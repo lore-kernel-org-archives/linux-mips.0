@@ -1,37 +1,35 @@
-From: Hartvig Ekner <hartvige@mips.com>
-Message-ID: <200212062224.gB6MOWI24351@coplin09.mips.com>
-Subject: Re: possible Malta 4Kc cache problem ...
-Date: Fri, 6 Dec 2002 23:24:32 +0100 (CET)
-In-Reply-To: <Pine.GSO.3.96.1021206174020.26674P-100000@delta.ds2.pg.gda.pl> from "Maciej W. Rozycki" at Dec 06, 2002 05:42:41 
+Message-ID: <006d01c29ea0$d0d15190$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <ECEPLLMMNGHMFBLHCLMACEALDGAA.giladb@riverhead.com>
+Subject: Re: Prefetches in memcpy
+Date: Sun, 8 Dec 2002 11:01:43 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Return-Path: <hartvige@mips.com>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: Carsten Langgaard <carstenl@mips.com>, "Kevin D. Kissell" <kevink@mips.com>, linux-mips@linux-mips.org
-Message-ID: <20021206222432.LM4RK2YnGys1y_pbsn6srrtIgMHgRJ6gvTaJGGg49Y4@z>
+To: Gilad <giladb@riverhead.com>, linux-mips@linux-mips.org
+Message-ID: <20021208100143.fU3Vl_SdTJefj92Q-maEGPf3JkBRjSaG25gu35vqxM8@z>
 
-The documents are provided to all core customers, and our marketing dept
-has decided that nobody else needs them :-)
+> As someone rather new to this list, and to mips-linux in general,
+> can someone explain the problem, as well as how one can avoid 
+> it or limit it's effects to a minimum ?
 
-As we now have a case which clearly proves otherwise, maybe somebody
-should reopen this discussion internally in MIPS? Dominic, do you want
-to volunteer?
+The problem is that memcpy() uses prefetch to pre-load the
+cache from the copy source, but does so very naively, such
+that it continues prefetching beyond the end of the block to
+be copied.  This is a Bad Idea for a couple of reasons.
+The first to be commented upon was the fact that it can
+result in bus hangs/bus errors if the kernel is trying to copy
+from the last few hundred bytes of physical memory, but 
+the really nasty one is that it screws up cache coherence
+for DMA I/O.
 
-/Hartvig
-
-Maciej W. Rozycki writes:
-> 
-> On Thu, 5 Dec 2002, Carsten Langgaard wrote:
-> 
-> > There is what the errata sheet says:
-> 
->  Is the errata doc available from anywhere?  Actually are such docs
-> available for any of your current (recent) processor products? 
-> 
-> -- 
-> +  Maciej W. Rozycki, Technical University of Gdansk, Poland   +
-> +--------------------------------------------------------------+
-> +        e-mail: macro@ds2.pg.gda.pl, PGP key available        +
+The no-brainer solution which has been proposed as a
+stopgap is simply to stop doing prefetch in memcpy()
+altogether.  The "correct" solution would be to have a
+slightly more complex memcpy() loop which only does
+prefetch up to the end of the source block, which is
+what is now done in the x86 port.

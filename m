@@ -1,28 +1,26 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: olson@anchor.engr.sgi.com (Dave Olson)
-Message-ID: <199901261709.JAA16711@anchor.engr.sgi.com>
+Message-ID: <199901261755.JAA16896@anchor.engr.sgi.com>
 Subject: Re: Parallel port support.
-In-Reply-To: <Pine.LNX.3.96.990126120139.12068J-100000@lager.engsoc.carleton.ca> from Alex deVries at "Jan 26, 99 12:03:08 pm"
-Date: Tue, 26 Jan 1999 09:09:10 -0800 (PST)
+In-Reply-To: <19990126182609.A663@bun.falkenberg.se> from Ulf Carlsson at "Jan 26, 99 06:26:09 pm"
+Date: Tue, 26 Jan 1999 09:55:16 -0800 (PST)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19990126170910.hDqDIY_sYRugMT7WCAIm4ar9uAu4P4_F7RCncuJ9sS8@z>
+To: Ulf Carlsson <ulfc@bun.falkenberg.se>
+Cc: adevries@engsoc.carleton.ca, linux@cthulhu.engr.sgi.com
+Message-ID: <19990126175516.5ZtQH93sgfVjseXcwYYmDtJin-LJsbDGlN2d_Le4Loc@z>
 
-Alex deVries wrote: 
+Ulf Carlsson wrote: 
+|  > Oh, it's *included* in the HPC3?  I'd missed that in the docs.
 |  
-|  I've never seen any documentation of the parallel port that hangs off of
-|  the pbus; does anyone know:
-|  - what kind of chip it is
+|  It should be in a separate document like the HAL2. None of the PBUS devices are
+|  documented in the HPC3 spec. Maybe it's some standard PC stuff?
 
-Just another part of the hpc3 asic.
+HAL2 *is* a seperate chip.  Documenting pieces of one chip in
+seperate docs would be, ummm, strange...
 
-|  - how it hangs off of the pbus?
-
-It doesn't.  That's just the address space where the control registers are.
 
 Dave Olson, Silicon Graphics
 http://reality.sgi.com/olson   olson@sgi.com

@@ -1,30 +1,25 @@
-Message-ID: <002001c08257$7186d000$2a764581@rembrandt.csv.ica.uni-stuttgart.de>
-From: "Thiemo Seufer" <seufer@csv.ica.uni-stuttgart.de>
-Subject: Re: Current CVS (010116) Boots OK
-Date: Fri, 19 Jan 2001 21:36:04 +0100
+Message-ID: <01c701c08268$a4965860$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <0101191014100B.01043@plugh.sibyte.com>
+Subject: Re: R[45]KC PRiD fields?
+Date: Fri, 19 Jan 2001 23:39:09 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: linux-mips@oss.sgi.com
-Message-ID: <20010119203604.xMA4DHXdyV3FkwEus-qTD7RuzDQjmvIgqCLAgQ3bMzU@z>
+To: carlson@sibyte.com, linux-mips@oss.sgi.com
+Message-ID: <20010119223909.tzA6IXmxYGQiLD_X_HHqe79WgNSniNK1Zeeqpd9qgZA@z>
 
-Maciej W. Rozycki wrote:
-[snip]
-> It's possible.  I'm actually using `cu' and it works fine wrt wrapping
->but it requires hw flow control (it sets "-clocal" and "crtscts" 
->explicitly) unfortunately, which is why it cannot be used for the
->DECstation's REX console I/O (which uses DTR/DSR flow control due to
->serial interface limitations on certain DEC hardware).  I'm going to
->modify `cu' at one time but since I don't really work with REX that much
->I'm just using `cat' for this purpose for now.
+> Does anyone happen to know what the R4Kc anc R5KC use for the company ID
+of the
+> PrID register (bits 23-16)?  I'm assuming it's 1, which is reserved for
+MTI,
+> but bits 15-8 seem to be carefully chosen not to conflict with previous
+> processors in the non-MIPS32/MIPS64 PRiD space.
 
-You might try 'screen'. I don't know if it requires Hardware
-flow control, but it works for me via
+The MIPS 4KC has a PrID of 0x000180xx
+The MIPS 5KC has a PrID of 0x000181xx
 
-screen screen /dev/ttyS1
-
-
-Thiemo
+            Kevin K.

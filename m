@@ -1,43 +1,32 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199706201012.MAA14703@informatik.uni-koblenz.de>
+From: Ralf Baechle <ralf@Julia.DE>
+Message-ID: <199706201407.QAA28016@kernel.panic.julia.de>
 Subject: Re: Getting X on Linux/SGI
-Date: Fri, 20 Jun 1997 12:12:15 +0200 (MET DST)
-In-Reply-To: <199706200917.FAA07966@jenolan.caipgeneral> from "David S. Miller" at Jun 20, 97 05:17:42 am
+Date: Fri, 20 Jun 1997 16:07:36 +0200 (MET DST)
+In-Reply-To: <Pine.LNX.3.95q.970620082252.15269C-100000@shire.ontko.com> from "Todd Shrider" at Jun 20, 97 08:42:47 am
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "David S. Miller" <davem@jenolan.rutgers.edu>
-Cc: fisher@sgi.com, lm@neteng.engr.sgi.com, sca@refugee.engr.sgi.com, carlson@heaven.newport.sgi.com, linux@cthulhu.engr.sgi.com, fisher@hollywood.engr.sgi.com
-Message-ID: <19970620101215.y-b5U7vYwNC5u0tDngVRKWBbyaawCMfAqwrBBYhFlbE@z>
+To: Todd Shrider <todds@ontko.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970620140736.VO3vhIycGkhIrUO6UwIBFytBTmYwvnC3h4gJF_bzsfE@z>
 
-> So you see, the real issue is that people don't know they want it...
+Hi,
+
+> that can hook up to the network, via cable or phone or whatever, browse
+> the web, ineract with the tv video feeds, receive and send mail (even if
+> only operating as a pop-client), browse news feeds, maybe even run
+> someting like Point-Cast as your "TV Screen Saver". 
 > 
-> Oh btw, Eddie will in fact be working on some MIPS based embedded
-> boards in the near future, and I can tell you he sure as hell isn't
-> gonna be putting QNX or any other "embedded OS" in those things.
+> When I think of systems, runnig chips like the 4300i, that can do things
+> like this, I think a pared down Linux is a very justified choice to run
+> them with. I'd rather it than Windows CE! If your still thinking of Linux
 
-Three people/companies have already started basing embedded systems
-based on the MIPS/Linux [1] at times when I personally wouldn't have
-trusted the entire MIPS port five minutes without peeking at it.
+The Algorithmics P4032 which I recently mentioned I'm also running Linux
+on has a R4300i.  The patches are too dirty and still based on 2.1.14,
+so they're not in the CVS tree ...
 
-Toshiba is currently porting Linux to a new R-family type processor
-for verification of the processor.  Hey, it does run Linux even before
-there is Silicon at all!
-
-Dave is right:
-
-> So you see, the real issue is that people don't know they want it...
-
-You see, we have not yet really taken off with the MIPS port and we
-already have some impact on the market.
-
-Another interesting embedded project will be done by Alan Cox.  He
-intends to port Linux to the R4650, a CPU without a TLB but just a
-pair of base/bounds registers.  Not an ELKS port but an almost full
-port of Linux just without certain features like mmap-ing.
+I'd love to see one of the MIPS based palmtop class machines to run Linux ...
 
   Ralf
-
-[1] Not going to be M/Linux ;-)

@@ -1,24 +1,25 @@
-content-class: urn:content-classes:message
-Subject: Want userland code for Mips Linux 2.2.12.
+Message-ID: <001201c12ab2$c7c4e700$8021690a@huawei.com>
+From: "machael thailer" <dony.he@huawei.com>
+Subject: question about syscall and interrupts......
+Date: Wed, 22 Aug 2001 10:33:08 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Date: Tue, 21 Aug 2001 15:09:11 -0700
-Message-ID: <84CE342693F11946B9F54B18C1AB837B0A259D@ex2k.pcs.psdc.com>
-From: "Steven Liu" <stevenliu@psdc.com>
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20010821220911.yP7AbmOtLBUy3g4ZLkJAWJVVOa7L1lcdnuC0n_7UE4g@z>
+Message-ID: <20010822023308.MOHxWacn1vbaXzsSo7Nh33jUniZ4-cP2kpckPTKSJeE@z>
 
-Hi All:
+Hello,
+    I find that in handle_sys() of scall_o32.S, it calls:
+        SAVE_SOME
+    But in the various board interrupt handlers entry(int-handler.S), it
+calls:
+        SAVE_ALL
 
-I do not  know where I can find the userland source code of  Mips Linux
-2.2.12 (bigendian) since I want to build the user applications such as
-init, bash, pwd, tar, ... 
+    So before entering syscall and interrupt handler entry, why do they need
+save different registers? and interrupt need save more things than syscalls?
 
-If anyone knows about it and let me know, I would be very pleased.
+Thank you very much.
 
-Thank you.
-
-Steven Liu
+machael thailer

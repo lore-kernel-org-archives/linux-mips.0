@@ -1,26 +1,55 @@
-From: "Eric Watkins" <watkinse@attens.com>
-Subject: SGI-Linux port progress?
-Date: Mon, 15 May 2000 13:44:54 -0700
-Message-ID: <003801bfbeae$6ccffc20$540ed7c0@hq.sd.cerf.net>
+Message-ID: <00a301bfbf26$363a5c00$0ceca8c0@satanas.mips.com>
+From: "Kevin D. Kissell" <kevink@mips.com>
+Subject: Re: Indy Documentation
+Date: Tue, 16 May 2000 13:02:15 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: linux@cthulhu.engr.sgi.com
-Message-ID: <20000515204454.8gtFb2sIrnjGtPnzDeCOA-iakxeDcyKNOuGb1d5ye5c@z>
+To: Florian Lohoff <flo@rfc822.org>, Ralf Baechle <ralf@oss.sgi.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Ulf Carlsson <ulfc@calypso.engr.sgi.com>, linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <20000516110215.rnLaukMxdRYrO1YoxiXuS0nmsybLH-JcyKOSZBatS44@z>
 
-Hello,
 
-I was just gifted/given an Indigo 2.
+-----Original Message-----
+From: Florian Lohoff <flo@rfc822.org>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>; Ulf Carlsson
+<ulfc@calypso.engr.sgi.com>; linux@cthulhu.engr.sgi.com
+<linux@cthulhu.engr.sgi.com>; linux-mips@fnet.fr <linux-mips@fnet.fr>;
+linux-mips@vger.rutgers.edu <linux-mips@vger.rutgers.edu>
+Date: Tuesday, May 16, 2000 12:22 PM
+Subject: Re: Indy Documentation
 
-It's working so I don't need any parts but I do want to know what the status
-of the hardhat project is. The files I found on the sgi site seemed out of
-date. Is any progress being made here?
+....
+>> Also I found that there is still a huge pile of Exabyte tapes that have the
+>> final full backup from the day when MIPS Computer Systems, Inc.  was
+>> shutdown by SGI after MIPS got bought in the early 90's.  That means that
+>> provided the legal problems involved with publication of such documentation
+>> get solved we now have everything that is required to support every machine
+>> ever made by MIPS Computer Systems, Inc.
+>
+>How will these legal issues be brought on the track ? I think both
+>companies (SGI + Mips) should have an interest to free up these documents
+>or at least hand out to some people who sign some kind of NDA.
+>
+>Flo
 
-How soon till I can install linux without having IRIX on my harddrive? All
-of the FAQs/docs I could find seemed to have IRIX as a requirement to
-partition the HD properly.
 
-Thanks!
+While MIPS Technologies Inc owns the microprocessor IP of the
+old MIPS Computer Systems, as well as much that was developed
+while MIPS was part of SGI, it is less than obvious what rights or
+responsibilites the new MIPS Technologies has with respect to the
+computer systems part of the pre-SGI MIPS business.  It is quite
+possible that all that stuff stayed with SGI when MIPS Technologies
+spun out.  I will forward the message to our legal people and see
+what they have to say.
+__
+
+Kevin D. Kissell
+MIPS Technologies European Architecture Lab
+kevink@mips.com
+Tel. +33.4.78.38.70.67
+FAX. +33.4.78.38.70.68

@@ -1,17 +1,54 @@
-Date: Fri, 25 Apr 2003 10:18:41 -0400 (EDT)
-From: Chip Coldwell <coldwell@frank.harvard.edu>
+Message-ID: <sea8ec0e.043@quicklogic.com>
+Date: Fri, 25 Apr 2003 08:04:07 -0700
+From: "Dan Aizenstros" <daizenstros@quicklogic.com>
 Subject: Re: NCD900 port?
-In-Reply-To: <sea8dc20.085@quicklogic.com>
-Message-ID: <Pine.LNX.4.44.0304251008550.23558-100000@frank.harvard.edu>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <coldwell@frank.harvard.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
+Return-Path: <daizenstros@quicklogic.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Dan Aizenstros <daizenstros@quicklogic.com>
-Cc: kevink@mips.com, linux-mips@linux-mips.org
-Message-ID: <20030425141841.TfMkAp6ZINm7d7fVhX28m_W-aQcV_NcQGylrHJiORa0@z>
+To: coldwell@frank.harvard.edu
+Cc: linux-mips@linux-mips.org
+Message-ID: <20030425150407.aaYuPp9YPuGoHJyYcoqHXxLuFwiI_NpOfiiAN9O8lUo@z>
 
+Hello Chip,
+
+The V320USC has a boot EEPROM that is used to configure
+it. If it is socketed on the board than I would suggest
+you remove it and put it in a device programmer and dump
+its contents. From the EEPROM contents you can find out
+some of the memory map of the system.
+
+You would be able to find out the base address of the
+V320USC registers which do not have a fixed address and
+could be located anywhere in the KSEG1 region.
+
+You would be able to find out the base address of the
+chips selects for the local bus.
+
+Without a memory map from NCD you will probably have
+to probe around to find the addresses of the devices
+attached to the local bus.
+
+You may have to write drivers for the devices attached
+to the local bus.
+
+Devices attached to the PCI bus will be easy to probe
+using configuration cycles.
+
+As for the bootloader, if it downloads binary images
+than you need to know what start address is expects
+so that you can compile linux to run from that address.
+If it can download ELF or S3 records than it will
+probably use the start address in the kernel image.
+Do you get a bootloader prompt on startup? Or does
+it just launch straight into X.
+
+-- Dan A.
+
+>>> Chip Coldwell <coldwell@frank.harvard.edu> 04/25/03 07:21 AM >>>
 On Fri, 25 Apr 2003, Dan Aizenstros wrote:
 > 
 > The V320USC is fully documented and manuals are
@@ -22,7 +59,7 @@ On Fri, 25 Apr 2003, Dan Aizenstros wrote:
 > be for our Hurricane board and so you will have to make
 > changes to support the NCD device.
 
-I found the documentation on line; it looks very thorough.  I also
+I found the documentation on line; it looks very thorough. I also
 found the (little-endian) toolchain on your website, which is very
 convenient.
 

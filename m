@@ -1,47 +1,77 @@
-Message-ID: <00d201c0518e$87060b20$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20001118132233Z553804-494+838@oss.sgi.com> <XFMail.001118180639.Harald.Koerfgen@home.ivm.de> <20001118182114.A19710@bacchus.dhis.org>
-Subject: Re: CVS Update@oss.sgi.com: linux
-Date: Sat, 18 Nov 2000 19:36:41 +0100
+Message-ID: <009d01c0556a$74eda6c0$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@paralogos.com>
+References: <3A1D3DA1.E982879B@vcubed.com>
+Subject: Re: Strange messages.
+Date: Thu, 23 Nov 2000 17:28:06 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>, Harald Koerfgen <Harald.Koerfgen@home.ivm.de>
-Cc: linux-cvs@oss.sgi.com, linux-mips@oss.sgi.com, linux-mips@fnet.fr
-Message-ID: <20001118183641.V8teVuurtyb_s5zgq3gZmYKlgy6Q7vIN26xKrIrdXto@z>
+To: Dan Aizenstros <dan@vcubed.com>, linux-mips@oss.sgi.com
+Message-ID: <20001123162806.NVlZaLFjYcbMtmxWTkhHlxLoHQHFYwzThtk3KcQ-DcA@z>
 
-> > > Log message:
-> > >       New configuration option CONFIG_MIPS_UNCACHED.  Not yet
-selectable due
-> > >       to the manuals documenting ll/sc operation as undefined for
-uncached
-> > >       memory.
-> >
-> > Wouldn't it make sense then to disable CONFIG_CPU_HAS_LLSC as well?
->
-> I'm waiting for authoritative answer from silicon guys before I deciede.
-> In the past I ran kernel entirely uncached and they seemed to work even
-> though the documentation made me assume the opposite.
+This really deserves to be in the  FAQ.  I guess
+I ought to put a version of this up an a web site
+somewhere and just point people to the URL:
+Either Ralf or I end up answering it about
+once a month.  
 
-We've been discussing this at MIPS, and it's a bit tricky.
-LL/SC is almost guaranteed not to work uncached in a
-multiprocessor configuration.  In the uniprocessor case,
-it's not documented to work, but probably would in most
-"natural" implementations.
+This message occurs when the kernel gets an 
+"unimplemented operation" trap from the FPU, 
+which means that an FP instruction has been issued
+that the hardware cannot handle on its own.  Usually
+this is a conversion of an extreme value or an operation 
+on a denormalized value. What the OS is supposed 
+to do in this case is to deal with the situation, by killing
+the process, fixing up the values, or emulating
+the instruction in software.
 
-The whole operation hinges on an invisible flip-flop which
-is set by an LL and cleared by one of a set of events,
-which include cache interventions by other CPUs,
-memory ops by the same CPU, ERETs, etc.  So long
-as the LL flop is set by the LL even uncached, and cleared
-on ERET regardless of caching, the desired behaviour will
-be obtained in an uncached uniprocessor.  But that's outside
-the scope of the ISA spec and any MIPS ISA validation suites,
-and a legal MIPS II/III/IV/V implementation could do otherwise.
+Setting flush-denormal-to-zero mode of the FPU
+and replaying the instruction to see if that helps
+is a slightly shady (in my opinion) hack that Ralf put in 
+as part of a tiny, minimal emulator that handled these 
+exceptions in some versions of MIPS Linux.  MIPS later
+integrated a full IEEE FPU emulator from Algorithmics
+into the 2.2.12 kernel, but it hasn't yet gone into
+the 2.3/2.4 repository.
 
-            Regards,
+So long as all you got was that message, and
+awk didn't subsequently dump core, you're probably
+OK.  Just don't do any serious numerical programming
+on the system until the full IEEE support goes in!
 
             Kevin K.
+
+----- Original Message ----- 
+From: "Dan Aizenstros" <dan@vcubed.com>
+To: <linux-mips@oss.sgi.com>
+Sent: Thursday, November 23, 2000 4:54 PM
+Subject: Strange messages.
+
+
+> Hello All,
+> 
+> Recently I upgraded my Linux/MIPS kernel from 2.2.12 to 
+> 2.4.0-test9 and I started getting messages like the following:
+> 
+> Setting flush to zero for awk.
+> 
+> I did not get this message when using a 2.2.12 kernel but I am
+> getting them with a 2.4.0-test9 kernel.
+> 
+> The 2.4.0-test9 kernel is based on the code from the snapshot
+> at oss.sgi.com in the following file,
+> /pub/linux/mips/mips-linux/simple/crossdev/src/linux-001027.tar.gz
+> with the patches from the same directory applied.
+> 
+> I get the message many times and for different programs during
+> system startup.
+> 
+> Has anyone seen this before?
+> 
+> Dan Aizenstros
+> Software Engineer
+> V3 Semiconductor Corp.
+> 

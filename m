@@ -1,38 +1,69 @@
-Message-ID: <03d201c15e56$7c26cac0$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20011026185452.88972.qmail@web10804.mail.yahoo.com>
-Subject: Re: MIPS 32bit and 64bit mode
-Date: Fri, 26 Oct 2001 21:42:13 +0200
+Message-ID: <04c801c160b0$1d62f660$3501010a@ltc.com>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <20011026210746.A20395@dev1.ltc.com> <3BDDACD2.7121F905@mvista.com>
+Subject: Re: PATCH: pci_auto bridge support
+Date: Mon, 29 Oct 2001 14:30:06 -0500
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: han han <piggie111000@yahoo.com>, linux-mips@oss.sgi.com
-Message-ID: <20011026194213.R8u_4nS7MFmT6GrLeIrMCp28U9V6io8CnX9Vtkiz8Ws@z>
+To: Jun Sun <jsun@mvista.com>
+Cc: linux-mips@oss.sgi.com, linux-mips-kernel@lists.sourceforge.net
+Message-ID: <20011029193006.kyWNnGK0HW8v6y-zQ2fMUm1JXO3BtB3C8H-EZFLTufs@z>
 
-> But, how does MIPS 5kc work with 32bit Linux kernel?
+I considered that, but since only this small chuck of run-once surrogate
+bios autoconfig code needs to know, I figured better keep it separate.
 
-If the KX, UX, and PX bits of the CP0 Status register
-are all zero, a MIPS5Kc is essentaillly functioning as
-a 32-bit CPU.  The registers are still 64 bits, and
-arithmetic operations will cause all 64 bits of the
-destination to be written, but this is outside of the
-"event horizon" of the program so long as 64-bit
-data and addressing is not enabled.  The 64-bit
-5Kc can, and does, boot the same Linux kernel as 
-the 32-bit 4Kc.  MIPS64 is a strict superset of MIPS32.
+Regards,
+Brad
 
-> Do you means there is no difference between 32 bit
-> mode and 64 bit mode for MIPS 5kc in kernel mode?
+----- Original Message -----
+From: "Jun Sun" <jsun@mvista.com>
+To: "Bradley D. LaRonde" <brad@ltc.com>
+Cc: <linux-mips@oss.sgi.com>; <linux-mips-kernel@lists.sourceforge.net>
+Sent: Monday, October 29, 2001 2:24 PM
+Subject: Re: PATCH: pci_auto bridge support
 
-There is no such thing as "32-bit mode" and "64-bit
-mode", not really.  There are 64-bit data-type instructions
-(e.g. "LD", "DADD") and, logically independently, there
-is 64-bit addressing for loads and stores - which includes 
-LW and LB as well as LD.  64-bit data is always enabled 
-in kernel mode on a MIPS64 part.  For 64-bit data in User 
-mode, and for 64-bit addressing in *either* mode, there are 
-explicit enables.
 
-            Kevin K.
+>
+> Brad,
+>
+> Have you considered embedding "topbus" argument into hose structure?  That
+> sounds like potentially better solution.
+>
+>
+>
+> "Bradley D. LaRonde" wrote:
+> >
+> > 2001-10-26  Bradley D. LaRonde <brad@ltc.com>
+> >
+> > * PCI bridge support.  See change log entry below.
+> >
+> > --- arch/mips/kernel/pci_auto.c 2001/08/18 06:21:53     1.1
+> > +++ arch/mips/kernel/pci_auto.c 2001/10/27 01:01:21
+> > @@ -4,6 +4,7 @@
+> >   * Author: Matt Porter <mporter@mvista.com>
+> >   *
+> >   * Copyright 2000, 2001 MontaVista Software Inc.
+> > + * Copyright 2001 Bradley D. LaRonde <brad@ltc.com>
+> >   *
+> >   * This program is free software; you can redistribute  it and/or
+modify it
+> >   * under  the terms of  the GNU General  Public License as published by
+the
+> > @@ -19,6 +20,15 @@
+> >   * . change most int to u32.
+> >   *
+> >   * Further modified to include it as mips generic code,
+ppopov@mvista.com.
+> > + *
+> > + * 2001-10-26  Bradley D. LaRonde <brad@ltc.com>
+> > + * - Add a top_bus argument to the "early config" functions so that
+> > + *   they can set a fake parent bus pointer to convince the underlying
+> > + *   pci ops to use type 1 configuration for sub busses.
+> > + * - Set bridge base and limit registers correctly.
+> > + * - Align io and memory base properly before and after bridge setup.
+> > + * - Don't fall through to pci_setup_bars for bridge.
+> > + * - Reformat the debug output to look more like lspci's output.
+> >   */

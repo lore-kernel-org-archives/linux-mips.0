@@ -1,50 +1,35 @@
-From: "Robert Rusek" <robru@teknuts.com>
-Subject: RE: Executing IRIX binary ?
-Date: Mon, 27 May 2002 14:58:15 -0700
-Message-ID: <001d01c205c9$9d8faf40$0a01a8c0@sohotower>
+From: Hartvig Ekner <hartvige@mips.com>
+Message-ID: <200205280659.IAA12543@copsun17.mips.com>
+Subject: Updated 7.1 installation images 
+Date: Tue, 28 May 2002 08:59:41 +0200 (MET DST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20020527211513.GE32064@paradigm.rfc822.org>
 Sender: owner-linux-mips@oss.sgi.com
-To: flo@rfc822.org
-Cc: 'Ralf Baechle' <ralf@oss.sgi.com>, linux-mips@oss.sgi.com
-Message-ID: <20020527215815.KfS1RCMIo2zoOlUhZ2IdPD77BgeFagewFFCdAGioK7o@z>
+To: user alias <linux-mips@oss.sgi.com>
+Message-ID: <20020528065941.n2FZyTijESx8wpYv-V6dOr2vPfATZBr6rB8TQD-x1pc@z>
 
-I have IRIX binary support turned on in the kernel.  I can copy over my
-IRIX libs from my old IRIX partition (I just do not know which ones).  I
-don't think I have the dynamic loader?  How would I check to see if I
-have it?  If not where would I get it?  Sorry about all these newbie
-questions it is just that I need to be able to run the IRIX version of
-fronpage server extensions since MS does not provide the open source.
+We have just updated our MIPS RedHat 7.1 installation images for our
+development boards on ftp.mips.com.
 
-Thanks,
-Robert.
+All the latest packages from H.J.'s 7.1 miniport are there, as well as new
+2.4.18 kernels.
 
-      -----Original Message-----
-      From: flo@rfc822.org [mailto:flo@rfc822.org] 
-      Sent: Monday, May 27, 2002 2:15 PM
-      To: Robert Rusek
-      Cc: 'Ralf Baechle'; linux-mips@oss.sgi.com
-      Subject: Re: Executing IRIX binary ?
-      
-      
-      On Mon, May 27, 2002 at 01:32:43PM -0700, Robert Rusek wrote:
-      > Ralf,
-      > 
-      > Looks like I have the kernal compiled with the IRIX 
-      binary support.  
-      > How do I go about executing the binaries?  When I try 
-      to execute it 
-      > tells me that the file is not found.
-      
-      Are you shure you have the dynamic loader + libc + other 
-      libs of IRIX installed in your system ?
-      
-      Flo
-      -- 
-      Florian Lohoff                  flo@rfc822.org            
-       +49-5201-669912
-                              Heisenberg may have been here.
-      
+/Hartvig
+
+
+From ftp.mips.com:
+
+ftp> pwd
+257 "/pub/linux/mips/installation/redhat7.1/02.00" is current directory.
+
+ftp> dir
+200 PORT command successful.
+150 Opening ASCII mode data connection for /bin/ls.
+total 748399
+-r--r--r--   1 9618     40          13612 May 27 23:27 INSTALL
+-r--r--r--   1 9618     40       383148032 May 27 23:32 MIPS_RedHat7.1_Release-02.00.iso
+-r--r--r--   1 9618     40       382801920 May 27 23:29 MIPS_RedHat7.1_Release-02.00.tar
+-r--r--r--   1 9618     40            585 May 27 23:27 README
+226 Transfer complete.
+321 bytes received in 0.026 seconds (12.11 Kbytes/s)

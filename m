@@ -1,53 +1,51 @@
-Reply-To: <raghav@ishoni.com>
-From: "Raghav P" <raghav@ishoni.com>
-Subject: Are page tables allocated in KSEG0 or in KSEG2?
-Date: Sat, 30 Jun 2001 14:51:17 +0530
-Message-ID: <E0FDC90A9031D511915D00C04F0CCD250399AA@leonoid.in.ishoni.com>
+content-class: urn:content-classes:message
+Subject: sti() does not work.
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Date: Tue, 3 Jul 2001 15:48:04 -0700
+Message-ID: <84CE342693F11946B9F54B18C1AB837B05CE09@ex2k.pcs.psdc.com>
+From: "Steven Liu" <stevenliu@psdc.com>
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20010630092117.EqrZZscawTDnG3Mccu06WQcOgKERFHsk-bV1Cr3AN2I@z>
+Cc: "stevenliu@psdc.com" <jeff@moke.com>
+Message-ID: <20010703224804.BUi9BWHlm2S0gYbOqQdxq4Gq_F4gvIOrbq8eSCYYP5Q@z>
 
-I was going thru the TLB exception for R2300 and had the following doubts
-which I hope someone can help me out with. ( am sorry if this is a newbie
-question but since this is MIPS specific I am posting here)
+Hi All:
 
-The code is in arch/mips/kernel/head.S for user TLB:
+I am working on the porting Linux to mips R3000 and  have a problem
+about sti( ) which is called in start_kernel( ).
 
-        /* TLB refill, EXL == 0, R[23]00 version */
-        LEAF(except_vec0_r2300)
-        .set    noat
-        .set    mips1
-        mfc0    k0, CP0_BADVADDR
-        lw      k1, current_pgd                 # get pgd pointer
-        srl     k0, k0, 22
-        sll     k0, k0, 2
-        addu    k1, k1, k0
-        mfc0    k0, CP0_CONTEXT
-        lw      k1, (k1)
-        and     k0, k0, 0xffc
-        addu    k1, k1, k0
-        lw      k0, (k1)
-        nop
-        mtc0    k0, CP0_ENTRYLO0
-        mfc0    k1, CP0_EPC
-        tlbwr
-        jr      k1
-        rfe
-        END(except_vec0_r2300)
+As we know, sti() is defined as __sti( ) in the
+include/asm-mips/system.h:
+ 
+extern __inline__ void  __sti(void)
+{
+	__asm__ __volatile__(
+		".set\tnoreorder\n\t"
+		".set\tnoat\n\t"
+		"mfc0\t$1,$12\n\t"
+		"ori\t$1,0x1f\n\t"
+		"xori\t$1,0x1e\n\t"
+		"mtc0\t$1,$12\n\t"               /* <----- problem  here
+! */
+		".set\tat\n\t"
+		".set\treorder"
+		: /* no outputs */
+		: /* no inputs */
+		: "$1", "memory");
+}
 
-My linux book says that pgd and pte entries are not setup by the kernel
-until a pagefault exception occurs.
-The above code will work only if the pgd and pte tables are stored in kseg2;
-if they were stored in kseg0 then if a pgd has an invalid pte entry the
-above code will index into an invalid pte page and get a wrong physical
-address.
-But the pgd_alloc() and pte_alloc() routines seem to be allocating physical
-pages from kseg0 for pgd and pte tables.
-Am I missing something here???
+Before calling this function, status_register = 0x1000fc00 and
+cause_register=0x00008000. 
+Clearly, this is an interrupt of the CPU timer. 
 
-Thanks
-Raghav
+When mtc0 instruction above is executed, the system hangs and the
+control does not go to the timer handler.
+
+Any help is greatly appreciated.
+
+Thank you.
+
+Steven liu

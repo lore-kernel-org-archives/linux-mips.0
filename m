@@ -1,38 +1,18 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <19971128161036.24017@thoma.uni-koblenz.de>
-Date: Fri, 28 Nov 1997 16:10:36 +0100
-From: Ralf Baechle <ralf@uni-koblenz.de>
+Message-ID: <m0xblXX-0005FsC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
 Subject: Re: Bintuils
-References: <19971128145410.36065@thoma.uni-koblenz.de> <m0xbRqY-0005FvC@lightning.swansea.linux.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <m0xbRqY-0005FvC@lightning.swansea.linux.org.uk>; from Alan Cox on Fri, Nov 28, 1997 at 02:56:45PM +0000
+Date: Sat, 29 Nov 1997 11:58:26 +0000 (GMT)
+In-Reply-To: <Pine.LNX.3.95.971128224354.4228B-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Nov 28, 97 10:51:47 pm
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Ralf Baechle <ralf@mailhost.uni-koblenz.de>ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
-Message-ID: <19971128151036.ScukAcP7Oi_kTup89f2OMQQ5dkXe_B_sUjMBeXWNg7c@z>
+To: Alex deVries <adevries@engsoc.carleton.ca>
+Cc: ralf@uni-koblenz.de, linux@cthulhu.engr.sgi.com
+Message-ID: <19971129115826.CK6389JLRXgiMdv_NWvTZdEFNcTefIqmmG-ty9qO20U@z>
 
-On Fri, Nov 28, 1997 at 02:56:45PM +0000, Alan Cox wrote:
-> >   - manually rebuild binutils 2.8.1 + patch.  When configuring binutils
-> >     2.8.1 do not use the --enable-shared option, it will make binutils
-> >     2.7 generate bad libraries.
-> 
-> Done that. I get a static and apparently workable binutils if I also turn
-> gcc optimisation off (otherwise gcc dumps)
-> 
-> >   - install the binutils just built
-> 
-> Done that
-> 
-> >   - You should now be able to rebuild the rpm without problems
-> 
-> gcc still dumps, if I fix that I get back to the original problem. This
-> is the 2.8.1 off sgi.com and has a "mips patch" listed in the spec file.
-> 
-> Im guessing the gcc one is a link bug that damaged gcc just slightly - zsh
-> also dumps gcc.
+> Does anyone have an editor?  It's a bit of a pain to have to FTP things
+> over to my i386 box, change, and re-FTP.
 
-In that case you are probably the victim of an older libc.  I'll rebuild
-libc for my sources for big endian machines asap.
+There is an nvi and a joe rpm on ftp.uk.linux.org as well as "ed".
 
-  Ralf
+Alan

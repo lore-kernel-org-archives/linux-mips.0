@@ -1,56 +1,72 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@Julia.DE>
-Message-ID: <199703072138.WAA16621@kernel.panic.julia.de>
-Subject: Re: Linux/SGI
-Date: Fri, 7 Mar 1997 22:38:35 +0100 (MET)
-In-Reply-To: <199703071951.NAA10311@athena.nuclecu.unam.mx> from "Miguel de Icaza" at Mar 7, 97 01:51:32 pm
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199703140018.QAA20671@yon.engr.sgi.com>
+Subject: Re: Hello world!
+Date: Thu, 13 Mar 1997 16:18:06 -0800 (PST)
+In-Reply-To: <9703141124.ZM7712@windy.wellington.sgi.com> from "Alistair Lambie" at Mar 14, 97 11:24:41 am
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Miguel de Icaza <miguel@nuclecu.unam.mx>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970307213835.4lOE8ARjuS24Uerhz_q87z5JxrWmb8olbCt1Sz6LJDI@z>
+To: linux@yon.engr.sgi.com, David <davem@caip.rutgers.edu>
+Message-ID: <19970314001806.H-N1OPsMrZrO6Ymx2XAOQ0ec6VIsKIQMJARNphFL4EM@z>
 
-Hello,
+:
+:On Mar 14, 10:32am, Mike Shaver wrote:
+:> Subject: Hello world!
+:> Looks like I'm getting an Indy when I get back to Ottawa next week, so
+:> I'd like to hear from others (hello?) as to what kind of work we're
+:> looking at in the short term.
+:>
 
->    This is kind of a test message to see if we are (Ralf and I) are on
-> the SGI Linux mailing list.
->  
->    Ralf and I have joined the Linux/SGI project (he will mail his very
-> own presentation later).  The idea basically is that we will be
-> getting a machine each one to finish the Linux on SGI port.
+The goals are:
+	0) Complete the merge with mainstream Linux
+	   (David left at 2.0.11 or so) which I assume
+	   Ralf has already done or doing.
 
-   Thanks for the introduction Miguel; I'd like to use the chance to drop
-some words about what I'm doing right now on Linux and what the status
-of this is.
+	1) Get the Indy to boot linux from a _local_ disk
+	   Ralf and Miguel were looking into SILO here.
 
-   As you know David left SGI again in the late August.  At that time he
-had not only completed a good part of the SGI specific stuff but also
-made a lot of improofments to the generic MIPS parts of the kernel.  At
-that time his kernel was based on Linus' 2.0.14.
+	2) Get gcc to work native of Linux/Indy
 
-  At the same time I was working mostly independend of him; luckily.  My target
-machines were at that time the good old Magnum 4000 and it's OEM variant
-M700-10 from Olivetti, the Magnum based Acer PICA machine and SNI's RM200.
-When Ariel mailed me about working on Linux/SGI my kernel for these
-machines was based on Linux 2.1.21.
+As Alistair said, David already got the WD SCSI driver to work
+and he was booting to multiuser and even running GNU emacs
+on his Linux Indy.  But this was done using:
 
-  It's obvious that our kernels have diverged a good bit from each other
-and right now I'm working on merging both kernel sources into one single
-tree again.
+	1) Cross builds (gcc-cross was running on IRIX 6.2
+	   and producing Linux ELF-32 binaries).
 
-  The second most important part of the system is libc.  On MIPS we use
-the GNU which has the enormous advantage of being far more portable and
-cleaner code than the Linux Libc on which most Linux/i386 systems are
-based.  Disadvantage is that GNU libc was much buggier than Linux Libc.
-This has changed a lot and so libc presents itself already quite near
-to a release (*) libc but there is still some work to do.
+	2) Booting was never local. It was always using the
+	   ARC prom bootp command.
 
-  Similar for the other core parts of the system on which David worked but
-right now I'm still busy merging the kernel sources; the next step will
-be libc.
+	3) The target Linux/Indy filesystems were NFS mounted.
 
-  Ralf
+Basically we need to mkfs.ext2(8) on the local Indy (as IRIX
+supports XFS and EFS both of which are proprietary, Sigh)
+It would be best to have a seprate disk (rather than a
+partition which may disappear in case of human error)
+Get SILO to work, get the latest gcc to work native
+and we can start working on userland.
 
-*) famous last words
+Asking David some questions might be a good idea too.
+I'm not sure he is currently on the list, I'll ask
+him if he's interested to join.
+
+:>
+:> I understand that we're looking to get a source repository out on the
+:> 'net, which would be a good start.  What are people planning to start
+:> with first?  (I suppose talking to disks is a priority... =) )
+:>
+
+Larry and I are working on setting up linux.sgi.com outside the
+SGI firewall. My intention is to set up tcpwrappers so that only
+the developers (Ralf, Miguel, Mike) and SGI people could login
+and give you complete control of the machine. At which point
+you can install ssh or whatever and start sharing sources.
+
+The "official" initial post-David merged source tree should
+come from Ralf.
+
+-- 
+Peace, Ariel

@@ -1,22 +1,60 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Thu, 10 Jul 1997 18:08:40 -0400
-Message-ID: <199707102208.SAA19714@tvp.boston.sgi.com>
-From: Wayne Mesard <wmesard@cthulhu.engr.sgi.com>
-Subject: How to get the masses (IRIX<->Linux)
-In-Reply-To: Ariel Faigon's message of 10 July 1997 14:38:49
-References: <199707102138.OAA23929@oz.engr.sgi.com>
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199707152215.AAA20071@informatik.uni-koblenz.de>
+Subject: Re: Fun with binutils ...
+Date: Wed, 16 Jul 1997 00:15:15 +0200 (MET DST)
+In-Reply-To: <199707151948.PAA08407@jenolan.rutgers.edu> from "David S. Miller" at Jul 15, 97 03:48:12 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ariel Faigon <ariel@sgi.com>
-Cc: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970710220840.EX1DKJIktVCR7kC2ukAWlxKd9I7JSdS11oQpVAY5wV4@z>
+To: "David S. Miller" <davem@jenolan.rutgers.edu>
+Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr
+Message-ID: <19970715221515.pxjWCxwGvNmarPimeBigKBs1zxXqmLvWUU5yWKVWmBc@z>
 
-Ariel Faigon writes:
-> If we could rewrite wakeupat or reboot to take some
-> extra boot options or alternatively run some Linux loader
-> (SILO/MILO) from IRIX then 2) should be easy.
+>     - GAS still doesn't deal with _huge_ loops.  The only program I know
+>       of which is affected is lmbench, but that alone is reason enough
+>       to fix it :-)
+> 
+> It is not a bug, just that we have the local label semantics specified
+> for linux-mips differently in gcc and gas.  I fixed this ages ago and
+> it made lat_ctx.c compile just fine.
 
-Not necessary.  Use nvram to set SystemPartition (and maybe one or two
-other prom variables?) to point at the Linux disk and then just init 6.
+It has nothing to do with local label semantics of GCC; I can easily trigger
+the problem in plain assembler using local or nonlocal labels.  Maybe you
+were still using a non-PIC lat_ctx at that time?  The problem only affects 
+PIC.  Another explanation would be that the size of the cacheflushing
+loop in lmbench was somewhen increased or the GCC variant you used generates
+different branches.  The problematic GAS code from:
+binutils/gas/config/tc-mips.c:
 
-Wayne();
-617-489-7864
+[...]
+  3439      case M_BGTL_I:
+  3440        likely = 1;
+  3441      case M_BGT_I:
+[...]
+  3470        if (imm_expr.X_op != O_constant)
+  3471          as_bad ("Unsupported large constant");
+[...]
+  3536      case M_BGTUL_I:
+  3537        likely = 1;
+  3538      case M_BGTU_I:
+[...]
+  3544        if (imm_expr.X_op != O_constant)
+  3545          as_bad ("Unsupported large constant");
+[...]
+  3632      case M_BLEL_I:
+  3633        likely = 1;
+  3634      case M_BLE_I:
+[...]
+  3647        if (imm_expr.X_op != O_constant)
+  3648          as_bad ("Unsupported large constant");
+[...]
+  3694      case M_BLEUL_I:
+  3695        likely = 1;
+  3696      case M_BLEU_I:
+[...]
+  3702        if (imm_expr.X_op != O_constant)
+  3703          as_bad ("Unsupported large constant");
+
+  Ralf

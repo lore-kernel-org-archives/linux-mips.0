@@ -1,25 +1,39 @@
-Message-ID: <001101becece$8a148ce0$1b76d693@lmemw.ericsson.se>
-From: "Stefan Mars" <stefan.mars@esavionics.se>
-Subject: Linux fs on Irix and the other way around
-Date: Thu, 15 Jul 1999 16:30:08 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <199907151906.VAA28323@zaphod.et.tudelft.nl>
+Subject: updating 5.1 distro
+Date: Thu, 15 Jul 1999 21:06:58 +0200 (CEST)
+From: Edwin Hakkennes <E.Hakkennes@et.tudelft.nl>
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-Content-Transfer-Encoding: 7bit
 To: linux@cthulhu.engr.sgi.com
-Message-ID: <19990715143008.6fcopCkcBFcF59FBxYJBMDXHHf-JJ9233diYrEJcIdQ@z>
+Cc: Edwin Hakkennes <E.Hakkennes@et.tudelft.nl>
+Message-ID: <19990715190658.veFZqdRxJqPYTlcBFrlSz06W6bVM4Ju4go6vFKt8MKQ@z>
 
-Hi,
+Hi all,
 
-I have been looking around for information on how to get linux filesystems
-to mount under Irix. From the project webpages I see that there is at least
-some kind of support for ext2fs, though I haven't seen the source for it.
+We are planning to use an old Indy with 9G of disk as an
+ftp-mirror-site. As this will obviously attract hackers, our sys-admin
+really wants to bring the machine in an up-to-date security state
+before widely announing it. Right now it has RedHat 5.1 installed,
+without any security updates. This seems to run fine.
 
-Can some kind soul point me towards information for writing/porting
-filesystemdrivers to Irix?
+I've seen some effort to produce redhat5.2 RPMS and even a message
+about getting glibc2.1 to work on mipseb, but nothing further.
 
-/Stefan Mars
+My (next) questions are:
 
-Email: stefan.mars@esavionics.se
+1) Is there already someone building/maintaining a 5.2 or 6.0 distro?
+
+2) Would supplying the right packages/hdlist to the 5.1 installer work?
+
+3) Are the diffs needed to build the 5.1 distro backported in RedHat 6.0?
+   (if not, are these stored somewhere?)
+
+I'm running rpm --rebuild *redhat6.0.src.rpm right now. At least
+glibc2.1 is giving errors, I'll see about some more tomorrow morning.
+
+Thanks for any answers and 
+Greetings,
+
+Edwin Hakkennes
+
+   

@@ -1,38 +1,20 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: fisher@hollywood.engr.sgi.com (William Fisher)
-Message-ID: <199802060031.QAA09851@hollywood.engr.sgi.com>
-Subject: Re: Another linux tidbit
-Date: Thu, 5 Feb 1998 16:31:49 -0800 (PST)
-In-Reply-To: <199802060013.QAA29017@fir.engr.sgi.com> from "William J. Earl" at Feb 5, 98 04:13:25 pm
-Reply-To: fisher@sgi.com
+Message-ID: <m0y36d2-0005FsC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: TLB entries > 4kb
+Date: Thu, 12 Feb 1998 21:57:07 +0000 (GMT)
+In-Reply-To: <E0y36YO-00042j-00@imladris.demon.co.uk> from "David Woodhouse" at Feb 12, 98 09:52:19 pm
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "William J. Earl" <wje@fir.engr.sgi.com>
-Cc: linux@hollywood.engr.sgi.com, William Fisher <fisher@hollywood.engr.sgi.com>
-Message-ID: <19980206003149.aFz5q4ntQ7f0c-6-1Ko1Rbf2E-nJfbFk4xYU8nYNm_M@z>
+To: David Woodhouse <Dave@imladris.demon.co.uk>
+Cc: mingo@chiara.csoma.elte.hu, alan@lxorguk.ukuu.org.uk, ralf@uni-koblenz.de, linux-kernel@vger.rutgers.edu, linux@cthulhu.engr.sgi.com
+Message-ID: <19980212215707.SL360MgKxVlBbsZzw50Iql9NNFQUdxT6IO2ofOk1T8M@z>
 
+> >  The way its done is ok normally. I guess you need to make X over
+> > Linux/RT call the rtlinux kernel to handle it. Note X _has_ to do
+> > those global cli/sti's to meet hardware needs
 > 
->     I was just browsing this week's Info World, which includes
-> their "1997 Product of the Year" awards.  They gave the Operating
-> System award to Red Hat Linux, and the Best Technical Support
-> award to the Linux user community.  They wrote, "Find out what
-> you have been missing while you've been rebooting Windows NT", and,
-> in regard to support from commercial vendors, "Many times [the vendors]
-> deny that there are bugs in their software."
-> 
-	Bill Gates has explictly stated in several published interviews
-	that Microsoft does NOT do software releases ONLY to fix bugs.
+> GGI (well, KGI) should be able to fix both of these, shouldn't it?
 
-	"The only reason to release new software is for features which
-	the customers are willing to pay." He even argued that the
-	typical "fixed in the next release" quoted by technical support
-	was a non-starter.
-
-	I wonder what BillG does when he hits an bug in "his software"?
-	What does he do after immediately calling technical support,
-	waiting one on hold for 20+ minutes, he is then told
-	"It's fixed in the next release", what does he do next?
-	File bug report and waits for some new additional buggy feature(s)
-	in the next release to arrive?
-
--- Bill
+Not for Linux/RT - the kernel cant do real cli/sti pairs. The stuff
+would have to become an RTLinux graphics setup call set

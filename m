@@ -1,24 +1,22 @@
-Date: Fri, 19 Oct 2001 14:09:38 -0400
-From: "J. Scott Kasten" <jsk@tetracon-eng.net>
-Subject: Re: Linux for Silicon Graphics
-In-Reply-To: <000201c158c8$0319a3c0$0b00a8c0@sci>
-Message-ID: <Pine.SGI.4.33.0110191409240.2820-100000@thor.tetracon-eng.net>
+Subject: Re: IDE DMA mode in Big endian for mips
+Date: Sun, 21 Oct 2001 17:50:00 +0100 (BST)
+In-Reply-To: <20011017.113842.41627007.nemoto@toshiba-tops.co.jp> from "Atsushi Nemoto" at Oct 17, 2001 11:38:42 AM
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E15vLnU-0007CG-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: Ricardo SOuza <ricardo@infom.com.br>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20011019180938.3YjokYf2BduMyojzCM8BRR_Mg_zs2oDOwGK-muEfQpI@z>
+To: Atsushi Nemoto <nemoto@toshiba-tops.co.jp>
+Cc: hli@quicklogic.com, linux-mips@oss.sgi.com
+Message-ID: <20011021165000.9kG8YZlLxYqVJfV4awJFc3m5pFlXaqkODEYzPELUtDM@z>
 
+>  				return 1;	/* try PIO instead of DMA */
+> +#if defined(__mips__) && defined(__BIG_ENDIAN) /* XXX mips only? */
+> +			outl(cpu_to_le32(hwif->dmatable_dma), dma_base + 4); /* PRD table */
+> +#else
+>  			outl(hwif->dmatable_dma, dma_base + 4); /* PRD table */
+> +#endif
 
-http://oss.sgi.com/mips/
-
-On Fri, 19 Oct 2001, Ricardo SOuza wrote:
-
->
-> I´d like to know what LINUX support SG and If someone can tell their URL!
->
-> thanks
->
->
+You should actually just be able to delete the #if stuff. On an LE machine
+cpu_to_le32() is a null operation

@@ -1,28 +1,24 @@
-From: Dominic Sweetman <dom@algor.co.uk>
+Message-ID: <00da01c2a047$2aa9f9e0$e20310ac@gv.com.tw>
+From: "??" <kevin@gv.com.tw>
+References: <011c01c29c54$7aa64c60$e20310ac@gv.com.tw> <20021205132358.A5634@linux-mips.org>
+Subject: enlarge KERNEL_STACK_SIZE
+Date: Tue, 10 Dec 2002 20:25:03 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-ID: <15860.30131.710196.940955@gladsmuir.algor.co.uk>
-Date: Mon, 9 Dec 2002 10:51:31 +0000
-Subject: Re: possible Malta 4Kc cache problem ...
-In-Reply-To: <200212062224.gB6MOWI24351@coplin09.mips.com>
-References: <Pine.GSO.3.96.1021206174020.26674P-100000@delta.ds2.pg.gda.pl>
-	<200212062224.gB6MOWI24351@coplin09.mips.com>
-Return-Path: <dom@algor.co.uk>
+Return-Path: <kevin@gv.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Hartvig Ekner <hartvige@mips.com>
-Cc: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Carsten Langgaard <carstenl@mips.com>, "Kevin D. Kissell" <kevink@mips.com>, linux-mips@linux-mips.org
-Message-ID: <20021209105131.6ht1ophheIt--FfB1mCEG260dCPLZ1ugSvUyc3dQ3pQ@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20021210122503.hiN96m1pkg5hI3zqk4jBRJyOMuOEqx958-3DP1ywtB8@z>
 
+dear all,
 
-Hartvig,
+ how to enlarge KERNEL_STACK_SIZE?
 
-> As we now have a case which clearly proves otherwise, maybe somebody
-> should reopen this discussion internally in MIPS? Dominic, do you want
-> to volunteer?
+ is it enough if i only change 
+ the definition of KERNEL_STACK_SIZE in include/asm-mips/processor.h ?
 
-I am stirring...
-
---
-Dominic
+ best regards,

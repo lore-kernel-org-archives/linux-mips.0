@@ -1,64 +1,29 @@
-Received: from lahoo.priv ([162.39.1.206]) by ispmxmta06-srv.alltel.net
-          with ESMTP
-          id <20040423032239.QXNV24676.ispmxmta06-srv.alltel.net@lahoo.priv>
-          for <linux-mips@linux-mips.org>; Thu, 22 Apr 2004 22:22:39 -0500
-Received: from prefect.priv ([10.1.1.141] helo=prefect)
-	by lahoo.priv with smtp (Exim 3.36 #1 (Debian))
-	id 1BGr1R-0005hF-00
-	for <linux-mips@linux-mips.org>; Thu, 22 Apr 2004 23:06:37 -0400
-Message-ID: <06d601c428e2$3ba1dcc0$8d01010a@prefect>
-From: "Bradley D. LaRonde" <brad@laronde.org>
-Subject: inconsistent operand constraints in 'asm' in unaligned.h:66 using gcc 3.4
-Date: Thu, 22 Apr 2004 23:22:40 -0400
+Received: from jhdew ([222.98.69.113])
+	by torinet.co.kr (8.12.8/8.12.8) with ESMTP id i3N8px5i009307
+	for <linux-mips@linux-mips.org>; Fri, 23 Apr 2004 17:51:59 +0900
+From: =?ks_c_5601-1987?B?wOXB+Mit?= <jhdew@torinet.co.kr>
+Subject: Problem with 64-bit kernel in SB1250 processor board.
+Date: Fri, 23 Apr 2004 17:01:09 +0900
+Message-ID: <000601c42909$236b5e20$714562de@jhdew>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <brad@laronde.org>
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: 8BIT
+Return-Path: <jhdew@torinet.co.kr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040423032240.64daGxwZeO9dl3CGFlWlNXew1HyfjWLES7wuNs4JtGU@z>
+Message-ID: <20040423080109.lvkL1nOGuPCbDMdO8s_bfy1NXzHfOml6tY2Ji7M1GcE@z>
 
-gcc 3.4 complians about:
+Hello,
 
-include/asm/unaligned.h:66: error: inconsistent operand constraints in an
-`asm'
+I¡¯m testing SB1250 processor board with 64bits linux kernel.
+I used last source(linux-2.4.21) from Broadcom sibyte site.
 
-from linux CVS 2.4 branch.  That's:
+But, when I did ping flooding 2-3 times (back ground running) to any
+host system from my board, it panics. (mainly page fault error)
+With 32bit linux kernel, no panic. Any idea?
+How stable SB1250 processor in 64-bit linux kernel?
 
-/*
- * Store doubleword ununaligned.
- */
-static inline void __stq_u(unsigned long __val, unsigned long long * __addr)
-{
-        __asm__("usw\t%1, %0\n\t"
-                "usw\t%D1, 4+%0"
-                : "=m" (*__addr)
-                : "r" (__val));
-}
-
-I was baffled by the "%D1" syntax until Thiemo Seufer pointed out that %D1
-assembled to "one register higher than the register chosen for %1".
-Ooooookay.  But gcc complains about a constraint problem.  Maybe "r" and
-"%Dn" don't get along (long)?
-
-Anyway... what about __val's type?  I would expect that to be "unsigned long
-long" for -mabi=32.  Otherwise will "%D" get what the asm author expected?
-If I do change it to "unsigned long long" then I get two of the constraint
-errors.  Ooooookay.  Anyone got a constraint that means "consecutive
-register pair"?
-
-I finally decided to punt and write:
-
-static inline void __stq_u(unsigned long long __val, unsigned long long *
-__addr)
-{
-        *__addr = __val;
-}
-
-Is this OK?  Is there a better solution?
-
-
-Regards,
-Brad
+I doubt paging management of SB1250 in 64-bit kernel.
+Any idea?

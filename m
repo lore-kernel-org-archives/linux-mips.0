@@ -1,51 +1,33 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Wed, 25 Nov 1998 14:08:27 -0800
-Message-ID: <199811252208.OAA23040@fir.engr.sgi.com>
+Date: Wed, 25 Nov 1998 14:25:24 -0800
+Message-ID: <199811252225.OAA23152@fir.engr.sgi.com>
 From: "William J. Earl" <wje@fir.engr.sgi.com>
 Subject: Re: help offered
-In-Reply-To: <Pine.LNX.4.04.9811251631410.3207-100000@elenuial.atlsci.com>
-References: <9811251324.ZM24100@xtp.engr.sgi.com>
-	<Pine.LNX.4.04.9811251631410.3207-100000@elenuial.atlsci.com>
+In-Reply-To: <199811252213.OAA07424@vostok.engr.sgi.com>
+References: <Pine.LNX.4.04.9811251542540.3207-100000@elenuial.atlsci.com>
+	<199811252213.OAA07424@vostok.engr.sgi.com>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: pjlahaie@atlsci.com
-Cc: Greg Chesson <greg@xtp.engr.sgi.com>, Ariel Faigon <ariel@cthulhu.engr.sgi.com>, Olivier Galibert <galibert@pobox.com>, linux@cthulhu.engr.sgi.com
-Message-ID: <19981125220827.ZBzjWA--uPOYoJMLRu_aaRDkAZ8FmHKk4nXAC7DYJAE@z>
+To: Alex Kozlov <alexvk@vostok.engr.sgi.com>
+Cc: pjlahaie@atlsci.com, ariel@cthulhu.engr.sgi.com, galibert@pobox.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19981125222524.8XZ6WCoj4UKOXqZqKgH26GQDuD4luYohB_JnsmEJZ9Y@z>
 
-pjlahaie@atlsci.com writes:
- > On Wed, 25 Nov 1998, Greg Chesson wrote:
+Alex Kozlov writes:
+ > pjlahaie@atlsci.com wrote:
+ > >
+ > >     I was under the impression the O2k memory bandwidth was limited to
+ > > ~800MB/s.  If so, even if you can read 4GB/s what are you foing to do with
+ > > it?  It would have to go over the CrayLink "network" and that doesn't do
+ > > 4GB/s.  The only way I can see 4GB/s disk throughput is multiple of the
+ > > node accessing "local" drives and adding all the bandwidth together.
+ > > 
  > 
- > > But the memory subsystem is ccNUMA.  That means any channel in the system
- > > can read/write any memory in the system.  With io buffers that comprise
- > > multiple pages, and with the pages of the buffer located on several different
- > > memory controllers, multiple io channels can burst (in parallel) to the
- > > "array" of pages that comprise the buffer.
+ > I thought craylink is 6 GB/s:
  > 
- >     Except some of this has to go through the CrayLink.  The memory you
- > are "bursting" to is not on the same node.  Therefore, if you have a
- > dual-threaded application that runs over the data, at most the max
- > bandwidth is 1.6GB/s (seeing as it's advantagous to spread your code to
- > two nodes and split the memory between them).  If you application can make
- > use of all processors on that box, then you get the full bandwidth.  The
- > most any single processor in that Origin can handle is 800MB/s and if it
- > needs to get that data, eventually that data is shoveled through the
- > CrayLink (and hopefully is gets migrated there).  Is there anything flawed
- > with this reasoning?
-
-      There is not a single CrayLink.  Each router port is a CrayLink.
-There are many CrayLinks if you have many nodes, so the aggregate bandwidth
-scales.  If you want to do some real processing on all of the data, you
-will need more processors that would be required to simply read it into
-some processor cache anyway, so the node bandwidth is unlikely to be the
-limiting factor.  When you add processors, you get more aggregate bandwidth.
-
-...
- > > So, a 16-processor Origin can operate a 2 GB/s file system and use only
- > > 40-50% of its internal bandwidth.  Obviously, many many configurations
- > > of processors, channels, disks and network devices are possible.
+ > cl0: flags=4041<UP,RUNNING,DRVRLOCK>
+ >         inet 192.0.2.113 netmask 0xffffff00 
+ >         speed 6.40 Gbit/s
  > 
- >     But that bandwidth isn't single node bandwidth.  No single node can do
- > 4GB/s.  All nodes need to use their local memory to achieve max bandwidth.
+ > Is it not true in practice?
 
-       Yes.  The point of the operating system is to spread the load of
-processing, I/O, and networking over the complete system, not create
-bottlenecks at a particular node card. 
+     Yes, but I think the "4GB/s" was "4 gigabytes/second".  The link is
+about 800 megabytes/second (6.4 gigabits/second).

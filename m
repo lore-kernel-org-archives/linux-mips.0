@@ -1,79 +1,31 @@
-From: "Robert Rusek" <robru@teknuts.com>
-Subject: Error Compiling 2.4.3 kernel on SGI IP22...
-Date: Tue, 19 Feb 2002 17:45:46 -0800
-Message-ID: <000901c1b9b0$51cdd0b0$0f1610ac@delllaptop>
+Message-ID: <002501c1b9b8$a87addb0$5601010a@prefect>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <000901c1b9b0$51cdd0b0$0f1610ac@delllaptop>
+Subject: Re: Error Compiling 2.4.3 kernel on SGI IP22...
+Date: Tue, 19 Feb 2002 21:45:11 -0500
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20020220014546.5NsCxwAYyYWUl77-gsw7gN6RnYApNTAHbmPNkLsIo2M@z>
+To: Robert Rusek <robru@teknuts.com>, linux-mips@oss.sgi.com
+Message-ID: <20020220024511.mxQ65NT-53JwtKm7ylI8q37K66hkVvRGshiodCFAuMo@z>
 
-Initially I got errors telling me that mips-linux-gcc, mips-linux-ld,
-and mips-linux-ar did not exists.  I simply made a link for:
+Check your arch/mips/ld.script file.  I think you need to remove the
+OUTPUT_FORMAT line in there.  This was fixed in CVS on May 10, 2001; your
+snapshot might be right before that.
 
-mips-linux-gcc	-> gcc 
-mips-linux-ld	-> ld
-mips-linux-ar	-> ar
+Regards,
+Brad
 
-Once doing so I got make to complete except for the last part when it
-goes to make the vmlinux file.  I included the last few lines before it
-errors out.  Any help would be greatly appreciated.
+----- Original Message -----
+From: "Robert Rusek" <robru@teknuts.com>
+To: <linux-mips@oss.sgi.com>
+Sent: Tuesday, February 19, 2002 8:45 PM
+Subject: Error Compiling 2.4.3 kernel on SGI IP22...
 
----
-make[1]: Entering directory `/usr/src/linux-2.4.3/arch/mips/kernel'
-make[1]: Nothing to be done for `all'.
-make[1]: Leaving directory `/usr/src/linux-2.4.3/arch/mips/kernel'
-make CFLAGS="-I /usr/src/linux-2.4.3/include/asm/gcc -D__KERNEL__
--I/usr/src/lin
-ux-2.4.3/include -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer
--fno-strict-
-aliasing -G 0 -mno-abicalls -fno-pic -mcpu=r5000 -mips2 -Wa,--trap -pipe
-" -C  a
-rch/mips/mm
-make[1]: Entering directory `/usr/src/linux-2.4.3/arch/mips/mm'
-make all_targets
-make[2]: Entering directory `/usr/src/linux-2.4.3/arch/mips/mm'
-make[2]: Nothing to be done for `all_targets'.
-make[2]: Leaving directory `/usr/src/linux-2.4.3/arch/mips/mm'
-make[1]: Leaving directory `/usr/src/linux-2.4.3/arch/mips/mm'
-make CFLAGS="-I /usr/src/linux-2.4.3/include/asm/gcc -D__KERNEL__
--I/usr/src/lin
-ux-2.4.3/include -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer
--fno-strict-
-aliasing -G 0 -mno-abicalls -fno-pic -mcpu=r5000 -mips2 -Wa,--trap -pipe
-" -C  a
-rch/mips/lib
-make[1]: Entering directory `/usr/src/linux-2.4.3/arch/mips/lib'
-make all_targets
-make[2]: Entering directory `/usr/src/linux-2.4.3/arch/mips/lib'
-make[2]: Nothing to be done for `all_targets'.
-make[2]: Leaving directory `/usr/src/linux-2.4.3/arch/mips/lib'
-make[1]: Leaving directory `/usr/src/linux-2.4.3/arch/mips/lib'
-mips-linux-ld -static -G 0 -T arch/mips/ld.script
-arch/mips/kernel/head.o arch/m
-ips/kernel/init_task.o init/main.o init/version.o \
-        --start-group \
-        arch/mips/kernel/kernel.o arch/mips/mm/mm.o kernel/kernel.o
-mm/mm.o fs/f
-s.o ipc/ipc.o arch/mips/math-emu/fpu_emulator.o
-arch/mips/sgi/kernel/ip22-kern.o
- \
-        drivers/block/block.o drivers/char/char.o drivers/misc/misc.o
-drivers/ne
-t/net.o drivers/media/media.o  drivers/scsi/scsidrv.o
-drivers/cdrom/driver.o dri
-vers/sgi/sgi.a drivers/video/video.o \
-        net/network.o \
-        arch/mips/lib/lib.a /usr/src/linux-2.4.3/lib/lib.a
-arch/mips/arc/arclib.
-a \
-        --end-group \
-        -o vmlinux
-mips-linux-ld: target elf32-bigmips not found
-make: *** [vmlinux] Error 1
----
 
---
-Robert Rusek
+> make[1]: Entering directory `/usr/src/linux-2.4.3/arch/mips/kernel'
+<snip>
+> mips-linux-ld: target elf32-bigmips not found
+> make: *** [vmlinux] Error 1

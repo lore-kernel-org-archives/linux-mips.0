@@ -1,20 +1,28 @@
-From: "Jason Saggers" <psyclone@owbn.net.nz>
-Subject: Newbie to the SGI Mips
-Date: Fri, 21 Sep 2001 22:32:02 +1200
-Message-ID: <004001c14288$a7684ae0$0114a8c0@kindred>
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
+Subject: How to build ld-2.0.6.so?
+Date: Fri, 21 Sep 2001 09:23:59 -0700
+Message-ID: <84CE342693F11946B9F54B18C1AB837B14A0E0@ex2k.pcs.psdc.com>
+From: "Steven Liu" <stevenliu@psdc.com>
 Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20010921103202.pHIDynbxW1CzQwF_75b4RlFtSFt9eEWG0L0C2CNfcqY@z>
+Message-ID: <20010921162359.4D3g58hFGcDuwVfg8MCjbtSQRvcT2xdEvN988-r9s0c@z>
 
-Hi,
-	I have come into possesion of the SGI Indy Workstation with a R5000 processor.
+Hi, All:
 
-I have been going thorugh a number of site that I could find and have found a number of out of date distribution, and have manage to get the simple distribution partially working.
+I have built the linux kernel, glibc, gcc , and init for my mips r3000
+cpu. The file /etc/ld-2.0.6.so is needed when I boot the system but I do
+not know how to build it. 
 
-If someone could point me to a resonable distribution I would be grateful....
+If you know, please let me know
 
-Jason
+1. Where could I get the source code?
+2. Which files should I use?
+3. How could I build it?
+
+Thanks,
+
+Steven Liu

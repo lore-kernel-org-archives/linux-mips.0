@@ -1,90 +1,36 @@
-Date: Tue, 26 Sep 2000 10:08:15 +0100 (GMT/BST)
-Message-ID: <200009260908.KAA00259@gladsmuir.algor.co.uk>
-From: Dominic Sweetman <dom@algor.co.uk>
+Message-ID: <000e01c02840$8285f910$a3291081@mc2.chalmers.se>
+From: "Erik Aderstedt" <erik@ic.chalmers.se>
+References: <D1E34549DAC3D311A05D0020940F00FF62D460@exchmail.velocityenterprises.net> <20000926103313.B15401@chem.unr.edu>
+Subject: Re: Getting started
+Date: Wed, 27 Sep 2000 07:05:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: Re: load_unaligned() and "uld" instruction
-In-Reply-To: <000d01c02782$32d31560$0deca8c0@Ulysses>
-References: <39CF9DFC.F30B302B@mvista.com>
-	<200009252116.WAA01137@gladsmuir.algor.co.uk>
-	<39CFC567.DD66BC56@mvista.com>
-	<000d01c02782$32d31560$0deca8c0@Ulysses>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: "Kevin D. Kissell" <kevink@mips.com>
-Cc: Jun Sun <jsun@mvista.com>, Dominic Sweetman <dom@algor.co.uk>, linux-mips@oss.sgi.com, linux-mips@fnet.fr
-Message-ID: <20000926090815.HUamW1_4NvxxjqXcro4jlk4XAvUSLY-2A7AY0NqTB1s@z>
+To: Keith M Wesolowski <wesolows@chem.unr.edu>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20000927050509.wKod9wkEahah-cuPZRBRQayqWDr6S_JGJpBHi5vhL10@z>
 
+Keith M Wesolowski wesolows@chem.unr.edu wrote:
+> There are several distributions of varying non-production quality
+> available. Start with the HOWTO at
+> http://oss.sgi.com/mips/mips-howto.html. For some reason, my distro
+> isn't included in that document even though I wrote a piece for it
+> (Ralf?), so see also http://foobazco.org/~wesolows/Install-HOWTO.html
+> - note that 0.2b is out but already getting fairly old. I know for a
+> fact that you can install it without Irix because that's what I did
+> from day one.
+>
 
-Kevin D. Kissell (kevink@mips.com) writes:
+I'd really like to try out your distribution (I want to use a diskless Indy
+as an X terminal) but the latest version I can find at your FTP site is 0.2a
+and there are messages all over the place saying "0.2a is broken, don't use
+it!". What gives?
 
-> > Another question is that in the same file most CPUs will take another
-> > compiler option such as "-mcpu=r8000", in which case the cpu model
-> > usually does NOT correspond to the actual CPU.  Why is that?
-> 
-> The -mcpu tells the compiler and assembler for what kind
-> of pipeline it should optimise, which is independent of the
-> ISA level.  "-mcpu=r8000", for example, tells the tools that
-> the CPU is superscalar. Thus one sees that option selected 
-> for the R5000 platforms, even though the R5000 and R8000
-> pipelines are otherwise very dissimilar.
-
-Hmm.  I wish it was that simple.  But some MIPS CPUs have 
-instruction set additions which are not related to the mips1, mips2,
-etc.  For example, a whole collection of parts with a vaguely
-"embedded" orientation has integer multiply/accumulate instructions.
-
-Algorithmics' version of GCC (and, I'm sure, others) picks up on the
--mcpu=xxx flag to do that.  In fact, I don't think there's any other
-way to allow the compiler to warn you of some bizarre omissions from
-one or two rogue CPUs.
-
-But until compiler support for MIPS Linux is more systematic, you'd be
-better being conservative.  And you don't want to unnecessarily
-multiply kernel versions - so in general, don't say "-mcpu=" anything
-for kernel builds.
-
-The Linux convention is "-mips2"; which is quite odd, because the
-MIPS-II ISA was incarnate in just one CPU (the R6000).  A few units
-were made around 1990 and even fewer worked; the project was overtaken
-by the (-mips3, 64-bit) R4000.
-
-Subsequently, and confusingly, "-mips2" has been re-used to mean
-"-mips3 but don't assume 64-bit registers".  Except for floating
-point.  Maybe.  (it's sometimes not a good idea to re-use a term).
-
-Ralf wrote:
-
-> You cannot use any kind of 64-bit operation for the 32-bit kernel...
-
-Outside SGI circles, I believe, "32-bit kernels" are all that are
-likely to work...
-
-> ... except for the $zero register.  This is because all exceptions
-> as far as they store / restore the integer registers at all will
-> only deal with the lower 32-bit of the registers.  In other word any
-> interrupt will corrupt the upper 32-bit bit of gp registers.
-
-Even calling a subroutine compiled 32-bit may corrupt one of the
-registers which are supposed to be preserved.
-
-As Kevin indicates, it would probably be worth some effort to converge
-on a kernel which would:
-
-1. build for either 32-bit ("MIPS32" and near-miss) and 64-bit
-  (MIPS3, MIPS4 and MIPS64) CPUs.
-
-2. Allow 64-bit operations on 64-bit CPUs, without insisting that
-   C data types grow.  Need to save the whole of registers and compile
-   "long long" and "double" data types...
-
-This is possible, but needs some thought.  AFAIK, the GCC currently
-used for Linux changes the whole calling convention when -mips3 is
-selected, which makes (2) pretty difficult.
-
--- 
-Dominic Sweetman
-Algorithmics Ltd
-The Fruit Farm, Ely Road, Chittering, CAMBS CB5 9PH, ENGLAND
-phone: +44 1223 706200 / fax: +44 1223 706250 / http://www.algor.co.uk
+Erik
+------
+Erik Aderstedt erik@ic.chalmers.se
+Chalmers University of Technology
+Solid State Electronics Laboratory

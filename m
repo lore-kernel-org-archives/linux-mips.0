@@ -1,20 +1,20 @@
-Subject: Re: IDE/Toolchains for MIPS?
-Date: Thu, 17 Jan 2002 13:45:29 +0000 (GMT)
-In-Reply-To: <NEBBLJGMNKKEEMNLHGAIMENNCEAA.mdharm@momenco.com> from "Matthew Dharm" at Jan 16, 2002 11:53:50 AM
+Date: Thu, 17 Jan 2002 23:55:50 -0800 (PST)
+From: Steve Herber <herber@thing.com>
+Subject: Spare hardware in the Seattle area 
+In-Reply-To: <200201180645.HAA14403@sparta.research.kpn.com>
+Message-ID: <Pine.LNX.4.33.0201172314060.4236-100000@thing.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <E16RCrB-0003LI-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: Matthew Dharm <mdharm@momenco.com>
-Cc: Linux-MIPS <linux-mips@oss.sgi.com>
-Message-ID: <20020117134529.xDXq__W2Ve6nZQbDNopkDCIR5XuhoRWgSprra098Ks0@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020118075550.XLe_tet3a1sCa8bjxJ521cQhCpZ8LRwvZzAt3gFQmG8@z>
 
-> Does anyone know of a good IDE for MIPS/Linux?
-> 
-> Some people I know are asking, because they're very used to the
-> graphical design environments on other platforms.
+I have some SGI Indigo and DECstation workstations that I would like to 
+give to anyone in the Seattle area that could put them to good use, 
+especially working on Linux MIPS support.
 
-kdevelop should build and run fine on mips, as should anjuta. I'm not a KDE
-fan but kdevelop is a very nice package
+Thanks,
+
+-- 
+Steve Herber	herber@thing.com	work: 206-732-6111
+IT Manager, Rosen Building, SoM, UoW	home: 425-454-2399

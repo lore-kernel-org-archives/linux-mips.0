@@ -1,36 +1,31 @@
-Date: Thu, 29 Mar 2001 19:39:01 +0200 (MET DST)
-From: Karel van Houten <K.H.C.vanHouten@research.kpn.com>
-Subject: Re: Recommended toolchain
-In-reply-to: <200103291728.TAA01350@sparta.research.kpn.com>
-Reply-to: vhouten@kpn.com
-Message-ID: <200103291739.TAA01695@sparta.research.kpn.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
+Message-ID: <00a901c0bb6f$d3e77820$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+Subject: Dumb Question on Cross-Development
+Date: Mon, 2 Apr 2001 14:24:00 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Cc: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Message-ID: <20010329173901.U-GsGl_6pzj-Ed90s2veqJE8ArDQScMAgiPMEfS4w2I@z>
+To: "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>
+Message-ID: <20010402122400.sf8lrgmPY87OkYdufSECiHvrzYzyYitrztXOSxBdyqE@z>
 
-I wrote:
-> This happens when I compile kernel 2.4.0-test9 with
-> binutils 2.10.1, gcc 2.95.3, glibc 2.2.2 on my 5000/260 (R4k)
-> (the same source/config compiles fine with 2.8.1/egcs-2.90.27/glibc-2.0.6):
-> ....
+I've historically done all of my MIPS/Linux development
+native, on Indies, P-5064's, Atlas, and Malta.  But now
+that we seem to be in a situation where the latest, 
+greatest, and most correct compilers are x86 cross-dev
+only, I've cut over to building kernels on my Athlon box.
+I'd like to start building apps and benchmarks (not 
+necessarily from srpm's).  Plainly, I need a set of
+libraries (naive attempts at cross-compilation of
+user code with the egcs 1.1.2 compiler results in
+complaints about the missing crt1.o), and possibly
+some variant include files.  Are these packaged
+somewhere, and is there an FAQ/HowTo on how
+to set them up?  This may have been handled in 
+Ralf's HowTo, but that seems to have disappeared
+from the web.
 
-Oh, and the resulting (ELF) kernel doesn't boot at all:
->>boot 3/rz0 1/new
-delo V0.7 Copyright 2000 Florian Lohoff <flo@rfc822.org>
-Loading /etc/delo.conf .. ok
-Loading /boot/vmlinux.new ....... ok
+            Regards,
 
-KN05 V2.1k    (PC: 0xa002cab8, SP: 0x8043fef0)
->>                            
-
--- 
-Karel van Houten
-
-----------------------------------------------------------
-The box said "Requires Windows 95 or better."
-I can't understand why it won't work on my Linux computer. 
-----------------------------------------------------------
+            Kevin K.

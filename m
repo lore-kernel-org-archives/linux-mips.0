@@ -1,67 +1,23 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199707241742.KAA26102@oz.engr.sgi.com>
-Subject: one more Indy running Linux
-Date: Thu, 24 Jul 1997 10:42:51 -0700 (PDT)
-Reply-To: ariel@sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <m0wrT66-0005FxC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: SGI 68k machines?
+Date: Thu, 24 Jul 1997 19:58:46 +0100 (BST)
+In-Reply-To: <199707241300.PAA12689@informatik.uni-koblenz.de> from "Ralf Baechle" at Jul 24, 97 03:00:21 pm
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970724174251.UW7kyscucsoteSVeElD5-DCRr50WkE223rdF3koTdD8@z>
+To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Cc: knobi@munich.sgi.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19970724185846.40zTJD64MPbn6_Uhapk2xVbTizsN4H_9wTuDpAv_Gu8@z>
 
-Hi,
+> >  Build from 83/84 until probably 88. Not a bad system for
+> > that time.
+> 
+> I wonder if there is still documentation for these beasts around such
+> that some dino freak can hack Linux for them?
 
-Mark Salter just joined the list.  I hope that having Linux
-run on an Indy will soon be very common.  At this point it is
-rare enough to be worth posting.
+Linux 68K current has an absolute need for an FPU. Thats one of the big
+macintrash problems we are facing as the 68LC040 not only has no FPU but
+for many motorola broke the exception handling so you can't even emulate it
 
-What is nice about this case is that Mark just grabbed whatever
-we have on the ftp site currently (which is not yet ready) and
-without being involved before, managed to get it to run in short order.
-
-Whoever can fix this: Please note the hiccups and problems in
-the process.  Maybe we should just update the precompiled binaries
-we give to people :-)
-
-
------ Forwarded message from Mark Salter -----
-
-From marks@sun470.rd.qms.com  Thu Jul 24 08:20:01 1997
-Date: Thu, 24 Jul 1997 10:19:50 -0500
-Message-Id: <199707241519.KAA16443@speedy.qms.com.rd.qms.com>
-From: Mark Salter <marks@sun470.rd.qms.com>
-To: ariel@sgi.com
-Cc: lm@cthulhu, davem@jenolan.rutgers.edu
-In-Reply-To: <9707178691.AA869165377@internet-mail.it.qms.com> (ariel@sgi.com)
-Subject: Re: [marks@sun470.rd.qms.com: mips linux]
-
-
-[ pointers deleted ]
-
-Thanks for the pointers, guys. I had relatively little trouble booting
-linux on my Indy. I put the "root-be-0.00.cpio.gz" filesystem on my
-PPro linux machine and built the kernel from the sources there. The
-only problems were:
-
-  * The ".previous" bug in the crossdev binutils binary. This problem got
-    some mention in the mailing list, but no resolution was mentioned. I
-    got the sources and a patch from ftp.linux.sgi.com, rebuilt binutils
-    and that fixed that.
-
-  * I wasn't sure how (or if it is even possible) to get  "root=" options
-    to the kernel from the Indy ARC PROM, so I changed NFS_ROOT in 
-    include/linux/nfs_fs.h to point to the right place where I placed the
-    root filesystem.
-
-So, you can now add me to the list of folks with Indys running linux. I
-guess I'll start working on fixing up a second disk so I don't have to
-boot off the network...
-
---Mark
-
------ End of forwarded message from Mark Salter -----
-
--- 
-Peace, Ariel
+Alan

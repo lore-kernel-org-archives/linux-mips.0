@@ -1,71 +1,42 @@
-Message-ID: <41581D75.3090706@embeddedalley.com>
-Date: Mon, 27 Sep 2004 07:02:29 -0700
-From: Pete Popov <ppopov@embeddedalley.com>
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Subject: Re: 2.6 kernel work for XXS1500
-References: <20040927085510.GD10739@curie-int.orbis-terrarum.net>
-In-Reply-To: <20040927085510.GD10739@curie-int.orbis-terrarum.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <ppopov@embeddedalley.com>
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: RE: mips linux glibc-2.3.3 build - Unknown ABI problem
+Date: Tue, 5 Oct 2004 21:35:41 -0700
+Message-ID: <69397FFCADEFD94F8D5A0FC0FDBCBBDEF4D2@avtrex-server.hq.avtrex.com>
+From: "David Daney" <ddaney@avtrex.com>
+Return-Path: <ddaney@avtrex.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Robin H. Johnson" <robbat2@gentoo.org>
+To: "T. P. Saravanan" <sara@procsys.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20040927140229.bOUBVTBDwjyH4uHl3R-QWBRTjHFdJA5GtSHvE7MtgY0@z>
+Message-ID: <20041006043541.tQqGasGUKLzBxmdU6JfT8CCsxRRmLlOv8kNKM1w8lSA@z>
 
-Hi Robin,
-
-Robin H. Johnson wrote:
-
->This is a general announcement of some work being done to update XXS1500
->support to a 2.6 kernel level. Testers welcome.
->
->This isn't ready for CVS inclusion yet, still needs more testing and
->validation, but to stop the hordes of people emailing me about it (Hi
->Marcel), here it is being publicly announced:
->http://dev.gentoo.org/~robbat2/xxs1500/linux-xxs1500-20040927.patch-dangerous.gz
->Applies against latest CVS.
->
->Contains:
->- Kconfig stuff for the BCM5222 Dual PHY.
->- XXS1500 PCI IRQ stuff
->- MTD access to the onboard flash (Pete's code)
->- Kconfig stuff for MTD flash
->- drivers/pcmcia/au1000_generic.c: cleanup debug code
->  
->
-I've updated the pcmcia driver but haven't pushed the patch in yet. I 
-cleaned up the debug code but I'll take a look at what you've done too.
-
-The rest of the core 2.6 update is on its way, including the 36bit 
-support, zImage, all the drivers, etc.
-
-Pete
-
->- drivers/pcmcia/au1000_xxs1500.c: port to 2.6
->- Move include/asm-mips/xxs1500.h to include/asm-mips/mach-xxs1500/xxs1500.h
->
->No warranty on it, I don't trust my PCMCIA code entirely yet.
->
-From the original codebase:
->a) au_writel((au_readl(GPIO2_PINSTATE) & ~(1<<14))|(1<<30), GPIO2_OUTPUT);
->b) au_writel((au_readl(GPIO2_PINSTATE) | (1<<14))|(1<<30), GPIO2_OUTPUT);
->
->The 1<<14 indicates a specific location to set, and the 1<<30 says to
->enable output on that location.
->In arch/mips/au1000/xxs1500/board_setup.c, snippet a is commented as
->'turn off power'.
->In drivers/pcmcia/au1000_xxs1500.c, snippet a is commented as 'turn on
->power', and snippet b is commented as 'turn off power'.
->
->Your guess is as good as mine as to which does what.
->
->I've replaced them with two macros:
->XXS1500_GPIO2_PCMCIA_POWER_ON
->XXS1500_GPIO2_PCMCIA_POWER_OFF
->
->Due to the number of times they occur.
->
->  
->
+U29ycnkgZm9yIHRoZSBob3JrZWQgdXAgbWFpbCBtZXNzYWdlIGZvcm1hdCwgYnV0IHRoZXNlIHdl
+YiBiYXNlZCBlLW1haWwgY2xpZW50cyBtYWtlIGl0IGRpZmZpY3VsdC4uLg0KIA0Kc3lzZGVwcy9t
+aXBzL21hY2hpbmUtZ21vbi5oIHZlcnNpb24gMS44IGhhcyB0aGUgI2luY2x1ZGUgPHNnaWRlZnMu
+aD4gd2hpY2ggd2lsbCBzb2x2ZSB0aGUgcHJvYmxlbSB3aGVuIHVzaW5nIGdjYyAzLjQueC4NCiAN
+CiANCk90aGVycyBoYXZlIHJlcG9ydGVkIHRoYXQgcmVjZW50IHZlcnNpb25zIG9mIGdsaWJjIGZy
+b20gdGhlIGdsaWJjIENWUyBzZXJ2ZXIgd2lsbCBjb21waWxlIHdpdGhvdXQgcGF0Y2hpbmcuICBQ
+ZXJoYXBzIHlvdSBzaG91bGQgdHJ5IGl0LiAgVGhhdCBpcyB3aGF0IEkgYW0gZ29pbmcgdG8gZG8g
+cmlnaHQgbm93Lg0KIA0KRGF2aWQgRGFuZXkuDQoNCgktLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
+LSANCglGcm9tOiBULiBQLiBTYXJhdmFuYW4gW21haWx0bzpzYXJhQHByb2NzeXMuY29tXSANCglT
+ZW50OiBUdWUgMTAvNS8yMDA0IDk6MTQgUE0gDQoJVG86IERhdmlkIERhbmV5IA0KCUNjOiBsaW51
+eC1taXBzQGxpbnV4LW1pcHMub3JnIA0KCVN1YmplY3Q6IFJlOiBtaXBzIGxpbnV4IGdsaWJjLTIu
+My4zIGJ1aWxkIC0gVW5rbm93biBBQkkgcHJvYmxlbQ0KCQ0KCQ0KDQoJVC4gUC4gU2FyYXZhbmFu
+IHdyb3RlOg0KCQ0KCT4gRGF2aWQgRGFuZXkgd3JvdGU6DQoJPg0KCT4+PiBXaGF0IHNob3VsZCBJ
+IGRvIHRvIGZpeCB0aGUgYnVpbGQ/DQoJPj4+ICANCgk+Pg0KCT4+DQoJPj4gZ2V0IHRoZSBtb3N0
+IHJlY2VudCBtYWNoaW5lLWdtb24uaCBmcm9tIGdsaWJjIENWUy4NCgk+Pg0KCT4+IFlvdSB3aWxs
+IHByb2JhYmx5IGZpbmQgYSBwcm9ibGVtIGxpbmtpbmcgbGliYyBhdCBhIGxhdGVyIHN0ZXAuICBC
+dXQgdGhlDQoJPj4gbmV3ZXIgbWFjaGluZS1nbW9uLmggd2lsbCBmaXggdGhpcyBwcm9ibGVtLg0K
+CT4+IA0KCT4+DQoJPiBPSy4gVGhhdCB3b3JrZWQuICBUaGFua3MgYSBsb3QuDQoJPg0KCU9vcHMh
+ICBJIHdpbGwgdGFrZSB0aGF0IGJhY2suIEkgc3VzcGVjdCBpdCBpcyBub3Qgd29ya2luZy4NCgkN
+CglXaGVuIHlvdSBzYWlkIENWUyBJIGFzc3VtZWQgdGhlIG9uZSBpbiBodHRwOi8vbGludXgtbWlw
+cy9jdnN3ZWIvbGliYy4gDQoJT24gY2xvc2VyDQoJbG9vayBpdCBsb29rcyB2ZXJ5IG9sZC4gIEZy
+b20gZGlzY3Vzc2lvbnMgaW4gYW5vdGhlciB0aHJlYWQgSSBnYXRoZXIgQ1ZTDQoJbWVhbnMgaHR0
+cDovL3NvdXJjZXMucmVkaGF0LmNvbS9jZ2ktYmluL2N2c3dlYi5jZ2kvbGliYy8/Y3Zzcm9vdD1n
+bGliYy4NCgkoQ29ycmVjdCBtZQ0KCWlmIHRoaXMgaXMgd3JvbmcuKSBJZiBJIHRha2UgdGhlIG1h
+Y2hpbmUtZ21vbi5oIGZyb20gaGVyZSAtIEl0IHN0aWxsIGhhcw0KCXRoZQ0KCXNhbWUgcHJvYmxl
+bSA6LSgNCgkNCgktU2FyYXZhbmFuLg0KCQ0KCQ0KCQ0KDQo=

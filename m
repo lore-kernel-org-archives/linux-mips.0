@@ -1,42 +1,66 @@
-Received: from localhost (localhost.tusur.ru [127.0.0.1])
-	by tusur.ru (Postfix) with SMTP id A0860B72F1
-	for <linux-mips@linux-mips.org>; Tue, 17 Aug 2004 08:53:50 +0700 (TSD)
-Received: from roman (unknown [211.189.34.20])
-	by tusur.ru (Postfix) with ESMTP id 5E98BB4BAA
-	for <linux-mips@linux-mips.org>; Tue, 17 Aug 2004 08:53:37 +0700 (TSD)
-Message-ID: <001601c483fd$9e3ae180$1422bdd3@roman>
-From: "Roman Mashak" <mrv@tusur.ru>
-Subject: Yamon compiling and linking
-Date: Tue, 17 Aug 2004 10:57:50 +0900
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="koi8-r"
-Content-Transfer-Encoding: 7bit
-Return-Path: <mrv@tusur.ru>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: MIPS Malta board linux problem 
+Date: Tue, 17 Aug 2004 18:19:11 -0700
+Message-ID: <3CB54817FDF733459B230DD27C690CEC0E72F6@Exchange.MIPS.COM>
+From: "Mitchell, Earl" <earlm@mips.com>
+Return-Path: <earlm@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20040817015750.NYMkSeCTWAuEMRvBF0Btw8KvfeK1EW1DzU_-77TMaZ8@z>
+To: usha davuluri <ranidavuluri@yahoo.com>, linux-mips@linux-mips.org
+Message-ID: <20040818011911.3DGXVqZaY1kfNxzZ4bumO13X52zDjYCYnnnt3Q8_528@z>
 
-Hello!
 
-I solved the problem with Yamon compiling I asked recently, but still have
-technical related questions about Yamon linking & code allocating in memory.
+I remember while back YAMON would get
+"TFTP READ-REQ ERROR" when used with
+the RH7.3 TFTP server. I believe this
+was fixed in later revs. So if you are
+using an old version of YAMON try a
+more recent rev. 
 
-Here it is.
+-earlm
 
-When I compile little-endian only image, as far as I understood, I got image
-without RESET code at the beginning, so according to the memory map and link
-script (link_el.xn) - starting entry point is __RESET_HANDLER_END (locating
-in init.S) and its address is 0x9fc10000.
-So, I don't quite understand, how will be going after CPU reset? As
-documentation's saying "following a reset, hardware fetches instructions
-starting at the reset exception vector 0xBFC00000". But what is waiting at
-this address, because reset code (reset.S) is not compiled and is not
-linked?
-
-Could you please make it clear to me?
-
-Thanks in advance!
-
-With best regards, Roman Mashak.  E-mail: mrv@tusur.ru
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org
+> [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of usha davuluri
+> Sent: Tuesday, August 17, 2004 6:05 PM
+> To: linux-mips@linux-mips.org
+> Subject: MIPS Malta board linux problem 
+> 
+> 
+> Hi,
+>  I am trying to bring up the Malta board with the
+> prebuils kernel. I am using TFTP server for that. I am
+> pretty much sure that TFTP server is up on my host
+> Redhat linux laptop. Some how I am not able to load
+> the immage on to the board. Please any one can help me
+> to solve this problem. 
+> I tested the tftp with the $:xinetd -d command. The
+> out put came well( TFTP is running). Following error
+> messages I am getting when I try to load the linux
+> kernel using tftp.
+> 
+> load
+> tftp://192.168.0.115//vmlinux-2.4.3.malta.install.el-01.02.srec
+> About to load
+> tftp://192.168.0.115//vmlinux-2.4.3.malta.install.el-01.02.srec
+> Press Ctrl-C to break
+> Error : TFTP READ-REQ ERROR
+> Diag  : Host returned: ErrorCode = 2, ErrorMsg =
+> Access violation
+> Hint  : Check TFTP-server: file-existence,
+> directory/file-attributes
+> Thank you,
+> Usha.
+> 
+> 
+> 		
+> __________________________________
+> Do you Yahoo!?
+> Y! Messenger - Communicate in real time. Download now. 
+> http://messenger.yahoo.com
+> 
+> 

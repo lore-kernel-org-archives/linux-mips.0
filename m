@@ -1,62 +1,36 @@
-Message-ID: <001101c0e464$72c130e0$0deca8c0@Ulysses>
+Message-ID: <011801c0e55f$e4d39820$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Pine.GSO.3.96.1010524113444.6990B-100000@delta.ds2.pg.gda.pl>
-Subject: Re: MIPS_ATOMIC_SET again (Re: newest kernel
-Date: Thu, 24 May 2001 17:15:53 +0200
+References: <Pine.GSO.3.96.1010525130531.17652A-100000@delta.ds2.pg.gda.pl>
+Subject: Re: [PATCH] incorrect asm constraints for ll/sc constructs
+Date: Fri, 25 May 2001 23:15:48 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: Joe deBlaquiere <jadb@redhat.com>, linux-mips@oss.sgi.com
-Message-ID: <20010524151553.G3oVV-h1n0Ebvo1BeODqgYpW3OjUaohCf2PXWago-rQ@z>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Daniel Jacobowitz <dan@debian.org>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010525211548.NU6MjkW6HZdM3CQNvdIzma3zizS72kEXEdIkJ7P7TdM@z>
 
-> > The problem is that, out in industry, not everyone wants to
-> > build their entire userland from source, and nobody particularly 
-> > wants to deal with  the product management problems of making, 
-> > maintaining,  testing, and distributing all the permutations of BE/LE, 
-> > FP/noFP, LLSC/noLLSC, etc, etc.
-> 
->  First, we are talking about glibc and not the entire userland.
+>  The following program cannot be compiled with gcc 2.95.3, because the
+> offset is out of range (I consider it a bug in gcc -- it should allocate
+> and load a temporary register itself and pass it appropriately as %0,
 
-But since essentially the entire userland is linked with glibc,
-I'm not sure how much that distinction matters, in practical
-terms.
+I think gcc can be forgiven for not allocating a temporary,
+given the ".set noat"...
 
-> I insist on having the performance-wise implementation in glibc.
-
-Joe and I likewise insist on having a high-performance
-implementation of glibc as the default.  The question is
-whether it's to be one optimised for performance on R3000's
-or on contemporary parts.  As has been stated by others,
-of *course* one wants to be able to build it either way.
-I'm simply saying that if one just does "./configure"
-and "make" for glibc with a mips target, it should default
-to use ll/sc, and that if one simply builds RPMs for binary
-distribution of MIPS/Linux binaries, they should be linked
-with a glibc that uses ll/sc.  And that therefore the MIPS/Linux
-kernel for R3000's (and R4100's) should have ll/sc emulation 
-support built in by default.
-
->  Second, do you expect everyone compiling the entire userland from
-> sources?  I don't.  The normal approach is to take a distribution and
-> build only these pieces which are not satisfying for one reason or
-> another.  Just take an ISA I, ISA II or whatever version you need.
-
-From where?  I'd love to find a decently complete (with compilers,
-networking tools, X, etc.) mipsel distribution of any MIPS ISA level 
-less that MIPS V to replace the antique crud that runs on my mipsel 
-platform.
-
->  Fourth, maintaining differently optimized distributions is not that
-> troublesome.
-
-Please don't get me wrong here, because I tremendously
-respect the work that you've been doing for MIPS/Linux,
-but how many differently optimised distributions do you
-presonally build, distribute, support, and maintain?
-
-            Regards,
-
-            Kevin K.
+> matching the "R" constraint; still it's better than generating bad code):
+>
+> int main(void)
+> {
+> int *p;
+>
+> asm volatile(".set push\n\t"
+>   ".set noat\n\t"
+> "lw $0,%0\n\t"
+> ".set pop"
+> :
+> : "R" (p[0x10000]));
+>
+> return 0;
+> }

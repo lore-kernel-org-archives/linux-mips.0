@@ -1,71 +1,43 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: fisher@hollywood.engr.sgi.com (William Fisher)
-Message-ID: <199706200855.BAA14655@hollywood.engr.sgi.com>
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199706201012.MAA14703@informatik.uni-koblenz.de>
 Subject: Re: Getting X on Linux/SGI
-Date: Fri, 20 Jun 1997 01:55:31 -0800 (PDT)
-In-Reply-To: <199706200734.AAA18987@neteng.engr.sgi.com> from "Larry McVoy" at Jun 20, 97 00:34:26 am
-Reply-To: fisher@sgi.com
-Content-Type: text
+Date: Fri, 20 Jun 1997 12:12:15 +0200 (MET DST)
+In-Reply-To: <199706200917.FAA07966@jenolan.caipgeneral> from "David S. Miller" at Jun 20, 97 05:17:42 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Larry McVoy <lm@neteng.engr.sgi.com>
-Cc: sca@refugee.engr.sgi.com, carlson@heaven.newport.sgi.com, linux@cthulhu.engr.sgi.com, William Fisher <fisher@hollywood.engr.sgi.com>
-Message-ID: <19970620095531.vy-bIoXV51CR674YiCjn0dbVaEEVVgaYKmir41cR4Ns@z>
+To: "David S. Miller" <davem@jenolan.rutgers.edu>
+Cc: fisher@sgi.com, lm@neteng.engr.sgi.com, sca@refugee.engr.sgi.com, carlson@heaven.newport.sgi.com, linux@cthulhu.engr.sgi.com, fisher@hollywood.engr.sgi.com
+Message-ID: <19970620101215.y-b5U7vYwNC5u0tDngVRKWBbyaawCMfAqwrBBYhFlbE@z>
 
+> So you see, the real issue is that people don't know they want it...
 > 
-> : "Christopher W. Carlson" <carlson@heaven.newport.sgi.com> writes:
-> : >My point was that SGI is into making hardware.  That's how it started
-> : >and that is still its main focus.  Yes, it is true that our software
-> : >is very important because it takes advantage of the proprietary stuff
-> : >in the hardware, but the main income for SGI is hardware.
-> : 
-> : How many people buy the hardware and program the bare metal?
-> 
-> We own MIPS.  MIPS sold or licensed 19.2 million chips last year.  About
-> 19 million of those were of the type "program the bare metal".
-> 
-> Much of the Linux/MIPS interest is for embedded systems.  We should have
-> done this years ago, there is no reason why not to do it other than NIH.
-> 
-	If the demand for Linux on MIPS chips is comming from the "embedded"
-	systems then things sure have changed since the early days of
-	MIPS Computer Systems. The embedded market in 1992-1996 was
-	NOT asking us for Linux, since it was very sensitive to running
-	small real-time kernels. In fact nearly all of the original
-	chips vendors who licensed the chips used the PROM code, remote
-	dbx, compilers, etc. which were sold/licensed to the chip vendors
-	for resell to the embedded customers.
+> Oh btw, Eddie will in fact be working on some MIPS based embedded
+> boards in the near future, and I can tell you he sure as hell isn't
+> gonna be putting QNX or any other "embedded OS" in those things.
 
-	If fact the original VP of embedded system marketing at MIPS was
-	Chet Silvestri, now VP of SPARC embedded systems at SUN. Chet
-	was very familar with embedded systems having worked at Intel
-	on numerous automobile systems, real-time process control, etc.
-	
-	Nearly all of those systems were nearly bare metal software
-	environments since we had numerous talks with Chet at MIPS
-	about software features that would propell the business.
-	NONE of those customers wanted anything to do with any flavor
-	of Unix, Linux, BSD, System V, etc.
+Three people/companies have already started basing embedded systems
+based on the MIPS/Linux [1] at times when I personally wouldn't have
+trusted the entire MIPS port five minutes without peeking at it.
 
-	In fact Hunter-Ready and the other real-time kernels weren't that
-	popular with the hard core real-time/embedded folks.
+Toshiba is currently porting Linux to a new R-family type processor
+for verification of the processor.  Hey, it does run Linux even before
+there is Silicon at all!
 
-	Hence I would like to here more about larry's definition of
-	"embedded systems" because they sure don't sound like any
-	that our semiconductor partners sell to.
+Dave is right:
 
-	I would like to see Linux on the low end of the SGI workstations
-	for two reasons; One as an existance proof that a lightweigth
-	Unix can be shown to run very fast on our hardware and secondly
-	for sale to either universities or other research labs that want
-	source code and want to hack. I don't think it will sell that many
-	machines but it can't hurt.
+> So you see, the real issue is that people don't know they want it...
 
-	I personally believe that the popularity of Linux on ALPHA is
-	pushed by the Digital Semiconductor Division and they will do
-	anything to sell chips and Digital systems. I think it is
-	similar behavior that you see in both IBM's Semiconductor Division
-	and at the Motorola's Semiconductor Division with the PowerPC.
-	That being they have no particular religion on any software or
-	OS, anything that moves chips is alright with them.
+You see, we have not yet really taken off with the MIPS port and we
+already have some impact on the market.
 
--- Bill
+Another interesting embedded project will be done by Alan Cox.  He
+intends to port Linux to the R4650, a CPU without a TLB but just a
+pair of base/bounds registers.  Not an ELKS port but an almost full
+port of Linux just without certain features like mmap-ing.
+
+  Ralf
+
+[1] Not going to be M/Linux ;-)

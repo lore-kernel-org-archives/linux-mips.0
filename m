@@ -1,38 +1,39 @@
-Date: Wed, 21 Mar 2001 18:39:48 +0100 (CET)
-From: Adrian Bunk <bunk@fs.tum.de>
-Subject: Re: Compile error with current CVS kernel
-In-Reply-To: <Pine.NEB.4.33.0103122252170.23935-100000@mimas.fachschaften.tu-muenchen.de>
-Message-ID: <Pine.NEB.4.33.0103211837550.22248-100000@gaia.fachschaften.tu-muenchen.de>
+Message-ID: <00eb01c0b2c6$02c7ef60$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+Subject: Embedded MIPS/Linux Needs
+Date: Thu, 22 Mar 2001 12:48:19 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20010321173948.-6StJgwncSfd5Uy3SW9XSoE8H409xNEDvUJFp7FWt58@z>
+Message-ID: <20010322114819.2hr7-kX8s9C0CJCZndwxYGV8GSUQ_RyTeyCVBWFrn50@z>
 
-Hi Ralf,
+Here at MIPS Technologies, we use Linux internally
+for design verification, experiments, benchmarking,
+etc., and as a consequence Carsten Langgaard and
+myself have both been active in this forum, and have
+tried to help the general Linux/MIPS community as
+best we can with the limited time that we can dedicate
+to the problem, in terms of suggested patches, bug
+fixes, cleanups, integration of needed components
+like the FPU emulator, etc.
 
-the latest CVS kernel still doesn't build, but the error message has
-changed:
+I have a question for those of you who are doing
+Linux work for *new* platforms (as opposed to the
+SGI/DEC legacy box support people).  IF, and I
+emphasize the word *if*, MIPS Technologies were
+make a bigger investment in MIPS/Linux technology,
+be it kernel enhancements, cross/native tools,
+userland ports, libraries, or whatever, what would
+be your prioritized "wish list"?
 
-<--  snip  -->
+Feel free to respond by point-to-point email, though
+responses that are also copied to the mailing list
+might provoke some interesting and enlightening
+debate.
 
-...
-mipsel-linux-nm vmlinux | grep -v '\(compiled\)\|\(\.o$\)\|\( [aUw]
-\)\|\(\.\.ng$\)\|\(LASH[RL]DI\)' | sort > System.map
-make[1]: Entering directory `/home/bunk/Ringo/linux/arch/mips/boot'
-gcc -o elf2ecoff elf2ecoff.c
-./elf2ecoff /home/bunk/Ringo/linux/vmlinux vmlinux.ecoff -a
-Sections ordering prevents a.out conversion.
-make[1]: *** [vmlinux.ecoff] Error 1
-make[1]: Leaving directory `/home/bunk/Ringo/linux/arch/mips/boot'
-make: *** [boot] Error 2
+            Regards,
 
-<--  snip  -->
-
-cu
-Adrian
-
--- 
-
-Nicht weil die Dinge schwierig sind wagen wir sie nicht,
-sondern weil wir sie nicht wagen sind sie schwierig.
+            Kevin K.

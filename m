@@ -1,33 +1,30 @@
-Date: Tue, 12 Aug 2003 01:16:35 +0200
-Subject: Re: load/store address overflow on binutils 2.14
-Message-ID: <20030811231635.GB23104@rembrandt.csv.ica.uni-stuttgart.de>
-References: <20030810145425.GE22977@rembrandt.csv.ica.uni-stuttgart.de> <Pine.GSO.4.21.0308112257180.20421-100000@vervain.sonytel.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.GSO.4.21.0308112257180.20421-100000@vervain.sonytel.be>
-From: Thiemo Seufer <ica2_ts@csv.ica.uni-stuttgart.de>
-Return-Path: <ica2_ts@csv.ica.uni-stuttgart.de>
+From: =?UTF-8?B?5pyx5Yek?= <zhufeng@koretide.com.cn>
+Subject: RE: gdbserver and gdb debugging stub for mips
+Date: Fri, 15 Aug 2003 19:10:26 +0800
+Message-ID: <MGEELAPMEFMLFBMDBLKLGEKGCEAA.zhufeng@koretide.com.cn>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <3F3CB4CC.8070109@cellvision1.com.tw>
+Return-Path: <zhufeng@koretide.com.cn>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Chip Coldwell <coldwell@frank.harvard.edu>, Linux/MIPS Development <linux-mips@linux-mips.org>
-Message-ID: <20030811231635.xIPIyJa1jk-ZHmAs3LEBL2DHyuTKRQciGC6mF1NIT0U@z>
+To: Wilson Chan <wilsonc@cellvision1.com.tw>, linux-mips@linux-mips.org
+Message-ID: <20030815111026.Ia5dp_6FJuzclozVafmCasLCq1y1QhRQ28q_-y1gYSM@z>
 
-Geert Uytterhoeven wrote:
-[snip]
-> > > Strangely, this is actually "correct" behavior.  Arguments on
-> > > variable-length argument lists are implicitly "promoted" to unsigned
-> > > int at the widest.  See K&R 2nd ed. A6.1 and A7.3.2.
-> > 
-> > Ugh. Thanks for pointing this out. I wasn't aware of it.
-> > 
-> > 	printf("%016Lx\n", ~a);
-> > 
-> > Produces the expected output. So it is actually an implementation
-> > bug in binutils, which isn't fixable for 2.14 and earlier, because
-> > those have to remain at K&R C level. The K&R requirement was only
-> > recenly loosened.
-> 
-> How can it print the correct output if ~a is `promoted' to unsigned int, while
-> you specify %Lx in the format string?
+I'm also looking for them . If anybody who has , please tell me , thank you.
+
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Wilson Chan
+Sent: 2003年8月15日 18:24
+To: linux-mips@linux-mips.org
+Subject: gdbserver and gdb debugging stub for mips
+
+
+Hi Sir:
+   Does anybody has a gdbserver and gdb debugging stub for mips. I need
+them to do remote debugging on mips. Thanks!
+
+Wilson
+08/15/2003

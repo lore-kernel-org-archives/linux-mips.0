@@ -1,38 +1,40 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199810200421.VAA17379@oz.engr.sgi.com>
-Subject: Re: get_mmu_context()
-Date: Mon, 19 Oct 1998 21:21:28 -0700 (PDT)
+Message-ID: <199810220626.XAA32028@oz.engr.sgi.com>
+Subject: (fwd) was bug in haifa scheduler (or not)
+Date: Wed, 21 Oct 1998 23:26:00 -0700 (PDT)
 Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19981020042128.CgihFwgFr_vuDKH467jiO-tSV-zV_9xamxicVj-ssIo@z>
+Message-ID: <19981022062600.v_-Br0FrmgyiBUDrsLIBbx7LsMUx-cPUxZeKgVx2RRE@z>
 
-Forwarding message from David, his email probably changed
-so it bounced...
-
------ Forwarded message from owner-linux@cthulhu -----
+[just forwarding a bounce]
 
 From: "David S. Miller" <davem@dm.cobaltmicro.com>
-To: imp@village.org
-CC: ralf@uni-koblenz.de, linux-mips@fnet.fr, linux@cthulhu.engr.sgi.com
-In-reply-to: <199810200407.WAA03233@harmony.village.org> (message from Warner
-	Losh on Mon, 19 Oct 1998 22:07:26 -0600)
-Subject: Re: get_mmu_context()
-References: <19981019121804.F387@uni-koblenz.de>  <Pine.SV4.3.91.981016185136.876A-100000@mech.math.msu.su> <XFMail.981018215318.harald.koerfgen@netcologne.de> <199810200407.WAA03233@harmony.village.org>
+To: ralf@uni-koblenz.de
+CC: linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr,
+        linux-mips@vger.rutgers.edu
+In-reply-to: <19981022024408.A360@uni-koblenz.de> (ralf@uni-koblenz.de)
+Subject: Re: Haifa scheduler bug in egcs 1.0.2
+References: <19981021015047.G1830@uni-koblenz.de> <199810210139.SAA22458@dm.cobaltmicro.com> <19981022024408.A360@uni-koblenz.de>
 
-   Date: Mon, 19 Oct 1998 22:07:26 -0600
-   From: Warner Losh <imp@village.org>
+   Date: Thu, 22 Oct 1998 02:44:08 +0200
+   From: ralf@uni-koblenz.de
 
-   Wouldn't it be easier to have ld to have variant fixup records?
-   That way you could patch all instances at run time, much like we do
-   when we load stuff now...
+   The ABI is quite strict in that aspect, it wants one lo16 per hi16
+   for the same symbol.  Binutils relax that by allowing an arbitrary
+   number of hi16 and one lo16 for the same symbol.
 
-See sparc32's btfixup in the kernel sources for the best
-implementation I've ever seen.
+I completely understand how hi16/lo16 relocations work on MIPS, but
+thanks for reiterating it to me once more.
+
+All you have shown me is a bug in the MIPS ABI, one of thousands.
+
+Therefore, there is no reason binutils cannot handle this sanely, and
+be fixed to do so.
 
 Later,
 David S. Miller

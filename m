@@ -1,38 +1,16 @@
-Date: Thu, 27 Sep 2001 10:33:22 -0400
-From: "J. Scott Kasten" <jsk@tetracon-eng.net>
-Subject: Re: indycam
-In-Reply-To: <Pine.SOL.4.31.0109270357470.14513-100000@fury.csh.rit.edu>
-Message-ID: <Pine.SGI.4.33.0109271031300.25970-100000@thor.tetracon-eng.net>
+Message-ID: <003101c147f5$a6fc5980$921c690a@huawei.com>
+From: "machael" <dony.he@huawei.com>
+Subject: What is the latest stable kernel version for MIPS?
+Date: Fri, 28 Sep 2001 16:14:53 +0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: George Gensure <werkt@csh.rit.edu>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010927143322.T_1sclbY6qM7D2rXu_JjXvE_-1cxVc_bR_6bp_TGB1I@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010928081453.MZToB7UQCdVSKhkPK90WBqCww8UkednOXXg3E1GC0sg@z>
 
+What is the latest stable kernel version for MIPS? And where can I download
+it?
 
-Look back through the archives.  Someone was working on Indy machine vino
-(video in) support.  I vaguely remember some kind of status being given in
-the past couple months or so.
-
---
-
-J. Scott Kasten
-Email: jsk AT tetracon-eng DOT net
-
-"Nearly all men can stand adversity,
- but if you want to test a man's
- charater, give him power. - A Lincoln"
-
-On Thu, 27 Sep 2001, George Gensure wrote:
-
-> has anyone gotten an indycam working under linux?
->
-> George
->
-> --
-> George R. Gensure       Computer Science House Member
-> werkt@csh.rit.edu       Sophomore, Rochester Institute of Technology
-> Computer Science
->
->
+machael

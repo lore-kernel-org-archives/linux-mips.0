@@ -1,31 +1,49 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199706101059.MAA18571@informatik.uni-koblenz.de>
+Message-ID: <199706102022.WAA20079@informatik.uni-koblenz.de>
 Subject: Re: Merge back of the MIPS sources
-Date: Tue, 10 Jun 1997 12:59:18 +0200 (MET DST)
-In-Reply-To: <199706091836.LAA02114@fir.engr.sgi.com> from "William J. Earl" at Jun 9, 97 11:36:10 am
+Date: Tue, 10 Jun 1997 22:22:55 +0200 (MET DST)
+In-Reply-To: <199706101748.KAA27937@fir.engr.sgi.com> from "William J. Earl" at Jun 10, 97 10:48:39 am
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: "William J. Earl" <wje@fir.engr.sgi.com>
-Cc: mende@piecomputer.engr.sgi.com, ralf@Julia.DE, ariel@sgi.com, linux@yon.engr.sgi.com
-Message-ID: <19970610105918.Ma213jKRC7EuKvOZ1KmhAmnAQGIDw9NErEnNItYB284@z>
+Cc: ralf@mailhost.uni-koblenz.de, mende@piecomputer.engr.sgi.com, ralf@Julia.DE, ariel@sgi.com, linux@yon.engr.sgi.com
+Message-ID: <19970610202255.h97Pphtqv_Pfs946XpcsTeVnb9raTio4IRE5HPLpI2c@z>
 
->       If the MIPS system is running big-endian (as under RISCos), it can
-> be binary-compatible with Indy linux, just as RISCos 5.01 -systype svr4
-> binaries are binary-compatible with Indy IRIX 5.1 and later systems.
-> If the MIPS system is running little-endian (as under NT), it cannot
-> be binary-compatible with Indy linux, without adding bi-endian support
-> (for running opposite-endian binaries, which is feasible, but messy).
-> We prototyped bi-endian support in RISCos when before the Magnum
-> was built, and it worked, but the code was very ugly in the streams
-> area.  linux would likely be easier, but still a hassle.
+>      I don't have the numbers ready to hand, but it was not huge for most
+> things, given the hack of running the disk wrong-endian.  CPU overhead
+> for non-disk DMA I/O was higher, of course, but there is no extra
+> overhead for operations where all the arguments are in registers.
+> (An integer in a register is the same, no matter which endian you are.)
+> getpid(), for example, is unaffected.  Similarly, read() and write()
+> to disk are unaffected.  On the other hand, stat() is a little slower.
+> 
+>      Note that endian data conversion is not blind byte swapping for
+> structures such a stat.  Instead, it is a field-by-field operation,
+> since the MIPS reverse-endian mode affects only addressing, not the
+> layout of the bytes of, say, an integer in memory.  A 32-bit integer
+> will be at a different offset from the base of the structure (4, say,
+> instead of 0), but the byte order in memory will be the same.  The
+> byte numbering of memory is different, which is how it appears that
+> the bytes have been swapped.  The structure conversion routines can
+> thus be compiled fairly efficiently, avoiding runtime structure offset
+> calculations for the most part (except for arrays embedded in
+> structures).
+> 
+>      If this starts to look worth doing, I can supply more imformation,
+> such as examples of how to efficiently convert structures.  
 
-Now that the overhead of accessing the userspace from the kernel under
-Linux is very close to zero I fear that the additional overhead of the
-byteorder conversion will show up very clearly in benchmarks unless
-someone comes up with very clever ideas how do this.  Do you have
-numbers how much the impact on RISC/os performance was?
+This definately is worth doing.  We have a couple of machines where we
+can not configure byteorder of the kernel to big endian like DECstations
+or the Acer PICA, essentially a downscaled Magnum with an Indy style L2
+cache intended for NT.  If we ever want to give them a chance to run
+commercial software, then we need to go biendian.  And we need to implement
+it very clean or Linus will never accept the patches.
+Luckily the functions get_user() and put_user in <asm/uaccess.h> do
+already a large part of the work for us but nevertheless we need to
+go through all the code once again.  So maybe this is not something
+for now but definately worth doing.
 
   Ralf

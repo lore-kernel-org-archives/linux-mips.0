@@ -1,82 +1,77 @@
-From: "Len Smith" <lsmith@systemdynamix.com>
-Subject: RE: SGI320/Linux - Zip Drive and COM port.
-Date: Thu, 6 Jan 2000 06:43:52 -0500
-Message-ID: <LOBBKIACINGIEBKLGDKHCEJBCEAA.lsmith@systemdynamix.com>
+Message-ID: <00ef01bf5859$6d11f410$0ceca8c0@satanas.mips.com>
+From: "Kevin D. Kissell" <kevink@mips.com>
+Subject: Re: Decstation 5000/150 2.3.21 Boot successs
+Date: Thu, 6 Jan 2000 16:19:27 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <LOBBKIACINGIEBKLGDKHMEIKCEAA.lsmith@systemdynamix.com>
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: linux@cthulhu.engr.sgi.com
-Cc: david@cantrell.org.uk
-Message-ID: <20000106114352.pytTzMWB7rrsdjmEoJRramScPuxmyCiA1AFG4WIfbyw@z>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: Florian Lohoff <flo@rfc822.org>, linux@cthulhu.engr.sgi.com
+Message-ID: <20000106151927.uYhRbwDfFiWna8tlQdVfuwzbz3hOg3iqd4sPkO5n884@z>
 
-I'd like to thank all of you for your support, especially David Cantrell
-(who is at home).
-
-The solution was pretty apparent; I just didn't take advantage of it.  The
-SGI320 VWS has proprietary hardware and while the base Red Hat 6.0 will work
-with the kernel obtained from the SGI Linux (www.linux.sgi.com) site it also
-requires that the 2.2.5-xx source be patched and rebuilt.  The patch
-corrects issues with the sound, COM ports and if you enable it SCSI
-emulation for the internal IDE ZIP Drive.  So, I:
-
-1. Downloaded the 2.2.10 tarball
-2. Downloaded the VWS patch from the SGI Linux Intel site
-3. Created duplicate directories under /usr/src named linux.2210 and
-linux.2210.vw, both containing exact copies of 2.2.10.
-4. Ran the patch "patch -p0 < visws_2210_28jul99.patch from /usr/src
-5. Visually verified that the directory linux.2210 was updated (look at what
-the patch does, then look for the changes)
-6. make dep
-7. make clean
-8. make menuconfig (or whatever config your prefer)
-9. Be sure to use at least the settings from the SGI site for the kernel -
-otherwise danger lurks
-10. Make sure the SGI Sound is on
-11. SCSI emulation
-12. make vmlinux (that's right, not zImage)
-13. make modules
-14. make modules_install
-15. ln -s /usr/src/linux.2210 /usr/src/linux
-16. ln -s /usr/src/linux.2210/System.map /boot/System.map
-17. Copy the vmlinux image to your SGI FAT boot partition.
-18. Make a new boot selection to point to the new kernel.
-19. Boot and Enjoy.
-
-The corrected the COM issue and the SCSI emulation found the ZIP as hdd4 and
-everything works okay! Thanks again for everyone's help.
 
 -----Original Message-----
-From: Len Smith [mailto:lsmith@systemdynamix.com]
-Sent: Wednesday, January 05, 2000 2:25 PM
-To: linux@cthulhu.engr.sgi.com
-Subject: SGI320/Linux - Zip Drive and COM port.
+From: Ralf Baechle <ralf@oss.sgi.com>
+To: Kevin D. Kissell <kevink@mips.com>
+Cc: Florian Lohoff <flo@rfc822.org>; linux@cthulhu.engr.sgi.com
+<linux@cthulhu.engr.sgi.com>
+Date: Thursday, January 06, 2000 3:27 PM
+Subject: Re: Decstation 5000/150 2.3.21 Boot successs
 
-I am attempting to deal with several issues with RH 6.0 Linux (2.2.10) on
-the SGI Visual Workstation that I am unable to resolve.  I am sure that the
-resolutions are quite simple, but I have tried the HOWTO route and asked
-others without success.  Normally I am reluctant to seek help, opting to
-work the problem out for myself, but I seem unable to do so in this case.
 
-First, I recently installed an SGI supplied IOMEGA ZIP-100 into floppy bay
-#2 on the VWS.  It installed easily and it works correctly under NT.  It is
-recognized by Linux as "hdd" on the third probe during boot.  I am unable to
-mount the device.  The HOWTOs reference SCSI drives (this is an IDE, I
-believe) or parallel-attached devices.  So I can't find support assistance
-for internal drives.  Do you have any guidance in this area?
+>On Thu, Jan 06, 2000 at 10:12:21AM +0100, Kevin D. Kissell wrote:
+>
+>> The "setting flush to zero/Unimlemented exception"
+>> problem is almost certainly due to the fact that the
+>> DECstation binaries were compiled for R3000-based
+>> platforms with R3K-style FPUs which have 32 single-precision
+>> FP regs that can also be treated pairwise as 16
+>> double-precision registers.  I didn't know that the 5000 line
+>> had R4000 CPUs in them, but on the basis of your reported
+>> CPU revision number, that's what you've got.
+>>
+>> The default SGI/MIPS Linux kernel startup sets the
+>> "FR" bit in the CP0.Status register, which enables
+>> R4000-style FPU registers, which is to say a full
+>> compliment of 32 double-precision registers...
+...
+>Linux _never_ changes the FR flag.  In fact it's living in the assumption
+>that once the firmware hands over the control to the kernel the FR flag
+>has been configured apropriately.  For a 32-bit kernel the binaries available
+>out there more or less conform to the MIPS ABI which uses the 16/32
+>register model, that is the kernel expects the FR flag to be cleared.
 
-Also, I am having difficulty accessing COM1 on the VWS.  I get an error on
-"setserial -g /dev/ttys0" or "/dev/cua0" under root.  Both devices are
-present and seem to be correct.  The port works correctly under NT.  If I
-try "setserial auto_irq skip_test autoconfig" I receive a "device not found"
-error.  If you have guidance here I would be grateful as well.
+Thanks for the correction.  Note that the tweak to head.S I suggested
+simply adds FR to the bits to be cleared in case they happen to be
+set.   My problem evidently was, and Florian's problem probably is, that
+the firmware was leaving FR set when Linux booted, and the DECstation
+binaries can't handle that configuration.   What I can say with some
+confidence is that those odd error messages *will* result if Linux
+boots on an R4000 with FR set, and tries to execute DECstation
+binaries.
 
-I thank your for your time.
+>In firm assumption that due all the practical problems involved with
+>a non-standard execution model (i.e. 32-bit, o32-style ELF, 32/32
+>register model and 32-bit gprs) I decieded that in practice nobody will
+>use this and dumped all the support for it from later 2.3 kernels.  That
+>is the scheduler will no longer try to handle context switching for
+>the 32/32 fpr model correctly etc.
+>
+>If that's desired, how about providing a syscall which allows to manipulate
+>this and possibly other bits?
 
-Regards,
+I very much prefer the idea of having exec() to the right thing, so
+that 32/32 fpr and o32 ABI programs can be mixed and matched
+as appropriate - assuming, of course, that there's sufficient information
+in the binary header to do the job!  In practical terms, given that
+Linux is a multiuser and multitasking system, a syscall that throws
+some sort of global switch could only be safely invoked once
+at boot time, and as such offers little advantage over hardwired
+kernel code.
 
-Len Smith
-lsmith@systemdynamix.com
+            Regards,
+
+            Kevin K.

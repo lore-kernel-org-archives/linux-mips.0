@@ -1,53 +1,91 @@
-Message-ID: <006a01c10532$13d4c760$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <013801c104f4$a807cf60$056aaac0@kjlin>
-Subject: Re: Kernel panic: Attempted to kill init! 
-Date: Thu, 5 Jul 2001 11:08:35 +0200
+Reply-To: <deepak@ishoni.com>
+From: "Deepak Shenoy" <deepak@ishoni.com>
+Subject: RE: Kernel panic: Attempted to kill init! 
+Date: Thu, 5 Jul 2001 19:50:43 +0530
+Message-ID: <E0FDC90A9031D511915D00C04F0CCD25688A@leonoid.in.ishoni.com>
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0067_01C10542.D60F6C80"
+	boundary="----=_NextPart_000_001D_01C1058D.04322F90"
+In-Reply-To: <E0FDC90A9031D511915D00C04F0CCD25393942@leonoid.in.ishoni.com>
 Sender: owner-linux-mips@oss.sgi.com
-To: kjlin <kj.lin@viditec-netmedia.com.tw>, linux-mips@oss.sgi.com
-Message-ID: <20010705090835.1LGXgbMSf9IyBJKOdijvdpszZD-4EXmfRd55aJd-5tY@z>
+To: 'kjlin' <kj.lin@viditec-netmedia.com.tw>, linux-mips@oss.sgi.com
+Message-ID: <20010705142043.-5hbUd34G33dkq-b2eiZfVj1OIAZCa8fc_yLppQpsDE@z>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0067_01C10542.D60F6C80
+------=_NextPart_000_001D_01C1058D.04322F90
 Content-Type: text/plain;
 	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-  When the kernel boots up and mounts the root file system,=20
-  the kernel start to do "execve("/sbin/AP",argv_init,envp_init)" to run =
-a AP.
-  But in my case, it panics when kernel tries to do the =
+"init" is started with pid 1. If this process is killed you get this
+message.
+it could be possible that your init kernel thread is returning, exiting etc.
+
+deepak
+
+-----Original Message-----
+From: owner-linux-mips@oss.sgi.com [mailto:owner-linux-mips@oss.sgi.com]On
+Behalf Of kjlin
+Sent: Thursday, July 05, 2001 7:19 AM
+To: linux-mips@oss.sgi.com
+Subject: Kernel panic: Attempted to kill init!
+
+
+Hi,
+
+When the kernel boots up and mounts the root file system,
+the kernel start to do "execve("/sbin/AP",argv_init,envp_init)" to run a AP.
+But in my case, it panics when kernel tries to do the
 "execve("/sbin/AP",argv_init,envp_init)".
-  The kernel panic message shows " Kernel panic: Attempted to kill init! =
-".
-  What situation will trigger such kernel panic?
-Well, bogus values for argv_init and envp_init would be the first thing =
-I would check...
+The kernel panic message shows " Kernel panic: Attempted to kill init! ".
+What situation will trigger such kernel panic?
 
-            Kevin K.
+Thanks,
+KJ
 
-------=_NextPart_000_0067_01C10542.D60F6C80
+
+------=_NextPart_000_001D_01C1058D.04322F90
 Content-Type: text/html;
 	charset="big5"
 Content-Transfer-Encoding: quoted-printable
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1252">
-<META content=3D"MSHTML 5.50.4134.600" name=3DGENERATOR>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dbig5">
+
+
+<META content=3D"MSHTML 5.00.2314.1000" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV>
-<DIV><FONT size=3D2></FONT></DIV></DIV>
-<BLOCKQUOTE dir=3Dltr=20
-style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
-BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
+<DIV><FONT color=3D#0000ff face=3D"Courier New" size=3D2><SPAN=20
+class=3D665412214-05072001>"init" is started with pid 1. If this process =
+is killed=20
+you get this message.</SPAN></FONT></DIV>
+<DIV><FONT color=3D#0000ff face=3D"Courier New" size=3D2><SPAN=20
+class=3D665412214-05072001>it could be possible that your init kernel =
+thread is=20
+returning, exiting etc.</SPAN></FONT></DIV>
+<DIV><FONT color=3D#0000ff face=3D"Courier New" size=3D2><SPAN=20
+class=3D665412214-05072001></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT color=3D#0000ff face=3D"Courier New" size=3D2><SPAN=20
+class=3D665412214-05072001>deepak</SPAN></FONT></DIV>
+<BLOCKQUOTE=20
+style=3D"BORDER-LEFT: #0000ff 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: =
+0px; PADDING-LEFT: 5px">
+  <DIV align=3Dleft class=3DOutlookMessageHeader dir=3Dltr><FONT =
+face=3DTahoma=20
+  size=3D2>-----Original Message-----<BR><B>From:</B> =
+owner-linux-mips@oss.sgi.com=20
+  [mailto:owner-linux-mips@oss.sgi.com]<B>On Behalf Of =
+</B>kjlin<BR><B>Sent:</B>=20
+  Thursday, July 05, 2001 7:19 AM<BR><B>To:</B>=20
+  linux-mips@oss.sgi.com<BR><B>Subject:</B> Kernel panic: Attempted to =
+kill=20
+  init! <BR><BR></DIV></FONT>
+  <DIV><FONT size=3D2>Hi,</FONT></DIV>
+  <DIV>&nbsp;</DIV>
   <DIV><FONT size=3D2>When the kernel boots up and mounts the root file =
 system,=20
   </FONT></DIV>
@@ -59,13 +97,10 @@ the=20
   <DIV><FONT size=3D2>The kernel panic message shows " Kernel panic: =
 Attempted to=20
   kill init! ".</FONT></DIV>
-  <DIV><FONT size=3D2>What situation will trigger such kernel=20
-panic?</FONT></DIV></BLOCKQUOTE>
-<DIV dir=3Dltr><FONT size=3D2>Well, bogus values for argv_init and =
-envp_init would=20
-be the first thing I would check...</FONT></DIV>
-<DIV dir=3Dltr><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV dir=3Dltr><FONT size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; Kevin K.</FONT></DIV></BODY></HTML>
+  <DIV><FONT size=3D2>What situation will trigger such kernel =
+panic?</FONT></DIV>
+  <DIV>&nbsp;</DIV>
+  <DIV><FONT size=3D2>Thanks,</FONT></DIV>
+  <DIV><FONT size=3D2>KJ</FONT></DIV></BLOCKQUOTE></BODY></HTML>
 
-------=_NextPart_000_0067_01C10542.D60F6C80--
+------=_NextPart_000_001D_01C1058D.04322F90--

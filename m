@@ -1,54 +1,30 @@
 From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199910012110.OAA12471@oz.engr.sgi.com>
-Subject: Re: (offtopic) sgi hard drive problem
-Date: Fri, 1 Oct 1999 14:10:52 -0700 (PDT)
+Message-ID: <199910180312.UAA98843@oz.engr.sgi.com>
+Subject: Re: current information about linux/sgi ?
+Date: Sun, 17 Oct 1999 20:12:08 -0700 (PDT)
 Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+In-Reply-To: <Pine.GSO.4.10.9910172334460.5329-100000@lutra.sztaki.hu> from "Gergely Madarasz" at Oct 17, 99 11:44:09 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Sender: owner-linux@cthulhu.engr.sgi.com
-Content-Transfer-Encoding: 7bit
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19991001211052.t0DTWH1jYUCZD65kzo2jFTkytbeYCpYJPreQGq_G_KA@z>
+Sender: owner-linuxmips@oss.sgi.com
+To: Gergely Madarasz <gorgo@sztaki.hu>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19991018031208.0vOthFG6qCS86306BPFWKjWETIMtqWorTlZuWjR5mV0@z>
 
+:Btw is the list archived somewhere else perhaps? I followed the link from
+:www.linux.sgi.com, the latest messages there are dated June 25.
+:And can someone summarize the current status of linux on different
+:workstation models ?
+:
+I'm fixing this as we speak. There are several old links
+to fix :-(
 
-[Just trying to help: forwarding this bounce from Alex Kozlov, thanks Alex]
+The up-to-date archives can be found at:
 
-:Subject: Re: sgi hard drive problem.
-:In-Reply-To: <Pine.GSO.3.96.991001142618.11A-100000@yacht.ee.fit.edu> from Can Altineller at "Oct 1, 99 03:25:36 pm"
-:To: altine@yacht.ee.fit.edu (Can Altineller)
-:Date: Fri, 1 Oct 1999 13:14:43 -0700 (PDT)
-:Cc: linux@cthulhu.engr.sgi.com
-:WWW-page: http://robotics.stanford.edu/~alexvk
-:From: alexvk@sgi.com
-:MIME-Version: 1.0
-:Content-Type: text/plain; charset=US-ASCII
-:Content-Transfer-Encoding: 7bit
-:
-:You need to make a new IRIX boot disk (by using some other SGI
-:computer):
-:
-:- boot up a system to single user mode
-:
-:- do fx to partition the second disk as a root disk
-:
-:- make file system on the second disk and mount the file system
-:
-:- copy sash to the new disk
-:
-:# fx "dksc(0,2)"
-:# mkfs /dev/rdsk/dks0d2s0
-:# mount /dev/dsk/dks0d2s0 /mnt
-:# /sbin/dvhtool -v g sash sash; /sbin/dvhtool -v c sash sash /dev/rdsk/dks0d2vh
-:# rm sash
-:
-:The problem obviously is that Linux erased your IRIX boot record and
-:partitions.
-:
-:--
-:Alexander V. Kozlov | alexvk@engr.sgi.com | (650) 933-8493
-:
+	http://oss.sgi.com/projects/linuxmips/archive/
 
+They should be updated automatically.
 
--- 
+--
 Peace, Ariel

@@ -1,22 +1,36 @@
-Subject: Re: [patch] 2.4.4: mmap() fails for certain legal requests
-Date: Tue, 8 May 2001 23:59:33 +0100 (BST)
-In-Reply-To: <15096.27432.381478.837650@pizda.ninka.net> from "David S. Miller" at May 08, 2001 02:54:48 PM
+From: "David S. Miller" <davem@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Message-ID: <E14xGS7-0000r5-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-ID: <15096.34887.893674.220288@pizda.ninka.net>
+Date: Tue, 8 May 2001 16:59:03 -0700 (PDT)
+Subject: Re: [patch] 2.4.4: mmap() fails for certain legal requests
+In-Reply-To: <E14xGS7-0000r5-00@the-village.bc.nu>
+References: <15096.27432.381478.837650@pizda.ninka.net>
+	<E14xGS7-0000r5-00@the-village.bc.nu>
 Sender: owner-linux-mips@oss.sgi.com
-To: "David S. Miller" <davem@redhat.com>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Cc: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, linux-kernel@vger.kernel.org, linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20010508225933.ePmpfiave3Zoug-K_QuY9X010KJ5LNueBVV4zksrXNI@z>
+Message-ID: <20010508235903.iIuy3HSAhSBYYYulSvq0_01sBxzPQms_QF2kamO9cQo@z>
 
->  >  Thanks for your response, though -- maybe there is someone interested,
->  > after all. 
-> 
-> That's pretty arrogant that cut and pasting a few lines into some
-> architecture specific files and reporting the updated patch is too
-> much to ask.
 
-And just how is he going to test it ? Considering he was just asking if the
-concept was reasonable I think you are a little out of order
+Alan Cox writes:
+ > And just how is he going to test it ? Considering he was just
+ > asking if the concept was reasonable I think you are a little out
+ > of order
+
+I can't test every platform when I have to make such changes.
+But it always serves to show the port maintainer "what" the
+change was.
+
+Yes, I am slightly out of order if the intent is just "does
+this idea look fine" (which it does btw, I can't  find any
+problems with it).
+
+I apologize to Maciej, but I do deplore him to actually do the
+final bits for the other ports when he makes his final patch
+submission.
+
+Later,
+David S. Miller
+davem@redhat.com

@@ -1,20 +1,24 @@
-From: "Andrew Linfoot" <alinfoot@escafeldcomputing.co.uk>
-Subject: Hardware Available To Developers
-Date: Wed, 4 Apr 2001 01:28:01 +0100
-Message-ID: <000101c0bc9e$1ec55f40$0101a8c0@derfel>
+Subject: Re: Dumb Question on Cross-Development
+Date: Wed, 4 Apr 2001 12:22:16 +0100 (BST)
+In-Reply-To: <20010404120211.C11161@paradigm.rfc822.org> from "Florian Lohoff" at Apr 04, 2001 12:02:11 PM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E14klMh-0001kx-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010404002801.o7O8OeDJPBf8Aowll7HlcXQz0P0mYdPuRc9b9w-mkj4@z>
+To: Florian Lohoff <flo@rfc822.org>
+Cc: Jun Sun <jsun@mvista.com>, "Kevin D. Kissell" <kevink@mips.com>, "\"MIPS/Linux List SGI\"" <linux-mips@oss.sgi.com>
+Message-ID: <20010404112216.dvpI_9O3oyLc6tvhXt0JX6F8e9zQBgZqjjC44sjtz-I@z>
 
-Hi everyone,
+> We already had the discussion on parts of that implementation. Honestly - 
+> I dont like the stuff - Rolling out mips packages as "noarch" is
+> simply broken - And the argument that one would want to install
+> it on a i386 nfs root is simply an excuse for a broken rpm or missing
+> installer.
 
-I will shortly have an I2 and Challenge S available (maybe even a
-quad-processor Challenge L )(specs to follow). I would like to make these
-available to developers, but you would have to arrange for
-collection/delivery (i could possibly deliver within say 50 to 100 miles), I
-am in Sheffield UK. In addition i have a 24-bit and XZ graphics card for
-Indy.
+Or a flawed packaging tool. RPM allows you to force noarch and you can use it
+to get around this precise problem. Its also useful when you want to force
+an x86 package onto an Alpha with em86.
 
-Please let me know is you know anyone who could make use of these.
-
-Andy
+I find it hard to believe dpkg lacks such a feature.

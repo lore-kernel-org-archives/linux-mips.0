@@ -1,47 +1,170 @@
-Date: Wed, 1 Oct 2003 17:34:26 +0400 (MSD)
-From: Tommy Tovbin <tovbin@niisi.msk.ru>
-Subject: Re: Problem with depmod 
-In-Reply-To: <3680.1065008920@ocs3.intra.ocs.com.au>
-Message-ID: <Pine.LNX.4.44.0310011729080.30245-100000@tux.NIISI>
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <tovbin@niisi.msk.ru>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C38884.738D0E78"
+Subject: Kernel Profile Patch for Au1x00?
+Date: Wed, 1 Oct 2003 20:28:15 -0500
+Message-ID: <F2DE90354F0ED94EB7061060D9396547B98A5C@mars.bandspeed.com>
+From: "Vince Bridgers" <vbridgers@bandspeed.com>
+Return-Path: <vbridgers@bandspeed.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Keith Owens <kaos@sgi.com>
-Cc: linux-mips@linux-mips.org, raiko@niisi.msk.ru
-Message-ID: <20031001133426.fNDZR0K4QkobJNgPOrBjfrPYa-wkb3M5u-wLxH4MN7A@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20031002012815.7Kf-VkeCPcsklX09SMQhrzINpYPd8bo0JWlxpRMvYis@z>
 
-On Wed, 1 Oct 2003, Keith Owens wrote:
+This is a multi-part message in MIME format.
 
-> On Wed, 1 Oct 2003 12:18:04 +0400 (MSD), 
-> Tommy Tovbin <tovbin@niisi.msk.ru> wrote:
-> >
-> >Hi, I've recompiled whole RedHat 7.3 on MIPS. Well, when I try to startup 
-> >my system I`m getting an error like this:
-> >
-> >Finding module dependencies:  depmod: cannot read ELF header from 
-> >/lib/modules/2.4.18/modules.dep
-> 
-> Short answer: 'mkdir /lib/modules/2.4.18/kernel' or 'make modules_install'.
+------_=_NextPart_001_01C38884.738D0E78
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Long answer: You can feed depmod multiple module directories, so depmod
-> has to look for directory 'kernel' to work out the top level of each tree.
-> modules.dep and the other text files are only ignored at the top level
-> of each tree.  You have no 'kernel' directory under /lib/modules/2.4.18
-> so depmod does not ignore the text files.
-> 
-> 
-> 
+Is there a kernel profile patch that anyone is aware of for the AMD
+(Alchemy) part Au1000/Au1500? If not, can anyone provide info on a good
+starting point to start a port?
+=20
+TIA,
+=20
+Vince
+=20
+=20
 
-Thanks a lot! 
+------_=_NextPart_001_01C38884.738D0E78
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
 
 
--- 
-With regards, Tommy Tovbin. tovbin at niisi dot msk dot ru.
-	Zz
-       zZ
-    |\ z    _,,,---,,_ /,`.-'`'_ ;-;;,_
-   |,4-  ) )-,_..;\ (  `'_'
-  '---''(_/--'  `-'\_)
+<meta name=3DProgId content=3DWord.Document>
+<meta name=3DGenerator content=3D"Microsoft Word 10">
+<meta name=3DOriginator content=3D"Microsoft Word 10">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C3885A.8AAAA820">
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DocumentKind>DocumentEmail</w:DocumentKind>
+  <w:EnvelopeVis/>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	mso-style-noshow:yes;
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */=20
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
+style=3D'tab-interval:.5in'>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Is there a kernel profile patch that anyone is aware =
+of for
+the AMD (Alchemy) part Au1000/Au1500? If not, can anyone provide info on =
+a good
+starting point to start a port?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>TIA,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Vince<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+=00
+------_=_NextPart_001_01C38884.738D0E78--

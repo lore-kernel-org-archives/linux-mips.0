@@ -1,29 +1,42 @@
-Message-ID: <004101c198bb$988a6ec0$9b6e0b0a@huawei.com>
-From: "machael thailer" <dony.he@huawei.com>
-References: <E16O9BM-0008W9-00@the-village.bc.nu>
-Subject: Re: limited Memory question...
-Date: Wed, 9 Jan 2002 11:13:22 +0800
+Message-ID: <00ee01c19cfa$ab8d3640$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <20020113211323.A7115@momenco.com> <15426.48692.795968.819750@gladsmuir.algor.co.uk>
+Subject: Re: MIPS64 status?
+Date: Mon, 14 Jan 2002 13:54:42 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: linux-mips@oss.sgi.com, Arnaldo Carvalho de Melo <acme@conectiva.com.br>
-Message-ID: <20020109031322.rjwdoTuiK74AgQHy1N-NwnbOoxwz03j399C8BC1uveI@z>
+To: Dominic Sweetman <dom@algor.co.uk>, Matthew Dharm <mdharm@momenco.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20020114125442.rNFTwrvI4l6cXeKhJkn_QYaWyYgkkmAFV3pA7937pBc@z>
 
-> >     I have a question to need you help. Our MIPS-based custom board has only
-> > 8M memory.When I want to insmod a 24M module, it often panics and says "out 
-> > of memory...".
-> > How can I solve this?
+> > As I understand it, 64-bit support is really two different things:
+> > 64-bit data path (i.e. unsigned long long) and 64-bit addressing
+> > (for more than 4G of RAM).
 > 
-> Stop the module using 24Mb of unpageable memory ?
+> Yes: the MIPS architecture is designed so there are lots of different
+> things which can be "64-bit", and you don't have to go for them all at
+> once.  This kind of choice can be as much curse as blessing, of course.
 
-Sorry , I think I didn't describe my questions clearly before.
+Careful, Dom.  As far as user-mode programs are concerned,
+older 64-bit MIPS designs (R4xxxx/R5xxxx/R7xxxx), one cannot
+enable 64-bit arithmetic without enabling 64-bit addressing,
+both of these functions being enabled by the Status.UX bit.
+SGI's IRIX OS allowed an execution model that provided
+64-bit registers and math, while *simulating* a 32-bit address
+space, based on sign-extending 32-bit addresses to 64-bits.
+The user was spared doubling the footprint of all his pointers,
+but the OS still had to manage the larger page tables.
 
-"24M" contains some debugging information. I compile it using "-g".
-code+data sections is only about 7.4M.
+The official MIPS64[tm] architecture spec from MIPS 
+Technologies also provides a bit (Status.PX) which enables
+the 64-bit data path without affecting address generation
+and translation, which removes this quirk.  Only the very
+most recent 64-bit cores and CPUs implement it, however.
 
-Can you describe your solutions in more details?
 
-machael.
+            Regards,
+
+            Kevin K.

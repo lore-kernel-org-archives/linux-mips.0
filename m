@@ -1,23 +1,22 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Sun, 11 Jan 1998 20:39:55 -0800
-Message-ID: <199801120439.UAA18238@fir.engr.sgi.com>
-From: "William J. Earl" <wje@fir.engr.sgi.com>
-Subject: Re: SGI/Linux on a Challenge S series
-In-Reply-To: <199801111740.SAA03330@pallas.spacetec.no>
-References: <199801111740.SAA03330@pallas.spacetec.no>
+Message-ID: <m0xrpuB-0005FsC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: BlueBelt Linux for SGI
+Date: Mon, 12 Jan 1998 19:52:15 +0000 (GMT)
+In-Reply-To: <199801121847.MAA01817@athena.nuclecu.unam.mx> from "Miguel de Icaza" at Jan 12, 98 12:47:58 pm
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Tor Arntsen <tor@spacetec.no>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980112043955.z0QyT3YLCCSOL_QQBIlWJ-B3ESuDjcF7mPAkXrcpd_M@z>
+To: Miguel de Icaza <miguel@nuclecu.unam.mx>
+Cc: adevries@engsoc.carleton.ca, linux@cthulhu.engr.sgi.com
+Message-ID: <19980112195215.gev2L5XwGIjdeILjxwRCuUCIpVpYmRoz9Zm5hBvXPCU@z>
 
-Tor Arntsen writes:
- > On Jan 10, 19:12, Charles Marker wrote:
- > >A Challenge S is just an Indy with the graphics, ISDN and some of the
- > >digital media removed.  As long as the kernel is probing for those
- > >devices and handling their non existance correctly, this should work
- > >reasonably well.
- > 
- > Uh, if I'm not suddenly totally confused a Challenge S is an Indigo-2 with
- > all those things removed, not an Indy..
+> > A lot of those failures are simply because of the order I built
+> > everything in;  eg. I built gpm-devel late in the game, so things like mc
+> > didn't compile. 
+> 
+> Oh, but this is such an important tool.  
+> 
+> We need mc ;-)
 
-     No, a Challenge S is an Indy, not an Indigo2.
+I've filled in a pile of the obvious blanks and a few spec file fixes
+- ftp.uk.linux.org as usual

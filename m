@@ -1,122 +1,43 @@
-Message-ID: <00cc01c0877c$fbc8a8e0$0deca8c0@Ulysses>
+Message-ID: <00e201c0877f$1acfdb80$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <7EB7C6B62C4FD41196A80090279A29113D7399@exchsrv1.cosinecom.com>
-Subject: Re: MIPS platform recommendations
-Date: Fri, 26 Jan 2001 10:47:13 +0100
+References: <3A6E132B.9000103@Lineo.COM> <3A6E1977.2B18484D@mvista.com> <3A6F36B8.4F10759B@mvista.com> <20010124163101.F863@bacchus.dhis.org>
+Subject: Re: CONFIG_MIPS_UNCACHED
+Date: Fri, 26 Jan 2001 11:02:24 +0100
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00C7_01C08785.57A97F60"
-Sender: owner-linux-mips@oss.sgi.com
-Return-Path: <owner-linux-mips@oss.sgi.com>
-To: John Van Horne <JohnVan.Horne@cosinecom.com>, linux-mips@oss.sgi.com
-Cc: Paul Lambert <Paul.Lambert@cosinecom.com>
-Message-ID: <20010126094713.ZIKCLs_m9-RrTa5K7LTbWt6cwoF0esm41QNHLNMB9hw@z>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_00C7_01C08785.57A97F60
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Sender: owner-linux-mips@oss.sgi.com
+Return-Path: <owner-linux-mips@oss.sgi.com>
+To: Ralf Baechle <ralf@oss.sgi.com>, Jun Sun <jsun@mvista.com>
+Cc: Pete Popov <ppopov@mvista.com>, Quinn Jensen <jensenq@lineo.com>, linux-mips@oss.sgi.com
+Message-ID: <20010126100224.ynZUFDb6ME2teh9iuYpTj0Bi-6K7P8L8p5-4onBgyrA@z>
 
-MIPS platform recommendationsPersonally, I use an Algorithmics P-5064 =
-board
-with an R5260 CPU for this sort of thing.  It's an
-ATX board that I've got bolted into a cheapo
-generic ATX enclosure on my lab network. They
-also have an RM7000 CPU module available.
-I'm running the MIPS 2.2.x port on it, however,
-not 2.4.  See www.algor.co.uk for info on the
-board.
+>
+> > It is really surprising to know this.  It sounds like a CPU bug to me.
+Can
+> > some MIPS "gods" clarify if such a behaviour is a bug or allowed?
+> >
+> > BTW, the CPU in EV96100 is QED RM7000, I believe.
+>
+> If you want to be strictly correct you have to execute the code that
+> disables caching of KSEG0 in uncached space like KSEG1, then flush the
+> caches before you can resume execution in KSEG0.  Otherwise you might
+> end up with dirty d-caches which when flushed will overwrite more
+> uptodate data in memory.  The window is very small but yet exists if
+> things are just right.
+
+That's one possible failure mode.   The other is that there
+are dirty lines (those that were brought into the cache and
+modified by stores, but never written back to memory) that
+are rendered invisible by forcing KSEG0 to go uncached.
+This will cause failure of any code that is expecting to see
+the results of those stores if said code executes before
+some other event causes the write-back - and if the
+machine is running with cacheing completely disabled,
+as it would be in the case under discussion, such an
+event may never occur!
+
+            Regards,
 
             Kevin K.
-  ----- Original Message -----=20
-  From: John Van Horne=20
-  To: 'linux-mips@oss.sgi.com'=20
-  Cc: Paul Lambert=20
-  Sent: Wednesday, January 24, 2001 8:23 PM
-  Subject: MIPS platform recommendations
-
-
-  Hello,=20
-
-  Can anyone recommend an R5000/R7000 machine=20
-  which can run Linux 2.4 and would be an appropriate=20
-  platform on which to build the libraries for an R5000/R7000=20
-  embedded Linux application? Which platform has the=20
-  most stable version of Linux 2.4 available?=20
-
-  Thanks in advance,=20
-  -John Van Horne=20
-  jvhorne@cosinecom.com=20
-
-
-------=_NextPart_000_00C7_01C08785.57A97F60
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD><TITLE>MIPS platform recommendations</TITLE>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 5.50.4134.600" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Personally, I use an Algorithmics P-5064 board</DIV>
-<DIV>with an R5260 CPU for this sort of thing.&nbsp; It's an</DIV>
-<DIV>ATX board that I've got bolted into a cheapo</DIV>
-<DIV>generic ATX enclosure on my lab network.&nbsp;They</DIV>
-<DIV>also have an RM7000 CPU module available.</DIV>
-<DIV>I'm running the MIPS 2.2.x port on it, however,</DIV>
-<DIV>not 2.4.&nbsp; See <A =
-href=3D"http://www.algor.co.uk">www.algor.co.uk</A> for=20
-info on the</DIV>
-<DIV>board.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;=20
-</FONT><FONT size=3D3>Kevin K.</FONT></DIV>
-<BLOCKQUOTE dir=3Dltr=20
-style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
-BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
-  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
-  <DIV=20
-  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black"><B>From:</B>=20
-  <A title=3DJohnVan.Horne@cosinecom.com=20
-  href=3D"mailto:JohnVan.Horne@cosinecom.com">John Van Horne</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A =
-title=3Dlinux-mips@oss.sgi.com=20
-  href=3D"mailto:'linux-mips@oss.sgi.com'">'linux-mips@oss.sgi.com'</A> =
-</DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Cc:</B> <A =
-title=3DPaul.Lambert@cosinecom.com=20
-  href=3D"mailto:Paul.Lambert@cosinecom.com">Paul Lambert</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Wednesday, January 24, =
-2001 8:23=20
-  PM</DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> MIPS platform=20
-  recommendations</DIV>
-  <DIV><BR></DIV>
-  <P><FONT face=3DArial size=3D2>Hello,</FONT> </P>
-  <P><FONT face=3DArial size=3D2>Can anyone recommend an R5000/R7000 =
-machine</FONT>=20
-  <BR><FONT face=3DArial size=3D2>which can run Linux 2.4 and would be =
-an=20
-  appropriate</FONT> <BR><FONT face=3DArial size=3D2>platform on which =
-to build the=20
-  libraries for an R5000/R7000</FONT> <BR><FONT face=3DArial =
-size=3D2>embedded Linux=20
-  application? Which platform has the</FONT> <BR><FONT face=3DArial =
-size=3D2>most=20
-  stable version of Linux 2.4 available?</FONT> </P>
-  <P><FONT face=3DArial size=3D2>Thanks in advance,</FONT> <BR><FONT =
-face=3DArial=20
-  size=3D2>-John Van Horne</FONT> <BR><FONT face=3DArial size=3D2><A=20
-  href=3D"mailto:jvhorne@cosinecom.com">jvhorne@cosinecom.com</A></FONT> =
-
-</P></BLOCKQUOTE></BODY></HTML>
-
-------=_NextPart_000_00C7_01C08785.57A97F60--

@@ -1,33 +1,36 @@
-Date: Thu, 6 Jun 2002 09:58:17 +0100 (BST)
-Message-ID: <200206060858.JAA03233@mudchute.algor.co.uk>
-From: Dominic Sweetman <dom@algor.co.uk>
+Date: Wed, 12 Jun 2002 22:25:22 -0400 (EDT)
+From: Donald Becker <becker@scyld.com>
+Subject: Re: NAPI for eepro100
+In-Reply-To: <20020612.163344.31410429.davem@redhat.com>
+Message-ID: <Pine.LNX.4.33.0206122219100.1390-100000@presario>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Subject: Re: [Fwd: Current state of MIPS16 support?] 
-In-Reply-To: <1375.1023293101@porcupine.cygnus.com>
-References: <15614.10904.705392.925058@gladsmuir.algor.co.uk>
-	<1375.1023293101@porcupine.cygnus.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: law@redhat.com
-Cc: Dominic Sweetman <dom@algor.co.uk>, Joe Buck <Joe.Buck@synopsys.com>, Eric Christopher <echristo@redhat.com>, Johannes Stezenbach <js@convergence.de>, gcc@gcc.gnu.org, linux-mips@oss.sgi.com, sde@algor.co.uk
-Message-ID: <20020606085817.I9MhyE4VkQf5G0ss1Kej9-q5vRHsalgn_yimLf1RVVs@z>
+To: "David S. Miller" <davem@redhat.com>
+Cc: Jeff Garzik <jgarzik@mandrakesoft.com>, linux-mips@oss.sgi.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, netdev@oss.sgi.com
+Message-ID: <20020613022522.fzFzyBQFDAxx2FVVdLovJLcvStH9ybp_GbWbSuj3xMQ@z>
 
+On Wed, 12 Jun 2002, David S. Miller wrote:
+>    From: Jeff Garzik <jgarzik@mandrakesoft.com>
+>    Oh crap, you're right...   eepro100 in general does funky stuff with the
+>    way packets are handled, mainly due to the need to issue commands to the
+>    NIC engine instead of the normal per-descriptor owner bit way of doing
+>    things.
 
-Jeff,
+The eepro100 has a unique design in many different aspects.
 
->  > I signed the assignment/waiver.  The companies involved are
->  > Algorithmics Ltd and DFS3 Ltd.  It was faxed to Jim Wilson (then at
->  > Cygnus) in October 1993 in the form recommended at that time.  Here's
->  > a PDF.  Note the 'company stationery' has changed since 1993...
-> 
-> What's important here is the assignment that is on file with the FSF.  That's
-> what needs to be checked.  
+> The question is, do the descriptor bits have to live right before
+> the RX packet data buffer or can other schemes be used?
 
-Are you in a position to do that?  If not, who is?
+With the current driver structure, yes, the descriptor words must be
+immediately before the packet data.  You can use other Rx and Tx
+structures/modes to avoid this, but they use less efficient memory access.
+For instance, the current Tx structure allows transmitting a packet with
+a single PCI burst, rather than multiple transfers.
+
 
 -- 
-Dominic Sweetman, 
-Algorithmics Ltd
-phone: +44 1223 706200 / fax: +44 1223 706250 / direct: +44 1223 706205
-http://www.algor.co.uk
+Donald Becker				becker@scyld.com
+Scyld Computing Corporation		http://www.scyld.com
+410 Severn Ave. Suite 210		Second Generation Beowulf Clusters
+Annapolis MD 21403			410-990-9993

@@ -1,72 +1,36 @@
-Message-ID: <00a601c3fa5e$ee4fe8b0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Law10-F10138dWMJ69i0000d0f4@hotmail.com>
-Subject: Re: r3000 instruction set
-Date: Mon, 23 Feb 2004 23:46:49 +0100
+Received: from m1.gw.fujitsu.co.jp ([10.0.50.71]) by fgwmail6.fujitsu.co.jp (8.12.10/Fujitsu Gateway)
+	id i211jMh8008387 for <linux-mips@linux-mips.org>; Mon, 1 Mar 2004 10:45:22 +0900
+	(envelope-from sundar@pst.fujitsu.com)
+Received: from s5.gw.fujitsu.co.jp by m1.gw.fujitsu.co.jp (8.12.10/Fujitsu Domain Master)
+	id i211jLLj007727 for <linux-mips@linux-mips.org>; Mon, 1 Mar 2004 10:45:21 +0900
+	(envelope-from sundar@pst.fujitsu.com)
+Received: from classic.aoi.pst.fujitsu.com (classic.aoi.pst.fujitsu.com [10.90.149.12]) by s5.gw.fujitsu.co.jp (8.12.10)
+	id i211jKAb031329 for <linux-mips@linux-mips.org>; Mon, 1 Mar 2004 10:45:20 +0900
+	(envelope-from sundar@pst.fujitsu.com)
+Received: from indofuji2 (dhcp155-203.aoi.pst.fujitsu.com [10.90.155.203])
+	by classic.aoi.pst.fujitsu.com (8.9.3/8.9.3) with ESMTP id KAA19335
+	for <linux-mips@linux-mips.org>; Mon, 1 Mar 2004 10:45:19 +0900
+From: "sundar" <sundar@pst.fujitsu.com>
+Subject: Problem after kernel entry point
+Date: Mon, 1 Mar 2004 10:44:09 +0900
+Message-ID: <001701c3ff2e$b12d4b60$cb9b5a0a@indofuji2>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Return-Path: <sundar@pst.fujitsu.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Mark and Janice Juszczec <juszczec@hotmail.com>, linux-mips@linux-mips.org
-Cc: uhler@mips.com, dom@mips.com, echristo@redhat.com
-Message-ID: <20040223224649.h4VrZHfn4_-lSXJ9xhf6UmdwJItlVzqvRtNqTn6wh-A@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20040301014409.GcN9VXuVENKpq2oiige7xdnkYgwKy4896rvOPVQR0Hc@z>
 
-Kaffe's makefiles won't pick up on configuration changes, so any time
-you re-configure for a different engine or debug level, you need to do
-a make clean.  At least, that's the way it was the last time I worked on it.
-If you had a partial build with JIT, then changed to intrp, then you could
-get all kinds of strange behavior.  The address range of your error us a
-dead giveaway.  It's too high to be the kaffe code segment, but too low
-to be a shared library.  It's where I'd expect the heap to be, and where
-I remember the JIT buffers being allocated when I was trying to debug
-that stuff.
 
-> Its been a few weeks since I built this version of kaffe.  The configure 
-> output says I did specify --with-engine=intrp.  I'll delete the compiled 
-> stuff, reconfigure (double checking that I give it --with-engine=intrp), 
-> recompile and retest.
-> 
-> I'll post my results.
-> 
-> Mark
-> 
-> 
-> 
-> >From: "Kevin D. Kissell" <kevink@mips.com>
-> >To: "Mark and Janice Juszczec" <juszczec@hotmail.com>,        
-> ><linux-mips@linux-mips.org>
-> >CC: <uhler@mips.com>, <dom@mips.com>, <echristo@redhat.com>
-> >Subject: Re: r3000 instruction set
-> >Date: Mon, 23 Feb 2004 18:21:19 +0100
-> >
-> > > Someone suggested posting the message I get.  Here it is:
-> > >
-> > > >./kaffe-bin FirstClass
-> > > [kaffe-bin:6] Illgal instruction 674696a at 2abb034, ra=2adbffd0,
-> > > P0_STATUS=0000500
-> > > pid 6: killed (signal 4)
-> > > >Reading command line: Try again
-> > > Kernel panic: Attmpted to kill int!
-> >
-> >Let me guess.  You are running little-endian.  The instruction word
-> >in memory would be 0x6a697406.  Do you think it's a coincidence
-> >that 0x6a6974 spells "jit" in ASCII?  ;o)
-> >
-> >The reported address range looks like that where kaffe builds its
-> >JITted instruciton buffers in MIPS/Linux.  And, like I say, JIT is
-> >somewhat broken for MIPS in Kaffe.  Which version of the kaffe sources
-> >are you building, and have you tried configuring with --with-engine=intrp
-> >as I suggested?
-> >
-> >             Regards,
-> >
-> >             Kevin K.
-> 
-> _________________________________________________________________
-> Click, drag and drop. My MSN is the simple way to design your homepage. 
-> http://click.atdmt.com/AVE/go/onm00200364ave/direct/01/
-> 
-> 
+HI,
+
+I am trying to port kernel to mips arch.
+After building the image, it just displays the kernel entry point and
+stops it.It is not going further and no error message too.
+What may be th problem? How i can debug this? 
+
+Thanks & Regards,
+sathis

@@ -1,38 +1,56 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@cobaltmicro.com>
-Message-ID: <199709270036.RAA02682@dns.cobaltmicro.com>
-Subject: Re: R3000 SGI machines
-Date: Fri, 26 Sep 1997 17:36:25 -0700 (PDT)
-In-Reply-To: <199709261558.IAA10949@fir.engr.sgi.com> from "William J. Earl" at Sep 26, 97 08:58:19 am
-Content-Type: text
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199710011720.KAA13138@oz.engr.sgi.com>
+Subject: Re: IRIX ELF docs
+Date: Wed, 1 Oct 1997 10:20:38 -0700 (PDT)
+In-Reply-To: <9710010856.ZM13076@heaven.newport.sgi.com> from "Christopher W. Carlson" at Oct 1, 97 08:56:30 am
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "William J. Earl" <wje@fir.engr.sgi.com>
-Cc: imp@village.org, ralf@cobaltmicro.com, linux@cthulhu.engr.sgi.com, ab@ivm.net
-Message-ID: <19970927003625.2TriX0KQB30Z9zCx231Yaw09FfswD-sZ91Qb2yeIzJA@z>
+To: "Christopher W. Carlson" <carlson@heaven.newport.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19971001172038.fbP35ASshopuFcmEmm-wAZ2g0u_PajxMNpdHxwkVm0M@z>
 
-> Warner Losh writes:
->  > In message <199709260639.XAA09959@dull.cobaltmicro.com> Ralf Baechle writes:
->  > : I receive an increasing number of emails asking for Linux as replacement
->  > : operating system for older R3000 SGI machines as well as Mips Inc.
->  > : machines.  Is there still documentation available for these systems
->  > : that would make a port possible?
->  > 
->  > I'll have to search my email archive (which would take some doing),
->  > but someone at SGI offered to get me the sources to RISCos, or at
->  > least the device drivers.  They were donated to berkeley, who didn't
->  > integrate them into their 4.4 or 4.4lite release, was the story I was
->  > told.  Might be worth looking into.  Wouldn't help with some of the
->  > older SGI machines, but would help with the MIPS co boxes.
-> 
->      The RISCos driver source was supplied with every system, and we
-> did donate the source to Berkeley.  Most of the VME controllers were
-> common to MIPS and SGI VME systems, so most of the drivers, other than
-> graphics, would be covered.
+Chris wrote:
+:
+:I recently went to the local technical bookstore and found that AT&T
+:no longer publishes the ABI books (the blue covered books describing
+:the ELF format).  The bookstore was, thus, unable to even order them
+:for me.
+:
+:Does anybody know where to buy these books?
+:
 
-I think I can still get access to RISC/os 5.x system, maybe also old
-RISC/os 4.51 tapes.  What files should I try to look for?
+Not specifically on the ABI, but a search for "MIPS" on www.amazon.com
+gives only 4 hits, two of which are out-of-print/hard-to-find and
+probably irrelevant, and two that on the architecture only:
 
-Andy, I think you still have Resi in use, don't you?  Any driver sources
-included?
+	Mips R4000 User's Manual
+	Joseph Heinrich / Paperback / Published 1993 
+	Our Price: $44.00 
 
-  Ralf
+	Mips Risc Architecture ~ Ships in 2-3 days
+	Gerry Kane, Joe Heinrich / Paperback / Published 1991 
+	Our Price: $46.00 
+	Read more about this title... 
+
+	Mips-X Risc Microprocessor (Kluwer International Series in
+	Engineering and Computer Science) 
+	Paul Chow / Hardcover / Published 1989 
+	(Publisher Out Of Stock)
+
+	Mips Risc Architecture 
+	Published 1991 
+	(Hard to Find)
+
+The canonical place to look for MIPS ABI stuff is:
+	www.mipsabi.org
+
+The SGI specific quickstart stuff and whatever is not published
+on www.mipsabi.org is probably not publicly documented and
+I suspect not even documented much beyond the (rld etc.) source itself.
+I'll be glad to be proven wrong on this.
+-- 
+Peace, Ariel

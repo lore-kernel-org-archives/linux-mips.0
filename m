@@ -1,48 +1,47 @@
-Message-ID: <011e01c0beae$f0d12840$0deca8c0@Ulysses>
+Message-ID: <004f01c0bf41$fe823720$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20010406130958.A14083@paradigm.rfc822.org> <20010406132214.D14083@paradigm.rfc822.org> <00a401c0be8e$cfc065a0$0deca8c0@Ulysses> <20010406135849.E14083@paradigm.rfc822.org> <00cb01c0be94$7744aac0$0deca8c0@Ulysses> <20010406152836.A21459@paradigm.rfc822.org>
+References: <Pine.GSO.3.96.1010406182059.15958E-100000@delta.ds2.pg.gda.pl>
 Subject: Re: first packages for mipsel
-Date: Fri, 6 Apr 2001 17:33:23 +0200
+Date: Sat, 7 Apr 2001 11:05:56 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Florian Lohoff <flo@rfc822.org>
-Cc: debian-mips@lists.debian.org, linux-mips@oss.sgi.com
-Message-ID: <20010406153323.DZZPUkfuvjr6eauMYpqDMHu1eeujcqPiciN7fPEz0yY@z>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Cc: Florian Lohoff <flo@rfc822.org>, debian-mips@lists.debian.org, linux-mips@oss.sgi.com
+Message-ID: <20010407090556.wjRAwvpx5jsE8f3OBcshEo8Bve64GbSJtQ4Ss6kLJao@z>
 
-> > > If there is a working ll/sc emulation fine - Currently there is none
-> > > so the only way to go TODAY is sysmips.
-> >
-> > I'll work on one in the background.  It should be pretty straightforward
-> > for the uniprocessor case, but an SMP version will be messier, and
-> > possibly require a platform-dependent hook.  Of course, the same
-> > is true of sysmips()...
+Maciej W. Rozycki" <macro@ds2.pg.gda.pl> wrote:
+> On Fri, 6 Apr 2001, Kevin D. Kissell wrote:
 >
-> For SMP versions we could currently just put an "#error" in it. There has
-> to be machine dependent support as the older SGI Challenge have. So dont
-> worry on that case.
+> > What advantage would there be to using sysmips() as opposed
+> > to doing the ll/sc emulation?  It seems to me that the decode path
+> > in the kernel would be just as fast, and there would be a single
+> > "ABI" for all programs - the ll/sc instructions themselves.
+>
+>  It was discussed a few times already.  It's ugly and is an overkill for
+> UP machines -- you take at least two faults for ll/sc emulation and only a
+> single syscall for TAS.
 
-I've just glanced at the unfinished ll emulation code in the 2.4.3 baseline.
-It looks like someone was trying to do a full and precise emulation of
-the instruction as documented, which is admirable but horribly difficult.
-The trick is that one can be aggressive in clearing the lock "flip flop".
-In real CPU's for example, the flop is cleared on every exception taken.
-Emulating that alone would make for a semi-functional operation,
-at least in terms of protecting kernel threads.  One needs to do a bit
-more to cover user-level multithreading.  Stricktly speaking, one should
-search the entire address space of the executing task and tag all
-virtual pages that map to the targeted physical page as being
-non-writable, and on a write protect error clear both the ll bit and
-the protections.  On a sc, one can either do nothing or proactively
-make the pages writable.  I find the notion of the *same* task having
-a lock cell virtually aliased to be wildly improbable, and would be
-tempted to consider elimitating the reverse translation and only
-flagging the page where the ll/sc is taking place.  That would not
-be 100% correct emulation, but I would be very surprised to find
-any code that would notice.
+Depends on your point of view.  Syscalls will be faster than
+emulation on processors without LL/SC support, certainly,
+but much slower than just executing the instructions on processors
+that do support LL/SC.  Intuitively, emulation would be roughly
+2x worse for an R3K, but a syscall will be 10-100 times worse
+for an R4K.  If we gave an equal weight to both families, that
+would argue in favor of LL/SC emulation - and working for
+MIPS Technologies (where all our designs for the past
+10 years have supported LL/SC) I would consider equal
+weighting to be very generous!  ;-)
 
-            Regards,
+I've seen the hybrid proposal of having libc determine the LL/SC
+capability of the processor and either executing the instructions
+or doing the syscall as appropriate. While that would allow
+near-optimal performance on all systems, I find it troublesome,
+both on the principle that the OS should conceal hardware
+implementation details from the user, and on the practical basis
+that glibc is the last place I would want to put more CPU-specific
+cruft.  But reasonable people can disagree.
 
             Kevin K.

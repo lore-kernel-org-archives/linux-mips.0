@@ -1,79 +1,44 @@
-Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <001901bebf2d$e1951530$0a02030a@snafu>
-From: "Andrew Linfoot" <andy@derfel99.freeserve.co.uk>
-References: <19990622032859.B6955@thepuffingroup.com> <19990622152145.A1059@uni-koblenz.de> <19990623014923.A8953@thepuffingroup.com> <19990625002853.D17220@uni-koblenz.de> <002701bebf17$cd9e4fd0$0a02030a@snafu> <19990625185906.A9050@thepuffingroup.com>
-Subject: Re: File corruption
-Date: Fri, 25 Jun 1999 18:11:52 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "Roald Lygre" <roald@stavanger.sgi.com>
+Message-ID: <9906301532.ZM1963@roald.stavanger.sgi.com>
+Date: Wed, 30 Jun 1999 15:32:37 +0000
+In-Reply-To: tor@spacetec.no (Tor Arntsen)
+        "Re: IRIX Partations with HardHat Linux" (Jun 30,  3:24pm)
+References: <199906301324.PAA14782@pallas.spacetec.no>
+Subject: Re: IRIX Partations with HardHat Linux
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ulf Carlsson <ulfc@thepuffingroup.com>
+To: Tor Arntsen <tor@spacetec.no>, swerner@fcc.net
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19990625171152.8svB7aqz_xMrhICu3mh8oy5O9YN99uiqOOrGoLjo6r8@z>
+Message-ID: <19990630153237.sYxFWVl_kN_k4VMVrJtYkyDn8CekbJAKEJlJFQlOesc@z>
 
-
-
-On a couple of occasions i have lost entire directories but this was some
-time ago
------ Original Message -----
-From: Ulf Carlsson <ulfc@thepuffingroup.com>
-To: Andrew Linfoot <andy@derfel99.freeserve.co.uk>
-Cc: <linux@cthulhu.engr.sgi.com>
-Sent: Friday, June 25, 1999 5:59 PM
-Subject: Re: File corruption
-
-
-> On Fri, Jun 25, 1999 at 03:34:15PM +0100, Andrew Linfoot wrote:
-> > I have been running 2.2.1 on my indy for about 3 weeks now and have
-> > encountered problems like this, in fact i am surprised at how stable the
-box
-> > is, i have been doing some quite large builds of qt, kde and the like
-too. If
-> > this is reproducible then i would be prepared to experiment on one of my
-> > boxes.
-I have had a couple of instances where i lost complete directories, but this
-was during the first few days of running Linux on my box, i simply put it
-down to operator error!
+On Jun 30,  3:24pm, Tor Arntsen wrote:
+> Subject: Re: IRIX Partations with HardHat Linux
+> On Jun 30, 14:22, "Shane W." wrote:
+> >I do have an IRIX CD-ROM, but I do not have a SCSI CD-ROM drive.  Am I out
+of
+> >luck as far as installing SGI Linux goes?
 >
-> It doesn't crash, only file corruption..
+> The Indy can access a CD-ROM drive on another host (it's via tftp when
+> from the PROM I believe).
 >
-> > The only gripe i have is that the scsi driver breaks when i attach
-external
-> > devices, any ideas?
->
-> I have file corruption without any external devices.  It looks like the
-problems
-> appear when more than one SCSI devices are present.  You only have one
-internal
-> SCSI drive, right?
-2 drives - see below
-If i attempt to attach an external device the system just hangs during scsi
-initialisation. I think this is fixed in later kernels but i don't have cvs
-up yet so i can't move past 2.2.1.
->
-> Do you mind telling us more exactly what type of file corruption you
-suffer
-> from?  It would also help if you could attach an output from hinv, or just
-tell
-> us what hardware you have.
-CPU: MIPS-R4400 FPU<MIPS-R4400FPC> ICACHE DCACHE SCACHE
-Loading R4000 MMU routines.
-CPU revision is: 00000450
-Primary instruction cache 16kb, linesize 16 bytes)
-Primary data cache 16kb, linesize 16 bytes)
-Secondary cache sized at 1024K linesize 128
-8-bit graphics
-128MB RAM
-sda 540MB with base IRIX
-sdb 2GB with Linux.and swap
 
-an interesting point here is that /proc/cpuinfo tells me i only have an
-r4000!
 
-Andy
->
-> Regards,
-> Ulf
->
+But you still need to be able to read the IRIX OS CD (it is in efs format). So
+you need the kernel that supports efs, as Dag pointed out.
+
+-Roald
+
+
+
+-- 
+    
+---------------------------------------------------------------
+| Company: SGI Norge A/S                                      |
+| Email:   roald@sgi.com          Tlf:          +47 5184 3633 |
+| Addr:    St Olavsgt 9           Mobil:        +47 909 33 903|
+|          N-4004 Stavanger       VMail (SGI):  870-4679      |
+|          NORWAY                 VMail(ext):   67114679      |
+|                                                             |
+| SGI Norway's WWW Home Page: http://www.sgi.no               |
+---------------------------------------------------------------

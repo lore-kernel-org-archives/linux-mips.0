@@ -1,48 +1,24 @@
-Message-ID: <004b01c08c33$e7b42ee0$a3291081@mc2.chalmers.se>
-From: "Erik Aderstedt" <erik@ic.chalmers.se>
-Subject: OSLoadOptions
-Date: Thu, 1 Feb 2001 10:46:51 +0100
+Subject: Re: OGL for Indy
+Date: Fri, 2 Feb 2001 03:34:04 +0000 (GMT)
+In-Reply-To: <01020121311700.01655@localhost.localdomain> from "Brandon Barker" at Feb 01, 2001 09:31:17 PM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <E14OWz8-0005jE-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: linux-mips@oss.sgi.com
-Message-ID: <20010201094651.q9Kmd9AiZ3q-_ScDlWNJ40y9-s3V7hvrufWSBLZWrjo@z>
+To: Brandon Barker <bebarker@meginc.com>
+Cc: 'linux-mips' <linux-mips@oss.sgi.com>
+Message-ID: <20010202033404.UNCVAG44_1Gcr3I26xslBY9gOTuNIhjqmU9OmemLEeU@z>
 
-Hi!
+> one for XFree86.  This means I may have to buy IRIX, though I would much 
+> rather use Linux.  Why has SGI not provided the necessary specs/code for 3d 
+> (open GL in this case?) acceleration?
 
-I'm using kernel 2.4.0-test3 from the SimpleLinux dist on an
-Indy w/ R4400SC, booting using DHCP on an x86 RedHat 6.1
-box. Right now the boot is completely unattended, I just turn on the Indy
-and a few seconds later I'm at the single user bash prompt. To get further
-than this, I would like to pass command line options to the kernel at boot,
-and have tried setting the OSLoadOptions PROM variable.
+They have to a few people at least. However you should understand that the
+direct render/context switch stuff aside the Indy is just a glorified drawing
+machine for solid triangles. Its old. What was in its time awesome technology
+is no longer.
 
-The problem is that the kernel seems to be passed the string
-'OSLoadOptions=<my kernel boot options>', instead of just the
-boot options. At least that is what is indicated by the line
-
-Kernel command line: OSLoadOptions=init=/sbin/simpleinit
-
-during boot. At the end of this mail is a clunky patch that fixes this, but
-I'm not sure if this is the right way to go about it.
-
-/Erik
-erik@ic.chalmers.se
-
-Patch to linux/arch/mips/arc/cmdline.c of 2.4.0
-
-37c37
-<       int actr, i;
----
->       int actr, i, offset;
-48a49
->           offset = (!strncmp(prom_argv[actr], "OSLoadOptions=",14)?14:0;
-50,51c51,52
-<               strcpy(cp, prom_argv[actr]);
-<               cp += strlen(prom_argv[actr]);
----
->               strcpy(cp, prom_argv[actr] + offset);
->               cp += strlen(prom_argv[actr] + offset);
+Alan

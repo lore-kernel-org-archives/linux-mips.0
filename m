@@ -1,66 +1,90 @@
-Message-ID: <007f01c10c59$bbe8bfa0$0deca8c0@Ulysses>
+Message-ID: <001301c10e84$570805a0$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20010713133517.C1378@bacchus.dhis.org> <Pine.GSO.3.96.1010713151359.3193D-100000@delta.ds2.pg.gda.pl> <20010714130448.C6713@bacchus.dhis.org>
-Subject: Re: sti() does not work.
-Date: Sat, 14 Jul 2001 13:39:58 +0200
+References: <20010716163712.B12104@superweasel.com> <20010717032055.A1236@bacchus.dhis.org> <20010716223902.A16351@superweasel.com> <20010717050050.A1737@bacchus.dhis.org>
+Subject: Re: Linux on a 100MHz r4000 indy?
+Date: Tue, 17 Jul 2001 07:50:00 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: Thiemo Seufer <ica2_ts@csv.ica.uni-stuttgart.de>, linux-mips@oss.sgi.com
-Message-ID: <20010714113958.nhTd9Pt9-QCAVWyunyyYiv5IHSOidAreDCHq4qMq-0c@z>
+To: Ralf Baechle <ralf@oss.sgi.com>, Greg Johnson <gjohnson@superweasel.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010717055000.gtSvaowmBuWocTwExqzz798c03hADF2Yfeiv750VaMs@z>
 
-> Real wild pig hackers on R3000 were writing code which knows that in the
-> load delay slot they still have the old register value available.  So you
-> can implement var1++; var2++ as:
-> 
-> .set noreorder
-> lw $reg, var1($gp)
-> nop
-> addiu $reg, $reg, 1
-> lw $reg, var2($gp)
-> sw $reg, var1($gp)
-> addiu $reg, $reg, 1
-> sw $reg, var2($gp)
-> 
-> .common var1, 4, 4
-> .common var2, 4, 4
-> 
-> Of course only safe with interrupts disabled.  So in a sense introducing
-> the load interlock broke semantics of MIPS machine code ;-)
+I don't have access to old R4000 revision data, and I'll take your
+word for the errata applicable to rev 0422.  A am a *little* surprised
+that such early parts found their way into Indys, since the Indy was
+not the first R4000 platform (I believe that honor belongs to the
+"Crimson" graphics workstations), but it's certainly possible.
 
-Architecturally, the target register value is UNDEFINED during
-the load delay slot on a MIPS I CPU.  Anyone who coded to any
-particular assumption regarding its value was coding to a 
-specific CPU implementation.  Introducing the load interlock
-in later versions of the ISA and later implementations did not
-reach backward in time and break the old hardware.  The
-implementation-specific code still works for its specific 
-implementation.  Refining the spec did not break the code for later
-implementations - it was *always* broken for later implementations! ;-)
-
-In a less pedantic tone, there actually is an architecturally
-legal case where an assembly coder can justify the use of
-noreorder for something other than CP0 pipeline hazards.
-If what I want to do is to test a value, branch on the result,
-and modify that value regardless of whether the branch is
-taken, I can code something like:
-
-    .set noreorder
-    bltz    t0,foo
-    sra    t0,t0,2
-    .set reorder
-    <other code>
-foo:
-
-Whereas otherwise I need to either consume another
-register or replicate the shift both after the branch and
-after foo.  If I'm very very lucky, the assembler will "hoist"
-such a replicated instruction into the delay slot - a  good
-compiler back-end optimiser certainly would.  But I'm not 
-aware of any MIPS assembler that would perform that
-optimisation - certainly the GNU assembler does not.
+            Regards,
 
             Kevin K.
+
+----- Original Message -----
+From: "Ralf Baechle" <ralf@oss.sgi.com>
+To: "Greg Johnson" <gjohnson@superweasel.com>
+Cc: <linux-mips@oss.sgi.com>
+Sent: Tuesday, July 17, 2001 5:00 AM
+Subject: Re: Linux on a 100MHz r4000 indy?
+
+
+> On Mon, Jul 16, 2001 at 10:39:02PM -0400, Greg Johnson wrote:
+>
+> > CPU revision is: 00000422
+>
+> That's a really old and buggy CPU.  Kevin Kissel may correct me but I
+think
+> it's the first series shipped to customers.  Among the fun bugs:
+>
+> --------------------------------------------------------------------------
+---
+>
+> 4. R4000PC, R4000SC: An instruction sequence which contains a load which
+causes
+>    a data cache miss and a jump, where the jump instruction is that last
+>    instruction in the page and the delay slot of the jump is not currently
+>    mapped, causes the exception vector to be overwritten by the jump
+address.
+>    The R4000 will use the jump address as the exception vector.
+>
+>    Example: lw <---- data cache miss
+> noop <---- one or two Noops
+> jr <---- last instruction in the page (jump or branch in-
+>       struction)
+> --------------<---- page boundary
+> noop
+>
+>    Workaround: Jump and branch instructions should never be in the last
+loca-
+>                tion of a page.
+> 11. R4000PC, R4000SC: In the case:
+>
+> lw rA, (rn)
+> noop (or any non-conflicting instruction)
+> lw rn, (rA) (where the address in rA causes a TLB refill)
+> --------------------> end of page
+> page not mapped
+>
+>    where rn and RA are general purpose registers r0 through r31
+>
+>    This code sequence causes the second load instruction to slip due to a
+>    load use interlock. When the R4000 crosses the page boundary after the
+>    lw, it vectors to 0x8000 0000 and later causes an instruction cache
+miss.
+>    After the instruction cache miss is complete the LW causes another TLB
+>    refill. This should vector to 0x8000 0000 but instead goes to 0x8000
+0180.
+>
+> 14 (Just an update of erratum 4)
+>
+> --------------------------------------------------------------------------
+---
+>
+> There's more but I don't want to paste the whole errata document in here
+> and above bugs alone without the respective workarounds in kernel and
+tools
+> are grave bugs.
+>
+>   Ralf

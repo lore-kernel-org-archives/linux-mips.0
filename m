@@ -1,30 +1,28 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199708231754.TAA15897@informatik.uni-koblenz.de>
-Subject: Re: Kernel compile errors...
-Date: Sat, 23 Aug 1997 19:54:34 +0200 (MET DST)
-In-Reply-To: <199708231606.MAA02843@neon.ingenia.ca> from "Mike Shaver" at Aug 23, 97 12:06:02 pm
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199708290014.UAA10404@neon.ingenia.ca>
+Subject: bogomips lives
+Date: Thu, 28 Aug 1997 20:14:12 -0400 (EDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>
-Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
-Message-ID: <19970823175434.ObCACpoNcPXkLI2tKH4OYgicHev4KWfSlFXRV9yrk4A@z>
+To: Ariel Faigon <ariel@yon.engr.sgi.com>, Linux/SGI list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19970829001412.X0j2sg2B_yWXUCaGViJaL-L7IC3v_HyYXgomN9Vmdfk@z>
 
-> Thus spake Ralf Baechle:
-> > Check the version number and file dates.  Compare with current version and
-> > date.  Conclusion? ;-)
-> 
-> My binutils include:
-> -rwxr-xr-x   2 root     root       193440 Sep 20  1996 mips-linux-as
-> and the tar ball matches the one on linus.  Ditto for GCC.
-> 
-> And I get the same errors as Alex and the others.  Are there newer
-> versions?  If so, where the heck are they?
+My Indy is sitting on my desk right now, begging for me to drop Linux
+on it.  Many, _many_ thanks to Ariel and David for whatever magic they
+had to invoke to get it through customs.
 
-Well, I've never build binaries of newer versions for Intel.  Since right
-now my Indy is 10000km away and my workhorse is a Pentium I'll publish
-updates as soon as I'm finished with some more urgent things.
+I've got to run now, but I'll get Linux on it tomorrow.  And then the
+fun _really_ begins.
 
-  Ralf
+Mike
+
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>           Resident Linux bigot and kernel hacker. (OOPS!)           
+#> `If you get bitten by a bug, tough luck...the one thing I won't do  
+#> is feel sorry for you.  In fact, I might ask you to do it all over  
+#> again, just to get more information.  I'm a heartless bastard.'     
+#>                       -- Linus Torvalds (on development kernels)    

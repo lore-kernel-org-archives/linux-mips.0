@@ -1,32 +1,47 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Wed, 18 Jun 1997 05:38:42 -0700
-Message-ID: <199706181238.FAA27279@fir.engr.sgi.com>
-From: "William J. Earl" <wje@fir.engr.sgi.com>
-Subject: Re: Good news: no more begging for HW
-In-Reply-To: <9706171700.ZM11546@blammo.engr.sgi.com>
-References: <199706171710.MAA15321@athena.nuclecu.unam.mx>
-	<9706171053.ZM9344@sgi.com>
-	<9706171700.ZM11546@blammo.engr.sgi.com>
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199706181748.KAA26985@yon.engr.sgi.com>
+Subject: Re: (Fwd) Re: SGI machine
+Date: Wed, 18 Jun 1997 10:48:56 -0700 (PDT)
+In-Reply-To: <33A78F2E.794B@munich.sgi.com> from "Martin Knoblauch" at Jun 18, 97 09:33:02 am
+Reply-To: ariel@sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: John Wiederhirn <jwiede@blammo.engr.sgi.com>
-Cc: linux@morgaine.engr.sgi.com
-Message-ID: <19970618123842.Q8nRVPMJ6KFvUuEu0TQZ_5krI_VKGdV1Fz_KbVVmLsw@z>
+To: Martin Knoblauch <knobi@munich.sgi.com>
+Cc: carlson@heaven.newport.sgi.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19970618174856.-9yRp2ZZ8jaaVlYw9lk-zsPJSdvF6qrgZgxyzFHzhnw@z>
 
-John Wiederhirn writes:
- > On Jun 17, 10:53am, richard offer wrote:
- > > * $ from miguel@nuclecu.unam.mx at "17-Jun:12:10pm" | sed "1,$s/^/* /"
- > > *
- > > * 4. Would it be possible for a free software company to redistribute
- > > *    the SGI's X server?  In that case, we could concentrate on getting
- > > *    the IRIX emulation as good as possible and just use the SGI X
- > > *    server and let Red Hat/Debian/GNU ship the cd with that binary.
- > >
- > > This would be my preferred solution, but I've had many an argument on this
- > > subject that I felt very dubious about bringing it up again.
-...
-     I talked with David Miller about this area last year.  I suspect that
-one can run any of the cards with the firmware loaded by the PROM, in "dumb"
-mode.  One would basically render by hand, or with very limited acceleration
-and just DMA the data into the frame buffer (since the frame buffer is generally
-not memory-mapped).  The result would not be really fast, but it would be functional.
-I am travelling today, but I will check tomorrow.
+:
+:Christopher W. Carlson wrote:
+:> 
+:> Just thought I'd pass on the response that I received from
+:> Richard Stallman.
+:> 
+:> --- Forwarded mail from Richard Stallman <rms@gnu.ai.mit.edu>
+:> 
+:> Date: Tue, 17 Jun 1997 15:17:06 -0400
+:> From: Richard Stallman <rms@gnu.ai.mit.edu>
+:> To: carlson
+:> Subject: Re: SGI machine
+:> 
+:> We now have free systems running on all our machines, so we
+:> could not accept a machine that runs a non-free system like IRIX.
+:>
+:
+: So, does this mean they are no longer interested in supporting
+:GNU stuff on non-free systems?
+: 
+
+Hi Linuxies,
+
+As much as I admire rms, his amazing life achievements,
+and the free software movement he created, let's not accept it
+"as is" when he talks in his strong opinionated style in the
+name of others.  I happen to know two major FSF contributors
+that would love to get SGI hardware and make GNU stuff work
+on IRIX _or_ Linux.   Please keep emailing me leads :-)
+
+-- 
+Peace, Ariel

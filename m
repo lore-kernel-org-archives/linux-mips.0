@@ -4,14 +4,27 @@ MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Date: Tue, 5 Apr 2005 09:11:24 +0100
-Message-ID: <CEA5455795C8AA44AA1E18EF32379B2105CF5E@exterity-serv1.Exterity.local>
+Date: Tue, 5 Apr 2005 16:28:37 +0100
+Message-ID: <CEA5455795C8AA44AA1E18EF32379B2105CF93@exterity-serv1.Exterity.local>
 From: "Gill Robles-Thome" <gill.robles@exterity.co.uk>
 Return-Path: <gill.robles@exterity.co.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20050405081124.xPrtScYFAgsx5tblYZuCQ9P_cUbqK_I3_IoEmKIRuDU@z>
+Message-ID: <20050405152837.5kirGZYlU3o6nQW5EuAhmCWbmeZ1VMpglHzpUPw8fE0@z>
+
+...we found the cause of the problem!  Need to select "Support for
+64-bit physical address space" option!
+
+Gill
+
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org
+[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Gill Robles-Thome
+Sent: 05 April 2005 09:11
+To: linux-mips@linux-mips.org
+Subject: RE: No PCI memory response
+
 
 Hi -
 
@@ -32,7 +45,7 @@ Subject: Re: No PCI memory response
 
 
 Gill wrote:
-> Can anyone help?  We're trying to talk to a RealTek RTL8139 device 
+> Can anyone help?  We're trying to talk to a RealTek RTL8139 device
 > across the PCI bus, and, although linux can access configuration 
 > registers on the device, it does not access memory space correctly, 
 > and we are unable to read back any sensible values from the RTL8139 

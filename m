@@ -1,49 +1,23 @@
-Message-ID: <015701c0c157$3595d020$056aaac0@kjlin>
-From: "kjlin" <kj.lin@viditec-netmedia.com.tw>
-References: <OF82A2E51E.E2ACCD3B-ON88256A25.007F33AB@taec.toshiba.com> <20010408134919.A18546@stud.fee.vutbr.cz>
-Subject: Re: ucLinux for MIPS
-Date: Tue, 10 Apr 2001 08:42:53 +0800
+Message-ID: <001101c0c1cd$87d4caa0$2301000a@rillanon.org>
+Reply-To: "Bruce Balden" <balden@lineo.com>
+From: "Bruce Balden" <balden@lineo.com>
+References: <20010410160028.C14758@buzz.ichilton.local>
+Subject: GDB/JTAG support
+Date: Tue, 10 Apr 2001 07:50:04 -0700
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: David Jez <dave.jez@seznam.cz>, Lisa.Hsu@taec.toshiba.com
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010410004253.OVE6EjjhUo5glr9FjbeeYkSaD3ZOtJVXsxJUvxxa9vs@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010410145004.iU5mB1g5ZSHV5lr3sWY99Nqxsh3aZMcUhrN-xqTu9uA@z>
 
-It seems the original linux-2.4.x code and had not yet been patched.
-From the source tree on the web site, 
-the only one architecture ucLinux supports seems to be the m68k.
-Dose someone else know more information about ucLinux on MIPS?
-Thanx!
+Hi.
 
------ Original Message ----- 
-From: "David Jez" <dave.jez@seznam.cz>
-To: <Lisa.Hsu@taec.toshiba.com>
-Cc: <linux-mips@oss.sgi.com>
-Sent: Sunday, April 08, 2001 7:49 PM
-Subject: Re: ucLinux for MIPS
+Can someone tell me the state of gdb/JTAG support for MIPS processors?
+
+Thanks,
 
 
-> > Hi, All
->   Hi Lisa,
-> 
-> > Does anybody know where can I find the uCLinux release and patch  which
-> > supports MIPS?    (The chip that I am using has MMU but is disabled)
-> > 
-> > Thanks,
->   I find it here:
->   http://cvs.uclinux.org/cgi-bin/cvsweb/uClinux-2.4.x/arch/mips/
-> 
->   (You can try download CVS verios of uClinux from cvs.uclinux.org or
-> www.uclinux.org. It may supports MIPS architecture)
-> 
-> > Lisa
->   Best Regards,
-> -- 
-> -------------------------------------------------------
->   David "Dave" Jez                Brno, CZ, Europe
->  E-mail: dave.jez@seznam.cz
-> PGP key: finger xjezda00@fest.stud.fee.vutbr.cz
-> ---------=[ ~EOF ]=------------------------------------
+Bruce Balden
+balden@lineo.com

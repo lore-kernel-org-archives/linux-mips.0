@@ -1,61 +1,38 @@
-Date: Tue, 17 Jul 2001 21:05:33 +0100 (IST)
-From: Dave Airlie <airlied@csn.ul.ie>
-Subject: Re: [patch] 2.4.5: DECstation LK201 keyboard non-functional
-In-Reply-To: <Pine.GSO.3.96.1010716195815.12988F-100000@delta.ds2.pg.gda.pl>
-Message-ID: <Pine.LNX.4.32.0107172102470.3817-100000@skynet>
+Message-ID: <012501c10f01$d5fd0f40$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <1114092660.995374763@[192.168.1.117]>
+Subject: Re: MIPS processor identification register
+Date: Tue, 17 Jul 2001 22:48:20 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: Harald Koerfgen <hkoerfg@web.de>, Ralf Baechle <ralf@uni-koblenz.de>, linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20010717200533.rfiWzPt96NnrMyG00h4Rx04yeefjd9XcELKPHIf8RAo@z>
+To: Narendra Sankar <naren@clearwaternetworks.com>, linux-mips@oss.sgi.com
+Message-ID: <20010717204820.QZuh3FbCYY-bDx6tnp3mrnJTp2ZGxkwVirabWixpaM0@z>
+
+There is no list that is both public and complete.   MIPS issues
+PRID values to MIPS licensees, but has no control over how,
+when and whether the associated processors are commercialized,
+and does not publish the full list of registered values.
+
+            Kevin K.
+
+----- Original Message -----
+From: "Narendra Sankar" <naren@clearwaternetworks.com>
+To: <linux-mips@oss.sgi.com>
+Sent: Tuesday, July 17, 2001 9:59 PM
+Subject: MIPS processor identification register
 
 
-Well that file you've moved is still a DEC specific file .. all the arch
-non-specific stuff is in drivers/char/dz.c and drivers/tc/zs.c already..
-the decserial.c file does nothing for any other arch but the DECstation..
-
-I'd rather it was fixed with the serial.c file in the old place... but
-hey I'm not exactly contributing a fix here so feel free to ignore this
-rant :-)
-
-Dave.
-
-
-
-On Mon, 16 Jul 2001, Maciej W. Rozycki wrote:
-
-> Hi,
+> hi everyone
+> I could not find an answer to this question in the archives and hence am
+> trying here -
 >
->  Since 2.4.5 there is a problem with the LK201 driver.  The driver gets
-> never registered.  It happens because chr_dev_init() got converted to
-> __initcall() and is no longer invoked before rs_init() for the DECstation
-> (chr_dev_init() calls tty_init() which registers the LK201 hook via
-> kbd_init()).
+> Is there a complete list somewhere of the different PRID (CP0 register 15)
+> values across the entire MIPS family - including all the different
+vendors?
 >
->  The following patch fixes the problem.  It makes the DECstation's object
-> file that provides rs_init() be included in the DRIVERS list as SERIAL.
-> It is on the CORE_FILES list of Makefile targets now.  The patch looks
-> bigger than it really is -- apart from trivial Makefile changes, it's
-> merely an arch/mips/dec/serial.c to drivers/char/decserial.c rename.
->
->  Note while putting a file away from an arch-specific tree into a generic
-> driver one might seem a bad move, it really is the right thing in this
-> case.  The point is the decserial.c device is not arch-specific at all,
-> i.e. no more than the 8250 serial.c device is.  DEC used the devices in a
-> number of their systems, including DECstations (onboard SCC and DZ11 and
-> TURBOchannel PMAC-A DZ11 devices), DEC 3000 Alpha systems (onboard SCC and
-> PMAC-A devices) and VAXstations (onboard DZ11 and PMAC-A devices).  Thus I
-> believe they should be treated as generic devices, especially as the VAX
-> and the DEC 3000 Alpha (to some extent) Linux ports are underway.
->
->  Please apply the patch.
->
->   Maciej
->
->
-
--- 
-David Airlie, Software Engineer
-http://www.skynet.ie/~airlied / airlied@skynet.ie
-pam_smb / Linux DecStation / Linux VAX / ILUG person
+> Thanks
+> Naren
+> Clearwater Networks

@@ -1,65 +1,99 @@
-From: ezsooco7jle@aol.com
-Message-ID: <000033993769$00003745$00007107@mail.www.yu>
-Subject: Looking For A Great Home Based Business?
-Date: Sat, 05 Aug 2000 04:41:09 -0400
+Date: Fri, 11 Aug 2000 00:50:51 -0700
+From: Shrijeet Mukherjee <shm@cthulhu.engr.sgi.com>
+Subject: Re: [linux-fbdev] SGI VW 540, fbdev and pot pourii of faults and
+ evidence..:-)
+In-Reply-To: <Pine.SGI.4.10.10008091908170.26870-100000@tigger.ccs.ornl.gov>
+Message-ID: <Pine.SGI.4.21.0008110042220.232700-100000@tantrik.engr.sgi.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Undisclosed.Recipients@sv1.nl-zeus.or.jp
-Message-ID: <20000805084109.DtGaPxp1pczN1pq2cDooAvmKMCpDfCT93Xb0EuzQ9Jo@z>
+Cc: linux-fbdev@vuser.vu.union.edu, Linux porting team <linux@cthulhu.engr.sgi.com>
+Message-ID: <20000811075051._-zpv-tJb9vFlKTUn7HC5D5Z9HH9UIMEviDSZ9wHLkA@z>
 
-Tired of the 40 X 40 X 40 Plan? You know: 
+On Wed, 9 Aug 2000 philloc@tigger.ccs.ornl.gov wrote:
 
-Work 40 hours per week for someone else for 40 years, then receive a 40% reduction in pay! 
+>	Hi,
+>> 
+>> > I would also like to ask, if SGI is likely to make the hardware specs OSS
+>> > (for cobalt etc.), so that those with the skill (this is not my forte, but
+>> > I will try...), can stabilise this otherwise competent port.
+>> 
+>> Nope. SGI no longer supports Visual Workstations with linux. I don't even
+>> know if they support Visual Workstatiosn period. It would be nice if they
+>> did release the specs anyways :-)
+>	They support it on WindozeNT etc... I was toying with the idea of 
+>running VMware just to see what the X server will do under NT.
+>
 
-Is working for a "boss" too demeaning and unrewarding? 
+So just to make the statement sound right. SGI never officially supported
+linux on the Visual Workstation 320. The current line of the Visual
+Workstation family, the 230, 330 and 530 all do and will support highly
+accelerated OpenGL under linux.
 
-Are you sick of depending on a job with too little pay and too many hours with no personal reward and even less future?
+>
+>	Anyone from SGI care to comment on why SGI has not released the
+>specs to reasonable attention, since they are unable to help port? 
+>
+>As complex as the hardware is, the SGI guys did a pretty good job on the
+>"hacks" they put in, so I am sure the specs would make it a breeze to port
+>:-)
+>
 
-If you're determined to retire in the next 2 - 5 years with enough income to have REAL Financial Independence and Freedom, and are not afraid to work for it, I can help you.
+Actually a "port" is not that simple. The real problem for opening up the
+driver port that we worked on, is that there are critical parts of SGI
+driver mode IP in there that we are not ready to open source at this
+point. Given that, the software is the best "spec" and documentation we
+have at this point .. this is a real issue.
 
-I am looking for people with a Good Work Ethic and extraordinary Desire to Earn at Least $10,000 per Month Working From Home!
+>> 
+>> > 1. After boot , no matter what video mode one is in, the text console is
+>> > zippy. After using X (or changing modes using fbset) the text scrolling is
+>> > *painfully* slow. There is no apparent difference in the kernel mechanism
+>> > when switching, so is it just the boot state that works?
+>> 
+>> Which X server?  Sounds like the X server is doing the naughty.
+>	Oh not even X. X is fine in fact (with the exception it shivers
+>and is tinted green in 32bit 1600x1200, and tinted green in 32bit 
+>1280x1024 , but fine in 8-16bit for all modes).
+>
 
-NO SPECIAL SKILLS OR EXPERIENCE REQUIRED. We will give you all the training and personal support you will need to ensure your success!
-
-This LEGITIMATE HOME-BASED INCOME OPPORTUNITY can put you back in Control of your Time, Your Finances, and Your Life!
-
-If you've tried other opportunities in the past that have failed to live up to their promises, THIS IS DIFFERENT THAN ANYTHING ELSE YOU'VE SEEN!
-
-THIS IS NOT A GET-RICH-QUICK SCHEME!
-
-YOUR FINANCIAL PAST DOES NOT HAVE TO BE YOUR FINANCIAL FUTURE!
-
-CALL ONLY IF YOU ARE SERIOUS!
-
-1-800-457-0481 (Free, 24 hour, 2 minute recorded message)
-
-DON'T GO TO SLEEP WITHOUT LISTENING TO THIS!
-
-"All our dreams can come true - if we have the courage to pursue them" - Walt Disney
-
-
-
-To be removed from future mailings, send an email to:  nope_02@yahoo.com and type "Remove" in the subject line.
-
-
-
-
-
-
-
-
-
+I remember there being some issue about stuff being ABGR or some strange
+format in some cases, which was screwing things up. Is this happening only
+under WindowMaker or was it Enlightenment .. some window manager was
+causing problems since it used X BLT's ..
 
 
+>	The problems is: 
+>
+>	machine boots. Text scrolling fine, no matter what I set it to
+>in the kernel (in 8bit colour that is. 16bit and I lose the fonts). If you
+>then fbset to ANY mode (say 800x600x8), and then do "ls -l", it is very
+>slow. Now I have stared at the kernel for a bit, and the only thing that
+>strikes me, is that on boot the frambuffer is initialised etc.., and it is
+>possible that the hardware is in some sort of "bios" mode, which plays
+>nice with the framebuffer. After boot, we switch the mode etc... but
+>something is not tripped, or the kernel/video uses a different set of
+>routines.
+>
+>	I suppose I should ask, anyone else see this behaviour?
+>
+>> 
+>> > 	Empirical observations (i.e. writing known patterns to the
+>> > /dev/fb0 device) indicate that SGI reverse RGB for 888 format, compared to
+>> > RGB565. That is red offset=0, green=8,blue=16 rather than red=24 etc.. I
+>> > have reversed the assignment in the "var" structure (in sgivwfb_set_var )
+>> > and in setcolreg the offsets are used, but to no effect. What else needs
+>> > changing?
+>> 
 
+Hope this helps some. 
 
-
-
-
-Tired of the 40 X 40 X 40 Plan? You know: 
-
-Work 40 hours per week for someone else for 40 years, then receive a 40% reduction in pay! 
-
-Is working for a "boss" too demeaning and unrewarding? 
-
-Are you sick of depending on a job with too little pay and too many hours with no personal reward and even less future?
+-- 
+--------------------------------------------------------------------------
+Shrijeet Mukherjee,    		        MTS Advanced Graphics, SGI
+http://reality.sgi.com/shm_engr     	phone: 650-933-5312
+email: shm@sgi.com, shrijeet@hotmail.com
+--------------------------------------------------------------------------
+Where there is a will, there is a way. If a way cannot be found, 
+it is the will that is suspect ..                                   -- shm 

@@ -1,158 +1,47 @@
-From: "Gill" <gill.robles@exterity.co.uk>
-Subject: Page fault question
-Date: Wed, 24 Sep 2003 08:36:38 +0100
-Message-ID: <000901c3826e$9703adc0$4300a8c2@gillpc>
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000A_01C38276.F8C815C0"
-Return-Path: <gill.robles@exterity.co.uk>
+From: "Guangxing Zhang" <guangxing@ict.ac.cn>
+Subject: help, question on pci communication!
+Mime-Version: 1.0
+Content-Type: text/plain;
+      charset="GB2312"
+Content-Transfer-Encoding: 8BIT
+Date: Wed, 24 Sep 2003 16:29:32 +0800
+Message-ID: <20030924082911Z8225460-1272+6248@linux-mips.org>
+Return-Path: <guangxing@ict.ac.cn>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030924073638.sIxu0n8b_N7r3NMpTfEG3guCw6E0uCjNYGPtSqIM9Qk@z>
+To: Fuxin Zhang <fxzhang@ict.ac.cn>
+Cc: linux-mips@linux-mips.orglinux-mips@linux-mips.org, angela <jhyang@ict.ac.cn>
+Message-ID: <20030924082932.OyojVsw5_HuKO1ZdarAXXlraKlrZErVThA9jZXDj49s@z>
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_000A_01C38276.F8C815C0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Hello -
-
-=20
-
-I'm currently porting vmlinux from NEC's EMMA2L platform to EMMA2.  The
-problem I'm having is that linux hangs when it attempts to do its first =
-page
-fault: the page fault handler is successfully called, the call to
-handle_mm_fault returns 2 (major fault).but then code execution appears =
-to
-just stop.  Linux is not completely dead, however - it still responds to =
-a
-timer interrupt.
-
-=20
-
-As the code for handling page faults is standard code, and TLB hardware
-should be the same on EMMA2 as on EMMA2L (where it works!), I don't
-understand what's gone wrong!  Does anyone have any ideas?
-
-=20
-
-Thanks for your help,
-
-=20
-
-=20
-
-Gill
-
-
-------=_NextPart_000_000A_01C38276.F8C815C0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-
-
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
-
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:595.3pt 841.9pt;
-	margin:72.0pt 90.0pt 72.0pt 90.0pt;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-GB link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hello &#8211;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>I&#8217;m currently porting vmlinux from NEC&#8217;s =
-EMMA2L
-platform to EMMA2.&nbsp; The problem I&#8217;m having is that linux =
-hangs when
-it attempts to do its first page fault: the page fault handler is =
-successfully
-called, the call to handle_mm_fault returns 2 (major fault)&#8230;but =
-then code
-execution appears to just stop.&nbsp; Linux is not completely dead, =
-however &#8211;
-it still responds to a timer interrupt.</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>As the code for handling page faults is standard =
-code, and
-TLB hardware should be the same on EMMA2 as on EMMA2L (where it works!), =
-I don&#8217;t
-understand what&#8217;s gone wrong!&nbsp; Does anyone have any =
-ideas?</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks for your help,</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Gill</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_000A_01C38276.F8C815C0--
+Hi, Fuxin and everyone see this mail,
+    In linux world ,newbies always like to ask and the veterans will always be enthusiastic.:)~~
+    Now there is a "ask", of course i am a newbie. 
+    Follow is the  architecture  which we are working on.
+    Now i want to transfer the data from the "sb1250" to mcp750 through the PCI bus with the help of 21555 bridge.
+I want to implement it in kernel module.Although knowing "use the force ,read source",but i really do not know
+how and where to begin.
+    Is there any advice on it ? How to implement the communication through PCI (or PCI-to-PCI bridge) in kernel 
+moudle?
+    Any help will be appreciated!Thank in advance!
+  
+                      -------------
+	                  |  MCP 750  |  (Power PC)
+                      -------------
+                            |
+　	    -------------------------------------------CPCI
+                         |
+             ---------------|--------------------------------    
+             |      --------|-----                         |
+             |      |Intel 21555 |(PCI-TO-PCI Bridge)      |
+             |      --------------                         |
+             |        |                					   |	
+             |      --------(PCI bus)					   |
+			 |          |                                  |
+			 |       --------                              |
+			 |		 |SB1250|(CPU)                         |
+			 |       --------                              |
+             ----------------------------------------------           
+　　　　　　　　Guangxing Zhang
+　　　　　　　　guangxing@ict.ac.cn
+			    2003-09-24 16:03:04
+　　　　　　　　　　

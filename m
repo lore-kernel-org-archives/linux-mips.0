@@ -1,8 +1,8 @@
-Message-ID: <011a01c30aab$b7748ce0$10eca8c0@grendel>
+Message-ID: <004201c30af7$524fb0a0$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Pine.LNX.4.44.0304241613190.18155-100000@frank.harvard.edu>
+References: <Pine.LNX.4.44.0304241839110.19067-100000@frank.harvard.edu>
 Subject: Re: NCD900 port?
-Date: Thu, 24 Apr 2003 23:51:41 +0200
+Date: Fri, 25 Apr 2003 08:53:02 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -10,27 +10,30 @@ Content-Transfer-Encoding: 7bit
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Chip Coldwell <coldwell@frank.harvard.edu>, linux-mips@linux-mips.org
-Message-ID: <20030424215141.cBdaqC_YWImF_Ow7reeial9m-xNitgufhiWrHtXmGto@z>
+To: Chip Coldwell <coldwell@frank.harvard.edu>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20030425065302.QgCEpm193h60gr2YXk4mMP2zTKoAlOHtMYCCtZhCqIs@z>
 
-> I'm facing a ~$1K site license charge for NCD's NCBridge software for
-> their NC948 X Terminals, and since my site consists of exactly three
-> of these things that I bought for less than $250 each I'm balking a
-> bit.
+> On Thu, 24 Apr 2003, Chip Coldwell wrote:
 > 
-> The NC948 consists of a 165 MHz QED RM5231, S3 Savage4 graphics
-> controller, and an AMD PCnet NIC of some sort.  It doesn't seem like
-> there's anything in that set that Linux or XFree86 wouldn't be happy
-> to run.
+> > On Thu, 24 Apr 2003, Kevin D. Kissell wrote:
+> > > 
+> > > What PCI bridge is being used?  Galileo?
+> > 
+> > Good question.  Short answer: I don't know.  I'll pry off the hood
+> > and take a peek at what's on the board, unless this is something that
+> > shares a die with the CPU.
+> 
+> It was easy to identify once I took off the cover.  The PCI bridge is
+> made by V3 Semiconductor (now a part of QuickLogic?), part number
+> V32OUSC-75LP (Rev. B1):
+> 
+> http://www.quicklogic.com/home.asp?PageID=235&sMenuID=126
+> 
+> Is this the one called "Galileo"?
 
-What PCI bridge is being used?  Galileo?
+No, Galileo is/was a different company.  So you may not be able
+to recycle as much existing code as you might have otherwise, but 
+at least you've got some documentation for it.
 
-> To be completely explicit what I'm proposing is to run Linux on the X
-> Terminal (as opposed to the server that provides boot image, xdm,
-> etc.).  My question is: has anybody done it or does anybody know a
-> reason why it can't be done?
-
-I think it's probably doable, but if you want two reasons 
-why it might not be, I'd say they would be:
-1) Undocumented/unsupported PCI or other interface
-2) Not enough RAM
+            Kevin K.

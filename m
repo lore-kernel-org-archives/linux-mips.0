@@ -1,52 +1,42 @@
-Received: from murphy.dk (brm@brian.localnet [10.0.0.2])
-	by valis.localnet (8.12.7/8.12.7/Debian-2) with ESMTP id h61LWZ9g009024
-	for <linux-mips@linux-mips.org>; Tue, 1 Jul 2003 23:32:35 +0200
-Message-ID: <3F01FDF3.1090105@murphy.dk>
-Date: Tue, 01 Jul 2003 23:32:35 +0200
-From: Brian Murphy <brian@murphy.dk>
+Message-ID: <002401c34200$0323fff0$d017a8c0@pc208>
+From: "smills_ho" <smills_ho@coventive.com>
+References: <200306031428.48675.julian@jusst.de>
+Subject: Re: rootfs for vr4181a
+Date: Fri, 4 Jul 2003 15:43:48 +0800
 MIME-Version: 1.0
-Subject: Re: 2.5 crash on boot
-References: <3F01CB57.7090408@murphy.dk> <3F01CD50.49F34BAC@broadcom.com>
-In-Reply-To: <3F01CD50.49F34BAC@broadcom.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <brian@murphy.dk>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Return-Path: <smills_ho@coventive.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20030701213235.wCyVSmKerzt46-aJVpwVeBjyBLRY5LTkhy02_tIaUuI@z>
+To: Julian Scheel <julian@jusst.de>, linux-mips@linux-mips.org
+Message-ID: <20030704074348.Dkxq2xFqnFeFHXtI3l22i78x2U35PQe_AcUrrE4f58w@z>
 
-Kip Walker wrote:
+Hi Julian,
+    What kernel version do you use? 2.4.2 or higher ?
+Can it work about ramdisk ?
 
->This may be related to something I just found -- in pmd_populate_kernel,
->a physical address is installed in the pmd instead of a virtual
->address.  The patch I sent Ralf 30 minutes ago is attached :-)
+Regards,
+
+Jeff
+----- Original Message -----
+From: "Julian Scheel" <julian@jusst.de>
+To: <linux-mips@linux-mips.org>
+Sent: Tuesday, June 03, 2003 8:28 PM
+Subject: rootfs for vr4181a
+
+
+> Hey all,
 >
->Kip
+> I am searching for a rootfs which can be used with a NEC VR4181A and can
+be
+> mounted over NFS (shouldn't need any special things, should it?)
+> Has someone such a rootfs - or can give me a link where to find it - or a
+link
+> to a description how to do it myself?
 >
->  
+> --
+> Grüße,
+> Julian
 >
-Now (with the latest source) I get:
-
-kjournald starting.  Commit interval 5 
-seconds                                 
-EXT3-fs: mounted filesystem with ordered data 
-mode.                            
-VFS: Mounted root (ext3 filesystem) 
-readonly.                                  
-Freeing unused kernel memory: 88k 
-freed                                        
-Adding 131532k swap on /dev/hda1.  Priority:-1 
-extents:1                       
-EXT3 FS 2.4-0.9.16, 02 Dec 2001 on hda2, internal 
-journal                      
-mount: Exception at [<800e5650>] 
-(800e5830)                                    
-mount: Exception at [<800e5650>] 
-(800e5830)                                    
-mount: Exception at [<800e5650>] 
-(800e5830)                                    
- 
-The error is in __copy_user (both_aligned), closer and closer...
-
-/Brian

@@ -1,22 +1,74 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@Julia.DE>
-Message-ID: <199705281504.RAA31666@kernel.panic.julia.de>
-Subject: Re: gmake?
-Date: Wed, 28 May 1997 17:04:30 +0200 (MET DST)
-In-Reply-To: <199705281444.KAA28334@neon.ingenia.ca> from "Mike Shaver" at May 28, 97 10:44:50 am
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199705281517.IAA10342@yon.engr.sgi.com>
+Subject: hardware independent hinv
+Date: Wed, 28 May 1997 08:17:44 -0700 (PDT)
+Reply-To: ariel@sgi.com (Ariel Faigon)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>
-Cc: ralf@Julia.DE, linux@cthulhu.engr.sgi.com
-Message-ID: <19970528150430.w6YklFRafCvau2KFEOT9e85J_72iJistEF7RFc6ywgU@z>
+To: linux@yon.engr.sgi.com
+Message-ID: <19970528151744.t9RnE26-zsJ7vtQ3ANaYomQeKVzHYgSt1ypAPkcZ4mI@z>
 
-Hi,
+Just forwarding since it sounds someone hopes that Linux/MIPS
+will some day have a HW independent hinv... - Ariel
 
-> (Still don't have the 2.1.{3[789],4[01]} source tree, hint, hint. =) )
+----- Forwarded message from Dave Olson -----
 
-Uhh, ahh...  I think I can upload it on Friday.  .41? *grmpf* ...
-One to go ...
+From olson@anchor  Mon May 12 13:50:21 1997
+Date: Mon, 12 May 1997 13:50:18 -0700
+From: olson@anchor (Dave Olson)
+Message-Id: <199705122050.NAA26767@anchor.engr.sgi.com>
+To: olson@anchor (Dave Olson), scotth@sgi.com
+Subject: Re: missing machfile
+Cc: swmgr@swmgr, breyer@swmgr, ariel@cthulhu
+References: <199705121525.IAA23143@swmgr.engr.sgi.com>
+    <199705121714.KAA23773@anchor.engr.sgi.com>
+    <199705121854.LAA18312@anchor.engr.sgi.com>
 
-  Ralf
+|  I would assume that hinv is hardware-dependent, because of the
+|  mapping issues?  Or is it table driven off of an analogue of the machtab?
+
+Still all compiled in.  Bug/rfe open for years now about making it table
+driven.
+
+|  Unfortunately, nothing better is generally available across
+|  platforms and releases.
+
+Yes, and that's something that would be nice to fix.  Maybe linux will
+do it, and we can copy them.
+
+|  D> Lots, for any non-trivial app.  They don't have to, but often want to.
+|  
+|  ???  Non-trivial as in "big and powerful", or as in "gets close to
+|  the hardware"?  I would argue that emacs and perl both fit the
+
+Both/either.  Not all  big apps, of course.
+
+|  I was looking at the options to uname, specifically "-p".  Based
+|  upon the man page, shouldn't `uname -p` return "mips3" instead of
+|  "mips" for my IP22?  That is one obvious meaning for:
+
+Yes, but then you break even more of the configure scripts.  Again,
+a no-win situation.
+
+|  I was just curious is there was somehow we could make life easier
+|  for configure scripts to port software for IRIX...  On the other
+|  hand, we generally only get bad comments about /bin/install, and at
+|  least we *don't* get comments like:
+
+|  # AIX cpp loses on an empty file, so make sure it contains at least a newline.
+Using cpp is a horrible solution...
+
+|  It is hard to add functionality without breaking stuff.
+
+A programmer's lament, if I ever heard one!
+
+Dave Olson, Silicon Graphics   Guru and busybody at large
+http://reality.sgi.com/olson   olson@sgi.com
+
+----- End of forwarded message from Dave Olson -----
+
+-- 
+Peace, Ariel

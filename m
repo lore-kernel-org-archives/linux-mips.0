@@ -1,36 +1,49 @@
-Received: from [127.0.0.1] (really [62.195.248.222])
-          by amsfep18-int.chello.nl
-          (InterMail vM.6.01.04.01 201-2131-118-101-20041129) with ESMTP
-          id <20050127220035.CFM27281.amsfep18-int.chello.nl@[127.0.0.1]>
-          for <linux-mips@linux-mips.org>; Thu, 27 Jan 2005 23:00:35 +0100
-Message-ID: <41F96491.6070101@amsat.org>
-Date: Thu, 27 Jan 2005 23:00:49 +0100
-From: Jeroen Vreeken <pe1rxq@amsat.org>
+Received: from acting (exchange01.skystream.com [63.89.190.81])
+	by sarang.flyduck.com (8.12.10/8.12.5) with SMTP id j0RNonWV017979
+	for <linux-mips@linux-mips.org>; Thu, 27 Jan 2005 15:50:49 -0800
+Message-ID: <004201c504cb$d43bacc0$1202a8c0@acting>
+From: "Ho Lee" <flylist@linuxkernel.net>
+References: <41F8688A.24C5725C@procsys.com>
+Subject: Re: Davicom driver support in pmon
+Date: Thu, 27 Jan 2005 15:56:32 -0800
 MIME-Version: 1.0
-Subject: Re: [PATCH] ADM5120 for 2.6.10
-References: <E1CuHFU-0000eI-DY@real.realitydiluted.com>
-In-Reply-To: <E1CuHFU-0000eI-DY@real.realitydiluted.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	format=flowed;
+	charset="iso-8859-1";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Return-Path: <pe1rxq@amsat.org>
+Return-Path: <flylist@linuxkernel.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20050127220049.JUQB4TgAzPlM8Yk5L0eIindWsZfjkZOQ-0l2wlrwuj8@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20050127235632.Orvo2Be6LP_pdIK7U9oqGzAXhtXkiNbmWC1sPl4D-44@z>
 
-sjhill@realitydiluted.com wrote:
 
->You should be talking to ADMTek about being allowed to post this code
->then. Otherwise, it should not be not be on the list.
->  
+Once I did in other platform. Did you set the valid MAC address
+to ID registers starting from I/O base + 0xc0?
+
+-- Ho
+
+----- Original Message ----- 
+From: "priya" <priya@procsys.com>
+To: <linux-mips@linux-mips.org>
+Sent: Wednesday, January 26, 2005 8:05 PM
+Subject: Davicom driver support in pmon
+
+
+> Hi,
+> I have implemented a davicom driver on
+> the same lines as rtl driver in pmon for
+> a customized mips platform - but iam not
+> able to set the mac ID. After the init
+> routine  the driver seem to have has
+> received a multicaste frame. This i
+> could verify by putting sufficient
+> prints. After this nothing happens. I
+> guess the mac address is also not set
+> properly. Has any one implemented a
+> davicom driver in pmon before??
+> 
+> thanks,
+> priya
 >
-I am confident I am allowed to post the code. It is published publicly 
-on the web and the blurb while irritating (which is why I want it 
-changed) does mention that you are excepted from the mentioned 
-restrictions if you have the appropriate license agreement.
-Since there is no doubt this code hase been distributed under the GPL I 
-have such a license.
-Btw I did contact admtek to ask for formal approval to change it to 
-something less scary.
-
-Jeroen

@@ -1,36 +1,39 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Tue, 13 Aug 1996 04:45:56 -0700
-Message-ID: <199608131145.EAA01442@neteng.engr.sgi.com>
-From: "David S. Miller" <dm@neteng.engr.sgi.com>
-In-reply-to: <199608122259.PAA28318@aa5b.engr.sgi.com> (nigel@aa5b)
+From: "Greg Chesson" <greg@xtp.engr.sgi.com>
+Message-ID: <9608130945.ZM7238@xtp.engr.sgi.com>
+Date: Tue, 13 Aug 1996 09:45:44 -0700
+In-Reply-To: nigel@aa5b (Nigel Gamble)
+        "Re: Linux: the next step" (Aug 13,  8:36am)
+References: <199608131536.IAA29651@aa5b.engr.sgi.com>
 Subject: Re: Linux: the next step
-Reply-to: dm@sgi.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: nigel@aa5b.engr.sgi.com
-Cc: lm@neteng.engr.sgi.com, jes@machine.engr.sgi.com, sca@refugee.engr.sgi.comlm@neteng.engr.sgi.com, nigel@cthulhu.engr.sgi.com, alambie@wellington.sgi.com, ariel@cthulhu.engr.sgi.com, linux@yon.engr.sgi.com
-Message-ID: <19960813114556.VaSoXaChta__SBW6McMmUjHiX8Dtg-i0iYEfpGunISc@z>
+To: Nigel Gamble <nigel@aa5b.engr.sgi.com>, dm@sgi.com
+Cc: linux@aa5b.engr.sgi.com
+Message-ID: <19960813164544.W9jcDwU_ret9k8aXJiNOJYx65kTXxBSiTV1Q837YLRg@z>
 
-   From: nigel@aa5b (Nigel Gamble)
-   Date: Mon, 12 Aug 1996 15:59:04 -0700 (PDT)
+The new real-time facilities in Irix (Nawaf's scheduler) are superior to what
+has been available before in any Unix-like system that I know of.  There are
+two areas of shortfall, but these are probably unavoidable given the design and
+its operating environment:
 
-   > They can guarentee real time response of 10Khz, with less than 15 usec
-   > variation.  That was with Linux running a 
-   > 
-   > 	tar f - /usr | (cd /newusr; tar xf -)
-   > 
-   > a web browser, X, etc, etc.  Good luck doing that on IRIX up.  Maybe MP.
+	1. priority-based scheduling is often a poor substitute for deadline
+	   scheduling, although it is useful for many rt applications.
 
-   We can already do this on MP with User Level Interrupts.
+	2. once a process gets scheduled via the rt facility, if it does any
+	   system calls you get Irix system call performance.  Sometimes this
+	   will be an issue (by limiting the number of syscalls and rt apps),
+	   and other times it will not be so important.
 
-I cannot wait to recompile all of my applications so that they can
-take advantage of ULI...
+I believe that efforts to incorporate hard real-time scheduling into a
+full-function OS will satisfy the large majority of customers who have
+real-time applications.  These customers do not want to run on the bare iron -
+they want their real-time and they want their OS also.
 
-The whole idea behind whatever approach linux will take to anything
-(using clone() for threads under Linux is a good example) is that you
-will not need to teach all of your "dumb" old programs (even ps!)
-about these special processes and or things a process can do.
+The Linux-based hack that Larry described is indeed elegant - I had a look at
+the paper.  However, if that hack were enough to support a wide range of
+real-time applications I think system hacks would have implemented it a long
+time ago.
 
-dm@engr.sgi.com
-
-'Ooohh.. "FreeBSD is faster over loopback, when compared to
-Linux over the wire". Film at 11.' -Linus
+g

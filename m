@@ -1,25 +1,35 @@
-Received: from jefflee (PC193.ia.kh.coventive.com [192.168.23.193] (may be forged))
-	by miao.coventive.com (8.11.6/8.11.6) with SMTP id h1P7rCx20539
-	for <linux-mips@linux-mips.org>; Tue, 25 Feb 2003 15:53:12 +0800
 From: "jeff" <jeff_lee@coventive.com>
-Subject: Kernel 2.4.20
-Date: Tue, 25 Feb 2003 15:58:51 +0800
-Message-ID: <LPECIADMAHLPOFOIEEFNIELPCNAA.jeff_lee@coventive.com>
+Subject: RE: Kernel 2.4.20
+Date: Tue, 25 Feb 2003 16:17:53 +0800
+Message-ID: <LPECIADMAHLPOFOIEEFNEEMACNAA.jeff_lee@coventive.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="US-ASCII"
 Content-Transfer-Encoding: base64
-In-Reply-To: <20030225124850.32cfa6f5.yoichi_yuasa@montavista.co.jp>
+In-Reply-To: <20030225080327.GC25303@rembrandt.csv.ica.uni-stuttgart.de>
 Return-Path: <jeff_lee@coventive.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030225075851.PDT5AHOLS-ZiIqe-SrvDDV3XqPATpd4HqoL5djP7ug0@z>
+To: Thiemo Seufer <ica2_ts@csv.ica.uni-stuttgart.de>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20030225081753.cin1me4EAeoce3aywccnFtqlRvmttxqHiQmQ7sCL-j4@z>
 
-RGVhciBBbGwsDQogICAgSSBhbSB0cnlpbmcgdG8gcG9ydGluZyBORUMgVnI0MTMxIHBsYXRmb3Jt
-IGZyb20gMi40LjE2IHRvIDIuNC4yMCBidXQgSSBmb3VuZCBzb21lIHByb2JsZW0uDQpJbiBrZXJu
-ZWwgMi40LjE2LCB0aGUga2VybmVsIGVudHJ5IGlzIDB4ODAwMDI0NzAgYnV0IHRoZSBrZXJuZWwg
-ZW50cnkgaW4gMi40LjIwIGlzIDB4ODAxeHh4eHgNClNvIG15IHByb2JsZW0gaXMgaG93IHRvIGNo
-YW5nZSB0aGUga2VybmVsIGVudHJ5IGZyb20gMHg4MDF4eHh4eCB0byBiZSAweDgwMDB4eHh4PyBv
-ciBob3cgDQp0byB0ZXN0IHRoaXMga2VybmVsIHdoZW4gdGhlIGtlcm5lbCBlbnRyeSBpcyAweDgw
-MXh4eHh4Pw0KDQpUaGFua3MgZm9yIGV2ZXJ5b25lJ3MgaGVscA0KDQpKZWZmIEAgQ292ZW50aXZl
+RGVhciBUaGllbW8sDQogICAgVGhhbmtzIGZvciB5b3VyIHF1aWNrbHkgcmVzcG9uc2UuDQpJIHRy
+eSB0byBtb2RpZnkgdGhlIC9hcmNoL21pcHMvbGQuc2NyaXB0LmluIG9yIC9hcmNoL21pcHMva2Vy
+bmVsL2hlYWQuUw0KYnV0IHN0aWxsIGNhbid0IHdvcmsgKGVudHJ5IGlzIGNoYW5nZWQgYnV0IGtl
+cm5lbCBjYW4ndCB3b3JrKS4gRG8gSSBtYWtlDQphbnkgbWlzdGFrZT8NCg0KVGhhbmtzDQoNCkpl
+ZmYgQCBDb3ZlbnRpdmUNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFRoaWVt
+byBTZXVmZXIgW21haWx0bzppY2EyX3RzQGNzdi5pY2EudW5pLXN0dXR0Z2FydC5kZV0NClNlbnQ6
+IFR1ZXNkYXksIEZlYnJ1YXJ5IDI1LCAyMDAzIDQ6MDMgUE0NClRvOiBqZWZmDQpDYzogbGludXgt
+bWlwc0BsaW51eC1taXBzLm9yZw0KU3ViamVjdDogUmU6IEtlcm5lbCAyLjQuMjANCg0KDQpqZWZm
+IHdyb3RlOg0KPiBEZWFyIEFsbCwNCj4gICAgIEkgYW0gdHJ5aW5nIHRvIHBvcnRpbmcgTkVDIFZy
+NDEzMSBwbGF0Zm9ybSBmcm9tIDIuNC4xNiB0byAyLjQuMjAgYnV0IEkgZm91bmQgc29tZSBwcm9i
+bGVtLg0KPiBJbiBrZXJuZWwgMi40LjE2LCB0aGUga2VybmVsIGVudHJ5IGlzIDB4ODAwMDI0NzAg
+YnV0IHRoZSBrZXJuZWwgZW50cnkgaW4gMi40LjIwIGlzIDB4ODAxeHh4eHgNCg0KVGhhdCdzIGp1
+c3Qgbm9ybWFsLCB0aGUgZW50cnkgaXMgdmFyaWFibGUuDQoNCj4gU28gbXkgcHJvYmxlbSBpcyBo
+b3cgdG8gY2hhbmdlIHRoZSBrZXJuZWwgZW50cnkgZnJvbSAweDgwMXh4eHh4IHRvIGJlIDB4ODAw
+MHh4eHg/IG9yIGhvdyANCj4gdG8gdGVzdCB0aGlzIGtlcm5lbCB3aGVuIHRoZSBrZXJuZWwgZW50
+cnkgaXMgMHg4MDF4eHh4eD8NCg0KVGhlIGVudHJ5IGFkZHJlc3MgaXMgZW5jb2RlZCBpbiB0aGUg
+RUxGIGhlYWRlciBhdCB0aGUgYmVnaW5uaW5nIG9mIHZtbGludXgNCihhcyBpdCBpcyBmb3IgYWxs
+IG90aGVyIEVMRiBleGVjdXRhYmxlcykuIFRoZSBoZWFkZXIncyBsYXlvdXQgY2FuIGJlIGZvdW5k
+DQplLmcuIGluIGxpbnV4L2luY2x1ZGUvbGludXgvZWxmLmguDQoNCg0KVGhpZW1v

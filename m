@@ -1,35 +1,39 @@
-Date: Thu, 5 Sep 2002 12:15:40 +0200 (MEST)
-From: Kjeld Borch Egevang <kjelde@mips.com>
+Message-ID: <010301c254da$892fcc50$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <Pine.GSO.3.96.1020905134606.2423G-100000@delta.ds2.pg.gda.pl>
 Subject: Re: 64-bit and N32 kernel interfaces
-In-Reply-To: <20020904204038.D1121@linux-mips.org>
-Message-ID: <Pine.LNX.4.44.0209051143300.2960-100000@coplin19.mips.com>
+Date: Thu, 5 Sep 2002 14:48:15 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <kjelde@mips.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Jun Sun <jsun@mvista.com>, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, linux-mips@linux-mips.org
-Message-ID: <20020905101540.RZqHtHKIq8U740Y9iFpx4oE75vc2Gsw5CaNT7mKLzac@z>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Tor Arntsen <tor@spacetec.no>
+Cc: Carsten Langgaard <carstenl@mips.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20020905124815.50nW4DXyc_5a3a8M3e9d-dAvCksAB8PYDLfFPptcRUw@z>
 
-On Wed, 4 Sep 2002, Ralf Baechle wrote:
+From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+>
 
-...
-> Several approach to solve that problem.  Adding another 1000 entries - which
-> will cost 8000 bytes of memory that will be mostly zeros.  Having wrappers
-> for each function that do the appropriate argument and result convertion
-> is another.  etc.
+> On Thu, 5 Sep 2002, Tor Arntsen wrote:
+> 
+> > > Any reference?  AFAIK, long is 64-bit for n32 and only void * is 32-bit. 
+> > >It doesn't make sense otherwise. 
+> > 
+> > On SGI/Irix n32 long and void* are 32-bit, only long long is 64-bit.
+> > On SGI/Irix n64 long and void* are 64-bit too.
+> 
+>  Hmm, it looks pretty much broken if that's true (especially given long
+> long was non-standard untile very recently).  I'll check the docs, yet.
 
-Ralf, that's not true. In our current 64-bit kernel we have 234 entries 
-for N64 which uses 8*234 = 1872 bytes. N32 has 241 entries using 1928 
-bytes. Even in an embedded environment that's not a lot of memory.
+n32 has the same data types as o32, an "ILP32" C integer 
+model.  n64 is a pretty normal "LP64" C integer model.
 
+What do you consider to be broken, and how would you
+have preferred it to have been done?
 
-/Kjeld
+            Regards,
 
--- 
-_    _ ____  ___                       Mailto:kjelde@mips.com
-|\  /|||___)(___    MIPS Denmark       Direct: +45 44 86 55 85
-| \/ |||    ____)   Lautrupvang 4 B    Switch: +45 44 86 55 55
-  TECHNOLOGIES      DK-2750 Ballerup   Fax...: +45 44 86 55 56
-                    Denmark            http://www.mips.com/
+            Kevin K.

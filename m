@@ -1,117 +1,38 @@
-content-class: urn:content-classes:message
-Subject: The printf() function in libc of glibc-2.0.6 can print nothing.
+Message-ID: <001501c129dd$8acebb80$8021690a@huawei.com>
+From: "machael thailer" <dony.he@huawei.com>
+References: <000701c12529$e1640580$8021690a@huawei.com> <20010815103314.A11966@bacchus.dhis.org> <000b01c1295e$0f2174c0$8021690a@huawei.com> <20010820230755.A11242@dea.linux-mips.net>
+Subject: Re: questions about eret....
+Date: Tue, 21 Aug 2001 09:06:43 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Date: Mon, 20 Aug 2001 12:43:23 -0700
-Message-ID: <84CE342693F11946B9F54B18C1AB837B0A254B@ex2k.pcs.psdc.com>
-From: "Steven Liu" <stevenliu@psdc.com>
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010820194323.O2PZWLXsIwfhlrM_5WYi5jnlrNV742Lkm0gdhnRki28@z>
-
-Hi, ALL:
-
-I have successfully built linux kernel 2.2.12 on mips and glibc-2.0.6
-with the following steps and options: 
-
-Under glibc-2.0.6/build, run
-
-CFLAGS="-mips2 -mcpu=r6000 -mmemcpy -O2 -D__MIPSEB__ " CC=mips-linux-gcc
-BUILD_CC=gcc AR=mips-linux-ar RANLIB=mips-linux-ranlib ../configure
---prefix=/usr --host=mips-linux
---enable-add-ons=crypt,linuxthreads,localedata --disable-profile
---with-headers=/home/wenbo/linux/include
-
-In file config.make, change CC = gcc into CC = mips-linux-gcc.
-
-Then run make.
-
-The build looks OK.
-
-I also built an aplication as following:
-
-liu.c:
-
-#include <stdio.h>
-
-void main()
-{
-  printf("My program is running\n");
-}
-
-Makefile:
-
-ARCH = mips
-
-.EXPORT_ALL_VARIABLES:
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010821010643.GTf4ZT11aoufSE15mHMqm5VBIyTnLcZXUCeiZIeS76g@z>
 
 
-CROSS_COMPILE 	=mips-linux-
-
-AS	=$(CROSS_COMPILE)as
-LD	=$(CROSS_COMPILE)ld
-CC	=$(CROSS_COMPILE)gcc  -D__mips__
--I/home/sliu/mips_lib/usr/include  
-CPP	=$(CC) -E
-AR	=$(CROSS_COMPILE)ar
-NM	=$(CROSS_COMPILE)nm
-STRIP	=$(CROSS_COMPILE)strip
-OBJCOPY	=$(CROSS_COMPILE)objcopy
-OBJDUMP	=$(CROSS_COMPILE)objdump
-MAKE	=make
-GENKSYMS=/sbin/genksyms
-
-LINKFLAGS = -static
-LIBS =/home/sliu/mips_lib/usr/lib/libc.a
-CFLAGS = -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -mips2
--mcpu=r6000 -mmemcpy
-#CFLAGS = -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer  -mmemcpy
-
-# use '-fno-strict-aliasing', but only if the compiler can take it
-CFLAGS += $(shell if $(CC) -fno-strict-aliasing -S -o /dev/null -xc
-/dev/null >/dev/null 2>&1; then echo "-fno-strict-aliasing"; fi)
-
-# egcs-1.0.2 compiler for MIPS has a problem for which this is a
-work-around
-CFLAGS += $(shell if $(CC) -mno-split-addresses -S -o /dev/null -xc
-/dev/null >/dev/null 2>&1; then echo "-mno-split-addresses"; fi)
+----- Original Message -----
+From: "Ralf Baechle" <ralf@oss.sgi.com>
+To: "machael thailer" <dony.he@huawei.com>
+Cc: <linux-mips@oss.sgi.com>
+Sent: Tuesday, August 21, 2001 5:07 AM
+Subject: Re: questions about eret....
 
 
+> On Mon, Aug 20, 2001 at 05:54:09PM +0800, machael thailer wrote:
+>
+> >     I have a question to ask about eret.
+> >
+> >     In RC4xxx/RC32334, after eret finished, does it automatically enable
+IE
+> > bit of STATUS register?
+>
+> ERET does not influence the state of the IE bit.
 
-.S.s:
-	$(CC) -D__ASSEMBLY__  -traditional -E -o $*.s $<
-.S.o:
-	$(CC) -D__ASSEMBLY__  -traditional -c -o $*.o $<
+I agree with you, but the RC32334 User manual (14-13 section) say  it does
+and say we must run a "CLI" just before eret to disable IE bit in Status
+register .
 
-
-
-liu: $(CONFIGURATION) liu.o
-	$(LD) $(LINKFLAGS) $(HEAD) liu.o  \
-          $(LIBS)  \
-	  -o liu
-	$(NM) liu | grep -v '\(compiled\)\|\(\.o$$\)\|\( [aU]
-\)\|\(\.\.ng$$\)\|\(LASH[RL]DI\)' | sort > System.map
-
-
-liu.o: liu.c 
-	$(CC) $(CFLAGS) $(PROFILING) -c -o $*.o $<
-
-clean:
-	rm -f *.o liu
-
-
-
------------------------------------------------------- Problem
------------------------------------------------------------
-
-The printf could not print the string "My program is running" on the
-screen.
-
-Any suggessions are greatly appreciated.
-
-Regards and thanks.
-
-
-Steven Liu
+machael thailer

@@ -1,23 +1,24 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <19980930011838.C3920@uni-koblenz.de>
-Date: Wed, 30 Sep 1998 01:18:38 +0200
-From: ralf@uni-koblenz.de
-Subject: Atlanta Linux Showcase
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <m0zPnb2-000aNTC@the-village.bc.nu>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: HAL2
+Date: Sun, 4 Oct 1998 13:49:07 +0100 (BST)
+In-Reply-To: <Pine.LNX.3.96.981004125525.2569A-100000@calypso.saturn> from "Ulf Carlsson" at Oct 4, 98 01:23:12 pm
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: linux@cthulhu.engr.sgi.com
-Message-ID: <19980929231838.NO8fubgRd-K_xlKuRPZsqTNbgIDaLInxXTdGv_SJ0fk@z>
+To: Ulf Carlsson <grim@zigzegv.ml.org>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19981004124907.OXufWdM6mKSblaiVOPsOMnisjb0OVEr-raHwy1eyZ_Q@z>
 
-From the web page http://www.ale.org/showcase/:
+> level applications. The implementation of my HAL2 driver will exist in
+> kernel space, and a user level library will provide higher level interface
+> to the applications (the same interface as libaudio.a in IRIX). Do we know
+> what the interface between libaudio.a and the Irix kernel looks like or am
+> I free to do what I want?
+> 
+> The code I've written so far is based upon this idea.
+> 
+> Is this the Right Thing to do it?
 
-[...]
-FREE! Linux In Action: showing a large variety of Linux software on multiple
-platforms (Alpha, Intel, PPC, SPARC) in action together. This is your chance to
-experience Linux hands-on! Atlanta Linux Enthusiasts (ALE) will staff the
-booth and will be on hand to demo software and answer questions. 
-[...]
-
-Anybody there to fix this ``bug''?
-
-  Ralf
+Not IMHO, well not unless it also supports the sound ioctls that every
+other Linux platform does as well. 

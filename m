@@ -1,41 +1,18 @@
-Message-ID: <005f01c158a5$960c9660$3501010a@ltc.com>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <Pine.GSO.3.96.1011019152309.1657F-100000@delta.ds2.pg.gda.pl>
-Subject: Re: Strange behavior of serial console under 2.4.9
-Date: Fri, 19 Oct 2001 09:54:35 -0400
+Reply-To: <ricardo@infom.com.br>
+From: "Ricardo SOuza" <ricardo@infom.com.br>
+Subject: Linux for Silicon Graphics
+Date: Fri, 19 Oct 2001 15:00:59 -0300
+Message-ID: <000201c158c8$0319a3c0$0b00a8c0@sci>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <200110191244.f9JCiPN25998@oss.sgi.com>
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "H . J . Lu" <hjl@lucon.org>
-Cc: linux-mips@oss.sgi.com, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Message-ID: <20011019135435.kpYKCA9i2AMkeEuVfMUmTfLMrlQxBHjra0ij680zvDc@z>
-
-H.J., which serial driver are you using?
-
-Regards,
-Brad
-
------ Original Message ----- 
-From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-To: "H . J . Lu" <hjl@lucon.org>
-Cc: <linux-mips@oss.sgi.com>
-Sent: Friday, October 19, 2001 9:26 AM
-Subject: Re: Strange behavior of serial console under 2.4.9
+To: linux-mips@oss.sgi.com
+Message-ID: <20011019180059.3BwhFxYQ9dwySYDARN9ek8FXYRQ7ReJHkF02Ghgg8dg@z>
 
 
-> On Thu, 18 Oct 2001, H . J . Lu wrote:
-> 
-> > I am using 9600 buad. It used to be ok under 2.4.3/2.4.5. But under
-> > 2.4.9, the first 10 minutes after boot is very slow. After that, it
-> > seems ok.
-> 
->  That might be driver-specific.  I'm using drivers/tc/zs.c and it works
-> fine at 115200 bps.
-> 
-> -- 
-> +  Maciej W. Rozycki, Technical University of Gdansk, Poland   +
-> +--------------------------------------------------------------+
-> +        e-mail: macro@ds2.pg.gda.pl, PGP key available        +
-> 
+I´d like to know what LINUX support SG and If someone can tell their URL!
+
+thanks

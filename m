@@ -1,26 +1,33 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199708162033.WAA20565@informatik.uni-koblenz.de>
+Message-ID: <199708162207.AAA01148@informatik.uni-koblenz.de>
 Subject: Re: boot linux - wish
-Date: Sat, 16 Aug 1997 22:33:17 +0200 (MET DST)
-In-Reply-To: <m0wzheO-0005FiC@lightning.swansea.linux.org.uk> from "Alan Cox" at Aug 16, 97 01:08:12 pm
+Date: Sun, 17 Aug 1997 00:07:45 +0200 (MET DST)
+In-Reply-To: <Pine.LNX.3.95.970816224739.21289F-100000@odin.waw.com> from "Vincent Renardias" at Aug 16, 97 10:54:01 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: shaver@neon.ingenia.ca, miguel@nuclecu.unam.mx, ariel@sgi.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19970816203317.FVeqy7ojvXHBqsEORjFZEXfMTUlhVMjCvgOZ1sQ2ISo@z>
+To: Vincent Renardias <vincent@waw.com>
+Cc: miguel@nuclecu.unam.mx, linux@cthulhu.engr.sgi.com
+Message-ID: <19970816220745.wEg0pFBADPNmH3-0cCH5crp30TCRE-UwPWnXdhq6IfA@z>
 
-> > If I stick all the RH stuff in an initrd and then they do FTP install,
-> > then they should be able to use it via boot /vmlinux or boot -f
-> > bootp()..., no?
+> On Sat, 16 Aug 1997, Miguel de Icaza wrote:
 > 
-> 2.1.4x blows up with an initrd - hopefully fixed in 2.1.50/soon but that
-> means the SGI one will corrupt and explode atm
+> > > Is there ever ANY chance of seeing XFS in Linux? Or a flavor of a really
+> > > fast journaled file system?
+> > 
+> > not right now.  And getting an XFS clone to work on Linux is really
+> > not a trivial task.
+> 
+> Are the XFS specs. available BTW?
 
-There are also additional MIPS bugs in the RAMdisk / initrd stuff.
-Shame on me, I have not used (-> debugged) it since the new style
-ramdisk code was merged ...
+There is a whitepaper available on SGI's webserver.  It however does
+not refer to the really interesting details.
+
+As far as the complexity of writing an XFS-like fs is concerned - SGI has
+invested a significant fraction of the R&D of XFS into the realtime stuff.
+So ignoring that part for the beginning makes the task of writing a XFS
+like filesystem much easier.
 
   Ralf

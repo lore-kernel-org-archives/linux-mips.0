@@ -1,68 +1,29 @@
-Date: Sat, 27 Jan 2001 11:52:05 +0100 (MET)
-From: Karel van Houten <K.H.C.vanHouten@research.kpn.com>
-Subject: Re: Cross compiling RPMs
-In-reply-to: <200101262114.NAA26672@saturn.mikemac.com>
-Message-ID: <200101271052.LAA21268@sparta.research.kpn.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
+Date: Sat, 27 Jan 2001 11:16:38 -0800
+From: Ralf Baechle <ralf@oss.sgi.com>
+Subject: Re: floating point on Nevada cpu
+Message-ID: <20010127111638.H867@bacchus.dhis.org>
+References: <3A6F8F66.6258801@mvista.com> <0101241833281Q.00834@plugh.sibyte.com> <3A6F9814.3E39027@mvista.com> <0101241917341S.00834@plugh.sibyte.com> <3A703E3C.360FB4FF@ridgerun.com> <3A706A22.6B760617@mvista.com> <010601c08780$d0b8a7a0$0deca8c0@Ulysses>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <010601c08780$d0b8a7a0$0deca8c0@Ulysses>; from kevink@mips.com on Fri, Jan 26, 2001 at 11:14:38AM +0100
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Mike McDonald <mikemac@mikemac.com>
-Cc: Florian Lohoff <flo@rfc822.org>, linux-mips@oss.sgi.com
-Message-ID: <20010127105205.7d8Y-mHrowNQZU3V30knWUpVGK4hsz8EY7Xf3DEyqKA@z>
+To: "Kevin D. Kissell" <kevink@mips.com>
+Cc: Pete Popov <ppopov@mvista.com>, Steve Johnson <stevej@ridgerun.com>, linux-mips@oss.sgi.com
+Message-ID: <20010127191638.RJJrrNXVeZQ3SiwyE8Cu6VsrLC9nZR0EIT8Haftbe2M@z>
 
-Mike wrote:
+On Fri, Jan 26, 2001 at 11:14:38AM +0100, Kevin D. Kissell wrote:
+
+> I had essentially the same problem at MIPS a year or two ago,
+> and I could have *sworn* that my fix, which ORed ST0_FR into
+> the initial Status register value set in the startup assembly code,
+> had made it into the standard distributions.  It's at about line 530
+> of head.S, where a term is added to make the instruction
 > 
->   If one were to go the native compiling route, what would the minimum
-> set of rpms needed be? kernel, bin-utils, cc. file-utils? ???
-> 
+> li t1,~(ST0_CU1|ST0_CU2|ST0_CU3|ST0_KX|ST0_SX|ST0_FR)
 
-It depends on what and how you want to compile. To use rpm, you need
-quite a lot tools (db3, patch, sed, grep, find,...). Beside that
-you'll at least need glibc, binutils, gcc, and make. But you'll find
-out that you'll have to compile flex, bison, m4, automake, autoconf,
-and even perl to get rpm builds going. My mipsel native environment
-currently has the following packages:
+It's not in the CVS 2.2 kernel.  I've added this patch to my kernel and
+will commit it when I'm online again.
 
-MAKEDEV-3.0.6-5         gcc-c++-2.95.3-14       newt-devel-0.50.17-1
-SysVinit-2.78-10        gcc-libstdc++-2.95.3-14 pam-0.72-26
-XFree86-4.0.1-1lm       gdbm-1.8.0-5            patch-2.5.4-4
-XFree86-devel-4.0.1-1lm gdbm-devel-1.8.0-5      perl-5.6.0-9
-XFree86-libs-4.0.1-1lm  gettext-0.10.35-23      popt-1.6-4lm
-autoconf-2.13-9         glib-1.2.8-4            pwdb-0.61.1-1
-automake-1.4-8          glib-devel-1.2.8-4      python-1.5.2-27
-basesystem-7.0-2        glibc-2.1.97-1          python-devel-1.5.2-27
-bash-2.04-11            glibc-devel-2.1.97-1    python-tools-1.5.2-27
-bc-1.05a-13             gmp-3.0.1-5             readline-4.1-5
-bdflush-1.5-14          gmp-devel-3.0.1-5       readline-devel-4.1-5
-binutils-2.10.1-3       gpm-1.19.3-4            rpm-4.0-4lm
-binutils-libs-2.10.1-3  gpm-devel-1.19.3-4      rpm-build-4.0-4lm
-bison-1.28-5            grep-2.4.2-4            sed-3.02-8
-byacc-1.9-16            groff-1.16-7            sh-utils-2.0-11
-bzip2-1.0.1-3           gtk+-1.2.8-7            slang-1.4.1-5
-bzip2-devel-1.0.1-3     gtk+-devel-1.2.8-7      slang-devel-1.4.1-5
-cpio-2.4.2-20           gzip-1.3-6              tar-1.13-4
-db1-1.85-4              info-4.0-15             tcl-8.3.1-46
-db1-devel-1.85-4        ldconfig-1.9.5-16       tcllib-0.4-46
-db2-2.4.14-4            libelf-0.7.0-3          termcap-11.0.1-3
-db2-devel-2.4.14-4      libelf-devel-0.7.0-3    texinfo-4.0-15
-db3-3.1.14-6lm          libpng-1.0.8-1          textutils-2.0e-8
-db3-devel-3.1.14-6lm    libpng-devel-1.0.8-1    tix-4.1.0.6-46
-db3-utils-3.1.14-6lm    libtermcap-2.0.8-25     tk-8.3.1-46
-dev-3.0.6-5             libtermcap-devel-2.0.8- tkinter-1.5.2-27
-diffutils-2.7-21        libtool-1.3.4-3lm       unzip-5.41-3
-fileutils-4.0x-3        m4-1.4.1-3              utempter-0.5.2-4
-findutils-4.1.5-4       make-3.79.1-5           vim-common-5.7-6
-flex-2.5.4a-11          ncurses-5.1-2           vim-minimal-5.7-6
-gawk-3.0.6-1            ncurses-devel-5.1-2     zlib-1.1.3-12
-gcc-2.95.3-14           newt-0.50.17-1          zlib-devel-1.1.3-12
-
-But you surely can start with less... :-)
--- 
-Karel van Houten
-
-----------------------------------------------------------
-The box said "Requires Windows 95 or better."
-I can't understand why it won't work on my Linux computer. 
-----------------------------------------------------------
+  Ralf

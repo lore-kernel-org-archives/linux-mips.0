@@ -1,53 +1,46 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199806161546.RAA28259@aisa.fi.muni.cz>
+Message-ID: <199806161825.UAA05307@aisa.fi.muni.cz>
 Subject: Re: RedHat 5.1 (Manhattan) ALPHA 1 for SGI/Indys
-In-Reply-To: <Pine.LNX.3.95.980614004054.27426A-100000@lager.engsoc.carleton.ca> from Alex deVries at "Jun 14, 98 00:44:23 am"
-Date: Tue, 16 Jun 1998 17:46:06 +0200 (MET DST)
+In-Reply-To: <Pine.LNX.3.95.980616120211.26590B-100000@lager.engsoc.carleton.ca> from Alex deVries at "Jun 16, 98 12:07:58 pm"
+Date: Tue, 16 Jun 1998 20:25:48 +0200 (MET DST)
 From: Honza Pazdziora <adelton@informatics.muni.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980616154606.BRkAAR9Cgo6unU8hH1NwikPsyl_TK0OSG2s6BLFr6sw@z>
+Cc: adelton@informatics.muni.cz, linux@cthulhu.engr.sgi.com
+Message-ID: <19980616182548.ffTs8-BloW5RHMyzK9w9m5FBi2qOBpf-pQWm5DtS0ZM@z>
 
 > 
-> 6. Last, but not least
+> > I've set up root password in the menu but it wasn't there after
+> > reboot -- not even /etc/passwd -- I had to boot init=/bin/bash.
 > 
-> Let us know if it worked!
+> Do you mean that /etc/passwd didn't exist at all?
 
-Great! It worked. I mean: it worked!
+Right. I can repeat the installation from the scratch tomorrow and
+have closer look at the other consoles. But neither passwd, nor shadow
+existed.
 
-I've installed it from our mirror at ftp.fi.muni.cz to an old 300 MB
-disk. After some fiddling with the ftp server to support tftp
-correctly and after one crash with some message about signal 11
-(caused by the disk, I believe) it's now installed and running.
+> Do you mean that mkswap segfaulted during install, or after?  I'll have a
+> closer look.  The util-linux we're using is a little old.
 
-Some comments out of my head:
+I'm not sure what happened during install -- I just wanted to have it
+done to see the real prompt ;-) But when I tried mkswap /dev/sdb2 on
+the prompt, it said something about freeing free buffer? (or whatever)
+and then gave register dump. Sorry, I'm at home and can't get to the
+machine because sshd isn't running there yet, so I will send the exact
+output tomorrow.
 
-The /usr/sbin/timeconfig failed in the menu -- it doesn't seem to be
-present in the installfs -- shall I find and compile it?
+> We actually already have ssh on ftp.replay.com, IIRC.  I'm in the US
+> (sigh...) so I can't export it.
 
-I've set up root password in the menu but it wasn't there after
-reboot -- not even /etc/passwd -- I had to boot init=/bin/bash.
+No problem, I thing we can add mips.rpm to out ssh mirror.
 
-I had to install gcc from RH 5.0.
+> If you were interested, you could have a look at getting a util-linux RPM
+> up to version 2.8.  util-linux is a gross thing.
 
-Mkswap failed with segmantation fault -- shall I send the register
-output? I will try to compile my own, but the machine is slow without
-swap, and I need to compile ssh first to get reasonable remote access.
-Once this is done, we might be able to provide ssh*.mips.rpm, if you
-are interested.
-
-It might be nice to put the notice about this 5.1 on the web, so that
-people are directed to the new stuff -- even this, plain text announce
-and instructions would be nice.
-
-As I have the system on a disk, it's much happier and it starts to
-look really reasonably. I will boot my machine to Linux and run the
-compilations of ssh and linux-utils (for mkswap) overnight. If there
-is anything I can compile/test/do to help you, please let me know.
+OK, I'll try.
 
 ------------------------------------------------------------------------
  Honza Pazdziora | adelton@fi.muni.cz | http://www.fi.muni.cz/~adelton/

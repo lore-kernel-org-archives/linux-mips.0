@@ -1,45 +1,24 @@
-From: "Gill" <gill.robles@exterity.co.uk>
-Subject: Char device driver problem
-Date: Fri, 30 Jan 2004 15:07:07 -0000
-Message-ID: <000b01c3e742$ba513d90$2000a8c0@gillpc>
+Received: from pc193 (PC193.ia.kh.coventive.com [192.168.23.193] (may be forged))
+	by miao.coventive.com (8.11.6/8.11.6) with SMTP id i1C20s318063
+	for <linux-mips@linux-mips.org>; Thu, 12 Feb 2004 10:00:56 +0800
+Message-ID: <01df01c3f10c$ec579450$c117a8c0@pc193>
+From: "jeff_lee" <jeff_lee@coventive.com>
+References: <3DC3910A44FBD94B8513C8E2A3F220E1560A0B@sc-msexch-16.extremenetworks.com>
+Subject: About XFS file system
+Date: Thu, 12 Feb 2004 10:07:03 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-Path: <gill.robles@exterity.co.uk>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <jeff_lee@coventive.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040130150707.n95LWDeLg2ZpjAtUCPxzYCRPwFllumByNW5-vEvZgL0@z>
+Message-ID: <20040212020703.W7UAyC8BYDEVWdXpO1D-YGD42IFFAOKIWlGlHbke-wQ@z>
 
-I'm currently writing a char device driver, and I've seen some unexpected
-behaviour, which someone may be able to explain.
+Dear MIPS members,
+    Does anyone try XFS file system on MIPS(VR serier) platform?
 
- 
-I have some test code which simply opens my device and makes an ioctl call.
-Initially, the device's "open" function did nothing, and the ioctl call:
+Thanks and best regards,
 
-o Performed initialisation
-
-o Called function to produce a test tone.
-
-This worked as expected, and generated the test tone.  However, I then moved
-the initialisation code into the open function.  This time, when the user
-opens the device and makes the ioctl call, no test tone is generated,
-although the function returns with a success code.
-
-Does anyone know why moving code in this way should change the behaviour?
-The initialisation code does not create any tasks, and calls to the device
-driver are blocking.  I've even tried using copy_to_user, and copy_from_user
-to ensure that arguments are passed correctly, although this doesn't make
-any discernable difference.  The only difference I can see is that I do
-additional context switches...
-
-Any help/suggestions would be much appreciated!
-
- 
-Gill
-
- 
-
- 
+Jeff

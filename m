@@ -1,8 +1,8 @@
-Message-ID: <002f01c4b1de$cb80abc0$10eca8c0@grendel>
+Message-ID: <00ae01c4b1ef$6ca4b450$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20041014115304.3edbe141.toch@dfpost.ru> <416E3CA4.9080807@ict.ac.cn> <000b01c4b1da$6e049f00$10eca8c0@grendel> <416E5B62.8050508@ict.ac.cn>
+References: <20041014115304.3edbe141.toch@dfpost.ru> <01d901c4b1c8$996b7b30$10eca8c0@grendel> <20041014121242.GA1398@rembrandt.csv.ica.uni-stuttgart.de> <416E6E32.5080009@mips.com> <20041014123615.GB1398@rembrandt.csv.ica.uni-stuttgart.de>
 Subject: Re: Strange instruction
-Date: Thu, 14 Oct 2004 13:13:11 +0200
+Date: Thu, 14 Oct 2004 15:12:13 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -10,105 +10,37 @@ Content-Transfer-Encoding: 7bit
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Fuxin Zhang <fxzhang@ict.ac.cn>
+To: Nigel Stephens <nigel@mips.com>, Thiemo Seufer <ica2_ts@csv.ica.uni-stuttgart.de>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20041014111311.SpGPztCA6NsiG0A4BwAHJvOUxgTtOtCH7catCL9nNto@z>
+Message-ID: <20041014131213.9D5507XZw1E4H3BDQjBS2Ty9MoN5iq-vdBCQTjgXHbk@z>
 
-Sorry about that disinformation.  The man page doesn't provide
-the necessary details - but running "objdump -H" does (and the
--H help option *is* called out in the man page).
+> Nigel Stephens wrote:
+> > Thiemo Seufer wrote:
+> > >GNU as has "move" as builtin macro which is expanded differently for
+> > >32 and 64 bit mode. This simplifies the task of writing code for both
+> > >models. Unfortunately the expansion was broken for a while and
+> > >generated always the 64 bit version if the toolchain was 64bit
+> > >_capable_. IIRC this was fixed in the early 2.14 timeframe.
+> > 
+> > Wouldn't it be safer, as Kevin suggests, for the "move" macro to 
+> > generate "or $rd,$0,$rs", since that will work correctly in either mode?
+> 
+> For CPUs with two adders the instruction scheduling is a bit better.
 
------ Original Message ----- 
-From: "Fuxin Zhang" <fxzhang@ict.ac.cn>
-To: "Kevin D. Kissell" <kevink@mips.com>
-Sent: Thursday, October 14, 2004 12:56
-Subject: Re: Strange instruction
+For CPUs with two adders, only one of which can do ORs, you mean.
+Isn't that a pretty small population of MIPS CPUs?
 
+> Ther are also many other macros which are expanded in dependence of
+> the 32/64 bit address/register size, a different "move" macro
+> expansion won't help much if the assembler invocation was wrong.
 
-> 
-> 
-> Kevin D. Kissell wrote:
-> 
-> >In all fairness, the syntax is in he "man" page for objdump, so 
-> >  
-> >
-> The man page does mention the option -m
-> 
->       -m machine
->       --architecture=machine
->            Specify the architecture to use when  disassembling  object  
-> files.
->            This  can  be  useful  when disassembling object files which 
-> do not
->            describe architecture information, such as S-records.  You 
-> can list
->            the available architectures with the -i option.
->      but it does not mention how to specify a machine, although I did 
-> find it in
-> objdump --help later:)
-> 
-> debian GNU objdump 2.14.90.0.7 20031029
-> 
-> >one doesn't really have to read the sources to figure it out!
-> >But the question of whether the default mode of objdump 
-> >should be the minimum 32-bit legacy instruction set is a good 
-> >one.  Not  many currenly used MIPS processors are MIPS I.  
-> >I understand that disassembling advanced instructions that are 
-> >not supported by a particular CPU as if they were normal can 
-> >cause confusion and error, but perhaps the default would be to 
-> >disassmble everything as MIPS64 rev 2, but with all instructions 
-> >that are not in MIPS I flagged somehow, perhaps with a message
-> >after the assembly code to indicate the extended ISA level?  e.g.
-> >
-> >a0000650:       07400003        bltz    k0,a0000660 <nmi_handler+0x1c>          
-> >a0000654:       03a0d82d        move k1,sp *mips3*
-> >a0000658:       3c1ba020        lui     k1,0xa020 
-> >
-> >Where specifying -m mips:isa64 or -m mips:4000 would suppress the warnings
-> >on MIPS64 or MIPS III instructions respectively. Just a thought...
-> >
-> >----- Original Message ----- 
-> >From: "Fuxin Zhang" <fxzhang@ict.ac.cn>
-> >To: "Dmitriy Tochansky" <toch@dfpost.ru>
-> >Cc: <linux-mips@linux-mips.org>
-> >Sent: Thursday, October 14, 2004 10:45
-> >Subject: Re: Strange instruction
-> >
-> >
-> >  
-> >
-> >>objdump -d -mmips:4000 vmlinux to force it regconize all MIPS III 
-> >>instructions
-> >>
-> >>I think this option should be renamed( i had try -mips3 -mmips3 etc. 
-> >>before i find it
-> >>by reading the source code)
-> >> or the default should be changed.
-> >>
-> >>Dmitriy Tochansky wrote:
-> >>
-> >>    
-> >>
-> >>>Hello!
-> >>>
-> >>>When starts kernel for my au1500 board reseting board. After disassembling I found instruction
-> >>>which reseting board. Here is few strings of "mipsel-linux-objdump -D vmlinux" output:
-> >>>
-> >>>---
-> >>>
-> >>>a0000650:       07400003        bltz    k0,a0000660 <nmi_handler+0x1c>          
-> >>>a0000654:       03a0d82d        0x3a0d82d                                       
-> >>>a0000658:       3c1ba020        lui     k1,0xa020 
-> >>>
-> >>>---
-> >>>
-> >>>Base address changed by me.
-> >>>
-> >>>What is A0000654? There is board resets.
-> >>>      
-> >>>
-> >
-> >
-> >  
-> >
-> 
+Perhaps, but it strikes me as being only prudent to remove unnecessarily
+fragile artifacts like this.  I'm sure that there are some macros that cannot
+be implemented in a 32/64-bit independent manner, but it's clear that some
+of them could be, but are not. And those that can be, should be, as a matter 
+of software engineering principle.  Now, finding the time/money to actually 
+do the work may be another story...  ;o)
+
+            Regards,
+
+            Kevin K. 

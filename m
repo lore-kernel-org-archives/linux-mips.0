@@ -1,41 +1,26 @@
-Message-ID: <00bf01bf78ce$37cf6cc0$0ceca8c0@satanas.mips.com>
-From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: Re: Indy crashes
-Date: Wed, 16 Feb 2000 23:33:33 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Date: Sun, 20 Feb 2000 22:05:14 +0100
+From: Ralf Baechle <ralf@oss.sgi.com>
+Subject: Re: Linux on O2?
+Message-ID: <20000220220514.A867@uni-koblenz.de>
+References: <20000220001445.B23993@uni-koblenz.de> <Pine.LNX.4.05.10002202009380.786-100000@callisto.of.borg>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.05.10002202009380.786-100000@callisto.of.borg>
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: "William J. Earl" <wje@cthulhu.engr.sgi.com>
-Cc: linux-mips@vger.rutgers.edu, linux-mips@fnet.fr, linux@cthulhu.engr.sgi.com
-Message-ID: <20000216223333.kDGL3cHB4D98BBZfWeoJE9rv0y2stqga4QRtVYatrbU@z>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Ralf Baechle <ralf@oss.sgi.com>, Marc Esipovich <marc@mucom.co.il>, brett <brett@madhouse.org>, Bruce Leggett <bleggett@sofamordanek.com>, linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <20000220210514.odDyfd3JxX1JwTANj9U1ivGJzKaLLStNfcmVrMt2h0I@z>
 
->Emprirically, it appears that the [R5000] manual is incorrect in regard
->to the number of nop instructions.  The above sequences are known
->to work (via years of testing, and also via validation in discussions
->with people familiar with the hardware pipelines).
+On Sun, Feb 20, 2000 at 08:11:19PM +0100, Geert Uytterhoeven wrote:
 
-In principle, I could check it against the RTL, but I probably
-won't bother.  Many thanks for sharing the IRIX disassembly!
+> Unrelated, but similar: I'd like to port Linux/m68k to the Tektronix XP21
+> X-terminal I have. It has a 68030, TMS34020 and NE2000 Ethernet, but where do
+> you find docs? Tektronix has sold their X-terminal division to NCD.
+> 
+> If a machine is older than the web, AltaVista won't help you neither.
 
-> > Thirdly, this whole thread underscores why "clever" solutions that 
-> > depend on implementation features of particular CPUs should 
-> > be avoided whenever possible. If you want to be assured of
-> > getting a delay cycle in a MIPS instruction stream, you should
-> > use a "SSNOP", (sll r0,r0,1 as opposed to the "nop" sll r0,r0,0),
-> > which forces delays even in superscalar implementations.
->
->      This is not realistic, given the number of workarounds required
->for various processors, unless you are willing to have most processors
->run quite a bit slower.  (Extra cycles in utlbmiss are noticeable.)
+From time to time I get email from people with ancient 68k-based SGIs
+asking for Linux ...
 
-
-I agree that it is not realistic to hav a single binary TLB miss handler
-for all possible MIPS CPUs, but that's not what I was getting at.
-I just consider it unwise to use the fact that one "knows" that branches 
-"always" delay three cycles to avoid hazards.  Such tricks are 
-obscurantist, and lead, in my experience, to errors.
-
-            Kevin K.
+  Ralf

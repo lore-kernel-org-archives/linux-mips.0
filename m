@@ -1,21 +1,19 @@
-From: "Ivan Leong" <ivanl@pacific.net.sg>
-Subject: where's dhcp_bootp?
-Date: Tue, 6 Jul 1999 21:38:24 +0800
-Message-ID: <NDBBJCODHKOEMPLCNOFGAEKNCBAA.ivanl@pacific.net.sg>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <19990708120428.A5358@frenzy.com>
+Date: Thu, 8 Jul 1999 12:04:28 -0500
+From: Bill Bradford <mrbill@frenzy.com>
+Subject: Indigo2 status?
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux@cthulhu.engr.sgi.com
-Content-Transfer-Encoding: 7bit
-To: linux@neteng.engr.sgi.com
-Message-ID: <19990706133824.Cm-kX3l0uOP_bVAbqpPMXZcGtkrX2vt1rfKPEugErGg@z>
+To: linux@cthulhu.engr.sgi.com
+Message-ID: <19990708170428.yptu-Ps-BF0YqJ9nf99aWtJVf3PI8MoFCB58fA15cms@z>
 
-i've two indies and right in the midst of getting
-linux on it off the net.
+Has there been any progress on the Indigo2 port?
 
-both indies are on irix 5.3 and it's bootp
-doesn't work correctly. i believe a dhcp_bootp
-is needed but where can i find such a beast?
+Bill
 
-cc reply to ivanl@pacific.net.sg appreciated.
+-- 
+Bill Bradford * mrbill@sunhelp.org * http://www.sunhelp.org
+------------------------------------------------------------
+From a Sun Microsystems bug report (#4102680):
+"Workaround: don't pound on the mouse like a wild monkey."

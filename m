@@ -1,17 +1,36 @@
 Content-class: urn:content-classes:message
-Subject: vmalloc memory corruption
+Subject: RE: vmalloc memory corruption
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Date: Tue, 4 Jan 2005 15:24:32 -0600
-Message-ID: <8230E1CC35AF9F43839F3049E930169A0D89F9@yang.LibreStream.local>
+Date: Thu, 6 Jan 2005 14:08:58 -0600
+Message-ID: <8230E1CC35AF9F43839F3049E930169A0D8A63@yang.LibreStream.local>
 From: "Christian Gan" <christian.gan@librestream.com>
 Return-Path: <christian.gan@librestream.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20050104212432.3nAp1SSSBQU226KHCcEvBRJOACeOBSxFw1imI0YxkLo@z>
+Message-ID: <20050106200858.Agv4nENkoDi7BjzgGMpdj88STTpsjXAK6TQm4POsvcI@z>
+
+Just a little update on this:
+
+I turned off 36 bit address support for the MIPS32
+(CONFIG_64BIT_PHYS_ADDR) and found that my tests for vmalloc work.
+
+Can anyone who knows better point me in a direction of where I should
+start?
+
+Thanks!
+
+Christian
+
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org
+[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Christian Gan
+Sent: Tuesday, January 04, 2005 3:25 PM
+To: linux-mips@linux-mips.org
+Subject: vmalloc memory corruption
 
 Hey all,
 

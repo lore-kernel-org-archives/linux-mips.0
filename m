@@ -1,54 +1,64 @@
-Message-ID: <073a01c4dec7$184527a0$0d00340a@matts>
-From: "Matthew Starzewski" <mstarzewski@xes-inc.com>
-References: <062301c4de41$5bf43cb0$0d00340a@matts> <41B96281.2050806@enix.org>
-Subject: Re: Using more than 256 MB of memory on SB1250 in 32-bit mode, revisited
-Date: Fri, 10 Dec 2004 08:46:52 -0600
+Content-class: urn:content-classes:message
+Subject: SM501 PCI Driver
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <mstarzewski@xes-inc.com>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C4DEF2.BAB7CDE3"
+Date: Fri, 10 Dec 2004 13:59:16 -0600
+Message-ID: <8230E1CC35AF9F43839F3049E930169A0A2766@yang.LibreStream.local>
+From: "Christian Gan" <christian.gan@librestream.com>
+Return-Path: <christian.gan@librestream.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Thomas Petazzoni <thomas.petazzoni@enix.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20041210144652.-UNEmozKXf8IfSADi3ZZ3-8iNM7505cD515YU6XxpbY@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20041210195916.DLdKyUgdJ2HW_lq71rPoVxUfEdWBHEjewWrNl-4CSMo@z>
+
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C4DEF2.BAB7CDE3
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
 
-> I'm really unsure of what I'll say, but I've seen people on this list
-> talking about CONFIG_DISCONTIGMEM, an option for the kernel, which is :
->
-> "Say Y to upport efficient handling of discontiguous physical memory,
->  for architectures which are either NUMA (Non-Uniform Memory Access)
->   or have huge holes in the physical address space for other reasons.
->  See <file:Documentation/vm/numa> for more."
+Quick question,
 
-I've tried using DISCONTIGMEM on the MIPS32 build, but it yields the
-following build error.  Maybe someone familiar w/ the SGI IP27 (Origin 200
-and
-2000) code could tell us whether simply turning on DISCONTIGMEM is
-a good idea.
+Does anyone know of any 2.6.X fb drivers for a Silicon Motion SM501 PCI =
+driver?  The 2.6 driver listed on their web site seems incomplete (only =
+supports 640x480).
 
-include/linux/mmzone.h:364:2: #error NODES_SHIFT > MAX_NODES_SHIFT
+Thanks!
 
-Also, even if it compiled with DISCONTIGMEM, a look at
-sgi-ip27/ip27-memory.c
-shows no sign of HIGHMEM support, what I was depending on to use the upper
-256MB of memory as per my original email.  Now this may be OK; depending on
-how
-flexible the DISCONTIGMEM option is, perhaps I could map a wired TLB or
-KSEG3
-to the 2nd 256MB.
+Christian
 
-Thoughts?
+------_=_NextPart_001_01C4DEF2.BAB7CDE3
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Matt
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.6944.0">
+<TITLE>SM501 PCI Driver</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
+<BR>
 
+<P><FONT SIZE=3D2>Quick question,<BR>
+<BR>
+Does anyone know of any 2.6.X fb drivers for a Silicon Motion SM501 PCI =
+driver?&nbsp; The 2.6 driver listed on their web site seems incomplete =
+(only supports 640x480).<BR>
+<BR>
+Thanks!<BR>
+<BR>
+Christian</FONT>
+</P>
 
------ Original Message -----
-From: "Thomas Petazzoni" <thomas.petazzoni@enix.org>
-To: "Matthew Starzewski" <mstarzewski@xes-inc.com>
-Cc: <linux-mips@linux-mips.org>; <Steve.Finney@SpirentCom.COM>
-Sent: Friday, December 10, 2004 2:46 AM
-Subject: Re: Using more than 256 MB of memory on SB1250 in 32-bit mode,
-revisited
+</BODY>
+</HTML>
+------_=_NextPart_001_01C4DEF2.BAB7CDE3--

@@ -1,27 +1,46 @@
-Date: Wed, 3 Oct 2001 09:48:20 -0500 (CDT)
-From: Brian <signal@shreve.net>
-Subject: How do I console into Origin 200?
-In-Reply-To: <5.1.0.14.2.20011003172659.00a6c4a8@mail.it-academy.bg>
-Message-ID: <Pine.LNX.4.33.0110030946270.13741-100000@mercury.shreve.net>
+Message-ID: <021601c14e14$b6bd8270$3501010a@ltc.com>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <Pine.LNX.4.10.10110051144170.31239-100000@transvirtual.com> <3BBE1C99.8DFA3611@mvista.com>
+Subject: Re: DDB5074
+Date: Fri, 5 Oct 2001 23:12:21 -0400
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20011003144820.XjVVaU2cNuVlDLzr9MppdPGA0fVNo4TcE1eFuvio9wA@z>
+To: Jun Sun <jsun@mvista.com>, James Simmons <jsimmons@transvirtual.com>
+Cc: linux-mips@oss.sgi.com, linux-mips@fnet.fr
+Message-ID: <20011006031221.X28y8Ak_XqEK-tIf1h5H7nzM04uz1VH19uzA_a5hj34@z>
+
+I don't anticipate needing 5074 support.  I do need 5477 though.
+
+Regards,
+Brad
+
+----- Original Message -----
+From: "Jun Sun" <jsun@mvista.com>
+To: "James Simmons" <jsimmons@transvirtual.com>
+Cc: "Ralf Baechle" <ralf@oss.sgi.com>; <linux-mips@oss.sgi.com>;
+<linux-mips@fnet.fr>
+Sent: Friday, October 05, 2001 4:48 PM
+Subject: Re: DDB5074
 
 
-
-I am trying to boot an Origin 200 (which I believe currently has IRIX on
-it, I will be installing linux-mips).  It has 2 9 pin serial connectors on
-the back.  I have hooked my Wyse terminal up to it with a serial cable
-with and without a null connector @ 9600bps.  Is this correct?  I get
-nothing on the screen.  I have never consoled into an Origin, and am not
-sure if I am doing this right.
-
-Brian
-
-
------------------------------------------------
-Brian Feeny, CCIE #8036	email:signal@shreve.net
-Network Engineer	phone:318.222.2638x109
-ShreveNet Inc.		fax:  318.221.6612
+> James Simmons wrote:
+> >
+> > > Is there still somebody who takes care of the DDB 5074 board or has
+any
+> > > interest in keeping up support for it otherwise?
+> >
+> > I believe Brad LaRonde was working on those boards.
+>
+> AFAIK, Brad is only working on rockhopper, a variant of DDB5477.  We will
+keep
+> DDB5476 and DDB5477(and rockhopper).  If nobody is interested in DDB5074,
+it
+> might be a good time to get rid of it.
+>
+> Brad, speak up!
+>
+> Jun
+>

@@ -1,27 +1,25 @@
-Message-ID: <2083.137.132.80.35.1046078693.squirrel@mysoc.nus.edu.sg>
-Date: Mon, 24 Feb 2003 17:24:53 +0800 (SGT)
-Subject: Please use appropriate subject line  [was (Re: Re: Re: (no subject))] 
-From: "M K Saravanan" <mksarav@comp.nus.edu.sg>
-In-Reply-To: <Pine.GSO.4.21.0302240937390.28564-100000@vervain.sonytel.be>
-References: <20030224052704.30149.qmail@webmail29.rediffmail.com>
-        <Pine.GSO.4.21.0302240937390.28564-100000@vervain.sonytel.be>
-Reply-To: mksarav@comp.nus.edu.sg
+Received: from jefflee (PC193.ia.kh.coventive.com [192.168.23.193] (may be forged))
+	by miao.coventive.com (8.11.6/8.11.6) with SMTP id h1P7rCx20539
+	for <linux-mips@linux-mips.org>; Tue, 25 Feb 2003 15:53:12 +0800
+From: "jeff" <jeff_lee@coventive.com>
+Subject: Kernel 2.4.20
+Date: Tue, 25 Feb 2003 15:58:51 +0800
+Message-ID: <LPECIADMAHLPOFOIEEFNIELPCNAA.jeff_lee@coventive.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-Path: <mksarav@comp.nus.edu.sg>
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: base64
+In-Reply-To: <20030225124850.32cfa6f5.yoichi_yuasa@montavista.co.jp>
+Return-Path: <jeff_lee@coventive.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: geert@linux-m68k.org
-Cc: ipv6_san@rediffmail.com, rddunlap@osdl.org, macro@ds2.pg.gda.pl, netdev@oss.sgi.com, linux-mips@linux-mips.org
-Message-ID: <20030224092453.HdO9xnkjA0Ul2MsiBJhb4TOvr12wXeZTRX7mII-Smmw@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030225075851.PDT5AHOLS-ZiIqe-SrvDDV3XqPATpd4HqoL5djP7ug0@z>
 
-I don't remember who started this thread.  Kindly use appropriate title in
-the "Subject" when posting queries.  It will also help when somebody
-follow the archive on a particular topic.
-
--- mks --
-
---
-M K Saravanan
-http://www.comp.nus.edu.sg/~mksarav
+RGVhciBBbGwsDQogICAgSSBhbSB0cnlpbmcgdG8gcG9ydGluZyBORUMgVnI0MTMxIHBsYXRmb3Jt
+IGZyb20gMi40LjE2IHRvIDIuNC4yMCBidXQgSSBmb3VuZCBzb21lIHByb2JsZW0uDQpJbiBrZXJu
+ZWwgMi40LjE2LCB0aGUga2VybmVsIGVudHJ5IGlzIDB4ODAwMDI0NzAgYnV0IHRoZSBrZXJuZWwg
+ZW50cnkgaW4gMi40LjIwIGlzIDB4ODAxeHh4eHgNClNvIG15IHByb2JsZW0gaXMgaG93IHRvIGNo
+YW5nZSB0aGUga2VybmVsIGVudHJ5IGZyb20gMHg4MDF4eHh4eCB0byBiZSAweDgwMDB4eHh4PyBv
+ciBob3cgDQp0byB0ZXN0IHRoaXMga2VybmVsIHdoZW4gdGhlIGtlcm5lbCBlbnRyeSBpcyAweDgw
+MXh4eHh4Pw0KDQpUaGFua3MgZm9yIGV2ZXJ5b25lJ3MgaGVscA0KDQpKZWZmIEAgQ292ZW50aXZl

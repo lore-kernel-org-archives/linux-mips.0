@@ -1,51 +1,44 @@
-Message-ID: <012801c07a53$ed06e460$0deca8c0@Ulysses>
+Message-ID: <019901c07a72$94d19f00$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20010109004101.B27674@paradigm.rfc822.org> <000501c079d3$fefe1a60$0deca8c0@Ulysses> <20010109130958.B1047@bacchus.dhis.org>
+References: <20010109095438.A10683@paradigm.rfc822.org> <XFMail.010109181100.Harald.Koerfgen@home.ivm.de> <20010109162835.B4232@bacchus.dhis.org>
 Subject: Re: MIPS32 patches breaking DecStation
-Date: Tue, 9 Jan 2001 16:50:34 +0100
+Date: Tue, 9 Jan 2001 20:30:05 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: Florian Lohoff <flo@rfc822.org>, linux-mips@oss.sgi.com
-Message-ID: <20010109155034.b72ITL0SFFgI_11h5qPSot18jSWA5S8408-HyO66nq4@z>
+To: Ralf Baechle <ralf@oss.sgi.com>, Harald Koerfgen <Harald.Koerfgen@home.ivm.de>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010109193005.Z23QL4ZgP7c2rXb1yV0zREpNBa8C-LWWZB9xObxzpFk@z>
 
-> > Yes, the code fragment in question is R4K-specific, but
-> > we really need to migrate towards the use of consistent
-> > mechanisms that work across the full range of MIPS
-> > CPUs.  Ideally, *all* CP0 hazards should some day be
-> > padded out with "ssnops" (sll $0,$0,1, if I recall), which
-> > force a 1 cycle delay per instruction even on superscalar
-> > MIPS CPUs.
->
-> While we could come up with a common TLB fault handler I really don't want
-> to.  For many applications this TLB fault handler is extremly performance
-> sensitive; every single cycle directly translates into application
-> performance.  Seems like we'll need some more TLB fault handler.  And a
-> complete TLB fault handler rewrite would be a good ide anyway, sigh ...
+> > Same here on my /260 (R4400SC V4.0). Neither inserting four "sll
+$0,$0,1" nor
+> > four "nop" seem to work. The branch, on the other hand, does.
 
-Sorry if I wasn't clear.  I am not suggesting a "one size
-fits all" TLB handler - though as the old SGI hardware
-gets retired and the newer, more standardized MIPS32
-and MIPS64 parts become the principal targets, we
-may see a greater convergence.  I am simply suggesting
-that, even if there are differences in policy necessitated
-by different CPU implementations, they should use the
-same mechanisms.  If all CP0 hazards are avoided by
-using ssnops, for example, we could evolve from writing
-a new handler for every R4K variant to having a routine
-that generates a handler with the right pipeline hazard
-management, based on a set of paramters for the CPU.
-And, while Ralf and I sometimes disagree on the importance
-of this, in my own opinion, being consistent in these small
-details helps avoid errors when a systems programmer
-new to the architecture and/or the OS needs to work on
-the system.
+Then it's apparently more than just a garden-variety CP0 hazard.
 
-You may say that I'm a dreamer, but I'm not the only one.  ;-)
+> Note the ssnops only make sense on superscalar CPUs, so not on the R4000.
+
+My point is that an SSNOP should cause a 1 cycle stall on *any* MIPS
+implementation to date, superscalar or not.  It's not documented that
+way for the R10000, but if I recall correctly, it works there too.  If one
+wants to standardize on a single mechanism, that's the one to use.
+That's all I'm saying.
+
+> Also note that the branch is equivalent to three nops.  One for the
+> branch instruction itself, the two more for instructions in the pipeline
+> that get killed.  On the R4600 / R500 where the hazard is only a single
+> instruction the branch is equivalent to only a single nop.  So while
+> unobvious the branch is a rather neat idea.
+
+Yes, it's cute, but it relies on accidents of implementation to work,
+and could easily fail on other CPUs otherwise compatible with
+the R4000.  In principle, such a branch might incur no delay at
+all on an advanced 64-bit processor.  By all means, use it for
+the specific cases of the CPUs on which it is known to work,
+but it should not be used in "default" MIPS CP0 handlers.
 
             Regards,
 

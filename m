@@ -1,28 +1,84 @@
 content-class: urn:content-classes:message
-Subject: RE: swapon failure with au1550
-Date: Tue, 22 Feb 2005 16:20:28 -0600
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Message-ID: <B482D8AA59BF244F99AFE7520D74BF9609D4F2@server1.RightHand.righthandtech.com>
-From: "Bob Breuer" <bbreuer@righthandtech.com>
-Return-Path: <bbreuer@righthandtech.com>
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C52310.4C19A488"
+Subject: How /sbin/init is executed
+Date: Mon, 7 Mar 2005 17:52:15 +0530
+Message-ID: <4BF47D56A0DD2346A1B8D622C5C5902C5F282A@soc-mail.soc-soft.com>
+From: <Rishabh@soc-soft.com>
+Return-Path: <Rishabh@soc-soft.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20050222222028.35IN27ZJ1Wqa12UfYv6RevujqiT40D3UPIhfdeTydUA@z>
+Message-ID: <20050307122215.0gjXwVjmQKxah4fcQzweEgUN0lvXndgT2sH1Wkbm3kc@z>
 
-The bitmask in a pte for swap type is 0x0000_1f00.  In the CPU_MIPS32 &&
-64BIT_PHYS_ADDR case, _PAGE_FILE is 0x0000_0400.  Since _PAGE_FILE is
-set in the maxed out swap type, it triggers a BUG().
+This is a multi-part message in MIME format.
 
-If I move the swap type field like this:
-  #define __swp_type(x)  (((x).val >> 2) & 0x0f)
-then it works for me.  This makes use of the _PAGE_DIRTY and _CACHE_MASK
-bits which were being used in the !64BIT_PHYS_ADDR case.
+------_=_NextPart_001_01C52310.4C19A488
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Is this a reasonable solution, or should a different grouping of bits be
-used?
 
-Bob Breuer
+
+Hi,
+
+I am working on HIGHMEM implementation on Monta Vista Linux 3.1. I am
+able to boot the kernel till "/sbin/init".=0D
+
+I am getting stuck with How /sbin/init is fetched and executed from
+Target ROOT Dir.=0D
+
+Is it that a part of /sbin/init file is fetched and executed and then
+the other part of the file is fetched?
+
+If I want to debug the progress of /sbin/init execution then how can I
+proceed in this direction?
+
+
+Rishabh Kumar Goel
+Software Engineer
+=0D
+SoCrates Software India Pvt. Ltd.
+a TOSHIBA Group Company
+#10, Industrial Layout,
+Prestige Atlanta,
+III Block, Koramangala,
+Bangalore - 560034
+=0D
+Ph. 080-51101669
+
+
+
+The information contained in this e-mail message and in any annexure is
+confidential to the  recipient and may contain privileged information. If=
+ you are not
+the intended recipient, please notify the sender and delete the message=
+ along with
+any annexure. You should not disclose, copy or otherwise use the=
+ information contained
+in the message or any annexure. Any views expressed in this e-mail are=
+ those of the
+individual sender except where the sender specifically states them to be=
+ the views of
+SoCrates Software India Pvt Ltd., Bangalore.
+------_=_NextPart_001_01C52310.4C19A488
+Content-Type: text/x-vcard;
+	name="Rishabh Kumar Goel.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Rishabh Kumar Goel.vcf
+Content-Disposition: attachment;
+	filename="Rishabh Kumar Goel.vcf"
+
+QkVHSU46VkNBUkQNClZFUlNJT046Mi4xDQpOOkdvZWw7UmlzaGFiaCBLdW1hcg0KRk46UmlzaGFi
+aCBLdW1hciBHb2VsDQpPUkc6U29jcmF0ZXMgU29mdHdhcmUgSW5kaWEgUHZ0IEx0ZC47T1MgJiBE
+RA0KVElUTEU6U0UNClRFTDtXT1JLO1ZPSUNFOjUxMTAxNjY5ICAgIEV4dDoyNjY5DQpBRFI7V09S
+SztFTkNPRElORz1RVU9URUQtUFJJTlRBQkxFOjtTb2NyYXRlcyBTb2Z0d2FyZSBJbmRpYSBQdnQu
+IEx0ZC47MTAgQnJpZGUgU3RyZWV0LCA9MEQ9MEFMYW5nZm9yZCBUb3duO0Jhbmc9DQphbG9yZTtL
+YXJuYXRha2E7NTYwMDI1O0lORElBDQpMQUJFTDtXT1JLO0VOQ09ESU5HPVFVT1RFRC1QUklOVEFC
+TEU6U29jcmF0ZXMgU29mdHdhcmUgSW5kaWEgUHZ0LiBMdGQuPTBEPTBBMTAgQnJpZGUgU3RyZWV0
+LCA9MEQ9MEFMYW5nZm9yZCBUb3duPQ0KPTBEPTBBQmFuZ2Fsb3JlLCBLYXJuYXRha2EgNTYwMDI1
+PTBEPTBBSU5ESUENCkVNQUlMO1BSRUY7SU5URVJORVQ6UmlzaGFiaEBzb2Mtc29mdC5jb20NClJF
+VjoyMDA1MDIxN1QwNjA4NDJaDQpFTkQ6VkNBUkQNCg==
+
+------_=_NextPart_001_01C52310.4C19A488--

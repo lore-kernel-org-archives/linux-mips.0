@@ -1,59 +1,139 @@
-From: "Lyle Bainbridge" <lyle@zevion.com>
-Subject: RE: How to translate Little to Big endian ?
-Date: Wed, 24 Sep 2003 11:12:12 -0500
-Message-ID: <000001c382b6$9e3b6fe0$1400a8c0@radium>
-MIME-Version: 1.0
+From: "Guangxing Zhang" <guangxing@ict.ac.cn>
+Subject: Re: Re: help, question on pci communication!
+Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <01C382AE.A6330DF0.prabhakark@contechsoftware.com>
-Return-Path: <lyle@zevion.com>
+      charset="GB2312"
+Content-Transfer-Encoding: 8BIT
+Date: Thu, 25 Sep 2003 9:41:35 +0800
+Message-ID: <20030925014120Z8225589-1272+6410@linux-mips.org>
+Return-Path: <guangxing@ict.ac.cn>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: prabhakark@contechsoftware.com, linux-mips@linux-mips.org
-Message-ID: <20030924161212.o2pyDqw-5EhVn3n1sGHdEJMuMM3i8dNjyqQLB82ZxgA@z>
+To: invictus rm <invictus_rm@hotmail.com>
+Cc: linux-mips@linux-mips.orglinux-mips@linux-mips.org, angela <jhyang@ict.ac.cn>, Fuxin Zhang <fxzhang@ict.ac.cn>
+Message-ID: <20030925014135.I75m2-Q0IbbzgePnqHg1-xXKnpgRQAPQqZVA4MRCV8U@z>
 
-Hi,
+Hi, invictus rm
+      Thank you very much for your enthusiastic help.
+      I think it will be BIG help to me.Thank you.
+      There is some thing i want to see your advise and help again. 
+      In BCM1250 we run the mips-linux which is customer compiled by us,
+and in the  MCP750 there is linux too.What i want to implement is 
+transfering  data from BCM1250 to MCP750 through PCI.And using "dmesg" 
+i found the following info:(In BCM1250 ,MIPS-LINUX)
+---------------------------------------------------------------------------------------------------------------------
+	.............
+    Jan  1 00:00:11 (none) kernel: Determined physical RAM map: 
+    Jan  1 00:00:11 (none) kernel:  memory: 003a7000 @ 00000000 (usable) 
+	Jan  1 00:00:11 (none) kernel:  memory: 0f711000 @ 0075c000 (usable) 
+	Jan  1 00:00:11 (none) kernel:  memory: 1ffffe00 @ 80000000 (usable) 
+	Jan  1 00:00:11 (none) kernel:  memory: 0ffffe00 @ c0000000 (usable) 
+	Jan  1 00:00:11 (none) kernel:  memory: 003b5000 @ 003a7000 (reserved) 
+	Jan  1 00:00:11 (none) kernel: 2815MB HIGHMEM available. 
+	Jan  1 00:00:11 (none) kernel: Initial ramdisk at: 0x803a7000 (3887104 bytes) 
+	Jan  1 00:00:11 (none) kernel: On node 0 totalpages: 851967 
+	Jan  1 00:00:11 (none) kernel: zone(0): 131072 pages. 
+	Jan  1 00:00:11 (none) kernel: zone(1): 0 pages. 
+	Jan  1 00:00:11 (none) kernel: zone(2): 720895 pages. 
+@	Jan  1 00:00:11 (none) kernel: Kernel command line: root=/dev/ram0 rw bigphysarea=8192 pcisharesize=16 
+@	Jan  1 00:00:11 (none) kernel: pcisharemem allocated @ 85800000 
+	...................
+---------------------------------------------------------------------------------------------------------------------
+    In the above lines tagged with @ i notice that there is "bigphysarea=8192 pcisharesize=16",
+I have read "kernel/include/linux/mm/bigphysarea.h" ,and known that bigphysarea can be used 
+to reserve some amount of physical memory at boot-time for PCI communication.A friend told me
+using it is simple ,but he did not tell me kow :-)~(Of course i think he knows it from others).
+And i think in my kernel module i can implement it.Without any knowledge on it ,I am swamped now.
+Can you give me some info on how to do that ,such as how to use the "bigphysarea"?How the MCP750 
+see the "bigphysarea" in BCM1250 and access it (read it)?
+    I think i am so avaricious , but i really thirst for the help and advice.
+    Thank you again and in advance again.:-)~  
 
-I believe that the CSB250 port will support big or small endian. Check
-out the latest mips-linux kernel code first (2.4.22 I beleive). Then you
-need to use a big endian toolchain.  Mips not Mipsel (ie,
-mips-linux-gcc). Then open the arch/mips/defconfig-csb250 file and
-modify the CONFIG_CPU_LITTLE_ENDIAN option.  It should be:
 
-CONFIG_CPU_LITTLE_ENDIAN=y
+======= invictus_rm@hotmail.com 2003-09-24 23:15:00 WROTE��=======
 
-Then continue to build the kernel as you would for little endian. I
-think that's all from the kernel standpoint. But, are you using Micromon
-to boot the kernel?  By default I think the CSB250 and it's monitor are
-built little endian, and you won't be able to use this if you want a BE
-kernel.  You need the boot loader to put the Au1500 into BE mode.
+>hi,
+>
+>  If the BCM1250 is operating in the device mode in the peripheral slot of 
+>the CPCI chassis, u need t get the enumeration of the PCI being done from 
+>MCP 750 right.
+>  The code for MCP750 alread exists in the linux kernel ( if i remember 
+>correctly).
+>
+>U can proceed in the following directions-->
+>(a) Get the PCI enumeration working properly on the MCP750 ( look at the 
+>ouput of lspci -vvv to decide whether resource allocation is proper or not) 
+>.. The powerpc provides a fairly comprehensive PCI enumeration code( 
+>including scanning beyond the bridge).
+>
+>(b) Once u are able to see ur device in the lspci output on the MCP board , 
+>u can load the driver ( ur custom driver ) to do the transfer from the 
+>BCM1250 to MCP and vice versa.
+>
+>(v) Look at the few PCI based drivers about the way the data transfers is 
+>handled specially pci_alloc_* / pci_map_*/pci_resource_*.........
+>
+>Hope this helps
+>
+>
+>
+>
+>>From: "Guangxing Zhang" <guangxing@ict.ac.cn>
+>>To: Fuxin Zhang <fxzhang@ict.ac.cn>
+>>CC: linux-mips@linux-mips.org <linux-mips@linux-mips.org>, angela 
+>><jhyang@ict.ac.cn>
+>>Subject: help, question on pci communication!
+>>Date: Wed, 24 Sep 2003 16:29:32 +0800
+>>
+>>Hi, Fuxin and everyone see this mail,
+>>     In linux world ,newbies always like to ask and the veterans will 
+>>always be enthusiastic.:)~~
+>>     Now there is a "ask", of course i am a newbie.
+>>     Follow is the  architecture  which we are working on.
+>>     Now i want to transfer the data from the "sb1250" to mcp750 through 
+>>the PCI bus with the help of 21555 bridge.
+>>I want to implement it in kernel module.Although knowing "use the force 
+>>,read source",but i really do not know
+>>how and where to begin.
+>>     Is there any advice on it ? How to implement the communication through 
+>>PCI (or PCI-to-PCI bridge) in kernel
+>>moudle?
+>>     Any help will be appreciated!Thank in advance!
+>>
+>>                       -------------
+>>	                  |  MCP 750  |  (Power PC)
+>>                       -------------
+>>                             |
+>>　	    -------------------------------------------CPCI
+>>                          |
+>>              ---------------|--------------------------------
+>>              |      --------|-----                         |
+>>              |      |Intel 21555 |(PCI-TO-PCI Bridge)      |
+>>              |      --------------                         |
+>>              |        |                					   |
+>>              |      --------(PCI bus)					   |
+>>			 |          |                                  |
+>>			 |       --------                              |
+>>			 |		 |SB1250|(CPU)                         |
+>>			 |       --------                              |
+>>              ----------------------------------------------
+>>　　　　　　　　Guangxing Zhang
+>>　　　　　　　　guangxing@ict.ac.cn
+>>			    2003-09-24 16:03:04
+>>　　　　　　　　　　
+>>
+>>
+>>
+>>
+>
+>_________________________________________________________________
+>Talk to Karthikeyan. Watch his stunning feats. 
+>http://server1.msn.co.in/sp03/tataracing/index.asp Download images.
 
-Email if you need more details.
-
-Lyle
-
-
-
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of 
-> Prabhakar Kalasani
-> Sent: Wednesday, September 24, 2003 10:15 AM
-> To: 'linux-mips@linux-mips.org'
-> Subject: How to translate Little to Big endian ?
-> 
-> 
-> Hi all,
-> I'm trying to port linux-2.4.21 on CSB250 , which is Au1500 
-> processor based board, the processor is a Big endian, I have 
-> taken PB1500 board as my prototype, but it's used Au1500 
-> Little endian. anybody could help me out, what are the 
-> changes do i need to change to make a Little endian souce 
-> into Big endian source.
-> 
-> Is anybody worked on Cogent's CSB250 board till.
-> 
-> Thanks in advance
-> Prabhakar
-> 
+= = = = = = = = = = = = = = = = = = = =
+			
+ 
+				 
+　　　　　　　　Guangxing Zhang
+　　　　　　　　guangxing@ict.ac.cn
+　　　　　　　　2003-09-25 08:43:44

@@ -1,30 +1,51 @@
-Message-ID: <011501c217c4$8daeb0a0$0b01a8c0@w2k30g>
-From: "David Christensen" <dpchrist@holgerdanske.com>
-References: <007601c216d0$6f7f0840$10eca8c0@grendel> <00e001c216f6$86594b40$0b01a8c0@w2k30g> <3D104BA4.BEEAAB6C@mips.com>
-Subject: Re: Linux and the Sony Playstation 2
-Date: Wed, 19 Jun 2002 11:18:00 -0700
+From: "Matthew Dharm" <mdharm@momenco.com>
+Subject: RE: MIPS - Serial port
+Date: Wed, 19 Jun 2002 12:07:51 -0700
+Message-ID: <NEBBLJGMNKKEEMNLHGAICEIECHAA.mdharm@momenco.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-15"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <20020619120414.8473.qmail@email.com>
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Cc: carstenl@mips.com
-Message-ID: <20020619181800.koW70h9p0qO0HsMkOirTYJuAPRfLzzCu9fUHn5OCT5o@z>
+To: Balakrishnan Ananthanarayanan <balakris_ananth@email.com>, linux-mips@oss.sgi.com, linux-kernel@vger.kernel.org, redhat-list@redhat.com
+Message-ID: <20020619190751.klYXPeMGCKhfY8PMwxSiAmCjHMBE5yDTbGlH-7BDlu8@z>
 
-Everyone:
+The RM7000 does not have an on-chip serial port.  The EV board has
+it's own UART.
 
-"Carsten Langgaard" <carstenl@mips.com> wrote on linux-mips@oss.sgi.com:
-> The DVDs you get with the linux kit, contain all necessary hardware
-> documentation.
+Matt
 
-OK  I assume the license is also on the DVD's.
+--
+Matthew D. Dharm                            Senior Software Designer
+Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
+(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
+Momentum Works For You                      www.momenco.com
 
-1.  Are the documents and license available online?  If so, what is/are
-    the URL(s)?
-
-2.  Has Sony submitted their license to OSI for approval?
-
-
-David Christensen
-dpchrist@holgerdanske.com
+> -----Original Message-----
+> From: owner-linux-mips@oss.sgi.com
+> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Balakrishnan
+> Ananthanarayanan
+> Sent: Wednesday, June 19, 2002 5:04 AM
+> To: linux-mips@oss.sgi.com; linux-kernel@vger.kernel.org;
+> redhat-list@redhat.com
+> Subject: MIPS - Serial port
+>
+>
+> Hi all,
+>
+>    Is there anyone who has accessed the serial port of an
+> RM7000 MIPS processor? If u can provide me the code please
+> - or atleast the Serial PORT number of an RM7000 proc.
+> mounted on an EV64120A Galileo Board?
+>
+> Balakrishnan
+>
+> --
+> __________________________________________________________
+> Sign-up for your own FREE Personalized E-mail at Mail.com
+> http://www.mail.com/?sr=signup
+>
+> Save up to $160 by signing up for NetZero Platinum Internet service.
+> http://www.netzero.net/?refcd=N2P0602NEP8
+>

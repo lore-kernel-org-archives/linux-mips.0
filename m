@@ -1,32 +1,37 @@
-Message-ID: <005b01c29c74$91049050$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <011001c29c51$c76d5370$10eca8c0@grendel> <Pine.GSO.4.21.0212051307590.7346-100000@vervain.sonytel.be> <20021205124548.GK18549@bogon.ms20.nix>
-Subject: Re: Old SGI penguin logo
-Date: Thu, 5 Dec 2002 16:39:56 +0100
+From: Hartvig Ekner <hartvige@mips.com>
+Message-ID: <200212062224.gB6MOWI24351@coplin09.mips.com>
+Subject: Re: possible Malta 4Kc cache problem ...
+Date: Fri, 6 Dec 2002 23:24:32 +0100 (CET)
+In-Reply-To: <Pine.GSO.3.96.1021206174020.26674P-100000@delta.ds2.pg.gda.pl> from "Maciej W. Rozycki" at Dec 06, 2002 05:42:41 
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Return-Path: <hartvige@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Guido Guenther <agx@sigxcpu.org>, linux-mips@linux-mips.org
-Message-ID: <20021205153956.IqquyDsujlpc_mq2yLZfBONc_ADKquMr-vKmBmhTLBY@z>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Cc: Carsten Langgaard <carstenl@mips.com>, "Kevin D. Kissell" <kevink@mips.com>, linux-mips@linux-mips.org
+Message-ID: <20021206222432.LM4RK2YnGys1y_pbsn6srrtIgMHgRJ6gvTaJGGg49Y4@z>
 
-> On Thu, Dec 05, 2002 at 01:10:09PM +0100, Geert Uytterhoeven wrote:
-> > On Thu, 5 Dec 2002, Kevin D. Kissell wrote:
-> [..snip..] 
-> > > Given that we're working on a port to MIPS, not 
-> > > SGI, wouldn't it be more appropriate?
-> > 
-> > Yes, if some talented person can create a nice penguin/mips logo, that would be
-> > nice.
-> Can we keep the SGI logo for the SGI IP22, IP27 & IP32 subarchitectures?
->  -- Guido
+The documents are provided to all core customers, and our marketing dept
+has decided that nobody else needs them :-)
 
-I would hope so - and I'd hope that the DECstation guys can keep
-their DEC logos if they like - but I've found it irksome for a long time
-that whenever I boot my Malta with a graphics head, I get an SGI
-logo...
+As we now have a case which clearly proves otherwise, maybe somebody
+should reopen this discussion internally in MIPS? Dominic, do you want
+to volunteer?
 
-            Kevin K.
+/Hartvig
+
+Maciej W. Rozycki writes:
+> 
+> On Thu, 5 Dec 2002, Carsten Langgaard wrote:
+> 
+> > There is what the errata sheet says:
+> 
+>  Is the errata doc available from anywhere?  Actually are such docs
+> available for any of your current (recent) processor products? 
+> 
+> -- 
+> +  Maciej W. Rozycki, Technical University of Gdansk, Poland   +
+> +--------------------------------------------------------------+
+> +        e-mail: macro@ds2.pg.gda.pl, PGP key available        +

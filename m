@@ -1,46 +1,23 @@
-Message-ID: <01b801c1a081$3f6518e0$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <m3elkoa5dw.fsf@myware.mynet> <20020118101908.C23887@lucon.org>
-Subject: Re: thread-ready ABIs
-Date: Sat, 19 Jan 2002 01:35:38 +0100
+Message-ID: <025901c1a0c4$30ec20e0$3d6e0b0a@huawei.com>
+From: "renc stone" <renwei@huawei.com>
+Subject: use float in no-fpu mips kernel modules?
+Date: Sat, 19 Jan 2002 16:34:59 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="gb2312"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "H . J . Lu" <hjl@lucon.org>, Ulrich Drepper <drepper@redhat.com>
-Cc: GNU libc hacker <libc-hacker@sources.redhat.com>, linux-mips@oss.sgi.com
-Message-ID: <20020119003538.XhttHLwiZW1AnFuURjSgdJ8zB9iITSNQtPhd8qHfcEk@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020119083459.BdEVPqRHx3C9JC7U6Ps-KrRJJ9hFf-xSDQcH006g8to@z>
 
-> On Thu, Jan 17, 2002 at 04:07:23PM -0800, Ulrich Drepper wrote:
-> > The time is near when we (well, I) well start a drastic move toward
-> > generally using thread registers.  Even in non-threaded code.
-> > 
-> > This means that unless all architectures get thread registers (or
-> > equivalent things like Alpha's special code) we'll have a two class
-> > society of platforms where all code written for the platforms without
-> > thread register can be run on the other systems, but not vice versa.
+hi,
+  Any one know how to use float point in mips kernel?
+  We use some 2.4.5 kernel, on idt mips 32334, which has no fpu, I think.
+  we want to use the float numbers like this:
+  float a = 87;
+  a * = 1.04;
+  Any kernel functions to do this? or how to compile it use soft fpu
+support?
 
-[snip]
 
-> > MIPS: Who feels responsible?  Andreas, HJ?
-> 
-> I don't see there are any registers we can use without breaking ABI.
-> On the other hand, can we change the mips kernel to save k0 or k1 for
-> user space?
-
-Thank you for posting this to linux-mips, since I'm not sure 
-that anyone at MIPS is on the GNU_libc_hacker list.
-
-It would, in principle, be possible to save/restore k0
-or k1 (but not both) if no other clever solution can be found.  
-There are other VM OSes that manage to do so for MIPS, 
-for other outside-the-old-ABI reasons.  It does, of course,
-add some instructions and some memory traffic to the 
-low-level exception handling , and we would have to look 
-at whether we would want to make such a feature standard 
-or specific to a "thread-ready" kernel build.
-
-            Regards,
-
-            Kevin K.
+     Thanks in advance.

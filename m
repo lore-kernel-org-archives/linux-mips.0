@@ -1,36 +1,31 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: "Alistair Lambie" <alambie@wellington.sgi.com>
-Message-ID: <9705281448.ZM6814@windy.wellington.sgi.com>
-Date: Wed, 28 May 1997 14:48:38 +0000
-In-Reply-To: Steve Alexander <sca@refugee.engr.sgi.com>
-        "Re: Linux/SGI Logos (was: Re: strace/truss equiv?)" (May 28,  2:47pm)
-References: <199705280245.TAA08534@refugee.engr.sgi.com>
-Subject: Re: Linux/SGI Logos (was: Re: strace/truss equiv?)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199705281452.KAA28458@neon.ingenia.ca>
+Subject: Re: gmake?
+In-Reply-To: <338C45DF.63DE@munich.sgi.com> from Martin Knoblauch at "May 28, 97 04:49:03 pm"
+Date: Wed, 28 May 1997 10:52:21 -0400 (EDT)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Steve Alexander <sca@refugee.engr.sgi.com>
-Cc: Seth Morabito <sethm@procyon.corp.sgi.com>, linux@cthulhu.engr.sgi.com
-Message-ID: <19970528144838.aXyuHrisy3GjVBfzj10nA8qKOcAzxRdKyKTC5mN-FBg@z>
+To: Martin Knoblauch <knobi@munich.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970528145221.pIJSCBJJ17MCTJI8LXGoAoH0pAlWaomDTcBRnDtQOmc@z>
 
-On May 28,  2:47pm, Steve Alexander wrote:
-> Subject: Re: Linux/SGI Logos (was: Re: strace/truss equiv?)
-> "Alistair Lambie" <alambie@wellington.sgi.com> writes:
-> >The second one should be 'Powered by SGI!  Can we get the logo to
-spin....that
-> >would be cool!
->
-> I like the first one, myself.
->
-> Nothing warms a frosted penguin butt like an R10K.
->
+Thus spake Martin Knoblauch:
+>  We already solved the issue :-) Dave has my copy of 3.75.
 
-Maybe we need a version with the penguin in the cage!  'SGI tames Linux'??
+Psst!
+I'm Mike!
 
-Alistair
+Dave is one of the people who know what they're doing. =)
+
+Mike
+(flattered, though...)
 
 -- 
-Alistair Lambie					    alambie@wellington.sgi.com
-Silicon Graphics New Zealand				  SGI Voicemail: 56791
-Level 5, Walsh Wrightson Tower,				    Ph: +64-4-802 1455
-94-96 Dixon St, Wellington, NZ			  	   Fax: +64-4-802 1459
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#> Paranoid for money.                            Sarcastic for kicks. 
+#>                                                                     
+#> "They already *KNOW* I am a whacko, Karen.                          
+#>                  That doesn't mean I am *WRONG*." -- mjr@clark.net  

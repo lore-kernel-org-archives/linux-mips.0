@@ -1,33 +1,39 @@
-Received: from keniowins (151.24.217.171) by smtp2.libero.it (7.0.012)
-        id 3E9BEBC3016C3BA8 for linux-mips@linux-mips.org; Fri, 20 Jun 2003 13:20:08 +0200
-From: "kenio" <chenio@libero.it>
-Subject: info...
-Date: Fri, 20 Jun 2003 13:21:36 +0200
-Message-ID: <BAEMJAJODKAHABOIHOBKIEOLCBAA.chenio@libero.it>
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <chenio@libero.it>
+Content-Transfer-Encoding: 8BIT
+Subject: ASID query : 2.4.20
+Date: Mon, 23 Jun 2003 10:58:41 -0700
+Message-ID: <D9F6B9DABA4CAE4B92850252C52383AB0796834F@ex-eng-corp.efi.com>
+From: "Ranjan Parthasarathy" <ranjanp@efi.com>
+Return-Path: <ranjanp@efi.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20030620112136.c0KU-hitig6K0Lv_Tqs8TbUjcGwsK0HYPXKrvqTn_H0@z>
+Message-ID: <20030623175841.KCpJytowMgjrZdWwmyV9UHKVY7cjVummB11uLWsQP1c@z>
 
-Hello
+I am seeing an issue with the way the current ASID circulation is implemented. The processor I am working on has the global bit implemented in the entryhi instead of the lo0 and lo1 registers.
 
-I would like to install a linux operating system on my RM600E (Siemens).
+Entry hi
 
-I downloaded a linux debian distribution for mips processor, but I have some
-problems to start the installation from CDROM, I can't put from CDROM
-because i get the following error.
+31:13 : VPN2
+12:7   : Reserved
+6       : Global Bit
+5:0    :  ASID
 
-this is the command
+The ASID_MASK is 0x3f and ASID_FIRST_VERSION becomes 0x40 which seems to be written to the entryhi if we use the current code. On most processors the bits after the ASID upto the VPN/VPN2 bits seem to be reserved,RO, writes are ignored and so things do not break. In our case this does not work as ASID_FIRST_VERSION would enable the global bit when we launch the first process.
 
-boot2: bot -f cd(0,0,10)path_for_image_file
+The code in asm-mips/mmu_context.h should use
 
-the system cannot start the CDROM.
+write_c0_entryhi(cpu_asid(cpu,next));
+instead of 
+write_c0_entryhi(cpu_context(cpu,next));
 
-Can you help me?
+in functions switch_mm,activate_mm,drop_mmu_context.
 
-thanks
+Any comments, feedback is most welcome.
+
+Thanks
+
+Ranjan

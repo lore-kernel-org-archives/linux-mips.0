@@ -1,30 +1,42 @@
-Date: Fri, 20 Apr 2001 10:45:52 -0300
-From: Ralf Baechle <ralf@oss.sgi.com>
-Subject: Re: Linux on LSI EZ4102
-Message-ID: <20010420104552.B1973@bacchus.dhis.org>
-References: <20010418132323.A25356@foobazco.org> <E14pzEm-0005jl-00@the-village.bc.nu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E14pzEm-0005jl-00@the-village.bc.nu>; from alan@lxorguk.ukuu.org.uk on Wed, Apr 18, 2001 at 10:11:42PM +0100
+Date: Fri, 20 Apr 2001 15:53:10 -0400 (EDT)
+From: George Gensure <werkt@csh.rit.edu>
+Subject: Re: glibc build
+In-Reply-To: <3AE08630.FF25517A@ayrnetworks.com>
+Message-ID: <Pine.SOL.4.31.0104201549180.3449-100000@fury.csh.rit.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Keith M Wesolowski <wesolows@foobazco.org>, Ralph Metzler <rjkm@convergence.de>, Quinn Jensen <jensenq@Lineo.COM>, linux-mips@oss.sgi.com
-Message-ID: <20010420134552.O2d5CA5IBouwTrMAw0wpDCywC48crXJ-YJTL6pKSsXg@z>
+To: Bryan Chua <chua@ayrnetworks.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010420195310.wNi3wYYK-Q8Fj5VHoF4bC8F7epvuy3qLOEPZLjNxx-U@z>
 
-On Wed, Apr 18, 2001 at 10:11:42PM +0100, Alan Cox wrote:
+I added the following entry to the environment variable CFLAGS and to the
+CFLAGS entry in glibcbug - -D__PIC__ ... got the same error.
 
-> > Any -ac kernel contains at most the same changes that are in the oss
-> > tree.  Trees other than the oss one, including ac, are likely to
-> > contain more bugs.
-> 
-> -ac has all the stuff Ralf has sent me. Linus has most of that. In some
-> ways -ac has less bugs (eg the oss tree has serious disk corruption bugs -ac
-> doesnt) but I certainly cant guarantee -ac will always build on mips, and 
-> right now with the sem changes it quite probably wont.
+George
+werkt@csh.rit.edu
 
-It won't nor will Linus latest pre-patch.
+On Fri, 20 Apr 2001, Bryan Chua wrote:
 
-Time to start sending more patches to you & Linus ...
-
-  Ralf
+> I ran into this at some point and tracked it down to adding -D__PIC__ to
+> CFLAGS.  I don't think it is necessary on newer (unreleased) compilers.
+>
+> -- bryan
+>
+> "George Gensure,,," wrote:
+>
+> > I get the following error while trying to cross-build glibc for mips on
+> > an i686.  Can anyone give any insight?
+> >
+> > ../sysdeps/mips/setjmp.S: Assembler messages:
+> > ../sysdeps/mips/setjmp.S:43: Error: Can not represent
+> > BFD_RELOC_16_PCREL_S2 relocation in this object file format
+> > make[2]: *** [/usr/local/crossbuild/glibc-build/setjmp/setjmp.o] Error 1
+> > make[2]: Leaving directory `/usr/local/crossbuild/glibc-2.2/setjmp'
+> > make[1]: *** [setjmp/subdir_lib] Error 2
+> > make[1]: Leaving directory `/usr/local/crossbuild/glibc-2.2'
+> > make: *** [install] Error 2
+> >
+> > George
+> > werkt@csh.rit.edu
+>

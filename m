@@ -1,32 +1,41 @@
-From: rajesh.palani@philips.com
-Subject: sysmips syscall
-Message-ID: <0056910008698539000002L192*@MHS>
-Date: Fri, 17 Nov 2000 19:28:50 -0600
+Message-ID: <0000004e4d37$00005be7$000004a8@63.52.248.235>
+From: McLean@d10.de
+Subject: Brand New FREE Satellite System
+Date: Fri, 17 Nov 2000 22:17:27 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; name="MEMO 11/17/00 19:26:59"
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: linux-mips@oss.sgi.com, linux-mips@fnet.fr
-Message-ID: <20001118012850.8rulLYXYbb4pzLRAenDzSw6_dEbanDHkwH-a8phEQXY@z>
+To: McLean@d10.de
+Message-ID: <20001118021727.vSvDeMa0k_4aUl9LGts_v2wv1XJXj4iJzY0TO_CgbS8@z>
 
-Hi,
+FREE Satellite T.V. System and FREE Installation
 
-   The following lines appear in the linuxthreads/sysdeps/mips/pt-machine.h file in version
-LinuxThreads 2.1.2:
+For a limited time we'll give you this top of the line Digital
+Satellite System for FREE!  We'll even include Free installation.
 
-TODO: This version makes use of MIPS ISA 2 features.  It won't
-   work on ISA 1.  These machines will have to take the overhead of
-   a sysmips(MIPS_ATOMIC_SET, ...) syscall which isn't implemented
-   yet correctly.  There is however a better solution for R3000
-   uniprocessor machines possible.
+Enjoy over 500 Channels of crystal clear digital picture and
+cd stereo sound on your FREE Satellite TV System.  Why pay
+for these items in a retail store, when we're giving you the
+same satellite package for free.
 
-My questions are:
-1.  Is the sysmips syscall implemented correctly yet?
-2.  What is the better solution for R3000 uniprocessor machines?
-3.  Does anyone have a patch for LinuxThreads that supports MIPS ISA 1?
 
-   Thanks and regards,
+Call 888-514-6881 to be Guaranteed Your FREE Satellite Today
 
-   Rajesh 
+
+This Innovative 20" Satellite includes a stereo receiver and
+an infrared remote.  With this FREE offer you will have both
+Interactive Television Capability and an On Screen Program Guide.
+
+This limited time FREE offer is much less than the monthly cost
+of cable tv. All you have to do is call us to arrange delivery.   
+If you call today, we'll throw in a second receiver for your
+second T.V. free.
+
+
+Call 888-514-6881 to Begin Surfing through 500 Channels Today!
+
+
+To be removed send email to tcaiom@yahoo.com

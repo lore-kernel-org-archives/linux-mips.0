@@ -1,36 +1,19 @@
-Date: Fri, 20 Apr 2001 16:21:20 -0400 (EDT)
-From: George Gensure <werkt@csh.rit.edu>
-Subject: Re: glibc build
-In-Reply-To: <3AE096DC.ECB49D19@ayrnetworks.com>
-Message-ID: <Pine.SOL.4.31.0104201612540.3449-100000@fury.csh.rit.edu>
+Subject: Re: ld.so-1.9.x for mips
+Date: Tue, 24 Apr 2001 14:43:51 +0100 (BST)
+In-Reply-To: <3AE52A87.9050403@jungo.com> from "Michael Shmulevich" at Apr 24, 2001 10:25:59 AM
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E14s36f-00024A-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: Bryan Chua <chua@ayrnetworks.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010420202120.IsurNmzsC3LS29wvV0Apb97qk0SIGPM9InUcT_npVKA@z>
+To: Michael Shmulevich <michaels@jungo.com>
+Cc: Ralf Baechle <ralf@oss.sgi.com>, Linux/MIPS <linux-mips@oss.sgi.com>, FR Linux/MIPS <linux-mips@fnet.fr>
+Message-ID: <20010424134351.ciZdql4GoM0EL1KXOuTYY1B5BbzxJ2IqbFfNQh9fGSc@z>
 
-I went throught and deleted all of those entries in assembly files which
-caused problems, but I end up with similar problems later, only the
-assembler seems to have been running from standard input..
+> The whole idea behind uClibc was to get rid of that huge chunk of 
+> memory-wasting package, and I do not mean to use any part of it.
+> Unless you can tell me how ld.so of glibc can be compiled standalone :-)
 
-George
-werkt@csh.rit.edu
-
-On Fri, 20 Apr 2001, Bryan Chua wrote:
-
-> CFLAGS=-D__PIC__ make all [check] install
->
-> the target "check" will not work if you are cross compiling, so you
-> might as well install...  You end up coming across this in several
-> places.
->
-> -- bryan
->
-> "George Gensure,,," wrote:
->
-> > Where is the CFLAGS that I should add to? In the Subdirectories?
-> >
-> > George
-> > werkt@csh.rit.edu
->
+You might want to look at newlib instead. That has mips support but not afaik
+MIPS linux syscall bindings yet. Its used for things like eCos

@@ -1,23 +1,48 @@
-Date: Wed, 11 Jul 2001 10:56:26 -0700 (PDT)
-From: "John D. Davis" <johnd@Stanford.EDU>
-Subject: Illegal Instruction with 2.4.2 and 2.4.3
-Message-ID: <Pine.GSO.4.31.0107111049350.2834-100000@myth1.Stanford.EDU>
+Reply-To: <peter@milleson.com>
+From: "Peter Milleson" <peter@milleson.com>
+Subject: boots then kernel panic
+Date: Wed, 11 Jul 2001 14:17:14 -0500
+Message-ID: <MEEBIKPBEIOBCILMHHEJOEMDCCAA.peter@milleson.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: debian-mips@lists.debian.org, linux-mips@oss.sgi.com
-Message-ID: <20010711175626.dgJ9L9KIGzLRY0GCJhMCyuaznEYHDEX5wPR83MbNJ3U@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010711191714.ZztYTzknmKrinP5xo7rw60Ihndjk2Jfo09i2Ijo4a6Y@z>
 
-I have been able to natively build kernels 2.4.0,2,3,4,5 on an Indy with
-without the CD-ROM support. I have only been able to boot 2.4.2 and 2.4.3.
-Previously, I was running 2.4.0-test9. 2.4.4 and 5 have ext2_fs inode
-problems. 2.4.0 hangs at cleaning the /tmp directory.
+Hi all!
 
-Extracting tar files causes an illegal instruction on 2.4.2 and 3.  Is
-there a patch for this.  Furthermore, are there patches available for all
-the various kernel versions and how do I get them for each version of the
-kernel.  Finally, I have read some email on stress tests.  Are those
-publicly available?
+Finally have my bootp and tftp server working in order for my used Indy 175
+to boot off the network. The system finally downloaded the kernel image (the
+kernel from hardhat-sgi-5.1) and the system kernel panics with the following
+error:
 
-thank you for your time,
-john
+SCSI bus is being reset for host 0 channel 0.
+scsi0: reset. page fault from irq handler: 0000
+$0 : {lots of numbers}
+$4 : "	"
+$8 : "	"
+$12: "	"
+$16: "	"
+$29: "	"
+$24: "	"
+$28: "	"
+epc	: 880fa97c
+Status: 1004fc82
+Cause	: 000000008
+Aiee, killing interrupt handler
+Kernel panic: Attempted to kill the idle task!
+In swapper task - not syncing
+
+Could there be a problem with the onboard SCSI controller? I don't know of
+any way to test the SCSI subsystem without a bootable SGI cdrom. I am going
+to try and download a different (newer?) kernel and try again and see what
+happens.
+
+Any help or pointers in the right direction would greatly be appreciated.
+
+Thanks,
+
+Peter
+mailto:pitr256@milleson.com

@@ -1,56 +1,32 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199712022231.OAA42384@oz.engr.sgi.com>
+Message-ID: <m0xd2Na-0005FtC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
 Subject: Re: Linux on the O2
-Date: Tue, 2 Dec 1997 14:31:26 -0800 (PST)
-In-Reply-To: <19971202231009.32146@grass.uni-koblenz.de> from "Ralf Baechle" at Dec 2, 97 11:10:09 pm
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Wed, 3 Dec 1997 00:09:26 +0000 (GMT)
+In-Reply-To: <Pine.LNX.3.95.971202161948.10955B-100000@vertigo.cs.indiana.edu> from "cypher" at Dec 2, 97 04:50:40 pm
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ralf Baechle <ralf@uni-koblenz.de>
-Cc: cypher@vertigo.cs.indiana.edu, linux@cthulhu.engr.sgi.com
-Message-ID: <19971202223126.cCPkH6RJGWzY9Ja0Aa6w2k8hqaxi1LD8k5yeyVyVlXw@z>
+To: cypher <cypher@vertigo.cs.indiana.edu>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19971203000926.fm6KaVooNc9R0jEfZasi9pD3YAUroAxwd94xbGneqEA@z>
 
-Ralf wrote:
-:
-:On Tue, Dec 02, 1997 at 04:50:40PM -0500, cypher wrote:
-:
-:I can well imagine that way can be found under which an O2 port could become
-:reality.  It's probably most important that customers (== $$$) ask for Linux
-:for their boxes and that word has to spread upto the higher managment.
-:
-:> Right now I am basically in position (not officially supported by the
-:> university of course, but there not telling me not to do it either, if you
-:> know what I mean) where I've been given and Indy and an O2 to work on
-:> porting Linux while on the clock.
-:
-:I suggest to work on the Indy.  There is Indy code that just needs a bit of
-:polishing and debugging, but essentially we're relativly close.  Working for
-:the O2 would mean that you'll aside of a bigger technical task you'll also
-:have to solve a political problem.
-:
-It is nice to see interest in Linux from big SGI customers
-(and I wish there was more of this :-)
+> I'm guessing that they're looking at this as if an Indy running Linux
+> won't really be that competetive with the O2s runnning IRIX, which I can
+> almost understand. 
 
-I'll second Ralf.  Once we have an Indy port that's stable,
-easy to install and maybe supported by Red-Hat or other
-Linux distributors. Once we have something that's actually used
-by many Indy owners (rather than just a handful), and once SGI
-real customers (who bring SGI real money) seem to like it and
-talk to their SGI reps about their interest in Linux on SGI,
-only then, management may be open to opening more HW specs
-to the public.
+Ah conspiracy theories abound. It could just be they didnt want anyone
+cloning their hardware
 
-I believe there are a few hundreds of thousands Indy's out there.
-If we can make one in ten of them (10%) switch to Linux, it would be
-a great achievement and one that would certainly be noted
-by everyone at SGI, including those who can approve releasing
-further specs.
+> I realize that SGI has a vested interest in seeing IRIX succeed, and IRIX
+> is probably (it hurts to say this) better than Linux when running 128 (or
+> soon 4096) CPUs. Linux however, is great lightweight OS for workstations
 
-And let's not waste too many resources on the N64 port either :-)
+Right now Linux scales to about 2-3 CPU's for generic stuff in 2.1.x maybe
+4 if the hardware is sane (eg Ultrasparc). To go to 128-4096 CPU's really
+involves changing the fundamental rules and building a sort of very tightly
+interlinked multicomputer - AP1000+ on steroids as it were. There is some
+interest in this from various people, notably in sticking 9 or 10 EBSA285
+Digital strongarm boards in a PCI backplane and using PCI bus as the 
+backbone network.
 
-As Mao Zedong used to say... hint, hint, nudge, nudge.
--- 
-Peace, Ariel
+Alan

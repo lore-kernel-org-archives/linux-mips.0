@@ -1,33 +1,27 @@
-Reply-To: <sseeger@stellartec.com>
-From: sseeger@stellartec.com (Steven Seeger)
-Subject: RE: NEC VR4181A
-Date: Thu, 13 Feb 2003 05:22:36 -0800
-Message-ID: <02c101c2d362$f9e2eed0$3501a8c0@wssseeger>
+Received: from ngw04ykf.rim.net (ngw04ykf.rim.net [10.102.100.115])
+	by mhs99ykf.rim.net (Postfix) with SMTP id 3CC95B46DF
+	for <linux-mips@linux-mips.org>; Thu, 13 Feb 2003 15:50:01 -0500 (EST)
+Received: from XCH21YKF.rim.net ([10.102.100.36])
+ by ngw04ykf.rim.net (NAVGW 2.5.2.9) with SMTP id M2003021315500029625
+ for <linux-mips@linux-mips.org>; Thu, 13 Feb 2003 15:50:00 -0500
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20030212224837.D16015@mvista.com>
-Return-Path: <sseeger@stellartec.com>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: Nwebie - Linux Install on Indigo2
+Date: Thu, 13 Feb 2003 15:49:59 -0500
+Message-ID: <C5F1D2493CDBD14F83AD2DCA9DB882ED0A481C90@xch05ykf.rim.net>
+From: "Aleksandar Todorovic" <atodorovic@rim.net>
+Return-Path: <atodorovic@rim.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Jun Sun' <jsun@mvista.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20030213132236.522Oy0-8oUdvHMwkTbCk7QB6tPE7vIC5zD7qb_RbCdc@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030213204959.BRs0A8zrlf4C0E7hr0kNhmKAF3LmGaoZZMND8kyUZ2k@z>
 
->Osprey uses Vr4181, which is a different chip from vr4181a.
+Hi everyone,
 
-Yeah I didn't notice the A on there. We are looking into the possibility of
-using the A in our board. Part of the problem is that the A only comes in
-BGA and we don't like dealing with that.
+from the linux-mips docs I understand that Indigo2 is a special case when it comes to Linux? Can anyone please point me in the right direction of some sort of install instructions for this, or any information in regards to getting Linux running on an Indigo2
 
->Interesting.  I was trying to get RT-Linux working at one time
->but aborted that effort in the middle.
-
-Getting RTAI working wasn't easy. Took over a week and it was supposedly
-already "ported." One of these days I really must find the time to check in
-my changes to that project. It works very well and is quite stable. I think
-46 us worst-case interrupt response off one of the VR4181's interrupts from
-an external source is very good.
-
-Steve
+Thanks
+Alex

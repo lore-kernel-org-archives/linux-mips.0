@@ -1,42 +1,47 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: "Bob Mende Pie" <mende@piecomputer.corp.sgi.com>
-Message-ID: <9604230935.ZM11797@piecomputer.corp.sgi.com>
-Date: Tue, 23 Apr 1996 09:35:15 -0700
-In-Reply-To: lm@gate1-neteng.engr.sgi.com (Larry McVoy)
-        "Re: David Miller is on the list" (Apr 22,  7:35pm)
-References: <199604230235.TAA13171@neteng.engr.sgi.com>
-Subject: Re: David Miller is on the list
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199604232227.PAA00323@yon.engr.sgi.com>
+Subject: Re: What target (was David ...)
+Date: Tue, 23 Apr 1996 15:27:36 -0700 (PDT)
+In-Reply-To: <199604232054.NAA01434@titian> from "Mike McDonald" at Apr 23, 96 01:54:29 pm
+Reply-To: ariel@cthulhu.engr.sgi.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Larry McVoy <lm@gate1-neteng.engr.sgi.com>, "David S. Miller" <davem@caip.rutgers.edu>
-Cc: ariel@cthulhu.engr.sgi.com, linux@yon.engr.sgi.com
-Message-ID: <19960423163515.adbXv2l1nbVHpFtpqu-vbQjhK-NhmHfgQsP4IAfDzB4@z>
+To: Mike McDonald <mikemac@titian.engr.sgi.com>
+Cc: ariel@cthulhu.engr.sgi.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19960423222736.gLJQFDHMcgrpKc0aRRhryx8XRzU01SM7DrzN0hKwIE4@z>
 
-On Apr 22,  7:35pm, Larry McVoy wrote:
-> Subject: Re: David Miller is on the list
-> :    >	4) xfishtank (don't laugh)
-> :    >
-> :    Bingo. Larry runs this too. You weird people. Is this a conspiracy? :-)
-> :
-> : Nope, not a conspiracy.  Grab a copy of:
-> :
-> : caip.rutgers.edu:/pub/davem/penguin.gif
-> :
-> : Then run 'xfishtank -p penguin.gif' after hacking endlessly on down
+>Mike dijo:
+>>yo dijo:
+>>
+>>P.S.
+>>gcc doesn't have support for 64 bit MIPS 27 ISA, I guess, but
+>>nobody is stopping us from using our compilers (as well as gcc
+>>at our convenience).
 >
-> Nah, try this:
+>  I strongly believe that using our compilers would be a "bad" thing
+>for the initial port. Requiring someone to buy IDO inorder to compile
+>a free OS seems like the "wrong" thing to me. Now, if we (SGI) decide
+>to ship a Linux version, then yes, using our compilers is OK. Let's
+>just make sure that the port is dependant on our compilers in any way
+>at this point. (I doubt that's what you were suggesting. I just want
+>to make it clear before we get started.)
 >
-> 	xearth &
-> 	xfishtank -d
 >
-> Fish in spaaaaaaaaaaaaaaace!
+Bob and I are working separately on making our compilers (actually only
+the C one, not Ada :-) be bundled with Irix (and possibly licence enabled
+for a nominal fee, which can be done automatically without human
+intervention -- surprisingly this may increase revenues because
+the cost of handling goes to zero and the potential upside due to
+lowering barriers is large). I think we have a very good chance of
+acheiving this as soon as our upcoming big software release.
 
-And all of the fish are bubbling the same thing ... "cpu ... more cpu ..."
-
-:-)
-
-
+Also, I agree, we should make sure that whatever we do is buildable
+by gcc. And we should also be paying Cygnus to do a real supported
+full port (including ld), but this is harder to achieve (need $$$
+from management) at this point.  However, after we have Linux and it
+takes off, everything related to free software would be possible :-)
 -- 
-				      /Bob...			 mende@sgi.com
-				http://reality.sgi.com/mende/
+Peace, Ariel

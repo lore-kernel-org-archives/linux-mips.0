@@ -1,80 +1,95 @@
-Message-ID: <59c501bf894d$31be85c0$0a00000a@decoy>
-From: "Jay Carlson" <nop@nop.com>
-References: <38C54F05.458A3EFE@transvirtual.com> <20000308140301.B1425@uni-koblenz.de> <38C6A5D4.F08DFCE4@transvirtual.com> <20000308174251.A6399@uni-koblenz.de> <38C6BE35.C58B0630@transvirtual.com> <20000308180850.D6399@uni-koblenz.de>
-Subject: Re: Mips/Linux integration of latest GCC, Binutils & GLibc
-Date: Wed, 8 Mar 2000 17:25:18 -0500
+Message-ID: <007701bf89ae$ae3d9710$0ceca8c0@satanas.mips.com>
+From: "Kevin D. Kissell" <kevink@mips.com>
+Subject: R39xx and Processor IDs (was Re: FP emulation patch available)
+Date: Thu, 9 Mar 2000 11:03:04 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Ralf Baechle <ralf@uni-koblenz.de>, Tim Wilkinson <tim@transvirtual.com>
-Cc: linux-mips@fnet.fr, linux-mips@vger.rutgers.edu, linux@cthulhu.engr.sgi.com
-Message-ID: <20000308222518.T_bin25c6FSKDCa3aiTgju7p9N6J7gXIAQUaHQTOzdg@z>
+To: Dominic Sweetman <dom@algor.co.uk>
+Cc: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>, Linux SGI <linux@cthulhu.engr.sgi.com>, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <20000309100304.hz7DoXv3O2tZEAABShRbblaexF4TPpe3RNpJsusQZp0@z>
 
-> > Okay this makes sense.  This then means there's a problem with GLIBC
-since it
-> > excludes certain files when building a static library but unfortuantely
-> > needs them because it uses #ifdef PIC to include bits of code related to
-> > shared library workings (essentially it considers PIC to mean SHARED
-when
-> > this may not infact be the case - not for MIPS anyway).
-> >
-> > So what you're saying is pretty much how I have my gcc, binutils and
-glibc
-> > set up - I introduced a -DSHARED to glibc (which I suspect isn't really
-> > okay) when building shared libraries so static libraries didn't include
-> > the bad code.  I may look for a better solution however.
+>> If Philips/Tosh are really aliasing the PrID of the R4650, sombody
+>> has done something Deeply Evil (and probably in violation of one
+>> agreement or another).  I'm checking with MIPS HQ on this, and
+>> hoping that in fact the R4650 value in the source code is in error.
 >
-> Indeed.  The problem is just that Ulrich drepper didn't accept such a
-patch
-> the last time I sent it to him.
+>The R3900 should be 34 (decimal).  We don't have a record of the
+>R4640/4650, which must surely be the same as each other.
+
+The collision is real.  As has been noted elsewhere in this thread,
+the R4640/4650 has no business running Linux, as it lacks a
+page-based MMU.  I had a bit of "cognative dissonance" when
+I did the conversion to the C-based system, but I left it in, figuring
+it was better to preserve partial support than to eliminate all trace
+of it.   But I think it could be argued that the R3900 characteristics
+should go into the table in place of those for the R4650 (which 
+are anyway wrong bacause they indicate that there is a TLB).
+Those characteristics should be essentially the same as those
+for the R3000A.
+
+>Probably not.  But this is a good chance to ride a favourite hobby
+>horse... 
 >
-> > I've also made a bunch of elf related changes to mips/linux so that the
-> > assembler output from gcc is more like the elf output for the x86/linux
-> > targets.  It's interesting to note that mips/linux doesn't even defined
-> > linux for CPP (and doesn't do a bunch of other stuff either come to
-that)
-> > which confused things no end when compiling the linux kernel.
+>But I think code should *never* read the PRId value.
+>
+>It often doesn't change when the chip does, and often changes when the
+>chip doesn't.  There's no guarantee that it marks the difference you
+>care about, and if it does now there's no guarantee it will do so
+>tomorrow.  Chip companies change it (or don't) for marketing reasons
+>more often than technical ones.
+>
+>Instead, software should contain probes for individual attributes.
+>Want to know whether you've got an R4000-style CP0?  Read the 'count'
+>register and see is it counting.  Want to know how large the cache is?
+>Easy to look for wraparound on an R3000; on an R4000, if you can't be
+>bothered to do the rather elaborate code, use the Config register.
+>Want to know whether the cache is 2-way set associative?  It usually
+>doesn't matter, so remain in happy ignorance.  How big is the TLB?
+>read and write to it and see when it wraps.  And so on.
+>
+>[Nobody will listen, probably rightly - I don't seem to have time to
+> hack code any more...]
 
-The mips-linux configuration in gcc 2.95.x out of the box is just awful.  It
-was obviously never tested against a full rebuild of the system, or in fact
-any significant rebuild.
 
-> Go to oss.sgi.com and get /pub/linux/mips/src/egcs/egcs-1.0.3a-2.diff.gz
-> and integrate that with a current egcs.  This is what most people are
-> using and is known to work.  It generates assembler output that is known
-> to be working with binutils and even halfway human-readable as far as this
-> can be said from compiler output.  You'll also find binutils test patches
-> for more current releases there.
+I quite sympthise with your frustration, and indeed the sloppy 
+use of PrID by various MIPS licensees makes it impossible
+to use *only* the PrID to determine things like cache size.  That
+having been said, I don't see it as being practical to dynamically
+probe for, say, the CP0 hazards to be respected in the TLB miss
+handler.  Probing for the TLB size may not be as simple as you 
+think: there's nothing that says that access to index N+1 is going
+to *necessarily* wrap to 0 - that's an implementation detail.
+Similarly, testing for the presence or absence of an FPU
+*might* be as simple as setting the CU1 bit and seeing if
+it can be read back, but I'm aware of at least one MIPS-based
+design where there's a flip-flop there even without an FPU.
+Sometimes one *does* care about the associativity of a
+cache, as in the case where one wants to flush all possible
+virtual aliases of an address.  Etc, etc.
 
-As Ralf sez, because MIPS PIC and non-PIC code can't intercall, generation
-of non-PIC code for use in static libraries is incorrect, unless EVERYTHING
-you're linking is non-PIC.   Most people feel that giving up shared
-libraries is too high a price for the potential gain in code density and
-efficiency from non-PIC/non-ABI builds.  Me, I still have lingering doubts,
-but I don't have working code yet, so...
+The PrID has been horribly abused, and can not be treated as 
+if it were a true architectural mechanism for distinguishing 
+implementations, but it remains at minimum one of the tools 
+available to the OS to determine where it is running. With the 
+newer MIPS32 and MIPS64 CPUs, we have codified mechanisms 
+for determining most of the information in the mips_cpu structure 
+based on extended configuration information from the core. Most 
+of the MIPS licensees have agreed to use this system for future 
+designs.  But so long as Linux is going to be used on older CPUs, 
+which will be for a  while, I fear we will be stuck with a mixture of 
+PrID and heuristics.
 
-I did a port/translation/reinterpretation of Ralf's configuration in
-egcs-1.0.3a-2 for gcc 2.95.1.  My take on this, as expressed in
-ftp://ftp.place.org/pub/nop/linuxce/gcc-2.95.1-interim-990916.patch.gz , is
-that gcc should always build as PIC, unless some Makefile etc really does
-want to ask for the non-PIC lossage.
+            Regards,
 
-The primary flag for controlling this in my config
-is -mabicalls/-mno-abicalls.  -mabicalls is the default (as it was in Ralf's
-config).  -D__PIC__ and -D__pic__ are asserted unless -mno-abicalls is set
-(which also implies -fno-pic).   glibc is happy with this.  So is the
-kernel.  And random makefiles, libtool, autoconf, etc, can happily build
-with their bogus -fpic or -fPIC options from other platforms and not break
-anything.
+            Kevin K.
+__
 
-Originally I thought that it would not be necessary to ever pass -KPIC to
-the assembler; at the top of each PIC/abicalls assembly file GCC produces,
-it sticks in a ".abicalls" directive which has the same effect as the -KPIC
-option.  That worked just great until I encountered .S files that didn't
-have that directive and didn't know any better, so I had to put the -KPIC
-back in :-(
-
-Jay
+Kevin D. Kissell
+MIPS Technologies European Architecture Lab
+kevink@mips.com
+Tel. +33.4.78.38.70.67
+FAX. +33.4.78.38.70.68

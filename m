@@ -1,35 +1,41 @@
-Date: Sun, 16 Sep 2001 19:50:08 -0300 (ADT)
-From: Wilbern Cobb <cobb@cn.csoft.net>
-Subject: Re: linker problem: relocation truncated to fit
-In-Reply-To: <20010917000719.B25531@false.linpro.no>
-Message-ID: <Pine.BSO.4.33.0109161949300.4519-100000@oddbox.cn>
+Message-ID: <20010917075345.52314.qmail@web14007.mail.yahoo.com>
+Date: Mon, 17 Sep 2001 00:53:45 -0700 (PDT)
+From: Eugenio Diaz <getnito@yahoo.com>
+Subject: Re: Origin 200
+In-Reply-To: <Pine.LNX.4.33.0109161018030.27130-100000@mercury.shreve.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux-mips@oss.sgi.com
-To: Petter Reinholdtsen <pere@hungry.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010916225008.o2jQ1dbpYkhxHpaRnuyuHlREXsJqGcfs2zLlk4i5gko@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010917075345.vpOdO-hoo10m-NMF2xRaDAGNRLJMhdKxHP-5VgyuW_8@z>
 
-On Mon, 17 Sep 2001, Petter Reinholdtsen wrote:
+--- Brian <signal@shreve.net> wrote:
+> 
+> Its the rackmount version..............I will search for some
+> benchmarks to see how this system ranks compared to some
+> PIII and other systems.
+> 
+> Are there any graphics options available for these, or just console?
+> 
+> I realize the origin is more of a "server", used for serving files
+> and web pages, than a workstation.
 
-> [Wilbern Cobb]
-> > This is a `feature' of the MIPS toolchain. Global and static items <= n
-> > bytes are placed into the small data or small bss sections instead of
-> > the normal data or bss sections as an optimization. Excess items would
-> > cause these linker errors.
-> >
-> > Pass the compiler the -Gn flag (default is 8 bytes), ie. -G4 should work
-> > for most purposes.
->
-> I tried -G4, -G2 and -G1 without any luck.  Even with -G1 there are still
-> more than 9300 relocation messages.  (Do I need to compile all the object
-> files again, by the way?  I've only tried to relink -- it takes 12 hours
-> to compile :-( ))
->
-> Unfortunately, my problem is with is a prorietary software product
-> (Opera web browser), so I can not send you any source or object files.
-> :-(
+I used to work for an SGI VAR, and we sold expensive (he, he) but SGI approved
+third party PCI video cards; I don't remember what manufacturer tough. I
+remember one particular customer (an NT shop) who was not comfortable with
+head-less servers, and required us to put a head on it :-)
 
-You most definately need to recompile all object files, sorry =).
+However, I think that if Linux is currently handling the PCI Bus (I think it's
+a 64-bit) on that architecture, you can use any PCI video card supported by
+Linux ... am I right?
 
--vedge
+=====
+________________________
+Eugenio Diaz, BSEE/BSCE   
+Linux Engineer
+getnito@yahoo.com
+
+__________________________________________________
+Terrorist Attacks on U.S. - How can you help?
+Donate cash, emergency relief information
+http://dailynews.yahoo.com/fc/US/Emergency_Information/

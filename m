@@ -1,57 +1,37 @@
-Received: from exchange.riverhead.com (exchange.riverhead.com [10.0.0.10])
-	by mail.riverhead.com (8.11.0/8.11.0) with ESMTP id h9SKJs300714
-	for <linux-mips@linux-mips.org>; Tue, 28 Oct 2003 22:19:54 +0200
-content-class: urn:content-classes:message
-Subject: BCM1250 Current Descriptor
+Date: Wed, 29 Oct 2003 18:11:03 +0100 (CET)
+From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Subject: Re: LK201 keyboard
+In-Reply-To: <20031023083736.GL20846@lug-owl.de>
+Message-ID: <Pine.LNX.4.32.0310291804500.20758-100000@jurand.ds.pg.gda.pl>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C39D90.6357E724"
-Date: Tue, 28 Oct 2003 22:16:36 +0200
-Message-ID: <328392AA673C0A49B54DABA457E37DAA097E62@exchange>
-From: "Gilad Benjamini" <gilad@riverhead.com>
-Return-Path: <gilad@riverhead.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <macro@ds2.pg.gda.pl>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20031028201636.ndYzrqbOLPdicfIwLpWXYc1GqpL923XQUrfTBW7GtUY@z>
+To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20031029171103.tJildU13YdzrhfczzpISqAjf8cbYbF4BtPkcbxKr2Cw@z>
 
-This is a multi-part message in MIME format.
+On Thu, 23 Oct 2003, Jan-Benedict Glaw wrote:
 
-------_=_NextPart_001_01C39D90.6357E724
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+> > > Erm, is this even correct if this keyboard isn't used "natively" by X11,
+> > > but through the Input API?
+> >
+> >  For the console (or the cooked mode) we already set up the device
+> > correctly.
+>
+> That doesn't exactly answer my question, but I think I'll figure it out
+> at some time:) At least, if I get XFree through the compiler at some
+> time (on a VAX).
 
-SGksDQpJIGhhdmUgYSBxdWVzdGlvbiB3aGljaCBpcyBzcGVjaWZpYyBmb3IgdGhlIEJDTTEyNTAu
-IEkgaG9wZSB0aGlzDQppcyB0aGUgcmlnaHQgZm9ydW0gdG8gYXNrIHRoaXMsIGlmIG5vdCwgbXkg
-YXBvbG9naWVzLg0KIA0KSW4gYW4gUlggRE1BIGNoYW5uZWwgdGhlIEJDTTEyNTAgc2lnbmFscyBh
-IHJlY2VpdmVkIHBhY2tldA0KYnkgdHVybmluZyBvbiB0aGUgU09QIGJpdC4gV2hlbiBhIHBhY2tl
-dCBhcnJpdmVzLCB0aGUgY3VycmVudF9kZXNjcmlwdG9yDQpyZWdpc3RlciBhbHNvIHVwZGF0ZXMg
-dG8gdGhlIG5leHQgcGFja2V0Lg0KQ291bGQgdGhlcmUgYmUgYSAobm9uLXRyaXZpYWwpIHRpbWUg
-Z2FwIGJldHdlZW4gdGhlIHVwZGF0ZSBvZiB0aG9zZSA/DQpXZSBzZWUgYSBzY2VuYXJpbyB3aGVy
-ZSB0aGUgU09QIGJpdCBpcyBvbiwgYnV0IHRoZSBkZXNjcmlwdG9yIGNvdW50IA0Kc2hvd3MgdGhh
-dCB0aGUgcGFja2V0IHN0aWxsIGJlbG9uZ3MgdG8gdGhlIERNQS4gSG93IGNhbiB0aGlzIGJlID8N
-CiANClRJQQ0KIA0K
+ I've just misunderstood the question -- sorry.  For XFree86 the current
+state is the "native" support doesn't work as of 3.3.6 (that's what I
+have) because of broken mappings both in the kernel and in XFree86 and
+that version doesn't support the input API AFAIK.  I'm told the "native"
+support doesn't work for newer versions of XFree86, either, and I haven't
+seen any reports about the input API.
 
-------_=_NextPart_001_01C39D90.6357E724
-Content-Type: text/html;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj48SFRNTD48SEVBRD48TUVUQSBIVFRQLUVRVUlWPSJDb250ZW50LVR5cGUiIENPTlRFTlQ9
-InRleHQvaHRtbDsgY2hhcnNldD11dGYtOCI+PC9IRUFEPjxCT0RZPjxESVY+SGksPC9ESVY+CjxE
-SVY+SSBoYXZlIGEgcXVlc3Rpb24gd2hpY2ggaXMgc3BlY2lmaWMgZm9yIHRoZSBCQ00xMjUwLiBJ
-IGhvcGUgdGhpczwvRElWPgo8RElWPmlzIHRoZSByaWdodCBmb3J1bSB0byBhc2sgdGhpcywgaWYg
-bm90LCBteSBhcG9sb2dpZXMuPC9ESVY+CjxESVY+Jm5ic3A7PC9ESVY+CjxESVY+SW4gYW4gUlgg
-RE1BIGNoYW5uZWwgdGhlIEJDTTEyNTAgc2lnbmFscyBhIHJlY2VpdmVkIHBhY2tldDwvRElWPgo8
-RElWPmJ5IHR1cm5pbmcgb24gdGhlIFNPUCBiaXQuIFdoZW4gYSBwYWNrZXQgYXJyaXZlcywgdGhl
-IApjdXJyZW50X2Rlc2NyaXB0b3I8L0RJVj4KPERJVj5yZWdpc3RlciBhbHNvIHVwZGF0ZXMgdG8g
-dGhlIG5leHQgcGFja2V0LjwvRElWPgo8RElWPkNvdWxkIHRoZXJlIGJlIGEgKG5vbi10cml2aWFs
-KSB0aW1lIGdhcCBiZXR3ZWVuIHRoZSB1cGRhdGUgb2YgdGhvc2UgPzwvRElWPgo8RElWPldlIHNl
-ZSBhIHNjZW5hcmlvIHdoZXJlIHRoZSBTT1AgYml0IGlzIG9uLCBidXQgdGhlIGRlc2NyaXB0b3Ig
-Y291bnQgPC9ESVY+CjxESVY+c2hvd3MgdGhhdCB0aGUgcGFja2V0IHN0aWxsIGJlbG9uZ3MgdG8g
-dGhlIERNQS4gSG93IGNhbiB0aGlzIGJlID88L0RJVj4KPERJVj4mbmJzcDs8L0RJVj4KPERJVj5U
-SUE8L0RJVj4KPERJVj4mbmJzcDs8L0RJVj48L0JPRFk+PC9IVE1MPg==
-
-------_=_NextPart_001_01C39D90.6357E724--
+-- 
++  Maciej W. Rozycki, Technical University of Gdansk, Poland   +
++--------------------------------------------------------------+
++        e-mail: macro@ds2.pg.gda.pl, PGP key available        +

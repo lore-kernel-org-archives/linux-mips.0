@@ -1,32 +1,21 @@
-From: "Jay Carlson" <nop@nop.com>
-Subject: RE: Dumb Question on Cross-Development
-Date: Wed, 4 Apr 2001 11:17:39 -0400
-Message-ID: <KEEOIBGCMINLAHMMNDJNIEHHCAAA.nop@nop.com>
+Message-ID: <007e01c0bd70$9052b4a0$8021690a@huawei.com>
+From: "machael" <dony.he@huawei.com.cn>
+Subject: Does Linux support RC32332 CPU now?
+Date: Thu, 5 Apr 2001 09:34:31 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <3AC93C0B.5020102@redhat.com>
 Sender: owner-linux-mips@oss.sgi.com
-To: Joe deBlaquiere <jadb@redhat.com>, Florian Lohoff <flo@rfc822.org>
-Cc: "Kevin D. Kissell" <kevink@mips.com>, "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>
-Message-ID: <20010404151739.8DMobed5WH5ODaYaYpMwi0jBNeoc5O_D_gr1YSKysrU@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010405013431.eURrZe8kc7VayBqJQWg54YHM5XmbjVHqch99-EVqF-s@z>
 
-> Perfect it is not, but it's not nearly _that_ bad either. I would
-> say 40% of the RPMs I've tried will configure out of the box for
-> a cross build. Another 40% or so require a few "export
-> ac_cv_sizeof_long=4" kind of settings to configure for a cross
-> build. The remaining 20% are painful.
+Hi, folks:
 
-Yeah, and it's not so bad once you start building up a config.site file you
-can reuse across builds.  I got this idea from the debian dpkg-cross
-package.  For people who aren't debian-y, the idea is that you set
-CONFIG_SITE to point at a file like
-http://www.csee.umbc.edu/~acedil1/agenda/files/agenda-config.site and run
-configure as normal.  (I don't think I like that particular file but it
-should give you ideas.)
+     I am a newbie in linux-mips. I have questions to ask:
 
-BTW dpkg-cross comes with a tool that does ldd via grepping through objdump
-output.
+     1   Does Linux support RC32332 CPU now?
+     2   I want to build my cross-compile environment  for MIPS target on my
+X86 host. Are there any documents about how to implement it?
 
-Jay
+Thank you very much.

@@ -1,42 +1,26 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@yon.engr.sgi.com (Ariel Faigon)
-Message-ID: <199706170106.SAA19946@yon.engr.sgi.com>
-Subject: Re: Good news: no more begging for HW
-Date: Mon, 16 Jun 1997 18:06:41 -0700 (PDT)
-In-Reply-To: <199706170046.CAA17216@informatik.uni-koblenz.de> from "Ralf Baechle" at Jun 17, 97 02:46:04 am
-Reply-To: ariel@sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <199706170225.TAA23023@neteng.engr.sgi.com>
+From: lm@neteng.engr.sgi.com (Larry McVoy)
+Subject: Re: Good news: no more begging for HW 
+Date: Mon, 16 Jun 1997 19:25:17 -0700
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Cc: linux@yon.engr.sgi.com
-Message-ID: <19970617010641.RN_NOt4_krYzd_ZBlFJjKFCD3pS61az-FBAmNQOdppo@z>
+To: Ariel Faigon <ariel@sgi.com>
+Cc: Ralf Baechle <ralf@mailhost.uni-koblenz.de>, linux@yon.engr.sgi.com
+Message-ID: <19970617022517.3HJW7tehe1pkxrhmyubKv8GXm0I8_0vvgj3b0QBtHXE@z>
 
-:
-:Ariel,
-:
-:that's great news.  Just send all the hardware to me ;-)
-:
-:Jokes aside, I was thinking since some time if the FSF wouldn't be a
-:great place to install some machines.  Another suggestion would be
-:Thomas Bogendoerfer who already wrote a network driver for the Mips
-:Magnum 4000 and others for Intel/Alpha.  I guess he might also be
-:interested.
-:
-If you know interested people in the FSF (real names)
-please have them email me with a short justification
-why they want the machines and what will they use them for.
-Same for Thomas.
+: I think the fairest way would be to publish all these
+: requests on this forum and have the people who care (us)
+: vote on who should get them.  I certainly don't want to
+: be the fascist person who decides who gets what.
 
-I cannot promise anything since there may be some
-oversubscription to the service :-)
+A nice facist is a good thing.  Voting assumes that everyone has enough info
+which may or may not be the case.  I'd suggest that each person that wants
+a machine fills out a little form that says
 
-I think the fairest way would be to publish all these
-requests on this forum and have the people who care (us)
-vote on who should get them.  I certainly don't want to
-be the fascist person who decides who gets what.
+	who am i?
 
+	what will i do w/ the machine?
 
--- 
-Peace, Ariel
+	when will it be done?
+
+--lm

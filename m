@@ -1,46 +1,47 @@
-From: "Mark Martin" <wolf@bescape.com>
-Subject: RE: linux/mips on cd?
-Date: Tue, 20 Jun 2000 22:11:19 -0500
-Message-ID: <004901bfdb2e$5f3a7b70$8ea3bad8@bescape.com>
+From: "Ian Chilton" <mailinglist@ichilton.co.uk>
+Subject: RE: Problems with multiple harddisks on my Indigo2
+Date: Wed, 21 Jun 2000 13:43:07 +0100
+Message-ID: <NAENLMKGGBDKLPONCDDOAELFCNAA.mailinglist@ichilton.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="US-ASCII"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.21.0006190712440.8536-100000@fogarty.jakma.org>
+In-Reply-To: <20000621112343.A19912@spock>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: linux-mips@oss.sgi.com
-Message-ID: <20000621031119.EsJfXn8YxRyQMGr-Rpwntsx4iOGQBWn-BC79BArmCLo@z>
+To: spock@mgnet.de, Linux Debian MIPS <debian-mips@lists.debian.org>, Linux MIPS cthulhu <linux@cthulhu.engr.sgi.com>, Linux MIPS <linux-mips@fnet.fr>, MIPS vger <linux-mips@vger.rutgers.edu>
+Message-ID: <20000621124307.iBNzkLmsVrJ8iPOi4RVlKYmTRotdEIkiVPRv9MKOh8Y@z>
 
-I might be interested in building a CD for folks if there's
-interest...cd-r's, of course...
+Hello,
 
-
-Mark
-
------Original Message-----
-From: owner-linux-mips@oss.sgi.com
-[mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Paul Jakma
-Sent: Monday, June 19, 2000 1:19 AM
-To: Linux MIPS
-Subject: linux/mips on cd?
+> cp: /mnt/redhat/kernel23/linux/arch/sparc/lib/COPYING.LIB: 
+> Input/output error
+> And dmesg shows:
+> attempt to access beyond end of device
+> 08:03: rw=0, want=959546428, limit=1888830
+[SNIP]
 
 
-does anyone sell a CD of linux-mips?
+I have an SGI Indy, with 2 internal hard disks, a 4GB and a 1GB
 
-I'd like to try linux-mips in production use as my dialup
-firewall. (security thru obscurity: let's see those script kiddies
-find 'sploits' for linux/mips!). However, i don't have the bandwidth
-to download the distribution.
+I get the same thing!
 
-if anyone is selling CD's, or if anyone would be kind enough to burn
-a CD for me, I'd be very grateful if they'd contact me off-list.
 
-thanks,
---
-Paul Jakma	paul@clubi.ie
-PGP5 key: http://www.clubi.ie/jakma/publickey.txt
--------------------------------------------
-Fortune:
-It got to the point where I had to get a haircut or both feet firmly
-planted in the air.
+> Also I'm getting a message
+> sc1,2,0: cmd=0x12 timeout after 2 sec.  Resetting SCSI bus
+
+I started getting this when I added the 2nd HD (1GB).
+
+
+Bye for Now,
+
+Ian
+
+
+                     \|||/ 
+                     (o o)
+ /----------------ooO-(_)-Ooo----------------\
+ |  Ian Chilton                              |
+ |  E-Mail :   ian@ichilton.co.uk            |
+ |  IRC Nick:  GadgetMan                     |
+ \-------------------------------------------/

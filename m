@@ -1,61 +1,45 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199709230305.UAA09789@oz.engr.sgi.com>
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199709232334.BAA03833@informatik.uni-koblenz.de>
 Subject: Re: Task list --preliminary list
-Date: Mon, 22 Sep 1997 20:05:26 -0700 (PDT)
-In-Reply-To: <199709230232.VAA16659@athena.nuclecu.unam.mx> from "Miguel de Icaza" at Sep 22, 97 09:32:19 pm
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+Date: Wed, 24 Sep 1997 01:34:50 +0200 (MET DST)
+In-Reply-To: <199709231837.NAA20145@speedy.rd.qms.com> from "Mark Salter" at Sep 23, 97 01:37:28 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Miguel de Icaza <miguel@nuclecu.unam.mx>
-Cc: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970923030526.ngqOLxi2uD_T34ydPYdluIQVHoLIj99PPVInTAhW2x4@z>
+To: Mark Salter <marks@sun470.sun470.rd.qms.com>
+Cc: miguel@nuclecu.unam.mx, ariel@cthulhu.engr.sgi.com, linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr
+Message-ID: <19970923233450.6skf7XGphClB-tFw8bMqloEZY3K63iIvxuaZ-9Kl9Wk@z>
 
-My personal favorites are a drudgery to wizards but an essential
-necessity for most mortals:
+> Yes, but I bet you didn't check it on an Indy with no scache :-)
+> I have one of those beasts and the latest code in the cvs tree
+> crashes early in the boot process.
+> 
+> The code in arch/mips/mm/r4xx0.c which sets up the cache flush
+> procs now selects r4k_flush_page_to_ram_d32i32_r4600 where
+> earlier versions of r4xx0.c selected r4k_flush_page_to_ram_d32i32.
+> I think the current choice is correct in that my Indy has the
+> R4600 cache bug mentioned in IDT's errata. But the *_r4600 version
+> also has some inline assembler under an ifdef CONFIG_SGI which
+> appears to do something to the SGI scache. But since I have
+> no scache, I get a bus error irq instead.
+> 
+> It seems a bit strange that r4k_flush_page_to_ram_d32i32_r4600
+> has this bit of SGI specific code, but r4k_flush_page_to_ram_d32i32
+> does not. ???
 
-[5] Verify that the latest source tree on Llinus compiles and boots
-    (maybe automate this with a daily build that gets tested)
-[4] Utility to boot Linux from IRIX (both locally and over net)
-[3] Stable precompiled Indy kernel + root-contents on linus
-[3] A working HOWTO for booting Linux on Indy
+The R4400 versions of the Indy have the "real" second level cache and
+use a SC CPU version.  Opposed to that the  L2 cache of the R4600 and
+R5000 Indies is controlled by external circuitry which needs special code.
 
-All the above even without having X :-)
+Actually since we have the same problem on a couple of other machines,
+SNI RM family one of them,  what should be done is to break out all the
+#ifugly'ed SGI bits and provide some hooks for them.  You L2 less
+machine would simply plug an empty function into these hooks.
 
+Using r4k_flush_page_to_ram_d32i32 was definately wrong, the R4600
+cache is two way set associative and flush_page_to_ram needs to take
+care of that for all the R4600 and R5000 relatives.
 
-:
-:
-:Here is a preliminary task list of things that should be done for a
-:complete Linux/MIPS port, right now it includes by personal favorites
-:and I am working on some of those bits, but some of the other can be
-:done now, I have a copy of this at:
-:
-:	http://www.nuclecu.unam.mx/~miguel/mips-task-list.txt
-:
-:Priority: 
-:
-:[9]  Get more userland programs compiled in RPM form
-:
-:[9]  Merging the latest GNU libc releases.
-:
-:[9]  Get the X libraries compiled.
-:
-:[5]  Getting SGI mouse to work.
-:
-:[5]  Test the STREAMS implementation of the mouse.
-:
-:[6]  Figure why init is setting the sigprocmask to a value different
-:     from 0.  This disables the debugger (SIGTRAP is disabled for
-:     all child processes).
-:
-:[7]  Getting IRIX X server to accept connections.
-:
-:Please, send me additions to this list.
-:Miguel.
-:
-
-
--- 
-Peace, Ariel
+  Ralf

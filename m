@@ -1,76 +1,69 @@
-From: Michl Ladislav <xmichl03@stud.fee.vutbr.cz>
-Date: Sun, 18 Mar 2001 16:32:11 +0100 (CET)
-Subject: arc cmdline.c
-Message-ID: <Pine.BSF.4.33.0103181559120.18101-100000@fest.stud.fee.vutbr.cz>
+Message-ID: <00e901c0b08b$50bed400$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <3AB61293.5652407C@mips.com>
+Subject: Re: Bug in the _save_fp_context.
+Date: Mon, 19 Mar 2001 16:43:07 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010318153211.YpA9_GFGlThCP4vMfuzIflw-tGzD_jVSxE6YATSt894@z>
+To: Carsten Langgaard <carstenl@mips.com>, linux-mips@oss.sgi.com
+Message-ID: <20010319154307.q3fWPrv0HR9bfOon8T2EZo71K8MpcaN4TFR6lC7PvyI@z>
 
-hi all,
+> I think there is a bug in the _save_fp_context function in
+> arch/mips/kernel/r4k_fpu.S
+> 
+> The problem is the following piece of code:
+> 
+>  jr ra
+>  .set nomacro
+>  EX(sw t0,SC_FPC_EIR(a0))
+>  nop
+>  .set macro
+> 
+> First of all what should the ".set nomacro" do?
+> If it means that the EX macro shouldn't be used then this entry wouldn't
+> get into __ex_table, which would be wrong.
+> But it look like it uses the macro anyway, regardless of the ".set
+> nomacro", at least with the compiler I use.
 
-i have some beginner questions, so please be patient with me :-)
+Not surprising, really.  "EX" is presumably a cpp macro
+that gets expanded by gcc from the .S file, based on
+some include file.  .set directives affect only the assembler,
+and would inhibit assembler-level macros only.  I'm not
+sure just what the definition of an assembler macro
+would be - it may or may not include pseudo-instructions
+like "la" or "li 32_bit_constant".  I *think* that what the
+author was trying to do here was to ensure that the
+"sw" instruction in the EX expansion was really and
+truly a single instruction.
 
-1) quoting indy-hd-boot-micro-howto.html:
-O.k. we're almost there. The last thing to do is to tell the PROM which
-file to boot on power up:
-[snip]
-	setenv OSLoader linux
-	setenv SystemPartition scsi(0)disk(1)rdisk(0)partition(8)
-	setenv OSLoadPartition /dev/sda1
+> Never the less we do not handle entries in the __ex_table which is
+> located in a branch delay.
+> So we need to handle the situation where we take a page fault on an
+> instruction which is located in a brach delay slot, or we don't put the
+> "potential" faulting instruction in a delay slot.
+> 
+> Any ideas, how we should handle this in a nice and clean way?
 
-but OSLoadPartition is ignored, so this no loger works. does it mean that
-i have to use
-	setenv root /dev/sda1
-instead?
+Is the __ex_table really ending up in the delay slot?
+Just looking at the source, I have the impression
+that the "sw t0,..." instruction should be in the delay
+slot, followed by the __ex_table.
 
-hmm, i really hate gotos :-(
+On another topic, now that I've patched the kernel to
+turn off the stupid stuck interrupt on my Malta board,
+I've realized that I can't just connect my old Atlas SCSI
+disk.  I'm torn between ordering a Tekram 390 PCI
+SCSI card, which should be able to use our "MIPS
+safe" NCR driver as-is (I hope) and buying an IDE
+disk and going through the network install ritual.
+Which do you recommend?  One thing I really never
+knew was just what kernel config options I need to
+select to build a kernel that can do the NFS-root
+bootstrap.  Can you help me there?
 
---- cmdline.c.orig	Sun Mar 18 15:26:02 2001
-+++ cmdline.c	Sun Mar 18 15:46:22 2001
-@@ -34,23 +34,18 @@
- 	char *cp;
- 	int actr, i;
+            Regards,
 
--	actr = 1; /* Always ignore argv[0] */
--
- 	cp = &(arcs_cmdline[0]);
--	while(actr < prom_argc) {
--		for(i = 0; i < NENTS(ignored); i++) {
--			int len = strlen(ignored[i]);
--
--			if(!strncmp(prom_argv[actr], ignored[i], len))
--				goto pic_cont;
-+
-+	/* Always ignore argv[0] */
-+	for (actr = 1; actr < prom_argc; actr++) {
-+		for (i = 0; i < NENTS(ignored); i++) {
-+			if (strncmp(prom_argv[actr], ignored[i], strlen(ignored[i]))) {
-+				/* Ok, we want it. */
-+				strcpy(cp, prom_argv[actr]);
-+				cp += strlen(prom_argv[actr]);
-+				*cp++ = ' ';
-+			}
- 		}
--		/* Ok, we want it. */
--		strcpy(cp, prom_argv[actr]);
--		cp += strlen(prom_argv[actr]);
--		*cp++ = ' ';
--
--	pic_cont:
--		actr++;
- 	}
- 	if (cp != &(arcs_cmdline[0])) /* get rid of trailing space */
- 		--cp;
-
-2) i also don't understand directory layout in arch/mips. i expected
-indy's prom cmdline in arch/mips/sgi/prom, but found it in arch/mips/arc.
-is there any historical (or other) reason for this?
-
-3) what compiler are you using? compilation of glibc2.2.2 with gcc 2.95.2
-took about 11 (!) hours on 100 MHz Indy, ie much more than on i486. now
-i'm trying build gcc 3.0 from cvs, i hope it helps.
-
-thanks for explanation,
-ladis
+            Kevin K.

@@ -1,90 +1,61 @@
-Message-ID: <001301c10e84$570805a0$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20010716163712.B12104@superweasel.com> <20010717032055.A1236@bacchus.dhis.org> <20010716223902.A16351@superweasel.com> <20010717050050.A1737@bacchus.dhis.org>
-Subject: Re: Linux on a 100MHz r4000 indy?
-Date: Tue, 17 Jul 2001 07:50:00 +0200
+Date: Tue, 17 Jul 2001 21:05:33 +0100 (IST)
+From: Dave Airlie <airlied@csn.ul.ie>
+Subject: Re: [patch] 2.4.5: DECstation LK201 keyboard non-functional
+In-Reply-To: <Pine.GSO.3.96.1010716195815.12988F-100000@delta.ds2.pg.gda.pl>
+Message-ID: <Pine.LNX.4.32.0107172102470.3817-100000@skynet>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>, Greg Johnson <gjohnson@superweasel.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010717055000.gtSvaowmBuWocTwExqzz798c03hADF2Yfeiv750VaMs@z>
-
-I don't have access to old R4000 revision data, and I'll take your
-word for the errata applicable to rev 0422.  A am a *little* surprised
-that such early parts found their way into Indys, since the Indy was
-not the first R4000 platform (I believe that honor belongs to the
-"Crimson" graphics workstations), but it's certainly possible.
-
-            Regards,
-
-            Kevin K.
-
------ Original Message -----
-From: "Ralf Baechle" <ralf@oss.sgi.com>
-To: "Greg Johnson" <gjohnson@superweasel.com>
-Cc: <linux-mips@oss.sgi.com>
-Sent: Tuesday, July 17, 2001 5:00 AM
-Subject: Re: Linux on a 100MHz r4000 indy?
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Cc: Harald Koerfgen <hkoerfg@web.de>, Ralf Baechle <ralf@uni-koblenz.de>, linux-mips@fnet.fr, linux-mips@oss.sgi.com
+Message-ID: <20010717200533.rfiWzPt96NnrMyG00h4Rx04yeefjd9XcELKPHIf8RAo@z>
 
 
-> On Mon, Jul 16, 2001 at 10:39:02PM -0400, Greg Johnson wrote:
+Well that file you've moved is still a DEC specific file .. all the arch
+non-specific stuff is in drivers/char/dz.c and drivers/tc/zs.c already..
+the decserial.c file does nothing for any other arch but the DECstation..
+
+I'd rather it was fixed with the serial.c file in the old place... but
+hey I'm not exactly contributing a fix here so feel free to ignore this
+rant :-)
+
+Dave.
+
+
+
+On Mon, 16 Jul 2001, Maciej W. Rozycki wrote:
+
+> Hi,
 >
-> > CPU revision is: 00000422
+>  Since 2.4.5 there is a problem with the LK201 driver.  The driver gets
+> never registered.  It happens because chr_dev_init() got converted to
+> __initcall() and is no longer invoked before rs_init() for the DECstation
+> (chr_dev_init() calls tty_init() which registers the LK201 hook via
+> kbd_init()).
 >
-> That's a really old and buggy CPU.  Kevin Kissel may correct me but I
-think
-> it's the first series shipped to customers.  Among the fun bugs:
+>  The following patch fixes the problem.  It makes the DECstation's object
+> file that provides rs_init() be included in the DRIVERS list as SERIAL.
+> It is on the CORE_FILES list of Makefile targets now.  The patch looks
+> bigger than it really is -- apart from trivial Makefile changes, it's
+> merely an arch/mips/dec/serial.c to drivers/char/decserial.c rename.
 >
-> --------------------------------------------------------------------------
----
+>  Note while putting a file away from an arch-specific tree into a generic
+> driver one might seem a bad move, it really is the right thing in this
+> case.  The point is the decserial.c device is not arch-specific at all,
+> i.e. no more than the 8250 serial.c device is.  DEC used the devices in a
+> number of their systems, including DECstations (onboard SCC and DZ11 and
+> TURBOchannel PMAC-A DZ11 devices), DEC 3000 Alpha systems (onboard SCC and
+> PMAC-A devices) and VAXstations (onboard DZ11 and PMAC-A devices).  Thus I
+> believe they should be treated as generic devices, especially as the VAX
+> and the DEC 3000 Alpha (to some extent) Linux ports are underway.
 >
-> 4. R4000PC, R4000SC: An instruction sequence which contains a load which
-causes
->    a data cache miss and a jump, where the jump instruction is that last
->    instruction in the page and the delay slot of the jump is not currently
->    mapped, causes the exception vector to be overwritten by the jump
-address.
->    The R4000 will use the jump address as the exception vector.
+>  Please apply the patch.
 >
->    Example: lw <---- data cache miss
-> noop <---- one or two Noops
-> jr <---- last instruction in the page (jump or branch in-
->       struction)
-> --------------<---- page boundary
-> noop
+>   Maciej
 >
->    Workaround: Jump and branch instructions should never be in the last
-loca-
->                tion of a page.
-> 11. R4000PC, R4000SC: In the case:
 >
-> lw rA, (rn)
-> noop (or any non-conflicting instruction)
-> lw rn, (rA) (where the address in rA causes a TLB refill)
-> --------------------> end of page
-> page not mapped
->
->    where rn and RA are general purpose registers r0 through r31
->
->    This code sequence causes the second load instruction to slip due to a
->    load use interlock. When the R4000 crosses the page boundary after the
->    lw, it vectors to 0x8000 0000 and later causes an instruction cache
-miss.
->    After the instruction cache miss is complete the LW causes another TLB
->    refill. This should vector to 0x8000 0000 but instead goes to 0x8000
-0180.
->
-> 14 (Just an update of erratum 4)
->
-> --------------------------------------------------------------------------
----
->
-> There's more but I don't want to paste the whole errata document in here
-> and above bugs alone without the respective workarounds in kernel and
-tools
-> are grave bugs.
->
->   Ralf
+
+-- 
+David Airlie, Software Engineer
+http://www.skynet.ie/~airlied / airlied@skynet.ie
+pam_smb / Linux DecStation / Linux VAX / ILUG person

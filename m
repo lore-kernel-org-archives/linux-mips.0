@@ -1,39 +1,73 @@
-Date: Fri, 15 Jun 2001 14:41:30 -0500 (CDT)
-From: Steve Langasek <vorlon@netexpress.net>
-Subject: Re: First version of sid-based root-tarball for mipsel available
-In-Reply-To: <20010615200828.A19897@linuxtag.org>
-Message-ID: <Pine.LNX.4.30.0106151412040.1744-100000@tennyson.netexpress.net>
+From: "Robert Rusek" <robru@ruseks.com>
+Subject: RedHat Test-7.0 Compiler problems.
+Date: Sat, 16 Jun 2001 11:10:16 -0700
+Message-ID: <000f01c0f68f$99019d70$6400a8c0@sohorob>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0010_01C0F654.ECA2C570"
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Cc: debian-mips@lists.debian.org
-Message-ID: <20010615194130.8jOYGN6sgk7jRJ-CEZxH65IcIAzIFHUlF21_B-HV9hI@z>
+Message-ID: <20010616181016.J_vd3sl8pMP1K_PPtm9Z3gdfb-iu_weohOWxPTnQN9Q@z>
 
-Hi Karsten,
+This is a multi-part message in MIME format.
 
-On Fri, 15 Jun 2001, Karsten Merker wrote:
+------=_NextPart_000_0010_01C0F654.ECA2C570
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-> Hallo everyone,
+Which rpm(s) contains the following files:
+ 
+crti.o, crt1.o... etc...
+ 
+I am trying to compile apache and it is telling me that the c
+pre-processer is not available.  Do the compilers work in test-7.0?
+ 
+Thanks in advance,
+--
+Robert Rusek
+ 
 
-> I have put together a first version of a root-tarball for mipsel based on
-> Debian "Sid". This is mostly untested yet and due to the SYSMIPS-problem
-> it works only on R4K and higher. If somebody wants to try it out, please
-> let me know the results.
+------=_NextPart_000_0010_01C0F654.ECA2C570
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-> The tarball can be found at
-> ftp://bolugftp.uni-bonn.de/pub/mipsel-linux/rootfs/experimental/debian-mipsel-rootfs-20010615.tar.bz2
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
 
-I'd be interested to give this a try, if only I could get a recent Linux
-kernel booting on my system. :)  My Cobalt CacheRaq has so far resisted all of
-my efforts to get 2.4 booting; it finds the kernel I've compiled, gets as far
-as starting to load the filesystems, but then goes into a loop reporting
-problems with 'spurious interrupts'.  So either I'm running the wrong patch
-against the 2.4.0 sources, or the CacheRaq is not yet well-supported under
-2.4.
+<META content=3D"MSHTML 5.50.4611.1300" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3D"Comic Sans MS">
+<DIV><FONT face=3DArial color=3D#008000 size=3D2><SPAN =
+class=3D944422816-16062001>Which=20
+rpm(s) contains the following files:</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#008000 size=3D2><SPAN=20
+class=3D944422816-16062001></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial><FONT color=3D#008000><FONT size=3D2>crti.o<SPAN =
 
-Karsten, what type of system are you doing your mipsel testing/development on?
+class=3D944422816-16062001>, </SPAN>crt1.o<SPAN =
+class=3D944422816-16062001>...=20
+etc...</SPAN></FONT></FONT></FONT></DIV>
+<DIV align=3Dleft><FONT color=3D#008000 size=3D2></FONT>&nbsp;</DIV>
+<DIV align=3Dleft><SPAN class=3D944422816-16062001><FONT =
+color=3D#008000><FONT=20
+size=3D2>I am trying to compile apache and it is telling me that the c=20
+pre-processer is not available.<SPAN class=3D320220818-16062001>&nbsp; =
+Do the=20
+compilers work in test-7.0?</SPAN></FONT></FONT></SPAN></DIV>
+<DIV align=3Dleft><FONT color=3D#008000 size=3D2><SPAN=20
+class=3D944422816-16062001></SPAN></FONT>&nbsp;</DIV>
+<DIV align=3Dleft><FONT color=3D#008000 size=3D2><SPAN =
+class=3D944422816-16062001>Thanks=20
+in advance,</SPAN></FONT></DIV>
+<DIV align=3Dleft><FONT color=3D#008000 size=3D2>--</FONT></DIV>
+<DIV align=3Dleft><FONT color=3D#008000 size=3D2>Robert=20
+Rusek</FONT></DIV></FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS" color=3D#008000=20
+size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
 
-Regards,
-Steve Langasek
-postmodern programmer
+------=_NextPart_000_0010_01C0F654.ECA2C570--

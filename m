@@ -1,32 +1,52 @@
-Received: from amdk62400 ([209.226.97.64]) by tomts8-srv.bellnexxia.net
-          (InterMail vM.5.01.04.19 201-253-122-122-119-20020516) with SMTP
-          id <20030307162727.FSVU3032.tomts8-srv.bellnexxia.net@amdk62400>
-          for <linux-mips@linux-mips.org>; Fri, 7 Mar 2003 11:27:27 -0500
-Message-ID: <000f01c2e4c6$65818600$0400a8c0@amdk62400>
-Reply-To: "HG" <henri@broadbandnetdevices.com>
-From: "HG" <henri@broadbandnetdevices.com>
-Subject: mips-linux-ld related question
-Date: Fri, 7 Mar 2003 11:25:14 -0500
+Message-ID: <20030309072432.19644.qmail@web41511.mail.yahoo.com>
+Date: Sat, 8 Mar 2003 23:24:32 -0800 (PST)
+From: Tinga Shilo <tingashilo@yahoo.com>
+Subject: Re: static variables access and gp
+In-Reply-To: <20030306094034.A26071@mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <henri@broadbandnetdevices.com>
+Content-Type: text/plain; charset=us-ascii
+Return-Path: <tingashilo@yahoo.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030307162514.hWhC1ozjqyNNpy3_lonfJfAJ_JFeuz3ybIsDKzpXQqA@z>
+To: Jun Sun <jsun@mvista.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20030309072432.noEKvJW9biC7yrMTGpgVqoHo21Y1iISeIflhY0mgLuA@z>
 
-Hi All
+Thx. Got it.
+Any other solution to speed up the access to this
+variable ? It's location never changes from kernel
+init to shutdown if I haven't made that clear.
 
-I installed the binutils-mips-linux-2.13.1.i386.rpm and
-egcs-mips-linux-1.1.2-4.i386.rpm from the linux-mips ftp site on a caldera
-distribution 3.11 linux box to crosscompile a 2.4 kernel.
-no error message while compiling , i get the following error while linking :
- mips-linux-ld: target elf32-bigmips not found
+--- Jun Sun <jsun@mvista.com> wrote:
+> On Wed, Mar 05, 2003 at 11:30:17PM -0800, Tinga
+> Shilo wrote:
+> > Hi,
+> > I am implementing a kernel mechanism which is 
+> > very performance oriented. Along my long critical
+> > path,
+> > there is a static variable that needs to be
+> accessed
+> > quite a few times. This variable is a structure
+> which
+> > is approximately 60 bytes big.
+> > In there any way I can "convince" my kernel
+> (compiled
+> > with gcc) to access this variable using gp ?
+> > Is gp usually used for this purpose in mips-linux
+> ?
+> > Can it be ?
+> >
+> 
+> No.  gp is used by kernel to hold current process in
+> 2.4
+> and current thread in 2.5.  Don't mess with it
+> unless
+> you are absolutely sure what you are doing.
+> 
+> Jun
 
-is there some env variable or path that I missed that needs to be set ????
 
-thanks for any help.
-
-Henri
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Tax Center - forms, calculators, tips, more
+http://taxes.yahoo.com/

@@ -1,60 +1,64 @@
-Message-ID: <XFMail.000215181433.Harald.Koerfgen@home.ivm.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Message-ID: <006501bf7803$59855ad0$0ceca8c0@satanas.mips.com>
+From: "Kevin D. Kissell" <kevink@mips.com>
+Subject: Re: Indy crashes
+Date: Tue, 15 Feb 2000 23:23:49 +0100
 MIME-Version: 1.0
-In-Reply-To: <00f001bf77a7$01e6cd10$0ceca8c0@satanas.mips.com>
-Date: Tue, 15 Feb 2000 18:14:33 +0100 (MET)
-Reply-To: "Harald Koerfgen" <Harald.Koerfgen@home.ivm.de>
-From: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>
-Subject: Re: ioremap() broken?
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: "Kevin D. Kissell" <kevink@mips.com>
-Cc: linux@cthulhu.engr.sgi.comlinux@cthulhu.engr.sgi.com, Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Message-ID: <20000215171433.jYkYZvODuPsFgjVQqCxq4tBwgxtIqI1PePYSaXsWjAU@z>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: Ralf Baechle <ralf@oss.sgi.com>, linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <20000215222349.LS9vPK0GEsc1Me2M7t89jLvVLz1PfC4NGOJlZIW96AY@z>
+
+>> The problem may be in the assumption made even in the
+>> most recent 2.3.x code that a hit-writeback-invalidate cache
+>> operation on the secondary cache automagically affects the
+>> primary.  That's the way it is on the R4000/4400, but that's
+>
+>In that case it doesn't affect the NEC DDB Vrc-5074, since there's no L2.
 
 
-On 15-Feb-00 Kevin D. Kissell wrote:
->>> > 1. Is it really necessary to add anything to the addr in the readb() et
->>> > al.
->>> >    macros? ioremap() already takes care of that.
->>> 
->>> There is something of an "embarassment of riches" in the kernel
->>> code in terms of mechanism for getting at I/O resources.  I don't
->>> think it was ever intended that people use readb() on addresses
->>> that had already been massaged with ioremap().  ioremap() is
->>> used where the driver *expects* an memory-mapped I/O model,
->>> and is applied to pointers that will be used to directly reference
->>> the device.  readb/writeb et. al. are for drivers that think that expect
->>> a more peek/poke like model.  I don't think it was ever intended that
->>> someone apply both at once!
->>
->>Yes it is! Please read Documentation/IO-mapping.txt. To access PCI memory
->>space, you have to use ioremap() and readb() and friends. If PCI drivers have
->>to work across differen architectures, this has to be fixed.
-> 
-> It is a coincidence that ioremap() is so simple on most current MIPS 
-> platforms.  On some systems, and on MIPS systems with more than 
-> 512M of combined memory and mapped I/O, it would be necessary
-> to invoke VM functions to create (and possibly wire) a kernel address
-> mapping, and on such systems ioremap() would have some real work
-> to do.
+If it isn't the cache, and it tracks the CPU type, the next thing
+I suspect is a pipe hazard.   The R5000 manual states that there
+should be "at least two integer instructions between" any
+instruction modifying the PageMask, EntryHi, or EntryLo[01]
+registers and the subsequent tlbw[ir] or tlbp.  That's different
+from the R4000.  In the current Linux arch/mips/head.S file, 
+this interval does not seem to be respected by any of the TLB 
+miss handlers.  Indeed, the default except_vec0_r4000 handler,
+which I believe is what is used if an R5000 is detected, has 
+the sequence
 
-Yes, indeed. The Philips PR31700/Toshiba TMPR3912 is such a beast and I could
-imagine that other MIPS based embedded CPUs tend to be similar.
+        mtc0    k1, CP0_ENTRYLO1                # load it
+        b       1f
+         tlbwr                                  # write random tlb entry
+1:
+        nop
+        eret
 
-On this particular CPU PCMCIA memory is accessed through *physical* addresses
-0x64000000-0x6bffffff, and thus unreachable through KSEG0 or KSEG1. To make
-things even more delicate, this CPU is based on a R3000 core and supports 4kB
-pages only, so even ye olde "let's create a wired TLB entry with 16 MB page
-size"-trick will not work. 
+wherin the purpose of the branch is obscure (I imagine
+it fixed a bug seen somewhere on some CPU but it
+makes me rather queasy)  but wherein in any case we 
+do not seem to be assured 2 issues between the mtc0 
+and the tlbwr.  It should be OK for an R4000, but not for 
+an R5000.
 
-Before you're beginning to ask, yes, I *do* have Linux/MIPS running on a Sharp
-Mobilon HC-4500 :-), and, no, PCMCIA is not working yet :-(
+So someone with the ability to reproduce the R5000
+problem should really try sticking a nop between the
+mtc0 and the branch (sigh) to see if that stabilizes 
+the system.
 
-What I am trying to say is that sooner or later we may have to deal with this
-case as well.
+            Regards,
 
----
-Regards,
-Harald
+            Kevin K.
+__
+
+Kevin D. Kissell
+MIPS Technologies European Architecture Lab
+kevink@mips.com
+Tel. +33.4.78.38.70.67
+FAX. +33.4.78.38.70.68
+
+    

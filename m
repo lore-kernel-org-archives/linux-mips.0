@@ -1,141 +1,59 @@
-Message-ID: <018201c12680$8f13e680$0deca8c0@Ulysses>
+Message-ID: <01a001c12688$7fdbbf00$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
+References: <018201c12680$8f13e680$0deca8c0@Ulysses>
 Subject: Re: FP emulator patch
-Date: Thu, 16 Aug 2001 20:23:32 +0200
+Date: Thu, 16 Aug 2001 21:20:11 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_017F_01C12691.51701D60"
-Sender: owner-linux-mips@oss.sgi.com
-To: "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>
-Message-ID: <20010816182332.Aw6t9IqISQWWqkup9miq8W-J806nM02eM5rDmK0QWGY@z>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_017F_01C12691.51701D60
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Sender: owner-linux-mips@oss.sgi.com
+To: "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>
+Message-ID: <20010816192011.JlEpwVkKLqtnr70BmbO2tdNaDxReeQ3nVmwQM8VO430@z>
 
-As I wrote last night, it looks to me as if FPU context
-management in signals was broken in all versions and
-proposed patches that I've seen.  The way I see it is this:
+> If the current thread does *not* own the FPU, we don't
+> need to save the thread FP state. If the signal handler
+> does no FP, so much the better, there's nothing to
+> be done.   If the signal handler uses FP, it will acquire 
+> the FPU by normal means. The FP context will be saved 
+> into the thread context of the previous owner, the signalling 
+> thread will acquire the FPU, and the signal handler will do 
+> it's FP. On return from the signal, we *must* de-allocate the
+> FPU and clear the CU1 bit.  If that's done, and the
+> thread (which had not *owned* the FPU prior to the
+> signal) starts doing FP again, normal mechanisms
+> will cause it's FP context to be restored.  If we don't,
+> it will start exectuing with a bogus FP context.
 
-If the current thread "owns" the FPU, we need to save the
-FPU state in the sigcontext and restore it on return.  If
-the signal handler uses floating point, it already has the
-FPU, and can do what it wants with it.  If it doesn't use
-the FPU, then we'll save and restore FPU state for
-nothing, but better safe than sorry.  In either case,
-the current thread retains ownership of the FPU.
-There is no reason to muck with the ownership data
-or the Cp0.Status.CU1 enables, apart from the
-questionable bit of enabling it before the FP context
-save in case it wasn't enabled.  I think that should go
-away, but I don't have time to test exhastively.  In
-any case, CU1 should have it's pre-signal state
-going into the signal handler.
+There is, actually, one conceptual hole in this
+scheme (and in every other one we've seen) if the
+following scenario occurs.  The current thread does
+not own the FPU, the signal handler executes FP
+instructions and runs for so long that it gets
+switched out.  The thread's FP state will then
+become that of the signal handler, and, since the
+thread didn't have the FPU when the signal context
+was set up, it the pre-signal state will be lost.
 
-If the current thread does *not* own the FPU, we don't
-need to save the thread FP state. If the signal handler
-does no FP, so much the better, there's nothing to
-be done.   If the signal handler uses FP, it will acquire 
-the FPU by normal means. The FP context will be saved 
-into the thread context of the previous owner, the signalling 
-thread will acquire the FPU, and the signal handler will do 
-it's FP. On return from the signal, we *must* de-allocate the
-FPU and clear the CU1 bit.  If that's done, and the
-thread (which had not *owned* the FPU prior to the
-signal) starts doing FP again, normal mechanisms
-will cause it's FP context to be restored.  If we don't,
-it will start exectuing with a bogus FP context.
+From that standpoint, the old code that saved the
+contex if current->used_math was almost correct.
+Almost correct, because the naive dump-the-FPU
+code is correct only if the FPU belongs to the thread.
+If it doesn't, the last saved thead FPU context, and not
+the FPU contents, needs to be copied into the signal 
+context.  Symmetrically, in restore_sigcontext(), the current 
+code restores the FPU if we *owned* the fp prior to the 
+signal, but we must likewise restore the thread FPU 
+context from the sigcontext if we *didn't* own the FPU, but
+the signal handler subsequently acquired it.
 
-The code I sketched last night is essentially correct,
-though it used a macro that doesn't exist.  I attach a
-patch relative to the current OSS repository's signal.c.
-The patch includes the stack frame tweak for the FPU
-emulator that was part of previous patches, but which
-is orthogonal to the problem under discussion.  I have
-built a kernel using this code and run 20 simultaneous
-copies of the MontaVista "stressor" program with no
-problems (though I also had the "v1.5" FPU emulator
-code).
+The alternative to doing direct sigcontext<->thread context
+saves/restores without passing through the FPU would
+be to force a fpu context switch on every signal dispatch,
+which I find rather inelegant.
 
-            Regards,
+I'll see if I can't come up with a new patch that also
+takes this into account, but may not have time before
+I take off on vacation this weekend...
 
-            Kevin K. 
-
-------=_NextPart_000_017F_01C12691.51701D60
-Content-Type: application/octet-stream;
-	name="signal.c.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="signal.c.patch"
-
-Index: signal.c=0A=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
-RCS file: /cvs/linux/arch/mips/kernel/signal.c,v=0A=
-retrieving revision 1.36=0A=
-diff -u -p -r1.36 signal.c=0A=
---- signal.c	2001/06/18 22:43:35	1.36=0A=
-+++ signal.c	2001/08/16 18:01:58=0A=
-@@ -221,7 +221,13 @@ restore_sigcontext(struct pt_regs *regs,=0A=
- 	err |=3D __get_user(owned_fp, &sc->sc_ownedfp);=0A=
- 	if (owned_fp) {=0A=
- 		err |=3D restore_fp_context(sc);=0A=
--		last_task_used_math =3D current;=0A=
-+	} else {=0A=
-+		if (current =3D=3D last_task_used_math) {=0A=
-+		/* Signal handler acquired FPU - give it back */=0A=
-+			last_task_used_math =3D NULL;=0A=
-+			current->used_math =3D 0;=0A=
-+			regs->cp0_status &=3D ~ST0_CU1;=0A=
-+		}=0A=
- 	}=0A=
- =0A=
- 	return err;=0A=
-@@ -326,6 +332,7 @@ setup_sigcontext(struct pt_regs *regs, s=0A=
- 	int owned_fp;=0A=
- 	int err =3D 0;=0A=
- 	u64 reg;=0A=
-+	u32 tstat;=0A=
- =0A=
- 	err |=3D __put_user(regs->cp0_epc, &sc->sc_pc);=0A=
- 	err |=3D __put_user(regs->cp0_status, &sc->sc_status);=0A=
-@@ -353,12 +360,12 @@ setup_sigcontext(struct pt_regs *regs, s=0A=
- 	owned_fp =3D (current =3D=3D last_task_used_math);=0A=
- 	err |=3D __put_user(owned_fp, &sc->sc_ownedfp);=0A=
- =0A=
--	if (current->used_math) {	/* fp is active.  */=0A=
-+	if (owned_fp) {	/* fp is active.  */=0A=
-+		tstat =3D regs->cp0_status;=0A=
-+		/* This enable should not really be necessary */=0A=
- 		set_cp0_status(ST0_CU1);=0A=
- 		err |=3D save_fp_context(sc);=0A=
--		last_task_used_math =3D NULL;=0A=
--		regs->cp0_status &=3D ~ST0_CU1;=0A=
--		current->used_math =3D 0;=0A=
-+		regs->cp0_status =3D tstat;=0A=
- 	}=0A=
- =0A=
- 	return err;=0A=
-@@ -374,6 +381,16 @@ get_sigframe(struct k_sigaction *ka, str=0A=
- =0A=
- 	/* Default to using normal stack */=0A=
- 	sp =3D regs->regs[29];=0A=
-+=0A=
-+#ifdef CONFIG_MIPS_FPU_EMULATOR=0A=
-+	/*=0A=
-+	 * FPU emulator may have it's own trampoline active just=0A=
-+	 * above the user stack, 16-bytes before the next lowest=0A=
-+	 * 16 byte boundary.  Try to avoid trashing it.=0A=
-+	 */=0A=
-+	sp -=3D 32;	/* 32 ought to be enough, but... */=0A=
-+=0A=
-+#endif /* CONFIG_MIPS_FPU_EMULATOR */=0A=
- =0A=
- 	/* This is the X/Open sanctioned signal stack switching.  */=0A=
- 	if ((ka->sa.sa_flags & SA_ONSTACK) && ! on_sig_stack(sp))=0A=
-
-------=_NextPart_000_017F_01C12691.51701D60--
+            Kevin K.

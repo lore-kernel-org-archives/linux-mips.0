@@ -1,28 +1,16 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199807161624.SAA14564@aisa.fi.muni.cz>
-Subject: Re: Installing noarch packages
-In-Reply-To: <199807161617.SAA14485@aisa.fi.muni.cz> from Honza Pazdziora at "Jul 16, 98 06:17:57 pm"
-Date: Thu, 16 Jul 1998 18:24:40 +0200 (MET DST)
-From: Honza Pazdziora <adelton@informatics.muni.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <m0ywsXV-000aQNC@the-village.bc.nu>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: Linus downtime
+Date: Thu, 16 Jul 1998 19:13:56 +0100 (BST)
+In-Reply-To: <199807161759.KAA47684@piecomputer.engr.sgi.com> from "Bob Mende Pie" at Jul 16, 98 10:59:12 am
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Honza Pazdziora <adelton@informatics.muni.cz>
-Cc: adevries@engsoc.carleton.ca, linux@cthulhu.engr.sgi.com
-Message-ID: <19980716162440.CMNwcPFUZxX2tB50r2DK2ETYs2kkcGa5B4-_zhI6f_o@z>
+To: Bob Mende Pie <mende@piecomputer.engr.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19980716181356.R5IbFYrPMsfvtq8Iruf7JW0F3nJybrU71mGzMWbkiCI@z>
 
-> 
-> This is with rpm version 2.5.1 from HH 5.1 PR distribution. I even
-> tried to build the automake rpm from src, got rpm fine but then
-> ended with the same message. So I assume there is something wrong
-> not with the noarch packages but with the rpm.
+>    Tommorow linus will be down between 10:00 PST and 11:00 PST to be moved
+> from one rack to another.
 
-I forgot to say that you can of course install it with --ignorearch.
-Still, this might be the problem why the devices installfailed,
-couldn't it?
-
-------------------------------------------------------------------------
- Honza Pazdziora | adelton@fi.muni.cz | http://www.fi.muni.cz/~adelton/
-                   I can take or leave it if I please
-------------------------------------------------------------------------
+What are you doing to the poor man ;)

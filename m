@@ -1,17 +1,38 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0xxUC0-0005FsC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: SSH...
-Date: Wed, 28 Jan 1998 09:54:00 +0000 (GMT)
-In-Reply-To: <Pine.LNX.3.95.980127235622.5867G-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jan 28, 98 00:02:10 am
+From: fisher@hollywood.engr.sgi.com (William Fisher)
+Message-ID: <199802060031.QAA09851@hollywood.engr.sgi.com>
+Subject: Re: Another linux tidbit
+Date: Thu, 5 Feb 1998 16:31:49 -0800 (PST)
+In-Reply-To: <199802060013.QAA29017@fir.engr.sgi.com> from "William J. Earl" at Feb 5, 98 04:13:25 pm
+Reply-To: fisher@sgi.com
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980128095400.7aMMk_0EBtN3J45XICCivw4yrbOHZF1AzNhkdKEy0kw@z>
+To: "William J. Earl" <wje@fir.engr.sgi.com>
+Cc: linux@hollywood.engr.sgi.com, William Fisher <fisher@hollywood.engr.sgi.com>
+Message-ID: <19980206003149.aFz5q4ntQ7f0c-6-1Ko1Rbf2E-nJfbFk4xYU8nYNm_M@z>
 
-> But, I live in the evil USA, and can't re-export it. Could someone in a
-> decent country stick an RPM binary that's signed with a PGP key put it on
-> ftp.replay.com ?  Alan?
+> 
+>     I was just browsing this week's Info World, which includes
+> their "1997 Product of the Year" awards.  They gave the Operating
+> System award to Red Hat Linux, and the Best Technical Support
+> award to the Linux user community.  They wrote, "Find out what
+> you have been missing while you've been rebooting Windows NT", and,
+> in regard to support from commercial vendors, "Many times [the vendors]
+> deny that there are bugs in their software."
+> 
+	Bill Gates has explictly stated in several published interviews
+	that Microsoft does NOT do software releases ONLY to fix bugs.
 
-When I get a moment I will
+	"The only reason to release new software is for features which
+	the customers are willing to pay." He even argued that the
+	typical "fixed in the next release" quoted by technical support
+	was a non-starter.
+
+	I wonder what BillG does when he hits an bug in "his software"?
+	What does he do after immediately calling technical support,
+	waiting one on hold for 20+ minutes, he is then told
+	"It's fixed in the next release", what does he do next?
+	File bug report and waits for some new additional buggy feature(s)
+	in the next release to arrive?
+
+-- Bill

@@ -1,65 +1,188 @@
-Message-ID: <38866.156.153.254.10.1066086919.squirrel@webmail.rmci.net>
-Date: Mon, 13 Oct 2003 17:15:19 -0600 (MDT)
-Subject: 64 bit kernel in the name of HIGHMEM
-From: <exister99@velocitus.net>
-In-Reply-To: <20031009140319.GA17647@linux-mips.org>
-References: <5334.156.153.254.2.1065650433.squirrel@webmail.rmci.net>
-        <20031009140319.GA17647@linux-mips.org>
+Received: from sinse004.ap.infineon.com (sgpk993a.sin.infineon.com [172.17.65.75])
+	by mail5-i.infineon.com (8.11.7p1+Sun/8.11.7) with ESMTP id h9E5miT23181
+	for <linux-mips@linux-mips.org>; Tue, 14 Oct 2003 13:48:44 +0800 (SGT)
+Message-ID: <0C674B14EAEBD61196D900B0D03DB49F010C835E@blrw502w.blr.infineon.com>
+From: "Babbellapati Syam Krishna (IFIN DC COM)"
+	<Syam-Krishna.Babbellapati@infineon.com>
+Subject: "sel" field in MTC0 instruction?
+Date: Tue, 14 Oct 2003 11:16:20 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-Path: <exister99@velocitus.net>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C39216.7E8A3B30"
+Return-Path: <Syam-Krishna.Babbellapati@infineon.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20031013231519.xa-ORZ6Cgi6XrOgXgT5muJfbH_nZH0S1hc-jUtXv_2g@z>
+To: "'linux-mips@linux-mips.org'" <linux-mips@linux-mips.org>
+Message-ID: <20031014054620.xmJu-wgAzLRkR9tSRhQ9UqhGHzNCR5B02rH47fdgUjw@z>
 
-Hi Ralf,
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Thanks for the prompt response.
+------_=_NextPart_001_01C39216.7E8A3B30
+Content-Type: text/plain
 
-> Reminds me of the HP Laserjet code in the kernel.  Anybody still using
-> or testing that?
+Hi there,
+ 
+I am running linux on a MIPS64 5kc processor. From the Data Sheet and
+Software User's manual, I could see that we can access the various MIPS
+Performance Counters (Coprocessor 0, Register 25) by using the "sel" field
+of the MTC0 or MFC0 registers.
+ 
+Format:   MTC0 rt, rd
 
-Yes, the code I am working with is basically a snapshot of the kernel
-source with /arch/mips/hp-lj etc.
+        (OR) MTC0 rt, rd, sel
 
-> Anyway, for a 64-bit processor such as the 20Kc I suggest a 64-bit
-> kernel. Highmem is a pain and 64-bit is the cure.
+Based on the second format, I have written a new assembly languauge routine:
 
-To that end I have been trying to build a 64 bit kernel.  I think I am
-going about it correctly.  Got ahold of
+ 
+#define write_32bit_cp0_performance_register(register,value) \
+__asm__ __volatile__( \
+"mtc0\t%0,"STR(register)",sel\n\t" \
+"nop" \
+: : "r" (value));
+ 
+"sel" in the above assembly instruction is a value of either 0, 1, 2 or 3
+based on the register which we would like to write.
+"sel" in the above code is newly introduced by us and if there is no sel
+then the code compiles properly but I guess we would always be accessing one
+register only in that case.
+(A similar routine is written using "mfc0" also for reading the values
+back.)
+ 
+But this code results in a compilation error:
+{standard input}: Assembler messages:
+{standard input}:41: Error: illegal operands `mtc0 $3,$25,0'
+{standard input}:45: Error: illegal operands `mfc0 $5,$25,1'
+where $25 is CP0_PERFORMANCE register.
+ 
+The command used for compilation is:
+mipsel-linux-gcc -c -I /home/syam/linux-2.4.20with095LTT/include/ -Wall -O2
+-fomit-frame-pointer -fno-common -finline-limit=5000 -G 0 -mno-abicalls
+-fno-pic -mcpu=r4600 -mips2 -pipe -DMODULE -mlong-calls tempCache.c
+ 
+ 
+Could someone help me in making me understand what is wrong here? Is it a
+problem with the syntax of the arguments or is there an assembler support
+which I am lacking for such an instruction?
+ 
+Any kind of pointers would be of help.
+ 
+Thank you,
+Syam
 
-mips64el-linux-binutils-2.14-3.i386.rpm 
-mips64el-linux-boot-gcc-2.95.4-9.i386.rpm
+----------------------------------------------------------------------------
+------------- 
+*Disclaimer*
+"This e-mail and any attachments are confidential and may contain trade
+secrets or privileged or undisclosed information. They may also be subject
+to copyright protection. Please do not copy, distribute or forward this
+email to anyone unless authorized. If you are not a named addressee, you
+must not use, disclose, retain or reproduce all or any part of the
+information contained in this e-mail or any attachments. If you have
+received this email by mistake please notify the sender immediately by
+return email and destroy/delete all copies of the email." 
 
-and got cranking.  Currently make is dying with the following output:
+ 
 
+------_=_NextPart_001_01C39216.7E8A3B30
+Content-Type: text/html
 
-[root@l51dhcp252 ljlinux]# make ARCH=mips64 CROSS_COMPILE=mips64el-linux-
-. scripts/mkversion > .tmpversion
-mips64el-linux-gcc -D__KERNEL__ -I/home/astone/cf_burn_64/ljlinux/include
--Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing
--fno-common -I/usr/lib/gcc-lib/mips64el-linux/2.95.4/include
--fomit-frame-pointer -Dx_unity_x -I
-/home/astone/cf_burn_64/ljlinux/include/asm/gcc -mabi=64 -G 0
--mno-abicalls -fno-pic -Wa,--trap -pipe  -DUTS_MACHINE='"mips64"'
--DKBUILD_BASENAME=version -c -o init/version.o init/version.c
-mips64el-linux-gcc -D__KERNEL__ -I/home/astone/cf_burn_64/ljlinux/include
--Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing
--fno-common -I/usr/lib/gcc-lib/mips64el-linux/2.95.4/include
--fomit-frame-pointer -Dx_unity_x -I
-/home/astone/cf_burn_64/ljlinux/include/asm/gcc -mabi=64 -G 0
--mno-abicalls -fno-pic -Wa,--trap -pipe   -DKBUILD_BASENAME=do_mounts -c
--o init/do_mounts.o init/do_mounts.c
-cpp0: output pipe has been closed
-mips64el-linux-gcc: Internal compiler error: program cc1 got fatal signal 11
-make: *** [init/do_mounts.o] Error 1
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+<TITLE>Message</TITLE>
 
+<META content="MSHTML 5.50.4926.2500" name=GENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=955195704-14102003><FONT face=Arial size=2>Hi 
+there,</FONT></SPAN></DIV>
+<DIV><SPAN class=955195704-14102003><FONT face=Arial 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=955195704-14102003><FONT face=Arial size=2>I am running linux 
+on a MIPS64 5kc processor. From the Data Sheet and Software User's manual, I 
+could see that we can access the various MIPS Performance Counters (Coprocessor 
+0, Register 25) by using the "sel" field of the MTC0 or MFC0 
+registers.</FONT></SPAN></DIV>
+<DIV><SPAN class=955195704-14102003><FONT face=Arial 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=955195704-14102003>
+<P><FONT size=2><STRONG>Format:&nbsp;</STRONG><SPAN 
+class=955195704-14102003><FONT face=Courier>&nbsp;&nbsp;</FONT></SPAN><FONT 
+face=Courier>MTC0 rt, rd</FONT></FONT></P>
+<P><FONT face=Courier><FONT size=2><SPAN 
+class=955195704-14102003>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(OR) 
+</SPAN>MTC0 rt, rd, sel</FONT></FONT></P>
+<P><FONT color=#0000ff><FONT face=Arial color=#000000 size=2><SPAN 
+class=955195704-14102003>Based on the second format, I have written a new 
+assembly languauge routine:</SPAN></FONT></P></DIV>
+<DIV><FONT face=Arial color=#000000 size=2><SPAN 
+class=955195704-14102003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial color=#000000 size=2>#define 
+write_32bit_cp0_performance_register(register,value) \</FONT></DIV>
+<DIV><FONT face=Arial color=#000000 size=2>__asm__ __volatile__( \</FONT></DIV>
+<DIV><FONT face=Arial color=#000000 
+size=2>"mtc0\t%0,"STR(register)",</FONT></FONT><FONT face=Arial 
+size=2>sel</FONT><FONT color=#0000ff><FONT face=Arial color=#000000 size=2>\n\t" 
+\</FONT></DIV>
+<DIV><FONT face=Arial color=#000000 size=2>"nop" \</FONT></DIV>
+<DIV><FONT face=Arial color=#000000 size=2>: : "r" (value));</FONT></DIV>
+<DIV><FONT face=Arial color=#000000 size=2></FONT>&nbsp;</DIV>
+<DIV></FONT><FONT face=Arial size=2>"</FONT><FONT face=Arial><FONT 
+size=2>sel"&nbsp;<SPAN class=955195704-14102003>in the above assembly 
+instruction is&nbsp;</SPAN>a value of either 0, 1, 2 or 3 based on the register 
+which we would like to write.</FONT></FONT></DIV>
+<DIV><FONT face=Arial size=2>"sel" in the above code is newly introduced by us 
+and if there is no sel then the code compiles properly but I guess we would 
+always be accessing one register only in&nbsp;<SPAN 
+class=955195704-14102003>that </SPAN>case.</FONT></DIV><FONT color=#0000ff>
+<DIV><FONT face=Arial color=#000000 size=2>(A similar routine is written using 
+"mfc0" also for reading the values back.)</FONT></DIV>
+<DIV><FONT face=Arial color=#000000 size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial color=#000000 size=2>But this code results in a 
+compilation error:</FONT></DIV></FONT><FONT face="Courier New" size=2>
+<DIV><FONT face=Arial>{standard input}: Assembler messages:</FONT></DIV>
+<DIV><FONT face=Arial>{standard input}:41: Error: illegal operands `mtc0 
+$3,$25,0'</FONT></DIV>
+<DIV><FONT face=Arial>{standard input}:45: Error: illegal operands `mfc0 
+$5,$25,1'</FONT></DIV></FONT><FONT color=#0000ff>
+<DIV><FONT face=Arial><FONT color=#000000><FONT size=2><SPAN 
+class=955195704-14102003>w</SPAN>here $25 is CP0_PERFORMANCE 
+register.</FONT></FONT></FONT></DIV>
+<DIV><FONT face=Arial color=#000000 size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial color=#000000 size=2>The command used for compilation 
+is:</FONT></DIV></FONT><FONT face=Arial size=2>
+<DIV>mipsel-linux-gcc -c -I /home/syam/linux-2.4.20with095LTT/include/ -Wall -O2 
+-fomit-frame-pointer -fno-common -finline-limit=5000 -G 0 -mno-abicalls -fno-pic 
+-mcpu=r4600 -mips2 -pipe -DMODULE -mlong-calls tempCache.c</DIV></FONT></SPAN>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><SPAN class=955195704-14102003><FONT face=Arial 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=955195704-14102003><FONT face=Arial size=2>Could someone help 
+me in making me understand what is wrong here? Is it a problem with the syntax 
+of the arguments or is there an assembler support which I am lacking for such an 
+instruction?</FONT></SPAN></DIV>
+<DIV><SPAN class=955195704-14102003><FONT face=Arial 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=955195704-14102003><FONT face=Arial size=2>Any kind of pointers 
+would be of help.</FONT></SPAN></DIV>
+<DIV><SPAN class=955195704-14102003><FONT face=Arial 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=955195704-14102003><FONT face=Arial size=2>Thank 
+you,</FONT></SPAN></DIV>
+<DIV><SPAN class=955195704-14102003><FONT face=Arial 
+size=2>Syam</FONT></SPAN></DIV><!-- Converted from text/rtf format -->
+<P><SPAN lang=en-us><FONT face="Comic Sans MS" 
+size=2>-----------------------------------------------------------------------------------------</FONT><FONT 
+face="Times New Roman"> </FONT></SPAN><BR><SPAN lang=en-us><FONT 
+face="Comic Sans MS" color=#0000ff size=1>*Disclaimer*<BR>"This e-mail and any 
+attachments are confidential and may contain trade secrets or privileged or 
+undisclosed information. They may also be subject to copyright protection. 
+Please do not copy, distribute or forward this email to anyone unless 
+authorized. If you are not a named addressee, you must not use, disclose, retain 
+or reproduce all or any part of the information contained in this e-mail or any 
+attachments. If you have received this email by mistake please notify the sender 
+immediately by return email and destroy/delete all copies of the email." 
+</FONT></SPAN></P>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV></BODY></HTML>
 
-Initial searches claim this is a bug in the compiler.  Could it be due to
-something I am doing wrong?  Any guidance on building a 64 bit kernel
-would be greatly appreciated.
-
-Best Regards, Andrew Stone
+------_=_NextPart_001_01C39216.7E8A3B30--

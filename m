@@ -1,72 +1,60 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: ariel@yon.engr.sgi.com (Ariel Faigon)
-Message-ID: <199703140018.QAA20671@yon.engr.sgi.com>
-Subject: Re: Hello world!
-Date: Thu, 13 Mar 1997 16:18:06 -0800 (PST)
-In-Reply-To: <9703141124.ZM7712@windy.wellington.sgi.com> from "Alistair Lambie" at Mar 14, 97 11:24:41 am
+Message-ID: <199703270456.UAA06849@yon.engr.sgi.com>
+Subject: Re: Status?  Ping?
+Date: Wed, 26 Mar 1997 20:56:58 -0800 (PST)
+In-Reply-To: <199703261602.LAA01615@neon.ingenia.ca> from "Mike Shaver" at Mar 26, 97 11:02:58 am
 Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: linux@yon.engr.sgi.com, David <davem@caip.rutgers.edu>
-Message-ID: <19970314001806.H-N1OPsMrZrO6Ymx2XAOQ0ec6VIsKIQMJARNphFL4EM@z>
+To: Mike Shaver <shaver@neon.ingenia.ca>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970327045658.KCDEyHTLfZhikdfeD2UTWhEVMAg4BilOT5dtuwKDvvg@z>
 
 :
-:On Mar 14, 10:32am, Mike Shaver wrote:
-:> Subject: Hello world!
-:> Looks like I'm getting an Indy when I get back to Ottawa next week, so
-:> I'd like to hear from others (hello?) as to what kind of work we're
-:> looking at in the short term.
-:>
+:(I'm assuming I just don't get my own messages back, and that they're
+:getting to the rest of the list fine.)
+:
+All Problems fixed.
 
-The goals are:
-	0) Complete the merge with mainstream Linux
-	   (David left at 2.0.11 or so) which I assume
-	   Ralf has already done or doing.
+:I'm supposed to be getting my Indy any day now, and I'm beginning to
+:wonder what state Miguel and Ralf (hi, all!) are at, and what I should
+:start with.  (I've also got some friends here eager to help out, and I
+:think we'll probably start with some basic userland bits.  Probably
+:diskutils, etc.)
+:
+:Do the others have hardware yet?
+:
 
-	1) Get the Indy to boot linux from a _local_ disk
-	   Ralf and Miguel were looking into SILO here.
+Here's the hardware status:
 
-	2) Get gcc to work native of Linux/Indy
+Miguel: Indy R5000 150MHz 64MB, 2GB, shipped a week ago
+and is apparently stuck in bureaucratic mess. I'll followup
+next week but since all Mexico is going on the Easter/Pasqua?
+vacation it seems it'll probably take over a week to get
+to Miguel.
 
-As Alistair said, David already got the WD SCSI driver to work
-and he was booting to multiuser and even running GNU emacs
-on his Linux Indy.  But this was done using:
+Mike: getting his own Indy from the Centennial College
+Fire sale, (w/ Kevin's help?) I assume.
 
-	1) Cross builds (gcc-cross was running on IRIX 6.2
-	   and producing Linux ELF-32 binaries).
+Ralf: I got an Indy promised from a kind soul. Kind soul
+is extremely busy, I keep probing kind soul every couple
+of days.
 
-	2) Booting was never local. It was always using the
-	   ARC prom bootp command.
+linux.sgi.com - we have a machine. Not yet set up outside
+the firewall due to the kudzu rush.  I'll get to it soon
+when I'm relieved of other urgent duties.
 
-	3) The target Linux/Indy filesystems were NFS mounted.
 
-Basically we need to mkfs.ext2(8) on the local Indy (as IRIX
-supports XFS and EFS both of which are proprietary, Sigh)
-It would be best to have a seprate disk (rather than a
-partition which may disappear in case of human error)
-Get SILO to work, get the latest gcc to work native
-and we can start working on userland.
+:How would I go about getting the source tree, once I get my hardware
+:here?
+:
+Ralf has the most up to date source tree (merge with recent Linux
+snap shot).  The original (David Miller) source tree is on
 
-Asking David some questions might be a good idea too.
-I'm not sure he is currently on the list, I'll ask
-him if he's interested to join.
-
-:>
-:> I understand that we're looking to get a source repository out on the
-:> 'net, which would be a good start.  What are people planning to start
-:> with first?  (I suppose talking to disks is a priority... =) )
-:>
-
-Larry and I are working on setting up linux.sgi.com outside the
-SGI firewall. My intention is to set up tcpwrappers so that only
-the developers (Ralf, Miguel, Mike) and SGI people could login
-and give you complete control of the machine. At which point
-you can install ssh or whatever and start sharing sources.
-
-The "official" initial post-David merged source tree should
-come from Ralf.
+	ftp://reality.sgi.com/private/dm/
 
 -- 
 Peace, Ariel

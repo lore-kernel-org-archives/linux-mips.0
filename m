@@ -1,36 +1,48 @@
-Date: Thu, 1 Feb 2001 09:26:55 +0000 (GMT)
-From: "Dr. David Gilbert" <gilbertd@treblig.org>
-Subject: Re: netbooting indy
-In-Reply-To: <Pine.GSO.4.30L.0101311648280.22989-100000@home-on-the-dome.mit.edu>
-Message-ID: <Pine.LNX.4.30.0102010926190.20992-100000@springhead.px.uk.com>
+Message-ID: <004b01c08c33$e7b42ee0$a3291081@mc2.chalmers.se>
+From: "Erik Aderstedt" <erik@ic.chalmers.se>
+Subject: OSLoadOptions
+Date: Thu, 1 Feb 2001 10:46:51 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Kenneth C Barr <kbarr@MIT.EDU>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010201092655.bRSuhjZor0otATKPtgm5EKB2uA-rewOicaRr23mMv9I@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010201094651.q9Kmd9AiZ3q-_ScDlWNJ40y9-s3V7hvrufWSBLZWrjo@z>
 
-On Wed, 31 Jan 2001, Kenneth C Barr wrote:
+Hi!
 
-> I finally got bootp/tftp to answer my indy's pleas for an image, but get
-> the following behavior (with my own IP addr and server, obviously):
->
-> >> boot bootp():/vmlinux
+I'm using kernel 2.4.0-test3 from the SimpleLinux dist on an
+Indy w/ R4400SC, booting using DHCP on an x86 RedHat 6.1
+box. Right now the boot is completely unattended, I just turn on the Indy
+and a few seconds later I'm at the single user bash prompt. To get further
+than this, I would like to pass command line options to the kernel at boot,
+and have tried setting the OSLoadOptions PROM variable.
 
+The problem is that the kernel seems to be passed the string
+'OSLoadOptions=<my kernel boot options>', instead of just the
+boot options. At least that is what is indicated by the line
 
-I haven't seen the error you got - however one thing I do differently is
-to do
+Kernel command line: OSLoadOptions=init=/sbin/simpleinit
 
-bootp():/vmlinux
+during boot. At the end of this mail is a clunky patch that fixes this, but
+I'm not sure if this is the right way to go about it.
 
-without the initial 'boot ' - worth a go?
+/Erik
+erik@ic.chalmers.se
 
-Dave
+Patch to linux/arch/mips/arc/cmdline.c of 2.4.0
 
--- 
-/------------------------------------------------------------------\
-| Dr. David Alan Gilbert | Work:dg@px.uk.com +44-161-286-2000 Ex258|
-| -------- G7FHJ --------|---------------------------------------- |
-| Home: dave@treblig.org            http://www.treblig.org         |
-\------------------------------------------------------------------/
+37c37
+<       int actr, i;
+---
+>       int actr, i, offset;
+48a49
+>           offset = (!strncmp(prom_argv[actr], "OSLoadOptions=",14)?14:0;
+50,51c51,52
+<               strcpy(cp, prom_argv[actr]);
+<               cp += strlen(prom_argv[actr]);
+---
+>               strcpy(cp, prom_argv[actr] + offset);
+>               cp += strlen(prom_argv[actr] + offset);

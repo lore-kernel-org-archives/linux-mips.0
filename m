@@ -1,39 +1,25 @@
-Message-ID: <002701bf8cc6$c2ef0200$0ceca8c0@satanas.mips.com>
-From: "Kevin D. Kissell" <kevink@mips.com>
 Subject: Re: FP emulation patch available
-Date: Mon, 13 Mar 2000 09:33:02 +0100
+Date: Mon, 13 Mar 2000 13:46:19 +0000 (GMT)
+In-Reply-To: <002701bf8cc6$c2ef0200$0ceca8c0@satanas.mips.com> from "Kevin D. Kissell" at Mar 13, 2000 09:33:02 AM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <E12UVAr-0007rR-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>
-Cc: linux-mips@vger.rutgers.edu, linux-mips@fnet.fr, Linux SGI <linux@cthulhu.engr.sgi.com>
-Message-ID: <20000313083302.SJCbRadcz5EXALtR_hXWH1jwVepq9u5SfcZg74EVNDE@z>
+To: "Kevin D. Kissell" <kevink@mips.com>
+Cc: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>, linux-mips@vger.rutgers.edu, linux-mips@fnet.fr, Linux SGI <linux@cthulhu.engr.sgi.com>
+Message-ID: <20000313134619.b2FavqGARwzCiSEK0NVsP5gUneH5jXZmfVXj751KxCk@z>
 
-As Ralf just reminded me by email, the Algorithmics/MIPS
-kernel FPU emulator is *not* SMP-safe.  It borrows an existing
-(if seldom used) exception handler, and has only a single
-set of emulated FPU registers.  I sort-of knew this, but
-had not worried about it, since to the best of my knowledge
-no one is building (or has built) SMP MIPS machines 
-out of FPU-less processors.  Nevertheless, a compile-time
-test, to blow up on any attempt at an SMP build of the 
-emulator should always have been there, and is going in 
-right away.
+> Does anyone out there actually need/want an SMP
+> version of the emulator?   It's not completely trivial,
+> but it would not be all that difficult to do...
 
-Does anyone out there actually need/want an SMP
-version of the emulator?   It's not completely trivial,
-but it would not be all that difficult to do...
+If you dont do it please add
 
-            Regards,
+#ifdef CONFIG_SMP
+#error "Not on this emulator"
+#endif
 
-            Kevin K.
-__
-
-Kevin D. Kissell
-MIPS Technologies European Architecture Lab
-kevink@mips.com
-Tel. +33.4.78.38.70.67
-FAX. +33.4.78.38.70.68
+to the emu code - for the person who didnt know 8)

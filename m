@@ -1,35 +1,30 @@
-Date: Tue, 15 Jan 2002 17:18:23 -0500 (EST)
-From: QuantumG <qg@nuclear.biodome.org>
-Subject: Re: Remove
-In-Reply-To: <20020115162743.GG18641@columbia.edu>
-Message-ID: <Pine.LNX.4.33.0201151713430.1760-100000@nuclear.biodome.org>
+Subject: Re: Compilers question
+Date: Thu, 17 Jan 2002 13:41:20 +0000 (GMT)
+In-Reply-To: <3C45CE3B.6080507@galileo.co.il> from "Rabeeh Khoury" at Jan 16, 2002 09:02:19 PM
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E16RCnA-0003KU-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: Mike Schiraldi <mgs21@columbia.edu>
-Cc: Winecellarconstruction / Weinkellerbau Gruber <office@winecellar.at>, mail1@winecellar.at
-Message-ID: <20020115221823.pNvgc89M1y9duI6pIVKydIlEN6kr_ueh3MgKMIkQRMs@z>
+To: Rabeeh Khoury <rabeeh@galileo.co.il>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20020117134120._TCwzASPTyuP0tMeiRZ0S6WUjdoDV1DF0-fzi9WYN-0@z>
 
+> The factors that I can identify till now are two -
+> 1.. Distribute the binary in ELF format (are there any compilers that
+> don't support ELF ? )
+> 2.. Compile the binary that it is ABI compliant
+> 
+> Please add more factors that should be checked, or even suggest another 
+> approach to overcome this problem (other than I get the other person 
+> tool chain and compile the sources myself).
 
-Then I would like to take this opportunity to introduce myself.  My name
-is Trent Waddington, I'm a compiler tester in the United Kingdom and I
-have no idea what this list is.  The web page at the address of which this
-list appears to be hosted has contact details as such:
+Assuming you plan to ship just the binary
 
-   WEINKELLERBAU FRIEDRICH GRUBER Ges.m.b.H.
-   A- 2770 Gutenstein, Ferdinand Raimund - Straße 171
-   Tel.: +43 / 26 34  / 74 65, FAX +43 / 26 34 / 85 85
+3. Ensure you also either ship .o files or you avoid using libc, ld.so and any
+other LGPL components (license requirements). 
 
-Would any members of this list who are in Germany (and I'm sure there are
-a few) please call this number and threaten the life of whoever answers.
-I am now adding a deny rule to my mail browser.  Thanks for playing.
+4. Check you use no GPL libraries (normally not likely)
 
-On Tue, 15 Jan 2002, Mike Schiraldi wrote:
-
-> You guys can stop sending remove notices to this list -- they just get
-> forwarded to the entire gigantic list, creating more spam for all of us. I
-> think it's pretty clear that whoever is spamming us is not going to take our
-> names off his mailing list.
->
->
+Alan

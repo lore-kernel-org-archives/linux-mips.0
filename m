@@ -1,47 +1,38 @@
-From: Dominic Sweetman <dom@algor.co.uk>
-MIME-Version: 1.0
-Message-ID: <15433.25352.345698.244662@gladsmuir.algor.co.uk>
-Date: Sat, 19 Jan 2002 12:14:00 +0000
+Message-ID: <002a01c1a137$a35340a0$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <m3elkoa5dw.fsf@myware.mynet><20020118101908.C23887@lucon.org><01b801c1a081$3f6518e0$0deca8c0@Ulysses><20020118201139.A847@lucon.org> <15433.26184.411289.161787@gladsmuir.algor.co.uk>
 Subject: Re: thread-ready ABIs
-In-Reply-To: <m34rlj4gb2.fsf@myware.mynet>
-References: <m3elkoa5dw.fsf@myware.mynet>
-	<20020118101908.C23887@lucon.org>
-	<m3elkn4ikq.fsf@myware.mynet>
-	<20020118110844.A25165@lucon.org>
-	<m34rlj4gb2.fsf@myware.mynet>
-Content-Type: text/plain; charset=US-ASCII
+Date: Sat, 19 Jan 2002 23:21:21 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Ulrich Drepper <drepper@redhat.com>
-Cc: "H . J . Lu" <hjl@lucon.org>, GNU libc hacker <libc-hacker@sources.redhat.com>, linux-mips@oss.sgi.com
-Message-ID: <20020119121400.iefSEqb0CwWO1032Wa4K5EaHg3vWdb2OI3yObusuieA@z>
+To: Dominic Sweetman <dom@algor.co.uk>, "H . J . Lu" <hjl@lucon.org>
+Cc: Ulrich Drepper <drepper@redhat.com>, GNU libc hacker <libc-hacker@sources.redhat.com>, linux-mips@oss.sgi.com
+Message-ID: <20020119222121.YZmr4tt4-Nqn2ah4BG75cTR0b1tr-aBxVUlwg9PhjUM@z>
 
+> > > It would, in principle, be possible to save/restore k0
+> > > or k1 (but not both) if no other clever solution can be found.  
+> > > There are other VM OSes that manage to do so for MIPS, 
+> > > for other outside-the-old-ABI reasons.  It does, of course,
+> > > add some instructions and some memory traffic to the 
+> > > low-level exception handling , and we would have to look 
+> > > at whether we would want to make such a feature standard 
+> > > or specific to a "thread-ready" kernel build.
+> > 
+> > I like the read-only k0 idea. We just need to make a system call to
+> > tell kernel what value to put in k0 before returning to the user space.
+> > It shouldn't be too hard to implement. I will try it next week.
+> 
+> You could, I guess, wire a TLB entry to map the thread register into
+> the highest virtual memory region of the machine (the top of 'kseg2'),
+> which is accessible in a single instruction as a negative offset from
+> $0.
 
-Well, just about k0/k1:
-
-So far as the hardware and instruction set is concerned, 
-k0/k1 are just two of the 32 general purpose registers.  There's
-nothing special about them and a program in user mode can read/write
-them.
-
-By a mere software convention, they're reserved.  But this is an
-important software convention, because MIPS hardware does so little to
-help out on an exception or interrupt.  Couple that to the lack of any
-absolute addressing mode, and any exception handler pretty much has to
-have a GP register it can write without saving, in order to be able to
-point to the register-save area.
-
-[You could, maybe, do something tricky with a negative offset
-from the (constant zero) $0 register and special mapping]
-
-OK, so that's one of them.  The second is used to reduce the length
-and run-time of the tiny exception handler which is used to refill the
-TLB when a page translation is not loaded.
-
-The OS doesn't rely on user programs not corrupting these registers,
-of course: it typically uses them only in non-interruptible code
-sequences.  But since the OS changes them under the feet of user
-programs, the convention that you don't use them is pretty strongly
-enforced.
-
-Dominic Sweetman
-Algorithmics Ltd
+Funny you should mention this.  I was thinking about it
+yesterday in this context as something else that I've seen 
+done in some non-Linux MIPS OSes, and something that 
+I think would be a better solution for CPU-specific fast 
+storage in SMP configurations than some of the hacks that
+I've seen proposed for SMP MIPS/Linux so far.

@@ -1,30 +1,49 @@
-From: Keith Owens <kaos@melbourne.sgi.com>
-Subject: Re: Kernel crash on boot with current cvs (todays) 
-In-reply-to: Your message of "Wed, 13 Jun 2001 13:37:51 +0200."
-             <20010613133751.A18749@bunny.shuttle.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 13 Jun 2001 21:46:20 +1000
-Message-ID: <8067.992432780@ocs4.ocs-net>
+From: "Robert Rusek" <robru@ruseks.com>
+Subject: RedHat test-7.0
+Date: Wed, 13 Jun 2001 23:08:20 -0700
+Message-ID: <000701c0f498$69d77c70$6400a8c0@sohorob>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0008_01C0F45D.BD78A470"
 Sender: owner-linux-mips@oss.sgi.com
-To: Raoul Borenius <borenius@shuttle.de>
-Cc: Florian Lohoff <flo@rfc822.org>, Ralf Baechle <ralf@oss.sgi.com>, linux-mips@oss.sgi.com
-Message-ID: <20010613114620.ml-5hxkMb87WePwV8R6RHGIyecfe5Mveh5_RZBz7VBc@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010614060820.2nh2laod8-t1zRyPqgyyD9eFEjOmACYuL2hYYpx0-t8@z>
 
-On Wed, 13 Jun 2001 13:37:51 +0200, 
-borenius@shuttle.de (Raoul Borenius) wrote:
->Unable to handle kernel paging request at virtual address 00000000, epc == 8800e                               e5c, ra == 8800ee5c
->Call Trace: [<88124dc0>] [<88124dd8>] [<8800eb84>] [<88063810>] [<880647f4>] [<8                               8063670>] [<880640f0>] [<880640b8>] [<8805f7f4>] [<88052a88>] [<88052b74>] [<880
->537c0>] [<88053768>] [<88052294>] [<8804ef14>] [<8800fc28>] [<8800c638>] [<c013d                               686>]
+This is a multi-part message in MIME format.
 
-The epc line and the call trace have embedded spaces and newlines which
-are preventing ksymoops from doing a full conversion.  Try again with
-the extra characters removed, i.e.
+------=_NextPart_000_0008_01C0F45D.BD78A470
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-Unable to handle kernel paging request at virtual address 00000000, epc == 8800e5c, ra == 8800ee5c
-....
-Call Trace: [<88124dc0>] [<88124dd8>] [<8800eb84>] [<88063810>]
-[<880647f4>] [<88063670>] [<880640f0>] [<880640b8>] [<8805f7f4>]
-[<88052a88>] [<88052b74>] [<880537c0>] [<88053768>] [<88052294>]
-[<8804ef14>] [<8800fc28>] [<8800c638>] [<c013d686>]
-Code: ...
+Has anyone successfully installed Red Hat test-7.0 and got the compilers
+working?
+--
+Robert Rusek
+ 
+
+------=_NextPart_000_0008_01C0F45D.BD78A470
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
+
+<META content=3D"MSHTML 5.50.4611.1300" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D145410406-14062001><FONT face=3D"Comic Sans MS" =
+color=3D#008000=20
+size=3D2>Has anyone successfully installed Red Hat test-7.0 and got the =
+compilers=20
+working?</FONT></SPAN></DIV>
+<DIV><FONT face=3D"Comic Sans MS" color=3D#008000 =
+size=3D2>--</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS" color=3D#008000 size=3D2>Robert =
+Rusek</FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0008_01C0F45D.BD78A470--

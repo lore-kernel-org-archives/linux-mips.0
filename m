@@ -1,79 +1,248 @@
-Date: Mon, 23 Jul 2001 20:56:56 +0100 (IST)
-From: Dave Airlie <airlied@csn.ul.ie>
-Subject: Re: about serial console problem
-In-Reply-To: <995898583.1139.2.camel@localhost.localdomain>
-Message-ID: <Pine.LNX.4.32.0107232056140.22712-100000@skynet>
+Message-ID: <01b701c113e7$9cbba1c0$056aaac0@kjlin>
+From: "kjlin" <kj.lin@viditec-netmedia.com.tw>
+References: <016701c110c6$a371d580$056aaac0@kjlin>
+Subject: Re: weird printf problem
+Date: Tue, 24 Jul 2001 10:23:22 +0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_01B4_01C1142A.AA6963A0"
 Sender: owner-linux-mips@oss.sgi.com
-To: Marc Karasek <marc_karasek@ivivity.com>
-Cc: Barry Wu <wqb123@yahoo.com>, linux-mips@oss.sgi.com
-Message-ID: <20010723195656.Y6Vt5ly2NhseiL9xDlkdqItw8aMg8cMAoeXw-2v3Qtk@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010724022322.E1bztbPswhTA9h2MjcHiJLmfFvK0Wb0yX-qhLoPdCSE@z>
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_01B4_01C1142A.AA6963A0
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+
+My kernel version is 2.4.1 and the processor is an MIPS R4000 style =
+embedded processor.
+I ues the serial port as my console.
+I found that the reason why the printf message will not be completely =
+outputed is the process of my testing program will not be selected again =
+by the schedular after outputing some message.
+Its "state" is TASK_INTERRUPTIBLE but the return value of =
+signal_pending(prev) is zero.
+Therefore, it is deleted from running queue in schedul() and never wake =
+up.
+
+asmlinkage void schedule(void)
+{
+...
+...
+move_rr_back:
+
+         switch (prev->state) {
+                 case TASK_INTERRUPTIBLE:
+                         if (signal_pending(prev)) {
+                                 prev->state =3D TASK_RUNNING;
+                                 break;
+                         }
+                 default:
+                         del_from_runqueue(prev);       (<---- Be =
+deleted here!)
+                 case TASK_RUNNING:
+        }
+...
+...
+}
+
+I am not familiar with the machanism of tty_write().
+Can any body tell me where should be chceked over?
+My serial driver is modified based on drivers/char/serial.c
+
+Thanks.
+  ----- Original Message -----=20
+  From: kjlin=20
+  To: linux-mips@oss.sgi.com=20
+  Sent: Friday, July 20, 2001 10:49 AM
+  Subject: weird printf problem
 
 
-Cool, this patch fixed a problem we were seeing with busybox on the
-Linux/VAX project, that I hadn't time to look at...
+  Hi all,
 
-thanks
+  I ported linux to my embeded board and encountered a weird "printf" =
+problem.
+  The library i used is uClibc.
+  I made the kernel to run a testing program directly after boot up.
+  In my case, less "printf" work well but more will fail.
+  Here is my testing program:
 
-Dave.
+  main()
+  {
+      int i=3D0;
 
+      while(i<200)
+      {
+                  printf("Hello World=3D%d\n",i);
+                  i++;
+      }
+  }
+  =20
+  The output message will die at "Hello World=3D10" or "Hello =
+World=3D168" or "Hello World=3D76" ........
+  Every times the message dies at different place but it will never =
+successfully be outputed "200" times.
+  However, if the condition is changed to "while(i<100)", then =
+everything is fine.
+  It is so weird!!
+  Why too much "printf" will cause the program to die?
+  Is it the problem of uClibc or kernel?
+  Does the compiler for my testing program concern this weird problem?
+  Can anybody give me some hints?
 
-On 23 Jul 2001, Marc Karasek wrote:
+  Thanks,
+  KJ
 
-> This sounds like a problem I ran into on another processor/platform.
-> What are you using for a ramdisk?  Is it busybox?  There was a bug in
-> 0.51 busybox that would not let it accept input from a console on a
-> serial port.  It had to do with the init for the serial port.  You can
-> check the patch file below to see the problem that was in busybox...
->
-> --- init.c.orig Sat Apr 21 17:46:57 2001
-> +++ init.c      Sat Apr 21 17:46:31 2001
-> @@ -276,7 +276,7 @@
->
->         /* Make it be sane */
->         tty.c_cflag &= CBAUD|CBAUDEX|CSIZE|CSTOPB|PARENB|PARODD;
-> -       tty.c_cflag |= HUPCL|CLOCAL;
-> +       tty.c_cflag |= CREAD|HUPCL|CLOCAL;
->
->         /* input modes */
->         tty.c_iflag = ICRNL | IXON | IXOFF;
->
-> On 22 Jul 2001 23:51:25 -0700, Barry Wu wrote:
-> >
-> > Hi, all,
-> >
-> > I am porting linux 2.4.3 to our mipsel evaluation
-> > board. Now I meet a problem. Because I use edown
-> > to download the linux kernel to evaluation board.
-> > I update the serial baud rate to 115200.
-> > I use serial 0 as our console, and I can use
-> > printk to print debug messages on serial port.
-> > But after kernel call /sbin/init, I can not
-> > see "INIT ...  ..." messages on serial port.
-> > I suppose perhaps I make some mistakes. But when
-> > I use 2.2.12 kernel, it ok.
-> > If someone knows, please help me. Thanks!
-> >
-> > Barry
-> >
-> > __________________________________________________
-> > Do You Yahoo!?
-> > Make international calls for as low as $.04/minute with Yahoo! Messenger
-> > http://phonecard.yahoo.com/
-> --
-> /*************************
-> Marc Karasek
-> Sr. Firmware Engineer
-> iVivity Inc.
-> marc_karasek@ivivity.com
-> (770) 986-8925
-> (770) 986-8926 Fax
-> *************************/
->
->
+------=_NextPart_000_01B4_01C1142A.AA6963A0
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-David Airlie, Software Engineer
-http://www.skynet.ie/~airlied / airlied@skynet.ie
-pam_smb / Linux DecStation / Linux VAX / ILUG person
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Dbig5" http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D2>My kernel version is 2.4.1 and the processor is an =
+MIPS R4000=20
+style embedded processor.</FONT></DIV>
+<DIV><FONT size=3D2>I ues the serial port as my console.</FONT></DIV>
+<DIV><FONT size=3D2>I found that the reason why the printf message will =
+not be=20
+completely outputed is the process of my testing program will not be =
+selected=20
+again by the schedular after outputing some message.</FONT></DIV>
+<DIV><FONT size=3D2>Its "state" is TASK_INTERRUPTIBLE but the return =
+value of=20
+signal_pending(prev) is zero.</FONT></DIV>
+<DIV><FONT size=3D2>Therefore, it&nbsp;is&nbsp;deleted from running =
+queue in=20
+schedul() and never wake up.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>asmlinkage&nbsp;void schedule(void)</FONT></DIV>
+<DIV><FONT size=3D2>{</FONT></DIV>
+<DIV><FONT size=3D2>...</FONT></DIV>
+<DIV><FONT size=3D2>...</FONT></DIV>
+<DIV><FONT size=3D2>move_rr_back:</FONT></DIV>
+<DIV><FONT size=3D2><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+switch=20
+(prev-&gt;state)=20
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+case=20
+TASK_INTERRUPTIBLE:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;=20
+if (signal_pending(prev))=20
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+prev-&gt;state =3D=20
+TASK_RUNNING;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+break;</FONT></DIV>
+<DIV><FONT=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;=20
+}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+default:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;=20
+del_from_runqueue(prev);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&lt;--=
+--&nbsp;<STRONG>Be=20
+deleted=20
+here</STRONG>!)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+case TASK_RUNNING:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+}<BR>...</FONT></DIV>
+<DIV><FONT size=3D2>...</FONT></DIV>
+<DIV><FONT size=3D2>}</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>I am not familiar with the machanism of=20
+tty_write().</FONT></DIV>
+<DIV><FONT size=3D2>Can any body tell me where should be chceked=20
+over?</FONT></DIV>
+<DIV><FONT size=3D2>My serial driver is modified based on=20
+drivers/char/serial.c</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>Thanks.</FONT></DIV>
+<BLOCKQUOTE=20
+style=3D"BORDER-LEFT: #000000 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: =
+0px; PADDING-LEFT: 5px; PADDING-RIGHT: 0px">
+  <DIV style=3D"FONT: 10pt =B7s=B2=D3=A9=FA=C5=E9">----- Original =
+Message ----- </DIV>
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt =B7s=B2=D3=A9=FA=C5=E9; =
+font-color: black"><B>From:</B>=20
+  <A href=3D"mailto:kj.lin@viditec-netmedia.com.tw"=20
+  title=3Dkj.lin@viditec-netmedia.com.tw>kjlin</A> </DIV>
+  <DIV style=3D"FONT: 10pt =B7s=B2=D3=A9=FA=C5=E9"><B>To:</B> <A=20
+  href=3D"mailto:linux-mips@oss.sgi.com"=20
+  title=3Dlinux-mips@oss.sgi.com>linux-mips@oss.sgi.com</A> </DIV>
+  <DIV style=3D"FONT: 10pt =B7s=B2=D3=A9=FA=C5=E9"><B>Sent:</B> Friday, =
+July 20, 2001 10:49 AM</DIV>
+  <DIV style=3D"FONT: 10pt =B7s=B2=D3=A9=FA=C5=E9"><B>Subject:</B> weird =
+printf problem</DIV>
+  <DIV><BR></DIV>
+  <DIV><FONT size=3D2>
+  <DIV><FONT size=3D2>
+  <DIV><FONT size=3D2>Hi all,</FONT></DIV>
+  <DIV>&nbsp;</DIV>
+  <DIV><FONT size=3D2>I ported linux to&nbsp;my embeded board&nbsp;and =
+encountered=20
+  a weird "printf" problem.</FONT></DIV>
+  <DIV>The library i used is uClibc.</DIV>
+  <DIV><FONT size=3D2>I made the kernel to run a testing program =
+directly after=20
+  boot up.</FONT></DIV>
+  <DIV><FONT size=3D2>In my case,&nbsp;less "printf" work well but more =
+will=20
+  fail.</FONT></DIV>
+  <DIV><FONT size=3D2>Here is my testing program:</FONT></DIV>
+  <DIV>&nbsp;</DIV>
+  <DIV><FONT size=3D2>main()</FONT></DIV>
+  <DIV><FONT size=3D2>{</FONT></DIV>
+  <DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; int i=3D0;</FONT></DIV>
+  <DIV>&nbsp;</DIV>
+  <DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp;=20
+  =
+while(i&lt;200)<BR>&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  printf("Hello=20
+  =
+World=3D%d\n",i);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  i++;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></DIV>
+  <DIV><FONT size=3D2>}</FONT></DIV>
+  <DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT size=3D2>The&nbsp;output message will die at "Hello =
+World=3D10" or=20
+  "Hello World=3D168" or "Hello World=3D76" ........</FONT></DIV>
+  <DIV><FONT size=3D2>Every times the message dies at different =
+place</FONT><FONT=20
+  size=3D2> but it will&nbsp;never successfully be outputed "200"=20
+  times.</FONT></DIV>
+  <DIV><FONT size=3D2>However, if the condition is changed to =
+"while(i&lt;100)",=20
+  then everything is fine.</FONT></DIV>
+  <DIV><FONT size=3D2>It is so weird!!</FONT></DIV>
+  <DIV><FONT size=3D2>Why too much "printf" will cause the program to=20
+  die?</FONT></DIV>
+  <DIV><FONT size=3D2>Is it the problem of uClibc or =
+kernel?</FONT></DIV>
+  <DIV>Does the compiler for my testing program concern this weird=20
+problem?</DIV>
+  <DIV><FONT size=3D2>Can anybody give me some hints?</FONT></DIV>
+  <DIV>&nbsp;</DIV>
+  <DIV>Thanks,</DIV>
+  <DIV>KJ</DIV></FONT></DIV></FONT></DIV></BLOCKQUOTE></BODY></HTML>
+
+------=_NextPart_000_01B4_01C1142A.AA6963A0--

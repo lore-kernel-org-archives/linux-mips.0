@@ -1,28 +1,29 @@
-Date: Sun, 7 Jul 2002 13:36:44 -0700 (PDT)
-From: Muthukumar Ratty <muthu5@sbcglobal.net>
+From: Hartvig Ekner <hartvige@mips.com>
+Message-ID: <200207080716.g687GvM10243@coplin09.mips.com>
 Subject: Re: MIPS Atlas board
-In-Reply-To: <02a401c225f2$1ef39b30$10eca8c0@grendel>
-Message-ID: <Pine.LNX.4.33.0207071333390.26311-100000@Muruga.localdomain>
+Date: Mon, 8 Jul 2002 09:16:57 +0200 (CEST)
+In-Reply-To: <20020707211930.A26692@dea.linux-mips.net> from "Ralf Baechle" at Jul 07, 2002 09:19:30 
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Cc: kevink@mips.com
-Message-ID: <20020707203644.UshHcjs7TYAcy5xu4DlVHeIMvXZekhS28YEa9wBtUvc@z>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: Muthukumar Ratty <muthu5@sbcglobal.net>, linux-mips@oss.sgi.com
+Message-ID: <20020708071657.UUIRzbxnWlCSECgX-OalUJOIieFBkvmvqz8vKJedZzY@z>
 
 
-Thanks kevin, I will use the PCI slot then.
 
->
-> If you're using the on-board multi-I/O wonder chip
-> (serial, ethernet, etc) there are some serious problems
-> with it that limit both the serial line and ethernet
-> performance.  It's good for downloading, and
-> that's about it.  Most of us at MIPS put an AMD
-> PCnet card in the PCI slot to make the system
-> usable for NFS, FTP, etc.
->
->             Regards,
->
->             Kevin K.
->
+Ralf Baechle writes:
+> On Sun, Jul 07, 2002 at 11:09:00AM -0700, Muthukumar Ratty wrote:
+
+> > BTW I was running network performance tools and the max I could read from
+> > Atlas board is ~0.3M. Is this a problem with the hardware?
+> 
+> Hard to say without any kind of closer analysis.  The number certainly
+> seems to be too low.  What network benchmark did you run, what processor
+> and clock rate does your Atlas have?
+
+There are known issues with the ethernet controller in the Philips 9730
+device. For network-intensive applications, use a plug-in card.
+
+/Hartvig

@@ -1,28 +1,25 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: marker@daddyo.engr.sgi.com (Charles Marker)
-Message-ID: <199905271832.LAA53444@daddyo.engr.sgi.com>
-Subject: Re: Lxrun: Linux Applications for Solaris
-Date: Thu, 27 May 1999 11:32:38 -0700 (PDT)
-In-Reply-To: <374D8D5A.2143F76A@detroit.sgi.com> from "Eric Kimminau" at May 27, 99 02:22:18 pm
+From: "Serdar Yegulalp" <serdar@thegline.com>
+Subject: O2 Guinea-pig ready
+Date: Thu, 10 Jun 1999 18:38:54 -0400
+Message-ID: <000001beb392$0550efa0$93b1cea7@gline.optonline.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <37603CAB.8094D1CD@cobaltnet.com>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: eak@sgi.com
-Cc: linux@cthulhu.engr.sgi.com, Charles Marker <marker@daddyo.engr.sgi.com>
-Message-ID: <19990527183238.xnpezscH0qquB2vcMJKjfOQN5dtT53NZrM753WSP_e0@z>
+To: linux@cthulhu.engr.sgi.com
+Message-ID: <19990610223854.a0A4fbHprThgfvx5r9VAzmFbhjVaoeM3PQ7vIRehRsk@z>
 
-> 
-> Anyone thought of porting this to IRIX?
-> 
-> http://www.sun.com/software/linux/lxrun/
-> 
+Greetings, all. I know this is probably premature, but when the O2 port gets
+going, I just want y'all to know I have an O2 machine here which is ready to
+be exploited.  Thx.
 
-This could be useful for IRIX, but only to enable executing MIPS based
-Linux binaries.  Lxrun is not an emulator, so you need to have
-underlying Intel hardware in order to run Intel Linux binaries.  Sun
-is providing this for Intel systems running Solaris where it could be
-useful, but I don't know how useful this would be for SPARC based
-systems (depending on the number of SPARC based Linux applications).
-
-					Charles
+--------------------------------------------------------------------------
+serdar@thegline.com                                    EFNet IRC: TheGline
+www.thegline.com                             ICQ: 934998  AOL IM: Ginrei23
+--------------------------------------------------------------------------
+           w e ' v e  c o m e  t o  f a k e  y o u  o v e r
+ you can crush me as I speak/write on rocks what you feel/now feel this
+--------------------------------------------------------------------------

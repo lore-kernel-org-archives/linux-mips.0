@@ -1,42 +1,21 @@
-Date: Fri, 26 Oct 2001 13:54:59 -0400 (EDT)
-From: George Gensure <werkt@csh.rit.edu>
+Message-ID: <039901c15e48$d45856e0$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <Pine.SOL.4.31.0110261354370.27585-100000@fury.csh.rit.edu>
 Subject: Re: MIPS 32bit and 64bit mode
-In-Reply-To: <20011026173004.78642.qmail@web10802.mail.yahoo.com>
-Message-ID: <Pine.SOL.4.31.0110261354370.27585-100000@fury.csh.rit.edu>
+Date: Fri, 26 Oct 2001 20:05:40 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: han han <piggie111000@yahoo.com>
+To: George Gensure <werkt@csh.rit.edu>, han han <piggie111000@yahoo.com>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20011026175459.Kpi8IB3rcSkm9FU7pRYLJ_45wJ9OpNrslVTMPZfrsfA@z>
+Message-ID: <20011026180540.LX3IydAlu80O2exla7xc7bWP7f43aXEj_aLk-XLKPRY@z>
 
-is the 5kc the same processor as the r5k?
+> is the 5kc the same processor as the r5k?
 
-George
+If by "r5k" you mean the R5000(tm), no it isn't.
+The MIPS 5Kc(tm) is a newer syntesizable 64-bit 
+MIPS CPU core from MIPS Technologies.
 
-On Fri, 26 Oct 2001, han han wrote:
-
-> Hi all,
->
-> Does Anybody help me to clear some concepts about MIPS
-> 5kc?
-> How to detect and set a MIPS 5kc chip working in 32bit
-> or 64bit mode? or the chip can automatically enter
-> proper mode when it fetchs an MIPS 32/64 instruction?
->
-> Also, does MIPS 5kc have some 64bit instructions?
->
-> Thanks a lot in advance,
->
-> --Han
->
-> __________________________________________________
-> Do You Yahoo!?
-> Make a great connection at Yahoo! Personals.
-> http://personals.yahoo.com
->
-
--- 
-George R. Gensure       Computer Science House Member
-werkt@csh.rit.edu       Sophomore, Rochester Institute of Technology
-Computer Science
+            Kevin K.

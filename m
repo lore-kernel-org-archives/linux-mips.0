@@ -1,52 +1,21 @@
-Message-ID: <00c401c135f0$509d6500$056aaac0@kjlin>
-From: "kjlin" <kj.lin@viditec-netmedia.com.tw>
-References: <008901c135c6$87b88c60$056aaac0@kjlin> <999696461.4471.15.camel@ez>
-Subject: Re: How to install the cross-compiler toolchain?
-Date: Wed, 5 Sep 2001 17:51:20 +0800
+Date: Thu, 6 Sep 2001 20:15:24 -0400 (EDT)
+From: George Gensure <werkt@csh.rit.edu>
+Subject: oops after rtc
+Message-ID: <Pine.SOL.4.31.0109062009001.11712-100000@fury.csh.rit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: Jean-Christophe ARNU <jc.arnu@wanadoo.fr>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010905095120.9XKgmC5r5dgVN7_7yv4diwICgtaf9w-0HRBKSpReZ14@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010907001524.9wsYVDe3E5I3hWukxLiPbdxhxEDklMlRudY4afIGCYM@z>
 
+what could be causing a kernel oops after trying to initialize the sgi rtc
+(may have nothing to do with the rtc, but the message comes right after
+it).  The rtc is rather important to me (!rtc + Kerberos = bad).
 
------ Original Message -----
-Subject: Re: How to install the cross-compiler toolchain?
+George
+werkt@csh.rit.edu
 
-
-> On 05 Sep 2001 12:52:13 +0800, kjlin wrote:
-> > #rpm -ivh glibc-2.2.3-13.3.i386.rpm
-> > error: failed dependencies:
-> >                 glibc-common = 2.2.3-13.3 is needed by glibc-2.2.3-13.3
-> >                 glibc-devel < 2.2.3 conflicts with glibc-2.2.3-13.3
-> > I also tried to install glibc-common-2.2.3-13.3.i386.rpm but still
-failed.
-> > #rpm -ivh glibc-common-2.2.3-13.3.i386.rpm
-> > error: failed dependencies:
-> >                 glibc < 2.2.3 conflicts with glibc-common-2.2.3-13.3
-> >
-> > I am confused by the result.
->
-> You should update and not install glibc.
-> # rpm -uvh glibc-common-2.2.3-13.3.i386.rpm
-
-It is the same.
-Just more error messages.
-# rpm -Uvh glibc-common-2.2.3-13.3.i386.rpm
-error: failed dependencies:
-        glibc < 2.2.3 conflicts with glibc-common-2.2.3-13.3
-        glibc-common = 2.2.2-10 is needed by glibc-2.2.2-10
-
-# rpm -Uvh glibc-2.2.3-13.3.i386.rpm
-error: failed dependencies:
-        glibc-common = 2.2.3-13.3 is needed by glibc-2.2.3-13.3
-        glibc-devel < 2.2.3 conflicts with glibc-2.2.3-13.3
-        glibc > 2.2.2 conflicts with glibc-common-2.2.2-10
-        glibc = 2.2.2 is needed by glibc-devel-2.2.2-10
-
-# rpm -Uvh glibc-devel-2.2.3-13.3.i386.rpm
-error: failed dependencies:
-        glibc = 2.2.3 is needed by glibc-devel-2.2.3-13.3
+-- 
+George R. Gensure       Computer Science House Member
+werkt@csh.rit.edu       Sophomore, Rochester Institute of Technology
+Computer Science Major

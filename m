@@ -1,24 +1,39 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199706261449.QAA29376@informatik.uni-koblenz.de>
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199706261501.LAA18745@neon.ingenia.ca>
 Subject: Re: Intel tools suspect, film at 11
-Date: Thu, 26 Jun 1997 16:49:21 +0200 (MET DST)
-In-Reply-To: <199706260420.AAA15089@neon.ingenia.ca> from "Mike Shaver" at Jun 26, 97 00:20:19 am
+In-Reply-To: <199706261449.QAA29376@informatik.uni-koblenz.de> from Ralf Baechle at "Jun 26, 97 04:49:21 pm"
+Date: Thu, 26 Jun 1997 11:01:48 -0400 (EDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>
+To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970626144921.9VYYeg6zjfJeRTmGyc7O-7RoHZpqP1Kudz6eyWMQvnE@z>
+Message-ID: <19970626150148.F-aZVhSAPiDgdY_TcDOrMRqk1tv_E-IiIMBwCbSvPB4@z>
 
-Hi,
+Thus spake Ralf Baechle:
+> > Well, I can build a (working) kernel with the IRIX-hosted tools, and
+> > not the Intel-hosted ones, so I'm beginning to suspect that it's not
+> > _just_ my incompetence at work.
+> 
+> Sorry, but the tools work 100% for Intel.  I've been using them for
+> one or two eternities on Intel.
 
-> Well, I can build a (working) kernel with the IRIX-hosted tools, and
-> not the Intel-hosted ones, so I'm beginning to suspect that it's not
-> _just_ my incompetence at work.
+That doesn't reflect too well on me then, does it? =)
 
-Sorry, but the tools work 100% for Intel.  I've been using them for
-one or two eternities on Intel.
+Seriously though, I'm at a loss.
+I can build a kernel with the IRIX tools, and I can't with the Intel
+ones.
 
-  Ralf
+I'll blow everything away and reinstall, I guess.
+
+Mike
+
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>                   Welcome to the technocracy.
+#>                                                                     
+#> "you'd be so disappointed
+#>              to find out that the magic was not
+#>                          really meant for you" - OLP

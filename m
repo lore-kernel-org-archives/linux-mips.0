@@ -1,35 +1,33 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199709162101.RAA05770@neon.ingenia.ca>
-Subject: EFS test kernel
-Date: Tue, 16 Sep 1997 17:01:05 -0400 (EDT)
+Message-ID: <199709170058.UAA07380@neon.ingenia.ca>
+Subject: EFS question
+Date: Tue, 16 Sep 1997 20:58:22 -0400 (EDT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Linux/SGI list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970916210105.apS8nkipXgxVYtv2_-IJSF-9nLjIm2dE2TNaJsdLYoc@z>
+Message-ID: <19970917005822.Jpaqiz0_Jp2oy0fJrDw6lX8-nqxYeEA6BOsx_mS1h8A@z>
 
-ftp://ftp.linux.sgi.com/pub/test/vmlinux-970916-efs.gz has rudimentary
-support for EFS partition mounting, and it lets me do some basic stuff
-on my IRIX partition, like list small[*] directories and run binaries.
+Just to make sure I understand this correctly:
+- when an inode has <= EFS_DIRECTEXTENTS extents, they're stored directly
+in the inode.
+- when an inode has > EFS_DIRECTEXTENTS extents, the extents in the
+inode refer to contiguous block regions that contain extents referring
+to the real data.
 
-I've got my IRIX root mounted at /usr/gnemul/irix (the emulation code
-requires that location), and have a symlink /lib/rld ->
-/usr/gnemul/irix/lib/rld.  I sometimes get problems specifying
-executables by explicit path (./ls or /usr/gnemul/irix/bin/ls), but if
-I put the current directory in my path and chdir to there, things like
-ls and date and wc and uname work just fine.
-
-Please let me know if you get any problems.
-
-[*] small == not requiring indirect extents
+The EFS code that Alan posted, in addition to having a curious
+aversion to structures, seemed to think that the first 4 bytes of
+dinode->di_u were the block number of a block containing extents, and
+thus doesn't work very well with files with numext >
+EFS_DIRECTEXTENTS.  I just want to ensure that I make a sane fix.
 
 Mike
 
 -- 
 #> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>                 Ignore the man behind the curtain.                  
+#>                 UNIX medicine man -- dark magick, cheap!            
 #>                                                                     
-#> "And then I realized that it never should have worked in the first  
-#>  place.  Thus, it would not work again until rewritten." --- Anon.  
+#>  When the going gets tough, the tough give cryptic error messages.  
+#>          "We believe in rough consensus and running code."          

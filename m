@@ -1,49 +1,98 @@
-Message-ID: <000f01c16271$8013eae0$001e690a@huawei.com>
-From: "machael" <dony.he@huawei.com>
-Subject: KSEG0 and KSEG2 ...
-Date: Thu, 1 Nov 2001 09:06:55 +0800
+Message-ID: <3BE182FB.2B8D8F8B@cotw.com>
+Date: Thu, 01 Nov 2001 11:14:35 -0600
+From: "Steven J. Hill" <sjhill@cotw.com>
+Reply-To: sjhill@cotw.com
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
+Subject: Re: Stabs and discarded functions (was Re: Old bug with 'gdb/dbxread.c'
+ and screwed up MIPS symbolic debugging...)
+References: <3BDF7F79.6050205@cygnus.com> <3BE02E31.3B2CA5FC@cotw.com> <20011031113208.A1882@nevyn.them.org> <3BE03ECD.5060904@cygnus.com> <20011031174749.A28985@nevyn.them.org>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Cc: Ralf Baechle <ralf@oss.sgi.com>
-Message-ID: <20011101010655.3Xv1gZ690sZr7dWS5JCNwrM0xuLNwAmdzcKXGco0LIY@z>
+To: Daniel Jacobowitz <dan@debian.org>
+Cc: gdb@sources.redhat.com, linux-mips@oss.sgi.com
+Message-ID: <20011101171435.xxxUlah6mNUGOaNwxWQg_S7CV6XRnX9XtV7-wy5XCbA@z>
 
+Daniel Jacobowitz wrote:
 
- Hello,ralf:
-    I use linux-2.4.5 and have some questions to need your help.
-    I try to replace some kernel functions with my own implementations.I
-will explain it in the following:
-    Let's say:
-        void (*my_func)(void)=func1;
-     where "my_func" is a function pointer defined in kernel, and "func1" is
- a function(void func1(void)) implemented in kernel.And "my_func" is an
- EXPORTED SYMBOL in mips_ksyms.c.
+[snip]
 
-    Now I want to replace "func1" with my own "func2" in a module
- my_module.o:
-     extern void (*my_func)(void);
-     my_func = func2;
-     where "func2" is a function (void fun2(void)) implemented in
- "my_module.o".
+> So it looks like binutils did not relocate the stabs for .text.exit properly.
+> 
+> Why?  It's pretty simple; there was nothing to relocate it to.  From the
+> kernel's linker script:
+> 
+>   /* Sections to be discarded */
+>   /DISCARD/ :
+>   {
+>         *(.text.exit)
+>         *(.data.exit)
+>         *(.exitcall.exit)
+>   }
+> 
+> So instead of the subtle error we get in objfiles containing multiple
+> sections, which we'll still need to deal with for the kernel for
+> .text.init, we have a completely bogus result.
+> 
+> We need to discard the stabs records for discarded symbols.  Of course,
+> we're just reading the psymtab in when we get here.  We don't have
+> symbols yet.  We could do this by a second pass after reading, instead
+> of the hack with textlow, but that's gross.
+> 
+> This makes it impossible to debug at least MIPS kernels with stabs and
+> gdb, so I very much want to fix it.  I'm not sure how this works on
+> x86, but I'd guess it had to do with differences in relocation types.
+> Anyone have an example handy?
+> 
+> Meanwhile, Steven, as a quick hack - try removing the /DISCARD/ bit
+> from your linker script and relinking.  What happens?  Does everything
+> else seem to work?
+> 
+Success! Yes, leaving those sections in allows for the debugger to work
+properly. Here is output from a fresh gdb checked out of cvs this morning:
 
-     If I do "insmod my_module.o", the kernel should run OK. In fact, it is
- often met an "unhandled kernel unaligned access" or "do_page_fault"
- exception and then panics.
+   GNU gdb 2001-11-01-cvs
+   Copyright 2001 Free Software Foundation, Inc.
+   GDB is free software, covered by the GNU General Public License, and you are
+   welcome to change it and/or distribute copies of it under certain conditions.
+   Type "show copying" to see the conditions.
+   There is absolutely no warranty for GDB.  Type "show warranty" for details.
+   This GDB was configured as "--host=i686-pc-linux-gnu
+--target=mips-linux-elf"...
+   (gdb) target remote /dev/ttyS1
+   Remote debugging using /dev/ttyS1
+   0x80012c88 in breakinst () at gdb-stub.c:907
+   907             __asm__ __volatile__("
+   (gdb) bt
+   #0  0x80012c88 in breakinst () at gdb-stub.c:907
+   #1  0x8020aabc in brcm_irq_setup () at irq.c:421
+   #2  0x8020aaf0 in init_IRQ () at irq.c:434
+   #3  0x801fc83c in start_kernel () at init/main.c:524
+   #4  0x801fd6f8 in init_arch (argc=160, argv=0xb3000000, envp=0x2, 
+       prom_vec=0xbf) at setup.c:425
+   (gdb) c
+   Continuing.
 
-     We know "func1" should be in KSEG0(unmapped , cached) since it is
-implemented in kernel space.So it's address should be 0x8XXXXXXX.And
- "my_func" should also pointed to this same address before inserting
- my_module.o. And "func2" should be in KSEG2(mapped, cached) since it is
- implemented in module, So it's address should be 0xCXXXXXXX.After inserting
- my_module.o, "my_func" should be changed to pointed to this new address in
- KSEG2.
-     My question is :
-     When "my_func" changes from KSEG0 from KSEG2, Can it cause some
- problems?
+   Program received signal SIGTRAP, Trace/breakpoint trap.
+   0x80012c88 in breakinst () at gdb-stub.c:907
+   907             __asm__ __volatile__("
+   (gdb) bt
+   #0  0x80012c88 in breakinst () at gdb-stub.c:907
+   #1  0x8001a554 in sys_create_module (name_user=0x10001dc8 "brcmdrv", 
+       size=713264) at module.c:305
+   (gdb) c
+   Continuing.
 
-     Thank you very much.
+So, it would seem according to you and Keith, we have a linker bug that
+is specific to MIPS and other architectures that do not use PC relative
+branches that needs to be resolved?
 
-     machael
+I also tried a fresh checkout of the insight debugger from cvs this
+morning and it works great too. Thanks for the interim solution.  I
+would like to be copied on remaining discussions including the design
+of the fix/patch. Thank you everyone.
+
+-Steve
+
+-- 
+ Steven J. Hill - Embedded SW Engineer

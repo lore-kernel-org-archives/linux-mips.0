@@ -1,22 +1,55 @@
-Subject: Re: thread-ready ABIs
-Date: Sun, 27 Jan 2002 20:24:36 +0000 (GMT)
-In-Reply-To: <20020122121330.A16110@nevyn.them.org> from "Daniel Jacobowitz" at Jan 22, 2002 12:13:30 PM
+From: "Robert Rusek" <robru@teknuts.com>
+Subject: Newbie Question
+Date: Sun, 27 Jan 2002 10:59:42 -0800
+Message-ID: <001e01c1a764$c8753fe0$6401a8c0@delllaptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <E16Uvqu-0002X7-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001F_01C1A721.BA51FFE0"
 Sender: owner-linux-mips@oss.sgi.com
-To: Daniel Jacobowitz <dan@debian.org>
-Cc: "Kevin D. Kissell" <kevink@mips.com>, Dominic Sweetman <dom@algor.co.uk>, Ralf Baechle <ralf@oss.sgi.com>, Ulrich Drepper <drepper@redhat.com>, Mike Uhler <uhler@mips.com>, "\"MIPS/Linux List SGI\"" <linux-mips@oss.sgi.com>, "H . J . Lu" <hjl@lucon.org>
-Message-ID: <20020127202436.UIWTUQqslrf6t0Fg0vf2A3f6LMH6wZpuowLTMJYmBOE@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020127185942.XB9kS3ZQvtTRpsHp1QDB__GE8dFL6uyqLVEGhSuj0CE@z>
 
-> Which it is.  Fork shares no memory regions; vfork/clone share all
-> memory regions.  AFAIK there is no share-heap-but-not-stack option in
-> Linux.
+This is a multi-part message in MIME format.
 
-Thats a design decision. At the point you don't have identical mappings for
-both threads you need two sets of page tables and you take all the
-performance hits that go with changing current tables on a schedule.
+------=_NextPart_000_001F_01C1A721.BA51FFE0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-Its a lot cheaper to use a different %esp for each thread
+I have been out of the loop for quite a while.  Is there a functional or
+completed port of any of the RedHat flavors?  If so how would I go about
+getting them?
+ 
+Thanks,
+--
+Robert Rusek
+ 
+
+------=_NextPart_000_001F_01C1A721.BA51FFE0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
+
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D554575718-27012002><FONT face=3DArial size=3D2>I have =
+been out of=20
+the loop for quite a while.&nbsp; Is there a functional or completed =
+port of any=20
+of the RedHat flavors?&nbsp; If so how would I go about getting=20
+them?</FONT></SPAN></DIV>
+<DIV><SPAN class=3D554575718-27012002><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D554575718-27012002><FONT face=3DArial=20
+size=3D2>Thanks,</FONT></SPAN></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>--</FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>Robert Rusek</FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_001F_01C1A721.BA51FFE0--

@@ -1,45 +1,61 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0xfuql-0005FsC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: Mount ext2 filesystem.
-Date: Wed, 10 Dec 1997 22:43:26 +0000 (GMT)
-In-Reply-To: <199712101335.WAA09888@meteor.nsg.sgi.com> from "Takeshi Hakamada" at Dec 10, 97 10:35:39 pm
-Content-Type: text
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199712111821.KAA13893@oz.engr.sgi.com>
+Subject: Re: Announce: New uploads
+Date: Thu, 11 Dec 1997 10:21:49 -0800 (PST)
+In-Reply-To: <348FFDBF.EE8@kaydara.com> from "Joe Alonso" at Dec 11, 97 09:50:39 am
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Takeshi Hakamada <hakamada@meteor.nsg.sgi.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19971210224326._HSZBEVHIOke2hMmxnYehm8-qU59a0Cdp33Re56fKKw@z>
+To: jalonso@kaydara.com
+Cc: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19971211182149.bddgrF-nAv2-aaKE1WSY3nhGCROkeqM9B43lPnetpJ8@z>
 
-> However, when I try to invoke rpm which is made by Alan(libc/ld workaround
-> version), I get efs read error as follows:
-> 
-> efs: read error in indirect extents
-> attempt to access beyond end of device
-> 08:01 rw=0, want=1207011792, limit=1965937
+:
+:Pardon my ignorance, but...
+:I have a couple of questions;  
+:is there a how-to document that outlines how to load linux on an sgi?
+:
+We are waiting for someone to write this.
 
-The efs driver is still very limited and cant handle many file layouts.
+You may get all the info by reading:
 
-> Anyway, why root-be-0.00.cpio.gz doesn't contain rpm binary?
-> I think rpm binary should be in root-be-0.00.cpio.gz.
+	http://reality.sgi.com/ariel/linux.gz
 
-Personally I'd like to see a lot less in a final root-be-0.00. Really it
-needs some minimal disk handling tools and rpm. The root-be is a good
-start for an NFS root right now.
+(an archive of this mailing list).  The problem is that
+it is way too long in this form.
 
-I used the installer stuff I did to get rpm on the disk by doing
 
-on Linux x86
+:is the Indigo Elan (r4000) supported?
+:
 
-rpm2cpio rpm-2.3.11.mips.rpm >rpm.cpio
+Unfortunately, no.
 
-ftping it to Irix and using the install cpio option. Ive been poking at
-better installing and talked to a few people about Arc firmware after Ralf
-prodded me. Given the horror stories told I think the better option is
-to finish producing a tool that takes a compressed ramdisk image (the initrd
-image) that is used by setups like the redhat installer and merges it with
-the kernel image so the existing bootup stuff can load it
 
-The X86 has memory space problems (install in 8Mb), on the indy blowing
-4Mbytes on the install ramdisk is almost an irrelevance.
+:I'm not sure how to initialize a loading of linux on the sgi.
+:Here's what I've assumed:
+:- bring over the src's to the sgi
+:- compile a basic system (under irix)
+:- copy over the original irix kernel with the new linux kernel
+:- re-boot
+:
+:The begging questions:
+:The FS are not compatible, therefore a new mkfs has to be done on the
+:(root) partitions.
+:This just doesn't "sound" right to me. 
+:What am I overlooking?
+:
 
-Alan
+You should be either:
+
+1) boot via bootp (/vmlinux on a remote filesystem) and mount
+   stuff via NFS.
+
+2) Go through a complex and not well documented way of creating
+   an ext2fs filesystem on your Indy (better get an additional disk)
+   copy the kernel and root to that system and reboot.
+
+--
+Peace, Ariel

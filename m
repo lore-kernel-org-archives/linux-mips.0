@@ -1,25 +1,37 @@
-Subject: Re: User applications
-Date: Tue, 9 Jan 2001 12:17:26 +0000 (GMT)
-In-Reply-To: <3A5AFAC8.CA682600@jungo.com> from "Michael Shmulevich" at Jan 09, 2001 01:49:29 PM
-MIME-Version: 1.0
+Date: Tue, 9 Jan 2001 13:09:58 -0200
+From: Ralf Baechle <ralf@oss.sgi.com>
+Subject: Re: MIPS32 patches breaking DecStation
+Message-ID: <20010109130958.B1047@bacchus.dhis.org>
+References: <20010109004101.B27674@paradigm.rfc822.org> <000501c079d3$fefe1a60$0deca8c0@Ulysses>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <E14FxiT-0006XP-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Disposition: inline
+In-Reply-To: <000501c079d3$fefe1a60$0deca8c0@Ulysses>; from kevink@mips.com on Tue, Jan 09, 2001 at 01:34:47AM +0100
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Michael Shmulevich <michaels@jungo.com>
-Cc: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, linux-mips@oss.sgi.com
-Message-ID: <20010109121726.nDBC-i8-UKG9-y5kzIeNDXsdxbAcjOEMvYmfV_9hwL8@z>
+To: "Kevin D. Kissell" <kevink@mips.com>
+Cc: Florian Lohoff <flo@rfc822.org>, linux-mips@oss.sgi.com
+Message-ID: <20010109150958.OLPIkDtv1QR19YuUEoU9UTNdiimRGC7qqr3TATgzz1I@z>
 
-> promoted to the syscall status? What is the situation that a user in its program
-> would like
-> to call cacheflush() ? Unless, of course, he is doing DoS.
+On Tue, Jan 09, 2001 at 01:34:47AM +0100, Kevin D. Kissell wrote:
 
-A cache flush is not a denial of service attack. Its no less effective than a
-1Mb memcpy 
+> uses 3 or 4 nops instead of the branch to the instruction
+> after the delay slot?   There was a reason that I eliminated
+> the branch construct from the MIPS internal Linux source
+> base - it's a hack that works perfectly on R4000's, but
+> it's pretty much a coincidence that it does so.  Yes,
+> the code fragment in question is R4K-specific, but
+> we really need to migrate towards the use of consistent
+> mechanisms that work across the full range of MIPS
+> CPUs.  Ideally, *all* CP0 hazards should some day be 
+> padded out with "ssnops" (sll $0,$0,1, if I recall), which 
+> force a 1 cycle delay per instruction even on superscalar 
+> MIPS CPUs.
 
-> I can understand why we need this in kernel, for context switch, for example, but
-> as a syscall?...
+While we could come up with a common TLB fault handler I really don't want
+to.  For many applications this TLB fault handler is extremly performance
+sensitive; every single cycle directly translates into application
+performance.  Seems like we'll need some more TLB fault handler.  And a
+complete TLB fault handler rewrite would be a good ide anyway, sigh ...
 
-Self modifying code, dynamic compilation, glibc trampolines
+  Ralf

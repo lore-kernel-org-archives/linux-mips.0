@@ -1,40 +1,26 @@
-Date: Wed, 7 Mar 2001 15:03:03 -0500 (EST)
-From: Kenneth C Barr <kbarr@MIT.EDU>
-Subject: oops on shutdown
-Message-ID: <Pine.GSO.4.30L.0103071457170.9228-100000@scrubbing-bubbles.mit.edu>
+Message-ID: <01b701c0a7f0$79260ba0$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <3AA7B13F.F918E1F8@ti.com> <20010308173003.A17217@physik.tu-cottbus.de> <20010308174044.B11107@bacchus.dhis.org>
+Subject: Re: Question concerning Assembler error
+Date: Thu, 8 Mar 2001 17:54:29 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: linux-mips@oss.sgi.com
-Message-ID: <20010307200303.kvTINsBOaQTfE4KmzpZzUbZOnnrmtACNKZWQUQqGOaQ@z>
+To: Ralf Baechle <ralf@oss.sgi.com>, heinold@physik.tu-cottbus.de, linux-mips@oss.sgi.com
+Message-ID: <20010308165429.CMpDQslFcFt8cvn0guz4QuM85M21vc4VyZt889-XvoA@z>
 
-I receive this error any time I try to "reboot" or "shutdown" my Indy
-running a snapshot of 2.4.1.
+> > Hm sorry cant help with the assembler problem, but which machine
+> > has a 4600 Prozessor and run mipsel on it?
+> 
+> RM200C.
 
-Is this normal or experienced by anyone else?
+Actually, It's far more likely that Jeff is working with a
+MIPS 4KC or 5KC CPU core.  -mcpu=r4600 ends up
+being the closest fit to the MIPS32 ISA and pipeline
+among the options available for the Linux-capable
+gcc compilers.
 
-Easy solution would be never to turn off the machine, but I want to make
-sure this isn't indicative of a larger problem.  (eg, broken paging?)
-
-
-shutdown: couldn't unmount /dev/sda1
-
-Unable to handle kernel paging request at virtual address 00000000, epc
-== 00008
-Oops in fault.c:do_page_fault, line 172:
-regs:
-
-...
-
-epc     00000000
-Status  1000fc03
-Cause   00000008
-Process reboot (pid:39, stackpage=8bc8e000)
-Stack:
-
-...
-
-Call trace: [<88031a6c>]  [<88031a64>] [<8813f734>] [<880b9a5c>]
-[<88058714>]
-Code: (Bad address in epc)
+            Kevin K.

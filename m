@@ -1,56 +1,40 @@
-Date: Tue, 6 Mar 2001 22:36:45 -0500 (EST)
-From: <nick@snowman.net>
-Subject: Problem makeing an O2 run bootp
-In-Reply-To: <20010306135856.E1184@bacchus.dhis.org>
-Message-ID: <Pine.LNX.4.21.0103062231010.23542-100000@ns>
+Date: Wed, 7 Mar 2001 15:03:03 -0500 (EST)
+From: Kenneth C Barr <kbarr@MIT.EDU>
+Subject: oops on shutdown
+Message-ID: <Pine.GSO.4.30L.0103071457170.9228-100000@scrubbing-bubbles.mit.edu>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010307033645.ygGXxQdSpb496sF8ZrcRFuNFRTvvhIh6FZFugO-TFKU@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010307200303.kvTINsBOaQTfE4KmzpZzUbZOnnrmtACNKZWQUQqGOaQ@z>
 
-I've got an o2 that I'm trying to make netboot, and it seems to work,
-however the o2 never acks the tftp packets.  The tcpdump is attached.  If
-anyone has suggestions/ideas I'd love to hear them.  I booted the o2 and
-ran "bootp():" from the arc prompt.
-	Thanks
-		Nick
-22:31:26.697102 arp who-has 10.1.1.3 tell 10.1.1.3
-22:31:26.697348 10.1.1.3.bootpc > 255.255.255.255.bootps: xid:0xbbb2
-secs:5 C:10.1.1.3 [|bootp]
-22:31:26.698900 10.1.1.1.bootps > 10.1.1.3.bootpc: xid:0xbbb2 secs:5
-C:10.1.1.3 Y:10.1.1.3 S:10.1.1.1 [|bootp] [tos 0x10]
-22:31:26.699191 arp who-has 10.1.1.3 tell 10.1.1.3
-22:31:26.710600 10.1.1.3.15283 > 10.1.1.1.tftp: 22 RRQ "vmlinuxo2"
-22:31:26.741123 10.1.1.1.35447 > 10.1.1.3.15283: udp 516 (DF)
-22:31:31.734006 arp who-has 10.1.1.3 tell 10.1.1.1
-22:31:31.734156 arp reply 10.1.1.3 is-at 8:0:69:5:b8:cb
-22:31:31.734291 10.1.1.1.35447 > 10.1.1.3.15283: udp 516 (DF)
-22:31:36.734065 10.1.1.1.35447 > 10.1.1.3.15283: udp 516 (DF)
-22:31:41.734046 10.1.1.1.35447 > 10.1.1.3.15283: udp 516 (DF)
-22:31:46.734050 10.1.1.1.35447 > 10.1.1.3.15283: udp 516 (DF)
-22:31:56.072778 10.1.1.3.15284 > 10.1.1.1.tftp: 22 RRQ "vmlinuxo2"
-22:31:56.102821 10.1.1.1.35447 > 10.1.1.3.15284: udp 516 (DF)
-22:32:01.094154 10.1.1.1.35447 > 10.1.1.3.15284: udp 516 (DF)
-22:32:06.094045 10.1.1.1.35447 > 10.1.1.3.15284: udp 516 (DF)
-22:32:11.094043 10.1.1.1.35447 > 10.1.1.3.15284: udp 516 (DF)
-22:32:16.094071 10.1.1.1.35447 > 10.1.1.3.15284: udp 516 (DF)
-22:32:21.094002 arp who-has 10.1.1.3 tell 10.1.1.1
-22:32:21.094142 arp reply 10.1.1.3 is-at 8:0:69:5:b8:cb
-22:32:26.000316 10.1.1.3.15285 > 10.1.1.1.tftp: 22 RRQ "vmlinuxo2"
-22:32:26.030369 10.1.1.1.35447 > 10.1.1.3.15285: udp 516 (DF)
-22:32:31.024092 10.1.1.1.35447 > 10.1.1.3.15285: udp 516 (DF)
-22:32:36.024044 10.1.1.1.35447 > 10.1.1.3.15285: udp 516 (DF)
-22:32:41.024045 10.1.1.1.35447 > 10.1.1.3.15285: udp 516 (DF)
-22:32:46.024055 10.1.1.1.35447 > 10.1.1.3.15285: udp 516 (DF)
-22:32:51.023999 arp who-has 10.1.1.3 tell 10.1.1.1
-22:32:51.024138 arp reply 10.1.1.3 is-at 8:0:69:5:b8:cb
-22:32:55.927938 10.1.1.3.15286 > 10.1.1.1.tftp: 22 RRQ "vmlinuxo2"
-22:32:55.957167 10.1.1.1.35447 > 10.1.1.3.15286: udp 516 (DF)
-22:33:00.954096 10.1.1.1.35447 > 10.1.1.3.15286: udp 516 (DF)
-22:33:05.954047 10.1.1.1.35447 > 10.1.1.3.15286: udp 516 (DF)
-22:33:10.954056 10.1.1.1.35447 > 10.1.1.3.15286: udp 516 (DF)
-22:33:15.954051 10.1.1.1.35447 > 10.1.1.3.15286: udp 516 (DF)
-22:33:20.954008 arp who-has 10.1.1.3 tell 10.1.1.1
-22:33:20.954142 arp reply 10.1.1.3 is-at 8:0:69:5:b8:cb
+I receive this error any time I try to "reboot" or "shutdown" my Indy
+running a snapshot of 2.4.1.
+
+Is this normal or experienced by anyone else?
+
+Easy solution would be never to turn off the machine, but I want to make
+sure this isn't indicative of a larger problem.  (eg, broken paging?)
+
+
+shutdown: couldn't unmount /dev/sda1
+
+Unable to handle kernel paging request at virtual address 00000000, epc
+== 00008
+Oops in fault.c:do_page_fault, line 172:
+regs:
+
+...
+
+epc     00000000
+Status  1000fc03
+Cause   00000008
+Process reboot (pid:39, stackpage=8bc8e000)
+Stack:
+
+...
+
+Call trace: [<88031a6c>]  [<88031a64>] [<8813f734>] [<880b9a5c>]
+[<88058714>]
+Code: (Bad address in epc)

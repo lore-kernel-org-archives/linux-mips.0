@@ -1,25 +1,30 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: "Serdar Yegulalp" <serdar@thegline.com>
-Subject: O2 Guinea-pig ready
-Date: Thu, 10 Jun 1999 18:38:54 -0400
-Message-ID: <000001beb392$0550efa0$93b1cea7@gline.optonline.net>
+From: olson@anchor.engr.sgi.com (Dave Olson)
+Message-ID: <199906111831.LAA05198@anchor.engr.sgi.com>
+Subject: Re: Belated Feedback:  HAL2
+In-Reply-To: <19990611202821.C22699@thepuffingroup.com> from Ulf Carlsson at "Jun 11, 99 08:28:21 pm"
+Date: Fri, 11 Jun 1999 11:31:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <37603CAB.8094D1CD@cobaltnet.com>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: linux@cthulhu.engr.sgi.com
-Message-ID: <19990610223854.a0A4fbHprThgfvx5r9VAzmFbhjVaoeM3PQ7vIRehRsk@z>
+To: Ulf Carlsson <ulfc@thepuffingroup.com>
+Cc: mikehill@hgeng.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19990611183126.FI5aI9Ru2py0yNeFvk1uo306Vlo79R1aDKNL9hn0DFY@z>
 
-Greetings, all. I know this is probably premature, but when the O2 port gets
-going, I just want y'all to know I have an O2 machine here which is ready to
-be exploited.  Thx.
+Ulf Carlsson wrote: 
+|  We beat IRIX, that sound great to me ;-)
 
---------------------------------------------------------------------------
-serdar@thegline.com                                    EFNet IRC: TheGline
-www.thegline.com                             ICQ: 934998  AOL IM: Ginrei23
---------------------------------------------------------------------------
-           w e ' v e  c o m e  t o  f a k e  y o u  o v e r
- you can crush me as I speak/write on rocks what you feel/now feel this
---------------------------------------------------------------------------
+The singlespeed cdrom drive was very touchy; it was the first generation
+drive to support audio data over scsi.  It's unlikely to be a RAM limitation,
+but who knows, at this point...
+
+|  I'm interested in how this CD playback works. Does it read raw data from the CD
+|  drive and just play it on the HAL2 or are there some other and smarter ways of
+
+It reads the audio data over scsi, converts it if needed, and sends it
+through the audio system.
+
+
+Dave Olson, Silicon Graphics
+http://reality.sgi.com/olson   olson@sgi.com

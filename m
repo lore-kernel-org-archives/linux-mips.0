@@ -1,26 +1,26 @@
-Message-ID: <002101c4e679$72938bc0$6f64a8c0@spark>
-From: "wuming" <wuming@ict.ac.cn>
-References: <001501c4e646$7f676c00$6f64a8c0@spark> <41C690CF.2010306@niisi.msk.ru>
-Subject: Re: problem about dma
-Date: Mon, 20 Dec 2004 17:51:16 +0800
+Message-ID: <000601c4e7b8$0f043830$3ca06096@NUNOE>
+From: "Hdei Nunoe" <nunoe@co-nss.co.jp>
+References: <20041207095837.GA13264@linux-mips.org><20041213.133409.11964920.nemoto@toshiba-tops.co.jp><20041215141613.GB29222@linux-mips.org> <20041221.233324.41626824.anemo@mba.ocn.ne.jp>
+Subject: MIPS32 -> MIPS64
+Date: Wed, 22 Dec 2004 08:51:58 +0900
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="KOI8-R"
-Content-Transfer-Encoding: base64
-Return-Path: <wuming@ict.ac.cn>
+	format=flowed;
+	charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <nunoe@co-nss.co.jp>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20041220095116.InMaU5ekHeRCJgfY1hN6YkeyC_B45GfpYWCG0Dwa1rA@z>
+Cc: ralf@linux-mips.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Message-ID: <20041221235158.DTJSfLTnwMSMCeiiyCGm-RiAdjiLK5s1NggIISPS7FM@z>
 
-DQotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tIA0KRnJvbTogIkdsZWIgTy4gUmFpa28iIDxy
-YWlrb0BuaWlzaS5tc2sucnU+DQpUbzogInd1bWluZyIgPHd1bWluZ0BpY3QuYWMuY24+DQpDYzog
-PGxpbnV4LW1pcHNAbGludXgtbWlwcy5vcmc+DQpTZW50OiBNb25kYXksIERlY2VtYmVyIDIwLCAy
-MDA0IDQ6NDMgUE0NClN1YmplY3Q6IFJlOiBwcm9ibGVtIGFib3V0IGRtYQ0KDQoNCj4gSW4gMi40
-LCBtZW1jcHkncyBwcmVmZXRjaCBtYXkgKGFuZCwgaW4gcHJhY3RpY2UsIGRvLCBubyBzbWlsZXMs
-IGl0IGNvc3QgDQo+IG1lIGEgbG90IG9mIHRpbWUgdG8gcmVhbGl6ZSkgYWNjZXNzIHRoYXQgbWVt
-b3J5LiBJIHRob3VnaCBpdCBoYXMgYmVlbiANCj4gZml4ZWQgaW4gMi42IHNvbWVkYXkuDQo+IA0K
-PiBSZWdhcmRzLA0KPiBHbGViLg0KPiANClRoYW5rIHlvdSEgOikNCkJ1dCBJIHRoaW5rIGl0IGlz
-IG5vdCB0aGUgb25seSByZWFzb24sIGJlY2F1c2UgdGhlIENQVSBvbiBteSBwbGF0Zm9ybSBkb2Vz
-IG5vdCANCnN1cHBvcnQgdGhlICJwcmVmIiBpbnN0cnVjdGlvbi4gU28sIG1lbWNweSdzIHByZWZl
-dGNoIG1heSBoYXZlIG5vIGVmZmVjdCBvbiB0aGF0IA0KYXJyYW5nZSBvZiBtZW1vcnkuDQoNCg==
+Hello,
+
+Could anyone tell how significant the migration from MIPS32 to MIPS64 is?
+Is it just re-building with the MIPS64 toolchain? 
+Or is it like another architecture porting?
+
+Regards,
+-hdei

@@ -1,45 +1,36 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@Julia.DE>
-Message-ID: <199704101422.QAA10766@kernel.panic.julia.de>
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199704101453.KAA21432@neon.ingenia.ca>
 Subject: Re: all in the family
-Date: Thu, 10 Apr 1997 16:22:14 +0200 (MET DST)
-In-Reply-To: <199704101453.KAA21432@neon.ingenia.ca> from "Mike Shaver" at Apr 10, 97 10:53:19 am
+In-Reply-To: <199704100718.CAA22863@athena.nuclecu.unam.mx> from Miguel de Icaza at "Apr 10, 97 02:18:59 am"
+Date: Thu, 10 Apr 1997 10:53:19 -0400 (EDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>
-Cc: miguel@nuclecu.unam.mx, linux@cthulhu.engr.sgi.com
-Message-ID: <19970410142214.sOmCMgETsloqqgLnnLN5DorHKBNmtHUe9kXVWPpoxqw@z>
+To: Miguel de Icaza <miguel@nuclecu.unam.mx>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970410145319.kqJAum5X_qWklu5akSt2dcWIuo6CV3PPVT_IpxGMMqw@z>
 
-Hi,
-
-> Thus spake Miguel de Icaza:
-> > > Anyone know if the emulation is up to hosting the Linux/Indy
-> > > cross-compiler?
-> > 
-> > Why do you need the emulation for on Linux/SPARC?   You just need to
-> > run configure on Linux/SPARC with the proper --target option and you
-> > will get your native cross-compiler in a second.
+Thus spake Miguel de Icaza:
+> > Anyone know if the emulation is up to hosting the Linux/Indy
+> > cross-compiler?
 > 
-> I was under the impression that building GCC for the Linux/SGI target
-> was non-trivial.  Ralf made mention of some patches, and since there
-> are binaries available for Solaris...
-> 
-> If GCC can support it with a --target choice, that'll be great.
+> Why do you need the emulation for on Linux/SPARC?   You just need to
+> run configure on Linux/SPARC with the proper --target option and you
+> will get your native cross-compiler in a second.
 
-(I think you're confusing host and target.  If you want IRIX to generate
-code for Linux the IRIX is the host and Linux the target os).
+I was under the impression that building GCC for the Linux/SGI target
+was non-trivial.  Ralf made mention of some patches, and since there
+are binaries available for Solaris...
 
-GCC does that as well as the binutils.  Truely pervert people can even
-build GCC / binutils on a host of type a to run on type b and generate
-code for type c.  I did that once or twice to build the first native
-compiler for Linux/MIPS.
+If GCC can support it with a --target choice, that'll be great.
 
-Try something like:
+Mike
 
-  ./configure --prefix=/usr --target=mips-linux
-
-to configure binutils and GCC.
-
-  Ralf
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>              Commando Developer - Whatever It Takes
+#>                                                                     
+#> "See, you not only have to be a good coder to create a system like
+#>    Linux, you have to be a sneaky bastard too." - Linus Torvalds

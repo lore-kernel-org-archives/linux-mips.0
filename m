@@ -1,24 +1,22 @@
-Subject: Re: Dumb Question on Cross-Development
-Date: Wed, 4 Apr 2001 12:22:16 +0100 (BST)
-In-Reply-To: <20010404120211.C11161@paradigm.rfc822.org> from "Florian Lohoff" at Apr 04, 2001 12:02:11 PM
-MIME-Version: 1.0
+Date: Wed, 4 Apr 2001 14:18:05 +0200
+From: Ralf Baechle <ralf@oss.sgi.com>
+Subject: Re: CVS Down?
+Message-ID: <20010404141805.B3928@bacchus.dhis.org>
+References: <000001c0bc9e$1cf978e0$0101a8c0@derfel>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <E14klMh-0001kx-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Disposition: inline
+In-Reply-To: <000001c0bc9e$1cf978e0$0101a8c0@derfel>; from alinfoot@escafeldcomputing.co.uk on Wed, Apr 04, 2001 at 01:23:23AM +0100
 Sender: owner-linux-mips@oss.sgi.com
-To: Florian Lohoff <flo@rfc822.org>
-Cc: Jun Sun <jsun@mvista.com>, "Kevin D. Kissell" <kevink@mips.com>, "\"MIPS/Linux List SGI\"" <linux-mips@oss.sgi.com>
-Message-ID: <20010404112216.dvpI_9O3oyLc6tvhXt0JX6F8e9zQBgZqjjC44sjtz-I@z>
+To: Andrew Linfoot <alinfoot@escafeldcomputing.co.uk>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010404121805.yRdlbZWwbY-REEvO_vlgHuD-wVE4DnMzUVbLahVkXPE@z>
 
-> We already had the discussion on parts of that implementation. Honestly - 
-> I dont like the stuff - Rolling out mips packages as "noarch" is
-> simply broken - And the argument that one would want to install
-> it on a i386 nfs root is simply an excuse for a broken rpm or missing
-> installer.
+On Wed, Apr 04, 2001 at 01:23:23AM +0100, Andrew Linfoot wrote:
 
-Or a flawed packaging tool. RPM allows you to force noarch and you can use it
-to get around this precise problem. Its also useful when you want to force
-an x86 package onto an Alpha with em86.
+> I have been trying to connect to cvs but am getting rejected access errors,
+> this worked fine for me last week, any ideas?
 
-I find it hard to believe dpkg lacks such a feature.
+Seems you didn't use cvs login first?
+
+  Ralf

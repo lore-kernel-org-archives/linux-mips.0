@@ -1,30 +1,50 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: olson@anchor.engr.sgi.com (Dave Olson)
-Message-ID: <199906111831.LAA05198@anchor.engr.sgi.com>
-Subject: Re: Belated Feedback:  HAL2
-In-Reply-To: <19990611202821.C22699@thepuffingroup.com> from Ulf Carlsson at "Jun 11, 99 08:28:21 pm"
-Date: Fri, 11 Jun 1999 11:31:26 -0700 (PDT)
+Message-ID: <002701bebf17$cd9e4fd0$0a02030a@snafu>
+From: "Andrew Linfoot" <andy@derfel99.freeserve.co.uk>
+References: <19990622032859.B6955@thepuffingroup.com> <19990622152145.A1059@uni-koblenz.de> <19990623014923.A8953@thepuffingroup.com> <19990625002853.D17220@uni-koblenz.de>
+Subject: Re: File corruption
+Date: Fri, 25 Jun 1999 15:34:15 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ulf Carlsson <ulfc@thepuffingroup.com>
-Cc: mikehill@hgeng.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19990611183126.FI5aI9Ru2py0yNeFvk1uo306Vlo79R1aDKNL9hn0DFY@z>
+To: linux@cthulhu.engr.sgi.com
+Message-ID: <19990625143415.lcfbBD2uf9k7HTqqdw0jXKsswy8SnARim_SQ_UsvtiQ@z>
 
-Ulf Carlsson wrote: 
-|  We beat IRIX, that sound great to me ;-)
+I have been running 2.2.1 on my indy for about 3 weeks now and have
+encountered problems like this,
+in fact i am surprised at how stable the box is, i have been doing some
+quite large builds of qt, kde and the like too. If this is reproducible then
+i would be prepared to experiment on one of my boxes.
 
-The singlespeed cdrom drive was very touchy; it was the first generation
-drive to support audio data over scsi.  It's unlikely to be a RAM limitation,
-but who knows, at this point...
+The only gripe i have is that the scsi driver breaks when i attach external
+devices, any ideas?
 
-|  I'm interested in how this CD playback works. Does it read raw data from the CD
-|  drive and just play it on the HAL2 or are there some other and smarter ways of
+Andy
+----- Original Message -----
+From: Ralf Baechle <ralf@uni-koblenz.de>
+To: <linux@cthulhu.engr.sgi.com>
+Sent: Thursday, June 24, 1999 11:28 PM
+Subject: Re: File corruption
 
-It reads the audio data over scsi, converts it if needed, and sends it
-through the audio system.
 
-
-Dave Olson, Silicon Graphics
-http://reality.sgi.com/olson   olson@sgi.com
+> On Wed, Jun 23, 1999 at 01:49:23AM +0200, Ulf Carlsson wrote:
+>
+> > > And under which kernel version did this start to happen?
+> >
+> > 2.2.1 I think.
+>
+> Are you shure?  The problem Alan is tracking started to hit from 2.2.7 on.
+> If 2.2.1 already starts making these kind of troubles then we probably
+> track two different problems.
+>
+> > Unfortunately I don't have IRIX.  However, I have a 133 MHz R4600 CPU
+with 512 k
+> > board cache.  I have two 1 Gb SCSI driver connected.
+>
+> Is this a low-mem configuration?  The problem Alan is tracking apparently
+> seems to hit low mem systems more often.
+>
+>   Ralf
+>

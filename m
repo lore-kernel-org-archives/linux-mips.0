@@ -1,291 +1,59 @@
-Received: from LocalHost ([203.226.1.239])
-	by mail.ditco.com (8.9.3/8.9.3) with ESMTP id QAA24810
-	for <linux-mips@linux-mips.org>; Tue, 18 Mar 2003 16:39:02 +0900
-From: =?ks_c_5601-1987?B?yLLA57/t?= <jwhwang@daelimins.com>
-Subject: about linux porting on SGI origin 300
-Date: Tue, 18 Mar 2003 16:46:01 +0900
-Message-ID: <000001c2ed22$6c55f9c0$ef01e2cb@LocalHost>
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C2ED6D.DC3DA1C0"
-Return-Path: <jwhwang@daelimins.com>
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C2F265.311CE0B0"
+Subject: arch/mips/kernel/setup.c patch - wrong start_pfn with CONFIG_EMBEDDED_RAMDISK
+Date: Mon, 24 Mar 2003 16:26:34 -0800
+Message-ID: <D9F6B9DABA4CAE4B92850252C52383AB0796825E@ex-eng-corp.efi.com>
+From: "Ranjan Parthasarathy" <ranjanp@efi.com>
+Return-Path: <ranjanp@efi.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20030318074601.cBVZrfzV3tm1FJD7tBiMphN_96Ukw5a2QZIQlg6zghw@z>
+Message-ID: <20030325002634.pn0c8Zel6glV-xbdVua71ExiWgiiY1pjKa_LhTcfEm4@z>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C2ED6D.DC3DA1C0
+------_=_NextPart_001_01C2F265.311CE0B0
 Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 7bit
-
-I hoe your business prospers.
-I have some question about linux-mips.
-I have SGI origin 300 (4cpu, 2.5GB mem, FC-AL), but I want to install
-Linux on this machine.
-Is it possible?
-Can I make this machine DB Server(Oracle 9i) ?
-Please let me know,,,
- 
-Best Regards,,,,
- 
-Jaewook hwang
-Daelim information & Service CO. 
-
-------=_NextPart_000_0001_01C2ED6D.DC3DA1C0
-Content-Type: text/html;
-	charset="ks_c_5601-1987"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
+I would like to submit the following change to arch/mips/kernel/setup.c. =
+The start_pfn is not correct in case CONFIG_EMBEDDED_RAMDISK is slected. =
+The ramdisk pages are added twice.
 
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dks_c_5601-1987">
+The diff -Naur output is attached to the mail.
 
+Thanks
 
-<meta name=3DProgId content=3DWord.Document>
-<meta name=3DGenerator content=3D"Microsoft Word 10">
-<meta name=3DOriginator content=3D"Microsoft Word 10">
-<link rel=3DFile-List href=3D"cid:filelist.xml@01C2ED6D.DB4F4A20">
-<!--[if gte mso 9]><xml>
- <o:OfficeDocumentSettings>
-  <o:DoNotRelyOnCSS/>
- </o:OfficeDocumentSettings>
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <w:WordDocument>
-  <w:SpellingState>Clean</w:SpellingState>
-  <w:GrammarState>Clean</w:GrammarState>
-  <w:DocumentKind>DocumentEmail</w:DocumentKind>
-  <w:EnvelopeVis/>
-  =
-<w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEve=
-ry>
-  =
-<w:DisplayVerticalDrawingGridEvery>2</w:DisplayVerticalDrawingGridEvery>
-  <w:Compatibility>
-   <w:SpaceForUL/>
-   <w:BalanceSingleByteDoubleByteWidth/>
-   <w:DoNotLeaveBackslashAlone/>
-   <w:ULTrailSpace/>
-   <w:DoNotExpandShiftReturn/>
-   <w:AdjustLineHeightInTable/>
-   <w:BreakWrappedTables/>
-   <w:SnapToGridInCell/>
-   <w:WrapTextWithPunct/>
-   <w:UseAsianBreakRules/>
-   <w:UseFELayout/>
-  </w:Compatibility>
-  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
- </w:WordDocument>
-</xml><![endif]-->
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:=B9=D9=C5=C1;
-	panose-1:2 3 6 0 0 1 1 1 1 1;
-	mso-font-alt:Batang;
-	mso-font-charset:129;
-	mso-generic-font-family:roman;
-	mso-font-pitch:variable;
-	mso-font-signature:-1342176593 1775729915 48 0 524447 0;}
-@font-face
-	{font-family:=B1=BC=B8=B2;
-	panose-1:2 11 6 0 0 1 1 1 1 1;
-	mso-font-alt:Gulim;
-	mso-font-charset:129;
-	mso-generic-font-family:modern;
-	mso-font-pitch:variable;
-	mso-font-signature:-1342176593 1775729915 48 0 524447 0;}
-@font-face
-	{font-family:"\@=B1=BC=B8=B2";
-	panose-1:2 11 6 0 0 1 1 1 1 1;
-	mso-font-charset:129;
-	mso-generic-font-family:modern;
-	mso-font-pitch:variable;
-	mso-font-signature:-1342176593 1775729915 48 0 524447 0;}
-@font-face
-	{font-family:"\@=B9=D9=C5=C1";
-	panose-1:2 3 6 0 0 1 1 1 1 1;
-	mso-font-charset:129;
-	mso-generic-font-family:roman;
-	mso-font-pitch:variable;
-	mso-font-signature:-1342176593 1775729915 48 0 524447 0;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	text-align:justify;
-	text-justify:inter-ideograph;
-	mso-pagination:none;
-	text-autospace:none;
-	word-break:break-hangul;
-	font-size:10.0pt;
-	mso-bidi-font-size:12.0pt;
-	font-family:=B9=D9=C5=C1;
-	mso-hansi-font-family:"Times New Roman";
-	mso-bidi-font-family:"Times New Roman";
-	mso-font-kerning:1.0pt;}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;
-	text-underline:single;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;
-	text-underline:single;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	mso-style-noshow:yes;
-	mso-ansi-font-size:10.0pt;
-	mso-bidi-font-size:10.0pt;
-	font-family:=B1=BC=B8=B2;
-	mso-ascii-font-family:=B1=BC=B8=B2;
-	mso-fareast-font-family:=B1=BC=B8=B2;
-	mso-hansi-font-family:Arial;
-	mso-bidi-font-family:Arial;
-	color:windowtext;}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-span.GramE
-	{mso-style-name:"";
-	mso-gram-e:yes;}
- /* Page Definitions */
- @page
-	{mso-page-border-surround-header:no;
-	mso-page-border-surround-footer:no;}
-@page Section1
-	{size:595.3pt 841.9pt;
-	margin:99.25pt 3.0cm 3.0cm 3.0cm;
-	mso-header-margin:42.55pt;
-	mso-footer-margin:49.6pt;
-	mso-paper-source:0;
-	layout-grid:18.0pt;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-<!--[if gte mso 10]>
-<style>
- /* Style Definitions */=20
- table.MsoNormalTable
-	{mso-style-name:"=C7=A5=C1=D8 =C7=A5";
-	mso-tstyle-rowband-size:0;
-	mso-tstyle-colband-size:0;
-	mso-style-noshow:yes;
-	mso-style-parent:"";
-	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
-	mso-para-margin:0cm;
-	mso-para-margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-</style>
-<![endif]-->
-</head>
+Ranjan
 
-<body lang=3DKO link=3Dblue vlink=3Dpurple =
-style=3D'tab-interval:40.0pt'>
+ <<diff.output.txt>>=20
 
-<div class=3DSection1 style=3D'layout-grid:18.0pt'>
+------_=_NextPart_001_01C2F265.311CE0B0
+Content-Type: text/plain;
+	name="diff.output.txt"
+Content-Transfer-Encoding: base64
+Content-Description: diff.output.txt
+Content-Disposition: attachment;
+	filename="diff.output.txt"
 
-<p class=3DMsoNormal><font size=3D2 face=3D=B1=BC=B8=B2><span =
-lang=3DEN-US style=3D'font-size:10.0pt;
-mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=B2;mso-hansi-font-family:=
-Arial;
-mso-bidi-font-family:Arial'>I hoe your business =
-prospers.<o:p></o:p></span></font></p>
+ZGlmZiAtTmF1ciBsaW51eC1kZXYvYXJjaC9taXBzL2tlcm5lbC9zZXR1cC5jIGxpbnV4LWRldi1w
+YXRjaC9hcmNoL21pcHMva2VybmVsL3NldHVwLmMKLS0tIGxpbnV4LWRldi9hcmNoL21pcHMva2Vy
+bmVsL3NldHVwLmMJV2VkIERlYyAxOCAxNTo0MDoxNCAyMDAyCisrKyBsaW51eC1kZXYtcGF0Y2gv
+YXJjaC9taXBzL2tlcm5lbC9zZXR1cC5jCU1vbiBNYXIgMjQgMTY6MTM6MDcgMjAwMwpAQCAtMjU1
+LDYgKzI1NSwxNiBAQAogCWludCBpOwogCiAjaWZkZWYgQ09ORklHX0JMS19ERVZfSU5JVFJECisj
+aWZkZWYgQ09ORklHX0VNQkVEREVEX1JBTURJU0sKKwkvKgorCSAqIEVtYmVkZGVkIHJhbWRpc2sg
+LT4gX2VuZCBhZnRlciB0aGUgcmFtZGlzayBzbyBubyBuZWVkIHRvIGFkZCB0aGVzZQorCSAqIHBh
+Z2VzIGFnYWluCisJICoKKwkgKiBQYXJ0aWFsbHkgdXNlZCBwYWdlcyBhcmUgbm90IHVzYWJsZSAt
+IHRodXMKKwkgKiB3ZSBhcmUgcm91bmRpbmcgdXB3YXJkcy4KKwkgKi8KKwlzdGFydF9wZm4gPSBQ
+Rk5fVVAoX19wYSgmX2VuZCkpOworI2Vsc2UKIAl0bXAgPSAoKCh1bnNpZ25lZCBsb25nKSZfZW5k
+ICsgUEFHRV9TSVpFLTEpICYgUEFHRV9NQVNLKSAtIDg7CiAJaWYgKHRtcCA8ICh1bnNpZ25lZCBs
+b25nKSZfZW5kKQogCQl0bXAgKz0gUEFHRV9TSVpFOwpAQCAtMjY0LDYgKzI3NCw3IEBACiAJCWlu
+aXRyZF9lbmQgPSBpbml0cmRfc3RhcnQgKyBpbml0cmRfaGVhZGVyWzFdOwogCX0KIAlzdGFydF9w
+Zm4gPSBQRk5fVVAoX19wYSgoJl9lbmQpKyhpbml0cmRfZW5kIC0gaW5pdHJkX3N0YXJ0KSArIFBB
+R0VfU0laRSkpOworI2VuZGlmCiAjZWxzZQogCS8qCiAJICogUGFydGlhbGx5IHVzZWQgcGFnZXMg
+YXJlIG5vdCB1c2FibGUgLSB0aHVzCg==
 
-<p class=3DMsoNormal><font size=3D2 face=3D=B1=BC=B8=B2><span =
-lang=3DEN-US style=3D'font-size:10.0pt;
-mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=B2;mso-hansi-font-family:=
-Arial;
-mso-bidi-font-family:Arial'>I have some question about <span =
-class=3DSpellE>linux-mips</span>.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D=B1=BC=B8=B2><span =
-lang=3DEN-US style=3D'font-size:10.0pt;
-mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=B2;mso-hansi-font-family:=
-Arial;
-mso-bidi-font-family:Arial'>I have SGI origin 300 (4cpu, 2.5GB <span
-class=3DSpellE>mem</span>, FC-AL), but I want to install Linux on this =
-machine.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D=B1=BC=B8=B2><span =
-lang=3DEN-US style=3D'font-size:10.0pt;
-mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=B2;mso-hansi-font-family:=
-Arial;
-mso-bidi-font-family:Arial'>Is it possible?<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D=B1=BC=B8=B2><span =
-lang=3DEN-US style=3D'font-size:10.0pt;
-mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=B2;mso-hansi-font-family:=
-Arial;
-mso-bidi-font-family:Arial'>Can I make this machine DB <span =
-class=3DGramE>Server(</span>Oracle
-9i) ?<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D=B1=BC=B8=B2><span =
-lang=3DEN-US style=3D'font-size:10.0pt;
-mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=B2;mso-hansi-font-family:=
-Arial;
-mso-bidi-font-family:Arial'>Please let me know<span =
-class=3DGramE>,,,</span><o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D=B1=BC=B8=B2><span =
-lang=3DEN-US style=3D'font-size:10.0pt;
-mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=B2;mso-hansi-font-family:=
-Arial;
-mso-bidi-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D=B1=BC=B8=B2><span =
-lang=3DEN-US style=3D'font-size:10.0pt;
-mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=B2;mso-hansi-font-family:=
-Arial;
-mso-bidi-font-family:Arial'>Best Regards<span =
-class=3DGramE>,,,,</span><o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D=B1=BC=B8=B2><span =
-lang=3DEN-US style=3D'font-size:10.0pt;
-mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=B2;mso-hansi-font-family:=
-Arial;
-mso-bidi-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><font size=3D2 =
-face=3D=B1=BC=B8=B2><span lang=3DEN-US
-style=3D'font-size:10.0pt;mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=
-=B2;mso-hansi-font-family:
-Arial;mso-bidi-font-family:Arial'>Jaewook</span></font></span><font =
-face=3D=B1=BC=B8=B2><span
-lang=3DEN-US =
-style=3D'mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=B2;mso-hansi-fon=
-t-family:
-Arial;mso-bidi-font-family:Arial'> <span =
-class=3DSpellE>hwang</span><o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><font size=3D2 =
-face=3D=B1=BC=B8=B2><span lang=3DEN-US
-style=3D'font-size:10.0pt;mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=
-=B2;mso-hansi-font-family:
-Arial;mso-bidi-font-family:Arial'>Daelim</span></font></span><font =
-face=3D=B1=BC=B8=B2><span
-lang=3DEN-US =
-style=3D'mso-bidi-font-size:10.0pt;font-family:=B1=BC=B8=B2;mso-hansi-fon=
-t-family:
-Arial;mso-bidi-font-family:Arial'> information &amp; Service CO. =
-<o:p></o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_0001_01C2ED6D.DC3DA1C0--
+------_=_NextPart_001_01C2F265.311CE0B0--

@@ -1,37 +1,45 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Ralf Baechle <ralf@Julia.DE>
-Message-ID: <199704100701.JAA08771@kernel.panic.julia.de>
+Message-ID: <199704101422.QAA10766@kernel.panic.julia.de>
 Subject: Re: all in the family
-Date: Thu, 10 Apr 1997 09:01:33 +0200 (MET DST)
-In-Reply-To: <199704100226.WAA01960@jenolan.caipgeneral> from "David S. Miller" at Apr 9, 97 10:26:18 pm
+Date: Thu, 10 Apr 1997 16:22:14 +0200 (MET DST)
+In-Reply-To: <199704101453.KAA21432@neon.ingenia.ca> from "Mike Shaver" at Apr 10, 97 10:53:19 am
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "David S. Miller" <davem@jenolan.rutgers.edu>
-Cc: shaver@neon.ingenia.ca, linux@cthulhu.engr.sgi.com
-Message-ID: <19970410070133.bsFQ6h5bAOaOqLiH8Z8aUYmZoezc61r-jGzoiYZf_sw@z>
+To: Mike Shaver <shaver@neon.ingenia.ca>
+Cc: miguel@nuclecu.unam.mx, linux@cthulhu.engr.sgi.com
+Message-ID: <19970410142214.sOmCMgETsloqqgLnnLN5DorHKBNmtHUe9kXVWPpoxqw@z>
 
->    Looks like I may be getting a machine here to see if we can migrate
->    some of our non-Oracle machines to Linux/SPARC.
+Hi,
+
+> Thus spake Miguel de Icaza:
+> > > Anyone know if the emulation is up to hosting the Linux/Indy
+> > > cross-compiler?
+> > 
+> > Why do you need the emulation for on Linux/SPARC?   You just need to
+> > run configure on Linux/SPARC with the proper --target option and you
+> > will get your native cross-compiler in a second.
 > 
->    Anyone know if the emulation is up to hosting the Linux/Indy
->    cross-compiler?
+> I was under the impression that building GCC for the Linux/SGI target
+> was non-trivial.  Ralf made mention of some patches, and since there
+> are binaries available for Solaris...
 > 
-> It should be straight forward, 32-bit to 32-bit crosses under gcc work
-> flawlessly right out of the box for everything I've ever tried.  It's
-> when you cross from 32-bit to 64-bit that you may hit a bug or two.
+> If GCC can support it with a --target choice, that'll be great.
 
-I've got the necessary patches to make the binutils and GCC work as
-Linux/Alpha -> Linux/MIPS crosscompiler.  Mike, if you need them remind
-me to send them if you need them.
+(I think you're confusing host and target.  If you want IRIX to generate
+code for Linux the IRIX is the host and Linux the target os).
 
->    In related news, we'll then have Linux running on 5 architectures
->    in the same room (Intel, Alpha, SPARC, ELKS, Indy).  Maybe I'll
->    steal the PowerMac too... =)
-> 
-> ELKS, that is cheating ;-)
+GCC does that as well as the binutils.  Truely pervert people can even
+build GCC / binutils on a host of type a to run on type b and generate
+code for type c.  I did that once or twice to build the first native
+compiler for Linux/MIPS.
 
-:-)
+Try something like:
+
+  ./configure --prefix=/usr --target=mips-linux
+
+to configure binutils and GCC.
 
   Ralf

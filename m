@@ -1,34 +1,22 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199709052036.NAA29563@oz.engr.sgi.com>
-Subject: 2.1.53 (from Linus)
-Date: Fri, 5 Sep 1997 13:36:12 -0700 (PDT)
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <m0x77Rs-0005FjC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: [Q: Linux/SGI] IRIX executable memory map.
+Date: Sat, 6 Sep 1997 00:05:56 +0100 (BST)
+In-Reply-To: <199709052251.PAA20078@fir.engr.sgi.com> from "William J. Earl" at Sep 5, 97 03:51:00 pm
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970905203612.c-9VF24sn2cJYODQW7iQjIM1Ra-gsGg2TNSlt8JNatc@z>
+To: "William J. Earl" <wje@fir.engr.sgi.com>
+Cc: miguel@nuclecu.unam.mx, linux@fir.engr.sgi.com
+Message-ID: <19970905230556.jI1dj3ua6P2_3zlR_qkVCHcShOI14xSF3BWYUJeHTDU@z>
 
-Just thought this would be of relevance to some:
+>      Simply automatically create the page in the page fault handler
+> when it is first referenced.  Treat as if it were an mmap() of /dev/zero
+> for 1 page.
 
-Subject: Linux-2.1.53..
-From: Linus Torvalds <torvalds@transmeta.com>
-Date: Thu, 4 Sep 1997 17:10:27 -0700
-Message-ID: <Pine.LNX.3.95.970904170831.428J-100000@penguin.transmeta.com>
-Newsgroups: .mlist. linux-kernel linux-kernel@vger.rutgers.edu
+Better to map it first. page fault is a far more critical path to stick
+conditionals into. Even better if possible is to stick it into the userspace
+dynamic loader for irix binaries. That however means not using the irix one
+or having a "preloader" before it
 
-
-I released a 2.1.53, which fixes two major bugs in the 2.1.x series. Ingo
-Molnar found one (and hopefully _the_) reason for dcache corruption in
-d_move(), and David Miller found and fixed a TCP-related crash-inducer. 
-
-In short, I hope 2.1.53 will finally be stable for people,
-
-                        Linus
-
-
-
--- 
-Peace, Ariel
+Alan

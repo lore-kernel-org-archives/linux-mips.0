@@ -1,98 +1,26 @@
-Received: from LarsN (unknown [194.239.1.62])
-	by 2m.dk (Postfix) with SMTP id CF8A312A5
-	for <linux-mips@linux-mips.org>; Mon,  2 Sep 2002 17:19:34 +0000 (/etc/localtime)
-Message-ID: <00c301c252a4$9a802a00$016d100a@2m.dk>
-From: "Stephen Mose Aaskov" <sma@2m.dk>
-Subject: MTD drivers and byte/word mode
-Date: Mon, 2 Sep 2002 19:17:23 +0200
+Received: from fury.csh.rit.edu (fury.csh.rit.edu [129.21.60.5])
+	by mcp.csh.rit.edu (Postfix) with ESMTP id 958D84376
+	for <linux-mips@linux-mips.org>; Mon,  2 Sep 2002 16:44:08 -0400 (EDT)
+Date: Mon, 2 Sep 2002 16:43:55 -0400 (EDT)
+From: George Gensure <werkt@csh.rit.edu>
+Subject: root-nfs hang and error
+Message-ID: <Pine.SOL.4.31.0209021634320.24635-100000@fury.csh.rit.edu>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00C0_01C252B5.5DD69F60"
-Return-Path: <sma@2m.dk>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <werkt@csh.rit.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20020902171723.DOVPQ2jMGn4C-HpA5EX3lQRFebTtsdOduITtwmVykAA@z>
+Message-ID: <20020902204355.9a621vbneXFP7Pa6A9psVxz-TWggdVc-oJf-v_AuTV4@z>
 
-This is a multi-part message in MIME format.
+I've got a problem with a diskless install on an Indy.
 
-------=_NextPart_000_00C0_01C252B5.5DD69F60
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+When trying to mount an nfs to install to, I end up with about a 5 minute
+hang (afterwards, though, all file transfer is seamless).  When rebooting
+to boot from that nfs root I get an rpc error from the Indy and it refuses
+to mount the root.  (obviously it panics).  The kernel is 2.4.16 and has
+nfs v2 and v3 installed, as well as root nfs support.  Anyone have any
+suggestions for getting this root to mount correctly?
 
-I=B4m working on a 2.4 port to a design with FLASH devices connected =
-through a 16 bit bus.
-The FLASH (AMD) is set to word mode.
-
-I have quite a hard time trying to understand the FLASH geometry =
-settings and calculations of the addresses used for CFI query etc.
-It looks as if the adresses calculated by cfi_build_cmd_addr() is the =
-double of what my FLASH chips are using.
-eg. the CFI query is written to 0xaa where my chip in word mode expects =
-the query command to be written to 0x55
-
-Is there any direct support in the MTD driver for differentiating =
-between word/byte mode ?
-
-The buswidth is set to 16 bits (=3D2), and interleave to 1 (I have two =
-chips sharing the bus, not in parallel)
-
-
-
-Stephen Mose Aaskov
-Engineer, R&D
-2M ELECTRONIC A/S
-Malervej 10, DK-2630 Taastrup
-Denmark
-Tel: +45 43300555  Fax: +45 43300567
-
-------=_NextPart_000_00C0_01C252B5.5DD69F60
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2614.3500" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>I=B4m working on a 2.4 port to a design =
-with FLASH=20
-devices connected through a 16 bit bus.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The FLASH (AMD) is set to word =
-mode.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I have quite a hard time trying to =
-understand the=20
-FLASH geometry settings and calculations of the addresses used for CFI =
-query=20
-etc.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It looks as if the adresses calculated =
-by=20
-cfi_build_cmd_addr() is the double of what my FLASH chips are=20
-using.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>eg. the CFI query is written to 0xaa =
-where my chip=20
-in word mode expects the query command to be written to =
-0x55</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Is there any direct support in the MTD =
-driver for=20
-differentiating between word/byte mode ?</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>The buswidth is set to 16 bits (=3D2), =
-and interleave=20
-to 1 (I have two chips sharing the bus, not in parallel)</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Stephen Mose Aaskov<BR>Engineer, =
-R&amp;D<BR>2M=20
-ELECTRONIC A/S<BR>Malervej 10, DK-2630 Taastrup<BR>Denmark<BR>Tel: +45=20
-43300555&nbsp; Fax: +45 43300567</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_00C0_01C252B5.5DD69F60--
+-George
+werkt@csh.rit.edu

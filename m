@@ -1,31 +1,29 @@
-Message-ID: <00da01c333f9$498b11f0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20030616093215Z8225220-1272+2626@linux-mips.org>
-Subject: Re: bootloader problem
-Date: Mon, 16 Jun 2003 13:20:02 +0200
+From: "Joseph Chiu" <joseph@omnilux.net>
+Subject: Wired TLB entry?
+Date: Mon, 16 Jun 2003 16:49:29 -0700
+Message-ID: <BPEELMGAINDCONKDGDNCCEFBDMAA.joseph@omnilux.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="GB2312"
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+In-Reply-To: <20030616093215Z8225220-1272+2626@linux-mips.org>
+Return-Path: <joseph@omnilux.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: He Jin <thesistarball@yahoo.com.cn>, linux-mips@linux-mips.org
-Message-ID: <20030616112002.M5h7wppz3_MNDKuY7oxf5C-LzXlkDP2NnWTaiEkEkyg@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030616234929.lAXMktxAakAsvOBSDOo6eqt2Jl_k41zGGiLO_IVW5cY@z>
 
+Hi,
+Is there a (proper) way to add a page entry in the TLB it's always valid?
+Specifically, accesses to memory-mapped hardware (PCMCIA) causes the kernel
+to oops under heavy interrupt loading.
+It seems to me that the page entry in the TLB is getting flushed out under
+the activity; and when the ioremap'd memory region is accesses, the
+exception handling for the missing translation does not run.
 
-> I met a problem when debuging a bootloader in IT8172G+RM5231A platform, it's like this:
-> 
-> the bootloader had 2 parts, the first part executes in ROM (0xbfc00000-0xbfc0xxxx) and
-> it move another part from ROM into SDRAM, then jump to the SDRAM entry point to continue.
-> 
-> In the ROM resident code, if I initialized&flushed the cache, it can jump to SDRAM entry
-> continue normally. However,if I comment out those cache related code and make cache disabled, 
-> it seems can not jump to SDRAM entry. 
-> 
-> Who can tell me why I must initialize&flush when cache disabled ? 
-
-Precisely what do you mean by "cache disabled",
-and what is the address of the SDRAM entry?
-
-            Kevin K.
+I'm afraid my two days of googling hasn't turned up the right information.
+I think I just don't know the right terminology and I hope someone can at
+least point me in the right direction.
+Thanks.
+Joseph
+(I am running 2.4.18)

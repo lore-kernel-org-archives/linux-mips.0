@@ -1,50 +1,52 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: ariel@yon.engr.sgi.com (Ariel Faigon)
-Message-ID: <199606020335.UAA24950@yon.engr.sgi.com>
-Subject: Re: progress, finally...
-Date: Sat, 1 Jun 1996 20:35:47 -0700 (PDT)
-In-Reply-To: <199606020212.TAA15557@neteng.engr.sgi.com> from "David S. Miller" at Jun 1, 96 07:12:02 pm
+Message-ID: <199606041716.KAA28670@yon.engr.sgi.com>
+Subject: Re: CVS commit mailing list?
+Date: Tue, 4 Jun 1996 10:16:42 -0700 (PDT)
+In-Reply-To: <199606041618.JAA15088@fir.esd.sgi.com> from "William J. Earl" at Jun 4, 96 09:18:04 am
 Reply-To: ariel@cthulhu.engr.sgi.com
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "David S. Miller" <dm@neteng.engr.sgi.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19960602033547.9RaGh_sc3RVHW-4W1Hx5WN4654ZM_B1hqxhHETiqgBI@z>
+To: "William J. Earl" <wje@fir.esd.sgi.com>
+Cc: ariel@cthulhu.engr.sgi.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19960604171642.Q8VpZSOICZTyqrAs70qjUUUa_bge_W5FOGuBpzcPBBc@z>
 
-David,
+OK, I requested
 
-This is very impressive progress. Thanks for the update!
+	linux-progress
 
-I understand you have the prom pointers. A few that _may_
-be relevant are in:
+to be created on majordomo@engr.
 
-	http://info.engr.sgi.com/~ariel/linux/port.html
+I guess it'll take some time till someone gets time to set this up,
+I'll let you know when it is ready.
 
-This doc was put together in a rush, any suggestions, requests
-for additions etc. would be welcome.
 
 >
+>Ariel Faigon writes:
+> > 
+> > If anyone on the linux@engr list is _not_ interested in these
+> > CVS commit auto reports, let me know and I'll ask majordomo-owner
+> > to create a separate:
+> > 
+> > 	linux-progress@engr
+> > 
+> > majordomo list.
+> > 
+> > Until we see objections/too-much-traffic, I think Dave can
+> > go ahead and auto-mail the reports to linux@engr
+> > 
+> > Personally, I think I'll find these interesting.
+>...
 >
->Ok, I have a complete compilation environment that seems to work quite
->well.
->
->All the tools are GNU, I have gcc/ld/as/etc. setups which can create
->either big or little endian kernels in either ELF or ECOFF format.
->The target format is that used by the existing Linux/MIPS people.
->
->These tools have been linking kernels for two days, I finally got a
->big endian kernel that sash would eat and it went fine until it tried
->to look for DECstation devices as that is one of the only machine
->types the existing Linux/MIPS kernels support (splat!). ;-)
->
->For now I'm going to hack the ARC prom code and the SCSI driver in
->parallel and see how far I can get it booting, more to come.
->
->Later,
->David S. Miller
->dm@sgi.com
+>      I am interested too, but I would rather have two lists, just as
+>we normally do for regular development (sgi.bugs.xxx for bug reports and
+>checkins about xxx, sgi.engr.xxx for general discussion about xxx).  
+>Why don't you set up linux-progress as a clone of linux to start, and 
+>people who tire of the reports can unsubscribe from the linux-progress.
+>Having a separate list will also make a little easier to search the
+>archives later on.
 >
 
 

@@ -1,113 +1,55 @@
-From: "Adam S. Kozlowski" <ask4adam@rogers.com>
-Subject: Can someone help with IBM Z-50?
-Date: Wed, 6 Apr 2005 03:16:57 -0400
+Reply-To: <bvacaliuc@ngit.com>
+From: "Bogdan Vacaliuc" <bvacaliuc@firefly.mv.com>
+Subject: RE: Gigabit Ethernet
+Date: Wed, 6 Apr 2005 07:01:25 -0400
+Message-ID: <002b01c53a98$0211ad00$0b03a8c0@lithium>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0004_01C53A57.176AD410"
-Message-ID: <20050406071726Z8224850-1340+5294@linux-mips.org>
-Return-Path: <ask4adam@rogers.com>
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <62642b91fa50ac5f881ed8fa9400deed@embeddededge.com>
+Return-Path: <bvacaliuc@firefly.mv.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20050406071657.0YZ0HlKqwNgFy8b5CNbCqIfm5Tw4U6xamOpWdhktJr8@z>
+To: 'Dan Malek' <dan@embeddededge.com>, 'Gilad Rom' <gilad@romat.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20050406110125.6MMYiQbedOkXbcqAJgIPD410EpBF0HEPdpctASqt4Es@z>
 
-This is a multi-part message in MIME format.
+On Tuesday, March 22, 2005 4:04 PM, Dan Malek wrote:
 
-------=_NextPart_000_0004_01C53A57.176AD410
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
+> On Mar 22, 2005, at 11:56 AM, Gilad Rom wrote:
+> 
+>> Has anyone ever tried using a Gigabit PCI
+>> adapter with one of the Au1x00 boards? Any success?
+> 
+> Just remember that the Au1x00 boards are 32-bit , 33 MHz,
+> 3.3V PCI, so choose your boards accordingly.  Please don't expect the
+> Au1x00 to run the TCP/IP stack anywhere near Gigabit speeds ..... :-)
 
-Hi there,
- 
-I have tried to compile the kernel for Z-50 (both 2.4.x and 2.6.x) for IBM
-Z-50 and just am not be able to do it successfully.
- 
-Has someone a linux kernel available for this device that I could download?
- 
-I have been running netbsd - but would prefer to move to Linux.
- 
-I believe that if I could boot it - I should be able to use the Debian for
-mips, or Gentoo mips distro - right?
- 
-If necessary, I could offer few bucks for some assistance.
-I just want to try it, and I spent weeks on it with no luck (was able to
-boot the old kernel from linux-vr days).
- 
-Regards,
- 
-netc
+We have researching this topic for a little while, particularly from the FPGA standpoint.  Although not specific to MIPS, I offer a
+few links which discuss the considerations for successfully sustaining gigabit ethernet transport.
+
+The "Gigabit System Reference Design", pg. 49 offers some benchmarks obtained using MontaVista Linux on a PowerPC 405.  Key
+takeaways are that the data payload must not be handled by the stack (DMA direct from framebuffer/fifo/sdram) and must use jumbo
+(5000,9000) ethernet frames.
+
+Best Regards,
+
+-bogdan
 
 ---
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.859 / Virus Database: 585 - Release Date: 2/14/2005
- 
 
-------=_NextPart_000_0004_01C53A57.176AD410
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+EE Times, "Altera Demonstrates FPGA for video-over-IP", March 2005,
+http://www.embedded.com/showArticle.jhtml?articleID=159903648 
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3DWindows-1252">
+Altera, "Video Over IP Reference Design", March 2005,
+http://www.altera.com/solutions/refdesigns/sys-sol/broadcast/ref-video.html
 
+Xilinx, "Gigabit System Reference Design", June 2004,
+http://direct.xilinx.com/bvdocs/appnotes/xapp536.pdf 
 
-<META content=3D"MSHTML 6.00.3790.259" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D156521007-06042005>Hi=20
-there,</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D156521007-06042005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D156521007-06042005>I have =
-tried to=20
-compile the kernel for Z-50 (both 2.4.x and 2.6.x) for IBM Z-50 and =
-just&nbsp;am=20
-not&nbsp;be able to do it successfully.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D156521007-06042005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D156521007-06042005>Has =
-someone a linux=20
-kernel available for this device that I could =
-download?</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D156521007-06042005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D156521007-06042005>I have =
-been running=20
-netbsd - but would prefer to move to Linux.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D156521007-06042005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D156521007-06042005>I =
-believe that if I=20
-could boot it - I should be able to use the Debian for mips, or Gentoo =
-mips=20
-distro - right?</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D156521007-06042005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D156521007-06042005>If =
-necessary, I=20
-could offer few bucks for some assistance.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D156521007-06042005>I just =
-want to try=20
-it, and I spent weeks on it with no luck (was able to boot the old =
-kernel from=20
-linux-vr days).</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D156521007-06042005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D156521007-06042005>Regards,</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D156521007-06042005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D156521007-06042005>netc</SPAN></FONT></DIV></BODY></HTML>
-<BR>
+Xilinx, "Considerations for High-Bandwidth TCP/IP PowerPC Applications", XCell Journal pg.14-16, Winter 2004,
+http://www.xilinx.com/publications/xcellonline/xcell_51/xc_pdf/xc_xcell51.pdf 
 
-<P><FONT SIZE=3D2>---<BR>
-Outgoing mail is certified Virus Free.<BR>
-Checked by AVG anti-virus system (http://www.grisoft.com).<BR>
-Version: 6.0.859 / Virus Database: 585 - Release Date: 2/14/2005<BR>
-</FONT> </P>
-
-------=_NextPart_000_0004_01C53A57.176AD410--
+Marco Riccioli, Xilinx "Getting the most TCP/IP from your Embedded Processor", Embedded World 2005,
+http://www.treck.com/xilinx.pdf

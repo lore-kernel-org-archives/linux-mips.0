@@ -1,33 +1,26 @@
 From: "Matthew Dharm" <mdharm@momenco.com>
 Subject: RE: MIPS64 status?
-Date: Mon, 14 Jan 2002 15:25:44 -0800
-Message-ID: <NEBBLJGMNKKEEMNLHGAICENCCEAA.mdharm@momenco.com>
+Date: Mon, 14 Jan 2002 16:27:02 -0800
+Message-ID: <NEBBLJGMNKKEEMNLHGAIKENDCEAA.mdharm@momenco.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20020114150554.A29242@dea.linux-mips.net>
+In-Reply-To: <Pine.LNX.3.96.1020114165623.28388B-100000@wakko.deltatee.com>
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>
+To: Jason Gunthorpe <jgg@debian.org>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20020114232544.aCYzcJpe5uZFZY4F-o2Yqr7nkxRzcDabOdklAO5MRbI@z>
+Message-ID: <20020115002702.-BiAy2FK8sogjTJDYGRR3slJkQev-fAupphHam65RSo@z>
 
-Ralf --
+Hrm...
 
-Thanks for the info.  Too bad "MIPS64" and "mips64" sound exactly the
-same on the telephone.
+Were you actually using 64-bit addresses on the PCI bus?
 
-But, I need to be pedantic, just to be clear on a couple of
-questions...
+My guess is that with some creative address mappings, this could be
+done.  The PCI bus itself would use only 32-bit address, but the CPU
+would use a base address offset into the >4G range.
 
-So, the "mips64" kernel can use 64-bits of address, for RAM >4G?
-But, the apps running are always 32-bit?
-Does this mean that any individual application can only use 4G of
-memory, tho you could have several applications in physical memory
-doing this? (i.e. multiple applications using 1G of RAM each, but not
-swapping to disk?)
-Does this mean we could map PCI memory/IO addresses above 4G and have
-it work?
+Yeah, I could see how that could get ugly...
 
 Matt
 
@@ -39,52 +32,33 @@ Momentum Works For You                      www.momenco.com
 
 > -----Original Message-----
 > From: owner-linux-mips@oss.sgi.com
-> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Ralf Baechle
-> Sent: Monday, January 14, 2002 3:06 PM
+> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Jason Gunthorpe
+> Sent: Monday, January 14, 2002 4:00 PM
 > To: Matthew Dharm
 > Cc: linux-mips@oss.sgi.com
-> Subject: Re: MIPS64 status?
+> Subject: RE: MIPS64 status?
 >
 >
-> On Sun, Jan 13, 2002 at 09:13:23PM -0800, Matthew Dharm wrote:
 >
-> > As I understand it, 64-bit support is really two
-> different things:  64-bit
-> > data path (i.e. unsigned long long) and 64-bit addressing
-> (for more than 4G
-> > of RAM).
+> On Mon, 14 Jan 2002, Matthew Dharm wrote:
 >
-> Right but due to the CPU architecture of pre-MIPS64 CPUs
-> they always come
-> together unless the software does funny attempts at
-> truncating OS support
-> to just 32-bit.  So the 32-bit kernel gives you none of the
-> two, the mips64
-> kernel both.
+> > Does this mean we could map PCI memory/IO addresses above
+> 4G and have
+> > it work?
 >
-> > My understanding is that "MIPS64" generally refers to a
-> kernel which
-> > supports a 64-bit data path, but we're still limited to
-> 32-bit addressing.
-> > Is that correct?
+> Ooh, don't go there :> We looked at that and actually did
+> it then backed
+> it out.
 >
-> MIPS64 is MIPS's MIPS64 processor architecture, mips64 is
-> the 64-bit kernel.
-> That may sound like nitpicking but it's important to
-> understand that both
-> are not the same.
+> The PCI spec (particuarly PCI-X) tries to make it possible, but in a
+> general system with PCI sockets/etc it is just is not feasible. PCI
+> bridges need to be located below 4G, as do the majority of
+> devices made.
+> There is also a performance hit for having device registers > 4G.
 >
-> > I suspect that this is very much a toolchain issue, as I
-> don't think gcc
-> > will generate 64-bit addressing code.
+> You'd definately need the mips64 kernel to do that, or use
+> ugly wired TLB
+> entries with normal mips.
 >
-> Gcc is fine; the problem are binutils, that is as and ld.
-> As a result of
-> the gcc problems we don't have a 64-bit userspace either so
-> all software
-> running on 64-bit kernels is currently old 32-bit software
-> running in
-> compatibility mode.
->
->   Ralf
+> Jason
 >

@@ -1,63 +1,53 @@
-Message-ID: <000901c0b830$fed84060$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <NEBBLJGMNKKEEMNLHGAIKELLCAAA.mdharm@momenco.com> <01032316143609.00779@plugh.sibyte.com> <01b801c0b3fb$1770b740$0deca8c0@Ulysses> <3ABF9683.1D08617B@mvista.com>
-Subject: Re: Multiple processor support?
-Date: Thu, 29 Mar 2001 11:16:41 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Date: Thu, 29 Mar 2001 19:28:37 +0200
+From: "Houten K.H.C. van (Karel)" <K.H.C.vanHouten@research.kpn.com>
+Subject: Re: Recommended toolchain
+In-reply-to: "Your message of Tue, 27 Mar 2001 21:02:33 +0200."
+ <Pine.GSO.3.96.1010327205904.17103B-100000@delta.ds2.pg.gda.pl>
+Reply-to: vhouten@kpn.com
+Message-ID: <200103291728.TAA01350@sparta.research.kpn.com>
 Sender: owner-linux-mips@oss.sgi.com
-To: Jun Sun <jsun@mvista.com>
-Cc: carlson@sibyte.com, Matthew Dharm <mdharm@momenco.com>, linux-mips@oss.sgi.com
-Message-ID: <20010329091641.6NGCl8NPI1DkrC8m2NPmFyGjYR4Sn6uEY3OCAOup1YY@z>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Cc: Karel van Houten <K.H.C.vanHouten@research.kpn.com>, Simon Gee <simong@oz.agile.tv>, linux-mips@oss.sgi.comK.H.C.vanHouten@research.kpn.com
+Message-ID: <20010329172837.bAOcArEs9HgbFhU69hF8CbhU5acju6ZA9inmm2FZUmA@z>
 
-> > (Software cache coherency) It is possible,
-> > but tricky, and at times unavoidably inefficient to build a
-> > software-coherent SMP system.  I have not heard of anyone
-> > doing so with MIPS/Linux.
-> >
->
-> How would it be possible?  Any reference to the previous implementations?
 
-Lots of work on software coherent schemes was done in the
-mid-late 1980s.  Check out the ASPLOS, and ISCA proceedings
-from the period for references.  In essence, such schemes involve
-the identification of critical regions at risk, the use of barriers around
-such regions, and an explicit cache flush/purge protocol.  You can think
-of the more common MP "TLB shootdown" protocols as being a variant
-of a software cache coherence scheme.
+Hi all,
 
-> I imagine you would need at least some kind of atomic operation (like
-ll/sc)
-> working reliably (which itself may require cache coherency).
+"Maciej W. Rozycki" writes:
+> What's wrong with the toolchain wrt the kernel now?  I've been compiling
+>2.4 kernels successfully till the end of January -- it's just a lack of
+>time and a nasty bug I want to track down that stop me from trying to
+>compile a new kernel these days.
 
-MIPS ll/sc, as defined and implemented, does require hardware
-coherency support for correct multiprocessor operation.  But one
-can, in principle, construct a software-coherent SMP system even
-in the absence of such a primitive - many of the implementations
-of software coherent SMPs used software coherence precisely
-because they were based on simple switch/crossbar interconnects
-where snooping was not possible.
+This happens when I compile kernel 2.4.0-test9 with
+binutils 2.10.1, gcc 2.95.3, glibc 2.2.2 on my 5000/260 (R4k)
+(the same source/config compiles fine with 2.8.1/egcs-2.90.27/glibc-2.0.6):
 
-> Also, any such
-> scheme should not require massive change in the programming.
-
-Whether progams need to change depends on the coherency
-and consistency models assumed by the program.  Certainly
-a naive multithreaded program that assumes an SGI-like model
-could not be dropped onto a software-coherent MP system without
-recompilation with specialized compilers at a minimum, and
-more likely not without recoding.  On the other hand, if one's objective
-is to run multiple, independent programs on different CPUs in
-an SMP system, it should only be the OS that should need to
-change to deal with the coherence issues for shared user pages
-and shared kernel data structures, and to ensure that any
-multithreaded application that is not explicitly set up to handle
-software cache coherency has its threads bound to the same
-CPU and caches (defeats some of the point of having a
-multithreaded program, I know, but...).
-
-            Regards,
-
-            Kevin K.
+# make boot
+....
+ld -static -G 0 -T arch/mips/ld.script.little -Ttext 0x80040000 arch/mips/kernel
+/head.o arch/mips/kernel/init_task.o init/main.o init/version.o \
+        --start-group \
+        arch/mips/kernel/kernel.o arch/mips/mm/mm.o kernel/kernel.o mm/mm.o fs/f
+s.o ipc/ipc.o arch/mips/dec/dec.o \
+        drivers/block/block.o drivers/char/char.o drivers/misc/misc.o drivers/ne
+t/net.o drivers/media/media.o drivers/parport/parport.a  drivers/scsi/scsidrv.o 
+drivers/cdrom/cdrom.a drivers/tc/tc.a \
+        net/network.o \
+        arch/mips/lib/lib.a /usr/src/linux/lib/lib.a arch/mips/dec/prom/rexlib.a
+ \
+        --end-group \
+        -o vmlinux
+nm vmlinux | grep -v '\(compiled\)\|\(\.o$\)\|\( [aU] \)\|\(\.\.ng$\)\|\(LASH[RL
+]DI\)' | sort > System.map
+make[1]: Entering directory `/usr/src/linux-2.4.0t9-R4k/arch/mips/boot'
+./elf2ecoff /usr/src/linux/vmlinux vmlinux.ecoff -a
+wrote 20 byte file header.
+wrote 56 byte a.out header.
+wrote 240 bytes of section headers.
+wrote 4 byte pad.
+writing 30560 bytes...
+Intersegment gap (-2147256160 bytes) too large.
+make[1]: *** [vmlinux.ecoff] Error 1
+make[1]: Leaving directory `/usr/src/linux-2.4.0t9-R4k/arch/mips/boot'
+make: *** [boot] Error 2

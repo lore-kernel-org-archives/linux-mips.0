@@ -1,26 +1,15 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199902100204.SAA70251@oz.engr.sgi.com>
-Subject: Web site rearrangement
-Date: Tue, 9 Feb 1999 18:04:10 -0800 (PST)
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <m10DJov-0007U1C@the-village.bc.nu>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: VID_HARDWARE_VINO
+Date: Thu, 18 Feb 1999 03:08:08 +0000 (GMT)
+In-Reply-To: <19990218031146.A19022@bun.falkenberg.se> from "Ulf Carlsson" at Feb 18, 99 03:11:46 am
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19990210020410.1KtEmcMxcRUuy0WrOmI97FT5uvO9pzo2TAvpEQCKE1c@z>
+To: Ulf Carlsson <ulfc@bun.falkenberg.se>
+Cc: alan@lxorguk.ukuu.org.uk, ralf@uni-koblenz.de, linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <19990218030808.TGMwGZWJnFMxeXswrZe6I_wlTqLOFvUGNK93nA5J_BE@z>
 
-Just FYI,
+> Has Ralf already done this or should I do it?
 
-To reflect the recent SGI official announcements, reduce
-media confusion, and have a more logical organization
-of the Linux on SGI web site, we've moved the 'mips'
-stuff one level down and added a separate Intel
-hierarchy (which is pretty empty right now but expected
-to grow in the future).
-
-If you find broken links etc. please let me know.
-
--- 
-Peace, Ariel
+You should I suspect

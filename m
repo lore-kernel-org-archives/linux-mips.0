@@ -1,27 +1,31 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199904282007.NAA08776@oz.engr.sgi.com>
-Subject: linux.sgi.com is up
-Date: Wed, 28 Apr 1999 13:07:32 -0700 (PDT)
-Reply-To: ariel@cthulhu.engr.sgi.com
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+Message-ID: <372B887C.6A548755@unidial.com>
+Date: Sat, 01 May 1999 23:04:28 +0000
+From: Alan Hoyt <neuroinc@unidial.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: Indigo2 port status?
+References: <Pine.LNX.3.96.990501171131.27661C-100000@lager.engsoc.carleton.ca>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19990428200732.iEWdkpr1NIgywRwTRbSC5brLS57w1p1B2V8_ks6-Xlk@z>
+To: Alex deVries <adevries@engsoc.carleton.ca>
+Cc: Charles Lepple <clepple@foo.tho.org>, Linux SGI <linux@cthulhu.engr.sgi.com>
+Message-ID: <19990501230428.oaC80z_1p4WIkEpskuv7NsRgUHcSs-e5i0_H5akJYak@z>
 
-Hi All:
+Alex deVries wrote:
 
-Really sorry for the downtime.
+> On Sat, 1 May 1999, Alan Hoyt wrote:
+> >
+> > I don't know what's going on with UAB - but I just started working on a
+> > port to the Indigo2 this April after receiving some hardware specs.
+>
+> Where'd you receive hardware specs from?
+>
+> - Alex
 
-	www.linux.sgi.com == ftp.linux.sgi.com == linus.linux.sgi.com
+From Ariel Faigon - who was kind enough to provide detailed specs. for the
+Indy.  Bill Earl stated that the two systems [indy and indigo2] were very
+similar but that he has not had the time to locate any additional
+documentation (where Indigo2 differs from Indy).  Sorry for the ambiguity.
 
-is back on air now with all its content intact.
-
-There have been an update of the VisWs area for the interested:
-	http://www.linux.sgi.com/intel/visws/howto.html
-
--- 
-Peace, Ariel
+ - Alan Hoyt -

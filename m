@@ -1,34 +1,31 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@ingenia.com>
-Message-ID: <199605011356.JAA17982@iron.ingenia.com>
-Subject: Re: Let's talk platforms...
-Date: Wed, 1 May 1996 09:56:04 -0400 (EDT)
-In-Reply-To: <199604302311.QAA15849@fir.esd.sgi.com> from "William J. Earl" at Apr 30, 96 04:11:05 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Wed, 1 May 1996 08:44:55 -0700
+From: wje@fir.esd.sgi.com (William J. Earl)
+Message-ID: <199605011544.IAA07701@fir.esd.sgi.com>
+Subject: Re: scope of this mailing list
+In-Reply-To: <199605010233.EAA26130@informatik.uni-koblenz.de>
+References: <Pine.LNX.3.91.960429200526.3781C-100000@redhat.com>
+	<199605010233.EAA26130@informatik.uni-koblenz.de>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "William J. Earl" <wje@fir.esd.sgi.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19960501135604.QIA3U3phi8Ak9g2xsSpe2sDLVpK19USz7lrUOhyI8Pc@z>
+To: Ralf Baechle <ralf@informatik.uni-koblenz.de>
+Cc: Erik Troan <ewt@redhat.com>, linux@neteng.engr.sgi.com
+Message-ID: <19960501154455.CVmhxrYPdxc2eBgTaFB7swEhJUQMol7_nFpReZzKT3I@z>
 
-William J. Earl wrote:
->       We expect to do the initial port to an Indy with an R4600 or
-> R5000 processor, following up with other processors and platforms.
-> A Challenge S is essentially the same as an Indy without a graphics
-> board.
+Ralf Baechle writes:
+...
+ > The main issue in achieving binary compatibility accross all Linux/MIPS
+ > targets is the byte order.  For some machines (Mips Magnum 4000, Olivetti
+ > M700-10, SNI RM series and others more) the byte order for the kernel is
+ > configurable.  For other it is fixed.  This is often the case for machines
+ > that were built with NT in mind.
+ > 
+ > The MIPS architecture offers us the nice feature of switchable byteorder
+ > for usermode.  Thus we have a way to run software from other systems with
+ > differing native byte order.  In other words: it's technological possible
+ > but it's not implemented yet.
+...
 
-Cool.
-That's been passed on to the salescritter as a desirable item, because
-of the Linux project.
-
-We'll see how it goes.
-
-Mike
-
--- 
-#> Mike Shaver (shaver@ingenia.com)                                        <#
-#> Technical specialist, pedant, packetsmith                               <#
-#>                                     Ingenia Communications Corporations <#
-#>                    Research, Development, Support and Sleep Deprivation <#
-#>                         Packets crafted, bugs found, rebellions quelled <#
+     I once worked on this problem on another OS base.  The basic system
+calls are easy.  ioctls, especially for streams, were much harder.  Within
+the limits of the published ABI, as opposed to the universe of working programs,
+the task is not too difficult.

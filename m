@@ -1,60 +1,59 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199707152215.AAA20071@informatik.uni-koblenz.de>
-Subject: Re: Fun with binutils ...
-Date: Wed, 16 Jul 1997 00:15:15 +0200 (MET DST)
-In-Reply-To: <199707151948.PAA08407@jenolan.rutgers.edu> from "David S. Miller" at Jul 15, 97 03:48:12 pm
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199707162206.PAA08262@oz.engr.sgi.com>
+Subject: Wellcome, Alan
+Date: Wed, 16 Jul 1997 15:06:59 -0700 (PDT)
+Reply-To: ariel@sgi.com (Ariel Faigon)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "David S. Miller" <davem@jenolan.rutgers.edu>
-Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr
-Message-ID: <19970715221515.pxjWCxwGvNmarPimeBigKBs1zxXqmLvWUU5yWKVWmBc@z>
+To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19970716220659.hV2s8PKO98Xe6v0Mx4LqWErWPLG4zPi6cUbWSEsmrmM@z>
 
->     - GAS still doesn't deal with _huge_ loops.  The only program I know
->       of which is affected is lmbench, but that alone is reason enough
->       to fix it :-)
-> 
-> It is not a bug, just that we have the local label semantics specified
-> for linux-mips differently in gcc and gas.  I fixed this ages ago and
-> it made lat_ctx.c compile just fine.
+Hi All,
 
-It has nothing to do with local label semantics of GCC; I can easily trigger
-the problem in plain assembler using local or nonlocal labels.  Maybe you
-were still using a non-PIC lat_ctx at that time?  The problem only affects 
-PIC.  Another explanation would be that the size of the cacheflushing
-loop in lmbench was somewhen increased or the GCC variant you used generates
-different branches.  The problematic GAS code from:
-binutils/gas/config/tc-mips.c:
+I'd like to wellcome (note the spelling) Alan Cox to the linux
+mailing list.  To those who don't know Alan, he is almost as
+famous as Linus himself in the Linux community :-)
 
-[...]
-  3439      case M_BGTL_I:
-  3440        likely = 1;
-  3441      case M_BGT_I:
-[...]
-  3470        if (imm_expr.X_op != O_constant)
-  3471          as_bad ("Unsupported large constant");
-[...]
-  3536      case M_BGTUL_I:
-  3537        likely = 1;
-  3538      case M_BGTU_I:
-[...]
-  3544        if (imm_expr.X_op != O_constant)
-  3545          as_bad ("Unsupported large constant");
-[...]
-  3632      case M_BLEL_I:
-  3633        likely = 1;
-  3634      case M_BLE_I:
-[...]
-  3647        if (imm_expr.X_op != O_constant)
-  3648          as_bad ("Unsupported large constant");
-[...]
-  3694      case M_BLEUL_I:
-  3695        likely = 1;
-  3696      case M_BLEU_I:
-[...]
-  3702        if (imm_expr.X_op != O_constant)
-  3703          as_bad ("Unsupported large constant");
+Alan played the leading role in major Linux areas including
+The Linux TCP/IP implementation and Linux/SMP as well as being
+involved on the Linux International Technical board and helping
+Linux happen and succeed.
 
-  Ralf
+Alan lives in Wales, The United Kingdom and he is interested
+in contributing to the SGI/Linux efffort.  I have put Alan
+on the first-comes and qualifies first-serverd waiting list
+for hardware.  Right now, Alan in #4 on the list with machine
+#1 expected to be shipped this Friday. [our main bottleneck
+is lack of dual disk config Indys]
+
+To Alan: the linux@engr.sgi.com list has about 50 subscribers
+mostly SGI employees (and a few managers :-) who either like
+Linux so much or have some other interest in seeing it running
+on SGI hardware.  It also includes all our core developers
+which you probably know.
+
+-- 
+Peace, Ariel
+
+
+
+
+----- Forwarded message from Majordomo@cthulhu -----
+
+From Majordomo-Owner@cthulhu  Wed Jul 16 14:13:16 1997
+Date: Wed, 16 Jul 1997 14:13:06 -0700
+Message-Id: <199707162113.OAA02588@cthulhu.engr.sgi.com>
+To: linux-approval@cthulhu
+From: Majordomo@cthulhu
+Subject: SUBSCRIBE linux alan@lxorguk.ukuu.org.uk
+Reply-To: Majordomo@cthulhu
+
+--
+
+alan@lxorguk.ukuu.org.uk has been added to linux.
+No action is required on your part.
+
+----- End of forwarded message from Majordomo@cthulhu -----

@@ -1,60 +1,73 @@
-Message-ID: <018601bf54c9$e28219c0$416baac0@viditec>
-From: "kjlin" <kj.lin@viditec-netmedia.com.tw>
-Subject: null TTY error
-Date: Sun, 2 Jan 2000 10:34:23 +0800
+Message-ID: <074001c11ef4$fdbd7530$3501010a@ltc.com>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <20010806164000.E400@rembrandt.csv.ica.uni-stuttgart.de> <997108890.1773.22.camel@ghostwheel.cygnus.com> <20010806082904.C15666@lucon.org> <997112036.2480.14.camel@ghostwheel.cygnus.com> <20010806083942.A16047@lucon.org>
+Subject: cross-mipsel-linux-ld --prefix library path
+Date: Mon, 6 Aug 2001 23:56:36 -0400
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0183_01BF550C.EF3D3E40"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20000102023423.Oj6xsHSdvywt6klS1U5pBZEFaGEHOhz8QOGrZ0wIAEE@z>
+Message-ID: <20010807035636.PZI-4uPbjPz6fMvJ391WraH5fF8_-BQxOkDf2GAhVRw@z>
 
-This is a multi-part message in MIME format.
+When I build and install cross-binutils (on Debian 2.2) like this:
 
-------=_NextPart_000_0183_01BF550C.EF3D3E40
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+  tar -xzf binutils-2.11.2.tar.gz
+  mkdir mipsel-binutils
+  cd mipsel-binutils
+  ../binutils-2.11.2/configure --target=mipsel-linux \
+    --prefix=/usr/mipsel-linux
+  make
+  make install
 
-SGkgYWxsLA0KDQpQb3J0aW5nIHRoZSBrZXJuZWwgMi40LjEgdG8gbXkgTUlQUyBlbWJlZGRlZCBi
-b2FyZCwNCmkgZW5jb3VudGVyZWQgYSBUVFkgcHJvYmxlbS4NCldoZW4gdGhlIHByaW50ZiBpcyBw
-dXR0ZWQgaW4gYSBsYXJnZSBsb29wLCBzdWNoIGFzIGEgMTAwIHRpbWVzIGxvb3AsIA0KdGhlIGtl
-cm5lbCBlcnJvciBtZXNzYWdlICJXYXJuaW5nOiBudWxsIFRUWSBmb3IgKGZmOmZmKSBpbiB0dHlf
-d3JpdGUiIGFwcGVhcnMuDQpIb3dldmVyLCBpZiBqdXN0IG9uZSBvciB0d28gcHJpbnRmIGFyZSB1
-c2VkLCBldmVyeXRoaW5nIGlzIGZpbmUuDQpEb2VzIHRoaXMgcHJvYmxlbSBjb25jZXJuIHdpdGgg
-bXkgc2VyaWFsIGRyaXZlcj8NCkkgd3JvdGUgbXkgc2VyaWFsIGRyaXZlciBiYXNlZCBvbiBkcml2
-ZXIvY2hhci9zZXJpYWwuYy4NCkNhbiBzb21lb25lIGdpdmUgbWUgYSBoaW50IHRoYXQgd2hlcmUg
-c2hvdWxkIGJlIGNoZWNrZWQgb3Zlcj8NCg0KVGhhbmtzLg0KDQoNCg==
+it seems the resulting mipsel-linux-ld wants to look in:
 
-------=_NextPart_000_0183_01BF550C.EF3D3E40
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+    /usr/mipsel-linux/mipsel-linux/lib
 
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PWdi
-MjMxMiIgaHR0cC1lcXVpdj1Db250ZW50LVR5cGU+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNS4w
-MC4yNjE0LjM1MDAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
-Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj5IaSA8Rk9OVCBmYWNlPSJU
-aW1lcyBOZXcgUm9tYW4iPmFsbCw8L0ZPTlQ+PC9GT05UPjwvRElWPg0KPERJVj4mbmJzcDs8L0RJ
-Vj4NCjxESVY+PEZPTlQgZmFjZT0iVGltZXMgTmV3IFJvbWFuIiBzaXplPTI+UG9ydGluZyB0aGUg
-a2VybmVsIDIuNC4xIHRvIG15IE1JUFMgDQplbWJlZGRlZCBib2FyZCw8L0ZPTlQ+PC9ESVY+DQo8
-RElWPjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiIgc2l6ZT0yPmkgZW5jb3VudGVyZWQgYSBU
-VFkgDQpwcm9ibGVtLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT0iVGltZXMgTmV3IFJv
-bWFuIiBzaXplPTI+V2hlbiB0aGUgcHJpbnRmJm5ic3A7aXMgcHV0dGVkIGluIGEgDQpsYXJnZSBs
-b29wLCBzdWNoIGFzIGEgMTAwIHRpbWVzIGxvb3AsIDwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQg
-ZmFjZT0iVGltZXMgTmV3IFJvbWFuIiBzaXplPTI+dGhlIGtlcm5lbCBlcnJvciBtZXNzYWdlICJX
-YXJuaW5nOiBudWxsIA0KVFRZIGZvciAoZmY6ZmYpIGluIHR0eV93cml0ZSIgYXBwZWFycy48L0ZP
-TlQ+PC9ESVY+DQo8RElWPjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiIgc2l6ZT0yPkhvd2V2
-ZXIsIGlmIGp1c3Qgb25lIG9yIHR3byBwcmludGYgYXJlIA0KdXNlZCwgZXZlcnl0aGluZyBpcyBm
-aW5lLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT0iVGltZXMgTmV3IFJvbWFuIiBzaXpl
-PTI+RG9lcyZuYnNwO3RoaXMgcHJvYmxlbSBjb25jZXJuIHdpdGggbXkgDQpzZXJpYWwgZHJpdmVy
-PzwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT0iVGltZXMgTmV3IFJvbWFuIiBzaXplPTI+
-SSB3cm90ZSBteSBzZXJpYWwgZHJpdmVyIGJhc2VkIG9uIA0KZHJpdmVyL2NoYXIvc2VyaWFsLmMu
-PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iIHNpemU9Mj5D
-YW4gc29tZW9uZSBnaXZlIG1lIGEgaGludCB0aGF0IHdoZXJlIA0Kc2hvdWxkIGJlIGNoZWNrZWQg
-b3Zlcj88L0ZPTlQ+PC9ESVY+DQo8RElWPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBmYWNlPSJU
-aW1lcyBOZXcgUm9tYW4iIHNpemU9Mj5UaGFua3MuPC9GT05UPjwvRElWPg0KPERJVj4mbmJzcDs8
-L0RJVj4NCjxESVY+Jm5ic3A7PC9ESVY+PC9CT0RZPjwvSFRNTD4NCg==
+for crt1.o, crti.o, libc.*, etc.
 
-------=_NextPart_000_0183_01BF550C.EF3D3E40--
+However, a cross-built glibc like:
+
+  tar -xzf glibc-2.2.3
+  cd glibc-2.2.3
+  patch -p1 -i../elf32-tradlittlemips.diff
+  tar -xzf ../glibc-linuxthreads-2.2.3.tar.gz
+  cd ..
+  mkdir mipsel-glibc
+  cd mipsel-glibc
+  ../glibc-2.2.3/configure --build=i686-linux \
+    --host=mipsel-linux --prefix=/usr/mipsel-linux \
+    --with-headers=/usr/mipsel-linux/include --enable-add-ons
+  make
+  make install
+
+puts it's stuff in:
+
+    /usr/mipsel-linux/lib/
+
+not:
+
+    /usr/mipsel-linux/mipsel-linux/lib/
+
+My first suspicion is that --prefix=/usr/mipsel-linux for binutils
+is naive, but --prefix=/usr looks like a disaster (would overwrite
+native stuff like libbfd.la for example, whatever that is).
+
+Another odd thing is that binutils installs:
+
+    /usr/mipsel-linux/bin/mipsel-linux-ld
+
+and an identical copy at:
+
+    /usr/mipsel-linux/mipsel-linux/bin/ld
+
+This seems like a Clue.  If fact, the whole
+/usr/mipsel-linux/mipsel-linux thing seems off to me.  Only, being
+only an RTN (Reluctant Toolchain Neophyte), that's about as far as
+I've gotten with it.
+
+Analysis (of the software, not me)?  :-)
+
+Regards,
+Brad

@@ -1,24 +1,32 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Fri, 17 Jul 1998 11:21:18 -0700
-Message-ID: <199807171821.LAA12337@fir.engr.sgi.com>
-From: "William J. Earl" <wje@fir.engr.sgi.com>
-Subject: Re: What about...
-In-Reply-To: <m0yxF1A-000aOoC@the-village.bc.nu>
-References: <9807171047.ZM18720@xtp.engr.sgi.com>
-	<m0yxF1A-000aOoC@the-village.bc.nu>
+Message-ID: <199807201230.OAA24985@aisa.fi.muni.cz>
+Subject: Re: ERRATA: rpm and portmap
+In-Reply-To: <Pine.LNX.3.95.980718013140.21796E-100000@lager.engsoc.carleton.ca> from Alex deVries at "Jul 18, 98 01:40:07 am"
+Date: Mon, 20 Jul 1998 14:30:44 +0200 (MET DST)
+From: Honza Pazdziora <adelton@informatics.muni.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Greg Chesson <greg@xtp.engr.sgi.com>, adevries@engsoc.carleton.ca, anubis@BanjaLuka.NET, linux@cthulhu.engr.sgi.com
-Message-ID: <19980717182118.8OzbApbdIT4QfTqh3unkkbMfXKePrRUv-reD0c42bck@z>
+To: Alex deVries <adevries@engsoc.carleton.ca>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19980720123044.8tbu0dPiJ2QoRzMgiYHoDaf0HhpwWgEaQ_gVb0y45a8@z>
 
-Alan Cox writes:
- > > many "holes"...  The idea of a simple buddy-system allocator as is
- > > ingrained in the Linux kernel falls apart completely in the face of
- > > this kind of architecture.   I suppose you could run a copy of Linux
- > > on every node, but I consider that an excuse rather than a solution.
- > 
- > Actually the Linux buddy stuff is quite happy with holes. Its still
- > completely inappropriate. From the above I deduce we'd have to do
- > mips64 before we even considerd it anyway
+> 
+> You can update your system by doing:
+> rpm -Uvh \
+> ftp://ftp.linux.sgi.com/pub/redhat/updates/hardhat-5.1/portmap-4.0-12.mipseb.rpm
+> rpm -Uvh \
+> ftp://ftp.linux.sgi.com/pub/redhat/updates/hardhat-5.1/rpm-2.5.2-3.mipseb.rpm
+> rpm -Uvh \
+> ftp://ftp.linux.sgi.com/pub/redhat/updates/hardhat-5.1/rpm-devel-2.5.2-3.mipseb.rpm
+> 
+> (Honza, could you maybe update the WWW pages to reflect mention of this?
+> Thanks)
 
-     Yes, the address space is very large, even in a single rack.
+Done.
+
+------------------------------------------------------------------------
+ Honza Pazdziora | adelton@fi.muni.cz | http://www.fi.muni.cz/~adelton/
+                   I can take or leave it if I please
+------------------------------------------------------------------------

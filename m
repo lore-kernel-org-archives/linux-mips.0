@@ -1,29 +1,67 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: olson@anchor.engr.sgi.com (Dave Olson)
-Message-ID: <199905040354.UAA16791@anchor.engr.sgi.com>
-Subject: Re: building an elf64 R10k kernel
-In-Reply-To: <372E6AA0.505A6071@foo.tho.org> from Charles Lepple at "May 4, 99 03:33:52 am"
-Date: Mon, 3 May 1999 20:54:28 -0700 (PDT)
+Message-ID: <001201be9c02$dbe83b10$0a02030a@snafu>
+From: "Andrew Linfoot" <andy@derfel99.freeserve.co.uk>
+Subject: Web Site
+Date: Wed, 12 May 1999 00:06:08 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000F_01BE9C0B.3C8ADF60"
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Charles Lepple <clepple@foo.tho.org>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19990504035428.jscZnPiMq0WRoHM34yMtBp1gVJZHZZPFCDe7z0MUpYQ@z>
+To: linux@cthulhu.engr.sgi.com
+Message-ID: <19990511230608.3kFwN-P2hh0qS-isSvkDPpQMW_6JjGoW6btMX1uQqGE@z>
 
-Charles Lepple wrote: 
-|  Hey all,
-|  Does anyone out there know any details on building elf64 objects? I was
-|  all happy about seeing Andrew's Indigo2 patches, and decided that I
-|  _had_ to try and make it work on an Indigo2 Impact 10000... Suffice it
-|  to say that it isn't straightforward.
+This is a multi-part message in MIME format.
 
-For r10k Indigo2 to work, you will need to hack the compiler,
-for various reasons (the way the r10k works, plus the fact that
-indigo2 doesn't have i/o cache coherency, interact in some "interesting"
-ways.  I would suggest not attempting this port, unless you have a *lot*
-of spare time.
+------=_NextPart_000_000F_01BE9C0B.3C8ADF60
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Dave Olson, Silicon Graphics
-http://reality.sgi.com/olson   olson@sgi.com
+Hi,
+
+Sorry for posting this here but i'm new and don't yet know who's who =
+etc...
+
+I have been unable to access the www.linux.sgi.com site for over 24 =
+hours, can someone please take a look?
+
+This may well be a problem at my ISP, but i can see all other SGI public =
+sites.
+
+Cheers
+Andy
+
+
+------=_NextPart_000_000F_01BE9C0B.3C8ADF60
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2314.1000" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Sorry for posting this here but i'm new =
+and don't=20
+yet know who's who etc...</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have been unable to access the <A=20
+href=3D"http://www.linux.sgi.com">www.linux.sgi.com</A> site for over 24 =
+hours,=20
+can someone please take a look?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>This may well be a problem at my ISP, =
+but i can see=20
+all other SGI public sites.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Cheers</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Andy</FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_000F_01BE9C0B.3C8ADF60--

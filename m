@@ -1,34 +1,33 @@
-Message-ID: <089d01c11f4b$449b4800$3501010a@ltc.com>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <Pine.GSO.3.96.1010807160731.3289D-100000@delta.ds2.pg.gda.pl>
+Date: Tue, 7 Aug 2001 09:42:14 -0500 (CDT)
+From: Steve Langasek <vorlon@netexpress.net>
 Subject: Re: cross-mipsel-linux-ld --prefix library path
-Date: Tue, 7 Aug 2001 10:14:27 -0400
+In-Reply-To: <074001c11ef4$fdbd7530$3501010a@ltc.com>
+Message-ID: <Pine.LNX.4.30.0108070939230.32641-100000@tennyson.netexpress.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010807141427.8G-lcJqTDyYPP996qgScxJW8bOmqaanHsZVejTeUSC4@z>
-
------ Original Message -----
-From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
 To: "Bradley D. LaRonde" <brad@ltc.com>
-Cc: <linux-mips@oss.sgi.com>
-Sent: Tuesday, August 07, 2001 10:10 AM
-Subject: Re: cross-mipsel-linux-ld --prefix library path
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010807144214.pIcq9WJow4ObC8yIsqKzdohrJ1VDc4nKWSsnSClv4aY@z>
 
+On Mon, 6 Aug 2001, Bradley D. LaRonde wrote:
 
->  You don't need to specify "--prefix=/usr/mipsel-linux" for building
-> cross-binutils.  The scripts will add the target alias automatically for
-> files that need it -- if you look at the scripts,
-> "${prefix}/${target_alias}" is the so called "tooldir".
+> Another odd thing is that binutils installs:
 
-Oh...  The mysteries of cross-toolchain building.  Thanks.
+>     /usr/mipsel-linux/bin/mipsel-linux-ld
 
-So if I leave out --prefix alogether, will "make install" overwrite any x86
-stuff, like that libbfd.la file I mentioned?
+> and an identical copy at:
 
-Regards,
-Brad
+>     /usr/mipsel-linux/mipsel-linux/bin/ld
+
+The places you /want/ these to show up are /usr/mipsel-linux/bin/ld and
+/usr/bin/mipsel-linux-ld.  The reason for having two copies is that when
+you're calling these tools directly (or from a make script), you want them to
+be in your path, so you want them to have a unique name
+(/usr/bin/mipsel-linux-ld); but internally, I believe the tools prefer /not/
+to have to mess with the name mangling used there, so instead they look for a
+tool with the normal name (ld) in an architecture-specific directory
+(/usr/mipsel-linux/bin).
+
+Steve Langasek
+postmodern programmer

@@ -1,42 +1,58 @@
-Message-ID: <00ae01c3035e$d431aba0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Pine.GSO.3.96.1030415161611.13254H-100000@delta.ds2.pg.gda.pl>
-Subject: Re: wbflush() abuse for TOSHIBA_RBTX4927
-Date: Tue, 15 Apr 2003 16:53:49 +0200
+Received: from blaze.ghs.com (blaze.ghs.com [192.67.158.233])
+	by eta.ghs.com (8.12.8/8.12.8) with ESMTP id h3K0LhMD000943
+	for <linux-mips@linux-mips.org>; Sat, 19 Apr 2003 17:21:43 -0700 (PDT)
+Received: from NOMAD (nomad.ghs.com [192.168.112.124])
+	by blaze.ghs.com (8.10.2+Sun/8.10.2+Sun) with ESMTP id h3K0LgW05412
+	for <linux-mips@linux-mips.org>; Sat, 19 Apr 2003 17:21:42 -0700 (PDT)
+From: "Mike Connors" <mike.connors@ghs.com>
+Subject: assembly debug question
+Date: Sat, 19 Apr 2003 17:20:27 -0700
+Message-ID: <001d01c306d2$a55fbe80$7c70a8c0@NOMAD>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Return-Path: <mike.connors@ghs.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, linux-mips@linux-mips.org
-Cc: source@mvista.com
-Message-ID: <20030415145349.lQ8ekF0jmZ4xNwMCykhbxwow5kuH8K53TNX9pbGBpyc@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030420002027.u0CSMrOQJGfHHel8FWJYc1HaVt_jtezzHwREEmNybrE@z>
 
-I remember that some of the Toshiba parts of the TX39 series
-had some interesting quirks relating to the write buffer.  Perhaps
-some of these were carried into the TX49 series as well?
+Hi All, 
 
------ Original Message ----- 
-From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-To: <linux-mips@linux-mips.org>
-Cc: <source@mvista.com>
-Sent: Tuesday, April 15, 2003 4:22 PM
-Subject: wbflush() abuse for TOSHIBA_RBTX4927
+I'm using gcc v2.96 to compile a MIPS targeted Linux kernel 
+and am finding it difficult to produce debug information 
+for assembly files. 
 
+I've discovered that a typical compile line for assembly 
+in the kernel gets its parameters from AFLAGS and results 
+in the following commandline: 
 
-> Hello,
-> 
->  I see wbflush() is abused in an interesting and inefficient way for
-> TOSHIBA_RBTX4927.  Is there any specific reason for such a setup?
-> 
->   Maciej
-> 
-> -- 
-> +  Maciej W. Rozycki, Technical University of Gdansk, Poland   +
-> +--------------------------------------------------------------+
-> +        e-mail: macro@ds2.pg.gda.pl, PGP key available        +
-> 
-> 
-> 
+mipsel-linux-gcc -D__ASSEMBLY__ -D__KERNEL__ -I/l/include \
+	-G 0 -mno-abicalls -fno-pic -mcpu=r4600 -mips2 \
+	-Wa,--trap -pipe -c entry.S -o entry.o 
+
+According to the documentation, some targets support 
+dwarf debug information using --gdwarf2.  Does anyone 
+know if the MIPS target is supported in version? 
+
+Also, --gstabs doesn't seem to work either.  Nor does 
+-gdwarf-2, -gdwarf -g2, -gstabs+, -gdwarf+, etc. 
+
+Has anyone had luck producing debug information for 
+assembly files with this version of gcc? 
+
+./mipsel-linux-gcc --version 
+2.96 
+./mipsel-linux-as --version 
+GNU assembler 2.11.92.0.10 
+
+Thanks in advance, 
+Mike 
+
+--- 
+Mike Connors			Green Hills Software, San Clemente 
+Field Applications Engineer	131 Avenida Victoria 
+mailto:mike.connors@ghs.com	San Clemente, CA  92672 
+phone: 1-949-369-3950		
+cell:  1-949-412-3951		fax: 1-949-369-3959 

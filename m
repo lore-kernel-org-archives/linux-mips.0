@@ -1,29 +1,40 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Tue, 4 Jun 1996 23:42:00 -0700
-Message-ID: <199606050642.XAA10272@neteng.engr.sgi.com>
-From: "David S. Miller" <dm@neteng.engr.sgi.com>
-In-reply-to: <199606041716.KAA28670@yon.engr.sgi.com> (ariel@yon)
-Subject: Re: CVS commit mailing list?
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199606081822.LAA01539@yon.engr.sgi.com>
+Subject: Re: Are you satisfied now Mr. McVoy? ;-)
+Date: Sat, 8 Jun 1996 11:22:46 -0700 (PDT)
+In-Reply-To: <199606081123.EAA07860@neteng.engr.sgi.com> from "David S. Miller" at Jun 8, 96 04:23:33 am
+Reply-To: ariel@cthulhu.engr.sgi.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: ariel@cthulhu.engr.sgi.com
-Cc: wje@fir.esd.sgi.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19960605064200.tvjQ3XnidMXKT2BPRUjz6kUhFgKYtRFsSQVNWibKCUk@z>
+To: "David S. Miller" <dm@neteng.engr.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19960608182246.O1e4jkAcwut53b_x6qpiWxmEv82r7I-pLf9d_TGEmCs@z>
 
-   From: ariel@yon (Ariel Faigon)
-   Date: Tue, 4 Jun 1996 10:16:42 -0700 (PDT)
+>
+>
+>Calibrating delay loop.. ok - 91.96 BogoMIPS
+>
+Will a Triton CPU (R5000) make this better ? :-)
 
-   OK, I requested
+For those who are not familiar with bogomips, my Pentium-100
+at home does 39.94 bogomips. And the best number I've seen
+for a desktop is almost 300 bogomips for an  Alpha 21064
+overclocked to 300MHz. The 91.96 number for a 150MHz Indy
+sounds pretty good. 
 
-	   linux-progress
+Still, I would like to know, David:
+What clock factor are you using? The DEC Alphas do one
+clock pre instruction, so their factor is 1, why is
+the Indy at less than two-thirds of its clock rate?
 
-   to be created on majordomo@engr.
 
-   I guess it'll take some time till someone gets time to set this up,
-   I'll let you know when it is ready.
+Fr more details:
+	http://sunsite.unc.edu/linux/HOWTO/mini/BogoMips
 
-When you tell me it is up I will point the CVS commit mails at it,
-thanks Ariel.
+It would be nice to send them the new data...
 
-Later,
-David S. Miller
-dm@engr.sgi.com
+-- 
+Peace, Ariel

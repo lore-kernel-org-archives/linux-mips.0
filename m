@@ -1,29 +1,51 @@
-Message-ID: <3EE4C5CF.3050607@galileo.co.il>
-Date: Mon, 09 Jun 2003 19:37:19 +0200
-From: Baruch Chaikin <bchaikin@il.marvell.com>
+From: "Tom Cernius" <tcernius@correlant.com>
+Subject: FW: Db1500 PCI Auto Scan Question
+Date: Wed, 11 Jun 2003 15:12:18 -0700
+Message-ID: <000201c33066$8623dac0$d452dad1@correlant.com>
 MIME-Version: 1.0
-Subject: Building a stand-alone FS on a very limited flash (newbie  question)
-References: <Pine.GSO.4.44.0306061234410.4045-100000@hydra.mmc.atmel.com> <Pine.GSO.3.96.1030609164009.2806n-100000@delta.ds2.pg.gda.pl> <20030609154408.GA1781@nevyn.them.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <bchaikin@galileo.co.il>
+Return-Path: <tcernius@correlant.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: linux-mips@linux-mips.org, Rabeeh Khoury <rabeeh@galileo.co.il>, Baruch Chaikin <bchaikin@galileo.co.il>
-Message-ID: <20030609173719.BcFtRz5qBDSMhjxc18c4qPBh2zQtK0rfEi7yp-MLJNs@z>
+To: ppopov@mvista.com
+Cc: linux-mips@linux-mips.org
+Message-ID: <20030611221218.1MhLnDxtRt5P6HysAk4Jx2bfjktWqlOZC6HsL1yA9jI@z>
 
-Hi all,
+Hello,
 
-I'm using MIPS kernel 2.4.18 with NFS file system mounted on a RedHat 
-machine. This works fine, but is unsuitable for system deployment. Do 
-you have hints for me where to start, in order to put the file system on 
-flash? The platform I'm using is very limited - only one MTD block of 
-2.5 MB is available for the file system, out of a 4 MB flash:
-    0.5 MB is allocated for the firmware code
-    1.0 MB for the compressed kernel image
-    2.5 MB for the (compressed?) file system
+   I am porting my first PCI driver for a PCI card hosted by the AMD Db1500
+"Zinfandel" development board.
+   This driver had been previously working on another host, where
+CONFIG_PCI_AUTO was not enabled.
 
-For example, I've noticed LibC itself is ~5 MB !
+    My PCI card REQUIRES 0xFF000000 and 0x90000000 be programmed into BAR0
+and BAR1 respectively.
+    My PCI card has nothing programmed into BAR0 and BAR1 at power-up.
+    My host Linux kernel was built with CONFIG_PCI, CONFIG_NEW_PCI, and
+CONFIG_PCI_AUTO turned on in the .config file.
 
-Thanks for any tip,
--    Baruch.
+     I noticed that during boot, the kernel tickles my devices BAR's and
+then writes these BARs with addresses in the range of
+     4000 0000 thru 43FF FFFF
+
+     I have tried everything and although I am able to write the proper
+(0xFF00 0000 and 0x9000 0000) addresses into the BAR's,
+     I have been unable to successfully read anything from my PCI cards CPU
+Register/Sdram space.
+
+     I suspect that it is NOT possible to use hardcoded PCI BAR addresses
+with the MIPS processor AND CONFIG_PCI_AUTO turned on,
+     as the kernel expects (and configures the PCI BARS of) PCI devices to
+reside in the address space 0x4000 0000 thru 0x43FF FFFF ??
+
+     I tried disabling the device, updating my BARS, reenabling in the
+driver code (a loadable module).
+     I tried writing the BARS just prior to tickling in the
+linux/arch/mips/kernel/pci_auto.c code.
+     I tried writing the BARS as soon as my device/vendor id are detected
+also in the linux/arch/mips/kernel/pci_auto.c code.
+
+Thanks,
+Tom

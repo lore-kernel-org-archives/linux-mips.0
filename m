@@ -1,27 +1,64 @@
-Date: Sun, 18 Apr 2004 15:00:30 +0200
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH] gcc 3.4 drops "accum" clobber, replace with "hi" intime.c
-Message-ID: <20040418130029.GA23489@linux-mips.org>
-References: <Pine.GSO.4.10.10404122244110.8735-100000@helios.et.put.poznan.pl> <20040412231309.GA702@linux-mips.org> <03f301c420e7$d8de2d70$8d01010a@prefect> <048e01c420f1$ad4ae3b0$8d01010a@prefect> <1081818125.19719.14.camel@dzur.sfbay.redhat.com> <04d501c420f3$6c836a30$8d01010a@prefect> <20040413010732.GA7560@nevyn.them.org> <04f501c420f4$5563f620$8d01010a@prefect> <053c01c420f5$ec230190$8d01010a@prefect> <Pine.LNX.4.55.0404131451200.15949@jurand.ds.pg.gda.pl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.55.0404131451200.15949@jurand.ds.pg.gda.pl>
-Return-Path: <ralf@linux-mips.org>
+Received: from lahoo.priv ([162.39.1.206]) by ispmxmta06-srv.alltel.net
+          with ESMTP
+          id <20040423032239.QXNV24676.ispmxmta06-srv.alltel.net@lahoo.priv>
+          for <linux-mips@linux-mips.org>; Thu, 22 Apr 2004 22:22:39 -0500
+Received: from prefect.priv ([10.1.1.141] helo=prefect)
+	by lahoo.priv with smtp (Exim 3.36 #1 (Debian))
+	id 1BGr1R-0005hF-00
+	for <linux-mips@linux-mips.org>; Thu, 22 Apr 2004 23:06:37 -0400
+Message-ID: <06d601c428e2$3ba1dcc0$8d01010a@prefect>
+From: "Bradley D. LaRonde" <brad@laronde.org>
+Subject: inconsistent operand constraints in 'asm' in unaligned.h:66 using gcc 3.4
+Date: Thu, 22 Apr 2004 23:22:40 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <brad@laronde.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: "Bradley D. LaRonde" <brad@laronde.org>, linux-mips@linux-mips.org, Eric Christopher <echristo@redhat.com>, Daniel Jacobowitz <dan@debian.org>
-Message-ID: <20040418130030.nqJElSUBHZgzjhgs93gNM5dDJD7U2iVQ8tKxf83jAgA@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20040423032240.64daGxwZeO9dl3CGFlWlNXew1HyfjWLES7wuNs4JtGU@z>
 
-On Tue, Apr 13, 2004 at 02:57:07PM +0200, Maciej W. Rozycki wrote:
+gcc 3.4 complians about:
 
-> 
-> > OK, so this patch actually builds, and it sounds like it will do the job,
-> > since "accum" means "hi and low", "lo" is already clobbered in all cases,
-> > and either "hi" is the output and doesn't need clobbering (hunks 1, 2, and
-> > 4), or "hi" is already clobbered (hunk 3).
-> 
->  There are more places this should be dealt with and I have the following 
-> preliminary patch for this, but I'm unsure about removal of "accum" being 
-> completely safe for older compilers.
+include/asm/unaligned.h:66: error: inconsistent operand constraints in an
+`asm'
+
+from linux CVS 2.4 branch.  That's:
+
+/*
+ * Store doubleword ununaligned.
+ */
+static inline void __stq_u(unsigned long __val, unsigned long long * __addr)
+{
+        __asm__("usw\t%1, %0\n\t"
+                "usw\t%D1, 4+%0"
+                : "=m" (*__addr)
+                : "r" (__val));
+}
+
+I was baffled by the "%D1" syntax until Thiemo Seufer pointed out that %D1
+assembled to "one register higher than the register chosen for %1".
+Ooooookay.  But gcc complains about a constraint problem.  Maybe "r" and
+"%Dn" don't get along (long)?
+
+Anyway... what about __val's type?  I would expect that to be "unsigned long
+long" for -mabi=32.  Otherwise will "%D" get what the asm author expected?
+If I do change it to "unsigned long long" then I get two of the constraint
+errors.  Ooooookay.  Anyone got a constraint that means "consecutive
+register pair"?
+
+I finally decided to punt and write:
+
+static inline void __stq_u(unsigned long long __val, unsigned long long *
+__addr)
+{
+        *__addr = __val;
+}
+
+Is this OK?  Is there a better solution?
+
+
+Regards,
+Brad

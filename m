@@ -1,19 +1,18 @@
 Subject: Re: NFSROOT filesystem
-Message-ID: <OF68B1111A.E5F36BC9-ON88256A02.0074F726@taec.toshiba.com>
+Message-ID: <OF4628F9A8.67E419FF-ON88256A03.005A3DC5@taec.toshiba.com>
 From: Lisa.Hsu@taec.toshiba.com
-Date: Thu, 1 Mar 2001 13:30:57 -0800
+Date: Fri, 2 Mar 2001 08:31:41 -0800
 MIME-Version: 1.0
 Content-type: text/plain; charset=us-ascii
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
 To: "H.Heinold" <heinold@physik.tu-cottbus.de>
 Cc: linux-mips@oss.sgi.com, owner-linux-mips@oss.sgi.com
-Message-ID: <20010301213057.YTDM5o0KUBZ6z_anvRd9AbAPdzmbyOI2OmLZmM3ZB0M@z>
+Message-ID: <20010302163141.2Ym0UHmz1VTsK5oD9GOk3JOC27-g6I8pQ6tEE5vSHEg@z>
 
 
-Thanks to Henning for showing me where to get the big-endian compiled
-packages and it works.   Now, I need big-endian compiled "ash".
-Is anybody know where I can get it?
+As I understand, ash requires mush  less memory than other shells.  I am
+working on an embedded system and memory is crucial to us.
 
 Thanks,
 
@@ -30,56 +29,26 @@ Lisa
                     ss.sgi.com                                                                                         
                                                                                                                        
                                                                                                                        
-                    03/01/01 01:24 AM                                                                                  
+                    03/02/01 12:17 AM                                                                                  
                                                                                                                        
                                                                                                                        
 
 
 
 
-On Wed, Feb 28, 2001 at 07:00:13PM -0800, Lisa.Hsu@taec.toshiba.com wrote:
+On Thu, Mar 01, 2001 at 01:30:57PM -0800, Lisa.Hsu@taec.toshiba.com wrote:
 >
-> Hi, All
->
-> For using NFS boot, I've already edited the /etc/hosts, /etc/exports to
-add
-> the entry for my target board.  The command line that I use in our EPROM
-> based bootloader  is as follows:
->
-> root=/dev/nfs rw ip=::::::rarp console=ttyS2
-> nfsroot=209.243.136.151:/work/nfsroot
->
-> I need to setup the NFSROOT filesystem on the server for my target board
-> (which is running in Big-endian mode),  what are the steps that I have to
-> do?
->
-For big endian you need big endian complied packages, you can retrieve the
-debian base2_2.2.tgz
-under ftp.uni-mainz.de/pub/Linux/debian-local/mips, which should work fine
-as nfsroot. I have some
-problems with open a console beacause on Indigo2 you only have output on
-the serial console.
-
-> There is a FTP site for getting RPM packages for little endian mode:
->
->
-tp://ftp.linux.sgi.com/[ig/linux/mips/mipsel-linux/RedHat-6.1/RPMS
->
-> I could not find similar one for big-endian.    Can anybody give me a
-> pointer to where the RPM packages reside on the web?
->
+> Thanks to Henning for showing me where to get the big-endian compiled
+> packages and it works.   Now, I need big-endian compiled "ash".
+> Is anybody know where I can get it?
 >
 > Thanks,
 >
-No prob.
-
 > Lisa
 >
->
->
 
-
-
+Hm why you need the ash? You can give the kernel the follwing via the
+commandoline init=/bin/bash.
 --
 
 

@@ -1,40 +1,24 @@
-Received: from cisco.com (megha.cisco.com [192.122.173.140])
-	by sj-msg-core-1.cisco.com (8.12.2/8.12.6) with ESMTP id h16E4fSQ021769
-	for <linux-mips@linux-mips.org>; Thu, 6 Feb 2003 06:04:42 -0800 (PST)
-Received: from IILANGOVW2K ([10.77.139.167])
-	by cisco.com (8.8.8/2.6/Cisco List Logging/8.8.8) with SMTP id TAA19712
-	for <linux-mips@linux-mips.org>; Thu, 6 Feb 2003 19:33:35 +0530 (IST)
-Message-ID: <005201c2cde8$b145e5d0$a78b4d0a@apac.cisco.com>
-From: "Indukumar Ilangovan" <iilangov@cisco.com>
-Subject: manipulating e_machine value in the elf Header
-Date: Thu, 6 Feb 2003 19:34:40 +0530
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <iilangov@cisco.com>
+Date: Mon, 10 Feb 2003 12:26:45 +0100
+From: Guido Guenther <agx@gandalf.physik.uni-konstanz.de>
+Subject: Re: porting arcboot
+Message-ID: <20030210112645.GA32696@honk.physik.uni-konstanz.de>
+References: <20030210034549.GA8408@pureza.melbourne.sgi.com> <Pine.LNX.4.21.0302101120390.1117-100000@melkor> <20030210111330.GA32276@honk.physik.uni-konstanz.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20030210111330.GA32276@honk.physik.uni-konstanz.de>
+Return-Path: <guido@honk1.physik.uni-konstanz.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030206140440.fFQRzU8qSGkATvPvaCejHMQ10jteynLItHmIfNU12tQ@z>
+To: Vivien Chappelier <vivienc@nerim.net>, linux-mips@linux-mips.org
+Message-ID: <20030210112645.P5AwGgS1LLJqPZOIGcys9ChUE157TPwyj1jwV0Y8ibA@z>
 
-Hi,
-
-I'm trying to port linux kernel to a mips board with a R4700 processor. It
-has a rom monitor program which can be used to load the image. (has support
-for tftp boot, xmodem....) . This bootloader has a hardcoded cpu_type which
-is cross checked with the e_machine value in the elf header. When I try to
-load the linux kernel this check (cpu_type == e_machine) fails & hence the
-boot loader aborts the loading of image.
-
-I tried to change the e_machine type value by changing the EM_MIPS value in
-include/linux/elf.h, still e_machine type is "8" in the image even after
-completely rebuilding the image. I even changed the EM_MIPS value in
-/usr/include/elf.h & couple of other locations (sde headers.....) still no
-luck....though hand editing the elf header is an option.. I don't want to do
-that !
-
-If any of you have any idea/suggestions I would be a happy man !
-
-Thanks in advance,
-Indu
+On Mon, Feb 10, 2003 at 12:13:30PM +0100, Guido Guenther wrote:
+> Can't we read the load address (and needed space) from the elf header
+s/load address/kernel's load address/
+> before InitMalloc? Would be much nicer and we don't need a different
+> loader for every subarch.
+In case we find a unique place for arcboot in the memory map of the
+different subarches.
+Regards,
+ -- Guido

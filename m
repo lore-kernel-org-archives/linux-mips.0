@@ -1,37 +1,28 @@
-Message-ID: <00f601c1ced8$63586600$0b01a8c0@w2k30g>
+Message-ID: <015201c1ceea$1af02760$0b01a8c0@w2k30g>
 From: "David Christensen" <dpchrist@holgerdanske.com>
-Subject: hello
-Date: Mon, 18 Mar 2002 15:55:00 -0800
+References: <00f601c1ced8$63586600$0b01a8c0@w2k30g> <200203182235.g2IMZiM01720@localhost.localdomain>
+Subject: Re: hello
+Date: Mon, 18 Mar 2002 18:01:54 -0800
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20020318235500.ZF1KiEDMMHov0C0zTHaS9Gy1hH0poXM0vWCs-Mv8M_8@z>
+To: LEO <leo@saintmail.net>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20020319020154.nHrLIuf1qeJYCYGNUng7I7mG-Dk6Uqm13YQ0zj7rN84@z>
 
-linux-mips@oss.sgi.com:
+Leo:
 
-Hello!  I have the opportunity to work on MIPS Linux using a MIPS Atlas
-(4Kc) board.
+> http://linux-mips.sourceforge.net/
+>
+> Fully equipped with toolchain howto and all.
 
-1.  Is there a reason why SourceForge isn't being used for the MIPS
-    Linux project?
+OK thanks for the pointer.  I searched SourceForge for "MIPS Linux"
+before posting to linux-mips@oss.sgi.com, and came up with "MIPS Linux"
+and "Linux MIPS".  Neither project had released files, so I thought they
+were dead.  Should I continue to use the linux-mips@oss.sgi.com mailing
+list, or switch to linux-mips on SourceForge?
 
-2.  What is the preferred host OS for MIPS Linux kernel and application
-    cross development (especially the MIPS Altas)?
-
-3.  What is the preferred toolchain for MIPS Linux kernel and
-    application cross development (especially the MIPS Altas)?
-
-4.  Is MIPS Linux self-hosted?
-
-5.  Can you do native development on MIPS Linux?
-
-6.  Does MIPS Linux support sound (oss or alsa) on any platform?  Does
-    it support sound on MIPS Atlas?
-
-
-TIA,
 
 David

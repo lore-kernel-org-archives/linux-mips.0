@@ -1,103 +1,37 @@
-Message-ID: <007f01c05c63$9b517b20$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20001202132748.A2002@paradigm.rfc822.org>
-Subject: Re: [PATCH] DEC init_cycle_counter
-Date: Sat, 2 Dec 2000 14:26:54 +0100
+Subject: Re: Support for smaller glibc
+Date: Sat, 2 Dec 2000 09:13:45 -0700 (MST)
+In-Reply-To: <E142CN5-0001Wk-00@the-village.bc.nu> from "Alan Cox" at Dec 02, 2000 01:06:28 PM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <E142FIH-00017w-00@xmission.xmission.com>
+From: Eric Jorgensen <alhaz@xmission.com>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Florian Lohoff <flo@rfc822.org>, linux-mips@oss.sgi.com
-Message-ID: <20001202132654.qxRxmAKE1WBUzYD709cku95nn3edOZc1duQKFVA7aEw@z>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: linux-mips@oss.sgi.com, linux-mips@fnet.fr
+Message-ID: <20001202161345.D66eqJAdUIwUnGXsUEg1EtX9_zAqGi4zEDPxKQCN6nM@z>
 
-Only that if you adopted the CPU probe and configuration
-scheme that we've been promulgating at MIPS, it would
-already have been taken care of in kernel/cpu_probe.c, and
-could be tested as (mips_cpu.options  & MIPS_CPU_COUNTER).
-I believe I even checked in the headers and C file in the 2.2
-repository, though I don't think I "wired it up" to replace the old
-assembler spaghetti.
-
-            Kevin K.
-
------ Original Message -----
-From: "Florian Lohoff" <flo@rfc822.org>
-To: <linux-mips@oss.sgi.com>
-Sent: Saturday, December 02, 2000 1:27 PM
-Subject: [PATCH] DEC init_cycle_counter
+> 
+> > > solved.  But forking a smaller libc of standard glibc is nothing but the
+> > > St. Florian's principle ...
+> > 
+> > Ulrich is refusing to do anything with it. Do you have any suggestions?
+> > I will do my best to do it right. But I am afraid I cannot do it alone.
+> 
+> Ulrich is right. Start from a library that is intended to be modular and
+> embedded. Folks are already looking at using newlib for this. 
 
 
->
-> Comments ?
->
-> Index: time.c
-> ===================================================================
-> RCS file: /cvs/linux/arch/mips/dec/time.c,v
-> retrieving revision 1.11
-> diff -u -r1.11 arch/mips/dec/time.c
-> --- arch/mips/dec/time.c 2000/11/23 02:00:49 1.11
-> +++ arch/mips/dec/time.c 2000/12/02 12:20:09
-> @@ -423,46 +423,6 @@
->   timer_interrupt(irq, dev_id, regs);
->  }
->
-> -char cyclecounter_available;
-> -
-> -static inline void init_cycle_counter(void)
-> -{
-> - switch (mips_cputype) {
-> - case CPU_UNKNOWN:
-> - case CPU_R2000:
-> - case CPU_R3000:
-> - case CPU_R3000A:
-> - case CPU_R3041:
-> - case CPU_R3051:
-> - case CPU_R3052:
-> - case CPU_R3081:
-> - case CPU_R3081E:
-> - case CPU_R6000:
-> - case CPU_R6000A:
-> - case CPU_R8000: /* Not shure about that one, play safe */
-> - cyclecounter_available = 0;
-> - break;
-> - case CPU_R4000PC:
-> - case CPU_R4000SC:
-> - case CPU_R4000MC:
-> - case CPU_R4200:
-> - case CPU_R4400PC:
-> - case CPU_R4400SC:
-> - case CPU_R4400MC:
-> - case CPU_R4600:
-> - case CPU_R10000:
-> - case CPU_R4300:
-> - case CPU_R4650:
-> - case CPU_R4700:
-> - case CPU_R5000:
-> - case CPU_R5000A:
-> - case CPU_R4640:
-> - case CPU_NEVADA:
-> - cyclecounter_available = 1;
-> - break;
-> - }
-> -}
-> -
->  struct irqaction irq0 = {timer_interrupt, SA_INTERRUPT, 0,
->   "timer", NULL, NULL};
->
-> @@ -513,8 +473,6 @@
->   xtime.tv_sec = mktime(year, mon, day, hour, min, sec);
->   xtime.tv_usec = 0;
->   write_unlock_irq(&xtime_lock);
-> -
-> - init_cycle_counter();
->
->   if (cyclecounter_available) {
->   write_32bit_cp0_register(CP0_COUNT, 0);
->
->
-> --
-> Florian Lohoff                  flo@rfc822.org             +49-5201-669912
->      Why is it called "common sense" when nobody seems to have any?
->
+	There are a few other methods. Lineo for instance has a utility
+called Lipo which goes through all the binaries on a system and then
+strips out all the library code that's unused, usually resulting in a
+substantial reduction in the size of libc6. Lipo is a proprietary
+app tho, currently only available supporting ia32 and ppc archetectures as
+part of the Embedix SDK.
+
+	There's also uClibc, and i've heard some talk of using bsd's libc,
+which i understand is also smaller. These may require modification to the
+sourcecode of your apps to work properly. 
+
+ - Eric

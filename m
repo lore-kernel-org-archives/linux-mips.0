@@ -1,48 +1,55 @@
-Message-ID: <013301c165cc$5d030fa0$4a1c690a@huawei.com>
-From: "machael" <dony.he@huawei.com>
-Subject: vmalloc bugs in 2.4.5???
-Date: Mon, 5 Nov 2001 15:34:44 +0800
+Message-ID: <20011106215824.52382.qmail@web11908.mail.yahoo.com>
+Date: Tue, 6 Nov 2001 13:58:24 -0800 (PST)
+From: Wayne Gowcher <wgowcher@yahoo.com>
+Subject: _MIPS_SIM and others not defined by specs file warning
+In-Reply-To: <1005012474.27128.306.camel@zeus>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20011105073444.R8zEWdikwg0T8th7_sRskrcEuJuPZudy1CCjlTAR450@z>
+To: linux-mips <linux-mips@oss.sgi.com>
+Message-ID: <20011106215824.GWS4ONU76jv9zXjR9QgquavvHHV49TFJeuEh3BSc90E@z>
 
-hello:
-    I use linux-2.4.5 and I think VMALLOC may have some bugs which i don't
-know how to fixup.
-    I try to replace some kernel functions with my own implementations.I
-will explain it in the following:
-    Let's say:
-        void (*my_func)(void)=func1;
-     where "my_func" is a function pointer defined in kernel, and "func1" is
- a function(void func1(void)) implemented in kernel.And "my_func" is an
- EXPORTED SYMBOL in mips_ksyms.c.
+I am attempting to compile X using egcs-2.91.66 and I
+am getting the following warnings which eventually
+lead to the build failing.
 
-    Now I want to replace "func1" with my own "func2" in a module
- my_module.o:
-     extern void (*my_func)(void);
-     my_func = func2;
-     where "func2" is a function (void fun2(void)) implemented in
- "my_module.o".
+ #warning "Macro _MIPS_ISA has not been defined by
+specs file"
+../../../../config/makedepend/makedepend: warning: 
+vga.c: 24: #warning "Macro _MIPS_SIM has not been
+defined by specs file"
+../../../../config/makedepend/makedepend: warning: 
+vga.c: 28: #warning "Macro _MIPS_SZINT has not been
+defined by specs file"
+../../../../config/makedepend/makedepend: warning: 
+vga.c: 32: #warning "Macro _MIPS_SZLONG has not been
+defined by specs file"
+../../../../config/makedepend/makedepend: warning: 
+vga.c: 36: #warning "Macro _MIPS_SZPTR has not been
+defined by specs file"
+../../../../config/makedepend/makedepend: warning: 
+vga.c: 44: #warning "Please update your GCC to GCC
+2.7.2-4 or newer"
 
-     If I do "insmod my_module.o", the kernel should run OK. In fact, it is
- often met an "unhandled kernel unaligned access" or "do_page_fault"
- exception and then panics.
+I have previously successfully compiled X using
+egcs-2.90.29.
 
-     We know "func1" should be in KSEG0(unmapped , cached) ,So it's address
-should be 0x8XXXXXXX.And "my_func" should also pointed to this same address
-before inserting
- my_module.o.  "func2" should be in KSEG2(mapped, cached) since it is
- implemented in module, So it's address should be 0xCXXXXXXX.After inserting
- my_module.o, "my_func" should be changed to pointed to this new address in
- KSEG2. But kernel panics......
-    If I change "module_map()" in include/asm/module.h from vmalloc to
-kmalloc, kernel runs ok after inserting my module. So I think vmalloc may
-have some bugs.
+Could someone tell me what I may be doing wrong ?
+Or what I need to pas into the compiler in order for
+it to read the specs file correctly.
 
-    Anyone knows how to fixup it?
+Would also be grateful if someone could point to me a
+document or something explaining what the specs file
+is and how it is used. By looking at it, I figure it
+to be a file that sets integer lengths, procesor type
+etc. But it sure would be nice to get a bigger picture
+explanation.
 
-    machael
+TIA
+
+Wayne
+
+__________________________________________________
+Do You Yahoo!?
+Find a job, post your resume.
+http://careers.yahoo.com

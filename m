@@ -1,8 +1,8 @@
-Message-ID: <030801c29bea$e91d76b0$10eca8c0@grendel>
+Message-ID: <009d01c29c40$85ccd9b0$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20021203224504.B13437@mvista.com> <007501c29b78$f34680e0$10eca8c0@grendel> <20021204135950.T4363@mvista.com>
+References: <20021203224504.B13437@mvista.com> <007501c29b78$f34680e0$10eca8c0@grendel> <3DEDD414.3854664F@mips.com> <20021204141900.U4363@mvista.com>
 Subject: Re: possible Malta 4Kc cache problem ...
-Date: Thu, 5 Dec 2002 00:14:18 +0100
+Date: Thu, 5 Dec 2002 10:27:10 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -10,34 +10,45 @@ Content-Transfer-Encoding: 7bit
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Jun Sun <jsun@mvista.com>
+To: Jun Sun <jsun@mvista.com>, Carsten Langgaard <carstenl@mips.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20021204231418.fbhO3stCoSflaZcx8oEiuia0ejivQ_cE2oPXetI59gU@z>
+Message-ID: <20021205092710.CgnmKI_U2squbk4jIo9BFPgtp1EdWjSCh7MonrRB9LI@z>
 
-> On Wed, Dec 04, 2002 at 10:38:36AM +0100, Kevin D. Kissell wrote:
-> > 
-> > Which version of the 4Kc manual are you looking at?  I'm looking
-> > at a very recent version of the 4Kc Software User's Manual
-> > (version 1.17, dated September 25, 2002), and it only shows
-> > Hit_Writeback_D to be invalid for *secondary and teritary*
-> > caches, which makes sense, since the 4KSc doesn't have any.
+> On Wed, Dec 04, 2002 at 11:08:20AM +0100, Carsten Langgaard wrote:
+> > I have just tried your test on a 4Kc and I see no problems.
+> > However I'm running on our internal kernel sources, and as Kevin mention we have
+> > changed a fixed a few things in this area.
+> > As Kevin also mention it sure look more like a I-cache invalidation problem,
+> > rather than a D-cache flush problem, as the 4Kc has a write-through cache.
+> > One think you could try, is our latest kernel release. You can find it here:
+> > ftp://ftp.mips.com/pub/linux/mips/kernel/2.4/images/
 > >
 > 
-> I was looking at rev 1.12, Jan 3, 2001.
+> Yes, the problem still exists with this kernel.
 > 
-> Good to know that 4K family does have Hit_WRiteback_D.  However,
-> since it is "recommanded" instead of "required".  Shouldn't we
-> still use "Hit_Writeback_Inv_D" just to be on the safe side?
+> Try to move the source tree to /root/, rename top dir to "try18", 
+> re-make the binary, and try again.
+> 
+> This problem is tricky to reproduce.  The location of the tree
+> definitely matters.  I am testing 32bit LE version.  Have not
+> tried BE.
+> 
+> I think I have pinned down the problem.  See my other follow-up posting.
 
-Pardon me, but I thought that you were talking about 
-hit-writeback-invalidates to begin with.  Indeed, I had
-thought that we had organized things so that Linux always
-did writeback-invalidates and never simple writebacks,
-just to be on the safe side, as you say, but tampoline code 
-is a special case where I can see no possible multiprocessor 
-coherence issues with failing to invalidate the local Dcache 
-copy. In any case, it would  be100% correct for a pure 
-"hit writeback" to be a no-op on a write-through cache, 
-since there is never anything dirty to write back.
+Your results are certainly interesting and suspicious.
+Before I take it up with the designers as a possible
+hardware bug, I would really like to know if there
+is more than one chip which exhibits this behavior.
+In principle, it *could* be a manufacturing defect.
+And while I acknowledge that your trace info
+would seem to argue on the face of it that the
+hardware didn't do what it should have done,
+there is a remarkable similarity between what
+you report and something that Carsten saw on
+a couple of completely different CPUs a week
+or two ago, which makes me wonder if there isn't
+still some subtle software failure behind all this.
+Thank you very, very, much for digging into
+this as deeply as you have.
 
             Kevin K.

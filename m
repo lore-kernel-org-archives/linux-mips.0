@@ -1,35 +1,47 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199705301438.QAA18776@informatik.uni-koblenz.de>
+Message-ID: <199705301513.RAA23721@informatik.uni-koblenz.de>
 Subject: Re: userland cometh
-Date: Fri, 30 May 1997 16:38:49 +0200 (MET DST)
-In-Reply-To: <199705301346.JAA12694@neon.ingenia.ca> from "Mike Shaver" at May 30, 97 09:46:33 am
+Date: Fri, 30 May 1997 17:13:52 +0200 (MET DST)
+In-Reply-To: <Pine.LNX.3.95.970530105637.10806A-100000@lager.engsoc.carleton.ca> from "Alex deVries" at May 30, 97 11:02:49 am
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>
-Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
-Message-ID: <19970530143849.fwu6rriZQMX6FJlR7MRw6vjfZOEfHNEcnBYlFDqNlEk@z>
+To: Alex deVries <adevries@engsoc.carleton.ca>
+Cc: shaver@neon.ingenia.ca, ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
+Message-ID: <19970530151352.W55EnL0eVYSFA0jqyeUGwC6m7kipAeen1C1nDFxBSyM@z>
 
 Hi,
 
-> Thus spake Ralf Baechle:
-> > Take a look at the little endian RPM packages I've published on
-> > kernel.panic.julia.de.  All these packages were build from the vanilla
-> > SRPM packages on the RedHat 4.1 package.
+> > Actually, I think it'll be my cohort Alex who'll be building most of
+> > them.  He likes RPM in a way that's a little frightening (hi, Alex!). =)
 > 
-> Yeah, yeah... =)
+> I am, yes, sitting on the edge of my seat for Mike to get the network
+> working so I can have access to the machine.  Mike's working on the
+> network now to stop my endless pestering.
 > 
-> Once I get a natively-hosted compiler working, I'll be cranking out
-> RPMs[*].  In the meantime, convincing some of those packages to
-> cross-compile is pretty interesting.  Lots of post-./configure
-> Makefile munging with perl and the like.
+> The priority will be getting rpm itself to compile properly, although I
+> don't anticipate any huge problems.  I just need to tell it that
+> Linux/mips exists, I suspect.
 
-Urgs...  Easier solution - in most cases running configure on a Intel
-or even better Sparc Linux machine does the right thing.  Or even
-better - you can save the generated config.cache files and feed them
-into future runs of autoconf generated configure scripts.  I used these
-two techniques to get my MIPS stuff crosscompiled.
+This and another one or two minor patches were required to make rpm
+build on my machine.
+
+> There's a large lump of joy in knowing that gcc/libc etc work properly.
+> The rest is easy.
+
+Trying to build and use a distribution will help us alot to find the bugs.
+
+> > I can imagine.  I'm not looking to be a distribution (yet). =)
+> 
+> I suspect if we do a good enough job of porting the bulk of the RPMS that
+> RedHat will take the effort seriously.  There'll be a lot of RPMs to port,
+> though... 
+
+Most of the changes we need to do are already covered by some other patch
+files in the SRPMs.  For example many packages already contain GNU libc
+patches; in some packages the GNU libc patches are disguised as Alpha
+patches.  And GNU libc patches are 90% of what we need to patch.
 
   Ralf

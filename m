@@ -1,58 +1,28 @@
-Message-ID: <0c0801bfe3b3$62fde200$0a00000a@decoy>
-From: "Jay Carlson" <nop@nop.com>
-References: <NAENLMKGGBDKLPONCDDOEEOGCOAA.mailinglist@ichilton.co.uk>
-Subject: Re: Status reports?
-Date: Sat, 1 Jul 2000 19:23:18 -0400
+Subject: Re: errno assignment in _syscall macros and glibc
+Date: Mon, 3 Jul 2000 14:45:58 +0100 (BST)
+In-Reply-To: <073a01bfe29c$00995e90$0a00000a@decoy> from "Jay Carlson" at Jun 30, 2000 10:03:41 AM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <E1396Xy-0004hz-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ian Chilton <mailinglist@ichilton.co.uk>, "Linux-Mips Mailing List (Old)" <linux-mips@fnet.fr>, Linux-MIPS Mailing List <linux-mips@oss.sgi.com>, richardh@penguin.nl, watkinse@attens.com, Jay Carlson <nop@place.org>, Ralf <ralf@gnu.org>
-Message-ID: <20000701232318.RGwvMRKEigXfY-_WdUy3t5f1g6A9fBoEFD5ImiuWo3g@z>
+To: Jay Carlson <nop@nop.com>
+Cc: Ralf Baechle <ralf@oss.sgi.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Andreas Jaeger <aj@suse.de>, Mike Klar <mfklar@ponymail.com>, linux-mips@oss.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <20000703134558.LeQ5NMSvvKxd33ZTYNfSbO8eFcYPrO-PEkxxzYtZRNE@z>
 
-"Ian Chilton" <mailinglist@ichilton.co.uk> writes:
+> Does newlib work under Linux?  I thought it was missing (for example) t=
+> he
+> syscalls, and generally needed work to be ported to Linux.  I'm interes=
 
-> * Not everything that happens on IRC is appropriate for the mailing list,
-> otherwise it would be a very high volume list.
+You would need to add the syscalls yes. Also the Cygnus^WRed Hat folks tell
+me that the eCos libc is built from and replaces newlib.
 
-Yeah.
+> *BSD libc has been suggested by a few people.
 
-> * The problem is, most of the people on the port and in #mipslinux are
-> developers, who are working on the ports, but have no time for
-> documentation.  Which is best, a port that is dead with loads of
-> documentation, or an active / up-to-date / working port with little
-> documentation.
+Good idea - how does it compare ?
 
-There's a need for high quality documentation, but I think there's a greater
-need for just little status reports.  Writing good documents is *hard*, but
-just little one-paragraph summaries, like a project diary, would be a
-wonderful service to the community.
-
-OTOH, although the current situation annoys me a little, it would annoy me a
-lot more if upstream work on mipslinux stopped.  :-)  So please don't take
-anything this list says about this as a demand.
-
-> I agree that the documentation is sparce, and see the above issues. That
-is
-> why, I am *thinking* of and suggesting to some of the guys that I, at
-least
-> for now, maintain a site with
-> * News from #mipslinux
-> * Links to current resources
-> * Possibly some documentation
-
-Doesn't have to be very heavyweight to be successful.
-
-> If you have any chance at all, I suggest you stop by #mipslinux at
-> times....all you need is an internet connection and one of the many IRC
-> clients...
->
-> Details are:
-> /server irc.openprojects.net         (port 6667)
-> /join #mipslinux
-
-I'll drop by soon.
-
-Jay
+> Jay
+> 
+> 

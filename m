@@ -1,30 +1,83 @@
-Message-ID: <04c901c1d20d$bfb061e0$5601010a@prefect>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <1016845916.24217.298.camel@zeus>
-Subject: Re: [Linux-mips-kernel]io.h patch
-Date: Fri, 22 Mar 2002 20:55:02 -0500
+From: "Y.H. Ku" <iskoo@ms45.hinet.net>
+Subject: RE: BootLoader on MIPS
+Date: Sat, 23 Mar 2002 16:42:41 +0800
+Message-ID: <NGBBILOAMLLIJMLIOCADAELACCAA.iskoo@ms45.hinet.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
+	charset="big5"
+In-Reply-To: <25369470B6F0D41194820002B328BDD2195BD9@ATLOPS>
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Pete Popov <ppopov@mvista.com>, linux-mips@oss.sgi.com
-Message-ID: <20020323015502.ENZ5iNPy9F8_BSlYkucuPaKtIXPuIkht3f-uHJKZ058@z>
+To: Marc Karasek <marc_karasek@ivivity.com>, linux-mips@oss.sgi.com
+Message-ID: <20020323084241.FkCXKzuo6599hFd_izS9wnSH_UEqyaHRgjbmARgiWfI@z>
+
+Hi everybody,
+
+I trace PMON into mips.S, and find the entry "_go".
+the entry transfer control to client prog.
+
+I am confused of what information PMON transfer to MIPS's BOOTLOADER
+and transfer to which entry point of BOOTLOADER.
+
+I found the bd_t struct of PPCBOOT.h for PPCBOOT package on POWERPC platform.
+It is corresponding POWERPC-LINUX data structure bd_info in ~/include/asm/mbx.h 
+(register r3~r7)
+
+I just can not find the entry for MIPS's one. (can not find corresponding baget.h's one)
+
+Could anybody tell me what is the information (register inforation) PMON transfer
+to bootloader?
+
+Or anybody can disscuss with me,
+
+best regards,
+--sam
+
+-----Original Message-----
+From: owner-linux-mips@oss.sgi.com
+[mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Marc Karasek
+Sent: Friday, March 22, 2002 9:21 PM
+To: 'Y.H. Ku'; linux-mips@oss.sgi.com
+Subject: RE: BootLoader on MIPS
 
 
------ Original Message -----
-From: "Pete Popov" <ppopov@mvista.com>
-To: "sforge" <linux-mips-kernel@lists.sourceforge.net>
-Sent: Friday, March 22, 2002 8:11 PM
-Subject: [Linux-mips-kernel]io.h patch
+YAMON is prob the default right now.  It has support for loading a kernel
+over tftp.  
+
+I do not think it is OS though.  I maybe wrong, I will have to check the
+source I have to see if it is or not.  I am currently adding  BOOTP support
+to it, along with some other options.  If it is OS, then I will be providing
+these back to the community.
+
+/*******************************************
+Marc Karasek
+Sr. Firmware Engineer
+iVivity Inc.
+Ph: 678-990-1550 x238
+Fax: 678-990-1551
+email: marc_karasek@ivivity.com
+/*******************************************
 
 
-> Some of the macros in io.h cause compile problems in some of the drivers
-> because of the do while syntax.  I don't see any good reason why we
-> can't make those macros inline functions.  Any objections to this patch?
+-----Original Message-----
+From: Y.H. Ku [mailto:iskoo@ms45.hinet.net]
+Sent: Friday, March 22, 2002 3:16 AM
+To: linux-mips@oss.sgi.com
+Subject: BootLoader on MIPS
 
-I pester Ralf about this from time to time.  The standing objection is that
-some older gccs don't do inline well.
 
-Regards,
-Brad
+Hello there,
+
+I am trying to porting Prom monitor code to
+appropriate MIPS bootloader for loading Linux kernel
+
+I ever make a test sucessfully with ppcboot's to load MBXloader
+for transfering control to linux kernel (hardhat).
+
+But I can not find the entry, and make decision what kind of BOOT LOADER
+to use on MIPS platform.
+
+I have the ddb5476 board type linux from montavista,
+Could anybody give me some suggestion?
+
+--Sam

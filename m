@@ -1,38 +1,58 @@
-Message-ID: <00f001bf73d4$4b5f21d0$0ceca8c0@satanas.mips.com>
+Message-ID: <022301bf7730$92b87180$0ceca8c0@satanas.mips.com>
 From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: Re: Enhanced 2.2.12 MIPS Kernel Sources  Available
-Date: Thu, 10 Feb 2000 15:36:55 +0100
+Subject: Re: Indy crashes
+Date: Mon, 14 Feb 2000 22:15:02 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="koi8-r"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: "Gleb O. Raiko" <raiko@niisi.msk.ru>
-Cc: linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr
-Message-ID: <20000210143655.Qi7Q8mqd6fJtgou5yRVoA3zTikAhcuxL1IeX8wHB184@z>
+To: geert@linux-m68k.org, Ralf Baechle <ralf@oss.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <20000214211502.AGVBSaAJDJq1Yr6aISBC8FHXzj-hSKg_G7bJg1HGHd4@z>
 
->It'll be great if you would put just patches too. I guess, it'll be easy
->for us to look through set of patches instead of downloading entire
->2.2.12 and making diff -ruN on it. Then, there might be a core patch
->that decribes changes in machine independent part of the kernel and the
->rest might cover specific boards. Most of developers here will be
->interested in the core patch, I guess.
+>On Thu, 3 Feb 2000, Ralf Baechle wrote:
+>> Today I exchanged the R5000 CPU module in my Indy against a R4600 module
+>> and found that on R4600SC the kernel runs reliable while it crashs pretty
+>> soon after booting on a R5000SC module.  This is consistent with the
+>> reports that I've looked at.
+>
+>That could explain the crashes I see on the DDB Vrc-5074 as well, which has a
+>NEC VR5000.
+>
+>I'll try to fix the bootmem stuff ASAP and upgrade to 2.3.38.
 
 
-OK, there is now a patch file available on the Paralogos site
-(http://www.paralogos.com/mipslinux/) with the deltas relative
-to the kernel.org 2.2.12 distribution.  It covers the whole kernel
-tree - I don't think I can reasonably decompose the changes
-without introducing a gratuitous opportunity to generate bugs.
+The problem may be in the assumption made even in the
+most recent 2.3.x code that a hit-writeback-invalidate cache
+operation on the secondary cache automagically affects the
+primary.  That's the way it is on the R4000/4400, but that's
+not the way the R5000 is specified.  So rather than set
+dma_cache_wback_inv to r4k_dma_cache_wback_inv_sc
+or r4k_dma_cache_wback_inv_pc, depending on the
+presence or absence of a primary cache,  in the MIPS 
+Technologies I bound it to a function:
 
-            Happy hacking,
+static void
+r4k_dma_cache_wback_inv(unsigned long addr, unsigned long size)
+{
+        r4k_dma_cache_wback_inv_pc(addr, size);
+        if(sc_present) r4k_dma_cache_wback_inv_sc(addr, size);
+}
+
+However, I have not had the opportunity to test this code on
+an R5000SC platform.   Looking at the R5000 spec, it is a
+little ambiguous.  The special case of sc HWIs affecting
+the primary isn't there, but then again sc HWIs aren't even
+called out in the table of defined cache operations.  Indeed,
+one *could* interpret the spec to mean that HWI on the 
+*primary* flushes the secondary, the reverse of the R4000,
+but it's by no means clear.   Thus I suggest hitting 'em both.
+
+Does anybody on this list have an R527x manual?   How
+is HWI of the primary/seconday caches defined there?
+
+            Regards,
 
             Kevin K.
-__
-
-Kevin D. Kissell
-MIPS Technologies European Architecture Lab
-kevink@mips.com
-Tel. +33.4.78.38.70.67
-FAX. +33.4.78.38.70.68

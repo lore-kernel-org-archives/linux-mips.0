@@ -1,33 +1,35 @@
-Message-ID: <022d01c0922f$c91ccd00$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <0101261750492Y.00834@plugh.sibyte.com><Pine.GSO.3.96.1010127084850.29150E-100000@delta.ds2.pg.gda.pl><20010127110106.F867@bacchus.dhis.org> <u8itmz28nk.fsf@gromit.rhein-neckar.de>
+Date: Thu, 8 Feb 2001 18:00:25 -0800
+From: Ralf Baechle <ralf@oss.sgi.com>
 Subject: Re: GDB 5 for mips-linux/Shared library loading with new binutils/glibc
-Date: Fri, 9 Feb 2001 01:31:12 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <20010208180025.A4031@bacchus.dhis.org>
+References: <0101261750492Y.00834@plugh.sibyte.com><Pine.GSO.3.96.1010127084850.29150E-100000@delta.ds2.pg.gda.pl><20010127110106.F867@bacchus.dhis.org> <u8itmz28nk.fsf@gromit.rhein-neckar.de> <022d01c0922f$c91ccd00$0deca8c0@Ulysses>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <022d01c0922f$c91ccd00$0deca8c0@Ulysses>; from kevink@mips.com on Fri, Feb 09, 2001 at 01:31:12AM +0100
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>, Andreas Jaeger <aj@suse.de>
-Cc: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Justin Carlson <carlson@sibyte.com>, linux-mips@oss.sgi.com
-Message-ID: <20010209003112.uOvsp6LU9gtmwpNELxGF9EY-yXDcZZ_zpoEgEKemc4o@z>
+To: "Kevin D. Kissell" <kevink@mips.com>
+Cc: Andreas Jaeger <aj@suse.de>, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Justin Carlson <carlson@sibyte.com>, linux-mips@oss.sgi.com
+Message-ID: <20010209020025.V-AUg78Kb3fLFlc_bqf-2RZscZ-OR0BB9Xj4IniyWXw@z>
 
-> > The only people who have contributed amounts of code large enough for
-the
-> > FSF to requires an assignment are David Miller (davem@redhat.com) and
-> > myself.  I've already signed an assignment with the FSF and I'm also
-sure
-> > David has.  I btw. cannot remember having seen any mail from you
-regarding
-> > copyright assignments of GDB.
->
-> David has only disclaimers for Binutils and GCC but not for GDB in the
-> FSF list.
+On Fri, Feb 09, 2001 at 01:31:12AM +0100, Kevin D. Kissell wrote:
 
-I asked MIPS' contacts with Red Hat to look into this, and
-there was, apparently, some confusion as to whether GDB
-was covered under a blanket assignment.  It's being taken
-care of.
+> > > The only people who have contributed amounts of code large enough for
+> > > the FSF to requires an assignment are David Miller (davem@redhat.com)
+> > > and myself.  I've already signed an assignment with the FSF and I'm
+> > > also sure David has.  I btw. cannot remember having seen any mail from
+> > > you regarding copyright assignments of GDB.
+> >
+> > David has only disclaimers for Binutils and GCC but not for GDB in the
+> > FSF list.
+> 
+> I asked MIPS' contacts with Red Hat to look into this, and
+> there was, apparently, some confusion as to whether GDB
+> was covered under a blanket assignment.  It's being taken
+> care of.
 
-            Kevin K.
+This code was written in '96 during David's time as a SGI intern, so that's
+probably not covered.
+
+  Ralf

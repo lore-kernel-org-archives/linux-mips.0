@@ -1,42 +1,71 @@
-Message-ID: <012b01bfaaeb$27911800$0ceca8c0@satanas.mips.com>
+Message-ID: <000d01bfad56$7541c320$0ceca8c0@satanas.mips.com>
 From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: Re: Should send SIGFPE to .*
-Date: Thu, 20 Apr 2000 19:09:07 +0200
+Subject: Re: /usr/include/asm/io.h:308: undefined reference to `mips_io_port_base'
+Date: Sun, 23 Apr 2000 21:02:14 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Florian Lohoff <flo@rfc822.org>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <20000420170907.Epyj8-LBkRBumJLDzvhPJajCNikXTmQzKfarTcMQpPA@z>
+To: Florian Lohoff <flo@rfc822.org>, linux@cthulhu.engr.sgi.com
+Message-ID: <20000423190214.v_NmvGjYWHH7kgNNGCACw57vMPktdfCjtDQxYwDaXCU@z>
 
->> if it was actually a problem), and as such the force_sig() should
->> use the value returned by compute_return_epc() as the signal
+>Hi,
+>i am trying to build "pileup" which is a "SoundBlaster" morse trainer.
+>As it directly accesses hardware it seems to include some files which
+>aehm - dont seem to work for userspace :)
 >
->I dont think compute_return_epc returns a signal value.
+>Does someone have an idea what goes wrong here ?
 
-Oops.  You're right.  It returns -EFAULT.  And it handles
-the signal propagation all by its lonesome, so nothing
-further needs to be done if it failed.
+Sure.  The "IN" and "OUT" macros used to simulate x86
+I/O instructions operating on ISA I/O space use
+mips_io_port_base as the base address for the
+memory-mapped I/O access to "non memory-mapped I/O"
+(in the PC sense) addresses.  Since MIPS platforms don't
+always have the same address space layout as a standard PC,
+mips_io_port_base is not a constant, but a variable declared
+in arch/mips/kernel/setup.c and initialized (if a non-zero value
+is required) in the platform setup code.
 
->> I was going to make another cleanup pass over traps.c this
->> week, so it looks like you've found me another nit to excise.
->> (Although we've got the full-blown Algorithmics emulator
->> in our source base - coming soon to a repository near you -
->> we kept the old stuff around for people wanting to build for
->> a minimal footprint).
+So arguably, what you need to do to make those macros
+work in user mode, is to have some kind of library module
+that you can link into the application that contains a declaration
+of mips_io_port_base, initialized to the correct value for
+your platform.
+
+>[...]
+>make CFLAGS="-O2 -g -Wall -D_REENTRANT"
+>make[1]: Entering directory `/home/builder/build/pileup-1.1'
+>gcc -O2 -g -Wall -D_REENTRANT -c  AdLib.c
+>gcc -O2 -g -Wall -D_REENTRANT -c pileup.c
+>gcc -O2 -g -Wall -D_REENTRANT -o pileup pileup.o AdLib.o -lm -lpthread
+>pileup.o: In function `stop_thread':
+>/home/builder/build/pileup-1.1/pileup.c:229: undefined reference to `ioperm'
+>/home/builder/build/pileup-1.1/pileup.c:230: undefined reference to `ioperm'
+>pileup.o: In function `start_thread':
+>/home/builder/build/pileup-1.1/pileup.c:289: undefined reference to `ioperm'
+>/home/builder/build/pileup-1.1/pileup.c:290: undefined reference to `ioperm'
+>pileup.o: In function `main':
+>/home/builder/build/pileup-1.1/pileup.c:625: undefined reference to `ioperm'
+>pileup.o:/home/builder/build/pileup-1.1/pileup.c:626: more undefined references
+to `ioperm' follow
+>AdLib.o: In function `wr_register':
+>/usr/include/asm/io.h:308: undefined reference to `mips_io_port_base'
+>/usr/include/asm/io.h:304: undefined reference to `mips_io_port_base'
+>/usr/include/asm/io.h:304: undefined reference to `mips_io_port_base'
+>AdLib.o: In function `AdLib_found':
+>/usr/include/asm/io.h:304: undefined reference to `mips_io_port_base'
+>AdLib.o: In function `ºm\*ºm\und':
+>/usr/include/asm/io.h:304: undefined reference to `mips_io_port_base'
+>make[1]: *** [pileup] Error 1
+>make[1]: Leaving directory `/home/builder/build/pileup-1.1'
+>make: *** [build] Error 2
+>[...]
 >
->How much is the full emulator as binary ?
-
-About 47Kbytes, I'm afraid.
-
-
-__
-
-Kevin D. Kissell
-MIPS Technologies European Architecture Lab
-kevink@mips.com
-Tel. +33.4.78.38.70.67
-FAX. +33.4.78.38.70.68
+>Flo
+>--
+>Florian Lohoff flo@rfc822.org       +49-subject-2-change
+>"Technology is a constant battle between manufacturers producing bigger and
+>more idiot-proof systems and nature producing bigger and better idiots."
+>

@@ -1,20 +1,28 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199706031834.UAA03009@informatik.uni-koblenz.de>
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199706031848.OAA26387@neon.ingenia.ca>
 Subject: Re: The Plan For Userland(tm)
-Date: Tue, 3 Jun 1997 20:34:33 +0200 (MET DST)
-In-Reply-To: <199706021821.OAA12315@neon.ingenia.ca> from "Mike Shaver" at Jun 2, 97 02:21:47 pm
+In-Reply-To: <199706031834.UAA03009@informatik.uni-koblenz.de> from Ralf Baechle at "Jun 3, 97 08:34:33 pm"
+Date: Tue, 3 Jun 1997 14:48:16 -0400 (EDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>
+To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970603183433.PJQ0kWi-7RHFAsNVITuCUu1ZjIvvMDgSB2f4y0u6yQk@z>
+Message-ID: <19970603184816.9CSrLHh8qEzTbosIezX-ocs_c_9m3C7wz7w6QOCCbuw@z>
 
-Mike,
+Thus spake Ralf Baechle:
+> btw, if you feel like it you could try if you can build Perl.  I also
+> don't yet have Pearl but many important packages depend of it.
 
-btw, if you feel like it you could try if you can build Perl.  I also
-don't yet have Pearl but many important packages depend of it.
+I'll trade you for bash and procps.
 
-  Ralf
+Mike
+
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>       Chief System Architect -- Head geek -- System exorcist        
+#>                                                                     
+#>   "Have you considered a life?  I hear they're quite affordable     
+#>          these days." --- shields@tembel.org                        

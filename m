@@ -1,30 +1,59 @@
-Received: from lahoo.priv ([69.40.149.179]) by ispmxmta09-srv.alltel.net
-          with ESMTP
-          id <20050315140408.SLWN4937.ispmxmta09-srv.alltel.net@lahoo.priv>
-          for <linux-mips@linux-mips.org>; Tue, 15 Mar 2005 08:04:08 -0600
-Received: from [10.1.1.128] (helo=prefect)
-	by lahoo.priv with smtp (Exim 4.44)
-	id 1DBCYq-0002pN-2B
-	for linux-mips@linux-mips.org; Tue, 15 Mar 2005 08:58:16 -0500
-Message-ID: <006601c52967$94040970$8001010a@prefect>
-From: "Bradley D. LaRonde" <brad@laronde.org>
-Subject: Tabs in message headers?
-Date: Tue, 15 Mar 2005 09:01:38 -0500
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
-Return-Path: <brad@laronde.org>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: [patch] arch/mips/au1000/common/time.c
+Date: Fri, 18 Mar 2005 17:13:12 -0800
+Message-ID: <BBB228F72FF00E4390479AC295FF4B350DE933@FOOTHILL.iad.idealab.com>
+From: "Joseph Chiu" <joseph@omnilux.net>
+Return-Path: <joseph@omnilux.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20050315140138.KsfpIqKjFcUj1W_T8u3BPu1aMMD8yqNGvHukxGVpjzY@z>
+To: linux-mips@linux-mips.org, "Ralf Baechle (E-mail)" <ralf@linux-mips.org>
+Message-ID: <20050319011312.iJ8oSpU_YdrvBVKlK7bBMm1ZwkiIM29hA75e31AjfyU@z>
 
-Did messages from the list all of a sudden get tabs (instead of spaces) in 
-the message headers?  Had to adjust my (probably too specific) procmail 
-rule.
+Hi,
 
-Regards,
-Brad 
+I reported on this a few years ago on 2.4.18, but it never seemed to have been addressed...
+
+in linux/arch/mips/au1000/common/time.c, mips_timer_interrupt calls irq_enter() *before*
+checking if (r4k_offset == 0), and then exits the interrupt without calling irq_exit().
+
+This problem was crashing our boards in some test cases...  Please apply.
+
+Thanks,
+Joseph
+
+----
+
+RCS file: /mnt/cvs/kernel-2.6/arch/mips/au1000/common/time.c,v
+retrieving revision 1.1.1.1
+diff -c -r1.1.1.1 time.c
+*** time.c	13 Mar 2005 08:19:05 -0000	1.1.1.1
+--- time.c	19 Mar 2005 01:04:19 -0000
+***************
+*** 86,96 ****
+  	int irq = 63;
+  	unsigned long count;
+  
+- 	irq_enter();
+- 	kstat_this_cpu.irqs[irq]++;
+- 
+  	if (r4k_offset == 0)
+  		goto null;
+  
+  	do {
+  		count = read_c0_count();
+--- 86,96 ----
+  	int irq = 63;
+  	unsigned long count;
+  
+  	if (r4k_offset == 0)
+  		goto null;
++ 
++ 	irq_enter();
++ 	kstat_this_cpu.irqs[irq]++;
+  
+  	do {
+  		count = read_c0_count();

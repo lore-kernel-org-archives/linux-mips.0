@@ -1,64 +1,43 @@
-Received: from mercure.tranzyme.com (dcsher01.tranzyme.com [192.168.1.3])
-	by neptune.tranzyme.com (8.12.10/8.12.10) with ESMTP id i5LDA9CO022607
-	for <linux-mips@linux-mips.org>; Mon, 21 Jun 2004 09:10:10 -0400
-Content-class: urn:content-classes:message
+Reply-To: <a.voropay@vmb-service.ru>
+From: "Alexander Voropay" <a.voropay@vmb-service.ru>
+Subject: Howto run Linux on ACER PICA 61
+Date: Tue, 22 Jun 2004 20:23:57 +0400
+Message-ID: <01d701c45875$5205b460$0200000a@ALEC>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: Linux on O2
-Date: Mon, 21 Jun 2004 09:10:15 -0400
-Message-ID: <C94F931D92788D4EBD498B740AA5F7E106B0AB@dcsher01.tranzyme.com>
-From: "Yanick Quirion" <YQuirion@tranzyme.com>
-Return-Path: <YQuirion@tranzyme.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-Path: <a.voropay@vmb-service.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040621131015.HdEB4rJeIvg7nKpStZrB8YmsLsEpNRk-ngo2zMZYzPg@z>
+Message-ID: <20040622162357.Q3eSVSrtEpEkD9JuWIAi3DyFwpm6LVLh37aw6l5nfkc@z>
 
-Dear all,
+Hi!
 
-I want to install linux on an SGI O2. Could you tell me if it's possible to install linux on this system:
+ I've just got (for free :) an ancient MIPS ACER PICA 61 motherboard.
 
-CPU: MIPS R12000 Processor Chip Revision: 2.3
-FPU: MIPS R12010 Floating Point Chip Revision: 0.0
-1 300 MHZ IP32 Processor
-Main memory size: 384 Mbytes
-Secondary unified instruction/data cache size: 1 Mbyte on Processor 0
-Instruction cache size: 32 Kbytes
-Data cache size: 32 Kbytes
-FLASH PROM version 4.17
-Integral SCSI controller 0: Version ADAPTEC 7880
-  Disk drive: unit 2 on SCSI controller 0
-  CDROM: unit 4 on SCSI controller 0
-Integral SCSI controller 1: Version ADAPTEC 7880
-On-board serial ports: tty1
-On-board serial ports: tty2
-On-board EPP/ECP parallel port
-CRM graphics installed
-Integral Ethernet: ec0, version 1
-Iris Audio Processor: version A3 revision 0
-Video: MVP unit 0 version 1.4
- with no AV Card or Camera.
-Vice: TRE
+ Can anyone help/guide me to run Linux-MIPS on this machine ?
+Is it still possible to run Linux on this architecture ?
+
+ The motherboard is old (~1993) and it is very difficult to find
+any documentations... AFAIK, this is version of ARC MIPS.
+(mipsel)
 
 
-If it's possible, where I can get cdrom ISO's?
+ This is Full-size AT board, AT power supply, 5 ISA slots, 8 SIMM
+slots. The CPU is PACEMIPS R4000-50Mhz (x2=100 internal ???) by
+Performance Semiconductor Corp.. NatSemi Ethernet/AUI onboard.
+No IDE connector. One additional slot is not ISA, but maked as
+IO an contains SCSI/Floppy/Serial/Perallel/Mice card. Another slot
+is like reversed EISA (double) and marked as VIO (locabus video?).
+Unfortunately, the original videocard is lost. :( However it works fine
+with old CirrusLogic VGA card in ISA slot (old ISA Trident 8900/9000
+does not works).
 
-Thank you
 
-Regards,
-_______________
-Yanick Quirion
-Network & System Administrator
-Tranzyme Pharma Inc.
- 
-(819) 820-6840 (phone)
-(819) 820-6855 (direct)
-(819) 820-6841 (fax)
-(819) 570-6855 (mobile)
- 
-YQuirion@tranzyme.com
-www.tranzymepharma.com
-www.tranzyme.com
- 
+
+
+St.Petersburg, Russia
+--
+-=AV=- 

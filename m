@@ -1,28 +1,158 @@
-content-class: urn:content-classes:message
-Subject: RE: User-mode drivers and TLB
-Date: Tue, 23 Sep 2003 09:41:24 -1000
-Message-ID: <DC1BF43A8FAE654DA6B3FB7836DD3A56DEB753@iris.adtech-inc.com>
+From: "Gill" <gill.robles@exterity.co.uk>
+Subject: Page fault question
+Date: Wed, 24 Sep 2003 08:36:38 +0100
+Message-ID: <000901c3826e$9703adc0$4300a8c2@gillpc>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-From: "Finney, Steve" <Steve.Finney@SpirentCom.COM>
-Return-Path: <Steve.Finney@SpirentCom.COM>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000A_01C38276.F8C815C0"
+Return-Path: <gill.robles@exterity.co.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Dominic Sweetman <dom@mips.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20030923194124.35t0AnDYo-tMuMy82xmbWf-VHmw2aGasBPab1U_ktfM@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030924073638.sIxu0n8b_N7r3NMpTfEG3guCw6E0uCjNYGPtSqIM9Qk@z>
 
-> 
-> Most MIPS CPU hardware allows you to map large chunks of memory with a
-> single TLB entry: often up to 16Mbytes at a time.  But I don't know
-> how you'd persuade Linux how to do that.
-> 
-> --
-> Dominic Sweetman
-> MIPS Technologies.
+This is a multi-part message in MIME format.
 
-Thanks: for what it's worth, the Broadcom/Sibyte apparently allows a TLB entry to map 128 MB (the max mapped size is 64 MB, but the TLB entries are paired). And supposedly the MIPS kernel tree was recently updated with some support for Linux to use wired TLB entries on the Broadcom, though I haven't tried this.
+------=_NextPart_000_000A_01C38276.F8C815C0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-sf
+Hello -
+
+=20
+
+I'm currently porting vmlinux from NEC's EMMA2L platform to EMMA2.  The
+problem I'm having is that linux hangs when it attempts to do its first =
+page
+fault: the page fault handler is successfully called, the call to
+handle_mm_fault returns 2 (major fault).but then code execution appears =
+to
+just stop.  Linux is not completely dead, however - it still responds to =
+a
+timer interrupt.
+
+=20
+
+As the code for handling page faults is standard code, and TLB hardware
+should be the same on EMMA2 as on EMMA2L (where it works!), I don't
+understand what's gone wrong!  Does anyone have any ideas?
+
+=20
+
+Thanks for your help,
+
+=20
+
+=20
+
+Gill
+
+
+------=_NextPart_000_000A_01C38276.F8C815C0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+
+
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-GB link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hello &#8211;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I&#8217;m currently porting vmlinux from NEC&#8217;s =
+EMMA2L
+platform to EMMA2.&nbsp; The problem I&#8217;m having is that linux =
+hangs when
+it attempts to do its first page fault: the page fault handler is =
+successfully
+called, the call to handle_mm_fault returns 2 (major fault)&#8230;but =
+then code
+execution appears to just stop.&nbsp; Linux is not completely dead, =
+however &#8211;
+it still responds to a timer interrupt.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>As the code for handling page faults is standard =
+code, and
+TLB hardware should be the same on EMMA2 as on EMMA2L (where it works!), =
+I don&#8217;t
+understand what&#8217;s gone wrong!&nbsp; Does anyone have any =
+ideas?</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks for your help,</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Gill</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_000A_01C38276.F8C815C0--

@@ -1,81 +1,82 @@
-Message-ID: <392B0FDD.D1AD619C@engr.sgi.com>
-Date: Tue, 23 May 2000 16:10:21 -0700
-From: Nancy Bigham <bigham@cthulhu.engr.sgi.com>
+From: "Eric Watkins" <watkinse@attens.com>
+Subject: RE: New mini-distribution/indigo2 monitor support
+Date: Wed, 24 May 2000 10:29:26 -0700
+Message-ID: <003001bfc5a5$9be16960$540ed7c0@hq.sd.cerf.net>
 MIME-Version: 1.0
-Subject: [Fwd: BOUNCE linux@relay.engr.sgi.com:    Non-member submission from
- [Andy Smith <abs@ummagumma.in2home.co.uk>]]
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <20000519154511.B21086@chem.unr.edu>
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: linux@cthulhu.engr.sgi.com
-Message-ID: <20000523231021.LIPm63RGlyR0X8dWo42LPi4kFgSGKoqziV74ZpIyXtE@z>
+To: Keith M Wesolowski <wesolows@chem.unr.edu>, linux@cthulhu.engr.sgi.com
+Message-ID: <20000524172926.HZjDIhk0jvdtYcIcapfqAKPZuHY4tLZEzdvSy-tgwPw@z>
+
+Hello,
+
+I noticed in your instructions that you suggest removing the framebuffer
+from the video card so the distribution will boot?
+
+QUOTE:
+"Note: If your system has an XZ framebuffer in it, you must remove it prior
+to booting and use a serial console instead. The XZ framebuffer will likely
+prevent your system from booting Linux even if you are not using it. "
+
+Are you suggesting that I remove the vid card?
+
+I'm trying to get my indigo2 to boot linux. Can you go into more detail on
+how to remove the framebuffer?
 
 
+For the rest of the list.. When will I be able to use these monitors? The
+monitor is almost the best part of the whole system. I've got PCs that will
+run rings around the indigo2 that don't have 21 inch monitors. It's not good
+to tell people 'Oh ya linux boots on that but then I have to use this dumb
+terminal to do anything.' At this point people start to laugh.
 
--------- Original Message --------
-Subject: BOUNCE linux@relay.engr.sgi.com:    Non-member submission from
-[Andy Smith <abs@ummagumma.in2home.co.uk>]
-Date: Tue, 23 May 2000 16:08:16 -0700 (PDT)
-From: owner-linux@cthulhu
-To: owner-linux@cthulhu
+When can I see X in all of it's glory on an indigo2?
 
-From owner-linux  Tue May 23 16:08:15 2000
-Received: from sgi.com (sgi.engr.sgi.com [192.26.80.37])
-	by cthulhu.engr.sgi.com (980427.SGI.8.8.8/970903.SGI.AUTOCF)
-	via ESMTP id QAA73053
-	for <linux@engr.sgi.com>;
-	Tue, 23 May 2000 16:08:14 -0700 (PDT)
-	mail_from (abs@ummagumma.in2home.co.uk)
-Received: from anchor-post-32.mail.demon.net
-(anchor-post-32.mail.demon.net [194.217.242.90]) 
-	by sgi.com (980327.SGI.8.8.8-aspam/980304.SGI-aspam:
-       SGI does not authorize the use of its proprietary
-       systems or networks for unsolicited or bulk email
-       from the Internet.) 
-	via ESMTP id QAA09201
-	for <linux@engr.sgi.com>; Tue, 23 May 2000 16:08:12 -0700 (PDT)
-	mail_from (abs@ummagumma.in2home.co.uk)
-Received: from maunsl00.demon.co.uk ([158.152.25.159]
-helo=ummagumma.in2home.co.uk)
-	by anchor-post-32.mail.demon.net with esmtp (Exim 2.12 #1)
-	id 12uNmO-0009Cf-0W
-	for linux@engr.sgi.com; Wed, 24 May 2000 00:08:06 +0100
-Received: (from abs@localhost) by ummagumma.in2home.co.uk (8.7.5/8.7.3)
-id AAA15777 for linux@engr.sgi.com; Wed, 24 May 2000 00:07:23 +0100
-(BST)
-Date: Wed, 24 May 2000 00:07:21 +0100
-From: Andy Smith <abs@ummagumma.in2home.co.uk>
-To: linux@engr.sgi.com
-Subject: new signon
-Message-ID: <20000524000721.L15875@ummagumma.in2home.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-X-Mailer: Mutt 0.95.4i
-Organization: Meadowlands
-X-Operating-System: SunOS 5.5.1 sun4c
+Thanks!
 
-Hi all,
-
-I've had an elderly Prime EXL at home for some time doing not very
-much, which I thought I might have some fun by trying to get some sort
-of linux os on it.  To my understanding the system is pretty much a
-relabeled Mips RC32x0 and currently has a running RISCos version 4_52.
-
-For what it's worth, my box uses a 3030 chip and was codenamed "Pizzaz"
-(I think).  It has an all-in-one motherboard with Lance ethernet, but
-neither a color nor mono video.  SCSI is done with a 53c94 hung off a
-"RAMBO" DMA controller.  /usr/include/sys/cpu_board.h says that the box
-is AKA an M20.
-
-Does anyone know of any resources or information where I could make a
-start?
-TIA
--- 
-  _          __         Siemens Buisiness Services Tel  : +44 2087
-603495
- /_|   _/   (  _  '_//  4th Floor, C Block,        Mob  : +44 7808
-824595
-(  |/)(/(/ __)//)/ //)  Whitgift Centre, Croydon   Email:
-a.b.smith@bigfoot.com
-        /               Surrey CR9 3LY England.
+> -----Original Message-----
+> From: owner-linux@cthulhu.engr.sgi.com
+> [mailto:owner-linux@cthulhu.engr.sgi.com]On Behalf Of Keith M Wesolowski
+> Sent: Friday, May 19, 2000 3:45 PM
+> To: linux@cthulhu.engr.sgi.com
+> Subject: New mini-distribution
+>
+>
+> Hi all,
+>
+> I got bored last week and put together a new mini-distribution for
+> SGIs. I know it works on Indigo2 at least. It's a lot smaller and has
+> some more up to date components than Hard Hat. Perhaps it would be a
+> good starting point for someone to use, or maybe it will be of no use
+> to anyone but me. :) Those interested can read a quick HOWTO at
+> http://foobazco.org/~wesolows/Install-HOWTO.html; the necessary files
+> are at ftp://ftp.foobazco.org/pub/people/wesolows/mips-linux/.
+>
+> Quick rundown:
+>
+> Kernel 2.2.14 from CVS
+> glibc 2.0.6 with patches
+> egcs 1.1.2 with patches
+> binutils 000425 with patches
+> bash 2.04
+> vim 5.6
+> barebones initscripts
+> miscellaneous useful software
+> NFS-based installation
+>
+> Plans:
+>
+> Not much. I will probably try to get gcc 2.96 and glibc 2.2 working
+> with it, those being the least up to date parts of it all. I don't
+> really think this is going anywhere; Debian will hopefully be finished
+> soon.
+>
+> --
+> Keith M Wesolowski			wesolows@chem.unr.edu
+> University of Nevada			http://www.chem.unr.edu
+> Chemistry Department Systems and Network Administrator
+>

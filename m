@@ -1,26 +1,54 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199706162118.XAA08006@informatik.uni-koblenz.de>
-Subject: Re: A pointed question about endianness...
-Date: Mon, 16 Jun 1997 23:18:40 +0200 (MET DST)
-In-Reply-To: <199706161754.KAA14400@fir.engr.sgi.com> from "William J. Earl" at Jun 16, 97 10:54:16 am
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199706170053.RAA19808@yon.engr.sgi.com>
+Subject: Re: ARC question
+Date: Mon, 16 Jun 1997 17:53:47 -0700 (PDT)
+In-Reply-To: <199706170012.CAA12560@informatik.uni-koblenz.de> from "Ralf Baechle" at Jun 17, 97 02:12:29 am
+Reply-To: ariel@sgi.com (Ariel Faigon)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "William J. Earl" <wje@fir.engr.sgi.com>
-Cc: adevries@engsoc.carleton.ca, linux@cthulhu.engr.sgi.com, ralf@Julia.DE, shaver@engsoc.carleton.ca
-Message-ID: <19970616211840.T222mFClA6ilqldsC_1ncbT7OFLoorH6BoiFt17itXM@z>
+To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Cc: linux@yon.engr.sgi.com
+Message-ID: <19970617005347.CfFzzBTBolcEP7dyNPiVUFJVZ2s1FWuV6ixH_4_HQkg@z>
 
->      You probably can't agree on one, unless you can agree on one set
-> of systems.  Most MIPS architecture systems, including all SGI
-> systems, are big-endian, but all DEC systems and all MIPS Magnum 4000
-> systems configured to run NT are little-endian.  (All other MIPS
-> systems are big-endian.)
+:
+:Hi,
+:
+:I've got a question about the ARCS firmware as implemented on SGI.  Is
+:there some documentation available for it?  I've got a documentation of
+:the ARC standard v1.0 from the ACE consortium (the document is marked
+:"Microsoft Confidential") as well as the "Portable Bootloader Specification"
+:which again ist M$ confidential.  These documents however don't seem to
+:fit SGI's machines to well as they're refering to EISA slots, little
+:endian byteorder and NT as OS and generally looked a bit outdated even
+:when I got them two years ago.
+:
+:So I suppose there is documention that is more authoritative for the SGI
+:firmware?
+:
+:  Ralf
+:
 
-It's worse than that.  SNI RM series is configurable, Algorithmics eval
-boards are configurable.  Acer PICA (derived from the Magnum) is le
-only, Sony machines are fixed to be, Deskstation MIPS machines are fixed
-to le ...
+The documentation that comes with the Indy includes all
+the PROM commands.  I gave my hard-copy "system administration"
+book to Mike when he was visiting here, but it should also be on
+every IRIX CD in "Insight" (SGI old help) format.  Clicking on "Help"
+in the desktop toolchest should lead you to the docs.
 
-  Ralf
+But, it gets even better (I hope).
+All our docs are online on the web outside the firewall.
+
+	http://www.sgi.com/techpubs/dynaweb_docs/0630/SGIindex/bks.html
+
+Or more specifically (on the ARC PROM):
+
+	http://www.sgi.com/cgi-bin/infosrch.cgi?cmd=getdoc&db=bks&fname=/SGI_Admin/IA_ConfigOps/10117
+
+And also, please check "man prom"
+
+Let me know if you need more than what's in there.
+
+-- 
+Peace, Ariel

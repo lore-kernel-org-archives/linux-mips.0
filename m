@@ -1,75 +1,81 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199812111946.LAA90900@oz.engr.sgi.com>
-Subject: (forwarding bounce) hardware specs
-Date: Fri, 11 Dec 1998 11:46:26 -0800 (PST)
+Message-ID: <199812131053.CAA00532@oz.engr.sgi.com>
+Subject: Hard Hat Linux (fwd)
+Date: Sun, 13 Dec 1998 02:53:42 -0800 (PST)
 Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19981211194626.eSlxMqxKIlpA6jXpKIMzocUIIgpDR6pICyjPC7GCo7U@z>
+Message-ID: <19981213105342.F9lxzRJRtoDHpeBOLneWlxdQwuXn9fQi0YM6pptOmgs@z>
 
-[Forwarding this bounce from linux@engr.sgi.com.
- Note that to avoid spams to the list we set the allowed
- to post to subscribers only.  This has caught many many
- spams (I've been the only one getting them :-)
+Hi,
 
- If you subscribe with a certain address, be sure to use
- that address in your posts.  Also, using a more "general"
- (one domain level up) in the subscription, would allow
- posting from various machines in that domain -- Ariel.]
+I'm not sure if I should feel amused or saddened by this
+email.  I'm not a lawyer, just curious of what would you
+be doing in reponse.
+
+Note that:
+	The facts this email presents are inaccurate:
+
+	1) We don't have any "product" on www.linux.sgi.com
+	   just a free source distribution.
+	2) His claim is ignoring the fact that "Linux" is
+	   a trademark of Linus Torvalds which may invalidate
+	   any claim to its derivatives by another party.
+	3) We use "Hard Hat 5.1" as a humorous way to say
+	   it is somewhat unstable release of Red Hat 5.1
+	   in a casual way in one title.
+	4) We never use the term "Hard Hat Linux".
+
+I guess the question is whether our very innocent and casual
+use of the phrase "Hard Hat" in one web page and without any
+product connotation constitutes trademark infringement.
 
 
-Sender: lpb@CERF.NET
-Message-ID: <36714FF1.CB44A9C6@cerfnet.com>
-Date: Fri, 11 Dec 1998 09:01:37 -0800
-From: Lyle Bickley <lpb@CERF.NET>
-Organization: Bickley Consulting West Inc.
-X-Mailer: Mozilla 4.5 [en] (X11; U; Linux 2.0.36 i586)
-X-Accept-Language: en
-MIME-Version: 1.0
-To: Alex deVries <adevries@engsoc.carleton.ca>
-CC: Dave Olson <olson@anchor.engr.sgi.com>, ralf@uni-koblenz.de,
-        andrewb@uab.edu, linux-smp@vger.rutgers.edu,
-        linux@cthulhu.engr.sgi.com
-Subject: Re: Linux on an SGI Challenge L
-References: <199812101644.IAA85119@anchor.engr.sgi.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-> There may still be some old white papers on www.sgi.com
-
-I do some app. development on SGI boxes, and have found that SGI's
-Developer Toolbox is a rich resource for hardware and software
-information - including an online copy of SGI's Hardware Referece
-manual.  You can join SGI's developer program for free by going to
-www.sgi.com and following the Developer links.  That will give you
-access to all of the goodies I've mentioned above.
-
-I'm interested in your progress in this matter.  SGI's hardware is very
-impressive in terms of CPU, buss and I/O performance - it would be
-"interesting" to see Linux on an SMP SGI system.
-
-Good Luck!  Uou'll probably need lots of it...   :-)
-
-Cheers,
-Lyle
-
-> 
-> Dave Olson, Silicon Graphics
-> http://reality.sgi.com/olson   olson@sgi.com
-> -
-> Linux SMP list: FIRST see FAQ at http://www.irisa.fr/prive/mentre/smp-faq/
-> To Unsubscribe: send "unsubscribe linux-smp" to majordomo@vger.rutgers.edu
-
--- 
-Lyle P. Bickley  |  Bickley Consulting West Inc.
-lpb@cerfnet.com  |  1697 Grant Road
-V 650-428-0621   |  Mountain View, CA 94040
-F 650-428-0599   |
-
+Forwarded message:
+:From maurice@harddata.com  Sat Dec 12 12:23:42 1998
+:Message-Id: <3.0.5.32.19981212132336.00a0ecb0@209.207.211.2>
+:X-Sender: mhilariu@209.207.211.2
+:X-Mailer: QUALCOMM Windows Eudora Light Version 3.0.5 (32)
+:Date: Sat, 12 Dec 1998 13:23:36 -0700
+:To: adevries@engsoc.carleton.ca
+:From: Maurice Hilarius <maurice@harddata.com>
+:Subject: Hard Hat Linux
+:Cc: ariel@sgi.com
+:Mime-Version: 1.0
+:Content-Type: text/plain; charset="us-ascii"
+:
+:Good day Gentlemen.
+:
+:One of our customers pointed us to your webpage:
+:http://www.linux.sgi.com/manhattan/
+:
+:We wish to inform you that the names "Hard Hat" and "Hard Hat Linux" are
+:copyrighted names and registered trademarks of Hard Data Ltd., Of Edmonton,
+:Alberta, Canada.
+:
+:We ask that you please use another name for your project, as we can not
+:permit this use of the brand name and trademark "Hard Hat Linux".
+:We suspect that this usage was probably not designed to harm our tradmark,
+:but we still can not permit it to be used, especially without our express
+:permission.
+:
+:If there are any questions please contact Maurice Hilarius of Hard Data
+:Ltd. at the address and/or telphone numbers listed in the signature (below).
+:
+:Seasons Greetings.
+:
+:Best regards,
+:
+:  Maurice W. Hilarius                   Telephone: 01-403-414-9319
+:  Hard Data Ltd.                      **FAX:       01-403-456-1510
+:  11060 - 166 Avenue                    email:maurice@harddata.com
+:  Edmonton, AB, Canada  - T5X 1Y3       http://www.harddata.com
+:  
+:
 
 
 -- 

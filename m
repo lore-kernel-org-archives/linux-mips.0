@@ -1,63 +1,51 @@
-Subject: Re: patches for test-and-set without ll/sc (Re: thread-ready ABIs)
-References: <20020120193843M.machida@sm.sony.co.jp>
-	<002c01c1a1a9$b9f0de40$0deca8c0@Ulysses>
-	<20020120221607T.machida@sm.sony.co.jp>
-	<20020122152744C.machida@sm.sony.co.jp> <m38zaqsxgx.fsf@myware.mynet>
-From: Andreas Jaeger <aj@suse.de>
-Date: Thu, 24 Jan 2002 10:56:57 +0100
-In-Reply-To: <m38zaqsxgx.fsf@myware.mynet> (Ulrich Drepper's message of "21
- Jan 2002 22:37:02 -0800")
-Message-ID: <hovgdskr6e.fsf@gee.suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: "Rodson Universal" <sales@rodson.com>
+Subject: Port and Stevedoring Equipment For Sale and Wanted
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Date: Thu, 24 Jan 2002 20:32:16 +0200
+Content-Transfer-Encoding: 8bit
+Message-ID: <E16Toft-0006LH-00@carbon.btinternet.com>
 Sender: owner-linux-mips@oss.sgi.com
-To: Ulrich Drepper <drepper@redhat.com>
-Cc: Machida Hiroyuki <machida@sm.sony.co.jp>, kevink@mips.com, hjl@lucon.org, libc-hacker@sources.redhat.com, linux-mips@oss.sgi.com
-Message-ID: <20020124095657.nx1JzgbkFAN39lOY-K-X9qSQ44bZy1G9ZK25ZhrWiy8@z>
+To: scharkalvin@yahoo.com
+Message-ID: <20020124183216.rdNat5QcILXvwIF0GnuGzAkaWTDXQTVAaVwmO_XVflI@z>
 
-Ulrich Drepper <drepper@redhat.com> writes:
+Attn : Stevedoring , crane and engineering dept.
+ 
+We buy and sell crawler and telescopic cranes 50-1000 tons
+Stevedoring equipment 
+Port cranes  equipment ,Shipyard equipment 
+Container cranes and equipment
+Floating grab cranes , heavy lift cranes , dry docks and barges
+ 
+PLEASE CHECK OUR WEBSITE www.rodson.com 
+ 
+We are always looking to buy port cranes and ship unloading systems ,
+bagging plants , pneumatic grain unloaders , dry cargo unloaders , screw
+type unloaders , dry cargo unloading systems , dry powdered cement
+unloaders , rail mounted and rubber tyred ship-to-shore cranes ,
+container
+cranes , grab cranes , coal discharging systems , Port pedastal whirley
+cranes ,container-handling forklifts and reachstackers , terminal
+tractors
+and trailers, electro-hydrauylic grabs 10-14 cu meter
+ 
+Please keep us informed of any equipment you have for sale and let us
+know
+your port equipment and stevedoring requirements
+thanks and regards
 
-> Machida Hiroyuki <machida@sm.sony.co.jp> writes:
->
->>   * glibc change:
->> 
->> 	We implement  test_and_set(addr, val) as follows,
->> 
->> 		Do mmap /dev/tst to _TST_START_MAGIC, if not yet mapped.
->> 		call _TST_START_MAGIC(addr, val)
->> 	
->> 	If we can't open /dev/tst then, use sysmips() as final resort.
->
-> First, the patch as it is unacceptable.  A file with copyright Sony?
-> All the code must be copyrighted by the FSF.  Sony will have to assign
-> the copyright for the code to the FSF.
->
-> Also, no such change can be accepted until the necessary kernel
-> changes are in the official kernel sources.  I cannot make any
-> exceptions since otherwise all kinds of people want to see support for
-> their local hack added.
->
-> Furthermore, the symbols were not available in version 2.2.  Therefore
-> they cannot be exported with this version.  It'll either be 2.2.6 (if
-> their ever will be such a release) or 2.3.
->
-> And finally, the patch should be sent to the glibc MIPS maintainer for
-> review.  The question is who feels responsible...
+connie sullivan
 
-I'll look into it later in more detail.
+Please reply to:
 
-But for now, let me just tell that I agree with Ulrich's comments.
-Additionally I'd like to wait with adding this patch until:
-- a solution for the thread register is found for MIPS (and those
-  solution should not conflict with this patch)
-- the kernel side patches have been adopted.
 
-Therefore please discuss this with the kernel and ABI folks, and then
-let's look again at the issues.
+sales@rodson.com 
 
-Andreas
--- 
- Andreas Jaeger
-  SuSE Labs aj@suse.de
-   private aj@arthur.inka.de
-    http://www.suse.de/~aj
+RODSON UNIVERSAL INC
+www.rodson.com 
+Tel +44 1444 412728 Fax +44 1444 415929
+
+If you feel that you have received this e-mail in error or wish to
+unsubscribe to future mailings, please reply to this e-mail with
+"remove"
+in the subject header.

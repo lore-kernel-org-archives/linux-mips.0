@@ -1,21 +1,17 @@
-Received: from PEPELEPEW ([172.30.1.10]) by ns.pioneer-pdt.com
-          (Post.Office MTA v3.5.3 release 223 ID# 0-68491U100L2S100V35)
-          with SMTP id com for <linux-mips@linux-mips.org>;
-          Mon, 15 Sep 2003 12:03:36 -0700
-From: craig.mautner@pioneer-pdt.com (Craig Mautner)
+From: "Craig Mautner" <craig.mautner@alumni.ucsd.edu>
 Subject: RE: schedule() BUG
-Date: Mon, 15 Sep 2003 11:59:50 -0700
-Message-ID: <JKEMLDJFFLGLICKLLEFJKEFNCOAA.craig.mautner@pioneer-pdt.com>
+Date: Sat, 13 Sep 2003 09:30:29 -0700
+Message-ID: <JKEMLDJFFLGLICKLLEFJGEFECOAA.craig.mautner@alumni.ucsd.edu>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 In-reply-to: <JKEMLDJFFLGLICKLLEFJMEEOCOAA.craig.mautner@alumni.ucsd.edu>
-Return-Path: <craig.mautner@pioneer-pdt.com>
+Return-Path: <craig.mautner@alumni.ucsd.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20030915185950.1H1PYPpg207Q0j_Hwd2qLmR5SUyuIrLYL0rCW6Acoqs@z>
+Message-ID: <20030913163029.6zyYyNDNwVa0Nkmp20y5grOYh0xoJcOdY_HoB6CDnLQ@z>
 
 Regarding my previous posting, we had made the assumption that schedule()
 could be called from an interrupt that occured within schedule(). However,

@@ -1,134 +1,79 @@
-Message-ID: <021c01bf772b$773033d0$0ceca8c0@satanas.mips.com>
-From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: Re: ioremap() broken?
-Date: Mon, 14 Feb 2000 21:38:29 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Date: Tue, 15 Feb 2000 01:37:39 +0100
+From: Ralf Baechle <ralf@oss.sgi.com>
+Subject: Re: Indy crashes
+Message-ID: <20000215013739.E828@uni-koblenz.de>
+References: <022301bf7730$92b87180$0ceca8c0@satanas.mips.com> <14504.31299.82555.477086@liveoak.engr.sgi.com> <200002142345.XAA00626@gladsmuir.algor.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200002142345.XAA00626@gladsmuir.algor.co.uk>
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: geert@linux-m68k.org, linux@cthulhu.engr.sgi.com
-Message-ID: <20000214203829.Mdnp1oO_h3t_nXGnP8lf-f-I6mwDbyeiz0hRBvt9v9Y@z>
+To: Dominic Sweetman <dom@algor.co.uk>
+Cc: "William J. Earl" <wje@cthulhu.engr.sgi.com>, "Kevin D. Kissell" <kevink@mips.com>, geert@linux-m68k.org, Ralf Baechle <ralf@oss.sgi.com>, linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <20000215003739.CA3TllJqOKn2NR030K_Ra7MBuQEM03cBZAcFvLsjyI8@z>
 
->in asm-mips/io.h we have:
->
->    extern inline void * ioremap(unsigned long offset, unsigned long size)
->    {
->     return (void *) KSEG1ADDR(offset);
->    }
->
->    #define readb(addr) (*(volatile unsigned char *) (0xa0000000 + (unsigned
-long)(addr)))
->
->
->and in asm-mips/addrspace.h:
->
->    #define KSEG1                   0xa0000000
->
->    #define KSEG1ADDR(a)            ((__typeof__(a))(((unsigned long)(a) &
-0x1fffffff) | KSEG1))
->
->
->Hence if I map physical address range 0x1fa00300-0x1fa0033f and read from it:
->
->     mapped = ioremap(0x1fa00300, 0x40); /* returns 0xbfa00300 */
->     data = readb(mapped+0x20);
->
->then this fails miserably with
->
->    Unable to handle kernel paging request at virtual address 5fa00320
->
->
->My questions:
->
-> 1. Is it really necessary to add anything to the addr in the readb() et al.
->    macros? ioremap() already takes care of that.
+On Mon, Feb 14, 2000 at 11:45:06PM +0000, Dominic Sweetman wrote:
 
-There is something of an "embarassment of riches" in the kernel
-code in terms of mechanism for getting at I/O resources.  I don't
-think it was ever intended that people use readb() on addresses
-that had already been massaged with ioremap().  ioremap() is
-used where the driver *expects* an memory-mapped I/O model,
-and is applied to pointers that will be used to directly reference
-the device.  readb/writeb et. al. are for drivers that think that expect
-a more peek/poke like model.  I don't think it was ever intended that
-someone apply both at once!
+> QED's RM7000 has an internal secondary cache which is more like (but
+> not compatible with) an R4000.  As part of our Linux familiarisation
+> we'll try to get that working.  It's 4-way set associative, 256Kbytes
+> big, unified and write-back; so that should shake out some more bugs.
 
-Furthermore, there are some platforms where a further transformation
-is necessary to get from a PCI-relative memory-mapped I/O address
-to a CPU address on the MIPS platform, thus in our io.h we have:
+[...]
 
-extern inline void * ioremap(unsigned long offset, unsigned long size)
-{
-        extern unsigned long platform_io_mem_base;
-        return (void *) KSEG1ADDR(offset | platform_io_mem_base);
-}
+> I used to be an advocate of the MIPS position; but what this argument
+> ignores is the difficulty of maintaining a portable software base,
+> particulary an OS which (like Linux) has grown up with invisible x86
+> caches.
+> 
+> To make sure that Linux/MIPS kernels are and remain robust we have to
+> convince lots of people to take the trouble to learn about visible
+> caches - even though the systems they're working on don't have them.
+> And we have to hope that driver writers will do the right thing, even
+> though they've never used a system which needs cache management code
+> and have none at hand to test their drivers with...
+> 
+> This would be unlikely even if we all agreed what the word 'flush'
+> meant (does it mean "invalidate"?  or "write-back"?  or perhaps "both,
+> if necessary"? and can you build a robust OS without knowing the
+> answer?)
 
+Yes.
 
-> 2. If yes, isn't it better to or (`|') instead of add ('+') 0xa0000000 in the
->    readb() et al. macros (or to use the macro KSEG1ADDR())?
+> It *could* happen.  MIPS are not the only family of CPUs with visible
+> caches - though I think they probably have by far the most complicated
+> ones, because of their high-end history.
 
+Sparc.
 
-One could make that argument.  Others might say that addition is
-an more mnemonic operation for adding a base displacement.
-The results will be, one hopes, the same.   But it's a fair question
-as to why KSEG1ADDR isn't used in preference indeed, it is in
-the MIPS 2.2.12 distribution.
+> The meeting of Linux and MIPS is in this respect really good for Linux
+> - great at finding portability problems.  But it's not particularly
+> good for MIPS.  For now, Linux/MIPS kernels will only be reliable if
+> maintained by people who understand this stuff, keep a safe distance
+> from the x86 mainstream, and use only sanity-checked drivers.
 
->FYI, I'm trying to make the UART in the NEC Vrc-5074 hosty bridge work cleanly
->with serial.c. And serial.c first ioremap()s it.
+No longer.  With Linux 2.3.41 Linux received a number of new software
+interfaces which also could easily be backported to previous kernels.
+As the side effect you even get scatter gather capabilities for every
+driver.
 
-The ioremap/readb stuff is only in the latest versions of serial.c,
-(newer that I run with, anyway), and yes, you are right, it's broken.
+Btw, please take a look at the new interfaces, they're documented in
+Documentation/DMA-mapping.txt.  They're not yet cast into stone, so if
+anybody has something to complain about these interfaces, better do it
+soon.
 
->Furthermore I see problems with
->
->    #define isa_readb(a) readb(a)
->
->since ISA I/O space is not at 0xa0000000 but at 0xa6000000 on the NEC DDB
->Vrc-5074. Don't we need an offset mips_io_mem_base, like is done on most other
->non-ia32 architectures (cfr. mips_io_port_base for inb() and friends)?
+> Kevin, I think you'd better tell your colleagues who design the chips
+> that they'd better put some snooping in, and soon...
 
-Isn't there an isa_slot_offset declaration?  Odd.  Even the
-i386 has a __ISA_IO_base in the definition.
+For I/O isn't not that bad to handle except a few cases like the
+NCR 53c8xx driver.  And there is always the silver bullet solution of
+using uncached accesses.
 
-Anyway, the general problem is even worse than you think,
-since - never mind any ISA nonsense - the function that maps
-PCI memory into the CPU space is in theory independent of
-the function that maps CPU memory into the PCI space (for
-DMA or whatever).  So the following functions may be needed
-in addition to ioremap.  Note that these key off a
-platform_mem_iobus_base (the base of memory as seen
-on the I/O bus) as opposed to platform_io_mem_base
-(the base of I/O space seen as memory).  These base
-addresses, in our version anyway, are declared in
-arch/mips/kernel./setup.c and can be modified in the
-platform setup code before any I/O macros are invoked.
+Things like mmap() and read/write right in the presence of virtual indexed
+caches are the real vomit bag.  Linus & Co. so far refuse to accept any of
+the optimal solutions.  And while I'd of course would like to such a
+solution to get into the kernel I can well understand Linus' refusal.
+From that point of view the RM7000 is the first MIPS CPU that got caches
+right since the R6000 ...
 
-extern inline unsigned long virt_to_bus(volatile void * address)
-{
-        extern unsigned long  platform_mem_iobus_base;
-
-        return (PHYSADDR(address) | platform_mem_iobus_base);
-}
-
-extern inline void * bus_to_virt(unsigned long address)
-{
-        extern unsigned long  platform_mem_iobus_base;
-
-        return (void *)KSEG0ADDR((address & ~platform_mem_iobus_base));
-}
-
-
-So, while we didn't put in the isa support, we did do a certain
-amount at MIPS to make arbitrary PCI platforms work with MIPS.
-You can snarf it from http://www.paralogos.com/mipslinux/ and
-see what I mean.
-
-And yes, one of these days, somebody needs to merge it into
-the SGI 2.3.x tree...
-
-            Regards,
-
-            Kevin K.
+  Ralf

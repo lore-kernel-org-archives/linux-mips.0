@@ -1,20 +1,30 @@
-Subject: Re: ISA
-Date: Fri, 21 Dec 2001 16:12:40 +0000 (GMT)
-In-Reply-To: <Pine.GSO.4.21.0112191456410.28777-100000@vervain.sonytel.be> from "Geert Uytterhoeven" at Dec 19, 2001 03:06:32 PM
+Message-ID: <003901c18f76$563c7480$520110ac@roc.com>
+From: "Rajesh B. V." <rajeshbv@intotoinc.com>
+Subject: Flash File System on MIPS 79S334A Board
+Date: Fri, 28 Dec 2001 13:34:54 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-ID: <E16HSHp-0000ay-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Jun Sun <jsun@mvista.com>, jim@jtan.com, Linux/MIPS Development <linux-mips@oss.sgi.com>
-Message-ID: <20011221161240.x7zXMeyju6pr1AFw_u9AKMs8Rcip5LLHOAEjTbdcHvU@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20011228080454.B9ExeZlgtsoUFKjv6kKoie2aZ4QJrn6qveWdoTixWkQ@z>
 
-> But what about request_mem_region() and friends? How can I distinguish between
-> ISA memory and the first 16 MB of RAM (or ROM, or whatever my board has there)?
-> 
-> Or am I not supposed to let those things show up in /proc/iomem?
-
-Interesting - I'd not considered that. Is ISA and non ISA space seperate on
-MIPS or is it all rather ambiguous ?
+Hi all,
+ 
+ I am using a IDT MIPS 79S334A Board with on board FLASH 'AM29LV320DB'.
+ I have to mount file system on this FLASH for my application usage.
+ 
+ I came to know through the linux-mtd site that JFFS can be used for this 
+ purpose with a lower layer mtd driver.
+ My questions are
+ 1) Was this chip is already had supporting lower level read/write/erase 
+ driver code in the mtd module?
+ 2) Did anybody used it on MIPS 79S334 board?
+ 
+ Please give me some hooks on how to proceed for this.
+ 
+ while replying please CC to me.
+ 
+ Thanks in advance,
+ --Rajesh

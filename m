@@ -1,39 +1,38 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199709181848.OAA25739@neon.ingenia.ca>
-Subject: indirect EFS extent question
-Date: Thu, 18 Sep 1997 14:48:28 -0400 (EDT)
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199709192019.NAA02902@oz.engr.sgi.com>
+Subject: Re: Linux/SGI: IRIX X server -- kind-of-works-now status.
+Date: Fri, 19 Sep 1997 13:19:27 -0700 (PDT)
+In-Reply-To: <199709191928.OAA30318@athena.nuclecu.unam.mx> from "Miguel de Icaza" at Sep 19, 97 02:28:38 pm
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Linux/SGI list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970918184828.TaWxMs3hVb0_umLEeJ0bWDx7KxgsSP8ni5UjGuWh9TE@z>
+To: Miguel de Icaza <miguel@nuclecu.unam.mx>
+Cc: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19970919201927.jb-1Uk1A68nKm1sGukbDKldoEFuxdjhFD0QlTXBsG28@z>
 
-I just read the comment in fs/efs_fs.h properly for the first time,
-and things are now much clearer.  I think.
+Miguel,
 
-So, is _this_ correct?
-	/* 
-	 * We're indirect, so we need to start looking in the 
-	 * indirect extents.
-	 *
-	 * EFS indirect extents are really doubly indirect:
-	 * inode->di_u.di_extents (1st level extents) refers to
-	 * contiguous blocks of extents (2nd level extents).  The
-	 * block of these 2nd level extents contain direct extents (or
-	 * 3rd level extents).  So, for each indirect extent in
-	 * di_u.di_extents, we need to get a block of 2nd-level
-	 * extents, get a block from one of the 2nd-level extents, and
-	 * then check the extents in that final block -- which, at
-	 * long last, contains direct extents.
-	 */
+Congtratulations on getting Xsgi on Linux to this stage.
 
-Mike
+To me it is pretty amazing that you were able to do all this
+only by looking at the HW docs, lots of syscall tracing, and so
+few hints from us.  Keep up the great work. 
 
--- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>      Chief System Architect -- will tame sendmail(8) for food       
-#>                                                                     
-#> "You are a very perverse individual, and I think I'd like to get to 
-#>  know you better." --- eric@reference.com                           
+Please continue to update us on further progress until you have
+a fully functional Xsgi server working.  Hope the X guys on the
+list would be able to help on the remaining questions.
+
+--
+Peace, Ariel
+
+:
+:
+:Hello guys, 
+:
+:   Well, my IRIX Xsgi server is running on Linux/SGI without aborting
+:now.  It displays the nice X cursor and a black background (ie, no
+:nice X background yet.
+:

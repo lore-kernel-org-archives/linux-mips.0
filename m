@@ -1,8 +1,8 @@
-Message-ID: <00e001c26ba2$c7e6c960$10eca8c0@grendel>
+Message-ID: <00fe01c26ba6$04943480$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3D9D484B.4C149BD8@mips.com> <200210041153.MAA12052@mudchute.algor.co.uk>
+References: <3D9D484B.4C149BD8@mips.com><200210041153.MAA12052@mudchute.algor.co.uk>  <3D9D855B.12128FA2@mips.com> <1033734968.31839.5.camel@irongate.swansea.linux.org.uk>
 Subject: Re: Promblem with PREF (prefetching) in memcpy
-Date: Fri, 4 Oct 2002 14:37:16 +0200
+Date: Fri, 4 Oct 2002 15:00:18 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -10,43 +10,36 @@ Content-Transfer-Encoding: 7bit
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Dominic Sweetman <dom@algor.co.uk>, Carsten Langgaard <carstenl@mips.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20021004123716.cf5l3G0unLs-d8nDzjnzKy-HlmbDt5r6Efw6PC381YQ@z>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>, Carsten Langgaard <carstenl@mips.com>
+Cc: Dominic Sweetman <dom@algor.co.uk>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20021004130018._p7D1xQEtx0CyD38_I48nDMrfz4_L_SoSz3Oe4RLdMY@z>
 
-From: "Dominic Sweetman" <dom@algor.co.uk>
-> Carsten Langgaard (carstenl@mips.com) writes:
+> On Fri, 2002-10-04 at 13:11, Carsten Langgaard wrote:
+> > Is a bus error exception an address related exception ?
+> > I'm afraid some implementation think it's not.
 > 
-> > I think we have a problem with the PREF instructions spread out in the
-> > memcpy function.
-> 
-> Not really.  The MIPS32 manual (for example):
-> 
->  "PREF does not cause addressing-related exceptions. If it does happen
->   to raise an exception condition, the exception condition is
->   ignored. If an addressing-related exception condition is raised and
->   ignored, no data movement occurs."
->   
->   PREF never generates a memory operation for a location with an
->   uncached memory access type."
-> 
-> For a Linux user program, at least, memory pages are "memory-like":
-> reads are guaranteed to be side-effect free, so any outlying
-> prefetches are harmless.  It's hard to see any circumstance where an
-> accessible cacheable location would lead to bad side-effects on read.
+> So you need an option for broken systems, no new news 8)
 
-In case Carsten's reply wasn't clear enough, there is a loophole
-in the spec:  kseg0.  There is no TLB access to cause a TLB
-exception (which would suppress the operation and be nullifed),
-If the prefetch address is correctly aligned, so that there is no
-address exception.  In typical use, kseg0 is cacheable, which
-means that the second paragraph you quote does not apply.
-A prefetch to a well-formed, cacheable kseg0 address which 
-has no primary storage behind it (e.g. 0x04000000 on a system
-with 64M of physical memory) should, according to the spec,
-cause a cache fill to be initiated for the line at that address,
-which will result in a bus error, if not a flat-out system hang.
+Alas, it's not so simple.  Bus errors are often not even
+precise exceptions, which is to say, they cannot be
+associated with a specific causing instruction.
 
-            Regards,
+> > What about an UART RX register, we might loose a character ?
+> > You can also configure you system, so you get a external interrupt from you
+> > system controller in case of a bus error, there is no way the CPU can
+> > relate this interrupt to the prefetching.
+> 
+> The use of memcpy for I/O space isnt permitted in Linux, thats why we
+> have memcpy_*_io stuff. Thus prefetches should never touch 'special'
+> spaces. (On x86 the older Athlons corrupt their cache if you do this so
+> its not a mips specific matter)
+
+The issue isn't that anyone would deliberately use memcpy() in I/O
+space.  Rather, it's that memcpy() prefetches quite a ways ahead,
+and if one has I/O space assigned just after the end of physical
+memory, Bad Things might happen on a perfectly legal memcpy()
+that references the last couple hundred bytes of memory in a 
+way that not even a clever and well-informed bus error handler 
+could undo.
 
             Kevin K.

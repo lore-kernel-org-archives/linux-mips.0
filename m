@@ -1,80 +1,38 @@
-Message-ID: <002d01c0b18b$5f512da0$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3AB68CFC.A2840808@mvista.com> <01e701c0b0d3$3fca8980$0deca8c0@Ulysses> <004601c0b11d$86340d20$0deca8c0@Ulysses> <3AB7AEFD.5B773122@mvista.com>
-Subject: Re: gdb 5.0 display arguments problem
-Date: Tue, 20 Mar 2001 23:16:02 +0100
+Date: Wed, 21 Mar 2001 18:39:48 +0100 (CET)
+From: Adrian Bunk <bunk@fs.tum.de>
+Subject: Re: Compile error with current CVS kernel
+In-Reply-To: <Pine.NEB.4.33.0103122252170.23935-100000@mimas.fachschaften.tu-muenchen.de>
+Message-ID: <Pine.NEB.4.33.0103211837550.22248-100000@gaia.fachschaften.tu-muenchen.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: Jun Sun <jsun@mvista.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010320221602.YQXlTVSAtgjOCuKW0a7BIBDzTCbmiztRaafLrwr_ReU@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010321173948.-6StJgwncSfd5Uy3SW9XSoE8H409xNEDvUJFp7FWt58@z>
 
-> "Kevin D. Kissell" wrote:
-> >
-> > > Yours may well be slightly different, but fatal for the same reason.
-> >
-> > Indeed, I wonder if your gdb isn't looking on the stack frame
-> > for an argument that isn't there - and which may never be
-> > there - and finding the value that also happens to be in s4.
-> >
->
-> I think I figured out the reason.  If you take a look of the code segment
-I
-> attached in my first posting, you will see that s4 register indeed holds
-the
-> value of a1, and presummably remains so for the rest of the function.
-> However, the actual assignment of a1 to s4 does not happen until a couple
-of
-> instructions later into the function.  So if the breakpoint is set at the
-> first instruction of the function, gdb would still think (wrongly) s4
-holds
-> the 2nd argument and, even worse, try to dereference it if it is a char*
-> pointer.
+Hi Ralf,
 
-It's not unusual to need to step one line to "see" arguments
-correctly.  A pity about the pointer dereference.  ;-)
+the latest CVS kernel still doesn't build, but the error message has
+changed:
 
-> > Another reason to fix things in the gdb proxy/exception code
-> > rather than cripple gdb backtrace is that, even with the backtrace
-> > fixed, the current kgdb situation is such that the slightest typo
-> > at the debugger operator interface can generate a bad address
-> > and blow the system sky high.  It's happened to me on more than
-> > one occasion.  Fortunately, what I was debugging at the time
-> > was readily reproduceable (if not, I would have fixed the kgdb
-> > problem then and there!).
-> >
->
-> This sounds pretty cool, but I don't see a clean algorithm.  So in the
-> exception code you would decide not to crash if 1)kgdb is configured, and
-2)
-> the exception is caused by kgdb code (how?).  Also if you decide not to
-crash,
-> what should be reasonable return values?
+<--  snip  -->
 
-There are a number of possible ways of going about it.  One is
-to set some kind of flag during the kgdb proxy access, which
-is tested by the page fault code.  That's the stuff that's derived
-from Cobalt code and that is partly in place in some existing
-kernel gdb support ("debugmem_got_flt", etc.).  I have not seen
-it work correcly, and isn't SMP safe.  Another scheme, which is
-actually a bit cleaner, would be to check explicitly for the faulting
-address to be that of the kgdb proxy load.  In any case, once the
-case has been identified, one tweaks the EPC value to return to
-something other than a repeat of the bad dereference, and returns
-zero or an error value to gdb - the protocol and message formats
-are described in comments in gdb-stub.c.
+...
+mipsel-linux-nm vmlinux | grep -v '\(compiled\)\|\(\.o$\)\|\( [aUw]
+\)\|\(\.\.ng$\)\|\(LASH[RL]DI\)' | sort > System.map
+make[1]: Entering directory `/home/bunk/Ringo/linux/arch/mips/boot'
+gcc -o elf2ecoff elf2ecoff.c
+./elf2ecoff /home/bunk/Ringo/linux/vmlinux vmlinux.ecoff -a
+Sections ordering prevents a.out conversion.
+make[1]: *** [vmlinux.ecoff] Error 1
+make[1]: Leaving directory `/home/bunk/Ringo/linux/arch/mips/boot'
+make: *** [boot] Error 2
 
-> Disable automatic char * dereferencing is not that bad.  You always have
-the
- > option to manually dereference it.  However, I could not find such an
-option.
-> Maybe gdb does not provide that yet.
+<--  snip  -->
 
-And even if it did, accidentally trying to dump "0x8021f34" would
-blow you out of the water.  It's the kernel proxy code that really needs
-to be fixed.
+cu
+Adrian
 
-            Kevin K.
+-- 
+
+Nicht weil die Dinge schwierig sind wagen wir sie nicht,
+sondern weil wir sie nicht wagen sind sie schwierig.

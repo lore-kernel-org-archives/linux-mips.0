@@ -1,18 +1,28 @@
 content-class: urn:content-classes:message
-Subject: Sibyte/Broadcom 1250 documentation
-Date: Mon, 17 Nov 2003 11:22:01 -1000
+Subject: backtrace issues on GDB 5.3
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="US-ASCII"
 Content-Transfer-Encoding: 8BIT
-Message-ID: <DC1BF43A8FAE654DA6B3FB7836DD3A56DEB7BE@iris.adtech-inc.com>
-From: "Finney, Steve" <Steve.Finney@SpirentCom.COM>
-Return-Path: <Steve.Finney@SpirentCom.COM>
+Date: Thu, 27 Nov 2003 07:26:59 -0600
+Message-ID: <F2DE90354F0ED94EB7061060D9396547B98C49@mars.bandspeed.com>
+From: "Vince Bridgers" <vbridgers@bandspeed.com>
+Return-Path: <vbridgers@bandspeed.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20031117212201.5bc1P78M-5uyZl7L9oz6lfnBQNGm3HSWjCJboGuri6Y@z>
+Message-ID: <20031127132659.ubDutCXMGGGAcbzcZW4Bj-0VIdfsMv5nEAtnqlz7Pgo@z>
 
-A little while ago, I believe someone on this list stated that documentation for the SB1250 chip wasn't publicly available. I just noticed that the user manual (a primary source of chip documentation) is available on Broadcom's public-access web site (sibyte.broadcom.com). I couldn't find the documentation for the actual SB-1  core there, though...
+I'm using GDB 5.3 for mipsel cross-compiled on an x86 box running RedHat
+7.3. When I try to use the backtrace capability from GDB most of the
+time I do not get a full stack context - I usually just get the function
+I'm in at the time. I'm using GCC 3.2 to compile the kernel,
+cross-compiled the same way. I've tried making sure the
+omit-frame-pointer option and the "no instruction schedule" options are
+on for when we do source level debugging with no joy.  
 
-sf
+Does backtrace work for GCC and GDB cross compiled for mipsel? If so,
+can someone briefly outline the "known good" configuration (GCC/GDB
+versions, + relevant configuration options)?
+
+TIA

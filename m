@@ -1,24 +1,19 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0yLByA-000aNnC@the-village.bc.nu>
+Message-ID: <m0yLFgY-000aNnC@the-village.bc.nu>
 From: alan@lxorguk.ukuu.org.uk (Alan Cox)
 Subject: Re: VCE exceptions
-Date: Fri, 3 Apr 1998 20:17:41 +0100 (BST)
-In-Reply-To: <199804031911.LAA21028@fir.engr.sgi.com> from "William J. Earl" at Apr 3, 98 11:11:15 am
+Date: Sat, 4 Apr 1998 00:15:45 +0100 (BST)
+In-Reply-To: <19980404011332.15427@loria.fr> from "Olivier Galibert" at Apr 4, 98 01:13:32 am
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "William J. Earl" <wje@fir.engr.sgi.com>
-Cc: ralf@uni-koblenz.de, linux@cthulhu.engr.sgi.com
-Message-ID: <19980403191741.LnzorpQiBnBs5HySrw4cfqynGhpa1m_ZvIAkR2pN6gM@z>
+To: Olivier Galibert <galibert@pobox.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19980403231545.nHaNJKOOO9SnjoFHL5z9_tALushFI208dvAecb2jl6g@z>
 
->      As soon as I get a chance, I will look at the relevant linux
-> code.  Note that physical color allocation can also make a big
-> performance difference on direct mapped secondary caches, as on all of
+> Can someone point me  to a good documentation/book/whatever explaining
+> what cache colouring is ?
 
-Colouring in Linux isnt going to work without ripping the godawful buddy
-allocator out of it. Unfortunately Linus seems quite attached to it at
-the moment. Bamboo under the finger nails at Linux Expo perhaps Ralph ?
+Well for a flavour of it I can politically correctly recommend
 
-Whenever we try and do any colouring it fragments the buddy stuff up 
-sufficiently badly that we basically break the box. 
-
-Alan
+"Unix Systems For Modern Architectures" by a Schimmel last resident I believe
+at SGI 8)

@@ -1,57 +1,32 @@
-Date: Sat, 24 Nov 2001 11:44:40 +0000 (GMT)
-From: Dave Airlie <airlied@csn.ul.ie>
-Subject: Re: advice on dz.c
-In-Reply-To: <20011123162710.D1048@holomorphy.com>
-Message-ID: <Pine.LNX.4.32.0111241140030.16093-100000@skynet>
+Message-ID: <01f201c1789d$0f872c00$8061a8c0@oz.agile.tv>
+From: "Jim Grohn" <Jim.Grohn@Agile.TV>
+Subject: crash from unalgined bad address passed to a syscall 
+Date: Thu, 29 Nov 2001 16:14:10 +1000
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: William Lee Irwin III <wli@holomorphy.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20011124114440.L6B7v1O7njHsHbxJh7e_Q7Y8PxUf0DuwsHj4KbUJ5z4@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20011129061410.7YpwD8gwMNDZtTm3MtnYxdNJhUS9xEtHMH3YfQzmkxY@z>
 
+I get a crash when I run the latest LTP.  The test passes 0x1 to getpeername
+for namelen (socklen_t*)
 
-This is unusual I've just taken a run down through a diff of 1.17 and 1.22
-from the MIPS CVS tree and I can't see anything that could cause breakage
-that has been changed... I'd try commentined out the DZ_DEBUG stuff.. this
-isn't meant to be called... unless someone wants to specifically debug
-their dz.c on a decstation.... otherwise it should be switched off..
+I think the problem may be in emulate_load_store_insn.   Should the code
+below be passing "pc" to search_exception_table and fixup_exception?
+regs->cp0_epc has been adjusted by compute_return_epc (called from do_ade)
+to be 4 bytes past the instruction that caused the problems.
 
-Granted to code doesn't look like it would compile with it off..
-
-Dave.
-
-On Fri, 23 Nov 2001, William Lee Irwin III wrote:
-
-> startup() in the 2.4.14 dz.c appears to either not terminate or to
-> bring down the kernel on a DecStation 5000/200. The 2.4.5 dz.c when
-> put it in its place appears to work properly, modulo some strangeness
-> in terminal emulation at runtime.
->
-> Unfortunately, attempts to isolate what difference creates the problem
-> failed to reveal the true cause of this. The kernel appears to die
-> immediately after restore_flags(). This appears unusual to me as the
-> changes are largely cosmetic.
->
-> I also tried extending the extent of the code over which interrupts
-> are disabled, to no avail. After extending it to what apparently was
-> the entire extent of the driver's ->open code the kernel died somewhere
-> between enabling interrupts again and the printk immediately after
-> the return to tty_open(). It did not appear that the driver was
-> re-entered at this point, as printk's for the other entry points
-> failed to trigger.
->
->
-> I am interested in suggestions as to what code changes I should make
-> in order to bring this driver into a more robust state so that I myself
-> can repair the code for use on one of my own personal machines.
->
->
-> Thanks,
-> Bill
->
-
--- 
-David Airlie, Software Engineer
-http://www.skynet.ie/~airlied / airlied@skynet.ie
-pam_smb / Linux DecStation / Linux VAX / ILUG person
+*************************
+fault:
+ /* Did we have an exception handler installed? */
+ fixup = search_exception_table(regs->cp0_epc);
+ if (fixup) {
+  long new_epc;
+  new_epc = fixup_exception(dpf_reg, fixup, regs->cp0_epc);
+  printk(KERN_DEBUG "%s: Forwarding exception at [<%lx>] (%lx)\n",
+         current->comm, regs->cp0_epc, new_epc);
+  regs->cp0_epc = new_epc;
+  return;
+ }

@@ -1,52 +1,39 @@
-Message-ID: <004d01c4b710$419ffbe0$8b1a13ac@realtek.com.tw>
+Received: from msx.realtek.com.tw (unverified [172.20.1.77]) by mf2.realtek.com.tw
+ (Content Technologies SMTPRS 4.3.14) with ESMTP id <T6cc78eb777dc803816a20@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
+ Thu, 21 Oct 2004 11:01:27 +0800
+Message-ID: <007101c4b71a$171bd830$8b1a13ac@realtek.com.tw>
 From: "colin" <colin@realtek.com.tw>
-References: <001301c4b6ad$70ce4420$8b1a13ac@realtek.com.tw> <41767409.5010209@ieee.org>
-Subject: Re: Strange! Cannot use JFFS2 as root
-Date: Thu, 21 Oct 2004 09:49:47 +0800
+References: <001301c4b6ad$70ce4420$8b1a13ac@realtek.com.tw> <20041020163048.GC17445@gate.ebshome.net>
+Subject: Re: [*VIP*] Re: Strange! Cannot use JFFS2 as root
+Date: Thu, 21 Oct 2004 11:00:11 +0800
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
-	charset="big5"
+	charset="iso-8859-1"
 Return-Path: <colin@realtek.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: charles.eidsness@ieee.org
 Cc: linux-mips@linux-mips.org
-Message-ID: <20041021014947.msJkWd1ylPLyycm1zy6ENbIOCp6Gf1bHKe_0ILhNAw4@z>
+Message-ID: <20041021030011.j8BdbUd9rWjJzon0E6cQmZ0AiIhCYJH0bSYZMy0uXpA@z>
 
 
-Hi Charles,
-Thank you. It works by your way.
-I had already tried "root=1f:01" and it didn't work, and then I spent whole
-day to test it... :-(
-It seems that "root=1f01" and "root=31:01" are both acceptable.
+Hi Eugene,
+The Kernel I use is 2.6.4, and I donot see the entry you mentioned.
 
-Thanks and regards,
+Regards,
 Colin
 
+
 ----- Original Message ----- 
-From: "Charles Eidsness" <charles.eidsness@ieee.org>
+From: "Eugene Surovegin" <ebs@ebshome.net>
 To: "colin" <colin@realtek.com.tw>
 Cc: <linux-mips@linux-mips.org>
-Sent: Wednesday, October 20, 2004 10:19 PM
-Subject: Re: Strange! Cannot use JFFS2 as root
+Sent: Thursday, October 21, 2004 12:30 AM
+Subject: [*VIP*] Re: Strange! Cannot use JFFS2 as root
 
 
-> Hi Colin,
->
-> I had a similar problem. You're passing root=/dev/mtdblock1 which has a
-> major value of 31 and a minor value of 1 but the by the looks of the
-> error message the kernel thinks you want to boot from a device with a
-> major number of 2 and a minor number of zero. You could try passing an
-> explicitly defined root=1F01 instead (major 31, minor 1). This works for
-> me. I have no idea why the kernel doesn't recognize the text based
-> declaration and haven't had time to investigate. Maybe someone else has
-> a better idea than I do.
->
-> Hope that helps,
-> Charles
->
-> colin wrote:
+> On Wed, Oct 20, 2004 at 10:02:26PM +0800, colin wrote:
+> >
 > > Hi all,
 > > I had booted up Linux with nfs root, and write a JFFS2 image to
 /dev/mtd1.
@@ -75,12 +62,13 @@ cmdline
 > >  which will fail at open() with the path "/sys/block/%s/dev".
 > >
 > > What's the problem? Could anyone tell me?
-> >
-> > Thanks and regards,
-> > Colin
-> >
-> >
-> >
-> >
-> >
-> >
+>
+> What is the kernel version you are using?
+>
+> Check that root_dev_names array in init/do_mounts.c has an entry,
+> which looks like
+>
+> { "mtdblock", 0x1f00 }
+>
+> --
+> Eugene

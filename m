@@ -1,37 +1,24 @@
-Message-ID: <009601c037a0$5f324940$0deca8c0@Ulysses>
+Message-ID: <009001c03858$0d963840$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <39EB41B0.101F0123@mvista.com>
-Subject: Re: IDT 32334 processor
-Date: Mon, 16 Oct 2000 20:38:44 +0200
+References: <200010171550.IAA25549@saturn.mikemac.com>
+Subject: Re: base.tgz 
+Date: Tue, 17 Oct 2000 18:33:49 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Pete Popov <ppopov@mvista.com>, linux-mips@oss.sgi.com
-Message-ID: <20001016183844.vOocE93j-RTKgHbDnvvrYJG6Z1nPqGBH0YNaFsQFoR8@z>
+To: jbglaw@lug-owl.de, Mike McDonald <mikemac@mikemac.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20001017163349.QGfU6ELSFhUNEbMoraCNYB2kRMUJwpw6TFqFOar0l8Y@z>
 
-No, but from the specs I've seen for the part, it should run a
-"MIPS32" kernel with little or no modification.  That's the port
-that we did at MIPS for the 4KC.  You can download the kernel
-sources from MIPS at ftp://ftp.mips.com/pub/linux/mips.   Some
-of the work has been merged into the 2.2 stream at SGI, but not
-all of it.
+> >Will see what I can do;) First of all, I'll combine all the .deb's
+> >I've currently fetched up. Btw, Geert asked for pciutils. Are there
+> >MIPSel machines with PCI bus(ses)?
+> 
+>   Yes.
 
-            Regards,
+Heck, I've got two different ones in the lab!
 
             Kevin K.
-
------ Original Message ----- 
-From: "Pete Popov" <ppopov@mvista.com>
-To: <linux-mips@oss.sgi.com>
-Sent: Monday, October 16, 2000 7:58 PM
-Subject: IDT 32334 processor
-
-
-> 
-> Has anyone done (or heard of) any work with linux and the IDT 32334 mips
-> processor?
-> 
-> Pete

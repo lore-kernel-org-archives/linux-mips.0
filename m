@@ -1,67 +1,38 @@
-Date: Wed, 25 Jun 2003 08:01:24 -0400 (EDT)
-From: <ik@cyberspace.org>
-Subject: Re: is there any docs/manuals for linker scripts symbols
-In-Reply-To: <20030624120017.GE4423@linux-mips.org>
-Message-ID: <Pine.SUN.3.96.1030625073721.22435A-100000@grex.cyberspace.org>
+Date: Sun, 29 Jun 2003 13:25:58 +0200 (MEST)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] MIPS DEC/SGI Linux logo
+Message-ID: <Pine.GSO.4.21.0306291324380.14478-100000@vervain.sonytel.be>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <ik@grex.cyberspace.org>
+Return-Path: <Geert.Uytterhoeven@sonycom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20030625120124.qOKUlEPsdqSczShVJD6tGkGzTAWx_6nNjJfRZIPyBnA@z>
+To: James Simmons <jsimmons@infradead.org>, Ralf Baechle <ralf@linux-mips.org>
+Cc: Linux Frame Buffer Device Development <linux-fbdev-devel@lists.sourceforge.net>, Linux/MIPS Development <linux-mips@linux-mips.org>
+Message-ID: <20030629112558.v4cXvgRUvvwRlPwzYlGjfM6-2LqwHLryWEEg0mProPc@z>
 
-Thanks Ralf for your insights !
 
-My board has a boot loader (rom) that enforce/restricts the sections in
-the elf header, hence I cannot use the default linker script that comes
-wit the kernel(arch/mips/). 
+MIPS: Show the correct logo on DEC and SGI machines.
 
-I'm refereing the ld manual at
-http://www.gnu.org/manual/ld-2.9.1/html_mono/ld.html
+--- linux-2.5.x/drivers/video/logo/logo.c.orig	Tue May 27 19:03:30 2003
++++ linux-2.5.x/drivers/video/logo/logo.c	Sat Jun 28 14:54:12 2003
+@@ -66,7 +66,7 @@
+ #endif
+ #ifdef CONFIG_LOGO_DEC_CLUT224
+ 		/* DEC Linux logo on MIPS/MIPS64 */
+-		if (mips_machgroup == MACH_GROUP_SGI)
++		if (mips_machgroup == MACH_GROUP_DEC)
+ 			logo = &logo_dec_clut224;
+ #endif
+ #ifdef CONFIG_LOGO_MAC_CLUT224
 
-I think your reply could be put as a howto/faqs in
-http://www.linux-mips.org (for the global symbols
-used in linux kernel).
+Gr{oetje,eeting}s,
 
-Thanks,
-Indu
+						Geert
 
-On Tue, 24 Jun 2003 ralf@linux-mips.org wrote:
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> On Tue, Jun 24, 2003 at 06:00:16AM -0400, ik@cyberspace.org wrote:
-> 
-> > I'm porting Linux kernel to a mips board for which I need to understand
-> > the various symbols used in the kernel.
-> > 
-> > For example what is the use of the following symbols
-> > `__init_begin'
-> > `__init_end'
-> > `__initcall_start
-> > `__initcall_end'
-> > `_ftext'
-> > `__setup_start'
-> > `__setup_end'
-> > 
-> > I'm not good in these linker scripts... any help pointers would be of
-> > great help to me ! (I'm referrring gnu ld  manual pages ... still have a
-> > long way to go :(
-> 
-> You'll find more information in the GNU info pages than in the man page
-> which is sort of an option summary only.  Of course both only cover ld,
-> not the way it's actually being used in Linux.
-> 
-> _ftext is the start of the executable kernel code.  __init_begin and
-> __init_end wrap the kernel's initialization code which will be freed after
-> full initialization.  See arch/mips/mm/init.c:__init_begin() and
-> arch/mips/mm/init.c:free_initmem() for how it's used.
-> 
-> __initcall_start and __initcall_end are used for the initcalls in
-> init/main.c.  See how those symbols are used in init/main.c:do_initcalls().
-> __setup_start and __setup_end are used in similarly obscure way to mark
-> start and end of the .setup.init section; see init/main.c:checksetup()
-> and <linux/init.h> for it's use.
-> 
->   Ralf
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds

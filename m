@@ -1,42 +1,43 @@
-content-class: urn:content-classes:message
+Received: from wip-ec-wd.wipro.com (localhost.wipro.com [127.0.0.1])
+	by localhost (Postfix) with ESMTP id 225B120560
+	for <linux-mips@linux-mips.org>; Wed,  6 Oct 2004 16:52:26 +0530 (IST)
+Received: from blr-ec-bh1.wipro.com (unknown [10.200.50.91])
+	by wip-ec-wd.wipro.com (Postfix) with ESMTP id 0266220551
+	for <linux-mips@linux-mips.org>; Wed,  6 Oct 2004 16:52:26 +0530 (IST)
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: RE: mips linux glibc-2.3.3 build - Unknown ABI problem
-Date: Tue, 5 Oct 2004 21:35:41 -0700
-Message-ID: <69397FFCADEFD94F8D5A0FC0FDBCBBDEF4D2@avtrex-server.hq.avtrex.com>
-From: "David Daney" <ddaney@avtrex.com>
-Return-Path: <ddaney@avtrex.com>
+	charset="US-ASCII"
+Content-Transfer-Encoding: 8BIT
+Subject: __up, __down_trylock & __down_interruptible for MIPS
+Date: Wed, 6 Oct 2004 16:55:10 +0530
+Message-ID: <6BF015B686198842A1C8F84F4B7E6D2601276A0F@chn-snr-msg.wipro.com>
+From: <priya.mani@wipro.com>
+Return-Path: <priya.mani@wipro.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "T. P. Saravanan" <sara@procsys.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20041006043541.tQqGasGUKLzBxmdU6JfT8CCsxRRmLlOv8kNKM1w8lSA@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20041006112510.6pOHLoQIJDhlk190IlzbDgpAQFKVfovhvkwDElGhPxQ@z>
 
-U29ycnkgZm9yIHRoZSBob3JrZWQgdXAgbWFpbCBtZXNzYWdlIGZvcm1hdCwgYnV0IHRoZXNlIHdl
-YiBiYXNlZCBlLW1haWwgY2xpZW50cyBtYWtlIGl0IGRpZmZpY3VsdC4uLg0KIA0Kc3lzZGVwcy9t
-aXBzL21hY2hpbmUtZ21vbi5oIHZlcnNpb24gMS44IGhhcyB0aGUgI2luY2x1ZGUgPHNnaWRlZnMu
-aD4gd2hpY2ggd2lsbCBzb2x2ZSB0aGUgcHJvYmxlbSB3aGVuIHVzaW5nIGdjYyAzLjQueC4NCiAN
-CiANCk90aGVycyBoYXZlIHJlcG9ydGVkIHRoYXQgcmVjZW50IHZlcnNpb25zIG9mIGdsaWJjIGZy
-b20gdGhlIGdsaWJjIENWUyBzZXJ2ZXIgd2lsbCBjb21waWxlIHdpdGhvdXQgcGF0Y2hpbmcuICBQ
-ZXJoYXBzIHlvdSBzaG91bGQgdHJ5IGl0LiAgVGhhdCBpcyB3aGF0IEkgYW0gZ29pbmcgdG8gZG8g
-cmlnaHQgbm93Lg0KIA0KRGF2aWQgRGFuZXkuDQoNCgktLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
-LSANCglGcm9tOiBULiBQLiBTYXJhdmFuYW4gW21haWx0bzpzYXJhQHByb2NzeXMuY29tXSANCglT
-ZW50OiBUdWUgMTAvNS8yMDA0IDk6MTQgUE0gDQoJVG86IERhdmlkIERhbmV5IA0KCUNjOiBsaW51
-eC1taXBzQGxpbnV4LW1pcHMub3JnIA0KCVN1YmplY3Q6IFJlOiBtaXBzIGxpbnV4IGdsaWJjLTIu
-My4zIGJ1aWxkIC0gVW5rbm93biBBQkkgcHJvYmxlbQ0KCQ0KCQ0KDQoJVC4gUC4gU2FyYXZhbmFu
-IHdyb3RlOg0KCQ0KCT4gRGF2aWQgRGFuZXkgd3JvdGU6DQoJPg0KCT4+PiBXaGF0IHNob3VsZCBJ
-IGRvIHRvIGZpeCB0aGUgYnVpbGQ/DQoJPj4+ICANCgk+Pg0KCT4+DQoJPj4gZ2V0IHRoZSBtb3N0
-IHJlY2VudCBtYWNoaW5lLWdtb24uaCBmcm9tIGdsaWJjIENWUy4NCgk+Pg0KCT4+IFlvdSB3aWxs
-IHByb2JhYmx5IGZpbmQgYSBwcm9ibGVtIGxpbmtpbmcgbGliYyBhdCBhIGxhdGVyIHN0ZXAuICBC
-dXQgdGhlDQoJPj4gbmV3ZXIgbWFjaGluZS1nbW9uLmggd2lsbCBmaXggdGhpcyBwcm9ibGVtLg0K
-CT4+IA0KCT4+DQoJPiBPSy4gVGhhdCB3b3JrZWQuICBUaGFua3MgYSBsb3QuDQoJPg0KCU9vcHMh
-ICBJIHdpbGwgdGFrZSB0aGF0IGJhY2suIEkgc3VzcGVjdCBpdCBpcyBub3Qgd29ya2luZy4NCgkN
-CglXaGVuIHlvdSBzYWlkIENWUyBJIGFzc3VtZWQgdGhlIG9uZSBpbiBodHRwOi8vbGludXgtbWlw
-cy9jdnN3ZWIvbGliYy4gDQoJT24gY2xvc2VyDQoJbG9vayBpdCBsb29rcyB2ZXJ5IG9sZC4gIEZy
-b20gZGlzY3Vzc2lvbnMgaW4gYW5vdGhlciB0aHJlYWQgSSBnYXRoZXIgQ1ZTDQoJbWVhbnMgaHR0
-cDovL3NvdXJjZXMucmVkaGF0LmNvbS9jZ2ktYmluL2N2c3dlYi5jZ2kvbGliYy8/Y3Zzcm9vdD1n
-bGliYy4NCgkoQ29ycmVjdCBtZQ0KCWlmIHRoaXMgaXMgd3JvbmcuKSBJZiBJIHRha2UgdGhlIG1h
-Y2hpbmUtZ21vbi5oIGZyb20gaGVyZSAtIEl0IHN0aWxsIGhhcw0KCXRoZQ0KCXNhbWUgcHJvYmxl
-bSA6LSgNCgkNCgktU2FyYXZhbmFuLg0KCQ0KCQ0KCQ0KDQo=
+Hi 
+
+I need to build a driver on the kernel version 2.4.22 on Mips
+architecture ( I am using an AMD board). When I try to insmod the driver
+it gives unresolved symbols for "__up, __down_trylock &
+__down_interruptible". 
+
+I checked in the semaphore.c file under kernel/arch/mips. The above
+symbols are neither defined nor exported while they are done for the
+semaphore files under other arch like sparc, sh, alpha etc.
+
+If I try to use the functions from the latest CVS files in the mips-org
+site it gives other compilation errors.
+
+Please can you tell me how do I go about this problem. Have the above
+functions been obsoleted? Is there any patch available for them? Or is
+there any doc explaining this? I am using Kernel version 2.4.22.
+
+Can anybody help me out with this please.
+
+Rgds
+Priya

@@ -1,25 +1,64 @@
-Message-ID: <01c701c08268$a4965860$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <0101191014100B.01043@plugh.sibyte.com>
-Subject: Re: R[45]KC PRiD fields?
-Date: Fri, 19 Jan 2001 23:39:09 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "James McD" <vile8@hotmail.com>
+Subject: Fwd: pthread in glibc 2.2.1
+Date: Mon, 22 Jan 2001 00:07:32 
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_NextPart_000_1656_4a88_499f"
+Message-ID: <F69IBJYduiFPUEOYMui000010a7@hotmail.com>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: carlson@sibyte.com, linux-mips@oss.sgi.com
-Message-ID: <20010119223909.tzA6IXmxYGQiLD_X_HHqe79WgNSniNK1Zeeqpd9qgZA@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010122000732.0ZEAsa1tf2Rsl5hqXT1C3odUbeNEM5yQSlLlj6fxpZU@z>
 
-> Does anyone happen to know what the R4Kc anc R5KC use for the company ID
-of the
-> PrID register (bits 23-16)?  I'm assuming it's 1, which is reserved for
-MTI,
-> but bits 15-8 seem to be carefully chosen not to conflict with previous
-> processors in the non-MIPS32/MIPS64 PRiD space.
+This is a multi-part message in MIME format.
 
-The MIPS 4KC has a PrID of 0x000180xx
-The MIPS 5KC has a PrID of 0x000181xx
+------=_NextPart_000_1656_4a88_499f
+Content-Type: text/plain; format=flowed
 
-            Kevin K.
+From what I have seen the gdb bombs out on 90% of pthread programs as
+well. This includes all platforms as far as I am aware. There is a fix
+posted on bugzilla stating you need to recompile the gdb from the cvs tree 
+and that should fix. However I have had mixed luck.
+Hope that helps somewhat!
+
+Sincerely,
+
+James McDermott
+>
+>Hi,
+>even the simplest pthread-program dies with a bus error(see attachment)
+>on my I2.  glibc is 2.2.1(same for 2.1.97), kernel is 2.4.0-test9.
+>Interesting enough I can't even get a core dump. Any starting points to
+>track this down?
+>Regards,
+>  -- Guido
+
+_________________________________________________________________
+Get your FREE download of MSN Explorer at http://explorer.msn.com
+
+------=_NextPart_000_1656_4a88_499f
+Content-Type: text/plain; charset=us-ascii
+Content-Description: pthread_create.c
+Content-Disposition: attachment; filename="pthreadcreate.c.orig"
+
+#include <pthread.h>
+#ifndef NULL
+#define NULL (void*)0
+#endif
+
+static void *task(p)
+	void *p;
+{
+	return (void *) (p == NULL);
+}
+
+int main(argc, argv)
+	int argc;
+	char **argv;
+{
+	pthread_t t;
+	exit(pthread_create(&t, NULL, task, NULL));
+}
+
+
+
+------=_NextPart_000_1656_4a88_499f--

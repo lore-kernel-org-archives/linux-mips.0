@@ -1,47 +1,23 @@
-Date: Wed, 18 Apr 2001 18:21:27 +0200 (MET DST)
-From: Karel van Houten <K.H.C.vanHouten@research.kpn.com>
-Subject: Indy and the multiple disk problem
-Message-ID: <200104181621.SAA06516@sparta.research.kpn.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
+Subject: Re: Linux on LSI EZ4102
+Date: Wed, 18 Apr 2001 22:11:42 +0100 (BST)
+In-Reply-To: <20010418132323.A25356@foobazco.org> from "Keith M Wesolowski" at Apr 18, 2001 01:23:24 PM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E14pzEm-0005jl-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Cc: "Houten K.H.C. van Karel" <K.H.C.vanHouten@research.kpn.com>
-Message-ID: <20010418162127.OYshay8fh6dQ1Q6a22xKNDdmri5ORuLixlv43DNOAXc@z>
+To: Keith M Wesolowski <wesolows@foobazco.org>
+Cc: Ralph Metzler <rjkm@convergence.de>, Quinn Jensen <jensenq@Lineo.COM>, linux-mips@oss.sgi.com
+Message-ID: <20010418211142.-C1_N0YG0evtWMuZRPqVrqIS0wUQpXp6F4XeLRcn4XY@z>
 
-Hi All
+> Any -ac kernel contains at most the same changes that are in the oss
+> tree.  Trees other than the oss one, including ac, are likely to
+> contain more bugs.
 
-I've made some observations concerning the indy multiple disk problem:
+-ac has all the stuff Ralf has sent me. Linus has most of that. In some
+ways -ac has less bugs (eg the oss tree has serious disk corruption bugs -ac
+doesnt) but I certainly cant guarantee -ac will always build on mips, and 
+right now with the sem changes it quite probably wont.
 
-The setup:
-Root FS on /dev/sda1, /local on /dev/sdb3, and some NFS mounted systems.
-Kernel 2.4.2 (March 30 CVS).
-
-Doing this:
-I mke2fs-ed the sdb3 partition, mounted it at /local, and copied
-a tree from an NFS filesystem to /local. No other activity on the system.
-I used tar | (cd;tar) for the copy.
-
-What happened:
-I tried to 'su' in another window on the machine, and it responded
-with a segfault. Several other programs reacted with segfaults or
-bus errors. 
-
-I stopped the copy, synced, and fsck-ed (-n) the local partitions.
-No problems on the /local partition, but the root was badly corrupted.
-Hey! That's strange, I didn't do anything on that partition!
-Could it be that there is some bug in the buffer layer, that is
-corrupting the buffers belonging to another FS?
-
-Any hints?
-
-I hope that I get the system up again tomorrow when I get to the office :(
-
--- 
-Karel van Houten
-
-----------------------------------------------------------
-The box said "Requires Windows 95 or better."
-I can't understand why it won't work on my Linux computer. 
-----------------------------------------------------------
+Alan

@@ -1,29 +1,36 @@
 From: "Lyle Bainbridge" <lyle@zevion.com>
-Subject: Mips cross toolchain
-Date: Tue, 20 Aug 2002 10:58:13 -0500
-Message-ID: <NCBBKGDBOEEBDOELAFOFKEGGCPAA.lyle@zevion.com>
+Subject: RE: Mips cross toolchain
+Date: Tue, 20 Aug 2002 13:47:01 -0500
+Message-ID: <NCBBKGDBOEEBDOELAFOFAEGKCPAA.lyle@zevion.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+In-reply-to: <3D626E61.3010505@clearcore.net>
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20020820155813.KUfuMoWRTVQSUooLJWTP6Bt61q2NOuWXLMi3VsITG38@z>
+To: Joe George <joeg@clearcore.net>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20020820184701.OjmSIj86w9XA4z8RzxQjRZzVRHOdLt1d7i_8LtyHK2Q@z>
 
-Hi,
 
-I'm a linux kernel newbie, and this is my first linux-mips posting.
-I have built a big endian, elf, cross toolchain for mips32 (I'm using
-an Alchemy Au1500 SOC) based on the GCC 3.0.4, Binutils 2.11.2 and
-Newlib 1.9.0.  My intention is to now use it to compile the 2.4.19 kernel.
 
-I am still figuring out how to cross compile the kernel, but I was
-wondering if I had used the correct versions of GCC and Binutils to
-succesfully build a stable kernel.  Also, are there any patches I would
-need? So far I've used the stock distributions from gnu.org.
+-----Original Message-----
+From: Joe George [mailto:joeg@clearcore.net]
+Sent: Tuesday, August 20, 2002 11:29 AM
+To: Lyle Bainbridge
+Cc: linux-mips@oss.sgi.com
+Subject: Re: Mips cross toolchain
 
-Any advice would be most appreciated.
 
-Thanks,
-Lyle Bainbridge
-Minneapolis, MN
+>>I don't know of anyone using big endian with Alchemy at this point.
+>>There may be some and I'd like to hear from them.
+
+
+Firstly, thanks to everyone for the advice.
+
+Ideally I'd use big endian.  Is there any reason the toolchain
+wouldn't support this.  I'm only using the Au1500 on-chip peripherals
+with the addition of an external Highpoint HPT371 ATA controller.
+
+Thanks
+Lyle

@@ -1,59 +1,48 @@
-Message-ID: <01a001c12688$7fdbbf00$0deca8c0@Ulysses>
+Message-ID: <01b001c12693$b4920140$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <018201c12680$8f13e680$0deca8c0@Ulysses>
+References: <018201c12680$8f13e680$0deca8c0@Ulysses> <20010816115349.A12153@nevyn.them.org> <3B7C1BB9.7011790E@mvista.com>
 Subject: Re: FP emulator patch
-Date: Thu, 16 Aug 2001 21:20:11 +0200
+Date: Thu, 16 Aug 2001 22:40:26 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="gb2312"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>
-Message-ID: <20010816192011.JlEpwVkKLqtnr70BmbO2tdNaDxReeQ3nVmwQM8VO430@z>
+To: Jun Sun <jsun@mvista.com>, Daniel Jacobowitz <dan@debian.org>
+Cc: "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>
+Message-ID: <20010816204026.XQT9NBMwwtA3WVaxktQNQPRLQSZPE0MONKuUkJbTMlo@z>
 
-> If the current thread does *not* own the FPU, we don't
-> need to save the thread FP state. If the signal handler
-> does no FP, so much the better, there's nothing to
-> be done.   If the signal handler uses FP, it will acquire 
-> the FPU by normal means. The FP context will be saved 
-> into the thread context of the previous owner, the signalling 
-> thread will acquire the FPU, and the signal handler will do 
-> it's FP. On return from the signal, we *must* de-allocate the
-> FPU and clear the CU1 bit.  If that's done, and the
-> thread (which had not *owned* the FPU prior to the
-> signal) starts doing FP again, normal mechanisms
-> will cause it's FP context to be restored.  If we don't,
-> it will start exectuing with a bogus FP context.
+> > current->used_math should never be set to zero in this sort of
+> > situation.  It's not an ownership flag!  It marks whether the FP state
+> > in the thread structure is valid.
+>
+> Daniel, it is funny that I agree with your last statement but cannot agree
+> with your first one.
+>
+> Under the above mentioned situation, after we make the copy of FPU state
+from
+> thread structure to the saved signal context, we need to set used_math bit
+to
+> zero.  This way when the signal handler uses FPU for the first time - if
+it
+> ever uses it -, the normal lazy FPU switch mechanism can kick in smoothly.
 
-There is, actually, one conceptual hole in this
-scheme (and in every other one we've seen) if the
-following scenario occurs.  The current thread does
-not own the FPU, the signal handler executes FP
-instructions and runs for so long that it gets
-switched out.  The thread's FP state will then
-become that of the signal handler, and, since the
-thread didn't have the FPU when the signal context
-was set up, it the pre-signal state will be lost.
+We've had a lot of messages crossing here, but please
+explain yourself here why clearing used_math helps in
+this case.  If, as has been proposed, the current
+thread does not own the FPU, and thus CU1 is not
+enabled, the FPU switch mechanism should kick in
+during the signal handler regardless. The signal
+handler will inherit the thread's FPU state from
+the thread context, and will muck with it, but
+if, as has been noted, the sigcontext has
+been loaded from the thread context before
+the handler is dispatched, and is restored after
+the handler executes, we're fine.  The only thing
+I can see that clearing used_math would achieve
+would be to guarantee the signal handler a virgin
+FPU context.
 
-From that standpoint, the old code that saved the
-contex if current->used_math was almost correct.
-Almost correct, because the naive dump-the-FPU
-code is correct only if the FPU belongs to the thread.
-If it doesn't, the last saved thead FPU context, and not
-the FPU contents, needs to be copied into the signal 
-context.  Symmetrically, in restore_sigcontext(), the current 
-code restores the FPU if we *owned* the fp prior to the 
-signal, but we must likewise restore the thread FPU 
-context from the sigcontext if we *didn't* own the FPU, but
-the signal handler subsequently acquired it.
-
-The alternative to doing direct sigcontext<->thread context
-saves/restores without passing through the FPU would
-be to force a fpu context switch on every signal dispatch,
-which I find rather inelegant.
-
-I'll see if I can't come up with a new patch that also
-takes this into account, but may not have time before
-I take off on vacation this weekend...
+            Regards,
 
             Kevin K.

@@ -1,22 +1,31 @@
-From: Alan Cox <alan@bagpuss.swansea.linux.org.uk>
-Message-ID: <200107292126.f6TLQ7m01578@bagpuss.swansea.linux.org.uk>
-Subject: Re: [long] Lance on DS5k/200
-Date: Sun, 29 Jul 2001 17:26:06 -0400 (EDT)
-In-Reply-To: <20010731004556.C19713@lug-owl.de> from "Jan-Benedict Glaw" at Jul 31, 2001 12:45:56 AM
+Message-ID: <000701c11c8b$77e039e0$8021690a@huawei.com>
+From: "machael thailer" <dony.he@huawei.com>
+Subject: Where is the first entry point for linux-mips boot?
+Date: Sat, 4 Aug 2001 10:16:27 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-Cc: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Dave Airlie <airlied@csn.ul.ie>, SGI MIPS list <linux-mips@oss.sgi.com>, Debian MIPS list <debian-mips@lists.debian.org>, engel@unix-ag.org
-Message-ID: <20010729212606.CCWS7iXS5qVaVtP44gPqa8AE85HfU_xJ9sfPyYNZCYU@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010804021627.V85WeG6kIODzQjloC1qUHcN1PzGQLQ-in4P41bzl10Q@z>
 
-> >  Z8530 is on my to-do list.  Our driver really sucks: neither DMA (the I/O
-> > ASIC again) nor sychronous mode, just basic asynchronous support.  I'm
-> > going to look at LANCE one day, too, but it's lower on the list.
-> 
-> You you facing towards all those Z8530 implementation or only to
-> "ours"?
+Hello,all:
 
-All the 8530 sync support is in my Z85230 driver. Its written so
-someone can add async support to it.
+    Now I plan to port linux on our mips-based board. Since it is the first
+time for me to work on linux-mips, I have several questions to ask:
+
+    There are many many subdirectories in arch/mips, I don't know where is
+the FIRST entry point for embedded linux-mips boot process? I find that
+there is "kernel_entry" in arch/mips/kernel/head.S. I know this is the entry
+point for linux kernel ,but it is not the FIRST entry point for embedded
+linux-mips boot process. So my questions is :
+    After the board initializations finish, it should load linux kernel into
+RAM and jump there .  Just before it runs the linux kernel, who calls
+"kernel_entry"?
+    I don't know whether I have expressed my meaning apparently. Hope you
+can understand me.
+
+Thank you very much.
+
+machael thailer

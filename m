@@ -1,46 +1,78 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0xvVCP-0005FsC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+From: fisher@hollywood.engr.sgi.com (William Fisher)
+Message-ID: <199801230012.QAA28870@hollywood.engr.sgi.com>
 Subject: Re: wd33c93 errors.
-Date: Thu, 22 Jan 1998 22:34:13 +0000 (GMT)
-In-Reply-To: <Pine.LNX.3.95.980122162527.21753E-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jan 22, 98 04:50:16 pm
+Date: Thu, 22 Jan 1998 16:12:18 -0800 (PST)
+In-Reply-To: <Pine.LNX.3.95.980122175054.21753I-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jan 22, 98 06:07:27 pm
+Reply-To: fisher@sgi.com
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980122223413.ahwqEqllWrbM4chT9vQ0zrKilzU-moN9zbF-6mcf-e8@z>
+Cc: alan@lxorguk.ukuu.org.uk, linux@hollywood.engr.sgi.com, William Fisher <fisher@hollywood.engr.sgi.com>
+Message-ID: <19980123001218.J6a7i_ItGAZFhG4skgXMAfsxOh1l8ed-GyA7jmZ4Xz8@z>
 
-> repartitioned it from Irix, and mounted it as an EFS partition under Irix
-> just fine.  That would seem to indicate that everything is alright with
-
-Including rewriting it ?
-
-> SCSI disk error : host 0 channel 0 id 6 lun 0 return code 2800000
-> Current error sd08:21: sense key Hardware Error
-> Additional sense indicates Address mark not found for id field
-> scsidisk I/O error: dev 08:21, sector 10
-> scsi0: MEDIUM ERROR on channel 0, id 6, lun 0, CDB: Request Sense 00 00 00
-> 10 00
-
-Thats the SCSI verbage for bad block
-
-> Current error sd08:21: sense key Medium Error
-> Additional sense indicates Recorded entity not found
-
-no address mark generally
-
-> scsidisk I/O error: dev 08:21, sector 108
-> scsi : aborting command due to timeout : pid 17577, scsi0, id 6, lun 0
-> Write (6) 12 bb a2 f4 00
-> scsi0: Aborting connected command 17577 - stopping DMA - sending wd33c93
-> ABORT command - flushing fifo - asr = 25, sr=ff, 16777215 bytes
-> un-transferred (timeout=-1) - sending wd33c93 DISCONNECT command = asr=00,
-> sr=18.
 > 
-> And the whole thing is hung, hard.
+> 
+> On Thu, 22 Jan 1998, Alan Cox wrote:
+> > > repartitioned it from Irix, and mounted it as an EFS partition under Irix
+> > > just fine.  That would seem to indicate that everything is alright with
+> > Including rewriting it ?
+> 
+> Ah, I tried that specifically, and had problems too with Irix.  So, the
+> disk is toast, and it'll go back to the storage room I found it in (along
+> with an AXP).
+> 
+> > > scsi0: Aborting connected command 17577 - stopping DMA - sending wd33c93
+> > > ABORT command - flushing fifo - asr = 25, sr=ff, 16777215 bytes
+> > > un-transferred (timeout=-1) - sending wd33c93 DISCONNECT command = asr=00,
+> > > sr=18.
+> > > And the whole thing is hung, hard.
+> > Thats a bug. 
+> 
+> I've got a WO recordable CDROM also. I can change directories on it just
+> fine, but when reading a lot of data on it, it'll give me:
+> 
+> scsi : aborting command due to timeout : pid 2282, scsi0, channel 0, id 2,
+> lun 0 Write (6) 00 0a 99 02 00
+> scsi0: Abort - removing command 2282 from input_Q.
+> 
+> And then a total hang again.. no numlock, no pinging.
+> 
+> I can't test the recordable CDROM under Irix because it doesn't have a
+> WORM driver built in.
+> 
+	I have been talking with Creative Digital Research, creators of
+	the HyCD product used in SGI's Hot Mix CD's. Seems that support
+	for recordable CD media has encountered problems BOTH under
+	Irix and Solaris. In older products, the PC SCSI devices
+	did NOT support disconnect. So the various third party vendors
+	ifdef'ed out the disconnect code in our wd SCSI driver and rebuild
+	the kernels to get around this "feature".
 
-Thats a bug. 
+	I am getting the details but it seems that something is amiss
+	with the "standard" PC SCSI devices in this area. There is also
+	some fuzzy-ness going on in the device type they are advertizing
+	themselves to be. I will have the gory details shortly since we
+	would like to understand the problem. We have had a couple of
+	customers complain about this problem.
 
-> surprised as it seems to work just fine under Irix.
-
-See if you can rewrite every sector of it under Irix ..
+-- Bill
+>
+> Now, another thing... I have a _functional_ (under both Irix and Linux
+> ) CDROM that doesn't get detected under Linux when I have all of this
+> other crap on the SCSI bus. It is perfectly usable if it's on the external
+> bus by itself, but not with other devices on the bus.
+> 
+> My conclusion is that my 700MB disk and recordable CDROM are crap, and the
+> Linux driver for the wd33c93 can't handle these kinds of problems
+> correctly.
+> 
+> And lastly: having a cute blue case seemed pretty good at first, but it'd
+> be heavenly to have room for more than two hard disks inside.
+> 
+> Tomorrow I'll borrow a functional SCSI disk and try again.
+> 
+> - Alex "and as if SCSI hell weren't bad enough, I have to get my wisdom
+> teeth out" deVries
+> 
+> 

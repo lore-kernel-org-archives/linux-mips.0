@@ -1,54 +1,31 @@
-Date: Thu, 14 Dec 2000 19:30:12 +0100 (MET)
-From: Karel van Houten <K.H.C.vanHouten@research.kpn.com>
-Subject: Re: Cannot type on DECstation prom
-In-reply-to: <20001214115451.A10322@web1.lanscape.net>
-Message-ID: <200012141830.TAA01589@sparta.research.kpn.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
+Message-ID: <8BEF9F7FD6FEA8409D2A706B2D6D32280553FF@server1.metering.co.nz>
+From: Pete Black <pete.black@metering.co.nz>
+Subject: Linux/MIPS on quad-R4400 Challenge L
+Date: Fri, 15 Dec 2000 11:16:31 +1300
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Martin Michlmayr <tbm@lanscape.net>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20001214183012.cH2-SNLdJU9cVYJQSSndS1GMt0othoXAkF8z3k3Gr78@z>
+To: "'linux-mips@oss.sgi.com'" <linux-mips@oss.sgi.com>
+Message-ID: <20001214221631.jU7HvI2GM6SvkV_a-_jg1FWPuTgcmHtAmaDSYIOfWCA@z>
 
-> I recently got a DECstation 5000/125 and I'm trying to get Linux to run.
-> I'm using minicom and while I get output from the machine, I can not
-> type anything on the prom.  When I power the machine on, I get:
-> 
-> .....
-> 
-> The funny thing is that I _can_ type when NetBSD is being started.  But
-> nothing happens on the prom.
-> 
+Hi there,
 
-These DECStations require full modem control signals on the
-prom console. I would build a D25 serial modem-faker cable:
+I happen to have acquired a quad-R4400 SGI Challenge-L server.
 
- 1 ------------------- 1
+It's big, it's black, and it seems to run OK.
 
- 2 -------\ /--------- 2
-           X
- 3 -------/ \--------- 3
+Is there any support in Linux/MIPS for a beast like this?
 
- 4 -+               +- 4
-    |               |
- 5 -+               +- 5
+Its currently running IRIX 6.5.9 quite happily, but i'd much rather run
+Linux, since then i have a standard OS across all my machines, and no hefty
+SGI taxes to pay.
 
- 6 -+               +- 6
-    |               |
- 7 -)---------------)- 7
-    |               |
- 8 -+               +- 8
-    |               |
-20 -+               +- 20
+From what i read on the FAQs, the Multi-processor versions of the R4400 are
+not supported.. will there ever be a time when Linux/MIPS will run on a
+machin elike this, or am i stuck with IRIX for the rest of this machine's
+life?
 
-This should work.
+Thanks
 
--- 
-Karel van Houten
-
-----------------------------------------------------------
-The box said "Requires Windows 95 or better."
-I can't understand why it won't work on my Linux computer. 
-----------------------------------------------------------
+-Pete

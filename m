@@ -1,54 +1,37 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@yon.engr.sgi.com (Ariel Faigon)
-Message-ID: <199704091846.LAA21442@yon.engr.sgi.com>
-Subject: Re: init=/bin/sh and serial devices
-Date: Wed, 9 Apr 1997 11:46:07 -0700 (PDT)
-In-Reply-To: <Pine.LNX.3.95.970408235053.28353A-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Apr 9, 97 00:29:32 am
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+From: Ralf Baechle <ralf@Julia.DE>
+Message-ID: <199704100701.JAA08771@kernel.panic.julia.de>
+Subject: Re: all in the family
+Date: Thu, 10 Apr 1997 09:01:33 +0200 (MET DST)
+In-Reply-To: <199704100226.WAA01960@jenolan.caipgeneral> from "David S. Miller" at Apr 9, 97 10:26:18 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: alambie@wellington.sgi.com, shaver@neon.ingenia.ca, linux@cthulhu.engr.sgi.com
-Message-ID: <19970409184607.daOlCV7N08H41ufFUwzFpPQh-R_VtmIcf7ewOL6Fe7I@z>
+To: "David S. Miller" <davem@jenolan.rutgers.edu>
+Cc: shaver@neon.ingenia.ca, linux@cthulhu.engr.sgi.com
+Message-ID: <19970410070133.bsFQ6h5bAOaOqLiH8Z8aUYmZoezc61r-jGzoiYZf_sw@z>
 
-:
-:-----BEGIN PGP SIGNED MESSAGE-----
-:
-:
-:On Wed, 9 Apr 1997, Alistair Lambie wrote:
-:> On Apr 9,  2:12pm, Mike Shaver wrote:
-:> > stdin in /dev/cua1, FWIW.
-:> >
-:> 
-:> Does your Indy not have a 'head' on it....why are you using the serial ports..
-:
-:The machine we're working on, bogomips, is in Ottawa, Canada.  Mike's on
-:business in Mountainview, California.  Joshua "boot boy" Lamorie handles
-:the hardboots, and I offer petty advice from Boston, watching Mike use
-:minicom in a ytalk session through a serial connection.  Odd, but it
-:works.
-:
-:Does anyone know the the status of gcc for sgi-linux?  I understand the
-:cross compiler between Irix and sgi-linux is operational.  How about a
-:native compiler?  I'm keen on porting a ton of RPM's...
-:
-:- - Alex
-:
-:<()       Alex deVries
-: |_\_ System Administrator
-:  ^^   The EngSoc Project
-:
-:
+>    Looks like I may be getting a machine here to see if we can migrate
+>    some of our non-Oracle machines to Linux/SPARC.
+> 
+>    Anyone know if the emulation is up to hosting the Linux/Indy
+>    cross-compiler?
+> 
+> It should be straight forward, 32-bit to 32-bit crosses under gcc work
+> flawlessly right out of the box for everything I've ever tried.  It's
+> when you cross from 32-bit to 64-bit that you may hit a bug or two.
 
-This is one of the things that weren't done and we want to get done
-by the Linux/SGI developers.  I believe that Miguel is one of the
-best people to make this happen.  If we can just get his Indy R5000
-out of the bureaucratic mess.  Miguel's Indy was shipped three weeks
-ago to Mexico and requires a "special permit for used equipment" by
-the Mexican customs to be provided by the SGI Mexico City office)
+I've got the necessary patches to make the binutils and GCC work as
+Linux/Alpha -> Linux/MIPS crosscompiler.  Mike, if you need them remind
+me to send them if you need them.
 
-I hope Miguel will send us some good news soon.
--- 
-Peace, Ariel
+>    In related news, we'll then have Linux running on 5 architectures
+>    in the same room (Intel, Alpha, SPARC, ELKS, Indy).  Maybe I'll
+>    steal the PowerMac too... =)
+> 
+> ELKS, that is cheating ;-)
+
+:-)
+
+  Ralf

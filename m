@@ -1,45 +1,33 @@
-Reply-To: <khs@digital-digital.com>
-From: "Han-Seong Kim" <khs@digital-digital.com>
-Subject: RE: Power MGMT on mips
-Date: Mon, 19 Nov 2001 21:13:08 +0900
-Message-ID: <000001c170f3$8d784d80$cbadfea9@khs>
+Date: Tue, 20 Nov 2001 17:28:29 -0500 (EST)
+From: George Gensure <werkt@csh.rit.edu>
+Subject: Re: TrueColor on an Indy
+In-Reply-To: <20011120225807.A26150@galadriel.physik.uni-konstanz.de>
+Message-ID: <Pine.SOL.4.31.0111201728150.19841-100000@fury.csh.rit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <20011112233031.A6493@dea.linux-mips.net>
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: 'Ralf Baechle' <ralf@oss.sgi.com>
-Cc: linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20011119121308.r_1w1BgoSC6vFg9z89FfXQGxwR-e8qe5x9Tt6MhRB74@z>
+To: Guido Guenther <agx@sigxcpu.org>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20011120222829.VWvEmTn7bOCzew9ZDdlmEvkrRdjrW0_lac19FEuoWsw@z>
 
-Hi Ralf,
+Hoo rah, my man... hoo rah.
 
-I reviewed the data sheet of Mips CPU - QED RM5231.
-There is a wait instruction.
-But when the SysAD bus goes to idle, the wait instruction is valid.
-How can I SysAD bus make idle state?
+George
 
-Han-Seong
+On Tue, 20 Nov 2001, Guido Guenther wrote:
 
------Original Message-----
-From: Ralf Baechle [mailto:ralf@oss.sgi.com]
-Sent: Monday, November 12, 2001 9:31 PM
-To: Han-Seong Kim
-Cc: linux-mips@fnet.fr; linux-mips@oss.sgi.com
-Subject: Re: Power MGMT on mips
+> Hi,
+> I just managed to get 24bpp to work on my Indy. I'll have to cleanup the
+> code, but for all of you who can't wait...a patch against current
+> xfree86 cvs can be found at:
+>  http://honk.physik.uni-konstanz.de/~agx/mipslinux/x/24bpp-2001-11-20.diff
+> There's one bug left. When the server comes up, you have to switch back
+> and forth to the console once, to get the display right...hope to find
+> it soon.
+>  -- Guido
+>
 
-
-On Mon, Nov 12, 2001 at 05:13:40PM +0900, Han-Seong Kim wrote:
-
-> I want to ask about Power-Mnagement on mips.
-> 1. Is it possible to use power mgnt (ex. apm,acpi) features of linux kernel?
-
-Both are PC stuff, so no.
-
-> 2.If no, how can manage CPU and Bidge chips for power mgnt ?
-
-Right now Linux/MIPS will only use the CPU's power managment features, that
-is the wait instruction or similar.
-
-  Ralf
+-- 
+George R. Gensure       Computer Science House Member
+werkt@csh.rit.edu       Sophomore, Rochester Institute of Technology
+Computer Science

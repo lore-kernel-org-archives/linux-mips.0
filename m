@@ -1,34 +1,50 @@
 From: "Ian Chilton" <mailinglist@ichilton.co.uk>
-Subject: Can't find |
-Date: Sat, 10 Jun 2000 13:12:17 +0100
-Message-ID: <NAENLMKGGBDKLPONCDDOMEEBCMAA.mailinglist@ichilton.co.uk>
+Subject: RE: Can't find |
+Date: Mon, 12 Jun 2000 13:37:19 +0100
+Message-ID: <NAENLMKGGBDKLPONCDDOCEHLCMAA.mailinglist@ichilton.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <39440AA3.51CEDFA3@brussels.sgi.com>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: info-iris-hardware@ARL.MIL
-Cc: Linux-MIPS Mailing List <linux-mips@oss.sgi.com>
-Message-ID: <20000610121217.0HvENiEO-uaAhKyDMVc3vUttf2dBPhyXcBH2o09qPSg@z>
+To: Alexis Cousein <al@brussels.sgi.com>
+Cc: Linux-MIPS Mailing List <linux-mips@oss.sgi.com>, info-iris-hardware@ARL.MIL
+Message-ID: <20000612123719.qXujlec_haUVUbGSAW8Jm18ZC3VkLSXDOQyhDCYdMlI@z>
 
 Hello,
 
-I have recently bought an Indy, but didn't get a keyboard with it, so I
-plugged a standard UK PS/2 keyboard in. All works well, except the | (pipe).
+> That's *usually* easy. You usu need another model specified in
+> /usr/lib/X11/xkb/X0-config.keyboard -- you have a 102 key keyboard and
+> the Indy thinks you have a 101 kkey keyboard or vice-versa.
 
-The key that's labelled ¦ (Left of the Z key) normally does |
-In Windows, If you do CTRL-ALT and the key left of 1, it shows ¦
+> Note that a file somewhere in the .desktop home directory of users can
+> override this file, so make sure that default file is the only one on
+> the system!
+
+In the desktopenv file, it has:
+SGI_KB_LAYOUT="gb"
+
+Will this matter?
 
 
-But, on the Indy I can only get the ¦ character, and can't find the |
-anywhere, which is annoying, because the | is useful / essential in UNIX.
+> Trouble is, it's been so long I've had to answer this that it's no
+> longer in deja.com archives
 
-I have it set for UK keyboard in the Maintence section on boot, and in IRIX
-itself....
+I have tried what you suggested, and it doesn't make any difference...I can
+only get a |.
+
+Anyone know exactly what the command is to go in this file?
 
 
-Anyone have any ideas?   Getting a bit desperate!
+I did find however, that while IRIX is booting, and that console window
+comes up, I can do CTRL-ALT, and they key left of 1 and get a |, but this
+doesn't work once it's booted. In a terminal window, I just get '15q' when I
+press this.
+
+
+Any ideas?
 
 
 Thanks!
@@ -39,16 +55,9 @@ Bye for Now,
 Ian
 
 
-                                \|||/
-                                (o o)
- /---------------------------ooO-(_)-Ooo---------------------------\
- |  Ian Chilton     (IRC Nick - GadgetMan)     ian@ichilton.co.uk  |
- |-----------------------------------------------------------------|
- |  Backup E-Mail -->  ian@ichilton.dhis.org      ICQ #: 16007717  |
- |  Mobile Phone (MAX 150 Chars!) -->  ianchilton@sms.genie.co.uk  |
- |-----------------------------------------------------------------|
- |  http://www.ianchilton.co.uk  --> Main Page                     |
- |  http://www.ichilton.co.uk    --> Own Web Server (When Online)  |
- |-----------------------------------------------------------------|
- |  "Unix is user friendly - it's just picky about it's friends."  |
- \-----------------------------------------------------------------/
+                     \|||/
+                     (o o)
+ /----------------ooO-(_)-Ooo----------------\
+ |  Ian Chilton                              |
+ |  E-Mail : ian@ichilton.co.uk              |
+ \-------------------------------------------/

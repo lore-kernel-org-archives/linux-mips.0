@@ -1,64 +1,31 @@
-Message-ID: <000e01c3e04a$52f38a80$6a0d12ac@ess>
-From: "wei liu" <wei.liu@esstech.com>
-Subject: is there any cache problem with 4kc core?
-Date: Wed, 21 Jan 2004 10:13:51 -0800
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000B_01C3E007.44A717A0"
-Return-Path: <Wei.Liu@esstech.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: How to add more memory?
+Date: Wed, 21 Jan 2004 15:58:24 -0600
+Message-ID: <CFD808D1D39ACB47ABFF586D484CC52EADE212@hqmailnode1.commstor.crossroads.com>
+From: "Nils Larson" <nlarson@Crossroads.com>
+Return-Path: <nlarson@Crossroads.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040121181351.ptmVIoaB4O-LeGOIvpYG6EDV7JJnc_IKJrepk6NICqA@z>
+Message-ID: <20040121215824.0R3-P-tVMt7WKObrAloilg5Xgas1aARKs59y0NmZTek@z>
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_000B_01C3E007.44A717A0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: quoted-printable
-
-I met a crash problem when trying linux2.4.18 on 4kc board. When the =
-kernel starts thread to run function init, it will crash, showing =
-Unhandled kernel unaligned access in =
-unaligned.c:emulate_load_store_insn, line 3
-51:
-while it is ok for me to run linux2.4.3
-
-Following is chip detail.
-CPU revision is: 00018004
-Primary instruction cache 8kb, linesize 16 bytes (2 ways)
-Primary data cache 8kb, linesize 16 bytes (2 ways)
-Linux version 2.4.18-MIPS-01.01 (gcc version 3.0)=20
-
-
-------=_NextPart_000_000B_01C3E007.44A717A0
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dgb2312">
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2>I met a crash problem when trying linux2.4.18 on 4kc =
-board.=20
-When the kernel starts thread to run function init, it will crash, =
-showing=20
-Unhandled kernel unaligned access in =
-unaligned.c:emulate_load_store_insn, line=20
-3<BR>51:</FONT></DIV>
-<DIV><FONT size=3D2>while it is ok for me to run linux2.4.3</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>Following is chip detail.</FONT></DIV>
-<DIV><FONT size=3D2>CPU revision is: 00018004<BR>Primary instruction =
-cache 8kb,=20
-linesize 16 bytes (2 ways)<BR>Primary data cache 8kb, linesize 16 bytes =
-(2=20
-ways)<BR>Linux version 2.4.18-MIPS-01.01 (gcc version 3.0)=20
-<BR></DIV></FONT></BODY></HTML>
-
-------=_NextPart_000_000B_01C3E007.44A717A0--
+Hi,
+We currently have a mips platform running Linux with 256MB of
+RAM starting at 0x8000_0000. We would like to add an additional
+1GB of RAM, maybe starting at 0x4000_0000, that would be used
+for user apps (user virtual memory). The memory map is:
+0x8000_0000 - 256MB RAM
+0xA000_0000 - uncached version of the same 256MB
+0xB000_0000 - PCI memory windows.
+This is a diskless setup booting from a ramdisk.
+So, the (sort of newbie) questions are:
+1. How do we tell Linux to use the new memory?
+2. Is this feasible?
+3. Is there a better way to add more memory?
+We need more space for user data.
+Thanks,
+Nils

@@ -1,25 +1,33 @@
-Subject: Re: errno assignment in _syscall macros and glibc
-Date: Sun, 25 Jun 2000 22:25:48 +0100 (BST)
-In-Reply-To: <20000625232138.A3802@bacchus.dhis.org> from "Ralf Baechle" at Jun 25, 2000 11:21:39 PM
+Message-ID: <019501bfe1bf$99746b10$0a00000a@decoy>
+From: "Jay Carlson" <nop@nop.com>
+References: <001c01bfd6f7$536705b0$540ed7c0@hq.sd.cerf.net>
+Subject: Re: Status reports?
+Date: Thu, 29 Jun 2000 07:46:01 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-ID: <E136JuZ-0003C0-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, Andreas Jaeger <aj@suse.de>, Mike Klar <mfklar@ponymail.com>, linux-mips@oss.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
-Message-ID: <20000625212548.uNcp-vKN7OVjyC9SY41XfmevQegKWRpjX5yDdyKWnOs@z>
+To: Eric Watkins <watkinse@attens.com>, linux-mips@oss.sgi.com
+Message-ID: <20000629114601.MhXWIw0MggmZLYkYiLJrj7GbM-WwyNk8o2ryq8jLRe4@z>
 
-> Sure; these days glibc is more or less synonym with libc and I was using
-> it in that sense.
-> 
-> What small, portable libcs do we have available anyway?  Some mipers will
-> want one.
+ "Eric Watkins" <watkinse@attens.com> writes:
 
-I've been playing with the Linux8086 libc which is tiny but not portable when
-Prumpf pointed out that Cygnus newlib is designed for precisely this job. Its
-about 250K MIPS32 (my PDA has mips32/mips64 but not mips16 - duh!!)
+[...]
 
-Alan
+> I know lots of this information gets distributed via IRC but someone
+should
+> let everyone, who's not on IRC all the time, know what's going on and what
+> progress is being made.
+
+IMO this is a serious problem for many open source development projects
+today.  Much of the interaction occurs in IRC or instant message chats, and
+not in email.  The people who are participating in the online chats have
+much better coordination, but it ends up excluding a lot of people.  It's
+not just people in the wrong timezone who lose out---projects also lose the
+potential effort of people who join the mailing list, see nothing going on,
+and don't get a chance to help.  I've found that even casual readers of a
+mailing list can bring insight from other projects to bear on problems.
+
+Jay

@@ -1,37 +1,38 @@
 Reply-To: <a.voropay@vmb-service.ru>
 From: "Alexander Voropay" <a.voropay@vmb-service.ru>
-Subject: RE: MIPS assembly document...
-Date: Wed, 23 Jun 2004 14:00:42 +0400
-Message-ID: <024c01c45908$f2008fb0$0200000a@ALEC>
+Subject: RE: Linux on SNI RM300E ?
+Date: Tue, 6 Jul 2004 14:18:01 +0400
+Message-ID: <03a001c46342$84ce7210$0200000a@ALEC>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <40D8F950.2050308@realitydiluted.com>
+In-Reply-To: <1089105260.40ea6d6cf2f9c@www.x-mail.net>
 Return-Path: <a.voropay@vmb-service.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "'Steven J. Hill'" <sjhill@realitydiluted.com>, linux-mips@linux-mips.org
-Message-ID: <20040623100042.kdgza-wY5WHH_YEGOXlxgIKrPJ9Txv10V_dQ-VW4PrQ@z>
+To: 'Thomas Kunze' <thomas.kunze@xmail.net>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20040706101801.AJefeGOg2nNy0RJhNrLL-QW6PelA3c6kfbyKLS6hU7c@z>
 
-Steven J. Hill wrote:
 
->Is there a nice little pocket MIPS assembly reference card
->with R3000 and/or R4000 instructions on it?
 
- The MIPS instructions is very simply, so it is possible
-to tead it in hex without reference card ;-)
+>i've downloaded the arcdiag-0.2 and served it via tftp. but the RM300E
+don't like that file.
+>it only says "Bad magic number". what does this mean
+(little/bigendian)? 
 
-* IDT Assembler Software Reference Guide Vol. 2
-3. CPU Instruction Reference
-4. CPU Instructions Encoding
-http://www1.idt.com/pcms/documents.taf?catID=121&docTypeID=25&mode=byTit
-le
-http://www1.idt.com/pcms/tempDocs/79RC32355_MA_92629.pdf
+>the same error-message appears when the to load mipsel boot-images.
 
-P.S. See:
-http://chortle.ccsu.edu/AssemblyTutorial/tutorialContents.html
-http://myrkraverk.afraid.org/PlayStation/EmotionEngine/
+ Do you have an originas OS (SINIX ?) supplied with this server ?
+Try a `file` GNU utility:
+$ file <ANY_BINARIES_FROM_THE_ORIGINAL_OS>
+or
+$ file <KERNEL_IMAGE_FROM_THE_ORIGINAL_OS>
+
+ Some modern loaders requires ELF binaries (not COFF) so you should
+know a full binary file format to load (ELF/COFF/little/bigendian).
+
 
 --
 -=AV=-

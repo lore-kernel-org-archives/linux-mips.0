@@ -1,74 +1,213 @@
-Message-ID: <20010813173446.61234.qmail@web11901.mail.yahoo.com>
-Date: Mon, 13 Aug 2001 10:34:46 -0700 (PDT)
-From: Wayne Gowcher <wgowcher@yahoo.com>
-Subject: Benchmark performance
-In-Reply-To: <20010809215522.A1958@lucon.org>
+content-class: urn:content-classes:message
+Subject: RE: Could not find the source code for "/sbin/init".
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Date: Tue, 14 Aug 2001 11:21:01 -0700
+Message-ID: <84CE342693F11946B9F54B18C1AB837B0A2431@ex2k.pcs.psdc.com>
+From: "Steven Liu" <stevenliu@psdc.com>
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010813173446.leEFffuzDPn7JG1gTmH6LAMDAF7RnCbiiEMlMwHCOf0@z>
+To: Pete Popov <ppopov@pacbell.net>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010814182101.JJE6eKLyOPCoupVSxOWKpRtzC6W84jfCcKNY_Uq00V0@z>
 
-I have been running the nbench-byte-2.1 benchmark on a
-mips r4k processor with various combinations of kernel
-and distribution packages. I initially started with a
-2.4.2 kernel using the redhat 5.1 distribution found
-on the SGI mips site. I compiled nbench native on the
-target with redhat mounted via nfs. I used this as my
-base.
+Hi, Pete:
 
-I then ran a 2.4.6 kernel on the same mips 4k
-processor, but this time with the redhat 7.0
-distribution. I compiled native using the
-distributions compiler. This resulted in :
+Thank you very much for your help.
 
-a 3 % reduction in the Memory Index benchmark
-a 2 % increase in the Integer Index benchmark
-a 23 % reduction in the Floating Point Index benchmark
+After several tries, I realized that you are right. My MMU may have
+problem.
 
+Because my mips CPU is not the standard one and I do not have a R3000
+application 
+program such as "date", "arch", or "init", I built an application as
+following.
 
-Using the same 2.4.6 kernel on the same mips 4k
-processor, with the redhat 7.1 distribution (compiling
-native with the distribution's compiler ) I got :
+liu.c is: 
 
-a 5.7 % reduction in the Memory Index benchmark
-a 1.5 % reduction in the Integer Index benchmark
-a 27 % reduction in the Floating point Index benchmark
+void main(void)
+{
 
-Also as a test I ran the redhat 5.1 native compiled
-nbench executable on the 2.4.6 / redhat 7.0 setup and
-again saw reduced performance :
+}
 
-a 4.8 % reduction in the Memory Index benchmark
-a 1.5 % increase in the Integer Index benchmark
-a 26  % reduction in the floating point benchmark
+Makefile is:
 
-Although I tried various compiler switches to acheive
-the highest index I could on a per kernel / per
-distribution basis ( they weren't always the same ).
-My basic CFLAGS settings were :
+ARCH = mips
 
-CFLAGS = -s -static -Wall -O2 -fomit-frame-pointer
--funroll-all-loops -mips2 -finline-functions.
+.EXPORT_ALL_VARIABLES:
 
 
-From the above tests it seems that newer does not in
-fact mean faster. I can only speculate as to why, and
-so I would appreciate hearing from anyone who :
+CROSS_COMPILE 	=mips-linux-
 
-a, has suggestions on how to optimize compiler
-performance.
+AS	=$(CROSS_COMPILE)as
+LD	=$(CROSS_COMPILE)ld
+CC	=$(CROSS_COMPILE)gcc  -D__mips__ 
+CPP	=$(CC) -E
+AR	=$(CROSS_COMPILE)ar
+NM	=$(CROSS_COMPILE)nm
+STRIP	=$(CROSS_COMPILE)strip
+OBJCOPY	=$(CROSS_COMPILE)objcopy
+OBJDUMP	=$(CROSS_COMPILE)objdump
+MAKE	=make
+GENKSYMS=/sbin/genksyms
 
-b, may know why performance seems to degrade with a
-newer kernel and with a newer distribution ? newer
-compiler ?
 
-c, any other tips for improving kernel / application
-performance.
+CFLAGS = -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -mips1
+-mcpu=r3000 -mmemcpy
 
-Wayne
+CFLAGS += $(shell if $(CC) -fno-strict-aliasing -S -o /dev/null -xc
+/dev/null >/dev/null 2>&1; then echo "-fno-strict-aliasing"; fi)
 
-__________________________________________________
-Do You Yahoo!?
-Send instant messages & get email alerts with Yahoo! Messenger.
-http://im.yahoo.com/
+# egcs-1.0.2 compiler for MIPS has a problem for which this is a
+work-around
+CFLAGS += $(shell if $(CC) -mno-split-addresses -S -o /dev/null -xc
+/dev/null >/dev/null 2>&1; then echo "-mno-split-addresses"; fi)
+
+
+
+.S.s:
+	$(CC) -D__ASSEMBLY__  -traditional -E -o $*.s $<
+.S.o:
+	$(CC) -D__ASSEMBLY__  -traditional -c -o $*.o $<
+
+
+
+liu: $(CONFIGURATION) liu.o
+	$(LD) $(LINKFLAGS) $(HEAD) liu.o  \
+		-o liu
+	$(NM) liu | grep -v '\(compiled\)\|\(\.o$$\)\|\( [aU]
+\)\|\(\.\.ng$$\)\|\(LASH[RL]DI\)' | sort > System.map
+
+
+liu.o: liu.c 
+	$(CC) $(CFLAGS) $(PROFILING) -c -o $*.o $<
+
+
+When I ran the program, it crushed.
+
+Could you build this application and run it on your R3000 system? If it
+works, send me your executable so that I can test my system.
+
+Regards,
+
+Steven Liu
+
+-----Original Message-----
+From: Pete Popov [mailto:ppopov@pacbell.net]
+Sent: Tuesday, August 07, 2001 11:53 AM
+To: Steven Liu
+Subject: Re: Could not find the source code for "/sbin/init".
+
+
+Steven Liu wrote:
+> Hi, Pete:
+> 
+> Thank you for your help.
+> 
+> Could you tell me what are sash,static bash, and dynamically 
+> linked bash? 
+> 
+> Sorry for the trival question because I am new in Linux kernel.
+
+sash is a "stand alone shell". It's very small and is completely
+statically 
+linked.  The commands are bit different -- for example, "ls" is "-ls" --
+ie, the 
+commands start with a "-".  If you can load sash instead of /sbin/init,
+it gives 
+you some confidence that your kernel is actually able to switch to
+userland.
+
+
+Static and dynamic bash refers to how the libraries that bash is using a
+linked. 
+With a statically linked bash, all of the libraries are linked as part
+of the 
+bash binary. That way there is no dynamic library loading when you start
+bash.
+
+Dynamically linked bash means that when you start bash, different
+libraries that 
+bash is using will be loaded dynamically.
+
+
+Pete
+
+> 
+> Regards,
+> 
+> Steven Liu
+> 
+> -----Original Message-----
+> From: Pete Popov [mailto:ppopov@pacbell.net]
+> Sent: Tuesday, August 07, 2001 10:49 AM
+> To: Steven Liu
+> Cc: linux-mips@oss.sgi.com
+> Subject: Re: Could not find the source code for "/sbin/init".
+> 
+> 
+> Steven Liu wrote:
+> 
+>>Hi ALL:
+>>
+>>As we know, the function init( ) in main.c is 
+>>
+>>static int init(void * unused)
+>>{
+>>	lock_kernel();
+>>	do_basic_setup();
+>>	free_initmem();
+>>	unlock_kernel();
+>>
+>>	if (open("/dev/console", O_RDWR, 0) < 0)
+>>		printk("Warning: unable to open an initial console.\n");
+>>
+>>	(void) dup(0);
+>>	(void) dup(0);
+>>	
+>>
+>>	if (execute_command)
+>>		execve(execute_command,argv_init,envp_init);
+>>
+>>	execve("/sbin/init",argv_init,envp_init);    //<--- problem
+>>
+>>	execve("/etc/init",argv_init,envp_init);
+>>	execve("/bin/init",argv_init,envp_init);
+>>	execve("/bin/sh",argv_init,envp_init);
+>>	panic("No init found.  Try passing init= option to kernel.");
+>>} 
+>>
+>>The system call execve("/sbin/init",argv_init,envp_init) will start a
+>>background process.
+>>In my case, it could not start the process, that is, system hangs
+>>
+> there
+> 
+>>and 
+>>execve("/etc/init",argv_init,envp_init) could not be executed.
+>>
+>>
+>>Could you tell me where could I find the source code for the
+>>
+> executable
+> 
+>>/sbin/init? 
+>>
+>>Thank you very much for your help.
+>>
+> 
+> /sbin/init is part of the SysVInit package.
+> 
+> Your problem is most likely NOT with /sbin/init itself. I would start
+by
+> loading 
+> sash first; if that works, try a static bash; if that works, try a
+> dynamically 
+> linked bash.
+> 
+> Pete
+> 
+> 
+> 
+> 

@@ -1,20 +1,32 @@
-Reply-To: <sseeger@stellartec.com>
-From: sseeger@stellartec.com (Steven Seeger)
-Subject: never mind
-Date: Sat, 6 Jul 2002 15:34:54 -0700
-Message-ID: <020401c2253d$5a4cca90$3501a8c0@wssseeger>
+Date: Sun, 7 Jul 2002 11:09:00 -0700 (PDT)
+From: Muthukumar Ratty <muthu5@sbcglobal.net>
+Subject: Re: MIPS Atlas board
+In-Reply-To: <20020703235506.A21798@dea.linux-mips.net>
+Message-ID: <Pine.LNX.4.33.0207071055220.25811-100000@Muruga.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com, linux-mips-kernel@lists.sourceforge.net
-Message-ID: <20020706223454.e1GXOVp0vxn6tmwTmBrAJkRGxl7xeDcCZYIylYzdwvw@z>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20020707180900.NXSzquMj3DZClg9TaY_jxTMIWQnrf_viad8m5C030g4@z>
 
-Well I fixed it. Somehow kswapd_wait gets a bad entry in its task_list and
-it's always 0xffffffff8. So, putting a hack in __wake_up_common to look for
-that address and break out (since that always seems to be at the end of the
-list) fixed the problem. How odd. Of course I really should find out why
-that bad value gets in there, but I'm so lazy.
+On Wed, 3 Jul 2002, Ralf Baechle wrote:
 
-Steve
+> Anybody actually still using the MIPS Atlas board?  If so, what kernel
+> versions?  I've not had any feedback about the Atlas in many moons, so
+> I'm considering to drop support for it for 2.5.  Comment?
+
+Oh no, I am using Atlas board with 2.4 kernel and I know few others also
+using it (guess they dont care anymore :( .  If its not a time killer
+could you please add it to 2.5 also.
+
+BTW I was running network performance tools and the max I could read from
+Atlas board is ~0.3M. Is this a problem with the hardware?
+
+Thanks a lot,
+Muthu.
+
+
+>
+>   Ralf
+>

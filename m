@@ -1,61 +1,75 @@
-Received: from nssinet2.co-nss.co.jp (localhost [127.0.0.1])
-	by nssinet2.co-nss.co.jp (8.9.3/3.7W) with ESMTP id JAA01608
-	for <linux-mips@linux-mips.org>; Tue, 22 Mar 2005 09:41:07 +0900 (JST)
-Received: from nssnet.co-nss.co.jp (nssnet.co-nss.co.jp [150.96.64.250])
-	by nssinet2.co-nss.co.jp (8.9.3/3.7W) with ESMTP id JAA01604
-	for <linux-mips@linux-mips.org>; Tue, 22 Mar 2005 09:41:07 +0900 (JST)
-Received: from NUNOE ([150.96.160.60])
-	by nssnet.co-nss.co.jp (8.9.3+Sun/3.7W) with SMTP id JAA04644
-	for <linux-mips@linux-mips.org>; Tue, 22 Mar 2005 09:33:09 +0900 (JST)
-Message-ID: <006501c52e78$bb081730$3ca06096@NUNOE>
-From: "Hdei Nunoe" <nunoe@co-nss.co.jp>
-Subject: PSCHED_JSCALE 
-Date: Tue, 22 Mar 2005 09:47:31 +0900
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	format=flowed;
-	charset="iso-2022-jp";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
-Return-Path: <nunoe@co-nss.co.jp>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: defkeymap.c Compile Warnings . . .
+Date: Wed, 23 Mar 2005 13:56:50 -0500
+Message-ID: <54AC63178735ED46BAC5F5E668A9F224046AAC@alfalfa.fortresstech.com>
+From: "Dennis Daniels" <ddaniels@fortresstech.com>
+Return-Path: <ddaniels@fortresstech.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20050322004731.7IGmwJLSfRxWbni48fW8h3qZ_UXlC-9zPAm0LcxAm5w@z>
+Message-ID: <20050323185650.ltU3qm4oyperSdcNYbDW554logVHJ8U6Fj608a8YWl0@z>
 
-Hi there,
+I'm having a compile problem with the generated file defkeymap.c for Linux 64-bit MIPS on the BCM1250, and was wondering if anyone has seen or heard of it. The structures in defkeymap.c are all coming out 2x what they should be . . .
 
-Has anyone known about the background information about
-the following change?  
+Thanks ahead of time,
+Dennis
 
-  The PSCHED_JSCALE in the net/sched/sch_api.c is defined in the
-$B!!(Binclude/net/pkt_sched.h.  If I set HZ to 1000 - PSCHED_JSCALE
-  is 0 - what would happen?
+Target:              BCM1250/64-bit
+Linux kernel:      2.4.20
+gcc:                  3.3.1
 
-$B!!(B#if HZ == 100
-$B!!(B#define PSCHED_JSCALE 13
-$B!!(B#elif HZ == 1024
-$B!!(B#define PSCHED_JSCALE 10
-$B!!(B#else
-$B!!(B#define PSCHED_JSCALE 0
-$B!!(B#endif
-$B!!(B
-$B!!(BThe code is updated in 2.4.27 as follows.
-  The PSCHED_JSCALE becomes 10 in this case.
-  What problems would it fix?  Or what behaivior would change?
+The warnings I'm getting are:
 
-$B!!(B#if HZ < 96
-$B!!(B#define PSCHED_JSCALE 14
-$B!!(B#elif HZ >= 96 && HZ < 192
-$B!!(B#define PSCHED_JSCALE 13
-$B!!(B#elif HZ >= 192 && HZ < 384
-$B!!(B#define PSCHED_JSCALE 12
-$B!!(B#elif HZ >= 384 && HZ < 768
-$B!!(B#define PSCHED_JSCALE 11
-$B!!(B#elif HZ >= 768
-$B!!(B#define PSCHED_JSCALE 10
-$B!!(B#endif
+mips64_fp_be-gcc -D__KERNEL__ -I/ws/ddaniels/projects/ddaniels-01/Arch_2/Patriot/SQA/Main/Applications/thirdparty/kernel/linux/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fnostrict-aliasing -fno-common -fomit-frame-pointer -I /ws
+/ddaniels/projects/ddaniels-01/Arch_2/Patriot/SQA/Main/Applications/thirdparty/kernel/linux/include/asm/gcc -mabi=64 -G 0 -mno-abicalls -fno-pic -Wa,--trap -pip
+e -mtune=sb1 -mips64   -nostdinc -iwithprefix include -DKBUILD_BASENAME=defkeymap  -c -o defkeymap.o defkeymap.c
+defkeymap.c:25: warning: excess elements in array initializer
+defkeymap.c:25: warning: (near initialization for `plain_map')
+defkeymap.c:25: warning: excess elements in array initializer
+defkeymap.c:25: warning: (near initialization for `plain_map')
+:
+:
+defkeymap.c:250: warning: excess elements in array initializer
+defkeymap.c:250: warning: (near initialization for `ctrl_alt_map')
+defkeymap.c:250: warning: excess elements in array initializer
+defkeymap.c:250: warning: (near initialization for `ctrl_alt_map'
 
-
----
-Hdei Nunoe
+and the structure looks like:
+u_short plain_map[NR_KEYS] = {
+            0xf200,  0xf01b,  0xf031,  0xf032,  0xf033,  0xf034,  0xf035,  0xf036,
+            0xf037,  0xf038,  0xf039,  0xf030,  0xf02d,  0xf03d,  0xf07f,   0xf009,
+            0xfb71,  0xfb77,  0xfb65,  0xfb72,  0xfb74,  0xfb79,  0xfb75,  0xfb69,
+            0xfb6f,  0xfb70,  0xf05b,  0xf05d,  0xf201,  0xf702,  0xfb61,  0xfb73,
+            0xfb64,  0xfb66,  0xfb67,  0xfb68,  0xfb6a,  0xfb6b,  0xfb6c,  0xf03b,
+            0xf027,  0xf060,  0xf700,  0xf05c,  0xfb7a,  0xfb78,  0xfb63,  0xfb76,
+            0xfb62,  0xfb6e,  0xfb6d,  0xf02c,  0xf02e,  0xf02f,  0xf700,  0xf30c,
+            0xf703,  0xf020,  0xf207,  0xf100,  0xf101,  0xf102,  0xf103,  0xf104,
+            0xf105,  0xf106,  0xf107,  0xf108,  0xf109,  0xf208,  0xf209,  0xf307,
+            0xf308,  0xf309,  0xf30b,  0xf304,  0xf305,  0xf306,  0xf30a,  0xf301,
+            0xf302,  0xf303,  0xf300,  0xf310,  0xf206,  0xf200,  0xf03c,  0xf10a,
+            0xf10b,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf30e,  0xf702,  0xf30d,  0xf01c,  0xf701,  0xf205,  0xf114,  0xf603,
+            0xf118,  0xf601,  0xf602,  0xf117,  0xf600,  0xf119,  0xf115,  0xf116,
+            0xf11a,  0xf10c,  0xf10d,  0xf11b,  0xf11c,  0xf110,  0xf311,  0xf11d,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+            0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,  0xf200,
+};  

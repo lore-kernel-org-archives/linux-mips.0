@@ -1,33 +1,42 @@
-From: info <ecom@my.tramonline.net>
-Date: Thu, 13 Dec 2001 08:45:32 +0900
-Subject: =?ISO-2022-JP?B?GyRCJDREczdIJE43bxsoQg==?=
+Message-ID: <06c701c183f7$d23eb410$5601010a@prefect>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <20011213163953.GB23023@paradigm.rfc822.org>
+Subject: Re: [PATCH] /proc/cpuinfo endianess (autoconf dependencie)
+Date: Thu, 13 Dec 2001 12:01:34 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-2022-JP"
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20011212234603691.LYNM.1476.t-mta7.odn.ne.jp@mta7.odn.ne.jp>
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20011212234532.w6yMBPVTO4GIQrON-YW3QKZM0eZK5-3I0zQmNOdh1N4@z>
+To: Florian Lohoff <flo@rfc822.org>, linux-mips@oss.sgi.com
+Message-ID: <20011213170134.06vbaHx8JJ4ymDB7WscVb9kE8H5ptPtxKfts7yRCG7M@z>
 
-ＨＰ＆メルマガ運営者様。
+For autoconf?  Why need to ask the kernel?  Aren't there other very simple
+ways of determining build endianness in userspace?
 
-■転職サイトの報酬制バーナ提携です。
-転職求職者の登録承認数に応じて『1000円/件』、
-更に転職決定で基本的に『1O万円/件』をお支払
-い致します。
-※ご提携金3000円を進呈致します。（今回のみ）
------------------------------------------------------
+Regards,
+Brad
 
-■英会話教材販売の報酬制バーナ提携です。
-売上１セットで『6000円』バックです。
-※ご提携金1000円を進呈致します。
-―――――――――――――――――――――――――――――■
+----- Original Message -----
+From: "Florian Lohoff" <flo@rfc822.org>
+To: <linux-mips@oss.sgi.com>
+Sent: Thursday, December 13, 2001 11:39 AM
+Subject: [PATCH] /proc/cpuinfo endianess (autoconf dependencie)
 
-※ご連絡いただければ詳細をお送り致します。
-では、よろしくお願い申し上げます。
+Something like this should be needed for current kernel to make
+autoconf happy ...
 
-◆お問合せ専用メール
-complan@bigfoot.com
-
-コム・プラン事務局
-http://drive.to/career/
+--- arch/mips/kernel/proc.c 2001/12/12 13:45:58 1.27.2.3
++++ arch/mips/kernel/proc.c 2001/12/13 17:39:19
+@@ -51,6 +51,11 @@
+  seq_printf(m, "BogoMIPS\t\t: %lu.%02lu\n",
+                loops_per_jiffy / (500000/HZ),
+                (loops_per_jiffy / (5000/HZ)) % 100);
++#ifdef __MIBSEB__
++ seq_printf(m, "byteorder\t\t: big endian\n");
++#else
++ seq_printf(m, "byteorder\t\t: little endian\n");
++#endif
+  seq_printf(m, "wait instruction\t: %s\n", cpu_wait ? "yes" : "no");
+  seq_printf(m, "microsecond timers\t: %s\n",
+                (mips_cpu.options & MIPS_CPU_COUNTER) ? "yes" : "no");

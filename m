@@ -1,37 +1,47 @@
-Date: Thu, 19 Jul 2001 03:30:08 -0700 (PDT)
-From: Chris Vandomelen <chrisv@b0rked.dhs.org>
-Subject: Re: Patches to support 48M IBM Workpad z50?
-In-Reply-To: <20010719122113.A2422@bacchus.dhis.org>
-Message-ID: <Pine.LNX.4.31.0107190328000.9246-100000@b0rked.dhs.org>
+Message-ID: <008101c110c4$de161c70$9400a8c0@jefflee>
+From: "jeff_lee" <jeff_lee@coventive.com>
+References: <3B572EFC.9090903@pacbell.net>
+Subject: Re: hard hat linux 2.0
+Date: Fri, 20 Jul 2001 10:37:02 +0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: linux-mips@oss.sgi.com, linux-mips-kernel@lists.sourceforge.net
-Message-ID: <20010719103008.wyLLqKbMECcqtIP_YHFuwsE32QZb3vpTUiCWneq-noo@z>
+To: ppopov@pacbell.net, linux-mips-kernel@lists.sourceforge.net, linux-mips@oss.sgi.com
+Message-ID: <20010720023702.rjP_vwkJWOBcSUy8yYdFEvC6nfrxYmcnwQE_oPaZgZY@z>
 
-> Now that hack took longer to implement than a proper solution ...
+Hi ,
+    How can I ftp the site ??
+Do I need the user name or passward ?? 
+Or how is the port number ??
 
-Yeah, that hack did take longer to implement than a proper solution. But
-it was what I could come up with at the time, as I haven't gone digging
-that far down into the kernel sources yet (and unfortunately, the prom.c
-source wasn't very helpful either.
+Thanks !!!
+----- Original Message ----- 
+From: "Pete Popov" <ppopov@pacbell.net>
+To: <linux-mips-kernel@lists.sourceforge.net>; <linux-mips@oss.sgi.com>
+Sent: Friday, July 20, 2001 3:03 AM
+Subject: hard hat linux 2.0
 
-> > that would be useful to work past the memory hole?
->
-> Put something like the following into your systems prom_meminit:
->
-> 	add_memory_region(0UL       , 16UL << 20, BOOT_MEM_RAM);
-> 	add_memory_region(16UL      , 16UL << 20, BOOT_MEM_RESERVED);
-> 	add_memory_region(32UL << 20, 32UL << 20, BOOT_MEM_RAM);
->
-> You may want to account for additional memory areas and do a proper detection
-> etc., exclude area which are used by the firmware etc.
 
-I'm pretty sure that 16M region in the 16-32M area is unused: it's
-possible to solder another 2 8M dram chips on the board and increase the
-memory to 64M..
-
-Thanks for the help. :)
-
-Chris
+> Looks like ftp.mvista.com was updated last night to include the mips 
+> journeyman edition. The images of interest would be 
+> ftp.mvista.com:/pub/Journeyman/cdimages/{je-d1-hhl2.0.cdimage, 
+> je-src-hhl2.0.cdimage}.  They are rather large so it takes a while to 
+> download them.
+> 
+> In addition to the userland packages, there is an up to date cross 
+> toolchain which can build the kernel as well as useland apps. There is 
+> also a native toolchain.  The toolchain is 2.95.3 based; glibc is 2.2.3. 
+>   Since there was some perl interest recently, perl is included. 
+> Rebuilding any of the userland packages, for those interested in doing 
+> that, is pretty trivial (cross based building!).
+> 
+> This is an embedded linux distribution so it's not as large as a RedHat 
+> desktop system. For embedded work though, I think it's more than 
+> sufficient.  One note, to anyone trying it.  A number of binaries are 
+> linked with pthreads, so you'll need either the new sysmips fix that 
+> Ralf is working on, when he completes it, or the patch from Florian. 
+> Otherwise binaries like ls, tar, and many others will seg fault.
+> 
+> Pete

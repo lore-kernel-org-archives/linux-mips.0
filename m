@@ -1,59 +1,74 @@
-Message-ID: <200108130153.f7D1rMj27259@oss.sgi.com>
-From: f9cclr9l6vjeru9s3uezs9@hotmail.com
-Subject: Save 50% on Premium Brand Cigarettes!
-Date: Wed, 15 Aug 2001 02:34:27 -0400
+Message-ID: <20010813173446.61234.qmail@web11901.mail.yahoo.com>
+Date: Mon, 13 Aug 2001 10:34:46 -0700 (PDT)
+From: Wayne Gowcher <wgowcher@yahoo.com>
+Subject: Benchmark performance
+In-Reply-To: <20010809215522.A1958@lucon.org>
 MIME-Version: 1.0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux-mips@oss.sgi.com
-To: f9cclr9l6vjeru9s3uezs9@hotmail.com
-Message-ID: <20010815063427.Ka4XlLNbabaHWNapuvUZvkWARs32EUeuzA4Spus5xcM@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010813173446.leEFffuzDPn7JG1gTmH6LAMDAF7RnCbiiEMlMwHCOf0@z>
 
-<HTML><FONT  COLOR=3D"#ff0000" SIZE=3D5 PTSIZE=3D18><B>Buy premium cigarett=
-es for up to 50% off.</FONT><FONT  COLOR=3D"#ff0000" BACK=3D"#ffffff" styl=
-e=3D"BACKGROUND-COLOR: #ffffff" SIZE=3D2 PTSIZE=3D10 FAMILY=3D"SANSSERIF" =
-FACE=3D"Arial" LANG=3D"0"></B> </FONT><FONT  COLOR=3D"#000000" BACK=3D"#ff=
-ffff" style=3D"BACKGROUND-COLOR: #ffffff" SIZE=3D2 PTSIZE=3D10 FAMILY=3D"S=
-ANSSERIF" FACE=3D"Arial" LANG=3D"0"><BR>
-</FONT><FONT  COLOR=3D"#000000" BACK=3D"#ffffff" style=3D"BACKGROUND-COLOR=
-: #ffffff" SIZE=3D3 PTSIZE=3D12 FAMILY=3D"SANSSERIF" FACE=3D"Arial" LANG=3D=
-"0"><B>Carton Niagra $10.50 &nbsp;&nbsp;Carton Marboro Duty Free $22.00 <B=
-R>
-<BR>
-</FONT><FONT  COLOR=3D"#0000ff" BACK=3D"#ffffff" style=3D"BACKGROUND-COLOR=
-: #ffffff" SIZE=3D4 PTSIZE=3D14 FAMILY=3D"SANSSERIF" FACE=3D"Arial" LANG=3D=
-"0"></B><A HREF=3D"http://www.smokingcigarettescheaper.com/">Click Here to=
- See the Savings!</A></FONT><FONT  COLOR=3D"#000000" BACK=3D"#ffffff" styl=
-e=3D"BACKGROUND-COLOR: #ffffff" SIZE=3D2 PTSIZE=3D10 FAMILY=3D"SANSSERIF" =
-FACE=3D"Arial" LANG=3D"0"><BR>
-<BR>
-<BR>
-</FONT><FONT  COLOR=3D"#000000" BACK=3D"#ffffff" style=3D"BACKGROUND-COLOR=
-: #ffffff" SIZE=3D3 PTSIZE=3D12 FAMILY=3D"SANSSERIF" FACE=3D"Arial" LANG=3D=
-"0">Did you know that buying cigarettes on line from America's Discount Ci=
-garettes you can save you up to 50%. We ship from the Seneca Indian Reserv=
-ation which saves you having to pay most of those high State and Federal t=
-axes on each pack. Here's an example of the saving you can expect... &nbsp=
-;Marboro Box Duty Free $22.00 a carton ..that's only $2.20 per pack! &nbsp=
-;Salem's $23.00 per carton ..that's only $2.30 per pack. Stop throwing mon=
-ey away. <BR>
-<BR>
-</FONT><FONT  COLOR=3D"#0000ff" BACK=3D"#ffffff" style=3D"BACKGROUND-COLOR=
-: #ffffff" SIZE=3D5 PTSIZE=3D18 FAMILY=3D"SANSSERIF" FACE=3D"Arial" LANG=3D=
-"0"><A HREF=3D"http://www.smokingcigarettescheaper.com/">Visit our site to=
-day and start saving today!</A><BR>
-<BR><BR><BR><font color=3D"#000000" size=3D2>
-This email was sent to you because your email is part of a targeted opt-in=
- list.&nbsp; If 
-you do not wish to receive further mailings, please click below and enter 
-your email at the bottom of the page.&nbsp; You may then rest-assured that=
- 
-you will never receive another email from us again.&nbsp;&nbsp;<BR><A 
-href=3D"http://www.removeyou.com/">UNSUBSCRIBE ME PLEASE</FONT><font color=
-=3Dwhite> or visnqmer@yahoo.com
-<br>                                                                      =
-                            
+I have been running the nbench-byte-2.1 benchmark on a
+mips r4k processor with various combinations of kernel
+and distribution packages. I initially started with a
+2.4.2 kernel using the redhat 5.1 distribution found
+on the SGI mips site. I compiled nbench native on the
+target with redhat mounted via nfs. I used this as my
+base.
 
-</BODY>
-</HTML>
+I then ran a 2.4.6 kernel on the same mips 4k
+processor, but this time with the redhat 7.0
+distribution. I compiled native using the
+distributions compiler. This resulted in :
+
+a 3 % reduction in the Memory Index benchmark
+a 2 % increase in the Integer Index benchmark
+a 23 % reduction in the Floating Point Index benchmark
+
+
+Using the same 2.4.6 kernel on the same mips 4k
+processor, with the redhat 7.1 distribution (compiling
+native with the distribution's compiler ) I got :
+
+a 5.7 % reduction in the Memory Index benchmark
+a 1.5 % reduction in the Integer Index benchmark
+a 27 % reduction in the Floating point Index benchmark
+
+Also as a test I ran the redhat 5.1 native compiled
+nbench executable on the 2.4.6 / redhat 7.0 setup and
+again saw reduced performance :
+
+a 4.8 % reduction in the Memory Index benchmark
+a 1.5 % increase in the Integer Index benchmark
+a 26  % reduction in the floating point benchmark
+
+Although I tried various compiler switches to acheive
+the highest index I could on a per kernel / per
+distribution basis ( they weren't always the same ).
+My basic CFLAGS settings were :
+
+CFLAGS = -s -static -Wall -O2 -fomit-frame-pointer
+-funroll-all-loops -mips2 -finline-functions.
+
+
+From the above tests it seems that newer does not in
+fact mean faster. I can only speculate as to why, and
+so I would appreciate hearing from anyone who :
+
+a, has suggestions on how to optimize compiler
+performance.
+
+b, may know why performance seems to degrade with a
+newer kernel and with a newer distribution ? newer
+compiler ?
+
+c, any other tips for improving kernel / application
+performance.
+
+Wayne
+
+__________________________________________________
+Do You Yahoo!?
+Send instant messages & get email alerts with Yahoo! Messenger.
+http://im.yahoo.com/

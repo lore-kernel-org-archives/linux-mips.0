@@ -1,23 +1,35 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199706210134.DAA11557@informatik.uni-koblenz.de>
-Subject: Re: CONFIG_REMOTE_DEBUG
-Date: Sat, 21 Jun 1997 03:34:47 +0200 (MET DST)
-In-Reply-To: <199706201524.LAA25039@neon.ingenia.ca> from "Mike Shaver" at Jun 20, 97 11:24:09 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Message-ID: <199706221750.KAA09710@neteng.engr.sgi.com>
+From: lm@neteng.engr.sgi.com (Larry McVoy)
+Subject: Re: Getting X on Linux/SGI 
+Date: Sun, 22 Jun 1997 10:50:07 -0700
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970621013447.l9jZelfz_vWJhV_2KkXwkIktu8SYRgtWQZTetyySlzE@z>
+To: fisher@sgi.com
+Cc: lm@neteng.engr.sgi.com, sca@refugee.engr.sgi.com, carlson@heaven.newport.sgi.com, linux@cthulhu.engr.sgi.com, William Fisher <fisher@hollywood.engr.sgi.com>
+Message-ID: <19970622175007.3FwZZev446_LygoFWRxn_UIywsJOk--GonitzIDwo3c@z>
 
-Hi,
+: 	If the demand for Linux on MIPS chips is comming from the "embedded"
+: 	systems then things sure have changed since the early days of
+: 	MIPS Computer Systems. 
 
-> Is this something that's useful enough to warrant me digging up the
-> cabling and software that I'd need to make it work?
+I think it is safe to confirm that yes, indeeedy, the market has changed.
 
-It's ages that I saw this in action for debugging a Mips Magnum kernel.
-I also think that David was using the stuff.
+: 	If fact the original VP of embedded system marketing at MIPS was
+: 	Chet Silvestri, now VP of SPARC embedded systems at SUN. 
 
-  Ralf
+I know Chet, and Chet was real interested in getting some free OS on 
+embedded SPARC when I was at Sun.
+
+: 	Hence I would like to here more about larry's definition of
+: 	"embedded systems" because they sure don't sound like any
+: 	that our semiconductor partners sell to.
+
+I think almost 100% of what I would call embedded Linux on MIPS is for
+game platforms.  What they really want is a full on Unix environment
+that they can use for development/debugging.  When they get done,
+they want to rip out Linux/Unix and run an app on the bare hardware.
+They may eventually want to leave a stripped down Linux in there but I
+don't see why today.
+
+What they really want is a reasonable development environment and they are
+smart enough to realize they get there fastest with Linux.

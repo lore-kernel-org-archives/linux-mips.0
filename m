@@ -1,51 +1,96 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199706190640.IAA20188@informatik.uni-koblenz.de>
-Subject: Re: Getting X on Linux/SGI
-Date: Thu, 19 Jun 1997 08:40:51 +0200 (MET DST)
-In-Reply-To: <199706182316.QAA00661@neteng.engr.sgi.com> from "Larry McVoy" at Jun 18, 97 04:16:34 pm
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199706192232.PAA03167@oz.engr.sgi.com>
+Subject: (fwd) Linux on N64 - can you help
+Date: Thu, 19 Jun 1997 15:32:30 -0700 (PDT)
+Reply-To: ariel@sgi.com (Ariel Faigon)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Larry McVoy <lm@neteng.engr.sgi.com>
-Cc: nigel@cthulhu.engr.sgi.com, carlson@heaven.newport.sgi.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19970619064051.53IudIMfJE60pCyDwFV937QtwZZ0pLXlvXAh_RXBKkI@z>
+To: linux@cthulhu.engr.sgi.com
+Cc: Allan Schaffer <allan@oz.engr.sgi.com>
+Message-ID: <19970619223230.Vvct-V6oW4IdQNTrXDqt445vNhtXxPlyEb70ch7K-bU@z>
 
-Larry McVoy wrote:
+Can anyone help this guy?  anyone from project reality?
+Forwarding to Linux and to Kevin (who may know where to
+get technical docs on this) I'll also suggest to the guy
+to join our list and listen for a while.
 
-> We can argue this all day.  It's pointless.
-> 
-> Something that is not pointless, something that the nay-sayers should
-> take to heart, is that more than 10% of Alpha sales last year were Linux.
-> I confirmed this with Digital this morning - the number is somewhere
-> between 25 and 30 thousand Alphas running Linux.
 
-Jon "Maddog" Hall says that the existence of Linux for Alphas helped
-Digital to sell more Digital UNIX systems than they would have sold
-without Linux.  His explanation is simple.  First Linux pulls their
-customers into the UNIX board.  Somewhen the customers have a problem
-that cannot be solved by Linux but a Digital UNIX system.  So it's a
-logical next step for them to use such a systems.
+----- Forwarded message from Allan Schaffer -----
 
-SGI is mostly in the systems bussines and the market of PC class MIPS
-machines is carefully expressed not doing very well, so this does not
-100% apply to their situation.  The point is that this not a Linux vs.
-IRIX situation.
+From allan@holodeck.csd.sgi.com  Thu Jun 19 15:02:54 1997
+Date: Thu, 19 Jun 1997 15:02:41 -0700
+From: allan@holodeck.csd.sgi.com (Allan Schaffer)
+Message-Id: <9706191502.ZM23638@holodeck.csd.sgi.com>
+X-Mailer: Z-Mail-SGI (3.2S.3 08feb96 MediaMail)
+To: ariel@cthulhu
+Subject: (Fwd) Can your Redirect this?
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 
-> Add to that the 4-6 million PCs running Linux and you start to have
-> a story.
-> 
-> Add to that the 19 million embedded MIPS chips and you start to ask
-> yourself why we aren't more serious about this market.
+Hi Ariel,
 
-A large fraction of these embedded MIPS chips is able to run Linux from
-it's hardware specs.  And I stopped counting the number of companies
-that have contaced me about embedded Linux.  I admit that my and probably
-most other people's core interest is in "real computers" ...
+I heard you're working on "linux stuff" these days, so thought
+you might be interested in this.  At least, as a kindred spirit...
 
-> So, while we could sit around and argue with those who disagree, I say
-> that there is more than enough evidence that there is a market there.
-> If there's a market, we do it.  That's the SGI way.
+Allan
 
-  Ralf
+--- Forwarded mail from Todd Shrider <todds@ontko.com>
+
+Date: Thu, 19 Jun 1997 16:07:38 -0500 (EST)
+From: Todd Shrider <todds@ontko.com>
+To: devprogram@sgi.com
+cc: sgi-faq@viz.tamu.edu
+Subject: Can your Redirect this? 
+
+
+Hello,
+
+If I'm not sending this to the proper channel, could you please help me
+re-direct it? Thanks!
+
+ I'm currently a student at Indiana University and a big time Linux
+enthusiast. I'm involved in a couple of Linux projects that relate
+directly to SGI. The first is a creation of my own. I am working at taking
+a Nintendo 64, adapting a mass storage device and a keyboard to it, and
+porting the Linux Operating System to it. Although the 64 is a game
+machine, it is a terrific platform, that has many upgrade options such as
+memory, external devices, connectability (i.e. network/modem), etc. It
+also has some very powerful graphics capabilities. For these reasons alone
+I feel it could make an excellent, low cost, "computer" and would be a
+very competitive platform in the network computer/java station market. 
+
+ Another project which I am just getting involved with is the porting of
+the Linux OS to platforms such as the Indy and O2. Linux is a wonderful OS
+and would add a great deal of value to these excellent workstations. In
+all honesty I figure the more platforms that Linux runs on the more
+successful it will be, and the more stable it will become (you can never
+rewrite a piece of code too much.
+
+ At any point I am looking for some support. As a student (at Indiana
+University) I really have no budget. There is also alot of technicle
+questions I have that no one seems to be able to answer. Could you help by
+either letting me know who I should get in touch with, or by forwarding
+this message to someone who might be able to help. 
+
+ I greatly appreciate your help. Thank you so much!    
+
+---
+Todd M. Shrider	       	        Oops, My brain just hit a bad sector!
+tshrider@indiana.edu	        Indiana Universrity, Adaptive Systems Lab
+http://www.cs.indiana.edu/~tshrider
+
+
+
+---End of forwarded mail from Todd Shrider <todds@ontko.com>
+
+-- 
+Allan Schaffer                                                allan@sgi.com
+Silicon Graphics                               http://reality.sgi.com/allan
+
+----- End of forwarded message from Allan Schaffer -----
+
+-- 
+Peace, Ariel

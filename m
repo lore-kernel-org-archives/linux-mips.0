@@ -1,33 +1,35 @@
-From: "embedlf" <embedlf@citiz.net>
-Subject: how I mount the root fs from ramdisk??
-Mime-Version: 1.0
+From: "jeff" <jeff_lee@coventive.com>
+Subject: RE: how I mount the root fs from ramdisk??
+Date: Fri, 29 Aug 2003 18:39:39 +0800
+Message-ID: <LPECIADMAHLPOFOIEEFNKEFODCAA.jeff_lee@coventive.com>
+MIME-Version: 1.0
 Content-Type: text/plain;
-      charset="GB2312"
-Content-Transfer-Encoding: 8BIT
-Date: Fri, 29 Aug 2003 17:35:5 +0800
-Message-ID: <20030829092829Z8225217-1272+4649@linux-mips.org>
-Return-Path: <embedlf@citiz.net>
+	charset="GB2312"
+Content-Transfer-Encoding: base64
+In-Reply-To: <20030829092829Z8225217-1272+4649@linux-mips.org>
+Return-Path: <jeff_lee@coventive.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.orglinux-mips@linux-mips.org
-Message-ID: <20030829093505.pCzMKB7m63AZOPkZDpxFVw8QgnA_5OwNtjCJ5bP31MM@z>
+To: embedlf <embedlf@citiz.net>, linux-mips@linux-mips.org
+Message-ID: <20030829103939.ZFiIiD70AlAAyl9hQDA_tVcIVtSeHrntMu_wgqRlYWc@z>
 
-linux-mips:
-	I use mips cpu board to design my product. I want run linux embeded in this board.
-But in this process,there is not harddisk on the board.
-	So I should mount the root fs on ramdisk. Do you think so? I should make a ramdisk.
-
-dd if=/dev/zero of=/dev/ram bs=1k count=2048
-mke2fs -vm0 /dev/ram 2048
-mount -t ext2 /dev/ram /mnt/ram
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-After I mount it, I should copy some files to this folder.I used cross_compiler,
-compiling linux on X86 PC.How do I make the file /sbin/init??where is the source??
-
-dd if=/dev/ram bs=1k count=2048 | gzip -v9 > /tmp/ram_image.gz
-
-	
-
-　　　　　　　　embedlf
-　　　　　　　　embedlf@citiz.net
-　　　　　　　　　　2003-08-29
+UGxlYXNlIGRvd25sb2FkIHRoZSBidXN5Ym94IGFuZCBtYWtlIGl0IHRvIGJlIG1pcHMgYmluYXJ5
+Lg0KT3IgeW91IGNhbiBmaW5kIHNvbWUgdXNhYmxlIGluZm9ybWF0aW9uIGZyb20gaHR0cDovL2xp
+bnV4Lmp1bnN1bi5uZXQNCg0KUmVnYXJkcywNCg0KSmVmZg0KDQotLS0tLU9yaWdpbmFsIE1lc3Nh
+Z2UtLS0tLQ0KRnJvbTogbGludXgtbWlwcy1ib3VuY2VAbGludXgtbWlwcy5vcmcgW21haWx0bzps
+aW51eC1taXBzLWJvdW5jZUBsaW51eC1taXBzLm9yZ11PbiBCZWhhbGYgT2YgZW1iZWRsZg0KU2Vu
+dDogRnJpZGF5LCBBdWd1c3QgMjksIDIwMDMgNTowMCBQTQ0KVG86IGxpbnV4LW1pcHNAbGludXgt
+bWlwcy5vcmcNClN1YmplY3Q6IGhvdyBJIG1vdW50IHRoZSByb290IGZzIGZyb20gcmFtZGlzaz8/
+DQoNCg0KbGludXgtbWlwczoNCglJIHVzZSBtaXBzIGNwdSBib2FyZCB0byBkZXNpZ24gbXkgcHJv
+ZHVjdC4gSSB3YW50IHJ1biBsaW51eCBlbWJlZGVkIGluIHRoaXMgYm9hcmQuDQpCdXQgaW4gdGhp
+cyBwcm9jZXNzLHRoZXJlIGlzIG5vdCBoYXJkZGlzayBvbiB0aGUgYm9hcmQuDQoJU28gSSBzaG91
+bGQgbW91bnQgdGhlIHJvb3QgZnMgb24gcmFtZGlzay4gRG8geW91IHRoaW5rIHNvPyBJIHNob3Vs
+ZCBtYWtlIGEgcmFtZGlzay4NCg0KZGQgaWY9L2Rldi96ZXJvIG9mPS9kZXYvcmFtIGJzPTFrIGNv
+dW50PTIwNDgNCm1rZTJmcyAtdm0wIC9kZXYvcmFtIDIwNDgNCm1vdW50IC10IGV4dDIgL2Rldi9y
+YW0gL21udC9yYW0NCn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCkFmdGVyIEkgbW91
+bnQgaXQsIEkgc2hvdWxkIGNvcHkgc29tZSBmaWxlcyB0byB0aGlzIGZvbGRlci5JIHVzZWQgY3Jv
+c3NfY29tcGlsZXIsDQpjb21waWxpbmcgbGludXggb24gWDg2IFBDLkhvdyBkbyBJIG1ha2UgdGhl
+IGZpbGUgL3NiaW4vaW5pdD8/d2hlcmUgaXMgdGhlIHNvdXJjZT8/DQoNCmRkIGlmPS9kZXYvcmFt
+IGJzPTFrIGNvdW50PTIwNDggfCBnemlwIC12OSA+IC90bXAvcmFtX2ltYWdlLmd6DQoNCgkNCg0K
+oaGhoaGhoaGhoaGhoaGhoWVtYmVkbGYNCqGhoaGhoaGhoaGhoaGhoaFlbWJlZGxmQGNpdGl6Lm5l
+dA0KoaGhoaGhoaGhoaGhoaGhoaGhoaEyMDAzLTA4LTI5DQoNCg==

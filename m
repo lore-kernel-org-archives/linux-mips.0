@@ -1,41 +1,15 @@
-Message-ID: <5.0.2.5.2.20020408155359.00c5fd00@mx15.freecom.ne.jp>
-Date: Mon, 08 Apr 2002 15:54:00 +0900
-From: sender <asdd@mx15.freecom.ne.jp>
-Subject: =?ISO-2022-JP?B?GyRCISo5LTlwISpFPj8mJTUhPCVTJTkbKEI=?=
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-2022-JP"; format=flowed
-Content-Transfer-Encoding: 7bit
+Date: Mon, 8 Apr 2002 21:33:57 -0700 (PDT)
+From: Muthukumar Ratty <muthu5@sbcglobal.net>
+Subject: Where to get the latest kernel.
+Message-ID: <Pine.LNX.4.33.0204082128480.25181-100000@Muruga.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-Message-ID: <20020408065400.gm1mFZDRh8MKJ1LQxXwKFoacl68Zg9T4JNZjDAosoS0@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020409043357.9eOuldPk2U23D0U9J5KnbQcnutR9Hr2tIyPG3ZzZuEY@z>
 
---------------------------------
-■全国の人材バンクへ転職の
-  一括エントリー登録受付け！
-http://hellobank.sub4you.net
 
-※完全なる【無償サービス】です。
-
---------------------------------
-■転職サイトの報酬制バナー提携も
-募集中です。転職求職者の登録承認
-数に応じて『1000円/件』更に転職決
-定で基本的に『1O万円/件』をお支払
-い致します。
-
-※運営者様の方でかかる費用等は一切
-ございません。
-
-※ご提携金3000円を進呈致します。
-
-※『ご返信ではなく』こちらの別アド
-レスにメールを頂ければ詳細をお送り
-致します。＜詳細希望＞
-bancom@bigfoot.com　
-
-コムプラン企画(ジョブサービス)
---------------------------------
-※【解除】は申し訳ございませんが
-　下記へ【空メール】をお送りくだ
-　さるようお願い申しあげます。
-dm_delet@bigfoot.com
--------------------------------- 
+Hi,
+Where can I download the latest development kernel for MIPS?
+Thanks,
+Muthu.

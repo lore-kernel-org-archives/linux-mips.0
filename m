@@ -1,33 +1,50 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199704152026.QAA15195@neon.ingenia.ca>
+From: "Christopher W. Carlson" <carlson@heaven.newport.sgi.com>
+Message-ID: <9704151406.ZM17208@heaven.newport.sgi.com>
+Date: Tue, 15 Apr 1997 14:06:04 -0700
+In-Reply-To: lm@neteng.engr.sgi.com (Larry McVoy)
+        "Re: EFS and XFS file systems support" (Apr 14,  1:47pm)
+References: <199704142047.NAA22932@neteng.engr.sgi.com>
 Subject: Re: EFS and XFS file systems support
-In-Reply-To: <199704152109.OAA12094@neteng.engr.sgi.com> from Larry McVoy at "Apr 15, 97 02:09:27 pm"
-Date: Tue, 15 Apr 1997 16:26:29 -0400 (EDT)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Larry McVoy <lm@neteng.engr.sgi.com>
+To: Larry McVoy <lm@neteng.engr.sgi.com>, Steve Alexander <sca@refugee.engr.sgi.com>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970415202629.cuBneQAK_5gaOE30e9jhoyArkKD9Oyg1nXzVCXjV-Rw@z>
+Message-ID: <19970415210604.V8o868ai_tUAJORZndjx8706tTmJ2Xt2HTXJqZjb6mk@z>
 
-Thus spake Larry McVoy:
-> At this point, since we are moving away from EFS, it is possible
-> that we would be willing to donate a version of the EFS code to
-> Linux.  I can probably get that cleared.  But someone else would
-> have to do the port, I'm too busy.  If you find someone to do the
-> port, let me know.
+On Apr 14,  1:47pm, Larry McVoy wrote:
+> Subject: Re: EFS and XFS file systems support
+> : I thought that there was a program available for Linux that would read EFS
+> : file systems, although I can't for the life of me remember the name.
+>
+> Nope.
+>
+> : >My biggest reason for wanting them supported is to access SGI CD ROMs.
+> :
+> : I think the better question is when will we start distributing CDs in a
+> : standard format...  Yeah, yeah, backward compatibility, I know ;->
+>
+> I agree with Steve.  Switch to iso9660.
+>-- End of excerpt from Larry McVoy
 
-Assuming it's all cleared with everyone, and we get a source
-repository somewhere to play with, I might give it a shot.  Does
-anyone know if the efslook stuff is GPL'd?
 
-Mike
+Hey, I'd love to switch to iso9660.  Unfortunately, how do we read all
+the CDs that have already been generated?  For example all the free
+source code that has been generated on the Developer's Toolbox and
+stuff.  Also, after a linux kernel has been booted, it would be nice
+to mount SGI file systems.
 
 -- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>                 Ignore the man behind the curtain.                  
-#>                                                                     
-#> "And then I realized that it never should have worked in the first  
-#>  place.  Thus, it would not work again until rewritten." --- Anon.  
+
+		Chris Carlson
+
+	+------------------------------------------------------+
+	| Also, carlson@sgi.com                                |
+	|   Work:       (714) 756-5976     SGI vmail: 678-4530 |
+	|   FAX:        (714) 833-9503                         |
+	|                                                      |
+	| Trivia fact: an electroencephalogram shows that a    |
+	| human brain and a bowl of quivering lime Jell-O have |
+	| the same waves.  [Time Magazine, Mar 17, 1997]       |
+	+------------------------------------------------------+

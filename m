@@ -1,54 +1,61 @@
-From: erik.niessen@philips.com
-Subject: Graphics on a mips-board
-Message-ID: <0056890012369098000002L982*@MHS>
-Date: Fri, 14 Jul 2000 00:00:37 +0200
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; name="MEMO 07/13/00 23:59:24"
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
+Date: Tue, 18 Jul 2000 23:23:22 -0400
+Message-ID: <200007182323.AA145031220@mail.alum.rpi.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: "clemej" <clemej@mail.alum.rpi.edu>
+Reply-To: <clemej@mail.alum.rpi.edu>
+Subject: Re: Okay, lost
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
 To: linux-mips@oss.sgi.com
-Message-ID: <20000713220037.OKqfBGCivBDxB6t5tsTqlGC-3cU-rO6wtpZ2MxoLGMI@z>
+Message-ID: <20000719032322.TZpzqp2vjW4Jm9sIi5b7Gi745o2TPgEgrRuWcOdts4g@z>
 
-Hello,
 
-I have the ide-controller running on my mips-board. My next step will be to get some graphics out of this box. On the board is an onboard graphics chip and according to the specs it is VGA compatible.
+When I was bitten by the infamous '-N' bug, it seems to me the 
+exception I got said "UTLB" in it somewhere.  This one doesn't.
+So maybe that's not the problem.
 
-I am using the serial-console for debugging and for sending characters to the box. My source tree is based on kernel 2.2.12.
+And I think I might be being bitten by the same thing.  All 2.4 
+kernels I've tried die with what seems to be a similar error on 
+my Indigo2 (R4400 200Mhz).  I thought I read somewhere something 
+about XZ graphics causing problems and boards should be 
+removed... why? Could this be the cause? I have XZ in my 
+machine.... I want to try a few more things before sounding too 
+many alarms though...
 
-Because the chip is VGA compatible I try to get the VGA16 framebuffer running on the box. After enabling the VGA16 framebuffer I receive the following output:
+john.c
+- --
+John Clemens
+clemens@alum.rpi.edu
 
-Jumping to image at 800605DCh...
-Detected 16MB of memory.
-Loading R4000/MIPS32 MMU routines.
-CPU revision is: 000028a0
-Primary instruction cache 32kb, linesize 32 bytes
-Primary data cache 32kb, linesize 32 bytes
-Linux version 2.2.12 (eniessen@psvcas16) (gcc version egcs-2.90.29 980515 (egcs-
-1.0.3 release)) #10 Thu Jul 13 13:45:19 PDT 2000
-calculating r4koff... 000f4240(1000000)
-CPU frequency 200.00 MHz
-Console: colour VGA+ 80x50
-Calibrating delay loop... 199.88 BogoMIPS
-Memory: 12652k/16380k available (616k kernel code, 2724k data)
-Checking for 'wait' instruction...  available.
-POSIX conformance testing by UNIFIX
-PCI: Probing PCI hardware
-Found SAA9730 at b2800000
-Linux NET4.0 for Linux 2.2
-Based upon Swansea University Computer Society NET3.039
-Starting kswapd v 1.1.1.1
-vga16fb: initializing
-vga16fb: mapped to 0xa00a0000
-Console: switching to colour frame buffer device 80x30
 
-It is doing the take_over_console but when I check the output of my VGA-connector there is no signal. Someone an idea how I can debug this???
+---------- Original Message ----------------------------------
+From:   Ralf Baechle <ralf@oss.sgi.com>
+Date:   Tue, 18 Jul 2000 05:23:09 +0200
 
-Has somebody any experience with framebuffers on a mips?
-
-Any hints/links/tips would be welcome,
-
-Thanks for your time,
-
-	Erik
+>On Mon, Jul 17, 2000 at 08:53:03PM -0500, A. Wrasman wrote:
+>
+>> Okay, I can't seem to get any of the pre-compiled linux kernels  after the 2.2.14 one on oss.sgi.com to boot on my Indy.
+>> 
+>> I get this type of error:
+>> Exception: <vector=Normal>
+>> Status register: 0x10044803<CU0,CH,IM7,IM4,IPL=???,MODE=KERNEL,EXL,IE>
+>> Cause register: 0x8034<CE=0,IP8,EXC=TRAP>
+>> Exception PC: 0x88240004, Exception RA: 0x8816d610
+>> Processor Trap exception at address 0xffffffff
+>> Local I/O interrupt register 1: 0x80 <VR/GIO2>
+>> 	Saved user regs in hex (&gpda 0xa8740e48, &_regs 0xa8741048):
+>> 	arg: a8740000 28 8847ff80 a
+>> 	tmp: a8740000 8480 88002000 8480 881932a0 1 fffffffc 47dfa8
+>> 	sve: a8740000 0 0 0 0 0 0 0
+>> 	t8 a8740000 t9 0 at 0 v0 0 v1 0 k1 88002000
+>> 	gp a8740000 fp 0 sp 0 ra 0
+>> 
+>> PANIC: unexpected exception
+>
+>Now that looks like a kernel compiled by somebody who doesn't read
+>documentation, see http://oss.sgi.com/mips/mips-howto.html.  In short:
+>remove the -N linker flag from arch/mips/Makefile.
+>
+>  Ralf
+>

@@ -1,71 +1,40 @@
-Message-ID: <001c01bf4ce7$666f74c0$1900000a@judy>
-From: "Charles Cosby" <chuckc@sentex.net>
-Subject: Linux for a Personal Iris
-Date: Wed, 22 Dec 1999 20:45:30 -0500
+Message-ID: <000d01bf5708$40dbe150$5a4f89d0@tds.net>
+Reply-To: "Ken Wills" <kenwills@tds.net>
+From: "Ken Wills" <kenwills@mailbag.com>
+Subject: general question on linux-mips
+Date: Tue, 4 Jan 2000 17:05:54 -0600
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0019_01BF4CBD.7C63ABE0"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
 To: linux@cthulhu.engr.sgi.com
-Message-ID: <19991223014530.BAtouXio9xQgcQy-UKCRBQ4pLNbv2vTptKTPhKLn9M4@z>
+Message-ID: <20000104230554.IQJ5bYxiVkF8kqj5ETpd3EwjQxF9GKkh2JAmRGbXFPQ@z>
 
-This is a multi-part message in MIME format.
+Hello everyone!
 
-------=_NextPart_000_0019_01BF4CBD.7C63ABE0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I have quite a general question, that I hope someone won't mind answering:-
 
-Hello:
+I've installed hard-hat-5.1 on my indy, with few problems, and updated to a
+kernel
+that supports swap and everything seems fine. Next I decided to update gcc
+and binutils,
+in order to try later kernel builds (2.3.x). (I'm a long time UNIX user, but
+quite new to linux).
 
-I have several Personal Iris' (from 4D/20's with entry graphics and 8 =
-meg up to 4D/35's with Turbo Graphics with 104 meg) and would love to =
-play with Linux on them.  I am using Linux now (red Hat 6.0) on an Intel =
-box but the tought of putting it on one (or more) of my Iris' is very =
-intriguing.  I realize that SGI has long since dropped support for these =
-boxes but since I am the proud owner of 10 of them I would love to see =
-this new OS ported to them.  I am also willing to help.  I am located =
-just outside of guelph Ontario Canada.  If anyone has any info about =
-this please let me know.
+My question is: I've had no sucess with gcc-2.95 or any version of binutils
+I can lay my hands on.
+binutils-2.95 builds with CFLAGS=-g , but then during the build of gcc, I
+get an error from as.
+Is the only option for software compilation a cross compiler on another
+linux box?
 
-thanks
-Chuck
+I've poured over the web pages and have the cvs repo, which I am about to
+start poking around in,
+and don't find any specific dos or don'ts.
 
-------=_NextPart_000_0019_01BF4CBD.7C63ABE0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Thanks,
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2614.3500" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#c0c0c0>
-<DIV><FONT size=3D2>Hello:</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>I have several Personal Iris' (from 4D/20's with =
-entry=20
-graphics and 8 meg up to 4D/35's with Turbo Graphics with 104 meg) and =
-would=20
-love to play with Linux on them.&nbsp; I am using Linux now (red Hat =
-6.0) on an=20
-Intel box but the tought of putting it on one (or more) of my Iris' is =
-very=20
-intriguing.&nbsp; I realize that SGI has long since dropped support for =
-these=20
-boxes but since I am the proud owner of 10 of them I would love to see =
-this new=20
-OS ported to them.&nbsp; I am also willing to help.&nbsp; I am located =
-just=20
-outside of guelph Ontario Canada.&nbsp; If anyone has any info about =
-this please=20
-let me know.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>thanks</FONT></DIV>
-<DIV><FONT size=3D2>Chuck</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0019_01BF4CBD.7C63ABE0--
+Ken
+kenwills@mailbag.com

@@ -1,29 +1,42 @@
-Message-ID: <20000209063649.10797.qmail@hotmail.com>
-Reply-To: "godwin" <godwin@orcawerks.com>
-From: "godwin" <godwinchan@hotmail.com>
-Subject: A new MIPS/SGI webpage..
-Date: Tue, 8 Feb 2000 22:36:44 -0800
+Message-ID: <00bc01bf73af$c7b19bc0$0ceca8c0@satanas.mips.com>
+From: "Kevin D. Kissell" <kevink@mips.com>
+Subject: Re: Enhanced 2.2.12 MIPS Kernel Sources  Available
+Date: Thu, 10 Feb 2000 11:15:32 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="koi8-r"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: linux@cthulhu.engr.sgi.com
-Message-ID: <20000209063644.HqtRTWpBJkJJ4tfrNheQQn8vQmQE0e84WC_HZjO5jn0@z>
+To: "Gleb O. Raiko" <raiko@niisi.msk.ru>
+Cc: linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr
+Message-ID: <20000210101532.zeKbBtdzPX_hFjfaxA72IGkXmL4Uo6HXGzWGtWnDPoI@z>
 
-Hi all..
+>"Kevin D. Kissell" wrote:
+>> 
+>> This code is NOT a supported product of MIPS
+>> Technologies Inc.   It is being made available on an
+>> "as is" basis subject to the ususal GPL.  It should be
+>> accessible via anonymous (and blind) FTP for a while at
+>> ftp://ftp.mips.com/incoming/linux.mips.src.01.01.tar.gz
+>> and is archived on the Paralogos MIPS/Linux web site at
+>> http://www.paralogos.com/mipslinux/.  We'd be very interested
+>> in any feedback, experimental results, and enhancements
+>> that any of you may wish to provide, and I will answer
+>> email questions to the extent that my time allows.
+>> 
+>
+>It'll be great if you would put just patches too. I guess, it'll be easy
+>for us to look through set of patches instead of downloading entire
+>2.2.12 and making diff -ruN on it. Then, there might be a core patch
+>that decribes changes in machine independent part of the kernel and the
+>rest might cover specific boards. Most of developers here will be
+>interested in the core patch, I guess.
+>
+>Regards,
+>Gleb.
 
-I have been lurking on the mailing list for a long time. I was figuring out
-what I was going to do.. so I made a webpage on MIPS/SGI Linux
-
-It is on http://www.orcawerks.com/sgi/irix/linux.html I hope I get the specs
-right.. that is the Xserver is only runs on XL series graphics on Indy right
-now? I just want it to make it a quick fact sheet so not many people would
-ask.. would linux work on my Personal Iris.
-
-I will put up a visual guide to install Indy in a couple of days..
-
-Thanks..
-
-Godwin
+The thought had certainly occurred to me to generate the patch
+relative to the 2.2.12 baseline - it would certainly be more compact
+than the whole source tree!   I'll try and find the time to do so, but
+it probably won't be any time this week...

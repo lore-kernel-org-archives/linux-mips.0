@@ -1,39 +1,30 @@
-Message-ID: <007901c0f1bd$ff8827c0$0b0932c8@vaio>
-Reply-To: =?iso-8859-1?Q?Manuel_Poueri=E9?= <pouerie@cpmsa.com>
-From: =?iso-8859-1?Q?Manuel_Poueri=E9?= <pouerie@cpmsa.com>
-Subject: 
-Date: Sun, 10 Jun 2001 10:59:48 -0400
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0076_01C0F19C.775930E0"
+From: Keith Owens <kaos@melbourne.sgi.com>
+Subject: Re: Kernel crash on boot with current cvs (todays) 
+In-reply-to: Your message of "Wed, 13 Jun 2001 13:37:51 +0200."
+             <20010613133751.A18749@bunny.shuttle.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 13 Jun 2001 21:46:20 +1000
+Message-ID: <8067.992432780@ocs4.ocs-net>
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010610145948.A1rcWsvs1jiBZ3riiJUVMANwz_qDBg3kML0f0phDSHs@z>
+To: Raoul Borenius <borenius@shuttle.de>
+Cc: Florian Lohoff <flo@rfc822.org>, Ralf Baechle <ralf@oss.sgi.com>, linux-mips@oss.sgi.com
+Message-ID: <20010613114620.ml-5hxkMb87WePwV8R6RHGIyecfe5Mveh5_RZBz7VBc@z>
 
-This is a multi-part message in MIME format.
+On Wed, 13 Jun 2001 13:37:51 +0200, 
+borenius@shuttle.de (Raoul Borenius) wrote:
+>Unable to handle kernel paging request at virtual address 00000000, epc == 8800e                               e5c, ra == 8800ee5c
+>Call Trace: [<88124dc0>] [<88124dd8>] [<8800eb84>] [<88063810>] [<880647f4>] [<8                               8063670>] [<880640f0>] [<880640b8>] [<8805f7f4>] [<88052a88>] [<88052b74>] [<880
+>537c0>] [<88053768>] [<88052294>] [<8804ef14>] [<8800fc28>] [<8800c638>] [<c013d                               686>]
 
-------=_NextPart_000_0076_01C0F19C.775930E0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+The epc line and the call trace have embedded spaces and newlines which
+are preventing ksymoops from doing a full conversion.  Try again with
+the extra characters removed, i.e.
 
-unsuscribe correo@cpmsa.com
-
-------=_NextPart_000_0076_01C0F19C.775930E0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 5.50.4207.2601" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>unsuscribe <A=20
-href=3D"mailto:correo@cpmsa.com">correo@cpmsa.com</A></FONT></DIV></BODY>=
-</HTML>
-
-------=_NextPart_000_0076_01C0F19C.775930E0--
+Unable to handle kernel paging request at virtual address 00000000, epc == 8800e5c, ra == 8800ee5c
+....
+Call Trace: [<88124dc0>] [<88124dd8>] [<8800eb84>] [<88063810>]
+[<880647f4>] [<88063670>] [<880640f0>] [<880640b8>] [<8805f7f4>]
+[<88052a88>] [<88052b74>] [<880537c0>] [<88053768>] [<88052294>]
+[<8804ef14>] [<8800fc28>] [<8800c638>] [<c013d686>]
+Code: ...

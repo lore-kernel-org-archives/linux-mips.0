@@ -1,37 +1,66 @@
-Message-ID: <01da01c2a7d9$1de6c500$e20310ac@gv.com.tw>
-From: "??" <kevin@gv.com.tw>
-References: <011c01c29c54$7aa64c60$e20310ac@gv.com.tw> <20021205132358.A5634@linux-mips.org>
-Subject: [help] exec_usermodehelper() then content of CURRENT is destroyed
-Date: Fri, 20 Dec 2002 11:37:26 +0800
+Received: from sohotower (adsl-66.218.38.74.dslextreme.com [66.218.38.74])
+	(authenticated)
+	by dtla2.teknuts.com (8.11.3/8.10.1) with ESMTP id gBNJVsE02783
+	for <linux-mips@linux-mips.org>; Mon, 23 Dec 2002 11:31:55 -0800
+From: "Robert Rusek" <robru@teknuts.com>
+Subject: MIPS_RedHat7.3_Release-01.00 On SGI Indy, r5k IP22?
+Date: Mon, 23 Dec 2002 11:31:54 -0800
+Message-ID: <000701c2aab9$f3552370$0a01a8c0@sohotower>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <kevin@gv.com.tw>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0008_01C2AA76.E531E370"
+Return-Path: <robru@teknuts.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: cms@gv.com.tw
-Message-ID: <20021220033726.xtVn-ffIj3ADVNLdsx-isymtmb7x5kbgu_JPDPXqzhs@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20021223193154.JRDVe2UW5H-4of31LgJ-tC_zyREXuNXzWWgKf2oWyqU@z>
 
-dear all,
+This is a multi-part message in MIME format.
 
-1)in our 2.4.18 mips kernel , when we call  exec_usermodehelper() (in
-kernel/kmod.c)
-the content of CURRENT is destroyed during [page_fault handler loading pages
-from storage-device to ram]
+------=_NextPart_000_0008_01C2AA76.E531E370
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
-which kind of error may cause this problem?
-any hint/idea?
+Does anyone know if he MIPS_RedHat7.3_Release-01.00 will run on the SGI
+Indy, r5k IP22?  It is the release from mips.com that is made for the
+malta and atlas boards.  I am already running their 7.0 release but am
+not sure if the 7.3 v1.0 will run big edian?
+ 
+Thanks. 
+--
+Robert Rusek
+ 
 
-2)btw, in some mips linux port,
-[syscall] is done by [scall_o32.S]
-when [handle_sys] is done,
-it will return by [o32_ret_from_sys_call],
-[o32_ret_from_sys_call] will do [reschedule] and [signal],
-but the question is here it doesn't check whether [syscall] is from
-User-space or Kernel-space
-if we use [syscall] in kernel-space, and do [signal] after [syscall] return,
-won't it cause problem? is this bug of linux code?
+------=_NextPart_000_0008_01C2AA76.E531E370
+Content-Type: text/html;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 
-thanks alot in advanced!
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
+
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D463462819-23122002>Does =
+anyone know if=20
+he MIPS_RedHat7.3_Release-01.00 will run on the&nbsp;SGI Indy, r5k =
+IP22?&nbsp;=20
+It is the release from mips.com that is made for the malta and atlas=20
+boards.&nbsp; I am already running their 7.0 release but am not sure if =
+the 7.3=20
+v1.0 will run big edian?</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D463462819-23122002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D463462819-23122002>Thanks.</SPAN></FONT><SPAN=20
+class=3D463462819-23122002><FONT face=3DArial =
+size=3D2>&nbsp;</FONT></SPAN></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>--</FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>Robert Rusek</FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0008_01C2AA76.E531E370--

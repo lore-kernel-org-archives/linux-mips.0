@@ -1,61 +1,78 @@
-From: Justin Carlson <carlson@sibyte.com>
-Reply-To: carlson@sibyte.com
-Subject: Re: floating point on Nevada cpu
-Date: Wed, 24 Jan 2001 18:57:04 -0800
-Content-Type: text/plain
-References: <3A6F8F66.6258801@mvista.com> <0101241833281Q.00834@plugh.sibyte.com> <3A6F94E0.4AB07CEB@mvista.com>
-In-Reply-To: <3A6F94E0.4AB07CEB@mvista.com>
-MIME-Version: 1.0
-Message-ID: <0101241913291R.00834@plugh.sibyte.com>
-Content-Transfer-Encoding: 8bit
+Date: Thu, 25 Jan 2001 16:55:31 +0100
+From: Florian Lohoff <flo@rfc822.org>
+Subject: [FIX] sysmips(MIPS_ATMIC_SET, ...) ret_from_sys_call vs. o32_ret_from_sys_call
+Message-ID: <20010125165530.B12576@paradigm.rfc822.org>
+References: <20010124163048.B15348@paradigm.rfc822.org> <20010124165919.C15348@paradigm.rfc822.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20010124165919.C15348@paradigm.rfc822.org>; from flo@rfc822.org on Wed, Jan 24, 2001 at 04:59:19PM +0100
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Pete Popov <ppopov@mvista.com>
-Cc: linux-mips@oss.sgi.comlinux-mips@oss.sgi.com
-Message-ID: <20010125025704.zCLe1nQsklAghSTlDb3r3WdpUB2arTuMQoHOXLinQfM@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010125155531.SEQ364GrvhjaPobERalambMoTOBYX6f5BYEUz65ZaUQ@z>
 
-On Wed, 24 Jan 2001, you wrote:
-> Justin Carlson wrote:
-> > 
-> > On Wed, 24 Jan 2001, Pete Popov wrote:
-> > > This simple test fails on a Nevada (5231) cpu:
-> > >
-> > > int main()
-> > > {
-> > >     float x1,x2,x3;
-> > >
-> > >     x1 = 7.5;
-> > >     x2 = 2.0;
-> > >     x3 = x1/x2;
-> > >     printf("x3 = %f\n", x3);
-> > > }
-> > >
-> > 
-> > Ummm...care to tell *how* it fails?
+On Wed, Jan 24, 2001 at 04:59:19PM +0100, Florian Lohoff wrote:
+> Decoded this is:
 > 
-> Here it is:
-> 
-> sh-2.03# ./fl
-> x3 = 0.000000
-> 
-> 
-> I'm running a test9 based kernel, but the same kernel compiled for my
-> Indigo2 produces the right result.  
+> Unable to handle kernel paging request at virtual address 00000000, epc == 00000000, ra == 00000000
+> $0 : 00000000 1004fc00 fffffff2 00000001
+> $4 : fffffff2 00000000 00000001 00000000
+> $8 : 00000000 2abf3a94 8800f4a0 00000004
+> $12: 8ec09f10 7ffffaf8 8ec09f18 8ec09f18
+> $16: 8801acf8 00000000 10011510 00000002
+> $20: 10011510 7ffffdd8 7ffffdcc 00000002
+> $24: 00000000 2abf3a80
+> $28: 8ec08000 8ec09ef8 7ffffd10 00000000
+> epc   : 00000000
+> Using defaults from ksymoops -t elf32-bigmips -a mips:3000
+> Status: 1004fc03
+> Cause : 30000008
 
-Hmmm...the only thing here that should involve kernel support is the lazy FPU
-register saving.   I'm not terribly familiar with that portion of the kernel,
-but it should take an unimplemented instruction trap on the first fpu op, set
-up a flag for saving FP state on context switches, enable the FPU, then let the
-program run.  From what I *have* seen of that code, it's shared between many
-processors; doesn't seem like a likely candidate for such a simple problem.
+Ok - another one (sorry to spam you) 
 
-If you compile that code snippet and optimize it with gcc, you actually won't
-invoke any fpu ops, as gcc is smart enough to precalculate the result, and
-just load that before jumping to printf().
+From "handle_sys" i see that system call address and no of
+args are in t2 and t3 which are 0x8800f4a0 and 4 with the register
+dump above.
 
-How are you compiling the code?  And are you compiling it the same way on both
-platforms?  Do you have fpu emulation enabled on a kernel that doesn't need it? 
+8800f4a0 is sys_sysmips which i also saw in the find strace.
 
-These are the potential problems that jump to mind...
+From the strace i find
 
--Justin
+sysmips(0x7d1, 0x2ac95d24, 0x1, 0)      = 4149
+
+all the time - 0x7d1 is "MIPS_ATOMIC_SET" - Ok from the trace
+i see the call comes from handle_sys which itself would end with
+o32_ret_from_sys_call.
+
+sysmips(MIPS_ATOMIC_SET, ...) 
+
+would itself return with "ret_from_sys_call".
+
+If i now apply
+
+Index: arch/mips/kernel/sysmips.c
+===================================================================
+RCS file: /cvs/linux/arch/mips/kernel/sysmips.c,v
+retrieving revision 1.15
+diff -u -r1.15 sysmips.c
+--- arch/mips/kernel/sysmips.c	2000/11/18 01:19:35	1.15
++++ arch/mips/kernel/sysmips.c	2001/01/25 15:48:44
+@@ -111,7 +111,7 @@
+ 
+ 		__asm__ __volatile__(
+ 			"move\t$29, %0\n\t"
+-			"j\tret_from_sys_call"
++			"j\to32_ret_from_sys_call"
+ 			: /* No outputs */
+ 			: "r" (&cmd));
+ 		/* Unreached */
+
+The machine now at least doesnt crash anymore - Others have to decide
+if this is correct. (Nevertheless find doesnt return but this might
+be a different problem)
+
+Flo
+-- 
+Florian Lohoff                  flo@rfc822.org             +49-5201-669912
+     Why is it called "common sense" when nobody seems to have any?

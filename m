@@ -1,84 +1,71 @@
-Message-ID: <00f901c0b08e$3099bc00$0deca8c0@Ulysses>
+Message-ID: <01e701c0b0d3$3fca8980$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3AB61293.5652407C@mips.com> <00e901c0b08b$50bed400$0deca8c0@Ulysses>
-Subject: Re: Bug in the _save_fp_context.
-Date: Mon, 19 Mar 2001 17:03:49 +0100
+References: <3AB68CFC.A2840808@mvista.com>
+Subject: Re: gdb 5.0 display arguments problem
+Date: Tue, 20 Mar 2001 01:18:02 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-15"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010319160349.QkX6O7LAJ1DQjGlvCSR56Uf1hySSXILS7i5HqM3plrc@z>
+To: Jun Sun <jsun@mvista.com>, linux-mips@oss.sgi.com
+Message-ID: <20010320001802.iZjzgirnqW4HraJHp5Lx9nT7sYWwXpvlqQqNlX2AJ04@z>
 
-Oops!  I hadn't noticed that Carsten had copied the
-Linux-MIPS mailing list on this, so I treated it as a
-point-to-point communication.  The rest of you can
-ignore my last paragraph!
+> I am using gdb 5.0 client to debug kernel, and found a bug in gdb 5.0 when
+it
+> trys to display an function argument.
+...
+> For whatever reason gdb client on the host side apparently thinks the
+second
+> arg is stored in register s4.  When the breakpoint is hit, gdb tries to
+> display the value of s4 (which is 0x4 in this case).  Since the type of
+this
+> argument is char *, gdb further tries to read the content at 0x4 which
+causes
+> kernel panic.
+>
+> I believe I have seen this problem before (and in most case the symptom is
+> wrong argument values instead of kernel panic).  Does someone have an idea
+how
+> to fix it or work around it?
+
+I had exactly the same problem with earlier versions of gdb (4.18
+if I recall), though for me the problem was invariably provoked by my
+asking "where" on a deeply nested set of stack frames.  I had always
+believed that the problem stemmed from the fact that the compiler,
+when invoked with the options used to build the Linux kernel in any
+case, is under no obligation to preserve the values of its incoming
+arguments past their useful life within the called function.  If the
+arguments are consumed before the next use of the register,
+they are never saved.  So sooner or later, the back trace comes to
+a function for which the argument storage on the stack frame is
+uninitialized garbage.
+
+That problem should, in theory, be fixable by compiling with
+a set of options that force the arguments to be stored in the
+stack frame.  Yours may well be slightly different, but fatal
+for the same reason.
+
+> Does this problem exist in native debugging?
+
+Yes, but in that case all you get is a bogus reported argument.
+The problem is that the kgdb "agent" in the kernel is being passed
+a bogus pointer, and is dereferencing it mindlessly (and fatally).
+
+> I assume we can disable gdb to display char strings by default.  Does
+someone
+> know how to do it?
+
+I tried fixing it with a hack to the exception handling code,
+inspired by the old Cobalt MIPS kernel code, such that the
+kgdb agent's proxy references could fail in a non-fatal manner.
+I never did get it to work.  It probably would be easy to cripple
+gdb to not automatically dereference pointer arguments, perhaps
+only in remote mode and perhaps only if some magic flag is set.
+But it *is* nice to see the string arguments when they are sane.
+A cleaner approach might be to have the proxy use a high level
+VM routine to check the validity of each address before
+dereferencing, but it's not clear that it's actually safe to invoke
+such routines from the level at which the kgdb proxy is executing.
 
             Kevin K.
-
------ Original Message -----
-From: "Kevin D. Kissell" <kevink@mips.com>
-To: "Carsten Langgaard" <carstenl@mips.com>; <linux-mips@oss.sgi.com>
-Sent: Monday, March 19, 2001 4:43 PM
-Subject: Re: Bug in the _save_fp_context.
-
-
-> > I think there is a bug in the _save_fp_context function in
-> > arch/mips/kernel/r4k_fpu.S
-> >
-> > The problem is the following piece of code:
-> >
-> >  jr ra
-> >  .set nomacro
-> >  EX(sw t0,SC_FPC_EIR(a0))
-> >  nop
-> >  .set macro
-> >
-> > First of all what should the ".set nomacro" do?
-> > If it means that the EX macro shouldn't be used then this entry wouldn't
-> > get into __ex_table, which would be wrong.
-> > But it look like it uses the macro anyway, regardless of the ".set
-> > nomacro", at least with the compiler I use.
->
-> Not surprising, really.  "EX" is presumably a cpp macro
-> that gets expanded by gcc from the .S file, based on
-> some include file.  .set directives affect only the assembler,
-> and would inhibit assembler-level macros only.  I'm not
-> sure just what the definition of an assembler macro
-> would be - it may or may not include pseudo-instructions
-> like "la" or "li 32_bit_constant".  I *think* that what the
-> author was trying to do here was to ensure that the
-> "sw" instruction in the EX expansion was really and
-> truly a single instruction.
->
-> > Never the less we do not handle entries in the __ex_table which is
-> > located in a branch delay.
-> > So we need to handle the situation where we take a page fault on an
-> > instruction which is located in a brach delay slot, or we don't put the
-> > "potential" faulting instruction in a delay slot.
-> >
-> > Any ideas, how we should handle this in a nice and clean way?
->
-> Is the __ex_table really ending up in the delay slot?
-> Just looking at the source, I have the impression
-> that the "sw t0,..." instruction should be in the delay
-> slot, followed by the __ex_table.
->
-> On another topic, now that I've patched the kernel to
-> turn off the stupid stuck interrupt on my Malta board,
-> I've realized that I can't just connect my old Atlas SCSI
-> disk.  I'm torn between ordering a Tekram 390 PCI
-> SCSI card, which should be able to use our "MIPS
-> safe" NCR driver as-is (I hope) and buying an IDE
-> disk and going through the network install ritual.
-> Which do you recommend?  One thing I really never
-> knew was just what kernel config options I need to
-> select to build a kernel that can do the NFS-root
-> bootstrap.  Can you help me there?
->
->             Regards,
->
->             Kevin K.
->

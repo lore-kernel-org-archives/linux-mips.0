@@ -1,19 +1,23 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0wr7AY-0005FiC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: Interest in SGI/Linux
-Date: Wed, 23 Jul 1997 20:33:53 +0100 (BST)
-In-Reply-To: <199707230249.EAA22451@informatik.uni-koblenz.de> from "Ralf Baechle" at Jul 23, 97 04:49:10 am
-Content-Type: text
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199707240217.EAA23045@informatik.uni-koblenz.de>
+Subject: Re: Yay!  It boots!  It boots!
+Date: Thu, 24 Jul 1997 04:17:26 +0200 (MET DST)
+In-Reply-To: <Pine.LNX.3.95.970723213813.14151B-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jul 23, 97 10:03:44 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Cc: ariel@sgi.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19970723193353.NLtIVyaTscL9yn6YNUa-RjSZ-Ko5Zx8cr7NBHWkI4qQ@z>
+To: Alex deVries <adevries@engsoc.carleton.ca>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970724021726._UQrRYlWMWc85RgzHfgM715209zSuJJOpMQP9QC_Pm0@z>
 
-> I'm also surprised, especially because a search on Altavista found just
-> one single reference to *.linux.sgi.com in a German newgroup, Dejanews
-> didn't find any references.
+Hi,
 
-Altavista doesnt archive linuxnet:#linux
+> I'm using Mike's vmlinux version 2.1.43 (11MB!), and the
 
-Alan
+*Brrr*  why are you using a kernel with debugging info?
+
+> root-be-0.0.cpio.gz (thanks, Ralf!) root file system.
+
+  Ralf

@@ -1,39 +1,25 @@
-Message-ID: <001301c18f39$5685c640$9b6e0b0a@huawei.com>
-From: "machael thailer" <dony.he@huawei.com>
-References: <20011226013221.A737@dea.linux-mips.net> <20011227.105518.74756316.nemoto@toshiba-tops.co.jp> <20011227011222.A16695@dea.linux-mips.net> <20011227.125122.71082554.nemoto@toshiba-tops.co.jp> <20011227022936.A19397@dea.linux-mips.net> <3C2B45D3.B938CA44@eicon.com> <20011227191959.B1553@dea.linux-mips.net>
-Subject: Re: vmalloc bugs in 2.4.5???
-Date: Fri, 28 Dec 2001 08:48:16 +0800
+Subject: Re: ISA
+Date: Tue, 1 Jan 2002 20:13:16 +0000 (GMT)
+In-Reply-To: <20020101112223.A14847@mvista.com> from "Jun Sun" at Jan 01, 2002 11:22:23 AM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E16LVHh-0001LU-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>, "Tommy S. Christensen" <tommy.christensen@eicon.com>
-Cc: Atsushi Nemoto <nemoto@toshiba-tops.co.jp>, linux-mips@oss.sgi.com
-Message-ID: <20011228004816.zglk-BSuAaHK7Mxm3C8V7E86cVgeiSK_4QHotQ-3gWg@z>
+To: Jun Sun <jsun@mvista.com>
+Cc: Jim Paris <jim@jtan.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Linux/MIPS Development <linux-mips@oss.sgi.com>
+Message-ID: <20020101201316.aABVaPmMdhWNMVueTeqNZp4dXWV04AMUR3td-BUYjW0@z>
 
-
------ Original Message ----- 
-From: Ralf Baechle <ralf@oss.sgi.com>
-To: Tommy S. Christensen <tommy.christensen@eicon.com>
-Cc: Atsushi Nemoto <nemoto@toshiba-tops.co.jp>; <dony.he@huawei.com>; <linux-mips@oss.sgi.com>
-Sent: Friday, December 28, 2001 5:19 AM
-Subject: Re: vmalloc bugs in 2.4.5???
-
-
-> On Thu, Dec 27, 2001 at 05:01:23PM +0100, Tommy S. Christensen wrote:
-> 
-> > Great! But please make sure that the cache is flushed after the pages
-> > are allocated instead of before.
+> >     check_mem_region(virt_to_phys(ioremap(ISA_address)), ...)
 > > 
-> > With 2.4.9 that still had the cache-flushing in vmalloc_area_pages(), I
-> > got cache aliasing problems in low memory situations (since alloc_page()
-> > will re-schedule when no pages are available).
+> > which might be the best way for now? 
 > 
-> Correct; I fixed that one.  That's actually a nasty one, affects all
-> previous Linux releases.  I wonder how this one went unnoticed for so long.
-> Probably because loading modules is a relativly rare event or so.
+> I agree with Geert and think isa_xxx_mem_region is a better approach.
+> Unfortunately, this requires a change in both dirver and
+> arch-specific part.
 
-How do you fix it? Can you mail your fixup code to me please?
+Its something that can be done progressively however as we fixup stuff.
+It'll just "happen" to work on x86 either way.
 
-machael
+Alan

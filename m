@@ -1,28 +1,46 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199708290014.UAA10404@neon.ingenia.ca>
-Subject: bogomips lives
-Date: Thu, 28 Aug 1997 20:14:12 -0400 (EDT)
+Date: Tue, 2 Sep 1997 17:47:13 -0400 (EDT)
+From: Alex deVries <adevries@engsoc.carleton.ca>
+Subject: Booting off of sdb1...
+Message-ID: <Pine.LNX.3.95.970902173244.5212A-100000@lager.engsoc.carleton.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ariel Faigon <ariel@yon.engr.sgi.com>, Linux/SGI list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970829001412.X0j2sg2B_yWXUCaGViJaL-L7IC3v_HyYXgomN9Vmdfk@z>
+To: linux@cthulhu.engr.sgi.com
+Message-ID: <19970902214713.Q_3_Wwrpg9ksh9WdP5KTM262QsgoWjp27hQiMZ-r5tE@z>
 
-My Indy is sitting on my desk right now, begging for me to drop Linux
-on it.  Many, _many_ thanks to Ariel and David for whatever magic they
-had to invoke to get it through customs.
 
-I've got to run now, but I'll get Linux on it tomorrow.  And then the
-fun _really_ begins.
+First off, thanks to input from Mike, I got my partition setup properly.
+Here's how it's done:
 
-Mike
+In fx in IRIX, create an optional partition.  This will create one huge
+partition at the beginning (sdb1), and a volume header (sdb2), which you
+won't use.  It doesn't matter what type of partition you label sdb1, Linux
+doesn't recognize either.  All this means is you may have to force the
+type recognition when doing a mount.
 
--- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>           Resident Linux bigot and kernel hacker. (OOPS!)           
-#> `If you get bitten by a bug, tough luck...the one thing I won't do  
-#> is feel sorry for you.  In fact, I might ask you to do it all over  
-#> again, just to get more information.  I'm a heartless bastard.'     
-#>                       -- Linus Torvalds (on development kernels)    
+From within an nfs-rooted Linux, I mke2fs'd it, and copied all the files
+over from my nfsroot (esentially Ralf's root .cpio.gz).
+
+But, here's my problem:  I've take my old kernel that boots with NFS root,
+and tried to boot it using:  
+vmlinux root=/dev/sdb1
+
+The kernel starts, and it finishes off with:
+
+Partition check:
+ sda: sad1 sda2 sda3 sda4
+ sdb: sdb1 sdb2 sdb3
+VFS: Mounted root (ext2 filesystem) readonly.
+: Can't open
+
+And then nothing.
+
+What am I missing?
+
+- Alex
+
+
+      Alex deVries              Success is realizing 
+  System Administrator          attainable dreams.
+   The EngSoc Project     

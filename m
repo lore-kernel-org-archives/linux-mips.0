@@ -1,33 +1,35 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199706021651.SAA03747@informatik.uni-koblenz.de>
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199706021855.OAA13584@neon.ingenia.ca>
 Subject: Re: Superpenguin 's slogan
-Date: Mon, 2 Jun 1997 18:51:03 +0200 (MET DST)
-In-Reply-To: <9706021150.ZM11223@akira.tampa.sgi.com> from "Liam Irish" at Jun 2, 97 11:50:04 am
+In-Reply-To: <199706021651.SAA03747@informatik.uni-koblenz.de> from Ralf Baechle at "Jun 2, 97 06:51:03 pm"
+Date: Mon, 2 Jun 1997 14:55:52 -0400 (EDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Liam Irish <irish@akira.tampa.sgi.com>
+To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970602165103.sIL7l23vOqEk7TiesmCStTPFcMnEkyfmf0tMG7okyZg@z>
+Message-ID: <19970602185552.npMRM6WRAnokVI0O1hkl25XvIDtby3QicJBUsYBCMic@z>
 
-> Hey, how about
+Thus spake Ralf Baechle:
+> > "Putting the MIPS back in BogoMIPS"
 > 
-> 
-> "Putting the MIPS back in BogoMIPS"
-> 
-> for a slogan?  Nice dual (triple even) meaning.
+> *         MIPS - the measure of performance                               *
 
-The old RISC/os systems from Mips had a default motd like
+Skipping right over the "Linux/Indy: the power to hurt your other
+boxes" tempation, what about:
 
-***************************************************************************
-*                                                                         *
-*         MIPS - the measure of performance                               *
-*                                                                         *
-***************************************************************************
+Is your box cool?
+Is it running Linux?
+Is it blue?
 
-At Waldorf Electronics were I started works on the MIPS port our Linux
-machines had exactly the same motd just with "Linux, the measure of price".
+Mike
+(spending far too much time with the SGI sales guys, it would seem)
 
-  Ralf
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>       Chief System Architect -- Head geek -- System exorcist        
+#>                                                                     
+#>   "Have you considered a life?  I hear they're quite affordable     
+#>          these days." --- shields@tembel.org                        

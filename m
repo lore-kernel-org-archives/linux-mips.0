@@ -1,21 +1,31 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0zbnrR-0007U8C@the-village.bc.nu>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: Borland (was: unproductive Haloween thread)
-Date: Fri, 6 Nov 1998 15:31:40 +0000 (GMT)
-In-Reply-To: <199811061411.PAA08425@link.csem.ch> from "Fernando D. Mato Mira" at Nov 6, 98 03:13:26 pm
-Content-Type: text
+From: jes@machine.engr.sgi.com (John E. Schimmel)
+Message-ID: <199811251957.LAA24028@machine.engr.sgi.com>
+Subject: Re: help offered
+Date: Wed, 25 Nov 1998 11:57:10 -0800 (PST)
+In-Reply-To: <19981125204900.A4692@loria.fr> from "Olivier Galibert" at Nov 25, 98 08:49:00 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "Fernando D. Mato Mira" <matomira@acm.org>
-Cc: dmerchan@hiwaay.net, linux@cthulhu.engr.sgi.com
-Message-ID: <19981106153140.ewkKq9V9IkD4ohDKuFvYmtHzWP7b9EvQsFduLXEfKmk@z>
+To: Olivier Galibert <galibert@pobox.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19981125195710.1gaNWUXLOLKC-6auP5feVjUjx6NIW1Vw9vTBONBX0iA@z>
 
-> At 07:59 AM 11/6/98 -0600, you wrote:
-> >What are Inprise and CodeWarrior, please?
 > 
-> Inprise == Borland
+> The  limit on  x86 is  2GB.   To  be  fair,  said  terabyte  files and
+> filesystems  are  connected  to systems   with  a 64bits architecture.
+> Afaik, linux on alpha handles terabytes files.
 > 
-> CodeWarrior: http://www.metrowerks.com/
+>   OG.
 > 
 
-Can someone tell me what this has to do with Linux/SGI ?
+We support >2GB on 32 bit systems, and added lseek64() and friends
+before we had 64 bit size_t/off_t.
+
+--------------------------------------------------------------
+John E. Schimmel                       Email:    jes@sgi.com         
+KD6MNW				       Voice:    (650)933-4116
+Silicon Graphics Inc.                  Fax:      (650)933-0513
+http://reality.sgi.com/jes             Cellular: (209)631-0896
+--------------------------------------------------------------

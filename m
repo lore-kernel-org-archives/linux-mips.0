@@ -1,142 +1,117 @@
-Received: from intrepid (c-67-175-6-30.client.comcast.net [67.175.6.30])
-	(authenticated bits=0)
-	by starbase.tos.net (8.13.1/8.13.1) with ESMTP id iBS0dFXA014161
-	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
-	for <linux-mips@linux-mips.org>; Mon, 27 Dec 2004 18:39:16 -0600
-Message-ID: <200412280039.iBS0dFXA014161@starbase.tos.net>
-From: "Habeeb J. Dihu" <macgyver@tos.net>
-Subject: RE: 2.6.9 Cobalt Tulip lockups.
-Date: Mon, 27 Dec 2004 18:38:23 -0600
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20041227233126.GA6680@linux-mips.org>
-Return-Path: <macgyver@tos.net>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: do_ri exception in Linux (MIPS 4kec)
+Date: Tue, 28 Dec 2004 20:11:16 +0530
+Message-ID: <F6B01C6242515443BB6E5DDD63AE935F046804@dbde2k01.itg.ti.com>
+From: "Nori, Soma Sekhar" <nsekhar@ti.com>
+Return-Path: <nsekhar@ti.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20041228003823.PZLFOYrcdujm1lJzTwMPpgj9eqR81z9nhkYjF4Qrgcw@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, "Iyer, Suraj" <ssiyer@ti.com>
+Message-ID: <20041228144116.yi0DGyZDCWgKl1HWOGdNskzHds4fMjWhimgwn2wGOyQ@z>
 
-Grrr...thought I did and ended up pasting the wrong output. :)  Here's the
-decoded output:
+Ralf,
 
-Trace; 800b32c8 <local_bh_enable+b8/c0>
-Trace; 80084e28 <do_IRQ+1d8/208>
-Trace; 80397ee8 <svc_sock_enqueue+248/4d0>
-Trace; 80397f08 <svc_sock_enqueue+268/4d0>
-Trace; 80398af4 <svc_write_space+44/b0>
-Trace; 8029a374 <sock_wfree+140/1d4>
-Trace; 800b87ac <update_process_times+2c/54>
-Trace; 800ad20c <profile_tick+40/48>
-Trace; 8029ccbc <__kfree_skb+d0/430>
-Trace; 802bc8b0 <zap_completion_queue+8c/d8>
-Trace; 802bc918 <find_skb+1c/140>
-Trace; 802bcba8 <netpoll_send_udp+3c/30c>
-Trace; 802575bc <serial8250_console_write+a4/354>
-Trace; 8027b370 <write_msg+70/b8>
-Trace; 800abe34 <__call_console_drivers+8c/94>
-Trace; 800abe34 <__call_console_drivers+8c/94>
-Trace; 800b3168 <__do_softirq+108/11c>
-Trace; 800abebc <_call_console_drivers+80/90>
-Trace; 800abf80 <call_console_drivers+b4/170>
-Trace; 800ac6b8 <release_console_sem+c8/288>
-Trace; 8022e900 <vscnprintf+14/30>
-Trace; 800ac34c <vprintk+1cc/32c>
-Trace; 8022e900 <vscnprintf+14/30>
-Trace; 800ac278 <vprintk+f8/32c>
-Trace; 800ac174 <printk+1c/28>
-Trace; 80279dec <t21142_timer+46c/474>
-Trace; 80279980 <t21142_timer+0/474>
-Trace; 800b8954 <run_timer_softirq+14c/2a8>
-Trace; 802b9458 <nf_iterate+d4/118>
-Trace; 800b3168 <__do_softirq+108/11c>
-Trace; 80084808 <handle_IRQ_event+6c/f0>
-Trace; 800b3208 <do_softirq+8c/94>
-Trace; 80084e18 <do_IRQ+1c8/208>
-Trace; 80082908 <cobalt_irq+68/180>
-Trace; 802dc1bc <ip_finish_output2+0/5b4>
-Trace; 80083180 <ret_from_exception+0/0>
-Trace; 802d89d8 <ip_output+78/94>
-Trace; 8030ffdc <inet_sendmsg+60/84>
-Trace; 80303260 <udp_sendmsg+374/a74>
-Trace; 802da298 <ip_generic_getfrag+0/bc>
-Trace; 80084e28 <do_IRQ+1d8/208>
-Trace; 8029afb0 <sock_alloc_send_pskb+208/56c>
-Trace; 8029b330 <sock_alloc_send_skb+1c/28>
-Trace; 80138718 <iput+4c/a8>
-Trace; 802dad80 <ip_append_data+a2c/b1c>
-Trace; 80134538 <d_alloc_anon+30/1a4>
-Trace; 800a4198 <try_to_wake_up+140/1b0>
-Trace; 802d07c0 <ip_route_output_flow+88/ac>
-Trace; 803031ec <udp_sendmsg+300/a74>
-Trace; 8030ffdc <inet_sendmsg+60/84>
-Trace; 80214364 <selinux_socket_sendmsg+1c/28>
-Trace; 80295864 <sock_sendmsg+10c/114>
-Trace; 800a7440 <autoremove_wake_function+0/44>
-Trace; 8030ffdc <inet_sendmsg+60/84>
-Trace; 80214364 <selinux_socket_sendmsg+1c/28>
-Trace; 80295894 <kernel_sendmsg+28/3c>
-Trace; 80295864 <sock_sendmsg+10c/114>
-Trace; 8029b7b4 <sock_no_sendpage+68/74>
-Trace; 80303ab8 <udp_sendpage+158/194>
-Trace; 80303aa0 <udp_sendpage+140/194>
-Trace; 8020e0d4 <file_alloc_security+2c/a0>
-Trace; 800a7440 <autoremove_wake_function+0/44>
-Trace; 802120f4 <selinux_inode_getattr+70/7c>
-Trace; 800a40c8 <try_to_wake_up+70/1b0>
-Trace; 80310070 <inet_sendpage+70/d0>
-Trace; 80398698 <svc_sendto+8c/244>
-Trace; 80398840 <svc_sendto+234/244>
-Trace; 8029ca50 <skb_release_data+118/280>
-Trace; 801d6f8c <nfssvc_encode_attrstat+37c/5a0>
-Trace; 8029cd50 <__kfree_skb+164/430>
-Trace; 8039918c <svc_udp_sendto+20/5c>
-Trace; 801cab18 <fh_put+18c/288>
-Trace; 8039b554 <svc_send+210/2ec>
-Trace; 8039c8a4 <svc_authorise+30/170>
-Trace; 801d8068 <nfssvc_release_fhandle+10/28>
-Trace; 80397740 <svc_process+334/894>
-Trace; 800bdbe8 <sigprocmask+98/1ec>
-Trace; 801c7398 <nfsd+2cc/6b8>
-Trace; 801c7274 <nfsd+1a8/6b8>
-Trace; 801c70cc <nfsd+0/6b8>
-Trace; 80086070 <kernel_thread_helper+10/18>
-Trace; 80086060 <kernel_thread_helper+0/18>
- 
+Thanks for the input.
+
+To understand what exceptions I was getting (apart from RI), I implemented a counter for each exception.
+In "except_vec3_generic" (entry.S), I included some code to increment a counter for each exception received.
+
+<code>
+	NESTED(except_vec3_generic, 0, sp)
+
+#if defined(CONFIG_CPU_R5432)
+	/* [jsun] work around a nasty bug in R5432  */
+	mfc0	k0, CP0_INDEX
+#endif 
+	mfc0	k1, CP0_CAUSE
+      la    k0, exception_counter
+	andi	k1, k1, 0x7c                
+	addu	k0, k0, k1
+      lw    k1, (k0)
+      addi  k1, k1, 1
+      sw    k1, (k0)
+
+	... (original code follows)
+
+</code>
+
+exception_counter is an array of 32 integers. On printing out the array in do_ri exception handler, I found that only TLB Mod(Code 1), TLBL (Code 2), TLBS (Code 3), syscall (code 8) and RI (code 10) exceptions were received (had count >= 1). With this, will it be safe to assume that RI is the only unwanted exception?
+
+To get hold of exact EPC at which RI is occuring, I tried to clear the EXL bit of status register by adding some more code above the exception counting code in the except_vec3_generic routine.
+
+<code>
+	NESTED(except_vec3_generic, 0, sp)
+
+#if defined(CONFIG_CPU_R5432)
+	/* [jsun] work around a nasty bug in R5432  */
+	mfc0	k0, CP0_INDEX
+#endif 
+      mfc0    k0, CP0_STATUS
+      nop
+      ori     k0, k0, 0x2
+      xori    k0, k0, 0x2
+      mtc0    k0, CP0_STATUS
+      nop
+	
+	... (Exception counting code follows)
+
+</code>
+
+Surprisingly, the processor does not seem to alow me to clear the EXL bit. I get AdEL (code 4) exception as I complete the "mtc0    k0, CP0_STATUS" instruction. The processor goes into an infinite loop of exceptions and boot-up hangs after printing "Freeing unused kernel memory: 48k freed". Is it not possible for software to clear the EXL bit after it has been set by the hardware? If not, what else can I do to get hold of the correct EPC value where RI is occuring?
+
+Thanks,
+Sekhar
+        
 
 -----Original Message-----
-From: linux-mips-bounce@linux-mips.org
-[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Ralf Baechle
-Sent: Monday, December 27, 2004 5:31 PM
-To: Habeeb J. Dihu
-Cc: linux-mips@linux-mips.org
-Subject: Re: 2.6.9 Cobalt Tulip lockups.
+From: Ralf Baechle [mailto:ralf@linux-mips.org]
+Sent: Monday, December 27, 2004 6:00 PM
+To: Nori, Soma Sekhar
+Cc: linux-mips@linux-mips.org; Iyer, Suraj
+Subject: Re: do_ri exception in Linux (MIPS 4kec)
 
-On Mon, Dec 27, 2004 at 05:12:50PM -0600, Habeeb J. Dihu wrote:
 
-> eth0: MII status 782d, Link partner report 45e1.
-> eth0: 21143 negotiation status 000000c6, MII.
-> Badness in local_bh_enable at kernel/softirq.c:141
-> Call Trace: [<800b32c8>]  [<80084e28>]  [<80397ee8>]  [<80397f08>]
-> [<80398af4>]  [<8029a374>]  [<800b87ac>]  [<800ad20c>]  [<8029ccbc>]
-> [<802bc8b0>]  [<802bc918>]  [<802bcba8>]  [<802575bc>]  [<8027b370>]
-> [<800abe34>]  [<800abe34>]  [<800b3168>]  [<800abebc>]  [<800abf80>]
-> [<800ac6b8>]  [<8022e900>]  [<800ac34c>]  [<8022e900>]  [<800ac278>]
-> [<800ac174>]  [<80279dec>]  [<80279980>]  [<800b8954>]  [<802b9458>]
-> [<800b3168>]  [<80084808>]  [<800b3208>]  [<80084e18>]  [<80082908>]
-> [<802dc1bc>]  [<80083180>]  [<802d89d8>]  [<8030ffdc>]  [<80303260>]
-> [<802da298>]  [<80084e28>]  [<8029afb0>]  [<8029b330>]  [<80138718>]
-> [<802dad80>]  [<80134538>]  [<800a4198>]  [<802d07c0>]  [<803031ec>]
-> [<8030ffdc>]  [<80214364>]  [<80295864>]  [<800a7440>]  [<8030ffdc>]
-> [<80214364>]  [<80295894>]  [<80295864>]  [<8029b7b4>]  [<80303ab8>]
-> [<80303aa0>]  [<8020e0d4>]  [<800a7440>]  [<802120f4>]  [<800a40c8>]
-> [<80310070>]  [<80398698>]  [<80398840>]  [<8029ca50>]  [<801d6f8c>]
-> [<8029cd50>]  [<8039918c>]  [<801cab18>]  [<8039b554>]  [<8039c8a4>]
-> [<801d8068>]  [<80397740>]  [<800bdbe8>]  [<801c7398>]  [<801c7274>]
-> [<801c70cc>]  [<80086070>]  [<80086060>] 
+On Thu, Dec 23, 2004 at 04:58:03PM +0530, Nori, Soma Sekhar wrote:
 
-Can you decode this dump?  Undecoded it's useless, decoded likely to
-be useful ...
+> We are using montavista Linux version 2.4.17, gcc version 2.95.3 running on MIPS 4kec.
+> 
+> Here is the dump:
+> $0 : 00000000 0044def4 000001ac 0000006b 00000000 7fff7c08 00000001 00000000
+> $8 : 0000fc00 00000001 00000000 941524d0 00004700 00000000 97fc3ea0 7fff7c08
+> $16: 100048a4 100029d8 100029d8 10003020 00000000 7fff7dc8 10003b60 2d8e2163
+> $24: 00000001 2ab7bc30                   10008e70 7fff7bf0 04000000 00439e50
+> Hi : 00000000
+> Lo : 00000001
+> epc  : 00439e84    Not tainted
+> Status: 0000fc13
+> Cause : 10800028
+> Process sh (pid: 18, stackpage=97fc2000)
+> Stack: 00000001 00000000 2abd0ff0 7fff7c28 10008e70 00000000 10008e6c 00000000
+>        100049a0 0042f188 00000000 100029d8 00000001 00000001 7fff7f04 10008e70
+>        00427fe4 00427f00 00000000 00000000 10002764 10008e70 10008e70 00000000
+>        00000000 00000000 10008e70 00422734 00000001 00000001 7fff7f04 10008e70
+>        10008e70 00000003 10008e70 004315cc 00000001 00000000 10002764 00000000
+>        10008e70 ...
+> Call Trace:
+> Code: 00000000  2421dd48  00220821 <8c220000> 00000000  005c1021  00400008  0000
+> 0000  8f99802c
+> 
+> The epc is not in kernel space and ksymoops did not provide any info. The epc keeps changing to different locations in user space over multiple runs.
+
+In a case like this you're likely dealing with double exceptions.  Your
+code is taking an exception and the exception handler while running with
+c0_status set is taking another exception.  If the first exception handler
+is still running with the c0_status.exl bit set the CPU when taking the
+second exception it will not record the PC of the second exception and
+you will have a seemingly unexplainable exception.
+
+A few processors have the nasty habit of throwing RI receptions or do
+similarly weird things when executing code that is mapped through multiple
+TLB pages but the 4kEC shouldn't.
 
   Ralf

@@ -1,50 +1,34 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Alan Cox <alan@cymru.net>
-Message-ID: <199605300943.KAA23935@snowcrash.cymru.net>
+Message-ID: <199605300946.KAA24198@snowcrash.cymru.net>
 Subject: Re: linux needs bsd networking stack
-Date: Thu, 30 May 1996 10:43:42 +0100 (BST)
-In-Reply-To: <199605292159.OAA09070@lanta.engr.sgi.com> from "Neal Nuckolls" at May 29, 96 02:59:58 pm
+Date: Thu, 30 May 1996 10:46:46 +0100 (BST)
+In-Reply-To: <199605292250.PAA03268@neteng.engr.sgi.com> from "David S. Miller" at May 29, 96 03:50:23 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Neal Nuckolls <nn@lanta.engr.sgi.com>
-Cc: torvalds@cs.helsinki.fi, alan@cymru.net, sparclinux-cvs@caipfs.rutgers.edu, lmlinux@neteng.engr.sgi.com
-Message-ID: <19960530094342.ncaYqnHKkzkBYwv6N6XpT5Cg6aMevhxvppT-WKlEfVI@z>
+To: "David S. Miller" <dm@neteng.engr.sgi.com>
+Cc: nn@lanta.engr.sgi.com, torvalds@cs.helsinki.fi, alan@cymru.net, sparclinux-cvs@caipfs.rutgers.edu, lmlinux@neteng.engr.sgi.com
+Message-ID: <19960530094646.Z5dhAoPc3S1VRLZFpB5X2eQtja-Jr1c3mB2Wb2-LJyI@z>
 
-> customization to turn them into networking switches,
-> routers, firewalls, etc.  Rather than embedding a RTOS,
-> they are choosing a free unix and usually this is FreeBSD
-> since Linux networking is not the de facto BSD stack.
+> It has a well defined architecture, I will agree with lm when he
+> mentions that it is a jungle of code to sift through in certain
+> respects.  It need a mallet to smooth certain aspects and interfaces
+> out.
 
-So we should use a defacto BSD stack because its a defacto stack. Ok there is this
-great OS called windows3. See you later
+I hope to be working full time on this eventually (like when people are paying me
+for it). I've also started documentation at the driver and skbuff level and will
+work over it bit by bit - see forthcoming Linux Journal articles then going into the
+KHG.
 
-> The "unique" tcp/ip implementation is a liability to linux.
+> their entire heart and soul into the Linux networking code.  I believe
+> at the very least that the Linux networking stack is superior
+> performance wise without any question, and as everyone knows I have
+> numbers to prove it ;-)
 
-I'm not convinced it is. A whole load of SGI people (LM notably) seem intent on "BSD
-stack, BSD stack, BSD stack". Everyone else I hear is saying "How fast can it go",
-"How stable can we make it", "Will you please make sure its as solid in 2.0 as in 1.2"
-
-> Is anyone working to replace the standard linux stack
-> with port derived from the 4.4BSD code?
-
-No -
-
-o	The BSD stack doesnt do IPX, AX25, NetROM, Appletalk
-o	There will be no defacto IPv6 for BSD, there are several species
-o	The licensing doesnt permit the two to meet easily
-o	You can't do 400Mbits/second with mbufs so you'd have to break the BSD code
-	anyway
-
-Im not convinced about the rest of the argument either. I know one big vendor using
-the BSD stack for a project. I know several using Linux (Things like the firewall
-from Mazama). We are seeing primary rate ISDN support for Linux starting to appear,
-and already have the heavy provider end multiple serial cards.
-
-For routers, anyone using a PC style architecture is bounding themselves to small
-routers anyway. No matter how good the code is you will soon need fancy hardware to
-handle BGP4, 50,000 routes and fast 100baseT speed switching. And there is no
-defacto BSD IPv6
+Before you admire the performance numbers get the pre2.1 code off Pedro Roque. Now he
+has added really neat header prediction code it kicks pre2.0's butt even though its
+doing a surplus memory alloc we need to tidy up
 
 Alan

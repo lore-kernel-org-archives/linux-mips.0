@@ -1,30 +1,38 @@
-From: "Jay Carlson" <nop@nop.com>
-Subject: RE: kernel should not reject -mips2 ELF binaries
-Date: Mon, 6 Nov 2000 22:00:02 -0500
-Message-ID: <KEEOIBGCMINLAHMMNDJNIEDHCAAA.nop@nop.com>
+Message-ID: <002101c04877$dbc6a270$2a00a8c0@enabtech>
+From: "Jawad Qureshi" <jawad@enabtech.com>
+Subject: How to Unsubsribe from this list
+Date: Tue, 7 Nov 2000 10:01:51 +0500
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20001107032802.D28567@bacchus.dhis.org>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001E_01C048A1.C03E3250"
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>, Jay Carlson <nop@place.org>
-Cc: linux-mips@oss.sgi.com, linux-mips@fnet.fr
-Message-ID: <20001107030002.qht1psmSQTun_mbeepo5uddNQ96ZnCM4pszeXGh38xU@z>
+To: linux-mips@fnet.fr
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20001107050151.Ryx8JUlWrntaEJtw0zGuh30aktcS6OkEzvVvj76DePU@z>
 
-> > 	if (__h->e_flags & EF_MIPS_ARCH)				\
-> > 		__res = 0;						\
+This is a multi-part message in MIME format.
 
-> > So what's the right way to fix this?  Three things come to mind:
-> >
-> > 1) rip out the EF_MIPS_ARCH check from elf_check_arch.
->
-> Take 1).  The problem we have is distiguishing Linux binaries from IRIX
-> binaries.  The code causing problems for you is a heuristic that no
-> longer works these days so I'll have to come up with something new.
+------=_NextPart_000_001E_01C048A1.C03E3250
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-OK.  I'm going to remove the above two lines in the Linux VR CVS repository.
-Thanks!
 
-Jay
+
+------=_NextPart_000_001E_01C048A1.C03E3250
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_001E_01C048A1.C03E3250--

@@ -1,43 +1,29 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199708051848.OAA06002@neon.ingenia.ca>
-Subject: indyIRQ.S
-Date: Tue, 5 Aug 1997 14:48:32 -0400 (EDT)
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199708060925.LAA11554@informatik.uni-koblenz.de>
+Subject: Re: indyIRQ.S
+Date: Wed, 6 Aug 1997 11:25:54 +0200 (MET DST)
+In-Reply-To: <199708052111.XAA01741@alpha.franken.de> from "Thomas Bogendoerfer" at Aug 5, 97 11:11:49 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Linux/SGI list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970805184832.j4z_o371OS2YUgjyhA-drUZZFoc1FXk_bF1G3y8UtMI@z>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: shaver@neon.ingenia.ca, linux@cthulhu.engr.sgi.com
+Message-ID: <19970806092554.vUvPGDhbYei8hkQPB9uOUZmjJWHDJuCPLdJXojsdcvA@z>
 
-Up-to-the-minute copy of the kernel, Ralf's Intel binutils, etc.
+> > mips-linux-gcc -D__KERNEL__ -I/export/sgi-linux/kernel/linux/include -D__GOGOGO__ -c indyIRQ.S -o indyIRQ.o
+> > indyIRQ.S: Assembler messages:
+> > indyIRQ.S:72: Warning: No .cprestore pseudo-op used in PIC code
+> > [...] 
+> > Any ideas?
+> 
+> yes, add a -fno-pic to your CFLAGS. The default for the current mips-linux-gcc
+> is to produce PIC code and most of the .S files aren't prepared to be compiled
+> this way.
 
-mips-linux-gcc -D__KERNEL__ -I/export/sgi-linux/kernel/linux/include -D__GOGOGO__ -c indyIRQ.S -o indyIRQ.o
-indyIRQ.S: Assembler messages:
-indyIRQ.S:72: Warning: No .cprestore pseudo-op used in PIC code
-indyIRQ.S:83: Warning: No .cprestore pseudo-op used in PIC code
-indyIRQ.S:95: Warning: No .cprestore pseudo-op used in PIC code
-indyIRQ.S:107: Warning: No .cprestore pseudo-op used in PIC code
-indyIRQ.S:124: Warning: No .cprestore pseudo-op used in PIC code
-indyIRQ.S:75: Error: Can not represent relocation in this object file format
-indyIRQ.S:86: Error: Can not represent relocation in this object file format
-indyIRQ.S:98: Error: Can not represent relocation in this object file format
-indyIRQ.S:110: Error: Can not represent relocation in this object file format
-indyIRQ.S:127: Error: Can not represent relocation in this object file format
-make[1]: *** [indyIRQ.o] Error 1
-make[1]: *** Waiting for unfinished jobs....
+None will compile not will the linker accept mixtures of PIC and non-PIC
+object files.  I suppose the cause is didling with the makefiles since
+-G 0 -mno-abicalls -fno-pic is default for MIPS.
 
-Any ideas?
-
-I'm also seeing a problem with asm/atomic.h and the like; stuff about
-invalid operands for binary +, etc.  I expect it's a CFLAGS or GCC
-spec file thing, but those should both be standard.
-
-Mike
-
--- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>              Linux: because every cycle counts.
-#>
-#> "I don't know what you do for a living[...]" -- perry@piermont.com
-#>        "I change the world." -- davem@caip.rutgers.edu
+  Ralf

@@ -1,35 +1,35 @@
-From: "Scott Thomas" <scott@tridsys.com>
-Subject: problem with download
-Date: Wed, 31 May 2000 11:17:52 -0400
-Message-ID: <002901bfcb13$63798a30$fe01a8c0@scott.tridsys.com>
+From: "Ian Chilton" <mailinglist@ichilton.co.uk>
+Subject: RE: Compile speed on SGI/Linux (like Indy)
+Date: Mon, 5 Jun 2000 18:41:28 +0100
+Message-ID: <NAENLMKGGBDKLPONCDDOCEJMCLAA.mailinglist@ichilton.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: owner-linuxmips@oss.sgi.com
-Return-Path: <owner-linuxmips@oss.sgi.com>
-To: linux@cthulhu.engr.sgi.com
-Message-ID: <20000531151752.mKBGi5zj4SN6eStBjCm8PvQJrl2pZpKXEIEhOtpemz4@z>
+In-Reply-To: <20000605190559.B6172@paradigm.rfc822.org>
+Sender: owner-linux-mips@oss.sgi.com
+Return-Path: <owner-linux-mips@oss.sgi.com>
+To: flo@rfc822.org
+Cc: Linux-MIPS Mailing List <linux-mips@oss.sgi.com>
+Message-ID: <20000605174128.oNWtY9zqPqO6sEXTA_dOC2wDkH3nMvIsD5ZVpDMigZU@z>
 
-Hello all,
-I've just recently acquired an old SGI Indy and planned to install
-Linux on it.  I've downloaded the hardhat-sgi-5.1.tar.gz file several
-times (from ftp.linux.sgi.com).  the ftp downloads the entire file,
-but never sees the EOF.
+Hello,
 
-when I try to un-tar it, it chokes since I believe the EOF marker
-is missing.  I'm in the process of trying the mirror sites, but I was
-wondering if anyone else has had this problem, and if so how
-did they overcome it?
+> The Endianess - debian-mips is Big Endian - Like
+> the SGI Indy and Indigo2
 
-btw, I noticed nothing has been posted to http://www.linux.sgi.com
-for over a year.  is anyone still working/interested in linux-mips?
 
---
-Scott Thomas
-Program Manager
-Trident Systems Inc.
-Phone: (703) 359-6226
-  Fax: (703) 273-6608
-Email: scott@tridsys.com
-  Web: http://www.tridsys.com
+Is there any documentation on how to install this then?
+
+
+Thanks!
+
+Ian
+
+
+                     \|||/ 
+                     (o o)
+ /----------------ooO-(_)-Ooo----------------\
+ |  Ian Chilton                              |
+ |  E-Mail : ian@ichilton.co.uk              |
+ \-------------------------------------------/

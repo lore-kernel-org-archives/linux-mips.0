@@ -1,32 +1,40 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: "Greg Chesson" <greg@xtp.engr.sgi.com>
-Message-ID: <9811251304.ZM24036@xtp.engr.sgi.com>
-Date: Wed, 25 Nov 1998 13:04:47 -0800
-In-Reply-To: alan@lxorguk.ukuu.org.uk (Alan Cox)
-        "Re: help offered" (Nov 25,  9:46pm)
-References: <m0zimlz-0007U1C@the-village.bc.nu>
+Date: Wed, 25 Nov 1998 13:18:12 -0800
+Message-ID: <199811252118.NAA22913@fir.engr.sgi.com>
+From: "William J. Earl" <wje@fir.engr.sgi.com>
 Subject: Re: help offered
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.04.9811251542540.3207-100000@elenuial.atlsci.com>
+References: <199811252037.MAA37649@oz.engr.sgi.com>
+	<Pine.LNX.4.04.9811251542540.3207-100000@elenuial.atlsci.com>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>, ariel@cthulhu.engr.sgi.com
-Cc: galibert@pobox.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19981125210447.P4LV2db7m9aWacWK-soBrI70mYrpEMPwXCcUqwDhJXo@z>
+To: pjlahaie@atlsci.com
+Cc: Ariel Faigon <ariel@cthulhu.engr.sgi.com>, Olivier Galibert <galibert@pobox.com>, linux@cthulhu.engr.sgi.com
+Message-ID: <19981125211812.ZHE4yFwW24h18TMHe_C3MRwCVeWh6D9A_EmuqkSW65s@z>
 
-One definition of OS scalability that I have not seen
-in general use is this:
+pjlahaie@atlsci.com writes:
+ > On Wed, 25 Nov 1998, Ariel Faigon wrote:
+ > 
+ > > I've seen way much higher numbers.  They are not official, and
+ > > are not supposed to be used in sales situations, but were obtained
+ > > in our labs with XFS and arrays that were designed and tuned to
+ > > maximize bandwidth and to prove that XFS is not the bottleneck.
+ > > I believe they also used fiberchannel etc.   Anyway, there are
+ > > some much greater experts on this subject on this list if they
+ > > care to give the details.
+ > 
+ >     I was under the impression the O2k memory bandwidth was limited to
+ > ~800MB/s.  If so, even if you can read 4GB/s what are you foing to do with
+ > it?  It would have to go over the CrayLink "network" and that doesn't do
+ > 4GB/s.  The only way I can see 4GB/s disk throughput is multiple of the
+ > node accessing "local" drives and adding all the bandwidth together.
 
-	an OS scales to S number of processors if all S processors
-	can be executing in the kernel at the same time.
+       A single node is only 800 MB/s, but an 8P Origin 2000 has four nodes,
+and a 32P has 16 nodes.  The router network bandwidth scales with the number
+of nodes, so the memory bandwidth of a 32P Origin 2000 is far more than enough
+for 4 GB/s.  If you attach the drives to multiple controllers on multiple
+nodes, then it is easy to stripe across them with the volume manager to
+get high bandwidth.  The volume manager does requests in parallel, so it
+is not a bottleneck.
 
-An OS that scales to S active kernels can usually operate hardware
-with P processors, where P > S.  A system for 1P should
-be able to handle 2P with a little work.  I expect a lightweight kernel
-like Linux to handle 4p with a few locks if on average only one of the
-4p is in the kernel.  I'd suggest that the LInux kernel is at present
-(1S, 4p) or maybe (1.5S, 4P).
-
-g
-
--- 
-Greg Chesson
+     The Origin architecture does not have a central bus, so it is not bus
+limited.  Just add boxes until the bandwidth is enough for what you need.

@@ -1,42 +1,21 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199806210605.XAA05652@oz.engr.sgi.com>
-Subject: Re: RedHat reveals some secrets
-Date: Sat, 20 Jun 1998 23:05:16 -0700 (PDT)
-In-Reply-To: <m0ynYV0-000aOnC@the-village.bc.nu> from "Alan Cox" at Jun 21, 98 02:00:49 am
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <m0yo2x5-000aOnC@the-village.bc.nu>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: 5.1 installation fun & games...
+Date: Mon, 22 Jun 1998 10:31:49 +0100 (BST)
+In-Reply-To: <Pine.SGI.3.96.980622095548.12756A-100000@wintermute.reading.sgi.com> from "Leon Verrall" at Jun 22, 98 10:08:21 am
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19980621060516.3e6IXkHvuN35K3KLcio52V1u1zX-3AIzdrEQQgZUKEE@z>
+To: Leon Verrall <leon@reading.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19980622093149.msg0wZyw8sOhJriAyd3qXcZHLBrFiWb_7TG2WnCKYtE@z>
 
-:
-:> by IDC and was estimated at 6.8% of the server operating system
-:> market, after NT, Novell NetWare, and "Unix" :-)
-:
-:Quick glue all the unixen together before they come too low ;)
-:
-:More seriously do you have a URL to the IDC one ?
-:
-It is not yet on the site (so it appears) but it was in the
-last page of today's Newspaper.
+> Anyway, this boots the kernel, mounts the root fs and then stops with the
+> message:
+> 
+>   Warning: unable to open an initial console
 
-The numbers were:
-	36.0%: Windows NT
-	26.4%: Netware (Novell)
-	20.0%: Unix
-	6.8%:  Linux
-	6.3%:  OS/2
-	3.8%:  Other
+You don't have a valid "/dev" inside of /scratch/linux/installfs
 
-(It adds to 99.3% probably due to last digit rounding)
-
-What's no less important, I feel, is that Linux is the _only_
-alternative OS to MS that actually _grew_, all the rest lost
-market share to Microsoft.
-
--- 
-Peace, Ariel
+Tar preserves major/minor numbers which will screw you royally across
+NFS (which doesnt). 

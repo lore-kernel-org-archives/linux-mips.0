@@ -1,53 +1,70 @@
-Date: Fri, 4 Oct 2002 15:24:18 +0100 (BST)
-Message-ID: <200210041424.PAA12242@mudchute.algor.co.uk>
-From: Dominic Sweetman <dom@algor.co.uk>
+From: Hartvig Ekner <hartvige@mips.com>
+Message-ID: <200210051512.g95FCmI11618@copfs01.mips.com>
+Subject: Re: Promblem with PREF (prefetching) in memcpy
+Date: Sat, 5 Oct 2002 17:12:47 +0200 (MEST)
+In-Reply-To: <20021005014345.B15883@linux-mips.org> from "Ralf Baechle" at Oct 05, 2002 01:43:45 AM
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Subject: Re: Promblem with PREF (prefetching) in memcpy
-In-Reply-To: <00dd01c26ba2$b18f55b0$10eca8c0@grendel>
-References: <3D9D484B.4C149BD8@mips.com>
-	<200210041153.MAA12052@mudchute.algor.co.uk>
-	<00dd01c26ba2$b18f55b0$10eca8c0@grendel>
-Return-Path: <dom@mudchute.algor.co.uk>
+Return-Path: <hartvige@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Kevin D. Kissell" <kevink@mips.com>
-Cc: Dominic Sweetman <dom@algor.co.uk>, Carsten Langgaard <carstenl@mips.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20021004142418.whnFUCcF1mQCsWkT9WZQPT5lHpKOk219fsFxh4vB7WA@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: "Kevin D. Kissell" <kevink@mips.com>, Dominic Sweetman <dom@algor.co.uk>, Carsten Langgaard <carstenl@mips.com>, linux-mips@linux-mips.org
+Message-ID: <20021005151247.Zor3Tm_F0rjV_ONPDleQGUFa3lm_yuhvnYMRR5kX2pc@z>
+
+I still say we should fix memcpy() (and everything else using prefetches)
+never to prefetch anything it hasn't been asked to touch.
+
+Apart from the performance loss of the current practice which Alan pointed
+out, I think there is another very good reason to fix it: SW coherency.
+
+Unless we want to do writeback/invalidate both before & after ownership
+of buffers are given/taken from DMA IO devices, we need to get rid of 
+the prefetches to unwanted areas. 
+
+So that's two good arguments for fixing memcpy() as I see it. I haven't
+really heard any arguments against it?
+
+Whether the last page of physical memory needs to be thrown away or not seems
+like a separate issue. Is this also done in x86 world? What are the issues
+you're thinking about Ralf? Are there devices which will read/write beyond 
+what they have been asked to?
+
+/Hartvig
 
 
-> A prefetch to a well-formed, cacheable kseg0 address which 
-> has no primary storage behind it (e.g. 0x04000000 on a system
-> with 64M of physical memory) should, according to the spec,
-> cause a cache fill to be initiated for the line at that address,
+Ralf Baechle writes:
+> 
+> On Fri, Oct 04, 2002 at 02:36:39PM +0200, Kevin D. Kissell wrote:
+> 
+> > In case Carsten's reply wasn't clear enough, there is a loophole
+> > in the spec:  kseg0.  There is no TLB access to cause a TLB
+> > exception (which would suppress the operation and be nullifed),
+> > If the prefetch address is correctly aligned, so that there is no
+> > address exception.  In typical use, kseg0 is cacheable, which
+> > means that the second paragraph you quote does not apply.
+> > A prefetch to a well-formed, cacheable kseg0 address which 
+> > has no primary storage behind it (e.g. 0x04000000 on a system
+> > with 64M of physical memory) should, according to the spec,
+> > cause a cache fill to be initiated for the line at that address,
+> > which will result in a bus error, if not a flat-out system hang.
+> 
+> Traditionally the kernel leaves the last page of memory unused but this
+> has been lost in the many changes to the memory initialization code.
+> It's still a good idea with all the broken I/O chips and PCI bridges out
+> there - and can avoid a hard to track bug.
+> 
+> That only leaves stuff usermode device drivers that are using cachable
+> mappings in the dangerzone.  That should be a rare case, if at all.
+> 
+>   Ralf
+> 
+> 
 
-True (at the CPU boundary).
 
-The system, having decoded the prefetch address and discovered it
-accesses the 'launch at once on read' I/O register is not obliged to
-resolve its dilemma by reading it.
-
-It's not even obliged to generate a bus error: it's often less harmful
-to just ignore it and pacify the CPU with some rubbish data...
-
-... but let's suppose it doesn't:
-
-> which will result in a bus error...
-
-I assume that this is not theoretical, and that at least one MTI core
-fails to ignore bus-error on prefetch?  (I take it that you're *not*
-arguing that this would be wrong).  Oops.
-
-If you enable bus errors, you must expect to have a bus error
-exception handler - and one of its jobs is to quietly ignore the bogus
-ones.
-
-There are lots of other system hardware or software workarounds.
-
-> ... if not a flat-out system hang.
-
-It's not good to design such suicide regions into the memory
-map... surely there's no MTI hardware which does *that*?
-
-Dominic.
+-- 
+ _    _   _____  ____     Hartvig Ekner        Mailto:hartvige@mips.com
+ |\  /| | |____)(____                          Direct: +45 4486 5503
+ | \/ | | |     _____)    MIPS Denmark         Switch: +45 4486 5555
+T E C H N O L O G I E S   http://www.mips.com  Fax...: +45 4486 5556

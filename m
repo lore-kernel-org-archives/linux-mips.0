@@ -1,39 +1,54 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: "Greg Chesson" <greg@xtp.engr.sgi.com>
-Message-ID: <9608130945.ZM7238@xtp.engr.sgi.com>
-Date: Tue, 13 Aug 1996 09:45:44 -0700
-In-Reply-To: nigel@aa5b (Nigel Gamble)
-        "Re: Linux: the next step" (Aug 13,  8:36am)
-References: <199608131536.IAA29651@aa5b.engr.sgi.com>
-Subject: Re: Linux: the next step
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199608242327.QAA19238@yon.engr.sgi.com>
+Subject: Linux/MIPS: short update
+Date: Sat, 24 Aug 1996 16:27:35 -0700 (PDT)
+Reply-To: ariel@cthulhu.engr.sgi.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Nigel Gamble <nigel@aa5b.engr.sgi.com>, dm@sgi.com
-Cc: linux@aa5b.engr.sgi.com
-Message-ID: <19960813164544.W9jcDwU_ret9k8aXJiNOJYx65kTXxBSiTV1Q837YLRg@z>
+To: linux@yon.engr.sgi.com
+Cc: John Loveall <jcl@cthulhu.engr.sgi.com>
+Message-ID: <19960824232735.BUJUys5E2g_m8HXKdgFZfI4J2lHOMiuN9b9iMsxpJ9A@z>
 
-The new real-time facilities in Irix (Nawaf's scheduler) are superior to what
-has been available before in any Unix-like system that I know of.  There are
-two areas of shortfall, but these are probably unavoidable given the design and
-its operating environment:
+a short update,
 
-	1. priority-based scheduling is often a poor substitute for deadline
-	   scheduling, although it is useful for many rt applications.
+As some of you know. David is going back to school (Aug 25).
+We wish the summer vacation was a little longer so he
+could really complete and stabilize the port but a lot
+of time was invested in major aggressive operations like
+replacing the Linux libc with the GNU libc and keep up
+with the latest GNU development tools. This should be seen
+as a good investment in a better Linux foundation for the
+future that will benefit all ports, not just the MIPS one.
 
-	2. once a process gets scheduled via the rt facility, if it does any
-	   system calls you get Irix system call performance.  Sometimes this
-	   will be an issue (by limiting the number of syscalls and rt apps),
-	   and other times it will not be so important.
+We are going to try and loan the two Indys to David so
+he could complete the port while at Rutgers. (The assets
+called stacey and tanya except for one monitor which was mine
+belong to John Loveall who generously loaned them to us for
+the summer.)
 
-I believe that efforts to incorporate hard real-time scheduling into a
-full-function OS will satisfy the large majority of customers who have
-real-time applications.  These customers do not want to run on the bare iron -
-they want their real-time and they want their OS also.
+David plans to:
 
-The Linux-based hack that Larry described is indeed elegant - I had a look at
-the paper.  However, if that hack were enough to support a wide range of
-real-time applications I think system hacks would have implemented it a long
-time ago.
+	1) Merge his work with Ralf (Germany MIPS port)
+	   so there will be only one Linux/MIPS port.
 
-g
+	2) Clean rough edges, Stabilize the port, on both
+	   hardware families.
+
+	3) Try to roll the work into Linux before Linus
+	   releases 2.1 so that everything will be a part
+	   of 2.1 and available on the net.
+
+If this can happen we've achieved our first major goal: get
+Linux to run on SGI hardware and be widely available.
+I hope David can pull it off.
+
+Lastly, I'd like to thank David for an impressive well
+done job and strongly hope to see him at SGI next summer too.
+and to all of you who helped this happen (you know who you are),
+thanks as well.
+
+-- 
+Peace, Ariel

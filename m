@@ -1,39 +1,43 @@
-Message-ID: <199907151906.VAA28323@zaphod.et.tudelft.nl>
-Subject: updating 5.1 distro
-Date: Thu, 15 Jul 1999 21:06:58 +0200 (CEST)
+Message-ID: <199907191330.PAA06009@zaphod.et.tudelft.nl>
+Subject: Re: 200mhz indy
+Date: Mon, 19 Jul 1999 15:30:53 +0200 (CEST)
+In-Reply-To: <37922879.C3136AE3@rigelfore.com> from "Eric Melville" at Jul 18, 99 12:18:17 pm
 From: Edwin Hakkennes <E.Hakkennes@et.tudelft.nl>
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: linux@cthulhu.engr.sgi.com
-Cc: Edwin Hakkennes <E.Hakkennes@et.tudelft.nl>
-Message-ID: <19990715190658.veFZqdRxJqPYTlcBFrlSz06W6bVM4Ju4go6vFKt8MKQ@z>
+To: Eric Melville <m_thrope@rigelfore.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19990719133053.C_SVbvKI-KqlsTXzdCpi-fqe7YgQJPH-n1NhjR_SrNI@z>
 
-Hi all,
+Hi Eric,
 
-We are planning to use an old Indy with 9G of disk as an
-ftp-mirror-site. As this will obviously attract hackers, our sys-admin
-really wants to bring the machine in an up-to-date security state
-before widely announing it. Right now it has RedHat 5.1 installed,
-without any security updates. This seems to run fine.
+> 
+> ok, this morning i successfully booted my r4400 rev. 6.0 indy! thanks
+> for the help... but now i've got a problem installing it. i'm a little
+> low on disk space for the whole hardhat archive. i was thinking i could
+> dump the rpms to a cd and then hook me external scsi cdrom to the indy,
+> however the root fs for hardhat setup seems to be missing mount, plus i
+> don't know if the redhat installer can be "tricked" like that (i have NO
+> redhat experience).
+> 
 
-I've seen some effort to produce redhat5.2 RPMS and even a message
-about getting glibc2.1 to work on mipseb, but nothing further.
+I didn't try this, but it should work. At least it works with
+redhat-alpha.
 
-My (next) questions are:
+If you can get the kernel loaded and recognising the CD, it should be
+do-able. Just boot the kernel with vmlinux root=/dev/scd0 
 
-1) Is there already someone building/maintaining a 5.2 or 6.0 distro?
+You can't just dump the RPMS to the CD. The whole install image should
+be on the CD, it should be mountable as a rootfs.
 
-2) Would supplying the right packages/hdlist to the 5.1 installer work?
+Beware that there are quite some absolute symlinks. They could pose
+problems. Make sure that mkisofs picks the right contents in this case.
+(e.g. sbin/init instead of /sbin/init)
 
-3) Are the diffs needed to build the 5.1 distro backported in RedHat 6.0?
-   (if not, are these stored somewhere?)
 
-I'm running rpm --rebuild *redhat6.0.src.rpm right now. At least
-glibc2.1 is giving errors, I'll see about some more tomorrow morning.
+BTW: I'm trying to come up with recompiled rpm for the updates relative to
+HardHat. Is anyone interested in these?
 
-Thanks for any answers and 
-Greetings,
+Greetings and good luck,
 
 Edwin Hakkennes
-
-   

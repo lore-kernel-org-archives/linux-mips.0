@@ -1,57 +1,37 @@
-Message-ID: <009d01c12a48$279347a0$d11110ac@snow.isltd.insignia.com>
-From: "Andrew Thornton" <andrew.thornton@insignia.com>
-Subject: Re: ? Thread Problem on MIPS Malta Board
-Date: Tue, 21 Aug 2001 14:49:52 +0100
+Message-ID: <001101c12a4e$319e7b10$b310a8c0@jefflee>
+From: "jeff_lee" <jeff_lee@coventive.com>
+References: <000701c12529$e1640580$8021690a@huawei.com> <20010815103314.A11966@bacchus.dhis.org> <000b01c1295e$0f2174c0$8021690a@huawei.com> <20010820230755.A11242@dea.linux-mips.net> <001501c129dd$8acebb80$8021690a@huawei.com> <20010821083508.A13302@dea.linux-mips.net> <001201c12a29$57f3b660$8021690a@huawei.com> <20010821131721.F13302@dea.linux-mips.net> <3B827B7C.16A1C763@mmc.atmel.com>
+Subject: Re: Question on porting Linux...
+Date: Tue, 21 Aug 2001 22:33:06 +0800
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_009A_01C12A50.89255500"
-Sender: owner-linux-mips@oss.sgi.com
-To: mukesh mishra <mukesh167@yahoo.com>, linux-mips@oss.sgi.com
-Message-ID: <20010821134952.2il7gE-mnCA3Bp7F4E7PTxvrUy8ThrKCd0AqwgSzEMk@z>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_009A_01C12A50.89255500
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="big5"
 Content-Transfer-Encoding: 7bit
+Sender: owner-linux-mips@oss.sgi.com
+To: swang@mmc.atmel.com, linux-mips@oss.sgi.com
+Message-ID: <20010821143306.PRH2K3ecHUscjvbLcNvP6lR8RE34D-k6foS_7yNsWrQ@z>
 
-Mukesh,
+What is your CPU arch?
 
->I am useing 4 threads in my application .It is works
->in general Linux enviornment(pc).I am using thread say
->"pthread_create".
-> At the MIPS Malta (red hat Linux)enviornment
->it is compiling linking but at the time of executing
->(exe file)it is giving error.It is returning value 11
-
-I did the same thing and found the problem to be that the return value from
-the clone syscall is mishandled by glibc. My fix was to use the attached
-clone.s. I'm sure there is a better fix, probably involving upgrading the
-version of glibc, but this got me working.
-
-Andrew Thornton
+Jeff
+----- Original Message -----
+From: "Shuanglin Wang" <swang@mmc.atmel.com>
+To: <linux-mips@oss.sgi.com>
+Sent: Tuesday, August 21, 2001 11:17 PM
+Subject: Question on porting Linux...
 
 
-------=_NextPart_000_009A_01C12A50.89255500
-Content-Type: application/octet-stream;
-	name="clone.s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="clone.s"
-
-CS50ZXh0CgovKgogKiBpbnQgX19jbG9uZShpbnQgKCpmbikgKHZvaWQgKmFyZyksIHZvaWQgKmNo
-aWxkX3N0YWNrLCBpbnQgZmxhZ3MsCiAqIHZvaWQgKmFyZyk7CiAqLwoKCS5nbG9ibAlfX2Nsb25l
-CgkuZW50CV9fY2xvbmUKCQpfX2Nsb25lOgoJLnNldAlub3Jlb3JkZXIKCS5jcGxvYWQgJDI1Cglh
-ZGRpdSAgICRzcCwkc3AsLTE2CgkuY3ByZXN0b3JlIDgKCS5zZXQJcmVvcmRlcgoKCS8qIEFsaWdu
-IHRoZSBzdGFjayB0byA4IGJ5dGVzICovCglsaQkJJDgsIDcKCW5vcgkJJDgsICQwLCAkOAoJYW5k
-CQkkNSwgJDUsICQ4CgoJLyogU2V0dXAgdGhlIG5ldyB0aHJlYWQncyBzdGFjayAqLwoJYWRkaXUg
-ICAkNSwkNSwtMTYKCXN3ICAgICAgJDQsMCgkNSkKCXN3ICAgICAgJDcsNCgkNSkKCXN3CQkkZ3As
-OCgkNSkKCgkvKiBDYWxsIHRoZSBjbG9uZSBzeXNjYWxsICovCgltb3ZlICAgICQ0LCQ2CglsaSAg
-ICAgICQyLDQxMjAKCXN5c2NhbGwKCWJuZXogICAgJDcsZXJyb3IKCWJndHogICAgJDIsZG9uZQoJ
-Ym5leiAgICAkMixlcnJvcgoKCS8qIFRoZSBuZXcgdGhyZWFkIHN0YXJ0cyBoZXJlICovCglsdyAg
-ICAgICQyNSwwKCRzcCkKCWx3ICAgICAgJDQsNCgkc3ApCglqYWwgICAgICQyNQoJbW92ZSAgICAk
-NCwkMgoJamFsCQlfZXhpdAoKZXJyb3I6CglsaQkJJDIsLTEKCmRvbmU6CglhZGRpdSAgICRzcCwk
-c3AsMTYKCWpyICAgICAgJDMxCgoJLmVuZAlfX2Nsb25lCgo=
-
-------=_NextPart_000_009A_01C12A50.89255500--
+> Hi all,
+>
+> I'm working on porting Linux to a third-part board. I don't know where to
+start.
+> Can anyone give me some tips?
+> By the way, the board doesn't have PCI bus, Interrupt controller, and RTC.
+Do
+> you think it is possible to port Linux to it?  And how difficult will it
+be?
+>
+> A lot of thanks,
+>
+> --Shuanglin
+>

@@ -1,56 +1,34 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@informatik.uni-koblenz.de>
-Message-ID: <199605010233.EAA26130@informatik.uni-koblenz.de>
-Subject: Re: scope of this mailing list
-Date: Wed, 1 May 1996 04:30:58 +0200 (MET DST)
-In-Reply-To: <Pine.LNX.3.91.960429200526.3781C-100000@redhat.com> from "Erik Troan" at Apr 29, 96 08:06:49 pm
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+From: Mike Shaver <shaver@ingenia.com>
+Message-ID: <199605011356.JAA17982@iron.ingenia.com>
+Subject: Re: Let's talk platforms...
+Date: Wed, 1 May 1996 09:56:04 -0400 (EDT)
+In-Reply-To: <199604302311.QAA15849@fir.esd.sgi.com> from "William J. Earl" at Apr 30, 96 04:11:05 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Erik Troan <ewt@redhat.com>
-Cc: linux@neteng.engr.sgi.com
-Message-ID: <19960501023058.ylPT1slHl4_uKpfGD-sHGqSwFFfO0JB0zWPtjI3w2gM@z>
+To: "William J. Earl" <wje@fir.esd.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19960501135604.QIA3U3phi8Ak9g2xsSpe2sDLVpK19USz7lrUOhyI8Pc@z>
 
-Hi,
+William J. Earl wrote:
+>       We expect to do the initial port to an Indy with an R4600 or
+> R5000 processor, following up with other processors and platforms.
+> A Challenge S is essentially the same as an Indy without a graphics
+> board.
 
-> > to get a Linux/MIPs distribution.  Furthermore, givem that Linux/MIPs
-> > will run IRIX elf binaries, we might be able to merge the Freeware and
-> > Linux/MIPs efforts - they have a lot of overlap.  Something to think 
-> > about.
-> 
-> This raises a good question - what is the relationship between the SGI port,
-> a port to Digital MIPS/TurboChannel machines, and the MIPS/PC port (that
-> works on MIPS machines with PCI/EISA buses)? Will they all be the same
-> endian? Should binarises be comaptible? What about sources such as libc
-> and the kernel syscall interface?
+Cool.
+That's been passed on to the salescritter as a desirable item, because
+of the Linux project.
 
-The main issue in achieving binary compatibility accross all Linux/MIPS
-targets is the byte order.  For some machines (Mips Magnum 4000, Olivetti
-M700-10, SNI RM series and others more) the byte order for the kernel is
-configurable.  For other it is fixed.  This is often the case for machines
-that were built with NT in mind.
+We'll see how it goes.
 
-The MIPS architecture offers us the nice feature of switchable byteorder
-for usermode.  Thus we have a way to run software from other systems with
-differing native byte order.  In other words: it's technological possible
-but it's not implemented yet.
+Mike
 
-The MIPS ABI which to support is one design goal for Linux/MIPS supports
-only big endian systems while current Linux/MIPS implementations are all
-little endian.  This single fact shows Linux/MIPS doesn't currently
-conform to the ABI but it will be relativly easy to do so in the future.
-
-The ABI explicitly forbids direct syscalls from the usercode into the
-kernel.  Instead every program is supposed to be linked with the shared
-library libc.so.1 which contains the actual interface to the kernel.
-Linux/MIPS currently uses the GNU libc which is far being compliant
-to the ABI.
-
-Nevertheless Linux/MIPS contains an (currently on partial implemented)
-syscall interface that provides not only the syscalls known from the
-Linux/i386 implementation - it also features the same syscall conventions,
-numbers and more as implemented in IRIX and other MIPS UNIX systems.
-Call it a kludge but it can make things easier.
-
-   Ralf
+-- 
+#> Mike Shaver (shaver@ingenia.com)                                        <#
+#> Technical specialist, pedant, packetsmith                               <#
+#>                                     Ingenia Communications Corporations <#
+#>                    Research, Development, Support and Sleep Deprivation <#
+#>                         Packets crafted, bugs found, rebellions quelled <#

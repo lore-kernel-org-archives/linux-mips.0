@@ -1,47 +1,47 @@
-From: Michl Ladislav <xmichl03@stud.fee.vutbr.cz>
-Date: Wed, 2 May 2001 22:48:19 +0200 (CEST)
-Subject: VINO - enabling DMA
-Message-ID: <Pine.BSF.4.33.0105022139370.85671-100000@fest.stud.fee.vutbr.cz>
+From: anthony.wei@philips.com
+Subject: Has anyone successfully reduced the size of libc.so?
+Message-ID: <0056910011804600000002L102*@MHS>
+Date: Thu, 3 May 2001 12:19:21 -0500
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1; name="MEMO 05/03/01 12:16:08"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010502204819.bZWsXPvMS56vupzM4vUfoflqwdhLMLEnSZ8WhRNrGWc@z>
+To: linux-mips@oss.sgi.com, linux-mips@fnet.fr
+Cc: brad@ltc.com
+Message-ID: <20010503171921.oV4Gk6rkq3RYSAmGkqLj3geZrIlDjsc7jEuC2s9BRWE@z>
 
-when writing Linux VINO driver i followed documentation found at:
-ftp://oss.sgi.com/pub/linux/mips/doc/indy/vino/vino.ps
+Hi,
 
-shortly (if someone is interested, i can send whole code):
-/* array of allocated pages */
-unsigned long *pages;
-/* same as above, but contains physical addresses */
-unsigned long *buf_desc;
+I am trying to create a stripped version of  libc.so  from glibc.2.1.95 src, by including only minimal symbols.
+	original full size libc.so: 				7.9 Meg
+ 	original libc.so but symbols stripped 		1.7 Meg
+	(running mipsel-linux-strip libc.so)
 
-/* i hope page starts at 4k boundary ;) */
-/* i also know that GFP_DMA is useless for MIPS */
-buf_desc = (unsigned long *) __get_free_pages(GFP_KERNEL | GFP_DMA, 0);
-pages = (unsigned long*) kmalloc(npage *
-         sizeof(unsigned long), GFP_KERNEL));
-for (i = 0; i < npage; i++) {
-	pages[i] = __get_free_pages(GFP_KERNEL | GFP_DMA, 0);
-	/* fill with something to see if vino writes data */
-	memset((void *) pages[i], i, PAGE_SIZE);
-	/* virt_to_bus returns PHYSADDR */
-	buf_desc[i] = virt_to_bus((void *)pages[i]);
-	mem_map_reserve(virt_to_page(pages[i]));
-}
-buf_desc[npage] = VINO_DESC_STOP;
-/* here set all things according doc (page_index to zero and so on...)
-...
-/* write descriptor table pointer to vino */
-vino_reg_write(virt_to_bus(buf_desc), VINO_A_DESC_TLB_PTR);
-vino_reg_write(virt_to_bus(buf_desc), VINO_A_DESC_PTR);
-/* and now start DMA */
-vino_reg_or(VINO_CTRL_A_DMA_ENBL, VINO_CTRL);
+Has anyone successfully  reduced the size of the libc.so?
 
-after that memory stays untouched, no data are trasferred. any ideas how
-to make DMA working? or better where to get more complete vino
-documentation?
+Here is what I did.  I started with glibc 2.1.95 and cross compiled for MIPS.
 
-regards,
-ladislav michl
+	A.  Using Bradley D. LaRonde's ramdisk as a model
+	B.  Ran strings on /lib/libc-2.0.7.so and /lib/ld-2.0.7.so on LaRonde's ramdisk
+	 	Removed  all the messages, leaving mostly  symbols.
+	C.  Ran a script, that took the symbols and found the corresponding
+		*.os file.  And resolved rescursively all undefined symbols.
+	D.  Extracted the commands used to create libc.so & ld.so, from
+		the log while cross compiling glibc.  Theses included:
+			dl-allobjs.os		libc_pic.a
+			librtld.os		ld.so
+			libc_pic.os		libc.so
+	E.  Replaced */stamp.os with the files found from step C.
+	F.  Extracted the symbols required for the ls command., and added to the *.os list.  
+		This brought the size of the libc.so back to the original size 1.7Meg (stripped)).
+	
+
+
+Thanks.
+
+Anthony Wei
+Philips Digital Network
+1000 West Maude Avenue     W3-948
+Sunnyvale, CA 94085-2810
++1-408-617-1673

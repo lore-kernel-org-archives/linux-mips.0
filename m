@@ -1,35 +1,38 @@
-Message-ID: <007301c1129d$cdf908e0$0deca8c0@Ulysses>
+Message-ID: <007d01c112a3$b10134a0$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20010722123526.K16278@rembrandt.csv.ica.uni-stuttgart.de>
+References: <20010722131525.L16278@rembrandt.csv.ica.uni-stuttgart.de>
 Subject: Re: mips64 linker bug?
-Date: Sun, 22 Jul 2001 13:02:21 +0200
+Date: Sun, 22 Jul 2001 13:44:37 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com, Thiemo Seufer <ica2_ts@csv.ica.uni-stuttgart.de>
-Message-ID: <20010722110221.X250-9y6_IR1LNjzeeLX2ZEmdaPrwXLWJvnvDc2m7mI@z>
+Message-ID: <20010722114437.nSRw1FFW-JcgqkqVx0VKzQ1Goftkxxd8SPEAY_snktg@z>
 
-> > > > Thanks...What should I do now? Change my code to mips32 or are there
-some
-> > > > patches to binutils that I can use, to get it working?
-> > >
-> > > Depends on what you want to do?
+> Kevin D. Kissell wrote:
+> [snip]
+> > > An Kernel with 64bit addresses is less compact and likely to run
+slower.
+> > > OTOH, a 64bit Kernel has certainly some hack value. :-)
 > >
-> > I'm working on a very small, single address space, microkernel and I
-have
-> > the MIPS Malta with a 5Kc CPU to develop it on. The 5Kc is compatible
-> > with mips32 but I must admit, I really like to have my kernel
-> > running 64bit :).
+> > Note that the 5Kc is one of the new generation of MIPS64 parts
+> > that can enable 64-bit integer and floating point instructions without
+> > requiring that 64-bit addressing also be enabled in the kernel.
 >
-> An Kernel with 64bit addresses is less compact and likely to run slower.
-> OTOH, a 64bit Kernel has certainly some hack value. :-)
+> Sorry, but I can't see what's new here. AFAICS this possibility existed
+> already in MIPS III.
 
-Note that the 5Kc is one of the new generation of MIPS64 parts
-that can enable 64-bit integer and floating point instructions without
-requiring that 64-bit addressing also be enabled in the kernel.
-Making Linux kernel support for this capability available is
-one of the things that we're working on.  But it's not there yet.
+Sorry if I wasn't clear.  It is only the newer parts that can enable the
+use of the 64-bit instructions *in user mode* without also enabling
+64-bit addressng.  It's true that MIPS III/IV parts provide access to
+those instructions in kernel regardless of the state of the Status.KX
+bit,  but in user mode they are only available if the Status.UX bit is set,
+enabling 64-bit addressing.  MIPS64 CPU's have an additional
+bit in the Status register (Bit 23, "PX") to enable 64-bit instructions
+without enabling 64-bit addressing.
+
+            Regards,
 
             Kevin K.

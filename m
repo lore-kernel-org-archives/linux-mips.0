@@ -1,57 +1,77 @@
-From: Julian Scheel <jscheel@activevb.de>
-Subject: Re: [patch] VR4181A and SMVR4181A
-Date: Mon, 17 Feb 2003 15:10:00 +0100
-References: <20030213155833.56019323.yoichi_yuasa@montavista.co.jp> <200302170850.18887.jscheel@activevb.de> <20030217173419.732b2456.yoichi_yuasa@montavista.co.jp>
-In-Reply-To: <20030217173419.732b2456.yoichi_yuasa@montavista.co.jp>
+Received: from blaze.ghs.com (blaze.ghs.com [192.67.158.233])
+	by eta.ghs.com (8.10.2/8.10.2) with ESMTP id h1KGAaP16251
+	for <linux-mips@linux-mips.org>; Thu, 20 Feb 2003 08:10:36 -0800 (PST)
+Received: from NOMAD (vpn012.ghs.com [10.239.157.12])
+	by blaze.ghs.com (8.10.2+Sun/8.10.2+Sun) with ESMTP id h1KGAZN21501
+	for <linux-mips@linux-mips.org>; Thu, 20 Feb 2003 08:10:35 -0800 (PST)
+From: "Mike Connors" <mike.connors@ghs.com>
+Subject: Where is libgcc_s.so.1? 
+Date: Thu, 20 Feb 2003 20:05:37 -0800
+Message-ID: <000001c2d95e$7de4e020$6501a8c0@NOMAD>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
-Message-ID: <200302171510.00299.jscheel@activevb.de>
-Return-Path: <jscheel@activevb.de>
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-Path: <mike.connors@ghs.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Yoichi Yuasa <yoichi_yuasa@montavista.co.jp>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20030217141000.v4A9EPcHJqcRnwBhCtiy9cn5izVWAe7Bb5hRVUdCsho@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030221040537.A8Ivb46IlR_s2zSuTFjT_8YhlaGFjt9Mf7uo6qZP1oA@z>
 
-Hi Yoichi,
+Hi All, 
 
-Am Montag, 17. Februar 2003 09:34 schrieb Yoichi Yuasa:
-> I am using binutils-2.12.1 .
->
-> I also try binutils-2.13.90.0.16 .
-> The binutils option was changed, it was able to compile as the following
-> options.
->
-> GCCFLAGS        += -march=vr4100 -Wa,--trap
->
-> I don't know yet about the details of new options.
-> We need to investigate about the details of options.
+I'm trying to find the rpm that contains libgcc_s.so.1.  
+It wasn't installed with the RedHat 7.3 install from 
+ftp.mips.com and I'm having trouble finding it at H.J.'s 
+repository. 
 
-This seems to work!
+Any help would be appreciated. 
 
-> You have to add -msoft-float, if you don't use FPU Emulator.
-> FPU Emulator is used by the default.
+Thanks in advance, 
+Mike 
 
-Ok.
+--- 
+Mike Connors			Green Hills Software, San Clemente 
+Field Applications Engineer	131 Avenida Victoria 
+mailto:mikec@ghs.com		San Clemente, CA  92672 
+phone: 1-949-369-3950		
+cell:  1-949-412-3951		fax: 1-949-369-3959 
 
-I have some more problems with the chip at present. I managed to build a 
-kernel, but booting won't work.
-I use the NEC Bootloader, and load the Image over a serial-connection to the 
-Ram (address 0x8010000). The bootloader set the INTERNAL_REGISTERS_BASE to 
-0xab000000. If I understand the starting-process, the kernel normally 
-searches it at 0xbfa00000 which is the address, before the Bootloader changes 
-it. This is set in include/asm-mips/nile4.h . It gets changed to 0x0a000000 
-(set it smvr4181a.h).
-Now I change the address in nile4.h to 0xab000000, so that the kernel should 
-use the correct address and then changes it to his 0x0a000000.
+Articles about Integrity:  
 
-I think this is the problem, because I get absolutely no output after the 
-binary-download finished and should start.
-Hopefully you can follow my explanation of the problem (c:
+EETimes: Proper RTOS designs can improve device security 
+	http://www.eetimes.com/story/OEG20020419S0082 
+ESC: RTOS Requirements for Use in Safety Critical Systems  
+ http://www.infoxpress.com/reviewtracker/reprints.asp?page_id=1045 
 
--- 
-Grüße,
-Julian
+Green Hills in the News: 
+
+FAA Certifies INTEGRITYR RTOS for DO-178B, Level A 
+	http://www.ghs.com/news/230210r.html 
+Northrop Selects INTEGRITYR-178B RTOS For Airbus, etc 
+	http://www.ghs.com/news/230129n.html 
+Record 2002 Product Sales for Green Hills SW 
+ 	http://www.ghs.com/news/230121r.html 
+INTEGRITYR RTOS Flies In F-16 Fighter Jet 
+	http://www.ghs.com/news/221213b.html 
+Boeing Selects INTEGRITYR RTOS for B-1B Avionics Upgrade 
+	http://www.ghs.com/news/221213b.html 
+INTEGRITYR RTOS selected by Boeing's C-17 Globemaster III 
+	http://www.ghs.com/news/221104b.html 
+Radstone Supports INTEGRITYR RTOS on COTS hardware 
+	http://www.ghs.com/news/221101r.html 
+Ryan International Selects INTEGRITYR as Avionics Platform 
+	http://www.ghs.com/news/220930r.html 
+GHS Selected as Preferred Supplier by Rockwell Collins 
+	http://www.ghs.com/news/220827r.html 
+INTEGRITYR RTOS Used For B-1 Bomber Flight Simulator: 
+	http://www.ghs.com/news/220701n.html 
+Green Hills Software Becomes #2 RTOS Company 
+	http://www.ghs.com/news/220508f.html 
+INTEGRITYR RTOS 4.0 Release Announced 
+	http://www.ghs.com/news/220313i.html 
+
+Green Hills Software Inc.	phone: 	1-805-965-6044 
+30 West Sola Street		toll-free: 1-800-765-GREEN (4733) 
+Santa Barbara, CA 93101		Tech-Support: 1-877-GHS-TECH (447-8324) 
+http://www.ghs.com		Email Support: mailto:support@ghs.com 

@@ -1,52 +1,36 @@
-Message-ID: <004501c15cab$88055b60$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <200110230102.f9N12kb20443@oss.sgi.com> <3BD5D236.8D0CE33C@lnxw.com> <20011023224718.A6283@dea.linux-mips.net>
-Subject: Re: Malta probs
-Date: Wed, 24 Oct 2001 18:47:10 +0200
+Date: Wed, 24 Oct 2001 16:42:06 -0400
+From: "J. Scott Kasten" <jsk@tetracon-eng.net>
+Subject: Re: I am looking for a mips machine
+In-Reply-To: <20011024121944.B6520@lucon.org>
+Message-ID: <Pine.SGI.4.33.0110241637200.11721-100000@thor.tetracon-eng.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>, Petko Manolov <pmanolov@lnxw.com>
+To: "H . J . Lu" <hjl@lucon.org>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20011024164710.ZLlEopNoo5tO6Tk1AxY8XaViuIGziuTSEncpzt1Xn6w@z>
-
-A clue - a machine check exception results
-when there are two identical values in the
-TLB, which is unhealthy for associative RAM
-arrays (never mind that synthesized MIPS
-4K and 5K cores may or may not actually
-have associative RAM for the TLB).  In the
-4K cores, this condition results even if the
-two identical values are non-Valid, which was
-not true in the R4000 and R5000 CPUs, and
-which necessitated a tweak to the TLB flush
-and invaldate routines to ensure that each entry
-is written with a unique invalid value (a function
-of the index).
-
-Please double-check that the TLB flush
-code that you are using does this.
-
-            Kevin K.
-
------ Original Message ----- 
-From: "Ralf Baechle" <ralf@oss.sgi.com>
-To: "Petko Manolov" <pmanolov@lnxw.com>
-Cc: <linux-mips@oss.sgi.com>
-Sent: Tuesday, October 23, 2001 10:47 PM
-Subject: Malta probs
+Message-ID: <20011024204206.UL2WUBjaKZZDAnP7jXhttvcse9b86n2_MwldYOzSreM@z>
 
 
-> On Tue, Oct 23, 2001 at 01:25:26PM -0700, Petko Manolov wrote:
-> 
-> > The theory looks good, but in reality latest kernel crashes
-> > with machine check exception in local_flush_tlb_all on malta
-> > board.  I tried both egcs-1.1.2 and gcc-3.0.1 and both are
-> > crashing at the same place.
-> 
-> What CPU are you using; can you send me your .config file?
-> 
->   Ralf
-> 
+My general impression is that your looking for a "FAST" board, and a
+little endian board make for mutually exclusive requirements.  Not that
+little endian couldn't be fast, but just about every piece of hardware
+I've seen running little endian has used one of the lesser mips chips in
+it where they've cut corners multiplexing address and data over the same
+pins and so forth.  Someone correct me if I'm wrong, but of all the ones
+I've looked at, the little endian boards had the less capable hardware to
+boot.  I think that's because the market was being driven by these little
+Win CE things, and CE only supports little endian.
+
+On Wed, 24 Oct 2001, H . J . Lu wrote:
+
+> On Wed, Oct 24, 2001 at 11:19:27AM -0700, James Simmons wrote:
+> >
+> > I use a Cobalt Qube for alot of my developement. It works fine. I know it
+> > is not in Ralph's tree yet but I plan to send him my work soon.
+>
+> I think Cobalt Qube is slow and is hard to expand the memory. I need at
+> least 128MB RAM. Also the current mips kernel doesn't support it.
+>
+>
+> H.J.
+>

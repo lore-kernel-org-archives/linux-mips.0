@@ -1,18 +1,14 @@
-Date: Thu, 27 Sep 2001 03:58:07 -0400 (EDT)
-From: George Gensure <werkt@csh.rit.edu>
-Subject: indycam
-Message-ID: <Pine.SOL.4.31.0109270357470.14513-100000@fury.csh.rit.edu>
+Date: Thu, 27 Sep 2001 08:35:45 -0300 (ADT)
+From: Wilbern Cobb <cobb@vedge.com.ar>
+Subject: SGI Octane
+Message-ID: <Pine.BSO.4.33.0109270831090.12864-100000@oddbox.cn>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20010927075807.8Z1ta3FoZP-0HRyN82RcKjQXn4aIH_lmbyQZSsC27D4@z>
+Message-ID: <20010927113545.BpcsZSS_spY4DVVTpTXUQX4m0_j486WjGF2gC5iO2MQ@z>
 
-has anyone gotten an indycam working under linux?
 
-George
+Are there plans for IP30 support?
 
--- 
-George R. Gensure       Computer Science House Member
-werkt@csh.rit.edu       Sophomore, Rochester Institute of Technology
-Computer Science
+-vedge

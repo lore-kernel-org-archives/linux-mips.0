@@ -1,41 +1,22 @@
-Message-ID: <056a01c18831$919daf90$5601010a@prefect>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <Pine.GSO.3.96.1011219023325.16267B-100000@delta.ds2.pg.gda.pl>
 Subject: Re: ISA
-Date: Tue, 18 Dec 2001 21:05:01 -0500
+Date: Wed, 19 Dec 2001 13:59:40 +0000 (GMT)
+In-Reply-To: <Pine.GSO.4.21.0112191046380.28694-100000@vervain.sonytel.be> from "Geert Uytterhoeven" at Dec 19, 2001 10:52:47 AM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <E16GhG0-0002zb-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Jun Sun <jsun@mvista.com>
-Cc: jim@jtan.com, linux-mips@oss.sgi.com
-Message-ID: <20011219020501.FTcLKyT1gmQ0NMl8xe14L0EtJ3EJTgpCUCLe6fHXZ30@z>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Jun Sun <jsun@mvista.com>, jim@jtan.com, Linux/MIPS Development <linux-mips@oss.sgi.com>
+Message-ID: <20011219135940.eac6HsW7Z36dwpiz5dIBNS7z13ImGfS9dFQu_-eO5jg@z>
 
------ Original Message -----
-From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-To: "Jun Sun" <jsun@mvista.com>
-Cc: <jim@jtan.com>; <linux-mips@oss.sgi.com>
-Sent: Tuesday, December 18, 2001 8:50 PM
-Subject: Re: ISA
+> You must _not_ use readb()/writeb() and friends with ISA memory space!
+> You must use isa_readb()/isa_writeb() and friends!
 
+Linus is saying the reverse. Drivers are moving away from isa_
 
-> On Tue, 18 Dec 2001, Jun Sun wrote:
-> > Now when people using ioremap/readb/writeb method to access ISA memory
-space,
-> > which lives in the lower range of the "bus memory space", it will
-collide with
-> > system ram under 1:1 mapping assumption.
->
->  Hmm, I believe there should be no such problem.  For systems equipped
-> with the PCI bus we may just assume the low 16MB of PCI memory address
-> space is reserved for ISA memory addresses (it's hardwired for many
-> platforms, so there should be no problem with it), i.e. avoid programming
-> BARs to point to that space and make ioremap() (or __ioremap(), actually)
-> act accordingly, i.e. assume a 1:1 mapping for addresses above 16MB and
-> perform an ISA mapping for ones below 16MB.
+> But for memory accesses, ISA memory space is not necessarily at `address 0'.
 
-That sounds like the simplest and best solution.
-
-Regards,
-Brad
+ioremap uses ookies, its up to yoyu what you hide in the cookie from an ISA
+ioremap

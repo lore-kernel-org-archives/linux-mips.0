@@ -1,91 +1,47 @@
-Message-ID: <07f601c11941$6ade3280$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Pine.GSO.3.96.1010730221944.19618C-100000@delta.ds2.pg.gda.pl>
-Subject: Re: [PATCH] wrong use of compute_return_epc() in /mips/kernel/traps.c
-Date: Mon, 30 Jul 2001 23:48:35 +0200
+Message-ID: <005e01c11973$1622d700$8021690a@huawei.com>
+From: "machael thailer" <dony.he@huawei.com>
+References: <3AE44D0A.9080003@jungo.com> <Pine.GSO.4.02.10104231829020.19846-100000@chimene.enst.fr> <20010423170425.F4623@bacchus.dhis.org> <3AE541B0.410FDF8A@lineo.com>
+Subject: Need your help:about RC32334 questions?
+Date: Tue, 31 Jul 2001 11:44:22 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: Ralf Baechle <ralf@uni-koblenz.de>, Thiemo Seufer <ica2_ts@csv.ica.uni-stuttgart.de>, linux-mips@oss.sgi.com
-Message-ID: <20010730214835.cc7uEOTo60CqmtfLqZRtHGC0i8mGmNa-G-yjvedQOEs@z>
+To: Ian Soanes <ians@lineo.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010731034422.Vx373yza6JTW-nZ-kWl328mhlKoqYVk0aqdEqO6u5FQ@z>
 
->  That's why I took the KISS approach.  Current code is cheap and satisfies
-> the specs I use, i.e. glibc's info pages.  If anyone needs anything more
-> one is free to improve handlers.
 
-The handlers cannot spontaneously generate information known
-only to the kernel.
-
-> > I missed the beginning of this thread, but it looks from the
-> > patch as if this is really about handling integer overflow
-> > exceptions, not FP exceptions.  That's unfortunate.
+> Hi Fabrice,
 >
->  The patch is about break and trap instruction handlers, indeed.
+> This may not be totally relevant, but I'm currently trying to get
+> gdbserver working on a RC32334 IDT board. I've been having some issues
+> with single stepping, but am making a bit of progress.
 >
-> > To begin with you are correct in that we should be
-> > passing the EPC value at the exception (and certainly not
-> > the result  of invoking compute_return_epc(), much less
-> > its side effects!), and the state of the BD bit from the
-> > Cause register, either abstracted into a variable in the
-> > info structure or as a flat-out copy of the Cause register.
+> 1/ I started with a mips gdbserver port kindly supplied by Martin
+> Rivers. It mostly works well but had some problems single stepping
+> through conditional branches (the problem may have been due to a
+> different target than Martin was using, or me... I am kind of new to
+> this :)
 >
->  I don't think passing BD is needed here.  Enough information is
-> available.  A SIGFPE due to a branch or a jump instruction is impossible.
-> Unless you have a chip on fire, in which case problems with signal
-> handlers are insignificant.
+> 2/ Previously I've had some luck single stepping kernel and module code
+> with the kernel gdbstub (arch/mips/kernel/gdb-stub.c), so I ported the
+> relevant single stepping code into gdbserver. The results were much
+> better. The only thing that seems to be wrong now is stepping over
+> function calls isn't working quite right. I can step into functions OK
+> though.
 >
-> > I would recommend the former as being less of a security
-> > hole.  Yes, we could blow that off and make the user
-> > decode for branches himself, but it's tacky. But what's
-> > more pernicious is the fact that, being an integer exception,
-> > it could have resulted from an overflow of any of the GPRs,
-> > including those that will be used by the low-level library
-> > code dispatching the signal to the user, and in the generated
-> > code of the user's own signal handler.  If we actually want
-> > to allow the user to fix the operation and saturate (or whatever)
-> > the destination register, enough of the trap context needs
-> > to be passed up to the signal handler *and* back down
-> > on the signal return to allow that manipulation, followed
-> > by a resumption of execution at the instruction following
-> > the one that generated the trap.
+> If you're interested I'll let you know how I get on over the next few
+> days. If not, I won't be offended :)
 >
->  Let's just leave it as an excercise to one writing some emulation code.
 
-An excercise much akin to squaring the circle.  Think
-about it.  Your program has overflowed on an operation
-on a0.  The signal is sent, and your signal routine is called,
-trashing a0 with the first argument.  For greater amusement,
-assume that the instruction was "add a0, a0, a1" (which
-is what could easily happen in a C function that begins
-by summing its first two arguments).  I simply do not see
-how user level code can determine whether the overflow
-was postive or negative without knowlege of the inputs,
-and those inputs may well have existed only in the registers.
-And even assuming that one could deduce the correct value,
-how would you propose patching it back into the execution
-stream, particularly in the presence of delayed branches?
+Hello,
+    Now I plan to port linux on our RC32334-based custom board. But I don't
+know whether linux support RC32334 now.
+Can you tell me which kernel version you use on your RC32334 IDT board? And
+where can i download it?
 
-> A general-purpose handler in the kernel or libc (which no one will
-> probably use) is an overkill and by defining own strict coding rules (be
-> it a calling convention, shadow registers or whatever) one can create
-> software that suits one's specific needs.
+Thanks in advance.
 
-Yeah.  Right.  Shadow registers will allow you to be certain
-that you haven't trashed your inputs.  They won't help you
-resume execution with a corrected value in the destination
-register of the faulting instruction.  I have no problem with
-declaring that signals  cannot be used to handle overflow
-exceptions.  I do have a problem with falsely pretending to
-support such handling. We can decide (for now) that the problem
-doesn't need to  be solved.  We can decide to call it a "TODO"
-for some time  when we're old and grey.   We can solve it now.
-I really don't care.  But it's dishonest to say that the current code
-solves it,  even  to a first order of approximation.  To trot out an
-overused Einstein quote,
-
-"Everything should be as simple as possible. But not simpler".
-
-            Kevin K.
+machael thailer

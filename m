@@ -1,29 +1,42 @@
-Received: from wssseeger ([192.168.1.53]) by nt_server.stellartec.com
-          (Post.Office MTA v3.1.2 release (PO205-101c)
-          ID# 568-43562U100L2S100) with SMTP id AAA486
-          for <linux-mips@linux-mips.org>; Mon, 14 Apr 2003 11:07:04 -0700
-Reply-To: <sseeger@stellartec.com>
-From: sseeger@stellartec.com (Steven Seeger)
-Subject: uclibc printf and floats
-Date: Mon, 14 Apr 2003 11:12:43 -0700
-Message-ID: <04d001c302b1$7203e270$3501a8c0@wssseeger>
+Message-ID: <00ae01c3035e$d431aba0$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <Pine.GSO.3.96.1030415161611.13254H-100000@delta.ds2.pg.gda.pl>
+Subject: Re: wbflush() abuse for TOSHIBA_RBTX4927
+Date: Tue, 15 Apr 2003 16:53:49 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="US-ASCII"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.GSO.3.96.1030414192822.24742P-100000@delta.ds2.pg.gda.pl>
-Return-Path: <sseeger@stellartec.com>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030414181243.YgzaMy9utmZO_toP82fq0Ppj6jheJ8kBtwpi_dmqHuI@z>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, linux-mips@linux-mips.org
+Cc: source@mvista.com
+Message-ID: <20030415145349.lQ8ekF0jmZ4xNwMCykhbxwow5kuH8K53TNX9pbGBpyc@z>
 
-I switched over to uclibc a while ago and am running the release (also tried
-the snapshot) of 0.1.19 or whatever it is. I notice that printf crashes with
-floats. This was a problem found with uclibc on other archs back almost 2
-years ago. If anyone can help me with some advice I'd appreciate it. I much
-prefer to continue using uclibc on this VR4181 instead of glibc.
+I remember that some of the Toshiba parts of the TX39 series
+had some interesting quirks relating to the write buffer.  Perhaps
+some of these were carried into the TX49 series as well?
 
-Thanks!
+----- Original Message ----- 
+From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+To: <linux-mips@linux-mips.org>
+Cc: <source@mvista.com>
+Sent: Tuesday, April 15, 2003 4:22 PM
+Subject: wbflush() abuse for TOSHIBA_RBTX4927
 
-Steve
+
+> Hello,
+> 
+>  I see wbflush() is abused in an interesting and inefficient way for
+> TOSHIBA_RBTX4927.  Is there any specific reason for such a setup?
+> 
+>   Maciej
+> 
+> -- 
+> +  Maciej W. Rozycki, Technical University of Gdansk, Poland   +
+> +--------------------------------------------------------------+
+> +        e-mail: macro@ds2.pg.gda.pl, PGP key available        +
+> 
+> 
+> 

@@ -1,32 +1,35 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199705272001.QAA21739@neon.ingenia.ca>
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199705272037.WAA12797@informatik.uni-koblenz.de>
 Subject: Re: strace/truss equiv?
-In-Reply-To: <199705271942.MAA11080@machine.engr.sgi.com> from "John E. Schimmel" at "May 27, 97 12:42:30 pm"
-Date: Tue, 27 May 1997 16:01:19 -0400 (EDT)
+Date: Tue, 27 May 1997 22:37:11 +0200 (MET DST)
+In-Reply-To: <199705271919.PAA21206@neon.ingenia.ca> from "Mike Shaver" at May 27, 97 03:19:29 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "John E. Schimmel" <jes@machine.engr.sgi.com>
+To: Mike Shaver <shaver@neon.ingenia.ca>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970527200119.K7Gfw_96A-Vq_gnAhJiEBHv25HXW4Ndjb9O7itoN4ig@z>
+Message-ID: <19970527203711.WYpWoSwu0LTAc5lhbC9oT-mEWHO3tkToVLRIFySfVvo@z>
 
-Thus spake John E. Schimmel:
-> The equivelant is par.  You may also want to take a look at
-> elfdump which will tell you what libraries you are linked with, etc.
+> OK, I'll bite.
+> What's the strace/truss equivalent under IRIX?
+> 
+> I'm trying to figure out why my "dynamically-linked" hello world
+> binaries are 115K, and I can't tell where the heck the linker is
+> finding the static libs.
 
-par was what I was looking for.
+The GNU linker has a verbose option which will make it print all the
+files as it tries to open them.  Check the docs.  You should have
 
-elfdump doesn't seem to tell me anything about the -b mips-linux
-stuff.  Oversight on SGI's part, no doubt. =)
+<prefix>/mips-linux/lib/libc.so             (A linker script)
+<prefix>/mips-linux/lib/libc.so.6           (A symlink to the acutal shlib)
+<prefix>/mips-linux/lib/libc-<version>.so   (The actual shared library image)
+<prefix>/mips-linux/lib/libc.a              (The static libc)
 
-Mike
+Note that libc.so is an ASCII file containing a short linker script
+unlike Linux libc.
 
--- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>           Resident Linux bigot and kernel hacker. (OOPS!)           
-#> `If you get bitten by a bug, tough luck...the one thing I won't do  
-#> is feel sorry for you.  In fact, I might ask you to do it all over  
-#> again, just to get more information.  I'm a heartless bastard.'     
-#>                       -- Linus Torvalds (on development kernels)    
+Does that help?
+
+  Ralf

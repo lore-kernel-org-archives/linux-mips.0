@@ -1,69 +1,80 @@
-Message-ID: <042401bf893a$b15465b0$0ceca8c0@satanas.mips.com>
-From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: Re: FP emulation patch available
-Date: Wed, 8 Mar 2000 21:12:49 +0100
+Message-ID: <59c501bf894d$31be85c0$0a00000a@decoy>
+From: "Jay Carlson" <nop@nop.com>
+References: <38C54F05.458A3EFE@transvirtual.com> <20000308140301.B1425@uni-koblenz.de> <38C6A5D4.F08DFCE4@transvirtual.com> <20000308174251.A6399@uni-koblenz.de> <38C6BE35.C58B0630@transvirtual.com> <20000308180850.D6399@uni-koblenz.de>
+Subject: Re: Mips/Linux integration of latest GCC, Binutils & GLibc
+Date: Wed, 8 Mar 2000 17:25:18 -0500
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>
-Cc: Linux SGI <linux@cthulhu.engr.sgi.com>, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
-Message-ID: <20000308201249.dedu6G_sVIvHUsNdX_dfh8pKaGmAT7SD1yKtUlmQrDc@z>
+To: Ralf Baechle <ralf@uni-koblenz.de>, Tim Wilkinson <tim@transvirtual.com>
+Cc: linux-mips@fnet.fr, linux-mips@vger.rutgers.edu, linux@cthulhu.engr.sgi.com
+Message-ID: <20000308222518.T_bin25c6FSKDCa3aiTgju7p9N6J7gXIAQUaHQTOzdg@z>
 
->For the records (Sharp Mobilon HC-4500):
+> > Okay this makes sense.  This then means there's a problem with GLIBC
+since it
+> > excludes certain files when building a static library but unfortuantely
+> > needs them because it uses #ifdef PIC to include bits of code related to
+> > shared library workings (essentially it considers PIC to mean SHARED
+when
+> > this may not infact be the case - not for MIPS anyway).
+> >
+> > So what you're saying is pretty much how I have my gcc, binutils and
+glibc
+> > set up - I introduced a -DSHARED to glibc (which I suspect isn't really
+> > okay) when building shared libraries so static libraries didn't include
+> > the bad code.  I may look for a better solution however.
 >
->Philips PR31700 (identical to Toshiba TMPR3912) @ 73.7 MHz, Implementation 0x22
->(same as R46[45]0), Revision 0x10 (does anybody know what R46[45]0 have?).
+> Indeed.  The problem is just that Ulrich drepper didn't accept such a
+patch
+> the last time I sent it to him.
 >
->Based on an R300A core with some ISA-II extensions, 1KB instruction cache, and
->4KB write-through data cache, 32 TLB entries.
+> > I've also made a bunch of elf related changes to mips/linux so that the
+> > assembler output from gcc is more like the elf output for the x86/linux
+> > targets.  It's interesting to note that mips/linux doesn't even defined
+> > linux for CPP (and doesn't do a bunch of other stuff either come to
+that)
+> > which confused things no end when compiling the linux kernel.
 
-If Philips/Tosh are really aliasing the PrID of the R4650, sombody has
-done something Deeply Evil (and probably in violation of one agreement
-or another).  I'm checking with MIPS HQ on this, and hoping that in fact
-the R4650 value in the source code is in error.
+The mips-linux configuration in gcc 2.95.x out of the box is just awful.  It
+was obviously never tested against a full rebuild of the system, or in fact
+any significant rebuild.
 
-If the Implementations *do* collide, we can still cope as long as the
-revision codes do not.  The cpu_probe code first looks for a match
-on Implementation+Revision, and then, that failing, looks for a match
-on implementation alone.   So we could contrive to have 0x2210
-resolve to CPU_R3900 and all other 0x22xx values to the R4650.
-But I don't like it one bit.
+> Go to oss.sgi.com and get /pub/linux/mips/src/egcs/egcs-1.0.3a-2.diff.gz
+> and integrate that with a current egcs.  This is what most people are
+> using and is known to work.  It generates assembler output that is known
+> to be working with binutils and even halfway human-readable as far as this
+> can be said from compiler output.  You'll also find binutils test patches
+> for more current releases there.
 
->Back on topic:
->
->My Mobilon dies horribly with the screen going blank and even a soft reset
->doesn't revive it. All that helps is to remove all batteries. No error messages
->can be seen.
->
->My DS 5000/133 (R3000A) with FPU disabled and FPU emulation shows:
-> Illegal instruction 00000034 at 801ce924, ...
->
->System.map shows:
-> 801ce920 b dsemul_insns
-> 801ce928 b dsemul_cpc
->
->Looks like your trick in mips_dsemul() doesn't work too well for ISA-I CPUs. Do
->you have an idea for an alternative?
+As Ralf sez, because MIPS PIC and non-PIC code can't intercall, generation
+of non-PIC code for use in static libraries is incorrect, unless EVERYTHING
+you're linking is non-PIC.   Most people feel that giving up shared
+libraries is too high a price for the potential gain in code density and
+efficiency from non-PIC/non-ABI builds.  Me, I still have lingering doubts,
+but I don't have working code yet, so...
 
+I did a port/translation/reinterpretation of Ralf's configuration in
+egcs-1.0.3a-2 for gcc 2.95.1.  My take on this, as expressed in
+ftp://ftp.place.org/pub/nop/linuxce/gcc-2.95.1-interim-990916.patch.gz , is
+that gcc should always build as PIC, unless some Makefile etc really does
+want to ask for the non-PIC lossage.
 
-Yes, and I should have thought of it earlier. The original Algorithmics
-implementation, in fact, used the system call trap vector instead of the
-Trap instruction vector to implement the trampoline for the delay slot
-emulation.   Although I try to make sure that interrupts are disabled
-during the operation, I was less than 100% confident that I could prevent
-the Linux scheduler from executing, and stealing a seldom-used vector
-seemed more prudent at the time.   In retrospect, I think I probably should
-have generated an Address Error.  It'll be a pretty small hack - I'll see if I
-can't turn it around this weekend.
+The primary flag for controlling this in my config
+is -mabicalls/-mno-abicalls.  -mabicalls is the default (as it was in Ralf's
+config).  -D__PIC__ and -D__pic__ are asserted unless -mno-abicalls is set
+(which also implies -fno-pic).   glibc is happy with this.  So is the
+kernel.  And random makefiles, libtool, autoconf, etc, can happily build
+with their bogus -fpic or -fPIC options from other platforms and not break
+anything.
 
-FWIW, the current version of the emulator presumably might not have
-paniced on you - I recently put the trampoline code on the user stack
-where it belongs, so it can execute in user mode.   I haven't got around
-to mentioning it on the web page, but you can find the patch on
-ftp.paralogos.com in /pub/linux/mips/kernel with a fairly self-evident file
-name.
+Originally I thought that it would not be necessary to ever pass -KPIC to
+the assembler; at the top of each PIC/abicalls assembly file GCC produces,
+it sticks in a ".abicalls" directive which has the same effect as the -KPIC
+option.  That worked just great until I encountered .S files that didn't
+have that directive and didn't know any better, so I had to put the -KPIC
+back in :-(
 
-            Kevin K.
+Jay

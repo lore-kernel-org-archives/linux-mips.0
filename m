@@ -1,33 +1,61 @@
-Message-ID: <000901c118c7$b9bcc800$8021690a@huawei.com>
-From: "machael thailer" <dony.he@huawei.com>
-References: <20010728000354.84537.qmail@web13908.mail.yahoo.com>
-Subject: Embed linux-mips problems...
-Date: Mon, 30 Jul 2001 15:17:42 +0800
+Message-ID: <075901c11902$6a27b260$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <200107301345.f6UDjXV04192@oss.sgi.com>
+Subject: Re:/sbin/init problem in HH2.0 distro
+Date: Mon, 30 Jul 2001 16:17:32 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="gb2312"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010730071742.Z3C-j71prP8UsGuZ94vnhr-MHdb43wLpkAaOU81MkS8@z>
+To: Fuxin Zhang <fxzhang@ict.ac.cn>, linux-mips@oss.sgi.com
+Message-ID: <20010730141732.TnLZEWLyuP1UXYbeq5S1TaGzXjrAejfO_U7YxQLMD0I@z>
 
-Hello, all:
-     Now I will plan to port linux on our custom mips-based board. Since
-this will be the first time I use linux on mips CPU and I am a newbie for
-mips RC32334, I have several questions to ask:
+Well, if you can run "passwd", can you run "nm"
+or some other utility to see if libc.so.6 does
+in fact define the symbol _sec0?
 
-1 What's the current stable linux kernel version for mips that you are
-using?Especially, which  version can support IDT mips RC32334 CPU now? If
-linux can not support RC32334 for the time being,which familys of Mips
-should I take as example and what modifications should I do?
-2 What IDE tools for Mips are you using to debug linux kernel and  APPs ?
-3  Are there any sample boot codes which can be burnt into BOOTROM and which
-will  initialize the mip-based boards when power-on and then load the
-linux-kernel to RAM via network or flash?
-4 Is it possible to use RTLinux for mips now? If so, which rtlinux version
-should I take?
+            Kevin K.
 
-Any suggestions will be highly appreciated.
+----- Original Message -----
+From: "Fuxin Zhang" <fxzhang@ict.ac.cn>
+To: <linux-mips@oss.sgi.com>
+Sent: Monday, July 30, 2001 3:48 PM
 
-Thank you very much.
-machael thailer
+
+> hello,linux-mips
+>     I am porting support of Algorithmics P6032 evalution board from
+> 2.2 kernel to 2.4. I started with the kernel 2.4.3 from hardhat2.0
+> distribution.Now I am able to boot the kernel but it hangs up when
+> trying to exec /sbin/init.The error message is something like:
+>    Init: Kernel panic: trying to kill init
+>    Init:error loading libc.so.6, undefined symbol _sec0
+>
+> But if i let the kernel execute /bin/ash.static directly,it can give me
+> a shell while complaining something like" no tty found,job control
+disabled". Then I can use most commands such as ls,passwd,cat.So the
+> libc.so.6 can't be a corrupted one.
+>
+>   The test environment is:
+>        Algorithmics P6032 with a idt79RC64474 CPU
+>        IDE hard disk(IBM Deskstar 40M,7200rpm)
+>   Kernel options:
+>        pci,ide(with/without dma,multimode) enabled
+>        serial console enabled
+>
+>   What can be the cause?
+>
+>   I suspect the ide driver first.But disabling dma doesn't help and it
+> seems to work quite well under ash.
+>
+>   I am investigating the cause,if you want,I can provide more
+> information.
+>
+>
+>
+>
+>
+> Regards
+>             Fuxin Zhang
+>             fxzhang@ict.ac.cn
+>

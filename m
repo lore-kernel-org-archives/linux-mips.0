@@ -1,56 +1,76 @@
-Message-ID: <002601c4bbeb$c9ffcdf0$8b1a13ac@realtek.com.tw>
-From: "colin" <colin@realtek.com.tw>
-References: <007801c4bb2a$9e7ded90$8b1a13ac@realtek.com.tw> <20041027031430.GC14668@linux-mips.org>
-Subject: Re: Which MIPS kernel is good to start up? linux-mips.org or    Montavista?
-Date: Wed, 27 Oct 2004 14:11:20 +0800
+Message-ID: <000e01c4bbee$8ba25a20$0e00a8c0@narendra>
+From: "Narendra Kulkarni" <narendradv@myrealbox.com>
+References: <000b01c4bb6a$f87b1580$0e00a8c0@narendra> <20041026150433.GA30620@linux-mips.org>
+Subject: Re: errors while  insmoding usb-skeleton.o (changed to suit our requirements)
+Date: Wed, 27 Oct 2004 12:00:17 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Return-Path: <colin@realtek.com.tw>
+Content-Transfer-Encoding: 7bit
+Return-Path: <narendradv@myrealbox.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20041027061120.nUwR_s21JA29-Z_amqsziA7YrblaVvFBdQqYYorersE@z>
+Message-ID: <20041027063017.Q8-zhAMxljIm8zh9IqpnsWk-PStMRe4iZEmOYNHVRKg@z>
 
+Hi,
 
-Dear Ralf,
+I have used the functions copy_to_user and copy_from_user in the driver to
+get and send data to user space. If  I comment the above statements,  i dont
+get the errors when i insmod usb-skeleton.o which i get when i use the
+copy_to_user and copy _from_user functions.
+errors --->
 
-> The time where choosing 2.4 for new project still did make sense is over.
+Using usb-skeleton.o
+insmod: Relocation overflow of type 4 for __copy_user
+insmod: Relocation overflow of type 4 for __copy_user
+insmod: Relocation overflow of type 4 for __copy_user
 
-Why? Isn't it stable of Kernel 2.6 for MIPS?
+Narendra
 
-Regards,
-Colin
 
 ----- Original Message ----- 
 From: "Ralf Baechle" <ralf@linux-mips.org>
-To: "colin" <colin@realtek.com.tw>
-Cc: <linux-mips@linux-mips.org>
-Sent: Wednesday, October 27, 2004 11:14 AM
-Subject: Re: Which MIPS kernel is good to start up? linux-mips.org or
-Montavista?
+To: "Narendra Kulkarni" <narendra@econtek.com>
+Cc: "'Narendra Kulkarni'" <narendra@spacomp.com>;
+<linux-mips@linux-mips.org>
+Sent: Tuesday, October 26, 2004 8:34 PM
+Subject: Re: errors while insmoding usb-skeleton.o (changed to suit our
+requirements)
 
 
-> On Tue, Oct 26, 2004 at 03:08:34PM +0800, colin wrote:
+> On Tue, Oct 26, 2004 at 08:19:14PM +0530, Narendra Kulkarni wrote:
 >
-> > Hi all,
-> > We want to begin to put Linux to our new board with 4KEc CPU.
-> > Is it better to start porting from Montavista's Kernel, or from the one
-of
-> > linux-mips.org?
-> > I phoned the sales of Montavista and he told me the difference of these
-2
-> > kernels are little, but their kernels have been tested a lot for
-stability.
+> > I am building a module usb-skeleton.o with following compiler options
+(The
+> > complier options are same as the options of used for building kernel)
+> >
+> >
+opt/brcm/hndtools-mipsel-linux-3.2.3/bin/mipsel-linux-gcc -D__KERNEL__  -I/
+> >
+usr/src/mipslinux/src/linux/linux/include -Wall -Wstrict-prototypes -Wno-tri
+> >
+graphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -I/usr/src/
+> >
+mipslinux/src/linux/linux/../../include -I/usr/src/mipslinux/src/linux/linux
+> > /include/asm/gcc -G
 >
-> A kernel isn't everything you'd get from Montavista; the comparison of
-> a site that's primarily geared towards development and a company that
-> is selling is probably not appropriate ...
+>  -mno-abicalls -fno-pic -pipe -mips2  -mlong-calls  -nostdinc -iwithprefix
+> > include -DKBUILD_BASENAME=usb-skeleton  -c -o usb-skeleton.o
+usb-skeleton.c
+> >
+> >  When insmoding the usb-skeleton.o,  insmod usb-skeleton.o
+> > I am getting the following erros
+> >  Using usb-skeleton.o
+> >  insmod: Relocation overflow of type 4 for __copy_user
+> >  insmod: Relocation overflow of type 4 for __copy_user
+> >  insmod: Relocation overflow of type 4 for __copy_user
+> >
+> > Where am i going wrong.  Help would be appreciated.
 >
-> > Naturally, we would like to choose the kernel version above 2.6.
->
-> The time where choosing 2.4 for new project still did make sense is over.
+> Seems your compiler command line is missing -DMODULE.
 >
 >   Ralf
+>
+>

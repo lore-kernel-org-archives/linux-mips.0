@@ -1,71 +1,45 @@
-Message-ID: <01b701c212bf$b1394850$780411ac@sam>
-From: "Sam" <iskoo@ms45.hinet.net>
-Subject: # CrossCompiler (Big Endian)
-Date: Thu, 13 Jun 2002 17:50:02 +0800
+Message-ID: <006a01c214b2$22e59280$0b01a8c0@w2k30g>
+From: "David Christensen" <dpchrist@holgerdanske.com>
+References: <20020615091631.20470.qmail@email.com>
+Subject: Re: Kernel - arch support(mips)
+Date: Sat, 15 Jun 2002 14:16:13 -0700
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_01B4_01C21302.BE4042E0"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20020613095002.zRjefcO5RFZF6YYlu_vmcpgrn85T6jcOf_Cb0BSJo10@z>
+Cc: Domcan Sami <domca_psg@email.com>
+Message-ID: <20020615211613.hKkxvPAH-R8_DcKdijT14MZq_Ho3hkXcEwJ81oLFX4g@z>
 
-This is a multi-part message in MIME format.
+linux-mips@oss.sgi.com:
 
-------=_NextPart_000_01B4_01C21302.BE4042E0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+> 1)I'm using is a Galileo Board EV64120A.
+> 2)It is a raw embedded target & does not support Linux. I'm trying to
+> print a string by compiling code with RM7000 & directing the output
+> via Serial Port to a WinNT HyperTerminal.
 
-Hi everybody,
+Searching on Google, it looks like you have a EV64120A-7000 made by
+Galileo Technology, Inc..  It is a PCI card that plugs into a PC, and
+includes the PMON ROM monitor in flash.  Galileo appears to have been
+sold to Marvell (www.marvell.com).  I don't see support or search links
+on the Marvell web site.  I don't see Galileo or EV64120A on their
+product page.  I suggest you send them an e-mail asking if and what
+support is available.
 
-    I got some information to build Little Endian CrossCompiler for mips
-    even precompiled binary files, and work well.....
 
-    However, I have to build a Big Endian's one
-    Should I get the binutil and glibc for big endian firstly?
+I was going to recommend the SDE-MIPS toolkit by Algorithmics, but I
+don't see your board in their Programmer's Guide.  Try asking them if
+they support it:
 
-    Is there any homepage for reference on web?
-    any sample?
+    http://www.algor-uk.com/
 
-    thanks all!
 
---Sam
+To be blunt, trying to make an older, slower, and unsupported board work
+is going to be difficult.  It might not be possible.  If you can, get a
+current, complete, and well-supported MIPS development system -- board,
+ICE/JTAG, ROM monitor/ embedded OS, development toolchain, etc..
 
-------=_NextPart_000_01B4_01C21302.BE4042E0
-Content-Type: text/html;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Dbig5" http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2>Hi everybody,</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; I got some information to build =
-Little=20
-Endian CrossCompiler for mips</FONT></DIV>
-<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; even precompiled binary files, =
-and work=20
-well.....</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; However, I have to build a Big =
-Endian's=20
-one</FONT></DIV>
-<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; Should I get the binutil and =
-glibc for big=20
-endian firstly?</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; Is there any homepage for =
-reference on=20
-web?</FONT></DIV>
-<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; any sample?</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; thanks all!</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>--Sam</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_01B4_01C21302.BE4042E0--
+David Christensen
+dpchrist@holgerdanske.com

@@ -1,32 +1,66 @@
-Subject: Re: Clean up the mips dynamic linker
-References: <20010712182402.A10768@lucon.org>
-	<20010713112635.A32010@bacchus.dhis.org> <m3lmlsu82u.fsf@otr.mynet>
-From: Andreas Jaeger <aj@suse.de>
-Date: Fri, 13 Jul 2001 20:07:40 +0200
-In-Reply-To: <m3lmlsu82u.fsf@otr.mynet> (Ulrich Drepper's message of "13 Jul
- 2001 09:06:49 -0700")
-Message-ID: <u8u20gem8j.fsf@gromit.moeb>
+Message-ID: <007f01c10c59$bbe8bfa0$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <20010713133517.C1378@bacchus.dhis.org> <Pine.GSO.3.96.1010713151359.3193D-100000@delta.ds2.pg.gda.pl> <20010714130448.C6713@bacchus.dhis.org>
+Subject: Re: sti() does not work.
+Date: Sat, 14 Jul 2001 13:39:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Ulrich Drepper <drepper@cygnus.com>
-Cc: Ralf Baechle <ralf@oss.sgi.com>, "H . J . Lu" <hjl@lucon.org>, linux-mips@oss.sgi.com, GNU C Library <libc-alpha@sourceware.cygnus.com>
-Message-ID: <20010713180740.DSQOT3ZNIp0qZTJQ-CvFSETwTIEltGOsbQU8Rd8hKqI@z>
+To: Ralf Baechle <ralf@oss.sgi.com>, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Cc: Thiemo Seufer <ica2_ts@csv.ica.uni-stuttgart.de>, linux-mips@oss.sgi.com
+Message-ID: <20010714113958.nhTd9Pt9-QCAVWyunyyYiv5IHSOidAreDCHq4qMq-0c@z>
 
-Ulrich Drepper <drepper@redhat.com> writes:
-
-> Ralf Baechle <ralf@oss.sgi.com> writes:
+> Real wild pig hackers on R3000 were writing code which knows that in the
+> load delay slot they still have the old register value available.  So you
+> can implement var1++; var2++ as:
 > 
->> So please, go ahead.
+> .set noreorder
+> lw $reg, var1($gp)
+> nop
+> addiu $reg, $reg, 1
+> lw $reg, var2($gp)
+> sw $reg, var1($gp)
+> addiu $reg, $reg, 1
+> sw $reg, var2($gp)
 > 
-> So you say the patch is OK from your POV?
+> .common var1, 4, 4
+> .common var2, 4, 4
+> 
+> Of course only safe with interrupts disabled.  So in a sense introducing
+> the load interlock broke semantics of MIPS machine code ;-)
 
-Just for the record, I also think it's ok - but will not apply it
-since it depends on patches for generic code.
+Architecturally, the target register value is UNDEFINED during
+the load delay slot on a MIPS I CPU.  Anyone who coded to any
+particular assumption regarding its value was coding to a 
+specific CPU implementation.  Introducing the load interlock
+in later versions of the ISA and later implementations did not
+reach backward in time and break the old hardware.  The
+implementation-specific code still works for its specific 
+implementation.  Refining the spec did not break the code for later
+implementations - it was *always* broken for later implementations! ;-)
 
-Andreas
--- 
- Andreas Jaeger
-  SuSE Labs aj@suse.de
-   private aj@arthur.inka.de
-    http://www.suse.de/~aj
+In a less pedantic tone, there actually is an architecturally
+legal case where an assembly coder can justify the use of
+noreorder for something other than CP0 pipeline hazards.
+If what I want to do is to test a value, branch on the result,
+and modify that value regardless of whether the branch is
+taken, I can code something like:
+
+    .set noreorder
+    bltz    t0,foo
+    sra    t0,t0,2
+    .set reorder
+    <other code>
+foo:
+
+Whereas otherwise I need to either consume another
+register or replicate the shift both after the branch and
+after foo.  If I'm very very lucky, the assembler will "hoist"
+such a replicated instruction into the delay slot - a  good
+compiler back-end optimiser certainly would.  But I'm not 
+aware of any MIPS assembler that would perform that
+optimisation - certainly the GNU assembler does not.
+
+            Kevin K.

@@ -1,30 +1,50 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0uK6ux-0005FbC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: lmbench with new checksum code...
-Date: Thu, 16 May 1996 18:32:51 +0100 (BST)
-In-Reply-To: <199605161603.JAA03193@neteng.engr.sgi.com> from "Larry McVoy" at May 16, 96 09:03:36 am
-Content-Type: text
+From: Alan Cox <alan@cymru.net>
+Message-ID: <199605300943.KAA23935@snowcrash.cymru.net>
+Subject: Re: linux needs bsd networking stack
+Date: Thu, 30 May 1996 10:43:42 +0100 (BST)
+In-Reply-To: <199605292159.OAA09070@lanta.engr.sgi.com> from "Neal Nuckolls" at May 29, 96 02:59:58 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Larry McVoy <lm@gate1-neteng.engr.sgi.com>
-Cc: davem@caip.rutgers.edu, lmlinux@neteng.engr.sgi.com, torvalds@cs.Helsinki.FI, sparclinux-cvs@caipfs.rutgers.edu, alan@cymru.net
-Message-ID: <19960516173251.FGnw41PaVnl8S_jLdTfCnG0oy7dvMTNLQe5evwafm_k@z>
+To: Neal Nuckolls <nn@lanta.engr.sgi.com>
+Cc: torvalds@cs.helsinki.fi, alan@cymru.net, sparclinux-cvs@caipfs.rutgers.edu, lmlinux@neteng.engr.sgi.com
+Message-ID: <19960530094342.ncaYqnHKkzkBYwv6N6XpT5Cg6aMevhxvppT-WKlEfVI@z>
 
-> I think your 4.8MB/sec number is pretty studly.  That means you are 
-> checksumming 9MB/sec as well as the protocol stack on a system that 
+> customization to turn them into networking switches,
+> routers, firewalls, etc.  Rather than embedding a RTOS,
+> they are choosing a free unix and usually this is FreeBSD
+> since Linux networking is not the de facto BSD stack.
 
-Actually the Linux kernel cheats on the receive side of loopback and doesnt
-checksum. Its too expensive to fiddle around on the send side for that short
-of doing the whole job and shorting the tcp layer as Solaris seems to.
+So we should use a defacto BSD stack because its a defacto stack. Ok there is this
+great OS called windows3. See you later
 
-> bcopies at ~20MB/sec.  You're already better than 2x the SunOS code.
-> Call it a day, you won.
+> The "unique" tcp/ip implementation is a liability to linux.
 
-Na.. We can cut all the checksums, do raw copies with no protocol overhead
-and possibly later on do user->user copying (with page flips to keep larry
-happy ;)). I can't see any reason we cannot do about 8-9MB/sec with a bit
-of extra code and some sneaky tricks.
+I'm not convinced it is. A whole load of SGI people (LM notably) seem intent on "BSD
+stack, BSD stack, BSD stack". Everyone else I hear is saying "How fast can it go",
+"How stable can we make it", "Will you please make sure its as solid in 2.0 as in 1.2"
 
-CONFIG_TCP_BENCHMARK_TRICKS 
+> Is anyone working to replace the standard linux stack
+> with port derived from the 4.4BSD code?
 
-anyone ?
+No -
+
+o	The BSD stack doesnt do IPX, AX25, NetROM, Appletalk
+o	There will be no defacto IPv6 for BSD, there are several species
+o	The licensing doesnt permit the two to meet easily
+o	You can't do 400Mbits/second with mbufs so you'd have to break the BSD code
+	anyway
+
+Im not convinced about the rest of the argument either. I know one big vendor using
+the BSD stack for a project. I know several using Linux (Things like the firewall
+from Mazama). We are seeing primary rate ISDN support for Linux starting to appear,
+and already have the heavy provider end multiple serial cards.
+
+For routers, anyone using a PC style architecture is bounding themselves to small
+routers anyway. No matter how good the code is you will soon need fancy hardware to
+handle BGP4, 50,000 routes and fast 100baseT speed switching. And there is no
+defacto BSD IPv6
+
+Alan

@@ -1,71 +1,28 @@
-Message-ID: <003201c228ee$1377c8e0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Pine.GSO.3.96.1020711132652.7876D-100000@delta.ds2.pg.gda.pl>
-Subject: Re: Sigcontext->sc_pc Passed to User
-Date: Thu, 11 Jul 2002 17:16:14 +0200
+Date: Thu, 11 Jul 2002 23:51:10 -0300 (BRT)
+From: Marcelo Tosatti <marcelo@conectiva.com.br>
+Subject: Re: [2.4 PATCH] pcnet32.c - tx underflow error
+In-Reply-To: <E17SRFB-00087H-00@the-village.bc.nu>
+Message-ID: <Pine.LNX.4.44.0207112350440.21590-100000@freak.distro.conectiva>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20020711151614.6F9cjmUV9-6rsjhswHiVj_9VAV1nfwrpaccBVMQwRas@z>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Jun Sun <jsun@mvista.com>, linux-mips@oss.sgi.com, Ralf Baechle <ralf@oss.sgi.com>, Jeff Garzik <jgarzik@mandrakesoft.com>
+Message-ID: <20020712025110.QhmMK_EDG4KXyXfiKPYuRy3JvPiXKDF_byz-It-5Eo4@z>
 
-From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
 
-[snip]
 
->  I believe the resumption should happen with EPC unmodified.  A handler
-> may set EPC differently if it wants (possibly with longjmp() or by
-> interpreting code at EPC and modifying EPC appropriately).  For the three
-> signal handling possibilities, I'd do that as follows (assuming SIGBUS,
-> SIGSEGV, etc. lethal signals): 
-> 
-> - SIG_IGN: return to EPC with no action.  A program will loop
->   indefinitely, but if that's what a user wants...
+On Thu, 11 Jul 2002, Alan Cox wrote:
 
-I don't think that this is the right thing to do, philosophically.
-Hanging in an infinite loop and making no forward progress
-is not, to me "ignoring" an event. The old X/Open specs I've 
-got say that SIGFPE, SIGILL, and SIGSEGV behavior is 
-undefined if bound to SIG_IGN (curiously, they don't call 
-out SIGBUS), but I think that in practical terms we need to 
-provide whatever behavior people expect from Linux on
-x86 and PPC.  What happens on those platforms?  A
-quick look at the x86 kernel code makes me think that
-they do, indeed, do the "wrong" thing and beat their
-heads against the ignored event for all eternity, but I'm
-insufficiently an expert in x86 trap semantics to know
-for certain whether that's the case.  If it is, right or 
-wrong, that's what we ought to do.
+> > This patch fixes a tx underflow error for 79c973 chip.  It essentially delay
+> > the transmission until the whole packet is received into the on-chip sdram.
+> >
+> > The patch is already accepted by Marcelo for the 2.4 tree, I think.
+>
+> Which slows the stuff down for people with real computers. Please apply
+> some kind of heuristic to this - eg switch to delaying if you exceed
+> 50 failures in a 60 second period.
 
-> - SIG_DFL: kill.
-> 
-> - HANDLER: call a handler with the signal context unmodified and let the
->   user code decide what to do.
+I haven't applied it yet.
 
-Independently of what we do for the SIG_IGN cases,
-this is important, and the user code cannot decide what
-to do if it cannot know what instruction caused the fault.
-Fixups on SIGFPE must be able to find the FP instruction,
-which is not currently possible if it was in a branch delay
-slot.  Similarly, user-mode emulation of "memory" via
-signal handlers cannot work unless the loads and stores
-can be identified.  But, having "done the deed", return
-from the signal handler should resume at the instruction
-*following* the one generating the fault, and not replay
-the same instruction.  We *could* punt that to the signal
-handler, but making every signal package carry its own
-copy of compute_return_epc() to handle the branch
-delay slot cases strikes me as being unfriendly to the
-user and is arguably slightly less reliable.  I guess I'd like things 
-to be rigged so that the sigcontext structure contains the address 
-of the faulting instruction as the sc_pc, but where the return 
-from signal goes to the address calculated by 
-compute_return_epc().  But again, what do people expect 
-in the "mainstream" world of x86 Linux?
-
-            Regards,
-
-            Kevin K.
+I'll let it come to me throught Jeff Garzik after the issues are resolved.

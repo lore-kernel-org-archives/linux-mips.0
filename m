@@ -1,23 +1,43 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0wu104-0005FiC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: An update...
-Date: Thu, 31 Jul 1997 20:35:04 +0100 (BST)
-In-Reply-To: <Pine.LNX.3.95.970724230351.22084H-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jul 24, 97 11:15:26 pm
-Content-Type: text
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199708051848.OAA06002@neon.ingenia.ca>
+Subject: indyIRQ.S
+Date: Tue, 5 Aug 1997 14:48:32 -0400 (EDT)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970731193504.C4M-UlzQSPFKy3IiifVL4xkzdBHYDQk5u3zjKoZMiTU@z>
+To: Linux/SGI list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19970805184832.j4z_o371OS2YUgjyhA-drUZZFoc1FXk_bF1G3y8UtMI@z>
 
-> - My root partition isn't being mounted read/write.  I can't figure it
-> out.  /proc/mounts does indicate that it's rw, and I'm sure the NFS export
-> is setup correctly.
+Up-to-the-minute copy of the kernel, Ralf's Intel binutils, etc.
 
-Are you remounting root after startup and do you have our export set not
-to map root to nobody ?
+mips-linux-gcc -D__KERNEL__ -I/export/sgi-linux/kernel/linux/include -D__GOGOGO__ -c indyIRQ.S -o indyIRQ.o
+indyIRQ.S: Assembler messages:
+indyIRQ.S:72: Warning: No .cprestore pseudo-op used in PIC code
+indyIRQ.S:83: Warning: No .cprestore pseudo-op used in PIC code
+indyIRQ.S:95: Warning: No .cprestore pseudo-op used in PIC code
+indyIRQ.S:107: Warning: No .cprestore pseudo-op used in PIC code
+indyIRQ.S:124: Warning: No .cprestore pseudo-op used in PIC code
+indyIRQ.S:75: Error: Can not represent relocation in this object file format
+indyIRQ.S:86: Error: Can not represent relocation in this object file format
+indyIRQ.S:98: Error: Can not represent relocation in this object file format
+indyIRQ.S:110: Error: Can not represent relocation in this object file format
+indyIRQ.S:127: Error: Can not represent relocation in this object file format
+make[1]: *** [indyIRQ.o] Error 1
+make[1]: *** Waiting for unfinished jobs....
 
-(try mount -o remount,rw -n /)
+Any ideas?
 
+I'm also seeing a problem with asm/atomic.h and the like; stuff about
+invalid operands for binary +, etc.  I expect it's a CFLAGS or GCC
+spec file thing, but those should both be standard.
 
-Alan
+Mike
+
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>              Linux: because every cycle counts.
+#>
+#> "I don't know what you do for a living[...]" -- perry@piermont.com
+#>        "I change the world." -- davem@caip.rutgers.edu

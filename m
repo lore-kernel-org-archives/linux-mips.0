@@ -1,44 +1,39 @@
-Message-ID: <019601c25501$c5307250$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Pine.GSO.3.96.1020905181042.7444G-100000@delta.ds2.pg.gda.pl>
+From: Hartvig Ekner <hartvige@mips.com>
+Message-ID: <200209051807.g85I73W06904@coplin09.mips.com>
 Subject: Re: 64-bit and N32 kernel interfaces
-Date: Thu, 5 Sep 2002 19:29:12 +0200
+Date: Thu, 5 Sep 2002 20:07:03 +0200 (CEST)
+In-Reply-To: <Pine.GSO.3.96.1020905170830.7444E-100000@delta.ds2.pg.gda.pl> from "Maciej W. Rozycki" at Sep 05, 2002 05:10:51 
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Return-Path: <hartvige@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Daniel Jacobowitz <dan@debian.org>
-Cc: Hartvig Ekner <hartvige@mips.com>, Tor Arntsen <tor@spacetec.no>, Carsten Langgaard <carstenl@mips.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20020905172912.tWn0RJaG6qlwQPrNhDsZZGiPsCaL3MwNnB6PUh-i9RM@z>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Cc: Daniel Jacobowitz <dan@debian.org>, Hartvig Ekner <hartvige@mips.com>, "Kevin D. Kissell" <kevink@mips.com>, Tor Arntsen <tor@spacetec.no>, Carsten Langgaard <carstenl@mips.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20020905180703.C1Ul9_VFC7ktfNf_o0VZQ0mvGbQYUoAmQLuVm3O2cd0@z>
 
-From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Maciej W. Rozycki writes:
+> 
 > On Thu, 5 Sep 2002, Daniel Jacobowitz wrote:
 > 
-> > N32 supports saving and restoring 64-bit registers, which O32 doesn't -
-> > according to some comments in GCC, O32 is in fact incompatible with
-> > using 64-bit operations.
+> > No - the point is that all data types have the same size in N32.  It
+> > was created explicitly as a transitional sop for people who didn't want
+> > to fix their code, but wanted a performance increase from their 64-bit
+> > hardware.
 > 
->  But that old software wouldn't benefit as it didn't perform 64-bit
-> operations unless manually coded in software using narrower data types. 
-> There is no 64-bit C data type for o32 and long long is quite a recent
-> invention -- it didn't exist in the 80s or even early 90s.
+>  Well, what's the performance increase of n32 over o32?  The increased
+> number of argument registers?  I doubt it's noticeable in most cases.
 
-Well, actually,. as I recall from those days, "long long" *did*
-exist in the very late 1980's, though it wasn't part of any standard,
-and there were variant names proposed for it.  Certainly it had 
-been  invented by the time the first 64-bit MIPS chips came out 
-in 1991/1992.  Maybe not in GCC, but in other complers of 
-the period.  The concensus was that "long" should be the largest
-element that could be loaded/stored/used in an integer register,
-which meant 32-bits for most of us in those days, yet there was
-a need to represent 64-bit integers for the clearest expression
-of some algorithms.  MIPS was rather unique in having made 
-a "binary compatible" transition from 32 to 64-bits.  Does anyone 
-know what's being done with C integer binding on the AMD
-"Hammer" architecture?  They're looking at the same problem,
-10 years further on.
+The technical benefits of n32 over o32 are:
 
-            Kevin K.
+* More argument registers => less memory traffic, less D-cache use,
+	=> faster code
+
+* 64-bit datapath of CPU can be utilized with big impact on certain
+  applications
+
+* 32 floating point registers instead of 16 (and more efficient
+  parameter passing as well)
+
+/Hartvig

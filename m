@@ -1,34 +1,35 @@
 From: Kanoj Sarcar <kanoj@google.engr.sgi.com>
-Message-ID: <200008232312.QAA92824@google.engr.sgi.com>
+Message-ID: <200009062351.QAA14035@google.engr.sgi.com>
 Subject: Re: CVS Update@oss.sgi.com: linux
-Date: Wed, 23 Aug 2000 16:12:58 -0700 (PDT)
-In-Reply-To: <20000823125657.A1008@bacchus.dhis.org> from "Ralf Baechle" at Aug 23, 2000 12:56:57 PM
+Date: Wed, 6 Sep 2000 16:51:19 -0700 (PDT)
+In-Reply-To: <20000907014521.A20605@bacchus.dhis.org> from "Ralf Baechle" at Sep 07, 2000 01:45:21 AM
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
 To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: Kanoj Sarcar <kanoj@oss.sgi.com>, linux-mips@oss.sgi.com
-Message-ID: <20000823231258.3KiX0sG3PLk5acDcNQOhzQ_QPVc6Lo8onxz7rU-rwTs@z>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20000906235119.kNK_qsVhsBQpoazKun2oYGnjWu3oPZXdavtt1PW3_mQ@z>
 
 > 
-> On Wed, Aug 23, 2000 at 10:23:50AM -0700, Kanoj Sarcar wrote:
+> On Wed, Sep 06, 2000 at 04:36:29PM -0700, Kanoj Sarcar wrote:
 > 
-> > Log message:
-> > 	Make prom_printf() functional on IP27s. And prom_printf() is not an
-> > 	init function, it needs to be around during regular system usage.
+> > 	Compile fix: flush only L2 cache.
 > 
-> On my system after the first TLB flush all PROM functions are no longer
-> usable since the function pointer point to mapped space.  Similar for
-> other ARC machines.
+> That's wrong, sysmips(FLUSH_CACHE) is supposed to flush all caches.
 > 
 >   Ralf
 > 
 
-I can see how the IP27 can have access to prom functions after init.
-Not sure how arc behaves on other machines, but I guess if you really
-wanted to use arc prom functions after init, you could take steps to
-ensure that ...
+The act of flushing the L2 cache, should include flushing the L1
+cache, whether done by software or processor provided primitives, 
+to guarantee the inclusion principle.
+
+Notwithstanding, feel free to add in a call to flush_cache_l1()
+(and I don't know whether you want to flush the i and d caches
+both, or just one), making sure there are no compile breakages.
+(the breakage that I fixed was due to the fact that there is no
+__flush_cache_all for mips64).
 
 Kanoj

@@ -1,32 +1,95 @@
-Reply-To: <jzhang@elmic.com>
-From: "Jimmy Zhang" <jzhang@elmic.com>
-Subject: How to make part of kseg0 uncached
-Date: Fri, 2 May 2003 16:56:44 -0700
-Message-ID: <004f01c31106$7cb63de0$0300a8c0@riverside>
+Date: Sun, 4 May 2003 19:21:49 -0700 (PDT)
+From: Muthukumar Ratty <muthu@iqmail.net>
+Subject: Re: Linux for MIPS Atlas 4Kc board
+In-Reply-To: <BAY1-F6t67zLTJTBUsl000074ca@hotmail.com>
+Message-ID: <Pine.LNX.4.33.0305041914120.14758-100000@Muruga.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-Path: <jzhang@elmic.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <muthu@iqmail.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030502235644.PF7k2HxMWsQSoFD7oTZhve4STExdsa0ZY_7WRqx-2kU@z>
+To: Michael Anburaj <michaelanburaj@hotmail.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20030505022149.cxLbkGT8UCqRIIsk1MvsVg-FIoq4ZSrOWcTGzZDOLy8@z>
 
-It is pretty simple to make the WHOLE kseg0 cached or uncached. However,
-I only want part of kseg0 uncached. 
 
-I must uncache that region because it gives me too much trouble with DMA
-data, however, I don't want to uncache the whole kseg0 segment in order
-to get better performance.  Kseg0 is not mapped through TLB, so it seems
-I can't achieve my goal through TLB. 
+Hi Mike,
 
-Cite from the book See Mips Run, "if you feel that your system needs to
-make uncached references to cacheable memory, then I strongly recommand
-that you divide memory into regions that are always accessed uncached
-and regions that are always accessed through the cache - and don't let
-them overlap. " But how ?
+I dont know what version you are trying but the one at linux_2_4 branch
+(linux2.4.21-pre4) seems to work. You can get it with
 
-Thanks,
+cvs -d :pserver:cvs@ftp.linux-mips.org:/home/cvs co -r linux_2_4 linux
 
-Jimmy
+to configure, you can use the default config. from head do ..
+
+cp arch/mips/default-atlas .config
+
+I tried little endian. If you want that you need to select it in the
+config.
+
+Muthu
+
+
+On Sun, 4 May 2003, Michael Anburaj wrote:
+
+> Hi,
+>
+> Finally, I could compile vmlinux. I thought of booting this RAM image (or
+> its SREC equivalent) using the onboard YAMON (in BIG endian mode - I am
+> having trouble building Redboot in BIG endian mode <issue ported at ecos
+> forum>, so for now thought of using YAMON). After downloding the
+> vmlinux.srec over the serial port (Starting at 0x80100000), I issued the go
+> command to run the image. I get the following message:
+>
+> YAMON> go
+>
+> LINUX started...
+>
+> * Exception (user) : Reserved instruction *
+> BadVAddr = 0x00000000  Cause    = 0x00808028
+> Compare  = 0x00061a80  Config   = 0x80038083
+> Config1  = 0x1e9b4d8a  Context  = 0x63800000
+> Count    = 0xb9188fd8  DEPC     = 0x21424255
+> Debug    = 0x0400dc0b  EPC      = 0x80122258
+> EntryHi  = 0x00000068  EntryLo0 = 0x028ff72e
+> EntryLo1 = 0x035a241f  ErrorEPC = 0x8003add0
+> Index    = 0x0000000b  PRId     = 0x00018001
+> PageMask = 0x01b90000  Random   = 0x0000000d
+> Status   = 0x00000402  WatchHi  = 0x00000000
+> WatchLo  = 0x00000000  Wired    = 0x00000000
+> Hi       = 0x00000000  Lo       = 0x04000000
+>
+> $ 0(zr):0x00000000  $ 8(t0):0x00000000  $16(s0):0x802d810a
+> $24(t8):0xffffffff
+> $ 1(at):0x80280000  $ 9(t1):0x00000000  $17(s1):0x802d810c
+> $25(t9):0x802c1e94
+> $ 2(v0):0x0000000a  $10(t2):0x8024f401  $18(s2):0x00000400
+> $26(k0):0x00000000
+> $ 3(v1):0x00000000  $11(t3):0x00000000  $19(s3):0x00000001
+> $27(k1):0x00000000
+> $ 4(a0):0x00000000  $12(t4):0x00000000  $20(s4):0x0000001a
+> $28(gp):0x802c0000
+> $ 5(a1):0x80280000  $13(t5):0x00000000  $21(s5):0x0000000a
+> $29(sp):0x802c1f58
+> $ 6(a2):0x8024385a  $14(t6):0x802d8109  $22(s6):0x0000003e
+> $30(s8):0x800b1080
+> $ 7(a3):0x00000000  $15(t7):0xfffffffe  $23(s7):0x0000003c
+> $31(ra):0x80122230
+>
+>
+> The linux image started fine, but caused an exception after a while. Is this
+> because Linux is not compatible with YAMON? If so, what are the possible
+> monitor programs that can go with Linux? Please point me to the documents in
+> this regard (documents on running Linux executable on Atlas 4Kc board).
+>
+> Or will Linux work with any ROM monitor? If so, please let me know the
+> reason for the exception.
+>
+> Thanks a lot,
+> -Mike.
+>
+> _________________________________________________________________
+> STOP MORE SPAM with the new MSN 8 and get 2 months FREE*
+> http://join.msn.com/?page=features/junkmail
+>
+>

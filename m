@@ -1,20 +1,27 @@
-Reply-To: <khs@digital-digital.com>
-From: "Han-Seong Kim" <khs@digital-digital.com>
-Subject: Power MGMT on mips
-Date: Mon, 12 Nov 2001 17:13:40 +0900
-Message-ID: <000001c16b51$f05f6070$cbadfea9@khs>
+Date: Tue, 13 Nov 2001 16:30:24 +0100 (CET)
+From: Roman Zippel <zippel@linux-m68k.org>
+Subject: Re: [RFC] generic MIPS RTC driver
+In-Reply-To: <20011113074424.A16723@cpe-24-221-152-185.az.sprintbbd.net>
+Message-ID: <Pine.LNX.4.33.0111131627580.3818-100000@serv>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20011112081340.OR0viMZFGKv6v8lUMs4KftjVaPCzdsjs37bIl4sNWrg@z>
+To: Tom Rini <trini@kernel.crashing.org>
+Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, Roman Zippel <zippel@linux-m68k.org>, Jun Sun <jsun@mvista.com>, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Linux/MIPS Development <linux-mips@oss.sgi.com>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux/PPC Development <linuxppc-dev@lists.linuxppc.org>, rz@linux-m68k.org
+Message-ID: <20011113153024.eLfYHWX0YJ9QyJQ-1c7YLwtXjYNvoW-S1D5aklQDxYA@z>
 
-Hi, 
+Hi,
 
-I want to ask about Power-Mnagement on mips.
-1. Is it possible to use power mgnt (ex. apm,acpi) features of linux kernel?
-2.If no, how can manage CPU and Bidge chips for power mgnt ?
+On Tue, 13 Nov 2001, Tom Rini wrote:
 
-Han-Seong
+> > http://linux-m68k-cvs.apia.dhs.org/
+>
+> That's the non-generic m68k version tho, yes?  Or did Roman do it in
+> that tree too?
+
+That version is even more recent than the one currently in the APUS
+repository. :)
+But I tested it also under APUS, so you only need to provide
+[gs]et_rtc_time and it should work.
+
+bye, Roman

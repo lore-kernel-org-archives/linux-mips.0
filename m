@@ -1,18 +1,18 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0yo8OL-000aOnC@the-village.bc.nu>
+Message-ID: <m0ypIvl-000aOnC@the-village.bc.nu>
 From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: 5.1 installation fun & games...
-Date: Mon, 22 Jun 1998 16:20:21 +0100 (BST)
-In-Reply-To: <Pine.SGI.3.96.980622161123.20040A-100000@wintermute.reading.sgi.com> from "Leon Verrall" at Jun 22, 98 04:12:32 pm
+Subject: Re: New 2.0.107 console scheme
+Date: Thu, 25 Jun 1998 21:47:41 +0100 (BST)
+In-Reply-To: <3592B271.14F268F4@csd.sgi.com> from "Jesse Barnes" at Jun 25, 98 01:26:25 pm
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Leon Verrall <leon@reading.sgi.com>
-Cc: alan@lxorguk.ukuu.org.uk, linux@cthulhu.engr.sgi.com
-Message-ID: <19980622152021.HGvk_yA9gDaIwBIQlgMStDBAqytZ9UjeBkTfjve1c3g@z>
+To: Jesse Barnes <jesseba@rock.csd.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19980625204741.dkd8-lg1_LyFIFgBMEAWJvRNoXwfBHowSlBE22w5VCE@z>
 
-> Ah, a chicken and egg thing. You can nfsroot an SG linux box as long as you
-> have a linux box to do it from...
+> Does the main kernel source tree have support for Indys natively, and
+> if so, is the new fbcon method supported for the console?  
 
-Or can do binary arithmetic on the console null zero and a couple of
-other device file numbers (ie on the sgi mknod console c 0 1024 probably
-comes out as 4,0 on Linux
+Almost and no. Its not fb_con thats relevant for the indy. fbcon is a directly
+accessible bitmapped display. The indy will need to use abscon directly  to
+issue newport commands

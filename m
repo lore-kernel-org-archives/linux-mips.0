@@ -1,76 +1,56 @@
-Message-ID: <000e01c4bbee$8ba25a20$0e00a8c0@narendra>
-From: "Narendra Kulkarni" <narendradv@myrealbox.com>
-References: <000b01c4bb6a$f87b1580$0e00a8c0@narendra> <20041026150433.GA30620@linux-mips.org>
-Subject: Re: errors while  insmoding usb-skeleton.o (changed to suit our requirements)
-Date: Wed, 27 Oct 2004 12:00:17 +0530
+Message-ID: <014901c4bd04$7fa2a1a0$0201a8c0@janos>
+From: "Hajdu Janos" <janos@tateyama.hu>
+Subject: VR4181 power management
+Date: Thu, 28 Oct 2004 17:40:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <narendradv@myrealbox.com>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0146_01C4BD15.431DB600"
+Return-Path: <janos@tateyama.hu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20041027063017.Q8-zhAMxljIm8zh9IqpnsWk-PStMRe4iZEmOYNHVRKg@z>
+To: linux-mips@ftp.linux-mips.org
+Message-ID: <20041028154049.Yb1vgMqC3lr9H-M15y1v-uLM2rVtHQRhK3IMEBQGgFk@z>
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0146_01C4BD15.431DB600
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-I have used the functions copy_to_user and copy_from_user in the driver to
-get and send data to user space. If  I comment the above statements,  i dont
-get the errors when i insmod usb-skeleton.o which i get when i use the
-copy_to_user and copy _from_user functions.
-errors --->
+I'd like to use the Vr4181 power management functions =
+(suspend/hibernate).
 
-Using usb-skeleton.o
-insmod: Relocation overflow of type 4 for __copy_user
-insmod: Relocation overflow of type 4 for __copy_user
-insmod: Relocation overflow of type 4 for __copy_user
+Can anyone help about it?
 
-Narendra
+Thanks,
 
+janos
+------=_NextPart_000_0146_01C4BD15.431DB600
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
------ Original Message ----- 
-From: "Ralf Baechle" <ralf@linux-mips.org>
-To: "Narendra Kulkarni" <narendra@econtek.com>
-Cc: "'Narendra Kulkarni'" <narendra@spacomp.com>;
-<linux-mips@linux-mips.org>
-Sent: Tuesday, October 26, 2004 8:34 PM
-Subject: Re: errors while insmoding usb-skeleton.o (changed to suit our
-requirements)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2900.2523" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#c0c0c0>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I'd like to use the Vr4181 power =
+management=20
+functions (suspend/hibernate).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Can anyone help about it?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>janos</FONT></DIV></BODY></HTML>
 
-
-> On Tue, Oct 26, 2004 at 08:19:14PM +0530, Narendra Kulkarni wrote:
->
-> > I am building a module usb-skeleton.o with following compiler options
-(The
-> > complier options are same as the options of used for building kernel)
-> >
-> >
-opt/brcm/hndtools-mipsel-linux-3.2.3/bin/mipsel-linux-gcc -D__KERNEL__  -I/
-> >
-usr/src/mipslinux/src/linux/linux/include -Wall -Wstrict-prototypes -Wno-tri
-> >
-graphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -I/usr/src/
-> >
-mipslinux/src/linux/linux/../../include -I/usr/src/mipslinux/src/linux/linux
-> > /include/asm/gcc -G
->
->  -mno-abicalls -fno-pic -pipe -mips2  -mlong-calls  -nostdinc -iwithprefix
-> > include -DKBUILD_BASENAME=usb-skeleton  -c -o usb-skeleton.o
-usb-skeleton.c
-> >
-> >  When insmoding the usb-skeleton.o,  insmod usb-skeleton.o
-> > I am getting the following erros
-> >  Using usb-skeleton.o
-> >  insmod: Relocation overflow of type 4 for __copy_user
-> >  insmod: Relocation overflow of type 4 for __copy_user
-> >  insmod: Relocation overflow of type 4 for __copy_user
-> >
-> > Where am i going wrong.  Help would be appreciated.
->
-> Seems your compiler command line is missing -DMODULE.
->
->   Ralf
->
->
+------=_NextPart_000_0146_01C4BD15.431DB600--

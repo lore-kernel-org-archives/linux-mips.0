@@ -1,27 +1,25 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199705272059.WAA16196@informatik.uni-koblenz.de>
-Subject: Re: strace/truss equiv?
-Date: Tue, 27 May 1997 22:58:59 +0200 (MET DST)
-In-Reply-To: <199705272050.QAA22211@neon.ingenia.ca> from "Mike Shaver" at May 27, 97 04:50:38 pm
+Message-ID: <199705272214.AAA27149@informatik.uni-koblenz.de>
+Subject: Re: Linux/SGI Logos (was: Re: strace/truss equiv?)
+Date: Wed, 28 May 1997 00:14:12 +0200 (MET DST)
+In-Reply-To: <9705271453.ZM9078@procyon.corp.sgi.com> from "Seth Morabito" at May 27, 97 02:53:19 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>
-Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
-Message-ID: <19970527205859.G3K8LLy4FRBvY3BYbz94sqXjtFnbEEzqanOzxt0qyMM@z>
+To: Seth Morabito <sethm@procyon.corp.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970527221412.834k92sBPxqxQD2N1ZKkZa7qJt_nDc133kCMC1iCnC0@z>
 
-Hi,
-
-> All is better now, and I've built apache. =)
-> Once I find a pristine source archive of the net-tools (proving
-> surprisingly difficult, since I have a memory like a sieve), I'll try
-> and get it serving pages.
+> Just threw together two quick ideas for basics of Linux/SGI logos.
+> Feel free to take a peak at http://procyon.corp.sgi.com/linux/index.html
 > 
-> Does anyone have a penguin-plus-SGI-cube logo yet, or should I get
-> someone here to whip it up? =)
+> Anyone who'd like to send me their own Logo creation and a quick
+> snippet of text about it, feel free to do so, and I'll add them to
+> this page.
 
-Would be great to have one.  Any talented artists on this list?
+Could you move the pages to a server that can be reached from outside
+sgi.com?  Thanks,
 
   Ralf

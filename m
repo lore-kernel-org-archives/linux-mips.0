@@ -1,24 +1,30 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Alan Cox <alan@cymru.net>
-Message-ID: <199605160935.KAA09812@snowcrash.cymru.net>
+Message-ID: <m0uK6ux-0005FbC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
 Subject: Re: lmbench with new checksum code...
-Date: Thu, 16 May 1996 10:35:04 +0100 (BST)
-In-Reply-To: <199605160653.CAA12098@huahaga.rutgers.edu> from "David S. Miller" at May 16, 96 02:53:50 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Thu, 16 May 1996 18:32:51 +0100 (BST)
+In-Reply-To: <199605161603.JAA03193@neteng.engr.sgi.com> from "Larry McVoy" at May 16, 96 09:03:36 am
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "David S. Miller" <davem@caip.rutgers.edu>
-Cc: lmlinux@neteng.engr.sgi.com, torvalds@cs.helsinki.fi, sparclinux-cvs@caipfs.rutgers.edu, alan@cymru.net
-Message-ID: <19960516093504.iii-JttQF51E_8qes8evgo-tjqhyo7Wf7p-5RHY0fIc@z>
+To: Larry McVoy <lm@gate1-neteng.engr.sgi.com>
+Cc: davem@caip.rutgers.edu, lmlinux@neteng.engr.sgi.com, torvalds@cs.Helsinki.FI, sparclinux-cvs@caipfs.rutgers.edu, alan@cymru.net
+Message-ID: <19960516173251.FGnw41PaVnl8S_jLdTfCnG0oy7dvMTNLQe5evwafm_k@z>
 
-> I doubt I can get 2mb/s more out of my code to beat solaris, sigh,
-> where the heck could all this overhead possibly be???
+> I think your 4.8MB/sec number is pretty studly.  That means you are 
+> checksumming 9MB/sec as well as the protocol stack on a system that 
 
-What makes you think the Solaris loopback is even doing checksums or a memcpy
-via kernel space ? They only way you'll beat solaris at the loopback network
-game is to cheat as they do. Make tcp_connect spot a localhost connection
-change the socket method to something akin to af_unix but streamlined a bit
-(only special case is urgent data).
+Actually the Linux kernel cheats on the receive side of loopback and doesnt
+checksum. Its too expensive to fiddle around on the send side for that short
+of doing the whole job and shorting the tcp layer as Solaris seems to.
 
-Alan
+> bcopies at ~20MB/sec.  You're already better than 2x the SunOS code.
+> Call it a day, you won.
+
+Na.. We can cut all the checksums, do raw copies with no protocol overhead
+and possibly later on do user->user copying (with page flips to keep larry
+happy ;)). I can't see any reason we cannot do about 8-9MB/sec with a bit
+of extra code and some sneaky tricks.
+
+CONFIG_TCP_BENCHMARK_TRICKS 
+
+anyone ?

@@ -1,123 +1,17 @@
-Message-ID: <009201c25b48$7da2cf30$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20020913172824.5c7ed0a4.g.c.bransby-99@student.lboro.ac.uk>
-Subject: Re: Cycle counter
-Date: Fri, 13 Sep 2002 19:10:28 +0200
+Reply-To: <correo@cpmsa.ocm>
+From: =?iso-8859-1?Q?CP&M_Concepci=F3n=2C_Poueri=E9_&_Mu=F1oz=2C_S.A.?= <correo@cpmsa.com>
+Subject: How to unsuscribe?
+Date: Mon, 16 Sep 2002 10:48:20 -0400
+Message-ID: <001201c25d90$19ba9fd0$0200a8c0@notebook>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+In-Reply-To: <20020916164137.A2579@linux-mips.org>
+Return-Path: <correo@cpmsa.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Gareth <g.c.bransby-99@student.lboro.ac.uk>, linux-mips@linux-mips.org
-Message-ID: <20020913171028.-O1_71A6shaGhiSHnfogOByxdVbB1vbk3N1bCbtElRk@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20020916144820.AIPP3f8IQ8P0PoW55hC8an4CxboYggaKxGB6ASBbkEM@z>
 
-A few comments, a couple of which are in common with
-Nick's response.
-
-1) With anything except the absolutely latest MIPS CPU
-     design (the M4K), you cannot access the Count register
-     unless you have full system coprocessor access, which
-     is to say, unless you are in the kernel.  If you're doing
-     this in user mode, I would expect you to get a SIGILL
-     on your mtc0/mfc0.  If you're embedding your code
-     in the kernel and triggering it via a system call, and if
-     you disable interrupts during the sample interval, you
-     should get a more-or-less accurate result.
-
-2)  As Nick points out, you should absolutely never
-     *write* to the count register.  Sample it and compute
-     deltas, but do not change it, as system timing depends
-     on it in many (most?) kernels.
-
-3)  Make sure you check the users manual for your CPU
-      to determine whether the count register is incremented
-      every cycle or every two cycles.
-
-4)  Personally, when I want to know how long a loop takes
-     to execute under Linux, I generally use the good old-fashioned
-     gettomeofday() system call to time a very large number of
-     iterations of the loop, enough to run for 10 seconds or
-     so, and divide by the number of iterations.  That won't
-     give you the worst-case, caches-cold execution time,
-     but it will give you a very close approximation of the
-     Nth iteration time, without having to embed the code
-     in the kernel.
-
-            Regards,
-
-            Kevin K.
- 
------ Original Message ----- 
-From: "Gareth" <g.c.bransby-99@student.lboro.ac.uk>
-To: <linux-mips@linux-mips.org>
-Sent: Friday, September 13, 2002 6:28 PM
-Subject: Cycle counter
-
-
-> Hi,
-> 
-> Another question reagarding the mips malta board. I am wanting to be able to
-> find out how many cycles a certain loop takes to execute. I understand there is
-> a cycle counter built into the processor that I want to use for this. I have a
-> bit of inline assembly to do the job but the results I am getting are not
-> consistent so i think there is probably something wrong with my attempt at the
-> inline assembly. Here is the code : 
-> 
->   void al_signal_start(void);
->   size_t al_signal_finished(void);
->   unsigned int GetcpuCycles(void);
-> 
->   char str[8];
-> 
->   int main (void)
->   {
->       double x;
->       al_signal_start();
->     
->       x = al_signal_finished();
->       printf("GetcpuCycles says : %f \n",x);
-> 
->       return 0;
->   }
-> 
->   size_t al_signal_finished(void)
->   {
->       return GetcpuCycles(); 
->   }
-> 
->   void al_signal_start(void)
->   {
->   int zero,temp;
->   __asm__("move $2, $zero");
->   __asm__("nop");
->           __asm__("mtc0 $2, $9" :  : "r" (temp));
->           __asm__("nop");
->           __asm__("nop");
->           __asm__("nop");
->   }
-> 
->   unsigned int GetcpuCycles(void)
->   {
->           int temp;
->           __asm__(".set reorder");
->           __asm__("mfc0 $2, $9" : : "r" (temp));
->           __asm__("nop");
->           __asm__("nop");
->           __asm__("nop");
->           /*__asm__("jr $31" );*/
->   }
-> 
-> 
-> As you can see, main just starts and stops the counter with no instructions in
-> between. I expexcted the cycle count to be zero or close to it because of the
-> instructions required to get the count but this is not the case. I am getting
-> numbers like 8499. Is there just something wrong with my assembly or is there
-> something else I am missing?
-> 
-> Thanks for any help
-> Gareth
-> 
-> 
-> 
+Anybody knows how to unsuscribe from this list?

@@ -1,53 +1,49 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Tue, 8 Apr 1997 15:00:12 -0700
-Message-ID: <199704082200.PAA14464@fir.esd.sgi.com>
-From: "William J. Earl" <wje@fir.esd.sgi.com>
-Subject: Re: serial consoles, sash and other wonders
-In-Reply-To: <199704082131.RAA03090@neon.ingenia.ca>
-References: <199704081948.MAA14047@fir.esd.sgi.com>
-	<199704082131.RAA03090@neon.ingenia.ca>
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199704082356.TAA04813@neon.ingenia.ca>
+Subject: Re: It booooooooooots!
+In-Reply-To: <9704091148.ZM9065@windy.wellington.sgi.com> from Alistair Lambie at "Apr 9, 97 11:48:25 am"
+Date: Tue, 8 Apr 1997 19:56:31 -0400 (EDT)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>
-Cc: linux@cthulhu.engr.sgi.com, "David S. Miller" <davem@caip.rutgers.edu>
-Message-ID: <19970408220012.NtGO_Y74CQSYAMPTLwjUFOZTA66_u9obstUtHgnfWC0@z>
+To: Alistair Lambie <alambie@wellington.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970408235631.wGSb6cOppzulelHZLl74F5QgkijFND8cv8iJUtmme-4@z>
 
-Mike Shaver writes:
- > Thus spake William J. Earl:
-...
- > >     If you don't have the installation CD's, I recommend that you back
- > > up the disk, perhaps to a second disk (complete with volume header and
- > > root partitions), so you can recover from any potential failure.  The
- > > "cp" command in the prom can be used to copy disk to disk to recover.
- > 
- > That I will do.
- > Will that work with differently-sized drives?
+Thus spake Alistair Lambie:
+> I used to have that...you probably haven't got a rarp server set up, so it
+> can't find its address.  One of the things David was going to add was that
+> ability to read it out of NVRAM...but that wasn't high on the priority list!
+>  For now, the only way is to have a rarp server.
 
-     Yes, but the drive to which you copy the data will have to be bigger,
-but it will then not appear to be any larger than the original drive.
-That is, the partition table in the volume header will claim that the
-second drive is really the same size as the original drive.  This is of
-course ok if you only want the extra drive as a backup.
+Actually, you can do it with
+boot -f bootp()server:/vmlinux nfsaddrs=my.ip.ad.dr:nfs.ip.ad.dr
 
-...
- > I'm having some trouble with the serial console, though.
- > I did an `nvram console d' and that took, but I fear that I've got to
- > set something else, since my serial cable is connected to port 2.  The
- > getty I'm running on ttyd2 works fine, FWIW.
+It mounts it now (I have the NFS daemon running with debugging on so
+that I can watch) but it just stops after it looks at tty[4123 -- in
+that order].
 
-      Yes, you really need two serial lines, one for the console (port 1,
-ttyd1) and one for the debug port (port 2, ttyd2).  At least, that is the
-way I control my test system from my host system.  Here, we usually use
-an Annex Ethernet-based serial concentrator for serial ports, and connect
-via telnet (or the Annex rtelnetd) to the serial ports, which are then
-wired to the test machines.  
+I'm going to see how the SPARC guys did it; I think it's just a matter
+of getting the device entries correct.
 
- > When I reboot, I get nothing on the serial console until the getty
- > login: prompt.
- >
- > (I can't think off the top of my head as to why I'm using that port,
- > but I think it had something to do with the available cabling.  I'm
- > not physically with the machine until 1400 EST tomorrow, but Josh
- > should feel free to step forward and explain it. =) )
+> Did you get my root filesystem etc off http://reality.sgi.com/ariel/alambie.
+> This should give you the bits you need to get multiuser (init), set up
+> networking and mount disks.
 
-       The PROM talks only to port 1, so you are seeing what I would
-expect.
+Yeah, and that's what I'm using for my root filesystem.
+It mounts everything and checks out stuff like /var/log/utmp (!), but
+then hangs after it looks at the ttys.
+
+Curious...
+
+Mike
+
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>           Resident Linux bigot and kernel hacker. (OOPS!)           
+#> `If you get bitten by a bug, tough luck...the one thing I won't do  
+#> is feel sorry for you.  In fact, I might ask you to do it all over  
+#> again, just to get more information.  I'm a heartless bastard.'     
+#>                       -- Linus Torvalds (on development kernels)    

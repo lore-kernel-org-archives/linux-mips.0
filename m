@@ -1,67 +1,71 @@
-Date: Wed, 15 Sep 2004 10:45:15 -0400
-Message-ID: <4139C8B50000007D@messageii.ucentric.com>
-In-Reply-To: <5.1.0.14.0.20040915103551.03b2ec90@172.16.1.10>
-From: "Brad Kemp" <bkemp@ucentric.com>
-Subject: RE: Problem with ARP response
+Message-ID: <41581D75.3090706@embeddedalley.com>
+Date: Mon, 27 Sep 2004 07:02:29 -0700
+From: Pete Popov <ppopov@embeddedalley.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Subject: Re: 2.6 kernel work for XXS1500
+References: <20040927085510.GD10739@curie-int.orbis-terrarum.net>
+In-Reply-To: <20040927085510.GD10739@curie-int.orbis-terrarum.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <bkemp@ucentric.com>
+Return-Path: <ppopov@embeddedalley.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Rajesh B. V." <rajeshbv@intoto.com>, linux-mips@linux-mips.org
-Message-ID: <20040915144515.RaBHuxYNSMazklBx4aUUzhYvDKIix1zPJ7YjSNp4OTs@z>
+To: "Robin H. Johnson" <robbat2@gentoo.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20040927140229.bOUBVTBDwjyH4uHl3R-QWBRTjHFdJA5GtSHvE7MtgY0@z>
 
+Hi Robin,
 
->-- Original Message --
->Date:	Wed, 15 Sep 2004 10:45:06 +0530
->To:	linux-mips@linux-mips.org
->From:	"Rajesh B. V." <rajeshbv@intoto.com>
->Subject: Problem with ARP response
->Cc:	rajeshbv@intoto.com
->
->
->Hi All,
->
->I have a network setup where both the LAN interface (eth0) and WAN 
->interface (eth1) of a Router running Linux will be put into same Switch.
->The setup is :
->LAN network is : 192.168.1.0/24  ( Router LAN interface IP is 
->192.168.1.1/24 with xx:01 as MAC)
->Router WAN interface IP is a static public IP with xx:02 as MAC.
->
->Now when a PC from the LAN networks tries to reach (ping) LAN interface
+Robin H. Johnson wrote:
 
->(eth0) of Router i observe vague ARP entry in the PC for the IP.
->I see some times WAN interface (eth1) MAC as the ARP entry in PC and some
+>This is a general announcement of some work being done to update XXS1500
+>support to a 2.6 kernel level. Testers welcome.
 >
->times LAN interface (eth0) MAC as the ARP entry in the PC.
->For every ARP request i see two responses one with WAN interface MAC and
+>This isn't ready for CVS inclusion yet, still needs more testing and
+>validation, but to stop the hordes of people emailing me about it (Hi
+>Marcel), here it is being publicly announced:
+>http://dev.gentoo.org/~robbat2/xxs1500/linux-xxs1500-20040927.patch-dangerous.gz
+>Applies against latest CVS.
 >
->one with LAN interface MAC.
+>Contains:
+>- Kconfig stuff for the BCM5222 Dual PHY.
+>- XXS1500 PCI IRQ stuff
+>- MTD access to the onboard flash (Pete's code)
+>- Kconfig stuff for MTD flash
+>- drivers/pcmcia/au1000_generic.c: cleanup debug code
+>  
 >
->I observed this is happening because, both the interfaces are receiving
-the
->
->ARP broadcast request from the PC and sending up the stack to ARP module
->
->and which responds with the corresponding interface MAC upon which it 
->received the packet.
->
->My requirement is to make ARP module not to respond for the packet received
->
->on WAN interface (eth1) with requested IP as LAN interface (eth0) IP.
->
->Will the arp_filter () in net/ipv4/arp.c can do this ?
->Also is there any draw back by doing so ?
->
->Regards,
->--Rajesh
->
->
+I've updated the pcmcia driver but haven't pushed the patch in yet. I 
+cleaned up the debug code but I'll take a look at what you've done too.
 
-If you disable the arp response from eth1, no traffic will go to it. Is this
-really what you want to do? 
-You might want to look in to 802.1q VLAN tagging if you want to run to logical
-networks on one physical network
-Brad
+The rest of the core 2.6 update is on its way, including the 36bit 
+support, zImage, all the drivers, etc.
+
+Pete
+
+>- drivers/pcmcia/au1000_xxs1500.c: port to 2.6
+>- Move include/asm-mips/xxs1500.h to include/asm-mips/mach-xxs1500/xxs1500.h
+>
+>No warranty on it, I don't trust my PCMCIA code entirely yet.
+>
+From the original codebase:
+>a) au_writel((au_readl(GPIO2_PINSTATE) & ~(1<<14))|(1<<30), GPIO2_OUTPUT);
+>b) au_writel((au_readl(GPIO2_PINSTATE) | (1<<14))|(1<<30), GPIO2_OUTPUT);
+>
+>The 1<<14 indicates a specific location to set, and the 1<<30 says to
+>enable output on that location.
+>In arch/mips/au1000/xxs1500/board_setup.c, snippet a is commented as
+>'turn off power'.
+>In drivers/pcmcia/au1000_xxs1500.c, snippet a is commented as 'turn on
+>power', and snippet b is commented as 'turn off power'.
+>
+>Your guess is as good as mine as to which does what.
+>
+>I've replaced them with two macros:
+>XXS1500_GPIO2_PCMCIA_POWER_ON
+>XXS1500_GPIO2_PCMCIA_POWER_OFF
+>
+>Due to the number of times they occur.
+>
+>  
+>

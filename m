@@ -1,32 +1,52 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199605301817.LAA13683@refugee.engr.sgi.com>
-Subject: Re: linux needs bsd networking stack 
-In-reply-to: Message from alan@cymru.net of 30 May 1996 11:06:25 BST
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 30 May 1996 11:17:21 -0700
-From: Steve Alexander <sca@refugee.engr.sgi.com>
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199606020335.UAA24950@yon.engr.sgi.com>
+Subject: Re: progress, finally...
+Date: Sat, 1 Jun 1996 20:35:47 -0700 (PDT)
+In-Reply-To: <199606020212.TAA15557@neteng.engr.sgi.com> from "David S. Miller" at Jun 1, 96 07:12:02 pm
+Reply-To: ariel@cthulhu.engr.sgi.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alan Cox <alan@cymru.net>
-Cc: Larry McVoy <lm@gate1-neteng.engr.sgi.com>, dm@neteng.engr.sgi.com, nn@lanta.engr.sgi.com, torvalds@cs.helsinki.fi, sparclinux-cvs@caipfs.rutgers.edu, lmlinux@neteng.engr.sgi.com
-Message-ID: <19960530181721.tILw7FqKemPYZm1723_hsePwvMaiJuBI8YxuDQuGZeI@z>
+To: "David S. Miller" <dm@neteng.engr.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19960602033547.9RaGh_sc3RVHW-4W1Hx5WN4654ZM_B1hqxhHETiqgBI@z>
 
-Alan Cox <alan@cymru.net> writes:
->We can't steal it outright. 4.4BSD has abominable problems as is. The FreeBSD 
->people
->have the worst of them fixed but don't have stuff like Vegas and have all the 
->horrible spoofing problems caused by bad timers.
+David,
 
-I'm not sure I understand what that means, but I'm pretty sure that Vegas is
-not universally agreed to be a good idea, unless I've missed a meeting.
+This is very impressive progress. Thanks for the update!
 
-Just to set the record straight, there are people at SGI who don't like either
-the BSD or Linux stacks ;->.
+I understand you have the prom pointers. A few that _may_
+be relevant are in:
 
-The one thing that I will say about the Linux stack is that it is evolving much
-more rapidly than any of the public BSD versions are (I spent some time porting
-aliases forward from one version to another for a friend, and the improvements
-between versions were amazing), so at some point it will probably win on
-functionality.
+	http://info.engr.sgi.com/~ariel/linux/port.html
 
--- Steve
+This doc was put together in a rush, any suggestions, requests
+for additions etc. would be welcome.
+
+>
+>
+>Ok, I have a complete compilation environment that seems to work quite
+>well.
+>
+>All the tools are GNU, I have gcc/ld/as/etc. setups which can create
+>either big or little endian kernels in either ELF or ECOFF format.
+>The target format is that used by the existing Linux/MIPS people.
+>
+>These tools have been linking kernels for two days, I finally got a
+>big endian kernel that sash would eat and it went fine until it tried
+>to look for DECstation devices as that is one of the only machine
+>types the existing Linux/MIPS kernels support (splat!). ;-)
+>
+>For now I'm going to hack the ARC prom code and the SCSI driver in
+>parallel and see how far I can get it booting, more to come.
+>
+>Later,
+>David S. Miller
+>dm@sgi.com
+>
+
+
+-- 
+Peace, Ariel

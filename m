@@ -1,48 +1,49 @@
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199909172104.OAA58099@oz.engr.sgi.com>
-Subject: Re: about the O2..
-Date: Fri, 17 Sep 1999 14:04:21 -0700 (PDT)
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-In-Reply-To: <37E29EBF.FA10420D@dcs.ed.ac.uk> from "Rory Hunter" at Sep 17, 99 09:04:15 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Thu, 23 Sep 1999 01:29:02 -0600
+From: sparker@taz.cs.utah.edu (Steven G. Parker)
+Message-ID: <9909230129.ZM763626@taz.cs.utah.edu>
+In-Reply-To: Rory Hunter <roryh@dcs.ed.ac.uk>
+        "Re: oddness" (Sep 23,  8:16am)
+References: <37E95D52.AC2CE967@dcs.ed.ac.uk>  <37E96210.64A50BBF@csd.sgi.com>
+	<37E9D3C8.F665545A@dcs.ed.ac.uk>
+Subject: Re: oddness
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux@cthulhu.engr.sgi.com
-Content-Transfer-Encoding: 7bit
 To: Rory Hunter <roryh@dcs.ed.ac.uk>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19990917210421.sc4KmGIVb9t_J3M1O3oSlipcz3UEeDf0Tf2MkLyJdqo@z>
+Cc: "linux@cthulhu.engr.sgi.com" <linux@cthulhu.engr.sgi.com>
+Message-ID: <19990923072902.T3zaEpCSMHfgsA4y3YgdMKVUnGlZJC3CD-ITtLqot0k@z>
 
-Rory Hunter mused:
-:
-:Hi,
-:
-:Here's something to amuse you in the meantime:-
-:
-:Being an IRIX newbie, more used to RH linux, upon encountering an
-:install of IRIX 6.3 (and a decidedly stale one at that), I naturally
-:went about trying to impose order opon the chaos and tried to make the
-:filesystem layout etc. more like the linux server's.
-:
-Big mistake :-)
 
-Anyway, just so you (and others) know in case you don't...
-You can get a more Linux/FreeBSD friendly env on IRIX by simply
-installing all the mandatory GNU utils and other popular free
-software stuff for IRIX.  This can be done using some cliking
-(install via the web) on the site:
+From the df man page:
+     The proc filesystem (normally mounted under /proc) is not printed by
+     default, but can be explicitly specified.  This filesystem consumes no
+     actual disk space, but is an interface to the virtual space of running
+     processes.  The total and free blocks reported represent the total
+     virtual memory (real memory plus swap space) present and the amount
+     currently free, respectively.
 
-	http://freeware.sgi.com/
 
-and finally putting /usr/freeware/bin first in your path.
-There's a 'fixpath' script that does this and more for you.
-Pretty clean, doesn't interfere with IRIX apps and work
-pretty well for thousands of SGI customers.
+You will see /proc if you use GNU df.  Otherwise, you have to explicitly
+ask for it (df /prof).
 
-:
-:Happy hacking,
-:
-Cheers.
+If you use IRIX df /proc, you will see that the Type is proc - a
+virtual filesystem.
 
--- 
-Peace, Ariel
+If you want to independently verify it - use prtvtoc to look at
+how your disk is partitioned.  You will probably not see a /proc
+paritition.
+
+Steve Parker
+
+On Sep 23,  8:16am, Rory Hunter wrote:
+> Subject: Re: oddness
+> Hi,
+>
+> I know the proc is virtual, but it puzzled me that 'df' should list it
+> when linux doesn't... if I can confirm that the partition itself is
+> virtual then I'll happliy ignore it.
+>
+> Cheers,
+>
+> Rory Hunter
+>-- End of excerpt from Rory Hunter

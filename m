@@ -1,29 +1,33 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199706170946.LAA08823@informatik.uni-koblenz.de>
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199706171749.NAA01271@neon.ingenia.ca>
 Subject: Re: Good news: no more begging for HW
-Date: Tue, 17 Jun 1997 11:46:05 +0200 (MET DST)
-In-Reply-To: <199706170622.XAA04075@neteng.engr.sgi.com> from "Larry McVoy" at Jun 16, 97 11:22:58 pm
+In-Reply-To: <199706171710.MAA15321@athena.nuclecu.unam.mx> from Miguel de Icaza at "Jun 17, 97 12:10:12 pm"
+Date: Tue, 17 Jun 1997 13:49:29 -0400 (EDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Larry McVoy <lm@neteng.engr.sgi.com>
-Cc: carlson@heaven.newport.sgi.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19970617094605.JNiBrq8TD7DzI2eMhRx6mCVEGek4pcwH8Ku58bgClYY@z>
+To: Miguel de Icaza <miguel@nuclecu.unam.mx>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970617174929.Dv1kYjF6bbwj2JlySX7qHK98i_zZ_cC5xAn1wDWn5RA@z>
 
-> : One group that I always think could use an SGI machine is the Free
-> : Software Foundation.  They would make sure things worked on SGI before
-> : releasing it.  That way, all of GNU would be tested on SGI by them.
-> 
-> This is a good idea.  Do we know if they don't have one?
+Thus spake Miguel de Icaza:
+> 4. Would it be possible for a free software company to redistribute
+>    the SGI's X server?  In that case, we could concentrate on getting
+>    the IRIX emulation as good as possible and just use the SGI X
+>    server and let Red Hat/Debian/GNU ship the cd with that binary.
 
-Somewhen RMS mentioned that they don't have MIPS machines.  Aside of PCs
-their equipment seems to consinst of ancient 68k Sony NeWS machines,
-an Amiga, old HP machines and other exotic equipment.  I think they also
-have an Alpha.
+FWIW, I'm quite interested in working on the IRIX emulation.
+I picked up a bunch of stuff about the MIPS ABI at the SGI DevCon
+(after arriving late for Ariel's talk =(), which also looks
+interesting.
 
-But all in all they are for shure among the people that will make best
-possible use of the hardware.
+Mike
 
-  Ralf
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>                 UNIX medicine man -- dark magick, cheap!            
+#>                                                                     
+#>  When the going gets tough, the tough give cryptic error messages.  
+#>          "We believe in rough consensus and running code."          

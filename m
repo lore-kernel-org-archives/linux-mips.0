@@ -1,55 +1,74 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199807150900.LAA00705@aisa.fi.muni.cz>
+Message-ID: <199807152017.WAA21881@aisa.fi.muni.cz>
 Subject: Re: The pre-release of Hard Hat Linux for SGI...
-In-Reply-To: <Pine.LNX.3.95.980715015327.30234B-100000@lager.engsoc.carleton.ca> from Alex deVries at "Jul 15, 98 02:05:15 am"
-Date: Wed, 15 Jul 1998 11:00:47 +0200 (MET DST)
+In-Reply-To: <Pine.LNX.3.95.980714192038.7212G-100000@lager.engsoc.carleton.ca> from Alex deVries at "Jul 14, 98 07:38:32 pm"
+Date: Wed, 15 Jul 1998 22:17:42 +0200 (MET DST)
 From: Honza Pazdziora <adelton@informatics.muni.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: ralf@uni-koblenz.de, linux@cthulhu.engr.sgi.com
-Message-ID: <19980715090047.XMCP0FZ1mY8c2F9WFWtjSsRPG3vFoPUAx7llZq34jqI@z>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19980715201742.ohyUF6T-msvKzGgYZwMkRRF3KEYQ84ioDJGa2iixNW8@z>
 
-> 
-> > Time to put up a webpage and register users :-)
-> 
-> Yup.  I updated the WWW and FTP site a bit.  It'd be really good if we
 
-OK, I've updated other links to manhattan/. Is the name Hard Hat 5.1
-official?
+OK, I finally got the tar.gz here. Let's look:
 
-> could maybe put a direct link from the main page to the Manhattan page.
-> Also, it'd be good to have some sort of hardware compatibility page.  I
-> know there will be people wondering about CPU compatibility, something I'm
-> a bit confused about. Honza, could you help us out with that?
+I've started installing it with networked WS, development, and some of
+the servers (NFS, news).
 
-Yes, I'll try to create the page. Basically R4400, R4600, R5000,
-PC and SC, anyrate are OK? How about R4000? Other hardware: XGE, XZ
-(for consoles), 10BaseT, any reasonable SCSI? How about the Challenge S?
+The fdisk seems to work, I was able to change the ID of the partition.
+There is still the funny thing when you are selecting the root
+partition -- the free space is negative (-522MB). Interesting thing is
+that this dialog shows the partitions as Linux native and Linux swap,
+even if the fdisk would show them as EFS and raw.
 
-> I know it's a bitch to download 270MB, but I'd really like it if someone
-> would give this dsitribution a shot.  Red Hat's going to press this on a
-> CD later this week, and we need to make sure that we get it right.
-> Actually, even Linux/SGI coasters would be pretty cool...
+I tried to mkfs the root with check for bad blocks, this killed the
+installer with Install exited abnormally. Without the checks it run
+OK.
 
-I have question about the ftp part (some of them based on the fact
-that we are little bit short of space on our mirror, but I'd like to
-mirror as much as possible). How about the RPM's in the
-/src/ftp/pub/redhat/old directory? Shouldn't the be in some
-subdirectory or gone? Also, I suggest renaming
-/src/ftp/pub/redhat/old/redhat-5.1 to something like
-redhat-5.1-alpha1 to be consistent with the name reflect the name of
-redhat-5.1alpha1.tgz.
+The dialog sees the swap partition as Swap001 but then you still have
+to say Continue without swap (I never got stuck in the middle of the
+menus with Alpha 1 -- I always got that Continue option anyway).
 
-Also, /src/ftp/pub/test/vml.tar.gz could be renamed to something like
-vmlinux-indy-2.1.99.tar.gz (is it 2.1.99?), and perhaps we could even
-put the kernels to some directory other than test (maybe kernel?) and
-also have a link there from software.html.
+Some of the packages still complain about failing, on console 4 Unable
+to load interpreter. During the install of 230 packages there were
+about 20 messages
 
-Anyway, our mirror already has 56 MB of that 270, let's hope it will
-go on ;-)
+	ldconfig: Exception at [<88109534>] (8810960c)
+
+(don't kill me if I retyped the numbers wrong). These numbers were
+exactly the same in all installs I did.
+
+About 3 packages before end, the install failed with Out of memory,
+Install exited abnormally, messages about signal, etc.
+
+So I rebooted and tried just with networked WS and development, this
+failed in about 60 % with Install exited abnormally.
+
+The third attempt I did was only 126 packages of base and networked
+WS, this finished fine.
+
+The steps afterwards, that failed, were /usr/sbin/timeconfig and
+/usr/sbin/ntsysv. But I'm pretty sure that with RH 5.1 A 1 and some
+wider selection of packages, these run OK. So they might just be in
+some packages I did not select.
+
+After booting the new kernel, I get Unable to open an initial console.
+
+I will try tomorrow to boot the old kernel to get the prompt and
+perhaps install and start sshd there to see the results of the new
+kernel.
+
+> Enjoy, and let me know if you do have the bandwidth do download and use
+> it.
+
+Alex, if you make any changes or so, please make them available as
+patch or packages, not as a new whole tar.gz -- the network was
+really slow from U.S. to Europe today.
+
+Thanks and I'm looking forward to more experiments,
 
 ------------------------------------------------------------------------
  Honza Pazdziora | adelton@fi.muni.cz | http://www.fi.muni.cz/~adelton/

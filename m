@@ -1,42 +1,24 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199807170809.KAA26176@aisa.fi.muni.cz>
-Subject: Mouse support in 2.1.100-2
-In-Reply-To: <Pine.LNX.3.95.980717012901.5792D-100000@lager.engsoc.carleton.ca> from Alex deVries at "Jul 17, 98 01:32:29 am"
-Date: Fri, 17 Jul 1998 10:09:43 +0200 (MET DST)
-From: Honza Pazdziora <adelton@informatics.muni.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <m0yxC6E-000aOoC@the-village.bc.nu>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: What about...
+Date: Fri, 17 Jul 1998 16:07:04 +0100 (BST)
+In-Reply-To: <199807171411.HAA11412@fir.engr.sgi.com> from "William J. Earl" at Jul 17, 98 07:11:42 am
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980717080943.XgiooTpgcEgmXxBIQNY8nGrxwpUirT7-VBLsFTvZXQo@z>
+To: "William J. Earl" <wje@fir.engr.sgi.com>
+Cc: adevries@engsoc.carleton.ca, anubis@BanjaLuka.NET, linux@cthulhu.engr.sgi.com
+Message-ID: <19980717150704.NDuKhEBEeySSr0VmBI4NTw93mIMsdjvwcroNfG-yELg@z>
 
-> > - mouse doesn't work?
-> 
-> In the HH install, there's a package called 'kernel-2.1.100-2'.  If you
-> install this, you'll have something like /boot/vmlinux-2.1.100.  That
-> kernel (2.1.100) should have mouse support in it.  you'll have to make a
-> symbolic link from /dev/psaux to /dev/mouse.
+> that giant a project, but it would not be particularly useful.  If there
+> were a good linux on some other very large ccNUMA machine, then an Origin
+> port would be much simpler.  By "good", I mean a linux which scale well
+> for large (greater than 32) processor and I/O count (many I/O buses
+> and thousands of disk).  It expect such a linux will happen eventually,
+> but not yet.
 
-I'm using the new kernel but am confused about the devices. Should I have
+The obvious starting point would probably be the older (386/486) sequent
+boxes. I almost got somewhere with this but one bit of sequent wasnt 
+willing to be helpful and counted its bus arbitrators as staying NDA.
 
-	psaux (10/1) and mouse -> psaux ?
-
-Here gpm fails with
-
-	gpm: /dev/mouse: Operation not supported by device
-
-and the same message I get then I do cat /dev/psaux.
-
-Or
-	mouse (4/64) and psaux -> mouse ?
-
-Here gpm starts without a problem but no running cursor on the screen.
-
-Yours,
-
-------------------------------------------------------------------------
- Honza Pazdziora | adelton@fi.muni.cz | http://www.fi.muni.cz/~adelton/
-                   I can take or leave it if I please
-------------------------------------------------------------------------
+That was 2 years ago so I ought to chase them again I guess

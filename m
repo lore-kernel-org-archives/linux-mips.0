@@ -1,9 +1,9 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199709192019.NAA02902@oz.engr.sgi.com>
-Subject: Re: Linux/SGI: IRIX X server -- kind-of-works-now status.
-Date: Fri, 19 Sep 1997 13:19:27 -0700 (PDT)
-In-Reply-To: <199709191928.OAA30318@athena.nuclecu.unam.mx> from "Miguel de Icaza" at Sep 19, 97 02:28:38 pm
+Message-ID: <199709230305.UAA09789@oz.engr.sgi.com>
+Subject: Re: Task list --preliminary list
+Date: Mon, 22 Sep 1997 20:05:26 -0700 (PDT)
+In-Reply-To: <199709230232.VAA16659@athena.nuclecu.unam.mx> from "Miguel de Icaza" at Sep 22, 97 09:32:19 pm
 Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -11,28 +11,51 @@ Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Miguel de Icaza <miguel@nuclecu.unam.mx>
 Cc: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970919201927.jb-1Uk1A68nKm1sGukbDKldoEFuxdjhFD0QlTXBsG28@z>
+Message-ID: <19970923030526.ngqOLxi2uD_T34ydPYdluIQVHoLIj99PPVInTAhW2x4@z>
 
-Miguel,
+My personal favorites are a drudgery to wizards but an essential
+necessity for most mortals:
 
-Congtratulations on getting Xsgi on Linux to this stage.
+[5] Verify that the latest source tree on Llinus compiles and boots
+    (maybe automate this with a daily build that gets tested)
+[4] Utility to boot Linux from IRIX (both locally and over net)
+[3] Stable precompiled Indy kernel + root-contents on linus
+[3] A working HOWTO for booting Linux on Indy
 
-To me it is pretty amazing that you were able to do all this
-only by looking at the HW docs, lots of syscall tracing, and so
-few hints from us.  Keep up the great work. 
+All the above even without having X :-)
 
-Please continue to update us on further progress until you have
-a fully functional Xsgi server working.  Hope the X guys on the
-list would be able to help on the remaining questions.
 
---
+:
+:
+:Here is a preliminary task list of things that should be done for a
+:complete Linux/MIPS port, right now it includes by personal favorites
+:and I am working on some of those bits, but some of the other can be
+:done now, I have a copy of this at:
+:
+:	http://www.nuclecu.unam.mx/~miguel/mips-task-list.txt
+:
+:Priority: 
+:
+:[9]  Get more userland programs compiled in RPM form
+:
+:[9]  Merging the latest GNU libc releases.
+:
+:[9]  Get the X libraries compiled.
+:
+:[5]  Getting SGI mouse to work.
+:
+:[5]  Test the STREAMS implementation of the mouse.
+:
+:[6]  Figure why init is setting the sigprocmask to a value different
+:     from 0.  This disables the debugger (SIGTRAP is disabled for
+:     all child processes).
+:
+:[7]  Getting IRIX X server to accept connections.
+:
+:Please, send me additions to this list.
+:Miguel.
+:
+
+
+-- 
 Peace, Ariel
-
-:
-:
-:Hello guys, 
-:
-:   Well, my IRIX Xsgi server is running on Linux/SGI without aborting
-:now.  It displays the nice X cursor and a black background (ie, no
-:nice X background yet.
-:

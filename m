@@ -1,64 +1,39 @@
-From: "James McD" <vile8@hotmail.com>
-Subject: Fwd: pthread in glibc 2.2.1
-Date: Mon, 22 Jan 2001 00:07:32 
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_NextPart_000_1656_4a88_499f"
-Message-ID: <F69IBJYduiFPUEOYMui000010a7@hotmail.com>
+Date: Tue, 23 Jan 2001 16:34:39 +0000 (GMT)
+From: "Dr. David Gilbert" <gilbertd@treblig.org>
+Subject: Re: Trying to boot an Indy
+In-Reply-To: <wwgofwyckov.fsf@arthur.zdv.Uni-Mainz.DE>
+Message-ID: <Pine.LNX.4.30.0101231633570.2812-100000@springhead.px.uk.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: linux-mips@oss.sgi.com
-Message-ID: <20010122000732.0ZEAsa1tf2Rsl5hqXT1C3odUbeNEM5yQSlLlj6fxpZU@z>
+To: Christoph Martin <martin@uni-mainz.de>
+Cc: Dave Gilbert <gilbertd@treblig.org>, linux-mips@oss.sgi.com
+Message-ID: <20010123163439.tnlDOPvB2QjpUBjMfbP94zleaW9TWLrev0vqp2J2DgA@z>
 
-This is a multi-part message in MIME format.
+On 23 Jan 2001, Christoph Martin wrote:
 
-------=_NextPart_000_1656_4a88_499f
-Content-Type: text/plain; format=flowed
+> Dave Gilbert <gilbertd@treblig.org> writes:
 
-From what I have seen the gdb bombs out on 90% of pthread programs as
-well. This includes all platforms as far as I am aware. There is a fix
-posted on bugzilla stating you need to recompile the gdb from the cvs tree 
-and that should fix. However I have had mixed luck.
-Hope that helps somewhat!
-
-Sincerely,
-
-James McDermott
+> > 1) I tried bootp - bootp()vmlinux - it says 'no server for vmlinux'.  The
+> > bootp server is a Linux/Alpha box running 2.4.0-ac9 - I've already done
+> > the trick with no_pmtu.  tcpdump shows bootp sending a packet with
+> > apparently the correct mac address.
+> >
 >
->Hi,
->even the simplest pthread-program dies with a bus error(see attachment)
->on my I2.  glibc is 2.2.1(same for 2.1.97), kernel is 2.4.0-test9.
->Interesting enough I can't even get a core dump. Any starting points to
->track this down?
->Regards,
->  -- Guido
+> I have the same problem serving bootp from my i386 2.4.0 box. bootp
+> with kernel 2.2.x on the same box works. And it is only the bootp from
+> the command console that is failing. the bootp part later on in the
+> kernel is working from the 2.4.0 box.
 
-_________________________________________________________________
-Get your FREE download of MSN Explorer at http://explorer.msn.com
+This sprang into life when I added the 'sa' entry in the bootp file - that
+is the server address.
 
-------=_NextPart_000_1656_4a88_499f
-Content-Type: text/plain; charset=us-ascii
-Content-Description: pthread_create.c
-Content-Disposition: attachment; filename="pthreadcreate.c.orig"
+Dave
 
-#include <pthread.h>
-#ifndef NULL
-#define NULL (void*)0
-#endif
-
-static void *task(p)
-	void *p;
-{
-	return (void *) (p == NULL);
-}
-
-int main(argc, argv)
-	int argc;
-	char **argv;
-{
-	pthread_t t;
-	exit(pthread_create(&t, NULL, task, NULL));
-}
-
-
-
-------=_NextPart_000_1656_4a88_499f--
+-- 
+/------------------------------------------------------------------\
+| Dr. David Alan Gilbert | Work:dg@px.uk.com +44-161-286-2000 Ex258|
+| -------- G7FHJ --------|---------------------------------------- |
+| Home: dave@treblig.org            http://www.treblig.org         |
+\------------------------------------------------------------------/

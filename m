@@ -1,19 +1,16 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0yLFgY-000aNnC@the-village.bc.nu>
+Message-ID: <m0yPDWr-000aNiC@the-village.bc.nu>
 From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: VCE exceptions
-Date: Sat, 4 Apr 1998 00:15:45 +0100 (BST)
-In-Reply-To: <19980404011332.15427@loria.fr> from "Olivier Galibert" at Apr 4, 98 01:13:32 am
+Subject: Re: RH Installer code.
+Date: Tue, 14 Apr 1998 22:46:08 +0100 (BST)
+In-Reply-To: <Pine.LNX.3.95.980414164515.13988B-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Apr 14, 98 04:59:18 pm
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Olivier Galibert <galibert@pobox.com>
+To: Alex deVries <adevries@engsoc.carleton.ca>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980403231545.nHaNJKOOO9SnjoFHL5z9_tALushFI208dvAecb2jl6g@z>
+Message-ID: <19980414214608.o_BjFXxO7ofml8P0kIBxo2yfrmqGyaDhcRMZUkTNd_g@z>
 
-> Can someone point me  to a good documentation/book/whatever explaining
-> what cache colouring is ?
+> There's some mention of Alan touching the RH installer code.  Alan, have
+> you done anything on this that the rest of us should be aware of?
 
-Well for a flavour of it I can politically correctly recommend
-
-"Unix Systems For Modern Architectures" by a Schimmel last resident I believe
-at SGI 8)
+No. I played with the PPC 'compiled in RAMdisk' code a bit, thats all

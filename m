@@ -1,43 +1,50 @@
-Date: Mon, 17 Sep 2001 12:20:54 -0400 (EDT)
-From: George Gensure <werkt@csh.rit.edu>
-Subject: Re: openssh probs
-In-Reply-To: <3BA63E02.20088.2100546@localhost>
-Message-ID: <Pine.SOL.4.31.0109171218020.15630-100000@fury.csh.rit.edu>
+From: "Soeren Laursen" <soeren.laursen@scrooge.dk>
+Date: Mon, 17 Sep 2001 18:39:30 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-type: text/plain; charset=ISO-8859-1
+Subject: Re: openssh probs
+Reply-to: soeren.laursen@scrooge.dk
+Message-ID: <3BA64362.29627.225041C@localhost>
+References: <3BA63E02.20088.2100546@localhost>
+In-reply-to: <Pine.SOL.4.31.0109171218020.15630-100000@fury.csh.rit.edu>
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Soeren Laursen <soeren.laursen@scrooge.dk>
+To: George Gensure <werkt@csh.rit.edu>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20010917162054.ouR708lUoWf387Rx40vvnvlo_3RAypWaUTvyI7ZGE_k@z>
+Message-ID: <20010917163930.jX4risM2g2VP4rjZ5lYlsM4W11kFwAEOwTy4ARS3fLo@z>
 
-Yeah, should've mentioned the version.  I'm already running 2.9p2.  The
-ssh server I'm testing on, I KNOW works.  I connect to it from my i686 box
-all the time.  I looked at the packet dump, and it doesn't look like the
-MAC is getting sent correctly.  I wasn't able to find the string anywhere
-in there (assuming it gets sent unencrypted, of course).
+> Yeah, should've mentioned the version.  I'm already running 2.9p2.  The
+> ssh server I'm testing on, I KNOW works.  I connect to it from my i686 box
+> all the time.  I looked at the packet dump, and it doesn't look like the
+> MAC is getting sent correctly.  I wasn't able to find the string anywhere
+> in there (assuming it gets sent unencrypted, of course).
 
-George
+Running
+OpenSSH_2.9p2, SSH protocols 1.5/2.0, 
 
-On Mon, 17 Sep 2001, Soeren Laursen wrote:
+On a:
+cpu                     : MIPS
+cpu model               : R4000SC V5.0
+system type             : SGI Indy
+BogoMIPS                : 74.75
+byteorder               : big endian
+unaligned accesses      : 0
+wait instruction        : no
+microsecond timers      : yes
+extra interrupt vector  : no
+hardware watchpoint     : yes
+VCED exceptions         : 27900
+VCEI exceptions         : 135012
 
-> > Has anyone had any success running openssh on an Indy r5000? Currently
-> > running 2.4.8 #4, and the error I get when running ssh is "Disconnecting:
-> > Corrupted MAC on input."
-> Yep, upgraded to openssh 2.x and the vanished.
->
-> I guess it was an implementation error because I got it as well on
-> i386 running openssh 1.x.
->
-> It depended on the client software as well. Other systems running
-> openssh could connect. Client from www.ssh.com could not
-> connect.
->
-> Best regards,
->
-> Soeren,
->
+It is a 2.4.3 kernel.
 
--- 
-George R. Gensure       Computer Science House Member
-werkt@csh.rit.edu       Sophomore, Rochester Institute of Technology
-Computer Science Major
+Nothing special running on it.
+
+Just installed a upgrade 2.9p6
+OpenSSH_2.9p2, SSH protocols 1.5/2.0, OpenSSL 0x0090602f
+
+And it work just as great as the first version.
+
+Best regards,
+
+Søren,

@@ -1,37 +1,33 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199801061816.KAA52967@oz.engr.sgi.com>
-Subject: Re: Indy power supply problems.
-Date: Tue, 6 Jan 1998 10:16:09 -0800 (PST)
-In-Reply-To: <199801061750.JAA18993@fir.engr.sgi.com> from "William J. Earl" at Jan 6, 98 09:50:17 am
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <199801091206.NAA01800@zaphod.et.tudelft.nl>
+Subject: fdisk for linux-sgi
+Date: Fri, 9 Jan 1998 13:06:46 +0100 (CET)
+From: Edwin Hakkennes <E.Hakkennes@ET.TUDelft.NL>
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "William J. Earl" <wje@fir.engr.sgi.com>
-Cc: miguel@nuclecu.unam.mx, linux@cthulhu.engr.sgi.com
-Message-ID: <19980106181609.HSmf9K7pNNQ2WH6cv9cK3lNQNoEIj8UwD7sF38Olxhg@z>
+To: linux@cthulhu.engr.sgi.com
+Cc: Edwin Hakkennes <E.Hakkennes@ET.TUDelft.NL>
+Message-ID: <19980109120646.gyABIaPwb_-QMdXUmXfB5BAKxVIzn2zjrdqEZunGicg@z>
 
-Bill Earl wrote:
-:
-:Miguel de Icaza writes:
-: > 
-: > My Indy is not behaving.
-: > 
-:there to tell the power supply to turn off.  Perhaps Ariel would know the
-:repair arrangements for your system.
-:
-All the developer's Indys that we donated are SGI machines
-that have a support contract.  The procedure is to call the
-local support office with the ID of the machine (the long number
-on the back) and get a field person to replace the part that
-needs replacement.  I believe Alan's monitor was replaced
-in this way recently.
+Hi all,
 
-Miguel: please call your local office and request replacement
-of the power supply (most probable) If this doesn't work, they
-should be able to replace any part up to the whole motherboard.
+I'm trying to get an indy running Linux. I downloaded the Getting_started
+stuff, and unpacked it. All seems to be fine, except that I cannot find
+an fdisk program on this file-system. (root-be-0.01.cpio)
 
--- 
-Peace, Ariel
+My question is: How do I partition the disk. I have one, empty 2G disk 
+on which only Linux should be installed. 
+
+Is it neccesary to put the disk in a PC for partioning?
+
+Thanks a lot in advance,
+
+Edwin
+  
+=======================================================================
+Edwin Hakkennes                            || E.Hakkennes@et.tudelft.nl
+TU Delft  (Delft University of Technology) || Fax        +31 15 2784898
+Department   of   Electrical   Engineering || Phone      +31 15 2786267
+Mekelweg 4, 2628 CD Delft, The Netherlands || 
+URL: http://cardit.et.tudelft.nl/~ednes    || Room         ET-HB 10.280
+=======================================================================

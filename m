@@ -1,12 +1,23 @@
-Message-ID: <003601c0d665$69381d20$0100a8c0@mshome.net>
-From: "CPMSA" <pouerie@cpmsa.com>
-References: <Pine.SOL.4.31.0105061221330.1956-100000@fury.csh.rit.edu>
-Subject: DELETE
-Date: Sun, 6 May 2001 15:47:38 -0400
+From: "Yoshi.-K" <ykida@yk.rim.or.jp>
+Subject: install in the first hard disk
+Date: Mon, 7 May 2001 08:26:25 +0900
+Message-ID: <MBECLJKHNDHFIBCEPBGLGEMGCKAA.ykida@yk.rim.or.jp>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.SOL.4.31.0105061221330.1956-100000@fury.csh.rit.edu>
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20010506194738.F-slYEgI2tgFc7xL-keIfmwIWgmXMPrdL5yYwt7qD0Y@z>
+Message-ID: <20010506232625.8DPnWVBmoN2N5D2JzcFaTRQZLT-e4sQdUbhgZWLE7Bk@z>
+
+Hello. my name is Yoshi. from Japan.
+
+SGI O2 is used. 
+I will install hardhat-sgi-5.1.tar.gz. 
+will be able to install in the first hard disk. 
+I want to use on one hard disk . Is it possible?
+----------------------------------------
+Yoshikatsu Kida
+http://starimpact.com/
+webmaster@starimpact.com

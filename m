@@ -1,30 +1,32 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199709042025.QAA08151@neon.ingenia.ca>
-Subject: Re: Booting off of sdb1...
-In-Reply-To: <199709022201.RAA26782@speedy.rd.qms.com> from Mark Salter at "Sep 2, 97 05:01:43 pm"
-Date: Thu, 4 Sep 1997 16:25:44 -0400 (EDT)
+Message-ID: <199709050458.AAA16971@neon.ingenia.ca>
+Subject: Kernel for local disk stuff
+Date: Fri, 5 Sep 1997 00:58:04 -0400 (EDT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mark Salter <marks@sun470.sun470.rd.qms.com>
-Cc: Linux/SGI list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970904202544._4eRFKxwNGwR8YxQRqVUu_Yw96ueQFvvQPP12vXO4_4@z>
+To: Linux/SGI list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19970905045804.daJPZ7BZG67WqChVZz9yeg-Io_Lefep1cxfOxAtQYXA@z>
 
-Thus spake Mark Salter:
-> Try this patch to linux/arch/mips/sgi/prom/cmdline.c:
+ftp://ftp.linux.sgi.com/pub/test/vmlinux-950905.gz works for me for
+mounting local disk as root.
 
-Fixed it for me.  Thanks.
+Getting a local disk set up is still a minor nightmare, because
+there's no simple boot image yet (though Alex is working on it), and
+because heavy ethernet traffic occasionally generates bus errors that
+lock up the box.  I'm going to take a look at what causes those
+tomorrow, hopefully.
 
-I'll commit that to the tree and put a new kernel up on
-ftp.linux.sgi.com.
+(I'm also going to reinstall IRIX on the primary disk.  mke2fs
+can really wreck IRIX's day. =) )
 
 Mike
 
 -- 
 #> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>      Chief System Architect -- will tame sendmail(8) for food       
-#>                                                                     
-#> "You are a very perverse individual, and I think I'd like to get to 
-#>  know you better." --- eric@reference.com                           
+#>              Linux: because every cycle counts.
+#>
+#> "I don't know what you do for a living[...]" -- perry@piermont.com
+#>        "I change the world." -- davem@caip.rutgers.edu

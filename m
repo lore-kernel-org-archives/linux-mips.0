@@ -1,35 +1,61 @@
-Message-ID: <00ee01c21b77$18522510$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Pine.GSO.3.96.1020624133501.22509K-100000@delta.ds2.pg.gda.pl>
-Subject: Re: sys_syscall patch.
-Date: Mon, 24 Jun 2002 14:02:49 +0200
+Message-ID: <3D171ECB.28F566C1@detewe.de>
+Date: Mon, 24 Jun 2002 15:29:47 +0200
+From: Carsten Lange <Carsten.Lange@detewe.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: mipsel-linux-gdb(5.2): DW_FORM_strp pointing outside of .debug_str
+ section
+Content-Type: multipart/mixed; boundary="------------5CF768D46FA92DC52A37C165"
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Carsten Langgaard <carstenl@mips.com>
-Cc: Ralf Baechle <ralf@oss.sgi.com>, linux-mips@oss.sgi.com
-Message-ID: <20020624120249.eQwgJs4_pvMPh9Va31KWAq9erzuHmQ3K3EUTqIQP6gI@z>
+To: "'linux-mips@oss.sgi.com'" <linux-mips@oss.sgi.com>
+Message-ID: <20020624132947.6Mpa_k-BlOScz-HPLyyqB1wHAo-t6M4WLeP_-PyaJok@z>
 
-From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-> On Mon, 24 Jun 2002, Carsten Langgaard wrote:
-> 
-> > > What programs btw are using syscall()?  To be honest I don't recall one ...
-> > 
-> > /sbin/rpc.lockd.
-> > It use syscall() to indirectly call the 'sys_nfsservctl' syscall, why it
-> > doesn't do the syscall directly is beyond me.
+This is a multi-part message in MIME format.
+--------------5CF768D46FA92DC52A37C165
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-I can only speculate that at the time it was written, there was not
-a universally respected library binding to get to the direct syscall.
+Hi,
 
->  Hmm, shouldn't syscall() be a library wrapper?  I think we should kill
-> sys_syscall(). 
+I get the above error from gdb 5.2 when using the <file> command.
+...
+(gdb) file iprbs
+file iprbs
+Reading symbols from iprbs...DW_FORM_strp pointing outside of .debug_str section
+(gdb)                                                       
+...
 
-While I agree that rpc.lockd should directly invoke the desired
-system call if possible, having an indirect system call mechanism
-is something that has proved useful to me in the past on other
-Unices, and I would rather see it fixed than discarded.
+My mipsel-linux- toolchain consist of the following packages:
+	binutils-2.12.1
+	gcc-3.1
+	glibc-2.2.5
+	gdb-5.2
 
-            Kevin K.
+I have no idea what the problem might be.
+
+Any hints (solutions/workaround) are welcome.
+
+Best regards,
+	Carsten
+--------------5CF768D46FA92DC52A37C165
+Content-Type: text/x-vcard; charset=us-ascii;
+ name="Carsten.Lange.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Description: Card for Carsten Lange
+Content-Disposition: attachment;
+ filename="Carsten.Lange.vcf"
+
+begin:vcard 
+n:Lange;Carsten
+tel;fax:+49 6104 4234
+tel;work:+49 30 6104 4228
+x-mozilla-html:FALSE
+url:http://www.detewe.de
+org:Cordless Technology A/S Berlin
+adr:;;Koepenicker Str. 180;10997 Berlin;;;
+version:2.1
+email;internet:Carsten.Lange@detewe.de
+x-mozilla-cpt:;0
+fn:Carsten Lange
+end:vcard
+
+--------------5CF768D46FA92DC52A37C165--

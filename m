@@ -1,42 +1,80 @@
-Received: from moon (unknown [210.25.135.67])
-	by mail.sdb.ac.cn (Postfix) with ESMTP id 64708F7CD3
-	for <linux-mips@linux-mips.org>; Tue, 13 May 2003 16:57:06 +0800 (CST)
-From: "Zhang Fei" <zhangfei@cnic.ac.cn>
-Reply-To: zhangfei@cnic.ac.cn
-Subject: Where to get base system for initializing?
-Mime-Version: 1.0
+Received: from rrcs-central-24-123-115-43.biz.rr.com ([24.123.115.43] helo=RADIUM)
+	by host31.ipowerweb.com with esmtp (Exim 3.36 #1)
+	id 19G5B0-0007dY-00
+	for linux-mips@linux-mips.org; Wed, 14 May 2003 15:56:46 -0700
+From: "Lyle Bainbridge" <lyle@zevion.com>
+Subject: RE: Power On Self Test and testing memory
+Date: Wed, 14 May 2003 17:56:26 -0500
+Message-ID: <000001c31a6c$0e504e80$0a01a8c0@RADIUM>
+MIME-Version: 1.0
 Content-Type: text/plain;
-      charset="GB2312"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Date: Tue, 13 May 2003 16:47:34 +0800
-Message-ID: <20030513085706.64708F7CD3@mail.sdb.ac.cn>
-Return-Path: <zhangfei@cnic.ac.cn>
+In-Reply-To: <20030514152643.A5897@luca.pas.lab>
+Return-Path: <lyle@zevion.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.orglinux-mips@linux-mips.org
-Message-ID: <20030513084734.KpldsuwQxYC2VZbQX2Q86S5bgQ0RCr0vurlpoDof_qg@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030514225626.BirI8Zyd93MWvPR6aNoV53ylZDOayVMGdOVKjiTA64I@z>
 
-hi all,
-   Now, I can boot my SGI-O2(R5000,IP32)box by downloading "vmlinux" kernel through filebootp/dhcp,
-It displayed some messages of booting,but stopped at init base system by NFS,because I haven't put any base system files in the NFS root directory.
-   
-   I googled through all the websites I can,but got nothing I need.  
-   Where can I get the proper base system for NFS boot? 
+Hi,
 
-   Thanks for any help in advance :-P
+I used the same strategy, but had similar issues.
+So I just skip the first couple of 1000 bytes.
+I'd like to find out why too.
 
-	
+Also, memory wraps.  If I have 32MB of RAM @ 0x80000000,
+then run the memory test in non-existent memory from
+0x82000000 to 0x83ffffff it appears to reference 0x80000000
+to 0x81ffffff.  Can this be made to fail?
 
- 				
+Lyle
 
-Zhang Fei
-zhangfei@cnic.ac.cn
-2003-05-13
-============================================
-R&D Division
-Computer Network Information Center
-Chinese Acdamy of Science
-Beijing , China
-Tel:010-62536760
-Fax:010-62560928
-Zip code:100080
+
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org 
+> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Jeff Baitis
+> Sent: Wednesday, May 14, 2003 5:27 PM
+> To: linux-mips@linux-mips.org
+> Subject: Power On Self Test and testing memory
+> 
+> 
+> Hi all:
+> 
+> I implemented memory tests in my bootloader code for the 
+> AU1500. I'm trying to figure out why Linux boots when loaded 
+> into cached KSEG0 (0x 80c0 0000), but my memory test FAILS 
+> for this same region.
+> 
+> (pretty backwards huh? get linux booting, then write memory tests!)
+> 
+> 
+> I start by writing 0x5555 5555 to all of uncached memory, 
+> reading it back, and I write 0xAAAA AAAA to all of uncached 
+> memory and read it back.
+> 
+> This works great.
+> 
+> Next, I try to write 0x5555 5555 to cached KSEG0 memory, and 
+> it fails at addr 0x8000FE50. But Linux boots!
+> 
+> I'm not issuing SYNC commands when writing to cached memory; 
+> could this be the problem?
+> 
+> We've exhaustively verified the memory burst parameters, etc. 
+> They look good.
+> 
+> Thank you in advance for your ideas!
+> 
+> Regards,
+> Jeff
+> 
+> -- 
+>          Jeffrey Baitis - Associate Software Engineer
+> 
+>                     Evolution Robotics, Inc.
+>                      130 West Union Street
+>                        Pasadena CA 91103
+> 
+>  tel: 626.535.2776  |  fax: 626.535.2777  |  baitisj@evolution.com 
+> 

@@ -1,44 +1,41 @@
-Date: Fri, 9 May 2003 22:44:13 -0700 (PDT)
+Received: from Muruga.localdomain (unverified [66.135.134.124]) by micaiah.rwc.iqcicom.com
+ (Vircom SMTPRS 2.0.244) with ESMTP id <B0006366815@micaiah.rwc.iqcicom.com> for <linux-mips@linux-mips.org>;
+ Fri, 9 May 2003 23:11:59 -0700
+Received: from localhost (muthu@localhost)
+	by Muruga.localdomain (8.11.6/8.11.2) with ESMTP id h4A5oON12880
+	for <linux-mips@linux-mips.org>; Fri, 9 May 2003 22:50:24 -0700
+Date: Fri, 9 May 2003 22:50:24 -0700 (PDT)
 From: Muthukumar Ratty <muthu@iqmail.net>
-Subject: Re: Linux for MIPS Atlas 4Kc board
-In-Reply-To: <BAY1-F45jlKqwWil63h0000a6fd@hotmail.com>
-Message-ID: <Pine.LNX.4.33.0305092241080.12630-100000@Muruga.localdomain>
+Subject: Re: OpenSSL/Binutils Issues
+In-Reply-To: <3EBC7E21.6040109@gentoo.org>
+Message-ID: <Pine.LNX.4.33.0305092248450.12875-100000@Muruga.localdomain>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-Path: <muthu@iqmail.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Michael Anburaj <michaelanburaj@hotmail.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20030510054413.xbiF4TDJDYSlLHx3CRSxiMYRuFVOtnFW8BOKL7j3RJc@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030510055024.cbFe_DofnkRVvUKO2Peg677ObZbeVN3CuQ5OT-8wg6o@z>
 
-> Warning: unable to open an initial console.
-> Kernel panic: No init found.  Try passing init= option to kernel.
+> 		./conftest: error while loading shared libraries:
+> 		usr/lib/libcrypto.so.0.9.6: unexpected reloc type 0x68
 >
 
 
-do you have init in /export/.../sbin Probably exporting wrong
-directory?
+something really wrong with your crypto library (has some non mips
+specific rel. syms???)
+
+> not sure if this is mips-specific, or if I need to bother the OpenSSL
+> team about it.
+
+probably you should :)
+
 
 >
-> in src/linux/init/main.c
+> 	Ideas?
 >
-> open("/dev/console", O_RDWR, 0) is returning a negative value. I don't have
-> a video device on board., required? Will /dev/console open a UART port
-> (/dev/ttyS0 or /dev/tty0)? Why am I getting this error?
+> --Kumba
 >
-> 1. Is the kernel not build properly (did not include console driver)?
-> 2. Should I pass init=blablabla as a parameter? <but nothing like that is
-> specified in the doc.>.
 >
-> Advice me please...
->
-> Thanks,
->
-> -Mike.
->
-> _________________________________________________________________
-> MSN 8 with e-mail virus protection service: 2 months FREE*
-> http://join.msn.com/?page=features/virus
 >
 >

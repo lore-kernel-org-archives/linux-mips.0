@@ -1,51 +1,51 @@
-From: "Matthew Dharm" <mdharm@momenco.com>
-Subject: RE: MIPS - Serial port
-Date: Wed, 19 Jun 2002 12:07:51 -0700
-Message-ID: <NEBBLJGMNKKEEMNLHGAICEIECHAA.mdharm@momenco.com>
+Date: Wed, 19 Jun 2002 13:38:52 -0700 (PDT)
+From: Paul Jackson <pj@engr.sgi.com>
+Subject: Re: [PATCH] include/asm-mips/pci.h
+In-Reply-To: <20020619112207.B6057@ayrnetworks.com>
+Message-ID: <Pine.LNX.4.44.0206191326560.18638-100000@turbo-linux.engr.sgi.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20020619120414.8473.qmail@email.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: Balakrishnan Ananthanarayanan <balakris_ananth@email.com>, linux-mips@oss.sgi.com, linux-kernel@vger.kernel.org, redhat-list@redhat.com
-Message-ID: <20020619190751.klYXPeMGCKhfY8PMwxSiAmCjHMBE5yDTbGlH-7BDlu8@z>
+To: William Jhun <wjhun@ayrnetworks.com>
+Cc: Ralf Baechle <ralf@oss.sgi.com>, linux-mips@oss.sgi.com
+Message-ID: <20020619203852.7gMlVoViqrCEGGv5EeJDUoWbQDvK_-C9m7oPyWvQJDQ@z>
 
-The RM7000 does not have an on-chip serial port.  The EV board has
-it's own UART.
+On Wed, 19 Jun 2002, William Jhun wrote:
+> Note that without the #ifdefs, you may get warnings like:
+>
+> ../../../ayr/linux/include/asm/pci.h: In function `prep_buffer':
+> ../../../ayr/linux/include/asm/pci.h:89: warning: statement with no effect
+> ...
+>
+> So are we still sure we want to leave them out?
 
-Matt
 
---
-Matthew D. Dharm                            Senior Software Designer
-Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
-(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
-Momentum Works For You                      www.momenco.com
+Yes - leave them out (speaking out of context here - hopefully still
+useful).
 
-> -----Original Message-----
-> From: owner-linux-mips@oss.sgi.com
-> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Balakrishnan
-> Ananthanarayanan
-> Sent: Wednesday, June 19, 2002 5:04 AM
-> To: linux-mips@oss.sgi.com; linux-kernel@vger.kernel.org;
-> redhat-list@redhat.com
-> Subject: MIPS - Serial port
->
->
-> Hi all,
->
->    Is there anyone who has accessed the serial port of an
-> RM7000 MIPS processor? If u can provide me the code please
-> - or atleast the Serial PORT number of an RM7000 proc.
-> mounted on an EV64120A Galileo Board?
->
-> Balakrishnan
->
-> --
-> __________________________________________________________
-> Sign-up for your own FREE Personalized E-mail at Mail.com
-> http://www.mail.com/?sr=signup
->
-> Save up to $160 by signing up for NetZero Platinum Internet service.
-> http://www.netzero.net/?refcd=N2P0602NEP8
->
+Remove the warnings instead.
+
+I've gotten in the habit of having the following form to
+optional code logic:
+
+In some header file foobar.h:
+
+    #if CONFIG_FOOBAR
+    #define init_foobar(x) do {		\
+	    int f = 2 * (x);		\
+	    foobar_initialize(f);	\
+	| while (0)
+    #else
+    #define init_foobar(x) do {} while (0)
+    #endif
+
+I don't see any warnings from this, and it provides just
+the right sort of syntax wrapper on the macro init_foobar(),
+forcing it to be a single statement, regardless of context,
+while providing a nested block context for any local variables.
+
+
+-- 
+                          I won't rest till it's the best ...
+                          Programmer, Linux Scalability
+                          Paul Jackson <pj@sgi.com> 1.650.933.1373

@@ -1,51 +1,48 @@
-Message-ID: <006901c119b5$ac8ecfe0$0deca8c0@Ulysses>
+Message-ID: <019701c11a8f$2561daa0$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3B664857.4040100@pacbell.net> <001f01c11997$bf9a4880$0deca8c0@Ulysses> <20010731113120.B12409@bacchus.dhis.org>
-Subject: Re: r4600 flag
-Date: Tue, 31 Jul 2001 13:40:47 +0200
+References: <Pine.LNX.4.10.10107311435110.28897-100000@transvirtual.com> <3B67F510.A0CFB4E7@patton.com>
+Subject: Re: sys_mips problems
+Date: Wed, 1 Aug 2001 15:37:32 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: ppopov@pacbell.net, linux-mips@oss.sgi.com
-Message-ID: <20010731114047.5s_IutqHD6iBFJI5J_I0yFbTMoEfWUbMNYBInwT88J4@z>
+To: paul@patton.com, James Simmons <jsimmons@transvirtual.com>
+Cc: Jun Sun <jsun@mvista.com>, linux-mips@oss.sgi.com, linux-mips-kernel@lists.sourceforge.net
+Message-ID: <20010801133732.AFKydLO571GoUt0-UEWcTzDOiENAiwpO6UPQJIJkRiY@z>
 
-> > Using mips-linux-gcc from egcs-2.91.66, I don't see exactly this
-> > behavior in the test case above.  I *do* see that *if* I have -mcpu=4600
-> > set *and* I have not otherwise set the ISA level to be MIPS I or
-> > MIPS II (-mips1, -mips2), 64-bit instructions will be emitted.
-> > But that's to be expected.
+> > > > Since I was having problems with everything sefaulting due to the
+sys_mips
+> > > > bug I tried the patch floating around. It fixed the segfault problem
+but
+> > > > instead I get this error. Anyone knows why?
+> > > >
+> > > > : error while loading shared libraries: libc.so.6: cannot stat
+shared
+> > > > object: Error 14
+> > >
+> > > Which patch did you use?
+> >
+> > The fast_sysmips one.
+> >
+> > > Does your CPU have ll/sc instructions?
+> >
+> > I have a cobalt cube which has a MIPS Nevada chip which is a R52xx chip.
+I
+> > don't know if it does. By default I have ll/sc and lld/scd instructions
+> > enabled.
 >
-> No, it contradict the GCC documentation:
->
-> `-mcpu=CPU TYPE'
->      Assume the defaults for the machine type CPU TYPE when scheduling
->      instructions.  The choices for CPU TYPE are `r2000', `r3000',
->      `r3900', `r4000', `r4100', `r4300', `r4400', `r4600', `r4650',
->      `r5000', `r6000', `r8000', and `orion'.  Additionally, the
->      `r2000', `r3000', `r4000', `r5000', and `r6000' can be abbreviated
->      as `r2k' (or `r2K'), `r3k', etc.  While picking a specific CPU
->      TYPE will schedule things appropriately for that particular chip,
->      the compiler will not generate any code that does not meet level 1
->      of the MIPS ISA (instruction set architecture) without a `-mipsX'
->      or `-mabi' switch being used.
+> I don't know which R52xx chip you have, but my QED RM5261 has ll/sc but
+> no mention of lld/scd instructions.
 
-In that case, the tools that I've been using are technically
-broken.  Surprise surprise.   Because -mcpu=4600 is
-most assuredly setting the ISA level, even if it doesn't
-override one explicitly set!
-
-> > To generate 32-bit code for an
-> > R4600-like platform, you need to specify both the ISA level
-> > (to deal with issues like the above) and the R4600 pipeline
-> > (to get the MAD instruction).
->
-> No MAD on R4600.  Again it would be in contradiction with above document-
-> ation.  Mad you get with:
-
-Right.  Sorry.  I got the 4600 and 4650 confused.  I no longer
-understand why "4600" and not "4650" is the model for MIPS32.
+The RM52xx families are MIPS IV ISA devices, and lld/scd are
+MIPS III (and therefore MIPS IV) instructions.  You've got 'em.
+But you won't be able to use them in User mode unless the UX
+bit of the CP0.Status register is set, which also turns on 64-bit
+addressing, for which I rather doubt that your kernel is prepared.
+User mode code should use only the 32-bit ll/sc's.  Not that it
+sounds like that has anything to do with the problem reported
+here, mind you...
 
             Kevin K.

@@ -1,65 +1,27 @@
-Message-ID: <064501c4e2b7$2591c820$0d00340a@matts>
-From: "Matthew Starzewski" <mstarzewski@xes-inc.com>
-References: <062301c4de41$5bf43cb0$0d00340a@matts> <41B96281.2050806@enix.org> <073a01c4dec7$184527a0$0d00340a@matts> <41B9CA72.7030208@enix.org>
-Subject: Re: Using more than 256 MB of memory on SB1250 in 32-bit mode, revisited
-Date: Wed, 15 Dec 2004 09:02:48 -0600
+Message-ID: <001501c4e646$7f676c00$6f64a8c0@spark>
+From: "wuming" <wuming@ict.ac.cn>
+Subject: problem about dma
+Date: Mon, 20 Dec 2004 11:46:33 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <mstarzewski@xes-inc.com>
+	charset="gb2312"
+Content-Transfer-Encoding: base64
+Return-Path: <wuming@ict.ac.cn>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Thomas Petazzoni <thomas.petazzoni@enix.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20041215150248.qw5pQLWCZm27_uvHyBQgjj7ZFK0jKiw6_t338DGV128@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20041220034633.scqEJU-wjbVFhov5sDIAElhdUUG-YhwlC8YwQQ2i204@z>
 
-> This may be an ancillary effect of what's mentioned above, but when
-num_physpages
-> grows in size, nr_free_pages doesn't track with it, so in void
-vfs_caches_init(unsigned long
-> mempages) and the like, you get a horrible underflow condition:
->
-> /* code */
->        printk("MJS - nr_free_pages():0x%X\n", nr_free_pages());
->        printk("MJS - OLD mempages:0x%X\n", mempages);
->        reserve = (mempages - nr_free_pages()) * 3/2;
->        mempages -= reserve;
->        printk("MJS - NEW reserve:0x%X mempages:0x%X\n",
->               reserve, mempages);
->
-> /* printout */
-> MJS - nr_free_pages():0x1E9A0
-> MJS - OLD mempages:0x90000
-> MJS - NEW reserve:0xAA190 mempages:0xFFFE5E70
-
-I thought I'd wrap up this thread, especially with the HIGHMEM thread still
-going around:
-
-http://www.linux-mips.org/archives/linux-mips/2004-12/msg00141.html
-
-The above underflow *was* my problem.  I was working in 2.6.6-rc3 before;
-with the patch below from 2.6.7-rc1 everything works fine.
-
-#  VFS cache sizing fix for small machines
-http://linux.bkbits.net:8080/linux-2.6/diffs/fs/dcache.c@1.81?nav=index.html
-|src/|src/fs|hist/fs/dcache.c
-# BitKeeper ChangeSet
-http://linux.bkbits.net:8080/linux-2.6/cset@1.1717.23.50?nav=index.html|src/
-|src/fs|related/fs/dcache.c
-
-In fs/dcache.c, vfs_caches_init():
-<  reserve = (mempages - nr_free_pages()) * 3/2;
-> reserve = min((mempages - nr_free_pages()) * 3/2, mempages - 1);
-
-Regards,
-Matt
-
-
------ Original Message -----
-From: "Thomas Petazzoni" <thomas.petazzoni@enix.org>
-To: "Matthew Starzewski" <mstarzewski@xes-inc.com>
-Cc: <linux-mips@linux-mips.org>
-Sent: Friday, December 10, 2004 10:10 AM
-Subject: Re: Using more than 256 MB of memory on SB1250 in 32-bit mode,
-revisited
+SW4gZmlsZSBpbmNsdWRlL2FzbS1taXBzL3BjaS5oDQp0aGVyZSBhcmUgc29tZSBmdW5jdGlvbnMg
+Zm9yIGRtYSBpZiB0aGUgSS9PIG1vZGVsIGlzIG5vbi1jb2hlcmVudC4NCmZvciBleGFtcGxlOg0K
+ICAgIHBjaV9tYXBfc2cNCiAgICBwY2lfdW5tYXBfc2cNClRoZXNlIHR3byBmdW5jdGlvbnMgZXhp
+c3QgZm9yIGlkZSBkbWEuDQpCZWZvcmUgdGhlIGRtYSB0cmFuc2ZlciwgcGNpX21hcF9zZyB3aWxs
+IG1hcCB0aGUgbWVtb3J5IHNwYWNlIGNvdmVyZWQgYnkgc2dfdGFibGUsDQphbmQgaXQgd2lsbCBm
+bHVzaCBhbmQgaW52YWxpZGF0ZSBjYWNoZSBpbmRleGVkIGJ5IHRoYXQgbWVtb3J5IHNwYWNlLg0K
+QWZ0ZXIgdGhlIGRtYSB0cmFuc2ZlciwgcGNpX3VubWFwX3NnIGFsc28gbmVlZHMgdG8gYmUgY2Fs
+bGVkIHRvIGZsdXNoIGFuZCBpbnZhbGlkYXRlDQp0aGUgc2FtZSBjYWNoZS4gQnV0IEkgZG8gbm90
+IGtub3cgd2h5IHRoZSBzZWNvbmQgZmx1c2ggd2lsbCBiZSBkZW1hbmRlZC4NCkkgdGhpbmsgdGhh
+dCBpbiB0aGUgaW50ZXJ2YWwgYmV0d2VlbiB0aGUgdHdvIGZsdXNoLCB0aGVyZSB3b3VsZCBiZSBu
+b3RoaW5nIHRvIGFjY2Vzcw0KdGhlIG1lbW9yeSBjb3ZlcmVkIGJ5IHRoZSBkbWEuIEJ1dCBpdCBp
+cyBub3QgdGhlIGNhc2UuDQpJIHdhbnQgdG8ga25vdyB3aGF0IGNhbiBhY2Nlc3MgdGhhdCBtZW1v
+cnkgYW5kIEkgbmVlZCBzb21lIGhlbHAuDQo=

@@ -1,88 +1,183 @@
-Message-ID: <39218D50.F09EBACD@engr.sgi.com>
-Date: Tue, 16 May 2000 11:02:56 -0700
+Message-ID: <3921AD2D.95843F5@engr.sgi.com>
+Date: Tue, 16 May 2000 13:18:53 -0700
 From: Nancy Bigham <bigham@cthulhu.engr.sgi.com>
 MIME-Version: 1.0
 Subject: [Fwd: BOUNCE linux@relay.engr.sgi.com:    Non-member submission from
- [Jun Sun <jsun@mvista.com>]]
+ [Klaus Naumann <spock@mgnet.de>]]
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
 To: linux@cthulhu.engr.sgi.com
-Message-ID: <20000516180256.VF7UbynADgORGtIOY36b9cFADTMMM2EGqcwku3SZ5uA@z>
+Message-ID: <20000516201853.iokGEa6oDwnTBW7TLDsw4el5hCK0SXriEn4S_gzf9bA@z>
 
 
 
 -------- Original Message --------
 Subject: BOUNCE linux@relay.engr.sgi.com:    Non-member submission from
-[Jun Sun <jsun@mvista.com>]
-Date: Tue, 16 May 2000 10:49:56 -0700 (PDT)
+[Klaus Naumann <spock@mgnet.de>]
+Date: Tue, 16 May 2000 11:40:21 -0700 (PDT)
 From: owner-linux@cthulhu
 To: owner-linux@cthulhu
 
-From owner-linux  Tue May 16 10:49:55 2000
+From owner-linux  Tue May 16 11:40:20 2000
 Received: from sgi.com (sgi.engr.sgi.com [192.26.80.37])
 	by cthulhu.engr.sgi.com (980427.SGI.8.8.8/970903.SGI.AUTOCF)
-	via ESMTP id KAA52215
+	via ESMTP id LAA22782
 	for <linux@engr.sgi.com>;
-	Tue, 16 May 2000 10:49:54 -0700 (PDT)
-	mail_from (jsun@mvista.com)
-Received: from hermes.mvista.com (gateway.mvista.com [63.192.220.206]) 
+	Tue, 16 May 2000 11:40:19 -0700 (PDT)
+	mail_from (spock@mgnet.de)
+Received: from asterix.hrz.tu-chemnitz.de (asterix.hrz.tu-chemnitz.de
+[134.109.132.84]) 
 	by sgi.com (980327.SGI.8.8.8-aspam/980304.SGI-aspam:
        SGI does not authorize the use of its proprietary
        systems or networks for unsolicited or bulk email
        from the Internet.) 
-	via ESMTP id KAA06183
-	for <linux@engr.sgi.com>; Tue, 16 May 2000 10:49:52 -0700 (PDT)
-	mail_from (jsun@mvista.com)
-Received: from mvista.com (IDENT:jsun@orion.mvista.com [10.0.0.75])
-	by hermes.mvista.com (8.9.3/8.9.3) with ESMTP id KAA22202;
-	Tue, 16 May 2000 10:49:43 -0700
-Sender: jsun@hermes.mvista.com
-Message-ID: <39218A14.919D119A@mvista.com>
-Date: Tue, 16 May 2000 10:49:08 -0700
-From: Jun Sun <jsun@mvista.com>
-X-Mailer: Mozilla 4.7 [en] (X11; I; Linux 2.2.12-20b i586)
-X-Accept-Language: en
-MIME-Version: 1.0
-To: Ralf Baechle <ralf@oss.sgi.com>
-CC: linux@engr.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
-Subject: Re: HELP : ptrace returns puzzling results
-References: <392045FC.827CACB5@mvista.com>
-<20000516133620.C4561@uni-koblenz.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+	via ESMTP id LAA05149
+	for <linux@engr.sgi.com>; Tue, 16 May 2000 11:40:18 -0700 (PDT)
+	mail_from (spock@mgnet.de)
+Received: from sunnyboy.informatik.tu-chemnitz.de by
+asterix.hrz.tu-chemnitz.de 
+          with Local SMTP (PP); Tue, 16 May 2000 20:40:13 +0200
+Received: from scotty.mgnet.de (sevenofnine.csn.tu-chemnitz.de
+[134.109.96.133]) 
+          by sunnyboy.informatik.tu-chemnitz.de (8.8.8/8.8.8) with SMTP 
+          id UAA05440 for <linux@engr.sgi.com>;
+          Tue, 16 May 2000 20:40:11 +0200 (MET DST)
+Received: (qmail 22691 invoked from network); 16 May 2000 18:40:12 -0000
+Received: from spock.mgnet.de (HELO scotty.mgnet.de) (192.168.1.4) 
+          by scotty.mgnet.de with SMTP; 16 May 2000 18:40:12 -0000
+Date: Tue, 16 May 2000 20:40:22 +0200
+From: Klaus Naumann <spock@mgnet.de>
+To: "Linux MIPS engr . sgi . com" <linux@engr.sgi.com>,
+        Linux MIPS <linux-mips@fnet.fr>
+Subject: [PATCH] Merging CPU & Machine selection in config.in
+Message-ID: <20000516204022.B598@spock>
+Reply-To: spock@mgnet.de
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="+fexcqMh/evT6CrY"
+Content-Transfer-Encoding: 8bit
+X-Mailer: Balsa 0.8.0-pre1
 
-Ralf Baechle wrote:
-> 
-> On Mon, May 15, 2000 at 11:46:20AM -0700, Jun Sun wrote:
-> 
-> > I am writing a gdbserver for linux/mips.  The server can now talk with
-> > the gdb client, and can run to completion if you press 'c'.
-> 
-> > reg #29 ($29,sp) = 2147483120 (0x7ffffdf0)
-> 
-> The value of sp looks sane, it a value near the absolute top of the stack
-> at 0x80000000.
-> 
-> > reg #37 ($64,pc) = 263607008 (0x0fb652e0)
-> 
-> Also looks sane at first look, this value is in the typical address range
-> where the dynamic linker gets mapped.
-> 
-> Many of the registers in the dump you gave have a value of zero and that is
-> worrying me much more.  All the caller saved registers are zero, that
-> smells.
-> 
 
-I looked at the problem again.  The registers are actually correct. 
-Most registers are zero becase that is the program start up time (in
-exec()). I now can set a breakpoint and run until that breakpoint.
+--+fexcqMh/evT6CrY
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 
-However, step or next or setting another breakpoint do not work.  It
-appears that gdbserver calls ptrace with PTRACE_SINGLESTEP option, which
-is not implemented in the kernel I am using (it is v2.3.99-pre3).  Is
-this implemented in the latest version?  If not, is it difficult to add
-one?  Or can we get around without it?
 
-Jun
+Hi,
+
+attached is a patch which merges the CPU and machine
+selection in the kernel configuration into one Main Menu.
+The reason is that I think it's not necessary to have
+two main menus used for this task.
+Please tell me if you like this idea or not and if so
+why you don't like it.
+
+	CU Klaus
+
+-- 
+Full Name   : Klaus Naumann     | (http://www.mgnet.de/) (Germany)
+Nickname    : Spock             | Org.: Mad Guys Network
+Phone / FAX : ++49/3661/675457  | E-Mail: (spock@mgnet.de)
+PGP Key     : www.mgnet.de/keys/key_spock.txt
+--+fexcqMh/evT6CrY
+Content-Type: application/octet-stream; charset=us-ascii
+Content-Disposition: attachment;
+filename="config.in-cpuandmachine.patch"
+
+diff -Nur linux/arch/mips/config.in linux.build/arch/mips/config.in
+--- linux/arch/mips/config.in	Tue May 16 16:56:08 2000
++++ linux.build/arch/mips/config.in	Tue May 16 17:14:36 2000
+@@ -10,7 +10,7 @@
+ endmenu
+ 
+ mainmenu_option next_comment
+-comment 'Machine selection'
++comment 'Machine/CPU selection'
+ bool 'Support for Acer PICA 1 chipset' CONFIG_ACER_PICA_61
+ if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
+    bool 'Support for Algorithmics P4032 (EXPERIMENTAL)'
+CONFIG_ALGOR_P4032
+@@ -23,6 +23,38 @@
+ bool 'Support for SGI IP22' CONFIG_SGI_IP22
+ bool 'Support for SNI RM200 PCI' CONFIG_SNI_RM200_PCI
+ 
++choice 'CPU type' \
++	"R3000 CONFIG_CPU_R3000	\
++	 R6000 CONFIG_CPU_R6000	\
++	 R4300 CONFIG_CPU_R4300	\
++	 R4x00 CONFIG_CPU_R4X00	\
++	 R5000 CONFIG_CPU_R5000	\
++	 R56x0 CONFIG_CPU_NEVADA \
++	 R8000 CONFIG_CPU_R8000	\
++	 R10000 CONFIG_CPU_R10000" R4x00
++
++bool 'Advanced CPU Config' CONFIG_CPU_ADVANCED
++
++if [ "$CONFIG_CPU_ADVANCED" = "y" ]; then
++	bool '  ll/sc Instructions available' CONFIG_CPU_HAS_LLSC
++	bool '  Writeback Buffer available' CONFIG_CPU_HAS_WB
++else
++	if [ "$CONFIG_CPU_R3000" = "y" ]; then
++		if [ "$CONFIG_DECSTATION" = "y" ]; then
++			define_bool CONFIG_CPU_HAS_LLSC n
++			define_bool CONFIG_CPU_HAS_WB y
++		else
++			define_bool CONFIG_CPU_HAS_LLSC n
++			define_bool CONFIG_CPU_HAS_WB n
++		fi
++	else
++		define_bool CONFIG_CPU_HAS_LLSC y
++		define_bool CONFIG_CPU_HAS_WB n
++	fi
++fi
++
++
++
+ #
+ # Select some configuration options automatically for certain systems.
+ #
+@@ -76,40 +108,6 @@
+ if [ "$CONFIG_PCI" != "y" ]; then
+    define_bool CONFIG_PCI n
+ fi
+-endmenu
+-
+-mainmenu_option next_comment
+-	comment 'CPU selection'
+-
+-	choice 'CPU type' \
+-		"R3000 CONFIG_CPU_R3000	\
+-		 R6000 CONFIG_CPU_R6000	\
+-		 R4300 CONFIG_CPU_R4300	\
+-		 R4x00 CONFIG_CPU_R4X00	\
+-		 R5000 CONFIG_CPU_R5000	\
+-		 R56x0 CONFIG_CPU_NEVADA \
+-		 R8000 CONFIG_CPU_R8000	\
+-		 R10000 CONFIG_CPU_R10000" R4x00
+-
+-	bool 'Override CPU Options' CONFIG_CPU_ADVANCED
+-
+-	if [ "$CONFIG_CPU_ADVANCED" = "y" ]; then
+-		bool '  ll/sc Instructions available' CONFIG_CPU_HAS_LLSC
+-		bool '  Writeback Buffer available' CONFIG_CPU_HAS_WB
+-	else
+-		if [ "$CONFIG_CPU_R3000" = "y" ]; then
+-			if [ "$CONFIG_DECSTATION" = "y" ]; then
+-				define_bool CONFIG_CPU_HAS_LLSC n
+-				define_bool CONFIG_CPU_HAS_WB y
+-			else
+-				define_bool CONFIG_CPU_HAS_LLSC n
+-				define_bool CONFIG_CPU_HAS_WB n
+-			fi
+-		else
+-			define_bool CONFIG_CPU_HAS_LLSC y
+-			define_bool CONFIG_CPU_HAS_WB n
+-		fi
+-	fi
+ endmenu
+ 
+ mainmenu_option next_comment
+
+--+fexcqMh/evT6CrY--

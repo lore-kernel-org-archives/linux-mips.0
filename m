@@ -1,22 +1,19 @@
-Date: Tue, 19 Jun 2001 20:15:16 +0900
-Message-ID: <200106191115.UAA02823@intranet.medialincs.com>
-From: =?EUC-KR?B?wba+58iv?=<joey@medialincs.com>
-Subject: system freeze when __sti() called 
+Message-ID: <003d01c0f8cd$2982dc80$031010ac@RJRWS1>
+From: "Robert Rusek" <robru@teknuts.com>
+Subject: Kernel-headers for Redhat test-7.0 kernel 2.4.3
+Date: Tue, 19 Jun 2001 07:36:01 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=EUC-KR
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20010619111516.wYfcgvUunbTXqORWXXevj60hP67U3DSZ89BElwqoaLQ@z>
+Message-ID: <20010619143601.Ep-HJ7v9A8RYOlNy1IjUcMlJqlnlzsV6BCGoIdmyeqQ@z>
 
-hello,
-I porting on gt-64120 with R-4700 ..
-
-after linux booting, ERL bit in STATUS register is setted 
-so I can't enable interrupt.
-
-I  tried to clear ERL bit but then system was down. 
-
-I use redboot as bootloader. 
-
-have any idea?
+Where do I find kernel-headers for Redhat test-7.0 kernel 2.4.3.
+  
+ Thanks in advance,
+ --
+ Robert Rusek
+  
+ 

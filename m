@@ -1,47 +1,116 @@
-Message-ID: <008101c110c4$de161c70$9400a8c0@jefflee>
-From: "jeff_lee" <jeff_lee@coventive.com>
-References: <3B572EFC.9090903@pacbell.net>
-Subject: Re: hard hat linux 2.0
-Date: Fri, 20 Jul 2001 10:37:02 +0800
+Message-ID: <016701c110c6$a371d580$056aaac0@kjlin>
+From: "kjlin" <kj.lin@viditec-netmedia.com.tw>
+Subject: weird printf problem
+Date: Fri, 20 Jul 2001 10:49:45 +0800
 MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0164_01C11109.B05F54A0"
+Sender: owner-linux-mips@oss.sgi.com
+To: linux-mips@oss.sgi.com
+Message-ID: <20010720024945.nm6moX_IgtctagdllpsFad59ZyRR0vGGyxlVcaU0XY0@z>
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0164_01C11109.B05F54A0
 Content-Type: text/plain;
 	charset="big5"
-Content-Transfer-Encoding: 7bit
-Sender: owner-linux-mips@oss.sgi.com
-To: ppopov@pacbell.net, linux-mips-kernel@lists.sourceforge.net, linux-mips@oss.sgi.com
-Message-ID: <20010720023702.rjP_vwkJWOBcSUy8yYdFEvC6nfrxYmcnwQE_oPaZgZY@z>
+Content-Transfer-Encoding: quoted-printable
 
-Hi ,
-    How can I ftp the site ??
-Do I need the user name or passward ?? 
-Or how is the port number ??
+Hi all,
 
-Thanks !!!
------ Original Message ----- 
-From: "Pete Popov" <ppopov@pacbell.net>
-To: <linux-mips-kernel@lists.sourceforge.net>; <linux-mips@oss.sgi.com>
-Sent: Friday, July 20, 2001 3:03 AM
-Subject: hard hat linux 2.0
+I ported linux to my embeded board and encountered a weird "printf" =
+problem.
+The library i used is uClibc.
+I made the kernel to run a testing program directly after boot up.
+In my case, less "printf" work well but more will fail.
+Here is my testing program:
 
+main()
+{
+    int i=3D0;
 
-> Looks like ftp.mvista.com was updated last night to include the mips 
-> journeyman edition. The images of interest would be 
-> ftp.mvista.com:/pub/Journeyman/cdimages/{je-d1-hhl2.0.cdimage, 
-> je-src-hhl2.0.cdimage}.  They are rather large so it takes a while to 
-> download them.
-> 
-> In addition to the userland packages, there is an up to date cross 
-> toolchain which can build the kernel as well as useland apps. There is 
-> also a native toolchain.  The toolchain is 2.95.3 based; glibc is 2.2.3. 
->   Since there was some perl interest recently, perl is included. 
-> Rebuilding any of the userland packages, for those interested in doing 
-> that, is pretty trivial (cross based building!).
-> 
-> This is an embedded linux distribution so it's not as large as a RedHat 
-> desktop system. For embedded work though, I think it's more than 
-> sufficient.  One note, to anyone trying it.  A number of binaries are 
-> linked with pthreads, so you'll need either the new sysmips fix that 
-> Ralf is working on, when he completes it, or the patch from Florian. 
-> Otherwise binaries like ls, tar, and many others will seg fault.
-> 
-> Pete
+    while(i<200)
+    {
+                printf("Hello World=3D%d\n",i);
+                i++;
+    }
+}
+=20
+The output message will die at "Hello World=3D10" or "Hello World=3D168" =
+or "Hello World=3D76" ........
+Every times the message dies at different place but it will never =
+successfully be outputed "200" times.
+However, if the condition is changed to "while(i<100)", then everything =
+is fine.
+It is so weird!!
+Why too much "printf" will cause the program to die?
+Is it the problem of uClibc or kernel?
+Does the compiler for my testing program concern this weird problem?
+Can anybody give me some hints?
+
+Thanks,
+KJ
+
+------=_NextPart_000_0164_01C11109.B05F54A0
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Dbig5" http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D2>
+<DIV><FONT size=3D2>
+<DIV><FONT size=3D2>Hi all,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>I ported linux to&nbsp;my embeded board&nbsp;and =
+encountered a=20
+weird "printf" problem.</FONT></DIV>
+<DIV>The library i used is uClibc.</DIV>
+<DIV><FONT size=3D2>I made the kernel to run a testing program directly =
+after boot=20
+up.</FONT></DIV>
+<DIV><FONT size=3D2>In my case,&nbsp;less "printf" work well but more =
+will=20
+fail.</FONT></DIV>
+<DIV><FONT size=3D2>Here is my testing program:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>main()</FONT></DIV>
+<DIV><FONT size=3D2>{</FONT></DIV>
+<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; int i=3D0;</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp;=20
+while(i&lt;200)<BR>&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+printf("Hello=20
+World=3D%d\n",i);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+i++;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></DIV>
+<DIV><FONT size=3D2>}</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>The&nbsp;output message will die at "Hello =
+World=3D10" or "Hello=20
+World=3D168" or "Hello World=3D76" ........</FONT></DIV>
+<DIV><FONT size=3D2>Every times the message dies at different =
+place</FONT><FONT=20
+size=3D2> but it will&nbsp;never successfully be outputed "200"=20
+times.</FONT></DIV>
+<DIV><FONT size=3D2>However, if the condition is changed to =
+"while(i&lt;100)",=20
+then everything is fine.</FONT></DIV>
+<DIV><FONT size=3D2>It is so weird!!</FONT></DIV>
+<DIV><FONT size=3D2>Why too much "printf" will cause the program to=20
+die?</FONT></DIV>
+<DIV><FONT size=3D2>Is it the problem of uClibc or kernel?</FONT></DIV>
+<DIV>Does the compiler for my testing program concern this weird =
+problem?</DIV>
+<DIV><FONT size=3D2>Can anybody give me some hints?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks,</DIV>
+<DIV>KJ</DIV></FONT></DIV></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0164_01C11109.B05F54A0--

@@ -1,30 +1,100 @@
-Date: Wed, 19 Sep 2001 09:39:16 -0400
-From: Daniel Jacobowitz <dan@debian.org>
-Subject: Re: kgdb with linux-mips problem
-Message-ID: <20010919093916.A4421@nevyn.them.org>
-References: <00fe01c140b4$ad3f9200$cd22690a@huawei.com> <20010918224620.A22455@nevyn.them.org> <016001c140b9$c5a2e900$cd22690a@huawei.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <016001c140b9$c5a2e900$cd22690a@huawei.com>; from zhangshaolin@huawei.com on Wed, Sep 19, 2001 at 11:18:37AM +0800
+Message-ID: <05e901c141a0$a03e6120$056aaac0@kjlin>
+From: "kjlin" <kj.lin@viditec-netmedia.com.tw>
+Subject: fork() vs vfork()
+Date: Thu, 20 Sep 2001 14:51:08 +0800
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_05E6_01C141E3.AE47B080"
 Sender: owner-linux-mips@oss.sgi.com
-To: Shaolin Zhang <zhangshaolin@huawei.com>
-Cc: Ernest Jih <ernest.jih@idt.com>, linux-mips@oss.sgi.com, renwei@huawei.com
-Message-ID: <20010919133916.ExgH2L17XCfoP36wGTkma43y3mh_AmuEOq41hu31lSk@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010920065108.7UDBjRtZMDHzkQva_pn4o-UOafe78lgaLuxMnRd8X1c@z>
 
-On Wed, Sep 19, 2001 at 11:18:37AM +0800, Shaolin Zhang wrote:
-> My gcc verison is 2.95.3 19991030, gdb verison is 20000204.
-> What is current version of bintuil and egcs,and where can i get it ?
-> thanks.
+This is a multi-part message in MIME format.
 
-From gcc.gnu.org/sources.redhat.com.  The one you'll really need to
-update is GDB: sources.redhat.com/pub/gdb/, I think, and look for a
-snapshot from the past few weeks.
+------=_NextPart_000_05E6_01C141E3.AE47B080
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
-I highly recommend you use an existing toolchain - MontaVista's
-(www.mvista.com, look for Journeyman) or H.J. Lu's (don't know the URL
-offhand).
+Hi all,
 
--- 
-Daniel Jacobowitz                           Carnegie Mellon University
-MontaVista Software                         Debian GNU/Linux Developer
+How does linux-mips treat the vfork() function?
+I can see the fork() implemented in syscall.c as following:
+
+save_static_function(sys_fork);
+static_unused int _sys_fork(struct pt_regs regs)
+{
+        int res;
+        res =3D do_fork(SIGCHLD, regs.regs[29], &regs, 0);
+        return res;
+}
+
+But i can't see anything about vfork/sys_vfork in mips platform.
+However, the vfork() was implemented as sys_vfork in other architecture.
+Such as arm platform:
+asmlinkage int sys_vfork(struct pt_regs *regs)
+{
+        return do_fork(CLONE_VFORK | CLONE_VM | SIGCHLD, regs->ARM_sp, =
+regs, 0);
+}
+
+Why not do the same "sys_vfork" in linux-mips?
+Does it mean that MIPS does not support vfork() or vfork() is equal to =
+fork() in MIPS platform?
+
+Thanks,
+KJ
+
+
+
+------=_NextPart_000_05E6_01C141E3.AE47B080
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Dbig5" http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D2>Hi all,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>How does linux-mips treat the vfork() =
+function?</FONT></DIV>
+<DIV><FONT size=3D2>I can see the fork() implemented in syscall.c as=20
+following:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>save_static_function(sys_fork);<BR>static_unused int =
+
+_sys_fork(struct pt_regs=20
+regs)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int =
+res;</FONT></DIV>
+<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; res =3D=20
+do_fork(SIGCHLD, regs.regs[29], &amp;regs, 0);</FONT></DIV>
+<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return=20
+res;<BR>}</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>But i can't see&nbsp;anything&nbsp;about =
+vfork/sys_vfork in=20
+mips platform.</FONT></DIV>
+<DIV><FONT size=3D2>However, the vfork() was implemented as sys_vfork in =
+other=20
+architecture.</FONT></DIV>
+<DIV><FONT size=3D2>Such as arm platform:</FONT></DIV>
+<DIV><FONT size=3D2>asmlinkage int sys_vfork(struct pt_regs=20
+*regs)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return=20
+do_fork(CLONE_VFORK | CLONE_VM | SIGCHLD, regs-&gt;ARM_sp, regs,=20
+0);<BR>}</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>Why not do the same "sys_vfork" in =
+linux-mips?</FONT></DIV>
+<DIV><FONT size=3D2>Does it mean that MIPS does not support vfork() or =
+vfork() is=20
+equal to fork() in MIPS platform?</FONT></DIV>
+<DIV><FONT size=3D2><BR>Thanks,</FONT></DIV>
+<DIV><FONT size=3D2>KJ<BR></DIV></FONT>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_05E6_01C141E3.AE47B080--

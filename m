@@ -1,29 +1,20 @@
-Message-ID: <00fb01c284e6$5b7bf4f0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3DC7CB8B.E2C1D4E5@mips.com> <20021105163806.A24996@bacchus.dhis.org>
-Subject: Re: Prefetches in memcpy
-Date: Tue, 5 Nov 2002 17:13:48 +0100
+Received: from BIGYIN (userpq32.uk.uudial.com [62.188.172.94])
+	by colossus.systems.pipex.net (Postfix) with SMTP id 8D20D160006F8
+	for <linux-mips@linux-mips.org>; Wed,  6 Nov 2002 13:16:54 +0000 (GMT)
+Message-ID: <001901c28596$ac215750$5eacbc3e@BIGYIN>
+Reply-To: "Render Dynamics Ltd." <chris@render-dynamics.com>
+From: "Render Dynamics Ltd." <chris@render-dynamics.com>
+References: <6574B617C8C9D411B5110000D11E605802C09B18@bru0001e.bru.fsc.net>
+Subject: unsubcribe linux-mips
+Date: Wed, 6 Nov 2002 13:16:02 -0000
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Return-Path: <chris@render-dynamics.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@uni-koblenz.de>, Carsten Langgaard <carstenl@mips.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20021105161348.haq7BWCCeHX17NQcrqo938bLjXuTrOWYiirA8yncF8g@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20021106131602.TmvyHNRhPE5UBZSGt9BAbs3NyzGNJ_APADU6GwshHWs@z>
 
-From: "Ralf Baechle" <ralf@uni-koblenz.de>
-> So I think the fix will have to be:
-> 
->  - Avoid prefetching beyond the end of the copy area in memcpy and memmove.
->  - Introduce a second variant of memcpy that never does prefetching.  This
->    one will be safe to use in KSEG1 / uncached XKPHYS also and will be used
->    for memcpy_fromio, memcpy_toio and friends.
-
-Assuming we had a version that prefetched exactly to the end
-of the source memory block and no further, why would we need
-the second variant?
-
-            Kevin K.
+unsubcribe linux-mips

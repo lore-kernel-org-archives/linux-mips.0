@@ -1,86 +1,111 @@
-Message-ID: <01bf01c0921b$6de26620$0deca8c0@Ulysses>
+Message-ID: <021b01c0922e$c8df4440$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3A830135.B1304041@mvista.com>
+References: <3A830135.B1304041@mvista.com> <01bf01c0921b$6de26620$0deca8c0@Ulysses> <3A83247D.FC52431D@mvista.com>
 Subject: Re: config option vs. run-time detection (the debate continues ...)
-Date: Thu, 8 Feb 2001 23:06:33 +0100
+Date: Fri, 9 Feb 2001 01:25:10 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Jun Sun <jsun@mvista.com>, linux-mips@oss.sgi.com
-Message-ID: <20010208220633.8forkBq9dkj2Q8RLm218M1lprToAfkDDNHKPYB0di3w@z>
+To: Jun Sun <jsun@mvista.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010209002510.sWYJzfL1eHv9CLM0laeBcP2ajpK8PDcNSsaZwxBQvlQ@z>
 
-> I love this topic!
-
-Well, I'm glad *you're* having fun!  ;-)
-
-> Instead of replying to 10 different emails, I decide to sort out my best
-> understanding of this topic and list them here, including some of MY
-responses
-> to some of the issues.
+> > > 1. Config option approach :
+> > >
+> > > In the kernel config menu, one picks one or more CPUs.  One also
+specifies
+> > > whether the CPU(s) have a FPU.
+> > >
+> > > All FPU related code in kernel is configured in or out based on the
+CONFIG
+> > > setting.
+> >
+> > As has been noted in other messages in this exchange, whether one
+> > has an FPU or not isn't really the determining factor in including FP
+> > support code in the kernel.  The bulk of it is the emulator, and the
+> > emulator needs to be there if you want to execute binaries built
+> > to include MIPS FP instructions, whether in full emulation or using
+> > the FPU (for the denormal cases, etc.).
+> >
+> That needs a little more explanation.
 >
-> Definition:
-> ------------
->
-> 1. Config option approach :
->
-> In the kernel config menu, one picks one or more CPUs.  One also specifies
-> whether the CPU(s) have a FPU.
->
-> All FPU related code in kernel is configured in or out based on the CONFIG
-> setting.
+> . When I say "All FPU related code", I really meant FPU code which is not
+a
+> part of FPU emaulator.  One example is the code in exit_thread()
+> (arch/mips/process.c) as brough up by flo.  I believe there are also such
+code
+> in ptrace.c.
 
-As has been noted in other messages in this exchange, whether one
-has an FPU or not isn't really the determining factor in including FP
-support code in the kernel.  The bulk of it is the emulator, and the
-emulator needs to be there if you want to execute binaries built
-to include MIPS FP instructions, whether in full emulation or using
-the FPU (for the denormal cases, etc.).
+Understood.  My point is that that code can be lumped with
+the emulator as the set of support needed to run FPU-full
+binaries.  Even with an emulator, one needs to manage
+and communicate FP state.  The only difference is that
+the "floating point registers" are in the thread structure,
+not in the CPU.
 
-So your CONFIG option would really be to say, regardless of
-the CPU, whether your kernel can handle an FPU-ful userland,
-or is stripped down to support only 100% integer binaries.
-
-> 2. run-time detection approach:
+> . Regarding whether we should have FPU emulator, I think it should be a
+> separate CONFIG option.  It is orthorgal to HAS_FPU option.
 >
-> CPU probing code probes CPU and sets has_fpu field in the mips_cpu
-structure.
+> In other words, we will have four combinations:
 >
-> All FPU related code is on a conditional branch based on has_fpu value.
-
-Again, the FPU-related code has to be there any time you're
-going to run FP binaries.  The MIPS_CPU_FPU bit simply
-tells the kernel how/when to use it.
-
-...
-
-> My Conclusion
-> --------------
+>  a) HAS_FPU & FPU_EMULATION - which is necessary when FPU is not a full
+> implementation.
 >
-> Clearly, it is a trade-off decision based how much one values the minuses
-and
-> pluses of both approaches.
+>  b) !HAS_FPU & FPU_EMULATION - which allows one to run fpu-ful userland
+> application
 >
-> While I do agree the minus for run-time detection are not serious ones, I
-> think the minus for config option is even less serious.  Having the same
-> kernel image runs on multiple CPUs is very nice.  I just doubt about the
-> usefulness of requiring the same kernel image to run on CPUs both with a
-FPU
-> and without a FPU.
+>  c) HAS_FPU & !FPU_EMULATION - when FPU is a full implementaion (or use
+the
+> old incomplete emaulation?)
 
-If you're building kernels for a workstation, that may be
-true.  If you're building kernels for a testbed where you're
-swapping CPU modules, it's actually rather nice to have
-a single kernel that boots on any of them.  I personally
-find myself in this situation.  Or to provide a less lab-oriented
-example, NEC has the R43xx family which have FPUs,
-and Toshiba markets some R49xx parts that are pin-compatible
-but cheaper - because they have no FPU.   If I were building
-a Linux-based system around either one, memory permitting,
-I would want to  have a kernel that could cope with either of
-them, to simplify the product management problem if I ever
-ended up wanting to cut over from one to the other.
+We're talking about MIPS/Linux here.  To the best of my knowledge
+there are *no* "full" implementations of IEEE floating point on
+a MIPS CPU.  The number of unimplemented cases varies
+somewhat from design to design, but I know of no MIPS CPU
+where it is a null set.
+
+>  d) !HAS_FPU & !FPU_EMULATION - it mandates non-fpu-ful userland (which to
+me
+> is perfectly fine)
+>
+> I start to feel a little "shaky" here as I have not written any FPU code.
+> Will such a classification make life easier or worse?  Is there any
+> feasibility issue here?
+
+It's not so much that I doubt the feasibility, I just wonder
+if there's any point to adding the complexity.  As noted
+above, if you're going to support FP-full binaries, you
+have to support the processor model of FPU.  The user
+will be manipulating what he sees as FP registers, and
+all of the state, signal, and context management logic
+associated with them has to be there regardless of whether
+they exist in the CPU or in the kernel.  It's true that there are
+a few paths through the code, the ones that actually load
+and store the FP registers, that are distinct.  Those could
+certainly be suppressed at compile time if you wanted a
+kernel that would never allow a real FPU to be used,
+but the memory savings would be smaller than you seem
+to think.  It's not "HAS_FPU" versus "EMULATOR",
+it's "SUPPORTS_FP" and "HAS_FPU".
+
+But my main objection to treating the two options as
+orthogonal is that your (c) case above will simply
+create kernels that are guaranteed fail for some
+cases of IEEE math.  It's just not good engineering
+to give people a 25% chance of building a kernel
+that seems to be just fine, at first...
+
+My own recommendation would be to either have
+full FP support for binaries or none at all.  If someone
+really wants to put the FPU-specific assembler
+routines under a different conditional, that's cool, but
+the configuration options should be such that the
+(c) cannot be generated by the config scripts.
+
+
+            Regards,
 
             Kevin K.

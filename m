@@ -1,99 +1,34 @@
-From: "Lyle Bainbridge" <lyle@zevion.com>
-Subject: RE: boot pb1500 from flash through 16-bit data bus?
-Date: Mon, 3 Nov 2003 23:41:26 -0600
-Message-ID: <000001c3a296$4d51b3a0$1400a8c0@radium>
+Date: Tue, 4 Nov 2003 19:48:09 +0100 (CET)
+From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Subject: Re: CVS Update@-mips.org: linux 
+In-Reply-To: <20031103231010Z8225443-1272+8723@linux-mips.org>
+Message-ID: <Pine.LNX.4.32.0311041939110.31563-100000@jurand.ds.pg.gda.pl>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20031104021343Z8225402-1272+8745@linux-mips.org>
-Return-Path: <lyle@zevion.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <macro@ds2.pg.gda.pl>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: yikok9@yahoo.com.cn, 'linux-mips' <linux-mips@linux-mips.org>
-Message-ID: <20031104054126.5dTCByoDTBL7stQQ1oOfUPgFup2R5qtTVbnbSwj_Dwo@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20031104184809.V5DmWSiU_91CU7bWYcNJpNG_HvsbAxRPyU_6CsiW6SA@z>
 
-Hi,
+On Mon, 3 Nov 2003 ralf@linux-mips.org wrote:
 
-If you are building as little endian and booting from a 16bit ROM then
-simply load your boot code into the 16 bit flash. You shouldn't need to
-swap bytes and half words yourself. Here's why:
+> Modified files:
+> 	include/asm-mips: i8259.h
+>
+> Log message:
+> 	Declare i8259A_lock spinlock.  New inline function i8259_irq to poll
+> 	interrupts in a PC-style daisy-chained i8259 configuration where no
+> 	better method to execute an interrupt acknowledge cycle is available.
 
-The Au1500 starts in big endian mode but the static bus controller
-starts in little endian mode and will actually read the little endian
-boot code correctly.  The very first thing you need to do in your boot
-code is switch the Au1500 to little endian mode. Then you need to do the
-other initial activities such as establishing the status register,
-config0, cause register and initializing the caches and TLB.
+ This is broken -- you do want to check bit #7 for spurious interrupts
+instead of doing awkward PIC poking.  Alternatively, just skip the check
+-- the condition is rare and handlers need to be able to deal with it
+anyway.  It was discussed a few months ago and I proposed a correct patch
+similar to your one, but it was rejected, sigh...
 
-If you are building as big endian it is a little more difficult. Place
-the following block at the reset vector:
-
-    .long 0xb4003c08 # lui t0,0xb400
-    .long 0x10003508 # ori t0,t0,0x1000
-    .long 0x00008d09 # lw t1,0(t0)
-    .long 0x02003529 # ori t1,t1,0x200
-    .long 0x0000ad09 # sw t1,0(t0)
-    .long 0x00000000 # nop
-    .long 0x00000000 # nop
-    .long 0x00000000 # nop
-    .long 0x00000000 # nop 
-
-This is a small fragement of little endian code that switches the static
-bus controller to big endian mode.  That way when the processor boots
-and reads the big endian boot code as little endian, the first part will
-be little endian and it will work.  Of course the code fragement above
-immediately switches the static bus to BE and everything will continue
-correctly.  I know it seems a little strange.
-
-Hope this helps.  Email if you have any questions.
-
-Cheers
-Lyle
-
-
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Wang Zaifang
-> Sent: Monday, November 03, 2003 8:13 PM
-> To: linux-mips
-> Subject: boot pb1500 from flash through 16-bit data bus?
-> 
-> 
-> hi, 
->   Does anyone have experience on writing 16-bit booting code 
-> for PB1500?
->   I'm working on a customized au1500 board that has puzzled 
-> us for serveral days, :-( The board is designed to boot from 
-> flash using 16-bit data bus, however it seemed that the code 
-> we stored in the flash does not run at all. There might be 
-> some errors in our design, so we turn to the PB1500 eval-board.
->   I wrote a piece of testing code that sends 010101... series 
-> to GPIO[0] continuousely after reset. The code runs well when 
-> the SRAM data bus is set to 32-bit width, i.e. a square 
-> waveform appears on GPIO[0]. Then I burn the code into flash 
-> through YAMON, assuring the code only reside in one flash 
-> chip of the two. Content of the flash looks like this in YAMON:
-> 
-> YAMON> dump bdc00000
-> 
-> BDC00000: 90 B1 00 00 08 3C 00 00 80 80 00 00 09 34 00 00  
-> .±...<.......4..
-> BDC00010: 2C 00 00 00 09 AD 00 00 FF FF 00 00 09 34 00 00  
-> ,....-.......4..
-> BDC00020: 00 01 00 00 09 AD 00 00 00 00 00 00 09 24 00 00  
-> .....-.......$.. ...
-> 
->   Each instruction word is split into two half-words, and put 
-> into lower 16-bits of two words. Then I reset the PB1500 
-> board, switch S15 to set the SRAM data bus to 16-bit mode, 
-> switch S13 to boot from the specified flash chip. But the 
-> code will not run, even after I swap the byte-order and the 
-> halfword-order.
-> 
->   Any advice will be appreciated, :-)
-> 
-> 　　　　　　　　Wang Zaifang
-> 　　　　　　　　yikok9@yahoo.com.cn
-> 　　　　　　　　　　2003-11-04
-> 
+-- 
++  Maciej W. Rozycki, Technical University of Gdansk, Poland   +
++--------------------------------------------------------------+
++        e-mail: macro@ds2.pg.gda.pl, PGP key available        +

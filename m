@@ -1,21 +1,24 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0xv6jV-0005FsC@lightning.swansea.linux.org.uk>
+Message-ID: <m0xvJsq-0005FsC@lightning.swansea.linux.org.uk>
 From: alan@lxorguk.ukuu.org.uk (Alan Cox)
 Subject: Re: root-be-0.03.tar.gz
-Date: Wed, 21 Jan 1998 20:26:44 +0000 (GMT)
-In-Reply-To: <34C64EB7.1FA95A9C@netscape.com> from "Mike Shaver" at Jan 21, 98 07:38:31 pm
+Date: Thu, 22 Jan 1998 10:29:15 +0000 (GMT)
+In-Reply-To: <Pine.LNX.3.95.980122005800.20627E-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jan 22, 98 01:04:19 am
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@netscape.com>
-Cc: adevries@engsoc.carleton.ca, linux@cthulhu.engr.sgi.com
-Message-ID: <19980121202644.GgoOHJOxpT9DczjHg1GWASSRBnW6jhVjW8by1ANc1zk@z>
+To: Alex deVries <adevries@engsoc.carleton.ca>
+Cc: shaver@netscape.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19980122102915.dfavxgUAY_Uk6ONzu7bGLkF3YM6xEaI2MaxUvIW9msw@z>
 
-> I _must_ start working on EFS again.  I assume I've missed the 2.2
-> freeze, but I could still help a lot of people by getting off my a** and
-> finishing it.  My apologies to those who are waiting on it.
+> Here's a question:  is it possible to boot off of the local disk without
+> the image being on an EFS partition? Will I ever be able to have my
+> machine have no EFS partition? How will ARC find the image?
 
-You've not missed it providing your code doesnt have to touch the fs
-layer as well as fs/efs. Certainly el penguino took the ADFS patch for
-2.1.80
+Using the Linux initrd stuff. To get the ARC loader to load it all you
+end up doing
 
-Alan
+char __initdata initrd_block[]={
+#include "bootdisk.hex.h"
+};
+
+8)

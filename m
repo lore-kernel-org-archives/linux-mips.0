@@ -1,34 +1,25 @@
-Date: Tue, 4 Nov 2003 19:48:09 +0100 (CET)
-From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Subject: Re: CVS Update@-mips.org: linux 
-In-Reply-To: <20031103231010Z8225443-1272+8723@linux-mips.org>
-Message-ID: <Pine.LNX.4.32.0311041939110.31563-100000@jurand.ds.pg.gda.pl>
+Subject: question regarding put data in the specified section
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <macro@ds2.pg.gda.pl>
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: 8BIT
+Date: Fri, 14 Nov 2003 09:42:34 -0800
+Message-ID: <92F2591F460F684C9C309EB0D33256FA01B750B8@trid-mail1.tridentmicro.com>
+content-class: urn:content-classes:message
+From: "Teresa Tao" <TERESAT@TTI-DM.COM>
+Return-Path: <TERESAT@TTI-DM.COM>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20031104184809.V5DmWSiU_91CU7bWYcNJpNG_HvsbAxRPyU_6CsiW6SA@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20031114174234.B2_REoinX3tVcBVn99huir2J0f4vCHxl0UhCb5mxbD0@z>
 
-On Mon, 3 Nov 2003 ralf@linux-mips.org wrote:
+Hi there,
 
-> Modified files:
-> 	include/asm-mips: i8259.h
->
-> Log message:
-> 	Declare i8259A_lock spinlock.  New inline function i8259_irq to poll
-> 	interrupts in a PC-style daisy-chained i8259 configuration where no
-> 	better method to execute an interrupt acknowledge cycle is available.
+Does anyone know how to put my userland program's data in a specified section?
 
- This is broken -- you do want to check bit #7 for spurious interrupts
-instead of doing awkward PIC poking.  Alternatively, just skip the check
--- the condition is rare and handlers need to be able to deal with it
-anyway.  It was discussed a few months ago and I proposed a correct patch
-similar to your one, but it was rejected, sigh...
+I know there is an attribute "section" to put my data inside a specified section, for example, int data __attribute__ ((section("INITDAT"));
+But how do I initialize/setup the INITDAT section? We use the commercial toolchain, and we don't have the source code for it, is there still a way to specify the postion of the INITDAT section?
 
--- 
-+  Maciej W. Rozycki, Technical University of Gdansk, Poland   +
-+--------------------------------------------------------------+
-+        e-mail: macro@ds2.pg.gda.pl, PGP key available        +
+Thanks in advance!
+
+Teresa

@@ -1,44 +1,71 @@
-Date: Fri, 22 Mar 2002 11:08:27 +0000 (GMT)
-From: Dave Airlie <airlied@csn.ul.ie>
-Subject: Re: [patch] linux: declance multicast filter fixes
-In-Reply-To: <Pine.GSO.3.96.1020321185116.22279D-100000@delta.ds2.pg.gda.pl>
-Message-ID: <Pine.LNX.4.32.0203221107170.1949-100000@skynet>
+Message-ID: <00c001c1d197$4a5c14a0$cecd7d3d@gol.com>
+From: "Girish Gulawani" <girishvg@yahoo.com>
+References: <sc99bfe4.044@quicklogic.com>
+Subject: Re: Re: PCI VGA Card Initilization (SIS6326 / PT80)
+Date: Fri, 22 Mar 2002 20:47:02 +0900
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: Ralf Baechle <ralf@uni-koblenz.de>, linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20020322110827.686SiNS6tesgxhqe7nKXUrjjyQATO9Da1APwYUshe9I@z>
+To: Dan Aizenstros <daizenstros@quicklogic.com>, dom@algor.co.uk, fxzhang@ict.ac.cn, linux-mips@oss.sgi.com
+Message-ID: <20020322114702.tWMfRqwhArzQDTWReH5iicabDQG-drxgU_d2ZvtRVJs@z>
 
 
-I've created declance_2_4.c on http://www.csn.ul.ie/~airlied/mips
+hello, all
+thank you very much for all these reply mails.
+my saga of VGA initialization continues. it occurs to me that the x86
+emulation for the VGA bios is a long process. SiS6326 chipset has support
+inside XFree86 & digging out the BIOS code from here is also a big story.
+hence i was looking for a rather quickish solution. currently i'm trying to
+use sis_*.c files from XFree86 source. dont know how but my monitor displays
+2 red & 1 green vertical lines. the sis_bios source code searched for the
+mode, memory references inside the BIOS at 0x20A offset & it failed to find
+the mode & other info. AOpen BIOS version is 2.25.
+could anybody of you please share your success story of VGA initialization
+on MIPS board with me??
+many thanks in advance.
+regards,
+girish.
 
-for the DS5000/200 series of DecStations..
 
-it only required the BE -> LE and the additional zeroing of the filter, it
-already did the mcast_table access correctly... (by luck rather than
-design :-)
 
-un-compiled and untested but it should work ..
+----- Original Message -----
+From: "Dan Aizenstros" <daizenstros@quicklogic.com>
+To: <dom@algor.co.uk>; <fxzhang@ict.ac.cn>; <linux-mips@oss.sgi.com>;
+<girishvg@yahoo.com>
+Sent: Friday, March 22, 2002 4:10 AM
+Subject: Re: Re: PCI VGA Card Initilization (SIS6326 / PT80)
 
-Dave.
 
-On Thu, 21 Mar 2002, Maciej W. Rozycki wrote:
+Hello Dominic,
 
-> Hello,
->
->  Following are a few trivial fixes for the DECstation's LANCE driver
-> needed for the chip's multicast filter to be set up correctly.  The patch
-> is needed for multicast reception to work, in particular for the IPv6's
-> neighbor discovery.  The CRC generation was verified using the AMD's
-> reference code and it was checked at the run time for selected multicast
-> addresses as well.  Please apply.
->
->  Maciej
->
->
+Actually it was Girish Gulawani who said he used the
+MILO bios not Zhang. He said he was using the files
+vgaraw1.c and vgaraw2.c from MILO. Those files do not
+use the x86emu BIOS emulator but try to directly
+initialize the VGA adapter.
 
--- 
-David Airlie, Software Engineer
-http://www.skynet.ie/~airlied / airlied@skynet.ie
-pam_smb / Linux DecStation / Linux VAX / ILUG person
+Dan Aizenstros
+Software Project Manager
+QuickLogic Canada
+
+>>> Dominic Sweetman <dom@algor.co.uk> 03/21/02 08:28 AM >>>
+
+Dan,
+
+> Is Algorithmics BIOS emulator not the x86emu code
+> that can be found in the Alpha MILO and the XFree86
+> code base as Alan Cox mentioned?
+
+It's an entirely indepedent invention of the same idea.  I've no idea
+whether it's any better/worse, but it sounded like our binary was
+working for Zhang better than the MILO he'd built.
+
+Dominic
+Algorithmics Ltd
+
+
+_________________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.com address at http://mail.yahoo.com

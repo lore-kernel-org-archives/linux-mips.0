@@ -1,22 +1,52 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0xdNb1-0005FsC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Date: Thu, 4 Dec 1997 00:39:07 -0500 (EST)
+From: Lige Hensley <ligeh@carpediem.com>
+Reply-To: Lige Hensley <ligeh@carpediem.com>
 Subject: Re: Linux on the O2
-Date: Wed, 3 Dec 1997 22:48:43 +0000 (GMT)
-In-Reply-To: <199712032231.OAA24793@fir.engr.sgi.com> from "William J. Earl" at Dec 3, 97 02:31:33 pm
-Content-Type: text
+In-Reply-To: <34850E4A.1075E816@home.com>
+Message-ID: <Pine.SGI.3.96.971204001929.20475A-100000@barramunda>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "William J. Earl" <wje@fir.engr.sgi.com>
+To: Chris Carlson <cwcarlson@home.com>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19971203224843.2H2Nm_9EiUZ5wuYd0r9NRqxcHqjNiI7cVYW0vagSo50@z>
+Message-ID: <19971204053907.9yurDFEkZ22p0fWnrqTKbBMQl2qbJAVNQVo0ld1paAs@z>
 
-> One interesting area for development, both in the embedded space, and on
-> the SGI workstations, would be in regard to realtime support, which is
-> needed for digital media.  By realtime, I mean not fast interrupt response,
-> but rather precisely scheduled repetitive events (such as driving the Indy
-> audio ports every 1 ms. with at most 0.9 ms delay no matter what else is
-> going on).  
+On Tue, 2 Dec 1997, Chris Carlson wrote:
 
-This exists although not for the MIPS platform and not directly accessible
-from user space. NMT have a RTLinux kernel that allows real time drivers
-to hit targets well well under 0.1ms. 
+> 
+> I also would like to see Linux ported to the O2 but also don't expect it to
+> happen in the near future.  We have to remember that SGI is a "hardware
+> company" and did not get where it is because of software.  To ask them to
+> divulge the inner workings of their bread-and-butter product, thus allowing
+> competitors to reproduce and improve upon the design is asking for disaster.
+> SGI does not fabricate their own chips and they have done their best to
+> provide access to their source (as long as it doesn't compromise their
+> hardware investment).  The only thing they have to sell is their design.
+> Since MIPS is not faring very well against competitors and there seems to me
+> a bit of doubt that they can stay ahead, what else does SGI have to sell?
+> Just their internal architecture and IRIX.
+
+I was under the impression that MIPS was doing pretty well.  Someone
+correct me if I am wrong, but I remember reading that the vast majority of
+MIPS chips wound up in things other than SGI computers (i.e. Sony
+Playstation, Nintendo 64's, etc.).  
+
+From what I read about the R12K, MIPS would appear to be near the top of
+the CPU game as far as raw procesing power.  When compared to a Pentium-II
+350 MHz, a 300MHz R12K was about equal in integer ops and nearly 5 times
+the speed with floating point ops.  It's not an Alpha, but it far better
+than anything cooked up at Intel.  (ok, maybe I am a little biased, but
+real men use RISC).
+
+
+
+-lige
+
+----------------------------------------------------------------
+Slam Foot Neck!  Ride the wave.  Touch Touch Touch.  I'm cereal.
+e-mail: lige.hensley@carpediem.com 
+www: http://www.iusd.iupui.edu/~henslelf
+  o__            
+  ,>/'        Network Coordinator.  Compression, Inc.
+ (_)\(_)  	http://www.carpediem.com	

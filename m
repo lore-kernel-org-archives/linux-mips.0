@@ -1,20 +1,31 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0xLvHY-0005G4C@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: More Linux/SGI status
-Date: Thu, 16 Oct 1997 20:08:28 +0100 (BST)
-In-Reply-To: <Pine.LNX.3.95.971016113322.32057A-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Oct 16, 97 11:39:29 am
-Content-Type: text
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199710220014.RAA05812@oz.engr.sgi.com>
+Subject: SGI/Linux mirrors
+Date: Tue, 21 Oct 1997 17:14:23 -0700 (PDT)
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: eak@detroit.sgi.com, linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr
-Message-ID: <19971016190828.D6PizJJRQ2zNTmchi1TnwLK7EJoJQIwnb5mApPi8hgI@z>
+To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19971022001423.kjsnu0aSuRiXKxaLdQsHQKB2WqlYS5-o8e-12M9V8WE@z>
 
-> Stick your kernel in /, and boot it.  That kernel would have to have the
-> EFS file system enabled so that you could mount a local disk with a Linux
-> image as /.  Then, partition your other disk, and install RPM's to your
-> heart's content.
+Hi,
 
-NFSroot is another possible way...
+More interest in SGI/Linux around the world.
+I was contacted by admins in three sites (Korea, Poland,
+and the Czech republic) who started mirroring our stuff.
 
-Alan
+Links to these sites are on our external Linux site:
+	http://www.linux.sgi.com/
+
+in the "software" section.
+
+P.S:
+Anyone has a stable precompiled Kernel we can put on linus ?
+It seems that someone deleted the old kernel that was there
+and now people cannot try the stuff.
+
+-- 
+Peace, Ariel

@@ -1,99 +1,67 @@
-content-class: urn:content-classes:message
+Message-ID: <008e01c2299a$3268da30$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <00b401c228ba$88b29bf0$10eca8c0@grendel> <20020712034015.C16608@dea.linux-mips.net> <003301c2297a$380ed400$10eca8c0@grendel> <20020712120024.A20727@dea.linux-mips.net>
+Subject: Re: Sigcontext->sc_pc Passed to User
+Date: Fri, 12 Jul 2002 13:49:15 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Subject: RE: mips32_flush_cache routine corrupts CP0_STATUS with gcc-2.96
-Date: Fri, 12 Jul 2002 11:08:22 +0200
-Message-ID: <CEEE372345CE51438B0EC15F09ADE2710910F8@dus04a.tsb-eu.com>
-From: "Sedjai, Mohamed" <MSedjai@tee.toshiba.de>
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Jon Burgess <Jon_Burgess@eur.3com.com>, Ralf Baechle <ralf@oss.sgi.com>
-Cc: "Gleb O. Raiko" <raiko@niisi.msk.ru>, linux-mips@oss.sgi.com, carstenl@mips.com
-Message-ID: <20020712090822.e0ifqpG7Rm8Bnoyzm_2tHixg0cOHhs2ujW1XY23D0Hg@z>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20020712114915.-OJqVfKN3zdpQtjdFvboteYlH7ZvJ5pg6XQ7CEEUsns@z>
 
-Hello everybody,
+From: "Ralf Baechle" <ralf@oss.sgi.com>
+> On Fri, Jul 12, 2002 at 10:00:27AM +0200, Kevin D. Kissell wrote:
+> 
+> > The IRIX team made some stunningly bad design 
+> > decisions over the years, my favorite being "virtual
+> > swap space" and its side effect of deliberately killing 
+> > system daemons at random under load.  A signal scheme
+> > such as we have now in MIPS/Linux, where a user program
+> > *cannot* identify the instruction causing a signal if
+> > that instruction was in the delay slot of a taken branch,
+> > is broken from first principles.
+> 
+> Certainly you're right when you say a signal handler show know which
+> instruction was causing a fault.  Ours is simply a too bad implementation
+> of their interface ...
+> 
+> IRIX virtual swap space is simply memory overcommit.  Linux has that too
+> and it's been subject to frequent religious discussions on Linux kernel.
+> Non-overcommit means large amounts of memory are required when forking
+> of a new process.  The standard example is a fat bloated Mozilla forking
+> for printing.  Non-overcommit means you need those 50 or 100 megs of
+> Mozilla process size once more and if not as physical memory then at
+> least as swap space.  Deciede yourself if you're paranoid and want that
+> operation to only succeed if that much memory is actually available or
+> if you take the risk of the fork & exec operation failing the other way.
 
-I've been following this thread with much attention and interest,
-and I would like to give my small contribution, even though my expertise
-is far lower than yours.
+Whenever it's been my design responsibility, I made forks fail if
+there wasn't enough backing store to handle the process.  Frankly,
+there are limits to the degree to which an OS should compromise
+its integrity for the sake of supporting badly concieved applications,
+be they Mozilla or the SGI integrated CAD environment.  But
+even if you prefer to take the "speculative" or "optimistic" model
+for handling the situation, what IRIX did was insane:  When, after
+having allowed too many unsupportable forks to succeed, they
+detected deadlock in the swap system, they killed processes
+*at random*.  Including system daemons.  At a *minimum*,
+a system should only terminate processes belonging to the
+user (and preferably the process group) who has been granted
+speculative fork success.  Anything else is a massive "breach of
+contract" for a multiuser OS.
 
-Our TX49 (R4000 based) manual also states that "if the CACHE instruction
-is issued for the line in which this instruction exists the operation 
-is not guaranted". As you can see from the arch/mips/mm/r4xx0.c file, 
-TX49 routines always disable caches before operating. 
+IMHO, if someone really wanted to fix this in the OS, 
+we'd get beyond the traditional Unix "fork" model.  
+And if someone really wanted to avoid the problem in Mozilla or 
+an IDE, one would have all subprograms launched by a tiny 
+"launcher", who would recieve instructions and data via some 
+form of IPC, fork itself, and exec as appropriate.
 
-Recently, one of our customer, raised the question since he was comparing
-performance between TX49 and another comparable MIPS architecture. 
-He noticed a huge difference in favor of the other vendor.
-For information it was a multimedia application. Investigations
-showed that the other vendor was running cache flushing operations cached. 
-He tried to also run TX49 cached and, miracle, TX49 performed much better 
-than the other chip. And the application could run for hours without
-crashing.
+But this is getting a bit off the topic.  Is anyone aware of any
+IRIX applications ported to Linux that would break if we
+corrected the signal payload semantics?
 
-I have contacted our designers, and the answer I got so far is that a problem can
-occur depending on the alignement of the CACHE instructions and on the set
-in which they are located (TX49 cache is 4 way set). This confirms Jon's 
-investigation. Carsten, can you comment this, as a MIPS insider ? Which
-CPUs are concerned ?
-
-Further investigation are now ongoing to find a proper workaround and thus suggestions 
-are highly apreciated.
-
-From my side I have a very simple question:
-
-If you run instruction cache flushing cached, then the cache will be dirty
-when the routine returns. At least the line(s) containing the routine itself ?
-Or am I missing something ?
-
-Best Regards,
-
-Mohamed SEDJAI
-TOSHIBA Electronics Europe 
-
-PS: Sorry Dominic for a possible misusage of the terminology. BTW I found your book 
-wonderfully well written and consider it as a reference to anyone who wants 
-to write a technical book. 
-
-
-
-
-
-
-
-
-
-
------Original Message-----
-From: Jon Burgess [mailto:Jon_Burgess@eur.3com.com]
-Sent: Donnerstag, 11. Juli 2002 18:34
-To: Ralf Baechle
-Cc: Gleb O. Raiko; linux-mips@oss.sgi.com; carstenl@mips.com
-Subject: Re: mips32_flush_cache routine corrupts CP0_STATUS with
-gcc-2.96
-
-
-
-
-> Ralf wrote:
->Have you tried to insert a large number of nops instead?
-
-My investigation suggests that a single extra nop is sufficient. I have also
-tried inserting extra nops before the cache routine to see if the relative
-alignment of the instructions with respect to the cacheline has an influence,
-but it has no effect. I am suspicious that if this occurs with the instruction
-following the loop then something odd might be occuring on every loop iteration
-as well. I might try adjusting the instructions in the loop to see if that has
-any effect.
-
->  Or preferably,
->how about replacing the __restore_flags() in your example with the
->following piece of inline assembler:
->
->  __asm__ __volatile__("mtc0\t%0, $12" ::"r" (flags) : "memory");
-
-I am happy that the current assembler code looks correct, but this change would
-make it simpler.
-
-     Jon
+            Kevin K.

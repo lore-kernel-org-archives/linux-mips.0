@@ -1,28 +1,26 @@
-Subject: Re: math broken on mips
-References: <Pine.LNX.4.44.0202181603470.25667-100000@moshier.net>
-Reply-To: drepper@redhat.com (Ulrich Drepper)
-From: Ulrich Drepper <drepper@redhat.com>
-Date: 18 Feb 2002 13:39:04 -0800
-In-Reply-To: <Pine.LNX.4.44.0202181603470.25667-100000@moshier.net>
-Message-ID: <m3it8ua2rr.fsf@myware.mynet>
+Message-ID: <002301c1b8d2$22a0efe0$443784d3@gol.com>
+From: "Girish Gulawani" <girishvg@yahoo.com>
+Subject: Page Size 16KB.
+Date: Tue, 19 Feb 2002 08:15:18 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: moshier@moshier.net
-Cc: Geoff Keating <geoffk@redhat.com>, fxzhang@ict.ac.cn, linux-mips@oss.sgi.com, libc-alpha@sources.redhat.com
-Message-ID: <20020218213904.5cHqr9Dd06KSoMMOfyE2TA6-z0u3EACKOjAbX1DryBE@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020218231518.mtFtnIBH54wNQb-uffpTCpYXTok4lOqHYLpUxS7VPlM@z>
 
-Stephen L Moshier <moshier@moshier.net> writes:
+hi, all.
+while in the process of changing page size of kernel to 16KB i am facing a
+strange problem. the kernel boots up & user command, currently statically
+linked shell, loads. it displays first prompt.  pressing enter keys, the
+serial device receives the interrupts but no activity on shell's part. where
+could the shell possibly be stuck?
+this is LSI MIPS EZ4021 implementation. please please help!!!
+many thanks & regards,
+girish.
 
-> Does the glibc documentation define it?
 
-No version of any math library reliably worked with anything but
-round-to-nearest.  Only functions which were implemented using integer
-operations were immune and this set varied among different platforms.
-It's not written down but was always said.  If somebody wants to add
-it to the documentation s/he can write something up.
-
--- 
----------------.                          ,-.   1325 Chesapeake Terrace
-Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
-Red Hat          `--' drepper at redhat.com   `------------------------
+_________________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.com address at http://mail.yahoo.com

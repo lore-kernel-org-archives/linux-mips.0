@@ -1,20 +1,36 @@
-Date: Tue, 13 Mar 2001 00:15:20 +0100
-From: Ralf Baechle <ralf@oss.sgi.com>
+Date: Tue, 13 Mar 2001 19:18:05 +0100 (MET)
+From: Karel van Houten <K.H.C.vanHouten@research.kpn.com>
 Subject: Re: Compile error with current CVS kernel
-Message-ID: <20010313001520.A20673@bacchus.dhis.org>
-References: <Pine.NEB.4.33.0103122252170.23935-100000@mimas.fachschaften.tu-muenchen.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.NEB.4.33.0103122252170.23935-100000@mimas.fachschaften.tu-muenchen.de>; from bunk@fs.tum.de on Mon, Mar 12, 2001 at 10:56:40PM +0100
+In-reply-to: <20010313152236.B1208@bacchus.dhis.org>
+Message-ID: <200103131818.TAA14585@sparta.research.kpn.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Adrian Bunk <bunk@fs.tum.de>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010312231520.y1FryyB0fkME1JOT58TNMg1-80GF4W2g_8x6T-Y5ubA@z>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: Adrian Bunk <bunk@fs.tum.de>, linux-mips@oss.sgi.com
+Message-ID: <20010313181805.Kvaasaloi07ew4sdRT30L_1d6-rSNEvosSmUsOkr7tY@z>
 
-On Mon, Mar 12, 2001 at 10:56:40PM +0100, Adrian Bunk wrote:
+Hi Ralf,
 
-Send me the output of ``mipsel-linux-objdump -p -h vmlinux''.
+Ralf wrote:
+> 
+> That's scary - these sections are explicitly mentioned in the linker
+> script and yet ld places them near address zero.  Oh pleassure, oh
+> garbage.
+> 
+> This can probably be fixed by changing the ldscript; can experiment what
+> it takes to get your ld to place all sections with a LOAD attribute placed
+> next to each other?  My ld behaves fine.
 
-  Ralf
+Can you point me to a binutils version and/or patches that should
+behave OK for native compiles?
+
+-- 
+Karel van Houten
+
+----------------------------------------------------------
+The box said "Requires Windows 95 or better."
+I can't understand why it won't work on my Linux computer. 
+----------------------------------------------------------

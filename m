@@ -1,126 +1,21 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199807202212.PAA18184@oz.engr.sgi.com>
-Subject: [Fwd: Proof Linux not just for geeks & nerds from IDG.net]
-Date: Mon, 20 Jul 1998 15:12:19 -0700 (PDT)
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <m0yydvZ-000aQ1C@the-village.bc.nu>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: [Fwd: Proof Linux not just for geeks & nerds from IDG.net]
+Date: Tue, 21 Jul 1998 16:02:04 +0100 (BST)
+In-Reply-To: <Pine.SUN.3.91.980721103822.15457B-100000@terra> from "Ron G. Minnich" at Jul 21, 98 10:39:11 am
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19980720221219.LAIUk7ZCCdvkYeFs5f9Vn2zeKOtb_94-RfYrg2GEz7w@z>
+To: "Ron G. Minnich" <rminnich@Sarnoff.COM>
+Cc: ralf@uni-koblenz.de, ariel@cthulhu.engr.sgi.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19980721150204.YWeCZJO3ruIBX9Am9X2BW1y2wrgmx1TFhmq0H1_QeDk@z>
 
+> Now if only we could convince darpa. They've just selected NT, as has the 
+> Navy. very disappointing. They don't seem to understand that they've just 
+> locked themselves into a technology ghetto. 
 
-I'd say this flood of news from Oracle, Informix, Corel
-and Computer Associates, is a pretty significant change
-of attitude towards Linux.
+The press are already having a great run on this one
 
+	 http://www.gcn.com/gcn/1998/July13/cov2.htm 
 
------ Forwarded message from Larry McVoy -----
-
-                                        IDG.net
-                                   http://www.idg.net
-                           From 200+ Web sites, quality computing
-                             intelligence you need every day.
-
- TOP HOW-TO ADVICE, ESSENTIAL INTELLIGENCE & FUN FROM IDG.net
-         Today's topic: Linux: The free OS that could
-                       for Monday, July 20
-
-LINUX SUPPORTERS RALLY AROUND FREEWARE OS
-     (Source: InfoWorld Electric) Linux, the popular freeware
-operating system, will be getting richer in functionality with
-upcoming features to include support for Intel's 64-bit Merced
-processor, a panel of Linux experts said last week.
-http://www.idg.net/go.cgi?id=20926
-
-LINUX PICKING UP STEAM
-     (Source: InfoWorld Electric) Computer Associates will join
-companies such as Software AG, InterBase, and Informix in running
-its database on the Linux operating system.
-http://www.idg.net/go.cgi?id=20928
-
-LINUX MAY CHALLENGE NT, ANDREESSEN SAYS
-     (Source: Computerworld) The Linux operating system will find a
-broader base of support during the next several years and could
-wind up being the biggest threat to Microsoft Corp.'s Windows NT
-platform, says Marc Andreessen, co-founder and executive vice
-president of products at Netscape Communications Corp.
-http://www.idg.net/go.cgi?id=20930
-
-INFORMIX GETS SET TO EMBRACE LINUX
-     (Source: InfoWorld Electric) Informix will detail a Linux
-support plan for its database in an announcement at the Informix
-Worldwide User Conference in Seattle this week.
-http://www.idg.net/go.cgi?id=20932
-
-ORACLE TO PORT DATABASE TO LINUX AFTER ALL
-     (Source: InfoWorld Electric) In a sudden turnabout, Oracle
-will indeed port its Oracle8 database to the Linux operating
-system. The company earlier this month said it had no such plans
-but has had a change of heart based on a recent groundswell of
-support for the open-source operating system.
-http://www.idg.net/go.cgi?id=20934
-
-COREL GETS BEHIND LINUX
-     (Source: Computerworld) Corel Corp. plans to release
-WordPerfect 8 for the Linux operating system before September.
-http://www.idg.net/go.cgi?id=20936
-
-FREEWARE CREATORS EYE CORPORATE USERS
-     (Source: Computerworld) The creators of some of the computer
-industry's most widely used software gathered in Palo Alto, Calif.,
-in April for a first- of- its- kind summit on freeware
-applications. They called attention to their software's wide
-popularity and urged closer ties with the corporate world.
-http://www.idg.net/go.cgi?id=20938
-
-SOMETHING FOR NOTHING ON THE 'NET
-     (Source: Computerworld) Despite the best efforts of many
-powerful commercial interests, the ability of people to get things
-for free on the Internet is still gaining momentum.
-http://www.idg.net/go.cgi?id=20940
-
-FORUM: LINUX READY FOR THE ENTERPRISE?
-     (Source: Network World Fusion) Readers answer the question
-"Would you bet your enterprise on a freeware OS?" (Free
-registration required to view this site.)
-http://www.idg.net/go.cgi?id=20942
-
-LINUX LINES UP FOR THE ENTERPRISE
-     (Source: SunWorld) It isn't designed for running the entire IT
-department, but it is inexpensive, powerful, easy to install, and
-it can run on a huge range of "obsolete" hardware. As a result,
-Linux is turning up on everything from print servers to Web servers
-to data collection systems.
-http://www.idg.net/go.cgi?id=20944
-
-LINUS TORVALDS INTERVIEW
-     (Source: InfoWorld Electric) InfoWorld Executive News Editor
-Michael Vizard talked with Torvalds about the issues facing the
-future development of operating systems and the economic models
-that drive the industry.
-http://www.idg.net/go.cgi?id=20946
-
-LINUX FOR DUMMIES
-     (Source: Dummies) With Linux For Dummies by your side, you can
-take charge of your computer's capabilities with confidence,
-without a Ph.D. in computer science.
-http://www.idg.net/go.cgi?id=20948
-
-Keep current on today's top IT stories, learn about new software,
-hardware, services and techniques, and search IDG's 200+ Web sites
-world-wide to find the intelligence you need at http://www.idg.net/
-
-Find what you're missing!
-
-The editors
-http://www.idg.net
-
-IDG.net. IT all starts here.
-
-[snip]
-
--- 
-Peace, Ariel
+Just don't get into any wars for a while - you might need towing home

@@ -1,45 +1,47 @@
-Message-ID: <200304102028.h3AKSf211575@uhler-linux.mips.com>
-Reply-To: uhler@mips.com
-Subject: Re: way selection bit for multi-way cache 
-In-reply-to: Your message of "Thu, 10 Apr 2003 22:09:06 +0200."
-             <20030410220906.B519@linux-mips.org>
-Date: Thu, 10 Apr 2003 13:28:41 -0700
-From: "Mike Uhler" <uhler@mips.com>
-Return-Path: <uhler@mips.com>
+Message-ID: <004a01c30002$b3b19480$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <20030410220906.B519@linux-mips.org><200304102028.h3AKSf211575@uhler-linux.mips.com><20030410225212.A3294@linux-mips.org> <16022.24992.314581.716649@gladsmuir.mips.com>
+Subject: Re: way selection bit for multi-way cache
+Date: Fri, 11 Apr 2003 10:15:06 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Mike Uhler <uhler@mips.com>, Jun Sun <jsun@mvista.com>, linux-mips@linux-mips.orguhler@mips.com
-Message-ID: <20030410202841.4CNYcz31DPSeml3fU4Wl6Q5ykUgK7Ndr9N12HhjGGjs@z>
+To: Dominic Sweetman <dom@mips.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: Mike Uhler <uhler@mips.com>, Jun Sun <jsun@mvista.com>, linux-mips@linux-mips.org
+Message-ID: <20030411081506.LSjd2gaAtvBcWyhgDuPK3BAHJxpsHsg7ScxcbzgVJUs@z>
 
-
-> On Thu, Apr 10, 2003 at 12:37:47PM -0700, Mike Uhler wrote:
+> Mike wrote:
 > 
-> > > The question came up between Jun and me when revising the way of handling
-> > > multi-way caches.  There is the MIPS32 / MIPS64 way of selecting the
-> > > cache way - but that scheme was originally already introduced by the
-> > > R4600.  The second somewhat less common scheme is using the lowest bits
-> > > of the address.  That was originally introduced with the R10000 but a
-> > > few other processors such as the R5432 and the TX49 series are using it
-> > > as well.  Unfortunately there has been way to much creativity (usually
-> > > a positive property but ...) among designers so this posting is an
-> > > attempt to achieve completeness.
-> > 
-> > Exactly why we made it a standard in MIPS32 and MIPS64.
+> > > I'm not sure what you mean by TLB translations required for hit
+> > > cacheops.  If you mean the Index Writeback or Index Invalidate
+> > > functions, note that you can (and should) use a kseg0 address to
+> > > do this.
 > 
-> Yep, of the existing variations that was certainly the nicest.  Only a
-> single function had to be taught about multi-way caches and that only
-> because it's a bit hard to flush caches for another process due to the
-> TLB translation required for the hit cacheops.  Alternative schemes need
-> more support by the code.
+> Mike was proposing a kseg0 address translating to the right physical
+> address, and used with a hit-type cacheop.  I believe Ralf (and Linux)
+> are just assuming that's no good because it doesn't work if you have
+> cacheable memory above 512Mbytes physical address.
 
-I'm not sure what you mean by TLB translations required for hit cacheops.
-If you mean the Index Writeback or Index Invalidate functions, note that
-you can (and should) use a kseg0 address to do this.  This bypasses
-the TLB, while still giving you the index that you want.  We simply
-OR the kseg0 base address into the index that we've calculated and
-use that as the argument to the CACHE instruction.  There's actually
-words to this effect in the MIPS32/MIPS64 spec, but it is, perhaps,
-not clear enough.
+More importantly, it doesn't work in the case of virtually tagged caches,
+such as those in the SB-1 and MIPS 20K.
 
-/gmu
+> I wonder whether anything really bad would happen if you temporarily
+> changed the (machine) ASID to that of the address space you wanted to
+> invalidate?
+
+I looked at that when we were investigating the aforementioned
+issues with virtually-tagged I-caches.  It looked to me as if exceptions
+can occur during the invalidation, and that processing those exceptions
+can cause signals to be raised to the current process in a manner that 
+assumes that the TLB and ASID are coherent and in sync with 
+the scheduler.  It may be that just changing the ASID temporarily
+would work - most of the time.  It may even be that, with a bit
+of lashing down of state, disabling of interrupts, setting of flags
+to be read by traps.c/signal.c, etc, etc, it could be made bulletproof.
+But I don't think that the simple, obvious hack is safe.
+
+            Kevin K.

@@ -1,39 +1,66 @@
-Message-ID: <003501c2de36$b27c8360$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20030227005338.GB2077@greglaptop.internal.keyresearch.com>
-Subject: Re: volatile question
-Date: Thu, 27 Feb 2003 09:03:17 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Message-ID: <200303032138.h23LcCF25903@uhler-linux.mips.com>
+Reply-To: uhler@mips.com
+Subject: Re: Improper handling of unaligned user address access? 
+In-reply-to: Your message of "Mon, 03 Mar 2003 22:22:31 +0100."
+             <Pine.GSO.4.21.0303032219100.12650-100000@vervain.sonytel.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 03 Mar 2003 13:38:12 -0800
+From: "Mike Uhler" <uhler@mips.com>
+Return-Path: <uhler@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Greg Lindahl <lindahl@keyresearch.com>, linux-mips@linux-mips.org
-Message-ID: <20030227080317.pF5ennczYbzBXAodTynfSY2pAmyj-2_lqEIpSORb5_4@z>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "Steven J. Hill" <sjhill@realitydiluted.com>, Linux/MIPS Development <linux-mips@linux-mips.org>, uhler@mips.com
+Message-ID: <20030303213812.c5IWgOh7OKXrXnKDl9UqYedloDePWqsGoZal9frpr7s@z>
 
-> In the mips, mips64, and even the i386 arch, arch/kernel/smp.c has
-> this in smp_call_function:
-> 
->         spin_lock(&call_lock);
->         call_data = &data;
-> 
->         /* Send a message to all other CPUs and wait for them to respond */
->         for (i = 0; i < smp_num_cpus; i++)
->                 if (i != cpu)
->                         core_send_ipi(i, SMP_CALL_FUNCTION);
-> 
-> call_data isn't volatile, it's a plain static *. So how can we be sure
-> that "call_data = &data" does anything other than change a register?
-> 
-> The i386 has a wb() after the assignment; we don't even have that.
 
-call_data is neither local nor static to the function, so the modification
-of the storage location would seem to be mandatory for the compiler
-before the call to core_send_ipi(), so I can see how the code, as written, 
-would generally work on most MIPS CPUs.  However, it would be legal 
-for the compiler to defer the store until *just* before the invocation of 
-core_send_ipi(), and on moderately complex,  high-ILP processors 
-it seems to me like the wb() might well be necessary.  I take it that
-you've observed a problem with this on your system?:
+<snip>
+
+> > 
+> >     8025f004 <cleanup_src_unaligned>:
+> >     8025f004:       10c00017        beqz    a2,8025f064 <done>
+> >     8025f008:       30d80003        andi    t8,a2,0x3
+> >     8025f00c:       13060009        beq     t8,a2,8025f034 <copy_bytes>
+> >     8025f010:       88a80000        lwl     t0,0(a1)
+> > 
+> > The instruction at 8025f00c is the offending instruction, however, the
+>                      ^^^^^^^^
+> Don't you mean 8025f010?
+> 
+
+<snip>
+
+> >     epc == 8025f00c, ra == 8011c3c8
+> >     epc  : 8025f00c    Not tainted
+> >     Status: 3000fc03
+> >     Cause : 90000008
+> > 
+> > I am using the last version of the 2.4.18 Linux/MIPS kernel. It looks
+> > like there was a possible fix for this in 'arch/mips/kernel/unaligned.c'
+> > by Ralf, but it did not seem to work. Any thoughts on this?
+> 
+> This looks like the unaligned access in a branch delay slot problem I
+> experienced a while ago, where the CPU doesn't set the BD flag if the branch is
+> not taken. Can you please try the patch I posted?
+
+In this particular case, it would appear that it's not the delay slot problem.
+According to the Cause value above, BD is set, and EPC has been rolled
+back to point at the branch.  That all looks consistent to me.
+
+Note that the lwl will not take an unaligned exception, and the Cause code
+value indicates a TLB miss.  I don't have the full context of the problem,
+but is 0xA (i.e., virtual page zero) actually a valid address?  If not,
+that's the cause of the problem.
+
+By the way, having the oops message put out the BadVAddr and PRId CP0 registers
+would be very helpful.
+
+/gmu
+-- 
+
+  =*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=
+  Michael Uhler, VP, Systems, Architecture, and Software Products 
+  MIPS Technologies, Inc.   Email: uhler@mips.com   Pager: uhler_p@mips.com
+  1225 Charleston Road      Voice:  (650)567-5025   FAX:   (650)567-5225
+  Mountain View, CA 94043   Mobile: (650)868-6870   Admin: (650)567-5085

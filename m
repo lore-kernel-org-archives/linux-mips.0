@@ -1,21 +1,31 @@
-Date: Tue, 30 Oct 2001 10:55:10 +0000 (GMT)
+Date: Tue, 30 Oct 2001 21:46:19 +0000 (GMT)
 From: Dave Airlie <airlied@csn.ul.ie>
 Subject: Re: [LV] FYI: Mopd ELF support
 In-Reply-To: <Pine.GSO.3.96.1011029170937.3407G-100000@delta.ds2.pg.gda.pl>
-Message-ID: <Pine.LNX.4.32.0110301054330.29920-100000@skynet>
+Message-ID: <Pine.LNX.4.32.0110302144340.14320-100000@skynet>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-vax@mithra.physics.montana.edu
-Cc: linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20011030105510.gvqNsC0NZybkR7LrfQBLUsjVgml5yvfCzvpGgSKP_Sc@z>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Cc: linux-mips@fnet.fr, linux-mips@oss.sgi.com, linux-vax@mithra.physics.montana.edu
+Message-ID: <20011030214619.WtlCrggicYKX3Ac-BM9X27n_LE_leJ_XeT6k1-AjoKI@z>
 
 
-Hi,
-    I'll try and get it some VAX time at home over the next couple of
-days...
+Okay it didn't go so well.. my VAX couldn't boot the file I normally use
+with this mopd (I had to rebuild it for a static libelf)...
 
-Dave.
+I've put a tgz up at
+
+http://www.skynet.ie/~airlied/vax/mopd_on_the_vax.tgz
+
+it contains the file I was trying to boot and the tcpdumps of this mopd
+and the one I normally use ...
+
+if you need any more info give me a shout ..
+
+Regards,
+	Dave.
+
 
 On Mon, 29 Oct 2001, Maciej W. Rozycki wrote:
 

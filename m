@@ -1,23 +1,32 @@
-Reply-To: <sseeger@stellartec.com>
-From: sseeger@stellartec.com (Steven Seeger)
-Subject: rtai part 2
-Date: Wed, 23 Apr 2003 06:20:09 -0700
-Message-ID: <06fd01c3099b$1125b2d0$3501a8c0@wssseeger>
+Date: Thu, 24 Apr 2003 10:43:45 +0300 (IDT)
+From: Nir Tzachar <tzachar@cs.bgu.ac.il>
+Subject: RE: Crash on insmod
+In-Reply-To: <1051006532.8589a060yaelgilad@myrealbox.com>
+Message-ID: <Pine.LNX.4.44.0304241036510.30698-100000@merlin>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20030423101533Z8225213-1272+1514@linux-mips.org>
-Return-Path: <sseeger@stellartec.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <tzachar@cs.bgu.ac.il>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Cc: stevep@metrowerks.com
-Message-ID: <20030423132009.4l1VRxZyoL4IOC3CNdrFWu4UIlI7JEAfBs-sdtdCX6s@z>
+To: Gilad Benjamini <yaelgilad@myrealbox.com>
+Cc: kernelnewbies@nl.linux.org, linux-mips@linux-mips.org
+Message-ID: <20030424074345.DfsCm_lxrgJGDxqexcBOprvvjwkVXK_lGIDg7mUn_vs@z>
 
-Just to clarify. The reason I mentioned 2.4.18 is because that's the last
-linux-mips kernel I patched. I haven't done any stress testing with
-2.4.21-pre4. Now I hope to keep the patch current with CVS in the 2.4
-branch.
+> Using /lib/modules/2.4.20-pre6-sb20021114 ...
+> unable to handle kernel paging request at virtual address 00006e76, epc == c0005100, ra == 80117e08
+> Oops in fault.c::do_page_fault, line 224:
 
-Steve
+hello.
+
+from ur oops msg, can i assume ur using 2.4.20-pre6 ???
+does this problem happen on a stable release? 
+try using a stable vanila kernel, and c what happens...
+
+i tried insmoding ur module, and it gave no problem using  a 2.4.18 
+or 2.4.20 on i386 -> maybe ur problem is mips related ??
+
+
+
+-- 
+========================================================================
+nir.

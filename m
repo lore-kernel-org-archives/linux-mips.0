@@ -1,24 +1,19 @@
-From: "jeff" <jeff_lee@coventive.com>
-Subject: FIR problem
-Date: Thu, 27 Jun 2002 18:14:18 +0800
-Message-ID: <LPECIADMAHLPOFOIEEFNEEHPCHAA.jeff_lee@coventive.com>
+Message-ID: <000901c221ae$2a9a0c00$780411ac@sam>
+From: "Sam" <iskoo@ms45.hinet.net>
+Subject: # trap handler example
+Date: Tue, 2 Jul 2002 17:52:22 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <20020627014620.A1484@dea.linux-mips.net>
-Content-Transfer-Encoding: 8bit
+	charset="big5"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Cc: jeff_lee <jeff_lee@coventive.com>
-Message-ID: <20020627101418.hawxUee93i0xqDbwG1hV1WXTXrXq2PtHjFHxX2JSahc@z>
+Message-ID: <20020702095222.K2PFnt4vkNlKqbI8mV8Kyj72MODn0vuqB0oplyk2Thw@z>
 
-Dear All,
-    Is there anybody know how to use the DMA on Vr4131?
-We want to drive the High Point 371 HDD driver and wnat
-to enable DMA. Base on the specfication, Vr4131 has the
-I/O <-> Memory DMA channel.
-    Now the PIO mode is running good, but speed is too slow.
+hi everybody,
 
-Thanks and best regs,
+    I want to write a trap handler for unalignment memory read/write error.
+    Is there any example for reference?
+    thanks all~
 
-Jeff
+--Sam

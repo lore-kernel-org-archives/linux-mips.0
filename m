@@ -1,33 +1,31 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@Julia.DE>
-Message-ID: <199705151240.OAA06555@kernel.panic.julia.de>
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199705151321.JAA19520@neon.ingenia.ca>
 Subject: Re: .36 progresss
-Date: Thu, 15 May 1997 14:40:48 +0200 (MET DST)
-In-Reply-To: <337B0192.63DE@munich.sgi.com> from "Martin Knoblauch" at May 15, 97 02:29:06 pm
+In-Reply-To: <199705151152.NAA00312@pris.intern.julia.de> from Ralf Baechle at "May 15, 97 01:52:15 pm"
+Date: Thu, 15 May 1997 09:21:45 -0400 (EDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Martin Knoblauch <knobi@munich.sgi.com>
+To: Ralf Baechle <ralf@Julia.DE>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970515124048.a_wXGd3ITRFh_yevw8ajNIDlJYyy9rmdp8pGT6Lu2fI@z>
+Message-ID: <19970515132145.en6FlwEDFtrUuCS0gVuKNetxMi967OoZ-90WsY99ws8@z>
 
-Hi,
+Thus spake Ralf Baechle:
+> I've fixed most of the problems in my .37 tree.  An Indy kernel will build
+> now.  More testing will be done when I receive my Indy.  Until then I'll
+> just counting backwards slowly ...
 
-> > [stuff about too many compilation errors in .36 ...]
-> > 
-> > I've fixed most of the problems in my .37 tree.  An Indy kernel
-> > will build now.  More testing will be done when I receive my
-> > Indy.  Until then I'll just counting backwards slowly ...
-> > 
-> >   Ralf
-> 
-> 
->   you are down to "1".
+Cool!
+Can I get my hands on a source tree?
 
-Sounds like you're delivering by parachute drop ;-)
+Mike
 
-Btw, will anybody on this list (aside of David ...) be on the Linux
-Kongress in Wuerzburg next week?  Would be nice to meet there.
-
-  Ralf
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>                   Welcome to the technocracy.
+#>                                                                     
+#> "you'd be so disappointed
+#>              to find out that the magic was not
+#>                          really meant for you" - OLP

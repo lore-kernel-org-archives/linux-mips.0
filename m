@@ -1,26 +1,32 @@
-Message-ID: <01ed01c47963$bc74a220$1701a8c0@portege>
-From: "Alec Voropay" <a.voropay@vmb-service.ru>
-Subject: SGI ARC .vs. ACE ARC BIOS
-Date: Tue, 3 Aug 2004 18:11:12 +0400
+From: "akshay" <akshay.singh@analog.com>
+Subject: RE: pthread uClibc
+Date: Thu, 5 Aug 2004 18:48:48 +0530
+Message-ID: <005601c47aee$beb7faf0$5d0d790a@asingh2d01>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="koi8-r"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-Path: <a.voropay@vmb-service.ru>
+Return-Path: <akshay.singh@analog.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20040803141112.eWEZD0708ES6dvBk2WlUhYT_402iGI_dASCbDJG196s@z>
-
-Hi!
-
- Can anyone explain a difference between SGI ARC BOOT-PROM
-(sometimes called ARCS) and an old ACE ARC BIOS (Jazz/Magnum) ?
-Is this equal (in functionality, not command line) ?
-
-P.S.
-http://www.netbsd.org/Documentation/Hardware/Machines/ARC/
+To: linux-mips@ftp.linux-mips.org
+Message-ID: <20040805131848.rJyARXv_qcF9Jl6HAjWprr6xon9XL6Y7qDRsc0nBs1U@z>
 
 
---
--=AV=-
+Hi,
+
+I am trying to use pthread on mips based platform.
+
+I have simple program to just create pthreads and when I run my program, it
+goes does not come back and when I hit enter on screen, I see following
+message on console.
+
+pt: assertion failed in manager.c:154.
+
+pt: assertion failed in manager.c:193.
+
+Can someone plz help me here .
+
+
+Thanks,
+Akshay

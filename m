@@ -1,53 +1,33 @@
-Message-ID: <000c01bf3da2$dab2a400$e548e8c3@thinkpad>
-From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: Re: EXT2 fs error
-Date: Fri, 3 Dec 1999 16:26:42 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: Re: Nomenclature: "MIPS32", "MIPS64"
+Date: Mon, 6 Dec 1999 13:35:54 +0000 (GMT)
+In-Reply-To: <00a201bf3fed$df8c82f0$0ceca8c0@satanas.mips.com> from "Kevin D. Kissell" at Dec 6, 99 02:29:06 pm
+Content-Type: text
+Message-ID: <E11uyJ2-0006Eb-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Marc Esipovich <marc@mucom.co.il>, e1097757@ceng.metu.edu.tr, linux@cthulhu.engr.sgi.com
-Message-ID: <19991203152642.pg97R51jBh8T_GW1Fd6VIyiCywGs-n5Y7cIfdkjSjFw@z>
+To: "Kevin D. Kissell" <kevink@mips.com>
+Cc: ralf@oss.sgi.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19991206133554.EwugcC_ZMvweCX4GMK7m5tYa1pE1VAGyiPj4sCcYZGk@z>
 
->On Tue, Nov 30, 1999 at 07:52:04PM +0000, Alan Cox wrote:
->
->> If there is a scsi error before the ext2fs error then yes probably so
->> You are looking for a "media error" probably.
->>
->> > > SCSI bus is being reset for 0 channel 0.
->> > > scsi0 reset. sending SDTR
->> >
->> > SCSI reset is due to repeated attempts to read a block, or I might be
->> > wrong and it it's due to a malfunction of the controller on your HD.
->>
->> You can get it off some working sane hardware if you try and ask for
-stupid
->> block numbers. It is worth doing a full fsck on the drive before assuming
->> hardware. Also check the cabling seems sound and is well attached and
-that
->> parity is enabled on the controller if the bios sets it.
->
->I've seen this happening on my Indy as well like once every month or even
->more rarely.  It only happens very rarely but it happens.  I think the
->hardware of my Indy is fine as all my attempts to reduce the problems I'm
->experiencing during my development to a hardware problem have failed.
->
->  Ralf
+> The problems are twofold.  First, while it is of course possible to create
+> a kernel that will run on both MIPS64 and pre-MIPS64 MIPS-III and
+> MIPS-IV CPUs, it is also possible to create a MIPS64 kernel that
+> would not necessarily run on R10000s and vice versa.  Secondly,
+> we are referring to two distinct things that ought to be distinguished
+> at the source and documentation level.   We need a name for something 
+> that is 64-bit-MIPS but not necessarily tied up with any particular CPU 
+> and a distinct name for something that is compatible with a particular 
+> CPU type.  "MIPS32" and "MIPS64" are already trademarked
+> by MIPS to describe the CPUs, so we need another name for the 
+> generic OS infrastructure for 64-bit MIPS registers/addresses.
 
-By any chance are you guys seeing this on R5000 Indys?
-There is an assumption in arch/mips/mm/r4xx0.c that
-flushing the secondary cache automagically flushes
-the same address in the primary data cache, but that
-assumption is not universally valid and there is no
-reason to believe that it is true on the R5K.   This
-could cause periodic random corruptions of DMA
-transfers, which could in turn manifest themselves
-as corrupted files or file system meta-data.  The
-R4000/R4400SC systems, and the entry-level
-Indy's without secondary caches should not be
-at risk.
+I would suggest that until someone from MIPS legal specifically raises an issue
+you don't worry about it. With the sparc people they were quite happy with
+Linux/sparc - which denotes Linux for sparc systems (they objected to 
+sparclinux as that implied it was their product). In fact given the "/" is
+'for' then I don't think there is even a valid trademark issue to be raised.
 
-            Kevin K.
+Its also not in MIPS interest to cause trouble. Its a product for their
+system. If they started being silly then everyones lawyers would be advising
+them to pull their "xyz product for mips" as a legal precaution.

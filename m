@@ -1,45 +1,21 @@
-From: "jeff" <jeff_lee@coventive.com>
-Subject: RE: Problem about porting mips kernel
-Date: Tue, 26 Nov 2002 10:23:05 +0800
-Message-ID: <LPECIADMAHLPOFOIEEFNEEOBCLAA.jeff_lee@coventive.com>
+Received: from fury.csh.rit.edu (fury.csh.rit.edu [129.21.60.5])
+	by mcp.csh.rit.edu (Postfix) with ESMTP id C3634A113
+	for <linux-mips@linux-mips.org>; Tue, 26 Nov 2002 17:30:30 -0500 (EST)
+Date: Tue, 26 Nov 2002 17:30:29 -0500 (EST)
+From: George Gensure <werkt@csh.rit.edu>
+Subject: O2 Patches
+Message-ID: <Pine.SOL.4.31.0211261728560.19456-100000@fury.csh.rit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
-In-Reply-To: <F61cMzfoV1qdiixjnzi000000e5@hotmail.com>
-Return-Path: <jeff_lee@coventive.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <werkt@csh.rit.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: henaldohzh@hotmail.com, ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20021126022305.xW825Ci7cBZBj8Nk2aBgdR0uQS3pODUm_8XYwjZV01M@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20021126223029.e4sBiwEDcUBY3n6nx_2Jppq0upxiLg8LO2oFcL8N2bU@z>
 
-SGksIGNhbiB5b3UgdHVybiBvZmYgdGhlIGNhY2hlIG9uIG1lbnVjb25maWcgYW5kIHRyeSBhZ2Fp
-bj8NCg0KUmVnYXJkcywNCg0KSmVmZg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJv
-bTogbGludXgtbWlwcy1ib3VuY2VAbGludXgtbWlwcy5vcmcgW21haWx0bzpsaW51eC1taXBzLWJv
-dW5jZUBsaW51eC1taXBzLm9yZ11PbiBCZWhhbGYgT2YgaGVuYWxkb2h6aEBob3RtYWlsLmNvbQ0K
-U2VudDogVHVlc2RheSwgTm92ZW1iZXIgMjYsIDIwMDIgMTA6MDYgQU0NClRvOiByYWxmQGxpbnV4
-LW1pcHMub3JnDQpDYzogbGludXgtbWlwc0BsaW51eC1taXBzLm9yZw0KU3ViamVjdDogUmU6IFBy
-b2JsZW0gYWJvdXQgcG9ydGluZyBtaXBzIGtlcm5lbA0KDQoNCkkgdGhpbmsgdGhhdCBrZXJuZWwg
-aGFkIGJlZW4gY29uZmlndXJlZCBwcm9wZXJseSwgYmVjYXVzZSBJIGNhbiBvcGVuIHRoZSANCnR0
-eVMwIGRldmljZSBpbiByYW1kaXNrLiBJdCBtZWFucyBubyByYW1kaXNrIHByb2JsZW0uIEJ1dCBJ
-IGhhdmUgbm90IGFueSANCmV4cGVyaWVuY2UgdG8gZml4IHRsYiBvciBjYWNoZSBidWcuIElmIHlv
-dSBjYW4gZ2l2ZSBzb21lIG1vcmUgYWR2aWNlPyBUaHguDQoNCg0KDQoNCj5Gcm9tOiBSYWxmIEJh
-ZWNobGUgPHJhbGZAbGludXgtbWlwcy5vcmc+DQo+VG86IGhlbmFsZG9oemhAaG90bWFpbC5jb20N
-Cj5DQzogbGludXgtbWlwc0BsaW51eC1taXBzLm9yZw0KPlN1YmplY3Q6IFJlOiBQcm9ibGVtIGFi
-b3V0IHBvcnRpbmcgbWlwcyBrZXJuZWwNCj5EYXRlOiBNb24sIDI1IE5vdiAyMDAyIDEzOjUzOjEw
-ICswMTAwDQo+DQo+T24gTW9uLCBOb3YgMjUsIDIwMDIgYXQgMTI6NDc6MjhQTSArMDAwMCwgaGVu
-YWxkb2h6aEBob3RtYWlsLmNvbSB3cm90ZToNCj4NCj4gPiAgIHRoZXNlIGRheXMsIEkgYW0gYnVz
-eSB3aXRoIHBvcnRpbmcgbWlwcyBrZXJuZWwgdG8gYSBib2FyZCB3aXRoIHZyNDEzMQ0KPiA+IGNv
-cmUuIFRoaXMgYm9hcmQgaGFzIG9ubHkgU0lVIHNlcmlhbCBwb3J0LCBhbmQgc29tZSBodyBoYXZl
-IGJlZW4gDQptb2RpZmllZC4NCj4gPiBOb3csIEkgaGF2ZSBwb3J0ZWQgdGhlIGtlcm5lbCB0byBp
-dCwgYW5kIG1vZGlmaWVkIGh3IHJ1biB3ZWxsLiBCdXQgc28NCj4gPiBwdXp6bGluZyBtZSwgdGhl
-IGV4ZWN1dGlvbiBmaWxlIGNhbm4ndCBydW4gYXQgYWxsLiBJZiBzb21lIG9uZSBjYW4gaGVscCAN
-Cm1lDQo+ID4gb3IgZ2l2ZSBzb21lIGFkdmljZXMuIEkgaGF2ZSBiZWVuIGNyYXp5IGZvciB0aGUg
-cHJvYmxlbS4gT2ZmIGhhdCBmb3IgDQp5b3VyDQo+ID4gaGVscC4gVGhhbmtzIGEgbG90Lg0KPiA+
-ICBidHcsIEkgdXNlIHRoZSByYW1kaXNrIHdpdGggYnVzeWJveC4NCj4NCj5JbiBnZW5lcmFsIHRo
-aXMga2luZCBvZiBwcm9ibGVtIG1lYW5zIHRoZSB0bGIgb3IgY2FjaGUgY29kZSBmb3IgYSANCnBh
-cnRpY3VsYXINCj5wbGF0Zm9ybSBpcyBmYXVsdHkgb3IgdGhlIGtlcm5lbCBub3QgY29uZmlndXJl
-ZCBwcm9wZXJseS4NCj4NCj4gICBSYWxmDQoNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCsPit9HPwtTYIE1TTiBFeHBs
-b3JlcjogIGh0dHA6Ly9leHBsb3Jlci5tc24uY29tL2xjY24vIA0K
+What happened to Glaurung's O2 patches (to say nothing of his page in
+general) from the linux-mips site?  That was the only place I could ever
+find anything regarding the O2 port.
+
+-George Gensure
+werkt@csh.rit.edu

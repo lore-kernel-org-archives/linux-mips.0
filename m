@@ -1,56 +1,77 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199806060025.RAA47789@oz.engr.sgi.com>
-Subject: Re: Some questions...
-Date: Fri, 5 Jun 1998 17:25:03 -0700 (PDT)
-In-Reply-To: <Pine.LNX.3.95.980605183028.29950C-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jun 5, 98 06:34:01 pm
+Message-ID: <199806101951.MAA65805@oz.engr.sgi.com>
+Subject: Re: 4d/25 docs.
+Date: Wed, 10 Jun 1998 12:51:32 -0700 (PDT)
+In-Reply-To: <Pine.LNX.3.95.980610202025.12951A-100000@ferret.lmh.ox.ac.uk> from "Matthew Kirkwood" at Jun 10, 98 08:25:34 pm
 Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980606002503.EHz__XxLo4NLCRA_sqHhycopGc2MLaQFY-cRxsOIwlc@z>
+To: Matthew Kirkwood <weejock@ferret.lmh.ox.ac.uk>
+Cc: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19980610195132.2ZyrNaESNlujdnLW6ygoBa0AIS0w6wuXmlr6lQzt58I@z>
 
 :
+:Hi,
 :
-:What are the implications of us redistributing the header files from Irix?
-:In particular, there are some header files for newport graphics that are
-:needed.
+:Someone has offered me a Personal Iris (4D/25) box which I'd
+:quite like to put Linux on.  I am aware that very little R3K
+:work has been and is being done, and that's fine by me :-)
+:
+:William Earl suggested a while ago (I checked the archive),
+:that docs for the 4D/?? boxes could be made available on the
+:same basis as those for the Indy.
+:
+:Since I don't know what basis this is, I'm a bit stumped :)
+:
+:Do I have to be a member of the Inner Circle(tm) to see these
+:things?
+:
+:FWIW, almost anything with enough detail will do.  I can sometimes
+:even read my own code :-)
+:
+:Cheers,
+:Matthew.
 :
 
-My personal reasoning for "it is not really a problem"
-stems from the following facts:
+Matthew,
 
-	1) If you have the Indy (hardware) you already have
-	   the license for IRIX (for your own use)
+Before I start. You know about:
 
-	2) Unlike in earlier days where you had so buy a "developer's CD"
-	   to get headers"   SGI is now including header files standard
-	   with the system (since 6.2 at least).
+	http://www.geocities.com/SiliconValley/Pines/2258/4dfaq.html
 
-	3) Newport graphics is ancient technology (about 6 years old)
+If not, check it out.
 
-Having said that, all these headers usually have this on top:
-/**************************************************************************
- *                                                                        *
- *               Copyright (C) 1996 Silicon Graphics, Inc.                *
- *                                                                        *
- *  These coded instructions, statements, and computer programs  contain  *
- *  unpublished  proprietary  information of Silicon Graphics, Inc., and  *
- *  are protected by Federal copyright law.  They  may  not be disclosed  *
- *  to  third  parties  or copied or duplicated in any form, in whole or  *
- *  in part, without the prior written consent of Silicon Graphics, Inc.  *
- *                                                                        *
- **************************************************************************/
+Really honestly, and by no means to sound negative but-- :
 
-So clearly we should get permission from the "powers that be" and
-someone needs to ask the legal people :-)   I just don't know
-what entity can approve this.  If anyone knows and we can get
-a brief "approved" from some director, it would be nice.
+I think the main problem is the handling.
 
-Any volunteers ?
+Someone who is probably highly paid (at SGI) needs to go and
+search for those antique docs (they are not online as far as
+I can tell/search), send them to the copy center (and pay them),
+ship them (ditto) all while stoppping the work they are paid to do
+in the first place and delaying their schedules etc.  All in all
+a waste of a few hours which most probably amounts to more than
+the market price of such a system.
+
+The return: some hacker somewhere will have a little fun with
+the docs or with the donated hardware.
+
+We are paid to do different things even though some of us
+lurk on the list and want Linux on SGI to be successful.
+
+Bill Earl and I together spent several hours to locate, duplicate
+and ship Indy specs to about 7 people, I'm not sure much
+ever came out of all this effort so I personally don't feel
+like I would like to repeat it :-)   I'd say, better get an old,
+used 486. it should cost between $0-$100 and be about as fast.
+
+Again: not to sound negative! really, just to tell how this
+looks from this end.
+
+Happy Linuxing.
 
 -- 
 Peace, Ariel

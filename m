@@ -1,36 +1,29 @@
-Date: Wed, 7 May 2003 09:31:40 +0300 (EEST)
-From: Petko Manolov <petkan@users.sourceforge.net>
-Subject: Re: Big endian RTL8150
-In-Reply-To: <20030505214003.GB2941@kroah.com>
-Message-ID: <Pine.LNX.4.50.0305070926230.2916-100000@tequila.rakia.org>
-References: <Pine.GSO.4.21.0305051135140.9126-100000@vervain.sonytel.be>
- <20030505214003.GB2941@kroah.com>
+Message-ID: <000a01c315cf$8171ac70$d017a8c0@pc208>
+From: "smills_ho" <smills_ho@coventive.com>
+References: <3EB0B329.9030603@ict.ac.cn> <16048.55936.346808.522687@cuddles.redhat.com> <3EB0DDC6.5080108@ict.ac.cn> <16048.57054.224964.883062@cuddles.redhat.com> <20030501085018.GA1885@greglaptop.attbi.com>
+Subject: Problem of cross-mipsel-compiler GLIBC-2.3.X
+Date: Fri, 9 May 2003 10:05:43 +0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <petkan@users.sourceforge.net>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <smills_ho@coventive.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Greg KH <greg@kroah.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Ralf Baechle <ralf@linux-mips.org>, "linux-usb-devel@lists.sourceforge.net" <linux-usb-devel@lists.sourceforge.net>, Linux/MIPS Development <linux-mips@linux-mips.org>, Dimitri Torfs <Dimitri.Torfs@sonycom.com>
-Message-ID: <20030507063140.rU8dOXkiVA4DHbTEy2ndSycAsENANp4NrtwAcTN7khg@z>
+To: Linux/MIPS Development <linux-mips@linux-mips.org>
+Cc: gcc@gcc.gnu.org
+Message-ID: <20030509020543.mnS6MQ-s46N008CpUT0gCGNUCL6uRYBaDavb5xOYzmw@z>
 
+Dear All,
+    I want to make a cross-compilered glibc-2.3.x and I get the source from
+ftp.gun.org. GCC version is 3.2.3, binutils is 2.13.2.1. The step is as
+following:
 
+1. Try to build binutils
+2. Try to make static GCC
+3. Try to make glibc -----> Then it is failed
 
-On Mon, 5 May 2003, Greg KH wrote:
+Is there anybody know what's going on or somebody had successfully to build
+the crossed glibc-2.3.x?
 
-> On Mon, May 05, 2003 at 11:47:48AM +0200, Geert Uytterhoeven wrote:
-> > 	Hi,
-> >
-> > The RTL8150 USB Ethernet driver doesn't work on big endian machines. Here are
-> > patches (for both 2.4.x and 2.5.x) to fix that. The fix was tested on the
-> > 2.4.20 and 2.4.21-rc1 version of the driver on big endian MIPS.
->
-> Thanks, I've applied this to my 2.4 and 2.5 trees and will forward them
-> on up the food chain.
-
-Those changes were living in my official RTL8150 cvs site for some time,
-waiting for comments from big-endian machine users.  I guess this should
-mean thumbs up. :)
-
-
-		Petko
+Thanks and best regs,

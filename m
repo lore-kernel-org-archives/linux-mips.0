@@ -1,34 +1,31 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Mon, 9 Jun 1997 11:42:26 -0700
-Message-ID: <199706091842.LAA02169@fir.engr.sgi.com>
-From: "William J. Earl" <wje@fir.engr.sgi.com>
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199706101059.MAA18571@informatik.uni-koblenz.de>
 Subject: Re: Merge back of the MIPS sources
-In-Reply-To: <199706061836.UAA18495@kernel.panic.julia.de>
-References: <199706061807.LAA01554@piecomputer.engr.sgi.com>
-	<199706061836.UAA18495@kernel.panic.julia.de>
+Date: Tue, 10 Jun 1997 12:59:18 +0200 (MET DST)
+In-Reply-To: <199706091836.LAA02114@fir.engr.sgi.com> from "William J. Earl" at Jun 9, 97 11:36:10 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ralf Baechle <ralf@Julia.DE>
-Cc: Bob Mende Pie <mende@piecomputer.engr.sgi.com>, ariel@sgi.com, linux@yon.engr.sgi.com
-Message-ID: <19970609184226.SMxFa3fz0m1nwrt_8dWVTpBJK_D4lO1mVMesS1J0SG4@z>
+To: "William J. Earl" <wje@fir.engr.sgi.com>
+Cc: mende@piecomputer.engr.sgi.com, ralf@Julia.DE, ariel@sgi.com, linux@yon.engr.sgi.com
+Message-ID: <19970610105918.Ma213jKRC7EuKvOZ1KmhAmnAQGIDw9NErEnNItYB284@z>
 
-Ralf Baechle writes:
- > >    Have you verified that the newest code still works on the other MIPS
- > > based systems?   Also, is it possible to have (linux) binary compatability
- > > between a mips Magnum or Millennium and an Indy?
- > 
- > By principle there is no problem to feed these machines even with IRIX
- > binaries.  Right now the port to these machines assumes that it is running
- > on the machine configured to little endian mode but porting to big endian
- > should be easy.
+>       If the MIPS system is running big-endian (as under RISCos), it can
+> be binary-compatible with Indy linux, just as RISCos 5.01 -systype svr4
+> binaries are binary-compatible with Indy IRIX 5.1 and later systems.
+> If the MIPS system is running little-endian (as under NT), it cannot
+> be binary-compatible with Indy linux, without adding bi-endian support
+> (for running opposite-endian binaries, which is feasible, but messy).
+> We prototyped bi-endian support in RISCos when before the Magnum
+> was built, and it worked, but the code was very ugly in the streams
+> area.  linux would likely be easier, but still a hassle.
 
-     Note, however, that running big-endian on the MIPS systems is a bit
-of a hack.  They were originally designed to be little-endian-only (a MIPS
-management aberration), so running big-endian means that, in general,
-I/O DMA has to be byte-swapped by software.  RISCos would preferentially
-write file systems on disks in native-endian format, which, if read on 
-a different system, would appear to be byte-swapped within each doubleword.
-That is, RISCos would skip the byte-swapping on non-removable media, unless
-the magic number in the superblock indicated that the disk was initialized
-in true big-endian format.  For all other media, RISCos would byte-swap,
-but, since those were much lower data rate, the performance impact was
-small.
+Now that the overhead of accessing the userspace from the kernel under
+Linux is very close to zero I fear that the additional overhead of the
+byteorder conversion will show up very clearly in benchmarks unless
+someone comes up with very clever ideas how do this.  Do you have
+numbers how much the impact on RISC/os performance was?
+
+  Ralf

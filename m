@@ -1,47 +1,22 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@yon.engr.sgi.com (Ariel Faigon)
-Message-ID: <199604232227.PAA00323@yon.engr.sgi.com>
+From: "Greg Chesson" <greg@xtp.engr.sgi.com>
+Message-ID: <9604231543.ZM29188@xtp.engr.sgi.com>
+Date: Tue, 23 Apr 1996 15:43:51 -0700
+In-Reply-To: ariel@yon (Ariel Faigon)
+        "Re: What target (was David ...)" (Apr 23,  3:27pm)
+References: <199604232227.PAA00323@yon.engr.sgi.com>
 Subject: Re: What target (was David ...)
-Date: Tue, 23 Apr 1996 15:27:36 -0700 (PDT)
-In-Reply-To: <199604232054.NAA01434@titian> from "Mike McDonald" at Apr 23, 96 01:54:29 pm
-Reply-To: ariel@cthulhu.engr.sgi.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike McDonald <mikemac@titian.engr.sgi.com>
-Cc: ariel@cthulhu.engr.sgi.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19960423222736.gLJQFDHMcgrpKc0aRRhryx8XRzU01SM7DrzN0hKwIE4@z>
+To: ariel@cthulhu.engr.sgi.com, Mike McDonald <mikemac@titian.engr.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19960423224351.HCFORwPPnsC6G_VaLaSuf6aAvVLYM92xRcsRR-0e2hE@z>
 
->Mike dijo:
->>yo dijo:
->>
->>P.S.
->>gcc doesn't have support for 64 bit MIPS 27 ISA, I guess, but
->>nobody is stopping us from using our compilers (as well as gcc
->>at our convenience).
->
->  I strongly believe that using our compilers would be a "bad" thing
->for the initial port. Requiring someone to buy IDO inorder to compile
->a free OS seems like the "wrong" thing to me. Now, if we (SGI) decide
->to ship a Linux version, then yes, using our compilers is OK. Let's
->just make sure that the port is dependant on our compilers in any way
->at this point. (I doubt that's what you were suggesting. I just want
->to make it clear before we get started.)
->
->
-Bob and I are working separately on making our compilers (actually only
-the C one, not Ada :-) be bundled with Irix (and possibly licence enabled
-for a nominal fee, which can be done automatically without human
-intervention -- surprisingly this may increase revenues because
-the cost of handling goes to zero and the potential upside due to
-lowering barriers is large). I think we have a very good chance of
-acheiving this as soon as our upcoming big software release.
+Right.
 
-Also, I agree, we should make sure that whatever we do is buildable
-by gcc. And we should also be paying Cygnus to do a real supported
-full port (including ld), but this is harder to achieve (need $$$
-from management) at this point.  However, after we have Linux and it
-takes off, everything related to free software would be possible :-)
--- 
-Peace, Ariel
+The objective with bringing David in has been to get something started....
+a first port as an "enabling technology".  I believe that many good things
+will happen as a result.
+
+greg

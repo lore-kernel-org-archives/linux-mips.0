@@ -1,46 +1,49 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Tue, 2 Sep 1997 17:47:13 -0400 (EDT)
-From: Alex deVries <adevries@engsoc.carleton.ca>
-Subject: Booting off of sdb1...
-Message-ID: <Pine.LNX.3.95.970902173244.5212A-100000@lager.engsoc.carleton.ca>
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199709040253.TAA24709@oz.engr.sgi.com>
+Subject: Re: Linux/SGI
+Date: Wed, 3 Sep 1997 19:53:47 -0700 (PDT)
+In-Reply-To: <340DF260.5D60941F@xtra.co.nz> from "Brendan Black" at Sep 4, 97 11:27:28 am
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: linux@cthulhu.engr.sgi.com
-Message-ID: <19970902214713.Q_3_Wwrpg9ksh9WdP5KTM262QsgoWjp27hQiMZ-r5tE@z>
+To: Brendan Black <ratfink@xtra.co.nz>
+Cc: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19970904025347.B82GEG2aF9ULHKX82ysEP8qtGO1fdMJfASrl6dc_2wE@z>
 
+:
+:Hi
+:
+:we don't have a spare Indy to play with, but have a
+:spare Challenge S (single processor R5000) 
+:
+:I was wondering if you thing this machine is possible, it would be 
+:used with a serial console (no X), for testing ;)
+:-- 
 
-First off, thanks to input from Mike, I got my partition setup properly.
-Here's how it's done:
+If you feel up to the challenge, sure, please go ahead.
 
-In fx in IRIX, create an optional partition.  This will create one huge
-partition at the beginning (sdb1), and a volume header (sdb2), which you
-won't use.  It doesn't matter what type of partition you label sdb1, Linux
-doesn't recognize either.  All this means is you may have to force the
-type recognition when doing a mount.
+There may be a few assumptions in the current code which detects
+the newport graphics console that this testing may uncover. If 
+you can fix this so it won't be Indy dependent, we win one more
+possible platform !
 
-From within an nfs-rooted Linux, I mke2fs'd it, and copied all the files
-over from my nfsroot (esentially Ralf's root .cpio.gz).
+Moreover, since a challenge-S doesn't have graphics anyway
+Linux which is fast and compact may even outperform IRIX
+on some benchmarks.
 
-But, here's my problem:  I've take my old kernel that boots with NFS root,
-and tried to boot it using:  
-vmlinux root=/dev/sdb1
+I would suggest that:
 
-The kernel starts, and it finishes off with:
+1) You join the mailing list:
+	To: majordomo@engr.sgi.com
+	Body: subscribe linux your@preferred.email.address
+   if you have questions, ask...
 
-Partition check:
- sda: sad1 sda2 sda3 sda4
- sdb: sdb1 sdb2 sdb3
-VFS: Mounted root (ext2 filesystem) readonly.
-: Can't open
+2) If you have Challenge-S patches, e-mail them to the list
+   and we can check that they didn't break anything and
+   merge them into the source tree.
 
-And then nothing.
-
-What am I missing?
-
-- Alex
-
-
-      Alex deVries              Success is realizing 
-  System Administrator          attainable dreams.
-   The EngSoc Project     
+-- 
+Peace, Ariel

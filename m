@@ -1,68 +1,54 @@
-From: "Lyle Bainbridge" <lyle@zevion.com>
-Subject: RE: GCC 3.3.2 and Alchemy AU1100
-Date: Tue, 9 Dec 2003 04:16:19 -0600
-Message-ID: <000001c3be3d$7d6920b0$1400a8c0@radium>
+From: "Matthew Dharm" <mdharm@momenco.com>
+Subject: RE: Chassis for MIPS Atlas board
+Date: Fri, 12 Dec 2003 14:58:16 -0800
+Message-ID: <002701c3c103$6da6b390$7200a8c0@internal.momenco.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <3FD59CC1.7030907@de.bosch.com>
-Return-Path: <lyle@zevion.com>
+In-Reply-To: <BAY1-F40m8TTmFKotxw0001310c@hotmail.com>
+Return-Path: <mdharm@momenco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Dirk Behme' <dirk.behme@de.bosch.com>, linux-mips@linux-mips.org
-Message-ID: <20031209101619.jmCynOeEQobX6DlEfR4Xmhh46wrbmBXfLJkaZyjlGX4@z>
+To: 'Michael Anburaj' <michaelanburaj@hotmail.com>, linux-mips@linux-mips.org
+Message-ID: <20031212225816.8OGhW2R5km_ZpLl2FkCsSUvXNwGsOLcocj8uoxk-_o0@z>
 
-Hi,
+For cPCI chassis, try One Stop Systems (www.onestopsystems.com).  You're not
+going to find anything cheap in the cPCI world, BTW.
 
-I am using GCC 3.3.2 to crosscompile the 2.4.22 kernel for
-an Au1500 system under x86 Redhat 9.0 and I use the following
-settings with success.
+Matt
 
- -mtune=r4600 -mips2 -Wa,--trap
-
-Cheers
-Lyle
+--
+Matthew D. Dharm                            Senior Software Designer
+Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
+(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
+Momentum Works For You                      www.momenco.com
 
 
 > -----Original Message-----
 > From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Dirk Behme
-> Sent: Tuesday, December 09, 2003 3:58 AM
-> To: 'linux-mips@linux-mips.org'
-> Subject: Re: GCC 3.3.2 and Alchemy AU1100
+> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Michael Anburaj
+> Sent: Friday, December 12, 2003 2:43 PM
+> To: linux-mips@linux-mips.org
+> Subject: Chassis for MIPS Atlas board
 > 
 > 
-> Hamilton, Ian wrote:
+> Can you please suggest (name of) a chassis (or empty case) 
+> for my atlas 
+> board; either avaiable at Fry's or circuit city or compUSA or 
+> online. I need 
+> the front pannel of the Atlas board & the PCI card's back 
+> rail (802.11b 
+> card's antenna) sticking out of the chassis.
 > 
-> > Hi there.
-> > 
-> > I'm trying to build software for the AMD AU1100 processor using 
-> > version 3.3.2 of the gnu compiler, and I'm having trouble 
-> figuring out 
-> > the -march, -mtune, etc settings.
-> > 
-> > Version 2.95 of gcc uses something like -mcpu=r4600, but 
-> this doesn't 
-> > work with 3.3.2.
-> > 
-> > I've tried other likely-looking options (e.g. -mips32), but the 
-> > compiler fails to assembler instructions like mtc0 and cache.
-> > 
-> > Has anyone built for the AU1100 using gcc 3.3.2? If so, 
-> could you tell 
-> > me the cpu options you used please?
+> If not for Atlas board , give me a general idea about compactPCI 19" 
+> chassis.
 > 
-> For a VR41xx CPU with GCC 3.3.1 I have used
+> Thanks a lot,
+> -Mike.
 > 
-> -march=r4600 -mips3 -Wa,--trap
-> 
-> instead of the old
-> 
-> -mcpu=r4600 -mips2 -Wa,--trap
-> 
-> Not sure whether this is correct (no test of the output on a 
-> target yet), but it compiles.
-> 
-> 
-> 
+> _________________________________________________________________
+> Browse styles for all ages, from the latest looks to cozy 
+> weekend wear at 
+> MSN Shopping.  And check out the beauty products! 
+http://shopping.msn.com

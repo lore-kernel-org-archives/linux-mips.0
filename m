@@ -1,74 +1,85 @@
-From: "Matthew Dharm" <mdharm@momenco.com>
-Subject: RE: Help with OOPSes, anyone?
-Date: Mon, 28 Jan 2002 15:50:58 -0800
-Message-ID: <NEBBLJGMNKKEEMNLHGAIGEBJCFAA.mdharm@momenco.com>
+Message-ID: <007001c1a97a$6e52a9e0$c1900dd3@gol.com>
+From: "Girish Gulawani" <girishvg@yahoo.com>
+References: <3C505900.9685DDE3@cotw.com> <003901c1a532$d01576e0$de920dd3@gol.com> <20020124174521.B8860@dea.linux-mips.net>
+Subject: Re: MIPS/Linux NonSGI
+Date: Wed, 30 Jan 2002 19:39:41 +0900
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <NEBBLJGMNKKEEMNLHGAIAEBJCFAA.mdharm@momenco.com>
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20020128235058.BGSeiYjrdPBHOlP_x808bxg69G5DIFOEgLfc6gdMq84@z>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>
+Message-ID: <20020130103941.2q0E2KFEOByIixCmWnHNe-j_B-IP0FjXK1uP_6wGLP0@z>
 
-Well, Jason's modified cache code doesn't help either.
 
-I'm still open to suggestions....
+hello, ralf.
 
-Ralf, are you in the same location as your board?  I'm curious to hear
-your opinion of this?
+could solve the disk corruption problem, thanks to you. it was due to my
+over-confident source code for bus mastering device. while re-targeting the
+driver from vxworks to linux i had introduced a bug. its all working great
+now. thanks again. while this problem is solved  i have one more query.
 
-Matthew Dharm
+as i mentioned earlier, our core supports page size of 16K. hence the mmu
+code is changed accordingly, for kernel 2.4.9. but any command load fails
+giving page alignment error. seems some problem from binfmt_elf.c file. i
+have build the command, ash, using egcc-2.91.66. to change the page
+alignment the option given was "--n16384". this option is surely wrong,
+hence could you tell me what is correct option? HOW TO CHANGE PAGE ALIGNMENT
+TO 16K WHILE LINKING USER COMMANDS??
 
---
-Matthew D. Dharm                            Senior Software Designer
-Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
-(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
-Momentum Works For You                      www.momenco.com
+many thanks in advance & best regards,
+girish.
 
-> -----Original Message-----
-> From: owner-linux-mips@oss.sgi.com
-> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Matthew Dharm
-> Sent: Monday, January 28, 2002 3:32 PM
-> To: linux-mips@oss.sgi.com
-> Subject: RE: Help with OOPSes, anyone?
+
+----- Original Message -----
+From: "Ralf Baechle" <ralf@oss.sgi.com>
+To: "Girish Gulawani" <girishvg@yahoo.com>
+Cc: "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>
+Sent: Friday, January 25, 2002 10:45 AM
+Subject: Re: MIPS/Linux NonSGI
+
+
+> On Fri, Jan 25, 2002 at 08:41:10AM +0900, Girish Gulawani wrote:
 >
+> > i'm trying to bringup linux 2.4.[2|9] on our board based on LSI mips r4k
+> > core.
+> > right now the kernel compiled with gcc-3.0, boots up & can only work
+with
 >
-> Well, here's the latest test results...
+> There are known bugs in older kernels that will crash them when compiled
+> with gcc 3.0.  Even with current 2.4 kernels it's still playing with the
+> fire.
 >
-> The 2.4.0 kernel from MontaVista seems to work just fine.
-> Of course,
-> it doesn't have support for the full range of interrupts,
-> but that's a
-> separate matter.  But it doesn't crash under big compiles.
+> > statically linked commands. hence the root file system mounted from
+> > ramdisk,nfs, & de-dream ide-disk can show some-prompt only if ash.static
+is
+> > invoked.
+> > this is seen with 2.4.3 & ditto with 2.4.9. the kernel is in un-cached
+> > mode,since we have page-size problem with our core in cached, write
+> > through/back
+> > both, modes. so question is WHY THE COMMANDS WITH SHARED LIBRARY DONOT
+WORK.
+> > FAILS TO LOAD SHARED LIBRARIES.
+> >
+> > the problem no.2 is root on ide-disk. the disk is paritioned & formatted
+> > using a linux pentium-pc. using a master disk the above said statically
+> > linked commands are downloaded to slave disk. the board boots up.
+however
+> > the bdflush/update process corrupts file-system. the UPDATE PROCESS
+CORRUPTS
+> > SUPERBLOCK AND INODES WHILE FLUSHING THE DIRTY BUFERS.
+> >
+> > PLEASE! PLEASE!! HELP ME ON THIS. THIS NEWSGROUP IS MY LAST HOPE.
 >
-> 2.4.17 with CONFIG_MIPS_UNCACHED crashes.  It takes longer, but that
-> may just be a function of it running so much slower.  The BogoMIPS
-> drops by a factor of 100.  Ouch.
+> Seems pretty obvious that cacheflushing for your system is broken.
+> Verify that arch/mips/mm/c-r4k.c knows how to handle your system.
 >
-> So it doesn't look like a cache problem after all.  And it does
-> suggest that something introduced between 2.4.0 and .17 is
-> what broke
-> things.  But what that is, I have no idea.
+>   Ralf
 >
-> I'm going to try Jason's modified cache code just in case,
-> but I doubt
-> that will change anything.  We'll have to see, tho.
->
-> Does anyone have any other suggestions to try?  I'm
-> starting to wonder
-> if perhaps the PROM isn't setting up the SDRAM properly, but that
-> conflicts with the working 2.4.0 kernel -- the PROM is the same in
-> both cases, so I would expect a PROM error to affect both versions.
->
-> I'm running out of ideas here... anyone?
->
-> Matt
->
-> --
-> Matthew D. Dharm                            Senior Software Designer
-> Momentum Computer Inc.                      1815 Aston Ave.
->  Suite 107
-> (760) 431-8663 X-115                        Carlsbad, CA 92008-7310
-> Momentum Works For You                      www.momenco.com
->
+> PS: Seems your caps lock key occasionally gets stuck ;-)
+
+
+_________________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.com address at http://mail.yahoo.com

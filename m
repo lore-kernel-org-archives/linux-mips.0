@@ -1,49 +1,53 @@
-From: "Matthew Dharm" <mdharm@momenco.com>
-Subject: RE: Marvell MV64340 documentation
-Date: Tue, 27 Jan 2004 11:39:34 -0800
-Message-ID: <000d01c3e50d$4a6e8b40$7200a8c0@internal.momenco.com>
+Received: from 246tNt.com (21-6.CampusNet.ucl.ac.be [130.104.21.6])
+	by neptune.fsa.ucl.ac.be (8.12.10/8.12.9/mp-2002.03.25) with ESMTP id i0SFkgfe004301
+	for <linux-mips@linux-mips.org>; Wed, 28 Jan 2004 16:46:42 +0100 (MET)
+Message-ID: <4017D96F.2080202@246tNt.com>
+Date: Wed, 28 Jan 2004 16:46:55 +0100
+From: Sylvain Munaut <tnt@246tnt.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Subject: Re: Linux 2.6 on AMD Alchemy Au1500
+References: <4017927B.5080907@246tNt.com> <1075302354.16255.12.camel@localhost.localdomain> <4017D2D5.2050605@246tNt.com> <1075303379.16255.23.camel@localhost.localdomain> <20040128153627.GB14580@linux-mips.org>
+In-Reply-To: <20040128153627.GB14580@linux-mips.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1075229071.4058.46.camel@podstavin.dev.rtsoft.ru>
-Return-Path: <mdharm@momenco.com>
+Return-Path: <tnt@246tnt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: podstavin@dev.rtsoft.ru
-Cc: 'Pavel Kiryukhin' <savl@dev.rtsoft.ru>, linux-mips@linux-mips.org
-Message-ID: <20040127193934.7lYYNDNpp3ELbwmQ1Ww7eV5bZO-UA4irzbfUCnxW8r4@z>
-
-I can't really answer something that specific without violating the NDA.
-Sorry.
-
-Matt
-
---
-Matthew D. Dharm                            Senior Software Designer
-Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
-(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
-Momentum Works For You                      www.momenco.com
+Cc: Linux/MIPS Development <linux-mips@linux-mips.org>
+Message-ID: <20040128154655.smd7Pf1hhNIXXvmP0uRKbFbUV_THjfN6qO0mPoj1FMM@z>
 
 
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Sergey 
-> Podstavin
-> Sent: Tuesday, January 27, 2004 10:45 AM
-> To: Matthew Dharm
-> Cc: Pavel Kiryukhin; linux-mips@linux-mips.org
-> Subject: Marvell MV64340 documentation
-> 
-> 
-> Hello Matthew!
-> 
-> Could you write me what do bits mean in the interrupt cause 
-> registers for MV64340 Ethernet? I need to handle them in the 
-> interrupt handler for the Gigabit Ethernet in the driver.
-> 
-> Best wishes,
-> Sergey Podstavin,
-> software engineer.  
-> 
-> 
+
+>>>Ok. Is it available on some CVS / www page ?
+>>>If we eventually choose Au1500 as platform I may be able to test it as 
+>>>well and bug reports.
+>>>      
+>>>
+>>No yet, but I'll email it to the mailing list in the next couple of
+>>days. I would consider it Beta.
+>>
+>>    
+>>
+Ok, anyway I don't yet have a board ...
+
+>>Just curious, why 2.6? 2.4 is solid, everything works, provides a mature
+>>kernel and drivers ...?
+>>    
+>>
+>
+>Because in the not too far future the Linux community will largely run
+>away from 2.4?  In fact the motivation of many developers to continue
+>with 2.4 is quite down already and Marcelo is going to put 2.4 into
+>deep freeze after 2.4.25.
+>
+>  
+>
+Yes that's one of my main reason. And by the time the products ships to 
+customers it will be tested. I think that one more person testing it is 
+one more person able to find/debug problems.
+There are also some features that are natively in 2.6 and requires 
+external patches / drivers in a 2.4 series kernel ( ipsec, preemption, 
+alsa, ... )
+
+
+Sylvain Munaut

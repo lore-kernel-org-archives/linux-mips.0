@@ -1,36 +1,27 @@
-From: "Jason Saggers" <psyclone@owbn.net.nz>
-Subject: FW: debian base 2 and tar issues ..
-Date: Sun, 30 Sep 2001 08:15:30 +1200
-Message-ID: <000001c14923$7ca389e0$0114a8c0@kindred>
+Date: Wed, 3 Oct 2001 09:48:20 -0500 (CDT)
+From: Brian <signal@shreve.net>
+Subject: How do I console into Origin 200?
+In-Reply-To: <5.1.0.14.2.20011003172659.00a6c4a8@mail.it-academy.bg>
+Message-ID: <Pine.LNX.4.33.0110030946270.13741-100000@mercury.shreve.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: "Linux-Mips (E-mail)" <linux-mips@oss.sgi.com>
-Message-ID: <20010929201530.LOLYFzRHu-q8SWXg-EvjJ1u-Dt2OxbAyOLm2aiHJiVI@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20011003144820.XjVVaU2cNuVlDLzr9MppdPGA0fVNo4TcE1eFuvio9wA@z>
 
 
 
------Original Message-----
-From: Jason Saggers [mailto:psyclone@owbn.net.nz]
-Sent: Saturday, September 29, 2001 11:03 PM
-To: Debian-Sparc (E-mail)
-Subject: debian base 2 and tar issues ..
+I am trying to boot an Origin 200 (which I believe currently has IRIX on
+it, I will be installing linux-mips).  It has 2 9 pin serial connectors on
+the back.  I have hooked my Wyse terminal up to it with a serial cable
+with and without a null connector @ 9600bps.  Is this correct?  I get
+nothing on the screen.  I have never consoled into an Origin, and am not
+sure if I am doing this right.
+
+Brian
 
 
-
-I am getting
-
-indy:~# tar
-[tar:95] Illegal instruction 0100017c at 2ac8eeac ra=00000000
-Illegal Instruction
-
-
-I am running on a Indy R5000 150Mhz with 160MB RAM
-
-Any suggestions
-
-
-JasonÿôèPÔ” ‘ ÿzf¢–Úy¸šŸû)j·ÿ­ê®zËÿ–+-³÷^n&§şŠàÂ+ajË›ç-¡ÿîË›±ÊâmïÿNº.nWÿ
-‰íiËeŠËfjË^¯ùb²Ûÿuæâjè
+-----------------------------------------------
+Brian Feeny, CCIE #8036	email:signal@shreve.net
+Network Engineer	phone:318.222.2638x109
+ShreveNet Inc.		fax:  318.221.6612

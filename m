@@ -1,42 +1,73 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Robin Humble <rjh@pixel.maths.monash.edu.au>
-Message-ID: <199901281634.DAA10412@pixel.maths.monash.edu.au>
-Subject: Re: Installing Linux on an Indy with 1 HD
-Date: Fri, 29 Jan 1999 03:34:00 +1100 (EDT)
-In-Reply-To: <Pine.LNX.4.05.9901281531560.9205-100000@vitelus.com> from "Robbie Stone" at Jan 28, 99 03:33:28 pm
-Content-Type: text
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199901290914.BAA13273@oz.engr.sgi.com>
+Subject: Re: Finally, a press release.
+Date: Fri, 29 Jan 1999 01:14:15 -0800 (PST)
+In-Reply-To: <Pine.LNX.3.96.990129023807.28403A-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jan 29, 99 02:41:39 am
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Robbie Stone <rstone@vitelus.com>
-Cc: nachtfalke@usa.net, linux@cthulhu.engr.sgi.com
-Message-ID: <19990128163400.hofPbGQYbDZfGXZq-MGwMcemDOZdQs25fE5boteBNBI@z>
+To: Alex deVries <adevries@engsoc.carleton.ca>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19990129091415.YoNnNTaA1Yf_OZu4uydEs41l3116Uw1GE2ejAz5mD7Y@z>
+
+:
+:
+:http://www.sgi.com/newsroom/press_releases/1999/january/servers.html
+:
+:I'm not sure it says much really concrete, but it is interesting.
+:
+Hi Alex (and Ralf, Miguel, David, Alan, Mike, Larry, Greg, Richard,
+Bent, Kurt, Jon, Bob, Bill, Dave, David, Steve, Alistair, Eric,
+Thomas, Andi, Mark, Oliver, Leon, Ulf, Honza, and apologies to
+whoever I forgot to mention inside or outside SGI)
+
+Basically this is the first public and official, even strategic
+SGI commitment to Linux so I think we should all take the
+time and celebrate the moment.
+
+Beau Vrolyk who is directly quoted in the release many times
+is a Senior VP reporting directly to Rick Belluzzo, our CEO.
+
+The bottom line is that all the top management at SGI is
+recognizing the importance of Linux.  This is in part thanks
+to Linus and all the contributors who kept the faith and put
+long hours without being paid for it into Linux and Open Source
+in general and Linux/SGI in particular to make it the amazing success
+that it is today.  Personally, for me this is a dream come true
+after over 3 years of evangelizing Linux / Open Source at SGI
+(and many many of e-mails of encouragement to Beau and others :-)
 
 
->Er, you can use gcc for most all of your building, as a matter of fact it
+:I wonder how this'll change the way this group operates.  A lot of us have
+:learned an amazing amount through Linux on Indy, and I think we've
+:produced something remarkable.  Let's hope making Linux official only
+:adds to it.
+:
+Note the part that explicitly mentions you all:
 
-Actually if you're talking about using gcc under IRIX then IRIX 5.3
-doesn't come with the necessary header files to compile anything(*).
-You need the IDO or IRIX >= 6.5 which Alexander does not posess. Also
-just to clear up some apparent confusion (which may well be mine rather
-than Alexanders) in order to install SGI-Linux for Indy you don't
-actually need to compile anything...
+"The company has actively worked with the Open Source community by
+ supporting Linux since the 1994 introduction of its Indy® workstation
+ and with support for Samba and HylaFax. In December 1998, the company
+ joined Linux International and introduced support of Samba 2.0 for its
+ OriginTM server line, enabling data consolidation and the world's fastest
+ data interoperability among Windows® and UNIX platform clients. Silicon
+ Graphics is the first commercial UNIX vendor to support Samba software,
+ a widely used suite of open source programs that simplifies integration of
+ multi-platform environments."
 
-I would also point out that Linux on Indy doesn't support any X11
-graphics yet. Swapping from IRIX 5.3 to something text-only could be
-a bit of a shock... But wait a few months and life could be all
-xPeaches and xCream :-)
+You should be all proud of the work you've done.  The best moments
+are just ahead of us !
 
-Personally I'd try to find a small (hyper-cheap/free) old SCSI drive
-(erm, 300-500M would do?) and install on that. Or do like Richard
-suggested and permanently run your Linux/Indy off a network root drive.
+:- Alex
+:
+:-- 
+:Alex deVries, puffin on LinuxNet.
+:I know exactly what I want in life.
+:
+:
 
-cheers,
-robin
-
-(*) except the IRIX kernel. It uses a weirdly lobotomised compiler
-hidden well away...
-
---
-He'd found that even the people whose job of work was, so to speak, the
-Universe, didn't really believe in it and were actually quite proud of not
-knowing what it really was or even if it could theoretically exist.
-     Robin Humble     /      http://www.maths.monash.edu.au/~rjh/
+-- 
+Peace, Ariel

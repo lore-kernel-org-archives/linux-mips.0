@@ -1,36 +1,31 @@
-Message-ID: <013701c144d9$af44d3c0$361e690a@huawei.com>
-From: "renc stone" <renwei@huawei.com>
-Subject: recent gdb add-symbol-file problem?
-Date: Mon, 24 Sep 2001 17:17:07 +0800
+Subject: Re: Need an account on a Linux/Mips box
+References: <1f05gge.7bt3xkxllentM@[10.0.12.137]>
+From: Kristoffer Gleditsch <kristoffer@linpro.no>
+Date: Mon, 24 Sep 2001 17:03:44 +0200
+Message-ID: <vzay9n46373.fsf@false.linpro.no>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux-mips@oss.sgi.com
-To: gcc@gnu.org
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010924091707.vJwePwaWz_wJeJ_y29_TkhiuyMf-InjmboZIQ7FL4rw@z>
+To: Emmanuel Dreyfus <manu@netbsd.org>
+Cc: linux-mips@oss.sgi.com, debian-mips@lists.debian.org
+Message-ID: <20010924150344.vlUGDx9QyI9_YjsBzXuX9EN7vKJhscX8jxWm6OkPZIw@z>
 
-hi ,
- I use gdb 20010919 source form sources.redhat.com,
- target mipsel, host i386 box.
+Hi,
 
-When I want to use this to debug some module of linux-mips kernel ,
-trouble comes:
+(Crossposted to the debian-mips list, in case there are others who are
+interested.)
 
-When I use the add-symbol-file command to add the symbols of module,
+[ Emmanuel Dreyfus ]
 
-add-symbol-file mymodule.o 0xc001e060
-gdb echos no problem,
-but it seems to be confused:
-the command
-b my_func1
-b my_func2
-b my_func3
+> I'm working on Linux compatibility on NetBSD/Mips. In order to
+> implement things such as signals, I need a user account on a big
+> endian Linux/Mips system.
 
-all show the same address, all the functions starts from ONE place?
-I checked the address, it's the text section start address of this module.
-Can't the gdb  correctly read the elf file of mipsel ?
+We have an SGI Indy (R4600 100Mhz CPU, 96MB RAM, 6.5GB HD) running
+Debian (Sid) which is available for developers who need access to a
+MIPS computer.  Please email me if you want an account.
 
- Any ideas?  Or anyone who have done this  please tell me how to get through
-it .
+Regards,
+
+-- 
+Kristoffer.

@@ -1,29 +1,42 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199706170057.CAA18692@informatik.uni-koblenz.de>
-Subject: Re: A pointed question about endianness...
-Date: Tue, 17 Jun 1997 02:57:04 +0200 (MET DST)
-In-Reply-To: <199706170033.RAA10832@titian.engr.sgi.com> from "Mike McDonald" at Jun 16, 97 05:32:56 pm
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199706170106.SAA19946@yon.engr.sgi.com>
+Subject: Re: Good news: no more begging for HW
+Date: Mon, 16 Jun 1997 18:06:41 -0700 (PDT)
+In-Reply-To: <199706170046.CAA17216@informatik.uni-koblenz.de> from "Ralf Baechle" at Jun 17, 97 02:46:04 am
+Reply-To: ariel@sgi.com (Ariel Faigon)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike McDonald <mikemac@titian.engr.sgi.com>
-Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
-Message-ID: <19970617005704.CU8gRoQYnXLGTKs0l5haIcBZF3513cr3zIgPlvPGt2c@z>
+To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Cc: linux@yon.engr.sgi.com
+Message-ID: <19970617010641.RN_NOt4_krYzd_ZBlFJjKFCD3pS61az-FBAmNQOdppo@z>
 
->   Is anyone working on the Algorithmics boards? We have 5 of them over
-> here currently being used with VxWorks (which isn't officially
-> supported on these boards). I could cause lots of trouble over here if
-> Linux did work on them. :-)
+:
+:Ariel,
+:
+:that's great news.  Just send all the hardware to me ;-)
+:
+:Jokes aside, I was thinking since some time if the FSF wouldn't be a
+:great place to install some machines.  Another suggestion would be
+:Thomas Bogendoerfer who already wrote a network driver for the Mips
+:Magnum 4000 and others for Intel/Alpha.  I guess he might also be
+:interested.
+:
+If you know interested people in the FSF (real names)
+please have them email me with a short justification
+why they want the machines and what will they use them for.
+Same for Thomas.
 
-Me, I've got a P4032 donated by Algorithmics here.  The port hasn't yet
-reached a state where I'd be pround of it, but bascially it works
-diskless.  Some guys from a Silicon Valley company are currently also
-porting Linux to that port, supported but otherwise mostly independant
-from me.  They're using similar board from Algorithmics which is based
-on a R5000 derivate.
+I cannot promise anything since there may be some
+oversubscription to the service :-)
 
-Ok, patch 2.1.43 just has been released.  **Input** ...
+I think the fairest way would be to publish all these
+requests on this forum and have the people who care (us)
+vote on who should get them.  I certainly don't want to
+be the fascist person who decides who gets what.
 
-  Ralf
+
+-- 
+Peace, Ariel

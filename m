@@ -1,18 +1,41 @@
-From: "Prasad V Nuli" <pnuli@attbi.com>
-Subject: Any Linux port for NEC Image RISC Station
-Date: Sat, 22 Feb 2003 14:45:21 -0500
-Message-ID: <ILEIIKPOCEKMENCAPIAKGENLCAAA.pnuli@attbi.com>
+Message-ID: <32869.4.64.238.61.1046060330.squirrel@www.osdl.org>
+Date: Sun, 23 Feb 2003 20:18:50 -0800 (PST)
+Subject: Re: Re: (no subject)
+From: "Randy.Dunlap" <rddunlap@osdl.org>
+In-Reply-To: <20030224040647.611.qmail@webmail17.rediffmail.com>
+References: <20030224040647.611.qmail@webmail17.rediffmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <pnuli@attbi.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Return-Path: <rddunlap@osdl.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030222194521.-Vi8GPkEm-oD70PwPe5DT0kR3iCkEpRtRT-sd0vfbI0@z>
+To: ipv6_san@rediffmail.com
+Cc: macro@ds2.pg.gda.pl, netdev@oss.sgi.com, linux-mips@linux-mips.org
+Message-ID: <20030224041850.0GMMJGUUx-sibvSU49OnMHG92BI38yEakll5KG_A2Zs@z>
 
-	Is there any Linux port available for NEC Image RISC Station MIPS machine ?
+>
+>
+> On Sat, 22 Feb 2003 Maciej W. Rozycki wrote :
+>>On 21 Feb 2003, santosh kumar gowda wrote:
+>>
+>> > Following message is produced at the IAD terminal.....
+>> >
+>> > # Unable to handle kernel paging request at virtual address
+>> > 00000000, epc == 802
+>> > 4ce74, ra == 802592a8
+>> > Oops in fault.c:do_page_fault, line 172:
+>>[...]
+>> > Suggestions/Tips are welcome.
+>>
+>>  Decode the oops first or nobody will be able to give any
+>>help.
+>
+> how do i decode the oops ??? help pls.
 
+Please see linux/REPORTING-BUGS and
+linux/Documentation/oops-tracing.txt .
+The latter will tell you how to use use 'ksymoops'
+to decode an oops message.
 
-Prasad Nuli
+~Randy

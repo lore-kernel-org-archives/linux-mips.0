@@ -1,46 +1,90 @@
-From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-Subject: RE: [uClibc] Re: uclibc mips ld.so and undefined symbols with nonzerosymbol table entry st_value
-Date: Tue, 11 May 2004 23:50:44 +0200
-Message-ID: <BCEFJBPJCGFCNMMMIDBHOEPBCFAA.Joakim.Tjernlund@lumentis.se>
+Received: from server1.RightHand.righthandtech.com ([207.252.250.187])
+	by ux1.dataflo.net (8.12.11/8.12.11) with ESMTP id i4DM5r5K079575
+	for <linux-mips@linux-mips.org>; Thu, 13 May 2004 17:05:55 -0500 (CDT)
+content-class: urn:content-classes:message
+Subject: RE: problems on D-cache alias in 2.4.22
+Date: Thu, 13 May 2004 17:05:52 -0500
+Message-ID: <B482D8AA59BF244F99AFE7520D74BF9609D4B1@server1.RightHand.righthandtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <053f01c43778$c2903390$8d01010a@prefect>
-Return-Path: <Joakim.Tjernlund@lumentis.se>
+Content-Transfer-Encoding: 8BIT
+From: "Bob Breuer" <bbreuer@righthandtech.com>
+Return-Path: <bbreuer@righthandtech.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Bradley D. LaRonde" <brad@laronde.org>, Daniel Jacobowitz <dan@debian.org>
-Cc: uclibc@uclibc.org, Richard Sandiford <rsandifo@redhat.com>, linux-mips@linux-mips.org
-Message-ID: <20040511215044.Giu78vCQROz5vvuD_g6oDcj4ZqoQAFfAl1Eb3vvmgiY@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20040513220552.IWMyDkVubuEtUKrAngn13Yla28TCOVj9VjKXdw8xwwM@z>
 
-> > > >
-> > > > Probably, since MIPS doesn't have a copy reloc.
-> > >
-> > > How about the other copy reloc right below there:
-> > >
-> > >     else if (sym->st_shndx == SHN_COMMON) {
-> > >       *got_entry = (unsigned long) _dl_find_hash(strtab +
-> > >         sym->st_name, tpnt->symbol_scope, ELF_RTYPE_CLASS_COPY);
-> > >     }
-> > >
-> > > ?
-> >
-> > Perhaps DL_NO_COPY_RELOCS should be defined for MIPS then?
-> > see ldso/include/dl-elf.h.
+
+> -----Original Message-----
+> Date: Thu, 13 May 2004 14:52:53 +0800
+> From: wuming <wuming@ict.ac.cn>
+> Subject: problems on D-cache alias in 2.4.22
 > 
-> For mips glibc 2.3.3 does:
+>  I am developing in linux-2.4.22 on the machine with virtual address
+> indexed and physical
+> address tagged. But when I compile some application programs, 
+> I met the
+> following error:
 > 
-> #define elf_machine_type_class(type)            ELF_RTYPE_CLASS_PLT
+> cc1: internal compiler error: Segmentation fault
 > 
-> and never uses ELF_RTYPE_CLASS_COPY directly (though it does use
-> ELF_RTYPE_CLASS_PLT directly).
+> I have searched about this error from internet, it's due to some
+> hardware fault or
+> a wrong pte fault handler. Because my machine have D-cache 
+> aliasing, so
+> I think
+> this error should be due to a wrong pte fault handler. After 
+> my painful
+> kernel hacking,
+> I found some strange problems and it's in function __update_cache( ):
 > 
-> Regards,
-> Brad
+> void __update_cache(struct vm_area_struct *vma, unsigned long address,
+> pte_t pte)
+> {
+> unsigned long addr;
+> struct page *page;
+> 
+> if (!cpu_has_dc_aliases)
+> return;
+> 
+> page = pte_page(pte);
+> 
+> /*This printk is added by myself*/
+> printk("<1>valid page:%d\tpage mapping:0x%p\tpage flags:%d\n",\
+> VALID_PAGE(page), page->mapping, (page->flags & (1UL << 
+> PG_dcache_dirty)));
+> 
+> if (VALID_PAGE(page) && page->mapping &&
+> (page->flags & (1UL << PG_dcache_dirty))) {
+> if (pages_do_alias((unsigned long) page_address(page), address &
+> PAGE_MASK)) {
+> addr = (unsigned long) page_address(page);
+> flush_data_cache_page(addr);
+> }
+> ClearPageDcacheDirty(page);
+> }
+> }
+> 
+> When my kernel is running, I found the condition "page->mapping" and
+> "(page->flags & (1UL << PG_dcache_dirty))"
+> will never be true at the same time. so the function
+> flush_data_cache_page( ) will never be called.
+> Then I commented the two condition, the compiler error disappeared.
+> I do not understand the phenomenon very clearly, so I need some help.
+> 
 > 
 
-Good, try replacing all ELF_RTYPE_CLASS_COPY with ELF_RTYPE_CLASS_PLT in 
-mips/elfinterp.c and define DL_NO_COPY_RELOCS in mips/dl-sysdep.h
+I am having a similar problem with 2.4.26 on an NEC VR5500 with a 32k
+2-way cache.  This is with a 32 bit little-endian kernel, and an ext2
+filesystem on an ide hard drive in pio mode.
 
-  Jocke
+Removing just the check for PG_dcache_dirty fixes the problem for me.
+
+Along the way, I found a bogus check for cache aliases in c-r4k.c.  In
+the ld_mmu_r4xx0 function, it has the check:
+    if (c->dcache.sets * c->dcache.ways > PAGE_SIZE)
+which will never work for a 32k cache.
+
+Bob Breuer

@@ -1,38 +1,36 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0xcAil-0005FsC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: A report from the battle field...
-Date: Sun, 30 Nov 1997 14:51:43 +0000 (GMT)
-In-Reply-To: <Pine.LNX.3.95.971129193017.26978E-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Nov 29, 97 07:44:47 pm
-Content-Type: text
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199712011827.KAA35756@oz.engr.sgi.com>
+Subject: Re: Seeq Ethernet
+Date: Mon, 1 Dec 1997 10:27:14 -0800 (PST)
+In-Reply-To: <19971201190923.06958@uni-koblenz.de> from "ralf@uni-koblenz.de" at Dec 1, 97 07:09:23 pm
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19971130145143.hVzx2pmxLqo8PycoDb0bM5XHVv5905uLu4M_GuNOOFk@z>
+To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19971201182714.spjSprtcEBEzpOtirvCOKr8qaUBoYog4LUsKgmPoPdk@z>
 
-> 1. When I try to FTP a lot of files to it, it complains about "eth0: ".  I
-> guess it's just going too quick.  The file then becomes corrupt.  The
+:
+:_the_ current problem for Linux/Indy is the Ethernet driver.  Time to fix
+:it.  Can anybody point me to docs for that chip?  I only have one half of
+:the required docs, the HPC docs.
+:
+:  Ralf
+:
+Ralf,
 
-Yep. Part of that however might be the ftp binary - ncftp I get
-the eth0: errors but dont seem to get file corruption.
+I tried to search internally for relevant bits and found this:
 
-> 2. Execution errors on various programs:
-> - bash: 
-> do_page_fault() #2: sending SIGSEGV to bash for illegal readaccess
-> from 000000d0 (epc ==0fb676c0, ra == 0fb676a0)
-> - pico (part of pine):
-> do_page_fault() #2: sending SIGSEGV to pico for illegal readaccess from
-> from 000000d0 (epc ==0fb676c0, ra == 0fb676a0)
+	http://www.sgi.com/Support/QNA/FAQ.book_1339.html
+	http://www.sgi.com/Support/QNA/FAQ.book_1315.html
+	http://www.sgi.com/Support/SCR/incidents/376000/376872.html
 
-Link these static possibly. The bash stuff is working fine on my box however
-the RPM maybe the one with readline in not the one I used. oops
+I cannot see a spec but the Seeq Tech home page seems to have
+all the datasheets (in PDF format only) online:
 
-> - mingetty: 
-> unix_gc: deferred due to low memory
+	http://www.seeq.com/
 
-Miguel's kernel has this fixed (its a vmalloc thing)
-
-> - when I try and do a control-alt-delete, it says that it's flushing the
-> cache, and that's it.
-
-I get a reboot about 1 in 3 times
+-- 
+Peace, Ariel

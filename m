@@ -1,131 +1,45 @@
-Content-class: urn:content-classes:message
+Subject: Re: uclibc mips ld.so and undefined symbols with nonzero symbol
+ table entry st_value
+References: <045b01c43155$1e06cd80$8d01010a@prefect>
+From: Richard Sandiford <rsandifo@redhat.com>
+Date: Sun, 09 May 2004 14:14:33 +0100
+In-Reply-To: <045b01c43155$1e06cd80$8d01010a@prefect> (Bradley D. LaRonde's
+ message of "Mon, 3 May 2004 17:25:11 -0400")
+Message-ID: <874qqpg2ti.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C4338E.53011F38"
-Subject: Strange Behavior - help
-Date: Thu, 6 May 2004 10:19:43 -0700
-Message-ID: <7F5F67B895426C40AC75B8290421C23915CE57@Exchange.stellartec.com>
-From: "Yashwant Shitoot" <yshitoot@stellartec.com>
-Return-Path: <yshitoot@stellartec.com>
+Content-Type: text/plain; charset=us-ascii
+Return-Path: <rsandifo@redhat.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20040506171943.fshjSpHL8v_W2ld0de6qPaFQIyu_t1_rkj7Rm1gmp08@z>
+To: "Bradley D. LaRonde" <brad@laronde.org>
+Cc: uclibc@uclibc.org, linux-mips@linux-mips.org
+Message-ID: <20040509131433.XB3iiJ7xithi39XS5NM6Fhehsm-WtFbPDYCfR4HtRfA@z>
 
-This is a multi-part message in MIME format.
+"Bradley D. LaRonde" <brad@laronde.org> writes:
+> I guess that the point of these procedure stubs is to keep
+> pointer-to-function values consistent between executables and share
+> libraries.  Is that what binutils is trying to accomplish here?
 
-------_=_NextPart_001_01C4338E.53011F38
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
+No, it's to enable lazy binding.  The idea is that when the dynamic
+loader loads libpthread.so, it doesn't need to resolve malloc()
+immediately, it can just leave the GOT entry pointing to the stub.
+Then, when the stub is called, it will ask the dynamic linker to
+find the true address of malloc() and update the GOT accordingly.
+This is supposed to reduce start-up time.
 
-Hello Friends,
+An object should never use stubs if takes the address of the function.
+It should only use a stub for some symbol foo if every use of foo is
+for a direct call.
 
-=20
+If the dynamic loader is choosing libpthread's stub over the real
+definition in libc.so, that sounds on the face of it like a dynamic
+loader bug.
 
-My root file system and linux is in rom (flash). The linux itself runs
-out of ram. When I reprogram the rom, I erase and write a new image of
-the rom from a compact flash card. After the new image is programmed in
-the function fclose() hangs up, implying that fclose() is rom resident
-and loaded as needed. Does this make sense ? Remember even after erasing
-the rom fopen() works fine.
+> But should stubs really be getting involved here?  As Thiemo Seufer pointed
+> out to me, readelf shows me that every undefined symbol in every shared
+> library in /lib on my x86 debian box has the st_value member for the symbol
+> table entry set to zero.
 
-=20
+The x86 and MIPS ABIs are very different though.
 
-Thanks=20
-
-=20
-
-Yash
-
-
-------_=_NextPart_001_01C4338E.53011F38
-Content-Type: text/html;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.0in 192.25pt 1.0in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hello Friends,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>My root file system and linux is in rom (flash). The =
-linux
-itself runs out of ram. When I reprogram the rom, I erase and write a =
-new image
-of the rom from a compact flash card. After the new image is programmed =
-in the
-function fclose() hangs up, implying that fclose() is rom resident and =
-loaded
-as needed. Does this make sense ? Remember even after erasing the rom =
-fopen()
-works fine.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks <o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Yash<o:p></o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C4338E.53011F38--
+Richard

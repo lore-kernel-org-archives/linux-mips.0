@@ -1,82 +1,117 @@
-From: Nigel Stephens <nigel@algor.co.uk>
+From: "yaelgilad" <yaelgilad@myrealbox.com>
+Subject: R_MIPS_26 etc.
+Date: Thu, 12 Dec 2002 09:07:27 +0200
+Message-ID: <ECEPLLMMNGHMFBLHCLMAOEDMDGAA.yaelgilad@myrealbox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <15862.15924.283825.28108@hendon.algor.co.uk>
-Date: Tue, 10 Dec 2002 19:19:16 +0000
-Subject: Re: GDB patch
-Reply-To: nigel@mips.com
-Return-Path: <nigel@hendon.algor.co.uk>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000E_01C2A1BD.E4BD0940"
+Return-Path: <yaelgilad@myrealbox.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Daniel Jacobowitz <dan@debian.org>
-Cc: Carsten Langgaard <carstenl@mips.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20021210191916.Q9O7FmNieaJB0aRgaQLTrvBjKYrGWobYF4eD2P5DdLk@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20021212070727.PeZkcptNgONTqv9lsaNLknx2Sj8sYMWoTO3S6cfAfoU@z>
 
-> On Tue, Dec 10, 2002 at 01:07:31PM +0100, Carsten Langgaard wrote:
-> 
-> > I've attached a patch for gdb-stub.c to make it work better with the
-> > sde-gdb.
-> > These changes should be backwards compatible with a standard gdb, so it
-> > shouldn't break anything.
-> > Ralf, could you please apply it.
-> 
-> 
-> Strongly object.  While I didn't check the implementation, it's nice to
-> see 'X' implemented.  And P.  But what the heck is this?
-> 
-> 
-> > @@ -816,13 +839,64 @@
-> >  		case 'k' :
-> >  			break;		/* do nothing */
-> >  
-> > +		case 'R':
-> > +			/* RNN[:SS],	Set the value of CPU register NN (size SS) */
-> > +			/* FALL THROUGH */
-> 
-> 
-> > -		/*
-> > -		 * Reset the whole machine (FIXME: system dependent)
-> > -		 */
-> >  		case 'r':
-> > -			break;
-> > +			/* rNN[:SS]	Return the value of CPU register NN (size SS) */
-> 
-> 
-> 
-> We're not making up a protocol here, we're implementing one.  R and r
-> don't have anything to do with setting registers.
+This is a multi-part message in MIME format.
 
-Hi Dan
+------=_NextPart_000_000E_01C2A1BD.E4BD0940
+Content-Type: text/plain;
+	charset="windows-1255"
+Content-Transfer-Encoding: 7bit
 
-Actually Carsten *is* trying to implement a protocol, it's just that
-it's an extension to the gdb remote debug protocol, as used in our
-SDE-MIPS toolchain (viz sde-gdb).  Algorithmics (now MIPS Technologies
-UK), always extended the gdb remote debug protocol to support reading
-and writing of single registers, and to support variable register
-sizes (to allow a 64-bit debug stub to inter-work with gdb debugging a
-32-bit application).
+Looking in the assembly code of my driver, I see the following
+pattern repeating with every function call.
+    4ce4: 0c000000  jal 0
+      4ce4: R_MIPS_26 rx_wait_packet
+(R_MIPS_26 is sometimes replaces by a similar command)
+What is R_MIPS_26 ? What are the rest of them ?
+I am guessing it has to do with relocatable addresses, but this specific
+function is in the same C file. Marking it as "static" does change the code
+and get rid of this command.
 
-When we first implemented these extensions we used the 'R' command to
-write a single register, and 'r' to read one (they weren't then used
-by gdb). Since then the remote protocol has gained the 'P' command to
-write a single register, so we no longer use 'R' - and it would be
-dangerous to do so since it can restart the target (so you can get rid
-of the special 'R' case, Carsten).
+TIA
+Gilad
 
-But the standard gdb remote protocol still doesn't have the ability to
-read a single register, so I believe that 'r' (or something like it)
-is a useful addition, which speeds up the remote protocol
-significantly when running over a serial line. And it won't break the
-kernel to add support for this extension.
+P.S. I am building assembler files in two different methods:
+- gmake <path-to-file>.lst
+- mips-linux-odjdump -x -S <path-to-C-file>  > <path-to-file.lst>
+The outputs are similar but not identical.
+What's the more "correct" way ?
+TIA-2
 
-Regards
 
-Nigel
--- 
-                         Nigel Stephens         Mailto:nigel@mips.com
-    _    _ ____  ___     MIPS Technologies (UK) Phone.: +44 1223 706200
-    |\  /|||___)(___     The Fruit Farm         Direct: +44 1223 706207
-    | \/ |||    ____)    Ely Road, Chittering   Fax...: +44 1223 706250
-    TECHNOLOGIES (UK)    Cambridge CB5 9PH      Cell..: +44 7976 686470
- [formerly Algorithmics] England                http://www.algor.co.uk
+
+
+
+------=_NextPart_000_000E_01C2A1BD.E4BD0940
+Content-Type: text/html;
+	charset="windows-1255"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dwindows-1255">
+<META content=3D"MSHTML 6.00.2722.900" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN =
+class=3D328594915-10122002>Looking in the=20
+assembly code of my driver, I see the following </SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN =
+class=3D328594915-10122002>pattern repeating=20
+with every function call.</SPAN></FONT></DIV>
+<DIV><FONT><SPAN class=3D328594915-10122002>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; 4ce4: 0c000000&nbsp; =
+jal=20
+0&nbsp;</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4ce4: =
+R_MIPS_26=20
+rx_wait_packet</FONT></DIV>
+<DIV><FONT><SPAN class=3D328594915-10122002></SPAN><FONT face=3DArial =
+size=3D2>(<SPAN=20
+class=3D328594915-10122002>R_MIPS_26 is sometimes replaces by a similar=20
+command)</SPAN><BR>What is R_MIPS_26 ? What are the rest of them=20
+?</FONT></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>I am =
+guessing it has=20
+to do with relocatable addresses, but this specific</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN =
+class=3D328594915-10122002>function is in the=20
+same C file. Marking it as "static" does change the code =
+</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>and =
+get rid of this=20
+command.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D328594915-10122002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D328594915-10122002>TIA</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D328594915-10122002>Gilad</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D328594915-10122002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>P.S. I =
+am building=20
+assembler files in two different methods:</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>- =
+gmake=20
+&lt;path-to-file&gt;.lst</SPAN></FONT></SPAN></FONT></DIV></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>- =
+mips-linux-odjdump=20
+-x -S &lt;path-to-C-file&gt;&nbsp; &gt;=20
+&lt;path-to-file.lst&gt;</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN =
+class=3D328594915-10122002>The&nbsp;outputs are=20
+similar but not identical.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>What's =
+the more=20
+"correct" way ?</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D328594915-10122002>TIA-2</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D328594915-10122002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D328594915-10122002></SPAN></FONT>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_000E_01C2A1BD.E4BD0940--

@@ -1,82 +1,45 @@
-Received: by fw01.bwg.de (8.11.6p2G/8.11.6) id h9N9YH808554
-	for linux-mips@linux-mips.org; Thu, 23 Oct 2003 11:34:17 +0200 (CEST)
-From: =?iso-8859-1?Q?Ralf_R=F6sch?= <ralf.roesch@rw-gmbh.de>
-Subject: Compiler Problems in tlbex-r4k.S
-Date: Thu, 23 Oct 2003 11:33:16 +0200
-Message-ID: <NHBBLBCCGMJFJIKAMKLHOEIJCBAA.ralf.roesch@rw-gmbh.de>
+From: "Lyle Bainbridge" <lyle@zevion.com>
+Subject: RE: Packages for RH 7.3/mips
+Date: Thu, 23 Oct 2003 13:52:20 -0500
+Message-ID: <000001c39996$c9f5d020$800101df@radium>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0000_01C39959.73C38B80"
-Return-Path: <ralf.roesch@rw-gmbh.de>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <3F97983C.57A34617@niisi.msk.ru>
+Return-Path: <lyle@zevion.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20031023093316.RBVo6MD7J3SWS2HRLrmNIuTwsUWsU-U-mTsYliVysAI@z>
+To: "'Gleb O. Raiko'" <raiko@niisi.msk.ru>, linux-mips@linux-mips.org
+Message-ID: <20031023185220.d_S-8e94M0hMZ8y-ntgj0TXymidMJFFVvaw1F8upNMY@z>
 
-This is a multi-part message in MIME format.
+Hi,
 
-------=_NextPart_000_0000_01C39959.73C38B80
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Yes, I'm very interested.  It looks like useful stuff, and it would be a
+shame not
+not capture it somewhere for public use.
 
-The latest update in tlbex-r4k.S (tag 2_4) produces
-following compiler errors on my machine:
+Nice work Gleb!
 
-mipsel-linux-gcc -D__ASSEMBLY__ -D__KERNEL__ -I/build/linux-2.4.22-rthal5g-s
-trom
-boli/include -I /build/linux-2.4.22-rthal5g-stromboli/include/asm/gcc -G
-0 -mno-
-abicalls -fno-pic -pipe   -mcpu=r4600 -mips2 -Wa,--trap   -c -o tlbex-r4k.o
-tlbe
-x-r4k.S
-tlbex-r4k.S: Assembler messages:
-tlbex-r4k.S:179: Error: missing ')'
-tlbex-r4k.S:179: Error: missing ')'
-tlbex-r4k.S:179: Error: missing ')'
-tlbex-r4k.S:179: Error: illegal operands `and'
-tlbex-r4k.S:207: Error: missing ')'
-tlbex-r4k.S:207: Error: missing ')'
-tlbex-r4k.S:207: Error: missing ')'
-tlbex-r4k.S:207: Error: illegal operands `and'
-tlbex-r4k.S:243: Error: missing ')'
-tlbex-r4k.S:243: Error: missing ')'
-tlbex-r4k.S:243: Error: missing ')'
-...
+Lyle
 
-If I change the line 43 from:
-#define PTE_PAGE_SIZE	(1L << PTE_PAGE_SHIFT)
-to
-#define PTE_PAGE_SIZE	(1 << PTE_PAGE_SHIFT)
-the compiling is o.k.
-
-Is that a compiler problem or an programming error ?
-
-  Ralf
-
-
-
-------=_NextPart_000_0000_01C39959.73C38B80
-Content-Type: text/x-vcard;
-	name="Ralf Roesch.vcf"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="Ralf Roesch.vcf"
-
-BEGIN:VCARD
-VERSION:2.1
-N:Roesch;Ralf
-FN:Ralf Roesch
-ORG:Roesch & Walter Industrie-Elektronik GmbH
-TITLE:Managing Director
-TEL;WORK;VOICE:+49 (7824) 6628-0
-TEL;WORK;FAX:+49 (+49) 7824 6628-29
-ADR;WORK:;;Im Heidenwinkel 5;Schwanau;;77963;Deutschland
-LABEL;WORK;ENCODING=3DQUOTED-PRINTABLE:Im Heidenwinkel =
-5=3D0D=3D0ASchwanau 77963=3D0D=3D0ADeutschland
-URL;WORK:http://www.rw-gmbh.de
-EMAIL;PREF;INTERNET:ralf.roesch@rw-gmbh.de
-REV:20010405T072400Z
-END:VCARD
-
-------=_NextPart_000_0000_01C39959.73C38B80--
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org 
+> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Gleb O. Raiko
+> Sent: Thursday, October 23, 2003 3:59 AM
+> To: linux-mips@linux-mips.org
+> Subject: Re: Packages for RH 7.3/mips
+> 
+> 
+> "H. J. Lu" wrote:
+> > I no longer work on MIPS. I forward your email to the Linux mips 
+> > mailing list.
+> 
+> Well, does anybody in the list have an interest in?
+> 
+> Basically, I would like to follow GPL rules and put the 
+> packages for the public access.
+> 
+> Regards,
+> Gleb.
+> 

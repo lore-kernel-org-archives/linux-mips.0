@@ -1,45 +1,33 @@
-From: Hartvig Ekner <hartvige@mips.com>
-Message-ID: <200205062206.g46M6ge17977@coplin09.mips.com>
-Subject: Re: zsh on console
-Date: Tue, 7 May 2002 00:06:42 +0200 (CEST)
-In-Reply-To: <20020506121606.B28872@lucon.org> from "H . J . Lu" at May 06, 2002 12:16:06 PM
+From: "Robert Rusek" <robru@teknuts.com>
+Subject: depmod help !
+Date: Mon, 6 May 2002 21:09:11 -0700
+Message-ID: <001501c1f57c$f2188e90$6601a8c0@delllaptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "H . J . Lu" <hjl@lucon.org>
-Cc: "Kevin D. Kissell" <kevink@mips.com>, Kjeld Borch Egevang <kjelde@mips.com>, linux-mips mailing list <linux-mips@oss.sgi.com>
-Message-ID: <20020506220642.OGI8vmWO8Xc-MWycSN4I3qOdx74B1C9T_ZnGHvBKrVo@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020507040911.TJ5sM8TbFwuFhSK0RamfLJYGXv-CgU7umB-F0z-GaZ8@z>
 
-H . J . Lu writes:
-> 
-> On Mon, May 06, 2002 at 02:57:28PM +0200, Kevin D. Kissell wrote:
-> > > When I run zsh on the console (serial interface) the process hangs. I can 
-> > > login with /bin/bash, but when I start /bin/zsh it waits forever. I can 
-> > > interrupt the process and regain control.
-> > > 
-> > > It's only related to the console. If I login with telnet it works just 
-> > > fine.
-> > > 
-> > > Any idea, what could be wrong?
-> > 
-> > I don't know what it would be specifically, but having
-> > dealt with similar problems on other Unix systems,
-> > it's proably the case that zsh uses a particular tty
-> > mode that isn't correctly supported by the serial
-> > console driver, either due to a bug in the driver or
-> > due to a conflict with some other feature enabled
-> > on the console port.  The next step to take would
-> > be to run "stty -all" under /bin/bash and under
-> > /bin/zsh on a telnet session, and compare the 
-> > outputs.
-> 
-> That sounds like a zsh bug I fixed. Please try zsh 3.0.8-8.1 in my RedHat 7.1
-> port and let me know if it doesn't work for you.
+I am running his on an Indy. I have kernel 2.4.17 and modutils 2.4.16.
+When a depmod is performed I get the following message:
 
-You only have the source RPM on OSS?
-I believe we compiled from another SRC RPM: zsh-4.0.4-5.src.rpm. 
+depmod: cannot read ELF header from /lib/modules/2.4.17/modules.dep
+depmod: cannot read ELF header from
+/lib/modules/2.4.17/modules.generic_string
+depmod: /lib/modules/2.4.17/modules.ieee1394map is not an ELF file
+depmod: /lib/modules/2.4.17/modules.isapnpmap is not an ELF file
+depmod: cannot read ELF header from
+/lib/modules/2.4.17/modules.parportmap
+depmod: /lib/modules/2.4.17/modules.pcimap is not an ELF file
+depmod: cannot read ELF header from
+/lib/modules/2.4.17/modules.pnpbiosmap
+depmod: /lib/modules/2.4.17/modules.usbmap is not an ELF file
 
-What was your fix? 
+How can I correct this?  I am trying to clean up my startup before I
+start using the machine.
 
-/Hartvig
+Thank you in advance.
+--
+Robert Rusek

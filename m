@@ -1,16 +1,36 @@
-Message-ID: <00c001c1d197$4a5c14a0$cecd7d3d@gol.com>
-From: "Girish Gulawani" <girishvg@yahoo.com>
-References: <sc99bfe4.044@quicklogic.com>
+Message-ID: <sc9ad9c1.008@quicklogic.com>
+Date: Fri, 22 Mar 2002 07:13:40 -0800
+From: "Dan Aizenstros" <daizenstros@quicklogic.com>
 Subject: Re: Re: PCI VGA Card Initilization (SIS6326 / PT80)
-Date: Fri, 22 Mar 2002 20:47:02 +0900
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Dan Aizenstros <daizenstros@quicklogic.com>, dom@algor.co.uk, fxzhang@ict.ac.cn, linux-mips@oss.sgi.com
-Message-ID: <20020322114702.tWMfRqwhArzQDTWReH5iicabDQG-drxgU_d2ZvtRVJs@z>
+To: linux-mips@oss.sgi.com, girishvg@yahoo.com
+Message-ID: <20020322151340.9nRhI1lrHrHaymolj4WSh1uK6xFmD2WoFM964y1i_Xg@z>
 
+Hello Girish,
+
+I have used the x86emu code to run the BIOS code
+on an ATI Rage IIC PCI adapter. I added the code
+to the PMON that I build for my company's Hurricane
+board. The code for the emulator does not require
+a lot of work because it is seperated between
+portable code that is not board or system specific
+and glue code that is.
+
+In the x86emu-0.8.tar.gz archive you will find the
+portable code in the directory scitech/src/x86emu.
+
+The code in scitech/src/biosemu can be used as a
+starting point for creating the glue code.
+
+Dan Aizenstros
+Software Project Manager
+QuickLogic Canada
+
+>>> "Girish Gulawani" <girishvg@yahoo.com> 03/22/02 03:45 AM >>>
 
 hello, all
 thank you very much for all these reply mails.
@@ -35,7 +55,7 @@ From: "Dan Aizenstros" <daizenstros@quicklogic.com>
 To: <dom@algor.co.uk>; <fxzhang@ict.ac.cn>; <linux-mips@oss.sgi.com>;
 <girishvg@yahoo.com>
 Sent: Friday, March 22, 2002 4:10 AM
-Subject: Re: Re: PCI VGA Card Initilization (SIS6326 / PT80)
+Subject: Re: Re: PCI VGA Card Initilization (SI6326 / PT80)
 
 
 Hello Dominic,

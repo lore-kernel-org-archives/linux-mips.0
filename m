@@ -1,33 +1,35 @@
-Message-ID: <200010221216.OAA03704@netsurf.de>
+Date: Sun, 22 Oct 2000 19:08:40 +0200 (MET DST)
+From: Karel van Houten <K.H.C.vanHouten@research.kpn.com>
 Subject: Re: Bug Tracker online
-Date: Sun, 22 Oct 2000 14:16:03 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.21.0010221352160.8799-100000@spock.mgnet.de> from "Klaus Naumann" at Oct 22, 2000 01:54:18 PM
-From: Ulrich Teichert <ut@netsurf.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-reply-to: <20001022185242.B21426@bacchus.dhis.org>
+Message-ID: <200010221708.TAA04753@sparta.research.kpn.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Klaus Naumann <spock@mgnet.de>
-Cc: Ulrich Teichert <ut@netsurf.de>, linux-mips@oss.sgi.com, linux-mips@fnet.fr
-Message-ID: <20001022121603.VhEiNCDOWhEEuP73IHa7vu-Y5Vi-U3K7fUth6raoVhc@z>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: Karel van Houten <K.H.C.vanHouten@research.kpn.com>, Linux/MIPS list <linux-mips@oss.sgi.com>, "Linux MIPS fnet.fr" <linux-mips@fnet.fr>
+Message-ID: <20001022170840.6DHmD_Nuvy7NsGb3G5jzju5Ozf-e5pY_gANprHNRRtY@z>
 
-Hi!
+Ralf wrote:
+> 
+> On Sun, Oct 22, 2000 at 12:21:07PM +0200, Karel van Houten wrote:
+> 
+> > I'm currently running kernel 2.4.0-test9, and I'm in the process
+> > of rebuilding RedHat 6.1 packages to get a minimal distribution ready.
+> 
+> Sorry to beat you, I got ~60% packages of distribution which is a mix
+> between 6.2 and 7.0 building :-)  I however only have big endian binaries.
+> 
 
->We actually could. I have a status called "Info" - so
->we could just add bugs with status Info and make a summary like
->"Bootmessages of Indigo2 (22102000)" and paste the info into the
->text field.
->
->Anyone against that or better solutions ?
+Indeed, I'm building Little endian binaries, especially for DECStation.
+I hope to make them available on oss, if space permits.
 
-Umm... I would prefer to use a designated state - it's much
-easier to search for. When you're abusing a system: be nice, even
-when it's your own ;-)
-
-Just my 2 Pf (way less than cents),
-Uli
 -- 
-Dipl. Inf. Ulrich Teichert|e-mail: Ulrich.Teichert@gmx.de
-Stormweg 24               |listening to: Paralysed (The Sewergrooves),
-24539 Neumuenster, Germany|Cheap Excitement (Stratford Mercenaries)
+Karel van Houten
+
+----------------------------------------------------------
+The box said "Requires Windows 95 or better."
+I can't understand why it won't work on my Linux computer. 
+----------------------------------------------------------

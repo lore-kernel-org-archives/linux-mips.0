@@ -1,250 +1,102 @@
-Reply-To: <sseeger@stellartec.com>
-From: sseeger@stellartec.com (Steven Seeger)
-Subject: O2 boot howto
-Date: Thu, 25 Jul 2002 05:08:12 -0700
-Message-ID: <011301c233d3$f353d9f0$3501a8c0@wssseeger>
+Message-ID: <3D44F31D.55155E24@mips.com>
+Date: Mon, 29 Jul 2002 09:47:49 +0200
+From: Carsten Langgaard <carstenl@mips.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Re: PATCH: Update E_MIP_ARCH_XXX (Re: [patch] linux:
+ RFC:elf_check_arch() rework)
+References: <Pine.GSO.3.96.1020725125830.27463H-100000@delta.ds2.pg.gda.pl>
+	 <3D3FFD21.8DA26337@mips.com> <20020725082610.A21614@lucon.org>
+	 <mailpost.1027610779.9546@news-sj1-1> <yov54remph1v.fsf@broadcom.com>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20020725120812.ATtKYucM42kWgJzhv8g5LuojqRnzXWwU4DUp6pDSbVU@z>
+To: cgd@broadcom.com
+Cc: hjl@lucon.org, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, linux-mips@fnet.fr, linux-mips@oss.sgi.com, binutils@sources.redhat.com
+Message-ID: <20020729074749.8tiFcM9JycNNPYiBRvVUgMi0N8nRXGCsz-8rzlAWr-0@z>
 
-I wrote up a howto on how to boot the O2 (R10k) in my case via bootp from a
-Linux server PC and mount an NFS root file system. I hope somebody can find
-it useful. I had to gather the answers on how to do this from a couple of
-guys and do a lot of reading..so maybe this will help the next guy out. :)
+First of all I will like to thank you for all the replies, we really appreciate
+it, because it helps us in our process of making a proper ABI spec.
+I known it's a relative late state we are trying to provide the community with an
+ABI document, but I guess it's better to be late than to never show up.
+I believe we all could benefit from such a document, it's only in a internal draft
+version right now, but it might be a good idea to send it out to the community for
+comments, before the finally version.
+But we are still in an early state and on the learning curve.
 
-Steve
+Regarding the ELF header arch values, we did try to select whose in order not to
+break things for anyone.
+I'm also a little surprised to see these value out in binutils, it really surprise
+me, if we got a linux toolchain that can generate mips32/mips64 code.
+
+MIPS32R2 and MIPS64R2 is a new enhanced version of MIPS32 and MIPS64 architecture,
+which among other things include some new instructions.
+
+Regarding Algorithmics, I don't know if everybody are aware of it, but we have
+just acquired Algorithmics.
+That among other things, is done in order to play a stronger part in the
+development of the toolchain. And their work will be pushed back to the community.
+
+Algorithmics have done a MIPS32 compiler for us, which is very close to be
+released.
+
+I hope this clarify a little bit, what our motivation are.
+/Carsten
+
+
+cgd@broadcom.com wrote:
+
+> At Thu, 25 Jul 2002 15:26:19 +0000 (UTC), "H. J. Lu" wrote:
+> > I'd like to fix binutils ASAP. Here is a patch.
+>
+> OK, so, I've seen no response so far that indicates that binutils
+> should actually be changed.
+>
+> to recap:
+>
+> * Binutils has deployed these values in several releases now, and I
+>   know for a fact that people are using binaries with these values.
+>
+> * SGI has followed binutils' lead in selecting values.
+>
+> * Algorithmics did something else, though it's not clear what the
+>   difference between "ARCH_ALGOR_32" and "ARCH_32" really is.
+>
+> It seems obvious that the simplest solution that causes the least pain
+> all around is to go with the numbering binutils currently uses.  This
+> will probably cause a little bit of pain for Algorithmics, but, well,
+> they could have sent something to binutils to indicate use of that
+> number, and i'm quite sure that most of the rest of us have had to put
+> temporary backward-compat hacks in our own codebases for incompatible
+> changes made by others in the past.  It's not that hard and doesn't
+> cause long-term pain.
+>
+> I could understand that MIPS or Algorithmics might like that, but I
+> think there're a bunch of morals to this story: if you want to lead on
+> ABI issues, get out in front of them (you can't lead from the back
+> 8-); interact with the tool development and use communities about such
+> issues _before_ solutions are needed and agreed upon in those
+> communities; and, you're hacking open source code like binutils,
+> contribute your changes back as soon as you possibly can.
+>
+> I'd also like to point out that saying "mips will be defining this
+> ABI, so you should all change your code to work with it" without,
+> AFAIK, even providing a draft of said ABI... is unlikely to produce
+> positive results even _if_ there's no precedent that would go against
+> the requested change.  (if somebody has a ptr, i'd be glad to be
+> corrected 8-)
+>
+> (I wonder what other incompatibilities may exist between this new ABI
+> and the current binutils MIPS ELF headers...)
+>
+> cgd
+> --
+> Chris Demetriou                                            Broadcom Corporation
+> Senior Staff Design Engineer                  Broadband Processor Business Unit
+>   Any opinions expressed in this message are mine, not necessarily Broadcom's.
+
 --
-Linux/O2 HOWTO
-
-Steven Seeger
-sseeger@stellartec.com
-
-July 24, 2002
-
-This FAQ describes booting the SGI O2 over the network from a server PC
-running dhcpd, and mounting an NFS root filesystem from that PC. This
-document will be covered in two steps: the O2 setup, and the PC setup.
-
-1. Copyright
-
-Copyright (c) 2002 Steven Seeger.
-
-Permission is granted to copy, distribute and/or modify this document under
-the terms of the GNU Free Documentation License, Version 1.1 or any later
-version published by the Free Software Foundation; with the Invariant
-Sections being Copyright, with no Front-Cover Texts and with no Back-Cover
-Texts.
-
-A copy of the GNU Free Documentation License is available on the World Wide
-Web at http://www.gnu.org/copyleft/fdl.html You can also obtain it by
-writing to the
-
-Free Software Foundation, Inc.
-  59 Temple Place - Suite 330
-  Boston, MA 02111-1307
-  USA
-
-2. Linux/MIPS net resources.
-
-Please see http://oss.sgi.com/mips/mips-howto.html for information on
-obtaining the latest Linux/MIPS kernel sources. Also contains anonymous CVS
-and FTP info.
-
-For information on building a serial cable, see
-http://oss.sgi.com/mips/i2-howto.html.
-
-3. Setting up the PC
-
-The PC will need to run tftpd, dhcpd (or a standalone bootpd), and NFS
-mountd. You can connect the O2 and the PC together with a crossover cable,
-or you can connect the O2 to your network. My computer is a PC based Linux
-box running RedHat 7.2, and all examples that follow will relate to RH 7.2
-and xinetd.
-
-3.1 dhcpd
-
-The dhcpd service is used to respond to the bootp protocol that the O2 will
-want to use for booting. In my situation, I have the O2 on my network but
-also have a router that connects the whole house and provides DHCP for it.
-The example dhcpd.conf file has IP address leasing disabled. Setting the
-O2's IP is described in detail in the next section.
-
-The dhcpd RPM that is floating around as of this writing for RedHat 7.2 does
-not seem to work with the O2. Upgrading to the latest version of dhcpd from
-http://www.isc.org seemed to fix my problem. The example /etc/dhcpd.conf
-file below shows my situation here at home where my house is networked on a
-192.168.1.0 network with a 255.255.255.0 subnet. My O2 is set to
-192.168.1.10.
-
-3.1.1 Example dhcpd.conf
-
-# dhcpd.conf
-#
-# Sample configuration file for ISC dhcpd
-#
-
-# option definitions common to all supported networks...
-
-#the following line is required for dhcpd version 3.0p1
-ddns-update-style ad-hoc;
-
-option subnet-mask 255.255.255.0;
-default-lease-time 0;
-max-lease-time 0;
-subnet 192.168.1.0 netmask 255.255.255.0 {
-#nothing in here...no ip leasing
-}
-
-# Fixed IP addresses can also be specified for hosts.   These addresses
-# should not also be listed as being available for dynamic assignment.
-# Hosts for which fixed IP addresses have been specified can boot using
-# BOOTP or DHCP.   Hosts for which no fixed address is specified can only
-# be booted with DHCP, unless there is an address range on the subnet
-# to which a BOOTP client is connected which has the dynamic-bootp flag
-# set.
-
-#the O2 goes here. I gave mine the IP 192.168.1.10
-#use printenv in the O2's command monitor and look at eaddr for the MAC
-address (hardware ethernet)
-
-host sgio2 {
-  hardware ethernet 08:00:69:0c:79:db;
-  fixed-address 192.168.1.10;
-  filename "vmlinux";
-}
-
-
-3.1.2 tftpd, xinetd, and portmap
-
-In the example dhcpd.conf file above, notice the filename="vmlinux" line.
-That line tells the O2 what filename to get from your tftpd. The current RPM
-for RedHat 7.2 tftp works fine for my O2 and can be found on
-http://rpmfind.net if you don't have it. This version for RH runs under
-xinetd and xinetd must be enabled along with portmapper for it to work. (You
-can run serviceconf in X to configure these services.)
-
-There is no configuration needed for tftpd. Just install the rpm and start
-the service in serviceconf along with portmap and xinetd. At a prompt type
-"service xinetd restart" and it will begin running. By default, tftpd wants
-to service a directory on /tftpboot. (Command line to start in.tfptd should
-have -s /tftpboot (or whatever your tftp directory is) on it.)
-
-The "vmlinux" file will go in that /tftpboot directory. If you have no
-"vmlinux" file suitable for booting your O2, then scroll up and click on
-that link to oss.sgi.com. :)
-
-In order to portmap to function properly, the following lines should be
-added to your /etc/hosts.allow file:
-
-portmap:ALL
-tftpd:ALL
-
-If you don't want to give access to all IP addresses, then you can replace
-ALL with whatever is suitable as well as use wildcards (ex 192.168.1.*)
-
-In order to be sure that your tftpd works properly, you can test it with
-your tftp client. Connect to localhost and try to get a file from your
-/tftpboot dir. If that works, then you're almost good to go. For example:
-
-tftp localhost
-get vmlinux
-
-If it receives the file successfully, then you're set.
-
-If your O2 doesn't seem able to connect to the tftpd, then add the following
-line to your /etc/sysctl.conf file:
-
-net.ipv4.ip_no_pmtu_disc = 1
-
-or type at a prompt:
-
-echo 1 > /proc/sys/net/ipv4/ip_no_pmtu_disc
-
-3.1.3 NFS and mountd
-
-In order to mount a root fs from your O2, you need to set up mountd. The nfs
-service should be started in serviceconf. The following line should be added
-to /etc/hosts.allow:
-
-mountd:ALL
-
-In /etc/exports, add:
-
-/pathname/rootfsdir       192.168.1.0/255.255.255.0(rw,no_root_squash)
-
-(The IP above is the whole subnet for your network.)
-
-That will export the /pathname/rootfsdir to the O2 if the O2's IP is set to
-192.168.1.10. This will give it read-write access, and treat root on the O2
-the same as root on your server PC's drive.
-
-If you want to make sure your system has mountd up and running, connect to
-your rootfs by typing at a prompt:
-
-mount localhost:/pathname/rootfsdir /mntdir
-
-If it mounts, then you should be good to go with your O2.
-
-For more information on NFS root, look for the diskless-root-nfs-HOWTO.
-
-4 Setting up the O2
-
-Turn on your O2 and marvel at its sleek stylish case while you wait 45
-seconds for it to actually do something. When the monitor finally displays
-something, press ESC when the "STOP FOR MAINTENANCE" button appears. Press
-'5' to go into the COMMAND MONITOR.
-
-4.1 IP
-
-Type the following in the command monitor:
-
-setenv netaddr 192.168.1.10
-
-That will set your O2 to the IP address listed above. Choose whichever is
-appropriate for you.
-
-4.2 Envs
-
-The PROM in the O2 will pass some of its env vars to the Linux kernel. To
-properly boot your system, type the following on the command monitor:
-
-setenv OSLoadOptions "nfsroot=SERVER_IP:/pathname/rootfs ip=O2_IP:SERVER_IP"
-setenv OSLoadPartition /dev/nfs
-
-So if your O2 is 192.168.1.10, and your server linux PC is 192.168.1.103,
-and the pathname to your O2's rootfs on your linux PC is /root/sgifs type:
-
-setenv OSLoadOptions "nfsroot=192.168.1.103:/root/sgifs
-ip=192.168.1.10:192.168.1.103"
-
-4.3 Bootp
-
-To boot your O2 and its Linux kernel, type the following:
-
-bootp():
-
-You should see the following from the O2:
-
-Setting $netaddr to 192.168.1.10 (from server)
-Obtaining from server
-(some numbers)
-
-If bootp(): just hangs, then your Linux PC's dhcpd server isn't set up
-properly. If the first line appears but not the second, then tftpd is not
-working. Check your Linux PC's /var/log/messages to see what's going on with
-your RPC services. You can also type "rpcinfo -p" on your server PC to make
-sure portmap and mountd are running. TFTPD won't show up there, but if
-portmap is running you should be fine.
-
-If you're lucky, the O2 will get the whole vmlinux file from your Linux PC,
-and then display a message like "entry point 0x80200000" and then boot! You
-should see the FB come up with the Tux logo.
-
-If your file system doesn't remount as read-write, you probably forgot to
-put an entry in /etc/fstab on the root filesystem you're trying to use. (Not
-the server's /etc/fstab, but the one in the SGI's fs.) I did that, so I
-figured I'd throw that in here. :)
+_    _ ____  ___   Carsten Langgaard   Mailto:carstenl@mips.com
+|\  /|||___)(___   MIPS Denmark        Direct: +45 4486 5527
+| \/ |||    ____)  Lautrupvang 4B      Switch: +45 4486 5555
+  TECHNOLOGIES     2750 Ballerup       Fax...: +45 4486 5556
+                   Denmark             http://www.mips.com

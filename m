@@ -1,46 +1,34 @@
+From: greg.roelofs@philips.com
 Subject: Re: apparent math-emu hang on movf instruction
-References: <OFFE4A0198.56A3A2A2-ON88256EDF.006D0D9F@philips.com>
-	<876587uwud.fsf@redhat.com>
-From: Richard Sandiford <rsandifo@redhat.com>
-Date: Thu, 29 Jul 2004 08:01:24 +0100
-In-Reply-To: <876587uwud.fsf@redhat.com> (Richard Sandiford's message of
- "Thu, 29 Jul 2004 07:54:50 +0100")
-Message-ID: <871xivuwjf.fsf@redhat.com>
+Date: Thu, 29 Jul 2004 14:53:46 -0700
+Message-ID: <OF8AA8C2FE.CCAA8F91-ON88256EE0.0078027A@philips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-Path: <rsandifo@redhat.com>
+Return-Path: <greg.roelofs@philips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: greg.roelofs@philips.com
+To: rsandifo@redhat.com
 Cc: linux-mips@linux-mips.org
-Message-ID: <20040729070124.sQjL9LwKmH0XBfjGmCSBA0zqZqu9eHJkoC23DZUFxQE@z>
+Message-ID: <20040729215346.R0bfRdHBu2_a9BiwN_B2s221caJEnQsbg3iDBhAdO5E@z>
 
-Richard Sandiford <rsandifo@redhat.com> writes:
-> Does the patch below (against 2.6) fix things?  Only the first hunk
-> is needed to fix the bug, the rest is just there for consistency.
+Richard Sandiford <rsandifo@redhat.com> wrote...
 
-Oops!  Serves me right for dabbling in new code.  Only the first
-hunk is correct.
+>> Does the patch below (against 2.6) fix things?  Only the first hunk
+>> is needed to fix the bug, the rest is just there for consistency.
 
-Richard
+> Oops!  Serves me right for dabbling in new code.  Only the first
+> hunk is correct.
 
+Yup, that does it!  Many thanks.  The only thing I had to change for
+2.4.x was the name of the "fcr31" soft-struct member; it's "sr" in
+older kernels:
 
-Index: arch/mips/math-emu/cp1emu.c
-===================================================================
-RCS file: /home/cvs/linux/arch/mips/math-emu/cp1emu.c,v
-retrieving revision 1.32
-diff -u -p -F^\([(a-zA-Z0-9_]\|#define\) -r1.32 cp1emu.c
---- arch/mips/math-emu/cp1emu.c	19 Jan 2004 16:25:21 -0000	1.32
-+++ arch/mips/math-emu/cp1emu.c	29 Jul 2004 06:42:53 -0000
-@@ -528,9 +528,8 @@ static int cop1Emulate(struct pt_regs *x
- 		if (MIPSInst_FUNC(ir) != movc_op)
- 			return SIGILL;
- 		cond = fpucondbit[MIPSInst_RT(ir) >> 2];
--		if (((ctx->fcr31 & cond) != 0) != ((MIPSInst_RT(ir) & 1) != 0))
--			return 0;
--		xcp->regs[MIPSInst_RD(ir)] = xcp->regs[MIPSInst_RS(ir)];
-+		if (((ctx->fcr31 & cond) != 0) == ((MIPSInst_RT(ir) & 1) != 0))
-+			xcp->regs[MIPSInst_RD(ir)] = xcp->regs[MIPSInst_RS(ir)];
- 		break;
- #endif
- 
+> +		if (((ctx->fcr31 & cond) != 0) == ((MIPSInst_RT(ir) & 1) != 0))
+		           ^^^^^ sr
+> +			xcp->regs[MIPSInst_RD(ir)] = xcp->regs[MIPSInst_RS(ir)];
+
+(Ralf renamed things on 20030720, according to the cvsweb.)
+
+Thanks again,
+-- 
+Greg Roelofs            `Name an animal that's small and fuzzy.' `Mold.'
+Philips Semiconductors   greg.roelofs@philips.com

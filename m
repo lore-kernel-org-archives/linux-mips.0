@@ -1,25 +1,39 @@
-Message-ID: <001201c12ab2$c7c4e700$8021690a@huawei.com>
-From: "machael thailer" <dony.he@huawei.com>
-Subject: question about syscall and interrupts......
-Date: Wed, 22 Aug 2001 10:33:08 +0800
+From: Hartvig Ekner <hartvige@mips.com>
+Message-ID: <200108220646.IAA13918@copsun17.mips.com>
+Subject: Re: Magic numbers about stack layout
+Date: Wed, 22 Aug 2001 08:46:01 +0200 (MET DST)
+In-Reply-To: <20010822.144547.30190293.nemoto@toshiba-tops.co.jp> from "Atsushi Nemoto" at Aug 22, 2001 02:45:47 PM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010822023308.MOHxWacn1vbaXzsSo7Nh33jUniZ4-cP2kpckPTKSJeE@z>
+To: Atsushi Nemoto <nemoto@toshiba-tops.co.jp>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010822064601.ifDsYXdKnwZGgZ5sB1rytYW0Y1NV8zwx7IRAScY50dY@z>
 
-Hello,
-    I find that in handle_sys() of scall_o32.S, it calls:
-        SAVE_SOME
-    But in the various board interrupt handlers entry(int-handler.S), it
-calls:
-        SAVE_ALL
+Hi,
 
-    So before entering syscall and interrupt handler entry, why do they need
-save different registers? and interrupt need save more things than syscalls?
+what is the purpose of replacing the magic numbers with code analysis?
+And what will happen when you run userland with MIPS16 or MIPS16e code?
 
-Thank you very much.
+We have it on our work-list to eventually clean up all the places in the
+kernel that inspect code to allow MIPS16(e) code as well, so adding more
+code inspection points is a bad idea unless it really is necessary.
 
-machael thailer
+/Hartvig
+
+Atsushi Nemoto writes:
+> 
+> ----Next_Part(Wed_Aug_22_14:45:47_2001_172)--
+> Content-Type: Text/Plain; charset=us-ascii
+> Content-Transfer-Encoding: 7bit
+> 
+> There are some magic constant numbers about stack layout in
+> thread_saved_pc() and get_wchan() function.
+> 
+> I made a patch to eliminate these magic numbers.  This patch analyzes
+> some functions prologue codes in heuristic way at run-time.  "ps -l"
+> (and "MAGIC SYSRQ" feature) works fine with this patch.
+> 
+> ---
+> Atsushi Nemoto

@@ -1,70 +1,64 @@
-From: Hartvig Ekner <hartvige@mips.com>
-Message-ID: <200210051512.g95FCmI11618@copfs01.mips.com>
-Subject: Re: Promblem with PREF (prefetching) in memcpy
-Date: Sat, 5 Oct 2002 17:12:47 +0200 (MEST)
-In-Reply-To: <20021005014345.B15883@linux-mips.org> from "Ralf Baechle" at Oct 05, 2002 01:43:45 AM
+Message-ID: <01fd01c26e1d$add77240$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <20020916164034.GA12489@convergence.de> <20021007144749.GB16641@convergence.de>
+Subject: Re: Once again: test_and_set for CPUs w/o LL/SC
+Date: Mon, 7 Oct 2002 18:21:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <hartvige@mips.com>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: "Kevin D. Kissell" <kevink@mips.com>, Dominic Sweetman <dom@algor.co.uk>, Carsten Langgaard <carstenl@mips.com>, linux-mips@linux-mips.org
-Message-ID: <20021005151247.Zor3Tm_F0rjV_ONPDleQGUFa3lm_yuhvnYMRR5kX2pc@z>
+To: Johannes Stezenbach <js@convergence.de>, linux-mips@linux-mips.org
+Message-ID: <20021007162152.HRgdSJr5JXN2e-tTnSFZxexrQv0nNF_sh607ILYivSs@z>
 
-I still say we should fix memcpy() (and everything else using prefetches)
-never to prefetch anything it hasn't been asked to touch.
-
-Apart from the performance loss of the current practice which Alan pointed
-out, I think there is another very good reason to fix it: SW coherency.
-
-Unless we want to do writeback/invalidate both before & after ownership
-of buffers are given/taken from DMA IO devices, we need to get rid of 
-the prefetches to unwanted areas. 
-
-So that's two good arguments for fixing memcpy() as I see it. I haven't
-really heard any arguments against it?
-
-Whether the last page of physical memory needs to be thrown away or not seems
-like a separate issue. Is this also done in x86 world? What are the issues
-you're thinking about Ralf? Are there devices which will read/write beyond 
-what they have been asked to?
-
-/Hartvig
-
-
-Ralf Baechle writes:
+> Hi all,
 > 
-> On Fri, Oct 04, 2002 at 02:36:39PM +0200, Kevin D. Kissell wrote:
+> On Mon, Sep 16, 2002 at 06:40:34PM +0200, I wrote:
+> > 
+> > The NEC VR41xx CPU has no LL/SC instructions, so they must
+> > be emulated by the kernel, which slows down the test-and-set
+> > and compare-and-swap operations (used by linux-threads)
+> > considerably. For the VR41xx (and other CPUs which have
+> > branch-likely instructions), there exisits a workaround
+> > which enables userspace-only atomic operations, with minor
+> > help from the kernel: The kernel must guarantee that register
+> > k1 is not equal to some magic value after every transition
+> > to userspace.
+> > 
+> > Two things were left open in July:
+> > - find out the minimal amount of changes to the kernel
+> >   to guarantee k1 != MAGIC after eret
+> > - determine how to tell glibc to use the branch-likely
+> >   workaround instead of emulated LL/SC
 > 
-> > In case Carsten's reply wasn't clear enough, there is a loophole
-> > in the spec:  kseg0.  There is no TLB access to cause a TLB
-> > exception (which would suppress the operation and be nullifed),
-> > If the prefetch address is correctly aligned, so that there is no
-> > address exception.  In typical use, kseg0 is cacheable, which
-> > means that the second paragraph you quote does not apply.
-> > A prefetch to a well-formed, cacheable kseg0 address which 
-> > has no primary storage behind it (e.g. 0x04000000 on a system
-> > with 64M of physical memory) should, according to the spec,
-> > cause a cache fill to be initiated for the line at that address,
-> > which will result in a bus error, if not a flat-out system hang.
-> 
-> Traditionally the kernel leaves the last page of memory unused but this
-> has been lost in the many changes to the memory initialization code.
-> It's still a good idea with all the broken I/O chips and PCI bridges out
-> there - and can avoid a hard to track bug.
-> 
-> That only leaves stuff usermode device drivers that are using cachable
-> mappings in the dangerzone.  That should be a rare case, if at all.
-> 
->   Ralf
-> 
-> 
+> Since there have been no follow-ups I must assume that
+> this topic is no longer of interest. Is this so? Or
+> is the way I approach it deemed inappropriate?
 
+When I first proposed the branch-likely hack last winter,
+I thought it might be worth while to do a through code
+inspection to determine what set of values could never
+be returned in k1 (or k0 for all I care) if an exception
+was taken, such that there would be no mods to the
+kernel required whatsoever.  I spent a little time going 
+down that path, and it does look at first glance as if one 
+could guarantee that one will never come out of an exception 
+with k1 equal to 0xffdadaff in current oss/linux-mips cvs
+sources, but the guys at Sony, who have a big interest in 
+this technique, given that the PS2 has no LL/SC,
+prefered a more conservative approach which explicitly
+clobbered the selective register on all exceptions,
+even if it meant some small performance impact.
+That's probably going to be a more reliable design,
+though I would still consider leaving the TLB refill handler
+untouched and counting on the fact that k1 must contain
+a non-lethal EntryLo value on return from the exception.
 
--- 
- _    _   _____  ____     Hartvig Ekner        Mailto:hartvige@mips.com
- |\  /| | |____)(____                          Direct: +45 4486 5503
- | \/ | | |     _____)    MIPS Denmark         Switch: +45 4486 5555
-T E C H N O L O G I E S   http://www.mips.com  Fax...: +45 4486 5556
+As for glibc, the possibilities are numerous and I'm not
+the guy who'd have to make it work.
+
+            Regards,
+
+            Kevin K.

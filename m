@@ -1,38 +1,33 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199708151337.JAA20136@neon.ingenia.ca>
+Message-ID: <199708151709.NAA22391@neon.ingenia.ca>
 Subject: Re: Local disk boot HOWTO
-In-Reply-To: <33F45BBC.84D44D8F@cygnus.detroit.sgi.com> from Eric Kimminau at "Aug 15, 97 09:38:04 am"
-Date: Fri, 15 Aug 1997 09:37:25 -0400 (EDT)
+In-Reply-To: <9708150958.ZM1050@xtp.engr.sgi.com> from Greg Chesson at "Aug 15, 97 09:58:08 am"
+Date: Fri, 15 Aug 1997 13:09:36 -0400 (EDT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: eak@detroit.sgi.com
-Cc: Linux/SGI list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970815133725.3m6qtmsY185cPxardB0h5L8f_tI8mmDEH51H2Ztb9bU@z>
+To: Greg Chesson <greg@xtp.engr.sgi.com>
+Cc: eak@detroit.sgi.com, ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
+Message-ID: <19970815170936.cYWQqYOJfrMyVSL25gky8qF-gIfkc_Bxe69OyGPRKrY@z>
 
-Thus spake Eric Kimminau:
-> OK, this IS simple enough. Does anyone have a tar of a functional Linux
-> installation I can snag and uncompress on my second disk?
+Thus spake Greg Chesson:
+> > > - put vmlinux on the IRIX /
+> > > - boot into sash
+> > > boot /vmlinux root=/dev/sdb1
+> 
+> seems to me you'd have to also patch vmlinux to get the device ID
+> correct for the root disk.
 
-ftp://ftp.linux.sgi.com/pub/mips-linux/root-be-0.00.cpio.gz
-should work fine.
-
-(20MB, BTW)
-
-> My assumption would be I would then just modify
-> /dev/sdb1/etc/hosts,hostname, etc. for networking and then reboot into
-> Linux? 
-
-Something like that.
-You can edit them after you reboot, though.
+The root= parameter tells it where its root device is.
+(It magically parses the [hs]d[ab][0-8] part into major/minor.)
 
 Mike
 
 -- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>                 UNIX medicine man -- dark magick, cheap!            
+#> Mike Shaver (shaver@ingenia.com)      Information Warfare Division  
+#> Chief Tactical and Strategic Officer         "Saepe fidelis"        
 #>                                                                     
-#>  When the going gets tough, the tough give cryptic error messages.  
-#>          "We believe in rough consensus and running code."          
+#> "I like your game, but we have to change the rules." -- Anon        
+#>                                                                     

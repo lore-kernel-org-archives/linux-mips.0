@@ -1,59 +1,57 @@
-Received: from newman.mips.com (ns-dmz [206.31.31.225])
-	by mx2.mips.com (8.12.5/8.12.5) with ESMTP id gASKapNf026683
-	for <linux-mips@linux-mips.org>; Thu, 28 Nov 2002 12:36:51 -0800 (PST)
-Received: from copfs01.mips.com (copfs01 [192.168.205.101])
-	by newman.mips.com (8.9.3/8.9.0) with ESMTP id MAA00473
-	for <linux-mips@linux-mips.org>; Thu, 28 Nov 2002 12:36:53 -0800 (PST)
-Received: from coplin09.mips.com (IDENT:root@coplin09 [192.168.205.79])
-	by copfs01.mips.com (8.11.4/8.9.0) with ESMTP id gASKaqb21980
-	for <linux-mips@linux-mips.org>; Thu, 28 Nov 2002 21:36:53 +0100 (MET)
-Received: (from hartvige@localhost)
-	by coplin09.mips.com (8.11.6/8.11.6) id gASKaqD24646
-	for linux-mips@linux-mips.org; Thu, 28 Nov 2002 21:36:52 +0100
-From: Hartvig Ekner <hartvige@mips.com>
-Message-ID: <200211282036.gASKaqD24646@coplin09.mips.com>
-Subject: New 7.3 installation kit for MIPS dev boards
-Date: Thu, 28 Nov 2002 21:36:52 +0100 (CET)
+Message-ID: <022501c29ac2$f421e470$6808a8c0@rd.svanetworks.com>
+From: "wgjl" <wgjl@21cn.com>
+Subject: Can't checkout linux source code
+Date: Tue, 3 Dec 2002 19:56:00 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-Path: <hartvige@mips.com>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0220_01C29B06.010CCB80"
+Return-Path: <wgjl@21cn.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20021128203652.p8zh_oN8jPu9pW29LCV2CLw66kOyXYXT5afWlCf9Ztk@z>
+Message-ID: <20021203115600.mmE10WcpxPbQSiLRPRSj6ml7TZ6js5yol6WEoSmRcbg@z>
 
-On our FTP site, you will now be able to find a MIPS RedHat 7.3 
-installation kit (for Malta boards) which contains all of the latest
-RPM's from both H.J.'s 7.3 port as well as some extras. The kernel
-is 2.4.18++. The complete kit is provided in both LE and BE versions.
+This is a multi-part message in MIME format.
 
-It also includes the new SDE/Linux compiler provided by MIPS, both 
-as a native toolchain, as well as a x86 cross version which has been
-used for generating the kernels (kernels provided both as precompiled
-binaries and complete source tree).
+------=_NextPart_000_0220_01C29B06.010CCB80
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-From ftp.mips.com:
+SSBjYW4ndCBjaGVjayBvdXQgdGhlIGxpbnV4IGRpcmVjdG9yeSBieSBleGVjdXRlIHRoZSBmb2xs
+b3dpbmcgY29tbWFuZHM6DQogDQpjdnMgLWQgOnBzZXJ2ZXI6Y3ZzQGZ0cC5saW51eC1taXBzLm9y
+ZzovaG9tZS9jdnMgbG9naW4NCnBhc3N3b3JkOiBjdnMNCg0KY3ZzIC1kIDpwc2VydmVyOmN2c0Bm
+dHAubGludXgtbWlwcy5vcmc6L2hvbWUvY3ZzIGNvIGxpbnV4DQoNClRoaXMgd2FzIHdvcmsgc29t
+ZSBkYXlzIGJlZm9yZS4gSG93IGFib3V0IGl0IG5vdz8gSG93IGNhbiBnaXZlIG1lIHNvbWUgdGhy
+ZWFkPw0KDQpUaGFua3MuDQoNCg0KV2FuZywgSmlhbmxpYW5nIChBcmljKQ0KYXJpY3dhbmdAc3Zh
+bmV0d29ya3MuY29tDQoNCiANCg==
 
-ftp> pwd
-257 "/pub/linux/mips/installation/redhat7.3/01.00" is current directory.
-ftp> dir
-227 Entering Passive Mode (206,31,31,227,157,169)
-150 Opening ASCII mode data connection for /bin/ls.
-total 985416
--rw-r--r--   1 9618     40          15352 Nov 27 02:31 INSTALL
--rw-r--r--   1 9618     40       535359488 Nov 26 09:17 MIPS_RedHat7.3_Release-01.00.iso
--rw-r--r--   1 9618     40       473165864 Nov 26 06:42 MIPS_RedHat7.3_Release-01.00.tar.gz
--rw-r--r--   1 9618     40            589 Nov 27 02:31 README
-226 Transfer complete.
+------=_NextPart_000_0220_01C29B06.010CCB80
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-Get the .tar file for an NFS install, and the .iso file for a CDROM install
-directly on the Malta. It's all explained in the README and INSTALL files.
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PWdi
+MjMxMiIgaHR0cC1lcXVpdj1Db250ZW50LVR5cGU+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNS4w
+MC4zMzE1LjI4NzAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
+Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj5JIGNhbid0IGNoZWNrIG91
+dCB0aGUgbGludXggZGlyZWN0b3J5IGJ5IGV4ZWN1dGUgdGhlIGZvbGxvd2luZyANCmNvbW1hbmRz
+OjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxE
+SVY+PEZPTlQgc2l6ZT0yPmN2cyAtZCA8QSANCmhyZWY9Im1haWx0bzo6cHNlcnZlcjpjdnNAZnRw
+LmxpbnV4LW1pcHMub3JnOi9ob21lL2N2cyI+OnBzZXJ2ZXI6Y3ZzQGZ0cC5saW51eC1taXBzLm9y
+ZzovaG9tZS9jdnM8L0E+IA0KbG9naW48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5w
+YXNzd29yZDogY3ZzPC9GT05UPjwvRElWPg0KPERJVj4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQg
+c2l6ZT0yPmN2cyAtZCA8QSANCmhyZWY9Im1haWx0bzo6cHNlcnZlcjpjdnNAZnRwLmxpbnV4LW1p
+cHMub3JnOi9ob21lL2N2cyI+OnBzZXJ2ZXI6Y3ZzQGZ0cC5saW51eC1taXBzLm9yZzovaG9tZS9j
+dnM8L0E+IA0KY28gbGludXg8L0ZPTlQ+PC9ESVY+DQo8RElWPiZuYnNwOzwvRElWPg0KPERJVj48
+Rk9OVCBzaXplPTI+VGhpcyB3YXMgd29yayBzb21lIGRheXMgYmVmb3JlLiBIb3cgYWJvdXQgaXQg
+bm93PyBIb3cgY2FuIGdpdmUgDQptZSBzb21lIHRocmVhZD88L0ZPTlQ+PC9ESVY+DQo8RElWPiZu
+YnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+VGhhbmtzLjwvRk9OVD48L0RJVj4NCjxESVY+
+Jm5ic3A7PC9ESVY+DQo8RElWPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+V2FuZywg
+SmlhbmxpYW5nIChBcmljKTwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjxBIA0KaHJl
+Zj0ibWFpbHRvOmFyaWN3YW5nQHN2YW5ldHdvcmtzLmNvbSI+YXJpY3dhbmdAc3ZhbmV0d29ya3Mu
+Y29tPC9BPjxCUj48L0RJVj48L0ZPTlQ+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7
+PC9ESVY+PC9CT0RZPjwvSFRNTD4NCg==
 
-/Hartvig
-
--- 
- _    _   _____  ____     Hartvig Ekner        Mailto:hartvige@mips.com
- |\  /| | |____)(____                          Direct: +45 4486 5503
- | \/ | | |     _____)    MIPS Denmark         Switch: +45 4486 5555
-T E C H N O L O G I E S   http://www.mips.com  Fax...: +45 4486 5556
+------=_NextPart_000_0220_01C29B06.010CCB80--

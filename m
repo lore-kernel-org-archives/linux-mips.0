@@ -1,32 +1,20 @@
-Message-ID: <01f201c1789d$0f872c00$8061a8c0@oz.agile.tv>
-From: "Jim Grohn" <Jim.Grohn@Agile.TV>
-Subject: crash from unalgined bad address passed to a syscall 
-Date: Thu, 29 Nov 2001 16:14:10 +1000
+Subject: Re: calibrating MIPS counter frequency
+Date: Thu, 29 Nov 2001 15:34:15 +0000 (GMT)
+In-Reply-To: <Pine.GSO.3.96.1011129161541.14485G-100000@delta.ds2.pg.gda.pl> from "Maciej W. Rozycki" at Nov 29, 2001 04:21:46 PM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <E169TCZ-0000Lk-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20011129061410.7YpwD8gwMNDZtTm3MtnYxdNJhUS9xEtHMH3YfQzmkxY@z>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Cc: Ralf Baechle <ralf@oss.sgi.com>, Jun Sun <jsun@mvista.com>, linux-mips@oss.sgi.com
+Message-ID: <20011129153415.kIA3EjrGc90Zftq_OptKmmooFc_DMJtigmeJAw_9BOk@z>
 
-I get a crash when I run the latest LTP.  The test passes 0x1 to getpeername
-for namelen (socklen_t*)
+>  On the contrary, the DECstation's undocumented I/O ASIC FCR (free running
+> counter) driven by the TURBOchannel bus clock is said to be much more
+> accurate than the DS1287 used there.  And it's David L. Mills who says so,
+> thus we may safely assume it's true. :-)
 
-I think the problem may be in emulate_load_store_insn.   Should the code
-below be passing "pc" to search_exception_table and fixup_exception?
-regs->cp0_epc has been adjusted by compute_return_epc (called from do_ade)
-to be 4 bytes past the instruction that caused the problems.
-
-*************************
-fault:
- /* Did we have an exception handler installed? */
- fixup = search_exception_table(regs->cp0_epc);
- if (fixup) {
-  long new_epc;
-  new_epc = fixup_exception(dpf_reg, fixup, regs->cp0_epc);
-  printk(KERN_DEBUG "%s: Forwarding exception at [<%lx>] (%lx)\n",
-         current->comm, regs->cp0_epc, new_epc);
-  regs->cp0_epc = new_epc;
-  return;
- }
+The old DEC hardware guaranteed good time quality. But thats rather unusual
+beyond DEC. 

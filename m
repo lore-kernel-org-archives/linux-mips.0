@@ -1,54 +1,49 @@
-content-class: urn:content-classes:message
+From: "Matthew Dharm" <mdharm@momenco.com>
+Subject: RE: Marvell MV64340 documentation
+Date: Tue, 27 Jan 2004 11:39:34 -0800
+Message-ID: <000d01c3e50d$4a6e8b40$7200a8c0@internal.momenco.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: How to add more memory?
-Date: Fri, 23 Jan 2004 09:14:44 -0600
-Message-ID: <CFD808D1D39ACB47ABFF586D484CC52EADE218@hqmailnode1.commstor.crossroads.com>
-From: "Nils Larson" <nlarson@Crossroads.com>
-Return-Path: <nlarson@Crossroads.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1075229071.4058.46.camel@podstavin.dev.rtsoft.ru>
+Return-Path: <mdharm@momenco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20040123151444.qnDcwPPXXqJaMfAi409Bb5IjBCSvs4VP33Dtlkj_jRI@z>
+To: podstavin@dev.rtsoft.ru
+Cc: 'Pavel Kiryukhin' <savl@dev.rtsoft.ru>, linux-mips@linux-mips.org
+Message-ID: <20040127193934.7lYYNDNpp3ELbwmQ1Ww7eV5bZO-UA4irzbfUCnxW8r4@z>
 
-Ralf,
-That's for responding.
-We're using the RM7000A on one platform and the RM7065C on another.
-Also, how exactly does highmem work? I can't seem to find a description
-of how highmem works (without reading code). I've read comments about hits
-on performance using this. How much of a hit is it? Is it 
-possible to DMA to this memory?
-Thanks,
-Nils
+I can't really answer something that specific without violating the NDA.
+Sorry.
 
------Original Message-----
-From: Ralf Baechle [mailto:ralf@linux-mips.org]
-Sent: Wednesday, January 21, 2004 6:28 PM
-To: Nils Larson
-Subject: Re: How to add more memory?
+Matt
+
+--
+Matthew D. Dharm                            Senior Software Designer
+Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
+(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
+Momentum Works For You                      www.momenco.com
 
 
-On Wed, Jan 21, 2004 at 03:58:24PM -0600, Nils Larson wrote:
-
-> We currently have a mips platform running Linux with 256MB of
-> RAM starting at 0x8000_0000. We would like to add an additional
-> 1GB of RAM, maybe starting at 0x4000_0000, that would be used
-> for user apps (user virtual memory). The memory map is:
-> 0x8000_0000 - 256MB RAM
-> 0xA000_0000 - uncached version of the same 256MB
-> 0xB000_0000 - PCI memory windows.
-> This is a diskless setup booting from a ramdisk.
-> So, the (sort of newbie) questions are:
-> 1. How do we tell Linux to use the new memory?
-> 2. Is this feasible?
-> 3. Is there a better way to add more memory?
-> We need more space for user data.
-
-I wrote the highmem code for Linux/MIPS.  It's currently limited
-to processor configurations that don't suffer from virtual aliases but
-that limitation can be removed; depending of your application and hardware
-that may be anywhere from trivial to hard.   What is your processor?
-
-  Ralf
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org 
+> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Sergey 
+> Podstavin
+> Sent: Tuesday, January 27, 2004 10:45 AM
+> To: Matthew Dharm
+> Cc: Pavel Kiryukhin; linux-mips@linux-mips.org
+> Subject: Marvell MV64340 documentation
+> 
+> 
+> Hello Matthew!
+> 
+> Could you write me what do bits mean in the interrupt cause 
+> registers for MV64340 Ethernet? I need to handle them in the 
+> interrupt handler for the Gigabit Ethernet in the driver.
+> 
+> Best wishes,
+> Sergey Podstavin,
+> software engineer.  
+> 
+> 

@@ -1,74 +1,45 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199811052053.MAA55262@oz.engr.sgi.com>
-Subject: Halloween doc II
-Date: Thu, 5 Nov 1998 12:53:04 -0800 (PST)
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Thu, 5 Nov 1998 16:00:23 -0500 (EST)
+From: david@carrera.columbus.sgi.com (David Watters)
+Message-ID: <9811051600.ZM2221@carrera.columbus.sgi.com>
+In-Reply-To: ariel@oz.engr.sgi.com (Ariel Faigon)
+        "Halloween doc II" (Nov  5, 12:53pm)
+References: <199811052053.MAA55262@oz.engr.sgi.com>
+Subject: Re: Halloween doc II
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19981105205304.nalYR_YjlSYEYFUiKD8XCD5YlkAOvMg84pmpxzJQJYE@z>
+Cc: nafose@palladium.corp.sgi.com
+Message-ID: <19981105210023.LF1nvwPRxJvyUEC-p2bbTnGQO6BctqRrXs9q0QBqkMQ@z>
 
-Hi,
 
-A second "what is Linux and how to combat it" document
-just came out the Microsoft leak factory:
 
-        http://www.opensource.org/halloween2.html
+It also made some high visibility press:
 
-It is a followup doc to the infamous "Halloween Doc"
-(now renamed "Halloween I").   It was leaked by an MS
-employee as a reaction to the recent publicity for
-Halloween-I.  It adds the threat of Linux as a client
-and gives a very positive evaluation of Linux (coming
-from within MS, this is telling).
+http://www.news.com/News/Item/0,4,28397,00.html?st.ne.ni.lh
 
-It concludes again, with the sinister suggestions to
-"de-commoditize" open protocols, plus (surprise) ways
-to attack Linux via litigation (if you can't beat them
-on merit, there are always the nukes, Bill).
 
-		---
-There's specific interest to this community: David Miller
-and Miguel de Icaza are both mentioned and their SPARC
-comparison docs are linked from this document.  No doubt,
-the MS guys did a great research job.
 
-There's a lot the Linux community learn from this document.
-Just read the "what's missing in Linux compared to NT"
-part and make sure it is implemented. It doesn't appear
-too hard.  Some points which are definitely geared towards
-the non sophisticated users include:
+On Nov 5, 12:53pm, Ariel Faigon wrote:
+> Subject: Halloween doc II
+> Hi,
+>
+> A second "what is Linux and how to combat it" document
+> just came out the Microsoft leak factory:
+>
+>         http://www.opensource.org/halloween2.html
 
-	1) Automounting a floppy/CD when it is inserted
-	   (BTW: IRIX mediad has been doing this for quite a while)
 
-	2) Simpler installation: e.g. rather than asking 30
-	   questions, provide a menu like:
-		1) Express install: don't ask me anything,
-		   just go ahead and fill my disk.
-		2) Pick and chose: let me select
-		...
 
-	3) XFree86 installation: don't ask me what chipset I have
-	   and what's the scan rates etc.  Instead have an internal
-	   mapping table between well known brand names (e.g. ATI Mach64)
-	   and the details of the card.  People usually know the latter
-	   (what's written on the box, but rarely the former)
 
-	4) Simpler Network config:  DHCP client installed by default
-	   Again saving complex questions to the simple user
 
-	5) Of course, a coherent consistent GUI to manage everything
-	   from HW devices to access to files etc.  Those who need
-	   the simplicity, will never be willing to do command line
-	   stuff.
 
-	6) Development tools like VB/VC++ :-)
 
-Someone forward this to Red Hat / Gnome and the XFree86 teams ...
 
 -- 
-Peace, Ariel
+David Watters         |                 Silicon*Graphics 
+Systems Engineer      |                http://www.sgi.com/ 
+Silicon Graphics, Inc.|    http://reality.sgi.com/davester/  (6/13/97) 
+david.watters@sgi.com |  1.800.800.SGI1 (Sales) 1.800.800.4SGI (Support) 
+DID 1.614.844.3820    |   http://www.nintendo.com/ (N64, the $130 SGI!) 

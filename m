@@ -1,21 +1,49 @@
-Reply-To: <deepak@ishoni.com>
-From: "Deepak Shenoy" <deepak@ishoni.com>
-Subject: user accessing kernel physical pages?
-Date: Mon, 30 Apr 2001 11:35:00 +0530
-Message-ID: <E0FDC90A9031D511915D00C04F0CCD256765@leonoid.in.ishoni.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "Andrew Linfoot" <alinfoot@escafeldcomputing.co.uk>
+Subject: RE: Passing kernel args
+Date: Tue, 1 May 2001 16:31:47 +0100
+Message-ID: <000001c0d253$f36e3b20$0101a8c0@derfel>
+In-Reply-To: <20010424230923.A5906@bilbo.physik.uni-konstanz.de>
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010430060500.-PDKX2zbaib8_HJUHFyFBU627iNTO3J2DJja-_CvhnE@z>
+To: 'Guido Guenther' <guido.guenther@gmx.net>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010501153147.Y2whA5C6EGhw0PDa17KnYrVamE4B7iooriSa3rz_Vp4@z>
 
-Hi,
+My fault i'm afraid! I had used an old kernel without the neccessary
+patches.
+I am now using 2.4.3 and everthing works fine.
 
-I am new to MIPS MMU architecture. I wanted to know if a user application be
-able to access physical pages of the kerenel; if appropriate page table
-entries are setup?. Is it possible?
+Sorry for any hassle this has caused.
 
-Thanks and Regards,
-deepak
+Andy
+
+-----Original Message-----
+From: owner-linux-mips@oss.sgi.com
+[mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Guido Guenther
+Sent: 24 April 2001 22:09
+To: Andrew Linfoot
+Cc: linux-mips@oss.sgi.com
+Subject: Re: Passing kernel args
+
+
+On Tue, Apr 24, 2001 at 08:09:13PM +0100, Andrew Linfoot wrote:
+> Just thought i would let you know of my experience with autobooting.
+>
+> I'm having the same problems as Dave in that i must specify a space in
+> the OSLoadOptions " root=/dev/sda1 ro". However every time i shutdown or
+> reboot it is truncated to OSLoadOptions= root=/dev/s meaning i have to
+reset
+> it after every reboot.
+Could you please send me the kernel command line with and without using
+the space (e.g.  dmesg | grep "command line") - i still don't see what
+this should be good for.  BTW no need to give root= in OSLoadOptions,
+you can use OSLoadPartition instead.
+>
+> any ideas as to what may be causing this?
+> I am runnning on an Indy R5K
+It seems the space in the PROM for OSLoadOptions is quiet limited. The
+space available seems to differ between different PROM versions
+though(see the HOWTO, it's in there).
+>
+> Also i am using an ELF kernel and not ECOFF as specified in Guido's howto.
+Doesn't make a difference. ECOFF is just a save bet.
+ -- Guido

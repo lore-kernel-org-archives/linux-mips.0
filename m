@@ -1,29 +1,29 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199806172204.AAA08176@aisa.fi.muni.cz>
-Subject: Re: What is the config of the kernel
-In-Reply-To: <Pine.LNX.3.95.980617140831.8736B-100000@lager.engsoc.carleton.ca> from Alex deVries at "Jun 17, 98 02:10:12 pm"
-Date: Thu, 18 Jun 1998 00:04:32 +0200 (MET DST)
+Message-ID: <199806172208.AAA08385@aisa.fi.muni.cz>
+Subject: Re: Stuff that needs to be done.
+In-Reply-To: <Pine.LNX.3.95.980617141204.8736C-100000@lager.engsoc.carleton.ca> from Alex deVries at "Jun 17, 98 02:19:02 pm"
+Date: Thu, 18 Jun 1998 00:08:55 +0200 (MET DST)
 From: Honza Pazdziora <adelton@informatics.muni.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: adelton@informatics.muni.cz, linux@cthulhu.engr.sgi.com
-Message-ID: <19980617220432.a2SE2OCqEcfkg-9kA09UtuawwzRFBN1XRDzU1wLgyHI@z>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19980617220855.Jt6nSSvMgmWiTM9KPMat87Iv4E3RAuCXHhFgwok4MfY@z>
 
 > 
-> I've got the one from Manhattan done, so that's okay.  And, uh, you are
-> generating your packages as 'mipseb', not 'mips', eh?  'mips' in RPM is
-> something we need to stamp out ASAP.
+> - something appears to be wrong with mkswap
 
-Hmmm, I just did rpm -i, rpm -bb, rpm -Uvh.
+If this is the problem from me, if might be a problem with the disk
+(I do not see into it however). The mkswap fails if I do not specify
+the size.
 
-> It's clear I need to be a bit quicker in my uploading updates so that we
-> don't end up replicating work. Sorry...
+> gcc
+>      For inclusion in the packaging, it should really be regenerated from
+>      the source RPM.  Needs lots of building time.
 
-No, it's just that I wanted to try that it works. Let me know if there
-is some compilation work I could let run on this Indy.
+If you assume the make will go clean, I can start it right away.
 
 ------------------------------------------------------------------------
  Honza Pazdziora | adelton@fi.muni.cz | http://www.fi.muni.cz/~adelton/

@@ -1,96 +1,75 @@
-Message-ID: <014a01c0402d$b432ada0$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <39F99E20.8EE47072@ridgerun.com>
-Subject: Re: remote GDB debugging and the __init macro of init.h
-Date: Fri, 27 Oct 2000 17:50:50 +0200
+Message-ID: <007801c040bb$7fc5def0$a3291081@mc2.chalmers.se>
+From: "Erik Aderstedt" <erik@ic.chalmers.se>
+References: <Pine.SGI.4.10.10010271233390.241075-100000@jberens.americas.sgi.com>
+Subject: Re: Installing linux on Indy
+Date: Sat, 28 Oct 2000 10:46:00 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Steve Kranz <skranz@ridgerun.com>, linux-mips@oss.sgi.com, linux-mips@fnet.fr
-Message-ID: <20001027155050.o0NAXcH8Tttr0oT1jtXDqwagtmzyy9gEo4iis0y5yhA@z>
+To: Joe Berens <jberens@sgi.com>, linux-mips@oss.sgi.com
+Message-ID: <20001028084600.vrjP6aGwZgCPlmb__VMPjMih5ot8RPKoC4bohdCHNVc@z>
 
-What you've done should solve the problem, but note
-that it has the side effect of preventing the text and data
-sections in question from getting freed up at the end
-of initialization.  I probably should have done so myself
-last year when I was struggling with debugging some init 
-code using kgdb, but instead I simply got used to finding 
-the address in the symbol table and setting the breakpoints 
-by hex address instead of by symbol.
+Hi,
 
-The real fix would be to  teach gdb to treat symbols
-in the init section as valid targets.
+The portmapper isn't running on your system. I'm not an expert, 
+I just know that I got a lot of RPC-related errors due to
+portmap not running.
 
-            Kevin K.
+If you are booting from a RedHat system please note that
+due to some misconfiguration (at least in 6.1) portmap will 
+not be running after you've booted the system , even though
+you may have installed it.
+
+Finally, make sure that nfsd and mountd are both running on
+your host.
+
+/Erik
+erik@ic.chalmers.se
 
 ----- Original Message ----- 
-From: "Steve Kranz" <skranz@ridgerun.com>
-To: <linux-mips@oss.sgi.com>; <linux-mips@fnet.fr>
-Sent: Friday, October 27, 2000 5:24 PM
-Subject: remote GDB debugging and the __init macro of init.h
+From: Joe Berens <jberens@sgi.com>
+To: <linux-mips@oss.sgi.com>
+Sent: Friday, October 27, 2000 7:46 PM
+Subject: Installing linux on Indy
 
 
-> Note:
+> Hello,
 > 
->   I had to make a change to allow remote MIPS kernel
->   debugging (GDB). The change I found necessary was in the
->   file:
+> I have followed the installation instructions and I think every thing is
+> set up right.  When I do "boot -f bootp()<ipaddr of
+> server>:/<hardhatdir>/vmlinux", the kernel seems to start booting and
+> hangs after:
 > 
->     include/linux/init.h     (2.4.0-test9)
-> 
->   As you can see from the snippet below the change
->   involves conditionally defining the "__init" macro as
->   a function of whether remote debugging is enabled or
->   not. Am I missing something, or does this seem like a
->   reasonable change?
-> 
-> ===========
-> Was this...
-> ===========
-> /*
->  * Mark functions and data as being only used at initialization
->  * or exit time.
->  */
-> #define __init  __attribute__ ((__section__ (".text.init")))
-> 
-> ==================================
-> I changed my local copy to this...
-> ==================================
-> /*
->  * Mark functions and data as being only used at initialization
->  * or exit time.
->  */
-> #ifdef CONFIG_REMOTE_DEBUG
-> // Note: While running the mips-linux-elf-gdb (GNU gdb 5.0), RidgeRun
-> Inc
-> // noticed that gdb could not correctly derive the true address of any
-> symbol
-> // declared with the __init pragma. This prevented being able to
-> correctly
-> // set breakpoints on any of those functions. So, if we are building
-> // with the GDB remote debugger in mind, then null out the __init
-> // definition making those functions look like a normal functions
-> // since this seems to satisfy things for remote kernel debugging.
-> // Incidentally, for reference, the GDB being used at the time of this
-> writing
-> // was configured as "--host=i686-pc-linux-gnu --target=mips-linux-elf".
-> 
-> // and the mips-linux-gcc crosscompiler being used is egcs-2.90.29
-> 980515
-> // (egcs-1.0.3 release) with binutils version 2.8.1. (These tools
-> running on
-> // a x86 host producing code for target CONFIG_CPU_R5000).
-> #define __init
-> #else
-> #define __init  __attribute__ ((__section__ (".text.init")))
-> #endif
+> Partition check: sda1 sda2 sda3 sda4
+> Looking up port of RPC 100003/2 on <ipaddr of server>
+> RPC: sendmsg returned error 128
+> RPC: sendmsg returned error 128
+> RPC: sendmsg returned error 128
+> RPC: sendmsg returned error 128
+> portmap: server <ip addr of server> not responding, timed out
+> Root-Nfs: Unable to get nfsd port number from server, using default
+> Looking up port of RPC 100005/1 on <ipaddr of server>
+> RPC: sendmsg returned error 128
 > 
 > 
-> Steve Kranz
-> skranz@ridgerun.com
-> Senior Kernel Developer
-> RidgeRun Inc.
+> Then it seems to hang for ever.
+> Any help is greatly appreciated.
+> 
+> Thank you,
+> 
+> Joe
+> ___________________________________
+> 
+> Joe Berens
+> SGI Customer Support Center
+> Operating Systems Group
+> Phone: 800-800-4744, Direct: 651-683-3254
+> Email: jberens@sgi.com
+> 
+> ___________________________________
+> 
+> 
 > 

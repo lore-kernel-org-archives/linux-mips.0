@@ -1,36 +1,36 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199705281444.KAA28334@neon.ingenia.ca>
-Subject: Re: gmake?
-In-Reply-To: <199705281436.QAA31633@kernel.panic.julia.de> from Ralf Baechle at "May 28, 97 04:36:53 pm"
-Date: Wed, 28 May 1997 10:44:50 -0400 (EDT)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: "Alistair Lambie" <alambie@wellington.sgi.com>
+Message-ID: <9705281448.ZM6814@windy.wellington.sgi.com>
+Date: Wed, 28 May 1997 14:48:38 +0000
+In-Reply-To: Steve Alexander <sca@refugee.engr.sgi.com>
+        "Re: Linux/SGI Logos (was: Re: strace/truss equiv?)" (May 28,  2:47pm)
+References: <199705280245.TAA08534@refugee.engr.sgi.com>
+Subject: Re: Linux/SGI Logos (was: Re: strace/truss equiv?)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ralf Baechle <ralf@Julia.DE>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970528144450.8_96YkmhwHAATV3uEIHOjomBF2UAFTnj5Ki20W2LBRg@z>
+To: Steve Alexander <sca@refugee.engr.sgi.com>
+Cc: Seth Morabito <sethm@procyon.corp.sgi.com>, linux@cthulhu.engr.sgi.com
+Message-ID: <19970528144838.aXyuHrisy3GjVBfzj10nA8qKOcAzxRdKyKTC5mN-FBg@z>
 
-Thus spake Ralf Baechle:
-> GNU make builds out of the box for IRIX 6.2.  I don't have my Indy here,
-> but I can make the binaries available if anyone needs them.  Just tell
-> me.
+On May 28,  2:47pm, Steve Alexander wrote:
+> Subject: Re: Linux/SGI Logos (was: Re: strace/truss equiv?)
+> "Alistair Lambie" <alambie@wellington.sgi.com> writes:
+> >The second one should be 'Powered by SGI!  Can we get the logo to
+spin....that
+> >would be cool!
+>
+> I like the first one, myself.
+>
+> Nothing warms a frosted penguin butt like an R10K.
+>
 
-The lovely Martin K just sent me a gmake 3.75 binary, and it works
-like a charm.
+Maybe we need a version with the penguin in the cage!  'SGI tames Linux'??
 
-> Looks you're just about to try to compile the kernel or libc :-)
-
-glibc, yup.
-(Still don't have the 2.1.{3[789],4[01]} source tree, hint, hint. =) )
-
-Mike
+Alistair
 
 -- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>           Resident Linux bigot and kernel hacker. (OOPS!)           
-#> `If you get bitten by a bug, tough luck...the one thing I won't do  
-#> is feel sorry for you.  In fact, I might ask you to do it all over  
-#> again, just to get more information.  I'm a heartless bastard.'     
-#>                       -- Linus Torvalds (on development kernels)    
+Alistair Lambie					    alambie@wellington.sgi.com
+Silicon Graphics New Zealand				  SGI Voicemail: 56791
+Level 5, Walsh Wrightson Tower,				    Ph: +64-4-802 1455
+94-96 Dixon St, Wellington, NZ			  	   Fax: +64-4-802 1459

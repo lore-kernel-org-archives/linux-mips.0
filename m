@@ -1,81 +1,85 @@
-Received: from of0 (firewall.openfuel.com [196.15.138.55])
-	by optical.cyberhost.co.za (Postfix) with ESMTP id 16CE25B121
-	for <linux-mips@linux-mips.org>; Thu,  3 Feb 2005 10:38:43 +0200 (SAST)
-From: "Etienne Bauermeister" <etienne@openfuel.com>
-Subject: Kernel compile error - rtc.c
-Date: Thu, 3 Feb 2005 10:38:47 +0200
-Message-ID: <000f01c509cb$c7420190$642aa8c0@of0>
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0010_01C509DC.8ACAD190"
-Return-Path: <etienne@openfuel.com>
+	boundary="----_=_NextPart_001_01C50DC3.54885187"
+Subject: Linux-mips port: HIGHMEM Address map
+Date: Tue, 8 Feb 2005 15:18:23 +0530
+Message-ID: <4BF47D56A0DD2346A1B8D622C5C5902C4C6E7F@soc-mail.soc-soft.com>
+From: <Rishabh@soc-soft.com>
+Return-Path: <Rishabh@soc-soft.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20050203083847.FgQOeTxUFypaaBbK9UR2VihnDDdsMvtopp8cDRQKGl4@z>
+Message-ID: <20050208094823.oXsshy6DCREIoFTNN7SZd5jS61E1O_TISrD9BJ_sf-Y@z>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0010_01C509DC.8ACAD190
+------_=_NextPart_001_01C50DC3.54885187
 Content-Type: text/plain;
 	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-I am compiling the linux-2.6.11-rc2-mipscvs-20050130 kernel using a
-toolchain I built myself from instructions on this mailing list. The
-toolchain consists of binutils-2.13.90.0.10, glibc-2.2.5,
-glibc-linuxthreads-2.2.5 and gcc-3.2-7.1 from H.J. Lu with all the
-patches like glibc-2.2.5-mips-build-gmon etc. applied. I am compiling
-the kernel for the AMD Au1100 (big endian) on an i686 host.  When I do
-this though I get the following error message a few minutes into the
-compilation process:
- 
-CC      drivers/char/rtc.o
-drivers/char/rtc.c: In function `rtc_init':
-drivers/char/rtc.c:955: `r' undeclared (first use in this function)
-drivers/char/rtc.c:955: (Each undeclared identifier is reported only
-once
-drivers/char/rtc.c:955: for each function it appears in.)
-make[2]: *** [drivers/char/rtc.o] Error 1
-make[1]: *** [drivers/char] Error 2
-make: *** [drivers] Error 2
-drivers/char/rtc.ot:~/mips/kernel/linux-2.6.11-rc2-mipscvs-20050130]$
- 
-I understand that the variable 'r' is not declared and this causes the
-error, but I don't know where to declare it or am I completely wrong and
-something else is at fault?  Please provide some help with this.  
- 
-A second question relates to some warnings I got earlier in the
-compilation process stating that some 'variables' (I assume) are
-'deprecated'.  Is this anything to be concerned about?
- 
-Thanks.
- 
-Etienne Bauermeister
-Design Engineer
-OpenFuel (Pty) Ltd
-WWW: http://www.openfuel.com
- 
- 
 
-------=_NextPart_000_0010_01C509DC.8ACAD190
+Hi,
+=0D
+Guys I am trying to figure out the virtual address map of linux mips
+port for the HIGHMEM enabled kernel.
+I am unable to figure out from which virtual address map is the HIGHMEM
+Memory starts.=0D
+=0D
+I found in function mem_init()
+=0D
+                        high_memory =3D (KSEG1 - KSEG0) >> PAGE_SHIFT;
+=0D
+Also I have seen in many driver source codes that
+__virt_to_phys(high_memory) has been used, will that mean that virtual
+address for HIGHMEM is beginning from 0xa0000000.=0D
+=0D
+If that is so then if I want to relocate it to KSEG3 which I feel will
+be free how can I do it?
+I have my SDRAM mapped at 2 locations {virtual addresses} (0xa0000000 -
+0xa3ffffff) and (0x80000000 - 0x83ffffff). Physical Address is
+(0x00000000 - 0x03ffffff).
+=0D
+I have also physical memory 0x20000000 - 0x23ffffff(physical address) to
+be used for HIGHMEM.
+=0D
+Regards,
+=0D
+Rishabh
+=0D
+
+
+The information contained in this e-mail message and in any annexure is
+confidential to the  recipient and may contain privileged information. If=
+ you are not
+the intended recipient, please notify the sender and delete the message=
+ along with
+any annexure. You should not disclose, copy or otherwise use the=
+ information contained
+in the message or any annexure. Any views expressed in this e-mail are=
+ those of the
+individual sender except where the sender specifically states them to be=
+ the views of
+SoCrates Software India Pvt Ltd., Bangalore.
+------_=_NextPart_001_01C50DC3.54885187
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=
+=3D"urn:schemas-microsoft-com:office:word" xmlns=
+=3D"http://www.w3.org/TR/REC-html40">
 
 <head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=
+=3Dus-ascii">
 
 
 <meta name=3DProgId content=3DWord.Document>
 <meta name=3DGenerator content=3D"Microsoft Word 10">
 <meta name=3DOriginator content=3D"Microsoft Word 10">
-<link rel=3DFile-List href=3D"cid:filelist.xml@01C509DC.8AB303D0">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C50DF1.6DA73040">
 <!--[if gte mso 9]><xml>
  <o:OfficeDocumentSettings>
   <o:DoNotRelyOnCSS/>
@@ -91,12 +95,29 @@ charset=3Dus-ascii">
    <w:SnapToGridInCell/>
    <w:WrapTextWithPunct/>
    <w:UseAsianBreakRules/>
+   <w:UseFELayout/>
   </w:Compatibility>
   <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
  </w:WordDocument>
 </xml><![endif]-->
 <style>
 <!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;
+	mso-font-alt:"\FF2D\FF33 \660E\671D";
+	mso-font-charset:128;
+	mso-generic-font-family:modern;
+	mso-font-pitch:fixed;
+	mso-font-signature:-1610612033 1757936891 16 0 131231 0;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;
+	mso-font-charset:128;
+	mso-generic-font-family:modern;
+	mso-font-pitch:fixed;
+	mso-font-signature:-1610612033 1757936891 16 0 131231 0;}
  /* Style Definitions */
  p.MsoNormal, li.MsoNormal, div.MsoNormal
 	{mso-style-parent:"";
@@ -105,7 +126,25 @@ charset=3Dus-ascii">
 	mso-pagination:widow-orphan;
 	font-size:12.0pt;
 	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
+	mso-fareast-font-family:"MS Mincho";}
+h1
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.6in;
+	text-indent:-.6in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	mso-list:l0 level1 lfo1;
+	tab-stops:list .6in;
+	font-size:18.0pt;
+	mso-bidi-font-size:16.0pt;
+	font-family:"Times New Roman";
+	mso-bidi-font-family:Arial;
+	mso-font-kerning:16.0pt;}
 a:link, span.MsoHyperlink
 	{color:blue;
 	text-decoration:underline;
@@ -114,13 +153,6 @@ a:visited, span.MsoHyperlinkFollowed
 	{color:purple;
 	text-decoration:underline;
 	text-underline:single;}
-pre
-	{margin:0in;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:10.0pt;
-	font-family:"Courier New";
-	mso-fareast-font-family:"Times New Roman";}
 span.EmailStyle17
 	{mso-style-type:personal-compose;
 	mso-style-noshow:yes;
@@ -145,11 +177,74 @@ span.GramE
 	mso-paper-source:0;}
 div.Section1
 	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:620767674;
+	mso-list-template-ids:-1021003584;}
+@list l0:level1
+	{mso-level-style-link:"Heading 1";
+	mso-level-text:%1;
+	mso-level-tab-stop:.6in;
+	mso-level-number-position:left;
+	margin-left:.6in;
+	text-indent:-.6in;}
+@list l0:level2
+	{mso-level-text:"%1\.%2";
+	mso-level-tab-stop:.6in;
+	mso-level-number-position:left;
+	margin-left:.6in;
+	text-indent:-.6in;}
+@list l0:level3
+	{mso-level-text:"%1\.%2\.%3";
+	mso-level-tab-stop:.6in;
+	mso-level-number-position:left;
+	margin-left:.6in;
+	text-indent:-.6in;}
+@list l0:level4
+	{mso-level-text:"%1\.%2\.%3\.%4";
+	mso-level-tab-stop:.6in;
+	mso-level-number-position:left;
+	margin-left:.6in;
+	text-indent:-.6in;}
+@list l0:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5";
+	mso-level-tab-stop:.7in;
+	mso-level-number-position:left;
+	margin-left:.7in;
+	text-indent:-.7in;}
+@list l0:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6";
+	mso-level-tab-stop:.8in;
+	mso-level-number-position:left;
+	margin-left:.8in;
+	text-indent:-.8in;}
+@list l0:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7";
+	mso-level-tab-stop:.9in;
+	mso-level-number-position:left;
+	margin-left:.9in;
+	text-indent:-.9in;}
+@list l0:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8";
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-1.0in;}
+@list l0:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9";
+	mso-level-tab-stop:1.1in;
+	mso-level-number-position:left;
+	margin-left:1.1in;
+	text-indent:-1.1in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
 -->
 </style>
 <!--[if gte mso 10]>
 <style>
- /* Style Definitions */=20
+ /* Style Definitions */=0D
  table.MsoNormalTable
 	{mso-style-name:"Table Normal";
 	mso-tstyle-rowband-size:0;
@@ -166,139 +261,138 @@ div.Section1
 <![endif]-->
 </head>
 
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
-style=3D'tab-interval:.5in'>
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple style=3D'tab-interval:.5in'>
 
-<div class=3DSection1><pre><font size=3D3 face=3D"Times New Roman"><span
-style=3D'font-size:12.0pt;font-family:"Times New Roman"'>I am compiling =
-the linux-2.6.11-rc2-mipscvs-20050130 kernel using a <span
-class=3DSpellE>toolchain</span> I built myself from instructions on this =
-mailing list. The <span
-class=3DSpellE>toolchain</span> consists of binutils-2.13.90.0.10, =
-glibc-2.2.5, glibc-linuxthreads-2.2.5 and gcc-3.2-7.1 from H.J. Lu with =
-all the patches like glibc-2.2.5-mips-build-gmon etc. applied. I am =
-compiling the kernel for the AMD Au1100 (big <span
-class=3DSpellE>endian</span>) on an i686 host.<span =
-style=3D'mso-spacerun:yes'>&nbsp; </span>When I do this though I get the =
-following error message a few minutes into the compilation =
-process:<o:p></o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New =
-Roman"'><o:p>&nbsp;</o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New Roman"'>CC<span =
-style=3D'mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-</span>drivers/char/<span
-class=3DSpellE>rtc.o</span><o:p></o:p></span></font></pre><pre><font =
-size=3D3
-face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New =
-Roman"'>drivers/char/<span
-class=3DSpellE>rtc.c</span>: In function `<span =
-class=3DSpellE>rtc_init</span>':<o:p></o:p></span></font></pre><pre><font=
+<div class=3DSection1>
 
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New =
-Roman"'>drivers/char/rtc.c:955: `r' undeclared (first use in this =
-function)<o:p></o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New =
-Roman"'>drivers/char/rtc.c:955: (Each undeclared identifier is reported =
-only once<o:p></o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New =
-Roman"'>drivers/char/rtc.c:955: for each function it appears =
-in.)<o:p></o:p></span></font></pre><pre><span
-class=3DGramE><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;
-font-family:"Times New Roman"'>make[</span></font></span><font size=3D3
-face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New Roman"'>2]: *** =
-[drivers/char/<span
-class=3DSpellE>rtc.o</span>] Error =
-1<o:p></o:p></span></font></pre><pre><span
-class=3DGramE><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;
-font-family:"Times New Roman"'>make[</span></font></span><font size=3D3
-face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New Roman"'>1]: *** =
-[drivers/char] Error 2<o:p></o:p></span></font></pre><pre><span
-class=3DGramE><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;
-font-family:"Times New Roman"'>make</span></font></span><font size=3D3
-face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New Roman"'>: *** [drivers] =
-Error 2<o:p></o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New =
-Roman"'>drivers/char/rtc.ot:~/mips/kernel/linux-2.6.11-rc2-mipscvs-200501=
-30]$<o:p></o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New =
-Roman"'><o:p>&nbsp;</o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New Roman"'>I understand =
-that the variable &#8216;r&#8217; is not declared and this causes the =
-error, but I don&#8217;t know where to declare it or am I completely =
-wrong and something else is at fault?<span =
-style=3D'mso-spacerun:yes'>&nbsp; </span>Please provide some help with =
-this.<span style=3D'mso-spacerun:yes'>&nbsp; =
-</span><o:p></o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New =
-Roman"'><o:p>&nbsp;</o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New Roman"'>A second =
-question relates to some warnings I got earlier in the compilation =
-process stating that some &#8216;variables&#8217; (I assume) are =
-&#8216;deprecated&#8217;.<span style=3D'mso-spacerun:yes'>&nbsp; =
-</span>Is this anything to be concerned =
-about?<o:p></o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New =
-Roman"'><o:p>&nbsp;</o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New =
-Roman"'>Thanks.<o:p></o:p></span></font></pre><pre><font
-size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;font-family:"Times New =
-Roman"'><o:p>&nbsp;</o:p></span></font></pre>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'>Hi,<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;mso-no-proof:yes'>Etienne =
-Bauermeister</span></font><span
-style=3D'mso-no-proof:yes'><o:p></o:p></span></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;mso-no-proof:yes'>Design&nbsp;Engineer</span></font><sp=
-an
-style=3D'mso-no-proof:yes'><o:p></o:p></span></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'>Guys I am trying to figure out the virtual address map=
+ of <span
+class=3DSpellE>linux</span> <span class=3DSpellE><span class=
+=3DGramE>mips</span></span>
+port for the HIGHMEM enabled kernel.<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;mso-no-proof:yes'>OpenFuel (Pty) =
-Ltd</span></font><span
-style=3D'mso-no-proof:yes'><o:p></o:p></span></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'>I am unable to figure out from which virtual address map=
+ <span
+class=3DGramE>is the HIGHMEM Memory starts</span>.=
+ <o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;mso-no-proof:yes'>WWW: <a =
-href=3D"http://www.openfuel.com">http://www.openfuel.com</a></span></font=
-><o:p></o:p></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'>I found in function <span class=3DSpellE>mem_<span
+class=3DGramE>init</span></span><span class=
+=3DGramE>()</span><o:p></o:p></span></font></p>
 
-<pre><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:12.0pt;
-font-family:"Times New =
-Roman"'><o:p>&nbsp;</o:p></span></font></pre></div>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'><span style=
+=3D'mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp; </span><span
+class=3DSpellE>high_memory</span> =3D (KSEG1 &#8211; KSEG0) &gt;&gt;=
+ PAGE_SHIFT;<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'>Also I have seen in many driver source codes that <b
+style=3D'mso-bidi-font-weight:normal'><span style=
+=3D'font-weight:bold;mso-bidi-font-weight:
+normal'>__<span class=3DSpellE>virt_to_<span class=
+=3DGramE>phys</span></span><span
+class=3DGramE>(</span><span class=3DSpellE>high_memory</span>)=
+ </span></b>has been
+used, will that mean that virtual address for HIGHMEM is beginning from
+0xa0000000. <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'>If that is so then if I want to relocate it to KSEG3=
+ which I
+feel will be free how can I do it?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'>I have my SDRAM mapped at 2 locations {virtual=
+ addresses} (0xa0000000
+&#8211; 0xa3ffffff) and (0x80000000 &#8211; 0x83ffffff). Physical Address=
+ is
+(0x00000000 &#8211; 0x03ffffff).<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'>I have also physical memory 0x20000000 &#8211; <span
+class=3DGramE>0x23ffffff(</span>physical address) to be used for=
+ HIGHMEM.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'>Regards,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'>Rishabh<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
 
 </body>
 
 </html>
 
-------=_NextPart_000_0010_01C509DC.8ACAD190--
+<table><tr><td bgcolor=3D#ffffff><font color=3D#000000><pre>The information=
+ contained in this e-mail message and in any annexure is
+confidential to the  recipient and may contain privileged information. If=
+ you are not
+the intended recipient, please notify the sender and delete the message=
+ along with
+any annexure. You should not disclose, copy or otherwise use the=
+ information contained
+in the message or any annexure. Any views expressed in this e-mail are=
+ those of the
+individual sender except where the sender specifically states them to be=
+ the views of
+SoCrates Software India Pvt Ltd., Bangalore.
+</pre></font></td></tr></table>
+------_=_NextPart_001_01C50DC3.54885187--

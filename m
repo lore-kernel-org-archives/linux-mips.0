@@ -1,59 +1,26 @@
-From: "Matthew Dharm" <mdharm@momenco.com>
-Subject: RE: fsck fails on latest 2.4 kernel
-Date: Fri, 1 Feb 2002 17:08:57 -0800
-Message-ID: <NEBBLJGMNKKEEMNLHGAICEDNCFAA.mdharm@momenco.com>
+From: Hartvig Ekner <hartvige@mips.com>
+Message-ID: <200202022049.VAA15305@copsun18.mips.com>
+Subject: Re: PATCH: Fix ll/sc for mips (take 3)
+Date: Sat, 2 Feb 2002 21:49:29 +0100 (MET)
+In-Reply-To: <20020202120354.A1522@lucon.org> from "H . J . Lu" at Feb 02, 2002 12:03:54 PM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20020201145244.B15521@lucon.org>
 Sender: owner-linux-mips@oss.sgi.com
 To: "H . J . Lu" <hjl@lucon.org>
-Cc: Ralf Baechle <ralf@oss.sgi.com>, Carsten Langgaard <carstenl@mips.com>, linux-mips@oss.sgi.com
-Message-ID: <20020202010857.aAeWLCdW1NEqAVbwYxvi7A12HnOpC-9nWCh_kZPEgM4@z>
+Cc: Justin Carlson <justinca@ri.cmu.edu>, Daniel Jacobowitz <dan@debian.org>, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Hiroyuki Machida <machida@sm.sony.co.jp>, libc-alpha@sources.redhat.com, linux-mips@oss.sgi.com, gcc@gcc.gnu.org
+Message-ID: <20020202204929.wjO4bHGyjcpKx4tiqzlCsPOQXOQO5eNkBvyK11fcxlk@z>
 
-As an aside, it looks like you can't rebuild this from source without
-gettext installed, but that isn't a pre-req given in the spec file.
 
-It looks like there is code to detect gettext and substitute a local
-copy if it's not available, but that code doesn't seem to work right.
+H . J . Lu writes:
+> Does everyone agree with this? If yes, I can make a patch not to use
+> branch likely. But on the other hand, "gcc -mips2" will generate code
+> using branch likely. If branch likely doesn't buy you anything, 
+> shouldn't we change gcc not to generate branch likely instructions?
 
-Matt
+I would say it's still too early to actively remove them. There are many
+processors out there (certainly in the embedded world most of them)
+without branch prediction, and for all of those branch-likelys actually
+help performance.
 
---
-Matthew D. Dharm                            Senior Software Designer
-Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
-(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
-Momentum Works For You                      www.momenco.com
-
-> -----Original Message-----
-> From: H . J . Lu [mailto:hjl@lucon.org]
-> Sent: Friday, February 01, 2002 2:53 PM
-> To: Matthew Dharm
-> Cc: Ralf Baechle; Carsten Langgaard; linux-mips@oss.sgi.com
-> Subject: Re: fsck fails on latest 2.4 kernel
->
->
-> On Fri, Feb 01, 2002 at 01:43:10PM -0800, Matthew Dharm wrote:
-> > Hrm... Looks like I'm getting bitten by this bug also.
-> >
-> > I'm using H.J.'s toolchain RPMs for building the userspace
-> > applications, but the same tools as Carsten for building
-> the kernel.
-> > I guess that combination doesn't work, either.
-> >
-> > Unfortunately, the RPMs that H.J. has put on oss.sgi.com
-> won't install
-> > on my system -- wrong version of RedHat.  And I don't see
-> the source
-> > to his toolchain RPMs, so I can't rebuild it myself for the local
-> > libraries.
->
-> My toolchain source rpm is on oss.sgi.com:
->
-> ftp://oss.sgi.com/pub/linux/mips/redhat/7.1/SRPMS/toolchain-
-> 20011020-1.src.rpm
->
->
-> H.J.
->
+/Hartvig

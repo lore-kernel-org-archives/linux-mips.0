@@ -1,33 +1,40 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199710242114.XAA11858@informatik.uni-koblenz.de>
-Subject: Re: Step by step of my experience
-Date: Fri, 24 Oct 1997 23:12:30 +0200 (MEST)
-In-Reply-To: <60222E63C9F4D011915F00A02435011C011A5F@bart.hgeng.com> from "Mike Hill" at Oct 24, 97 01:07:43 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+From: Ralf Baechle <ralf@cobaltmicro.com>
+Message-ID: <199710242302.QAA00534@dull.cobaltmicro.com>
+Subject: Re: Look what I found in a big cardboard box
+Date: Fri, 24 Oct 1997 16:02:08 -0700 (PDT)
+In-Reply-To: <m0xOrfv-0005G0C@lightning.swansea.linux.org.uk> from "Alan Cox" at Oct 24, 97 10:53:47 pm
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Hill <mikehill@hgeng.com>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19971024211230.qLo5IvVL5Fb6t3pJC4_YKMLIbl_BOWumerNCl9UssvQ@z>
+Message-ID: <19971024230208.j4i-rgCu0x72lPNIYebFZy5hB1uxmJZdmR1YXjBQo04@z>
 
 Hi,
 
-> Thus spake Mike Shaver:
-> > I'll clean up my current support tomorrow or Friday, and then I'll
-> > check it in and coerce Miguel or Ralf into making a new test
-> > kernel available. 
-> 
-> Is it possible to download the latest development work on the kernel,
-> for instance what's in the CVS repository?  Or, to quote the FAQ:
-> 
-> 	14.  Where can I find up-to-the-second releases?
+> And there was light (actually there was heavy..)
 
-We'll setup anonymous CVS access and a cronjob that will create diffs
-between kernel releases such that people can stay uptodate.  Right now
-you should go for the testing kernels in /pub/src/kernel/testing/, they
-are the newest and most reliable onces released.  I've got tons of
-bugfixes but I won't have the time to merge them in the near future ...
+*grin*  And there was big - the box didn't fit into my car ...
+
+> My SGI arrived today. Anyway after the required prelimiaries (Batallion,
+> making stupid indycam movies) I had a hack at the ext2fs utils and libs -
+> fixed them to compile and run properly under the Indy native cc. I can
+> successfully make and then fsck an ext2 partition.
+
+I'll work on a set of standalone utilities for the Indy's ARC (pronounce
+arggghh ...) firmware.  That will bring us closer to get the thing
+independant from IRIX.  In theory it should be pretty easy, but the
+various ARC implementations I saw so far were beyond just completly broken,
+at least the old onces which should be supported, too.
+
+> What Im going to do next is chase the work from the Mac68K installer and
+> see if I can use that with the ext2fs lib to get the same arrangement working
+> (that is an application level toolset for installing tars and the like) from
+> Irix. 
+> 
+> To that goal I'm going to be working on the tool stuff until I've successfully
+> bootstrapped Linux that way.
+
+Cool.
 
   Ralf

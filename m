@@ -1,61 +1,53 @@
-Message-ID: <066201c160d5$eb51ed40$3501010a@ltc.com>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <20011026210746.A20395@dev1.ltc.com> <3BDDACD2.7121F905@mvista.com> <04c801c160b0$1d62f660$3501010a@ltc.com> <3BDDDA7A.329F827D@mvista.com>
-Subject: Re: [Linux-mips-kernel]Re: PATCH: pci_auto bridge support
-Date: Mon, 29 Oct 2001 19:00:43 -0500
+Date: Tue, 30 Oct 2001 10:55:10 +0000 (GMT)
+From: Dave Airlie <airlied@csn.ul.ie>
+Subject: Re: [LV] FYI: Mopd ELF support
+In-Reply-To: <Pine.GSO.3.96.1011029170937.3407G-100000@delta.ds2.pg.gda.pl>
+Message-ID: <Pine.LNX.4.32.0110301054330.29920-100000@skynet>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: Jun Sun <jsun@mvista.com>
-Cc: linux-mips@oss.sgi.com, linux-mips-kernel@lists.sourceforge.net
-Message-ID: <20011030000043.7WULMjfqrrfGznhSb2-zoUyofzY_eEhxifT8wnpPGic@z>
-
------ Original Message -----
-From: "Jun Sun" <jsun@mvista.com>
-To: "Bradley D. LaRonde" <brad@ltc.com>
-Cc: <linux-mips@oss.sgi.com>; <linux-mips-kernel@lists.sourceforge.net>
-Sent: Monday, October 29, 2001 5:38 PM
-Subject: [Linux-mips-kernel]Re: PATCH: pci_auto bridge support
+To: linux-vax@mithra.physics.montana.edu
+Cc: linux-mips@fnet.fr, linux-mips@oss.sgi.com
+Message-ID: <20011030105510.gvqNsC0NZybkR7LrfQBLUsjVgml5yvfCzvpGgSKP_Sc@z>
 
 
-> "Bradley D. LaRonde" wrote:
-> >
-> > I considered that, but since only this small chuck of run-once surrogate
-> > bios autoconfig code needs to know, I figured better keep it separate.
-> >
+Hi,
+    I'll try and get it some VAX time at home over the next couple of
+days...
+
+Dave.
+
+On Mon, 29 Oct 2001, Maciej W. Rozycki wrote:
+
+> Hi,
 >
-> I would vote to put it inside the hose structure:
+>  I've made a preliminary version of mopd with ELF support available.  It's
+> Mats O. Jansson's mopd 2.5.3 with several fixes, updates and enhancements.
+> The work is definitely not finished, but basic functionality is already
+> implemented.  I'm making it available due to the amount of PITA
+> maintenance of traditional mopd image formats incurs, in hope someone will
+> find it useful.  Libelf is required for this version of mopd.  It should
+> build and run on any Linux system, regardless of endianness.  It might
+> work on other systems as well.
 >
-> . It makes a workaround look like a real fix. :-)
+>  I've made RPM packages available at the usual place (i.e.
+> 'ftp://ftp.ds2.pg.gda.pl/pub/macro/').  Beside source packages there are
+> i386 and mipsel binary ones available.  Grab the latest version; olders
+> are for a reference only.  To aid people with no RPM support in their
+> systems I've unpacked the source package into the "mopd" directory.  Still
+> you need to study the .spec file to figure how to build binaries.
 >
-> . In other implementations of pci_auto, hose is the private sys data of a
-pci
-> dev. Having a bus number inside is very useful (e.g., pci_ops can tell
-whether
-> it is type0 of type1 configuration based on the bus number rather than a
-shaky
-> NULL parent bus pointer).  In the future, all pci_auto should be combined
-into
-> the pci driver.  So that is probably the right direction to go.
+>  Any feedback will be appreciated; I'm especially interested in reports
+> from VAX users, as I've only been able to verify the operation booting
+> Linux on a DECstation 5000 (i.e. MIPS) system.  Note: this version of mopd
+> does not require switching devices into the PROMISC or ALLMULTI modes of
+> operation.
 >
-> I think hose may evolve to be the data structure that represents the
-topology
-> of PCI buses.  It should have more uses in the future (e.g., the standard
-IRQ
-> routing across PCI-PCI bridges).
+>   Maciej
+>
+>
 
-Isn't the bus topology already adequately represented in the pci_dev and
-pci_channel structures?
-
-I look at the pci autoconfig stuff as a bios replacement.  The fact that we
-can use some of the same structures and functions to help us implement it is
-a bonus, but not a mandate to mess with the existing model.
-
-Isn't Linux already handling PCI-PCI bridges and multiple PCI channles fine
-already, or has our autoconfig code exposed some existing non-arch-specific
-weakness?
-
-Regards,
-Brad
+-- 
+David Airlie, Software Engineer
+http://www.skynet.ie/~airlied / airlied@skynet.ie
+pam_smb / Linux DecStation / Linux VAX / ILUG person

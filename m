@@ -1,52 +1,34 @@
-Message-ID: <010701c07986$ac768180$0deca8c0@Ulysses>
+Message-ID: <01b401c079c3$095c4740$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Pine.GSO.3.96.1010108151854.23234G-100000@delta.ds2.pg.gda.pl>
-Subject: Re: User applications
-Date: Mon, 8 Jan 2001 16:21:18 +0100
+References: <XFMail.791030042838.Harald.Koerfgen@home.ivm.de>
+Subject: Re: Current CVS kernel no-go on R4k Decstation
+Date: Mon, 8 Jan 2001 23:33:25 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: linux-mips@oss.sgi.com, Carsten Langgaard <carstenl@mips.com>, Michael Shmulevich <michaels@jungo.com>
-Message-ID: <20010108152118.2zqdKEXYOQXfZdJgY8MX6IzVFDTXVGhXCecMhkDYDTk@z>
+To: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>, Karsten Merker <karsten@excalibur.cologne.de>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010108223325.V-jXK6lzwRQ9Pp8j6Z7rIRtCOCvjauULtcOMvkdSO4E@z>
 
-
------ Original Message -----
-From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-To: "Kevin D. Kissell" <kevink@mips.com>
-Cc: <linux-mips@oss.sgi.com>; "Carsten Langgaard" <carstenl@mips.com>;
-"Michael Shmulevich" <michaels@jungo.com>
-Sent: Monday, January 08, 2001 4:07 PM
-Subject: Re: User applications
-
-
-> On Mon, 8 Jan 2001, Kevin D. Kissell wrote:
+> > Similar effect for me (DS5000/150, Checkout @ Sat Jan 6 ~22:30 CET),
+> > except that I do not get the "illigal instruction" lines. Harald has the
+> > same problem on his /260. It looks like sometime in December 2000
+> > something has gone broken in the R4K-support, or are we perhaps
+> > triggering a compiler bug in egcs 1.1.2?
 >
-> > Back in the Ancient Old Days of System V, every architecture
-> > had an architecture-specific system call entry, the first parameter
-> > of which expressed what needed to be done.  Do we have
-> > such a thing in Linux?   That would be the logical place to
-> > things like cache flush and the atomic operations that were
-> > being discussed here a couple of weeks ago.
->
->  The only case caches need to be synchronized is modifying some code.
+> I don't think so. This hang appeared in the middle of December and may or
+may
+> not be related to the MIPS32 patches which were commited then.
+Unfortunately I
+> haven't had the time to track this down.
 
-Which just happens to be the case under discussion here.
+If you're referring to the MIPS32 patches that came from the MIPS 2.2 tree,
+we generally test those on an R4600 Indy and a couple R5xxx platforms as
+a matter of routine.  This is not to say that there might not be some change
+to the R4x00 support between 2.2 and 2.4 that interacts pathologically with
+the MIPS32 code...
 
->The  ptrace syscall does it automatically for text writes -- it's needed
-and
-> used by gdb to set breakpoints, for example.  For other code there is
-> cacheflush() which allows you to flush a cache range relevant to a given
-> virtual address (I see it's not implemented very well at the moment).
->
->  Obviously, you don't want to allow unprivileged users to flush caches as
-> a whole as it could lead to a DoS.
-
-By that logic, we should not allow users to allocate more virtual
-memory than there is physical memory in the system!  A pathological
-swap program is arguably far a far worse denial of service attack
-than flushing the caches - so long as by "flush" we mean invalidate
-with writeback (on copyback caches), of course.
+           Kevin K.

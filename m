@@ -1,30 +1,25 @@
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199910180312.UAA98843@oz.engr.sgi.com>
-Subject: Re: current information about linux/sgi ?
-Date: Sun, 17 Oct 1999 20:12:08 -0700 (PDT)
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-In-Reply-To: <Pine.GSO.4.10.9910172334460.5329-100000@lutra.sztaki.hu> from "Gergely Madarasz" at Oct 17, 99 11:44:09 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Message-ID: <v04220600b4393344e187@[192.168.0.2]>
+In-Reply-To: <l03020901b43818ad81dc@[216.220.110.150]>
+References: <l03020901b43818ad81dc@[216.220.110.150]>
+Date: Sun, 24 Oct 1999 17:06:25 -0500
+From: Gavin Kistner <gavin@refinery.com>
+Subject: Re: Linux on SGI O2
+Content-Type: text/plain; charset="us-ascii"
 Sender: owner-linuxmips@oss.sgi.com
-To: Gergely Madarasz <gorgo@sztaki.hu>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19991018031208.0vOthFG6qCS86306BPFWKjWETIMtqWorTlZuWjR5mV0@z>
+To: Four Hewes <four@bway.net>, linux@cthulhu.engr.sgi.com
+Message-ID: <19991024220625.-EvuhqLBAgwi93ezKfqmqJWqLp1tNS0-tTY0K2XTaTc@z>
 
-:Btw is the list archived somewhere else perhaps? I followed the link from
-:www.linux.sgi.com, the latest messages there are dated June 25.
-:And can someone summarize the current status of linux on different
-:workstation models ?
-:
-I'm fixing this as we speak. There are several old links
-to fix :-(
+At 12:45 AM -0400 1999-10-24, Four Hewes wrote:
+>Judging from " Linux/MIPS HOWTO:3.2 Processor types: R4000 and R5000
+>family, R10000," there in not presently a version on Linux that runs on the
+>SGI O2, right?
 
-The up-to-date archives can be found at:
+As on O2 ownder, I'm anxiously awaiting it, but I've not yet seen it happen. To my knowledge, you are correct.
 
-	http://oss.sgi.com/projects/linuxmips/archive/
-
-They should be updated automatically.
+- Gavin
 
 --
-Peace, Ariel
+Gavin Kistner                                   Creative Director
++1 314 725 5096                        Image Refinery Productions
+gavin@refinery.com                        http://www.refinery.com

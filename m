@@ -1,25 +1,31 @@
-Mime-Version: 1.0
-Message-ID: <v04220600b4393344e187@[192.168.0.2]>
-In-Reply-To: <l03020901b43818ad81dc@[216.220.110.150]>
-References: <l03020901b43818ad81dc@[216.220.110.150]>
-Date: Sun, 24 Oct 1999 17:06:25 -0500
-From: Gavin Kistner <gavin@refinery.com>
-Subject: Re: Linux on SGI O2
-Content-Type: text/plain; charset="us-ascii"
+Message-ID: <120f701bf2137$5788bc40$0a00000a@nop.com>
+From: "Jay Carlson" <nop@nop.com>
+References: <19991026162026.I1207@paradigm.rfc822.org> <19991027103326.A6252@uni-koblenz.de>
+Subject: Re: latest binutils cygnus CVS 991025
+Date: Thu, 28 Oct 1999 07:26:51 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
-To: Four Hewes <four@bway.net>, linux@cthulhu.engr.sgi.com
-Message-ID: <19991024220625.-EvuhqLBAgwi93ezKfqmqJWqLp1tNS0-tTY0K2XTaTc@z>
+To: Ralf Baechle <ralf@oss.sgi.com>, Florian Lohoff <flo@rfc822.org>
+Cc: linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <19991028112651.mG7-3dnpssYJqJ3OqlVdTtgMD7MJO_o_VC__wbju-_4@z>
 
-At 12:45 AM -0400 1999-10-24, Four Hewes wrote:
->Judging from " Linux/MIPS HOWTO:3.2 Processor types: R4000 and R5000
->family, R10000," there in not presently a version on Linux that runs on the
->SGI O2, right?
+>  - Symbol versioning is broken in the CVS version.  There is no fix yet
+for
+>    this problem.
+>  - The CVS gas version has a few problems with weak symbols, aliases and
+>    other special cases.  These usually don't show up.  Anyway, the
+patchkit
+>    on oss.sgi.com has all these fixes which haven't made their way into
+>    CVS.
+>
+> I've spent a tremendous amount of time into tracking down a large number
+of
+> other bugs in binutils; I was able to rebuild entire RH 6.0 with that
+> linker.
 
-As on O2 ownder, I'm anxiously awaiting it, but I've not yet seen it happen. To my knowledge, you are correct.
+This is the 2.8.1+mips patchkit?
 
-- Gavin
-
---
-Gavin Kistner                                   Creative Director
-+1 314 725 5096                        Image Refinery Productions
-gavin@refinery.com                        http://www.refinery.com
+Jay

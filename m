@@ -1,43 +1,44 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@Julia.DE>
-Message-ID: <199706140004.CAA08235@kernel.panic.julia.de>
-Subject: Re: Userland loader / run time loader
-Date: Sat, 14 Jun 1997 02:04:03 +0200 (MET DST)
-In-Reply-To: <Pine.LNX.3.95.970613194626.15021G-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jun 13, 97 07:51:37 pm
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199706141721.KAA12726@yon.engr.sgi.com>
+Subject: Re: gcc for Irix.
+Date: Sat, 14 Jun 1997 10:21:07 -0700 (PDT)
+In-Reply-To: <9706140839.ZM21078@heaven.newport.sgi.com> from "Christopher W. Carlson" at Jun 14, 97 08:39:28 am
+Reply-To: ariel@sgi.com (Ariel Faigon)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: ralf@Julia.DE, lm@neteng.engr.sgi.com, ralf@mailhost.uni-koblenz.de, shaver@neon.ingenia.ca, linux@cthulhu.engr.sgi.com
-Message-ID: <19970614000403.-wd29cv7NINeOBpjaVZ7wvtAydDL2MAYT4jyGdwQaoc@z>
+To: "Christopher W. Carlson" <carlson@heaven.newport.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970614172107.bhDGRBIVdLSsWJ7bWGPBqE5VKtIqft3gs0mI4hD7Uc8@z>
 
-> > {\grin[evil] Because I've got four types of MIPS boxes running Linux at
-> > home and to two more I've got access.}
-> 
-> To address the needs of us lowly folk who have fewer than 2 MIPS boxes[1],
-> which endian are we going to be supporting first?  It would be _very_
-> pleasant to be able to run all these binaries that Ralf has prepared. 
+:
+:Actually, it isn't a bug because there was a major version change.
+:Anything can change between 5.3 and 6.2.  I know we try to maintain
+:backwards compatibility but sometimes ANSI requires changes in the
+:number of parameters, there's a change in the values used to pass to
+:functions, etc.
+:
+:I believe our promise is that code compiled on 5.3 will run on 6.2,
+:not that it will still compile.
+:
+Yes, It was mainly ANSI/POSIX1C/POSIX2/XPG4/UNIX95 (spec 1170) changes
+(See /usr/include/standards.h) which caused major changes in IRIX
+headers in order to be able to support all these standards without
+conflicts (a pretty big undertaking).
 
-The dependencies from the byteorder are very low.  As long as we do
-not have a kernel with the capability to execute binaries of both byteorder
-at the same time byteorder is almost a non-issue for development.  Just
-recompiling, that's it.
+In addition there were some enhancemnets to certain APIs, for example
+supporting faster serial speeds which changed some termios.h subtle
+interfaces (you may still compile with -D_OLD_TERMIOS of course, but
+still a change that may break compilations on old and arguably not
+cleanly written UNIX apps -- GNU less comes to mind) 
 
-> Also, exactly how difficult is it to alternate the kernel between big and
-> little endian? 
+And finally there's "fix_headers" - the utility that comes with gcc
+and fixes headers so they can be used with some gcc conventions
+and extensions to C.  Combine this with our multi-standard headers
+which I suspect the designers of "fix_headers" never thought of
+and you get a pretty cool mess :-)
 
-Well, depends on what you mean.  The simple solution is just recompiling
-everything.  Works for kernel and user apps.  The more complex solution
-is to make the kernel capable of running user apps of both byteorder at
-the same time.  Among other things this requires that we go through all
-the kernel source and fix the user space access routines.  A bit more of
-an effort ;-)  Mips already did that once for RISC/os.
-
-> This is getting cooler by the minute...
-> 
-> [1] In my case, 0, but access network access to 1.
-
-Slower than 10mbit/s doesn't count :-)
-
-  Ralf
+-- 
+Peace, Ariel

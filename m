@@ -1,42 +1,32 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199708110250.WAA25855@neon.ingenia.ca>
-Subject: /dev/usema questions
-Date: Sun, 10 Aug 1997 22:50:35 -0400 (EDT)
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199708120407.GAA03608@informatik.uni-koblenz.de>
+Subject: Re: Bottom half bug
+Date: Tue, 12 Aug 1997 06:07:06 +0200 (MET DST)
+In-Reply-To: <199708112359.SAA03734@athena.nuclecu.unam.mx> from "Miguel de Icaza" at Aug 11, 97 06:59:07 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Linux/SGI list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970811025035.-6nHOcyWZE68_zLo8P2-IUUiWXCjANx7vAXUA5pP_a0@z>
+To: Miguel de Icaza <miguel@nuclecu.unam.mx>
+Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
+Message-ID: <19970812040706.Kz4ImWd3fQxQRm4yhcWQRphcqrVRGzdUxdzpAuGtcMk@z>
 
-Couple of questions I'd like some enlightenment on, as I try to get
-/dev/usema{,clone} ready for Miguel's Xcellent Adventure:
+>   Well, the major problem with getting gdb up was that init is for
+> some reason setting the blocked signal mask to 0x39 (this includes
+> sighup, sigtrap and a couple of others).  
+> 
+>   I will debug this next, right now I have this gross hack on gdb to
+> reset the signal mask to zero.  Any ideas of why would init be doing this?
 
-- what is us_attach.us_handle for?  Is it some opaque pointer I can
-send to userland and get back for all the other ioctls?  Please? =)
+Well, I'll look at this when I get off the plane or so ...
 
-- do libc and IRIX really use the minor of the filehandle to identify
-the usema `device' it's working with?
+I finally tracked the problem with <CTRL>-s locking up the machine down.
+It's a missing restore_flags() in the newport driver that makes the
+keyboard driver bottom half go bobo.  Also we were missing irq_enter/
+irq_leave in the Indy interrupt handler.  The patch, well, it's in my
+suit case.  Have fun with your crashing boxes :-)
 
-- from sys/usioctl.h:
-#define UIOCBLOCK       (UIOC|3)        /* block, sync, intr */
-#define UIOCNOIBLOCK    (UIOC|5)        /* block, sync, intr */
-Should I take UIOCNOIBLOCK to really be "/* block, sync, nointr */"?
+California, I'm comin',
 
-- what's the difference between sync/async blocking/unblocking?  I
-thought it might be that sync would mean that schedule() happened
-immediately, but then I don't think that async blocking makes much
-sense.
-
-The us* stuff is pretty cool, I must say.  Someone (<whistles
-quietly>) should think about doing it for Linux...
-
-Mike
-
--- 
-#> Mike Shaver (shaver@ingenia.com)      Information Warfare Division  
-#> Chief Tactical and Strategic Officer         "Saepe fidelis"        
-#>                                                                     
-#> "I like your game, but we have to change the rules." -- Anon        
-#>                                                                     
+  Ralf

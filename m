@@ -1,42 +1,43 @@
-Content-Class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: gcov and gprof 
-Date: Sun, 19 Oct 2003 18:23:52 -0700
-Message-ID: <501EA67E9359C645A10C42EB5B52480D2AB2D9@SNEXCH01.mcdata.com>
-From: "Krishna Kondaka" <Krishna.Kondaka@MCDATA.com>
-Return-Path: <Krishna.Kondaka@MCDATA.com>
+Subject: Re: module dependency files
+From: Jeff Angielski <jeff@theptrgroup.com>
+In-Reply-To: <Pine.GSO.4.44.0310211717110.14194-100000@ares.mmc.atmel.com>
+References: <Pine.GSO.4.44.0310211717110.14194-100000@ares.mmc.atmel.com>
+Content-Type: text/plain
+Message-ID: <1066771519.3289.45.camel@localhost.localdomain>
+Mime-Version: 1.0
+Date: 21 Oct 2003 17:25:20 -0400
+Content-Transfer-Encoding: 7bit
+Return-Path: <jeff@theptrgroup.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20031020012352.nTEtsHN450KYt90EcMHsaetc8C-PaBmDHnMxgPmYk_A@z>
+To: David Kesselring <dkesselr@mmc.atmel.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20031021212520.eGBNJWpaod2ceOtj5YLLCJlpXPi2txPUk9_fjhaqFFY@z>
 
+From the Linux kernel Makefile...
 
+#
+# INSTALL_MOD_PATH specifies a prefix to MODLIB for module directory
+# relocations required by build roots.  This is not defined in the
+# makefile but the arguement can be passed to make if needed.
+#
+                                                                                Just set this to the location of your target filesystem when you do the modules_install.
 
-Hi,
+Jeff Angielski
+The PTR Group
 
-I would like to know if gcov and gprof are available on MIPS Linux. If yes, which version of library/utils are these available?
-
-Thanks in advance
-Krishna
-
-SPECIAL NOTICE 
-
-All information transmitted hereby is intended only for the use of the 
-addressee(s) named  above and may contain confidential and privileged 
-information. Any unauthorized  review, use, disclosure or distribution
-of confidential and privileged information is prohibited. If the reader of
-this message is not the intended recipient(s) or the employee or agent 
-responsible for delivering the message to the intended recipient, you
-are herby notified that you must not read this transmission and that
-disclosure, copying, printing, distribution or use of any of the
-information contained in or attached to this transmission is STRICTLY 
-PROHIBITED.
-
-Anyone who receives confidential and privileged information in error should 
-notify us immediately by telephone and mail the original message to us at the
-above address and destroy all copies.  To the extent any portion of this
-communication contains public information, no such restrictions 
-apply to that information. (gate01)
+On Tue, 2003-10-21 at 17:22, David Kesselring wrote:
+> I have now gotten the modules to build but there is one part of the
+> process that doesn't work. On my pc I want to build all of the files which
+> are to be installed on the mips board. I am trying to create the files
+> which can be copied onto (or into) the redhat 7.3 miniport. "make modules"
+> works fine. It seems like I need to run "make modules_install" but it
+> complains about the .o files being the wrong architecture. So the basic
+> question seems to be how can I run depmod on the pc for mips?
+> Thanks again.
+> 
+> David Kesselring
+> Atmel MMC
+> dkesselr@mmc.atmel.com
+> 919-462-6587
+> 

@@ -1,21 +1,33 @@
-Message-ID: <024501c10f3c$27d290d0$b310a8c0@jefflee>
-From: "jeff_lee" <jeff_lee@coventive.com>
-Subject: mipsel machine
-Date: Wed, 18 Jul 2001 11:45:52 +0800
+Date: Wed, 18 Jul 2001 21:09:42 -0700 (PDT)
+From: Chris Vandomelen <chrisv@b0rked.dhs.org>
+Subject: Patches to support 48M IBM Workpad z50?
+Message-ID: <Pine.LNX.4.31.0107182100140.9246-100000@b0rked.dhs.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010718034552.fUh2NRVGKqnTYrEugMQt1Frr4N65cXXexFgA4lOOWd0@z>
+To: linux-mips@oss.sgi.com, linux-mips-kernel@lists.sourceforge.net
+Message-ID: <20010719040942.oK1Lj73WvYtEmNgct8ss6i9NnWzraVo-4t9FPP5AaaU@z>
 
-Dear All
-   I am Jeff. I need to find out a mips machine (with HDD and bigger RAM)
-that can run the mipsel. Do you have any suggestion about the machine ?
-Where can I find the machine. We need the machine to do the native compiler.
+Since I can't seem to find any information about this anywhere else, I
+figured this would be the appropriate place to ask.
 
-Thanks and best regs,
+I'm using a moderately hacked 2.4.0-test9 kernel from the linux-vr
+repository (the only complete kernel, excluding NetBSD, that I've found
+which runs on CE devices at the moment), and it doesn't want to recognize
+all 48M of RAM in the device, only the 1st 16. The memory is mapped as
+such:
 
-Jeff at Coventive company
-==========================================================
+0M  - 16M:	On-board memory
+16M - 32M:	Unmapped region
+32M - 64M:	Memory expansion card
+
+When the first 16M is checked, the memory immediately after that is found
+to be non-existant.
+
+Does anyone have a patch (other than the hack I tossed together to turn
+the 32M-64M chunk into an MTD device) that would be useful to work past
+the memory hole?
+
+TIA
+
+Chris

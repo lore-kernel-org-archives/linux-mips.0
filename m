@@ -1,23 +1,80 @@
-Message-ID: <913763E09A62D2118DC500A0C9E4139DBF8B40@nt-milan.milan.sgi.com>
-From: Maurizio Morosini <mmorosin@sgi.com>
-Subject: 1400scsi cable
-Date: Wed, 25 Oct 2000 09:59:43 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+From: "James McD" <vile8@hotmail.com>
+Subject: Re: indy gr3-xz support
+Date: Wed, 25 Oct 2000 19:05:46 GMT
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F251SCeX8KShPdHfKsp00001138@hotmail.com>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: "'eurotac@neu.sgi.com'" <eurotac@neu.sgi.com>
-Cc: linux-mips@oss.sgi.com, maurizio@relay.milan.sgi.com
-Message-ID: <20001025075943.wyPVZSAFV3E5p9_fvxihAlCT2UIdrqpyKVaU4fSEIcs@z>
+To: rsanders@conejo.engr.sgi.com
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20001025190546.yi33Gz3_qbBJSr_YTLC9PXLwgdaPWM3SbV5Sk0-I7ug@z>
+
+Hey, I feel your pain. I too have recently acquired the same machine with no 
+ram etc.
+You are in luck though, all you need is some 72 pin parity ram, if you look 
+up DMT technologies they have it in sticks of 8megs each for about 32 bucks 
+for 64 megs.
+The hard drive is also an easy to come by item, from what I have heard watch 
+out when purchasing too fast a drive though...ie 7200 rpm or better since 
+the drive can create a large quantity of heat in the small case.
+You will also need something to view the display with, dmt also has 
+monitors, but if you look around you may be able to find something bigger or 
+you could get the converter cable to use a normal peecee style monitor. Be 
+careful to check scan rates when purchasing old sgi monitors as I burnt one 
+up in the blink of a screen.
+Once all is said and done as far as the hardware goes then set yourself up a 
+network and check out:  
+http://reality.sgi.com/raju/SGI-Linux-mini-HOWTO.html
+or just do a search off google for <sgi indy linux howto> and you will find 
+many documents on getting Linux fired up on your indy!
 
 
 
+>From: "Robert M. Sanders" <rsanders@conejo.engr.sgi.com>
+>To: linux-mips@oss.sgi.com
+>Subject: Re: indy gr3-xz support
+>Date: Wed, 25 Oct 2000 06:49:17 -0700 (PDT)
+>Received: from [216.32.174.190] by hotmail.com (3.2) with ESMTP id 
+>MHotMailBBC030CC00AAD820F3DBD820AEBE10F90; Wed Oct 25 06:53:16 2000
+>Received: by oss.sgi.com id <S553797AbQJYNwK>;Wed, 25 Oct 2000 06:52:10 
+>-0700
+>Received: from pneumatic-tube.sgi.com ([204.94.214.22]:40239 "EHLO        
+>pneumatic-tube.sgi.com") by oss.sgi.com with ESMTPid <S553779AbQJYNvu>; 
+>Wed, 25 Oct 2000 06:51:50 -0700
+>Received: from nodin.corp.sgi.com (nodin.corp.sgi.com [192.26.51.193]) by 
+>pneumatic-tube.sgi.com (980327.SGI.8.8.8-aspam/980310.SGI-aspam) via ESMTP 
+>id GAA01726for <linux-mips@oss.sgi.com>; Wed, 25 Oct 2000 06:59:14 -0700 
+>(PDT)mail_from (rsanders@conejo.engr.sgi.com)
+>Received: from conejo.engr.sgi.com (conejo.engr.sgi.com [130.62.50.34]) by 
+>nodin.corp.sgi.com (980427.SGI.8.8.8/980728.SGI.AUTOCF) via ESMTP id 
+>GAA33856 for <linux-mips@oss.sgi.com>; Wed, 25 Oct 2000 06:51:49 -0700 
+>(PDT)
+>Received: (from rsanders@localhost)by conejo.engr.sgi.com (SGI-8.9.3/8.9.3) 
+>id GAA02341for linux-mips@oss.sgi.com; Wed, 25 Oct 2000 06:49:17 -0700 
+>(PDT)
+From owner-linux-mips@oss.sgi.com Wed Oct 25 06:56:50 2000
+>Message-Id: <200010251349.GAA02341@conejo.engr.sgi.com>
+>In-Reply-To: <Pine.BSI.4.10.10010251535430.15635-100000@xs4.xs4all.nl>
+>X-Status: N
+>X-Mailer: Applixware 4.41 (1021.286.3)
+>X-Orcpt: rfc822;linux-mips@oss.sgi.com
+>Sender: owner-linux-mips@oss.sgi.com
+>Precedence: bulk
+>
+> >
+> > Is the Gr3-XZ supported (24bp / opengl) under mips-linux?
+> >
+> > And the indy-sound system?
+> >
+> >
+>For sound, see - http://www.alsa-project.org/
+>
+>Bob
+>
 
- Hi all
- I am looking for a Part Number regarding scsi cable for Mylex 
- AcceleRAID 250 PCI card for 1400 Sistem . 
- 1400 scsi cable is short and I didn't recive any cable
- with Raid board . Have anyone some info??
-       Thanks  a lot  Maurizio
- 
+_________________________________________________________________________
+Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com.
+
+Share information about yourself, create your own public profile at 
+http://profiles.msn.com.

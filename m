@@ -1,37 +1,29 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: alambie@wellington.sgi.com (Alistair Lambie)
-Message-ID: <199704182235.KAA13888@soyuz.wellington.sgi.com>
-Subject: Re: init=/bin/sh and serial devices
-Date: Sat, 19 Apr 1997 10:35:30 +1200 (NZT)
-In-Reply-To: <199704150209.WAA00938@jenolan.caipgeneral> from "David S. Miller" at Apr 14, 97 10:09:11 pm
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199704301534.LAA01989@neon.ingenia.ca>
+Subject: Re: Linux 2.1.36
+In-Reply-To: <199704300925.LAA24193@informatik.uni-koblenz.de> from Ralf Baechle at "Apr 30, 97 11:25:15 am"
+Date: Wed, 30 Apr 1997 11:34:19 -0400 (EDT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "David S. Miller" <davem@jenolan.rutgers.edu>
-Cc: wje@fir.engr.sgi.com, knobi@munich.sgi.com, shaver@neon.ingenia.ca, linux@cthulhu.engr.sgi.com
-Message-ID: <19970418223530.uRgYSSVfnWMBsVPtnOZaFXBNvOtClPs7fm4lxLDpIjo@z>
+To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970430153419.dWn0mS_yN66VR2BBonc87IDYrW57NxjZvux1sJ42nzw@z>
 
-> 
->    Date: Mon, 14 Apr 1997 11:05:52 -0700
->    From: "William J. Earl" <wje@fir.engr.sgi.com>
-> 
-> 	Does the textport driver run in color-index mode?  If so, it
->    will probably work on the 8-bit card.  The cards are largely
->    identical, except for the depth of the frame buffer.
-> 
-> If memory serves, I left the chip in the exact mode the firmware has
-> set it to.  So if the firmware sets up the card to use color-index
-> mode, then I do as well in the driver.  (I think I did this so I did
-> not have to deal with monitor frequencies, and resolutions, and that
-> sort of thing)
-> 
-> But my text rendering code may make assumptions about frame buffer
-> depth, I draw them using the various simpler raster operation commands
-> the Newport has, so someone who knows would have to look at my code.
-> 
-I've been away for a few days, so sorry about the late reply :-)
+Thus spake Ralf Baechle:
+> Because I don't have a Indy for testing this release is completly
+> untested on SGI machines.
 
-It definitely works on an 8 bit machine.  That is what I have used in the past.
+I'll take care of that when I get in to the office today (home sick
+this morning).
 
-Cheers, Alistair
+Mike
+
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>      Chief System Architect -- will tame sendmail(8) for food       
+#>                                                                     
+#> "You are a very perverse individual, and I think I'd like to get to 
+#>  know you better." --- eric@reference.com                           

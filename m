@@ -1,28 +1,44 @@
-Subject: Re: errno assignment in _syscall macros and glibc
-Date: Mon, 3 Jul 2000 14:45:58 +0100 (BST)
-In-Reply-To: <073a01bfe29c$00995e90$0a00000a@decoy> from "Jay Carlson" at Jun 30, 2000 10:03:41 AM
+From: "Ian Chilton" <mailinglist@ichilton.co.uk>
+Subject: New Linux/MIPS Site Online!
+Date: Wed, 5 Jul 2000 15:09:47 +0100
+Message-ID: <NAENLMKGGBDKLPONCDDOCEHFCPAA.mailinglist@ichilton.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-ID: <E1396Xy-0004hz-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Jay Carlson <nop@nop.com>
-Cc: Ralf Baechle <ralf@oss.sgi.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Andreas Jaeger <aj@suse.de>, Mike Klar <mfklar@ponymail.com>, linux-mips@oss.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
-Message-ID: <20000703134558.LeQ5NMSvvKxd33ZTYNfSbO8eFcYPrO-PEkxxzYtZRNE@z>
+To: "Linux-Mips Mailing List (Old)" <linux-mips@fnet.fr>, Linux-MIPS Mailing List <linux-mips@oss.sgi.com>
+Message-ID: <20000705140947.dCVWZSKQeVTUO1E1WGjsjy1o8kvGsgI7PnXBsE6UZGs@z>
 
-> Does newlib work under Linux?  I thought it was missing (for example) t=
-> he
-> syscalls, and generally needed work to be ported to Linux.  I'm interes=
+Hello,
 
-You would need to add the syscalls yes. Also the Cygnus^WRed Hat folks tell
-me that the eCos libc is built from and replaces newlib.
+The new "Unofficial Linux/MIPS Site" is now available.
+Go to: http://www.linux-mips.org
 
-> *BSD libc has been suggested by a few people.
+More to come, but it's there, and there's plenty of links!   :-)
 
-Good idea - how does it compare ?
 
-> Jay
-> 
-> 
+Thanks to:
+Klaus Naumann		-->  Some of the content + counter
+Richard Hartensveld	-->  Hosting / domain
+
+
+Bye for Now,
+
+Ian
+
+
+                                \|||/ 
+                                (o o)
+ /---------------------------ooO-(_)-Ooo---------------------------\
+ |  Ian Chilton     (IRC Nick - GadgetMan)     ian@ichilton.co.uk  |
+ |-----------------------------------------------------------------|
+ |  Backup E-Mail -->  ian@ichilton.dhis.org      ICQ #: 16007717  |
+ |  Mobile Phone (MAX 150 Chars!) -->  ianchilton@sms.genie.co.uk  |
+ |-----------------------------------------------------------------|
+ |  http://www.ianchilton.co.uk  --> Main Page                     |
+ |  http://www.ichilton.co.uk    --> Own Web Server (When Online)  |
+ |-----------------------------------------------------------------|
+ |  "Unix is user friendly - it's just picky about it's friends."  |
+ \-----------------------------------------------------------------/

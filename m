@@ -1,22 +1,32 @@
-Subject: Re: Kernel compiler
-Date: Sat, 4 Nov 2000 10:40:42 +0000 (GMT)
-In-Reply-To: <20001104035326.A29005@bacchus.dhis.org> from "Ralf Baechle" at Nov 04, 2000 03:53:26 AM
+From: "Jay Carlson" <nop@nop.com>
+Subject: RE: The initial results (Re: stable binutils, gcc, glibc ...
+Date: Mon, 6 Nov 2000 06:43:25 -0500
+Message-ID: <KEEOIBGCMINLAHMMNDJNIEDGCAAA.nop@nop.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Message-ID: <E13s0ke-0004Sa-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+In-Reply-To: <39ED2166.9B5F970@mvista.com>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: Keith Owens <kaos@melbourne.sgi.com>, linux-mips@oss.sgi.com, linux-mips@fnet.fr
-Message-ID: <20001104104042.by9Wj4hyiXsELlKKJjEOTVMuQvcLJxp1O48NzRiyTqE@z>
+To: linux-mips@fnet.fr, linux-mips@oss.sgi.com
+Message-ID: <20001106114325.RXO7cCr1hDep2tfyrcXMtb0fZXbVfHkn5LleufuB5mc@z>
 
-> The reports regarding egcs 2.96 and newer misscompiling the kernel only
-> affect x86 or are other architecture affected as well?  I don't have any
-> pending compiler >= 2.96 related bug reports.
+> I also had success with latest binutils CVS tree.  I gave a try to the
+> latest gcc, but did not look into it further.
+>
+> http://sourceware.cygnus.com/binutils
+> cvs -z 9 -d :pserver:anoncvs@anoncvs.cygnus.com:/cvs/src co -D "Oct 13,
+> 2000" binutils
 
-The Red Hat 2.96 seems to compile 2.2 correctly when you fix the 2.2 bugs but
-does miscompile x86 fs/buffers.c on 2.4 according to reports. I think with mips
-you'd have to experiment. Also AFAIK that tree branch hasn't been tested on
-mips 
+OK, I've decided to bite the bullet and try to get current on everything.
+Most of the patches I've seen lying around have been integrated into
+binutils and gcc.  Congratulations!
+
+However, there's still this lingering issue with binutils.  The ulfc patches
+haven't been integrated, and I'm worried that I'm going to run into the
+"binutils generate busted relocs" problem as a result.  What's the
+resolution of that issue?  Patch still needed?  Patch not needed if the only
+two binutils ever used are 2.8.1 and current-cvs (>2.10)?
+
+Jay

@@ -1,31 +1,49 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <36A51517.A24C2BEB@hiwaay.net>
-Date: Tue, 19 Jan 1999 17:28:23 -0600
-From: dmanddmer <dmerchan@hiwaay.net>
+Date: Tue, 19 Jan 1999 19:29:16 -0600 (CST)
+From: Chad Carlin <chad@sgi.com>
+Subject: Re: [Fwd: linus.linux.sgi.com]
+In-Reply-To: <36A51517.A24C2BEB@hiwaay.net>
+Message-ID: <Pine.SGI.3.94.990119192805.7049B-110000@roctane.dallas.sgi.com>
 MIME-Version: 1.0
-Subject: [Fwd: linus.linux.sgi.com]
-Content-Type: multipart/mixed; boundary="------------0BD0375297667C7067B8BD23"
+Content-Type: MULTIPART/MIXED; BOUNDARY=------------0BD0375297667C7067B8BD23
+Content-ID: <Pine.SGI.3.94.990119192805.7049C@roctane.dallas.sgi.com>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: linux@cthulhu.engr.sgi.com
-Message-ID: <19990119232823.2lcHQVV3jtXRqfFEs1Qj_TzmtgnHqtP2ZEaGnxMMkLg@z>
+To: dmanddmer <dmerchan@hiwaay.net>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19990120012916.eHWe5M-yeePPPJAE34o9UNBiGCmuaXN3lXw4crDPqI0@z>
 
-This is a multi-part message in MIME format.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
+
 --------------0BD0375297667C7067B8BD23
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; CHARSET=us-ascii
+Content-ID: <Pine.SGI.3.94.990119192805.7049D@roctane.dallas.sgi.com>
 
-Btw, I heard a rumor that the memory in the VPC is custom or unique
-memory.  Is this true?  How much of the VPC, besides the obvious, is not
-industry standard?  If SGI is attempting solely to require customers to
-be able to buy any upgrades ONLY from SGI, then SGI has shot itself in
-the foot again.  It did not work for Apple, it didn't work for Unisys,
-it didn't work for Intergraph.  In short, it hasn't worked for anyone.
+The current mainstream memory offering is 70n/s and we are at 50n/s.  The memory is not proprietary - any manufacturer could buy it if their system could drive it fast enough! 
 
-David M.
+            Chad Carlin                 
+            Silicon Graphics Inc.	  	
+            chad@sgi.com 
+	    http://reality.sgi.com/chad
+
+ 
+
+On Tue, 19 Jan 1999, dmanddmer wrote:
+
+->Btw, I heard a rumor that the memory in the VPC is custom or unique
+->memory.  Is this true?  How much of the VPC, besides the obvious, is not
+->industry standard?  If SGI is attempting solely to require customers to
+->be able to buy any upgrades ONLY from SGI, then SGI has shot itself in
+->the foot again.  It did not work for Apple, it didn't work for Unisys,
+->it didn't work for Intergraph.  In short, it hasn't worked for anyone.
+->
+->David M.
+
 --------------0BD0375297667C7067B8BD23
-Content-Type: message/rfc822
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Type: MESSAGE/RFC822
+Content-ID: <Pine.SGI.3.94.990119192805.7049E@roctane.dallas.sgi.com>
+Content-Description: 
 
 Received: from sgi.com (SGI.COM [192.48.153.1])
 	by mail.HiWAAY.net (8.9.1a/8.9.0) with ESMTP id JAA28325

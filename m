@@ -1,65 +1,23 @@
-Message-ID: <00ef01c109d6$c7b39150$9400a8c0@jefflee>
-From: "jeff_lee" <jeff_lee@coventive.com>
-Subject: DHCP problem
-Date: Wed, 11 Jul 2001 14:57:41 +0800
+Date: Wed, 11 Jul 2001 10:56:26 -0700 (PDT)
+From: "John D. Davis" <johnd@Stanford.EDU>
+Subject: Illegal Instruction with 2.4.2 and 2.4.3
+Message-ID: <Pine.GSO.4.31.0107111049350.2834-100000@myth1.Stanford.EDU>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00EC_01C10A19.D5AD9E70"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Cc: CIH <cih@coventive.com>, =?big5?B?SmFsZW4gt6iqRqan?= <jalen@coventive.com>
-Message-ID: <20010711065741.vi6qPHMgnq-90L-P3YHtRF3cNYOPDonEbFuIV1xfimw@z>
+To: debian-mips@lists.debian.org, linux-mips@oss.sgi.com
+Message-ID: <20010711175626.dgJ9L9KIGzLRY0GCJhMCyuaznEYHDEX5wPR83MbNJ3U@z>
 
-This is a multi-part message in MIME format.
+I have been able to natively build kernels 2.4.0,2,3,4,5 on an Indy with
+without the CD-ROM support. I have only been able to boot 2.4.2 and 2.4.3.
+Previously, I was running 2.4.0-test9. 2.4.4 and 5 have ext2_fs inode
+problems. 2.4.0 hangs at cleaning the /tmp directory.
 
-------=_NextPart_000_00EC_01C10A19.D5AD9E70
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+Extracting tar files causes an illegal instruction on 2.4.2 and 3.  Is
+there a patch for this.  Furthermore, are there patches available for all
+the various kernel versions and how do I get them for each version of the
+kernel.  Finally, I have read some email on stress tests.  Are those
+publicly available?
 
-Hi all, I got some question about the DHCP. We have a mipsel machine and =
-running HomeRF wireless module on it. The CPU is Vr4121, HomeRF bus is =
-ISA-like bus. Now the module can work fine with fixed-ip. We want to get =
-the IP when system boot-up. We had tried two way: cross compiler the =
-pump and dhclient applications, but when we execute the pump, it show =
-the "operation failed". When we execute dhclient, it show "segment =
-fault" ....... I don't know what's going on .Can someone tell me what's =
-going on ?? Or where can I get the binary code for pump and dhclient ??
-
-Thanks and best regs,
-
-Jeff
-
-
-------=_NextPart_000_00EC_01C10A19.D5AD9E70
-Content-Type: text/html;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Dbig5" http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DVerdana size=3D2>Hi all, I got some question about the =
-DHCP. We=20
-have a mipsel machine and running HomeRF wireless module on it. The CPU =
-is=20
-Vr4121, HomeRF bus is ISA-like bus. Now the module can work fine with =
-fixed-ip.=20
-We want to get the IP when system boot-up. We had tried two way: cross =
-compiler=20
-the pump and dhclient applications, but when we execute the pump, it =
-show the=20
-"operation failed". When we execute dhclient, it show "segment fault" =
-....... I=20
-don't know what's going on .Can someone tell me what's going on ?? Or =
-where can=20
-I get the binary code for pump and dhclient ??<BR></FONT></DIV>
-<DIV><FONT face=3DVerdana size=3D2>Thanks and best regs,</FONT></DIV>
-<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DVerdana size=3D2>Jeff<BR></DIV></FONT></BODY></HTML>
-
-------=_NextPart_000_00EC_01C10A19.D5AD9E70--
+thank you for your time,
+john

@@ -1,117 +1,25 @@
-From: "yaelgilad" <yaelgilad@myrealbox.com>
-Subject: R_MIPS_26 etc.
-Date: Thu, 12 Dec 2002 09:07:27 +0200
-Message-ID: <ECEPLLMMNGHMFBLHCLMAOEDMDGAA.yaelgilad@myrealbox.com>
+Received: from cac0.wmi.com (cac0.wmi.com [66.105.85.220])
+	by portal.wmi.com (8.11.6/8.11.6) with ESMTP id gBHIZSr25511
+	for <linux-mips@linux-mips.org>; Tue, 17 Dec 2002 13:35:28 -0500
+Received: from wmiddm (wmiddm.wmi.com [192.168.1.139])
+	by cac0.wmi.com (8.11.0/8.11.0) with SMTP id gBHIZSO17942
+	for <linux-mips@linux-mips.org>; Tue, 17 Dec 2002 13:35:28 -0500
+Message-ID: <016401c2a5fb$0d636fb0$8b01a8c0@wmiddm>
+From: "David D. McCoach" <ddm@wmi.com>
+Subject: Unaligned Instruction Trap
+Date: Tue, 17 Dec 2002 13:35:19 -0500
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000E_01C2A1BD.E4BD0940"
-Return-Path: <yaelgilad@myrealbox.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <ddm@wmi.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20021212070727.PeZkcptNgONTqv9lsaNLknx2Sj8sYMWoTO3S6cfAfoU@z>
+Message-ID: <20021217183519.yZc_Cs6ov119ToOZy8_YW4vyaghUOAJTqaLkrIbIo8k@z>
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_000E_01C2A1BD.E4BD0940
-Content-Type: text/plain;
-	charset="windows-1255"
-Content-Transfer-Encoding: 7bit
-
-Looking in the assembly code of my driver, I see the following
-pattern repeating with every function call.
-    4ce4: 0c000000  jal 0
-      4ce4: R_MIPS_26 rx_wait_packet
-(R_MIPS_26 is sometimes replaces by a similar command)
-What is R_MIPS_26 ? What are the rest of them ?
-I am guessing it has to do with relocatable addresses, but this specific
-function is in the same C file. Marking it as "static" does change the code
-and get rid of this command.
-
-TIA
-Gilad
-
-P.S. I am building assembler files in two different methods:
-- gmake <path-to-file>.lst
-- mips-linux-odjdump -x -S <path-to-C-file>  > <path-to-file.lst>
-The outputs are similar but not identical.
-What's the more "correct" way ?
-TIA-2
-
-
-
-
-
-------=_NextPart_000_000E_01C2A1BD.E4BD0940
-Content-Type: text/html;
-	charset="windows-1255"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1255">
-<META content=3D"MSHTML 6.00.2722.900" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D328594915-10122002>Looking in the=20
-assembly code of my driver, I see the following </SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D328594915-10122002>pattern repeating=20
-with every function call.</SPAN></FONT></DIV>
-<DIV><FONT><SPAN class=3D328594915-10122002>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; 4ce4: 0c000000&nbsp; =
-jal=20
-0&nbsp;</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4ce4: =
-R_MIPS_26=20
-rx_wait_packet</FONT></DIV>
-<DIV><FONT><SPAN class=3D328594915-10122002></SPAN><FONT face=3DArial =
-size=3D2>(<SPAN=20
-class=3D328594915-10122002>R_MIPS_26 is sometimes replaces by a similar=20
-command)</SPAN><BR>What is R_MIPS_26 ? What are the rest of them=20
-?</FONT></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>I am =
-guessing it has=20
-to do with relocatable addresses, but this specific</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D328594915-10122002>function is in the=20
-same C file. Marking it as "static" does change the code =
-</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>and =
-get rid of this=20
-command.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D328594915-10122002></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D328594915-10122002>TIA</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D328594915-10122002>Gilad</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D328594915-10122002></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>P.S. I =
-am building=20
-assembler files in two different methods:</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>- =
-gmake=20
-&lt;path-to-file&gt;.lst</SPAN></FONT></SPAN></FONT></DIV></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>- =
-mips-linux-odjdump=20
--x -S &lt;path-to-C-file&gt;&nbsp; &gt;=20
-&lt;path-to-file.lst&gt;</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D328594915-10122002>The&nbsp;outputs are=20
-similar but not identical.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D328594915-10122002>What's =
-the more=20
-"correct" way ?</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D328594915-10122002>TIA-2</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D328594915-10122002></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D328594915-10122002></SPAN></FONT>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_000E_01C2A1BD.E4BD0940--
+I have a problem with random "Unaligned Instruction Traps: during the boot
+process.  After rcS starts executing.
+I am using as Flash file system through a MTD driver.
+Does anyone have a thread for me pull on?
+Thanks

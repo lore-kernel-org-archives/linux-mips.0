@@ -1,58 +1,36 @@
-Received: from blaze.ghs.com (blaze.ghs.com [192.67.158.233])
-	by eta.ghs.com (8.12.8/8.12.8) with ESMTP id h3K0LhMD000943
-	for <linux-mips@linux-mips.org>; Sat, 19 Apr 2003 17:21:43 -0700 (PDT)
-Received: from NOMAD (nomad.ghs.com [192.168.112.124])
-	by blaze.ghs.com (8.10.2+Sun/8.10.2+Sun) with ESMTP id h3K0LgW05412
-	for <linux-mips@linux-mips.org>; Sat, 19 Apr 2003 17:21:42 -0700 (PDT)
-From: "Mike Connors" <mike.connors@ghs.com>
-Subject: assembly debug question
-Date: Sat, 19 Apr 2003 17:20:27 -0700
-Message-ID: <001d01c306d2$a55fbe80$7c70a8c0@NOMAD>
+Received: from RADIUM ([192.168.1.19])
+	by Radium.intranet (8.9.3/8.9.3) with ESMTP id RAA29708
+	for <linux-mips@linux-mips.org>; Tue, 22 Apr 2003 17:34:22 -0500
+From: "Lyle Bainbridge" <lyle@zevion.com>
+Subject: ide_ops issues for big endian mips
+Date: Tue, 22 Apr 2003 17:45:29 -0500
+Message-ID: <000801c30920$df9a4a20$1301a8c0@RADIUM>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-Path: <mike.connors@ghs.com>
+Return-Path: <lyle@zevion.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20030420002027.u0CSMrOQJGfHHel8FWJYc1HaVt_jtezzHwREEmNybrE@z>
+Message-ID: <20030422224529.jWTI9v67fosA56bifAvR90lFyffxA_O8eAiwgyj803k@z>
 
-Hi All, 
 
-I'm using gcc v2.96 to compile a MIPS targeted Linux kernel 
-and am finding it difficult to produce debug information 
-for assembly files. 
+I am using an Au1500 based system in big endian mode.
+IDE worked fine with the 2.4.20 kernel, but broke in
+the 2.4.21 kernel.  It seems that the 2.4.20 IDE code
+provided some IDE operations ide_insw, ide_outsw,
+ide_insl and ide_outsl, that didn't use the standard
+io.h functions (insw, outsw, insl, outsl) but instead 
+provided some special IDE versions that didn't do the
+byte swapping done by the standard calls.
 
-I've discovered that a typical compile line for assembly 
-in the kernel gets its parameters from AFLAGS and results 
-in the following commandline: 
+This is not true for the 2.4.21 IDE code.  It uses the
+standard functions in io.h and these do the byte swapping
+and things don't work.  By changing these functions to
+not swap, IDE works for me again.
 
-mipsel-linux-gcc -D__ASSEMBLY__ -D__KERNEL__ -I/l/include \
-	-G 0 -mno-abicalls -fno-pic -mcpu=r4600 -mips2 \
-	-Wa,--trap -pipe -c entry.S -o entry.o 
+Any thoughts? Anybody else seen this?   Am I doing something
+wrong and fixing a symptom not the problem?
 
-According to the documentation, some targets support 
-dwarf debug information using --gdwarf2.  Does anyone 
-know if the MIPS target is supported in version? 
-
-Also, --gstabs doesn't seem to work either.  Nor does 
--gdwarf-2, -gdwarf -g2, -gstabs+, -gdwarf+, etc. 
-
-Has anyone had luck producing debug information for 
-assembly files with this version of gcc? 
-
-./mipsel-linux-gcc --version 
-2.96 
-./mipsel-linux-as --version 
-GNU assembler 2.11.92.0.10 
-
-Thanks in advance, 
-Mike 
-
---- 
-Mike Connors			Green Hills Software, San Clemente 
-Field Applications Engineer	131 Avenida Victoria 
-mailto:mike.connors@ghs.com	San Clemente, CA  92672 
-phone: 1-949-369-3950		
-cell:  1-949-412-3951		fax: 1-949-369-3959 
+Lyle

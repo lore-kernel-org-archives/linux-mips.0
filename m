@@ -1,32 +1,35 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199708132022.NAA27369@oz.engr.sgi.com>
-Subject: linus accessible from within SGI
-Date: Wed, 13 Aug 1997 13:22:59 -0700 (PDT)
-Reply-To: ariel@sgi.com (Ariel Faigon)
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199708141721.NAA05220@neon.ingenia.ca>
+Subject: Re: linus accessible from within SGI
+In-Reply-To: <9708141731.ZM8013@wolfi.munich.sgi.com> from Wolfgang Szoecs at "Aug 14, 97 05:31:49 pm"
+Date: Thu, 14 Aug 1997 13:21:27 -0400 (EDT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970813202259.4eFj-JKeEd8TvlnCKkNOACFCLRl20sF56RLEVRsio5Y@z>
+To: Wolfgang Szoecs <wolfi@wolfi.munich.sgi.com>
+Cc: Linux/SGI list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19970814172127.RwyFivq7XqJ1fvtJ1ZH-LjxGmUhSqUSivvhemkb91Bw@z>
 
-Good news:
+Thus spake Wolfgang Szoecs:
+> BTW, i'm searching for a kernel image for booting a linux-NFS-root.
+> Does anybody have one, and could give me that ?
+> (a root-fs i already have)
 
-Looks like the routing problem that prevented many outside .engr
-to access linus is now fixed.
+Oh yeah, I forgot to tell the list about this:
 
-guest@sgigate 3% traceroute linus.linux.sgi.com
-traceroute to linus.linux.sgi.com (192.48.153.197), 30 hops max, 40 byte packets
- 1  purgatory.SGI.COM (204.94.209.2)  2 ms  5 ms  3 ms
- 2  forbidden (204.94.211.38)  4 ms  14 ms  7 ms
- 3  paloalto-cr6.bbnplanet.net (131.119.26.57)  90 ms  105 ms  63 ms
- 4  paloalto-cr4.bbnplanet.net (131.119.0.148)  684 ms  113 ms  75 ms
- 5  paloalto-cr34.bbnplanet.net (131.119.0.109)  11 ms  15 ms  22 ms
- 6  sgi.bbnplanet.net (131.119.16.6)  27 ms  16 ms  24 ms
- 7  linus.linux.sgi.com (192.48.153.197)  16 ms  18 ms  18 ms
+Miguel gave me his kernel, since I couldn't build one with either my
+tools or the ones on linus, and I put it up for Jan at
+ftp://ftp.linux.sgi.com/pub/testing/vmlinux-970813-jwr.gz
+(You'll need to gunzip it for use.)
 
-Roundabout, but working.
+Mike
 
 -- 
-Peace, Ariel
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>           Resident Linux bigot and kernel hacker. (OOPS!)           
+#> `If you get bitten by a bug, tough luck...the one thing I won't do  
+#> is feel sorry for you.  In fact, I might ask you to do it all over  
+#> again, just to get more information.  I'm a heartless bastard.'     
+#>                       -- Linus Torvalds (on development kernels)    

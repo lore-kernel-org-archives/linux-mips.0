@@ -1,57 +1,37 @@
-Message-ID: <023c01c29ac3$22050610$6808a8c0@rd.svanetworks.com>
-From: "Aric, Wang" <aricwang@svanetworks.com>
-Subject: can't checkout linux source code
-Date: Tue, 3 Dec 2002 19:57:14 +0800
+Message-ID: <005701c29b74$f1f76870$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <3DEDBDFC.D87C1B84@mips.com>
+Subject: Re: Latest sources from CVS.
+Date: Wed, 4 Dec 2002 10:09:54 +0100
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0237_01C29B06.2D2D2E80"
-Return-Path: <aricwang@svanetworks.com>
+Content-Type: text/plain;
+	charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20021203115714.Gnp51rvsE67WJUa2HVcCid8JbEDkcMH6hzv-EXd_nf8@z>
+To: Carsten Langgaard <carstenl@mips.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20021204090954.kxjZE_NwQLjVuHfS0gH1veh640pJOnEBQKVKsLUQvj4@z>
 
-This is a multi-part message in MIME format.
+> I just checked the latest sources out of cvs.
+> 
+> It look like you are only able to compile the kernel, if you got a
+> MIPS32/MIPS64 compliant compiler.
+> The mips32 and mips64 assembler directives are set in
+> include/asm-mips/mipsregs.h
+> 
+> I guess this will make some people out there, which doesn't use a MIPS32
+> compliant compiler, a little bit unhappy.
+> But then again, we would like to force everybody to use the SDE
+> compiler.
 
-------=_NextPart_000_0237_01C29B06.2D2D2E80
-Content-Transfer-Encoding: base64
-Content-Type: text/plain;
-	charset="gb2312"
+For those on the list who don't understand Carsten's sense
+of humour, I think that was missing a smiley!  ;-)
+I mean, sure, we'd like to move more people toward SDE, 
+but "force" is putting it a bit strongly!  And if those directives
+are really being used unconditionally, I worry that the code
+being generated is likewise emitting MIPS32 instructions
+that won't work on the "ghost fleet" of abandoned workstations
+now running Linux on R4K/R5K CPUs.
 
-SSBjYW4ndCBjaGVjayBvdXQgdGhlIGxpbnV4IGRpcmVjdG9yeSBieSBleGVjdXRlIHRoZSBmb2xs
-b3dpbmcgY29tbWFuZHM6DQogDQpjdnMgLWQgOnBzZXJ2ZXI6Y3ZzQGZ0cC5saW51eC1taXBzLm9y
-ZzovaG9tZS9jdnMgbG9naW4NCnBhc3N3b3JkOiBjdnMNCg0KY3ZzIC1kIDpwc2VydmVyOmN2c0Bm
-dHAubGludXgtbWlwcy5vcmc6L2hvbWUvY3ZzIGNvIGxpbnV4DQoNClRoaXMgd2FzIHdvcmsgc29t
-ZSBkYXlzIGJlZm9yZS4gSG93IGFib3V0IGl0IG5vdz8gSG93IGNhbiBnaXZlIG1lIHNvbWUgdGhy
-ZWFkPw0KDQpUaGFua3MuDQoNCg0KV2FuZywgSmlhbmxpYW5nIChBcmljKQ0KYXJpY3dhbmdAc3Zh
-bmV0d29ya3MuY29tDQoNCiANCg==
-
-------=_NextPart_000_0237_01C29B06.2D2D2E80
-Content-Transfer-Encoding: base64
-Content-Type: text/html;
-	charset="gb2312"
-
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PWdi
-MjMxMiIgaHR0cC1lcXVpdj1Db250ZW50LVR5cGU+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNS4w
-MC4zMzE1LjI4NzAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
-Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPg0KPERJVj48Rk9OVCBzaXplPTI+SSBjYW4ndCBj
-aGVjayBvdXQgdGhlIGxpbnV4IGRpcmVjdG9yeSBieSBleGVjdXRlIHRoZSBmb2xsb3dpbmcgDQpj
-b21tYW5kczo8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9E
-SVY+DQo8RElWPjxGT05UIHNpemU9Mj5jdnMgLWQgPEEgDQpocmVmPSJtYWlsdG86OnBzZXJ2ZXI6
-Y3ZzQGZ0cC5saW51eC1taXBzLm9yZzovaG9tZS9jdnMiPjpwc2VydmVyOmN2c0BmdHAubGludXgt
-bWlwcy5vcmc6L2hvbWUvY3ZzPC9BPiANCmxvZ2luPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBz
-aXplPTI+cGFzc3dvcmQ6IGN2czwvRk9OVD48L0RJVj4NCjxESVY+Jm5ic3A7PC9ESVY+DQo8RElW
-PjxGT05UIHNpemU9Mj5jdnMgLWQgPEEgDQpocmVmPSJtYWlsdG86OnBzZXJ2ZXI6Y3ZzQGZ0cC5s
-aW51eC1taXBzLm9yZzovaG9tZS9jdnMiPjpwc2VydmVyOmN2c0BmdHAubGludXgtbWlwcy5vcmc6
-L2hvbWUvY3ZzPC9BPiANCmNvIGxpbnV4PC9GT05UPjwvRElWPg0KPERJVj4mbmJzcDs8L0RJVj4N
-CjxESVY+PEZPTlQgc2l6ZT0yPlRoaXMgd2FzIHdvcmsgc29tZSBkYXlzIGJlZm9yZS4gSG93IGFi
-b3V0IGl0IG5vdz8gSG93IGNhbiBnaXZlIA0KbWUgc29tZSB0aHJlYWQ/PC9GT05UPjwvRElWPg0K
-PERJVj4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPlRoYW5rcy48L0ZPTlQ+PC9ESVY+
-DQo8RElWPiZuYnNwOzwvRElWPg0KPERJVj4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0y
-PldhbmcsIEppYW5saWFuZyAoQXJpYyk8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48
-QSANCmhyZWY9Im1haWx0bzphcmljd2FuZ0BzdmFuZXR3b3Jrcy5jb20iPmFyaWN3YW5nQHN2YW5l
-dHdvcmtzLmNvbTwvQT48QlI+PC9ESVY+PC9GT05UPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05U
-PiZuYnNwOzwvRElWPjwvRElWPjwvQk9EWT48L0hUTUw+DQo=
-
-------=_NextPart_000_0237_01C29B06.2D2D2E80--
+            Kevin K.

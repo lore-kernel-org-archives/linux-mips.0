@@ -1,131 +1,129 @@
 Received: from localhost (localhost.lan [127.0.0.1])
-	by mail.romat.com (Postfix) with ESMTP id D3E8CEB2EF
-	for <linux-mips@linux-mips.org>; Sun, 14 Nov 2004 17:53:01 +0200 (IST)
+	by mail.romat.com (Postfix) with ESMTP id 36D69EB2EF
+	for <linux-mips@linux-mips.org>; Mon, 15 Nov 2004 09:43:28 +0200 (IST)
 Received: from mail.romat.com ([127.0.0.1])
  by localhost (mail.romat.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 40319-01 for <linux-mips@linux-mips.org>;
- Sun, 14 Nov 2004 17:52:54 +0200 (IST)
+ with ESMTP id 44580-07 for <linux-mips@linux-mips.org>;
+ Mon, 15 Nov 2004 09:43:24 +0200 (IST)
 Received: from gilad (unknown [192.168.1.167])
-	by mail.romat.com (Postfix) with SMTP id 6F55AEB2A9
-	for <linux-mips@linux-mips.org>; Sun, 14 Nov 2004 17:52:48 +0200 (IST)
-Message-ID: <0a2201c4ca62$25d37f80$a701a8c0@lan>
+	by mail.romat.com (Postfix) with SMTP id B4F6FEB2B6
+	for <linux-mips@linux-mips.org>; Mon, 15 Nov 2004 09:43:24 +0200 (IST)
+Message-ID: <0a9001c4cae6$f1aa3890$a701a8c0@lan>
 From: "Gilad Rom" <gilad@romat.com>
-References: <20041112181335.13362.qmail@web81008.mail.yahoo.com> <09ac01c4ca24$e68a6740$a701a8c0@lan>
+References: <20041114184502.41815.qmail@web81007.mail.yahoo.com>
 Subject: Re: GPIO on the Au1500
-Date: Sun, 14 Nov 2004 17:53:49 +0200
+Date: Mon, 15 Nov 2004 09:44:31 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	format=flowed;
 	charset="iso-8859-1";
-	reply-type=response
+	reply-type=original
 Content-Transfer-Encoding: 7bit
 Return-Path: <gilad@romat.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20041114155349.17lZBK8Z7cKUjPjsxEp7d-a2le7pmYI64TPosvmhiRo@z>
+Message-ID: <20041115074431.wLVR2SPX-J3VeeOFL4Yugoo89XAxsLtQsbMt87JyoXw@z>
 
-Replying to myself - 
+Thank you for the driver, I'm using it as a reference.
 
-I've composed a small program which mmap()'s
-SYS_BASE and then tries to read at the appropriate
-GPIO offset, as defined in the Au1500 databook.
+Still, I am trying to acccess the GPIO ports of the Au1500
+using /dev/mem, but I keep getting these odd values
+(see previous messages to this list)
 
-For some reason, I keep getting that magical value, 
-0x10000001 for EVERY address I try to read, be it 
-SYS_BASE (0xB1900000) or every other address. (for example,
-I've tried reading the MAC address from the MAC0 base address
-of 0xB1500000, offset 0x0008, and I always get 0x10000001).
+Do you think it is possible, 
+or should I stick to using the driver?
 
-Any reason I shouldn't succeed in reading the au1500 
-hardware addresses through /dev/mem?
 
-Attached is the code I'm using:
-
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/mman.h>
-
-#define SYS_BASE     0xB1900000
-
-int
-main () 
-{
- volatile unsigned long *base;
- unsigned char val;
- int f, i;
-
- f = open ("/dev/mem", O_RDWR | O_SYNC);
- if (f < 0) {
-  perror ("fopen");
-  exit (-1);
- }
- 
- base = (unsigned long *) mmap (NULL, 
-   getpagesize (), 
-   PROT_READ | PROT_WRITE, 
-   MAP_SHARED, 
-   f,
-   SYS_BASE);
-
- if (base == (unsigned long *) (-1)) {
-  perror ("mmap");
-  exit (-1);
- }
-
- printf ("data at %p: 0x%x\n", base, (unsigned long) *base);
- *base = 0xffffffff;
-        printf ("data at %p: 0x%x\n", base, (unsigned long) *base);
- close (f);
- return (0);
-}
-
-Thanks!
+Thank you,
 Gilad.
 
 ----- Original Message ----- 
-From: "Gilad Rom" <gilad@romat.com>
-To: <ppopov@embeddedalley.com>; <linux-mips@linux-mips.org>
-Sent: Sunday, November 14, 2004 10:35 AM
+From: "Pete Popov" <ppopov@embeddedalley.com>
+To: <charles.eidsness@ieee.org>; "Gilad Rom" <gilad@romat.com>
+Cc: <linux-mips@linux-mips.org>
+Sent: Sunday, November 14, 2004 8:45 PM
 Subject: Re: GPIO on the Au1500
 
 
-> Thanks. 
-> Can't I just mmap /dev/mem and use the
-> GPIO offset from SYS_BASE?
 > 
-> Gilad.
+> --- Charles Eidsness <charles.eidsness@ieee.org>
+> wrote:
 > 
-> ----- Original Message ----- 
-> From: "Pete Popov" <ppopov@embeddedalley.com>
-> To: "Gilad Rom" <gilad@romat.com>; <linux-mips@linux-mips.org>
-> Sent: Friday, November 12, 2004 8:13 PM
-> Subject: Re: GPIO on the Au1500
+>> Hi Gilad,
+>> 
+>> A little while ago I wrote my own GPIO driver for
+>> the Au1000, mainly as a learning experience. I 
+>> never bothered to release it because a driver 
+>> already exists and I thought it was working. 
 > 
+> It was, a long time ago, when it was written for the
+> Au1000. I had a user app and doc somewhere but can't
+> find it anymore. The driver didn't support gpio2 and
+> was, in general, stale. So perhaps your driver will
+> help Gilad.
 > 
+> Pete
+> 
+>> I'm not sure if it will 
+>> work on the Au1550, but if you're interested you can
+>> find the source 
+>> code here:
 >> 
->> --- Gilad Rom <gilad@romat.com> wrote:
->> 
->>> Hello,
->>> 
->>> I am trying to use the au1000_gpio driver, but I'm a
->>> little clueless as to how it is meant to be used. 
->>> Can I use the GPIO ioctl's from a userland 
->>> program, or must I write a kernel module?
->> 
->> I'll see if I can dig up some docs and the example
->> userland program this weekend. That driver hasn't been
->> tested in a while though.
->> 
->> Pete
->> 
->>> Thank you,
->>> Gilad Rom
->>> Romat Telecom
->>> 
->>> 
->>> 
 >>
+> http://members.rogers.com/charles.eidsness/au1000_gpio.c
+>>
+> http://members.rogers.com/charles.eidsness/au1000_gpio.h
+>> 
+>> Cheers,
+>> Charles
+>> 
+>> Gilad Rom wrote:
+>> > Thanks. Can't I just mmap /dev/mem and use the
+>> > GPIO offset from SYS_BASE?
+>> > 
+>> > Gilad.
+>> > 
+>> > ----- Original Message ----- From: "Pete Popov"
+>> <ppopov@embeddedalley.com>
+>> > To: "Gilad Rom" <gilad@romat.com>;
+>> <linux-mips@linux-mips.org>
+>> > Sent: Friday, November 12, 2004 8:13 PM
+>> > Subject: Re: GPIO on the Au1500
+>> > 
+>> > 
+>> >>
+>> >> --- Gilad Rom <gilad@romat.com> wrote:
+>> >>
+>> >>> Hello,
+>> >>>
+>> >>> I am trying to use the au1000_gpio driver, but
+>> I'm a
+>> >>> little clueless as to how it is meant to be
+>> used. Can I use the GPIO 
+>> >>> ioctl's from a userland program, or must I write
+>> a kernel module?
+>> >>
+>> >>
+>> >> I'll see if I can dig up some docs and the
+>> example
+>> >> userland program this weekend. That driver hasn't
+>> been
+>> >> tested in a while though.
+>> >>
+>> >> Pete
+>> >>
+>> >>> Thank you,
+>> >>> Gilad Rom
+>> >>> Romat Telecom
+>> >>>
+>> >>>
+>> >>>
+>> >>
+>> > 
+>> > 
+>> > 
+>> 
+>> 
+> 
 >

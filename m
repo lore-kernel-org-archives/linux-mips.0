@@ -1,54 +1,38 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: sr@dragon.engr.sgi.com (Steve Rikli)
-Message-ID: <199708152036.NAA03360@dragon.engr.sgi.com>
-Subject: Re: Power Series?
-Date: Fri, 15 Aug 1997 13:36:37 -0700 (PDT)
-In-Reply-To: <199708152020.QAA24149@neon.ingenia.ca> from "Mike Shaver" at Aug 15, 97 04:20:45 pm
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199708152053.QAA24515@neon.ingenia.ca>
+Subject: Re: boot linux - wish
+In-Reply-To: <Pine.LNX.3.95.970815163117.21813A-100000@lager.engsoc.carleton.ca> from Alex deVries at "Aug 15, 97 04:38:14 pm"
+Date: Fri, 15 Aug 1997 16:53:01 -0400 (EDT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970815203637.AzsLBOx9YhRX7DqmmAYGARcfsErVyNhyNPsBKNpvPqk@z>
+To: Alex deVries <adevries@engsoc.carleton.ca>
+Cc: ariel@sgi.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19970815205301.fAEkwBAhzF_kFqjarJSQrVCjk1foGwAFsqgUjMnoX4s@z>
 
-Mike Shaver wrote:
+Thus spake Alex deVries:
+> I don't mind rising to that challenge, but one huge obstacle is how do we
+> get the utility to partition the Linux drive? 
+
+Oliver is working on fdisk, I believe.
+Last I heard, he was working on the geometry-query issue.  Oliver?
+
+> > And give hints like:
+> > 	Sorry you don't have the e2fs tools installed on IRIX yet
+> > 	should I download them from ftp.linux.sgi.com [y/n]?
 > 
-> Are the Power Series boxes of interest to me? =)
-> I may be able to get my hands on a 3-processor fridge-sized Power
-> Series something, and if it's a MIPS system, I just might give it a
-> shot.
+> Er, does such a tool in fact exist?
 
-They're respectable machines, depending on the flavor/color.  ;)
+Yup.
+That's how I made bogomips' ext2 drive initially.
 
-Are you sure it's really 3p ?  Most of the fridge-sized POWER Series
-(you might also hear them referred to as "Predators" or "4D" systems)
-had CPU cards which were 2p each, up to a max (AFAIK) of 8p per
-system.  Though there was the 4D/210GTX which were sold in droves,
-from what I hear.
+Mike
 
-In general, the 4D/XX0 nomenclature works like this:
-
-	4D/340 == 4 33MHz R3000 CPUs
-	4D/480 == 8 40MHz R3000 CPUs
-	etc.
-
-You get the idea.  Also in general, the fridge-sized POWER Series
-cards were/are compatible with the deskside POWER Series, though
-there were backplane differences (primarily just the # of slots
-available, but there were a few other subtleties).
-
-Personally, I'd *love* to see Linux running on the POWER series,
-since I can likely get my hands on a deskside 4D/440 pretty
-easily.  ;-)
-
-If you need more info about the configuration of the POWER series
-systems/chassis let me know and I might be able to help out.
-
-cheers,
-sr.
 -- 
-|| Steve Rikli <sr@sgi.com> ||| The problem with life is there's no     ||
-|| Systems Administrator    ||| entry fee to keep out the riffraff.     ||
-|| NSD, EIS Infrastructure  |||                                         ||
-|| Silicon Graphics, Inc.   |||               - Calvin                  ||
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>                 Ignore the man behind the curtain.                  
+#>                                                                     
+#> "And then I realized that it never should have worked in the first  
+#>  place.  Thus, it would not work again until rewritten." --- Anon.  

@@ -1,35 +1,70 @@
-From: "Ian Chilton" <mailinglist@ichilton.co.uk>
-Subject: RE: Compile speed on SGI/Linux (like Indy)
-Date: Mon, 5 Jun 2000 18:41:28 +0100
-Message-ID: <NAENLMKGGBDKLPONCDDOCEJMCLAA.mailinglist@ichilton.co.uk>
+Date: Fri, 9 Jun 2000 10:31:05 -0300
+From: "J. Scott Kasten" <jsk@tetracon-eng.net>
+Subject: Re: Linux on Indy
+In-Reply-To: <NAENLMKGGBDKLPONCDDOGEBOCMAA.mailinglist@ichilton.co.uk>
+Message-ID: <Pine.SGI.4.10.10006091025370.1120-100000@thor.tetracon-eng.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20000605190559.B6172@paradigm.rfc822.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: flo@rfc822.org
+To: Ian Chilton <mailinglist@ichilton.co.uk>
 Cc: Linux-MIPS Mailing List <linux-mips@oss.sgi.com>
-Message-ID: <20000605174128.oNWtY9zqPqO6sEXTA_dOC2wDkH3nMvIsD5ZVpDMigZU@z>
-
-Hello,
-
-> The Endianess - debian-mips is Big Endian - Like
-> the SGI Indy and Indigo2
+Message-ID: <20000609133105.9R_RWkK_hsOJUAffsw334xYadMCzUTaHZDCj0e9bxTw@z>
 
 
-Is there any documentation on how to install this then?
+Let's try and keep this discussion on the list as I'm going to be trying
+the same thing in a few weeks.
 
+From what I have observed, the 5.1 tarball has under the mipseb directory
+a minimal root file system with etc, sbin, lib, etc. in addition to the
+RedHat/RPMS directory.  I suspect that you will need to get that minimal
+root file system mounted, and then use that to run the install and explode
+the RPMS to the disk.  I'm further going to speculate that you will
+probably netboot the thing the first time and do an NFS mounted root to
+make that happen.  But again, this is pure speculation...
 
-Thanks!
+-S-
 
-Ian
+--
 
+J. Scott Kasten
+Email: jsk AT tetracon-eng DOT net
 
-                     \|||/ 
-                     (o o)
- /----------------ooO-(_)-Ooo----------------\
- |  Ian Chilton                              |
- |  E-Mail : ian@ichilton.co.uk              |
- \-------------------------------------------/
+"The only future you have is the one
+ you choose to make for yourself..."
+
+On Fri, 9 Jun 2000, Ian Chilton wrote:
+
+> Hello,
+> 
+> OK...I now have a 2nd disk in my Indy. I have read the MIPS/HOWTO, the
+> SGI/Linux mini-HOWTO (by: Raju) and the Hard Hat 5.1 installation
+> instructions, but I still haven't got a clue how to do this....
+> 
+> I have an SGI Indy running Irix 6.5.8m (now with a 2nd hard disk).
+> I also have a PC running Win98 and another running SuSE Linux.
+> 
+> I have got the hardhat-sgi-5.1tar.gz file...can't I just copy this to the
+> Indy while running IRIX, and unpack from there?
+> 
+> Please could someone explain how I do this?
+> (incl partitioning this new disk for Linux...I ran fx, but didn't have a
+> clue how to use it...)
+> 
+> 
+> Thanks!
+> 
+> 
+> Bye for Now,
+> 
+> Ian
+> 
+> 
+>                      \|||/
+>                      (o o)
+>  /----------------ooO-(_)-Ooo----------------\
+>  |  Ian Chilton                              |
+>  |  E-Mail : ian@ichilton.co.uk              |
+>  \-------------------------------------------/
+> 
+> 

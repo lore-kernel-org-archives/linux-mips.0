@@ -1,54 +1,69 @@
-Message-ID: <025701bf88e2$c648a7e0$0ceca8c0@satanas.mips.com>
+Message-ID: <042401bf893a$b15465b0$0ceca8c0@satanas.mips.com>
 From: "Kevin D. Kissell" <kevink@mips.com>
 Subject: Re: FP emulation patch available
-Date: Wed, 8 Mar 2000 10:43:23 +0100
+Date: Wed, 8 Mar 2000 21:12:49 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>, "Andrew R. Baker" <andrewb@uab.edu>
-Cc: linux-mips@vger.rutgers.edu, linux-mips@fnet.fr, Linux SGI <linux@cthulhu.engr.sgi.com>, "Gleb O. Raiko" <raiko@niisi.msk.ru>
-Message-ID: <20000308094323.bYFpmzNSa-Q6HD4c5QS-XRoRds55k3y-ttwMXPeb_W0@z>
+To: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>
+Cc: Linux SGI <linux@cthulhu.engr.sgi.com>, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <20000308201249.dedu6G_sVIvHUsNdX_dfh8pKaGmAT7SD1yKtUlmQrDc@z>
 
-Hearald Koerfgen wrote:
+>For the records (Sharp Mobilon HC-4500):
 >
->On 07-Mar-00 Andrew R. Baker wrote:
->> 
->> 
->> On Tue, 7 Mar 2000, Gleb O. Raiko wrote:
->>> "Bradley D. LaRonde" wrote:
->>> > 
->>> > I would jump right on this but I really need it for 2.3.47+.
->>> > 
->>> > Regards,
->>> > Brad
->>> 
->>> I vote for 2.3 too. It seems 2.2 will vanish soon anyway.
->> 
->> Working on it.
+>Philips PR31700 (identical to Toshiba TMPR3912) @ 73.7 MHz, Implementation 0x22
+>(same as R46[45]0), Revision 0x10 (does anybody know what R46[45]0 have?).
 >
->Me too. Compiles and links but doesn't work. I guess the cpu detection doesn't
->work properly for my Mobilon yet. I am actually compiling it for a DECstation
->:-)
+>Based on an R300A core with some ISA-II extensions, 1KB instruction cache, and
+>4KB write-through data cache, 32 TLB entries.
+
+If Philips/Tosh are really aliasing the PrID of the R4650, sombody has
+done something Deeply Evil (and probably in violation of one agreement
+or another).  I'm checking with MIPS HQ on this, and hoping that in fact
+the R4650 value in the source code is in error.
+
+If the Implementations *do* collide, we can still cope as long as the
+revision codes do not.  The cpu_probe code first looks for a match
+on Implementation+Revision, and then, that failing, looks for a match
+on implementation alone.   So we could contrive to have 0x2210
+resolve to CPU_R3900 and all other 0x22xx values to the R4650.
+But I don't like it one bit.
+
+>Back on topic:
+>
+>My Mobilon dies horribly with the screen going blank and even a soft reset
+>doesn't revive it. All that helps is to remove all batteries. No error messages
+>can be seen.
+>
+>My DS 5000/133 (R3000A) with FPU disabled and FPU emulation shows:
+> Illegal instruction 00000034 at 801ce924, ...
+>
+>System.map shows:
+> 801ce920 b dsemul_insns
+> 801ce928 b dsemul_cpc
+>
+>Looks like your trick in mips_dsemul() doesn't work too well for ISA-I CPUs. Do
+>you have an idea for an alternative?
 
 
-It's odd - I'm on at least one of the mailing lists in question, but I missed
-part of this thread yesterday - such as Bradley's message, and another
-that must have come from someone (Dom?) at Algorithmics.  
+Yes, and I should have thought of it earlier. The original Algorithmics
+implementation, in fact, used the system call trap vector instead of the
+Trap instruction vector to implement the trampoline for the delay slot
+emulation.   Although I try to make sure that interrupts are disabled
+during the operation, I was less than 100% confident that I could prevent
+the Linux scheduler from executing, and stealing a seldom-used vector
+seemed more prudent at the time.   In retrospect, I think I probably should
+have generated an Address Error.  It'll be a pretty small hack - I'll see if I
+can't turn it around this weekend.
 
-Anyway, the my CPU detection would certainly not have worked for
-a Mobilon.   But it ought to have worked for a DECstation.  What
-CPU does it have?   In addition to the cpu_probe() routine itself,
-arch/mips/kernel/cpu_probe.c contains a table that describes the
-CPU's that are recognized, and in principle it "knows" all the CPUs
-that were recognized by the old assembler code in head.S, plus
-a couple more (R4300 and MIPS 4Kc/5Kc).   The problem may
-be a CPU that is mis-identified, or it may be that the options in the
-table associated with that CPU are incorrectly defined.  Please
-let me know what CPU and "PrID" the system has.
-
-            Regards,
+FWIW, the current version of the emulator presumably might not have
+paniced on you - I recently put the trampoline code on the user stack
+where it belongs, so it can execute in user mode.   I haven't got around
+to mentioning it on the web page, but you can find the patch on
+ftp.paralogos.com in /pub/linux/mips/kernel with a fairly self-evident file
+name.
 
             Kevin K.

@@ -1,63 +1,35 @@
-Received: from RADIUM (localhost [127.0.0.1])
-	by medtron.medtronic.com (8.10.1/8.10.1) with SMTP id g9BHYrw16860
-	for <linux-mips@linux-mips.org>; Fri, 11 Oct 2002 12:34:53 -0500 (CDT)
-From: "Lyle Bainbridge" <lyle@zevion.com>
-Subject: GCC 3.2 to build mips-linux kernel
-Date: Fri, 11 Oct 2002 12:34:53 -0500
-Message-ID: <NCBBKGDBOEEBDOELAFOFAEPMDAAA.lyle@zevion.com>
+Date: Mon, 14 Oct 2002 23:04:06 +0200 (CEST)
+From: Michael Matz <matz@suse.de>
+Subject: Re: MIPS gas relaxation still doesn't work
+In-Reply-To: <orwuokzs9k.fsf@free.redhat.lsd.ic.unicamp.br>
+Message-ID: <Pine.LNX.4.33.0210142301560.20702-100000@wotan.suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <lyle@zevion.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <matz@suse.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20021011173453.iQJHIjERa7zQsp4U1oGqdrTaZyVvQCgzpTjvZgP5FIE@z>
+To: Alexandre Oliva <aoliva@redhat.com>
+Cc: "H. J. Lu" <hjl@lucon.org>, "David S. Miller" <davem@redhat.com>, rsandifo@redhat.com, linux-mips@linux-mips.org, gcc@gcc.gnu.org, binutils@sources.redhat.com
+Message-ID: <20021014210406.6irtYq3vLK7BGd6c8NLYWFx1-yGk1tgRKHwJ9_W5V5E@z>
+
+Hi,
+
+On 14 Oct 2002, Alexandre Oliva wrote:
+
+> > If gcc just emits
+>
+> > 	bne     $2,$0,$L7493
+> > 	j       $L2
+>
+> IIRC, that's exactly what GCC will emit if you don't tell it to try to
+> fill delay slots.  If it tries to fill delay slots and fails, I doubt
+> the assembler is going to succeed at that.
+
+I think that isn't hj's point.  He wanta gas to take advantage of
+relaxation, and gcc is hindering that for no good reason.  I admit I have
+no idea of Mips, though, so I don't know if relaxation somehow is
+depending on delay slot filling at all ;-)
 
 
-I built a mips-linix 2.4.18 kernel for an AU1500 board using:
-  gcc-3.2  /   binutils-2.13   /   glibc-2.2.5
-
-It builds and executes but is unsuccessful during startup.
-I have attached the log at the end of this message.  It
-appears to have skipped a number of steps.  I noticed that
-a working kernel built with gcc 2.95.3 is 800K larger.
-(~3MB versus !2.2MB).
-
-I'm a little confused, and wondered if the 3.2 compiler requires
-some patching to work for mips-linux.
-
-Any advice would be appreciated.
-
-Lyle Bainbridge
-
-Kernel Startup Log follows:
-
-init arch
-init prom
-init cpu
-CPU revision is: 01030200
-Primary instruction cache 16kb, linesize 32 bytes (4 ways)
-Primary data cache 16kb, linesize 32 bytes (4 ways)
-Linux version 2.4.18-mips (Lyle Bainbridge@RADIUM) (gcc version 3.2) #1 Fri
-Oct
-11 01:48:42 2002
-Determined physical RAM map:
- memory: 02000000 @ 00000000 (usable)
-On node 0 totalpages: 8192
-zone(0): 8192 pages.
-zone(1): 0 pages.
-zone(2): 0 pages.
-Kernel command line:  console=ttyS0,38400
-calculating r4koff... 003c6ea4(3960484)
-CPU frequency 396.05 MHz
-Calibrating delay loop... 395.67 BogoMIPS
-Memory: 29476k/32768k available (1309k kernel code, 3292k reserved, 96k
-data, 20
-0k init, 0k highmem)
-Dentry-cache hash table entries: 4096 (order: 3, 32768 bytes)
-Inode-cache hash table entries: 2048 (order: 2, 16384 bytes)
-Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-Kernel panic: can't allocate root vfsmount
-In idle task - not syncing
+Ciao,
+Michael.

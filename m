@@ -1,49 +1,47 @@
-Date: Thu, 23 Sep 1999 01:29:02 -0600
-From: sparker@taz.cs.utah.edu (Steven G. Parker)
-Message-ID: <9909230129.ZM763626@taz.cs.utah.edu>
-In-Reply-To: Rory Hunter <roryh@dcs.ed.ac.uk>
-        "Re: oddness" (Sep 23,  8:16am)
-References: <37E95D52.AC2CE967@dcs.ed.ac.uk>  <37E96210.64A50BBF@csd.sgi.com>
-	<37E9D3C8.F665545A@dcs.ed.ac.uk>
-Subject: Re: oddness
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199909302254.PAA31695@oz.engr.sgi.com>
+Subject: moving www.linux.sgi.com
+Date: Thu, 30 Sep 1999 15:54:13 -0700 (PDT)
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Rory Hunter <roryh@dcs.ed.ac.uk>
-Cc: "linux@cthulhu.engr.sgi.com" <linux@cthulhu.engr.sgi.com>
-Message-ID: <19990923072902.T3zaEpCSMHfgsA4y3YgdMKVUnGlZJC3CD-ITtLqot0k@z>
+Content-Transfer-Encoding: 7bit
+To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19990930225413.1SyEd95ykZsae-x8nLaTbvv1pkikq6arPmfIVXuEJ5Q@z>
 
+Hi All,
 
-From the df man page:
-     The proc filesystem (normally mounted under /proc) is not printed by
-     default, but can be explicitly specified.  This filesystem consumes no
-     actual disk space, but is an interface to the virtual space of running
-     processes.  The total and free blocks reported represent the total
-     virtual memory (real memory plus swap space) present and the amount
-     currently free, respectively.
+As you may know, the machine www.linux.sgi.com has had an
+interesting history: it was originally Larry McVoy's desktop
+which he donated for hosting this service and was never
+really officially maintained/supported.  Then it got
+replaced by Bob Mende and we used scraped parts, disk etc.
+from various places to keep it going as best as we could...
 
+The time has come to host this service on a more reliable
+machine, on a faster link, closer to the backbone, that is
+actually officially supported by SGI.
 
-You will see /proc if you use GNU df.  Otherwise, you have to explicitly
-ask for it (df /prof).
+So we intend to migrate the old SGI/linux site to oss.sgi.com.
 
-If you use IRIX df /proc, you will see that the Type is proc - a
-virtual filesystem.
+Of course, we will keep the aliases and virtual hosts
+working so this should be mostly transparent but as Ralf
+just mentioned we ask that people refrain from checking
+stuff in until this process is done.  Also: we have had
+scores of people who have checked-in stuff long time ago
+and never returned so we would like to ask that those who
+want to check in new stuff, let Ralf know so he can set
+you up for new ssh access.
 
-If you want to independently verify it - use prtvtoc to look at
-how your disk is partitioned.  You will probably not see a /proc
-paritition.
+Any questions comments welcome.
 
-Steve Parker
+P.S.
+And if you see any problems it is _not_ because of any
+evil empire or SGI dropping support for Linux :-) but
+just because of my ineptitude in doing such things.
+I ask for your patience and understanding.  Thanks.
 
-On Sep 23,  8:16am, Rory Hunter wrote:
-> Subject: Re: oddness
-> Hi,
->
-> I know the proc is virtual, but it puzzled me that 'df' should list it
-> when linux doesn't... if I can confirm that the partition itself is
-> virtual then I'll happliy ignore it.
->
-> Cheers,
->
-> Rory Hunter
->-- End of excerpt from Rory Hunter
+-- 
+Peace, Ariel

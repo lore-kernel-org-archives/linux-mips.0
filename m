@@ -1,55 +1,61 @@
-From: "Robert Rusek" <robru@teknuts.com>
-Subject: Newbie Question
-Date: Sun, 27 Jan 2002 10:59:42 -0800
-Message-ID: <001e01c1a764$c8753fe0$6401a8c0@delllaptop>
+Message-ID: <002f01c1a7d8$e49bb9f0$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <E16Uvqu-0002X7-00@the-village.bc.nu>
+Subject: Re: thread-ready ABIs
+Date: Mon, 28 Jan 2002 09:50:35 +0100
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_001F_01C1A721.BA51FFE0"
-Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20020127185942.XB9kS3ZQvtTRpsHp1QDB__GE8dFL6uyqLVEGhSuj0CE@z>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_001F_01C1A721.BA51FFE0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Sender: owner-linux-mips@oss.sgi.com
+To: Daniel Jacobowitz <dan@debian.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Dominic Sweetman <dom@algor.co.uk>, Ralf Baechle <ralf@oss.sgi.com>, Ulrich Drepper <drepper@redhat.com>, Mike Uhler <uhler@mips.com>, "\"MIPS/Linux List (SGI)\"" <linux-mips@oss.sgi.com>, "H . J . Lu" <hjl@lucon.org>
+Message-ID: <20020128085035.xPYq9sSIKt3wQd7WpSOdEmpkJ37Ev9K4M77xZPE62TM@z>
 
-I have been out of the loop for quite a while.  Is there a functional or
-completed port of any of the RedHat flavors?  If so how would I go about
-getting them?
- 
-Thanks,
---
-Robert Rusek
- 
+> > Which it is.  Fork shares no memory regions; vfork/clone share all
+> > memory regions.  AFAIK there is no share-heap-but-not-stack option in
+> > Linux.
+> 
+> Thats a design decision. At the point you don't have identical mappings for
+> both threads you need two sets of page tables and you take all the
+> performance hits that go with changing current tables on a schedule.
+> 
+> Its a lot cheaper to use a different %esp for each thread
 
-------=_NextPart_000_001F_01C1A721.BA51FFE0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+That's a point of view that reflects the PC-centric origins of
+Linux.  Large-scale parallel systems, such as the current
+high-end server offerings from Sun, IBM/Sequent, and SGI,
+have a non-uniform memory access (NUMA) model on which
+insisting on maintining identical page tables for all threads of
+a parallel program can result in an intollerable level of remote
+memory accesses.  The usual technique employed on such
+systems is a dynamic replication of frequently accessed
+pages.  This of course implies greater OS overhead for all 
+operations on virtual memory maps, and additional overhead
+to synchronize the copies, but that can be more than
+compensated for by reducing the average memory latency
+seen by the CPUs.  An even more extrememe case, though
+one that is perhaps less relevant to mainstream parallel 
+servers, is that of the emulation of shared memory ("virtual
+shared memory" or VSM as we used to call it) on message
+based highly-parallel machines, which likewise depends on
+having distinctly set-up and managed page tables for different
+threads/processes within a parallel program.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<TITLE>Message</TITLE>
+There's nothing wrong with having an OS design that allows
+common page tables to be used across the threads of a
+parallel program running on a simple, small-scale SMP
+platform like a dual or quad CPU PC.  But making that
+the *only* way that thread parallelism is supported
+is, in my opinion, a design error that will have to be fixed
+one of these days.  And the longer the existing model
+is enhanced and maintained, the harder it will be to fix.
 
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D554575718-27012002><FONT face=3DArial size=3D2>I have =
-been out of=20
-the loop for quite a while.&nbsp; Is there a functional or completed =
-port of any=20
-of the RedHat flavors?&nbsp; If so how would I go about getting=20
-them?</FONT></SPAN></DIV>
-<DIV><SPAN class=3D554575718-27012002><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D554575718-27012002><FONT face=3DArial=20
-size=3D2>Thanks,</FONT></SPAN></DIV>
-<DIV align=3Dleft><FONT face=3DArial size=3D2>--</FONT></DIV>
-<DIV align=3Dleft><FONT face=3DArial size=3D2>Robert Rusek</FONT></DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
+All that having been said, please note that this issue is
+orthogonal to the question of whether one should have
+a single "process image" across all threads of a parallel
+program.
 
-------=_NextPart_000_001F_01C1A721.BA51FFE0--
+            Regards,
+
+            Kevin K.

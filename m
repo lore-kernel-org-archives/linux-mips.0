@@ -1,42 +1,92 @@
-content-class: urn:content-classes:message
+Received: from localhost (localhost [127.0.0.1])
+	by mail.sos.be (Postfix) with ESMTP id 9331D17C017
+	for <linux-mips@linux-mips.org>; Tue, 23 Mar 2004 02:37:18 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: Non recoverabe Abort
-Date: Mon, 22 Mar 2004 20:45:44 +0530
-Message-ID: <E519BE9E8DAC6A4B89DA4AD1D2A155B783B561@soc-mail.soc-soft.com>
-From: "Nitin P Mahajan" <Nitin@soc-soft.com>
-Return-Path: <Nitin@soc-soft.com>
+Subject: VIRUS (Worm.SomeFool.Gen-1) IN MAIL FROM YOU
+In-Reply-To: <20040323013655.65F5317C013@mail.sos.be>
+Message-ID: <VS09238-07@morse.sos.be>
+Content-Type: multipart/report; report-type=delivery-status;
+    boundary="----------=_1080005838-9238-1"
+From: Amavis <postmaster@sos.be>
+Date: Tue, 23 Mar 2004 02:37:18 +0100 (CET)
+Return-Path: <>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Cc: linux-net@vger.kernel.org
-Message-ID: <20040322151544.xj1B0o8j4D1UsHGao4L60CWMchoaRc9C-RaxjQUBnCo@z>
+Message-ID: <20040323013718.NkVQH74hCtgiXvCtBITJ9-PERh5eF1_Gat4T3BrkUso@z>
 
-Hi!
+This is a multi-part message in MIME format...
 
-	I am writing a driver for the on-chip Ethernet controller
-(Exactly Similar to TC35815) on TX4938.
+------------=_1080005838-9238-1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 
-I am facing one problem for a long time. I am getting the following two
-interrupts but not the transmit interrupt when I attempt to transmit. 1.
-Non-recoverable Abort. 2. Master Abort Reception.
+VIRUS ALERT
 
-I have just created one transmit descriptor and attached a small data
-buffer to it. Through the MAC loop back I want to test this basic
-transmission. I am not getting the TxComp interrupt. I am giving the
-physical address of the descriptor to the DMA controller and assigning
-the physical address of the data buffer into the DataBuff field in the
-descriptor. Is it possible to get the transmit and receive interrupts in
-the MAC loopback condition.
+Our content checker found
+    virus: Worm.SomeFool.Gen-1
+in email presumably from you (<linux-mips@linux-mips.org>), to the following recipient:
+-> vennoten-lijst@sos.be
 
-Could anyone please tell me what can be the reason of these interrupts
-(1. Non-recoverable Abort, 2. Master Abort Reception) and how can I
-overcome it.
+Please check your system for viruses,
+or ask your system administrator to do so.
 
-Thanking u in advance,
+Delivery of the email was stopped!
 
-Regards
 
--Nitin Mahajan
+For your reference, here are headers from your email:
+------------------------- BEGIN HEADERS -----------------------------
+Return-Path: <linux-mips@linux-mips.org>
+Received: from sos.be (218-163-146-201.HINET-IP.hinet.net [218.163.146.201])
+	by mail.sos.be (Postfix) with ESMTP id 65F5317C013
+	for <info@sos.be>; Tue, 23 Mar 2004 02:36:55 +0100 (CET)
+From: linux-mips@linux-mips.org
+To: info@sos.be
+Subject: Re: Your document
+Date: Tue, 23 Mar 2004 09:36:58 +0800
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0005_00000074.00007104"
+X-Priority: 3
+X-MSMail-Priority: Normal
+Message-Id: <20040323013655.65F5317C013@mail.sos.be>
+-------------------------- END HEADERS ------------------------------
+
+------------=_1080005838-9238-1
+Content-Type: message/delivery-status
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Description: Delivery error report
+
+Reporting-MTA: dns; morse.sos.be
+Received-From-MTA: smtp; mail.sos.be ([127.0.0.1])
+Arrival-Date: Tue, 23 Mar 2004 02:37:05 +0100 (CET)
+
+Final-Recipient: rfc822; vennoten-lijst@sos.be
+Action: failed
+Status: 5.7.1
+Diagnostic-Code: smtp; 550 5.7.1 Message content rejected, id=09238-07 - VIRUS: Worm.SomeFool.Gen-1
+Last-Attempt-Date: Tue, 23 Mar 2004 02:37:18 +0100 (CET)
+
+------------=_1080005838-9238-1
+Content-Type: text/rfc822-headers
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Description: Undelivered-message headers
+
+Received: from sos.be (218-163-146-201.HINET-IP.hinet.net [218.163.146.201])
+	by mail.sos.be (Postfix) with ESMTP id 65F5317C013
+	for <info@sos.be>; Tue, 23 Mar 2004 02:36:55 +0100 (CET)
+From: linux-mips@linux-mips.org
+To: info@sos.be
+Subject: Re: Your document
+Date: Tue, 23 Mar 2004 09:36:58 +0800
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0005_00000074.00007104"
+X-Priority: 3
+X-MSMail-Priority: Normal
+Message-Id: <20040323013655.65F5317C013@mail.sos.be>
+
+------------=_1080005838-9238-1--

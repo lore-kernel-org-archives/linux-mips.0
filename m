@@ -1,36 +1,50 @@
-From: Dominic Sweetman <dom@mips.com>
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <16813.39660.948092.328493@doms-laptop.algor.co.uk>
-Date: Wed, 1 Dec 2004 10:20:28 +0000
-Subject: Re: [PATCH] Improve atomic.h implementation robustness
-In-Reply-To: <20041201070014.GG3225@rembrandt.csv.ica.uni-stuttgart.de>
-References: <20041201070014.GG3225@rembrandt.csv.ica.uni-stuttgart.de>
-Return-Path: <dom@mips.com>
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: RE: [Patch] make 2.4 compile with GCC-3.4.3...
+Date: Thu, 2 Dec 2004 22:20:35 -0800
+Message-ID: <69397FFCADEFD94F8D5A0FC0FDBCBBDEF4FA@avtrex-server.hq.avtrex.com>
+From: "David Daney" <ddaney@avtrex.com>
+Return-Path: <ddaney@avtrex.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Thiemo Seufer <ica2_ts@csv.ica.uni-stuttgart.de>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Nigel Stephens <nigel@mips.com>, David Ung <davidu@mips.com>
-Message-ID: <20041201102028.KWik3GxxeVqYAVerD-URO2kVPiPRTL9rxhqN-2nvwpk@z>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20041203062035.G62X6PnJYQrmkdX3JfyxbUbRME6ZHQPl7qFAp7dwFLk@z>
 
-
-Thiemo writes:
-
-> the atomic functions use so far memory references for the inline
-> assembler to access the semaphore. This can lead to additional
-> instructions in the ll/sc loop, because newer compilers don't
-> expand the memory reference any more but leave it to the assembler.
-> 
-> The appended patch...
-
-I thought it was an explicit aim of the substantial rewrite of the
-MIPS backend for 3.x to get the compiler to generate only "real"
-instructions, not macros which expand to multiple instructions inside
-the assembler.  So it's disappointing if newer compilers got worse.
-
-Can one of our compiler-knowledgable people follow this up?
-
---
-Dominic Sweetman
-MIPS Technologies
+VGhpZW1vIFNldWZlciB3cm90ZToNCj5EYXZpZCBEYW5leSB3cm90ZToNCj5bc25pcF0NCj4+ICoq
+KiBrZXJuZWwvTWFrZWZpbGUgICAyIERlYyAyMDA0IDE5OjUwOjA1IC0wMDAwICAgICAgIDEuMg0K
+Pj4gLS0tIGtlcm5lbC9NYWtlZmlsZSAgIDMgRGVjIDIwMDQgMDM6MDA6NDQgLTAwMDANCj4+ICoq
+KioqKioqKioqKioqKiBvYmoteSAgICAgICAgICs9IGJyYW5jaC5vIGNwdS1wcm9iZS5vIGlycS5v
+IHBybw0KPj4gKioqIDE4LDIzICoqKioNCj4+IC0tLSAxOCwyNyAtLS0tDQo+PiAgICAgICAgICAg
+ICAgICAgIHRyYXBzLm8gcHRyYWNlLm8gcmVzZXQubyBzZW1hcGhvcmUubyBzZXR1cC5vIHN5c2Nh
+bGwubyBcDQo+PiAgICAgICAgICAgICAgICAgIHN5c21pcHMubyBpcGMubyBzY2FsbF9vMzIubyB0
+aW1lLm8gdW5hbGlnbmVkLm8NCj4+ICANCj4+ICsgY2hlY2tfZ2NjID0gJChzaGVsbCBpZiAkKEND
+KSAkKDEpIC1TIC1vIC9kZXYvbnVsbCAteGMgL2Rldi9udWxsID4gL2Rldi9udWxsIDI+JjE7IHRo
+ZW4gZWNobyAiJCgxKSI7IGVsc2UgZWNobyAiJCgyKSI7IGZpKQ0KPj4gKw0KPj4gKyBzeXNjYWxs
+Lm8gc2lnbmFsLm8gOiBvdmVycmlkZSBDRkxBR1MgKz0gJChjYWxsIGNoZWNrX2djYywgLWZuby11
+bml0LWF0LWEtdGltZSwpDQo+DQo+V2hhdCBkaWZmZXJlbmNlIGRvZXMgdGhpcyBjYXVzZT8NCg0K
+SXQgY2F1c2VzIC1mbm8tdW5pdC1hdC1hLXRpbWUgdG8gYmUgYWRkZWQgdG8gQ0ZMQUdTIHdoZW4g
+Y29tcGlsaW5nDQpzeXNjYWxsLmMgYW5kIHNpZ25hbC5jLiAgQWxsIG90aGVyIGZpbGVzIGFyZSBj
+b21waWxlZCB3aXRoIHRoZSAibm9ybWFsIiBDRkxBR1MuDQogDQotZm5vLXVuaXQtYXQtYS10aW1l
+IHByZXZlbnRzIEdDQyBmcm9tIHJlYXJyYW5naW5nIHRoaW5ncyBpbiBpdHMgb3V0cHV0IHRodXMg
+cHJldmVudGluZw0KdGhlIHNhdmVfc3RhdGljX2Z1bmN0aW9uKCkgZnJvbSBiZWluZyBzZXBhcmF0
+ZWQgZnJvbSBpdHMgY29tcGFuaW9uLiAgQXMgZmFyIGFzIEkgY291bGQgdGVsbA0Kb25seSBzeXNj
+YWxsLmMgYW5kIHNpZ25hbC5jIG5lZWQgdGhpcy4NCiANCk9uZSBzbWFsbCBpc3N1ZSBpcyB0aGF0
+IHRoZXNlIHR3byBmaWxlcyBub3cgc2VlbSB0byBnZXQgcmVjb21waWxlZCB3aXRoIGVhY2gNCm1h
+a2UgaW52b2NhdGlvbi4gIEJ1dCB0aGF0IGlzIGJldHRlciB0aGFuIGJlaW5nIG1pc2NvbXBpbGVk
+Lg0KIA0KSSBhbSBub3Qgc3VyZSBpZiBjaGVja19nY2MgaXMgaW5oZXJpdGVkIGZyb20gdGhlIGhp
+Z2hlciBsZXZlbCBtYWtlZmlsZSBzbyBJIHB1dCBpdCBpbiB0aGlzIG9uZQ0KYXMgd2VsbC4gIElm
+IHlvdSB0aGluayBpdCBpcyBhIGdvb2QgYXBwcm9hY2ggSSB3aWxsIHRyeSB0byBzaW1wbGlmeSB0
+aGUgcGF0Y2ggYSBsaXR0bGUuDQoNCj5bc25pcF0NCj4+IC0tLSA3Nyw4NCAtLS0tDQo+PiAgICAq
+IEF0b21pY2FsbHkgc3dhcCBpbiB0aGUgbmV3IHNpZ25hbCBtYXNrLCBhbmQgd2FpdCBmb3IgYSBz
+aWduYWwuDQo+PiAgICAqLw0KPj4gICBzYXZlX3N0YXRpY19mdW5jdGlvbihzeXNfc2lnc3VzcGVu
+ZCk7DQo+PiAhIF9fYXR0cmlidXRlX3VzZWRfXyBzdGF0aWMgaW50DQo+PiAhIF9zeXNfc2lnc3Vz
+cGVuZChzdHJ1Y3QgcHRfcmVncyByZWdzKQ0KPg0KPlRoZXNlIHNob3VsZCBhbHNvIHVzZSAibm9p
+bmxpbmUiLCBsaWtlIDIuNi4NCg0Kbm9pbmxpbmUgd2FzIG5vdCBkZWZpbmVkIGZvciBtZSA6KCBz
+byBJIHJlbW92ZWQgaXQuICBJdCBzZWVtcyB0aGF0IGluIDIuNiBpdCBpcw0KanVzdCAjZGVmaW5l
+ZCB0byBiZSBub3RoaW5nLiAgVGhlIGFsdGVybmF0aXZlIGlzIHRvIGFkZDoNCiANCiNpZm5kZWYg
+bm9pbmxpbmUNCiNkZWZpbmUgbm9pbmxpbmUNCiNlbmRpZg0KIA0KdG8gY29tcGlsZXIuaCBhcyBp
+cyBkb25lIGluIDIuNg0KIA0KRGF2aWQgRGFuZXkuDQo=

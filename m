@@ -1,37 +1,32 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199705312257.SAA30365@neon.ingenia.ca>
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199705312209.AAA13044@informatik.uni-koblenz.de>
 Subject: Re: ah...
-In-Reply-To: <199705312209.AAA13044@informatik.uni-koblenz.de> from Ralf Baechle at "Jun 1, 97 00:09:15 am"
-Date: Sat, 31 May 1997 18:57:54 -0400 (EDT)
+Date: Sun, 1 Jun 1997 00:09:15 -2200 (MET DST)
+In-Reply-To: <199705302125.RAA22822@neon.ingenia.ca> from "Mike Shaver" at May 30, 97 05:25:28 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970531225754.xQt4PpSu56JMvyoel5waMrlagikHRvrvElX0TH1Z5NY@z>
+To: Mike Shaver <shaver@neon.ingenia.ca>
+Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
+Message-ID: <19970601220915.tVCe3xrKvqZfr1dthF8Lx91CpRtW8CFUiUu0VKXyAOc@z>
 
-Thus spake Ralf Baechle:
-> I checked my own source base at home; both libc and the kernel use the
-> same values as IRIX 6.2 so there must be something wrong with your libc.
+Hi,
 
-No, there's something wrong with my kernel.
-I'm still using davem's 2.0.12 from the CVS archive, and it uses the
-"standard Linux" values for SOCK_{STREAM,DGRAM}.
+> Thus spake Ralf Baechle:
+> > One of the fun things with SGI...  Long time ago checked two SGI machines
+> > running different OS versions for reference.  In one of them the values
+> > for SOCK_STREAM and SOCK_DGRAM are swapped compared to the other.  I wonder
+> > why.  But anyway, at that time I choose to clone the constants from the
+> > newer one.
+> 
+> Solaris is the same way...it's probably an SVR thing.
+> (If you're going to use sockets, though, why not use the BSD values?)
 
-I'll wait to get a newer source tree, I guess.  (Wednesday?)
+One crappy conversion routine less.
 
-I think I'd prefer to keep all of the values standard across Linux
-ports, but it's not really my call.  I guess as long as your libc
-changes and kernel stuff propogate into the mainline trees, it's no
-big deal.
+I checked my own source base at home; both libc and the kernel use the
+same values as IRIX 6.2 so there must be something wrong with your libc.
 
-Mike
-
--- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>              Linux: because every cycle counts.
-#>
-#> "I don't know what you do for a living[...]" -- perry@piermont.com
-#>        "I change the world." -- davem@caip.rutgers.edu
+  Ralf

@@ -1,34 +1,62 @@
-From: "Jay Carlson" <nop@nop.com>
-Subject: RE: questions on the cross-compiler
-Date: Fri, 5 Jan 2001 20:46:43 -0500
-Message-ID: <KEEOIBGCMINLAHMMNDJNGEFGCAAA.nop@nop.com>
+Message-ID: <00d801c0797d$5cc410c0$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <3A598AFC.83204F56@mips.com> <3A59C0FB.62E52EF0@jungo.com>
+Subject: Re: User applications
+Date: Mon, 8 Jan 2001 15:14:38 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="koi8-r"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <006c01c07765$fdd26440$0deca8c0@Ulysses>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: "Kevin D. Kissell" <kevink@mips.com>, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Lisa.Hsu@taec.toshiba.com
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010106014643.rTHAYDpB1TGfd5pTaKlRk24mOra02xSQeuZ6SSsF_c0@z>
+To: linux-mips@oss.sgi.com, Carsten Langgaard <carstenl@mips.com>, Michael Shmulevich <michaels@jungo.com>
+Message-ID: <20010108141438.AhWMyYyl0bYFJ9-LF-MP4vC1Fz0vyLECtmcBsKAlSgk@z>
 
-Kevin D. Kissell writes:
-
-> Lisa's underlying problem may be that there isn't a Config
-> option for the R39xx CPUs, and she's ended up getting an
-> R4000 (or whatever) configuration by default.
+> > When a new user process is started will its user space be cleared by the
+> > kernel or is there a potential leak from an older user process ?
 >
-> At some point specific support for the R3900 features
-> (MIPS II ISA, seperate hardware interrupt vector, etc.)
-> should go into the kernel,
-[...]
+> Usually it is defied by the loader. If the data section contents is set to
+> LOAD, then the contents of the section will be loaded from disk (no leak),
+> if not -- whatever values left i nmemory will be there, or exactly, the
+> virtual page of some other proccess that was swapped out or ended.
 
-http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/linux/arch/mips/r39xx/?cvsroot
-=linux-vr
+Note that what you are describing here is the "exec()" behavior.
+I believe Carsten was talking about what happens on a "fork()".
 
-The TX3912 is supported by the Linux VR kernel tree.  I'm not sure it's been
-tested in a while, but kernel sources from a few months ago run nice on my
-VTech Helio.
+> > What about the registers values, are they cleared for each new user
+> > application or will it simply contain the current value it got when the
+> > user application is started ?
+>
+> It depends on the context switch algorithm of the processor, I think.
 
-Jay
+On a fork() (or presumably clone()) operation, the set of registers
+is copied.  Loading a new program ("exec()") should set up the
+registers that point to the base of the new stack, the environment,
+etc.  Historically, it's up to the runtime startup code ("crt0" in old
+Unix systems) to do any other register initialization.
+
+> > How can you flush the data and instruction cashes from a user
+> > application ?
+> >
+>
+> As far as I understand, ASID must take care of it. It contains unique IDs
+> per process virtual space, so that even
+> though virtual addresses may be found in TLB, their ASID will be
+different,
+> causing TLB miss and probably page fault.
+
+That won't necessarily affect the caches, though.  While it
+would be possible to do so, I don't believe any existing
+MIPS implementations include ASID in the cache tags.
+Hits are determined by an address match, period.
+
+Back in the Ancient Old Days of System V, every architecture
+had an architecture-specific system call entry, the first parameter
+of which expressed what needed to be done.  Do we have
+such a thing in Linux?   That would be the logical place to
+things like cache flush and the atomic operations that were
+being discussed here a couple of weeks ago.
+
+            Regards,
+
+            Kevin K.

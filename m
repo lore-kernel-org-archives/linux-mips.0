@@ -1,33 +1,33 @@
-From: <merchant3@alltheplanet.com>
-Subject: ADV: Accept Credit Cards
-Date: Mon, 28 Feb 2000 00:25:51
-Message-ID: <859.575359.604457@www.alltheplanet.com>
+Subject: Re: Kernel/User Memory Access and Original Sin
+Date: Mon, 28 Feb 2000 13:27:02 +0000 (GMT)
+In-Reply-To: <010101bf81e6$9c546120$0ceca8c0@satanas.mips.com> from "Kevin D. Kissell" at Feb 28, 2000 01:23:17 PM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E12PQCX-0001uL-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-Message-ID: <20000228002551.ArfFO-KBaUnjT3SExK2Gs2zreyojBfbU2G6Qo2eZr-M@z>
+To: "Kevin D. Kissell" <kevink@mips.com>
+Cc: Linux/MIPS fnet <linux-mips@fnet.fr>, Linux/MIPS algor <linux-porters@algor.co.uk>, Linux SGI <linux@cthulhu.engr.sgi.com>
+Message-ID: <20000228132702.43UzPwGbKoWqqlWSxas31K4vp6VYSyAZ1EDhb6GByyg@z>
 
-To be removed from our mailing list, please reply with "Remove" in the
-subject line.
+> Linux, as written for the x86, goes very heavily for inlining.
+> Rather than call specially protected copyin/copyout sorts
+> of routines for manipulating user memory, Linux uses inline
+> macros (copy_from_user/copy_to_user, etc.) that depend on
 
-Your business should be accepting Credit Cards from your customers!
-Over 97% of all sales on the internet are done with Credit Cards.  Over 92% 
-of mail-orders and telephone-orders are done with Credit Cards.  If you 
-don't take Credit Cards, 9 out of every 10 potential customers can't do 
-business with you.  We specialize in on-line businesses, mail-order and 
-telephone order businesses, start-ups, in-home businesses as well as retail 
-locations.  In other words, we specialize in YOUR business.  Call 
-661-288-2842 now, and in a few days, you'll be accepting Credit Cards.  
-661-288-2842.
+Its up to the port how it is done. Most of them are non inline for
+x86 for example.
 
-We do Web design too!!
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+> __access_ok routine, but it is much more heavyweight
+> than the old heuristic.  Not only does it need to check the
+> virtual address against the process' VMAs, but it needs
+
+Its broken if it does that. The process VMA may change on an SMP box or
+during fault handling sleeps.
+
+__access_ok has one purpose. To verify the address range given is entirely
+sensible to feed to __copy_*_user. If you have to do handling the complex
+way (eg if your cpu design requires it) then __access_ok can just return 1
+and the __copy_*_user - inline or out of line - can do all the work.

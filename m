@@ -1,40 +1,52 @@
-Date: Mon, 22 Oct 2001 12:19:19 -0700
-From: "H . J . Lu" <hjl@lucon.org>
-Subject: Re: First attempt to install Linux on my Indigo 2
-Message-ID: <20011022121919.A27925@lucon.org>
-References: <20011022130659.B20721@minus-9.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20011022130659.B20721@minus-9.com>; from mat@minus-9.com on Mon, Oct 22, 2001 at 01:06:59PM +0100
+Message-ID: <004501c15cab$88055b60$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <200110230102.f9N12kb20443@oss.sgi.com> <3BD5D236.8D0CE33C@lnxw.com> <20011023224718.A6283@dea.linux-mips.net>
+Subject: Re: Malta probs
+Date: Wed, 24 Oct 2001 18:47:10 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Mat Withers <mat@minus-9.com>
+To: Ralf Baechle <ralf@oss.sgi.com>, Petko Manolov <pmanolov@lnxw.com>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20011022191919.VLU97mxTut-nMyXt4Ql_5u-G6V1ag7GmgegQ5gbEOUY@z>
+Message-ID: <20011024164710.ZLlEopNoo5tO6Tk1AxY8XaViuIGziuTSEncpzt1Xn6w@z>
 
-On Mon, Oct 22, 2001 at 01:06:59PM +0100, Mat Withers wrote:
-> Hi
+A clue - a machine check exception results
+when there are two identical values in the
+TLB, which is unhealthy for associative RAM
+arrays (never mind that synthesized MIPS
+4K and 5K cores may or may not actually
+have associative RAM for the TLB).  In the
+4K cores, this condition results even if the
+two identical values are non-Valid, which was
+not true in the R4000 and R5000 CPUs, and
+which necessitated a tweak to the TLB flush
+and invaldate routines to ensure that each entry
+is written with a unique invalid value (a function
+of the index).
+
+Please double-check that the TLB flush
+code that you are using does this.
+
+            Kevin K.
+
+----- Original Message ----- 
+From: "Ralf Baechle" <ralf@oss.sgi.com>
+To: "Petko Manolov" <pmanolov@lnxw.com>
+Cc: <linux-mips@oss.sgi.com>
+Sent: Tuesday, October 23, 2001 10:47 PM
+Subject: Malta probs
+
+
+> On Tue, Oct 23, 2001 at 01:25:26PM -0700, Petko Manolov wrote:
 > 
-> I've been subscribed to the list for quite a while but am just about to try installing Linux on my Indigo2 (R4400SC / 128Mb RAM) for the first time.
+> > The theory looks good, but in reality latest kernel crashes
+> > with machine check exception in local_flush_tlb_all on malta
+> > board.  I tried both egcs-1.1.2 and gcc-3.0.1 and both are
+> > crashing at the same place.
 > 
-> I want to try H J Lu's port of Radhat 7.1. I've read the the howto at http://oss.sgi.com/mips/mips-howto.html, have set up a tftp server a bootp server an nfs server and have made up a working serial cable. Now having browsed ftp://oss.sgi.com/pub/linux/mips/redhat/7.1/ I am unsure what to do next. I assume I will need a kernel image and a root filing system to nfs mount but can't see anything resembling them on the ftp site.
-
-1. You need to find a working kernel for your machine. I don't have
-one.
-
-2. In README:
-
-3. install.tar.bz2 has some scripts to prepare NFS root and install
-RedHat 7.1 on a hard drive.
-
+> What CPU are you using; can you send me your .config file?
 > 
-> I have a spare 4Gb scsi disk that I want to attempt the install on. I assume that once I have got the machine booted using an nfs root I can partion the hard disk - somehow install the RPMS on it and then use dvhtool to get my SGI to boot from the hard disk.
+>   Ralf
 > 
-
-From README:
-
-3. install.tar.bz2 has some scripts to prepare NFS root and install
-RedHat 7.1 on a hard drive.
-
-
-H.J.

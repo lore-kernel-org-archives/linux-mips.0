@@ -1,45 +1,46 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@yon.engr.sgi.com (Ariel Faigon)
-Message-ID: <199606182323.QAA15589@yon.engr.sgi.com>
-Subject: gcc solution looks plausible (was: anyone know if this is true?)
-Date: Tue, 18 Jun 1996 16:23:56 -0700 (PDT)
-In-Reply-To: <199606182106.OAA15730@anchor.engr.sgi.com> from "Dave Olson" at Jun 18, 96 02:06:24 pm
-Reply-To: ariel@cthulhu.engr.sgi.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Thu, 20 Jun 1996 11:12:17 -0700
+From: wje@fir.esd.sgi.com (William J. Earl)
+Message-ID: <199606201812.LAA24532@fir.esd.sgi.com>
+Subject: Re: Kernel doesn't work on 200MHz Indy
+In-Reply-To: <199606201102.XAA02623@soyuz.wellington.sgi.com>
+References: <199606201102.XAA02623@soyuz.wellington.sgi.com>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Dave Olson <olson@anchor.engr.sgi.com>
-Cc: gcc@corp.sgi.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19960618232356.oRTp5jrP-WP36iVJhP6QHUNOWGO0glZL15f5JB0rtVU@z>
+To: Alistair Lambie <alambie@wellington.sgi.com>
+Cc: linux@neteng.engr.sgi.com
+Message-ID: <19960620181217.WEeuYkuOJYl7zU5dz9OAsRffu9rTYl3py45old85U_s@z>
 
-[I'm Ccing gcc@corp and linux@engr, some more people may be happy to hear this]
+Alistair Lambie writes:
+ > Just incase anyone is interested:
+ > 
+ > I was able to boot Davids kernel on my Indy when I only had a 100MHz R4600PC,
+ > but know I've upgraded to a 200MHz R4400SC it dies!  Looks like something
+ > to do with the memory controller...
 
-Dave Olson wrote to me about 'ld':
->
->The one in /var/sysgen/root is the same one that driverwrap invokes.
->
->There are two ld's, the one in usr/lib, and the one in usr/bin.  They
->are different.  There is a one to one match between /usr/bin/ld and
->/var/sysgen/root/usr/bin/ld, and similarly for /usr/lib/ld and
->/var/sysgen/root/ld
->
->(assuming a 32 bit system)
->
+      There is no way the kernel could work on an R4000 or R4400 without 
+changes to the cache routines, as well as the addition of certain workarounds
+for processor errata.  Stick to R4600 and R5000 processors for the time being.
+I asked David to start with the R4600, because the workarounds for the errata
+are far simpler, and because it and the R5000 are the volume processors for
+Indy.  It will not be all that hard to add R4000 and R4400 support, but there
+are several messy workarounds to implement, so it is more interesting to get
+a complete system working on an R4600 or R5000.
 
-Thanks! that's encouraging.
+...
+ > PS - It only gives a BogoMIPS reading of 103.63, which is around what I got
+ >      when it was a 100MHz chip.
 
-I assume this means that I should install two symlinks:
+      That is to be expected.  BogoMIPS is essentiall 2 times the number of
+times one can execute a loop like this:
 
-  /usr/freeware/bin/ld -> /var/sysgen/root/usr/bin/ld
-  /usr/freeware/lib/gcc-lib/mips-sgi-irixX.Y/2.7.2/ld -> /var/sysgen/root/ld
+	la	a0,0x7FFFFFFF
+1:	bltz	a0,1b
+	addu	a0,-1
 
-Or something close to this.
-
-This plus building gcc -with-gnu-as, using -32 -old_ld in the specs file
-and Bean's permission to package crt[1n].o  should solve all the problems
-I'm aware of and make many customers happy.
-
-That was very helpful. Looks like a solution is close. Thanks again.
--- 
-Peace, Ariel
+On an R3000, R4600, or R5000, the branch executes in two cycles (counting one
+for the branch delay slot), so BogoMIPS equals the processor clock rate.
+On an R4000 or R4400, the branch executes in four cycles (counting one for
+the branch delay slot), so BogoMIPS equals one half the processor clock rate.
+There appears to be a small error in the current logic for calibrating
+the processor clock rate, which accounts for the BogoMIPS being 103.63 instead
+of 100.00.

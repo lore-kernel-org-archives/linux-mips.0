@@ -1,100 +1,45 @@
-content-class: urn:content-classes:message
-Subject: Inclusion of rrm.o in export-objs
+Reply-To: <khs@digital-digital.com>
+From: "Han-Seong Kim" <khs@digital-digital.com>
+Subject: RE: Power MGMT on mips
+Date: Mon, 19 Nov 2001 21:13:08 +0900
+Message-ID: <000001c170f3$8d784d80$cbadfea9@khs>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Date: Fri, 16 Nov 2001 00:38:46 +1100
-Message-ID: <4DF7FE7DA7E47442B859983ABCFBBF627971@chimsvr1.chimerical.com.au>
-From: "Ivan Hamilton" <ivan@chimerical.com.au>
+	charset="us-ascii"
+In-Reply-To: <20011112233031.A6493@dea.linux-mips.net>
 Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20011115133846.ktRJv7LFId6yc6EAAq7TPQew2YQobkoARZneIoknBow@z>
+To: 'Ralf Baechle' <ralf@oss.sgi.com>
+Cc: linux-mips@fnet.fr, linux-mips@oss.sgi.com
+Message-ID: <20011119121308.r_1w1BgoSC6vFg9z89FfXQGxwR-e8qe5x9Tt6MhRB74@z>
 
-I'm a little new, so let me know if this is out of place.
+Hi Ralf,
 
-After grabbing the latest source via CVS, I ran into compilation
-problems.
-A little (read "a lot of") searching, and I found I was not alone with
-this problem.
-This fix, worked for me. But I'm not sure why no one else had run into
-it.
+I reviewed the data sheet of Mips CPU - QED RM5231.
+There is a wait instruction.
+But when the SysAD bus goes to idle, the wait instruction is valid.
+How can I SysAD bus make idle state?
 
-My Makefile knowledge is extremely limited to say the least. But are
-there possible side-effects of this particular fix? And how does a fix
-like this, find it's way back into the source tree?
+Han-Seong
 
-Any pointers, or other information welcome.
-
-
-==ORIGINAL MESSAGE START==
-
-*	Newsgroups: linux.debian.ports.mips 
-*	From: Petter Reinholdtsen <pere@hungry.com
-<mailto:pere@hungry.com>> 
-*	Subject: Compile problem with latest mips kernel CVS 
-*	Date: Wed, 07 Nov 2001 09:40:07 +0100 
-*	Organization: linux.*_mail_to_news_unidirectional_gateway 
-*	Approved: robomod@news.nic.it (1.20) 
-
-Hello
-
-I do not have post access to linux-mips@oss.sgi.com, so I try to send
-it here instead.
-
-I tested to compile the kernel from the mips kernel CVS last night,
-and it stopped with the following error.  The error line is
-"EXPORT_SYMBOL(<symbol>');".  The object rrm.o must be added to
-export-objs.  Patch below.
-
-make[4]: Entering directory `/usr/src/linux-cvs/drivers/sgi/char'
-
-gcc -I /usr/src/linux-cvs/include/asm/gcc -D__KERNEL__
--I/usr/src/linux-cvs/include -Wall -Wstrict-prototypes -Wno-trigraphs
--O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common -G 0
--mno-abicalls -fno-pic -mcpu=r4600 -mips2 -Wa,--trap -pipe -DMODULE
--mlong-calls   -c -o rrm.o rrm.c
-Assembler messages:
-Warning: The -mcpu option is deprecated.  Please use -march and -mtune
-instead.
-Warning: The -march option is incompatible to -mipsN and therefore
-ignored.
-rrm.c:74: parse error before
-`this_object_must_be_defined_as_export_objs_in_the_Makefile'
-rrm.c:74: warning: type defaults to `int' in declaration of
-`this_object_must_be_defined_as_export_objs_in_the_Makefile'
-rrm.c:74: warning: data definition has no type or storage class
-rrm.c:75: parse error before
-`this_object_must_be_defined_as_export_objs_in_the_Makefile'
-rrm.c:75: warning: type defaults to `int' in declaration of
-`this_object_must_be_defined_as_export_objs_in_the_Makefile'
-rrm.c:75: warning: data definition has no type or storage class
-make[4]: *** [rrm.o] Error 1
-make[4]: Leaving directory `/usr/src/linux-cvs/drivers/sgi/char'
-
- - Add rrm.o to export-objs, and sort the list of objects.
-
-Index: Makefile
-===================================================================
-RCS file: /cvs/linux/drivers/sgi/char/Makefile,v
-retrieving revision 1.13
-diff -u -r1.13 Makefile
---- Makefile    2001/03/11 03:35:59     1.13
-+++ Makefile    2001/11/07 08:27:35
-@@ -9,7 +9,7 @@
-
- O_TARGET := sgichar.o
-
--export-objs    := newport.o shmiq.o sgicons.o usema.o
-+export-objs    := newport.o rrm.o sgicons.o shmiq.o usema.o
- obj-y          := newport.o shmiq.o sgicons.o usema.o streamable.o
-
- obj-$(CONFIG_SGI_SERIAL)       += sgiserial.o
+-----Original Message-----
+From: Ralf Baechle [mailto:ralf@oss.sgi.com]
+Sent: Monday, November 12, 2001 9:31 PM
+To: Han-Seong Kim
+Cc: linux-mips@fnet.fr; linux-mips@oss.sgi.com
+Subject: Re: Power MGMT on mips
 
 
--- 
-To UNSUBSCRIBE, email to debian-mips-request@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact
-listmaster@lists.debian.org
+On Mon, Nov 12, 2001 at 05:13:40PM +0900, Han-Seong Kim wrote:
 
-==ORIGINAL MESSAGE END==
+> I want to ask about Power-Mnagement on mips.
+> 1. Is it possible to use power mgnt (ex. apm,acpi) features of linux kernel?
+
+Both are PC stuff, so no.
+
+> 2.If no, how can manage CPU and Bidge chips for power mgnt ?
+
+Right now Linux/MIPS will only use the CPU's power managment features, that
+is the wait instruction or similar.
+
+  Ralf

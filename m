@@ -1,17 +1,38 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m10UUbc-0007TvC@the-village.bc.nu>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: mpg123 hack
-Date: Tue, 6 Apr 1999 13:05:23 +0100 (BST)
-In-Reply-To: <19990406084728.A8313@bun.falkenberg.se> from "Ulf Carlsson" at Apr 6, 99 08:47:28 am
-Content-Type: text
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199904070215.TAA27956@oz.engr.sgi.com>
+Subject: Re: HAL2 driver 0.2
+Date: Tue, 6 Apr 1999 19:15:58 -0700 (PDT)
+In-Reply-To: <19990406215209.A1972@fmc-container.mach.uni-karlsruhe.de> from "Matthias Kleinschmidt" at Apr 6, 99 09:52:09 pm
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ulf Carlsson <ulfc@bun.falkenberg.se>
-Cc: clepple@foo.tho.org, linux@cthulhu.engr.sgi.com
-Message-ID: <19990406120523.GJ7TyL2-1Lg56YwLlNmwPQGIFR0u_BajNLaSkTqTxwM@z>
+To: Matthias Kleinschmidt <mkleinschmidt@gmx.de>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19990407021558.cMZ4jXnARq5iM7ByWczPEdM0L4FW9ZPBbhChkqbY9Ng@z>
 
-> is in stereo mode though, I print the registers every time the card is
-> triggered. One might otherwise think that I accidently had set it up into Quad
-> mode.
+Matthias wrote:
+:Ulf wrote:
+:> Hello,
+:>
+:>I've uploaded new version of ALSA HAL2 sounddrivers now.
+:>Works much better.
+:>
+:> Check: ftp://ftp.linux.sgi.com/pub/linux/mips/test/ALSA
+:
+:-rw-------    1 9032     user         915 Apr  6 21:57 ALSA-HAL2-HOWTO
+:
+:Is this supposed to be non readable?
+:
+:Ciao
+: Matthias
+:
 
-If you put the chip in mono mode does it need doubled samples ?
+Matthias,
+
+Thanks for noticing, I just fixed that.
+
+-- 
+Peace, Ariel

@@ -1,23 +1,19 @@
 Subject: Re: [2.4 PATCH] pcnet32.c - tx underflow error
-Date: Thu, 11 Jul 2002 00:51:37 +0100 (BST)
-In-Reply-To: <3D2CAD78.9070609@mvista.com> from "Jun Sun" at Jul 10, 2002 02:56:08 PM
+Date: Thu, 11 Jul 2002 03:16:03 +0100 (BST)
+In-Reply-To: <3D2CCC83.6090304@mvista.com> from "Jun Sun" at Jul 10, 2002 05:08:35 PM
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Message-ID: <E17SRFB-00087H-00@the-village.bc.nu>
+Message-ID: <E17STUx-0008LR-00@the-village.bc.nu>
 From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 To: Jun Sun <jsun@mvista.com>
-Cc: linux-mips@oss.sgi.com, Ralf Baechle <ralf@oss.sgi.com>, marcelo@conectiva.com.br
-Message-ID: <20020710235137.mUYjUFCk1m0f59twFn6rpavizmJSil0sqNNRf4Q2b_E@z>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, linux-mips@oss.sgi.com, Ralf Baechle <ralf@oss.sgi.com>, marcelo@conectiva.com.br
+Message-ID: <20020711021603.HhlQCKtx35dt7qDfxKwaNaukfCnnYcq9Gk-GWHakTJE@z>
 
-> This patch fixes a tx underflow error for 79c973 chip.  It essentially delay 
-> the transmission until the whole packet is received into the on-chip sdram.
-> 
-> The patch is already accepted by Marcelo for the 2.4 tree, I think.
+> I even suspect this is the default setting on PCI cards on PC.  Can someone 
+> verify?  If that is the case, that will explain why driver never sets this 
+> bit.  Maybe we don't have any "real computers" after all. :-)
 
-Which slows the stuff down for people with real computers. Please apply
-some kind of heuristic to this - eg switch to delaying if you exceed
-50 failures in a 60 second period.
-
-Alan
+Most PC hardware can deliver that kind of DMA guarantee. UDMA100 doesn't
+work very well otherwise.

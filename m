@@ -1,82 +1,30 @@
-content-class: urn:content-classes:message
+Received: from lahoo.priv ([69.40.149.179]) by ispmxmta09-srv.alltel.net
+          with ESMTP
+          id <20050315140408.SLWN4937.ispmxmta09-srv.alltel.net@lahoo.priv>
+          for <linux-mips@linux-mips.org>; Tue, 15 Mar 2005 08:04:08 -0600
+Received: from [10.1.1.128] (helo=prefect)
+	by lahoo.priv with smtp (Exim 4.44)
+	id 1DBCYq-0002pN-2B
+	for linux-mips@linux-mips.org; Tue, 15 Mar 2005 08:58:16 -0500
+Message-ID: <006601c52967$94040970$8001010a@prefect>
+From: "Bradley D. LaRonde" <brad@laronde.org>
+Subject: Tabs in message headers?
+Date: Tue, 15 Mar 2005 09:01:38 -0500
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C525FA.C5C0374C"
-Subject: Memory Management HAndling
-Date: Fri, 11 Mar 2005 10:55:43 +0530
-Message-ID: <4BF47D56A0DD2346A1B8D622C5C5902C61E22B@soc-mail.soc-soft.com>
-From: <Rishabh@soc-soft.com>
-Return-Path: <Rishabh@soc-soft.com>
+Content-Type: text/plain;
+	format=flowed;
+	charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <brad@laronde.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20050311052543.VwZqsWK9Y3wCzkYHF7Rp5njwQ3Epwsd85DXnAlojiU8@z>
+Message-ID: <20050315140138.KsfpIqKjFcUj1W_T8u3BPu1aMMD8yqNGvHukxGVpjzY@z>
 
-This is a multi-part message in MIME format.
+Did messages from the list all of a sudden get tabs (instead of spaces) in 
+the message headers?  Had to adjust my (probably too specific) procmail 
+rule.
 
-------_=_NextPart_001_01C525FA.C5C0374C
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-
-Hi,
-
-I have been working on MMU of Linux Port of 2.4.20 kernel for MIPS Port.
-
-I have found that MACROS like=0D
-
-#define __pa(x)		((unsigned long) (x) - PAGE_OFFSET)
-#define __va(x)		((void *)((unsigned long) (x) + PAGE_OFFSET))
-#define virt_to_page(kaddr)	(mem_map + (__pa(kaddr) >> PAGE_SHIFT))
-
-
-These macros can handle memory pages in KSEG0. Any suggestions on how
-can they be changed for addressing memory present in HIGHMEM. Since VA
-will not be in linear relation with mem_map.=0D
-Rishabh Kumar Goel
-Software Engineer
-=0D
-SoCrates Software India Pvt. Ltd.
-a TOSHIBA Group Company
-#10, Industrial Layout,
-Prestige Atlanta,
-III Block, Koramangala,
-Bangalore - 560034
-=0D
-Ph. 080-51101669
-
-
-
-The information contained in this e-mail message and in any annexure is
-confidential to the  recipient and may contain privileged information. If=
- you are not
-the intended recipient, please notify the sender and delete the message=
- along with
-any annexure. You should not disclose, copy or otherwise use the=
- information contained
-in the message or any annexure. Any views expressed in this e-mail are=
- those of the
-individual sender except where the sender specifically states them to be=
- the views of
-SoCrates Software India Pvt Ltd., Bangalore.
-------_=_NextPart_001_01C525FA.C5C0374C
-Content-Type: text/x-vcard;
-	name="Rishabh Kumar Goel.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Rishabh Kumar Goel.vcf
-Content-Disposition: attachment;
-	filename="Rishabh Kumar Goel.vcf"
-
-QkVHSU46VkNBUkQNClZFUlNJT046Mi4xDQpOOkdvZWw7UmlzaGFiaCBLdW1hcg0KRk46UmlzaGFi
-aCBLdW1hciBHb2VsDQpPUkc6U29jcmF0ZXMgU29mdHdhcmUgSW5kaWEgUHZ0IEx0ZC47T1MgJiBE
-RA0KVElUTEU6U0UNClRFTDtXT1JLO1ZPSUNFOjUxMTAxNjY5ICAgIEV4dDoyNjY5DQpBRFI7V09S
-SztFTkNPRElORz1RVU9URUQtUFJJTlRBQkxFOjtTb2NyYXRlcyBTb2Z0d2FyZSBJbmRpYSBQdnQu
-IEx0ZC47MTAgQnJpZGUgU3RyZWV0LCA9MEQ9MEFMYW5nZm9yZCBUb3duO0Jhbmc9DQphbG9yZTtL
-YXJuYXRha2E7NTYwMDI1O0lORElBDQpMQUJFTDtXT1JLO0VOQ09ESU5HPVFVT1RFRC1QUklOVEFC
-TEU6U29jcmF0ZXMgU29mdHdhcmUgSW5kaWEgUHZ0LiBMdGQuPTBEPTBBMTAgQnJpZGUgU3RyZWV0
-LCA9MEQ9MEFMYW5nZm9yZCBUb3duPQ0KPTBEPTBBQmFuZ2Fsb3JlLCBLYXJuYXRha2EgNTYwMDI1
-PTBEPTBBSU5ESUENCkVNQUlMO1BSRUY7SU5URVJORVQ6UmlzaGFiaEBzb2Mtc29mdC5jb20NClJF
-VjoyMDA1MDIxN1QwNjA4NDJaDQpFTkQ6VkNBUkQNCg==
-
-------_=_NextPart_001_01C525FA.C5C0374C--
+Regards,
+Brad 

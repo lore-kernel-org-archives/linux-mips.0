@@ -1,71 +1,53 @@
-Message-ID: <01cb01c20754$4c14e400$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <1022691053.7644.16.camel@ldt-sj3-022.sj.broadcom.com> <1022700389.7644.155.camel@ldt-sj3-022.sj.broadcom.com>
-Subject: Re: __flush_cache_all() miscellany
-Date: Wed, 29 May 2002 23:03:20 +0200
+Message-ID: <001601c20803$339e4650$0b01a8c0@w2k30g>
+From: "David Christensen" <dpchrist@holgerdanske.com>
+Subject: cross-compiler for MIPS_RedHat7.1_Release-01.00 on Atlas/4Kc using RH7.3-i386 host
+Date: Thu, 30 May 2002 10:54:55 -0700
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Justin Carlson <justinca@cs.cmu.edu>, linux-mips@oss.sgi.com
-Cc: ralf@oss.sgi.com
-Message-ID: <20020529210320.wWcwPJRcpYquizfz67fiM4NiksCB_kH37vMuClRkgiM@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020530175455.SbS4xLRapYh_eAZx1vqbmJcoZeH6Y4XCkCFXX-paV24@z>
 
-> While doing this, I've noticed that the whole mips tree is horribly
-> inconsistent in terms of the cache flushing syscalls (sys_cacheflush and
-> sys_sysmips->CACHE_FLUSH).  
-> 
-> Here's what the different ports appear to flush given one of these
-> syscall:
-> 
-> andes:  l1 and l2
-> lexra:  l1 icache
-> mips32: l1 icache/dcache
-> r3k:    l1 icache
-> r4k:    l1 icache/dcache
-> r5432:  l1 icache/dcache
-> r5900:  l1 icache/dcache
-> rm7k:   l1 icache/dcache
-> sb1:    l1 icache/dcache
-> sr7100: l1 and l2
-> tx39:   l1 icache
-> tx49:   li icache/dcache
-> 
-> Some of these are blatantly wrong with respect to the cacheflush
-> syscall; it defines flags for flushing the icache, dcache, or both.  In
-> the latter two cases, the lexra, r3k, and tx39 are not doing what was
-> requested.  I doubt this matters for any significant userspace app, but
-> it would be nice to at least be consistent.
-> 
-> As for the sysmips system call, I've  not been able to dig up the
-> semantics.  (Actually, I don't really see why we have both ways of
-> flushing the cache at all...some historical cruft?).  Anyone have a
-> helpful pointer to docs on the subject?
+linux-mips@oss.sgi.com:
 
-I agree that things need to be straightened out a bit here,
-or at least better documented, but things may not be as bad 
-as you think, depending on the actual use of the system calls.  
-Specifically, if what one is worried about is ensuring that a 
-modification to memory gets picked up by the instruction 
-stream, as in setting/clearing a breakpoint or executing a JIT,
-one does not need to flush the dcache *if* the dcache
-is write-through in the first place - as it is for most if
-not all of the processors you list above as flushing the
-icache only.  (As a parenthetical note, future MIPS
-processors won't need a system call to deal with 
-instruction stream modifications, but we need to deal
-with the here-and-now).
+I have downloaded ftp://ftp.mips.com/pub/linux/mips/installation/redhat7
+.1/01.00/MIPS_RedHat7.1_Release-01.00.iso, burned a CD, and followed the
+instructions provided on the CD (/linux/installation/README) to install
+Linux (little-endian) on a MIPS Atlas/4Kc board with a SCSI disk.  I
+would now like to recompile the kernel to experiment with sound.  I have
+posted to this mailing list before and was informed that I need a cross-
+compiler, available on oss.sgi.com.  My host is Red Hat Linux-i386 7.3.
 
-While trampolines, breakpointing and JITing are the main 
-uses of user-mode cache manipulation (drivers are a whole 
-'nother story), we really should have distinct capabilities for 
-I-stream modification and for explicit synchronizations of 
-the data storage hierarchy, for non-coherent multiprocessors
-and user-manipulated DMA buffers.  As to whether
-those capabilities should be distinguished by system
-call (sysmips vs. cacheflush) or by parameter to the
-same system call, I don't have enough data to form
-an opinion at this point.
 
-            Kevin K.
+Following the instructions provided in Chapter 10 of the Linux/MIPS
+HOWTO (http://oss.sgi.com/mips/mips-howto.html), I have located these
+files:
+
+    ftp://oss.sgi.com/pub/linux/mips/crossdev/i386-linux/mipsel-linux/
+        binutils-mipsel-linux-2.8.1-2.i386.rpm
+
+    ftp://oss.sgi.com/pub/linux/mips/crossdev/i386-linux/mipsel-linux/
+        egcs-mipsel-linux-1.1.2-4.i386.rpm
+
+    ftp://oss.sgi.com/pub/linux/mips/glibc/mipsel-linux/
+        glibc-2.0.6-5lm.mipsel.rpm
+
+
+I am unable to find:
+
+    glibc-crypt-2.0.6.tar.gz
+
+    glibc-localedata-2.0.6.tar.gz
+
+    glibc-linuxthreads-2.0.6.tar.gz
+
+
+Does anybody have any comments or suggestions?
+
+
+TIA,
+
+David Christensen
+dpchrist@holgerdanske.com

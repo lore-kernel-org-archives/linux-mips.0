@@ -1,20 +1,28 @@
-Subject: Re: sgiserial.c
-Date: Tue, 10 Oct 2000 10:41:08 +0100 (BST)
-In-Reply-To: <20001010054506.F25504@bacchus.dhis.org> from "Ralf Baechle" at Oct 10, 2000 05:45:06 AM
+From: "Randy Sartin" <randys@ridgerun.com>
+Subject: rs_ioctl() in sgiserial.c info/help needed
+Date: Wed, 11 Oct 2000 13:28:05 -0600
+Message-ID: <NEBBLGAKILMAGOFHJDNNGEJMCAAA.randys@ridgerun.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-ID: <E13ivuH-0003Un-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: Keith Owens <kaos@melbourne.sgi.com>, Linux on MIPS <linux-mips@oss.sgi.com>
-Message-ID: <20001010094108.C0c3YtHfOkHSI2apKAmrAj0rDwtJd3IxlsmcIEZyhcc@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20001011192805._avZdeJjLvOJ6B7gttZEh9keHapvcvKnrWt08PgWulE@z>
 
-> The Origin's IOC3 16550 can go even higher rates at low interrupt load
-> due to it's higher crystal frequency and a NIC-like DMA descriptors.
-> We just don't do it yet in the Linux driver ...
+Background:
+I am trying to get the Indy's serial port to drive a dongle and am having
+some trouble getting the dongle to work. The problem seems to be in
+rs_ioctl() in sgiserial.c - it doesn't handle the TIOCMSET command. The
+TIOCMSET command allows control over the DTR and RTS lines.
 
-165x0 chips on x86 running in normal FIFO modes we can do 900Kbits pretty
-solidly. You should be able to hit the full 2Mbit without trying
+The "standard" rs_ioctl() in serial.c does support TIOCMSET. It calls
+set_modem_info() to control the UART (I think) to then control DTR and RTS.
+
+So - my question is...
+Can I control DTR and RTS on Indy or is this a software feature that hasn't
+been implemented yet?
+
+Thanks,
+Randy Sartin

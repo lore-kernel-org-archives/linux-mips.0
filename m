@@ -1,51 +1,68 @@
-From: "Eric Watkins" <watkinse@attens.com>
-Subject: RE: ADMIN: mailing list moved
-Date: Thu, 15 Jun 2000 11:33:29 -0700
-Message-ID: <001f01bfd6f8$3394da90$540ed7c0@hq.sd.cerf.net>
+From: "Scott Thomas" <scott@tridsys.com>
+Subject: RE: linux/mips on cd?
+Date: Tue, 20 Jun 2000 09:41:53 -0400
+Message-ID: <002a01bfdabd$4b7c61a0$fe01a8c0@scott.tridsys.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20000602005044.C26563@uni-koblenz.de>
+In-Reply-To: <Pine.LNX.4.05.10006192043320.12529-100000@callisto.of.borg>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>, linux-mips@oss.sgi.com
-Message-ID: <20000615183329.rn820duMkNfwPQYBtpubaKnH_XK7WcyjjkcuvzbLMDg@z>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Florian Lohoff <flo@rfc822.org>
+Cc: Paul Jakma <paul@clubi.ie>, Linux MIPS <linux-mips@oss.sgi.com>, cfolmar@redhat.com
+Message-ID: <20000620134153.JBK1uTBtxI-CDISfM2bmF649mL9oUsDPWZp3t-ZG81s@z>
 
-http://oss.sgi.com/projects/linux-mips/archive/
+>
+> [ taking CD from the CD rack ]
+> 
+> [ citing CD cover ]
+> 
+>     Linux Rough Cuts
+>     Excavated for PowerPC (MkLinux)m UltraSPARC, MIPS, and M68K 
+> by the Red Hat
+>     Linux Community
+>     
+>     Copyright 1998 Red Hat Software, Inc.
+> 
+> It even has an ISBN number: 1-888172-14-2 :-)
+> 
+> 
 
-This URL gives me:
+fyi...
+I recently inquired Red Hat about this... 
+according to Cris Folmar at Red Hat, the Rough Cuts CD
+is no longer available. 
 
-The requested URL /projects/linux-mips/archive/ was not found on this
-server.
+perhaps Red Hat should consider making a new version available?
 
-Is there a live archive?
+--
+Scott Thomas
+Program Manager
+Trident Systems Inc.
+Phone: (703) 359-6226
+  Fax: (703) 273-6608
+Email: scott@tridsys.com
+  Web: http://www.tridsys.com
 
-> -----Original Message-----
-> From: owner-linux-mips@oss.sgi.com
-> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Ralf Baechle
-> Sent: Thursday, June 01, 2000 3:51 PM
-> To: linux-mips@oss.sgi.com
-> Subject: ADMIN: mailing list moved
->
->
-> The mailing list linux@engr.sgi.com is moving to linux-mips@oss.sgi.com.
-> I've copied the old subscription list, so there is no need to
-> resubscribe.  Archives of the mailing list will be available at
-> http://oss.sgi.com/projects/linux-mips/archive/.  Subscriptions are
-> be handled by majordomo@oss.sgi.com.
->
-> Subscribers of linuxmips@oss.sgi.com - that mailing list was only used
-> for internal purposes, that is to generate mailinglist archives of the
-> old linux@engr.sgi.com list.  While subscribing to it was possible it
-> was still a bad idea.  While you were receiving all postings to
-> linux@engr.sgi.com most of you were not subscribed to that list and
-> therefore not able to post.  Worse, your postings were going only to
-> the handfull of subscribers to that list.  Subscriptions to that list
-> have also all been moved over to linux-mips@oss.sgi.com
->
-> In case of problems please send mail to linux-mips-owner@oss.sgi.com
-> or me.
->
->   Ralf
->
+
+> Now I have to admit there's no decent (read: Debian) distro for 
+> Linux/MIPS on
+> CD yet...
+> 
+> Gr{oetje,eeting}s,
+> 
+> 						Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- 
+> geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a 
+> hacker. But
+> when I'm talking to journalists I just say "programmer" or 
+> something like that.
+> 							    -- 
+> Linus Torvalds
+> 
+> 

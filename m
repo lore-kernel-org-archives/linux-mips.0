@@ -1,26 +1,37 @@
-Date: Mon, 21 May 2001 21:07:29 +0900
-Message-ID: <200105211207.VAA12651@intranet.medialincs.com>
-From: =?EUC-KR?B?wba+58iv?=<joey@medialincs.com>
-Subject: udp, tcp checksum error?
+Date: Tue, 22 May 2001 13:04:37 -0400 (EDT)
+From: George Gensure <werkt@csh.rit.edu>
+Subject: Re: newest kernel
+In-Reply-To: <20010522143330.B9891@paradigm.rfc822.org>
+Message-ID: <Pine.SOL.4.31.0105221303310.28804-100000@fury.csh.rit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=EUC-KR
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010521120729.gNZOXVhC2a8WvcMVaWFEg09MhETL-C_MpNBrDQIeY1A@z>
+To: Florian Lohoff <flo@rfc822.org>
+Cc: Jun Sun <jsun@mvista.com>, Pete Popov <ppopov@mvista.com>, linux-mips@oss.sgi.com
+Message-ID: <20010522170437.e-uaUMuCPqcxjhWxgnzCQq7suL9S8J9u93xkPSC336Q@z>
 
-hello.
-I'm booting up by nfs-root.
+Good call.  Thanks everyone, that did it. now if i could just get my cross compiled gcc 3.1 to realize that crti.o exists and should be linked in with libgcc...
 
-nfs server is RH-7.0 and kernel 2.4.4 , this machine's nfs is good working
+George
+werkt@csh.rit.edu
 
-but when target mips machine connect to host by UDP, 
-wrong checksum UDP packet  is discarded.
+On Tue, 22 May 2001, Florian Lohoff wrote:
 
-i use mips big endian toolchains(20010303), kernel sorce is CVS update version.
-
-I thinks include/asm-mips/checksum.h logic is different from i386's
-
-anyone have idea this problem?
-
-thanx.
+> On Mon, May 21, 2001 at 04:23:52PM -0700, Jun Sun wrote:
+> > The patch seems to be just a fast implementation of sysmips().  Why would it
+> > solve an otherwise illegal instruction problem?
+> >
+> > George, what was exactly the error and the faulty instruction?
+>
+> Wrong - Its not only a "fast" path sysmips. It solves the illegal instruction
+> case as it carefully doesnt touch registers it should not touch.
+>
+> The sysmips illegal instruction stuff came from the early exit
+> needed to skip the -EXXXX case in the scall32.S which did not
+> restore the modified registers. This needed fixing and there was
+> no clean way of doing this in C thus i wrote an asm sysmips/MIPS_ATOMIC_SET
+> and called it "fast_sysmips" which itself would go into the old
+> sysmips function when not MIPS_ATOMIC_SET.
+>
+> Flo
+>

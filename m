@@ -1,42 +1,42 @@
-Received: from fairytale.tal.org (cruel.tal.org [195.16.220.85])
-	by gw02.mail.saunalahti.fi (Postfix) with ESMTP id 5CE29177E8
-	for <linux-mips@linux-mips.org>; Mon, 16 Aug 2004 20:43:26 +0300 (EEST)
-Received: from amos (unknown [195.16.220.84])
-	by fairytale.tal.org (Postfix) with SMTP id 6AF428DB0
-	for <linux-mips@linux-mips.org>; Mon, 16 Aug 2004 20:51:57 +0300 (EEST)
-Message-ID: <001501c483b9$36dc6b60$54dc10c3@amos>
-From: "Kaj-Michael Lang" <milang@tal.org>
-Subject: O2 framebuffer and mmap..
-Date: Mon, 16 Aug 2004 20:48:16 +0300
+Received: from localhost (localhost.tusur.ru [127.0.0.1])
+	by tusur.ru (Postfix) with SMTP id A0860B72F1
+	for <linux-mips@linux-mips.org>; Tue, 17 Aug 2004 08:53:50 +0700 (TSD)
+Received: from roman (unknown [211.189.34.20])
+	by tusur.ru (Postfix) with ESMTP id 5E98BB4BAA
+	for <linux-mips@linux-mips.org>; Tue, 17 Aug 2004 08:53:37 +0700 (TSD)
+Message-ID: <001601c483fd$9e3ae180$1422bdd3@roman>
+From: "Roman Mashak" <mrv@tusur.ru>
+Subject: Yamon compiling and linking
+Date: Tue, 17 Aug 2004 10:57:50 +0900
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="utf-8"
+	charset="koi8-r"
 Content-Transfer-Encoding: 7bit
-Return-Path: <milang@tal.org>
+Return-Path: <mrv@tusur.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040816174816.CCyaAoQdebtcKbNroRSoTYxlDF6ISmNTObnYvPx1MrQ@z>
+Message-ID: <20040817015750.NYMkSeCTWAuEMRvBF0Btw8KvfeK1EW1DzU_-77TMaZ8@z>
 
-Hi
+Hello!
 
-The O2 fb driver (or something else) has broken mmap interface, you probably
-know that. Anyway, I've tried to find the cause for it but I've haven't been
-that succesfull.
+I solved the problem with Yamon compiling I asked recently, but still have
+technical related questions about Yamon linking & code allocating in memory.
 
-I've patched a current cvs kernel with the old O2-fb
-driver (from: http://www.linux-mips.org/~glaurung/)(before gbefb
-merge/rename)
-and mmap does not work with the old driver, so something else seem to
-have changed so that the mmap things don't work. The 2.6.1 kernel on the
-above page
-does have a functional mmap (my test app and X works with it) but it's very
-old..
+Here it is.
 
-Does anyone have any hints or ideas ?
+When I compile little-endian only image, as far as I understood, I got image
+without RESET code at the beginning, so according to the memory map and link
+script (link_el.xn) - starting entry point is __RESET_HANDLER_END (locating
+in init.S) and its address is 0x9fc10000.
+So, I don't quite understand, how will be going after CPU reset? As
+documentation's saying "following a reset, hardware fetches instructions
+starting at the reset exception vector 0xBFC00000". But what is waiting at
+this address, because reset code (reset.S) is not compiled and is not
+linked?
 
-Oh, and I've added some sysfs stuff to the gbefb driver, should I post the
-changes here ?
+Could you please make it clear to me?
 
--- 
-Kaj-Michael Lang , milang@tal.org
+Thanks in advance!
+
+With best regards, Roman Mashak.  E-mail: mrv@tusur.ru

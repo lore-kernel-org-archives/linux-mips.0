@@ -1,51 +1,29 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@yon.engr.sgi.com (Ariel Faigon)
-Message-ID: <199704141824.LAA13874@yon.engr.sgi.com>
-Subject: Re: How big is the Linux/MIPS kernel?
-Date: Mon, 14 Apr 1997 11:24:49 -0700 (PDT)
-In-Reply-To: <199704141813.LAA19102@titian.engr.sgi.com> from "Mike McDonald" at Apr 14, 97 11:13:43 am
-Reply-To: ariel@sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <199704142228.PAA07659@refugee.engr.sgi.com>
+Subject: Re: EFS and XFS file systems support 
+In-reply-to: Message from lm@neteng of 14 Apr 1997 13:47:42 PDT
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 14 Apr 1997 15:28:40 -0700
+From: Steve Alexander <sca@refugee.engr.sgi.com>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike McDonald <mikemac@titian.engr.sgi.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970414182449.xSMedpLB5rMigowfc1yhRD36Dyh8sGjYQEmLPPI2qYg@z>
+To: Larry McVoy <lm@neteng.engr.sgi.com>
+Cc: "Christopher W. Carlson" <carlson@heaven.newport.sgi.com>, linux@cthulhu.engr.sgi.com
+Message-ID: <19970414222840.VJO078Ya-u5LtoQbZIt71ThPtvFltmbIJ3uWEcngBJc@z>
 
-:
-:
-:  Could someone tell me how big the kernel is for the MIPS chip? I
-:need a rough estimate of the size of a minimal kernel with networking
-:support, probably no file systems nor disks. A project I'm working on
-:is currently using VxWorks. We're suppose to add a bunch of large, off
-:the shelf software components to it and I'm worried about running
-:everything in one unprotected address space. (All it takes is the web
-:browser to hickup and the box will crash. But hey, no one has ever
-:heard of a web browser crashing!) Does anyone have an estimate of the
-:process switching time? That's one of the things the hardware types
-:harp about for their multimedia apps.
-:
-:  Thanks
-:
-:  Mike McDonald
-:  mikemac@engr.sgi.com
-:
+lm@neteng (Larry McVoy) writes:
+>: I thought that there was a program available for Linux that would read EFS
+>: file systems, although I can't for the life of me remember the name.
+>
+>Nope.
 
-11:26 ariel@info /hosts/neteng.engr/home/dm/alambie> size vmlinux 
+OK, I went and looked...
 
+Subject:   -65- How can I read an IRIX (EFS) CD-ROM on a machine which
+                doesn't use EFS?
+Date: 18 Jun 1995 00:00:01 EST
 
-           Section           Size        Physical        Virtual
-                                         Address         Address
+  You want 'efslook', at
+  ftp://viz.tamu.edu/pub/sgi/software/efslook.tar.gz.
 
-               .text      809344        2282131456      2282131456      
-             .rodata       71264        2282940800      2282940800      
-            .reginfo          24        2283012064      2283012064      
-               .data       90848        2283012096      2283012096      
-               .sbss         349        2283102944      2283102944      
-                .bss      131324        2283103296      2283103296      
-880632 + 90848 + 131673 = 1103153
-
-
--- 
-Peace, Ariel
+-- Steve

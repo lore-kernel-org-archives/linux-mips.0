@@ -1,38 +1,37 @@
-Message-ID: <002b01c1b607$6afbd5c0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3C6C6ACF.CAD2FFC@mvista.com> <20020215031118.B21011@dea.linux-mips.net> <20020214232030.A3601@mvista.com> <20020215003037.A3670@mvista.com>
-Subject: Re: FPU emulator unsafe for SMP?
-Date: Fri, 15 Feb 2002 10:59:09 +0100
+Date: Fri, 15 Feb 2002 11:56:59 GMT
+Message-ID: <200202151156.LAA17485@mudchute.algor.co.uk>
+From: Dominic Sweetman <dom@algor.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Subject: Re: [patch] linux 2.4.17: The second mb() rework (final)
+In-Reply-To: <006e01c1b606$27b1b060$0deca8c0@Ulysses>
+References: <Pine.GSO.3.96.1020212123901.17858B-100000@delta.ds2.pg.gda.pl>
+	<010601c1b3bd$1da618e0$0deca8c0@Ulysses>
+	<20020213.102805.74755945.nemoto@toshiba-tops.co.jp>
+	<20020215.123124.70226832.nemoto@toshiba-tops.co.jp>
+	<006e01c1b606$27b1b060$0deca8c0@Ulysses>
 Sender: owner-linux-mips@oss.sgi.com
-To: Jun Sun <jsun@mvista.com>, Ralf Baechle <ralf@oss.sgi.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20020215095909.cgIV2nbN2KBtv5vCADWybx8amjSRZYWtOETxdlvMT00@z>
+To: "Kevin D. Kissell" <kevink@mips.com>
+Cc: Atsushi Nemoto <nemoto@toshiba-tops.co.jp>, macro@ds2.pg.gda.pl, mdharm@momenco.com, ralf@uni-koblenz.de, linux-mips@fnet.fr, linux-mips@oss.sgi.com
+Message-ID: <20020215115659.Bl87RrtCl6vSkE1Ki2BDmNm6gI5u1NGMTT5izlnzc90@z>
 
-> > > > I have been chasing a FPU register corruption problem on a SMP box.  The
-> > > > curruption seems to be caused by FPU emulator code.  Is that code SMP safe? 
-> > > > If not, what are the volunerable spots?
-> > > 
-> > > In theory the fp emulation code should be MP safe as the full emulation
-> > > is only accessing it's context in the fp register set of struct
-> > > task_struct.  The 32-bit kernel's fp register switching is entirely broken
-> > > (read: close to non-existant).  Lots of brownie points for somebody to
-> > > backport that from the 64-bit kernel to the 32-bit kernel and forward
-> > > port all the FPU emu bits to the 64-bit kernel ...
-> > > 
-> > 
-> > Brownie sounds good. :-)  So what is the "fp register switching" you are 
-> > referring to?  There is set of code related to lazy fpu context switch,
-> > which seems to be working fine now.
-> >
+
+Kevin D. Kissell (kevink@mips.com) writes:
+
+> > Note that SYNC on TX39/H and TX39/H2 does not flush a write buffer.
+> > Some operation (for example, bc0f loop) are required to flush a write
+> > buffer.
 > 
-> Hmm, I see. The lazy fpu context switch code is not SMP safe.
-> I see fishy things like "last_task_used_math" etc...
+> That is, I would say, a bug in the TX39 implementation of SYNC.
 
-What, you mean "last_task_used_math" isn't allocated in a
-processor-specific page of kseg3???    ;-)
+That's only a problem if the CPU permitted reads to overtake buffered
+writes.  [Early R3000 write buffers did that (with an address check to
+avoid the disaster of allowing a read to overtake a write to the same
+location).]
 
-            Kevin K.
+But my recollection is that the TX39 does all memory operations in
+order: so SYNC has very little to do, but it isn't a bug.
+
+Dominic Sweetman
+Algorithmics

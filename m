@@ -1,28 +1,20 @@
-content-class: urn:content-classes:message
+Reply-To: <khs@digital-digital.com>
+From: "Han-Seong Kim" <khs@digital-digital.com>
+Subject: Power MGMT on mips
+Date: Mon, 12 Nov 2001 17:13:40 +0900
+Message-ID: <000001c16b51$f05f6070$cbadfea9@khs>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: Which usrland packages should be built for swapon, hostname,and grep?
-Date: Fri, 9 Nov 2001 12:16:11 -0800
-Message-ID: <84CE342693F11946B9F54B18C1AB837B14AE21@ex2k.pcs.psdc.com>
-From: "Steven Liu" <stevenliu@psdc.com>
+	charset="ks_c_5601-1987"
 Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20011109201611.IDKE2ecUsdrq7PLlI5FumdbP-Y9MuXI_uGqDjm5BF3U@z>
+To: linux-mips@fnet.fr, linux-mips@oss.sgi.com
+Message-ID: <20011112081340.OR0viMZFGKv6v8lUMs4KftjVaPCzdsjs37bIl4sNWrg@z>
 
-Hi All:
+Hi, 
 
-I am porting linux to mips r3000 now and need to build the following
-files for the target board:
-    /sbin/swapon,
-   /bin/hostname,
-   /bin/mount,
-   /bin/grep.
-Which usrland packages should I use for the above files?
+I want to ask about Power-Mnagement on mips.
+1. Is it possible to use power mgnt (ex. apm,acpi) features of linux kernel?
+2.If no, how can manage CPU and Bidge chips for power mgnt ?
 
-Any help should be greatly appreciated.
-
-Thank you.
-
-Steven Liu
+Han-Seong

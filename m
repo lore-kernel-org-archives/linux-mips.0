@@ -1,54 +1,123 @@
-From: "Matthew Dharm" <mdharm@momenco.com>
-Subject: RE: Chassis for MIPS Atlas board
-Date: Fri, 12 Dec 2003 14:58:16 -0800
-Message-ID: <002701c3c103$6da6b390$7200a8c0@internal.momenco.com>
+Message-ID: <01e801c3c6e2$4aa51ff0$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <20031220095312.38822.qmail@web10104.mail.yahoo.com>
+Subject: Re: Regarding branch delay instructions in R4000
+Date: Sat, 20 Dec 2003 11:16:09 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <BAY1-F40m8TTmFKotxw0001310c@hotmail.com>
-Return-Path: <mdharm@momenco.com>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Michael Anburaj' <michaelanburaj@hotmail.com>, linux-mips@linux-mips.org
-Message-ID: <20031212225816.8OGhW2R5km_ZpLl2FkCsSUvXNwGsOLcocj8uoxk-_o0@z>
+To: karthikeyan natarajan <karthik_96cse@yahoo.com>, Michael Uhler <uhler@mips.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20031220101609.mRJli1pVZ45z7X2r3ji5u2u2cpLDsEz8nmu0kZrH8JQ@z>
 
-For cPCI chassis, try One Stop Systems (www.onestopsystems.com).  You're not
-going to find anything cheap in the cPCI world, BTW.
+Yes, MIPS stood for Microprocessor without Interlocked Pipeline Stages
+when it was first used as a name for a graduate student project at Stanford
+University in publications from 1982.  But that in itself was a play on words,
+as the most common metric of computer perfomance at the time was 
+"Millions of Instructions Per Second", or MIPS.  The Stanford architcture 
+was revamped and commercialized as the "MIPS I" architecture, implemented 
+in the R2000 and R3000 CPUs, which likewise had no interlocks on cache load 
+delays. As silicon geometries became finer and gates got cheaper, the relative cost
+of providing the interlocks decreased, while the need to run the same MIPS 
+binaries on multiple, very different implementations of the architecture increased.
+So from the R4000 onwards, MIPS CPUs have had interlocks.  But by that time
+the name "MIPS" was a well-known trademark, and it made no sense to change it.
 
-Matt
+----- Original Message ----- 
+From: "karthikeyan natarajan" <karthik_96cse@yahoo.com>
+To: "Michael Uhler" <uhler@mips.com>
+Cc: <linux-mips@linux-mips.org>
+Sent: Saturday, December 20, 2003 10:53
+Subject: Re: Regarding branch delay instructions in R4000
 
---
-Matthew D. Dharm                            Senior Software Designer
-Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
-(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
-Momentum Works For You                      www.momenco.com
 
-
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Michael Anburaj
-> Sent: Friday, December 12, 2003 2:43 PM
-> To: linux-mips@linux-mips.org
-> Subject: Chassis for MIPS Atlas board
+> Hi gmu,
+> 
+>     Have got a one more doubt...
+> MIPS stands for Microprocessor without Interlocked
+> Pipeline Stages.
+>     But, in the "R4400_Uman_book_Ed2.pdf" doc, it is
+> mentioned that the CPU general registers are 
+> interlocked. I am bit confused after reading this doc.
+>     Would be great if you clarify this doubt too...
+> 
+> Thanks much,
+> -karthi
+> 
+> > The MIPS architecture specifies a single delay slot
+> > after a branch
+> > or jump.  The fact that the R4000 implementation
+> > (and pretty much
+> > any of the ones following) had a pipeline in which
+> > more instructions
+> > had already entered the pipe before the branch is
+> > resolved is not
+> > relevant to the architecture specification.  In the
+> > case you
+> > mention, a single instruction is executed after the
+> > branch, as
+> > architecturally required, and any subsequent
+> > instructions in the
+> > pipe are killed.
+> > 
+> > /gmu
+> > 
+> > On Thu, 2003-12-18 at 22:01, karthikeyan natarajan
+> > wrote:
+> > > Hi All,
+> > > 
+> > >     If this is not a right forum to ask this
+> > Question,
+> > > 
+> > > please redirect me to the appropriate one...
+> > >     Since R4000 is using the 8 stage pipeline,
+> > three
+> > > instructions are already entered into the pipeline
+> > > when the branch instruction is executed. Out of
+> > these
+> > > three instructions, the first instruction will be 
+> > > executed for sure.
+> > > 
+> > > My question is:
+> > >     What happens to the other two instruction that
+> > are
+> > > in the delay slots? are they nullified?
+> > >     Could anyone please shed some light on this.
+> > > 
+> > > Thanks much,
+> > > -karthi
+> > > 
+> > > =====
+> > > The expert at anything was once a beginner
+> > > 
+> > >
+> >
+> ________________________________________________________________________
+> > > Yahoo! Messenger - Communicate instantly..."Ping" 
+> > > your friends today! Download Messenger Now 
+> > > http://uk.messenger.yahoo.com/download/index.html
+> > > 
+> > -- 
+> > Michael Uhler, Chief Technology Officer
+> > MIPS Technologies, Inc.  Email: uhler@mips.com 
+> > Pager: uhler_p@mips.com
+> > 1225 Charleston Road     Voice:  (650)567-5025  FAX:
+> >   (650)567-5225
+> > Mountain View, CA 94043  Mobile: (650)868-6870 
+> > Admin: (650)567-5085
+> > 
+> >  
+> 
+> =====
+> The expert at anything was once a beginner
+> 
+> ________________________________________________________________________
+> Yahoo! Messenger - Communicate instantly..."Ping" 
+> your friends today! Download Messenger Now 
+> http://uk.messenger.yahoo.com/download/index.html
 > 
 > 
-> Can you please suggest (name of) a chassis (or empty case) 
-> for my atlas 
-> board; either avaiable at Fry's or circuit city or compUSA or 
-> online. I need 
-> the front pannel of the Atlas board & the PCI card's back 
-> rail (802.11b 
-> card's antenna) sticking out of the chassis.
-> 
-> If not for Atlas board , give me a general idea about compactPCI 19" 
-> chassis.
-> 
-> Thanks a lot,
-> -Mike.
-> 
-> _________________________________________________________________
-> Browse styles for all ages, from the latest looks to cozy 
-> weekend wear at 
-> MSN Shopping.  And check out the beauty products! 
-http://shopping.msn.com

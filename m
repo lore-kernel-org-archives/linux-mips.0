@@ -1,124 +1,102 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199711142117.NAA27890@oz.engr.sgi.com>
-Subject: Pentium F00F bug Linux workaround
-Date: Fri, 14 Nov 1997 13:17:24 -0800 (PST)
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: fisher@hollywood.engr.sgi.com (William Fisher)
+Message-ID: <199711172128.NAA04775@hollywood.engr.sgi.com>
+Subject: Re: Pentium F00F bug Linux workaround; BSDI Response
+Date: Mon, 17 Nov 1997 13:28:20 -0800 (PST)
+Reply-To: fisher@sgi.com
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19971114211724.dnXwdXtqecxAely4Wm8NQC4LB5eLDpTLLlB9W5eYKAw@z>
+To: linux@hollywood.engr.sgi.com
+Cc: William Fisher <fisher@hollywood.engr.sgi.com>
+Message-ID: <19971117212820.yZnjloc_UN6vU-HqAPBerEjT_YE03DqqG86ypUPk8H4@z>
 
-[Just forwarding from linux-dev since I thought some people
- may be interested.  Ingo Molnar has found a way to workaround
- the latest Pentium/Pentium-MMX F00F bug. Linus then improved on it.
+Here is the response I got from BSDI on the Pentium F00F bug fix.
 
- I'm impressed by the repeatedly demonstrated ability of the Linux
- community to beat Microsoft.  It remains to be seen how long it'll
- take Microsoft to respond to this serious bug that can crash any
- Windows/WindowsNT machine from user mode (incl. any remotely loaded
- Captive-X control)]
+-- Bill
+-----------------------
+From dab@frantic.BSDI.COM  Sat Nov 15 09:32:26 1997
+Date: Sat, 15 Nov 1997 11:32:42 -0600 (CST)
+From: David Borman <dab@BSDI.COM>
+Message-Id: <199711151732.LAA17129@frantic.BSDI.COM>
+To: fisher@sgi.com
+Subject: Re: Pentium F00F bug Linux workaround
 
--------------------------------------------------------------------------
+Hi Bill,
 
-From Linus:
+> Is this true that:
+> 
+> "BSDI signed an NDA with Intel to get early fix techniques"?
+> 
+> ...
+> Subject: Re: Pentium F00F bug Linux workaround
+> References:  <199711142117.NAA27890@.....>
+> Sender: owner-linux@cthulhu
+> Precedence: bulk
+> 
+> We also got some good press from it pretty fast after we released the fixes:
+> 
+> http://www.news.com/News/Item/0,4,16312,00.html
+> 
+> Whats extremely humorous is that BSDI signed an NDA with Intel to get
+> early fix techniques told to them by Intel engineers.  But the NDA
+> stated they could not release patch sets for BSDI until Intel said so,
+> the thinking on Intel's part is that they wanted nobody to be the
+> first with a fix.  BSDI overlooked this and put the fix out, then
+> quickly took the fixes down once they released they had breached the
+> Intel NDA.
+> 
+> After the Linux fix was already out, Intel engineers spoke with Linus
+> and tried to get him to sign an NDA, I've never laughed so hard in my life.
+>
+Hmm... The Linux message is not accurate.  At no time has BSDI violated
+any agreements with Intel.  The first patch that we put up was a beta
+patch.  It solves the problem, but we made some minor improvements on
+it in our official patch.
 
-Ingo, Alan, others,
- I have a quick cleanup of 2.1.63 that looks a bit better wrt the F0 0F
-bug, and also avoids the double SMP unlock that somebody noticed (sorry
-for not giving attribution, I've been pretty rushed today trying to get
-the stuff out quickly to people to test). 
+I'll also point out that Intel called us.  From our official patch:
 
-I still don't have any pentium closeby to actually test this, so I'm
-appending patches relative to 2.1.63. Does this still work for people with
-the bug?
+	BSDI has worked closely with Intel since they contacted us about
+	this erratum. We were able to develop a workaround for BSD/OS very
+	quickly, and Intel's assistance was invaluable in this process.
+	BSDI is confident that the software workaround solves this problem
+	for our customers.
+	...
+	Thanks to Intel Corporation for contacting BSDI with data that
+	led to the fix.
 
-		Linus
+Also, though I don't personally have anything to support this, it is our
+understanding that the Linux fix was based at least in part upon
+disassembling our beta patch.
 
------
-diff -u --recursive --new-file v2.1.63/linux/arch/i386/mm/fault.c linux/arch/i386/mm/fault.c
---- v2.1.63/linux/arch/i386/mm/fault.c	Wed Nov 12 13:34:25 1997
-+++ linux/arch/i386/mm/fault.c	Wed Nov 12 13:33:48 1997
-@@ -74,14 +74,6 @@
- 	return 0;
- }
- 
--asmlinkage void divide_error(void);
--asmlinkage void debug(void);
--asmlinkage void nmi(void);
--asmlinkage void int3(void);
--asmlinkage void overflow(void);
--asmlinkage void bounds(void);
--asmlinkage void invalid_op(void);
--
- asmlinkage void do_divide_error (struct pt_regs *, unsigned long);
- asmlinkage void do_debug (struct pt_regs *, unsigned long);
- asmlinkage void do_nmi (struct pt_regs *, unsigned long);
-@@ -189,44 +181,27 @@
- 		goto out;
- 	}
- 
--	printk(&quot;&lt;%p/%p&gt;\n&quot;, idt2, (void *)address);
- 	/*
- 	 * Pentium F0 0F C7 C8 bug workaround:
- 	 */
--	if ( pentium_f00f_bug &amp;&amp; (address &gt;= (unsigned long)idt2) &amp;&amp;
--			(address &lt; (unsigned long)idt2+256*8) ) {
--
--		void (*handler) (void);
--		int nr = (address-(unsigned long)idt2)/8;
--		unsigned long low, high;
--
--		low = idt[nr].a;
--		high = idt[nr].b;
--
--		handler = (void (*) (void)) ((low&amp;0x0000ffff) | (high&amp;0xffff0000));
--		printk(&quot;&lt;handler %p... &quot;, handler);
--		unlock_kernel();
--
--		if (handler==divide_error)
--			do_divide_error(regs,error_code);
--		else if (handler==debug)
--			do_debug(regs,error_code);
--		else if (handler==nmi)
--			do_nmi(regs,error_code);
--		else if (handler==int3)
--			do_int3(regs,error_code);
--		else if (handler==overflow)
--			do_overflow(regs,error_code);
--		else if (handler==bounds)
--			do_bounds(regs,error_code);
--		else if (handler==invalid_op)
--			do_invalid_op(regs,error_code);
--		else {
--			printk(&quot;INVALID HANDLER!\n&quot;);
--			for (;;) __cli();
-+	if ( pentium_f00f_bug ) {
-+		unsigned long nr;
-+		
-+		nr = (address - (unsigned long) idt2) &gt;&gt; 3;
-+
-+		if (nr &lt; 7) {
-+			static void (*handler[])(struct pt_regs *, unsigned long) = {
-+				do_divide_error,	/* 0 - divide overflow */
-+				do_debug,		/* 1 - debug trap */
-+				do_nmi,			/* 2 - NMI */
-+				do_int3,		/* 3 - int 3 */
-+				do_overflow,		/* 4 - overflow */
-+				do_bounds,		/* 5 - bound range */
-+				do_invalid_op };	/* 6 - invalid opcode */
-+			unlock_kernel();
-+			handler[nr](regs, error_code);
-+			return;
- 		}
--		printk(&quot;... done&gt;\n&quot;);
--		goto out;
- 	}
- 
- 	/* Are we prepared to handle this kernel fault?  */
+I've attached our "press release".
+
+		-David Borman, dab@bsdi.com
 
 
--- 
-Peace, Ariel
+FOR IMMEDIATE RELEASE
+Contact:	Donna Faulkner
+		Baron, McDonald & Wells
+		770/492-0373
+		dfaulkner@bmwpr.com
+
+First Intel Pentium Processor 'F0' Bug Fix Announced for BSDI ISP Customers
+
+ISPs and other users of BSD/OS can be protected against system 'freezes'
+caused by illegal code strings 
+
+COLORADO SPRINGS, Co.  (November 17, 1997)
+
+Internet Service Providers (ISPs) and other users of the BSD/OS can now protect themselves against problems associated with the 'F0' bug discovered in Intel's Pentium processor.  Berkeley Software Design, Inc. (BSDI) today announced a patch that protects companies running BSD/OS 3.1, 3.0, 2.1 against system freezes caused when the processor receives an illegal, one-line instruction.  
+	BSDI's patch enables the BSD/OS to gain control whenever an invalid sequence is executed, enabling the system to take its normal action in response to illegal instructions.  The patch offers a solution to more than 7,000 organizations and companies relying on the BSD/OS, including over 3,000 ISPs worldwide.  ISPs are particularly vulnerable to system attacks based on the Pentium processor bug, since any user or subscriber with malicious intent has the potential to create a system-wide hang-up.
+
+	"BSDI has developed an outstanding reputation for rapid response to attacks," said Mike Karels, vice president of engineering for BSDI.  "Last summer, we were the first commercial vendor to provide a defense against 'SYN-flooding' attacks.  This week, we have once again demonstrated industry-leading support for our customers."
+
+The BSD/OS patch is downloadable from the company's web site at
+	http://www.bsdi.com. 
+Berkeley Software Design, Inc. is the commercial supplier of the
+high-performance BSD Internet and networking system software originally
+developed at the University of California, Berkeley.
+
+Internet experts worldwide are powering the networked economy with over 75,000 deployed servers running BSDI software engines and applications.  BSDI products for Intel-based PC platforms include the BSDI Internet Server, BSD/OS, and network software for networking appliance developers.  BSDI customers include Adobe Systems, Chase Manhattan Bank, CompuServe, U.S. West, UUNET Technologies, Volvo, and leading Internet Service Providers worldwide.  BSDI is privately held and headquartered in Colorado Springs, Colorado.  Contact BSDI at 719-593-9445, info@bsdi.com or http://www.bsdi.com.
+
+BSDI, BSD/OS and the BSDI logo are trademarks of Berkeley Software Design, Inc.  All other product or service names are trademarks of their respective owners.

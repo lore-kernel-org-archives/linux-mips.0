@@ -1,25 +1,25 @@
-Message-ID: <20050404134918.29726.qmail@web15804.mail.cnb.yahoo.com>
-Date: Mon, 4 Apr 2005 21:49:18 +0800 (CST)
-From: dfsd df <tomcs163@yahoo.com.cn>
-Subject: Re: questions about early-printk
-In-Reply-To: 6667
+From: "Gill" <gill.robles@exterity.co.uk>
+Subject: No PCI memory response
+Date: Mon, 4 Apr 2005 15:44:51 +0100
+Message-ID: <000001c53924$db7c75e0$2000a8c0@gillpc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gb2312
-Content-Transfer-Encoding: 8bit
-Return-Path: <tomcs163@yahoo.com.cn>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-Path: <gill.robles@exterity.co.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20050404134918.ksqtP00YSC6NAESW60qpwlk8376r0ocxk9Zir2vaTL0@z>
+Message-ID: <20050404144451.2x1ZHFGFarQJZVfG4YY-b9PTaXSLAbi7b0SmfSiXorg@z>
 
-Sorry, It's still Malta board, MIPS4Kc cpu. the UART
-is ti16c550c.
+Can anyone help?  We're trying to talk to a RealTek RTL8139 device across
+the PCI bus, and, although linux can access configuration registers on the
+device, it does not access memory space correctly, and we are unable to read
+back any sensible values from the RTL8139 registers. 
 
-The source code at junsun.net is :
-------------------------------------------------------
-#include "uart16550.h" 
+We are using the latest 2.6 linux on an Alchemy DB1550 board.
 
-/* === CONFIG === */ 
+Any help would be much appreciated!
 
-#define BASE 0xb0000080
-------------------------------------------------------
+
+Gill

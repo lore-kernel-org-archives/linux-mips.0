@@ -1,181 +1,124 @@
-Message-ID: <008c01c43ca2$d09264c0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <005401c43c6b$35b750f0$6901a8c0@ratwin1>
-Subject: Re: setup X11 on MIPS64/MALTA
-Date: Tue, 18 May 2004 08:39:03 +0200
+Received: from server1.RightHand.righthandtech.com ([207.252.250.187])
+	by ux1.dataflo.net (8.12.11/8.12.11) with ESMTP id i4IIHcAk042243
+	for <linux-mips@linux-mips.org>; Tue, 18 May 2004 13:17:39 -0500 (CDT)
+content-class: urn:content-classes:message
+Subject: RE: problems on D-cache alias in 2.4.22
+Date: Tue, 18 May 2004 13:17:38 -0500
+Message-ID: <B482D8AA59BF244F99AFE7520D74BF9609D4B3@server1.RightHand.righthandtech.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0089_01C43CB3.92C65320"
-Return-Path: <kevink@mips.com>
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C43D04.66A62BCA"
+From: "Bob Breuer" <bbreuer@righthandtech.com>
+Return-Path: <bbreuer@righthandtech.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ratin@koperasw.com, linux-mips@linux-mips.org
-Message-ID: <20040518063903.7MQvOOu1h4L-_S1cZJgqmA_CCFKjkLfbv2J04VQTlwQ@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20040518181738.kAigocALXHQQxULZoiPsUI5FSJYUF4X9xAcqswMmKNU@z>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0089_01C43CB3.92C65320
+------_=_NextPart_001_01C43D04.66A62BCA
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-I managed to make X11 work on a 5Kc/Malta configuration by overlaying =
-part of the MIPS port
-of RH 7.1 with the "zhang tarball" =
-(ftp://ftp.paralogos.com/pub/linux/mips/tarballs/X11R6.mipsel.tar.gz )=20
-and overlaying part of the linux-mips.org source tree with Matrox fixes =
-from kernel.org.
 
-Earl Mitchell of MIPS went through this exercise last year and came up =
-with a revised procdeure
-which I've bundled into a 33MB tarball and put up at=20
-ftp://ftp.paralogos.com/pub/linux/mips/tarballs/earlm_xfree86_malta.tgz=20
-I haven't actually used it yet, but it contains a revised X11 subtree, =
-sample configuration files, and
-a README.
-  ----- Original Message -----=20
-  From: Ratin Kumar=20
-  To: linux-mips@linux-mips.org=20
-  Sent: Tuesday, May 18, 2004 2:00
-  Subject: setup X11 on MIPS64/MALTA
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org
+> [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Peter Horton
+> Sent: Friday, May 14, 2004 2:53 AM
+> To: wuming
+> Cc: linux-mips@linux-mips.org
+> Subject: Re: problems on D-cache alias in 2.4.22
+>=20
+>=20
+> wuming wrote:
+>=20
+...
+> > at last, when I replaced flush_page_to_ram( ) with=20
+> flush_dcache_page( ),
+> > the internal compiler error disappeared.
+> >
+...
+>=20
+> This is probably just hiding your problem. flush_page_to_ram() is not=20
+> used anymore.
+>=20
+> P.
+>=20
+>=20
 
+Changing that same place also fixes my problem.  However, I came across
+the mips cobalt patches and after applying a variation of the IDE cache
+fix from there, that also fixes the problem.  So it would seem that this
+is the same problem as already fixed in the cobalt patch, but showing up
+on non-cobalt hardware.
 
-  Hi,
+flush_page_to_ram() was made useless around the release of 2.4.21.  I
+suspect that this was broken at that time, seeing how it is broken in
+2.4.22 and 2.4.26.  From browsing the debian-mips mailing list archives,
+it appears that they have not had a stable mips kernel since 2.4.19,
+could this bug be the cause?  Are the recent Debian mips kernels still
+unstable?
 
+Would anyone with an unstable 2.4.2x kernel be willing to try one of the
+attached patches to see if the situation improves?
 
+Bob
 
-  I am trying to get X11 up on my MALTA (MIPS 64, little endian board). =
-I have the frame buffer working (using Matrox Mill - II PCI card). I =
-also have the Red Hat 7.3 installation going but I am not able to get X =
-to work. Has any one tried this combination OR if there is any advice on =
-this ??
+------_=_NextPart_001_01C43D04.66A62BCA
+Content-Type: application/octet-stream;
+	name="cache_alias_fix1.diff"
+Content-Transfer-Encoding: base64
+Content-Description: cache_alias_fix1.diff
+Content-Disposition: attachment;
+	filename="cache_alias_fix1.diff"
 
+SW5kZXg6IG1tL2ZpbGVtYXAuYwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJDUyBmaWxlOiAvaG9tZS9jdnMvbGludXgv
+bW0vZmlsZW1hcC5jLHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjc0LjIuMTQKZGlmZiAtdSAtcjEu
+NzQuMi4xNCBmaWxlbWFwLmMKLS0tIG1tL2ZpbGVtYXAuYwkyMCBGZWIgMjAwNCAwMToyMjoyMSAt
+MDAwMAkxLjc0LjIuMTQKKysrIG1tL2ZpbGVtYXAuYwkxOCBNYXkgMjAwNCAxNzoxODoyNiAtMDAw
+MApAQCAtMjExMSw3ICsyMTExLDcgQEAKIAkgKiBhbmQgcG9zc2libHkgY29weSBpdCBvdmVyIHRv
+IGFub3RoZXIgcGFnZS4uCiAJICovCiAJbWFya19wYWdlX2FjY2Vzc2VkKHBhZ2UpOwotCWZsdXNo
+X3BhZ2VfdG9fcmFtKHBhZ2UpOworCWZsdXNoX2RjYWNoZV9wYWdlKHBhZ2UpOwogCXJldHVybiBw
+YWdlOwogCiBub19jYWNoZWRfcGFnZToK
 
+------_=_NextPart_001_01C43D04.66A62BCA
+Content-Type: application/octet-stream;
+	name="cache_alias_fix2.diff"
+Content-Transfer-Encoding: base64
+Content-Description: cache_alias_fix2.diff
+Content-Disposition: attachment;
+	filename="cache_alias_fix2.diff"
 
-  Thanks in advance.
+SW5kZXg6IGluY2x1ZGUvYXNtLW1pcHMvaWRlLmgKPT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1MgZmlsZTogL2hvbWUv
+Y3ZzL2xpbnV4L2luY2x1ZGUvYXNtLW1pcHMvaWRlLmgsdgpyZXRyaWV2aW5nIHJldmlzaW9uIDEu
+MTEuMi43CmRpZmYgLXUgLXIxLjExLjIuNyBpZGUuaAotLS0gaW5jbHVkZS9hc20tbWlwcy9pZGUu
+aAkxNSBKdWwgMjAwMyAxNTowODozMyAtMDAwMAkxLjExLjIuNworKysgaW5jbHVkZS9hc20tbWlw
+cy9pZGUuaAkxOCBNYXkgMjAwNCAxNzo1Nzo0NCAtMDAwMApAQCAtNjksNiArNjksNDkgQEAKICNl
+bmRpZgogCiAjaW5jbHVkZSA8YXNtLWdlbmVyaWMvaWRlX2lvcHMuaD4KKyNpbmNsdWRlIDxhc20v
+cjRrY2FjaGUuaD4KKworc3RhdGljIGlubGluZSB2b2lkIF9fZmx1c2hfZGNhY2hlX3JhbmdlKHVu
+c2lnbmVkIGxvbmcgc3RhcnQsIHVuc2lnbmVkIGxvbmcgZW5kKQoreworCXVuc2lnbmVkIGxvbmcg
+ZGNfc2l6ZSwgZGNfbGluZSwgYWRkcjsKKworCWRjX3NpemUgPSBjdXJyZW50X2NwdV9kYXRhLmRj
+YWNoZS53YXlzaXplOworCWRjX2xpbmUgPSBjdXJyZW50X2NwdV9kYXRhLmRjYWNoZS5saW5lc3o7
+CisKKwlhZGRyID0gc3RhcnQgJiB+KGRjX2xpbmUgLSAxKTsKKwllbmQgKz0gZGNfbGluZSAtIDE7
+CisKKwlpZiAoZW5kIC0gYWRkciA8IGRjX3NpemUpCisJCWZvciAoOyBhZGRyIDwgZW5kOyBhZGRy
+ICs9IGRjX2xpbmUpCisJCQlmbHVzaF9kY2FjaGVfbGluZShhZGRyKTsKKwllbHNlIHsKKwkJLyog
+Zmx1c2ggYWxsIG9mIGRjYWNoZSAqLworCQlhZGRyID0gS1NFRzA7CisJCWVuZCA9IGFkZHIgKyBk
+Y19zaXplOworCQlmb3IgKDsgYWRkciA8IGVuZDsgYWRkciArPSBkY19saW5lKQorCQkJZmx1c2hf
+ZGNhY2hlX2xpbmVfaW5kZXhlZChhZGRyKTsKKwl9Cit9CisKKyN1bmRlZiBpbnN3CisjdW5kZWYg
+aW5zbAorI3VuZGVmIF9faWRlX2luc3cKKyN1bmRlZiBfX2lkZV9pbnNsCisKK3N0YXRpYyBpbmxp
+bmUgdm9pZCBfX2lkZV9pbnN3KHVuc2lnbmVkIGxvbmcgcG9ydCwgdm9pZCAqYWRkciwgdTMyIGNv
+dW50KQoreworCV9faW5zdyhwb3J0LCBhZGRyLCBjb3VudCk7CisJX19mbHVzaF9kY2FjaGVfcmFu
+Z2UoKHVuc2lnbmVkIGxvbmcpYWRkciwgKHVuc2lnbmVkIGxvbmcpYWRkciArIGNvdW50KjIpOwor
+fQorCitzdGF0aWMgaW5saW5lIHZvaWQgX19pZGVfaW5zbCh1bnNpZ25lZCBsb25nIHBvcnQsIHZv
+aWQgKmFkZHIsIHUzMiBjb3VudCkKK3sKKwlfX2luc2wocG9ydCwgYWRkciwgY291bnQpOworCV9f
+Zmx1c2hfZGNhY2hlX3JhbmdlKCh1bnNpZ25lZCBsb25nKWFkZHIsICh1bnNpZ25lZCBsb25nKWFk
+ZHIgKyBjb3VudCo0KTsKK30KKworI2RlZmluZSBpbnN3KHBvcnQsIGFkZHIsIGNvdW50KSBfX2lk
+ZV9pbnN3KHBvcnQsIGFkZHIsIGNvdW50KQorI2RlZmluZSBpbnNsKHBvcnQsIGFkZHIsIGNvdW50
+KSBfX2lkZV9pbnNsKHBvcnQsIGFkZHIsIGNvdW50KQogCiAjZW5kaWYgLyogX19LRVJORUxfXyAq
+LwogCg==
 
-
-
-  -Ratin.
-
-------=_NextPart_000_0089_01C43CB3.92C65320
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
-<STYLE>@page Section1 {size: 8.5in 11.0in; margin: 1.0in 1.25in 1.0in =
-1.25in; }
-P.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
-}
-LI.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
-}
-DIV.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
-}
-A:link {
-	COLOR: blue; TEXT-DECORATION: underline
-}
-SPAN.MsoHyperlink {
-	COLOR: blue; TEXT-DECORATION: underline
-}
-A:visited {
-	COLOR: purple; TEXT-DECORATION: underline
-}
-SPAN.MsoHyperlinkFollowed {
-	COLOR: purple; TEXT-DECORATION: underline
-}
-SPAN.EmailStyle17 {
-	COLOR: windowtext; FONT-FAMILY: Arial
-}
-DIV.Section1 {
-	page: Section1
-}
-</STYLE>
-</HEAD>
-<BODY lang=3DEN-US vLink=3Dpurple link=3Dblue bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>I managed to make X11 work on a =
-5Kc/Malta=20
-configuration by overlaying part of the MIPS port</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>of RH 7.1 with the "zhang tarball" (<A=20
-href=3D"ftp://ftp.paralogos.com/pub/linux/mips/tarballs/X11R6.mipsel.tar.=
-gz ) ">ftp://ftp.paralogos.com/pub/linux/mips/tarballs/X11R6.mip<FONT=20
-color=3D#000000>sel.tar.gz ) </FONT></A></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>and overlaying part of the =
-linux-mips.org source=20
-tree with </FONT><FONT face=3DArial size=3D2>Matrox fixes from=20
-kernel.org.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Earl Mitchell of MIPS went through this =
-exercise=20
-last year and came up with a revised procdeure</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>which I've bundled into a 33MB tarball =
-and put up=20
-at </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><A=20
-href=3D"ftp://ftp.paralogos.com/pub/linux/mips/tarballs/earlm_xfree86_mal=
-ta.tgz">ftp://ftp.paralogos.com/pub/linux/mips/tarballs/earlm_xfree86_mal=
-ta.tgz</A>=20
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I haven't actually used it yet, but it =
-contains a=20
-revised X11 subtree, sample configuration files, and</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>a README.</FONT></DIV>
-<BLOCKQUOTE dir=3Dltr=20
-style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
-BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
-  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
-  <DIV=20
-  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black"><B>From:</B>=20
-  <A title=3Dratin@koperasw.com href=3D"mailto:ratin@koperasw.com">Ratin =
-Kumar</A>=20
-  </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A =
-title=3Dlinux-mips@linux-mips.org=20
-  =
-href=3D"mailto:linux-mips@linux-mips.org">linux-mips@linux-mips.org</A> =
-</DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Tuesday, May 18, 2004 =
-2:00</DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> setup X11 on =
-MIPS64/MALTA</DIV>
-  <DIV><FONT face=3DArial size=3D2></FONT><BR></DIV>
-  <DIV class=3DSection1>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Hi,</SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial"></SPAN></FONT>&nbsp;</P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">I am trying to get X11 =
-up on my=20
-  </SPAN></FONT><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">MALTA</SPAN></FONT><FONT =
-
-  face=3DArial size=3D2><SPAN style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Arial"> (MIPS 64,=20
-  little endian board). I have the frame buffer working (using Matrox =
-Mill =96 II=20
-  PCI card). I also have the Red Hat 7.3 installation going but I am not =
-able to=20
-  get X to work. Has any one tried this combination OR if there is any =
-advice on=20
-  this ??</SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial"></SPAN></FONT>&nbsp;</P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Thanks in=20
-  advance.</SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial"></SPAN></FONT>&nbsp;</P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Arial">-Ratin.</SPAN></FONT></P></DIV></BLOCKQUOTE></BODY></HTML>
-
-------=_NextPart_000_0089_01C43CB3.92C65320--
+------_=_NextPart_001_01C43D04.66A62BCA--

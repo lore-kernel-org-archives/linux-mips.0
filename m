@@ -1,87 +1,64 @@
-Reply-To: <ratin@koperasw.com>
-From: "Ratin Kumar" <ratin@koperasw.com>
-Subject: RE: pthread uClibc
-Date: Thu, 5 Aug 2004 23:30:22 -0700
-Message-ID: <00bc01c47b7e$de436130$6401a8c0@ratwin1>
+Date: Thu, 12 Aug 2004 21:11:33 +0200 (MEST)
+From: "Svetoslav Slavtchev" <svetljo@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <006101c47b6b$abbd6610$5d0d790a@asingh2d01>
-Return-Path: <ratin@koperasw.com>
+References: <Pine.LNX.4.58.0408121954270.14123@shofar.kom.e-technik.tu-darmstadt.de>
+Subject: Re: Q: problems with missing /dev/tty0 on X startup in MIPS system
+Message-ID: <15387.1092337893@www3.gmx.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-Path: <svetljo@gmx.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'akshay' <akshay.singh@analog.com>, linux-mips@linux-mips.org
-Message-ID: <20040806063022.HtIz7nP1toJ89v_jVKqJdenoLvCeGHvkkoNQSfQ5jt8@z>
+To: Ralf Ackermann <rac@KOM.tu-darmstadt.de>
+Cc: linuxconsole-dev@lists.sourceforge.net, linux-mips@linux-mips.org
+Message-ID: <20040812191133.DphBnHPtCTBn9XvK-buHJw1IY7hSw3OWZ_G05_NLAIo@z>
 
-It might make a bit more sense if you talk a bit about your setup/toolchain
-(cross??) and version of libraries used....
+> Hello,
+> 
+> I'm trying to get VGA output on a MIPSel system (MeshCube 
+> http://www.meshcube.org) to work. 
+> The system uses a miniPCI ATI Rage VGA card (=> problem does not get 
+> initialized due to lack of system BIOS => hopefully initialized by int10 
+> XFree86 x86 emulator code).
+> 
+> I've attached an USB mouse and keyboard but fail to start X due to
+> 
+> Fatal server error:
+> xf86OpenConsole: Cannot open /dev/tty0 (No such file or directory)
+> 
+> My questions to those working with MIPS boards / on the Ruby/Linux console
+> project are:
+>  - 1. How to test the USB input functionality?
+> 	(I could test the mouse by doing: cat < /dev/input/mice
+> 	=> any hints on doing something similar for the keyboard?)
 
------Original Message-----
-From: linux-mips-bounce@linux-mips.org
-[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of akshay
-Sent: Thursday, August 05, 2004 9:13 PM
-To: linux-mips@linux-mips.org
-Subject: pthread uClibc
+not a guru here, but i hope this will help you
+-----------------------
+modprobe evdev
+cat /proc/bus/input/devices
+: Bus=0011 Vendor=0001 Product=0001 Version=ab41
+N: Name="AT Translated Set 2 keyboard"
+P: Phys=isa0060/serio0/input0
+H: Handlers=kbd event0
+B: EV=120003
+B: KEY=4 2000000 2b803878 f840d001 f2ffffdf ffefffff ffffffff fffffffe
+B: LED=7
+<snip>
+cat /dev/input/event0
+------
+should give you some characters on typing to
+the corresponding keyboard
 
+>  - 2. Any hints on the missing /dev/tty0 stuff? (this is maybe
+> 	related to the console / keyboard stuff?)
+> 
+> Any hints are welcome, best regards
+>  Ralf
 
-Hi,
+best,
 
-I am trying to use pthread on mips based platform.
+svetljo
 
-I have simple program to just create pthreads and when I run my program, it
-goes in infinite loop and never comes back.
-Though when I hit enter on console, I see following message on console.
-
-pt: assertion failed in manager.c:154.
-
-pt: assertion failed in manager.c:193.
-
-Can someone plz help me here .
-
-
-
-Here is the code for my program.
-==============================================================
-#include <stdio.h>
-#include <pthread.h>
-
-void print_message_function( void *ptr );
-
-     pthread_t thread1;
-     char *message1 = "Thread 1";
-
-main()
-{
-     int  iret1, iret2;
-
-    /* Create independant threads each of which will execute function */
-
-     iret1 = pthread_create( &thread1, NULL, (void*)&print_message_function,
-(v
-oid*) message1);
-
-printf("threads created ....\n");
-     /* Wait till threads are complete before main continues. Unless we  */
-     /* wait we run the risk of executing an exit which will terminate   */
-     /* the process and all threads before the threads have completed.   */
-
-     pthread_join( thread1, NULL);
-
-     printf("Thread 1 returns: %d\n",iret1);
-     exit(0);
-}
-
-void print_message_function( void *ptr )
-{
-     char *message;
-     message = (char *) ptr;
-     printf("%s \n", message);
-}
-
-
-
-
-
-Thanks,
-Akshay
+-- 
+NEU: WLAN-Router für 0,- EUR* - auch für DSL-Wechsler!
+GMX DSL = supergünstig & kabellos http://www.gmx.net/de/go/dsl

@@ -1,118 +1,44 @@
-Message-ID: <000401c3160f$1a087bf0$d017a8c0@pc208>
-From: "smills_ho" <smills_ho@coventive.com>
-References: <3EB0B329.9030603@ict.ac.cn> <16048.55936.346808.522687@cuddles.redhat.com> <3EB0DDC6.5080108@ict.ac.cn> <16048.57054.224964.883062@cuddles.redhat.com> <20030501085018.GA1885@greglaptop.attbi.com> <000a01c315cf$8171ac70$d017a8c0@pc208> <1052464867.2485.3.camel@ghostwheel.sfbay.redhat.com> <3EBB58C6.3070604@gentoo.org> <001f01c31603$1ed7fbd0$d017a8c0@pc208> <3EBB670E.4020200@gentoo.org>
-Subject: Re: Problem of cross-mipsel-compiler GLIBC-2.3.X
-Date: Fri, 9 May 2003 17:40:58 +0800
+Date: Fri, 9 May 2003 22:44:13 -0700 (PDT)
+From: Muthukumar Ratty <muthu@iqmail.net>
+Subject: Re: Linux for MIPS Atlas 4Kc board
+In-Reply-To: <BAY1-F45jlKqwWil63h0000a6fd@hotmail.com>
+Message-ID: <Pine.LNX.4.33.0305092241080.12630-100000@Muruga.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <smills_ho@coventive.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <muthu@iqmail.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: kumba@gentoo.org, linux-mips@linux-mips.org
-Message-ID: <20030509094058.KChZqOw0Qbct2Cq98v4GPQ02PoygtUK3IZztS3C3TvM@z>
+To: Michael Anburaj <michaelanburaj@hotmail.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20030510054413.xbiF4TDJDYSlLHx3CRSxiMYRuFVOtnFW8BOKL7j3RJc@z>
 
-Dear Kumba,
+> Warning: unable to open an initial console.
+> Kernel panic: No init found.  Try passing init= option to kernel.
+>
 
-    After try several versions of binutils and glibc , it works in crossing
-XFree86 4.2.1.
-binutils 2.13.2.1 + gcc 3.2.3 + glibc 2.3.2
-and some patchs come from debian's packages ( binutils 2.13.90.0.18 ,
-gcc-3.2.1,glibc-2.3.1)
 
-Thanks and best regards,
-
-Smills_ho
-
------ Original Message -----
-From: "Kumba" <kumba@gentoo.org>
-To: <linux-mips@linux-mips.org>
-Sent: Friday, May 09, 2003 4:30 PM
-Subject: Re: Problem of cross-mipsel-compiler GLIBC-2.3.X
-
+do you have init in /export/.../sbin Probably exporting wrong
+directory?
 
 >
-> I'm not quite sure.  I don't see how trying it could hurt, maybe it
-> will work, maybe it won't.  Although, 2.14.90.0.1 was just released as
-> well, you might try that, or even CVS Head, as I heard that includes
-> last-minute mips fixes.  I'm fairly new to the whole cross-compiler
-> thing myself, and recently discovered the HOWTO mentioned in your
-> previous mail, which I'm looking at to try and get an i686->mips
-> cross-compiler going.  For now though, my sparc->mips cross-compiler
-> works, so it's what I'll rely on the most.
+> in src/linux/init/main.c
 >
-> --Kumba
+> open("/dev/console", O_RDWR, 0) is returning a negative value. I don't have
+> a video device on board., required? Will /dev/console open a UART port
+> (/dev/ttyS0 or /dev/tty0)? Why am I getting this error?
 >
+> 1. Is the kernel not build properly (did not include console driver)?
+> 2. Should I pass init=blablabla as a parameter? <but nothing like that is
+> specified in the doc.>.
 >
-> smills_ho wrote:
-> > Dear Kumba,
-> >     Should we try this binutils-2.13.90.0.20?
-> > We try the version binutils-2.13.90.0.18 (Debian used) and it is failed
-on
-> > cross-gcc step :-(
-> >
-> > Thanks and best regards,
-> >
-> > ----- Original Message -----
-> > From: "Kumba" <kumba@gentoo.org>
-> > To: <linux-mips@linux-mips.org>
-> > Sent: Friday, May 09, 2003 3:29 PM
-> > Subject: Re: Problem of cross-mipsel-compiler GLIBC-2.3.X
-> >
-> >
-> >
-> >>Oddly enough, I followed these basic steps and wound up with a working
-> >>cross-compiler from sparc64 -> mipseb (Sun Blade 100 to mips
-> >>big-endian).  Gcc nor glibc gave me any issues.....However, when I tried
-> >>the same exact steps on i686, glibc complained about libgcc not being
-> >>available, among other things.  It's got me baffled, but I'm not exactly
-> >>complaining.  Currently, it's gcc-3.2.3 (propolice patched) +
-> >>glibc-2.3.2 + binutils-2.13.90.0.20, which it'll get rebuilt for the new
-> >>binutils 2.14.
-> >>
-> >>--Kumba
-> >>
-> >>
-> >>
-> >>Eric Christopher wrote:
-> >>
-> >>>On Thu, 2003-05-08 at 19:05, smills_ho wrote:
-> >>>
-> >>>
-> >>>>Dear All,
-> >>>>   I want to make a cross-compilered glibc-2.3.x and I get the source
-> >
-> > from
-> >
-> >>>>ftp.gun.org. GCC version is 3.2.3, binutils is 2.13.2.1. The step is
-as
-> >>>>following:
-> >>>>
-> >>>>1. Try to build binutils
-> >>>>2. Try to make static GCC
-> >>>>3. Try to make glibc -----> Then it is failed
-> >>>>
-> >>>>Is there anybody know what's going on or somebody had successfully to
-> >
-> > build
-> >
-> >>>>the crossed glibc-2.3.x?
-> >>>
-> >>>
-> >>>A host cross host compiler for linux systems is a little more involved
-> >>>than this :)
-> >>>
-> >>>However, I don't know where you went wrong since you really didn't
-> >>>provide much in the way of information as to what you did or where it
-> >>>failed.
-> >>>
-> >>>-eric
-> >>>
-> >>
-> >>
-> >
-> >
-> >
+> Advice me please...
+>
+> Thanks,
+>
+> -Mike.
+>
+> _________________________________________________________________
+> MSN 8 with e-mail virus protection service: 2 months FREE*
+> http://join.msn.com/?page=features/virus
 >
 >

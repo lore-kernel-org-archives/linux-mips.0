@@ -1,32 +1,51 @@
-Received: from fairytale.tal.org (cruel.tal.org [195.16.220.85])
-	by gw01.mail.saunalahti.fi (Postfix) with ESMTP id 67B7036364
-	for <linux-mips@linux-mips.org>; Wed,  7 Jul 2004 17:36:35 +0300 (EEST)
-Received: from amos (unknown [195.16.220.84])
-	by fairytale.tal.org (Postfix) with SMTP id 0CF4F8D77
-	for <linux-mips@linux-mips.org>; Wed,  7 Jul 2004 17:38:14 +0300 (EEST)
-Message-ID: <00e201c46430$5cc18250$54dc10c3@amos>
-From: "Kaj-Michael Lang" <milang@tal.org>
-References: <000d01c463d1$994e59a0$6030a8c0@eng32>
-Subject: Re: querries on cross compiler
-Date: Wed, 7 Jul 2004 17:40:32 +0300
+Message-ID: <00ba01c46823$3729b200$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <KevinK@mips.com>
+References: <BAY2-F21njXXBARdkfw0003b0c8@hotmail.com> <20040710100412.GA23624@linux-mips.org>
+Subject: Re: Strange, strange occurence
+Date: Mon, 12 Jul 2004 17:16:31 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <milang@tal.org>
+Return-Path: <KevinK@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20040707144032.IhfZI9t96EDS8tzOXRzRO6Z-qV9ZwJD8AhF6SUNSEE4@z>
+To: Ralf Baechle <ralf@linux-mips.org>, S C <theansweriz42@hotmail.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20040712151631.Q2meLexL6p2sWWmTlvuyv42XzbIX58cGsnsUhrZgce4@z>
 
-> Iam trying to build a cross compiler for MIPS processor on
-> "i686-pc-linux-gcc" host. Iam getting some errors during the installation
-of
-> BINUTILS(binutils-2.9.1) i.e, after configure, when I type "make" Iam
-> getting errors. Can u please suggest how to remove these errors.
+[snip]
+> > The crash is occuring inside the function r4k_flush_icache_range().
+> > 
+> > I tried 'flush -i' and 'flush -d' on YAMON after the download but before 
+> > the 'go', but that didn't help. I also tried completely disabling caches 
+> > and loading/running uncached, but it gave the same error.
+> > 
+> > Now, the final twist! Using an ICE, I set a breakpoint at the 
+> > r4k_flush_icache_range function. Then I loaded the kernel as usual, ran it 
+> > with the ICE, stepped through a few instructions inside the 
+> > r4k_flush_icache_range function and then did a 'cont'. The kernel now 
+> > booted fine!
+> 
+> As already pointed out by the other poster Niels Sterrenburg using a
+> debugger unavoidably changes the state of the system to be debugged.
+> 
+> For at least some of the TX49xx processors there is a problem under certain
+> circumstances if a flush of an I-cache line flushes that cache instruction
+> itself.  Make sure you're not getting hit by that one.
 
-That binutils is extremly old, try using something a little more uptodate...
-I'd recommend using crosstool to build you cross compiler.
+It's not just the TX49xx series.  While many MIPS-compatible processors 
+do handle the special case of flushing the active CACHE instruction itself, 
+not all of them do, and the MIPS32 spec calls it out as having an "UNPREDICTABLE"
+result.
 
--- 
-Kaj-Michael Lang , milang@tal.org
+A truly safe and general I-cache flush routine should itself run uncached,
+but a cursory glance at the linux-mips.org sources makes me think
+that we do not take that precaution by default - the flush_icache_range
+pointer looks to be set to the address of r4k_flush_icache_range()
+function, rather than its (uncacheable) alias in kseg1.  Is this something
+that's fixed in a linker script, or are we just living dangerously?
+
+            Regards,
+
+            Kevin K.

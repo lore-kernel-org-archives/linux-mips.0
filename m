@@ -1,39 +1,38 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199706261501.LAA18745@neon.ingenia.ca>
-Subject: Re: Intel tools suspect, film at 11
-In-Reply-To: <199706261449.QAA29376@informatik.uni-koblenz.de> from Ralf Baechle at "Jun 26, 97 04:49:21 pm"
-Date: Thu, 26 Jun 1997 11:01:48 -0400 (EDT)
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199706261846.LAA11570@oz.engr.sgi.com>
+Subject: anon-ftp enabled on linus
+Date: Thu, 26 Jun 1997 11:46:22 -0700 (PDT)
+Reply-To: ariel@sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970626150148.F-aZVhSAPiDgdY_TcDOrMRqk1tv_E-IiIMBwCbSvPB4@z>
+To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19970626184622.kQGxYy92eVvtjbOz47qx7mYJQOSv2n-P-izvbgVCM6w@z>
 
-Thus spake Ralf Baechle:
-> > Well, I can build a (working) kernel with the IRIX-hosted tools, and
-> > not the Intel-hosted ones, so I'm beginning to suspect that it's not
-> > _just_ my incompetence at work.
-> 
-> Sorry, but the tools work 100% for Intel.  I've been using them for
-> one or two eternities on Intel.
+FYI:
 
-That doesn't reflect too well on me then, does it? =)
+I just enabled public ftp access to linus.linux.sgi.com
+ftpd runs as user/group  ftp/ftp.
 
-Seriously though, I'm at a loss.
-I can build a kernel with the IRIX tools, and I can't with the Intel
-ones.
+The chroot'ed location (~ftp) is /src (where the CVS tree resides)
 
-I'll blow everything away and reinstall, I guess.
+I made sure that the source tree has no world write permissions
+or ftp group write permissions anywhere.
 
-Mike
+Since IRIX comes only with a dynamically liked '/bin/ls'
+I had to add /lib/rld libc.so and /dev/zero rooted at /src
+for dir to work.  I made all the permissions secure but
+another check would be appreciated.
+
+If anyone feels like building the latest wu-ftpd (with all security
+patches) and replace the SGI ftpd - welcome.
+
+A web site is planned too.  I hope we got a volunteer to set it up.
+
+Let's keep the public areas only on the /src partition. I suggest
+/src/www (or some such) for the web doc root.
 
 -- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>                   Welcome to the technocracy.
-#>                                                                     
-#> "you'd be so disappointed
-#>              to find out that the magic was not
-#>                          really meant for you" - OLP
+Peace, Ariel

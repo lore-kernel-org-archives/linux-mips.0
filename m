@@ -1,22 +1,18 @@
-From: "Robert Rusek" <rrusek@teknuts.com>
-Subject: dump/Restore issues on Indy
-Date: Mon, 13 May 2002 14:53:26 -0700
-Message-ID: <C0F41630CD8B9C4680F2412914C1CF070164C9@WH-EXCHANGE1.AD.WEIDERPUB.COM>
+Subject: Re: RAMDISK problem on 79s334A board.
+Date: Wed, 15 May 2002 12:00:27 +0100 (BST)
+In-Reply-To: <Pine.LNX.4.10.10205151403260.14414-100000@brahma.intotoind.com> from "Venkata Rajesh Bikkina" at May 15, 2002 02:12:25 PM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <E177wWB-0001df-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20020513215326.7Q_pe0y7usY9ydr9ZTLHokd0azvAUyfCb7oLugvdn7g@z>
+To: Venkata Rajesh Bikkina <rajeshbv@intotoinc.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20020515110027.Q46awv2fewGcAWTJCNk40hxTHMYVmaHmvvj9WdkhEco@z>
 
-I am having problems doing a restore after a dump.  The dump finishes
-without any problems.  I get an invalid header when doing a restore.
-When I use tar it works great so I know that it is not a hardware
-problem.  I have compiled the lates dump/restore and ef2progs.  
+> But when i build RAMDISK image and insert the module, insmod is
+> doing fine. But after that i could not invoke any other application ( even
+> ps -ef is also giving segmentation fault.)
 
-Any help would be greatly appreciated.
-
---
-Robert Rusek
-    
+Looks like your module corrupts the kernel.

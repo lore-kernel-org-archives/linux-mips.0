@@ -1,63 +1,49 @@
-Date: Tue, 30 Oct 2001 21:46:19 +0000 (GMT)
-From: Dave Airlie <airlied@csn.ul.ie>
-Subject: Re: [LV] FYI: Mopd ELF support
-In-Reply-To: <Pine.GSO.3.96.1011029170937.3407G-100000@delta.ds2.pg.gda.pl>
-Message-ID: <Pine.LNX.4.32.0110302144340.14320-100000@skynet>
+Message-ID: <000f01c16271$8013eae0$001e690a@huawei.com>
+From: "machael" <dony.he@huawei.com>
+Subject: KSEG0 and KSEG2 ...
+Date: Thu, 1 Nov 2001 09:06:55 +0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: linux-mips@fnet.fr, linux-mips@oss.sgi.com, linux-vax@mithra.physics.montana.edu
-Message-ID: <20011030214619.WtlCrggicYKX3Ac-BM9X27n_LE_leJ_XeT6k1-AjoKI@z>
+To: linux-mips@oss.sgi.com
+Cc: Ralf Baechle <ralf@oss.sgi.com>
+Message-ID: <20011101010655.3Xv1gZ690sZr7dWS5JCNwrM0xuLNwAmdzcKXGco0LIY@z>
 
 
-Okay it didn't go so well.. my VAX couldn't boot the file I normally use
-with this mopd (I had to rebuild it for a static libelf)...
+ Hello,ralf:
+    I use linux-2.4.5 and have some questions to need your help.
+    I try to replace some kernel functions with my own implementations.I
+will explain it in the following:
+    Let's say:
+        void (*my_func)(void)=func1;
+     where "my_func" is a function pointer defined in kernel, and "func1" is
+ a function(void func1(void)) implemented in kernel.And "my_func" is an
+ EXPORTED SYMBOL in mips_ksyms.c.
 
-I've put a tgz up at
+    Now I want to replace "func1" with my own "func2" in a module
+ my_module.o:
+     extern void (*my_func)(void);
+     my_func = func2;
+     where "func2" is a function (void fun2(void)) implemented in
+ "my_module.o".
 
-http://www.skynet.ie/~airlied/vax/mopd_on_the_vax.tgz
+     If I do "insmod my_module.o", the kernel should run OK. In fact, it is
+ often met an "unhandled kernel unaligned access" or "do_page_fault"
+ exception and then panics.
 
-it contains the file I was trying to boot and the tcpdumps of this mopd
-and the one I normally use ...
+     We know "func1" should be in KSEG0(unmapped , cached) since it is
+implemented in kernel space.So it's address should be 0x8XXXXXXX.And
+ "my_func" should also pointed to this same address before inserting
+ my_module.o. And "func2" should be in KSEG2(mapped, cached) since it is
+ implemented in module, So it's address should be 0xCXXXXXXX.After inserting
+ my_module.o, "my_func" should be changed to pointed to this new address in
+ KSEG2.
+     My question is :
+     When "my_func" changes from KSEG0 from KSEG2, Can it cause some
+ problems?
 
-if you need any more info give me a shout ..
+     Thank you very much.
 
-Regards,
-	Dave.
-
-
-On Mon, 29 Oct 2001, Maciej W. Rozycki wrote:
-
-> Hi,
->
->  I've made a preliminary version of mopd with ELF support available.  It's
-> Mats O. Jansson's mopd 2.5.3 with several fixes, updates and enhancements.
-> The work is definitely not finished, but basic functionality is already
-> implemented.  I'm making it available due to the amount of PITA
-> maintenance of traditional mopd image formats incurs, in hope someone will
-> find it useful.  Libelf is required for this version of mopd.  It should
-> build and run on any Linux system, regardless of endianness.  It might
-> work on other systems as well.
->
->  I've made RPM packages available at the usual place (i.e.
-> 'ftp://ftp.ds2.pg.gda.pl/pub/macro/').  Beside source packages there are
-> i386 and mipsel binary ones available.  Grab the latest version; olders
-> are for a reference only.  To aid people with no RPM support in their
-> systems I've unpacked the source package into the "mopd" directory.  Still
-> you need to study the .spec file to figure how to build binaries.
->
->  Any feedback will be appreciated; I'm especially interested in reports
-> from VAX users, as I've only been able to verify the operation booting
-> Linux on a DECstation 5000 (i.e. MIPS) system.  Note: this version of mopd
-> does not require switching devices into the PROMISC or ALLMULTI modes of
-> operation.
->
->   Maciej
->
->
-
--- 
-David Airlie, Software Engineer
-http://www.skynet.ie/~airlied / airlied@skynet.ie
-pam_smb / Linux DecStation / Linux VAX / ILUG person
+     machael

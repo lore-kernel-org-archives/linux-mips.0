@@ -1,29 +1,31 @@
-Message-ID: <006601bf2df8$118a7850$0228a8c0@satanas>
+Message-ID: <062a01bf3092$e54906b0$0228a8c0@satanas>
 From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: Re: Challenge "S" 
-Date: Sat, 13 Nov 1999 17:56:43 +0100
+Subject: kernel-headers RPM?
+Date: Wed, 17 Nov 1999 01:30:03 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Mark Spencer <markster@linux-support.net>, Joan Eslinger <wombat@kilimanjaro.engr.sgi.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19991113165643.kIDh52MF-qW58pw78gzbnDm83ZEbaGIh551Miqg3Qmk@z>
+To: SGI Linux Alias <linux@cthulhu.engr.sgi.com>, linux-mips@fnet.fr
+Message-ID: <19991117003003.LxFL3o91qPP6BWPeNe40fhRoa18Vdq4MWOj3foPXk7s@z>
 
->Linux runs on a Challenge S, you just can't use the mezzanine peripheral
->cards yet.
-
-I've never tried it, but the Indy kernel should run unmodified on a
-Challenge S (which is essentially a "headless" Indy).  I've certainly
-run Indy's off the serial console.   The one tricky bit would be that 
-for the console serial port to work as the system console, one must 
-ensure that /dev/console in the root filesystem actually maps to ttyS0.
-
-            Regards,
-
-            Kevin K.
+I've managed to bring up a mipsel 2.2.12
+kernel using the Red Hat 6.0 root filesystem
+from off the SGI web site.  I can install the
+egcs package, but I also need the development
+glibc package to be installed before I can
+"go native".   That package in turn depends
+on the kernel-headers package, which I've
+been unable to locate on the web.  Do any
+of you know where I could find a copy, or
+that failing, build/fake one? Forcing the
+install by overriding the dependencies
+seems to but the rpm database in a
+corrupt state - rpm core dumps thereafter
+on installation that would otherwise succeed.
+:-(
 __
 
 Kevin D. Kissell

@@ -1,8 +1,8 @@
-Message-ID: <00dd01c26ba2$b18f55b0$10eca8c0@grendel>
+Message-ID: <00e001c26ba2$c7e6c960$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
 References: <3D9D484B.4C149BD8@mips.com> <200210041153.MAA12052@mudchute.algor.co.uk>
 Subject: Re: Promblem with PREF (prefetching) in memcpy
-Date: Fri, 4 Oct 2002 14:36:39 +0200
+Date: Fri, 4 Oct 2002 14:37:16 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -12,7 +12,7 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Dominic Sweetman <dom@algor.co.uk>, Carsten Langgaard <carstenl@mips.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20021004123639.w9anw57VJ6jPUPx2QoOp3JS3SFldkDyKes6thvqRsbU@z>
+Message-ID: <20021004123716.cf5l3G0unLs-d8nDzjnzKy-HlmbDt5r6Efw6PC381YQ@z>
 
 From: "Dominic Sweetman" <dom@algor.co.uk>
 > Carsten Langgaard (carstenl@mips.com) writes:

@@ -1,51 +1,95 @@
-Received: from ngw04ykf.rim.net (ngw04ykf.rim.net [10.102.100.115])
-	by mhs99ykf.rim.net (Postfix) with SMTP id ABA75B4906
-	for <linux-mips@linux-mips.org>; Thu, 13 Feb 2003 17:17:58 -0500 (EST)
-content-class: urn:content-classes:message
-Subject: RE: Nwebie - Linux Install on Indigo2
+Date: Fri, 14 Feb 2003 04:33:43 -0500 (EST)
+From: Zwane Mwaikambo <zwane@zwane.ca>
+Subject: [PATCH][2.5][4/14] smp_call_function_on_cpu - MIPS
+Message-ID: <Pine.LNX.4.50.0302140356050.3518-100000@montezuma.mastecende.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Date: Thu, 13 Feb 2003 17:17:56 -0500
-Message-ID: <C5F1D2493CDBD14F83AD2DCA9DB882ED0A481C92@xch05ykf.rim.net>
-From: "Aleksandar Todorovic" <atodorovic@rim.net>
-Return-Path: <atodorovic@rim.net>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <zwane@zwane.ca>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ilya@theIlya.com
-Cc: linux-mips@linux-mips.org
-Message-ID: <20030213221756.xb4HTow7og6URxZpcy9PXP1chRPd66WrSJ03vGFYWTc@z>
+To: Linux Kernel <linux-kernel@vger.kernel.org>
+Cc: Linus Torvalds <torvalds@transmeta.com>, linux-mips@linux-mips.org
+Message-ID: <20030214093343.9SJV4EKd0V3ZJcv98hz35TGpjDrZkkpIrwYZwXIXDck@z>
 
-Would you happen to have the exact link to the doc you are reffering to,
-I cant seem to find it, when I do a search nothing close comes up
+ smp.c |   43 +++++++++++++++++++++++++++++--------------
+ 1 files changed, 29 insertions(+), 14 deletions(-)
 
-Thanks
-a
-
------Original Message-----
-From: ilya@theIlya.com [mailto:ilya@theIlya.com]
-Sent: February 13, 2003 5:02 PM
-To: Aleksandar Todorovic
-Cc: linux-mips@linux-mips.org
-Subject: Re: Nwebie - Linux Install on Indigo2
-
-
-I2 HOWTO on http://oss.sgi.com
-There is more generic howto there that applies to Indys and in large
-part
-to I2's
-
-	Ilya.
-
-On Thu, Feb 13, 2003 at 03:49:59PM -0500, Aleksandar Todorovic wrote:
-> Hi everyone,
-> 
-> from the linux-mips docs I understand that Indigo2 is a special case
-when it comes to Linux? Can anyone please point me in the right
-direction of some sort of install instructions for this, or any
-information in regards to getting Linux running on an Indigo2
-> 
-> Thanks
-> Alex
-> 
+Index: linux-2.5.60/arch/mips/kernel/smp.c
+===================================================================
+RCS file: /build/cvsroot/linux-2.5.60/arch/mips/kernel/smp.c,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 smp.c
+--- linux-2.5.60/arch/mips/kernel/smp.c	10 Feb 2003 22:15:04 -0000	1.1.1.1
++++ linux-2.5.60/arch/mips/kernel/smp.c	14 Feb 2003 06:09:00 -0000
+@@ -185,22 +185,32 @@
+ 	smp_call_function(reschedule_this_cpu, NULL, 0, 0);
+ }
+ 
+-
+ /*
+- * The caller of this wants the passed function to run on every cpu.  If wait
+- * is set, wait until all cpus have finished the function before returning.
+- * The lock is here to protect the call structure.
++ * smp_call_function_on_cpu - Runs func on all processors in the mask
++ *
++ * @func: The function to run. This must be fast and non-blocking.
++ * @info: An arbitrary pointer to pass to the function.
++ * @wait: If true, wait (atomically) until function has completed on other CPUs.
++ * @mask The bitmask of CPUs to call the function
++ * 
++ * Returns 0 on success, else a negative status code. Does not return until
++ * remote CPUs are nearly ready to execute func or have executed it.
++ *
+  * You must not call this function with disabled interrupts or from a
+  * hardware interrupt handler or from a bottom half handler.
+  */
+-int smp_call_function (void (*func) (void *info), void *info, int retry, 
+-								int wait)
++
++int smp_call_function_on_cpu (void (*func) (void *info), void *info, int wait,
++				unsigned long mask)
+ {
+-	int cpus = smp_num_cpus - 1;
+-	int i;
++	int cpu, i, num_cpus;
+ 
+-	if (smp_num_cpus < 2) {
+-		return 0;
++	cpu = get_cpu();
++	mask &= ~(1UL << cpu);
++	num_cpus = hweight32(mask);
++	if (num_cpus == 0) {
++		put_cpu_no_resched();
++		return -EINVAL;
+ 	}
+ 
+ 	spin_lock(&smp_fn_call.lock);
+@@ -209,19 +219,24 @@
+ 	smp_fn_call.fn = func;
+ 	smp_fn_call.data = info;
+ 
+-	for (i = 0; i < smp_num_cpus; i++) {
+-		if (i != smp_processor_id()) {
++	for (i = 0; i < NR_CPUS; i++) {
++		if (cpu_online(i) && ((1UL << i) & mask))
+ 			/* Call the board specific routine */
+ 			core_call_function(i);
+-		}
+ 	}
+ 
+ 	if (wait) {
+-		while(atomic_read(&smp_fn_call.finished) != cpus) {}
++		while(atomic_read(&smp_fn_call.finished) != num_cpus) {}
+ 	}
+ 
+ 	spin_unlock(&smp_fn_call.lock);
++	put_cpu_no_resched();
+ 	return 0;
++}
++
++int smp_call_function (void (*func) (void *info), void *info, int retry, int wait)
++{
++	return smp_call_function_on_cpu(func, info, wait, cpu_online_map);
+ }
+ 
+ void synchronize_irq(void)

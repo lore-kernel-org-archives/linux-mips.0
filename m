@@ -1,37 +1,56 @@
-Message-ID: <XFMail.000313200547.Harald.Koerfgen@home.ivm.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
-In-Reply-To: <E12UVAr-0007rR-00@the-village.bc.nu>
-Date: Mon, 13 Mar 2000 20:05:47 +0100 (MET)
-Reply-To: "Harald Koerfgen" <Harald.Koerfgen@home.ivm.de>
-From: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>
+Message-ID: <005a01bf8d42$c656d2c0$ec44e8c3@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
 Subject: Re: FP emulation patch available
+Date: Tue, 14 Mar 2000 00:20:36 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: " (Linux SGI)" <linux@cthulhu.engr.sgi.com>, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu, " (Kevin D. Kissell)" <kevink@mips.com>
-Message-ID: <20000313190547.Qcqmvctkd8MS3rq4RiYBii9fabGI1tRH0wTeGvEYpH0@z>
+To: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>
+Cc: Linux SGI <linux@cthulhu.engr.sgi.com>, Linux/MIPS fnet <linux-mips@fnet.fr>, linux-mips@vger.rutgers.edu
+Message-ID: <20000313232036.ROw_AvC9RRvixujTkcOe89-m91dzFN8JNva4dsRCGvU@z>
+
+Herald Koerfgen writes:
+>Personally, I don't have any idea why the emulator works perfectly on an
+R3000
+>but not on an R3912.
+
+Nor I, but in the absence of data, I'm happy to speculate.  ;-)
+...
+>Oh I see, I should have made myself more clear. I have a root filesystem on
+a
+>CF card based on declinuxroot (a cut down RedHat 5.1) and my Mobilon boots
+all
+>the way through to the login prompt if I delete the fsck from the
+initscripts.
+>
+>Booting into single user mode I can easily verify that tools like df or
+e2fsck
+>are bombing out with floating point exeptions. My "tests" with the emulator
+>have been so far: Does df survive? What does fsck do? and things like that.
+>Well, with the emulator all these tools make the Mobilon crash. Hard. So
+hard
+>that even the reset button doesn't work.
 
 
-On 13-Mar-00 Alan Cox wrote:
->> Does anyone out there actually need/want an SMP
->> version of the emulator?   It's not completely trivial,
->> but it would not be all that difficult to do...
-> 
-> If you dont do it please add
-> 
->#ifdef CONFIG_SMP
->#error "Not on this emulator"
->#endif
-> 
-> to the emu code - for the person who didnt know 8)
+There are two ways in which the FPU emulator is close enough
+to the hardware to be this sensitive to implementation.  One
+is the way the emulator provokes an address error exception to
+execute a delay slot instruction following a simulated branch, but
+I don't think df or fsck do any branch-on-floating-conditions.  The
+other is, of course, that it counts on getting sensible and recoverable
+coprocessor unusable exceptions.  If the R3912 does something
+funky to the processor state on a CP1 unusable fault - an event
+that it doesn't have to deal with in its principal mission
+as a Windows CE platform - the results would be much
+what you are seeing.
 
-harry:~ > grep CONFIG_SMP linux/arch/mips/config.in
-harry:~ > grep CONFIG_SMP linux/arch/mips64/config.in
-   bool '  Multi-Processing support (Experimental)' CONFIG_SMP
+There are people at Toshiba who read this mailing
+list, so we can hope that they too are on the case and
+can maybe lend a clue...
 
-SCNR :-).
--- 
-Regards,
-Harald
+            Regards,
+
+            Kevin K.

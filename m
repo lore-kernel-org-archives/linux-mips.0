@@ -1,64 +1,41 @@
-Date: Thu, 12 Aug 2004 21:11:33 +0200 (MEST)
-From: "Svetoslav Slavtchev" <svetljo@gmx.de>
+Received: from fairytale.tal.org (cruel.tal.org [195.16.220.85])
+	by gw02.mail.saunalahti.fi (Postfix) with ESMTP id A1BF4177E1
+	for <linux-mips@linux-mips.org>; Mon, 16 Aug 2004 20:37:01 +0300 (EEST)
+Received: from amos (unknown [195.16.220.84])
+	by fairytale.tal.org (Postfix) with SMTP id 2C30B8DB0
+	for <linux-mips@linux-mips.org>; Mon, 16 Aug 2004 20:45:33 +0300 (EEST)
+Message-ID: <001401c483b8$51d289f0$54dc10c3@amos>
+From: "Kaj-Michael Lang" <milang@tal.org>
+Subject: O2 arcboot 32-bit kernel boot fix
+Date: Mon, 16 Aug 2004 20:41:40 +0300
 MIME-Version: 1.0
-References: <Pine.LNX.4.58.0408121954270.14123@shofar.kom.e-technik.tu-darmstadt.de>
-Subject: Re: Q: problems with missing /dev/tty0 on X startup in MIPS system
-Message-ID: <15387.1092337893@www3.gmx.net>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+	charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-Path: <svetljo@gmx.de>
+Return-Path: <milang@tal.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Ackermann <rac@KOM.tu-darmstadt.de>
-Cc: linuxconsole-dev@lists.sourceforge.net, linux-mips@linux-mips.org
-Message-ID: <20040812191133.DphBnHPtCTBn9XvK-buHJw1IY7hSw3OWZ_G05_NLAIo@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20040816174140.kv85lmcQauAg8JW1-JJPb8NSTCQL-c6mfUc9SNwc2Dk@z>
 
-> Hello,
-> 
-> I'm trying to get VGA output on a MIPSel system (MeshCube 
-> http://www.meshcube.org) to work. 
-> The system uses a miniPCI ATI Rage VGA card (=> problem does not get 
-> initialized due to lack of system BIOS => hopefully initialized by int10 
-> XFree86 x86 emulator code).
-> 
-> I've attached an USB mouse and keyboard but fail to start X due to
-> 
-> Fatal server error:
-> xf86OpenConsole: Cannot open /dev/tty0 (No such file or directory)
-> 
-> My questions to those working with MIPS boards / on the Ruby/Linux console
-> project are:
->  - 1. How to test the USB input functionality?
-> 	(I could test the mouse by doing: cat < /dev/input/mice
-> 	=> any hints on doing something similar for the keyboard?)
+Hi
 
-not a guru here, but i hope this will help you
------------------------
-modprobe evdev
-cat /proc/bus/input/devices
-: Bus=0011 Vendor=0001 Product=0001 Version=ab41
-N: Name="AT Translated Set 2 keyboard"
-P: Phys=isa0060/serio0/input0
-H: Handlers=kbd event0
-B: EV=120003
-B: KEY=4 2000000 2b803878 f840d001 f2ffffdf ffefffff ffffffff fffffffe
-B: LED=7
-<snip>
-cat /dev/input/event0
-------
-should give you some characters on typing to
-the corresponding keyboard
+Played with arcboot today and fixed (for me atleast) loading of 32-bit
+kernels.
+I've also added a very simple progress thing so you know something is
+happening when
+the kernel is loaded.
+Anyway, the patch can be found here:
+http://fairytale.tal.org/pub/talinux/patches/arcboot-O2boot-and-progress.patch
 
->  - 2. Any hints on the missing /dev/tty0 stuff? (this is maybe
-> 	related to the console / keyboard stuff?)
-> 
-> Any hints are welcome, best regards
->  Ralf
+The fix was quite simple, arcboot was loading the kernel over itself, the
+ -	.base     = 0x80004000,
++	.base     = 0x80002000,
 
-best,
+change is the actual fix. 64-bit kernels loads fine after the fix.
 
-svetljo
+There is some extra stuff (a patch from gentoo, removal debuging from e2fs
+lib, etc) too..
 
 -- 
-NEU: WLAN-Router für 0,- EUR* - auch für DSL-Wechsler!
-GMX DSL = supergünstig & kabellos http://www.gmx.net/de/go/dsl
+Kaj-Michael Lang , milang@tal.org

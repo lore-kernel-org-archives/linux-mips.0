@@ -1,25 +1,28 @@
-Received: from nwd2mhb1.analog.com (nwd2mhb1.analog.com [137.71.5.12])
-	by nwd2mail2.analog.com (8.12.10/8.12.10) with ESMTP id i7641GfT001707
-	for <linux-mips@linux-mips.org>; Fri, 6 Aug 2004 00:01:16 -0400
-Received: from jasmine.cpgindia.analog.com ([10.121.13.30])
-	by nwd2mhb1.analog.com (8.9.3 (PHNE_28810+JAGae91741)/8.9.3) with ESMTP id AAA09577
-	for <linux-mips@linux-mips.org>; Fri, 6 Aug 2004 00:01:07 -0400 (EDT)
-Received: from asingh2d01 ([10.121.13.93])
-	by jasmine.cpgindia.analog.com (8.9.1/8.9.1) with SMTP id JAA04143
-	for <linux-mips@linux-mips.org>; Fri, 6 Aug 2004 09:31:04 +0530 (IST)
-From: "akshay" <akshay.singh@analog.com>
-Subject: pthread uClibc
-Date: Fri, 6 Aug 2004 09:43:03 +0530
-Message-ID: <006101c47b6b$abbd6610$5d0d790a@asingh2d01>
+Reply-To: <ratin@koperasw.com>
+From: "Ratin Kumar" <ratin@koperasw.com>
+Subject: RE: pthread uClibc
+Date: Thu, 5 Aug 2004 23:30:22 -0700
+Message-ID: <00bc01c47b7e$de436130$6401a8c0@ratwin1>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <akshay.singh@analog.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <006101c47b6b$abbd6610$5d0d790a@asingh2d01>
+Return-Path: <ratin@koperasw.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
+To: 'akshay' <akshay.singh@analog.com>, linux-mips@linux-mips.org
+Message-ID: <20040806063022.HtIz7nP1toJ89v_jVKqJdenoLvCeGHvkkoNQSfQ5jt8@z>
+
+It might make a bit more sense if you talk a bit about your setup/toolchain
+(cross??) and version of libraries used....
+
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org
+[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of akshay
+Sent: Thursday, August 05, 2004 9:13 PM
 To: linux-mips@linux-mips.org
-Message-ID: <20040806041303.uoWi6p0DAO2t0-BSFz1sigQOTE1iGDwCoViiFVSxcz0@z>
+Subject: pthread uClibc
 
 
 Hi,

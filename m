@@ -1,7 +1,7 @@
 From: "Matthew Dharm" <mdharm@momenco.com>
 Subject: RE: fsck fails on latest 2.4 kernel
-Date: Fri, 1 Feb 2002 15:03:31 -0800
-Message-ID: <NEBBLJGMNKKEEMNLHGAIOEDLCFAA.mdharm@momenco.com>
+Date: Fri, 1 Feb 2002 17:08:57 -0800
+Message-ID: <NEBBLJGMNKKEEMNLHGAICEDNCFAA.mdharm@momenco.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -10,12 +10,13 @@ In-Reply-To: <20020201145244.B15521@lucon.org>
 Sender: owner-linux-mips@oss.sgi.com
 To: "H . J . Lu" <hjl@lucon.org>
 Cc: Ralf Baechle <ralf@oss.sgi.com>, Carsten Langgaard <carstenl@mips.com>, linux-mips@oss.sgi.com
-Message-ID: <20020201230331.XPv5BdnvFIksUPaHGZxc3FhV2y32RZUdodFBGyv1RWc@z>
+Message-ID: <20020202010857.aAeWLCdW1NEqAVbwYxvi7A12HnOpC-9nWCh_kZPEgM4@z>
 
-Okay... I'm a moron.  I totally missed that SRPM after looking more
-than 3 times.
+As an aside, it looks like you can't rebuild this from source without
+gettext installed, but that isn't a pre-req given in the spec file.
 
-Maybe I need stronger coffee....
+It looks like there is code to detect gettext and substitute a local
+copy if it's not available, but that code doesn't seem to work right.
 
 Matt
 
@@ -26,8 +27,7 @@ Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
 Momentum Works For You                      www.momenco.com
 
 > -----Original Message-----
-> From: owner-linux-mips@oss.sgi.com
-> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of H . J . Lu
+> From: H . J . Lu [mailto:hjl@lucon.org]
 > Sent: Friday, February 01, 2002 2:53 PM
 > To: Matthew Dharm
 > Cc: Ralf Baechle; Carsten Langgaard; linux-mips@oss.sgi.com

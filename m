@@ -1,54 +1,70 @@
-From: Hartvig Ekner <hartvige@mips.com>
-Message-ID: <200112051510.QAA12575@copsun18.mips.com>
-Subject: Re: Booting from IDE
-Date: Wed, 5 Dec 2001 16:10:33 +0100 (MET)
-In-Reply-To: <3C0E3764.4EC8FE58@mips.com> from "Dan Temple" at Dec 05, 2001 04:04:04 PM
+Message-ID: <01b801c17f5d$0af02180$5601010a@prefect>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <20011207121416.A9583@dev1.ltc.com> <Pine.GSO.4.21.0112071830000.29896-100000@mullein.sonytel.be> <20011207123833.A23784@nevyn.them.org> <20011207160636.B23798@dea.linux-mips.net> <20011207131521.A3942@neurosis.mit.edu> <1007753789.1680.1.camel@GLOVEBOX.AHS.RI.CMU.EDU> <20011207144343.A4417@neurosis.mit.edu>
+Subject: Re: PATCH: io.h remove detrimental do {...} whiles, add sequence points, add const modifiers
+Date: Fri, 7 Dec 2001 15:23:33 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Dan Temple <dant@mips.com>
-Cc: Nitin <nitin.borle@broadcom.com>, "linux-mips@oss.sgi.com" <linux-mips@oss.sgi.com>
-Message-ID: <20011205151033.41Xd6JhnJSq_SP_3neVmdUBaDueaWcBecGx6179S4i8@z>
+To: jim@jtan.com, Justin Carlson <justinca@ri.cmu.edu>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20011207202333.xFQx5GuxlJDr4Rj5m6CnnsJt3jZBbTiecqhD4hEPtbA@z>
 
-If you feel lucky, you can also reserve space on your disk for the kernel - 
-either in a separate partition, or outside the area used by your current
-partitions. The YAMON 02.02 or later can read the kernel directly from disk
-and execute it.
+----- Original Message -----
+From: "Jim Paris" <jim@jtan.com>
+To: "Justin Carlson" <justinca@ri.cmu.edu>
+Cc: <linux-mips@oss.sgi.com>
+Sent: Friday, December 07, 2001 2:43 PM
+Subject: Re: PATCH: io.h remove detrimental do {...} whiles, add sequence
+points, add const modifiers
 
-I do this on my Malta board with one disk.
 
-/Hartvig
+> > Maybe I missed this, but is there any reason for the patch, other then
+> > a personal preference of how to do macros that look like functions?
+> > I've seen gcc do strange non-optimal things with functions declared
+> > inlines, but I've never seen it generate bad code WRT to do{}while(0)
+> > constructs.
+> >
+> > Unless I'm missing something, this patch looks like a solution in search
+> > of a problem...
 
+No Justin.  See below.
 
-Dan Temple writes:
-> 
-> I guess you're installing as per:
-> 
-> ftp://ftp/pub/linux/mips/installation/redhat7.1/INSTALL
-> 
-> (If not, you might want to upgrade to that version).
-> 
-> YAMON can't read the disk file system, so you have to TFTP the kernel to memory from a remote filesystem, and then run it. The instructions are in the above file under "Booting linux on the target".
-> 
-> The latest version (2.02) of YAMON can read and write blocks from an IDE device (not a filesystem) so you could install a CompactFlash card and use that to store the kernel if you don't want to TFTP each time. 
-> 
-> There is also a $start environment variable if you want to auto-boot.
-> 
-> /Dan
-> 
-> Nitin wrote:
-> > 
-> > Hi,
-> > I have a very basic query. I have a MIPS Malta board. I attached a IDE
-> > hard disk to it and installed linux as per the instructions. At the end
-> > of the installation, system rebooted and control gone to the board
-> > monitor program(Yamon). How can I get the linux prompt? Do I need to
-> > write an application program which will read boot sector from hard disk,
-> > 
-> > store it in memory and pass on control to that particular location?(If
-> > yes, is such application already available?) Or is there a other way of
-> > doing it.
-> > 
-> > Thanks,
-> > Nitin
+> In the case of set_io_port_base, I see no real reason.  But for the
+> out[b,w,l] functions, having the do/while can prevent constructs that
+> might otherwise make sense, like
+>
+> for(i=0;i<10;i++,outb(i,port)) {
+>            ...
+>         }
+>
+> Okay, so it's a bad example, but.. :)  Maybe Brad has a better one.
+
+From drivers/net/wireless/heremes.h:
+
+<snip>
+/* Register access convenience macros */
+#define hermes_read_reg(hw, off) (inw((hw)->iobase + (off)))
+#define hermes_write_reg(hw, off, val) (outw_p((val), (hw)->iobase + (off)))
+
+#define hermes_read_regn(hw, name) (hermes_read_reg((hw), HERMES_##name))
+#define hermes_write_regn(hw, name, val) (hermes_write_reg((hw),
+HERMES_##name, (val)))
+
+/* Note that for the next two, the count is in 16-bit words, not bytes */
+#define hermes_read_data(hw, off, buf, count) (insw((hw)->iobase + (off),
+(buf), (count)))
+#define hermes_write_data(hw, off, buf, count) (outsw((hw)->iobase + (off),
+(buf), (count)))
+</snip>
+
+That won't compile with the do {...} while(0)s left in io.h.  My patch lets
+hermes.h (and all other io code that I've tested) compile.
+
+heremes.h compiles as-is on other platforms.  Why should mips snub it for
+some dubious value of do {...} while(0)?
+
+Regards,
+Brad

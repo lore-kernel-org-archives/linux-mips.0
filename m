@@ -1,44 +1,64 @@
-Message-ID: <003301c468ee$80c5fa60$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <KevinK@mips.com>
-References: <BAY2-F21njXXBARdkfw0003b0c8@hotmail.com> <20040710100412.GA23624@linux-mips.org> <00ba01c46823$3729b200$0deca8c0@Ulysses> <20040713003317.GA26715@linux-mips.org>
-Subject: Re: Strange, strange occurence
-Date: Tue, 13 Jul 2004 17:31:42 +0200
+Reply-To: <a.voropay@vmb-service.ru>
+From: "Alexander Voropay" <a.voropay@vmb-service.ru>
+Subject: MS VC++ compiler / MIPS
+Date: Wed, 14 Jul 2004 17:53:11 +0400
+Message-ID: <07d301c469a9$e708f550$0200000a@ALEC>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Return-Path: <KevinK@mips.com>
+Return-Path: <a.voropay@vmb-service.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: S C <theansweriz42@hotmail.com>, linux-mips@linux-mips.org
-Message-ID: <20040713153142.qegVwQI8Ec8K16iCFmr2Yd_b-ttO3kpKqgcoEAOq47E@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20040714135311.sz7ma4Sv1X46S8KvtFWwJfwITIjqZNo3ag-m6hzhsUI@z>
 
-> > A truly safe and general I-cache flush routine should itself run uncached,
-> > but a cursory glance at the linux-mips.org sources makes me think
-> > that we do not take that precaution by default - the flush_icache_range
-> > pointer looks to be set to the address of r4k_flush_icache_range()
-> > function, rather than its (uncacheable) alias in kseg1.  Is this something
-> > that's fixed in a linker script, or are we just living dangerously?
-> 
-> That's a new restriction in MIPS32 v2.0 and you're right, we're not trying
-> to deal with it yet except for the TX49xx.
+Hi!
 
-I'm pretty sure that restriction is not new to MIPS32 v2.0.  In any
-case, there are pre-MIPS32/MIPS64 chips in current mass production
-and use, under Linux among other OSes, which specify in their user
-manuals that one should not invalidate the Icache line from which one
-is currently executing.  The clause about unpredictable behavior in
-that case went into the MIPS32 spec because it was known that such
-parts existed, and we wanted to make it as easy as possible for such 
-designs to be made compliant
+ Is it possible to use it for the something useful ??
+(to compie a kernel 8-))
 
-Invalidating the entire Icache with a routine executing out of the Icache
-is a Bad Idea, and will almost certainly cause problems some of the time
-on some MIPS processors.  Reasonable people could disagree on whether
-we want to handle that in the generic code, or create a variant icache flush 
-routine which gets plugged in only for those parts that really need it.
+ As it is known, MS provides eMbedded Visual Tools 3.0
+for free download. It contains a free C++ MIPS cross compiler .
 
-            Regards,
+evt2002web_min.exe [210485 KB]
 
-            Kevin K.
+
+
+
+
+
+========================
+C:\...ft eMbedded Tools\EVC\WCE300\BIN>CLMIPS.EXE /help 
+Microsoft (R) 32-bit/16-bit C/C++ Optimizing Compiler Version 12.01.8667
+for MIPS R-Series
+Copyright (C) Microsoft Corp 1984-1999. All rights reserved.
+
+[....]
+                             -CODE GENERATION-
+
+/QMRWCE optimize for WinCE (Default)     /QMOb<n> basic block threshold
+/QMR3900 optimize for r3900              /QMOu<n> unroll n loop
+iterations
+/QMR4100 optimize for r4100              /QMFPE[-] FP emulation
+(default)
+/QMR4200 optimize for r4200              /Gd __cdecl calling convention
+/QMR4300 optimize for r4300              /GA optimize for Windows
+Application
+/QMmips16 code for MIPS16 ASE            /GD optimize for Windows DLL
+/QMmips1 MIPS1 ISA                       /Gr __fastcall calling
+convention
+/QMmips2 MIPS2 ISA (default)             /Gf enable string pooling
+/QMNoDivCheck no divide by zero check    /GF enable read-only string
+pooling
+/QMNoUnalign no LWL,LWR,SWL,SWR          /Gh enable hook function call
+/QMNoULoad do not generate LWL,LWR       /GR[-] enable C++ RTTI
+/QMNoUStore do not generate SWL,SWR      /Gy separate functions for
+linker
+/QMOC use old float comparison helpers
+
+[....]
+
+
+--
+-=AV=-

@@ -1,106 +1,65 @@
-Reply-To: <deepak@ishoni.com>
-From: "Deepak Shenoy" <deepak@ishoni.com>
-Subject: RE: Kernel panic: Attempted to kill init! 
-Date: Thu, 5 Jul 2001 19:50:43 +0530
-Message-ID: <E0FDC90A9031D511915D00C04F0CCD25688A@leonoid.in.ishoni.com>
+Message-ID: <00ef01c109d6$c7b39150$9400a8c0@jefflee>
+From: "jeff_lee" <jeff_lee@coventive.com>
+Subject: DHCP problem
+Date: Wed, 11 Jul 2001 14:57:41 +0800
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_001D_01C1058D.04322F90"
-In-Reply-To: <E0FDC90A9031D511915D00C04F0CCD25393942@leonoid.in.ishoni.com>
+	boundary="----=_NextPart_000_00EC_01C10A19.D5AD9E70"
 Sender: owner-linux-mips@oss.sgi.com
-To: 'kjlin' <kj.lin@viditec-netmedia.com.tw>, linux-mips@oss.sgi.com
-Message-ID: <20010705142043.-5hbUd34G33dkq-b2eiZfVj1OIAZCa8fc_yLppQpsDE@z>
+To: linux-mips@oss.sgi.com
+Cc: CIH <cih@coventive.com>, =?big5?B?SmFsZW4gt6iqRqan?= <jalen@coventive.com>
+Message-ID: <20010711065741.vi6qPHMgnq-90L-P3YHtRF3cNYOPDonEbFuIV1xfimw@z>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_001D_01C1058D.04322F90
+------=_NextPart_000_00EC_01C10A19.D5AD9E70
 Content-Type: text/plain;
 	charset="big5"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-"init" is started with pid 1. If this process is killed you get this
-message.
-it could be possible that your init kernel thread is returning, exiting etc.
+Hi all, I got some question about the DHCP. We have a mipsel machine and =
+running HomeRF wireless module on it. The CPU is Vr4121, HomeRF bus is =
+ISA-like bus. Now the module can work fine with fixed-ip. We want to get =
+the IP when system boot-up. We had tried two way: cross compiler the =
+pump and dhclient applications, but when we execute the pump, it show =
+the "operation failed". When we execute dhclient, it show "segment =
+fault" ....... I don't know what's going on .Can someone tell me what's =
+going on ?? Or where can I get the binary code for pump and dhclient ??
 
-deepak
+Thanks and best regs,
 
------Original Message-----
-From: owner-linux-mips@oss.sgi.com [mailto:owner-linux-mips@oss.sgi.com]On
-Behalf Of kjlin
-Sent: Thursday, July 05, 2001 7:19 AM
-To: linux-mips@oss.sgi.com
-Subject: Kernel panic: Attempted to kill init!
-
-
-Hi,
-
-When the kernel boots up and mounts the root file system,
-the kernel start to do "execve("/sbin/AP",argv_init,envp_init)" to run a AP.
-But in my case, it panics when kernel tries to do the
-"execve("/sbin/AP",argv_init,envp_init)".
-The kernel panic message shows " Kernel panic: Attempted to kill init! ".
-What situation will trigger such kernel panic?
-
-Thanks,
-KJ
+Jeff
 
 
-------=_NextPart_000_001D_01C1058D.04322F90
+------=_NextPart_000_00EC_01C10A19.D5AD9E70
 Content-Type: text/html;
 	charset="big5"
 Content-Transfer-Encoding: quoted-printable
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dbig5">
-
-
-<META content=3D"MSHTML 5.00.2314.1000" name=3DGENERATOR>
+<META content=3D"text/html; charset=3Dbig5" http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT color=3D#0000ff face=3D"Courier New" size=3D2><SPAN=20
-class=3D665412214-05072001>"init" is started with pid 1. If this process =
-is killed=20
-you get this message.</SPAN></FONT></DIV>
-<DIV><FONT color=3D#0000ff face=3D"Courier New" size=3D2><SPAN=20
-class=3D665412214-05072001>it could be possible that your init kernel =
-thread is=20
-returning, exiting etc.</SPAN></FONT></DIV>
-<DIV><FONT color=3D#0000ff face=3D"Courier New" size=3D2><SPAN=20
-class=3D665412214-05072001></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT color=3D#0000ff face=3D"Courier New" size=3D2><SPAN=20
-class=3D665412214-05072001>deepak</SPAN></FONT></DIV>
-<BLOCKQUOTE=20
-style=3D"BORDER-LEFT: #0000ff 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: =
-0px; PADDING-LEFT: 5px">
-  <DIV align=3Dleft class=3DOutlookMessageHeader dir=3Dltr><FONT =
-face=3DTahoma=20
-  size=3D2>-----Original Message-----<BR><B>From:</B> =
-owner-linux-mips@oss.sgi.com=20
-  [mailto:owner-linux-mips@oss.sgi.com]<B>On Behalf Of =
-</B>kjlin<BR><B>Sent:</B>=20
-  Thursday, July 05, 2001 7:19 AM<BR><B>To:</B>=20
-  linux-mips@oss.sgi.com<BR><B>Subject:</B> Kernel panic: Attempted to =
-kill=20
-  init! <BR><BR></DIV></FONT>
-  <DIV><FONT size=3D2>Hi,</FONT></DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><FONT size=3D2>When the kernel boots up and mounts the root file =
-system,=20
-  </FONT></DIV>
-  <DIV><FONT size=3D2>the kernel start to do=20
-  "execve("/sbin/AP",argv_init,envp_init)" to run a AP.</FONT></DIV>
-  <DIV><FONT size=3D2>But in my case, it panics when kernel tries to do =
-the=20
-  "execve("/sbin/AP",argv_init,envp_init)".</FONT></DIV>
-  <DIV><FONT size=3D2>The kernel panic message shows " Kernel panic: =
-Attempted to=20
-  kill init! ".</FONT></DIV>
-  <DIV><FONT size=3D2>What situation will trigger such kernel =
-panic?</FONT></DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><FONT size=3D2>Thanks,</FONT></DIV>
-  <DIV><FONT size=3D2>KJ</FONT></DIV></BLOCKQUOTE></BODY></HTML>
+<DIV><FONT face=3DVerdana size=3D2>Hi all, I got some question about the =
+DHCP. We=20
+have a mipsel machine and running HomeRF wireless module on it. The CPU =
+is=20
+Vr4121, HomeRF bus is ISA-like bus. Now the module can work fine with =
+fixed-ip.=20
+We want to get the IP when system boot-up. We had tried two way: cross =
+compiler=20
+the pump and dhclient applications, but when we execute the pump, it =
+show the=20
+"operation failed". When we execute dhclient, it show "segment fault" =
+....... I=20
+don't know what's going on .Can someone tell me what's going on ?? Or =
+where can=20
+I get the binary code for pump and dhclient ??<BR></FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2>Thanks and best regs,</FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>Jeff<BR></DIV></FONT></BODY></HTML>
 
-------=_NextPart_000_001D_01C1058D.04322F90--
+------=_NextPart_000_00EC_01C10A19.D5AD9E70--

@@ -1,72 +1,56 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199903032040.MAA09311@oz.engr.sgi.com>
-Subject: Some New? Indy problems (fwd)
-Date: Wed, 3 Mar 1999 12:40:26 -0800 (PST)
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Date: Mon, 8 Mar 1999 13:47:03 +0100
+Message-ID: <199903081247.NAA02741@sun168.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+From: Tom Woelfel <eedthwo@eede.ericsson.se>
+Reply-To: eedthwo@eede.ericsson.se
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19990303204026.OY-uwq26SbJqVza8gn7d-V7swe6on0lGZIwPPciA9A4@z>
+To: Illegal.f_magic.number.while.install-procedure@eede.ericsson.se
+Message-ID: <19990308124703.yJmRPBL7i1zcdNuJmkX2yRb3C3QFYE20IXq5PRaZm2U@z>
 
-[Forwarding a bounce,
- apparently not sent from the subscription address. -- Ariel]
+Hi,
 
-Forwarded message:
-:Date: Wed, 3 Mar 1999 10:58:30 -0800
-:Message-Id: <199903031858.KAA13965@lil.brown-dog.org>
-:X-Authentication-Warning: lil.brown-dog.org: jcoffin set sender to jcoffin@lil.brown-dog.org using -f
-:To: linux@cthulhu.engr.sgi.com
-:Subject: Some New? Indy problems
-:
-:Hi all, 
-:
-:I've been periodically trying to get Linux up on an Indy r5000 with
-:varying degrees of success.  I machine has a dead video card,
-:confirmed by the PROM's hardware verification routines, but I've been
-:working via a serial connection which is OK for now.  In the latest
-:round of tinkering, I used Thomas Bogendoerfer's binary kernel (Linux
-:version 2.1.131 (tsbogend@james.franken.de) (gcc version 2.7.2.3) #262
-:Fr9) and got the following.  I hope this helps you all in you quest.
-:
-:
-:--jeff
-:
-:...
-:VFS: Mounted root (nfs filesystem).
-:Freeing prom memory: 2608k freed                                         
-:Freeing unused kernel memory: 48k freed        
-:Got dbe at 0fb7041c.
-:$0 : 00000000 0fb83b50 2aaab01c 0000000a
-:$4 : 2aaab000 00000000 00000154 00000000
-:$8 : 2aaab000 00000010 00000000 00000010
-:$12: 7ffffdb0 7ffffdb0 0fb653bc 00000003
-:$16: 2aaab000 0fb62b30 0fb62b30 00000000
-:$20: 00000000 00000000 00000006 0fb65bb8
-:$24: 00000000 0fb703c0
-:$28: 0fb8b6d0 7ffffc10 7ffffc40 0fb69e2c
-:epc   : 0fb7041c
-:Status: 0000fc13
-:Cause : 0000401c
-:
-:and HINV:
-:
-:>> hinv 
-:                   System: IP22
-:                Processor: 180 Mhz R5000, with FPU
-:     Primary I-cache size: 32 Kbytes
-:     Primary D-cache size: 32 Kbytes
-:     Secondary cache size: 512 Kbytes
-:              Memory size: 64 Mbytes
-:                 Graphics: GR3-XZ
-:                SCSI Disk: scsi(0)disk(2)
-:                SCSI Disk: scsi(0)disk(3)
-:                    Audio: Iris Audio Processor: version A2 revision 4.1.0
-:>> 
-:
+on the last weekend I've started to install linux on my good ol' Indy
+(System: IP22; Processor: 100MHz R4000, with FPU). After setting up
+bootp/tftp and creating a file-system I was finally ready to boot linux 
+over the network. After loading the kernel the system is giving me
+these messages:
 
+============================================================
+>> boot bootp()/vmlinux
+73264+592+11520+331680+27848d+3628+5792 entry: 0x8df9a960
+Setting $netaddres to 192.168.1.5 (from server deadmoon)
+Obtaining /vmlinux from server deadmoon
 
--- 
-Peace, Ariel
+Cannot load bootp()/vmlinux
+Illegal f_magic number 0x7f45, expected MIPSELMAGIC or MIPSEBMAGIC.
+
+Exception: <vector=UTLB MISS>
+....<More Information>.....
+============================================================
+
+Then a message that <return> is rebooting the system appears at the
+bottom of the screen.
+
+On server deadmoon I can see:
+
+============================================================
+bootp():found 192.168.1.5(sgi)
+bootp():bootfile=/export/mipseb/vmlinux
+bootp():vendor magic field is 0.0.0.0
+bootp():sending reply..
+
+============================================================
+
+I have tried this with the vmlinuv that comes with hardhat, and with
+several newer (prebuild) kernels (2.1.131, 990212). The result was
+always the same. I guess that this has something todo with magic
+numbers ? Is there anyone out there who has seen this before?
+
+(System Configuration: Server running kernel 2.2.2 - connected with
+internal net via 10Mbit-Hub).
+
+Any hints welcome,
+Tom

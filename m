@@ -1,209 +1,32 @@
-From: Michl Ladislav <xmichl03@stud.fee.vutbr.cz>
-Date: Wed, 28 Mar 2001 21:18:59 +0200 (CEST)
-Subject: newport console can do set_font
-Message-ID: <Pine.BSF.4.33.0103282114440.66424-100000@fest.stud.fee.vutbr.cz>
+From: rajesh.palani@philips.com
+Subject: Problem with using modutils
+Message-ID: <0056910011132437000002L172*@MHS>
+Date: Wed, 28 Mar 2001 13:53:04 -0600
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1; name="MEMO 03/28/01 13:50:07"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010328191859.2qb3qAXZ-lZRU17tdhxoCQtSzUQNrsArS2v0cd8Nvlg@z>
+To: linux-mips@oss.sgi.com, linux-mips@fnet.fr
+Message-ID: <20010328195304.t4fsZDMGWjVGhpgOmJJYnuriAL1fV7fMfz-qsyZBqoU@z>
 
-hi all,
+Hi,
 
-i hope this is the right place to send this. comments and corrections are
-welcome.
+   I am trying to use insmod on a MIPS platform.  I try to install a simple module & get the following errors:
 
-regards,
-ladis
+   local symbol gcc2_compiled. with index 10 exceeds local_symtab_size 10
+   local symbol __gnu_compiled_c with index 11 exceeds local_symtab_size 10
 
-Index: drivers/video/newport_con.c
-===================================================================
-RCS file: /cvs/linux/drivers/video/newport_con.c,v
-retrieving revision 1.23
-diff -a -u -r1.23 newport_con.c
---- drivers/video/newport_con.c	2000/11/23 02:00:54	1.23
-+++ drivers/video/newport_con.c	2001/03/28 19:12:34
-@@ -20,6 +20,7 @@
- #include <linux/vt_kern.h>
- #include <linux/mm.h>
- #include <linux/module.h>
-+#include <linux/slab.h>
+   I use the following line for generating the object file:
+   mipsel-linux-gcc -D__KERNEL__  -DMODULE -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer  -G 0 -mno-abicalls -fno-pic -mcpu=r3000 -mlong-calls -mips1 -pipe  -c
 
- #include <asm/uaccess.h>
- #include <asm/system.h>
-@@ -38,6 +39,14 @@
+   I am using modutils version 2.3.11.  We have tried both Debian and RedHat sources cross-compiled for MIPS with the following options:
+CC=mipsel-linux-gcc CFLAGS="-I../linux/include -DMIPS" RANLIB=mipsel-linux-ranlib AR=mipsel-linux-ar ./configure  --disable-kerneld
+--disable-compat-2-0 --enable-insmod-static --target=mipsel-linux
+However the problem still remains.
 
- #define FONT_DATA ((unsigned char *)font_vga_8x16.data)
+   Any pointers would be greatly appreciated.
 
-+/* borrowed from fbcon.c */
-+#define REFCOUNT(fd)	(((int *)(fd))[-1])
-+#define FNTSIZE(fd)	(((int *)(fd))[-2])
-+#define FNTCHARCNT(fd)	(((int *)(fd))[-3])
-+#define FONT_EXTRA_WORDS 3
-+
-+static unsigned char *font_data[MAX_NR_CONSOLES];
-+
- extern struct newport_regs *npregs;
+   Best regards,
 
- static int logo_active;
-@@ -274,6 +283,7 @@
- static const char * __init newport_startup(void)
- #endif
- {
-+    int i;
-     struct newport_regs *p;
-
-     npregs = (struct newport_regs *) (KSEG1 + 0x1f0f0000);
-@@ -289,11 +299,14 @@
- 	return NULL;
-     }
-
-+    for (i = 0; i < MAX_NR_CONSOLES; i++)
-+        font_data[i] = FONT_DATA;
-+
-     newport_reset ();
-     newport_get_revisions();
-     newport_get_screensize();
-
--    // gfx_init (display_desc);
-+    /* gfx_init (display_desc); */
-
-     return "SGI Newport";
- }
-@@ -329,7 +342,7 @@
- {
-     unsigned char *p;
-
--    p = &FONT_DATA[(charattr & 0xff) << 4];
-+    p = &font_data[vc->vc_num][(charattr & 0xff) << 4];
-     charattr = (charattr >> 8) & 0xff;
-     xpos <<= 3;
-     ypos <<= 4;
-@@ -378,7 +391,7 @@
- 			     NPORT_DMODE0_L32);
-
-     for (i = 0; i < count; i++, xpos += 8) {
--	p = &FONT_DATA[(s[i] & 0xff) << 4];
-+	p = &font_data[vc->vc_num][(s[i] & 0xff) << 4];
-
- 	newport_wait();
-
-@@ -446,11 +459,82 @@
-     return 1;
- }
-
--static int newport_font_op(struct vc_data *vc, struct console_font_op *f)
-+static int newport_set_font(int unit, struct console_font_op *op)
- {
--    return -ENOSYS;
-+	int w = op->width;
-+	int h = op->height;
-+	int size = h * op->charcount;
-+	int i;
-+	unsigned char *new_data, *data = op->data, *p;
-+
-+	/* ladis: when I grow up, there will be a day... and more sizes will
-+	 * be supported ;-) */
-+	if ((w != 8) || (h != 16) || (op->charcount != 256 && op->charcount != 512))
-+		return -EINVAL;
-+
-+	if (!(new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size, GFP_USER)))
-+		return -ENOMEM;
-+
-+	new_data += FONT_EXTRA_WORDS * sizeof(int);
-+	FNTSIZE(new_data) = size;
-+	FNTCHARCNT(new_data) = op->charcount;
-+	REFCOUNT(new_data) = 0; /* usage counter */
-+
-+	p = new_data;
-+	for (i = 0; i < op->charcount; i++) {
-+		memcpy(p, data, h);
-+		data += 32;
-+		p += h;
-+        }
-+
-+	/* check if font is already used by other console */
-+	for (i = 0; i < MAX_NR_CONSOLES; i++) {
-+		if (font_data[i] != FONT_DATA && FNTSIZE(font_data[i]) == size
-+		&& !memcmp(font_data[i], new_data, size)) {
-+			kfree(new_data - FONT_EXTRA_WORDS * sizeof(int));
-+			/* current font is the same as the new one */
-+			if (i == unit)
-+				return 0;
-+			new_data = font_data[i];
-+			break;
-+		}
-+	}
-+	/* old font is user font */
-+	if (font_data[unit] != FONT_DATA) {
-+		if (--REFCOUNT(font_data[unit]) == 0)
-+			kfree(font_data[unit] - FONT_EXTRA_WORDS * sizeof(int));
-+	}
-+	REFCOUNT(new_data)++;
-+	font_data[unit] = new_data;
-+
-+	return 0;
- }
-
-+static int newport_set_def_font(int unit, struct console_font_op *op)
-+{
-+	if (font_data[unit] != FONT_DATA) {
-+		if (--REFCOUNT(font_data[unit]) == 0)
-+			kfree(font_data[unit] - FONT_EXTRA_WORDS * sizeof(int));
-+		font_data[unit] = FONT_DATA;
-+	}
-+
-+	return 0;
-+}
-+
-+static int newport_font_op(struct vc_data *vc, struct console_font_op *op)
-+{
-+	int unit = vc->vc_num;
-+
-+	switch (op->op) {
-+		case KD_FONT_OP_SET:
-+			return newport_set_font(unit, op);
-+		case KD_FONT_OP_SET_DEFAULT:
-+			return newport_set_def_font(unit, op);
-+		default:
-+			return -ENOSYS;
-+	}
-+}
-+
- static int newport_set_palette(struct vc_data *vc, unsigned char *table)
- {
-     return -EINVAL;
-@@ -594,21 +678,21 @@
- };
-
- #ifdef MODULE
--
--int init_module(void) {
--    if (!newport_startup())
--       printk("Error loading SGI Newport Console driver\n");
--    else
--       printk("Loading SGI Newport Console Driver\n");
-
--    take_over_console(&newport_con,0,MAX_NR_CONSOLES-1,1);
--
--    return 0;
-+int init_module(void)
-+{
-+	if (!newport_startup())
-+		printk("Error loading SGI Newport Console driver\n");
-+	else
-+		printk("Loading SGI Newport Console Driver\n");
-+	take_over_console(&newport_con,0,MAX_NR_CONSOLES-1,1);
-+	return 0;
- }
-
--int cleanup_module(void) {
--    printk("Unloading SGI Newport Console Driver\n");
--    return 0;
-+int cleanup_module(void)
-+{
-+	printk("Unloading SGI Newport Console Driver\n");
-+	return 0;
- }
-
- #endif
+   Rajesh

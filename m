@@ -1,70 +1,50 @@
-Message-ID: <004b01c4b3a7$6193e810$7101a8c0@dinosaur>
-From: "???" <Mickey@turtle.ee.ncku.edu.tw>
-References: <20041015174542.20487.qmail@web81008.mail.yahoo.com> <004201c4b331$f9f6b180$7101a8c0@dinosaur> <4171501D.5040506@embeddedalley.com>
-Subject: Re: Is there any means to use Cramfs and JFFS2 images as root disks?
-Date: Sun, 17 Oct 2004 01:41:33 +0800
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Mickey@turtle.ee.ncku.edu.tw>
+Content-Transfer-Encoding: 8BIT
+Subject: Mozilla Firefox compile problem
+Date: Mon, 18 Oct 2004 10:24:59 +0200
+Message-ID: <34A8108658DCCE4B8595675ABFD8172709FAFE@dusse201.eu.infineon.com>
+From: <Andre.Messerschmidt@infineon.com>
+Return-Path: <Andre.Messerschmidt@infineon.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Pete Popov <ppopov@embeddedalley.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20041016174133.Bsv6INyzkWGOglQ9v76MMQNbqWhVpTbUO6p0jbSrwzA@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20041018082459.0YRvW4wsfXQmNpIqY1RjrBsc9RXYamfgDlEmEwnzQTQ@z>
 
+Hi,
 
------ Original Message ----- 
-From: "Pete Popov" <ppopov@embeddedalley.com>
-To: "???" <Mickey@turtle.ee.ncku.edu.tw>
-Cc: <linux-mips@linux-mips.org>
-Sent: Sunday, October 17, 2004 12:45 AM
-Subject: Re: Is there any means to use Cramfs and JFFS2 images as root
-disks?
+I am trying to compile Mozilla Firefox 1.0PR with Montavista Pro 3.1 toolchain (I linked mips_fp_be to mips-linux), but I get the following error messages:
 
+---- snip ---------------------------------------------------
+mips-linux-g++  -I/opt/mvx/usr/X11R6/include -fno-rtti -fno-exceptions -Wall -Wconversion -Wpointer-arith -Wcast-align -Woverloaded-virtual -Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor -Wno-long-long -Wa,-xgot -pthread -pipe  -DDEBUG -D_DEBUG -DDEBUG_am -DTRACING -g -fno-inline -o nsIFileEnumerator nsIFileEnumerator.o           -L../../dist/bin -L../../dist/lib -L../../dist/bin -lxpcom  -L/data2/Sources/inca/mozilla/dist/lib -lplds4 -lplc4 -lnspr4 -lpthread -ldl   -ldl -lm
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub203()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub156()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub184()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub128()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub226()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub246()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub112()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub180()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub230()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub147()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub151()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub116()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub111()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub231()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub141()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub104()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub58()'
+../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub53()'
 
-> ??? wrote:
-> > Hi Pete,
-> > How do I compile JFFS2 image and Kernel image together and by that way
-> > Kernel can know where /dev/mtdblock3 is?
->
-> I'm not sure a brief answer will help you, but here it is.
->
-> You don't compile "jffs2 image and kernel image" together. You select
-> jffs2 support in the kernel when you run something like "make
-> menuconfig". You rebuild the kernel and now your kernel will have jffs2
-> support. You also need your kernel to have mtd support, since that's how
-> you'll access /dev/mtdblockxxxx. You then build a jffs2 image, put it in
-> flash in whatever partition you want or have space for, and then boot
-> the kernel with "root=/dev/mtdblockxxx".
+...
 
-My question still exists: YAMON doesn't know where /dev/mtdblock3 is...
-How do I put JFFS2 image by YAMON onto the right location in Flash... :-)
+---- snap ---------------------------------------------------
 
->
-> > And if I want to just write JFFS2 image to Flash, how do I do on YAMON?
->
-> Yes, you can, but I don't remember the commands off the top of my head.
-> On the Au1x boards, you can use yamon to erase the flash and load srec
-> files directly to flash. You may also be able to load a binary file and
-> store it in flash which would make it easier. Finally, you can build a
-> kernel with NFS root file system, or a ramdisk, etc, -- something other
-> than jffs2. Then, you can use the linux kernel to erase the mtd
-> partition where you want a jffs2 image, and then copy the image to that
-> partition.
->
+I found some similar error messages from 2002 via Google, but the provided patches were for PPC and I do not know how to port them to MIPS. (Also i assume that such patches would have made it into the main branch by now)
 
-Great! This is a good idea.
-I can already boot up Linux with NFS root.
-I'll give it a try to write JFFS2 root image to /dev/mtdblock on Linux
-system, not on YAMON.
+Has anybody compiled Firefox successfully with Montavista and can give me some hints on how to proceed?
 
-> > Can also I use Cramfs as root when boot up, like JFFS2?
->
-> Yes, you can. The same steps above apply.
->
-> Pete
-
-Thanks and regards,
-Colin
+Thanks and regards 
+André Messerschmidt

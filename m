@@ -1,29 +1,33 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199704142228.PAA07659@refugee.engr.sgi.com>
-Subject: Re: EFS and XFS file systems support 
-In-reply-to: Message from lm@neteng of 14 Apr 1997 13:47:42 PDT
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 14 Apr 1997 15:28:40 -0700
-From: Steve Alexander <sca@refugee.engr.sgi.com>
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199704152026.QAA15195@neon.ingenia.ca>
+Subject: Re: EFS and XFS file systems support
+In-Reply-To: <199704152109.OAA12094@neteng.engr.sgi.com> from Larry McVoy at "Apr 15, 97 02:09:27 pm"
+Date: Tue, 15 Apr 1997 16:26:29 -0400 (EDT)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Larry McVoy <lm@neteng.engr.sgi.com>
-Cc: "Christopher W. Carlson" <carlson@heaven.newport.sgi.com>, linux@cthulhu.engr.sgi.com
-Message-ID: <19970414222840.VJO078Ya-u5LtoQbZIt71ThPtvFltmbIJ3uWEcngBJc@z>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970415202629.cuBneQAK_5gaOE30e9jhoyArkKD9Oyg1nXzVCXjV-Rw@z>
 
-lm@neteng (Larry McVoy) writes:
->: I thought that there was a program available for Linux that would read EFS
->: file systems, although I can't for the life of me remember the name.
->
->Nope.
+Thus spake Larry McVoy:
+> At this point, since we are moving away from EFS, it is possible
+> that we would be willing to donate a version of the EFS code to
+> Linux.  I can probably get that cleared.  But someone else would
+> have to do the port, I'm too busy.  If you find someone to do the
+> port, let me know.
 
-OK, I went and looked...
+Assuming it's all cleared with everyone, and we get a source
+repository somewhere to play with, I might give it a shot.  Does
+anyone know if the efslook stuff is GPL'd?
 
-Subject:   -65- How can I read an IRIX (EFS) CD-ROM on a machine which
-                doesn't use EFS?
-Date: 18 Jun 1995 00:00:01 EST
+Mike
 
-  You want 'efslook', at
-  ftp://viz.tamu.edu/pub/sgi/software/efslook.tar.gz.
-
--- Steve
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>                 Ignore the man behind the curtain.                  
+#>                                                                     
+#> "And then I realized that it never should have worked in the first  
+#>  place.  Thus, it would not work again until rewritten." --- Anon.  

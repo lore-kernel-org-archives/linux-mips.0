@@ -1,90 +1,68 @@
-From: "Gilad Rom" <gilad@romat.com>
-Subject: =?windows-1255?B?+vnl4eQ6IPr55eHkOiBBdTE1MDAgQ2hpcCBTZWxlY3Q=?=
-Date: Thu, 25 Nov 2004 09:32:17 +0200
+Received: from fw01.bwg.de (localhost [127.0.0.1])
+	by fw01.bwg.de (8.11.6p2G/8.11.6) with ESMTP id iAQLcxR07542
+	for <linux-mips@linux-mips.org>; Fri, 26 Nov 2004 22:38:59 +0100 (CET)
+From: =?iso-8859-1?Q?Ralf_R=F6sch?= <ralf.roesch@rw-gmbh.de>
+Subject: [PATCH] Fix for Toshiba TX49XX TLB refill handler
+Date: Fri, 26 Nov 2004 22:39:06 +0100
+Message-ID: <NHBBLBCCGMJFJIKAMKLHCEHNCCAA.ralf.roesch@rw-gmbh.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="windows-1255"
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <41A5886F.3000101@embeddedalley.com>
-Message-ID: <20041125073158.98A11EB2A9@mail.romat.com>
-Return-Path: <gilad@romat.com>
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0024_01C4D408.BCF5F8C0"
+Return-Path: <ralf.roesch@rw-gmbh.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Pete Popov' <ppopov@embeddedalley.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20041125073217.-elqlENfIbnpCIJRAG-JQqGP7A2WAjL0sDmaBrN-K6g@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20041126213906.oV2eMPffwN0zU1eWuiOgoD4SFwJ0bt1GAUbPjj93Zf8@z>
 
-The device is a simple ALTERA chip, used for testing (for the mean time).
-I need to make sure that I can access it, and simply read data from it.
-Here's my question: Let's say I assign 0x1000 as the address portion (CSBA)
-Of MEM_STADDR1. What address should I mmap after that?
-(Using mmap only for initial development, Once I realize all I need
-To do I'll write a driver).
+This is a multi-part message in MIME format.
 
-Thanks,
-Gilad.
+------=_NextPart_000_0024_01C4D408.BCF5F8C0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
------הודעה מקורית-----
-מאת: linux-mips-bounce@linux-mips.org
-[mailto:linux-mips-bounce@linux-mips.org] בשם Pete Popov
-נשלח: Thursday, November 25, 2004 9:23 AM
-אל: Gilad Rom
-עותק: linux-mips@linux-mips.org
-נושא: Re: תשובה: Au1500 Chip Select
+Hi Thiemo,
 
-Gilad Rom wrote:
-> Well, what I did so far was setup mem_stcfg1/mem_staddr1. 
-> What I'm having trouble with is, what values do I need to Set in 
-> mem_staddr1,
+without this patch the TX4927 Toshiba processor definitely does not boot.
+(My CPU was hanging without any message on the serial console), this means
+the panic() message
+		panic("No TLB refill handler yet (CPU type: %d)",
+		      current_cpu_data.cputype);
+could not be seen.
 
-Depends on the device attached to that CS and the physical address you want
-to assign to it.
+I am not sure, if the place where I inserted the new processor type is
+correct.
+Please review and apply.
 
-> and then, how do I access
-> That memory (mmap? Driver?).
+The patch included is against 2.6.
 
-Driver would be better.
+Thanks and regards
+  Ralf Roesch
 
-Pete
 
-> Thanks.
-> Gilad.
-> 
-> -----הודעה מקורית-----
-> מאת: linux-mips-bounce@linux-mips.org
-> [mailto:linux-mips-bounce@linux-mips.org] בשם Pete Popov
-> נשלח: Wednesday, November 24, 2004 7:58 PM
-> אל: Gilad Rom
-> עותק: linux-mips@linux-mips.org
-> נושא: Re: Au1500 Chip Select
-> 
-> Gilad Rom wrote:
-> 
-> 
->>Hello,
->>
->>I am trying to implement a simple program which Will be used to 
->>communicate with an I/O peripheral Over CS1 (Chip select 1) of the 
->>au1500.
-> 
-> 
-> I'm not sure I understand what you're trying to do. The chip select is 
-> setup by the boot loader or kernel, and you don't touch it anymore. 
-> The CS will get asserted/deasserted based on the addresses you're trying
-to access.
-> 
-> 
->>Has anyone ever attempted this? Could someone Point me to some sample 
->>code, perhaps? I am grepping Through the kernel, yet having trouble 
->>locating Chip-select specific code for reference.
-> 
-> 
-> Again, what sort of an example are you looking for?  Setting up a chip 
-> select on the Au1x is nothing more than writing the appropriate values 
-> to the 3 chip select registers. Then you're done.
-> 
-> Pete
-> 
-> 
-> 
-> 
+------=_NextPart_000_0024_01C4D408.BCF5F8C0
+Content-Type: application/octet-stream;
+	name="tlbex-tx4927.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="tlbex-tx4927.patch"
+
+Index: arch/mips/mm/tlbex.c=0A=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
+RCS file: /home/cvs/linux/arch/mips/mm/tlbex.c,v=0A=
+retrieving revision 1.6=0A=
+diff -u -r1.6 tlbex.c=0A=
+--- arch/mips/mm/tlbex.c	24 Nov 2004 22:57:59 -0000	1.6=0A=
++++ arch/mips/mm/tlbex.c	26 Nov 2004 21:25:16 -0000=0A=
+@@ -763,6 +763,7 @@=0A=
+ 	case CPU_R4700:=0A=
+ 	case CPU_R5000:=0A=
+ 	case CPU_5KC:=0A=
++	case CPU_TX49XX:=0A=
+ 		i_nop(p);=0A=
+ 		i_tlbwr(p);=0A=
+ 		break;=0A=
+
+------=_NextPart_000_0024_01C4D408.BCF5F8C0--

@@ -1,107 +1,75 @@
-Date: Tue, 30 Jul 2002 16:09:37 +0200 (CEST)
-From: Dan Temple <dant@mips.com>
-Subject: Re: PATCH: Update E_MIP_ARCH_XXX (Re: [patch] linux:  RFC:elf_check_arch()
- rework)
-In-Reply-To: <3D44F31D.55155E24@mips.com>
-Message-ID: <Pine.LNX.4.44.0207301606350.31951-100000@coplin18.mips.com>
+Message-ID: <004201c23860$85425d10$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <37A3C2F21006D611995100B0D0F9B73CBFE213@tnint11.telogy.design.ti.com> <3D477DC3.6C304839@mips.com>
+Subject: Re: GAS 4kc question...
+Date: Wed, 31 Jul 2002 09:04:17 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Carsten Langgaard <carstenl@mips.com>
-Cc: cgd@broadcom.com, hjl@lucon.org, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, linux-mips@oss.sgi.com, binutils@sources.redhat.com
-Message-ID: <20020730140937.VyIjmDmz_dU311QxMpSvV96E053kIn_DF4nKN4RicEk@z>
+To: Carsten Langgaard <carstenl@mips.com>, "Zajerko-McKee, Nick" <nmckee@telogy.com>
+Cc: "Linux-Mips (E-mail)" <linux-mips@oss.sgi.com>
+Message-ID: <20020731070417.z3YoxzAcKzLKaxwy_ipjXq8eXro4ZHCqJuXxE6-OUmc@z>
 
-I've now heard a bit of the history from Nigel at Algorithmics, and to summarize, they chose the 6 and 7 values for MIPS32/64 after Cygnus, who were also producing a MIPS32/64 toolchain, had chosen these. (Algor had originally used the value of 5 for MIPS32, but had to changed when both SGI (who assigned it to something else) and Cygnus chose otherwise). Hence ARCH_ALGOR_32.
+To try to reconcile some seemingly contradictory responses,
+the multiply-accumulate and the 3-operand, or "targeted" multiply 
+instruction were first supported by the IDT R4650 as a superset 
+of the MIPS III ISA.  As they proved useful and popular, they
+were later integrated into the MIPS32 ISA spec.  Prior to MIPS32
+standardizing things, there were several variations on the multiply-accumulate
+instruction mnemonics (madd, mac, etc.) and even some variants
+on the encoding.  MIPS32 adopted "madd" as the standard
+mnemonic, and uses the same encoding as the R4650.  I'm 
+not sure what you mean by "mulu".  The origininal MIPS mnemonic
+for a 2-operand multiply is "mult", and it has an unsigned counterpart
+"multu".  The 3-operand multiply was standardized with the mnemonic
+"mul". If an "unsigned" version of that instruction existed, it would be 
+"mulu", but no such version  exists, and it's not clear to me that it would
+make any sense, given that the definition of the targeted multiply is that 
+the specified target GPR gets the *least significant* 32 bits of the product.
 
-A little research also reveals that the value of 5 for ARCH_32 was first checked into CVS in Dec 2000 by Nick Clifton at Redhat.
+As Carsten indicates, "madd" and "mul" are enabled by -mips32
+in newer assemblers, but it is also true that -m4650 will cause them
+to be assembled correctly in older assemblers.  I have run madd code
+generated with the 4650 option successfully on a MIPS 4Kc.
 
-Anyway, that's why things are the way they are, but may not help much as to a resolution :(
+            Regards,
 
-My personal take on this is that the two main commercial providers (Cygnus and Algor) of MIPS32/64-capable GNU toolchains have been using 6 & 7 for quite a while, SGI "agree", and that this is quite a precedent. Hopefully the ABI process will soon shake any other issues out too.
+            Kevin K.
 
-/Dan
+----- Original Message ----- 
+From: "Carsten Langgaard" <carstenl@mips.com>
+To: "Zajerko-McKee, Nick" <nmckee@telogy.com>
+Cc: "Linux-Mips (E-mail)" <linux-mips@oss.sgi.com>
+Sent: Wednesday, July 31, 2002 8:03 AM
+Subject: Re: GAS 4kc question...
 
-On Mon, 29 Jul 2002, Carsten Langgaard wrote:
 
-> First of all I will like to thank you for all the replies, we really appreciate
-> it, because it helps us in our process of making a proper ABI spec.
-> I known it's a relative late state we are trying to provide the community with an
-> ABI document, but I guess it's better to be late than to never show up.
-> I believe we all could benefit from such a document, it's only in a internal draft
-> version right now, but it might be a good idea to send it out to the community for
-> comments, before the finally version.
-> But we are still in an early state and on the learning curve.
+> I guess you mean madd and mul (not mulu).
+> These instructions are MIPS32 instructions and are most likely not recognized
+> by your toolchain.
+> Try use the compiler option "-mips32" to verify it.
+> So for now I'm afraid you need to hardcode these by hand. We are very close to
+> release a MIPS32 compiler, so we don't need these hacks in the future.
 > 
-> Regarding the ELF header arch values, we did try to select whose in order not to
-> break things for anyone.
-> I'm also a little surprised to see these value out in binutils, it really surprise
-> me, if we got a linux toolchain that can generate mips32/mips64 code.
-> 
-> MIPS32R2 and MIPS64R2 is a new enhanced version of MIPS32 and MIPS64 architecture,
-> which among other things include some new instructions.
-> 
-> Regarding Algorithmics, I don't know if everybody are aware of it, but we have
-> just acquired Algorithmics.
-> That among other things, is done in order to play a stronger part in the
-> development of the toolchain. And their work will be pushed back to the community.
-> 
-> Algorithmics have done a MIPS32 compiler for us, which is very close to be
-> released.
-> 
-> I hope this clarify a little bit, what our motivation are.
 > /Carsten
 > 
+> "Zajerko-McKee, Nick" wrote:
 > 
-> cgd@broadcom.com wrote:
-> 
-> > At Thu, 25 Jul 2002 15:26:19 +0000 (UTC), "H. J. Lu" wrote:
-> > > I'd like to fix binutils ASAP. Here is a patch.
+> > Hi,
 > >
-> > OK, so, I've seen no response so far that indicates that binutils
-> > should actually be changed.
+> > I'm trying to write some inline assembler code that needs the madd and mulu
+> > op codes found on the 4KC processor.  I've tried setting the cpu to 4650,
+> > but it failed to recognize the mulu instruction.  Can someone give me the
+> > magic incantation?  I'm running right now GCC 2.95.3 from Montavista.  I
+> > guess one way I can attack it for now is to build the op code by hand, but
+> > that is quite dirty, IMHO...
 > >
-> > to recap:
+> >   ------------------------------------------------------------------------
 > >
-> > * Binutils has deployed these values in several releases now, and I
-> >   know for a fact that people are using binaries with these values.
-> >
-> > * SGI has followed binutils' lead in selecting values.
-> >
-> > * Algorithmics did something else, though it's not clear what the
-> >   difference between "ARCH_ALGOR_32" and "ARCH_32" really is.
-> >
-> > It seems obvious that the simplest solution that causes the least pain
-> > all around is to go with the numbering binutils currently uses.  This
-> > will probably cause a little bit of pain for Algorithmics, but, well,
-> > they could have sent something to binutils to indicate use of that
-> > number, and i'm quite sure that most of the rest of us have had to put
-> > temporary backward-compat hacks in our own codebases for incompatible
-> > changes made by others in the past.  It's not that hard and doesn't
-> > cause long-term pain.
-> >
-> > I could understand that MIPS or Algorithmics might like that, but I
-> > think there're a bunch of morals to this story: if you want to lead on
-> > ABI issues, get out in front of them (you can't lead from the back
-> > 8-); interact with the tool development and use communities about such
-> > issues _before_ solutions are needed and agreed upon in those
-> > communities; and, you're hacking open source code like binutils,
-> > contribute your changes back as soon as you possibly can.
-> >
-> > I'd also like to point out that saying "mips will be defining this
-> > ABI, so you should all change your code to work with it" without,
-> > AFAIK, even providing a draft of said ABI... is unlikely to produce
-> > positive results even _if_ there's no precedent that would go against
-> > the requested change.  (if somebody has a ptr, i'd be glad to be
-> > corrected 8-)
-> >
-> > (I wonder what other incompatibilities may exist between this new ABI
-> > and the current binutils MIPS ELF headers...)
-> >
-> > cgd
-> > --
-> > Chris Demetriou                                            Broadcom Corporation
-> > Senior Staff Design Engineer                  Broadband Processor Business Unit
-> >   Any opinions expressed in this message are mine, not necessarily Broadcom's.
+> >    Nick Zajerko-McKee.vcfName: Nick Zajerko-McKee.vcf
+> >                          Type: VCard (text/x-vcard)
 > 
 > --
 > _    _ ____  ___   Carsten Langgaard   Mailto:carstenl@mips.com
@@ -113,10 +81,3 @@ On Mon, 29 Jul 2002, Carsten Langgaard wrote:
 > 
 > 
 > 
-
--- 
-Dan Temple, Eng. Mgr.     Tel: +45-44865512     
-  MIPS Denmark              Fax: +45-44865556     
-  Lautrupvang 4B            mailto:dant@mips.com  
-  DK-2750 Ballerup          http://www.mips.com
-  Denmark                  

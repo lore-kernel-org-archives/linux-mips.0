@@ -1,35 +1,30 @@
-Message-ID: <020001c126ad$bad05e20$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <01e801c126a6$ec2a3420$0deca8c0@Ulysses> <3B7C53BA.24B75620@mvista.com>
-Subject: Re: FP emulator patch
-Date: Fri, 17 Aug 2001 01:46:40 +0200
+Message-ID: <3B7C7EA5.A307DAD@artilemicro.com>
+Date: Thu, 16 Aug 2001 19:17:09 -0700
+From: Hua Wen <hua@artilemicro.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
+Subject: Upgrade kernel from release 2.2.1 to 2.4.?
+References: <Pine.SOL.4.31.0105061221330.1956-100000@fury.csh.rit.edu>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Jun Sun <jsun@mvista.com>
-Cc: "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>, Daniel Jacobowitz <dan@debian.org>
-Message-ID: <20010816234640.WEzE6oAZ4lYsvoAOISVodMaicTmrcdsCj3ixJZ5E2F0@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010817021709.yhUB84JPa8iqH-j_hcRAKIQBlPzLcOvUri-Hfu_KD1o@z>
 
-> > > Strange indeed.  And note that if the code were correct, your
-> > > surmise about the init_fpu() path being "logically the correct"
-> > > one would no longer be true - we'd be saving the FPU state of
-> > > the current process for no good reason.
-> > 
-> > And note further that, by forcing current->used_math to
-> > zero, the old code was in fact driving the signal handler
-> > needlessly into the broken code...
-> > 
-> 
-> By not clearing current->used_math bit, you are in fact restoring an FPU
-> context unnecessarily.
+Hi,
 
-And by clearing it, you are destroying an FPU context unnecessarily.
-I'll take the overhead, thanks! ;-)  Seriously, if that optimization
-is really that important, let's find some other mechanism for communicating
-to do_cpu() the fact that we're doing a signal.
+We made changes to linux/MIPS kernel 2.2.1 for our
+system and it's been running well so far. We now
+plan to upgrade the kernel to 2.4.X. The question
+we have is:
 
-            Regards,
+Which sub release of 2.4 is more stable and is
+recommended to use? 
 
-            Kevin K.
+From http://oss.sgi.com/cgi-bin/cvsweb.cgi/linux,
+I can see available tags for kernel 2.4 are:
+linux_2_4_4, linux_2_4_3, linux_2_4_2,
+linux_2_4_0...
+
+Thanks in advance for your advice!
+
+-Hua

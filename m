@@ -1,74 +1,41 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@yon.engr.sgi.com (Ariel Faigon)
-Message-ID: <199705281517.IAA10342@yon.engr.sgi.com>
-Subject: hardware independent hinv
-Date: Wed, 28 May 1997 08:17:44 -0700 (PDT)
-Reply-To: ariel@sgi.com (Ariel Faigon)
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199705281910.PAA31544@neon.ingenia.ca>
+Subject: Re: Dynapenguin!
+In-Reply-To: <9705281156.ZM10564@procyon.corp.sgi.com> from Seth Morabito at "May 28, 97 11:56:47 am"
+Date: Wed, 28 May 1997 15:10:19 -0400 (EDT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: linux@yon.engr.sgi.com
-Message-ID: <19970528151744.t9RnE26-zsJ7vtQ3ANaYomQeKVzHYgSt1ypAPkcZ4mI@z>
+To: Seth Morabito <sethm@procyon.corp.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970528191019.4WwrzNHzw-8a9AbISzx_ka0V7Vo5oqwAGSuv78TZEFI@z>
 
-Just forwarding since it sounds someone hopes that Linux/MIPS
-will some day have a HW independent hinv... - Ariel
+Thus spake Seth Morabito:
+> On May 28,  2:37pm, Mike Shaver wrote:
+> > Subject: Dynapenguin!
+> 
+> ... As in, "Electra Woman and DynaPenguin"?
 
------ Forwarded message from Dave Olson -----
+Nope.
+(Before my time... =) ))
 
-From olson@anchor  Mon May 12 13:50:21 1997
-Date: Mon, 12 May 1997 13:50:18 -0700
-From: olson@anchor (Dave Olson)
-Message-Id: <199705122050.NAA26767@anchor.engr.sgi.com>
-To: olson@anchor (Dave Olson), scotth@sgi.com
-Subject: Re: missing machfile
-Cc: swmgr@swmgr, breyer@swmgr, ariel@cthulhu
-References: <199705121525.IAA23143@swmgr.engr.sgi.com>
-    <199705121714.KAA23773@anchor.engr.sgi.com>
-    <199705121854.LAA18312@anchor.engr.sgi.com>
+> Congrats, Mike!!
 
-|  I would assume that hinv is hardware-dependent, because of the
-|  mapping issues?  Or is it table driven off of an analogue of the machtab?
+No, "congrats, Ralf!!", for getting it all patched up and putting up
+with my incessant pestering.
 
-Still all compiled in.  Bug/rfe open for years now about making it table
-driven.
+> (Tom Servo voice -->) "We're on our waaaayyy!"
 
-|  Unfortunately, nothing better is generally available across
-|  platforms and releases.
+Indeed.
 
-Yes, and that's something that would be nice to fix.  Maybe linux will
-do it, and we can copy them.
-
-|  D> Lots, for any non-trivial app.  They don't have to, but often want to.
-|  
-|  ???  Non-trivial as in "big and powerful", or as in "gets close to
-|  the hardware"?  I would argue that emacs and perl both fit the
-
-Both/either.  Not all  big apps, of course.
-
-|  I was looking at the options to uname, specifically "-p".  Based
-|  upon the man page, shouldn't `uname -p` return "mips3" instead of
-|  "mips" for my IP22?  That is one obvious meaning for:
-
-Yes, but then you break even more of the configure scripts.  Again,
-a no-win situation.
-
-|  I was just curious is there was somehow we could make life easier
-|  for configure scripts to port software for IRIX...  On the other
-|  hand, we generally only get bad comments about /bin/install, and at
-|  least we *don't* get comments like:
-
-|  # AIX cpp loses on an empty file, so make sure it contains at least a newline.
-Using cpp is a horrible solution...
-
-|  It is hard to add functionality without breaking stuff.
-
-A programmer's lament, if I ever heard one!
-
-Dave Olson, Silicon Graphics   Guru and busybody at large
-http://reality.sgi.com/olson   olson@sgi.com
-
------ End of forwarded message from Dave Olson -----
+Mike
+(Indy sign!)
 
 -- 
-Peace, Ariel
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>              Linux: because every cycle counts.
+#>
+#> "I don't know what you do for a living[...]" -- perry@piermont.com
+#>        "I change the world." -- davem@caip.rutgers.edu

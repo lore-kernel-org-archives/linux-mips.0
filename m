@@ -1,29 +1,32 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0zzpd7-0007U2C@the-village.bc.nu>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: My Indy is gone
-Date: Mon, 11 Jan 1999 22:16:12 +0000 (GMT)
-In-Reply-To: <19990111184751.B242@bun.falkenberg.se> from "Ulf Carlsson" at Jan 11, 99 06:47:51 pm
-Content-Type: text
+From: sr@dragon.engr.sgi.com (Steve Rikli)
+Message-ID: <199901112218.OAA10838@dragon.engr.sgi.com>
+Subject: Re: linus down?
+Date: Mon, 11 Jan 1999 14:18:40 -0800 (PST)
+In-Reply-To: <Pine.SGI.4.05.9901111203050.37411-100000@tantrik.engr.sgi.com> from "Shrijeet Mukherjee" at Jan 11, 99 12:03:21 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ulf Carlsson <ulfc@bun.falkenberg.se>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19990111221612.8I9ZCZg3-PPtbo8dMffD_JvsK_spUi7wxC4u1Ko67h0@z>
+To: Shrijeet Mukherjee <shm@cthulhu.engr.sgi.com>
+Cc: shaver@netscape.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19990111221840.kiNHAb2rhjjgkTtybvyhI32No7m7RFsx8Zvl234pvaM@z>
 
-> The company where from I had got my Indy has now taken the machine back. It
-> looks like my Linux/SGI days have been counted *sob*. The attempt I made to
-> write an HAL2 driver wasn't completed, and the work is now stalled because of
-> the absence of Indy machines at my home. If you would like to finish this, send
-> me an email. Also, good luck to the Debian/MIPS project in the future, looks
-> like I have to leave this as well...
+Shrijeet Mukherjee wrote:
+> On Mon, 11 Jan 1999, Mike Shaver wrote:
 > 
-> If you have anyone has any extra Indy machines, donations are welcome :-)
+> ->I can't get to cvs or http services on linus...anyone know what's up?
+> 
+> I am seeing the same problem .. what is going on ?
 
-I'm currently trying to give the Indy sitting here back to SGI so they can
-give it to an X developer or someone who has time to hack on the small number
-of drivers now needed. 
+linus.linux.sgi.com gives every appearance of being down with some
+kinda h/w problem.
 
-Ariel, the machine sitting in a box on my floor would be in much better
-hands with Ulf
+I've just started poking it -- more info when I have it.
 
-Alan
+sr.
+-- 
+|| Steve Rikli <sr@sgi.com> ||| I love the rules.  Once you know the    ||
+|| Systems Administrator    ||| rules you can cheat.                    ||
+|| NSD/SNS/ASD/SSBU/CSBU/...|||                                         ||    
+|| Silicon Graphics, Inc.   |||       - Charles M. Schulz, _Peanuts_    ||

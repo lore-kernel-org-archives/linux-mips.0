@@ -1,19 +1,40 @@
-Subject: Re: csum_ipv6_magic()
-Date: Mon, 22 Oct 2001 08:55:35 +0100 (BST)
-In-Reply-To: <20011022151606V.machida@sm.sony.co.jp> from "Machida Hiroyuki" at Oct 22, 2001 03:16:06 PM
-MIME-Version: 1.0
+Date: Mon, 22 Oct 2001 12:19:19 -0700
+From: "H . J . Lu" <hjl@lucon.org>
+Subject: Re: First attempt to install Linux on my Indigo 2
+Message-ID: <20011022121919.A27925@lucon.org>
+References: <20011022130659.B20721@minus-9.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <E15vZvr-000138-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Disposition: inline
+In-Reply-To: <20011022130659.B20721@minus-9.com>; from mat@minus-9.com on Mon, Oct 22, 2001 at 01:06:59PM +0100
 Sender: owner-linux-mips@oss.sgi.com
-To: Machida Hiroyuki <machida@sm.sony.co.jp>
-Cc: Ralf Baechle <ralf@uni-koblenz.de>, linux-mips@oss.sgi.com
-Message-ID: <20011022075535.7SfJ9zYljceOFSFssvckJNU1ohYjRkoXUz993w0aCXU@z>
+To: Mat Withers <mat@minus-9.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20011022191919.VLU97mxTut-nMyXt4Ql_5u-G6V1ag7GmgegQ5gbEOUY@z>
 
-> I guess that csum_ipv6_magic() in include/asm-mips/checksum.h 
-> needs "addu %0, $1" at the next of "sltu $1, %0, $1".
-> Without this, you cannot add a carry of the last addtion.
+On Mon, Oct 22, 2001 at 01:06:59PM +0100, Mat Withers wrote:
+> Hi
+> 
+> I've been subscribed to the list for quite a while but am just about to try installing Linux on my Indigo2 (R4400SC / 128Mb RAM) for the first time.
+> 
+> I want to try H J Lu's port of Radhat 7.1. I've read the the howto at http://oss.sgi.com/mips/mips-howto.html, have set up a tftp server a bootp server an nfs server and have made up a working serial cable. Now having browsed ftp://oss.sgi.com/pub/linux/mips/redhat/7.1/ I am unsure what to do next. I assume I will need a kernel image and a root filing system to nfs mount but can't see anything resembling them on the ftp site.
 
-Is that actually needed. The final end around carry cannot itself cause
-a second carry.
+1. You need to find a working kernel for your machine. I don't have
+one.
+
+2. In README:
+
+3. install.tar.bz2 has some scripts to prepare NFS root and install
+RedHat 7.1 on a hard drive.
+
+> 
+> I have a spare 4Gb scsi disk that I want to attempt the install on. I assume that once I have got the machine booted using an nfs root I can partion the hard disk - somehow install the RPMS on it and then use dvhtool to get my SGI to boot from the hard disk.
+> 
+
+From README:
+
+3. install.tar.bz2 has some scripts to prepare NFS root and install
+RedHat 7.1 on a hard drive.
+
+
+H.J.

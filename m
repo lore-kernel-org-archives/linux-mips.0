@@ -1,23 +1,41 @@
-Date: Mon, 17 Jun 2002 13:04:39 -0700 (PDT)
-From: James Simmons <jsimmons@transvirtual.com>
-Subject: Re: tx3912 Re: [PATCH] fbdev updates.
-In-Reply-To: <20020606211252.GA1112@elf.ucw.cz>
-Message-ID: <Pine.LNX.4.44.0206171304110.31825-100000@www.transvirtual.com>
+Message-ID: <00bd01c21618$4e714ef0$4c00a8c0@prefect>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <20020617094851.30730.qmail@email.com>
+Subject: Re: Code error - why?
+Date: Mon, 17 Jun 2002 12:01:56 -0400
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Linux Fbdev development list <linux-fbdev-devel@lists.sourceforge.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-mips@oss.sgi.com, linux-mips-kernel@lists.sourceforge.net
-Message-ID: <20020617200439.Gqk-iNpiv2tb1aQn8uYlrClKSBA5MFWsTuyMrJ_bHso@z>
+To: Balakrishnan Ananthanarayanan <balakris_ananth@email.com>, linux-mips@oss.sgi.com
+Message-ID: <20020617160156.vp7xGTiAM6LCHeDHpEwq9qU7-ubUnDTIw6T0efuk_nQ@z>
+
+Drop the $ on the registers?
+
+Regards,
+Brad
+
+----- Original Message -----
+From: "Balakrishnan Ananthanarayanan" <balakris_ananth@email.com>
+To: <linux-mips@oss.sgi.com>; <linux-kernel@vger.kernel.org>;
+<redhat-list@redhat.com>
+Sent: Monday, June 17, 2002 5:48 AM
+Subject: Code error - why?
 
 
-> Hi!
+> I wrote a SAMPLE CODE - Hello.S to work for a cross-assembler
+mips-linux-as - but this is giving me an error message:
+>    ".data
+>          quest: .asciiz "Hello World!"
+>     .text
+>     _start:
+>          la $a0, quest
+>          li $v0, 4
+>          syscall   "
 >
-> >    This patch includes the latest in the fbdev BK repository. I have
-> > modified several fbdev drivers (maxinefb, tx3912fb, pmag drivers) to the
-> > new api. Please test these changes out before I submit them to linus.
-> > Thank you. It is against the latest BK tree and 2.5.20.
+> The error messages are:
+>   " Hello.S line 5: illegal operands 'la'
+>     Hello.S line 6: illegal operands 'li'"
 >
-> Does the code even boot on any machine having tx3912fb?
-
-Yes :-) Also a few other types of MIPS devices use this framebuffer.
+> Can anyone help? What is wrong?

@@ -1,38 +1,36 @@
-Date: Wed, 31 Jan 2001 17:36:54 -0500 (EST)
-From: Kenneth C Barr <kbarr@MIT.EDU>
-Subject: netbooting indy
-Message-ID: <Pine.GSO.4.30L.0101311648280.22989-100000@home-on-the-dome.mit.edu>
-Mime-Version: 1.0
+Date: Thu, 1 Feb 2001 09:26:55 +0000 (GMT)
+From: "Dr. David Gilbert" <gilbertd@treblig.org>
+Subject: Re: netbooting indy
+In-Reply-To: <Pine.GSO.4.30L.0101311648280.22989-100000@home-on-the-dome.mit.edu>
+Message-ID: <Pine.LNX.4.30.0102010926190.20992-100000@springhead.px.uk.com>
+MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: linux-mips@oss.sgi.com
-Message-ID: <20010131223654.0erRDMHxJf1zC0SqDyvKhpyo8eP9D3x7-OqTyb79B2E@z>
+To: Kenneth C Barr <kbarr@MIT.EDU>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010201092655.bRSuhjZor0otATKPtgm5EKB2uA-rewOicaRr23mMv9I@z>
 
-I finally got bootp/tftp to answer my indy's pleas for an image, but get
-the following behavior (with my own IP addr and server, obviously):
+On Wed, 31 Jan 2001, Kenneth C Barr wrote:
 
->> boot bootp():/vmlinux
-   73264+592+11520+331680+27848d+3628+5792 entry: 0x8df9a960
-   Setting $netaddres to 192.168.1.5 (from server deadmoon)
-   Obtaining /vmlinux from server deadmoon
+> I finally got bootp/tftp to answer my indy's pleas for an image, but get
+> the following behavior (with my own IP addr and server, obviously):
+>
+> >> boot bootp():/vmlinux
 
-i get a spinning cursor, which becomes the letter "n" and the entire
-machine (including keyboard, mouse) locks.
 
-A packet trace with ethereal reveals the indy ack'ing 2730 packets of 512
-bytes each (1,397,760) before sending a "TFTP Error Code" packet:
+I haven't seen the error you got - however one thing I do differently is
+to do
 
-Opcode: Error Code (5)
-Error Code: Disk full or allocation exceeded (3)
+bootp():/vmlinux
 
-The server's disks are not full, and my impression was that the indy would
-be d/ling the vmlinux image into memory, not disk.  I have 64MB of RAM.
+without the initial 'boot ' - worth a go?
 
-I repeated the process and got the same "n"-freeze a second time.
+Dave
 
-What does this behavior indicate?  (I didn't see it in HOWTO common
-errors)  How can I fix it?
-
-Thanks for your ideas,
-Ken
+-- 
+/------------------------------------------------------------------\
+| Dr. David Alan Gilbert | Work:dg@px.uk.com +44-161-286-2000 Ex258|
+| -------- G7FHJ --------|---------------------------------------- |
+| Home: dave@treblig.org            http://www.treblig.org         |
+\------------------------------------------------------------------/

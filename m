@@ -1,31 +1,31 @@
-Subject: Re: Need an account on a Linux/Mips box
-References: <1f05gge.7bt3xkxllentM@[10.0.12.137]>
-From: Kristoffer Gleditsch <kristoffer@linpro.no>
-Date: Mon, 24 Sep 2001 17:03:44 +0200
-Message-ID: <vzay9n46373.fsf@false.linpro.no>
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: Error in loading shared library glinc-2.0.6.so.
+Date: Mon, 24 Sep 2001 18:10:07 -0700
+Message-ID: <84CE342693F11946B9F54B18C1AB837B14A1A4@ex2k.pcs.psdc.com>
+From: "Steven Liu" <stevenliu@psdc.com>
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Emmanuel Dreyfus <manu@netbsd.org>
-Cc: linux-mips@oss.sgi.com, debian-mips@lists.debian.org
-Message-ID: <20010924150344.vlUGDx9QyI9_YjsBzXuX9EN7vKJhscX8jxWm6OkPZIw@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010925011007.nrYzYEpQptds4n_Vkwn8wUqsAqRu9yvOQ0nCbzD1d6A@z>
 
-Hi,
+Hi, All:
 
-(Crossposted to the debian-mips list, in case there are others who are
-interested.)
+I have a bootupproblem in my new Mips R3000 Linux system. 
 
-[ Emmanuel Dreyfus ]
+I build the kernel 2.2.12, glibc-2.0.6, gcc and init utility. When it
+boots up, it loads /sbin/init, /lib/ld-2.0.6.so,and /etc/ld.so.cache.
+But it gives an error when it tries to load /lib/libc-2.0.6.so: "Error
+in loading shared library glinc-2.0.6.so".
 
-> I'm working on Linux compatibility on NetBSD/Mips. In order to
-> implement things such as signals, I need a user account on a big
-> endian Linux/Mips system.
+After I investigated the problem, I found that the virtual addresses for
+/etc/ld.so.cache and /lib/libc.2.0.6.so are the same: 0x2aaac000 in
+do_mmap( ).
 
-We have an SGI Indy (R4600 100Mhz CPU, 96MB RAM, 6.5GB HD) running
-Debian (Sid) which is available for developers who need access to a
-MIPS computer.  Please email me if you want an account.
+I would be very appreciated if you can give me any help.
 
-Regards,
+Thank you.
 
--- 
-Kristoffer.
+Steven Liu

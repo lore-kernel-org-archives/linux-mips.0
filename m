@@ -1,29 +1,68 @@
-From: "Craig Mautner" <craig.mautner@alumni.ucsd.edu>
-Subject: RE: schedule() BUG
-Date: Sat, 13 Sep 2003 09:30:29 -0700
-Message-ID: <JKEMLDJFFLGLICKLLEFJGEFECOAA.craig.mautner@alumni.ucsd.edu>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-reply-to: <JKEMLDJFFLGLICKLLEFJMEEOCOAA.craig.mautner@alumni.ucsd.edu>
-Return-Path: <craig.mautner@alumni.ucsd.edu>
+From: "=?GB2312?Q?=B9=E3=D0=C7?=" <guangxing@ict.ac.cn>
+Subject: Sorry for my ignorance
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+      boundary="=====000_Dragon337632027063_====="
+Date: Tue, 16 Sep 2003 9:28:51 +0800
+Message-ID: <20030916012829Z8225408-1272+5461@linux-mips.org>
+Return-Path: <guangxing@ict.ac.cn>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030913163029.6zyYyNDNwVa0Nkmp20y5grOYh0xoJcOdY_HoB6CDnLQ@z>
+To: linux-mips@linux-mips.orglinux-mips@linux-mips.org
+Message-ID: <20030916012851.l22CCQ5kWMB70x77a8yICkcMiSeSAV0tf3utIsu29Ps@z>
 
-Regarding my previous posting, we had made the assumption that schedule()
-could be called from an interrupt that occured within schedule(). However,
-because schedule() is in the kernel, ret_from_irq will skip over the call to
-schedule() and simply restore the context.
+This is a multi-part message in MIME format.
 
--Craig
+--=====000_Dragon337632027063_=====
+Content-Type: text/plain;
+      charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
 
--.     .-.     .-_     Craig Mautner
-  \   /   \   / / `    Coastal Sr. Consulting, Inc.
-   `-'     `-'  `---   (858)361-2683
-                       (858)581-0542 (fax)
-5580 La Jolla Blvd. #308 La Jolla, CA 92037
-mailto:craig.mautner@alumni.ucsd.edu
-http://home.san.rr.com/cmautner/csc/craig/
+Hi,everybody
+    I must say sorry to everyone for my ignorance and=
+ carelessness of my yesterday's mail.
+As you can be aware of ,I am a newbie to here!I do not know the=
+ rules clearly.
+    An enthusiastic friend told me that my mail will made all=
+ anti-spam systems ring alarm,
+Now I have changed the format of my mail to simple text instead=
+ of HTML format.
+    Allow me to say  SORRY, SORRY,SORRY!~ 
+=09
+
+=A1=A1  =D7=A3
+=BD=A1=BF=B5 =D3=E4=BF=EC
+ =09=09=09=09
+
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=B9=E3=D0=C7
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1guangxing@ict.ac.cn
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A12003-09-16
+
+
+--=====000_Dragon337632027063_=====
+Content-Type: image/gif;
+      name="LittleBoy.GIF"
+Content-Transfer-Encoding: base64
+Content-Disposition: FoxmailIcon;
+      filename="LittleBoy.GIF"
+
+R0lGODlhIAAgANQAAGCXzwCAgGBnYP/IkPzJmpFjPBsNA2Q8HxQDACIGAk4HADYDAA0AAP///wAA
+ANPT05KSkm5ubmVlZUZGRiUlJRgYGBEREQ8PDwcHBwMDAwAAAAAAAAAAAAAAAAAAAAAAACH/C05F
+VFNDQVBFMi4wAwEAAAAh/sJodHRwOi8vd3d3LnJ0bHNvZnQuY29tL2FuaW1hZ2ljLwoKQ3JlYXRl
+ZCB3aXRoIEFuaW1hZ2ljIEdJRiBWIDEuMjJhCmJ5IFJpZ2h0IHRvIExlZnQgU29mdHdhcmUgSW5j
+LgoKVG8gc3VwcHJlc3MgdGhpcyBtZXNzYWdlIGluIHRoZSByZWdpc3RlcmVkIHZlcnNpb24KdW5j
+aGVjayAiT3B0aW9ucyB8IEFuaW1hZ2ljIGNvbW1lbnQgZnJhbWUiCgAh+QQJGQABACwAAAAAIAAg
+AAAF1mAgjmRpnmiqrqrjvjCLugNsO3LpDPz91rgcggf07XqyYa/nI9ZWytqy6HQGT1HrtEq8mhjc
+45b7NImB5DTSrP6py6UoLfweLEwGpuBcJ95LYEANYm5vfyQOeQ4Ng12LfFyHIw5gi41AApdqkiIO
+CUxdjJppnAGBYYyQBQUERAoleW2QRAWuJFmOfbW1rySnfVy7A70jsV3ARAc8xCO/RXNkC8rDWGGz
+ZAgpzsgD2Srbfd4rCZ/ALjki5OXWXjKWoz2D6AEvooM2ojEtAADvqfz+BgE0EQIAIfkECRkAAQAs
+AAAAACAAIAAABc5gII5kaZ5oqq6q474wi7oDbDty6Qz8/da4HIIH9O16smGv5yPWVsrasuh0Bk9R
+67RKvJoY3OOW+zSJgeQ00qz+qculKC38HixMhum5TryXwFKBVHV+JA55R2KJhGZgMFt7XIUjDglM
+XZhvkyKAYW5OBQUERAoleW2RRAWkJFldqVWrq6UknXxcsgO0I6eZtwMHPLsjtkVzZAvBulievwgp
+xb8DzyrRfNQrCZa3Ljki2tueXjIODeaR5eMrL+bnNu0xLQAA5e0NDvP18PkmIQAh+QQJGQABACwA
+AAAAIAAgAAAF02AgjmRpnmiqrqrjvjCLug9sO3LpPPz91rgchgf07XqyYa/nI9ZWytqy6HQGT1Hr
+tEq8mjLc45b7NImB5DTSrP6py6UoLfx+VEwWpuRcJ95LYEANYm5vfyQOeQ4Ng12LfFyHIw5gi41A
+EpdqkiIOF0xdjJppnAGBYYyQERFOFCV5bZBErDyuI1mOfaystiOnfVy7D70isF3ARBO1X1U2m8rD
+WGGyZBgpv8g81irYwNsrF5/ALjki4eLTXjKWoz2D5QEvooM2ojEtEBDsqfn7g/0mQgAAOw==
+
+--=====000_Dragon337632027063_=====--

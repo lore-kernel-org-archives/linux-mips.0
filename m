@@ -1,8 +1,13 @@
-Message-ID: <008401c26094$794952f0$10eca8c0@grendel>
+Received: from newman.mips.com (ns-dmz [206.31.31.225])
+	by mx2.mips.com (8.12.5/8.12.5) with ESMTP id g8O7n7rZ001883
+	for <linux-mips@linux-mips.org>; Tue, 24 Sep 2002 00:49:07 -0700 (PDT)
+Received: from grendel (grendel [192.168.236.16])
+	by newman.mips.com (8.9.3/8.9.0) with SMTP id AAA07450
+	for <linux-mips@linux-mips.org>; Tue, 24 Sep 2002 00:49:27 -0700 (PDT)
+Message-ID: <008801c2639f$385b1b80$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20020920095623.5300295a.g.c.bransby-99@student.lboro.ac.uk>
-Subject: Re: Cycles for certain instructions
-Date: Fri, 20 Sep 2002 12:57:03 +0200
+Subject: FCSR Management
+Date: Tue, 24 Sep 2002 09:51:18 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -10,27 +15,34 @@ Content-Transfer-Encoding: 7bit
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Gareth <g.c.bransby-99@student.lboro.ac.uk>, linux-mips@linux-mips.org
-Message-ID: <20020920105703.sKOB8CsRABD0P_-mZalONrI9BtU29z089KcsDwoZ-Hc@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20020924075118.lbeNE997NI0PvvKo_HCs-m8UBveMGY3s-QwtRTHoM6A@z>
 
-> I am doing an investigation with a mips malta board that has a 4kc processor on
-> it. I am trying to find out how many cycles certain instructions take to
-> execute.
-> 
-> The program I am running loops a small piece of code many times. After a few
-> loops of the code the caches will have all the instructions in them and so 
-> accesses to memory will be few and far between. So how many cycles do 
-> instructions such as load word and store word take? Obviosly if the data is not
-> in the cache the time take will depend on the speed of the external memory. If
-> the data is in the cache is the time taken fairly predictable for a given core?
+In looking at some anomalous behavior on another software
+platform, I checked the current MIPS/Linux kernel sources
+and I wonder if we don't have yet another FP context problem
+lurking under the surface.
 
-On a 4Kc, and indeed on the vast majority of MIPS CPUs,
-if the data is in the cache, a load will pipeline fully.  Which is
-to say, the following instruction will issue on the next clock.
-*However*, if that following instruction uses the loaded data,
-it will stall by one cycle waiting for the data to come back
-from the cache.  Compilers for MIPS will generally try to stick
-some useful instructions between load and load data use.
+On most, if not all, MIPS CPUs with integrated FPUs,
+the act of writing a value to the FP CSR (Control and
+Status Register, fcr31) which has the "E" bit, or any matching
+pair of Enable/Cause bits for the V/Z/O/U/I IEEE exceptions
+set will trigger a floating point exception.  In the case of
+the Unimplemented Operation exception (the "E" bit),
+the emulator is invoked and all of the Cause bits are cleared
+in the context before user execution is resumed.  In the
+case of other FP exceptions, the default behavior is to
+dump core, so the user never executes again.  But *if*
+the user has registered a handler for SIGFPE, and one
+of the IEEE exceptions occurs, I don't see where the
+associated Cause bit is being cleared, and I would think
+that the consequence would be that the process would
+get into an endless loop of trapping, posting the signal,
+restoring the FCSR from the context with the bits set,
+and trapping again, whether or not the PC is modified
+to avoid re-executing the faulting instruction.
+
+Am I missing something, or is this a problem?
 
             Regards,
 

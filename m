@@ -1,61 +1,28 @@
-From: "Kjeld Borch Egevang" <kjelde@mips.com>
-Subject: RE: Error in gcc version 2.96 20000731
-Date: Thu, 13 Sep 2001 23:22:46 +0200
-Message-ID: <NFBBKGGKGLLGNBGCEPKIKEHDCAAA.kjelde@mips.com>
+Message-ID: <000901c13d8f$1471bb20$751c690a@huawei.com>
+From: "machael thailer" <dony.he@huawei.com>
+Subject: About KGDB debug questions...
+Date: Sat, 15 Sep 2001 10:35:27 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="gb2312"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20010913141454.A30909@lucon.org>
 Sender: owner-linux-mips@oss.sgi.com
-To: "H . J . Lu" <hjl@lucon.org>
+To: Ralf Baechle <ralf@oss.sgi.com>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20010913212246.XloAcbmkuYCFokVzQL7NE0B9H0vgWLCMGSYiyl--5j4@z>
+Message-ID: <20010915023527.c-kR98M45c8hsszTVcVpV57Z0Opb0LuQo4a_ddJ-D4c@z>
 
-I get your point. A bit suprising though. Do you consider it a bug?
+Hello,
 
-/Kjeld
+    I have a question about KGDB debug. Sometimes when I run 'n' on host
+GDB, then the target KGDB receive many packets and cannot stop, and the EPC
+is adding 4 each time it receives a packet. It looks like  'c'without any
+breakpoints.
+Any suggestions? Are there any patches?
 
------Original Message-----
-From: owner-linux-mips@oss.sgi.com
-[mailto:owner-linux-mips@oss.sgi.com]On Behalf Of H . J . Lu
-Sent: 13. september 2001 23:15
-To: Kjeld Borch Egevang
-Cc: linux-mips@oss.sgi.com
-Subject: Re: Error in gcc version 2.96 20000731
+And what is the latest mips version of linux? Which tree can I download it ?
 
-
-On Thu, Sep 13, 2001 at 11:09:04PM +0200, Kjeld Borch Egevang wrote:
-> Perhaps I don't get you point, but I get the same with:
-> 
-> int main()
-> {
->   rtx rt;
-> 
->   put_code(&rt, (short)5);
->   printf("gen_rtx, code=%d\n", (int)rt.code);
-> }
-> 
-
-That is not what I meant. You have
-
-typedef struct rtx_def
-{
-  short code;
-  int dummy;
-} rtx;
- 
-The first field of rtx_def is short.
-
-  for (; length >= 0; length--)
-    ((int *) rt)[length] = 0;
-
-But you access it as int. If you do
-
-  for (; length >= 0; length--)
-    ((short *) rt)[length] = 0;
-
-It will be ok.
+BTW:Currently I use linux-2.4.5-pre1.
 
 
-H.J.
+
+machael thailer

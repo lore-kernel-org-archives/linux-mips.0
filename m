@@ -1,45 +1,53 @@
-Message-ID: <000e01bf3c9e$99711e90$0228a8c0@satanas>
+Message-ID: <000c01bf3da2$dab2a400$e548e8c3@thinkpad>
 From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: Re: Problems with glibc RPM
-Date: Thu, 2 Dec 1999 09:23:09 +0100
+Subject: Re: EXT2 fs error
+Date: Fri, 3 Dec 1999 16:26:42 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Khaled Labib <labibk@taec.toshiba.com>, linux@cthulhu.engr.sgi.com
-Message-ID: <19991202082309.NwmRhjIacszI2Gnh6-YlMnP6U88BgKsXHaXe9fLqgQ4@z>
+To: Ralf Baechle <ralf@oss.sgi.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Marc Esipovich <marc@mucom.co.il>, e1097757@ceng.metu.edu.tr, linux@cthulhu.engr.sgi.com
+Message-ID: <19991203152642.pg97R51jBh8T_GW1Fd6VIyiCywGs-n5Y7cIfdkjSjFw@z>
 
+>On Tue, Nov 30, 1999 at 07:52:04PM +0000, Alan Cox wrote:
 >
->I downloaded glibc-2.0.6-4.src.rpm and glibc-2.0.6-3.src.rpm from 
->ftp.linux.sgi.com.
+>> If there is a scsi error before the ext2fs error then yes probably so
+>> You are looking for a "media error" probably.
+>>
+>> > > SCSI bus is being reset for 0 channel 0.
+>> > > scsi0 reset. sending SDTR
+>> >
+>> > SCSI reset is due to repeated attempts to read a block, or I might be
+>> > wrong and it it's due to a malfunction of the controller on your HD.
+>>
+>> You can get it off some working sane hardware if you try and ask for
+stupid
+>> block numbers. It is worth doing a full fsck on the drive before assuming
+>> hardware. Also check the cabling seems sound and is well attached and
+that
+>> parity is enabled on the controller if the bios sets it.
 >
->When I tried to use the rpm tool to install them, I got the following error 
->message:
+>I've seen this happening on my Indy as well like once every month or even
+>more rarely.  It only happens very rarely but it happens.  I think the
+>hardware of my Indy is fine as all my attempts to reduce the problems I'm
+>experiencing during my development to a hardware problem have failed.
 >
->unpacking of archive failed on file glibc-2.0.6.tar.gz: cpio: read failed - 
->Success
->
->
->Can someone help ? I really need these sources from the rpm.
->
->I am using RedHat Linux 6.0 on a PC.
+>  Ralf
 
+By any chance are you guys seeing this on R5000 Indys?
+There is an assumption in arch/mips/mm/r4xx0.c that
+flushing the secondary cache automagically flushes
+the same address in the primary data cache, but that
+assumption is not universally valid and there is no
+reason to believe that it is true on the R5K.   This
+could cause periodic random corruptions of DMA
+transfers, which could in turn manifest themselves
+as corrupted files or file system meta-data.  The
+R4000/R4400SC systems, and the entry-level
+Indy's without secondary caches should not be
+at risk.
 
-I believe there are some interoperatbility problems between
-Red Hat 5.2 and 6.0 rpm programs.   When I did a port of
-mipsel linux to a MIPS development board, I started by
-booting the RH 6.0 mipsel root file system, with the 6.0
-rpm program, and found that I could not reliably install
-the 5.2 gcc/glibc binary RPMs on the SGI server.  I
-backed off to a 5.2 level root file system and rpm program,
-and the problems went away.
-
-__
-
-Kevin D. Kissell
-MIPS Technologies European Architecture Lab
-kevink@mips.com
-Tel. +33.4.78.38.70.67
-FAX. +33.4.78.38.70.68
+            Kevin K.

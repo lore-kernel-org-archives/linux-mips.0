@@ -1,41 +1,71 @@
-From: "Hiroo Hayashi" <hiroo.hayashi@toshiba.co.jp>
-Subject: bus error by write transaction (RE: [patch] linux 2.4.5: Make __dbe_table available to modules)
-Date: Thu, 23 Aug 2001 15:11:33 -0500
-Message-ID: <FFEHJOJAGEIJIPPEKDNGOEJGCDAA.hiroo.hayashi@toshiba.co.jp>
+content-class: urn:content-classes:message
+Subject: RE: glibc 2.0.6 building problem.
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.GSO.3.96.1010823172522.21718E-100000@delta.ds2.pg.gda.pl>
+	charset="iso-8859-1"
+Date: Fri, 24 Aug 2001 17:31:17 -0700
+Message-ID: <84CE342693F11946B9F54B18C1AB837B0A2699@ex2k.pcs.psdc.com>
+From: "Steven Liu" <stevenliu@psdc.com>
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, "Gleb O. Raiko" <raiko@niisi.msk.ru>
-Cc: linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20010823201133.AFqMvaViFRaNXw4OSlOeM6bhNqJv944rSK5ZfKQXuK4@z>
+To: Brian Murphy <brian.murphy@eicon.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010825003117.NmtUePwZeVGsOHhO02Wevovpcktv_eEu-eKK_KzvulM@z>
 
-Hi,
+Hi, Brian:
 
-> > I consider external signaling of write failures may be useful for kernel
-> > debugging purposes. I agree it's hard (or even impossible) to achieve
-> > proper behaviour on write failures for user space. There is a small
-> > chance to kill another process, for example, write transactions may
-> > delay due to write buffer. So, the kernel may only print something.
-> 
->  Or, more severly and importantly, a write-back cache.  We provide such
-> diagnostics but it's dubious for writes.  You are right, it might be
-> useful for debugging in some cases, though.
+Thank you very much for your help in my building glibc-2.0.6. Now I am
+building gcc from egcs-1.1.2.tar.gz for the native compiler of my Mips
+R3000 target.
 
-Yes, most MIPS CPU except very old one use writeback cache.
+Do you have a Makefile in doing this? If you do, could you please send
+it to me? 
 
-Note that most MIPS documents use word 'load' and 'store' for instruction,
-and 'read' and 'write' for bus transaction.  You have to distinguish them.
+Regards,
 
-On a system with writeback cache, a write bus transaction is issued when
-a modified cache line is replaced by a cache miss for either load
-instruction or store instruction.
+Steven Liu
 
-(Here I'm ignoring I/O access to make the point clear.)
 
-The data on a write bus transaction may be a data modified by a store
-instruction which was issued some years ago :-)  What the OS can do?
+-----Original Message-----
+From: Brian Murphy [mailto:brian.murphy@eicon.com]
+Sent: Thursday, August 16, 2001 12:58 PM
+To: Steven Liu
+Subject: Re: glibc 2.0.6 building problem.
 
-Hiro
+
+Steven Liu wrote:
+
+> Hi, ALL:
+>
+> After built Linux kernel 2.2.12 for mips r3000, I got the related
+files
+> for glibc-2.0.6 build.  But I found a problem when I were building
+glibc
+> 2.0.6. Here is part of the screen printout:
+>
+> cd build <return>
+> C=mips-linux-gcc BUILD_CC=gcc AR=mips-linux-ar
+RANLIB=mips-linux-ranlib
+> ../configure --prefix=/usr --host=mips-linux
+> --enable-add-ons=crypt,linuxthreads,localedata --enable-profile
+<return>
+>
+> .....
+>
+> ......
+> checking installed Linux kernel header files... TOO OLD!
+> configure: error: GNU libc requires kernel header files from
+> Linux 2.0.10 or later to be installed before configuring.
+> The kernel header files are found usually in /usr/include/asm and
+> /usr/include/linux; make sure these directories use files from
+> Linux 2.0.10 or later.  This check uses <linux/version.h>, so
+> make sure that file was built correctly when installing the kernel
+> header
+> files.
+>
+
+Here is my Makefile.global and Makefile I use to build a glibc-2.0.6
+
+- hope it helps.
+
+/Brian

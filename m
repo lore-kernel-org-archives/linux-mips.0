@@ -1,30 +1,22 @@
-From: Hartvig Ekner <hartvige@mips.com>
-Message-ID: <200202251921.UAA27344@copsun18.mips.com>
-Subject: Re: Setting up of GP in static, non-PIC version of glibc?
-Date: Mon, 25 Feb 2002 20:21:00 +0100 (MET)
-In-Reply-To: <20020225193928.A4385@dea.linux-mips.net> from "Ralf Baechle" at Feb 25, 2002 07:39:28 PM
+Subject: Re: MIPS, i8259 and spurious interrupts.
+Date: Tue, 26 Feb 2002 11:10:38 +0000 (GMT)
+In-Reply-To: <15483.26654.874273.652089@gladsmuir.algor.co.uk> from "Dominic Sweetman" at Feb 26, 2002 10:49:02 AM
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <E16ffVG-0000IW-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: Johannes Stezenbach <js@convergence.de>, Hartvig Ekner <hartvige@mips.com>, linux-mips@oss.sgi.com
-Message-ID: <20020225192100.5dKxmHkEEWFKVaWLdRrk4ex0ZmN_A_gF4z-WN3-qa3g@z>
+To: Dominic Sweetman <dom@algor.co.uk>
+Cc: Scott A McConnell <samcconn@cotw.com>, linux-mips@oss.sgi.com
+Message-ID: <20020226111038.zNBIzDlwls6WTacYtLriynPjLkP3uen6OtE9wYUn9Ss@z>
 
+> Then 8259s are ugly things which have some very CPU-specific
+> interactions with x86 CPUs.  In a non-x86 context you need to
+> initialise them in particular ways.  
+ 
+Like with a soldering iron 8)
 
-Ralf Baechle writes:
-> 
-> On Mon, Feb 25, 2002 at 07:31:41PM +0100, Johannes Stezenbach wrote:
-> > BTW: Who is "we"? Do you mean global data optimization is broken
-> > in gcc/binutils or just that no one at SGI is using it?
-> 
-> It's an ECOFF specific optimization that just has been forward ported into
-> the ELF world.  And what does this have to do with SGI anyway?
-
-I still don't get it. Why would one not use GP optimization with non-shared
-non-PIC code? It certainly is used throughout in the non-Linux MIPS world,
-and on the limited testing I did today it also worked fine. Is there 
-something which is known not to work, or some conflict somewhere which
-prevents the general use of GP?
-
-/Hartvig
+In paticular if you are getting hangs at the point where you allow an IRQ
+to come in check the level/edge behaviour and see if in fact you are taking
+a continuous stream of interrupts jamming the CPU in irq handling

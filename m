@@ -1,29 +1,190 @@
-From: "Jay Carlson" <nop@nop.com>
-Subject: RE: snow, a statically linked shared library MIPS ABI
-Date: Thu, 22 Mar 2001 10:28:41 -0500
-Message-ID: <KEEOIBGCMINLAHMMNDJNMEHDCAAA.nop@nop.com>
+Message-ID: <3ABA430E.BDC095E@ti.com>
+Date: Thu, 22 Mar 2001 11:23:10 -0700
+From: Jeff Harrell <jharrell@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <013a01c0b2db$749249a0$0deca8c0@Ulysses>
+Subject: Re: Embedded MIPS/Linux Needs
+References: <00eb01c0b2c6$02c7ef60$0deca8c0@Ulysses>
+Content-Type: multipart/mixed;
+ boundary="------------067786785BCB493D506E86D4"
 Sender: owner-linux-mips@oss.sgi.com
-To: "Kevin D. Kissell" <kevink@mips.com>, Jay Carlson <nop@place.org>, linux-mips@oss.sgi.com, linuxce-devel@linuxce.org
-Message-ID: <20010322152841.FScZWPhUkGjjd6TC31VxCqOn2ry4M-kaouAjtlAC6gY@z>
+To: "Kevin D. Kissell" <kevink@mips.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010322182310.oQCSCFntf1Bg1ja-nLJQfK5B0_6w4kMesfWL1acL970@z>
 
-Kevin D. Kissell [mailto:kevink@mips.com] writes:
+This is a multi-part message in MIME format.
+--------------067786785BCB493D506E86D4
+Content-Type: multipart/alternative;
+ boundary="------------9A7CE958C2C774B590AC4627"
 
-> > Instead, we can build shared library images located at fixed locations
-> > in memory, with the location configured at library creation time.
-> > Stub libraries are generated that hold the absolute addresses of
-> > functions and data within the library image; programs (and other
-> > libraries) link with the stubs.
+
+--------------9A7CE958C2C774B590AC4627
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+"Kevin D. Kissell" wrote:
+
+> Here at MIPS Technologies, we use Linux internally
+> for design verification, experiments, benchmarking,
+> etc., and as a consequence Carsten Langgaard and
+> myself have both been active in this forum, and have
+> tried to help the general Linux/MIPS community as
+> best we can with the limited time that we can dedicate
+> to the problem, in terms of suggested patches, bug
+> fixes, cleanups, integration of needed components
+> like the FPU emulator, etc.
 >
-> In fact, this is exactly how shared libraries worked under
-> UNIX System V.  It is inelegant, but economical.
 
-Yeah.  I bet there are precedents back in the mainframe world too.  But my
-first encounter with it was Linux a.out libraries, so it's a sign that I'm
-truly a Linux Weenie that I think of it that way :-)
+I think that  one of the larger hurdles that we have had
+to overcome is a common set of tools that can build a current
+kernel and userland application set from a cross-developed
+environment.  There seems to have been a
+divergence between kernel tools and userland tools specifically in
+the area of recent kernel 2.4.x and GLIBC 2.2.x that is a major
+headache for delivering a toolchain that is on par with the
+intel equivalent designs.  It is tough to offer a linux design that
+requires multiple toolchains one to build the kernel, one to build
+userland apps.
 
-Jay
+
+>
+> I have a question for those of you who are doing
+> Linux work for *new* platforms (as opposed to the
+> SGI/DEC legacy box support people).  IF, and I
+> emphasize the word *if*, MIPS Technologies were
+> make a bigger investment in MIPS/Linux technology,
+> be it kernel enhancements, cross/native tools,
+> userland ports, libraries, or whatever, what would
+> be your prioritized "wish list"?
+>
+
+    1. A toolchain that will build 2.4.x version of the kernel as well
+        as GLIBC 2.2 dependent applications.  Preferrably this would
+        be a cross-development environment.  (This would require
+         GLIBC 2.2 accessable as a cross-compiled environment
+
+    2.  Userland app ports
+
+
+>
+> Feel free to respond by point-to-point email, though
+> responses that are also copied to the mailing list
+> might provoke some interesting and enlightening
+> debate.
+>
+>             Regards,
+>
+>             Kevin K.
+
+From past experience it's easy to see that without a
+solid set of development tools, it is hard to justify using
+a particular CPU or hardware.
+
+
+
+--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Jeff Harrell                    Work:  (801) 619-6104
+Broadband Access group/TI
+jharrell@ti.com
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+--------------9A7CE958C2C774B590AC4627
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+"Kevin D. Kissell" wrote:
+<blockquote TYPE=CITE>Here at MIPS Technologies, we use Linux internally
+<br>for design verification, experiments, benchmarking,
+<br>etc., and as a consequence Carsten Langgaard and
+<br>myself have both been active in this forum, and have
+<br>tried to help the general Linux/MIPS community as
+<br>best we can with the limited time that we can dedicate
+<br>to the problem, in terms of suggested patches, bug
+<br>fixes, cleanups, integration of needed components
+<br>like the FPU emulator, etc.
+<br>&nbsp;</blockquote>
+I think that&nbsp; one of the larger hurdles that we have had
+<br>to overcome is a common set of tools that can build a current
+<br>kernel and userland application set from a cross-developed
+<br>environment.&nbsp; There seems to have been a
+<br>divergence between kernel tools and userland tools specifically in
+<br>the area of recent kernel 2.4.x and GLIBC&nbsp;2.2.x that is a major
+<br>headache for delivering a toolchain that is on par with the
+<br>intel equivalent designs.&nbsp; It is tough to offer a linux design
+that
+<br>requires multiple toolchains one to build the kernel, one to build
+<br>userland apps.
+<br>&nbsp;
+<blockquote TYPE=CITE>&nbsp;
+<br>I have a question for those of you who are doing
+<br>Linux work for *new* platforms (as opposed to the
+<br>SGI/DEC legacy box support people).&nbsp; IF, and I
+<br>emphasize the word *if*, MIPS Technologies were
+<br>make a bigger investment in MIPS/Linux technology,
+<br>be it kernel enhancements, cross/native tools,
+<br>userland ports, libraries, or whatever, what would
+<br>be your prioritized "wish list"?
+<br>&nbsp;</blockquote>
+&nbsp;&nbsp;&nbsp; 1.&nbsp;A toolchain that will build 2.4.x version of
+the kernel as well
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; as GLIBC 2.2 dependent applications.&nbsp;
+Preferrably this would
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; be a cross-development environment.&nbsp;
+(This would require
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GLIBC 2.2 accessable
+as a cross-compiled environment
+<p>&nbsp;&nbsp;&nbsp; 2.&nbsp; Userland app ports
+<br>&nbsp;
+<blockquote TYPE=CITE>&nbsp;
+<br>Feel free to respond by point-to-point email, though
+<br>responses that are also copied to the mailing list
+<br>might provoke some interesting and enlightening
+<br>debate.
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Regards,
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kevin
+K.</blockquote>
+
+<p><br>From past experience it's easy to see that without a
+<br>solid set of development tools, it is hard to justify using
+<br>a particular CPU or hardware.
+<br>&nbsp;
+<br>&nbsp;
+<pre>--&nbsp;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Jeff Harrell&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Work:&nbsp; (801) 619-6104&nbsp;
+Broadband Access group/TI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+jharrell@ti.com
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</pre>
+&nbsp;</html>
+
+--------------9A7CE958C2C774B590AC4627--
+
+--------------067786785BCB493D506E86D4
+Content-Type: text/x-vcard; charset=us-ascii;
+ name="jharrell.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Description: Card for Jeff Harrell
+Content-Disposition: attachment;
+ filename="jharrell.vcf"
+
+begin:vcard 
+n:Harrell;Jeff
+tel;cell:(801) 597-6268
+tel;fax:(801) 619-6150
+tel;work:(801) 619-6104
+x-mozilla-html:TRUE
+url:http://www.ti.com
+org:Broadband Access Group
+version:2.1
+email;internet:jharrell@ti.com
+title:Texas Instruments
+adr;quoted-printable:;;170 West Election Rd. Suite 100	=0D=0AMS 4106		;Draper;Utah;84020-6410;USA
+x-mozilla-cpt:;0
+fn:Jeff Harrell
+end:vcard
+
+--------------067786785BCB493D506E86D4--

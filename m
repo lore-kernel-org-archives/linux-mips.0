@@ -1,21 +1,26 @@
-From: "xuhaoz" <xuhaoz@neonetech.com>
-Subject: about platform
-Date: Sat, 31 Jul 2004 21:37:34 +0800
-Message-ID: <PMEKJGJGKKPHMBEGKNMIKENACCAA.xuhaoz@neonetech.com>
+Message-ID: <01ed01c47963$bc74a220$1701a8c0@portege>
+From: "Alec Voropay" <a.voropay@vmb-service.ru>
+Subject: SGI ARC .vs. ACE ARC BIOS
+Date: Tue, 3 Aug 2004 18:11:12 +0400
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="gb2312"
+	charset="koi8-r"
 Content-Transfer-Encoding: 7bit
-Return-Path: <xuhaoz@neonetech.com>
+Return-Path: <a.voropay@vmb-service.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040731133734.sLmskAR2H7pJ84tVEc35hrnqZqZI9h2Se6Qx_ezecGs@z>
+Message-ID: <20040803141112.eWEZD0708ES6dvBk2WlUhYT_402iGI_dASCbDJG196s@z>
 
-hello:
-can uclinux run on the mipsR3000 ?, 
-_________________________________________
-zhang xuhao
-ICQ#: 116926669
-More ways to contact me: http://wwp.icq.com/116926669
-_________________________________________
+Hi!
+
+ Can anyone explain a difference between SGI ARC BOOT-PROM
+(sometimes called ARCS) and an old ACE ARC BIOS (Jazz/Magnum) ?
+Is this equal (in functionality, not command line) ?
+
+P.S.
+http://www.netbsd.org/Documentation/Hardware/Machines/ARC/
+
+
+--
+-=AV=-

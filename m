@@ -1,20 +1,24 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199901181044.CAA33723@oz.engr.sgi.com>
-Subject: More thanks
-Date: Mon, 18 Jan 1999 02:44:34 -0800 (PST)
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Mon, 18 Jan 1999 11:25:00 -0600
+Message-ID: <199901181725.LAA20930@metropolis.nuclecu.unam.mx>
+From: Miguel de Icaza <miguel@nuclecu.unam.mx>
+In-reply-to: <199901181040.CAA33736@oz.engr.sgi.com> (ariel@oz.engr.sgi.com)
+Subject: Re: linus.linux.sgi.com
+References: <199901181040.CAA33736@oz.engr.sgi.com>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19990118104434.rbIGwms5GkoQeRp9nMsJNX8B3s-WlSUcBAcbar8B174@z>
+To: ariel@cthulhu.engr.sgi.com
+Cc: davem@dm.cobaltmicro.com, ralf@uni-koblenz.de, linux@cthulhu.engr.sgi.com, adevries@engsoc.carleton.ca, richard@infopact.nl
+Message-ID: <19990118172500.yc1kJ_gLp1pCqkpA6lxM6e94VXGAVCd-oLLzfGzlX84@z>
 
-Please pardon the additional message but I neglected to thank
-Steve Rikli and David Katinsky for being instrumental in
-bringing linus.linux.sgi.com up again.  So to set the record
-straight, thanks Steve and David for your support !
 
--- 
-Peace, Ariel
+> The binary compatibility FUD is ironic considering
+> that they have broken binary compatibility as well as source
+> compatibility so many times in their history (m68k -> SPARC
+> SPARC - x86, SunOs -> Solaris) believe me I know since I've
+> been a Sun customer and an ISV.  
+
+You forgot the breakage in the various Solaris 2.n->2.n+1
+
+At least the 2.4->2.5 was painful for me
+
+Miguel.

@@ -1,36 +1,27 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199704101453.KAA21432@neon.ingenia.ca>
+Message-ID: <199704101509.LAA21619@neon.ingenia.ca>
 Subject: Re: all in the family
-In-Reply-To: <199704100718.CAA22863@athena.nuclecu.unam.mx> from Miguel de Icaza at "Apr 10, 97 02:18:59 am"
-Date: Thu, 10 Apr 1997 10:53:19 -0400 (EDT)
+In-Reply-To: <199704100226.WAA01960@jenolan.caipgeneral> from "David S. Miller" at "Apr 9, 97 10:26:18 pm"
+Date: Thu, 10 Apr 1997 11:09:25 -0400 (EDT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Miguel de Icaza <miguel@nuclecu.unam.mx>
+To: "David S. Miller" <davem@jenolan.rutgers.edu>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970410145319.kqJAum5X_qWklu5akSt2dcWIuo6CV3PPVT_IpxGMMqw@z>
+Message-ID: <19970410150925.jzvOFpYG0rF6VL4E86wjwlCLKjdTrUEeTd5ZHfcazjA@z>
 
-Thus spake Miguel de Icaza:
-> > Anyone know if the emulation is up to hosting the Linux/Indy
-> > cross-compiler?
-> 
-> Why do you need the emulation for on Linux/SPARC?   You just need to
-> run configure on Linux/SPARC with the proper --target option and you
-> will get your native cross-compiler in a second.
+Thus spake David S. Miller:
+> ELKS, that is cheating ;-)
 
-I was under the impression that building GCC for the Linux/SGI target
-was non-trivial.  Ralf made mention of some patches, and since there
-are binaries available for Solaris...
-
-If GCC can support it with a --target choice, that'll be great.
+Yeah, but Alan insists on working on it. =)
 
 Mike
 
 -- 
 #> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>              Commando Developer - Whatever It Takes
+#>      Chief System Architect -- will tame sendmail(8) for food       
 #>                                                                     
-#> "See, you not only have to be a good coder to create a system like
-#>    Linux, you have to be a sneaky bastard too." - Linus Torvalds
+#> "You are a very perverse individual, and I think I'd like to get to 
+#>  know you better." --- eric@reference.com                           

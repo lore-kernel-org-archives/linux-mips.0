@@ -1,43 +1,40 @@
-content-class: urn:content-classes:message
-Subject: RE: Using more than 256 MB of memory on SB1250 in 32-bit mode
+Message-ID: <009901c36fb8$08190970$6601010a@prefect>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <10C6C1971DA00C4BB87AC0206E3CA382627229@1aurora.enabtech>
+Subject: Re: RE: Information required
+Date: Sun, 31 Aug 2003 08:04:29 -0400
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Date: Fri, 29 Aug 2003 16:40:58 -1000
-Message-ID: <DC1BF43A8FAE654DA6B3FB7836DD3A56DEB73D@iris.adtech-inc.com>
-From: "Finney, Steve" <Steve.Finney@SpirentCom.COM>
-Return-Path: <Steve.Finney@SpirentCom.COM>
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <brad@ltc.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Steve Madsen <madsen@tadpole.com>, linux-mips@linux-mips.org
-Message-ID: <20030830024058.ZiBtb7tY0YF-v54IccvaUZscxkUolRU8sXngimyN2c4@z>
+To: Adeel Malik <AdeelM@avaznet.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20030831120429.bzUZhdhUls4nUGSNZEB1gw4WI9ZEdEgmqvZvV79H6aU@z>
 
-Not sure what you mean by "system memory". You can turn on CONFIG_HIGHMEM and get access to 512 MB physical memory  or more on the BCM with a 32-bit kernel, but you can't access memory above the low 256 MB  directly through KSEG0/1, so there are some things that the kernel can't use it for (though it can be allocated to user processes). Also, since CONFIG_DISCONTIGMEM isn't supported, you end up wasting a bunch of RAM on useless page table space (36MB for 512 MB physical), and there's also some caching weirdness if you try and mmap() /dev/mem to get user access to the >0x10000000 I/O registers. Also, your startup will report "1792 MB HIGHMEM available".
+----- Original Message ----- 
+From: "Adeel Malik" <AdeelM@avaznet.com>
+To: "Dan Aizenstros" <daizenstros@quicklogic.com>
+Cc: <linux-mips@linux-mips.org>
+Sent: Saturday, August 30, 2003 7:34 AM
+Subject: RE: RE: Information required
 
-sf
 
-> -----Original Message-----
-> From: Steve Madsen [mailto:madsen@tadpole.com]
-> Sent: Friday, August 29, 2003 12:00 PM
-> To: linux-mips@linux-mips.org
-> Subject: Using more than 256 MB of memory on SB1250 in 32-bit mode
-> 
-> 
-> Is it possible to use more than 256 MB of system memory with 
-> the Broadcom 
-> SB1250 in 32-bit mode?  The memory map I'm looking at shows 
-> me that the 
-> second 256 MB of memory is at physical address 0x80000000.  I 
-> suspect that 
-> due to the 2G/2G split in the kernel, I can't use memory this 
-> high without 
-> moving to the 64-bit kernel.
-> 
-> Would someone confirm this for me?
-> 
-> -- 
-> Steve Madsen <madsen@tadpole.com>
-> Tadpole Computer, Inc.  http://www.tadpole.com
-> 
-> 
+>        I have been able to resolve all the unresolved function symbols, by
+> properly configuring the MODVERSIONING in the module code. Only two
+symbols
+> are left:
+>
+> 1. unresolved symbol Atomic_add
+> 2. unresolved symbol Atomic_sub
+>
+> These symbols are not even in /proc/ksyms and System.map file of the
+> cross-compild linux-2.4 directory.
+
+I don't think you'll find those in Linux.  Maybe your module relies on
+another module.
+
+Regards,
+Brad

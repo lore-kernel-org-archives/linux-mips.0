@@ -1,20 +1,21 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: "Greg Chesson" <greg@xtp.engr.sgi.com>
-Message-ID: <9712041142.ZM14920@xtp.engr.sgi.com>
-Date: Thu, 4 Dec 1997 11:42:21 -0800
-In-Reply-To: alan@lxorguk.ukuu.org.uk (Alan Cox)
-        "Re: A question about architecture and byte order with RPMs" (Dec  4,  6:56pm)
-References: <m0xdgRS-0005FsC@lightning.swansea.linux.org.uk>
-Subject: Re: A question about architecture and byte order with RPMs
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Date: Fri, 5 Dec 1997 11:15:24 -0600
+Message-ID: <199712051715.LAA07167@athena.nuclecu.unam.mx>
+From: Miguel de Icaza <miguel@nuclecu.unam.mx>
+In-reply-to: <19971202200147.44637@uni-koblenz.de> (ralf@uni-koblenz.de)
+Subject: Re: vmalloc hacks
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: adevries@engsoc.carleton.ca, ralf@uni-koblenz.de, linux@cthulhu.engr.sgi.com, rpm-list@redhat.com
-Message-ID: <19971204194221.XtwLvQo7ZtbIyV4f0UE23L-ItrcNCjXkGhFwiTwgP4k@z>
+To: linux-mips@fnet.fr
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19971205171524.rQJ6o02kDVa8zYzUwHQp6hyLUyuB89QpHWPHQdZP2N8@z>
 
-Future MMUs are in the future.  I'm more interested in solving the problem
-in a device-independent way.  Also, doing it on a page basis is a bit
-restrictive and limits your options.
 
-g
+Hello Ralf,
+
+> So you'll have to make vmalloc a real function again or you'll break the
+> binary compatibility with modules.  Ok, not very much an issue.
+
+Probably sched.c just needs to include vmalloc.h, that should get rid
+of this problem.
+
+Miguel.

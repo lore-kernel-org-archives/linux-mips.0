@@ -1,19 +1,67 @@
-Date: Wed, 8 Nov 2000 15:05:21 -0500 (EST)
-From: <nick@snowman.net>
-Subject: Issues with R8000
-In-Reply-To: <3A09ADDB.EA2A6246@mvista.com>
-Message-ID: <Pine.LNX.4.21.0011081504010.6507-100000@ns>
+Message-ID: <002801c04d1b$c1adc320$a727e29f@ict.ac.cn>
+From: "Zheng Baojian" <bjzheng@ict.ac.cn>
+Subject: Can you help me?
+Date: Mon, 13 Nov 2000 10:45:17 +0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0025_01C04D5E.CFC1C0E0"
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20001108200521.Y4cQWDSPiVgKpN-78PZ9gw1FmZDC4U_CYKh9nralURo@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20001113024517.D6L_1fnzWfrLXOivCsPiDjILeaPxDwcDXUhKZq9Pf6M@z>
 
-This is not linux specific, but I'm hoping someone will have a
-suggestion.  I recently got an Indigo2 r8000.  Anything I hook up to the
-external chain is flakey.  It won't always boot (complains about cable
-disk or cdrom error), and I get regular scsi timeouts.  Does anyone have
-suggestions how to fix this?
-	Thanks
-		Nick
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0025_01C04D5E.CFC1C0E0
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
+
+SGVsbG86DQogICAgIEknbSBhIENoaW5lc2Ugc3R1ZGVudCxpIHdhbnQgdG8gcnVuIGxpbnV4IG9u
+IFNHSSBPMiB3b3Jrc3RhdGlvbi4NCkkgc2VlIHRoYXQgTzIgbm90IHN1cHBvcnQgbGludXggbm93
+IG9uIHlvdXIgd2ViLGNhbiB5b3UgdGVsbCBtZSB0aGUNCnJlYXNvbj9BcyBzZXJpZXMgb2YgU0dJ
+IHdvcmtzdGF0aW9ucyxPMixJbmR5LE9ueXggLE9yaWdpbix0aGV5IGhhdmUgc2FtZQ0KYXJjaGl0
+ZWN0dXJlLHNhbWUgY3B1LHdoeSBvdGhlcnMgc3VwcG9ydCBsaW51eCxPMiBub3Qgc3VwcG9ydC4N
+CiAgICAgICAgQmVzdCByZWdhcmRzLg0KQmp6aGVuZw0K
+
+------=_NextPart_000_0025_01C04D5E.CFC1C0E0
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
+
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PWdi
+MjMxMiIgaHR0cC1lcXVpdj1Db250ZW50LVR5cGU+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNS4w
+MC4yMzE0LjEwMDAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
+Qk9EWSBiZ0NvbG9yPSNjMGMwYzA+DQo8RElWPjxGT05UIHNpemU9Mj4NCjxESVY+PEZPTlQgc2l6
+ZT0yPkhlbGxvOjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPiZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwO0knbSBhIENoaW5lc2Ugc3R1ZGVudCxpIHdhbnQgdG8gDQpydW4gbGlu
+dXggb24gU0dJIE8yIHdvcmtzdGF0aW9uLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0y
+Pkkgc2VlIHRoYXQgTzIgbm90IHN1cHBvcnQgbGludXggbm93IG9uIHlvdXIgd2ViLGNhbiB5b3Ug
+dGVsbCANCm1lIHRoZTwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPnJlYXNvbj9BcyBz
+ZXJpZXMgb2YgU0dJIHdvcmtzdGF0aW9ucyxPMixJbmR5LDxTUEFOIGxhbmc9RU4tVVMgDQpzdHls
+ZT0iRk9OVC1GQU1JTFk6ICdUaW1lcyBOZXcgUm9tYW4nOyBGT05ULVNJWkU6IDEwLjVwdDsgbXNv
+LWJpZGktZm9udC1zaXplOiAxMi4wcHQ7IG1zby1mYXJlYXN0LWZvbnQtZmFtaWx5OiDLzszlOyBt
+c28tZm9udC1rZXJuaW5nOiAxLjBwdDsgbXNvLWFuc2ktbGFuZ3VhZ2U6IEVOLVVTOyBtc28tZmFy
+ZWFzdC1sYW5ndWFnZTogWkgtQ047IG1zby1iaWRpLWxhbmd1YWdlOiBBUi1TQSI+T255eCZuYnNw
+OyxPcmlnaW4sdGhleSANCmhhdmUgc2FtZTwvU1BBTj48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05U
+IHNpemU9Mj48U1BBTiBsYW5nPUVOLVVTIA0Kc3R5bGU9IkZPTlQtRkFNSUxZOiAnVGltZXMgTmV3
+IFJvbWFuJzsgRk9OVC1TSVpFOiAxMC41cHQ7IG1zby1iaWRpLWZvbnQtc2l6ZTogMTIuMHB0OyBt
+c28tZmFyZWFzdC1mb250LWZhbWlseTogy87M5TsgbXNvLWZvbnQta2VybmluZzogMS4wcHQ7IG1z
+by1hbnNpLWxhbmd1YWdlOiBFTi1VUzsgbXNvLWZhcmVhc3QtbGFuZ3VhZ2U6IFpILUNOOyBtc28t
+YmlkaS1sYW5ndWFnZTogQVItU0EiPmFyY2hpdGVjdHVyZSxzYW1lIA0KY3B1LHdoeSBvdGhlcnMg
+c3VwcG9ydCBsaW51eCxPMiBub3Qgc3VwcG9ydC48L1NQQU4+PC9GT05UPjwvRElWPg0KPERJVj48
+Rk9OVCBzaXplPTI+PFNQQU4gbGFuZz1FTi1VUyANCnN0eWxlPSJGT05ULUZBTUlMWTogJ1RpbWVz
+IE5ldyBSb21hbic7IEZPTlQtU0laRTogMTAuNXB0OyBtc28tYmlkaS1mb250LXNpemU6IDEyLjBw
+dDsgbXNvLWZhcmVhc3QtZm9udC1mYW1pbHk6IMvOzOU7IG1zby1mb250LWtlcm5pbmc6IDEuMHB0
+OyBtc28tYW5zaS1sYW5ndWFnZTogRU4tVVM7IG1zby1mYXJlYXN0LWxhbmd1YWdlOiBaSC1DTjsg
+bXNvLWJpZGktbGFuZ3VhZ2U6IEFSLVNBIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsgDQpCZXN0IHJlZ2FyZHMuPC9TUEFOPjwvRk9OVD48L0RJVj4NCjxESVY+PEZP
+TlQgc2l6ZT0yPjxTUEFOIGxhbmc9RU4tVVMgDQpzdHlsZT0iRk9OVC1GQU1JTFk6ICdUaW1lcyBO
+ZXcgUm9tYW4nOyBGT05ULVNJWkU6IDEwLjVwdDsgbXNvLWJpZGktZm9udC1zaXplOiAxMi4wcHQ7
+IG1zby1mYXJlYXN0LWZvbnQtZmFtaWx5OiDLzszlOyBtc28tZm9udC1rZXJuaW5nOiAxLjBwdDsg
+bXNvLWFuc2ktbGFuZ3VhZ2U6IEVOLVVTOyBtc28tZmFyZWFzdC1sYW5ndWFnZTogWkgtQ047IG1z
+by1iaWRpLWxhbmd1YWdlOiBBUi1TQSI+Qmp6aGVuZzwvU1BBTj48L0ZPTlQ+PC9ESVY+PC9GT05U
+PjwvRElWPjwvQk9EWT48L0hUTUw+DQo=
+
+------=_NextPart_000_0025_01C04D5E.CFC1C0E0--

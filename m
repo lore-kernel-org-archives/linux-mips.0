@@ -1,58 +1,107 @@
-Message-ID: <00bd01c12020$31041d00$d11110ac@snow.isltd.insignia.com>
-From: "Andrew Thornton" <andrew.thornton@insignia.com>
-Subject: Re: How to build a kernel for the malta board?
-Date: Wed, 8 Aug 2001 16:38:37 +0100
+Message-ID: <02a401c12063$cde1e830$3501010a@ltc.com>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+Subject: gcc 3.0 / glibc 2.2.3 cross-toolchain
+Date: Wed, 8 Aug 2001 19:42:17 -0400
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="gb2312"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20010808153837.SAFH3zaq0WOvNLsft5gGm9a-5KN4lAv4vavpjd4_9eE@z>
+Message-ID: <20010808234217.U3DUqU438VcQ5pbyCT6PzuY5gSZMd09Uv-io2bQ7cxg@z>
 
-Shuanglin,
+I have spent quite a bit of time trying to get a gcc 3.0 / glibc 2.2.3
+cross-toolchain working.  I am not a Toolchain Builder, but I really wanted
+to try this combo and I don't see any way around building it myself.
 
-This is what I did.
+I've had some success.  Everything seems to build fine.  However, when I try
+to run a simple "hello world" dynamically linked with glibc, I get this:
 
-Download the Linux kernel source from the MIPS ftp site and extract it on
-the development host:
+    <myprogram>: error while loading shared libraries: failed to map
+    segment from shared object: cannot load shared object file: Invalid
+argument
 
- % tar -xzf linux-2.4.3.mips-src-01.00.tar.gz
- % cd linux-2.4.3
+I think it is trying to load libc.so.6, which is in my root in /lib/,
+symlinked to libc-2.2.3.so, and so is ld.so.1, symlinked to ld-2.2.3.so.
 
-I patched this kernel to make the FPU emulator more reliable using patches
-from this list's archive.
+I feel like I am pretty close, but I am starting to get discouraged and
+could really use some help.  I really am clueless about what
+should/shouldn't work.  I'm trying to do this based on bits and pieces of
+information that I've collected from countless sources.  I have heard that
+gcc 3.0 isn't really "working", but I still want to try.
 
-Setup the configuration file:
+Here is what I've used:
 
- % cp .config.malta .config
- % chmod +w .config
+   * binutils-2.11.90.0.25.tar.gz (extracted from H. J. Lu's
+     srpm on oss.sgi.com; I've tried others also)
+   * gcc-3.0.tar.gz (released version - no patches)
+   * glibc-linuxthreads-2.2.3.tar.gz (released version - no
+     patches; glibc didn't want to configure without this)
+   * glibc-2.2.3.tar.gz (released version)
 
-For little endian mode, edit this file changing the line:
+plus a tiny patch to glibc that looks like:
 
- # CONFIG_CPU_LITTLE_ENDIAN is not set
-to:
- CONFIG_CPU_LITTLE_ENDIAN=y
+--- libc-04052001/sysdeps/mips/mipsel/rtld-parms Sat Jul 12 18:26:15 1997
++++ libc-04052001-patched/sysdeps/mips/mipsel/rtld-parms Fri Apr  6 09:23:27
+2001
+@@ -1,3 +1,3 @@
+ ifndef rtld-oformat
+-rtld-oformat = elf32-littlemips
++rtld-oformat = elf32-tradlittlemips
+ endif
 
-Setup the make file:
+I built everything on my i386 Debian 2.2 box as follows:
 
- % chmod +w Makefile
+Build the mipsel cross-binutils
 
-Edit this file changing the line:
+  tar -xzf binutils-2.11.90.0.25.tar.gz
+  mkdir mipsel-binutils
+  cd mipsel-binutils
 
- CROSS_COMPILE   =
-to:
- CROSS_COMPILE   = mipsel-linux-
+  ../binutils-2.11.2/configure --target=mipsel-linux \
+    --libdir='${exec_prefix}'/mipsel-linux/i386-linux/lib
 
-Build and install the kernel:
+  make
+  make install
+  cd ..
 
- % make oldconfig
- % make dep
- % make
+Build the mipsel cross-gcc:
 
-To use TFTP to boot the kernel:
+  tar -xzf gcc-3.0.tar.gz
+  mkdir mipsel-gcc
+  cd mipsel-gcc
 
- % mipsel-linux-objcopy -O srec vmlinux vmlinux.srec
- % cp vmlinux.srec /tftpboot/mipsel-2.4.3
+  ../gcc-3.0/configure --target=mipsel-linux \
+     --enable-languages=c --disable-shared
 
-Andrew Thornton
+  make
+  make install
+  cd ..
+
+Install the kernel headers
+
+  mkdir /usr/local/mipsel-linux/include
+  cp -r $LINUX_SRC/include/linux /usr/local/mipsel-linux/include
+  cp -r $LINUX_SRC/include/asm-mips /usr/local/mipsel-linux/include/asm
+
+Build glibc:
+
+  tar -xzf glibc-2.2.3
+  cd glibc-2.2.3
+  patch -p1 -i../elf32-tradlittlemips.diff
+  tar -xzf ../glibc-linuxthreads-2.2.3.tar.gz
+  cd ..
+  mkdir mipsel-glibc
+  cd mipsel-glibc
+
+  ../glibc-2.2.3/configure --build=i686-linux --host=mipsel-linux \
+    --enable-add-ons --prefix=/usr/local/mipsel-linux
+
+  make
+  make install
+  cd ..
+
+Thanks.
+
+Regards,
+Brad

@@ -1,171 +1,25 @@
-Received: from mail.soc-soft.com (202.56.254.199) by vscrn4.securesynergyonline.com (202.138.125.47), id <1075358884906.53258282.vscrn4.securesynergyonline.com>
-	for <linux-mips@linux-mips.org>;
-	Thu, 29 Jan 2004 12:18:04 +0530
 content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3E635.7C891FB8"
-Subject: Testing of Ethernet controller
-Date: Thu, 29 Jan 2004 12:29:49 +0530
-Message-ID: <E519BE9E8DAC6A4B89DA4AD1D2A155B76751A8@soc-mail.soc-soft.com>
-From: "Nitin P Mahajan" <Nitin@soc-soft.com>
-Return-Path: <Nitin@soc-soft.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: Gcc - can't branch to undefined symbol
+Date: Thu, 29 Jan 2004 12:25:16 -0800
+Message-ID: <603BA0CFF3788E46A0DB0918D9AA95100A0E3088@sj580004wcom.int.lantronix.com>
+From: "Jerry Walden" <jerry.walden@lantronix.com>
+Return-Path: <jerry.walden@lantronix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040129065949.iNijb2GfJMKoeihtDAVJOtITsE0xXuq6JkZPIqOSYzI@z>
+Message-ID: <20040129202516.4RIcHPRHqFmFt5mtRPpzEbUpCHqNnMQNoR6xZBZcB44@z>
 
-This is a multi-part message in MIME format.
+Hello -
 
-------_=_NextPart_001_01C3E635.7C891FB8
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I am using gcc 3.3.2 - when I assemble a file that has a branch to a
+label, and the label is not defined in the .S file (i.e. there is no
+extern - the label exists in another .S file) the error "cannot branch
+to an undefined symbol" results.  Using an older version of
+mipsel-gnu-linux-gcc does not report this error.  Any idea what I am
+doing wrong?
 
-Hi All!
-
-            I am new to the list.
-
-I am writing a driver for a on-chip MAC controller exactly similar to
-TC35815 chip. Can anyone please tell me that how can I test it
-thoroughly.
-
- Mainly I have to design the test bed keeping in view the following
-points.
-
-=20
-
-a.	Throughput of 10/100 Mbps
-b.	Interrupt and polling modes.
-c.	And functional test
-
-Thanking u in advance
-
-=20
-
-Regards
-
-=20
-
-Nitin
-
-
-------_=_NextPart_001_01C3E635.7C891FB8
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-
-
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
-
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
- /* List Definitions */
- ol
-	{margin-bottom:0in;}
-ul
-	{margin-bottom:0in;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hi All!</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp; I
-am new to the list.</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>I am writing a driver for a on-chip MAC controller =
-exactly
-similar to TC35815 chip. Can anyone please tell me that how can I test =
-it
-thoroughly.</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;Mainly I have to design the test bed keeping in =
-view
-the following points.</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<ol start=3D1 type=3Da>
- <li class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-     font-family:Arial'>Throughput of 10/100 Mbps</span></font></li>
- <li class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-     font-family:Arial'>Interrupt and polling modes.</span></font></li>
- <li class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-     font-family:Arial'>And functional test</span></font></li>
-</ol>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanking u in advance</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Regards</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Nitin</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C3E635.7C891FB8--
-Scanned by SecureSynergy VirusScreen Service. 
-For more information log on to : http://www.securesynergyonline.com or http://www.securesynergy.com
+Thanks

@@ -1,91 +1,61 @@
-Message-ID: <sc9ad9c1.008@quicklogic.com>
-Date: Fri, 22 Mar 2002 07:13:40 -0800
-From: "Dan Aizenstros" <daizenstros@quicklogic.com>
-Subject: Re: Re: PCI VGA Card Initilization (SIS6326 / PT80)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Message-ID: <007201c1d1ee$83bb33f0$9d00a8c0@sathya>
+From: "Sathya.N" <n.sathya@gdatech.co.in>
+Subject: Bug in Assertion failure in macro_build_lui ....tc-mips.c
+Date: Sat, 23 Mar 2002 03:41:25 +0530
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com, girishvg@yahoo.com
-Message-ID: <20020322151340.9nRhI1lrHrHaymolj4WSh1uK6xFmD2WoFM964y1i_Xg@z>
-
-Hello Girish,
-
-I have used the x86emu code to run the BIOS code
-on an ATI Rage IIC PCI adapter. I added the code
-to the PMON that I build for my company's Hurricane
-board. The code for the emulator does not require
-a lot of work because it is seperated between
-portable code that is not board or system specific
-and glue code that is.
-
-In the x86emu-0.8.tar.gz archive you will find the
-portable code in the directory scitech/src/x86emu.
-
-The code in scitech/src/biosemu can be used as a
-starting point for creating the glue code.
-
-Dan Aizenstros
-Software Project Manager
-QuickLogic Canada
-
->>> "Girish Gulawani" <girishvg@yahoo.com> 03/22/02 03:45 AM >>>
-
-hello, all
-thank you very much for all these reply mails.
-my saga of VGA initialization continues. it occurs to me that the x86
-emulation for the VGA bios is a long process. SiS6326 chipset has support
-inside XFree86 & digging out the BIOS code from here is also a big story.
-hence i was looking for a rather quickish solution. currently i'm trying to
-use sis_*.c files from XFree86 source. dont know how but my monitor displays
-2 red & 1 green vertical lines. the sis_bios source code searched for the
-mode, memory references inside the BIOS at 0x20A offset & it failed to find
-the mode & other info. AOpen BIOS version is 2.25.
-could anybody of you please share your success story of VGA initialization
-on MIPS board with me??
-many thanks in advance.
-regards,
-girish.
+To: gcc <gcc-bugs@gcc.gnu.org>, linux-mips@oss.sgi.com
+Cc: egcs-bugs@cygnus.com
+Message-ID: <20020322221125.0TqvUQM3lsJN4N70Odnjh336nDBvpyzsBX5RyyLYN3A@z>
 
 
+ Hi,
 
------ Original Message -----
-From: "Dan Aizenstros" <daizenstros@quicklogic.com>
-To: <dom@algor.co.uk>; <fxzhang@ict.ac.cn>; <linux-mips@oss.sgi.com>;
-<girishvg@yahoo.com>
-Sent: Friday, March 22, 2002 4:10 AM
-Subject: Re: Re: PCI VGA Card Initilization (SI6326 / PT80)
+  I am building the qla2x00.c driver (Fibre channel driver from Qlogic) as
+loadable module for our IP under Red Hat Linux 7.2(kernel version is 2.4.x)
+We are  using the Broadcom's BCM12500 Processor (MIPS Core).When I compiled
+the code , I am getting the output as given below. After the warnings ,you
+could see {standard input} Assembler messages: etc.,
 
+ Could you please help me in  sorting out this bug?
 
-Hello Dominic,
-
-Actually it was Girish Gulawani who said he used the
-MILO bios not Zhang. He said he was using the files
-vgaraw1.c and vgaraw2.c from MILO. Those files do not
-use the x86emu BIOS emulator but try to directly
-initialize the VGA adapter.
-
-Dan Aizenstros
-Software Project Manager
-QuickLogic Canada
-
->>> Dominic Sweetman <dom@algor.co.uk> 03/21/02 08:28 AM >>>
-
-Dan,
-
-> Is Algorithmics BIOS emulator not the x86emu code
-> that can be found in the Alpha MILO and the XFree86
-> code base as Alan Cox mentioned?
-
-It's an entirely indepedent invention of the same idea.  I've no idea
-whether it's any better/worse, but it sounded like our binary was
-working for Zhang better than the MILO he'd built.
-
-Dominic
-Algorithmics Ltd
+Here Qlogic is my Fibre Channel source code directory.
 
 
-_________________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.com address at http://mail.yahoo.com
+ [root@localhost Qlogic]# make SMP=1
+
+/usr/local/sbtools/x86-linux-rh7.1/mips-linux-2.1.1/bin/mips-linux-gcc -D__K
+ERNEL__ -DMODULE -Wall -O2 -DISP2200 -DMODVERSIONS -include
+
+/home/sathya/linux/src/linux/include/linux/modsetver.h -I/home/sathya/linux/
+src/linux/include -I/home/sathya/linux/src/linux/include/../drivers/scsi -Wa
+ll -Wstrict-prototypes -fomit-frame-pointer -fno-strength-reduce -pipe -fno-
+strict-aliasing -mcpu=sb1 -mips2 -mgp32 -mlong32 -mips16 -EB -D__SMP__  -CON
+FIG_SMP     -c -o qla2x00.o qla2x00.c
+ In file included from qla2x00.c:384:
+/home/sathya/linux/src/linux/include/linux/malloc.h:4:2: warning:
+ #warning linux/malloc.h is deprecated, use linux/slab.h instead.
+ qla2x00.c: In function `qla2100_proc_info':
+ qla2x00.c:1146: warning: long int format, int arg (arg 4)
+ qla2x00.c:1146: warning: unsigned int format, long int arg (arg 5)
+ qla2x00.c:1146: warning: unsigned int format, pointer arg (arg 8)
+ {standard input}: Assembler messages:
+  {standard input}:119338: Internal error!
+ Assertion failure in macro_build_lui at
+/home/cgd/proj/sb/systemsw-2.1.1/lin.x/systemsw/tools/src/binutils/gas/confi
+g/tc-mips.c line 3101.
+ Please report this bug.
+ make:  [qla2x00.o] Error 2*
+
+ Regards & Thanks,
+ N.Sathyanarayana
+ Member Technical Staff
+ GDA Technologies Ltd.,
+ Chennai
+ India
+
+ www.gdatech.com
+ catch me at : n.sathya@gdatech.co.in

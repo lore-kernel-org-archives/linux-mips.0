@@ -1,43 +1,71 @@
-Message-ID: <00a601c213cf$8bf56b30$0b01a8c0@w2k30g>
-From: "David Christensen" <dpchrist@holgerdanske.com>
-References: <20020614115049.16384.qmail@email.com>
-Subject: Re: Kernel - arch support(mips)
-Date: Fri, 14 Jun 2002 11:15:35 -0700
+Message-ID: <01b701c212bf$b1394850$780411ac@sam>
+From: "Sam" <iskoo@ms45.hinet.net>
+Subject: # CrossCompiler (Big Endian)
+Date: Thu, 13 Jun 2002 17:50:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_01B4_01C21302.BE4042E0"
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Cc: Domcan Sami <domca_psg@email.com>
-Message-ID: <20020614181535.bh7icH_KB99wSF_eaRKz4UE3kteV1tPDaYCTd8k4YNY@z>
+Message-ID: <20020613095002.zRjefcO5RFZF6YYlu_vmcpgrn85T6jcOf_Cb0BSJo10@z>
 
-linux-mips@oss.sgi.com:
+This is a multi-part message in MIME format.
 
-Domcan Sami <domca_psg@email.com> wrote:
-> I am trying to compile a program using a MIPS-LINUX cross compiler
-> (gcc). I've set up a connection between my i386 Linux machine and a
-> MIPS(RM7000) processor. This is again connected to a WinNT Terminal
-> where there should be an output from the MIPS processor.
->
-> I have 2 kernels in my Linux machine under the directories:
-> 1) /usr/src/linux - kernel version 2.2.14
-> 2) /root/kernels/linux - kernel version 2.4.14
->
-> I am using a boot image generated from the older kernel for booting.
-> The problem is the older kernel doesn't support MIPS architecture.
-> What should I do to upgrade my kernel so that it supports MIPS
-> architecture & that I'll be able to cross-compile my programs
-> properly.
+------=_NextPart_000_01B4_01C21302.BE4042E0
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
-Please provide more information:
+Hi everybody,
 
-1.  What is your target platform -- e.g. make of model of the board or
-    computer that has the RM7000 processor on/in it?
+    I got some information to build Little Endian CrossCompiler for mips
+    even precompiled binary files, and work well.....
 
-2.  Does the target support Linux, does it have a ROM monitor, or is it
-    a raw embedded target (e.g. requires crt0)?
+    However, I have to build a Big Endian's one
+    Should I get the binutil and glibc for big endian firstly?
 
+    Is there any homepage for reference on web?
+    any sample?
 
-David Christensen
-dpchrist@holgerdanske.com
+    thanks all!
+
+--Sam
+
+------=_NextPart_000_01B4_01C21302.BE4042E0
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Dbig5" http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D2>Hi everybody,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; I got some information to build =
+Little=20
+Endian CrossCompiler for mips</FONT></DIV>
+<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; even precompiled binary files, =
+and work=20
+well.....</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; However, I have to build a Big =
+Endian's=20
+one</FONT></DIV>
+<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; Should I get the binutil and =
+glibc for big=20
+endian firstly?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; Is there any homepage for =
+reference on=20
+web?</FONT></DIV>
+<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; any sample?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp; thanks all!</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>--Sam</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_01B4_01C21302.BE4042E0--

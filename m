@@ -1,55 +1,45 @@
-From: Hartvig Ekner <hartvige@mips.com>
-Message-ID: <200204241335.PAA02613@copsun17.mips.com>
-Subject: Re: Updates for RedHat 7.1/mips
-Date: Wed, 24 Apr 2002 15:35:16 +0200 (MET DST)
-In-Reply-To: <20020423155925.A8846@lucon.org> from "H . J . Lu" at Apr 23, 2002 03:59:25 PM
+Message-ID: <013401c1ebb1$12e39cd0$4c00a8c0@prefect>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <3CC6CC21.45E7ABB1@mvista.com>
+Subject: Re: ps2 keyboard -- no key down events
+Date: Wed, 24 Apr 2002 12:57:09 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "H . J . Lu" <hjl@lucon.org>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20020424133516.Wb3ZFAt56buDqE11XNHCIfgJJgbSUgp6ALO1HMK_GrY@z>
+To: michael_pruznick@mvista.com, linux-mips@oss.sgi.com
+Message-ID: <20020424165709.Wyno7NV5FqFkv91l3XRNUrtpPNVmIqYNpMNahPeSeaI@z>
 
-All the problems I reported are fixed (only tested LE so far). Thanks.
+Could it be a level-trigger versus edge-trigger interrupt setting?
 
-Currently recompiling glibc natively for the installation images.
-We'll post a message here when our new installation images are ready.
+Regards,
+Brad
 
-/Hartvig
+----- Original Message ----- 
+From: "Michael Pruznick" <michael_pruznick@mvista.com>
+To: <linux-mips@oss.sgi.com>
+Sent: Wednesday, April 24, 2002 11:15 AM
+Subject: ps2 keyboard -- no key down events
 
-H . J . Lu writes:
+
+> I'm working on this mips board with a smsc 90e66 south bridge and
+> fdc37m812 super io.  I'm using the standard pc_keyb.c driver.  I only
+> see keyboard interrupts and KBD_STAT_OBF set in response to "key up"
+> events.  I never see them in response to "key down" events.  Thus, the
+> shell running on the vga console never gets my input (since it is the
+> "key down" events that pass the character typed to the shell).
 > 
-> On Mon, Apr 22, 2002 at 08:38:49PM +0200, Hartvig Ekner wrote:
-> > Hi,
-> > 
-> > H . J . Lu writes:
-> > > 
-> > > On Mon, Apr 22, 2002 at 06:55:14PM +0200, Hartvig Ekner wrote:
-> > > > Hi H.J,
-> > > > 
-> > > > No, I did not compile myself, but used your binary (except for cracklib,
-> > > > where I used our natively compiled package instead). But I did replace
-> > > > ALL new updated packages at once during the upgrade.
-> > > > 
-> > > > However, I have also tried to install (-U) rpm*rpm and the popt rpm on a
-> > > > working system based on your original packages, and voila: the same error
-> > > > appears. So it does appear to be linked to the rpm RPM package.
-> > > > 
-> > > > The grep you asked for returns:
-> > > 
-> > > Thanks. I will fix those among other bugs I have been working on.
-> > 
-> > Great, thanks. Can you let me know as soon as the RPM problem has been fixed,
-> > so that I can continue the update of the installation images? BTW, are the
-> > other bugs you're working on something to wait for in this regard or not?
-> > 
+> At this point, I'm thinking that the standard driver needs some mods
+> to work with the super io's ps2 controller.  The smsc doc only covers
+> programming the plug and play registers and doesn't give any info about
+> programming the ps2 controller.
 > 
-> I updated glibc, python, gcc, gdb, rpm, openssl, binutils and toolchain at
+> I've looked around the web, but haven't found anything useful.
 > 
-> ftp://oss.sgi.com/pub/linux/mips/redhat/7.1/
+> Can anyone point me towards some resources that might help out?
 > 
-> Let know know if there are any problems.
+> -- 
+> Michael Pruznick, michael_pruznick@mvista.com, www.mvista.com
+> MontaVista Software, 1237 East Arques Ave, Sunnyvale, CA 94085
 > 
-> 
-> H.J.

@@ -1,78 +1,29 @@
-Received: from simpledemkyosn (dsl092-191-011.sfo1.dsl.speakeasy.net [66.92.191.11])
-	by simp98.iserver.net (8.12.9p1/8.11.2) with SMTP id h991pJ2Q024739
-	for <linux-mips@linux-mips.org>; Thu, 9 Oct 2003 01:51:21 GMT
-Message-ID: <00b001c38e03$bbc23960$e201a8c0@simpledemkyosn>
-From: "Yuri" <yuri@simpledevices.com>
-Subject: tx4927 support (newbie question)
-Date: Wed, 8 Oct 2003 18:21:57 -0700
+Date: Thu, 9 Oct 2003 13:55:12 +0100 (BST)
+From: Thomas Horsten <thomas@horsten.com>
+Subject: Re: [PATCH] Proposed NMI handling interface...
+In-Reply-To: <20031008160600.GA19102@linux-mips.org>
+Message-ID: <Pine.LNX.4.40.0310091354230.16550-100000@jehova.dsm.dk>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00AD_01C38DC9.0EA8EB00"
-Return-Path: <yuri@simpledevices.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <th@jehova.dsm.dk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20031009012157.LBN6am4zmpbAIhmse4o0v7SEWrbWmNsTkU-_lRmxzAI@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: "Steven J. Hill" <sjhill@realitydiluted.com>, linux-mips@linux-mips.org
+Message-ID: <20031009125512.QqB41z6K5MFImG9RG84mbANnNQ5r2CyGiDhX5LBN6pw@z>
 
-This is a multi-part message in MIME format.
+On Wed, 8 Oct 2003, Ralf Baechle wrote:
 
-------=_NextPart_000_00AD_01C38DC9.0EA8EB00
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> That hook you're proposing isn't even necessary in generic code.  NMI
+> on MIPS hardware is a fairly odd type of exception - it goes straight to
+> 0xbfc00000 which usually is a a firmware address - and lots of firmware
+> doesn't even offer an NMI hook.  So for those cases where it's possible,
+> you need to do something firmware anyway before jumping to Linux's NMI
+> handler.  An additional problem with the NMI design of MIPS is it's using
+> ErrorEPC, just like cache errors so you better pray - or simply design
+> systems only to rely on NMI for debugging and catastrophic failures.
 
-Hi,
-I'm trying to get the 2.4 kernel running on rbtx4927 toshiba eval board.
-There are config options to enable the board support in the kernel tree =
-and also some relatively recent patches
-specific to the board.  However the furthest I could get in the boot =
-process is to the calibration of the delay loop.
-I'm not sure whether all of the interrupts are disabled or just the =
-timer, but jiffies are not getting incremented.  As far as I could trace =
-it so far, the right irq setup routines are called in the init, but to =
-no avail.  I'm using mipsel-linux-gcc version 2.95.4. version 2.95.3 had =
-the same results.  I have tried linux_2_4 and linux_2_4_22_rc3 tags of =
-the cvs
-Thanks
-Yuri
+On Lasat boards NMI is used to reboot into Service Mode. There's no hook
+to override this behaviour.
 
-
-------=_NextPart_000_00AD_01C38DC9.0EA8EB00
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.3700.6699" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I'm trying to get the 2.4 kernel =
-running on=20
-rbtx4927 toshiba eval board.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>There are config options to enable the =
-board=20
-support in the kernel tree and also some relatively recent =
-patches</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>specific to the board.&nbsp; However =
-the furthest I=20
-could get in the boot process is to the calibration of the delay=20
-loop.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I'm not sure whether&nbsp;all of the =
-interrupts=20
-are&nbsp;disabled or just the timer, but jiffies are not&nbsp;getting=20
-incremented.&nbsp; As far as I could trace it so far, the right irq =
-setup=20
-routines are called in the init, but to no avail.&nbsp; I'm using=20
-mipsel-linux-gcc version 2.95.4.&nbsp;version 2.95.3 had the same =
-results.&nbsp;=20
-I have tried linux_2_4 and linux_2_4_22_rc3 tags of the cvs</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Yuri</FONT></DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_00AD_01C38DC9.0EA8EB00--
+// Thomas

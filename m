@@ -1,69 +1,44 @@
-Received: from sunsv2.sasken.com (localhost [127.0.0.1])
-	by sandesha.sasken.com (8.12.8/8.12.8) with ESMTP id h3A5fwWY029539
-	for <linux-mips@linux-mips.org>; Thu, 10 Apr 2003 11:12:00 +0530 (IST)
-Received: from pcz-madhavis.sasken.com (IDENT:madhavis@pcz-madhavis.sasken.com [10.1.64.210])
-	by sunsv2.sasken.com (8.11.6/8.11.6) with ESMTP id h3A5g6w16430
-	for <linux-mips@linux-mips.org>; Thu, 10 Apr 2003 11:12:06 +0530 (IST)
-Date: Thu, 10 Apr 2003 11:12:06 +0530 (IST)
-From: Madhavi <madhavis@sasken.com>
-Subject: Kernel compilation for MIPS
-Message-ID: <Pine.LNX.4.33.0304101106270.2692-100000@pcz-madhavis.sasken.com>
-MIME-Version: 1.0
-Content-type: multipart/mixed; boundary="=_IS_MIME_Boundary"
-Return-Path: <madhavis@sasken.com>
+Message-ID: <200304101937.h3AJbl211418@uhler-linux.mips.com>
+Reply-To: uhler@mips.com
+Subject: Re: way selection bit for multi-way cache 
+In-reply-to: Your message of "Thu, 10 Apr 2003 21:24:30 +0200."
+             <20030410212430.A519@linux-mips.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 10 Apr 2003 12:37:47 -0700
+From: "Mike Uhler" <uhler@mips.com>
+Return-Path: <uhler@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030410054206.gAgLjQ6kXa1R7qIqgnB1LV6fQlZUbGXMk6lF02SZ0K0@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Mike Uhler <uhler@mips.com>, Jun Sun <jsun@mvista.com>, linux-mips@linux-mips.orguhler@mips.com
+Message-ID: <20030410193747.OUwDPCES7qdkhDN2H7HBDOxH83pgjvSmE6RgTIoXS8I@z>
 
---=_IS_MIME_Boundary
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+> On Thu, Apr 10, 2003 at 11:50:53AM -0700, Mike Uhler wrote:
+> 
+> > I can't comment on anything but MIPS32 and MIPS64 CPUs, but the
+> > MIPS32 and MIPS64 standard is to use the bits above the index field
+> > to specify the way.  See the figure entitled "Usage of Address Fields
+> > to Select Index and Way" in the CACHE instruction description of the
+> > MIPS32 and MIPS64 Architecture for Programmer's manuals.
+> 
+> The question came up between Jun and me when revising the way of handling
+> multi-way caches.  There is the MIPS32 / MIPS64 way of selecting the
+> cache way - but that scheme was originally already introduced by the
+> R4600.  The second somewhat less common scheme is using the lowest bits
+> of the address.  That was originally introduced with the R10000 but a
+> few other processors such as the R5432 and the TX49 series are using it
+> as well.  Unfortunately there has been way to much creativity (usually
+> a positive property but ...) among designers so this posting is an
+> attempt to achieve completeness.
+> 
+>   Ralf
 
+Exactly why we made it a standard in MIPS32 and MIPS64.
+-- 
 
-Hi
-
-During my kernel compilation for MIPS (R5432) using the MIPS
-cross-compiler, I am getting the following error.
-
-mipsel-linux-ld:arch/mips/ld.script:6: parse error
-
-The line 6 in ld.script is:
-	. = ;
-
-I have seen in the arch/mips/Makefile that sed is replacing @@LOADADDR@@
-by $LOADADDR in ld.script.in. Hence the line, . = @@LOADADDR@@; is getting
-converted to . = ;.
-
-Do I need to assign the LOADADDR somewhere.
-
-Thank you in advance.
-
-regards
-Madhavi.
-
-Madhavi Suram
-Software Engineer
-Customer Delivery / Networks
-Sasken Communication Technologies Limited
-139/25, Ring Road, Domlur
-Bangalore - 560071 India
-Email: madhavis@sasken.com
-Tel: + 91 80 5355501 Extn: 8062
-Fax: + 91 80 5351133
-URL: www.sasken.com
-
-
---=_IS_MIME_Boundary
-Content-Type: text/plain;charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-************************************************************************
-
-SASKEN BUSINESS DISCLAIMER
-
-This message may contain confidential, proprietary or legally Privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, Disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken accepts no liability for any loss or damage, which may be caused by viruses.
-
-***********************************************************************
-
---=_IS_MIME_Boundary--
+  =*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=
+  Michael Uhler, VP, Systems, Architecture, and Software Products 
+  MIPS Technologies, Inc.   Email: uhler@mips.com   Pager: uhler_p@mips.com
+  1225 Charleston Road      Voice:  (650)567-5025   FAX:   (650)567-5225
+  Mountain View, CA 94043   Mobile: (650)868-6870   Admin: (650)567-5085

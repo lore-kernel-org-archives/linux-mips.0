@@ -1,61 +1,17 @@
-Date: Tue, 18 Jul 2000 23:23:22 -0400
-Message-ID: <200007182323.AA145031220@mail.alum.rpi.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: "clemej" <clemej@mail.alum.rpi.edu>
-Reply-To: <clemej@mail.alum.rpi.edu>
-Subject: Re: Okay, lost
+Reply-To: <khs@digital-digital.com>
+From: =?ks_c_5601-1987?B?sejH0by6?= <khs@digital-digital.com>
+Subject: IGS5050 Driver
+Date: Wed, 26 Jul 2000 21:37:02 +0900
+Message-ID: <000001bff6fe$34021120$8d19ebcb@khs>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: linux-mips@oss.sgi.com
-Message-ID: <20000719032322.TZpzqp2vjW4Jm9sIi5b7Gi745o2TPgEgrRuWcOdts4g@z>
+To: linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr
+Message-ID: <20000726123702.xNVuTAyBOBjNL-h541BOfaT6uwdr1nBnlLo1pJroGM0@z>
 
-
-When I was bitten by the infamous '-N' bug, it seems to me the 
-exception I got said "UTLB" in it somewhere.  This one doesn't.
-So maybe that's not the problem.
-
-And I think I might be being bitten by the same thing.  All 2.4 
-kernels I've tried die with what seems to be a similar error on 
-my Indigo2 (R4400 200Mhz).  I thought I read somewhere something 
-about XZ graphics causing problems and boards should be 
-removed... why? Could this be the cause? I have XZ in my 
-machine.... I want to try a few more things before sounding too 
-many alarms though...
-
-john.c
-- --
-John Clemens
-clemens@alum.rpi.edu
-
-
----------- Original Message ----------------------------------
-From:   Ralf Baechle <ralf@oss.sgi.com>
-Date:   Tue, 18 Jul 2000 05:23:09 +0200
-
->On Mon, Jul 17, 2000 at 08:53:03PM -0500, A. Wrasman wrote:
->
->> Okay, I can't seem to get any of the pre-compiled linux kernels  after the 2.2.14 one on oss.sgi.com to boot on my Indy.
->> 
->> I get this type of error:
->> Exception: <vector=Normal>
->> Status register: 0x10044803<CU0,CH,IM7,IM4,IPL=???,MODE=KERNEL,EXL,IE>
->> Cause register: 0x8034<CE=0,IP8,EXC=TRAP>
->> Exception PC: 0x88240004, Exception RA: 0x8816d610
->> Processor Trap exception at address 0xffffffff
->> Local I/O interrupt register 1: 0x80 <VR/GIO2>
->> 	Saved user regs in hex (&gpda 0xa8740e48, &_regs 0xa8741048):
->> 	arg: a8740000 28 8847ff80 a
->> 	tmp: a8740000 8480 88002000 8480 881932a0 1 fffffffc 47dfa8
->> 	sve: a8740000 0 0 0 0 0 0 0
->> 	t8 a8740000 t9 0 at 0 v0 0 v1 0 k1 88002000
->> 	gp a8740000 fp 0 sp 0 ra 0
->> 
->> PANIC: unexpected exception
->
->Now that looks like a kernel compiled by somebody who doesn't read
->documentation, see http://oss.sgi.com/mips/mips-howto.html.  In short:
->remove the -N linker flag from arch/mips/Makefile.
->
->  Ralf
->
+SGVsbG8gdGhlcmUNCg0KSSB3YW50IHRvIGtub3cgdGhhdCB0aGVyZSBpcyBhIElHUzUwNTAgR3Jw
+YWhpYyBjaGlwIGRyaXZlciBmb3IgbGludXgtbWlwcy4NCklmIHllcywgd2hlcmUgaXMgdGhlIGRy
+aXZlciBmaWxlcz8NCg0KLUhhbi1TZW9uZw==

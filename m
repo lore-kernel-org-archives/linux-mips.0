@@ -1,47 +1,24 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: "Christopher W. Carlson" <carlson@heaven.newport.sgi.com>
-Message-ID: <9704151411.ZM17232@heaven.newport.sgi.com>
-Date: Tue, 15 Apr 1997 14:11:22 -0700
-In-Reply-To: lm@neteng.engr.sgi.com (Larry McVoy)
-        "Re: EFS and XFS file systems support" (Apr 15,  2:09pm)
-References: <199704152109.OAA12094@neteng.engr.sgi.com>
-Subject: Re: EFS and XFS file systems support
+Message-ID: <199704152116.OAA16516@refugee.engr.sgi.com>
+Subject: Re: EFS and XFS file systems support 
+In-reply-to: Message from carlson@heaven.newport.sgi.com of 15 Apr 1997
+ 14:06:04 PDT
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Date: Tue, 15 Apr 1997 14:16:50 -0700
+From: Steve Alexander <sca@refugee.engr.sgi.com>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Larry McVoy <lm@neteng.engr.sgi.com>
-Cc: Steve Alexander <sca@refugee.engr.sgi.com>, linux@cthulhu.engr.sgi.com
-Message-ID: <19970415211122.QdTziYllFKuvCerLZvP2dPy8dv7gsbL1-ONa4L8xjBQ@z>
+To: "Christopher W. Carlson" <carlson@heaven.newport.sgi.com>
+Cc: Larry McVoy <lm@neteng.engr.sgi.com>, linux@cthulhu.engr.sgi.com
+Message-ID: <19970415211650.nmTTxlv8zflxgzAp3yBYnfcDIkjrrtcZgxigOaCN94g@z>
 
-On Apr 15,  2:09pm, Larry McVoy wrote:
-> Subject: Re: EFS and XFS file systems support
-> At this point, since we are moving away from EFS, it is possible
-> that we would be willing to donate a version of the EFS code to
-> Linux.  I can probably get that cleared.  But someone else would
-> have to do the port, I'm too busy.  If you find someone to do the
-> port, let me know.
->
->-- End of excerpt from Larry McVoy
+"Christopher W. Carlson" <carlson@heaven.newport.sgi.com> writes:
+>Hey, I'd love to switch to iso9660.  Unfortunately, how do we read all
+>the CDs that have already been generated?
 
+Adding 9660 does not require us to remove EFS.
 
-If you can get it cleared, I'll do the port.
+I think the issue may have more to do with PROMs and sash and stuff like that
+than the OS proper.
 
-Initially, I'll port it to my system at home and create an EFS
-filesystem on a Zip drive and see if I can read it here in the office.
-
-If that all works, then I'll pass my source to one of the other guys
-who actually has a linux SGI box.
-
--- 
-
-		Chris Carlson
-
-	+------------------------------------------------------+
-	| Also, carlson@sgi.com                                |
-	|   Work:       (714) 756-5976     SGI vmail: 678-4530 |
-	|   FAX:        (714) 833-9503                         |
-	|                                                      |
-	| Trivia fact: an electroencephalogram shows that a    |
-	| human brain and a bowl of quivering lime Jell-O have |
-	| the same waves.  [Time Magazine, Mar 17, 1997]       |
-	+------------------------------------------------------+
+-- Steve

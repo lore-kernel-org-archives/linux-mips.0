@@ -1,20 +1,21 @@
-Received: from zcard307.ca.nortel.com (zcard307.ca.nortel.com [47.129.242.67])
-	by zcars04e.nortelnetworks.com (Switch-2.2.6/Switch-2.2.0) with ESMTP id i2TNdHR13909
-	for <linux-mips@linux-mips.org>; Mon, 29 Mar 2004 18:39:17 -0500 (EST)
-Message-ID: <4068B3A4.4000204@americasm01.nt.com>
-Date: Mon, 29 Mar 2004 18:39:16 -0500
-From: "Lijun Chen" <chenli@nortelnetworks.com>
+Message-ID: <017b01c41640$d74ca920$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <4018EA65.40407@c-gix.com> <40190154.10601@bitbox.co.uk> <20040330100959.GA7466@idealx.com> <406948D4.4050708@bitbox.co.uk>
+Subject: Re: Best kernel for a Cobalt Qube 2
+Date: Tue, 30 Mar 2004 12:21:59 +0200
 MIME-Version: 1.0
-Subject: NMI handling in MIPS64
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <chenli@nortelnetworks.com>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20040329233916.PRGEtbeOI-SJVwcCFDGFX-2_lJuuvPiHZUeW7x6EnOU@z>
+To: Peter Horton <phorton@bitbox.co.uk>, Dominique Quatravaux <dom@idealx.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20040330102159.-tJ1i40AdOBS8iI14yFY1dovpCaNDzcCHBky2nm4AIo@z>
 
-Hi,
+> http:///www.colonel-panic.org/cobalt-mips
+> 
+> P.
 
-I noticed there is a NMI handler in mips32 kernel tree (arch/mips/kernel/head.S and traps.c).
-But there is not a counterpart in mips64. Do we need one?
+I think you meant  http://www.colonel-panic.org/cobalt-mips/

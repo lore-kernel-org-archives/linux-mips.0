@@ -1,35 +1,48 @@
-Date: Fri, 3 Mar 2000 14:37:52 -0500 (EST)
-From: James A Simmons <jsimmons@acsu.buffalo.edu>
-Subject: Re: About X server...
-In-Reply-To: <38C000C5.5BB5689B@themis.fciencias.unam.mx>
-Message-ID: <Pine.GSO.4.05.10003031436560.9045-100000@tolstoy.pubsites.buffalo.edu>
+Message-ID: <578601bf882d$d945f650$0a00000a@decoy>
+From: "Jay Carlson" <nop@nop.com>
+References: <Pine.LNX.3.96.1000306220330.12659B-100000@lithium><097a01bf87eb$ebe4d4d0$b8119526@ltc.com> <200003071022.KAA00275@gladsmuir.algor.co.uk>
+Subject: Re: FP emulation patch available
+Date: Tue, 7 Mar 2000 07:08:23 -0500
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Carlos Ernesto =?iso-8859-1?Q?L=F3pez=20Natar=E9n?= <natorro@themis.fciencias.unam.mx>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <20000303193752.9LCm0k_Wm7oIFyr2hHoQ2xJAbe-h1pMsSo7wMNe-h48@z>
+To: Dominic Sweetman <dom@algor.co.uk>, "Bradley D. LaRonde" <brad@ltc.com>
+Cc: "Andrew R. Baker" <andrewb@uab.edu>, Linux SGI <linux@cthulhu.engr.sgi.com>, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <20000307120823.Q5F9l8fyUYl0aky-UZm3K5vUqpWr8HGi82eLJWqO_vM@z>
 
+> Bradley D. LaRonde (brad@ltc.com) writes (re the FPA emulator out of
+> Algorithmics via Kevin Kissell):
+>
+> > I would jump right on this but I really need it for 2.3.47+.
+>
+> It's good to see our donation to the Linux project being taken up
+> enthusiastically , but didn't SGI have some code like this?  I mean,
+> you can't have a serious MIPS run-time system without an FP emulator,
+> can you?
 
-From what I seen the best thing to do is run the native Xsgi X server
-under linux. I have seen a patched XFree86 X server in CVS. Its uses the
-/dev/graphics interface native to IRIX. 
+quoting from softftp.S from 2.3.19:
 
-"Look its a text editor, no its a OS, no its Emacs"
-James Simmons                                                      (o_
-fbdev/gfx developer                                      (o_  (o_ //\
-http://www.linux-fbdev.org                              (/)_ (/)_ V_/_
-http://linuxgfx.sourceforge.net
+ * For now it's just a crude hack good enough to run certain fp programs
+like
+ * Mozilla.
 
-On Fri, 3 Mar 2000, Carlos Ernesto [iso-8859-1] López Natarén wrote:
+It's just dealing with denorms, NaNs, etc as inputs.  AFAIK NetBSD was no
+better until pretty recently.
 
-> Hi!
-> I just wanted to know if there is a X server working on
-> linux, because I want to install it on an Indy, but I
-> really need X working... 
-> the Hard Hat homepage has not much info about it...
-> Thanks a lot
-> natorro
-> 
+Whether Linux or NetBSD, as systems, were ever serious MIPS run-time
+systems---well, you wrote the book, so I'm inclined to get out of the
+argument.
+
+From my LinuxCE perspective, a full FP emu is fairly important for getting
+binary compatibility back with mainline Linux/MIPS---we've been in the
+softfp ghetto.  But most of what we do with FP is, uh, keep /bin/df happy
+when it tries to calculate the percentage of free disk space, and the like.
+And dropping softfp means we don't *have* to maintain a forked
+toolchain/libc.
+
+(of course, getting rid of softfp makes mips16 more...interesting...)
+
+Jay

@@ -1,138 +1,41 @@
-Message-ID: <000801c0a572$b7471e40$dde0490a@BANANA>
-From: "Steven Liu" <stevenliu@psdc.com>
-Subject: mips-tfile
-Date: Mon, 5 Mar 2001 04:49:28 -0800
+Message-ID: <3AA4878C.F10825DE@agile.tv>
+Date: Tue, 06 Mar 2001 16:45:32 +1000
+From: Liam Davies <ldavies@agile.tv>
+Reply-To: ldavies@oz.agile.tv
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C0A52F.A8FAAB60"
+Subject: Re: Troubles with TLB refills
+References: <3AA30A91.B5842678@agile.tv> <20010305114926.A26862@bacchus.dhis.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: linux-mips@oss.sgi.com
-Message-ID: <20010305124928.eJVJtXzPoCZJY0xvw5xYLVN1hcfQDx_PROwl_guvyOA@z>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010306064532.PqXwlKSdQcRlpLdb54R2Tw_OnKDlggdHreOJEKMlXwA@z>
 
-This is a multi-part message in MIME format.
+Ralf,
 
-------=_NextPart_000_0005_01C0A52F.A8FAAB60
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+From the change 1.42 to 1.43 on file arch/mips/kernel/traps.c some code was
+added
+to copy the EJTAG exception vector
 
-Hi, All:
++ /*
++  * Copy the EJTAG debug exception vector handler code to it's final
++  * destination.
++  */
++ memcpy((void *)(KSEG0 + 0x300), &except_vec_ejtag_debug, 0x80);
 
-Hi, All:
+This code indescriminatly smashes the end of except_vec0_r4600 and
+all of except_vec0_nevada handlers with the .fill set to only 0x280
+00000000800002d4 T except_vec0_r4600
+0000000080000328 T except_vec0_nevada
+0000000080000380 T except_vec0_r45k_bvahwbug
 
-I am working on cross-compiler for mips R3000 on Linux now and meet a =
-problem in egcs.
+I'm not sure under what platform we need to load JTAG support, but we can
+just increase the fill area in head.S to say 0x400
 
-My host system is i386 with Rad Hat 7.0 installed.
+Cheers
+Liam
 
-First, I successfully built and installed binutils-2.8.1 by using=20
-binutils-2.8.1.tar.gz and egcs-mips-linux-1.1.2-2.i386.rpm. This created =
-
-bin, lib, mips-linux subdirectories.
-
-Second, I installed the linux kernel source code for mips by using=20
-linux-2.2.14-000715.tar.gz and configured it and enabled=20
-CONFIG_CROSSCOMPILE.  Made soft links: let  mips-linux/include/asm=20
-pointd to linux-2.2.14-000715/include/asm-mips and
-mips-linux/include/linux pointd to linux-2.2.14-000715/include/linux.
-
-Third, unziped the egcs-1.1.2.tar.gz, added the patch=20
-egcs-mips-linux-1.1.2-2.i386.rpm and configured it as following:
-     ./configure --prefix=3D3D/home/sliu --with-newlib =
---target=3Dmips-linux
-and made it this way:
-     make SUBDIRS=3D3D"libiberty texinfo gcc" ALL_TARGET_MODULES=3D3D =
-=3D
-CONFIGURE_TARGET_MODULES=3D3D INSTALL_TARGET_MODULES=3D3D =
-LANGUAGES=3D3D"c"
-
-Then, it gave the following errors in gcc subdirectory:
-
-xgcc: installation problem, cannot exec `mips-tfile': No such file or =
-=3D
-directory
-make[1]: *** [libgcc2.a] Error 1
-make[1]: Leaving directory `/home/sliu/egcs-1.1.2/gcc'
-make: *** [all-gcc] Error 2
-
-Any help would be greatly appreciated.
-
-Regards,
-
-
-Steven
-
-------=_NextPart_000_0005_01C0A52F.A8FAAB60
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.3103.1000" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi, All:</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Hi, All:</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am working on cross-compiler for mips =
-R3000 on=20
-Linux now and meet a problem in egcs.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>My host system is i386 with Rad Hat 7.0 =
-
-installed.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>First, I successfully built and =
-installed=20
-binutils-2.8.1 by using <BR>binutils-2.8.1.tar.gz and=20
-egcs-mips-linux-1.1.2-2.i386.rpm. This created <BR>bin, lib, mips-linux=20
-subdirectories.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Second, I installed the linux kernel =
-source code=20
-for mips by using <BR>linux-2.2.14-000715.tar.gz and configured it and =
-enabled=20
-<BR>CONFIG_CROSSCOMPILE.&nbsp; Made soft links: let&nbsp; =
-mips-linux/include/asm=20
-<BR>pointd to linux-2.2.14-000715/include/asm-mips=20
-and<BR>mips-linux/include/linux pointd to=20
-linux-2.2.14-000715/include/linux.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Third, unziped the egcs-1.1.2.tar.gz, =
-added the=20
-patch <BR>egcs-mips-linux-1.1.2-2.i386.rpm and configured it as=20
-following:<BR>&nbsp;&nbsp;&nbsp;&nbsp; ./configure =
---prefix=3D3D/home/sliu=20
---with-newlib --target=3Dmips-linux<BR>and made it this=20
-way:<BR>&nbsp;&nbsp;&nbsp;&nbsp; make SUBDIRS=3D3D"libiberty texinfo =
-gcc"=20
-ALL_TARGET_MODULES=3D3D =3D<BR>CONFIGURE_TARGET_MODULES=3D3D =
-INSTALL_TARGET_MODULES=3D3D=20
-LANGUAGES=3D3D"c"</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Then, it gave the following errors in =
-gcc=20
-subdirectory:</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>xgcc: installation problem, cannot exec =
-
-`mips-tfile': No such file or =3D<BR>directory<BR>make[1]: *** =
-[libgcc2.a] Error=20
-1<BR>make[1]: Leaving directory `/home/sliu/egcs-1.1.2/gcc'<BR>make: *** =
-
-[all-gcc] Error 2</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Any help would be greatly =
-appreciated.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><BR>Steven</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0005_01C0A52F.A8FAAB60--
+=-------------=
+Agile TV Corporation

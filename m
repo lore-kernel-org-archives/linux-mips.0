@@ -1,20 +1,54 @@
-Date: Tue, 4 Dec 2001 19:10:52 -0500 (EST)
-From: George Gensure <werkt@csh.rit.edu>
-Subject: glx on indy
-Message-ID: <Pine.SOL.4.31.0112041906480.25909-100000@fury.csh.rit.edu>
+From: Hartvig Ekner <hartvige@mips.com>
+Message-ID: <200112051510.QAA12575@copsun18.mips.com>
+Subject: Re: Booting from IDE
+Date: Wed, 5 Dec 2001 16:10:33 +0100 (MET)
+In-Reply-To: <3C0E3764.4EC8FE58@mips.com> from "Dan Temple" at Dec 05, 2001 04:04:04 PM
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20011205001052.wQc-3Z-bwwhVkVpN4jCbZo8tmK0O1oAiqKdk_EPkNIw@z>
+To: Dan Temple <dant@mips.com>
+Cc: Nitin <nitin.borle@broadcom.com>, "linux-mips@oss.sgi.com" <linux-mips@oss.sgi.com>
+Message-ID: <20011205151033.41Xd6JhnJSq_SP_3neVmdUBaDueaWcBecGx6179S4i8@z>
 
-Has anyone gotten the glx modules loaded successfully into X running on an
-indy?  glx by itself in the logs gives an unresolved symbol for
-glDDXExtentionInfo.  Any ideas anyone?
+If you feel lucky, you can also reserve space on your disk for the kernel - 
+either in a separate partition, or outside the area used by your current
+partitions. The YAMON 02.02 or later can read the kernel directly from disk
+and execute it.
 
--George
+I do this on my Malta board with one disk.
 
--- 
-George R. Gensure       Computer Science House
-werkt@csh.rit.edu       Sophomore, Rochester Institute of Technology
-Computer Science
+/Hartvig
+
+
+Dan Temple writes:
+> 
+> I guess you're installing as per:
+> 
+> ftp://ftp/pub/linux/mips/installation/redhat7.1/INSTALL
+> 
+> (If not, you might want to upgrade to that version).
+> 
+> YAMON can't read the disk file system, so you have to TFTP the kernel to memory from a remote filesystem, and then run it. The instructions are in the above file under "Booting linux on the target".
+> 
+> The latest version (2.02) of YAMON can read and write blocks from an IDE device (not a filesystem) so you could install a CompactFlash card and use that to store the kernel if you don't want to TFTP each time. 
+> 
+> There is also a $start environment variable if you want to auto-boot.
+> 
+> /Dan
+> 
+> Nitin wrote:
+> > 
+> > Hi,
+> > I have a very basic query. I have a MIPS Malta board. I attached a IDE
+> > hard disk to it and installed linux as per the instructions. At the end
+> > of the installation, system rebooted and control gone to the board
+> > monitor program(Yamon). How can I get the linux prompt? Do I need to
+> > write an application program which will read boot sector from hard disk,
+> > 
+> > store it in memory and pass on control to that particular location?(If
+> > yes, is such application already available?) Or is there a other way of
+> > doing it.
+> > 
+> > Thanks,
+> > Nitin

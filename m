@@ -1,30 +1,30 @@
-Reply-To: <a.voropay@vmb-service.ru>
-From: "Alec Voropay" <a.voropay@vmb-service.ru>
-Subject: RE: JAZZ architecture
-Date: Fri, 15 Oct 2004 17:36:41 +0400
-Message-ID: <00ee01c4b2bc$0482e720$1701a8c0@vmbservice.ru>
+Received: from dinosaur (218-168-152-123.dynamic.hinet.net [218.168.152.123])
+	by msr32.hinet.net (8.9.3/8.9.3) with SMTP id BAA19614
+	for <linux-mips@linux-mips.org>; Sat, 16 Oct 2004 01:31:29 +0800 (CST)
+Message-ID: <002f01c4b2dc$cd1262e0$7101a8c0@dinosaur>
+From: =?big5?B?qkyr2KZ3?= <Mickey@turtle.ee.ncku.edu.tw>
+Subject: Is there any means to use Cramfs and JFFS2 images as root disks?
+Date: Sat, 16 Oct 2004 01:31:20 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="big5"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.58L.0410151351540.11787@blysk.ds.pg.gda.pl>
-Return-Path: <a.voropay@vmb-service.ru>
+Return-Path: <Mickey@turtle.ee.ncku.edu.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "'Maciej W. Rozycki'" <macro@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20041015133641.XojrXcyn3HGR2H_ocwBPX3xAiAKXTkkmWxxJg6nmgKU@z>
-
-Hi!
-
-> These are typos, not API changes.  This shows how popular the 
-> platform is -- they have been there for a year and nobody noticed.
-
- I have this platform and trying to galvanize it. There was even more
-seriuos problems: C syntax errors (since early 2.2 versions).
+To: linux-mips@linux-mips.org
+Message-ID: <20041015173120.rz0OY6MtSWy2uXowPoIgPg9OFriBmN05MPJyq0uJuVU@z>
 
 
-P.S. http://www.sensi.org/~alec/mips/acer_pica.html
+Hello,
+I had successfully booted up Linux with an NFS root.
+Trying to boot up Linux with Cramfs and JFFS2 roots, I am wondering how to
+pass parameters to Kernel.
+I found that on some bootloaders, parameters are like these:
+    rootfstype = jffs2 root=/dev/mtdblock3
 
---
--=AV=-
+But YAMON doesn't seem to support MTD BLOCK.
+Therefore, how do I tell Kernel where the root image is on YAMON?
+
+Thanks and regards,
+Colin

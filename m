@@ -1,61 +1,33 @@
-Message-ID: <3D171ECB.28F566C1@detewe.de>
-Date: Mon, 24 Jun 2002 15:29:47 +0200
-From: Carsten Lange <Carsten.Lange@detewe.de>
+Message-ID: <019401c21b99$387ce290$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <3D1729F3.7241A74A@mips.com> <3D17376B.59333E27@niisi.msk.ru> <20020624173954.A1109@dea.linux-mips.net>
+Subject: Re: Bug in __copy_user
+Date: Mon, 24 Jun 2002 18:07:18 +0200
 MIME-Version: 1.0
-Subject: mipsel-linux-gdb(5.2): DW_FORM_strp pointing outside of .debug_str
- section
-Content-Type: multipart/mixed; boundary="------------5CF768D46FA92DC52A37C165"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "'linux-mips@oss.sgi.com'" <linux-mips@oss.sgi.com>
-Message-ID: <20020624132947.6Mpa_k-BlOScz-HPLyyqB1wHAo-t6M4WLeP_-PyaJok@z>
+To: Ralf Baechle <ralf@oss.sgi.com>, "Gleb O. Raiko" <raiko@niisi.msk.ru>
+Cc: Carsten Langgaard <carstenl@mips.com>, linux-mips@oss.sgi.com
+Message-ID: <20020624160718.5wwZ43HPggfBxSdwWEoPzMj1ax_fj2RVgPlRuq7gY8M@z>
 
-This is a multi-part message in MIME format.
---------------5CF768D46FA92DC52A37C165
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: "Ralf Baechle" <ralf@oss.sgi.com> 
+> On Mon, Jun 24, 2002 at 07:14:51PM +0400, Gleb O. Raiko wrote:
+> 
+> > This patch also solves the problem for mips in 2.4/2.5 kernel. My
+> > question was about the patch for mips64 and mips in 2.2 kernel.
+> > 
+> > Shall memcpy.S from 2.4/2.5 be backported to 2.2 and mips64?
+> 
+> I think that would be the prefered solution as it'll be easier to maintain.
+> 
+> I've not received any 2.2 patches in a very long, long time - anybody
+> actually still using it?
 
-Hi,
+Only a few thousand (or tens of thousands) of Sony Playstation 2
+users.  ;-)  Most of them are running the wierd 2.2.1.?? Sony
+branch, but there are a few poor deluded souls tryng to update
+to 2.2.20...
 
-I get the above error from gdb 5.2 when using the <file> command.
-...
-(gdb) file iprbs
-file iprbs
-Reading symbols from iprbs...DW_FORM_strp pointing outside of .debug_str section
-(gdb)                                                       
-...
-
-My mipsel-linux- toolchain consist of the following packages:
-	binutils-2.12.1
-	gcc-3.1
-	glibc-2.2.5
-	gdb-5.2
-
-I have no idea what the problem might be.
-
-Any hints (solutions/workaround) are welcome.
-
-Best regards,
-	Carsten
---------------5CF768D46FA92DC52A37C165
-Content-Type: text/x-vcard; charset=us-ascii;
- name="Carsten.Lange.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Description: Card for Carsten Lange
-Content-Disposition: attachment;
- filename="Carsten.Lange.vcf"
-
-begin:vcard 
-n:Lange;Carsten
-tel;fax:+49 6104 4234
-tel;work:+49 30 6104 4228
-x-mozilla-html:FALSE
-url:http://www.detewe.de
-org:Cordless Technology A/S Berlin
-adr:;;Koepenicker Str. 180;10997 Berlin;;;
-version:2.1
-email;internet:Carsten.Lange@detewe.de
-x-mozilla-cpt:;0
-fn:Carsten Lange
-end:vcard
-
---------------5CF768D46FA92DC52A37C165--
+            Kevin K.

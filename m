@@ -1,32 +1,30 @@
-Date: Tue, 6 Nov 2001 22:48:54 +0000 (GMT)
-From: Dave Airlie <airlied@csn.ul.ie>
-Subject: Re: [LV] FYI: Mopd ELF support
-In-Reply-To: <Pine.GSO.3.96.1011031131020.10781C-100000@delta.ds2.pg.gda.pl>
-Message-ID: <Pine.LNX.4.32.0111062247250.14556-100000@skynet>
+Message-ID: <001101c16725$c0a6eae0$4a1c690a@huawei.com>
+From: "machael" <dony.he@huawei.com>
+References: <013301c165cc$5d030fa0$4a1c690a@huawei.com> <20011106130839.B30219@dea.linux-mips.net>
+Subject: Re: vmalloc bugs in 2.4.5???
+Date: Wed, 7 Nov 2001 08:47:18 +0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-vax@mithra.physics.montana.edu
-Cc: linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20011106224854.YowRAXRzHwLbPhMGUxu8ZaBO7kK3T7Fl0RIIbb2ZZqU@z>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20011107004718.Tzx8JRkTGj6ZPjRPJCsv1hHuW6sApq3kr97fCs0umEA@z>
 
-
->  Since I'll be away till Tuesday, expect an update in the middle of the
-> next week.  I'm assuming ELF loading works, right?
+> >     I use linux-2.4.5 and I think VMALLOC may have some bugs which i
+don't
+> > know how to fixup.
 >
-not sure the VAX is handling this too well..
+> Vmalloc is probably innocent I'd rather guess cache flushing is broken on
+> your platform.
 
-if I boot the vmlinux ELF file our build system produces it won't boot it
-but I think this is due to our vmlinux file being linked for running with
-VM switched on, and the mop loads it into memory that doesn't exist..
+Yes, It is possible. But I don't know how to fixup this broken cache
+flushing?
+And when and where should I flush cache (icache and dcache) manually?I am
+really know little things about cache.
 
-Dave.
+Can you help me?
+Thank you very much.
 
->   Maciej
->
->
-
--- 
-David Airlie, Software Engineer
-http://www.skynet.ie/~airlied / airlied@skynet.ie
-pam_smb / Linux DecStation / Linux VAX / ILUG person
+machael

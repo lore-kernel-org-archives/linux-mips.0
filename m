@@ -1,31 +1,39 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Mon, 10 Jun 1996 10:02:50 -0700
-From: wje@fir.esd.sgi.com (William J. Earl)
-Message-ID: <199606101702.KAA28690@fir.esd.sgi.com>
-Subject: Re: Are you satisfied now Mr. McVoy? ;-)
-In-Reply-To: <199606081822.LAA01539@yon.engr.sgi.com>
-References: <199606081123.EAA07860@neteng.engr.sgi.com>
-	<199606081822.LAA01539@yon.engr.sgi.com>
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199606112234.PAA06140@yon.engr.sgi.com>
+Subject: Re: Is this a silly idea?
+Date: Tue, 11 Jun 1996 15:34:30 -0700 (PDT)
+In-Reply-To: <9606111144.ZM25626@storm.engr.sgi.com> from "Donna Yobs" at Jun 11, 96 11:44:12 am
+Reply-To: ariel@cthulhu.engr.sgi.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: ariel@cthulhu.engr.sgi.com
-Cc: "David S. Miller" <dm@neteng.engr.sgi.com>, linux@cthulhu.engr.sgi.com
-Message-ID: <19960610170250.l9X-sOALAdd-5RDxZ7x2Ps-G0IvCpdmpkjiTLneA5Bs@z>
+To: Donna Yobs <yobs@storm.engr.sgi.com>
+Cc: linux@neteng.engr.sgi.com
+Message-ID: <19960611223430.Re4Z0iD_fucviWFPfZ4NrVgI_S-qRsJKPOXPpMczpMY@z>
 
-Ariel Faigon writes:
- > >
- > >
- > >Calibrating delay loop.. ok - 91.96 BogoMIPS
- > >
- > Will a Triton CPU (R5000) make this better ? :-)
+>
+>lm is right, we don't want to let the xfs source out;
+>but if we could do just the loadable modules it would
+>show an advantage of mips technology on linux (or is
+>that counter culture, sigh).
+>
+Donna,
 
-     An R5000 should scale with clock rate, relative to the 133 MHZ R4600
-David is using.  The 180 MHZ R5000 would then be 124.46.
+I think this is a good realistic compromise that can be accepted
+both by SGI and the Linux community.
 
- > For those who are not familiar with bogomips, my Pentium-100
- > at home does 39.94 bogomips. And the best number I've seen
- > for a desktop is almost 300 bogomips for an  Alpha 21064
- > overclocked to 300MHz. The 91.96 number for a 150MHz Indy
- > sounds pretty good. 
+On the way to "world domination now" (as Linus puts it), Linux
+enthusiasts must learn how to realistically compromise here and there.
 
-     I think the 150 MHZ R4400 is in David's host machine, with the
-133 MHZ R4600 in his target machine, so the 91.96 should be for the latter.
+Think of it: a much more significant "compromise" is to support
+the Windows API via WINE etc. rather than trying to force the Unix
+APIs upon the rest of the software-developers-world and lose.
+
+With clever compromises that the commercial world can accept
+and by keeping the vast majority of the value under the GPL,
+Linux will gradually get where Linus (and some of the rest of us :-)
+want it to be.
+-- 
+Peace, Ariel

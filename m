@@ -1,45 +1,23 @@
-Message-ID: <006a01c214b2$22e59280$0b01a8c0@w2k30g>
-From: "David Christensen" <dpchrist@holgerdanske.com>
-References: <20020615091631.20470.qmail@email.com>
-Subject: Re: Kernel - arch support(mips)
-Date: Sat, 15 Jun 2002 14:16:13 -0700
+Date: Mon, 17 Jun 2002 13:04:39 -0700 (PDT)
+From: James Simmons <jsimmons@transvirtual.com>
+Subject: Re: tx3912 Re: [PATCH] fbdev updates.
+In-Reply-To: <20020606211252.GA1112@elf.ucw.cz>
+Message-ID: <Pine.LNX.4.44.0206171304110.31825-100000@www.transvirtual.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Cc: Domcan Sami <domca_psg@email.com>
-Message-ID: <20020615211613.hKkxvPAH-R8_DcKdijT14MZq_Ho3hkXcEwJ81oLFX4g@z>
-
-linux-mips@oss.sgi.com:
-
-> 1)I'm using is a Galileo Board EV64120A.
-> 2)It is a raw embedded target & does not support Linux. I'm trying to
-> print a string by compiling code with RM7000 & directing the output
-> via Serial Port to a WinNT HyperTerminal.
-
-Searching on Google, it looks like you have a EV64120A-7000 made by
-Galileo Technology, Inc..  It is a PCI card that plugs into a PC, and
-includes the PMON ROM monitor in flash.  Galileo appears to have been
-sold to Marvell (www.marvell.com).  I don't see support or search links
-on the Marvell web site.  I don't see Galileo or EV64120A on their
-product page.  I suggest you send them an e-mail asking if and what
-support is available.
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Linux Fbdev development list <linux-fbdev-devel@lists.sourceforge.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-mips@oss.sgi.com, linux-mips-kernel@lists.sourceforge.net
+Message-ID: <20020617200439.Gqk-iNpiv2tb1aQn8uYlrClKSBA5MFWsTuyMrJ_bHso@z>
 
 
-I was going to recommend the SDE-MIPS toolkit by Algorithmics, but I
-don't see your board in their Programmer's Guide.  Try asking them if
-they support it:
+> Hi!
+>
+> >    This patch includes the latest in the fbdev BK repository. I have
+> > modified several fbdev drivers (maxinefb, tx3912fb, pmag drivers) to the
+> > new api. Please test these changes out before I submit them to linus.
+> > Thank you. It is against the latest BK tree and 2.5.20.
+>
+> Does the code even boot on any machine having tx3912fb?
 
-    http://www.algor-uk.com/
-
-
-To be blunt, trying to make an older, slower, and unsupported board work
-is going to be difficult.  It might not be possible.  If you can, get a
-current, complete, and well-supported MIPS development system -- board,
-ICE/JTAG, ROM monitor/ embedded OS, development toolchain, etc..
-
-
-David Christensen
-dpchrist@holgerdanske.com
+Yes :-) Also a few other types of MIPS devices use this framebuffer.

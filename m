@@ -1,51 +1,30 @@
-Message-ID: <000901c12704$bf95c2e0$8021690a@huawei.com>
-From: "machael thailer" <dony.he@huawei.com>
-References: <000701c11c8b$77e039e0$8021690a@huawei.com> <20010804071016.A1275@bacchus.dhis.org> <001501c126ca$4a5331a0$8021690a@huawei.com> <20010817052635.A2931@bacchus.dhis.org>
-Subject: Re: Where is the first entry point for linux-mips boot?
-Date: Fri, 17 Aug 2001 18:09:48 +0800
+Message-ID: <3B7D5513.F10F35A1@taec.com>
+Date: Fri, 17 Aug 2001 10:32:03 -0700
+From: Hua Wen <wenh@taec.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Upgrade kernel from release 2.2 to 2.4.?
+References: <Pine.SOL.4.31.0105061221330.1956-100000@fury.csh.rit.edu>
+Content-Type: text/plain; charset=gb2312
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010817100948.YMzAA8QJS804bY3kSUfFzTTCHWJsl_7TQgctmz0uizI@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010817173203.ZCb9_IbCSd-tIQfbLQGLyjGFVEuML3r9uilQcijT9pY@z>
 
+Hi,
 
------ Original Message -----
-From: "Ralf Baechle" <ralf@oss.sgi.com>
-To: "machael thailer" <dony.he@huawei.com>
-Cc: <linux-mips@oss.sgi.com>
-Sent: Friday, August 17, 2001 11:26 AM
-Subject: Re: Where is the first entry point for linux-mips boot?
+We made changes to linux/MIPS kernel 2.2.1 for our
+system and it's been running well so far. We now
+plan to upgrade the kernel to 2.4.X. The question
+is:
 
+Which sub release of 2.4 is more stable and is
+recommended to use? 
 
-> On Fri, Aug 17, 2001 at 11:11:21AM +0800, machael thailer wrote:
->
-> > After my custom board  finished initializations, It should load "linux
-> > kernel" into RAM.
-> > The question is :  Is this a compressed "linux kernel" just like
-vmlinux.gz
-> > of X86 that I should load? Or is it "/usr/src/linux/vmlinux" that is not
-> > compressed that I should load?
->
-> The standard MIPS kernel doesn't support compressed kernels on MIPS.
->
-> > And what RAM address should it loaded at?  Since it is linked at
-> > 0x80200000,Should I load there or at somewhere else?
->
-> Obviously to the address it's linked for.  You can adjust that address
-> as you need.  With compressed kernels it may be necessary to choose a
-> different address however so the decompressed kernel doesn't overwrite
-> the compressed kernel during compression.
+From http://oss.sgi.com/cgi-bin/cvsweb.cgi/linux,
+I can see available tags for kernel 2.4 are:
+linux_2_4_4, linux_2_4_3, linux_2_4_2,
+linux_2_4_0...
 
-If I load the kernel to RAM address 0x80200000, is this a virtual address or
-physical address at this time? Since my RAM can not be so large, I guess
-this is virtual address,right? Should I enable MMU in my board
-initializations?
+Thanks in advance for your advice!
 
-
-Thank you once again.
-
-machael
+-Hua

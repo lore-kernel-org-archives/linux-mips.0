@@ -1,104 +1,176 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: "John Chen" <chen@betty.esd.sgi.com>
-Message-ID: <9706181241.ZM5754@betty.esd.sgi.com>
-Date: Wed, 18 Jun 1997 12:41:23 -0700
-In-Reply-To: kck@darwin (Ken Klingman)
-        "Getting X on Linux/SGI" (Jun 18,  9:41am)
-References: <199706181641.JAA05598@darwin.esd.sgi.com>
-Subject: Re: Getting X on Linux/SGI
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <199706190207.TAA04619@neteng.engr.sgi.com>
+Subject: FYI - free Windows API
+Date: Wed, 18 Jun 1997 19:07:51 -0700
+From: Larry McVoy <lm@neteng.engr.sgi.com>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: John Chen <chen@darwin.esd.sgi.com>, Joe Chien <jc@darwin.esd.sgi.com>, Ken Klingman <kck@darwin.esd.sgi.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970618194123.oUA-Rm8jorAJstGOrxnKCQ9W-chEMo16jXo4k2ILmxE@z>
+To: linux@neteng.engr.sgi.com, os@neteng.engr.sgi.com
+Message-ID: <19970619020751.My-AvbDRlqZ5juM1Rhtro8j0g1CpcpXGMnC9hOqV7ls@z>
 
-On Jun 18,  9:41am, Ken Klingman wrote:
-> Subject: Getting X on Linux/SGI
-> John,
->
-> There's an effort going to port Linux to SGI systems.  They've
-> got the basic kernel up on an Indy, but are now trying to figure
-> out what to do with X.  Could you reply to the mail alias (linux@engr)
-> with a few words on the effort involved and what kind of specs they
-> need?  I know that our X server architecture is complicated by the
-> support of OpenGL, but wouldn't it be a lot simpler to just do X
-> without any OpenGL support?
->
-> ...
->
-> Ken
->
-> ...
->
-> Forwarded message:
-> > Larry McVoy wrote:
-> > >
-> > > : There are some very serious issues which come up even getting
-> > > : Xfree to a moderate level of acceleration.
-> > >
-> > > How about to a simple level of working?  Without any acceleration?
-> > > For most people, just having xterms and netscape working is enough.
-> > >
-> > > I'm not a graphics or X person.  Could someone who knows SGI's gfx
-> > > devices tell us how hard it would be to make the basics work?
 
-The fastest path to make basic X works is probably by implementing
-a device dependent layer (DDX) that controls all pixels going in/out
-framebuffer, opens and closes devices like keyboard and mouse,
-interpret input events and control graphic display backend.
-Since frame buffer on Indy system is not directly accessible.
-all pixels in/out frame buffer has to be via this DDX layer.
-A lot of sample code under cfb directory should be
-reuseable with minor changes. To begin with non-accelerated
-rendering, only setpixel and getpixel are required.
+------- Forwarded Message
 
-A generic DDX layer which described in "The X Window System Server" book
-(authors: Elias Israel and Erik Fortune) can be FTP from export.lcs.mit.edu
+Date:    Wed, 18 Jun 1997 18:59:17 -0700
+From:    gordoni@base.com (Gordon Irlam)
+To:      achut@eng.sun.com, bruce_horton@hotmail.com, hsu@freebsd.org,
+	 corbin@eng.sun.com, gnu@toad.com, lm@sgi.com, willey@purdue.edu,
+	 kr@base.com, lpd@aladdin.com, rlm@transmeta.com, deraadt@theos.com,
+	 tclayton@eng.sun.com
+cc:      FoRK@pest.w3.org
+Subject: Willows places Windows API under GNU (Library) GPL
 
-I think you also need following stuff for Indy system with Newport graphic:
+Below is my boring corporatized summary of this.
 
-1) Newport graphics spec.
-2) A basic graphic driver that map RE chip to Xsgi's address
-   space, so X can program RE registers
-3) This graphic driver also needs to set up graphic backend display
-   id table and display mode registers (if X support only one visual,
-   this step is simple), to program Cmap for cursor color
-   and to program cursor registers for glyph and location.
-   All of these work can also be done in X if driver map backend to X.
+My uncorporatized analysis is simpler, and reads:
 
-> > >
-> >
-> > ...
-> >
-> >  Questions:
-> >
-> > - How much HW dependent stuff is in Xsgi itself?
+    Fuckin cool!  -  http://www.willows.com/
 
-Xsgi contains something specific to IRIX, e.g. share memory input
-queue stuff which may not be wanted by Linux.
 
-> > - Which of the DSOs in /usr/lib/X11/dyDDX are minimally
-> >   needed to bring up an non-GLX Xserver?
 
-All DSOs in dyDDX support GLX. If the system is Indy,
-rex3.so is used for Newport graphic and exp.so is used for
-EXPRESS graphic. By trimming down Xsgi and DSO's, you should be able
-to run Xsgi on Linux without GLX.
+                                                gordon
 
--John
+--------------------------------------------------------------------
 
-> > - How much efforts would it cost to compile the dyDDX
-> >   stuff for Linux and distribute the binaries only
-> >   (assuming that there is not to much HW stuff in Xsgi itself)?
-> >
-> >
-> >  And of course, we probably have to provide the microcode and
-> > loader for the different GFX cards.
-> >
-> >  I definitely agree with Ariel, that this is the most important
-> > topic once we have Linux running stable.
-> >
-> > Martin
-> >
->-- End of excerpt from Ken Klingman
+Willows Software has decided to make the sources to their
+Windows API technology freely available under the GNU Library GPL.
+
+This is very significant.
+
+Willows technology sounds has a long way to go before it catches
+up to Microsoft, but much like the capacity of Linux to overtake
+the existing Unix vendors, this possibility shouldn't be ruled
+out.  A Linux magnitude net effort to create a free replacement
+to Windows could certainly put a bound on Microsoft's ability to
+increase the price it starts charging for it's operating systems
+now that it thinks it has secured a monopoly.
+
+While this technology is not perfect, it is probably the best
+non-Microsoft licensed Windows API technology that presently exists
+(alternatives being Wabi from Sun, and Wine written by Bob Amstead
+and friends, freely available on the net).  Other technologies, such
+as from Bristol, use code licensed by Microsoft.
+
+Willows Software comprises both a set of Windows API compatible libraries
+that presently run on top of Unix and Mac, and also an x86 machine code
+simulator for running existing x86 binaries.  The option to simply
+compile to native code on the appropriate processor also exists.
+Only the Win16 API presently appears mature, and a lot of work is still
+required to complete the Win32 APIs.  According to an earlier press
+release, a lot of work will also be required to implement OLE.
+
+Willows Software is a part of the Canopy Group which is a group of
+companies owned by NFT Ventures.  NFT Ventures is run by Ray Norda.
+I believe NFT stands for Norda Family Trust.  Another member of the
+Canopy Group is Caldera, one of the leading Linux companies.  According
+to the Canopy Group's own web site the mission of the Canopy Group is:
+
+    "to enhance and support Novell's products with aggressive strategies
+    and technologies"
+
+This suprizes me given that Ray Norda is no longer involved with
+Novell (I even checked recent SEC filings by Novell to confirm this).
+I don't really understand the relationship between Novell and Willow,
+nor whether Eric Schmidt's presence at Novell might also have played
+a part in the decision to free the Willows Windows API (Schmidt is
+one of the few senior people in the industry that appears to understand
+the economic forces associated with free software).
+
+See http://www.willows.com/ for further details, or to download the
+complete sources.
+
+A previous article on Willows follows.
+
+                                                    gordon
+
+----------------------------------------------------------------------------
+
+      January 1996 article reporting plans by Willows to make the
+      sources to their software freely available on the net, but
+      to continue to charge money for it's commercial use.  (The
+      new license that was just announced is royalty free)...
+
+Subject: A not-quite-free Windows clone...
+Date: Fri, 5 Jan 1996 18:25:15 -0800 (PST)
+
+From Unigram...
+
+NOORDA's WILLOWS TO PUT ITS WINDOWS-ON-UNIX SOURCE ON TO NET
+
+Fresh from its victory over Microsoft Corp last month at 
+ECMA, the European Computer Manufacturers Association (UX No 
+569), the tiny Ray Noorda-financed start-up Willows Software 
+has changed gears, plowing ahead with a move that is bound 
+to irk the mighty Redmond empire. This week it'll detail a 
+plan to distribute the source code to its ersatz Win32s 
+operating environment, described as a subset of Windows 95, 
+free on the Internet. It will also make its anticipated 
+software development kit, the Twin Cross Platform Developers 
+Kit (XPDK), similarly available for personal use. Noorda 
+himself will brief the press. The source code will allow 
+users of any flavour of Unix - followed in turn by Apple 
+Macintosh, Novell NetWare and ultimately IBM OS/2 users - to 
+run Windows binaries, particularly Microsoft's own highly 
+popular Word, Excel and PowerPoint programs, on their 
+systems. They will not have to pay any operating systems 
+"taxes" to Microsoft. 
+
+Saratoga, California-based Willows claims the move will 
+create something of a paradigm shift - at least within the 
+narrow confines of Unix - and spell the end of Sun 
+Microsystems Inc's like-minded but limited product, Wabi, as 
+well as Motif. Officially, Wabi only runs two dozen of the 
+thousands of Windows programs available and to run some of 
+them, like PowerPoint, requires the real Windows underneath, 
+defeating one of Sun's purposes - to wit, depriving 
+Microsoft of its revenue stream. Willows chief Rob Farnum 
+says he will spend the next few weeks lobbying Wabi's 
+greatest adherents, Sun and IBM, to abandon Wabi and license 
+the Willows solution on favourable terms. He has utter 
+confidence such an appeal will succeed and make Willows 
+money. (Sun and IBM Corp did after all sit on the ECMA 
+technical committee TC37 with Willows pushing the technology 
+as a standard.) Farnum never wanted to distribute the source 
+code, he says, because Willows doesn't have the financial 
+wherewithal to support it. The decision to do it anyway was 
+made over the holidays by Microsoft's old nemesis Ray Noorda 
+and his henchmen. Farnum now believes that despite the fact 
+the source code won't be supported it will attract tens of 
+thousands of users. 
+
+Outside interest in Willows technology, he said, has always 
+focused almost exclusively on its ability to run binaries. 
+It is unclear whether Noorda will also try to tie it in 
+somehow with the Linux freeware-based Corsair Internet 
+desktop his Caldera operation is pushing. Willows is also 
+now willing to forego carving out what it estimates would be 
+a modest little $10m business selling its XPDK toolkit to a 
+couple of thousand Unix developers a year. Any real money to 
+be made, it figures, lies in what it calls "professional 
+services," porting applications for people with its 
+technology or helping them port them. It intends to announce 
+such a program this week. It also intends to announce 
+licensing schemes whereby pieces of its technology can be 
+bundled with third-party programs. 
+
+Willows will support its technology when applied to 
+commercial purposes and apparently charge modest licensing 
+fees of $250 a platform despite the number of developers 
+using it or run-times created. Farnum claims that when 
+Willows this week announces the imminent arrival of its XPDK 
+for the Mac - which like its NetWare kit is at the alpha 
+stage - it will bring pressure to bear on Microsoft's new 
+$1,600 Visual C++ tool for the platform. Still he remains 
+diffident, or perhaps cautious, about Willows impact on 
+Microsoft - at one point calling it "mouse nuts" - and 
+Microsoft's reaction to Willows' moves. He apparently 
+expects Microsoft to denigrate Willows technology out of a 
+perceived loss of control, loss of revenue and threat to 
+Win95. At the same time, he admits it would take Willows 50 
+man-years just to catch up with Microsoft's OLE work which 
+he knows he must emulate. Farnum leaves unarticulated or 
+unadmitted - despite direct questions - Willows long-term 
+purposes respecting Microsoft though perhaps he and Noorda 
+now feel they will make more daunting foes by using the 
+Internet to evolve their schemes. 
+
+------- End of Forwarded Message

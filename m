@@ -1,24 +1,25 @@
-Subject: Re: indy scsi
-Date: Wed, 8 May 2002 14:37:43 +0100 (BST)
-In-Reply-To: <20020508144247.A2023@ugyvitelszolgaltato.hu> from "Szabo Attila" at May 08, 2002 02:42:47 PM
+From: "Robert Rusek" <rrusek@teknuts.com>
+Subject: Indy SCSI Errors
+Date: Wed, 8 May 2002 10:23:18 -0700
+Message-ID: <C0F41630CD8B9C4680F2412914C1CF070164BD@WH-EXCHANGE1.AD.WEIDERPUB.COM>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-ID: <E175RdX-0001aT-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: Szabo Attila <trial@ugyvitelszolgaltato.hu>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20020508133743.eF4FpHEvu0z0StuxlAS4N6rYfwb0F6_D-dUBVYoMmv0@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020508172318.rFjWHxBD8YtiDX86xDSGl9hbG40tEoXACoMAEk5jTU0@z>
 
-> Yes, I know all of that, and I've expected only max 3-5 MB/sec but not
-> 1.7.
-> The scsi bandwith on indy is 10MB/s, the disk is above 10 MB/s.
-> Maybe I expect too much
+I am currently running kernel 2.4.17 and am getting sparatice errors
+like the following.  I seen that there had been bugs in the scsi driver
+in the earlier kernel versions.  Has anyone encountered this?  Is there
+a newer kernal that maybe addresses this?
 
-An old 2Gb 5400 RPM drive ought to deliver about 2Mbytes/second data rates.
-The 1.7 sounds suprisingly low unless the driver code doesn't support 
-disconnect and scsi2 tagged stuff. For an old NCR538x/9x device without
-those it sounds all too believable.
 
-Alan
+EXT2-fs error (device sd(8,1)): ext2_check_page: bad entry in directory
+#110030: unaligned
+ directory entry - offset=0, inode=6226015, rec_len=95, name_len=95
+
+Thank you in advance,
+--
+Robert Rusek

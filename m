@@ -1,32 +1,21 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199801211809.KAA03109@oz.engr.sgi.com>
-Subject: Re: Disk Space
-Date: Wed, 21 Jan 1998 10:09:26 -0800 (PST)
-In-Reply-To: <6e690e14.34c6079f@aol.com> from "LetherGlov" at Jan 21, 98 09:35:09 am
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <m0xv6jV-0005FsC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: root-be-0.03.tar.gz
+Date: Wed, 21 Jan 1998 20:26:44 +0000 (GMT)
+In-Reply-To: <34C64EB7.1FA95A9C@netscape.com> from "Mike Shaver" at Jan 21, 98 07:38:31 pm
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: LetherGlov <LetherGlov@aol.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980121180926.hZBPquh43FR6IWWr34Eg3LncIRsJskDJCUphgQ4viKA@z>
+To: Mike Shaver <shaver@netscape.com>
+Cc: adevries@engsoc.carleton.ca, linux@cthulhu.engr.sgi.com
+Message-ID: <19980121202644.GgoOHJOxpT9DczjHg1GWASSRBnW6jhVjW8by1ANc1zk@z>
 
-:
-:There seems to be a small problem on the root(/) drive of Linus, as it is 100%
-:used. I'm not quite sure what caused this, as a few days ago it was fine, but
-:I'd like to be able to pull some sources from the CVS and it woun't let me
-:complaining about the space.
-:
-Yes the root filesystem is very small.  Please use only the /src
-and /work partitions to do your work.  There are only three users
-who have over 20 Mb each in their home dirs.  I guess I can
-delete Larry's stuff since he hasn't logged in in a very long time
-Also: anyone knows if Mark Salter is still helping? He has 43Mb...
+> I _must_ start working on EFS again.  I assume I've missed the 2.2
+> freeze, but I could still help a lot of people by getting off my a** and
+> finishing it.  My apologies to those who are waiting on it.
 
-I also cleaned some old logs /var/adm/{oOLD}* so we are down to 98% before
-dealing with user dirs...
+You've not missed it providing your code doesnt have to touch the fs
+layer as well as fs/efs. Certainly el penguino took the ADFS patch for
+2.1.80
 
--- 
-Peace, Ariel
+Alan

@@ -1,79 +1,46 @@
-content-class: urn:content-classes:message
+Received: from msx.realtek.com.tw (unverified [172.20.1.77]) by mf2.realtek.com.tw
+ (Content Technologies SMTPRS 4.3.14) with ESMTP id <T6cc4c6aee3dc803816a20@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
+ Wed, 20 Oct 2004 22:03:43 +0800
+Message-ID: <001301c4b6ad$70ce4420$8b1a13ac@realtek.com.tw>
+From: "colin" <colin@realtek.com.tw>
+Subject: Strange! Cannot use JFFS2 as root
+Date: Wed, 20 Oct 2004 22:02:26 +0800
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Mozilla Firefox compile problem
-Date: Wed, 20 Oct 2004 09:10:03 +0200
-Message-ID: <34A8108658DCCE4B8595675ABFD8172709FAFF@dusse201.eu.infineon.com>
-From: <Andre.Messerschmidt@infineon.com>
-Return-Path: <Andre.Messerschmidt@infineon.com>
+	charset="big5"
+Return-Path: <colin@realtek.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ica2_ts@csv.ica.uni-stuttgart.de
-Cc: linux-mips@linux-mips.org
-Message-ID: <20041020071003.-SDIoh_VsExJNjgqZN1kwQsNEvsWf0ga1xamDWgjyyw@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20041020140226.WytVZDZ5YXue30e8xBfrdLAK4yTAj3N6_M-TB6JNPo4@z>
 
 
->This patch is broken and will only paper over the problem. Use 
->the patch in https://bugzilla.mozilla.org/show_bug.cgi?id=258429
->At least the firefox 0.93 in Debian mips works with it.
+Hi all,
+I had booted up Linux with nfs root, and write a JFFS2 image to /dev/mtd1.
+Here is my cmdline for Kernel:
+     go 0x80305018 root=/dev/nfs rw nfsroot=172.19.26.145:/nfs/rootfs
+ip=172.19.27.193::172.19.27.254:255.255.254.0:::
+mtdparts=maltaflash:1536k(ldr),2048k(root)
 
-Thanks for the reply. With that patch I got two undefined macros
-(SETUP_GP and SAVE_GP). SETUP_GP was mentioned in the thread, but I
-could not find a definition for SAVE_GP. To go on I just defined it
-empty and continued to compile.
-Then I got the following error, which leaves me totally lost.
+After writing the JFFS2 image to /dev/mtd1, I can mount /dev/mtdblcok1 to
+some directory.
+    mount -t jffs2 /dev/mtdblock1 /mnt
 
---- snip --------------------------------------
-mips-linux-g++ -I/opt/mvx/usr/X11R6/include -fno-rtti -fno-exceptions
--Wall -Wconversion -Wpointer-arith -Wcast-align -Woverloaded-virtual
--Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor -Wno-long-long
--Wa,-xgot -pthread -pipe  -DDEBUG -D_DEBUG -DDEBUG_am -DTRACING -g
--fno-inline -fPIC -shared -Wl,-h -Wl,libnecko2.so -o libnecko2.so
-nsNetModule2.o             -Wl,--whole-archive
-../../dist/lib/libnkdata_s.a  ../../dist/lib/libnkgopher_s.a
-../../dist/lib/libnkkeyword_s.a  ../../dist/lib/libnkviewsource_s.a
--Wl,--no-whole-archive -L../../dist/bin -lxpcom  -L../../dist/bin
--L/data2/Sources/inca/mozilla/dist/lib -lplds4 -lplc4 -lnspr4 -lpthread
--ldl    -Wl,-Bsymbolic -ldl -lm
-chmod +x libnecko2.so
-/data2/Sources/inca/mozilla/config/nsinstall -R -m 755 libnecko2.so
-../../dist/gre/components
-: ../../dist/gre/components/libnecko2.so
-/data2/Sources/inca/mozilla/config/nsinstall -R -m 755 libnecko2.so
-../../dist/lib/components
-: ../../dist/lib/components/libnecko2.so
-/data2/Sources/inca/mozilla/config/nsinstall -R -m 755 libnecko2.so
-../../dist/bin/components
-: ../../dist/bin/components/libnecko2.so
-gmake[3]: Leaving directory `/data2/Sources/inca/mozilla/netwerk/build2'
-gmake[3]: Entering directory
-`/data2/Sources/inca/mozilla/netwerk/resources'
-+++ making chrome /data2/Sources/inca/mozilla/netwerk/resources  =>
-../../dist/bin/chrome/comm.jar
-+++ adding chrome ../../dist/bin/chrome/installed-chrome.txt
-+++
-content,install,url,jar:resource:/chrome/comm.jar!/content/necko/
-        zip warning: ../comm.jar not found or empty
-  adding: content/necko/redirect_loop.xul (stored 0%)
-+++ overriding content/necko/contents.rdf
-  adding: content/necko/contents.rdf (stored 0%)
-+++ making chrome /data2/Sources/inca/mozilla/netwerk/resources  =>
-../../dist/bin/chrome/en-US.jar
-error: file '../../toolkit/locales/en-US/chrome/necko/contents.rdf'
-doesn't exist at ../../config/make-jars.pl line 418, <STDIN> line 9.
-gmake[3]: *** [libs] Fehler 2
-gmake[3]: Leaving directory
-`/data2/Sources/inca/mozilla/netwerk/resources'
-gmake[2]: *** [libs] Fehler 2
-gmake[2]: Leaving directory `/data2/Sources/inca/mozilla/netwerk'
-gmake[1]: *** [tier_9] Fehler 2
-gmake[1]: Leaving directory `/data2/Sources/inca/mozilla'
-make: *** [default] Fehler 2
---- snap --------------------------------------
+Next, I hope to boot up Linux with JFFS2 root, and try to give this cmdline
+to Kernel:
+    go 0x80305018 rootfstype=jffs2
+mtdparts=maltaflash:1536k(ldr),2048k(root) root=/dev/mtdblock1
 
-Anyone any ideas?
+and the Kernel would complain me about no root:
+    VFS: Unable to mount root fs via NFS, trying floppy.
+    Kernel panic: VFS: Unable to mount root fs on unknown-block(2,0)
 
-Best regards
-Andre
+I traced the code and found that when passing "/dev/mtdblock1" to
+name_to_dev_t() in do_mounts.c, it would return 0 at every try_name(),
+ which will fail at open() with the path "/sys/block/%s/dev".
+
+What's the problem? Could anyone tell me?
+
+Thanks and regards,
+Colin

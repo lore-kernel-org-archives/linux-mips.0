@@ -1,84 +1,30 @@
-Received: from virtual.paginaweb.be (localhost [127.0.0.1])
-	by virtual.paginaweb.be (8.12.10/8.12.10/UnixTech - Niddle v2.5 - abuse@unixtech.be) with ESMTP id i2ICe1IW017367
-	for <linux-mips@linux-mips.org>; Thu, 18 Mar 2004 13:40:03 +0100
-Received: (from amavis@localhost)
-	by virtual.paginaweb.be (8.12.10/8.12.10/Debian-4) id i2ICambc016835
-	for linux-mips@linux-mips.org; Thu, 18 Mar 2004 13:36:48 +0100
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Subject: VIRUS (W32/Netsky.D@mm) IN YOUR MAIL
-Message-ID: <VSXXegqH2g@virtual>
-Content-Type: multipart/report; report-type=delivery-status;
-    boundary="----------=_1079613408-16384-1"
-From: AMaViS <virusalert@unixtech.be>
-Date: Thu, 18 Mar 2004 13:36:48 +0100 (CET)
-Return-Path: <>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: PMON documentation
+Date: Thu, 18 Mar 2004 14:09:19 +0100
+Message-ID: <765921A8173EC145948ACBAA0480F67E2C76D5@server10.dallmeier.de>
+From: "erras stefan" <stefan.erras@dallmeier-electronic.com>
+Return-Path: <stefan.erras@dallmeier-electronic.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040318123648.r9TKlrlDmY3WN4NKnv72Xqm4_V9qDat9F6ZRbi_9dSk@z>
+Message-ID: <20040318130919.4Qv_n_DADZxguebrj88tPzcIhn7-ohzksPRYFSCYvPc@z>
 
-This is a multi-part message in MIME format...
+Hello,
+I'm working on a development project with a RM5231 MIPS processor.
+I have to modify some things in the PMON bootloader source-code.
+Can anybody give me an advice where I can find PMON source code
+documentation or a detailed explanation how PMON works.
+Which files do I have to look into, when I would like to modify the
+bootloader.
+Maybe I can use another bootloader. Which alternatives do I have. I do
+not need the debug functionality of PMON. Maybe there is an easier to
+understand and modify bootloader.
 
-------------=_1079613408-16384-1
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+Thank you all in advance for your help!
 
-VIRUS ALERT
-
-Our virus checker found
-    virus: W32/Netsky.D@mm
-    banned filename: your_website.pif
-in your email to the following recipient:
--> info@namurlug.org
-
-Delivery of the email was stopped!
-
-Please check your system for viruses,
-or ask your system administrator to do so.
-
-For your reference, here are headers from your email:
-------------------------- BEGIN HEADERS -----------------------------
-From: linux-mips@linux-mips.org
-To: info@namurlug.org
-Subject: Re: Your website
-Date: Thu, 18 Mar 2004 18:05:29 +0530
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0003_0000775C.000043A7"
-X-Priority: 3
-X-MSMail-Priority: Normal
--------------------------- END HEADERS ------------------------------
-
-------------=_1079613408-16384-1
-Content-Type: message/delivery-status
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Delivery error report
-
-Reporting-MTA: dns; virtual
-Arrival-Date: Thu, 18 Mar 2004 13:36:48 +0100 (CET)
-
-Final-Recipient: rfc822; info@namurlug.org
-Action: failed
-Status: 5.7.1
-Diagnostic-Code: smtp; 550 5.7.1 Message content rejected, id=XXegqH2g - VIRUS: W32/Netsky.D@mm
-Last-Attempt-Date: Thu, 18 Mar 2004 13:36:48 +0100 (CET)
-
-------------=_1079613408-16384-1
-Content-Type: text/rfc822-headers
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Undelivered-message headers
-
-From: linux-mips@linux-mips.org
-To: info@namurlug.org
-Subject: Re: Your website
-Date: Thu, 18 Mar 2004 18:05:29 +0530
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0003_0000775C.000043A7"
-X-Priority: 3
-X-MSMail-Priority: Normal
-
-------------=_1079613408-16384-1--
+Best regards
+Stefan

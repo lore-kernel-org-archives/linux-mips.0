@@ -1,53 +1,61 @@
-Date: Wed, 23 Oct 2002 16:46:06 +0200 (MEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [patch] Correct monochrome selection
-In-Reply-To: <20021023142839.GG14430@finlandia.infodrom.north.de>
-Message-ID: <Pine.GSO.4.21.0210231642200.2882-100000@vervain.sonytel.be>
+Received: from sohotower (adsl-66.218.38.74.dslextreme.com [66.218.38.74])
+	(authenticated)
+	by dtla2.teknuts.com (8.11.3/8.10.1) with ESMTP id g9T4YOs04081
+	for <linux-mips@linux-mips.org>; Mon, 28 Oct 2002 20:34:24 -0800
+From: "Robert Rusek" <robru@teknuts.com>
+Subject: What is the latest stable version of Linux for an SGI Indy?
+Date: Mon, 28 Oct 2002 20:36:32 -0800
+Message-ID: <000001c27f04$c23f24b0$0a01a8c0@sohotower>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <Geert.Uytterhoeven@sonycom.com>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C27EC1.B41BE4B0"
+Return-Path: <robru@teknuts.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Martin Schulze <joey@infodrom.org>
-Cc: Linux/MIPS Development <linux-mips@linux-mips.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Frame Buffer Device Development <linux-fbdev-devel@lists.sourceforge.net>
-Message-ID: <20021023144606.HO-vagPPN3qwnWJmEmk5nPnHmeMQxvwj8WtbhWvnAC4@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20021029043632._nZR1XxNVxeTa_r8dIRewLNO113StiEg1ENBXCSerss@z>
 
-On Wed, 23 Oct 2002, Martin Schulze wrote:
-> Geert Uytterhoeven wrote:
-> > On Sat, 19 Oct 2002, Martin Schulze wrote:
-> > > please apply the patch below which will add proper handling for
-> > > monochrome graphic cards.
-> > > 
-> > > Both changes are required since there are graphic cards out in the
-> > > voi^Wwild that are monochrome but have bits_per_pixel set to something
-> > > else than 1, e.g. PMAG-AA which uses 8 bits per pixel but ignores 7 of
-> > > it.
-> > > 
-> > > Since currently no such card is supported, this change wasn't
-> > > required.  However, we developed support for the PMAG-AA card and we
-> > > would like to add support for it to the Linux kernel, of course.
-> > 
-> > HP300 TopCat uses a similar scheme, and is supported by Linux/m68k.
-> 
-> *cough*  Is there a working machine running Linux out somewhere?  If
-> so, I wonder why this oddity wasn't noted/didn't appear etc.
+This is a multi-part message in MIME format.
 
-drivers/video/hpfb.c sets fb_var_screeninfo.bits_per_pixel to 1 instead of 8,
-and relies on an unmerged[*] hack to drivers/video/fbcon.c to display the
-monochrome penguin logo.
+------=_NextPart_000_0001_01C27EC1.B41BE4B0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-> HP300 is not a really working port iirc.
-
-Yes, it depends a lot on your definition of `working' :-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
-[*] Available from Linux/m68k CVS http://linux-m68k-cvs.apia.dhs.org/
+I have been out of the scene for a while but want to upgrade my SGI to
+the latest rev of Linux RedHat.  I am currently running RedHat 7.1 with
+Kernel 2.4.18.
+ 
+Thanks.
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Robert Rusek
+ 
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+------=_NextPart_000_0001_01C27EC1.B41BE4B0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
+
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D203193404-29102002>I have =
+been out of=20
+the scene for a while but want to upgrade my SGI to the latest rev of =
+Linux=20
+RedHat.&nbsp; I am currently running RedHat 7.1 with Kernel=20
+2.4.18.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D203193404-29102002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D203193404-29102002>Thanks.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>--</FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>Robert Rusek</FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0001_01C27EC1.B41BE4B0--

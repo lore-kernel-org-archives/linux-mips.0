@@ -1,33 +1,24 @@
-Message-ID: <00f601c1cd53$9c862060$8c3684d3@gol.com>
-From: "Girish Gulawani" <girishvg@yahoo.com>
-Subject: Error loading shared libraries.
-Date: Sun, 17 Mar 2002 10:32:30 +0900
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Message-ID: <5.0.2.5.2.20020317113440.00c74650@pop3.livedoor.com>
+Date: Sun, 17 Mar 2002 11:34:51 +0900
+From: info <job21@livedoor.com>
+Subject: =?ISO-2022-JP?B?GyRCISo5LTlwISpFPj8mJTUhPCVTJTkhSkw1TkEbKEI=?=
+ =?ISO-2022-JP?B?GyRCIUsbKEI=?=
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-2022-JP"; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>
-Message-ID: <20020317013230.6R4IQOOfvZeVhoa6v-90Wyc_cIAji99x-65CdT0IBsI@z>
+Message-ID: <20020317023451.nBlsYa-v0VpcCKKDVyQnh_9D-SRPeLAg_bkmDqvHYDQ@z>
 
+（広告）
+全国の人材バンクへ転職の
+一括エントリー登録受付け！
+http://all.at/topseed
 
-Hello, all.
-I know this is kind of weird problem at this point of time. I have a MIPS
-board booted up with Linux 2.4.3 kernel. But it fails on the "init". I get
-an error in the init process:
+※特定商取引法には該当しない
+完全なる"無償サービス"です。
+費用などは一切かかりません。
 
-init: error in loading shared libraries
-libutil.so.1: cannot map file data: Bad file descriptor ...
-
-The compiler used is EGCS 2.91.66, downloaded from the net. Such error is
-seen while loading any executable. I have a statically linked shell running.
-Basically I dont know where the problem is. Please help me.
-Many thanks in advance.
-Girish.
-
-
-
-
-_________________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.com address at http://mail.yahoo.com
+※解除は下記へ空メール
+   をお送りください。
+career@jsc.getmyip.com
+ジョブ・サービス 

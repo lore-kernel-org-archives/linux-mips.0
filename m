@@ -1,70 +1,233 @@
-Message-ID: <200110111658.JAA20874@deliverator.sgi.com>
-From: "MITHEC" <mithec@multimania.com>
-Subject: La Quatrième Guerre Mondiale a commencé!
-Mime-Version: 1.0
-Content-Type: text/html; charset="ISO-8859-1"
-Date: Thu, 11 Oct 2001 19:01:22 +0200
-Reply-To: "MITHEC" <mithec@multimania.com>
-Content-Transfer-Encoding: quoted-printable
+From: "Hanks Li" <hli@quicklogic.com>
+Subject: Big endian problem
+Date: Fri, 12 Oct 2001 12:26:07 -0400
+Message-ID: <APEOLACBIPNAFKJDDFIIIEBLCBAA.hli@quicklogic.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20011011170122.mVwb-6q7na65R5gS4ApW5e4jOQRI1hDAe1-uavON7J4@z>
+Message-ID: <20011012162607.6jv8PsQ2he5TTN-80uVsLfwcIBQXBvuCBgKhPvij-so@z>
 
-<html>
+Hi,
 
-<head>
-<meta http-equiv=3D"Content-Language" content=3D"fr">
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dwindows=
--1252">
-<meta name=3D"GENERATOR" content=3D"Microsoft FrontPage 5.0">
-<meta name=3D"ProgId" content=3D"FrontPage.Editor.Document">
-<title>La Quatri=E8me Guerre Mondiale a commenc=E9!</title>
-</head>
+Has anyone tried to compile in Big Endian mode? When I compile the code in
+big endian, I got the following message. Does anybody know how to solve this
+problem? The assembler I'm using is "GNU assembler 2.11.90.0.27". I have no
+problem compiling the code in little endian at all.
 
-<body>
+Thanks
 
-<table border=3D"0" width=3D"100%" cellspacing=3D"0" cellpadding=3D"0">
-  <tr>
-    <td width=3D"33%">
-      <p align=3D"center"><a href=3D"http://mithec.multimania.com"><img
-border=3D"0" src=3D"http://mithec.multimania.com/mail/but1-mail.jpg" widt=
-h=3D"168"
-height=3D"65"></a><p align=3D"left"><b><font color=3D"#000080"><span
-style=3D"font-family: Tahoma; mso-ansi-language: FR; mso-bidi-font-weight=
-:
-bold; mso-bidi-font-size: 14.0pt" lang=3D"FR">Le
-      11 septembre 2001, le monde a chang=E9 pour toujours&nbsp;: La Quat=
-ri=E8me
-      guerre mondiale a commenc=E9. Quel sera le r=F4le de la Russie dans=
- cette
-      guerre&nbsp;? Et celui d=92Europe? Quelles seront les armes&nbsp;de=
- cette
-      guerre? La Russie entrera-t-elle dans l=92OTAN? On se pose beaucoup=
- de
-      questions. La G=E9opolitique est du retour. =AB&nbsp;La Russie apr=E8=
-s l=92an
-      2000&nbsp;=BB en tant que livre g=E9opolitique majeur tr=E8s r=E9ce=
-nt nous
-      aidera de trouver des r=E9ponses.</span></font></b>
-      </td>
-    <td width=3D"75%">
-      <p align=3D"center"><a href=3D"http://mithec.multimania.com"><img
-border=3D"0" src=3D"http://mithec.multimania.com/mail/mail3.jpg" width=3D=
-"536"
-height=3D"382"></a></td>
-  </tr>
-  <tr>
-    <td width=3D"108%" colspan=3D"2"><font size=3D"2" face=3D"Tahoma">Cet
-      e-mail non-sollicit=E9 n'est pas un S.P.A.M. parce qu'il est confor=
-me au
-d=E9cret 1618 Titre III du 105<sup>e</sup> Congr=E8s des =C9tats-Unis qui
-      stipule que le e-mail doit contenir l'adresse d'exp=E9diteur et avo=
-ir une
-<a href=3D"mailto:mithec2001@yahoo.com">
-      facilit=E9 d'annulation</a> pour l'adress=E9. </font></td>
-  </tr>
-</table>
+Hanshi Li
 
-</body>
-
-</html>
+----------------------------------------------------------------------------
+------------------------------------
+mips-linux-gcc -I
+/home/hli/linux/include/asm/gcc -D__KERNEL__ -I/home/hli/linux/include -Wall
+ -Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-ali
+asing -fno-common -G
+0 -mno-abicalls -fno-pic -mcpu=r5000 -mips2 -Wa,--trap -pipe -DEXPORT_SYMTAB
+ -c time.c
+Assembler messages:
+Warning: The -mcpu option is deprecated. Please use -march and -mtune
+instead.
+time.c: In function `calibrate_div32_gettimeoffset':
+time.c:225: Unrecognizable insn:
+(insn 60 144 66 (parallel[
+(set (reg:SI 8 t0)
+(asm_operands (".set push
+.set noat
+.set noreorder
+b 1f
+li %4,0x21
+0:
+sll $1,%0,0x1
+srl %3,%0,0x1f
+or %0,$1,$2
+sll %1,%1,0x1
+sll %2,%2,0x1
+1:
+bnez %3,2f
+sltu $2,%0,%z5
+bnez $2,3f
+2:
+addiu %4,%4,-1
+subu %0,%0,%z5
+addiu %2,%2,1
+3:
+bnez %4,0b
+srl $2,%1,0x1f
+.set pop") ("=&r") 0[
+(reg/v:SI 4 a0)
+(reg:SI 8 t0)
+(reg:DI 6 a2)
+(reg/v:SI 5 a1)
+(reg:SI 9 t1)
+]
+[
+(asm_input:SI ("Jr"))
+(asm_input:SI ("0"))
+(asm_input:DI ("1"))
+(asm_input:SI ("2"))
+(asm_input:SI ("3"))
+] ("time.c") 201))
+(set (reg:SI 6 a2)
+(asm_operands (".set push
+.set noat
+.set noreorder
+b 1f
+li %4,0x21
+0:
+sll $1,%0,0x1
+srl %3,%0,0x1f
+or %0,$1,$2
+sll %1,%1,0x1
+sll %2,%2,0x1
+1:
+bnez %3,2f
+sltu $2,%0,%z5
+bnez $2,3f
+2:
+addiu %4,%4,-1
+subu %0,%0,%z5
+addiu %2,%2,1
+3:
+bnez %4,0b
+srl $2,%1,0x1f
+.set pop") ("=&r") 1[
+(reg/v:SI 4 a0)
+(reg:SI 8 t0)
+(reg:DI 6 a2)
+(reg/v:SI 5 a1)
+(reg:SI 9 t1)
+]
+[
+(asm_input:SI ("Jr"))
+(asm_input:SI ("0"))
+(asm_input:DI ("1"))
+(asm_input:SI ("2"))
+(asm_input:SI ("3"))
+] ("time.c") 201))
+(set (reg/v:SI 5 a1)
+(asm_operands (".set push
+.set noat
+.set noreorder
+b 1f
+li %4,0x21
+0:
+sll $1,%0,0x1
+srl %3,%0,0x1f
+or %0,$1,$2
+sll %1,%1,0x1
+sll %2,%2,0x1
+1:
+bnez %3,2f
+sltu $2,%0,%z5
+bnez $2,3f
+2:
+addiu %4,%4,-1
+subu %0,%0,%z5
+addiu %2,%2,1
+3:
+bnez %4,0b
+srl $2,%1,0x1f
+.set pop") ("=&r") 2[
+(reg/v:SI 4 a0)
+(reg:SI 8 t0)
+(reg:DI 6 a2)
+(reg/v:SI 5 a1)
+(reg:SI 9 t1)
+]
+[
+(asm_input:SI ("Jr"))
+(asm_input:SI ("0"))
+(asm_input:DI ("1"))
+(asm_input:SI ("2"))
+(asm_input:SI ("3"))
+] ("time.c") 201))
+(set (reg:SI 9 t1)
+(asm_operands (".set push
+.set noat
+.set noreorder
+b 1f
+li %4,0x21
+0:
+sll $1,%0,0x1
+srl %3,%0,0x1f
+or %0,$1,$2
+sll %1,%1,0x1
+sll %2,%2,0x1
+1:
+bnez %3,2f
+sltu $2,%0,%z5
+bnez $2,3f
+2:
+addiu %4,%4,-1
+subu %0,%0,%z5
+addiu %2,%2,1
+3:
+bnez %4,0b
+srl $2,%1,0x1f
+.set pop") ("=&r") 3[
+(reg/v:SI 4 a0)
+(reg:SI 8 t0)
+(reg:DI 6 a2)
+(reg/v:SI 5 a1)
+(reg:SI 9 t1)
+]
+[
+(asm_input:SI ("Jr"))
+(asm_input:SI ("0"))
+(asm_input:DI ("1"))
+(asm_input:SI ("2"))
+(asm_input:SI ("3"))
+] ("time.c") 201))
+(set (reg:SI 14 t6)
+(asm_operands (".set push
+.set noat
+.set noreorder
+b 1f
+li %4,0x21
+0:
+sll $1,%0,0x1
+srl %3,%0,0x1f
+or %0,$1,$2
+sll %1,%1,0x1
+sll %2,%2,0x1
+1:
+bnez %3,2f
+sltu $2,%0,%z5
+bnez $2,3f
+2:
+addiu %4,%4,-1
+subu %0,%0,%z5
+addiu %2,%2,1
+3:
+bnez %4,0b
+srl $2,%1,0x1f
+.set pop") ("=&r") 4[
+(reg/v:SI 4 a0)
+(reg:SI 8 t0)
+(reg:DI 6 a2)
+(reg/v:SI 5 a1)
+(reg:SI 9 t1)
+]
+[
+(asm_input:SI ("Jr"))
+(asm_input:SI ("0"))
+(asm_input:DI ("1"))
+(asm_input:SI ("2"))
+(asm_input:SI ("3"))
+] ("time.c") 201))
+(clobber (reg:QI 2 v0))
+(clobber (reg:QI 1 at))
+] ) -1 (insn_list:REG_DEP_OUTPUT 13 (insn_list 38 (insn_list 53 (insn_list
+51 (insn_list 41 (nil))))))
+(nil))
+time.c:225: confused by earlier errors, bailing out
+make[1]: *** [time.o] Error 1
+make[1]: Leaving directory `/home/hli/linux/arch/mips/kernel'
+make: *** [_dir_arch/mips/kernel] Error 2
+----------------------------------------------------------------------------
+---------------------------------

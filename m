@@ -1,50 +1,41 @@
-Message-ID: <01d901c4b1c8$996b7b30$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20041014115304.3edbe141.toch@dfpost.ru>
-Subject: Re: Strange instruction
-Date: Thu, 14 Oct 2004 10:34:18 +0200
+Received: from wip-ec-wd.wipro.com (localhost.wipro.com [127.0.0.1])
+	by localhost (Postfix) with ESMTP id 0ADC92055B
+	for <linux-mips@linux-mips.org>; Thu, 14 Oct 2004 14:14:19 +0530 (IST)
+Received: from blr-ec-bh3.wipro.com (unknown [10.200.50.93])
+	by wip-ec-wd.wipro.com (Postfix) with ESMTP id E503B2051E
+	for <linux-mips@linux-mips.org>; Thu, 14 Oct 2004 14:14:18 +0530 (IST)
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: Down_trylock kernel 2.4
+Date: Thu, 14 Oct 2004 14:17:44 +0530
+Message-ID: <6BF015B686198842A1C8F84F4B7E6D26012C484C@chn-snr-msg.wipro.com>
+From: <priya.mani@wipro.com>
+Return-Path: <priya.mani@wipro.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Dmitriy Tochansky <toch@dfpost.ru>, linux-mips@linux-mips.org
-Message-ID: <20041014083418.aL0hkJHlkbSict3LBqqatAuDCGXq3IhC64HjqG8wMTk@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20041014084744.pYRvmsapjSiEYKV1Tk7RfX9cmirlJVC3NjJe3CA1fck@z>
 
-That's a 64-bit add, which is actually being used as a 64-bit move
-of the "sp" register to k1.  Try "objdump -m mips:isa64" (or whatever
-variant gives your version of objdump the right to disassemble the
-MIPS III+/MIPS64 instructions.
+Hi,
+************
+Revision 1.4.2.8 / (download) - annotate - [select for diffs], Fri Nov
+28 03:39:10 2003 UTC (10 months, 2 weeks ago) by ralf 
+Branch: linux_2_4 
+Changes since 1.4.2.7: +0 -7 lines
+Diff to previous 1.4.2.7 (colored) to branchpoint 1.4 (colored) 
 
-One might suspect that your board monitor ROM was built for a 64-bit CPU.
-This illustrates why, if one want to write portable assembler code for MIPS,
-one should implement "move" operations as OR Target,$0,Source rather than
-using an ADDU or DADDU...
+Remove waking_non_zero_trylock and it's caller __down_trylock.
+Reimplement the non-ll/sc version of down_trylock
+************
 
------ Original Message ----- 
-From: "Dmitriy Tochansky" <toch@dfpost.ru>
-To: <linux-mips@linux-mips.org>
-Sent: Thursday, October 14, 2004 13:53
-Subject: Strange instruction
+As per the above cvs version log __down_trylock has been removed from
+semaphore.c. Has it been replaced by some other symbol/function like for
+eg., __down_interruptible was renamed with __down_failed_interruptible.
+Or has it become obsolete? If my driver has a call to this symbol what
+should I do then? 
 
-
-> Hello!
-> 
-> When starts kernel for my au1500 board reseting board. After disassembling I found instruction
-> which reseting board. Here is few strings of "mipsel-linux-objdump -D vmlinux" output:
-> 
-> ---
-> 
-> a0000650:       07400003        bltz    k0,a0000660 <nmi_handler+0x1c>          
-> a0000654:       03a0d82d        0x3a0d82d                                       
-> a0000658:       3c1ba020        lui     k1,0xa020 
-> 
-> ---
-> 
-> Base address changed by me.
-> 
-> What is A0000654? There is board resets.
-> 
-> 
+Thanks
+Priya

@@ -1,48 +1,40 @@
-Date: Thu, 3 May 2001 17:15:59 -0700 (PDT)
-From: "John D. Davis" <johnd@Stanford.EDU>
-Subject: Re: NFS -13 error
-In-Reply-To: <20010502155424.A9256@bilbo.physik.uni-konstanz.de>
-Message-ID: <Pine.GSO.4.31.0105031707340.14342-100000@myth1.Stanford.EDU>
+Message-ID: <019801c0d50c$32024fb0$2dd75b82@serendipity>
+From: "Patrick Fisher" <pbfisher@seas.upenn.edu>
+Subject: Executing Programs from initrd
+Date: Fri, 4 May 2001 22:36:31 -0400
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Guido Guenther <guido.guenther@gmx.net>, linux-mips@oss.sgi.com
-Message-ID: <20010504001559.0a7fP8_7l1oJIDtVLF2njzSmPHugW4pvEfoKJJ5crGo@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010505023631.DYYJ_FEWyTxEwnZpvT216n2qUnVRW5dOb50I1wnLAhQ@z>
 
-I have downloaded the linux stuff and a kernel image(2.4.0-ip22) from the
-site listed below.  I am getting a kernel panic.  I am nolonger getting
-nfs errors. I added a link from /tftpboot/to the debian linux directory on
-the server.  I guess dhcp_bootp doesn't have the right flag set or
-something.  However, the message is:
 
->Kernel panic: I have no root and I want to scream.
+I'm plodding along working with Linux/MIPS (and Linux-VR) on a Philips Nino.
+I can boot linux, and fool around with the stand alone shell.  I can also
+execute a program included on Steven Hill's Nino ramdisk - a simple Hello
+World program, in assembly, which I compiled with my mipsel-linux toolchain
+(well, also from Steven Hill, but it was compiled locally on my own
+machine).  That program runs fine.
 
-Is there a flag that I need to set for the root? I have /etc/exports with
-the -root=sgilinuxIPaddress,rw for the parent directory of the linux
-distribution?  I have tried other vmlinux kernels and gotten the same type
-of problem.  THe one from sgi says it can't mount fs and ask for root=.  I
-have tried to set that at the bootp():vmlinux root=/linux but that did not
-help either. Furthermore, I am not getting an mountd error on the SGI
-server.  Any and all suggestions would be greatly appreciated.
+    However, I can't run any binaries other than this one and the shell.  I
+wrote an additional Hello World program in C, compiled it for mipsel, and
+put it in the ramdisk.  The executable is definitely there when I boot on
+the nino - I can send it all to the serial console and see that it exists.
+However, any attempt to execute it returns "No such file or directory".
+It's got all the right permissions, and this occurs when I'm positive I'm
+giving it the whole path.  It simply can't see the file.  I also copied "ls"
+from a root image for a mipsel decstation, and got the same problem.  I
+downloaded the GNU fileutils source, set it for a mipsel target, compiled,
+put a few binaries on the ramdisk, and again, it can't find the file (but
+it's there, and I can see the contents).
+This occurs on a ~650k ramdisk with ~30k free, and a 2MB ramdisk with ~1.5MB
+free, using either the SGI Linux/MIPS sources or the Linux-VR project's
+sources.
 
-I am trying to install linux from an SGI Indy running IRIX over the
-network.
 
-thanks,
-john davis
+Any ideas?
 
-On Wed, 2 May 2001, Guido Guenther wrote:
-
-> On Tue, May 01, 2001 at 04:29:18PM -0700, John D. Davis wrote:
-> >
-> > I am having a problem installing linux on a 4400 indy.  I downloaded a
-> > "fixed" version from: honk.physik.uni-konstanz,de/linux-mips/install
-> > and downloaded :
-> > root-be-0.04.cpio
-> This one is *very* outdated. Don't use it. It's there for purely
-> "historic reasons".
-> See
->   ftp://ftp.uni-mainz.de/pub/Linux/debian-local/mips/
-> for an up to date root image.
->  -- Guido
->
+Thanks,
+Patrick

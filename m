@@ -1,199 +1,130 @@
-Received: from NinaZ ([212.199.155.240]) by fep2.012.net.il with ESMTP
-          id <20030128074132.XZDQ1458.fep2@NinaZ>
-          for <linux-mips@linux-mips.org>; Tue, 28 Jan 2003 09:41:32 +0200
-From: "Victor I. Zaslavsky" <victor@zaslavsky.org>
-Subject: Cross compiler installation
-Date: Tue, 28 Jan 2003 09:41:31 +0200
-Message-ID: <000a01c2c6a0$acdb37b0$f09bc7d4@NinaZ>
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000B_01C2C6B1.706407B0"
-Return-Path: <victor@zaslavsky.org>
+Message-ID: <200301281948.h0SJmug29073@uhler-linux.mips.com>
+Reply-To: uhler@mips.com
+Subject: Re: unaligned load in branch delay slot 
+In-reply-to: Your message of "Tue, 28 Jan 2003 09:53:47 PST."
+             <20030128095347.W11633@mvista.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 28 Jan 2003 11:48:56 -0800
+From: "Mike Uhler" <uhler@mips.com>
+Return-Path: <uhler@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030128074131.38faZWB3csvOXuNyzXstdYYSfoB9pwt2868HrpT9X1I@z>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_000B_01C2C6B1.706407B0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
-Hi folks,
- 
-I am looking for step-by-step instruction how to install cross compiler
-for MIPS on my RedHat 8 Intel-based machine.
- 
-Any help will be very appreciated.
- 
-Thanks in advance,
-Victor
- 
-
-------=_NextPart_000_000B_01C2C6B1.706407B0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
+To: Jun Sun <jsun@mvista.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/MIPS Development <linux-mips@linux-mips.org>, uhler@mips.com
+Message-ID: <20030128194856.Cu9h0lFAU7wsHsfrabf0sh3xPwtUs4qAAM7ItHyy_s4@z>
 
 
-<meta name=3DProgId content=3DWord.Document>
-<meta name=3DGenerator content=3D"Microsoft Word 10">
-<meta name=3DOriginator content=3D"Microsoft Word 10">
-<link rel=3DFile-List href=3D"cid:filelist.xml@01C2C6B1.6FE3B420">
-<!--[if gte mso 9]><xml>
- <o:OfficeDocumentSettings>
-  <o:DoNotRelyOnCSS/>
- </o:OfficeDocumentSettings>
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <w:WordDocument>
-  <w:SpellingState>Clean</w:SpellingState>
-  <w:GrammarState>Clean</w:GrammarState>
-  <w:DocumentKind>DocumentEmail</w:DocumentKind>
-  <w:EnvelopeVis/>
-  <w:Compatibility>
-   <w:ApplyBreakingRules/>
-  </w:Compatibility>
-  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
- </w:WordDocument>
-</xml><![endif]-->
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0in;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";
-	mso-ansi-language:EN-US;
-	mso-fareast-language:EN-US;}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;
-	text-underline:single;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;
-	text-underline:single;}
-p.MsoAutoSig, li.MsoAutoSig, div.MsoAutoSig
-	{margin:0in;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	mso-style-noshow:yes;
-	mso-ansi-font-size:10.0pt;
-	mso-bidi-font-size:10.0pt;
-	font-family:Arial;
-	mso-ascii-font-family:Arial;
-	mso-hansi-font-family:Arial;
-	mso-bidi-font-family:Arial;
-	color:windowtext;}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-span.GramE
-	{mso-style-name:"";
-	mso-gram-e:yes;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:56.7pt 42.5pt 56.7pt 85.05pt;
-	mso-header-margin:.5in;
-	mso-footer-margin:.5in;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-<!--[if gte mso 10]>
-<style>
- /* Style Definitions */=20
- table.MsoNormalTable
-	{mso-style-name:"Table Normal";
-	mso-tstyle-rowband-size:0;
-	mso-tstyle-colband-size:0;
-	mso-style-noshow:yes;
-	mso-style-parent:"";
-	mso-padding-alt:0in 5.4pt 0in 5.4pt;
-	mso-para-margin:0in;
-	mso-para-margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-</style>
-<![endif]-->
-</head>
+> 
+> Geert,
+> 
+> I had exactly the same problem with Vr4120A chip!
+> 
+> I have narrowed it down to be a hardware bug.  Basically under
+> certain conditions, BD flag won't get set.
+> 
+> You can verify that by inserting various number of "nop" just
+> before the faulting places and observe certain address alignment
+> would show/hide this bug.
+> 
+> Further more I wrote a standalone kernel code and could not
+> reproduce it, which means it requires more conditions than just
+> address alignment.
+> 
+> NEC Europe knows about this problem.  Not sure if they passed
+> it to Japan where the chip is designed.  Their engineers
+> even had difficulty to understand what I was talking about. 
 
-<body lang=3DRU link=3Dblue vlink=3Dpurple style=3D'tab-interval:.5in'>
+Let me give the list some background on this to aid in understanding.
 
-<div class=3DSection1>
+When the MIPS I Architecture was originally defined (back in
+1984), it included the architecturally-visible branch delay slot
+that exists in the architecture today.  The Coprocessor 0
+EPC register was defined to be the PC at which to restart after
+an exception or an interrupt.  However, because an exception or
+interrupt could occur while attempting to execute the instruction
+in a branch delay slot, EPC could not simply point at that
+instruction, because if the branch or jump was taken, restarting
+at the delay slot PC doesn't account for the taken branch/jump.
+As such, the architecture was specified such that if an exception
+or interrupt was detected while attempting to execution the
+instruction in a branch delay slot, EPC was defined to receive
+the PC of the branch, and the BD bit was set in the Coprocessor 0
+Cause register.  Most implementations of the MIPS Architecture did
+exactly this.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-10.0pt;font-family:Arial'>Hi folks,<o:p></o:p></span></font></p>
+In a few implementations of the MIPS Architecture (and I can't confirm
+nor deny that this is the case with the NEC VR 41xx chips - I simply don't
+know), the implementors observed that the restart PC could, in fact,
+be the PC of the instruction in the delay slot, but only if the preceding
+branch was known to be not-taken.  Restarting a not-taken branch
+at the branch is equivalent to restarting at the delay slot in
+terms of PC flow.  Note that this assumes that restarting at the
+branch would not cause a different decision on the restart as
+on the original execution, and this is required by the architecture.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+Since the MIPS architecture has no not-taken jump instructions, there
+should never be a case in which EPC points at the delay slot of a
+jump, nor should there ever be a case in which EPC points at the
+delay slot of a taken branch.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-10.0pt;font-family:Arial'>I am looking for step-by-step instruction how =
-to
-install cross compiler for MIPS on my <span class=3DSpellE>RedHat</span> =
-8 Intel-based
-machine.<o:p></o:p></span></font></p>
+In the MIPS32 and MIPS64 Architecture, we explicitly require that the
+value in EPC point at the branch/jump and that the BD bit be set in
+the Cause register if an exception is detected in the delay slot.
+Our compliance testing tests for this, and there are no compliant
+implementations of the MIPS32 or MIPS64 Architecture which will
+cause EPC to point to the delay slot of the branch (subject, of coure,
+to an obscure bug).
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+As I mentioned earlier, there are some number of implementations of
+earlier versions of the MIPS Architecture which apparently have
+decided to point EPC at the delay slot instruction in the case of
+a not-taken branch.  I can't give you a list of such implementations
+because they pre-date our formal MIPS32/MIPS64 compliance testing.
+I would hope that the users manual and/or errata sheets for chips
+that do this would mention this as an issue.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-10.0pt;font-family:Arial'>Any help will be <span =
-class=3DGramE>very</span>
-appreciated.<o:p></o:p></span></font></p>
+So, the proposed code that went by on this list earlier can almost
+certainly remove the jumps (they are always taken), and only adjust
+PC if the previous instruction was a branch.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+One word of warning, however:  Note that branch delay slots are
+defined as DYNAMIC, not STATIC instructions.  Consider the following
+example:
 
-<p class=3DMsoAutoSig><font size=3D3 face=3D"Times New Roman"><span =
-lang=3DEN-US
-style=3D'font-size:12.0pt;mso-ansi-language:EN-US;mso-no-proof:yes'>Thank=
-s in
-advance,</span><span =
-style=3D'mso-no-proof:yes'><o:p></o:p></span></font></p>
+	...
+5:	b	20f
+	nop
+	...
+10:	b	someplace
+20:	instruction-that-causes-exception
 
-<p class=3DMsoAutoSig><font size=3D3 face=3D"Times New Roman"><span =
-lang=3DEN-US
-style=3D'font-size:12.0pt;mso-ansi-language:EN-US;mso-no-proof:yes'>Victo=
-r</span><span
-style=3D'mso-no-proof:yes'><o:p></o:p></span></font></p>
+If the PC flow goes executions the branch at label 10 and detects
+an exception on the instruction at label 20, EPC should point at
+label 10, and the BD bit in Cause should be set.  However, if the branch
+at label 5, with the nop in its delay slot, goes directly to the
+excepting instruction at label 20, that instruction IS NOT in a
+branch delay slot (remember, it's a dynamic relationship, not a
+static one), so EPC would point at label 20 and the BD bit in cause
+would not be set.
 
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-lang=3DEN-US
-style=3D'font-size:12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+If the patch assumes that one can look backward by one instruction
+in the STATIC code to determine if the instruction is in a
+delay slot, one can not have code that jumps directly to the
+instruction following another branch, as this would cause the
+code to assume that it was in the delay slot of the branch.
 
-</div>
+This is exactly the reason why the architecture is defined in the
+way that it is.
 
-</body>
+If anyone has any other questions, let me know.
 
-</html>
+/gmu
 
-------=_NextPart_000_000B_01C2C6B1.706407B0--
+-- 
+
+  =*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=
+  Michael Uhler, VP, Systems, Architecture, and Software Products 
+  MIPS Technologies, Inc.   Email: uhler@mips.com   Pager: uhler_p@mips.com
+  1225 Charleston Road      Voice:  (650)567-5025   FAX:   (650)567-5225
+  Mountain View, CA 94043   Mobile: (650)868-6870   Admin: (650)567-5085

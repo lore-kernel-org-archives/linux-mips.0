@@ -1,56 +1,86 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: "Alistair Lambie" <alambie@wellington.sgi.com>
-Message-ID: <9704041257.ZM3038@windy.wellington.sgi.com>
-Date: Fri, 4 Apr 1997 12:57:06 +0000
-In-Reply-To: Mike Shaver <shaver@neon.ingenia.ca>
-        "Re: The Indy has landed..." (Apr  4, 12:24pm)
-References: <199704040023.TAA20413@neon.ingenia.ca>
-Subject: Re: The Indy has landed...
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199704081926.MAA17386@yon.engr.sgi.com>
+Subject: Re: serial consoles, sash and other wonders
+Date: Tue, 8 Apr 1997 12:26:23 -0700 (PDT)
+In-Reply-To: <199704081903.PAA01566@neon.ingenia.ca> from "Mike Shaver" at Apr 8, 97 03:03:33 pm
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>, Ralf Baechle <ralf@Julia.DE>
+To: Mike Shaver <shaver@neon.ingenia.ca>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970404125706.A3LOmWjpEhP2cAm2yq6HRsVFomd2ETCg1jR2fvoM6Vo@z>
+Message-ID: <19970408192623.RyZJWANwsBtbK6bhGymewSsZB5b2rIk_sDeljEP3FOU@z>
 
-On Apr 4, 12:24pm, Mike Shaver wrote:
-> Subject: Re: The Indy has landed...
-> Thus spake Ralf Baechle:
-> > > IRIX (bogomips.ingenia.com)
-> >
-> > (Hope this is R4600 - otherwise BogoMIPS won't be too impressive ...)
->
-> bogomips 10# cat /proc/cpuinfo
-> Cannot open /proc/cpuinfo: No such file or directory
-> bogomips 11# dmesg | more
-> dmesg: Command not found.
-> bogomips 12# man dmesg
-> No manual entry found for dmesg.
-> bogomips 13#
->
-> Not sure...I _think_ it's an R5K, but the packing bits and the machine
-> itself are 3 time zones east.
->
+Just in case the real experts on this don't answer.
+I'll give my 0.02 ...
 
-I assume it's got Irix running at the moment.  If so, try 'hinv'.
+Check out the following man pages:
 
-> > Assuming you're using a Linux box as TFTP Server here are old versions of
-> > my config files.  Iff(OS != Linux) while(1){swear();rtfm(damn);swear()} ;-)
->
-> Actually (I guess I should have made this clearer...a couple of people
-> have sent tftp help) I meant tips on what should go in the NFS root
-> area.  Can I just pull stuff down from davem's private archive and
-> untar, or have things changed since then?
->
+dvhtool (1M)            - modify and obtain disk volume header information
+vh (7M)                 - disk volume header
 
-Ariel....maybe you should put the tar's on netengr.engr:~/dm/alambie on
-ftp://reality.sgi.com/private/dm/ till I get linux.sgi.com sorted out.  There
-should be everything you need to get multiuser in there.
+sash is hidden in that volume header. In a normal IRIX system,
+The ARC PROM boots sash and sash boots /unix.
 
-Cheers, Alistair
+/unix is ELF (32 or 64 depending on the platform) in every IRIX
+since 6.2 (I think). Used to be ECOFF earlier.
+
+sash is ECOFF on Indys and ELF in newer systems as Bill Earl
+said. One of the things we need to give you are the sources
+for sash, right ?
+
+I'll see what I can do on the sash thing. (Actually was on my
+TODO list for a while.)
+
+:
+:So damned close we can taste it.
+:I can tftp the kernel off neon, the bootp server is up (but not tested
+:-- anyone have a good way to test without a reboot), and we've got a
+:serial terminal set up.
+:
+:We've still got to get the console working on the serial line, but we
+:should be OK with that.
+:
+:What's got me confused is this, from the archive (I think it's wje's
+:message):
+:
+:     On an Indy, the booted kernel (or other program) must be in MIPS
+:ECOFF format.  On Moosehead, the kernel must be in ELF format.  The
+:"-coff" option to the IRIX ld will cause it to create an ECOFF binary
+:instead of an ELF binary in the final link, even if all the input
+:binaries are in ELF format.  If you want to boot an ELF kernel on
+:Indy, you have to boot an indirect loader.  You can use the IRIX sash.
+:Put sash in the volume header on the Indy, or in a bootp-able place on
+:the host system.
+:
+:-----
+:
+:1) Where's sash?  A find / on my Indy didn't turn up anything by that
+:name.
+:2) What exactly does `bootp-able' mean?  If I stick it in
+:/tftpboot/205.207.220.72/sash, does that count?  (The Indy is my only
+:IRIX box, and I don't have the installation CDs, so I'm somewhat
+:loathe to go screwing with the disk.)
+:3) Once I get it booting (pls, pls) will the Linux kernel know how to
+:talk to the serial console?
+:4) I've just got the kernel as /tftpboot/205.207.220.72/vmlinux.  DO I
+:need to add .IP22 or anything?
+:
+:Any ideas?
+:
+:Mike
+:
+:-- 
+:#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+:#>                   Welcome to the technocracy.
+:#>                                                                     
+:#> "you'd be so disappointed
+:#>              to find out that the magic was not
+:#>                          really meant for you" - OLP
+:
+
 
 -- 
-Alistair Lambie					    alambie@wellington.sgi.com
-Silicon Graphics New Zealand				  SGI Voicemail: 56791
-Level 5, Walsh Wrightson Tower,				    Ph: +64-4-802 1455
-94-96 Dixon St, Wellington, NZ			  	   Fax: +64-4-802 1459
+Peace, Ariel

@@ -1,34 +1,28 @@
-Subject: Re: Support for smaller glibc
-Date: Sat, 2 Dec 2000 16:31:53 +0000 (GMT)
-In-Reply-To: <E142FIH-00017w-00@xmission.xmission.com> from "Eric Jorgensen" at Dec 02, 2000 09:13:45 AM
+Message-ID: <01c701c05ee5$587a36a0$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <3A2D60BB.311D4ECA@isratech.ro>
+Subject: Re: MIPS ext2fs problem.
+Date: Tue, 5 Dec 2000 19:00:58 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-ID: <E142FZs-0001he-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Eric Jorgensen <alhaz@xmission.com>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, linux-mips@oss.sgi.com, linux-mips@fnet.fr
-Message-ID: <20001202163153.JQuUgNYOpdmMCK60iuoXh6Jgj-feNT4qXz72J8is74A@z>
+To: Nicu Popovici <octavp@isratech.ro>, linux-mips@oss.sgi.com
+Message-ID: <20001205180058.F_g-76p-zeWLpy8msg5TdEPU7lIzblw94qLPD402xzs@z>
 
-> 	There are a few other methods. Lineo for instance has a utility
-> called Lipo which goes through all the binaries on a system and then
+> I did port the ATLAS support from linux-2.2.12 kernel into linux-2.2.14
+> . I saw that there is a problem, if I reset the computer in an unusual
+> way  then at restart it tries to do e2fsck on the hdd. My problem is
+> that when I run linux 2.2.14 ( for ATLAS , that we ported ) it get
+> stucked in running e2fsck. Do you have any ideea of what is happening ?
 
-Try it on a real application and with glibc 2.2 at least its far from
-large. glibc isnt designed to be modular.
+Are you using SCSI disks, and if so, did you merge the
+SCSI driver from the MIPS 2.2.12 kernel into your 2.2.14
+base?  The standard distribution of that driver wasn't 100%
+cache safe for MIPS, and probably still isn't.
 
-> substantial reduction in the size of libc6. Lipo is a proprietary
-> app tho, currently only available supporting ia32 and ppc archetectures as
-> part of the Embedix SDK.
+            Regards,
 
-Lipo is an afternoons work to do with libbfd so thats a path that is easy
-to pursue. (
-
-> 	There's also uClibc, and i've heard some talk of using bsd's libc,
-> which i understand is also smaller. These may require modification to the
-> sourcecode of your apps to work properly. 
-
-BSD libc is smaller, uClibc is pretty ropey and not very modular. Both the
-BSD libc and newlib are modular. Newlib for mips32 without mips16 support 
-including FPU emulation with every option on is about 350K
+            Kevin K.

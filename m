@@ -1,29 +1,21 @@
 From: "Matthew Dharm" <mdharm@momenco.com>
 Subject: RE: fsck fails on latest 2.4 kernel
-Date: Fri, 1 Feb 2002 13:43:10 -0800
-Message-ID: <NEBBLJGMNKKEEMNLHGAIEEDKCFAA.mdharm@momenco.com>
+Date: Fri, 1 Feb 2002 15:03:31 -0800
+Message-ID: <NEBBLJGMNKKEEMNLHGAIOEDLCFAA.mdharm@momenco.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20020116235232.A2760@dea.linux-mips.net>
+In-Reply-To: <20020201145244.B15521@lucon.org>
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>, Carsten Langgaard <carstenl@mips.com>, hjl@lucon.org
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20020201214310.gAZYyTMA2jT-C8CGhI62e_N4XxxqB9g08NDFa_GcBfA@z>
+To: "H . J . Lu" <hjl@lucon.org>
+Cc: Ralf Baechle <ralf@oss.sgi.com>, Carsten Langgaard <carstenl@mips.com>, linux-mips@oss.sgi.com
+Message-ID: <20020201230331.XPv5BdnvFIksUPaHGZxc3FhV2y32RZUdodFBGyv1RWc@z>
 
-Hrm... Looks like I'm getting bitten by this bug also.
+Okay... I'm a moron.  I totally missed that SRPM after looking more
+than 3 times.
 
-I'm using H.J.'s toolchain RPMs for building the userspace
-applications, but the same tools as Carsten for building the kernel.
-I guess that combination doesn't work, either.
-
-Unfortunately, the RPMs that H.J. has put on oss.sgi.com won't install
-on my system -- wrong version of RedHat.  And I don't see the source
-to his toolchain RPMs, so I can't rebuild it myself for the local
-libraries.
-
-Any suggestions on what the best approach is?
+Maybe I need stronger coffee....
 
 Matt
 
@@ -35,24 +27,33 @@ Momentum Works For You                      www.momenco.com
 
 > -----Original Message-----
 > From: owner-linux-mips@oss.sgi.com
-> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Ralf Baechle
-> Sent: Wednesday, January 16, 2002 11:53 PM
-> To: Carsten Langgaard
-> Cc: linux-mips@oss.sgi.com
+> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of H . J . Lu
+> Sent: Friday, February 01, 2002 2:53 PM
+> To: Matthew Dharm
+> Cc: Ralf Baechle; Carsten Langgaard; linux-mips@oss.sgi.com
 > Subject: Re: fsck fails on latest 2.4 kernel
 >
 >
-> On Thu, Jan 17, 2002 at 08:25:56AM +0100, Carsten Langgaard wrote:
->
-> > > Don't use these for building userspace apps.
+> On Fri, Feb 01, 2002 at 01:43:10PM -0800, Matthew Dharm wrote:
+> > Hrm... Looks like I'm getting bitten by this bug also.
 > >
-> > I'm only building the kernel with these.
-> > What are you using for building the kernel ?
+> > I'm using H.J.'s toolchain RPMs for building the userspace
+> > applications, but the same tools as Carsten for building
+> the kernel.
+> > I guess that combination doesn't work, either.
+> >
+> > Unfortunately, the RPMs that H.J. has put on oss.sgi.com
+> won't install
+> > on my system -- wrong version of RedHat.  And I don't see
+> the source
+> > to his toolchain RPMs, so I can't rebuild it myself for the local
+> > libraries.
 >
-> Exactly the binaries which I put on oss.  I know that in
-> the meantime
-> various problems with them have shown up so I'm waiting for the next
-> official binutils release to replace them.
+> My toolchain source rpm is on oss.sgi.com:
 >
->   Ralf
+> ftp://oss.sgi.com/pub/linux/mips/redhat/7.1/SRPMS/toolchain-
+> 20011020-1.src.rpm
+>
+>
+> H.J.
 >

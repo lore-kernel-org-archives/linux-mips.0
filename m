@@ -1,45 +1,76 @@
-Subject: Re: uclibc mips ld.so and undefined symbols with nonzero symbol
- table entry st_value
-References: <045b01c43155$1e06cd80$8d01010a@prefect>
-From: Richard Sandiford <rsandifo@redhat.com>
-Date: Sun, 09 May 2004 14:14:33 +0100
-In-Reply-To: <045b01c43155$1e06cd80$8d01010a@prefect> (Bradley D. LaRonde's
- message of "Mon, 3 May 2004 17:25:11 -0400")
-Message-ID: <874qqpg2ti.fsf@redhat.com>
+Message-ID: <012701c43607$83aa65f0$8d01010a@prefect>
+From: "Bradley D. LaRonde" <brad@laronde.org>
+References: <045b01c43155$1e06cd80$8d01010a@prefect> <874qqpg2ti.fsf@redhat.com>
+Subject: Re: uclibc mips ld.so and undefined symbols with nonzero symbol table entry st_value
+Date: Sun, 9 May 2004 16:52:17 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-Path: <rsandifo@redhat.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <brad@laronde.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Bradley D. LaRonde" <brad@laronde.org>
+To: Richard Sandiford <rsandifo@redhat.com>
 Cc: uclibc@uclibc.org, linux-mips@linux-mips.org
-Message-ID: <20040509131433.XB3iiJ7xithi39XS5NM6Fhehsm-WtFbPDYCfR4HtRfA@z>
+Message-ID: <20040509205217.7si8sunh98J63u1MvgoYkxHh3Jdd1GMiR3w8UvAzvls@z>
 
-"Bradley D. LaRonde" <brad@laronde.org> writes:
-> I guess that the point of these procedure stubs is to keep
-> pointer-to-function values consistent between executables and share
-> libraries.  Is that what binutils is trying to accomplish here?
+----- Original Message ----- 
+From: "Richard Sandiford" <rsandifo@redhat.com>
+To: "Bradley D. LaRonde" <brad@laronde.org>
+Cc: <uclibc@uclibc.org>; <linux-mips@linux-mips.org>
+Sent: Sunday, May 09, 2004 9:14 AM
+Subject: Re: uclibc mips ld.so and undefined symbols with nonzero symbol
+table entry st_value
 
-No, it's to enable lazy binding.  The idea is that when the dynamic
-loader loads libpthread.so, it doesn't need to resolve malloc()
-immediately, it can just leave the GOT entry pointing to the stub.
-Then, when the stub is called, it will ask the dynamic linker to
-find the true address of malloc() and update the GOT accordingly.
-This is supposed to reduce start-up time.
 
-An object should never use stubs if takes the address of the function.
-It should only use a stub for some symbol foo if every use of foo is
-for a direct call.
+> "Bradley D. LaRonde" <brad@laronde.org> writes:
+> > I guess that the point of these procedure stubs is to keep
+> > pointer-to-function values consistent between executables and share
+> > libraries.  Is that what binutils is trying to accomplish here?
+>
+> No, it's to enable lazy binding.  The idea is that when the dynamic
+> loader loads libpthread.so, it doesn't need to resolve malloc()
+> immediately, it can just leave the GOT entry pointing to the stub.
+> Then, when the stub is called, it will ask the dynamic linker to
+> find the true address of malloc() and update the GOT accordingly.
+> This is supposed to reduce start-up time.
+>
+> An object should never use stubs if takes the address of the function.
+> It should only use a stub for some symbol foo if every use of foo is
+> for a direct call.
 
-If the dynamic loader is choosing libpthread's stub over the real
-definition in libc.so, that sounds on the face of it like a dynamic
-loader bug.
+OK.  So in a case where an object does take a pointer, does that mean that
+ld.so must fix the GOT entry for that symbol before handing control to the
+app (i.e. no lazy binding for that symbol)?
 
-> But should stubs really be getting involved here?  As Thiemo Seufer pointed
-> out to me, readelf shows me that every undefined symbol in every shared
-> library in /lib on my x86 debian box has the st_value member for the symbol
-> table entry set to zero.
 
-The x86 and MIPS ABIs are very different though.
+> If the dynamic loader is choosing libpthread's stub over the real
+> definition in libc.so, that sounds on the face of it like a dynamic
+> loader bug.
 
-Richard
+OK.
+
+
+> > But should stubs really be getting involved here?  As Thiemo Seufer
+pointed
+> > out to me, readelf shows me that every undefined symbol in every shared
+> > library in /lib on my x86 debian box has the st_value member for the
+symbol
+> > table entry set to zero.
+>
+> The x86 and MIPS ABIs are very different though.
+
+I notice that the debian mipsel libpthread.so.0 in
+http://ftp.debian.org/pool/main/g/glibc/libc6_2.2.5-11.5_mipsel.deb has
+st_value == 0 for every UND FUNC, just like my x86 debian libraries.  This
+is very different than the uClibc libpthread.so where every UND FUNC has
+st_value != 0.  Interestingly if I link glibc's libpthread with uClibc's
+libc.so I see that most UND FUNCs then have st_value != 0.
+
+I would like to see how uClibc ld.so behaves I could somehow get ld to not
+generate any stubs in  libpthread.  Any idea why libpthread gets full stubs
+when linked with uClibc libc.so but no stubs when linked with glibc libc.so?
+
+
+Regards,
+Brad

@@ -1,39 +1,58 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199708072137.RAA00275@neon.ingenia.ca>
-Subject: usema stat() magic
-Date: Thu, 7 Aug 1997 17:37:53 -0400 (EDT)
+Message-ID: <199708081519.LAA06545@neon.ingenia.ca>
+Subject: par and us*
+Date: Fri, 8 Aug 1997 11:19:35 -0400 (EDT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Linux/SGI list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970807213753.XaRQVRmJrUNz2RPKaOawPQgNz7BzeaQOgAcYO3_GR88@z>
+Message-ID: <19970808151935.RY8xixSOshFejCOEbAOeMyLbS9eBwYKwCyDXt7txIqw@z>
 
-I'm starting to work on the /dev/usema{,clone} drivers, and it looks
-pretty conceptually straightforward.
+I've got a simple lock-contention program that I'm using to see how
+the usema stuff works.
 
-It looks like libc uses some data hidden in the stat structure (dunno
-what yet, but I'm sure Miguel will need it to be accurate =) ).  What
-I can't figure out is how that data's hidden in the stat structure.  I
-could _completely_ understand an IOCTL on the clone fd to get data,
-but it doesn't seem to do that.  It does an fstat() on the fd it gets
-back...
+When I try to run the program under par, though, it only lets me trace
+one of the invocations:
 
-I tried looking at the stat data, but I can't see anything in there
-that leaps out at me.  If it's just for diagnostics, I'm not _too_
-worried about it, certainly not in the short term, but I have the
-sinking feeling that there's more to it than that.
+1 [shaver@linus ~/work/usema]$ par -s -SS -l -o lock-p.par ./lock p
+1 Creating new lock.
+1 Storing lock.
+1 Getting lock.
+1 Waiting...
 
-It's quite handy that the zero-contention cases are all handled in
-user-space, BTW, except that my test cases have to get that much more
-complex because of it. =)
+(now I start the second one)
+2 [shaver@linus ~/work/usema]$ par -s -SS -l -o lock-c2.par ./lock c
+2 Cannot syscall trace pid 23779:Resource busy
+2 Finding existing lock.
+2 Getting lock.
+2 [shaver@linus ~/work/usema]$
+
+(back to the shell!)
+(release the lock on the first invocation)
+1 
+1 Releasing lock.
+1 Exiting
+1 [shaver@linus ~/work/usema]$ 
+
+(and now I get more output from the second invocation)
+2 [shaver@linus ~/work/usema]$ Waiting...
+2 Releasing lock.
+2 Exiting
+
+Under normal circumstances (no par), I have to press enter on the
+second one as well for it to release the lock and exit.  When par is
+doing its (arguably weird, maybe broken) thing, I don't have to do
+that...
+
+Is this a known problem?
 
 Mike
 
 -- 
 #> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>                 Ignore the man behind the curtain.                  
-#>                                                                     
-#> "And then I realized that it never should have worked in the first  
-#>  place.  Thus, it would not work again until rewritten." --- Anon.  
+#>              Linux: because every cycle counts.
+#>
+#> "I don't know what you do for a living[...]" -- perry@piermont.com
+#>        "I change the world." -- davem@caip.rutgers.edu

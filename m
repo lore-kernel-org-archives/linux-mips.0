@@ -1,34 +1,72 @@
-From: Dominic Sweetman <dom@algor.co.uk>
+From: "Y.H. Ku" <iskoo@ms45.hinet.net>
+Subject: RE: BootLoader on MIPS
+Date: Tue, 26 Mar 2002 18:09:13 +0800
+Message-ID: <NGBBILOAMLLIJMLIOCADOENICCAA.iskoo@ms45.hinet.net>
 MIME-Version: 1.0
-Message-ID: <15519.27120.100625.818807@gladsmuir.algor.co.uk>
-Date: Mon, 25 Mar 2002 18:18:24 +0000
-Subject: Re: Re: PCI VGA Card Initilization (SIS6326 / PT80)
-In-Reply-To: <00c001c1d197$4a5c14a0$cecd7d3d@gol.com>
-References: <sc99bfe4.044@quicklogic.com>
-	<00c001c1d197$4a5c14a0$cecd7d3d@gol.com>
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="big5"
+In-Reply-To: <3C9FAEB5.2070201@mvista.com>
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Girish Gulawani <girishvg@yahoo.com>
-Cc: Dan Aizenstros <daizenstros@quicklogic.com>, dom@algor.co.uk, fxzhang@ict.ac.cn, linux-mips@oss.sgi.com
-Message-ID: <20020325181824.HqozOCY-ij8oO7vP4FnBzdAs_SJJS_g2pwM-e11JppU@z>
+To: Jun Sun <jsun@mvista.com>
+Cc: Marc Karasek <marc_karasek@ivivity.com>, linux-mips@oss.sgi.com
+Message-ID: <20020326100913.V1RFopauVZW4dchSomAeM9zyRaVzPnP48HqM4oNu3x4@z>
+
+Ya,
+I have traced the PMON code (www.carmel.com/pmon/) with NEC DDB5476 board (linux package from Montavista),
+(LSI Logic' Software Support Package for MIPS processors version 5.3.33)
+
+However, though it seem clear that function "_go" of pmon/head.S transfer control to client program
+by "j k0" (a exception)
+BUT I do not understand what information tha PMON transfer to LINUX-MIPS KERNEL
+I found the KERNEL's entry is "kernel_entry" of ~arch/mips/kernel/head.S.
+But, I can not find any information just like "board information" be transferred well.
+where is it!? using sp register with "j k0" command?
+where is the memory setting be transferred?
+What MIPS LINUX needed!?
+(PPCBOOT to PPC-LINUX is clear with a board_info struct, initrd_start and initrd_end ... and work well...
+
+REALLY thanks for help,
+--Ku
 
 
-Girish,
 
-> it occurs to me that the x86 emulation for the VGA bios is a long
-> process.
 
-It is.  But I believe that video chip companies have the chip designer
-and the BIOS/Windows driver developer working at adjacent desks.  If
-you knew everything they'd ever said to each other, then there would
-be no need for an x86 emulator.
 
-We thought the x86 emulator was simpler; and evidently so did the MILO
-people...
 
--- 
-Dominic Sweetman
-Algorithmics Ltd
-The Fruit Farm, Ely Road, Chittering, CAMBS CB5 9PH, ENGLAND
-phone +44 1223 706200/fax +44 1223 706250/direct +44 1223 706205
-http://www.algor.co.uk
+-----Original Message-----
+From: owner-linux-mips@oss.sgi.com
+[mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Jun Sun
+Sent: Tuesday, March 26, 2002 7:12 AM
+To: Y.H. Ku
+Cc: Marc Karasek; linux-mips@oss.sgi.com
+Subject: Re: BootLoader on MIPS
+
+
+Y.H. Ku wrote:
+
+> Hi everybody,
+> 
+> I trace PMON into mips.S, and find the entry "_go".
+> the entry transfer control to client prog.
+> 
+> I am confused of what information PMON transfer to MIPS's BOOTLOADER
+> and transfer to which entry point of BOOTLOADER.
+> 
+> I found the bd_t struct of PPCBOOT.h for PPCBOOT package on POWERPC platform.
+> It is corresponding POWERPC-LINUX data structure bd_info in ~/include/asm/mbx.h 
+> (register r3~r7)
+> 
+> I just can not find the entry for MIPS's one. (can not find corresponding baget.h's one)
+> 
+> Could anybody tell me what is the information (register inforation) PMON transfer
+> to bootloader?
+> 
+> Or anybody can disscuss with me,
+> 
+
+
+NEC provides PMON for DDB5476.  You should be able to get it if it is not
+already on the board.
+
+Jun

@@ -1,67 +1,24 @@
-Date: Wed, 14 Jan 2004 22:23:16 -0800
-From: "David S. Miller" <davem@redhat.com>
-Subject: Re: [BUG] 2.6.1/MIPS - missing cache flushing when user program
- returns pages to kernel
-Message-ID: <20040114222316.25276f12.davem@redhat.com>
-In-Reply-To: <20040114174012.H13471@mvista.com>
-References: <20040114163920.E13471@mvista.com>
-	<20040114171252.4d873c51.akpm@osdl.org>
-	<20040114172946.03e54706.akpm@osdl.org>
-	<20040114174012.H13471@mvista.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <davem@redhat.com>
+Date: Fri, 16 Jan 2004 10:49:00 +0100 (MET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: VR4131 - MQ1132 - UPD63335
+In-Reply-To: <40079391.7080301@mistralsoftware.com>
+Message-ID: <Pine.GSO.4.58.0401161047480.14892@waterleaf.sonytel.be>
+References: <40079391.7080301@mistralsoftware.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <geert@linux-m68k.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Jun Sun <jsun@mvista.com>
-Cc: akpm@osdl.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, rmk@arm.linux.org.uk
-Message-ID: <20040115062316.FH7cSn85mlm7YgYQiP6LoNf9hx27zf3Gj4aBjY8kZ74@z>
+To: "Suresh. R" <suresh@mistralsoftware.com>
+Cc: Linux/MIPS Development <linux-mips@linux-mips.org>
+Message-ID: <20040116094900.BaCN25ZYrmn565W3YzTssq0hXBmZPqJ9BrX-eLc8Kdw@z>
 
-On Wed, 14 Jan 2004 17:40:12 -0800
-Jun Sun <jsun@mvista.com> wrote:
-
-> Looking at my tree (which is from linux-mips.org), it appears
-> arm, sparc, sparc64, and sh have tlb_start_vma() defined to call
-> cache flushing.
-
-Correct, in fact every platform where cache flushing matters
-at all (ie. where flush_cache_*() routines actually need to
-flush a cpu cache), they should have tlb_start_vma() do such
-a flush.
-
-> What exactly does tlb_start_vma()/tlb_end_vma() mean?  There is
-> only one invocation instance, which is significant enough to infer
-> the meaning.  :)
-
-When the kernel unmaps a mmap region of a process (either for the
-sake of munmap() or tearing down all mapping during exit()) tlb_start_vma()
-is called, the page table mappings in the region are torn down one by
-one, then a tlb_end_vma() call is made.
-
-At the top level, ie. whoever invokes unmap_page_range(), there will
-be a tlb_gather_mmu() call.
-
-In order to properly optimize the cache flushes, most platforms do the
-following:
-
-1) The tlb->fullmm boolean keeps trap of whether this is just a munmap()
-   unmapping operation (if zero) or a full address space teardown
-   (if non-zero).
-
-2) In the full address space teardown case, and thus tlb->fullmm is
-   non-zero, the top level will do the explict flush_cache_mm()
-   (see mm/mmap.c:exit_mmap()), therefore the tlb_start_vma()
-   implementation need not do the flush, otherwise it does.
-
-   This is why sparc64 and friends implement it like this:
-
-#define tlb_start_vma(tlb, vma) \
-do {    if (!(tlb)->fullmm)     \
-                flush_cache_range(vma, vma->vm_start, vma->vm_end); \
-} while (0)
-
-Hope this clears things up.
-
-Someone should probably take what I just wrote, expand and organize it,
-then add such content to Documentation/cachetlb.txt
+On Fri, 16 Jan 2004, Suresh. R wrote:
+> I am writing a linux device driver for UPD63335 audio codec. Its
+> controlled through the MQ1132 co-processor. The VR4131 is the processor.
+> The memory of MQ1132 is mapped to the processor memory in Kseg1 (0xA000
+> 0000 onwards) which the manual says is TLB Unmapped region. Now my
+> question is is it necessary to map this region before using it in Linux.
+> Actually I have WinCE code for my reference. In that code the programmer
+> is mapping the region using Virtual Cpoy and Virtual Alloc. Is it
+> necessary to do that or Can I directly address the memory locatoin.

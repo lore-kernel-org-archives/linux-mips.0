@@ -1,46 +1,45 @@
-Message-ID: <00d001c2947a$d71231d0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20021125100152.6471.qmail@mailweb33.rediffmail.com>
-Subject: Re: Re: watch exception only for kseg0 addresses..?
-Date: Mon, 25 Nov 2002 13:04:28 +0100
+From: "jeff" <jeff_lee@coventive.com>
+Subject: RE: Problem about porting mips kernel
+Date: Tue, 26 Nov 2002 10:23:05 +0800
+Message-ID: <LPECIADMAHLPOFOIEEFNEEOBCLAA.jeff_lee@coventive.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+	charset="gb2312"
+Content-Transfer-Encoding: base64
+In-Reply-To: <F61cMzfoV1qdiixjnzi000000e5@hotmail.com>
+Return-Path: <jeff_lee@coventive.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: atul srivastava <atulsrivastava9@rediffmail.com>, Ralf Baechle <ralf@linux-mips.org>
+To: henaldohzh@hotmail.com, ralf@linux-mips.org
 Cc: linux-mips@linux-mips.org
-Message-ID: <20021125120428.piDSbXZwLJoGjlUbnMmor2N4aw3Rh0UytHEVoktZU30@z>
+Message-ID: <20021126022305.xW825Ci7cBZBj8Nk2aBgdR0uQS3pODUm_8XYwjZV01M@z>
 
-> > Beyond that there
-> > are at least two different formats of watch registers implemented 
-> > in actual silicon, the original R4000-style and the MIPS32/MIPS64 
-> > style watch registers and the kernel's watch code only know the R4000 
-> > style.
-> 
-> my cpu manual ( IDT RC32334) talks about two watch registers 
-> CP0_IWATCH and CP0_DWATCH where it is required to just put desired 
-> VIRTUAL( bits 2--31) addresses to be watched , there is no mention 
-> of CP0_WATCHLO and CP0_WATCHHI .
-
-Your CPU would appear to be neither MIPS32/MIPS64 compliant
-nor R4000 backward-compatible.  The designers may have sought 
-to simplify the use of watch registers in user space, apparently at the price 
-of the restriction you are seeing.
-
-> additionally i guees for userspace virtual watch register problem, 
-> the hardware takes care of all , i just need to specify my virual 
-> address this is what i understand from my  manual.
-> 
-> and one more problem i face when i try to debug a mysterious page 
-> fault problem, that i get my watch exception but after page fault 
-> ..hence I can't really debug , shouldn't the priority of watch 
-> exceptions should be higher than atleast instruction fetch 
-> exception.? or the scope of debugging by watch exception is 
-> limited by design.....
-
-Does your CPU implement EJTAG?
-
-            Kevin K.
+SGksIGNhbiB5b3UgdHVybiBvZmYgdGhlIGNhY2hlIG9uIG1lbnVjb25maWcgYW5kIHRyeSBhZ2Fp
+bj8NCg0KUmVnYXJkcywNCg0KSmVmZg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJv
+bTogbGludXgtbWlwcy1ib3VuY2VAbGludXgtbWlwcy5vcmcgW21haWx0bzpsaW51eC1taXBzLWJv
+dW5jZUBsaW51eC1taXBzLm9yZ11PbiBCZWhhbGYgT2YgaGVuYWxkb2h6aEBob3RtYWlsLmNvbQ0K
+U2VudDogVHVlc2RheSwgTm92ZW1iZXIgMjYsIDIwMDIgMTA6MDYgQU0NClRvOiByYWxmQGxpbnV4
+LW1pcHMub3JnDQpDYzogbGludXgtbWlwc0BsaW51eC1taXBzLm9yZw0KU3ViamVjdDogUmU6IFBy
+b2JsZW0gYWJvdXQgcG9ydGluZyBtaXBzIGtlcm5lbA0KDQoNCkkgdGhpbmsgdGhhdCBrZXJuZWwg
+aGFkIGJlZW4gY29uZmlndXJlZCBwcm9wZXJseSwgYmVjYXVzZSBJIGNhbiBvcGVuIHRoZSANCnR0
+eVMwIGRldmljZSBpbiByYW1kaXNrLiBJdCBtZWFucyBubyByYW1kaXNrIHByb2JsZW0uIEJ1dCBJ
+IGhhdmUgbm90IGFueSANCmV4cGVyaWVuY2UgdG8gZml4IHRsYiBvciBjYWNoZSBidWcuIElmIHlv
+dSBjYW4gZ2l2ZSBzb21lIG1vcmUgYWR2aWNlPyBUaHguDQoNCg0KDQoNCj5Gcm9tOiBSYWxmIEJh
+ZWNobGUgPHJhbGZAbGludXgtbWlwcy5vcmc+DQo+VG86IGhlbmFsZG9oemhAaG90bWFpbC5jb20N
+Cj5DQzogbGludXgtbWlwc0BsaW51eC1taXBzLm9yZw0KPlN1YmplY3Q6IFJlOiBQcm9ibGVtIGFi
+b3V0IHBvcnRpbmcgbWlwcyBrZXJuZWwNCj5EYXRlOiBNb24sIDI1IE5vdiAyMDAyIDEzOjUzOjEw
+ICswMTAwDQo+DQo+T24gTW9uLCBOb3YgMjUsIDIwMDIgYXQgMTI6NDc6MjhQTSArMDAwMCwgaGVu
+YWxkb2h6aEBob3RtYWlsLmNvbSB3cm90ZToNCj4NCj4gPiAgIHRoZXNlIGRheXMsIEkgYW0gYnVz
+eSB3aXRoIHBvcnRpbmcgbWlwcyBrZXJuZWwgdG8gYSBib2FyZCB3aXRoIHZyNDEzMQ0KPiA+IGNv
+cmUuIFRoaXMgYm9hcmQgaGFzIG9ubHkgU0lVIHNlcmlhbCBwb3J0LCBhbmQgc29tZSBodyBoYXZl
+IGJlZW4gDQptb2RpZmllZC4NCj4gPiBOb3csIEkgaGF2ZSBwb3J0ZWQgdGhlIGtlcm5lbCB0byBp
+dCwgYW5kIG1vZGlmaWVkIGh3IHJ1biB3ZWxsLiBCdXQgc28NCj4gPiBwdXp6bGluZyBtZSwgdGhl
+IGV4ZWN1dGlvbiBmaWxlIGNhbm4ndCBydW4gYXQgYWxsLiBJZiBzb21lIG9uZSBjYW4gaGVscCAN
+Cm1lDQo+ID4gb3IgZ2l2ZSBzb21lIGFkdmljZXMuIEkgaGF2ZSBiZWVuIGNyYXp5IGZvciB0aGUg
+cHJvYmxlbS4gT2ZmIGhhdCBmb3IgDQp5b3VyDQo+ID4gaGVscC4gVGhhbmtzIGEgbG90Lg0KPiA+
+ICBidHcsIEkgdXNlIHRoZSByYW1kaXNrIHdpdGggYnVzeWJveC4NCj4NCj5JbiBnZW5lcmFsIHRo
+aXMga2luZCBvZiBwcm9ibGVtIG1lYW5zIHRoZSB0bGIgb3IgY2FjaGUgY29kZSBmb3IgYSANCnBh
+cnRpY3VsYXINCj5wbGF0Zm9ybSBpcyBmYXVsdHkgb3IgdGhlIGtlcm5lbCBub3QgY29uZmlndXJl
+ZCBwcm9wZXJseS4NCj4NCj4gICBSYWxmDQoNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCsPit9HPwtTYIE1TTiBFeHBs
+b3JlcjogIGh0dHA6Ly9leHBsb3Jlci5tc24uY29tL2xjY24vIA0K

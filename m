@@ -1,39 +1,35 @@
-content-class: urn:content-classes:message
+Date: Tue, 24 Jun 2003 06:00:16 -0400 (EDT)
+From: <ik@cyberspace.org>
+Subject: is there any docs/manuals for linker scripts symbols
+Message-ID: <Pine.SUN.3.96.1030624055005.4605A-100000@grex.cyberspace.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: ASID query : 2.4.20
-Date: Mon, 23 Jun 2003 10:58:41 -0700
-Message-ID: <D9F6B9DABA4CAE4B92850252C52383AB0796834F@ex-eng-corp.efi.com>
-From: "Ranjan Parthasarathy" <ranjanp@efi.com>
-Return-Path: <ranjanp@efi.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <ik@grex.cyberspace.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030623175841.KCpJytowMgjrZdWwmyV9UHKVY7cjVummB11uLWsQP1c@z>
+To: kernelnewbies@nl.linux.org, linux-mips@linux-mips.org
+Message-ID: <20030624100016.RqVZLXr2ud1pThOi2sSLGg57HvvwL22192I8ok9wGqA@z>
 
-I am seeing an issue with the way the current ASID circulation is implemented. The processor I am working on has the global bit implemented in the entryhi instead of the lo0 and lo1 registers.
+Hi All,
 
-Entry hi
+Is there any documentation for the symbols in the ld.script linker
+scripts for the linux kernel. 
 
-31:13 : VPN2
-12:7   : Reserved
-6       : Global Bit
-5:0    :  ASID
+I'm porting Linux kernel to a mips board for which I need to understand
+the various symbols used in the kernel.
 
-The ASID_MASK is 0x3f and ASID_FIRST_VERSION becomes 0x40 which seems to be written to the entryhi if we use the current code. On most processors the bits after the ASID upto the VPN/VPN2 bits seem to be reserved,RO, writes are ignored and so things do not break. In our case this does not work as ASID_FIRST_VERSION would enable the global bit when we launch the first process.
+For example what is the use of the following symbols
+`__init_begin'
+`__init_end'
+`__initcall_start
+`__initcall_end'
+`_ftext'
+`__setup_start'
+`__setup_end'
 
-The code in asm-mips/mmu_context.h should use
+I'm not good in these linker scripts... any help pointers would be of
+great help to me ! (I'm referrring gnu ld  manual pages ... still have a
+long way to go :(
 
-write_c0_entryhi(cpu_asid(cpu,next));
-instead of 
-write_c0_entryhi(cpu_context(cpu,next));
-
-in functions switch_mm,activate_mm,drop_mmu_context.
-
-Any comments, feedback is most welcome.
-
-Thanks
-
-Ranjan
+Thanks in advance !
+Indu

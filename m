@@ -1,30 +1,69 @@
-From: Joe Buck <Joe.Buck@synopsys.com>
-Message-ID: <200205312144.OAA15256@atrus.synopsys.com>
-Subject: Re: [Fwd: Current state of MIPS16 support?]
-Date: Fri, 31 May 2002 14:44:04 -0700 (PDT)
-In-Reply-To: <1022870431.3668.19.camel@ghostwheel.cygnus.com> from "Eric Christopher" at May 31, 2002 11:40:29 AM
+Message-ID: <004101c20900$5a1f35c0$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <3CF7F7B1.50300@broadon.com>
+Subject: Re: virtual coherency issues with 4Kc ? 
+Date: Sat, 1 Jun 2002 02:07:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Eric Christopher <echristo@redhat.com>
-Cc: Dominic Sweetman <dom@algor.co.uk>, Johannes Stezenbach <js@convergence.de>, gcc@gcc.gnu.org, linux-mips@oss.sgi.com, sde@algor.co.uk
-Message-ID: <20020531214404.qeDT_uND3k69OyEwQ8b36GdFXD0MmKw5NsrXXOhinSk@z>
+To: Raymond Lo <lo@broadon.com>, linux-mips@oss.sgi.com
+Message-ID: <20020601000732.VM6PwEk1Dd4mRxaXtR7fY_jxhMQdcoM3mo05aRyyruM@z>
 
-> > > I have not looked at the Algorithmics code because I don't have
-> > > copyright on it...
+Note that the cache organization of the 4Kc is configurable.
+Virtual aliasing problems should only be possible if the cache
+"way" size exceeds the page size used (4KB for Linux). A
+maxed-out 4Kc can create a virtual coherency problem, 
+but a 4Kc with e.g. 4-way set associative 16KB caches
+should be exempt.  Since the cache configuration of a 4Kc
+can be determined at boot time by the kernel, by reading
+the config registers, those annoying cache flushes should
+only really happen if the cache configuration is "at risk".
 
-Dominic wrote:
-> > We do publish our sources on our web server.  Not only are they GPL
-> > but we have a copyright assignment to the FSF in place (which I know
-> > was sent to Jim Wilson of Cygnus, albeit in 1993...)
+            Kevin K.
 
-Eric Christopher wrote:
-> It's great that your changes do get out in one form or another. I'm
-> personally uncertain as to the nature of copyright and how it would
-> affect if I looked at your code and put it into the mainline sources -
-> so I haven't :) 
+----- Original Message ----- 
+From: "Raymond Lo" <lo@broadon.com>
+To: <linux-mips@oss.sgi.com>
+Sent: Saturday, June 01, 2002 12:22 AM
+Subject: virtual coherency issues with 4Kc ? 
 
-Whose name and what company name would be on the copyright assignment?
-We can check with the FSF list to see if it's on file.  Meanwhile it
-should not go in.
+
+> I'm evaluting the MIPS 4Kc core.   One thing I'm trying to find out is 
+> how does linux deal with virtual aliasing in the cache for 4Kc.  
+> 
+> The cache of 4Kc is virtually-indexed and it has no hardware support to 
+> suppress virtual aliasing.   The cachetlb.txt under linux/Documentation 
+> indicates that two things need to be done in software to handle virtual 
+> aliasing in D-cache.
+> 
+> The first is to handle virtual aliasing in user address spaces.  Shared 
+> pages are mmaped at virtual addresses that are multiples of the cache 
+> size.   That has already been taked care of in  include/asm-mips/shmparam.h.
+> 
+> The second is to handle virtual aliasing between kernel virtual address 
+> space and user virtual address space by providing a number of functions 
+> to flush the cache at various points in the kernel.   The old interface 
+> is flush_page_to_ram.   The new ones are
+>   copy_user_page,
+>   clear_user_page,
+>   flush_dcache_page.
+> 
+> I'm surprised to find out that flush_dcache_page is a macro defined to 
+> be  do {} while (0) in linux/asm-mips/pgtable.h.  The source code I 
+> looked is the web CVS on oss.sgi.com and 2.4.18.
+> 
+> Apparently the necessary flushing hasn't been done from the mm and fs 
+> code for any MIPS port.  I know this is not necessary for R4000 with 
+> virtual coherency execptions.     I don't understand why it can be 
+> skipped for 4Kc.   Can anybody shine some light on the subject?
+> 
+>  -Raymond
+> 
+>  
+> P.S.   The link http://oss.sgi.com/mips/archive/ is stale.  
+> 
+> 
+> 
+> 

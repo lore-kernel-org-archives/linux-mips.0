@@ -1,77 +1,27 @@
-Message-ID: <003c01c22a67$0aab1ee0$4c00a8c0@prefect>
-From: "Bradley D. LaRonde" <brad@ltc.com>
+Message-ID: <00a801c22b1c$446a6fe0$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
 References: <023e01c22a5e$c013f120$10eca8c0@grendel>
 Subject: Re: Gcc v2.96 versus Trolltech QtEmbedded Window System
-Date: Sat, 13 Jul 2002 08:15:56 -0400
+Date: Sun, 14 Jul 2002 11:53:10 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: "Kevin D. Kissell" <kevink@mips.com>, linux-mips@oss.sgi.com
-Message-ID: <20020713121556.k5mKi4k0NblRHaijo_pi9ZmUZNP6sIVtTVDGbU_JaXE@z>
+Message-ID: <20020714095310.ysYb5Cf950dvKl94J24QCcNgFaGveub0Fw7kxUsKtkU@z>
 
-I've built qt 2.3.2 with various toolchains that I've built myself.  Most
-recently I built qt 2.3.2 for mipsel with binutils 2.12, gcc 3.1, and glibc
-2.4.
+Many thanks to all of you who replied with suggestions.
+I was able to repeat the experiment on a system with
+essentially the same configuration as my own, except
+with 256MB of memory instead of 32M.  The compilation
+that took 20 hours to get to 90MB if virtual size completed
+in something like 5 minutes, with the last sampled virtual
+footprint being 94MB.  Now all I've gotta do is to squeeze
+the resulting build tree across an ISDN line back to my
+own system to install, but even if that comes out to 
+hundreds of megabytes, it'll be faster than a local build.  ;-)
 
-Here is how I build my toolchains:
+            Regards,
 
-    http://www.ltc.com/~brad/mips/mips-cross-toolchain
-
-I configure qt starting like this:
-
-    ./configure -xplatform linux-mips-g++
-
-Regards,
-Brad
-
------ Original Message -----
-From: "Kevin D. Kissell" <kevink@mips.com>
-To: <linux-mips@oss.sgi.com>
-Sent: Saturday, July 13, 2002 7:15 AM
-Subject: Gcc v2.96 versus Trolltech QtEmbedded Window System
-
-
-> I am trying to build the GPL version of the Trolltech
-> QT embedded windowing system on my Malta, using
-> what I believe to be H.J. Lu's most recent tool chain:
->
-> [root@localhost release-emb-generic]# g++ -v
-> Reading specs from /usr/lib/gcc-lib/mipsel-redhat-linux-gnu/2.96/specs
-> gcc version 2.96 20000731 (Red Hat Linux 7.3 2.96-110.1)
->
-> The QT build process is a little unusual - the configure
-> script causes a fairly huge (640KB) C++ source file
-> to be generated, which is then thrown at the compiler.
-> I would expect that to take a while, but after about
-> 20 hours with zero output passed to the assembler
-> stage (it runs with -pipe) and the gradual accretion
-> of about 90MB of virtual memory (on my poor 32MB
-> system) I concluded that it was probably trapped in
-> an infinite loop.  As I have seen this sort of thing occur
-> in the past in optimizer stages, I hacked the makefile
-> to replace -O2 with -O0.  It hasn't run for 20 hours
-> at -O0 yet, but after a couple of hours the memory
-> allocation dynamic looks to be the same, only faster
-> (72MB after only a couple of hours), so I'm not
-> optimistic.
->
-> My questions to the assembled panel of experts are:
->
-> Are there known problems with gcc 2.96.110.1 in
-> this regard?
->
-> Is there a native toolchain that would be more
-> likely to be able to handle the build of QT?
-> I'm considering trying the 2.95 set on Maciej's
-> site out of desperation.
->
-> Has anyone succeeded in building QT Embedded
-> for mips(el) Linux, either native or using cross-tools?
->
->             Regards,
->
->             Kevin K.
->
->
+            Kevin K.

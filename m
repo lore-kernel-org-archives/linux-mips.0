@@ -1,40 +1,45 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: "Alistair Lambie" <alambie@wellington.sgi.com>
-Message-ID: <9705291105.ZM8133@windy.wellington.sgi.com>
-Date: Thu, 29 May 1997 11:05:35 +0000
-In-Reply-To: fchism@kraken.seattle.sgi.com (Frank Chism)
-        "Re: Linux/SGI Logos (was: Re: strace/truss equiv?)" (May 29, 11:02am)
-References: <199705280245.TAA08534@refugee.engr.sgi.com>
-	<199705281638.JAA18907@kraken.seattle.sgi.com>
-	<199705282248.PAA19808@kraken.seattle.sgi.com>
-Subject: Re: Linux/SGI Logos (was: Re: strace/truss equiv?)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199705300847.KAA25091@informatik.uni-koblenz.de>
+Subject: Re: userland cometh
+Date: Fri, 30 May 1997 10:47:18 +0200 (MET DST)
+In-Reply-To: <199705300548.BAA09588@neon.ingenia.ca> from "Mike Shaver" at May 30, 97 01:48:34 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Frank Chism <fchism@kraken.seattle.sgi.com>
+To: Mike Shaver <shaver@neon.ingenia.ca>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970529110535.oLxrsDIqGEcMiyBDkSbKQEmYKV68JvMd3yhg8tUyHiI@z>
+Message-ID: <19970530084718.asRAW0F2eUU9quML-IPo7jgDivTs8iC4ccr_lM3lqBI@z>
 
-On May 29, 11:02am, Frank Chism wrote:
-> Subject: Re: Linux/SGI Logos (was: Re: strace/truss equiv?)
-> > Ahhh...that's it...the penguin pushing the bars of the logo apart and
-breaking
-> > out.  Some sort of symbolism of Linux breaking down barriers??
-> >
-> > Alistair
-> >
->
-> Yeah, that's the ticket.  Penguin as superhero.  I love it!
->
+Hi,
 
-I can see it...a penguin with a cape with a big S flying out of the
-'cage'....di we have an artist out there???
+> OK, I think I've got this cross-compiling thing licked.
+> 
+> Modulo some bogus interactions between the mostly-hacked 2.1.36 kernel
+> headers and the glibc 2.0.1 stuff (which seems to be a bit off itself,
+> but that's for another day), userland is coming along nicely.
+> 
+> I've been rebuilding with the glibc-2.0.1 stuff and all-dynamic
+> linking, and I've got:
+> fileutils-3.16
+> tar-1.12
+> sh-utils-1.16
+> textutils-1.22
+> ncurses_1.9.9g (just the libncurses.a, ma'am)
+> net-tools' inetd, arp, ifconfig, rarp, route and telnetd
+> 
+> I can't get ping or bash to work build just yet (ping was _not_ happy with
+> my headers), but I'll keep at it.
+> 
+> Once I'm done here, I'll be making a new root.tar.gz for anyone who
+> wants to play around with it.
 
-Alistair
+Take a look at the little endian RPM packages I've published on
+kernel.panic.julia.de.  All these packages were build from the vanilla
+SRPM packages on the RedHat 4.1 package.
 
+I'd like to keep the number of .tar packages as low as possible; the
+root.tar.gz package has proven not to be very updateable.
 
--- 
-Alistair Lambie					    alambie@wellington.sgi.com
-Silicon Graphics New Zealand				  SGI Voicemail: 56791
-Level 5, Walsh Wrightson Tower,				    Ph: +64-4-802 1455
-94-96 Dixon St, Wellington, NZ			  	   Fax: +64-4-802 1459
+  Ralf

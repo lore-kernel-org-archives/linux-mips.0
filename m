@@ -1,36 +1,56 @@
-Received: from RADIUM ([192.168.1.19])
-	by Radium.intranet (8.9.3/8.9.3) with ESMTP id RAA29708
-	for <linux-mips@linux-mips.org>; Tue, 22 Apr 2003 17:34:22 -0500
-From: "Lyle Bainbridge" <lyle@zevion.com>
-Subject: ide_ops issues for big endian mips
-Date: Tue, 22 Apr 2003 17:45:29 -0500
-Message-ID: <000801c30920$df9a4a20$1301a8c0@RADIUM>
+From: "Matthew Dharm" <mdharm@momenco.com>
+Subject: RE: Improperly handled case in arch/mips/au1000/common/time.c
+Date: Tue, 22 Apr 2003 16:17:06 -0700
+Message-ID: <NEBBLJGMNKKEEMNLHGAIMEAMDAAA.mdharm@momenco.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <lyle@zevion.com>
+In-Reply-To: <20030423010727.A8410@linux-mips.org>
+Return-Path: <mdharm@momenco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20030422224529.jWTI9v67fosA56bifAvR90lFyffxA_O8eAiwgyj803k@z>
+To: Ralf Baechle <ralf@linux-mips.org>, Jun Sun <jsun@mvista.com>
+Cc: Jeff Baitis <baitisj@evolution.com>, Pete Popov <ppopov@mvista.com>, linux-mips@linux-mips.org
+Message-ID: <20030422231706.qwnKo2VDmlaUeXei5xHyGfZXZELgrOenY0h0jvX_xgk@z>
 
+Umm... I might have some time in a few weeks.  Right now it's not much
+of a priority for us (as a corporation).  I just have to hijack the
+code from some of our other boards which already implements the new
+system.
 
-I am using an Au1500 based system in big endian mode.
-IDE worked fine with the 2.4.20 kernel, but broke in
-the 2.4.21 kernel.  It seems that the 2.4.20 IDE code
-provided some IDE operations ide_insw, ide_outsw,
-ide_insl and ide_outsl, that didn't use the standard
-io.h functions (insw, outsw, insl, outsl) but instead 
-provided some special IDE versions that didn't do the
-byte swapping done by the standard calls.
+Matt
 
-This is not true for the 2.4.21 IDE code.  It uses the
-standard functions in io.h and these do the byte swapping
-and things don't work.  By changing these functions to
-not swap, IDE works for me again.
+--
+Matthew D. Dharm                            Senior Software Designer
+Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
+(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
+Momentum Works For You                      www.momenco.com
 
-Any thoughts? Anybody else seen this?   Am I doing something
-wrong and fixing a symptom not the problem?
-
-Lyle
+> -----Original Message-----
+> From: Ralf Baechle [mailto:ralf@linux-mips.org]
+> Sent: Tuesday, April 22, 2003 4:07 PM
+> To: Jun Sun
+> Cc: Jeff Baitis; Pete Popov; linux-mips@linux-mips.org;
+> Matthew Dharm
+> Subject: Re: Improperly handled case in
+> arch/mips/au1000/common/time.c
+>
+>
+> On Tue, Apr 22, 2003 at 03:56:25PM -0700, Jun Sun wrote:
+>
+> > I think this is a good example to show benefit of code sharing.
+> > There is no good reason for au1x00 boards of not using new time.c.
+> > You get to write less board code, fewer bugs and future proof.
+>
+> There are just three configurations left using CONFIG_OLD_TIME_C:
+>
+>  - EV64120 which I guess can be considered abandonded
+>  - Momenco Ocelot (Matthew, feel like you have time to take care of
+>    this?)
+>  - RM200  (semi-maintained, my turn to fix it ...)
+>
+> Seems like it's time to get rid of CONFIG_OLD_TIME_C.
+>
+>   Ralf
+>

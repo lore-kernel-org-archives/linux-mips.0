@@ -1,14 +1,21 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0xsvZ4-0005FsC@lightning.swansea.linux.org.uk>
+Message-ID: <m0xtzBj-0005FsC@lightning.swansea.linux.org.uk>
 From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Reminds me: XV
-Date: Thu, 15 Jan 1998 20:06:58 +0000 (GMT)
-In-Reply-To: <m0xsv66-0005FsC@lightning.swansea.linux.org.uk> from "Alan Cox" at Jan 15, 98 07:37:01 pm
+Subject: Re: My NEC VR4000's
+Date: Sun, 18 Jan 1998 18:11:15 +0000 (GMT)
+In-Reply-To: <34C23ACA.83E2E39C@netexpress.net> from "David Hinkle" at Jan 18, 98 11:24:27 am
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: shaver@neon.ingenia.ca, mdhill@interlog.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19980115200658.SS1SWF8UKrF1HFjSIoqBGv9OjJjqcq2sp-p1U-C_X3o@z>
+To: David Hinkle <drachen@netexpress.net>
+Cc: kbob@jogger-egg.engr.sgi.com, linux-mips@fnet.fr, linux@cthulhu.engr.sgi.com
+Message-ID: <19980118181115.YDpj0yJM_e_PhduYKO59jyN4AptMIPmLGCBXUhPGhXk@z>
 
-I uploaded an xv rpm today - its a nother -D_USE_POSIX because it uses 
-signal masks
+> password....  Bye the way... Is there an easier way to clear the root
+> password?    And does anybody know what filesystem IRIX uses?
+
+If its running Irix < 6.4 then read bugtraq archives for about 100,000 ways
+to break root on your machine  8)
+
+The best general scheme on a remote box is to stuff the disk into a machine
+and without mounting it replace any disk block starting root:........:dfgkd
+with your own password string. 

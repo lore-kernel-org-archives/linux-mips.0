@@ -1,50 +1,47 @@
-From: "Soeren Laursen" <soeren.laursen@scrooge.dk>
-Date: Mon, 17 Sep 2001 18:39:30 +0200
+Message-ID: <00fe01c140b4$ad3f9200$cd22690a@huawei.com>
+Reply-To: "Shaolin Zhang" <zhangshaolin@huawei.com>
+From: "Shaolin Zhang" <zhangshaolin@huawei.com>
+Subject: kgdb with linux-mips problem
+Date: Wed, 19 Sep 2001 10:42:08 +0800
 MIME-Version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Subject: Re: openssh probs
-Reply-to: soeren.laursen@scrooge.dk
-Message-ID: <3BA64362.29627.225041C@localhost>
-References: <3BA63E02.20088.2100546@localhost>
-In-reply-to: <Pine.SOL.4.31.0109171218020.15630-100000@fury.csh.rit.edu>
+Content-Type: text/plain;
+	charset="gb2312"
 Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: George Gensure <werkt@csh.rit.edu>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010917163930.jX4risM2g2VP4rjZ5lYlsM4W11kFwAEOwTy4ARS3fLo@z>
+To: linux-mips@oss.sgi.com
+Cc: Ernest Jih <ernest.jih@idt.com>, "\"recc stone\"" <renwei@huawei.com>
+Message-ID: <20010919024208.W_44NbfIWW580kgf4_reBNHI8DUnQ5yA9ZZyFh8d1mg@z>
 
-> Yeah, should've mentioned the version.  I'm already running 2.9p2.  The
-> ssh server I'm testing on, I KNOW works.  I connect to it from my i686 box
-> all the time.  I looked at the packet dump, and it doesn't look like the
-> MAC is getting sent correctly.  I wasn't able to find the string anywhere
-> in there (assuming it gets sent unencrypted, of course).
+Hello ,
 
-Running
-OpenSSH_2.9p2, SSH protocols 1.5/2.0, 
+  Now we have some problems in using kgdb to debug the Linux-mips kernel on IDT 79s334A board.
 
-On a:
-cpu                     : MIPS
-cpu model               : R4000SC V5.0
-system type             : SGI Indy
-BogoMIPS                : 74.75
-byteorder               : big endian
-unaligned accesses      : 0
-wait instruction        : no
-microsecond timers      : yes
-extra interrupt vector  : no
-hardware watchpoint     : yes
-VCED exceptions         : 27900
-VCEI exceptions         : 135012
+1.I enabled the kernel startup option kgdb=on to debug the kernel setup.
+  At first, the gdb on host pc connected to the target boards correctly.
+  Then I use a few "n"(Next) command to debug the kernel, but the kernel
+seems
+ to run out of my hands, as if I had executed some "c" command.
+  I use "set debug remote 1"  command to see the packets gdb send&receive:
+  and find :
+   the gdb send a "c" packet to the stub at the end of packet sequence.
 
-It is a 2.4.3 kernel.
+  I guess that the gdb on the host pc send some wrong command , or it can't
+get right info
+  to debug?
 
-Nothing special running on it.
 
-Just installed a upgrade 2.9p6
-OpenSSH_2.9p2, SSH protocols 1.5/2.0, OpenSSL 0x0090602f
+2.I want to debug some init_module function in module , like this :
 
-And it work just as great as the first version.
+int init_module(void)
+{
+    breakpoint(); // use the breakpoint function in kernel to get a break.
+    my_functions();
+}
 
-Best regards,
-
-Søren,
+When I insmod this module, it through exception 9 (breakpoint), then I run
+"bt"
+command in gdb, but this time gdb report "can't find the start of function
+0x....".
+Is this a gdb problem or gdb stub problem? BTW, when I first bootup the
+kernel
+and connect the gdb&stub ,the sample problem happened.

@@ -1,66 +1,138 @@
-Message-ID: <002e01c0a553$b5c48e00$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <NDBBIDGAOKMNJNDAHDDMEEHOCOAA.mfklar@ponymail.com>
-Subject: Re: FPU context clobbered by signals
-Date: Mon, 5 Mar 2001 10:07:20 +0100
+Message-ID: <000801c0a572$b7471e40$dde0490a@BANANA>
+From: "Steven Liu" <stevenliu@psdc.com>
+Subject: mips-tfile
+Date: Mon, 5 Mar 2001 04:49:28 -0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0005_01C0A52F.A8FAAB60"
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Mike Klar <mfklar@ponymail.com>, linux-mips@oss.sgi.com, linux-mips@fnet.fr
-Message-ID: <20010305090720.y0FsfJBDTsG6B82VA_EHj6MrKuPeE53vxygSvaT7ih4@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010305124928.eJVJtXzPoCZJY0xvw5xYLVN1hcfQDx_PROwl_guvyOA@z>
 
-> Currently setup_sigcontext() appears to behave as follows:
-> If the current process owns the FPU context, sc_ownedfp is set to 1 in the
-> sigcontext passed to the signal handler, and the floating point registers
-> are saved in that sigcontext.  This makes sense.
-> If the current process does not own the FPU context, but did at one point
-> execute FPU operations (which all glibc apps will do for initialization),
-> sc_ownedfp in the sigcontext is set to 0, and the floating point registers
-> are still saved.  This is, at the very least, a security hole, since those
-> registers belong to a different process at that point.
+This is a multi-part message in MIME format.
 
-I'm speaking from first principles here, not from an analysis
-of the code on non-MIPS architectures, but what *should*
-happen on a signal to a process that is not the current/latest
-user of the FPU is that the FPU sigcontext information should
-be copied from the saved thread context state.
+------=_NextPart_000_0005_01C0A52F.A8FAAB60
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> And restore_sigcontext() appears to behave thusly:
-> If sc_ownedfp is set in the sigcontext that is passed back from the signal
-> handler, the FPU context is restored from the sigcontext, and FPU context
-> ownership is given to the current process, without saving the old context.
-> Either I'm misunderstanding this, or there is a possibility that this will
-> simply forget about some other process' FPU context.
+Hi, All:
 
-The behavior described sort-of makes sense, if one is willing
-to take it on faith that the signal handler did not trash the
-sigcontext information (which I personally consider unwise).
-If the signal was sent to the current owner of the FPU, the
-post-signal thread FPU  state needs to represent the pre-signal
-state of the FPU, which was saved in the sigcontext structure.
+Hi, All:
 
-> So what _is_ the desired behavior here?
+I am working on cross-compiler for mips R3000 on Linux now and meet a =
+problem in egcs.
 
-The desired behavior (IMHO) is that signals are dispatched
-with the FPU state corresponding to the last known FPU
-state of the thread taking the signal.  If the only copy of that
-state prior to signal dispatch resides in the FPU, that state
-needs to be saved before signal dispatch and restored
-after signal return.
+My host system is i386 with Rad Hat 7.0 installed.
 
-Or, to put it another way, the semantics of signals with
-respect to FP registers should be the same as the
-semantics with respect to general purpose registers.
-The only wrinkle is the lazy FPU context switch logic,
-which creates two anomolous situations: one where
-the current contents of the FPU does not belong to
-the current thread (because the current thread has
-not executed any FP instructions), and one where the
-FP register state of a non-current thread is not yet saved
-in the thread state of that thread (because no subsequent
-thread has executed any FP instructions).
+First, I successfully built and installed binutils-2.8.1 by using=20
+binutils-2.8.1.tar.gz and egcs-mips-linux-1.1.2-2.i386.rpm. This created =
 
-            Kevin K.
+bin, lib, mips-linux subdirectories.
+
+Second, I installed the linux kernel source code for mips by using=20
+linux-2.2.14-000715.tar.gz and configured it and enabled=20
+CONFIG_CROSSCOMPILE.  Made soft links: let  mips-linux/include/asm=20
+pointd to linux-2.2.14-000715/include/asm-mips and
+mips-linux/include/linux pointd to linux-2.2.14-000715/include/linux.
+
+Third, unziped the egcs-1.1.2.tar.gz, added the patch=20
+egcs-mips-linux-1.1.2-2.i386.rpm and configured it as following:
+     ./configure --prefix=3D3D/home/sliu --with-newlib =
+--target=3Dmips-linux
+and made it this way:
+     make SUBDIRS=3D3D"libiberty texinfo gcc" ALL_TARGET_MODULES=3D3D =
+=3D
+CONFIGURE_TARGET_MODULES=3D3D INSTALL_TARGET_MODULES=3D3D =
+LANGUAGES=3D3D"c"
+
+Then, it gave the following errors in gcc subdirectory:
+
+xgcc: installation problem, cannot exec `mips-tfile': No such file or =
+=3D
+directory
+make[1]: *** [libgcc2.a] Error 1
+make[1]: Leaving directory `/home/sliu/egcs-1.1.2/gcc'
+make: *** [all-gcc] Error 2
+
+Any help would be greatly appreciated.
+
+Regards,
+
+
+Steven
+
+------=_NextPart_000_0005_01C0A52F.A8FAAB60
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.3103.1000" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi, All:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Hi, All:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I am working on cross-compiler for mips =
+R3000 on=20
+Linux now and meet a problem in egcs.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>My host system is i386 with Rad Hat 7.0 =
+
+installed.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>First, I successfully built and =
+installed=20
+binutils-2.8.1 by using <BR>binutils-2.8.1.tar.gz and=20
+egcs-mips-linux-1.1.2-2.i386.rpm. This created <BR>bin, lib, mips-linux=20
+subdirectories.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Second, I installed the linux kernel =
+source code=20
+for mips by using <BR>linux-2.2.14-000715.tar.gz and configured it and =
+enabled=20
+<BR>CONFIG_CROSSCOMPILE.&nbsp; Made soft links: let&nbsp; =
+mips-linux/include/asm=20
+<BR>pointd to linux-2.2.14-000715/include/asm-mips=20
+and<BR>mips-linux/include/linux pointd to=20
+linux-2.2.14-000715/include/linux.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Third, unziped the egcs-1.1.2.tar.gz, =
+added the=20
+patch <BR>egcs-mips-linux-1.1.2-2.i386.rpm and configured it as=20
+following:<BR>&nbsp;&nbsp;&nbsp;&nbsp; ./configure =
+--prefix=3D3D/home/sliu=20
+--with-newlib --target=3Dmips-linux<BR>and made it this=20
+way:<BR>&nbsp;&nbsp;&nbsp;&nbsp; make SUBDIRS=3D3D"libiberty texinfo =
+gcc"=20
+ALL_TARGET_MODULES=3D3D =3D<BR>CONFIGURE_TARGET_MODULES=3D3D =
+INSTALL_TARGET_MODULES=3D3D=20
+LANGUAGES=3D3D"c"</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Then, it gave the following errors in =
+gcc=20
+subdirectory:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>xgcc: installation problem, cannot exec =
+
+`mips-tfile': No such file or =3D<BR>directory<BR>make[1]: *** =
+[libgcc2.a] Error=20
+1<BR>make[1]: Leaving directory `/home/sliu/egcs-1.1.2/gcc'<BR>make: *** =
+
+[all-gcc] Error 2</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Any help would be greatly =
+appreciated.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><BR>Steven</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0005_01C0A52F.A8FAAB60--

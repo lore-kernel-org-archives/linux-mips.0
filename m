@@ -1,49 +1,109 @@
-From: "Ian Chilton" <mailinglist@ichilton.co.uk>
-Subject: Linux on SGI Indy ?
-Date: Thu, 25 May 2000 21:18:14 +0100
-Message-ID: <NAENLMKGGBDKLPONCDDOIELOCKAA.mailinglist@ichilton.co.uk>
+From: fisher@hollywood.engr.sgi.com (William Fisher)
+Message-ID: <200005310410.VAA00290@hollywood.engr.sgi.com>
+Subject: Re: Problems booting Indigo...
+Date: Tue, 30 May 2000 21:10:28 -0700 (PDT)
+In-Reply-To: <Pine.LNX.4.21.0005301954120.439-100000@hork.rochester.rr.com> from "Chris Ruvolo" at May 30, 2000 08:12:53 PM
+Reply-To: fisher@sgi.com
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr
-Message-ID: <20000525201814.yTqF5g6oHwcE6gCOoe2MrNazV6j_M-1GfUTcCo4oX8c@z>
+To: Chris Ruvolo <csr6702@grace.rit.edu>
+Cc: linux@cthulhu.engr.sgi.com, Jan-Benedict Glaw <jbglaw@lug-owl.de>, William Fisher <fisher@hollywood.engr.sgi.com>
+Message-ID: <20000531041028.18Bk_U3zS_tdBTW69Ul7YmGVNSIilYvzd5n3cKSQQuI@z>
 
-Hello,
+> 
+> On Wed, 31 May 2000, Jan-Benedict Glaw wrote:
+> 
+> >	  [root@parkautomat:/root] #> arp -s 192.168.1.3 08:00:69:06:BA:2E
+> 
+> I didn't need to do this to get the bootp response.
+> 
+> >	- ISC dhcpd from .deb (2.0-3) with very short config:
+> 
+> I switched to this and it works.
+> 
+> >Effect: The Indigo gets its config, but unfortunately it seems that
+> >incoming tftp UDP packets are not accepted. This might be because
+> >the originating port is != 69 (which is tftp):
+> 
+> Ok, I'm now in the same boat.
+> 
+> >Now the final question: How can I make in.tftpd to answer *from* port 69?
+> 
+> I'm not sure this is the problem.  I believe RFC-compliant TFTP servers
+> use system-assigned ports for each client connection.  At least, I've seen
+> this behavior on other TFTP servers.  But, you may be right.  The client
+> could be expecting replies only on port 69.  I don't know if this is
+> possible without modifying the TFTP server.
+> 
+> Can anyone confirm this?
+> 
+> Thanks,
+> Chris
+> 
+> PS: Please cc responses to me.
+> 
+	Ok, I looked at the ARCS prom code for the Indy series machine aka an IP22
+	in SGI hardware speak.
 
-I have just purchased a 2nd hand SGI Indy (100Mhz MIPS with 48MB RAM).
+This code is from the BSD 4.3 distribution with some minor additions to support
+one of the last RFC's which added a few more options to the tftp protocol.
 
-This is the first time I have seen/used IRIX, but I have been running Linux
-for years.
-
-My questions are:
-
-* Can I run Linux on this machine?
-* If so, where can I download it?
-* Is anyone running Linux on an Indy, if so, i'd appreciate your comments
-etc..
+The code in main.c looks like:
 
 
-Thanks!
+struct  servent *sp;
+
+main(argc, argv)
+        char *argv[];
+{
+        struct sockaddr_in sin;
+        int top;
+
+        sp = getservbyname("tftp", "udp");
+        if (sp == 0) {
+                fprintf(stderr, "tftp: udp/tftp: unknown service\n");
+                exit(1);
+        }
+        f = socket(AF_INET, SOCK_DGRAM, 0);
+        if (f < 0) {
+                perror("tftp: socket");
+                exit(3);
+        }
+        bzero((char *)&sin, sizeof (sin));
+        sin.sin_family = AF_INET;
+        if (bind(f, &sin, sizeof (sin)) < 0) {
+                perror("tftp: bind");
+                exit(1);
+        }
+        strcpy(mode, "netascii");
+        signal(SIGINT, intr);
+        if (argc > 1) {
+                if (setjmp(toplevel) != 0)
+                        exit(0);
+                setpeer(argc, argv);
+        }
+        top = setjmp(toplevel) == 0;
+        for (;;)
+                command(top);
+}
 
 
-Bye for Now,
+The socket descriptor "f" is used to receive the data from the wire.
 
-Ian
+The standard line in the /etc/services file for "tftp" contains:
 
+tftp            69/udp
 
-                                \|||/
-                                (o o)
- /---------------------------ooO-(_)-Ooo---------------------------\
- |  Ian Chilton     (IRC Nick - GadgetMan)     ian@ichilton.co.uk  |
- |-----------------------------------------------------------------|
- |  Backup E-Mail -->  ian@ichilton.dhis.org      ICQ #: 16007717  |
- |  Mobile Phone (MAX 150 Chars!) -->  ianchilton@sms.genie.co.uk  |
- |-----------------------------------------------------------------|
- |  http://www.ianchilton.co.uk  --> Main Page                     |
- |  http://www.ichilton.co.uk    --> Own Web Server (When Online)  |
- |-----------------------------------------------------------------|
- |  "Unix is user friendly - it's just picky about it's friends."  |
- \-----------------------------------------------------------------/
+which will be returned in the "struct  servent *sp" on the "getservbyname()" call.
+
+I looked at both tftp and tftpd and nowhere is there any checks for
+the UDP packet arriving on port 69. Are you sure this is the underlying
+cause of the problem? I didn't look at your packet trace in gory details.
+
+You can look at the stand BSD 4.X release for the nearly identical source
+code that is used in the SGI proms.
+
+-- Bill (fisher@sgi.com)

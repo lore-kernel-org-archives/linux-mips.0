@@ -1,28 +1,29 @@
-From: "Wayne Chen" <waynechen@aiptek.com.tw>
-Subject: RE: CVS Update@-mips.org: linux 
-Date: Mon, 14 Apr 2003 09:05:36 +0800
-Message-ID: <001101c30221$f51a1750$3803000a@aiptek.com.tw>
+Received: from wssseeger ([192.168.1.53]) by nt_server.stellartec.com
+          (Post.Office MTA v3.1.2 release (PO205-101c)
+          ID# 568-43562U100L2S100) with SMTP id AAA486
+          for <linux-mips@linux-mips.org>; Mon, 14 Apr 2003 11:07:04 -0700
+Reply-To: <sseeger@stellartec.com>
+From: sseeger@stellartec.com (Steven Seeger)
+Subject: uclibc printf and floats
+Date: Mon, 14 Apr 2003 11:12:43 -0700
+Message-ID: <04d001c302b1$7203e270$3501a8c0@wssseeger>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: base64
-In-Reply-To: <20030412205002Z8225201-1272+1267@linux-mips.org>
-Return-Path: <WayneChen@aiptek.com.tw>
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.GSO.3.96.1030414192822.24742P-100000@delta.ds2.pg.gda.pl>
+Return-Path: <sseeger@stellartec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org, linux-cvs@linux-mips.org
-Message-ID: <20030414010536.rDlHPanJCHY5pMUfX10v75oP8uHsRGlfqKuf64hItmU@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030414181243.YgzaMy9utmZO_toP82fq0Ppj6jheJ8kBtwpi_dmqHuI@z>
 
-DQpJIHdvdWxkIGxpa2UgdG8gdW4tcmVnaXN0ZXIuDQoNCndheW5lDQogDQogICANCg0KDQotLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogcmFsZkBsaW51eC1taXBzLm9yZyBbbWFpbHRv
-OnJhbGZAbGludXgtbWlwcy5vcmddDQpTZW50OiBTdW5kYXksIEFwcmlsIDEzLCAyMDAzIDQ6NTAg
-QU0NClRvOiBsaW51eC1jdnNAbGludXgtbWlwcy5vcmcNClN1YmplY3Q6IENWUyBVcGRhdGVALW1p
-cHMub3JnOiBsaW51eCANCg0KDQoNCkNWU1JPT1Q6CS9ob21lL2N2cw0KTW9kdWxlIG5hbWU6CWxp
-bnV4DQpDaGFuZ2VzIGJ5OglyYWxmQGZ0cC5saW51eC1taXBzLm9yZwkwMy8wNC8xMiAyMTo0OTo1
-Nw0KDQpNb2RpZmllZCBmaWxlczoNCglhcmNoL21pcHMvbW0gICA6IE1ha2VmaWxlIGMtcjRrLmMg
-bG9hZG1tdS5jIA0KCWFyY2gvbWlwczY0L21tIDogTWFrZWZpbGUgYy1yNGsuYyBsb2FkbW11LmMg
-DQpSZW1vdmVkIGZpbGVzOg0KCWFyY2gvbWlwcy9tbSAgIDogYy1taXBzMzI2NC5jIHBnLW1pcHMz
-MjY0LmMgDQoJYXJjaC9taXBzNjQvbW0gOiBjLW1pcHMzMjY0LmMgcGctbWlwczMyNjQuYyANCglp
-bmNsdWRlL2FzbS1taXBzOiBtaXBzMzI2NC1jYWNoZS5oIA0KCWluY2x1ZGUvYXNtLW1pcHM2NDog
-bWlwczMyNjQtY2FjaGUuaCANCg0KTG9nIG1lc3NhZ2U6DQoJU2VuZCBtaXBzMzI2NCBiYWNrIGlu
-dG8gdGhlIGhlbGwgaXQgY2FtZSBmcm9tIC4uLg0KDQoNCg==
+I switched over to uclibc a while ago and am running the release (also tried
+the snapshot) of 0.1.19 or whatever it is. I notice that printf crashes with
+floats. This was a problem found with uclibc on other archs back almost 2
+years ago. If anyone can help me with some advice I'd appreciate it. I much
+prefer to continue using uclibc on this VR4181 instead of glibc.
+
+Thanks!
+
+Steve

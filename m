@@ -1,8 +1,8 @@
 From: Kanoj Sarcar <kanoj@google.engr.sgi.com>
-Message-ID: <200009062351.QAA14035@google.engr.sgi.com>
+Message-ID: <200009070005.RAA27824@google.engr.sgi.com>
 Subject: Re: CVS Update@oss.sgi.com: linux
-Date: Wed, 6 Sep 2000 16:51:19 -0700 (PDT)
-In-Reply-To: <20000907014521.A20605@bacchus.dhis.org> from "Ralf Baechle" at Sep 07, 2000 01:45:21 AM
+Date: Wed, 6 Sep 2000 17:05:18 -0700 (PDT)
+In-Reply-To: <20000907020237.B20605@bacchus.dhis.org> from "Ralf Baechle" at Sep 07, 2000 02:02:37 AM
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -10,26 +10,18 @@ Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
 To: Ralf Baechle <ralf@oss.sgi.com>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20000906235119.kNK_qsVhsBQpoazKun2oYGnjWu3oPZXdavtt1PW3_mQ@z>
+Message-ID: <20000907000518.1Q436hMx-TCwnUd_w1MOziqwvCTV9a2kTtPmxjTZiKg@z>
 
 > 
-> On Wed, Sep 06, 2000 at 04:36:29PM -0700, Kanoj Sarcar wrote:
+> On Wed, Sep 06, 2000 at 04:51:19PM -0700, Kanoj Sarcar wrote:
 > 
-> > 	Compile fix: flush only L2 cache.
+> > The act of flushing the L2 cache, should include flushing the L1
+> > cache, whether done by software or processor provided primitives, 
+> > to guarantee the inclusion principle.
 > 
-> That's wrong, sysmips(FLUSH_CACHE) is supposed to flush all caches.
-> 
->   Ralf
-> 
+> The inclusion principle is not true for all processor types.
 
-The act of flushing the L2 cache, should include flushing the L1
-cache, whether done by software or processor provided primitives, 
-to guarantee the inclusion principle.
-
-Notwithstanding, feel free to add in a call to flush_cache_l1()
-(and I don't know whether you want to flush the i and d caches
-both, or just one), making sure there are no compile breakages.
-(the breakage that I fixed was due to the fact that there is no
-__flush_cache_all for mips64).
+Which processor is supported out of the mips64 tree that does
+not obey the inclusion principle?
 
 Kanoj

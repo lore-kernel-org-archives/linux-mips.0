@@ -1,36 +1,75 @@
-Message-ID: <3A5DD6A8.1040600@Lineo.COM>
-Date: Thu, 11 Jan 2001 08:52:08 -0700
-From: Quinn Jensen <jensenq@Lineo.COM>
+Message-ID: <001e01c07c68$96155f80$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <3A5E7FFB.79925DF9@mvista.com>
+Subject: Re: broken RM7000 in CVS ...
+Date: Fri, 12 Jan 2001 08:23:30 +0100
 MIME-Version: 1.0
-Subject: Re: [BusyBox] 0.48 - Can't mount /proc
-References: <3A5CAC53.60700@jungo.com> <20010110122159.A24714@lineo.com> <3A5D609C.2080201@jungo.com> <20010111044808.A1592@lineo.com> <20010111130450.B5811@paradigm.rfc822.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: owner-linux-mips@oss.sgi.com
-Cc: Erik Andersen <andersen@lineo.com>, Michael Shmulevich <michaels@jungo.com>, busybox@opensource.lineo.com
-Message-ID: <20010111155208.C7NhGpRUi5Iw8YHu90BMSg2AE6j3HLSxR4N1ggKF8d8@z>
+To: Jun Sun <jsun@mvista.com>, linux-mips@oss.sgi.com
+Message-ID: <20010112072330.l9v1iqQTv8ythqOrfs9iSc5I_Y5niLzKBrKVwUL_Hp8@z>
 
-Here's a kernel patch.  The __access_ok macro looks one byte
-too far and fails.  Since copy_mount_options() isn't
-sure how long the string arguments are, it just copies
-to the end of the page.  Since this is on busybox's
-stack, the copy wants to go all the way to 0x7FFFFFF
-and hits this corner case.
+Yes, arguably the mips_cpu structure could also contain
+a descriptor of the MMU routines to bind, and it probably
+would have if it would have been a simple matter of an
+address/length of a vector to copy.  But heck, it could
+be a function pointer as well, I suppose.
 
-Quinn Jensen
-jensenq@lineo.com
+Anyway, I'm not surprised if there was something off
+somewhere in the RM7000 descriptor.  I did a first
+cut based on an old copy of the QED spec - I had no
+hardware to test it on - and there was no pretention
+of putting in full RM7000 support in the kernel when
+I did the decriptor, it was more a matter of showing
+what a 3-cache CPU would look like!
+
+            Kevin K.
+
+----- Original Message -----
+From: "Jun Sun" <jsun@mvista.com>
+To: <linux-mips@oss.sgi.com>
+Sent: Friday, January 12, 2001 4:54 AM
+Subject: broken RM7000 in CVS ...
 
 
---- linux-sgi-2.4.0-test11-pristine/include/asm-mips/uaccess.h  Wed Oct  4 19:19:02 2000
-+++ linux/include/asm-mips/uaccess.h    Wed Jan 10 16:20:35 2001
-@@ -46,7 +46,7 @@
-   *  - OR we are in kernel mode.
-   */
-  #define __access_ok(addr,size,mask) \
--        (((__signed__ long)((mask)&(addr | size | (addr+size)))) >= 0)
-+        (((__signed__ long)((mask)&(addr | size | (addr+size-1)))) >= 0)
-  #define __access_mask ((long)(get_fs().seg))
-
-  #define access_ok(type,addr,size) \ 
+>
+> I saw mips_cpu structure is introduced to the CVS tree.  That is a really
+good
+> thing, although many places need to be improved.
+>
+> An initial try found the following bug.  There are probably more down the
+> road. :-)
+>
+> Jun
+>
+> diff -Nru linux/arch/mips/mm/loadmmu.c.orig linux/arch/mips/mm/loadmmu.c
+> --- linux/arch/mips/mm/loadmmu.c.orig   Thu Jan 11 19:32:11 2001
+> +++ linux/arch/mips/mm/loadmmu.c        Thu Jan 11 19:48:06 2001
+> @@ -59,6 +59,11 @@
+>                 printk("Loading MIPS32 MMU routines.\n");
+>                 ld_mmu_mips32();
+>  #endif
+> +#if defined(CONFIG_CPU_RM7000)
+> +               printk("Loading RM7000 MMU routines.\n");
+> +               ld_mmu_rm7k();
+> +#endif
+> +
+>         } else switch(mips_cpu.cputype) {
+>  #ifdef CONFIG_CPU_R3000
+>         case CPU_R2000:
+> @@ -74,13 +79,6 @@
+>         case CPU_R5432:
+>                 printk("Loading R5432 MMU routines.\n");
+>                 ld_mmu_r5432();
+> -               break;
+> -#endif
+> -
+> -#if defined(CONFIG_CPU_RM7000)
+> -       case CPU_RM7000:
+> -               printk("Loading RM7000 MMU routines.\n");
+> -               ld_mmu_rm7k();
+>                 break;
+>  #endif

@@ -1,19 +1,23 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199706202143.OAA12725@refugee.engr.sgi.com>
-Subject: Re: Getting X on Linux/SGI 
-In-reply-to: Message from lm@neteng of 20 Jun 1997 9:40:27 PDT
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 20 Jun 1997 14:43:21 -0700
-From: Steve Alexander <sca@refugee.engr.sgi.com>
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199706210134.DAA11557@informatik.uni-koblenz.de>
+Subject: Re: CONFIG_REMOTE_DEBUG
+Date: Sat, 21 Jun 1997 03:34:47 +0200 (MET DST)
+In-Reply-To: <199706201524.LAA25039@neon.ingenia.ca> from "Mike Shaver" at Jun 20, 97 11:24:09 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Larry McVoy <lm@neteng.engr.sgi.com>
-Cc: "David S. Miller" <davem@jenolan.rutgers.edu>, carlson@heaven.newport.sgi.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19970620214321.Aijtmkb3j2V0OTKS_dFH-mkFch62gg99GiBAn5gfC3k@z>
+To: Mike Shaver <shaver@neon.ingenia.ca>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970621013447.l9jZelfz_vWJhV_2KkXwkIktu8SYRgtWQZTetyySlzE@z>
 
-lm@neteng (Larry McVoy) writes:
->You != <the entire customer base>.
+Hi,
 
-Really?  Thanks for the tip.
+> Is this something that's useful enough to warrant me digging up the
+> cabling and software that I'd need to make it work?
 
--- Steve
+It's ages that I saw this in action for debugging a Mips Magnum kernel.
+I also think that David was using the stuff.
+
+  Ralf

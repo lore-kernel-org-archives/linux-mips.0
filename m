@@ -1,41 +1,35 @@
-Date: Fri, 20 Apr 2001 15:53:10 -0400 (EDT)
+Date: Fri, 20 Apr 2001 16:21:20 -0400 (EDT)
 From: George Gensure <werkt@csh.rit.edu>
 Subject: Re: glibc build
-In-Reply-To: <3AE08630.FF25517A@ayrnetworks.com>
-Message-ID: <Pine.SOL.4.31.0104201549180.3449-100000@fury.csh.rit.edu>
+In-Reply-To: <3AE096DC.ECB49D19@ayrnetworks.com>
+Message-ID: <Pine.SOL.4.31.0104201612540.3449-100000@fury.csh.rit.edu>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
 To: Bryan Chua <chua@ayrnetworks.com>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20010420195310.wNi3wYYK-Q8Fj5VHoF4bC8F7epvuy3qLOEPZLjNxx-U@z>
+Message-ID: <20010420202120.IsurNmzsC3LS29wvV0Apb97qk0SIGPM9InUcT_npVKA@z>
 
-I added the following entry to the environment variable CFLAGS and to the
-CFLAGS entry in glibcbug - -D__PIC__ ... got the same error.
+I went throught and deleted all of those entries in assembly files which
+caused problems, but I end up with similar problems later, only the
+assembler seems to have been running from standard input..
 
 George
 werkt@csh.rit.edu
 
 On Fri, 20 Apr 2001, Bryan Chua wrote:
 
-> I ran into this at some point and tracked it down to adding -D__PIC__ to
-> CFLAGS.  I don't think it is necessary on newer (unreleased) compilers.
+> CFLAGS=-D__PIC__ make all [check] install
+>
+> the target "check" will not work if you are cross compiling, so you
+> might as well install...  You end up coming across this in several
+> places.
 >
 > -- bryan
 >
 > "George Gensure,,," wrote:
 >
-> > I get the following error while trying to cross-build glibc for mips on
-> > an i686.  Can anyone give any insight?
-> >
-> > ../sysdeps/mips/setjmp.S: Assembler messages:
-> > ../sysdeps/mips/setjmp.S:43: Error: Can not represent
-> > BFD_RELOC_16_PCREL_S2 relocation in this object file format
-> > make[2]: *** [/usr/local/crossbuild/glibc-build/setjmp/setjmp.o] Error 1
-> > make[2]: Leaving directory `/usr/local/crossbuild/glibc-2.2/setjmp'
-> > make[1]: *** [setjmp/subdir_lib] Error 2
-> > make[1]: Leaving directory `/usr/local/crossbuild/glibc-2.2'
-> > make: *** [install] Error 2
+> > Where is the CFLAGS that I should add to? In the Subdirectories?
 > >
 > > George
 > > werkt@csh.rit.edu

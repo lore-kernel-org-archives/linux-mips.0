@@ -1,45 +1,61 @@
-Content-class: urn:content-classes:message
+Received: from nssinet2.co-nss.co.jp (localhost [127.0.0.1])
+	by nssinet2.co-nss.co.jp (8.9.3/3.7W) with ESMTP id JAA01608
+	for <linux-mips@linux-mips.org>; Tue, 22 Mar 2005 09:41:07 +0900 (JST)
+Received: from nssnet.co-nss.co.jp (nssnet.co-nss.co.jp [150.96.64.250])
+	by nssinet2.co-nss.co.jp (8.9.3/3.7W) with ESMTP id JAA01604
+	for <linux-mips@linux-mips.org>; Tue, 22 Mar 2005 09:41:07 +0900 (JST)
+Received: from NUNOE ([150.96.160.60])
+	by nssnet.co-nss.co.jp (8.9.3+Sun/3.7W) with SMTP id JAA04644
+	for <linux-mips@linux-mips.org>; Tue, 22 Mar 2005 09:33:09 +0900 (JST)
+Message-ID: <006501c52e78$bb081730$3ca06096@NUNOE>
+From: "Hdei Nunoe" <nunoe@co-nss.co.jp>
+Subject: PSCHED_JSCALE 
+Date: Tue, 22 Mar 2005 09:47:31 +0900
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Bitrotting serial drivers
-Date: Mon, 21 Mar 2005 13:10:13 -0800
-Message-ID: <BBB228F72FF00E4390479AC295FF4B350DE937@FOOTHILL.iad.idealab.com>
-From: "Joseph Chiu" <joseph@omnilux.net>
-Return-Path: <joseph@omnilux.net>
+	format=flowed;
+	charset="iso-2022-jp";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <nunoe@co-nss.co.jp>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ulrich Eckhardt <eckhardt@satorlaser.com>, linux-mips@linux-mips.org
-Message-ID: <20050321211013.i4-dU9ILXiV6FkM0ee_HQVDPoVS2CZ0UdeLnKN2xd20@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20050322004731.7IGmwJLSfRxWbni48fW8h3qZ_UXlC-9zPAm0LcxAm5w@z>
 
-Hmmm, that's news to me!  I've been using console=ttyS0,115200  console=ttyS0,9600 and console= (no console) forever.
+Hi there,
 
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org
-> [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Ulrich Eckhardt
-> Sent: Monday, March 21, 2005 12:51 PM
-> To: linux-mips@linux-mips.org
-> Subject: Re: Bitrotting serial drivers
-> 
-> 
-> On Sunday 20 March 2005 23:51, Pete Popov wrote:
-> > It works and no one has complained about any bugs. 
-> 
-> I hereby do complain that it doesn't work. ;)
-> 
-> I'd give more details, but I'm neither at work nor did I 
-> investigate the 
-> situation properly. What I remember trying is to add 
-> 'console=/dev/ttyS0' or 
-> somesuch to the commandline, but couldn't get it to work 
-> there. The funny 
-> thing is that when I use the GDB support over serial line 
-> (which seems to use 
-> a primitive, stripped-down version of a serial driver) it 
-> works, I can then 
-> redirect boot messages via 'console=gdb'.
-> 
-> Uli
-> 
-> 
+Has anyone known about the background information about
+the following change?  
+
+  The PSCHED_JSCALE in the net/sched/sch_api.c is defined in the
+　include/net/pkt_sched.h.  If I set HZ to 1000 - PSCHED_JSCALE
+  is 0 - what would happen?
+
+　#if HZ == 100
+　#define PSCHED_JSCALE 13
+　#elif HZ == 1024
+　#define PSCHED_JSCALE 10
+　#else
+　#define PSCHED_JSCALE 0
+　#endif
+　
+　The code is updated in 2.4.27 as follows.
+  The PSCHED_JSCALE becomes 10 in this case.
+  What problems would it fix?  Or what behaivior would change?
+
+　#if HZ < 96
+　#define PSCHED_JSCALE 14
+　#elif HZ >= 96 && HZ < 192
+　#define PSCHED_JSCALE 13
+　#elif HZ >= 192 && HZ < 384
+　#define PSCHED_JSCALE 12
+　#elif HZ >= 384 && HZ < 768
+　#define PSCHED_JSCALE 11
+　#elif HZ >= 768
+　#define PSCHED_JSCALE 10
+　#endif
+
+
+---
+Hdei Nunoe

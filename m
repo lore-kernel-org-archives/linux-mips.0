@@ -1,18 +1,20 @@
 Subject: Re: RAMDISK problem on 79s334A board.
-Date: Wed, 15 May 2002 12:00:27 +0100 (BST)
-In-Reply-To: <Pine.LNX.4.10.10205151403260.14414-100000@brahma.intotoind.com> from "Venkata Rajesh Bikkina" at May 15, 2002 02:12:25 PM
+Date: Wed, 15 May 2002 14:28:59 +0100 (BST)
+In-Reply-To: <Pine.LNX.4.10.10205151729240.22271-100000@brahma.intotoind.com> from "Venkata Rajesh Bikkina" at May 15, 2002 05:30:50 PM
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Message-ID: <E177wWB-0001df-00@the-village.bc.nu>
+Message-ID: <E177ypv-0001up-00@the-village.bc.nu>
 From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 To: Venkata Rajesh Bikkina <rajeshbv@intotoinc.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20020515110027.Q46awv2fewGcAWTJCNk40hxTHMYVmaHmvvj9WdkhEco@z>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, linux-mips@oss.sgi.com
+Message-ID: <20020515132859.V8ug0BCfDeNRbAB_urWln0i2zyVsExgj76_VTwOQM_Q@z>
 
-> But when i build RAMDISK image and insert the module, insmod is
-> doing fine. But after that i could not invoke any other application ( even
-> ps -ef is also giving segmentation fault.)
+> But the same module is working fine and kernel is also fine if i use NFS
+> and insert the module.
+> Any further info ?
 
-Looks like your module corrupts the kernel.
+Not really. The fact it works with NFS and not ramdisk may simply be that
+in one case it corrupts memory that is used, and the other it corrupts
+memory that isnt

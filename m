@@ -1,12 +1,27 @@
-Date: Fri, 22 Mar 2002 13:43:48 +0800 (CST)
-From: Aladdin Chang <chang@totoro.ee.ntust.edu.tw>
-Subject: Kernel space ..
-Message-ID: <Pine.LNX.4.33.0203221342340.1483-100000@totoro.ee.ntust.edu.tw>
+From: "Y.H. Ku" <iskoo@ms45.hinet.net>
+Subject: BootLoader on MIPS
+Date: Fri, 22 Mar 2002 16:16:28 +0800
+Message-ID: <NGBBILOAMLLIJMLIOCADKEKFCCAA.iskoo@ms45.hinet.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20020322054348.jPiOSjFuP8UTHeb5YFZHT39tQOrjFWdhjACHvc8VMmE@z>
+Message-ID: <20020322081628.6QmYr2ISHQPiAhE9mPMzwgM2SoEkR08wEsXZBGbRUys@z>
 
-Does mips-linux can handle more than 512M(0x80000000 ~ 0x9fffffff)
-kernel memory? 
+Hello there,
+
+I am trying to porting Prom monitor code to
+appropriate MIPS bootloader for loading Linux kernel
+
+I ever make a test sucessfully with ppcboot's to load MBXloader
+for transfering control to linux kernel (hardhat).
+
+But I can not find the entry, and make decision what kind of BOOT LOADER
+to use on MIPS platform.
+
+I have the ddb5476 board type linux from montavista,
+Could anybody give me some suggestion?
+
+--Sam

@@ -1,53 +1,24 @@
-From: newsletter@IPMailStop.com
-Subject: ADV: Free Investment Newsletter
-Date: Sat, 24 Jun 2000 17:09:59
-Message-ID: <667.425812.581765@www.IPMailStop.com>
+Subject: Re: errno assignment in _syscall macros and glibc
+Date: Sun, 25 Jun 2000 20:26:42 +0100 (BST)
+In-Reply-To: <20000625204334.E1572@bacchus.dhis.org> from "Ralf Baechle" at Jun 25, 2000 08:43:34 PM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E136I3I-0002yR-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-Message-ID: <20000624170959.8o4DclZel2h-dW4gkpRrmCJH6AHiB3BSlvzpjrvHrHU@z>
+To: Ralf Baechle <ralf@uni-koblenz.de>
+Cc: Andreas Jaeger <aj@suse.de>, Mike Klar <mfklar@ponymail.com>, linux-mips@oss.sgi.com, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <20000625192642.npeW7I-FnEyAMJq-nxal0nD6i0uUVQOSn6CqNT3tp2A@z>
 
-Hello, to be removed from our mailing list please visit 
-http://www.stockmarketletter.com/remove.html
+> Andreas - I think the syscall interface should finally officially be
+> declared a private interface between libc and the kernel, that is nobody
+> except these two should use it.  Many of the other attempts to use it
+> have been quite problematic - portabilitywise and worse.
 
-This a invitation to join our Free Investment Newsletter. In today's fast moving 
-markets you timely information to make informed decisions.
+Don't make it too private. glibc is still worryingly large for some embedded
+applications. Between a libc and the kernel yes, between glibc and the kernel
+no.
 
-Visit http://www.stockmarketletter.com for your Free Subscription.
-
-The Information You Want, When You Want It And it's FREE! 
-
-We think you will find our newsletter to be your most important research tool. 
-They are e-mailed to subscribers prior to publication on our web site. Our 
-newsletters feature in-depth company profiles, breaking financial news, links to 
-free delayed stock quotes and company news releases and educational articles prior 
-to general publication. We are here to help you identify and track prospering 
-companies. 
-
-Breaking News. We e-mail you information related to the companies we are tracking. 
-Through interviews with the people in charge, you will get the information and 
-clarification you need. 
-
-Fast Information Flow. We deal directly with public companies over the internet -- 
-eliminating the delay of traditional information gathering. 
-
-Background Information. By monitoring message boards and chat rooms we keep track 
-of what investors are interested in. We address everything from changes in 
-regulations, of interest to experienced investors, to the background and 
-educational information new investors need about the numerous exchanges and 
-listings.
-
-The Stock Market Letter is a privately held company specializing in distribution 
-of information about publicly traded companies. Our objective is to identify and 
-track investment opportunities for our subscribers. 
-
-Once again, visit http://www.stockmarketletter.com for your Free Subscription.
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+Alan

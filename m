@@ -1,45 +1,29 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@yon.engr.sgi.com (Ariel Faigon)
-Message-ID: <199604240532.WAA01149@yon.engr.sgi.com>
-Subject: Periodic Tables outside firewall
-Date: Tue, 23 Apr 1996 22:32:55 -0700 (PDT)
-In-Reply-To: <199604240156.VAA10149@huahaga.rutgers.edu> from "David S. Miller" at Apr 23, 96 09:56:27 pm
-Reply-To: ariel@cthulhu.engr.sgi.com
+From: alambie@wellington.sgi.com (Alistair Lambie)
+Message-ID: <199604250238.OAA02669@soyuz.wellington.sgi.com>
+Subject: Re: Kickoff meeting minutes
+Date: Thu, 25 Apr 1996 14:38:29 +1200 (NZT)
+In-Reply-To: <9604241922.ZM3884@surfdog.csd.sgi.com> from "Sandeep Cariapa" at Apr 24, 96 07:22:44 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "David S. Miller" <davem@caip.rutgers.edu>
+To: Sandeep Cariapa <cariapa@surfdog.csd.sgi.com>
 Cc: linux@yon.engr.sgi.com
-Message-ID: <19960424053255.FPVE92SajBciyr3xK5yZpR2zK1_aHnwABdOnWTOAM6M@z>
+Message-ID: <19960425023829.VmFPn2fTMgCIcTMVuDrGdpNjqm3wsTaA8e5_PSav6e4@z>
 
->
->   Date: Tue, 23 Apr 1996 09:35:24 -0700
->   From: wje@fir.esd.sgi.com (William J. Earl)
->
->	There are tables of the systems under
->
->	   http://ssales.corp.sgi.com/products/html/periodic_table.html
->
->   Unfortunately, these are inside the firewall.
->
+> 
+> 	At the meeting there was some talk about hooking up with the folks
+> in Germany who're porting to MIPS boxes. If there is any interest, the
+> email address is: linux@informatik.uni-koblenz.de
+> Sandeep
+> 
+Another contact is: andy@waldorf-gmbh.de
 
-	http://www.sgi.com/Technology/index.html
+He was the one driving the porting group when I was last talking with them...when 
+asked about SGI boxes he always complained that the reason they didn't work on them
+was that they couldn't get the info they needed!  I'm sure they would be interested
+in what is happening here.  As far as I know they have an ARCS machine up and
+running, and have all the crossdev stuff done (but I guess we don't need that).
 
-Is outside the firewall and has similar content (click on
-"Periodic Tables")
-
-I also found some MIPS Assembly guides under Silicon Surf
-(they actually are pointers to www.mips.com) for example:
-
-	http://www.mips.com/r4400/UMan/R4000.book_5.html
-
-Includes the R4K instruction set and much more.
-(I believe Bill mentioned this)
-
-I tried to mirror what's in our technical library, but it turns
-out it is all generated from SGML by DynaWeb using gci scripts
-so its too hairy to deal with. Anyway, the above is just as good.
-
--- 
-Peace, Ariel
+Cheers, Alistair

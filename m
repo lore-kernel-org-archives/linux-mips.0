@@ -1,35 +1,142 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199708141721.NAA05220@neon.ingenia.ca>
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199708141832.LAA29943@oz.engr.sgi.com>
 Subject: Re: linus accessible from within SGI
-In-Reply-To: <9708141731.ZM8013@wolfi.munich.sgi.com> from Wolfgang Szoecs at "Aug 14, 97 05:31:49 pm"
-Date: Thu, 14 Aug 1997 13:21:27 -0400 (EDT)
+Date: Thu, 14 Aug 1997 11:32:41 -0700 (PDT)
+In-Reply-To: <199708141315.JAA20926@dormammu.detroit.sgi.com> from "Michael O'Connor" at Aug 14, 97 09:15:30 am
+Reply-To: ariel@sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Wolfgang Szoecs <wolfi@wolfi.munich.sgi.com>
-Cc: Linux/SGI list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970814172127.RwyFivq7XqJ1fvtJ1ZH-LjxGmUhSqUSivvhemkb91Bw@z>
+To: Michael O'Connor <mjo@sgi.com>
+Cc: eak@detroit.sgi.com, ariel@sgi.com, linux@cthulhu.engr.sgi.com, comm-tech@rock.csd.sgi.com
+Message-ID: <19970814183241.DsFtWlbw1NyD2mv4lSBCG0xFDekG5-ApKVtvVoooPLM@z>
 
-Thus spake Wolfgang Szoecs:
-> BTW, i'm searching for a kernel image for booting a linux-NFS-root.
-> Does anybody have one, and could give me that ?
-> (a root-fs i already have)
+:
+:
+:|Has anyone been able to get "mirror" work via socks through our
+:|firewall?
+:
+:By 'mirror', I take it you mean the perl mirror program.  :)
+:
+:The more general question is:  How do you get perl TCP/IP programs
+:to work over SOCKS?  It appears that Simon Cooper, sc@sgi.com, is
+:working on a perl module to do that.  Suggest you talk with him, or
+:use something else to mirror -- some of the nouveau FTP clients
+:do this, and could probably be easily SOCKSified.  
+:
+In the case of perl it is easy to cross the firewall by simply
+using a proxy. i.e. you don't need to SOCSify you perl since
+the proxy (which is SOCKsified) does the job for you.
 
-Oh yeah, I forgot to tell the list about this:
-
-Miguel gave me his kernel, since I couldn't build one with either my
-tools or the ones on linus, and I put it up for Jan at
-ftp://ftp.linux.sgi.com/pub/testing/vmlinux-970813-jwr.gz
-(You'll need to gunzip it for use.)
-
-Mike
+Enclosed below is a (http) 'GET' script that uses one possible
+SGI proxy when given the -e option. The method uses is the name
+of the script so you may symlink it to 'HEAD' for example.
 
 -- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>           Resident Linux bigot and kernel hacker. (OOPS!)           
-#> `If you get bitten by a bug, tough luck...the one thing I won't do  
-#> is feel sorry for you.  In fact, I might ask you to do it all over  
-#> again, just to get more information.  I'm a heartless bastard.'     
-#>                       -- Linus Torvalds (on development kernels)    
+Peace, Ariel
+
+#!/usr/bin/perl5
+#
+# perl5+LWP script to fetch a URL
+#
+# Usage:
+#	Get [-e] [-t<timeout>] <URL>
+#
+# Author:
+#	ariel@sgi.com, 1996
+#
+use HTTP::Status;
+use LWP::UserAgent;
+use LWP::Protocol;
+
+{
+	#
+	# Override these methods. Their default behavior is bad for us.
+	#
+	package LWP::Protocol; sub use_alarm { shift->_elem('use_alarm', 0); }
+	package LWP::UserAgent; sub redirect_ok { 0; }
+}
+
+
+require 'getopts.pl';
+&Getopts('t:m:e');
+
+$0 =~ s,.*/,,;
+
+unless ($ARGV[0]) {
+    die "Usage: $0 [-e -tTIMEOUT -mMETHOD] URL
+	-e	Use a proxy for [e]xternal accesses
+	default METHOD is program name
+	default TIMEOUT is 7 sec for internal, 14 for external\n";
+}
+
+if ($opt_t =~ /^\d+$/) {
+    $get_timeout = $opt_t;
+} else {
+    $get_timeout = 7;
+    $get_timeout *= 2 if ($opt_e);
+}
+($method = $opt_m) || ($method = $0);
+$method =~ tr,a-z,A-Z,;
+
+# print "get started\n";
+&get($method, $ARGV[0], $get_timeout);
+
+
+# get($method, $from_url, $timeout)
+#       Fetches $url into a $get_contents. Gives up after $timeout sec.
+#       returns the HTTP get code (200 for OK etc.)
+#
+sub get {
+    my($method, $url, $timeout) = @_;
+    my ($ua, $request, $response);    
+    my ($key, $get_rc, $lf);
+
+    $ua = new LWP::UserAgent;
+    $ua->use_alarm(1);
+    $ua->timeout($timeout);
+    $ua->agent("Get-perl5/v1.0");
+    if ($opt_e) {
+	$ua->proxy([ 'http' ], 'http://www-dms.esd.sgi.com:8080/');
+    }
+
+    if ($url =~ m,^/,) {
+	$url = 'localhost' . $url;
+    }
+    unless ($url =~ /^[a-z]+:/) {
+	$url = 'http://' . $url;
+    }
+    $get_content = '';
+    $Content_length = '';
+
+    $request = new HTTP::Request($method, $url);
+    # $request->push_header('If-Modified-Since' => 'Thu, 01-Jan-70 00:00:00 GMT');
+
+    print STDERR $method, ' ', $url, ': ';
+
+    $response = $ua->request($request);
+
+    $get_rc = $response->code;
+    $get_content = $response->content if $response->is_success;
+    $error_msg = status_message($get_rc);
+
+    if ($get_rc == 200) {                       # 200: OK
+	$Content_length = $response->header('Content-length');
+    }
+    # Some servers do not send the content length...
+    if ($Content_length eq '' &&  $get_content) {
+	$Content_length = length($get_content);
+    }
+
+    print STDERR $error_msg,
+        ($Content_length ? " ($Content_length)" : ''), "\n";
+
+    print STDERR $response->headers_as_string;
+    print $get_content;
+
+    $get_rc;
+}
+
+__END__

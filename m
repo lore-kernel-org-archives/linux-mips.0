@@ -1,54 +1,34 @@
-Message-ID: <006c01c07765$fdd26440$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Pine.GSO.3.96.1010105214251.9384G-100000@delta.ds2.pg.gda.pl>
-Subject: Re: questions on the cross-compiler
-Date: Fri, 5 Jan 2001 23:22:06 +0100
+From: "Jay Carlson" <nop@nop.com>
+Subject: RE: questions on the cross-compiler
+Date: Fri, 5 Jan 2001 20:46:43 -0500
+Message-ID: <KEEOIBGCMINLAHMMNDJNGEFGCAAA.nop@nop.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <006c01c07765$fdd26440$0deca8c0@Ulysses>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Lisa.Hsu@taec.toshiba.com
+To: "Kevin D. Kissell" <kevink@mips.com>, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Lisa.Hsu@taec.toshiba.com
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20010105222206._CpK1qYPc8zEmkEzr0XtrVSIG0DfGKMms8yJQT2siXc@z>
+Message-ID: <20010106014643.rTHAYDpB1TGfd5pTaKlRk24mOra02xSQeuZ6SSsF_c0@z>
 
-> > With the help from Kevin Kissell,  I've found out that  the compilation
-> > directives "set .mips3[4]" were turned on before cpu_probe() and
-cpu_probe
-> > () functions in my head.S file.  This is the reason why I've got that
-wrong
-> > code generated although I've specified mip1 in the gcc options.
-> >
-> > I 've temporarily used #define to add "set .mips1" in the code to fix
-the
-> > problem.   My question now,  is: how can we make the kernel code
-flexible
-> > to free from the problem of the one that I've got?
+Kevin D. Kissell writes:
+
+> Lisa's underlying problem may be that there isn't a Config
+> option for the R39xx CPUs, and she's ended up getting an
+> R4000 (or whatever) configuration by default.
 >
-> 1. Don't use "set .mips*" unless absolutely needed.  The right ISA level
-> is already set via a compiler option depending on the host CPU selected
-> upon kernel configuration.
+> At some point specific support for the R3900 features
+> (MIPS II ISA, seperate hardware interrupt vector, etc.)
+> should go into the kernel,
+[...]
 
-Lisa's underlying problem may be that there isn't a Config
-option for the R39xx CPUs, and she's ended up getting an
-R4000 (or whatever) configuration by default.
+http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/linux/arch/mips/r39xx/?cvsroot
+=linux-vr
 
-At some point specific support for the R3900 features
-(MIPS II ISA, seperate hardware interrupt vector, etc.)
-should go into the kernel, but for the moment, you should
-make sure that when you do the initial "make config"
-(or xconfig or menuconfig or whatever) you select an
-R3000 CPU.  You won't get it by default.  You may
-also need to hack the head.S code to detect an R39xx PrID
-value and replace it with an R3000  value before it gets used
-by the kernel.  Otherwise, you may need to generate additional
-cases/conditionals for R3900 wherever you see R3000 called
-out in the existing code.  If your kernel base has my cpu_probe()
-in C, adding R39xx support will be much easier, but while
-I *think* I set it up such that, if the R4K_EXCEPTION_MODEL
-option bit isn't set, the kernel assumes an R3K model, I never
-tested that option - not having any R3xxx platforms in
-the lab!
+The TX3912 is supported by the Linux VR kernel tree.  I'm not sure it's been
+tested in a while, but kernel sources from a few months ago run nice on my
+VTech Helio.
 
-            Kevin K.
+Jay

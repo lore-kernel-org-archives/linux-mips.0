@@ -1,34 +1,67 @@
-Reply-To: <a.voropay@vmb-service.ru>
-From: "Alec Voropay" <a.voropay@vmb-service.ru>
-Subject: RE: MIPS Magnum ARCsystem
-Date: Tue, 14 Sep 2004 21:41:13 +0400
-Message-ID: <021a01c49a82$0778cdc0$1701a8c0@alec>
+Date: Wed, 15 Sep 2004 10:45:15 -0400
+Message-ID: <4139C8B50000007D@messageii.ucentric.com>
+In-Reply-To: <5.1.0.14.0.20040915103551.03b2ec90@172.16.1.10>
+From: "Brad Kemp" <bkemp@ucentric.com>
+Subject: RE: Problem with ARP response
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20040914171124.GA8200@aton.pcde.inka.de>
-Return-Path: <a.voropay@vmb-service.ru>
+Return-Path: <bkemp@ucentric.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Dennis Grevenstein' <dennis@pcde.inka.de>, linux-mips@linux-mips.org
-Message-ID: <20040914174113.stT0R3ElWHYFBpBAfYbotYHc2g9ktJx6tnfL3G_l63s@z>
-
-Hi!
-
-> However, I guess the parts are basically a Magnum 4000.
-
- Great. I have a ACER PICA-61 (MIPS Magnum clone).
-http://www.sensi.org/~alec/mips/acer_pica.html
-
->Now I'm trying to find out what kind of operating system I could use
-
- Unfortunately, I can't run ANY OS on this machine.
-- Linux for this architecture was broken since early 2.2 kernel...
-- The OpenBSD/arc port has been discontinued after the 2.3 release.
-- To build a NetBSD/arc I need to install a full NetBSD cross
-development on the i386 host.
+To: "Rajesh B. V." <rajeshbv@intoto.com>, linux-mips@linux-mips.org
+Message-ID: <20040915144515.RaBHuxYNSMazklBx4aUUzhYvDKIix1zPJ7YjSNp4OTs@z>
 
 
---
--=AV=-
+>-- Original Message --
+>Date:	Wed, 15 Sep 2004 10:45:06 +0530
+>To:	linux-mips@linux-mips.org
+>From:	"Rajesh B. V." <rajeshbv@intoto.com>
+>Subject: Problem with ARP response
+>Cc:	rajeshbv@intoto.com
+>
+>
+>Hi All,
+>
+>I have a network setup where both the LAN interface (eth0) and WAN 
+>interface (eth1) of a Router running Linux will be put into same Switch.
+>The setup is :
+>LAN network is : 192.168.1.0/24  ( Router LAN interface IP is 
+>192.168.1.1/24 with xx:01 as MAC)
+>Router WAN interface IP is a static public IP with xx:02 as MAC.
+>
+>Now when a PC from the LAN networks tries to reach (ping) LAN interface
+
+>(eth0) of Router i observe vague ARP entry in the PC for the IP.
+>I see some times WAN interface (eth1) MAC as the ARP entry in PC and some
+>
+>times LAN interface (eth0) MAC as the ARP entry in the PC.
+>For every ARP request i see two responses one with WAN interface MAC and
+>
+>one with LAN interface MAC.
+>
+>I observed this is happening because, both the interfaces are receiving
+the
+>
+>ARP broadcast request from the PC and sending up the stack to ARP module
+>
+>and which responds with the corresponding interface MAC upon which it 
+>received the packet.
+>
+>My requirement is to make ARP module not to respond for the packet received
+>
+>on WAN interface (eth1) with requested IP as LAN interface (eth0) IP.
+>
+>Will the arp_filter () in net/ipv4/arp.c can do this ?
+>Also is there any draw back by doing so ?
+>
+>Regards,
+>--Rajesh
+>
+>
+
+If you disable the arp response from eth1, no traffic will go to it. Is this
+really what you want to do? 
+You might want to look in to 802.1q VLAN tagging if you want to run to logical
+networks on one physical network
+Brad

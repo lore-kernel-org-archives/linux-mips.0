@@ -1,8 +1,8 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199807160723.JAA29043@aisa.fi.muni.cz>
+Message-ID: <199807161354.PAA09548@aisa.fi.muni.cz>
 Subject: Re: The pre-release of Hard Hat Linux for SGI...
 In-Reply-To: <Pine.LNX.3.95.980715180435.22020I-100000@lager.engsoc.carleton.ca> from Alex deVries at "Jul 15, 98 06:13:15 pm"
-Date: Thu, 16 Jul 1998 09:23:37 +0200 (MET DST)
+Date: Thu, 16 Jul 1998 15:54:50 +0200 (MET DST)
 From: Honza Pazdziora <adelton@informatics.muni.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -10,61 +10,86 @@ Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Alex deVries <adevries@engsoc.carleton.ca>
 Cc: adelton@informatics.muni.cz, linux@cthulhu.engr.sgi.com
-Message-ID: <19980716072337.w5XmqCYBNhdkg2SAs9FK6UDvhR4c1hYlUqTTC4qFRZY@z>
+Message-ID: <19980716135450.I7FGNvekNqlbQEHDCxp4DPMjoI1WqdFgsN1CZZ9-FKE@z>
 
+
+Alright, here are the steps I needed to do in order to have machine that
+would allow me to log in. To repeat what I stared with, I installed
+just the newtorked WS, did not select any aditional packages, did not
+remove any from selection, just base and network.
+
+The first problem: Unable to open initial console. Since you are able
+to boot Upgrade from network and have the second console available
+(do not start the upgrade, just boot it and hit twice Enter to get rid
+of those messages about mount failing), you can create the entries
+in the dev directory, that are missing and cause the trouble. I did
+
+	cd /dev
+	tar cf - * | ( cd /mnt/dev ; tar xvf - )
+
+so you take the devices from the installation root (there are just
+about 8 of them, but there is console ther and that's you need).
+The install.log shows that the installation of the dev RPM failed,
+so that's why we need to create the devices by hand (obviously, when
+it says it fails, it really fails in some way ;-) So you have
+console but do not have devices for disks, so Linux won't be able
+to remount root, etc.
+
+I've found device /tmp/sdb2 still on the second console of Upgrade,
+numbers 8/18, so I created /mnt/dev/sdb2 and /mnt/dev/sdb1 with 8/18
+and 8/17. You might be installing to different drives, but anyway,
+look around and you'll find the numbers.
+
+If you do not have /etc/passwd like I didn't, you can do
+
+	echo 'root::0:0:root:/:/bin/bash' > /mnt/etc/passwd
+
+to be able to log in after you reboot.
+
+I think it's time to reboot, so do sync and reboot.
+
+I had to boot with init=/bin/bash because first I forgot to create the
+/etc/passwd, and second, the /bin/login said something about libraries
+(it just blinked and returned the prompt but I saw something like .so
+so I think that was it). So once you have bash# prompt, do
+/sbin/ldconfig.
+
+> > Some of the packages still complain about failing, on console 4 Unable
+> > to load interpreter.
+
+P.S.: I maybe did not stressed out that some of the packages failed
+_and_ some gave the following message -- I do not know which gave the
+message about ldconfig, but certainly not all that failed.
+
+		During the install of 230 packages there were
+> > about 20 messages
+> > 	ldconfig: Exception at [<88109534>] (8810960c)
 > 
-> > About 3 packages before end, the install failed with Out of memory,
-> > Install exited abnormally, messages about signal, etc.
+> _THAT_ worries me a lot.
 > 
-> That's a problem.  How much memory do you have?
+> If you have an existing install of linux on your SGI, do this:
+> - install the ldconfig rpm that's in the distribution you have
 
-32 MB.
+It was installed fine already ...
 
-> > So I rebooted and tried just with networked WS and development, this
-> > failed in about 60 % with Install exited abnormally.
-> 
-> What package was installing at the time the install broke?
+> - run ldconfig
 
-ncurses4, I believe.
+... so I did run ldconfig ...
 
-> > The third attempt I did was only 126 packages of base and networked
-> > WS, this finished fine.
-> 
-> Good.
-> 
-> > After booting the new kernel, I get Unable to open an initial console.
-> 
-> Did you pass a root= variable to the kernel when booting?  You should
-> normally have to do something like:
-> 
-> boot vmlinux root=/dev/sdb1
+> Does that still give the exception?
 
-Yes, sure. I do $linux ;-)
+... and no, no exception, just some messages about some libraries
+that I decided are harmless. Anyway, after this, I was able to log in
+on prompt and start ncftp to get the dev RPM and install it and install
+ssh to get to my mail and send this report.
 
-> Does the kernel see the partitions on your disk?
+Do you want the install.log, Alex? I thought you said that the problem
+with failing packages was caused by csh and that it was harmless
+(just a message). I'm affraid it really means some problem, because
+it did not create the /dev entries and did not create the
+/etc/passwd.
 
-Yes, upto there everything is fine. The Unable to open an initial
-console message comes after the message about freeing kernel memory
--- 44kB. The system however seems to be doing something after that
--- at least accoring to the sound of the disk. It works and then it
-goes silent. When I boot init=/bin/bash, I again get the Unable to
-open an initial console message and then nothing, but the while
-before the disk goes silent is shorter. So I assume the prompt is
-somewhere out there.
-
-Interesting thing (for me, anyway ;-): when I tried to boot the old
-kernel (RH 5.1 A 1, 2.1.99), I got the same message about initial
-console. So there must be something wrong on the root filesystem.
-
-During the isntallation, I was not able to run a single process (like
-mount or cat, all end with Segmentation fault). When I booted to
-Upgrade, I was able to work with the /mnt filesystem just fine. I
-thought the initial console could be caused by a missing /etc/inittab
-but it's there. What could be the case? The upgrade fails with signal
-8 when it should start installing the first selected package, but
-before that I can work rather well (just tried ls, cat, mount) with
-the filesystem, so I could fix the initial console problem, if I knew
-how ;-)
+More later,
 
 ------------------------------------------------------------------------
  Honza Pazdziora | adelton@fi.muni.cz | http://www.fi.muni.cz/~adelton/

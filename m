@@ -1,120 +1,188 @@
-Received: from fw01.bwg.de (localhost [127.0.0.1])
-	by fw01.bwg.de (8.11.6p2G/8.11.6) with ESMTP id iAK9eCR15962
-	for <linux-mips@linux-mips.org>; Sat, 20 Nov 2004 10:40:12 +0100 (CET)
-From: =?iso-8859-1?Q?Ralf_R=F6sch?= <ralf.roesch@rw-gmbh.de>
-Subject: [PATCH] Fix for Toshiba  tx4297.h 
-Date: Sat, 20 Nov 2004 10:40:20 +0100
-Message-ID: <NHBBLBCCGMJFJIKAMKLHEEHGCCAA.ralf.roesch@rw-gmbh.de>
+Received: from dlep90.itg.ti.com ([157.170.152.54])
+	by dragon.ti.com (8.13.1/8.13.1) with ESMTP id iANIJSQ3026310
+	for <linux-mips@linux-mips.org>; Tue, 23 Nov 2004 12:19:28 -0600 (CST)
+Received: from dlee2k70.ent.ti.com (localhost [127.0.0.1])
+	by dlep90.itg.ti.com (8.12.11/8.12.11) with ESMTP id iANIJRXS016610
+	for <linux-mips@linux-mips.org>; Tue, 23 Nov 2004 12:19:28 -0600 (CST)
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0023_01C4CEED.5579E780"
-Return-Path: <ralf.roesch@rw-gmbh.de>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C4D188.F405672E"
+Subject: Cache Question
+Date: Tue, 23 Nov 2004 12:19:21 -0600
+Message-ID: <C4D23DECD6CD714BBFB38B0AE8D25A3A24FF66@dlee2k03.ent.ti.com>
+From: "Kapoor, Pankaj" <pkapoor@ti.com>
+Return-Path: <pkapoor@ti.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20041120094020.LiPAxjQ_lwydzwipJUVtKY2NmNFxW4wTseQEg3lXEQ4@z>
+Message-ID: <20041123181921.zYPwwAVkWg82Y8y7Pbl2NOTt9h5FsQ_g7wEYS9Wdqc8@z>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0023_01C4CEED.5579E780
+------_=_NextPart_001_01C4D188.F405672E
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-This patch fixes wrong address registers for the TX4927.
-I have checked against the TMPR4927A data sheet and 
-tested with some of the registers.
-
-The patch included is against 2.6.
-Could anyone review and apply please?
-
-Thanks and regards
-  Ralf Roesch
-
-
-------=_NextPart_000_0023_01C4CEED.5579E780
-Content-Type: application/octet-stream;
-	name="tx4927.h-2004-11-18-rnw.patch"
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="tx4927.h-2004-11-18-rnw.patch"
 
-Index: include/asm-mips/tx4927/tx4927.h=0A=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
-RCS file: /home/cvs/linux/include/asm-mips/tx4927/tx4927.h,v=0A=
-retrieving revision 1.2=0A=
-diff -u -r1.2 tx4927.h=0A=
---- include/asm-mips/tx4927/tx4927.h	11 Apr 2003 17:28:35 -0000	1.2=0A=
-+++ include/asm-mips/tx4927/tx4927.h	18 Nov 2004 22:19:20 -0000=0A=
-@@ -88,8 +88,8 @@=0A=
- =0A=
- =0A=
- /* TX4927 Configuration registers (64-bit registers) */=0A=
--#define TX4927_CONFIG_BASE                       0xe300=0A=
--#define TX4927_CONFIG_CCFG                       0xe300=0A=
-+#define TX4927_CONFIG_BASE                       0xe000=0A=
-+#define TX4927_CONFIG_CCFG                       0xe000=0A=
- #define TX4927_CONFIG_CCFG_RESERVED_42_63                BM_63_42=0A=
- #define TX4927_CONFIG_CCFG_WDRST                         BM_41_41=0A=
- #define TX4927_CONFIG_CCFG_WDREXEN                       BM_40_40=0A=
-@@ -124,14 +124,14 @@=0A=
- #define TX4927_CONFIG_CCFG_ENDIAN                        BM_02_02=0A=
- #define TX4927_CONFIG_CCFG_ARMODE                        BM_01_01=0A=
- #define TX4927_CONFIG_CCFG_ACEHOLD                       BM_00_00=0A=
--#define TX4927_CONFIG_REVID                      0xe308 =0A=
-+#define TX4927_CONFIG_REVID                      0xe008 =0A=
- #define TX4927_CONFIG_REVID_RESERVED_32_63               BM_32_63=0A=
- #define TX4927_CONFIG_REVID_PCODE                        BM_16_31=0A=
- #define TX4927_CONFIG_REVID_MJERREV                      BM_12_15=0A=
- #define TX4927_CONFIG_REVID_MINEREV                      BM_08_11=0A=
- #define TX4927_CONFIG_REVID_MJREV                        BM_04_07=0A=
- #define TX4927_CONFIG_REVID_MINREV                       BM_00_03=0A=
--#define TX4927_CONFIG_PCFG                       0xe310 =0A=
-+#define TX4927_CONFIG_PCFG                       0xe010 =0A=
- #define TX4927_CONFIG_PCFG_RESERVED_57_63                BM_57_63=0A=
- #define TX4927_CONFIG_PCFG_DRVDATA                       BM_56_56=0A=
- #define TX4927_CONFIG_PCFG_DRVCB                         BM_55_55=0A=
-@@ -197,10 +197,10 @@=0A=
- #define TX4927_CONFIG_PCFG_DMASEL0_SIO1                  BM_00_00=0A=
- #define TX4927_CONFIG_PCFG_DMASEL0_ACLC0                 BM_01_01=0A=
- #define TX4927_CONFIG_PCFG_DMASEL0_ACLC2                 BM_00_01=0A=
--#define TX4927_CONFIG_TOEA                       0xe318 =0A=
-+#define TX4927_CONFIG_TOEA                       0xe018 =0A=
- #define TX4927_CONFIG_TOEA_RESERVED_36_63                BM_36_63=0A=
- #define TX4927_CONFIG_TOEA_TOEA                          BM_00_35=0A=
--#define TX4927_CONFIG_CLKCTR                     0xe320 =0A=
-+#define TX4927_CONFIG_CLKCTR                     0xe020 =0A=
- #define TX4927_CONFIG_CLKCTR_RESERVED_26_63              BM_26_63=0A=
- #define TX4927_CONFIG_CLKCTR_ACLCKD                      BM_25_25=0A=
- #define TX4927_CONFIG_CLKCTR_PIOCKD                      BM_24_24=0A=
-@@ -223,7 +223,7 @@=0A=
- #define TX4927_CONFIG_CLKCTR_TM2RST                      BM_02_02=0A=
- #define TX4927_CONFIG_CLKCTR_SIO0RST                     BM_01_01=0A=
- #define TX4927_CONFIG_CLKCTR_SIO1RST                     BM_00_00=0A=
--#define TX4927_CONFIG_GARBC                      0xe330 =0A=
-+#define TX4927_CONFIG_GARBC                      0xe030 =0A=
- #define TX4927_CONFIG_GARBC_RESERVED_10_63               BM_10_63=0A=
- #define TX4927_CONFIG_GARBC_SET_09                       BM_09_09=0A=
- #define TX4927_CONFIG_GARBC_ARBMD                        BM_08_08=0A=
-@@ -243,7 +243,7 @@=0A=
- #define TX4927_CONFIG_GARBC_PRIORITY_H3_PDMAC            BM_00_00=0A=
- #define TX4927_CONFIG_GARBC_PRIORITY_H3_DMAC             BM_01_01=0A=
- #define TX4927_CONFIG_GARBC_PRIORITY_H3_BAD_VALUE        BM_00_01=0A=
--#define TX4927_CONFIG_RAMP                       0xe348 =0A=
-+#define TX4927_CONFIG_RAMP                       0xe048 =0A=
- #define TX4927_CONFIG_RAMP_RESERVED_20_63                BM_20_63=0A=
- #define TX4927_CONFIG_RAMP_RAMP                          BM_00_19=0A=
- #define TX4927_CONFIG_LIMIT                      0xefff=0A=
-@@ -456,7 +456,7 @@=0A=
- #define TX4927_ACLC_ACINTSTS            0xf710=0A=
- #define TX4927_ACLC_ACINTMSTS           0xf714=0A=
- #define TX4927_ACLC_ACINTEN             0xf718=0A=
--#define TX4927_ACLC_ACINTDIS            0xfR71c=0A=
-+#define TX4927_ACLC_ACINTDIS            0xf71c=0A=
- #define TX4927_ACLC_ACSEMAPH            0xf720=0A=
- #define TX4927_ACLC_ACGPIDAT            0xf740=0A=
- #define TX4927_ACLC_ACGPODAT            0xf744=0A=
+Hi,
 
-------=_NextPart_000_0023_01C4CEED.5579E780--
+Is there any specific reason why the cache invalidation routine is
+executed with interrupts disabled?=20
+
+Example:=20
+
+static void
+mips32_dma_cache_inv_pc(unsigned long addr, unsigned long size)
+{
+	unsigned long end, a;
+	unsigned int flags;
+
+	if (size >=3D dcache_size) {
+		flush_cache_all();
+	} else {
+	        __save_and_cli(flags);
+		a =3D addr & ~(dc_lsize - 1);
+		end =3D (addr + size) & ~(dc_lsize - 1);
+		while (1) {
+			flush_dcache_line(a); /* Hit_Writeback_Inv_D */
+			if (a =3D=3D end) break;
+			a +=3D dc_lsize;
+		}
+		__restore_flags(flags);
+	}
+
+	bc_inv(addr, size);
+}
+
+Thanks.
+- Pankaj
+
+------_=_NextPart_001_01C4D188.F405672E
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.6603.0">
+<TITLE>Cache Question</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us">Hi,</SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT COLOR=3D"#000000">Is there =
+any specific reason why the</FONT></SPAN><SPAN LANG=3D"en-us"><FONT =
+COLOR=3D"#000000"> cache invalidation routine is executed with =
+interrupts disabled? </FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT =
+COLOR=3D"#000000">Example:</FONT></SPAN><SPAN LANG=3D"en-us"><FONT =
+COLOR=3D"#000000"></FONT></SPAN><SPAN LANG=3D"en-us"> </SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT COLOR=3D"#000000">static =
+void</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT =
+COLOR=3D"#000000">mips32_dma_cache_inv_pc(unsigned long addr, unsigned =
+long size)</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT =
+COLOR=3D"#000000">{</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+COLOR=3D"#000000">unsigned long end, a;</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+COLOR=3D"#000000">unsigned int flags;</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+COLOR=3D"#000000">if (size &gt;=3D dcache_size) {</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+COLOR=3D"#000000">flush_cache_all();</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+COLOR=3D"#000000">} else {</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+COLOR=3D"#000000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+__save_and_cli(flags);</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT COLOR=3D"#000000">a =3D =
+addr &amp; ~(dc_lsize - 1);</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT COLOR=3D"#000000">end =
+=3D (addr + size) &amp; ~(dc_lsize - 1);</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT COLOR=3D"#000000">while =
+(1) {</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+COLOR=3D"#000000">flush_dcache_line(a); /* Hit_Writeback_Inv_D =
+*/</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT COLOR=3D"#000000">if (a =
+=3D=3D end) break;</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT COLOR=3D"#000000">a =
++=3D dc_lsize;</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+COLOR=3D"#000000">}</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+COLOR=3D"#000000">__restore_flags(flags);</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+COLOR=3D"#000000">}</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN =
+LANG=3D"en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+COLOR=3D"#000000">bc_inv(addr, size);</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT =
+COLOR=3D"#000000">}</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT =
+COLOR=3D"#000000">Thanks.</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT COLOR=3D"#000000">- =
+Pankaj</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C4D188.F405672E--

@@ -1,30 +1,41 @@
-Message-ID: <001101c16725$c0a6eae0$4a1c690a@huawei.com>
-From: "machael" <dony.he@huawei.com>
-References: <013301c165cc$5d030fa0$4a1c690a@huawei.com> <20011106130839.B30219@dea.linux-mips.net>
-Subject: Re: vmalloc bugs in 2.4.5???
-Date: Wed, 7 Nov 2001 08:47:18 +0800
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: parent and child processes share the same stack.
+Date: Tue, 6 Nov 2001 17:27:08 -0800
+Message-ID: <84CE342693F11946B9F54B18C1AB837B14AD5A@ex2k.pcs.psdc.com>
+From: "Steven Liu" <stevenliu@psdc.com>
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20011107004718.Tzx8JRkTGj6ZPjRPJCsv1hHuW6sApq3kr97fCs0umEA@z>
+To: linux-mips@oss.sgi.com
+Cc: Steven Liu <stevenliu@psdc.com>
+Message-ID: <20011107012708.GkBgAE8bET3x7KqnK9gOBc1qc7XBwCoPVPopPeZSh9w@z>
 
-> >     I use linux-2.4.5 and I think VMALLOC may have some bugs which i
-don't
-> > know how to fixup.
->
-> Vmalloc is probably innocent I'd rather guess cache flushing is broken on
-> your platform.
+Hi All:
 
-Yes, It is possible. But I don't know how to fixup this broken cache
-flushing?
-And when and where should I flush cache (icache and dcache) manually?I am
-really know little things about cache.
+I am porting Linux to my r3000 cpu now and meet with a problem when the
+init program is running. 
 
-Can you help me?
-Thank you very much.
+When the init process (pid=1) forks the first child (pid=7), the parent
+process called copy_thread( ) which did the following assignment:
+childregs->regs[29] = usp ( Here, usp is the parent's stack pointer)
+(see arch/mips/kerenel/process.c).  So, the child and the parent share
+the same stack.
 
-machael
+After the fork, the parent called write_utmp_wtmp( ) which then called
+memset(&utmp,0,sizeof(utmp)) and erased the stack. As we know, this
+stack is shared by the parent and the child, the child will die when the
+child is scheduled to run because the contents of the stack are all
+zeros.
+
+I think the stack should not be shared by the parent and the child after
+anyone tries to modify the stack, that is, the child and parent should
+have separete stacks. I searched the code and could not find the place
+where the separation is given. 
+
+Any help would be greatly appreciated.
+
+Thanks,
+
+Steven Liu

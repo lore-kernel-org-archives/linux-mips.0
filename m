@@ -1,45 +1,16 @@
-Message-ID: <013401c1ebb1$12e39cd0$4c00a8c0@prefect>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <3CC6CC21.45E7ABB1@mvista.com>
-Subject: Re: ps2 keyboard -- no key down events
-Date: Wed, 24 Apr 2002 12:57:09 -0400
+Subject: Re: reiserfs
+Date: Sat, 27 Apr 2002 21:19:53 +0100 (BST)
+In-Reply-To: <1019689986.8208.104.camel@zeus> from "Pete Popov" at Apr 24, 2002 04:13:06 PM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <E171Yfh-0000gA-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: michael_pruznick@mvista.com, linux-mips@oss.sgi.com
-Message-ID: <20020424165709.Wyno7NV5FqFkv91l3XRNUrtpPNVmIqYNpMNahPeSeaI@z>
+To: Pete Popov <ppopov@mvista.com>
+Cc: linux-mips <linux-mips@oss.sgi.com>
+Message-ID: <20020427201953.EplP3pK0WKLP4R21Ty3m42CUBryCEpgiFyhrzTL0Wh0@z>
 
-Could it be a level-trigger versus edge-trigger interrupt setting?
+> Has anyone been able to run reiserfs on big endian systems?
 
-Regards,
-Brad
-
------ Original Message ----- 
-From: "Michael Pruznick" <michael_pruznick@mvista.com>
-To: <linux-mips@oss.sgi.com>
-Sent: Wednesday, April 24, 2002 11:15 AM
-Subject: ps2 keyboard -- no key down events
-
-
-> I'm working on this mips board with a smsc 90e66 south bridge and
-> fdc37m812 super io.  I'm using the standard pc_keyb.c driver.  I only
-> see keyboard interrupts and KBD_STAT_OBF set in response to "key up"
-> events.  I never see them in response to "key down" events.  Thus, the
-> shell running on the vga console never gets my input (since it is the
-> "key down" events that pass the character typed to the shell).
-> 
-> At this point, I'm thinking that the standard driver needs some mods
-> to work with the super io's ps2 controller.  The smsc doc only covers
-> programming the plug and play registers and doesn't give any info about
-> programming the ps2 controller.
-> 
-> I've looked around the web, but haven't found anything useful.
-> 
-> Can anyone point me towards some resources that might help out?
-> 
-> -- 
-> Michael Pruznick, michael_pruznick@mvista.com, www.mvista.com
-> MontaVista Software, 1237 East Arques Ave, Sunnyvale, CA 94085
-> 
+Should work on newer 2.4 kernels

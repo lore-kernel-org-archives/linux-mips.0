@@ -1,33 +1,25 @@
-Date: Tue, 9 Jan 2001 11:23:17 +0100 (CET)
-From: Predrag Malicevic <pmalic@blic.net>
-Subject: Re: O200 problem...
-In-Reply-To: <20010109004138.A12181@bacchus.dhis.org>
-Message-ID: <Pine.LNX.4.30.0101091053100.11171-100000@quake.blic.net>
+Subject: Re: User applications
+Date: Tue, 9 Jan 2001 12:17:26 +0000 (GMT)
+In-Reply-To: <3A5AFAC8.CA682600@jungo.com> from "Michael Shmulevich" at Jan 09, 2001 01:49:29 PM
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E14FxiT-0006XP-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010109102317.dPHnfxgQe4wj-6in7QAPcAEvloX2D6iahUDcXR4PhFE@z>
+To: Michael Shmulevich <michaels@jungo.com>
+Cc: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, linux-mips@oss.sgi.com
+Message-ID: <20010109121726.nDBC-i8-UKG9-y5kzIeNDXsdxbAcjOEMvYmfV_9hwL8@z>
 
-On Tue, 9 Jan 2001, Ralf Baechle wrote:
+> promoted to the syscall status? What is the situation that a user in its program
+> would like
+> to call cacheflush() ? Unless, of course, he is doing DoS.
 
-> > CPU 0 clock is 65535MHz.
->
-> Something's fishy.  I guess ;-)
+A cache flush is not a denial of service attack. Its no less effective than a
+1Mb memcpy 
 
-It is really strange... 65 GHz? ;)
+> I can understand why we need this in kernel, for context switch, for example, but
+> as a syscall?...
 
-> Thanks for sending the oops message; however without additional data
-> provided I can't use it.  Can you please point please put the kernel image
-> that resulted in the oops online?
-
-Ok, I'll put it by Thursday (I can't come to the machines earlier).
-
-P.S. I was first building kernels on an i386 system running RedHat 7.0,
-but later on I switched to a faster machine running Slackware 7.0. In both
-cases I used binutils-mips64-linux-2.9.5-3/egcs-mips64-linux-1.1.2-3 RPMs
-from oss.sgi.com. Kernels from both machines behaved the same way.
-
---pm
+Self modifying code, dynamic compilation, glibc trampolines

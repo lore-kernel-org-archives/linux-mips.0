@@ -1,22 +1,32 @@
-Message-ID: <00c401c10a78$a029ece0$9400a8c0@jefflee>
-From: "jeff_lee" <jeff_lee@coventive.com>
-References: <20010711230550.A26702@linuxtag.org>
-Subject: mipsel rpm
-Date: Thu, 12 Jul 2001 10:16:13 +0800
+Subject: Re: Clean up the mips dynamic linker
+References: <20010712182402.A10768@lucon.org>
+	<20010713112635.A32010@bacchus.dhis.org> <m3lmlsu82u.fsf@otr.mynet>
+From: Andreas Jaeger <aj@suse.de>
+Date: Fri, 13 Jul 2001 20:07:40 +0200
+In-Reply-To: <m3lmlsu82u.fsf@otr.mynet> (Ulrich Drepper's message of "13 Jul
+ 2001 09:06:49 -0700")
+Message-ID: <u8u20gem8j.fsf@gromit.moeb>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010712021613.v8p-lA_Dt9yh9AZ7ADxvB7qNpp1ZT9GXUS26E9KkzkI@z>
+To: Ulrich Drepper <drepper@cygnus.com>
+Cc: Ralf Baechle <ralf@oss.sgi.com>, "H . J . Lu" <hjl@lucon.org>, linux-mips@oss.sgi.com, GNU C Library <libc-alpha@sourceware.cygnus.com>
+Message-ID: <20010713180740.DSQOT3ZNIp0qZTJQ-CvFSETwTIEltGOsbQU8Rd8hKqI@z>
 
-Hi, Can mipsel rpm install in x86 platform ??
-I got some rpm from
-pc1.peanuts.gr.jp/~kei/Hard-Float/Based-Kondara-1.1/RPMS/ mipsel/ , but can
-not install in x86 platform. How to use these prm ?? Or I need a mips
-platform to install theis rpm ??
+Ulrich Drepper <drepper@redhat.com> writes:
 
-Thanks and best regs,
+> Ralf Baechle <ralf@oss.sgi.com> writes:
+> 
+>> So please, go ahead.
+> 
+> So you say the patch is OK from your POV?
 
-Jeff
+Just for the record, I also think it's ok - but will not apply it
+since it depends on patches for generic code.
+
+Andreas
+-- 
+ Andreas Jaeger
+  SuSE Labs aj@suse.de
+   private aj@arthur.inka.de
+    http://www.suse.de/~aj

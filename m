@@ -1,135 +1,37 @@
-Message-ID: <006701c1bb87$b2b6fb80$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3C75B181.C5A065A1@mvista.com> <3C75C19C.13BB0FCC@mvista.com>
+Date: Fri, 22 Feb 2002 18:08:51 +0100
+From: Kjeld Borch Egevang <kjelde@mips.com>
+Message-ID: <200202221708.g1MH8pX13027@coplin19.mips.com>
 Subject: Re: ieee754_csr is the problem (Re: lazy fpu switch irrelavant to no-fpu  case?
-Date: Fri, 22 Feb 2002 10:59:35 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <006701c1bb87$b2b6fb80$0deca8c0@Ulysses>
+References: <3C75B181.C5A065A1@mvista.com> <3C75C19C.13BB0FCC@mvista.com> <006701c1bb87$b2b6fb80$0deca8c0@Ulysses>
 Sender: owner-linux-mips@oss.sgi.com
-To: Jun Sun <jsun@mvista.com>, linux-mips@oss.sgi.com
-Message-ID: <20020222095935.3RZgV4o7O_Q01rbxxY4jGdHKTqsKNX9EFSxk-5YudjU@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020222170851.YshjT_QzCwUZF-bSuR2QvWqLiSzmjYR2PnyIcIzJitQ@z>
 
-This is what I get for processing my mail in-order.
-I just got done writing a message asking if the
-ieee_754_csr issue might be at the root of your
-problem.
+In mips.test, you wrote:
+>This is what I get for processing my mail in-order.
+>I just got done writing a message asking if the
+>ieee_754_csr issue might be at the root of your
+>problem.
+>
+>Anyway, rather than create an array of the damned
+>things, I would think that the "best" thing to do would
+>be to merge the "abstract" IEEE CSR with the
+>simulated MIPS CSR (by adding the "noq" and
+>"nod" bits in otherwise unused/reserved bit positions),
+>and using the thread-local CSR copy for all of the
+>ieee_754_csr manipulations, much as I did for
+>the FP registers.  That would be a bit more intrusive
+>than your proposed hack, however, and only slightly
+>more efficient.
 
-Anyway, rather than create an array of the damned
-things, I would think that the "best" thing to do would
-be to merge the "abstract" IEEE CSR with the
-simulated MIPS CSR (by adding the "noq" and
-"nod" bits in otherwise unused/reserved bit positions),
-and using the thread-local CSR copy for all of the
-ieee_754_csr manipulations, much as I did for
-the FP registers.  That would be a bit more intrusive
-than your proposed hack, however, and only slightly
-more efficient.
+I've been wondering: Why was the CSR copy made in the first place?
 
-            Kevin K.
+/Kjeld
 
------ Original Message -----
-From: "Jun Sun" <jsun@mvista.com>
-To: <linux-mips@oss.sgi.com>
-Sent: Friday, February 22, 2002 4:57 AM
-Subject: ieee754_csr is the problem (Re: lazy fpu switch irrelavant to
-no-fpu case?
-
-
-> Jun Sun wrote:
-> > Anyhow, the problem I am seeing with FPU/SMP case seems to be caused by
-FPU
-> > emulation code itself, if we can assume it is not caused by fpu context
-> > switch.  Right now the FPU is not turned on on the box.
-> >
->
-> OK, I found the guilt part in FPU emul.  It is the global variable
-> ieee754_csr.  The following patch seems to fix the problem.  I am sure
-someone
-> who are more familiar with FPU might be able to make it more elegant.
->
-> There is another global variable which is potentially dangerous for SMP.
-It
-> is fpuemuprivate.  Currently it is used in almost used for accounting and
-> read-only purpose.  I did not bother to change it.  It should be fixed
-too, I
-> suppose.
->
-> Cheers.
->
-> Jun
-
-
-----------------------------------------------------------------------------
-----
-
-
-> diff -Nru linux/arch/mips/math-emu/ieee754.h.orig
-linux/arch/mips/math-emu/ieee754.h
-> --- linux/arch/mips/math-emu/ieee754.h.orig Thu Jan 31 17:13:26 2002
-> +++ linux/arch/mips/math-emu/ieee754.h Thu Feb 21 19:34:06 2002
-> @@ -323,7 +323,7 @@
->
->  /* the control status register
->  */
-> -struct ieee754_csr {
-> +struct ieee754_csr_struct {
->   unsigned pad:13;
->   unsigned nod:1; /* set 1 for no denormalised numbers */
->   unsigned cx:5; /* exceptions this operation */
-> @@ -331,7 +331,13 @@
->   unsigned sx:5; /* exceptions total */
->   unsigned rm:2; /* current rounding mode */
->  };
-> -extern struct ieee754_csr ieee754_csr;
-> +
-> +#include <linux/sched.h>
-> +#include <linux/threads.h>
-> +#include <linux/smp.h>
-> +#include <asm/current.h>
-> +extern struct ieee754_csr_struct ieee754_csr_array[NR_CPUS];
-> +#define ieee754_csr ieee754_csr_array[smp_processor_id()]
->
->  static __inline unsigned ieee754_getrm(void)
->  {
-> diff -Nru linux/arch/mips/math-emu/ieee754.c.orig
-linux/arch/mips/math-emu/ieee754.c
-> --- linux/arch/mips/math-emu/ieee754.c.orig Mon Jan 28 11:17:14 2002
-> +++ linux/arch/mips/math-emu/ieee754.c Thu Feb 21 19:37:32 2002
-> @@ -52,7 +52,7 @@
->
->  /* the control status register
->  */
-> -struct ieee754_csr ieee754_csr;
-> +struct ieee754_csr_struct ieee754_csr_array[NR_CPUS];
->
->  /* special constants
->  */
-> diff -Nru linux/arch/mips/math-emu/cp1emu.c.orig
-linux/arch/mips/math-emu/cp1emu.c
-> --- linux/arch/mips/math-emu/cp1emu.c.orig Mon Jan 28 11:17:14 2002
-> +++ linux/arch/mips/math-emu/cp1emu.c Thu Feb 21 19:22:45 2002
-> @@ -945,7 +945,7 @@
->  static ieee754##p fpemu_##p##_##name (ieee754##p r, ieee754##p s, \
->      ieee754##p t) \
->  { \
-> -    struct ieee754_csr ieee754_csr_save; \
-> +    struct ieee754_csr_struct ieee754_csr_save; \
->      s = f1 (s, t); \
->      ieee754_csr_save = ieee754_csr; \
->      s = f2 (s, r); \
-> diff -Nru linux/arch/mips/math-emu/dp_sqrt.c.orig
-linux/arch/mips/math-emu/dp_sqrt.c
-> --- linux/arch/mips/math-emu/dp_sqrt.c.orig Thu Feb 21 19:41:09 2002
-> +++ linux/arch/mips/math-emu/dp_sqrt.c Thu Feb 21 19:39:08 2002
-> @@ -37,7 +37,7 @@
->
->  ieee754dp ieee754dp_sqrt(ieee754dp x)
->  {
-> - struct ieee754_csr oldcsr;
-> + struct ieee754_csr_struct oldcsr;
->   ieee754dp y, z, t;
->   unsigned scalx, yh;
->   COMPXDP;
->
+-- 
+_    _ ____  ___                       Mailto:kjelde@mips.com
+|\  /|||___)(___    MIPS Denmark       Direct: +45 44 86 55 85
+| \/ |||    ____)   Lautrupvang 4 B    Switch: +45 44 86 55 55
+  TECHNOLOGIES      DK-2750 Ballerup   Fax...: +45 44 86 55 56
+                    Denmark            http://www.mips.com/

@@ -1,54 +1,25 @@
-From: "Robert Rusek" <rrusek@teknuts.com>
-Subject: Executing IRIX binary ?
-Date: Wed, 22 May 2002 16:01:07 -0700
-Message-ID: <C0F41630CD8B9C4680F2412914C1CF070164E6@WH-EXCHANGE1.AD.WEIDERPUB.COM>
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0007_01C201A9.E36C94C0"
+Subject: Re: Executing IRIX binary ?
+References: <C0F41630CD8B9C4680F2412914C1CF070164E6@WH-EXCHANGE1.AD.WEIDERPUB.COM>
+From: hakon@ping.uio.no (Håkon Eriksen)
+Date: 24 May 2002 14:04:01 +0200
+In-Reply-To: "Robert Rusek"'s message of "Wed, 22 May 2002 16:01:07 -0700"
+Message-ID: <1zl8z6921n2.fsf@vetikke.uio.no>
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20020522230107.W6YQeGPZdWMAL2M_AmkVHXz4bAKs8WJEqqot_4uSkYA@z>
+To: Robert Rusek <rrusek@teknuts.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20020524120401.buHwbVkkDhX3a3Nx-IIDgwIwk1O1uO_E9Zq8e5lv5EU@z>
 
-This is a multi-part message in MIME format.
+"Robert Rusek" <rrusek@teknuts.com> writes:
 
-------=_NextPart_000_0007_01C201A9.E36C94C0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+> Is there anyway to run/execute irix 5/6 binaries in linux mips on an
+> Indy?  Good old Microsoft does not provide the source for it's frontpage
+> extensions, but they do provide a binary for IRIX.
 
-Is there anyway to run/execute irix 5/6 binaries in linux mips on an
-Indy?  Good old Microsoft does not provide the source for it's frontpage
-extensions, but they do provide a binary for IRIX.
- 
-Thanks
-Rob.
+If FrontPage extensions is what you want, there are several ways of
+getting this to run on linux. Microsoft may not supply the source, but
+they do show you how to install it on Apache.
+<URL:http://support.microsoft.com/default.aspx?scid=kb;EN-US;q202198> 
+If this is not what you're looking for, try google.
 
-------=_NextPart_000_0007_01C201A9.E36C94C0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD><TITLE>Message</TITLE>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 5.50.4915.500" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D363205922-22052002><FONT face=3D"Comic Sans MS" =
-color=3D#008000=20
-size=3D2>Is there anyway to run/execute irix 5/6 binaries in linux mips =
-on an=20
-Indy?&nbsp; Good old Microsoft does not provide the source for it's =
-frontpage=20
-extensions, but they do provide a binary for IRIX.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D363205922-22052002><FONT face=3D"Comic Sans MS" =
-color=3D#008000=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D363205922-22052002><FONT face=3D"Comic Sans MS" =
-color=3D#008000=20
-size=3D2>Thanks</FONT></SPAN></DIV>
-<DIV><SPAN class=3D363205922-22052002><FONT face=3D"Comic Sans MS" =
-color=3D#008000=20
-size=3D2>Rob.</FONT></SPAN></DIV></BODY></HTML>
-
-------=_NextPart_000_0007_01C201A9.E36C94C0--
+-- 
+ - håkon

@@ -1,43 +1,37 @@
 Reply-To: <a.voropay@vmb-service.ru>
 From: "Alexander Voropay" <a.voropay@vmb-service.ru>
-Subject: Howto run Linux on ACER PICA 61
-Date: Tue, 22 Jun 2004 20:23:57 +0400
-Message-ID: <01d701c45875$5205b460$0200000a@ALEC>
+Subject: RE: MIPS assembly document...
+Date: Wed, 23 Jun 2004 14:00:42 +0400
+Message-ID: <024c01c45908$f2008fb0$0200000a@ALEC>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <40D8F950.2050308@realitydiluted.com>
 Return-Path: <a.voropay@vmb-service.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20040622162357.Q3eSVSrtEpEkD9JuWIAi3DyFwpm6LVLh37aw6l5nfkc@z>
+To: "'Steven J. Hill'" <sjhill@realitydiluted.com>, linux-mips@linux-mips.org
+Message-ID: <20040623100042.kdgza-wY5WHH_YEGOXlxgIKrPJ9Txv10V_dQ-VW4PrQ@z>
 
-Hi!
+Steven J. Hill wrote:
 
- I've just got (for free :) an ancient MIPS ACER PICA 61 motherboard.
+>Is there a nice little pocket MIPS assembly reference card
+>with R3000 and/or R4000 instructions on it?
 
- Can anyone help/guide me to run Linux-MIPS on this machine ?
-Is it still possible to run Linux on this architecture ?
+ The MIPS instructions is very simply, so it is possible
+to tead it in hex without reference card ;-)
 
- The motherboard is old (~1993) and it is very difficult to find
-any documentations... AFAIK, this is version of ARC MIPS.
-(mipsel)
+* IDT Assembler Software Reference Guide Vol. 2
+3. CPU Instruction Reference
+4. CPU Instructions Encoding
+http://www1.idt.com/pcms/documents.taf?catID=121&docTypeID=25&mode=byTit
+le
+http://www1.idt.com/pcms/tempDocs/79RC32355_MA_92629.pdf
 
+P.S. See:
+http://chortle.ccsu.edu/AssemblyTutorial/tutorialContents.html
+http://myrkraverk.afraid.org/PlayStation/EmotionEngine/
 
- This is Full-size AT board, AT power supply, 5 ISA slots, 8 SIMM
-slots. The CPU is PACEMIPS R4000-50Mhz (x2=100 internal ???) by
-Performance Semiconductor Corp.. NatSemi Ethernet/AUI onboard.
-No IDE connector. One additional slot is not ISA, but maked as
-IO an contains SCSI/Floppy/Serial/Perallel/Mice card. Another slot
-is like reversed EISA (double) and marked as VIO (locabus video?).
-Unfortunately, the original videocard is lost. :( However it works fine
-with old CirrusLogic VGA card in ISA slot (old ISA Trident 8900/9000
-does not works).
-
-
-
-
-St.Petersburg, Russia
 --
--=AV=- 
+-=AV=-

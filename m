@@ -1,33 +1,40 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199801091206.NAA01800@zaphod.et.tudelft.nl>
-Subject: fdisk for linux-sgi
-Date: Fri, 9 Jan 1998 13:06:46 +0100 (CET)
-From: Edwin Hakkennes <E.Hakkennes@ET.TUDelft.NL>
-Content-Type: text
+From: marker@daddyo.engr.sgi.com (Charles Marker)
+Message-ID: <199801101804.KAA62540@daddyo.engr.sgi.com>
+Subject: Re: SGI/Linux on a Challenge S series
+Date: Sat, 10 Jan 1998 10:04:32 -0800 (PST)
+In-Reply-To: <Pine.SOL.3.94.980110093122.2895A-100000@maelstrom.cerf.net> from "William Ellis" at Jan 10, 98 09:38:20 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: linux@cthulhu.engr.sgi.com
-Cc: Edwin Hakkennes <E.Hakkennes@ET.TUDelft.NL>
-Message-ID: <19980109120646.gyABIaPwb_-QMdXUmXfB5BAKxVIzn2zjrdqEZunGicg@z>
+To: William Ellis <bellis@cerf.net>
+Cc: linux@cthulhu.engr.sgi.com, Charles Marker <marker@daddyo.engr.sgi.com>
+Message-ID: <19980110180432.0KXW_f_Y0fB8GvccA-Os2S0m6Huw0aDAJHnCHCo9y2M@z>
 
-Hi all,
+> 
+> 
+> 
+> I just got hold of a spare Challenge S Series(R5000) I was
+> going to attempt putting SGI/Linux on.  I know the porting is
+> basicaly geared for the Indy's but I was going to muck with it
+> a bunch. Then I just saw this post and was wondering if there 
+> was any quick, good heads-up for these machines.  
+> Thanks, Bill 
 
-I'm trying to get an indy running Linux. I downloaded the Getting_started
-stuff, and unpacked it. All seems to be fine, except that I cannot find
-an fdisk program on this file-system. (root-be-0.01.cpio)
+A Challenge S is just an Indy with the graphics, ISDN and some of the
+digital media removed.  As long as the kernel is probing for those
+devices and handling their non existance correctly, this should work
+reasonably well.
 
-My question is: How do I partition the disk. I have one, empty 2G disk 
-on which only Linux should be installed. 
+					Charles
 
-Is it neccesary to put the disk in a PC for partioning?
-
-Thanks a lot in advance,
-
-Edwin
-  
-=======================================================================
-Edwin Hakkennes                            || E.Hakkennes@et.tudelft.nl
-TU Delft  (Delft University of Technology) || Fax        +31 15 2784898
-Department   of   Electrical   Engineering || Phone      +31 15 2786267
-Mekelweg 4, 2628 CD Delft, The Netherlands || 
-URL: http://cardit.et.tudelft.nl/~ednes    || Room         ET-HB 10.280
-=======================================================================
+> >> I tried to compile the latest sources for an Indigo R4k .. with minimal
+> [*snip*]
+> > Did you modify the load address of the kernel?  Indy kernels are by
+> > default linked for address 0x88002000 because the Indy has a 128mb
+> > hole in it's address space there.  I assumes (wje???) that your box
+> > has it's memory mapped from 0x80000000 upwards, so this would only
+> > work if you actually have that more than 128mb ...
+> >   Ralf
+> 

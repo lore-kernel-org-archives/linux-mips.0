@@ -1,5 +1,57 @@
-Date: Mon, 4 Mar 2002 00:00:24 +0100
-From: linux-mips-local@paname.org
-Message-ID: <200203032300.g23N0O0I003466@darth.paname.org>
+From: Hartvig Ekner <hartvige@mips.com>
+Message-ID: <200203061854.g26IspK06935@coplin09.mips.com>
+Subject: Re: Questions?
+Date: Wed, 6 Mar 2002 19:54:51 +0100 (CET)
+In-Reply-To: <1015440234.19618.37.camel@MCK_Linux> from "Marc Karasek" at Mar 06, 2002 01:43:25 PM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-Message-ID: <20020303230024.yVq4j9JTpXSYivfKaNIOwOGUwIbql5LWoCrtgWc7ObA@z>
+To: Marc Karasek <marc_karasek@ivivity.com>
+Cc: sjhill@cotw.com, Linux MIPS <linux-mips@oss.sgi.com>
+Message-ID: <20020306185451.N61eYJLCrkst2YR9qY6_7EJJMRCHeLfCIvHez1TCUQg@z>
+
+It also depends on which new drivers you expect to use and thus need to
+port from the x86 world. I can certainly tell you that we always start
+off with LE for driver porting, for obvious reasons (x86, PCI), and then
+go BE after that.
+
+/Hartvig
+
+Marc Karasek writes:
+> 
+> No, I have been involved with too many sorties in the war already.  I
+> was just asking if there was any issues with one side or the other from
+> a purely technical aspect.
+> 
+> On Wed, 2002-03-06 at 13:20, Steven J. Hill wrote:
+> > Marc Karasek wrote:
+> > > 
+> > > How many of you are involved with embedded linux development using a
+> > > MIPS processor?
+> > > 
+> > A fair number of us. Over a hundred easily.
+> > 
+> > > What endianess have you chosen for your project and why?
+> > > 
+> > You don't really want to start this holy war, do you? That aside,
+> > usually big endian is more useful in applications moving networking
+> > type traffic or a fair amount of graphics processing. Little endian
+> > is handy if you are porting applications from Windows or a lot of
+> > your software is written in little endian.
+> > 
+> > That's my $.02.
+> > 
+> > -Steve
+> > 
+> > -- 
+> >  Steven J. Hill - Embedded SW Engineer
+> -- 
+> /*************************
+> Marc Karasek
+> Sr. Firmware Engineer
+> iVivity Inc.
+> marc_karasek@ivivity.com
+> 678.990.1550 x238
+> 678.990.1551 Fax
+> *************************/

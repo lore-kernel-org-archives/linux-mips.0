@@ -1,28 +1,92 @@
-Message-ID: <010601c1b3bd$1da618e0$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Pine.GSO.3.96.1020212123901.17858B-100000@delta.ds2.pg.gda.pl>
-Subject: Re: [patch] linux 2.4.17: The second mb() rework (final)
-Date: Tue, 12 Feb 2002 13:02:13 +0100
+From: Dominic Sweetman <dom@algor.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <15465.15062.840707.525971@gladsmuir.algor.co.uk>
+Date: Tue, 12 Feb 2002 15:55:02 +0000
+Subject: Re: gcc include strangeness
+In-Reply-To: <20020211232001.G4623@dea.linux-mips.net>
+References: <20020211142708.GA2577@convergence.de>
+	<Pine.GSO.3.96.1020211155920.18917F-100000@delta.ds2.pg.gda.pl>
+	<20020211162844.GD2918@convergence.de>
+	<20020211232001.G4623@dea.linux-mips.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Matthew Dharm <mdharm@momenco.com>
-Cc: Ralf Baechle <ralf@uni-koblenz.de>, linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20020212120213.SgiV0R0xbJ6L8-34riJnGJkjJnS8V1c3XmvtCe0Y_Eo@z>
+To: linux-mips@oss.sgi.com
+Cc: Johannes Stezenbach <js@convergence.de>, nigel@algor.co.uk, "Hartvig Ekner <hartvige@mips.com>
+    \"Maciej W. Rozycki\"" <macro@ds2.pg.gda.pl>, Florian Lohoff <flo@rfc822.org>, Ralf Baechle <ralf@oss.sgi.com>
+Message-ID: <20020212155502.IYT7HPz4bNEKwMK3IrRm3VOR5L9CciD_dkjekxS_t6M@z>
 
-From: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>:
-> On Mon, 11 Feb 2002, Matthew Dharm wrote:
-> 
-> > Aren't there more processors that have sync?  I thought the RM7000
-> > (PMC-Sierra) did too...
-> 
->  Obviously there are as "sync" is standard for MIPS II and above.  That's
-> why only CONFIG_CPU_R3000 and CONFIG_CPU_TX39XX disable "sync".
 
-According to the (rather old) Tx39xx specs at my disposal,
-those parts should also support the SYNC instruction.  Does
-anyone know for a fact that some of them do not?
+I've been keeping quiet through all this, but perhaps I should speak
+up.
 
-            Kevin K.
+Algorithmics maintains a GNU toolchain for embedded systems and
+supplies it bundled with support and a basic run-time system as our
+product SDE-MIPS.
+
+From version 5.0 (just gone into beta) we are configuring and testing
+the compiler/assembler/object tools for Linux use.  We always publish
+the GNU sources used to build SDE-MIPS on our web-site, but we are
+currently leaning towards going further and putting binary RPMs of the
+Linux toolchain out for free download - so those of you who want can
+just use it.
+
+The upside of this is that we have the resource and skill (and it
+looks like we'll be able to get enough support/development funding) to
+maintain a Linux/MIPS compiler.  It would be a good thing for the
+Linux/MIPS community if compiler bugs and shortcomings got fixed on a
+fairly stable base, instead of relying on pick-your-version folklore.
+We should also be able to get funding to do things like fixing support
+for SGI n32/n64 code-generation conventions.
+
+Our compiler already has support for pretty much every wrinkle
+of any MIPS instruction set anywhere, and command-line-selectable
+machine descriptions for many different MIPS pipelines.
+
+The downside: our development process is not currently very
+Linux-shaped.  We "release late, release rarely".  In providing a
+stable compiler for embedded use we have found it easier to avoid the
+bleeding edge of GCC.  We've found it necessary to make bold changes
+in "machine-independent" code - GCC is a wonderful multi-target
+compiler, but it's x86 (PPC a distant second) which is routinely
+tested.  The leading edge is a fertile breeding ground of bugs for
+minor architectures.
+
+And more: our v5.0 compiler's ancestor was a 2.96 release from Cygnus'
+internal development tree, provided to MIPS Technologies in the fall
+of 2000.  We picked it up because it had work MIPS had already funded,
+and some valuable multiple-issue machine description features which
+didn't make it into 3.0.  But it has taken a long time to make sure
+the new compiler is as well-tuned and reliable as the EGCS 1.1-based
+compiler it replaced, and the 2.96-derived compiler is only now
+shipping as part of a beta release.
+
+So now we have numerous patches, many of them not in officially "MIPS
+machine-dependent" code, against an 18-months old and slightly strange
+version of GCC.  Nobody is currently doing the substantial work to
+turn our changes into patches for GCC 3.x.
+
+What I think we ought to do is to:
+
+o Release the existing compiler for use among Linux/MIPS enthusiasts
+  (we're hoping that some commercial developers will take support
+  contracts, of course);
+
+o Hope that many of you will use it and feed back bug reports, and
+  that some of you will grab the sources and help track & fix them;
+
+o Aim to make earlier and more frequent releases for adventurous Linux
+  users (we will keep a slow-moving 'stable' release for those whose
+  priority is elsewhere);
+
+o Aim over the next couple of years - and with all the help we can get
+  - to converge closer to the evolving GCC 3.x mainstream.
+
+I guess the question for this list is: is anyone interested?
+
+--
+Dominic Sweetman
+Algorithmics Ltd
+The Fruit Farm, Ely Road, Chittering, CAMBS CB5 9PH, ENGLAND
+phone +44 1223 706200/fax +44 1223 706250/direct +44 1223 706205
+http://www.algor.co.uk

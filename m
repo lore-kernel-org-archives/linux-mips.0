@@ -1,47 +1,33 @@
-Date: Sat, 21 Jul 2001 03:22:17 -0600
+Date: Sat, 21 Jul 2001 12:12:29 -0600
 Subject: Re: SHN_MIPS_SCOMMON
 From: Greg Satz <satz@ayrnetworks.com>
-Message-ID: <B77EA5E8.883E%satz@ayrnetworks.com>
-In-Reply-To: <20010721033019.A22637@bacchus.dhis.org>
+Message-ID: <B77F222C.888C%satz@ayrnetworks.com>
+In-Reply-To: <20010721104144.A17894@lucon.org>
 Mime-version: 1.0
 Content-type: text/plain; charset="US-ASCII"
 Content-transfer-encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>
+To: "H . J . Lu" <hjl@lucon.org>, Ralf Baechle <ralf@oss.sgi.com>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20010721092217.oerLTZu06wY16SobknoyVlt_RWHmaOXwntCYvFeKnzQ@z>
+Message-ID: <20010721181229.YQf2QxMkI40pVNetrAiKWPDCPyTIISLq-WeahQEWqm4@z>
 
-Hi Ralf, maybe I am missing something but after downloading and some perusal
-I don't see where the newer (2.4.5) kernel addresses this problem. At the
-risk of being redundant, the issue, as I see it, is the use of SCOMMON
-symbols in ELF section SHN_MIPS_SCOMMON (0xff03). These symbols are
-overlooked when insmod relocates symbols in the SHN_COMMON ELF section. They
-end up in the kernel with a value of 4. Upon being referenced, the module
-gets a page fault opps.
-
-The file obj/obj_reloc.c in the modutils package is where the SHN_COMMON
-symbol relocation work is performed. Using the gcc flag -fno-common forces
-all commons info bss thus preventing the problem. We do this as a
-work-around now.
-
-The question is whether the gcc -fno-common flag is the real fix or is
-obj/obj_reloc.c deficient. I have a patch that appears to work for
-obj/obj_reloc.c
-
-We create the problem situation by declaring variables in one file as extern
-and defining them in another. The compiler puts these variables in the
-SCOMMON segment instead of the COMMON segment.
+The problem I ran into was making NFS as a kernel module. The resulting
+sunrpc.o module crashed when insmod was run over it. Ralf's fix that all
+compiles and links use -G 0 worked for me.
 
 Thanks,
 Greg
 
-on 7/20/01 7:30 PM, Ralf Baechle at ralf@oss.sgi.com wrote:
+on 7/21/01 11:41 AM, H . J . Lu at hjl@lucon.org wrote:
 
-> On Fri, Jul 20, 2001 at 04:15:28PM -0600, Greg Satz wrote:
+> On Sat, Jul 21, 2001 at 02:11:20PM +0200, Ralf Baechle wrote:
+>> Only if you don't compile / assemble / link with -G 0.
+>> 
+>> .scommon shouldn't ever be in a kernel object.  It seems that ld started
+>> to move .common objects to .scommon from a certain version on, so 2.4.5
 > 
->> When making modules for the 2.4.2 kernel, gcc and friends will generate
+> Send me a testcase. I will fix the linker.
 > 
-> Rotten kernel error.  Upgrade to >= 2.4.5.
 > 
-> Ralf
+> H.J.
 > 

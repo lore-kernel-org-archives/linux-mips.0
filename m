@@ -1,8 +1,8 @@
-Message-ID: <001901c3f9dc$3a46b6a0$10eca8c0@grendel>
+Message-ID: <006001c3fa31$74c07fa0$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Law10-F39hgbi1Kigvf000046ac@hotmail.com> <1077477186.3636.34.camel@dzur.sfbay.redhat.com> <001001c3f98e$2270dcc0$10eca8c0@grendel> <1077507447.3636.37.camel@dzur.sfbay.redhat.com>
+References: <Law10-F123ODt9Cz93M0000b89a@hotmail.com>
 Subject: Re: r3000 instruction set
-Date: Mon, 23 Feb 2004 08:11:14 +0100
+Date: Mon, 23 Feb 2004 18:21:19 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -10,21 +10,29 @@ Content-Transfer-Encoding: 7bit
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Eric Christopher <echristo@redhat.com>
-Cc: Mark and Janice Juszczec <juszczec@hotmail.com>, linux-mips@linux-mips.org
-Message-ID: <20040223071114.Et_qSiv5rgZ0SFGXjPllL0mHo-q3xZ-I5aV1wQgsSbA@z>
+To: Mark and Janice Juszczec <juszczec@hotmail.com>, linux-mips@linux-mips.org
+Cc: uhler@mips.com, dom@mips.com, echristo@redhat.com
+Message-ID: <20040223172119.9eyiXwzPEiCxpg08kIt7y1tpGACb8pc4084E_acpXxI@z>
 
-> On Sun, 2004-02-22 at 13:52, Kevin D. Kissell wrote:
-> > > Other than the responses you've already gotten, likely you'll need to
-> > > compile with -march=r3900(or -mcpu=r3900 if it's an old toolchain) since
-> > > the 3900 is missing a couple of r3000 instructions iirc.
-> > 
-> > The 3900 family should run MIPS I code compiled for the R3000.
+> Someone suggested posting the message I get.  Here it is:
 > 
-> IIRC there were some standard MIPS I instructions that were not on the
-> tx39.
+> >./kaffe-bin FirstClass
+> [kaffe-bin:6] Illgal instruction 674696a at 2abb034, ra=2adbffd0, 
+> P0_STATUS=0000500
+> pid 6: killed (signal 4)
+> >Reading command line: Try again
+> Kernel panic: Attmpted to kill int!
 
-I think you may be confusing MIPS I and MIPS II.  I'm pretty darn certain
-that the TX39 inplemented all of MIPS I, most of MIPS II, plus a MADD 
-extension.  I'm not going to go instruction counting this morning, but the
-TX39 spec declares up-front that it's a superset of the R3000A.
+Let me guess.  You are running little-endian.  The instruction word
+in memory would be 0x6a697406.  Do you think it's a coincidence
+that 0x6a6974 spells "jit" in ASCII?  ;o)
+
+The reported address range looks like that where kaffe builds its
+JITted instruciton buffers in MIPS/Linux.  And, like I say, JIT is
+somewhat broken for MIPS in Kaffe.  Which version of the kaffe sources 
+are you building, and have you tried configuring with --with-engine=intrp
+as I suggested?
+
+            Regards,
+
+            Kevin K.

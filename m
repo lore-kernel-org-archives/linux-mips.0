@@ -1,97 +1,57 @@
-Message-ID: <01bd01c22495$53e99820$4c00a8c0@prefect>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <01da01c2247f$b80c5e20$3501a8c0@wssseeger>
-Subject: Re: sys_execve problem
-Date: Fri, 5 Jul 2002 22:32:08 -0400
+Reply-To: <sseeger@stellartec.com>
+From: sseeger@stellartec.com (Steven Seeger)
+Subject: FW: [Linux-mips-kernel]my slab problem
+Date: Sat, 6 Jul 2002 14:41:31 -0700
+Message-ID: <01fe01c22535$e4fc9c90$3501a8c0@wssseeger>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: sseeger@stellartec.com
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20020706023208.onLM5vZk50A1mOfsClvZDRyM_mR9h8mdVK_ei8mdeLs@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020706214131.DnrCuivg71naFZFZ1M6dZTYPBn27a_p7sToyQSmjsm8@z>
 
-I meant "is /sbin/init statically linked?"
+Ok I've narrowed down my problem with the SF tree's 2.4.18 kernel and with
+the OSS 2.4.18 tree (tag linux_2_4, from about 3 weeks ago).
 
-What /sbin/init are you using?  Have you tried a statically linked busybox
-init?
+I'm running on an NEC Osprey board. I've confirmed that XIP in ROM isn't
+causing this problem.
 
-Regards,
-Brad
+I have a module that kmallocs almost all of the free memory in the system on
+insmod, and kfrees the memory on rmmod. Then, when I try to run a program
+that needs a lot of memory it page faults somewhere in the __wake_up
+function trying to wake up kswapd. kswapd actually does wake up and runs
+after the page fault, but doesn't find any slabs to reap.
 
------ Original Message -----
-From: "Steven Seeger" <sseeger@stellartec.com>
-To: "'Bradley D. LaRonde'" <brad@ltc.com>
-Cc: <linux-mips@oss.sgi.com>
-Sent: Friday, July 05, 2002 7:57 PM
-Subject: RE: sys_execve problem
+In my working kernel with all the slab debug stuff turned on, I'll see that
+slabs from the 131072 slab size (my kmallocs were 90000 bytes each) will get
+reaped as needed. This doesn't happen with the SF kernel. In fact,
+kmem_cache_reap gets to the comment that says /* couldn't find anything to
+reap */
+
+I don't know if it isn't finding anything because of the page fault in
+__wake_up (which oddly enough doesn't crash the system..it just kills the
+process that was running, ie the memory hog)
+
+My working kernel is the 2.4.0-test9 kernel that Brad did a lot of work on.
+I really would like to get the later and greater kernel up and running. If
+anybody can offer some advice please let me know.
+
+I figure I'll figure this problem out before messing with the execve problem
+in the OSS 2.5.2 and 2.4.19 kernel since for all I know if I get those
+booting I'll run into this problem here. :)
+
+If anybody can point me in the right direction I'd appreciate it.
+
+Steve
 
 
-> By init do you mean the init_task_union? That's in the data segment and
-not
-> static. ld.so is needed but it's also executable. It boots fine under
-other
-> kernels. I either have this problem with 2.4.19 or the 2.4.18 problem
-where
-> kfree doesn't free any memory and the system eventually runs out of memory
-> because of the buffer caches. I'd love to get 2.4.19 booting because then
-I
-> wouldn't have to mess with a problem with 2.4.16 from SF where the
-> current->user gets set to 0 somewhere in kernel_thread and crashes in
-> do_fork. I know the kfree works on 2.4.19 because the system doesn't
-freeze
-> up when the rom block driver tries to call fsync_dev in rom_release like
-it
-> does on the 2.4.18. (It freezes up in sync_inodes)
->
-> I'm about to look for a new job here. :)
->
-> Steve
->
-> >-----Original Message-----
-> >From: Bradley D. LaRonde [mailto:brad@ltc.com]
-> >Sent: Friday, July 05, 2002 4:39 PM
-> >To: sseeger@stellartec.com
-> >Cc: linux-mips@oss.sgi.com
-> >Subject: Re: sys_execve problem
-> >
-> >
-> >Is your init static?  Does it need ld.so?  Is ld.so executable
-> >(that's a
-> >tricky one).
-> >
-> >Regards,
-> >Brad
-> >
-> >----- Original Message -----
-> >From: "Steven Seeger" <sseeger@stellartec.com>
-> >To: <linux-mips@oss.sgi.com>
-> >Sent: Friday, July 05, 2002 12:15 PM
-> >Subject: sys_execve problem
-> >
-> >
-> >> Hey guys. I have compiled 2.4.19-ac1 from the CVS with the
-> >linux_2_4 tag
-> >for
-> >> my NEC Osprey board (NEC VR4181) It boots fine and stuff,
-> >but doesn't load
-> >> init. I've confirmed with simple print statements that do_execve is
-> >> returning a 0 at the point in fs/exec.c where it says "/*
-> >execve success
-> >*/"
-> >> and yet init doesn't load. The system just sits there. I see
-> >on a scope
-> >that
-> >> my timer interrupt is firing every 10 ms and the serial
-> >console responds
-> >> properly. It echos characters and stops the echo when it
-> >receives a ctrl-S
-> >> and resumes it on ctrl-Q. Obviously this is the last little
-> >part of the
-> >> kernel to work though here. Any ideas?
-> >>
-> >> Steve
-> >
->
->
+
+-------------------------------------------------------
+This sf.net email is sponsored by:ThinkGeek
+Got root? We do.
+http://thinkgeek.com/sf
+_______________________________________________
+Linux-mips-kernel mailing list
+Linux-mips-kernel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/linux-mips-kernel

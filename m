@@ -1,29 +1,44 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0yDFLA-000V5iC@the-village.bc.nu>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: Getting Started ..... NOT
-Date: Thu, 12 Mar 1998 21:16:36 +0000 (GMT)
-In-Reply-To: <Pine.GSO.3.96.980313030936.24023A-100000@sparc> from "Tony C. Wu" at Mar 13, 98 03:35:36 am
-Content-Type: text
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199803241843.KAA108458@oz.engr.sgi.com>
+Subject: Linux list spam and bounces
+Date: Tue, 24 Mar 1998 10:43:15 -0800 (PST)
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "Tony C. Wu" <tonywu@life.nthu.edu.tw>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980312211636.9y-bH6NxcpnjHWCZ46duxnwO-7IEZRxWXo0eLR-nbHo@z>
+To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19980324184315.VmTo3RH1OJJZUwsFJTeqpq9ZU25BZmo7xTmuwOeSnng@z>
 
-> 2.1.72_NOSL: put me in repair fs mode, but i can't change anything.
->              It said it couldn't read superblock on /dev/sdb
+SGI/Linux subscribers,
 
-Ok. The disk image expects to be /dev/sdb
-do
+In the past few weeks we've experienced some spam on the list
+as a result we've turned on restricted posting which allows
+only members of the list to post.
 
+The problem with this solution is that it may inconvenience
+some people posting from different locations.  I apologize
+for this inconveniece.  The subscription and unsubscription
+is open so feel free to update your addresses.
 
-mount -n -o remount,rw /dev/sdb1  /
+Tip: you should be subscribing with a general domain rather
+than a specific one:
+	Good:   subscribe linux myname@engr.sgi.com
+	Bad:    subscribe linux myname@myhost.engr.sgi.com
 
-vi /etc/fstab
+The reason is that majordomo (latest version with 'mungedomain')
+will consider the first a general form of the second but NOT
+vice versa.  if you're subscribed as
+	name@X.Y.Z
 
-change /dev/sdb to /dev/sdb1
+and you mail as (just a different host):
+	name@W.Y.Z
 
-exit
+You're message will bounce with "not a member of the list".
 
+In my next posting I will send one digest of all the bounced
+messages in the past few days.
 
-Best of luck
+--
+Peace, Ariel

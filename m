@@ -1,124 +1,157 @@
-Received: from server1.RightHand.righthandtech.com ([207.252.250.187])
-	by ux1.dataflo.net (8.12.11/8.12.11) with ESMTP id i4IIHcAk042243
-	for <linux-mips@linux-mips.org>; Tue, 18 May 2004 13:17:39 -0500 (CDT)
-content-class: urn:content-classes:message
-Subject: RE: problems on D-cache alias in 2.4.22
-Date: Tue, 18 May 2004 13:17:38 -0500
-Message-ID: <B482D8AA59BF244F99AFE7520D74BF9609D4B3@server1.RightHand.righthandtech.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C43D04.66A62BCA"
-From: "Bob Breuer" <bbreuer@righthandtech.com>
-Return-Path: <bbreuer@righthandtech.com>
+Date: Fri, 21 May 2004 08:32:32 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Subject: [zli4@cs.uiuc.edu: [OPERA] Another potential bug in /arch/mips/kernel/sysirix.c]
+Message-ID: <20040521063232.GL1912@lug-owl.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="1KBBbqQMyIFUBNXy"
+Content-Disposition: inline
+Return-Path: <jbglaw@dvmwest.gt.owl.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040518181738.kAigocALXHQQxULZoiPsUI5FSJYUF4X9xAcqswMmKNU@z>
+Message-ID: <20040521063232.yC6S4l9302r5oUdiZGCQ3o_tPWpJJARIg3ZVSaxNgmw@z>
 
-This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C43D04.66A62BCA
-Content-Type: text/plain;
-	charset="iso-8859-1"
+--1KBBbqQMyIFUBNXy
+Content-Type: multipart/mixed; boundary="EIfQsdwoOfRLryR6"
+Content-Disposition: inline
+
+
+--EIfQsdwoOfRLryR6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
+Hi!
 
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org
-> [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Peter Horton
-> Sent: Friday, May 14, 2004 2:53 AM
-> To: wuming
-> Cc: linux-mips@linux-mips.org
-> Subject: Re: problems on D-cache alias in 2.4.22
->=20
->=20
-> wuming wrote:
->=20
-...
-> > at last, when I replaced flush_page_to_ram( ) with=20
-> flush_dcache_page( ),
-> > the internal compiler error disappeared.
-> >
-...
->=20
-> This is probably just hiding your problem. flush_page_to_ram() is not=20
-> used anymore.
->=20
-> P.
->=20
->=20
+This just came in by lkml. Forwarded in the hope of catching Ralf's
+eyes:)
 
-Changing that same place also fixes my problem.  However, I came across
-the mips cobalt patches and after applying a variation of the IDE cache
-fix from there, that also fixes the problem.  So it would seem that this
-is the same problem as already fixed in the cobalt patch, but showing up
-on non-cobalt hardware.
+MfG, JBG
 
-flush_page_to_ram() was made useless around the release of 2.4.21.  I
-suspect that this was broken at that time, seeing how it is broken in
-2.4.22 and 2.4.26.  From browsing the debian-mips mailing list archives,
-it appears that they have not had a stable mips kernel since 2.4.19,
-could this bug be the cause?  Are the recent Debian mips kernels still
-unstable?
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
+PA));
 
-Would anyone with an unstable 2.4.2x kernel be willing to try one of the
-attached patches to see if the situation improves?
+--EIfQsdwoOfRLryR6
+Content-Type: message/rfc822
+Content-Disposition: inline
 
-Bob
+Return-Path: <linux-kernel-owner+jbglaw=40lug-owl.de-S265184AbUETW20@vger.kernel.org>
+X-Original-To: jbglaw@lug-owl.de
+Delivered-To: jbglaw@lug-owl.de
+Received: from vger.kernel.org (vger.kernel.org [12.107.209.244])
+	by dvmwest.gt.owl.de (Postfix) with ESMTP id 20E164B6D1
+	for <jbglaw@lug-owl.de>; Fri, 21 May 2004 00:32:34 +0200 (CEST)
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S265184AbUETW20 (ORCPT <rfc822;jbglaw@lug-owl.de>);
+	Thu, 20 May 2004 18:28:26 -0400
+Received: (majordomo@vger.kernel.org) by vger.kernel.org id S265267AbUETW20
+	(ORCPT <rfc822;linux-kernel-outgoing>);
+	Thu, 20 May 2004 18:28:26 -0400
+Received: from dcs-server2.cs.uiuc.edu ([128.174.252.3]:47330 "EHLO
+	dcs-server2.cs.uiuc.edu") by vger.kernel.org with ESMTP
+	id S265184AbUETW2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+	Thu, 20 May 2004 18:28:23 -0400
+Received: from Turandot (turandot.cs.uiuc.edu [128.174.246.118])
+	(authenticated bits=0)
+	by dcs-server2.cs.uiuc.edu (8.12.10/8.12.10) with ESMTP id i4KMSMgn020818
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NOT)
+	for <linux-kernel@vger.kernel.org>; Thu, 20 May 2004 17:28:22 -0500 (CDT)
+From: "Zhenmin Li" <zli4@cs.uiuc.edu>
+To: <linux-kernel@vger.kernel.org>
+Subject: [OPERA] Another potential bug in /arch/mips/kernel/sysirix.c
+Date: Thu, 20 May 2004 17:26:36 -0500
+Message-ID: <001801c43eb9$835b09f0$76f6ae80@Turandot>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3 (Normal)
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook, Build 10.0.6626
+Importance: Normal
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2800.1409
+Sender: linux-kernel-owner@vger.kernel.org
+Precedence: bulk
+X-Mailing-List: linux-kernel@vger.kernel.org
+X-Spam-Checker-Version: SpamAssassin 2.63 (2004-01-11) on mail
+X-Spam-Level: 
+X-Spam-Status: No, hits=-4.9 required=4.0 tests=BAYES_00 autolearn=ham
+	version=2.63
+X-Spam-Report: 
+	* -4.9 BAYES_00 BODY: Bayesian spam probability is 0 to 1%
+	*      [score: 0.0000]
 
-------_=_NextPart_001_01C43D04.66A62BCA
-Content-Type: application/octet-stream;
-	name="cache_alias_fix1.diff"
-Content-Transfer-Encoding: base64
-Content-Description: cache_alias_fix1.diff
-Content-Disposition: attachment;
-	filename="cache_alias_fix1.diff"
+We ran our bug detection tool upon Linux 2.6.6, and found some potential
+errors. 
+We would sincerely appreciate your help if anyone can confirm whether they
+are bugs or not.
 
-SW5kZXg6IG1tL2ZpbGVtYXAuYwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJDUyBmaWxlOiAvaG9tZS9jdnMvbGludXgv
-bW0vZmlsZW1hcC5jLHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjc0LjIuMTQKZGlmZiAtdSAtcjEu
-NzQuMi4xNCBmaWxlbWFwLmMKLS0tIG1tL2ZpbGVtYXAuYwkyMCBGZWIgMjAwNCAwMToyMjoyMSAt
-MDAwMAkxLjc0LjIuMTQKKysrIG1tL2ZpbGVtYXAuYwkxOCBNYXkgMjAwNCAxNzoxODoyNiAtMDAw
-MApAQCAtMjExMSw3ICsyMTExLDcgQEAKIAkgKiBhbmQgcG9zc2libHkgY29weSBpdCBvdmVyIHRv
-IGFub3RoZXIgcGFnZS4uCiAJICovCiAJbWFya19wYWdlX2FjY2Vzc2VkKHBhZ2UpOwotCWZsdXNo
-X3BhZ2VfdG9fcmFtKHBhZ2UpOworCWZsdXNoX2RjYWNoZV9wYWdlKHBhZ2UpOwogCXJldHVybiBw
-YWdlOwogCiBub19jYWNoZWRfcGFnZToK
 
-------_=_NextPart_001_01C43D04.66A62BCA
-Content-Type: application/octet-stream;
-	name="cache_alias_fix2.diff"
-Content-Transfer-Encoding: base64
-Content-Description: cache_alias_fix2.diff
-Content-Disposition: attachment;
-	filename="cache_alias_fix2.diff"
+Linux 2.6.6, /arch/mips/kernel/sysirix.c, Line 1642
 
-SW5kZXg6IGluY2x1ZGUvYXNtLW1pcHMvaWRlLmgKPT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1MgZmlsZTogL2hvbWUv
-Y3ZzL2xpbnV4L2luY2x1ZGUvYXNtLW1pcHMvaWRlLmgsdgpyZXRyaWV2aW5nIHJldmlzaW9uIDEu
-MTEuMi43CmRpZmYgLXUgLXIxLjExLjIuNyBpZGUuaAotLS0gaW5jbHVkZS9hc20tbWlwcy9pZGUu
-aAkxNSBKdWwgMjAwMyAxNTowODozMyAtMDAwMAkxLjExLjIuNworKysgaW5jbHVkZS9hc20tbWlw
-cy9pZGUuaAkxOCBNYXkgMjAwNCAxNzo1Nzo0NCAtMDAwMApAQCAtNjksNiArNjksNDkgQEAKICNl
-bmRpZgogCiAjaW5jbHVkZSA8YXNtLWdlbmVyaWMvaWRlX2lvcHMuaD4KKyNpbmNsdWRlIDxhc20v
-cjRrY2FjaGUuaD4KKworc3RhdGljIGlubGluZSB2b2lkIF9fZmx1c2hfZGNhY2hlX3JhbmdlKHVu
-c2lnbmVkIGxvbmcgc3RhcnQsIHVuc2lnbmVkIGxvbmcgZW5kKQoreworCXVuc2lnbmVkIGxvbmcg
-ZGNfc2l6ZSwgZGNfbGluZSwgYWRkcjsKKworCWRjX3NpemUgPSBjdXJyZW50X2NwdV9kYXRhLmRj
-YWNoZS53YXlzaXplOworCWRjX2xpbmUgPSBjdXJyZW50X2NwdV9kYXRhLmRjYWNoZS5saW5lc3o7
-CisKKwlhZGRyID0gc3RhcnQgJiB+KGRjX2xpbmUgLSAxKTsKKwllbmQgKz0gZGNfbGluZSAtIDE7
-CisKKwlpZiAoZW5kIC0gYWRkciA8IGRjX3NpemUpCisJCWZvciAoOyBhZGRyIDwgZW5kOyBhZGRy
-ICs9IGRjX2xpbmUpCisJCQlmbHVzaF9kY2FjaGVfbGluZShhZGRyKTsKKwllbHNlIHsKKwkJLyog
-Zmx1c2ggYWxsIG9mIGRjYWNoZSAqLworCQlhZGRyID0gS1NFRzA7CisJCWVuZCA9IGFkZHIgKyBk
-Y19zaXplOworCQlmb3IgKDsgYWRkciA8IGVuZDsgYWRkciArPSBkY19saW5lKQorCQkJZmx1c2hf
-ZGNhY2hlX2xpbmVfaW5kZXhlZChhZGRyKTsKKwl9Cit9CisKKyN1bmRlZiBpbnN3CisjdW5kZWYg
-aW5zbAorI3VuZGVmIF9faWRlX2luc3cKKyN1bmRlZiBfX2lkZV9pbnNsCisKK3N0YXRpYyBpbmxp
-bmUgdm9pZCBfX2lkZV9pbnN3KHVuc2lnbmVkIGxvbmcgcG9ydCwgdm9pZCAqYWRkciwgdTMyIGNv
-dW50KQoreworCV9faW5zdyhwb3J0LCBhZGRyLCBjb3VudCk7CisJX19mbHVzaF9kY2FjaGVfcmFu
-Z2UoKHVuc2lnbmVkIGxvbmcpYWRkciwgKHVuc2lnbmVkIGxvbmcpYWRkciArIGNvdW50KjIpOwor
-fQorCitzdGF0aWMgaW5saW5lIHZvaWQgX19pZGVfaW5zbCh1bnNpZ25lZCBsb25nIHBvcnQsIHZv
-aWQgKmFkZHIsIHUzMiBjb3VudCkKK3sKKwlfX2luc2wocG9ydCwgYWRkciwgY291bnQpOworCV9f
-Zmx1c2hfZGNhY2hlX3JhbmdlKCh1bnNpZ25lZCBsb25nKWFkZHIsICh1bnNpZ25lZCBsb25nKWFk
-ZHIgKyBjb3VudCo0KTsKK30KKworI2RlZmluZSBpbnN3KHBvcnQsIGFkZHIsIGNvdW50KSBfX2lk
-ZV9pbnN3KHBvcnQsIGFkZHIsIGNvdW50KQorI2RlZmluZSBpbnNsKHBvcnQsIGFkZHIsIGNvdW50
-KSBfX2lkZV9pbnNsKHBvcnQsIGFkZHIsIGNvdW50KQogCiAjZW5kaWYgLyogX19LRVJORUxfXyAq
-LwogCg==
+1634 asmlinkage int irix_statvfs64(char *fname, struct irix_statvfs64 *buf)
+1635 {
+1636         struct nameidata nd;
+1637         struct kstatfs kbuf;
+1638         int error, i;
+1639
+1640         printk("[%s:%d] Wheee.. irix_statvfs(%s,%p)\n",
+1641                current->comm, current->pid, fname, buf);
+!1642         error = verify_area(VERIFY_WRITE, buf, sizeof(struct
+irix_statvfs));
+1643         if(error)
+1644                 goto out;
 
-------_=_NextPart_001_01C43D04.66A62BCA--
+
+May be changed to:
+1634 asmlinkage int irix_statvfs64(char *fname, struct irix_statvfs64 *buf)
+1635 {
+1636         struct nameidata nd;
+1637         struct kstatfs kbuf;
+1638         int error, i;
+1639
+1640         printk("[%s:%d] Wheee.. irix_statvfs(%s,%p)\n",
+1641                current->comm, current->pid, fname, buf);
+!1642         error = verify_area(VERIFY_WRITE, buf, sizeof(struct
+irix_statvfs64));
+1643         if(error)
+1644                 goto out;
+
+
+
+Thanks a lot,
+OPERA Research Group
+University of Illinois at Urbana-Champaign
+
+
+
+
+-
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
+
+--EIfQsdwoOfRLryR6--
+
+--1KBBbqQMyIFUBNXy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAraKAHb1edYOZ4bsRAgS7AKCMMtcG7IH9W8lS21CyoH5a4bRMDgCcDhzi
+F+Q4Q8Rm/5vydS/wz5m+p9M=
+=Qr+x
+-----END PGP SIGNATURE-----
+
+--1KBBbqQMyIFUBNXy--

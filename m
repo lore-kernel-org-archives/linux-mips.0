@@ -1,49 +1,60 @@
-content-class: urn:content-classes:message
-Subject: set_bit() function.
+Message-ID: <018601bf54c9$e28219c0$416baac0@viditec>
+From: "kjlin" <kj.lin@viditec-netmedia.com.tw>
+Subject: null TTY error
+Date: Sun, 2 Jan 2000 10:34:23 +0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Date: Mon, 6 Aug 2001 11:04:38 -0700
-Message-ID: <84CE342693F11946B9F54B18C1AB837B0A21EB@ex2k.pcs.psdc.com>
-From: "Steven Liu" <stevenliu@psdc.com>
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0183_01BF550C.EF3D3E40"
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20010806180438.TFuYluO-afLEO4YaTnQofqReVYASJ-u8P1egX8j-6mY@z>
+Message-ID: <20000102023423.Oj6xsHSdvywt6klS1U5pBZEFaGEHOhz8QOGrZ0wIAEE@z>
 
-Hi, ALL:
+This is a multi-part message in MIME format.
 
-I have a question regarding the function set_bit() in
-linux/include/asm-mips/bitops.h for MIPS 1(R3000).
+------=_NextPart_000_0183_01BF550C.EF3D3E40
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-extern __inline__ void set_bit(int nr, void * addr)
-{
-	int	mask;
-	int	*a = addr;
-	__bi_flags;
+SGkgYWxsLA0KDQpQb3J0aW5nIHRoZSBrZXJuZWwgMi40LjEgdG8gbXkgTUlQUyBlbWJlZGRlZCBi
+b2FyZCwNCmkgZW5jb3VudGVyZWQgYSBUVFkgcHJvYmxlbS4NCldoZW4gdGhlIHByaW50ZiBpcyBw
+dXR0ZWQgaW4gYSBsYXJnZSBsb29wLCBzdWNoIGFzIGEgMTAwIHRpbWVzIGxvb3AsIA0KdGhlIGtl
+cm5lbCBlcnJvciBtZXNzYWdlICJXYXJuaW5nOiBudWxsIFRUWSBmb3IgKGZmOmZmKSBpbiB0dHlf
+d3JpdGUiIGFwcGVhcnMuDQpIb3dldmVyLCBpZiBqdXN0IG9uZSBvciB0d28gcHJpbnRmIGFyZSB1
+c2VkLCBldmVyeXRoaW5nIGlzIGZpbmUuDQpEb2VzIHRoaXMgcHJvYmxlbSBjb25jZXJuIHdpdGgg
+bXkgc2VyaWFsIGRyaXZlcj8NCkkgd3JvdGUgbXkgc2VyaWFsIGRyaXZlciBiYXNlZCBvbiBkcml2
+ZXIvY2hhci9zZXJpYWwuYy4NCkNhbiBzb21lb25lIGdpdmUgbWUgYSBoaW50IHRoYXQgd2hlcmUg
+c2hvdWxkIGJlIGNoZWNrZWQgb3Zlcj8NCg0KVGhhbmtzLg0KDQoNCg==
 
-	a += nr >> 5;                        // <---- why shits right 5
-bits? 
-	mask = 1 << (nr & 0x1f);
-	__bi_save_flags(flags);
-	__bi_cli();
-	*a |= mask;
-	__bi_restore_flags(flags);
-}
+------=_NextPart_000_0183_01BF550C.EF3D3E40
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-In
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PWdi
+MjMxMiIgaHR0cC1lcXVpdj1Db250ZW50LVR5cGU+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNS4w
+MC4yNjE0LjM1MDAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
+Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj5IaSA8Rk9OVCBmYWNlPSJU
+aW1lcyBOZXcgUm9tYW4iPmFsbCw8L0ZPTlQ+PC9GT05UPjwvRElWPg0KPERJVj4mbmJzcDs8L0RJ
+Vj4NCjxESVY+PEZPTlQgZmFjZT0iVGltZXMgTmV3IFJvbWFuIiBzaXplPTI+UG9ydGluZyB0aGUg
+a2VybmVsIDIuNC4xIHRvIG15IE1JUFMgDQplbWJlZGRlZCBib2FyZCw8L0ZPTlQ+PC9ESVY+DQo8
+RElWPjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiIgc2l6ZT0yPmkgZW5jb3VudGVyZWQgYSBU
+VFkgDQpwcm9ibGVtLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT0iVGltZXMgTmV3IFJv
+bWFuIiBzaXplPTI+V2hlbiB0aGUgcHJpbnRmJm5ic3A7aXMgcHV0dGVkIGluIGEgDQpsYXJnZSBs
+b29wLCBzdWNoIGFzIGEgMTAwIHRpbWVzIGxvb3AsIDwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQg
+ZmFjZT0iVGltZXMgTmV3IFJvbWFuIiBzaXplPTI+dGhlIGtlcm5lbCBlcnJvciBtZXNzYWdlICJX
+YXJuaW5nOiBudWxsIA0KVFRZIGZvciAoZmY6ZmYpIGluIHR0eV93cml0ZSIgYXBwZWFycy48L0ZP
+TlQ+PC9ESVY+DQo8RElWPjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiIgc2l6ZT0yPkhvd2V2
+ZXIsIGlmIGp1c3Qgb25lIG9yIHR3byBwcmludGYgYXJlIA0KdXNlZCwgZXZlcnl0aGluZyBpcyBm
+aW5lLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT0iVGltZXMgTmV3IFJvbWFuIiBzaXpl
+PTI+RG9lcyZuYnNwO3RoaXMgcHJvYmxlbSBjb25jZXJuIHdpdGggbXkgDQpzZXJpYWwgZHJpdmVy
+PzwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT0iVGltZXMgTmV3IFJvbWFuIiBzaXplPTI+
+SSB3cm90ZSBteSBzZXJpYWwgZHJpdmVyIGJhc2VkIG9uIA0KZHJpdmVyL2NoYXIvc2VyaWFsLmMu
+PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iIHNpemU9Mj5D
+YW4gc29tZW9uZSBnaXZlIG1lIGEgaGludCB0aGF0IHdoZXJlIA0Kc2hvdWxkIGJlIGNoZWNrZWQg
+b3Zlcj88L0ZPTlQ+PC9ESVY+DQo8RElWPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBmYWNlPSJU
+aW1lcyBOZXcgUm9tYW4iIHNpemU9Mj5UaGFua3MuPC9GT05UPjwvRElWPg0KPERJVj4mbmJzcDs8
+L0RJVj4NCjxESVY+Jm5ic3A7PC9ESVY+PC9CT0RZPjwvSFRNTD4NCg==
 
-extern __inline__ int test_bit(int nr, const void *addr)
-{
-	return ((1UL << (nr & 31)) & (((const unsigned int *) addr)[nr
->> 5])) != 0;
-}
-
-addr is always passed in as a pointer to an integer. Why does it use
-array [nr >>5]?
-
-Any help is greatly appreciated.
-
-Thanks.
-
-Steven Liu
+------=_NextPart_000_0183_01BF550C.EF3D3E40--

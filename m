@@ -1,24 +1,20 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0yxC6E-000aOoC@the-village.bc.nu>
+Message-ID: <m0yxF1A-000aOoC@the-village.bc.nu>
 From: alan@lxorguk.ukuu.org.uk (Alan Cox)
 Subject: Re: What about...
-Date: Fri, 17 Jul 1998 16:07:04 +0100 (BST)
-In-Reply-To: <199807171411.HAA11412@fir.engr.sgi.com> from "William J. Earl" at Jul 17, 98 07:11:42 am
+Date: Fri, 17 Jul 1998 19:14:04 +0100 (BST)
+In-Reply-To: <9807171047.ZM18720@xtp.engr.sgi.com> from "Greg Chesson" at Jul 17, 98 10:47:02 am
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "William J. Earl" <wje@fir.engr.sgi.com>
-Cc: adevries@engsoc.carleton.ca, anubis@BanjaLuka.NET, linux@cthulhu.engr.sgi.com
-Message-ID: <19980717150704.NDuKhEBEeySSr0VmBI4NTw93mIMsdjvwcroNfG-yELg@z>
+To: Greg Chesson <greg@xtp.engr.sgi.com>
+Cc: wje@fir.engr.sgi.com, adevries@engsoc.carleton.ca, anubis@BanjaLuka.NET, linux@cthulhu.engr.sgi.com
+Message-ID: <19980717181404.31OFf3lUf372M8k5MgqBSx_CSGdldLfdCIr9ARe2SRc@z>
 
-> that giant a project, but it would not be particularly useful.  If there
-> were a good linux on some other very large ccNUMA machine, then an Origin
-> port would be much simpler.  By "good", I mean a linux which scale well
-> for large (greater than 32) processor and I/O count (many I/O buses
-> and thousands of disk).  It expect such a linux will happen eventually,
-> but not yet.
+> many "holes"...  The idea of a simple buddy-system allocator as is
+> ingrained in the Linux kernel falls apart completely in the face of
+> this kind of architecture.   I suppose you could run a copy of Linux
+> on every node, but I consider that an excuse rather than a solution.
 
-The obvious starting point would probably be the older (386/486) sequent
-boxes. I almost got somewhere with this but one bit of sequent wasnt 
-willing to be helpful and counted its bus arbitrators as staying NDA.
-
-That was 2 years ago so I ought to chase them again I guess
+Actually the Linux buddy stuff is quite happy with holes. Its still
+completely inappropriate. From the above I deduce we'd have to do
+mips64 before we even considerd it anyway

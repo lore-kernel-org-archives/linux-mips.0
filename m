@@ -1,95 +1,163 @@
-Message-ID: <007701bf89ae$ae3d9710$0ceca8c0@satanas.mips.com>
+Message-ID: <008a01bf8c23$65dd01f0$0ceca8c0@satanas.mips.com>
 From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: R39xx and Processor IDs (was Re: FP emulation patch available)
-Date: Thu, 9 Mar 2000 11:03:04 +0100
+Subject: Re: FP emulation patch available
+Date: Sun, 12 Mar 2000 14:03:35 +0100
 MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0087_01BF8C2B.C1CC7E70"
+Sender: owner-linuxmips@oss.sgi.com
+Return-Path: <owner-linuxmips@oss.sgi.com>
+To: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>
+Cc: Linux SGI <linux@cthulhu.engr.sgi.com>, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
+Message-ID: <20000312130335.ukQiQwQmY4IaZ7Gb_IgLEwfzRglf0GzvEUOnT5Iut2M@z>
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0087_01BF8C2B.C1CC7E70
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Sender: owner-linuxmips@oss.sgi.com
-Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Dominic Sweetman <dom@algor.co.uk>
-Cc: Harald Koerfgen <Harald.Koerfgen@home.ivm.de>, Linux SGI <linux@cthulhu.engr.sgi.com>, linux-mips@fnet.fr, linux-mips@vger.rutgers.edu
-Message-ID: <20000309100304.hz7DoXv3O2tZEAABShRbblaexF4TPpe3RNpJsusQZp0@z>
 
->> If Philips/Tosh are really aliasing the PrID of the R4650, sombody
->> has done something Deeply Evil (and probably in violation of one
->> agreement or another).  I'm checking with MIPS HQ on this, and
->> hoping that in fact the R4650 value in the source code is in error.
+>My DS 5000/133 (R3000A) with FPU disabled and FPU emulation shows:
+> Illegal instruction 00000034 at 801ce924, ...
 >
->The R3900 should be 34 (decimal).  We don't have a record of the
->R4640/4650, which must surely be the same as each other.
-
-The collision is real.  As has been noted elsewhere in this thread,
-the R4640/4650 has no business running Linux, as it lacks a
-page-based MMU.  I had a bit of "cognative dissonance" when
-I did the conversion to the C-based system, but I left it in, figuring
-it was better to preserve partial support than to eliminate all trace
-of it.   But I think it could be argued that the R3900 characteristics
-should go into the table in place of those for the R4650 (which 
-are anyway wrong bacause they indicate that there is a TLB).
-Those characteristics should be essentially the same as those
-for the R3000A.
-
->Probably not.  But this is a good chance to ride a favourite hobby
->horse... 
+>System.map shows:
+> 801ce920 b dsemul_insns
+> 801ce928 b dsemul_cpc
 >
->But I think code should *never* read the PRId value.
->
->It often doesn't change when the chip does, and often changes when the
->chip doesn't.  There's no guarantee that it marks the difference you
->care about, and if it does now there's no guarantee it will do so
->tomorrow.  Chip companies change it (or don't) for marketing reasons
->more often than technical ones.
->
->Instead, software should contain probes for individual attributes.
->Want to know whether you've got an R4000-style CP0?  Read the 'count'
->register and see is it counting.  Want to know how large the cache is?
->Easy to look for wraparound on an R3000; on an R4000, if you can't be
->bothered to do the rather elaborate code, use the Config register.
->Want to know whether the cache is 2-way set associative?  It usually
->doesn't matter, so remain in happy ignorance.  How big is the TLB?
->read and write to it and see when it wraps.  And so on.
->
->[Nobody will listen, probably rightly - I don't seem to have time to
-> hack code any more...]
+>Looks like your trick in mips_dsemul() doesn't work too well for ISA-I CPUs. Do
+>you have an idea for an alternative?
 
 
-I quite sympthise with your frustration, and indeed the sloppy 
-use of PrID by various MIPS licensees makes it impossible
-to use *only* the PrID to determine things like cache size.  That
-having been said, I don't see it as being practical to dynamically
-probe for, say, the CP0 hazards to be respected in the TLB miss
-handler.  Probing for the TLB size may not be as simple as you 
-think: there's nothing that says that access to index N+1 is going
-to *necessarily* wrap to 0 - that's an implementation detail.
-Similarly, testing for the presence or absence of an FPU
-*might* be as simple as setting the CU1 bit and seeing if
-it can be read back, but I'm aware of at least one MIPS-based
-design where there's a flip-flop there even without an FPU.
-Sometimes one *does* care about the associativity of a
-cache, as in the case where one wants to flush all possible
-virtual aliases of an address.  Etc, etc.
+I have come up with a slightly-less-pretty hack that uses the
+Load Address Error trap instead of the Trap instruction to force
+kernel entry in the delay slot emulator. It seems just as functional
+as the previous version (i.e. operational but "paranoia" finds an
+exponentiation problem), and is currently being tortured with crashme
+to see if it holds up under corrupted instruction streams and corrupted
+process states.  I attach a pseudo-patch (cvs diff -c output) for the changes
+relative to the version obtained by applying the previous patches on the
+paralogos.com server, and would appreicate verification that it does
+indeed work on an R3K.  If it does, I'll check it into the MIPS repository
+and it will be included in the next web distribution (and maybe our
+CD-ROMS).
 
-The PrID has been horribly abused, and can not be treated as 
-if it were a true architectural mechanism for distinguishing 
-implementations, but it remains at minimum one of the tools 
-available to the OS to determine where it is running. With the 
-newer MIPS32 and MIPS64 CPUs, we have codified mechanisms 
-for determining most of the information in the mips_cpu structure 
-based on extended configuration information from the core. Most 
-of the MIPS licensees have agreed to use this system for future 
-designs.  But so long as Linux is going to be used on older CPUs, 
-which will be for a  while, I fear we will be stuck with a mixture of 
-PrID and heuristics.
+My apologies to those of you whose mailers can't handle
+attachments.
 
             Regards,
 
             Kevin K.
-__
 
-Kevin D. Kissell
-MIPS Technologies European Architecture Lab
-kevink@mips.com
-Tel. +33.4.78.38.70.67
-FAX. +33.4.78.38.70.68
+
+
+------=_NextPart_000_0087_01BF8C2B.C1CC7E70
+Content-Type: application/octet-stream;
+	name="cp1emu.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="cp1emu.patch"
+
+Index: cp1emu.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: =
+/home/repository/sw/linux-2.2.12/linux/arch/mips/fpu_emulator/cp1emu.c,v
+retrieving revision 1.5
+diff -c -r1.5 cp1emu.c
+*** cp1emu.c	2000/02/27 15:19:18	1.5
+--- cp1emu.c	2000/03/12 12:24:06
+***************
+*** 767,772 ****
+--- 767,774 ----
+  static unsigned int	dsemul_sr;
+  static void *dsemul_osys;
+ =20
++ #define AdEL 4
++ #define AdELOAD 0x8fa00001
+ =20
+  int
+  do_dsemulret(struct pt_regs *xcp)
+***************
+*** 774,781 ****
+  #ifdef DSEMUL_TRACE
+      _mon_printf ("desemulret\n");
+  #endif
+!     /* Restore previous Trap instruction vector */
+!     (void)set_except_vector(13, dsemul_osys);
+      /* Set EPC to return to post-branch instruction */
+      xcp->cp0_epc =3D VA_TO_REG (dsemul_cpc);
+      /*=20
+--- 776,783 ----
+  #ifdef DSEMUL_TRACE
+      _mon_printf ("desemulret\n");
+  #endif
+!     /* Restore previous exception vector */
+!     (void)set_except_vector(AdEL, dsemul_osys);
+      /* Set EPC to return to post-branch instruction */
+      xcp->cp0_epc =3D VA_TO_REG (dsemul_cpc);
+      /*=20
+***************
+*** 811,833 ****
+       */
+      dsemul_insns =3D (mips_instruction *)(xcp->regs[29] & ~3);
+      dsemul_insns -=3D 3; /* Two instructions, plus one for luck ;-) */
+!     /* Verify that space exists, or can be grown, on the stack */
+      if(verify_area(VERIFY_WRITE, dsemul_insns, =
+sizeof(mips_instruction)*2))=20
+  	return SIGBUS;
+     =20
+      dsemul_insns[0] =3D ir;
+      /*=20
+       * Algorithmics used a system call instruction, and
+!      * borrowed that vector.  It seems more prudent, and
+!      * is simpler in Linux, to use a TEQ instruction, though
+!      * this does require a MIPS II CPU.
+       */
+- #define TEQ_R0_R0 0x00000034=20
+-     dsemul_insns[1] =3D TEQ_R0_R0;
+ =20
+      dsemul_cpc =3D cpc;
+      dsemul_sr =3D xcp->cp0_status;
+!     dsemul_osys =3D set_except_vector(13, handle_dsemulret);
+  =20
+      xcp->cp0_epc =3D VA_TO_REG &dsemul_insns[0];
+      xcp->cp0_status &=3D ~ST0_IM;	/* interrupt disabled inside dsemul! =
+*/
+--- 813,841 ----
+       */
+      dsemul_insns =3D (mips_instruction *)(xcp->regs[29] & ~3);
+      dsemul_insns -=3D 3; /* Two instructions, plus one for luck ;-) */
+!     /* Verify that the stack pointer is not competely insane */
+      if(verify_area(VERIFY_WRITE, dsemul_insns, =
+sizeof(mips_instruction)*2))=20
+  	return SIGBUS;
+     =20
+      dsemul_insns[0] =3D ir;
+      /*=20
+       * Algorithmics used a system call instruction, and
+!      * borrowed that vector.  As that would be catastrophic
+!      * if a reschedule happens, a TEQ instruction was used
+!      * in early versions of the Linux kernel emulator, since=20
+!      * Linux does nothing useful with Trap instructions.
+!      * That does not work on R3000s, however, so here we
+!      * steal the Address Error on Load vector and
+!      * generate an address error on an unaligned load.
+       */
+ =20
++     /* If one is *really* paranoid, one tests for a bad stack pointer =
+*/
++     if((xcp->regs[29] & 0x3) =3D=3D 0x3) dsemul_insns[1] =3D AdELOAD - =
+1;
++     else dsemul_insns[1] =3D AdELOAD;
++=20
+      dsemul_cpc =3D cpc;
+      dsemul_sr =3D xcp->cp0_status;
+!     dsemul_osys =3D set_except_vector(AdEL, handle_dsemulret);
+  =20
+      xcp->cp0_epc =3D VA_TO_REG &dsemul_insns[0];
+      xcp->cp0_status &=3D ~ST0_IM;	/* interrupt disabled inside dsemul! =
+*/
+
+------=_NextPart_000_0087_01BF8C2B.C1CC7E70--

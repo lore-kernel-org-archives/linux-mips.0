@@ -1,58 +1,25 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199708081519.LAA06545@neon.ingenia.ca>
-Subject: par and us*
-Date: Fri, 8 Aug 1997 11:19:35 -0400 (EDT)
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199708082220.AAA02667@informatik.uni-koblenz.de>
+Subject: Re: Linux GGI and Linux/SGI
+Date: Sat, 9 Aug 1997 00:20:17 +0200 (MET DST)
+In-Reply-To: <9708081041.ZM971@blammo.engr.sgi.com> from "John Wiederhirn" at Aug 8, 97 10:41:46 am
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Linux/SGI list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970808151935.RY8xixSOshFejCOEbAOeMyLbS9eBwYKwCyDXt7txIqw@z>
+To: John Wiederhirn <jwiede@blammo.engr.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970808222017.zUsYWQhBb1yaF5hZaXGhdfu_omO993YwBYtEzz-GwBM@z>
 
-I've got a simple lock-contention program that I'm using to see how
-the usema stuff works.
+> Are there any plans to move (maybe it's already there) the
+> SGI version of Linux to a GGI-model design?
+> (see http://synergy.foo.net/~ggi/)
 
-When I try to run the program under par, though, it only lets me trace
-one of the invocations:
+Well, we have discussed using GGI.  Last I checkend GGI was still itself
+in a state of flux and the last thing I want to do is to open another
+battle field.  Technical reasons against GGI was mostly that the original
+design was very bloated as far as the kernel is affected.  This has
+been improoved somwhat since.
 
-1 [shaver@linus ~/work/usema]$ par -s -SS -l -o lock-p.par ./lock p
-1 Creating new lock.
-1 Storing lock.
-1 Getting lock.
-1 Waiting...
-
-(now I start the second one)
-2 [shaver@linus ~/work/usema]$ par -s -SS -l -o lock-c2.par ./lock c
-2 Cannot syscall trace pid 23779:Resource busy
-2 Finding existing lock.
-2 Getting lock.
-2 [shaver@linus ~/work/usema]$
-
-(back to the shell!)
-(release the lock on the first invocation)
-1 
-1 Releasing lock.
-1 Exiting
-1 [shaver@linus ~/work/usema]$ 
-
-(and now I get more output from the second invocation)
-2 [shaver@linus ~/work/usema]$ Waiting...
-2 Releasing lock.
-2 Exiting
-
-Under normal circumstances (no par), I have to press enter on the
-second one as well for it to release the lock and exit.  When par is
-doing its (arguably weird, maybe broken) thing, I don't have to do
-that...
-
-Is this a known problem?
-
-Mike
-
--- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>              Linux: because every cycle counts.
-#>
-#> "I don't know what you do for a living[...]" -- perry@piermont.com
-#>        "I change the world." -- davem@caip.rutgers.edu
+  Ralf

@@ -1,40 +1,83 @@
-Date: Wed, 14 Jan 2004 16:22:01 -0800 (PST)
-From: Nathan Field <ndf@ghs.com>
-Subject: Re: ptrace induced instruction cache bug?
-In-Reply-To: <20040114160729.D13471@mvista.com>
-Message-ID: <Pine.LNX.4.44.0401141619110.1969-100000@zcar.ghs.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <ndf@ghs.com>
+Date: Wed, 14 Jan 2004 17:12:52 -0800
+From: Andrew Morton <akpm@osdl.org>
+Subject: Re: [BUG] 2.6.1/MIPS - missing cache flushing when user program
+ returns pages to kernel
+Message-ID: <20040114171252.4d873c51.akpm@osdl.org>
+In-Reply-To: <20040114163920.E13471@mvista.com>
+References: <20040114163920.E13471@mvista.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <akpm@osdl.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Jun Sun <jsun@mvista.com>
-Cc: Daniel Jacobowitz <dan@debian.org>, linux-mips@linux-mips.org
-Message-ID: <20040115002201.j3EbcnFOvlY46JkeQZKLNrT5ql2p3LfR-LN5z2tYW4Q@z>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Russell King <rmk@arm.linux.org.uk>
+Message-ID: <20040115011252.7jkwvsg9S139wk_p6No22w5wQbGeVrMEcm_m4D4ry1U@z>
 
-> There are too many things related to cache are wrong in 2.4.17.  For
-> example,
+Jun Sun <jsun@mvista.com> wrote:
+>
+> I have been chasing a nasty memory corruption bug on my MIPS box with
+> 2.6.1 kernel.  In the end it appears the following sequence has
+> happened:
 > 
-> . flush_page_indexed() is not right for multi-way cache
-> . when you map user pages into kernel, you are sufferring potential cache
->   aliasing problem (BTW, we still suffer from this right now to a less degree)
-> . flush_page_to_ram() has a broken semantic, because it is not clear whether
->   the area mapped into user virt spaces should be flushed or not
-> ...
+> 1. userland gets a page and writes some stuff to it, which dirties
+>    data cache.  In my case, it is actually doing a sys_read() into
+>    that page.  See my kgdb trace attached in the end.
 > 
-> In short, it is not worth your time to fix old bugs.  Last time I
-> checked malta was working fine around 2.4.21.  It shouldn't be too hard
-> to get it working again in the latest 2.4 branch.
-	Is this the 2.4.21 from ftp.kernel.org, or do I need to get 
-specific patches to get it to work? I looked at the cvs tree but it's 
-currently a 2.6 release. Should I just check out the linux_2_4_branch 
-version from linux-mips.org?
+> 2. userland returns this page to kernel *without* any cache flushing,
+>    i.e., the dcache is still dirty.
+> 
+> 3. kernel calls kmalloc() to get a block from this page.
+> 
+> 4. the dirty dcache is written back to physical memory some time later,
+>    corrupting the kernel data.
+> 
+> It seems to me the problem is that we should do a cache flush 
+> for all the pages returned to kernel during step 2.
+> 
+> I attached a hack which solves my problem but I am not sure if it is
+> most appropriate.  It looks like the affected user region (start, end)
+> can span over multiple vma areas.  If so, the fix will only flush the first
+> area.
+> 
+> Also, it is hard to find an appropriate place to do the flushing
+> The new 2.6 mm is a confusing maze to me.  I hope someone more
+> knowledgable can come up with a more decent fix for this problem.
+> 
+> BTW, it appears in 2.4 we are doing this flushing in do_zap_page_range()
+> where we call a flush_cache_range(mm, start, end).
 
-	nathan
+That flush_cache_range was removed between 2.5.67 and 2.5.68.  If you put
+it back, does it fix the problem?
 
--- 
-Nathan Field (ndf@ghs.com)			          All gone.
+It seems from Russell's words here, MIPS should be flushing in
+tlb_start_vma().
 
-But the trouble with analogies is that analogies are like goldfish:
-sometimes they have nothing to do with the topic at hand.
-        -- Crispin (from a posting to the Bugtraq mailing list)
+I think that's wrong, really.  We've discussed this before and decided that
+these flushing operations should be open-coded in the main .c file rather
+than embedded in arch functions which happen to undocumentedly do other
+stuff.
+
+
+# --------------------------------------------
+# 03/04/14	rmk@arm.linux.org.uk	1.1017
+# [PATCH] flush_cache_mm in zap_page_range
+# 
+# unmap_vmas() eventually calls tlb_start_vma(), where most architectures
+# flush caches as necessary.  The flush here seems to make the
+# flush_cache_range() in zap_page_range() redundant, and therefore can be
+# removed.
+# --------------------------------------------
+#
+diff -Nru a/mm/memory.c b/mm/memory.c
+--- a/mm/memory.c	Wed Jan 14 17:09:07 2004
++++ b/mm/memory.c	Wed Jan 14 17:09:07 2004
+@@ -601,7 +601,6 @@
+ 
+ 	lru_add_drain();
+ 	spin_lock(&mm->page_table_lock);
+-	flush_cache_range(vma, address, end);
+ 	tlb = tlb_gather_mmu(mm, 0);
+ 	unmap_vmas(&tlb, mm, vma, address, end, &nr_accounted);
+ 	tlb_finish_mmu(tlb, address, end);

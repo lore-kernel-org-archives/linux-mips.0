@@ -1,36 +1,41 @@
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Russell Coker <russell@coker.com.au>
-Reply-To: Russell Coker <russell@coker.com.au>
-Subject: Re: broken devfs-support in SGI Zilog8530 serial driver
-Date: Fri, 29 Mar 2002 14:38:35 +0100
-References: <20020329103244.GA15765@bunny.shuttle.de> <000001c1d711$2492f070$1fc1f2a3@mow.siemens.ru> <20020329132650.GA16905@bunny.shuttle.de>
-In-Reply-To: <20020329132650.GA16905@bunny.shuttle.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID: <20020329133836.377B1237BB@lyta.coker.com.au>
+Message-ID: <5.0.2.5.2.20020408155359.00c5fd00@mx15.freecom.ne.jp>
+Date: Mon, 08 Apr 2002 15:54:00 +0900
+From: sender <asdd@mx15.freecom.ne.jp>
+Subject: =?ISO-2022-JP?B?GyRCISo5LTlwISpFPj8mJTUhPCVTJTkbKEI=?=
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-2022-JP"; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Raoul Borenius <raoul@shuttle.de>, Borsenkow Andrej <Andrej.Borsenkow@mow.siemens.ru>
-Cc: linux-mips@oss.sgi.com, devfs@oss.sgi.com
-Message-ID: <20020329133835.1BtvTYCJrIhDn1WqsOtyyCaRlKqOh82PO1egHV9gMWY@z>
+Message-ID: <20020408065400.gm1mFZDRh8MKJ1LQxXwKFoacl68Zg9T4JNZjDAosoS0@z>
 
-You need some code similar to the following in the serial driver:
+--------------------------------
+■全国の人材バンクへ転職の
+  一括エントリー登録受付け！
+http://hellobank.sub4you.net
 
-#ifdef CONFIG_DEVFS_FS
-        serial_driver.name = "tts/%d";
-#else
-        serial_driver.name = "ttyS";
-#endif
+※完全なる【無償サービス】です。
 
-Of course if the original device nodes were named /dev/ttyZ0 etc then you 
-want "tts/Z%d".
+--------------------------------
+■転職サイトの報酬制バナー提携も
+募集中です。転職求職者の登録承認
+数に応じて『1000円/件』更に転職決
+定で基本的に『1O万円/件』をお支払
+い致します。
 
-Look at the Cyclades and Stallion drivers for examples of it being done 
-correctly.  Or tell me exactly the details of what you want and I'll send you 
-a patch.
+※運営者様の方でかかる費用等は一切
+ございません。
 
--- 
-If you send email to me or to a mailing list that I use which has >4 lines
-of legalistic junk at the end then you are specifically authorizing me to do
-whatever I wish with the message and all other messages from your domain, by
-posting the message you agree that your long legalistic sig is void.
+※ご提携金3000円を進呈致します。
+
+※『ご返信ではなく』こちらの別アド
+レスにメールを頂ければ詳細をお送り
+致します。＜詳細希望＞
+bancom@bigfoot.com　
+
+コムプラン企画(ジョブサービス)
+--------------------------------
+※【解除】は申し訳ございませんが
+　下記へ【空メール】をお送りくだ
+　さるようお願い申しあげます。
+dm_delet@bigfoot.com
+-------------------------------- 

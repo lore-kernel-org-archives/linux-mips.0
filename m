@@ -1,8 +1,8 @@
-Message-ID: <005101c415c1$5c99ef00$10eca8c0@grendel>
+Message-ID: <008901c415d0$3a94d5f0$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20040329182510.219.qmail@web60703.mail.yahoo.com> <20040329184156.GA3482@lucon.org>
-Subject: Re: linux port on mips
-Date: Mon, 29 Mar 2004 21:09:27 +0200
+References: <4068809F.8070103@murphy.dk> <4068864D.1020209@realitydiluted.com>
+Subject: Re: BUG in pcnet32.c?
+Date: Mon, 29 Mar 2004 22:55:52 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -10,51 +10,29 @@ Content-Transfer-Encoding: 7bit
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "H. J. Lu" <hjl@lucon.org>, Shantanu Gogate <sagogate@yahoo.com>
+To: "Steven J. Hill" <sjhill@realitydiluted.com>, Brian Murphy <brian@murphy.dk>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20040329190927.IIznPnFy9VYEz10fpbO5r86Lf0YJ7d9L6ITEMSIfgt8@z>
+Message-ID: <20040329205552.9fsX-kxnzlaPOOdS1SbxGwt_kvmbOTrkO1lakwGV1zI@z>
 
-Shantanu:
+> Excellent. So my new BUG code detected another bad network driver. Your network
+> driver is broken and it needs fixed. I will refer you to these posts between
+> Jeff Garzik and myself when I found a similar issue on the 'natsemi.c' driver.
+> Mapping a PCI address with length zero is a BUG, period. You length should
+> be the maximum RX buffer length + 2. You will see from the patches in the
+> messages below that this is for IP header alignment. Good luck and please let
+> use know how it turns out.
 
-See http://www.linux-mips.org/distributions.html for pointers to H.J's 7.1 port,
-plus some other userland distributions.  While that page mentions the installation
-kit for 7.1 that's available on the MIPS FTP server, it does not mention the RH 7.3
-variant, which can be found at
-ftp://ftp.mips.com/pub/linux/mips/installation/redhat7.3/01.00/
+Which reminds me of something I've been meaning to mention for a while.
+Back in the dark days of Linux 2.2 on MIPS, I discovered that a number
+of network drivers were subtly broken for MIPS because they allocated
+enough extra space for IP header alignment, but not for cache line alignment.
+Particularly on CPUs with write-back caches, it can be a Bad Thing if a cache 
+line straddles two packet buffers, as the flush of one can cause the other to be
+clobbered.  I had to redefine the alignment constant for MIPS to be a function
+of the line size to have 100% solid operation of the Tulip and pcnet32 drivers.
 
------ Original Message ----- 
-From: "H. J. Lu" <hjl@lucon.org>
-To: "Shantanu Gogate" <sagogate@yahoo.com>
-Cc: <linux-mips@linux-mips.org>
-Sent: Monday, March 29, 2004 20:41
-Subject: Re: linux port on mips
+The whole network driver cache management paradigm was redone for 2.4,
+and I've often wondered whether the same potential problem exists, but never
+had the time to go in and check.
 
-
-> Please ask it on the Linux mips mailing list.
-> 
-> 
-> H.J.
-> ---
-> On Mon, Mar 29, 2004 at 10:25:10AM -0800, Shantanu Gogate wrote:
-> > i found the following snippet in one of your ports to glibc bug mailing list. However that link
-> > does not seem to be active anymore ? Is the mini-port you mentioned available anywhere else ? It
-> > could be of help to me. 
-> > 
-> > thanks,
-> > shantanu.
-> > 
-> > --snip--
-> > My mini-port of RedHat 7.1 is at
-> > 
-> > ftp://oss.sgi.com/pub/linux/mips/redhat/7.1/
-> > 
-> > you should be able to put a small RedHat 7.1 on the mips/mipsel box and
-> > compile the rest of RedHat 7.1 yourselves.
-> > --snip--
-> > 
-> > __________________________________
-> > Do you Yahoo!?
-> > Yahoo! Finance Tax Center - File online. File on time.
-> > http://taxes.yahoo.com/filing.html
-> 
-> 
+There, I've mentioned it.  My conscience is clear.  ;o)

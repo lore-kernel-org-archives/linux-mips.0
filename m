@@ -1,28 +1,36 @@
-Date: Mon, 15 Jan 2001 06:42:26 -0200
+Date: Tue, 16 Jan 2001 04:10:29 -0200
 From: Ralf Baechle <ralf@oss.sgi.com>
-Subject: Re: broken RM7000 in CVS ...
-Message-ID: <20010115064226.D8866@bacchus.dhis.org>
-References: <3A5E7FFB.79925DF9@mvista.com> <001e01c07c68$96155f80$0deca8c0@Ulysses> <3A5F53CB.F8EC3947@mvista.com> <020a01c07ccf$cf11d220$0deca8c0@Ulysses>
+Subject: Re: O200 problem...
+Message-ID: <20010116041028.B2068@bacchus.dhis.org>
+References: <20010109004138.A12181@bacchus.dhis.org> <Pine.LNX.4.30.0101121507090.13361-100000@quake.blic.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <020a01c07ccf$cf11d220$0deca8c0@Ulysses>; from kevink@mips.com on Fri, Jan 12, 2001 at 08:42:24PM +0100
+In-Reply-To: <Pine.LNX.4.30.0101121507090.13361-100000@quake.blic.net>; from pmalic@blic.net on Fri, Jan 12, 2001 at 03:20:25PM +0100
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: "Kevin D. Kissell" <kevink@mips.com>
-Cc: Jun Sun <jsun@mvista.com>, linux-mips@oss.sgi.com
-Message-ID: <20010115084226.TxfSNKXfMntOuCYrjpm6KXNomnvtAhzwhsbmdFgDNPo@z>
+To: Predrag Malicevic <pmalic@blic.net>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010116061029.x0gdu3oPYlnZ6y6I2P8J8-b1RGPr11yePdGgkZBAqqU@z>
 
-On Fri, Jan 12, 2001 at 08:42:24PM +0100, Kevin D. Kissell wrote:
+On Fri, Jan 12, 2001 at 03:20:25PM +0100, Predrag Malicevic wrote:
 
-> And thereby hangs a tale.  MIPS tweaked the Config register, and has
-> added additional registers "behind" the Config register (a previously
-> reserved zero field in the mtc0/mfc0 instructions now serves as a
-> sort of bank select, and most current gnu assemblers recognize
-> "mfc0 $2, 16, 1", etc.) in MIPS32 to allow MMU and cache configuration,
+> > Thanks for sending the oops message; however without additional data
+> > provided I can't use it.  Can you please point please put the kernel image
+> > that resulted in the oops online?
+> 
+> http://lothar.penguinpowered.com/o200.tar.gz
+> 
+> You'll find everything in the archive: vmlinux, System.map, kernel
+> configuration file and a new session log with 'oops messages'.
 
-Do you know when the ability to address the additional register banks got
-added to gas?  I'd like to get rid of the sucky .word <opcode> thing we're
-using right now to address the additional register banks.
+I just examined your crash data; it's not obvious why what is causing the
+DBE exception that is making your kernel die.  It seems to happen in
+the SCSI code; I wonder if any of the devices you have on the SCSI bus
+especially on the second hostadapter is making the Qlogic driver go nuts.
+
+Can you retry your kernel with devices from this bus removed?
+
+Thanks,
 
   Ralf

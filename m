@@ -1,25 +1,53 @@
-From: "Arthur Britto" <ahbritto@iat.com>
-Subject: I have spare decstations
-Date: Tue, 26 Jun 2001 20:50:40 -0700
-Message-ID: <NEBBKLDJALCNOONJNDDGCEEHCJAA.ahbritto@iat.com>
-To: engel@unix-ag.org
-Message-ID: <20010627035040.1gel2ulbh3d1ASnsCAPa509yVZfBsU2Eyom2coWJOVg@z>
+Reply-To: <raghav@ishoni.com>
+From: "Raghav P" <raghav@ishoni.com>
+Subject: Are page tables allocated in KSEG0 or in KSEG2?
+Date: Sat, 30 Jun 2001 14:51:17 +0530
+Message-ID: <E0FDC90A9031D511915D00C04F0CCD250399AA@leonoid.in.ishoni.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Sender: owner-linux-mips@oss.sgi.com
+To: linux-mips@oss.sgi.com
+Message-ID: <20010630092117.EqrZZscawTDnG3Mccu06WQcOgKERFHsk-bV1Cr3AN2I@z>
 
-[Charset iso-8859-1 unsupported, filtering to ASCII...]
-Hi,
+I was going thru the TLB exception for R2300 and had the following doubts
+which I hope someone can help me out with. ( am sorry if this is a newbie
+question but since this is MIPS specific I am posting here)
 
-I could not find the mailing list for decstation Linux.  Perhaps you could
-help me...
+The code is in arch/mips/kernel/head.S for user TLB:
 
-I have two DecStation 3100s that I must dispose of immediately.  I would
-happily provide them to anyone working on the port.
+        /* TLB refill, EXL == 0, R[23]00 version */
+        LEAF(except_vec0_r2300)
+        .set    noat
+        .set    mips1
+        mfc0    k0, CP0_BADVADDR
+        lw      k1, current_pgd                 # get pgd pointer
+        srl     k0, k0, 22
+        sll     k0, k0, 2
+        addu    k1, k1, k0
+        mfc0    k0, CP0_CONTEXT
+        lw      k1, (k1)
+        and     k0, k0, 0xffc
+        addu    k1, k1, k0
+        lw      k0, (k1)
+        nop
+        mtc0    k0, CP0_ENTRYLO0
+        mfc0    k1, CP0_EPC
+        tlbwr
+        jr      k1
+        rfe
+        END(except_vec0_r2300)
 
-If you know of anyone who could use the machines and is able to pick up the
-machines in Berkeley, California they are available for free.
+My linux book says that pgd and pte entries are not setup by the kernel
+until a pagefault exception occurs.
+The above code will work only if the pgd and pte tables are stored in kseg2;
+if they were stored in kseg0 then if a pgd has an invalid pte entry the
+above code will index into an invalid pte page and get a wrong physical
+address.
+But the pgd_alloc() and pte_alloc() routines seem to be allocating physical
+pages from kseg0 for pgd and pte tables.
+Am I missing something here???
 
-Thank you,
-
-Arthur Britto
-
-
------ End of forwarded message from Arthur Britto -----
+Thanks
+Raghav

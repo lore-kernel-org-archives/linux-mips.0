@@ -1,59 +1,24 @@
 From: "Robert Rusek" <robru@ruseks.com>
-Subject: Kernel-headers for Redhat test-7.0 kernel 2.4.3
-Date: Sun, 17 Jun 2001 14:42:54 -0700
-Message-ID: <002101c0f776$7757d3a0$6400a8c0@sohorob>
+Subject: Newbie: RedHat Test-7.0 Compiler Question
+Date: Wed, 20 Jun 2001 08:04:00 -0700
+Message-ID: <000901c0f99a$3cfa2480$6400a8c0@sohorob>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0022_01C0F73B.CAF8FBA0"
-Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010617214254.IILySsMxqsLeLo8m5h0VFT1hT4gK0GTYY7MkhAPUS7Y@z>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0022_01C0F73B.CAF8FBA0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Sender: owner-linux-mips@oss.sgi.com
+To: linux-mips@oss.sgi.com
+Message-ID: <20010620150400.r_86NDYUwU03IPlX8fBjQ88B711rhoh4sRqUyJE76Ms@z>
 
+Over the past month I have been struggling trying to make my compilers
+work under RedHat Test-7.0.  I attempted to do the rpmi -i with the
+rpm's in the build with not much success.  Seems like the core things
+are missing.  If possible I need help with the steps that are needed to
+make the compilers work.  I want to be able to compile things like the
+kernel, bind, apache, and sendmail.
 
+Any help would be greatly appreciated.
 
- 
-Where do I find kernel-headers for Redhat test-7.0 kernel 2.4.3.
- 
-Thanks in advanc,
+Thank you in advance.
 --
 Robert Rusek
- 
-
-------=_NextPart_000_0022_01C0F73B.CAF8FBA0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<TITLE>Message</TITLE>
-
-<META content=3D"MSHTML 5.50.4611.1300" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DTahoma size=3D2><BR><BR></FONT>&nbsp;</DIV>
-<DIV><SPAN class=3D115534620-17062001><FONT face=3D"Comic Sans MS" =
-color=3D#008000=20
-size=3D2>Where do I find kernel-headers for Redhat test-7.0 kernel=20
-2.4.3.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D115534620-17062001><FONT face=3D"Comic Sans MS" =
-color=3D#008000=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D115534620-17062001><FONT face=3D"Comic Sans MS" =
-color=3D#008000=20
-size=3D2>Thanks in advanc,</FONT></SPAN></DIV>
-<DIV><FONT face=3D"Comic Sans MS" color=3D#008000 =
-size=3D2>--</FONT></DIV>
-<DIV><FONT face=3D"Comic Sans MS" color=3D#008000 size=3D2>Robert =
-Rusek</FONT></DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0022_01C0F73B.CAF8FBA0--

@@ -1,58 +1,44 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199810191953.MAA90956@jibe.engr.sgi.com>
-Subject: Re: XZ
-In-Reply-To: <199810190644.IAA17078@link.csem.ch> from "Fernando D. Mato Mira" at "Oct 19, 98 08:44:45 am"
-Date: Mon, 19 Oct 1998 12:53:40 -0700 (PDT)
-From: kyriazis@sgi.com (George Kyriazis)
-Reply-To: kyriazis@sgi.com
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199810200421.VAA17379@oz.engr.sgi.com>
+Subject: Re: get_mmu_context()
+Date: Mon, 19 Oct 1998 21:21:28 -0700 (PDT)
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "Fernando D. Mato Mira" <matomira@acm.org>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19981019195340.97rbJjFBCM8s5OgzDPGejdeVFPtEaXv1Hf8EuB6f4A4@z>
+To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19981020042128.CgihFwgFr_vuDKH467jiO-tSV-zV_9xamxicVj-ssIo@z>
 
+Forwarding message from David, his email probably changed
+so it bounced...
 
-In a previous episode, Fernando D. Mato Mira claimed:
-> At 05:15 PM 10/18/98 -0700, you wrote:
-> >    XZ is one of the variants of the Elan/Extreme series of cards,
-> >which have one or more geometry engines on the card.  The geometry
-> >engines need microcode downloaded for full functionality, and the
-> >interfaces are not externally documented, so it is hard to build
-> >linux support without access to the IRIX source for reference.
-> 
-> What about just getting the console running (no X server)?
-> How do GR2 (Indigo Elan) and GR3 (Indigo II Elan) differ in terms of
-> programming?
-> 
-I did some asking around.  Here's what I found:
+----- Forwarded message from owner-linux@cthulhu -----
 
-* In order to do anything, you have to download microcode.
+From: "David S. Miller" <davem@dm.cobaltmicro.com>
+To: imp@village.org
+CC: ralf@uni-koblenz.de, linux-mips@fnet.fr, linux@cthulhu.engr.sgi.com
+In-reply-to: <199810200407.WAA03233@harmony.village.org> (message from Warner
+	Losh on Mon, 19 Oct 1998 22:07:26 -0600)
+Subject: Re: get_mmu_context()
+References: <19981019121804.F387@uni-koblenz.de>  <Pine.SV4.3.91.981016185136.876A-100000@mech.math.msu.su> <XFMail.981018215318.harald.koerfgen@netcologne.de> <199810200407.WAA03233@harmony.village.org>
 
-* The monitor PROM downloads a mini-microcode that could be used.  I am
-  not sure what the entry points look like to the PROM.  I think this
-  is the safest bet.
+   Date: Mon, 19 Oct 1998 22:07:26 -0600
+   From: Warner Losh <imp@village.org>
 
-* The full-functioning microcode (that does 3d) is downloaded at boot
-  time before the X server initializes.
- 
-* The people that I asked are not clear about the programming differences
-  between GR2 and GR3.  Certainly they are the same for OpenGL-level
-  programming.  My guess is that there are differences in the CPU interfacing
-  and video back end.  User-level code is the same, but kernel initialization
-  and management code may be different.
+   Wouldn't it be easier to have ld to have variant fixup records?
+   That way you could patch all instances at run time, much like we do
+   when we load stuff now...
 
-* Getting things up and running on a GR-type (Express) architecture is 
-  definetely more difficult than Newport.
+See sparc32's btfixup in the kernel sources for the best
+implementation I've ever seen.
 
-* Documentation will be hard to find.  Documentation for programming the
-  microcoded engines, even harder.  You could, of course, use the existing
-  microcode.
+Later,
+David S. Miller
+davem@dm.cobaltmicro.com
 
-  --george
+----- End of forwarded message from owner-linux@cthulhu -----
+
 -- 
------------------------------------------------------------------------------
-George Kyriazis  | Silicon Graphics, Inc., 8U-590 |  kyriazis@sgi.com
-                 | 2011 N. Shoreline Blvd.        |  650-933-2828
-                 | Mt. View, CA 94043             | 
+Peace, Ariel

@@ -1,50 +1,76 @@
-Date: Fri, 16 Mar 2001 20:35:40 +0100
-From: Ralf Baechle <ralf@oss.sgi.com>
-Subject: Re: Can't build a CONFIG_CPU_NEVADA kernel
-Message-ID: <20010316203540.D2857@bacchus.dhis.org>
-References: <20010314084633.A25674@nevyn.them.org> <20010314195919.A1911@bacchus.dhis.org> <20010314140529.A29525@nevyn.them.org> <20010314202058.B1911@bacchus.dhis.org> <00fc01c0acd3$c881ca80$0deca8c0@Ulysses> <20010316150423.A3529@bacchus.dhis.org> <010201c0ae49$6df089e0$0deca8c0@Ulysses>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <010201c0ae49$6df089e0$0deca8c0@Ulysses>; from kevink@mips.com on Fri, Mar 16, 2001 at 07:46:23PM +0100
+From: Michl Ladislav <xmichl03@stud.fee.vutbr.cz>
+Date: Sun, 18 Mar 2001 16:32:11 +0100 (CET)
+Subject: arc cmdline.c
+Message-ID: <Pine.BSF.4.33.0103181559120.18101-100000@fest.stud.fee.vutbr.cz>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: "Kevin D. Kissell" <kevink@mips.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010316193540.HyRswpRtx_43_ionnLzkMr69GNJKDgCtdG3S7VqEtik@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010318153211.YpA9_GFGlThCP4vMfuzIflw-tGzD_jVSxE6YATSt894@z>
 
-On Fri, Mar 16, 2001 at 07:46:23PM +0100, Kevin D. Kissell wrote:
+hi all,
 
-> > GCC to schedule instructions for a certain processor xxx.  This does not
-> > enable the full use of it's instruction set.  Back in time when I choose
-> > these options I choose because GCC didn't know -mcpu=r5000 but the R8000
-> > was supported and it was the closest fit.  Gcc 1.1.2 knows this option
-> > so I just changed all instances of -mcpu=r8000 into -mcpu=r5000.
-> 
-> As I understand it, the original intention behind -mcpu was to optimise 
-> instruction scheduling, but it got perverted over time to enable 
-> instructions as well.  In any case, the R5000 and R8000 have the 
-> same ISA, but the pipelines are radically different.  The R8K is 
-> 4-way superscalar, with a 2-cycle branch penalty and branch 
-> prediction.  The R5K is two way supercalar (Int/FP pairs only) 
-> with classic MIPS branch behavior, etc.
+i have some beginner questions, so please be patient with me :-)
 
-Gcc's knowledge about MIPS architecture is so limited that an R5000 isn't
-very much different from an R8000 ...
+1) quoting indy-hd-boot-micro-howto.html:
+O.k. we're almost there. The last thing to do is to tell the PROM which
+file to boot on power up:
+[snip]
+	setenv OSLoader linux
+	setenv SystemPartition scsi(0)disk(1)rdisk(0)partition(8)
+	setenv OSLoadPartition /dev/sda1
 
-> > Unfortunately true but there is a reason that QED's manual marks it as an
-> > proprietary extension ...
-> 
-> Yup.  The quesiton is, does gcc's -mmad option actually
-> select based on -mcpu or some other variable which
-> semantics to use, or does it assume R4650 semantics
+but OSLoadPartition is ignored, so this no loger works. does it mean that
+i have to use
+	setenv root /dev/sda1
+instead?
 
-If you have a collection which of the CPUs have implemented mmad in what
-way I'd like to use that to put it into gcc.
+hmm, i really hate gotos :-(
 
-> (I had the impression that it was the R4650 that drove
-> the implementation of MIPS madd's into gcc - correct
-> me if I'm wrong).
+--- cmdline.c.orig	Sun Mar 18 15:26:02 2001
++++ cmdline.c	Sun Mar 18 15:46:22 2001
+@@ -34,23 +34,18 @@
+ 	char *cp;
+ 	int actr, i;
 
-Guess that's right.
+-	actr = 1; /* Always ignore argv[0] */
+-
+ 	cp = &(arcs_cmdline[0]);
+-	while(actr < prom_argc) {
+-		for(i = 0; i < NENTS(ignored); i++) {
+-			int len = strlen(ignored[i]);
+-
+-			if(!strncmp(prom_argv[actr], ignored[i], len))
+-				goto pic_cont;
++
++	/* Always ignore argv[0] */
++	for (actr = 1; actr < prom_argc; actr++) {
++		for (i = 0; i < NENTS(ignored); i++) {
++			if (strncmp(prom_argv[actr], ignored[i], strlen(ignored[i]))) {
++				/* Ok, we want it. */
++				strcpy(cp, prom_argv[actr]);
++				cp += strlen(prom_argv[actr]);
++				*cp++ = ' ';
++			}
+ 		}
+-		/* Ok, we want it. */
+-		strcpy(cp, prom_argv[actr]);
+-		cp += strlen(prom_argv[actr]);
+-		*cp++ = ' ';
+-
+-	pic_cont:
+-		actr++;
+ 	}
+ 	if (cp != &(arcs_cmdline[0])) /* get rid of trailing space */
+ 		--cp;
 
-  Ralf
+2) i also don't understand directory layout in arch/mips. i expected
+indy's prom cmdline in arch/mips/sgi/prom, but found it in arch/mips/arc.
+is there any historical (or other) reason for this?
+
+3) what compiler are you using? compilation of glibc2.2.2 with gcc 2.95.2
+took about 11 (!) hours on 100 MHz Indy, ie much more than on i486. now
+i'm trying build gcc 3.0 from cvs, i hope it helps.
+
+thanks for explanation,
+ladis

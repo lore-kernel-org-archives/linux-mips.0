@@ -1,32 +1,54 @@
-Date: Thu, 22 Jan 2004 14:44:05 -0800
-From: Jun Sun <jsun@mvista.com>
-Subject: Re: [PATCH 2.6] set up conswitchp when CONFIG_VT is set
-Message-ID: <20040122144405.C3573@mvista.com>
-References: <20040121162032.F29705@mvista.com> <Pine.GSO.4.58.0401221052100.1408@waterleaf.sonytel.be> <20040122122832.GA4482@linux-mips.org> <Pine.GSO.4.58.0401221331160.1408@waterleaf.sonytel.be> <20040122221820.GA23391@linux-mips.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20040122221820.GA23391@linux-mips.org>; from ralf@linux-mips.org on Thu, Jan 22, 2004 at 11:18:20PM +0100
-Return-Path: <jsun@mvista.com>
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: How to add more memory?
+Date: Fri, 23 Jan 2004 09:14:44 -0600
+Message-ID: <CFD808D1D39ACB47ABFF586D484CC52EADE218@hqmailnode1.commstor.crossroads.com>
+From: "Nils Larson" <nlarson@Crossroads.com>
+Return-Path: <nlarson@Crossroads.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/MIPS Development <linux-mips@linux-mips.org>, jsun@mvista.com
-Message-ID: <20040122224405.rC_n5XozrD27E4QFDbwx9fgCBQfqaW6hxYyGL4Fdb-U@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20040123151444.qnDcwPPXXqJaMfAi409Bb5IjBCSvs4VP33Dtlkj_jRI@z>
 
-On Thu, Jan 22, 2004 at 11:18:20PM +0100, Ralf Baechle wrote:
-> On Thu, Jan 22, 2004 at 01:32:58PM +0100, Geert Uytterhoeven wrote:
-> 
-> > DUMMY_CONSOLE can be set in drivers/video/console/Kconfig only.
-> > drivers/video/console/Kconfig is included by drivers/video/Kconfig only, and
-> > its inclusion depends on VT.
-> > Hence the #ifdef CONFIG_VT is superfluous, unless the above isn't true for the
-> > MIPS tree (I checked plain 2.6.1).
-> 
-> A few systems used to hardwire CONFIG_DUMMY_CONSOLE in their Config.in /
-> Kconfig.  Seem that has been fixed, good.
-> 
+Ralf,
+That's for responding.
+We're using the RM7000A on one platform and the RM7065C on another.
+Also, how exactly does highmem work? I can't seem to find a description
+of how highmem works (without reading code). I've read comments about hits
+on performance using this. How much of a hit is it? Is it 
+possible to DMA to this memory?
+Thanks,
+Nils
 
-You are both right.  
+-----Original Message-----
+From: Ralf Baechle [mailto:ralf@linux-mips.org]
+Sent: Wednesday, January 21, 2004 6:28 PM
+To: Nils Larson
+Subject: Re: How to add more memory?
 
-In the end conswitchp needs to be set if and only if CONFIG_VT is set.  
+
+On Wed, Jan 21, 2004 at 03:58:24PM -0600, Nils Larson wrote:
+
+> We currently have a mips platform running Linux with 256MB of
+> RAM starting at 0x8000_0000. We would like to add an additional
+> 1GB of RAM, maybe starting at 0x4000_0000, that would be used
+> for user apps (user virtual memory). The memory map is:
+> 0x8000_0000 - 256MB RAM
+> 0xA000_0000 - uncached version of the same 256MB
+> 0xB000_0000 - PCI memory windows.
+> This is a diskless setup booting from a ramdisk.
+> So, the (sort of newbie) questions are:
+> 1. How do we tell Linux to use the new memory?
+> 2. Is this feasible?
+> 3. Is there a better way to add more memory?
+> We need more space for user data.
+
+I wrote the highmem code for Linux/MIPS.  It's currently limited
+to processor configurations that don't suffer from virtual aliases but
+that limitation can be removed; depending of your application and hardware
+that may be anywhere from trivial to hard.   What is your processor?
+
+  Ralf

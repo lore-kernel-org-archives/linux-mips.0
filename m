@@ -1,32 +1,53 @@
-Date: Thu, 24 Apr 2003 10:43:45 +0300 (IDT)
-From: Nir Tzachar <tzachar@cs.bgu.ac.il>
-Subject: RE: Crash on insmod
-In-Reply-To: <1051006532.8589a060yaelgilad@myrealbox.com>
-Message-ID: <Pine.LNX.4.44.0304241036510.30698-100000@merlin>
+Received: from wssseeger ([192.168.1.53]) by nt_server.stellartec.com
+          (Post.Office MTA v3.1.2 release (PO205-101c)
+          ID# 568-43562U100L2S100) with SMTP id AAA479
+          for <linux-mips@linux-mips.org>; Thu, 24 Apr 2003 07:04:32 -0700
+Reply-To: <sseeger@stellartec.com>
+From: sseeger@stellartec.com (Steven Seeger)
+Subject: [patch] wait instruction on vr4181
+Date: Thu, 24 Apr 2003 07:10:28 -0700
+Message-ID: <076701c30a6b$429b0560$3501a8c0@wssseeger>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <tzachar@cs.bgu.ac.il>
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0768_01C30A30.963C2D60"
+In-Reply-To: <20030424141217.A23893@linux-mips.org>
+Return-Path: <sseeger@stellartec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Gilad Benjamini <yaelgilad@myrealbox.com>
-Cc: kernelnewbies@nl.linux.org, linux-mips@linux-mips.org
-Message-ID: <20030424074345.DfsCm_lxrgJGDxqexcBOprvvjwkVXK_lGIDg7mUn_vs@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030424141028.HV90FLJ9HNwAVuBJvI1QdW12xdvWldLOgG8c4CDl19o@z>
 
-> Using /lib/modules/2.4.20-pre6-sb20021114 ...
-> unable to handle kernel paging request at virtual address 00006e76, epc == c0005100, ra == 80117e08
-> Oops in fault.c::do_page_fault, line 224:
+This is a multi-part message in MIME format.
 
-hello.
+------=_NextPart_000_0768_01C30A30.963C2D60
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
-from ur oops msg, can i assume ur using 2.4.20-pre6 ???
-does this problem happen on a stable release? 
-try using a stable vanila kernel, and c what happens...
+The VR4181 does work with the wait instruction. This is a patch for that.
+(arch/mips/cpu-probe.c)
 
-i tried insmoding ur module, and it gave no problem using  a 2.4.18 
-or 2.4.20 on i386 -> maybe ur problem is mips related ??
+Steve
 
 
+------=_NextPart_000_0768_01C30A30.963C2D60
+Content-Type: application/octet-stream;
+	name="patch-cpu-probe.c"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="patch-cpu-probe.c"
 
--- 
-========================================================================
-nir.
+--- linux-2.4.21.orig/arch/mips/kernel/cpu-probe.c	2003-04-24 =
+05:32:21.000000000 -0700
++++ linux-2.4.21/arch/mips/kernel/cpu-probe.c	2003-04-24 =
+05:26:42.000000000 -0700
+@@ -69,6 +69,7 @@
+ 	case CPU_NEVADA:
+ 	case CPU_RM7000:
+ 	case CPU_TX49XX:
++	case CPU_VR4181:
+ 	case CPU_4KC:
+ 	case CPU_4KEC:
+ 	case CPU_4KSC:
+
+------=_NextPart_000_0768_01C30A30.963C2D60--

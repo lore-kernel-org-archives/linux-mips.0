@@ -1,100 +1,53 @@
-Message-ID: <05e901c141a0$a03e6120$056aaac0@kjlin>
-From: "kjlin" <kj.lin@viditec-netmedia.com.tw>
-Subject: fork() vs vfork()
-Date: Thu, 20 Sep 2001 14:51:08 +0800
+Message-ID: <048f01c14241$89c103c0$3501010a@ltc.com>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <3BAA962D.C55F2239@mvista.com>
+Subject: Re: busybox does not like 2.4.8, or the other way around?
+Date: Thu, 20 Sep 2001 22:02:58 -0400
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_05E6_01C141E3.AE47B080"
-Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010920065108.7UDBjRtZMDHzkQva_pn4o-UOafe78lgaLuxMnRd8X1c@z>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_05E6_01C141E3.AE47B080
 Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Sender: owner-linux-mips@oss.sgi.com
+To: Jun Sun <jsun@mvista.com>, linux-mips@oss.sgi.com
+Message-ID: <20010921020258.zLL8av9riuAE8CUlxthrKQ8ptyfW4Bm8AxWQp4owFAo@z>
 
-Hi all,
+I'm using busybox 0.60.1 with the latest oss kernel with success.  No clue
+on why your busybox is stuck though.
 
-How does linux-mips treat the vfork() function?
-I can see the fork() implemented in syscall.c as following:
+Regards,
+Brad
 
-save_static_function(sys_fork);
-static_unused int _sys_fork(struct pt_regs regs)
-{
-        int res;
-        res =3D do_fork(SIGCHLD, regs.regs[29], &regs, 0);
-        return res;
-}
-
-But i can't see anything about vfork/sys_vfork in mips platform.
-However, the vfork() was implemented as sys_vfork in other architecture.
-Such as arm platform:
-asmlinkage int sys_vfork(struct pt_regs *regs)
-{
-        return do_fork(CLONE_VFORK | CLONE_VM | SIGCHLD, regs->ARM_sp, =
-regs, 0);
-}
-
-Why not do the same "sys_vfork" in linux-mips?
-Does it mean that MIPS does not support vfork() or vfork() is equal to =
-fork() in MIPS platform?
-
-Thanks,
-KJ
+----- Original Message -----
+From: "Jun Sun" <jsun@mvista.com>
+To: <linux-mips@oss.sgi.com>
+Sent: Thursday, September 20, 2001 9:21 PM
+Subject: busybox does not like 2.4.8, or the other way around?
 
 
-
-------=_NextPart_000_05E6_01C141E3.AE47B080
-Content-Type: text/html;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Dbig5" http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2>Hi all,</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>How does linux-mips treat the vfork() =
-function?</FONT></DIV>
-<DIV><FONT size=3D2>I can see the fork() implemented in syscall.c as=20
-following:</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>save_static_function(sys_fork);<BR>static_unused int =
-
-_sys_fork(struct pt_regs=20
-regs)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int =
-res;</FONT></DIV>
-<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; res =3D=20
-do_fork(SIGCHLD, regs.regs[29], &amp;regs, 0);</FONT></DIV>
-<DIV><FONT size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return=20
-res;<BR>}</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>But i can't see&nbsp;anything&nbsp;about =
-vfork/sys_vfork in=20
-mips platform.</FONT></DIV>
-<DIV><FONT size=3D2>However, the vfork() was implemented as sys_vfork in =
-other=20
-architecture.</FONT></DIV>
-<DIV><FONT size=3D2>Such as arm platform:</FONT></DIV>
-<DIV><FONT size=3D2>asmlinkage int sys_vfork(struct pt_regs=20
-*regs)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return=20
-do_fork(CLONE_VFORK | CLONE_VM | SIGCHLD, regs-&gt;ARM_sp, regs,=20
-0);<BR>}</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>Why not do the same "sys_vfork" in =
-linux-mips?</FONT></DIV>
-<DIV><FONT size=3D2>Does it mean that MIPS does not support vfork() or =
-vfork() is=20
-equal to fork() in MIPS platform?</FONT></DIV>
-<DIV><FONT size=3D2><BR>Thanks,</FONT></DIV>
-<DIV><FONT size=3D2>KJ<BR></DIV></FONT>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_05E6_01C141E3.AE47B080--
+>
+> I have a small busybox userland that works fine with 2.4.2 kernel, but
+failed
+> with the latest 2.4.8 kernel.  The symptom is that it is stuck at the
+> following prompt:
+>
+> ================
+> ....
+> Kernel command line: console=ttyS0,115200 ip=bootp
+> ....
+> Freeing unused kernel memory: 4k freed
+> Algorithmics/MIPS FPU Emulator v1.4
+> serial console detected.  Disabling virtual terminals.
+> init started:  BusyBox v0.51 (2001.07.18-06:43+0000) multi-call binary
+>
+> Please press Enter to activate this console.
+> ================
+>
+> A simple test shows the console is still working, i.e., pressing a key
+*does*
+> generate an interrupt and ISR *does* read the correct char value.
+>
+> I really cannot think of anything else that might make busybox stuck here.
+> Any clue?  Anybody else is using busybox with more recent kernels?
+>
+> Jun
+>

@@ -1,36 +1,42 @@
-From: Dominic Sweetman <dom@mips.com>
+Reply-To: <a.voropay@vmb-service.ru>
+From: "Alec Voropay" <a.voropay@vmb-service.ru>
+Subject: RE: anybody tried NPTL?
+Date: Mon, 23 Aug 2004 19:09:31 +0400
+Message-ID: <036001c48923$31563350$1701a8c0@alec>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-ID: <16677.38151.342836.702112@doms-laptop.algor.co.uk>
-Date: Thu, 19 Aug 2004 23:07:03 -0700
-Subject: Re: anybody tried NPTL?
-In-Reply-To: <006f01c485f9$41348b50$3c01a8c0@portege>
-References: <20040804152936.D6269@mvista.com>
-	<16676.46694.564448.344602@arsenal.mips.com>
-	<006f01c485f9$41348b50$3c01a8c0@portege>
-Return-Path: <dom@mips.com>
+In-Reply-To: <20040823122843.GB20905@linux-mips.org>
+Return-Path: <a.voropay@vmb-service.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Alec Voropay <a.voropay@vmb-service.ru>
-Cc: Dominic Sweetman <dom@mips.com>, linux-mips@linux-mips.org
-Message-ID: <20040820060703.WW6K5_E7LUUIA3kdOOHK1ld3bsfnszlcSYVFS24G-tM@z>
+To: 'Ralf Baechle' <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20040823150931.1Ikkbtfk5gn7VZYdL-pyo6-21sa_iFd7Ki6yEyYGLyg@z>
+
+Ralf Baechle [mailto:ralf@linux-mips.org] wrote:
+
+> In addition to what Dom has already answered - there are very 
+> significant differences between the multithreading as
+> implemented in the  Windows OS family and the varioius
+> threading implementations for Linux  like classic
+> libpthreads, Linuxthreads, NPTL, Mozilla and more.
+> If we legally could look at MS's code I'd not expect to find
+> much useful for us there ...
+
+ OK, OK. You are right. However, as it is known, there is at
+least one project "to bridge" Win32/multithread and *NIX :
+ WINE.
+http://winehq.com/site/docs/wine-devel/x3398
+
+ Yes, the Win32/MIPS API (and ABI) is dead, but MIPS/multithreading
+lives in the WindowsCE/MIPS HPCs.
 
 
-Alec,
+ Unfortunately, I can't find any details about Win32/MIPS
+implementation.
 
-> > We are working on our multi-threading extension to the MIPS
-> > architecture, and one of our longer-term aims is to achieve really
-> > good NPTL performance.
-> 
-> Sorry for a bit offtopic..., as far as I remember, the Windows NT
-> MIPS edition has a working multithread implementation. Is this
-> implementation very copyrighted and is it possible to use something
-> ftom there for the NPTL implementation ?
-
-It's Microsoft, so yes it will be copyrighted and it would be better
-if our staff didn't even look at it.
 
 --
-Dominic Sweetman
-MIPS Technologies
+-=VA=-

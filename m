@@ -1,50 +1,47 @@
-Message-ID: <00b801c0c6de$7781ab80$056aaac0@kjlin>
-From: "kjlin" <kj.lin@viditec-netmedia.com.tw>
-References: <001f01c0c651$00a2e520$056aaac0@kjlin> <3ADB54EE.1090406@jungo.com>
-Subject: Re: linux-2.4.0.0-test5 for MIPS
-Date: Tue, 17 Apr 2001 09:33:54 +0800
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: 7bit
+Date: Wed, 18 Apr 2001 18:21:27 +0200 (MET DST)
+From: Karel van Houten <K.H.C.vanHouten@research.kpn.com>
+Subject: Indy and the multiple disk problem
+Message-ID: <200104181621.SAA06516@sparta.research.kpn.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20010417013354.uC4FzhcfEbD8f6JhEzd5IBAy8B8iCV3dY7q-YP_CDF8@z>
+Cc: "Houten K.H.C. van Karel" <K.H.C.vanHouten@research.kpn.com>
+Message-ID: <20010418162127.OYshay8fh6dQ1Q6a22xKNDdmri5ORuLixlv43DNOAXc@z>
 
-But i could not find any ftp site named ftp.mips.org !!
-In the oss.sgi.com, i just saw the linux-2.4.0-test4 and test9.
-For some reasons, i need linux-2.4.0-test5 for mips!!
-Which one can help??
+Hi All
 
------ Original Message -----
-From: "Michael Shmulevich" <michaels@jungo.com>
-To: "kjlin" <kj.lin@viditec-netmedia.com.tw>
-Sent: Tuesday, April 17, 2001 4:24 AM
-Subject: Re: linux-2.4.0.0-test5 for MIPS
+I've made some observations concerning the indy multiple disk problem:
 
+The setup:
+Root FS on /dev/sda1, /local on /dev/sdb3, and some NFS mounted systems.
+Kernel 2.4.2 (March 30 CVS).
 
-> Probably at ftp.mips.org
->
-> kjlin wrote:
->
-> > Maybe it is not a good question here.....
-> >
-> > But......
-> >
-> > Can anybody tell me where to download the linux-2.4.0.0-test5 for MIPS??
-> >
-> > Thanx!
-> >
-> >
->
->
-> --
-> Sincerely yours,
-> Michael Shmulevich
-> ______________________________________
-> Software Developer
-> Jungo - R&D
-> email: michaels@jungo.com
-> web: http://www.jungo.com
-> Phone: 1-877-514-0537(USA)  +972-9-8859365(Worldwide) ext. 233
-> Fax:   1-877-514-0538(USA)  +972-9-8859366(Worldwide)
+Doing this:
+I mke2fs-ed the sdb3 partition, mounted it at /local, and copied
+a tree from an NFS filesystem to /local. No other activity on the system.
+I used tar | (cd;tar) for the copy.
+
+What happened:
+I tried to 'su' in another window on the machine, and it responded
+with a segfault. Several other programs reacted with segfaults or
+bus errors. 
+
+I stopped the copy, synced, and fsck-ed (-n) the local partitions.
+No problems on the /local partition, but the root was badly corrupted.
+Hey! That's strange, I didn't do anything on that partition!
+Could it be that there is some bug in the buffer layer, that is
+corrupting the buffers belonging to another FS?
+
+Any hints?
+
+I hope that I get the system up again tomorrow when I get to the office :(
+
+-- 
+Karel van Houten
+
+----------------------------------------------------------
+The box said "Requires Windows 95 or better."
+I can't understand why it won't work on my Linux computer. 
+----------------------------------------------------------

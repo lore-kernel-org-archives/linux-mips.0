@@ -1,19 +1,26 @@
-Subject: Re: Indy Documentation
-Date: Sun, 14 May 2000 00:46:14 +0100 (BST)
-In-Reply-To: <Pine.LNX.4.21.0005130609590.1061-100000@calypso.engr.sgi.com> from "Ulf Carlsson" at May 13, 2000 06:21:56 AM
+From: "Eric Watkins" <watkinse@attens.com>
+Subject: SGI-Linux port progress?
+Date: Mon, 15 May 2000 13:44:54 -0700
+Message-ID: <003801bfbeae$6ccffc20$540ed7c0@hq.sd.cerf.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-ID: <E12qlbr-0000xy-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Ulf Carlsson <ulfc@calypso.engr.sgi.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <20000513234614.u8cmROvAbm3Q6FHQnLdo5xrCw4teFZk-pOX5B6O0RPA@z>
+To: linux@cthulhu.engr.sgi.com
+Message-ID: <20000515204454.8gtFb2sIrnjGtPnzDeCOA-iakxeDcyKNOuGb1d5ye5c@z>
 
-> found anything, and it took me almost 9 hours of hard work.  The biggest
-> problem I had was that I ran into the open file limit in Linux so I could only
-> search 250 machines at the same time.  Why is it so?
+Hello,
 
-Because you are running an older 2.2 release or didnt RTFM ;)
+I was just gifted/given an Indigo 2.
+
+It's working so I don't need any parts but I do want to know what the status
+of the hardhat project is. The files I found on the sgi site seemed out of
+date. Is any progress being made here?
+
+How soon till I can install linux without having IRIX on my harddrive? All
+of the FAQs/docs I could find seemed to have IRIX as a requirement to
+partition the HD properly.
+
+Thanks!

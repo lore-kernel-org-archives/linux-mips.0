@@ -1,28 +1,31 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0xr5TY-0005FsC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: RedHat 5.0 RPMs for SGI...
-Date: Sat, 10 Jan 1998 18:17:40 +0000 (GMT)
-In-Reply-To: <Pine.LNX.3.95.980109143918.55A-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jan 9, 98 02:54:03 pm
-Content-Type: text
+From: kck@mailbox.esd.sgi.com (Ken Klingman)
+Message-ID: <199801120305.TAA02316@mailbox.esd.sgi.com>
+Subject: Re: SGI/Linux on a Challenge S series
+Date: Sun, 11 Jan 1998 19:05:12 -0800 (PST)
+In-Reply-To: <199801111740.SAA03330@pallas.spacetec.no> from "Tor Arntsen" at Jan 11, 98 06:40:24 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
+To: Tor Arntsen <tor@spacetec.no>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980110181740.Io2JNYyODDGCiFF86dMHxMQRLdvY9qZrW4jC972Cujg@z>
+Message-ID: <19980112030512.LR2vIMOR-wC6qe3w51MfSywhPUbOhA8BodnL_A1NGBU@z>
 
-> I'm in the middle of churning out the RH 5.0 RPMs, and I'll upload them
-> into a seperate directory on linus than the others. The only difference
-> with these and many of the RPM's already on linus is that they're built
-> against the latest glibc, and they're from the RH 5.0 install, not 4.9.1.
+You're totally confused.  Charles is correct.
 
-Ok. I'll work with you on that from Monday. Ive got the fixes for several
-RH5 SRPMS to build with mips.  Glibc 2.0.6 should fix the argv[0] bug
-and the -lbsd problems too so much more should build
+Ken
 
-> Could someone in Europe kindly create a PGP RPM?  I have one here, but I
-> cannot distribute it because of ridiculous laws.
 
-No problem. I can build pgp etc again. I'll build ssh and anything else
-looking fun off replay and upload the stuff back
-
-Alan
+> 
+> On Jan 10, 19:12, Charles Marker wrote:
+> >A Challenge S is just an Indy with the graphics, ISDN and some of the
+> >digital media removed.  As long as the kernel is probing for those
+> >devices and handling their non existance correctly, this should work
+> >reasonably well.
+> 
+> Uh, if I'm not suddenly totally confused a Challenge S is an Indigo-2 with
+> all those things removed, not an Indy..
+> 
+> Tor
+> 

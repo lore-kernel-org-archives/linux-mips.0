@@ -1,38 +1,35 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@Julia.DE>
-Message-ID: <199704091006.MAA06864@kernel.panic.julia.de>
-Subject: Re: serial consoles, sash and other wonders
-Date: Wed, 9 Apr 1997 12:06:52 +0200 (MET DST)
-In-Reply-To: <199704081948.MAA14047@fir.esd.sgi.com> from "William J. Earl" at Apr 8, 97 12:48:07 pm
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199704091840.LAA21362@yon.engr.sgi.com>
+Subject: Re: init=/bin/sh and serial devices
+Date: Wed, 9 Apr 1997 11:40:47 -0700 (PDT)
+In-Reply-To: <199704091831.LAA27695@fir.esd.sgi.com> from "William J. Earl" at Apr 9, 97 11:31:04 am
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: "William J. Earl" <wje@fir.esd.sgi.com>
-Cc: shaver@neon.ingenia.ca, linux@cthulhu.engr.sgi.com
-Message-ID: <19970409100652.qcoXEh2iNAa_ic1IoscLGK06c2I6QJ8uWWrNVWrOh9k@z>
+Cc: knobi@munich.sgi.com, alambie@wellington.sgi.com, shaver@neon.ingenia.ca, linux@cthulhu.engr.sgi.com
+Message-ID: <19970409184047.SMkQBullMG3Hzwdl3b9dJ-db7kbEFjfiFcqIvAMVJfs@z>
 
-Hi,
+:
+:Martin Knoblauch writes:
+:...
+: >  this brings up the question: do we already have drivers for
+: > the textport? Not to speak of an X-Server? How are we (SGI)
+: > going to handle this? As far as I know we never published
+: > the hardware dependent parts on the X11 distribution, did we?
+:...
+:
+:    With management authorization, I provided the technical details
+:for the graphics hardware (and all the other Indy hardware) to David
+:Miller, who I believe got a textport driver working.
+:
 
->      By the way, it is pretty easy to write a little program to convert
-> a kernel ELF binary to an ECOFF binary, discarding most of the symbols and
-> other stuff, assuming you have the header files for the file formats.
-> (The result would not be acceptable to many of the tools, such as dbx,
-> but it would be bootable.)
-> 
->      For a production linux for the Indy, the most reasonable approach,
-> however, would be to make silo or whatever boot program you are using be
-> ECOFF, so that old PROMs are supported.
+Also, the agreement we signed with David was that all the Linux work
+including those low level drivers will be released under the GPL
+i.e. anyone who cares would be able to look at these driver sources.
 
-I also have to deal with ARC machines (the little endian NT stuff).  By
-definiton they have to support ECOFF; everything else is optional.  This
-brings in the extra issue that the loader needs to be relocatable.
-MIPS-ECOFF configurations of GCC can't do that and the linker dies when
-loading ELF PIC code into an ECOFF executable.  Unfortunately fixing is
-nontrivial.
-
-The {Net,Open}BSD people already have a converter tool which they use to
-generate their kernel executable.  It would solve the ld problems.
-I did some work on it and I should probably finish it ...
-
-  Ralf
+-- 
+Peace, Ariel

@@ -1,97 +1,66 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199903270039.QAA24143@oz.engr.sgi.com>
+Message-ID: <199903300853.AAA52093@oz.engr.sgi.com>
 Subject: Re: Port to R3000 Indigo
-Date: Fri, 26 Mar 1999 16:39:34 -0800 (PST)
-In-Reply-To: <36FC14FD.46F1279E@unidial.com> from "root" at Mar 26, 99 11:15:09 pm
+Date: Tue, 30 Mar 1999 00:53:03 -0800 (PST)
+In-Reply-To: <37000EE1.6C336FD0@unidial.com> from "Alan Hoyt" at Mar 29, 99 11:38:10 pm
 Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: root <neuroinc@unidial.com>
-Cc: ariel@cthulhu.engr.sgi.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19990327003934.xOK_j5bGKm1sh-6uk4udUhSWka8fxMmSXf9HiEydF10@z>
+To: Alan Hoyt <neuroinc@unidial.com>
+Cc: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19990330085303.Z_VeJODfYDLy32-onFo7NjUee7VNfKJKs9pJAQNAEvE@z>
 
-Alan Hoyt said:
-:>
-:> It won't happen by itself, only if someone devotes serious
-:> time to it.  My personal feeling is that Linux on R3000
-:> will not happen (there are cheaper and faster old pentium 90's
-:> out there) but if someone builds it... I've been wrong before.
+:Two questions:
 :
-:Are you saying that the effort necessary to port Linux to R3000
-:Indigo would be better placed elsewhere?
+:Does this mean that you are going to be posting the hardware specifications
+:for the Indigo 2, O2, etc.. (i.e. SGI's more recent systems) on your web
+:server for public access, or will this information be disseminated through
+:controlled channels?
 :
-[Obligatory Disclaimer:
- Everything I write below is personal views, no one appointed me
- to be an official SGI spokeperson]
-
-In a way yes ;-)
-
-For example, I personally would be much happier if the few people
-who have the ability to make such port a reality would devote their
-time on more attractive, newer machines.
-
-The real scarcity is in talent who can make things happen.  There's
-no scarcity in people who just "want" things to happen and voice
-their wishes on various mailing lists.
-
-If we could get talent to get involved with the SGI Intel machines
-it would be IMHO more valuable; the reasons are simple:
-
-	- We can leverage the thousands of precompiled PRMs out there
-	  rather than duplicating work
-
-	- The installed base of these systems is expected to be much
-	  larger so the scarcity of talent with access to hardware
-	  would likely be less grave.
-
-	- The performance and attractiveness of these machines is
-	  much higher.
-
-	- Market realities: SGI as a company may be much more inclined
-	  to put resources on something that is not a dead product.
-	  and we have to realize that every response even on this
-	  friendly mailing list, is in the end paid for by SGI since
-	  people work on company time.
-
-There's some work going on (while no one was taking notice, the 2.2.4
-kernel just got a /dev/fb implementation from Jeff Newquist) so
-we can have X11 (albeit unaccelerated) running on the SGI VisWS!
-People are welcome to look at the code and get involved, it is all
-completely open on www.linux.sgi.com (in the Intel section).
-
-Regarding MIPS, for similar reasons, having the Indy port 'finished'
-(it is not yet really easy to get up and running) or having support
-for O2s, seems (at least to me) to be much more attractive than
-R3000 Indigos.
-
-Again, It is not that I don't want it to happen.  I'm just
-asking myself, what would I (and many others) prefer to put
-available talent energies on.   If we don't set priorities,
-we run the risk of getting lost in multiple unfinished ports
-and dilute our efforts and end results.
-
-
+:Also,  if you are going to post the specs - when will they be available?
 :
-:The final portion of my original question, is really the most
-:important - are the hardware specifications/documentation available
-:or are they considered proprietary?
+:Just curious, since HP publicly released some detailed hardware specs for
+:their systems in PDF format to assist their Linux porting project - it's very
+:nice.
 :
-:This issue alone is paramount since it substantially affects the "effort"
-:necessary to port.
+:Thanks
 :
-I believe Bill Earl tried to locate some very old specs but
-couldn't find them (and he can correct me if I'm wrong).  Indy
-specs were sent (sorry I only have paper versions) to those
-who have shown they are really serious and can make a difference
-and asked for them.  The best source for older SGI machines
-data is at:
+: - Alan Hoyt -
+:
+Alan,
 
-	http://www.geocities.com/SiliconValley/Pines/2258/4dfaq.html
+I believe this was referred to by Bill Earl in an earlier post.
+Clearly, this needs further explanation.
 
-This is the best I could find on anything before my times at SGI...
+Since the interfaces with SGI proprietary hardware were never meant
+to be public, the only documentation you can really rely on to be
+accurate and reliable is the (working) IRIX source code.  We would really
+like to avoid publishing material that's incomplete, outdated, and
+turns out to be more confusing than it is worth.
+
+Now, if it were entirely in my hands, I would have gladly published
+some source code.  The problem is much more complex than that.  The
+IRIX source code includes licensed code from many external commercial
+sources, AT&T SVR4, Sun, Xerox, etc. each surrounded by its own complex
+licensing terms, so the lawyers need to look into this lest SGI
+becomes liable by just making some "innocent goodwill" happen.  
+
+I know it sounds lame, and I as much as anyone, hate this, but
+this is reality, and it isn't simple as it may appear to some.
+It requires a lot of legal (inspection and clearance) + engineering
+(sanitize and clean up code) time which I'm not sure we can afford
+on a global scale. 
+
+The good news is that SGI is clearly putting much more emphasis
+these days on developing hardware that is much more standard
+and opening more and more source code (after legal has looked into
+it and approved it).  Everything we have been doing in the past
+year on the Linux front makes this clear that this is where we're
+going.  I would like to request a bit of patience and support...
+You are preaching to the choir here.
 
 -- 
 Peace, Ariel

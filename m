@@ -1,20 +1,30 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0zMCB8-000aQzC@the-village.bc.nu>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: challenge s boots linux
-Date: Thu, 24 Sep 1998 15:15:29 +0100 (BST)
-In-Reply-To: <Pine.SOL.4.02.9809240031070.6032-100000@azure.engin.umich.edu> from "Jeremy John Welling" at Sep 24, 98 00:47:07 am
-Content-Type: text
+From: kyriazis@jibe.engr.sgi.com (George Kyriazis)
+Message-ID: <199809242359.QAA76554@jibe.engr.sgi.com>
+Subject: Re: VINO
+In-Reply-To: <19980924011207.09418@alpha.franken.de> from Thomas Bogendoerfer at "Sep 24, 98 01:12:07 am"
+Date: Thu, 24 Sep 1998 16:59:06 -0700 (PDT)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Jeremy John Welling <jwelling@engin.umich.edu>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980924141529.X458s9iff0iqgz2o9uHcu1jr2PbXU9Ebr37M3EH_uo0@z>
+Message-ID: <19980924235906.7eknO7NMjy5-7VPPaKRxpjEi2a3dw6p1WWnIDgtuXw8@z>
 
-> What is the next architecture sgi/linux will be ported to?  Indigo2 r4kXZ?  
-> What is the status of the newport Xserver? What is the best place to get
 
-Im still learning about the internals of the Xserver and building an
-"fb" driver layer to glue to the accelerated stuff. I've been dicing up
-afb so that it generates newport_something() commands for each area
-after having done its clipping. Hopefully they'll approximately match
-the real newport 8)
+> Is it possible to do VINO DMA directly to the newport ?
+> 
+As far as I know, you have to do it through memory.
+
+To elaborate:  I believe you can program the DMA controller to copy
+from VINO to the REX3 (read: from a fixed address to a fixed address),
+but I doubt the data formats are compatible.  Ie, you'll be dumping
+garbage to the REX3 registers.
+
+  --george
+-- 
+-----------------------------------------------------------------------------
+George Kyriazis  | Silicon Graphics, Inc., 8U-590 |  kyriazis@sgi.com
+                 | 2011 N. Shoreline Blvd.        |  650-933-2828
+                 | Mt. View, CA 94043             | 

@@ -1,52 +1,39 @@
-Message-ID: <32076.62.242.140.98.992627293.squirrel@webmail.drscallcenter.dk>
-Date: Fri, 15 Jun 2001 19:48:13 +0200 (CEST)
-Subject: Re: Another newbie question, O2 this time
-From: "Mark Nellemann" <mark@nellemann.nu>
-In-Reply-To: <Pine.LNX.4.21.0106151345370.2010-100000@ns>
-References: <Pine.LNX.4.21.0106151345370.2010-100000@ns>
+Date: Fri, 15 Jun 2001 14:41:30 -0500 (CDT)
+From: Steve Langasek <vorlon@netexpress.net>
+Subject: Re: First version of sid-based root-tarball for mipsel available
+In-Reply-To: <20010615200828.A19897@linuxtag.org>
+Message-ID: <Pine.LNX.4.30.0106151412040.1744-100000@tennyson.netexpress.net>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_em7_CFpi+gD-0/d3m6/Far1wwnbV.pD_cA3yL)YSJwZ158yPbQw',,Bhl34O"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: nick@snowman.net
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010615174813.knTTUFaiHF-7PHglJNizA6bA4jO93PxFJbhjspsBlew@z>
+To: linux-mips@oss.sgi.com
+Cc: debian-mips@lists.debian.org
+Message-ID: <20010615194130.8jOYGN6sgk7jRJ-CEZxH65IcIAzIFHUlF21_B-HV9hI@z>
 
-------=_em7_CFpi+gD-0/d3m6/Far1wwnbV.pD_cA3yL)YSJwZ158yPbQw',,Bhl34O
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Hi Karsten,
 
+On Fri, 15 Jun 2001, Karsten Merker wrote:
 
-I am willing to help all I can, but i'm no expert. I got an O2 R5000 at a 
-friends place, which I can also use if that will help.
+> Hallo everyone,
 
-Please let me know what I can do to help.
+> I have put together a first version of a root-tarball for mipsel based on
+> Debian "Sid". This is mostly untested yet and due to the SYSMIPS-problem
+> it works only on R4K and higher. If somebody wants to try it out, please
+> let me know the results.
 
-/Mark
+> The tarball can be found at
+> ftp://bolugftp.uni-bonn.de/pub/mipsel-linux/rootfs/experimental/debian-mipsel-rootfs-20010615.tar.bz2
 
-> Linux will (possibly) boot uncached, and will at some point work.  If
-> you're willing to help us get it farther that would be terrific.
->  Nick
-> 
-> On Fri, 15 Jun 2001, Mark Nellemann wrote:
-> 
->> 
->> Hi,
->> 
->> There's a chance that I can get my hands on a O2 (with a R12000 cpu).
->> Will  Linux run on that hardware, and is it easy to install? I have
->> been using  Linux for many years, but only on x86 and recently ppc.
->> 
->> 
->> /Mark 
->> 
->> 
+I'd be interested to give this a try, if only I could get a recent Linux
+kernel booting on my system. :)  My Cobalt CacheRaq has so far resisted all of
+my efforts to get 2.4 booting; it finds the kernel I've compiled, gets as far
+as starting to load the filesystems, but then goes into a loop reporting
+problems with 'spurious interrupts'.  So either I'm running the wrong patch
+against the 2.4.0 sources, or the CacheRaq is not yet well-supported under
+2.4.
 
+Karsten, what type of system are you doing your mipsel testing/development on?
 
-------=_em7_CFpi+gD-0/d3m6/Far1wwnbV.pD_cA3yL)YSJwZ158yPbQw',,Bhl34O
-Content-Type: ; name=""
-Content-Disposition: attachment; filename=""
-Content-Transfer-Encoding: base64
-
-DQo=
-
-------=_em7_CFpi+gD-0/d3m6/Far1wwnbV.pD_cA3yL)YSJwZ158yPbQw',,Bhl34O--
+Regards,
+Steve Langasek
+postmodern programmer

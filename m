@@ -1,63 +1,58 @@
-Message-ID: <000601bfe328$2e3fe6c0$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: Re: R5000 support (specifically two-way set-associative cache...)
-Date: Sat, 1 Jul 2000 08:46:59 +0200
+Message-ID: <0c0801bfe3b3$62fde200$0a00000a@decoy>
+From: "Jay Carlson" <nop@nop.com>
+References: <NAENLMKGGBDKLPONCDDOEEOGCOAA.mailinglist@ichilton.co.uk>
+Subject: Re: Status reports?
+Date: Sat, 1 Jul 2000 19:23:18 -0400
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Jun Sun <jsun@mvista.com>, Dominic Sweetman <dom@algor.co.uk>
-Cc: linux-mips@fnet.fr, linux@cthulhu.engr.sgi.com, nigel@algor.co.uk
-Message-ID: <20000701064659.AeCzQ50lW6xiA6oz5VChbTlZCiNvGghGkU9-3YplkEM@z>
+To: Ian Chilton <mailinglist@ichilton.co.uk>, "Linux-Mips Mailing List (Old)" <linux-mips@fnet.fr>, Linux-MIPS Mailing List <linux-mips@oss.sgi.com>, richardh@penguin.nl, watkinse@attens.com, Jay Carlson <nop@place.org>, Ralf <ralf@gnu.org>
+Message-ID: <20000701232318.RGwvMRKEigXfY-_WdUy3t5f1g6A9fBoEFD5ImiuWo3g@z>
 
-In any case, note that the cache descriptor structures
-defined by MIPS Technologies for the Linux 2.2 kernels
-(coming one of these days to 2.3) allow for the cache
-geometry to be fully described and specified, either
-as a simple table copy based on the PrID, or as a
-combination of table data and dynamic probing.
+"Ian Chilton" <mailinglist@ichilton.co.uk> writes:
 
-            Kevin K.
+> * Not everything that happens on IRC is appropriate for the mailing list,
+> otherwise it would be a very high volume list.
 
------Original Message-----
-From: Jun Sun <jsun@mvista.com>
-To: Dominic Sweetman <dom@algor.co.uk>
-Cc: linux-mips@fnet.fr <linux-mips@fnet.fr>; linux@cthulhu.engr.sgi.com
-<linux@cthulhu.engr.sgi.com>; nigel@algor.co.uk <nigel@algor.co.uk>
-Date: Saturday, July 01, 2000 3:29 AM
-Subject: Re: R5000 support (specifically two-way set-associative cache...)
+Yeah.
 
+> * The problem is, most of the people on the port and in #mipslinux are
+> developers, who are working on the ports, but have no time for
+> documentation.  Which is best, a port that is dead with loads of
+> documentation, or an active / up-to-date / working port with little
+> documentation.
 
+There's a need for high quality documentation, but I think there's a greater
+need for just little status reports.  Writing good documents is *hard*, but
+just little one-paragraph summaries, like a project diary, would be a
+wonderful service to the community.
+
+OTOH, although the current situation annoys me a little, it would annoy me a
+lot more if upstream work on mipslinux stopped.  :-)  So please don't take
+anything this list says about this as a demand.
+
+> I agree that the documentation is sparce, and see the above issues. That
+is
+> why, I am *thinking* of and suggesting to some of the guys that I, at
+least
+> for now, maintain a site with
+> * News from #mipslinux
+> * Links to current resources
+> * Possibly some documentation
+
+Doesn't have to be very heavyweight to be successful.
+
+> If you have any chance at all, I suggest you stop by #mipslinux at
+> times....all you need is an internet connection and one of the many IRC
+> clients...
 >
->> Fundamentally:
->>
->> o "index" operations just go first through one set, then the other.
->>   So long as initialisation routines are applied to each possible
->>   index in turn, both sets get initialised.
->>
->> o "hit" operations "just work".
->>
->> So long as initialisation is done carefully (basic rule: perform one
->> stage to the whole cache before going on to the next), run-time cache
->> maintenance can and should be done with "hit" instructions, and you
->> don't need to worry whether the CPU is direct mapped, 2- or 4-way set
->> associative.
->>
->> (it's all explained in my book, "See MIPS Run", of course...)
->>
->> Even with the Vr5432 you only have to know the difference when first
->> setting up the CPU.
->>
->
->Not exactly - the current Linux/MIPS implementation uese index
->operations to flush cache.
->As a result flush_all_cache() does not really flush all cache.
->
->
->> Dominic Sweetman
->> Algorithmics Ltd
->
->Jun
->> dom@algor.co.uk
+> Details are:
+> /server irc.openprojects.net         (port 6667)
+> /join #mipslinux
+
+I'll drop by soon.
+
+Jay

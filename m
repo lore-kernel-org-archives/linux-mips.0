@@ -1,55 +1,202 @@
-Reply-To: <bvacaliuc@ngit.com>
-From: "Bogdan Vacaliuc" <bvacaliuc@firefly.mv.com>
-Subject: RE: Gigabit Ethernet
-Date: Wed, 6 Apr 2005 07:01:25 -0400
-Message-ID: <002b01c53a98$0211ad00$0b03a8c0@lithium>
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <62642b91fa50ac5f881ed8fa9400deed@embeddededge.com>
-Return-Path: <bvacaliuc@firefly.mv.com>
+Content-Type: multipart/alternative;
+    boundary="----_=_NextPart_001_01C53AAD.700E8EAF"
+Subject: cross compiling
+Date: Wed, 6 Apr 2005 19:05:04 +0530
+Message-ID: <4D6E93075B31154298572E6B73CA849D72F496@noida-mail.bbnet.ad>
+From: "B Srinivas " <b.srinivas@conexant.com>
+Return-Path: <b.srinivas@conexant.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Dan Malek' <dan@embeddededge.com>, 'Gilad Rom' <gilad@romat.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20050406110125.6MMYiQbedOkXbcqAJgIPD410EpBF0HEPdpctASqt4Es@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20050406133504.tdVH5Gpfe3FHugrYMUEKmXiBkg5uy2jpGHxdN0lc508@z>
 
-On Tuesday, March 22, 2005 4:04 PM, Dan Malek wrote:
+This is a multi-part message in MIME format.
 
-> On Mar 22, 2005, at 11:56 AM, Gilad Rom wrote:
-> 
->> Has anyone ever tried using a Gigabit PCI
->> adapter with one of the Au1x00 boards? Any success?
-> 
-> Just remember that the Au1x00 boards are 32-bit , 33 MHz,
-> 3.3V PCI, so choose your boards accordingly.  Please don't expect the
-> Au1x00 to run the TCP/IP stack anywhere near Gigabit speeds ..... :-)
+------_=_NextPart_001_01C53AAD.700E8EAF
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-We have researching this topic for a little while, particularly from the FPGA standpoint.  Although not specific to MIPS, I offer a
-few links which discuss the considerations for successfully sustaining gigabit ethernet transport.
+Hi,
 
-The "Gigabit System Reference Design", pg. 49 offers some benchmarks obtained using MontaVista Linux on a PowerPC 405.  Key
-takeaways are that the data payload must not be handled by the stack (DMA direct from framebuffer/fifo/sdram) and must use jumbo
-(5000,9000) ethernet frames.
+     Iam trying to set up a cross compiler tool chain for mips 64 bit
+big endian.
 
-Best Regards,
+Iam fixed in a chicken-egg kind of situation ......  during the
+compilation the linker doesn't find the crti.o which is built using the
+glibc but I still don't have glibc which need the compiler !!!. can
+anybody point me to a solution.
 
--bogdan
+=20
 
----
+Regards
 
-EE Times, "Altera Demonstrates FPGA for video-over-IP", March 2005,
-http://www.embedded.com/showArticle.jhtml?articleID=159903648 
+Srinivas
 
-Altera, "Video Over IP Reference Design", March 2005,
-http://www.altera.com/solutions/refdesigns/sys-sol/broadcast/ref-video.html
+------------------------------------------------------------------------
+------------
 
-Xilinx, "Gigabit System Reference Design", June 2004,
-http://direct.xilinx.com/bvdocs/appnotes/xapp536.pdf 
+=20
 
-Xilinx, "Considerations for High-Bandwidth TCP/IP PowerPC Applications", XCell Journal pg.14-16, Winter 2004,
-http://www.xilinx.com/publications/xcellonline/xcell_51/xc_pdf/xc_xcell51.pdf 
+=20
 
-Marco Riccioli, Xilinx "Getting the most TCP/IP from your Embedded Processor", Embedded World 2005,
-http://www.treck.com/xilinx.pdf
+B.Srinivas
+
+Software Engineer
+
+Conexant Systems Inc. , Noida
+
+Email : b.srinivas@conexant.com
+
+=20
+
+
+
+
+
+********************** Legal Disclaimer ****************************
+"This email may contain confidential and privileged material for the sole u=
+se of the intended recipient.  Any unauthorized review, use or distribution=
+ by others is strictly prohibited.  If you have received the message in err=
+or, please advise the sender by reply email and delete the message. Thank y=
+ou."
+**********************************************************************
+
+
+------_=_NextPart_001_01C53AAD.700E8EAF
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
+hemas-microsoft-com:office:word" xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size:1=
+0.0pt;
+font-family:Arial'>Hi,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size:1=
+0.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp; Iam trying to set up a cross co=
+mpiler tool chain for
+mips 64 bit big endian.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size:1=
+0.0pt;
+font-family:Arial'>Iam fixed in a chicken-egg kind of situation &#8230;&#82=
+30;&nbsp;
+during the compilation the linker doesn&#8217;t find the crti.o which is bu=
+ilt
+using the glibc but I still don&#8217;t have glibc which need the compiler =
+!!!.
+can anybody point me to a solution.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size:1=
+0.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size:1=
+0.0pt;
+font-family:Arial'>Regards</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size:1=
+0.0pt;
+font-family:Arial'>Srinivas</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size:1=
+0.0pt;
+font-family:Arial'>--------------------------------------------------------=
+----------------------------</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span style=3D=
+'font-size:
+12.0pt'>&nbsp;<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span style=3D=
+'font-size:
+12.0pt'>&nbsp;<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size:1=
+0.0pt;
+font-family:Arial'>B.Srinivas</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size:1=
+0.0pt;
+font-family:Arial'>Software Engineer</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size:1=
+0.0pt;
+font-family:Arial'>Conexant Systems Inc. , Noida</span></font><o:p></o:p></=
+p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size:1=
+0.0pt;
+font-family:Arial'>Email : b.srinivas@conexant.com</span></font><o:p></o:p>=
+</p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span style=3D=
+'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+
+<P STYLE=3D"margin-top: 0pt;margin-bottom: 0pt;"><SPAN STYLE=3D"FONT-FAMILY=
+:'Arial';FONT-SIZE:8pt;"> </SPAN>
+</P>
+<P STYLE=3D"margin-top: 0pt;margin-bottom: 0pt;"><SPAN STYLE=3D"FONT-FAMILY=
+:'Arial';FONT-SIZE:8pt;"> </SPAN>
+</P>
+<P STYLE=3D"margin-top: 0pt;margin-bottom: 0pt;"><SPAN STYLE=3D"FONT-FAMILY=
+:'Arial';FONT-SIZE:8pt;">********************** Legal Disclaimer **********=
+****************** </SPAN>
+</P>
+<P STYLE=3D"margin-top: 0pt;margin-bottom: 0pt;"><SPAN STYLE=3D"FONT-FAMILY=
+:'Arial';FONT-SIZE:8pt;">&quot;This email may contain confidential and priv=
+ileged material for the sole use of the intended recipient.  Any unauthoriz=
+ed review, use or distribution by others is strictly prohibited.  If you ha=
+ve received the message in error, please advise the sender by reply email a=
+nd delete the message. Thank you.&quot; </SPAN>
+</P>
+<P STYLE=3D"margin-top: 0pt;margin-bottom: 0pt;"><SPAN STYLE=3D"FONT-FAMILY=
+:'Arial';FONT-SIZE:8pt;">**************************************************=
+******************** </SPAN> </P></body>
+
+</html>
+
+------_=_NextPart_001_01C53AAD.700E8EAF--

@@ -1,32 +1,19 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199709110452.AAA03150@neon.ingenia.ca>
-Subject: Re: Linux/SGI: Xsgi Shmiq/Qcntl
-In-Reply-To: <199709110303.WAA25810@athena.nuclecu.unam.mx> from Miguel de Icaza at "Sep 10, 97 10:03:09 pm"
-Date: Thu, 11 Sep 1997 00:52:56 -0400 (EDT)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <m0x93di-0005FjC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: Linux/SGI: MAP_AUTOGROW, F_ALLOCSP
+Date: Thu, 11 Sep 1997 08:26:10 +0100 (BST)
+In-Reply-To: <199709110216.TAA26791@fir.engr.sgi.com> from "William J. Earl" at Sep 10, 97 07:16:48 pm
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Miguel de Icaza <miguel@nuclecu.unam.mx>
-Cc: linux@fir.engr.sgi.com
-Message-ID: <19970911045256.1cUzoL16gMYiNms2-6Dlp_FrHyxRbK28j7zRQPoNWCo@z>
+To: "William J. Earl" <wje@fir.engr.sgi.com>
+Cc: miguel@nuclecu.unam.mx, linux@fir.engr.sgi.com
+Message-ID: <19970911072610.-qT4qQbPcfcLeHTumikL_oHPCUW3TU2SLba5iRJV0lc@z>
 
-Thus spake Miguel de Icaza:
->     The code does an open on /dev/shmiq and then opens: sprintf (buf,
-> "/dev/qcntl%d", mistery_variable) I want to know how it computes
-> mistery_variable.  I am obviously screwing something in the shmiq
-> emulation code. 
+>      This seems reasonable enough.  This code supports the "shm" shared
+> memory transport of Xsgi; other process mmap() the file to communicate
+> with the server.  It is something of a hack (being not particularly secure).
 
-If it's like the rest of the shmiq stuff, it's probably the minor
-number.   Remind me to test that stuff better now that I have an
-Indy. =)
-
-Mike
-
--- 
-#> Mike Shaver (shaver@ingenia.com)      Information Warfare Division  
-#> Chief Tactical and Strategic Officer         "Saepe fidelis"        
-#>                                                                     
-#> "I like your game, but we have to change the rules." -- Anon        
-#>                                                                     
+So you use mmap() based XShm rather than the SYS5 ipc based shm Linux currently
+uses. Makes some sense. As to secure well last time I looked nobody had yet
+fixed the auth bug so X and security aren't related anyway

@@ -1,64 +1,26 @@
-Reply-To: <a.voropay@vmb-service.ru>
-From: "Alexander Voropay" <a.voropay@vmb-service.ru>
-Subject: MS VC++ compiler / MIPS
-Date: Wed, 14 Jul 2004 17:53:11 +0400
-Message-ID: <07d301c469a9$e708f550$0200000a@ALEC>
+Message-ID: <003001c469b4$3b5ae960$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <07d301c469a9$e708f550$0200000a@ALEC>
+Subject: Re: MS VC++ compiler / MIPS
+Date: Wed, 14 Jul 2004 17:07:06 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="US-ASCII"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <a.voropay@vmb-service.ru>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20040714135311.sz7ma4Sv1X46S8KvtFWwJfwITIjqZNo3ag-m6hzhsUI@z>
+To: a.voropay@vmb-service.ru, linux-mips@linux-mips.org
+Message-ID: <20040714150706.V1G6vdIoK85CdaDueo1RY9UbgdrrhofUH5KZ-uhMD-k@z>
 
-Hi!
+If I recall correctly, the MS compiler uses a subltly different
+calling convention/ABI than the "o32" gcc conventions assumed
+by MIPS Linux, and certainly the assembler directives will be
+different from those assumed by the Linux sources.  It *might*
+be possible to hack up a MIPS Linux kernel source tree to
+build with the MS tool kit, but it would be a lot of work, 
+some of it subtle.
 
- Is it possible to use it for the something useful ??
-(to compie a kernel 8-))
+            Regards,
 
- As it is known, MS provides eMbedded Visual Tools 3.0
-for free download. It contains a free C++ MIPS cross compiler .
-
-evt2002web_min.exe [210485 KB]
-
-
-
-
-
-
-========================
-C:\...ft eMbedded Tools\EVC\WCE300\BIN>CLMIPS.EXE /help 
-Microsoft (R) 32-bit/16-bit C/C++ Optimizing Compiler Version 12.01.8667
-for MIPS R-Series
-Copyright (C) Microsoft Corp 1984-1999. All rights reserved.
-
-[....]
-                             -CODE GENERATION-
-
-/QMRWCE optimize for WinCE (Default)     /QMOb<n> basic block threshold
-/QMR3900 optimize for r3900              /QMOu<n> unroll n loop
-iterations
-/QMR4100 optimize for r4100              /QMFPE[-] FP emulation
-(default)
-/QMR4200 optimize for r4200              /Gd __cdecl calling convention
-/QMR4300 optimize for r4300              /GA optimize for Windows
-Application
-/QMmips16 code for MIPS16 ASE            /GD optimize for Windows DLL
-/QMmips1 MIPS1 ISA                       /Gr __fastcall calling
-convention
-/QMmips2 MIPS2 ISA (default)             /Gf enable string pooling
-/QMNoDivCheck no divide by zero check    /GF enable read-only string
-pooling
-/QMNoUnalign no LWL,LWR,SWL,SWR          /Gh enable hook function call
-/QMNoULoad do not generate LWL,LWR       /GR[-] enable C++ RTTI
-/QMNoUStore do not generate SWL,SWR      /Gy separate functions for
-linker
-/QMOC use old float comparison helpers
-
-[....]
-
-
---
--=AV=-
+            Kevin K.

@@ -1,83 +1,67 @@
-Date: Wed, 14 Jan 2004 17:12:52 -0800
-From: Andrew Morton <akpm@osdl.org>
+Date: Wed, 14 Jan 2004 22:23:16 -0800
+From: "David S. Miller" <davem@redhat.com>
 Subject: Re: [BUG] 2.6.1/MIPS - missing cache flushing when user program
  returns pages to kernel
-Message-ID: <20040114171252.4d873c51.akpm@osdl.org>
-In-Reply-To: <20040114163920.E13471@mvista.com>
+Message-ID: <20040114222316.25276f12.davem@redhat.com>
+In-Reply-To: <20040114174012.H13471@mvista.com>
 References: <20040114163920.E13471@mvista.com>
+	<20040114171252.4d873c51.akpm@osdl.org>
+	<20040114172946.03e54706.akpm@osdl.org>
+	<20040114174012.H13471@mvista.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-Path: <akpm@osdl.org>
+Return-Path: <davem@redhat.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Jun Sun <jsun@mvista.com>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Russell King <rmk@arm.linux.org.uk>
-Message-ID: <20040115011252.7jkwvsg9S139wk_p6No22w5wQbGeVrMEcm_m4D4ry1U@z>
+Cc: akpm@osdl.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, rmk@arm.linux.org.uk
+Message-ID: <20040115062316.FH7cSn85mlm7YgYQiP6LoNf9hx27zf3Gj4aBjY8kZ74@z>
 
+On Wed, 14 Jan 2004 17:40:12 -0800
 Jun Sun <jsun@mvista.com> wrote:
->
-> I have been chasing a nasty memory corruption bug on my MIPS box with
-> 2.6.1 kernel.  In the end it appears the following sequence has
-> happened:
-> 
-> 1. userland gets a page and writes some stuff to it, which dirties
->    data cache.  In my case, it is actually doing a sys_read() into
->    that page.  See my kgdb trace attached in the end.
-> 
-> 2. userland returns this page to kernel *without* any cache flushing,
->    i.e., the dcache is still dirty.
-> 
-> 3. kernel calls kmalloc() to get a block from this page.
-> 
-> 4. the dirty dcache is written back to physical memory some time later,
->    corrupting the kernel data.
-> 
-> It seems to me the problem is that we should do a cache flush 
-> for all the pages returned to kernel during step 2.
-> 
-> I attached a hack which solves my problem but I am not sure if it is
-> most appropriate.  It looks like the affected user region (start, end)
-> can span over multiple vma areas.  If so, the fix will only flush the first
-> area.
-> 
-> Also, it is hard to find an appropriate place to do the flushing
-> The new 2.6 mm is a confusing maze to me.  I hope someone more
-> knowledgable can come up with a more decent fix for this problem.
-> 
-> BTW, it appears in 2.4 we are doing this flushing in do_zap_page_range()
-> where we call a flush_cache_range(mm, start, end).
 
-That flush_cache_range was removed between 2.5.67 and 2.5.68.  If you put
-it back, does it fix the problem?
+> Looking at my tree (which is from linux-mips.org), it appears
+> arm, sparc, sparc64, and sh have tlb_start_vma() defined to call
+> cache flushing.
 
-It seems from Russell's words here, MIPS should be flushing in
-tlb_start_vma().
+Correct, in fact every platform where cache flushing matters
+at all (ie. where flush_cache_*() routines actually need to
+flush a cpu cache), they should have tlb_start_vma() do such
+a flush.
 
-I think that's wrong, really.  We've discussed this before and decided that
-these flushing operations should be open-coded in the main .c file rather
-than embedded in arch functions which happen to undocumentedly do other
-stuff.
+> What exactly does tlb_start_vma()/tlb_end_vma() mean?  There is
+> only one invocation instance, which is significant enough to infer
+> the meaning.  :)
 
+When the kernel unmaps a mmap region of a process (either for the
+sake of munmap() or tearing down all mapping during exit()) tlb_start_vma()
+is called, the page table mappings in the region are torn down one by
+one, then a tlb_end_vma() call is made.
 
-# --------------------------------------------
-# 03/04/14	rmk@arm.linux.org.uk	1.1017
-# [PATCH] flush_cache_mm in zap_page_range
-# 
-# unmap_vmas() eventually calls tlb_start_vma(), where most architectures
-# flush caches as necessary.  The flush here seems to make the
-# flush_cache_range() in zap_page_range() redundant, and therefore can be
-# removed.
-# --------------------------------------------
-#
-diff -Nru a/mm/memory.c b/mm/memory.c
---- a/mm/memory.c	Wed Jan 14 17:09:07 2004
-+++ b/mm/memory.c	Wed Jan 14 17:09:07 2004
-@@ -601,7 +601,6 @@
- 
- 	lru_add_drain();
- 	spin_lock(&mm->page_table_lock);
--	flush_cache_range(vma, address, end);
- 	tlb = tlb_gather_mmu(mm, 0);
- 	unmap_vmas(&tlb, mm, vma, address, end, &nr_accounted);
- 	tlb_finish_mmu(tlb, address, end);
+At the top level, ie. whoever invokes unmap_page_range(), there will
+be a tlb_gather_mmu() call.
+
+In order to properly optimize the cache flushes, most platforms do the
+following:
+
+1) The tlb->fullmm boolean keeps trap of whether this is just a munmap()
+   unmapping operation (if zero) or a full address space teardown
+   (if non-zero).
+
+2) In the full address space teardown case, and thus tlb->fullmm is
+   non-zero, the top level will do the explict flush_cache_mm()
+   (see mm/mmap.c:exit_mmap()), therefore the tlb_start_vma()
+   implementation need not do the flush, otherwise it does.
+
+   This is why sparc64 and friends implement it like this:
+
+#define tlb_start_vma(tlb, vma) \
+do {    if (!(tlb)->fullmm)     \
+                flush_cache_range(vma, vma->vm_start, vma->vm_end); \
+} while (0)
+
+Hope this clears things up.
+
+Someone should probably take what I just wrote, expand and organize it,
+then add such content to Documentation/cachetlb.txt

@@ -1,72 +1,212 @@
-Date: Mon, 24 May 2004 11:13:35 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-Subject: Re: Socket problem?
-Message-ID: <20040524091335.GD1912@lug-owl.de>
-References: <20040522160635.GV1912@lug-owl.de> <000501c44168$b4718800$2000a8c0@gillpc>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ieuopS9JtHMyIYxU"
-Content-Disposition: inline
-In-Reply-To: <000501c44168$b4718800$2000a8c0@gillpc>
-Return-Path: <jbglaw@dvmwest.gt.owl.de>
+Received: from c-67-170-233-233.client.comcast.net ([67.170.233.233] helo=ratwin1)
+	by host73.ipowerweb.com with asmtp (Exim 3.36 #1)
+	id 1BSgyD-0002aX-00
+	for linux-mips@linux-mips.org; Tue, 25 May 2004 11:48:13 -0700
+Reply-To: <ratin@koperasw.com>
+From: "Ratin Kumar" <ratin@koperasw.com>
+Subject: Gnome/Mozilla on Malta
+Date: Tue, 25 May 2004 11:49:36 -0700
+Message-ID: <00b601c44289$09cfc2a0$6901a8c0@ratwin1>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00B7_01C4424E.5D70EAA0"
+Return-Path: <ratin@koperasw.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040524091335.Ox8ZvN2XEXzkLJ4uXlLLTnsCuK_GRMCHzKCYQXkeuSY@z>
+Message-ID: <20040525184936.xmUrJAFloVgYBRv_MtQhox2acihjXMAE564InniRFzg@z>
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_00B7_01C4424E.5D70EAA0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+ 
+
+Has anyone tried building gnome and/or mozilla for Malta?
+
+ 
+
+My target is RH7.3 port for mipsel with a matrox mill II PCI card in frame
+buffer mode.
+
+ 
+
+I have tried native build of gnome and got quiet a few components going.
+
+ 
+
+I have also tried garnome with some success in getting a few components to
+build but it failed with Nautilus.
+
+ 
+
+I have also tried KDE but for some odd reason it does not pick up my QT
+installation during configure stage, even after I have set the
+LD_LIBRARY_PATH...
+
+ 
+
+Basically I want to have a browser running on RH installation.
+
+ 
+
+Any ideas???
+
+ 
+
+Thanks in advance.
+
+ 
+
+-Ratin.
 
 
---ieuopS9JtHMyIYxU
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+------=_NextPart_000_00B7_01C4424E.5D70EAA0
+Content-Type: text/html;
+	charset="US-ASCII"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2004-05-24 09:25:43 +0100, Gill <gill.robles@exterity.co.uk>
-wrote in message <000501c44168$b4718800$2000a8c0@gillpc>:
-> Hi -
->=20
-> To clarify, more specifically select() returns a positive value, and a
-> subsequent call to FD_ISSET() returns TRUE for one of the sockets the app=
- is
-> listening on.  Then, app calls recvfrom() which returns (sometimes) -1.
-> Problem occurs sporadically...I'm seeing it every hundred or so packets at
-> the moment, but it varies.
+<html>
 
-That sounds perfectly okay.
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
 
-From SuS V3:
--------------------------------------------------------------------
-A descriptor shall be considered ready for reading when a call to an
-input function with O_NONBLOCK clear would not block, whether or not the
-function would transfer data successfully. (The function might return
-data, an end-of-file indication, or an error other than one indicating
-that it is blocked, and in each of these cases the descriptor shall be
-considered ready for reading.)
--------------------------------------------------------------------
 
-So everything is perfectly okay, and because you have to do proper error
-checking anyways, that shouldn't disturb your application at all.
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
 
-MfG, JBG
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
-PA));
+</head>
 
---ieuopS9JtHMyIYxU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+<div class=3DSection1>
 
-iD8DBQFAsby/Hb1edYOZ4bsRAkJ2AJ440la+6H1v814nFOv9iMTGK+y+QACfeKj7
-Qlgrmv4WxI9UiVQE5V+DZhU=
-=8ZvA
------END PGP SIGNATURE-----
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi,</span></font></p>
 
---ieuopS9JtHMyIYxU--
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Has anyone tried building gnome and/or mozilla for =
+</span></font><font
+  size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'>Malta</span></font><font
+size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'>?</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>My target is RH7.3 port for mipsel with a matrox mill =
+II PCI
+card in frame buffer mode.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I have tried native build of gnome and got quiet a =
+few
+components going.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I have also tried garnome with some success in =
+getting a few
+components to build but it failed with Nautilus.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I have also tried KDE but for some odd reason it does =
+not
+pick up my QT installation during configure stage, even after I have set =
+the
+LD_LIBRARY_PATH&#8230;..</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Basically I want to have a browser running on RH
+installation.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Any ideas???</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks in advance&#8230;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>-Ratin.</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_00B7_01C4424E.5D70EAA0--

@@ -1,26 +1,66 @@
-content-class: urn:content-classes:message
-Subject: MIPS bootloaders
-Date: Thu, 9 Oct 2003 11:34:49 -1000
-Message-ID: <DC1BF43A8FAE654DA6B3FB7836DD3A56DEB770@iris.adtech-inc.com>
+Message-ID: <021e01c38eb2$4e95f840$2256fea9@janelle>
+From: "Steve Scott" <steve.scott@pioneer-pdt.com>
+References: <5334.156.153.254.2.1065650433.squirrel@webmail.rmci.net> <20031009140319.GA17647@linux-mips.org>
+Subject: bug in kernel_entry?
+Date: Thu, 9 Oct 2003 15:11:36 -0700
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-From: "Finney, Steve" <Steve.Finney@SpirentCom.COM>
-Return-Path: <Steve.Finney@SpirentCom.COM>
+Content-Transfer-Encoding: 7bit
+Return-Path: <steve.scott@pioneer-pdt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20031009213449.qUWbONUWx8ckgTsaYOjfshoUxKKEcj5SzlGODMO3rLQ@z>
+Cc: steve.scott@pioneer-pdt.com
+Message-ID: <20031009221136.-IXbyH9zfS2Sx9XOWAPFY2X2jnGKVkQdp2kKxrNCpfQ@z>
 
-> 
-> In message <20031009110154.B17781@mvista.com> you wrote:
-> >
-> > Actually is YAMON code freely available?  Can someone from 
-> MIPS confirm
-> > that and perhaps point to the downloading place?  
+I ran across what looks like a bug in the 'kernel_entry' function in
+linux/arch/mips/kernel/head.S while chasing another problem. Our
+version of kernel_entry is for 2.4.17. 2.4.22 seems to have
+the same problem.
 
+kernel_entry initializes the kernel stack pointer 'kernelsp'. But then
+immediately after this clears the bss, which has the side effect of setting
+kernelsp to 0. In our system, on initial entry to cpu_idle(), kernelsp is 0.
 
-Broadcom has a "CFE" bootloader for their chip, and the documentation implies that it was designed to be for general purpose use (e.g., arch/mips/board/... directory hierarchy); it's covered by what I'd call a BSD style license (but IANAL). I don't know if it is publically available, and its current state of support is largely tailored to the peripherals on their eval boards, but (from my limited experience) it looks like  a reasonable and pretty-well written bootloader. Typical size is 400K, but this could be decreased (or increased :-) ).
+The bug "heals" itself the first time schedule() is called. But, if for some
+reason CP0_STATUS doesn't have CU0 set at startup (which would be
+bad for other reasons), and you get an exception before the first call to
+schedule() (e.g., the syscall to create "init"), the exception handler will
+try to save registers starting from kernelsp, which is 0.
 
-sf
+from head.S:
+
+    NESTED(kernel_entry, 16, sp)
+    .
+    .
+    .
+    /*
+     * Stack for kernel and init, current variable
+     */
+    la $28, init_task_union
+    addiu t0, $28, KERNEL_STACK_SIZE-32
+    subu sp, t0, 4*SZREG
+
+    sw t0, kernelsp                /* <-- this is going to get overwritten below when bss
+is cleared... [srs] */
+
+    /* The firmware/bootloader passes argc/argp/envp
+     * to us as arguments.  But clear bss first because
+     * the romvec and other important info is stored there
+     * by prom_init().
+     */
+    la t0, _edata                    /* <-- here is the code that eventually clears
+kernelsp [srs] */
+    sw zero, (t0)
+    la t1, (_end - 4)
+1:
+    addiu t0, 4
+    bne t0, t1, 1b
+    sw zero, (t0)
+
+   jal init_arch
+    nop
+  END(kernel_entry)
+
+--steve

@@ -1,50 +1,79 @@
 content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: Mozilla Firefox compile problem
-Date: Mon, 18 Oct 2004 10:24:59 +0200
-Message-ID: <34A8108658DCCE4B8595675ABFD8172709FAFE@dusse201.eu.infineon.com>
+Subject: RE: Mozilla Firefox compile problem
+Date: Wed, 20 Oct 2004 09:10:03 +0200
+Message-ID: <34A8108658DCCE4B8595675ABFD8172709FAFF@dusse201.eu.infineon.com>
 From: <Andre.Messerschmidt@infineon.com>
 Return-Path: <Andre.Messerschmidt@infineon.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20041018082459.0YRvW4wsfXQmNpIqY1RjrBsc9RXYamfgDlEmEwnzQTQ@z>
+To: ica2_ts@csv.ica.uni-stuttgart.de
+Cc: linux-mips@linux-mips.org
+Message-ID: <20041020071003.-SDIoh_VsExJNjgqZN1kwQsNEvsWf0ga1xamDWgjyyw@z>
 
-Hi,
 
-I am trying to compile Mozilla Firefox 1.0PR with Montavista Pro 3.1 toolchain (I linked mips_fp_be to mips-linux), but I get the following error messages:
+>This patch is broken and will only paper over the problem. Use 
+>the patch in https://bugzilla.mozilla.org/show_bug.cgi?id=258429
+>At least the firefox 0.93 in Debian mips works with it.
 
----- snip ---------------------------------------------------
-mips-linux-g++  -I/opt/mvx/usr/X11R6/include -fno-rtti -fno-exceptions -Wall -Wconversion -Wpointer-arith -Wcast-align -Woverloaded-virtual -Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor -Wno-long-long -Wa,-xgot -pthread -pipe  -DDEBUG -D_DEBUG -DDEBUG_am -DTRACING -g -fno-inline -o nsIFileEnumerator nsIFileEnumerator.o           -L../../dist/bin -L../../dist/lib -L../../dist/bin -lxpcom  -L/data2/Sources/inca/mozilla/dist/lib -lplds4 -lplc4 -lnspr4 -lpthread -ldl   -ldl -lm
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub203()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub156()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub184()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub128()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub226()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub246()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub112()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub180()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub230()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub147()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub151()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub116()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub111()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub231()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub141()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub104()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub58()'
-../../dist/bin/libxpcom.so: undefined reference to `nsXPTCStubBase::Stub53()'
+Thanks for the reply. With that patch I got two undefined macros
+(SETUP_GP and SAVE_GP). SETUP_GP was mentioned in the thread, but I
+could not find a definition for SAVE_GP. To go on I just defined it
+empty and continued to compile.
+Then I got the following error, which leaves me totally lost.
 
-...
+--- snip --------------------------------------
+mips-linux-g++ -I/opt/mvx/usr/X11R6/include -fno-rtti -fno-exceptions
+-Wall -Wconversion -Wpointer-arith -Wcast-align -Woverloaded-virtual
+-Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor -Wno-long-long
+-Wa,-xgot -pthread -pipe  -DDEBUG -D_DEBUG -DDEBUG_am -DTRACING -g
+-fno-inline -fPIC -shared -Wl,-h -Wl,libnecko2.so -o libnecko2.so
+nsNetModule2.o             -Wl,--whole-archive
+../../dist/lib/libnkdata_s.a  ../../dist/lib/libnkgopher_s.a
+../../dist/lib/libnkkeyword_s.a  ../../dist/lib/libnkviewsource_s.a
+-Wl,--no-whole-archive -L../../dist/bin -lxpcom  -L../../dist/bin
+-L/data2/Sources/inca/mozilla/dist/lib -lplds4 -lplc4 -lnspr4 -lpthread
+-ldl    -Wl,-Bsymbolic -ldl -lm
+chmod +x libnecko2.so
+/data2/Sources/inca/mozilla/config/nsinstall -R -m 755 libnecko2.so
+../../dist/gre/components
+: ../../dist/gre/components/libnecko2.so
+/data2/Sources/inca/mozilla/config/nsinstall -R -m 755 libnecko2.so
+../../dist/lib/components
+: ../../dist/lib/components/libnecko2.so
+/data2/Sources/inca/mozilla/config/nsinstall -R -m 755 libnecko2.so
+../../dist/bin/components
+: ../../dist/bin/components/libnecko2.so
+gmake[3]: Leaving directory `/data2/Sources/inca/mozilla/netwerk/build2'
+gmake[3]: Entering directory
+`/data2/Sources/inca/mozilla/netwerk/resources'
++++ making chrome /data2/Sources/inca/mozilla/netwerk/resources  =>
+../../dist/bin/chrome/comm.jar
++++ adding chrome ../../dist/bin/chrome/installed-chrome.txt
++++
+content,install,url,jar:resource:/chrome/comm.jar!/content/necko/
+        zip warning: ../comm.jar not found or empty
+  adding: content/necko/redirect_loop.xul (stored 0%)
++++ overriding content/necko/contents.rdf
+  adding: content/necko/contents.rdf (stored 0%)
++++ making chrome /data2/Sources/inca/mozilla/netwerk/resources  =>
+../../dist/bin/chrome/en-US.jar
+error: file '../../toolkit/locales/en-US/chrome/necko/contents.rdf'
+doesn't exist at ../../config/make-jars.pl line 418, <STDIN> line 9.
+gmake[3]: *** [libs] Fehler 2
+gmake[3]: Leaving directory
+`/data2/Sources/inca/mozilla/netwerk/resources'
+gmake[2]: *** [libs] Fehler 2
+gmake[2]: Leaving directory `/data2/Sources/inca/mozilla/netwerk'
+gmake[1]: *** [tier_9] Fehler 2
+gmake[1]: Leaving directory `/data2/Sources/inca/mozilla'
+make: *** [default] Fehler 2
+--- snap --------------------------------------
 
----- snap ---------------------------------------------------
+Anyone any ideas?
 
-I found some similar error messages from 2002 via Google, but the provided patches were for PPC and I do not know how to port them to MIPS. (Also i assume that such patches would have made it into the main branch by now)
-
-Has anybody compiled Firefox successfully with Montavista and can give me some hints on how to proceed?
-
-Thanks and regards 
-André Messerschmidt
+Best regards
+Andre

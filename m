@@ -1,24 +1,25 @@
-Date: Tue, 26 Jun 2001 11:20:33 -0700 (PDT)
-From: "John D. Davis" <johnd@Stanford.EDU>
-Subject: I few questions
-Message-ID: <Pine.GSO.4.31.0106261114300.3423-100000@myth1.Stanford.EDU>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com, debian-mips@lists.debian.org
-Message-ID: <20010626182033.3XXcEYSXWval2CdSIfMdvTD1mMxyeG5sApmJBS9z3D4@z>
+From: "Arthur Britto" <ahbritto@iat.com>
+Subject: I have spare decstations
+Date: Tue, 26 Jun 2001 20:50:40 -0700
+Message-ID: <NEBBKLDJALCNOONJNDDGCEEHCJAA.ahbritto@iat.com>
+To: engel@unix-ag.org
+Message-ID: <20010627035040.1gel2ulbh3d1ASnsCAPa509yVZfBsU2Eyom2coWJOVg@z>
 
-I have a few simple questions that I have been wondering about.  I am
-currently running the debian verison of Linux with 2.4.0 kernel on an
-Indy.
+[Charset iso-8859-1 unsupported, filtering to ASCII...]
+Hi,
 
-1) What is the difference between the Redhat and debian verison of linux?
-Should I use one over the other for my Indy?
+I could not find the mailing list for decstation Linux.  Perhaps you could
+help me...
 
-2) Is there a JVM/JIT available for MIPS Linux?
+I have two DecStation 3100s that I must dispose of immediately.  I would
+happily provide them to anyone working on the port.
 
-3) Is there something that is available to replace sash, another
-bootloader?
+If you know of anyone who could use the machines and is able to pick up the
+machines in Berkeley, California they are available for free.
 
-thanks for your time,
-john davis
+Thank you,
+
+Arthur Britto
+
+
+----- End of forwarded message from Arthur Britto -----

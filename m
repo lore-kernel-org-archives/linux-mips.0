@@ -1,116 +1,42 @@
-Message-ID: <046001c12086$4ba02ee0$3501010a@ltc.com>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <02a401c12063$cde1e830$3501010a@ltc.com> <20010808164502.A6966@nevyn.them.org> <02ca01c12066$164e5570$3501010a@ltc.com> <040c01c1207d$78b62b90$3501010a@ltc.com>
-Subject: Re: gcc 3.0 / glibc 2.2.3 cross-toolchain
-Date: Wed, 8 Aug 2001 23:49:30 -0400
+Message-ID: <007001c120d4$22a24520$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <54045BFDAD47D5118A850002A5095CC30AC570@exchange1.cam.pace.co.uk>
+Subject: Re: RM5231A Cause Register Values
+Date: Thu, 9 Aug 2001 15:06:40 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010809034930.qoHAYu_dG6KSBB_aN8ipj_VYq1f7lCJtSNmQ8Jy6JGU@z>
+To: Phil Thompson <Phil.Thompson@pace.co.uk>, linux-mips@oss.sgi.com
+Message-ID: <20010809130640.AbQ4AYGp75gnjeqLg-Ycf_PgtdjOD4xX3-VCj05rAGg@z>
 
-I've chronicled my cross-toolchain mips-adventures at:
+That bit should be the "IV" bit on the R52xx, which is actually
+a control bit, not a status indication.  The set value implies
+that interrupt exceptions are being vectored to offet 0x200
+instead of 0x180.  It should not be changing on its own!
 
-http://www.ltc.com/~brad/mips/mipsel-linux-cross-toolchain-building.txt
-
-I included a copy of the glibc patch that has the MAP_BASE_ADDR fix in it in
-the same directory, namely:
-
-http://www.ltc.com/~brad/mips/
-
-Regards,
-Brad
+            Kevin K.
 
 ----- Original Message -----
-From: "Bradley D. LaRonde" <brad@ltc.com>
-To: "Bradley D. LaRonde" <brad@ltc.com>; "Daniel Jacobowitz"
-<dan@debian.org>
-Cc: <linux-mips@oss.sgi.com>
-Sent: Wednesday, August 08, 2001 10:44 PM
-Subject: Re: gcc 3.0 / glibc 2.2.3 cross-toolchain
+From: "Phil Thompson" <Phil.Thompson@pace.co.uk>
+To: <linux-mips@oss.sgi.com>
+Sent: Thursday, August 09, 2001 2:39 PM
+Subject: RM5231A Cause Register Values
 
 
-> Woohoo!  It works!  Thanks!  I was using H. J. Lu's first patch and that
-was
-> broken.  I found the second patch and it worked, except it left the first
-> line in rtld-ldscript.in, when it really should have removed the file
-> entirely.  Looks like it's right in the glibc CVS though.
+> In my low level assembler interrupt handler I'm detecting a Cause register
+> value of 0x00800000. According to "See MIPS Run", the bit that is set
+should
+> be zero - but I haven't been able to find any RM5231A documentation that
+> defines this bit as anything else.  Any ideas?
 >
-> Regards,
-> Brad
+> BTW, the exception is raised under fairly heavy network traffic and in
+> either disable_irq_nosync() or ei_start_xmit(). The latter is in the
+network
+> card driver and itself contains a call to disable_irq_nosync(). I don't
+> believe (although I may be wrong) that this was happening under the old
+> style interrupt code.
 >
-> ----- Original Message -----
-> From: "Bradley D. LaRonde" <brad@ltc.com>
-> To: "Daniel Jacobowitz" <dan@debian.org>
-> Cc: <linux-mips@oss.sgi.com>
-> Sent: Wednesday, August 08, 2001 7:58 PM
-> Subject: Re: gcc 3.0 / glibc 2.2.3 cross-toolchain
->
->
-> > ----- Original Message -----
-> > From: "Daniel Jacobowitz" <dan@debian.org>
-> > To: "Bradley D. LaRonde" <brad@ltc.com>
-> > Cc: <linux-mips@oss.sgi.com>
-> > Sent: Wednesday, August 08, 2001 7:45 PM
-> > Subject: Re: gcc 3.0 / glibc 2.2.3 cross-toolchain
-> >
-> >
-> > > On Wed, Aug 08, 2001 at 07:42:17PM -0400, Bradley D. LaRonde wrote:
-> > > > I have spent quite a bit of time trying to get a gcc 3.0 / glibc
-2.2.3
-> > > > cross-toolchain working.  I am not a Toolchain Builder, but I really
-> > wanted
-> > > > to try this combo and I don't see any way around building it myself.
-> > > >
-> > > > I've had some success.  Everything seems to build fine.  However,
-when
-> I
-> > try
-> > > > to run a simple "hello world" dynamically linked with glibc, I get
-> this:
-> > > >
-> > > >     <myprogram>: error while loading shared libraries: failed to map
-> > > >     segment from shared object: cannot load shared object file:
-> Invalid
-> > > > argument
-> > > >
-> > > > I think it is trying to load libc.so.6, which is in my root in
-/lib/,
-> > > > symlinked to libc-2.2.3.so, and so is ld.so.1, symlinked to
-> ld-2.2.3.so.
-> > > >
-> > > > I feel like I am pretty close, but I am starting to get discouraged
-> and
-> > > > could really use some help.  I really am clueless about what
-> > > > should/shouldn't work.  I'm trying to do this based on bits and
-pieces
-> > of
-> > > > information that I've collected from countless sources.  I have
-heard
-> > that
-> > > > gcc 3.0 isn't really "working", but I still want to try.
-> > > >
-> > > > Here is what I've used:
-> > > >
-> > > >    * binutils-2.11.90.0.25.tar.gz (extracted from H. J. Lu's
-> > > >      srpm on oss.sgi.com; I've tried others also)
-> > > >    * gcc-3.0.tar.gz (released version - no patches)
-> > > >    * glibc-linuxthreads-2.2.3.tar.gz (released version - no
-> > > >      patches; glibc didn't want to configure without this)
-> > > >    * glibc-2.2.3.tar.gz (released version)
-> > >
-> > > You're missing the patch to change MAP_BASE_ADDR.  You need that.
-> > > Something as simple as changing it to 0 will work for you, since
-you're
-> > > building everything yourself.
-> >
-> > I tried applying the patch that H. J. Lu posted on linux-mips that
-> contains
-> > that fix, but then glibc would compile.  I'll try it again - maybe I
-> messed
-> > something up.  If that doesn't work, I'll try the simple fix.  Thanks.
-> >
-> > Regards,
-> > Brad
+> Thanks,
+> Phil

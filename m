@@ -1,31 +1,17 @@
-From: fisher@hollywood.engr.sgi.com (William Fisher)
-Message-ID: <199908062056.NAA10977@hollywood.engr.sgi.com>
-Subject: Re: Status update for new features for slinx and SGI Linux 1.1 needed
-Date: Fri, 6 Aug 1999 13:56:17 -0800 (PDT)
-In-Reply-To: <14251.18809.661631.345106@fir.engr.sgi.com> from "William J. Earl" at Aug 6, 99 01:45:45 pm
-Reply-To: fisher@sgi.com
-Content-Type: text
+Message-ID: <37BA3421.969992F@isee.zju.edu.cn>
+Date: Wed, 18 Aug 1999 12:18:41 +0800
+From: Zhang Tao <zhangt@isee.zju.edu.cn>
+MIME-Version: 1.0
+Subject: require help
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "William J. Earl" <wje@fir.engr.sgi.com>
-Cc: wombat@kilimanjaro.engr.sgi.com, sp@albion.engr.sgi.com, slinx@albion.engr.sgi.com, linux@hollywood.engr.sgi.com, William Fisher <fisher@hollywood.engr.sgi.com>
-Message-ID: <19990806215617.FEnMrtoIU61TVD06JUcAlYKafYcObvbMxIij2TqCJlg@z>
+Content-Transfer-Encoding: 7bit
+To: Majordomo@cthulhu.engr.sgi.com, linux-request@cthulhu.engr.sgi.comMajordomo@cthulhu.engr.sgi.com, owner-linux@cthulhu.engr.sgi.comlinux@cthulhu.engr.sgi.com
+Message-ID: <19990818041841.SJEnheJxaoAiDsekAHb5JqJT0dKy1XqfqAQAjjjmsu0@z>
 
-> 
-> Joan Eslinger writes:
->  > Two more things not specifically on your list, but that are traditionally
->  > included in RedHat kernels (and went in 1.0):
->  > 
->  > pcmcia
->  > ibcs
->  > 
->  > I have these in my drivers tree.
-> 
->       Are these not part of the base Linux release from Linus?  If not,
-> I will add them to the list.
-> 
-	Reading the kernel mailing list, there was a LONG series of
-	messages on the "infrastructure" support for pcmcia cards
-	between some Stanford-ites and Linus. Hence it wasn't clear
-	what was going to get checked into the tree.
-
--- Bill
+hello,
+I am a student.Can I obtain some MIPS architecture documents through
+your linux mailing list. If I could ,how and where ?
+thanks in advance.
+zhang tao

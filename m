@@ -1,22 +1,29 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0xbla9-0005FsC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: Bintuils
-Date: Sat, 29 Nov 1997 12:01:09 +0000 (GMT)
-In-Reply-To: <Pine.LNX.3.95.971129004253.21890A-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Nov 29, 97 00:49:33 am
-Content-Type: text
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199711300049.QAA31814@oz.engr.sgi.com>
+Subject: Re: Used Indys
+Date: Sat, 29 Nov 1997 16:49:40 -0800 (PST)
+In-Reply-To: <3.0.2.32.19971129153944.0072bc38@192.168.4.20> from "Douglas F. Elznic" at Nov 29, 97 03:39:44 pm
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: ralf@uni-koblenz.de, linux@cthulhu.engr.sgi.com
-Message-ID: <19971129120109.l8jgbAfWbEREVRhnBiKyVKBX8wr20K8QLzVzt7y8hdA@z>
+To: "Douglas F. Elznic" <delznic@acm.org>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19971130004940.UXVoDywQK2KhqC9mgDvfOO3vt7dxTSgXEuCfdwhll9Q@z>
 
-> I've had SRPMs of RedHat 5.0 (Hurricane) for a couple of days, so when I
-> get my build system running well, it'll churn out the upgraded RPMs.
-> Having compiled a few things this evening, I can tell you it'll take a
-> long time.  The 4600 isn't as fast as I'd thought.
+:
+:Hello,
+: I am looking to get my hangs on a old cheap indy. I found a couple of
+:places on the web that catered to sell cheap sparcs but no indys. Any ideas?
+:
+:
+Check out:
 
-If you have the tree from /devel you probably dont quite have final 5.0
-We'll soon find out. My 5.0 CD should appear pretty soon and I'll mount
-the SRMS directory of it somewhere for ftp.
+	http://www.sgi.com/Products/sysrem/SysRem.html
 
-Alan
+and in any case, never buy a system with less than 64MB.
+
+-- 
+Peace, Ariel

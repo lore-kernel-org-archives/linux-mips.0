@@ -1,41 +1,28 @@
-Date: Fri, 30 Nov 2001 09:49:44 +0000 (GMT)
-From: Dave Airlie <airlied@csn.ul.ie>
-Subject: Re: Bug in Dwarf support?
-In-Reply-To: <86048F07C015D311864100902760F1DD01B5E463@dlfw003a.dus.infineon.com>
-Message-ID: <Pine.LNX.4.32.0111300947080.29181-100000@skynet>
+Subject: Re: pcmcia
+Date: Fri, 30 Nov 2001 17:54:08 +0000 (GMT)
+In-Reply-To: <1007141701.22949.140.camel@zeus> from "Pete Popov" at Nov 30, 2001 09:35:01 AM
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E169rrU-0004GN-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: Andre.Messerschmidt@infineon.com
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20011130094944.246ZseqhqTw9g32fxDr-mGVM5RLbOu6fLCsY8Gn5aH4@z>
+To: Pete Popov <ppopov@mvista.com>
+Cc: "Guillermo A. Loyola" <gmo@broadcom.com>, linux-mips <linux-mips@oss.sgi.com>, sforge <linux-mips-kernel@lists.sourceforge.net>
+Message-ID: <20011130175408.z_VdPXdhy4lXrrx4eYRiEzmZQO6QQgYCg0eZ7AH1Fek@z>
 
+> > We need the same here, how about doing this instead:
+> > 
+> > #ifdef __i386__
+> > typedef u_short   ioaddr_t;
+> > #else
+> > typedef u_int	ioaddr_t;
+> > #endif
+> 
+> That probably makes more sense.  I wasn't sure if it's only x86 that
+> needs? ioaddr_t to be a 16 bit type.  
 
-I had this with a debugger I was beta testing... there is a compile path
-stored separate to the path of the file, it needs to use the compile
-path, so it is a bug in the debugger not using the full standard.. you can
-the info out with gdb (I can't remember the exact incantation...)
+Is there any platform where making it int actually -breaks-. At least for
+2.5 it would seem a lot saner to just make it bigger and see
 
-Dave.
-
-On Fri, 30 Nov 2001 Andre.Messerschmidt@infineon.com wrote:
-
-> Hi.
->
-> When I compile kernel 2.4.3 with dwarf debug support (using H.J.Lu's gcc
-> 2.96 binaries) I get no path information for source files.
-> I did a hexdump of .debug_sfnames with readelf and the path is there but
-> separated from the filename by a 0x00. For include files the path is ok.
-> (i.e. the 0x00 is missing)
->
-> Is this a bug or standard? I believe this prevents my debugger from
-> recognizing the source tree structure.
->
-> best regards
-> Andre Messerschmidt
->
-
--- 
-David Airlie, Software Engineer
-http://www.skynet.ie/~airlied / airlied@skynet.ie
-pam_smb / Linux DecStation / Linux VAX / ILUG person
+Alan

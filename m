@@ -1,23 +1,32 @@
-Message-ID: <001701c1217a$3f206960$277d00d9@shodan>
-From: "Armin F. Gnosa" <armin@gnosa.com>
-References: <007501c120e8$fe293720$737e9fc1@shodan> <20010809175131.D30160@paradigm.rfc822.org>
+Message-ID: <002601c121a0$de4f2fa0$237900d9@shodan>
+From: "Armin F. Gnosa" <mipslist@gnosa.com>
+References: <Pine.GSO.3.96.1010810110057.2724F-100000@delta.ds2.pg.gda.pl>
 Subject: Re: Problem with PMAD-AA / DECStation 5000/200
-Date: Fri, 10 Aug 2001 10:54:46 +0200
+Date: Fri, 10 Aug 2001 15:32:13 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="Windows-1252"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Florian Lohoff <flo@rfc822.org>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20010810085446.shCzMir-VLA0PMQ8-8hZCYIdmFvpQgQXKqoKq6lJdw0@z>
+Message-ID: <20010810133213.x_7__LFCZZlOfqhwbcKoMM8w8RJA1gZQiQc89WPvlfU@z>
 
-> If anyone can read out different proms i would happy to put them
-> somewhere on the net.  I guess the Dec/Compaq whoever guys who might
-> own the copyright dont bother after at least 10-15 years. There are
-> proms who are not able to boot from the net which could be solved just
-> by burning a new eprom.
+>  I'm not sure how exactly the ROMs are wired (they're usually 8-bit);
+> hopefully in a "natural" way.  You can read most of ROMs under Linux via
+> mmap()ping /dev/mem -- parts of ROMs may not be directly available to the
+> host CPU if they contain option's CPU firmware.  The MB ROM is remapped
+> (byte-merged) by the chipset so that it can be read in 32-bit quantities
+> as parts of it get executed directly (the I/O ASIC permits switching the
+> byte merging off).  Option ROMs are not remapped as they always get copied
+> to the system RAM before execution.  Their organization can be read from
+> their headers as specified by the TURBOchannel firmware specification.
 
-That would certainly be an interesting institution to which I would
-contribute, but for the sake if the webmaster those copyright matters 
-have to be cleared before. :-)
+That sounds like an interesting alternative to pulling the PROM out of
+its socket. Then, a program running on a DECStation 5000/200 should be
+reading from 0x1F81C0000..0x1F1FFFFF, right? One question about Byte
+Merging: Does it mean that I don't have to read bytewise but instead
+DWORD-wise?
+
+Regards,
+Armin

@@ -1,38 +1,91 @@
-From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-Subject: RE: [uClibc] Re: uclibc mips ld.so and undefined symbols withnonzerosymbol table entry st_value
-Date: Tue, 11 May 2004 09:27:42 +0200
-Message-ID: <JPEALJAFNGDDLOPNDIEEGEFDCIAA.joakim.tjernlund@lumentis.se>
+Message-ID: <046a01c43763$42feeeb0$8d01010a@prefect>
+From: "Bradley D. LaRonde" <brad@laronde.org>
+References: <01a901c436ce$7029d890$8d01010a@prefect> <87oeowkoa6.fsf@redhat.com> <02fd01c43709$981a24a0$8d01010a@prefect> <20040511140351.GA13367@nevyn.them.org>
+Subject: Re: uclibc mips ld.so and undefined symbols with nonzero symbol table entry st_value
+Date: Tue, 11 May 2004 10:21:33 -0400
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <JPEALJAFNGDDLOPNDIEEMEELCIAA.joakim.tjernlund@lumentis.se>
-Return-Path: <joakim.tjernlund@lumentis.se>
+Return-Path: <brad@laronde.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Bradley D. LaRonde" <brad@laronde.org>, Richard Sandiford <rsandifo@redhat.com>
-Cc: uclibc@uclibc.org, linux-mips@linux-mips.org
-Message-ID: <20040511072742.6lEyChZCKVa2JanBrmIkuYn1Y_u0IrYzESL0qSZM0Lc@z>
+To: Daniel Jacobowitz <dan@debian.org>
+Cc: Richard Sandiford <rsandifo@redhat.com>, uclibc@uclibc.org, linux-mips@linux-mips.org
+Message-ID: <20040511142133.5z9ZGSIaTloi6QU0mwIsWdFDaDDYcbapJaL8lLK04KA@z>
 
-> > Changing the alias for __phtread_once to
-> > extern int __phtread_once(void) __attribute__ ((weak));
-> > makes st_value=0 in libc, making the entry
-> > look the same as in glibc.
-> 
-> hmm, this is not quite true. The binding in glibc is WEAK, but
-> the above trick makes the binding GLOBAL in uClibc.
+----- Original Message ----- 
+From: "Daniel Jacobowitz" <dan@debian.org>
+To: "Bradley D. LaRonde" <brad@laronde.org>
+Cc: "Richard Sandiford" <rsandifo@redhat.com>; <uclibc@uclibc.org>;
+<linux-mips@linux-mips.org>
+Sent: Tuesday, May 11, 2004 10:03 AM
+Subject: Re: uclibc mips ld.so and undefined symbols with nonzero symbol
+table entry st_value
 
-__phtread_once becoms WEAK if add "weak_function" to the
-declaration in libc/inet/rpc/rpc_thread.c:
-      extern weak_function int __pthread_once (pthread_once_t *__once_control,
-			   void (*__init_routine) (void));
-and remove the it compleatly from libc/misc/pthread/weaks.c
- 
-Now __phtread_once matches glibc, execpt for the reloc type. In glibc
-you get a R_PPC_GLOB_DAT and in uClibc a R_PPC_ADDR32. Don't think that matters.
 
-Is it desirable to match the pthread_ functions with glibc?
-I havn't tried to run any code with these changes, so I have no
-idea if it actually works.
+> On Mon, May 10, 2004 at 11:39:41PM -0400, Bradley D. LaRonde wrote:
+> > ----- Original Message ----- 
+> > From: "Richard Sandiford" <rsandifo@redhat.com>
+> > To: "Bradley D. LaRonde" <brad@laronde.org>
+> > Cc: <uclibc@uclibc.org>; <linux-mips@linux-mips.org>
+> > Sent: Monday, May 10, 2004 4:41 PM
+> > Subject: Re: uclibc mips ld.so and undefined symbols with nonzero symbol
+> > table entry st_value
+> >
+> >
+> > > "Bradley D. LaRonde" <brad@laronde.org> writes:
+> > > > I read this in the spec:
+> > > >
+> > > >     All externally visible symbols, both defined and undefined,
+> > > >     must be hashed into the hash table.
+> > > >
+> > > > Should libpthread's malloc stub be added to the hash table?
+> > >
+> > > Yes.
+> > >
+> > > > I guess not, but I think that might be happening (haven't verified),
+> > > > and libdl finding it in there and thinking it is the real deal, not
+> > > > realizing it is just a stub.
+> > >
+> > > If you have an undefined function symbol with st_value != 0, then
+> > > that st_value must be for a stub.  That's how the loader can (and is
+> > > supposed to) tell the difference.
+> > >
+> > > It's probably a good idea to look at how glibc handles this.
+> >
+> > uClibc/ldso/ldso/mips/elfinterp.c around line 288 looks like this:
+> >
+> >
+> >     /* Relocate the global GOT entries for the object */
+> >     while(i--) {
+> >       if (sym->st_shndx == SHN_UNDEF) {
+> >         if (ELF32_ST_TYPE(sym->st_info) == STT_FUNC && sym->st_value)
+> >           *got_entry = sym->st_value + (unsigned long) tpnt->loadaddr;
+> >         else {
+> >           *got_entry = (unsigned long) _dl_find_hash(strtab +
+> >              sym->st_name, tpnt->symbol_scope, ELF_RTYPE_CLASS_COPY);
+> >         }
+> >      }
+> >
+> >
+> > If I change that ELF_RTYPE_CLASS_COPY to ELF_RTYPE_CLASS_PLT to tell
+> > _dl_find_hash to ignore stubs when resolving undefined functions without
+> > stubs, the dlopen tests all pass.  dlopen gets a pointer to the libc.so
+> > malloc instead of a pointer to the libpthread malloc stub.  Yay!  :-)
+> >
+> > Does that look like the correct fix?
+>
+> Probably, since MIPS doesn't have a copy reloc.
 
- Jocke
+How about the other copy reloc right below there:
+
+    else if (sym->st_shndx == SHN_COMMON) {
+      *got_entry = (unsigned long) _dl_find_hash(strtab +
+        sym->st_name, tpnt->symbol_scope, ELF_RTYPE_CLASS_COPY);
+    }
+
+?
+
+Regards,
+Brad

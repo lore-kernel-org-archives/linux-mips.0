@@ -1,39 +1,62 @@
-From: Hartvig Ekner <hartvige@mips.com>
-Message-ID: <200209051807.g85I73W06904@coplin09.mips.com>
-Subject: Re: 64-bit and N32 kernel interfaces
-Date: Thu, 5 Sep 2002 20:07:03 +0200 (CEST)
-In-Reply-To: <Pine.GSO.3.96.1020905170830.7444E-100000@delta.ds2.pg.gda.pl> from "Maciej W. Rozycki" at Sep 05, 2002 05:10:51 
+From: "Matthew Dharm" <mdharm@momenco.com>
+Subject: RE: [jsun@mvista.com: Re: /dev/rtc lookalike for NEW_TIME_C?]
+Date: Fri, 6 Sep 2002 17:13:02 -0700
+Message-ID: <NEBBLJGMNKKEEMNLHGAIGENKCIAA.mdharm@momenco.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <hartvige@mips.com>
+In-reply-to: <20020906111815.B1282@mvista.com>
+Return-Path: <mdharm@momenco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: Daniel Jacobowitz <dan@debian.org>, Hartvig Ekner <hartvige@mips.com>, "Kevin D. Kissell" <kevink@mips.com>, Tor Arntsen <tor@spacetec.no>, Carsten Langgaard <carstenl@mips.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20020905180703.C1Ul9_VFC7ktfNf_o0VZQ0mvGbQYUoAmQLuVm3O2cd0@z>
+To: Jun Sun <jsun@mvista.com>, linux-mips@linux-mips.org
+Message-ID: <20020907001302.mehrrqXQugXBNQB1sr33TaQzFA7Bwmrl2IGsJM1aTHY@z>
 
-Maciej W. Rozycki writes:
-> 
-> On Thu, 5 Sep 2002, Daniel Jacobowitz wrote:
-> 
-> > No - the point is that all data types have the same size in N32.  It
-> > was created explicitly as a transitional sop for people who didn't want
-> > to fix their code, but wanted a performance increase from their 64-bit
-> > hardware.
-> 
->  Well, what's the performance increase of n32 over o32?  The increased
-> number of argument registers?  I doubt it's noticeable in most cases.
+In case anyone is interesed, I just tried this.  The patch still
+applies, tho with some fuzz.  It appears to work as advertised, which
+is to say that it does everything I'm interested in.
 
-The technical benefits of n32 over o32 are:
+I _definately_ think this should go in on the 2.4 branch, as well as
+the 2.5 branch.
 
-* More argument registers => less memory traffic, less D-cache use,
-	=> faster code
+Matt
 
-* 64-bit datapath of CPU can be utilized with big impact on certain
-  applications
+--
+Matthew D. Dharm                            Senior Software Designer
+Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
+(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
+Momentum Works For You                      www.momenco.com
 
-* 32 floating point registers instead of 16 (and more efficient
-  parameter passing as well)
-
-/Hartvig
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org
+> [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Jun Sun
+> Sent: Friday, September 06, 2002 11:18 AM
+> To: linux-mips@linux-mips.org
+> Cc: jsun@mvista.com
+> Subject: [jsun@mvista.com: Re: /dev/rtc lookalike for NEW_TIME_C?]
+>
+>
+>
+> Try again ....
+>
+> ----- Forwarded message from Jun Sun <jsun@mvista.com> -----
+>
+> On Thu, Sep 05, 2002 at 08:26:14PM -0700, Matthew Dharm wrote:
+> > Has anyone written a driver module provide something like
+> /dev/rtc for
+> > those platforms that use the CONFIG_NEW_TIME_C?
+> >
+>
+> Yes.  I submitted this patch November last year.  There was
+> some discussions,
+> but no real opposition.  Ralf, can you apply this patch?  Tom Rini
+> is supposedly to come up with a unified solution in 2.5+.  But until
+> then this is such a useful thing for MIPS folks.
+>
+> http://linux.junsun.net/patches/oss.sgi.com/submitted.
+>
+> Jun
+>
+> ----- End forwarded message -----
+>

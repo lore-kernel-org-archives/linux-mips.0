@@ -1,27 +1,25 @@
-Date: Tue, 13 Nov 2001 16:30:24 +0100 (CET)
-From: Roman Zippel <zippel@linux-m68k.org>
-Subject: Re: [RFC] generic MIPS RTC driver
-In-Reply-To: <20011113074424.A16723@cpe-24-221-152-185.az.sprintbbd.net>
-Message-ID: <Pine.LNX.4.33.0111131627580.3818-100000@serv>
+Subject: Re: BE Toolchain
+Date: Tue, 13 Nov 2001 16:45:25 +0000 (GMT)
+In-Reply-To: <1005668252.19178.52.camel@localhost.localdomain> from "Marc Karasek" at Nov 13, 2001 11:17:09 AM
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E163ggf-0001d8-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: Tom Rini <trini@kernel.crashing.org>
-Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, Roman Zippel <zippel@linux-m68k.org>, Jun Sun <jsun@mvista.com>, "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Linux/MIPS Development <linux-mips@oss.sgi.com>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux/PPC Development <linuxppc-dev@lists.linuxppc.org>, rz@linux-m68k.org
-Message-ID: <20011113153024.eLfYHWX0YJ9QyJQ-1c7YLwtXjYNvoW-S1D5aklQDxYA@z>
+To: Marc Karasek <marc_karasek@ivivity.com>
+Cc: "H . J . Lu" <hjl@lucon.org>, Dan Temple <dant@mips.com>, Linux MIPS <linux-mips@oss.sgi.com>
+Message-ID: <20011113164525.6DyWgid-p_Y2X3zpK3wMkfHOawHZ6KrljeIHWwN-yaY@z>
 
-Hi,
+> I was refering to a formal (supported) release from RH.  Something I can
+> pay RH to get support for.
 
-On Tue, 13 Nov 2001, Tom Rini wrote:
+Maintaining an entire distribution support for a processor is not a cheap
+business. It would depend if enough people actually wanted to buy it. I
+suspect for smaller volumes you want to pay Ralf, HJ or someone rather than
+try and fund an entire general distro port.
 
-> > http://linux-m68k-cvs.apia.dhs.org/
->
-> That's the non-generic m68k version tho, yes?  Or did Roman do it in
-> that tree too?
+We do plenty of MIPS stuff in the embedded and contract side so it would
+depend what you wanted
 
-That version is even more recent than the one currently in the APUS
-repository. :)
-But I tested it also under APUS, so you only need to provide
-[gs]et_rtc_time and it should work.
-
-bye, Roman
+Alan

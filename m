@@ -1,51 +1,70 @@
-Reply-To: <a.voropay@vmb-service.ru>
-From: "Alec Voropay" <a.voropay@vmb-service.ru>
-Subject: PATCH:  JAZZ jazzdma.c  linux_2_4
-Date: Fri, 15 Oct 2004 21:35:49 +0400
-Message-ID: <013201c4b2dd$6c4e64d0$1701a8c0@vmbservice.ru>
+Message-ID: <004b01c4b3a7$6193e810$7101a8c0@dinosaur>
+From: "???" <Mickey@turtle.ee.ncku.edu.tw>
+References: <20041015174542.20487.qmail@web81008.mail.yahoo.com> <004201c4b331$f9f6b180$7101a8c0@dinosaur> <4171501D.5040506@embeddedalley.com>
+Subject: Re: Is there any means to use Cramfs and JFFS2 images as root disks?
+Date: Sun, 17 Oct 2004 01:41:33 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="koi8-r"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <a.voropay@vmb-service.ru>
+Return-Path: <Mickey@turtle.ee.ncku.edu.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20041015173549.485By7ShrV5sjfvXE7dy5RjwBIA2L2zksEfCnIiLvcU@z>
+To: Pete Popov <ppopov@embeddedalley.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20041016174133.Bsv6INyzkWGOglQ9v76MMQNbqWhVpTbUO6p0jbSrwzA@z>
 
 
+----- Original Message ----- 
+From: "Pete Popov" <ppopov@embeddedalley.com>
+To: "???" <Mickey@turtle.ee.ncku.edu.tw>
+Cc: <linux-mips@linux-mips.org>
+Sent: Sunday, October 17, 2004 12:45 AM
+Subject: Re: Is there any means to use Cramfs and JFFS2 images as root
+disks?
 
-Spellcheck
 
+> ??? wrote:
+> > Hi Pete,
+> > How do I compile JFFS2 image and Kernel image together and by that way
+> > Kernel can know where /dev/mtdblock3 is?
+>
+> I'm not sure a brief answer will help you, but here it is.
+>
+> You don't compile "jffs2 image and kernel image" together. You select
+> jffs2 support in the kernel when you run something like "make
+> menuconfig". You rebuild the kernel and now your kernel will have jffs2
+> support. You also need your kernel to have mtd support, since that's how
+> you'll access /dev/mtdblockxxxx. You then build a jffs2 image, put it in
+> flash in whatever partition you want or have space for, and then boot
+> the kernel with "root=/dev/mtdblockxxx".
 
-diff -Naur -p -X dontdiff linux_2_4/arch/mips/jazz/jazzdma.c
-linux_2_4-jazz/arch/mips/jazz/jazzdma.c
---- linux_2_4/arch/mips/jazz/jazzdma.c  Wed Oct 22 04:29:14 2003
-+++ linux_2_4-jazz/arch/mips/jazz/jazzdma.c     Fri Oct 15 20:44:52 2004
-@@ -108,7 +108,7 @@ unsigned long vdma_alloc(unsigned long p
-                return VDMA_ERROR;      /* invalid physical address */
-        }
+My question still exists: YAMON doesn't know where /dev/mtdblock3 is...
+How do I put JFFS2 image by YAMON onto the right location in Flash... :-)
 
--       spin_lock_saveirq(&jazz_dma_lock, flags);
-+       spin_lock_irqsave(&jazz_dma_lock, flags);
+>
+> > And if I want to just write JFFS2 image to Flash, how do I do on YAMON?
+>
+> Yes, you can, but I don't remember the commands off the top of my head.
+> On the Au1x boards, you can use yamon to erase the flash and load srec
+> files directly to flash. You may also be able to load a binary file and
+> store it in flash which would make it easier. Finally, you can build a
+> kernel with NFS root file system, or a ramdisk, etc, -- something other
+> than jffs2. Then, you can use the linux kernel to erase the mtd
+> partition where you want a jffs2 image, and then copy the image to that
+> partition.
+>
 
-        /*
-         * Find free chunk
-@@ -120,7 +120,7 @@ unsigned long vdma_alloc(unsigned long p
-                       first < VDMA_PGTBL_ENTRIES) first++;
-                if (first + pages > VDMA_PGTBL_ENTRIES) {
-                        /* nothing free */
--                       spin_unlock_restoreirq(&jazz_dma_lock, flags);
-+                       spin_unlock_irqrestore(&jazz_dma_lock, flags);
-                        return VDMA_ERROR;
-                }
+Great! This is a good idea.
+I can already boot up Linux with NFS root.
+I'll give it a try to write JFFS2 root image to /dev/mtdblock on Linux
+system, not on YAMON.
 
-@@ -167,7 +167,7 @@ unsigned long vdma_alloc(unsigned long p
-                printk("\n");
-        }
+> > Can also I use Cramfs as root when boot up, like JFFS2?
+>
+> Yes, you can. The same steps above apply.
+>
+> Pete
 
--       spin_unlock_restoreirq(&jazz_dma_lock, flags);
-+       spin_unlock_irqrestore(&jazz_dma_lock, flags);
-
-        return laddr;
- }
+Thanks and regards,
+Colin

@@ -1,77 +1,67 @@
-Message-ID: <009d01c0556a$74eda6c0$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@paralogos.com>
-References: <3A1D3DA1.E982879B@vcubed.com>
-Subject: Re: Strange messages.
-Date: Thu, 23 Nov 2000 17:28:06 +0100
+Message-ID: <011e01c058be$420db900$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <0A5319EEAF65D411825E00805FBBD8A1209DB0@exchange.clt.ixl.com>
+Subject: Re: off topic timmy
+Date: Mon, 27 Nov 2000 23:06:10 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Dan Aizenstros <dan@vcubed.com>, linux-mips@oss.sgi.com
-Message-ID: <20001123162806.NVlZaLFjYcbMtmxWTkhHlxLoHQHFYwzThtk3KcQ-DcA@z>
+To: tmaloney@ixl.com, linux-mips@oss.sgi.com
+Message-ID: <20001127220610.qeDI8b_2QtmzuJJWuBXRNBgNl1VhdU6OiRWK5pNxp6E@z>
 
-This really deserves to be in the  FAQ.  I guess
-I ought to put a version of this up an a web site
-somewhere and just point people to the URL:
-Either Ralf or I end up answering it about
-once a month.  
+Actually, there is a potential reason why it won't work.
+I don't know about IRIX 6.4, but IRIX 6.3 had distinct
+kernel, library, and binary builds for desktop (Indy,
+Indigo2, Challenge S, O2) platforms versus the
+larger server-class systems like those listed below.
+The difference was that the "lite" desktop versions in fact
+ran the CPU in 32-bit mode, while the big-system versions 
+ran full 64-bit.  The logic was that the overhead of 
+64-bit register context on the stack, etc, was too great
+to be permitted on desktop platforms.  For people
+like myself, who wanted to develop and test CPU
+benchmark codes on the desktop before launching
+them on the Origin, this was no kindness.
 
-This message occurs when the kernel gets an 
-"unimplemented operation" trap from the FPU, 
-which means that an FP instruction has been issued
-that the hardware cannot handle on its own.  Usually
-this is a conversion of an extreme value or an operation 
-on a denormalized value. What the OS is supposed 
-to do in this case is to deal with the situation, by killing
-the process, fixing up the values, or emulating
-the instruction in software.
-
-Setting flush-denormal-to-zero mode of the FPU
-and replaying the instruction to see if that helps
-is a slightly shady (in my opinion) hack that Ralf put in 
-as part of a tiny, minimal emulator that handled these 
-exceptions in some versions of MIPS Linux.  MIPS later
-integrated a full IEEE FPU emulator from Algorithmics
-into the 2.2.12 kernel, but it hasn't yet gone into
-the 2.3/2.4 repository.
-
-So long as all you got was that message, and
-awk didn't subsequently dump core, you're probably
-OK.  Just don't do any serious numerical programming
-on the system until the full IEEE support goes in!
+So there is an excellent chance that they "idiot
+proofed" the release you have so that you can't load
+it on your Indy.
 
             Kevin K.
 
------ Original Message ----- 
-From: "Dan Aizenstros" <dan@vcubed.com>
+----- Original Message -----
+From: <tmaloney@ixl.com>
 To: <linux-mips@oss.sgi.com>
-Sent: Thursday, November 23, 2000 4:54 PM
-Subject: Strange messages.
+Sent: Monday, November 27, 2000 9:35 PM
+Subject: off topic timmy
 
 
-> Hello All,
+> any reason this couldn't be used with a Indy R4600/133? please respond
+> offlist, and thanks.
 > 
-> Recently I upgraded my Linux/MIPS kernel from 2.2.12 to 
-> 2.4.0-test9 and I started getting messages like the following:
+> SGI IRIX 6.4 Installation CD Set (8 CD's)
+> for Octane, Onyx, Onyx2 and Origin (200/2000) 
+> Includes: 
+> SGI 813-0616-002: IRIX 6.4 for Origin, Onyx2, and Octane 
+> SGI 813-0617-003: IRIX 6.4 Applications, 8/97 
+> SGI 813-0722-011: IRIX 6.4 Recommended/Required Patches 2/98 
+> SGI 813-0735-001: Octane System Disk Patches, 2/98 
+> SGI 813-0648-002: Octane Demos 1.1 for IRIX 6.4 
+> SGI 813-0543-001: Freeware 2.0 
+> SGI 813-0574-001: R5000 Convert Patch 
+> SGI 814-0544-006: Hot Mix 17 
 > 
-> Setting flush to zero for awk.
 > 
-> I did not get this message when using a 2.2.12 kernel but I am
-> getting them with a 2.4.0-test9 kernel.
 > 
-> The 2.4.0-test9 kernel is based on the code from the snapshot
-> at oss.sgi.com in the following file,
-> /pub/linux/mips/mips-linux/simple/crossdev/src/linux-001027.tar.gz
-> with the patches from the same directory applied.
-> 
-> I get the message many times and for different programs during
-> system startup.
-> 
-> Has anyone seen this before?
-> 
-> Dan Aizenstros
-> Software Engineer
-> V3 Semiconductor Corp.
+> Tim Maloney
+> Senior Developer
+> iXL, Inc.
+> 1930 Camden Road, Suite 2070
+> Charlotte, NC 28203
+> 704 943-7193 phone
+> tmaloney@ixl.com
+> www.ixl.com
 > 

@@ -1,32 +1,19 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199707230543.BAA03684@neon.ingenia.ca>
+Message-ID: <m0wr7AY-0005FiC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
 Subject: Re: Interest in SGI/Linux
-In-Reply-To: <199707230518.WAA04735@piecomputer.engr.sgi.com> from Bob Mende Pie at "Jul 22, 97 10:18:04 pm"
-Date: Wed, 23 Jul 1997 01:43:51 -0400 (EDT)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Wed, 23 Jul 1997 20:33:53 +0100 (BST)
+In-Reply-To: <199707230249.EAA22451@informatik.uni-koblenz.de> from "Ralf Baechle" at Jul 23, 97 04:49:10 am
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Bob Mende Pie <mende@piecomputer.engr.sgi.com>
-Cc: Linux/SGI list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19970723054351.Imh5Wk6M5SAXHV4UlKjhZ-Rqw5SLOBjOGGcYkLaIHco@z>
+To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Cc: ariel@sgi.com, linux@cthulhu.engr.sgi.com
+Message-ID: <19970723193353.NLtIVyaTscL9yn6YNUa-RjSZ-Ko5Zx8cr7NBHWkI4qQ@z>
 
-Thus spake Bob Mende Pie:
-> > >         snafu.rutgers.edu
-> > 
-> > This is suspicious.
-> > Should we be controlling access to linus?
-> 
-> This is most likely davem ...
+> I'm also surprised, especially because a search on Altavista found just
+> one single reference to *.linux.sgi.com in a German newgroup, Dejanews
+> didn't find any references.
 
-My point exactly.
+Altavista doesnt archive linuxnet:#linux
 
-Mike
-
--- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>            Chief System Architect and Herder of Bits                
-#>                                                                     
-#> "Yoda say, `Just slap a little public key crypto into it' does not  
-#>      a secure system make." -- Marcus J. Ranum (mjr@clark.net)      
+Alan

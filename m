@@ -1,27 +1,40 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199704301957.VAA27997@informatik.uni-koblenz.de>
-Subject: Re: Linux 2.1.36
-Date: Wed, 30 Apr 1997 21:57:10 +0200 (MET DST)
-In-Reply-To: <199704301534.LAA01989@neon.ingenia.ca> from "Mike Shaver" at Apr 30, 97 11:34:19 am
+Message-ID: <199705021211.OAA13307@informatik.uni-koblenz.de>
+Subject: Re: linux-2.1.36
+Date: Fri, 2 May 1997 14:11:06 +0200 (MET DST)
+In-Reply-To: <199705021121.HAA22284@neon.ingenia.ca> from "Mike Shaver" at May 2, 97 07:21:17 am
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Mike Shaver <shaver@neon.ingenia.ca>
-Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
-Message-ID: <19970430195710.Zm-Bi39zkScPu8RGheAzbPOhFEbJhKVnH8nZr5Ni74Q@z>
+Cc: linux@cthulhu.engr.sgi.com, davem@caip.rutgers.edu
+Message-ID: <19970502121106.jiGP4YafyGEPjTtYvGVAbCSXE_Cr4ICBa9JY6nvc-uM@z>
 
 Hi,
 
-> > Because I don't have a Indy for testing this release is completly
-> > untested on SGI machines.
-> 
-> I'll take care of that when I get in to the office today (home sick
-> this morning).
+> Looks like sgiserial.c needs to be updated to use the new IRQ stuff,
+> etc. (can't find keypress_wait, still using queue_task_irq_off).
 
-Ok.  Please send patches and bug reports to ralf@uni-koblenz.de.  I'll
-be off for one week in the Silicon Valley and my other folders will
-probably be hopeless overflowed when I return.
+Mea culpa.  I leave that part to you.
+
+> I'm going to wish I was paying more attention on linux-kernel when
+> people were going over this stuff, I just know it. =)
+> 
+> Also, wd33c93.c fails to compile.  Probably some simple stuff (I'm
+> getting parse errors), but I won't be able to do much with it until
+> the afternoon.
+
+I messed the wd driver stuff up.  I didn't fix the rejects when applying
+Linus' patch 2.1.36.  I fixed that in the meantime and will try to find
+time to make a pre-patch-2.1.37 before I leave Germany.
+
+David did completly reformat the WD driver to make it readable.  Downside
+is that it's difficult to see what he really has changed.  Someone
+should probably do that.
+
+David, what are the differences between your version of the WD driver
+and the stock WD driver?
 
   Ralf

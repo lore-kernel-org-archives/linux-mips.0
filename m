@@ -1,150 +1,44 @@
-Message-ID: <02b801c13203$f52ad440$056aaac0@kjlin>
-From: "kjlin" <kj.lin@viditec-netmedia.com.tw>
-Subject: compile C++ code
-Date: Fri, 31 Aug 2001 18:01:51 +0800
+Message-ID: <010401c132fe$610d0610$3501010a@ltc.com>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <20010901165842.B13357@tuxedo.skovlyporten.dk>
+Subject: Re: set_except_vector question
+Date: Sat, 1 Sep 2001 11:54:26 -0400
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_02B5_01C13247.03141880"
-Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010831100151.lL8vQ4qyfDbmRhQcq4RdSQLV_GUicKb8CAxHSF-l0bw@z>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_02B5_01C13247.03141880
 Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Sender: owner-linux-mips@oss.sgi.com
+To: Lars Munch <lars@segv.dk>, linux-mips@oss.sgi.com
+Message-ID: <20010901155426.VUeq0LkwwHv7QWbI8V-aV8T3WBlcFfv-KSuDSlouQKE@z>
 
-Hi all,
+Looks like it is synthesizing a jump (j) instruction to forward interrupt
+exceptions to the interrupt handler for cpus that have a dedicated interrupt
+vector (DIVEC).  arch/mips/kernel/setup.c sets the DIVEC option for certain
+cpus.
 
-My host is x86 with redhat 7.0 and install the mips cross-compiler:
-1.binutils-mips-linux-2.8.1-2.i386.rpm
-2.egcs-mips-linux-1.1.2-3.i386.rpm
-3.egcs-c++-mips-linux-1.1.2-4.i386.rpm
-4.libc-2.0.6
-5.egcs-libstdc++-mips-linux-2.9.0-4.i386.rpm
-But when i compile the following C++ code, something wrong!
+Regards,
+Brad
 
-#include <stdio.h>
-class A {
-public:
-        A();
-        virtual void hello();        // with virtual is failed, without =
-virtual is ok.
-};
-A::A() {printf("A construction!\n");}
-void A::hello() { printf("hello\n"); }
-main()
-{
-        A *exam;
-        exam->hello();
-}
-
-#mips-linux-gcc test.C
-/usr/lib/gcc-lib/mips-linux/egcs-2.91.66/libgcc.a(frame.o): In function =
-`decode_uleb128':
-/usr/src/redhat/BUILD/egcs-1.1.2/target-mips-linux/gcc/../../gcc/frame.c(=
-.data+0x0): undefined reference to `pthread_create'
-/usr/mips-linux/bin/ld: bfd assertion fail ../../bfd/elf32-mips.c:5123
-mips-linux-gcc: Internal compiler error: program ld got fatal signal 11
-#mips-linux-g++ test.C
-/usr/mips-linux/lib/libstdc++.so: undefined reference to =
-`pthread_create'
-/usr/mips-linux/lib/libstdc++.so: undefined reference to =
-`pthread_getspecific'
-/usr/mips-linux/lib/libstdc++.so: undefined reference to `pthread_once'
-/usr/mips-linux/lib/libstdc++.so: undefined reference to =
-`pthread_key_create'
-/usr/mips-linux/lib/libstdc++.so: undefined reference to =
-`pthread_setspecific'
-
-If the "virtual" is not used, "virtual void hello();" to "void =
-hello();", mips-linux-gcc compiling is fine but mips-linux-g++ compiling =
-is still the same error.
-What is going on?
-Is it the problem of compiler or library?
-How should i do?
-
-Thanks in advance!
-KJ
+----- Original Message -----
+From: "Lars Munch" <lars@segv.dk>
+To: <linux-mips@oss.sgi.com>
+Sent: Saturday, September 01, 2001 10:58 AM
+Subject: set_except_vector question
 
 
-
-------=_NextPart_000_02B5_01C13247.03141880
-Content-Type: text/html;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Dbig5" http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2>Hi all,</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>My host is x86 with redhat 7.0 and install =
-the&nbsp;mips=20
-cross-compiler:</FONT></DIV>
-<DIV><FONT size=3D2>1.binutils-mips-linux-2.8.1-2.i386.rpm</FONT></DIV>
-<DIV><FONT size=3D2>2.egcs-mips-linux-1.1.2-3.i386.rpm</FONT></DIV>
-<DIV><FONT size=3D2>3.egcs-c++-mips-linux-1.1.2-4.i386.rpm</FONT></DIV>
-<DIV><FONT size=3D2>4.libc-2.0.6</FONT></DIV>
-<DIV><FONT =
-size=3D2>5.egcs-libstdc++-mips-linux-2.9.0-4.i386.rpm</FONT></DIV>
-<DIV><FONT size=3D2>But when i compile the following C++ code, something =
-
-wrong!</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>#include &lt;stdio.h&gt;</FONT></DIV>
-<DIV><FONT size=3D2>class A=20
-{<BR>public:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-A();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; virtual void=20
-hello();&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // with virtual is failed, =
-without=20
-virtual is ok.<BR>};<BR>A::A() {printf("A construction!\n");}<BR>void =
-A::hello()=20
-{ printf("hello\n");=20
-}<BR>main()<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A=20
-*exam;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-exam-&gt;hello();<BR>}<BR></FONT></DIV>
-<DIV><FONT size=3D2>#mips-linux-gcc test.C</FONT></DIV>
-<DIV><FONT =
-size=3D2>/usr/lib/gcc-lib/mips-linux/egcs-2.91.66/libgcc.a(frame.o): In=20
-function=20
-`decode_uleb128':<BR>/usr/src/redhat/BUILD/egcs-1.1.2/target-mips-linux/g=
-cc/../../gcc/frame.c(.data+0x0):=20
-undefined reference to `pthread_create'<BR>/usr/mips-linux/bin/ld: bfd =
-assertion=20
-fail ../../bfd/elf32-mips.c:5123<BR>mips-linux-gcc: Internal compiler =
-error:=20
-program ld got fatal signal 11</FONT></DIV>
-<DIV><FONT size=3D2>#mips-linux-g++ test.C</FONT></DIV>
-<DIV><FONT size=3D2>/usr/mips-linux/lib/libstdc++.so: undefined =
-reference to=20
-`pthread_create'<BR>/usr/mips-linux/lib/libstdc++.so: undefined =
-reference to=20
-`pthread_getspecific'<BR>/usr/mips-linux/lib/libstdc++.so: undefined =
-reference=20
-to `pthread_once'<BR>/usr/mips-linux/lib/libstdc++.so: undefined =
-reference to=20
-`pthread_key_create'<BR>/usr/mips-linux/lib/libstdc++.so: undefined =
-reference to=20
-`pthread_setspecific'<BR></FONT></DIV>
-<DIV><FONT size=3D2>If the "virtual" is not used, "virtual void =
-hello();" to "void=20
-hello();", mips-linux-gcc compiling is&nbsp;fine&nbsp;but mips-linux-g++ =
-
-compiling is still the same error.</FONT></DIV>
-<DIV><FONT size=3D2>What is going on?</FONT></DIV>
-<DIV><FONT size=3D2>Is it the problem of compiler or =
-library?</FONT></DIV>
-<DIV><FONT size=3D2>How should i do?</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>Thanks in advance!</FONT></DIV>
-<DIV><FONT size=3D2>KJ<BR></FONT></DIV>
-<DIV><FONT size=3D2>&nbsp;</DIV></FONT></BODY></HTML>
-
-------=_NextPart_000_02B5_01C13247.03141880--
+> Hi
+>
+> I have been looking at the set_except_vector function in
+> arch/mips[64]/kernel/traps.c and wondering why the handler
+> address is changed/recalculated before it is stored:
+>
+> *(volatile u32 *)(KSEG0+0x200) = 0x08000000 | (0x03ffffff & (handler >>
+2));
+>
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+> Could someone please enlighten me?
+>
+> Thanks
+> Lars Munch
+>

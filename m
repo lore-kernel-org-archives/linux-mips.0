@@ -1,29 +1,56 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: alambie@wellington.sgi.com (Alistair Lambie)
-Message-ID: <199604250238.OAA02669@soyuz.wellington.sgi.com>
-Subject: Re: Kickoff meeting minutes
-Date: Thu, 25 Apr 1996 14:38:29 +1200 (NZT)
-In-Reply-To: <9604241922.ZM3884@surfdog.csd.sgi.com> from "Sandeep Cariapa" at Apr 24, 96 07:22:44 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+From: Ralf Baechle <ralf@informatik.uni-koblenz.de>
+Message-ID: <199605010233.EAA26130@informatik.uni-koblenz.de>
+Subject: Re: scope of this mailing list
+Date: Wed, 1 May 1996 04:30:58 +0200 (MET DST)
+In-Reply-To: <Pine.LNX.3.91.960429200526.3781C-100000@redhat.com> from "Erik Troan" at Apr 29, 96 08:06:49 pm
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Sandeep Cariapa <cariapa@surfdog.csd.sgi.com>
-Cc: linux@yon.engr.sgi.com
-Message-ID: <19960425023829.VmFPn2fTMgCIcTMVuDrGdpNjqm3wsTaA8e5_PSav6e4@z>
+To: Erik Troan <ewt@redhat.com>
+Cc: linux@neteng.engr.sgi.com
+Message-ID: <19960501023058.ylPT1slHl4_uKpfGD-sHGqSwFFfO0JB0zWPtjI3w2gM@z>
 
+Hi,
+
+> > to get a Linux/MIPs distribution.  Furthermore, givem that Linux/MIPs
+> > will run IRIX elf binaries, we might be able to merge the Freeware and
+> > Linux/MIPs efforts - they have a lot of overlap.  Something to think 
+> > about.
 > 
-> 	At the meeting there was some talk about hooking up with the folks
-> in Germany who're porting to MIPS boxes. If there is any interest, the
-> email address is: linux@informatik.uni-koblenz.de
-> Sandeep
-> 
-Another contact is: andy@waldorf-gmbh.de
+> This raises a good question - what is the relationship between the SGI port,
+> a port to Digital MIPS/TurboChannel machines, and the MIPS/PC port (that
+> works on MIPS machines with PCI/EISA buses)? Will they all be the same
+> endian? Should binarises be comaptible? What about sources such as libc
+> and the kernel syscall interface?
 
-He was the one driving the porting group when I was last talking with them...when 
-asked about SGI boxes he always complained that the reason they didn't work on them
-was that they couldn't get the info they needed!  I'm sure they would be interested
-in what is happening here.  As far as I know they have an ARCS machine up and
-running, and have all the crossdev stuff done (but I guess we don't need that).
+The main issue in achieving binary compatibility accross all Linux/MIPS
+targets is the byte order.  For some machines (Mips Magnum 4000, Olivetti
+M700-10, SNI RM series and others more) the byte order for the kernel is
+configurable.  For other it is fixed.  This is often the case for machines
+that were built with NT in mind.
 
-Cheers, Alistair
+The MIPS architecture offers us the nice feature of switchable byteorder
+for usermode.  Thus we have a way to run software from other systems with
+differing native byte order.  In other words: it's technological possible
+but it's not implemented yet.
+
+The MIPS ABI which to support is one design goal for Linux/MIPS supports
+only big endian systems while current Linux/MIPS implementations are all
+little endian.  This single fact shows Linux/MIPS doesn't currently
+conform to the ABI but it will be relativly easy to do so in the future.
+
+The ABI explicitly forbids direct syscalls from the usercode into the
+kernel.  Instead every program is supposed to be linked with the shared
+library libc.so.1 which contains the actual interface to the kernel.
+Linux/MIPS currently uses the GNU libc which is far being compliant
+to the ABI.
+
+Nevertheless Linux/MIPS contains an (currently on partial implemented)
+syscall interface that provides not only the syscalls known from the
+Linux/i386 implementation - it also features the same syscall conventions,
+numbers and more as implemented in IRIX and other MIPS UNIX systems.
+Call it a kludge but it can make things easier.
+
+   Ralf

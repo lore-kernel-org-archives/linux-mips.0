@@ -1,26 +1,17 @@
-Message-ID: <009401c12650$021bcca0$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3B7A70B8.ED92FE4@mips.com><20010815110634.A19305@nevyn.them.org> <20010816132042T.nemoto@toshiba-tops.co.jp>
-Subject: Re: FP emulator patch
-Date: Thu, 16 Aug 2001 14:35:46 +0200
+Subject: Re: glibc
+Date: Thu, 16 Aug 2001 15:04:23 +0100 (BST)
+In-Reply-To: <3B7B8951.B666A175@eicon.com> from "Brian Murphy" at Aug 16, 2001 10:50:25 AM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <E15XNl1-0005C7-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: dan@debian.org, Atsushi Nemoto <nemoto@toshiba-tops.co.jp>
-Cc: carstenl@mips.com, linux-mips@oss.sgi.com
-Message-ID: <20010816123546._fESUZQi54wvG3ueOKZaGUf4tlOCFp6YARIuPLPHKo4@z>
+To: Brian Murphy <brian.murphy@eicon.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010816140423.48F05Q_IQatgXtIRZUQBLOuTnnUSsOnB7pyW0vtm5Bw@z>
 
-> I also am trying to fix this problem.  How about my patch?
-> 
-> restore_sigcontext() can be more optimized, but I think this is a
-> smallest patch to fix the problem.
+> We use 2.0.6 here because it is half the size of the newer glibcs and it seems
+> to work fine for us.
 
-I beleive that your patch might fix a symptom of the bugs
-that I talked about in my mail last night, but it doesn't solve
-the underlying problem.  With the signal setup/restore 
-changes I posted last night, your patch should not be
-necessary.
-
-            Kevin K.
+It trust someone patched the holes in it for things like DNS lookups ?

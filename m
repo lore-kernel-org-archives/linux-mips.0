@@ -1,39 +1,34 @@
-Message-ID: <019201c32b40$2d54cf60$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20030604153930.H19122@mvista.com> <20030604231547.GA22410@linux-mips.org> <20030604164652.J19122@mvista.com>
-Subject: Re: [RFC] synchronized CPU count registers on SMP machines
-Date: Thu, 5 Jun 2003 10:55:10 +0200
+Received: from ecs ([65.92.128.188]) by tomts10-srv.bellnexxia.net
+          (InterMail vM.5.01.05.32 201-253-122-126-132-20030307) with SMTP
+          id <20030606175628.BNXK9695.tomts10-srv.bellnexxia.net@ecs>
+          for <linux-mips@linux-mips.org>; Fri, 6 Jun 2003 13:56:28 -0400
+Message-ID: <002701c32c55$14305520$0500a8c0@sympatico.ca>
+Reply-To: "HG" <henri@broadbandnetdevices.com>
+From: "HG" <henri@broadbandnetdevices.com>
+Subject: how to get older version instead of bleeding edge 
+Date: Fri, 6 Jun 2003 13:57:21 -0400
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Return-Path: <henri@broadbandnetdevices.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Jun Sun <jsun@mvista.com>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20030605085510.mkOgBHeayCj8dMIpPxZW9t9gsw3qrSoGTbfwZNDKR8o@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030606175721.ROYWRA6HN_OCFojBNqMNsQqMFSVzbA-pCSqJsP7RLPo@z>
 
------ Original Message ----- 
-From: "Jun Sun" <jsun@mvista.com>
-> On Thu, Jun 05, 2003 at 01:15:47AM +0200, Ralf Baechle wrote:
-> > On Wed, Jun 04, 2003 at 03:39:30PM -0700, Jun Sun wrote:
-> > 
-> > > 1) clocks on different CPUs don't have the same frequency
-> > > 2) clocks on different CPUs drift to each other
-> > > 2) some fancy power saving feature such as frequency scaling
-> > > 
-> > > But I think for a foreseeable future most MIPS SMP machines
-> > > don't have the above issues (true?).  And it is probably worthwile
-> > > to synchronize count registers for them.
-> > 
-> > 1) and 2) affect most SGI systems.
-> >
-> 
-> Assuming SGI systems represent the past of MIPS, we are still ok
-> future-wise. :)
+Hi all
 
-I personally think it would be foolish to assume that future MIPS 
-MP systems will not be subject to one or more such constraint.
+How I get the older version of the linux for mips kernel , in particular I
+would like the 2.4.20
 
-            Kevin K.
+after downloading successfully the latest cvs with the web example
+i tried to upgrade with : $ cvs
+cvs -d :pserver:cvs@ftp.linux-mips.org:/home/cvs  update -r2.4.20 linux
+a long list of ..../filename is no longer in the repository was obtained
+
+any hints of the command line necessary
+
+thanks
+
+Henri

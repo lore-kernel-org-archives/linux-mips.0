@@ -1,52 +1,24 @@
 From: "Robert Rusek" <robru@teknuts.com>
-Subject: RE: Latest kernel?
-Date: Sun, 24 Feb 2002 18:43:17 -0800
-Message-ID: <001401c1bda6$352f7d10$6601a8c0@delllaptop>
+Subject: System lockup problem. . .
+Date: Sun, 24 Feb 2002 19:45:06 -0800
+Message-ID: <000701c1bdae$d226c580$6601a8c0@delllaptop>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20020220221507.GC29624@paradigm.rfc822.org>
 Sender: owner-linux-mips@oss.sgi.com
-To: 'Florian Lohoff' <flo@rfc822.org>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20020225024317.RQpl9_VzRTQUUN2cUPRgw1g1e_KyqdBbBJDvBKOZI8s@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020225034506.87q1OVWs3VDEf31m0LvomwOaUZryLM57R_fPWCddul0@z>
 
-Florian,
-
-I checked the oss.sgi.com cvs and they do not seem to have linux_2_4
-only linux-2.4-xfs.  Is that what I am looking for?  Will that give me a
-working 2.4.x kernel?
+I am running Kernel 2.4.3 on an SGI Indy (IP22).  I built the RedHat 7.1
+system from the NFS root obtained from ftp.mips.com. Everything seems to
+be working until I added an additional drive.  Now when I do an heavy IO
+operation on the additional drive my system locks up.  It seems like
+there is not enough buffer allocated somewhere. I know that the drive is
+not an issue since when I boot the system up under IRIX 5.3 all works
+well..  Has anyone had a similar problem?  Where should I look?  Is is
+an Kernel issue or a setting in the OS?
 
 Thanks in advance,
-Rob.
-
------Original Message-----
-From: owner-linux-mips@oss.sgi.com [mailto:owner-linux-mips@oss.sgi.com]
-On Behalf Of Florian Lohoff
-Sent: Wednesday, February 20, 2002 2:15 PM
-To: Robert Rusek
-Cc: linux-mips@oss.sgi.com
-Subject: Re: Latest kernel?
-
-
-On Wed, Feb 20, 2002 at 02:00:36PM -0800, Robert Rusek wrote:
-> Where can I obtain the latest stable build of the kernel.  I need it 
-> to work on my SGI IP22.  If possible I do not want to use CSV since I 
-> do not have a high speed internet connection.  Any help would be 
-> greatly appreciated.
-
-I dont think there are regular tarballs - Take the pain once - checkout
-the kernel and before modifying make a tarball. Then you can just
-
-cvs -z3 update -Pd 
-
-Your tarball all the time. BTW: You should checkout -r linux_2_4 as i
-dont think 2.5 has success reports on mips already.
-
-Flo
--- 
-Florian Lohoff                  flo@rfc822.org
-+49-5201-669912
-Nine nineth on september the 9th              Welcome to the new
-billenium
+--
+Robert Rusek

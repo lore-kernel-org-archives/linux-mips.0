@@ -1,52 +1,23 @@
-content-class: urn:content-classes:message
+Subject: swapon failure with au1550
+Date: Tue, 15 Feb 2005 17:09:13 -0600
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
-Subject: [PATCH] Using JR instead of J instruction for jumping to IRQ handler.
-Date: Sat, 12 Feb 2005 16:26:29 +0530
-Message-ID: <F6B01C6242515443BB6E5DDD63AE935F046834@dbde2k01.itg.ti.com>
-From: "Nori, Soma Sekhar" <nsekhar@ti.com>
-Return-Path: <nsekhar@ti.com>
+Message-ID: <B482D8AA59BF244F99AFE7520D74BF9609D4F0@server1.RightHand.righthandtech.com>
+content-class: urn:content-classes:message
+From: "Bob Breuer" <bbreuer@righthandtech.com>
+Return-Path: <bbreuer@righthandtech.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Cc: ralf@linux-mips.org
-Message-ID: <20050212105629.isiMjHD_VB4E6tu_Lt4Fh9lHDCzhPCCY1YtOrWaP3zo@z>
+Message-ID: <20050215230913.2y5hQLYlpl4u7F7ygPNW-BlT51cx-YbVqkbbHH3qgLg@z>
 
+With the current cvs on an au1550 configured with 64-bit physical
+address, I get a kernel oops when trying to activate a swap partition
+with swapon.
 
-Hi Ralf,
+It looks like mm/swapfile.c line 1385 is hitting the BUG_ON() in both
+pte_to_swp_entry() and swp_entry_to_pte().
 
-Attached patch attempts to use load address k0, <handler> followed by
-jump register k0 to jump to the MIPS IRQ handler from CAC_BASE + 0x200
-instead of just jump <handler>. This will enable jumping even if IRQ
-handler is linked at high kernel logical address. (like 0x94000000+).
-
-I have tested this to work fine on my 4kec. (Not sure if the code will
-hold good for MIPS64 though)
-
-Thanks,
-Sekhar Nori.
-
---- linux.orig/arch/mips/kernel/traps.c 2004-12-25 03:04:32.000000000
-+0530
-+++ linux/arch/mips/kernel/traps.c      2005-02-12 14:53:32.465876000
-+0530
-@@ -848,9 +848,12 @@
-
-        exception_handlers[n] = handler;
-        if (n == 0 && cpu_has_divec) {
--               *(volatile u32 *)(CAC_BASE + 0x200) = 0x08000000 |
--                                                (0x03ffffff & (handler
->> 2));
--               flush_icache_range(CAC_BASE + 0x200, CAC_BASE + 0x204);
-+               *(volatile u32 *)(CAC_BASE + 0x200) = 0x3c1a0000 |
-+                                        (handler >> 16);
-+               *(volatile u32 *)(CAC_BASE + 0x204) = 0x375a0000 |
-+                                        (handler & 0xFFFF);
-+               *(volatile u32 *)(CAC_BASE + 0x208) = 0x03400008;
-+               flush_icache_range(CAC_BASE + 0x200, CAC_BASE + 0x20C);
-
-        }
-        return (void *)old_handler;
- }
+Bob Breuer

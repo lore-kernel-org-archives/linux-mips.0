@@ -1,59 +1,29 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199712052220.OAA60317@oz.engr.sgi.com>
+Message-ID: <m0xe6T1-0005FsC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
 Subject: Re: M$ 's strategy against Linux: nightmare scenario
-Date: Fri, 5 Dec 1997 14:20:36 -0800 (PST)
+Date: Fri, 5 Dec 1997 22:43:26 +0000 (GMT)
 In-Reply-To: <199712052132.NAA22370@sgi.sgi.com> from "Mike Acar" at Dec 5, 97 04:31:02 pm
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Mike Acar <mike@contract.kent.edu>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19971205222036.H5e7JON1OUT24dwbQ5dvEr8w83TRaHnSgv5sILg8oMM@z>
+Message-ID: <19971205224326.7fpc0ZiTs1_HKY_eWF9xRYb4rCMEqGSuooDEDpQt8B0@z>
 
-Mike wrote:
-:
-:[Snip: Linus works for Transmeta, which Microsoft might buy in order to
-:"acquire" Linux. Legal or not, the legal fight might hamper Linux's spread well
-:enough to significantly reduce the threat to NT.]
-:
-:This isn't a particularly big worry to me.
-:
-Just to make it clear, I just forwarded the piece and I don't necessarily
-agree with the poster on most points.
+> The I2O SIG will control access to the hardware docs on the next generation of
+> fast PCs, and the licensing terms - let alone the SIG member's veto power over
+> membership applicants - are in fundamental conflict with Linux and the other
+> free PC Unices. Microsoft might not need to try to crush Linux directly; there's
+> a distinct possibility that Linux simply won't run on the next generation of
+> PCs.
 
-To me the day MS starts using legal threats and acquisitions in order
-to stop Linux can be declared the day Linux has won.  Unfortunately
-for us Linux lovers, before Wine can run _all_ the Win32 apps without
-_any_ problem (not so close IMHO) and before Linux has a dumb-user GUI
-that really hides all the incredible (for the average Windows user)
-Unix complexities from the majority of the user base it doesn't have
-a chance of world domination, not even in the enterprise servers
-low-end space.
+I2O is in hand, most I2O vendors I've talked to are very determined to see
+the spec become open and the general public vendors are taking from all
+sides - including where it counts with the "We wont buy i2o boxes as it ties
+us to unsuitable OS's". The SIG may also move in that way given time. If not
+we'll just break it. The fact they erroneously published the spec helps a lot
 
+You arent watching hard. The microsoft strategy is NT for servers, and Windows
+CE embedded in everything from your TV, telephone to toilet. CE is on ROM..
 
-:
-:What does worry me, however, is that Intel, MS and others are making
-:significant progress in taking control of the PC architecture.
-:
-Excellent and valid point.  Note that there are new forces on the
-rise which directly clash with Intel interests.  I'm refering to
-both the existing National-Semiconductor + Cyrix merger and AMD,
-and to the (about 9 at last count) startups working on x86 compatible
-designs.  The next few years will be interesting and Intel might very
-probably not emerge as the winner.
-
-
-:
-:Along those lines, are there any plans for providing Linux drivers for the
-:Wintel hardware SGI's announced for next summer?
-:
-I can understand the curiosity and interest.  Please note that SGI
-future products and plans are highly confidential and are not supposed
-to take place on this public forum.
-
-
--- 
-Peace, Ariel
+Alan

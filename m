@@ -1,32 +1,55 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@Julia.DE>
-Message-ID: <199706201407.QAA28016@kernel.panic.julia.de>
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199706201651.MAA25966@neon.ingenia.ca>
 Subject: Re: Getting X on Linux/SGI
-Date: Fri, 20 Jun 1997 16:07:36 +0200 (MET DST)
-In-Reply-To: <Pine.LNX.3.95q.970620082252.15269C-100000@shire.ontko.com> from "Todd Shrider" at Jun 20, 97 08:42:47 am
+In-Reply-To: <199706201640.JAA06720@neteng.engr.sgi.com> from Larry McVoy at "Jun 20, 97 09:40:27 am"
+Date: Fri, 20 Jun 1997 12:51:10 -0400 (EDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Todd Shrider <todds@ontko.com>
+To: Larry McVoy <lm@neteng.engr.sgi.com>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970620140736.VO3vhIycGkhIrUO6UwIBFytBTmYwvnC3h4gJF_bzsfE@z>
+Message-ID: <19970620165110.QFfWfly9vyWibsfgeXnY4-4VX6eFOJNjXbHD3Q8Xfdc@z>
 
-Hi,
-
-> that can hook up to the network, via cable or phone or whatever, browse
-> the web, ineract with the tv video feeds, receive and send mail (even if
-> only operating as a pop-client), browse news feeds, maybe even run
-> someting like Point-Cast as your "TV Screen Saver". 
+Thus spake Larry McVoy:
+> : Personally, I wouldn't buy an O2 to run Linux.
 > 
-> When I think of systems, runnig chips like the 4300i, that can do things
-> like this, I think a pared down Linux is a very justified choice to run
-> them with. I'd rather it than Windows CE! If your still thinking of Linux
+> OK, we won't try and sell you one.  What about the people that would buy
+> an O2 to run Linux?  
+>
+> You != <the entire customer base>.
 
-The Algorithmics P4032 which I recently mentioned I'm also running Linux
-on has a R4300i.  The patches are too dirty and still based on 2.1.14,
-so they're not in the CVS tree ...
+FWIW, there's a _lot_ of interest at my company in having one OS that
+runs on all our boxes (Intel, SP*RC, Alpha, now MIPS), and Linux is
+the preferred choice.  The reasons don't necessarily have anything
+to do with disliking the native OS (except for Solaris, perhaps), but
+we _would_ like:
+- common file structure and apps
+- source compatibility
+- access to source for the firewall machines
 
-I'd love to see one of the MIPS based palmtop class machines to run Linux ...
+If the Solaris binary compatibility was up to hosting Oracle and the
+Netscape WWW servers[*], we'd probably have already gone that route on
+all but the 4d monster.
 
-  Ralf
+I know that having Linux on SGI hardware would make it much easier to
+`sell' it into our environment, which includes solutions we deliver to
+clients.  (And I don't get to make all that many purchasing
+decisions. =) )
+
+[*] At the DevCon last week, the question of support for Linux was
+raised at the executive Q&A panel.  There was a show of hands, and a
+_lot_ of people in the audience were interested in seeing SuiteSpot on
+Linux; Netscape's asked me to write them a little paper explaining why
+`people who aren't willing to pay for Linux would be willing to pay
+for SuiteSpot', and I'll send a copy around here when it's done.
+
+Mike
+
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>              Commando Developer - Whatever It Takes
+#>                                                                     
+#> "See, you not only have to be a good coder to create a system like
+#>    Linux, you have to be a sneaky bastard too." - Linus Torvalds

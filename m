@@ -1,38 +1,32 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199708152053.QAA24515@neon.ingenia.ca>
-Subject: Re: boot linux - wish
-In-Reply-To: <Pine.LNX.3.95.970815163117.21813A-100000@lager.engsoc.carleton.ca> from Alex deVries at "Aug 15, 97 04:38:14 pm"
-Date: Fri, 15 Aug 1997 16:53:01 -0400 (EDT)
+Message-ID: <199708152054.QAA24528@neon.ingenia.ca>
+Subject: Re: Power Series?
+In-Reply-To: <199708152036.NAA03360@dragon.engr.sgi.com> from Steve Rikli at "Aug 15, 97 01:36:37 pm"
+Date: Fri, 15 Aug 1997 16:54:36 -0400 (EDT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: ariel@sgi.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19970815205301.fAEkwBAhzF_kFqjarJSQrVCjk1foGwAFsqgUjMnoX4s@z>
+To: Steve Rikli <sr@dragon.engr.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970815205436.nT_bScs5DBOx4s7oz1CJsQMlYEdFMnr7TiPhF5s24OM@z>
 
-Thus spake Alex deVries:
-> I don't mind rising to that challenge, but one huge obstacle is how do we
-> get the utility to partition the Linux drive? 
-
-Oliver is working on fdisk, I believe.
-Last I heard, he was working on the geometry-query issue.  Oliver?
-
-> > And give hints like:
-> > 	Sorry you don't have the e2fs tools installed on IRIX yet
-> > 	should I download them from ftp.linux.sgi.com [y/n]?
+Thus spake Steve Rikli:
+> Mike Shaver wrote:
+> > 
+> > Are the Power Series boxes of interest to me? =)
 > 
-> Er, does such a tool in fact exist?
+> They're respectable machines, depending on the flavor/color.  ;)
 
-Yup.
-That's how I made bogomips' ext2 drive initially.
+This one is brown.
 
 Mike
+(I hear the mauve ones have more RAM, though)
 
 -- 
 #> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>                 Ignore the man behind the curtain.                  
+#>      Chief System Architect -- will tame sendmail(8) for food       
 #>                                                                     
-#> "And then I realized that it never should have worked in the first  
-#>  place.  Thus, it would not work again until rewritten." --- Anon.  
+#> "You are a very perverse individual, and I think I'd like to get to 
+#>  know you better." --- eric@reference.com                           

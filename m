@@ -1,49 +1,30 @@
-From: Kanoj Sarcar <kanoj@google.engr.sgi.com>
-Message-ID: <200101171315.FAA98450@google.engr.sgi.com>
-Subject: Re: crash in __alloc_bootmem_core on SGI current cvs
-Date: Wed, 17 Jan 2001 05:15:36 -0800 (PST)
-In-Reply-To: <20010116172235.A1379@bacchus.dhis.org> from "Ralf Baechle" at Jan 16, 2001 05:22:35 PM
+Message-ID: <002001c08257$7186d000$2a764581@rembrandt.csv.ica.uni-stuttgart.de>
+From: "Thiemo Seufer" <seufer@csv.ica.uni-stuttgart.de>
+Subject: Re: Current CVS (010116) Boots OK
+Date: Fri, 19 Jan 2001 21:36:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Florian Lohoff <flo@rfc822.org>, linux-mips@oss.sgi.com, Kanoj Sarcar <kanoj@engr.sgi.com>
-Message-ID: <20010117131536.QlUQ3xR2D6tmn0CT2TDE4nugeBxVuZlOOCqwnpPRZ0A@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010119203604.xMA4DHXdyV3FkwEus-qTD7RuzDQjmvIgqCLAgQ3bMzU@z>
 
-> 
-> On Tue, Jan 16, 2001 at 05:39:40PM +0100, Maciej W. Rozycki wrote:
-> 
-> > > Wouldnt be this correct ? Realsize is size - holes.
-> > > 
-> > > Index: mm/page_alloc.c
-> > > ===================================================================
-> > > RCS file: /cvs/linux/mm/page_alloc.c,v
-> > > retrieving revision 1.49
-> > > diff -u -r1.49 page_alloc.c
-> > > --- mm/page_alloc.c	2001/01/11 04:02:45	1.49
-> > > +++ mm/page_alloc.c	2001/01/16 16:26:55
-> > > @@ -824,7 +824,7 @@
-> > >  		if (zholes_size)
-> > >  			realsize -= zholes_size[j];
-> > >  
-> > > -		printk("zone(%lu): %lu pages.\n", j, size);
-> > > +		printk("zone(%lu): %lu pages.\n", j, realsize);
-> > >  		zone->size = size;
-> > >  		zone->name = zone_names[j];
-> > >  		zone->lock = SPIN_LOCK_UNLOCKED;
-> > 
-> >  It look reasonable but is it what was really intended?  You should ask
-> > the author or linux-kernel, I suppose. 
-> 
-> Which probably is Kanoj who is subscribed to this list.
-> 
->   Ralf
-> 
+Maciej W. Rozycki wrote:
+[snip]
+> It's possible.  I'm actually using `cu' and it works fine wrt wrapping
+>but it requires hw flow control (it sets "-clocal" and "crtscts" 
+>explicitly) unfortunately, which is why it cannot be used for the
+>DECstation's REX console I/O (which uses DTR/DSR flow control due to
+>serial interface limitations on certain DEC hardware).  I'm going to
+>modify `cu' at one time but since I don't really work with REX that much
+>I'm just using `cat' for this purpose for now.
 
-realsize is fine, and that is what it is in Linus' tree. We want
-to report actual number of pages, not number of pages including
-the holes in memory.
+You might try 'screen'. I don't know if it requires Hardware
+flow control, but it works for me via
 
-Kanoj
+screen screen /dev/ttyS1
+
+
+Thiemo

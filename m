@@ -1,46 +1,31 @@
-Received: from msx.realtek.com.tw (unverified [172.20.1.77]) by mf2.realtek.com.tw
- (Content Technologies SMTPRS 4.3.14) with ESMTP id <T6cc4c6aee3dc803816a20@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
- Wed, 20 Oct 2004 22:03:43 +0800
-Message-ID: <001301c4b6ad$70ce4420$8b1a13ac@realtek.com.tw>
-From: "colin" <colin@realtek.com.tw>
-Subject: Strange! Cannot use JFFS2 as root
-Date: Wed, 20 Oct 2004 22:02:26 +0800
-MIME-Version: 1.0
+Date: Wed, 20 Oct 2004 16:41:44 -0700
+From: "David S. Miller" <davem@davemloft.net>
+Subject: Re: [discuss] Re: [PATCH] Add key management syscalls to non-i386
+ archs
+Message-ID: <20041020164144.3457eafe.davem@davemloft.net>
+In-Reply-To: <20041020232509.GF995@wotan.suse.de>
+References: <3506.1098283455@redhat.com>
+	<20041020150149.7be06d6d.davem@davemloft.net>
+	<20041020225625.GD995@wotan.suse.de>
+	<20041020160450.0914270b.davem@davemloft.net>
+	<20041020232509.GF995@wotan.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset="big5"
-Return-Path: <colin@realtek.com.tw>
+Return-Path: <davem@davemloft.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20041020140226.WytVZDZ5YXue30e8xBfrdLAK4yTAj3N6_M-TB6JNPo4@z>
+To: Andi Kleen <ak@suse.de>
+Cc: dhowells@redhat.com, torvalds@osdl.org, akpm@osdl.org, linux-kernel@vger.kernel.org, discuss@x86-64.org, sparclinux@vger.kernel.org, linuxppc64-dev@ozlabs.org, linux-m68k@vger.kernel.org, linux-sh@m17n.org, linux-arm-kernel@lists.arm.linux.org.uk, parisc-linux@parisc-linux.org, linux-ia64@vger.kernel.org, linux-390@vm.marist.edu, linux-mips@linux-mips.org
+Message-ID: <20041020234144.760nZG4gSXDc-Kh7qoj_u3k2NUBkJhyWrVCCq2KlxWA@z>
 
+On Thu, 21 Oct 2004 01:25:09 +0200
+Andi Kleen <ak@suse.de> wrote:
 
-Hi all,
-I had booted up Linux with nfs root, and write a JFFS2 image to /dev/mtd1.
-Here is my cmdline for Kernel:
-     go 0x80305018 root=/dev/nfs rw nfsroot=172.19.26.145:/nfs/rootfs
-ip=172.19.27.193::172.19.27.254:255.255.254.0:::
-mtdparts=maltaflash:1536k(ldr),2048k(root)
+> IMHO breaking the build unnecessarily is extremly bad because
+> it will prevent all testing. And would you really want to hold
+> up the whole linux testing machinery just for some obscure 
+> system call? IMHO not a good tradeoff.
 
-After writing the JFFS2 image to /dev/mtd1, I can mount /dev/mtdblcok1 to
-some directory.
-    mount -t jffs2 /dev/mtdblock1 /mnt
-
-Next, I hope to boot up Linux with JFFS2 root, and try to give this cmdline
-to Kernel:
-    go 0x80305018 rootfstype=jffs2
-mtdparts=maltaflash:1536k(ldr),2048k(root) root=/dev/mtdblock1
-
-and the Kernel would complain me about no root:
-    VFS: Unable to mount root fs via NFS, trying floppy.
-    Kernel panic: VFS: Unable to mount root fs on unknown-block(2,0)
-
-I traced the code and found that when passing "/dev/mtdblock1" to
-name_to_dev_t() in do_mounts.c, it would return 0 at every try_name(),
- which will fail at open() with the path "/sys/block/%s/dev".
-
-What's the problem? Could anyone tell me?
-
-Thanks and regards,
-Colin
+Then change the unistd.h cookie from "#error" to a "#warning".  It
+accomplishes both of our goals.

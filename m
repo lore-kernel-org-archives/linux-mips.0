@@ -1,34 +1,22 @@
-Date: Fri, 2 Feb 2001 15:03:11 +0000 (GMT)
-From: "Dr. David Gilbert" <gilbertd@treblig.org>
-Subject: Re: Cross build applications
-In-Reply-To: <3A7AC901.4BD0F4E0@mips.com>
-Message-ID: <Pine.LNX.4.30.0102021502170.1654-100000@springhead.px.uk.com>
+Subject: Re: Filesystem corruption
+Date: Mon, 5 Feb 2001 12:10:37 +0000 (GMT)
+In-Reply-To: <20010205020241.A30062@bacchus.dhis.org> from "Ralf Baechle" at Feb 05, 2001 02:02:41 AM
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E14PkTf-0003DK-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Carsten Langgaard <carstenl@mips.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010202150311.9GTpOxlIQ2tUtGBpg-kIahN9kFtJlAMWB3BGMu2nSdQ@z>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: Carsten Langgaard <carstenl@mips.com>, linux-mips@oss.sgi.com
+Message-ID: <20010205121037.mwoNfVXpHqDMNacfeF0cQgYccDTY5Sg6DQbBd580Y3w@z>
 
-On Fri, 2 Feb 2001, Carsten Langgaard wrote:
+> 2.4.1 is known to cause fs corruption for all architectures; 2.4.0 should
+> actually be fine.  I just reached 8 days of uptime on a 32p Origin 2000,
+> so it can't be that bad.
 
-> I'm trying to cross build a small test program on a linux PC, but it
-> fails.
->
-> mips-linux-gcc -o test test.c
-> /usr/mips-linux/bin/ld: cannot open crt1.o: No such file or directory
+Im tracking fs corruption and worse on 2.4.0 as well (zero page corruptions
+since 2.4.0test10 for example)
 
-Yep - you need to obtain a copy of this - just copy it out of Linux/mips
-installation and put it in one of the lib directories under your
-/usr/mips-linux.
-
-(That let me get "hello world" crossing from Linux/Alpha last week)
-
-Dave
--- 
-/------------------------------------------------------------------\
-| Dr. David Alan Gilbert | Work:dg@px.uk.com +44-161-286-2000 Ex258|
-| -------- G7FHJ --------|---------------------------------------- |
-| Home: dave@treblig.org            http://www.treblig.org         |
-\------------------------------------------------------------------/
+I dont believe any 2.4 is currently 'safe'

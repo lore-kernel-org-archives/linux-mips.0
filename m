@@ -1,53 +1,65 @@
-Message-ID: <001701c3d30c$4d0223c0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20040104090922.35955.qmail@web10102.mail.yahoo.com>
-Subject: Re: Regarding the LL & SC instructions
-Date: Sun, 4 Jan 2004 22:47:06 +0100
+Date: Wed, 14 Jan 2004 12:07:22 -0500 (EST)
+From: David Kesselring <dkesselr@mmc.atmel.com>
+Subject: Re: Correct assembler/compiler options for 4KC core?
+In-Reply-To: <20040114165025.GB22218@rembrandt.csv.ica.uni-stuttgart.de>
+Message-ID: <Pine.GSO.4.44.0401141200460.13057-100000@ares.mmc.atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <dkesselr@mmc.atmel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: karthikeyan natarajan <karthik_96cse@yahoo.com>, linux-mips@linux-mips.org
-Message-ID: <20040104214706.DWkqgFzAXoLIy4S4QTYbnzCdUhn5RQI_7gnviOWJsP4@z>
+To: Thiemo Seufer <ica2_ts@csv.ica.uni-stuttgart.de>
+Cc: "Zajerko-McKee, Nick" <nmckee@telogy.com>, linux-mips@linux-mips.org
+Message-ID: <20040114170722.pm1Y93eD8YNfTGG4fmHfEp-HZMWz5nVVdxrwJRg0pNc@z>
 
-You can modify any, all, or none of the bytes in a word loaded/stored
-with LL/SC.  What you *can't* do is independently  LL/SC individual 
-bytes within the same memory word, but operationally, this is of little
-consequence.  If you want to atomically modify a byte, you LL the word
-containing the byte, modify the byte in question, and SC the word.
-If the SC succeeds, all is as you wish.  If the SC fails, you need to
-retry the whole sequence.
-
------ Original Message ----- 
-From: "karthikeyan natarajan" <karthik_96cse@yahoo.com>
-To: <linux-mips@linux-mips.org>
-Sent: Sunday, January 04, 2004 10:09
-Subject: Regarding the LL & SC instructions
+If 2.95 is too old for him, where should he(and I) get the latest stable
+packages. It seems like the MIPS environment is varied and there are
+toolchains for various processors in different locations. Is the toolchain
+and binutils for 4k/5k processors on the linux-mips.org ftp site?
+Is the correct gcc 3.2.xx? Will it build 2.4.2x that is in linux-mips cvs?
+Will it build 2.6? Will it build 64bit kernels? It would be nice if
+someone in the know could create a chart or add the info to readme or
+howto on linux-mips.org site.
+Thanks for sharing what you know.
+David
 
 
-> Hi All,
-> 
->     Seems that LL & SC instrutions operate on a 'word'
-> data.
->     Can we use the same instructions to do a atomic
-> increment on a 'byte' data. If not, are there any
-> specific instructions to operate on a byte data?
-> (Like, LLD & SCD for doubleword data) or else, any 
-> method to achieve this using the LL & SC instr?
-> 
-> Thanks much,
-> -karthi
-> 
-> 
-> =====
-> The expert at anything was once a beginner
-> 
-> ________________________________________________________________________
-> Yahoo! Messenger - Communicate instantly..."Ping" 
-> your friends today! Download Messenger Now 
-> http://uk.messenger.yahoo.com/download/index.html
-> 
-> 
+On Wed, 14 Jan 2004, Thiemo Seufer wrote:
+
+> Zajerko-McKee, Nick wrote:
+> > Hi,
+> >
+> > I'm trying to use the following opcodes: movz, movn, clo, clz, madd, msub on
+> > both a 4KC and 4KeC core. What gas options should I use to get the above
+> > opcodes to work (mips4?  mips32?)
+>
+> With a modern toolchain: -march=mips32.
+>
+> > How would one link against closed source
+> > libraries that were compiled for mips2?
+>
+> This will just work if you use a recent binutils version, and if the
+> libraries are O32 ABI conformant.
+>
+> > Is there a list of what opcodes
+> > correspond to the various ISA's and gas flags?  The best reference I saw was
+> > from fsf that just mentions the -mips1/-mips2/-mips3/-mips4. I did notice
+> > in the latest gas docs -march option,
+>
+> -mips32 is retained as an alias for -march=mips32.
+>
+> > but I don't see that available in my
+> > toolchain.  I'm running on a development system with gas 2.9.5 and gcc 2.96.
+>
+> gas 2.9.5 is _very_ old. It might be possible to use "-mips4 -mgp32" for
+> movn, movz, but I'm not sure if this actually works. For the other opcodes
+> the toolchain is just too old.
+>
+>
+> Thiemo
+>
+
+David Kesselring
+Atmel MMC
+dkesselr@mmc.atmel.com
+919-462-6587

@@ -1,123 +1,60 @@
-Message-ID: <200301281948.h0SJmug29073@uhler-linux.mips.com>
+Message-ID: <200301282139.h0SLdmf29392@uhler-linux.mips.com>
 Reply-To: uhler@mips.com
-Subject: Re: unaligned load in branch delay slot 
-In-reply-to: Your message of "Tue, 28 Jan 2003 09:53:47 PST."
-             <20030128095347.W11633@mvista.com>
+Subject: Re: [OT] Re: unaligned load in branch delay slot 
+In-reply-to: Your message of "28 Jan 2003 16:30:09 EST."
+             <1043789409.23571.12.camel@gs256.sp.cs.cmu.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 28 Jan 2003 11:48:56 -0800
+Date: Tue, 28 Jan 2003 13:39:48 -0800
 From: "Mike Uhler" <uhler@mips.com>
 Return-Path: <uhler@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Jun Sun <jsun@mvista.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/MIPS Development <linux-mips@linux-mips.org>, uhler@mips.com
-Message-ID: <20030128194856.Cu9h0lFAU7wsHsfrabf0sh3xPwtUs4qAAM7ItHyy_s4@z>
+To: justinca@cs.cmu.edu
+Cc: linux-mips@linux-mips.org, uhler@mips.com
+Message-ID: <20030128213948.mRIfKnpcPJyFKYdZAitELlI3VqRJUv6l6rjRPNWijzQ@z>
 
-
+> On Tue, 2003-01-28 at 14:48, Mike Uhler wrote:
 > 
-> Geert,
+> > If the patch assumes that one can look backward by one instruction
+> > in the STATIC code to determine if the instruction is in a
+> > delay slot, one can not have code that jumps directly to the
+> > instruction following another branch, as this would cause the
+> > code to assume that it was in the delay slot of the branch.
 > 
-> I had exactly the same problem with Vr4120A chip!
+> A while back, when working on a different architecture that also had
+> branch delay slots, it took me a while to get my head around the
+> branch-in-a-delay-slot case, e.g.
 > 
-> I have narrowed it down to be a hardware bug.  Basically under
-> certain conditions, BD flag won't get set.
 > 
-> You can verify that by inserting various number of "nop" just
-> before the faulting places and observe certain address alignment
-> would show/hide this bug.
+> 10:  b 100
+> 20:  b 30
+> 30:  foo
+> ...
+> 100: bar
 > 
-> Further more I wrote a standalone kernel code and could not
-> reproduce it, which means it requires more conditions than just
-> address alignment.
+> where the actual program flow would be
 > 
-> NEC Europe knows about this problem.  Not sure if they passed
-> it to Japan where the chip is designed.  Their engineers
-> even had difficulty to understand what I was talking about. 
+> 10
+> 20
+> 100
+> 30
+> 
+> and instruction 100 would be considered to be in the delay slot of 20.
+> 
+> I was *very* happy when I first looked at MIPS to see that this was 
+> specified as unpredictable, even if it was pretty cool to be able to
+> make the CPU execute a single instruction in the middle of nowhere. 
+> Pointless, but cool.  :)
 
-Let me give the list some background on this to aid in understanding.
-
-When the MIPS I Architecture was originally defined (back in
-1984), it included the architecturally-visible branch delay slot
-that exists in the architecture today.  The Coprocessor 0
-EPC register was defined to be the PC at which to restart after
-an exception or an interrupt.  However, because an exception or
-interrupt could occur while attempting to execute the instruction
-in a branch delay slot, EPC could not simply point at that
-instruction, because if the branch or jump was taken, restarting
-at the delay slot PC doesn't account for the taken branch/jump.
-As such, the architecture was specified such that if an exception
-or interrupt was detected while attempting to execution the
-instruction in a branch delay slot, EPC was defined to receive
-the PC of the branch, and the BD bit was set in the Coprocessor 0
-Cause register.  Most implementations of the MIPS Architecture did
-exactly this.
-
-In a few implementations of the MIPS Architecture (and I can't confirm
-nor deny that this is the case with the NEC VR 41xx chips - I simply don't
-know), the implementors observed that the restart PC could, in fact,
-be the PC of the instruction in the delay slot, but only if the preceding
-branch was known to be not-taken.  Restarting a not-taken branch
-at the branch is equivalent to restarting at the delay slot in
-terms of PC flow.  Note that this assumes that restarting at the
-branch would not cause a different decision on the restart as
-on the original execution, and this is required by the architecture.
-
-Since the MIPS architecture has no not-taken jump instructions, there
-should never be a case in which EPC points at the delay slot of a
-jump, nor should there ever be a case in which EPC points at the
-delay slot of a taken branch.
-
-In the MIPS32 and MIPS64 Architecture, we explicitly require that the
-value in EPC point at the branch/jump and that the BD bit be set in
-the Cause register if an exception is detected in the delay slot.
-Our compliance testing tests for this, and there are no compliant
-implementations of the MIPS32 or MIPS64 Architecture which will
-cause EPC to point to the delay slot of the branch (subject, of coure,
-to an obscure bug).
-
-As I mentioned earlier, there are some number of implementations of
-earlier versions of the MIPS Architecture which apparently have
-decided to point EPC at the delay slot instruction in the case of
-a not-taken branch.  I can't give you a list of such implementations
-because they pre-date our formal MIPS32/MIPS64 compliance testing.
-I would hope that the users manual and/or errata sheets for chips
-that do this would mention this as an issue.
-
-So, the proposed code that went by on this list earlier can almost
-certainly remove the jumps (they are always taken), and only adjust
-PC if the previous instruction was a branch.
-
-One word of warning, however:  Note that branch delay slots are
-defined as DYNAMIC, not STATIC instructions.  Consider the following
-example:
-
-	...
-5:	b	20f
-	nop
-	...
-10:	b	someplace
-20:	instruction-that-causes-exception
-
-If the PC flow goes executions the branch at label 10 and detects
-an exception on the instruction at label 20, EPC should point at
-label 10, and the BD bit in Cause should be set.  However, if the branch
-at label 5, with the nop in its delay slot, goes directly to the
-excepting instruction at label 20, that instruction IS NOT in a
-branch delay slot (remember, it's a dynamic relationship, not a
-static one), so EPC would point at label 20 and the BD bit in cause
-would not be set.
-
-If the patch assumes that one can look backward by one instruction
-in the STATIC code to determine if the instruction is in a
-delay slot, one can not have code that jumps directly to the
-instruction following another branch, as this would cause the
-code to assume that it was in the delay slot of the branch.
-
-This is exactly the reason why the architecture is defined in the
-way that it is.
-
-If anyone has any other questions, let me know.
+I presume that you're talking about Sparc, where such a construct is
+used to execute a single instruction out of a table.  This is, in
+fact, very, very unpredictable on a MIPS implementation, ranging from
+reserved instruction, to branching to one of the two branch targets,
+to wandering off into hyperspace.  So please do not assume that because
+a particular implementation does something that all implementations
+do the same thing. In this particular case, I can guarantee you that
+you won't like the answer you get.
 
 /gmu
 

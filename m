@@ -1,30 +1,35 @@
-From: jallan@freeuk.com
-Date: Tue, 29 Feb 2000 18:39:12 z (GMT)
-Subject: Re: Linux on O2?
-Message-ID: <E12PrY8-0000J5-00@scrabble.freeuk.net>
+Date: Fri, 3 Mar 2000 14:37:52 -0500 (EST)
+From: James A Simmons <jsimmons@acsu.buffalo.edu>
+Subject: Re: About X server...
+In-Reply-To: <38C000C5.5BB5689B@themis.fciencias.unam.mx>
+Message-ID: <Pine.GSO.4.05.10003031436560.9045-100000@tolstoy.pubsites.buffalo.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
+Content-Transfer-Encoding: 8BIT
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: jsimmons@acsu.buffalo.edu
-Cc: Bastiaan.N.Veelo@immtek.ntnu.no, linux@cthulhu.engr.sgi.com, Harald.Koerfgen@home.ivm.de
-Message-ID: <20000229183912.npZHCpEf5s829rZAa3QFjRhhxI7Uq2Fy5pdce1wwoQg@z>
+To: Carlos Ernesto =?iso-8859-1?Q?L=F3pez=20Natar=E9n?= <natorro@themis.fciencias.unam.mx>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <20000303193752.9LCm0k_Wm7oIFyr2hHoQ2xJAbe-h1pMsSo7wMNe-h48@z>
 
-You wrote:
 
-> From: James Simmons 
+From what I seen the best thing to do is run the native Xsgi X server
+under linux. I have seen a patched XFree86 X server in CVS. Its uses the
+/dev/graphics interface native to IRIX. 
 
-> > The O2's I can get hold of, if I am well informed, come with an R5000
-> > processor, 128MB RAM, 2GB SCSI, soundcard, keyboard and 21" Monitor for
-> > 5000 NOK (that's about 1250 DEM or 625 USD!). Though I live in Norway I
-> > visit Germany from time to time and transport is therefore a lesser
-> > problem.
+"Look its a text editor, no its a OS, no its Emacs"
+James Simmons                                                      (o_
+fbdev/gfx developer                                      (o_  (o_ //\
+http://www.linux-fbdev.org                              (/)_ (/)_ V_/_
+http://linuxgfx.sourceforge.net
+
+On Fri, 3 Mar 2000, Carlos Ernesto [iso-8859-1] López Natarén wrote:
+
+> Hi!
+> I just wanted to know if there is a X server working on
+> linux, because I want to install it on an Indy, but I
+> really need X working... 
+> the Hard Hat homepage has not much info about it...
+> Thanks a lot
+> natorro
 > 
-> WoW!!! Can I get one for this price? 
-
-
-Make that wow from me too! I am interested as well!
-
-Did I miss the original repy to my inquiry about Linux on an O2 though?
-
-Thanks.
-
-John Allan

@@ -1,18 +1,35 @@
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Ilya Volynets <ilya@theIlya.com>
+Reply-To: ilya@theIlya.com
 Subject: Re: about mips IDE DMA disk problem
-Date: Fri, 10 Aug 2001 16:59:15 +0100 (BST)
-In-Reply-To: <no.id> from "Barry Wu" at Aug 10, 2001 08:39:44 AM
+Date: Fri, 10 Aug 2001 11:05:39 -0700
+References: <E15VEgt-0001Di-00@the-village.bc.nu>
+In-Reply-To: <E15VEgt-0001Di-00@the-village.bc.nu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <E15VEgt-0001Di-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-ID: <01081011053902.07543@gateway>
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Barry Wu <wqb123@yahoo.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010810155915.KTlkXlw47bY4J6v_rKQCuQAoINyN6HkPfZ7xxGQRCRI@z>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>, Barry Wu <wqb123@yahoo.com>
+Cc: linux-mips@oss.sgi.com, boards@mips.com
+Message-ID: <20010810180539.fV2K2Ttldiavrysc7alL42WZ0k_auXQevRn7Njm7l0g@z>
 
-> We port linux-2.2.12 to our mipsel evaluation board.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-2.2.12 is ancient including remotely exploitable security holes. If you
-update to a vaguely recent 2.2 kernel you'll also find there are ali1535
-drivers although I dont think anyone has verified them on mips
+On Friday 10 August 2001 08:59, Alan Cox wrote:
+> > We port linux-2.2.12 to our mipsel evaluation board.
+>
+> 2.2.12 is ancient including remotely exploitable security holes. If you
+> update to a vaguely recent 2.2 kernel you'll also find there are ali1535
+> drivers although I dont think anyone has verified them on mips
+Perhaps somebody should tell MIPS, Inc. people that 2.2.12 on their
+site is little bit out of date.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAjt0InkACgkQtKh84cA8u2lxcwCdEM8mRkj63kpxnfaRU2tS9D86
+QS8AnjVTo67VGpbgcgnn+nkuHVJW/DQN
+=4ngI
+-----END PGP SIGNATURE-----

@@ -1,31 +1,141 @@
-Date: Tue, 19 Mar 2002 13:14:18 +0100 (CET)
-From: Adrian Schroeter <adrian@suse.de>
-Reply-To: Adrian Schroeter <adrian@suse.de>
-Subject: Re: hello
-In-Reply-To: <20020319121114.GB18733@paradigm.rfc822.org>
-Message-ID: <Pine.LNX.4.44.0203191313230.31349-100000@reiser.suse.de>
+Message-ID: <017701c1cf99$a7d9a890$0b01a8c0@w2k30g>
+From: "David Christensen" <dpchrist@holgerdanske.com>
+Subject: Fw: hello
+Date: Tue, 19 Mar 2002 14:55:22 -0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Florian Lohoff <flo@rfc822.org>
-Cc: David Christensen <dpchrist@holgerdanske.com>, linux-mips@oss.sgi.com
-Message-ID: <20020319121418.Frsx_aCEXOSekNX2bL6XfLyLu_Tp_plsRWOLXjcM2xE@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020319225522.n7fQMig19d4VsZxiyijXzfsCK6ywDkY6WYDGEStGDJY@z>
 
-On Tue, 19 Mar 2002, Florian Lohoff wrote:
-> On Mon, Mar 18, 2002 at 03:55:00PM -0800, David Christensen wrote:
-> > 6.  Does MIPS Linux support sound (oss or alsa) on any platform?  Does
-> >     it support sound on MIPS Atlas?
+linux-mips@oss.sgi.com:
+
+Thank you all for your replies.  :-)
+
+
+Hartvig Ekner <hartvige@mips.com> wrote:
+>> 2.  What is the preferred host OS...
+> We use Linux/x86 for kernel compiles,
+
+Which Linux distribution does MIPS use?  Since I'm going to be working
+on an Atlas board using software from MIPS, I would like to match things
+up exactly.
+
+As an aside, is anybody using a VMware virtual machine for their
+development host?
+
+> and native compile for apps.
+
+OK  that sounds like a safe bet.
+
+>> 3.  What is the preferred toolchain...
+> This is what we use for cross Kernel compiles (toolchain from oss):
 >
-> Some rumors about Indy/Indigo2 HAL support have been heard.
+> /home/hartvige> gcc -v
+> Reading specs from /usr/lib/gcc-lib/i386-redhat-linux/2.96/specs
+> gcc version 2.96 20000731 (Red Hat Linux 7.1 2.96-85)
 
-oss works for me here on Indy/Indigo2. The arts drivers seems to be too
-outdated atm.
+Hmmm.  That looks like a native i386 compiler.  I'm surprised its not
+something like "mips-elf-gcc".
+
+I'll assume the cross-compile toolchain was built per
+http://oss.sgi.com/mips/mips-howto.html section 10.
+
+>> 4.  Is MIPS Linux self-hosted?
+> Yes. Even without workstations, you could use MIPS or Algo development
+> boards for self-hosted development (which is what we do - primarily
+> Malta boards).
+
+Good.  :-)
+
+>> 5.  Can you do native development on MIPS Linux?
+> Yes.
+
+Good.  :-)
+
+>> 6.  Does MIPS Linux support sound (oss or alsa) on any platform?
+>>     Does it support sound on MIPS Atlas?
+> Yes. Plug in a Creative SB card, based on the Ensoniq chip and
+> enable the es1371.c in the kernel compile. Works both LE & BE, and
+> with apps like madplay (mp3) and mplayer (mpeg4).
+
+Great!  :-)
 
 
-bye
-adrian
+Florian Lohoff <flo@rfc822.org> wrote:
+>> 1.  Is there a reason why SourceForge isn't being used for the MIPS
+>>     Linux project?
+> The Linux-mips project is much older than sourceforge and looking at
+> the history of hyped venture capital companys does not really give a
+> good feeling about using sourceforge. Personally spoken i dont like
+> sourceforge - For most cases its just too bloated and working for ISPs
+> its not a problem to get some public accesible ftp/web/cvs space.
 
-**********************************************************************
-Adrian Schroeter
-SuSE AG, Deutschherrnstr. 15-19, 90429 Nuernberg, Germany
-email: adrian@suse.de   (495 mails already received today.)
+OK  I've used SourceForge as a software consumer and liked it.  I just
+received their approval for an GPL'd Perl utility I wrote ("dirdiff").
+
+>> 4.  Is MIPS Linux self-hosted?
+> Definitly
+
+Good. :-)
+
+>> 5.  Can you do native development on MIPS Linux?
+> Yep - The Debian autobuilder run native on little and big endian.
+
+Hmmm.  Do you mean GNU autoconf running natively on MIPS, or something
+running on a Debian x86 host, or something else?
+
+>> 6.  Does MIPS Linux support sound (oss or alsa) on any platform?
+Does
+>>     it support sound on MIPS Atlas?
+> Somme rumors about Indy/Indigo2 HAL support have been heard.
+
+OK
+
+> The problem with some sourceforge trees and the split up information
+> is that like you already experienced is a real problem for Linux-mips
+> as there is no "source of the only wisdom". I dont like that tree-
+> forking etc. Either build your stuff clean - ready for inclusion -
+> or just drop the tree under the table as a big bad ugly hack.
+
+OK
+
+
+Adrian Schroeter <adrian@suse.de> wrote:
+>>> 6.  Does MIPS Linux support sound (oss or alsa) on any platform?
+>>>     Does it support sound on MIPS Atlas?
+>> Some rumors about Indy/Indigo2 HAL support have been heard.
+> oss works for me here on Indy/Indigo2. The arts drivers seems to be
+> too outdated atm.
+
+OK
+
+
+Leo Przybylski <leop@engr.arizona.edu> wrote:
+> Well, all Linux/MIPS stuff on on oss.sgi.com is maintained largely by
+> Ralf Baechle who is also contributor to numerous Linux/MIPS projects
+> on sourceforge. As far as I know he is also a huge part of the
+> sourceforge Linux/MIPS. You may have noticed that Bradley D. LaRonde
+> is also a huge contributor.
+>
+> You have probably guessed that all the projects on sourceforge
+> regarding linux mips are related by the maintainers and contributors.
+> Most of the code is being contributed to sourceforge, oss.sgi.com,
+> debian, redhat and so on. When everyone has their own toolchains,
+> roots and kernels it's hard to keep them in their own repositories.
+> oss.sgi.com has tried largely to do this though which is why it is a
+> good place to start. The ftp site carries debian and redhat binaries,
+> patches, etc... There's also the linux-mips kernel located in the
+> oss.sgi.com CVS repository.
+>
+> As for why it is working to keep most of the resources in oss.sgi.com
+> contrary to sourceforge, I don't really have an answer to that. Hope
+> this helps.
+
+Thanks for the background.  Clearly, linux-mips has much history behind
+it.
+
+
+David

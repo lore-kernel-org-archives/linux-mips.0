@@ -1,57 +1,70 @@
-Content-Class: urn:content-classes:message
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: __up, __down_trylock & __down_interruptible for MIPS
-Date: Thu, 7 Oct 2004 15:12:32 +0530
-Message-ID: <6BF015B686198842A1C8F84F4B7E6D2601276C2F@chn-snr-msg.wipro.com>
-From: <priya.mani@wipro.com>
-Return-Path: <priya.mani@wipro.com>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C4ACFC.449F0874"
+Subject: Yamon File system support
+Date: Fri, 8 Oct 2004 11:31:35 +0530
+Message-ID: <9A45247F1AEBB94189B16E7083981F936DE4DC@INDIAEXCH.gmi.domain>
+From: "Vinay Nagendra" <Vinay.Nagendra@gnss.com>
+Return-Path: <Vinay.Nagendra@gnss.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: geert@linux-m68k.org
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20041007094232.8F57A1fQ526eSDUgVA_BeSrul1BE_MQuuVVwu5GWsC8@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20041008060135.Hoygskaf4tUYbyX3YMF24dm-vFkNoX5SopE__njKP5I@z>
 
-Thanks but I did try that and did not find kernel version above 2.3.
-Since I am behind a firewall I got speacial access to the
-ftp.linux-mips.org and logged into the site to find the linux under pub
-which contains only upto kernel version 2.3. Am I going the wrong path?
+This is a multi-part message in MIME format.
 
------Original Message-----
-From: geert@sonycom.com [mailto:geert@sonycom.com] On Behalf Of Geert
-Uytterhoeven
-Sent: Thursday, October 07, 2004 1:40 PM
-To: Priya Balasubramanian (WT01 - EMBEDDED & PRODUCT ENGINEERING
-SOLUTIONS)
-Cc: Ralf Baechle; Linux/MIPS Development
-Subject: RE: __up, __down_trylock & __down_interruptible for MIPS
+------_=_NextPart_001_01C4ACFC.449F0874
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+  Can anyone please let me know if JFFs2 file system is supported by
+Yamon.
 
 
-On Thu, 7 Oct 2004 priya.mani@wipro.com wrote:
-> I too doubted that the kernel which I am using is not in proper shape.
-> Please could you point me to a proper link where I can download it
-from.
-> I am in need of a proper working kernel version 2.4.25 or above.
-> 
-> Hope you can lead me to a proper link for this!
 
-http://cvs.linux-mips.org/kernel.html
+Best Regards,
+Vinay
 
-and check out the 2.4 branch (or mainline if you want 2.6).
 
-Gr{oetje,eeting}s,
 
-						Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 --
-geert@linux-m68k.org
+------_=_NextPart_001_01C4ACFC.449F0874
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-In personal conversations with technical people, I call myself a hacker.
-But
-when I'm talking to journalists I just say "programmer" or something
-like that.
-							    -- Linus
-Torvalds
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.6487.1">
+<TITLE>Yamon File system support</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
+
+<P><FONT SIZE=3D2 FACE=3D"Georgia">Hi,</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Georgia">&nbsp; Can anyone please let me know =
+if JFFs2 file system is supported by Yamon.</FONT>
+</P>
+<BR>
+<BR>
+
+<P><B><FONT COLOR=3D"#008080" SIZE=3D2 FACE=3D"Verdana">Best =
+Regards,</FONT></B>
+
+<BR><B><FONT COLOR=3D"#008080" SIZE=3D2 =
+FACE=3D"Verdana">Vinay</FONT></B>
+</P>
+<BR>
+<BR>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C4ACFC.449F0874--

@@ -1,150 +1,34 @@
-Message-ID: <0b2001c4cb31$94b0b060$a701a8c0@lan>
-From: "Gilad Rom" <gilad@romat.com>
-References: <20041114184502.41815.qmail@web81007.mail.yahoo.com> <0a9001c4cae6$f1aa3890$a701a8c0@lan> <4198D6AB.2060005@ieee.org>
-Subject: Re: GPIO on the Au1500
-Date: Mon, 15 Nov 2004 18:38:43 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=response
+In-Reply-To: <0a2201c4ca62$25d37f80$a701a8c0@lan>
+References: <20041112181335.13362.qmail@web81008.mail.yahoo.com> <09ac01c4ca24$e68a6740$a701a8c0@lan> <0a2201c4ca62$25d37f80$a701a8c0@lan>
+Mime-Version: 1.0 (Apple Message framework v619)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-ID: <FA00299D-3765-11D9-A70B-003065F9B7DC@embeddededge.com>
 Content-Transfer-Encoding: 7bit
-Return-Path: <gilad@romat.com>
+From: Dan Malek <dan@embeddededge.com>
+Subject: Re: GPIO on the Au1500
+Date: Mon, 15 Nov 2004 19:25:10 -0500
+Return-Path: <dan@embeddededge.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: charles.eidsness@ieee.org
+To: Gilad Rom <gilad@romat.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20041115163843.ftM6JN42Mr3isd7sFiKQ2R9ktFuo94aZRgCrx2mTl6w@z>
-
-Thanks Charles.
-
-First of all, I managed to get it working today,
-(mmapping /dev/mem) so it is possible ;)
-
-Secondly, I am using the GPIO ports for our own custom
-design, so I am not exposing /dev/mem to all kinds
-of nasty userland apps.
-
-Gilad.
-
------ Original Message ----- 
-From: "Charles Eidsness" <charles.eidsness@ieee.org>
-To: "Gilad Rom" <gilad@romat.com>
-Cc: <linux-mips@linux-mips.org>
-Sent: Monday, November 15, 2004 6:17 PM
-Subject: Re: GPIO on the Au1500
+Message-ID: <20041116002510.f-Z5NQzQ5MlP247JDki0DFGcBn0MSSlMpPenL5dGcOE@z>
 
 
-> Hi Gilad,
->
-> I'd be really surprised if it's possible. I think that those addresses are 
-> beyond the valid physical address range for the mem driver. Even if it did 
-> work I personally wouldn't feel comfortable doing that sort of thing. You 
-> could inadvertently cause a lot of nasty things to happen. Maybe someone 
-> else has a different (better) opinion.
->
-> If you do use my driver I uploaded the wrong header file yesterday. I've 
-> now uploaded the correct one.
->
-> Cheers,
-> Charles
->
-> Gilad Rom wrote:
->> Thank you for the driver, I'm using it as a reference.
->>
->> Still, I am trying to acccess the GPIO ports of the Au1500
->> using /dev/mem, but I keep getting these odd values
->> (see previous messages to this list)
->>
->> Do you think it is possible, or should I stick to using the driver?
->>
->>
->> Thank you,
->> Gilad.
->>
->> ----- Original Message ----- From: "Pete Popov" 
->> <ppopov@embeddedalley.com>
->> To: <charles.eidsness@ieee.org>; "Gilad Rom" <gilad@romat.com>
->> Cc: <linux-mips@linux-mips.org>
->> Sent: Sunday, November 14, 2004 8:45 PM
->> Subject: Re: GPIO on the Au1500
->>
->>
->>>
->>> --- Charles Eidsness <charles.eidsness@ieee.org>
->>> wrote:
->>>
->>>> Hi Gilad,
->>>>
->>>> A little while ago I wrote my own GPIO driver for
->>>> the Au1000, mainly as a learning experience. I never bothered to 
->>>> release it because a driver already exists and I thought it was 
->>>> working.
->>>
->>>
->>> It was, a long time ago, when it was written for the
->>> Au1000. I had a user app and doc somewhere but can't
->>> find it anymore. The driver didn't support gpio2 and
->>> was, in general, stale. So perhaps your driver will
->>> help Gilad.
->>>
->>> Pete
->>>
->>>> I'm not sure if it will work on the Au1550, but if you're interested 
->>>> you can
->>>> find the source code here:
->>>>
->>>>
->>> http://members.rogers.com/charles.eidsness/au1000_gpio.c
->>>
->>>>
->>> http://members.rogers.com/charles.eidsness/au1000_gpio.h
->>>
->>>>
->>>> Cheers,
->>>> Charles
->>>>
->>>> Gilad Rom wrote:
->>>> > Thanks. Can't I just mmap /dev/mem and use the
->>>> > GPIO offset from SYS_BASE?
->>>> > > Gilad.
->>>> > > ----- Original Message ----- From: "Pete Popov"
->>>> <ppopov@embeddedalley.com>
->>>> > To: "Gilad Rom" <gilad@romat.com>;
->>>> <linux-mips@linux-mips.org>
->>>> > Sent: Friday, November 12, 2004 8:13 PM
->>>> > Subject: Re: GPIO on the Au1500
->>>> > > >>
->>>> >> --- Gilad Rom <gilad@romat.com> wrote:
->>>> >>
->>>> >>> Hello,
->>>> >>>
->>>> >>> I am trying to use the au1000_gpio driver, but
->>>> I'm a
->>>> >>> little clueless as to how it is meant to be
->>>> used. Can I use the GPIO >>> ioctl's from a userland program, or must I 
->>>> write
->>>> a kernel module?
->>>> >>
->>>> >>
->>>> >> I'll see if I can dig up some docs and the
->>>> example
->>>> >> userland program this weekend. That driver hasn't
->>>> been
->>>> >> tested in a while though.
->>>> >>
->>>> >> Pete
->>>> >>
->>>> >>> Thank you,
->>>> >>> Gilad Rom
->>>> >>> Romat Telecom
->>>> >>>
->>>> >>>
->>>> >>>
->>>> >>
->>>> > > >
->>>>
->>>
->>>
->>
->> 
+On Nov 14, 2004, at 10:53 AM, Gilad Rom wrote:
+
+> For some reason, I keep getting that magical value, 0x10000001 for 
+> EVERY address I try to read, be it SYS_BASE (0xB1900000) or every 
+> other address.
+
+It's not working because that is not the address of the device(s).
+The 0xB1900000 is the Kernel Virtual address of these devices, the real
+physical address, and the one you have to use with mmap() is the
+system control block address 0x11900000.
+
+Just be very, very careful with user space access of any IO using this
+method.  The kernel can ensure atomic updates using various methods,
+but user applications can't and may cause system failures.  This is why
+a GPIO driver is a much better approach.
+
+	-- Dan

@@ -1,28 +1,33 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Mike Shaver <shaver@neon.ingenia.ca>
-Message-ID: <199707041952.PAA24276@neon.ingenia.ca>
-Subject: Native!
-Date: Fri, 4 Jul 1997 15:52:45 -0400 (EDT)
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199707071755.TAA11889@informatik.uni-koblenz.de>
+Subject: Re: MIPS Distribution status (Was: Status ...)
+Date: Mon, 7 Jul 1997 19:55:39 +0200 (MET DST)
+In-Reply-To: <199707071619.MAA20927@jenolan.caipgeneral> from "David S. Miller" at Jul 7, 97 12:19:28 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@neon.ingenia.ca>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970704195245.tCDTrvBwcE6B2b5m69H_dgR-WSxXeLTXFJNO1pYyotI@z>
+To: "David S. Miller" <davem@jenolan.rutgers.edu>
+Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
+Message-ID: <19970707175539.0Llw_U-rYMjyALrIOz-Q9x0alr7yV_Q9QTnQaXTEsPc@z>
 
-I've grabbed Ralf's cpio'd super-root and now I have a native
-compiler.
+>    From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+>    Date: Mon, 7 Jul 1997 18:10:24 +0200 (MET DST)
+> 
+>     - Package doesn't build for unknown reasons:
+>        Emacs getty_ps e2fsprogs bdflush 
+> 
+> Emacs should build strictly out of the box in an of itself, I know
+> because I specifically sent RMS patches for linux-mips support the
+> moment I got it working last summer with GLIBC.  (I even then logged
+> in to the gnu project machines and made sure those changes made it
+> into his tree ;-)
+> 
+> If it isn't compiling at all, tell me how it is failing.
 
-Some day, I'll figure you what was wrong with mine.  In the meantime,
-I'm going to try to get the Indy booting off local disk, because the
-NFS stuff is a little sloooooooow.
+Ok, special service for the Emacs people.  I'll check out why the RPM
+didn't build.  I didn't care about that yet because my favourite
+editor still is the prophet of Rock'n'Roll ...
 
-Mike
-
--- 
-#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
-#>              Commando Developer - Whatever It Takes
-#>                                                                     
-#> "See, you not only have to be a good coder to create a system like
-#>    Linux, you have to be a sneaky bastard too." - Linus Torvalds
+  Ralf

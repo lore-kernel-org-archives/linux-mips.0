@@ -1,43 +1,23 @@
-Subject: Re: [patch] linux 2.4.17: An mb() rework
-Date: Thu, 31 Jan 2002 23:38:54 +0000 (GMT)
-In-Reply-To: <Pine.LNX.3.96.1020131110531.13418A-100000@wakko.deltatee.com> from "Jason Gunthorpe" at Jan 31, 2002 01:35:42 PM
+Date: Thu, 31 Jan 2002 20:02:25 -0800 (PST)
+From: Kaz Kylheku <kaz@ashi.footprints.net>
+Subject: Re: [libc-alpha] Re: PATCH: Fix ll/sc for mips
+In-Reply-To: <20020201.123523.50041631.machida@sm.sony.co.jp>
+Message-ID: <Pine.LNX.4.33.0201311952440.2305-100000@ashi.FootPrints.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <E16WQn9-0003XW-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: jgg@debian.org
-Cc: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20020131233854.8Pwn_ZaKK_sMJPxYAWxvXiFn5B_-pcXQwnUM1s8c1qc@z>
+To: Hiroyuki Machida <machida@sm.sony.co.jp>
+Cc: hjl@lucon.org, macro@ds2.pg.gda.pl, libc-alpha@sources.redhat.com, linux-mips@oss.sgi.com
+Message-ID: <20020201040225.__4jziERB25iNWChbXVZY49YDmuwObNLfEtT8k9ztP4@z>
 
-> A little more qualification would be that:
->     write(...,device);   // Disable int
->     wmb()
->     enable_ints();
-> Is expected to have a potential spurious interrupt. But, perhaps this is
-> OK:
->     outl(...,device);
->     wmb();
->     enable_ints();
-> This is consistant with how the PCI spec discusses ordering/etc and
-> barriers are frequently used in the PCI drivers. Looking at the i386 code
-> this is what I would expect to see.
-> 
-> Anyone know for sure?
+On Fri, 1 Feb 2002, Hiroyuki Machida wrote:
+> Please note that "sc" may fail even if nobody write the
+> variable. (See P.211 "8.4.2 Load-Linked/Sotre-Conditional" of "See 
+> MIPS RUN" for more detail.) 
+> So, after your patch applied, compare_and_swap() may fail, even if
+> *p is equal to oldval.
 
-The x86 behaviour forced as I understand it is
-
-	barrier()		-	compiler level store barrier
-	rmb()			-	read barrier to bus/DMA level
-					[no operation]
-	wmb()			-	write barrier to bus/DMA level
-					[synchronizing instruction sequence
-					 of locked add of 0 to stack top]
-
-	(mb and wmb as names come from Alpha so I guess its definitive 8))
-
-It does not enforce PCI posting. Also your spurious interrupt case is
-wrong for other horrible reasons. Interrupt delivery must never be 
-assumed to be synchronous in a portable driver. (In fact you'll see async
-irq delivery on an X86)
+I can't think of anything that will break because of this, as long
+as the compare_and_swap eventually succeeds on some subsequent trial.
+If the atomic operation has to abort for some reason other than *p being
+unequal to oldval, that should be cool.

@@ -1,101 +1,57 @@
-Date: Fri, 14 Feb 2003 04:35:26 -0500 (EST)
-From: Zwane Mwaikambo <zwane@zwane.ca>
-Subject: [PATCH][2.5][5/14] smp_call_function_on_cpu - MIPS64
-Message-ID: <Pine.LNX.4.50.0302140358120.3518-100000@montezuma.mastecende.com>
+From: Julian Scheel <jscheel@activevb.de>
+Subject: Re: [patch] VR4181A and SMVR4181A
+Date: Mon, 17 Feb 2003 15:10:00 +0100
+References: <20030213155833.56019323.yoichi_yuasa@montavista.co.jp> <200302170850.18887.jscheel@activevb.de> <20030217173419.732b2456.yoichi_yuasa@montavista.co.jp>
+In-Reply-To: <20030217173419.732b2456.yoichi_yuasa@montavista.co.jp>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <zwane@zwane.ca>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
+Message-ID: <200302171510.00299.jscheel@activevb.de>
+Return-Path: <jscheel@activevb.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Linux Kernel <linux-kernel@vger.kernel.org>
-Cc: Linus Torvalds <torvalds@transmeta.com>, linux-mips@linux-mips.org
-Message-ID: <20030214093526.UIYPbuJ6qJZ8mFZ0B-FfRzNEntzv9HRpXWl7gRH1T4I@z>
+To: Yoichi Yuasa <yoichi_yuasa@montavista.co.jp>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20030217141000.v4A9EPcHJqcRnwBhCtiy9cn5izVWAe7Bb5hRVUdCsho@z>
 
- smp.c |   51 ++++++++++++++++++++++++++++++++++++++++-----------
- 1 files changed, 40 insertions(+), 11 deletions(-)
+Hi Yoichi,
 
-Index: linux-2.5.60/arch/mips64/kernel/smp.c
-===================================================================
-RCS file: /build/cvsroot/linux-2.5.60/arch/mips64/kernel/smp.c,v
-retrieving revision 1.1.1.1
-diff -u -r1.1.1.1 smp.c
---- linux-2.5.60/arch/mips64/kernel/smp.c	10 Feb 2003 22:15:44 -0000	1.1.1.1
-+++ linux-2.5.60/arch/mips64/kernel/smp.c	14 Feb 2003 06:11:21 -0000
-@@ -131,16 +131,35 @@
- 	int wait;
- } *call_data;
- 
--int smp_call_function (void (*func) (void *info), void *info, int retry, 
--								int wait)
-+/*
-+ * smp_call_function_on_cpu - Runs func on all processors in the mask
-+ *
-+ * @func: The function to run. This must be fast and non-blocking.
-+ * @info: An arbitrary pointer to pass to the function.
-+ * @wait: If true, wait (atomically) until function has completed on other CPUs.
-+ * @mask The bitmask of CPUs to call the function
-+ * 
-+ * Returns 0 on success, else a negative status code. Does not return until
-+ * remote CPUs are nearly ready to execute func or have executed it.
-+ *
-+ * You must not call this function with disabled interrupts or from a
-+ * hardware interrupt handler or from a bottom half handler.
-+ */
-+
-+int smp_call_function_on_cpu (void (*func) (void *info), void *info,
-+				int wait, unsigned long mask)
- {
- 	struct call_data_struct data;
--	int i, cpus = smp_num_cpus-1;
-+	int i, cpu, num_cpus;
- 	static spinlock_t lock = SPIN_LOCK_UNLOCKED;
- 
--	if (cpus == 0)
--		return 0;
--
-+	cpu = get_cpu();
-+	mask &= ~(1UL << cpu);
-+	num_cpus = hweight64(mask);
-+	if (num_cpus == 0) {
-+		put_cpu_no_resched();	
-+		return -EINVAL;
-+	}
- 	data.func = func;
- 	data.info = info;
- 	atomic_set(&data.started, 0);
-@@ -151,20 +170,30 @@
- 	spin_lock_bh(&lock);
- 	call_data = &data;
- 	/* Send a message to all other CPUs and wait for them to respond */
--	for (i = 0; i < smp_num_cpus; i++)
--		if (smp_processor_id() != i)
-+	for (i = 0; i < NR_CPUS; i++) {
-+		if (!cpu_online(i))
-+			continue;
-+
-+		if ((1UL << i) & mask)
- 			sendintr(i, DOCALL);
-+	}
- 
- 	/* Wait for response */
--	/* FIXME: lock-up detection, backtrace on lock-up */
--	while (atomic_read(&data.started) != cpus)
-+	while (atomic_read(&data.started) != num_cpus)
- 		barrier();
- 
- 	if (wait)
--		while (atomic_read(&data.finished) != cpus)
-+		while (atomic_read(&data.finished) != num_cpus)
- 			barrier();
- 	spin_unlock_bh(&lock);
-+	put_cpu_no_resched();
- 	return 0;
-+}
-+
-+int smp_call_function (void (*func) (void *info), void *info, int retry, 
-+								int wait)
-+{
-+	return smp_call_function_on_cpu(func, info, wait, cpu_online_map);
- }
- 
- extern void smp_call_function_interrupt(int irq, void *d, struct pt_regs *r)
+Am Montag, 17. Februar 2003 09:34 schrieb Yoichi Yuasa:
+> I am using binutils-2.12.1 .
+>
+> I also try binutils-2.13.90.0.16 .
+> The binutils option was changed, it was able to compile as the following
+> options.
+>
+> GCCFLAGS        += -march=vr4100 -Wa,--trap
+>
+> I don't know yet about the details of new options.
+> We need to investigate about the details of options.
+
+This seems to work!
+
+> You have to add -msoft-float, if you don't use FPU Emulator.
+> FPU Emulator is used by the default.
+
+Ok.
+
+I have some more problems with the chip at present. I managed to build a 
+kernel, but booting won't work.
+I use the NEC Bootloader, and load the Image over a serial-connection to the 
+Ram (address 0x8010000). The bootloader set the INTERNAL_REGISTERS_BASE to 
+0xab000000. If I understand the starting-process, the kernel normally 
+searches it at 0xbfa00000 which is the address, before the Bootloader changes 
+it. This is set in include/asm-mips/nile4.h . It gets changed to 0x0a000000 
+(set it smvr4181a.h).
+Now I change the address in nile4.h to 0xab000000, so that the kernel should 
+use the correct address and then changes it to his 0x0a000000.
+
+I think this is the problem, because I get absolutely no output after the 
+binary-download finished and should start.
+Hopefully you can follow my explanation of the problem (c:
+
+-- 
+Grüße,
+Julian

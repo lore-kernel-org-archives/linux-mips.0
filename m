@@ -1,34 +1,58 @@
-Message-ID: <012301c04d5c$b4d71b60$38258286@lfm.rwthaachen.de>
-From: "Markus Hoff-Holtmanns" <markus@LFM.rwth-aachen.de>
-References: <20001113092014.54D9D1F10E@helena.bawue.de>
-Subject: MIPS Linux and O2 and/or Octane...
-Date: Mon, 13 Nov 2000 11:30:12 +0100
+From: "Ian Chilton" <ian@ichilton.co.uk>
+Subject: RE: User/Group Problem
+Date: Mon, 13 Nov 2000 20:02:21 -0000
+Message-ID: <NAENLMKGGBDKLPONCDDOGEMADCAA.ian@ichilton.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.GSO.3.96.1001113195048.12211C-100000@delta.ds2.pg.gda.pl>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: linux-mips@oss.sgi.com
-Message-ID: <20001113103012.vomXWHZpKrCCIYea1wh9I0hdfTCN40sN_L3QcvxPtdQ@z>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Ralf Baechle <ralf@oss.sgi.com>
+Cc: linux-mips@oss.sgi.com, lfs-discuss@linuxfromscratch.org
+Message-ID: <20001113200221.JaqdJ1HWsDV3lCohUvtJGg5OjyGOTENe5Mk03MpmYTw@z>
 
-Hi folks!
+Hello,
 
-There probably already were numerous threads concerning this subject, but
-I'm new and I didn't find anything fitting in the archives. So here is my
-question.
+>  That's actually not a MIPS-specific problem.
 
-Anyone who did or tried a Linux port for O2, or contributed anything
-regarding that topic, could you please give me that information again. At
-the moment I try to gather as much info as possible in this regard, as we
-have some O2s running IRIX 6.3 and gathering dust most of the time.
+I actually got round this by copying /lib/libnss* from glibc 2.0.6 over,
+until I had finished compiling everything..
 
-Any help appreciated.
 
-Markus
+From the LFS-Book:
 
---
-Markus Hoff-Holtmanns
-RWTH Aachen
-Germany
-markus@lfm.rwth-aachen.de
+------------ Quote --------------
+Copying old NSS library files
+If your normal Linux system runs glibc-2.0, you need to copy the NSS library
+files to the LFS partition. Certain statically linked programs still depend
+on the NSS library, especially programs that need to lookup
+usernames,userid's and groupid's. You can check which C library version your
+normal Linux system uses by running:
+
+strings /lib/libc* | grep "release version"
+
+The output of that command should tell you something like this:
+
+GNU C Library stable release version 2.1.3, by Roland McGrath et al.
+
+If you have a libc-2.0.x file copy the NSS library files by running:
+
+cp -av /lib/libnss* $LFS/lib
+
+--------------- End Quote --------------
+
+
+Bye for Now,
+
+Ian
+
+
+                                \|||/
+                                (o o)
+ /---------------------------ooO-(_)-Ooo---------------------------\
+ |  Ian Chilton        (IRC Nick - GadgetMan)     ICQ #: 16007717  |
+ |-----------------------------------------------------------------|
+ |  E-Mail: ian@ichilton.co.uk     Web: http://www.ichilton.co.uk  |
+ \-----------------------------------------------------------------/

@@ -1,28 +1,33 @@
-Date: Tue, 11 Dec 2001 09:40:50 +1000 (EST)
-From: Ben Elliston <bje@redhat.com>
-Subject: Re: PATCH: Handle Linux/mips (Re: Why is byteorder removed from
- /proc/cpuinfo?)
-In-Reply-To: <Pine.GSO.3.96.1011210211533.24010J-100000@delta.ds2.pg.gda.pl>
-Message-ID: <Pine.LNX.4.33.0112110939100.17417-100000@hypatia.brisbane.redhat.com>
+From: info <ecom@my.tramonline.net>
+Date: Thu, 13 Dec 2001 08:45:32 +0900
+Subject: =?ISO-2022-JP?B?GyRCJDREczdIJE43bxsoQg==?=
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-2022-JP"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20011212234603691.LYNM.1476.t-mta7.odn.ne.jp@mta7.odn.ne.jp>
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: Ralf Baechle <ralf@oss.sgi.com>, "H . J . Lu" <hjl@lucon.org>, linux-mips@oss.sgi.com
-Message-ID: <20011210234050.53zxaYT9VIUut9mL_4Ow6x7zO69bY5QZ7qVsmqk96yc@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20011212234532.w6yMBPVTO4GIQrON-YW3QKZM0eZK5-3I0zQmNOdh1N4@z>
 
-> > crosscompilation unlike the /proc/cpuinfo thing and doesn't rely on
-> > properly installed libraries and headers might possibly of interest for
-> > building standalone software.
+ＨＰ＆メルマガ運営者様。
 
->  Hmm, I don't think config.guess is ever used for cross-compilation as
-> the script's purpose is to guess the host and you need to specify one
-> explicitly for a cross-compilation to happen.  Anyway it's saner not
-> to use build system properties to guess host system ones.
+■転職サイトの報酬制バーナ提携です。
+転職求職者の登録承認数に応じて『1000円/件』、
+更に転職決定で基本的に『1O万円/件』をお支払
+い致します。
+※ご提携金3000円を進呈致します。（今回のみ）
+-----------------------------------------------------
 
-You're close, but not quite correct.  In a cross-compilation environment,
-the job of config.guess is to determine the type of the build system,
-which may be different to the host and will certainly be different to the
-target.
+■英会話教材販売の報酬制バーナ提携です。
+売上１セットで『6000円』バックです。
+※ご提携金1000円を進呈致します。
+―――――――――――――――――――――――――――――■
 
-Ben
+※ご連絡いただければ詳細をお送り致します。
+では、よろしくお願い申し上げます。
+
+◆お問合せ専用メール
+complan@bigfoot.com
+
+コム・プラン事務局
+http://drive.to/career/

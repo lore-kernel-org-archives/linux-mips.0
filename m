@@ -1,92 +1,119 @@
-From: Dominic Sweetman <dom@algor.co.uk>
+From: "Robert Rusek" <robru@teknuts.com>
+Subject: NFS ROOT Problem - boot  (newbie)
+Date: Wed, 13 Feb 2002 11:07:44 -0800
+Message-ID: <002f01c1b4c1$b7c4cb60$6d1510ac@delllaptop>
 MIME-Version: 1.0
-Message-ID: <15465.15062.840707.525971@gladsmuir.algor.co.uk>
-Date: Tue, 12 Feb 2002 15:55:02 +0000
-Subject: Re: gcc include strangeness
-In-Reply-To: <20020211232001.G4623@dea.linux-mips.net>
-References: <20020211142708.GA2577@convergence.de>
-	<Pine.GSO.3.96.1020211155920.18917F-100000@delta.ds2.pg.gda.pl>
-	<20020211162844.GD2918@convergence.de>
-	<20020211232001.G4623@dea.linux-mips.net>
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Cc: Johannes Stezenbach <js@convergence.de>, nigel@algor.co.uk, "Hartvig Ekner <hartvige@mips.com>
-    \"Maciej W. Rozycki\"" <macro@ds2.pg.gda.pl>, Florian Lohoff <flo@rfc822.org>, Ralf Baechle <ralf@oss.sgi.com>
-Message-ID: <20020212155502.IYT7HPz4bNEKwMK3IrRm3VOR5L9CciD_dkjekxS_t6M@z>
+Message-ID: <20020213190744.Vv2l1lIdhxFF60YPpy_rd4C_8xs7HMVa2Bv8N446NWU@z>
 
+I am relatively new to this.  I am trying to boot to an nfs root on my
+PC RedHat 7.2 box.  I downloaded the nfs image from ftp.mips.org
+(nfsroot.mips.redhat7.1.eb-01.00.tar.gz).  I have a working 2.4.3 kernel
+that I have installed on a SGI.  I need to boot to the nfs image so that
+I can install to a local drive.  I have setup nfs on my PC RedHat 7.2
+box and it is working.   When I boot the kernel on my SGI as follows:
 
-I've been keeping quiet through all this, but perhaps I should speak
-up.
+>> boot nfsroot=192.168.0.75:mips ip=192.168.0.50
 
-Algorithmics maintains a GNU toolchain for embedded systems and
-supplies it bundled with support and a basic run-time system as our
-product SDE-MIPS.
+I get the following:
 
-From version 5.0 (just gone into beta) we are configuring and testing
-the compiler/assembler/object tools for Linux use.  We always publish
-the GNU sources used to build SDE-MIPS on our web-site, but we are
-currently leaning towards going further and putting binary RPMs of the
-Linux toolchain out for free download - so those of you who want can
-just use it.
+---
 
-The upside of this is that we have the resource and skill (and it
-looks like we'll be able to get enough support/development funding) to
-maintain a Linux/MIPS compiler.  It would be a good thing for the
-Linux/MIPS community if compiler bugs and shortcomings got fixed on a
-fairly stable base, instead of relying on pick-your-version folklore.
-We should also be able to get funding to do things like fixing support
-for SGI n32/n64 code-generation conventions.
+1503232+0+147092 entry: 0x880025a8
+ARCH: SGI-IP22
+PROMLIB: ARC firmware Version 1 Revision 10
+CPU: MIPS-R5000 FPU<MIPS-R5000FPC> ICACHE DCACHE SCACHE
+Loading R4000 MMU routines.
+CPU revision is: 00002310
+Primary instruction cache 32kb, linesize 32 bytes.
+Primary data cache 32kb, linesize 32 bytes.
+Linux version 2.4.3 (flo@paradigm) (gcc version 3.0 20010303
+(prerelease)) #1 Thu Apr 12 22:38:03
+CEST 2001
+MC: SGI memory controller Revision 3
+R4600/R5000 SCACHE size 512K, linesize 32 bytes.
+Determined physical RAM map:
+ memory: 00001000 @ 00000000 (reserved)
+ memory: 00001000 @ 00001000 (reserved)
+ memory: 00193000 @ 08002000 (reserved)
+ memory: 005ab000 @ 08195000 (usable)
+ memory: 000c0000 @ 08740000 (ROM data)
+ memory: 03800000 @ 08800000 (usable)
+On node 0 totalpages: 49152
+zone(0): 49152 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: root=scsi(0)disk(1)rdisk(0)partition(0)
+nfsroot=192.168.0.75:mips ip=192.168.0.50
+Calibrating system timer... 900000 [180.00 MHz CPU]
+zs0: console input
+Console: ttyS0 (Zilog8530)
+Calibrating delay loop... 179.81 BogoMIPS
+Memory: 60056k/63148k available (1311k kernel code, 3092k reserved, 83k
+data, 72k init)
+Dentry-cache hash table entries: 32768 (order: 6, 262144 bytes)
+Buffer-cache hash table entries: 16384 (order: 4, 65536 bytes)
+Page-cache hash table entries: 65536 (order: 6, 262144 bytes)
+Inode-cache hash table entries: 16384 (order: 5, 131072 bytes)
+Checking for 'wait' instruction...  available.
+POSIX conformance testing by UNIFIX
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Starting kswapd v1.8
+initialize_kbd: Keyboard reset failed, no ACK
+pty: 256 Unix98 ptys configured
+keyboard: Timeout - AT keyboard not present?
+keyboard: Timeout - AT keyboard not present?
+DS1286 Real Time Clock Driver v1.0
+streamable misc devices registered (keyb:150, gfx:148)
+block: queued sectors max/low 39482kB/13160kB, 128 slots per queue
+sgiseeq.c: David S. Miller (dm@engr.sgi.com)
 
-Our compiler already has support for pretty much every wrinkle
-of any MIPS instruction set anywhere, and command-line-selectable
-machine descriptions for many different MIPS pipelines.
+eth0: SGI Seeq8003 08:00:69:0a:31:7a
+SCSI subsystem driver Revision: 1.00
+wd33c93-0: chip=WD33c93B/13 no_sync=0xff no_dma=0 debug_flags=0x00
+           setup_args=,,,,,,,,,
+           Version 1.25 - 09/Jul/1997, Compiled Apr 12 2001 at 22:38:57
+scsi0 : SGI WD93
+ sending SDTR 0103013f0csync_xfer=2c  Vendor: SGI       Model: IBM
+DORS-32160    Rev: W80D
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+ sending SDTR 0103013f0csync_xfer=2c  Vendor: SGI       Model: SEAGATE
+ST51080N  Rev: 0950
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+Detected scsi disk sda at scsi0, channel 0, id 1, lun 0
+Detected scsi disk sdb at scsi0, channel 0, id 2, lun 0
+SCSI device sda: 4197405 512-byte hdwr sectors (2149 MB)
+Partition check:
+ sda: sda1 sda2 sda3 sda4
+SCSI device sdb: 2070235 512-byte hdwr sectors (1060 MB)
+ sdb: sdb1 sdb2 sdb3 sdb4
+SGI Zilog8530 serial driver version 1.00
+tty00 at 0xbfbd9830 (irq = 21) is a Zilog8530
+tty01 at 0xbfbd9838 (irq = 21) is a Zilog8530
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP
+IP: routing cache hash table of 2048 buckets, 16Kbytes
+TCP: Hash tables configured (established 16384 bind 32768)
+IP-Config: Guessing netmask 255.255.255.0
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+Looking up port of RPC 100003/2 on 192.168.0.75
+Looking up port of RPC 100005/2 on 192.168.0.75
+VFS: Mounted root (nfs filesystem) readonly.
+Freeing prom memory: 768kb freed
+Freeing unused kernel memory: 72k freed
+nfs: server 192.168.0.75 not responding, still trying
 
-The downside: our development process is not currently very
-Linux-shaped.  We "release late, release rarely".  In providing a
-stable compiler for embedded use we have found it easier to avoid the
-bleeding edge of GCC.  We've found it necessary to make bold changes
-in "machine-independent" code - GCC is a wonderful multi-target
-compiler, but it's x86 (PPC a distant second) which is routinely
-tested.  The leading edge is a fertile breeding ground of bugs for
-minor architectures.
+---
 
-And more: our v5.0 compiler's ancestor was a 2.96 release from Cygnus'
-internal development tree, provided to MIPS Technologies in the fall
-of 2000.  We picked it up because it had work MIPS had already funded,
-and some valuable multiple-issue machine description features which
-didn't make it into 3.0.  But it has taken a long time to make sure
-the new compiler is as well-tuned and reliable as the EGCS 1.1-based
-compiler it replaced, and the 2.96-derived compiler is only now
-shipping as part of a beta release.
+It seems that it initially finds the root on the nfs box but it never
+get to do an init.  It just stops and waits...  Do I need to modify any
+setting manually on my NFS image in order for the kernel to boot?
 
-So now we have numerous patches, many of them not in officially "MIPS
-machine-dependent" code, against an 18-months old and slightly strange
-version of GCC.  Nobody is currently doing the substantial work to
-turn our changes into patches for GCC 3.x.
-
-What I think we ought to do is to:
-
-o Release the existing compiler for use among Linux/MIPS enthusiasts
-  (we're hoping that some commercial developers will take support
-  contracts, of course);
-
-o Hope that many of you will use it and feed back bug reports, and
-  that some of you will grab the sources and help track & fix them;
-
-o Aim to make earlier and more frequent releases for adventurous Linux
-  users (we will keep a slow-moving 'stable' release for those whose
-  priority is elsewhere);
-
-o Aim over the next couple of years - and with all the help we can get
-  - to converge closer to the evolving GCC 3.x mainstream.
-
-I guess the question for this list is: is anyone interested?
-
+Thanks
 --
-Dominic Sweetman
-Algorithmics Ltd
-The Fruit Farm, Ely Road, Chittering, CAMBS CB5 9PH, ENGLAND
-phone +44 1223 706200/fax +44 1223 706250/direct +44 1223 706205
-http://www.algor.co.uk
+Robert Rusek

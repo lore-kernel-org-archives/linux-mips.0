@@ -1,19 +1,58 @@
-Subject: Re: [2.4 PATCH] pcnet32.c - tx underflow error
-Date: Thu, 11 Jul 2002 03:21:19 +0100 (BST)
-In-Reply-To: <3D2CC891.1010506@mvista.com> from "Jun Sun" at Jul 10, 2002 04:51:45 PM
+Message-ID: <005c01c228a2$fb2bf450$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <3D2CBF73.50001@mvista.com> <20020710164900.A28911@lucon.org> <20020711043601.B3207@dea.linux-mips.net>
+Subject: Re: Malta crashes on the latest 2.4 kernel
+Date: Thu, 11 Jul 2002 08:19:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-ID: <E17STa3-0008M5-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
-To: Jun Sun <jsun@mvista.com>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, linux-mips@oss.sgi.com, Ralf Baechle <ralf@oss.sgi.com>, marcelo@conectiva.com.br
-Message-ID: <20020711022119.guhdj595k2SSfwlUb7uss9YyJ0JqvRTkR-xy8ICiIhE@z>
+To: Ralf Baechle <ralf@oss.sgi.com>, "H. J. Lu" <hjl@lucon.org>
+Cc: Jun Sun <jsun@mvista.com>, linux-mips@oss.sgi.com
+Message-ID: <20020711061955.lmM0rm73VDHi970D5_6MRVsMPsdl9yi4QlYwL7A2o_k@z>
 
-> > Which slows the stuff down for people with real computers.
+> On Wed, Jul 10, 2002 at 04:49:00PM -0700, H. J. Lu wrote:
 > 
-> Contrary to what it might appear at first glance, it does not really.
+> > > See the crash scene.  Anybody knows the cause?  It is strange to see the 
+> > > reserved exception.
+> > > 
+> > 
+> > The 2.4 kernel checked out around Jul  4 09:28 PDT works fine on Malta.
+> 
+> Jun's patch certainly is correct for some MIPS32 CPUs; others may get
+> away without this one.  Previous experience with pipeline hazards on MIPS
+> processors has shown that at times hazards may change even between minor
+> revisions of a CPU; documentation isn't always trustworthy about such
+> minor details of the pipeline.
 
-Throughput and latency are quite different things. Try that on a latency
-sensitive setup like a beowulf.
+Excuse me, but I've seen this statement used by others in
+the past as an excuse for doing something silly or not doing
+something reasonable, and it generally hasn't washed.
+In what specific cases have the CP0 pipeline hazards 
+changed between minor revisions of any production
+MIPS CPU?  The *documentation* may have been
+corrected, but these hazards are fairly fundamental
+artifacts of the pipeline microarchitecture of a given
+processor.
+
+The CP0 hazard between a write of EntryHi
+and a subsequent TLBWI instruction is flagged
+in the MIPS32 spec and noted as being "typically" 
+2 cycles.  I'm not going to spend the time going
+through my full set of users manuals, but a representative
+sampling shows this hazard as being specified for
+every R4xxx and R5xxx CPU I checked.  The fact
+that a given CPU *may* get away with it is no
+excuse for not protecting common code.
+
+I note that Ralf has, in fact, applied the fix to the
+OSS CVS repository.  I also note that "BARRIER"
+is still defined to be a string of 6 nops.  I would argue
+(again) that those really, really ought to be ssnops,
+and that if they *were* ssnops, one could probably
+have fewer of them.
+
+            Regards,
+
+            Kevin K.

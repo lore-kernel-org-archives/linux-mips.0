@@ -1,29 +1,40 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0wrgCw-0005FlC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: Possible X solutions.
-Date: Fri, 25 Jul 1997 09:58:42 +0100 (BST)
-In-Reply-To: <9707241356.ZM3565@blammo.engr.sgi.com> from "John Wiederhirn" at Jul 24, 97 01:56:34 pm
-Content-Type: text
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199707301836.LAA12371@oz.engr.sgi.com>
+Subject: Re: CVS commits
+Date: Wed, 30 Jul 1997 11:36:43 -0700 (PDT)
+In-Reply-To: <199707301821.UAA07944@informatik.uni-koblenz.de> from "Ralf Baechle" at Jul 30, 97 08:21:41 pm
+Reply-To: ariel@sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: John Wiederhirn <jwiede@blammo.engr.sgi.com>
+To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970725085842.2JLyZz7gPqwBETIkzTwAqLJaQETNZ92NhnZ6zFalMXQ@z>
+Message-ID: <19970730183643.ud85qU5qGW3OYfNEbQMOTl6TEseLRAT-uvYSvdV4MSc@z>
 
-> Has anyone considered perhaps partnering with either Metrolink
-> or Xi Graphics (makers of Accelerated-X) and having _them_ be
-> the providers of the X server for SGI?
+:
+:Hi all,
+:
+:what do you think, should we open a new mailing list where everybody
+:is allowed to subscribe.  Only the CVS commits and other important
+:announcements are being posted?  This would help making the development
+:more transparent by showing interested non-developers what's going on.
+:
+:  Ralf
+:
+Ralf,
 
-If there's not going to be a free X server for the SGI then Ariel
-can keep the machine...
+I believe we already have one, it was created by me when
+David Miller was working here in the summer of 96:
 
-> B.  Gives us a venue by which SGI can provide optimized
->     versions of OpenGL for Linux/Intel.  This is what we
->     could bring to the table.
-> 
-> C.  Lends additional credibility to the Linux/SGI port.
+	To: majordomo@engr.sgi.com
+	subscribe linux-progress your@preferred.email.address
 
-These two are probably good reasons for having a valued added option.
-However crippling a required system component isnt.
+So just add linux-progress@engr.sgi.com to the CVS commit alias
 
-Alan
+[This should work for all the SGI internal interested parties
+ not sure about external people...]
+
+-- 
+Peace, Ariel

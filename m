@@ -1,41 +1,47 @@
-Message-ID: <01fe01c2e8f6$c41451a0$6601010a@prefect>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <438113fe62.3fe6243811@netvision.net.il>
-Subject: Re: allocating a large memory area
-Date: Wed, 12 Mar 2003 19:23:26 -0500
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <brad@ltc.com>
+Content-Transfer-Encoding: 8BIT
+Subject: RE: Disabling lwl and lwr instruction generation
+Date: Thu, 13 Mar 2003 10:00:47 -0800
+Message-ID: <D9F6B9DABA4CAE4B92850252C52383AB07968240@ex-eng-corp.efi.com>
+From: "Ranjan Parthasarathy" <ranjanp@efi.com>
+Return-Path: <ranjanp@efi.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Hilik Stein <hilik@netvision.net.il>
+To: Ralf Baechle <ralf@linux-mips.org>, Richard Hodges <rh@matriplex.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20030313002326.IoiKp1AF1I8NfNgdexM34skWXzz5h6XYDaCviDnkf-c@z>
+Message-ID: <20030313180047.LjIatnQgxTukzIMDKMQZGl0nLYOFPpjflgpc3VvKPac@z>
 
------ Original Message -----
-From: "Hilik Stein" <hilik@netvision.net.il>
-To: <linux-mips@linux-mips.org>
-Sent: Wednesday, March 12, 2003 6:28 AM
-Subject: allocating a large memory area
+Thanks for all your replies and no I am not working on the chinese processor :-). BTW it would be nice to have a mips option on override cpu options for disabling the lwl,lwr,swl,swr similar to "Cpu has ll/sc".
+
+Thanks
+
+Ranjan
+
+-----Original Message-----
+From: Ralf Baechle [mailto:ralf@linux-mips.org]
+Sent: Wednesday, March 12, 2003 5:34 PM
+To: Richard Hodges
+Cc: Ranjan Parthasarathy; 'linux-mips@linux-mips.org'
+Subject: Re: Disabling lwl and lwr instruction generation
 
 
-> i need to allocate a large memory region for my data (32MB), which is far
-> beyond what kmalloc can provide for me.
-> i do not want to use vmalloc, since it will allocate the memory out of
-> KSEG2, which is too slow and will generate too many exceptions when i
-> have to access my data randomly.
-> i was thinking of limiting the linux from accessing the highest physical
-> 32MB by using "mem=224M" kernel command line parameter. this was i
-> can access my data using 0x8e000000 through KSEG1.
+On Wed, Mar 12, 2003 at 04:50:53PM -0800, Richard Hodges wrote:
 
-Or put it below the kernel load point.
+> I got lwl and lwr from a memcpy() with two void pointers...
+> 
+> I quickly changed those to the (aligned) structure pointers instead, and
+> then memcpy() changed to ordinary word loads and stores.
+> 
+> So, is somebody starting a toolchain for that new Chinese CPU? :-)
 
-Or... I've used this trick - define a large array and let the linker make
-space for it in .bss.  This is convenient since now the kernel has no
-special requirement about load address or memory limit and the address can
-just be a pointer to the array.
+Wouldn't be the first processor without lwl/lwr instructions.  There have
+been a few that didn't implement it for silly bean^Wgate counting issues
+others have done it for patent and licensing reasons.
 
-Regards,
-Brad
+(Afair MIPS's patent is about to expire and IBM's prior art patent in the
+same area is even way older but that legalese ...)
+
+  Ralf

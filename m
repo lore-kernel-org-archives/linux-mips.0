@@ -1,42 +1,44 @@
-Message-ID: <002b01c1a5c3$f1b71d80$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3C505900.9685DDE3@cotw.com> <003901c1a532$d01576e0$de920dd3@gol.com> <20020124174521.B8860@dea.linux-mips.net>
+Message-ID: <009b01c1a63e$bf045580$c3930dd3@gol.com>
+From: "Girish Gulawani" <girishvg@yahoo.com>
+References: <3C505900.9685DDE3@cotw.com> <003901c1a532$d01576e0$de920dd3@gol.com> <20020124174521.B8860@dea.linux-mips.net> <002b01c1a5c3$f1b71d80$10eca8c0@grendel>
 Subject: Re: MIPS/Linux NonSGI
-Date: Fri, 25 Jan 2002 18:15:36 +0100
+Date: Sat, 26 Jan 2002 16:54:53 +0900
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>, Girish Gulawani <girishvg@yahoo.com>
+To: "Kevin D. Kissell" <kevink@mips.com>, Ralf Baechle <ralf@oss.sgi.com>
 Cc: "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>
-Message-ID: <20020125171536.opM4im1_99bF7SJ2u9bYy1s1hihlEIDwyGGiAqj3v3Y@z>
+Message-ID: <20020126075453.oB-Vb2dTS9Zq0dJnGaM0R1R9YrBRjLiyp9lZfCyJeKo@z>
 
-> On Fri, Jan 25, 2002 at 08:41:10AM +0900, Girish Gulawani wrote:
->
-> > i'm trying to bringup linux 2.4.[2|9] on our board based on LSI mips r4k
-> > core.
 
-[snip]
+hi, again.
+thanks a lot for quick reply. re-compiled the kernels, using egcc-2.91, but
+no luck. is there still older version i should be using? & i guess you were
+referring to file arch/mips/mm/r4xx.c. the board support is detected &
+load_mmu_r4k() is called. so this looks okay.
+yes, LSI CPUs differ from the main stream, right in the cache opcodes. but
+this problem apart, as i have been using kernel in un-cached mode & anyway i
+have build almost all the commands by static linking. hence shared library
+issue i shall deal with later.
+***right now my main concern is file system getting corrupted. the
+bdflush/update processes flushes the inode buffers & corrupts the fs. to be
+precise the "update" process wakes up & writes some buffers to the disk from
+the function sync_old_buffers() in fs/buffer.c. the pci-ide bus mastering
+controller is non standard & that the driver is also self written. however
+since reads from the disk are working as i can see all the commands getting
+loaded & executed, the writes also should be working properly, as they
+differ only in a command to the controller.
+so where could be the problem? please help me.
+many thanks & best regards,
+girish.
 
-> Seems pretty obvious that cacheflushing for your system is broken.
+ps. ralf, liked your comment abt my caps lock getting stuck;-) it just shows
+how desperate i'm in solving this problem.
 
-Sure sounds like it.
 
-> Verify that arch/mips/mm/c-r4k.c knows how to handle your system.
->
->   Ralf
 
-LSI has done a number of R3K and R4K-like designs under
-their MIPS architecture license which have features
-that differ from the main stream of MIPS CPUs where the OS
-is concerned.  Cache manipulation is a case in point.
-If it's not obvious to you from the cache management
-code, compare the relevant sections of your CPU manual
-with the MIPS32 spec (which I think is on the web somewhere
-at www.mips.com) or a copy of the R4000 manual if you
-can find one kicking around somewhere.
-
-            Regards,
-
-            Kevin K.
+_________________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.com address at http://mail.yahoo.com

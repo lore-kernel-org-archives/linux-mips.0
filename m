@@ -1,23 +1,19 @@
 From: "Matthew Dharm" <mdharm@momenco.com>
-Subject: RE: Galileo 64240 
-Date: Mon, 7 Jan 2002 14:49:59 -0800
-Message-ID: <NEBBLJGMNKKEEMNLHGAIMELECEAA.mdharm@momenco.com>
+Subject: RE: Galileo 64240
+Date: Tue, 8 Jan 2002 13:28:39 -0800
+Message-ID: <NEBBLJGMNKKEEMNLHGAIGELHCEAA.mdharm@momenco.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <200201072217.g07MHrY20022@spinics.net>
+In-Reply-To: <3C3AE9FC.F34C9794@patton.com>
 Sender: owner-linux-mips@oss.sgi.com
-To: ellis@spinics.net, linux-mips@oss.sgi.com
-Message-ID: <20020107224959.IUSBwyNnbyik-yNjxHakwF39fBx-L4fcW6CWq-8WUe8@z>
+To: paul@patton.com, ellis@spinics.net
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20020108212839.YNVkmyTUzC3S_DtWT6WVQ08gsOcSasnMa9u_vwDobDo@z>
 
-We've got a 64240-based board that we're going to be porting Linux
-to... tho we're not using the on-board MPSC ports.  I doubt anyone is
-building a board using the MPSC ports -- it's just too difficult to
-drive them, and 16550-like parts are too cheap.
-
-If you're trying to bring up a 64240-based board under linux, perhaps
-sharing work would be good?
+I would love a copy of that, personally.  Could you send it to me (or
+the list)?
 
 Matt
 
@@ -29,12 +25,27 @@ Momentum Works For You                      www.momenco.com
 
 > -----Original Message-----
 > From: owner-linux-mips@oss.sgi.com
-> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of ellis@spinics.net
-> Sent: Monday, January 07, 2002 2:18 PM
-> To: linux-mips@oss.sgi.com
-> Subject: Galileo 64240
+> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Paul Kasper
+> Sent: Tuesday, January 08, 2002 4:46 AM
+> To: ellis@spinics.net
+> Cc: linux-mips@oss.sgi.com
+> Subject: Re: Galileo 64240
 >
 >
-> Is there any support code around for the Galileo 64240?  A serial
-> driver would be really nice ;)
+> ellis@spinics.net wrote:
+> >
+> > Is there any support code around for the Galileo 64240?  A serial
+> > driver would be really nice ;)
+>
+> I also have a hacked-up port of MontaVista's HHLinux gt96100eth code
+> that is functional on 64240 and 64240A in little-endian mode and
+> untested in BE.  It still lacks support for any "advanced"
+> features of
+> the Galileo chips.
+>
+> --
+>  /"\ . . . . . . . . . . . . . . . /"\
+>  \ /   ASCII Ribbon Campaign       \ /     Paul R. Kasper
+>   X    - NO HTML/RTF in e-mail      X      Patton Electronics Co.
+>  / \   - NO MSWord docs in e-mail  / \     301-975-1000 x173
 >

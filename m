@@ -1,49 +1,51 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@Julia.DE>
-Message-ID: <199704111311.PAA01052@kernel.panic.julia.de>
-Subject: Re: More on the serial strangeness
-Date: Fri, 11 Apr 1997 15:11:52 +0200 (MET DST)
-In-Reply-To: <199704090858.EAA08923@neon.ingenia.ca> from "Mike Shaver" at Apr 9, 97 04:58:17 am
+From: ariel@yon.engr.sgi.com (Ariel Faigon)
+Message-ID: <199704141824.LAA13874@yon.engr.sgi.com>
+Subject: Re: How big is the Linux/MIPS kernel?
+Date: Mon, 14 Apr 1997 11:24:49 -0700 (PDT)
+In-Reply-To: <199704141813.LAA19102@titian.engr.sgi.com> from "Mike McDonald" at Apr 14, 97 11:13:43 am
+Reply-To: ariel@sgi.com (Ariel Faigon)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mike Shaver <shaver@neon.ingenia.ca>
+To: Mike McDonald <mikemac@titian.engr.sgi.com>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970411131152.1EkenFaNKvrYkGuGrdWDdYSTsy6UBrcLJ_-Z7vmHEjg@z>
+Message-ID: <19970414182449.xSMedpLB5rMigowfc1yhRD36Dyh8sGjYQEmLPPI2qYg@z>
 
-Hi,
+:
+:
+:  Could someone tell me how big the kernel is for the MIPS chip? I
+:need a rough estimate of the size of a minimal kernel with networking
+:support, probably no file systems nor disks. A project I'm working on
+:is currently using VxWorks. We're suppose to add a bunch of large, off
+:the shelf software components to it and I'm worried about running
+:everything in one unprotected address space. (All it takes is the web
+:browser to hickup and the box will crash. But hey, no one has ever
+:heard of a web browser crashing!) Does anyone have an estimate of the
+:process switching time? That's one of the things the hardware types
+:harp about for their multimedia apps.
+:
+:  Thanks
+:
+:  Mike McDonald
+:  mikemac@engr.sgi.com
+:
 
-> Received: from sgi.sgi.com (SGI.COM [192.48.153.1])
->         by alles.intern.julia.de (8.8.5/8.8.5) with SMTP id KAA19302
->         for <ralf@Julia.DE>; Fri, 11 Apr 1997 10:51:21 +0200
-[...]
->Date: Wed, 9 Apr 1997 04:58:17 -0400 (EDT)
+11:26 ariel@info /hosts/neteng.engr/home/dm/alambie> size vmlinux 
 
-Two days for that mail?
 
-> - If I try to access /dev/console or /dev/tty[1234], I get "can't
-> create /dev/whatever: Error 19", which seems to be "no such device".
+           Section           Size        Physical        Virtual
+                                         Address         Address
 
-Btw, Linux/MIPS errno values are (almost) the same as IRIX.
+               .text      809344        2282131456      2282131456      
+             .rodata       71264        2282940800      2282940800      
+            .reginfo          24        2283012064      2283012064      
+               .data       90848        2283012096      2283012096      
+               .sbss         349        2283102944      2283102944      
+                .bss      131324        2283103296      2283103296      
+880632 + 90848 + 131673 = 1103153
 
-> If someone with the appropriate tools could build me a static tail
-> binary, it'll make the experimentation go a fair bit faster.
 
-This is the fun part.  You probably need to cheat to make textutils'
-autoconf work for crosscompilation.  It's usually ok to run configure on
-a Linux/Intel system (Using a glibc system is a good idea) and then
-crosscompile with a command like
-
-  make CC=mips-linux-gcc CFLAGS="-O2 -pipe" LDFLAGS="-static -s"
-
-Autoconf is *nice* in almost all cases but it's often a bitch when
-crosscompiling, so feel free to use every dirty trick in the book ...
-
-> (If it'll help, I can set Miguel and Ralf up with appropriate access
-> on neon so they can experiment.  It'll take a few days, but if it
-> keeps those precious geek-cycle from going to waste...)
-
-Thanks, would be useful.
-
-  Ralf
+-- 
+Peace, Ariel

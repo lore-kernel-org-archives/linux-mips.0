@@ -1,37 +1,34 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199706040041.CAA04699@informatik.uni-koblenz.de>
+From: Ralf Baechle <ralf@Julia.DE>
+Message-ID: <199706041440.QAA14054@kernel.panic.julia.de>
 Subject: Re: The Plan For Userland(tm)
-Date: Wed, 4 Jun 1997 02:41:14 +0200 (MET DST)
-In-Reply-To: <Pine.LNX.3.95.970603180712.25914M-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jun 3, 97 06:13:42 pm
+Date: Wed, 4 Jun 1997 16:40:19 +0200 (MET DST)
+In-Reply-To: <9706041004.ZM2604@akira.tampa.sgi.com> from "Liam Irish" at Jun 4, 97 10:04:56 am
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: ralf@mailhost.uni-koblenz.de, shaver@neon.ingenia.ca, linux@cthulhu.engr.sgi.com
-Message-ID: <19970604004114.V0RvS5su2I-LLNkeDh8wyFBFInlzhVRvAYbmJ7h7Mzo@z>
+To: Liam Irish <irish@akira.tampa.sgi.com>
+Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
+Message-ID: <19970604144019.gKM2fMTaXxuqte1PRzeXKhSd3V8HEagQ2lc1ahJNQ-Y@z>
 
-> I need to link it with libz, which I just realized is really called zlib,
-> not the zlibc found on prep.ai.mit.edu.  Who knew?  I'm just getting
-> problmes now with glibc's crt1.o, which I know little or nothing about.
+> > Yeah, and if there won't be xfs for linux I'd really like to see ext2
+> > support for IRIX ...
 > 
-> Ralph, can you give us (Mike or I) a copy of your SSH's?  We will in turn
+> >   Ralf
+> >-- End of excerpt from Ralf Baechle
+> 
+> 
+> I'd like to do that.  I've already been talking to some engineers about it.  I
+> was trying to determine if it already been done.  Guess not.  I think it'd be
+> easier to put ext2 on irix than xfs on linux, esp considering the other options
+> involved with xfs.  Would it be 32-bit xfs?
+> 
+> Anyway.  They both interface a VFS, so it should be _too_ bad.  Unfortunately,
+> I haven't seen to much documentation for VFS on irix.  Well, see if the Mtn
+> View engineers will help out in that regard.
 
-s/Ralph/Ralf/
-
-> keep you up to date with our userland binaries, and hopefully we can move
-> towards sharing RPMs, both source and binary. 
-
-ssh is no big deal.  Builds out of the box.  You will just have to
-tell it for which architecture you're building, ie:
-./configure --prefix=/usr mips-linux
-
-There is also a rpm source package for libz available, but for now you
-can just use the libz.a and includes included with ssh.
-
-> mips-linux-gcc, incidentally, is very impressive.
-
-Just another GCC.
+The other fun thing is that right now David and some other people are
+rewriting the Linux VFS which also has impact on the ext2 code.
 
   Ralf

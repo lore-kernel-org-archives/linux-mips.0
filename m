@@ -1,38 +1,79 @@
-Message-ID: <007d01c112a3$b10134a0$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20010722131525.L16278@rembrandt.csv.ica.uni-stuttgart.de>
-Subject: Re: mips64 linker bug?
-Date: Sun, 22 Jul 2001 13:44:37 +0200
+Date: Mon, 23 Jul 2001 20:56:56 +0100 (IST)
+From: Dave Airlie <airlied@csn.ul.ie>
+Subject: Re: about serial console problem
+In-Reply-To: <995898583.1139.2.camel@localhost.localdomain>
+Message-ID: <Pine.LNX.4.32.0107232056140.22712-100000@skynet>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com, Thiemo Seufer <ica2_ts@csv.ica.uni-stuttgart.de>
-Message-ID: <20010722114437.nSRw1FFW-JcgqkqVx0VKzQ1Goftkxxd8SPEAY_snktg@z>
+To: Marc Karasek <marc_karasek@ivivity.com>
+Cc: Barry Wu <wqb123@yahoo.com>, linux-mips@oss.sgi.com
+Message-ID: <20010723195656.Y6Vt5ly2NhseiL9xDlkdqItw8aMg8cMAoeXw-2v3Qtk@z>
 
-> Kevin D. Kissell wrote:
-> [snip]
-> > > An Kernel with 64bit addresses is less compact and likely to run
-slower.
-> > > OTOH, a 64bit Kernel has certainly some hack value. :-)
-> >
-> > Note that the 5Kc is one of the new generation of MIPS64 parts
-> > that can enable 64-bit integer and floating point instructions without
-> > requiring that 64-bit addressing also be enabled in the kernel.
+
+Cool, this patch fixed a problem we were seeing with busybox on the
+Linux/VAX project, that I hadn't time to look at...
+
+thanks
+
+Dave.
+
+
+On 23 Jul 2001, Marc Karasek wrote:
+
+> This sounds like a problem I ran into on another processor/platform.
+> What are you using for a ramdisk?  Is it busybox?  There was a bug in
+> 0.51 busybox that would not let it accept input from a console on a
+> serial port.  It had to do with the init for the serial port.  You can
+> check the patch file below to see the problem that was in busybox...
 >
-> Sorry, but I can't see what's new here. AFAICS this possibility existed
-> already in MIPS III.
+> --- init.c.orig Sat Apr 21 17:46:57 2001
+> +++ init.c      Sat Apr 21 17:46:31 2001
+> @@ -276,7 +276,7 @@
+>
+>         /* Make it be sane */
+>         tty.c_cflag &= CBAUD|CBAUDEX|CSIZE|CSTOPB|PARENB|PARODD;
+> -       tty.c_cflag |= HUPCL|CLOCAL;
+> +       tty.c_cflag |= CREAD|HUPCL|CLOCAL;
+>
+>         /* input modes */
+>         tty.c_iflag = ICRNL | IXON | IXOFF;
+>
+> On 22 Jul 2001 23:51:25 -0700, Barry Wu wrote:
+> >
+> > Hi, all,
+> >
+> > I am porting linux 2.4.3 to our mipsel evaluation
+> > board. Now I meet a problem. Because I use edown
+> > to download the linux kernel to evaluation board.
+> > I update the serial baud rate to 115200.
+> > I use serial 0 as our console, and I can use
+> > printk to print debug messages on serial port.
+> > But after kernel call /sbin/init, I can not
+> > see "INIT ...  ..." messages on serial port.
+> > I suppose perhaps I make some mistakes. But when
+> > I use 2.2.12 kernel, it ok.
+> > If someone knows, please help me. Thanks!
+> >
+> > Barry
+> >
+> > __________________________________________________
+> > Do You Yahoo!?
+> > Make international calls for as low as $.04/minute with Yahoo! Messenger
+> > http://phonecard.yahoo.com/
+> --
+> /*************************
+> Marc Karasek
+> Sr. Firmware Engineer
+> iVivity Inc.
+> marc_karasek@ivivity.com
+> (770) 986-8925
+> (770) 986-8926 Fax
+> *************************/
+>
+>
 
-Sorry if I wasn't clear.  It is only the newer parts that can enable the
-use of the 64-bit instructions *in user mode* without also enabling
-64-bit addressng.  It's true that MIPS III/IV parts provide access to
-those instructions in kernel regardless of the state of the Status.KX
-bit,  but in user mode they are only available if the Status.UX bit is set,
-enabling 64-bit addressing.  MIPS64 CPU's have an additional
-bit in the Status register (Bit 23, "PX") to enable 64-bit instructions
-without enabling 64-bit addressing.
-
-            Regards,
-
-            Kevin K.
+-- 
+David Airlie, Software Engineer
+http://www.skynet.ie/~airlied / airlied@skynet.ie
+pam_smb / Linux DecStation / Linux VAX / ILUG person

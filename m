@@ -1,36 +1,30 @@
-Subject: Re: Mips IRQ support
-From: Pete Popov <ppopov@pacbell.net>
-In-Reply-To: <CBD6266EA291D5118144009027AA63353F92B7@xboi05.boi.hp.com>
-References: <CBD6266EA291D5118144009027AA63353F92B7@xboi05.boi.hp.com>
-Content-Type: text/plain
+Message-ID: <000c01c1a3e9$6a8086c0$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <20020122232529V.machida@sm.sony.co.jp><005301c1a368$87d27ed0$10eca8c0@grendel> <20020123145634M.machida@sm.sony.co.jp>
+Subject: Re: patches for test-and-set without ll/sc (Re: thread-ready ABIs)
+Date: Wed, 23 Jan 2002 09:38:24 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Date: 22 Jan 2002 17:26:19 -0800
-Message-ID: <1011749179.28944.262.camel@zeus>
-Mime-Version: 1.0
 Sender: owner-linux-mips@oss.sgi.com
-To: "TWEDE,ROGER    (HP-Boise,ex1)" <roger_twede@hp.com>
-Cc: linux-mips <linux-mips@oss.sgi.com>
-Message-ID: <20020123012619.9zyyoLtsHxNKpi3vV8zTNknr0YgdDhb2oIHwi4ikrj8@z>
+To: Machida Hiroyuki <machida@sm.sony.co.jp>
+Cc: aj@suse.de, hjl@lucon.org, ralf@oss.sgi.com, linux-mips@oss.sgi.com
+Message-ID: <20020123083824.5dbkdwsDJx2XW6N2oz1IGt_RuHQYe032mWlzDZk4lXU@z>
 
-On Tue, 2002-01-22 at 17:15, TWEDE,ROGER (HP-Boise,ex1) wrote:
+> > It should in principle be SMP safe.
 > 
-> Are there any plans to provide full MIPS irq support in the general mips irq
-> code?
-> 
-> The only machine that appears to attempt to fully support the MIPS interrupt
-> set currently is the gt64120/momenco_ocelot machine.
- 
-> It uses the define CP0_S1_INTCONTROL ($20) to get at the upper interrupt
-> lines ( > 8 ).
+> I don't think so.
 
-That's really a QED rm7k cpu feature, not a mips generic one.
- 
-> Anyone else find that support for this MIPS hardware would be best placed in
-> the standard irq code rather than each machine variant having to
-> re-implement it itself (as the irq code was in the past).
+You are quite right.  It was an offhand remark
+that should have been better qualified.   The basic
+mechanism requires no global memory resource
+and will detect discontinuitues in scheduling on
+several CPUs at once, but but it is certainly not
+SMP safe in the sense of the code sample
+providing atomic increment on a classical SMP
+hardware platform.  
 
-Might be a good feature for arch/mips/kernel/irq_cpu.c and it wouldn't
-be difficult to add.  I don't think arch/mips/kernel/irq.c needs to
-change.
+            Regards,
 
-Pete
+            Kevin K.

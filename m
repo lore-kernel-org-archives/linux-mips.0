@@ -1,20 +1,20 @@
 Received: from sunsv2.sasken.com (localhost [127.0.0.1])
-	by sandesha.sasken.com (8.12.8/8.12.8) with ESMTP id h396Hi35029407
-	for <linux-mips@linux-mips.org>; Wed, 9 Apr 2003 11:47:45 +0530 (IST)
+	by sandesha.sasken.com (8.12.8/8.12.8) with ESMTP id h3A5fwWY029539
+	for <linux-mips@linux-mips.org>; Thu, 10 Apr 2003 11:12:00 +0530 (IST)
 Received: from pcz-madhavis.sasken.com (IDENT:madhavis@pcz-madhavis.sasken.com [10.1.64.210])
-	by sunsv2.sasken.com (8.11.6/8.11.6) with ESMTP id h396Hpw10678
-	for <linux-mips@linux-mips.org>; Wed, 9 Apr 2003 11:47:51 +0530 (IST)
-Date: Wed, 9 Apr 2003 11:47:51 +0530 (IST)
+	by sunsv2.sasken.com (8.11.6/8.11.6) with ESMTP id h3A5g6w16430
+	for <linux-mips@linux-mips.org>; Thu, 10 Apr 2003 11:12:06 +0530 (IST)
+Date: Thu, 10 Apr 2003 11:12:06 +0530 (IST)
 From: Madhavi <madhavis@sasken.com>
-Subject: cross-compiler for mips (r5432)
-Message-ID: <Pine.LNX.4.33.0304091136220.1873-100000@pcz-madhavis.sasken.com>
+Subject: Kernel compilation for MIPS
+Message-ID: <Pine.LNX.4.33.0304101106270.2692-100000@pcz-madhavis.sasken.com>
 MIME-Version: 1.0
 Content-type: multipart/mixed; boundary="=_IS_MIME_Boundary"
 Return-Path: <madhavis@sasken.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20030409061751.wpFX4Kh1FCfERdT1U-COSkfvhkDKx5-L1ZIZG5PghIc@z>
+Message-ID: <20030410054206.gAgLjQ6kXa1R7qIqgnB1LV6fQlZUbGXMk6lF02SZ0K0@z>
 
 --=_IS_MIME_Boundary
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -22,17 +22,19 @@ Content-Type: TEXT/PLAIN; charset=US-ASCII
 
 Hi
 
-I want to install a cross-compiler for MIPS(R5432 CPU) on an i686 host.
-Since R4000 is compatible with R5432, I am using "mips3" as the target.
-binutils-2.13 and I phase compilation of gcc-3.2 happened without any
-problems. But, glibc-2.2.5 is giving many compilation problems. This is
-how I configured glibc:
+During my kernel compilation for MIPS (R5432) using the MIPS
+cross-compiler, I am getting the following error.
 
-configure --build=i686-linux --host=mips3el-linux --enable-add-ons
---prefix=/usr.
+mipsel-linux-ld:arch/mips/ld.script:6: parse error
 
-Could someone guide me on this or give me some pointers for installation?
-Is the target option "mips3" the right choice for R5432?
+The line 6 in ld.script is:
+	. = ;
+
+I have seen in the arch/mips/Makefile that sed is replacing @@LOADADDR@@
+by $LOADADDR in ld.script.in. Hence the line, . = @@LOADADDR@@; is getting
+converted to . = ;.
+
+Do I need to assign the LOADADDR somewhere.
 
 Thank you in advance.
 
@@ -49,7 +51,6 @@ Email: madhavis@sasken.com
 Tel: + 91 80 5355501 Extn: 8062
 Fax: + 91 80 5351133
 URL: www.sasken.com
-
 
 
 --=_IS_MIME_Boundary

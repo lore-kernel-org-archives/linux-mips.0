@@ -1,24 +1,39 @@
-Date: Thu, 7 Jun 2001 12:56:14 -0400 (EDT)
-From: Daniel Berlin <dan@www.cgsoftware.com>
-Subject: Re: stabs or ecoff for Linux/mips
-In-Reply-To: <20010607093149.B13198@lucon.org>
-Message-ID: <Pine.LNX.4.33.0106071255220.14244-100000@www.cgsoftware.com>
+Message-ID: <007901c0f1bd$ff8827c0$0b0932c8@vaio>
+Reply-To: =?iso-8859-1?Q?Manuel_Poueri=E9?= <pouerie@cpmsa.com>
+From: =?iso-8859-1?Q?Manuel_Poueri=E9?= <pouerie@cpmsa.com>
+Subject: 
+Date: Sun, 10 Jun 2001 10:59:48 -0400
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0076_01C0F19C.775930E0"
 Sender: owner-linux-mips@oss.sgi.com
-To: "H . J . Lu" <hjl@lucon.org>
-Cc: GDB <gdb@sourceware.cygnus.com>, binutils@lucon.org, linux-mips@oss.sgi.com
-Message-ID: <20010607165614.cqedIjwc6rPCG45uDolPHiviNecZNXSqepPsM73Jzw8@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010610145948.A1rcWsvs1jiBZ3riiJUVMANwz_qDBg3kML0f0phDSHs@z>
 
-STABS definitely.
+This is a multi-part message in MIME format.
 
-On Thu, 7 Jun 2001, H . J . Lu wrote:
+------=_NextPart_000_0076_01C0F19C.775930E0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> What is the better debug format for Linux/mips in the terms of gdb
-> and binutils, stabs or ecoff? I know the future is dwarf2. But I need
-> something stable now. Since Linux/x86 uses stabs, I lean toward to
-> stabs. Any comments?
->
->
-> H.J.
->
+unsuscribe correo@cpmsa.com
+
+------=_NextPart_000_0076_01C0F19C.775930E0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 5.50.4207.2601" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>unsuscribe <A=20
+href=3D"mailto:correo@cpmsa.com">correo@cpmsa.com</A></FONT></DIV></BODY>=
+</HTML>
+
+------=_NextPart_000_0076_01C0F19C.775930E0--

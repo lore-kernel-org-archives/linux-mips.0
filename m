@@ -1,31 +1,47 @@
-content-class: urn:content-classes:message
-Subject: RE: 64 bit operations w/32 bit kernel
-Date: Tue, 30 Sep 2003 09:23:05 -1000
-Message-ID: <DC1BF43A8FAE654DA6B3FB7836DD3A56DEB75F@iris.adtech-inc.com>
+Date: Wed, 1 Oct 2003 17:34:26 +0400 (MSD)
+From: Tommy Tovbin <tovbin@niisi.msk.ru>
+Subject: Re: Problem with depmod 
+In-Reply-To: <3680.1065008920@ocs3.intra.ocs.com.au>
+Message-ID: <Pine.LNX.4.44.0310011729080.30245-100000@tux.NIISI>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-From: "Finney, Steve" <Steve.Finney@SpirentCom.COM>
-Return-Path: <Steve.Finney@SpirentCom.COM>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <tovbin@niisi.msk.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>, "Finney, Steve" <Steve.Finney@SpirentCom.COM>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20030930192305.t4erbtdkxObJ-jzuPysOwZVc8BFzIddLa0CpANdHVGo@z>
+To: Keith Owens <kaos@sgi.com>
+Cc: linux-mips@linux-mips.org, raiko@niisi.msk.ru
+Message-ID: <20031001133426.fNDZR0K4QkobJNgPOrBjfrPYa-wkb3M5u-wLxH4MN7A@z>
+
+On Wed, 1 Oct 2003, Keith Owens wrote:
+
+> On Wed, 1 Oct 2003 12:18:04 +0400 (MSD), 
+> Tommy Tovbin <tovbin@niisi.msk.ru> wrote:
+> >
+> >Hi, I've recompiled whole RedHat 7.3 on MIPS. Well, when I try to startup 
+> >my system I`m getting an error like this:
+> >
+> >Finding module dependencies:  depmod: cannot read ELF header from 
+> >/lib/modules/2.4.18/modules.dep
+> 
+> Short answer: 'mkdir /lib/modules/2.4.18/kernel' or 'make modules_install'.
 
 > 
-> What you want really is a 64-bit kernel.  On a 64-bit kernel even for
-> processes running in 32-bit address spaces (o32, N32) the processor
-> will run with the UX bit enabled.  o32 userspace still lives in the
-> assumption that registers are 32-bit so only those bits will 
-> be restored
-> in function calls etc.  N32 (where userspace isn't ready for 
-> prime time
-> yet) does guarantee that.  And N64 (userspace similarly not ready for
-> prime time) obviously is fully 64-bit everything.
+> Long answer: You can feed depmod multiple module directories, so depmod
+> has to look for directory 'kernel' to work out the top level of each tree.
+> modules.dep and the other text files are only ignored at the top level
+> of each tree.  You have no 'kernel' directory under /lib/modules/2.4.18
+> so depmod does not ignore the text files.
+> 
+> 
+> 
 
-What is the page table space impact of a 64 bit kernel on an architecture like the Sibyte with discontiguous physical address spaces?  Do you still waste 36 MB of page table space on the "hole", or does it even double because the page table entries are bigger for the wider addresses? Or do the issues become irrelevant with the larger address space?
+Thanks a lot! 
 
-Thanks,
-sf
+
+-- 
+With regards, Tommy Tovbin. tovbin at niisi dot msk dot ru.
+	Zz
+       zZ
+    |\ z    _,,,---,,_ /,`.-'`'_ ;-;;,_
+   |,4-  ) )-,_..;\ (  `'_'
+  '---''(_/--'  `-'\_)

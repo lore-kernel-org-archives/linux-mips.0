@@ -1,40 +1,54 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Wed, 20 Jan 1999 16:18:05 -0500 (EST)
+Date: Wed, 20 Jan 1999 16:29:54 -0500 (EST)
 From: david@carrera.columbus.sgi.com (David Watters)
-Message-ID: <9901201618.ZM39458@carrera.columbus.sgi.com>
-In-Reply-To: kck@mailbox.esd.sgi.com (Ken Klingman)
-        "Re: [Fwd: linus.linux.sgi.com]" (Jan 19,  6:36pm)
-References: <199901200236.SAA12779@mailbox.esd.sgi.com>
+Message-ID: <9901201629.ZM40293@carrera.columbus.sgi.com>
+In-Reply-To: job bogan <job@piquin.uchicago.edu>
+        "Re: [Fwd: linus.linux.sgi.com]" (Jan 19,  9:01pm)
+References: <199901200301.VAA14922@piquin.uchicago.edu>
 Subject: Re: [Fwd: linus.linux.sgi.com]
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ken Klingman <kck@mailbox.esd.sgi.com>, Richard Offer <offer@morgaine.engr.sgi.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19990120211805.lzoDpozHIN1WGkROXzM5h7zBgs0HUboqdqB1Vj-KFEY@z>
+To: job bogan <job@piquin.uchicago.edu>, Richard Offer <offer@morgaine.engr.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com, ellidz@eridu.uchicago.edu
+Message-ID: <19990120212954.Ua0H6c4soseuVyrnfN5GBuuErPw-WrFQJ0U5gkcWhyQ@z>
 
-On Jan 19,  6:36pm, Ken Klingman wrote:
-> Subject: Re: [Fwd: linus.linux.sgi.com]
->
-> The VW 320 and 540 use 288-bit wide synchronous DRAM, clocked
-> at 100MHz.  288 bits means it's not your everyday PC SDRAM.
+On Jan 19,  9:01pm, job bogan wrote:
+> judging by
+> previous SGI prices, i can buy twice as much 3rd party ram as SGI ram.
 
-But it is!
+You will be glad to know that the memory will be available from 3rd parties.
 
-It is just laid out differently.
+> interface, we might look at them.  The lack of true multi-user and
+> non-console interfaces in NT just takes these SGIs off the chart
 
-Industry standard SDRAM chips but to get the wider memory path
-they layed them out differently.
+Some of what you need may be bundled.  Take a look at the interoperability
+kit that is bundled which includes a lot of what you mentioned.
 
-They used a different JDEC standard DIMM (the same as in some notebooks)
-because the motherboard would have been a mess using the giant, more
-commond desktop-PC JDEC standard modules.
+> And once it's there, i see no reason to buy them unless i can get the
+> Video Performance out of them.  (unless, perhaps, they clean up on raw
+> cpu due to a cleaned up system bus.)
 
-The idea is a high-bandwith arch. at PC prices and to do that you have
-to make some tough decisions.  Otherwise the OCTANE is a far better (and $)
-arch. that is just dying for faster processors and next-gen graphics.
+What system bus?  The FSB is the same, otherwise the off the shelf CPUs
+(which I assume you will by 3rd party :) ) won't work.  Our memory
+controller is lower latency than the 440xx and has huge bandwidth from
+memory to the controller.  Both of these (mostly the latency) will show
+on FP performance when you break cache.
 
-Who cares.  It is all in the application performance.  We will soon see...
+> i've never been the world's biggest SGI/Irix fan.
+
+Really? :)
+
+> But - for my env., and
+> most of the Academic world, i just don't see these as viable machines
+> until Linux or Irix runs on them.  egh...  you may be able to get the
+> CAD/CAM market back,  but i don't see us buying more SGIs soon.
+
+The small little CAD/CAM market. :)
+If we get that back then we will build all the Linux/IRIX boxes you
+need.
+
+Thanks for your perspective though.
 
 -- 
 David Watters         |                 Silicon*Graphics 

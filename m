@@ -1,67 +1,52 @@
-Message-ID: <sea8dc20.086@quicklogic.com>
-Date: Fri, 25 Apr 2003 06:56:14 -0700
-From: "Dan Aizenstros" <daizenstros@quicklogic.com>
+Date: Fri, 25 Apr 2003 10:18:41 -0400 (EDT)
+From: Chip Coldwell <coldwell@frank.harvard.edu>
 Subject: Re: NCD900 port?
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
-Return-Path: <daizenstros@quicklogic.com>
+In-Reply-To: <sea8dc20.085@quicklogic.com>
+Message-ID: <Pine.LNX.4.44.0304251008550.23558-100000@frank.harvard.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <coldwell@frank.harvard.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: coldwell@frank.harvard.edu, kevink@mips.com
-Cc: linux-mips@linux-mips.org
-Message-ID: <20030425135614.GK_Djsol1s1RqorOKvTzh6vahDE4jKcnEgKmWUMIXfE@z>
+To: Dan Aizenstros <daizenstros@quicklogic.com>
+Cc: kevink@mips.com, linux-mips@linux-mips.org
+Message-ID: <20030425141841.TfMkAp6ZINm7d7fVhX28m_W-aQcV_NcQGylrHJiORa0@z>
 
-Hello Chip,
-
-The V320USC is fully documented and manuals are
-available if you want them. The QuickLogic web site
-is a bit out of date with respect to the Linux support.
-I am tracking the linux-mips CVS tree and I can send
-you a patch sometime next week. However, the patch will
-be for our Hurricane board and so you will have to make
-changes to support the NCD device.
-
-Can you provide any information about the bootloader?
-Does it support loading of ELF images?
-
-Also, do you know what endian the machine is using.
-The Linux port is mostly tested little endian and
-may need some work to get big endian going.
-
-Regards,
-
-Dan Aizenstros
-
->>> Chip Coldwell <coldwell@frank.harvard.edu> 04/24/03 15:51 PM >>>
-On Thu, 24 Apr 2003, Chip Coldwell wrote:
-
-> On Thu, 24 Apr 2003, Kevin D. Kissell wrote:
-> > 
-> > What PCI bridge is being used?  Galileo?
+On Fri, 25 Apr 2003, Dan Aizenstros wrote:
 > 
-> Good question.  Short answer: I don't know.  I'll pry off the hood
-> and take a peek at what's on the board, unless this is something that
-> shares a die with the CPU.
+> The V320USC is fully documented and manuals are
+> available if you want them. The QuickLogic web site
+> is a bit out of date with respect to the Linux support.
+> I am tracking the linux-mips CVS tree and I can send
+> you a patch sometime next week. However, the patch will
+> be for our Hurricane board and so you will have to make
+> changes to support the NCD device.
 
-It was easy to identify once I took off the cover.  The PCI bridge is
-made by V3 Semiconductor (now a part of QuickLogic?), part number
-V32OUSC-75LP (Rev. B1):
+I found the documentation on line; it looks very thorough.  I also
+found the (little-endian) toolchain on your website, which is very
+convenient.
 
-http://www.quicklogic.com/home.asp?PageID=235&sMenuID=126
+The first big stumbling block will be to guess the base address where
+the bridge is located.  I see in your Hurricane board it's found at
+0xBC000000; is there any reason to hope that NCD would locate it in
+the same place or is this pretty much an arbitrary decision?
 
-Is this the one called "Galileo"?
+> Can you provide any information about the bootloader?
+> Does it support loading of ELF images?
 
-There's also two RS-232 line drivers/receivers, MAX3185 made by Maxim
-(now part of Dallas Semiconductor) and some nearby Samsung parts that
-I suppose are probably UARTs (this thing has two serial ports).  I
-would guess that getting something to come out on a serial console is
-going to be my first step.
+I really don't know.  If it doesn't, I suppose could give it a
+compressed kernel image.  Or would this require some monkeying around
+with head.S?
 
-Digitally signed images and bootloaders that enforce them sounds
-particularly nasty.  That's a show topper for me, if it turns out to
-be that way.
+> Also, do you know what endian the machine is using.
+> The Linux port is mostly tested little endian and
+> may need some work to get big endian going.
+
+That I don't know.  If I had to guess I would say big-endian just
+because of the cultural background that NCD comes from.
+
+I'm going to do some experiments over the weekend and try to come up
+with some answers to these questions.
 
 Chip
 

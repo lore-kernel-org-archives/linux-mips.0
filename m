@@ -1,44 +1,56 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@yon.engr.sgi.com (Ariel Faigon)
-Message-ID: <199706141721.KAA12726@yon.engr.sgi.com>
-Subject: Re: gcc for Irix.
-Date: Sat, 14 Jun 1997 10:21:07 -0700 (PDT)
-In-Reply-To: <9706140839.ZM21078@heaven.newport.sgi.com> from "Christopher W. Carlson" at Jun 14, 97 08:39:28 am
-Reply-To: ariel@sgi.com (Ariel Faigon)
+From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
+Message-ID: <199706160017.CAA23535@informatik.uni-koblenz.de>
+Subject: Re: A pointed question about endianness...
+Date: Mon, 16 Jun 1997 02:17:02 +0200 (MET DST)
+In-Reply-To: <Pine.LNX.3.95.970615184212.1448A-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jun 15, 97 06:54:36 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: "Christopher W. Carlson" <carlson@heaven.newport.sgi.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970614172107.bhDGRBIVdLSsWJ7bWGPBqE5VKtIqft3gs0mI4hD7Uc8@z>
+To: Alex deVries <adevries@engsoc.carleton.ca>
+Cc: linux@cthulhu.engr.sgi.com, ralf@Julia.DE, shaver@engsoc.carleton.ca
+Message-ID: <19970616001702.U7WVVOsK2pPVZEAPQDeVbMYWgAY98KwMP0ZUPtdxqFs@z>
 
-:
-:Actually, it isn't a bug because there was a major version change.
-:Anything can change between 5.3 and 6.2.  I know we try to maintain
-:backwards compatibility but sometimes ANSI requires changes in the
-:number of parameters, there's a change in the values used to pass to
-:functions, etc.
-:
-:I believe our promise is that code compiled on 5.3 will run on 6.2,
-:not that it will still compile.
-:
-Yes, It was mainly ANSI/POSIX1C/POSIX2/XPG4/UNIX95 (spec 1170) changes
-(See /usr/include/standards.h) which caused major changes in IRIX
-headers in order to be able to support all these standards without
-conflicts (a pretty big undertaking).
+> As we speak, Ralf has produced a batch of MIPS LSB binaries that would be
+> glorious to be able to run.  The kernel that Mike Shaver and I have is
+> MSB, as are our kernel, cross-compiler and rudamentary binaries.  I
+> believe this is because we're branching off of Dave M's work.
+> 
+> But, can we please agree on one endianness?  I don't care which it is, so
+> long as we all agree. Mike and I are quite willing to give up MSB.
+> 
+> My proposal is to use Ralf's LSB binaries as a launchpad[1], and produce
+> only LSB binaries until we get bi-endianness going. 
 
-In addition there were some enhancemnets to certain APIs, for example
-supporting faster serial speeds which changed some termios.h subtle
-interfaces (you may still compile with -D_OLD_TERMIOS of course, but
-still a change that may break compilations on old and arguably not
-cleanly written UNIX apps -- GNU less comes to mind) 
+Well, the point in a bi-endian kernel is that it will give us the possibility
+of running binaries with the opposite byteorder of the kernel.  We don't
+have that feature available right now, so we're bound to whatever byteorder
+the kernel is running.  Which again is fixed on many machines.  This
+means that for now we'll have to build both little endian and big endian
+binaries; on SGI we'll only be able to execute big endian binaries.
 
-And finally there's "fix_headers" - the utility that comes with gcc
-and fixes headers so they can be used with some gcc conventions
-and extensions to C.  Combine this with our multi-standard headers
-which I suspect the designers of "fix_headers" never thought of
-and you get a pretty cool mess :-)
+I think your missunderstood that bi-endianess gives us the possibility to
+execute binaries of both endianess concurrently on the same kernel.  It
+does that but it also give us at all the possibility to run binaries of
+the other byteorder.  So your proposal is currently technically not possible.
 
--- 
-Peace, Ariel
+Btw, question to the SGI gurus - is the kernel byteorder of SGI machines
+be reconfigurable?
+
+> Also, Ralf, could you put up a binary of your kernel and a tar ball of
+> your root fs?
+
+Ok, I'll put it on http://www.uni-koblenz.de/~linux/vmlinux-2.1.42-pre3.gz.
+Not on kernel.panic because I've run out of disk space.  Feel free to
+put it on your ftp server.  My root fs is definately to big for upload over
+a 14.4k line, so stay tuned.
+
+> [1] Which are mirrored on ftp://ftp.engsoc.carleton.ca/pub/mips if you're
+> having problems getting them from .de.  That is, until whatever.sgi.com is
+> setup.
+
+Hmm...  Ariel, Larry or whoever knows about that - what is the current
+state of linux.sgi.com?
+
+  Ralf

@@ -1,46 +1,27 @@
-Message-ID: <021601c14e14$b6bd8270$3501010a@ltc.com>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <Pine.LNX.4.10.10110051144170.31239-100000@transvirtual.com> <3BBE1C99.8DFA3611@mvista.com>
-Subject: Re: DDB5074
-Date: Fri, 5 Oct 2001 23:12:21 -0400
+Message-ID: <000f01c14f54$7b1e1220$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <Pine.LNX.4.10.10110071013000.3558-100000@transvirtual.com>
+Subject: Re: MIPS PC - anyone?
+Date: Sun, 7 Oct 2001 19:21:17 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Jun Sun <jsun@mvista.com>, James Simmons <jsimmons@transvirtual.com>
-Cc: linux-mips@oss.sgi.com, linux-mips@fnet.fr
-Message-ID: <20011006031221.X28y8Ak_XqEK-tIf1h5H7nzM04uz1VH19uzA_a5hj34@z>
+To: James Simmons <jsimmons@transvirtual.com>, Volker Jahns <Volker.Jahns@thalreit.de>
+Cc: Jun Sun <jsun@mvista.com>, linux-mips@oss.sgi.com
+Message-ID: <20011007172117._BGOP2ZVvyqiNaTOpnj5Jx7f9uHvbzLvR6ni27DLwFE@z>
 
-I don't anticipate needing 5074 support.  I do need 5477 though.
+> > Why don't you use the SONY playstation 2 w/ its LINUX kit? The costs are
+> > less and the graphics performance is greater than any Intel based PC I
+> > am aware of.
+> 
+> The SONY stuff is 2.2.X based. Their is work going on for 2.4.X support
+> but it is not stable at the moment.
 
-Regards,
-Brad
+2.2 or 2.4, is the necessary configuration in fact generally
+available?  Last I heard, which was some months ago,
+it required a PS2 configuration that was only available
+in Japan.
 
------ Original Message -----
-From: "Jun Sun" <jsun@mvista.com>
-To: "James Simmons" <jsimmons@transvirtual.com>
-Cc: "Ralf Baechle" <ralf@oss.sgi.com>; <linux-mips@oss.sgi.com>;
-<linux-mips@fnet.fr>
-Sent: Friday, October 05, 2001 4:48 PM
-Subject: Re: DDB5074
-
-
-> James Simmons wrote:
-> >
-> > > Is there still somebody who takes care of the DDB 5074 board or has
-any
-> > > interest in keeping up support for it otherwise?
-> >
-> > I believe Brad LaRonde was working on those boards.
->
-> AFAIK, Brad is only working on rockhopper, a variant of DDB5477.  We will
-keep
-> DDB5476 and DDB5477(and rockhopper).  If nobody is interested in DDB5074,
-it
-> might be a good time to get rid of it.
->
-> Brad, speak up!
->
-> Jun
->
+            Kevin K.

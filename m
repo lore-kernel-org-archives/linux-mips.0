@@ -1,29 +1,30 @@
-Message-ID: <014201c20839$6804ac50$0b01a8c0@w2k30g>
-From: "David Christensen" <dpchrist@holgerdanske.com>
-References: <Pine.LNX.4.33.0205301346530.4760-100000@Muruga.localdomain>
-Subject: Re: cross-compiler for MIPS_RedHat7.1_Release-01.00 on Atlas/4Kc using RH7.3-i386 host
-Date: Thu, 30 May 2002 17:23:11 -0700
+From: Joe Buck <Joe.Buck@synopsys.com>
+Message-ID: <200205312144.OAA15256@atrus.synopsys.com>
+Subject: Re: [Fwd: Current state of MIPS16 support?]
+Date: Fri, 31 May 2002 14:44:04 -0700 (PDT)
+In-Reply-To: <1022870431.3668.19.camel@ghostwheel.cygnus.com> from "Eric Christopher" at May 31, 2002 11:40:29 AM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Cc: Muthukumar Ratty <muthu5@sbcglobal.net>
-Message-ID: <20020531002311.SWwILuzH5LQcnFR7AWuINGBen-ZrcanicvEkjDqN3N8@z>
+To: Eric Christopher <echristo@redhat.com>
+Cc: Dominic Sweetman <dom@algor.co.uk>, Johannes Stezenbach <js@convergence.de>, gcc@gcc.gnu.org, linux-mips@oss.sgi.com, sde@algor.co.uk
+Message-ID: <20020531214404.qeDT_uND3k69OyEwQ8b36GdFXD0MmKw5NsrXXOhinSk@z>
 
-linux-mips@oss.sgi.com & Muthukumar:
+> > > I have not looked at the Algorithmics code because I don't have
+> > > copyright on it...
 
-Muthukumar Ratty wrote:
-> BTW you may need to do slight changes, like changing target from
-> little-mips to tradlittle-mips etc. Its simple but if you get stuck,
-> post it here and someone will help you.
+Dominic wrote:
+> > We do publish our sources on our web server.  Not only are they GPL
+> > but we have a copyright assignment to the FSF in place (which I know
+> > was sent to Jim Wilson of Cygnus, albeit in 1993...)
 
-So far, no problems.  :-)
+Eric Christopher wrote:
+> It's great that your changes do get out in one form or another. I'm
+> personally uncertain as to the nature of copyright and how it would
+> affect if I looked at your code and put it into the mainline sources -
+> so I haven't :) 
 
-
-Thank you for your reply.
-
-
-David Christensen
-dpchrist@holgerdanske.com
+Whose name and what company name would be on the copyright assignment?
+We can check with the FSF list to see if it's on file.  Meanwhile it
+should not go in.

@@ -1,24 +1,32 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ulf Carlsson <grim@zigzegv.ml.org>
-Message-ID: <199808171937.VAA30017@calypso.saturn>
-Subject: Re: R4[04]00SC
-In-Reply-To: <Pine.LNX.3.96.980813210627.17725A-100000@dn.demo.org> from Lukas Grunwald at "Aug 13, 98 09:09:22 pm"
-Date: Mon, 17 Aug 1998 21:37:28 +0200 (CEST)
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199809092147.OAA66371@oz.engr.sgi.com>
+Subject: SGI/Linux subscription growth
+Date: Wed, 9 Sep 1998 14:47:23 -0700 (PDT)
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Lukas Grunwald <lukas@cubic.org>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19980817193728.QUGEZEGg4QaFShRSmX3NJPoktBvXQGpRxzf5I8rD0xU@z>
+To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19980909214723.MAVTKkfHNe_4pcyUx1Xv-hATPqIkA8fhMa6iYcDCljA@z>
 
-> Thx, it work fine, (booting) but i need a INSTALL Kernel (Bootp/NFS ROOT)
-> for
-> installing the system.
+Hi,
 
-Nice to hear :)
+Just wanted to share some numbers I just noted.
 
-I have compiled a version with bootp and nfs root now on your demand,
-sgilinux-sc-2.tgz. Have fun.
+The readership of the SGI/Linux mailing list seems to be growing
+at about the same rate that Linux is growing, i.e. high double digits,
+maybe triple digits per year.  I have only 3 data points:
 
-- Ulf
+	Tue Jan 13 12:46:42 1998	120 subscribers
+
+	Tue Jun  2 11:59:30 1998	156 subscribers
+
+	Wed Sep  9 14:11:37 1998	195 subscribers
+
+SGI subscribers are less than 1/4 of the total (47/195).
+i.e. most people are not SGI employees.
+
+-- 
+Peace, Ariel

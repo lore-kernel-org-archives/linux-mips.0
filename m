@@ -1,64 +1,33 @@
-From: Hartvig Ekner <hartvige@mips.com>
-Message-ID: <200202181252.NAA03169@copsun18.mips.com>
-Subject: Re: [patch] linux 2.4.17: The second mb() rework (final)
-Date: Mon, 18 Feb 2002 13:52:47 +0100 (MET)
-In-Reply-To: <Pine.GSO.3.96.1020215135427.29773F-100000@delta.ds2.pg.gda.pl> from "Maciej W. Rozycki" at Feb 15, 2002 02:03:45 PM
+Date: Mon, 18 Feb 2002 14:50:30 -0500 (EST)
+From: Stephen L Moshier <moshier@moshier.net>
+Reply-To: moshier@moshier.net
+Subject: Re: math broken on mips
+Message-ID: <Pine.LNX.4.44.0202181419220.25604-100000@moshier.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
-Cc: Hartvig Ekner <hartvige@mips.com>, Dominic Sweetman <dom@algor.co.uk>, "Kevin D. Kissell" <kevink@mips.com>, Atsushi Nemoto <nemoto@toshiba-tops.co.jp>, mdharm@momenco.com, ralf@uni-koblenz.de, linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20020218125247.BcQdlVsVKD0zWHzDNbfEPNDzymm6mOdyYT7A-gAV9BI@z>
-
-Maciej W. Rozycki writes:
-> 
-> On Fri, 15 Feb 2002, Hartvig Ekner wrote:
-> 
-> > But in-order for the CPU is not enough - it also needs to make sure all
-> > written data is visible for DMA accesses to memory from the outside, which
-> > is why the writebuffer needs to be flushed by a SYNC as well. From the
-> > definition of "SYNC":
-> > 
-> > 	"A store is completed when the stored value is visible to every other
-> > 	processor in the system". 
-> > 
-> > Which presumably also includes DMA I/O devices...
-> 
->  The description found in the R4k manual seems to contradict.  A "sync" on
-> a single CPU only assures transactions on it's external bus will happen in
-> order wrt the "sync".  In a multiple-CPU environment all CPUs interested
-> in a barrier need to execute a "sync".  That's seems natural -- how would 
-> you define a synchronization point for a CPU that does not execute a
-> "sync".
-
-You are no doubt correct regarding the R4K manual - so my comment probably
-only applies for CPU's that claim to be MIPS32/MIPS64 compliant. All MTI's
-CPU offerings (cores only) do in fact flush the WB on a SYNC to comply with
-the current spec.
-
->  Since I/O devices have no means to signal a CPU a "sync" operation, how
-> can you expect a "sync" on the CPU to complete all preceding writes to the
-> device?  It's only a following read that may imply it.
-
-This I do have a problem understanding. If the SYNC does not flush the WB
-on some processor/writebuffer combinations, and a read can be satisfied
-out of the WB, how would you ever be able to guarantee that DMA data written
-by the CPU has reached memory before triggering the IO device?
-
-/Hartvig
-
-> 
-> -- 
-> +  Maciej W. Rozycki, Technical University of Gdansk, Poland   +
-> +--------------------------------------------------------------+
-> +        e-mail: macro@ds2.pg.gda.pl, PGP key available        +
-> 
-> 
+To: Zhang Fuxin <fxzhang@ict.ac.cn>
+Cc: linux-mips@oss.sgi.com, libc-alpha@sources.redhat.com
+Message-ID: <20020218195030.3AAgGoQC0fuSwTmJnC3u_vwaQaBzq0cjRy_KIjd7omY@z>
 
 
--- 
- _    _   _____  ____     Hartvig Ekner        Mailto:hartvige@mips.com
- |\  /| | |____)(____                          Direct: +45 4486 5503
- | \/ | | |     _____)    MIPS Denmark         Switch: +45 4486 5555
-T E C H N O L O G I E S   http://www.mips.com  Fax...: +45 4486 5556
+> pow(2,7) = 128.0 when rounding = TONEAREST or UPWARD
+>                = 64.1547.. when rounding = DOWNWARD or TOWARDZERO
+
+The libm functions from IBM that were recently installed in glibc come
+with this remark in sysdeps/ieee754/dbl-64/MathLib.h:
+
+  /* Assumption: Machine arithmetic operations are performed in       */
+  /* round nearest mode of IEEE 754 standard.                         */
+
+These math functions use a doubled-precision Dekker arithmetic which is
+very sensitive to rounding rules and arithetic flaws.  Fixing the
+routines to give reasonable answers with other rounding modes would not
+be practical.
+
+It is customary for a system math library to expect default environment
+conditions, and I do not think this design actually violates any
+standards. If you want to use non-default arithmetic settings and have
+them work portably on various systems, you will have to take defensive steps
+to protect your program from damage by the operating system and the system
+library.

@@ -1,28 +1,36 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199608122331.QAA09379@ratliff.engr.sgi.com>
-Subject: Re: Linux: the next step 
-In-reply-to: Your message of "Mon, 12 Aug 96 15:59:04 PDT."
-             <199608122259.PAA28318@aa5b.engr.sgi.com>
-Date: Mon, 12 Aug 96 16:31:30 -0700
-From: Bob English <renglish@ratliff.engr.sgi.com>
+Date: Tue, 13 Aug 1996 04:45:56 -0700
+Message-ID: <199608131145.EAA01442@neteng.engr.sgi.com>
+From: "David S. Miller" <dm@neteng.engr.sgi.com>
+In-reply-to: <199608122259.PAA28318@aa5b.engr.sgi.com> (nigel@aa5b)
+Subject: Re: Linux: the next step
+Reply-to: dm@sgi.com
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Nigel Gamble <nigel@aa5b.engr.sgi.com>
-Cc: Larry McVoy <lm@gate1-neteng.engr.sgi.com>, jes@machine.engr.sgi.com, sca@refugee.engr.sgi.com, lm@neteng.engr.sgi.com, alambie@wellington.sgi.com, ariel@cthulhu.engr.sgi.com, linux@yon.engr.sgi.com
-Message-ID: <19960812233130.0hW_dLm6EmVoNLm_yOz4nex1NoDDZY-cWC6fw54F36w@z>
+To: nigel@aa5b.engr.sgi.com
+Cc: lm@neteng.engr.sgi.com, jes@machine.engr.sgi.com, sca@refugee.engr.sgi.comlm@neteng.engr.sgi.com, nigel@cthulhu.engr.sgi.com, alambie@wellington.sgi.com, ariel@cthulhu.engr.sgi.com, linux@yon.engr.sgi.com
+Message-ID: <19960813114556.VaSoXaChta__SBW6McMmUjHiX8Dtg-i0iYEfpGunISc@z>
 
-In message <199608122259.PAA28318@aa5b.engr.sgi.com> you write:
->That's fine for one class of real-time problems, but it's not going
->to help make the RealAudio player (raplayer) useable on Linux...
->The RealAudio application, together with all the support that it is
->getting from the kernel in audio drivers, networking code etc., needs
->to run at a higher priority than most of the other stuff that might be
->going on...
->
->How will Linux solve this type of problem?
+   From: nigel@aa5b (Nigel Gamble)
+   Date: Mon, 12 Aug 1996 15:59:04 -0700 (PDT)
 
-With mirrors.  You run another copy of Linux on a high-priority RT
-thread.  Full API, fast preemption, minimal performance and code impact.
-You work on linux-slow and run rt apps on linux-fast.  You could even
-reboot linux-slow without losing your audio signal :-).
+   > They can guarentee real time response of 10Khz, with less than 15 usec
+   > variation.  That was with Linux running a 
+   > 
+   > 	tar f - /usr | (cd /newusr; tar xf -)
+   > 
+   > a web browser, X, etc, etc.  Good luck doing that on IRIX up.  Maybe MP.
 
---bob--
+   We can already do this on MP with User Level Interrupts.
+
+I cannot wait to recompile all of my applications so that they can
+take advantage of ULI...
+
+The whole idea behind whatever approach linux will take to anything
+(using clone() for threads under Linux is a good example) is that you
+will not need to teach all of your "dumb" old programs (even ps!)
+about these special processes and or things a process can do.
+
+dm@engr.sgi.com
+
+'Ooohh.. "FreeBSD is faster over loopback, when compared to
+Linux over the wire". Film at 11.' -Linus

@@ -1,25 +1,22 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: "Greg Chesson" <greg@xtp.engr.sgi.com>
-Message-ID: <9811251457.ZM1244@xtp.engr.sgi.com>
-Date: Wed, 25 Nov 1998 14:57:51 -0800
-In-Reply-To: <pjlahaie@atlsci.com>
-        "Re: help offered" (Nov 25,  5:09pm)
-References: <Pine.LNX.4.04.9811251701300.3207-100000@elenuial.atlsci.com>
-Subject: Re: help offered
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199812041904.LAA63896@oz.engr.sgi.com>
+Subject: SGI joins linux international
+Date: Fri, 4 Dec 1998 11:04:13 -0800 (PST)
+Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: pjlahaie@atlsci.com
-Cc: Ariel Faigon <ariel@cthulhu.engr.sgi.com>, Olivier Galibert <galibert@pobox.com>, linux@cthulhu.engr.sgi.com
-Message-ID: <19981125225751.vUkMTDUO8dKKvgCtZURn1KAKs73dT72xF1NEPX6F35U@z>
+To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19981204190413.KdpDqEpQqdXTiDEjTgycRAQRyXPuzIOcRFEsHtOJ9MI@z>
 
-no problem, I apologize for being jumpy.
+[forwarding good news]
 
-When you're married to an english teacher you can easily learn
-to read too much into someone's choice of words (because that's
-what literary criticism is all about.... :-)
+An official announcement that SGI has joined Linux International
+appears at http://miranda.li.org/news/sgi/index.shtml
 
-g
+Thanks to Dave McAllister for making this happen!
 
 -- 
-Greg Chesson
+Peace, Ariel

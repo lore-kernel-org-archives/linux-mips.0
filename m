@@ -1,30 +1,38 @@
-Message-ID: <AEC4671C8179D61194DE0002B328BDD2070C59@ATLOPS>
-From: Dinesh Nagpure <dinesh_nagpure@ivivity.com>
-Subject: un handled paging request, kernel v2.4.16
-Date: Mon, 30 Sep 2002 16:21:30 -0400
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_000_01C268BE.F60BF950"
-Return-Path: <dinesh_nagpure@ivivity.com>
+Received: from templar ([10.0.0.2])
+	by bard.illuminatus.org with esmtp (Exim 3.35 #1 (Debian))
+	id 17wHww-0003ik-00
+	for <linux-mips@linux-mips.org>; Tue, 01 Oct 2002 01:00:10 -0700
+Subject: scatterlist.h
+From: Mike Nugent <mips@illuminatus.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 01 Oct 2002 01:48:38 -0700
+Message-ID: <1033462118.13267.97.camel@templar>
+Mime-Version: 1.0
+Return-Path: <mips@illuminatus.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org, gcc-help@gcc.gnu.org
-Message-ID: <20020930202130.GdkI0ejGjZS--V5o6YXhUAwWjWPquPzUBL7S87bgNHo@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20021001084838.M_N_qtE9kQJGCdv9ZvTSSPbY5Xy4nr5nLe9tPVxg9jY@z>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
 
-------_=_NextPart_000_01C268BE.F60BF950
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Next problem  ( I know you all love my by now :)
 
-Hi,
+in drivers/scsi/scsi_merge.c
 
-In porting Linux kernel version 2.4.16 to our platform using the RM5231A, I
-am struggling with this page fault for a couple of days now and would very
-much appreciate any input to fix this.
+scsi_merge.c:939: structure has no member named `page'
 
-Here is what I see is happening, after completing the initial boot up when
-it is time to start the user-mode stuff I get a un handled paging request
-fault.
-------_=_NextPart_000_01C268BE.F60BF950--
+line 939: sgpnt[count - 1].page = NULL;
+
+(struct scatterlist *sgpnt;  included from scsi.h, which includes
+asm/scatterlist.h)
+
+
+struct scatterlist {
+    char *  address;    /* Location data is to be transferred to */
+    unsigned int length;
+
+    __u32 dvma_address;
+};
+
+Yes!  It's right!  No member page!

@@ -1,23 +1,34 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0xIqbs-0005FiC@lightning.swansea.linux.org.uk>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Date: Wed, 8 Oct 1997 10:46:29 -0700
+Message-ID: <199710081746.KAA23629@fir.engr.sgi.com>
+From: "William J. Earl" <wje@fir.engr.sgi.com>
 Subject: Re: More Linux/SGI status
-Date: Wed, 8 Oct 1997 08:32:43 +0100 (BST)
-In-Reply-To: <199710072241.RAA01259@athena.nuclecu.unam.mx> from "Miguel de Icaza" at Oct 7, 97 05:41:38 pm
-Content-Type: text
+In-Reply-To: <m0xIqiF-0005FiC@lightning.swansea.linux.org.uk>
+References: <199710072356.QAA23399@oz.engr.sgi.com>
+	<m0xIqiF-0005FiC@lightning.swansea.linux.org.uk>
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Miguel de Icaza <miguel@nuclecu.unam.mx>
-Cc: linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr
-Message-ID: <19971008073243.jUuf8p6ECfRBCWe3gZEjHLYaiar8pveTvc1XgX1oPIs@z>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: ariel@cthulhu.engr.sgi.com, miguel@nuclecu.unam.mx, linux@cthulhu.engr.sgi.com, linux-mips@fnet.fr
+Message-ID: <19971008174629.goqfepBTj-s0aIzO6dhjNIKLelhlCoBpWPIgjMpWsk4@z>
 
-> 	4. A nice, easy-to use install program.  Taking the existing
-> 	   Red Hat/Mustand install program and port it should be
-> 	   pretty easy. 
+Alan Cox writes:
+ > > My take on this is that since whoever bought that Indy
+ > > already paid for the OS including the X server and other
+ > > binaries there should be no reason why not to allow
+ > > them to run it on top of linux.
+ > 
+ > Thats simple until someone builds a clone SGI box. RedHat rpms
+ > actually have some provision for a tool called rhmask which 
+ > requires you have some "original" to generate the new rpm. Anyway
+ > we don't want to encourage folks not to make the Linux version
+ > kick the backside of any SGI original item..
 
-The big install problem is repartitioning an EFS system without damaging
-the EFS. There seem to be tools to do it via tape from reading the CD's.
-
-Once my SGI appears cranking out a distribution set is still my first goal
-
-
-Alan
+      It makes no sense to clone an SGI box, since there is no
+long-term standard hardware profile.  That is, the combination
+of hardware and system software provides a consistent model, but
+the hardware/software interface changes each generation, both
+in graphics and in I/O.  For people building MIPS-based linux boxes,
+starting with the XFree86 source base, and adding good OpenGL support,
+is a better model than trying to use Xsgi.  Using Xsgi (and libGL.so)
+is simply an expedient way to get graphics support for linux on an
+SGI box.

@@ -1,83 +1,35 @@
-From: "Y.H. Ku" <iskoo@ms45.hinet.net>
-Subject: RE: BootLoader on MIPS
-Date: Sat, 23 Mar 2002 16:42:41 +0800
-Message-ID: <NGBBILOAMLLIJMLIOCADAELACCAA.iskoo@ms45.hinet.net>
+Date: Sun, 24 Mar 2002 13:51:22 +0000 (GMT)
+From: Dave Airlie <airlied@csn.ul.ie>
+Subject: Re: [patch] linux: declance multicast filter fixes
+In-Reply-To: <Pine.GSO.3.96.1020323010132.3959A-100000@delta.ds2.pg.gda.pl>
+Message-ID: <Pine.LNX.4.32.0203241349380.32481-100000@skynet>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-In-Reply-To: <25369470B6F0D41194820002B328BDD2195BD9@ATLOPS>
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: Marc Karasek <marc_karasek@ivivity.com>, linux-mips@oss.sgi.com
-Message-ID: <20020323084241.FkCXKzuo6599hFd_izS9wnSH_UEqyaHRgjbmARgiWfI@z>
-
-Hi everybody,
-
-I trace PMON into mips.S, and find the entry "_go".
-the entry transfer control to client prog.
-
-I am confused of what information PMON transfer to MIPS's BOOTLOADER
-and transfer to which entry point of BOOTLOADER.
-
-I found the bd_t struct of PPCBOOT.h for PPCBOOT package on POWERPC platform.
-It is corresponding POWERPC-LINUX data structure bd_info in ~/include/asm/mbx.h 
-(register r3~r7)
-
-I just can not find the entry for MIPS's one. (can not find corresponding baget.h's one)
-
-Could anybody tell me what is the information (register inforation) PMON transfer
-to bootloader?
-
-Or anybody can disscuss with me,
-
-best regards,
---sam
-
------Original Message-----
-From: owner-linux-mips@oss.sgi.com
-[mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Marc Karasek
-Sent: Friday, March 22, 2002 9:21 PM
-To: 'Y.H. Ku'; linux-mips@oss.sgi.com
-Subject: RE: BootLoader on MIPS
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Cc: Ralf Baechle <ralf@uni-koblenz.de>, linux-mips@fnet.fr, linux-mips@oss.sgi.com
+Message-ID: <20020324135122.FqWIIFgB51R9IViI9yCNk3wbnUo023F1u2Fr3ezWQX4@z>
 
 
-YAMON is prob the default right now.  It has support for loading a kernel
-over tftp.  
+> > I've created declance_2_4.c on http://www.csn.ul.ie/~airlied/mips
+> >
+> > for the DS5000/200 series of DecStations..
+>
+>  Thanks for the reference -- I definitely want to look how to merge the
+> drivers one day (well, actually the LANCE core should be common to all
+> drivers eventually).  There is certainly no point in keeping your code
+> separately.  I suppose your driver should work for the PMAD card as well.
+>
 
-I do not think it is OS though.  I maybe wrong, I will have to check the
-source I have to see if it is or not.  I am currently adding  BOOTP support
-to it, along with some other options.  If it is OS, then I will be providing
-these back to the community.
+well it should work for the PMAD and I've got a version for the VAX that
+splits off from my one, the VAX uses a similiar wiring as the DS5000/200,
+I've been waiting for the LANCE core to be separated out a lot of people
+have talked about it and I hear for 2.5 maybe someone is actually going to
+do it ...
 
-/*******************************************
-Marc Karasek
-Sr. Firmware Engineer
-iVivity Inc.
-Ph: 678-990-1550 x238
-Fax: 678-990-1551
-email: marc_karasek@ivivity.com
-/*******************************************
+Dave
 
-
------Original Message-----
-From: Y.H. Ku [mailto:iskoo@ms45.hinet.net]
-Sent: Friday, March 22, 2002 3:16 AM
-To: linux-mips@oss.sgi.com
-Subject: BootLoader on MIPS
-
-
-Hello there,
-
-I am trying to porting Prom monitor code to
-appropriate MIPS bootloader for loading Linux kernel
-
-I ever make a test sucessfully with ppcboot's to load MBXloader
-for transfering control to linux kernel (hardhat).
-
-But I can not find the entry, and make decision what kind of BOOT LOADER
-to use on MIPS platform.
-
-I have the ddb5476 board type linux from montavista,
-Could anybody give me some suggestion?
-
---Sam
+-- 
+David Airlie, Software Engineer
+http://www.skynet.ie/~airlied / airlied@skynet.ie
+pam_smb / Linux DecStation / Linux VAX / ILUG person

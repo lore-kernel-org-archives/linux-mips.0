@@ -1,37 +1,19 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Tue, 2 Dec 1997 19:06:33 -0800
-Message-ID: <199712030306.TAA05948@fir.engr.sgi.com>
-From: "William J. Earl" <wje@fir.engr.sgi.com>
+Message-ID: <m0xdCOt-0005FsC@lightning.swansea.linux.org.uk>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
 Subject: Re: Linux on the O2
-In-Reply-To: <9712021646.ZM11626@blammo.engr.sgi.com>
-References: <m0xd2Iz-0005FsC@lightning.swansea.linux.org.uk>
-	<9712021646.ZM11626@blammo.engr.sgi.com>
+Date: Wed, 3 Dec 1997 10:51:27 +0000 (GMT)
+In-Reply-To: <3484C528.4DDB2A53@xtra.co.nz> from "Brendan Black" at Dec 3, 97 03:34:16 pm
+Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: John Wiederhirn <jwiede@blammo.engr.sgi.com>
+To: Brendan Black <ratfink@xtra.co.nz>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19971203030633.FrHJA0JEGivhg8KajgJdJUkf8NMjyYMvGbcYMty5_10@z>
+Message-ID: <19971203105127.BetDtvcGxpm6VUofXxMBkvZOdigGpwOEpSMK1RFIO4s@z>
 
-John Wiederhirn writes:
-...
- > Now, having said all that, I do believe the problem is solvable.
- > I think that with some modifications of the Linux kernel, it would
- > be quite possible to get the necessary abstraction to support
- > either an IRIX or customized third-party X server.  Further, it
- > would be nice if something equivalent to the SGI DMedia libraries
- > were available on Linux (with similar hardware abstraction), since
- > this is an area where simply put, Linux is FAR behind Windows{95,NT}
- > and SGI (and others).
- > 
- > Getting Linux on O2 probably isn't too difficult.  Getting USEFUL
- > O2/Octane/Onyx2 2D/3D graphics and multimedia under Linux would
- > be god-awful difficult with the current kernel/X situation.
-...
+> I can imagine all sorts of 'uses' for something like this (linux on the
+> N64) - but one thing crops
+> up, I thought there WAS an N64 port.
+> 
+> I seem to remember something, may have been an article on IX magazine...
 
-     Having implemented a good bit of the system-specific code for
-Indy and O2, I agree entirely.  Without the above features, O2 is just
-another, not especially distinguished, general purpose workstation,
-except for having fairly fast I/O for its price.  The most interesting
-thing about O2 is what you can do with graphics and multimedia, which
-is otherwise possible only with far more expensive hardware.  In
-different problem domains, something similar can be said of Octane and
-the various SGI servers.
+April issue I believe ...

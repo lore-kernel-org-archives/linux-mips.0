@@ -1,35 +1,43 @@
-From: "jeff" <jeff_lee@coventive.com>
-Subject: RE: how I mount the root fs from ramdisk??
-Date: Fri, 29 Aug 2003 18:39:39 +0800
-Message-ID: <LPECIADMAHLPOFOIEEFNKEFODCAA.jeff_lee@coventive.com>
+content-class: urn:content-classes:message
+Subject: RE: Using more than 256 MB of memory on SB1250 in 32-bit mode
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="GB2312"
-Content-Transfer-Encoding: base64
-In-Reply-To: <20030829092829Z8225217-1272+4649@linux-mips.org>
-Return-Path: <jeff_lee@coventive.com>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Date: Fri, 29 Aug 2003 16:40:58 -1000
+Message-ID: <DC1BF43A8FAE654DA6B3FB7836DD3A56DEB73D@iris.adtech-inc.com>
+From: "Finney, Steve" <Steve.Finney@SpirentCom.COM>
+Return-Path: <Steve.Finney@SpirentCom.COM>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: embedlf <embedlf@citiz.net>, linux-mips@linux-mips.org
-Message-ID: <20030829103939.ZFiIiD70AlAAyl9hQDA_tVcIVtSeHrntMu_wgqRlYWc@z>
+To: Steve Madsen <madsen@tadpole.com>, linux-mips@linux-mips.org
+Message-ID: <20030830024058.ZiBtb7tY0YF-v54IccvaUZscxkUolRU8sXngimyN2c4@z>
 
-UGxlYXNlIGRvd25sb2FkIHRoZSBidXN5Ym94IGFuZCBtYWtlIGl0IHRvIGJlIG1pcHMgYmluYXJ5
-Lg0KT3IgeW91IGNhbiBmaW5kIHNvbWUgdXNhYmxlIGluZm9ybWF0aW9uIGZyb20gaHR0cDovL2xp
-bnV4Lmp1bnN1bi5uZXQNCg0KUmVnYXJkcywNCg0KSmVmZg0KDQotLS0tLU9yaWdpbmFsIE1lc3Nh
-Z2UtLS0tLQ0KRnJvbTogbGludXgtbWlwcy1ib3VuY2VAbGludXgtbWlwcy5vcmcgW21haWx0bzps
-aW51eC1taXBzLWJvdW5jZUBsaW51eC1taXBzLm9yZ11PbiBCZWhhbGYgT2YgZW1iZWRsZg0KU2Vu
-dDogRnJpZGF5LCBBdWd1c3QgMjksIDIwMDMgNTowMCBQTQ0KVG86IGxpbnV4LW1pcHNAbGludXgt
-bWlwcy5vcmcNClN1YmplY3Q6IGhvdyBJIG1vdW50IHRoZSByb290IGZzIGZyb20gcmFtZGlzaz8/
-DQoNCg0KbGludXgtbWlwczoNCglJIHVzZSBtaXBzIGNwdSBib2FyZCB0byBkZXNpZ24gbXkgcHJv
-ZHVjdC4gSSB3YW50IHJ1biBsaW51eCBlbWJlZGVkIGluIHRoaXMgYm9hcmQuDQpCdXQgaW4gdGhp
-cyBwcm9jZXNzLHRoZXJlIGlzIG5vdCBoYXJkZGlzayBvbiB0aGUgYm9hcmQuDQoJU28gSSBzaG91
-bGQgbW91bnQgdGhlIHJvb3QgZnMgb24gcmFtZGlzay4gRG8geW91IHRoaW5rIHNvPyBJIHNob3Vs
-ZCBtYWtlIGEgcmFtZGlzay4NCg0KZGQgaWY9L2Rldi96ZXJvIG9mPS9kZXYvcmFtIGJzPTFrIGNv
-dW50PTIwNDgNCm1rZTJmcyAtdm0wIC9kZXYvcmFtIDIwNDgNCm1vdW50IC10IGV4dDIgL2Rldi9y
-YW0gL21udC9yYW0NCn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCkFmdGVyIEkgbW91
-bnQgaXQsIEkgc2hvdWxkIGNvcHkgc29tZSBmaWxlcyB0byB0aGlzIGZvbGRlci5JIHVzZWQgY3Jv
-c3NfY29tcGlsZXIsDQpjb21waWxpbmcgbGludXggb24gWDg2IFBDLkhvdyBkbyBJIG1ha2UgdGhl
-IGZpbGUgL3NiaW4vaW5pdD8/d2hlcmUgaXMgdGhlIHNvdXJjZT8/DQoNCmRkIGlmPS9kZXYvcmFt
-IGJzPTFrIGNvdW50PTIwNDggfCBnemlwIC12OSA+IC90bXAvcmFtX2ltYWdlLmd6DQoNCgkNCg0K
-oaGhoaGhoaGhoaGhoaGhoWVtYmVkbGYNCqGhoaGhoaGhoaGhoaGhoaFlbWJlZGxmQGNpdGl6Lm5l
-dA0KoaGhoaGhoaGhoaGhoaGhoaGhoaEyMDAzLTA4LTI5DQoNCg==
+Not sure what you mean by "system memory". You can turn on CONFIG_HIGHMEM and get access to 512 MB physical memory  or more on the BCM with a 32-bit kernel, but you can't access memory above the low 256 MB  directly through KSEG0/1, so there are some things that the kernel can't use it for (though it can be allocated to user processes). Also, since CONFIG_DISCONTIGMEM isn't supported, you end up wasting a bunch of RAM on useless page table space (36MB for 512 MB physical), and there's also some caching weirdness if you try and mmap() /dev/mem to get user access to the >0x10000000 I/O registers. Also, your startup will report "1792 MB HIGHMEM available".
+
+sf
+
+> -----Original Message-----
+> From: Steve Madsen [mailto:madsen@tadpole.com]
+> Sent: Friday, August 29, 2003 12:00 PM
+> To: linux-mips@linux-mips.org
+> Subject: Using more than 256 MB of memory on SB1250 in 32-bit mode
+> 
+> 
+> Is it possible to use more than 256 MB of system memory with 
+> the Broadcom 
+> SB1250 in 32-bit mode?  The memory map I'm looking at shows 
+> me that the 
+> second 256 MB of memory is at physical address 0x80000000.  I 
+> suspect that 
+> due to the 2G/2G split in the kernel, I can't use memory this 
+> high without 
+> moving to the 64-bit kernel.
+> 
+> Would someone confirm this for me?
+> 
+> -- 
+> Steve Madsen <madsen@tadpole.com>
+> Tadpole Computer, Inc.  http://www.tadpole.com
+> 
+> 

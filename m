@@ -1,38 +1,69 @@
-Reply-To: <a.voropay@vmb-service.ru>
-From: "Alexander Voropay" <a.voropay@vmb-service.ru>
-Subject: RE: Linux on SNI RM300E ?
-Date: Tue, 6 Jul 2004 14:18:01 +0400
-Message-ID: <03a001c46342$84ce7210$0200000a@ALEC>
+Received: from eng32 [192.168.48.96] by mac.com [192.168.48.242]
+	with SMTP (MDaemon.v3.0.0.R)
+	for <linux-mips@linux-mips.org>; Wed, 07 Jul 2004 08:51:43 +0530
+Message-ID: <000d01c463d1$994e59a0$6030a8c0@eng32>
+From: "hemanth" <macindiard@vsnl.net>
+Subject: querries on cross compiler
+Date: Wed, 7 Jul 2004 08:52:14 +0530
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="US-ASCII"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1089105260.40ea6d6cf2f9c@www.x-mail.net>
-Return-Path: <a.voropay@vmb-service.ru>
+Return-Path: <macindiard@vsnl.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Thomas Kunze' <thomas.kunze@xmail.net>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20040706101801.AJefeGOg2nNy0RJhNrLL-QW6PelA3c6kfbyKLS6hU7c@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20040707032214.EYcebmP6LeM5Os4wJNr5KEGt1S5Zp0hYYd150x84RVI@z>
 
 
+Hi,
 
->i've downloaded the arcdiag-0.2 and served it via tftp. but the RM300E
-don't like that file.
->it only says "Bad magic number". what does this mean
-(little/bigendian)? 
+Iam trying to build a cross compiler for MIPS processor on
+"i686-pc-linux-gcc" host. Iam getting some errors during the installation of
+BINUTILS(binutils-2.9.1) i.e, after configure, when I type "make" Iam
+getting errors. Can u please suggest how to remove these errors.
 
->the same error-message appears when the to load mipsel boot-images.
+These are the errors,
+root@localhost binutils-2.9.1]# make
 
- Do you have an originas OS (SINIX ?) supplied with this server ?
-Try a `file` GNU utility:
-$ file <ANY_BINARIES_FROM_THE_ORIGINAL_OS>
-or
-$ file <KERNEL_IMAGE_FROM_THE_ORIGINAL_OS>
+make[1]: Entering directory `/root/cross_compiler/binutils-2.9.1/libiberty'
 
- Some modern loaders requires ELF binaries (not COFF) so you should
-know a full binary file format to load (ELF/COFF/little/bigendian).
+if [ -n "" ] && [ ! -d pic ]; then \
 
+mkdir pic; \
 
---
--=AV=-
+else true; fi
+
+touch stamp-picdir
+
+echo "# !Automatically generated from ./functions.def"\
+
+"- DO NOT EDIT!" >needed2.awk
+
+grep '^DEFVAR(' < ./functions.def \
+
+| sed -e '/DEFVAR/s|DEFVAR.\([^,]*\).*|/\1/ { printf "#ifndef
+NEED_\1\\n#define NEED_\1\\n#endif\\n" }|' \
+
+>>needed2.awk
+
+grep '^DEFFUNC(' < ./functions.def \
+
+| sed -e '/DEFFUNC/s|DEFFUNC.\([^,]*\).*|/\1/ { printf "#ifndef
+NEED_\1\\n#define NEED_\1\\n#endif\\n" }|' \
+
+>>needed2.awk
+
+gcc -c -g -O2 -I. -I./../include ./dummy.c 2>/dev/null
+
+make[1]: *** [dummy.o] Error 1
+
+make[1]: Leaving directory `/root/cross_compiler/binutils-2.9.1/libiberty'
+
+make: *** [all-libiberty] Error 2
+
+regards,
+Hemanth
+MACIL
+Electronics city
+Bangalore

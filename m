@@ -1,50 +1,71 @@
-Message-ID: <001601c20803$339e4650$0b01a8c0@w2k30g>
+Message-ID: <002401c20810$c73edd40$0b01a8c0@w2k30g>
 From: "David Christensen" <dpchrist@holgerdanske.com>
-Subject: cross-compiler for MIPS_RedHat7.1_Release-01.00 on Atlas/4Kc using RH7.3-i386 host
-Date: Thu, 30 May 2002 10:54:55 -0700
+References: <001601c20803$339e4650$0b01a8c0@w2k30g>
+Subject: Re: cross-compiler for MIPS_RedHat7.1_Release-01.00 on Atlas/4Kc using RH7.3-i386 host
+Date: Thu, 30 May 2002 12:32:29 -0700
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: linux-mips@oss.sgi.com
-Message-ID: <20020530175455.SbS4xLRapYh_eAZx1vqbmJcoZeH6Y4XCkCFXX-paV24@z>
+Message-ID: <20020530193229.WUfDLtC0DMUNEKSrH3MZcsV1aDt9y41qAbGi1npwG-I@z>
 
 linux-mips@oss.sgi.com:
 
-I have downloaded ftp://ftp.mips.com/pub/linux/mips/installation/redhat7
-.1/01.00/MIPS_RedHat7.1_Release-01.00.iso, burned a CD, and followed the
-instructions provided on the CD (/linux/installation/README) to install
-Linux (little-endian) on a MIPS Atlas/4Kc board with a SCSI disk.  I
-would now like to recompile the kernel to experiment with sound.  I have
-posted to this mailing list before and was informed that I need a cross-
-compiler, available on oss.sgi.com.  My host is Red Hat Linux-i386 7.3.
+I tried installing the three packages anyway.  binutils and egcs
+installed fine.  They contain files and directories with "mips-linux",
+etc., in their names, so they don't conflict with my native i386
+installation:
+
+    root@r7320g:~# rpm -ihv binutils-mipsel-linux-2.8.1-2.i386.rpm
+    Preparing...                ########################################
+### [100%]
+       1:binutils-mipsel-linux  ########################################
+### [100%]
+
+    root@r7320g:~# rpm -ihv egcs-mipsel-linux-1.1.2-4.i386.rpm
+    Preparing...                ########################################
+### [100%]
+       1:egcs-mipsel-linux      ########################################
+### [100%]
 
 
-Following the instructions provided in Chapter 10 of the Linux/MIPS
-HOWTO (http://oss.sgi.com/mips/mips-howto.html), I have located these
-files:
+But glibc has problems:
 
-    ftp://oss.sgi.com/pub/linux/mips/crossdev/i386-linux/mipsel-linux/
-        binutils-mipsel-linux-2.8.1-2.i386.rpm
-
-    ftp://oss.sgi.com/pub/linux/mips/crossdev/i386-linux/mipsel-linux/
-        egcs-mipsel-linux-1.1.2-4.i386.rpm
-
-    ftp://oss.sgi.com/pub/linux/mips/glibc/mipsel-linux/
-        glibc-2.0.6-5lm.mipsel.rpm
+    root@r7320g:~# rpm -ihv glibc-2.0.6-5lm.mipsel.rpm
+    error: failed dependencies:
+            glibc < 2.2.5 conflicts with glibc-common-2.2.5-34
+            glibc < 2.1.90 conflicts with db1-1.85-8
+            glibc < 2.1.90 conflicts with db2-2.4.14-10
+            glibc < 2.1.90 conflicts with gnome-libs-1.4.1.2.90-14
 
 
-I am unable to find:
+Looking at the contents:
 
-    glibc-crypt-2.0.6.tar.gz
+    root@r7320g:~# rpm -q -l -p glibc-2.0.6-5lm.mipsel.rpm | head
+    /etc/nsswitch.conf
+    /etc/rpc
+    /lib/ld-2.0.6.so
+    /lib/ld.so.1
+    /lib/libBrokenLocale-2.0.6.so
+    /lib/libBrokenLocale.so.1
+    /lib/libc-2.0.6.so
+    /lib/libc.so.6
+    /lib/libcrypt-2.0.6.so
+    /lib/libcrypt.so.1
 
-    glibc-localedata-2.0.6.tar.gz
 
-    glibc-linuxthreads-2.0.6.tar.gz
+It contains files that would break my native i386 installation:
+
+    root@r7320g:~# ls -1 /etc/nsswitch.conf /etc/rpc /lib/ld*
+    /etc/nsswitch.conf
+    /etc/rpc
+    /lib/ld-2.2.5.so
+    /lib/ld-linux.so.2
 
 
-Does anybody have any comments or suggestions?
+Any comments or suggestions?
 
 
 TIA,

@@ -1,53 +1,171 @@
-Received: from 246tNt.com (21-6.CampusNet.ucl.ac.be [130.104.21.6])
-	by neptune.fsa.ucl.ac.be (8.12.10/8.12.9/mp-2002.03.25) with ESMTP id i0SFkgfe004301
-	for <linux-mips@linux-mips.org>; Wed, 28 Jan 2004 16:46:42 +0100 (MET)
-Message-ID: <4017D96F.2080202@246tNt.com>
-Date: Wed, 28 Jan 2004 16:46:55 +0100
-From: Sylvain Munaut <tnt@246tnt.com>
+Received: from mail.soc-soft.com (202.56.254.199) by vscrn4.securesynergyonline.com (202.138.125.47), id <1075358884906.53258282.vscrn4.securesynergyonline.com>
+	for <linux-mips@linux-mips.org>;
+	Thu, 29 Jan 2004 12:18:04 +0530
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Subject: Re: Linux 2.6 on AMD Alchemy Au1500
-References: <4017927B.5080907@246tNt.com> <1075302354.16255.12.camel@localhost.localdomain> <4017D2D5.2050605@246tNt.com> <1075303379.16255.23.camel@localhost.localdomain> <20040128153627.GB14580@linux-mips.org>
-In-Reply-To: <20040128153627.GB14580@linux-mips.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <tnt@246tnt.com>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3E635.7C891FB8"
+Subject: Testing of Ethernet controller
+Date: Thu, 29 Jan 2004 12:29:49 +0530
+Message-ID: <E519BE9E8DAC6A4B89DA4AD1D2A155B76751A8@soc-mail.soc-soft.com>
+From: "Nitin P Mahajan" <Nitin@soc-soft.com>
+Return-Path: <Nitin@soc-soft.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: Linux/MIPS Development <linux-mips@linux-mips.org>
-Message-ID: <20040128154655.smd7Pf1hhNIXXvmP0uRKbFbUV_THjfN6qO0mPoj1FMM@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20040129065949.iNijb2GfJMKoeihtDAVJOtITsE0xXuq6JkZPIqOSYzI@z>
+
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C3E635.7C891FB8
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi All!
+
+            I am new to the list.
+
+I am writing a driver for a on-chip MAC controller exactly similar to
+TC35815 chip. Can anyone please tell me that how can I test it
+thoroughly.
+
+ Mainly I have to design the test bed keeping in view the following
+points.
+
+=20
+
+a.	Throughput of 10/100 Mbps
+b.	Interrupt and polling modes.
+c.	And functional test
+
+Thanking u in advance
+
+=20
+
+Regards
+
+=20
+
+Nitin
 
 
+------_=_NextPart_001_01C3E635.7C891FB8
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
->>>Ok. Is it available on some CVS / www page ?
->>>If we eventually choose Au1500 as platform I may be able to test it as 
->>>well and bug reports.
->>>      
->>>
->>No yet, but I'll email it to the mailing list in the next couple of
->>days. I would consider it Beta.
->>
->>    
->>
-Ok, anyway I don't yet have a board ...
+<html>
 
->>Just curious, why 2.6? 2.4 is solid, everything works, provides a mature
->>kernel and drivers ...?
->>    
->>
->
->Because in the not too far future the Linux community will largely run
->away from 2.4?  In fact the motivation of many developers to continue
->with 2.4 is quite down already and Marcelo is going to put 2.4 into
->deep freeze after 2.4.25.
->
->  
->
-Yes that's one of my main reason. And by the time the products ships to 
-customers it will be tested. I think that one more person testing it is 
-one more person able to find/debug problems.
-There are also some features that are natively in 2.6 and requires 
-external patches / drivers in a 2.4 series kernel ( ipsec, preemption, 
-alsa, ... )
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
 
 
-Sylvain Munaut
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi All!</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; I
+am new to the list.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I am writing a driver for a on-chip MAC controller =
+exactly
+similar to TC35815 chip. Can anyone please tell me that how can I test =
+it
+thoroughly.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;Mainly I have to design the test bed keeping in =
+view
+the following points.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<ol start=3D1 type=3Da>
+ <li class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+     font-family:Arial'>Throughput of 10/100 Mbps</span></font></li>
+ <li class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+     font-family:Arial'>Interrupt and polling modes.</span></font></li>
+ <li class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+     font-family:Arial'>And functional test</span></font></li>
+</ol>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanking u in advance</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Regards</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Nitin</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C3E635.7C891FB8--
+Scanned by SecureSynergy VirusScreen Service. 
+For more information log on to : http://www.securesynergyonline.com or http://www.securesynergy.com

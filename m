@@ -1,33 +1,53 @@
-From: "randy" <fountain21tanya@hotmail.com>
-Date: Thu, 25 Mar 2004 08:05:07 GMT
-Message-ID: <1080201907-11895@excite.com>
-Subject: Exceptional deals on C1AL1S, 80 precent off!
+Content-Class: urn:content-classes:message
+MIME-Version: 1.0
 Content-Type: text/plain;
-Return-Path: <sweet1p06@hotmail.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: PMON - IdentifyFlashType
+Date: Thu, 25 Mar 2004 16:25:03 +0100
+Message-ID: <765921A8173EC145948ACBAA0480F67E2C76D6@server10.dallmeier.de>
+From: "erras stefan" <stefan.erras@dallmeier-electronic.com>
+Return-Path: <stefan.erras@dallmeier-electronic.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ladis@linux-mips.org
-Message-ID: <20040325080507.eCaxg4_CZk2Q7aCodarkmvXi9khUFjhAKRkHwR3oSN8@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20040325152503.bovcQ2A2o9Y8mkS_K2tE01-KzUs-81BJzfskFKfCKm8@z>
 
-Greatest VIAGRnoA and CIoALaIS
-Best offers on ValiuXXm and XZanaXx
-Quick weight loss (josh design) and antidepressant meedication!
-Incredible deals, 80 prcent off!
-We ship wroldwide!
+Can anybody of you great guys can explain me the folling function which
+I found in PMON:
 
-Clik Here:
-http://looney.base4ds.com/s95/index.php?id=s95
+BOOL IdentifyFlashType()
+{
+	ULONG	mId, dId;
 
+	WRITE_REGISTER_ULONG(FLASH_START, 0x90909090);
+	mId = READ_REGISTER_ULONG(FLASH_START);
+	WRITE_REGISTER_ULONG(FLASH_START, 0x90909090);
+	dId = READ_REGISTER_ULONG(FLASH_START+4);
+	
+	if ((mId == 0x00890089) && (dId == 0x00180018)) 
+	{
+		FlashType = 1;		// J3 flash
+		WRITE_REGISTER_ULONG(FLASH_START, 0x00ff00ff);
+		printf("J3 32MB flash found on this platform\r\n");
+		return TRUE;
+	}	
+	else if ((mId == 0x00890089) && (dId == 0x00170017)) 
+	{	 
+		FlashType = 1;		// J3 flash
+		WRITE_REGISTER_ULONG(FLASH_START, 0x00ff00ff);
+		printf("J3 16MB flash found on this platform\r\n");
+		return TRUE;
+	}
+	return FALSE;
+}
 
+I have to know what the WRITE_REGISTER_ULONG and READ_REGISTER_ULONG
+functions do affect.
+Why do they write 0x90909090 or 0x00ff00ff to FLASH_START?
+Whats the meaning of mId and dId?
 
+Thank you all in advance for your help!!!
 
-
-
-
-
-
-
-
-tracy clipper new gretchen paula advil tattoo new 
-gambit steph scorpion passion maria florida bigman lorraine 
-nikita jkm twins tango director memory jeff center blowfish
+Greetings
+Stefan

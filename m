@@ -1,53 +1,64 @@
-Content-Class: urn:content-classes:message
+content-class: urn:content-classes:message
+Subject: FW: 64 bit operations w/32 bit kernel
+Date: Thu, 25 Mar 2004 13:25:57 -1000
+Message-ID: <DC1BF43A8FAE654DA6B3FB7836DD3A56DEB879@iris.adtech-inc.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
-Subject: PMON - IdentifyFlashType
-Date: Thu, 25 Mar 2004 16:25:03 +0100
-Message-ID: <765921A8173EC145948ACBAA0480F67E2C76D6@server10.dallmeier.de>
-From: "erras stefan" <stefan.erras@dallmeier-electronic.com>
-Return-Path: <stefan.erras@dallmeier-electronic.com>
+From: "Finney, Steve" <Steve.Finney@SpirentCom.COM>
+Return-Path: <Steve.Finney@SpirentCom.COM>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040325152503.bovcQ2A2o9Y8mkS_K2tE01-KzUs-81BJzfskFKfCKm8@z>
+Message-ID: <20040325232557.O8M0Rc5wn-AKrSWij3HtsDj081ezdiScmOh_ly8ij6Q@z>
 
-Can anybody of you great guys can explain me the folling function which
-I found in PMON:
+Back in September I was wrestling with the issue of how or
+whether you could do atomic access to 64 bit memory mapped 
+registers from user space running on a 32 bit kernel, and 
+had pretty much concluded (on the basis of discussions here
+and elsewhere) that it was impossible. However, Chris 
+Demetriou from Broadcom provided me with a working solution, 
+which turns out to match Maciej's suggestion below (which I 
+wasn't smart enough to grok at the time). Here's the read, 
+and you can do an equivalent with a write...
 
-BOOL IdentifyFlashType()
+sf
+
+-----------------------------------------------------
+
+uint64_t
+read64 (volatile uint64_t *addr)
 {
-	ULONG	mId, dId;
+     double d;
+     uint64_t rv;
+     __asm__ __volatile__ (".set push            \n\t"
+                           ".set mips32          \n\t"
+                           "ldc1 %0, 0(%2)       \n\t"
+                           "sdc1 %0, %1          \n\t"
+                           ".set pop"
+                           : "=f"(d), "=m"(rv) : "r"(addr));
+     return rv;
+ }
 
-	WRITE_REGISTER_ULONG(FLASH_START, 0x90909090);
-	mId = READ_REGISTER_ULONG(FLASH_START);
-	WRITE_REGISTER_ULONG(FLASH_START, 0x90909090);
-	dId = READ_REGISTER_ULONG(FLASH_START+4);
-	
-	if ((mId == 0x00890089) && (dId == 0x00180018)) 
-	{
-		FlashType = 1;		// J3 flash
-		WRITE_REGISTER_ULONG(FLASH_START, 0x00ff00ff);
-		printf("J3 32MB flash found on this platform\r\n");
-		return TRUE;
-	}	
-	else if ((mId == 0x00890089) && (dId == 0x00170017)) 
-	{	 
-		FlashType = 1;		// J3 flash
-		WRITE_REGISTER_ULONG(FLASH_START, 0x00ff00ff);
-		printf("J3 16MB flash found on this platform\r\n");
-		return TRUE;
-	}
-	return FALSE;
-}
+------------------------------------------------------------------------
 
-I have to know what the WRITE_REGISTER_ULONG and READ_REGISTER_ULONG
-functions do affect.
-Why do they write 0x90909090 or 0x00ff00ff to FLASH_START?
-Whats the meaning of mId and dId?
+On Tue, 30 Sep 2003, Ralf Baechle wrote:
 
-Thank you all in advance for your help!!!
+> What I called a bug is the necessity to access hardware registers with
+> 64-bit loads and stores in some systems as opposed to of 32-bit
+> instructions - that simply doesn't work from 32-bit universes.
+> 
+> To clarify, it was my understanding of Steve's problem he needs 64-bit
+> loads and stores, not something in the 64-bit physical address space.
+> The later problem obviously would get a different answer.
 
-Greetings
-Stefan
+ I must have missed the detail.  Well, if 64-bit transfers are needed,
+then going for the 64-bit kernel is about the only way.  Or, as a wild
+hack, perhaps "ldc1" and "sdc1" can be used, if it's known the FP is
+present.
+
+-- 
++  Maciej W. Rozycki, Technical University of Gdansk, Poland   +
++--------------------------------------------------------------+
++        e-mail: macro@ds2.pg.gda.pl, PGP key available        +

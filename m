@@ -1,37 +1,53 @@
-Message-ID: <00b501bf3ffe$f25a9910$0ceca8c0@satanas.mips.com>
-From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: Re: Nomenclature: "MIPS32", "MIPS64"
-Date: Mon, 6 Dec 1999 16:31:13 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: fisher@hollywood.engr.sgi.com (William Fisher)
+Message-ID: <199912080313.TAA24823@hollywood.engr.sgi.com>
+Subject: Re: Question for David Miller or anyone else about R6000 code
+Date: Tue, 7 Dec 1999 19:13:05 -0800 (PST)
+In-Reply-To: <19991206092830.C765@uni-koblenz.de> from "Ralf Baechle" at Dec 6, 99 09:28:30 am
+Reply-To: fisher@sgi.com
+Content-Type: text
 Sender: owner-linuxmips@oss.sgi.com
 Return-Path: <owner-linuxmips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19991206153113.8gn4jpBruJkJrrGL8D98Q-lnTz3wqlxb2-t-8q5Qwzc@z>
+To: ralf@oss.sgi.com, kevink@mips.com
+Cc: linux@hollywood.engr.sgi.com, William Fisher <fisher@hollywood.engr.sgi.com>
+Message-ID: <19991208031305.3oU1WcOAYw_lE9WpHor4m-7BZyocUXZasdvWrW9f83w@z>
 
->On Mon, Dec 06, 1999 at 01:35:54PM +0000, Alan Cox wrote:
->
->> I would suggest that until someone from MIPS legal specifically raises an
-issue
->> you don't worry about it. With the sparc people they were quite happy with
->> Linux/sparc - which denotes Linux for sparc systems (they objected to
->> sparclinux as that implied it was their product). In fact given the "/" is
->> 'for' then I don't think there is even a valid trademark issue to be raised.
->>
->> Its also not in MIPS interest to cause trouble. Its a product for their
->> system. If they started being silly then everyones lawyers would be advising
->> them to pull their "xyz product for mips" as a legal precaution.
->
->I wouldn't expect MIPS to create any legal problems for anybody; you should
->consider this no more than an advice.
->
->  Ralf
+> 
+> On Mon, Dec 06, 1999 at 10:58:10AM +0100, Kevin D. Kissell wrote:
+> 
+> > I'm working on cleaning up and enhancing the
+> > MIPS/Linux code to support the new families
+> > of CPUs coming out of MIPS Technologies Inc.
+> > In doing so, I've come across and fixed a number
+> > of bugs, most of which I've also passed back to
+> > Ralf Baechle for integration with the moving
+> > target at linux.sgi.com.   But I came across 
+> > something this morning that, while not a problem
+> > for us, puzzles me.   In arch/mips/mm/r6000.c,
+> > which has your name on it, there is a compiler
+> > directive to use MIPS III instructions, and the
+> > resulting code does indeed end up containing
+> > 64-bit (daddiu, etc.) instructions.   I've never
+> > actually programmed an R6000, but all of the
+> > information I have on that processor indicates
+> > that it is a MIPS II, 32-bit design, and that those
+> > instructions should therefore cause exceptions.
+> > 
+> > Am I mistaken, or is that directive a bug?
+> 
+> It obviously is.  The R6000 code isn't supposed to work and given that
+> currently none of the Linux/MIPS hackers has a) R6000 documentation and
+> b) an R6000 machine an R6000 port ever happening is highly unprobable.
+> As the result of this I think I'm going to just burry the R6000 support
+> and while I'm at it also the R8000.
+> 
+>   Ralf
+> 
+	Since the R6000 was an ECL machine produced in late 1992, just
+	before the MIPS/SGI merger. There were only a few machines sold
+	and the machine was designed to be a Fortran FP specialist.
 
-Exactly.  The point is that there are two different concepts to be represented
-in the kernel for which we risk having a name collision, and that the
-registration
-of the trademark provides an argument somewhat stronger than a coin toss
-for resolving it one way and not the other.
+	Hence the R6000 is long since dead. We still have the MIPS risc/os 5.01
+	operating system source code, so if anybody has lots of free cycles
+	to waste, I'm sure we can send them locore.
+
+-- Bill

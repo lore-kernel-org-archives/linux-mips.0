@@ -1,36 +1,36 @@
-Message-ID: <011801c0e55f$e4d39820$0deca8c0@Ulysses>
+Message-ID: <00c901c0e631$4bcebd80$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <Pine.GSO.3.96.1010525130531.17652A-100000@delta.ds2.pg.gda.pl>
+References: <Pine.GSO.3.96.1010525130531.17652A-100000@delta.ds2.pg.gda.pl> <011801c0e55f$e4d39820$0deca8c0@Ulysses> <20010525144937.A28370@nevyn.them.org>
 Subject: Re: [PATCH] incorrect asm constraints for ll/sc constructs
-Date: Fri, 25 May 2001 23:15:48 +0200
+Date: Sun, 27 May 2001 00:14:43 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>, Daniel Jacobowitz <dan@debian.org>
+To: Daniel Jacobowitz <dan@debian.org>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20010525211548.NU6MjkW6HZdM3CQNvdIzma3zizS72kEXEdIkJ7P7TdM@z>
+Message-ID: <20010526221443.g5KTuNHQNWoXmCEM1Jr2NDKG4D6YlB-wYhSuHT_UwQU@z>
 
->  The following program cannot be compiled with gcc 2.95.3, because the
-> offset is out of range (I consider it a bug in gcc -- it should allocate
-> and load a temporary register itself and pass it appropriately as %0,
+> On Fri, May 25, 2001 at 11:15:48PM +0200, Kevin D. Kissell wrote:
+> > >  The following program cannot be compiled with gcc 2.95.3, because the
+> > > offset is out of range (I consider it a bug in gcc -- it should
+allocate
+> > > and load a temporary register itself and pass it appropriately as %0,
+> >
+> > I think gcc can be forgiven for not allocating a temporary,
+> > given the ".set noat"...
+>
+> Except, of course, gcc doesn't even know the set noat is there.  It
+> doesn't parse the interior of asm() statements.
 
-I think gcc can be forgiven for not allocating a temporary,
-given the ".set noat"...
+Fair enough.  It was an offhand remark.  But seriously, what does
+the "R" constraint mean here?  The only documentation I've got
+(http://linux.fh-heilbronn.de/doku/GNU/docs/gcc/gcc_163.html#SEC163)
+says that "Q" through "U" are reserved for use with EXTRA_CONSTRAINT
+in machine-dependent definitions of arbitrary operand types.  When
+and where does it get bound for MIPS gcc, and what is it supposed
+to mean?  If I compile this kind of fragment using a "m" constraint,
+it seems to do the right thing, at least on my archaic native compiler.
 
-> matching the "R" constraint; still it's better than generating bad code):
->
-> int main(void)
-> {
-> int *p;
->
-> asm volatile(".set push\n\t"
->   ".set noat\n\t"
-> "lw $0,%0\n\t"
-> ".set pop"
-> :
-> : "R" (p[0x10000]));
->
-> return 0;
-> }
+            Kevin K.

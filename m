@@ -1,70 +1,41 @@
-Received: from fw01.bwg.de (localhost [127.0.0.1])
-	by fw01.bwg.de (8.11.6p2G/8.11.6) with ESMTP id iATBQSR07975
-	for <linux-mips@linux-mips.org>; Mon, 29 Nov 2004 12:26:28 +0100 (CET)
-From: =?iso-8859-1?Q?Ralf_R=F6sch?= <ralf.roesch@rw-gmbh.de>
-Subject: [PATCH] Fix for signal.c and Toshiba TX49XX TLB refill handler
-Date: Mon, 29 Nov 2004 12:26:44 +0100
-Message-ID: <NHBBLBCCGMJFJIKAMKLHGEHOCCAA.ralf.roesch@rw-gmbh.de>
+Received: from localhost (localhost.lan [127.0.0.1])
+	by mail.romat.com (Postfix) with ESMTP id 8CFE0EB2F8
+	for <linux-mips@linux-mips.org>; Tue, 30 Nov 2004 11:56:45 +0200 (IST)
+Received: from mail.romat.com ([127.0.0.1])
+ by localhost (mail.romat.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 13726-04 for <linux-mips@linux-mips.org>;
+ Tue, 30 Nov 2004 11:56:40 +0200 (IST)
+Received: from gilad (unknown [192.168.1.167])
+	by mail.romat.com (Postfix) with ESMTP id 499DFEB2EF
+	for <linux-mips@linux-mips.org>; Tue, 30 Nov 2004 11:56:40 +0200 (IST)
+From: "Gilad Rom" <gilad@romat.com>
+Subject: CP0 EntryLo
+Date: Tue, 30 Nov 2004 11:56:39 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-Path: <ralf.roesch@rw-gmbh.de>
+Message-ID: <20041130095640.499DFEB2EF@mail.romat.com>
+Return-Path: <gilad@romat.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20041129112644.ePe4jXXUPJwD7D_NFfguXIbz6dtz-I-nN0m9P-aQ-h8@z>
+Message-ID: <20041130095639.OeenjjuH47x0LwpRl9mm2yuT89cQ6SI2Jx4SKMJyQII@z>
 
-the signal.c (get_sigframe) handler forces my boot process hanging in init
-process.
-Following patch solves the problem:
+Hello List,
 
-Index: arch/mips/kernel/signal.c
-===================================================================
-RCS file: /home/cvs/linux/arch/mips/kernel/signal.c,v
-retrieving revision 1.79
-diff -u -r1.79 signal.c
---- arch/mips/kernel/signal.c	28 Nov 2004 23:20:12 -0000	1.79
-+++ arch/mips/kernel/signal.c	29 Nov 2004 11:18:37 -0000
-@@ -374,7 +374,7 @@
- 	else
- 		almask = ALMASK;
+I am attempting to access a peripheral device over the Au1500 static bus.
 
--	return (void *)((sp - frame_size) & ~(PLAT_TRAMPOLINE_STUFF_LINE - 1));
-+	return (void *)((sp - frame_size) & almask);
- }
+According to the Au1500 Databook, Whenever I set the Chip Select config
+Register DTY bits to 1 (for "I/O Device"), I must also set 
+Bits 29:26 of CoProcessor 0 to 0xD, to represent bits 35:32 of the 
+Physical address. 
 
- #ifdef CONFIG_TRAD_SIGNALS
+My question is, if anyone can answer it, is how do I setup
+The CoProcessor0 registers 29:26 in my driver?
 
+I have noticed a set of functions called write/read_c0_entrylo[0,1],
+But I keep getting random values when invoking these from my driver.
 
-
-without next patch the TX4927 Toshiba processor definitely does not boot.
-(My CPU was hanging without any message on the serial console), this means
-the panic() message
-		panic("No TLB refill handler yet (CPU type: %d)",
-		      current_cpu_data.cputype);
-could not be seen.
-
-I am not sure, if the place where I inserted the new processor type is
-correct.
-
-Index: arch/mips/mm/tlbex.c
-===================================================================
-RCS file: /home/cvs/linux/arch/mips/mm/tlbex.c,v
-retrieving revision 1.7
-diff -u -r1.7 tlbex.c
---- arch/mips/mm/tlbex.c	29 Nov 2004 05:31:09 -0000	1.7
-+++ arch/mips/mm/tlbex.c	29 Nov 2004 11:23:05 -0000
-@@ -763,6 +763,7 @@
-
- 	case CPU_R4600:
- 	case CPU_R4700:
-+	case CPU_TX49XX:
- 	case CPU_R5000:
- 	case CPU_R5000A:
- 	case CPU_5KC:
-
-The patches included is against 2.6.
-
-Thanks and regards
-  Ralf Roesch
+Thanks,
+Gilad.

@@ -1,26 +1,28 @@
-Message-ID: <001301c1c7cd$ef03a0a0$283584d3@gol.com>
-From: "Girish Gulawani" <girishvg@yahoo.com>
-Subject: SMP : How can I tell if it worked? 
-Date: Sun, 10 Mar 2002 09:53:00 +0900
+Message-ID: <000701c1ca6e$40741fd0$fa4d3254@T2M.lan>
+From: "Nicolas Sauzede" <nicolas.sauzede@t2m.fr>
+Subject: fetched 2.4.16 source tree
+Date: Wed, 13 Mar 2002 10:05:41 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "MIPS/Linux List (SGI)" <linux-mips@oss.sgi.com>
-Message-ID: <20020310005300.XhKc6YeYESHa8G-oOIbg8pTJXu5aBt4pf8J0RBxzmUE@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020313090541.qSDtb52M5mLfqEJwT6nBsgJ9DiSh8zYkZfK-bu3lD-w@z>
 
+Hi !
 
-hello.
-i have a board with dual LSI EZ4021. the kernel version 2.4.3 is configured
-as SMP & its running. what i'd like to know is, how to confirm? its just a
-simple system that is single user & a serial console. for such system where
-can i get FREE multithreaded application w/ source code? would you recommend
-any particular applications for benchmarking?
-many thanks in advance.
-girish.
+I've got a working debian linux on my Indy, and I fetched the
+[kernel-source-2.4.16_2.4.16-1_all.deb] package
+but I couldn't recompile it !
+There are lots of warning and errors, both for kernel/modules
+I began patching (succesfully) ones concerning scsi, but there still remains
+keyboard and other part failing to compile..
 
+Do I have to apply some special patch ??
+I just D/L [kernel-patch-2.4.16-mips_2.4.16-0.011212.1_all.deb] => is it it
+? Is it the best patch, for compiling sources on my Indy ?
 
-_________________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.com address at http://mail.yahoo.com
+Thanks,
+
+Nicolas Sauzede.

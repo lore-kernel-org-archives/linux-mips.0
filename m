@@ -1,41 +1,36 @@
-Message-ID: <017701c1d114$2a1bca60$5601010a@prefect>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <86048F07C015D311864100902760F1DD01B5E828@dlfw003a.dus.infineon.com>
-Subject: Re: Kernel compile with -O0
-Date: Thu, 21 Mar 2002 15:06:29 -0500
+Message-ID: <001401c1d161$eef48640$0b01a8c0@w2k30g>
+From: "David Christensen" <dpchrist@holgerdanske.com>
+Subject: Fw: Fw: Fw: hello
+Date: Thu, 21 Mar 2002 21:24:37 -0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1252"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Andre.Messerschmidt@infineon.com, linux-mips@oss.sgi.com
-Message-ID: <20020321200629.yctYelIuPB1PEeqLFQ4OcZVPjuRnSWeylLaYamhUbpA@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020322052437.oc4LD_Nb0cHlv15PmYoBWnG-Oa57OlCubm8aEjKO6r0@z>
 
-That turns off inlining, which the kernel *requires*.
+linux-mips@oss.sgi.com:
 
-Regards,
-Brad
+Hartvig Ekner <hartvige@mips.com> wrote:
+>> What host hardware platform(s) and host operating system(s) does MIPS
+>> use to build their MIPS Linux distribution as found on
+>> ftp://ftp.mips.com/pub/linux/mips/?
+>
+> We use commercial Redhat x86/Linux hosts with the cross compiler link
+> I sent for kernel compiles. All the binary RPM's are directly from
+> H.J.s miniport (which I believe is mostly crosscompiled), and then we
+> added some of the nfs/cdrom installation scripts around all this. We
+> only rebuild parts of userland (most often native) from the SRPMS when
+> necessary for internal debug etc, but this is purely for debug, not
+> re-distribution.
+>
+> All of H.J's binary RPMs for the userland and the corresponding source
+> RPMs we used can be found at:
+>
+> ftp://oss.sgi.com/pub/linux/mips/redhat/7
 
------ Original Message -----
-From: <Andre.Messerschmidt@infineon.com>
-To: <linux-mips@oss.sgi.com>
-Sent: Thursday, March 21, 2002 1:36 PM
-Subject: Kernel compile with -O0
+Great!  Thanks for all the help.  :-)
 
 
-> Hi.
->
-> When I try to compile my 2.4.3 Kernel with -O0 I get a lot of undefined
-> references to functions like __cli, clear_bit etc. during linking.
-With -O1
-> it works.
->
-> Do I have to provide some special compile option to make this work?
->
-> best regards
-> --
-> Andre Messerschmidt
->
-> Application Engineer
-> Infineon Technologies AG
->
+David

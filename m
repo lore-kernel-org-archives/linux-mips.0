@@ -1,43 +1,38 @@
-Message-ID: <199907191330.PAA06009@zaphod.et.tudelft.nl>
-Subject: Re: 200mhz indy
-Date: Mon, 19 Jul 1999 15:30:53 +0200 (CEST)
-In-Reply-To: <37922879.C3136AE3@rigelfore.com> from "Eric Melville" at Jul 18, 99 12:18:17 pm
-From: Edwin Hakkennes <E.Hakkennes@et.tudelft.nl>
-Content-Type: text
+Message-ID: <006e01bed92d$35beb940$81fd92ca@provokator>
+Reply-To: "InartS Multimedia" <inarts@bdg.centrin.net.id>
+From: "InartS Multimedia" <inarts@bdg.centrin.net.id>
+References: <199907210601.XAA18875@hollywood.engr.sgi.com>
+Subject: Re: Linux for IRIS
+Date: Wed, 28 Jul 1999 11:34:02 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Eric Melville <m_thrope@rigelfore.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19990719133053.C_SVbvKI-KqlsTXzdCpi-fqe7YgQJPH-n1NhjR_SrNI@z>
+Content-Transfer-Encoding: 7bit
+To: linux@cthulhu.engr.sgi.com, fisher@sgi.com
+Cc: William Fisher <fisher@hollywood.engr.sgi.com>
+Message-ID: <19990728183402.LcR9lieLqZ-4jMyagVBO6WqCSJB8Nzn_xFzdPs25ra4@z>
 
-Hi Eric,
+> It must be Irix 4.0.5 since there wasn't an Irix 4.5 release.
+> A Personal Iris 4D is a VERY OLD and slow machine that runs
+> just great using  Irix 4.0.5. It is a very slow R3000 based
+> machine.
 
-> 
-> ok, this morning i successfully booted my r4400 rev. 6.0 indy! thanks
-> for the help... but now i've got a problem installing it. i'm a little
-> low on disk space for the whole hardhat archive. i was thinking i could
-> dump the rpms to a cd and then hook me external scsi cdrom to the indy,
-> however the root fs for hardhat setup seems to be missing mount, plus i
-> don't know if the redhat installer can be "tricked" like that (i have NO
-> redhat experience).
-> 
+Yes,It is true. It is Irix 4.0.5,... sorry , i am mistaken. Ha..ha.
+I just got this machine and i am not so familiar with this system. I am
+still doing research on it. How powerful actually is this machine? If we
+compare it to today's Pentium classes machine, which pentium class has the
+same power with this machine?
+Does it enough to do some 3D modelling/animation job?
 
-I didn't try this, but it should work. At least it works with
-redhat-alpha.
+> If you want a "reasonable" MIPS Linux box, you might want to
+> consider upgrading to an Indy aka R4400 based system on which
+> most of the Linux MIPS development centers.
 
-If you can get the kernel loaded and recognising the CD, it should be
-do-able. Just boot the kernel with vmlinux root=/dev/scd0 
+Do you know how can i get upgrade system in Indonesia or other asia
+countries?
 
-You can't just dump the RPMS to the CD. The whole install image should
-be on the CD, it should be mountable as a rootfs.
+Thank you very much,
 
-Beware that there are quite some absolute symlinks. They could pose
-problems. Make sure that mkisofs picks the right contents in this case.
-(e.g. sbin/init instead of /sbin/init)
-
-
-BTW: I'm trying to come up with recompiled rpm for the updates relative to
-HardHat. Is anyone interested in these?
-
-Greetings and good luck,
-
-Edwin Hakkennes
+Aris

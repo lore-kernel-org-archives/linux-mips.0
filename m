@@ -1,78 +1,43 @@
-Message-ID: <012801c13307$a05865e0$3501010a@ltc.com>
-From: "Bradley D. LaRonde" <brad@ltc.com>
-References: <20010901165842.B13357@tuxedo.skovlyporten.dk> <010401c132fe$610d0610$3501010a@ltc.com> <20010901181009.A13883@tuxedo.skovlyporten.dk>
-Subject: Re: set_except_vector question
-Date: Sat, 1 Sep 2001 13:00:37 -0400
+Message-ID: <02e701c13418$7f51a0c0$056aaac0@kjlin>
+From: "kjlin" <kj.lin@viditec-netmedia.com.tw>
+References: <02b801c13203$f52ad440$056aaac0@kjlin> <999283122.29395.45.camel@ez>
+Subject: Re: compile C++ code
+Date: Mon, 3 Sep 2001 09:33:56 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="big5"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Lars Munch <lars@segv.dk>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010901170037._uzS2sQ1W6v6RRTbOL3lUYNtduVG5-qWsM1EbcuGvaM@z>
-
-I haven't verified it, but it looks like it is making jump (j) instruction
-that jumps to handler.  So the first instruction at the dedicated interrupt
-vector becomes a jump to the handler.
-
-Regards,
-Brad
-
------ Original Message -----
-From: "Lars Munch" <lars@segv.dk>
-To: "Bradley D. LaRonde" <brad@ltc.com>
-Cc: <linux-mips@oss.sgi.com>
-Sent: Saturday, September 01, 2001 12:10 PM
-Subject: Re: set_except_vector question
+To: linux-mips@oss.sgi.com
+Message-ID: <20010903013356.-FQJ7b5-JweP3a-vQyMMViFSLxKZJ3wWQOR-U3gt22E@z>
 
 
-> What do you mean by "synthesizing a jump"?
+> > #mips-linux-gcc test.C
+> > /usr/lib/gcc-lib/mips-linux/egcs-2.91.66/libgcc.a(frame.o): In function
+`decode_uleb128':
+> >
+/usr/src/redhat/BUILD/egcs-1.1.2/target-mips-linux/gcc/../../gcc/frame.c(.da
+ta+0x0): undefined reference to `pthread_create'
+> > /usr/mips-linux/bin/ld: bfd assertion fail ../../bfd/elf32-mips.c:5123
+> > mips-linux-gcc: Internal compiler error: program ld got fatal signal 11
+> > #mips-linux-g++ test.C
+> > /usr/mips-linux/lib/libstdc++.so: undefined reference to
+`pthread_create'
+> > /usr/mips-linux/lib/libstdc++.so: undefined reference to
+`pthread_getspecific'
+> > /usr/mips-linux/lib/libstdc++.so: undefined reference to `pthread_once'
+> > /usr/mips-linux/lib/libstdc++.so: undefined reference to
+`pthread_key_create'
+> > /usr/mips-linux/lib/libstdc++.so: undefined reference to
+`pthread_setspecific'
+> >
+> It seems you should link with pthread lib :
+> #mips-linux-g++ test.C -lpthread
 >
-> My CPU is a 5Kc and it has a DIVEC which is set to the mipsIRQ function in
-> /arch/mips64/mips-boards/generic/mipsIRQ.S to handle interrupts. But I
-still do
-> not understand the address manipulation which is done before storing the
-> function pointer (handler).
->
-> Thanks
-> Lars Munch
->
-> On Sat, Sep 01, 2001 at 11:54:26AM -0400, Bradley D. LaRonde wrote:
-> > Looks like it is synthesizing a jump (j) instruction to forward
-interrupt
-> > exceptions to the interrupt handler for cpus that have a dedicated
-interrupt
-> > vector (DIVEC).  arch/mips/kernel/setup.c sets the DIVEC option for
-certain
-> > cpus.
-> >
-> > Regards,
-> > Brad
-> >
-> > ----- Original Message -----
-> > From: "Lars Munch" <lars@segv.dk>
-> > To: <linux-mips@oss.sgi.com>
-> > Sent: Saturday, September 01, 2001 10:58 AM
-> > Subject: set_except_vector question
-> >
-> >
-> > > Hi
-> > >
-> > > I have been looking at the set_except_vector function in
-> > > arch/mips[64]/kernel/traps.c and wondering why the handler
-> > > address is changed/recalculated before it is stored:
-> > >
-> > > *(volatile u32 *)(KSEG0+0x200) = 0x08000000 | (0x03ffffff & (handler
->>
-> > 2));
-> > >
-> > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > >
-> > > Could someone please enlighten me?
-> > >
-> > > Thanks
-> > > Lars Munch
-> > >
-> >
->
+> I think the libgcc.a should be linked with it ... Can anyone tell us
+> further on that subject?
+
+Yes, if i link with "-lpthread" , the error is solved.
+But i am confused that when i compile the same code with native gcc/g++, it
+is needless to link with that option.
+Why?

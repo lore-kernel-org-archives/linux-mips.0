@@ -1,31 +1,29 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <372B887C.6A548755@unidial.com>
-Date: Sat, 01 May 1999 23:04:28 +0000
-From: Alan Hoyt <neuroinc@unidial.com>
+From: olson@anchor.engr.sgi.com (Dave Olson)
+Message-ID: <199905040354.UAA16791@anchor.engr.sgi.com>
+Subject: Re: building an elf64 R10k kernel
+In-Reply-To: <372E6AA0.505A6071@foo.tho.org> from Charles Lepple at "May 4, 99 03:33:52 am"
+Date: Mon, 3 May 1999 20:54:28 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Indigo2 port status?
-References: <Pine.LNX.3.96.990501171131.27661C-100000@lager.engsoc.carleton.ca>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Alex deVries <adevries@engsoc.carleton.ca>
-Cc: Charles Lepple <clepple@foo.tho.org>, Linux SGI <linux@cthulhu.engr.sgi.com>
-Message-ID: <19990501230428.oaC80z_1p4WIkEpskuv7NsRgUHcSs-e5i0_H5akJYak@z>
+To: Charles Lepple <clepple@foo.tho.org>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19990504035428.jscZnPiMq0WRoHM34yMtBp1gVJZHZZPFCDe7z0MUpYQ@z>
 
-Alex deVries wrote:
+Charles Lepple wrote: 
+|  Hey all,
+|  Does anyone out there know any details on building elf64 objects? I was
+|  all happy about seeing Andrew's Indigo2 patches, and decided that I
+|  _had_ to try and make it work on an Indigo2 Impact 10000... Suffice it
+|  to say that it isn't straightforward.
 
-> On Sat, 1 May 1999, Alan Hoyt wrote:
-> >
-> > I don't know what's going on with UAB - but I just started working on a
-> > port to the Indigo2 this April after receiving some hardware specs.
->
-> Where'd you receive hardware specs from?
->
-> - Alex
+For r10k Indigo2 to work, you will need to hack the compiler,
+for various reasons (the way the r10k works, plus the fact that
+indigo2 doesn't have i/o cache coherency, interact in some "interesting"
+ways.  I would suggest not attempting this port, unless you have a *lot*
+of spare time.
 
-From Ariel Faigon - who was kind enough to provide detailed specs. for the
-Indy.  Bill Earl stated that the two systems [indy and indigo2] were very
-similar but that he has not had the time to locate any additional
-documentation (where Indigo2 differs from Indy).  Sorry for the ambiguity.
-
- - Alan Hoyt -
+Dave Olson, Silicon Graphics
+http://reality.sgi.com/olson   olson@sgi.com

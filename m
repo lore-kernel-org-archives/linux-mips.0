@@ -1,66 +1,56 @@
-Message-ID: <000a01c4bb6d$5f0f8ae0$0e00a8c0@narendra>
-From: "Narendra Kulkarni" <narendradv@myrealbox.com>
-References: <000b01c4bb6a$f87b1580$0e00a8c0@narendra> <20041026150433.GA30620@linux-mips.org>
-Subject: Re: errors while  insmoding usb-skeleton.o (changed to suit our requirements)
-Date: Tue, 26 Oct 2004 20:36:26 +0530
+Message-ID: <002601c4bbeb$c9ffcdf0$8b1a13ac@realtek.com.tw>
+From: "colin" <colin@realtek.com.tw>
+References: <007801c4bb2a$9e7ded90$8b1a13ac@realtek.com.tw> <20041027031430.GC14668@linux-mips.org>
+Subject: Re: Which MIPS kernel is good to start up? linux-mips.org or    Montavista?
+Date: Wed, 27 Oct 2004 14:11:20 +0800
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <narendradv@myrealbox.com>
+Return-Path: <colin@realtek.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: 'Narendra Kulkarni' <narendra@spacomp.com>, linux-mips@linux-mips.org
-Message-ID: <20041026150626.SY2iBp6UkBsoYJEdirL2r3AT2eg7zyCRRPYEbp09WMo@z>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20041027061120.nUwR_s21JA29-Z_amqsziA7YrblaVvFBdQqYYorersE@z>
 
-Hello Ralf,
-I think if  we use -DKBUILD_BASENAME, we dont need -DMODULE. Correct me if i
-am wrong
 
-Narendra
+Dear Ralf,
+
+> The time where choosing 2.4 for new project still did make sense is over.
+
+Why? Isn't it stable of Kernel 2.6 for MIPS?
+
+Regards,
+Colin
 
 ----- Original Message ----- 
 From: "Ralf Baechle" <ralf@linux-mips.org>
-To: "Narendra Kulkarni" <narendra@econtek.com>
-Cc: "'Narendra Kulkarni'" <narendra@spacomp.com>;
-<linux-mips@linux-mips.org>
-Sent: Tuesday, October 26, 2004 8:34 PM
-Subject: Re: errors while insmoding usb-skeleton.o (changed to suit our
-requirements)
+To: "colin" <colin@realtek.com.tw>
+Cc: <linux-mips@linux-mips.org>
+Sent: Wednesday, October 27, 2004 11:14 AM
+Subject: Re: Which MIPS kernel is good to start up? linux-mips.org or
+Montavista?
 
 
-> On Tue, Oct 26, 2004 at 08:19:14PM +0530, Narendra Kulkarni wrote:
+> On Tue, Oct 26, 2004 at 03:08:34PM +0800, colin wrote:
 >
-> > I am building a module usb-skeleton.o with following compiler options
-(The
-> > complier options are same as the options of used for building kernel)
-> >
-> >
-opt/brcm/hndtools-mipsel-linux-3.2.3/bin/mipsel-linux-gcc -D__KERNEL__  -I/
-> >
-usr/src/mipslinux/src/linux/linux/include -Wall -Wstrict-prototypes -Wno-tri
-> >
-graphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -I/usr/src/
-> >
-mipslinux/src/linux/linux/../../include -I/usr/src/mipslinux/src/linux/linux
-> > /include/asm/gcc -G
+> > Hi all,
+> > We want to begin to put Linux to our new board with 4KEc CPU.
+> > Is it better to start porting from Montavista's Kernel, or from the one
+of
+> > linux-mips.org?
+> > I phoned the sales of Montavista and he told me the difference of these
+2
+> > kernels are little, but their kernels have been tested a lot for
+stability.
 >
->  -mno-abicalls -fno-pic -pipe -mips2  -mlong-calls  -nostdinc -iwithprefix
-> > include -DKBUILD_BASENAME=usb-skeleton  -c -o usb-skeleton.o
-usb-skeleton.c
-> >
-> >  When insmoding the usb-skeleton.o,  insmod usb-skeleton.o
-> > I am getting the following erros
-> >  Using usb-skeleton.o
-> >  insmod: Relocation overflow of type 4 for __copy_user
-> >  insmod: Relocation overflow of type 4 for __copy_user
-> >  insmod: Relocation overflow of type 4 for __copy_user
-> >
-> > Where am i going wrong.  Help would be appreciated.
+> A kernel isn't everything you'd get from Montavista; the comparison of
+> a site that's primarily geared towards development and a company that
+> is selling is probably not appropriate ...
 >
-> Seems your compiler command line is missing -DMODULE.
+> > Naturally, we would like to choose the kernel version above 2.6.
+>
+> The time where choosing 2.4 for new project still did make sense is over.
 >
 >   Ralf
->
->

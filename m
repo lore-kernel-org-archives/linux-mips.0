@@ -1,38 +1,56 @@
-From: Hartvig Ekner <hartvige@mips.com>
-Message-ID: <200202052053.VAA21843@copsun18.mips.com>
+Message-ID: <02a001c1ae90$43748d40$5601010a@prefect>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+References: <200202051747.SAA21696@copsun18.mips.com> 	<3C6044A7.13FEB2E2@cotw.com> <1012943709.10659.106.camel@zeus> <3C604D73.88F1CDCE@cotw.com>
 Subject: Re: What is the maximum physical RAM for a 32bit MIPS core?
-Date: Tue, 5 Feb 2002 21:53:58 +0100 (MET)
-In-Reply-To: <3C6044A7.13FEB2E2@cotw.com> from "Steven J. Hill" at Feb 05, 2002 02:46:31 PM
+Date: Tue, 5 Feb 2002 16:58:26 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 To: sjhill@cotw.com
-Cc: Hartvig Ekner <hartvige@mips.com>, linux-mips@oss.sgi.com
-Message-ID: <20020205205358.sxMHycGWjtbHhPfFTByX00C43r3lxD4OiMCZAur1MvE@z>
+Cc: linux-mips <linux-mips@oss.sgi.com>
+Message-ID: <20020205215826.94e1CW6V-484nJPeX0rTsdy_GwHeNZsg1iO7O5V4Qv8@z>
 
-Hi,
+----- Original Message -----
+From: "Steven J. Hill" <sjhill@cotw.com>
+To: "Pete Popov" <ppopov@pacbell.net>
+Cc: "Hartvig Ekner" <hartvige@mips.com>; "linux-mips"
+<linux-mips@oss.sgi.com>
+Sent: Tuesday, February 05, 2002 4:24 PM
+Subject: Re: What is the maximum physical RAM for a 32bit MIPS core?
 
-Steven J. Hill writes:
-> 
-> Hartvig Ekner wrote:
-> > 
-> > You have to distinguish between physical and virtual memory. The MIPS32
-> > architecture supports implementations with up to 36 bits of physical
-> > address space, however the virtual address space in kernel and user mode
-> > is as you describe below.
-> > 
-> I wasn't talking about the MIP32[tm] cores specifically, I was using a
-> generalization of 32bit. However, this is good to know. All of the data
-> sheets that I just downloaded from the MIPS site for the R4k[X] cores
-> don't mention the 36-bit PA item. Care to elaborate?
 
-Sure. All the 4K, 4KE and 4KS families (all MIPS32 cores) from MTI only
-provide 32 bits of PA. The 5K and 20K families (MIPS64 implementations)
-both provide 36 bit of PA.
+> Pete Popov wrote:
+> >
+> > I'm not sure if it's a "little" though.  Ralf has already done the work
+> > for 64bit memory support on 32bit kernels, but that only works currently
+> > on 64bit CPUs.  I started hacking on the 64bit memory patch to get it to
+> > work on 32bit processors, but had to put that aside for a few weeks. I
+> > hope to get back to it soon.
+> >
+> Sure, the "little" is a relative term. As far as your patch is concerned,
+> you are essentially trying to use a true 32-bit processor (my definition
+> being that it is not a 64-bit processor running in 32-bit mode), to
+address
+> address more than 4GB of physical memory. I don't see how that is possible
+> with just the MMU and TLB unless you are using chip selects and customm
+> logic.
 
-Also note that all of the above is only relevant for cores which have a TLB.
-The low-end 4K/4KE/4KS cores all come in variants without TLB (to save
-die area) and these can of course only generate 32-bits of PA regardless.
+As already mentioned, a MIPS TLB entry typically can point with 36 bits
+(that's 67TB of address space?) at physical memory.  If you have more than
+2^31 bytes of physical memory, then a single process can't map all of
+physical memory into it's address space, but it can map in pages (using TLB
+entries) from anywhere within the 36-bit physical memory space.
 
-/Hartvig
+In other words, process address space doesn't limit physical address space.
+Only TLB capability limits physical address space.
+
+And right, KSEG0 and KSEG1 can only get at the low 0.5GB of physical memory.
+You can imagine that KSEG0 is implemented with a single hardwired TLB entry
+that maps virtual address 0x80000000 to physical address 0x0, 0.5GB wide.
+
+The only way to get to physical memory above 0.5GB is through a TLB entry.
+
+Regards,
+Brad

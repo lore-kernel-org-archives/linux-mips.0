@@ -1,29 +1,44 @@
-Received: from jhdew ([222.98.69.113])
-	by torinet.co.kr (8.12.8/8.12.8) with ESMTP id i3N8px5i009307
-	for <linux-mips@linux-mips.org>; Fri, 23 Apr 2004 17:51:59 +0900
-From: =?ks_c_5601-1987?B?wOXB+Mit?= <jhdew@torinet.co.kr>
-Subject: Problem with 64-bit kernel in SB1250 processor board.
-Date: Fri, 23 Apr 2004 17:01:09 +0900
-Message-ID: <000601c42909$236b5e20$714562de@jhdew>
+Received: from il06exr06.mot.com (il06exr06.mot.com [129.188.137.136])
+	by ftpbox.mot.com (Motorola/Ftpbox) with ESMTP id i3NG4gXU028857
+	for <linux-mips@linux-mips.org>; Fri, 23 Apr 2004 09:04:42 -0700 (MST)
+Received: from ca25exm01.GI.COM (ca25exm01.w1.bcs.mot.com [168.84.84.121])
+	by il06exr06.mot.com (Motorola/il06exr06) with ESMTP id i3NG4BXP019479
+	for <linux-mips@linux-mips.org>; Fri, 23 Apr 2004 11:04:41 -0500
+Message-ID: <D5A7E45D575DD61180130002A5DB377C04E48C99@ca25exm01>
+From: Stephens Tim-MGI1634 <Tim.Stephens@motorola.com>
+Subject: Why does serial.c not allow you to share the serial console port
+	 interrupt?
+Date: Fri, 23 Apr 2004 09:04:02 -0700
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 8BIT
-Return-Path: <jhdew@torinet.co.kr>
+Content-Type: text/plain
+Return-Path: <Tim.Stephens@motorola.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040423080109.lvkL1nOGuPCbDMdO8s_bfy1NXzHfOml6tY2Ji7M1GcE@z>
+Message-ID: <20040423160402.FxOjmMG9k3BjBc5Z6K3Dn912VuAubR0AxBHt3mNN8Bs@z>
 
 Hello,
 
-I¡¯m testing SB1250 processor board with 64bits linux kernel.
-I used last source(linux-2.4.21) from Broadcom sibyte site.
+I'm trying to understand why the serial.c driver does not allow the sharing of the serial console interrupt.  There are several places on the net the mention you cannot share the console interrupt, however there is no explaination why.  I assume it has something to do with OOPS reporting.  Please advise.
 
-But, when I did ping flooding 2-3 times (back ground running) to any
-host system from my board, it panics. (mainly page fault error)
-With 32bit linux kernel, no panic. Any idea?
-How stable SB1250 processor in 64-bit linux kernel?
+I'm trying to enable the second serial port on a MIPS based embedded system.  Both serial ports (16550 type) are attached to the same MIPS interrupt.  The console is attached to ttyS0, which shares the MIPS interrupt with ttyS1.
 
-I doubt paging management of SB1250 in 64-bit kernel.
-Any idea?
+The code in question is:
+
+#ifdef CONFIG_SERIAL_CONSOLE
+    /*
+     *    The interrupt of the serial console port
+     *    can't be shared.
+     */
+    if (sercons.flags & CON_CONSDEV) {
+        for(i = 0; i < NR_PORTS; i++)
+            if (i != sercons.index &&
+                rs_table[i].irq == rs_table[sercons.index].irq)
+                rs_table[i].irq = 0;
+    }
+#endif
+
+If I change the #ifdef to #if 0 both the console and ttyS1 seem to work ok.
+
+Thanks,
+Tim

@@ -1,29 +1,57 @@
-Message-ID: <000a01c315cf$8171ac70$d017a8c0@pc208>
+Message-ID: <001601c31602$86838de0$d017a8c0@pc208>
 From: "smills_ho" <smills_ho@coventive.com>
-References: <3EB0B329.9030603@ict.ac.cn> <16048.55936.346808.522687@cuddles.redhat.com> <3EB0DDC6.5080108@ict.ac.cn> <16048.57054.224964.883062@cuddles.redhat.com> <20030501085018.GA1885@greglaptop.attbi.com>
-Subject: Problem of cross-mipsel-compiler GLIBC-2.3.X
-Date: Fri, 9 May 2003 10:05:43 +0800
+References: <3EB0B329.9030603@ict.ac.cn> <16048.55936.346808.522687@cuddles.redhat.com> <3EB0DDC6.5080108@ict.ac.cn> <16048.57054.224964.883062@cuddles.redhat.com> <20030501085018.GA1885@greglaptop.attbi.com> <000a01c315cf$8171ac70$d017a8c0@pc208> <1052464867.2485.3.camel@ghostwheel.sfbay.redhat.com>
+Subject: Re: Problem of cross-mipsel-compiler GLIBC-2.3.X
+Date: Fri, 9 May 2003 16:10:59 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="big5"
 Content-Transfer-Encoding: 7bit
 Return-Path: <smills_ho@coventive.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Linux/MIPS Development <linux-mips@linux-mips.org>
-Cc: gcc@gcc.gnu.org
-Message-ID: <20030509020543.mnS6MQ-s46N008CpUT0gCGNUCL6uRYBaDavb5xOYzmw@z>
+To: Eric Christopher <echristo@redhat.com>
+Cc: Linux/MIPS Development <linux-mips@linux-mips.org>, gcc@gcc.gnu.org
+Message-ID: <20030509081059.zTgXefCjKv68Cl4R6W53s8lrSpDZGSULe-W-b-ElR1w@z>
 
-Dear All,
-    I want to make a cross-compilered glibc-2.3.x and I get the source from
-ftp.gun.org. GCC version is 3.2.3, binutils is 2.13.2.1. The step is as
-following:
+Dear Eric,
+    I follow the step that provide by Bradley
+http://www.ltc.com/~brad/mips/mipsel-linux-cross-toolchain-building.txt
 
-1. Try to build binutils
-2. Try to make static GCC
-3. Try to make glibc -----> Then it is failed
+Thanks and best regards
 
-Is there anybody know what's going on or somebody had successfully to build
-the crossed glibc-2.3.x?
+----- Original Message -----
+From: "Eric Christopher" <echristo@redhat.com>
+To: "smills_ho" <smills_ho@coventive.com>
+Cc: "Linux/MIPS Development" <linux-mips@linux-mips.org>; <gcc@gcc.gnu.org>
+Sent: Friday, May 09, 2003 3:21 PM
+Subject: Re: Problem of cross-mipsel-compiler GLIBC-2.3.X
 
-Thanks and best regs,
+
+> On Thu, 2003-05-08 at 19:05, smills_ho wrote:
+> > Dear All,
+> >     I want to make a cross-compilered glibc-2.3.x and I get the source
+from
+> > ftp.gun.org. GCC version is 3.2.3, binutils is 2.13.2.1. The step is as
+> > following:
+> >
+> > 1. Try to build binutils
+> > 2. Try to make static GCC
+> > 3. Try to make glibc -----> Then it is failed
+> >
+> > Is there anybody know what's going on or somebody had successfully to
+build
+> > the crossed glibc-2.3.x?
+>
+> A host cross host compiler for linux systems is a little more involved
+> than this :)
+>
+> However, I don't know where you went wrong since you really didn't
+> provide much in the way of information as to what you did or where it
+> failed.
+>
+> -eric
+>
+> --
+> Eric Christopher <echristo@redhat.com>
+>

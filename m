@@ -1,39 +1,23 @@
-Message-ID: <20010910215311.19039.qmail@web14001.mail.yahoo.com>
-Date: Mon, 10 Sep 2001 14:53:11 -0700 (PDT)
-From: Eugenio Diaz <getnito@yahoo.com>
-Subject: Re: O2 Linux
-In-Reply-To: <Pine.LNX.4.21.0109032232360.9003-100000@ns>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <200109121008.f8CA8se04584@oss.sgi.com>
+Date: Wed, 12 Sep 2001 18:9:31 +0800
+From: Barry Wu <wqb123@yahoo.com>
+Subject: 
+Mime-Version: 1.0
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010910215311.B8euKWXftYal9Kw3NDC8yR0DF0aaar6hkLTN4UB7fK0@z>
+To: "linux-mips@oss.sgi.com" <linux-mips@oss.sgi.com>
+Cc: where.can.I.find.cross.compiler.for.glibc2.2@oss.sgi.com
+Message-ID: <20010912100931.Njz8kOi7Uacg4AK87rsNIYyyqJ6l-QMeyyyzjSOW3b8@z>
 
---- nick@snowman.net wrote:
-> Actually if I may add to this we are desperately looking for developers
-> and testers.  One of our main contributers (who the port is pretty much
-> due to) no longer has time to help, and I am very inexperienced at linux
-> kernel development.
-> 	Nick
+Hi, all,
 
-I have an O2 at home and I can help with testing (I am very good at picking up
-problems) since I don't have much time for development. I also have 10 Indys at
-work waiting for me to have some time to do something with them, possibly a
-Linux cluster to play with "PAPERS" (http://www.aggregate.org) ...
+Where can I find cross compiler for glibc2.2? I want to cross compiler login and some
+applications on my x86 redhat7.1 system. If someone knows, please help me.
 
-I am new to the list (since about month ago), but due to lack of time I have
-not read it much and have a backlog of about 600 messages ;-)
+Barry
 
-I keep mentioning that I don't have time, well, for Linux on the O2 I am wiling
-to steal 2 hours from my sleep to work on it ;-)
 
-=====
-________________________
-Eugenio Diaz, BSEE/BSCE   
-Linux Engineer
-getnito@yahoo.com
-
-__________________________________________________
+_________________________________________________________
 Do You Yahoo!?
-Get email alerts & NEW webcam video instant messaging with Yahoo! Messenger
-http://im.yahoo.com
+Get your free @yahoo.com address at http://mail.yahoo.com

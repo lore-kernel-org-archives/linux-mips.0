@@ -1,38 +1,21 @@
-Message-ID: <012501c10f01$d5fd0f40$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <1114092660.995374763@[192.168.1.117]>
-Subject: Re: MIPS processor identification register
-Date: Tue, 17 Jul 2001 22:48:20 +0200
+Message-ID: <024501c10f3c$27d290d0$b310a8c0@jefflee>
+From: "jeff_lee" <jeff_lee@coventive.com>
+Subject: mipsel machine
+Date: Wed, 18 Jul 2001 11:45:52 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="big5"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Narendra Sankar <naren@clearwaternetworks.com>, linux-mips@oss.sgi.com
-Message-ID: <20010717204820.QZuh3FbCYY-bDx6tnp3mrnJTp2ZGxkwVirabWixpaM0@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010718034552.fUh2NRVGKqnTYrEugMQt1Frr4N65cXXexFgA4lOOWd0@z>
 
-There is no list that is both public and complete.   MIPS issues
-PRID values to MIPS licensees, but has no control over how,
-when and whether the associated processors are commercialized,
-and does not publish the full list of registered values.
+Dear All
+   I am Jeff. I need to find out a mips machine (with HDD and bigger RAM)
+that can run the mipsel. Do you have any suggestion about the machine ?
+Where can I find the machine. We need the machine to do the native compiler.
 
-            Kevin K.
+Thanks and best regs,
 
------ Original Message -----
-From: "Narendra Sankar" <naren@clearwaternetworks.com>
-To: <linux-mips@oss.sgi.com>
-Sent: Tuesday, July 17, 2001 9:59 PM
-Subject: MIPS processor identification register
-
-
-> hi everyone
-> I could not find an answer to this question in the archives and hence am
-> trying here -
->
-> Is there a complete list somewhere of the different PRID (CP0 register 15)
-> values across the entire MIPS family - including all the different
-vendors?
->
-> Thanks
-> Naren
-> Clearwater Networks
+Jeff at Coventive company
+==========================================================

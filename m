@@ -1,23 +1,29 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <m0wrT66-0005FxC@lightning.swansea.linux.org.uk>
+Message-ID: <m0wrgCw-0005FlC@lightning.swansea.linux.org.uk>
 From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: SGI 68k machines?
-Date: Thu, 24 Jul 1997 19:58:46 +0100 (BST)
-In-Reply-To: <199707241300.PAA12689@informatik.uni-koblenz.de> from "Ralf Baechle" at Jul 24, 97 03:00:21 pm
+Subject: Re: Possible X solutions.
+Date: Fri, 25 Jul 1997 09:58:42 +0100 (BST)
+In-Reply-To: <9707241356.ZM3565@blammo.engr.sgi.com> from "John Wiederhirn" at Jul 24, 97 01:56:34 pm
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Cc: knobi@munich.sgi.com, linux@cthulhu.engr.sgi.com
-Message-ID: <19970724185846.40zTJD64MPbn6_Uhapk2xVbTizsN4H_9wTuDpAv_Gu8@z>
+To: John Wiederhirn <jwiede@blammo.engr.sgi.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19970725085842.2JLyZz7gPqwBETIkzTwAqLJaQETNZ92NhnZ6zFalMXQ@z>
 
-> >  Build from 83/84 until probably 88. Not a bad system for
-> > that time.
+> Has anyone considered perhaps partnering with either Metrolink
+> or Xi Graphics (makers of Accelerated-X) and having _them_ be
+> the providers of the X server for SGI?
+
+If there's not going to be a free X server for the SGI then Ariel
+can keep the machine...
+
+> B.  Gives us a venue by which SGI can provide optimized
+>     versions of OpenGL for Linux/Intel.  This is what we
+>     could bring to the table.
 > 
-> I wonder if there is still documentation for these beasts around such
-> that some dino freak can hack Linux for them?
+> C.  Lends additional credibility to the Linux/SGI port.
 
-Linux 68K current has an absolute need for an FPU. Thats one of the big
-macintrash problems we are facing as the 68LC040 not only has no FPU but
-for many motorola broke the exception handling so you can't even emulate it
+These two are probably good reasons for having a valued added option.
+However crippling a required system component isnt.
 
 Alan

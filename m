@@ -1,43 +1,39 @@
-Received: from bigyin (userds45.uk.uudial.com [62.188.6.151])
-	by colossus.systems.pipex.net (Postfix) with SMTP id 8BA9816000567
-	for <linux-mips@linux-mips.org>; Mon,  9 Sep 2002 21:32:43 +0100 (BST)
-Message-ID: <004f01c25840$06711260$9706bc3e@bigyin>
-Reply-To: "Render Dynamics Ltd." <chris@render-dynamics.com>
-From: "Render Dynamics Ltd." <chris@render-dynamics.com>
-Subject: 
-Date: Mon, 9 Sep 2002 21:32:31 +0100
+Message-ID: <3D7F9414.2020305@realitydiluted.com>
+Date: Wed, 11 Sep 2002 14:05:56 -0500
+From: "Steven J. Hill" <sjhill@realitydiluted.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_004C_01C25848.679060C0"
-Return-Path: <chris@render-dynamics.com>
+Subject: New uClibc-0.9.15 cross toolchains for MIPS...
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <sjhill@realitydiluted.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20020909203231.gT8BC16MBOYLiAjf918JETVUmg9pxxR1fiAeSBVjUKo@z>
+To: uclibc.@uclibc.org, linux-mips@linux-mips.org
+Message-ID: <20020911190556.zwCoEBGE7qpbfRGmRM4RWknTPVF7tB5wp1ggOQux-qM@z>
 
-This is a multi-part message in MIME format.
+Greetings.
 
-------=_NextPart_000_004C_01C25848.679060C0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I am pleased to announce new cross toolchains for uClibc
+based MIPS big and little endian compilers. These RPMS
+are for installation on a x86 host to produce uClibc
+binaries for MIPS targets. They can be downloaded from
+the following URL:
 
-unsubscribe linux-mips
+    ftp://ftp.realitydiluted.com/Linux/uclibc/
 
-------=_NextPart_000_004C_01C25848.679060C0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+The RPMS are based off of the uClibc toolchain builder
+found at:
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2713.1100" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><EM>unsubscribe linux-mips</EM><A=20
-href=3D"mailto:chris@render-dynamics.com"></A></DIV></BODY></HTML>
+    http://www.us.kernel.org/pub/linux/libs/uclibc/toolchain/
 
-------=_NextPart_000_004C_01C25848.679060C0--
+This toolchain uses the following tool versions:
+
+    binutils-2.13
+    gcc-3.2
+    uClibc-0.9.15 w/patches to uClibc CVS as of yesterday
+
+These toolchains can also be used to compile Linux MIPS
+kernels which I have been doing with no problems at all.
+Thanks and enjoy!
+
+-Steve

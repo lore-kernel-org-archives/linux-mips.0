@@ -1,37 +1,80 @@
-Date: Tue, 20 Mar 2001 21:37:15 +0100
-From: Ralf Baechle <ralf@oss.sgi.com>
-Subject: Re: Recommended toolchain
-Message-ID: <20010320213715.C3763@bacchus.dhis.org>
-References: <3AB6C948.7F8EE4B7@oz.agile.tv> <200103202012.VAA07412@sparta.research.kpn.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200103202012.VAA07412@sparta.research.kpn.com>; from K.H.C.vanHouten@research.kpn.com on Tue, Mar 20, 2001 at 09:12:02PM +0100
+Message-ID: <002d01c0b18b$5f512da0$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <3AB68CFC.A2840808@mvista.com> <01e701c0b0d3$3fca8980$0deca8c0@Ulysses> <004601c0b11d$86340d20$0deca8c0@Ulysses> <3AB7AEFD.5B773122@mvista.com>
+Subject: Re: gdb 5.0 display arguments problem
+Date: Tue, 20 Mar 2001 23:16:02 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Karel van Houten <K.H.C.vanHouten@research.kpn.com>
-Cc: Simon Gee <simong@oz.agile.tv>, linux-mips@oss.sgi.com
-Message-ID: <20010320203715.h1QQ05Hlv17tnc2VoewEnWznW18U1zFSSftDsNGAil4@z>
+To: Jun Sun <jsun@mvista.com>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010320221602.YQXlTVSAtgjOCuKW0a7BIBDzTCbmiztRaafLrwr_ReU@z>
 
-On Tue, Mar 20, 2001 at 09:12:02PM +0100, Karel van Houten wrote:
+> "Kevin D. Kissell" wrote:
+> >
+> > > Yours may well be slightly different, but fatal for the same reason.
+> >
+> > Indeed, I wonder if your gdb isn't looking on the stack frame
+> > for an argument that isn't there - and which may never be
+> > there - and finding the value that also happens to be in s4.
+> >
+>
+> I think I figured out the reason.  If you take a look of the code segment
+I
+> attached in my first posting, you will see that s4 register indeed holds
+the
+> value of a1, and presummably remains so for the rest of the function.
+> However, the actual assignment of a1 to s4 does not happen until a couple
+of
+> instructions later into the function.  So if the breakpoint is set at the
+> first instruction of the function, gdb would still think (wrongly) s4
+holds
+> the 2nd argument and, even worse, try to dereference it if it is a char*
+> pointer.
 
-> You wrote:
-> > Recently I've been working with various version mixes of the gnu tool
-> > chain for a mipsel-linux target and settled on a patchy binutils
-> > 2.8.1/egcs 1.1.2/glibc 2.0.6 setup. However this lacks the functionality
-> > that I would get from a newer toolchain for use with the linux 2.4
-> > kernel. As a result, I was wondering if someone could recommend the
-> > latest "stable"/recommended toolchain for a mipsel-linux target.
-> 
-> Well, I'm currently using:
-> binutils 2.10.1
-> gcc 2.95.3 (with Maciej's patches)
-> glibc 2.2.2 (compiled with above toolchain).
-> 
-> This toolchain works for native compiles on my mipsel box.
-> One drawback: I can't compile any kernels with this setup,
-> For kernel compiles I use 2.8.1/egcs-2.90.27/glibc-2.0.6.
+It's not unusual to need to step one line to "see" arguments
+correctly.  A pity about the pointer dereference.  ;-)
 
-You MUST use minimum egcs-2.91.66 (1.1.2); older compilers WILL misscompile
-kernels.
+> > Another reason to fix things in the gdb proxy/exception code
+> > rather than cripple gdb backtrace is that, even with the backtrace
+> > fixed, the current kgdb situation is such that the slightest typo
+> > at the debugger operator interface can generate a bad address
+> > and blow the system sky high.  It's happened to me on more than
+> > one occasion.  Fortunately, what I was debugging at the time
+> > was readily reproduceable (if not, I would have fixed the kgdb
+> > problem then and there!).
+> >
+>
+> This sounds pretty cool, but I don't see a clean algorithm.  So in the
+> exception code you would decide not to crash if 1)kgdb is configured, and
+2)
+> the exception is caused by kgdb code (how?).  Also if you decide not to
+crash,
+> what should be reasonable return values?
 
-  Ralf
+There are a number of possible ways of going about it.  One is
+to set some kind of flag during the kgdb proxy access, which
+is tested by the page fault code.  That's the stuff that's derived
+from Cobalt code and that is partly in place in some existing
+kernel gdb support ("debugmem_got_flt", etc.).  I have not seen
+it work correcly, and isn't SMP safe.  Another scheme, which is
+actually a bit cleaner, would be to check explicitly for the faulting
+address to be that of the kgdb proxy load.  In any case, once the
+case has been identified, one tweaks the EPC value to return to
+something other than a repeat of the bad dereference, and returns
+zero or an error value to gdb - the protocol and message formats
+are described in comments in gdb-stub.c.
+
+> Disable automatic char * dereferencing is not that bad.  You always have
+the
+ > option to manually dereference it.  However, I could not find such an
+option.
+> Maybe gdb does not provide that yet.
+
+And even if it did, accidentally trying to dump "0x8021f34" would
+blow you out of the water.  It's the kernel proxy code that really needs
+to be fixed.
+
+            Kevin K.

@@ -1,26 +1,38 @@
-Subject: Re: recent gdb add-symbol-file problem?
-References: <013701c144d9$af44d3c0$361e690a@huawei.com>
-From: Alexandre Oliva <aoliva@redhat.com>
-Date: 27 Sep 2001 06:33:40 -0300
-In-Reply-To: "renc stone"'s message of "Mon, 24 Sep 2001 17:17:07 +0800"
-Message-ID: <or3d59yo3v.fsf@localhost.localdomain>
+Date: Thu, 27 Sep 2001 10:33:22 -0400
+From: "J. Scott Kasten" <jsk@tetracon-eng.net>
+Subject: Re: indycam
+In-Reply-To: <Pine.SOL.4.31.0109270357470.14513-100000@fury.csh.rit.edu>
+Message-ID: <Pine.SGI.4.33.0109271031300.25970-100000@thor.tetracon-eng.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: renc stone <renwei@huawei.com>
-Cc: gcc@gnu.org, linux-mips@oss.sgi.com
-Message-ID: <20010927093340.8LhhVMO1ZkOt8fef5oz6wh08CXncAxUb7hgwZfGd-jA@z>
+To: George Gensure <werkt@csh.rit.edu>
+Cc: linux-mips@oss.sgi.com
+Message-ID: <20010927143322.T_1sclbY6qM7D2rXu_JjXvE_-1cxVc_bR_6bp_TGB1I@z>
 
-On Sep 24, 2001, "renc stone" <renwei@huawei.com> wrote:
 
-> Can't the gdb  correctly read the elf file of mipsel ?
+Look back through the archives.  Someone was working on Indy machine vino
+(video in) support.  I vaguely remember some kind of status being given in
+the past couple months or so.
 
->  Any ideas?
+--
 
-You got the wrong mailing list.  gcc != gdb.
+J. Scott Kasten
+Email: jsk AT tetracon-eng DOT net
 
--- 
-Alexandre Oliva   Enjoy Guarana', see http://www.ic.unicamp.br/~oliva/
-Red Hat GCC Developer                  aoliva@{cygnus.com, redhat.com}
-CS PhD student at IC-Unicamp        oliva@{lsd.ic.unicamp.br, gnu.org}
-Free Software Evangelist    *Please* write to mailing lists, not to me
+"Nearly all men can stand adversity,
+ but if you want to test a man's
+ charater, give him power. - A Lincoln"
+
+On Thu, 27 Sep 2001, George Gensure wrote:
+
+> has anyone gotten an indycam working under linux?
+>
+> George
+>
+> --
+> George R. Gensure       Computer Science House Member
+> werkt@csh.rit.edu       Sophomore, Rochester Institute of Technology
+> Computer Science
+>
+>

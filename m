@@ -1,110 +1,28 @@
-Content-class: urn:content-classes:message
+content-class: urn:content-classes:message
+Subject: RE: swapon failure with au1550
+Date: Tue, 22 Feb 2005 16:20:28 -0600
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: HIGHMEM Query
-Date: Tue, 22 Feb 2005 14:31:16 +0530
-Message-ID: <4BF47D56A0DD2346A1B8D622C5C5902C571A8D@soc-mail.soc-soft.com>
-From: <Rishabh@soc-soft.com>
-Return-Path: <Rishabh@soc-soft.com>
+Message-ID: <B482D8AA59BF244F99AFE7520D74BF9609D4F2@server1.RightHand.righthandtech.com>
+From: "Bob Breuer" <bbreuer@righthandtech.com>
+Return-Path: <bbreuer@righthandtech.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20050222090116.NBiRG0MebWGOdkwPXT9YbK90jNqwP6iGVBt2eYHCsPU@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20050222222028.35IN27ZJ1Wqa12UfYv6RevujqiT40D3UPIhfdeTydUA@z>
 
+The bitmask in a pte for swap type is 0x0000_1f00.  In the CPU_MIPS32 &&
+64BIT_PHYS_ADDR case, _PAGE_FILE is 0x0000_0400.  Since _PAGE_FILE is
+set in the maxed out swap type, it triggers a BUG().
 
-hi ralf,
+If I move the swap type field like this:
+  #define __swp_type(x)  (((x).val >> 2) & 0x0f)
+then it works for me.  This makes use of the _PAGE_DIRTY and _CACHE_MASK
+bits which were being used in the !64BIT_PHYS_ADDR case.
 
-Thanks for the valuable input, I checked the TLB Entry and found
+Is this a reasonable solution, or should a different grouping of bits be
+used?
 
-Value in EntryLo0/1 seems absurd. Can you suggest me some way about how
-to approach this problem?
-________________________________________________________________________
-___
-xdr_partial_copy_from_skb: kaddr: ffffd000, ppage: 83f751a0, *ppage:
-8117ff90
-Data bus error, epc == 80161a90, ra == 80161924
-ENTRYHI: 0xFFFFC000, ENTRYLO0:0x00000001, ENTRYLO1:0x001FFF5F
-INDEX: 0x00000009
-Oops in traps.c::do_be, line 465:
-$0 : 00000000 10008400 ffffd000 00000000 ffffd000 83f730a0 00000978
-00000000
-$8 : 622f2123 732f6e69 0a230a68 74532023 20747261 ffffffff 00000010
-756e694c
-$16: 83f730a0 ffffd000 00000998 000020a4 0000006c 00000000 ffffd000
-811e3cc0
-$24: 00000018 801e95ff                   811e2000 811e3bc0 00000000
-80161924
-Hi : 00000000
-Lo : 00000001
-epc  : 80161a90    Not tainted
-Status: 10008403
-Cause : 0000001c
-Process ksoftirqd_CPU0 (pid: 3, stackpage=811e2000)
-Stack:    0000003c 0000003e 80036a40 80036ae4 00000998 00000998 811e3cc0
- 00000a04 8010813c 80036ae4 0000004c 80155f58 10008401 ffffc000 0000000a
- 0000003c 0000004e 80155f58 80037048 10008401 00000000 83f751a0 0000006c
- 00000998 811e3cc0 83f751a0 00001000 80212ff0 83fcc0b4 811e3cc0 80155f58
- 80155fa0 83fcd080 80212ff0 ffffd000 00001000 00000000 83f751a0 ffffd000
- 00001000 ...
-Call Trace:   [<80036a40>] [<80036ae4>] [<8010813c>] [<80036ae4>]
-[<80155f58>]
- [<80155f58>] [<80037048>] [<80155f58>] [<80155fa0>] [<80160794>]
-[<8011d68c>]
- [<801560a8>] [<80185c7f>] [<80156288>] [<8015627c>] [<80140748>]
-[<80140738>]
- [<80156164>] [<80140d0c>] [<80140d00>] [<80036e50>] [<80181ff8>]
-[<80106420>]
- [<8011d898>] [<80140b04>] [<80114414>] [<8011d68c>] [<8011ec50>]
-[<8011d8bc>]
- [<8011d3a0>] [<8011d37c>] [<8011d68c>] [<8011db0c>] [<8011d318>]
-[<80114414>]
- [<8011d8bc>] [<8011d628>] [<8011d604>] [<8011d8bc>] [<8010b9c4>] ...
-
-
-Code: 8cac0010  8caf0014  ac880000 <ac890004> 8ca80018  8ca9001c
-24a50020  2484
-
-0020  ac8affe8
-________________________________________________________________________
-___
-
------Original Message-----
-From: Ralf Baechle [mailto:ralf@linux-mips.org]
-Sent: Friday, February 18, 2005 2:07 AM
-To: Rishabh Kumar Goel
-Cc: linux-mips@linux-mips.org; mel@skynet.ie; jbglaw@lug-owl.de
-Subject: Re: HIGHMEM Query
-
-On Thu, Feb 17, 2005 at 10:40:22AM +0530, Rishabh@soc-soft.com wrote:
-
-First, fix your mailer setup, it's littering emails with extra carriage
-returns.
-
-> I have been working on HIGHMEM fixation for 2.4.20 linux MVL kernel
-for
-> MIPS architecture.
-> I am getting DATA BUS ERROR(ADDR: 0xffffd000) exception when loading
-> (copying the data received from ethernet to the kernel space in
-FIXADDR
-> SPACE) "/sbin/init" from TARGET ROOT DIR (through NFS). I figured out
-> that this is because there is no corresponding page table entry for
-the
-> same.
-
-That does not make sense.  If you don't have a pagetable entry the CPU
-will
-take a TLB reload exception.  If the entry is invalid, the kernel will
-die with an oops.  A bus error has different causes.
-
-  Ralf
-
-The information contained in this e-mail message and in any annexure is
-confidential to the  recipient and may contain privileged information. If you are not
-the intended recipient, please notify the sender and delete the message along with
-any annexure. You should not disclose, copy or otherwise use the information contained
-in the message or any annexure. Any views expressed in this e-mail are those of the
-individual sender except where the sender specifically states them to be the views of
-SoCrates Software India Pvt Ltd., Bangalore.
+Bob Breuer

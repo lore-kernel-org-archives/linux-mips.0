@@ -1,44 +1,100 @@
-From: "Matthew Dharm" <mdharm@momenco.com>
-Subject: RE: gt-64120 bootloader??
-Date: Tue, 13 Nov 2001 11:53:23 -0800
-Message-ID: <NEBBLJGMNKKEEMNLHGAIAEBECEAA.mdharm@momenco.com>
+content-class: urn:content-classes:message
+Subject: Inclusion of rrm.o in export-objs
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20011113092119.GA7142@medialincs.com>
+	charset="iso-8859-1"
+Date: Fri, 16 Nov 2001 00:38:46 +1100
+Message-ID: <4DF7FE7DA7E47442B859983ABCFBBF627971@chimsvr1.chimerical.com.au>
+From: "Ivan Hamilton" <ivan@chimerical.com.au>
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "Joe Y." <joey@medialincs.com>, linux-mips@oss.sgi.com
-Message-ID: <20011113195323.rp_4piDeR4BXpewAxCBs7stoz3JeroqT_WTfQjnvxzE@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20011115133846.ktRJv7LFId6yc6EAAq7TPQew2YQobkoARZneIoknBow@z>
 
-Do you mean the Gallileo EV-64120 board?  AFAIK, that comes with PMON.
+I'm a little new, so let me know if this is out of place.
 
-We make a GT-64120 based board with Linux support, and we use a
-customized version of PMON and RedBoot for that board.
+After grabbing the latest source via CVS, I ran into compilation
+problems.
+A little (read "a lot of") searching, and I found I was not alone with
+this problem.
+This fix, worked for me. But I'm not sure why no one else had run into
+it.
 
-Matthew Dharm
+My Makefile knowledge is extremely limited to say the least. But are
+there possible side-effects of this particular fix? And how does a fix
+like this, find it's way back into the source tree?
 
---
-Matthew D. Dharm                            Senior Software Designer
-Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
-(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
-Momentum Works For You                      www.momenco.com
+Any pointers, or other information welcome.
 
-> -----Original Message-----
-> From: owner-linux-mips@oss.sgi.com
-> [mailto:owner-linux-mips@oss.sgi.com]On Behalf Of Joe Y.
-> Sent: Tuesday, November 13, 2001 1:21 AM
-> To: linux-mips@oss.sgi.com
-> Subject: gt-64120 bootloader??
->
->
-> anyone know bootloader for the galileo 64120 board ?
->
-> PMON or redboot is not support gt-64120..
->
-> I looking for having ability to load linux.
->
-> if you have any experience, inform to me.
->
-> thanks.
->
+
+==ORIGINAL MESSAGE START==
+
+*	Newsgroups: linux.debian.ports.mips 
+*	From: Petter Reinholdtsen <pere@hungry.com
+<mailto:pere@hungry.com>> 
+*	Subject: Compile problem with latest mips kernel CVS 
+*	Date: Wed, 07 Nov 2001 09:40:07 +0100 
+*	Organization: linux.*_mail_to_news_unidirectional_gateway 
+*	Approved: robomod@news.nic.it (1.20) 
+
+Hello
+
+I do not have post access to linux-mips@oss.sgi.com, so I try to send
+it here instead.
+
+I tested to compile the kernel from the mips kernel CVS last night,
+and it stopped with the following error.  The error line is
+"EXPORT_SYMBOL(<symbol>');".  The object rrm.o must be added to
+export-objs.  Patch below.
+
+make[4]: Entering directory `/usr/src/linux-cvs/drivers/sgi/char'
+
+gcc -I /usr/src/linux-cvs/include/asm/gcc -D__KERNEL__
+-I/usr/src/linux-cvs/include -Wall -Wstrict-prototypes -Wno-trigraphs
+-O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common -G 0
+-mno-abicalls -fno-pic -mcpu=r4600 -mips2 -Wa,--trap -pipe -DMODULE
+-mlong-calls   -c -o rrm.o rrm.c
+Assembler messages:
+Warning: The -mcpu option is deprecated.  Please use -march and -mtune
+instead.
+Warning: The -march option is incompatible to -mipsN and therefore
+ignored.
+rrm.c:74: parse error before
+`this_object_must_be_defined_as_export_objs_in_the_Makefile'
+rrm.c:74: warning: type defaults to `int' in declaration of
+`this_object_must_be_defined_as_export_objs_in_the_Makefile'
+rrm.c:74: warning: data definition has no type or storage class
+rrm.c:75: parse error before
+`this_object_must_be_defined_as_export_objs_in_the_Makefile'
+rrm.c:75: warning: type defaults to `int' in declaration of
+`this_object_must_be_defined_as_export_objs_in_the_Makefile'
+rrm.c:75: warning: data definition has no type or storage class
+make[4]: *** [rrm.o] Error 1
+make[4]: Leaving directory `/usr/src/linux-cvs/drivers/sgi/char'
+
+ - Add rrm.o to export-objs, and sort the list of objects.
+
+Index: Makefile
+===================================================================
+RCS file: /cvs/linux/drivers/sgi/char/Makefile,v
+retrieving revision 1.13
+diff -u -r1.13 Makefile
+--- Makefile    2001/03/11 03:35:59     1.13
++++ Makefile    2001/11/07 08:27:35
+@@ -9,7 +9,7 @@
+
+ O_TARGET := sgichar.o
+
+-export-objs    := newport.o shmiq.o sgicons.o usema.o
++export-objs    := newport.o rrm.o sgicons.o shmiq.o usema.o
+ obj-y          := newport.o shmiq.o sgicons.o usema.o streamable.o
+
+ obj-$(CONFIG_SGI_SERIAL)       += sgiserial.o
+
+
+-- 
+To UNSUBSCRIBE, email to debian-mips-request@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact
+listmaster@lists.debian.org
+
+==ORIGINAL MESSAGE END==

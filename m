@@ -1,50 +1,36 @@
-Received: from fw01.bwg.de (localhost [127.0.0.1])
-	by fw01.bwg.de (8.11.6p2G/8.11.6) with ESMTP id j0RA2NI26886
-	for <linux-mips@linux-mips.org>; Thu, 27 Jan 2005 11:02:23 +0100 (CET)
-Received: from ximap.arbeitsgruppe (80.131.188.248)
-          by mail.bwg.de with MERCUR Mailserver (v4.03.06 MTA4LTIzMDQtNDg3Ng==)
-          for <linux-mips@linux-mips.org>; Thu, 27 Jan 2005 11:03:12 +0100
-Received: from rr2600 (rr-2600 [192.168.178.44])
-	by ximap.arbeitsgruppe (Postfix) with SMTP id D826B174B2E
-	for <linux-mips@linux-mips.org>; Thu, 27 Jan 2005 11:02:11 +0100 (CET)
-From: =?iso-8859-1?Q?Ralf_R=F6sch?= <ralf.roesch@rw-gmbh.de>
-Subject: Compiler erros in process.c
-Date: Thu, 27 Jan 2005 11:02:49 +0100
-Message-ID: <NHBBLBCCGMJFJIKAMKLHEEKACCAA.ralf.roesch@rw-gmbh.de>
+Received: from [127.0.0.1] (really [62.195.248.222])
+          by amsfep18-int.chello.nl
+          (InterMail vM.6.01.04.01 201-2131-118-101-20041129) with ESMTP
+          id <20050127220035.CFM27281.amsfep18-int.chello.nl@[127.0.0.1]>
+          for <linux-mips@linux-mips.org>; Thu, 27 Jan 2005 23:00:35 +0100
+Message-ID: <41F96491.6070101@amsat.org>
+Date: Thu, 27 Jan 2005 23:00:49 +0100
+From: Jeroen Vreeken <pe1rxq@amsat.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Re: [PATCH] ADM5120 for 2.6.10
+References: <E1CuHFU-0000eI-DY@real.realitydiluted.com>
+In-Reply-To: <E1CuHFU-0000eI-DY@real.realitydiluted.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <ralf.roesch@rw-gmbh.de>
+Return-Path: <pe1rxq@amsat.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20050127100249.qZA-Izd8n3OtEThTJBKw0vQALa5NQy-5r13Ef3F-ZGc@z>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20050127220049.JUQB4TgAzPlM8Yk5L0eIindWsZfjkZOQ-0l2wlrwuj8@z>
 
-The last commit of process.c (version 1.73, 2.6)
-results in compiler errors on my system:
+sjhill@realitydiluted.com wrote:
 
-arch/mips/kernel/process.c: In function `dump_regs':
-arch/mips/kernel/process.c:169: error: `EF_CP0_EPC' undeclared (first use in
-thi
-s function)
-arch/mips/kernel/process.c:169: error: (Each undeclared identifier is
-reported o
-nly once
-arch/mips/kernel/process.c:169: error: for each function it appears in.)
-arch/mips/kernel/process.c:170: error: `EF_CP0_BADVADDR' undeclared (first
-use i
-n this function)
-arch/mips/kernel/process.c:171: error: `EF_CP0_STATUS' undeclared (first use
-in
-this function)
-arch/mips/kernel/process.c:172: error: `EF_CP0_CAUSE' undeclared (first use
-in t
-his function)
-make[1]: *** [arch/mips/kernel/process.o] Error 1
-make: *** [arch/mips/kernel] Error 2
+>You should be talking to ADMTek about being allowed to post this code
+>then. Otherwise, it should not be not be on the list.
+>  
+>
+I am confident I am allowed to post the code. It is published publicly 
+on the web and the blurb while irritating (which is why I want it 
+changed) does mention that you are excepted from the mentioned 
+restrictions if you have the appropriate license agreement.
+Since there is no doubt this code hase been distributed under the GPL I 
+have such a license.
+Btw I did contact admtek to ask for formal approval to change it to 
+something less scary.
 
-I could not find 'EF_CP0_EPC' in the entire source tree.
-
-Regards
-  Ralf Roesch
+Jeroen

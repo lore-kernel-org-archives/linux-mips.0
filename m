@@ -1,40 +1,46 @@
-Message-ID: <001501c043dd$7ed69780$066fe8c3@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <39FF1A83.387D0E1F@isratech.ro> <39FF2AEB.3137F75E@ti.com>
-Subject: Re: MIPS ftp problem!
-Date: Wed, 1 Nov 2000 09:26:46 +0100
+From: "Mike Klar" <mfklar@ponymail.com>
+Subject: RE: userspace spinlocks
+Date: Wed, 1 Nov 2000 08:40:30 -0800
+Message-ID: <NDBBIDGAOKMNJNDAHDDMKECHCNAA.mfklar@ponymail.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <20001101143611.B7375@bacchus.dhis.org>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Brady Brown <bbrown@ti.com>, Nicu Popovici <octavp@isratech.ro>
+To: Ralf Baechle <ralf@oss.sgi.com>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20001101082646.vBQ039KSbM_3AWKG0kxRNq18JjcaEEg_FJw2CgP5igY@z>
+Message-ID: <20001101164030.VXxsb1SQ7Na0InzEXd8suIkz4RZp1Ghcm9aMlleE_7k@z>
 
-> > I have a problem with the mips machine. I have an Atlas board and when I
-> > do ftp on the mips machine from a intel one and I try to transfer files
-> > ( it works very very slow 0,0234 bytes/s). The same is happening when I
-> > try to make ftp from the mips machine on a intel box ( all running Linux
-> > ).
-> >
-> > Thanks,
-> > Nicu
->
-> Is this using the Atlas on-board NIC? We found some pretty bad performance
-> with the on-board NIC and went to the very cheap RTL8139 PCI card from
-> OvisLink (used the 8139too.o driver). Performance there is pretty good.
+Ralf Baechle wrote:
 
-There seems to be a problem with the on-board NIC on the Philips
-multi-I/O part misbehaving under load.   It seems to be OK
-for TFTP downloading and telnet sessions, but loses packets/interrupts
-under FTP or NFS.  So I heartily second Brady's recommendation
-of using an add-in PCI NIC. At MIPS, we use AMD PCnet cards,
-for which there is a MIPS cache-and-endianness-clean driver in the
-kernel sources on the MIPS FTP site (and I think built into the kernel
-binary there as well).
+> Ok, I'll take this and try to hack it into shape.  I especially don't
+> like putting anything into the scheduler - another 5 ns for a 200MHz box
+> per cotext switch go down the drain.
 
-            Regards,
+I agree that's pretty nasty, but I don't see any other way to break the link
+on context switches that doesn't also add the same overhead (if not more).
+The worst part of it is the extra store per context switch happens even if
+you don't ever use ll/sc.
 
-            Kevin K.
+You could probably implement locking primitives without it, but then you're
+getting away from actually emulating ll and sc.  I guess that's not a big
+deal, since we're already not emulating them 100%, but the further you get
+from the actual functionality of the instructions, the more likely it is to
+break some user space code when someone decides to be "clever" with ll/sc by
+using them per the hardware ll/sc specification.
+
+Then again, I'm just ranting here, since the clear-it-in-the-resume-function
+approach apparently wasn't doing what it should have 100% anyway.
+
+> For sanity reasons I also think we
+> don't want to support SMP for the ll/sc emulation.
+
+I agree.  It's not impossible to do, but very much non-trivial, for
+something that will probably never be used anyway.  The embedded R4K CPUs
+that I've seen without ll/sc give lack of SMP support as the reason for not
+implementing ll/sc.  Sigh... as if uniprocessor systems never need locking
+primitives....
+
+Mike K.

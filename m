@@ -1,42 +1,31 @@
-From: "Soeren Laursen" <soeren.laursen@scrooge.dk>
-Date: Wed, 8 Aug 2001 10:25:44 +0200
-MIME-Version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
+Date: Wed, 8 Aug 2001 08:59:15 -0400 (EDT)
+From: Ian <ian@WPI.EDU>
 Subject: Re: HELP can't boot
-Reply-to: soeren.laursen@scrooge.dk
-Message-ID: <3B7113A8.1719.52C999@localhost>
-In-reply-to: <Pine.OSF.4.33.0108071650040.27293-100000@grover.WPI.EDU>
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20010808104536.A21775@gandalf.physik.uni-konstanz.de>
+Message-ID: <Pine.OSF.4.33.0108080857440.32160-100000@grover.WPI.EDU>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com, Ian <ian@WPI.EDU>
-Message-ID: <20010808082544.My81uGvS1v87LHIzTtqERF6ebNdNRV7LkcLAINxB4Ak@z>
+To: Guido Guenther <guido.guenther@gmx.net>
+Cc: Soeren Laursen <soeren.laursen@scrooge.dk>, linux-mips@oss.sgi.com
+Message-ID: <20010808125915.TG_u1gQf5YiiJzEs1BUaAPazkAlbu6LN_ltNX9jJm-0@z>
 
-You need (as I know) to use irix to prepare the disk.
+I was in the middle of a HardHat install, and fdisk was able to partition
+the disks.  The problem is that I deleted all of the partitions on the
+original disk, including sda9 and sda11, which store the SGI sash
+bootloader and associated files.  Without the bootloader, the system is
+inoperable.  I did not realize that those partitions contained it at that
+time.
 
-But read the following links:
+On Wed, 8 Aug 2001, Guido Guenther wrote:
 
-http://black.hole.org/indy-boot.html
-http://foobazco.org/~wesolows/Install-HOWTO.html
-http://www.stafwag.f2s.com/indy/index.php?lang=eng
+> On Wed, Aug 08, 2001 at 10:25:44AM +0200, Soeren Laursen wrote:
+> > You need (as I know) to use irix to prepare the disk.
+> No need for Irix. Linux fdisk can handle sgi disklkabels since quiet
+> some time now.
+>  -- Guido
+>
 
-
-Søren,
-
-> OK I'm having some problems here.
-> 
-> I recently received an SGI Indy (complete with all hardware except disk)
-> and I installed a blank 1-GB scsi disk (no disk errors reported on bootup)
-> but without sash I cannot netboot linux.
-> 
-> My question is this:  How can I netboot linux (using bootp, tftp, and nfs,
-> all confirmed working)?  I the kernel and the hardhat kit, but I can't get
-> the Indy to load the kernel.
-> 
-> I have no IRIX kits available, nor a CD-writer (although I have
-> access to a CD-writer if needed).  PLEASE help!
-> 
-> Thanks in advance!
-> 
-> --
-> Ian Cooper
-> ian@wpi.edu
+--
+Ian Cooper
+ian@wpi.edu

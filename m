@@ -1,44 +1,38 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199708142315.BAA06429@informatik.uni-koblenz.de>
-Subject: Re: clock skew and ethernet timeouts
-Date: Fri, 15 Aug 1997 01:15:22 +0200 (MET DST)
-In-Reply-To: <199708132209.RAA31518@speedy.rd.qms.com> from "Mark Salter" at Aug 13, 97 05:09:32 pm
+From: Mike Shaver <shaver@neon.ingenia.ca>
+Message-ID: <199708151337.JAA20136@neon.ingenia.ca>
+Subject: Re: Local disk boot HOWTO
+In-Reply-To: <33F45BBC.84D44D8F@cygnus.detroit.sgi.com> from Eric Kimminau at "Aug 15, 97 09:38:04 am"
+Date: Fri, 15 Aug 1997 09:37:25 -0400 (EDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Mark Salter <marks@sun470.sun470.rd.qms.com>
-Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19970814231522.lLCrmwsGBpbEzoA-1fybJjyOJSkUoCF5qoP7B4YrHYk@z>
+To: eak@detroit.sgi.com
+Cc: Linux/SGI list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19970815133725.3m6qtmsY185cPxardB0h5L8f_tI8mmDEH51H2Ztb9bU@z>
 
-> I also noticed that the linux time of day clock falls behind
-> real time whenever these timeouts occur. I decided to take a
-> look at this side of the problem and discovered that interrupts
-> are being turned off for extended periods of time. I modified
-> the timer interrupt handler to print a message if it detects
-> a missed system tick. Sure enough, every ethernet timeout is
-> accompanied by a message coming from the timer interrupt. The
-> message indicates that the timer interrupt was held off for
-> as much as 45ms!
+Thus spake Eric Kimminau:
+> OK, this IS simple enough. Does anyone have a tar of a functional Linux
+> installation I can snag and uncompress on my second disk?
 
-I've never seen these problems in my configurations.  However I've fixed
-a couple of interrupt realted things which I'll commit into the CVS
-as soon as I'm in Mountain View.  One of these, a console bug might
-actually have been the cause of the extreme long interrupt disable time
-you have seen.
+ftp://ftp.linux.sgi.com/pub/mips-linux/root-be-0.00.cpio.gz
+should work fine.
 
-There are more thing which need to be reworked with resprect to interrupts.
-For example cache flushing turns interrupts off for sometimes several
-thousand cycles even though this is only required for certain buggy CPUs
-like the R4600 v1.x.  And even there are better workarounds.  General
-rule about cli():  Think about it if you really need it.  Then think again
-about it.  If you're finished wnd still think cli() might be a good solution,
-then think once again about it ...
+(20MB, BTW)
 
-For me the "most wanted - fix on sight" bug is currently a memory corruption
-problem.  Other than that I was able to compile >92mb RPM binaries several
-times in a row.  It's just that that memory corruption problem corrupts
-disk data structures in memory which might be written back later ...
+> My assumption would be I would then just modify
+> /dev/sdb1/etc/hosts,hostname, etc. for networking and then reboot into
+> Linux? 
 
-  Ralf
+Something like that.
+You can edit them after you reboot, though.
+
+Mike
+
+-- 
+#> Mike Shaver (shaver@ingenia.com) Ingenia Communications Corporation 
+#>                 UNIX medicine man -- dark magick, cheap!            
+#>                                                                     
+#>  When the going gets tough, the tough give cryptic error messages.  
+#>          "We believe in rough consensus and running code."          

@@ -1,31 +1,69 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Date: Wed, 1 May 1996 08:44:55 -0700
-From: wje@fir.esd.sgi.com (William J. Earl)
-Message-ID: <199605011544.IAA07701@fir.esd.sgi.com>
-Subject: Re: scope of this mailing list
-In-Reply-To: <199605010233.EAA26130@informatik.uni-koblenz.de>
-References: <Pine.LNX.3.91.960429200526.3781C-100000@redhat.com>
-	<199605010233.EAA26130@informatik.uni-koblenz.de>
+From: Alan Cox <alan@cymru.net>
+Message-ID: <199605160909.KAA08950@snowcrash.cymru.net>
+Subject: Re: mpp kernel interface
+Date: Thu, 16 May 1996 10:09:17 +0100 (BST)
+In-Reply-To: <199605152243.PAA19394@neteng.engr.sgi.com> from "Larry McVoy" at May 15, 96 03:43:19 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Ralf Baechle <ralf@informatik.uni-koblenz.de>
-Cc: Erik Troan <ewt@redhat.com>, linux@neteng.engr.sgi.com
-Message-ID: <19960501154455.CVmhxrYPdxc2eBgTaFB7swEhJUQMol7_nFpReZzKT3I@z>
+To: Larry McVoy <lm@gate1-neteng.engr.sgi.com>
+Cc: tridge@cs.anu.edu.au, linux-mc@arvidsjaur.anu.edu.au, Linus.Torvalds@cs.Helsinki.FI, linux@neteng.engr.sgi.com, alan@cymru.net
+Message-ID: <19960516090917._kpA5zY8Ev_qB1QRJyxquk0IF5BavAae8DcHI9ajUSw@z>
 
-Ralf Baechle writes:
-...
- > The main issue in achieving binary compatibility accross all Linux/MIPS
- > targets is the byte order.  For some machines (Mips Magnum 4000, Olivetti
- > M700-10, SNI RM series and others more) the byte order for the kernel is
- > configurable.  For other it is fixed.  This is often the case for machines
- > that were built with NT in mind.
- > 
- > The MIPS architecture offers us the nice feature of switchable byteorder
- > for usermode.  Thus we have a way to run software from other systems with
- > differing native byte order.  In other words: it's technological possible
- > but it's not implemented yet.
-...
+> : With 30 people now on this list there must be someone else who wants
+> : to say something ...
 
-     I once worked on this problem on another OS base.  The basic system
-calls are easy.  ioctls, especially for streams, were much harder.  Within
-the limits of the published ABI, as opposed to the universe of working programs,
-the task is not too difficult.
+I've not actually seen anything from the list (should be going to ukuu)
+
+> 	SMP vs cluster?
+
+Why vs, why not AND. An SMP box is just a couple of well connected nodes.
+
+> The hard one is sockets.  I've never seen a good solution to that.
+> I'll come back to that.  First, I want to go through the other ones and
+> offer suggestions.
+
+There are several approaches to this. One is to treat it like a device so
+you open a socket on a given machine and it like the device doesnt walk. The
+other is to bend IP mobile to the needs. That would probably want something
+like an old 486 as a network FEP.
+
+> do remote processes.  For the PID name space, make pid_t a 32 bit int,
+> make the top 16 bits the host part, and the bottom 16 bits the pid part.
+> (We need to come back to the host part when we discuss process migration.)
+> A host part of "0" means "this host".  So a "kill -HUP 1" will always
+> restart init.
+
+We can also do this for devices so you can mknod a printer on a different 
+node.
+
+> Devices I sort of punt on.  For device access, I would just use the 
+> remote mag tape protocol (or something very, very similar) so that all
+> of the locking, etc., still works - since you ship all the requests to
+> the system w/ the device, that kernel can implement the locks.  Any
+> issues here?
+
+The vfs issues fairly controlled requests to the FS layer, and the device
+layer also is fairly clean. The MOSIX project intercepted stuff at this
+level --- so a remote device turns the request into a message. The system
+also accounted messages so a process like a find would migrate across cpus
+as it changed the disk it was searching.
+
+> we have the talent right here on this list to do it.  So I'll bow out of
+> commenting on it, other than to say make sure mmap works right.
+
+mmap is foul. SYS5 shared memory is just as bad too. 
+
+> Sockets.  This is a hard problem.  Some people think that a socket
+> should stick around after the CPU that created the socket has crashed.
+
+If you are having a single apparent IP address this is true for TCP, you can
+on spotting a down host just send an RST and go into TIME_WAIT to preserve
+the corruption protection properties of TCP.
+
+> is a big performance win.  Coming from a network cluster, you'll get that
+> without having to work for it - the other way frequently is harder.
+
+It also means more people can play

@@ -1,41 +1,27 @@
-Message-ID: <32869.4.64.238.61.1046060330.squirrel@www.osdl.org>
-Date: Sun, 23 Feb 2003 20:18:50 -0800 (PST)
-Subject: Re: Re: (no subject)
-From: "Randy.Dunlap" <rddunlap@osdl.org>
-In-Reply-To: <20030224040647.611.qmail@webmail17.rediffmail.com>
-References: <20030224040647.611.qmail@webmail17.rediffmail.com>
+Message-ID: <2083.137.132.80.35.1046078693.squirrel@mysoc.nus.edu.sg>
+Date: Mon, 24 Feb 2003 17:24:53 +0800 (SGT)
+Subject: Please use appropriate subject line  [was (Re: Re: Re: (no subject))] 
+From: "M K Saravanan" <mksarav@comp.nus.edu.sg>
+In-Reply-To: <Pine.GSO.4.21.0302240937390.28564-100000@vervain.sonytel.be>
+References: <20030224052704.30149.qmail@webmail29.rediffmail.com>
+        <Pine.GSO.4.21.0302240937390.28564-100000@vervain.sonytel.be>
+Reply-To: mksarav@comp.nus.edu.sg
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Return-Path: <rddunlap@osdl.org>
+Return-Path: <mksarav@comp.nus.edu.sg>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ipv6_san@rediffmail.com
-Cc: macro@ds2.pg.gda.pl, netdev@oss.sgi.com, linux-mips@linux-mips.org
-Message-ID: <20030224041850.0GMMJGUUx-sibvSU49OnMHG92BI38yEakll5KG_A2Zs@z>
+To: geert@linux-m68k.org
+Cc: ipv6_san@rediffmail.com, rddunlap@osdl.org, macro@ds2.pg.gda.pl, netdev@oss.sgi.com, linux-mips@linux-mips.org
+Message-ID: <20030224092453.HdO9xnkjA0Ul2MsiBJhb4TOvr12wXeZTRX7mII-Smmw@z>
 
->
->
-> On Sat, 22 Feb 2003 Maciej W. Rozycki wrote :
->>On 21 Feb 2003, santosh kumar gowda wrote:
->>
->> > Following message is produced at the IAD terminal.....
->> >
->> > # Unable to handle kernel paging request at virtual address
->> > 00000000, epc == 802
->> > 4ce74, ra == 802592a8
->> > Oops in fault.c:do_page_fault, line 172:
->>[...]
->> > Suggestions/Tips are welcome.
->>
->>  Decode the oops first or nobody will be able to give any
->>help.
->
-> how do i decode the oops ??? help pls.
+I don't remember who started this thread.  Kindly use appropriate title in
+the "Subject" when posting queries.  It will also help when somebody
+follow the archive on a particular topic.
 
-Please see linux/REPORTING-BUGS and
-linux/Documentation/oops-tracing.txt .
-The latter will tell you how to use use 'ksymoops'
-to decode an oops message.
+-- mks --
 
-~Randy
+--
+M K Saravanan
+http://www.comp.nus.edu.sg/~mksarav

@@ -1,223 +1,282 @@
-Date: Fri, 28 Sep 2001 15:16:28 -0700 (PDT)
-From: Brad <prettygood@cs.stanford.edu>
+Date: Fri, 28 Sep 2001 18:50:15 -0700 (PDT)
+From: Brad Bozarth <prettygood@cs.stanford.edu>
 Reply-To: <prettygood@cs.stanford.edu>
-Subject: [patch] big-endian -> little-endian cramfs
-Message-ID: <Pine.LNX.4.33.0109281513240.9055-200000@earth.ayrnetworks.com>
+Subject: [patch] updated big-endian mkcramfs/cramfs
+Message-ID: <Pine.LNX.4.33.0109281843480.11173-100000@earth.ayrnetworks.com>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="17438721-837620130-1001715388=:9055"
-Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20010928221628.r9Abeys9GKDp0EDLz2cc9pXWIjiw-joo1-HPQPLu0yc@z>
-
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
-
---17438721-837620130-1001715388=:9055
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: owner-linux-mips@oss.sgi.com
+To: linux-kernel@vger.linux.org
+Cc: torvalds@transmeta.com, linux-mips@oss.sgi.com
+Message-ID: <20010929015015.EjU3BC1TBQDgkc9el86e58wrMS5kpkFdReoPI-Nox6g@z>
 
-A few people have expressed interest in this, and I needed it as
-well.  Currently, cramfs images aren't shareable between different endian
-architectures.  The documentation states the meta-data should always be
-stored little endian, as the cost of swabbing would be low, but the code
-doesn't do it.  We needed shareable images, so I modified inode.c,
-cramfs_fs.h, and mkcramfs.h to enable a big-endian machine to swab meta
-data when writing (mkcramfs.c) and reading (inode.c).  This is done with
-#defined macros (the 26 bit/6 bit bitfield is kind of ugly to translate),
-so the code doesn't change for little-endian machines, only big-endian.
-I tested reading le on be, reading a be-written le image on le, etc...
-
-This is a patch against 2.4.10.
+This is against 2.4.10 and fixes issues brought up about the first patch.
+It also fixes error handling in one section of mkcramfs where a fd is not
+checked after open.
 
 -Brad Bozarth
 
+-------------------------------------------------
+
+--- 2.4.10/scripts/cramfs/mkcramfs.c	Thu Jul 19 16:14:53 2001
++++ current/scripts/cramfs/mkcramfs.c	Fri Sep 28 18:37:45 2001
+@@ -317,19 +317,20 @@
+ 		offset += opt_pad;
+ 	}
+
+-	super->magic = CRAMFS_MAGIC;
+-	super->flags = CRAMFS_FLAG_FSID_VERSION_2 | CRAMFS_FLAG_SORTED_DIRS;
++	super->magic = CRAMFS_MAGIC; /* #defined correctly on both endians */
++	super->flags = le32_to_cpu(CRAMFS_FLAG_FSID_VERSION_2 |
++				    CRAMFS_FLAG_SORTED_DIRS);
+ 	if (opt_holes)
+-		super->flags |= CRAMFS_FLAG_HOLES;
++		super->flags |= le32_to_cpu(CRAMFS_FLAG_HOLES);
+ 	if (image_length > 0)
+-		super->flags |= CRAMFS_FLAG_SHIFTED_ROOT_OFFSET;
+-	super->size = size;
++		super->flags |= le32_to_cpu(CRAMFS_FLAG_SHIFTED_ROOT_OFFSET);
++	super->size = CRAM_SWAB_24(size);
+ 	memcpy(super->signature, CRAMFS_SIGNATURE, sizeof(super->signature));
+
+-	super->fsid.crc = crc32(0L, Z_NULL, 0);
+-	super->fsid.edition = opt_edition;
+-	super->fsid.blocks = total_blocks;
+-	super->fsid.files = total_nodes;
++	super->fsid.crc = le32_to_cpu(crc32(0L, Z_NULL, 0));
++	super->fsid.edition = le32_to_cpu(opt_edition);
++	super->fsid.blocks = le32_to_cpu(total_blocks);
++	super->fsid.files = le32_to_cpu(total_nodes);
+
+ 	memset(super->name, 0x00, sizeof(super->name));
+ 	if (opt_name)
+@@ -337,11 +338,11 @@
+ 	else
+ 		strncpy(super->name, "Compressed", sizeof(super->name));
+
+-	super->root.mode = root->mode;
+-	super->root.uid = root->uid;
++	super->root.mode = le16_to_cpu(root->mode);
++	super->root.uid = le16_to_cpu(root->uid);
+ 	super->root.gid = root->gid;
+-	super->root.size = root->size;
+-	super->root.offset = offset >> 2;
++	super->root.size = CRAM_SWAB_24(root->size);
++	SET_CRAM_OFFSET(&(super->root), offset >> 2);
+
+ 	return offset;
+ }
+@@ -356,7 +357,7 @@
+ 		fprintf(stderr, "filesystem too big.  Exiting.\n");
+ 		exit(8);
+ 	}
+-	inode->offset = (offset >> 2);
++	SET_CRAM_OFFSET(inode, offset >> 2);
+ }
 
 
+@@ -379,10 +380,10 @@
 
+ 			entry->dir_offset = offset;
 
+-			inode->mode = entry->mode;
+-			inode->uid = entry->uid;
++			inode->mode = le16_to_cpu(entry->mode);
++			inode->uid = le16_to_cpu(entry->uid);
+ 			inode->gid = entry->gid;
+-			inode->size = entry->size;
++			inode->size = CRAM_SWAB_24(entry->size);
+ 			inode->offset = 0;
+ 			/* Non-empty directories, regfiles and symlinks will
+ 			   write over inode->offset later. */
+@@ -395,7 +396,7 @@
+ 				*(base + offset + len) = '\0';
+ 				len++;
+ 			}
+-			inode->namelen = len >> 2;
++			SET_CRAM_NAMELEN(inode, len >> 2);
+ 			offset += len;
 
---17438721-837620130-1001715388=:9055
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name="unifiedcram.diff"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.33.0109281516280.9055@earth.ayrnetworks.com>
-Content-Description: 
-Content-Disposition: attachment; filename="unifiedcram.diff"
+ 			/* TODO: this may get it wrong for chars >= 0x80.
+@@ -503,7 +504,7 @@
+ 			exit(8);
+ 		}
 
-LS0tIDIuNC4xMC9pbmNsdWRlL2xpbnV4L2NyYW1mc19mcy5oCVRodSBKdWwg
-MTkgMTY6MTQ6NTMgMjAwMQ0KKysrIGN1cnJlbnQvaW5jbHVkZS9saW51eC9j
-cmFtZnNfZnMuaAlUaHUgU2VwIDI3IDE3OjM2OjU3IDIwMDENCkBAIC05LDcg
-KzksMTIgQEANCiANCiAjZW5kaWYNCiANCisjaWYgKGRlZmluZWQoQllURV9P
-UkRFUikgJiYgQllURV9PUkRFUiA9PSBCSUdfRU5ESUFOKSB8fCBkZWZpbmVk
-KF9fTUlQU0VCX18pDQorI2RlZmluZSBDUkFNRlNfTUFHSUMJCTB4NDUzZGNk
-MjgJLyogZW5kaWFuIHJldmVyc2VkIG1hZ2ljICovDQorI2Vsc2UNCiAjZGVm
-aW5lIENSQU1GU19NQUdJQwkJMHgyOGNkM2Q0NQkvKiBzb21lIHJhbmRvbSBu
-dW1iZXIgKi8NCisjZW5kaWYNCisNCiAjZGVmaW5lIENSQU1GU19TSUdOQVRV
-UkUJIkNvbXByZXNzZWQgUk9NRlMiDQogDQogLyoNCkBAIC04MCw2ICs4NSw0
-MCBAQA0KICAqIGNoYW5nZWQgdG8gdGVzdCBzdXBlci5mdXR1cmUgaW5zdGVh
-ZC4NCiAgKi8NCiAjZGVmaW5lIENSQU1GU19TVVBQT1JURURfRkxBR1MgKDB4
-N2ZmKQ0KKw0KKy8qIA0KKyAqIFNpbmNlIGNyYW1mcyAoYWNjb3JkaW5nIHRv
-IGRvY3MpIHNob3VsZCBhbHdheXMgYmUgc3RvcmVkIGxpdHRsZSBlbmRpYW4s
-IA0KKyAqIHByb3ZpZGUgbWFjcm9zIHRvIHN3YWIgdGhlIGJpdGZpZWxkcyAo
-bWtjcmFtZnMgdXNlcyB0aGlzIGZpbGUgdG9vKS4gDQorICovDQorI2lmIChk
-ZWZpbmVkKEJZVEVfT1JERVIpICYmIEJZVEVfT1JERVIgPT0gQklHX0VORElB
-TikgfHwgZGVmaW5lZChfX01JUFNFQl9fKQ0KKw0KKyNkZWZpbmUgQ1JBTV9T
-V0FCXzE2KHgpCSggKCAoMHgwMDAwRkYwMCAmICh4KSkgPj4gOCAgICkgfCBc
-DQorCQkJICAoICgweDAwMDAwMEZGICYgKHgpKSA8PCA4ICkgKQ0KKyNkZWZp
-bmUgQ1JBTV9TV0FCXzI0KHgpCSggKCAoMHgwMEZGMDAwMCAmICh4KSkgPj4g
-MTYgKSB8IFwNCisJCQkgICggKDB4MDAwMEZGMDAgJiAoeCkpICAgICAgICkg
-fCBcDQorCQkJICAoICgweDAwMDAwMEZGICYgKHgpKSA8PCAxNiApICkNCisj
-ZGVmaW5lIENSQU1fU1dBQl8zMih4KQkoICggKDB4RkYwMDAwMDAgJiAoeCkp
-ID4+IDI0ICkgfCBcDQorCQkJICAoICgweDAwRkYwMDAwICYgKHgpKSA+PiA4
-ICApIHwgXA0KKwkJCSAgKCAoMHgwMDAwRkYwMCAmICh4KSkgPDwgOCAgKSB8
-IFwNCisJCQkgICggKDB4MDAwMDAwRkYgJiAoeCkpIDw8IDI0ICkgKQ0KKyNk
-ZWZpbmUgR0VUX0NSQU1fTkFNRUxFTih4KSAoKCh1OCopKHgpKVs4XSAmIDYz
-KQ0KKyNkZWZpbmUgR0VUX0NSQU1fT0ZGU0VUKHgpICAoKENSQU1fU1dBQl8y
-NCgoKHUzMiopKHgpKVsyXSAmIDB4MDBGRkZGRkYpPDwyKSB8IFwNCisJCQkg
-ICAgICAgICAgICAgICAgICgoKCh1MzIqKSh4KSlbMl0gJiAweEMwMDAwMDAw
-KT4+MzApICkNCisjZGVmaW5lIFNFVF9DUkFNX09GRlNFVCh4LHkpICAgKCAo
-KHUzMiopKHgpKVsyXSA9ICgoKHkpJjMpPDwzMCkgfCBcDQorCQkJCSBDUkFN
-X1NXQUJfMjQoICggKCh5KSAmIDB4MDNGRkZGRkYpID4+IDIpICkgfCBcDQor
-CQkJCSAoKCh1MzIpKCgodTgqKSh4KSlbOF0gJiAweDNGKSkgPDwgMjQpICkN
-CisjZGVmaW5lIFNFVF9DUkFNX05BTUVMRU4oeCx5KQkoICgodTgqKSh4KSlb
-OF0gPSAoICgoMHgzRiAmICh5KSkpIHwgXA0KKwkJCQkJCSAgICAoMHhDMCAm
-ICgodTgqKSh4KSlbOF0pICkgKQ0KKw0KKyNlbHNlDQorI2RlZmluZSBDUkFN
-X1NXQUJfMTYoeCkJCSh4KQ0KKyNkZWZpbmUgQ1JBTV9TV0FCXzI0KHgpCQko
-eCkNCisjZGVmaW5lIENSQU1fU1dBQl8zMih4KQkJKHgpDQorI2RlZmluZSBH
-RVRfQ1JBTV9OQU1FTEVOKHgpCSgoeCktPm5hbWVsZW4pDQorI2RlZmluZSBH
-RVRfQ1JBTV9PRkZTRVQoeCkJKCh4KS0+b2Zmc2V0KQ0KKyNkZWZpbmUgU0VU
-X0xFX09GRlNFVCh4LHkpCSgoeCktPm9mZnNldCA9IHkpDQorI2RlZmluZSBT
-RVRfTEVfTkFNRUxFTih4LHkpCSgoeCktPm5hbWVsZW4gPSB5KQ0KKyNlbmRp
-Zg0KIA0KIC8qIFVuY29tcHJlc3Npb24gaW50ZXJmYWNlcyB0byB0aGUgdW5k
-ZXJseWluZyB6bGliICovDQogaW50IGNyYW1mc191bmNvbXByZXNzX2Jsb2Nr
-KHZvaWQgKmRzdCwgaW50IGRzdGxlbiwgdm9pZCAqc3JjLCBpbnQgc3JjbGVu
-KTsNCi0tLSAyLjQuMTAvZnMvY3JhbWZzL2lub2RlLmMJTW9uIEF1ZyAyNyAw
-Nzo1Mzo0OSAyMDAxDQorKysgY3VycmVudC9mcy9jcmFtZnMvaW5vZGUuYwlG
-cmkgU2VwIDI4IDE0OjAxOjUzIDIwMDENCkBAIC0zNSw3ICszNSw3IEBADQog
-DQogLyogVGhlc2UgdHdvIG1hY3JvcyBtYXkgY2hhbmdlIGluIGZ1dHVyZSwg
-dG8gcHJvdmlkZSBiZXR0ZXIgc3RfaW5vDQogICAgc2VtYW50aWNzLiAqLw0K
-LSNkZWZpbmUgQ1JBTUlOTyh4KQkoKHgpLT5vZmZzZXQ/KHgpLT5vZmZzZXQ8
-PDI6MSkNCisjZGVmaW5lIENSQU1JTk8oeCkJKEdFVF9DUkFNX09GRlNFVCh4
-KSA/IEdFVF9DUkFNX09GRlNFVCh4KTw8MiA6IDEpDQogI2RlZmluZSBPRkZT
-RVQoeCkJKCh4KS0+aV9pbm8pDQogDQogc3RhdGljIHN0cnVjdCBpbm9kZSAq
-Z2V0X2NyYW1mc19pbm9kZShzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiLCBzdHJ1
-Y3QgY3JhbWZzX2lub2RlICogY3JhbWZzX2lub2RlKQ0KQEAgLTQzLDkgKzQz
-LDkgQEANCiAJc3RydWN0IGlub2RlICogaW5vZGUgPSBuZXdfaW5vZGUoc2Ip
-Ow0KIA0KIAlpZiAoaW5vZGUpIHsNCi0JCWlub2RlLT5pX21vZGUgPSBjcmFt
-ZnNfaW5vZGUtPm1vZGU7DQotCQlpbm9kZS0+aV91aWQgPSBjcmFtZnNfaW5v
-ZGUtPnVpZDsNCi0JCWlub2RlLT5pX3NpemUgPSBjcmFtZnNfaW5vZGUtPnNp
-emU7DQorCQlpbm9kZS0+aV9tb2RlID0gQ1JBTV9TV0FCXzE2KGNyYW1mc19p
-bm9kZS0+bW9kZSk7DQorCQlpbm9kZS0+aV91aWQgPSBDUkFNX1NXQUJfMTYo
-Y3JhbWZzX2lub2RlLT51aWQpOw0KKwkJaW5vZGUtPmlfc2l6ZSA9IENSQU1f
-U1dBQl8yNChjcmFtZnNfaW5vZGUtPnNpemUpOw0KIAkJaW5vZGUtPmlfYmxv
-Y2tzID0gKGNyYW1mc19pbm9kZS0+c2l6ZSAtIDEpIC8gNTEyICsgMTsNCiAJ
-CWlub2RlLT5pX2Jsa3NpemUgPSBQQUdFX0NBQ0hFX1NJWkU7DQogCQlpbm9k
-ZS0+aV9naWQgPSBjcmFtZnNfaW5vZGUtPmdpZDsNCkBAIC02Niw3ICs2Niw4
-IEBADQogCQkJaW5vZGUtPmlfZGF0YS5hX29wcyA9ICZjcmFtZnNfYW9wczsN
-CiAJCX0gZWxzZSB7DQogCQkJaW5vZGUtPmlfc2l6ZSA9IDA7DQotCQkJaW5p
-dF9zcGVjaWFsX2lub2RlKGlub2RlLCBpbm9kZS0+aV9tb2RlLCBjcmFtZnNf
-aW5vZGUtPnNpemUpOw0KKwkJCWluaXRfc3BlY2lhbF9pbm9kZShpbm9kZSwg
-aW5vZGUtPmlfbW9kZSwgDQorCQkJCQkgICBDUkFNX1NXQUJfMjQoY3JhbWZz
-X2lub2RlLT5zaXplKSk7DQogCQl9DQogCX0NCiAJcmV0dXJuIGlub2RlOw0K
-QEAgLTIxOSwxMSArMjIwLDExIEBADQogCX0NCiANCiAJLyogQ2hlY2sgdGhh
-dCB0aGUgcm9vdCBpbm9kZSBpcyBpbiBhIHNhbmUgc3RhdGUgKi8NCi0JaWYg
-KCFTX0lTRElSKHN1cGVyLnJvb3QubW9kZSkpIHsNCisJaWYgKCFTX0lTRElS
-KENSQU1fU1dBQl8xNihzdXBlci5yb290Lm1vZGUpKSkgew0KIAkJcHJpbnRr
-KEtFUk5fRVJSICJjcmFtZnM6IHJvb3QgaXMgbm90IGEgZGlyZWN0b3J5XG4i
-KTsNCiAJCWdvdG8gb3V0Ow0KIAl9DQotCXJvb3Rfb2Zmc2V0ID0gc3VwZXIu
-cm9vdC5vZmZzZXQgPDwgMjsNCisJcm9vdF9vZmZzZXQgPSBHRVRfQ1JBTV9P
-RkZTRVQoJihzdXBlci5yb290KSkgPDwgMjsNCiAJaWYgKHN1cGVyLmZsYWdz
-ICYgQ1JBTUZTX0ZMQUdfRlNJRF9WRVJTSU9OXzIpIHsNCiAJCXNiLT5DUkFN
-RlNfU0JfU0laRT1zdXBlci5zaXplOw0KIAkJc2ItPkNSQU1GU19TQl9CTE9D
-S1M9c3VwZXIuZnNpZC5ibG9ja3M7DQpAQCAtMjk5LDcgKzMwMCw3IEBADQog
-CQkgKiBhbmQgdGhlIG5hbWUgcGFkZGVkIG91dCB0byA0LWJ5dGUgYm91bmRh
-cmllcw0KIAkJICogd2l0aCB6ZXJvZXMuDQogCQkgKi8NCi0JCW5hbWVsZW4g
-PSBkZS0+bmFtZWxlbiA8PCAyOw0KKwkJbmFtZWxlbiA9IEdFVF9DUkFNX05B
-TUVMRU4oZGUpIDw8IDI7DQogCQluZXh0b2Zmc2V0ID0gb2Zmc2V0ICsgc2l6
-ZW9mKCpkZSkgKyBuYW1lbGVuOw0KIAkJZm9yICg7Oykgew0KIAkJCWlmICgh
-bmFtZWxlbikNCkBAIC0zMDgsNyArMzA5LDggQEANCiAJCQkJYnJlYWs7DQog
-CQkJbmFtZWxlbi0tOw0KIAkJfQ0KLQkJZXJyb3IgPSBmaWxsZGlyKGRpcmVu
-dCwgbmFtZSwgbmFtZWxlbiwgb2Zmc2V0LCBDUkFNSU5PKGRlKSwgZGUtPm1v
-ZGUgPj4gMTIpOw0KKwkJZXJyb3IgPSBmaWxsZGlyKGRpcmVudCwgbmFtZSwg
-bmFtZWxlbiwgb2Zmc2V0LCBDUkFNSU5PKGRlKSwgDQorCQkJCUNSQU1fU1dB
-Ql8xNihkZS0+bW9kZSkgPj4gMTIpOw0KIAkJaWYgKGVycm9yKQ0KIAkJCWJy
-ZWFrOw0KIA0KQEAgLTMzOSw3ICszNDEsNyBAQA0KIAkJaWYgKHNvcnRlZCAm
-JiAoZGVudHJ5LT5kX25hbWUubmFtZVswXSA8IG5hbWVbMF0pKQ0KIAkJCWJy
-ZWFrOw0KIA0KLQkJbmFtZWxlbiA9IGRlLT5uYW1lbGVuIDw8IDI7DQorCQlu
-YW1lbGVuID0gR0VUX0NSQU1fTkFNRUxFTihkZSkgPDwgMjsNCiAJCW9mZnNl
-dCArPSBzaXplb2YoKmRlKSArIG5hbWVsZW47DQogDQogCQkvKiBRdWljayBj
-aGVjayB0aGF0IHRoZSBuYW1lIGlzIHJvdWdobHkgdGhlIHJpZ2h0IGxlbmd0
-aCAqLw0KQEAgLTM4NSw5ICszODcsMTAgQEANCiANCiAJCXN0YXJ0X29mZnNl
-dCA9IE9GRlNFVChpbm9kZSkgKyBtYXhibG9jayo0Ow0KIAkJaWYgKHBhZ2Ut
-PmluZGV4KQ0KLQkJCXN0YXJ0X29mZnNldCA9ICoodTMyICopIGNyYW1mc19y
-ZWFkKHNiLCBibGtwdHJfb2Zmc2V0LTQsIDQpOw0KLQkJY29tcHJfbGVuID0g
-KCoodTMyICopIGNyYW1mc19yZWFkKHNiLCBibGtwdHJfb2Zmc2V0LCA0KQ0K
-LQkJCSAgICAgLSBzdGFydF9vZmZzZXQpOw0KKwkJCXN0YXJ0X29mZnNldCA9
-IENSQU1fU1dBQl8zMigqKHUzMiAqKSANCisJCQkJICAgICAgICBjcmFtZnNf
-cmVhZChzYiwgYmxrcHRyX29mZnNldCAtIDQsIDQpKTsNCisJCWNvbXByX2xl
-biA9IENSQU1fU1dBQl8zMigqKHUzMiAqKQ0KKwkJCSAgICAgY3JhbWZzX3Jl
-YWQoc2IsIGJsa3B0cl9vZmZzZXQsIDQpKSAtIHN0YXJ0X29mZnNldDsNCiAJ
-CXBnZGF0YSA9IGttYXAocGFnZSk7DQogCQlpZiAoY29tcHJfbGVuID09IDAp
-DQogCQkJOyAvKiBob2xlICovDQotLS0gMi40LjEwL3NjcmlwdHMvY3JhbWZz
-L21rY3JhbWZzLmMJVGh1IEp1bCAxOSAxNjoxNDo1MyAyMDAxDQorKysgY3Vy
-cmVudC9zY3JpcHRzL2NyYW1mcy9ta2NyYW1mcy5jCUZyaSBTZXAgMjggMTQ6
-MTU6MzcgMjAwMQ0KQEAgLTMxNywxOSArMzE3LDIwIEBADQogCQlvZmZzZXQg
-Kz0gb3B0X3BhZDsNCiAJfQ0KIA0KLQlzdXBlci0+bWFnaWMgPSBDUkFNRlNf
-TUFHSUM7DQotCXN1cGVyLT5mbGFncyA9IENSQU1GU19GTEFHX0ZTSURfVkVS
-U0lPTl8yIHwgQ1JBTUZTX0ZMQUdfU09SVEVEX0RJUlM7DQorCXN1cGVyLT5t
-YWdpYyA9IENSQU1GU19NQUdJQzsgLyogI2RlZmluZWQgY29ycmVjdGx5IG9u
-IGJvdGggZW5kaWFucyAqLw0KKwlzdXBlci0+ZmxhZ3MgPSBDUkFNX1NXQUJf
-MzIoQ1JBTUZTX0ZMQUdfRlNJRF9WRVJTSU9OXzIgfCANCisJCQkJICAgIENS
-QU1GU19GTEFHX1NPUlRFRF9ESVJTKTsNCiAJaWYgKG9wdF9ob2xlcykNCi0J
-CXN1cGVyLT5mbGFncyB8PSBDUkFNRlNfRkxBR19IT0xFUzsNCisJCXN1cGVy
-LT5mbGFncyB8PSBDUkFNX1NXQUJfMzIoQ1JBTUZTX0ZMQUdfSE9MRVMpOw0K
-IAlpZiAoaW1hZ2VfbGVuZ3RoID4gMCkNCi0JCXN1cGVyLT5mbGFncyB8PSBD
-UkFNRlNfRkxBR19TSElGVEVEX1JPT1RfT0ZGU0VUOw0KLQlzdXBlci0+c2l6
-ZSA9IHNpemU7DQorCQlzdXBlci0+ZmxhZ3MgfD0gQ1JBTV9TV0FCXzMyKENS
-QU1GU19GTEFHX1NISUZURURfUk9PVF9PRkZTRVQpOw0KKwlzdXBlci0+c2l6
-ZSA9IENSQU1fU1dBQl8yNChzaXplKTsNCiAJbWVtY3B5KHN1cGVyLT5zaWdu
-YXR1cmUsIENSQU1GU19TSUdOQVRVUkUsIHNpemVvZihzdXBlci0+c2lnbmF0
-dXJlKSk7DQogDQotCXN1cGVyLT5mc2lkLmNyYyA9IGNyYzMyKDBMLCBaX05V
-TEwsIDApOw0KLQlzdXBlci0+ZnNpZC5lZGl0aW9uID0gb3B0X2VkaXRpb247
-DQotCXN1cGVyLT5mc2lkLmJsb2NrcyA9IHRvdGFsX2Jsb2NrczsNCi0Jc3Vw
-ZXItPmZzaWQuZmlsZXMgPSB0b3RhbF9ub2RlczsNCisJc3VwZXItPmZzaWQu
-Y3JjID0gQ1JBTV9TV0FCXzMyKGNyYzMyKDBMLCBaX05VTEwsIDApKTsNCisJ
-c3VwZXItPmZzaWQuZWRpdGlvbiA9IENSQU1fU1dBQl8zMihvcHRfZWRpdGlv
-bik7DQorCXN1cGVyLT5mc2lkLmJsb2NrcyA9IENSQU1fU1dBQl8zMih0b3Rh
-bF9ibG9ja3MpOw0KKwlzdXBlci0+ZnNpZC5maWxlcyA9IENSQU1fU1dBQl8z
-Mih0b3RhbF9ub2Rlcyk7DQogDQogCW1lbXNldChzdXBlci0+bmFtZSwgMHgw
-MCwgc2l6ZW9mKHN1cGVyLT5uYW1lKSk7DQogCWlmIChvcHRfbmFtZSkNCkBA
-IC0zMzcsMTEgKzMzOCwxMSBAQA0KIAllbHNlDQogCQlzdHJuY3B5KHN1cGVy
-LT5uYW1lLCAiQ29tcHJlc3NlZCIsIHNpemVvZihzdXBlci0+bmFtZSkpOw0K
-IA0KLQlzdXBlci0+cm9vdC5tb2RlID0gcm9vdC0+bW9kZTsNCi0Jc3VwZXIt
-PnJvb3QudWlkID0gcm9vdC0+dWlkOw0KKwlzdXBlci0+cm9vdC5tb2RlID0g
-Q1JBTV9TV0FCXzE2KHJvb3QtPm1vZGUpOw0KKwlzdXBlci0+cm9vdC51aWQg
-PSBDUkFNX1NXQUJfMTYocm9vdC0+dWlkKTsNCiAJc3VwZXItPnJvb3QuZ2lk
-ID0gcm9vdC0+Z2lkOw0KLQlzdXBlci0+cm9vdC5zaXplID0gcm9vdC0+c2l6
-ZTsNCi0Jc3VwZXItPnJvb3Qub2Zmc2V0ID0gb2Zmc2V0ID4+IDI7DQorCXN1
-cGVyLT5yb290LnNpemUgPSBDUkFNX1NXQUJfMjQocm9vdC0+c2l6ZSk7DQor
-CVNFVF9DUkFNX09GRlNFVCgmKHN1cGVyLT5yb290KSwgb2Zmc2V0ID4+IDIp
-Ow0KIA0KIAlyZXR1cm4gb2Zmc2V0Ow0KIH0NCkBAIC0zNTYsNyArMzU3LDcg
-QEANCiAJCWZwcmludGYoc3RkZXJyLCAiZmlsZXN5c3RlbSB0b28gYmlnLiAg
-RXhpdGluZy5cbiIpOw0KIAkJZXhpdCg4KTsNCiAJfQ0KLQlpbm9kZS0+b2Zm
-c2V0ID0gKG9mZnNldCA+PiAyKTsNCisJU0VUX0NSQU1fT0ZGU0VUKGlub2Rl
-LCBvZmZzZXQgPj4gMik7DQogfQ0KIA0KIA0KQEAgLTM3OSwxMCArMzgwLDEw
-IEBADQogDQogCQkJZW50cnktPmRpcl9vZmZzZXQgPSBvZmZzZXQ7DQogDQot
-CQkJaW5vZGUtPm1vZGUgPSBlbnRyeS0+bW9kZTsNCi0JCQlpbm9kZS0+dWlk
-ID0gZW50cnktPnVpZDsNCisJCQlpbm9kZS0+bW9kZSA9IENSQU1fU1dBQl8x
-NihlbnRyeS0+bW9kZSk7DQorCQkJaW5vZGUtPnVpZCA9IENSQU1fU1dBQl8x
-NihlbnRyeS0+dWlkKTsNCiAJCQlpbm9kZS0+Z2lkID0gZW50cnktPmdpZDsN
-Ci0JCQlpbm9kZS0+c2l6ZSA9IGVudHJ5LT5zaXplOw0KKwkJCWlub2RlLT5z
-aXplID0gQ1JBTV9TV0FCXzI0KGVudHJ5LT5zaXplKTsNCiAJCQlpbm9kZS0+
-b2Zmc2V0ID0gMDsNCiAJCQkvKiBOb24tZW1wdHkgZGlyZWN0b3JpZXMsIHJl
-Z2ZpbGVzIGFuZCBzeW1saW5rcyB3aWxsDQogCQkJICAgd3JpdGUgb3ZlciBp
-bm9kZS0+b2Zmc2V0IGxhdGVyLiAqLw0KQEAgLTM5NSw3ICszOTYsNyBAQA0K
-IAkJCQkqKGJhc2UgKyBvZmZzZXQgKyBsZW4pID0gJ1wwJzsNCiAJCQkJbGVu
-Kys7DQogCQkJfQ0KLQkJCWlub2RlLT5uYW1lbGVuID0gbGVuID4+IDI7DQor
-CQkJU0VUX0NSQU1fTkFNRUxFTihpbm9kZSwgbGVuID4+IDIpOw0KIAkJCW9m
-ZnNldCArPSBsZW47DQogDQogCQkJLyogVE9ETzogdGhpcyBtYXkgZ2V0IGl0
-IHdyb25nIGZvciBjaGFycyA+PSAweDgwLg0KQEAgLTUwMyw3ICs1MDQsNyBA
-QA0KIAkJCWV4aXQoOCk7DQogCQl9DQogDQotCQkqKHUzMiAqKSAoYmFzZSAr
-IG9mZnNldCkgPSBjdXJyOw0KKwkJKih1MzIgKikgKGJhc2UgKyBvZmZzZXQp
-ID0gQ1JBTV9TV0FCXzMyKGN1cnIpOw0KIAkJb2Zmc2V0ICs9IDQ7DQogCX0g
-d2hpbGUgKHNpemUpOw0KIA0K
---17438721-837620130-1001715388=:9055--
+-		*(u32 *) (base + offset) = curr;
++		*(u32 *) (base + offset) = le32_to_cpu(curr);
+ 		offset += 4;
+ 	} while (size);
+
+@@ -652,6 +653,10 @@
+ 		exit(16);
+ 	}
+ 	fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0666);
++	if (fd < 0) {
++		perror(outfile);
++		exit(8);
++	}
+
+ 	root_entry = calloc(1, sizeof(struct entry));
+ 	if (!root_entry) {
+--- 2.4.10/include/linux/cramfs_fs.h	Thu Jul 19 16:14:53 2001
++++ current/include/linux/cramfs_fs.h	Fri Sep 28 18:33:42 2001
+@@ -9,7 +9,12 @@
+
+ #endif
+
++#if (defined(BYTE_ORDER) && BYTE_ORDER == BIG_ENDIAN) || defined(__MIPSEB__)
++#define CRAMFS_MAGIC		0x453dcd28	/* endian reversed magic */
++#else
+ #define CRAMFS_MAGIC		0x28cd3d45	/* some random number */
++#endif
++
+ #define CRAMFS_SIGNATURE	"Compressed ROMFS"
+
+ /*
+@@ -80,6 +85,48 @@
+  * changed to test super.future instead.
+  */
+ #define CRAMFS_SUPPORTED_FLAGS (0x7ff)
++
++/*
++ * Since cramfs (according to docs) should always be stored little endian,
++ * provide macros to swab the bitfields (mkcramfs uses this file too).
++ */
++#if (defined(BYTE_ORDER) && BYTE_ORDER == BIG_ENDIAN) || defined(__MIPSEB__)
++
++#ifndef le16_to_cpu
++#define le16_to_cpu(x)	( ( (0x0000FF00 & (x)) >> 8   ) | \
++			  ( (0x000000FF & (x)) << 8 ) )
++#endif /* le16_to_cpu */
++#ifndef le32_to_cpu
++#define le32_to_cpu(x)	( ( (0xFF000000 & (x)) >> 24 ) | \
++			  ( (0x00FF0000 & (x)) >> 8  ) | \
++			  ( (0x0000FF00 & (x)) << 8  ) | \
++			  ( (0x000000FF & (x)) << 24 ) )
++#endif /* le32_to_cpu */
++#define CRAM_SWAB_24(x)	( ( (0x00FF0000 & (x)) >> 16 ) | \
++			  ( (0x0000FF00 & (x))       ) | \
++			  ( (0x000000FF & (x)) << 16 ) )
++#define GET_CRAM_NAMELEN(x) (((u8*)(x))[8] & 63)
++#define GET_CRAM_OFFSET(x)  ((CRAM_SWAB_24(((u32*)(x))[2] & 0x00FFFFFF)<<2) | \
++			                 ((((u32*)(x))[2] & 0xC0000000)>>30) )
++#define SET_CRAM_OFFSET(x,y)   ( ((u32*)(x))[2] = (((y)&3)<<30) | \
++				 CRAM_SWAB_24( ( ((y) & 0x03FFFFFF) >> 2) ) | \
++				 (((u32)(((u8*)(x))[8] & 0x3F)) << 24) )
++#define SET_CRAM_NAMELEN(x,y)	( ((u8*)(x))[8] = ( ((0x3F & (y))) | \
++						    (0xC0 & ((u8*)(x))[8]) ) )
++
++#else
++#ifndef le16_to_cpu
++#define le16_to_cpu(x)		(x)
++#endif /* le16_to_cpu */
++#ifndef le32_to_cpu
++#define le32_to_cpu(x)		(x)
++#endif /* le32_to_cpu */
++#define CRAM_SWAB_24(x)		(x)
++#define GET_CRAM_NAMELEN(x)	((x)->namelen)
++#define GET_CRAM_OFFSET(x)	((x)->offset)
++#define SET_CRAM_OFFSET(x,y)	((x)->offset = y)
++#define SET_CRAM_NAMELEN(x,y)	((x)->namelen = y)
++#endif
+
+ /* Uncompression interfaces to the underlying zlib */
+ int cramfs_uncompress_block(void *dst, int dstlen, void *src, int srclen);
+--- 2.4.10/fs/cramfs/inode.c	Mon Aug 27 07:53:49 2001
++++ current/fs/cramfs/inode.c	Fri Sep 28 18:36:06 2001
+@@ -21,6 +21,7 @@
+ #include <linux/cramfs_fs.h>
+
+ #include <asm/uaccess.h>
++#include <asm/byteorder.h>
+
+ #define CRAMFS_SB_MAGIC u.cramfs_sb.magic
+ #define CRAMFS_SB_SIZE u.cramfs_sb.size
+@@ -35,7 +36,7 @@
+
+ /* These two macros may change in future, to provide better st_ino
+    semantics. */
+-#define CRAMINO(x)	((x)->offset?(x)->offset<<2:1)
++#define CRAMINO(x)	(GET_CRAM_OFFSET(x) ? GET_CRAM_OFFSET(x)<<2 : 1)
+ #define OFFSET(x)	((x)->i_ino)
+
+ static struct inode *get_cramfs_inode(struct super_block *sb, struct cramfs_inode * cramfs_inode)
+@@ -43,9 +44,9 @@
+ 	struct inode * inode = new_inode(sb);
+
+ 	if (inode) {
+-		inode->i_mode = cramfs_inode->mode;
+-		inode->i_uid = cramfs_inode->uid;
+-		inode->i_size = cramfs_inode->size;
++		inode->i_mode = le16_to_cpu(cramfs_inode->mode);
++		inode->i_uid = le16_to_cpu(cramfs_inode->uid);
++		inode->i_size = CRAM_SWAB_24(cramfs_inode->size);
+ 		inode->i_blocks = (cramfs_inode->size - 1) / 512 + 1;
+ 		inode->i_blksize = PAGE_CACHE_SIZE;
+ 		inode->i_gid = cramfs_inode->gid;
+@@ -66,7 +67,8 @@
+ 			inode->i_data.a_ops = &cramfs_aops;
+ 		} else {
+ 			inode->i_size = 0;
+-			init_special_inode(inode, inode->i_mode, cramfs_inode->size);
++			init_special_inode(inode, inode->i_mode,
++					   CRAM_SWAB_24(cramfs_inode->size));
+ 		}
+ 	}
+ 	return inode;
+@@ -219,11 +221,11 @@
+ 	}
+
+ 	/* Check that the root inode is in a sane state */
+-	if (!S_ISDIR(super.root.mode)) {
++	if (!S_ISDIR(le16_to_cpu(super.root.mode))) {
+ 		printk(KERN_ERR "cramfs: root is not a directory\n");
+ 		goto out;
+ 	}
+-	root_offset = super.root.offset << 2;
++	root_offset = GET_CRAM_OFFSET(&(super.root)) << 2;
+ 	if (super.flags & CRAMFS_FLAG_FSID_VERSION_2) {
+ 		sb->CRAMFS_SB_SIZE=super.size;
+ 		sb->CRAMFS_SB_BLOCKS=super.fsid.blocks;
+@@ -299,7 +301,7 @@
+ 		 * and the name padded out to 4-byte boundaries
+ 		 * with zeroes.
+ 		 */
+-		namelen = de->namelen << 2;
++		namelen = GET_CRAM_NAMELEN(de) << 2;
+ 		nextoffset = offset + sizeof(*de) + namelen;
+ 		for (;;) {
+ 			if (!namelen)
+@@ -308,7 +310,8 @@
+ 				break;
+ 			namelen--;
+ 		}
+-		error = filldir(dirent, name, namelen, offset, CRAMINO(de), de->mode >> 12);
++		error = filldir(dirent, name, namelen, offset, CRAMINO(de),
++				le16_to_cpu(de->mode) >> 12);
+ 		if (error)
+ 			break;
+
+@@ -339,7 +342,7 @@
+ 		if (sorted && (dentry->d_name.name[0] < name[0]))
+ 			break;
+
+-		namelen = de->namelen << 2;
++		namelen = GET_CRAM_NAMELEN(de) << 2;
+ 		offset += sizeof(*de) + namelen;
+
+ 		/* Quick check that the name is roughly the right length */
+@@ -385,9 +388,10 @@
+
+ 		start_offset = OFFSET(inode) + maxblock*4;
+ 		if (page->index)
+-			start_offset = *(u32 *) cramfs_read(sb, blkptr_offset-4, 4);
+-		compr_len = (*(u32 *) cramfs_read(sb, blkptr_offset, 4)
+-			     - start_offset);
++			start_offset = le32_to_cpu(*(u32 *)
++				        cramfs_read(sb, blkptr_offset - 4, 4));
++		compr_len = le32_to_cpu(*(u32 *)
++			     cramfs_read(sb, blkptr_offset, 4)) - start_offset;
+ 		pgdata = kmap(page);
+ 		if (compr_len == 0)
+ 			; /* hole */

@@ -1,46 +1,38 @@
-Date: Thu, 31 Jan 2002 15:43:04 -0500 (EST)
-From: George Gensure <werkt@csh.rit.edu>
-Subject: Re: Newport XZ
-In-Reply-To: <20020131111144.A14922@gandalf.physik.uni-konstanz.de>
-Message-ID: <Pine.SOL.4.31.0201311537330.11295-100000@fury.csh.rit.edu>
+Date: Thu, 31 Jan 2002 15:33:23 -0800 (PST)
+From: Kaz Kylheku <kaz@ashi.footprints.net>
+Subject: Re: [libc-alpha] Re: PATCH: Fix ll/sc for mips
+In-Reply-To: <Pine.GSO.3.96.1020131230104.9069A-100000@delta.ds2.pg.gda.pl>
+Message-ID: <Pine.LNX.4.33.0201311526010.21705-100000@ashi.FootPrints.net>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: Guido Guenther <agx@sigxcpu.org>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20020131204304.yOXQTdW7q69FhTY5w2KzKPWzTZD2znWiIjsR2v2Gz9U@z>
+To: "Maciej W. Rozycki" <macro@ds2.pg.gda.pl>
+Cc: "H . J . Lu" <hjl@lucon.org>, GNU C Library <libc-alpha@sources.redhat.com>, linux-mips@oss.sgi.com
+Message-ID: <20020131233323.zTsnSsPLfBRvIEUzQEZD-lfYSaXeglkeexGErAwDPH8@z>
 
-It's definitely not a dual head board, however, attached to the sgi bus
-(s-bus?) these two cards are stacked on top of one another.  The top one
-has the display adapter.  I only say it is a XZ because of a hardware site
-that I found that showed all the different Newport cards, and this was the
-only one that matched it.  I don't have a problem doing the serial (found
-a cord), but I looked at the kernel source for the graphics and gconsole
-drivers, and it looked like they work now by some dark black magic.  There
-is no probing of the card of any kind, and even the code that looks as
-though it might be able to run on more than one machine has been #if 0 -ed
-out.  Would only the base address for the XZ be different, or would it be
-a completely different arrangement for the card as opposed to the XLs?
+On Thu, 31 Jan 2002, Maciej W. Rozycki wrote:
 
--George
+> Date: Thu, 31 Jan 2002 23:17:21 +0100 (MET)
+> From: Maciej W. Rozycki <macro@ds2.pg.gda.pl>
+> To: H . J . Lu <hjl@lucon.org>
+> Cc: GNU C Library <libc-alpha@sources.redhat.com>, linux-mips@oss.sgi.com
+> Subject: [libc-alpha] Re: PATCH: Fix ll/sc for mips
+> 
+> On Thu, 31 Jan 2002, H . J . Lu wrote:
+> 
+> > 	(__compare_and_swap): Return 0 when failed to compare or swap.
+> [...]
+> > 	* sysdeps/mips/atomicity.h (compare_and_swap): Return 0 when
+> > 	failed to compare or swap.
+> 
+>  Looking at the i486 implementation these are not expected to fail. 
+> Unless I am missing something... 
 
-On Thu, 31 Jan 2002, Guido Guenther wrote:
-
-> On Wed, Jan 30, 2002 at 06:30:38PM -0500, George Gensure wrote:
-> > Does the current kernel support the 2 board Newport XZ?  I have it in one
-> > of my machines, and I can't even get console, let alone get in there to
-> > run X. (no serial terminal available... damn the mac style serial)
-> If this is a 2 board XL, chances might be good to get this working
-> fairly easily. My impression was always that these are basically two XL
-> boards located at different base addresses, but I never ever got my
-> hands on such a board myself. Anyway you'll need a serial cable to debug
-> things anyway.
-> As for the XZ, there are no docs neither for single headed nor dual
-> head(I didn't know there's a dual head XZ too).
->  -- Guido
->
-
--- 
-George R. Gensure       Computer Science House Member
-werkt@csh.rit.edu       Sophomore, Rochester Institute of Technology
-Computer Science
+That's what ``compare'' means in ``compare and swap''. You lock the
+memory location at some hardware level and then compare the location
+to the specified value. If there is a match, you change the memory
+location to the new value. Otherwise you don't, and indicate that 
+you didn't. That's what ``fail'' means. The comparison failed,
+and the operation failed to install the new value. The caller must
+detect this and handle that. Algorithms based on atomic
+compare-and-swap take failure into account.

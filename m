@@ -1,53 +1,48 @@
-Message-ID: <007601c216d0$6f7f0840$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-Subject: Linux and the Sony Playstation 2
-Date: Tue, 18 Jun 2002 15:59:57 +0200
+Message-ID: <00e001c216f6$86594b40$0b01a8c0@w2k30g>
+From: "David Christensen" <dpchrist@holgerdanske.com>
+References: <007601c216d0$6f7f0840$10eca8c0@grendel>
+Subject: Re: Linux and the Sony Playstation 2
+Date: Tue, 18 Jun 2002 11:31:34 -0700
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20020618135957.XbW4aH5dct_cN2kvdY8QW5q4RZv1Qm-BlqrgMWkH9kc@z>
+To: linux-mips@oss.sgi.com
+Cc: license-discuss@opensource.org, kevink@mips.com
+Message-ID: <20020618183134.bDAsVNrO1OnUoLkwkPY7eMC4aRVm93zC6qa3OqYzuyU@z>
 
-The Sony PS2 Linux kit has been shipping for nearly
-a month now, and I'm frankly astonished at how little
-I've seen on this mailing list about it.  For better or
-for worse, this changes everything for MIPS/Linux.
-The number of MIPS/Linux users worldwide has
-just gone up by at least an order of magnitude,
-and they are on a platform running a 2.2.1-derived
-kernel and using gcc 2.95.2.
+Kevin:
 
-It's a perfectly usable platform out of the box, but
-Carsten has thrown "crashme" at it, and it goes down
-relatively quickly.  People trying to port kaffe and
-other programs that do double-precision float are
-blocked because there's no double precision on the
-R5900, and the Sony kernel lacks the Algorithmics
-emulator.
+Kevin D. Kissell <kevink@mips.com> wrote on linux-mips@oss.sgi.com:
+> The Sony PS2 Linux kit has been shipping for nearly...
 
-It's not clear what Sony is going to put into further
-development, and what they are going to expect the
-user community to take over from here.  There is a 
-group of people trying to take the kernel up to
-2.2.20, but I'm not yet sure whether they know
-what they are doing, and anyway, that box needs
-to get to 2.4.x ASAP.
+If the PS2 is an open source platform, I would like to know that.
+However, I do not see Sony on the OSI approved license list:
 
-I respectfully submit that, within a year, any 
-MIPS/Linux  source tree that does not support 
-the PS2 will be considered obsolete.  And that
-quite specifically includes the one at oss.sgi.com.
-I personally would want to approach this in terms 
-of merging the necessary PS2 code into something
-that could be expressed as a patch over kernel.org's
-2.4.19_or_better, and which would be provded 
-as the default MIPS kernel technology by MIPS 
-and SGI servers, and ultimately by kernel.org.
+    http://www.opensource.org/licenses/index.php
 
-Is no one else here working on this?
 
-            Regards,
+So, let me get out my soap box...
 
-            Kevin K.
+When people say "Open Source", the first thing that comes to mind is
+software.  But, this is only one half of the equation.  The hardware
+must also be "open", or the concept doesn't work.  First, because
+attempting to write systems software without complete and accurate
+hardware documentation is an exercise in reverse engineering.  The
+community can better spend its time on documented hardware.  Second, and
+more importantly, because any intellectual property (IP) encumbrance
+will make the results pointless in the marketplace.
+
+
+Closed hardware breaks the community development model.  Vendors who
+provide a Linux distribution but keep their hardware proprietary cannot
+honestly claim "Open Source".  Vendors who fully disclose and freely
+license both their hardware and software have embraced "Open Source".
+As consumers, we vote with our dollars. As engineers, we further one
+cause or the other by our education, employment, and personal project
+choices.
+
+
+David Christensen
+dpchrist@holgerdanske.com

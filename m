@@ -1,47 +1,52 @@
-From: "Ian Chilton" <mailinglist@ichilton.co.uk>
+Date: Wed, 21 Jun 2000 22:38:42 +0100 (IST)
+From: Paul Jakma <paul@clubi.ie>
 Subject: RE: Problems with multiple harddisks on my Indigo2
-Date: Wed, 21 Jun 2000 13:43:07 +0100
-Message-ID: <NAENLMKGGBDKLPONCDDOAELFCNAA.mailinglist@ichilton.co.uk>
+In-Reply-To: <NAENLMKGGBDKLPONCDDOAELFCNAA.mailinglist@ichilton.co.uk>
+Message-ID: <Pine.LNX.4.21.0006212234190.5050-100000@fogarty.jakma.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20000621112343.A19912@spock>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: spock@mgnet.de, Linux Debian MIPS <debian-mips@lists.debian.org>, Linux MIPS cthulhu <linux@cthulhu.engr.sgi.com>, Linux MIPS <linux-mips@fnet.fr>, MIPS vger <linux-mips@vger.rutgers.edu>
-Message-ID: <20000621124307.iBNzkLmsVrJ8iPOi4RVlKYmTRotdEIkiVPRv9MKOh8Y@z>
+To: Ian Chilton <mailinglist@ichilton.co.uk>
+Cc: spock@mgnet.de, Linux Debian MIPS <debian-mips@lists.debian.org>, Linux MIPS cthulhu <linux@cthulhu.engr.sgi.com>, Linux MIPS <linux-mips@fnet.fr>, MIPS vger <linux-mips@vger.rutgers.edu>
+Message-ID: <20000621213842.AoKua-mXH-gpwvkUOB6Cn76aH0SEBvamJz0UvLw7hxA@z>
 
-Hello,
+On Wed, 21 Jun 2000, Ian Chilton wrote:
 
-> cp: /mnt/redhat/kernel23/linux/arch/sparc/lib/COPYING.LIB: 
-> Input/output error
-> And dmesg shows:
-> attempt to access beyond end of device
-> 08:03: rw=0, want=959546428, limit=1888830
-[SNIP]
+> I have an SGI Indy, with 2 internal hard disks, a 4GB and a 1GB
+> 
+> I get the same thing!
+> 
+> 
+> > Also I'm getting a message
+> > sc1,2,0: cmd=0x12 timeout after 2 sec.  Resetting SCSI bus
+> 
+> I started getting this when I added the 2nd HD (1GB).
+> 
 
+fwiw, i got this too on my indy when i added a Quantum Empire 1GB.
 
-I have an SGI Indy, with 2 internal hard disks, a 4GB and a 1GB
+From cold boot the PROM doesn't recognise the second disk, but IRIX
+does (PROM gives me the exact same error message as the one you wrote
+above - but prints it twice). If i halt back to PROM then the PROM
+does see the second disk. (and only prints that error message once)
 
-I get the same thing!
+my theories are:
 
+1. PROM controller driver is minimal and doesn't init the
+controller/disks properly whereas the IRIX driver does. 
 
-> Also I'm getting a message
-> sc1,2,0: cmd=0x12 timeout after 2 sec.  Resetting SCSI bus
+2. disk spin up times.. ??
 
-I started getting this when I added the 2nd HD (1GB).
+3. Perhaps cause the outboard SCSI port is not terminated. (least not
+on my indy)
 
+> 
+-- 
+Paul Jakma	paul@clubi.ie
+PGP5 key: http://www.clubi.ie/jakma/publickey.txt
+-------------------------------------------
+Fortune:
+Give me a fish and I will eat today.
 
-Bye for Now,
-
-Ian
-
-
-                     \|||/ 
-                     (o o)
- /----------------ooO-(_)-Ooo----------------\
- |  Ian Chilton                              |
- |  E-Mail :   ian@ichilton.co.uk            |
- |  IRC Nick:  GadgetMan                     |
- \-------------------------------------------/
+Teach me to fish and I will eat forever.

@@ -1,31 +1,22 @@
-Message-ID: <3E6C5DE2.6090403@prosyst.bg>
-Date: Mon, 10 Mar 2003 11:41:54 +0200
-From: Alexander Popov <s_popov@prosyst.bg>
+content-class: urn:content-classes:message
+Subject: specify the user mode program's physical address
+Date: Tue, 11 Mar 2003 18:05:11 -0800
+Message-ID: <61F6477DE6BED311B69F009027C3F5840213109C@Exchange.tridentmicro.com>
 MIME-Version: 1.0
-Subject: Re: Mycable XXS board
-References: <3E6C4DF1.3020304@mycable.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <s_popov@prosyst.bg>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+From: "Teresa Tao" <Teresat@tridentmicro.com>
+Return-Path: <Teresat@tridentmicro.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20030310094154.utRqv3fDHRgjKCWfBoKSkdLCNS_3yV-8IGXxYdBi7Ys@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030312020511.nehs3DZQPVhiAKpxI9g-2kl_hzroL2ZC6dsIfH6MUQo@z>
 
-Thanks to all that helped me up with that...
+Hi, 
 
-I managed to compile the kernel (2.4.21). There were some problems with unresolved symbols, but when 
-I fixed the support to only pb1500 and removed the MTD CFI support , the framebuffer and a few other 
-things it worked.
+Is there a way for linux to specify the physical address for a user mode program? So my program will load into the specified physical memory.
 
-Thanks againg guys.
+Thanks in advance!
 
-Best Regards,
-
--- 
-Alexander Popov
-RTOS&JVM Team Leader
-Prosyst Bulgaria, Inc.
-email: s_popov@prosyst.bg
-mobile: +35987663193
-icq: 29207350
+Teresa

@@ -1,41 +1,56 @@
-Message-ID: <3AA4878C.F10825DE@agile.tv>
-Date: Tue, 06 Mar 2001 16:45:32 +1000
-From: Liam Davies <ldavies@agile.tv>
-Reply-To: ldavies@oz.agile.tv
+Date: Tue, 6 Mar 2001 22:36:45 -0500 (EST)
+From: <nick@snowman.net>
+Subject: Problem makeing an O2 run bootp
+In-Reply-To: <20010306135856.E1184@bacchus.dhis.org>
+Message-ID: <Pine.LNX.4.21.0103062231010.23542-100000@ns>
 MIME-Version: 1.0
-Subject: Re: Troubles with TLB refills
-References: <3AA30A91.B5842678@agile.tv> <20010305114926.A26862@bacchus.dhis.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Ralf Baechle <ralf@oss.sgi.com>
 Cc: linux-mips@oss.sgi.com
-Message-ID: <20010306064532.PqXwlKSdQcRlpLdb54R2Tw_OnKDlggdHreOJEKMlXwA@z>
+Message-ID: <20010307033645.ygGXxQdSpb496sF8ZrcRFuNFRTvvhIh6FZFugO-TFKU@z>
 
-Ralf,
-
-From the change 1.42 to 1.43 on file arch/mips/kernel/traps.c some code was
-added
-to copy the EJTAG exception vector
-
-+ /*
-+  * Copy the EJTAG debug exception vector handler code to it's final
-+  * destination.
-+  */
-+ memcpy((void *)(KSEG0 + 0x300), &except_vec_ejtag_debug, 0x80);
-
-This code indescriminatly smashes the end of except_vec0_r4600 and
-all of except_vec0_nevada handlers with the .fill set to only 0x280
-00000000800002d4 T except_vec0_r4600
-0000000080000328 T except_vec0_nevada
-0000000080000380 T except_vec0_r45k_bvahwbug
-
-I'm not sure under what platform we need to load JTAG support, but we can
-just increase the fill area in head.S to say 0x400
-
-Cheers
-Liam
-
-=-------------=
-Agile TV Corporation
+I've got an o2 that I'm trying to make netboot, and it seems to work,
+however the o2 never acks the tftp packets.  The tcpdump is attached.  If
+anyone has suggestions/ideas I'd love to hear them.  I booted the o2 and
+ran "bootp():" from the arc prompt.
+	Thanks
+		Nick
+22:31:26.697102 arp who-has 10.1.1.3 tell 10.1.1.3
+22:31:26.697348 10.1.1.3.bootpc > 255.255.255.255.bootps: xid:0xbbb2
+secs:5 C:10.1.1.3 [|bootp]
+22:31:26.698900 10.1.1.1.bootps > 10.1.1.3.bootpc: xid:0xbbb2 secs:5
+C:10.1.1.3 Y:10.1.1.3 S:10.1.1.1 [|bootp] [tos 0x10]
+22:31:26.699191 arp who-has 10.1.1.3 tell 10.1.1.3
+22:31:26.710600 10.1.1.3.15283 > 10.1.1.1.tftp: 22 RRQ "vmlinuxo2"
+22:31:26.741123 10.1.1.1.35447 > 10.1.1.3.15283: udp 516 (DF)
+22:31:31.734006 arp who-has 10.1.1.3 tell 10.1.1.1
+22:31:31.734156 arp reply 10.1.1.3 is-at 8:0:69:5:b8:cb
+22:31:31.734291 10.1.1.1.35447 > 10.1.1.3.15283: udp 516 (DF)
+22:31:36.734065 10.1.1.1.35447 > 10.1.1.3.15283: udp 516 (DF)
+22:31:41.734046 10.1.1.1.35447 > 10.1.1.3.15283: udp 516 (DF)
+22:31:46.734050 10.1.1.1.35447 > 10.1.1.3.15283: udp 516 (DF)
+22:31:56.072778 10.1.1.3.15284 > 10.1.1.1.tftp: 22 RRQ "vmlinuxo2"
+22:31:56.102821 10.1.1.1.35447 > 10.1.1.3.15284: udp 516 (DF)
+22:32:01.094154 10.1.1.1.35447 > 10.1.1.3.15284: udp 516 (DF)
+22:32:06.094045 10.1.1.1.35447 > 10.1.1.3.15284: udp 516 (DF)
+22:32:11.094043 10.1.1.1.35447 > 10.1.1.3.15284: udp 516 (DF)
+22:32:16.094071 10.1.1.1.35447 > 10.1.1.3.15284: udp 516 (DF)
+22:32:21.094002 arp who-has 10.1.1.3 tell 10.1.1.1
+22:32:21.094142 arp reply 10.1.1.3 is-at 8:0:69:5:b8:cb
+22:32:26.000316 10.1.1.3.15285 > 10.1.1.1.tftp: 22 RRQ "vmlinuxo2"
+22:32:26.030369 10.1.1.1.35447 > 10.1.1.3.15285: udp 516 (DF)
+22:32:31.024092 10.1.1.1.35447 > 10.1.1.3.15285: udp 516 (DF)
+22:32:36.024044 10.1.1.1.35447 > 10.1.1.3.15285: udp 516 (DF)
+22:32:41.024045 10.1.1.1.35447 > 10.1.1.3.15285: udp 516 (DF)
+22:32:46.024055 10.1.1.1.35447 > 10.1.1.3.15285: udp 516 (DF)
+22:32:51.023999 arp who-has 10.1.1.3 tell 10.1.1.1
+22:32:51.024138 arp reply 10.1.1.3 is-at 8:0:69:5:b8:cb
+22:32:55.927938 10.1.1.3.15286 > 10.1.1.1.tftp: 22 RRQ "vmlinuxo2"
+22:32:55.957167 10.1.1.1.35447 > 10.1.1.3.15286: udp 516 (DF)
+22:33:00.954096 10.1.1.1.35447 > 10.1.1.3.15286: udp 516 (DF)
+22:33:05.954047 10.1.1.1.35447 > 10.1.1.3.15286: udp 516 (DF)
+22:33:10.954056 10.1.1.1.35447 > 10.1.1.3.15286: udp 516 (DF)
+22:33:15.954051 10.1.1.1.35447 > 10.1.1.3.15286: udp 516 (DF)
+22:33:20.954008 arp who-has 10.1.1.3 tell 10.1.1.1
+22:33:20.954142 arp reply 10.1.1.3 is-at 8:0:69:5:b8:cb

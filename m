@@ -1,38 +1,43 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Ralf Baechle <ralf@Julia.DE>
-Message-ID: <199706132329.BAA06504@kernel.panic.julia.de>
+Message-ID: <199706140004.CAA08235@kernel.panic.julia.de>
 Subject: Re: Userland loader / run time loader
-Date: Sat, 14 Jun 1997 01:29:47 +0200 (MET DST)
-In-Reply-To: <Pine.LNX.3.95.970613192104.15021E-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jun 13, 97 07:30:37 pm
+Date: Sat, 14 Jun 1997 02:04:03 +0200 (MET DST)
+In-Reply-To: <Pine.LNX.3.95.970613194626.15021G-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Jun 13, 97 07:51:37 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Alex deVries <adevries@engsoc.carleton.ca>
 Cc: ralf@Julia.DE, lm@neteng.engr.sgi.com, ralf@mailhost.uni-koblenz.de, shaver@neon.ingenia.ca, linux@cthulhu.engr.sgi.com
-Message-ID: <19970613232947.ktnXNz355Nj65gjDMYD-7Y9U8D3bc_b1Yt5djIhyUI8@z>
+Message-ID: <19970614000403.-wd29cv7NINeOBpjaVZ7wvtAydDL2MAYT4jyGdwQaoc@z>
 
-> To begin with, excuse my noviceness in this all. Those are LSB binaries,
-> whereas the sgi-linux box that I have access to (bogomips.ingenia.com)
-> will only run MSB. 
+> > {\grin[evil] Because I've got four types of MIPS boxes running Linux at
+> > home and to two more I've got access.}
 > 
-> As written on this list earlier, we don't have bi-endian support.  So,
-> which one is it we're going to support to begin with? How is it that Ralf
-> is able to execute LSB binaries?
->
-> Am I missing something big?
+> To address the needs of us lowly folk who have fewer than 2 MIPS boxes[1],
+> which endian are we going to be supporting first?  It would be _very_
+> pleasant to be able to run all these binaries that Ralf has prepared. 
 
-{\grin[evil] Because I've got four types of MIPS boxes running Linux at
-home and to two more I've got access.}
+The dependencies from the byteorder are very low.  As long as we do
+not have a kernel with the capability to execute binaries of both byteorder
+at the same time byteorder is almost a non-issue for development.  Just
+recompiling, that's it.
 
-I think this also explains why I'm so interested in running biendianess -
-I'm running out of diskspace ...
+> Also, exactly how difficult is it to alternate the kernel between big and
+> little endian? 
 
-> Also, there was talk of getting merged up with kernel 2.1.4[234].  Any
-> luck so far?
+Well, depends on what you mean.  The simple solution is just recompiling
+everything.  Works for kernel and user apps.  The more complex solution
+is to make the kernel capable of running user apps of both byteorder at
+the same time.  Among other things this requires that we go through all
+the kernel source and fix the user space access routines.  A bit more of
+an effort ;-)  Mips already did that once for RISC/os.
 
-Yes.  I haven't merged all the files of my home CVS archive yet into
-David's CVS archive from which he sends patches to Linus but the biggest
-part is now in sync.
+> This is getting cooler by the minute...
+> 
+> [1] In my case, 0, but access network access to 1.
+
+Slower than 10mbit/s doesn't count :-)
 
   Ralf

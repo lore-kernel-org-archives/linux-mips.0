@@ -1,82 +1,70 @@
-Message-ID: <005401c0ed9c$a2ce8b20$0deca8c0@Ulysses>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3B1BC6B8.C58758FA@palmchip.com> <02a901c0ed2b$2eac6300$0deca8c0@Ulysses> <3B1BEF48.AB0E568C@palmchip.com> <033701c0ed3c$59ccf980$0deca8c0@Ulysses> <3B1C1AAD.3A62D636@palmchip.com>
-Subject: Re: dcache_blast() bug?
-Date: Tue, 5 Jun 2001 10:50:47 +0200
+Message-ID: <002e01c0ee0c$1572fed0$031010ac@rjrtower>
+From: "Robert Rusek" <robru@teknuts.com>
+Subject: Newbie Question, Please help
+Date: Tue, 5 Jun 2001 15:08:42 -0700
 MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_002B_01C0EDD1.68B40570"
+Sender: owner-linux-mips@oss.sgi.com
+To: linux-mips@oss.sgi.com
+Message-ID: <20010605220842.d4GcGpYQX00CxbKtcCbBRuHzTJtYQmWhMB1mOw1JFnI@z>
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_002B_01C0EDD1.68B40570
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Sender: owner-linux-mips@oss.sgi.com
-To: Ian Thompson <iant@palmchip.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010605085047.L-7k8HK8rWkTSdt_TavrKbY8mOvi5hTO5o8yhjk2QiM@z>
+Content-Transfer-Encoding: quoted-printable
 
+I just got a SGI Challenge S.  I need advice on which flavor of Linux I =
+should install, RedHat or Debian.  Which is the better choice.  I also =
+need to find out how to install this.  I already attempted and failed to =
+install the RedHat 5.1.  I am using a RedHat 7.0 box to do the install =
+(bootp/tftp/nfs) but I am not even able to get the setup to run.  I am =
+using the latest version of DHCP/BOOTP (ics 2.0) to try to boot.  It =
+gets the address then claims it is sending the vmlinux file via tftp.  =
+On the SGI it just times out.
 
-> Thanks for your help Kevin.  It may be possible that this is a hardware
-> bug.  I am using one of the lead vehicle chips with 16k d$ & i$,
-> although there is some custom hardware which may be causing trouble as
-> well.  Oh, and this is the 2.4.1 kernel.
+Any advice, pointers, etc would be greatly appreciated.
 
-I'm also running a 4Kc lead vehicle, on a MIPS Malta board,
-with the 2.4.1 kernel, run the system moderately hard, and have
-never seen any behavior like that you describle.
+Thanks in advance,
+Robert Ruserk
 
-> It appears that when I copy the arguments into the command line
-> variable, they are 8-byte aligned, and the destination is also 8-byte
-> aligned.  However, there is an inconsistency between the data in the
-> cache and in memory after the blast_dcache() call.
+------=_NextPart_000_002B_01C0EDD1.68B40570
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Am I correct in taking this to mean that the contents of
-memory is correct, but that the cache is in error when
-you read the data back in cacheable space?  That suggests
-that writes are working fine, but that either the blast_dcache()
-isn't correctly clearing the tags, or the refill from memory
-is getting trashed on the way to the cache.  The former
-could result from misbehavior in the 4Kc lead vehicle chip
-itself (possibly provoked by some kind of marginal
-clock or power supply input), the later could result from
-any one of several problems in the path between the RAM
-array and the lead vehicle cache.  I favor the later theory.
-See below.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 5.50.4611.1300" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>I just got a SGI Challenge S.&nbsp; I =
+need advice=20
+on which flavor of Linux I should install, RedHat or Debian.&nbsp; Which =
+is the=20
+better choice.&nbsp; I also need to find out how to install this.&nbsp; =
+I=20
+already attempted and failed to install the RedHat 5.1.&nbsp; I am using =
+a=20
+RedHat 7.0 box to do the install (bootp/tftp/nfs) but I am not even able =
+to get=20
+the setup to run.&nbsp; I am using the latest version of DHCP/BOOTP (ics =
+2.0) to=20
+try to boot.&nbsp; It gets the address then claims it is sending the =
+vmlinux=20
+file via tftp.&nbsp; On the SGI it just times out.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Any advice, pointers, etc would be =
+greatly=20
+appreciated.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks in advance,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Robert =
+Ruserk</FONT></DIV></BODY></HTML>
 
->
-Could it also be
-> possible that the cache write buffer is not quite empty, and the data in
-> it is being lost on the blast call?
-
-I know of no software mechanism that will cause the contents
-of the write buffer to be lost.  I think a bus error indication
-from the system might cause it to be thrown away, but that's
-about it.  The SYNC instruction forces its contents to be
-written to memory, not discarded.
-
-> Should some implementation of
-> wbflush be called before the cache ops are done?
-
-The write buffers are part of the BIU which is on the
-"far side" of the cache.  Since the cache in write-through,
-the cache operations should not result in any interaction
-with the write buffer at all - the cache tags should get
-invalidated, and that's all.
-
-The reason that the 8-byte granularity of error suggests
-a hardware problem at the memory interface is that, while
-writes to memory will be 1, 2, or 4 bytes (byte, halfword,
-and word stores), and the cache line size and write buffer
-size are both 16 bytes, the 4Kc lead vehicle has a 64-bit
-memory interface, and reads 8 bytes at a time when doing
-cache fills.  A botched RAM cycle during a cache fill would
-cause 8-byte blocks within the 16-byte cache lines to be
-trashed - which seems to be exactly what you are seeing.
-
-I strongly suggest that you double check all mechanical connections
-(CPU socket and memory slots), and if that doesn't help, check your
-RAM timing, your supply voltage, and the symmetry and cleanliness
-of your clocks.  It sounds like the problem is highly reproducable,
-so a next step might be to stick a logic analyser on the CPU/Memory
-interface and watch the fill operation on the address, following the flush.
-
-            Regards,
-
-            Kevin K.
+------=_NextPart_000_002B_01C0EDD1.68B40570--

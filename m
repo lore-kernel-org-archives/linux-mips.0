@@ -1,24 +1,40 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-Message-ID: <199608122124.OAA08877@ratliff.engr.sgi.com>
-Subject: Re: Linux: the next step 
-In-reply-to: Your message of "Mon, 12 Aug 96 14:18:18 PDT."
-             <199608122118.OAA18053@refugee.engr.sgi.com>
-Date: Mon, 12 Aug 96 14:24:15 -0700
-From: Bob English <renglish@ratliff.engr.sgi.com>
+From: jes@machine.engr.sgi.com (John E. Schimmel)
+Message-ID: <199608122139.OAA12095@machine.engr.sgi.com>
+Subject: Re: Linux: the next step
+Date: Mon, 12 Aug 1996 14:39:21 -0700 (PDT)
+In-Reply-To: <199608122120.OAA18080@refugee.engr.sgi.com> from "Steve Alexander" at Aug 12, 96 02:20:39 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Steve Alexander <sca@refugee.engr.sgi.com>
-Cc: Bob English <renglish@ratliff.engr.sgi.com>, Larry McVoy <lm@gate1-neteng.engr.sgi.com>, Nigel Gamble <nigel@cthulhu.engr.sgi.com>, Alistair Lambie <alambie@wellington.sgi.com>, ariel@cthulhu.engr.sgi.com, linux@yon.engr.sgi.comrenglish@ratliff.engr.sgi.com
-Message-ID: <19960812212415.Q0n6Vm8UTrPnA5wwn2ViozBNL92AXmqkcXJvOtq4q4I@z>
+Cc: lm@gate1-neteng.engr.sgi.com, lm@neteng.engr.sgi.com, nigel@cthulhu.engr.sgi.com, alambie@wellington.sgi.com, ariel@cthulhu.engr.sgi.com, linux@yon.engr.sgi.com
+Message-ID: <19960812213921.pCwgbO9ebqJjjzuj7ZrafWr-D9WLUxI1XUAmk3S-kGE@z>
 
-In message <199608122118.OAA18053@refugee.engr.sgi.com> you write:
->If I look at those benchmarks, they'll probably run faster on Linux on an Indy
->than they do on IRIX on an Indy, so I doubt the locking is the big problem we
->need to be looking at.  I don't have numbers from David to quote, so maybe I'm
->wrong.  I'd like to be wrong.
+> 
+> lm@gate1-neteng (Larry McVoy) writes:
+> >You'll have to borrow my copy, Usenix rejected it.  Fuckheads.
+> 
+> No doubt to make room for some paper on TCL scripts or something.  Feh.
+> Yeah, if you can make me a copy or convince the authors to send me one I'd
+> appreciate it.
 
-I was comparing Irix MP times vs. Irix UP times, and the difference is
-both substantial and locking related.  Of course, if Irix were as
-efficient on a UP as Linux, the difference might be a factor of 10
-rather than a factor of 2 :-).
+Now wait a minute here.  Read the paper before commenting.
+They create a "real-time" thread under Linux.  That does not
+mean that it does anything, that the OS has real time support,
+etc.  There was nothing particularly new about what it did.
+There is now a Linux conference which should showcase this
+sort of thing.  Usenix is for new and interesting work that
+would be of interest to a large audience.
 
---bob--
+> 
+> -- Steve
+> 
+> 
+
+------------------------------------------------------------
+John E. Schimmel                        jes@sgi.com         
+Silicon Graphics Inc.                   Voice: (415)933-4116
+http://reality.sgi.com/employees/jes    Fax:   (415)967-8496
+------------------------------------------------------------

@@ -1,46 +1,57 @@
-Message-ID: <019b01c0878d$8ac9e6c0$0deca8c0@Ulysses>
+Message-ID: <01e501c0879f$e56623c0$0deca8c0@Ulysses>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <3A70A356.F3CA71F1@jungo.com> <20010125141632.B2311@bacchus.dhis.org> <3A712A52.FAC574F1@mips.com>
-Subject: Re: MIPS/linux compatible PCI network cards
-Date: Fri, 26 Jan 2001 12:45:45 +0100
+References: <3A6F8F66.6258801@mvista.com> <0101241833281Q.00834@plugh.sibyte.com> <3A6F9814.3E39027@mvista.com> <0101241917341S.00834@plugh.sibyte.com> <3A703E3C.360FB4FF@ridgerun.com> <3A706A22.6B760617@mvista.com> <010601c08780$d0b8a7a0$0deca8c0@Ulysses> <3A717518.B1CAFEDC@ridgerun.com>
+Subject: Re: floating point on Nevada cpu
+Date: Fri, 26 Jan 2001 14:57:08 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-15"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Carsten Langgaard <carstenl@mips.com>, Ralf Baechle <ralf@oss.sgi.com>
-Cc: Michael Shmulevich <michaels@jungo.com>, linux-mips@oss.sgi.com
-Message-ID: <20010126114545.QuEQkfCsoA2ZUNcN00ep_B_m23lZ8Fska6kdmrSmvl0@z>
+To: Steve Johnson <stevej@ridgerun.com>
+Cc: Pete Popov <ppopov@mvista.com>, linux-mips@oss.sgi.com
+Message-ID: <20010126135708.eMoP-P0xpKGeyDz2r7TDUJ3kD-gC5vfY_J-NJCEvOlg@z>
 
-> > > Hello all,
-> > >
-> > > I would like to ask if someone knows some more or less widely
-available
-> > > PCI network card that is compatible with MIPS/Linux.
-> > >
-> > > I have heard of Tulip and AMD's PCnet. I wonder if you heard of
-others.
-> >
-> > These all have already been used with Linux/MIPS.  I don't have any
-reports
-> > on the current status of these drivers.  If they don't work they should
-> > be reasonably easy to fix.
+> "Kevin D. Kissell" wrote:
 >
-> The tulip driver worked fine at least in the past. The AMD PCnet driver
-works
-> just fine, we are using it on our reference boards.
+> > I had essentially the same problem at MIPS a year or two ago,
+> > and I could have *sworn* that my fix, which ORed ST0_FR into
+> > the initial Status register value set in the startup assembly code,
+> > had made it into the standard distributions.  It's at about line 530
+> > of head.S, where a term is added to make the instruction
+> >
+> > li t1,~(ST0_CU1|ST0_CU2|ST0_CU3|ST0_KX|ST0_SX|ST0_FR)
+> >
+> > I spent days thinking it was a mipsel library problem,
+> > because it only turned up when I tried exercising a
+> > little-endian version of the same kernel that worked
+> > sell big-endian on the Indy.  But of course it was all
+> > due to the mipsel system having a boot-prom that
+> > cleverly enabled all the FP registers for me...
+> >
+> >             Kevin K.
+>
+> Kevin,
+>
+>     Your/Flo's/Ralf's thread in the MIPS Linux archives from last January
+was
+> what clued me into the ST0_FR setting in the first place.  Ralf gave
+arguments
+> why he wouldn't take your change at that time, which is why that line
+isn't in
+> the 2.4.x kernel.
 
-Note, however, that the Tulip driver that was part of the
-standard 2.2/2.3 repository at oss.sgi.com was both
-downrev with regard to the author's own web site and
-subobtimal if not outright buggy in it's cache management.
-The AMD PCnet driver as we found it was clean and efficient
-but had no MIPS cache hooks.   I had to put those in.
-So unless Ralf or someone at SGI that the versions
-on oss.sgi.com are the versions I cleaned up for MIPS,
-I would recommend pulling them off the MIPS site.
+Yeah, and I still think they are piss-poor arguments.  ;-)
 
-            Regards,
+I still do not see much virtue in saying that one has a binary
+kernel that supports either FR=0 or FR=1, *provided*
+that the entire userland from init inward is built with the same
+"polarity" *and* that the boot monitor is  guaranteed to have
+set FR the right way before launching the kernel.  FR=0 (o32)
+and FR=1 (n32, n64) binaries should be distinguishable at
+exec() time, and the FR bit set appropriately at
+that time.  Making assumptions  about what the bootloader
+or bootprom has done is just plain foolish, IMHO.
 
             Kevin K.

@@ -1,25 +1,69 @@
-Date: Tue, 27 Feb 2001 02:42:35 +0100
-From: Ralf Baechle <ralf@oss.sgi.com>
-Subject: Re: Where is 2.2.x kernel?
-Message-ID: <20010227024235.A26684@bacchus.dhis.org>
-References: <001c01c09fcd$61c20070$dde0490a@BANANA>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <001c01c09fcd$61c20070$dde0490a@BANANA>; from stevenliu@psdc.com on Mon, Feb 26, 2001 at 12:23:22AM -0800
+Message-ID: <000a01c0a0cf$849efbe0$dde0490a@BANANA>
+From: "Steven Liu" <stevenliu@psdc.com>
+Subject: binutils-2.8.1-mips.patch and egcs-1.1.2-mips.patch ?
+Date: Tue, 27 Feb 2001 07:11:10 -0800
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0007_01C0A08C.7616DF90"
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: Steven Liu <stevenliu@psdc.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010227014235.tvsu14EjbMEdfENTNtRI_4woEjqW-hnXXZNsgMqLZM4@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20010227151110.jZz5w1cc34ZaFFbqWHw2RkHtGgbGnvCHT0g5zGf1gCk@z>
 
-On Mon, Feb 26, 2001 at 12:23:22AM -0800, Steven Liu wrote:
+This is a multi-part message in MIME format.
 
-> In ftp://oss.sgi.com/pub/linux/mips/kernel/, there are many folders like v2.1, v2.2, and v2.3. But there is nothing in v2.2. Where could I 
-> find 2.2.x kernel? 
+------=_NextPart_000_0007_01C0A08C.7616DF90
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-You can now get the kernel from anonymous CVS.  See the howto at
-http://oss.sgi.com/mips/mips-howto.html for how to access anonymous CVS;
-Linux 2.2 is on the CVS branch linux_2_2.
+Hi ALL:
 
-  Ralf
+Thank you for your help.
+
+If any one knows where I can find the following files:=20
+     binutils-2.8.1-mips.patch  and
+    egcs-1.1.2-mips.patch,
+please let me know.
+
+Regards,
+
+
+Steven Liu
+
+
+
+------=_NextPart_000_0007_01C0A08C.7616DF90
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.3103.1000" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial>Hi ALL:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Thank you for your help.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>If&nbsp;any one knows where I can find the =
+following=20
+files: </FONT></DIV>
+<DIV><FONT face=3DArial>&nbsp;&nbsp;&nbsp;&nbsp;=20
+<STRONG>binutils-2.8.1-mips.patch&nbsp; </STRONG>and</FONT></DIV>
+<DIV><FONT face=3DArial>&nbsp;&nbsp;&nbsp;=20
+<STRONG>egcs-1.1.2-mips.patch</STRONG>,</FONT></DIV>
+<DIV><FONT face=3DArial>please let me know.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Regards,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Steven Liu</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0007_01C0A08C.7616DF90--

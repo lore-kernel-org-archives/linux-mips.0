@@ -1,105 +1,99 @@
-Received: from radium ([192.168.0.20])
-	by localhost.localdomain (8.12.8/8.12.8) with ESMTP id hA11brmv028438
-	for <linux-mips@linux-mips.org>; Fri, 31 Oct 2003 19:37:56 -0600
 From: "Lyle Bainbridge" <lyle@zevion.com>
-Subject: 
-Date: Fri, 31 Oct 2003 19:38:58 -0600
-Message-ID: <000001c3a018$ed5efb30$800101df@radium>
+Subject: RE: boot pb1500 from flash through 16-bit data bus?
+Date: Mon, 3 Nov 2003 23:41:26 -0600
+Message-ID: <000001c3a296$4d51b3a0$1400a8c0@radium>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <20031104021343Z8225402-1272+8745@linux-mips.org>
 Return-Path: <lyle@zevion.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20031101013858.t6Eg5RdARX5IN63XxVjFXUFDBrnf_IzetRzFtSZe2Vg@z>
+To: yikok9@yahoo.com.cn, 'linux-mips' <linux-mips@linux-mips.org>
+Message-ID: <20031104054126.5dTCByoDTBL7stQQ1oOfUPgFup2R5qtTVbnbSwj_Dwo@z>
 
 Hi,
 
-I am porting the linux-mips 2.4.22 kernel to a custom Au1500 board and I
-am seeing strange output when the kernel starts.  Some lines feed ok,
-but some don't, and in that case the error level is displayed (ie, <4>).
-Also numerous characters are dropped. 
+If you are building as little endian and booting from a 16bit ROM then
+simply load your boot code into the 16 bit flash. You shouldn't need to
+swap bytes and half words yourself. Here's why:
 
-Does anybody have any clue about what might be happening?  See kernel
-output below.
+The Au1500 starts in big endian mode but the static bus controller
+starts in little endian mode and will actually read the little endian
+boot code correctly.  The very first thing you need to do in your boot
+code is switch the Au1500 to little endian mode. Then you need to do the
+other initial activities such as establishing the status register,
+config0, cause register and initializing the caches and TLB.
 
-Thanks,
+If you are building as big endian it is a little more difficult. Place
+the following block at the reset vector:
+
+    .long 0xb4003c08 # lui t0,0xb400
+    .long 0x10003508 # ori t0,t0,0x1000
+    .long 0x00008d09 # lw t1,0(t0)
+    .long 0x02003529 # ori t1,t1,0x200
+    .long 0x0000ad09 # sw t1,0(t0)
+    .long 0x00000000 # nop
+    .long 0x00000000 # nop
+    .long 0x00000000 # nop
+    .long 0x00000000 # nop 
+
+This is a small fragement of little endian code that switches the static
+bus controller to big endian mode.  That way when the processor boots
+and reads the big endian boot code as little endian, the first part will
+be little endian and it will work.  Of course the code fragement above
+immediately switches the static bus to BE and everything will continue
+correctly.  I know it seems a little strange.
+
+Hope this helps.  Email if you have any questions.
+
+Cheers
 Lyle
 
-CPU revision is: 01030200<4>Primary instruction cache 16kB, physically
-tagged, 4
--way, linesize 32 bytes.<4>Primary data cache 16kB 4-way, linesize 32
-bytes.
-Linux version 2.4.22 (root@localhost.localdomain) (gcc version 3.3.1) #9
-Fri Oct
- 31 18:57:53 CST 2003<4>Determined physical RAM map:<4> memory:
-0(usable)
-On node zone(0): 8192 pages..e4>zone1o): 0 pages.
-ss
-zone(2): 0 pages.
-Kernel command line:  panic=2 ethaddr=00:30:23:50:00:00 root=/dev/hda2
-console=t
-tyS0,115200
- 0ST 2003<4>calculating r4koff... 00493e00(4800000)
-CPU frequency 480.00 MHz
-set_au1x00_lcd_clock: warning: LCD clock too high (60000
-KHz)<4>Calibrating dela
-y loop... 478.41 BogoMIPS
-Memory:8r9804k/32768k available (1257k kernel code, 2964k reserved, 84k
-data, 76
-k init, 0k highmem)<6>Dentry cache hash table entries: 4096 (order: 3,
-32768 byt
-es)
-Inode cache hash table entries: 2048 (order: 2, 16384 bytes)
-Mount cache hash table entries: 512 (order: 0, 4096 bytes)
-Buffer cache hash table entries: 1024 (order: 0, 4096 bytes)
-Page-cache hash table entries: 8192 (order: 3, 32768 bytes)<4>Checking
-for 'wait
-' instruction... unavailable.
-POSIX conformance testing by UNIFIX
-Autoconfig PCI channel 0x80267b18
-X1Scanning bus 00, I/O 0x00000300:0x00100000, Mem 0x40000000:0x50000000
- 04k data, 76k init, 0k highmem)
-00:0c.0 Class 0104: 1103:0007 (rev 01)
-        I/O at 0x00000300 [size=0x8]
-        I/O at 0x00000308 [size=0x4]
-        I/O at 0x00000310 [size=0x8]
-        I/O at 0x00000318 [size=0x4]
-        I/O at 0x00000400 [size=0x100]
-Non-coherent PCI accesses enabled<6>Linux NET4.0 for Linux 2.4<6>Based
-upon Swan
-sea University Computer Society NET3.039
-Initializing RT netlink socket
-Starting kswapda6>Journalled Block Device driver loaded
-pty: 256 Unix98 ptys configured<6>Serial driver version 1.01
-(2001-02-08) with n
-o serial options enabled
- eata, 76k init, 0k highmem)<6>ttyS00 at 0xb1100000 (irq = 0) is a 16550
-ttyS01 at 0xb1200000 (irq = 1) is a 16550<6>ttyS02 at 0xb1300000 (irq =
-2) is a
-16550
-ttyS03 at 0xb1400000 (irq = 3) is a 1655056>loop: loaded (max 8 devices)
-)(is a 16550<4>au1000eth.c:1.4 ppopov@mvista.com
-eth0: Au1x Ethernet found at 0xb1500000, irq 28<4>ethaddr not set in
-boot prom<6
->eth0: Broadcom BCM5222 10/100 BaseT PHY at phy address 3<6>eth0: Using
-Broadcom
- BCM5222 10/100 BaseT PHY as default<6>Uniform Multi-Platform E-IDE
-driver Revis
-ion: 7.00beta4-2.4
-ide: Assuming 33MHz system bus speed for PIO modes; override with
-idebus=xx<6>HP
-T371: IDE controller at PCI slot 07:0c.0<6>HPT371: chipset revision
-1<6>HPT371:
-not 100% native mode: will probe irqs later
-HPT37X: using 33MHz PCI clock<6>    ide0: BM-DMA at 0x0408-0x040, BIOS
-settings:
- hd:pio, hd:pio
-HPT371: port 0x0310 already claimed by ide0
-NET4: Linux TCP/IP 1.0 for NET4.0<6>IP Protocols: ICMP, UDP, TCP, IGMP
-6>IP: routing cache hash table of 512 buckets, 4Kbytes
-verride with idebus=xx=6>TCP: Hash tables configured (established 2048
-bind 4096
-)
+
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org 
+> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Wang Zaifang
+> Sent: Monday, November 03, 2003 8:13 PM
+> To: linux-mips
+> Subject: boot pb1500 from flash through 16-bit data bus?
+> 
+> 
+> hi, 
+>   Does anyone have experience on writing 16-bit booting code 
+> for PB1500?
+>   I'm working on a customized au1500 board that has puzzled 
+> us for serveral days, :-( The board is designed to boot from 
+> flash using 16-bit data bus, however it seemed that the code 
+> we stored in the flash does not run at all. There might be 
+> some errors in our design, so we turn to the PB1500 eval-board.
+>   I wrote a piece of testing code that sends 010101... series 
+> to GPIO[0] continuousely after reset. The code runs well when 
+> the SRAM data bus is set to 32-bit width, i.e. a square 
+> waveform appears on GPIO[0]. Then I burn the code into flash 
+> through YAMON, assuring the code only reside in one flash 
+> chip of the two. Content of the flash looks like this in YAMON:
+> 
+> YAMON> dump bdc00000
+> 
+> BDC00000: 90 B1 00 00 08 3C 00 00 80 80 00 00 09 34 00 00  
+> .±...<.......4..
+> BDC00010: 2C 00 00 00 09 AD 00 00 FF FF 00 00 09 34 00 00  
+> ,....-.......4..
+> BDC00020: 00 01 00 00 09 AD 00 00 00 00 00 00 09 24 00 00  
+> .....-.......$.. ...
+> 
+>   Each instruction word is split into two half-words, and put 
+> into lower 16-bits of two words. Then I reset the PB1500 
+> board, switch S15 to set the SRAM data bus to 16-bit mode, 
+> switch S13 to boot from the specified flash chip. But the 
+> code will not run, even after I swap the byte-order and the 
+> halfword-order.
+> 
+>   Any advice will be appreciated, :-)
+> 
+> 　　　　　　　　Wang Zaifang
+> 　　　　　　　　yikok9@yahoo.com.cn
+> 　　　　　　　　　　2003-11-04
+> 

@@ -1,30 +1,49 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: Ralf Baechle <ralf@cobaltmicro.com>
-Message-ID: <199710100127.SAA10165@dull.cobaltmicro.com>
-Subject: Re: Arch specific initramdisk?
-Date: Thu, 9 Oct 1997 18:27:02 -0700 (PDT)
-In-Reply-To: <Pine.LNX.3.95.971009185152.20315W-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Oct 9, 97 06:57:29 pm
+Message-ID: <199710110058.RAA14665@dull.cobaltmicro.com>
+Subject: Re: make zImage, and initrd...
+Date: Fri, 10 Oct 1997 17:58:48 -0700 (PDT)
+In-Reply-To: <Pine.LNX.3.95.971010192929.364D-100000@lager.engsoc.carleton.ca> from "Alex deVries" at Oct 10, 97 07:41:19 pm
 Content-Type: text
 Sender: owner-linux@cthulhu.engr.sgi.com
 To: Alex deVries <adevries@engsoc.carleton.ca>
 Cc: linux@cthulhu.engr.sgi.com
-Message-ID: <19971010012702.y1RjaBdlF2K-2eM6ywh5OGSAzFBC52FSkZnjwHwWDO8@z>
+Message-ID: <19971011005848.egxI_08k6ngAP2szU4sMr1joLR09dgj7JHPKb2I_QzQ@z>
 
-Hi,
-
-> I'm trying to do kernel modifications so that initrd is supported, which
-> will make installations easier.
+> I'm working on adding the ramdisk and initrd features to the kernel.  It
+> compiles, which is pretty good for my first kernel patch.
 > 
-> I was a bit surprised that these weren't architecture neutral to begin
-> with.  Why is this dependant on the arch? The code I've found for other
-> archs is in arch/*/kernel/setup.c.
-> 
-> How safe is it for me to replicate the code from, say, the sparc port?  Is
-> there anything I should be aware of?
+> But, I have no way to actually test it.  The kernel needs to find the
+> offset of the ramdisk in the first 11 bits of one of the boot headers, so
+> the kernel needs to be less than 2047k.
 
-The only difference between the architectures is where in memory the
-initrd is being stored.  I haven't check how things work on a Sparc but
-basically what we need should be at least very similar to for example
-the i386 code - as far as setup.c is affected.
+Dunno what you're trying to do, but it sounds extremly weired ...
+
+> This wouldn't normally be a problem, but doing a 'make zImage' tells me
+> that:
+> ./mkboot zImage.tmp zImage
+> Input file isn't a little endian ELF file
+> make[1]: *** [zImage] Error 1
+> 
+> What would be required to make mkboot handle zImage, or bzImage?
+
+Don't do it.  mkboot is used for the boxes that use Milo for booting to
+convert the ELF executable into an a.out file that Milo accepts.  Milo
+again is necessary because the ARC firmware is so incredibly buggy and I
+don't want to have more ARC stuff in the kernel than absolutly necessary.
+
+What I suggest instead is to load the ramdisk file using the ARCS
+Open, Read, Write, Close and Seek functions from any ARC supported media.
+That includes tapes, CDROM, EFS, XFS and even tftp.  Take the information
+what file to read from the ARC command line.
+
+> In the meantime, I will try to strip down a kernel to below 2047k.  My
+> current one is 2347.
+
+Why limiting the kernel size?  640kb are enough for everybody?
+
+> Any other ideas?
+
+Yes, time to leave for Sushi with Miguel :-)
 
   Ralf

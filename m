@@ -1,33 +1,35 @@
-Date: Sat, 21 Jul 2001 12:12:29 -0600
-Subject: Re: SHN_MIPS_SCOMMON
-From: Greg Satz <satz@ayrnetworks.com>
-Message-ID: <B77F222C.888C%satz@ayrnetworks.com>
-In-Reply-To: <20010721104144.A17894@lucon.org>
-Mime-version: 1.0
-Content-type: text/plain; charset="US-ASCII"
-Content-transfer-encoding: 7bit
+Message-ID: <007301c1129d$cdf908e0$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <20010722123526.K16278@rembrandt.csv.ica.uni-stuttgart.de>
+Subject: Re: mips64 linker bug?
+Date: Sun, 22 Jul 2001 13:02:21 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: "H . J . Lu" <hjl@lucon.org>, Ralf Baechle <ralf@oss.sgi.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20010721181229.YQf2QxMkI40pVNetrAiKWPDCPyTIISLq-WeahQEWqm4@z>
+To: linux-mips@oss.sgi.com, Thiemo Seufer <ica2_ts@csv.ica.uni-stuttgart.de>
+Message-ID: <20010722110221.X250-9y6_IR1LNjzeeLX2ZEmdaPrwXLWJvnvDc2m7mI@z>
 
-The problem I ran into was making NFS as a kernel module. The resulting
-sunrpc.o module crashed when insmod was run over it. Ralf's fix that all
-compiles and links use -G 0 worked for me.
+> > > > Thanks...What should I do now? Change my code to mips32 or are there
+some
+> > > > patches to binutils that I can use, to get it working?
+> > >
+> > > Depends on what you want to do?
+> >
+> > I'm working on a very small, single address space, microkernel and I
+have
+> > the MIPS Malta with a 5Kc CPU to develop it on. The 5Kc is compatible
+> > with mips32 but I must admit, I really like to have my kernel
+> > running 64bit :).
+>
+> An Kernel with 64bit addresses is less compact and likely to run slower.
+> OTOH, a 64bit Kernel has certainly some hack value. :-)
 
-Thanks,
-Greg
+Note that the 5Kc is one of the new generation of MIPS64 parts
+that can enable 64-bit integer and floating point instructions without
+requiring that 64-bit addressing also be enabled in the kernel.
+Making Linux kernel support for this capability available is
+one of the things that we're working on.  But it's not there yet.
 
-on 7/21/01 11:41 AM, H . J . Lu at hjl@lucon.org wrote:
-
-> On Sat, Jul 21, 2001 at 02:11:20PM +0200, Ralf Baechle wrote:
->> Only if you don't compile / assemble / link with -G 0.
->> 
->> .scommon shouldn't ever be in a kernel object.  It seems that ld started
->> to move .common objects to .scommon from a certain version on, so 2.4.5
-> 
-> Send me a testcase. I will fix the linker.
-> 
-> 
-> H.J.
-> 
+            Kevin K.

@@ -1,46 +1,37 @@
-Received: from localhost (localhost.tusur.ru [127.0.0.1])
-	by tusur.ru (Postfix) with SMTP id 3CE8EB6789
-	for <linux-mips@linux-mips.org>; Wed, 21 Jul 2004 12:14:08 +0700 (TSD)
-Received: from roman (unknown [211.189.32.204])
-	by tusur.ru (Postfix) with ESMTP id 07A83B5212
-	for <linux-mips@linux-mips.org>; Wed, 21 Jul 2004 12:13:53 +0700 (TSD)
-Message-ID: <002701c46ee1$feeb7fc0$cc20bdd3@roman>
-From: "Roman Mashak" <mrv@tusur.ru>
-Subject: simple assembler program
-Date: Wed, 21 Jul 2004 14:17:14 +0900
+Received: from mail.esn.co.in ([202.125.80.34])
+	by ns2.astrainfonets.net (8.12.8p1/8.12.8) with ESMTP id i6LCpGIW024659
+	for <linux-mips@linux-mips.org>; Wed, 21 Jul 2004 12:51:18 GMT
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="koi8-r"
-Content-Transfer-Encoding: 7bit
-Return-Path: <mrv@tusur.ru>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: Error :Nomatch found in TLB ?????
+Date: Wed, 21 Jul 2004 18:25:05 +0530
+Message-ID: <4EE0CBA31942E547B99B3D4BFAB34811067510@mail.esn.co.in>
+From: "Srinivas JT." <srinivasjt@esntechnologies.co.in>
+Return-Path: <srinivasjt@esntechnologies.co.in>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20040721051714.uIZTH4gr8b2KiMoT0wKfl1q1oq5Yz82qetv1pvTniBc@z>
+Message-ID: <20040721125505.RUyMjcwgwFTU4DF4vGt4pUsaSwkw_3JAmFyaefFNBUc@z>
 
-Hello!
+Dear All,
+I am very new to this group.
+I tried to load my .serc file into my Db1500 SDB. The steps that I followed are,
 
-    I tried to compile simple assembler program:
+1) I wrote a filein C(Linux).
+2) I generated an object file using gcc.
+3) By using objcopy I converted my obj file into srec file.
+4) Then I tried to download my srec file into Db1500 SDB in Yamon using tftp.
 
-#define a 1
-#define b 2
+then I got error as,
 
-.ent main
-.global main
-main:
-        li $3, a
-        li $2, b
-        addu $4, $2, $3
-.end main
+Error: No match in TLB for mapped address  : Address = 0x00000000
 
-I use SDE-lite kit version 5.03.06 and compile with sde-as:
-#sde-as test.S -o testtest.S: Assembler messages:
-test.S:9: Error: absolute expression required `li'
-test.S:10: Error: absolute expression required `li'
+Why I am getting this error ?. Is any error there in my procedure..?
 
-When I eliminate #define and use just 'li $3, 1' and so on - everything is
-compiled correctly. Where is my problem?
+Thanks in Advance.
 
-Thanks in advance!
-
-With best regards, Roman Mashak.  E-mail: mrv@tusur.ru
+Regards,
+Srinivas JT

@@ -1,21 +1,30 @@
-Message-ID: <002d01c4ba3e$f29d99d0$0300a8c0@bigshot>
-Reply-To: <johnzhan@sinovee.com>
-From: <johnzhan@sinovee.com>
-Subject: status about RM9122
-Date: Mon, 25 Oct 2004 11:01:38 +0800
+Reply-To: <a.voropay@vmb-service.ru>
+From: "Alec Voropay" <a.voropay@vmb-service.ru>
+Subject: RE: Kernel conversion problem ELF -> ECOFF
+Date: Mon, 25 Oct 2004 14:03:37 +0400
+Message-ID: <01aa01c4ba79$e87557f0$1701a8c0@vmbservice.ru>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: base64
-Return-Path: <johnzhan@sinovee.com>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <417C2BB1.9030105@pain-net.home>
+Return-Path: <a.voropay@vmb-service.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20041025030138.IEARVjwfnWBUlzZ9ASSEdr8d5hvxUKa_dveMaI5Lpbc@z>
+To: 'Stefan Deling' <stefan.deling@web.de>, linux-mips@linux-mips.org
+Message-ID: <20041025100337.VbNW1jgx_XZKu_2FuCnyjkTmXHiDMIAB7Dw25VkOiJ0@z>
 
-SGksIGZvbGtzLA0KQ291bGQgeW91IHRlbGwgbWUgdGhlIHN0YXR1cyBhYm91dCBSTTkxMjIvOTIy
-MiBwb3J0aW5nPw0KUk05MDAwIHNlcmllcyBpcyBQTUMtc2llcnJhIG1pcDY0IENQVS4NCkkgaGF2
-ZSBzZWFyY2hlZCB3aG9sZSBhcmNoaXZlcywgYnV0IEkgY291bGQgbm90IGdldCBhbnkgdGhyZWFk
-IGFib3V0IHRoYXQuDQpEaWQgYW55b25lIGtub3cgdGhhdD8NCjEgc3RhcnQgcG9pbnQuDQoyIGN1
-cnJlbnQgc3RhdHVzDQozIGhvdyBhYm91dCBTTVAga2VybmVsIG9uIFJNOTIyMg0KDQoNCnRoYW5r
-cyBhIGxvdC4NCg0KDQotLQ0KSm9obiBaaGFuLg0K
+
+> elf2ecoof told me:
+> "programm header type 3 1694766464 can´t be converted!"
+> Has anyone got a solution for this problem??
+
+ Try to use "objcopy" unility ftom the your toolchain.
+
+$ objcopy -O ecoff-littlemips   kernel.elf    kernel.ecoff
+
+(or see man objcopy about -O....  formats )
+
+
+--
+-=AV=-

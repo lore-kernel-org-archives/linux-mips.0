@@ -1,55 +1,54 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
 From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199712292108.NAA21648@oz.engr.sgi.com>
-Subject: Donating Hardware (fwd)
-Date: Mon, 29 Dec 1997 13:08:03 -0800 (PST)
+Message-ID: <199801021756.JAA36833@oz.engr.sgi.com>
+Subject: Re: Please help - need a 4600 no L2 cache kernel asap
+Date: Fri, 2 Jan 1998 09:56:49 -0800 (PST)
+In-Reply-To: <9801021008.ZM4428@mdhill.interlog.com> from "Michael Hill" at Jan 2, 98 10:08:13 am
 Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19971229210803.bM1l7W4cceoXidyPLSjYCyIzjLFGLgmoa_2Q9-FfKlw@z>
+To: Michael Hill <mike@mdhill.interlog.com>
+Cc: linux@cthulhu.engr.sgi.com
+Message-ID: <19980102175649.D6IZ-eu6KyBR-plryXsjfPO6X8qsZFS3gjp3oD8yk8A@z>
 
-[just forwarding an email I got]
+Important change to the SGI/Linux FTP site:
 
-If there's anyone in the NJ area who is interested
-in some old hardware donation, feel free to contact
-Beth directly.
+I just moved the CVS source tree hierarchy so it can be
+accessed via ftp:
 
+	ftp://ftp.linux.sgi.com/cvs/
 
------ Forwarded message from bunnies@panix.com -----
+There's also a link from the web site to this (software page)
+	http://www.linux.sgi.com/software.html
 
-From bunnies@panix.com  Fri Dec 19 05:22:37 1997
-From: bunnies@panix.com
-Date: Fri, 19 Dec 1997 08:22:11 -0500 (EST)
-Message-Id: <199712191322.IAA02921@panix2.panix.com>
-To: ariel@sgi.com
-X-URL: http://www.linux.sgi.com/
-X-Mailer: Lynx, Version 2.7.1f
-X-Personal_name: Elizabeth Coates
-Subject: Donating Hardware
+This should enable anyone to compile a good kernel from scratch.
 
-HI,
+Whoever has a stable kernel that works on a L2-cache-less 4600
+please share.  I'll gladly give this person ssh access to linus.
 
-I am at Schering-Plough.  We have an old power series with a 2 cpu
-board (questionable board).  I think it's a 4d/440.  I noticed
-that you would like to extend the port to r3000 cpus and wondered
-if you would like this.  Here are the catches.  Corporate doesn't
-want to donate to other than academic.  They might have to come
-to NJ to get it.  So, if there are any porters at a school that
-can accept donated hardware and they wouldn't mind picking it
-up in Kenilworth NJ (just south of Newark) I will start the long
-LART-ish process of donation.  We also have a sun 4/360 that they
-can probably take too.  
-
-Happy Holidays!!!!
-
---Beth Coates   1-908-298-6651 (daytime)
-
-
-
------ End of forwarded message from bunnies@panix.com -----
 
 -- 
 Peace, Ariel
+
+
+:
+:Ralf discovered and corrected this in his kernel source after several of us had
+:problems with his last publicly-available Indy kernel binary (8 December).
+: Since then no kernel binary or source has been posted to ftp.linux.sgi.com
+:(except linux-magnum-971229.tar.gz on 29 December).  Maybe the fix is part of
+:what Ralf wanted help with before Christmas.
+:
+:On Dec 21,  5:45pm, Ralf Baechle wrote:
+:> Subject: Mergeback
+:> Hi,
+:>
+:> can anybody else work a bit on merging things back to Linus for the
+:> next couple of days?  I wont have very much time :-(
+:>
+:>   Ralf
+:>-- End of excerpt from Ralf Baechle
+:
+:On Jan 2,  6:59am, Andrew O'Brien wrote:
+:> Subject: Re: Please help - need a 4600 no L2 cache kernel asap

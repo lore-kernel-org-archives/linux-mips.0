@@ -1,91 +1,30 @@
-Message-ID: <3EEC9513.80905@galileo.co.il>
-Date: Sun, 15 Jun 2003 17:47:31 +0200
-From: Baruch Chaikin <bchaikin@il.marvell.com>
-MIME-Version: 1.0
-Subject: Re: Building a stand-alone FS on a very limited flash (newbie question)
-References: <20030610131519.47A8BC5FD7@atlas.denx.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Date: Mon, 16 Jun 2003 17:32:40 +0800
+From: "He Jin" <thesistarball@yahoo.com.cn>
+Subject: bootloader problem
+Mime-Version: 1.0
+Content-Type: text/plain;
+      charset="GB2312"
 Content-Transfer-Encoding: 7bit
-Return-Path: <bchaikin@galileo.co.il>
+Message-ID: <20030616093215Z8225220-1272+2626@linux-mips.org>
+Return-Path: <thesistarball@yahoo.com.cn>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: linux-mips@linux-mips.org, Rabeeh Khoury <rabeeh@galileo.co.il>
-Message-ID: <20030615154731.2Cj1rmw5VLLdvoRA9iQFvBJ3SINF4Rnjx1SnotrtOHg@z>
+To: linux-mips@linux-mips.orglinux-mips@linux-mips.org
+Message-ID: <20030616093240.uqn0LWrTocf4Mx16Mk670Jts9dXz_EYsYVzZKlNeyDs@z>
 
-All,
+Hi, everybody,
 
-To conclude, the recommendation here is to:
-o	Compile with uClibC or dietlibc
-o	Use busybox
-o	Gain extra 0.5 MB space
+I met a problem when debuging a bootloader in IT8172G+RM5231A platform, it's like this:
 
-Another question is the file system itself.  What is the recommendation 
-here - JFFS, CRAMFS, anything else?...
+the bootloader had 2 parts, the first part executes in ROM (0xbfc00000-0xbfc0xxxx) and
+it move another part from ROM into SDRAM, then jump to the SDRAM entry point to continue.
 
-Thanks for your answers!
--	Baruch.
+In the ROM resident code, if I initialized&flushed the cache, it can jump to SDRAM entry
+continue normally. However,if I comment out those cache related code and make cache disabled, 
+it seems can not jump to SDRAM entry. 
 
+Who can tell me why I must initialize&flush when cache disabled ? 
 
-Wolfgang Denk wrote:
-> In message <20030610125623.GC30175@rembrandt.csv.ica.uni-stuttgart.de> you wrote:
-> 
->>># ls -l lib | grep -v '^[ld]'
->>>total 2433
->>
->>I conclude ELDK consists of little more than the basic networking utilities,
-> 
-> 
-> The ELDK (Embedded Linux Development Kit) consists of MUCH more (more
-> than 400 MB if you install everything).
-> 
-> I was just talking about the  ramdisk  image.  You  are  right,  this
-> contains busybox plus basic networking utilities. For this framework,
-> the compressed image size is about 1.3 MB.
-> 
-> 
->>and the libc-related parts eat up most of the space. A more feature-rich
->>system probably can't afford to waste that much.
-> 
-> 
-> The oriiginal poster mentioned that he has 2.5 MB available, so if he
-> uses something like the framework I mentioned he  still  has  1.2  MB
-> compressed size available. This is a _lot_.
-> 
-> 
-> If memroy really gets tight, there are other  places  where  you  can
-> save space, for example the O.P. wrote:
-> 
-> 
->>  0.5 MB is allocated for the firmware code
->>  1.0 MB for the compressed kernel image
->>  2.5 MB for the (compressed?) file system
-> 
-> 
-> The reservation for both the firmware and for  the  kernel  image  is
-> more  than generous; 256 kB + 768 kB should be sufficient, too. Which
-> gives another 0.5 MB for application stuff.
-> 
-> 
-> Please understand me right: I do not want  to  deny  that  uClibc  or
-> dietlibc  are  fine  methods  to  optimize  the memory footprint of a
-> system. But for a starter it is probably much easier to use  standard
-> libraries as long as there is memory available.
-> 
-> For the current thread the keyword was "strip". 
-> 
-> 
-> Best regards,
-> 
-> Wolfgang Denk
-> 
+Thanks a lot!
 
-
--- 
-This message may contain confidential, proprietary or legally privileged 
-information. The information is intended only for the use of the 
-individual or entity named above. If the reader of this message is not 
-the intended recipient, you are hereby notified that any dissemination, 
-distribution or copying of this communication is strictly prohibited. If 
-you have received this communication in error, please notify us 
-immediately by telephone, or by e-mail and delete the message from your 
-computer.
+He Jin	

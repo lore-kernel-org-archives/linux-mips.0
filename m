@@ -1,51 +1,21 @@
-Message-ID: <004101c1b948$32f9cc60$21910dd3@gol.com>
-From: "Girish Gulawani" <girishvg@yahoo.com>
-References: <002301c1b8d2$22a0efe0$443784d3@gol.com> <20020218173419.A15980@momenco.com>
-Subject: Re: Page Size 16KB.
-Date: Tue, 19 Feb 2002 22:20:26 +0900
+Date: Tue, 19 Feb 2002 10:27:52 -0500 (EST)
+From: Stephen L Moshier <steve@moshier.net>
+Reply-To: steve@moshier.net
+Subject: Re: endless loop in remainder() on mips
+Message-ID: <Pine.LNX.4.44.0202191023460.26177-100000@moshier.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-linux-mips@oss.sgi.com
-To: linux-mips@oss.sgi.com
-Message-ID: <20020219132026.C6UcuBCDpEAc8O9tmlup90XytABoy4pXkdM3uBuUhGM@z>
+To: Zhang Fuxin <fxzhang@ict.ac.cn>
+Cc: linux-mips@oss.sgi.com, libc-alpha@sources.redhat.com
+Message-ID: <20020219152752.wbI8mLqdOiCdmOsRtZIpAV7Jwwy5Cya16yKfB3YSuag@z>
 
 
-> Does your userspace shell set the CREAD flag properly?
-i think so. and btw, my kernel version is 2.4.9. i thought this CREAD
-problem isnt there in this version. but shall check again. thanks for this
-info.
+> t-remainder.c
 
-other than this where else could be the problem that i'm overlooking??
+This code does not look like the current version of
+  sysdeps/ieee754/dbl-64/e_remainder.c
 
-
-> Matt
->
-> On Tue, Feb 19, 2002 at 08:15:18AM +0900, Girish Gulawani wrote:
-> > hi, all.
-> > while in the process of changing page size of kernel to 16KB i am facing
-a
-> > strange problem. the kernel boots up & user command, currently
-statically
-> > linked shell, loads. it displays first prompt.  pressing enter keys, the
-> > serial device receives the interrupts but no activity on shell's part.
-where
-> > could the shell possibly be stuck?
-> > this is LSI MIPS EZ4021 implementation. please please help!!!
-> > many thanks & regards,
-> > girish.
-> >
-> >
-> > _________________________________________________________
-> > Do You Yahoo!?
-> > Get your free @yahoo.com address at http://mail.yahoo.com
->
-> --
-> Matthew Dharm                              Work: mdharm@momenco.com
-> Senior Software Designer, Momentum Computer
-
-
-_________________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.com address at http://mail.yahoo.com
+IBM fixed the bug, and I thought there was acknowledgment
+here that the fix worked on a MIPS.  The change was installed
+December 5, 2001 and it seems to be in glibc-2.2.5.

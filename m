@@ -1,35 +1,67 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: Ralf Baechle <ralf@mailhost.uni-koblenz.de>
-Message-ID: <199707241300.PAA12689@informatik.uni-koblenz.de>
-Subject: Re: SGI 68k machines?
-Date: Thu, 24 Jul 1997 15:00:21 +0200 (MET DST)
-In-Reply-To: <33D74F2A.794B@munich.sgi.com> from "Martin Knoblauch" at Jul 24, 97 02:48:42 pm
+From: ariel@oz.engr.sgi.com (Ariel Faigon)
+Message-ID: <199707241742.KAA26102@oz.engr.sgi.com>
+Subject: one more Indy running Linux
+Date: Thu, 24 Jul 1997 10:42:51 -0700 (PDT)
+Reply-To: ariel@sgi.com (Ariel Faigon)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: Martin Knoblauch <knobi@munich.sgi.com>
-Cc: ralf@mailhost.uni-koblenz.de, linux@cthulhu.engr.sgi.com
-Message-ID: <19970724130021.jhxdFUjGYbJ9P9IzmosF51ZfBa5lQ9rtJJs0s2gxFRo@z>
+To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
+Message-ID: <19970724174251.UW7kyscucsoteSVeElD5-DCRr50WkE223rdF3koTdD8@z>
 
->  CPU board based on the 68020. No 68881 FPU, but you could
-> get a FPU accellerator board based on multiple Weitek chips.
+Hi,
 
-Sounds as if this beast might be similar to the Weitek based FPA available
-for the 68k based Suns.
+Mark Salter just joined the list.  I hope that having Linux
+run on an Indy will soon be very common.  At this point it is
+rare enough to be worth posting.
 
-> Up to 8 MB (or was it 16 MB, maybe only 4), IRIS-GL based GFX,
-> MEX window manager. 
-> 
->  Bus system was Multibus. Disks ESDI, SMD and IPI. Don't
-> know what the SCSI story was. 
+What is nice about this case is that Mark just grabbed whatever
+we have on the ftp site currently (which is not yet ready) and
+without being involved before, managed to get it to run in short order.
 
-SCSI to ESDI converter cards were popular at that time ...
+Whoever can fix this: Please note the hiccups and problems in
+the process.  Maybe we should just update the precompiled binaries
+we give to people :-)
 
->  Build from 83/84 until probably 88. Not a bad system for
-> that time.
 
-I wonder if there is still documentation for these beasts around such
-that some dino freak can hack Linux for them?
+----- Forwarded message from Mark Salter -----
 
-  Ralf
+From marks@sun470.rd.qms.com  Thu Jul 24 08:20:01 1997
+Date: Thu, 24 Jul 1997 10:19:50 -0500
+Message-Id: <199707241519.KAA16443@speedy.qms.com.rd.qms.com>
+From: Mark Salter <marks@sun470.rd.qms.com>
+To: ariel@sgi.com
+Cc: lm@cthulhu, davem@jenolan.rutgers.edu
+In-Reply-To: <9707178691.AA869165377@internet-mail.it.qms.com> (ariel@sgi.com)
+Subject: Re: [marks@sun470.rd.qms.com: mips linux]
+
+
+[ pointers deleted ]
+
+Thanks for the pointers, guys. I had relatively little trouble booting
+linux on my Indy. I put the "root-be-0.00.cpio.gz" filesystem on my
+PPro linux machine and built the kernel from the sources there. The
+only problems were:
+
+  * The ".previous" bug in the crossdev binutils binary. This problem got
+    some mention in the mailing list, but no resolution was mentioned. I
+    got the sources and a patch from ftp.linux.sgi.com, rebuilt binutils
+    and that fixed that.
+
+  * I wasn't sure how (or if it is even possible) to get  "root=" options
+    to the kernel from the Indy ARC PROM, so I changed NFS_ROOT in 
+    include/linux/nfs_fs.h to point to the right place where I placed the
+    root filesystem.
+
+So, you can now add me to the list of folks with Indys running linux. I
+guess I'll start working on fixing up a second disk so I don't have to
+boot off the network...
+
+--Mark
+
+----- End of forwarded message from Mark Salter -----
+
+-- 
+Peace, Ariel

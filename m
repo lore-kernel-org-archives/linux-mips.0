@@ -1,22 +1,37 @@
 Return-Path: <owner-linux@cthulhu.engr.sgi.com>
-From: ariel@oz.engr.sgi.com (Ariel Faigon)
-Message-ID: <199812041904.LAA63896@oz.engr.sgi.com>
-Subject: SGI joins linux international
-Date: Fri, 4 Dec 1998 11:04:13 -0800 (PST)
-Reply-To: ariel@cthulhu.engr.sgi.com (Ariel Faigon)
+From: kck@mailbox.esd.sgi.com (Ken Klingman)
+Message-ID: <199812060316.TAA91244@mailbox.esd.sgi.com>
+Subject: Re: SGI joins linux internationalt
+Date: Sat, 5 Dec 1998 19:16:20 -0800 (PST)
+In-Reply-To: <199812042233.OAA19757@fir.engr.sgi.com> from "William J. Earl" at Dec 4, 98 02:33:03 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux@cthulhu.engr.sgi.com
-To: SGI/Linux mailing list <linux@cthulhu.engr.sgi.com>
-Message-ID: <19981204190413.KdpDqEpQqdXTiDEjTgycRAQRyXPuzIOcRFEsHtOJ9MI@z>
+To: "William J. Earl" <wje@fir.engr.sgi.com>
+Cc: anderson@more.net, adevries@engsoc.carleton.ca, linux@cthulhu.engr.sgi.com
+Message-ID: <19981206031620.X10XwcLkHZmTXxbvyCk3Z5CSrJxgfZNyCEEmeNSo43g@z>
 
-[forwarding good news]
+> 
+> Eric L. Anderson writes:
+>  > "William J. Earl" wrote:
+>  > > 
+>  > >        I am working on getting authorization to release more documentation,
+>  > > as well as fragments of hardware management software and, if possible,
+>  > > downloadable graphics firmware for those cards which require firmware.
+>  > > I have agreement in principle, but I need to get agreement on the complete
+>  > > list of items to be released.
+>  > 
+>  > Does the "list of items" include the VPC video hardware? It would be
+>  > great to see SGI support Linux as an alternative OS for the VPC.
+> 
+>       I don't think I can comment on the VPC right now.
+> 
 
-An official announcement that SGI has joined Linux International
-appears at http://miranda.li.org/news/sgi/index.shtml
+We are working on incorporating support for the new workstation
+products into the standard LInux distributions.  However, there
+are issues with both graphics and digital media that make it
+difficult to release details about the hardware implementation
+and interfaces.
 
-Thanks to Dave McAllister for making this happen!
-
--- 
-Peace, Ariel
+Ken Klingman

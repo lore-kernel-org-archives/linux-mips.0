@@ -1,41 +1,73 @@
-From: Dominic Sweetman <dom@mips.com>
+Received: from mamata (mamata.alumnus.co.in [192.168.10.121])
+	by alumnux.com (8.9.3/8.9.3) with SMTP id WAA11295
+	for <linux-mips@linux-mips.org>; Sat, 2 Aug 2003 22:58:43 +0530
+From: "debashis" <debashis@alumnux.com>
+Subject: Mlata: Problem with Flash Write
+Date: Sat, 2 Aug 2003 17:24:11 +0530
+Message-ID: <HPEELEDLLMNGNMNENADLKEDHCAAA.debashis@alumnux.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-ID: <16170.7179.635988.268987@doms-laptop.algor.co.uk>
-Date: Fri, 1 Aug 2003 08:51:39 +0100
-Subject: RE: RM7k cache_flush_sigtramp
-In-Reply-To: <9DFF23E1E33391449FDC324526D1F259017DF087@SJC1EXM02>
-References: <9DFF23E1E33391449FDC324526D1F259017DF087@SJC1EXM02>
-Return-Path: <dom@mips.com>
+Return-Path: <debashis@alumnux.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Adam Kiepul <Adam_Kiepul@pmc-sierra.com>
-Cc: 'Ralf Baechle' <ralf@linux-mips.org>, Fuxin Zhang <fxzhang@ict.ac.cn>, linux-mips@linux-mips.org
-Message-ID: <20030801075139.tV1dcE9Grcn20lXn96rLGsAxjxBXFE1Eh87ai77W5_4@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20030802115411.UGeGZmzzAgwitfxjH5UKDa4zhMs6chUWNmstd9Glq44@z>
+
+Hi,
+I have a problem with writing into the FLASH of Malta board. I am trying to
+describe the problem bellow. Please help me. I am using Malta 4KC box and
+running Linux Kernel 2.4.18.
+
+I have writen a File System (ext2) into Flash address 0x9E100000 using
+Yamon's 'load' command.
+
+I have also loaded my Vmlinux into RAM using Yamon's 'load' command. Now I
+am trying to access the File System written into Flash (Loaded at address
+0x9E100000) from vmlinux code. I am actually enabled the MTD support and
+using Test RAM driver(linux/drivers/mtd/devices/mtdram.c) to get a MTD
+device. The portion of the configuration is given bellow -
+
+#
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=y
+CONFIG_MTD_DEBUG=y
+CONFIG_MTD_DEBUG_VERBOSE=3
+# CONFIG_MTD_PARTITIONS is not set
+# CONFIG_MTD_REDBOOT_PARTS is not set
+# CONFIG_MTD_CHAR is not set
+CONFIG_MTD_BLOCK=y
+# CONFIG_FTL is not set
+# CONFIG_NFTL is not set
+......
+
+#
+# Self-contained MTD device drivers
+#
+# CONFIG_MTD_PMC551 is not set
+# CONFIG_MTD_SLRAM is not set
+CONFIG_MTD_MTDRAM=y
+CONFIG_MTDRAM_TOTAL_SIZE=1024
+CONFIG_MTDRAM_ERASE_SIZE=128
+CONFIG_MTDRAM_ABS_POS=1E100000
+
+Also I did the small change in the mtdram.c file -
+
+	mtd_info->type = MTD_NORFLASH;
+	mtd_info->flags = MTD_CAP_NORFLASH;
 
 
-> If this is just to ensure the I Cache coherency for modified code
-> then the following should be sufficient:
-> 
-> cache Hit_Writeback_D, offset(base_register)
-> cache Hit_Invalidate_I, offset(base_register)
-> 
-> The ordering does matter however since the Hit_Invalidate_I makes
-> sure the write buffer is flushed.
+Now, with the above cofiguration I am able to mount the File System from
+Flash. I am able to read the files. Also I can add/delete files. However,
+once I unmount the File System, none of the changes are reflected into
+Flash. So next time when I mount, I am not able to view my changes. It is
+all old stuff. I saw that the ram_write() function gets called during
+unmount.
 
-I'm probably jumping into the middle of something, sorry... 
+Do I need to use some other driver? Any test code/sample code is available
+for this? Any other suggestion are welcome.
 
-The MIPS32/MIPS64 release 2 architecture includes a useful instruction
-SYNCI which does the whole job (repeat on each affected cache line)
-and is legal in user mode; this will take a while to spread but I'd
-recommend it as a model worth following.
-
-So I hope that kernels will provide one function for "I've just
-written instructions and now I want to execute them", and not export
-the separate writeback-D/invalidate-I interface.
-
---
-Dominic Sweetman
-MIPS Technologies
-dom@mips.com
+Regards,
+debashis

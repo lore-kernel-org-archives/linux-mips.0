@@ -1,33 +1,19 @@
-From: "Mike Klar" <mfklar@ponymail.com>
-Subject: RE: stable binutils, gcc, glibc ...
-Date: Sun, 15 Oct 2000 18:33:42 -0700
-Message-ID: <NDBBIDGAOKMNJNDAHDDMAENPCMAA.mfklar@ponymail.com>
+Subject: Re: stable binutils, gcc, glibc ...
+Date: Mon, 16 Oct 2000 08:00:26 +0100 (BST)
+In-Reply-To: <20001016030732.H15377@bacchus.dhis.org> from "Ralf Baechle" at Oct 16, 2000 03:07:32 AM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20001016023523.D15377@bacchus.dhis.org>
+Message-ID: <E13l4G3-0003J1-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
 To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: Jay Carlson <nop@nop.com>, linux-mips@fnet.fr, linux-mips@oss.sgi.com
-Message-ID: <20001016013342.bVOIeQPwhPCybmYaIajMHnddPeIvtApd5yak6W1ZN9E@z>
+Cc: Keith Owens <kaos@melbourne.sgi.com>, linux-mips@fnet.fr, linux-mips@oss.sgi.com
+Message-ID: <20001016070026.Z8sorzOoWyrHnDwuKpr3dR2sOha0H_HeQswzT6XLBAI@z>
 
-Ralf Baechle wrote:
+> Newlib, the libraries from eCOS and also libstand from NetBSD are three
 
-> Have the other tools - in particular binutils and gcc actually
-> been modified
-> except maybe changing defaults?
+The eCos library is an updated newlib.
 
-binutils we use unmodified from the cross- SRPM on ftp://oss.sgi.com.
-egcs-1.0.3a did require a small patch, which Jay has at:
-ftp://ftp.place.org/pub/nop/linuxce/egcs-1.0.3a-mips-softfloat.patch
-I've reworked it slightly to patch cleanly against the latest Linux-MIPS
-egcs-1.0.3a release, but the server that's on is a bit whacked at the moment
-(the patch conflict was pretty trivial, though...).
-
-We actually did not change the compiler default from hard-float, to compile
-soft-float, the flag -msoft-float still has to be used.  Jay's patch just
-makes -msoft-float work (with glibc), at least that's my understanding.
-
-Mike Klar
+Alan

@@ -1,34 +1,27 @@
-Date: Mon, 5 Feb 2001 16:13:23 -0500
-From: Kenneth C Barr <kbarr@MIT.EDU>
-Subject: netbooting indy - update, elf2ecoff?
-In-Reply-To: <20010205115026.C2487@bacchus.dhis.org>
-Message-ID: <Pine.SGI.4.30L.0102051604550.234337-100000@w20-575-66.mit.edu>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Re: NFS root with cache on
+Date: Mon, 5 Feb 2001 21:39:51 +0000 (GMT)
+In-Reply-To: <20010205115026.C2487@bacchus.dhis.org> from "Ralf Baechle" at Feb 05, 2001 11:50:26 AM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <E14PtMY-0004Ei-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: owner-linux-mips@oss.sgi.com
 Return-Path: <owner-linux-mips@oss.sgi.com>
-To: linux-mips@oss.sgi.com
-Message-ID: <20010205211323.pFYu2H0N0n5zSmeLib-Bo-996hAMjYYd81eKOGtAtOQ@z>
+To: Ralf Baechle <ralf@oss.sgi.com>
+Cc: Jun Sun <jsun@mvista.com>, Quinn Jensen <jensenq@Lineo.COM>, linux-mips@oss.sgi.com
+Message-ID: <20010205213951.5EPudzxFsRXeZh4kq4tcSC89YVw7ckeFZwDK1mBoEbI@z>
 
-Thank you very much for your help so far!  Here's an update and another
-question:
+> On Mon, Feb 05, 2001 at 10:07:18AM -0800, Jun Sun wrote:
+> 
+> > Did you set rx_copybreak to 1518?  I sent patches long time ago to the driver
+> > authors for MIPS, but I am not sure they are not there.
+> 
+> Copybreak is just an optimization.  So even with this unused or set to a
+> wrong value the driver should work.
 
-Updates:
-1.  Had to attach a console (we have XZ graphics not XL)
-2.  An ecoff kernel image downloaded fine.  The ELF ones download halfway
-and fail silently (even with the console attached)
-
-Question: As the vmlinux-indy-2.2.1-990226.ecoff kernel begins the boot
-sequence, it hangs at "unable to open initial console."  I had unpacked
-the filesystem on linux as the FAQ suggests, and my device files look
-right.  So, on the NFS server, I symlinked /dev/console to /dev/ttyS0.
-Now the message is replaced with a cryptic: "S<<<<<"
-
-Perhaps that kernel doesn't have console support?  Is there any other
-explanation for the "S<<<<<" failure where I used to see "...initial
-console?"
-
-I'd like to try a different kernel but I can't find an elf2ecoff binary.
-Does anyone have this converted or a known-good ecoff kernel?
-
-Ken
+If you set it wrongly you can get network failures/stalls. The normal cases
+are not a problem however. You need to copybreak small frames to avoid filling
+the socket queue with empty spaces. Some platforms set it to 1518 to force
+a copy thereby aligning the IP header on a 4 byte boundary, which most
+PCI bus master drivers wont do if you are not copying

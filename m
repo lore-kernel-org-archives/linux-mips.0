@@ -1,67 +1,26 @@
-Message-ID: <008e01c2299a$3268da30$10eca8c0@grendel>
+Message-ID: <00ce01c229a4$a7d4ed40$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <00b401c228ba$88b29bf0$10eca8c0@grendel> <20020712034015.C16608@dea.linux-mips.net> <003301c2297a$380ed400$10eca8c0@grendel> <20020712120024.A20727@dea.linux-mips.net>
-Subject: Re: Sigcontext->sc_pc Passed to User
-Date: Fri, 12 Jul 2002 13:49:15 +0200
+Subject: Mipsel libc with LL/SC online anywhere?
+Date: Fri, 12 Jul 2002 15:04:07 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-linux-mips@oss.sgi.com
-To: Ralf Baechle <ralf@oss.sgi.com>
-Cc: linux-mips@oss.sgi.com
-Message-ID: <20020712114915.-OJqVfKN3zdpQtjdFvboteYlH7ZvJ5pg6XQ7CEEUsns@z>
+To: linux-mips@oss.sgi.com
+Message-ID: <20020712130407.PAz2xnOEyt2JYqVlB7nNrGkUuulRlLxpRmwXy4YrVjI@z>
 
-From: "Ralf Baechle" <ralf@oss.sgi.com>
-> On Fri, Jul 12, 2002 at 10:00:27AM +0200, Kevin D. Kissell wrote:
-> 
-> > The IRIX team made some stunningly bad design 
-> > decisions over the years, my favorite being "virtual
-> > swap space" and its side effect of deliberately killing 
-> > system daemons at random under load.  A signal scheme
-> > such as we have now in MIPS/Linux, where a user program
-> > *cannot* identify the instruction causing a signal if
-> > that instruction was in the delay slot of a taken branch,
-> > is broken from first principles.
-> 
-> Certainly you're right when you say a signal handler show know which
-> instruction was causing a fault.  Ours is simply a too bad implementation
-> of their interface ...
-> 
-> IRIX virtual swap space is simply memory overcommit.  Linux has that too
-> and it's been subject to frequent religious discussions on Linux kernel.
-> Non-overcommit means large amounts of memory are required when forking
-> of a new process.  The standard example is a fat bloated Mozilla forking
-> for printing.  Non-overcommit means you need those 50 or 100 megs of
-> Mozilla process size once more and if not as physical memory then at
-> least as swap space.  Deciede yourself if you're paranoid and want that
-> operation to only succeed if that much memory is actually available or
-> if you take the risk of the fork & exec operation failing the other way.
+I'm benchmarking some code that does lots of
+semaphores, and with the libc from the "standard"
+MIPS/SGI RH 7.1 distribution, those are done using
+sysmips, in the interest of universality.  Regardles of
+whether and how the ongoing argument of How Things
+Should Be is settled, is there a copy of an up-to-date
+glibc package built to use ll/sc out there on anyone's
+FTP or web server?  I suppose I could extract and
+replace the necessary routines by hand, but that would
+be slow and fraught with the risk of error...
 
-Whenever it's been my design responsibility, I made forks fail if
-there wasn't enough backing store to handle the process.  Frankly,
-there are limits to the degree to which an OS should compromise
-its integrity for the sake of supporting badly concieved applications,
-be they Mozilla or the SGI integrated CAD environment.  But
-even if you prefer to take the "speculative" or "optimistic" model
-for handling the situation, what IRIX did was insane:  When, after
-having allowed too many unsupportable forks to succeed, they
-detected deadlock in the swap system, they killed processes
-*at random*.  Including system daemons.  At a *minimum*,
-a system should only terminate processes belonging to the
-user (and preferably the process group) who has been granted
-speculative fork success.  Anything else is a massive "breach of
-contract" for a multiuser OS.
-
-IMHO, if someone really wanted to fix this in the OS, 
-we'd get beyond the traditional Unix "fork" model.  
-And if someone really wanted to avoid the problem in Mozilla or 
-an IDE, one would have all subprograms launched by a tiny 
-"launcher", who would recieve instructions and data via some 
-form of IPC, fork itself, and exec as appropriate.
-
-But this is getting a bit off the topic.  Is anyone aware of any
-IRIX applications ported to Linux that would break if we
-corrected the signal payload semantics?
+            Regards,
 
             Kevin K.

@@ -1,57 +1,71 @@
-Message-ID: <001601c31602$86838de0$d017a8c0@pc208>
+Message-ID: <001f01c31603$1ed7fbd0$d017a8c0@pc208>
 From: "smills_ho" <smills_ho@coventive.com>
-References: <3EB0B329.9030603@ict.ac.cn> <16048.55936.346808.522687@cuddles.redhat.com> <3EB0DDC6.5080108@ict.ac.cn> <16048.57054.224964.883062@cuddles.redhat.com> <20030501085018.GA1885@greglaptop.attbi.com> <000a01c315cf$8171ac70$d017a8c0@pc208> <1052464867.2485.3.camel@ghostwheel.sfbay.redhat.com>
+References: <3EB0B329.9030603@ict.ac.cn> <16048.55936.346808.522687@cuddles.redhat.com> <3EB0DDC6.5080108@ict.ac.cn> <16048.57054.224964.883062@cuddles.redhat.com> <20030501085018.GA1885@greglaptop.attbi.com> <000a01c315cf$8171ac70$d017a8c0@pc208> <1052464867.2485.3.camel@ghostwheel.sfbay.redhat.com> <3EBB58C6.3070604@gentoo.org>
 Subject: Re: Problem of cross-mipsel-compiler GLIBC-2.3.X
-Date: Fri, 9 May 2003 16:10:59 +0800
+Date: Fri, 9 May 2003 16:15:12 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="big5"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-Path: <smills_ho@coventive.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Eric Christopher <echristo@redhat.com>
-Cc: Linux/MIPS Development <linux-mips@linux-mips.org>, gcc@gcc.gnu.org
-Message-ID: <20030509081059.zTgXefCjKv68Cl4R6W53s8lrSpDZGSULe-W-b-ElR1w@z>
+To: kumba@gentoo.org, linux-mips@linux-mips.org
+Message-ID: <20030509081512.OV3gun5m91zIxLxG-rf6TfHzoT1qg5rf-19dITgnAtg@z>
 
-Dear Eric,
-    I follow the step that provide by Bradley
-http://www.ltc.com/~brad/mips/mipsel-linux-cross-toolchain-building.txt
+Dear Kumba,
+    Should we try this binutils-2.13.90.0.20?
+We try the version binutils-2.13.90.0.18 (Debian used) and it is failed on
+cross-gcc step :-(
 
-Thanks and best regards
+Thanks and best regards,
 
 ----- Original Message -----
-From: "Eric Christopher" <echristo@redhat.com>
-To: "smills_ho" <smills_ho@coventive.com>
-Cc: "Linux/MIPS Development" <linux-mips@linux-mips.org>; <gcc@gcc.gnu.org>
-Sent: Friday, May 09, 2003 3:21 PM
+From: "Kumba" <kumba@gentoo.org>
+To: <linux-mips@linux-mips.org>
+Sent: Friday, May 09, 2003 3:29 PM
 Subject: Re: Problem of cross-mipsel-compiler GLIBC-2.3.X
 
 
-> On Thu, 2003-05-08 at 19:05, smills_ho wrote:
-> > Dear All,
-> >     I want to make a cross-compilered glibc-2.3.x and I get the source
+> Oddly enough, I followed these basic steps and wound up with a working
+> cross-compiler from sparc64 -> mipseb (Sun Blade 100 to mips
+> big-endian).  Gcc nor glibc gave me any issues.....However, when I tried
+> the same exact steps on i686, glibc complained about libgcc not being
+> available, among other things.  It's got me baffled, but I'm not exactly
+> complaining.  Currently, it's gcc-3.2.3 (propolice patched) +
+> glibc-2.3.2 + binutils-2.13.90.0.20, which it'll get rebuilt for the new
+> binutils 2.14.
+>
+> --Kumba
+>
+>
+>
+> Eric Christopher wrote:
+> > On Thu, 2003-05-08 at 19:05, smills_ho wrote:
+> >
+> >>Dear All,
+> >>    I want to make a cross-compilered glibc-2.3.x and I get the source
 from
-> > ftp.gun.org. GCC version is 3.2.3, binutils is 2.13.2.1. The step is as
-> > following:
-> >
-> > 1. Try to build binutils
-> > 2. Try to make static GCC
-> > 3. Try to make glibc -----> Then it is failed
-> >
-> > Is there anybody know what's going on or somebody had successfully to
+> >>ftp.gun.org. GCC version is 3.2.3, binutils is 2.13.2.1. The step is as
+> >>following:
+> >>
+> >>1. Try to build binutils
+> >>2. Try to make static GCC
+> >>3. Try to make glibc -----> Then it is failed
+> >>
+> >>Is there anybody know what's going on or somebody had successfully to
 build
-> > the crossed glibc-2.3.x?
+> >>the crossed glibc-2.3.x?
+> >
+> >
+> > A host cross host compiler for linux systems is a little more involved
+> > than this :)
+> >
+> > However, I don't know where you went wrong since you really didn't
+> > provide much in the way of information as to what you did or where it
+> > failed.
+> >
+> > -eric
+> >
 >
-> A host cross host compiler for linux systems is a little more involved
-> than this :)
->
-> However, I don't know where you went wrong since you really didn't
-> provide much in the way of information as to what you did or where it
-> failed.
->
-> -eric
->
-> --
-> Eric Christopher <echristo@redhat.com>
 >

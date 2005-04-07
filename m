@@ -1,44 +1,53 @@
-From: "Michael Uhler" <uhler@mips.com>
-Subject: RE: memcpy prefetch
-Date: Thu, 7 Apr 2005 05:25:15 -0700
-Message-ID: <003901c53b6c$da8938e0$cf14a8c0@MIPS.COM>
+Received: from localhost (localhost [127.0.0.1])
+	by krt.neobee.net (8.12.7/8.12.7/SuSE Linux 0.6) with ESMTP id j37DYrZF021718
+	for <linux-mips@linux-mips.org>; Thu, 7 Apr 2005 15:34:54 +0200
+Received: from krt.neobee.net ([127.0.0.1])
+ by localhost (krt.neobee.net [127.0.0.1]) (amavisd-new, port 10024) with LMTP
+ id 20943-08 for <linux-mips@linux-mips.org>;
+ Thu,  7 Apr 2005 15:34:53 +0200 (CEST)
+Received: from davidovic ([192.168.0.89])
+	by krt.neobee.net (8.12.7/8.12.7/SuSE Linux 0.6) with ESMTP id j37DYp1p021714
+	for <linux-mips@linux-mips.org>; Thu, 7 Apr 2005 15:34:51 +0200
+Message-ID: <200504071334.j37DYp1p021714@krt.neobee.net>
+Reply-To: <mile.davidovic@micronasnit.com>
+From: "Mile Davidovic" <mile.davidovic@micronasnit.com>
+Subject: Porting new board
+Date: Thu, 7 Apr 2005 15:35:08 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <4255240E.4050701@timesys.com>
-Return-Path: <uhler@mips.com>
+	charset="ISO-8859-2"
+Content-Transfer-Encoding: 7bit
+Return-Path: <mile.davidovic@micronasnit.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Greg Weeks' <greg.weeks@timesys.com>, 'Ralf Baechle' <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20050407122515.8JawiMYYo8xzqpUywNp3qahn6ebz0887gkaIVXB3Cuk@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20050407133508.51NujnjM5qQYGkkkEn9G3k8YnL20y2HRpjx7Is1Kuf8@z>
 
-> What's the performance hit for doing a pref on a cache line that is 
-> already pref'd? Does it turn into a nop, or do we get some horrible 
-> degenerate case? Are 64 bit processors always at least 32 byte cache 
-> line size? I don't really expect anyone to know the answers 
-> right now. I 
-> expect I'll need to time code to tell. This makes generating 
-> them at run 
-> time look better and better.
+Hello all
+I try to port new board (MIPS 4KEC processor) to latest version
+of linux-mips kernel. I have question regarding Kconfig and adding
+new board.
+In arch/mips/Kconfig I add next lines:
 
-As very general rules of thumb:
+config MIPS_VGCA_EVA
+  bool "Support for VGCA-Eva board"
+  select SYS_SUPPORTS_BIG_ENDIAN
+  help
+	  This enables support for the VGCA-EVA board.
 
-- A pref to a line which is already in the cache take a cycle in the
-load/store unit and does not go back out to the memory subsystem.  There are
-some possible ships-passing-in-the-night scenarios, but most processors do
-what you'd expect.
+and in arch/mips/Makefile I add next lines:
+core-$(MIPS_VGCA_EVA)	+= arch/mips/vgca-eva/
+cflags-$(MIPS_VGCA_EVA)   += -Iinclude/asm-mips/vgca-eva
+load-$(MIPS_VGCA_EVA)	+= 0xffffffff80100000
 
-- Most 64-bit processors are built for high-end applications, and most
-high-end processors most likely have at least 32-bit lines.  One usually has
-smaller line sizes when the processor is intended for lower-end
-applications, or where the memory subsystem isn't all that good.
+But when I try to build kernel with:
+	make menuconfig  		---> choose VGCA-Eva board
+	make arch=mips V=1 CROSS_COMPILE=mips-linux- 
 
-/gmu
+it stop forever. When I try to choose some other board it work nice. 
+Any comment?
 
----
-Michael Uhler, Chief Technology Officer
-MIPS Technologies, Inc.   Email: uhler at mips.com
-1225 Charleston Road
-Mountain View, CA 94043
+
+
+Thanks a lot.
+Best regards Mile

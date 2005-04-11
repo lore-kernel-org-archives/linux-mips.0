@@ -1,36 +1,55 @@
-Received: from localhost (localhost [127.0.0.1])
-	by krt.neobee.net (8.12.7/8.12.7/SuSE Linux 0.6) with ESMTP id j3BAEBZF023537
-	for <linux-mips@linux-mips.org>; Mon, 11 Apr 2005 12:14:16 +0200
-Received: from krt.neobee.net ([127.0.0.1])
- by localhost (krt.neobee.net [127.0.0.1]) (amavisd-new, port 10024) with LMTP
- id 22496-08 for <linux-mips@linux-mips.org>;
- Mon, 11 Apr 2005 12:14:11 +0200 (CEST)
-Received: from davidovic ([192.168.0.89])
-	by krt.neobee.net (8.12.7/8.12.7/SuSE Linux 0.6) with ESMTP id j3BADt1p023510
-	for <linux-mips@linux-mips.org>; Mon, 11 Apr 2005 12:14:03 +0200
-Message-ID: <200504111014.j3BADt1p023510@krt.neobee.net>
-Reply-To: <mile.davidovic@micronasnit.com>
-From: "Mile Davidovic" <mile.davidovic@micronasnit.com>
-Subject: Toolchain question
-Date: Mon, 11 Apr 2005 12:13:50 +0200
+Message-ID: <004a01c53ed4$dab12b00$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <42553E49.7080004@timesys.com> <4256991C.4020601@timesys.com> <20050408161357.GB19166@linux-mips.org> <4256B524.2080509@timesys.com> <425AD440.5050600@timesys.com>
+Subject: Re: another 4kc machine check.
+Date: Mon, 11 Apr 2005 22:27:15 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-2"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <mile.davidovic@micronasnit.com>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Linux/MIPS Development' <linux-mips@linux-mips.org>
-Message-ID: <20050411101350.FA-TmLHwRr00PC8itFTl5eI-2c9IRzEHTk3ErpDxaHk@z>
+To: Greg Weeks <greg.weeks@timesys.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20050411202715.v1kEX0JokBN7jWRR_JN1z3rPPVhSew3e3I41tWc-u2I@z>
 
-Hello all
-I would like to port board (with MIPS 4kec) to latest linux 2.6 kernel.
-Using porting guide 
-from (http://www.linux-mips.org/wiki/index.php/Porting) I successfully made
-console and
-serial driver. But problem appears with first printk (in start_kernel) I got
-exception.  
+If the 4KC and 4KEC need it, so does the 4KSC (and 4KSD).
 
-I used toolchain which uclibc buildroot script produced (gcc-3.4.2,
-binutils-2.15.91.0.2),
-and I am not sure is this correct combination.
+----- Original Message ----- 
+From: "Greg Weeks" <greg.weeks@timesys.com>
+To: "Ralf Baechle" <ralf@linux-mips.org>
+Cc: <linux-mips@linux-mips.org>
+Sent: Monday, April 11, 2005 21:47
+Subject: Re: another 4kc machine check.
+
+
+> This patch appears to fix my machine check problem on the 4kc. The 4kc 
+> shouldn't need an ssnop here, but this appears to fix it.
+> 
+> Greg Weeks
+> 
+
+
+--------------------------------------------------------------------------------
+
+
+> --- mips-malta4kcle-basic/arch/mips/mm/tlbex.c-orig
+> +++ mips-malta4kcle-basic/arch/mips/mm/tlbex.c
+> @@ -847,7 +847,6 @@
+>  
+>   case CPU_R10000:
+>   case CPU_R12000:
+> - case CPU_4KC:
+>   case CPU_SB1:
+>   case CPU_4KSC:
+>   case CPU_20KC:
+> @@ -874,6 +873,7 @@
+>   tlbw(p);
+>   break;
+>  
+> + case CPU_4KC:
+>   case CPU_4KEC:
+>   case CPU_24K:
+>   i_ehb(p);
+> 

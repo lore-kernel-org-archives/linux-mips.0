@@ -1,30 +1,85 @@
-Message-ID: <00c701c53f7e$09ec56c0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <42553E49.7080004@timesys.com> <4256991C.4020601@timesys.com> <20050408161357.GB19166@linux-mips.org> <4256B524.2080509@timesys.com> <425AD440.5050600@timesys.com> <004a01c53ed4$dab12b00$10eca8c0@grendel> <Pine.LNX.4.61L.0504121610500.18606@blysk.ds.pg.gda.pl>
-Subject: Re: another 4kc machine check.
-Date: Tue, 12 Apr 2005 18:38:14 +0200
+Received: from msx.realtek.com.tw (unverified [172.21.1.77]) by mf2.realtek.com.tw
+ (Content Technologies SMTPRS 4.3.14) with ESMTP id <T7052afa4d3dc8038166a4@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
+ Fri, 15 Apr 2005 14:32:59 +0800
+Message-ID: <001b01c54184$b918b5a0$106215ac@realtek.com.tw>
+From: "colin" <colin@realtek.com.tw>
+Subject: Re: initrd problem
+Date: Fri, 15 Apr 2005 14:31:14 +0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Content-Type: text/plain;
+	charset="big5"
+Return-Path: <colin@realtek.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: Greg Weeks <greg.weeks@timesys.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20050412163814.Z01LgRK13SOmXqddx1hO45JXl08vk69dZBm0GSuOp7I@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20050415063114.bi4rz8LXp53CFYiqHQDn_OTUlkvFtbjGxt0YV7-duSw@z>
 
-> On Mon, 11 Apr 2005, Kevin D. Kissell wrote:
-> 
-> > If the 4KC and 4KEC need it, so does the 4KSC (and 4KSD).
-> 
->  But that's weird in the first place as 4Kc implements the original 
-> revision of MIPS32 so it does not implement "ehb".  Therefore it acts just 
-> as an ordinary "nop", but according to the 4K manual there is no need for 
-> one -- the hazard between a move to EntryLo0/EntryLo1 and tlbwi/tlbwr is 
-> explicitly listed as 0 instructions.
 
-Oops.  Maybe I misread the patch.  I thought the added NOP was between
-the TLBWR and the ERET.
 
-            Kevin K.
+Hi Kumba,
+I used your patch for 2.6.11 on MIPS kernel, and found that it lost the
+definition "kernel_physaddr".
+Could you tell me where is it?
+
+Regards,
+Colin
+
+
+
+----------------------------------------------------------------------------
+---------------
+
+
+Ed Martini wrote:
+> Background:
+>
+> I'm trying to get 2.6.11 to run on a MIPS Malta board with Yamon.  The
+> kernel that comes with the board is 2.4.18 with an embedded ramdisk that
+> runs some scripts to install RPMS via NFS or CD-ROM.  The kernel is
+> converted to s-records via objcopy(1), and loaded into memory via tftp.
+> I want to do something similar with 2.6.latest.
+>
+> Problem:
+>
+> On or about Nov 21 of last year, the CONFIG_EMBEDDED_RAMDISK disappeared.
+>
+> http://www.linux-mips.org/archives/linux-mips/2004-11/msg00135.html
+>
+> In it's place it is suggested to use the tools in arch/mips/boot, so I
+> tried it.  I can cross-compile the kernel, and I get an ELF vmlinux.  I
+> can convert it to ecoff with elf2ecoff, and attach an initrd image with
+> addinitrd.  The problem begins here.  I end up with an ecoff format
+> kernel which is not recognized by objcopy(1), and therefore no s-records.
+>
+> It seems there is a program called gensrec that would do the job, but
+> google doesn't want to tell me where to get it.  Some IRIX binary perhaps?
+>
+> Solution?
+>
+> Should I put CONFIG_EMBEDDED_RAMDISK and its ilk back into my kernel, or
+> write an ELF version of addinitrd?  Other ideas?
+>
+> Thanks in advance.
+
+The future is purportedly in the feature known as initramfs.  See the file
+Documentation/early-userpace/README for more details on how that is supposed
+to work.
+
+That said, I tried initramfs a few times, but either due to lack of
+understanding, or broken support code in 2.6.10, I couldn't get it to
+properly
+load an initrd bundled in, so I forward-ported a patch I wrote that
+originally
+fixed CONFIG_EMBEDDED_RAMDISK to work with any ABI to 2.6.10, and it worked
+rather well.  I'm sticking with this method until I find more/better docs on
+how to use initramfs properly.
+
+If you're interested, the patch I use can be found here:
+http://dev.gentoo.org/~kumba/mips/misc/misc-2.6.10-add-ramdisk-back.patch
+[2.6.10]
+http://dev.gentoo.org/~kumba/mips/misc/misc-2.6.11-add-ramdisk-back.patch
+[2.6.11]
+
+
+--Kumba

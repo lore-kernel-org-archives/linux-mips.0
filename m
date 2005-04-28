@@ -1,85 +1,55 @@
-Received: from msx.realtek.com.tw (unverified [172.21.1.77]) by mf2.realtek.com.tw
- (Content Technologies SMTPRS 4.3.14) with ESMTP id <T7052afa4d3dc8038166a4@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
- Fri, 15 Apr 2005 14:32:59 +0800
-Message-ID: <001b01c54184$b918b5a0$106215ac@realtek.com.tw>
-From: "colin" <colin@realtek.com.tw>
-Subject: Re: initrd problem
-Date: Fri, 15 Apr 2005 14:31:14 +0800
+Message-ID: <002d01c54bfa$5b913f80$0deca8c0@Ulysses>
+From: "Kevin D. Kissell" <KevinK@mips.com>
+References: <20050427.143622.77402407.nemoto@toshiba-tops.co.jp> <20050428134118.GC1276@linux-mips.org>
+Subject: Re: preempt safe fpu-emulator
+Date: Thu, 28 Apr 2005 06:58:28 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
-	charset="big5"
-Return-Path: <colin@realtek.com.tw>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <KevinK@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20050415063114.bi4rz8LXp53CFYiqHQDn_OTUlkvFtbjGxt0YV7-duSw@z>
+To: Ralf Baechle <ralf@linux-mips.org>, Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20050428135828.bJhMfFhcLm5TEFHp42eelSRA6830ezK-rSS2OpXamTA@z>
+
+When I first integrated the Algorithmics emulator with the Linux kernel
+several years back, I tried doing something like this but ran into some
+problem that I cannot recall exactly - there may have been some case
+where the system expected threads to "inherit" FCSR changes.  I agree
+that this is an obviously cleaner approach, but be careful.
+
+            Regards,
+
+            Kevin K.
+
+----- Original Message ----- 
+From: "Ralf Baechle" <ralf@linux-mips.org>
+To: "Atsushi Nemoto" <anemo@mba.ocn.ne.jp>
+Cc: <linux-mips@linux-mips.org>
+Sent: Thursday, April 28, 2005 6:41 AM
+Subject: Re: preempt safe fpu-emulator
 
 
-
-Hi Kumba,
-I used your patch for 2.6.11 on MIPS kernel, and found that it lost the
-definition "kernel_physaddr".
-Could you tell me where is it?
-
-Regards,
-Colin
-
-
-
-----------------------------------------------------------------------------
----------------
-
-
-Ed Martini wrote:
-> Background:
->
-> I'm trying to get 2.6.11 to run on a MIPS Malta board with Yamon.  The
-> kernel that comes with the board is 2.4.18 with an embedded ramdisk that
-> runs some scripts to install RPMS via NFS or CD-ROM.  The kernel is
-> converted to s-records via objcopy(1), and loaded into memory via tftp.
-> I want to do something similar with 2.6.latest.
->
-> Problem:
->
-> On or about Nov 21 of last year, the CONFIG_EMBEDDED_RAMDISK disappeared.
->
-> http://www.linux-mips.org/archives/linux-mips/2004-11/msg00135.html
->
-> In it's place it is suggested to use the tools in arch/mips/boot, so I
-> tried it.  I can cross-compile the kernel, and I get an ELF vmlinux.  I
-> can convert it to ecoff with elf2ecoff, and attach an initrd image with
-> addinitrd.  The problem begins here.  I end up with an ecoff format
-> kernel which is not recognized by objcopy(1), and therefore no s-records.
->
-> It seems there is a program called gensrec that would do the job, but
-> google doesn't want to tell me where to get it.  Some IRIX binary perhaps?
->
-> Solution?
->
-> Should I put CONFIG_EMBEDDED_RAMDISK and its ilk back into my kernel, or
-> write an ELF version of addinitrd?  Other ideas?
->
-> Thanks in advance.
-
-The future is purportedly in the feature known as initramfs.  See the file
-Documentation/early-userpace/README for more details on how that is supposed
-to work.
-
-That said, I tried initramfs a few times, but either due to lack of
-understanding, or broken support code in 2.6.10, I couldn't get it to
-properly
-load an initrd bundled in, so I forward-ported a patch I wrote that
-originally
-fixed CONFIG_EMBEDDED_RAMDISK to work with any ABI to 2.6.10, and it worked
-rather well.  I'm sticking with this method until I find more/better docs on
-how to use initramfs properly.
-
-If you're interested, the patch I use can be found here:
-http://dev.gentoo.org/~kumba/mips/misc/misc-2.6.10-add-ramdisk-back.patch
-[2.6.10]
-http://dev.gentoo.org/~kumba/mips/misc/misc-2.6.11-add-ramdisk-back.patch
-[2.6.11]
-
-
---Kumba
+> On Wed, Apr 27, 2005 at 02:36:22PM +0900, Atsushi Nemoto wrote:
+> 
+> > Hi.  Here is a patch to make the fpu-emulator preempt-safe.  It would
+> > be SMP-safe also.
+> > 
+> > The 'ieee754_csr' global variable is removed.  Now the 'ieee754_csr'
+> > is an alias of current->thread.fpu.soft.fcr31.  While the fpu-emulator
+> > uses different mapping for RM bits (FPU_CSR_Rm vs. IEEE754_Rm), RM
+> > bits are converted before (and after) calling of cop1Emulate().  If we
+> > adjusted IEEE754_Rm to match with FPU_CSR_Rm, we can remove ieee_rm[]
+> > and mips_rm[].  Should we do it?
+> > 
+> > With this patch, whole fpu-emulator can be run without disabling
+> > preempt.  I will post a patch to fix preemption issue soon.
+> 
+> I applied both your patches with some slight cleanup for the endianess
+> stuff in arch/mips/math-emu/ieee754.h and non-Linux stuff.
+> 
+>   Ralf
+> 
+> 

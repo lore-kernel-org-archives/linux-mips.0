@@ -1,18 +1,50 @@
-In-Reply-To: <8230E1CC35AF9F43839F3049E930169A137217@yang.LibreStream.local>
-References: <8230E1CC35AF9F43839F3049E930169A137217@yang.LibreStream.local>
-Mime-Version: 1.0 (Apple Message framework v622)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-ID: <ca9dea6d5cc67afd6a42f06de4286bf9@embeddededge.com>
-Content-Transfer-Encoding: 7bit
-From: Dan Malek <dan@embeddededge.com>
-Subject: Re: iptables/vmalloc issues on alchemy
-Date: Thu, 28 Apr 2005 16:56:39 -0400
-Return-Path: <dan@embeddededge.com>
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: iptables/vmalloc issues on alchemy
+Date: Thu, 28 Apr 2005 16:22:34 -0500
+Message-ID: <8230E1CC35AF9F43839F3049E930169A137228@yang.LibreStream.local>
+From: "Christian Gan" <christian.gan@librestream.com>
+Return-Path: <christian.gan@librestream.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Christian Gan <christian.gan@librestream.com>
+To: Dan Malek <dan@embeddededge.com>
 Cc: linux-mips@linux-mips.org, Herbert Valerio Riedel <hvr@hvrlab.org>, Josh Green <jgreen@users.sourceforge.net>, Pete Popov <ppopov@embeddedalley.com>
-Message-ID: <20050428205639._pXxC1I42Eatk4SlGvzq57eoKogvHvycjQPiKpNZosE@z>
+Message-ID: <20050428212234.SDue_Bz85zRBvFaY6zGQAujRroe1cHi_iZnFbCAo2EU@z>
+
+Yes "long time ago" is a very loose and relative term :).  My version at
+the time was 2.6.10 (December-ish).  I was seeing very similar symptoms
+to Herbert:
+
+- loading a firmware module (for a prism 802.11b mini PCI card) through
+the hotplug support would fail when using vmalloc, but not kmalloc.
+- I put together a dirty tester that kept increasing page requests to
+vmalloc until corruption was detected.  Again it would be okay if I used
+kmalloc or if I disabled CONFIG_64BIT_PHYS_ADDR.
+
+By the way I didn't mention but my original post was attached to that
+last post of mine if people wanted to glance over it.  Unfortunately I'm
+in the same boat as Dan where I don't have my setup anymore at this
+time.
+
+Christian Gan
+Software Developer
+LibreStream Technologies
+200-55 Rothwell Road
+Winnipeg, MB, Canada R3P-2M5
+christian.gan@librestream.com
+Ph: (204) 487-0612 x209
+Fx: (204) 487-0914
+
+-----Original Message-----
+From: Dan Malek [mailto:dan@embeddededge.com] 
+Sent: Thursday, April 28, 2005 3:57 PM
+To: Christian Gan
+Cc: linux-mips@linux-mips.org; Herbert Valerio Riedel; Josh Green; Pete
+Popov
+Subject: Re: iptables/vmalloc issues on alchemy
 
 
 On Apr 28, 2005, at 4:11 PM, Christian Gan wrote:

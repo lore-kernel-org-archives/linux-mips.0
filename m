@@ -1,41 +1,169 @@
-From: "Bryan Althouse" <bryan.althouse@3phoenix.com>
-Subject: 
-Date: Thu, 28 Apr 2005 15:15:49 -0400
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20050428191608Z8225923-1340+6320@linux-mips.org>
-Return-Path: <bryan.althouse@3phoenix.com>
+Content-Transfer-Encoding: 8BIT
+Subject: RE: iptables/vmalloc issues on alchemy
+Date: Thu, 28 Apr 2005 15:11:27 -0500
+Message-ID: <8230E1CC35AF9F43839F3049E930169A137217@yang.LibreStream.local>
+From: "Christian Gan" <christian.gan@librestream.com>
+Return-Path: <christian.gan@librestream.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
+To: Herbert Valerio Riedel <hvr@hvrlab.org>, Dan Malek <dan@embeddededge.com>
+Cc: Josh Green <jgreen@users.sourceforge.net>, linux-mips@linux-mips.org, Pete Popov <ppopov@embeddedalley.com>
+Message-ID: <20050428201127.2sYJbREvnJmQ6ecCIiKqTJc_y75dLP0muI4YyE84KUQ@z>
+
+Could this also related to this problem I posted a long time ago?  I
+haven't had a chance to revisit things for a while...
+
+-----Original Message-----
+Just a little update on this:
+
+I turned off 36 bit address support for the MIPS32
+(CONFIG_64BIT_PHYS_ADDR) and found that my tests for vmalloc work.
+
+Can anyone who knows better point me in a direction of where I should
+start?
+
+Thanks!
+
+Christian
+
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org
+[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Christian Gan
+Sent: Tuesday, January 04, 2005 3:25 PM
 To: linux-mips@linux-mips.org
-Cc: TheNop@gmx.net
-Message-ID: <20050428191549.HuE_TLp8P8sriG7NYeWKXkNVwS3c4eDEWvAUMQPeEkI@z>
+Subject: vmalloc memory corruption
 
-Hello,
+Hey all,
 
-I would like to use a 2.6.x kernel with my Yosemite/HalfDome board.
-Somehow, I am unable to compile the kernel.  I have tried the 2.6.10 kernel
-trees from ftp.pmc-sierra.com and also the latest 2.6.12 snapshot from
-linux-mips.  I am using the 3.3.x cross compile tools from
-ftp.pmc-sierra.com .  The 2.4.x kernels from PMC compile fine.
+I'm running into a strange memory corruption problem while trying to get
+a driver to load firmware using hotplug support on a DBAU1550 eval
+board.  This board has a single AU1550 MIPS32 processor.  I'm running
+kernel version 2.6.10-rc3.
 
-In the case of 2.6.10 from ftp.pmc-sierra.com, my error looks like:
-       Make[3]: *** [drivers/char/agp/backend.o] Error 1
+I've attached a code snippet below that I'd like somebody to try to
+verify for me so I can determine whether or not it is a problem with my
+kernel/hardware.  
 
+The test code is a simplified version of the interaction between the
+driver and the firmware/hotplug support of the kernel.  The firmware
+hotplug support (linux/drivers/base/firmware_class.c) if fed data from a
+file and places it into a buffer, this buffer gets reallocated when
+required and grows as more data is read in.  Old data is memcopied into
+the new reallocated buffer and newly read data is appended to the end.
+What I'm finding is that eventually this data is corrupted.
+
+Compile the test snippet below as a module and insmod it.  If things are
+successful you should see results like this:
+
+# insmod vmalloctest.ko
+Using vmalloctest.ko
+testing vmalloc
+0x00 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 0x09 0x00 0x01 0x02 0x03
+0x04 0x05 0x06 0x07 0x08 0x09 0x00 0x01 0x02 0x03 0x04 0x05 0x06 0x07
+0x08 0x09 ...
+0x00 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 0x09
+
+But if data changes at any time, you've got problems like me.  When I
+run this on my platform eventually the data becomes all 0x00.
+
+Notice that if you use kmalloc instead of vmalloc (define USE_KMALLOC),
+everything works.
+
+Thanks!
+
+Christian Gan
+
+// Start vmalloctest.c
+
+#ifndef __KERNEL__
+#define __KERNEL__
+#endif
+
+#include <linux/config.h>
+#include <linux/version.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/errno.h>
+#include <linux/string.h>
+#include <linux/mm.h>
+#include <linux/delay.h>
+#include <linux/init.h>
+#include <linux/vmalloc.h>
+
+#include <asm/io.h>
+
+//#define USE_KMALLOC
+
+void fillbuf(char * buf, unsigned long len) {
+	int i = 0;
+	for (i = 0; i < len; i++)
+	{
+		buf[i] = 0xFF & i;
+	}
+}
+
+int __init vmalloctest_init(void)
+{
+    char * buf = NULL;
+	int i = 0;
+
+	printk("testing vmalloc\n");
 	
-In the case of 2.6.12 from linux-mips, my error looks like:
-	drivers/net/titan_ge.c1950: error: 'titan_device_remove"  undeclared
-here (not in a function)
+	for (i = 0; i < 50; i++)
+	{
+		int j = 0;
+#ifndef USE_KMALLOC		
+		char * newbuf = vmalloc( (i+1)*PAGE_SIZE ); // allocate
+a new buffer that grows in size #else
+		char * newbuf = kmalloc( (i+1)*PAGE_SIZE, GFP_KERNEL );
+// allocate a new buffer that grows in size
+#endif		
+		if (!newbuf)
+		{
+			printk("Could not allocate memory: %ld bytes\n",
+(i+1)*PAGE_SIZE);
+			break;
+		}
+				
+		if (i==0)
+		{
+			fillbuf(newbuf, PAGE_SIZE );		// fill
+the original buffer with some data... any will suffice
+		}
+		else
+		{
+			memcpy(newbuf, buf, i*PAGE_SIZE);	// copy
+the contents of the old buffer to the new	
+		}
+		
+#ifndef USE_KMALLOC
+		vfree(buf);		// free the old buffer
+#else
+		kfree(buf);		// free the old buffer
+#endif		
 
-My compile process is like so:
-make mrproper
-make xconfig
-make oldconfig
-make ARCH=mips CROSS_COMPILE=/<tool_path>/mips64-linux-gnu-    vmlinux
+		buf = newbuf;
+		
+		// print out the first few bytes
+		for (j=0; j < 10; j++)
+		{
+			printk("0x%02X ", 0xff & buf[j]);
+		}
+		printk("\n");
+	}
 
-Could someone share their .config with me, or make some suggestions?
+#ifndef USE_KMALLOC
+	vfree(buf);
+#else
+	kfree(buf);
+#endif		
 
-Thank you,
-Bryan
+	return 0;
+}
+module_init(vmalloctest_init);
+
+MODULE_LICENSE("GPL");

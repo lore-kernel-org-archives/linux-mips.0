@@ -1,33 +1,62 @@
-Received: from Charles (host81-129-41-101.range81-129.btcentralplus.com [81.129.41.101])
-	by turtle.dnsmaster.net (8.13.1/8.12.8) with ESMTP id j3T825ZI024072
-	for <linux-mips@linux-mips.org>; Fri, 29 Apr 2005 08:02:06 GMT
-Message-ID: <000a01c54c91$bd2d03e0$0410a8c0@Charles>
-From: "Charles Palmer" <charles.palmer@acutetechnology.com>
-Subject: Obtaining cardmgr, cardctl for Alchemy
-Date: Fri, 29 Apr 2005 09:02:02 +0100
+From: "Bryan Althouse" <bryan.althouse@3phoenix.com>
+Subject: RE: your mail (yosemite + 2.6.x issues)
+Date: Fri, 29 Apr 2005 09:52:05 -0400
 MIME-Version: 1.0
 Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=original
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-Path: <charles.palmer@acutetechnology.com>
+In-Reply-To: <20050429110258.GE5951@linux-mips.org>
+Message-ID: <20050429135220Z8225807-1340+6357@linux-mips.org>
+Return-Path: <bryan.althouse@3phoenix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20050429080202.A5ttpT4drbDMolbkoyZ1Jor16TJ3iLpBLqBVd0Mndts@z>
+To: 'Ralf Baechle' <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20050429135205.JBRKP-XSFBnK9JwMhn-cVpPEOZOKbIawgPzx89tjJcI@z>
 
-I am working with AMD's DBAu1200 development board and want to get the 
-PCMCIA working. It looks like I am missing a package containing cardmgr, 
-cardctl etc. Does anyone know where I can download this from? I am using 
-2.4.26 kernel, based on a source tree provided with AMD's development kit, 
-but it appears to lack this package.
+Thanks Ralf, now I can compile the kernel.  But, I don't get any serial
+console output when I try to boot it.  Actually, I get a single line that
+looks like this:
 
-AMD's pcmcia.txt readme says this: "Install the MVL HHL PCMCIA package, file 
-named hhl-mips_fp_le-pcmcia-cs-3.1.24-db010812.1.mips_fp_le.rpm. This 
-pacakge contains the scripts and utilities (specifically cardmgr and 
-cardctl) for making PCMCIA work". I am using 2.4.26 kernel, based on a 
-source tree provided with AMD's development kit, but it appears to lack this 
-package.
+Loading file: tftp://192.168.2.39/vmlinux (elf)
+0x80100000/2288188 + 0x8032ea3c/111372(z) + 4125 syms|
 
-Thanks - Charles Palmer 
+I have found PMC's "yosemite_defconfig" file and I am using it as the
+".config". I have tried using CONFIG_PMC_INTERNAL_UART=y and I have also
+tried commenting it out.  Either way, I get no console output.
+
+Thanks for the help!
+Bryan
+
+-----Original Message-----
+From: Ralf Baechle [mailto:ralf@linux-mips.org] 
+Sent: Friday, April 29, 2005 7:03 AM
+To: Bryan Althouse
+Cc: linux-mips@linux-mips.org; TheNop@gmx.net
+Subject: Re: your mail
+
+On Thu, Apr 28, 2005 at 03:15:49PM -0400, Bryan Althouse wrote:
+
+> I would like to use a 2.6.x kernel with my Yosemite/HalfDome board.
+> Somehow, I am unable to compile the kernel.  I have tried the 2.6.10
+kernel
+> trees from ftp.pmc-sierra.com and also the latest 2.6.12 snapshot from
+> linux-mips.  I am using the 3.3.x cross compile tools from
+> ftp.pmc-sierra.com .  The 2.4.x kernels from PMC compile fine.
+> 
+> In the case of 2.6.10 from ftp.pmc-sierra.com, my error looks like:
+>        Make[3]: *** [drivers/char/agp/backend.o] Error 1
+
+Configuring AGP support for a MIPS kernel is obviously nonsense.  Disable
+CONFIG_AGP.
+
+> In the case of 2.6.12 from linux-mips, my error looks like:
+> 	drivers/net/titan_ge.c1950: error: 'titan_device_remove"  undeclared
+> here (not in a function)
+
+Whoops, a bug.  The function indeed doesn't exist even though it should,
+will fix that.  You will hit this bug only if compiling the titan driver
+as a module, so workaround set CONFIG_TITAN_GE=y.  Which for the typical
+titan-based device seems to be the preferable choice anyway.
+
+  Ralf

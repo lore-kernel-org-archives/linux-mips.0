@@ -1,48 +1,82 @@
-Content-class: urn:content-classes:message
+Message-ID: <57961.131.181.46.15.1114757462.squirrel@mail.longlandclan.hopto.org>
+In-Reply-To: <015301c54c01$9b8e4e00$3c67a8c0@netsity.com>
+References: <015301c54c01$9b8e4e00$3c67a8c0@netsity.com>
+Date: Fri,
+      29 Apr 2005 06:51:02 -0000 (Local time zone must be set--see zic
+     manual page)
+Subject: Re: GD Library on MIPS Processor
+From: "Stuart Longland" <stuartl@longlandclan.hopto.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: iptables/vmalloc issues on alchemy
-Date: Thu, 28 Apr 2005 18:16:36 -0500
-Message-ID: <8230E1CC35AF9F43839F3049E930169A137236@yang.LibreStream.local>
-From: "Christian Gan" <christian.gan@librestream.com>
-Return-Path: <christian.gan@librestream.com>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-Path: <stuartl@longlandclan.hopto.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Dan Malek <dan@embeddedalley.com>
-Cc: Josh Green <jgreen@users.sourceforge.net>, Herbert Valerio Riedel <hvr@hvrlab.org>, linux-mips@linux-mips.org, Pete Popov <ppopov@embeddedalley.com>
-Message-ID: <20050428231636.A_Eo3ENOZkY4ZuQZrODaSEjzRqovw5arhJBKwif5XxY@z>
+To: Inpreet Singh <Singh.Inpreet@netsity.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20050429065102.JjuLdAQWJYWgA9cVXAK9mgivE8U5h4i9TaO1YuU-3Hg@z>
 
-Sorry, I should have been more clear:  The little test module I created
-worked without CONFIG_64BIT_PHYS_ADDR, I realize that it would fail for
-the PCI device though.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Thanks!
+Okay, before I start... can you please turn off HTML message composition?
+Some users here don't take kindly to HTML email. ;-)
 
-Christian
+> Sir I am using gd library on Linux intel processor sucessfully but now I
+> want to do same on MIPS. I don't know to how install, configure and test
+> gd library on MIPS. Sir please give me some clue or link to study for
+> the same.
+>
+> I tried to configure gd library compilation using following command from
+> linux intel processor:
+>
+> ./configure --host=mips
 
------Original Message-----
-From: Dan Malek [mailto:dan@embeddedalley.com] 
-Sent: Thursday, April 28, 2005 5:17 PM
-To: Christian Gan
-Cc: Josh Green; Herbert Valerio Riedel; linux-mips@linux-mips.org; Pete
-Popov
-Subject: Re: iptables/vmalloc issues on alchemy
+Try ./configure --host=mips-unknown-linux-gnu (or mips-unknown-linux-uclibc if
+you use µClibc).  Setting --build and --target may help too.
 
+> and it makes Makefile with some differences
+> ***************************************************
+> host_triplet = mips-unknown-elf
+> host = mips-unknown-elf
+> host_alias = mips
+> host_cpu = mips
+> ***************************************************
+> Now I tried to build a example using this Makefile "make gddemo". What I
+> expect that it will create gddemo binary that will output in correctly
+> on MIPS processor. But when I run this binary on MIPS it is showing
+> errors.
+> **************************************************************
+> /launchpad # ./gddemo
+> ./gddemo: 1: Syntax error: "(" unexpected
+> **************************************************************
 
-On Apr 28, 2005, at 5:22 PM, Christian Gan wrote:
+I'm not sure what's going on there... but I'd presume it's related to the
+wrong `host` option being set.
 
-> ..... Again it would be okay if I used
-> kmalloc or if I disabled CONFIG_64BIT_PHYS_ADDR.
+Also, make sure you run the compiled binaries on the MIPS machine... they
+won't work on x86 (you'll get a "cannot execute binary file" error message).
 
-An Au1500 or Au1550 isn't likely to work with this disabled.
-PCI and other peripherals exist in the 36-bit space, unless you
-disable them.  I suspect all of this got broken with the dynamic
-exception handler building.  Prior to that, I suspect it works
-fine.  I guess we need to do some regression testing ....
+> Also I have downloaded debian packages for gd library on MIPS processor
+> but don't know how to install them. I tried dpkg command but it shows no
+> such command. So sir please help me out.
+> So please help me how should I proceed.
 
-Thanks.
+That's odd.  Do you have Debian installed correctly on the MIPS machine?  What
+version/distribution did you install?
 
+- --
++-------------------------------------------------------------+
+| Stuart Longland -oOo- http://stuartl.longlandclan.hopto.org |
+| Atomic Linux Project     -oOo-    http://atomicl.berlios.de |
+| - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+| I haven't lost my mind - it's backed up on a tape somewhere |
++-------------------------------------------------------------+
 
-	-- Dan
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+
+iD8DBQFCcdkpuarJ1mMmSrkRAlt0AJ97SkR+SDtpVXiU1KzhWvSLFLTJIgCfQyFO
+n8aKAVeZBTUPKhHm8NAvxAY=
+=1oRI
+-----END PGP SIGNATURE-----

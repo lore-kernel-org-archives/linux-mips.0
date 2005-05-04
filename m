@@ -1,42 +1,45 @@
 From: "Bryan Althouse" <bryan.althouse@3phoenix.com>
-Subject: RE: your mail (yosemite + 2.6.x issues)
-Date: Fri, 29 Apr 2005 09:52:05 -0400
+Subject: RE: 
+Date: Wed, 4 May 2005 10:22:08 -0400
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050429110258.GE5951@linux-mips.org>
-Message-ID: <20050429135220Z8225807-1340+6357@linux-mips.org>
+In-Reply-To: <1115214949.13387.13.camel@euskadi.packetvision>
+Message-ID: <20050504142226Z8225804-1340+6519@linux-mips.org>
 Return-Path: <bryan.althouse@3phoenix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Ralf Baechle' <ralf@linux-mips.org>
+To: 'Alex Gonzalez' <linux-mips@packetvision.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20050429135205.JBRKP-XSFBnK9JwMhn-cVpPEOZOKbIawgPzx89tjJcI@z>
+Message-ID: <20050504142208.ElFwTYk8Kv19AdSkwE5tV42Oboz5_6FK00KPdkl_FL8@z>
 
-Thanks Ralf, now I can compile the kernel.  But, I don't get any serial
-console output when I try to boot it.  Actually, I get a single line that
-looks like this:
+Thanks for your help.  Yes I do need SMP.  Jason Liu of PMC did a check on
+my serial number, and found that I have rev 1.1 silicon.  He says I need rev
+1.2 in order to use a 2.6.x kernel.  I have shipped my hardware back to them
+for an upgrade.  Hopefully, I'll be back in business in a week or two.
 
-Loading file: tftp://192.168.2.39/vmlinux (elf)
-0x80100000/2288188 + 0x8032ea3c/111372(z) + 4125 syms|
-
-I have found PMC's "yosemite_defconfig" file and I am using it as the
-".config". I have tried using CONFIG_PMC_INTERNAL_UART=y and I have also
-tried commenting it out.  Either way, I get no console output.
-
-Thanks for the help!
 Bryan
 
 -----Original Message-----
-From: Ralf Baechle [mailto:ralf@linux-mips.org] 
-Sent: Friday, April 29, 2005 7:03 AM
+From: Alex Gonzalez [mailto:linux-mips@packetvision.com] 
+Sent: Wednesday, May 04, 2005 9:56 AM
 To: Bryan Althouse
 Cc: linux-mips@linux-mips.org; TheNop@gmx.net
-Subject: Re: your mail
+Subject: Re:
 
-On Thu, Apr 28, 2005 at 03:15:49PM -0400, Bryan Althouse wrote:
+I had no problems compiling the linux-2.6.10 kernel from pmc-sierra's
+ftp.
 
+>       Make[3]: *** [drivers/char/agp/backend.o] Error 1
+
+Do you need AGP support? My kernel is configured without it.
+
+Alex
+
+On Thu, 2005-04-28 at 20:15, Bryan Althouse wrote:
+> Hello,
+> 
 > I would like to use a 2.6.x kernel with my Yosemite/HalfDome board.
 > Somehow, I am unable to compile the kernel.  I have tried the 2.6.10
 kernel
@@ -46,17 +49,21 @@ kernel
 > 
 > In the case of 2.6.10 from ftp.pmc-sierra.com, my error looks like:
 >        Make[3]: *** [drivers/char/agp/backend.o] Error 1
-
-Configuring AGP support for a MIPS kernel is obviously nonsense.  Disable
-CONFIG_AGP.
-
+> 
+> 	
 > In the case of 2.6.12 from linux-mips, my error looks like:
 > 	drivers/net/titan_ge.c1950: error: 'titan_device_remove"  undeclared
 > here (not in a function)
-
-Whoops, a bug.  The function indeed doesn't exist even though it should,
-will fix that.  You will hit this bug only if compiling the titan driver
-as a module, so workaround set CONFIG_TITAN_GE=y.  Which for the typical
-titan-based device seems to be the preferable choice anyway.
-
-  Ralf
+> 
+> My compile process is like so:
+> make mrproper
+> make xconfig
+> make oldconfig
+> make ARCH=mips CROSS_COMPILE=/<tool_path>/mips64-linux-gnu-    vmlinux
+> 
+> Could someone share their .config with me, or make some suggestions?
+> 
+> Thank you,
+> Bryan
+> 
+> 

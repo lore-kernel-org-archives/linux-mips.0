@@ -1,31 +1,30 @@
-Message-ID: <200505051756.j45Hu54Y021121@arbas.nms.ulrich-teichert.org>
-Subject: Re: USB hangs on AU1100
-Date: Thu, 5 May 2005 19:56:04 +0200 (MEST)
-In-Reply-To: <20050505172017.GC1628@hattusa.textio> from "Thiemo Seufer" at May 05, 2005 07:20:17 PM
-From: Ulrich Teichert <krypton@ulrich-teichert.org>
+From: "Bryan Althouse" <bryan.althouse@3phoenix.com>
+Subject: ATA devices attached to arbitary busses
+Date: Thu, 5 May 2005 13:56:57 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-Path: <krypton@ulrich-teichert.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20050505175716Z8225009-1340+6570@linux-mips.org>
+Return-Path: <bryan.althouse@3phoenix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Thiemo Seufer <ths@networkno.de>
-Cc: "'linux-mips@linux-mips.org'" <linux-mips@linux-mips.org>
-Message-ID: <20050505175604.PGOoAyFCDD7LURo1WGqlTCPos-oO66Gba80TU5Or1kU@z>
+To: owner-linux-mips@oss.sgi.com
+Cc: linux-mips@linux-mips.org
+Message-ID: <20050505175657.h5miuFWo1N5gLFMmNRFTe13osi5xOSrWA5sRTvNMkNQ@z>
 
-Hi,
+owner-linux-mips@oss.sgi.com  wrote on 8/19/2002:
 
-[del]
->I wonder if the code works reliable. At least, a comma operator isn't a
->sequence point, which means the compiler is free to change the execution
->order.
+> We support ATA devices attached to arbitary busses. The newest ATA code
+> supports arbitary mmio/pio addressing mechanisms. You don't need ISA or
+> an ISA like bus.
 
-Not accordingly to the C standard, which notes strict left-to-right
-execution without reordering for the comma operator.
 
-HTH,
-Uli
--- 
-Dipl. Inf. Ulrich Teichert|e-mail: Ulrich.Teichert@gmx.de
-Stormweg 24               |listening to: Suicide Drive (The Deep Eynde)
-24539 Neumuenster, Germany|Public Pervert (Interpol) Cauchemar (Opération S)
+This is good news!  We want to connect an IDE flash drive to the local bus
+of an rm9224.  Of course we will have to make an IDE host adapter with an
+FPGA.  Right now, I'm a bit clueless as to how to get the linux kernel to
+support this.  Could someone please point me in the right direction?  What
+kernel source files should I be looking at?  Is there any documentation?
+Many thanks!
+
+Bryan 

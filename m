@@ -1,19 +1,26 @@
-Subject: Re: pcmcia-cs package for linux-mips 2.6.10?
-From: Pete Popov <ppopov@embeddedalley.com>
-Reply-To: ppopov@embeddedalley.com
-In-Reply-To: <9DFF23E1E33391449FDC324526D1F259024380C7@sjc1exm02.pmc_nt.nt.pmc-sierra.bc.ca>
-References: <9DFF23E1E33391449FDC324526D1F259024380C7@sjc1exm02.pmc_nt.nt.pmc-sierra.bc.ca>
+Message-ID: <9DFF23E1E33391449FDC324526D1F259024380C8@sjc1exm02.pmc_nt.nt.pmc-sierra.bc.ca>
+From: Kiran Thota <Kiran_Thota@pmc-sierra.com>
+Subject: RE: pcmcia-cs package for linux-mips 2.6.10?
+Date: Thu, 5 May 2005 16:32:02 -0700 
+MIME-Version: 1.0
 Content-Type: text/plain
-Date: Thu, 05 May 2005 15:46:53 -0700
-Message-ID: <1115333213.5820.104.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-Path: <ppopov@embeddedalley.com>
+Return-Path: <Kiran_Thota@pmc-sierra.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Kiran Thota <Kiran_Thota@pmc-sierra.com>
+To: "'ppopov@embeddedalley.com'" <ppopov@embeddedalley.com>
 Cc: "'linux-mips@linux-mips.org'" <linux-mips@linux-mips.org>, "'linux-pcmcia@lists.infradead.org'" <linux-pcmcia@lists.infradead.org>
-Message-ID: <20050505224653.x3ZaCf-vovz8VHtalkBLxu3w9EgTJxbKagtJE-yggYY@z>
+Message-ID: <20050505233202.AHBKh5HWP4By13Gzk69Col7S9jTfPFL3ENh5Na-00FI@z>
+
+I m trying to build memory_cs.o as a module.
+It aint available in kernel. What do i do?
+
+-----Original Message-----
+From: Pete Popov [mailto:ppopov@embeddedalley.com]
+Sent: Thursday, May 05, 2005 3:47 PM
+To: Kiran Thota
+Cc: 'linux-mips@linux-mips.org'; 'linux-pcmcia@lists.infradead.org'
+Subject: Re: pcmcia-cs package for linux-mips 2.6.10?
+
 
 On Thu, 2005-05-05 at 15:43 -0700, Kiran Thota wrote:
 > 

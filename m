@@ -1,48 +1,42 @@
-Received: by wproxy.gmail.com with SMTP id 57so1080468wri
-        for <linux-mips@linux-mips.org>; Thu, 23 Jun 2005 15:04:26 -0700 (PDT)
-Message-ID: <2db32b72050623150411886bbd@mail.gmail.com>
-Date: Thu, 23 Jun 2005 15:04:26 -0700
-From: rolf liu <rolfliu@gmail.com>
-Reply-To: rolf liu <rolfliu@gmail.com>
-Subject: Re: which 2.6 kernel can be run on db1550?
-In-Reply-To: <ecb4efd1050623144816f7f528@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
-References: <2db32b72050623133731f7b098@mail.gmail.com>
-	 <ecb4efd1050623144816f7f528@mail.gmail.com>
-Return-Path: <rolfliu@gmail.com>
+Message-ID: <026701c57c96$5ddbed40$6cf9a8c0@ALEC>
+Reply-To: "Alexander Voropay" <alec@artcoms.ru>
+From: "Alexander Voropay" <alec@artcoms.ru>
+References: <1943a413050629014858a124f7@mail.gmail.com>
+Subject: Re: Popular MIPS4Kc boards?
+Date: Wed, 29 Jun 2005 14:32:24 +0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	format=flowed;
+	charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <alec@artcoms.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20050623220426.Ua_-diW3EhC7bjhv_EXFRoHTGz09tyq-bmVZgNOZtCs@z>
+To: Krishna B S <bskris@gmail.com>, linux-mips@linux-mips.org
+Message-ID: <20050629103224.8-mvJP68w3Y1EzYHNCYkM271p5c2DKITWgHiW5aKt_I@z>
 
-Thanks very much for the information.
+"Krishna B S" <bskris@gmail.com> wrote:
+ 
+> I would like to know from you what is the most popular board used by
+> the community with this kind of processor. I know, its tough to get a
+> clear answer.
 
-SDE is the toolchain from mips, which is based on gcc 2.96.
+ You could use one of the consumer devices as a development board ;)
 
-I'll try 2.6.11 then
+I.e. : http://www.linux-mips.org/wiki/Adm5120 or
+http://www.linux-mips.org/wiki/Broadcom_SOCs
 
+ This devices costs about $50..100 and includes case, power supply,
+Ethernet, RS-232, Flash, DRAM (16 to 32Mb), USB an one or two
+MiniPCI slots.
 
-On 6/23/05, Clem Taylor <clem.taylor@gmail.com> wrote:
-> On 6/23/05, rolf liu <rolfliu@gmail.com> wrote:
-> > I just compiled 2.4.31 and run that on db1550. It works through a NFS
-> > root file system. I am thinking of running of 2.6 on db1550.
-> 
-> I haven't switched over to 2.6.12, but I'm running 2.6.11 (checked out
-> from linux-mips on 2005.03.18) on a Au1550 based board. When I was
-> porting to my hardware, the default kernel worked just fine on the
-> DBAu1550. I'm using gcc 3.4.3 and 2.15.94.0.2.2 bintools.
-> 
-> > Which one can be compiled by SDE and run this box?
-> 
-> I'm not sure what SDE is. I used buildroot to compile my toolchain and
-> make my root image.
-> 
-> > I tried 2.6.12 and tried 2.6.12-rc6, but got no luck. They just don't compile.
-> 
-> I haven't had a chance to try 2.6.12 yet.
-> 
->                                --Clem
->
+ You could use a USB stick or IDE HDD with USB-to-IDE controller 
+to mount a root partition.
+
+ There are a lot of MiniPCI peripherial cards: WiFi, sound, IDE,
+Serial ATA and seems even SVGA.
+
+--
+-=AV=-
+ 

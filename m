@@ -1,86 +1,63 @@
-Content-class: urn:content-classes:message
+From: "Bryan Althouse" <bryan.althouse@3phoenix.com>
+Subject: RE: Seg fault when compiled with -mabi=64 and -lpthread
+Date: Fri, 1 Jul 2005 11:09:22 -0400
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C57DFC.D8A9ACDA"
-Subject: RFH:  What are the semantics of writeb() and friends?
-Date: Thu, 30 Jun 2005 22:22:17 -0700
-Message-ID: <01049E563C8ECC43AD6B53A5AF419B38098BD2@avtrex-server2.hq2.avtrex.com>
-From: "David Daney" <ddaney@avtrex.com>
-Return-Path: <ddaney@avtrex.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20050701035105.GA9601@nevyn.them.org>
+Message-ID: <20050701150938Z8226157-3678+821@linux-mips.org>
+Return-Path: <bryan.althouse@3phoenix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20050701052217.cFNKdM6vPfLkOKQy-zA7xAI0eIeeCRY488uMFOIoUqk@z>
+To: 'Daniel Jacobowitz' <dan@debian.org>, "'Stephen P. Becker'" <geoman@gentoo.org>, macro@blysk.ds.pg.gda.pl
+Cc: 'Linux/MIPS Development' <linux-mips@linux-mips.org>
+Message-ID: <20050701150922.Vh7uF74pG6fj0aucwKfphfUvcYDZ8FBEWBQra1LcNkg@z>
 
-This is a multi-part message in MIME format.
+Thanks for everyone's input!
 
-------_=_NextPart_001_01C57DFC.D8A9ACDA
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Looks like I should upgrade glibc, and possibly gcc.  When you say that I
+should try CVS HEAD of glibc, I'm not sure what you mean.  I have looked in
+the linux-mips.org CVS and the closest thing I can find is libc, and it
+looks really old.  I have also found a glibc CVS at
+:pserver:anoncvs@sources.redhat.com:/cvs/glibc.  If I get libc from here is
+this the "CVS HEAD"?  
 
-In this thread:
-=20
-http://www.linux-mips.org/cgi-bin/mesg.cgi?a=3Dlinux-mips&i=3D42C1C6EA.50=
-80709%40avtrex.com
-=20
-I relate the problems I was having with the Intel e100 driver on a new =
-2.6.12 port to a 4ke based system.
-=20
-My new question is:  What are the semantics of writeb(), writel() et =
-al.?  I would assume that the effects of these must be in the same order =
-that they were issued, and that any hardware write back queue cannot =
-combine or merge them in any way.  Is that correct?
-=20
-=20
-A second question I have is:  What is the difference in the semantics of =
-wbflush() and wmb()?  For my CPU they both evaluate to the same thing =
-(the 'sync' instruction).  So for my own sake I could use either, but =
-depending on the situation I assume that one would be used over the =
-other.
-=20
-Thanks,
-David Daney.
+Should I get GCC from the generic GCC site, or should get it from the
+linux-mips CVS?  
 
-------_=_NextPart_001_01C57DFC.D8A9ACDA
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I apologize for the simple questions.  I have not built a tool chain before.
+I've been using the one supplied by PMC-Sierra.  Will I need to patch any of
+these sources for MIPs?
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><HTML =
-DIR=3Dltr><HEAD><META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1"></HEAD><BODY><DIV><FONT face=3D'Arial' =
-color=3D#000000 size=3D2>In this thread:</FONT></DIV>=0A=
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial color=3D#000000 size=3D2><A =0A=
-href=3D"http://www.linux-mips.org/cgi-bin/mesg.cgi?a=3Dlinux-mips&amp;i=3D=
-42C1C6EA.5080709%40avtrex.com">http://www.linux-mips.org/cgi-bin/mesg.cgi=
-?a=3Dlinux-mips&amp;i=3D42C1C6EA.5080709%40avtrex.com</A></FONT></DIV>=0A=
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial size=3D2>I relate the problems I was having with =
-the Intel =0A=
-e100 driver on a new 2.6.12 port to a 4ke based system.</FONT></DIV>=0A=
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial size=3D2>My new question is:&nbsp; What are the =
-semantics of =0A=
-writeb(), writel() et al.?&nbsp; I would assume that the effects of =
-these must =0A=
-be in the same order that they were issued, and that any hardware write =
-back =0A=
-queue cannot combine or merge them in any way.&nbsp; Is that =0A=
-correct?</FONT></DIV>=0A=
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial size=3D2>A second question I have is:&nbsp; What =
-is the =0A=
-difference in the semantics of wbflush() and wmb()?&nbsp; For my CPU =
-they both =0A=
-evaluate to the same thing (the 'sync' instruction).&nbsp; So for my own =
-sake I =0A=
-could use either, but depending on the situation I assume that one would =
-be used =0A=
-over the other.</FONT></DIV>=0A=
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial size=3D2>Thanks,</FONT></DIV>=0A=
-<DIV><FONT face=3DArial size=3D2>David Daney.</FONT></DIV></BODY></HTML>
-------_=_NextPart_001_01C57DFC.D8A9ACDA--
+Bryan  
+
+-----Original Message-----
+From: Daniel Jacobowitz [mailto:dan@debian.org] 
+Sent: Thursday, June 30, 2005 11:51 PM
+To: Stephen P. Becker
+Cc: Ralf Baechle; Bryan Althouse; 'Linux/MIPS Development'
+Subject: Re: Seg fault when compiled with -mabi=64 and -lpthread
+
+On Thu, Jun 30, 2005 at 06:09:09PM -0400, Stephen P. Becker wrote:
+> 
+> > Bryan seems to be using the original Red Hat gnupro 64-bit toolchain. 
+> > I don't know how well that works nowadays; but current CVS versions do
+> > work, or did when I last tested (a month or two ago).
+> > 
+> 
+> Hmm, well with respect to my problem, I'm using a pretty recent
+> toolchain, with gcc 3.4.4, binutils-2.16.1, glibc-2.3.5, and headers
+> from a linux-mips 2.6.11 snapshot.  Interestingly, I tried to reproduce
+> Bryan's segfault, but could not.  That code ran without error when I
+> linked with libpthread.  Any thoughts?
+
+I don't think glibc 2.3.5 worked for mips64.  But I haven't checked it
+in a long time.  Try CVS HEAD of glibc instead.
+
+Other than that, you're on your own - building glibc is extremely error
+prone.
+
+-- 
+Daniel Jacobowitz
+CodeSourcery, LLC

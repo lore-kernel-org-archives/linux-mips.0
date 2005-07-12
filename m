@@ -1,48 +1,63 @@
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: I built a mipsel-linux toolchain, but it doesn't work
-Date: Sat, 2 Jul 2005 14:10:48 +0530
-Message-ID: <A8A67F242940E246A515077CF9ECACC157F3F6@dbde01.ent.ti.com>
-From: "Singh, Ajay" <ajaysingh@ti.com>
-Return-Path: <ajaysingh@ti.com>
+Subject: RE: Looking for a MIPS64 device
+Date: Tue, 12 Jul 2005 10:22:43 -0700
+Message-ID: <3CB54817FDF733459B230DD27C690CEC010491B9@Exchange.MIPS.COM>
+From: "Mitchell, Earl" <earlm@mips.com>
+Return-Path: <earlm@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: sjhill@realitydiluted.com, David Daney <ddaney@avtrex.com>
-Cc: moreau francis <francis_moreau2000@yahoo.fr>, zhan rongkai <zhanrk@gmail.com>, linux-mips@linux-mips.org
-Message-ID: <20050702084048.aynanTpUU7EMrknRO0xURilPuU1uC6TvH7W6qbVB7QU@z>
+To: Stanislaw Skowronek <sskowron@et.put.poznan.pl>, linux-mips@linux-mips.org
+Message-ID: <20050712172243.ecK7nXXI5NSb_lmTjy40mPQJWxnDxNS5gx61dqUEDgI@z>
 
-We are using uClibc-0.9.27 for MIPS target. Can you point out the issues
-with uClibc-0.9.27 ??
 
-~Ajay.
+You can try vendors on this page ...
 
------Original Message-----
-From: linux-mips-bounce@linux-mips.org
-[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of
-sjhill@realitydiluted.com
-Sent: Friday, July 01, 2005 8:30 PM
-To: David Daney
-Cc: moreau francis; zhan rongkai; linux-mips@linux-mips.org
-Subject: Re: I built a mipsel-linux toolchain, but it doesn't work
+http://www.mips.com/content/Ecosystem/Chips/ProductCatalog/chipSelector?do=1&mips64=on&vendorId=*&freq=0
 
-> moreau francis wrote:
-> > Could you develop please ? What kind of config/hack does Buildroot 
-> > to be able to use GCC with uClibc ?
-> > 
+-earlm
+
+
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org
+> [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Stanislaw
+> Skowronek
+> Sent: Tuesday, July 12, 2005 7:06 AM
+> To: linux-mips@linux-mips.org
+> Subject: Looking for a MIPS64 device
 > 
-> It is quite complicated, but you can find a summary on this web page:
 > 
-> http://www.google.com/search?q=uclibc+buildroot
+> %hi16(all),
 > 
-Here is the page for it:
-
-   http://buildroot.uclibc.org/
-
-The mipsel target is supported and will build for your needs. Do not use
-uClibc-0.9.27 when you configure your buildroot system. Use the latest
-uClibc snapshot. There are issues with uClibc-0.9.27 with MIPS targets.
-
--Steve
+> I'm looking for a MIPS64 device with FPU, and 40-bit physical address
+> space. I need I/O coherency (this is important!). I'd be glad if the
+> performance was good, but I'm not really bent on it.
+> 
+> This is for a research project in reconfigurable computing. I'd prefer
+> MIPS devices because they are elegant (the other choice is 
+> probably either
+> PowerPC or x86_64, which is really scary) and 
+> power-efficient. The project
+> is partially supported by Xilinx Inc.
+> 
+> I tried contacting Broadcom, when the project was conducted 
+> at the Poznan
+> University of Technology (my employer), however no contact 
+> was established
+> (not even a "go away, you're ugly"). Same went for PMC-Sierra.
+> 
+> Do you know of any MIPS64 device with FPU (and MMU, but it 
+> goes without
+> saying) that can be purchased in small quantities for a 
+> project like this?
+> 
+> Cheers,
+> 
+> Stanislaw Skowronek
+> 
+> 
+> 
+> 

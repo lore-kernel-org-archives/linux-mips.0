@@ -1,63 +1,53 @@
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: Looking for a MIPS64 device
-Date: Tue, 12 Jul 2005 10:22:43 -0700
-Message-ID: <3CB54817FDF733459B230DD27C690CEC010491B9@Exchange.MIPS.COM>
-From: "Mitchell, Earl" <earlm@mips.com>
-Return-Path: <earlm@mips.com>
+Subject: RE: Au1550 ethernet throughput low
+Date: Thu, 14 Jul 2005 10:32:22 +0530
+Message-ID: <A8A67F242940E246A515077CF9ECACC16B16C4@dbde01.ent.ti.com>
+From: "Singh, Ajay" <ajaysingh@ti.com>
+Return-Path: <ajaysingh@ti.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Stanislaw Skowronek <sskowron@et.put.poznan.pl>, linux-mips@linux-mips.org
-Message-ID: <20050712172243.ecK7nXXI5NSb_lmTjy40mPQJWxnDxNS5gx61dqUEDgI@z>
+To: jaypee@hotpop.com, linux-mips <linux-mips@linux-mips.org>
+Message-ID: <20050714050222._BBUPB7_3HiMdePehKsKPWis8veqVAHvVA59fszz_XA@z>
 
+Is your driver on Linux 2.6 NAPI enabled ? And is CONFIG_PREEMPT=y?
 
-You can try vendors on this page ...
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org
+[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of jaypee@hotpop.com
+Sent: Wednesday, July 13, 2005 9:30 PM
+To: linux-mips
+Subject: Au1550 ethernet throughput low
 
-http://www.mips.com/content/Ecosystem/Chips/ProductCatalog/chipSelector?do=1&mips64=on&vendorId=*&freq=0
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
--earlm
+Hi all,
+I've got a au1550 board based largely on the pb1550. The ethernet
+throughput is ~66Mbps using the 2.6 kernel. This also consumes a lot of
+cpu cycles to send.
 
+We have older designs using au1000 and mvista 2.4 kernel that achieve
+full line rate throughput without using a lot of the cpu.
 
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org
-> [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Stanislaw
-> Skowronek
-> Sent: Tuesday, July 12, 2005 7:06 AM
-> To: linux-mips@linux-mips.org
-> Subject: Looking for a MIPS64 device
-> 
-> 
-> %hi16(all),
-> 
-> I'm looking for a MIPS64 device with FPU, and 40-bit physical address
-> space. I need I/O coherency (this is important!). I'd be glad if the
-> performance was good, but I'm not really bent on it.
-> 
-> This is for a research project in reconfigurable computing. I'd prefer
-> MIPS devices because they are elegant (the other choice is 
-> probably either
-> PowerPC or x86_64, which is really scary) and 
-> power-efficient. The project
-> is partially supported by Xilinx Inc.
-> 
-> I tried contacting Broadcom, when the project was conducted 
-> at the Poznan
-> University of Technology (my employer), however no contact 
-> was established
-> (not even a "go away, you're ugly"). Same went for PMC-Sierra.
-> 
-> Do you know of any MIPS64 device with FPU (and MMU, but it 
-> goes without
-> saying) that can be purchased in small quantities for a 
-> project like this?
-> 
-> Cheers,
-> 
-> Stanislaw Skowronek
-> 
-> 
-> 
-> 
+Can someone with a pb/db1550 and linux 2.6 do a quick test to verify
+that is is not a 2.6 kernel problem, and is a problem with our HW/SW.
+
+If anyone can do the same with a 2.4 kernel too that would be great.
+
+Thanks,
+JP
+
+- --
+mailto:jaypee@hotpop.com
+http://www.jaypee.org.uk
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFC1TqCZDxnKy3oOpYRAhwaAKCoY/3lEX/DksOEq42FfxlsF2rjEgCeNI0G
+/72t16fNrA4XvX+KVumsNDw=
+=yoD8
+-----END PGP SIGNATURE-----

@@ -1,53 +1,227 @@
-Content-class: urn:content-classes:message
+Message-ID: <20050715232325.96159.qmail@web81403.mail.yahoo.com>
+Date: Fri, 15 Jul 2005 16:23:24 -0700 (PDT)
+From: Pete Popov <pete_popov@yahoo.com>
+Subject: Re: CVS Update@linux-mips.org: linux
+In-Reply-To: <20050716001621.6d9d607a.yuasa@hh.iij4u.or.jp>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Au1550 ethernet throughput low
-Date: Thu, 14 Jul 2005 10:32:22 +0530
-Message-ID: <A8A67F242940E246A515077CF9ECACC16B16C4@dbde01.ent.ti.com>
-From: "Singh, Ajay" <ajaysingh@ti.com>
-Return-Path: <ajaysingh@ti.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-Path: <pete_popov@yahoo.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: jaypee@hotpop.com, linux-mips <linux-mips@linux-mips.org>
-Message-ID: <20050714050222._BBUPB7_3HiMdePehKsKPWis8veqVAHvVA59fszz_XA@z>
+To: Yoichi Yuasa <yuasa@hh.iij4u.or.jp>, ppopov@linux-mips.org
+Cc: linux-mips@linux-mips.org
+Message-ID: <20050715232324.MRSXKSc683f-1GvlKYnyUjTaFsVqHUqoiNG-MMHzrRU@z>
 
-Is your driver on Linux 2.6 NAPI enabled ? And is CONFIG_PREEMPT=y?
 
------Original Message-----
-From: linux-mips-bounce@linux-mips.org
-[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of jaypee@hotpop.com
-Sent: Wednesday, July 13, 2005 9:30 PM
-To: linux-mips
-Subject: Au1550 ethernet throughput low
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+--- Yoichi Yuasa <yuasa@hh.iij4u.or.jp> wrote:
 
-Hi all,
-I've got a au1550 board based largely on the pb1550. The ethernet
-throughput is ~66Mbps using the 2.6 kernel. This also consumes a lot of
-cpu cycles to send.
+> Hi Pete,
+> 
+> On Thu, 14 Jul 2005 18:48:00 +0100
+> ppopov@linux-mips.org wrote:
+> 
+> > 
+> > Log message:
+> > 	Philips PNX8550 support: MIPS32-like core with 2
+> Trimedias on it.
+> 
+> I think the following include path is better.
 
-We have older designs using au1000 and mvista 2.4 kernel that achieve
-full line rate throughput without using a lot of the cpu.
+Thanks :)! I thought I cleaned up everything ;)
 
-Can someone with a pb/db1550 and linux 2.6 do a quick test to verify
-that is is not a 2.6 kernel problem, and is a problem with our HW/SW.
+Pete
 
-If anyone can do the same with a 2.4 kernel too that would be great.
-
-Thanks,
-JP
-
-- --
-mailto:jaypee@hotpop.com
-http://www.jaypee.org.uk
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFC1TqCZDxnKy3oOpYRAhwaAKCoY/3lEX/DksOEq42FfxlsF2rjEgCeNI0G
-/72t16fNrA4XvX+KVumsNDw=
-=yoD8
------END PGP SIGNATURE-----
+> 
+> Yoichi
+> 
+> Signed-off-by: Yoichi Yuasa <yuasa@hh.iij4u.or.jp>
+> 
+> diff -urN -X dontdiff
+> a-orig/arch/mips/philips/pnx8550/common/gdb_hook.c
+> a/arch/mips/philips/pnx8550/common/gdb_hook.c
+> ---
+> a-orig/arch/mips/philips/pnx8550/common/gdb_hook.c
+> 2005-07-15 02:47:58.000000000 +0900
+> +++ a/arch/mips/philips/pnx8550/common/gdb_hook.c
+> 2005-07-15 23:44:03.361056952 +0900
+> @@ -31,7 +31,7 @@
+>  #include <asm/serial.h>
+>  #include <asm/io.h>
+>  
+> -#include <asm/mach-pnx8550/uart.h>
+> +#include <uart.h>
+>  
+>  static struct serial_state rs_table[RS_TABLE_SIZE]
+> = {
+>  	SERIAL_PORT_DFNS	/* Defined in serial.h */
+> diff -urN -X dontdiff
+> a-orig/arch/mips/philips/pnx8550/common/int.c
+> a/arch/mips/philips/pnx8550/common/int.c
+> --- a-orig/arch/mips/philips/pnx8550/common/int.c
+> 2005-07-15 02:47:58.000000000 +0900
+> +++ a/arch/mips/philips/pnx8550/common/int.c
+> 2005-07-15 23:44:32.008701848 +0900
+> @@ -35,8 +35,8 @@
+>  
+>  #include <asm/io.h>
+>  #include <asm/gdb-stub.h>
+> -#include <asm/mach-pnx8550/int.h>
+> -#include <asm/mach-pnx8550/uart.h>
+> +#include <int.h>
+> +#include <uart.h>
+>  
+>  extern asmlinkage void cp0_irqdispatch(void);
+>  
+> diff -urN -X dontdiff
+> a-orig/arch/mips/philips/pnx8550/common/pci.c
+> a/arch/mips/philips/pnx8550/common/pci.c
+> --- a-orig/arch/mips/philips/pnx8550/common/pci.c
+> 2005-07-15 02:47:58.000000000 +0900
+> +++ a/arch/mips/philips/pnx8550/common/pci.c
+> 2005-07-15 23:44:52.444595120 +0900
+> @@ -24,9 +24,9 @@
+>  #include <linux/kernel.h>
+>  #include <linux/init.h>
+>  
+> -#include <asm/mach-pnx8550/pci.h>
+> -#include <asm/mach-pnx8550/glb.h>
+> -#include <asm/mach-pnx8550/nand.h>
+> +#include <pci.h>
+> +#include <glb.h>
+> +#include <nand.h>
+>  
+>  static struct resource pci_io_resource = {
+>  	"pci IO space",
+> diff -urN -X dontdiff
+> a-orig/arch/mips/philips/pnx8550/common/platform.c
+> a/arch/mips/philips/pnx8550/common/platform.c
+> ---
+> a-orig/arch/mips/philips/pnx8550/common/platform.c
+> 2005-07-15 02:47:58.000000000 +0900
+> +++ a/arch/mips/philips/pnx8550/common/platform.c
+> 2005-07-15 23:45:16.826888448 +0900
+> @@ -17,9 +17,9 @@
+>  #include <linux/init.h>
+>  #include <linux/resource.h>
+>  
+> -#include <asm/mach-pnx8550/int.h>
+> -#include <asm/mach-pnx8550/usb.h>
+> -#include <asm/mach-pnx8550/uart.h>
+> +#include <int.h>
+> +#include <usb.h>
+> +#include <uart.h>
+>  
+>  static struct resource pnx8550_usb_ohci_resources[]
+> = {
+>  	[0] = {
+> diff -urN -X dontdiff
+> a-orig/arch/mips/philips/pnx8550/common/proc.c
+> a/arch/mips/philips/pnx8550/common/proc.c
+> --- a-orig/arch/mips/philips/pnx8550/common/proc.c
+> 2005-07-15 02:47:58.000000000 +0900
+> +++ a/arch/mips/philips/pnx8550/common/proc.c
+> 2005-07-15 23:45:33.076418144 +0900
+> @@ -24,8 +24,8 @@
+>  
+>  #include <asm/io.h>
+>  #include <asm/gdb-stub.h>
+> -#include <asm/mach-pnx8550/int.h>
+> -#include <asm/mach-pnx8550/uart.h>
+> +#include <int.h>
+> +#include <uart.h>
+>  
+>  
+>  static int pnx8550_timers_read (char* page, char**
+> start, off_t offset, int count, int* eof, void*
+> data)
+> diff -urN -X dontdiff
+> a-orig/arch/mips/philips/pnx8550/common/prom.c
+> a/arch/mips/philips/pnx8550/common/prom.c
+> --- a-orig/arch/mips/philips/pnx8550/common/prom.c
+> 2005-07-15 02:47:58.000000000 +0900
+> +++ a/arch/mips/philips/pnx8550/common/prom.c
+> 2005-07-15 23:45:44.729646584 +0900
+> @@ -15,7 +15,7 @@
+>  #include <linux/string.h>
+>  
+>  #include <asm/bootinfo.h>
+> -#include <asm/mach-pnx8550/uart.h>
+> +#include <uart.h>
+>  
+>  /* #define DEBUG_CMDLINE */
+>  
+> diff -urN -X dontdiff
+> a-orig/arch/mips/philips/pnx8550/common/reset.c
+> a/arch/mips/philips/pnx8550/common/reset.c
+> --- a-orig/arch/mips/philips/pnx8550/common/reset.c
+> 2005-07-15 02:47:58.000000000 +0900
+> +++ a/arch/mips/philips/pnx8550/common/reset.c
+> 2005-07-15 23:45:55.884950720 +0900
+> @@ -23,7 +23,7 @@
+>  #include <linux/config.h>
+>  #include <linux/slab.h>
+>  #include <asm/reboot.h>
+> -#include <asm/mach-pnx8550/glb.h>
+> +#include <glb.h>
+>  
+>  void pnx8550_machine_restart(char *command)
+>  {
+> diff -urN -X dontdiff
+> a-orig/arch/mips/philips/pnx8550/common/setup.c
+> a/arch/mips/philips/pnx8550/common/setup.c
+> --- a-orig/arch/mips/philips/pnx8550/common/setup.c
+> 2005-07-15 02:47:58.000000000 +0900
+> +++ a/arch/mips/philips/pnx8550/common/setup.c
+> 2005-07-15 23:43:38.693806944 +0900
+> @@ -33,11 +33,11 @@
+>  #include <asm/pgtable.h>
+>  #include <asm/time.h>
+>  
+> -#include <asm/mach-pnx8550/glb.h>
+> -#include <asm/mach-pnx8550/int.h>
+> -#include <asm/mach-pnx8550/pci.h>
+> -#include <asm/mach-pnx8550/uart.h>
+> -#include <asm/mach-pnx8550/nand.h>
+> +#include <glb.h>
+> +#include <int.h>
+> +#include <pci.h>
+> +#include <uart.h>
+> +#include <nand.h>
+>  
+>  extern void prom_printf(char *fmt, ...);
+>  
+> diff -urN -X dontdiff
+> a-orig/arch/mips/philips/pnx8550/common/time.c
+> a/arch/mips/philips/pnx8550/common/time.c
+> --- a-orig/arch/mips/philips/pnx8550/common/time.c
+> 2005-07-15 02:47:58.000000000 +0900
+> +++ a/arch/mips/philips/pnx8550/common/time.c
+> 2005-07-15 23:46:11.606560672 +0900
+> @@ -31,8 +31,8 @@
+>  #include <asm/div64.h>
+>  #include <asm/debug.h>
+>  
+> -#include <asm/mach-pnx8550/int.h>
+> -#include <asm/mach-pnx8550/cm.h>
+> +#include <int.h>
+> +#include <cm.h>
+>  
+>  extern unsigned int mips_hpt_frequency;
+>  
+> diff -urN -X dontdiff
+> a-orig/arch/mips/philips/pnx8550/jbs/board_setup.c
+> a/arch/mips/philips/pnx8550/jbs/board_setup.c
+> ---
+> a-orig/arch/mips/philips/pnx8550/jbs/board_setup.c
+> 2005-07-15 02:47:59.000000000 +0900
+> +++ a/arch/mips/philips/pnx8550/jbs/board_setup.c
+> 2005-07-15 23:46:28.102052976 +0900
+> @@ -39,7 +39,7 @@
+>  #include <asm/reboot.h>
+>  #include <asm/pgtable.h>
+>  
+> -#include <asm/mach-pnx8550/glb.h>
+> 
+=== message truncated ===

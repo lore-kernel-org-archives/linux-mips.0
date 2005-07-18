@@ -1,39 +1,30 @@
-Subject: undefined symbol '__divdi3' & '__moddi3' on linux kernel 2.6.10  (toolchain Linuxi386/Mips32)
-Date: Mon, 18 Jul 2005 16:25:45 +0200
+From: "Bryan Althouse" <bryan.althouse@3phoenix.com>
+Subject: RE: mips64 crosstool
+Date: Mon, 18 Jul 2005 14:53:36 -0400
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Message-ID: <17AB476A04B7C842887E0EB1F268111E01551B@xpserver.intra.lexbox.org>
-Content-class: urn:content-classes:message
-From: "David Sanchez" <david.sanchez@lexbox.fr>
-Return-Path: <david.sanchez@lexbox.fr>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <6097c4905071221414a929ed2@mail.gmail.com>
+Message-ID: <20050718185209Z8226843-3678+3416@linux-mips.org>
+Return-Path: <bryan.althouse@3phoenix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20050718142545.V1Xo64Tmyw3LFzbQ5fso8BlrdnQ3bzAxRIgGTgFMewA@z>
+Cc: 'Linux/MIPS Development' <linux-mips@linux-mips.org>
+Message-ID: <20050718185336.KR7FOYvIRdPUzTmHo0ss-NX_Vcr0PnfPvmMGnHEHSJ4@z>
 
-Hi,
+Many thanks to everyone who has helped me on this issue. 
 
-I'm a newby on Linux/Mips more my English is very poor so sorry...
-But I have a big problem (for me):
+I ended up abandoning the crosstool approach.  It supports mips32 well, but
+not mips64.  Linux from scratch has a very good step by step procedure for
+building a tool chain for mips64.  I was able to build with very little
+headaches.  Unfortunately, I have not yet been able to execute any programs
+compiled with the tool chain.  I'm not sure where I went wrong. 
 
-I want to cross-compile my linux kernel 2.6.10 on my PC i386 for mips32
-(alchemy AU1550) CPU.
-I developed a module that contains some operations on types loff_t (i.e
-long long) such as div and mod. The code is in a foo.c file.
+PMC sierra is working on an update for their tool chain.  They have supplied
+me with a "beta" version tool chain that has solved my problems.  Now, I am
+able to compile with -mabi=64 and -lpthread.  The executable no longer
+Segfaults.  Since I'm past this problem, I will probably not spend much more
+time trying to build a working tool chain.
 
-I successfully built a cross toolchain using:
-The bin utils (Bintuils-2.15), the glibc headers (glibc-2.3.5) and the
-gcc core (gcc-3.4.4).
-
-The compilation of the kernel works but unfortunately the link generates
-two error messages on the file foo.c:
-Undefined reference to '__divdi3'
-Undefined reference to '__moddi3'
-
-What I'm doing wrong ? 
-Why the gcc doesn't embed the symbol implementation ? 
-And so where can I found an implementation ? 
-
-Thanks for all your help
+Bryan   

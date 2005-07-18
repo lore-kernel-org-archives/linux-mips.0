@@ -1,17 +1,19 @@
 From: "Bryan Althouse" <bryan.althouse@3phoenix.com>
 Subject: RE: mips64 crosstool
-Date: Mon, 18 Jul 2005 14:53:36 -0400
+Date: Mon, 18 Jul 2005 21:00:26 +0200
 MIME-Version: 1.0
+Message-ID: <000001c58bca$f50976e0$0300a8c0@intra.lexbox.org>
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 In-Reply-To: <6097c4905071221414a929ed2@mail.gmail.com>
-Message-ID: <20050718185209Z8226843-3678+3416@linux-mips.org>
-Return-Path: <bryan.althouse@3phoenix.com>
+Content-Class: urn:content-classes:message
+Return-Path: <linux-mips-bounce@linux-mips.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
+To: unlisted-recipients, no To-header on input, IMB Recipient 1 <mspop3connector.david.sanchez@lexbox.fr>
 Cc: 'Linux/MIPS Development' <linux-mips@linux-mips.org>
-Message-ID: <20050718185336.KR7FOYvIRdPUzTmHo0ss-NX_Vcr0PnfPvmMGnHEHSJ4@z>
+Message-ID: <20050718190026.pQGo-dZYIAyjLOb9oAAQytUOerIyj1vVVXEeI3qvZ7g@z>
 
 Many thanks to everyone who has helped me on this issue. 
 

@@ -1,49 +1,39 @@
-Received: from dlep52.itg.ti.com ([157.170.170.57])
-	by go4.ext.ti.com (8.13.1/8.13.1) with ESMTP id j6JA44mg023968
-	for <linux-mips@linux-mips.org>; Tue, 19 Jul 2005 05:04:04 -0500 (CDT)
-Received: from dlep90.itg.ti.com (localhost [127.0.0.1])
-	by dlep52.itg.ti.com (8.12.11/8.12.11) with ESMTP id j6JA43dn011191
-	for <linux-mips@linux-mips.org>; Tue, 19 Jul 2005 05:04:04 -0500 (CDT)
-Received: from dbde01.ent.ti.com (localhost [127.0.0.1])
-	by dlep90.itg.ti.com (8.12.11/8.12.11) with ESMTP id j6JA42cE028059
-	for <linux-mips@linux-mips.org>; Tue, 19 Jul 2005 05:04:03 -0500 (CDT)
-Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: Updating RTC with date command
-Date: Tue, 19 Jul 2005 15:34:01 +0530
-Message-ID: <CBD77117272E1249BFDC21E33D555FDC06018D@dbde01.ent.ti.com>
-From: "Nori, Soma Sekhar" <nsekhar@ti.com>
-Return-Path: <nsekhar@ti.com>
+Subject: SNR calculation in stv0299 driver
+Content-class: urn:content-classes:message
+Date: Tue, 19 Jul 2005 17:08:10 +0100
+Message-ID: <CEA5455795C8AA44AA1E18EF32379B210BA979@exterity-serv1.Exterity.local>
+From: "Gill Robles-Thome" <gill.robles@exterity.co.uk>
+Return-Path: <gill.robles@exterity.co.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20050719100401.NtPAnMGVASUInyJwrh8nUik_Kvq3haUC37u4NmzPMKg@z>
+Message-ID: <20050719160810.y8Mlgi3aT24QtgKJnV560V5YAYnTAiiuVYLa3_wpcJs@z>
+
+Hi -
+
+Can anyone explain the algorithm used to calculate the SNR for the
+stv0299 driver? Ie
 
 
-Hi,
+	case FE_READ_SNR:
+	{
+		s32 snr = 0xffff - ((stv0299_readreg (i2c, 0x24) << 8)
+				   | stv0299_readreg (i2c, 0x25));
+		snr = 3 * (snr - 0xa100);
+		*((u16*) arg) = (snr > 0xffff) ? 0xffff :
+				(snr < 0) ? 0 : snr;
+		break;
+	}
+ 
 
-I am trying to add RTC (ds1338) support to 2.6.10 mips kernel
-running on my 4kec board.
+I don't understand where the 0xa100 value comes from, or why the result
+is them multiplied by 3!  Registers 0x24 and 0x25 are apparently "Noise
+Indicator" registers, but the stv0299 specification doesn't explain very
+well how these registers should be used.
 
-I have populated the rtc_{get|set}_time and rtc_set_mmss pointers 
-and the date command shows the time correctly (as read from the RTC).
-
-However, when I try to update the time using date -s <time string> 
-the RTC does not get updated. (shows the old time when I boot-up again)
-
-In arch\mips\kernel\time.c the timer_interrupt calls rtc_set_mmss,
-but that call is made only when STA_UNSYNC is _not_ set in time_status
-variable. do_settimeofday/sys_stime _set_ this flag so the timer 
-interrupt does not call rtc_set_mmss. 	
-
-In all, I could not figure out any other invocation of rtc_set_time or 
-rtc_set_mmss which could be setting the time in my case.
-
-Can somebody please help me understand how the RTC is supposed to be
-updated after user changes the time using the date command?
-
-Thanks,
-Sekhar Nori
+Thanks for your help,
+Gill

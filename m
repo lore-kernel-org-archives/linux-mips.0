@@ -1,39 +1,76 @@
+Message-ID: <010901c58d28$15e2a3b0$6cf9a8c0@ALEC>
+Reply-To: "Alexander Voropay" <alec@artcoms.ru>
+From: "Alexander Voropay" <alec@artcoms.ru>
+References: <f07e6e05071909301c212ab4@mail.gmail.com> <20050719164427.GB8758@linux-mips.org> <f07e6e05071910194bab9b16@mail.gmail.com> <1121802786.7285.88.camel@localhost.localdomain> <Pine.LNX.4.61L.0507200955390.30702@blysk.ds.pg.gda.pl> <f07e6e05072002197b529b72@mail.gmail.com>
+Subject: Re: bal instruction in gcc 3.x
+Date: Wed, 20 Jul 2005 16:39:31 +0400
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: SNR calculation in stv0299 driver
-Content-class: urn:content-classes:message
-Date: Tue, 19 Jul 2005 17:08:10 +0100
-Message-ID: <CEA5455795C8AA44AA1E18EF32379B210BA979@exterity-serv1.Exterity.local>
-From: "Gill Robles-Thome" <gill.robles@exterity.co.uk>
-Return-Path: <gill.robles@exterity.co.uk>
+	format=flowed;
+	charset="ISO-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <alec@artcoms.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20050719160810.y8Mlgi3aT24QtgKJnV560V5YAYnTAiiuVYLa3_wpcJs@z>
+To: Kishore K <hellokishore@gmail.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20050720123931.WK5-QGAisTiWZK7xF7lETlD0z1YUgeEQIAhZeuogeOU@z>
 
-Hi -
+<hellokishore@gmail.com> wrote:
 
-Can anyone explain the algorithm used to calculate the SNR for the
-stv0299 driver? Ie
+>>> However, if I compile the code with gcc3, it exits with the
+>>>error "Cannot branch to unknown symbol".
+
+> On the other hand, if I replace 
+> 
+> bal jump_to_label   
+> 
+> by 
+> 
+> la t9, jump_to_label
+> jalr t9
+> 
+> I don't see any warning. What could be the reason ?
 
 
-	case FE_READ_SNR:
-	{
-		s32 snr = 0xffff - ((stv0299_readreg (i2c, 0x24) << 8)
-				   | stv0299_readreg (i2c, 0x25));
-		snr = 3 * (snr - 0xa100);
-		*((u16*) arg) = (snr > 0xffff) ? 0xffff :
-				(snr < 0) ? 0 : snr;
-		break;
-	}
- 
+1) With "jal label " you'll have a MIPS_26 RELOC type in the ELF obj file:
 
-I don't understand where the 0xa100 value comes from, or why the result
-is them multiplied by 3!  Registers 0x24 and 0x25 are apparently "Noise
-Indicator" registers, but the stv0299 specification doesn't explain very
-well how these registers should be used.
+  jal  lablel
 
-Thanks for your help,
-Gill
+00000000 <.text>:
+   0:   0c000000        jal     0x0
+   4:   00000000        nop
+
+RELOCATION RECORDS FOR [.text]:
+OFFSET   TYPE              VALUE
+00000000 R_MIPS_26         label
+
+
+2) The "la r,label" is a syntetic inctruction wich expanded into two:
+"lui r,%hi label  ; addui r,%lo label". It gives you two RELOCs:
+
+  la  t0, label
+  jalr t0
+
+00000000 <.text>:
+   0:   3c080000        lui     t0,0x0
+   4:   25080000        addiu   t0,t0,0
+   8:   0100f809        jalr    t0
+   c:   00000000        nop
+
+RELOCATION RECORDS FOR [.text]:
+OFFSET   TYPE              VALUE
+00000000 R_MIPS_HI16       label
+00000004 R_MIPS_LO16       label
+
+3) AFAIK (correct me), there is no MIPS-specific RELOC type for
+the "branch"  instruction format in the BFD, so "bal" to the *external*
+symbols is impossible.
+
+May be, old gas generates something like RELOC_PCREL
+for "bal external" ?
+
+
+--
+-=AV=-

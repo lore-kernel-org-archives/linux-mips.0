@@ -1,40 +1,39 @@
-Message-ID: <42FA40A2.6010400@timesys.com>
-Date: Wed, 10 Aug 2005 14:00:02 -0400
-From: Greg Weeks <greg.weeks@timesys.com>
+Received: from msx.realtek.com.tw (unverified [172.21.1.77]) by mf2.realtek.com.tw
+ (Clearswift SMTPRS 5.1.4) with ESMTP id <T72c632d8addc80381610fc@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
+ Mon, 15 Aug 2005 10:58:12 +0800
+Message-ID: <006c01c5a144$e12c92d0$106215ac@realtek.com.tw>
+From: "colin" <colin@realtek.com.tw>
+Subject: Pthread problem in pthread_create() in uClibc
+Date: Mon, 15 Aug 2005 10:56:05 +0800
 MIME-Version: 1.0
-Subject: Re: 24K malta
-References: <42FA03D4.5060400@timesys.com>
-In-Reply-To: <42FA03D4.5060400@timesys.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <greg.weeks@timesys.com>
+Content-Type: text/plain;
+	charset="big5"
+Return-Path: <colin@realtek.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20050810180002.7_xcTuURiFvxDvCdklMTNRjT1fETcA_JqP-oKqUV2PY@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20050815025605.W3DEEAWbrH8J5HZGaLgtyFHoFRJHT_SU_PDYAHcElmA@z>
 
-Greg Weeks wrote:
 
-> I'm seeing something strange on a 24K malta and I'm wondering if 
-> anyone else has ran into something like it.
->
-> This is a 2.6.12 based kernel. I've not had a chance to try the 
-> current CVS yet. The last time I checked the current CVS didn't boot 
-> as is on a 4Kc malta so I've not been keeping current with CVS.
->
-> When I try a simple
->
-> strace ls
->
-> I either hang or seg fault on a 24Kc or 24Kec processor, but a 4Kc or 
-> 4Kec works. If I turn off the cache on the 24K it works as well. 
-> Without cache it's unbearably slow of course. This is the same exact 
-> build of the kernel and root file system for all boards.
+Hi there,
+We have encountered a pthread problem in pthread_create().
+Our system is "MIPS Linux kernel 2.6.11 with uClibc 0.9.27". We need to know
+if the problem is in Linux kernel or in uClibc.
 
-The memcpy prefetch bug is still there for malta, so I had to build 
-another kernel. This is with a CVS sync from this morning.
+When calling pthread_create(), it will fail at the line "suspend(self);".
+I found that many people have encounter the same problem, but I havn't seen
+any solution.
+    http://www.uclibc.org/lists/uclibc/2003-April/006031.html
+    http://www.uclibc.org/lists/uclibc/2004-June/009271.html
+    http://www.uclibc.org/lists/uclibc/2003-July/006570.html
 
-The first strace ls works now, but the second time I do it it hangs. 
-Kill -9 frees it up and the board isn't hanging.
+Here is the error message when I use gdbserver to debug it:
+    "Cannot access memory at address 0x411104"
 
-Greg Weeks
+There is no this problem in "X86 Linux kernel 2.6.11 with uClibc 0.9.27".
+Therefore, we need to know if this problem is because of that the MIPS Linux
+kernel has some different thread behaviors from X86 Linux Kernel?
+
+Regards,
+Colin

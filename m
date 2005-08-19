@@ -1,24 +1,34 @@
-Message-ID: <BAY18-DAV1144F0C7D384449D254D6BD2B20@phx.gbl>
+Message-ID: <BAY18-DAV2A05369EA8C7D91990C16D2B50@phx.gbl>
 From: "mohanlal jangir" <mohanlaljangir@hotmail.com>
-Subject: NPTL info needed
-Date: Thu, 18 Aug 2005 16:41:25 +0530
+References: <200508181804.LAA04568@mon-irva-10.broadcom.com> <4304D201.2060306@mvista.com>
+Subject: Re: NPTL info needed
+Date: Fri, 19 Aug 2005 19:32:51 +0530
 MIME-Version: 1.0
 Content-Type: text/plain;
 	format=flowed;
 	charset="iso-8859-1";
-	reply-type=original
+	reply-type=response
 Content-Transfer-Encoding: 7bit
 Return-Path: <mohanlaljangir@hotmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20050818111125.zCuCrv0alw-3o_eGWnYy7qCiOjEflKlowDhwIVcoIX4@z>
+To: mlachwani <mlachwani@mvista.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20050819140251.kL-ChceWnMmxjXR1yc5K9C-kgoygEEaHCoNTQ1H25Cs@z>
 
-Does Linux 2.6 have NPTL support for MIPS architecture? A line at 
-http://www.linux-mips.org/wiki/NPTL says "Currently NPTL for Linux/MIPS is 
-work in progress". Where can I get NPTL source? Do I need new/patched 
-compiler and glibc to compile NPTL source? If yes, what are the patches and 
-where can I find them?
+> This may help:
+>
+> http://www.linux-mips.org/archives/linux-mips/2005-03/msg00088.html
+>
+> Thanks
+> Manish Lachwani
+>
+
+Hi Manish,
+Thanks for your help. I tried to apply this patch on Linux-2.6.10 and many 
+hunks failed. Could you tell me which kernel version this patch should be 
+applied? Also do I need to apply any patch to gcc, glibc sources (and build 
+a new toolchain)?
 
 Regards,
-Mohanlal
+Mohanlal 

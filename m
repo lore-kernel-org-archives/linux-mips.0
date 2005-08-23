@@ -1,34 +1,18 @@
-Message-ID: <BAY18-DAV2A05369EA8C7D91990C16D2B50@phx.gbl>
-From: "mohanlal jangir" <mohanlaljangir@hotmail.com>
-References: <200508181804.LAA04568@mon-irva-10.broadcom.com> <4304D201.2060306@mvista.com>
-Subject: Re: NPTL info needed
-Date: Fri, 19 Aug 2005 19:32:51 +0530
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=response
-Content-Transfer-Encoding: 7bit
-Return-Path: <mohanlaljangir@hotmail.com>
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: What is the state of  KDB on MIPS?
+Date: Mon, 22 Aug 2005 18:00:27 -0700
+Message-ID: <762C0A863A7674478671627FEAF5848105AF9151@hqmail01.powertv.com>
+From: "Knittel, Brian" <Brian.Knittel@powertv.com>
+Return-Path: <Brian.Knittel@powertv.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: mlachwani <mlachwani@mvista.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20050819140251.kL-ChceWnMmxjXR1yc5K9C-kgoygEEaHCoNTQ1H25Cs@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20050823010027.U5lfSE3uGK6nOPUxserEZzKetsYg2n1Gt_w6XA7wXrA@z>
 
-> This may help:
->
-> http://www.linux-mips.org/archives/linux-mips/2005-03/msg00088.html
->
-> Thanks
-> Manish Lachwani
->
-
-Hi Manish,
-Thanks for your help. I tried to apply this patch on Linux-2.6.10 and many 
-hunks failed. Could you tell me which kernel version this patch should be 
-applied? Also do I need to apply any patch to gcc, glibc sources (and build 
-a new toolchain)?
-
-Regards,
-Mohanlal 
+VGhlcmUgYXJlIGEgY291cGxlIG9mIHJlZmVyZW5jZXMgdG8gS0RCIGluIHRoZSBhcmNoaXZlLCBi
+dXQgbm90aGluZyByZWNlbnQuIFdoYXQgaXMgdGhlIHN0YXRlIG9mIEtEQiBvbiBNSVBTPw0KIA0K
+VGhhbmtzLA0KLS1Ccmlhbg0K

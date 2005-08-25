@@ -1,27 +1,38 @@
-Received: from msx.realtek.com.tw (unverified [172.21.1.77]) by mf2.realtek.com.tw
- (Clearswift SMTPRS 5.1.4) with ESMTP id <T72fba0ee27dc8038163f8@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
- Thu, 25 Aug 2005 19:58:19 +0800
-Message-ID: <008e01c5a96b$fce24810$106215ac@realtek.com.tw>
-From: "colin" <colin@realtek.com.tw>
-Subject: Please suggest one PCI VGA card for Malta board
-Date: Thu, 25 Aug 2005 19:56:11 +0800
+From: "Bryan Althouse" <bryan.althouse@3phoenix.com>
+Subject: RE: custom ide driver causes "Badness in smp_call_function"
+Date: Thu, 25 Aug 2005 11:26:58 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
-	charset="big5"
-Return-Path: <colin@realtek.com.tw>
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20050824152444.GE2783@linux-mips.org>
+Message-ID: <20050825152131Z8225298-3678+7482@linux-mips.org>
+Return-Path: <bryan.althouse@3phoenix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20050825115611.E1qcV8rqBV2jikv7O8k0duLAdJqcvrGvgdf7JTvXi4s@z>
+To: 'Ralf Baechle' <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20050825152658.kSWkoRguc0DsIEZAbjs1TCQrXRFSaU34hNdC83AhpJY@z>
 
+Ralf,
 
-Hi there,
-We want to use frame buffer on Malta board to see the video display of our
-application.
-Therefore, we need one vga card that can be used on Malta board with Linux
-2.6.11 "without modifying driver".
-Could you suggest us a "common" vga card that can easily do that?
+Thank you for your help.  
+I'm doing MMIO, not PIO, but it looks like your assessment is still valid.
+I've been searching for places where ide MMIO is performed with interrupts
+disabled.  I got excited when I found these lines in probe_hwif() of
+ide-probe.c:
 
-Thanks & regards,
-Colin
+   irqd = hwif->irq;
+   if (irqd)
+        disable_irq(hwif->irq);
+
+I was not initializing hwif->irq in my driver, so probably the interrupts
+were being disabled here, and subsequent lines were causing the SMP badness.
+I added the line "hwif->irq = 0" to my driver.  Interrupts are no longer
+disabled here, but still I get the SMP badness.  I'll keep looking for other
+places where the interrupts might be disabled.  
+
+Does anyone know if the mips/swarm.c driver has this problem with SMP?
+Thanks!
+  
+Bryan

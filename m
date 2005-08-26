@@ -1,17 +1,19 @@
 From: "Bryan Althouse" <bryan.althouse@3phoenix.com>
 Subject: RE: custom ide driver causes "Badness in smp_call_function"
-Date: Fri, 26 Aug 2005 14:05:43 -0400
+Message-ID: <000501c5aa6a$3beadc30$0300a8c0@intra.lexbox.org>
+Date: Fri, 26 Aug 2005 20:16:09 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 In-Reply-To: <1125071244.7298.2.camel@localhost.localdomain>
-Message-ID: <20050826180008Z8224984-3678+7604@linux-mips.org>
-Return-Path: <bryan.althouse@3phoenix.com>
+Content-Class: urn:content-classes:message
+Return-Path: <linux-mips-bounce@linux-mips.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
+To: unlisted-recipients, no To-header on input, IMB Recipient 1 <mspop3connector.david.sanchez@lexbox.fr>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20050826180543.MbbM84ueQUsFH7e47oLEHKDn_fPHgPNlmW5R7KqjfFw@z>
+Message-ID: <20050826181609.s_qYSUcpjLYxLzLgDBdszlVwPjUZBItgGo4ogThUwtk@z>
 
 Alan,
 

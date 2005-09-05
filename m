@@ -1,61 +1,50 @@
-From: "Bryan Althouse" <bryan.althouse@3phoenix.com>
-Subject: RE: custom ide driver causes "Badness in smp_call_function"
-Date: Thu, 1 Sep 2005 12:15:31 -0400
+Received: from jorg ([62.79.30.245])
+	by smtp010.tiscali.dk (8.12.10/8.12.10) with ESMTP id j85BfYnW009084
+	for <linux-mips@linux-mips.org>; Mon, 5 Sep 2005 13:41:34 +0200 (MEST)
+From: =?iso-8859-1?Q?J=F8rg_Ulrich_Hansen?= <jh@hansen-telecom.dk>
+Subject: Re: Howto Boot from Flash with the Alchemy AU1100
+Date: Mon, 5 Sep 2005 13:41:34 +0200
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAb4ajDk58bkCNi0V1ZTQFHIKAAAAQAAAAS0TGHpU5zUWTXqf0fsiG9AEAAAAA@hansen-telecom.dk>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050826141047.GA8777@linux-mips.org>
-Message-ID: <20050901161023Z8225398-3678+8096@linux-mips.org>
-Return-Path: <bryan.althouse@3phoenix.com>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Return-Path: <jh@hansen-telecom.dk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Ralf Baechle' <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20050901161531.wNZg9n_XvXiYNWJycz_O91ZwKCI164wGQQg_BiesDtU@z>
-
-Ralf,
-
-I've done more testing with your patch.  When I use it with my non-SMP
-kernel, disk access will cause a panic with a cache error message.  Is this
-patch only intended for SMP, or is this a legitimate problem?
-
-Bryan
+To: linux-mips@linux-mips.org
+Message-ID: <20050905114134.G5Rg1Ime7wpzKNaSd6bKG9Nw5boUBw2qQBOMDduWlmU@z>
 
 
-Index: include/asm-mips/mach-generic/ide.h
-===================================================================
-RCS file: /home/cvs/linux/include/asm-mips/mach-generic/ide.h,v
-retrieving revision 1.9
-diff -u -r1.9 ide.h
---- include/asm-mips/mach-generic/ide.h	19 Apr 2005 12:26:59 -0000	1.9
-+++ include/asm-mips/mach-generic/ide.h	26 Aug 2005 14:04:38 -0000
-@@ -19,6 +19,7 @@
- #include <linux/pci.h>
- #include <linux/stddef.h>
- #include <asm/processor.h>
-+#include <asm/cacheflush.h>
- 
- #ifndef MAX_HWIFS
- # ifdef CONFIG_BLK_DEV_IDEPCI
-@@ -105,12 +106,14 @@
- 
- /* MIPS port and memory-mapped I/O string operations.  */
- 
--static inline void __ide_flush_dcache_range(unsigned long addr, unsigned
-long size)
-+static inline void __ide_flush_dcache_range(unsigned long addr,
-+	unsigned long size)
- {
--	if (cpu_has_dc_aliases) {
--		unsigned long end = addr + size;
--		for (; addr < end; addr += PAGE_SIZE)
--			flush_dcache_page(virt_to_page(addr));
-+	unsigned long end = addr + size;
-+
-+	while (addr < end) {
-+		SetPageDcacheDirty(virt_to_page(addr));
-+		addr += PAGE_SIZE;
- 	}
- }
- 
+Start linux from flash at startup
+The boot loader can be set up to automatically start Linux at power up.
+
+Do the following:
+To load kernel image into RAM on mb1100 type:
+load
+
+Then the image has to be copied to FLASH.
+Erase block in FLASH:
+erase bfd00000 2c0000
+
+Copy image from RAM to FLASH:
+copy a0100000 bfd00000 2c0000
+
+When YAMON starts up it will process the start command, so that has to be
+set up.
+The kernel_entry address is not fixed so the start address has to be set up
+for each new kernel
+image. The start address can be read from the srec image file or it is
+printed on the screen after
+the load image command.
+
+To set the start command:
+set start 'copy bfd00000 a0100000 2c0000; go a032b018 \
+root=/dev/mtdblock0 rootfstype=jffs2'
+
+
+Start Linux with root file system mounted as jffs2
+In a real world the root file system will normally be located in the FLASH
+memory as a jffs2
+partition. 
+We will now copy a jffs2 image with the root file system to the FLASH.

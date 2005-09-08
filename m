@@ -1,50 +1,81 @@
-Received: from jorg ([62.79.30.245])
-	by smtp010.tiscali.dk (8.12.10/8.12.10) with ESMTP id j85BfYnW009084
-	for <linux-mips@linux-mips.org>; Mon, 5 Sep 2005 13:41:34 +0200 (MEST)
-From: =?iso-8859-1?Q?J=F8rg_Ulrich_Hansen?= <jh@hansen-telecom.dk>
-Subject: Re: Howto Boot from Flash with the Alchemy AU1100
-Date: Mon, 5 Sep 2005 13:41:34 +0200
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAb4ajDk58bkCNi0V1ZTQFHIKAAAAQAAAAS0TGHpU5zUWTXqf0fsiG9AEAAAAA@hansen-telecom.dk>
+Received: from unknown (HELO vasanth) (Authenticated-user:_vasanth@aelixsystems.com@[59.92.141.41])
+          (envelope-sender <vasanth@aelixsystems.com>)
+          by xmail05.myhosting.com (qmail-ldap-1.03) with SMTP
+          for <linux-mips@linux-mips.org>; 8 Sep 2005 13:55:39 -0000
+Message-ID: <005201c5b47d$20a0d4d0$3c00a8c0@vasanth>
+From: "vasanth" <vasanth@aelixsystems.com>
+Subject: unresolved symbol
+Date: Thu, 8 Sep 2005 19:26:17 +0530
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Return-Path: <jh@hansen-telecom.dk>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_004F_01C5B4AB.2F2C0AF0"
+Return-Path: <vasanth@aelixsystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20050905114134.G5Rg1Ime7wpzKNaSd6bKG9Nw5boUBw2qQBOMDduWlmU@z>
+Message-ID: <20050908135617.o3K--hJNJ6883dxUbh9qPGtgJwEEEldg028C2ly8BLM@z>
 
+This is a multi-part message in MIME format.
 
-Start linux from flash at startup
-The boot loader can be set up to automatically start Linux at power up.
+------=_NextPart_000_004F_01C5B4AB.2F2C0AF0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Do the following:
-To load kernel image into RAM on mb1100 type:
-load
+Hi,
 
-Then the image has to be copied to FLASH.
-Erase block in FLASH:
-erase bfd00000 2c0000
+I am getting the folowing error message when i do insmod .
+insmod: unresolved symbol __udelay
+insmod: unresolved symbol atomic_add
+insmod: unresolved symbol atomic_sub
 
-Copy image from RAM to FLASH:
-copy a0100000 bfd00000 2c0000
+I complied the driver code for mips processor using the folowing command
+mips-linux-gcc -G O -mno-abicalls -fno-pic -pipe -mtune=3D4kc -mips32 -c =
+lcddriver.c -I/mykernel/include
+It is compiling without any error .=20
+Can anybody know how to solve this problem.?
 
-When YAMON starts up it will process the start command, so that has to be
-set up.
-The kernel_entry address is not fixed so the start address has to be set up
-for each new kernel
-image. The start address can be read from the srec image file or it is
-printed on the screen after
-the load image command.
+Regards,
+Vasanth.
+------=_NextPart_000_004F_01C5B4AB.2F2C0AF0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-To set the start command:
-set start 'copy bfd00000 a0100000 2c0000; go a032b018 \
-root=/dev/mtdblock0 rootfstype=jffs2'
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2><FONT face=3D"Courier New" size=3D3>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I&nbsp;am getting&nbsp;the folowing =
+error message=20
+when i do&nbsp;insmod .</FONT></DIV>
+<DIV>insmod: unresolved symbol __udelay<BR>insmod: unresolved symbol=20
+atomic_add</DIV>
+<DIV>insmod: unresolved symbol atomic_sub</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I&nbsp;complied the driver code for =
+mips processor=20
+using the folowing command</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>mips-linux-gcc -G O -mno-abicalls =
+-fno-pic -pipe=20
+-mtune=3D4kc -mips32 -c lcddriver.c -I/mykernel/include</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It is compiling without any error . =
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Can anybody&nbsp;know how to solve this =
 
+problem.?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT></FONT></FONT><FONT face=3DArial =
 
-Start Linux with root file system mounted as jffs2
-In a real world the root file system will normally be located in the FLASH
-memory as a jffs2
-partition. 
-We will now copy a jffs2 image with the root file system to the FLASH.
+size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>
+<DIV><FONT face=3DArial =
+size=3D2>Vasanth.</DIV></DIV></FONT></BODY></HTML>
+
+------=_NextPart_000_004F_01C5B4AB.2F2C0AF0--

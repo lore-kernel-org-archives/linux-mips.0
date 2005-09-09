@@ -1,81 +1,62 @@
-Received: from unknown (HELO vasanth) (Authenticated-user:_vasanth@aelixsystems.com@[59.92.141.41])
-          (envelope-sender <vasanth@aelixsystems.com>)
-          by xmail05.myhosting.com (qmail-ldap-1.03) with SMTP
-          for <linux-mips@linux-mips.org>; 8 Sep 2005 13:55:39 -0000
-Message-ID: <005201c5b47d$20a0d4d0$3c00a8c0@vasanth>
-From: "vasanth" <vasanth@aelixsystems.com>
-Subject: unresolved symbol
-Date: Thu, 8 Sep 2005 19:26:17 +0530
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_004F_01C5B4AB.2F2C0AF0"
-Return-Path: <vasanth@aelixsystems.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: scheduling with irqs disabled: init
+Date: Fri, 9 Sep 2005 10:25:55 +0530
+Message-ID: <4BF47D56A0DD2346A1B8D622C5C5902CD345ED@soc-mail.soc-soft.com>
+From: <Vadivelan@soc-soft.com>
+Return-Path: <Vadivelan@soc-soft.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20050908135617.o3K--hJNJ6883dxUbh9qPGtgJwEEEldg028C2ly8BLM@z>
+Message-ID: <20050909045555.5s7_1_OKgl9h7WF_X9Zg8pv2sRZsuoIxxeVZnXWvsuI@z>
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_004F_01C5B4AB.2F2C0AF0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+hi,
+	I'm porting MVL4.0 kernel on to a mips board. I've been getting
+a call trace as follows.
 
-Hi,
+BUG: scheduling with irqs disabled: init/0x00000000/1
+caller is schedule_timeout+0x84/0xe8
+Call Trace:
+ [<8030a0a8>] schedule_timeout+0x84/0xe8
+ [<803090b8>] schedule+0x114/0x160
+ [<803090b0>] schedule+0x10c/0x160
+ [<8030a0a8>] schedule_timeout+0x84/0xe8
+ [<80132610>] process_timeout+0x0/0x8
+ [<80132c0c>] msleep_interruptible+0x4c/0x70
+ [<802300a8>] gs_wait_tx_flushed+0x1fc/0x3b0
+ [<8022fc44>] gs_write+0x25c/0x264
+ [<802310cc>] gs_close+0x260/0x394
+ [<80216364>] tty_fasync+0x8c/0x134
+ [<80216b00>] release_dev+0x6f4/0xa08
+ [<8021dddc>] write_chan+0x420/0x48c
+ [<8012107c>] __wake_up+0x44/0x80
+ [<80120f58>] default_wake_function+0x0/0x28
+ [<8017a734>] get_empty_filp+0x64/0x13c
+ [<80215234>] tty_ldisc_deref+0xcc/0x110
+ [<80215b28>] tty_write+0x2bc/0x454
+ [<80216e24>] tty_release+0x10/0x20
+ [<80179988>] vfs_write+0xac/0x114
+ [<8017aacc>] __fput+0x298/0x2d0
+ [<8018e9b8>] getname+0x28/0xfc
+ [<80178d2c>] filp_close+0x54/0xb4
+ [<80178d24>] filp_close+0x4c/0xb4
+ [<8010bc64>] stack_done+0x20/0x3c
 
-I am getting the folowing error message when i do insmod .
-insmod: unresolved symbol __udelay
-insmod: unresolved symbol atomic_add
-insmod: unresolved symbol atomic_sub
+I'm totally unaware of the bug. Can anyone help me fix it?
 
-I complied the driver code for mips processor using the folowing command
-mips-linux-gcc -G O -mno-abicalls -fno-pic -pipe -mtune=3D4kc -mips32 -c =
-lcddriver.c -I/mykernel/include
-It is compiling without any error .=20
-Can anybody know how to solve this problem.?
+Thanking u in advance,
 
-Regards,
-Vasanth.
-------=_NextPart_000_004F_01C5B4AB.2F2C0AF0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+vadi.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><FONT face=3D"Courier New" size=3D3>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I&nbsp;am getting&nbsp;the folowing =
-error message=20
-when i do&nbsp;insmod .</FONT></DIV>
-<DIV>insmod: unresolved symbol __udelay<BR>insmod: unresolved symbol=20
-atomic_add</DIV>
-<DIV>insmod: unresolved symbol atomic_sub</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I&nbsp;complied the driver code for =
-mips processor=20
-using the folowing command</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>mips-linux-gcc -G O -mno-abicalls =
--fno-pic -pipe=20
--mtune=3D4kc -mips32 -c lcddriver.c -I/mykernel/include</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It is compiling without any error . =
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Can anybody&nbsp;know how to solve this =
 
-problem.?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT></FONT></FONT><FONT face=3DArial =
-
-size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>
-<DIV><FONT face=3DArial =
-size=3D2>Vasanth.</DIV></DIV></FONT></BODY></HTML>
-
-------=_NextPart_000_004F_01C5B4AB.2F2C0AF0--
+The information contained in this e-mail message and in any annexure is
+confidential to the  recipient and may contain privileged information. If you are not
+the intended recipient, please notify the sender and delete the message along with
+any annexure. You should not disclose, copy or otherwise use the information contained
+in the message or any annexure. Any views expressed in this e-mail are those of the
+individual sender except where the sender specifically states them to be the views of
+SoCrates Software India Pvt Ltd., Bangalore.

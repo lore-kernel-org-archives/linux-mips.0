@@ -1,62 +1,66 @@
-content-class: urn:content-classes:message
+From: "Michael Uhler" <uhler@mips.com>
+Subject: RE: [PATCH] Fix TCP/UDP checksums on the Broadcom SB-1
+Date: Tue, 20 Sep 2005 07:26:54 -0700
+Message-ID: <00da01c5bdef$596ee380$0502a8c0@MIPS.COM>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: scheduling with irqs disabled: init
-Date: Fri, 9 Sep 2005 10:25:55 +0530
-Message-ID: <4BF47D56A0DD2346A1B8D622C5C5902CD345ED@soc-mail.soc-soft.com>
-From: <Vadivelan@soc-soft.com>
-Return-Path: <Vadivelan@soc-soft.com>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20050920110609.GB3159@linux-mips.org>
+Return-Path: <uhler@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20050909045555.5s7_1_OKgl9h7WF_X9Zg8pv2sRZsuoIxxeVZnXWvsuI@z>
+To: 'Ralf Baechle' <ralf@linux-mips.org>, 'Matej Kupljen' <matej.kupljen@ultra.si>
+Cc: "'Maciej W. Rozycki'" <macro@linux-mips.org>, 'Daniel Jacobowitz' <dan@debian.org>, linux-mips@linux-mips.org
+Message-ID: <20050920142654.9GRbgOxWKk277fDDxTBYiX-rWUPyAuZZWx8l_v3KX8g@z>
+
+For what it's worth, the 64-bit architecture, both prior to and with MIPS64,
+has always required that 64-bit GPRs be sign-extended when used with 32-bit
+operations.  I'm surprised that this wasn't seen on more 64-bit CPUs than
+just the SB1.
 
 
-hi,
-	I'm porting MVL4.0 kernel on to a mips board. I've been getting
-a call trace as follows.
+/gmu
+---
+Michael Uhler, Chief Technology Officer
+MIPS Technologies, Inc.   Email: uhler at mips.com
+1225 Charleston Road      Voice:  (650)567-5025
+Mountain View, CA 94043
 
-BUG: scheduling with irqs disabled: init/0x00000000/1
-caller is schedule_timeout+0x84/0xe8
-Call Trace:
- [<8030a0a8>] schedule_timeout+0x84/0xe8
- [<803090b8>] schedule+0x114/0x160
- [<803090b0>] schedule+0x10c/0x160
- [<8030a0a8>] schedule_timeout+0x84/0xe8
- [<80132610>] process_timeout+0x0/0x8
- [<80132c0c>] msleep_interruptible+0x4c/0x70
- [<802300a8>] gs_wait_tx_flushed+0x1fc/0x3b0
- [<8022fc44>] gs_write+0x25c/0x264
- [<802310cc>] gs_close+0x260/0x394
- [<80216364>] tty_fasync+0x8c/0x134
- [<80216b00>] release_dev+0x6f4/0xa08
- [<8021dddc>] write_chan+0x420/0x48c
- [<8012107c>] __wake_up+0x44/0x80
- [<80120f58>] default_wake_function+0x0/0x28
- [<8017a734>] get_empty_filp+0x64/0x13c
- [<80215234>] tty_ldisc_deref+0xcc/0x110
- [<80215b28>] tty_write+0x2bc/0x454
- [<80216e24>] tty_release+0x10/0x20
- [<80179988>] vfs_write+0xac/0x114
- [<8017aacc>] __fput+0x298/0x2d0
- [<8018e9b8>] getname+0x28/0xfc
- [<80178d2c>] filp_close+0x54/0xb4
- [<80178d24>] filp_close+0x4c/0xb4
- [<8010bc64>] stack_done+0x20/0x3c
-
-I'm totally unaware of the bug. Can anyone help me fix it?
-
-Thanking u in advance,
-
-vadi.
-
-
-The information contained in this e-mail message and in any annexure is
-confidential to the  recipient and may contain privileged information. If you are not
-the intended recipient, please notify the sender and delete the message along with
-any annexure. You should not disclose, copy or otherwise use the information contained
-in the message or any annexure. Any views expressed in this e-mail are those of the
-individual sender except where the sender specifically states them to be the views of
-SoCrates Software India Pvt Ltd., Bangalore.
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org 
+> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Ralf Baechle
+> Sent: Tuesday, September 20, 2005 4:06 AM
+> To: Matej Kupljen
+> Cc: Maciej W. Rozycki; Daniel Jacobowitz; linux-mips@linux-mips.org
+> Subject: Re: [PATCH] Fix TCP/UDP checksums on the Broadcom SB-1
+> 
+> 
+> On Tue, Sep 20, 2005 at 01:00:04PM +0200, Matej Kupljen wrote:
+> 
+> > > > This caused incorrect checksums in some UDP packets for 
+> NFS root.  
+> > > > The problem was mild when using a 10.0.1.x IP address, 
+> but severe 
+> > > > when using 192.168.1.x.
+> > > 
+> > >  Ah!  So *that* is the reason for the absolutely abysmal NFS 
+> > > performance
+> > > of the SWARM with 2.6!  I have had no time to track it 
+> down -- thanks a 
+> > > lot!
+> > 
+> > Is this for MIPS64 only?
+> > Because, on dbau1200 we also have poor NFS performance :-(
+> 
+> It's for 64-bit kernels only.  Note the difference, I didn't 
+> say MIPS64.
+> 
+> Also, since this bug did result in an operation that has 
+> undefined behaviour it likely may will only have impacted 
+> some 64-bit processors - such as the SB1 - but others may 
+> have been unaffected.
+> 
+>   Ralf
+> 
+> 

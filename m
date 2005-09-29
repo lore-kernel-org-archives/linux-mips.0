@@ -1,52 +1,34 @@
-Received: from mail.glaze.se ([212.209.188.162]:31504 "HELO rocket.glaze.se")
-	by ftp.linux-mips.org with SMTP id S8134392AbVI0Tqz (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 27 Sep 2005 20:46:55 +0100
-Received: from IBMJP (unknown [10.42.1.6])
-	by rocket.glaze.se (Postfix) with ESMTP id BB914376451
-	for <linux-mips@linux-mips.org>; Tue, 27 Sep 2005 21:46:45 +0200 (CEST)
-From: "Jan Pedersen" <jan.pedersen@glaze.dk>
-Subject: [patch] cfi: removed warning message on expected behaivor
-Date: Tue, 27 Sep 2005 21:45:53 +0200
+Received: from mail.domino-uk.com ([193.131.116.193]:6405 "EHLO
+	vMIMEsweeper.dps.local") by ftp.linux-mips.org with ESMTP
+	id S8133429AbVI2HIs convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 29 Sep 2005 08:08:48 +0100
+Received: from dps-exchange1.dps.local (dps-exchange1) by vMIMEsweeper.dps.local
+ (Clearswift SMTPRS 5.0.4) with ESMTP id <T73ad55e998c18374c1824@vMIMEsweeper.dps.local> for <linux-mips@linux-mips.org>;
+ Thu, 29 Sep 2005 08:08:47 +0100
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20050927194645.BB914376451@rocket.glaze.se>
-Return-Path: <jan.pedersen@glaze.dk>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: Floating point performance
+Date: Thu, 29 Sep 2005 09:08:47 +0200
+Message-ID: <6EC3F44BE5E6B742BE3EBC3465525944096814@emea-exchange3.emea.dps.local>
+From: "Ulrich Eckhardt" <Eckhardt@satorlaser.com>
+Return-Path: <Eckhardt@satorlaser.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20050927194553.WOaf-V_IWYMRY4zTr2h1020sJOfl07SU3V_mEWkpkZ0@z>
+Message-ID: <20050929070847.sMUm2yI3Eyu1cEWv-IY4OrEf9MDj0o96SWQW2lW6GVo@z>
 
-When an erase operation is in progress, the DQ5 (data bit 5 / exceeded
-timing limit) pin on the flash chips may raise just before operation
-complete is detected. This is expected behaivor because when the erase is
-complete, DQ5 switches from 'exceeded timing limit' to 'data bit 5' which
-therefore might be read as '1' just before operation complete is detected.
-This fix is well tested.
+(Sorry if this mail is garbled, I'm forced to use a sub-par client)
 
-Signed-off-by: Jan Pedersen <jp@jp-embedded.com>
----
-diff -Naur linux-2.4.31.org/drivers/mtd/chips/cfi_cmdset_0002.c
-linux-2.4.31/drivers/mtd/chips/cfi_cmdset_0002.c
---- linux-2.4.31.org/drivers/mtd/chips/cfi_cmdset_0002.c	2004-11-17
-06:54:21.000000000 -0500
-+++ linux-2.4.31/drivers/mtd/chips/cfi_cmdset_0002.c	2005-08-22
-12:14:17.000000000 -0400
-@@ -950,12 +950,8 @@
- 		    oldstatus   = cfi_read( map, adr );
- 		    status      = cfi_read( map, adr );
- 		    
--		    if( ( oldstatus & 0x00FF ) == ( status & 0x00FF ) )
-+		    if( ( oldstatus & 0x00FF ) != ( status & 0x00FF ) )
- 		    {
--                printk( "Warning: DQ5 raised while erase operation was in
-progress, but erase completed OK\n" ); 		    
--		    } 			
--			else
--            {
- 			    /* DQ5 is active so we can do a reset and stop
-the erase */
- 				cfi_write(map, CMD(0xF0), chip->start);
-                 printk( KERN_WARNING "Internal flash device timeout occured
-or write operation was performed while flash was erasing\n" );
+Matej Kupljen wrote:
+> I've built soft float toolchain (with crosstool) and then build
+> MPlayer with it. The performance is very low. I cannot even play the
+> mp3 file with MPlayer on DBAU1200 with 400MHz CPU!
+[...]
+> Any other suggestions?
+
+I'm not sure what you are doing, but if you only want to play music, I'd use Ogg Vorbis instead, which has a decoder that only uses integer arithmetic for exactly the case of FPU-less machines and the Au1200. I could also imagine an MP3 decoder written for integer only being written somewhere, but I don't know anything about it.
+
+Uli

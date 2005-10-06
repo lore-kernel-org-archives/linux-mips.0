@@ -1,32 +1,80 @@
-Received: from smtp101.biz.mail.mud.yahoo.com ([68.142.200.236]:54391 "HELO
-	smtp101.biz.mail.mud.yahoo.com") by ftp.linux-mips.org with SMTP
-	id S3465666AbVJDAo0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 4 Oct 2005 01:44:26 +0100
-In-Reply-To: <000f01c5c876$a2b78740$0400a8c0@buzz>
-References: <000f01c5c876$a2b78740$0400a8c0@buzz>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-ID: <2e5c8ef0628b1886bde6e6ca6d76b79e@embeddedalley.com>
-Content-Transfer-Encoding: 7bit
-From: Dan Malek <dan@embeddedalley.com>
-Subject: Re: Au1550 Serial port - linux-2.6.13.2
-Date: Mon, 3 Oct 2005 17:43:56 -0700
-Return-Path: <dan@embeddedalley.com>
+Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:52097 "EHLO
+	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133554AbVJFR70 convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 6 Oct 2005 18:59:26 +0100
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: Basic question w.r.t bootloader 
+Date: Thu, 6 Oct 2005 10:59:16 -0700
+Message-ID: <3CB54817FDF733459B230DD27C690CEC010493E5@Exchange.MIPS.COM>
+From: "Mitchell, Earl" <earlm@mips.com>
+Return-Path: <earlm@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Kyle Unice <unixe@comcast.net>
+To: Arravind babu <aravindforl@yahoo.co.in>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20051004004356.gr_Wzh8pABWsKAPPYCIeaZN7eHHSrY9psE0O0EFsGik@z>
+Message-ID: <20051006175916.9-Lx57Q7zXYsapoNFhAFWYg2IAxhCnJy8-oQcsxV_x4@z>
 
 
-On Oct 3, 2005, at 5:00 PM, Kyle Unice wrote:
 
-> I have configured linux-2.6.13.2 for a db1550_defconfig build.  When I
-> compile it, I get this error when compiling au1x00_uart.c:
+If its a DRAM DIMM module then SW reads info
+about that RAM via the SPD interface.
+SPD = Serial Presence Detect 
+This is typically an I2C interface so
+SW can bit bang it. 
 
-You need to use the linux-mips.org CVS tree.  Current top of
-tree is 2.6.14-rc2, which builds and boots fine on the db1550.
+SPD provides more info than just size.
+For example on some systems you need to
+know the RAS/CAS params and various
+wait state settings in order to program your
+memory controller for optimal performance. 
+This is how PCs are able to configure themselves 
+to work with standard modules. For more info
+checkout this site ...
 
-Thanks.
+http://www.pcguide.com/art/sdram.htm
 
-	-- Dan
+For SRAMs the HW guys usually provide
+some set of registers for SW to read 
+info its needs like size. And sometimes
+they don't so you have to use address
+probing tricks as Wolfgang described. 
+
+-earlm
+
+
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org
+> [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Wolfgang Denk
+> Sent: Thursday, October 06, 2005 12:29 AM
+> To: Arravind babu
+> Cc: linux-mips@linux-mips.org
+> Subject: Re: Basic question w.r.t bootloader 
+> 
+> 
+> In message 
+> <20051006065332.6978.qmail@web8604.mail.in.yahoo.com> you wrote:
+> > 
+> >        Generally how bootloader/bootflash code detects
+> > the size of RAM on the board? Is it hardcoded some
+> > where in the bootflash code or is it detected using
+> > memory chips ?
+> 
+> One method is to probe addresses (at N, 2*N, 4*N etc. starting with a
+> resonable value of N like 1 MB) until probing fails. See for  example
+> common/memsize.c in the U-Boot sources.
+> 
+> Best regards,
+> 
+> Wolfgang Denk
+> 
+> -- 
+> Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
+> Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+> The IQ of the group is the lowest IQ of a member of the group divided
+> by the number of people in the group.
+> 
+> 

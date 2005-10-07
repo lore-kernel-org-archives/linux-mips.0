@@ -1,56 +1,60 @@
-Received: from ns1.pioneer-pra.com ([65.205.244.70]:19409 "EHLO
-	mail1.dmz.sj.pioneer-pra.com") by ftp.linux-mips.org with ESMTP
-	id S8133575AbVJGSNR (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 7 Oct 2005 19:13:17 +0100
-From: "Mike C. Ward" <mward@pioneer-pra.com>
-Subject: RE: Where is op_model_mipsxx.c ?
-Date: Fri, 7 Oct 2005 11:13:02 -0700
-Message-ID: <020b01c5cb6a$c2251830$5502020a@eo>
+Received: from sccrmhc11.comcast.net ([204.127.202.55]:1209 "EHLO
+	sccrmhc11.comcast.net") by ftp.linux-mips.org with ESMTP
+	id S8133577AbVJGUSe (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 7 Oct 2005 21:18:34 +0100
+From: "Kyle Unice" <unixe@comcast.net>
+Subject: Cross-compiling Linux problem
+Date: Fri, 7 Oct 2005 14:18:24 -0600
+Message-ID: <002b01c5cb7c$45c181e0$0400a8c0@buzz>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4343525A.6080605@avtrex.com>
-Return-Path: <mward@pioneer-pra.com>
+Return-Path: <unixe@comcast.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'David Daney' <ddaney@avtrex.com>, linux-mips@linux-mips.org
-Message-ID: <20051007181302.2iopSsnEvg0pFyVuD0ZG_h3fPRjyDFrmUzYhs6z3QAM@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20051007201824.WRAH73CcC06tSot5lwwvKe64UXo952JuPiE-b7iBzV4@z>
 
-I created an op_model file for the r5K core in a MIPS32 kernel.
-details are at
-http://oss.pioneer-pra.com/oprofile/
-
-I have not had a chance to test it on a real 2.6 kernel yet, it
-was back-ported from 2.6.11 into 2.4.25.
-
-Mike
-
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of David Daney
-> Sent: Tuesday, October 04, 2005 9:11 PM
-> To: linux-mips@linux-mips.org
-> Subject: Where is op_model_mipsxx.c ?
-> 
-> 
-> I noticed this in the Makefile for the OProfile directory for mips:
-> 
-> oprofile-$(CONFIG_CPU_MIPS32_R1)                += op_model_mipsxx.o
-> 
-> The file op_model_mipsxx.c does not seem to exist.  Which 
-> implies to me 
-> that someone was working on making it work for MIPS32, but 
-> didn't quite 
-> finish.
-> 
-> I want to start hacking on OProfile for a MIPS32 based system and 
-> thought it might make a nice starting point.
-> 
-> If the missing file exists would its author mind making it 
-> available to me?
-> 
-> Thanks,
-> David Daney
-> 
-> 
+  LD      arch/mips/au1000/common/built-in.o
+  CC      arch/mips/kernel/cpu-probe.o
+  CC      arch/mips/kernel/branch.o
+  AS      arch/mips/kernel/entry.o
+  AS      arch/mips/kernel/genex.o
+  CC      arch/mips/kernel/irq.o
+  CC      arch/mips/kernel/process.o
+  CC      arch/mips/kernel/ptrace.o
+  CC      arch/mips/kernel/reset.o
+  CC      arch/mips/kernel/semaphore.o
+  CC      arch/mips/kernel/setup.o
+  CC      arch/mips/kernel/signal.o
+  CC      arch/mips/kernel/syscall.o
+  CC      arch/mips/kernel/time.o
+  CC      arch/mips/kernel/traps.o
+  CC      arch/mips/kernel/unaligned.o
+  CC      arch/mips/kernel/mips_ksyms.o
+  CC      arch/mips/kernel/module.o
+  AS      arch/mips/kernel/r4k_fpu.o
+  AS      arch/mips/kernel/r4k_switch.o
+  AS      arch/mips/kernel/scall32-o32.o
+  CC      arch/mips/kernel/proc.o
+  LD      arch/mips/kernel/built-in.o
+  AS      arch/mips/kernel/head.o
+  CC      arch/mips/kernel/init_task.o
+  LDS     arch/mips/kernel/vmlinux.lds
+  CC      arch/mips/mm/cache.o
+  CC      arch/mips/mm/extable.o
+  CC      arch/mips/mm/fault.o
+  CC      arch/mips/mm/init.o
+  CC      arch/mips/mm/pgtable.o
+  CC      arch/mips/mm/tlbex.o
+arch/mips/mm/tlbex.c:516:5: warning: "CONFIG_64BIT" is not defined
+  AS      arch/mips/mm/tlbex-fault.o
+  CC      arch/mips/mm/ioremap.o
+arch/mips/mm/ioremap.c: In function `__ioremap':
+include/asm-mips/mach-au1x00/ioremap.h:15: sorry, unimplemented: inlining
+failed
+ in call to '__fixup_bigphys_addr': function body not available
+arch/mips/mm/ioremap.c:28: sorry, unimplemented: called from here
+make[1]: *** [arch/mips/mm/ioremap.o] Error 1
+make: *** [arch/mips/mm] Error 2

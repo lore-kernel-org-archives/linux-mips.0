@@ -1,28 +1,58 @@
-Received: from mf2.realtek.com.tw ([220.128.56.22]:26895 "EHLO
-	mf2.realtek.com.tw") by ftp.linux-mips.org with ESMTP
-	id S8133560AbVJGIVw (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 7 Oct 2005 09:21:52 +0100
-Received: from msx.realtek.com.tw (unverified [172.21.1.77]) by mf2.realtek.com.tw
- (Clearswift SMTPRS 5.1.4) with ESMTP id <T73d84dedfadc803816180c@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
- Fri, 7 Oct 2005 16:23:44 +0800
-Message-ID: <005a01c5cb18$1e2df870$106215ac@realtek.com.tw>
-From: "colin" <colin@realtek.com.tw>
-Subject: Is CONFIG_CPU_MIPS32_R2 workable?
-Date: Fri, 7 Oct 2005 16:21:29 +0800
+Received: from sccrmhc13.comcast.net ([63.240.76.28]:16815 "EHLO
+	sccrmhc13.comcast.net") by ftp.linux-mips.org with ESMTP
+	id S8133556AbVJGPeO convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 7 Oct 2005 16:34:14 +0100
+From: "Kyle Unice" <unixe@comcast.net>
+Subject: Cygwin Cross-compile of linux release
+Date: Fri, 7 Oct 2005 09:34:05 -0600
+Message-ID: <001901c5cb54$8dfc70f0$0400a8c0@buzz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
-	charset="big5"
-Return-Path: <colin@realtek.com.tw>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-Path: <unixe@comcast.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20051007082129.JobTXb2GfU6UzIozKT-tB57H8SoB-vS97AMYNMp417U@z>
+Message-ID: <20051007153405.MgXFZHmHMo2W-tHFvHX_5qRRvLAjAYHvol15O4BNnyc@z>
 
+I checked out the source for mips linux and tried cross-compiling this on
+cygwin.  
+This is the result:
+  HOSTCC  scripts/mod/modpost.o
+  HOSTCC  scripts/mod/sumversion.o
+scripts/mod/sumversion.c: In function `md4_final_ascii':
+scripts/mod/sumversion.c:221: warning: unsigned int format, long unsigned
+int ar
+g (arg 4)
+scripts/mod/sumversion.c:221: warning: unsigned int format, long unsigned
+int ar
+g (arg 5)
+scripts/mod/sumversion.c:221: warning: unsigned int format, long unsigned
+int ar
+g (arg 6)
+scripts/mod/sumversion.c:221: warning: unsigned int format, long unsigned
+int ar
+g (arg 7)
+  HOSTLD  scripts/mod/modpost
+  HOSTCC  scripts/kallsyms
+scripts/kallsyms.c: In function `compress_symbols':
+scripts/kallsyms.c:366: warning: implicit declaration of function `memmem'
+scripts/kallsyms.c:366: warning: assignment makes pointer from integer
+without a
+ cast
+scripts/kallsyms.c:385: warning: assignment makes pointer from integer
+without a
+ cast
+/cygdrive/c/DOCUME~1/KYLE~1.BUZ/LOCALS~1/Temp/ccLMGC3l.o:kallsyms.c:(.text+0
+x6cb
+): undefined reference to `_memmem'
+/cygdrive/c/DOCUME~1/KYLE~1.BUZ/LOCALS~1/Temp/ccLMGC3l.o:kallsyms.c:(.text+0
+x72d
+): undefined reference to `_memmem'
+collect2: ld returned 1 exit status
+make[1]: *** [scripts/kallsyms] Error 1
+make: *** [scripts] Error 2
 
-Hi all,
-Has anyone successfully run 2.6.13 with this option on?
-I backported this option to 2.6.12, and failed running on our platform.
-
-Regards,
-Colin
+Kyle@buzz /usr/src/linux
+$

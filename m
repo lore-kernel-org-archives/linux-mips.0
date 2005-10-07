@@ -1,80 +1,34 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:52097 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133554AbVJFR70 convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 6 Oct 2005 18:59:26 +0100
-Content-class: urn:content-classes:message
+Received: from mf2.realtek.com.tw ([220.128.56.22]:24079 "EHLO
+	mf2.realtek.com.tw") by ftp.linux-mips.org with ESMTP
+	id S8133569AbVJGGcD (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 7 Oct 2005 07:32:03 +0100
+Received: from msx.realtek.com.tw (unverified [172.21.1.77]) by mf2.realtek.com.tw
+ (Clearswift SMTPRS 5.1.4) with ESMTP id <T73d7e97391dc803816180c@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
+ Fri, 7 Oct 2005 14:33:59 +0800
+Message-ID: <002701c5cb08$c9682630$106215ac@realtek.com.tw>
+From: "colin" <colin@realtek.com.tw>
+Subject: gcc of SDE6 cannot compile C++ applications
+Date: Fri, 7 Oct 2005 14:31:44 +0800
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Basic question w.r.t bootloader 
-Date: Thu, 6 Oct 2005 10:59:16 -0700
-Message-ID: <3CB54817FDF733459B230DD27C690CEC010493E5@Exchange.MIPS.COM>
-From: "Mitchell, Earl" <earlm@mips.com>
-Return-Path: <earlm@mips.com>
+	charset="big5"
+Return-Path: <colin@realtek.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Arravind babu <aravindforl@yahoo.co.in>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20051006175916.9-Lx57Q7zXYsapoNFhAFWYg2IAxhCnJy8-oQcsxV_x4@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20051007063144._jTlBiwZiYmNuIlgmTmT5BQlwx-u4D8pQdle3IUH22A@z>
 
 
+Hi there,
+I upgrade my SDE from 5 to 6.
+Before upgrading, we can compile C++ applications. After doing that, C++
+cannot be compiled by the gcc of SDE6.
+The warning message is like this:
+    mipsel-linux-gcc: main.cpp: C++ compiler not installed on this system
 
-If its a DRAM DIMM module then SW reads info
-about that RAM via the SPD interface.
-SPD = Serial Presence Detect 
-This is typically an I2C interface so
-SW can bit bang it. 
+I found that MIPS offers C++ compiler running on MIPS.
+Does MIPS want us to compile C++ on MIPS, not on X86?
 
-SPD provides more info than just size.
-For example on some systems you need to
-know the RAS/CAS params and various
-wait state settings in order to program your
-memory controller for optimal performance. 
-This is how PCs are able to configure themselves 
-to work with standard modules. For more info
-checkout this site ...
-
-http://www.pcguide.com/art/sdram.htm
-
-For SRAMs the HW guys usually provide
-some set of registers for SW to read 
-info its needs like size. And sometimes
-they don't so you have to use address
-probing tricks as Wolfgang described. 
-
--earlm
-
-
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org
-> [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Wolfgang Denk
-> Sent: Thursday, October 06, 2005 12:29 AM
-> To: Arravind babu
-> Cc: linux-mips@linux-mips.org
-> Subject: Re: Basic question w.r.t bootloader 
-> 
-> 
-> In message 
-> <20051006065332.6978.qmail@web8604.mail.in.yahoo.com> you wrote:
-> > 
-> >        Generally how bootloader/bootflash code detects
-> > the size of RAM on the board? Is it hardcoded some
-> > where in the bootflash code or is it detected using
-> > memory chips ?
-> 
-> One method is to probe addresses (at N, 2*N, 4*N etc. starting with a
-> resonable value of N like 1 MB) until probing fails. See for  example
-> common/memsize.c in the U-Boot sources.
-> 
-> Best regards,
-> 
-> Wolfgang Denk
-> 
-> -- 
-> Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-> Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-> The IQ of the group is the lowest IQ of a member of the group divided
-> by the number of people in the group.
-> 
-> 
+Regards,
+Colin

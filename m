@@ -1,70 +1,71 @@
-Received: from sccrmhc13.comcast.net ([204.127.202.64]:48627 "EHLO
-	sccrmhc13.comcast.net") by ftp.linux-mips.org with ESMTP
-	id S8133591AbVJGVyQ convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 7 Oct 2005 22:54:16 +0100
+Received: from sccrmhc14.comcast.net ([63.240.76.49]:12163 "EHLO
+	sccrmhc14.comcast.net") by ftp.linux-mips.org with ESMTP
+	id S8133433AbVJHDdh convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Sat, 8 Oct 2005 04:33:37 +0100
 From: "Kyle Unice" <unixe@comcast.net>
 Subject: RE: Cross-compiling Linux problem
-Date: Fri, 7 Oct 2005 15:54:08 -0600
-Message-ID: <002d01c5cb89$a4f1b830$0400a8c0@buzz>
+Date: Fri, 7 Oct 2005 21:33:27 -0600
+Message-ID: <003701c5cbb9$0c4a9590$0400a8c0@buzz>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-In-Reply-To: <1128721636.9971.166.camel@localhost.localdomain>
+In-Reply-To: <4346F65B.6050800@avtrex.com>
 Return-Path: <unixe@comcast.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ppopov@embeddedalley.com
-Cc: 'Brett Foster' <fosterb@uoguelph.ca>, linux-mips@linux-mips.org
-Message-ID: <20051007215408.1_XdKglWVdRaZ-dtaYkyk6QznM9jaVXrxOjCsP_Vw6w@z>
+To: 'David Daney' <ddaney@avtrex.com>
+Cc: ppopov@embeddedalley.com, 'Brett Foster' <fosterb@uoguelph.ca>, linux-mips@linux-mips.org
+Message-ID: <20051008033327._sJ57T5utWRgaDz8-5776hsUL5U7HFa9pvLnEBz4IFU@z>
 
-I am using gcc-3.4.4 and the cvs checkout of linux-mips.org tree.
+David,
+Thanks I downloaded and installed git.  Used git to get the linux source 
+And did a build and got:
+
+  CC      arch/mips/au1000/common/prom.o
+  AS      arch/mips/au1000/common/int-handler.o
+  CC      arch/mips/au1000/common/irq.o
+  CC      arch/mips/au1000/common/puts.o
+  CC      arch/mips/au1000/common/time.o
+  CC      arch/mips/au1000/common/reset.o
+  CC      arch/mips/au1000/common/au1xxx_irqmap.o
+  CC      arch/mips/au1000/common/clocks.o
+  CC      arch/mips/au1000/common/platform.o
+  CC      arch/mips/au1000/common/power.o
+  CC      arch/mips/au1000/common/setup.o
+  AS      arch/mips/au1000/common/sleeper.o
+  CC      arch/mips/au1000/common/cputable.o
+  CC      arch/mips/au1000/common/dma.o
+  CC      arch/mips/au1000/common/dbdma.o
+  CC      arch/mips/au1000/common/gpio.o
+  CC      arch/mips/au1000/common/pci.o
+arch/mips/au1000/common/pci.c: In function `au1x_pci_setup':
+include/asm-mips/mach-au1x00/ioremap.h:15: sorry, unimplemented: inlining
+failed
+ in call to '__fixup_bigphys_addr': function body not available
+arch/mips/au1000/common/pci.c:28: sorry, unimplemented: called from here
+make[1]: *** [arch/mips/au1000/common/pci.o] Error 1
+make: *** [arch/mips/au1000/common] Error 2
+
 Kyle
 
 -----Original Message-----
-From: Pete Popov [mailto:ppopov@embeddedalley.com] 
-Sent: Friday, October 07, 2005 3:47 PM
+From: David Daney [mailto:ddaney@avtrex.com] 
+Sent: Friday, October 07, 2005 4:28 PM
 To: Kyle Unice
-Cc: 'Brett Foster'; 'linux-mips@linux-mips.org'
-Subject: RE: Cross-compiling Linux problem
+Cc: ppopov@embeddedalley.com; 'Brett Foster'; linux-mips@linux-mips.org
+Subject: Re: Cross-compiling Linux problem
 
-On Fri, 2005-10-07 at 15:26 -0600, Kyle Unice wrote:
-> I am compiling the db1550_defconfig which does define
-> CONFIG_64BIT_PHYS_ADDR.
-> The cross compiler is mipsel generated from crosstool.sh
-
-Which gcc version? And I assume you are using the linux-mips.org tree,
-not kernel.org?
-
-Pete
-
+Kyle Unice wrote:
+> I am using gcc-3.4.4 and the cvs checkout of linux-mips.org tree.
 > Kyle
-> 
-> -----Original Message-----
-> From: Brett Foster [mailto:fosterb@uoguelph.ca] 
-> Sent: Friday, October 07, 2005 2:42 PM
-> To: Kyle Unice
-> Cc: linux-mips@linux-mips.org
-> Subject: Re: Cross-compiling Linux problem
-> 
-> Kyle Unice wrote:
-> 
-> >arch/mips/mm/tlbex.c:516:5: warning: "CONFIG_64BIT" is not defined
-> >  AS      arch/mips/mm/tlbex-fault.o
-> >  CC      arch/mips/mm/ioremap.o
-> >arch/mips/mm/ioremap.c: In function `__ioremap':
-> >include/asm-mips/mach-au1x00/ioremap.h:15: sorry, unimplemented: inlining
-> >failed
-> > in call to '__fixup_bigphys_addr': function body not available
-> >arch/mips/mm/ioremap.c:28: sorry, unimplemented: called from here
-> >make[1]: *** [arch/mips/mm/ioremap.o] Error 1
-> >make: *** [arch/mips/mm] Error 2
-> >  
-> >
-> I once had this sort of problem when I forgot to specify the cross 
-> compiler while invoking make and tried to compile a MIPS kernel on X86
-gcc.
-> 
-> Brett
-> 
-> 
+
+Not withstanding Maciej's comment about the real problem being the 
+broken header file, I give you a quote from 
+http://www.linux-mips.org/wiki/Git : "At this time only the linux.git 
+repository is in production use.... all other archives are only historical."
+
+You might consider getting your code from the git repository as the CVS 
+repository is no longer being maintained.
+
+David Daney

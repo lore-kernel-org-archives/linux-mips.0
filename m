@@ -1,62 +1,46 @@
-Received: from sccrmhc14.comcast.net ([63.240.76.49]:64486 "EHLO
-	sccrmhc14.comcast.net") by ftp.linux-mips.org with ESMTP
-	id S8133616AbVJHNwf (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Sat, 8 Oct 2005 14:52:35 +0100
-From: "Kyle Unice" <unixe@comcast.net>
-Subject: RE: Cross-compiling Linux problem
-Date: Sat, 8 Oct 2005 07:52:24 -0600
-Message-ID: <003c01c5cc0f$83a19e30$0400a8c0@buzz>
+Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:16821 "EHLO
+	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133578AbVJQP0z
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 17 Oct 2005 16:26:55 +0100
+Message-ID: <00b201c5d32e$2de780b0$0302a8c0@Ulysses>
+From: "Kevin D. Kissell" <KevinK@mips.com>
+References: <f69849430510170429t2735ed0fo3caa862c1dfea83a@mail.gmail.com> <43539ADF.6040504@gentoo.org>
+Subject: Re: How to improve performance of 2.6 kernel
+Date: Mon, 17 Oct 2005 17:19:31 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="utf-8"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4346FD34.8000100@total-knowledge.com>
-Return-Path: <unixe@comcast.net>
+Return-Path: <KevinK@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "'Ilya A. Volynets-Evenbakh'" <ilya@total-knowledge.com>, 'David Daney' <ddaney@avtrex.com>
-Cc: ppopov@embeddedalley.com, 'Brett Foster' <fosterb@uoguelph.ca>, linux-mips@linux-mips.org
-Message-ID: <20051008135224.x2F2D3jaPAwUot3frRmnw4LF2Q-Ul6GugPiuzpKUeiU@z>
+To: Stuart Longland <redhatter@gentoo.org>, kernel coder <lhrkernelcoder@gmail.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20051017151931.C18ZJOPfCwTkV8eBZILyggWol_enTPYijoy7tk2V7hc@z>
 
-It appears that the function __fixup_bigphys_addr is not inline anymore but 
-A callable function.  I removed the "inline " qualifier from the extern
-declaration in
-Ioremap.h (if CONFIG_64BIT_PHYS_ADDR is declared) and linux built ok.
-Kyle 
+>kernel coder wrote:
+>> I am also attaching the benchmarks I took for both the kernels. Is
+>> there any way I can improve 2.6's performance? Thanks.
+>
+>Hi,
+> Don't mean to nitpick... but do you think it wise to use a proprietry
+>format like Microsoft Excel on a prodominantly Linux-user list? :-)
+>Tab-delimited would probably be better for distribution on a mailing list.
 
------Original Message-----
-From: Ilya A. Volynets-Evenbakh [mailto:ilya@total-knowledge.com] 
-Sent: Friday, October 07, 2005 4:57 PM
-To: David Daney
-Cc: Kyle Unice; ppopov@embeddedalley.com; 'Brett Foster';
-linux-mips@linux-mips.org
-Subject: Re: Cross-compiling Linux problem
+There are 2D data plots that are hard to do as ASCII art. ;o)
+It opened fine for me in Open Office - there was one set of graphs
+that looked to be empty, but I couldn't tell if that was OO screwing
+up or the way the spreadsheet went out.  But the raw data was
+legible and troubling.
 
-CVS is not where development happens, but it is still updated, according 
-to Ralf.
+> How much slower are we talking here?  And in what regards?
 
-David Daney wrote:
+Memory copy, network I/O, and disk I/O, by factors ranging from
+about 10% to almost 50% - I'd say about 25% on the average.
+If this can't be explained by a configuration error, we have a real
+problem here, but if that's the case, I'm surprised no one has raised
+a red flag earlier.
 
-> Kyle Unice wrote:
->
->> I am using gcc-3.4.4 and the cvs checkout of linux-mips.org tree.
->> Kyle
->
->
-> Not withstanding Maciej's comment about the real problem being the 
-> broken header file, I give you a quote from 
-> http://www.linux-mips.org/wiki/Git : "At this time only the linux.git 
-> repository is in production use.... all other archives are only 
-> historical."
->
-> You might consider getting your code from the git repository as the 
-> CVS repository is no longer being maintained.
->
-> David Daney
->
->
+        Regards,
 
--- 
-Ilya A. Volynets-Evenbakh
-Total Knowledge. CTO
-http://www.total-knowledge.com
+        Kevin K.

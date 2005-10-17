@@ -1,46 +1,52 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:16821 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133578AbVJQP0z
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 17 Oct 2005 16:26:55 +0100
-Message-ID: <00b201c5d32e$2de780b0$0302a8c0@Ulysses>
-From: "Kevin D. Kissell" <KevinK@mips.com>
-References: <f69849430510170429t2735ed0fo3caa862c1dfea83a@mail.gmail.com> <43539ADF.6040504@gentoo.org>
-Subject: Re: How to improve performance of 2.6 kernel
-Date: Mon, 17 Oct 2005 17:19:31 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
+Received: from smtp101.biz.mail.re2.yahoo.com ([68.142.229.215]:8557 "HELO
+	smtp101.biz.mail.re2.yahoo.com") by ftp.linux-mips.org with SMTP
+	id S8133579AbVJQQd2 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 17 Oct 2005 17:33:28 +0100
+In-Reply-To: <00b201c5d32e$2de780b0$0302a8c0@Ulysses>
+References: <f69849430510170429t2735ed0fo3caa862c1dfea83a@mail.gmail.com> <43539ADF.6040504@gentoo.org> <00b201c5d32e$2de780b0$0302a8c0@Ulysses>
+Mime-Version: 1.0 (Apple Message framework v623)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-ID: <3888b5a785ca8313b05d10eec9871fe6@embeddedalley.com>
 Content-Transfer-Encoding: 7bit
-Return-Path: <KevinK@mips.com>
+From: Dan Malek <dan@embeddedalley.com>
+Subject: Re: How to improve performance of 2.6 kernel
+Date: Mon, 17 Oct 2005 12:38:34 -0400
+Return-Path: <dan@embeddedalley.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Stuart Longland <redhatter@gentoo.org>, kernel coder <lhrkernelcoder@gmail.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20051017151931.C18ZJOPfCwTkV8eBZILyggWol_enTPYijoy7tk2V7hc@z>
+To: "Kevin D. Kissell" <KevinK@mips.com>
+Cc: kernel coder <lhrkernelcoder@gmail.com>, linux-mips@linux-mips.org, Stuart Longland <redhatter@gentoo.org>
+Message-ID: <20051017163834.k_dXlvB8S5a9QcZZEB6nRZ8QFUAeK8xCli1hdSLOyok@z>
 
->kernel coder wrote:
->> I am also attaching the benchmarks I took for both the kernels. Is
->> there any way I can improve 2.6's performance? Thanks.
->
->Hi,
-> Don't mean to nitpick... but do you think it wise to use a proprietry
->format like Microsoft Excel on a prodominantly Linux-user list? :-)
->Tab-delimited would probably be better for distribution on a mailing list.
 
-There are 2D data plots that are hard to do as ASCII art. ;o)
-It opened fine for me in Open Office - there was one set of graphs
-that looked to be empty, but I couldn't tell if that was OO screwing
-up or the way the spreadsheet went out.  But the raw data was
-legible and troubling.
+On Oct 17, 2005, at 11:19 AM, Kevin D. Kissell wrote:
 
-> How much slower are we talking here?  And in what regards?
+> If this can't be explained by a configuration error, we have a real
+> problem here, but if that's the case, I'm surprised no one has raised
+> a red flag earlier.
 
-Memory copy, network I/O, and disk I/O, by factors ranging from
-about 10% to almost 50% - I'd say about 25% on the average.
-If this can't be explained by a configuration error, we have a real
-problem here, but if that's the case, I'm surprised no one has raised
-a red flag earlier.
+It has been discussed on other processor architecture lists.
+It's been hard to justify the move from 2.4 to 2.6 on resource
+challenged embedded systems, which unfortunately make up the
+majority of systems running Linux.  There are various processor
+specific modifications (mostly around VM, MMU, and cache
+management) being attempted to bring the performance level
+back up to 2.4.  If these were back ported to 2.4, I suspect the
+performance difference would be even greater.
 
-        Regards,
+Of course, the speed and resources of workstations masks
+the problems, so most developers don't "feel" the system is
+any different. There isn't interest in the detailed performance
+measurements we have to do on embedded systems when
+we do an upgrade and realize it doesn't meet the performance
+goals.  This is usually just written off with the "....  well, you have
+new features .." statement, but somehow it doesn't add up.
 
-        Kevin K.
+There isn't any magic configuration option or quick fix.  You
+have to take the time to dig into the details of a specific
+performance issue and then try to optimize anything you can
+to improve the situation.
+
+Thanks.
+
+	-- Dan

@@ -1,47 +1,45 @@
-Received: from wbmler1.mail.xerox.com ([13.13.138.216]:18375 "EHLO
-	wbmler1.mail.xerox.com") by ftp.linux-mips.org with ESMTP
-	id S3465587AbVJUODG convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 21 Oct 2005 15:03:06 +0100
-Received: from wbmlir2.mail.xerox.com (wbmlir2.mail.xerox.com [13.131.8.222])
-	by wbmler1.mail.xerox.com (8.13.4/8.13.1) with ESMTP id j9LE33m3020807
-	for <linux-mips@linux-mips.org>; Fri, 21 Oct 2005 10:03:03 -0400
-Received: from wbmlir2.mail.xerox.com (localhost [127.0.0.1])
-	by wbmlir2.mail.xerox.com (8.13.4/8.13.1) with ESMTP id j9LE2NjN027828
-	for <linux-mips@linux-mips.org>; Fri, 21 Oct 2005 10:02:23 -0400
-Received: from usa7061gw02.na.xerox.net (usa7061gw02.na.xerox.net [13.151.32.4])
-	by wbmlir2.mail.xerox.com (8.13.4/8.13.1) with ESMTP id j9LE1sCs027456
-	for <linux-mips@linux-mips.org>; Fri, 21 Oct 2005 10:02:23 -0400
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: au1x00 usb device status
-Date: Fri, 21 Oct 2005 15:01:35 +0100
-Message-ID: <DAF42D2FFC65A146BAB240719E4AD214C212F3@gbrwgceumf02.eu.xerox.net>
-From: "Hamilton, Ian" <Ian.Hamilton@xerox.com>
-Return-Path: <Ian.Hamilton@xerox.com>
+Received: from smtp102.biz.mail.re2.yahoo.com ([68.142.229.216]:46937 "HELO
+	smtp102.biz.mail.re2.yahoo.com") by ftp.linux-mips.org with SMTP
+	id S8133451AbVJUPKw (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 21 Oct 2005 16:10:52 +0100
+In-Reply-To: <DAF42D2FFC65A146BAB240719E4AD214C212F3@gbrwgceumf02.eu.xerox.net>
+References: <DAF42D2FFC65A146BAB240719E4AD214C212F3@gbrwgceumf02.eu.xerox.net>
+Mime-Version: 1.0 (Apple Message framework v623)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-ID: <11386cff191ef9d9414dbde253de402d@embeddedalley.com>
+Content-Transfer-Encoding: 7bit
+From: Dan Malek <dan@embeddedalley.com>
+Subject: Re: au1x00 usb device status
+Date: Fri, 21 Oct 2005 11:16:36 -0400
+Return-Path: <dan@embeddedalley.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20051021140135.j9DsZpQ6D2jVb3H-spgdhR1ONNvTucsGdKvQ6sgl31c@z>
+To: "Hamilton, Ian" <Ian.Hamilton@xerox.com>
+Cc: 'linux-mips@linux-mips.org'MIPSlinux-mips@linux-mips.org
+Message-ID: <20051021151636.EVbzqyQxe0U0mwwBDOYtLcmN086EJQqFcIjqqC_h5Ts@z>
 
-Hi Rodolfo.
 
-> Are you implemented any Gadget support? Or are you just using the
-> tty/raw emulation?
+On Oct 21, 2005, at 10:01 AM, Hamilton, Ian wrote:
 
-I'm a USB novice, so I'm not sure about this yet. The USB device port is
-used
-as a communication port to another board, so I guess a tty/raw emulation
-would be appropriate, but I don't yet know how it was implemented on the
-2.4
-kernel. I'm still trying to understand the code.
+> ......  so I guess a tty/raw emulation
+> would be appropriate,
 
-I was hoping it would be a straight copy from 2.4 to 2.6, but clearly it
-isn't :-(
+That's all that was available in 2.4.  I'd say if you actually
+see it working, you are lucky :-)  The only way I have seen
+this work successfully in a real product was using a
+custom RTLinux driver to service most of the USB hardware,
+then feed this upstream to the Linux USB software.
 
-Still, it is an opportunity to learn about USB :-)
+> I was hoping it would be a straight copy from 2.4 to 2.6, but clearly 
+> it
+> isn't :-(
 
-Cheers,
-Ian.
+You will want to use the gadget interface.  I think most of what
+we had done in the past has been checked in, but if not I'll
+dig it out.  It was never functional to my satisfaction.
+
+
+Thanks.
+
+
+	-- Dan

@@ -1,27 +1,44 @@
-Received: from smtp102.biz.mail.re2.yahoo.com ([68.142.229.216]:40315 "HELO
-	smtp102.biz.mail.re2.yahoo.com") by ftp.linux-mips.org with SMTP
-	id S8133503AbVJUPar (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 21 Oct 2005 16:30:47 +0100
-In-Reply-To: <DAF42D2FFC65A146BAB240719E4AD214C212BF@gbrwgceumf02.eu.xerox.net>
-References: <DAF42D2FFC65A146BAB240719E4AD214C212BF@gbrwgceumf02.eu.xerox.net>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-ID: <b5be2c8d31c8718aca3d0ee3223abe7e@embeddedalley.com>
-Content-Transfer-Encoding: 7bit
-From: Dan Malek <dan@embeddedalley.com>
-Subject: Re: au1x00 usb device status
-Date: Fri, 21 Oct 2005 11:36:27 -0400
-Return-Path: <dan@embeddedalley.com>
+Received: from wvmler3.mail.xerox.com ([13.8.138.218]:18352 "EHLO
+	wvmler3.mail.xerox.com") by ftp.linux-mips.org with ESMTP
+	id S3465639AbVJXJmG convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 24 Oct 2005 10:42:06 +0100
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: au1x00 usb device status
+Date: Mon, 24 Oct 2005 10:40:37 +0100
+Message-ID: <DAF42D2FFC65A146BAB240719E4AD214C21486@gbrwgceumf02.eu.xerox.net>
+From: "Hamilton, Ian" <Ian.Hamilton@xerox.com>
+Return-Path: <Ian.Hamilton@xerox.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Hamilton, Ian" <Ian.Hamilton@xerox.com>
-Cc: 'linux-mips@linux-mips.org'MIPSlinux-mips@linux-mips.org
-Message-ID: <20051021153627.zlVLTXDRdlPWz09xuGYmuzX-0DIGYCbi32FgKezCga4@z>
+To: Dan Malek <dan@embeddedalley.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20051024094037.nahON8pcF3T3BXaVFlvj07IWb_d2Dt_MLzJtdmzGTgU@z>
+
+Thanks Dan, that's very helpful.
+
+I haven't seen anything in the drivers/usb/gadget directory which
+looks like an au1100 driver, so if you could send me any code you
+have, I'd be grateful :-)
+
+Cheers,
+Ian.
+
+-----Original Message-----
+From: Dan Malek [mailto:dan@embeddedalley.com] 
+Sent: 21 October 2005 16:36
+To: Hamilton, Ian
+Cc: 'linux-mips@linux-mips.org' MIPS
+Subject: Re: au1x00 usb device status
 
 
 On Oct 21, 2005, at 9:17 AM, Hamilton, Ian wrote:
 
-> Is there a full description of the timing problem somewhere on the web?
+> Is there a full description of the timing problem somewhere on the
+web?
 > In particular, how quickly does the interrupt need to be serviced?
 
 There are two major challenges (and many minor ones).

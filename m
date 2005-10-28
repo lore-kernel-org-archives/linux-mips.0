@@ -1,51 +1,30 @@
-Received: from ns1.pioneer-pra.com ([65.205.244.70]:63035 "EHLO
-	mail1.dmz.sj.pioneer-pra.com") by ftp.linux-mips.org with ESMTP
-	id S8133563AbVJZR02 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 26 Oct 2005 18:26:28 +0100
-From: "Mike C. Ward" <mward@pioneer-pra.com>
-Subject: RE: Porting oprofile to 2.4.32 kernel
-Date: Wed, 26 Oct 2005 10:25:55 -0700
-Message-ID: <013701c5da52$5399a9c0$5502020a@eo>
+Received: from imsantv37.netvigator.com ([210.87.250.143]:12996 "EHLO
+	imsantv37.netvigator.com") by ftp.linux-mips.org with ESMTP
+	id S8133638AbVJ1Jvl (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 28 Oct 2005 10:51:41 +0100
+Received: from imsantv44.netvigator.com (imsantv37 [127.0.0.1])
+	by imsantv37.netvigator.com (8.13.1/8.13.1) with ESMTP id j9S9pmtU026535
+	for <linux-mips@linux-mips.org>; Fri, 28 Oct 2005 17:51:49 +0800
+From: "Louis Lai" <louis.lai@entone.com>
+Subject: missing /dev/tty0
+Date: Fri, 28 Oct 2005 17:46:23 +0800
+Message-ID: <HAENJFHIMADGCOMALOKKOEELCBAA.louis.lai@entone.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="US-ASCII"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20051026135414.GD3161@linux-mips.org>
-Return-Path: <mward@pioneer-pra.com>
+Return-Path: <louis.lai@entone.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'kernel coder' <lhrkernelcoder@gmail.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20051026172555.VwTGkkDcL-qJHOvD549605jUbJnpI2HL_K-IFDOlty8@z>
+To: linuxconsole-dev@lists.sourceforge.net, linux-mips@linux-mips.org
+Message-ID: <20051028094623.gmDO2_yolBmykISKwiwfnww_8cYt5DyFa_aTsWdBWS8@z>
 
-But if you wanted to undertake that cause nonetheless, you
-could check out the patch I did to 2.4.25 
-at 
-http://oss.pioneer-pra.com/oprofile/
+Hi all,
 
-Mike
+I am using a 2.4.30 kernel for my MIPS embedded processor. The kernel can
+start up properly but the tty0 doesn't exist under /dev. I have already
+enable the virtual console during kernel configuration. is it something
+configure not properly for the kernel?? Anyone can help??
 
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Ralf Baechle
-> Sent: Wednesday, October 26, 2005 6:54 AM
-> To: kernel coder
-> Cc: linux-mips@linux-mips.org
-> Subject: Re: Porting oprofile to 2.4.32 kernel
-> 
-> 
-> On Wed, Oct 26, 2005 at 02:34:07AM -0700, kernel coder wrote:
-> 
-> >    i'm trying to port oprofile on 2.4.32 kernel running on MIPS 
-> > board.From where can i  get the patch for other boards so 
-> that i can 
-> > make a head start by using that patch as a guide.
-> 
-> Oprofile for 2.4 is considered a lost cause on any 
-> architecture and I guess I'd rather do something sensible 
-> like ironing snowflakes than porting it at this stage where 
-> funeral eulogies for 2.4 are already being written ;-)
-> 
->   Ralf
-> 
-> 
+Thanks in advance,
+Louis

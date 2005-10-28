@@ -1,65 +1,78 @@
-Received: from imsantv21.netvigator.com ([210.87.250.86]:37780 "EHLO
-	imsantv21.netvigator.com") by ftp.linux-mips.org with ESMTP
-	id S8133606AbVJ1Ksx (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 28 Oct 2005 11:48:53 +0100
-Received: from imsantv44.netvigator.com (imsantv21 [127.0.0.1])
-	by imsantv21.netvigator.com (8.13.1/8.13.1) with ESMTP id j9SAmtW6004319
-	for <linux-mips@linux-mips.org>; Fri, 28 Oct 2005 18:48:59 +0800
-From: "Louis Lai" <louis.lai@entone.com>
-Subject: RE: missing /dev/tty0
-Date: Fri, 28 Oct 2005 18:43:31 +0800
-Message-ID: <HAENJFHIMADGCOMALOKKIEEMCBAA.louis.lai@entone.com>
+Received: from p549F7AB8.dip.t-dialin.net ([84.159.122.184]:43192 "EHLO
+	p549F7AB8.dip.t-dialin.net") by ftp.linux-mips.org with ESMTP
+	id S8133644AbVJ1MLJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 28 Oct 2005 13:11:09 +0100
+Message-ID: <200510281204.j9SC40rn029674@lilac.hdcindia.analog.com>
+From: "Sathesh Babu Edara" <satheshbabu.edara@analog.com>
+Subject: Linux-2.6.12 code base for linux-mips
+Date: Fri, 28 Oct 2005 17:39:44 +0530
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4361FCEF.30707@avilinks.com>
-Return-Path: <louis.lai@entone.com>
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_000F_01C5DBE6.95723CA0"
+Return-Path: <satheshbabu.edara@analog.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Yoann Allain <yallain@avilinks.com>
-Cc: linuxconsole-dev@lists.sourceforge.net, linux-mips@linux-mips.org
-Message-ID: <20051028104331.JAKJfAyDdfDMphGDyMAg3yc8CJ4VKNKdPdwSmfGB4Iw@z>
+To: linux-mips@linux-mips.org, linux-cvs-patches@linux-mips.org
+Message-ID: <20051028120944.IUPI9YdV2KXGlsuvblos-gDKzN2OV0g1SCJljC80EbE@z>
 
-Hi Yoann,
+This is a multi-part message in MIME format.
 
-Thanks for your reply!!
-i can create the device file but i still not able to open it.
-When i open /dev/tty0, i got "No such device".
-Any ideas??
+------=_NextPart_000_000F_01C5DBE6.95723CA0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-Thanks again,
-Louis
+Hi ,	
 
------Original Message-----
-From: Yoann Allain [mailto:yallain@avilinks.com]
-Sent: Friday, October 28, 2005 6:27 PM
-To: Louis Lai
-Cc: linuxconsole-dev@lists.sourceforge.net; linux-mips@linux-mips.org
-Subject: Re: missing /dev/tty0
+	I would like to know the linux-mips version corresponding to the
+linux-2.6.12 kernel taken from kernel.org.
 
+	I am referring to the below site to download the linux-2.6.12 mips
+version.
+	http://www.longlandclan.hopto.org/~stuartl/mips-linux/sources/
 
-Louis Lai a écrit :
+	But I found there are so many files with linux-2.6.12 name so can
+you please let me know the name of the official release version
+corresponding to linux-2.6.12.
 
->Hi all,
->
->I am using a 2.4.30 kernel for my MIPS embedded processor. The kernel can
->start up properly but the tty0 doesn't exist under /dev. I have already
->enable the virtual console during kernel configuration. is it something
->configure not properly for the kernel?? Anyone can help??
->
->Thanks in advance,
->Louis
->
->
->
-Hi Louis,
+	What is the kernel code base version or date that has been used for
+porting linux-2.6.12 from kernel.org onto linux-mips.
 
-The problem is that you didn't create the special file /dev/tty0. Create
-it with the mknod command :
-# mknod /dev/tty0 c 4 0
-Then put the good rights, for example:
-# chmod 640 /dev/tty0
-That should do it...
+Regards,
+Sathesh
 
-    Yoann
+------=_NextPart_000_000F_01C5DBE6.95723CA0
+Content-Type: application/ms-tnef;
+	name="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="winmail.dat"
+
+eJ8+IiwMAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
+b3NvZnQgTWFpbC5Ob3RlADEIAQOQBgBQBQAAHgAAAAsAAgABAAAAAwAmAAAAAAAeAHAAAQAAACYA
+AABMaW51eC0yLjYuMTIgY29kZSBiYXNlIGZvciBsaW51eC1taXBzAAAAAgFxAAEAAAAWAAAAAcXb
+uHujrU0WX9asRUCJ7F0TDA6WmgAACwABDgAAAAACAQoOAQAAABgAAAAAAAAAQgzmOe/bok2F0Kba
+mpibKMKAAAADABQOAQAAAAIBCRABAAAAagIAAGYCAADKAwAATFpGdZXQ7nYDAAoAcmNwZzEyNRYy
+APgLYG4OEDAzM08B9wKkA+MCAGNoCsBzsGV0MCAHEwKAfQqA2QjIIDsJbw4wNQKAEfJOKgmwCfAE
+kGF0BbFSDQ3gaAmAAdAgNS41IDAuOTkuAdAwOUkCgFx2CJB3awuAZDo0DGBjAFALAwu1IEj4aSAs
+DIMKsQqECoEBkRAgSSB3CGBsZCAgbGlrZSAU8CBrNG5vB+B0FWAaYW512HgtbQUgBCB2BJAAkE0C
+ICAFoQlwc3ACIGQNC4BnGrIbSDIuNi73DiAa4ASRZQMgAZAakAOgywNSHsUuBbBnLhjvGfB2YR/Q
+CXBmBJAFEB1oYlcfEBsRAJB0GqNkGxBufQkAYRpQHc8b6iCWAZF7PwHxCJAaQBRSDvAdQXN0AHtI
+WVBFUkxJEE5LIGgCQHA6L3QvdylQLgkADyAPAWSiYw8BLmhvBTBvIFIUL34oEHUKwHRsL6Ub4i0b
+gy9zCGFjB5C8LyAR0AHxGkAREGwoIPsMYAlQYwBAKN8p7yr/LAr3LZEBQC3QMBHQEdALpyC+3EJ1
+BUAZ8AIQdRcQGzK/CXAhwDUxLEAlgABweR+Q3wMQB5ED8BtAHfxuIdA1gypjA5F5CGAgC1BlYX8R
+IBpgETAlgBqgGvc3o2/uZhszOmAnMGMHMSHxOLTPHD8dRh4KIJ8gVxDwBUD/BAAbMx7VBaABACMA
+O6oFsf5kFOAaoT9iEPAEICMQH3H+dREgGlACEAXAHRAAIB1Sfx4LH606UAIwPVYb4j47UvRlZwsR
+cxiQILMGEBtBLHNoPkQR4QBJkAAAAwDeP59OAAADAAlZAwAAAAsAAoAIIAYAAAAAAMAAAAAAAABG
+AAAAAAOFAAAAAAAAAwAEgAggBgAAAAAAwAAAAAAAAEYAAAAAEIUAAAAAAAADAByACCAGAAAAAADA
+AAAAAAAARgAAAAABhQAAAAAAAAsAQ4AIIAYAAAAAAMAAAAAAAABGAAAAAIKFAAAAAAAACwBEgAgg
+BgAAAAAAwAAAAAAAAEYAAAAADoUAAAAAAAADAEaACCAGAAAAAADAAAAAAAAARgAAAAAYhQAAAAAA
+AAsAR4AIIAYAAAAAAMAAAAAAAABGAAAAAAaFAAAAAAAACwAfDgEAAAACAfgPAQAAABAAAABCDOY5
+79uiTYXQptqamJsoAgH6DwEAAAAQAAAAQgzmOe/bok2F0KbampibKAMA/g8FAAAAAwANNP0/AwAD
+AA80/T8DAAIBFDQBAAAAEAAAAE5JVEH5v7gBAKoAN9luAAACAX8AAQAAADEAAAAwMDAwMDAwMDQy
+MENFNjM5RUZEQkEyNEQ4NUQwQTZEQTlBOTg5QjI4ODREOTJEMDAAAAAAAwAGEEHffNEDAAcQwgEA
+AAMAEBAAAAAAAwAREAAAAAAeAAgQAQAAAGUAAABISSxJV09VTERMSUtFVE9LTk9XVEhFTElOVVgt
+TUlQU1ZFUlNJT05DT1JSRVNQT05ESU5HVE9USEVMSU5VWC0yNjEyS0VSTkVMVEFLRU5GUk9NS0VS
+TkVMT1JHSUFNUkVGRVJSAAAAAHY9
+
+------=_NextPart_000_000F_01C5DBE6.95723CA0--

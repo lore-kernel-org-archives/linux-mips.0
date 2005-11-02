@@ -1,65 +1,52 @@
-Received: from nwd2mail2.analog.com ([137.71.25.51]:50577 "EHLO
-	nwd2mail2.analog.com") by ftp.linux-mips.org with ESMTP
-	id S8133658AbVJ1QlG (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 28 Oct 2005 17:41:06 +0100
-Message-ID: <200510281635.j9SGZLrn017834@lilac.hdcindia.analog.com>
+Received: from nwd2mail3.analog.com ([137.71.25.52]:16569 "EHLO
+	nwd2mail3.analog.com") by ftp.linux-mips.org with ESMTP
+	id S8133803AbVKBPfw (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 2 Nov 2005 15:35:52 +0000
+Received: from nwd2mhb1.analog.com (nwd2mhb1.analog.com [137.71.5.12])
+	by nwd2mail3.analog.com (8.12.10/8.12.10) with ESMTP id jA2FaU2N020540
+	for <linux-mips@linux-mips.org>; Wed, 2 Nov 2005 10:36:30 -0500
+Received: from lilac.hdcindia.analog.com ([10.121.13.31])
+	by nwd2mhb1.analog.com (8.9.3 (PHNE_28810+JAGae91741)/8.9.3) with ESMTP id KAA29292
+	for <linux-mips@linux-mips.org>; Wed, 2 Nov 2005 10:36:27 -0500 (EST)
+Received: from SEdaraL01 (sedara-l01.ad.analog.com [10.82.242.18])
+	by lilac.hdcindia.analog.com (8.12.10+Sun/8.12.10) with ESMTP id jA2FUTrn015102
+	for <linux-mips@linux-mips.org>; Wed, 2 Nov 2005 21:00:33 +0530 (IST)
+Message-ID: <200511021530.jA2FUTrn015102@lilac.hdcindia.analog.com>
 From: "Sathesh Babu Edara" <satheshbabu.edara@analog.com>
-Subject: Patch file between linux-2.6.12 from kernel.org and linux-2.6.12 from linux-mips.org
-Date: Fri, 28 Oct 2005 22:11:04 +0530
+Subject: Linux-2.6.12 code base for linux-mips
+Date: Wed, 2 Nov 2005 21:06:16 +0530
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_000D_01C5DC0C.81F40B60"
-In-Reply-To: 
-Return-Path: <satheshbabu.edara@analog.com>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org, linux-cvs-patches@linux-mips.org
-Message-ID: <20051028164104.wV4dXJI2bxvdLWrxux8Cwk2L6EiVSUPn4zGYtLMirgU@z>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_000D_01C5DC0C.81F40B60
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <20051029101445.GC2935@linux-mips.org>
+Return-Path: <satheshbabu.edara@analog.com>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: linux-mips@linux-mips.org
+Message-ID: <20051102153616.Eu5Ca9JgriC1w1FWJoIHTfBWPzrjfMKI_BtEXhXc3FE@z>
 
-
-
+ 
 Hi,
-   Is there any patch file available between  linux-2.6.12 from kernel.org
-and linux-2.6.12 from linux-mips.org.
+ - I would like to know the code base for  linux-2.6.12 (linux_2_6_12 tag)
+in the CVS repository is same as the one in the git repository
+archive(linux-2.6.12). 
+
+ - I am new to GIT.In order   to checkout linux-2.6.12 tag from git
+repository I followed the  commands given in the
+http://www.linux-mips.org/wiki/Git web site
+
+
+- It is hanging while cloning the repository using the below command  
+    # git clone rsync://ftp.linux-mips.org/git/linux.git linux.git
+- Then i used http:// instead of rsync:// in the above command and it is
+working fine.
+ 
+In the "Status of CVS to GIT conversion " section, there is no information
+on linux-2.6.12 tag/branch.If I want to checkout linux-2.6.12 tag from GIT
+repository what command  I should use after cloning the git repository.
+
+Thanks in advance.
 
 Regards,
-Sathesh
-
-------=_NextPart_000_000D_01C5DC0C.81F40B60
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
-
-eJ8+IgwQAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
-b3NvZnQgTWFpbC5Ob3RlADEIAQOQBgBcBAAAIAAAAAsAAgABAAAAAwAmAAAAAAALACsAAAAAAAMA
-LgAAAAAAHgBwAAEAAABVAAAAUGF0Y2ggZmlsZSBiZXR3ZWVuIGxpbnV4LTIuNi4xMiBmcm9tIGtl
-cm5lbC5vcmcgYW5kIGxpbnV4LTIuNi4xMiBmcm9tIGxpbnV4LW1pcHMub3JnAAAAAAIBcQABAAAA
-GwAAAAHF27h7o61NFl/WrEVAiexdEwwOlpoACT0QQAALAAEOAAAAAAIBCg4BAAAAGAAAAAAAAABC
-DOY579uiTYXQptqamJsowoAAAAMAFA4BAAAAAgEJEAEAAAA0AQAAMAEAAKMBAABMWkZ1c3fthgMA
-CgByY3BnMTI1FjIA+Atgbg4QMDMzTwH3AqQD4wIAY2gKwHPwZXQwIAcTAoMAUBBmGHBycQ5QENhU
-YWibA3ECgH0KgAjIIDsJb+0OMDUCgBQyKgmwCfAEkNRhdAWxUg3gaAmAAdAAIDUuNTAuOTmSLgHQ
-MDkCgFx2CJCkd2sLgGQ0DGBjAFD9CwNjEgILxQqxCoQKgRogAwLREhIxNiBIaSzVGtQgHPBJBCB0
-F6AJcFIgAHB5IAqwdBDgIPZmAxAdkXYLcAtgAmAdkFpiETB3CeEc8GwLgHXAeC0yLjYuDiAeQIkD
-YSBrBJFlbC4FsLpnHaFkH88g0CHkbQUginMhUi4a2lJlZwsRznMchQYQHVFzaAqgA2BadAWQdBrU
-FCEAJyADAN4/n04AAAMACVkDAAAACwACgAggBgAAAAAAwAAAAAAAAEYAAAAAA4UAAAAAAAADAASA
-CCAGAAAAAADAAAAAAAAARgAAAAAQhQAAAAAAAAMAHIAIIAYAAAAAAMAAAAAAAABGAAAAAAGFAAAA
-AAAACwBDgAggBgAAAAAAwAAAAAAAAEYAAAAAgoUAAAAAAAALAESACCAGAAAAAADAAAAAAAAARgAA
-AAAOhQAAAAAAAAMARoAIIAYAAAAAAMAAAAAAAABGAAAAABiFAAAAAAAACwBHgAggBgAAAAAAwAAA
-AAAAAEYAAAAABoUAAAAAAAALAB8OAQAAAAIB+A8BAAAAEAAAAEIM5jnv26JNhdCm2pqYmygCAfoP
-AQAAABAAAABCDOY579uiTYXQptqamJsoAwD+DwUAAAADAA00/T8DAAMADzT9PwMAAgEUNAEAAAAQ
-AAAATklUQfm/uAEAqgA32W4AAAIBfwABAAAAMQAAADAwMDAwMDAwNDIwQ0U2MzlFRkRCQTI0RDg1
-RDBBNkRBOUE5ODlCMjhFNERBMkQwMAAAAAADAAYQtO0Q6gMABxBqAAAAAwAQEAAAAAADABEQAAAA
-AB4ACBABAAAAZQAAAEhJLElTVEhFUkVBTllQQVRDSEZJTEVBVkFJTEFCTEVCRVRXRUVOTElOVVgt
-MjYxMkZST01LRVJORUxPUkdBTkRMSU5VWC0yNjEyRlJPTUxJTlVYLU1JUFNPUkdSRUdBUkRTLFMA
-AAAAtvA=
-
-------=_NextPart_000_000D_01C5DC0C.81F40B60--
+Sathesh  

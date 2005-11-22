@@ -1,23 +1,24 @@
-Received: from mf2.realtek.com.tw ([220.128.56.22]:63246 "EHLO
-	mf2.realtek.com.tw") by ftp.linux-mips.org with ESMTP
-	id S8134094AbVKPH6h (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 16 Nov 2005 07:58:37 +0000
-Received: from msx.realtek.com.tw (unverified [172.21.1.77]) by mf2.realtek.com.tw
- (Clearswift SMTPRS 5.1.7) with ESMTP id <T74a638fbcfdc80381613b4@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
- Wed, 16 Nov 2005 16:02:38 +0800
-Message-ID: <006c01c5ea83$c7cec780$106215ac@realtek.com.tw>
-From: "colin" <colin@realtek.com.tw>
-Subject: Does oProfile support 4KE now?
-Date: Wed, 16 Nov 2005 16:00:16 +0800
+Received: from mask.powertv.com ([12.146.136.163]:59074 "EHLO
+	hqmail01.powertv.com") by ftp.linux-mips.org with ESMTP
+	id S8134241AbVKVC4u (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 22 Nov 2005 02:56:50 +0000
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
-	charset="big5"
-Return-Path: <colin@realtek.com.tw>
+	charset="UTF-8"
+Content-Transfer-Encoding: base64
+Subject: Saving arguments on the stack
+Date: Mon, 21 Nov 2005 18:59:20 -0800
+Message-ID: <762C0A863A7674478671627FEAF5848105AF92D2@hqmail01.powertv.com>
+From: "Knittel, Brian" <Brian.Knittel@powertv.com>
+Return-Path: <Brian.Knittel@powertv.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20051116080016.8D-cR6CRrxWJrhQMzJA-htnQcdX_YWL0I_xgVzOR1M0@z>
+Message-ID: <20051122025920.FCztMhxagtq79LDgJxncH9yuap4WZcYyWbU_qGFjbJo@z>
 
-
-Hello,
+SGksDQoNCkknZCBsaWtlIHRvIGZvcmNlIHRoZSBjb21waWxlciB0byBzdG9yZSBhcmd1bWVudHMg
+b24gdGhlIHN0YWNrIHdpdGggb3RoZXJ3aXNlIG9wdGltaXplZCBjb2RlLg0KDQpJIGZvdW5kIGEg
+cmVmZXJuY2UgaW4gdGhlIGFyY2hpdmVzIChmb3JtIDIwMDEpIGZvciB1c2luZyAtMCAobm8gb3B0
+aW1pemF0aW9uKS4gSGFzIGFueW9uZSBmb3VuZCBhbm90aGVyIHdheSB0byBkbyB0aGlzPw0KDQpU
+aGFua3MsDQoNCi0tQnJpYW4NCg0K

@@ -1,48 +1,115 @@
-Received: from mask.powertv.com ([12.146.136.163]:15997 "EHLO
-	hqmail01.powertv.com") by ftp.linux-mips.org with ESMTP
-	id S3466586AbVKWSdv (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 23 Nov 2005 18:33:51 +0000
-content-class: urn:content-classes:message
+Received: from laf31-5-82-235-130-100.fbx.proxad.net ([82.235.130.100]:6636
+	"EHLO lexbox.fr") by ftp.linux-mips.org with ESMTP id S8133460AbVK3KOR convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 30 Nov 2005 10:14:17 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
-Subject: RE: Saving arguments on the stack
-Date: Wed, 23 Nov 2005 10:36:31 -0800
-Message-ID: <762C0A863A7674478671627FEAF5848105AF92D7@hqmail01.powertv.com>
-From: "Knittel, Brian" <Brian.Knittel@powertv.com>
-Return-Path: <Brian.Knittel@powertv.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: DbAu1550 copy file corruption
+Date: Wed, 30 Nov 2005 11:14:02 +0100
+Message-ID: <17AB476A04B7C842887E0EB1F268111E027190@xpserver.intra.lexbox.org>
+From: "David Sanchez" <david.sanchez@lexbox.fr>
+Return-Path: <david.sanchez@lexbox.fr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Dominic Sweetman <dom@mips.com>
-Message-ID: <20051123183631.QyxIfgB7ahJcQoGq4hCvCNBo3TL3b3sP34840tHk5YE@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20051130101402.yLz3bAoFQJpsbct1uZSnraEOVJAb7O4mNry5Uqdko0M@z>
 
-SGkgUmFsZiwNCiANCkkndmUgd29ya2VkIG91dCB0aGUgYmFja3RyYWNlLiBDaGFuZ2luZyB0aGUg
-Y29tcGlsZXIgaXMgcHJvYmFibHkgbm90IGFuIG9wdGlvbi4gT25lIGNvbGxlYWd1ZSBoYXMgc3Vn
-Z2VzdGVkIHRoYXQgd2l0aCBzeXN0ZW1zIHdpdGggcmVhc29uYWJsZSBzaXplIGNhY2hlcywgbm90
-IHNhdmluZyB0aGUgYXJndW1lbnRzIG9uIHRoZSBzdGFjayBkb2VzIG5vdCBwcm92aWRlIHNpZ25p
-ZmljYW50IHBlcmZvcm1hbmNlIGltcHJvdmVtZW50LiBJJ20gc3VyZSB0aGF0IGRlcGVuZHMgdXBv
-biB3aGF0IHlvdSBhcmUgZG9pbmcsIGJ1dCBJIHN1c3BlY3QgaGUgaXMgcmlnaHQgZm9yIHRoZSBt
-b3N0IHBhcnQuIA0KIA0KQ29tbWVudHMsIGFueW9uZT8NCiANClRoYW5rcywNCi0tQnJpYW4NCg0K
-CS0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tIA0KCUZyb206IFJhbGYgQmFlY2hsZSBbbWFpbHRv
-OnJhbGZAbGludXgtbWlwcy5vcmddIA0KCVNlbnQ6IFdlZCAxMS8yMy8yMDA1IDE6NTQgQU0gDQoJ
-VG86IEtuaXR0ZWwsIEJyaWFuIA0KCUNjOiBsaW51eC1taXBzQGxpbnV4LW1pcHMub3JnOyBEb21p
-bmljIFN3ZWV0bWFuIA0KCVN1YmplY3Q6IFJlOiBTYXZpbmcgYXJndW1lbnRzIG9uIHRoZSBzdGFj
-aw0KCQ0KCQ0KDQoJT24gVHVlLCBOb3YgMjIsIDIwMDUgYXQgMTA6MjQ6MDlBTSAtMDgwMCwgS25p
-dHRlbCwgQnJpYW4gd3JvdGU6DQoJDQoJPiBXZSdkIGxpa2UgdG8gYWRkIGFyZ3VtZW50cyB0byB0
-aGUgYmFja3RyYWNlIGluIE9vcHMgbWVzc2FnZXMgdG8gbWFrZQ0KCT4gZGVidWdnaW5nIGZyb20g
-dGhlc2UgcmVwb3J0cyBtb3JlIGVmZmljaWVudC4gSXQgaXMgcGFydGljdWxhcmx5IHVzZWZ1bA0K
-CT4gZm9yIGRldGVybWluaW5nIHdoZXJlIHRoZSBwcm9ibGVtIHdhcyBnZW5lcmF0ZWQsIHBhcnRp
-Y3VsYXJseSB3aGVuIGJhZA0KCT4gcG9pbnRlcnMgYXJlIHBhc3NlZCBpbi4gVGhpcyBpcyBmb3Ig
-cHJvZHVjdGlvbiBlbWJlZGRlZCBkZXZpY2VzIHdpdGgNCgk+IG9wdGltaXplZCBjb2RlIGFuZCB3
-aGljaCByZWJvb3QgaW1tZWRpYXRlbHkgYWZ0ZXIgc3RvcmluZyBvciBzZW5kaW5nIHRoZQ0KCT4g
-T29wcyBtZXNzYWdlLiBQZXJmb3JtYW5jZSBpcyBhbiBpc3N1ZSwgYnV0IHRoZSBvdmVyaGVhZCBv
-ZiBzdG9yaW5nIHRoZQ0KCT4gYXJndW1lbnRzIG9uIHRoZSBzdGFjayBpcyBsaWtlbHkgd29ydGgg
-dGhlIGFkZGVkIGRlYnVnIGluZm8uDQoJDQoJSW4gdGhpcyBjYXNlIHlvdSB3b3VsZCBwcm9iYWJs
-eSBoYXZlIHRvIG1vZGlmeSB0aGUgY29tcGlsZXIgdG8gc2F2ZSBhbGwNCglhcmd1bWVudHMuICBB
-bm90aGVyIGlzc3VlIGlzIGFjdHVhbGx5IGZpbmRpbmcgdGhlIHN0YWNrZnJhbWUuICBGb3IgYQ0K
-CWRlYnVnZ2VyIHVzaW5nIGRlYnVnIGluZm9ybWF0aW9uIHRoaXMgaXMgcG9zc2libGUgYnV0IHNo
-b3J0IG9mIHRoYXQgaXQncw0KCWhhcmQgb24gTUlQUyB0byBwcm9kdWNlIGEgbWVhbmluZ2Z1bCBi
-YWNrdHJhY2UuICBPciBoYXZpbmcgc29tZXRoaW5nDQoJYXMgY29tcGxpY2F0ZSBhcyBvbiBpYTY0
-IC4uLg0KCQ0KCSAgUmFsZg0KCQ0KDQo=
+Hi,
+
+I still have a problem of file corruption after a big copy (around 300M)
+and no solution at this time...
+
+Who have a dbau1550 and who could try the following script to check
+copies on big files?
+
+
+####################################
+#!/bin/sh
+
+path_file=$1
+if test -z $path_file ; then
+	path_file=`pwd`
+fi
+
+# You can modify the source and the destination filename, the source
+file 
+# size and the number of iterations.
+
+# Source and destination filename
+src_file=${path_file}/src_test_file
+dst_file=${path_file}/dst_test_file
+# Source file size: 300M
+src_file_size=300000
+# Number of iterations
+let max_it=50
+
+# Create source file
+if test ! -f ${src_file} ; then
+	echo "* Generating ${src_file}..."
+	dd bs=1024 count=${src_file_size} if=/dev/urandom of=${src_file}
+	echo ""
+fi
+
+# Check if source exists
+if test -f ${src_file} ; then
+	echo "* Check copy from $src_file to $dst_file:"
+	echo ""
+else
+	echo "$src_file does NOT exist" ; exec false
+fi
+
+# Clear destination
+if test -f ${dst_file} ; then
+	rm ${dst_file}
+fi
+
+# Go
+let i=0
+let nb_err=0
+while [ $i -lt $max_it ]
+do
+	cp ${src_file} ${dst_file}
+	cmp ${src_file} ${dst_file}
+	if [ $? -eq 0 ]
+		then
+			echo ${src_file} ${dst_file} IDENTICAL
+		else
+			let nb_err=nb_err+1
+		fi
+	rm ${dst_file}
+	let i=i+1
+done
+
+# Result
+echo ""
+echo "Done"
+echo -e "\t$nb_err error(s) over $max_it iteration(s)"
+echo ""
+####################################
+
+On my DbAu155 + Sata HDD on PDC20579 + Linux Kernel 2.6.10 + busybox
+1.0:
+Each destination differs from the source:
+
+####################################
+* Generating ./src_test_file...
+300000+0 records in
+300000+0 records out
+
+* Check copy from ./src_test_file to ./dst_test_file:
+
+./src_test_file ./dst_test_file differ: char 10388254, line 40877
+./src_test_file ./dst_test_file differ: char 69932960, line 274140
+./src_test_file ./dst_test_file differ: char 36867840, line 144723
+...
+
+Done
+        50 error(s) over 50 iteration(s)
+####################################
+
+Thanks'
+
+David

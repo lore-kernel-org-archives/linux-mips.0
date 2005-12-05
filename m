@@ -1,104 +1,57 @@
-Received: from [62.154.208.154] ([62.154.208.154]:63899 "EHLO
-	firewall1.addi-data.de") by ftp.linux-mips.org with ESMTP
-	id S8134039AbVLAPDp convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 1 Dec 2005 15:03:45 +0000
-Received: from [172.16.2.26] (helo=security01.addi-data.intra)
-	by firewall1.addi-data.de with esmtp (Exim 4.43)
-	id 1Ehq1a-0006oU-9I
-	for linux-mips@linux-mips.org; Thu, 01 Dec 2005 16:07:07 +0100
-Received: from security1.addi-data.de (exchange01.addi-data.intra) by
-    security01.addi-data.intra (Clearswift SMTPRS 5.0.9) with ESMTP id
-    <T74f37c7607ac10021ac30@security01.addi-data.intra> for
-    <linux-mips@linux-mips.org>; Thu, 1 Dec 2005 16:07:06 +0100
+Received: from laf31-5-82-235-130-100.fbx.proxad.net ([82.235.130.100]:47077
+	"EHLO lexbox.fr") by ftp.linux-mips.org with ESMTP id S8133575AbVLEIW7 convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 5 Dec 2005 08:22:59 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: get an usleep() with less than 20ms on 2.4.27
-Date: Thu, 1 Dec 2005 16:07:05 +0100
-Message-ID: <DD0BA80209AFF04091B518EA708D0A0B2F67DF@exchange01.addi-data.intra>
-From: "Conil.Christophe" <Conil.Christophe@addi-data.com>
-Return-Path: <conil.christophe@addi-data.com>
+Subject: Au1550 system bus masters issue
+Date: Mon, 5 Dec 2005 09:18:50 +0100
+Message-ID: <17AB476A04B7C842887E0EB1F268111E0271B7@xpserver.intra.lexbox.org>
+From: "David Sanchez" <david.sanchez@lexbox.fr>
+Return-Path: <david.sanchez@lexbox.fr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20051201150705.YMj62DOzULesSzDKVv6uUn9Tp6Kb0aobUQ0nPKFEprg@z>
+Message-ID: <20051205081850.1ITQg8Ez8ZVGSDSLNGl9VWVfnkRN8pW2USL4PB8WkKM@z>
 
 Hi,
 
-I'm using a 2.4.27 Kernel on MIPS.
+I notice the following issue in the specification update (v31420) of the
+au1550:
 
-I'm actually programming a USR-Space software which needs high-precision sleep() functions. Actually, by using them, I can't get a sleep time lower than 20 ms. (even with a usleep(1) which should sleep for 1 microsecond) I thought it may came from the Linux default scheduler, so I increased its resolution by modifying HZ and CLOCKS_PER_SEC (I set them to 1000 instead of 100) in the /linux/include/asm-mips/param.h file. I'm now having a minimum usleep time of 2ms, which is better, but still not perfect (since I need at least 1ms) If I continue increasing these 2 values, my kernel doesn't compile because of /linux/include/linux/timex.h. 
+"System bus masters (USB host, PCI, MAC0, MAC1, DDMA) may receive stale
+data.
 
-Do you have a clue what could I do to have a non-active (without a while) sleeping time fewer than 2ms? (A sleeping time of 0.5 ms would be perfect)
+Description
+-----------
+System bus masters (USB host controller, PCI controller, MAC0, MAC1,
+DDMA controller), when performing
+coherent reads, may incorrectly receive stale data from memory instead
+of valid modified data from the Au1
+data cache. If the request for data arrives within a 3-clock window
+prior to the cache line castout to memory,
+the cache snoop response is incorrect and stale data is retrieved from
+memory instead of the correct data from
+the cache. The cache line castout then completes, and memory is updated.
+Cache/memory data is not corrupted, but the specific bus read in not
+valid.
 
-Please excuse my newbieness if I said something not relevant... 
+Affected Step
+-------------
+AA
 
-Thank you very much,
+Workaround
+----------
+Do not enable cacheable master reads if the core modifies data in cache.
 
-Christophe CONIL
+Status
+------
+Not Fixed"
 
+Does somebody known if the linux kernel 2.6.10 integrates this
+workaround ?
 
-Content of /linux/include/linux/timex.h
---------------------------------------------------------------------------------
-#if HZ >= 12 && HZ < 24
-# define SHIFT_HZ 4
-[...]
-#elif HZ >= 768 && HZ < 1536
-# define SHIFT_HZ 10
-#else
-# error You lose. <
-#endif
---------------------------------------------------------------------------------
-
-
-Content of /linux/include/asm-mips/param.h
---------------------------------------------------------------------------------
-#ifndef _ASM_PARAM_H
-#define _ASM_PARAM_H
-
-#ifndef HZ
-
-#ifdef __KERNEL__
-
-/* Safeguard against user stupidity  */
-#ifdef _SYS_PARAM_H
-#error Do not include <asm/param.h> with __KERNEL__ defined!
-#endif
-
-#include <linux/config.h>
-
-/* This is the internal value of HZ, that is the rate at which the jiffies
-   counter is increasing.  This value is independent from the external value
-   and can be changed in order to suit the hardware and application
-   requirements.  */
-#  define HZ 1000 /* CC : Previous value was 100 */
-#  define hz_to_std(a) (a)
-
-#else /* defined(__KERNEL__)  */
-
-/* This is the external value of HZ as seen by user programs.  Don't change
-   unless you know what you're doing - changing breaks binary compatibility.  */
-#define HZ 100 
-
-#endif /* defined(__KERNEL__)  */
-#endif /* defined(HZ)  */
-
-[...]
-
-#ifdef __KERNEL__
-# define CLOCKS_PER_SEC     1000     /* frequency at which times() counts */ /* CC : Previous value was 100 */
-#endif
-
-#endif /* _ASM_PARAM_H */
---------------------------------------------------------------------------------
-
-**********************************************************************
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the system manager.
-
-This footnote confirms that this email message has been scanned for 
-the presence of computer viruses.
-**********************************************************************
+Thanks

@@ -1,59 +1,67 @@
-Received: from krt.tmd.ns.ac.yu ([147.91.177.65]:16267 "EHLO krt.neobee.net")
-	by ftp.linux-mips.org with ESMTP id S8133413AbVLGLL0 (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 7 Dec 2005 11:11:26 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by krt.neobee.net (8.12.7/8.12.7/SuSE Linux 0.6) with ESMTP id jB7CSfuI003385
-	for <linux-mips@linux-mips.org>; Wed, 7 Dec 2005 13:28:41 +0100
-Received: from krt.neobee.net ([127.0.0.1])
- by localhost (krt.neobee.net [127.0.0.1]) (amavisd-new, port 10024) with LMTP
- id 03262-01 for <linux-mips@linux-mips.org>;
- Wed,  7 Dec 2005 13:28:41 +0100 (CET)
-Received: from had ([192.168.0.89])
-	by krt.neobee.net (8.12.7/8.12.7/SuSE Linux 0.6) with ESMTP id jB7CSdti003380
-	for <linux-mips@linux-mips.org>; Wed, 7 Dec 2005 13:28:40 +0100
-Reply-To: <Mile.Davidovic@micronasnit.com>
-From: "Mile Davidovic" <Mile.Davidovic@micronasnit.com>
-Subject: List symbols from object files
-Date: Wed, 7 Dec 2005 12:11:04 +0100
-Message-ID: <001701c5fb1e$ea5e33c0$5900a8c0@niit.micronasnit.com>
+Received: from mail.ivivity.com ([64.238.111.98]:53219 "EHLO thoth.ivivity.com")
+	by ftp.linux-mips.org with ESMTP id S8133723AbVLGVt2 convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 7 Dec 2005 21:49:28 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Mile.Davidovic@micronasnit.com>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: pci_iomap issues?
+Date: Wed, 7 Dec 2005 16:49:09 -0500
+Message-ID: <0F31272A2BCBBE4FA01344C6E69DBF501EAACE@thoth.ivivity.com>
+From: "Marc Karasek" <marck@ivivity.com>
+Return-Path: <marck@ivivity.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20051207111104.podNx9sPgXxzc5RJ6b1RA3bnAMTQ_buVrtNTUVEjzE4@z>
+To: Scott Ashcroft <scott.ashcroft@talk21.com>, Mark Mason <mason@broadcom.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20051207214909.UxpmNdB7f6vYVzIxFKg2fzAOa8tVUVI6fy-j3CzFmWU@z>
 
-Hello all
+By multiple buses do you mean physical buses off of the CPU/companion chip or one PCI bus then a bridge chip then next PCI Bus, and so on..
 
-I am not shure that this question is for this list, if I made mistake, I am
-so sorry.
-My question is about usage of mips-linux-nm on Linux kernel with debugging
-information. 
+If it is the latter, then the code should be able to automatically take care of it.  The boot code should have already scanned the bus and annotated all of the buses.  The basic procedure is to start at bus 0, find the first bridge, look past this bridge, find next one, until you find the last bridge.  At this point you backtrack and setup each bridge (primary, secondary #'s, etc.).  Thne you go out and do config cycles to find out what devices are available and map them into the address space.  When Linux comes up it should do something similar, minus the setup to find out how many buses it has, and then how many devices it has.  The difference would be if linux finds a device it just reads the BARs to find out where it is mapped.  
 
-mips-linux-nm -la vmlinux does not show line number information.
-Is this expected bahavioure or I am missing something?
+If it is the former, then this should be a chip specific operation where Linux would scan again but needs to know to scan on multiple interfaces/PCI buses. The boot code should also be aware of this situation and map things appropriately.    
 
-This is part of my .config file:
-CONFIG_DEBUG_KERNEL=y
-# CONFIG_MAGIC_SYSRQ is not set
-CONFIG_LOG_BUF_SHIFT=14
-# CONFIG_SCHEDSTATS is not set
-# CONFIG_DEBUG_SLAB is not set
-CONFIG_DEBUG_PREEMPT=y
-# CONFIG_DEBUG_SPINLOCK is not set
-# CONFIG_DEBUG_SPINLOCK_SLEEP is not set
-# CONFIG_DEBUG_KOBJECT is not set
-CONFIG_DEBUG_INFO=y
-# CONFIG_DEBUG_FS is not set
-CONFIG_CROSSCOMPILE=y
-CONFIG_CMDLINE=""
-# CONFIG_DEBUG_STACK_USAGE is not set
-# CONFIG_KGDB is not set
-CONFIG_RUNTIME_DEBUG=y
-# CONFIG_MIPS_UNCACHED is not set
+Any content within this email is provided "AS IS" for informational purposes only. No contract will be formed between the parties by virtue of this email.
+<**************************>
+Marc Karasek
+System Lead Technical Engineer
+iVivity Inc.
+PH: 678-990-1550 x238
+Fax: 678-990-1551
+<**************************>
 
 
-Best regards Mile
+
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org
+[mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Scott Ashcroft
+Sent: Wednesday, December 07, 2005 12:46 PM
+To: Mark Mason
+Cc: Scott Ashcroft; linux-mips@linux-mips.org
+Subject: Re: pci_iomap issues?
+
+
+
+--- Mark Mason <mason@broadcom.com> wrote:
+> 
+> Any system based on BCM1480s could have multiple pci
+> busses (one PCI-X
+> directly, and additional busses through HT/PCI-X
+> bridges).  For the
+> BCM91480B board, we had to turn on PCI_DOMAINS to
+> get this to work
+> correctly.
+
+I understand that there are machines with multiple PCI
+busses out there but comparing the ppc64 code with the
+proposed mips patches I don't see much difference.
+Are the ppc64 people just breaking multiple PCI bus
+machines, did something happen in the generic PCI code
+which fixed the issue or is there just a difference I
+can't see?
+
+Cheers,
+Scott

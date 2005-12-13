@@ -1,97 +1,31 @@
-Received: from rtsoft3.corbina.net ([85.21.88.6]:32584 "EHLO
-	buildserver.ru.mvista.com") by ftp.linux-mips.org with ESMTP
-	id S8133480AbVLHR0Y (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 8 Dec 2005 17:26:24 +0000
-Message-ID: <43986CB8.9000000@ru.mvista.com>
-Date: Thu, 08 Dec 2005 20:26:16 +0300
-From: "Vladimir A. Barinov" <vbarinov@ru.mvista.com>
+Received: from mf2.realtek.com.tw ([220.128.56.22]:9482 "EHLO
+	mf2.realtek.com.tw") by ftp.linux-mips.org with ESMTP
+	id S8133519AbVLMJ1o (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 13 Dec 2005 09:27:44 +0000
+Received: from msx.realtek.com.tw (unverified [172.21.1.77]) by mf2.realtek.com.tw
+ (Clearswift SMTPRS 5.1.7) with ESMTP id <T7531950ea4dc80381613b4@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
+ Tue, 13 Dec 2005 17:30:25 +0800
+Message-ID: <017301c5ffc7$80383830$106215ac@realtek.com.tw>
+From: "colin" <colin@realtek.com.tw>
+Subject: To put Linux kernel as closer as possible to 0x80000000
+Date: Tue, 13 Dec 2005 17:27:56 +0800
 MIME-Version: 1.0
-Subject: [Fwd: Re: [PATCH] Philips PNX8550 command line patch]
-Content-Type: multipart/mixed;
- boundary="------------050707090104000905020304"
-Return-Path: <vbarinov@ru.mvista.com>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="big5"
+Return-Path: <colin@realtek.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ralf@linux-mips.org, ppopov@embeddedalley.com
-Cc: linux-mips@linux-mips.org
-Message-ID: <20051208172616.-SrveN4sKrD0fR_XwWM30J2iGhacoNBtmhC3FX_1n18@z>
-
-This is a multi-part message in MIME format.
---------------050707090104000905020304
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Sorry, but it seems that this mail was lost :(
-resending...
-
---------------050707090104000905020304
-Content-Type: message/rfc822;
- name="Re: [PATCH] Philips PNX8550 command line patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="Re: [PATCH] Philips PNX8550 command line patch"
-
-Message-ID: <43986714.2020806@ru.mvista.com>
-Date: Thu, 08 Dec 2005 20:02:12 +0300
-From: "Vladimir A. Barinov" <vbarinov@ru.mvista.com>
-User-Agent: Mozilla Thunderbird 1.0.2-6 (X11/20050513)
-X-Accept-Language: en-us, en
-MIME-Version: 1.0
-To: Peter Popov <ppopov@embeddedalley.com>
-CC: Ralf Baechle <ralf@linux-mips.org>,
- "'linux-mips@linux-mips.org'" <linux-mips@linux-mips.org>
-Subject: Re: [PATCH] Philips PNX8550 command line patch
-References: <20051206192105.32325.qmail@web403.biz.mail.mud.yahoo.com>
-In-Reply-To: <20051206192105.32325.qmail@web403.biz.mail.mud.yahoo.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hello Pete, Ralf,
-
-Peter Popov wrote:
-
->--- Ralf Baechle <ralf@linux-mips.org> wrote:
->
->  
->
->>On Tue, Dec 06, 2005 at 09:02:14PM +0300, Vladimir
->>A. Barinov wrote:
->>
->>    
->>
->>>This patch makes passing command line from
->>>      
->>>
->>bootloader for Philips 
->>    
->>
->>>PNX8550 platform.
->>>Does it makes sense to commit this patch?
->>>      
->>>
->>Looks ok at a quick glance.  I'll wait a bit so Pete
->>has a chance to comment.
->>    
->>
->
->Looks fine to me.
->  
->
-Sorry for my misunderstood but I suppose that this patch should be 
-ignored since it
-used JBS board dependent code and I have STB810 that based on the code 
-of JBS.
-But JBS board could have firmware that differs from that STB810 uses. So 
-the command line
-could be parsed incorrectly for JBS, it's needed to check by somebody 
-who has JBS board.
-
-I prepared STB810 board dependent patch that include this fix for 
-command-line parsing for STB810 board only.
-So Ralf please ignore this patch though it was approved by you and Pete.
-
-Vladimir
+To: linux-mips@linux-mips.org
+Message-ID: <20051213092756.sKA7aMQj4IQLqnjXGQa10fwW3xKiAV250fB1ddsA9MY@z>
 
 
+Hi all,
+We want to put Linux kernel as closer as possible to the bottom of memory.
+I know that there is some stuff put in the beginning of memory, like
+Exception table.
+So, what's the closest address to 0x80000000 that is allowable to store
+kernel?
 
---------------050707090104000905020304--
+Regards,
+Colin

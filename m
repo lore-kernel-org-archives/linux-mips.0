@@ -1,62 +1,61 @@
-Received: from ltrxmail.lantronix.com ([67.134.254.86]:10821 "EHLO
-	double-bogey.int.lantronix.com") by ftp.linux-mips.org with ESMTP
-	id S8133546AbWAEQMo convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 5 Jan 2006 16:12:44 +0000
-Content-Class: urn:content-classes:message
+Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:37098 "EHLO
+	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133363AbWAGJWI
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Sat, 7 Jan 2006 09:22:08 +0000
+Message-ID: <001d01c6136c$2a77ae40$0202a8c0@Ulysses>
+From: "Kevin D. Kissell" <KevinK@mips.com>
+References: <f69849430601062302if424acey70e98f86e0de36e6@mail.gmail.com>
+Subject: Re: Almost 80% of UDP packets dropped
+Date: Sat, 7 Jan 2006 10:24:29 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: iptables/vmalloc issues on alchemy (revisited)
-Date: Thu, 5 Jan 2006 08:15:13 -0800
-Message-ID: <2F0FC2A92C0B154BB406D5E74CB3E693010849F5@3putt.int.lantronix.com>
-From: "Christi Garvin" <christi.garvin@lantronix.com>
-Return-Path: <christi.garvin@lantronix.com>
+Content-Transfer-Encoding: 7bit
+Return-Path: <KevinK@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Cc: dan@embeddededge.com
-Message-ID: <20060105161513.YclmMaetwNPkiZeTH3DiN5fi3iLsx3i5Q13tAvW3c5M@z>
+To: kernel coder <lhrkernelcoder@gmail.com>, linux-mips@linux-mips.org
+Message-ID: <20060107092429.Y1KRG_kJfxRb0-GnGoUjHZDLQD06NmA3BiyuPmUuomM@z>
 
-This issue was reported on this mailing list back in April '05....
- 
-On Tue, 2005-04-26 at 10:43 +0200, Herbert Valerio Riedel wrote:
-> ... 
-> The problem seems to be so far, that when modifying the iptables
-> structures by adding/flushing the rules, a state can be reached sooner
-> or later (indeterministic! smells like race) where the data structure
-> becomes invalid (although there are checks in the kernel which would
-> prevent that); the result is either ip_tables.c:ipt_do_tables() causing
-> an oops due to bad pointer dereferencing (or the kernel freezing w/o
-> further notice at all), or the iptables tool being unable to
-> retrieve/modify the rules from the kernel (and getting ENOMEM/EINVAL) or
-> simply segfaulting due to other inconsistencies with the data...
-it appears the problem was found...
-On Wed, 2005-04-27 at 15:06 -0400, Dan Malek wrote:
-> Oh wait ....  I found a bug a while ago from someone trying to load
-> large modules.  There is a problem if the kernel grows to need
-> additional PTE tables, the top level pointers don't get propagated
-> correctly and subsequent access by a thread that didn't actually
-> do the allocation would fail.  I'm looking into this, including your
-> past message about 64-bit PTEs.
- 
-and possibly fixed:
- 
-> From: Dan Malek [mailto:dan@embeddededge.com] 
-> Sent: Thursday, April 28, 2005 3:57 PM
-> Subject: Re: iptables/vmalloc issues on alchemy
->
-> I've just been talking about 2.6, so "long time ago" can't be
-> that long :-)  I have the updates to the exception handler so
-> the PTEs get loaded correctly, that's on the way.  I think 2.4
-> should be OK if anyone is using that.
- 
-I am encountering this same problem with 2.6.11 and iptables 1.2.11, 
-and I've searched for an appropriate patch/fix, and cannot find one....
-Can you tell me if this has been fixed, and if so, point me in the
-direction of the patch?
- 
-regards,
-christi garvin
-**********************************************************************
-This e-mail is the property of Lantronix. It is intended only for the person or entity to which it is addressed and may contain information that is privileged, confidential, or otherwise protected from disclosure. Distribution or copying of this e-mail, or the information contained herein, to anyone other than the intended recipient is prohibited.
+What value of HZ are you using?  If you're still at the 2.6 default of 1000,
+try reducing it to 100 and see if things improve...
+
+----- Original Message ----- 
+From: "kernel coder" <lhrkernelcoder@gmail.com>
+To: <linux-mips@linux-mips.org>
+Sent: Saturday, January 07, 2006 8:02 AM
+Subject: Almost 80% of UDP packets dropped
+
+
+> hi,
+>     I was trying to measure the UDP reception speed on my borad which
+> has MIPS 4kc processor with 133 MHZ speed.I was transfering 10mb file
+> from intel pentium 4 machine to MIPS board,but the recieved file was
+> only 900kB.
+> 
+> When i further investigated the problem ,i came to know that the user
+> application was not getting enough opportunities to get data from
+> socket queue which caused almost 80% of packets to be dropped as
+> socket queue had no free space.
+> 
+> When i increased the socket recieve buffer size,it resulted in
+> increase in no. of packets recieved .When i slow slowed down the
+> transmitter , it also caused more packets to be recieved.
+> 
+> But the above mentioned mechanism only decreased no. of lost
+> packets.But there was no way that i could increase UDP reception speed
+> because the user application was not getting enough opportunities to
+> read packets in burst of UDP packets.
+> 
+> I noticed that user application started recieveing packets after
+> Kernel had recieved all the UDP packets.
+> 
+> Please tell me how can i make sure that user application or udp client
+> running MIPS 4kc processor gets enough opportunities to dequeue
+> packets from socket buffer so that lost of packets could be reduced to
+> minimal and also the size of UDP recieved file in a specific interval
+> of time could be increased.
+> 
+> lhrkernelcoder
+> 
+> 

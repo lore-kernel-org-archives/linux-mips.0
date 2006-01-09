@@ -1,12 +1,12 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:23021 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133706AbWAII4X
+Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:50925 "EHLO
+	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8134420AbWAIPNQ
 	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 9 Jan 2006 08:56:23 +0000
-Message-ID: <005a01c614fb$2fe76b00$10eca8c0@grendel>
+	Mon, 9 Jan 2006 15:13:16 +0000
+Message-ID: <00af01c6152f$dc1863f0$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <200601090742.k097gYaZ017304@lilac.hdcindia.analog.com>
-Subject: Re: 
-Date: Mon, 9 Jan 2006 10:00:48 +0100
+References: <200601090742.k097gYaZ017304@lilac.hdcindia.analog.com> <200601090749.k097nFaZ017891@lilac.hdcindia.analog.com> <20060109145425.GA4286@linux-mips.org>
+Subject: Re: LL and SC instruction simulation
+Date: Mon, 9 Jan 2006 16:17:50 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -14,70 +14,29 @@ Content-Transfer-Encoding: 7bit
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Sathesh Babu Edara <satheshbabu.edara@analog.com>, linux-mips-bounce@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20060109090048.d5ijo6d8uDsZIHVxSod3RqkzccwUrt_AWA-G2VnyROM@z>
+To: Ralf Baechle <ralf@linux-mips.org>, Sathesh Babu Edara <satheshbabu.edara@analog.com>
+Cc: linux-mips-bounce@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20060109151750.Xib31AURvaCW1QEFsxusbzxRJqPIfqNimvwkQC0QsYk@z>
 
-There is no "ideal" value for a given processor frequency.
-The lower the value, the less interrupt processing overhead,
-but the slower the response time to events that are detected
-or serviced during clock interrupts. 1000 HZ *may* be a sensible
-value (I have my doubts, personally) for 2+ GHz PC processors, 
-but it's excessive (IMHO) for a 200MHz processor and unworkable 
-for a 20MHz CPU. I think that 100HZ is still a reasonable value
-for an embedded RISC CPU, but the "ideal" value is going to
-be a function of the application.
-
-        Regards,
-
-        Kevin K.
-
------ Original Message ----- 
-From: "Sathesh Babu Edara" <satheshbabu.edara@analog.com>
-To: "'Kevin D. Kissell'" <kevink@mips.com>; <linux-mips-bounce@linux-mips.org>; <linux-mips@linux-mips.org>
-Sent: Monday, January 09, 2006 8:43 AM
-Subject: RE: 
-
-
+Ralf writes:
+> On Mon, Jan 09, 2006 at 01:19:46PM +0530, Sathesh Babu Edara wrote:
 > 
-> Hi,
->   Appreciate your response .
-> 
->   What is the ideal HZ value if the processor speed is 200Mhz?.
-> 
-> Regards,
-> Sathesh
-> -----Original Message-----
-> From: Kevin D. Kissell [mailto:kevink@mips.com] 
-> Sent: Wednesday, January 04, 2006 6:37 PM
-> To: Sathesh Babu Edara
-> Cc: linux-mips-bounce@linux-mips.org; linux-mips@linux-mips.org
-> Subject: Re: 
-> 
-> Sathesh Babu Edara wrote:
-> >  
+> >    We have ported linux-2.4.18 and linux-2-6.12 kernel (mips.org)onto MIPS
+> > processor (CPU type lx4189).
 > > 
-> > Hi,
-> >    We have ported linux-2.6.12 kernel onto MIPS processor (LX4189) and 
-> > the processor speed is 200Mhz.
-> > By default Linux-2.6.12 kernel comes with HZ value 1000.Will this HZ 
-> > value cause an overhead on the 200MHZ CPU.Can someone advise me on 
-> > whether going back to HZ vaule of 100 like Linux-2.4 will reduce the 
-> > overhead on this CPU.What are the side effects this change can cause?.
+> >  We observed that on 2.4 kernel,ll and sc instruction exception handlers
+> > hitting very often.
+> > Where as on linux-2.6.12 this is not happening.
 > 
-> The 1000Hz clock should not actually cause any problems with a 200MHz CPU,
-> but it will suck up an annoyingly high percentage of available cycles.
-> Backing off to 100Hz may cause some degradation of some
-> real-time/interactive response times, but the improved overall performance
-> will probably more than make up for it.  I never build with a HZ value
-> greater than 100 these days, but then again, I'm mostly running on FPGAs and
-> other hardware emulators where the CPU clock frequencies may be less than
-> 1MHz, and are never more than 33MHz.
-> Note that a HZ  value of less than 100 may cause some kernel macros to
-> generate divide-by-zero operations/exceptions.
+> > Can anybody have idea why this instructions are hitting on 2.4.18 kernel and
+> > not on 2-6.12 kernel.
 > 
-> Regards,
-> 
-> Kevin K.
-> 
-> 
-> 
+> Only ll/sc instructions in application software can be emulated, so it
+> would seem your application is behaving different on 2.4 and 2.6 kernels.
+
+Is there an interface where 2.6 might be telling library code to use system calls
+instead LL/SC, where the 2.4 kernel didn't?
+
+            Regards,
+
+            Kevin K.

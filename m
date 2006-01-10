@@ -1,72 +1,48 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:24559 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133508AbWAIV7V convert rfc822-to-8bit
+Received: from alg145.algor.co.uk ([62.254.210.145]:51206 "EHLO
+	dmz.algor.co.uk") by ftp.linux-mips.org with ESMTP id S8133415AbWAJJd3
 	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 9 Jan 2006 21:59:21 +0000
-Content-class: urn:content-classes:message
+	Tue, 10 Jan 2006 09:33:29 +0000
+From: Dominic Sweetman <dom@mips.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <17347.32817.144103.968382@mips.com>
+Date: Tue, 10 Jan 2006 09:36:49 +0000
 Subject: RE: [processor frequency]
-Date: Mon, 9 Jan 2006 14:00:50 -0800
-Message-ID: <3CB54817FDF733459B230DD27C690CEC010495E3@Exchange.MIPS.COM>
-From: "Mitchell, Earl" <earlm@mips.com>
-Return-Path: <earlm@mips.com>
+In-Reply-To: <3CB54817FDF733459B230DD27C690CEC010495E3@Exchange.MIPS.COM>
+References: <3CB54817FDF733459B230DD27C690CEC010495E3@Exchange.MIPS.COM>
+Return-Path: <dom@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Wolfgang Denk <wd@denx.de>, "Kevin D. Kissell" <kevink@mips.com>
-Cc: Sathesh Babu Edara <satheshbabu.edara@analog.com>, linux-mips@linux-mips.org
-Message-ID: <20060109220050.F1g_tyUXE4NahE8zEkWLRhcefBzY-Z7-V5FiK-4FGdA@z>
+To: "Mitchell, Earl" <earlm@mips.com>
+Cc: Wolfgang Denk <wd@denx.de>, "Kevin D. Kissell" <kevink@mips.com>, Sathesh Babu Edara <satheshbabu.edara@analog.com>, linux-mips@linux-mips.org
+Message-ID: <20060110093649.HN7mvC9R7o8cT4lwTx1zGRNblq6RS2t60tDgfr8aLGk@z>
 
 
-Wolfgang, 
+My colleague Earl writes:
 
-In your summary you mention ...
+> The desktop/server guys typically use much larger caches (i.e. >= 512K)
+> and most have L2, compared to embedded systems which typically use less
+> without an L2. So I'd also expect embedded guys using small caches to see 
+> larger decreases in performance due to more cache misses (i.e. more 
+> interrupts produce more evictions). 
 
- "This probably explains why many developers who never use low-end embedded processors don't care about (and usually don't even know of) these problems in the 2.6 kernel."
+It's certainly true that running an interrupt routine (even one which
+doesn't lead to any scheduling activity) will cause some cache
+traffic.  But it is important to keep the relative timescales in mind.
+With an averagely bad memory system, evicting and replacing a cache
+line costs 150ns read latency, with a 100ns writeback (notionally done
+"in the background" just after the read) on about one miss in four...
 
-The desktop/server guys typically use much larger caches (i.e. >= 512K)
-and most have L2, compared to embedded systems which typically use less
-without an L2. So I'd also expect embedded guys using small caches to see 
-larger decreases in performance due to more cache misses (i.e. more 
-interrupts produce more evictions). 
+Let's make some pessimistic assumptions.  Suppose an interrupt routine
+displaces 2KB of code and data and uses 32-byte cache lines, and we
+assume the process happens twice as the background process refills the
+cache to its liking.  Then we'll get 120 odd reads, which will cost
+about 20us, about 2% of total time on a 1KHz clock.  That doesn't
+sound like it should be a huge effect.
 
--earlm
+It would be better to measure it, though.
 
-
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org
-> [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Wolfgang Denk
-> Sent: Monday, January 09, 2006 1:24 PM
-> To: Kevin D. Kissell
-> Cc: Sathesh Babu Edara; linux-mips@linux-mips.org
-> Subject: Re: [processor frequency]
-> 
-> 
-> In message <005a01c614fb$2fe76b00$10eca8c0@grendel> you wrote:
-> > There is no "ideal" value for a given processor frequency.
-> > The lower the value, the less interrupt processing overhead,
-> > but the slower the response time to events that are detected
-> > or serviced during clock interrupts. 1000 HZ *may* be a sensible
-> > value (I have my doubts, personally) for 2+ GHz PC processors, 
-> > but it's excessive (IMHO) for a 200MHz processor and unworkable 
-> > for a 20MHz CPU. I think that 100HZ is still a reasonable value
-> > for an embedded RISC CPU, but the "ideal" value is going to
-> > be a function of the application.
-> 
-> We did some tests of the performance impact of 100 vs. 1000 Hz  clock
-> frequency on low end systems (50 MHz PowerPC); for details please see
-> http://www.denx.de/wiki/view/Know/Clock100vs1000Hz
-> 
-> Best regards,
-> 
-> Wolfgang Denk
-> 
-> -- 
-> Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-> Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-> Our missions are peaceful -- not for conquest.  When we do battle, it
-> is only because we have no choice.
-> 	-- Kirk, "The Squire of Gothos", stardate 2124.5
-> 
-> 
+--
+Dominic Sweetman
+MIPS Technologies.

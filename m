@@ -1,34 +1,39 @@
-Received: from mf2.realtek.com.tw ([60.248.182.46]:17679 "EHLO
-	mf2.realtek.com.tw") by ftp.linux-mips.org with ESMTP
-	id S3457192AbWAPIN7 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 16 Jan 2006 08:13:59 +0000
-Received: from msx.realtek.com.tw (unverified [172.21.1.77]) by mf2.realtek.com.tw
- (Clearswift SMTPRS 5.1.7) with ESMTP id <T75e06cae14dc803816c34@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
- Mon, 16 Jan 2006 16:19:52 +0800
-Message-ID: <005101c61a75$43edc6b0$106215ac@realtek.com.tw>
-From: "colin" <colin@realtek.com.tw>
-Subject: Can I use this kind of performance counters to implement oProfile?
-Date: Mon, 16 Jan 2006 16:17:17 +0800
+Received: from zproxy.gmail.com ([64.233.162.201]:39960 "EHLO zproxy.gmail.com")
+	by ftp.linux-mips.org with ESMTP id S8133443AbWAPMTz (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 16 Jan 2006 12:19:55 +0000
+Received: by zproxy.gmail.com with SMTP id l8so1101018nzf
+        for <linux-mips@linux-mips.org>; Mon, 16 Jan 2006 04:23:26 -0800 (PST)
+Message-ID: <f07e6e0601160423h5ce1c0d7lcb7e38f8509c4116@mail.gmail.com>
+Date: Mon, 16 Jan 2006 17:53:26 +0530
+From: Kishore K <hellokishore@gmail.com>
+Subject: gcc -3.4.4 and linux-2.4.32
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset="big5"
-Return-Path: <colin@realtek.com.tw>
+Content-Type: multipart/mixed;
+	boundary="----=_Part_5435_18690732.1137414206474"
+Return-Path: <hellokishore@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20060116081717.jhc1haJPeYBBBc0ncn0w0L-PHGmkzq_KSwn4yTPovsM@z>
+Message-ID: <20060116122326.5KV-RLeWGmQ8L-sjhEgWgg_s1dHj3rBozniK-KdYv2U@z>
 
+------=_Part_5435_18690732.1137414206474
+Content-Type: multipart/alternative;
+	boundary="----=_Part_5436_32105947.1137414206474"
 
-Hi all,
-Our SOC has performance counters, and we would like to use oProfile on it.
-After surveying the oProfile doc, I found that the model of our performance
-counters donot seem to fit oProfile.
-This is because oProfile uses the interrupts caused by overflow of, say,
-cache miss count to estimate the probability of this event in every portion.
-Our SOC doesn't emit interrupt when event count overflow. Therefore,
-oProfile cannot be used to estimate cache miss event on our chip. Is that
-right?
+------=_Part_5436_32105947.1137414206474
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Regards,
-Colin
+hi
+When 2.4.32 kernel (from linux-mips) is compiled with the tool chain based
+on gcc 3.4.4 and binutils 2.16.1, the kernel crashes on malta board. The
+crash file is enclosed along with the mail. If the same kernel is compiled
+with the tool chain based on gcc 3.3.6, no problem is observed.
+
+May I know, whether it is because of the changes in ABI in gcc 3.4. If so,
+has any one got the patch to make 2.4.x kernels work with gcc 3.4 compilers=
+?
+------=_Part_5436_32105947.1137414206474--
+
+------=_Part_5435_18690732.1137414206474--

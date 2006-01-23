@@ -1,65 +1,31 @@
-Received: from mail.ivivity.com ([64.238.111.98]:41556 "EHLO thoth.ivivity.com")
-	by ftp.linux-mips.org with ESMTP id S3950817AbWATVXV convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 20 Jan 2006 21:23:21 +0000
-Content-class: urn:content-classes:message
+Received: from mf2.realtek.com.tw ([60.248.182.46]:18451 "EHLO
+	mf2.realtek.com.tw") by ftp.linux-mips.org with ESMTP
+	id S3458555AbWAWJNT (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 23 Jan 2006 09:13:19 +0000
+Received: from msx.realtek.com.tw (unverified [172.21.1.77]) by mf2.realtek.com.tw
+ (Clearswift SMTPRS 5.1.7) with ESMTP id <T7604b02056dc803816c34@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
+ Mon, 23 Jan 2006 17:19:52 +0800
+Message-ID: <015501c61ffd$cd41db30$106215ac@realtek.com.tw>
+From: "colin" <colin@realtek.com.tw>
+Subject: Can somebody please send me a copy of oprofile utils?
+Date: Mon, 23 Jan 2006 17:17:15 +0800
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: how to emdedded ramdisk.gz in vmlinux for linux-2.6.14? 
-Date: Fri, 20 Jan 2006 16:27:12 -0500
-Message-ID: <0F31272A2BCBBE4FA01344C6E69DBF501EAB34@thoth.ivivity.com>
-From: "Marc Karasek" <marck@ivivity.com>
-Return-Path: <marck@ivivity.com>
+	charset="big5"
+Return-Path: <colin@realtek.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: wd@denx.de
-Cc: "P. Christeas" <p_christ@hol.gr>, Linux-Mips <linux-mips@linux-mips.org>
-Message-ID: <20060120212712.XFthfcp8AAL1Fp5HCG94Nrg8HkOmM63Cccj2aXLlc1A@z>
-
-I took a look at the page...
-
-The one criteria, being able to update in a live system, trumps all of the other considerations.  If you cannot update a live system, then you might as well take your ball & bat and go home.  :-)
-
-Seriously, that is a what I would call a no-brainer decision.    
-
-Any content within this email is provided "AS IS" for informational purposes only. No contract will be formed between the parties by virtue of this email.
-<**************************>
-Marc Karasek
-System Lead Technical Engineer
-iVivity Inc.
-PH: 678-990-1550 x238
-Fax: 678-990-1551
-<**************************>
+To: linux-mips@linux-mips.org
+Message-ID: <20060123091715.sPRcnr3Jo4ElT9S18ie1x4_2mcBtuAU7VZChD71op4U@z>
 
 
+Hi all,
+I need oprofile utils to profile kernel and now I am stuck over compiling
+C++ and some libraries.
+Could somebody please send me static compiled oprofile utils running over
+MIPS platform?
+This will save me a lot of time.
 
------Original Message-----
-From: wd@denx.de [mailto:wd@denx.de]
-Sent: Friday, January 20, 2006 4:04 PM
-To: Marc Karasek
-Cc: P. Christeas; Linux-Mips
-Subject: Re: how to emdedded ramdisk.gz in vmlinux for linux-2.6.14? 
-
-
-In message <1137790053.22994.58.camel@localhost.localdomain> you wrote:
-> Basically due to design issues and cost issues having a flash based
-> system is not possible.  Currently we have only 16MB total of flash and
-
-If you have enough flash to store a compressed ramdisk image, you can
-store a compressed flash file system as well. For example, you  could
-use  a  cramfs file system. In most cases the ramdisk solution is the
-worst option to chose. See for example
-http://www.denx.de/wiki/view/DULG/RootFileSystemSelection
-
-
-Best regards,
-
-Wolfgang Denk
-
--- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-There are bugs and then there are bugs.  And then there are bugs.
-                                                    - Karl Lehenbauer
+Thanks and regards,
+Colin

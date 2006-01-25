@@ -1,72 +1,34 @@
-Received: from fmr22.intel.com ([143.183.121.14]:64408 "EHLO
-	scsfmr002.sc.intel.com") by ftp.linux-mips.org with ESMTP
-	id S8133382AbWAYRHE convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 25 Jan 2006 17:07:04 +0000
-Content-class: urn:content-classes:message
+Received: from ozlabs.org ([203.10.76.45]:954 "EHLO ozlabs.org")
+	by ftp.linux-mips.org with ESMTP id S8133463AbWAYWZJ (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 25 Jan 2006 22:25:09 +0000
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: [PATCH 5/6] fix warning on test_ti_thread_flag()
-Date: Wed, 25 Jan 2006 09:08:15 -0800
-Message-ID: <B05667366EE6204181EABE9C1B1C0EB509780224@scsmsx401.amr.corp.intel.com>
-From: "Chen, Kenneth W" <kenneth.w.chen@intel.com>
-Return-Path: <kenneth.w.chen@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <17367.64370.844350.972910@cargo.ozlabs.ibm.com>
+Date: Thu, 26 Jan 2006 09:28:02 +1100
+From: Paul Mackerras <paulus@samba.org>
+Subject: Re: [PATCH 5/6] fix warning on test_ti_thread_flag()
+In-Reply-To: <20060125113446.GF18584@miraclelinux.com>
+References: <20060125112625.GA18584@miraclelinux.com>
+	<20060125113446.GF18584@miraclelinux.com>
+Return-Path: <paulus@ozlabs.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Akinobu Mita <mita@miraclelinux.com>
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Russell King <rmk@arm.linux.org.uk>, Ian Molton <spyro@f2s.com>, dev-etrax@axis.com, David Howells <dhowells@redhat.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Linus Torvalds <torvalds@osdl.org>, linux-ia64@vger.kernel.org, Hirokazu Takata <takata@linux-m32r.org>, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, Linux/MIPS Development <linux-mips@linux-mips.org>, parisc-linux@parisc-linux.org, Linux/PPC Development <linuxppc-dev@ozlabs.org>, linux390@de.ibm.com, linuxsh-dev@lists.sourceforge.net, linuxsh-shmedia-dev@lists.sourceforge.net, sparclinux@vger.kernel.org, ultralinux@vger.kernel.org, Miles Bader <uclinux-v850@lsi.nec.co.jp>, Andi Kleen <ak@suse.de>, Chris Zankel <chris@zankel.net>
-Message-ID: <20060125170815.YwHdMMCA_jIw5e_yJuH9SaBsn_vrlxSLTR0EpIoet18@z>
+To: Akinobu Mita <mita@miraclelinux.com>
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, Ian Molton <spyro@f2s.com>, David Howells <dhowells@redhat.com>, linuxppc-dev@ozlabs.org, Greg Ungerer <gerg@uclinux.org>, sparclinux@vger.kernel.org, Miles Bader <uclinux-v850@lsi.nec.co.jp>, Linus Torvalds <torvalds@osdl.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Hirokazu Takata <takata@linux-m32r.org>, linuxsh-shmedia-dev@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Richard Henderson <rth@twiddle.net>, Chris Zankel <chris@zankel.net>, dev-etrax@axis.com, ultralinux@vger.kernel.org, Andi Kleen <ak@suse.de>, linuxsh-dev@lists.sourceforge.net, linux390@de.ibm.com, Russell King <rmk@arm.linux.org.uk>, parisc-linux@parisc-linux.org
+Message-ID: <20060125222802.BDwszPPiS_Ea3xX7nJDyD3n8VfE7b2BZliwFwaCAPU4@z>
 
-Geert Uytterhoeven wrote on Wednesday, January 25, 2006 4:29 AM
-> On Wed, 25 Jan 2006, Akinobu Mita wrote:
-> > If the arechitecture is
-> > - BITS_PER_LONG == 64
-> > - struct thread_info.flag 32 is bits
-> > - second argument of test_bit() was void *
-> > 
-> > Then compiler print error message on test_ti_thread_flags()
-> > in include/linux/thread_info.h
-> > 
-> > Signed-off-by: Akinobu Mita <mita@miraclelinux.com>
-> > ---
-> >  thread_info.h |    2 +-
-> >  1 files changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > Index: 2.6-git/include/linux/thread_info.h
-> > ===================================================================
-> > --- 2.6-git.orig/include/linux/thread_info.h	2006-01-25
-19:07:12.000000000 +0900
-> > +++ 2.6-git/include/linux/thread_info.h	2006-01-25
-19:14:26.000000000 +0900
-> > @@ -49,7 +49,7 @@
-> >  
-> >  static inline int test_ti_thread_flag(struct thread_info *ti, int
-flag)
-> >  {
-> > -	return test_bit(flag,&ti->flags);
-> > +	return test_bit(flag, (void *)&ti->flags);
-> >  }
+Akinobu Mita writes:
+
+> If the arechitecture is
+> - BITS_PER_LONG == 64
+> - struct thread_info.flag 32 is bits
+> - second argument of test_bit() was void *
 > 
-> This is not safe. The bitops are defined to work on unsigned long
-only, so
-> flags should be changed to unsigned long instead, or you should use a
-> temporary.
-> 
-> Affected platforms:
->   - alpha: flags is unsigned int
->   - ia64, sh, x86_64: flags is __u32
-> 
-> The only affected 64-platforms are little endian, so it will silently
-work
-> after your change, though...
+> Then compiler print error message on test_ti_thread_flags()
+> in include/linux/thread_info.h
 
-I thought test_bit can operate on array beyond unsigned long.
-It's perfectly legitimate to do: test_bit(999, bit_array) as
-long as bit_array is indeed big enough to hold 999 bits.  It
-is the responsibility of the caller to make sure that the
-underlying array is big enough for the bit that is being tested.
+And correctly so.  The correct fix is to make thread_info.flag an
+unsigned long.  This patch is NAKed.
 
-I don't think you need to change the flags size.
-
-- Ken
+Paul.

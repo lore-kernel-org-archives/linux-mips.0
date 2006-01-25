@@ -1,41 +1,47 @@
-Received: from mail.glaze.se ([212.209.188.162]:23311 "HELO rocket.glaze.se")
-	by ftp.linux-mips.org with SMTP id S8133553AbWAXVWR (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 24 Jan 2006 21:22:17 +0000
-From: "Jan Pedersen" <jan.pedersen@glaze.dk>
-Subject: RE: 802.11b/g mini-PCI card that is known to work with linux-mips (Au1550)
-Date: Tue, 24 Jan 2006 22:26:29 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <ecb4efd10601240845j515c42a1xbfe4dd7ea6857e1e@mail.gmail.com>
-Message-ID: <20060124212632.6F2CD376465@rocket.glaze.se>
-Return-Path: <jan.pedersen@glaze.dk>
+Received: from mail.ocs.com.au ([202.147.117.210]:61892 "EHLO mail.ocs.com.au")
+	by ftp.linux-mips.org with ESMTP id S8133488AbWAYLuY (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 25 Jan 2006 11:50:24 +0000
+From: Keith Owens <kaos@sgi.com>
+Subject: Re: [PATCH 3/6] C-language equivalents of include/asm-*/bitops.h 
+In-reply-to: Your message of "Wed, 25 Jan 2006 20:32:06 +0900."
+             <20060125113206.GD18584@miraclelinux.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 25 Jan 2006 22:54:43 +1100
+Message-ID: <24086.1138190083@ocs3.ocs.com.au>
+Return-Path: <kaos@sgi.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Clem Taylor' <clem.taylor@gmail.com>, linux-mips@linux-mips.org
-Message-ID: <20060124212629.mghtm8NmoLSybHXCsFei2NL-OeR5tSC4G8t4KyIbVBI@z>
+To: Akinobu Mita <mita@miraclelinux.com>
+Cc: linux-kernel@vger.kernel.org, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Russell King <rmk@arm.linux.org.uk>, Ian Molton <spyro@f2s.com>, dev-etrax@axis.com, David Howells <dhowells@redhat.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Linus Torvalds <torvalds@osdl.org>, linux-ia64@vger.kernel.org, Hirokazu Takata <takata@linux-m32r.org>, linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>, linux-mips@linux-mips.org, parisc-linux@parisc-linux.org, linuxppc-dev@ozlabs.org, linux390@de.ibm.com, linuxsh-dev@lists.sourceforge.net, linuxsh-shmedia-dev@lists.sourceforge.net, sparclinux@vger.kernel.org, ultralinux@vger.kernel.org, Miles Bader <uclinux-v850@lsi.nec.co.jp>, Andi Kleen <ak@suse.de>, Chris Zankel <chris@zankel.net>
+Message-ID: <20060125115443.N7loHf77W_PsKz_ceLrNuLJzn8OkWZvkS2k1NAk5pYs@z>
 
-I have used the WL-850F cards for several years. They work wery well.
+Akinobu Mita (on Wed, 25 Jan 2006 20:32:06 +0900) wrote:
+>o generic {,test_and_}{set,clear,change}_bit() (atomic bitops)
+...
+>+static __inline__ void set_bit(int nr, volatile unsigned long *addr)
+>+{
+>+	unsigned long mask = BITOP_MASK(nr);
+>+	unsigned long *p = ((unsigned long *)addr) + BITOP_WORD(nr);
+>+	unsigned long flags;
+>+
+>+	_atomic_spin_lock_irqsave(p, flags);
+>+	*p  |= mask;
+>+	_atomic_spin_unlock_irqrestore(p, flags);
+>+}
 
+Be very, very careful about using these generic *_bit() routines if the
+architecture supports non-maskable interrupts.
 
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org [mailto:linux-mips-bounce@linux-
-> mips.org] On Behalf Of Clem Taylor
-> Sent: 24. januar 2006 17:45
-> To: linux-mips@linux-mips.org
-> Subject: OT: 802.11b/g mini-PCI card that is known to work with linux-mips
-> (Au1550)
-> 
-> Hi,
-> 
-> I realize this is a bit off topic, but I was wondering if anyone has
-> any experience using 802.11 mini-PCI cards with linux-mips? It sounds
-> like many of the 802.11b/g chipsets only have closed-source drivers
-> which means I'm out of luck for linux-mips. I was wondering if anyone
-> can recommend a chipset or specific mini-PCI card that is known to
-> work with linux-mips. I'm using an AMD Alchemy Au1550.
-> 
->                                Thanks,
->                                Clem Taylor
-> 
+NMI events can occur at any time, including when interrupts have been
+disabled by *_irqsave().  So you can get NMI events occurring while a
+*_bit fucntion is holding a spin lock.  If the NMI handler also wants
+to do bit manipulation (and they do) then you can get a deadlock
+between the original caller of *_bit() and the NMI handler.
+
+Doing any work that requires spinlocks in an NMI handler is just asking
+for deadlock problems.  The generic *_bit() routines add a hidden
+spinlock behind what was previously a safe operation.  I would even say
+that any arch that supports any type of NMI event _must_ define its own
+bit routines that do not rely on your _atomic_spin_lock_irqsave() and
+its hash of spinlocks.

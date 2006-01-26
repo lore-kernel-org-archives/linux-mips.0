@@ -1,12 +1,12 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:57538 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133511AbWAZJK6
+Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:38339 "EHLO
+	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133547AbWAZPQr
 	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 26 Jan 2006 09:10:58 +0000
-Message-ID: <000b01c62259$535f0e10$10eca8c0@grendel>
+	Thu, 26 Jan 2006 15:16:47 +0000
+Message-ID: <005101c6228c$6ebfb0a0$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <cda58cb80601250136p5ee350e6g@mail.gmail.com> <cda58cb80601250534r5f464fd1v@mail.gmail.com> <43D78725.6050300@mips.com> <20060125141424.GE3454@linux-mips.org> <cda58cb80601250632r3e8f7b9en@mail.gmail.com> <20060125150404.GF3454@linux-mips.org> <cda58cb80601251003m6ba4379w@mail.gmail.com> <43D7C050.5090607@mips.com> <cda58cb80601260011r6136c3fq@mail.gmail.com> <43D887BB.3030906@mips.com> <cda58cb80601260047g78ffb52cr@mail.gmail.com>
+References: <cda58cb80601250136p5ee350e6g@mail.gmail.com> <20060125124738.GA3454@linux-mips.org> <cda58cb80601250534r5f464fd1v@mail.gmail.com> <43D78725.6050300@mips.com> <20060125141424.GE3454@linux-mips.org> <cda58cb80601250632r3e8f7b9en@mail.gmail.com> <20060125150404.GF3454@linux-mips.org> <cda58cb80601251003m6ba4379w@mail.gmail.com> <43D7C050.5090607@mips.com> <cda58cb80601260702wf781e70l@mail.gmail.com>
 Subject: Re: [RFC] Optimize swab operations on mips_r2 cpu
-Date: Thu, 26 Jan 2006 10:17:25 +0100
+Date: Thu, 26 Jan 2006 16:23:16 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -15,43 +15,55 @@ Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Franck <vagabon.xyz@gmail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20060126091725.YmYyGabiHhe_gHQQi2v9KzlXYPEVSzL6eLVqRx-daqE@z>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20060126152316.2NknFGgA0zVl4na6TzQglQthVx9o-mbFOJUSWka555U@z>
 
-> > Franck wrote:
-> > > Let's say that the 4KSC has "wsbh" instruction which is part of
-> > > MIPS32R2 instructrion set (I haven't checked it). The question is how
-> > > the 4KSC would use the SWAB optimizations since it doesn't define
-> > > CONFIG_CPU_MIPS32_R2  ? The 4KSC might not be the only one case...
-> >
-> > The 4KSc happens not to have the MIPS32R2 WSBH (is that pronounced
-> > "wasabi"? ;o) instruction, but it does have the MIPS32R2 ROTR, because
-> > it's part of the SmartMIPS ASE.  Our options here include:
-> >
-> > * Say "to heck with it" and deny the 4KSc use of the ROTR, and stay
-> >    with a "#ifdef CONFIG_CPU_MIPS32R2" conditional.
-> >
-> > * Define CONFIG_CPU_MIPS4KSC as an additional oddball CPU flag, and
-> >    make it "#if defined(CONFIG_CPU_MIPS32R2) || defined(CONFIG_CPU_MIPS4KSC)
-> >
-> > * Have an ASE-support flag, CONFIG_CPU_SMARTMIPS, which would cover both
-> >    the 4KSc and 4KSd.  In that case code using ROTR could be conditional on
-> >    #if defined(CPU_CONFIG_MIPS32R2) || defined(CONFIG_CPU_SMARTMIPS).
-> >
-> > I personally think that the third option is the cleanest and most conceptually
-> > correct, but I'm not the guy operationally responsible for maintaining
-> > that code.
-> 
-> I think we will have to use second _and_ third options. I can't find
-> out an example, but since 4KSC has some MIPS32_R2 instructions it will
-> need to use some specific MIPS32_R2 code sometimes.
-
-You don't understand. There is nothing in the 4KSc that is not in the SmartMIPS ASE.
-The 4KSc implements MIPS32+SmartMIPS.  The 4KSd implementes MIPS32R2+SmartMIPS.
-You're getting confused because some elements of SmartMIPS made it into MIPS32R2.
-If we have a CONFIG_CPU_SMARTMIPS flag, there would be no need for a
-CONFIG_CPU_MIPS4KSC flag.
+Could you please post your mipsel-linux-gcc -v output?   It might help.
+I've never tried building Linux with any of the Sc/Sd/SmartMIPS options,
+so I really don't know what you could be experiencing.  One thought that
+comes to mind is that the -march=4ksd option may be treated as a hint to
+generate compact code (for smart cards) in a way that -march=mips32r2
+is not.  I'll ask around...
 
         Regards,
 
         Kevin K.
+
+----- Original Message ----- 
+From: "Franck" <vagabon.xyz@gmail.com>
+To: "Kevin D. Kissell" <kevink@mips.com>
+Cc: <linux-mips@linux-mips.org>
+Sent: Thursday, January 26, 2006 4:02 PM
+Subject: Re: [RFC] Optimize swab operations on mips_r2 cpu
+
+
+> Kevin
+> 
+> 2006/1/25, Kevin D. Kissell <kevink@mips.com>:
+> > Not really.  As we discussed at the time, the 4KSc is a superset of
+> > MIPS32 which includes some, but not all MIPS32R2 features (plus other
+> > stuff), and the 4KSd is a strict superset of MIPS32R2.  So some additional
+> > information is required to express the desired support.  I was just pointing
+> > out, in the case of the SWAB optimizations, that there was no need to invent
+> > yet another way of describing MIPS32R2.
+> >
+> 
+> I'm trying to use CPU_MIPS32_R2 instead of CPU_4KD in order to get rid
+> of the last macro. So now to compile the kernel I'm using somthing
+> like:
+> 
+>         mipsel-linux-gcc -march=mips32r2 -Wa,-32 -Wa,-mips32r2 -msmartmips
+> 
+> instead of
+> 
+>         mipsel-linux-gcc -march=4ksd -Wa,-32 -Wa,-mips32r2 -msmartmips
+> 
+> Now the size of the kernel code is 33Ko bigger ! I have no idea
+> why...I tried to add -mips16e option but it fails to compile...Do you
+> have an idea ?
+> 
+> Thanks
+> --
+>                Franck
+> 
+> 

@@ -1,41 +1,47 @@
-Received: from hiauly1.hia.nrc.ca ([132.246.100.193]:24591 "EHLO
-	hiauly1.hia.nrc.ca") by ftp.linux-mips.org with ESMTP
-	id S8133727AbWA0AY5 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 27 Jan 2006 00:24:57 +0000
-Message-ID: <200601270028.k0R0STBB021468@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: [PATCH 3/6] C-language equivalents of
-Date: Thu, 26 Jan 2006 19:28:29 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <20060126230443.GC13632@colo.lackof.org> from "Grant Grundler" at Jan 26, 2006 04:04:43 pm
+Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:5064 "EHLO
+	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133392AbWA0KHP
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 27 Jan 2006 10:07:15 +0000
+Message-ID: <000b01c6232a$5ea81470$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <cda58cb80601250136p5ee350e6g@mail.gmail.com> <cda58cb80601251003m6ba4379w@mail.gmail.com> <43D7C050.5090607@mips.com> <cda58cb80601260702wf781e70l@mail.gmail.com> <005101c6228c$6ebfb0a0$10eca8c0@grendel> <43D8F000.9010106@mips.com> <cda58cb80601260831i61167787g@mail.gmail.com> <43D8FF16.40107@mips.com> <cda58cb80601261002w6eb02249k@mail.gmail.com> <43D93025.9040800@mips.com> <cda58cb80601270103t1419117cq@mail.gmail.com>
+Subject: Re: [RFC] Optimize swab operations on mips_r2 cpu
+Date: Fri, 27 Jan 2006 11:13:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <dave@hiauly1.hia.nrc.ca>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: mita@miraclelinux.com, linux-kernel@vger.kernel.org, ink@jurassic.park.msu.ru, spyro@f2s.com, dev-etrax@axis.com, dhowells@redhat.com, ysato@users.sourceforge.jp, torvalds@osdl.org, linux-ia64@vger.kernel.org, takata@linux-m32r.org, linux-m68k@vger.kernel.org, gerg@uclinux.org, linux-mips@linux-mips.org, parisc-linux@parisc-linux.org, linuxppc-dev@ozlabs.org, linux390@de.ibm.com, linuxsh-dev@lists.sourceforge.net, linuxsh-shmedia-dev@lists.sourceforge.net, sparclinux@vger.kernel.org, ultralinux@vger.kernel.org, uclinux-v850@lsi.nec.co.jp, ak@suse.de, chris@zankel.net
-Message-ID: <20060127002829.NlvDUE4VWuvkdtAYxLF7eUK9cxxa4cRSPN2T2g--1iw@z>
+To: Franck <vagabon.xyz@gmail.com>, Nigel Stephens <nigel@mips.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20060127101344.yvJZQU01PxQ9iiSNTtbTCYLOQNMKJQQNFfHVqnITOxA@z>
 
-> Yeah, about the same for parisc.
+> > You could, but why not stick with -march=4ksd if that's your CPU of
+> > choice? It appears to result in  marginally smaller code even when using
+> > -Os, and should have (slightly) better performance than a generic
+> > mips32r2 kernel?
 > 
-> > Clearly the smallest of the lot with the smallest register pressure,
-> > being the best candidate out of the lot, whether we inline it or not.
-> 
-> Agreed. But I expect parisc will have to continue using it's asm
-> sequence and ignore the generic version. AFAIK, the compiler isn't that
-> good with instruction nullification and I have other issues I'd
-> rather work on.
+> Just to avoid a new CPU_4KSD definition in the kernel code as
+> suggested by Kevin. Basically all mips32r2 specific code is the same
+> as 4ksd specific code (except the code that deals with SmartMIPS
+> extension). So it can use CONFIG_CPU_MIPS32_R2 macro. But I was not
+> aware of -march=4ksd and -march=mips32r2 differences. Maybe now it is
+> needed to have a new CPU_4KSD definition ?
 
-I looked at the assembler code generated on parisc with 4.1.0 (prerelease).
-The toernig code is definitely inferior.  The mita sequence is four
-instructions longer than the arm sequence, but it didn't have any branches.
-The arm sequence has four branches.  Thus, it's not clear to me which
-would perform better in the real world.  There were no nullified instructions
-generated for any of the sequences.  However, neither is as good as the
-handcraft asm sequence currently being used.
+Configuration hacks that are specific to a single core create cruft and
+maintenence problems.  As I said yesterday, I think we'd be much better
+off to have a CONFIG_CPU_MIPS_SMALL or some such option
+that could cause -Os to be used, allow branch-likelies, etc. The optimizations
+under discussion aren't at all specific to the 4KSd, and I would think that
+for every 4KSd embedded Linux platform there are several 4KEc platforms
+that would benefit from a smaller kernel footprint.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+It's Linux, and people can do what they want, but I'd prefer not to see more
+core-specifc cruft work its way back into the linux-mips or kernel.org reference
+trees.
+
+            Regards,
+
+            Kevin K.

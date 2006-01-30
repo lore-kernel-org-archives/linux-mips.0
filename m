@@ -1,64 +1,32 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:59848 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S3465606AbWA0Pd0
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 27 Jan 2006 15:33:26 +0000
-Message-ID: <00df01c62357$ef9a1fa0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <cda58cb80601250136p5ee350e6g@mail.gmail.com> <cda58cb80601260702wf781e70l@mail.gmail.com> <005101c6228c$6ebfb0a0$10eca8c0@grendel> <43D8F000.9010106@mips.com> <cda58cb80601260831i61167787g@mail.gmail.com> <43D8FF16.40107@mips.com> <cda58cb80601261002w6eb02249k@mail.gmail.com> <43D93025.9040800@mips.com> <cda58cb80601270103t1419117cq@mail.gmail.com> <43DA240F.5070301@mips.com> <cda58cb80601270654jf779622w@mail.gmail.com>
-Subject: Re: [RFC] Optimize swab operations on mips_r2 cpu
-Date: Fri, 27 Jan 2006 16:39:59 +0100
+Received: from smtp18.wanadoo.fr ([193.252.22.126]:23278 "EHLO
+	smtp18.wanadoo.fr") by ftp.linux-mips.org with ESMTP
+	id S8133558AbWA3OJ2 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 30 Jan 2006 14:09:28 +0000
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf1807.wanadoo.fr (SMTP Server) with ESMTP id AD7107000091
+	for <linux-mips@linux-mips.org>; Mon, 30 Jan 2006 15:14:16 +0100 (CET)
+Received: from lexbox.fr (AToulouse-254-1-72-91.w81-49.abo.wanadoo.fr [81.49.99.91])
+	by mwinf1807.wanadoo.fr (SMTP Server) with ESMTP id 7D6B9700008E
+	for <linux-mips@linux-mips.org>; Mon, 30 Jan 2006 15:14:16 +0100 (CET)
+Subject: [PATCH] Au1xx0: really set KSEG0 to uncached on reboot
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Date: Mon, 30 Jan 2006 15:10:59 +0100
+Content-class: urn:content-classes:message
+Message-ID: <17AB476A04B7C842887E0EB1F268111E02740C@xpserver.intra.lexbox.org>
+From: "David Sanchez" <david.sanchez@lexbox.fr>
+Return-Path: <david.sanchez@lexbox.fr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Franck <vagabon.xyz@gmail.com>, Nigel Stephens <nigel@mips.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20060127153959.KCLeD_lnFdRP9mc6BQEb6zPcESiepRA3KiczMj3BdcU@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20060130141059.PKMm4ttdcbP3y8h2H69AsAfyQATIqozeie9XTeElrUM@z>
 
 
-> > Not that I'm a Linux hacker, but aren't those separate things? Can't you
-> > compile with -march=4ksd to get the CPU-specific compiler optimisations,
-> > but then use the more generic CONFIG_CPU_MIPSR2 and/or
-> > CONFIG_CPU_SMARTMIPS to select the appropriate code inside the kernel
-> > source (i.e. no need for CONFIG_CPU_4KSD)?
-> >
-> 
-> To use -march=4ksd, you need to tell to the building process that
-> you're using a 4KSD cpu. The only way to do that is to define a new
-> CPU_4KSD. But, if I understood mips configuration script, you cannot
-> define CPU_4KSD _and_ CPU_MIPS32R2 at the same time; at least easily.
+Hi,
 
-The point is not to set CPU_4KSD and CPU_MIPS32R2 at the same time,
-the point is to not have to define CPU_4KSD *at all*, and use the combination
-of MIPS32R2 and SMARTMIPS to drive the options, e.g.:
+The patch doesn't work for Au1550. Since I apply it my DbAu1550 frees on
+restart.
 
-ifdef CONFIG_CPU_SMARTMIPS
-cflags-$(CONFIG_CPU_MIPS32R1)   += \
-                        $(call set_gccflags,mips32,smartmips,4kec,mips3,mips2)\
-                        -Os, -Wa,--trap
-
-cflags-$(CONFIG_CPU_MIPS32R2)   += \
-                        $(call set_gccflags,4ksd,mips32r2,4kec,mips3,mips2) \
-                        -Wa,--trap
-else
-cflags-$(CONFIG_CPU_MIPS32R1)   += \
-                        $(call set_gccflags,mips32,mips32,r4600,mips3,mips2) \
-                        -Wa,--trap
-
-cflags-$(CONFIG_CPU_MIPS32R2)   += \
-                        $(call set_gccflags,mips32r2,mips32r2,r4600,mips3,mips2)
- \
-                        -Wa,--trap
-endif
-
-
-That's almost certainly not the cleanest way to do it (and I really don't know
-if the values I threw in for the MIPS32R1+SmartMIPS (e.g. 4KSc) combination
-would actually work.  I just want to point out that it isn't that hard to do.
-
-            Regards,
-
-            Kevin K.
+David

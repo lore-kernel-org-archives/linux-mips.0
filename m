@@ -1,32 +1,44 @@
-Received: from smtp18.wanadoo.fr ([193.252.22.126]:23278 "EHLO
-	smtp18.wanadoo.fr") by ftp.linux-mips.org with ESMTP
-	id S8133558AbWA3OJ2 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 30 Jan 2006 14:09:28 +0000
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf1807.wanadoo.fr (SMTP Server) with ESMTP id AD7107000091
-	for <linux-mips@linux-mips.org>; Mon, 30 Jan 2006 15:14:16 +0100 (CET)
-Received: from lexbox.fr (AToulouse-254-1-72-91.w81-49.abo.wanadoo.fr [81.49.99.91])
-	by mwinf1807.wanadoo.fr (SMTP Server) with ESMTP id 7D6B9700008E
-	for <linux-mips@linux-mips.org>; Mon, 30 Jan 2006 15:14:16 +0100 (CET)
-Subject: [PATCH] Au1xx0: really set KSEG0 to uncached on reboot
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Date: Mon, 30 Jan 2006 15:10:59 +0100
-Content-class: urn:content-classes:message
-Message-ID: <17AB476A04B7C842887E0EB1F268111E02740C@xpserver.intra.lexbox.org>
-From: "David Sanchez" <david.sanchez@lexbox.fr>
-Return-Path: <david.sanchez@lexbox.fr>
+Received: from deliver-1.mx.triera.net ([213.161.0.31]:61400 "HELO
+	deliver-1.mx.triera.net") by ftp.linux-mips.org with SMTP
+	id S8133489AbWAaKeU (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 31 Jan 2006 10:34:20 +0000
+Received: from localhost (in-1.mx.triera.net [213.161.0.25])
+	by deliver-1.mx.triera.net (Postfix) with ESMTP id 385C9C094
+	for <linux-mips@linux-mips.org>; Tue, 31 Jan 2006 11:39:13 +0100 (CET)
+Received: from smtp.triera.net (smtp.triera.net [213.161.0.30])
+	by in-1.mx.triera.net (Postfix) with SMTP id CA4361BC095
+	for <linux-mips@linux-mips.org>; Tue, 31 Jan 2006 11:39:14 +0100 (CET)
+Received: from kupljenlap (unknown [213.161.20.162])
+	by smtp.triera.net (Postfix) with ESMTP id A1E001A18C2
+	for <linux-mips@linux-mips.org>; Tue, 31 Jan 2006 11:39:14 +0100 (CET)
+Subject: PCMCIA on AU1200
+From: Matej Kupljen <matej.kupljen@ultra.si>
+Content-Type: text/plain
+Date: Tue, 31 Jan 2006 11:39:13 +0100
+Message-ID: <1138703953.7932.36.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Return-Path: <matej.kupljen@ultra.si>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20060130141059.PKMm4ttdcbP3y8h2H69AsAfyQATIqozeie9XTeElrUM@z>
+Message-ID: <20060131103913.lf73LY3O70KAEvYTV1Sga1L613M84pEADrlyFCB4rnA@z>
 
+Hi
 
-Hi,
+I am trying to use PCMCIA on a DBAU1200 with 16bit card.
+From the docs for the board, I see that the PCMCIA interface 
+is on CE[3], but the value of the mem_staddr3 is
+0x1000000.
 
-The patch doesn't work for Au1550. Since I apply it my DbAu1550 frees on
-restart.
+Looking at the Linux source code, I see that the PCMCIA is
+ioremap-ed to 0xf00000000 (36 bit). It also uses PSEUDO
+addresses for the skt->phys_attr and skt->phys_mem.
 
-David
+At what (physical) address can I find the card's I/O space,
+so I can use tools like devmem2 to see the cards CIS?
+Should I configure mem_stadd3 to same other value?
+To 0xf0000000?
+
+BR,
+Matej

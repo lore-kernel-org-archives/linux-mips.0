@@ -1,106 +1,42 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:31965 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S3458489AbWBARXI convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 1 Feb 2006 17:23:08 +0000
-From: "Michael Uhler" <uhler@mips.com>
-Subject: RE: gdb vs. gdbserver with -mips3 / 32bitmode userspace
-Date: Wed, 1 Feb 2006 09:26:57 -0800
-Message-ID: <005901c62754$b414dc80$bb14a8c0@MIPS.COM>
+Received: from smtp.innovsys.com ([66.115.232.196]:54207 "EHLO
+	mail.innovsys.com") by ftp.linux-mips.org with ESMTP
+	id S3465637AbWBBPA2 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 2 Feb 2006 15:00:28 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20060201164423.GA4891@nevyn.them.org>
-Return-Path: <uhler@mips.com>
+Subject: RE: [patch 10/44] generic fls64()
+Date: Thu, 2 Feb 2006 09:05:33 -0600
+Message-ID: <DCEAAC0833DD314AB0B58112AD99B93B859547@ismail.innsys.innovsys.com>
+From: "Rune Torgersen" <runet@innovsys.com>
+Return-Path: <runet@innovsys.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Daniel Jacobowitz' <dan@debian.org>, "'Maciej W. Rozycki'" <macro@linux-mips.org>
-Cc: 'Johannes Stezenbach' <js@linuxtv.org>, linux-mips@linux-mips.org
-Message-ID: <20060201172657.mNF5VV2miCabci-wkSNnhQH6d0GDy9Stvrvxjbdcdps@z>
+To: Akinobu Mita <mita@miraclelinux.com>, linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, Ian Molton <spyro@f2s.com>, David Howells <dhowells@redhat.com>, linuxppc-dev@ozlabs.org, Greg Ungerer <gerg@uclinux.org>, sparclinux@vger.kernel.org, Miles Bader <uclinux-v850@lsi.nec.co.jp>, Linus Torvalds <torvalds@osdl.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Hirokazu Takata <takata@linux-m32r.org>, linuxsh-shmedia-dev@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Richard Henderson <rth@twiddle.net>, Chris Zankel <chris@zankel.net>, dev-etrax@axis.com, ultralinux@vger.kernel.org, Andi Kleen <ak@suse.de>, linuxsh-dev@lists.sourceforge.net, linux390@de.ibm.com, Russell King <rmk@arm.linux.org.uk>, parisc-linux@parisc-linux.org
+Message-ID: <20060202150533.SdgZqm0z2QCrU6vItUcCxjfhO6mhCEPeci2cXOEGYVk@z>
 
-Daniel,
+> From: Akinobu Mita
+> Sent: Wednesday, February 01, 2006 03:03
+> +static inline int fls64(__u64 x)
+> +{
+> +	__u32 h = x >> 32;
+> +	if (h)
+> +		return fls(x) + 32;
 
-The O/S maybe doing something different, but the architecture has 3 bits in
-Status: KX, SX, and UX that enable access to the address space above 32
-bits.  With these bits off, an attempt to access these addresses causes an
-exception.  So while 32-bit apps have the full 64-bit address space, most of
-it is inaccessible to the 32-bit app.
-
-There's a table in Chapter 4 of the MIPS64 Privileged Architecture Spec on
-our web page that describes exactly what address references are gated by
-what bit.
-
-I notice the original question was about MIPS III.  There were certain early
-chips that had problems with access control on the extended segments, so
-it's possible that there could be implementation-specific problems.
-
-
-/gmu
----
-Michael Uhler, Chief Technology Officer
-MIPS Technologies, Inc.   Email: uhler@mips.com
-1225 Charleston Road      Voice:  (650)567-5025   FAX:   (650)567-5225
-Mountain View, CA 94043   Mobile: (650)868-6870   Admin: (650)567-5085
-
-
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Daniel 
-> Jacobowitz
-> Sent: Wednesday, February 01, 2006 8:44 AM
-> To: Maciej W. Rozycki
-> Cc: Johannes Stezenbach; linux-mips@linux-mips.org
-> Subject: Re: gdb vs. gdbserver with -mips3 / 32bitmode userspace
+Shouldn't this be return fls(h) + 32; ??
+                            ^^^
+> +	return fls(x);
+> +}
+> +
+> +#endif /* _ASM_GENERIC_BITOPS_FLS64_H_ */
 > 
-> 
-> On Tue, Jan 31, 2006 at 05:36:13PM +0000, Maciej W. Rozycki wrote:
-> > On Tue, 31 Jan 2006, Johannes Stezenbach wrote:
-> > 
-> > > I think (maybe in error ;-), that all binaries compiled 
-> for a 32bit 
-> > > ABI, but a 64bit ISA, have this flag set, as the kernel 
-> will refuse 
-> > > to execute 64bt code (i.e. not o32 or n32 ABI). 
-> Therefore, shouldn't 
-> > > gdb also evaluate this flag when deciding about the ISA register 
-> > > size?
-> > 
-> >  O32 implies 32-bit registers no matter what ISA is specified (while
-> > o32/MIPS-III is effectively o32/MIPS-II, o32/MIPS-IV makes 
-> a difference), 
-> > therefore it's a bug.  You should try sending your proposal to 
-> > <gdb-patches@sources.redhat.com> instead.  But I smell the 
-> problem is 
-> > elsewhere -- mips_isa_regsize() shouldn't be called for the 
-> "cooked" 
-> > registers and these are ones you should only see under 
-> Linux or, as a 
-> > matter of fact, any hosted environment.  See 
-> mips_register_type() for a 
-> > start.
-> 
-> All of this code is flat-out wrong, as far as I'm concerned.  
-> I have a project underway which will fix it, as a nice side effect.
-> 
-> GDB is trying to do something confusing, but admirable, here. 
->  When you're running on a 64-bit system the full 64 bits are 
-> always there: even if the binary only uses half of them (is 
-> this true in Linux?  I don't remember if the relevant control 
-> bits get fudged, it's been a while; it's definitely true on 
-> some other systems).  Thus it's possible for a bogus 
-> instruction to corrupt the top half of a register, leading to 
-> otherwise inexplicable problems.
-> 
-> So if the remote stub knows about 64-bit registers, it should 
-> report them to GDB, and GDB should accept and display them, 
-> and still handle 32-bit frames.  If the remote stub doesn't, 
-> then there's no option but to report the 32-bit registers.
-> 
-> Really, GDB ought to (and soon will I hope) autodetect which 
-> ones were sent.
-> 
-> -- 
-> Daniel Jacobowitz
-> CodeSourcery
+> --
+> _______________________________________________
+> Linuxppc-dev mailing list
+> Linuxppc-dev@ozlabs.org
+> https://ozlabs.org/mailman/listinfo/linuxppc-dev
 > 
 > 

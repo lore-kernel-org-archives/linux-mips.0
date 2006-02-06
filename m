@@ -1,64 +1,34 @@
-Received: from smtp4.wanadoo.fr ([193.252.22.27]:18501 "EHLO smtp4.wanadoo.fr")
-	by ftp.linux-mips.org with ESMTP id S8133462AbWBFII1 convert rfc822-to-8bit
+Received: from [64.215.88.90] ([64.215.88.90]:50503 "EHLO email.vitesse.com")
+	by ftp.linux-mips.org with ESMTP id S3458325AbWBFVtY convert rfc822-to-8bit
 	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 6 Feb 2006 08:08:27 +0000
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf0401.wanadoo.fr (SMTP Server) with ESMTP id DBF171C00313
-	for <linux-mips@linux-mips.org>; Mon,  6 Feb 2006 09:13:53 +0100 (CET)
-Subject: RE: [PATCH] Au1xx0: really set KSEG0 to uncached on reboot
+	Mon, 6 Feb 2006 21:49:24 +0000
+Received: from wilson.vitesse.com (wilson [10.9.72.71])
+	by email.vitesse.com (8.11.0/8.11.0) with ESMTP id k16Ls2h24377
+	for <linux-mips@linux-mips.org>; Mon, 6 Feb 2006 13:54:02 -0800 (PST)
+Received: from MX-COS.vsc.vitesse.com (mx-cs1 [10.9.72.41])
+	by wilson.vitesse.com (8.11.6/8.11.6) with ESMTP id k16Ls6b06925
+	for <linux-mips@linux-mips.org>; Mon, 6 Feb 2006 14:54:07 -0700 (MST)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Date: Mon, 6 Feb 2006 09:10:37 +0100
-Content-class: urn:content-classes:message
-Message-ID: <17AB476A04B7C842887E0EB1F268111E027447@xpserver.intra.lexbox.org>
-From: "David Sanchez" <david.sanchez@lexbox.fr>
-Return-Path: <david.sanchez@lexbox.fr>
+Subject: oprofile gets only kernel samples?
+Date: Mon, 6 Feb 2006 14:54:00 -0700
+Message-ID: <389E6A416914954182ECDFCD844D8269434D89@MX-COS.vsc.vitesse.com>
+From: "Kurt Schwemmer" <kurts@vitesse.com>
+Return-Path: <kurts@vitesse.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Sergei Shtylylov <sshtylyov@ru.mvista.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20060206081037.rIBFQ8Lj0PHqQ2MhaGI1ntaEklWbKs82ZuzJjkXFQj4@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20060206215400.eLcJmHuQZ6XxgmN4CxaqrsqR2thWuR-DOA-MByULbbM@z>
 
-Hi,
+I've got oprofile working sort of with 2.6.15 kernel on a 24Kc processor
+using just timer interrupts. I only get samples within vmlinux.out
+though. When I look at top output during the period of time there is
+definitely some significant user mode time. Before digging too deep into
+the problem I thought I'd ask to see if this is a known limitation and
+if everyone is seeing this.
 
-This is exactly what I did...
-But I notice that sometimes it works and sometimes the kernel frees when 
-"** Resetting Integrated Peripherals"
-
-Regards,
-
-David SANCHEZ
- LexBox, The Digital Evidence
-
-Parc d'Activités de Basso Cambo
-42, Avenue du Général de Croutte
-31100 TOULOUSE / FRANCE
-
-david.sanchez@lexbox.fr
-Tél :     +33 (0)5 62 47 15 81
-Fax :    +33 (0)5 62 47 15 84
-
-
-
------Message d'origine-----
-De : Sergei Shtylylov [mailto:sshtylyov@ru.mvista.com] 
-Envoyé : samedi 4 février 2006 01:30
-À : David Sanchez
-Cc : linux-mips@linux-mips.org
-Objet : Re: [PATCH] Au1xx0: really set KSEG0 to uncached on reboot
-
-Hello.
-
-David Sanchez wrote:
-
-> The patch doesn't work for Au1550. Since I apply it my DbAu1550 frees on
-> restart.
-
-    Just tried 'reboot' command on a fresh kernel with this patch and NFP 
-userland -- it worked well.
-
-> David
-
-WBR, Sergei
+Thanks,
+Kurt Schwemmer

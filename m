@@ -1,68 +1,40 @@
-Received: from smtp4.wanadoo.fr ([193.252.22.27]:46831 "EHLO smtp4.wanadoo.fr")
-	by ftp.linux-mips.org with ESMTP id S8133371AbWBGMpj convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 7 Feb 2006 12:45:39 +0000
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf0403.wanadoo.fr (SMTP Server) with ESMTP id D82371C002E1
-	for <linux-mips@linux-mips.org>; Tue,  7 Feb 2006 13:51:13 +0100 (CET)
-Subject: RE: Au1xx0: really set KSEG0 to uncached on reboot
+Received: from rtsoft2.corbina.net ([85.21.88.2]:45449 "HELO
+	mail.dev.rtsoft.ru") by ftp.linux-mips.org with SMTP
+	id S8133369AbWBGPXZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 7 Feb 2006 15:23:25 +0000
+Message-ID: <43E8BD84.60308@ru.mvista.com>
+Date: Tue, 07 Feb 2006 18:32:20 +0300
+From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Date: Tue, 7 Feb 2006 13:47:57 +0100
-Content-class: urn:content-classes:message
-Message-ID: <17AB476A04B7C842887E0EB1F268111E02746A@xpserver.intra.lexbox.org>
-From: "David Sanchez" <david.sanchez@lexbox.fr>
-Return-Path: <david.sanchez@lexbox.fr>
+Subject: Re: [PATCH] TX49 MFC0 bug workaround
+References: <43E25381.4060309@ru.mvista.com>	<20060203.101705.41198541.nemoto@toshiba-tops.co.jp>	<43E2BC1F.7080505@ru.mvista.com> <20060203.112253.104030567.nemoto@toshiba-tops.co.jp>
+In-Reply-To: <20060203.112253.104030567.nemoto@toshiba-tops.co.jp>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <sshtylyov@ru.mvista.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Sergei Shtylylov <sshtylyov@ru.mvista.com>, linux-mips@linux-mips.org
-Cc: Jordan Crouse <jordan.crouse@amd.com>
-Message-ID: <20060207124757.9q2HW8H7Y7tSSl6yQvtSt4UNnWZFCoF_jfP_kCqNALw@z>
-
-Yes, I mean "freezes" :) 
-
-I have the BCSR fix applied.
-
-And the message "** Resetting Integrated Peripherals" comes from the arch/mips/au1000/common/reset.c file (I'm using the kernel 2.6.10).
-
-Maybe I forget to apply other patches...
-
-
------Message d'origine-----
-De : Sergei Shtylylov [mailto:sshtylyov@ru.mvista.com] 
-Envoyé : lundi 6 février 2006 18:46
-À : linux-mips@linux-mips.org
-Cc : Jordan Crouse; David Sanchez; Sergei Shtylylov
-Objet : Re: Au1xx0: really set KSEG0 to uncached on reboot
+Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, linux-mips@linux-mips.org
+Message-ID: <20060207153220.XwutJ9xxeq2tGnlMttuexHSa6r7qAxhUsZO7ZnJ88Kc@z>
 
 Hello.
 
-Jordan Crouse wrote:
-> On 06/02/06 09:10 +0100, David Sanchez wrote:
+Atsushi Nemoto wrote:
+>>>>>>On Fri, 03 Feb 2006 05:12:47 +0300, Sergei Shtylylov <sshtylyov@ru.mvista.com> said:
 > 
->>Hi,
->>
->>This is exactly what I did...
->>But I notice that sometimes it works and sometimes the kernel frees when 
+> sshtylyov>     If I don't mistake, the offending code is in
+> sshtylyov> local_irq_disable, local_irq_save, and local_irq_restore
+> sshtylyov> macros. The effect would be a crash on any exception taken
+> sshtylyov> once interrupts get disabled in a module (*and* that code
+> sshtylyov> happens to fall on a page boundary)... nasty. :-(
 
-    You mean "freezes" probably? :-)
+    ... and yet worse: any external interrupts actually blocked from CPU 
+forever by Status.EXL set (which then will never be cleared after the errata 
+triggers).
 
->>"** Resetting Integrated Peripherals"
+> Right.  And it can really happen.
 
-    This is not kernel's msg, but YAMON's one...
-
-> We'll need to nail this down before we go any further.  Can we get a trace
-> of what happens when it crashes?
-
-    David, do you have BCSR fix from:
-
-http://www.linux-mips.org/archives/linux-mips/2005-10/msg00236.html
-
-applied (the recent kernel has it but which one are you using?)?
-DBAu1550 reset may not work as expeceted otherwise indeed...
-
-> Jordan
+> ---
+> Atsushi Nemoto
 
 WBR, Sergei

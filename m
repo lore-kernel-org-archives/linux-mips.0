@@ -1,124 +1,203 @@
-Received: from sorrow.cyrius.com ([65.19.161.204]:19474 "EHLO
-	sorrow.cyrius.com") by ftp.linux-mips.org with ESMTP
-	id S8133748AbWBXBfV convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 24 Feb 2006 01:35:21 +0000
-Date: Fri, 24 Feb 2006 01:42:27 +0000
-From: Martin Michlmayr <tbm@cyrius.com>
-Subject: Re: [RFC] SMP initialization order fixes.
-Message-ID: <20060224014226.GA26064@deprecation.cyrius.com>
-References: <20060222190940.GA29967@linux-mips.org> <Pine.LNX.4.64.0602221636300.5110@trantor.stuart.netsweng.com>
+Received: from maillog.itri.org.tw ([61.61.254.20]:44971 "EHLO
+	maillog.itri.org.tw") by ftp.linux-mips.org with ESMTP
+	id S8133727AbWCBCoO (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 2 Mar 2006 02:44:14 +0000
+Received: from mail.itri.org.tw (mail [140.96.157.2])
+	by maillog.itri.org.tw (8.11.6+Sun/8.11.6) with ESMTP id k222kpg16124
+	for <linux-mips@linux-mips.org>; Thu, 2 Mar 2006 10:46:56 +0800 (CST)
+Received: from mail.itri.org.tw (localhost [127.0.0.1])
+	by mail.itri.org.tw (8.13.4/8.13.4) with ESMTP id k222u05P020946
+	for <linux-mips@linux-mips.org>; Thu, 2 Mar 2006 10:56:10 +0800 (CST)
+Received: from ms4.itri.org.tw ([140.96.151.44])
+	by mail.itri.org.tw (8.13.4/8.13.4) with ESMTP id k222taHn020771
+	for <linux-mips@linux-mips.org>; Thu, 2 Mar 2006 10:56:00 +0800 (CST)
+Message-ID: <03a101c63da4$2b119020$8873608c@11088002601>
+Reply-To: "Charles C.K.Lai" <cklai@itri.org.tw>
+From: "Charles C.K.Lai" <cklai@itri.org.tw>
+Subject: Initramfs on AMD DB1550 Board
+Date: Thu, 2 Mar 2006 10:51:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <Pine.LNX.4.64.0602221636300.5110@trantor.stuart.netsweng.com>
-Return-Path: <tbm@cyrius.com>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0399_01C63DE7.329F2CB0"
+Return-Path: <cklai@itri.org.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20060224014227.17a_NPbepSRf5IWBlBj3_7sgGwLjOw7tadvaPAZiA_4@z>
+Message-ID: <20060302025102.amz2aRXMUcOYjS5dmARn64EZcKkWuG5rzjgllzbkFCU@z>
 
-* Stuart Anderson <anderson@netsweng.com> [2006-02-22 16:41]:
-> >RM9000 & BCM1250 users for testing.  This really needs to be fixed for
-> >2.6.16.
-> I'm not sure if this is the specific fix or not, but I can report that git
-> as of today (approx 2pm est) is working better than is has since 2.6.14 for
-> me on a bcm1480.
+This is a multi-part message in MIME format.
 
-Strange, I get the following oops during boot with latest git:
+------=_NextPart_000_0399_01C63DE7.329F2CB0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="big5"
 
+I downloaded kernel 2.6.14 from Linux-MIPS,
+and compiled with gcc-3.4.4 and mipssde-6.02.03 toolchain.
 
-CFE> ifconfig eth0 -auto; boot -elf 192.168.1.1:/srv/tftp/mips/bigsur
-Device eth0:  hwaddr 00-02-4C-F5-2C-3C, ipaddr 192.168.1.146, mask 255.255.255.0
-        gateway 192.168.1.1, nameserver 131.111.8.42, domain cyrius.com
-Loader:elf Filesys:tftp Dev:eth0 File:192.168.1.1:/srv/tftp/mips/bigsur Options:(null)
-Loading: 0xffffffff80100000/3248680 
-eth0: Link speed: 100BaseT FDX[J
-0xffffffff80419228/286248 Entry at 0x803e9000
-Closing network.
-Starting program at 0x803e9000
-[RUN!]
-Broadcom SiByte BCM1480 A3 (pass1) @ 700 MHz (SB-1A rev 0)
-Board type: SiByte BCM91x80A/B (BigSur)
-[CPU1]
-[cpu1]
-[CPU2]
-[cpu2]
-[CPU3]
-[cpu3]
-Linux version 2.6.16-rc4-Helix64-smp (tbm@deprecation) (gcc version 4.0.3 20051201 (prerelease) (Debian 4.0.2-5)) #2 SMP Fri Feb 24 01:36:35 GMT 2006
-CPU revision is: 01041100
-FPU revision is: 000f0103
-swarm setup: M41T81 RTC detected.
-This kernel optimized for board runs with CFE
+I put the target directory at /init,
+run gen_initramfs_list.sh with /init to a text file,
+and assigned this text file to the initrd for cpio.
+
+After compiled, loaded, and ran,
+I got the message below,
+Would someone tell me how to set the root parameter?
+Thanks a lot!
+
+=========================================================================================================
+
+Linux version 2.6.14 (gcc version 3.4.4 mipssde-6.02.03-20050626CPU revision 
+is: 03030200
+AMD Alchemy Au1550/Db1550 Board
+(PRId 03030200) @ 396MHZ
+BCLK switching enabled!
 Determined physical RAM map:
- memory: 000000000fe7ae00 @ 0000000000000000 (usable)
- memory: 000000001ffffe00 @ 0000000080000000 (usable)
- memory: 000000000ffffe00 @ 00000000c0000000 (usable)
- memory: 000000003ffffe00 @ 0000000140000000 (usable)
-Detected 3 available secondary CPU(s)
+ memory: 0c000000 @ 00000000 (usable)
 Built 1 zonelists
-Kernel command line: root=/dev/hda2
-Primary instruction cache 32kB, 4-way, linesize 32 bytes.
-Primary data cache 32kB, 4-way, linesize 32 bytes.
-Synthesized TLB refill handler (35 instructions).
-Synthesized TLB load handler fastpath (49 instructions).
-Synthesized TLB store handler fastpath (49 instructions).
-Synthesized TLB modify handler fastpath (48 instructions).
-PID hash table entries: 4096 (order: 12, 131072 bytes)
-Dentry cache hash table entries: 1048576 (order: 11, 8388608 bytes)
-Inode-cache hash table entries: 524288 (order: 10, 4194304 bytes)
-Memory: 1991780k/2095580k available (2437k kernel code, 103096k reserved, 539k data, 196k init, 0k highmem)
-Mount-cache hash table entries: 256
+Kernel command line: ln -s /linuxrc /init console=ttyS0,115200
+Primary instruction cache 16kB, physically tagged, 4-way, linesize 32 bytes.
+Primary data cache 16kB, 4-way, linesize 32 bytes.
+Synthesized TLB refill handler (17 instructions).
+Synthesized TLB load handler fastpath (34 instructions).
+Synthesized TLB store handler fastpath (34 instructions).
+Synthesized TLB modify handler fastpath (33 instructions).
+PID hash table entries: 1024 (order: 10, 16384 bytes)
+calculating r4koff... 00060ae0(396000)
+CPU frequency 396.00 MHz
+Dentry cache hash table entries: 32768 (order: 5, 131072 bytes)
+Inode-cache hash table entries: 16384 (order: 4, 65536 bytes)
+Memory: 187268k/196608k available (1952k kernel code, 9056k reserved, 323k 
+data)Mount-cache hash table entries: 512
 Checking for 'wait' instruction...  unavailable.
-Checking for the multiply/shift bug... no.
-Checking for the daddi bug... no.
-Checking for the daddiu bug... no.
-CPU revision is: 03041100
-FPU revision is: 000f0103
-CPU 0 Unable to handle kernel paging request at virtual address 0000008b3cb03e00, epc == ffffffff8010b37c, ra == ffffffff8010b2fc
-Primary instruction cache 32kB, 4-way, linesize 32 bytes.
-Primary data cache 32kB, 4-way, linesize 32 bytes.
-Synthesized TLB refill handler (35 instructions).
-Oops[#1]:
-Cpu 0
-$ 0   : 0000000000000000 0000000000000001 0000000003333333 0000008b3cb03e00
-$ 4   : ffffffff8041be00 0000000000000001 0000000000000000 ffffffff8041c588
-$ 8   : 0000000014001fe1 ffffffff8fefcae0 ffffffff803e9108 0000000000000000
-$12   : ffffffffffffffff ffffffff8026f7e8 ffffffff80420000 ffffffff80420000
-$16   : 0000000000000001 0000000000000001 0000000000000001 ffffffff8041c5c0
-$20   : ffffffff80430000 0000000000000000 0000000000000000 0000000000000000
-$24   : ffffffff80430000 ffffffff8fe7dfd4                                  
-$28   : ffffffff9fff8000 a80000009fffbf30 0000000000000000 ffffffff8010b2fc
-Hi    : 0000000000000000
-Lo    : 0000000000000024
-epc   : ffffffff8010b37c __cpu_up+0xb4/0x168     Not tainted
-ra    : ffffffff8010b2fc __cpu_up+0x34/0x168
-Status: 14001fe3    KX SX UX KERNEL EXL IE 
-Cause : 00808008
-BadVA : 0000008b3cb03e00
-PrId  : 01041100
-Process swapper (pid: 1, threadinfo=a80000009fff8000, task=a80000000fe79848)
-Stack : 0000000000000001 0000000000000001 ffffffff8015eccc ffffffff8015ecb8
-        0000000000000001 ffffffff80420000 ffffffff80420000 ffffffff803a0000
-        0000000000000000 ffffffff80100e78 0000000000000000 0000000000000000
-        0000000000000000 0000000000000000 0000000000000000 0000000000000000
-        0000000000000000 0000000000000000 0000000000000000 ffffffff80104c80
-        0000000000000000 ffffffff80104c70 0000000000000000 0000000000000000
-        0000000000000000 0000000000000000
-Call Trace:
- [<ffffffff8015eccc>] cpu_up+0xfc/0x190
- [<ffffffff8015ecb8>] cpu_up+0xe8/0x190
- [<ffffffff80100e78>] init+0x9c8/0x9f0
- [<ffffffff80104c80>] kernel_thread_helper+0x10/0x18
- [<ffffffff80104c70>] kernel_thread_helper+0x0/0x18
+NET: Registered protocol family 16
+Serial: Au1x00 driver
+ttyS0 at I/O 0xb1100000 (irq = 0) is a AU1X00_UART
+ttyS1 at I/O 0xb1200000 (irq = 8) is a AU1X00_UART
+ttyS2 at I/O 0xb1400000 (irq = 9) is a AU1X00_UART
+io scheduler noop registered
+io scheduler anticipatory registered
+io scheduler deadline registered
+io scheduler cfq registered
+RAMDISK driver initialized: 16 RAM disks of 8192K size 1024 blocksize
+loop: loaded (max 8 devices)
+au1000eth version 1.5 Pete Popov <ppopov@embeddedalley.com>
+eth0: Au1x Ethernet found at 0xb0500000, irq 27
+eth0: AMD 79C874 10/100 BaseT PHY at phy address 31
+eth0: Using AMD 79C874 10/100 BaseT PHY as default
+eth1: Au1x Ethernet found at 0xb0510000, irq 28
+eth1: AMD 79C874 10/100 BaseT PHY at phy address 31
+eth1: Using AMD 79C874 10/100 BaseT PHY as default
+mice: PS/2 mouse device common for all mice
+NET: Registered protocol family 2
+IP route cache hash table entries: 2048 (order: 1, 8192 bytes)
+TCP established hash table entries: 8192 (order: 3, 32768 bytes)
+TCP bind hash table entries: 8192 (order: 3, 32768 bytes)
+TCP: Hash tables configured (established 8192 bind 8192)
+TCP reno registered
+TCP bic registered
+NET: Registered protocol family 1
+NET: Registered protocol family 17
+NET: Registered protocol family 15
+VFS: Cannot open root device "<NULL>" or unknown-block(1,0)
+Please append a correct "root=" boot option
+Kernel panic - not syncing: VFS: Unable to mount root fs on 
+unknown-block(1,0) 
 
+------=_NextPart_000_0399_01C63DE7.329F2CB0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset="big5"
 
-Code: 0062182d  3c020333  34423333 <dc640000> 000214b8  3442cccd  00021478  6446995c  00c4001d 
-Kernel panic - not syncing: Attempted to kill init!
- <0>Rebooting in 5 seconds..261.63 BogoMIPS (lpj=130816)
-Passing control back to CFE...
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
+<META content=3D"MSHTML 6.00.2900.2802" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>I downloaded kernel 2.6.14 from Linux-MIPS, </DIV>
+<DIV>and&nbsp;compiled with&nbsp;gcc-3.4.4 and mipssde-6.02.03 =
+toolchain. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I put the target directory at /init, </DIV>
+<DIV>run gen_initramfs_list.sh with /init to a text file, </DIV>
+<DIV>and assigned this text file to the initrd for cpio. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>After compiled, loaded, and ran, </DIV>
+<DIV>I got the message below, </DIV>
+<DIV>Would someone tell me how to set the root parameter? </DIV>
+<DIV>Thanks a lot! </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Linux version 2.6.14 (gcc version 3.4.4 mipssde-6.02.03-20050626CPU =
 
--- 
-Martin Michlmayr
-http://www.cyrius.com/
+revision is: 03030200<BR>AMD Alchemy Au1550/Db1550 Board<BR>(PRId =
+03030200) @=20
+396MHZ<BR>BCLK switching enabled!<BR>Determined physical RAM=20
+map:<BR>&nbsp;memory: 0c000000 @ 00000000 (usable)<BR>Built 1=20
+zonelists<BR>Kernel command line: ln -s /linuxrc /init=20
+console=3DttyS0,115200<BR>Primary instruction cache 16kB, physically =
+tagged,=20
+4-way, linesize 32 bytes.<BR>Primary data cache 16kB, 4-way, linesize 32 =
+
+bytes.<BR>Synthesized TLB refill handler (17 =
+instructions).<BR>Synthesized TLB=20
+load handler fastpath (34 instructions).<BR>Synthesized TLB store =
+handler=20
+fastpath (34 instructions).<BR>Synthesized TLB modify handler fastpath =
+(33=20
+instructions).<BR>PID hash table entries: 1024 (order: 10, 16384=20
+bytes)<BR>calculating r4koff... 00060ae0(396000)<BR>CPU frequency 396.00 =
+
+MHz<BR>Dentry cache hash table entries: 32768 (order: 5, 131072=20
+bytes)<BR>Inode-cache hash table entries: 16384 (order: 4, 65536=20
+bytes)<BR>Memory: 187268k/196608k available (1952k kernel code, 9056k =
+reserved,=20
+323k data)Mount-cache hash table entries: 512<BR>Checking for 'wait'=20
+instruction...&nbsp; unavailable.<BR>NET: Registered protocol family=20
+16<BR>Serial: Au1x00 driver<BR>ttyS0 at I/O 0xb1100000 (irq =3D 0) is a=20
+AU1X00_UART<BR>ttyS1 at I/O 0xb1200000 (irq =3D 8) is a =
+AU1X00_UART<BR>ttyS2 at=20
+I/O 0xb1400000 (irq =3D 9) is a AU1X00_UART<BR>io scheduler noop =
+registered<BR>io=20
+scheduler anticipatory registered<BR>io scheduler deadline =
+registered<BR>io=20
+scheduler cfq registered<BR>RAMDISK driver initialized: 16 RAM disks of =
+8192K=20
+size 1024 blocksize<BR>loop: loaded (max 8 devices)<BR>au1000eth version =
+1.5=20
+Pete Popov &lt;<A=20
+href=3D"mailto:ppopov@embeddedalley.com">ppopov@embeddedalley.com</A>&gt;=
+<BR>eth0:=20
+Au1x Ethernet found at 0xb0500000, irq 27<BR>eth0: AMD 79C874 10/100 =
+BaseT PHY=20
+at phy address 31<BR>eth0: Using AMD 79C874 10/100 BaseT PHY as =
+default<BR>eth1:=20
+Au1x Ethernet found at 0xb0510000, irq 28<BR>eth1: AMD 79C874 10/100 =
+BaseT PHY=20
+at phy address 31<BR>eth1: Using AMD 79C874 10/100 BaseT PHY as =
+default<BR>mice:=20
+PS/2 mouse device common for all mice<BR>NET: Registered protocol family =
+2<BR>IP=20
+route cache hash table entries: 2048 (order: 1, 8192 bytes)<BR>TCP =
+established=20
+hash table entries: 8192 (order: 3, 32768 bytes)<BR>TCP bind hash table =
+entries:=20
+8192 (order: 3, 32768 bytes)<BR>TCP: Hash tables configured (established =
+8192=20
+bind 8192)<BR>TCP reno registered<BR>TCP bic registered<BR>NET: =
+Registered=20
+protocol family 1<BR>NET: Registered protocol family 17<BR>NET: =
+Registered=20
+protocol family 15<BR>VFS: Cannot open root device "&lt;NULL&gt;" or=20
+unknown-block(1,0)<BR>Please append a correct "root=3D" boot =
+option<BR>Kernel=20
+panic - not syncing: VFS: Unable to mount root fs on=20
+unknown-block(1,0)</DIV></BODY></HTML>
+
+------=_NextPart_000_0399_01C63DE7.329F2CB0--

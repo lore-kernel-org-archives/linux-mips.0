@@ -1,59 +1,29 @@
-Received: from fw-ca-1-hme0.vitesse.com ([64.215.88.90]:9830 "EHLO
+Received: from fw-ca-1-hme0.vitesse.com ([64.215.88.90]:45997 "EHLO
 	email.vitesse.com") by ftp.linux-mips.org with ESMTP
-	id S8133814AbWCMU6o convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 13 Mar 2006 20:58:44 +0000
+	id S8133524AbWCMVyv convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 13 Mar 2006 21:54:51 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Subject: RE: Cross compile kernel w/ buildroot toolchain
-Date: Mon, 13 Mar 2006 14:07:34 -0700
-Message-ID: <389E6A416914954182ECDFCD844D8269434FC1@MX-COS.vsc.vitesse.com>
+Date: Mon, 13 Mar 2006 15:03:42 -0700
+Message-ID: <389E6A416914954182ECDFCD844D8269434FC7@MX-COS.vsc.vitesse.com>
 From: "Kurt Schwemmer" <kurts@vitesse.com>
 Return-Path: <kurts@vitesse.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20060313210734.pRxE8WZ9Qtmhj1Jl_OXRuu0FOzdVhERq4sCPjI6hc2M@z>
+Message-ID: <20060313220342.wSKIiKbxrqWOWl9iDZjnTjCst1HuSk3ynjzu0R_gYNw@z>
 
-I didn't touch any of the source yet. 
-
-I'm downloading the 1/10/05 2.6.15 tarball (
-ftp://ftp.linux-mips.org/pub/linux/mips/kernel/v2.6/linux-2.6.15.tar.gz
-)now to see if that fixes things.
-
-In response to Thiemo's message the error with (V=1) is:
-
-make -f scripts/Makefile.build obj=arch/mips/kernel
-  /klocal/buildroot/build_mipsel/staging_dir/bin/mipsel-linux-gcc
--Wp,-MD,arch/mips/kernel/.entry.o.d  -nostdinc -isystem
-/klocal/buildroot/build_mipsel/staging_dir/bin-ccache/../lib/gcc/mipsel-
-linux-uclibc/3.4.5/include -D__KERNEL__ -Iinclude  -D__ASSEMBLY__  -I
-/usr/local/src/linux-2.6/include/asm/gcc -G 0 -mno-abicalls -fno-pic
--pipe  -finline-limit=100000 -mabi=32 -march=mips32r2 -Wa,-32
--Wa,-march=mips32r2 -Wa,-mips32r2 -Wa,--trap
--Iinclude/asm-mips/mach-mips -Iinclude/asm-mips/mach-generic -Wall
--Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common
--ffreestanding -O2     -fomit-frame-pointer  -I
-/usr/local/src/linux-2.6/include/asm/gcc -G 0 -mno-abicalls -fno-pic
--pipe  -finline-limit=100000 -mabi=32 -march=mips32r2 -Wa,-32
--Wa,-march=mips32r2 -Wa,-mips32r2 -Wa,--trap
--Iinclude/asm-mips/mach-mips -Iinclude/asm-mips/mach-generic    -c -o
-arch/mips/kernel/entry.o arch/mips/kernel/entry.S
-arch/mips/kernel/entry.S: Assembler messages:
-arch/mips/kernel/entry.S:157: Error: opcode not supported on this
-processor: mips32 (mips32) `jr.hb $31'
-make[1]: *** [arch/mips/kernel/entry.o] Error 1
-make: *** [arch/mips/kernel] Error 2
-
-Also, assembler -v output:
-GNU assembler version 2.16.1 (mipsel-linux-uclibc) using BFD version
-2.16.1
+Getting the _very_ latest source fixed my problem. I can now build the
+kernel with the cross compiler that buildroot builds. Thanks to all who
+offered advice!
 
 Thanks,
-Kurt Schwemmer
+Kurt Schwemmer 
 
 > -----Original Message-----
 > From: Ralf Baechle [mailto:ralf@linux-mips.org] 

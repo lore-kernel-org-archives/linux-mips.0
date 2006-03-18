@@ -1,105 +1,62 @@
-Received: from mail.soc-soft.com ([202.56.254.199]:38926 "EHLO
-	igateway.soc-soft.com") by ftp.linux-mips.org with ESMTP
-	id S8133417AbWCQNjx convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 17 Mar 2006 13:39:53 +0000
-content-class: urn:content-classes:message
+Received: from mailout.mbnet.fi ([194.100.161.24]:25375 "HELO
+	mail3.mbnet.mbnet.fi") by ftp.linux-mips.org with SMTP
+	id S8133435AbWCRIsw (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Sat, 18 Mar 2006 08:48:52 +0000
+Message-ID: <2052.88.192.17.186.1142672292.squirrel@webmail.mbnet.fi>
+In-Reply-To: <20060318015941.GY18750@deprecation.cyrius.com>
+References: <Pine.GSO.4.58.0603171412170.11482@kekkonen.cs.hut.fi>
+    <20060318015941.GY18750@deprecation.cyrius.com>
+Date: Sat, 18 Mar 2006 10:58:12 +0200 (EET)
+Subject: Re: [PATCH] SGI VINO driver 64-bit fix / V4L ioctl compatibility
+     layer needs fixes
+From: "Mikael Nousiainen" <turja@mbnet.fi>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Init not working in 64-bit kernel
-Date: Fri, 17 Mar 2006 19:19:08 +0530
-Message-ID: <4BF47D56A0DD2346A1B8D622C5C5902C01524E41@soc-mail.soc-soft.com>
-From: <Vadivelan@soc-soft.com>
-Return-Path: <Vadivelan@soc-soft.com>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-Path: <turja@mbnet.fi>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ralf@linux-mips.org
+To: Martin Michlmayr <tbm@cyrius.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20060317134908.t4rbQFfiHeHZrFli-HrUvwYVlhQ7vpx-rg_C5fH9718@z>
+Message-ID: <20060318085812.PybU9dh-MMTcKisF_9ECgeZgyv9A1bpKhKd3EMAnYd0@z>
 
-
-Hi,
-	first thanx for ur reply.
-
-All the following options are enabled in the kernel.
-
-CONFIG_MIPS32_COMPAT=y
-CONFIG_MIPS32_O32=y
-CONFIG_MIPS32_N32=y
-
-I've another doubt. Is it enough to set only the bits KX,SX and UX of
-the status register to work in 64-bit mode?
-Though I've used the cross compiler mips64_fp_be-gcc from MontaVista,
-the generated vmlinux image seems to boot fine even without setting the
-above bits.
-I don't know if I'm operating in 32-bit or 64-bit mode.
-But I've enabled 64-bit support in kernel configuration.
-
-Regards,
-vadi
-
------Original Message-----
-From: Ralf Baechle [mailto:ralf@linux-mips.org]
-Sent: Friday, March 17, 2006 6:49 PM
-To: Vadivelan M
-Cc: linux-mips@linux-mips.org
-Subject: Re: Init not working in 64-bit kernel
-
-
-On Fri, Mar 17, 2006 at 03:36:50PM +0530, Vadivelan@soc-soft.com wrote:
-
-> 	I'm porting a 64-bit linux kernel provided for a mips4
-architecture
-> to a mips3 target board. The existing NFS root file system has been
-> compiled for a 64-bit mips4 architecture. If I mount this file system,
-
-> the init does not run. After mounting the filesystem, I get the
-> following messages and the kernel hangs.
+> * turja@mbnet.fi <turja@mbnet.fi> [2006-03-17 14:19]:
+>> This patch should fix problems with VINO drivers when using a 64-bit
+>> kernel.
 >
-> -------------------------------------------------
-> Looking up port of RPC 100003/2 on 192.168.5.93
-> Looking up port of RPC 100005/1 on 192.168.5.93
-> VFS: Mounted root (nfs filesystem).
-> Freeing unused kernel memory: 132k freed
+> Did you test this?
 
-That's a rather generic kind of death uppon entry of userspace sympthom,
-so I cannot really give alot of advice other than below:
+To be honest, I didn't test this (as I didn't have 64-bit kernel available),
+but the fix was quite trivial. Basically I only had to change one unsigned
+long
+back to u32 as the DMA addresses VINO uses are always 32-bit.
+Nothing else should prevent the driver from working in a 64-bit environment.
 
-> I also tried to mount a 32-bit working NFS root filesystem. Still I
-> get the same problem. I thought 32-bit binaries will execute fine in
-> 64-bit kernel.
+>
+> It looks exactly like the patch you gave me for testing a few days ago
+> and that did not work...
 
-They do - but you need to enable 32-bit compatibility:
+Yup, it didn't work...
 
-CONFIG_MIPS32_COMPAT=y
-CONFIG_MIPS32_O32=y
+>
+>> There are also other bugs which prevent V4L drivers from functioning
+>> correctly when using 32-bit userland with a 64-bit kernel as the ioctl
+>> compatibility layer (in drivers/media/video/compat_ioctl32.c) doesn't
+>> seem
+>> to handle VIDIOC_CROPCAP.
+>
+> ... or did I see this bug?
 
-And if you have an N32 root filesystem (unlikely) you also have to set
-CONFIG_MIPS32_N32=y.
+.... because the bug you saw was this. The compatibility layer
+doesn't forward certain ioctls to the driver and only returns an error code.
 
-> Do I have to recompile the binutils and glibc for my target file
-> system?
+Also please remember to download the newest version (0.7.1) of the
+patched camsource from my web page when testing the driver.
+The newest version has a couple of fixes which should allow
+the application to work with the driver even if VIDIOC_CROPCAP fails.
+But anyway the V4L ioctl compatibility layer needs to be fixed.
 
-No.  The entire software should just work.
-
-> Kindly ignore the confidentiality notice attached at the end of the
-> mail. It is an automatically generated one and I cannot remove it.I'm
-> extremely sorry for the inconvenience.
-
-We're fabulous at ignoring things ;-)
-
-  Ralf
-
-
+http://www.mbnet.fi/~turja/vino/
 
 
-
-
-The information contained in this e-mail message and in any annexure is
-confidential to the  recipient and may contain privileged information. If you are not
-the intended recipient, please notify the sender and delete the message along with
-any annexure. You should not disclose, copy or otherwise use the information contained
-in the message or any annexure. Any views expressed in this e-mail are those of the
-individual sender except where the sender specifically states them to be the views of
-SoCrates Software India Pvt Ltd., Bangalore.
+Mikael Nousiainen

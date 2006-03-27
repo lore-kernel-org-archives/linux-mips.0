@@ -1,68 +1,52 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:59844 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133487AbWC0M4V
+Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:38085 "EHLO
+	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133487AbWC0QKV
 	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 27 Mar 2006 13:56:21 +0100
-Message-ID: <005901c6519f$b226e060$10eca8c0@grendel>
+	Mon, 27 Mar 2006 17:10:21 +0100
+Message-ID: <00d501c651ba$ccae9c00$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <f07e6e0603240636x5e496cd2g29316d73490aa300@mail.gmail.com> <20060324165518.GA16567@linux-mips.org> <f07e6e0603250122t6328c09coe37141d14396dc12@mail.gmail.com> <000d01c65022$90d758a0$10eca8c0@grendel> <f07e6e0603270326s7acb75e4x3000bb08de93ffc5@mail.gmail.com>
+References: <f07e6e0603240636x5e496cd2g29316d73490aa300@mail.gmail.com> <20060324165518.GA16567@linux-mips.org> <f07e6e0603250122t6328c09coe37141d14396dc12@mail.gmail.com> <000d01c65022$90d758a0$10eca8c0@grendel> <f07e6e0603270326s7acb75e4x3000bb08de93ffc5@mail.gmail.com> <005901c6519f$b226e060$10eca8c0@grendel> <f07e6e0603270612k39c91d01wa0e08c35fee1922c@mail.gmail.com>
 Subject: Re: 2.6.14 - problem with malta
-Date: Mon, 27 Mar 2006 15:09:33 +0200
+Date: Mon, 27 Mar 2006 18:23:34 +0200
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0056_01C651B0.74775770"
+	boundary="----=_NextPart_000_00D2_01C651CB.8F1496E0"
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Kishore K <hellokishore@gmail.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20060327130933.Y9yPV74tICwpvD2o_AIVFKdtu-Uzz-cDfm9qPnIIOxE@z>
+Message-ID: <20060327162334.zspwMJJB1G-mvwrhEtAHHodtw6PuP_9NR_BSlPkPkYc@z>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0056_01C651B0.74775770
+------=_NextPart_000_00D2_01C651CB.8F1496E0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
   ----- Original Message -----=20
-  Thanks for the suggestion. In my config only CONFIG_CPU_MIPS32_R1 and =
-CONFIG_SYS_HAS_CPU_MIPS32_R1 are set. Even then, I observe the same =
-problem. I am enclosing the configuration file along with this mail.=20
-
-My own Malta kernels are built from rather old 2.6 sources, so it's not
-clear that all the same options are required/possible.  The questions =
-that
-come to mind for me are:
-
-1) You're booting a big-endian kernel.  The Malta board can be set up
-    for either endianness with a DIP switch, but I believe that it ships
-    from the factory in little-endian mode.  Have you verified that the
-    endianness setup?
-
-2)  You're configuring for hot-pluggable CPUs.  That isn't fully =
-supported
-     in the old source base I've got.  It may be fixed in 2.6.14, but do =
-you
-     actually need it on a Malta?
-
-3) You've got support for MIPS MT (the multithreading extension) =
-enabled,
-    with the slave-virtual-processor boot loader, etc.  This stuff only =
-works
-    on a 34K core, and could cause severe problems if invoked on a 4Kc.
-    At least you don't have SMP/SMTC multi-virtual-processor support
-    enabled, which would *definitely* cause a prompt crash on a 4Kc,
-    but please turn MIPS_MT off.  If MIPS MT + VPE loader are really
-    selected options in the default malta config file, it needs to be =
-fixed!
-
-            Regards,
-
-            Kevin K.
+  From: Kishore K=20
+  ...
 
 
-------=_NextPart_000_0056_01C651B0.74775770
+  I reset the above options, but the same problem persists. If I =
+compiled 2.6.10 with default configuration (endian is changed to big =
+endian), the board comes up without any problem.
+
+
+
+Then the first thing to do is look at the diff between the 2.6.10 =
+.config file
+and the 2.6.14 .config file and elminate all possible differences.  The =
+diff
+with my 2.6.9+ .config for Malta could be deceptive, because I've got a
+totally hacked up SMTC configuration for the 34K.
+
+        Regards,
+
+        Kevin K.
+------=_NextPart_000_00D2_01C651CB.8F1496E0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -75,127 +59,48 @@ charset=3Diso-8859-1">
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
 <BLOCKQUOTE=20
 style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
 BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
   <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
-  <DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">
-  <BLOCKQUOTE class=3Dgmail_quote=20
-  style=3D"PADDING-LEFT: 1ex; MARGIN: 0pt 0pt 0pt 0.8ex; BORDER-LEFT: =
-rgb(204,204,204) 1px solid">
-    <DIV style=3D"DIRECTION: ltr">
-    <DIV><FONT face=3DArial =
-size=3D2></FONT></DIV></DIV></BLOCKQUOTE></DIV>
-  <DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">Thanks=20
-  for the suggestion. In my config only <FONT face=3DArial=20
-  size=3D2>CONFIG_CPU_MIPS32_R1 and </FONT><FONT face=3DArial=20
-  size=3D2>CONFIG_SYS_HAS_CPU_MIPS32_R1 are set. Even then, I observe =
-the same=20
-  problem. I am enclosing the configuration file along with this mail.=20
-  </FONT></DIV>
   <DIV=20
   style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;</DIV></BLOCKQUOTE>
-<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">My own=20
-Malta kernels are built from rather old 2.6 sources, so it's not</DIV>
-<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">clear that=20
-all the same options are required/possible.&nbsp; The questions =
-that</DIV>
-<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">come to=20
-mind for me are:</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;</DIV>
-<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">1) You're=20
-booting a big-endian kernel.&nbsp; The Malta board can be set up</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;=20
-for either endianness with a DIP switch, but I believe that it =
-ships</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;=20
-from the factory in little-endian mode.&nbsp; Have you verified that =
-the</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;=20
-endianness setup?</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;</DIV>
-<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">2)&nbsp;=20
-You're configuring for hot-pluggable CPUs.&nbsp; That isn't fully=20
-supported</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in=20
-the old source base I've got.&nbsp; It may be fixed in 2.6.14, but do =
-you</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;&nbsp;=20
-actually need it on a Malta?</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;</DIV>
-<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">3) You've=20
-got support for MIPS MT (the multithreading extension) enabled,</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;&nbsp;with=20
-the slave-virtual-processor boot loader, etc.&nbsp; This stuff only =
-works</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;=20
-on a 34K core, and could cause severe problems if invoked on a =
-4Kc.</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;&nbsp;At=20
-least you don't have SMP/SMTC multi-virtual-processor support</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;=20
-enabled, which would *definitely* cause a prompt crash on a 4Kc,</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;&nbsp;but=20
-please turn MIPS_MT off.&nbsp; If&nbsp;MIPS&nbsp;MT&nbsp;+ =
-VPE&nbsp;loader are=20
-really</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;=20
-selected options&nbsp;in the&nbsp;default malta config file, it needs to =
-be=20
-fixed!</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Regards,</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;</DIV>
-<DIV=20
-style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black">&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Kevin K.</DIV><FONT face=3DArial =
+black"><B>From:</B>=20
+  <A title=3Dhellokishore@gmail.com =
+href=3D"mailto:hellokishore@gmail.com">Kishore=20
+  K</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><FONT=20
+  style=3D"BACKGROUND-COLOR: #e4e4e4">...</FONT></DIV><FONT face=3DArial =
 size=3D2>
-<DIV><BR></DIV></FONT></BODY></HTML>
+  <DIV><BR></DIV>
+  <DIV></FONT><FONT face=3D"Times New Roman" size=3D3>I reset the above =
+options, but=20
+  the same problem persists. If I compiled 2.6.10 with default =
+configuration=20
+  (endian is changed to big endian), the board comes up without any=20
+  problem.<BR></FONT></DIV></BLOCKQUOTE>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Then the first thing to do is look at =
+the diff=20
+between the 2.6.10 .config file</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>and the 2.6.14 .config file and =
+elminate all=20
+possible differences.&nbsp; The diff</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>with my 2.6.9+ .config for Malta could =
+be=20
+deceptive, because I've got a</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>totally hacked up SMTC configuration =
+for the=20
+34K.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
+Regards,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kevin=20
+K.</FONT></DIV></FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_0056_01C651B0.74775770--
+------=_NextPart_000_00D2_01C651CB.8F1496E0--

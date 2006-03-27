@@ -1,95 +1,68 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:63412 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133714AbWCYP2W
+Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:59844 "EHLO
+	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133487AbWC0M4V
 	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Sat, 25 Mar 2006 15:28:22 +0000
-Message-ID: <000d01c65022$90d758a0$10eca8c0@grendel>
+	Mon, 27 Mar 2006 13:56:21 +0100
+Message-ID: <005901c6519f$b226e060$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <f07e6e0603240636x5e496cd2g29316d73490aa300@mail.gmail.com> <20060324165518.GA16567@linux-mips.org> <f07e6e0603250122t6328c09coe37141d14396dc12@mail.gmail.com>
+References: <f07e6e0603240636x5e496cd2g29316d73490aa300@mail.gmail.com> <20060324165518.GA16567@linux-mips.org> <f07e6e0603250122t6328c09coe37141d14396dc12@mail.gmail.com> <000d01c65022$90d758a0$10eca8c0@grendel> <f07e6e0603270326s7acb75e4x3000bb08de93ffc5@mail.gmail.com>
 Subject: Re: 2.6.14 - problem with malta
-Date: Sat, 25 Mar 2006 16:41:19 +0100
+Date: Mon, 27 Mar 2006 15:09:33 +0200
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000A_01C6502A.F13D4210"
+	boundary="----=_NextPart_000_0056_01C651B0.74775770"
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Kishore K <hellokishore@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20060325154119.Fi8YgA7ScLMBHriWozPA5e6XmqRSMNeJfb17bMSVl0o@z>
+To: Kishore K <hellokishore@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20060327130933.Y9yPV74tICwpvD2o_AIVFKdtu-Uzz-cDfm9qPnIIOxE@z>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000A_01C6502A.F13D4210
+------=_NextPart_000_0056_01C651B0.74775770
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-See below...
+
   ----- Original Message -----=20
-  From: Kishore K=20
-  To: Ralf Baechle=20
-  Cc: linux-mips@linux-mips.org=20
-  Sent: Saturday, March 25, 2006 10:22 AM
-  Subject: Re: 2.6.14 - problem with malta
+  Thanks for the suggestion. In my config only CONFIG_CPU_MIPS32_R1 and =
+CONFIG_SYS_HAS_CPU_MIPS32_R1 are set. Even then, I observe the same =
+problem. I am enclosing the configuration file along with this mail.=20
 
+My own Malta kernels are built from rather old 2.6 sources, so it's not
+clear that all the same options are required/possible.  The questions =
+that
+come to mind for me are:
 
-  On 3/24/06, Ralf Baechle <ralf@linux-mips.org> wrote:
-    On Fri, Mar 24, 2006 at 08:06:43PM +0530, Kishore K wrote:
+1) You're booting a big-endian kernel.  The Malta board can be set up
+    for either endianness with a DIP switch, but I believe that it ships
+    from the factory in little-endian mode.  Have you verified that the
+    endianness setup?
 
-    > hi
-    > I am trying to bring up the malta board (MIPS 4kec), using the =
-2.6.14 kernel
-    > downloaded from linux-mips. The kernel is built with =
-malta_defconfig located=20
-    > in arch/mips/configs. After loading this kernel, board halts after =
-printing
-    > "Linux Started
-    > Config serial console: console=3DttyS0, 38400n8r"
-    >
-    > Kernel is built with the tool chain based on gcc 3.3.6, binutils =
-2.14.90.0.8
-    > .
+2)  You're configuring for hot-pluggable CPUs.  That isn't fully =
+supported
+     in the old source base I've got.  It may be fixed in 2.6.14, but do =
+you
+     actually need it on a Malta?
 
-    Note I generally don't test with HJ.Lu's toolchain at all.  It may =
-be
-    broken for MIPS, I don't know.  Also due to known bugs in older =
-toolchains
-    the minimal requirement is binutils 2.16; the vanilla FSF version =
-from
-    ftp.gnu.org will do.
-
-    (2.15 will core dump for some configurations but if it doesn't die, =
-it seems
-    to do just fine)
-
-  Thanks for the reply. I observed the same problem  even when compiled =
-with tool chain based on gcc 3.4.4 binutils 2.15.97 and uclibc- 0.9.27. =
-I 'll try with binutils 2.16. Please note that my malta is based on 4kc =
-but not 4kec.
-Ah.  That makes a difference.  In your earlier mssage, you said you had =
-a 4KEc.
-The malta_defconfig file by default configures the kernel to be built =
-assuming
-MIPS32 Release 2.  The 4KEc is Release 2 compatible, but the older 4Kc =
-and
-5K cores are not.   You need to tweak the configuration such that=20
-CONFIG_CPU_MIPS32_R1=3Dy but CONFIG_CPU_MIPS32_R2 is not set
-(it's the other way around in the malta_defconfig in the linux-mips =
-git),
-and, to be on the safe side, such that CONFIG_SYS_HAS_CPU_MIPS32_R2
-isn't set.
-
-Your failure was so early that I was wondering what on earth could have
-nailed you, but if the kernel was built for Release 2, you would have =
-had
-"DI" (disable interrupts) instructions very early on, and these could =
-have
-caused a fatal early exception on a Release 1 part.
+3) You've got support for MIPS MT (the multithreading extension) =
+enabled,
+    with the slave-virtual-processor boot loader, etc.  This stuff only =
+works
+    on a 34K core, and could cause severe problems if invoked on a 4Kc.
+    At least you don't have SMP/SMTC multi-virtual-processor support
+    enabled, which would *definitely* cause a prompt crash on a 4Kc,
+    but please turn MIPS_MT off.  If MIPS MT + VPE loader are really
+    selected options in the default malta config file, it needs to be =
+fixed!
 
             Regards,
 
             Kevin K.
-------=_NextPart_000_000A_01C6502A.F13D4210
+
+
+------=_NextPart_000_0056_01C651B0.74775770
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -102,108 +75,127 @@ charset=3Diso-8859-1">
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>See below...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
 <BLOCKQUOTE=20
 style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
 BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
   <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
-  <DIV=20
-  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black"><B>From:</B>=20
-  <A title=3Dhellokishore@gmail.com =
-href=3D"mailto:hellokishore@gmail.com">Kishore=20
-  K</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A =
-title=3Dralf@linux-mips.org=20
-  href=3D"mailto:ralf@linux-mips.org">Ralf Baechle</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Cc:</B> <A =
-title=3Dlinux-mips@linux-mips.org=20
-  =
-href=3D"mailto:linux-mips@linux-mips.org">linux-mips@linux-mips.org</A> =
-</DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Saturday, March 25, 2006 =
-10:22=20
-  AM</DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Re: 2.6.14 - problem =
-with=20
-  malta</DIV>
-  <DIV><BR></DIV>On 3/24/06, <B class=3Dgmail_sendername>Ralf =
-Baechle</B> &lt;<A=20
-  href=3D"mailto:ralf@linux-mips.org">ralf@linux-mips.org</A>&gt; wrote:
-  <DIV><SPAN class=3Dgmail_quote></SPAN>
+  <DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">
   <BLOCKQUOTE class=3Dgmail_quote=20
   style=3D"PADDING-LEFT: 1ex; MARGIN: 0pt 0pt 0pt 0.8ex; BORDER-LEFT: =
-rgb(204,204,204) 1px solid">On=20
-    Fri, Mar 24, 2006 at 08:06:43PM +0530, Kishore K wrote:<BR><BR>&gt;=20
-    hi<BR>&gt; I am trying to bring up the malta board (MIPS 4kec), =
-using the=20
-    2.6.14 kernel<BR>&gt; downloaded from linux-mips. The kernel is =
-built with=20
-    malta_defconfig located <BR>&gt; in arch/mips/configs. After loading =
-this=20
-    kernel, board halts after printing<BR>&gt; "Linux Started<BR>&gt; =
-Config=20
-    serial console: console=3DttyS0, 38400n8r"<BR>&gt;<BR>&gt; Kernel is =
-built=20
-    with the tool chain based on gcc 3.3.6, binutils 2.14.90.0.8<BR>&gt; =
+rgb(204,204,204) 1px solid">
+    <DIV style=3D"DIRECTION: ltr">
+    <DIV><FONT face=3DArial =
+size=3D2></FONT></DIV></DIV></BLOCKQUOTE></DIV>
+  <DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">Thanks=20
+  for the suggestion. In my config only <FONT face=3DArial=20
+  size=3D2>CONFIG_CPU_MIPS32_R1 and </FONT><FONT face=3DArial=20
+  size=3D2>CONFIG_SYS_HAS_CPU_MIPS32_R1 are set. Even then, I observe =
+the same=20
+  problem. I am enclosing the configuration file along with this mail.=20
+  </FONT></DIV>
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;</DIV></BLOCKQUOTE>
+<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">My own=20
+Malta kernels are built from rather old 2.6 sources, so it's not</DIV>
+<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">clear that=20
+all the same options are required/possible.&nbsp; The questions =
+that</DIV>
+<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">come to=20
+mind for me are:</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;</DIV>
+<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">1) You're=20
+booting a big-endian kernel.&nbsp; The Malta board can be set up</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;=20
+for either endianness with a DIP switch, but I believe that it =
+ships</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;=20
+from the factory in little-endian mode.&nbsp; Have you verified that =
+the</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;=20
+endianness setup?</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;</DIV>
+<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">2)&nbsp;=20
+You're configuring for hot-pluggable CPUs.&nbsp; That isn't fully=20
+supported</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in=20
+the old source base I've got.&nbsp; It may be fixed in 2.6.14, but do =
+you</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;&nbsp;=20
+actually need it on a Malta?</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;</DIV>
+<DIV style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">3) You've=20
+got support for MIPS MT (the multithreading extension) enabled,</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;&nbsp;with=20
+the slave-virtual-processor boot loader, etc.&nbsp; This stuff only =
+works</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;=20
+on a 34K core, and could cause severe problems if invoked on a =
+4Kc.</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;&nbsp;At=20
+least you don't have SMP/SMTC multi-virtual-processor support</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;=20
+enabled, which would *definitely* cause a prompt crash on a 4Kc,</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;&nbsp;but=20
+please turn MIPS_MT off.&nbsp; If&nbsp;MIPS&nbsp;MT&nbsp;+ =
+VPE&nbsp;loader are=20
+really</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;=20
+selected options&nbsp;in the&nbsp;default malta config file, it needs to =
+be=20
+fixed!</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;=20
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Regards,</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;</DIV>
+<DIV=20
+style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black">&nbsp;&nbsp;&nbsp;=20
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Kevin K.</DIV><FONT face=3DArial =
+size=3D2>
+<DIV><BR></DIV></FONT></BODY></HTML>
 
-    .<BR><BR>Note I generally don't test with HJ.Lu's toolchain at=20
-    all.&nbsp;&nbsp;It may be<BR>broken for MIPS, I don't =
-know.&nbsp;&nbsp;Also=20
-    due to known bugs in older toolchains<BR>the minimal requirement is =
-binutils=20
-    2.16; the vanilla FSF version from<BR><A=20
-    href=3D"http://ftp.gnu.org">ftp.gnu.org</A> will do.<BR><BR>(2.15 =
-will core=20
-    dump for some configurations but if it doesn't die, it seems<BR>to =
-do just=20
-    fine)</BLOCKQUOTE>
-  <DIV><BR>Thanks for the reply. I observed the same problem&nbsp; even =
-when=20
-  compiled with tool chain based on gcc 3.4.4 binutils 2.15.97 and =
-uclibc-=20
-  0.9.27. I 'll try with binutils 2.16. Please note that my malta is =
-based on=20
-  4kc but not 4kec.</DIV></DIV></BLOCKQUOTE>
-<DIV><FONT face=3DArial size=3D2>Ah.&nbsp; That makes a =
-difference.&nbsp; In your=20
-earlier mssage, you said you had a 4KEc.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The malta_defconfig file by default =
-configures the=20
-kernel to be built assuming</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>MIPS32 Release 2.&nbsp; The 4KEc is =
-Release 2=20
-compatible, but the older 4Kc and</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>5K cores are not.&nbsp;&nbsp; You need =
-to tweak the=20
-configuration such that </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>CONFIG_CPU_MIPS32_R1=3Dy but =
-CONFIG_CPU_MIPS32_R2 is=20
-not set</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>(it's the other way around in the =
-malta_defconfig=20
-in the linux-mips git),</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>and, to be on the safe side, such that=20
-CONFIG_SYS_HAS_CPU_MIPS32_R2</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>isn't set.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Your failure was so early that I was =
-wondering what=20
-on earth could have</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>nailed you, but if the kernel was built =
-for Release=20
-2, you would have had</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"DI" (disable interrupts) instructions =
-very early=20
-on, and these could have</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>caused a fatal early exception on a =
-Release 1=20
-part.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; Regards,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; Kevin K.</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_000A_01C6502A.F13D4210--
+------=_NextPart_000_0056_01C651B0.74775770--

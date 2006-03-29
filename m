@@ -1,42 +1,61 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:14799 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133728AbWC2OTA
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 29 Mar 2006 15:19:00 +0100
-Message-ID: <06d301c6533d$9c3c0f10$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <024c01c65337$63931c90$106215ac@realtek.com.tw> <442A94D0.1020106@mips.com>
-Subject: Re: Using hardware watchpoint for applications debugging
-Date: Wed, 29 Mar 2006 16:32:29 +0200
+Received: from web31912.mail.mud.yahoo.com ([68.142.207.92]:21893 "HELO
+	web31912.mail.mud.yahoo.com") by ftp.linux-mips.org with SMTP
+	id S8133768AbWC2PfE (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 29 Mar 2006 16:35:04 +0100
+Message-ID: <20060329154531.46528.qmail@web31912.mail.mud.yahoo.com>
+Date: Wed, 29 Mar 2006 07:45:31 -0800 (PST)
+From: Kumaraswamy Mudide <kumara_mudide@yahoo.com>
+Subject: Re: gdb info threads with core files
+In-Reply-To: <20060328223757.GB12609@nevyn.them.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Content-Type: multipart/alternative; boundary="0-567865972-1143647131=:44340"
+Content-Transfer-Encoding: 8bit
+Return-Path: <kumara_mudide@yahoo.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Nigel Stephens <nigel@mips.com>, colin <colin@realtek.com.tw>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20060329143229.u9feJcvCA1JyqImTpMXwuXfi31_i-rAw4S34jPQPYvM@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20060329154531.ukQkswaYOl6hrWIbPHUMZv-TdXMjvFbWPvHGOgka5IY@z>
 
-> colin wrote:.
-> >     2. When an exception happens and we find that it's not touching the righ
-> > address, we will discard it. However, exception will happen again because
-> > the former instruction will be re-executed when the exception is finished.
-> >
+--0-567865972-1143647131=:44340
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+
+Hi Everyone,
+   
+       We are using 2.4.25and gdb 6.4 version. "info threads" with core file, it does always shows only one thread.
+   
+  Any ideas???
+  
+
+Daniel Jacobowitz <dan@debian.org> wrote:
+  On Tue, Mar 28, 2006 at 02:28:35PM -0800, Kumaraswamy Mudide wrote:
+> Hi Everyone,
 > 
-> You'll need to single-step over the instruction which generated the
-> unwanted watchpoint exception, with the watchpoint disabled. Then after
-> handling the single step reenable the watchpoint and resume normal
-> execution.
+> We are using linux 2.4.25 and gdb 6.4, info threads with the core files always shows only single thread. This threads is same as to which we have sent segv or abort signal. 
+> 
+> bt and info reg seems to be working fine. but not info threads.
+> 
+> Any idea??
 
-There's actually a simpler and more efficient approach in Linux.  The code 
-already exists in the MIPS Linux kernel to "skip" the instruction responsible 
-for the current exception, because the situation also arises for emulated 
-instructions.   In do_watch(), in the cases where you want to ignore the
-watchpoint, you should be able to just invoke compute_return_epc(regs)
-and return.  There should be no need to handle single-step exceptions 
-or disable/reenable the watchpoint.
+Then your kernel probably does not support multithreaded core dumping.
 
-            Regards,
+-- 
+Daniel Jacobowitz
+CodeSourcery
 
-            Kevin K.
+
+
+Thanks & Regards,
+Kumar
+603-542-4834
+		
+---------------------------------
+Talk is cheap. Use Yahoo! Messenger to make PC-to-Phone calls.  Great rates starting at 1&cent;/min.
+--0-567865972-1143647131=:44340
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+
+<div>Hi Everyone,</div>  <div>&nbsp;</div>  <div>&nbsp;&nbsp; &nbsp;&nbsp;We are using 2.4.25and gdb 6.4 version. "info threads" with core file, it does always shows only one thread.</div>  <div>&nbsp;</div>  <div>Any ideas???</div>  <div><BR><BR><B><I>Daniel Jacobowitz &lt;dan@debian.org&gt;</I></B> wrote:</div>  <BLOCKQUOTE class=replbq style="PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #1010ff 2px solid">On Tue, Mar 28, 2006 at 02:28:35PM -0800, Kumaraswamy Mudide wrote:<BR>&gt; Hi Everyone,<BR>&gt; <BR>&gt; We are using linux 2.4.25 and gdb 6.4, info threads with the core files always shows only single thread. This threads is same as to which we have sent segv or abort signal. <BR>&gt; <BR>&gt; bt and info reg seems to be working fine. but not info threads.<BR>&gt; <BR>&gt; Any idea??<BR><BR>Then your kernel probably does not support multithreaded core dumping.<BR><BR>-- <BR>Daniel Jacobowitz<BR>CodeSourcery<BR></BLOCKQUOTE><BR><BR><BR>Thanks &amp;
+ Regards,<br>Kumar<br>603-542-4834<p>
+		<hr size=1>Talk is cheap. Use Yahoo! Messenger to make PC-to-Phone calls. <a href="http://us.rd.yahoo.com/mail_us/taglines/postman7/*http://us.rd.yahoo.com/evt=39666/*http://beta.messenger.yahoo.com"> Great rates starting at 1&cent;/min.
+--0-567865972-1143647131=:44340--

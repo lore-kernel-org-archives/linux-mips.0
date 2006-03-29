@@ -1,106 +1,58 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:38085 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133487AbWC0QKV
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 27 Mar 2006 17:10:21 +0100
-Message-ID: <00d501c651ba$ccae9c00$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <f07e6e0603240636x5e496cd2g29316d73490aa300@mail.gmail.com> <20060324165518.GA16567@linux-mips.org> <f07e6e0603250122t6328c09coe37141d14396dc12@mail.gmail.com> <000d01c65022$90d758a0$10eca8c0@grendel> <f07e6e0603270326s7acb75e4x3000bb08de93ffc5@mail.gmail.com> <005901c6519f$b226e060$10eca8c0@grendel> <f07e6e0603270612k39c91d01wa0e08c35fee1922c@mail.gmail.com>
-Subject: Re: 2.6.14 - problem with malta
-Date: Mon, 27 Mar 2006 18:23:34 +0200
+Received: from mx.globalone.ru ([194.84.254.251]:24338 "EHLO mx.globalone.ru")
+	by ftp.linux-mips.org with ESMTP id S8133517AbWC2Grg (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 29 Mar 2006 07:47:36 +0100
+Received: from mx.globalone.ru (localhost [127.0.0.1])
+	by mx.globalone.ru (8.12.10/8.12.8) with ESMTP id k2T6vxIl022410
+	for <linux-mips@linux-mips.org>; Wed, 29 Mar 2006 10:57:59 +0400
+Received: from smtp.globalone.ru (smtp.globalone.ru [172.16.38.5])
+	by mx.globalone.ru (8.12.10/8.12.8) with ESMTP id k2T6vpuZ022397
+	for <linux-mips@linux-mips.org>; Wed, 29 Mar 2006 10:57:51 +0400
+Message-ID: <0f1501c652fe$650d2950$e90d11ac@spb.in.rosprint.ru>
+Reply-To: "Alexander Voropay" <a.voropay@equant.ru>
+From: "Alexander Voropay" <a.voropay@equant.ru>
+References: <44299EE6.7010309@bootc.net>
+Subject: Re: Emulating MIPS -- please help!
+Date: Wed, 29 Mar 2006 10:59:13 +0400
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00D2_01C651CB.8F1496E0"
-Return-Path: <kevink@mips.com>
+Content-Type: text/plain;
+	format=flowed;
+	charset="iso-8859-1";
+	reply-type=response
+Content-Transfer-Encoding: 7bit
+Return-Path: <a.voropay@equant.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Kishore K <hellokishore@gmail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20060327162334.zspwMJJB1G-mvwrhEtAHHodtw6PuP_9NR_BSlPkPkYc@z>
+To: Chris Boot <bootc@bootc.net>, linux-mips@linux-mips.org
+Message-ID: <20060329065913.HNvZ9nknlOQ5jtqE_LiW_OzlFyh1VW6RvNdEKYBqY7o@z>
 
-This is a multi-part message in MIME format.
+From: "Chris Boot" <bootc@bootc.net>
 
-------=_NextPart_000_00D2_01C651CB.8F1496E0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> Can anyone post some instructions and, perhaps, a .config for 2.6.16 so 
+> I can get some output like kernel boot messages and a login screen?
 
+ I've spent some time playing with GXEmul and Linux kernel.
+The Linux 2.4.x under GXEemul 0.3.8 works fine.
+The UART, timer, VGA/pckbd and IDE are working.
+You could find a precompiled 2.4 kernel with built-in ramdisk there:
+http://www.nwpi.ru/~alec/mips/
+One kernel is compiled with GCC2.9.6 while another with
+GCC 3.3.5. They shows different CPU frequency under
+emulator due to the tricky "loop optimization" in the GXEmul/mips.
 
-  ----- Original Message -----=20
-  From: Kishore K=20
-  ...
+ You could use DISK-debian image with pivot_root also to
+get a mips/debian with glibc and GCC. Use a -di: option
+to attach an IDE disk image.
 
+ To run this kernels, use Malta mode:
+$ ./gxemul -E evbmips -e malta vmlinux_2_4_32-malta-ide-pci-ramdisk.elf.gz
 
-  I reset the above options, but the same problem persists. If I =
-compiled 2.6.10 with default configuration (endian is changed to big =
-endian), the board comes up without any problem.
+ Wait a minute to fill GXEmul translation cache. PCI stuff in the
+GXEmul does not work (try lspci).
 
+ Unfortunately, I still can't get Linux 2.6.x working under GXEmul.
+The interrupt routines in the 2.6 was massively changed
+and this produces IRQ16 spurious interrupt infinity loop.
+It's reasonable difficult to find such sort of bugs.
 
-
-Then the first thing to do is look at the diff between the 2.6.10 =
-.config file
-and the 2.6.14 .config file and elminate all possible differences.  The =
-diff
-with my 2.6.9+ .config for Malta could be deceptive, because I've got a
-totally hacked up SMTC configuration for the 34K.
-
-        Regards,
-
-        Kevin K.
-------=_NextPart_000_00D2_01C651CB.8F1496E0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1528" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<BLOCKQUOTE=20
-style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
-BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
-  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
-  <DIV=20
-  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black"><B>From:</B>=20
-  <A title=3Dhellokishore@gmail.com =
-href=3D"mailto:hellokishore@gmail.com">Kishore=20
-  K</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><FONT=20
-  style=3D"BACKGROUND-COLOR: #e4e4e4">...</FONT></DIV><FONT face=3DArial =
-size=3D2>
-  <DIV><BR></DIV>
-  <DIV></FONT><FONT face=3D"Times New Roman" size=3D3>I reset the above =
-options, but=20
-  the same problem persists. If I compiled 2.6.10 with default =
-configuration=20
-  (endian is changed to big endian), the board comes up without any=20
-  problem.<BR></FONT></DIV></BLOCKQUOTE>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Then the first thing to do is look at =
-the diff=20
-between the 2.6.10 .config file</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>and the 2.6.14 .config file and =
-elminate all=20
-possible differences.&nbsp; The diff</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>with my 2.6.9+ .config for Malta could =
-be=20
-deceptive, because I've got a</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>totally hacked up SMTC configuration =
-for the=20
-34K.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-Regards,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kevin=20
-K.</FONT></DIV></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_00D2_01C651CB.8F1496E0--
+--
+-=AV=-

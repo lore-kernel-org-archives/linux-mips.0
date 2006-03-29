@@ -1,58 +1,37 @@
-Received: from mx.globalone.ru ([194.84.254.251]:24338 "EHLO mx.globalone.ru")
-	by ftp.linux-mips.org with ESMTP id S8133517AbWC2Grg (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 29 Mar 2006 07:47:36 +0100
-Received: from mx.globalone.ru (localhost [127.0.0.1])
-	by mx.globalone.ru (8.12.10/8.12.8) with ESMTP id k2T6vxIl022410
-	for <linux-mips@linux-mips.org>; Wed, 29 Mar 2006 10:57:59 +0400
-Received: from smtp.globalone.ru (smtp.globalone.ru [172.16.38.5])
-	by mx.globalone.ru (8.12.10/8.12.8) with ESMTP id k2T6vpuZ022397
-	for <linux-mips@linux-mips.org>; Wed, 29 Mar 2006 10:57:51 +0400
-Message-ID: <0f1501c652fe$650d2950$e90d11ac@spb.in.rosprint.ru>
-Reply-To: "Alexander Voropay" <a.voropay@equant.ru>
-From: "Alexander Voropay" <a.voropay@equant.ru>
-References: <44299EE6.7010309@bootc.net>
-Subject: Re: Emulating MIPS -- please help!
-Date: Wed, 29 Mar 2006 10:59:13 +0400
+Received: from mf2.realtek.com.tw ([60.248.182.46]:28176 "EHLO
+	mf2.realtek.com.tw") by ftp.linux-mips.org with ESMTP
+	id S8133762AbWC2Nhg (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 29 Mar 2006 14:37:36 +0100
+Received: from msx.realtek.com.tw (unverified [172.21.1.77]) by mf2.realtek.com.tw
+ (Clearswift SMTPRS 5.1.7) with ESMTP id <T7754657d1bdc803816a88@mf2.realtek.com.tw> for <linux-mips@linux-mips.org>;
+ Wed, 29 Mar 2006 21:50:45 +0800
+Message-ID: <024c01c65337$63931c90$106215ac@realtek.com.tw>
+From: "colin" <colin@realtek.com.tw>
+Subject: Using hardware watchpoint for applications debugging
+Date: Wed, 29 Mar 2006 21:47:58 +0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=response
 Content-Transfer-Encoding: 7bit
-Return-Path: <a.voropay@equant.ru>
+Content-Type: text/plain;
+	charset="big5"
+Return-Path: <colin@realtek.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Chris Boot <bootc@bootc.net>, linux-mips@linux-mips.org
-Message-ID: <20060329065913.HNvZ9nknlOQ5jtqE_LiW_OzlFyh1VW6RvNdEKYBqY7o@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20060329134758.qlb6qALxA8VXkLFTRUKv8yKmHjP_NvgynKRwAiB1vBk@z>
 
-From: "Chris Boot" <bootc@bootc.net>
 
-> Can anyone post some instructions and, perhaps, a .config for 2.6.16 so 
-> I can get some output like kernel boot messages and a login screen?
+Hi all,
+Our applications encounter memory crash very often. Thus we would like to
+use hardware watchpoint on our platform, MIPS 4KEc.
+After starting to design it, more and more issues emerge. They are listed
+below:
+    1. WatchLo Register only has 29 bits to indicate the VAddr. Therefore,
+it will also trigger exceptions when accessing nearby addresses.
+    2. When an exception happens and we find that it's not touching the righ
+address, we will discard it. However, exception will happen again because
+the former instruction will be re-executed when the exception is finished.
 
- I've spent some time playing with GXEmul and Linux kernel.
-The Linux 2.4.x under GXEemul 0.3.8 works fine.
-The UART, timer, VGA/pckbd and IDE are working.
-You could find a precompiled 2.4 kernel with built-in ramdisk there:
-http://www.nwpi.ru/~alec/mips/
-One kernel is compiled with GCC2.9.6 while another with
-GCC 3.3.5. They shows different CPU frequency under
-emulator due to the tricky "loop optimization" in the GXEmul/mips.
+Is there any easy way to solve these problems?
 
- You could use DISK-debian image with pivot_root also to
-get a mips/debian with glibc and GCC. Use a -di: option
-to attach an IDE disk image.
-
- To run this kernels, use Malta mode:
-$ ./gxemul -E evbmips -e malta vmlinux_2_4_32-malta-ide-pci-ramdisk.elf.gz
-
- Wait a minute to fill GXEmul translation cache. PCI stuff in the
-GXEmul does not work (try lspci).
-
- Unfortunately, I still can't get Linux 2.6.x working under GXEmul.
-The interrupt routines in the 2.6 was massively changed
-and this produces IRQ16 spurious interrupt infinity loop.
-It's reasonable difficult to find such sort of bugs.
-
---
--=AV=-
+Regards,
+Colin

@@ -1,61 +1,65 @@
-Received: from web31912.mail.mud.yahoo.com ([68.142.207.92]:21893 "HELO
-	web31912.mail.mud.yahoo.com") by ftp.linux-mips.org with SMTP
-	id S8133768AbWC2PfE (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 29 Mar 2006 16:35:04 +0100
-Message-ID: <20060329154531.46528.qmail@web31912.mail.mud.yahoo.com>
-Date: Wed, 29 Mar 2006 07:45:31 -0800 (PST)
-From: Kumaraswamy Mudide <kumara_mudide@yahoo.com>
-Subject: Re: gdb info threads with core files
-In-Reply-To: <20060328223757.GB12609@nevyn.them.org>
+Received: from mf2.realtek.com.tw ([60.248.182.46]:50450 "EHLO
+	mf2.realtek.com.tw") by ftp.linux-mips.org with ESMTP
+	id S8133814AbWC3CFC (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 30 Mar 2006 03:05:02 +0100
+Message-ID: <002d01c6539f$d040a200$106215ac@realtek.com.tw>
+From: "colin" <colin@realtek.com.tw>
+References: <024c01c65337$63931c90$106215ac@realtek.com.tw> <442A94D0.1020106@mips.com>
+Subject: Re: Using hardware watchpoint for applications debugging
+Date: Thu, 30 Mar 2006 10:15:28 +0800
 MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-567865972-1143647131=:44340"
-Content-Transfer-Encoding: 8bit
-Return-Path: <kumara_mudide@yahoo.com>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="big5"
+Return-Path: <colin@realtek.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20060329154531.ukQkswaYOl6hrWIbPHUMZv-TdXMjvFbWPvHGOgka5IY@z>
-
---0-567865972-1143647131=:44340
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-
-Hi Everyone,
-   
-       We are using 2.4.25and gdb 6.4 version. "info threads" with core file, it does always shows only one thread.
-   
-  Any ideas???
-  
-
-Daniel Jacobowitz <dan@debian.org> wrote:
-  On Tue, Mar 28, 2006 at 02:28:35PM -0800, Kumaraswamy Mudide wrote:
-> Hi Everyone,
-> 
-> We are using linux 2.4.25 and gdb 6.4, info threads with the core files always shows only single thread. This threads is same as to which we have sent segv or abort signal. 
-> 
-> bt and info reg seems to be working fine. but not info threads.
-> 
-> Any idea??
-
-Then your kernel probably does not support multithreaded core dumping.
-
--- 
-Daniel Jacobowitz
-CodeSourcery
+To: Nigel Stephens <nigel@mips.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20060330021528.ll8X5TfViz4iWRX9zSYUYPVmByAVbuyzPA4X06yD6Eg@z>
 
 
+Hi Nigel,
+We use the same way with you to handle the issue 2.
 
-Thanks & Regards,
-Kumar
-603-542-4834
-		
----------------------------------
-Talk is cheap. Use Yahoo! Messenger to make PC-to-Phone calls.  Great rates starting at 1&cent;/min.
---0-567865972-1143647131=:44340
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+As to adding watchpoint to kernel, there will be another problem.
+ASID in kernel is variable. Therefore, we cannot indicate which thread we
+want to watch by ASID.
+What we can do is setting G (global) bit to WatchHi Register and then all
+threads accessing that address will cause the exception.
+In the exception, it will filter the threads by PID to find out the thread
+we are watching.
 
-<div>Hi Everyone,</div>  <div>&nbsp;</div>  <div>&nbsp;&nbsp; &nbsp;&nbsp;We are using 2.4.25and gdb 6.4 version. "info threads" with core file, it does always shows only one thread.</div>  <div>&nbsp;</div>  <div>Any ideas???</div>  <div><BR><BR><B><I>Daniel Jacobowitz &lt;dan@debian.org&gt;</I></B> wrote:</div>  <BLOCKQUOTE class=replbq style="PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #1010ff 2px solid">On Tue, Mar 28, 2006 at 02:28:35PM -0800, Kumaraswamy Mudide wrote:<BR>&gt; Hi Everyone,<BR>&gt; <BR>&gt; We are using linux 2.4.25 and gdb 6.4, info threads with the core files always shows only single thread. This threads is same as to which we have sent segv or abort signal. <BR>&gt; <BR>&gt; bt and info reg seems to be working fine. but not info threads.<BR>&gt; <BR>&gt; Any idea??<BR><BR>Then your kernel probably does not support multithreaded core dumping.<BR><BR>-- <BR>Daniel Jacobowitz<BR>CodeSourcery<BR></BLOCKQUOTE><BR><BR><BR>Thanks &amp;
- Regards,<br>Kumar<br>603-542-4834<p>
-		<hr size=1>Talk is cheap. Use Yahoo! Messenger to make PC-to-Phone calls. <a href="http://us.rd.yahoo.com/mail_us/taglines/postman7/*http://us.rd.yahoo.com/evt=39666/*http://beta.messenger.yahoo.com"> Great rates starting at 1&cent;/min.
---0-567865972-1143647131=:44340--
+Regards,
+Colin
+
+----- Original Message ----- 
+From: "Nigel Stephens" <nigel@mips.com>
+To: "colin" <colin@realtek.com.tw>
+Cc: <linux-mips@linux-mips.org>
+Sent: Wednesday, March 29, 2006 10:08 PM
+Subject: Re: Using hardware watchpoint for applications debugging
+
+
+>
+>
+> colin wrote:.
+> >     2. When an exception happens and we find that it's not touching the
+righ
+> > address, we will discard it. However, exception will happen again
+because
+> > the former instruction will be re-executed when the exception is
+finished.
+> >
+> >
+>
+> You'll need to single-step over the instruction which generated the
+> unwanted watchpoint exception, with the watchpoint disabled. Then after
+> handling the single step reenable the watchpoint and resume normal
+> execution.
+>
+> It would be best if you added watchpoint support to the kernel ptrace
+> code: since that would make the watchpoints usable by GDB also.
+>
+> Nigel
+>

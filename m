@@ -1,12 +1,12 @@
-Received: from mf2.realtek.com.tw ([60.248.182.46]:50450 "EHLO
+Received: from mf2.realtek.com.tw ([60.248.182.46]:30483 "EHLO
 	mf2.realtek.com.tw") by ftp.linux-mips.org with ESMTP
-	id S8133814AbWC3CFC (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 30 Mar 2006 03:05:02 +0100
-Message-ID: <002d01c6539f$d040a200$106215ac@realtek.com.tw>
+	id S8133814AbWC3CJV (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 30 Mar 2006 03:09:21 +0100
+Message-ID: <003701c653a0$6ab38320$106215ac@realtek.com.tw>
 From: "colin" <colin@realtek.com.tw>
-References: <024c01c65337$63931c90$106215ac@realtek.com.tw> <442A94D0.1020106@mips.com>
+References: <024c01c65337$63931c90$106215ac@realtek.com.tw> <442A94D0.1020106@mips.com> <06d301c6533d$9c3c0f10$10eca8c0@grendel>
 Subject: Re: Using hardware watchpoint for applications debugging
-Date: Thu, 30 Mar 2006 10:15:28 +0800
+Date: Thu, 30 Mar 2006 10:19:47 +0800
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
@@ -14,52 +14,51 @@ Content-Type: text/plain;
 Return-Path: <colin@realtek.com.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Nigel Stephens <nigel@mips.com>
+To: "Kevin D. Kissell" <kevink@mips.com>, Nigel Stephens <nigel@mips.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20060330021528.ll8X5TfViz4iWRX9zSYUYPVmByAVbuyzPA4X06yD6Eg@z>
+Message-ID: <20060330021947.mDrx2R39f01g8xlG0cwiPwt5lDcNoeo35DvZEmLq43g@z>
 
 
-Hi Nigel,
-We use the same way with you to handle the issue 2.
-
-As to adding watchpoint to kernel, there will be another problem.
-ASID in kernel is variable. Therefore, we cannot indicate which thread we
-want to watch by ASID.
-What we can do is setting G (global) bit to WatchHi Register and then all
-threads accessing that address will cause the exception.
-In the exception, it will filter the threads by PID to find out the thread
-we are watching.
+Hi Kevin,
+After looking into function compute_return_epc(regs), we find that it can
+just skip an instruction.
+But the instruction that cause exceptions should not be skipped.
 
 Regards,
 Colin
 
+
 ----- Original Message ----- 
-From: "Nigel Stephens" <nigel@mips.com>
-To: "colin" <colin@realtek.com.tw>
+From: "Kevin D. Kissell" <kevink@mips.com>
+To: "Nigel Stephens" <nigel@mips.com>; "colin" <colin@realtek.com.tw>
 Cc: <linux-mips@linux-mips.org>
-Sent: Wednesday, March 29, 2006 10:08 PM
+Sent: Wednesday, March 29, 2006 10:32 PM
 Subject: Re: Using hardware watchpoint for applications debugging
 
 
->
->
-> colin wrote:.
-> >     2. When an exception happens and we find that it's not touching the
-righ
-> > address, we will discard it. However, exception will happen again
+> > colin wrote:.
+> > >     2. When an exception happens and we find that it's not touching
+the righ
+> > > address, we will discard it. However, exception will happen again
 because
-> > the former instruction will be re-executed when the exception is
+> > > the former instruction will be re-executed when the exception is
 finished.
+> > >
 > >
-> >
+> > You'll need to single-step over the instruction which generated the
+> > unwanted watchpoint exception, with the watchpoint disabled. Then after
+> > handling the single step reenable the watchpoint and resume normal
+> > execution.
 >
-> You'll need to single-step over the instruction which generated the
-> unwanted watchpoint exception, with the watchpoint disabled. Then after
-> handling the single step reenable the watchpoint and resume normal
-> execution.
+> There's actually a simpler and more efficient approach in Linux.  The code
+> already exists in the MIPS Linux kernel to "skip" the instruction
+responsible
+> for the current exception, because the situation also arises for emulated
+> instructions.   In do_watch(), in the cases where you want to ignore the
+> watchpoint, you should be able to just invoke compute_return_epc(regs)
+> and return.  There should be no need to handle single-step exceptions
+> or disable/reenable the watchpoint.
 >
-> It would be best if you added watchpoint support to the kernel ptrace
-> code: since that would make the watchpoints usable by GDB also.
+>             Regards,
 >
-> Nigel
->
+>             Kevin K.

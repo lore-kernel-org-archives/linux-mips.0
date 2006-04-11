@@ -1,43 +1,71 @@
-Received: from rtsoft2.corbina.net ([85.21.88.2]:4817 "HELO mail.dev.rtsoft.ru")
-	by ftp.linux-mips.org with SMTP id S8133612AbWDGVJW (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 7 Apr 2006 22:09:22 +0100
-Message-ID: <4436D74F.3040108@ru.mvista.com>
-Date: Sat, 08 Apr 2006 01:19:11 +0400
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Received: from mail.soc-soft.com ([202.56.254.199]:48139 "EHLO
+	igateway.soc-soft.com") by ftp.linux-mips.org with ESMTP
+	id S8133382AbWDKEIg convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 11 Apr 2006 05:08:36 +0100
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Subject: Re: [PATCH] Fix swap entry for MIPS32 36-bit physical address
-References: <B482D8AA59BF244F99AFE7520D74BF9609D4F2@server1.RightHand.righthandtech.com> <4433C9EE.8030402@ru.mvista.com> <4436C301.2060001@ru.mvista.com>
-In-Reply-To: <4436C301.2060001@ru.mvista.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <sshtylyov@ru.mvista.com>
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: Init not working in 64-bit kernel
+Date: Tue, 11 Apr 2006 09:50:14 +0530
+Message-ID: <4BF47D56A0DD2346A1B8D622C5C5902C015D8605@soc-mail.soc-soft.com>
+From: <Vadivelan@soc-soft.com>
+Return-Path: <Vadivelan@soc-soft.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Pete Popov <ppopov@embeddedalley.com>, Jordan Crouse <jordan.crouse@amd.com>
-Message-ID: <20060407211911.7_GpxN5sqWDNFQ7InTRhJDZkzq9lbTNWr5OPao-vRpg@z>
+To: anemo@mba.ocn.ne.jp, ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org
+Message-ID: <20060411042014.tcr0Y9YuSGdDtin-up_2PCrIr-F_qIAbg3PcFg8ZNjY@z>
 
-Hello.
 
-Sergei Shtylyov wrote:
+Hi,
+	I'm sry.  I couldn't reply immediately.
+I've fixed the problem. U'r suggestion was valuable. I've signed
+extended the addresses required and I'm able to boot the board.
 
->>    Additionally, PTEs in MIPS32R2 should have the same layout for the 
->> 36-bit physical address case as in MIPS32R1, according to the 
->> architecture manuals -- so, fix the #ifdef's.
+Thanking u.
 
->    I've decided to tead off that part (incomplete anyway) and move it to 
-> a separate patch which I'll post shortly.
+Regards,
+Vadi.
 
-    I'm really not sure that we need that #if defined(CONFIG_CPU_MIPS32) -- it 
-renders CONFIG_64BIT_PHYS_ADDR non-working on all other 32-bit CPUs for which 
-Kconfig entry claims that this support exists:
+-----Original Message-----
+From: Atsushi Nemoto [mailto:anemo@mba.ocn.ne.jp]
+Sent: Monday, March 20, 2006 8:08 PM
+To: ralf@linux-mips.org
+Cc: Vadivelan M; linux-mips@linux-mips.org
+Subject: Re: Init not working in 64-bit kernel
 
-config 64BIT_PHYS_ADDR
-         bool "Support for 64-bit physical address space"
-         depends on (CPU_R4X00 || CPU_R5000 || CPU_RM7000 || CPU_RM9000 || 
-CPU_R10000 || CPU_SB1 || CPU_MIPS32 || CPU_MIPS64) && 32BIT
 
-    At least RM7000 has the same PTE layout as MIPS32, I guess the others also 
-do. I suspect that the intent was to limit this option to the Alchemy CPUs 
-where it's *really* necessary?
+>>>>> On Mon, 20 Mar 2006 13:14:52 +0000, Ralf Baechle
+>>>>> <ralf@linux-mips.org> said:
 
-WBR, Sergei
+ralf> This kernel is already 15 months old and there have been a vast
+ralf> number of bug fixes since.  And god knows what Montavista changed
+ralf> in their kernel - I don't have the faintest idea.  In short, try a
+
+ralf> modern kernel.  Btw, Linux 2.6.16 was released today and chances
+ralf> are it'll solve alot of your issues.
+
+I suppose he is trying 64bit kernel on RBTX4938 board, but the board
+dependent code seems not ready for 64bit.  For example, there are some
+0xff1fXXXX constants there and all these constants must be sign extended
+(0xffffffffff1fXXXX) for 64bit.  Also these virtual address are mapped
+to 36bit physical address 0xfff1fXXXX so some assumption in the 32bit
+kernel (virt==phys for TX49 internal regs) is not true in 64bit kernel.
+
+---
+Atsushi Nemoto
+
+
+
+
+
+
+The information contained in this e-mail message and in any annexure is
+confidential to the  recipient and may contain privileged information. If you are not
+the intended recipient, please notify the sender and delete the message along with
+any annexure. You should not disclose, copy or otherwise use the information contained
+in the message or any annexure. Any views expressed in this e-mail are those of the
+individual sender except where the sender specifically states them to be the views of
+SoCrates Software India Pvt Ltd., Bangalore.

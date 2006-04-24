@@ -1,21 +1,58 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:31134 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133490AbWDXHY1
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 24 Apr 2006 08:24:27 +0100
-Message-ID: <004801c66772$6cc350b0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <07fb01c66770$0d61a920$f3479696@LGE.NET>
-Subject: Re: Reading an entire cacheline
-Date: Mon, 24 Apr 2006 09:40:55 +0200
+Received: from mail1.lge.co.kr ([156.147.1.151]:54766 "EHLO mail1.lge.co.kr")
+	by ftp.linux-mips.org with ESMTP id S8133654AbWDXJkJ (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 24 Apr 2006 10:40:09 +0100
+Received: from [150.150.71.243] (jsungkim@lge.com) by
+          mail1.lge.co.kr (Terrace MailWatcher)
+          with ESMTP id 2006042418:53:00:828273.280.53
+          for <linux-mips@linux-mips.org>;
+          Mon, 24 Apr 2006 18:53:00 +0900 (KST)
+From: "Kim, Jong-Sung" <jsungkim@lge.com>
+Subject: RE: Reading an entire cacheline
+Date: Mon, 24 Apr 2006 18:52:19 +0900
+Message-ID: <081a01c66784$c6f7cb30$f3479696@LGE.NET>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Return-Path: <jsungkim@lge.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Kim, Jong-Sung" <jsungkim@lge.com>, linux-mips@linux-mips.org
-Message-ID: <20060424074055.U18Vht5jIlhmdDOXrQOY68PrE302eJmJUi1DkNrvIsQ@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20060424095219.Yf0Pp34imfjo_QPbuf7bBhEylbmlXVx7wnwozd79hwM@z>
+
+Dear Mr. Kissell and the others,
+
+I apologize for my rude question if you felt like. I was first in this
+mailing list and I didn't think I had to describe the background of my
+problem such in depth. I have an application stored in an onboard block
+device and it sometimes makes bus error or segmentation fault during
+do_page_fault().
+When the application is stored in and executed from an nfs device or an
+ramfs or any other device, it works without any problem. So I think the
+problem comes from the device driver or something below.
+In some experiments, the cache invalidation in a point reduces the frequency
+of abnormal terminations. (I don't know it's a walk-around or just reduction
+yet) When the application was copied from the device onto the other (ram or
+network) device, it works well. So I guess the problem is related to the
+cache and not from just d-cache incoherency. I targeted the consistency
+between d- and i-cache as first. If you have any idea, please let me know.
+For the device driver for the block device is very large and not my work,
+I'm still in the dark. ^^;
+
+Thank you for your hints about the interrupt disabling and the variable
+cachability. They could be very helpful for me. For the tag, I meant the
+physical address field of the valid tag. Thank you again.
+
+
+Regards,
+JS.
+
+
+-----Original Message-----
+From: Kevin D. Kissell [mailto:kevink@mips.com] 
+Sent: Monday, April 24, 2006 4:41 PM
+To: Kim, Jong-Sung; linux-mips@linux-mips.org
+Subject: Re: Reading an entire cacheline
 
 Yes, your question was too brief the first time around - I couldn't
 tell what you were really asking.  I'm still not 100% sure of what
@@ -43,7 +80,8 @@ Subject: RE: Reading an entire cacheline
 > Cache configuration is 2-way, 32-byte cacheline for both d- and i-cache
 > without L2 cache. Of course, MIPS-port Linux as the kernel for it. And, a
 > onboard block device has problem in its operation. I don't think it's a
-> kernel problem. So I wanna inspect the contents of cache RAMs at the device
+> kernel problem. So I wanna inspect the contents of cache RAMs at the
+device
 > driver's context. I've added some lines of codes look like follow:
 > 
 > __asm__ __volatile__(
@@ -62,10 +100,13 @@ Subject: RE: Reading an entire cacheline
 > 3))
 > );
 > 
-> This is executed for every index, every way, and every word. The thing aches
+> This is executed for every index, every way, and every word. The thing
+aches
 > my head is the tags from a single cacheline differs. (very often for
-> d-cache) So I modified the code to reread the cacheline from the first word
-> when the tag was modified before reading all four words. Then the code never
+> d-cache) So I modified the code to reread the cacheline from the first
+word
+> when the tag was modified before reading all four words. Then the code
+never
 > return. I couldn't find any related information from manual.
 > 
 > Please give me a hint for reading whole cacheline safely.

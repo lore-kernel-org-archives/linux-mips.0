@@ -1,89 +1,72 @@
-Received: from mx1.razamicroelectronics.com ([63.111.213.197]:8753 "EHLO
-	hq-ex-mb01.razamicroelectronics.com") by ftp.linux-mips.org with ESMTP
-	id S8133367AbWDRHAm (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 18 Apr 2006 08:00:42 +0100
-Content-class: urn:content-classes:message
+Received: from mail1.lge.co.kr ([156.147.1.151]:62973 "EHLO mail1.lge.co.kr")
+	by ftp.linux-mips.org with ESMTP id S8133490AbWDXHLs (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 24 Apr 2006 08:11:48 +0100
+Received: from [150.150.71.243] (jsungkim@lge.com) by
+          mail1.lge.co.kr (Terrace MailWatcher)
+          with ESMTP id 2006042416:24:39:650536.280.168
+          for <linux-mips@linux-mips.org>;
+          Mon, 24 Apr 2006 16:24:39 +0900 (KST)
+From: "Kim, Jong-Sung" <jsungkim@lge.com>
+Subject: RE: Reading an entire cacheline
+Date: Mon, 24 Apr 2006 16:23:58 +0900
+Message-ID: <07fb01c66770$0d61a920$f3479696@LGE.NET>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C662B7.88BA32FD"
-Subject: Can you please help me out  -- Issue with GDB on mips board ????
-Date: Tue, 18 Apr 2006 00:13:03 -0700
-Message-ID: <2E96546B3C2C8B4CA739323C6058204A726D89@hq-ex-mb01.razamicroelectronics.com>
-From: "V Mehul" <vmehul@razamicroelectronics.com>
-Return-Path: <vmehul@razamicroelectronics.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <058801c66280$3fa1ebb0$f3479696@LGE.NET>
+Return-Path: <jsungkim@lge.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Cc: dan@debian.org
-Message-ID: <20060418071303.8u_fcaOuJGlVlxJUaMGjE6PsJ625qTynAnvesyb_zR8@z>
+Message-ID: <20060424072358.6_oZ2H7AVCAF4MctPAcb4TnoJygVVf7oZ735T2f6AEA@z>
 
-This is a multi-part message in MIME format.
+Hi all,
 
-------_=_NextPart_001_01C662B7.88BA32FD
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Was my question too brief? I'm using MIPS5Kf core included in a Broadcom
+implemented processor and it has a 32kB d-cache and a same sized i-cache.
+Cache configuration is 2-way, 32-byte cacheline for both d- and i-cache
+without L2 cache. Of course, MIPS-port Linux as the kernel for it. And, a
+onboard block device has problem in its operation. I don't think it's a
+kernel problem. So I wanna inspect the contents of cache RAMs at the device
+driver's context. I've added some lines of codes look like follow:
+
+	__asm__ __volatile__(
+		".set	noreorder\n\t"
+		".set	mips3\n\t"
+		"cache	5, 0x00(%3)\n\t"	// load d-cache tag
+		".set	mips0\n\t"		// by index
+		".set	mips32\n\t"
+		"mfc0	%0, $28, 0\n\t"
+		"mfc0	%1, $28, 1\n\t"
+		"mfc0	%2, $29, 1\n\t"
+		.set	mips0\n\t"
+		.set	reorder"
+		: "=r" (tag), "=r" (data_lo), "=r" (data_hi)
+		: "r" (0x80000000 | (way << 14) | (index << 5) | (word <<
+3))
+	);
+
+This is executed for every index, every way, and every word. The thing aches
+my head is the tags from a single cacheline differs. (very often for
+d-cache) So I modified the code to reread the cacheline from the first word
+when the tag was modified before reading all four words. Then the code never
+return. I couldn't find any related information from manual.
+
+Please give me a hint for reading whole cacheline safely.
 
 
-hi,
-       i am working on i386 based board and want some information. i am =
-using mips-linux 2.6.6 kernel on target board and linux 2.6.9 on intel =
-board. I am running an application under "gdbserver" on the target mips =
-board, but am not able to do a single step inside the function. Foll. =
-error is displayed
-          "ptrace : Input/Output error",
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org
+[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Kim, Jong-Sung
+Sent: Tuesday, April 18, 2006 9:37 AM
+To: linux-mips@linux-mips.org
+Subject: Reading an entire cacheline
 
-   the  "ptrace.c" file under arch/mips/kernel/ does not have support =
-for PTRACE_SINGLESTEP because of which the above error is occuring. =
-Though i386,alpha,arm etc. architecture has this support, but why mips =
-doesnt have this ?
-=20
-   I am not a member of this group, so kindly reply me on my personal =
-id.
+Hi,
 
-Regards,
-Mehul.
+Is there any way to read an entire cacheline from the MIPS5Kf? Four
+sequential cache instructions do similarly, but sometimes the tags from a
+same cacheline differ. How can I read a consistent cacheline safely?
 
-------_=_NextPart_001_01C662B7.88BA32FD
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7226.0">
-<TITLE>Can you please help me out  -- Issue with GDB on mips board =
-????</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-<BR>
-
-<P><FONT SIZE=3D2>hi,<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i am working on i386 based board =
-and want some information. i am using mips-linux 2.6.6 kernel on target =
-board and linux 2.6.9 on intel board. I am running an application under =
-&quot;gdbserver&quot; on the target mips board, but am not able to do a =
-single step inside the function. Foll. error is displayed<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;ptrace : =
-Input/Output error&quot;,<BR>
-<BR>
-&nbsp;&nbsp; the&nbsp; &quot;ptrace.c&quot; file under arch/mips/kernel/ =
-does not have support for PTRACE_SINGLESTEP because of which the above =
-error is occuring. Though i386,alpha,arm etc. architecture has this =
-support, but why mips doesnt have this ?<BR>
-<BR>
-&nbsp;&nbsp; I am not a member of this group, so kindly reply me on my =
-personal id.<BR>
-<BR>
-Regards,<BR>
-Mehul.</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C662B7.88BA32FD--
+Thanks.

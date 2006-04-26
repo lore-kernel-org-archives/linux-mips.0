@@ -1,115 +1,211 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:47776 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133747AbWDXPGv
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 24 Apr 2006 16:06:51 +0100
-Content-class: urn:content-classes:message
+Received: from mail1.lge.co.kr ([156.147.1.151]:27867 "EHLO mail1.lge.co.kr")
+	by ftp.linux-mips.org with ESMTP id S4475208AbWDZIfd (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 26 Apr 2006 09:35:33 +0100
+Received: from [150.150.71.243] (jsungkim@lge.com) by
+          mail1.lge.co.kr (Terrace MailWatcher)
+          with ESMTP id 2006042617:48:39:591911.280.144
+          for <linux-mips@linux-mips.org>;
+          Wed, 26 Apr 2006 17:48:39 +0900 (KST)
+From: "Kim, Jong-Sung" <jsungkim@lge.com>
+Subject: RE: Reading an entire cacheline
+Date: Wed, 26 Apr 2006 17:47:16 +0900
+Message-ID: <009f01c6690e$0501a3d0$f3479696@LGE.NET>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C667B2.640FE2D3"
-Subject: RE: what will be caused by setting TLB's virtual address part to unmapped address?
-Date: Mon, 24 Apr 2006 08:18:50 -0700
-Message-ID: <692AB3595F5D76428B34B9BEFE20BC1F8ABA07@Exchange.MIPS.COM>
-From: "Uhler, Mike" <uhler@mips.com>
-Return-Path: <uhler@mips.com>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-To: Bin Chen <binary.chen@gmail.com>, linux-mips@linux-mips.org
-Message-ID: <20060424151850.OFMA04ZyYUHKq83nBxe8tzVFMO1he0_lnm1PnF8yVG0@z>
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01C667B2.640FE2D3
 Content-Type: text/plain;
 	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <081a01c66784$c6f7cb30$f3479696@LGE.NET>
+Return-Path: <jsungkim@lge.com>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: linux-mips@linux-mips.org
+Message-ID: <20060426084716.SgjAGwrVjCK3Eh5l5qV1r8b3O5h7uZJUwiBArZfRM5w@z>
 
-What you're seeing is the standard sequence used to initialize the TLB.
-The processor doesn't look at entries for kseg0, so those TLB entries
-are ignored.
+Hi all,
+
+Please look at following codes:
+
+save_flags(flags);
+cli();
+__asm__ __volatile__(
+	"	.set	noreorder\n"
+	"	.set	mips32\n"
+	"2:	.set	mips3\n"
+	"	cache	5, 0x00(%12)\n"
+	"	.set	mips0\n"
+	"	mfc0	%0, $28, 0\n"
+	"	mfc0	%1, $28, 1\n"
+	"	mfc0	%2, $29, 1\n"
+	"	.set	mips3\n"
+	"	cache	5, 0x08(%12)\n"
+	"	.set	mips0\n"
+	"	mfc0	%3, $28, 0\n"
+	"	mfc0	%4, $28, 1\n"
+	"	mfc0	%5, $29, 1\n"
+	//"	bne	%0, %3, 2b\n"
+	"	.set	mips3\n"
+	"	cache	5, 0x10(%12)\n"
+	"	.set	mips0\n"
+	"	mfc0	%6, $28, 0\n"
+	"	mfc0	%7, $28, 1\n"
+	"	mfc0	%8, $29, 1\n"
+	//"	bne	%0, %6, 2b\n"
+	"	.set	mips3\n"
+	"	cache	5, 0x18(%12)\n"
+	"	.set	mips0\n"
+	"	mfc0	%9, $28, 0\n"
+	"	mfc0	%10, $28, 1\n"
+	"	mfc0	%11, $29, 1\n"
+	//"	bne	%0, %9, 2b\n"
+	"	.set	mips0\n"
+	"	.set	reorder"
+	: "=r" (tag[1][way][0]), "=r" (datalo[1][way][0]),
+	  "=r" (datahi[1][way][0]),
+	  "=r" (tag[1][way][1]), "=r" (datalo[1][way][1]),
+	  "=r" (datahi[1][way][1]),
+	  "=r" (tag[1][way][2]), "=r" (datalo[1][way][2]),
+	  "=r" (datahi[1][way][2]),
+	  "=r" (tag[1][way][3]), "=r" (datalo[1][way][3]),
+	  "=r" (datahi[1][way][3])
+	: "r" (0x80000000 | (way << 14) | (line << 5))
+);
+restore_flags(flags);
+
+Interrupt is disabled and no memory variable is touched while reading four
+words in a cacheline. When bne instructions're activated, this code still
+makes a infinitive loop. I don't know what does make changes in the d-cache.
+Or.. am I doing something wrong? Any idea'll be welcomed. Thanks.
+
+Regards,
+JS.
 
 
-/gmu
----
-Michael Uhler, Chief Technology Officer
-MIPS Technologies, Inc.   Email: uhler at mips dot com
-1225 Charleston Road      Voice:  (650)567-5025
-Mountain View, CA 94043=20
+PS. if you think my question is not proper in this mailing list, please let
+me know.
+
 
 -----Original Message-----
 From: linux-mips-bounce@linux-mips.org
-[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Bin Chen
-Sent: Monday, April 24, 2006 8:14 AM
+[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Kim, Jong-Sung
+Sent: Monday, April 24, 2006 6:52 PM
 To: linux-mips@linux-mips.org
-Subject: what will be caused by setting TLB's virtual address part to
-unmapped address?
+Subject: RE: Reading an entire cacheline
+
+Dear Mr. Kissell and the others,
+
+I apologize for my rude question if you felt like. I was first in this
+mailing list and I didn't think I had to describe the background of my
+problem such in depth. I have an application stored in an onboard block
+device and it sometimes makes bus error or segmentation fault during
+do_page_fault().
+When the application is stored in and executed from an nfs device or an
+ramfs or any other device, it works without any problem. So I think the
+problem comes from the device driver or something below.
+In some experiments, the cache invalidation in a point reduces the frequency
+of abnormal terminations. (I don't know it's a walk-around or just reduction
+yet) When the application was copied from the device onto the other (ram or
+network) device, it works well. So I guess the problem is related to the
+cache and not from just d-cache incoherency. I targeted the consistency
+between d- and i-cache as first. If you have any idea, please let me know.
+For the device driver for the block device is very large and not my work,
+I'm still in the dark. ^^;
+
+Thank you for your hints about the interrupt disabling and the variable
+cachability. They could be very helpful for me. For the tag, I meant the
+physical address field of the valid tag. Thank you again.
 
 
-
-	Hi,
-=09
-	In MIPS64, the 0xFFFFFFFF80000000 is a kernel unmapped area,
-what will be caused by setting up a TLB entry with the virtual address
-be 0xFFFFFFFF80000000?
-=09
-	I ask this question because I noticed u-boot's TLB init code use
-the address from 0xFFFFFFFF80000000 to fill in the blank tlb, but I
-don't know the purpose of this operation.
-=09
-	Thanks in advance.
-=09
-	B.C
-=09
+Regards,
+JS.
 
 
-------_=_NextPart_001_01C667B2.640FE2D3
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+-----Original Message-----
+From: Kevin D. Kissell [mailto:kevink@mips.com] 
+Sent: Monday, April 24, 2006 4:41 PM
+To: Kim, Jong-Sung; linux-mips@linux-mips.org
+Subject: Re: Reading an entire cacheline
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD><TITLE>Message</TITLE>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2900.2873" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><!-- Converted from text/plain format --><SPAN=20
-class=3D031461515-24042006></SPAN><FONT face=3DArial><FONT =
-color=3D#0000ff><FONT=20
-size=3D2>W<SPAN class=3D031461515-24042006>hat you're seeing is the =
-standard=20
-sequence used to initialize the TLB.&nbsp; The processor doesn't look at =
-entries=20
-for kseg0, so those TLB entries are =
-ignored.</SPAN></FONT></FONT></FONT><BR>
-<P><FONT size=3D2>/gmu<BR>---<BR>Michael Uhler, Chief Technology =
-Officer<BR>MIPS=20
-Technologies, Inc.&nbsp;&nbsp; Email: uhler at mips dot com<BR>1225 =
-Charleston=20
-Road&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Voice:&nbsp; =
-(650)567-5025<BR>Mountain View,=20
-CA 94043</FONT> </P></DIV>
-<DIV>
-<P><FONT size=3D2></FONT></P>
-<DIV></DIV><FONT face=3DTahoma size=3D2><FONT face=3DArial=20
-color=3D#0000ff></FONT>-----Original Message-----<BR><B>From:</B>=20
-linux-mips-bounce@linux-mips.org =
-[mailto:linux-mips-bounce@linux-mips.org] <B>On=20
-Behalf Of </B>Bin Chen<BR><B>Sent:</B> Monday, April 24, 2006 8:14=20
-AM<BR><B>To:</B> linux-mips@linux-mips.org<BR><B>Subject:</B> what will =
-be=20
-caused by setting TLB's virtual address part to unmapped=20
-address?<BR><BR></FONT></DIV>
-<BLOCKQUOTE=20
-style=3D"PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #0000ff 2px =
-solid; MARGIN-RIGHT: 0px">Hi,<BR><BR>In=20
-  MIPS64, the 0xFFFFFFFF80000000 is a kernel unmapped area, what will be =
-caused=20
-  by setting up a TLB entry with the virtual address be=20
-  0xFFFFFFFF80000000?<BR><BR>I ask this question because I noticed =
-u-boot's TLB=20
-  init code use the address from 0xFFFFFFFF80000000 to fill in the blank =
-tlb,=20
-  but I don't know the purpose of this operation.<BR><BR>Thanks in=20
-  advance.<BR><BR>B.C<BR></BLOCKQUOTE></BODY></HTML>
+Yes, your question was too brief the first time around - I couldn't
+tell what you were really asking.  I'm still not 100% sure of what
+you're doing, though.   I don't want to sound insulting, but you're
+disabling interrupts during this operation, right?  And if you're
+copying the values into variables in memory, you're doing nothing
+but non-cached references, right?  When you see the tags changing
+on you, which bits are changing, and what are they defined to mean?
 
-------_=_NextPart_001_01C667B2.640FE2D3--
+            Regards,
+
+            Kevin K.
+
+----- Original Message ----- 
+From: "Kim, Jong-Sung" <jsungkim@lge.com>
+To: <linux-mips@linux-mips.org>
+Sent: Monday, April 24, 2006 9:23 AM
+Subject: RE: Reading an entire cacheline
+
+
+> Hi all,
+> 
+> Was my question too brief? I'm using MIPS5Kf core included in a Broadcom
+> implemented processor and it has a 32kB d-cache and a same sized i-cache.
+> Cache configuration is 2-way, 32-byte cacheline for both d- and i-cache
+> without L2 cache. Of course, MIPS-port Linux as the kernel for it. And, a
+> onboard block device has problem in its operation. I don't think it's a
+> kernel problem. So I wanna inspect the contents of cache RAMs at the
+device
+> driver's context. I've added some lines of codes look like follow:
+> 
+> __asm__ __volatile__(
+> ".set noreorder\n\t"
+> ".set mips3\n\t"
+> "cache 5, 0x00(%3)\n\t" // load d-cache tag
+> ".set mips0\n\t" // by index
+> ".set mips32\n\t"
+> "mfc0 %0, $28, 0\n\t"
+> "mfc0 %1, $28, 1\n\t"
+> "mfc0 %2, $29, 1\n\t"
+> .set mips0\n\t"
+> .set reorder"
+> : "=r" (tag), "=r" (data_lo), "=r" (data_hi)
+> : "r" (0x80000000 | (way << 14) | (index << 5) | (word <<
+> 3))
+> );
+> 
+> This is executed for every index, every way, and every word. The thing
+aches
+> my head is the tags from a single cacheline differs. (very often for
+> d-cache) So I modified the code to reread the cacheline from the first
+word
+> when the tag was modified before reading all four words. Then the code
+never
+> return. I couldn't find any related information from manual.
+> 
+> Please give me a hint for reading whole cacheline safely.
+> 
+> 
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org
+> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Kim, Jong-Sung
+> Sent: Tuesday, April 18, 2006 9:37 AM
+> To: linux-mips@linux-mips.org
+> Subject: Reading an entire cacheline
+> 
+> Hi,
+> 
+> Is there any way to read an entire cacheline from the MIPS5Kf? Four
+> sequential cache instructions do similarly, but sometimes the tags from a
+> same cacheline differ. How can I read a consistent cacheline safely?
+> 
+> Thanks.
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 

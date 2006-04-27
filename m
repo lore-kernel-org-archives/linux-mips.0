@@ -1,22 +1,68 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:37552 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S4475373AbWDZLHx
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 26 Apr 2006 12:07:53 +0100
-Message-ID: <005701c66924$00a74860$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <081a01c66784$c6f7cb30$f3479696@LGE.NET> <009f01c6690e$0501a3d0$f3479696@LGE.NET> <20060426101603.GB29550@networkno.de>
-Subject: Re: Reading an entire cacheline
-Date: Wed, 26 Apr 2006 13:24:32 +0200
+Received: from mail1.lge.co.kr ([156.147.1.151]:59345 "EHLO mail1.lge.co.kr")
+	by ftp.linux-mips.org with ESMTP id S8133367AbWD0FEz (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 27 Apr 2006 06:04:55 +0100
+From: "Kim, Jong-Sung" <jsungkim@lge.com>
+Subject: RE: Reading an entire cacheline
+Date: Thu, 27 Apr 2006 14:04:07 +0900
+Message-ID: <00fc01c669b8$0319f6d0$f3479696@LGE.NET>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+In-Reply-To: <005701c66924$00a74860$10eca8c0@grendel>
+Return-Path: <jsungkim@lge.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Kim, Jong-Sung" <jsungkim@lge.com>, Thiemo Seufer <ths@networkno.de>
+To: "'Kevin D. Kissell'" <kevink@mips.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20060426112432.LrJBjwh4XhkutPzl-SmwxcRQ0buAxNkZC8Bc1lMQYgY@z>
+Message-ID: <20060427050407.gZw3uA_ji-5iXtoppKrLxpsJnaMvfCvzsrKBuizTudY@z>
+
+Dear Mr. Kissell,
+
+Thank you for your advices about disassembling. Please see:
+
+1380:	...
+1384:	00431025	or	v0,v0,v1
+1388:	00441025	or	v0,v0,a0
+138c:	bc450000	cache	0x5,0(v0)
+1390:	4002e000	mfc0	v0,c0_taglo
+1394:	4003e001	mfc0	v1,c0_datalo
+1398:	4004e801	mfc0	a0,c0_datahi
+139c:	bc450008	cache	0x5,8(v0)
+13a0:	4005e000	mfc0	a1,c0_taglo
+13a4:	4006e001	mfc0	a2,c0_datalo
+13a8:	4007e801	mfc0	a3,c0_datahi
+13ac:	bc450010	cache	0x5,16(v0)
+13b0:	4008e000	mfc0	t0,c0_taglo
+13b4:	4009e001	mfc0	t1,c0_datalo
+13b8:	400ae801	mfc0	t2,c0_datahi
+13bc:	bc450010	cache	0x5,16(v0)
+13c0:	400be000	mfc0	t3,c0_taglo
+13c4:	400ee001	mfc0	t6,c0_datalo
+13c8:	400ce801	mfc0	t4,c0_datahi
+13cc:	ae020020	sw	v0,32(s0)
+13d0:	ae030060	sw	v1,96(s0)
+13d4:	...
+
+It seems no memory variable is accessed during the sequence. The obviously
+unexpected thing is the use of register v0. It should have the value of the
+index and should not be touched before the execution of the last cache
+instruction. In this way, tags read are doomed to be different.
+
+It's my fault. So, I corrected the "=r" to be "=&r", and it seems work.
+Thank you again.
+
+Regards,
+JS.
+
+
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org
+[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Kevin D. Kissell
+Sent: Wednesday, April 26, 2006 8:25 PM
+To: Kim, Jong-Sung; Thiemo Seufer
+Cc: linux-mips@linux-mips.org
+Subject: Re: Reading an entire cacheline
 
 > [snip]
 > > //" bne %0, %9, 2b\n"

@@ -1,38 +1,41 @@
-Received: from ntfw.echelon.com ([205.229.50.10]:30442 "EHLO [205.229.50.10]")
-	by ftp.linux-mips.org with ESMTP id S8133421AbWD1RCL convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 28 Apr 2006 18:02:11 +0100
-Content-class: urn:content-classes:message
+Received: from smtp115.iad.emailsrvr.com ([207.97.245.115]:50335 "HELO
+	smtp135.iad.emailsrvr.com") by ftp.linux-mips.org with SMTP
+	id S8133953AbWEBVWO (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 2 May 2006 22:22:14 +0100
+Received: from ratin (adsl-69-233-145-110.dsl.sndg02.pacbell.net [69.233.145.110])
+	(Authenticated sender: mrahman@sypixx.com)
+	by relay1.r1.iad.emailsrvr.com (SMTP Server) with ESMTP id 99B88451674
+	for <linux-mips@linux-mips.org>; Tue,  2 May 2006 17:22:06 -0400 (EDT)
+Message-ID: <007e01c66e2e$8008f720$2300a8c0@ratin>
+Reply-To: "Ratin" <mrahman@sypixx.com>
+From: "Ratin" <mrahman@sypixx.com>
+References: <4456960D.70403@telus.net> <20060502193838.GA3474@linux-mips.org>
+Subject: changing IP address on mipsel-linux 
+Date: Tue, 2 May 2006 14:22:21 -0700
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Java virtual machine on linux MIPS
-Date: Fri, 28 Apr 2006 10:02:08 -0700
-Message-ID: <DDBD7B17DB2ECE48BCD94C593F7255B401551C70@monk.echelon.echcorp.com>
-From: "Prashant Viswanathan" <vprashant@echelon.com>
-Return-Path: <vprashant@echelon.com>
+	format=flowed;
+	charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <mrahman@sypixx.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: gowri@bitel.co.kr, linux-mips@linux-mips.org
-Message-ID: <20060428170208.wzoHY4nSY4vqs1Q1zRWZD8BwT9sUpsGdsrKLsclYZbc@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20060502212221.oNJP-QdCT8aHL2Uh0HkKDkjpVKZIU8uYLq6tHOLvDvQ@z>
 
-IBM's J9 works on linux-mips.
+I am not sure if this is the right mailing list (new here) but how would you 
+change the IP address parmanently on
+a box having IDT C32H434 CPU ? There seems to be no /etc/init.d/network on 
+this box. I could
+do it with ifconfig but I need to make parmanent change as well as effective 
+right away.
 
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org
-[mailto:linux-mips-bounce@linux-
-> mips.org] On Behalf Of Gowri Satish Adimulam
-> Sent: Thursday, April 27, 2006 6:39 PM
-> To: linux-mips@linux-mips.org
-> Subject: Java virtual machine on linux MIPS
-> 
-> Hi ,
-> 
-> He is there  any java virtual machine runs on mips based linux .
-> 
-> any pointers will be helpful
-> 
-> Regards
-> Gowri
-> 
+The other question is when I change the IP address on the fly with ifconfig, 
+is there a way to make the
+inet listener apps (that are running in the background) to autometically 
+listen on the new IP address?
+
+Thanks,
+
+Ratin

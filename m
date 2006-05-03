@@ -1,41 +1,37 @@
-Received: from smtp115.iad.emailsrvr.com ([207.97.245.115]:50335 "HELO
-	smtp135.iad.emailsrvr.com") by ftp.linux-mips.org with SMTP
-	id S8133953AbWEBVWO (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 2 May 2006 22:22:14 +0100
-Received: from ratin (adsl-69-233-145-110.dsl.sndg02.pacbell.net [69.233.145.110])
-	(Authenticated sender: mrahman@sypixx.com)
-	by relay1.r1.iad.emailsrvr.com (SMTP Server) with ESMTP id 99B88451674
-	for <linux-mips@linux-mips.org>; Tue,  2 May 2006 17:22:06 -0400 (EDT)
-Message-ID: <007e01c66e2e$8008f720$2300a8c0@ratin>
-Reply-To: "Ratin" <mrahman@sypixx.com>
-From: "Ratin" <mrahman@sypixx.com>
-References: <4456960D.70403@telus.net> <20060502193838.GA3474@linux-mips.org>
-Subject: changing IP address on mipsel-linux 
-Date: Tue, 2 May 2006 14:22:21 -0700
+Received: from maillog.itri.org.tw ([61.61.254.20]:33220 "EHLO
+	maillog.itri.org.tw") by ftp.linux-mips.org with ESMTP
+	id S8126480AbWECDRO (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 3 May 2006 04:17:14 +0100
+Received: from mail.itri.org.tw (mail [140.96.157.2])
+	by maillog.itri.org.tw (8.11.6+Sun/8.11.6) with ESMTP id k433D2o10802
+	for <linux-mips@linux-mips.org>; Wed, 3 May 2006 11:13:05 +0800 (CST)
+Received: from mail.itri.org.tw (localhost [127.0.0.1])
+	by mail.itri.org.tw (8.13.4/8.13.4) with ESMTP id k433Mth5010922
+	for <linux-mips@linux-mips.org>; Wed, 3 May 2006 11:23:10 +0800 (CST)
+Received: from ms1.itri.org.tw ([140.96.147.43])
+	by mail.itri.org.tw (8.13.4/8.13.4) with ESMTP id k433MKV9010489
+	for <linux-mips@linux-mips.org>; Wed, 3 May 2006 11:22:55 +0800 (CST)
+Message-ID: <00fa01c66e5f$eb0af470$8873608c@11088002601>
+Reply-To: "Charles C.K.Lai" <cklai@itri.org.tw>
+From: "Charles C.K.Lai" <cklai@itri.org.tw>
+Subject: How can I use DBAu1550 UART3 instead of UART0?
+Date: Wed, 3 May 2006 11:16:01 +0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=original
 Content-Transfer-Encoding: 7bit
-Return-Path: <mrahman@sypixx.com>
+Content-Type: text/plain;
+	charset="big5"
+Return-Path: <cklai@itri.org.tw>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20060502212221.oNJP-QdCT8aHL2Uh0HkKDkjpVKZIU8uYLq6tHOLvDvQ@z>
+Message-ID: <20060503031601.A3kXOIzi9JW32eOez9QEIhtS6nf0dd9bLP400Jv2d4w@z>
 
-I am not sure if this is the right mailing list (new here) but how would you 
-change the IP address parmanently on
-a box having IDT C32H434 CPU ? There seems to be no /etc/init.d/network on 
-this box. I could
-do it with ifconfig but I need to make parmanent change as well as effective 
-right away.
+Dear All, 
 
-The other question is when I change the IP address on the fly with ifconfig, 
-is there a way to make the
-inet listener apps (that are running in the background) to autometically 
-listen on the new IP address?
+    I have a AMD DBAu1550 Development board, 
+    if I have to use the uart port 3 instead of uart port 0, 
+    what can I do? 
 
-Thanks,
+    Thanks a lot. 
 
-Ratin
+    Charles C.K. Lai

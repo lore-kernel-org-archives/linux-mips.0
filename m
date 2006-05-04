@@ -1,38 +1,32 @@
-Received: from rtsoft2.corbina.net ([85.21.88.2]:32927 "HELO
-	mail.dev.rtsoft.ru") by ftp.linux-mips.org with SMTP
-	id S8133530AbWEDRR1 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 4 May 2006 18:17:27 +0100
-Message-ID: <445A36E3.4010809@ru.mvista.com>
-Date: Thu, 04 May 2006 21:16:19 +0400
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:46728 "EHLO
+	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133797AbWEDVWT
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 4 May 2006 22:22:19 +0100
+Message-ID: <028201c66fc1$4f724d20$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <445A577D.7090507@am.sony.com> <20060504205517.GF18218@networkno.de> <20060504210449.GA12676@smtp.west.cox.net>
+Subject: Re: [PATCH] fix mips/Makefile to support CROSS_COMPILE from environment var
+Date: Thu, 4 May 2006 23:25:46 +0200
 MIME-Version: 1.0
-Subject: Re: Porting Au1x000 USB host controller on u-boot
-References: <20060504095341.GB19913@gundam.enneenne.com> <445A347A.5050507@ru.mvista.com>
-In-Reply-To: <445A347A.5050507@ru.mvista.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <sshtylyov@ru.mvista.com>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: Rodolfo Giometti <giometti@linux.it>, Linux-MIPS <linux-mips@linux-mips.org>
-Message-ID: <20060504171619.PwxiIpPkNOPMkbJQx5wFlNP8JXQrXs2VlJcrDp6HOkA@z>
+To: Tom Rini <trini@kernel.crashing.org>, Thiemo Seufer <ths@networkno.de>
+Cc: Tim Bird <tim.bird@am.sony.com>, linux-mips@linux-mips.org
+Message-ID: <20060504212546.hQHut8TzMO0aDo7p0Vm71qCqg1T727ATf-sl1lZkR7Y@z>
 
-Hello, I wrote:
+> Let me ask a stupid question.  With all of the ways to otherwise do a
+> cross compile, why a config option on MIPS?  ARM*/SH*, which are at
+> least as likely to not be native-compiled, don't do that.  Just
+> something I've always wondered, really.
 
->> I'm trying to implement support for USB host into u-boot. I
->> initialized the USB controller just as linux does, the EDs and the TDs
->> look like good in memory but the controller seems not well reading
->> them and on the bus I see random USB messages...
+Probably because, unlike ARM and SH, the MIPS architecture began life
+as a workstation/server processor, and for a while there cross-compilation
+was the exception rather than the rule.
 
->> I think that there could be some problem on memory coherency... some
->> suggestion?
+            Regards,
 
-> try to disable USB controller's DMA coherency in the USB enable register 
-> (there's a related errata in all Au1xx0 family) -- the Linux driver 
-> doesn't do this though, and this shouldn't matter unless you're 
-> modifying USB buffers on the fly. :-)
-
-    AND make sure every buffer/TD/ED is written back / invalidated from cache 
-before the OHCI accesses them since the cache coherency on Au1xx0 is b0rken!
-
-WBR, Sergei
+            Kevin K.

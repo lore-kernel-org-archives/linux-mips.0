@@ -1,65 +1,38 @@
-Received: from smtp125.iad.emailsrvr.com ([207.97.245.125]:23959 "HELO
-	smtp135.iad.emailsrvr.com") by ftp.linux-mips.org with SMTP
-	id S7620187AbWECQy1 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 3 May 2006 17:54:27 +0100
-Message-ID: <007b01c66ed2$493622f0$2300a8c0@ratin>
-Reply-To: "Ratin" <mrahman@sypixx.com>
-From: "Ratin" <mrahman@sypixx.com>
-References: <5C1FD43E5F1B824E83985A74F396286E01DD4E88@bby1exm08.pmc_nt.nt.pmc-sierra.bc.ca>
-Subject: Re: changing IP address on mipsel-linux
-Date: Wed, 3 May 2006 09:54:46 -0700
+Received: from rtsoft2.corbina.net ([85.21.88.2]:32927 "HELO
+	mail.dev.rtsoft.ru") by ftp.linux-mips.org with SMTP
+	id S8133530AbWEDRR1 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 4 May 2006 18:17:27 +0100
+Message-ID: <445A36E3.4010809@ru.mvista.com>
+Date: Thu, 04 May 2006 21:16:19 +0400
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=original
+Subject: Re: Porting Au1x000 USB host controller on u-boot
+References: <20060504095341.GB19913@gundam.enneenne.com> <445A347A.5050507@ru.mvista.com>
+In-Reply-To: <445A347A.5050507@ru.mvista.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <mrahman@sypixx.com>
+Return-Path: <sshtylyov@ru.mvista.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Don Hiatt <Don_Hiatt@pmc-sierra.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20060503165446.P_aok0k7uiQ7I7_6PdZOWgE4UJt_vsGTnal41won7wo@z>
+Cc: Rodolfo Giometti <giometti@linux.it>, Linux-MIPS <linux-mips@linux-mips.org>
+Message-ID: <20060504171619.PwxiIpPkNOPMkbJQx5wFlNP8JXQrXs2VlJcrDp6HOkA@z>
 
-I meant changing the IP address of the device running mipsel-linux 
-statically (not DHCP) on the fly (I am using http interface and a C handler 
-function to do so) and then keeping it for the rest of its lifetime, so have 
-to run system ( ifconfig ) or similar API call for immediate change and 
-perhaps write the new IP to a file somewhere, which I am yet to discover.
+Hello, I wrote:
 
-Ratin
+>> I'm trying to implement support for USB host into u-boot. I
+>> initialized the USB controller just as linux does, the EDs and the TDs
+>> look like good in memory but the controller seems not well reading
+>> them and on the bus I see random USB messages...
 
------ Original Message ----- 
-From: "Don Hiatt" <Don_Hiatt@pmc-sierra.com>
-To: "'Ratin'" <mrahman@sypixx.com>
-Cc: <linux-mips@linux-mips.org>
-Sent: Wednesday, May 03, 2006 9:21 AM
-Subject: RE: changing IP address on mipsel-linux
+>> I think that there could be some problem on memory coherency... some
+>> suggestion?
 
+> try to disable USB controller's DMA coherency in the USB enable register 
+> (there's a related errata in all Au1xx0 family) -- the Linux driver 
+> doesn't do this though, and this shouldn't matter unless you're 
+> modifying USB buffers on the fly. :-)
 
-> Perhaps you mean you want to set the IP for a NFS mounted filesystem?
->
-> If so you can pass "ip=dhcp" or ip="192.168.13.120" as a kernel argument.
->
-> Cheers,
->
-> don
->
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org
-> [mailto:linux-mips-bounce@linux-mips.org]On Behalf Of Ratin
-> Sent: Wednesday, May 03, 2006 9:12 AM
-> To: Freddy Spierenburg
-> Cc: linux-mips@linux-mips.org
-> Subject: Re: changing IP address on mipsel-linux
->
->
-> Hi Freddy, Thanks for your response, I appreciate your help. I am kind of
-> new to this version of Linux.
-> The uname -a gives me this:
->
-> Linux 192.168.0.62 2.6.10-idt20050328 #1 Tue Dec 13 10:36:55 PST 2005 mips
-> unknown
->
-> Ratin
-> 
+    AND make sure every buffer/TD/ED is written back / invalidated from cache 
+before the OHCI accesses them since the cache coherency on Au1xx0 is b0rken!
+
+WBR, Sergei

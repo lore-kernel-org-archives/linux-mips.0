@@ -1,30 +1,54 @@
-Received: from smtp115.iad.emailsrvr.com ([207.97.245.115]:56533 "HELO
-	smtp135.iad.emailsrvr.com") by ftp.linux-mips.org with SMTP
-	id S8133884AbWELAnA (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 12 May 2006 02:43:00 +0200
-Received: from ratin (adsl-69-233-145-110.dsl.sndg02.pacbell.net [69.233.145.110])
-	(Authenticated sender: mrahman@sypixx.com)
-	by relay1.r1.iad.emailsrvr.com (SMTP Server) with ESMTP id 4076A44F85B
-	for <linux-mips@linux-mips.org>; Thu, 11 May 2006 20:42:51 -0400 (EDT)
-Message-ID: <006401c6755c$c080def0$2300a8c0@ratin>
-Reply-To: "Ratin" <mrahman@sypixx.com>
-From: "Ratin" <mrahman@sypixx.com>
-References: <c58a7a270605090735t8e4f21ax6ca87f97b9143e3b@mail.gmail.com> <20060509163411.GA8528@linux-mips.org> <44614E0F.2000207@windriver.com> <c58a7a270605100211o8181e23p5c0b1a7eb0060f90@mail.gmail.com>
-Subject: SOAP
-Date: Thu, 11 May 2006 17:41:04 -0700
+Received: from sj-iport-5.cisco.com ([171.68.10.87]:1127 "EHLO
+	sj-iport-5.cisco.com") by ftp.linux-mips.org with ESMTP
+	id S8126579AbWELQYi convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 12 May 2006 18:24:38 +0200
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=response
-Content-Transfer-Encoding: 7bit
-Return-Path: <mrahman@sypixx.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: SOAP
+Date: Fri, 12 May 2006 09:24:25 -0700
+Message-ID: <27801B4D04E7CA45825B0E0CE60FE10A01E51ED3@xmb-sjc-237.amer.cisco.com>
+From: "Ratin Rahman \(mratin\)" <mratin@cisco.com>
+Return-Path: <mratin@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20060512004104.GVM92IznE11Bh8eWcNOlda7R0MczxJu9gLt1rDYWSyU@z>
+To: Ralf Roesch <ralf.roesch@rw-gmbh.de>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20060512162425.w_0KFBLH3Qf5VmWt-Tce42nLZ5bz98NfgOvAK25V2w0@z>
 
-Is there an implementation of SOAP (Simple Object Access Protocol) for 
-linux-mips?
+Thanks, good to know about the illegal XML serialization patent that
+Microsoft obtained from the patent office on that page. 
+Ratin
 
-Ratin 
+-----Original Message-----
+From: Ralf Roesch [mailto:ralf.roesch@rw-gmbh.de] 
+Sent: Friday, May 12, 2006 12:51 AM
+To: Ratin
+Cc: linux-mips@linux-mips.org
+Subject: Re: SOAP
+
+we have successfully used gSOAP since years now on a mips based embedded
+target runing linux from mips-org.
+Further related information about the gSOAP project you can find at
+http://www.cs.fsu.edu/~engelen/soap.html
+
+Ralf
+
+Roesch & Walter___________________________________________
+Industrie-Elektronik GmbH * Tel.: +49-7824 / 6628-0
+Im Heidenwinkel 5         * Fax:  +49-7824 / 6628-29
+D-77963 Schwanau          * mailto:ralf.roesch@rw-gmbh.de
+Germany                   * WWW: http://www.rw-gmbh.de
+
+
+
+
+Ratin wrote:
+> Is there an implementation of SOAP (Simple Object Access Protocol) for
+
+> linux-mips?
+>
+> Ratin
+>

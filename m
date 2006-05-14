@@ -1,54 +1,36 @@
-Received: from sj-iport-5.cisco.com ([171.68.10.87]:1127 "EHLO
-	sj-iport-5.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S8126579AbWELQYi convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 12 May 2006 18:24:38 +0200
-Content-class: urn:content-classes:message
+Received: from eastrmmtao01.cox.net ([68.230.240.38]:56562 "HELO
+	eastrmmtao01.cox.net") by ftp.linux-mips.org with SMTP
+	id S8127173AbWENNvK (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Sun, 14 May 2006 15:51:10 +0200
+Received: from hermes.mountolympos.net ([70.160.186.45])
+          by eastrmmtao01.cox.net
+          (InterMail vM.6.01.06.01 201-2131-130-101-20060113) with ESMTP
+          id <20060514135102.VCNU17255.eastrmmtao01.cox.net@hermes.mountolympos.net>
+          for <linux-mips@linux-mips.org>; Sun, 14 May 2006 09:51:02 -0400
+Received: from zeus.mountolympos.net (zeus.mountolympos.net [192.168.2.2])
+	by hermes.mountolympos.net (Postfix) with ESMTP id 5BC1C1677D
+	for <linux-mips@linux-mips.org>; Sun, 14 May 2006 09:51:02 -0400 (EDT)
+Received: from [192.168.2.3] (kronos.mountolympos.net [192.168.2.3])
+	by zeus.mountolympos.net (Postfix) with ESMTP id 494AF100A118
+	for <linux-mips@linux-mips.org>; Sun, 14 May 2006 09:51:02 -0400 (EDT)
+Message-ID: <446735C6.2080306@mountolympos.net>
+Date: Sun, 14 May 2006 09:51:02 -0400
+From: John Miller <jamiller1110@cox.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: SOAP
-Date: Fri, 12 May 2006 09:24:25 -0700
-Message-ID: <27801B4D04E7CA45825B0E0CE60FE10A01E51ED3@xmb-sjc-237.amer.cisco.com>
-From: "Ratin Rahman \(mratin\)" <mratin@cisco.com>
-Return-Path: <mratin@cisco.com>
+Subject: Instruction error with cache opcode
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-Path: <jamiller1110@cox.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Roesch <ralf.roesch@rw-gmbh.de>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20060512162425.w_0KFBLH3Qf5VmWt-Tce42nLZ5bz98NfgOvAK25V2w0@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20060514135102.ZmnkCGTukk0UazjpXJT-nU6OJRw_E0Pqxgu0M2PHuoA@z>
 
-Thanks, good to know about the illegal XML serialization patent that
-Microsoft obtained from the patent office on that page. 
-Ratin
+I am attempting to write a routine to initialize the cache for a MIPS
+4kc core to get Linux 2.6.16.14 to compile.  I am sure someone has
+probably already done this, but I am doing it for educational reasons. 
+I am receiving the following error:
 
------Original Message-----
-From: Ralf Roesch [mailto:ralf.roesch@rw-gmbh.de] 
-Sent: Friday, May 12, 2006 12:51 AM
-To: Ratin
-Cc: linux-mips@linux-mips.org
-Subject: Re: SOAP
-
-we have successfully used gSOAP since years now on a mips based embedded
-target runing linux from mips-org.
-Further related information about the gSOAP project you can find at
-http://www.cs.fsu.edu/~engelen/soap.html
-
-Ralf
-
-Roesch & Walter___________________________________________
-Industrie-Elektronik GmbH * Tel.: +49-7824 / 6628-0
-Im Heidenwinkel 5         * Fax:  +49-7824 / 6628-29
-D-77963 Schwanau          * mailto:ralf.roesch@rw-gmbh.de
-Germany                   * WWW: http://www.rw-gmbh.de
-
-
-
-
-Ratin wrote:
-> Is there an implementation of SOAP (Simple Object Access Protocol) for
-
-> linux-mips?
->
-> Ratin
->
+arch/mips/kernel/head.S: Assembler messages:
+arch/mips/kernel/head.S:131: Error: Instruction cache requires absolute
+expression

@@ -1,43 +1,31 @@
-Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:16107 "EHLO
-	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133554AbWENTjC
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Sun, 14 May 2006 21:39:02 +0200
-Message-ID: <009501c6778e$947c3ff0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <446735C6.2080306@mountolympos.net> <002a01c67761$253e97f0$0202a8c0@Ulysses> <4467796E.8060000@mountolympos.net>
-Subject: Re: Instruction error with cache opcode
-Date: Sun, 14 May 2006 21:42:46 +0200
+Received: from eastrmmtao01.cox.net ([68.230.240.38]:11687 "HELO
+	eastrmmtao01.cox.net") by ftp.linux-mips.org with SMTP
+	id S8133760AbWEOBiI (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 15 May 2006 03:38:08 +0200
+Received: from hermes.mountolympos.net ([70.160.186.45])
+          by eastrmmtao01.cox.net
+          (InterMail vM.6.01.06.01 201-2131-130-101-20060113) with ESMTP
+          id <20060515013801.YQMZ17255.eastrmmtao01.cox.net@hermes.mountolympos.net>
+          for <linux-mips@linux-mips.org>; Sun, 14 May 2006 21:38:01 -0400
+Received: from zeus.mountolympos.net (zeus.mountolympos.net [192.168.2.2])
+	by hermes.mountolympos.net (Postfix) with ESMTP id 5572C1677B
+	for <linux-mips@linux-mips.org>; Sun, 14 May 2006 21:38:01 -0400 (EDT)
+Received: from [192.168.2.4] (odysseus.mountolympos.net [192.168.2.4])
+	by zeus.mountolympos.net (Postfix) with ESMTP id 3438A100A118
+	for <linux-mips@linux-mips.org>; Sun, 14 May 2006 21:38:01 -0400 (EDT)
+Message-ID: <4467DB78.8030304@mountolympos.net>
+Date: Sun, 14 May 2006 21:38:00 -0400
+From: John Miller <jamiller1110@cox.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Re: Instruction error with cache opcode
+References: <446735C6.2080306@mountolympos.net>	<002a01c67761$253e97f0$0202a8c0@Ulysses>	<4467796E.8060000@mountolympos.net> <20060515.100659.126574393.nemoto@toshiba-tops.co.jp> <4467DACE.9000800@mountolympos.net>
+In-Reply-To: <4467DACE.9000800@mountolympos.net>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Return-Path: <jamiller1110@cox.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: John Miller <jamiller1110@cox.net>, linux-mips@linux-mips.org
-Message-ID: <20060514194246.p6XhRZPyIPLe3q6VKt89kqur5r4ZtvShmYRD5xIqNig@z>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20060515013800._qy--xKRLYMWixW8cVrdnyUrJanv6g0Fk9UdN7TsNB4@z>
 
-> > Where and how is the value of Index_Store_Tag_I  defined?
-> 
-> I included asm/cacheops.h from the kernel tree, it is defined there as :
-> 
-> #define Index_Store_Tag_I 0x08
-> 
-> I also tried to substitute 0x08 directly into my source and I got the
-> same error.  Strangely enough, if I remove the include line, I get the
-> same exact error.
-
-Have you got your sources properly installes so that include/asm is
-a symlink to include/asm-mips?  I've done the experiment at my end,
-and it builds just fine so long as regdef.h and cacheops.h are really
-on the include path of the compilation.  If they're not, I get:
-
-[kevink@cthulhu tmp]$ mipsel-linux-gcc -I ~/smtchead/include -c cacheop.S
-cacheop.S: Assembler messages:
-cacheop.S:4: Error: Instruction cache requires absolute expression
-cacheop.S:4: Error: Instruction cache requires absolute expression
-cacheop.S:4: Error: illegal operands `cache'
-
-            Regards,
-
-            Kevin K.
+Sorry, I sent that last message without thanking everyone for their help.

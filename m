@@ -1,150 +1,131 @@
-Received: from gateway.stellartec.com ([65.107.16.99]:43021 "EHLO
-	gateway.stellartec.com") by ftp.linux-mips.org with ESMTP
-	id S8133569AbWEOQgu (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 15 May 2006 18:36:50 +0200
-Content-Class: urn:content-classes:message
-Content-Transfer-Encoding: 7bit
+Received: from SBA.FLIR.com ([12.164.250.85]:37579 "EHLO coral.sba.flir.net")
+	by ftp.linux-mips.org with ESMTP id S8133443AbWEPOtT (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 16 May 2006 16:49:19 +0200
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C6783D.34D4EE96"
-Subject: Need help burning flash using osprey vr41xx
-Date: Mon, 15 May 2006 09:32:52 -0700
-Message-ID: <7F5F67B895426C40AC75B8290421C239D1ED02@Exchange.stellartec.com>
-From: "Yashwant Shitoot" <yshitoot@stellartec.com>
-Return-Path: <yshitoot@stellartec.com>
+Content-Type: multipart/mixed; boundary="----=neXtPaRt_1147790958"
+Subject: RE: problem building cross compiler gcc-3.4.4
+Date: Tue, 16 May 2006 07:49:15 -0700
+Message-ID: <D68CE2DA7B2E3C4B880DAFD4DE38EE16630B6E@coral.sba.flir.net>
+From: "De Jong, Rienco" <Marinus.DeJong@flir.com>
+Return-Path: <Marinus.DeJong@flir.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20060515163252.7-jZhc3DAdsH-4mA0dSFb2-SMfppM-8OrGPJE__foSg@z>
+Message-ID: <20060516144915.nmtmEMGqV8fzEgpaV6iKFRUlj-MY57os-0F7yD2dnb8@z>
 
-This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C6783D.34D4EE96
-X-EC0D2A8E-5CB7-4969-9C36-46D859D137BE-PartID: E8350D8F-73BE-426E-B8F0-E99E7CB1977F
+------=neXtPaRt_1147790958
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi Shyamal,
 
-=20
+I also have problems with compiling a mips platform for threads.  I used
+the buildroot environment but made no progress.  I am able to compile
+buildroot for the old/stable version of linux threads which also
+includes a version of gcc.  I also tried posting to this list but have
+heard no response as of yet so this is probably not the right list for
+this kind of question.
 
-I do have a working system with vrboot, vmlinux and romdisk. Now I would
-like to use about 10 bytes in the unused portion of flash (at addr
-0xbfc01fc0) and put in a serial number. I have tried bin2rom
-serialNum.inf 0xbfc01fc0 0xbfc01fff (and some variations) however
-ethload hangs up at "sending jump addr".
+I was trying to get the use of the NPTL. Are you trying to build for
+NPTL as well?  If not you should be able to use the previous build of
+the compiler to build the old and stable version of linux threads.
+Apparently gcc doesn't need to have the --enable_threads flag set for
+that but I can't say for sure.
 
-=20
-
-Any suggestions ?
-
-=20
-
-Thanks
-
-=20
-
-Yash
-
-=20
+Rienco De Jong
 
 
-------_=_NextPart_001_01C6783D.34D4EE96
-X-EC0D2A8E-5CB7-4969-9C36-46D859D137BE-PartID: 6FC3009E-4F04-46E2-B509-239A0C4033E7
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org
+[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Shyamal Sadanshio
+Sent: Monday, May 15, 2006 10:35 PM
+To: linux-mips@linux-mips.org
+Subject: Fwd: problem building cross compiler gcc-3.4.4
 
-<html>
+Hi,
 
-<head>
-<META http-equiv=3D"Content-Type" content=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+I am facing gcc 3.4.4 build problem for mips platform with
+--enable-thread options.
 
-</head>
+../gcc-3.4.4/configure --target=3D$TARGET --prefix=3D$PREFIX
+--enable-language=3Dc
+--with-headers=3D/opt/crosstool/mipsel-unknown-linux-gnu/sys-include/
+--with-gnu-ld --with-gnu-as --disable-shared --enable-threads
 
-<body link=3Dblue vlink=3Dpurple>
+Error message are listed as below:
+************************************************************************
+*************************
+In file included from ./tm.h:13,
+                 from ../../gcc-3.4.4/gcc/libgcc2.c:43:
+../../gcc-3.4.4/gcc/config/mips/linux.h:198: error: parse error before
+"stack_t"
+../../gcc-3.4.4/gcc/config/mips/linux.h:198: warning: no semicolon at
+end of str
+uct or union
+../../gcc-3.4.4/gcc/config/mips/linux.h:201: error: parse error before
+'}' token
+../../gcc-3.4.4/gcc/config/mips/linux.h:201: warning: type defaults to
+`int' in
+declaration of `_sig_ucontext_t'
+../../gcc-3.4.4/gcc/config/mips/linux.h:201: warning: data definition
+has no typ
+e or storage class
+In file included from ./tm.h:13,
+                 from ../../gcc-3.4.4/gcc/libgcc2.c:43:
+../../gcc-3.4.4/gcc/config/mips/linux.h:198: error: parse error before
+"stack_t"
+../../gcc-3.4.4/gcc/config/mips/linux.h:198: warning: no semicolon at
+end of str
+uct or union
+../../gcc-3.4.4/gcc/config/mips/linux.h:201: error: parse error before
+'}' token
+../../gcc-3.4.4/gcc/config/mips/linux.h:201: warning: type defaults to
+`int' in
+declaration of `_sig_ucontext_t'
+../../gcc-3.4.4/gcc/config/mips/linux.h:201: warning: data definition
+has no typ
+e or storage class
+make[2]: *** [libgcc/./_muldi3.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[2]: *** [libgcc/./_negdi2.o] Error 1
+make[2]: Leaving directory
+`/tmp/mipsel-unknown-linux-gnu-toolchain/build-gcc-bo
+otstrap/gcc'
+make[1]: *** [libgcc.a] Error 2
+make[1]: Leaving directory
+`/tmp/mipsel-unknown-linux-gnu-toolchain/build-gcc-bo
+otstrap/gcc'
+make: *** [all-gcc] Error 2
 
-<div class=3DSection1>
+************************************************************************
+*************************
+I am able to build the minimal version of compiler for kernel build
+with config options as below:
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hello,</span></font></p>
+../gcc-3.4.4/configure --target=3D$TARGET --prefix=3D$PREFIX
+--enable-language=3Dc --without-headers --with-gnu-ld --with-gnu-as
+--disable-shared --disable-threads
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
+Has anybody faced this issue earlier?
+Will be grateful if someone could comment on this issue.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>I do have a working system with vrboot, vmlinux and =
-romdisk.
-Now I would like to use about 10 bytes in the unused portion of flash =
-(at addr
-0xbfc01fc0) and put in a serial number. I have tried bin2rom =
-serialNum.inf
-0xbfc01fc0 0xbfc01fff (and some variations) however ethload hangs up at
-&#8220;sending jump addr&#8221;.</span></font></p>
+Thanks and Regards,
+Shyamal
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Any suggestions ?</span></font></p>
+Thanks and Regards,
+Shyamal
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks</span></font></p>
+------=neXtPaRt_1147790958
+Content-Type: text/plain;
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
+**********************************************************************
+Notice to recipient: This email is meant for only the intended recipient of the transmission, and may be a communication privileged by law, subject to export control restrictions or that otherwise contains proprietary information.  If you receive this email by mistake, please notify us immediately by replying to this message and then destroy it and do not review, disclose, copy or distribute it.  Thank you in advance for your cooperation.
+**********************************************************************
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Yash</span></font></p>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C6783D.34D4EE96--
+------=neXtPaRt_1147790958--

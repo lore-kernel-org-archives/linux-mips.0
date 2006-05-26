@@ -1,64 +1,45 @@
-Received: from [220.76.242.187] ([220.76.242.187]:62415 "EHLO
+Received: from [220.76.242.187] ([220.76.242.187]:63183 "EHLO
 	localhost.localdomain") by ftp.linux-mips.org with ESMTP
-	id S8133428AbWEZCkG (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 26 May 2006 04:40:06 +0200
-Message-ID: <002601c6806d$b09fc890$9d0ba8c0@mrv>
+	id S8133389AbWEZDFZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 26 May 2006 05:05:25 +0200
+Message-ID: <002e01c68071$3ad42800$9d0ba8c0@mrv>
 From: "Roman Mashak" <mrv@corecom.co.kr>
-References: <001101c6805e$4c4f62b0$9d0ba8c0@mrv> <20060526103840.79fe5ec5.yoichi_yuasa@tripeaks.co.jp>
+References: <C28979E4F697C249ABDA83AC0C33CDF80DE0F2@sjc1exm07.pmc_nt.nt.pmc-sierra.bc.ca>
 Subject: Re: booting with NFS root
-Date: Fri, 26 May 2006 11:40:01 +0900
+Date: Fri, 26 May 2006 12:05:17 +0900
 MIME-Version: 1.0
 Content-Type: text/plain;
 	format=flowed;
-	charset="ISO-8859-1";
+	charset="koi8-r";
 	reply-type=original
 Content-Transfer-Encoding: 7bit
 Return-Path: <mrv@corecom.co.kr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+To: Kiran Thota <Kiran_Thota@pmc-sierra.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20060526024001.ak2GfRzhVpstL2i_7DrdhnPdxlJIHRgoSRK1657Su8k@z>
+Message-ID: <20060526030517.aPimnQ3OXqPyOmYv3n2qY2lNYOWFOr0vJeeocMhii2I@z>
 
-Hello, Yoichi
+Hello, Kiran!
+You wrote to "Roman Mashak" <mrv@corecom.co.kr>; <linux-mips@linux-mips.org> 
+on Thu, 25 May 2006 19:07:13 -0700:
 
-and thanks for reply.
+KT> Roman,
+KT>  You have an older version of the linux kernel. I can send you latest 
+snapshot.
+I've taken the latest 2.4.x available on ftp.pmc-sierra.com
 
- YY> <snip>
- ??>> Freeing unused kernel memory: 104k freed
- ??>> do_cpu invoked from kernel context! in traps.c::do_cpu, line 676:
+KT> There was a software bug. I don't know your source version to send patch 
+but I am
+KT> attaching the source titan_ge.c
 
- YY> This error is coprocessor unusable exception.
-May this be caused by hardware error/bug ?
+Thank you Kiran, I recompliled the kernel with driver you attached and now 
+there's no panic at least, kernel only hangs up waiting for reply from NFS:
 
- ??>> $0 : 00000000 9004a000 2ab03fe0 2ab03fe0 2ab01560 00000000 00000ae0
- ??>> 00000ae0 $8 : 00000020 2ab01fe0 2ab01520 00001000 00000019 00000080
- ??>> 811d7b18 00000c62 $16: 2ab010c0 811d7c58 87f8cfe0 00000003 00000080
- ??>> 2ab01520 87f841a0 00000001 $24: 00000000 00000080
- ??>> 811d6000 811d7ba0 2aaa8000 8015f414 Hi : 00000000 Lo : 00000000 epc
- ??>> : 80256e14    Not tainted
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+Looking up port of RPC 100003/2 on 192.168.11.43
 
- YY> The exception program counter is 0x80256e14 .
- YY> You can check instructions(0x80256e14 and before) in your kernel
- YY> object.
-I ran 'objdump -d /tftpboot/vmlinux | grep -B7 ^80256e14' and got the 
-following:
-
-80256df8:       732f6330        0x732f6330
-80256dfc:       64347000        daddiu  s4,at,28672
-80256e00:       63636973        daddi   v1,k1,26995
-80256e04:       732f6330        0x732f6330
-80256e08:       64357000        daddiu  s5,at,28672
-80256e0c:       63636973        daddi   v1,k1,26995
-80256e10:       732f6330        0x732f6330
-80256e14:       64367000        daddiu  s6,at,28672
-
-But I'm not good in MIPS assembling. Does this give you some clue?
-
- ??>> Status: 9004a003
- ??>> Cause : 1000002c
- ??>> PrId  : 000034c1
- ??>> Process init (pid: 1, stackpage=811d6000)
- ??>> Stack:    8015f8a8 8015f9a8 87f71180 8012b2fc 00000000 80135330
+I ran 'tcpdump' on server's side and observed that it's unable to obtain MAC 
+address of Sequoia board. Where have I done mistake?
 
 With best regards, Roman Mashak.  E-mail: mrv@corecom.co.kr 

@@ -1,131 +1,170 @@
-Received: from SBA.FLIR.com ([12.164.250.85]:37579 "EHLO coral.sba.flir.net")
-	by ftp.linux-mips.org with ESMTP id S8133443AbWEPOtT (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 16 May 2006 16:49:19 +0200
-Content-class: urn:content-classes:message
+Received: from [220.76.242.187] ([220.76.242.187]:59087 "EHLO
+	localhost.localdomain") by ftp.linux-mips.org with ESMTP
+	id S8134092AbWEZAty (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 26 May 2006 02:49:54 +0200
+Received: from mrv ([192.168.11.157])
+	by localhost.localdomain (8.12.8/8.12.8) with SMTP id k4Q0pfEE030590
+	for <linux-mips@linux-mips.org>; Fri, 26 May 2006 09:51:43 +0900
+Message-ID: <001101c6805e$4c4f62b0$9d0ba8c0@mrv>
+From: "Roman Mashak" <mrv@corecom.co.kr>
+Subject: booting with NFS root
+Date: Fri, 26 May 2006 09:49:50 +0900
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=neXtPaRt_1147790958"
-Subject: RE: problem building cross compiler gcc-3.4.4
-Date: Tue, 16 May 2006 07:49:15 -0700
-Message-ID: <D68CE2DA7B2E3C4B880DAFD4DE38EE16630B6E@coral.sba.flir.net>
-From: "De Jong, Rienco" <Marinus.DeJong@flir.com>
-Return-Path: <Marinus.DeJong@flir.com>
+Content-Type: text/plain;
+	format=flowed;
+	charset="koi8-r";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <mrv@corecom.co.kr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20060516144915.nmtmEMGqV8fzEgpaV6iKFRUlj-MY57os-0F7yD2dnb8@z>
+Message-ID: <20060526004950.blae7oLfx3alXxr32PBCwvfEE-sj9smrp9q6C2bWtDg@z>
 
+Hello!
 
-------=neXtPaRt_1147790958
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I have evaluation board from PMC-sierra, their CPU is using E9000 core. 
+Kernel (2.4.26), root FS are provided by them. I set up NFS and TFTP servers 
+on my linux box, kernel loads into board but fails to boot woth the 
+following message (I skipped some lines of kernel):
 
-Hi Shyamal,
+=====================
+PMC-Sierra TITAN 10/100/1000 Ethernet Driver
+Device Id : 206014,  Version : 0
+eth0: port 0 with MAC address 30:30:3a:31:31:3a
+Rx NAPI supported, Tx Coalescing ON
+eth1: port 1 with MAC address 30:30:3a:31:31:3b
+Rx NAPI supported, Tx Coalescing ON
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP, IGMP
+IP: routing cache hash table of 1024 buckets, 8Kbytes
+TCP: Hash tables configured (established 8192 bind 16384)
+IP-Config: Entered.
+ipconfig.c 1194
+dev.c 1998
+dev.c 2013
+dev.c 750
+irq.c 539
+irq.c 571
+irq.c 840
+irq.c 879
+handler->startup 80259d14
+irq.c 892
+irq.c 576
+Assigned IRQ 6 to port 0
+titan_ge.c 2256
+titan_ge.c 2278
+titan_ge.c 2316
+titan_ge.c 2359
+titan_ge.c 1614
+titan_ge.c 1659
+titan_ge.c 1698
+titan_ge.c 1717
+titan_ge.c 1837
+titan_ge.c 2025
+titan_ge.c 2118
+titan_ge.c 2177
+dev_addr=       1, reg_addr=      11
+val=    4111
+val=       1
+titan_ge.c 2184
+titan_ge.c 2397
+dev_addr=       1, reg_addr=      11
+val=    4112
+val=       1
+dev.c 788
+dev.c 2034
+dev.c 2043
+dev.c 2059
+IP-Config: eth0 UP (able=1, xid=57c63687)
+dev.c 1998
+dev.c 2013
+dev.c 750
+irq.c 539
+irq.c 571
+irq.c 840
+irq.c 879
+irq.c 892
+irq.c 576
+Assigned IRQ 6 to port 1
+titan_ge.c 2256
+titan_ge.c 2278
+titan_ge.c 2316
+titan_ge.c 2359
+titan_ge.c 1659
+titan_ge.c 1698
+titan_ge.c 1717
+titan_ge.c 1837
+titan_ge.c 2025
+titan_ge.c 2118
+titan_ge.c 2177
+dev_addr=       2, reg_addr=      11
+val=    4111
+val=       1
+titan_ge.c 2184
+titan_ge.c 2397
+dev_addr=       2, reg_addr=      11
+val=    4212
+val=       1
+eth1: Error opening interface
+dev.c 788
+dev.c 2034
+dev.c 2043
+dev.c 2059
+IP-Config: Failed to open eth1
+ipconfig.c 1199
+IP-Config: Guessing netmask 255.255.255.0
+IP-Config: Complete:
+      device=eth0, addr=192.168.11.42, mask=255.255.255.0, 
+gw=255.255.255.255,
+     host=192.168.11.42, domain=, nis-domain=(none),
+     bootserver=255.255.255.255, rootserver=192.168.11.43, rootpath=
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+Looking up port of RPC 100003/2 on 192.168.11.43
+Looking up port of RPC 100005/1 on 192.168.11.43
+VFS: Mounted root (nfs filesystem).
+Freeing unused kernel memory: 104k freed
+do_cpu invoked from kernel context! in traps.c::do_cpu, line 676:
+$0 : 00000000 9004a000 2ab03fe0 2ab03fe0 2ab01560 00000000 00000ae0 00000ae0
+$8 : 00000020 2ab01fe0 2ab01520 00001000 00000019 00000080 811d7b18 00000c62
+$16: 2ab010c0 811d7c58 87f8cfe0 00000003 00000080 2ab01520 87f841a0 00000001
+$24: 00000000 00000080                   811d6000 811d7ba0 2aaa8000 8015f414
+Hi : 00000000
+Lo : 00000000
+epc   : 80256e14    Not tainted
+Status: 9004a003
+Cause : 1000002c
+PrId  : 000034c1
+Process init (pid: 1, stackpage=811d6000)
+Stack:    8015f8a8 8015f9a8 87f71180 8012b2fc 00000000 80135330 00002012
+ 00000019 87f8cf60 2ab019e4 00000004 00002012 000590c0 2ab01000 10000000
+ 811d7d88 87ff5740 00000000 811d7ef8 81164e80 00000000 00000002 87f841a0
+ 8015ffd8 811d7c20 811d6000 811d7cbc 801975a4 00006012 0000000a 811d7c18
+ 811d7c18 7f454c46 01020100 00000000 00000000 00020008 00000001 00401980
+ 00000034 ...
+Call Trace:   [<8015f8a8>] [<8015f9a8>] [<8012b2fc>] [<80135330>] 
+[<8015ffd8>]
+ [<801975a4>] [<8015fbc0>] [<801493ac>] [<801007b8>] [<8014889c>] 
+[<801495bc>]
+ [<801495a8>] [<801007b8>] [<80108f80>] [<801007b8>] [<8014fcc4>] 
+[<801095c0>]
+ [<8025ad30>] [<801007b8>] [<8025ad30>] [<8014af50>] [<801007b8>] 
+[<80117888>]
+ [<801194a0>] [<80100884>] [<801007b8>] [<8010079c>] [<8025de14>] 
+[<80104320>]
+ [<80117aec>] [<8026b7a8>] [<801b2054>] [<80104310>]
 
-I also have problems with compiling a mips platform for threads.  I used
-the buildroot environment but made no progress.  I am able to compile
-buildroot for the old/stable version of linux threads which also
-includes a version of gcc.  I also tried posting to this list but have
-heard no response as of yet so this is probably not the right list for
-this kind of question.
+Code: 30c8003c  01244821  24840040 <ac85ffc0> ac85ffc4  ac85ffc8  ac85ffcc 
+ac85ffd0  ac85ffd4
+Kernel panic: Attempted to kill init!
+=====================
 
-I was trying to get the use of the NPTL. Are you trying to build for
-NPTL as well?  If not you should be able to use the previous build of
-the compiler to build the old and stable version of linux threads.
-Apparently gcc doesn't need to have the --enable_threads flag set for
-that but I can't say for sure.
+I load kernel with the following parameters:
+tftp://192.168.11.43/vmlinux ip=192.168.11.42 root=/dev/nfs 
+nfsroot=192.168.11.43:/export/linux/mips-fs-be
 
-Rienco De Jong
+What may be the problem here?
 
+Thanks in advance!
 
------Original Message-----
-From: linux-mips-bounce@linux-mips.org
-[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Shyamal Sadanshio
-Sent: Monday, May 15, 2006 10:35 PM
-To: linux-mips@linux-mips.org
-Subject: Fwd: problem building cross compiler gcc-3.4.4
-
-Hi,
-
-I am facing gcc 3.4.4 build problem for mips platform with
---enable-thread options.
-
-../gcc-3.4.4/configure --target=3D$TARGET --prefix=3D$PREFIX
---enable-language=3Dc
---with-headers=3D/opt/crosstool/mipsel-unknown-linux-gnu/sys-include/
---with-gnu-ld --with-gnu-as --disable-shared --enable-threads
-
-Error message are listed as below:
-************************************************************************
-*************************
-In file included from ./tm.h:13,
-                 from ../../gcc-3.4.4/gcc/libgcc2.c:43:
-../../gcc-3.4.4/gcc/config/mips/linux.h:198: error: parse error before
-"stack_t"
-../../gcc-3.4.4/gcc/config/mips/linux.h:198: warning: no semicolon at
-end of str
-uct or union
-../../gcc-3.4.4/gcc/config/mips/linux.h:201: error: parse error before
-'}' token
-../../gcc-3.4.4/gcc/config/mips/linux.h:201: warning: type defaults to
-`int' in
-declaration of `_sig_ucontext_t'
-../../gcc-3.4.4/gcc/config/mips/linux.h:201: warning: data definition
-has no typ
-e or storage class
-In file included from ./tm.h:13,
-                 from ../../gcc-3.4.4/gcc/libgcc2.c:43:
-../../gcc-3.4.4/gcc/config/mips/linux.h:198: error: parse error before
-"stack_t"
-../../gcc-3.4.4/gcc/config/mips/linux.h:198: warning: no semicolon at
-end of str
-uct or union
-../../gcc-3.4.4/gcc/config/mips/linux.h:201: error: parse error before
-'}' token
-../../gcc-3.4.4/gcc/config/mips/linux.h:201: warning: type defaults to
-`int' in
-declaration of `_sig_ucontext_t'
-../../gcc-3.4.4/gcc/config/mips/linux.h:201: warning: data definition
-has no typ
-e or storage class
-make[2]: *** [libgcc/./_muldi3.o] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[2]: *** [libgcc/./_negdi2.o] Error 1
-make[2]: Leaving directory
-`/tmp/mipsel-unknown-linux-gnu-toolchain/build-gcc-bo
-otstrap/gcc'
-make[1]: *** [libgcc.a] Error 2
-make[1]: Leaving directory
-`/tmp/mipsel-unknown-linux-gnu-toolchain/build-gcc-bo
-otstrap/gcc'
-make: *** [all-gcc] Error 2
-
-************************************************************************
-*************************
-I am able to build the minimal version of compiler for kernel build
-with config options as below:
-
-../gcc-3.4.4/configure --target=3D$TARGET --prefix=3D$PREFIX
---enable-language=3Dc --without-headers --with-gnu-ld --with-gnu-as
---disable-shared --disable-threads
-
-Has anybody faced this issue earlier?
-Will be grateful if someone could comment on this issue.
-
-Thanks and Regards,
-Shyamal
-
-
-Thanks and Regards,
-Shyamal
-
-
-------=neXtPaRt_1147790958
-Content-Type: text/plain;
-
-**********************************************************************
-Notice to recipient: This email is meant for only the intended recipient of the transmission, and may be a communication privileged by law, subject to export control restrictions or that otherwise contains proprietary information.  If you receive this email by mistake, please notify us immediately by replying to this message and then destroy it and do not review, disclose, copy or distribute it.  Thank you in advance for your cooperation.
-**********************************************************************
-
-
-------=neXtPaRt_1147790958--
+With best regards, Roman Mashak.  E-mail: mrv@corecom.co.kr 

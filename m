@@ -1,12 +1,14 @@
-Received: from [220.76.242.187] ([220.76.242.187]:63183 "EHLO
+Received: from [220.76.242.187] ([220.76.242.187]:4816 "EHLO
 	localhost.localdomain") by ftp.linux-mips.org with ESMTP
-	id S8133389AbWEZDFZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 26 May 2006 05:05:25 +0200
-Message-ID: <002e01c68071$3ad42800$9d0ba8c0@mrv>
+	id S8133477AbWEZI57 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 26 May 2006 10:57:59 +0200
+Received: from mrv ([192.168.11.157])
+	by localhost.localdomain (8.12.8/8.12.8) with SMTP id k4Q8xhEE002635
+	for <linux-mips@linux-mips.org>; Fri, 26 May 2006 17:59:46 +0900
+Message-ID: <003601c680a2$7946d3e0$9d0ba8c0@mrv>
 From: "Roman Mashak" <mrv@corecom.co.kr>
-References: <C28979E4F697C249ABDA83AC0C33CDF80DE0F2@sjc1exm07.pmc_nt.nt.pmc-sierra.bc.ca>
-Subject: Re: booting with NFS root
-Date: Fri, 26 May 2006 12:05:17 +0900
+Subject: compiling C++ app for RM9150 board
+Date: Fri, 26 May 2006 17:57:52 +0900
 MIME-Version: 1.0
 Content-Type: text/plain;
 	format=flowed;
@@ -16,30 +18,62 @@ Content-Transfer-Encoding: 7bit
 Return-Path: <mrv@corecom.co.kr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Kiran Thota <Kiran_Thota@pmc-sierra.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20060526030517.aPimnQ3OXqPyOmYv3n2qY2lNYOWFOr0vJeeocMhii2I@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20060526085752.eLL2DTtDaaZv-dexMe_e6Medv6R19sAreK58eZgwjaI@z>
 
-Hello, Kiran!
-You wrote to "Roman Mashak" <mrv@corecom.co.kr>; <linux-mips@linux-mips.org> 
-on Thu, 25 May 2006 19:07:13 -0700:
+Hello!
 
-KT> Roman,
-KT>  You have an older version of the linux kernel. I can send you latest 
-snapshot.
-I've taken the latest 2.4.x available on ftp.pmc-sierra.com
+So, I succefully booted with PMC-sierra board RM9150. Now I need to compile 
+and test some C++ application on it. I use toolchain provided by PMC-sierra 
+and use the following compilation flags:
 
-KT> There was a software bug. I don't know your source version to send patch 
-but I am
-KT> attaching the source titan_ge.c
+Creating .depend
+mips64-linux-gnu-g++  -Wall -mips1 -mabi=32 -M main.cpp cmd.cpp ../ep.c > 
+.depend
+Compiling main.cpp
+mips64-linux-gnu-g++ -c  -Wall -mips1 -mabi=32 main.cpp -o main.o
+Compiling cmd.cpp
+mips64-linux-gnu-g++ -c -Wall -mips1 -mabi=32 cmd.cpp -o cmd.o
+Linking linkd
+mips64-linux-gnu-g++ main.o cmd.o ../ep.c ../lib/api.a  -o linkd -m 
+elf32btsmip
 
-Thank you Kiran, I recompliled the kernel with driver you attached and now 
-there's no panic at least, kernel only hangs up waiting for reply from NFS:
+At linking stage I get whole bunch of errors:
 
-NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-Looking up port of RPC 100003/2 on 192.168.11.43
+/opt/redhat/mips64linux-031001/H-i686-pc-linux-gnulibc2.2/lib/gcc-lib/mips64-linux-gnu/3.3-mips64linux-031001/../../../../mips64-linux-gnu/bin/ld: 
+main.o: ABI is incompatible with that of the selected emulation
+File format not recognized: failed to merge target specific data of file 
+main.o
+/opt/redhat/mips64linux-031001/H-i686-pc-linux-gnulibc2.2/lib/gcc-lib/mips64-linux-gnu/3.3-mips64linux-031001/../../../../mips64-linux-gnu/bin/ld: 
+cmdProc.o: ABI is incompatible with that of the selected emulation
+File format not recognized: failed to merge target specific data of file 
+cmdProc.o
+/opt/redhat/mips64linux-031001/H-i686-pc-linux-gnulibc2.2/lib/gcc-lib/mips64-linux-gnu/3.3-mips64linux-031001/../../../../mips64-linux-gnu/bin/ld: 
+../lib/clnkapi.a(clnkethapilnx.o): ABI is incompatible with that of the 
+selected emulation
+File format not recognized: failed to merge target specific data of file 
+../lib/clnkapi.a(clnkethapilnx.o)
+/opt/redhat/mips64linux-031001/H-i686-pc-linux-gnulibc2.2/lib/gcc-lib/mips64-linux-gnu/3.3-mips64linux-031001/../../../../mips64-linux-gnu/bin/ld: 
+BFD 2.13-mips64linux-031001 20020920 assertion fail 
+/es/build/mips64linux/devo/bfd/elfxx-mips.c:1775
+/opt/redhat/mips64linux-031001/H-i686-pc-linux-gnulibc2.2/lib/gcc-lib/mips64-linux-gnu/3.3-mips64linux-031001/../../../../mips64-linux-gnu/bin/ld: 
+BFD 2.13-mips64linux-031001 20020920 assertion fail 
+/es/build/mips64linux/devo/bfd/elfxx-mips.c:1778
+main.o: In function `main':
+main.o(.text+0x28): relocation truncated to fit: R_MIPS_GOT16 card
+/opt/redhat/mips64linux-031001/H-i686-pc-linux-gnulibc2.2/lib/gcc-lib/mips64-linux-gnu/3.3-mips64linux-031001/../../../../mips64-linux-gnu/bin/ld: 
+BFD 2.13-mips64linux-031001 20020920 assertion fail 
+/es/build/mips64linux/devo/bfd/elfxx-mips.c:1775
+/opt/redhat/mips64linux-031001/H-i686-pc-linux-gnulibc2.2/lib/gcc-lib/mips64-linux-gnu/3.3-mips64linux-031001/../../../../mips64-linux-gnu/bin/ld: 
+BFD 2.13-mips64linux-031001 20020920 assertion fail 
+/es/build/mips64linux/devo/bfd/elfxx-mips.c:1778
+main.o(.text+0x48): relocation truncated to fit: R_MIPS_CALL16 
+getopt@@GLIBC_2.0
 
-I ran 'tcpdump' on server's side and observed that it's unable to obtain MAC 
-address of Sequoia board. Where have I done mistake?
+.... and so on
+
+Seems I have some mismatch with formats?
+
+I appreciate any hints. Thanks in advance!
 
 With best regards, Roman Mashak.  E-mail: mrv@corecom.co.kr 

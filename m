@@ -1,45 +1,47 @@
-Received: from maillog.itri.org.tw ([61.61.254.20]:46233 "EHLO
-	maillog.itri.org.tw") by ftp.linux-mips.org with ESMTP
-	id S8126616AbWE3JEe (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 30 May 2006 11:04:34 +0200
-Received: from mail.itri.org.tw (mail [140.96.157.2])
-	by maillog.itri.org.tw (8.11.6+Sun/8.11.6) with ESMTP id k4U90fW19001
-	for <linux-mips@linux-mips.org>; Tue, 30 May 2006 17:00:46 +0800 (CST)
-Received: from mail.itri.org.tw (localhost [127.0.0.1])
-	by mail.itri.org.tw (8.13.4/8.13.4) with ESMTP id k4U9ArqG013328
-	for <linux-mips@linux-mips.org>; Tue, 30 May 2006 17:11:08 +0800 (CST)
-Received: from ms1.itri.org.tw ([140.96.147.43])
-	by mail.itri.org.tw (8.13.4/8.13.4) with ESMTP id k4U9Abmd013235
-	for <linux-mips@linux-mips.org>; Tue, 30 May 2006 17:10:53 +0800 (CST)
-Message-ID: <011a01c683c7$efe74700$8873608c@11088002601>
-Reply-To: "Charles C.K.Lai" <cklai@itri.org.tw>
-From: "Charles C.K.Lai" <cklai@itri.org.tw>
-Subject: Debug Messages lost....
-Date: Tue, 30 May 2006 17:03:31 +0800
+Received: from [220.76.242.187] ([220.76.242.187]:4497 "EHLO
+	localhost.localdomain") by ftp.linux-mips.org with ESMTP
+	id S8133510AbWEaBy3 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 31 May 2006 03:54:29 +0200
+Message-ID: <001001c68455$29746ba0$9d0ba8c0@mrv>
+From: "Roman Mashak" <mrv@corecom.co.kr>
+References: <000101c6838e$437abdf0$9d0ba8c0@mrv> <20060530140616.GA18432@linux-mips.org>
+Subject: Re: compiling BCM5700 driver
+Date: Wed, 31 May 2006 10:54:31 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
-	charset="big5"
-Return-Path: <cklai@itri.org.tw>
+	format=flowed;
+	charset="ISO-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <mrv@corecom.co.kr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20060530090331.ntwZBUV7m2CeV8QSNroRnC0yDFXanV_3kPWVAyBLuyo@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20060531015431.QTUD1kexrAwy-Fp638T13Q5Z3PpSWDuJ0_FNRrGHlgk@z>
 
-Dear All, 
+Hello, Ralf!
+You wrote to "Roman Mashak" <mrv@corecom.co.kr> on Tue, 30 May 2006 15:06:16 
++0100:
 
-    I built my kernel for Yamon and U-Boot boot loader, 
-    while I booted my kernel 2.6.15 with Yamon, 
-    I got the system messages for kernel booting, 
-    but I lost the system messages for U-Boot kernel 2.6.15 booting. 
-    Are there some option for debug messages? 
+ ??>> I try to compile BCM5700 driver of gigabit ethernet card for MIPS
+ ??>> target. I used both toolchains (from PMC-sierra and self-made
+ ??>> following http://www.kegel.com/crosstool recommendations). Get same
+ ??>> errors: In file included from mm.h:151,                from
+ ??>> b57um.c:19: tigon3.h:2225: unnamed fields of type other than struct or
+ ??>> union are not allowed
 
-    By the way, I got the system messages for Yamon, 
-    with kernel 2.6.15 booting, 
-    but I lost the system messages for Yamon with kernel 2.6.16.16 booting.
-    Would someone please tell me the answer? 
+ RB> Broadcom's old and infamous Tigon 3 driver.  Dump it, use tg3, be
+ RB> happy.
+I ran across problems with Trigon3 driver working in bridge mode. Upon 
+replacement it with bcm5700 - all problems have gone.
+Anyway, I managed to compile driver and now I'm testing it.
 
-    Thanks a lot. 
+I'm more concerned with Titan GE driver on "Sequoia" board (by PMC-sierra). 
+What's the status of this driver in 2.4.26? If I understand correct - it's 
+maintained now only in 2.6.x? Upon compilation of 2.4.26 for Sequoia" board 
+and installation on to target, we observed a lot of CRC errors on gigabit 
+ethernet (we used SmartBit for testing). Is the driver in this version 
+broken?
 
-    Charles C.K. Lai
-    
+With best regards, Roman Mashak.  E-mail: mrv@corecom.co.kr 

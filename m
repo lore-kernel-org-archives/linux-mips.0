@@ -1,844 +1,165 @@
-Received: from mail.windriver.com ([147.11.1.11]:54977 "EHLO mail.wrs.com")
-	by ftp.linux-mips.org with ESMTP id S8133427AbWEaESk (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 31 May 2006 06:18:40 +0200
-Content-class: urn:content-classes:message
+Received: from [220.76.242.187] ([220.76.242.187]:60810 "EHLO
+	localhost.localdomain") by ftp.linux-mips.org with ESMTP
+	id S8133654AbWFABmJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 1 Jun 2006 03:42:09 +0200
+Message-ID: <003801c6851c$9a860250$9d0ba8c0@mrv>
+From: "Roman Mashak" <mrv@corecom.co.kr>
+References: <478F19F21671F04298A2116393EEC3D5273E4F@sjc1exm08.pmc_nt.nt.pmc-sierra.bc.ca>
+Subject: Re: compiling BCM5700 driver
+Date: Thu, 1 Jun 2006 10:41:45 +0900
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C68469.4557660F"
-Subject: RE: Problem with TLB mcheck!
-Date: Wed, 31 May 2006 06:18:26 +0200
-Message-ID: <6A3254532ACD7A42805B4E1BFD18080EDC158B@ism-mail01.corp.ad.wrs.com>
-From: "Zhan, Rongkai" <rongkai.zhan@windriver.com>
-Return-Path: <rongkai.zhan@windriver.com>
+Content-Type: text/plain;
+	format=flowed;
+	charset="koi8-r";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <mrv@corecom.co.kr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: art <art@sigrand.ru>, linux-mips@linux-mips.org
-Message-ID: <20060531041826.fkLiLPzxq9Qx3d77Jp7wYmjGz-riRAh7uHvZzD2Dt8U@z>
+To: Raj Palani <Rajesh_Palani@pmc-sierra.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20060601014145.6s_GkAsRJzdOAt12zV-rhgUpUz89WwKX1Tw8cOy492g@z>
 
-This is a multi-part message in MIME format.
+Hello, Raj!
+You wrote to "Roman Mashak" <mrv@corecom.co.kr>; "Ralf Baechle" 
+<ralf@linux-mips.org> on Wed, 31 May 2006 09:06:44 -0700:
 
-------_=_NextPart_001_01C68469.4557660F
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ RP> Yes.  We are currently maintaining the Titan GE driver on "Sequoia"
+ RP> only in 2.6.x.  The GE driver in Sequoia has been renamed to
+ RP> msp85xx_ge.c.  We are in the process of generating a patchset to add
+ RP> support for Sequoia (MSP8510/MSP8520) in the Linux/MIPS 2.6 tree.
 
-Hi,
+ RP> Our most recent Linux 2.6 tree for Sequoia is available on our ftp site
+ RP> (ftp.pmc-sierra.com) under
+ RP> /pub/linux/2.6.12/linux-2.6.12-rc3_L002.tar.gz.
 
-=20
+There are msp85x0_ge.[ch] in this tarball. And seems old code from 
+titan_ge.[ch] is still in used. Nevertheless kernel gets panic:
 
-Please see: =
-http://www.linux-mips.org/archives/linux-mips/2005-04/msg00026.html
-
-=20
-
-Best Regards,
-
-Mark. Zhan
-
----------------------------------------
-
-Wind River System, Inc. China Beijing Office
-
-     Tel: +86 010 64398185/86/87 Ext. 16
-
-Mobile: +86 139 1097 7353
-
-    Fax: +86 64398189
-
-E-Mail: rongkai.zhan@windriver.com
-
----------------------------------------
-
------Original Message-----
-From: linux-mips-bounce@linux-mips.org =
-[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of art
-Sent: Wednesday, May 31, 2006 11:42 AM
-To: linux-mips@linux-mips.org
-Subject: Problem with TLB mcheck!
-
-=20
-
-Sorry for resending, but I find out that I wasn't subscribed!
-
-I use 2.6.16 kernel from linux-mips.org (from tarrball).
-
-When I execute:
-
-# cat /bin/busybox > box
-
-Got mcheck at 800f9b68
-
+Linux version 2.6.12-rc3 (root@ecb-test32.corecom.local) (gcc version 
+3.3-mips64linux-031001) #1 Thu Jun 1 10:33:22 KST 2006
+PMON reports memory size 256MB
+cpu_clock set to 900000000
+CPU revision is: 000034c1
+FPU revision is: 00003420
+PMC-Sierra Sequoia Board Setup
+32-bit support
+Determined physical RAM map:
+ memory: 20000000 @ 00000000 (usable)
+Built 1 zonelists
+Kernel command line: tftp://192.168.11.43/vmlinux root=/dev/nfs 
+nfsroot=192.168.11.43:/export/linux/mips-fs-be 
+ip=192.168.11.42:192.168.11.1::255.255.255.0::eth0
+Unknown boot option `tftp://192.168.11.43/vmlinux': ignoring
+Primary instruction cache 16kB, physically tagged, 4-way, linesize 32 bytes.
+Primary data cache 16kB, 4-way, linesize 32 bytes.
+Secondary cache size 256K, linesize 32 bytes.
+Synthesized TLB refill handler (27 instructions).
+Synthesized TLB load handler fastpath (39 instructions).
+Synthesized TLB store handler fastpath (39 instructions).
+Synthesized TLB modify handler fastpath (38 instructions).
+PID hash table entries: 4096 (order: 12, 65536 bytes)
+Using 450.000 MHz high precision timer.
+Dentry cache hash table entries: 131072 (order: 7, 524288 bytes)
+Inode-cache hash table entries: 65536 (order: 6, 262144 bytes)
+Memory: 515712k/524288k available (1623k kernel code, 8440k reserved, 372k 
+data, 356k init, 0k highmem)
+CompactFlash ATA Support for PMC-Sierra Sequoia
+ <6>Internal UART Support for PMC-Sierra Sequoia
+ <7>Calibrating delay loop... 897.02 BogoMIPS (lpj=448512)
+Mount-cache hash table entries: 512
+Checking for 'wait' instruction...  available.
+NET: Registered protocol family 16
+PCI: Failed to allocate mem resource #2:20000000@e0000000 for 0000:00:01.0
+PCI: Failed to allocate mem resource #2:20000000@e8000000 for 0000:01:01.0
+Generic RTC Driver v1.07
+Serial: 8250/16550 driver $Revision: 1.1.1.1 $ 4 ports, IRQ sharing disabled
+ttyS0 at MMIO 0x0 (irq = 0) is a 16550A
+io scheduler noop registered
+io scheduler anticipatory registered
+io scheduler deadline registered
+io scheduler cfq registered
+loop: loaded (max 8 devices)
+PMC-Sierra MSP85x0 10/100/1000 Ethernet Driver
+Device Id : 206014,  Version : 0
+: port 0 with MAC address 00:e0:04:00:02:4e
+Rx NAPI supported, Tx Coalescing ON
+: port 1 with MAC address 00:e0:04:00:02:4f
+Rx NAPI supported, Tx Coalescing ON
+NET: Registered protocol family 2
+IP: routing cache hash table of 4096 buckets, 32Kbytes
+TCP established hash table entries: 131072 (order: 8, 1048576 bytes)
+TCP bind hash table entries: 65536 (order: 6, 262144 bytes)
+TCP: Hash tables configured (established 131072 bind 65536)
+NET: Registered protocol family 1
+NET: Registered protocol family 17
+Data bus error, epc == 802214d8, ra == 802214ac
+Oops in arch/mips/kernel/traps.c::do_be, line 338[#1]:
 Cpu 0
-
-$ 0   : 00000000 10008400 c00216bc c00316bc
-
-$ 4   : c00116bc 00004000 00000005 00008000
-
-$ 8   : c00356bc c003d6bc c00016bc 00010000
-
-$12   : 0000000f 00008000 00007fff 00007fff
-
-$16   : 00000003 8024da80 00000008 c0000000
-
-$20   : 00000000 803d7000 8118c000 80240000
-
-$24   : 0000000f 00000000
-
-$28   : 81200000 81201b80 00001000 800f9c0c
-
-Hi    : 0000000b
-
-Lo    : 5555555b
-
-epc   : 800f9b68 zlib_deflateInit2_+0x184/0x200     Not tainted
-
-ra    : 800f9c0c zlib_deflateInit_+0x28/0x34
-
-Status: 10208403    KERNEL EXL IE
-
-Cause : 00800060
-
-PrId  : 0001800b
-
-Hi    : 0000000b
-
-Pagemask: ffffffff
-
-EntryHi : c0000096
-
-EntryLo0: 0000a05f
-
-EntryLo1: 0000a09f
-
-=20
-
-Index:  3 pgmask=3D4kb va=3D00468000 asid=3D96
-
-                        [pa=3D00378000 c=3D3 d=3D0 v=3D1 g=3D0]
-
-                        [pa=3D00000000 c=3D0 d=3D0 v=3D0 g=3D0]
-
-=20
-
-Index:  6 pgmask=3D4kb va=3D7fa0a000 asid=3D96
-
-                        [pa=3D012f7000 c=3D3 d=3D1 v=3D1 g=3D0]
-
-                        [pa=3D01244000 c=3D3 d=3D1 v=3D1 g=3D0]
-
-=20
-
-Index:  7 pgmask=3D4kb va=3D004f0000 asid=3D96
-
-                        [pa=3D012f4000 c=3D3 d=3D1 v=3D1 g=3D0]
-
-                        [pa=3D00000000 c=3D0 d=3D0 v=3D0 g=3D0]
-
-=20
-
-Index: 10 pgmask=3D4kb va=3D0046e000 asid=3D96
-
-                        [pa=3D00310000 c=3D3 d=3D0 v=3D1 g=3D0]
-
-                        [pa=3D00311000 c=3D3 d=3D0 v=3D1 g=3D0]
-
-=20
-
-Index: 11 pgmask=3D4kb va=3D0046a000 asid=3D96
-
-                        [pa=3D0030c000 c=3D3 d=3D0 v=3D1 g=3D0]
-
-                        [pa=3D00000000 c=3D0 d=3D0 v=3D0 g=3D0]
-
-=20
-
-Index: 15 pgmask=3D4kb va=3D0048c000 asid=3D96
-
-                        [pa=3D0032e000 c=3D3 d=3D0 v=3D1 g=3D0]
-
-                        [pa=3D0032f000 c=3D3 d=3D0 v=3D1 g=3D0]
-
-=20
-
-=20
-
-Code: 00684021  00055880  ae33001c <ae640038> a272001d  ae740018=20
-
-ae6e002c  ae6f004c  ae660050
-
-Kernel panic - not syncing: Caught Machine Check exception - caused
-
-by multiple matching entries in the TLB.
-
-=20
-
-This thig happens, as I noted, when work with relatively big amounts
-
-of memory ( more than 10-60Kb). busybox for example 700Kb
-
-=20
-
-=20
-
---=20
-
-Best regards,
-
- art                            mailto:art@sigrand.ru
-
-=20
-
-=20
-
-=20
-
-
-------_=_NextPart_001_01C68469.4557660F
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<meta http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"City"/>
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"country-region"/>
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"place"/>
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"chsdate" downloadurl=3D""/>
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"chmetcnv" downloadurl=3D""/>
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"PersonName"/>
-<!--[if !mso]>
-<style>
-st1\:*{behavior:url(#default#ieooui) }
-</style>
-<![endif]-->
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:SimSun;
-	panose-1:2 1 6 0 3 1 1 1 1 1;}
-@font-face
-	{font-family:SimSun;
-	panose-1:2 1 6 0 3 1 1 1 1 1;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	text-align:justify;
-	text-justify:inter-ideograph;
-	font-size:10.5pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-p.MsoPlainText, li.MsoPlainText, div.MsoPlainText
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:9.0pt;
-	font-family:SimSun;}
- /* Page Definitions */
- @page Section1
-	{size:595.3pt 841.9pt;
-	margin:72.0pt .65pt 72.0pt .65pt;
-	layout-grid:15.6pt;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DZH-CN link=3Dblue vlink=3Dpurple =
-style=3D'text-justify-trim:punctuation'>
-
-<div class=3DSection1 style=3D'layout-grid:15.6pt'>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Hi,<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Please see: <a
-href=3D"http://www.linux-mips.org/archives/linux-mips/2005-04/msg00026.ht=
-ml">http://www.linux-mips.org/archives/linux-mips/2005-04/msg00026.html</=
-a><o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Best Regards,<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Mark. Zhan<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>---------------------------------------<o:p></o=
-:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Wind River System, Inc. <st1:country-region =
-w:st=3D"on">China</st1:country-region>
-<st1:City w:st=3D"on"><st1:place =
-w:st=3D"on">Beijing</st1:place></st1:City> =
-Office<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0 Tel: +86 010 64398185/86/87 Ext. =
-16<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DDE
-style=3D'font-size:9.0pt'>Mobile: +86 139 1097 =
-7353<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DDE
-style=3D'font-size:9.0pt'>=A0=A0=A0 Fax: +86 =
-64398189<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DDE
-style=3D'font-size:9.0pt'>E-Mail: =
-rongkai.zhan@windriver.com<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>---------------------------------------<o:p></o=
-:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>-----Original Message-----<br>
-From: linux-mips-bounce@linux-mips.org
-[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of art<br>
-Sent: Wednesday, May 31, 2006 11:42 AM<br>
-To: <st1:PersonName =
-w:st=3D"on">linux-mips@linux-mips.org</st1:PersonName><br>
-Subject: Problem with TLB mcheck!</span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Sorry for resending, but I find out that I =
-wasn't
-subscribed!<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>I use <st1:chsdate IsROCDate=3D"False" =
-IsLunarDate=3D"False"
-Day=3D"30" Month=3D"12" Year=3D"1899" w:st=3D"on">2.6.16</st1:chsdate> =
-kernel from
-linux-mips.org (from tarrball).<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>When I execute:<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'># cat /bin/busybox &gt; =
-box<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Got mcheck at <st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"False" SourceValue=3D"800" UnitName=3D"F" =
-w:st=3D"on">800f</st1:chmetcnv>9b68<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Cpu 0<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>$ 0=A0=A0 : 00000000 <st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"True" SourceValue=3D"10008400" =
-UnitName=3D"C" w:st=3D"on">10008400
- c</st1:chmetcnv>00216bc c00316bc<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>$ 4=A0=A0 : c00116bc 00004000 00000005 =
-00008000<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>$ 8=A0=A0 : c00356bc c003d6bc c00016bc =
-00010000<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>$12=A0=A0 : <st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"False" SourceValue=3D"0" UnitName=3D"F" =
-w:st=3D"on">0000000f</st1:chmetcnv>
-00008000 00007fff 00007fff<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>$16=A0=A0 : 00000003 8024da80 <st1:chmetcnv =
-TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"8" =
-UnitName=3D"C"
-w:st=3D"on">00000008 =
-c</st1:chmetcnv>0000000<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>$20=A0=A0 : 00000000 803d7000 <st1:chmetcnv =
-TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"8118" UnitName=3D"C"
-w:st=3D"on">8118c</st1:chmetcnv>000 =
-80240000<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>$24=A0=A0 : <st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"False" SourceValue=3D"0" UnitName=3D"F" =
-w:st=3D"on">0000000f</st1:chmetcnv>
-00000000<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>$28=A0=A0 : 81200000 81201b80 00001000 =
-<st1:chmetcnv
-TCSC=3D"0" NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"800"
-UnitName=3D"F" w:st=3D"on">800f</st1:chmetcnv><st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"False" SourceValue=3D"9" UnitName=3D"C" =
-w:st=3D"on">9c</st1:chmetcnv><st1:chmetcnv
-TCSC=3D"0" NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"0"
-UnitName=3D"C" =
-w:st=3D"on">0c</st1:chmetcnv><o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Hi=A0=A0=A0 : =
-0000000b<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Lo=A0=A0=A0 : =
-5555555b<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>epc=A0=A0 : <st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"False" SourceValue=3D"800" UnitName=3D"F" =
-w:st=3D"on">800f</st1:chmetcnv>9b68
-zlib_deflateInit2_+0x184/0x200=A0=A0=A0=A0 Not =
-tainted<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>ra=A0=A0=A0 : <st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"False" SourceValue=3D"800" UnitName=3D"F" =
-w:st=3D"on">800f</st1:chmetcnv><st1:chmetcnv
-TCSC=3D"0" NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"9"
-UnitName=3D"C" w:st=3D"on">9c</st1:chmetcnv><st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"False" SourceValue=3D"0" UnitName=3D"C" =
-w:st=3D"on">0c</st1:chmetcnv>
-zlib_deflateInit_+0x28/0x34<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Status: 10208403=A0=A0=A0 KERNEL EXL =
-IE<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Cause : 00800060<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>PrId=A0 : =
-0001800b<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Hi=A0=A0=A0 : =
-0000000b<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Pagemask: =
-ffffffff<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>EntryHi : =
-c0000096<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>EntryLo0: <st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"False" SourceValue=3D"0" UnitName=3D"a" =
-w:st=3D"on">0000a</st1:chmetcnv><st1:chmetcnv
-TCSC=3D"0" NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"5"
-UnitName=3D"F" =
-w:st=3D"on">05f</st1:chmetcnv><o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>EntryLo1: <st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"False" SourceValue=3D"0" UnitName=3D"a" =
-w:st=3D"on">0000a</st1:chmetcnv><st1:chmetcnv
-TCSC=3D"0" NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"9"
-UnitName=3D"F" =
-w:st=3D"on">09f</st1:chmetcnv><o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Index:=A0 3 pgmask=3D4kb va=3D00468000 =
-asid=3D96<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 [pa=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" =
-SourceValue=3D"378000"
-UnitName=3D"C" w:st=3D"on">00378000 c</st1:chmetcnv>=3D3 d=3D0 =
-v=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"1" =
-UnitName=3D"g"
-w:st=3D"on">1 g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 [pa=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"0" =
-UnitName=3D"C"
-w:st=3D"on">00000000 c</st1:chmetcnv>=3D0 d=3D0 v=3D<st1:chmetcnv =
-TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"0" =
-UnitName=3D"g"
-w:st=3D"on">0 g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Index:=A0 6 pgmask=3D4kb va=3D7fa<st1:chmetcnv =
-TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" SourceValue=3D"0" =
-UnitName=3D"a"
-w:st=3D"on">0a</st1:chmetcnv>000 asid=3D96<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 [pa=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"12" UnitName=3D"F"
-w:st=3D"on">012f</st1:chmetcnv><st1:chmetcnv TCSC=3D"0" NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"True" SourceValue=3D"7000" UnitName=3D"C" =
-w:st=3D"on">7000
- c</st1:chmetcnv>=3D3 d=3D1 v=3D<st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1" Negative=3D"False"
-HasSpace=3D"True" SourceValue=3D"1" UnitName=3D"g" w:st=3D"on">1 =
-g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 [pa=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" =
-SourceValue=3D"1244000"
-UnitName=3D"C" w:st=3D"on">01244000 c</st1:chmetcnv>=3D3 d=3D1 =
-v=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"1" =
-UnitName=3D"g"
-w:st=3D"on">1 g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Index:=A0 7 pgmask=3D4kb va=3D<st1:chmetcnv =
-TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" SourceValue=3D"4" =
-UnitName=3D"F"
-w:st=3D"on">004f</st1:chmetcnv>0000 =
-asid=3D96<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 [pa=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"12" UnitName=3D"F"
-w:st=3D"on">012f</st1:chmetcnv><st1:chmetcnv TCSC=3D"0" NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"True" SourceValue=3D"4000" UnitName=3D"C" =
-w:st=3D"on">4000
- c</st1:chmetcnv>=3D3 d=3D1 v=3D<st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1" Negative=3D"False"
-HasSpace=3D"True" SourceValue=3D"1" UnitName=3D"g" w:st=3D"on">1 =
-g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0[pa=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"0" =
-UnitName=3D"C"
-w:st=3D"on">00000000 c</st1:chmetcnv>=3D0 d=3D0 v=3D<st1:chmetcnv =
-TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"0" =
-UnitName=3D"g"
-w:st=3D"on">0 g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Index: 10 pgmask=3D4kb va=3D0046e000 =
-asid=3D96<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 [pa=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" =
-SourceValue=3D"310000"
-UnitName=3D"C" w:st=3D"on">00310000 c</st1:chmetcnv>=3D3 d=3D0 =
-v=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"1" =
-UnitName=3D"g"
-w:st=3D"on">1 g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 [pa=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" =
-SourceValue=3D"311000"
-UnitName=3D"C" w:st=3D"on">00311000 c</st1:chmetcnv>=3D3 d=3D0 =
-v=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"1" =
-UnitName=3D"g"
-w:st=3D"on">1 g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Index: 11 pgmask=3D4kb va=3D<st1:chmetcnv =
-TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"46" UnitName=3D"a"
-w:st=3D"on">0046a</st1:chmetcnv>000 =
-asid=3D96<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0 =A0=A0=A0[pa=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"30" UnitName=3D"C"
-w:st=3D"on">0030c</st1:chmetcnv><st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"True" SourceValue=3D"0" UnitName=3D"C" =
-w:st=3D"on">000 c</st1:chmetcnv>=3D3
-d=3D0 v=3D<st1:chmetcnv TCSC=3D"0" NumberType=3D"1" Negative=3D"False" =
-HasSpace=3D"True"
-SourceValue=3D"1" UnitName=3D"g" w:st=3D"on">1 =
-g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 [pa=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"0" =
-UnitName=3D"C"
-w:st=3D"on">00000000 c</st1:chmetcnv>=3D0 d=3D0 v=3D<st1:chmetcnv =
-TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"0" =
-UnitName=3D"g"
-w:st=3D"on">0 g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Index: 15 pgmask=3D4kb va=3D<st1:chmetcnv =
-TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"48" UnitName=3D"C"
-w:st=3D"on">0048c</st1:chmetcnv>000 =
-asid=3D96<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 [pa=3D0032e<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"True" SourceValue=3D"0" =
-UnitName=3D"C"
-w:st=3D"on">000 c</st1:chmetcnv>=3D3 d=3D0 v=3D<st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"True" SourceValue=3D"1" UnitName=3D"g" =
-w:st=3D"on">1 g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 [pa=3D<st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"32" UnitName=3D"F"
-w:st=3D"on">0032f</st1:chmetcnv><st1:chmetcnv TCSC=3D"0" =
-NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"True" SourceValue=3D"0" UnitName=3D"C" =
-w:st=3D"on">000 c</st1:chmetcnv>=3D3
-d=3D0 v=3D<st1:chmetcnv TCSC=3D"0" NumberType=3D"1" Negative=3D"False" =
-HasSpace=3D"True"
-SourceValue=3D"1" UnitName=3D"g" w:st=3D"on">1 =
-g</st1:chmetcnv>=3D0]<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Code: 00684021=A0 00055880=A0 ae<st1:chmetcnv =
-TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" =
-SourceValue=3D"33001"
-UnitName=3D"C" w:st=3D"on">33001c</st1:chmetcnv> &lt;ae640038&gt; =
-a272001d=A0
-ae740018 <o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>ae6e<st1:chmetcnv TCSC=3D"0" NumberType=3D"1"
-Negative=3D"False" HasSpace=3D"False" SourceValue=3D"2" UnitName=3D"C" =
-w:st=3D"on">002c</st1:chmetcnv>=A0
-ae<st1:chmetcnv TCSC=3D"0" NumberType=3D"1" Negative=3D"False" =
-HasSpace=3D"False"
-SourceValue=3D"6" UnitName=3D"F" =
-w:st=3D"on">6f</st1:chmetcnv><st1:chmetcnv TCSC=3D"0"
-NumberType=3D"1" Negative=3D"False" HasSpace=3D"False" SourceValue=3D"4" =
-UnitName=3D"C"
-w:st=3D"on">004c</st1:chmetcnv>=A0 ae660050<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Kernel panic - not syncing: Caught Machine =
-Check
-exception - caused<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>by multiple matching entries in the =
-TLB.<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>This thig happens, as I noted, when work with
-relatively big amounts<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>of memory ( more than 10-60Kb). busybox for =
-example
-700Kb<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>-- <o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>Best regards,<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US
-style=3D'font-size:9.0pt'>=A0art=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
-mailto:art@sigrand.ru<o:p></o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoPlainText><font size=3D1 face=3D&#23435;&#20307;><span =
-lang=3DEN-US><o:p>&nbsp;</o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C68469.4557660F--
+$ 0   : 00000000 90008000 9fc00840 9fc00840
+$ 4   : 00000001 00000000 00000000 8036b97c
+$ 8   : 00000000 801d8150 814df0f0 ffffffff
+$12   : 00200200 00100100 0000ffff 8036b974
+$16   : 9fc00000 816b5920 00000840 81690220
+$20   : 0000003c 00000008 ffffffc0 00200000
+$24   : 8036b97c 00000001
+$28   : 80380000 80381df8 81690000 802214ac
+Hi    : 0006d7ff
+Lo    : f8164000
+epc   : 802214d8 alloc_skb+0x98/0xec     Not tainted
+ra    : 802214ac alloc_skb+0x6c/0xec
+Status: 90008002    KERNEL EXL
+Cause : 0000801c
+PrId  : 000034c1
+Modules linked in:
+Process swapper (pid: 1, threadinfo=80380000, task=8037ab78)
+Stack : 8010d6b0 8026e7e4 814e4e80 80369420 8169030c c01043b0 816b59c0 
+8021a044
+        0000001c 00180c01 00000000 00000000 c0000000 00000000 81690220 
+81690000
+        8034bc14 00000000 00000000 00000000 00000000 8021a608 803eb9c0 
+00000000
+        00000001 80381e68 18230458 80232598 81690000 00000000 00000000 
+81690220
+        8021a684 00100000 8021a16c 00000000 8021aaf8 8023743c 00000000 
+fb004000
+        ...
+Call Trace:
+ [<8010d6b0>] dma_map_single+0x5c/0x7c
+ [<8026e7e4>] fib_magic+0x114/0x144
+ [<8021a044>] msp85x0_ge_rx_task+0x74/0x174
+ [<8021a608>] xdma_config+0x1cc/0x22c
+ [<80232598>] rtnetlink_fill_ifinfo+0x474/0x57c
+ [<8021a684>] msp85x0_ge_port_start+0x1c/0x74
+ [<8021a16c>] msp85x0_port_init+0x28/0x80
+ [<8021aaf8>] msp85x0_eth_setup_tx_ring+0x80/0xc8
+ [<8023743c>] netlink_broadcast+0x29c/0x478
+ [<8021adf0>] msp85x0_ge_eth_open+0x114/0x250
+ [<8021af18>] msp85x0_ge_eth_open+0x23c/0x250
+ [<80219f14>] msp85x0_ge_open+0x30/0xec
+ [<80232b84>] rtmsg_ifinfo+0x80/0xf8
+ [<80232b58>] rtmsg_ifinfo+0x54/0xf8
+ [<80227d2c>] dev_open+0x64/0xd8
+ [<80227d98>] dev_open+0xd0/0xd8
+ [<8022d108>] dev_mc_upload+0x18/0x24
+ [<80229f28>] dev_change_flags+0x70/0x158
+ [<8019a84c>] proc_create+0x9c/0x100
+ [<80311fb8>] ic_open_devs+0x20c/0x3a4
+ [<8012a874>] msleep+0x48/0x5c
+ [<80313524>] ip_auto_config+0x64/0x30c
+ [<8030a7f8>] seqgen_init+0x10/0x20
+ [<8030a7f8>] seqgen_init+0x10/0x20
+ [<802f4828>] do_initcalls+0x50/0x100
+ [<802f4828>] do_initcalls+0x50/0x100
+ [<802f4908>] do_basic_setup+0x30/0x3c
+ [<801004ac>] init+0x3c/0x120
+ [<801035d0>] kernel_thread_helper+0x10/0x18
+ [<801035c0>] kernel_thread_helper+0x0/0x18
+
+
+Code: ae30008c  ac640000  8e220094 <ac400004> 8e230094  a4600008  8e220094 
+a440000a  8e230094
+Kernel panic - not syncing: Attempted to kill init!
+
+
+With best regards, Roman Mashak.  E-mail: mrv@corecom.co.kr 

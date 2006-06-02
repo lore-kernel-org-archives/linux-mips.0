@@ -1,82 +1,59 @@
-Received: from mail.baslerweb.com ([145.253.187.130]:4207 "EHLO
-	mail.baslerweb.com") by ftp.linux-mips.org with ESMTP
-	id S8133569AbWFBJQW convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 2 Jun 2006 11:16:22 +0200
-Received: (from smtpd@127.0.0.1) by mail.baslerweb.com (8.13.4/8.13.4)
-	id k52BFEsZ004337 for <linux-mips@linux-mips.org>; Fri, 2 Jun 2006 13:15:14 +0200
+Received: from 209-232-97-206.ded.pacbell.net ([209.232.97.206]:63644 "EHLO
+	dns0.mips.com") by ftp.linux-mips.org with ESMTP id S8133865AbWFBTJS
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 2 Jun 2006 21:09:18 +0200
+Message-ID: <01b401c68678$98199a10$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <e8180c7f0606021139w6d26e03eice708d5076cccf64@mail.gmail.com>
+Subject: Re: replacing synthesized tlb handlers with older ones
+Date: Fri, 2 Jun 2006 21:13:11 +0200
 MIME-Version: 1.0
-Date: Fri, 2 Jun 2006 11:16:18 +0200
-Message-ID: <C5A8FDEFF7647F4C9CB927D7DEB30773C7AE85@AHR075S.basler.corp>
-From: "Koeller, T." <Thomas.Koeller@baslerweb.com>
-Subject: RE: Location of PCI setup code
-Content-class: urn:content-classes:message
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-Path: <Thomas.Koeller@baslerweb.com>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20060602091618.1UHOJ2WDPTl6t_ijZIvcbVMyMxt7TiJ-ZlkS_Jx5ULA@z>
+To: Prasad Boddupalli <bprasad@cs.arizona.edu>, linux-mips@linux-mips.org
+Message-ID: <20060602191311.UiRs3PT90gbL-1-vDqj_eOrRBdbaY-YlVc-jSjmZwrc@z>
 
-> From: Ralf Baechle [mailto:ralf@linux-mips.org] 
+The TLB refill handler behavior for 1 CPU is fundamentally
+different than for SMP.  In the uniprocessor case, the page
+table origin is implicit, whereas in SMP it needs to be indexed
+by some per-CPU value, typically maintained in the Context
+register.  Pre-synthesed kernels set up up so that the Context
+value would be shifted left 23 bits, then right by 2 bits, to generate
+an offset.  The newer system eliminates the right shift by ensuring
+that the CPU index is stored in a pre-scaled form, and that bits
+23 and 24 are zero.  So you can't just drop the old code into
+the newer kernel, unless you also change the setup of Context.
+A single CPU would work, because 0 == 0, otherwise...
+Try nuking those right shifts.
+
+            Regards,
+
+            Kevin K.
+ 
+----- Original Message ----- 
+From: "Prasad Boddupalli" <bprasad@cs.arizona.edu>
+To: <linux-mips@linux-mips.org>
+Sent: Friday, June 02, 2006 8:39 PM
+Subject: replacing synthesized tlb handlers with older ones
+
+
+> Hi,
 > 
-> On Thu, Jun 01, 2006 at 10:46:17PM +0200, Thomas Koeller wrote:
+> To embed some additional functionality in the tlb refill handler, I
+> replaced the synthesized refill handlers in 2.6.16 linux with those
+> from 2.6.6 (for example tlb-r4k.S under arch/mips/mm-32). Everything
+> seem ok when I bring up one CPU, but causes unrecoverable exceptions
+> in the kernel when I bring up multiple CPUs. I explored if that could
+> be because of unflushed icaches on other CPUs. but that doesn't seem
+> to be the case.
 > 
-> > the PCI setup code for a platform is conventionally located 
-> in arch/mips/pci. 
-> > I fail to see the benefits of separating this particular 
-> part of a platform's 
-> > setup from the rest. The PCI setup code will in general 
-> contain references to 
-> > platform-specific information, such as the overall address 
-> space layout, of 
-> > which the PCI memory and I/O pages are a part. If the PCI 
-> setup code were in 
-> > the platform subdirectory, sharing this information by means of a 
-> > platform-local header file would be easy. But with the PCI code in 
-> > arch/mips/pci, this becomes more difficult. The platform 
-> header could be 
-> > located somewhere outside the platform's directory, maybe under 
-> > 'include' (where?), or referenced via an ugly relative path like 
-> > '../../vendor/platform/platform.h'. All this seems rather 
-> clumsy to me. No 
-> > other part of a platform's initialization is separated from 
-> the rest in a 
-> > similar way, so what is so special about PCI setup that it 
-> cannot be in the 
-> > platform directory, thereby avoiding all these annoyances? 
+> Have anyone run into similar problem ?
 > 
-> The per-platform PCI code used to live in the per-platform 
-> directories.
-> It turned into a giant mess, very little code was being shared, it was
-> hard to uniformly perform any kind of modification or fixes - and more
-> of that kind of changes will be needed before the PCI codes really
-> shines.
+> thank you,
+> Prasad.
 > 
->   Ralf
 > 
-
-So how am I supposed to deal with the issues mentioned?
-Should I duplicate the PCI-related platform definitions into
-arch/mips/pci? Scattering related information across several places is
-generally regarded as poor design, as it will make maintenance more
-difficult.
-Or should I resort to one of the methods I mentioned, or is there any
-other
-preferred/recommended way of dealing with this?
-
-tk
------------------------------------------------ 
-Thomas Koeller, Software Development 
-
-Basler Vision Technologies 
-An der Strusbek 60-62 
-22926 Ahrensburg 
-Germany 
-
-Tel +49 (4102) 463-390 
-Fax +49 (4102) 463-46390
-
-mailto:Thomas.Koeller@baslerweb.com 
-http://www.baslerweb.com 

@@ -1,120 +1,237 @@
-Received: from mail.windriver.com ([147.11.1.11]:7106 "EHLO mail.wrs.com")
-	by ftp.linux-mips.org with ESMTP id S8133934AbWFFOET convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 6 Jun 2006 15:04:19 +0100
-Content-class: urn:content-classes:message
+Received: from hm397.locaweb.com.br ([200.234.205.160]:41178 "HELO
+	hm397.locaweb.com.br") by ftp.linux-mips.org with SMTP
+	id S8133722AbWFGP3O (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 7 Jun 2006 16:29:14 +0100
+Message-ID: <01c201c68a47$1beaed90$7d01010a@p3>
+From: <reservas@morrodaspedras.com>
+References: <20060607105221.7b15b243.vitalywool@gmail.com> <20060607142702.GA20184@linux-mips.org>
+Subject: Re: PNX8550 fails to compile in 2.6.17-rc4
+Date: Wed, 7 Jun 2006 12:29:03 -0300
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Socket buffer allocation outside DMA-able memory
-Date: Tue, 6 Jun 2006 16:02:55 +0200
-Message-ID: <6A3254532ACD7A42805B4E1BFD18080EEA211B@ism-mail01.corp.ad.wrs.com>
-From: "Zhan, Rongkai" <rongkai.zhan@windriver.com>
-Return-Path: <rongkai.zhan@windriver.com>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_01BF_01C68A2D.F621F5E0"
+Return-Path: <reservas@morrodaspedras.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Zhan, Rongkai" <rongkai.zhan@windriver.com>, ashley jones <ashley_jones_2000@yahoo.com>, art <art@sigrand.ru>, linux-mips@linux-mips.org
-Message-ID: <20060606140255.4UGQjTRGYRUbplHzbaND9cyu--kK45UnkdEamxnZi0g@z>
+To: Ralf Baechle <ralf@linux-mips.org>, Vitaly Wool <vitalywool@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20060607152903.3mYefyC292Y5WdyfaMSyHrZ4gyJRUA9fTi7B4p36aM0@z>
 
-After having a look at the latest 2.6.17-rc6 codes, __dev_alloc_skb is defined like this:
+This is a multi-part message in MIME format.
 
-#ifndef CONFIG_HAVE_ARCH_DEV_ALLOC_SKB
-/**
- *	__dev_alloc_skb - allocate an skbuff for sending
- *	@length: length to allocate
- *	@gfp_mask: get_free_pages mask, passed to alloc_skb
- *
- *	Allocate a new &sk_buff and assign it a usage count of one. The
- *	buffer has unspecified headroom built in. Users should allocate
- *	the headroom they think they need without accounting for the
- *	built in space. The built in space is used for optimisations.
- *
- *	%NULL is returned in there is no free memory.
- */
-static inline struct sk_buff *__dev_alloc_skb(unsigned int length,
-					      gfp_t gfp_mask)
-{
-	struct sk_buff *skb = alloc_skb(length + NET_SKB_PAD, gfp_mask);
-	if (likely(skb))
-		skb_reserve(skb, NET_SKB_PAD);
-	return skb;
-}
-#else
-extern struct sk_buff *__dev_alloc_skb(unsigned int length, int gfp_mask);
-#endif
+------=_NextPart_000_01BF_01C68A2D.F621F5E0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Please, dont wright no more for me. Tanks.
+  ----- Original Message -----=20
+  From: Ralf Baechle=20
+  To: Vitaly Wool=20
+  Cc: linux-kernel@vger.kernel.org ; linux-mips@linux-mips.org=20
+  Sent: Wednesday, June 07, 2006 11:27 AM
+  Subject: Re: PNX8550 fails to compile in 2.6.17-rc4
 
 
-Therefore, you also can consider to implement your machine-specific __dev_alloc_skb() function, and force the skb is allocated from your low 32MB memory zone.
+  On Wed, Jun 07, 2006 at 10:52:21AM +0400, Vitaly Wool wrote:
 
-Best Regards,
-Mark. Zhan
-________________________________________
-From: linux-mips-bounce@linux-mips.org [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Zhan, Rongkai
-Sent: Tuesday, June 06, 2006 9:34 PM
-To: ashley jones; art; linux-mips@linux-mips.org
-Subject: RE: Socket buffer allocation outside DMA-able memory
+  > when I try to compile Linux kernel for pnx8550 in 2.6.17-rc4, I get =
+the following error:
+  >=20
+  >   CC      arch/mips/philips/pnx8550/common/setup.o
+  > =
+/home/vital/work/opensource/mtd/arch/mips/philips/pnx8550/common/setup.c:=
+ In function `plat_setup':
+  > =
+/home/vital/work/opensource/mtd/arch/mips/philips/pnx8550/common/setup.c:=
+133: warning: implicit declaration of function `ip3106_lcr'
+  > =
+/home/vital/work/opensource/mtd/arch/mips/philips/pnx8550/common/setup.c:=
+134: error: invalid lvalue in assignment
+  > =
+/home/vital/work/opensource/mtd/arch/mips/philips/pnx8550/common/setup.c:=
+135: warning: implicit declaration of function `ip3106_baud'
+  > =
+/home/vital/work/opensource/mtd/arch/mips/philips/pnx8550/common/setup.c:=
+135: error: invalid lvalue in assignment
+  > make[2]: *** [arch/mips/philips/pnx8550/common/setup.o] Error 1
+  > make[1]: *** [arch/mips/philips/pnx8550/common] Error 2
+  > make: *** [vmlinux] Error 2
+  >=20
+  > I guess it's not what it should be ;-)
 
-Hi,
+  This seems to be one of the serial bits for the ip3106 which must have
+  been lost on the way to kernel.org.  Unfortunately the original author
+  does no longer take care of the code.  I just took a stab at the =
+PNX8550
+  code and it has a significant number of other problems.  All small in
+  the sum large enough such that I will mark PNX8550 support broken.
 
-Maybe you can enable ISA bus. And then add your low 32MB memory into ZONE_DMA, while the high 32MB memory into ZONE_NORMAL.
-In the case, you are required to redefine MAX_DMA_ADDRESS to (PAGE_OFFSET + 0x00200000) in asm-mips/dma.h
+    Ralf
 
+  [MIPS] Mark PNX8550 support broken.
+     =20
+  Broken in too many way for me to fix it for 2.6.17.
 
-Just a noise.
+  Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 
-Best Regards,
-Mark. Zhan
-________________________________________
-From: linux-mips-bounce@linux-mips.org [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of ashley jones
-Sent: Tuesday, June 06, 2006 8:38 PM
-To: art; linux-mips@linux-mips.org
-Subject: Re: Socket buffer allocation outside DMA-able memory
-
-hi,
-       I guess your 25 bit dma address field will be word alligned, so ur dma engine will be able to index up to 64 MB( 25+2 = 27 bits).
- 
-        If that is not the case then you can use one of the foll. work around,
- 
-  * dont give whole 64 MB to linux, give only Lower 32 MB.
-  * Give only upper 32 MB to linux, and give memory to ur dma engine from lower 32 MB, and once you recv any data you copy to skb and submit to linux. ( ofcourse your performance will get hit in this case.)
- 
- 
-Regards,
-A'Jones.
-
-
-art <art@sigrand.ru> wrote:
-Hello all!
-I work with ADM5120 chip. it has embedded switch.
-Switch descriptor has 25-bit dma addres field - so addressible only
-32Mb!
-My system has 64Mb memory. But I have to set 32Mb to make it work!
-I thought that setting DMA mask can help. So in
-/arch/mips/adm5120/setup.c i make:
-
-static struct platform_device adm5120hcd_device = {
-.name = "adm5120-hcd",
-.id = -1,
-.dev = {
-.dma_mask = &hcd_dmamask,
-.coherent_dma_mask = 0x01ffffff,
-},
-.num_resources = ARRAY_SIZE(adm5120_hcd_resources),
-.resource = adm5120_hcd_resources,
-};
-But It is wrong, because dev_alloc_skb dont know to which device it
-allocates buffer!
-
-How to tell kernel allocate skbuffers in less then 32Mb addrspace whet
-system has 64Mb?
-
--- 
-Best regards,
-art mailto:art@sigrand.ru
+  diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+  index 0e25c1d..d87177f 100644
+  --- a/arch/mips/Kconfig
+  +++ b/arch/mips/Kconfig
+  @@ -440,12 +440,12 @@ config MIPS_XXS1500
+  =20
+   config PNX8550_V2PCI
+    bool "Philips PNX8550 based Viper2-PCI board"
+  - select PNX8550
+  + select PNX8550 && BROKEN
+    select SYS_SUPPORTS_LITTLE_ENDIAN
+  =20
+   config PNX8550_JBS
+    bool "Philips PNX8550 based JBS board"
+  - select PNX8550
+  + select PNX8550 && BROKEN
+    select SYS_SUPPORTS_LITTLE_ENDIAN
+  =20
+   config DDB5074
+  -
+  To unsubscribe from this list: send the line "unsubscribe =
+linux-kernel" in
+  the body of a message to majordomo@vger.kernel.org
+  More majordomo info at  http://vger.kernel.org/majordomo-info.html
+  Please read the FAQ at  http://www.tux.org/lkml/
 
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam? Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+
+  --=20
+  No virus found in this incoming message.
+  Checked by AVG Free Edition.
+  Version: 7.1.394 / Virus Database: 268.8.2/357 - Release Date: =
+6/6/2006
+
+------=_NextPart_000_01BF_01C68A2D.F621F5E0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2900.2873" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DTahoma>Please, dont wright no more for me. =
+Tanks.</FONT></DIV>
+<BLOCKQUOTE=20
+style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
+BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
+  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+  <A title=3Dralf@linux-mips.org =
+href=3D"mailto:ralf@linux-mips.org">Ralf=20
+  Baechle</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A =
+title=3Dvitalywool@gmail.com=20
+  href=3D"mailto:vitalywool@gmail.com">Vitaly Wool</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Cc:</B> <A =
+title=3Dlinux-kernel@vger.kernel.org=20
+  =
+href=3D"mailto:linux-kernel@vger.kernel.org">linux-kernel@vger.kernel.org=
+</A> ;=20
+  <A title=3Dlinux-mips@linux-mips.org=20
+  =
+href=3D"mailto:linux-mips@linux-mips.org">linux-mips@linux-mips.org</A> =
+</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Wednesday, June 07, 2006 =
+11:27=20
+  AM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Re: PNX8550 fails to =
+compile in=20
+  2.6.17-rc4</DIV>
+  <DIV><BR></DIV>On Wed, Jun 07, 2006 at 10:52:21AM +0400, Vitaly Wool=20
+  wrote:<BR><BR>&gt; when I try to compile Linux kernel for pnx8550 in=20
+  2.6.17-rc4, I get the following error:<BR>&gt; <BR>&gt;&nbsp;&nbsp;=20
+  CC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  arch/mips/philips/pnx8550/common/setup.o<BR>&gt;=20
+  =
+/home/vital/work/opensource/mtd/arch/mips/philips/pnx8550/common/setup.c:=
+ In=20
+  function `plat_setup':<BR>&gt;=20
+  =
+/home/vital/work/opensource/mtd/arch/mips/philips/pnx8550/common/setup.c:=
+133:=20
+  warning: implicit declaration of function `ip3106_lcr'<BR>&gt;=20
+  =
+/home/vital/work/opensource/mtd/arch/mips/philips/pnx8550/common/setup.c:=
+134:=20
+  error: invalid lvalue in assignment<BR>&gt;=20
+  =
+/home/vital/work/opensource/mtd/arch/mips/philips/pnx8550/common/setup.c:=
+135:=20
+  warning: implicit declaration of function `ip3106_baud'<BR>&gt;=20
+  =
+/home/vital/work/opensource/mtd/arch/mips/philips/pnx8550/common/setup.c:=
+135:=20
+  error: invalid lvalue in assignment<BR>&gt; make[2]: ***=20
+  [arch/mips/philips/pnx8550/common/setup.o] Error 1<BR>&gt; make[1]: =
+***=20
+  [arch/mips/philips/pnx8550/common] Error 2<BR>&gt; make: *** [vmlinux] =
+Error=20
+  2<BR>&gt; <BR>&gt; I guess it's not what it should be ;-)<BR><BR>This =
+seems to=20
+  be one of the serial bits for the ip3106 which must have<BR>been lost =
+on the=20
+  way to kernel.org.&nbsp; Unfortunately the original author<BR>does no =
+longer=20
+  take care of the code.&nbsp; I just took a stab at the PNX8550<BR>code =
+and it=20
+  has a significant number of other problems.&nbsp; All small in<BR>the =
+sum=20
+  large enough such that I will mark PNX8550 support =
+broken.<BR><BR>&nbsp;=20
+  Ralf<BR><BR>[MIPS] Mark PNX8550 support broken.<BR>&nbsp;&nbsp;&nbsp;=20
+  <BR>Broken in too many way for me to fix it for =
+2.6.17.<BR><BR>Signed-off-by:=20
+  Ralf Baechle &lt;<A=20
+  =
+href=3D"mailto:ralf@linux-mips.org">ralf@linux-mips.org</A>&gt;<BR><BR>di=
+ff=20
+  --git a/arch/mips/Kconfig b/arch/mips/Kconfig<BR>index =
+0e25c1d..d87177f=20
+  100644<BR>--- a/arch/mips/Kconfig<BR>+++ b/arch/mips/Kconfig<BR>@@ =
+-440,12=20
+  +440,12 @@ config MIPS_XXS1500<BR>&nbsp;<BR>&nbsp;config=20
+  PNX8550_V2PCI<BR>&nbsp; bool "Philips PNX8550 based Viper2-PCI =
+board"<BR>-=20
+  select PNX8550<BR>+ select PNX8550 &amp;&amp; BROKEN<BR>&nbsp; select=20
+  SYS_SUPPORTS_LITTLE_ENDIAN<BR>&nbsp;<BR>&nbsp;config =
+PNX8550_JBS<BR>&nbsp;=20
+  bool "Philips PNX8550 based JBS board"<BR>- select PNX8550<BR>+ select =
+PNX8550=20
+  &amp;&amp; BROKEN<BR>&nbsp; select=20
+  SYS_SUPPORTS_LITTLE_ENDIAN<BR>&nbsp;<BR>&nbsp;config =
+DDB5074<BR>-<BR>To=20
+  unsubscribe from this list: send the line "unsubscribe linux-kernel" =
+in<BR>the=20
+  body of a message to <A=20
+  =
+href=3D"mailto:majordomo@vger.kernel.org">majordomo@vger.kernel.org</A><B=
+R>More=20
+  majordomo info at&nbsp; <A=20
+  =
+href=3D"http://vger.kernel.org/majordomo-info.html">http://vger.kernel.or=
+g/majordomo-info.html</A><BR>Please=20
+  read the FAQ at&nbsp; <A=20
+  =
+href=3D"http://www.tux.org/lkml/">http://www.tux.org/lkml/</A><BR><BR><BR=
+><BR>--=20
+  <BR>No virus found in this incoming message.<BR>Checked by AVG Free=20
+  Edition.<BR>Version: 7.1.394 / Virus Database: 268.8.2/357 - Release =
+Date:=20
+  6/6/2006<BR></BLOCKQUOTE></BODY></HTML>
+
+------=_NextPart_000_01BF_01C68A2D.F621F5E0--

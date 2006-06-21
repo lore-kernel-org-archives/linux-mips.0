@@ -1,40 +1,40 @@
-Received: from [220.76.242.187] ([220.76.242.187]:26515 "EHLO
+Received: from [220.76.242.187] ([220.76.242.187]:20146 "EHLO
 	localhost.localdomain") by ftp.linux-mips.org with ESMTP
-	id S8133715AbWFTAgt (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 20 Jun 2006 01:36:49 +0100
-Message-ID: <001901c69401$9d005280$9d0ba8c0@mrv>
+	id S8133814AbWFUAfH (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 21 Jun 2006 01:35:07 +0100
+Message-ID: <001401c694ca$8cb8e530$9d0ba8c0@mrv>
 From: "Roman Mashak" <mrv@corecom.co.kr>
-References: <000601c6937f$0bed5270$9d0ba8c0@mrv> <20060619135156.GA9701@linux-mips.org>
+References: <478F19F21671F04298A2116393EEC3D531D2D4@sjc1exm08.pmc_nt.nt.pmc-sierra.bc.ca>
 Subject: Re: Ethernet bridging on 2.6.12-rc3 (PMC-sierra patched)
-Date: Tue, 20 Jun 2006 09:36:46 +0900
+Date: Wed, 21 Jun 2006 09:34:52 +0900
 MIME-Version: 1.0
 Content-Type: text/plain;
 	format=flowed;
-	charset="ISO-8859-1";
+	charset="koi8-r";
 	reply-type=original
 Content-Transfer-Encoding: 7bit
 Return-Path: <mrv@corecom.co.kr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
+To: Raj Palani <Rajesh_Palani@pmc-sierra.com>, Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20060620003646.NmnfYzeTd8U68K3sZU4bPSxJe7j8HdJdSzNfFxc1rKY@z>
+Message-ID: <20060621003452.4Mk8RasL8T4602b8eWJ_AVxE3T3Bux-6D-Sjj8rXlzA@z>
 
-Hello, Ralf!
-You wrote to "Roman Mashak" <mrv@corecom.co.kr> on Mon, 19 Jun 2006 14:51:56 
-+0100:
+Hello, Raj!
+You wrote to "Ralf Baechle" <ralf@linux-mips.org>; "Roman Mashak" 
+<mrv@corecom.co.kr> on Tue, 20 Jun 2006 09:15:56 -0700:
 
- RB> The Titan driver (the version on linux-mips.org and any other version
- RB> I've seen) are pretty broken and remarkably ugly pieces of code.  The
-On the other hand, bridge works fine on 2.4.26 kernel on PMC board with 
-Titan driver, which is much more broken AFAIK rather then in 2.6.X.
+ RP> I would request that you take a look at our current GE driver
+ RP> (msp85x0_ge.c) for the Sequoia platform and send us your feedback.
+ RP> This is currently available on our ftp site ftp.pmc-sierra.com under
+ RP> /pub/linux/2.6.12/linux-2.6.12-rc3_L002.tar.gz.  The driver has been
+ RP> completely re-written and we welcome any feedback on the same.
+As you could notice in my first message in this thread I reffered to 
+2.6.12-rc3_L002 from PMC ftp site. And Ethernet bridging behavior I 
+described is occurring at that particular kernel.
 
- RB> authors of the Basler eXcite platform have contributed their driver and
- RB> I hope it will show up upstream soon.  Afaik it has not been tested
-When is it supposed to be merged into CVS ?
-
- RB> with any of PMC's eval boards but the necessary changes should not be
- RB> hard.
-
+ RP> The patches that have been generated for fixes that were made after
+ RP> this release are available under
+ RP> /pub/linux/2.6.12/patches-2.6.12-rc3_L002.
 
 With best regards, Roman Mashak.  E-mail: mrv@corecom.co.kr 

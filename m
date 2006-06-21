@@ -1,57 +1,81 @@
-Received: from mail.windriver.com ([147.11.1.11]:44450 "EHLO mail.wrs.com")
-	by ftp.linux-mips.org with ESMTP id S8126578AbWFUDdn convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 21 Jun 2006 04:33:43 +0100
-Content-class: urn:content-classes:message
+Received: from dsl-KK-static-026.199.95.61.touchtelindia.net ([61.95.199.26]:17118
+	"EHLO mailsvr.procsys.com") by ftp.linux-mips.org with ESMTP
+	id S8133364AbWFUFgc (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 21 Jun 2006 06:36:32 +0100
+Message-ID: <110701c694f4$f1412fb0$f301a8c0@procsys>
+From: "ankur maheshwari" <ankur_maheshwari@procsys.com>
+References: <20060615225723.012c82be.khali@linux-fr.org><1150406598.1193.73.camel@localhost.localdomain><20060616222908.f96e3691.khali@linux-fr.org><1150735558.8413.7.camel@localhost.localdomain> <20060620120836.628ddc79.khali@linux-fr.org>
+Subject: Re: i2c-algo-ite and i2c-ite planned for removal
+Date: Wed, 21 Jun 2006 11:08:34 +0530
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: [PATCH] remove set_c0_status(ST0_IM) form wrppmc's irq.c
-Date: Wed, 21 Jun 2006 05:33:24 +0200
-Message-ID: <6A3254532ACD7A42805B4E1BFD18080E01039084@ism-mail01.corp.ad.wrs.com>
-From: "Zhan, Rongkai" <rongkai.zhan@windriver.com>
-Return-Path: <rongkai.zhan@windriver.com>
+Content-Transfer-Encoding: 7bit
+Return-Path: <ankur_maheshwari@procsys.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20060621033324.ta85b4tH7G92-J1rtgZs_6C6B0bZZJOA4EXtqO5JzGI@z>
+To: Jean Delvare <khali@linux-fr.org>, Pete Popov <ppopov@embeddedalley.com>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20060621053834.lw9hlJDS5FBu_gvN7u1kQTDAHRLzJ7xyKMBFdoVNquM@z>
 
-Hi Yiochi,
+hi all,
 
-Yes. You are right.
+I have used once i2c-adap-ite and i2c-algo-ite for ite-8712 chip and it
+worked fine for me in MV 2.4.25. Its been an year ago, I asked on same forum
+if some one has used it before but I didn't got any reply.
 
-To Ralf: Please consider the codes for wrppmc board go into the current merge window. Thanks.
+I added this struct definition in a .h (i2c-adap-ite.h) file which we need
+to include in i2c-adap-ite.c also program ite-8712 controller pins for i2c
+use.
 
-Best Regards,
-Mark. Zhan
------Original Message-----
-From: linux-mips-bounce@linux-mips.org [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Yoichi Yuasa
-Sent: Tuesday, June 20, 2006 10:27 PM
-To: Ralf Baechle
-Cc: linux-mips@linux-mips.org
-Subject: [PATCH] remove set_c0_status(ST0_IM) form wrppmc's irq.c
+struct iic_ite {
+	int iic_base;
+	int iic_irq;
+	int iic_clock;
+	int iic_own;
+};
 
-Hi,
+It worked perfectly fine for me.
 
-mips_cpu_irq_init() does clear_c0_status(ST0_IM) first.
-I think that set_c0_status(ST0_IM) isn't necessary.
+It's just an info on ite-chip works, to remove it from kernel tree .....
+decision is up to you : ).
 
-Yoichi
+thanks,
+Ankur
 
-Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+----- Original Message -----
+From: "Jean Delvare" <khali@linux-fr.org>
+To: "Pete Popov" <ppopov@embeddedalley.com>
+Cc: <linux-mips@linux-mips.org>; <linux-kernel@vger.kernel.org>
+Sent: Tuesday, June 20, 2006 3:38 PM
+Subject: Re: i2c-algo-ite and i2c-ite planned for removal
 
-diff -pruN -X mips/Documentation/dontdiff mips-orig/arch/mips/gt64120/wrppmc/irq.c mips/arch/mips/gt64120/wrppmc/irq.c
---- mips-orig/arch/mips/gt64120/wrppmc/irq.c	2006-06-20 21:17:36.853537000 +0900
-+++ mips/arch/mips/gt64120/wrppmc/irq.c	2006-06-20 21:36:41.949101000 +0900
-@@ -62,9 +62,6 @@ void gt64120_init_pic(void)
- 
- void __init arch_init_irq(void)
- {
--	/* enable all CPU interrupt bits. */
--	set_c0_status(ST0_IM);	/* IE bit is still 0 */
--
- 	/* IRQ 0 - 7 are for MIPS common irq_cpu controller */
- 	mips_cpu_irq_init(0);
- 
+
+> Hi Pete,
+>
+> > > > For historical correctness, this driver was once upon a time usable,
+> > > > though it was a few years ago. It was written by MV for some ref
+board
+> > > > that had the ITE chip and it did work. That ref board is no longer
+> > > > around so it's probably safe to nuke the driver.
+> > >
+> > > In which kernel version? In every version I checked (2.4.12, 2.4.30,
+> > > 2.6.0 and 2.6.16) it wouldn't compile due to struct iic_ite being used
+> > > but never defined (and possibly other errors, but I can't test-compile
+> > > the driver.)
+> >
+> > Honestly, I don't remember. I think it was one of the very first 2.6
+> > kernels because when MV first released a 2.6 product, 2.6 was still
+> > 'experimental'. It's quite possible of course that the driver was never
+> > properly merged upstream in the community tree(s). But I do know that it
+> > worked in the internal MV tree and an effort was made to get the driver
+> > accepted upstream.
+>
+> I couldn't find any evidence of this effort. Whatever, past is past, if
+> someone fixes the i2c-ite and i2c-algo-ite drivers soon, fine with me,
+> if not, the drivers will be deleted (which doesn't mean they can't be
+> resurrected later if there is interest and someone takes over
+> maintenance.) I'm setting the deadline to September 2006.
+>
+> --
+> Jean Delvare

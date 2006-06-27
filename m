@@ -1,215 +1,389 @@
-Received: from exprod8og58.obsmtp.com ([64.18.3.98]:62433 "HELO
-	exprod8og58.obsmtp.com") by ftp.linux-mips.org with SMTP
-	id S8133884AbWFZV2u (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 26 Jun 2006 22:28:50 +0100
+Received: from [62.154.208.154] ([62.154.208.154]:36779 "EHLO
+	firewall1.addi-data.de") by ftp.linux-mips.org with ESMTP
+	id S8133507AbWF0OaZ convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 27 Jun 2006 15:30:25 +0100
+Received: from [172.16.2.26] (helo=security01.addi-data.intra)
+	by firewall1.addi-data.de with esmtp (Exim 4.43)
+	id 1FvEa0-0005pD-SW
+	for linux-mips@linux-mips.org; Tue, 27 Jun 2006 16:30:17 +0200
+Received: from security1.addi-data.de (exchange01.addi-data.intra) by security01.addi-data.intra
+ (Clearswift SMTPRS 5.2.3) with ESMTP id <T7922bc6dccac10021a74dc@security01.addi-data.intra> for <linux-mips@linux-mips.org>;
+ Tue, 27 Jun 2006 16:30:17 +0200
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Subject: sb1250-mac broadcom ethernet driver
-Date: Mon, 26 Jun 2006 17:20:15 -0400
-Content-Type: multipart/signed;
-	micalg=SHA1;
-	protocol="application/x-pkcs7-signature";
-	boundary="----=_NextPart_000_0065_01C69944.CA476420"
-Message-ID: <0240FDD68D6C1F4289F73D134A2536A1CA168F@mail1.bluesocket.com>
-From: "Tom Christoffel" <tomc@bluesocket.com>
-Return-Path: <tomc@bluesocket.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: AW: Bigphysarea and MIPS
+Date: Tue, 27 Jun 2006 16:30:14 +0200
+Message-ID: <DD0BA80209AFF04091B518EA708D0A0B4C42A1@exchange01.addi-data.intra>
+From: "Francois Beauregard" <Beauregard.Francois@addi-data.com>
+Return-Path: <beauregard.francois@addi-data.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Cc: Patrick Foy <pfoy@bluesocket.com>, Tom Guevin <tguevin@bluesocket.com>
-Message-ID: <20060626212015.dvtM65eIpyVJMowzZ9q6cI-CxRA3QSxh_oByugbeqDU@z>
+Message-ID: <20060627143014.uFS6Ke_ToU8o03FwdrsvE1rVR_Hw3DV1lEYzTAMu-zA@z>
 
-This is a multi-part message in MIME format.
+Hello,
 
-------=_NextPart_000_0065_01C69944.CA476420
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0066_01C69944.CA476420"
+Finally I found a solution at my last problem.
+Bigphysarea patch allocated memory in the KSEG0 segment (using alloc_bootmem_low_pages).
+This data are accessed through the cache.
+Our architecture is defined as NON_COHERENT_IO.
+So I think the data could be dirty. (Am I wrong?)
+
+I took a look in the file arch/mips/jazz/jazzdma.c, because it allocates memory with alloc_bootmem_low_pages too, and I saw they used the following functions:
+
+	virt_addr = alloc_bootmem_low_pages (...) ;
+
+	/*I replace the previous line with
+	bp__virt_mem = bigphysarea_alloc_pages( ...) ;
+	virt_addr = bp__virt_mem ;
+	*/
+
+	dma_cache_wback_inv(virt_addr,size);
+
+	virt_addr=KSEG1ADDR(virt_addr);
+
+	bus_addr= PHYSADDR(virt_addr);
+
+The memory is now in the segment KSEG1, which is not accessed through a cache.
+
+But, I notice that I have to free the bigphysarea memory with the original address or there is a PCI bus error (see the code below). (That's why I store it in bp__virt_mem value)
+
+I don't understand why the kernel works sometimes with the address of bigphysarea (to free the memory), and sometimes deals with the address tuned by KSEG1ADDR() (before/after a DMA transfer, I wrote/read the values at this address).
+
+Is there any explanation?
+It seems too that virt_to_phys (bp__virt_mem), virt_to_bus (bp__virt_mem) are equals to PHYSADDR(virt_addr).
+So I guess that virt_to_phys applies to KSEG0 memory and PHYSADDR to KSEG1. Could you tell me please if I am wrong?
+And what about the __pa() macro?
+
+Now I wonder if I can find the bigphysarea address back, because there is only an offset between bigphysarea address and the virt_addr (equals to the offset between KSEG0 and KSEG1).
+What about this?
+bp_virt_addr = KSEG0(PHYSADDR(virt_addr));
 
 
-------=_NextPart_001_0066_01C69944.CA476420
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 
-We are experiencing intermittent lockups, the interface stops transmitting
-and receiving, which sometimes recover and sometimes not.  Has anyone out
-there experienced this problem?  Do you know of a fix?  I saw some mention
-of a queue lockup and a reference to 2.6.16 but I could not find a patch.
-Any help would be greatly appreciated.
-
- 
-
- 
-
-Thank you.
+Thanks a lot.
 
 
-------=_NextPart_001_0066_01C69944.CA476420
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+NB: With an ix86 arch, the cache handling seems transparent. That's why there was no bug.
 
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;
-	font-weight:normal;
-	font-style:normal;
-	text-decoration:none none;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+Here is A solution I wrote:
 
-</head>
+/*address used by bigphysarea. We have to store it in order to free it later with */
+caddr_t bp_virt_mem = NULL;
 
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+#define  NUMBER_OF_PAGES 5
 
-<div class=3DSection1>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:11.0pt;
-font-family:Arial'>We are experiencing intermittent lockups, the =
-interface
-stops transmitting and receiving, which sometimes recover and sometimes =
-not.&nbsp;
-Has anyone out there experienced this problem?&nbsp; Do you know of a =
-fix?&nbsp; I saw
-some mention of a queue lockup and a reference to 2.6.16 but I could not =
-find a
-patch.&nbsp; Any help would be greatly =
-appreciated.<o:p></o:p></span></font></p>
+/*returns the virtual kernel address you have to deal with for DMA transfers. Ie, you write the data you want to transfer in.
+bus_addr = address to pass to the DMA controller*/
+void * allocate_continuous_memory(void * bus_addr ){
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:11.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+	void * virt_addr = NULL;
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:11.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+	/* bp_virt_mem will be page aligned*/
+	if ( ! (bp_virt_mem = bigphysarea_alloc_pages (NUMBER_OF_PAGES, 1, 	GFP_KERNEL) ) )
+		BUG();
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:11.0pt;
-font-family:Arial'>Thank you.<o:p></o:p></span></font></p>
+	virt_addr= (void *) bp_virt_mem;
 
-</div>
+	/*this function makes caches and coherent by writing the content of 	the caches back to memory, if necessary.
+	It also invalidates the affected part of the caches as necessary 	before DMA transfers from outside of memory*/
+	dma_cache_wback_inv(virt_addr,size);
 
-</body>
+	virt_addr=KSEG1ADDR(virt_addr);
 
-</html>
+	bus_addr= PHYSADDR(virt_addr);
 
-------=_NextPart_001_0066_01C69944.CA476420--
 
-------=_NextPart_000_0065_01C69944.CA476420
-Content-Type: application/x-pkcs7-signature;
-	name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="smime.p7s"
+	memset(virt_addr,0, NUMBER_OF_PAGES * PAGE_SIZE);
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIOTjCCBHAw
-ggNYoAMCAQICEB+0zZj6uUmxQ2K5VZ1P12EwDQYJKoZIhvcNAQEFBQAwga4xCzAJBgNVBAYTAlVT
-MQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VS
-VFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQD
-Ey1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDUwNjA3
-MDgwOTEwWhcNMTkwNzA5MTczNjU4WjBlMQswCQYDVQQGEwJTRTEUMBIGA1UEChMLQWRkVHJ1c3Qg
-QUIxHTAbBgNVBAsTFEFkZFRydXN0IFRUUCBOZXR3b3JrMSEwHwYDVQQDExhBZGRUcnVzdCBDbGFz
-cyAxIENBIFJvb3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCWltQhSWDia+hBBwze
-xODcEyPNwTXH+9ZOEQpnXvUGW2ulCDtbKRY654eyNAbFvAWlA3yCyykQruGIgb3WntP+LVbBFc7j
-Jp0VLhD7Bo8wBN6ntGO0/7Gcrjyvd7ZWxbWroulpOj0OM3kyP3CCkplhbY0wCI9xP6ZIVxn4JdxL
-ZlyldI+Yrsj5wAYi56xz36Uu+1LcsRVlIPo1Zmne3yzxbrww2ywkEtvrNTVokMsAsJchPXQhI2U0
-K7t4WaPW4XY5mqRJjox0r26kmqPZm9I4XJuiGMx1I4S+6+JNM3GOGvDC+Mcdoq0Dlyz4zyXG9rgk
-MbFjXZJ/Y/AlyVMuH79NAgMBAAGjgdEwgc4wHwYDVR0jBBgwFoAUiYJnfcSdJnAAS7RQSHzePa4E
-bn0wHQYDVR0OBBYEFJWxtPCUtr3H2tERCSG+wa9J/RB7MA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMB
-Af8EBTADAQH/MBEGCWCGSAGG+EIBAQQEAwIAATBYBgNVHR8EUTBPME2gS6BJhkdodHRwOi8vY3Js
-LnVzZXJ0cnVzdC5jb20vVVROLVVTRVJGaXJzdC1DbGllbnRBdXRoZW50aWNhdGlvbmFuZEVtYWls
-LmNybDANBgkqhkiG9w0BAQUFAAOCAQEAaenDt4Gwt0ps0AgcIC5PrbDFLtmGHU116Z2Ok+MEWh9p
-Lgv/mvP50iMHmRqHMGGiIngTqsioHxNL64GxQF6EfG7tEpPCUr6dj4iW4XZvYFF0nT7/3AoLtP27
-1e7/k+Dh7/LJxMN9flJEjrQZF5vTiDM1G5g5EMXVLk31lpzXfbxMV6X2iD9BrSNLmk7bZ69/EsDz
-W7Y44lu6XPYCWRWdZAuSfoopDa0AdQxf1MzGzSfdlSTlOEV9Y81qezrb2rXVR4y3DQPhCxjzImQo
-KXoyoBzj+hY78e3nhaNU4eI8IfyjqXjrzFTM9B8aFinNgbqmbMWOnmDn/WFJQN50NCXR9TCCBKIw
-ggOKoAMCAQICEES+DItQACS0EdM2JSVnyYkwDQYJKoZIhvcNAQEFBQAwga4xCzAJBgNVBAYTAlVT
-MQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VS
-VFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQD
-Ey1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNOTkwNzA5
-MTcyODUwWhcNMTkwNzA5MTczNjU4WjCBrjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYD
-VQQHEw5TYWx0IExha2UgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYD
-VQQLExhodHRwOi8vd3d3LnVzZXJ0cnVzdC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3QtQ2xp
-ZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBFbWFpbDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
-ggEBALI5haTyfatBO2JGN67NwWB1vDll+UoaR6K5zEjMapjVTTUZuaRC5c5J4oovHnzSMQfHTrSD
-ZJ0uKdWiZMSFvYVRNXmkTmiQexx6pJKoF/KYFfKTzMmkMpW7DE8wvZigC4vlbhuiRvp4vKJvq1le
-pS/Pytptqi/rrKGzaqq3Lmc1i3nhHmmI4uZGzaCl6r4LznY6eg6b6vzaJ1s9cx8i5khhxkzzabGo
-Lhu21DEgLLyCio6kDqXXiUP8FlqvHXHXEVnauocNr/rz4cLwpMVnjNbWVDreCqS6A3ezZcj9HtN0
-YqoYymiTHqGFfvVHZcv4TVcodNI0/zC27vZiMBSMLOsCAwEAAaOBuTCBtjALBgNVHQ8EBAMCAcYw
-DwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUiYJnfcSdJnAAS7RQSHzePa4Ebn0wWAYDVR0fBFEw
-TzBNoEugSYZHaHR0cDovL2NybC51c2VydHJ1c3QuY29tL1VUTi1VU0VSRmlyc3QtQ2xpZW50QXV0
-aGVudGljYXRpb25hbmRFbWFpbC5jcmwwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMA0G
-CSqGSIb3DQEBBQUAA4IBAQCxbWFdphp/fKtK5DD8U28lJMbK7eIxXCsO7u5hVW8EPs853sUbSZTk
-6yBMtOaeUC5y2Y31qqOzStpWHGCXgNyCoq1KvYor/wsJtMbXIARF5M2AAbq6K27OqteS/uSv6/Qm
-HRYqf2wwlTcvMxKsf93H0RGMUZiy0KOR0K32n56Dkx4dQrhGr2tm8Jt/6uMDAuUCUcGq1TWdckAD
-iboxHcUQaFKe36KFxVwIpnjmU0+x6LfTFJ6TpsNk46x+cc28n+kDG8z76awxwa98FXQCmcOyR6bC
-MmHXx29IJFEnodWHVfJ7j5g9Fp7udbb40I7y88auKFun8PM2F/zDBdPKA0pUMIIFMDCCBBigAwIB
-AgIRALhASGtdEs9xQrTC9Bt/zugwDQYJKoZIhvcNAQEFBQAwZTELMAkGA1UEBhMCU0UxFDASBgNV
-BAoTC0FkZFRydXN0IEFCMR0wGwYDVQQLExRBZGRUcnVzdCBUVFAgTmV0d29yazEhMB8GA1UEAxMY
-QWRkVHJ1c3QgQ2xhc3MgMSBDQSBSb290MB4XDTA2MDEwNjAwMDAwMFoXDTA3MDEwNjIzNTk1OVow
-geExNTAzBgNVBAsTLENvbW9kbyBUcnVzdCBOZXR3b3JrIC0gUEVSU09OQSBOT1QgVkFMSURBVEVE
-MUYwRAYDVQQLEz1UZXJtcyBhbmQgQ29uZGl0aW9ucyBvZiB1c2U6IGh0dHA6Ly93d3cuY29tb2Rv
-Lm5ldC9yZXBvc2l0b3J5MR8wHQYDVQQLExYoYykyMDAzIENvbW9kbyBMaW1pdGVkMRswGQYDVQQD
-ExJUaG9tYXMgQ2hyaXN0b2ZmZWwxIjAgBgkqhkiG9w0BCQEWE3RvbWNAYmx1ZXNvY2tldC5jb20w
-gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAOG7e2jM10+HZ+O0zBvFZmSmD2tCIyBjROmuZg9j
-gLkHp2t/BY94k7FZ+s3AKJ7QzB1V8Puq6xM4hDVL2RgZaGe/1vHPmhL85gNOKSY7PCFsLotSCctW
-xzoePSlP2FyfaMIOtGR4Zm/3RM9cJaouxsAqbjOYIzs120y1A+SsXp1TAgMBAAGjggHgMIIB3DAd
-BgNVHQ4EFgQUX8E9MDsqgBnAQUbdreGMP2z7b6QwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQC
-MAAwIAYDVR0lBBkwFwYIKwYBBQUHAwQGCysGAQQBsjEBAwUCMBEGCWCGSAGG+EIBAQQEAwIFIDBG
-BgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEBATArMCkGCCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5j
-b21vZG8ubmV0L0NQUzB3BgNVHR8EcDBuMDagNKAyhjBodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9B
-ZGRUcnVzdENsYXNzMUNBUm9vdC5jcmwwNKAyoDCGLmh0dHA6Ly9jcmwuY29tb2RvLm5ldC9BZGRU
-cnVzdENsYXNzMUNBUm9vdC5jcmwwgYYGCCsGAQUFBwEBBHoweDA7BggrBgEFBQcwAoYvaHR0cDov
-L2NydC5jb21vZG9jYS5jb20vQWRkVHJ1c3RVVE5DbGllbnRDQS5jcnQwOQYIKwYBBQUHMAKGLWh0
-dHA6Ly9jcnQuY29tb2RvLm5ldC9BZGRUcnVzdFVUTkNsaWVudENBLmNydDAeBgNVHREEFzAVgRN0
-b21jQGJsdWVzb2NrZXQuY29tMA0GCSqGSIb3DQEBBQUAA4IBAQBnBjo2haPWyH2BGDzLesC+V2Oi
-jPY2Udg+lcvgkQ8BU6tuyrD+7dn2W4UA2fweukj/K4zdSSXH8Z1NtuY8Kah+pxEYqZFLBNESttJO
-vFJ4ZIjSPhPAwBaiPuP/pL5kM12jqMbyD9tE9g64JWQHNmNP6VHU2VIHnBbVM/7UyN1yLBIMiTs6
-PFQz4/iqr+o32ZxQdhTFpwBCItcjXN0yTVDtw3K0KkfrxdijfbixCNDWeOvhpAUTcrNs3uIRBhMK
-Hd+/JssB8ri6HA9iIZXIjF+lbMz+7uhIGws5SojBRJfWrwD3nA/c7LTmQrqkjfndTWLrkQeR8WI3
-RgUuBF/R5CtdMYIDBDCCAwACAQEwejBlMQswCQYDVQQGEwJTRTEUMBIGA1UEChMLQWRkVHJ1c3Qg
-QUIxHTAbBgNVBAsTFEFkZFRydXN0IFRUUCBOZXR3b3JrMSEwHwYDVQQDExhBZGRUcnVzdCBDbGFz
-cyAxIENBIFJvb3QCEQC4QEhrXRLPcUK0wvQbf87oMAkGBSsOAwIaBQCgggHgMBgGCSqGSIb3DQEJ
-AzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA2MDYyNjIxMjAxNVowIwYJKoZIhvcNAQkE
-MRYEFAe59DgyoOVq68DpIo36C6fvBNZXMGcGCSqGSIb3DQEJDzFaMFgwCgYIKoZIhvcNAwcwDgYI
-KoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMAcGBSsO
-AwIaMAoGCCqGSIb3DQIFMIGJBgkrBgEEAYI3EAQxfDB6MGUxCzAJBgNVBAYTAlNFMRQwEgYDVQQK
-EwtBZGRUcnVzdCBBQjEdMBsGA1UECxMUQWRkVHJ1c3QgVFRQIE5ldHdvcmsxITAfBgNVBAMTGEFk
-ZFRydXN0IENsYXNzIDEgQ0EgUm9vdAIRALhASGtdEs9xQrTC9Bt/zugwgYsGCyqGSIb3DQEJEAIL
-MXygejBlMQswCQYDVQQGEwJTRTEUMBIGA1UEChMLQWRkVHJ1c3QgQUIxHTAbBgNVBAsTFEFkZFRy
-dXN0IFRUUCBOZXR3b3JrMSEwHwYDVQQDExhBZGRUcnVzdCBDbGFzcyAxIENBIFJvb3QCEQC4QEhr
-XRLPcUK0wvQbf87oMA0GCSqGSIb3DQEBAQUABIGAGOaSxF0E3rKXggQw1cybOmdUVgcOKY3gP8/W
-b/LuK7jeKAW49F1j3lLSSHLxsFQ7PzFsPSPwlz3DIX7G+cSBslJSSY1TJ3h8gZ8k8BozMtbT15MS
-5y0Z5aufWiYpY7DIA5b6NJdIvKsYLcxouGsPJ3YoAvhvGVBhilVItecku+IAAAAAAAA=
+	return (virt_addr);
 
-------=_NextPart_000_0065_01C69944.CA476420--
+}
+
+
+/*that's why we have to store the address returned by bigphysarea*/
+void free_continuous_memory(){
+	if (bp__virt_mem) {
+		bigphysarea_free_pages (bp__virt_mem);
+		bp__virt_mem = NULL;
+	}
+}
+
+/*if you want to remap this buffer in userland*/
+int mmap_lookup (struct file *file, struct vm_area_struct *vma){
+	
+	unsigned long off = vma -> vm_pgoff << PAGE_SHIFT;
+	unsigned long vma_size = vma-> vm_end - vma->vm_start;
+
+	/*we have to map with the address returned by bigphysarea, or it will be a PCI Bus error...*/
+	remap_page_range (vma->vm_start, virt_to_phys (bp__virt_mem), vma-	>vm_end-vma->vm_start, vma-> vm_page_prot);
+
+	return 0;
+}
+
+
+
+
+
+
+-----Ursprüngliche Nachricht-----
+Von: linux-mips-bounce@linux-mips.org [mailto:linux-mips-bounce@linux-mips.org] Im Auftrag von Francois Beauregard
+Gesendet: Mittwoch, 14. Juni 2006 17:23
+An: linux-mips@linux-mips.org
+Betreff: Bigphysarea and MIPS
+
+Hello everybody,
+
+
+it's my first post on the list, so be indulgent, I'm a newbee.
+I'm writing a driver using a DMA transfer between on board RAM of a card and a memory ring buffer in kernel space. The processor is a Toshiba Tx49. The PCI controller is a PLX PCI9054 rev AC. It's seems to work fine.
+The ring buffer in kernel space is then mmap()'ed in user's space using remap_page_range().
+The kernel is a 2.4.22 - bigphys version.
+
+
+The driver writes the pattern 0123456789 in this ring buffer (as uint32_t), and transfers those data on the on board ram thanks to the DMA (pci->local).
+Then I transfer those data into the same ring buffer, but 10 uint32_t further. (local->pci)
+So I may read 01234567890123456789.
+
+I have to use a continuous memory ring buffer (about 2MBytes) due to the speed of the card.
+That's why I allocated it firstly with bigphysarea patch. (I will describe it later)
+As I encountered a problem with this patch, I tried to use pci_alloc_consistent (arch/mips/kernel/pci-dma.c) instead (after I read the O'Reilly Linux Driver book).
+With this function, the DMA transfer succeeds (the pattern is ok: 01234567890123456789), but the mmap() call raised a PCI Bus error.
+(I have seen in the mailing list that I probably have to modify mk_pte_phys(). Am I wrong?)
+
+Now, my problem with bigphysarea.
+The allocation of the ring buffer is done trough bigphysarea_alloc_pages (mm/bigphysarea.c). (I add bigphysarea=[number] as described in the documentation).
+
+After boot, sometimes I read 01234567890000000000. Sometimes 01234567890000000089.
+Then the next DMA transfer returns: 01234567890000006789
+I tried to pass different flags to bigphysarea_alloc_pages (GFP_ATOMIC|GFP_DMA, GFP_KERNEL|GFP_DMA ...) without success.
+
+I took a look at the source code of the two functions, and I tried to understand the difference, but the code is too dependent on the hardware for my knowledge))-;
+pci_alloc_consistent and bigphysarea patch call finally __get_free_pages, but bigphysarea uses kmalloc call whereas pci_alloc_consistent makes some operation with dma_cache_wback_inv.
+I know that the flag CONFIG_NONCOHERENT_IO is set.
+The addresses of the ring buffer are respectively 0x27820000 and 0x002FA000 with bigphysarea and pci_alloc_consistent.
+
+Are'nt bigphysarea and mips compliant?
+How could I solve this problem?
+Did anyone succeed with bigphysarea and mips in association?
+
+
+Thanks a lot.
+
+Regards,
+
+
+
+
+
+/*this function allocated the ring buffer,with bigphysarea or pci_alloc_consistent
+* bigphysarea is a global variable
+*/
+int alloc_ring_buffer(struct pci_dev *dev, uint32_t number_of_pages)
+{
+	uint32_t free_mem=0;
+	PRIVDATA (dev)->PC_ring_buffer_size=number_of_pages*PAGE_SIZE;
+
+	if (bigphysarea){
+		printk("Using Bigphysarea\n");
+		bigphysarea_kinfo(&Free_Mem); /*returns the size of avialable memory*/
+	
+		if (free_mem<number_of_pages*PAGE_SIZE)
+			printk("The bigphysarea reserved memory is too short\n");
+		else{
+			unsigned long size=PRIVDATA (dev)->PC_ring_buffer_size;
+			/*pci_alloc_consistent seems to use the flags : GFP_ATOMIC and GFP_DMA*/
+			PRIVDATA (dev)->PC_ring_buffer_virt_addr= (uint32_t* )
+ 			bigphysarea_alloc_pages (number_of_pages,1,/*GFP_ATOMIC|GFP_DMA*/GFP_KERNEL);
+
+
+			if (PRIVDATA (dev)->PC_ring_buffer_virt_addr) {
+				unsigned long adr = (unsigned long)PRIVDATA (dev)->PC_ring_buffer_virt_addr;
+				while (size > 0) {
+					mem_map_reserve(virt_to_page(phys_to_virt(adr)));
+					adr += PAGE_SIZE;
+					size -= PAGE_SIZE;
+				}
+			}
+
+			PRIVDATA (dev)->PC_ring_buffer_bus_addr=virt_to_bus (PRIVDATA (dev)->PC_ring_buffer_virt_addr);
+		}
+	}else{
+		printk("Using pci_alloc_consistent\n");
+		free_mem=free_mem;/*remove warning*/
+
+		/*allocation*/
+		PRIVDATA (dev)->PC_ring_buffer_virt_addr= pci_alloc_consistent(dev, PRIVDATA (dev)->PC_ring_buffer_size, &PRIVDATA (dev)->PC_ring_buffer_bus_addr);
+
+		/*put a flag to all the allocated pages*/
+		if (PRIVDATA (dev)->PC_ring_buffer_virt_addr){
+			struct page *page,*end_page;
+
+			/*the last page*/
+			end_page=virt_to_page(PRIVDATA (dev)->PC_ring_buffer_virt_addr+PRIVDATA (dev)->PC_ring_buffer_size-1);
+
+			for (page=virt_to_page(PRIVDATA (dev)->PC_ring_buffer_virt_addr);page<=end_page;page++)
+				set_bit(PG_reserved,&page->flags);
+
+		}
+	}
+
+	if (!(PRIVDATA (dev)->PC_ring_buffer_virt_addr)){
+		printk("Can't allocated contiguous memory\n");
+ 		return -ENOMEM;
+	}
+	else
+		printk("Allocation of the contiguous memory OK\nVirtual Address: %lX\n"\
+		"Bus physical Address: %lX\n",(unsigned long)PRIVDATA (dev)->PC_ring_buffer_virt_addr,(unsigned long)PRIVDATA (dev)->PC_ring_buffer_bus_addr);
+
+	memset(PRIVDATA (dev)->PC_ring_buffer_virt_addr,0,number_of_pages*PAGE_SIZE);
+
+	return 0;
+}
+
+
+
+
+
+/*-----------------------------------------------------------/
+*                     pci_alloc_consistent
+*
+/*-----------------------------------------------------------*/
+void *pci_alloc_consistent(struct pci_dev *hwdev, size_t size,
+                           dma_addr_t * dma_handle)
+{
+        void *ret;
+        int gfp = GFP_ATOMIC;
+        struct pci_bus *bus = NULL;
+
+#ifdef CONFIG_ISA
+        if (hwdev == NULL || hwdev->dma_mask != 0xffffffff)
+                gfp |= GFP_DMA;
+#endif
+        ret = (void *) __get_free_pages(gfp, get_order(size));
+
+        if (ret != NULL) {
+                memset(ret, 0, size);
+                if (hwdev)
+                        bus = hwdev->bus;
+                *dma_handle = bus_to_baddr(bus, __pa(ret));
+#ifdef CONFIG_NONCOHERENT_IO
+                dma_cache_wback_inv((unsigned long) ret, size);
+                ret = UNCAC_ADDR(ret);
+#endif
+        }
+
+        return ret;
+}
+
+/*-----------------------------------------------------------/
+*                     bigphysarea_alloc_pages
+*
+/*-----------------------------------------------------------*/
+
+
+caddr_t bigphysarea_alloc_pages(int count, int align, int priority)
+{
+        range_t *range, **range_ptr, *new_range, *align_range;
+        caddr_t aligned_base;
+
+        if (init_level < 2)
+                if (init2(priority))
+                        return 0;
+        new_range   = NULL;
+        align_range = NULL;
+
+        if (align == 0)
+                align = PAGE_SIZE;
+        else
+                align = align * PAGE_SIZE;
+        /*
+         * Search a free block which is large enough, even with alignment.
+         */
+        range_ptr = &free_list;
+        while (*range_ptr != NULL) {
+                range = *range_ptr;
+                aligned_base =
+                  (caddr_t)((((unsigned long)range->base + align - 1) / align) * align);
+                if (aligned_base + count * PAGE_SIZE <=
+                    range->base + range->size)
+                        break;
+             range_ptr = &range->next;
+        }
+        if (*range_ptr == NULL)
+                return 0;
+        range = *range_ptr;
+        /*
+         * When we have to align, the pages needed for alignment can
+         * be put back to the free pool.
+         * We check here if we need a second range data structure later
+         * and allocate it now, so that we don't have to check for a
+         * failed kmalloc later.
+         */
+        if (aligned_base - range->base + count * PAGE_SIZE < range->size) {
+                new_range = kmalloc(sizeof(range_t), priority);
+                if (new_range == NULL)
+                        return NULL;
+        }
+        if (aligned_base != range->base) {
+                align_range = kmalloc(sizeof(range_t), priority);
+                if (align_range == NULL) {
+                        if (new_range != NULL)
+                                kfree(new_range);
+                        return NULL;
+                }
+                align_range->base = range->base;
+                align_range->size = aligned_base - range->base;
+                range->base = aligned_base;
+                range->size -= align_range->size;
+                align_range->next = range;
+                *range_ptr = align_range;
+                range_ptr = &align_range->next;
+        }
+        if (new_range != NULL) {
+                /*
+                 * Range is larger than needed, create a new list element for
+                 * the used list and shrink the element in the free list.
+                 */
+                new_range->base        = range->base;
+                new_range->size        = count * PAGE_SIZE;
+                range->base = new_range->base + new_range->size;
+                range->size = range->size - new_range->size;
+        } else {
+                /*
+                 * Range fits perfectly, remove it from free list.
+                 */
+                *range_ptr = range->next;
+                new_range = range;
+        }
+        /*
+         * Insert block into used list
+         */
+        new_range->next = used_list;
+        used_list = new_range;
+
+        return new_range->base;
+}
+
+
+
+
+
+
+
+
+
+**********************************************************************
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the system manager.
+
+This footnote confirms that this email message has been scanned for 
+the presence of computer viruses.
+**********************************************************************

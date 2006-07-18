@@ -1,46 +1,232 @@
-Received: from [220.76.242.187] ([220.76.242.187]:16269 "EHLO
-	localhost.localdomain") by ftp.linux-mips.org with ESMTP
-	id S8133892AbWGKBWK (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 11 Jul 2006 02:22:10 +0100
-Received: from mrv ([192.168.11.157])
-	by localhost.localdomain (8.12.8/8.12.8) with SMTP id k6B1NhiU020256
-	for <linux-mips@linux-mips.org>; Tue, 11 Jul 2006 10:23:46 +0900
-Message-ID: <000901c6a488$6f7e1800$9d0ba8c0@mrv>
-From: "Roman Mashak" <mrv@corecom.co.kr>
-Subject: SHT_REL bad size
-Date: Tue, 11 Jul 2006 10:22:11 +0900
+Received: from wip-ec-wd.wipro.com ([203.91.193.32]:63211 "EHLO
+	wip-ec-wd.wipro.com") by ftp.linux-mips.org with ESMTP
+	id S8126482AbWGRFYy (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 18 Jul 2006 06:24:54 +0100
+Received: from wip-ec-wd.wipro.com (localhost.wipro.com [127.0.0.1])
+	by localhost (Postfix) with ESMTP id 86737205ED
+	for <linux-mips@linux-mips.org>; Tue, 18 Jul 2006 10:51:52 +0530 (IST)
+Received: from blr-ec-bh02.wipro.com (blr-ec-bh02.wipro.com [10.201.50.92])
+	by wip-ec-wd.wipro.com (Postfix) with ESMTP id 56286205EC
+	for <linux-mips@linux-mips.org>; Tue, 18 Jul 2006 10:51:51 +0530 (IST)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
-	format=flowed;
-	charset="windows-1251";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
-Return-Path: <mrv@corecom.co.kr>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C6AA29.6F544430"
+Subject: RE: Mounting rootfs from Alchemy Flash fails
+Date: Tue, 18 Jul 2006 10:47:16 +0530
+Message-ID: <2156B1E923F1A147AABDF4D9FDEAB4CB09D11E@blr-m2-msg.wipro.com>
+From: <hemanth.venkatesh@wipro.com>
+Return-Path: <hemanth.venkatesh@wipro.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20060711012211.hA87ZVCcsLNJgw9edGs2MKzHx5yjoP1YWUcm3tsZTow@z>
+Message-ID: <20060718051716.cMhZQAgUsrqlaV6jHVHU3wlJ2G4iSgSdbPmdejv_pw4@z>
 
-Hello,
+This is a multi-part message in MIME format.
 
-I'm trying to compile application for MIPS 4km (designed by "Cavium"). Here 
-is the command line:
+------_=_NextPart_001_01C6AA29.6F544430
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Compiling main.cpp
-mips-g++ -c -Wall -D_GNU_SOURCE -mips32 -mtune=4kc  main.cpp -o main.o
-Compiling cmd.cpp
-mips-g++ -c -Wall -D_GNU_SOURCE -mips32 -mtune=4kc  cmdProc.cpp -o cmdProc.o
-Linking binkd
-mips-g++ main.o cmd.o ../lnkep.c ../lib/libapi.a  -o binkd
+Hi All,
 
-Compilation is fine, but on target I ran into error launching the program:
+=20
 
-#./binkd
-SHT_REL bad size=0
-./binkd cannot execute
+   We are trying to boot Linux MIPS 2.6.14 kernel on an AU1100 based
+board, mounting  root file system from Flash (S29GLxxxN MirrorBitTM
+Family, AMD Spansion) fails.  We have updated Alchamy-flash.c  to
+specify  flash size 32 MB and physical address as 0X1E000000.  We found
+that probe function is failing and vendor command set is not found, log
+attached below. Any inputs for resolving the problem are appreciated.
 
-Seems like the problem with linker?
+=20
 
-Appreciate any hints, thank you.
+=20
 
-With best regards, Roman Mashak.  E-mail: mrv@corecom.co.kr 
+Kernel command line arguments:   root=3D/dev/mtdblock0,
+
+=20
+
+SUI Flash: probing 32-bit flash bus
+
+SUI Flash: Found 2 x16 devices at 0x0 in 32-bit bank
+
+ Amd/Fujitsu Extended Query Table at 0x0040
+
+SUI Flash: CFI does not contain boot bank location. Assuming top.
+
+number of CFI chips: 1
+
+Sum of regions (0) !=3D total size of set of interleaved chips (2000000)
+
+gen_probe: No supported Vendor Command Set found
+
+=20
+
+=20
+
+Thanks in advance
+
+Hemanth
+
+=20
+
+
+------_=_NextPart_001_01C6AA29.6F544430
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal;
+	font-family:Arial;
+	color:windowtext;}
+span.EmailStyle18
+	{mso-style-type:personal;
+	font-family:Arial;
+	color:navy;}
+span.EmailStyle19
+	{mso-style-type:personal-reply;
+	font-family:Arial;
+	color:navy;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi All,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;&nbsp; We are trying to boot Linux MIPS 2.6.14 =
+kernel
+on an AU1100 based board, mounting &nbsp;root file system from Flash =
+(S29GLxxxN
+MirrorBitTM Family, AMD Spansion) fails.&nbsp; We have updated =
+Alchamy-flash.c
+&nbsp;to specify &nbsp;flash size 32 MB and physical address as =
+0X1E000000.
+&nbsp;We found that probe function is failing and vendor command set is =
+not
+found, log attached below. Any inputs for resolving the problem are
+appreciated.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Kernel command line arguments:&nbsp;&nbsp;
+root=3D/dev/mtdblock0,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>SUI Flash: probing 32-bit flash =
+bus<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>SUI Flash: Found 2 x16 devices at 0x0 in 32-bit =
+bank<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;Amd/Fujitsu Extended Query Table at =
+0x0040<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>SUI Flash: CFI does not contain boot bank location. =
+Assuming
+top.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>number of CFI chips: 1<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Sum of regions (0) !=3D total size of set of =
+interleaved chips
+(2000000)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>gen_probe: No supported Vendor Command Set =
+found<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks in advance<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hemanth<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C6AA29.6F544430--

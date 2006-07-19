@@ -1,69 +1,280 @@
-Received: from wip-ec-wd.wipro.com ([203.91.193.32]:13971 "EHLO
+Received: from wip-ec-wd.wipro.com ([203.91.193.32]:65209 "EHLO
 	wip-ec-wd.wipro.com") by ftp.linux-mips.org with ESMTP
-	id S8127232AbWGRIqi convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 18 Jul 2006 09:46:38 +0100
+	id S8133477AbWGSONM (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 19 Jul 2006 15:13:12 +0100
 Received: from wip-ec-wd.wipro.com (localhost.wipro.com [127.0.0.1])
-	by localhost (Postfix) with ESMTP id 4960D205E6
-	for <linux-mips@linux-mips.org>; Tue, 18 Jul 2006 14:13:39 +0530 (IST)
-Received: from blr-ec-bh01.wipro.com (blr-ec-bh01.wipro.com [10.201.50.91])
-	by wip-ec-wd.wipro.com (Postfix) with ESMTP id 35AF2205D9
-	for <linux-mips@linux-mips.org>; Tue, 18 Jul 2006 14:13:39 +0530 (IST)
+	by localhost (Postfix) with ESMTP id 3D57220654
+	for <linux-mips@linux-mips.org>; Wed, 19 Jul 2006 19:40:10 +0530 (IST)
+Received: from blr-ec-bh02.wipro.com (blr-ec-bh02.wipro.com [10.201.50.92])
+	by wip-ec-wd.wipro.com (Postfix) with ESMTP id 2901020626
+	for <linux-mips@linux-mips.org>; Wed, 19 Jul 2006 19:40:10 +0530 (IST)
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Mounting rootfs from Alchemy Flash fails
-Date: Tue, 18 Jul 2006 14:16:23 +0530
-Message-ID: <2156B1E923F1A147AABDF4D9FDEAB4CB09D16B@blr-m2-msg.wipro.com>
-In-Reply-To: <20060718071819.GW5162@dusktilldawn.nl>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C6AB3D.728FBB18"
+Subject: CRAMFS  Ramdisk image as Rootfs
+Date: Wed, 19 Jul 2006 19:43:03 +0530
+Message-ID: <2156B1E923F1A147AABDF4D9FDEAB4CB09D2DE@blr-m2-msg.wipro.com>
 From: <hemanth.venkatesh@wipro.com>
 Return-Path: <hemanth.venkatesh@wipro.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: freddy@dusktilldawn.nl
-Cc: linux-mips@linux-mips.org
-Message-ID: <20060718084623.uZZjeHerNA1U01AsnZY-14G0WfbUGexF5d5GG3uwRec@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20060719141303.y610j0vWH8Y6Gd3nxRkRXbOhFZ9d6Roi2ruonN0gfMs@z>
 
-Freddy, thanks for your reply. We are not using DB1100 board, but a
-custom board which has AU1100 core. We have added the partition info
-into alchemy-flash.c but the probe is not going through. It doesnot seem
-to have the dip switches you mentioned, and we are able to boot from
-flash with a 2.4 kernel. Its only 2.6.14 that is giving problems.
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C6AB3D.728FBB18
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi All,
+
+=20
+
+I was trying to mount cramfs image as Ramdisk rootfs for 2.6.14 kernel.
+Even though the kernel seems to detect the cramfs image, it is not able
+to mount it as rootfs. It throws the error "cramfs: bad root offset
+4864" The target is little endian, and  RHEL host on which the image was
+built is also little endian.=20
+
+=20
+
+The other images like EXT2 for ramdisk don't seem to get detected at
+all, and just throws error "VFS: Unable to mount root fs on
+unknown-block(1,0)".  Anyone faced similar issue before or knows what
+could be causing the problem.
+
+=20
+
+go r root=3D/dev/ram rd_start=3D0x85000000 rd_size=3D5009408 =
+rootfstype=3Dcramfs
+
+=20
+
+Initializing IPsec netlink socket
+
+NET: Registered protocol family 1
+
+NET: Registered protocol family 17
+
+md: Autodetecting RAID arrays.
+
+md: autorun ...
+
+md: ... autorun DONE.
+
+WIPRO path_lookup retval 0
+
+WIPRO security_sb_mount  retval 0
+
+WIPRO do_new_mount retval 0
+
+WIPRO do_mount retval 0
+
+RAMDISK: cramfs filesystem found at block 0
+
+RAMDISK: Loading 4892KiB [1 disk] into ram disk... done.
+
+cramfs: bad root offset 4864
+
+=20
 
 Thanks
+
 Hemanth
 
------Original Message-----
-From: Freddy Spierenburg [mailto:freddy@dusktilldawn.nl] 
-Sent: Tuesday, July 18, 2006 12:48 PM
-To: Hemanth V (WT01 - Embedded Systems)
-Cc: linux-mips@linux-mips.org
-Subject: Re: Mounting rootfs from Alchemy Flash fails
 
-Hi Hemanth,
+------_=_NextPart_001_01C6AB3D.728FBB18
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 18, 2006 at 10:47:16AM +0530, hemanth.venkatesh@wipro.com
-wrote:
-> We have updated Alchamy-flash.c  to specify  flash size 32 MB
-> and physical address as 0X1E000000.
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-Isn't 32MB the default in 2.6.14 for the DB1100 board? If I
-memorized it correctly you don't have to update anything. It
-should work out of the box, since the DB1100 comes standard with
-32MB flash.
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"PlaceName"/>
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"PlaceType"/>
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"place"/>
+<!--[if !mso]>
+<style>
+st1\:*{behavior:url(#default#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
+</head>
 
-> We found that probe function is failing and vendor command set
-> is not found, log attached below. Any inputs for resolving the
-> problem are appreciated.
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
 
-Have you checked dip-switch S5? Both switches should be on (white
-switches both near the 1 and 2 instead of the text cts-2)
+<div class=3DSection1>
 
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi All,<o:p></o:p></span></font></p>
 
--- 
-$ cat ~/.signature
-Freddy Spierenburg <freddy@dusktilldawn.nl>  http://freddy.snarl.nl/
-GnuPG: 0x7941D1E1=C948 5851 26D2 FA5C 39F1  E588 6F17 FD5D 7941 D1E1
-$ # Please read http://www.ietf.org/rfc/rfc2015.txt before complain!
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I was trying to <st1:place w:st=3D"on"><st1:PlaceType =
+w:st=3D"on">mount</st1:PlaceType>
+ <st1:PlaceName w:st=3D"on">cramfs</st1:PlaceName></st1:place> image as =
+Ramdisk
+rootfs for 2.6.14 kernel. Even though the kernel seems to detect the =
+cramfs
+image, it is not able to mount it as rootfs. It throws the error =
+&#8220;cramfs:
+bad root offset 4864&#8221; The target is little endian, and &nbsp;RHEL =
+host on
+which the image was built is also little endian. =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>The other images like EXT2 for ramdisk don&#8217;t =
+seem to
+get detected at all, and just throws error &#8220;VFS: Unable to mount =
+root fs
+on unknown-block(1,0)&#8221;.&nbsp; Anyone faced similar issue before or =
+knows
+what could be causing the problem.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>go r root=3D/dev/ram rd_start=3D0x85000000 =
+rd_size=3D5009408
+rootfstype=3Dcramfs<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Initializing IPsec netlink =
+socket<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>NET: Registered protocol family =
+1<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>NET: Registered protocol family =
+17<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>md: Autodetecting RAID =
+arrays.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>md: autorun ...<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>md: ... autorun DONE.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>WIPRO path_lookup retval =
+0<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>WIPRO security_sb_mount&nbsp; retval =
+0<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>WIPRO do_new_mount retval =
+0<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>WIPRO do_mount retval 0<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>RAMDISK: cramfs filesystem found at block =
+0<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>RAMDISK: Loading 4892KiB [1 disk] into ram disk... =
+done.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>cramfs: bad root offset =
+4864<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hemanth<o:p></o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C6AB3D.728FBB18--

@@ -1,139 +1,99 @@
-Received: from lvs00-fl-n02.ftl.affinity.com ([216.219.253.98]:16306 "EHLO
-	lvs00-fl-n02.ftl.affinity.com") by ftp.linux-mips.org with ESMTP
-	id S8133847AbWGTOag (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 20 Jul 2006 15:30:36 +0100
-Received: from [24.106.202.234] ([24.106.202.234]:13062 "EHLO 3PiGAS")
-	by ams002.ftl.affinity.com with ESMTP id S362485AbWGTOaa (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 20 Jul 2006 10:30:30 -0400
-From: "Gary Smith" <gary.smith@3phoenix.com>
-Subject: IDE on Swarm
-Date: Thu, 20 Jul 2006 10:30:28 -0400
-Message-ID: <000601c6ac09$0c262f30$6dacaac0@3PiGAS>
+Received: from wip-ec-wd.wipro.com ([203.91.193.32]:3017 "EHLO
+	wip-ec-wd.wipro.com") by ftp.linux-mips.org with ESMTP
+	id S8133863AbWGTQCi (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 20 Jul 2006 17:02:38 +0100
+Received: from wip-ec-wd.wipro.com (localhost.wipro.com [127.0.0.1])
+	by localhost (Postfix) with ESMTP id 5FF4520611
+	for <linux-mips@linux-mips.org>; Thu, 20 Jul 2006 21:29:33 +0530 (IST)
+Received: from blr-ec-bh02.wipro.com (blr-ec-bh02.wipro.com [10.201.50.92])
+	by wip-ec-wd.wipro.com (Postfix) with ESMTP id 45B38205F9
+	for <linux-mips@linux-mips.org>; Thu, 20 Jul 2006 21:29:33 +0530 (IST)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0007_01C6ABE7.85148F30"
-Return-Path: <gary.smith@3phoenix.com>
+	boundary="----_=_NextPart_001_01C6AC15.E5D92044"
+Subject: Bit operations work differently on MIPS and IA32
+Date: Thu, 20 Jul 2006 21:32:27 +0530
+Message-ID: <2156B1E923F1A147AABDF4D9FDEAB4CB09D3D8@blr-m2-msg.wipro.com>
+From: <hemanth.venkatesh@wipro.com>
+Return-Path: <hemanth.venkatesh@wipro.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20060720143028.ySOIlnCSVYFCUo0wiC9wTYmMaMtQmTQdNlrvBL-6PvI@z>
+Message-ID: <20060720160227.0sFgeBJrIWos5mrfLewQlb88Cx---m93FZiw-MqcRLI@z>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0007_01C6ABE7.85148F30
+------_=_NextPart_001_01C6AC15.E5D92044
 Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Hello All,
+Hi All,
 
- 
+=20
 
-I'd like to ask a question regarding a post I noticed on a message board.
-The post I read is as follows.
+I ran the below program on an IA32 and AU1100 machine, both being little
+endian machines and got different results. Does anyone know what could
+be the cause of this behaviour. This problem is blocking us from booting
+the cramfs rootfs.
 
- 
+=20
 
-http://mail.bitmover.com/pipermail/sibyte-users/2004-November/000029.html
+#include <stdio.h>
 
- 
+typedef unsigned int u32;
 
-I am using a BCM91250A evaluation board with a compactflash device connected
-to the onboard IDE controller.  When booting with a Linux 2.4.20 kernel, the
-IDE interface is recognized and the compactflash device is hda.  When
-booting with a Linux 2.6.16.25 kernel, the IDE interface is recognized, but
-no device information is echoed to the console.  I've included output below.
-The message post above mentions that there were problems with the IDE driver
-in Linux 2.6 during the late 2004 time-frame.  I'd like to inquire about the
-current availability of the IDE driver in the kernel.
+main()
 
- 
+{
 
- 
+struct tmp{
 
-Linux 2.4.20 Output:
+u32 namelen:6,offset:26;
 
- 
+}tmp1;
 
-Uniform Multi-Platform E-IDE driver Revision: 6.31
+=20
 
-ide: Assuming 50MHz system bus speed for PIO modes; override with idebus=xx
+(*(int *)(&tmp1))=3D0x4c0;
 
-SiByte onboard IDE configured as device 0
+=20
 
-hda: SanDisk SDCFB-1024, ATA DISK drive
+printf("%d %d\n",tmp1.namelen,tmp1.offset);
 
-ide0 at 0xffffffffb00b3e01-0xffffffffb00b3e08,0xffffffffb00b7ec1 on irq 36
+=20
 
-hda: 2001888 sectors (1025 MB) w/1KiB Cache, CHS=1986/16/63
+}
 
-Partition check:
+=20
 
- /dev/ide/host0/bus0/target0/lun0: p1
+Results on IA32 : 0 19
 
- 
+=20
 
- 
+Results on AU1100 (MIPS):  0 1216
 
- 
+=20
 
-Linux 2.6.16.25 Output:
+Thanks
 
- 
-
-Uniform Multi-Platform E-IDE driver Revision: 7.00alpha2
-
-ide: Assuming 50MHz system bus speed for PIO modes; override with idebus=xx
-
-ide-floppy driver 0.99.newide
-
-SWARM IDE driver
-
-ide-swarm: IDE interface at GenBus slot 4
-
-NET: Registered protocol family 2
-
- 
-
- 
-
-Thank you for your time.
-
- 
-
-Gary
-
---
-
-Gary A. Smith, ABD PhD
-Systems Engineer, 3Phoenix, Inc.
+hemanth
 
 
-------=_NextPart_000_0007_01C6ABE7.85148F30
+------_=_NextPart_001_01C6AC15.E5D92044
 Content-Type: text/html;
-	charset="US-ASCII"
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
 <html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
 xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
 xmlns=3D"http://www.w3.org/TR/REC-html40">
 
 <head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+<meta http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dus-ascii">
 <meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"City"/>
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"place"/>
-<!--[if !mso]>
-<style>
-st1\:*{behavior:url(#default#ieooui) }
-</style>
-<![endif]-->
 <style>
 <!--
  /* Style Definitions */
@@ -166,229 +126,111 @@ div.Section1
 
 <div class=3DSection1>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>Hello =
-All,<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi All,<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'>I&#8217;d like
-to ask a question regarding a post I noticed on a message board.&nbsp; =
-The post
-I read is as follows.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'>http://mail.bitmover.com/pipermail/sibyte-users/2004-No=
-vember/000029.html<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>I am =
-using a
-BCM91250A evaluation board with a compactflash device connected to the =
-onboard
-IDE controller.&nbsp; When booting with a Linux 2.4.20 kernel, the IDE
-interface is recognized and the compactflash device is hda.&nbsp; When =
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I ran the below program on an IA32 and AU1100 =
+machine, both
+being little endian machines and got different results. Does anyone know =
+what
+could be the cause of this behaviour. This problem is blocking us from =
 booting
-with a Linux 2.6.16.25 kernel, the IDE interface is recognized, but no =
-device
-information is echoed to the console.&nbsp; I&#8217;ve included output
-below.&nbsp; The message post above mentions that there were problems =
-with the
-IDE driver in Linux 2.6 during the late 2004 time-frame.&nbsp; I&#8217;d =
-like
-to inquire about the current availability of the IDE driver in the =
-kernel.<o:p></o:p></span></font></p>
+the cramfs rootfs.<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>#include &lt;stdio.h&gt;<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>Linux =
-2.4.20
-Output:<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>typedef unsigned int =
+u32;<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>main()<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>Uniform
-Multi-Platform E-IDE driver Revision: 6.31<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>{<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>ide: =
-Assuming
-50MHz system bus speed for PIO modes; override with =
-idebus=3Dxx<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>struct tmp{<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>SiByte =
-onboard
-IDE configured as device 0<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>u32 namelen:6,offset:26;<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>hda: =
-SanDisk
-SDCFB-1024, ATA DISK drive<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>}tmp1;<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>ide0 at =
-0xffffffffb00b3e01-0xffffffffb00b3e08,0xffffffffb00b7ec1
-on irq 36<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>hda: =
-2001888
-sectors (1025 MB) w/1KiB Cache, =
-CHS=3D1986/16/63<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>(*(int =
+*)(&amp;tmp1))=3D0x4c0;<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'>Partition check:<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'>&nbsp;/dev/ide/host0/bus0/target0/lun0:
-p1<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>printf(&quot;%d =
+%d\n&quot;,tmp1.namelen,tmp1.offset);<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>}<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>Linux =
-2.6.16.25
-Output:<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>Results on IA32 : 0 19<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>Uniform =
-Multi-Platform
-E-IDE driver Revision: 7.00alpha2<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>Results on AU1100 (MIPS):&nbsp; 0 =
+1216<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>ide: =
-Assuming
-50MHz system bus speed for PIO modes; override with =
-idebus=3Dxx<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'>ide-floppy
-driver 0.99.newide<o:p></o:p></span></font></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>Thanks<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>SWARM =
-IDE driver<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'>ide-swarm: IDE
-interface at GenBus slot 4<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>NET: =
-Registered
-protocol family 2<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier New";color:black'>Thank =
-you for
-your time.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Courier =
-New"><span
-style=3D'font-size:12.0pt;font-family:"Courier =
-New";color:black'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><st1:place w:st=3D"on"><st1:City w:st=3D"on"><font =
-size=3D3
-  color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:12.0pt;font-family:
-  "Courier =
-New";color:black'>Gary</span></font></st1:City></st1:place><font
-color=3Dblack face=3D"Courier New"><span style=3D'font-family:"Courier =
-New";
-color:black'><o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Courier New"><span =
-style=3D'font-size:12.0pt;
-font-family:"Courier New"'>--</span></font><o:p></o:p></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Courier New"><span =
-style=3D'font-size:12.0pt;
-font-family:"Courier New"'>Gary A. Smith, ABD PhD<br>
-Systems Engineer, 3Phoenix, Inc.</span></font><o:p></o:p></p>
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>hemanth<o:p></o:p></span></font></p>
 
 </div>
 
@@ -396,4 +238,4 @@ Systems Engineer, 3Phoenix, Inc.</span></font><o:p></o:p></p>
 
 </html>
 
-------=_NextPart_000_0007_01C6ABE7.85148F30--
+------_=_NextPart_001_01C6AC15.E5D92044--

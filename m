@@ -1,141 +1,112 @@
-Received: from wip-ec-wd.wipro.com ([203.91.193.32]:5001 "EHLO
+Received: from wip-ec-wd.wipro.com ([203.91.193.32]:25315 "EHLO
 	wip-ec-wd.wipro.com") by ftp.linux-mips.org with ESMTP
-	id S8133479AbWGUGvz convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 21 Jul 2006 07:51:55 +0100
+	id S8133935AbWGXOyZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 24 Jul 2006 15:54:25 +0100
 Received: from wip-ec-wd.wipro.com (localhost.wipro.com [127.0.0.1])
-	by localhost (Postfix) with ESMTP id AFFB52062A
-	for <linux-mips@linux-mips.org>; Fri, 21 Jul 2006 12:18:50 +0530 (IST)
+	by localhost (Postfix) with ESMTP id 5F751206C9
+	for <linux-mips@linux-mips.org>; Mon, 24 Jul 2006 20:21:13 +0530 (IST)
 Received: from blr-ec-bh02.wipro.com (blr-ec-bh02.wipro.com [10.201.50.92])
-	by wip-ec-wd.wipro.com (Postfix) with ESMTP id 9AD102061C
-	for <linux-mips@linux-mips.org>; Fri, 21 Jul 2006 12:18:50 +0530 (IST)
+	by wip-ec-wd.wipro.com (Postfix) with ESMTP id 4759220650
+	for <linux-mips@linux-mips.org>; Mon, 24 Jul 2006 20:21:13 +0530 (IST)
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Bit operations work differently on MIPS and IA32
-Date: Fri, 21 Jul 2006 12:21:45 +0530
-Message-ID: <2156B1E923F1A147AABDF4D9FDEAB4CB09D442@blr-m2-msg.wipro.com>
-In-Reply-To: <20060720174522.67213.qmail@web31514.mail.mud.yahoo.com>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C6AF31.072375BC"
+Subject: Multiple page size support for AU1xxx
+Date: Mon, 24 Jul 2006 20:24:13 +0530
+Message-ID: <2156B1E923F1A147AABDF4D9FDEAB4CB09D650@blr-m2-msg.wipro.com>
 From: <hemanth.venkatesh@wipro.com>
 Return-Path: <hemanth.venkatesh@wipro.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: imipak@yahoo.com
-Cc: linux-mips@linux-mips.org
-Message-ID: <20060721065145.LSKFkLN9n9yhJvjS_3lTkcfaqV-omCBifE0i8yiuDVw@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20060724145413.dYui7mX2HEgJyCcrWBF_cjTfFtx_Bd3j3u-vcErHf1g@z>
 
-Hi,
+This is a multi-part message in MIME format.
 
-It was indeed compiler options, but not sure exactly which one.
-Previously we were using WR GNU compiler  mips-wrs-linux-gnu-gcc, and
-when we replaced it with mips-wrs-linux-gnu-mips32_el-gpp-gcc bit
-operations are working perfectly. The system has been booted from a
-cramfs RAMDISK image.
+------_=_NextPart_001_01C6AF31.072375BC
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your help
+Has anyone been able to configure and boot kernel with page sizes other
+that 4kb i.e. 16KB and 64KB on any AU1xxx based boards.
+
+=20
+
+Thanks
+
 Hemanth
 
------Original Message-----
-From: Jonathan Day [mailto:imipak@yahoo.com] 
-Sent: Thursday, July 20, 2006 11:15 PM
-To: Hemanth V (WT01 - Embedded Systems); linux-mips@linux-mips.org
-Subject: Re: Bit operations work differently on MIPS and IA32
 
-Hi,
+------_=_NextPart_001_01C6AF31.072375BC
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Well, looking at it, the word is aligned in exactly
-the same way but the bitfields are applied in the
-opposite direction. (In the ix32 example, the 6 bits
-are counting from the low end of the word, but on the
-MIPS are counting from the high end.)
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-The first question one must ask is whether you are
-using the same toolchain for both and what compiler
-directives you are giving in each case. (If you are
-using GCC on the MIPS, it would also be good to know
-what sort of code it was compiled to generate by
-default. If you ask GCC for the version information,
-it'll give the compiler flags used.)
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
-Even with this information, as another poster noted,
-bitfield operations are not guaranteed to be portable.
-The best I, or anyone else, can do is see if there's
-anything obviously inconsistant in the compiler flags.
+</head>
 
-If you absolutely need to use the bitfields you've
-listed, you CAN do a workaround. Either you can use a
-#ifdef to determine the order the bitfields are listed
-in the union, OR you can take 6 bits off each end and
-recombine the end you want to keep with the offset.
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
 
-(Optimizing the code could break either of these
-methods, as there is no guarantee where the optimizer
-will decide to place the fields. That would presumably
-be system-dependent, as different bytes may be easier
-to access on different architectures, so would be
-subject to different optimizations.)
+<div class=3DSection1>
 
---- hemanth.venkatesh@wipro.com wrote:
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Has anyone been able to configure and boot kernel =
+with page
+sizes other that 4kb i.e. 16KB and 64KB on any AU1xxx based =
+boards.<o:p></o:p></span></font></p>
 
-> Hi All,
-> 
->  
-> 
-> I ran the below program on an IA32 and AU1100
-> machine, both being little
-> endian machines and got different results. Does
-> anyone know what could
-> be the cause of this behaviour. This problem is
-> blocking us from booting
-> the cramfs rootfs.
-> 
->  
-> 
-> #include <stdio.h>
-> 
-> typedef unsigned int u32;
-> 
-> main()
-> 
-> {
-> 
-> struct tmp{
-> 
-> u32 namelen:6,offset:26;
-> 
-> }tmp1;
-> 
->  
-> 
-> (*(int *)(&tmp1))=0x4c0;
-> 
->  
-> 
-> printf("%d %d\n",tmp1.namelen,tmp1.offset);
-> 
->  
-> 
-> }
-> 
->  
-> 
-> Results on IA32 : 0 19
-> 
->  
-> 
-> Results on AU1100 (MIPS):  0 1216
-> 
->  
-> 
-> Thanks
-> 
-> hemanth
-> 
-> 
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks<o:p></o:p></span></font></p>
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hemanth<o:p></o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C6AF31.072375BC--

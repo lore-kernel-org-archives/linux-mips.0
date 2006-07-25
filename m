@@ -1,112 +1,38 @@
-Received: from wip-ec-wd.wipro.com ([203.91.193.32]:25315 "EHLO
-	wip-ec-wd.wipro.com") by ftp.linux-mips.org with ESMTP
-	id S8133935AbWGXOyZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 24 Jul 2006 15:54:25 +0100
-Received: from wip-ec-wd.wipro.com (localhost.wipro.com [127.0.0.1])
-	by localhost (Postfix) with ESMTP id 5F751206C9
-	for <linux-mips@linux-mips.org>; Mon, 24 Jul 2006 20:21:13 +0530 (IST)
-Received: from blr-ec-bh02.wipro.com (blr-ec-bh02.wipro.com [10.201.50.92])
-	by wip-ec-wd.wipro.com (Postfix) with ESMTP id 4759220650
-	for <linux-mips@linux-mips.org>; Mon, 24 Jul 2006 20:21:13 +0530 (IST)
-Content-class: urn:content-classes:message
+Received: from [202.99.27.194] ([202.99.27.194]:1752 "EHLO mail1.topsec.com.cn")
+	by ftp.linux-mips.org with ESMTP id S8133966AbWGYCww (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 25 Jul 2006 03:52:52 +0100
+Message-ID: <004001c6af95$14585900$0100000a@codingman>
+From: <wyb@topsec.com.cn>
+Subject: unmatched R_MIPS_HI16/LO16 on gcc 3.4.3
+Date: Tue, 25 Jul 2006 10:49:56 +0800
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C6AF31.072375BC"
-Subject: Multiple page size support for AU1xxx
-Date: Mon, 24 Jul 2006 20:24:13 +0530
-Message-ID: <2156B1E923F1A147AABDF4D9FDEAB4CB09D650@blr-m2-msg.wipro.com>
-From: <hemanth.venkatesh@wipro.com>
-Return-Path: <hemanth.venkatesh@wipro.com>
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <wyb@topsec.com.cn>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20060724145413.dYui7mX2HEgJyCcrWBF_cjTfFtx_Bd3j3u-vcErHf1g@z>
+To: macro@linux-mips.org, ralf@linux-mips.org, sskowron@ET.PUT.Poznan.PL, rsandifo@redhat.com
+Cc: linux-mips@linux-mips.org
+Message-ID: <20060725024956.Dm7mEnG_skBmkqOroz4DRawO0yPzI_p484gtN4UznnA@z>
 
-This is a multi-part message in MIME format.
+Sorry for disturbing you.
 
-------_=_NextPart_001_01C6AF31.072375BC
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I met similar problem as Stanislaw Skowronek, but for gcc 3.4.3. I created a
+kernel module, when insmod, kernel reported "dangerous relocation". I traced
+the bug, found unmatched R_MIPS_HI16/LO16 in module's elf file, and kernel
+refused to relocate:
+...
+00015a5c  00039a05 R_MIPS_HI16       0000000c   tos_net_debug
+00015a68  00000204 R_MIPS_26         00000000   .text
+00015a64  00046005 R_MIPS_HI16       0006b598   arp_proxy_list
+00015a6c  00046006 R_MIPS_LO16       0006b598   arp_proxy_list
+...
 
-Has anyone been able to configure and boot kernel with page sizes other
-that 4kb i.e. 16KB and 64KB on any AU1xxx based boards.
+My problem arised when expression on tos_net_debug could be optimized out,
+it seemed like gcc optimized out the LO16, but left HI16.
 
-=20
+The original discussion on similar problem is at
+http://www.linux-mips.org/archives/linux-mips/2005-05/msg00097.html
 
-Thanks
-
-Hemanth
-
-
-------_=_NextPart_001_01C6AF31.072375BC
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Has anyone been able to configure and boot kernel =
-with page
-sizes other that 4kb i.e. 16KB and 64KB on any AU1xxx based =
-boards.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hemanth<o:p></o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C6AF31.072375BC--
+thanks very much

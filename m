@@ -1,46 +1,247 @@
-Received: from wip-ec-wd.wipro.com ([203.91.193.32]:33995 "EHLO
-	wip-ec-wd.wipro.com") by ftp.linux-mips.org with ESMTP
-	id S8133435AbWGYKGx convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 25 Jul 2006 11:06:53 +0100
+Received: from cluster-a.mailcontroller.altohiway.com ([213.83.66.193]:26603
+	"EHLO cluster-a.mailcontroller.altohiway.com") by ftp.linux-mips.org
+	with ESMTP id S8134022AbWG0Pxy (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 27 Jul 2006 16:53:54 +0100
+Received: from efs01.eventmine.local (host-212-158-201-87.bulldogdsl.com [212.158.201.87])
+	by rlya6a.mailcontroller.altohiway.com (MailControl) with SMTP id k6RFrlTr009217
+	for <linux-mips@linux-mips.org>; Thu, 27 Jul 2006 16:53:47 +0100
 Content-class: urn:content-classes:message
+Subject: is sde lite a complete toolchain?
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Multiple page size support for AU1xxx
-Date: Tue, 25 Jul 2006 15:36:33 +0530
-Message-ID: <2156B1E923F1A147AABDF4D9FDEAB4CB09D6F3@blr-m2-msg.wipro.com>
-In-Reply-To: <20060725034619.GA22617@linux-mips.org>
-From: <hemanth.venkatesh@wipro.com>
-Return-Path: <hemanth.venkatesh@wipro.com>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C6B194.D8D498EE"
+Date: Thu, 27 Jul 2006 16:53:47 +0100
+Message-ID: <583C102FDFBE2E4FB8ADF0D680B0798C0B53CB@efs01.eventmine.local>
+From: "Shan Wang" <swang@eventmine.com>
+Return-Path: <swang@eventmine.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20060725100633.f20TIvakYawOVGDfDu3MD0wP8MyijnjA-kC2nhLeTqo@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20060727155347.HsBSP7r4vssGDFxHkmM5AOD0XE0B6AurnjHmnCKdbFE@z>
 
-Hi Ralf,
+This is a multi-part message in MIME format.
 
->>Currently only 16kB works and only for 64-bit kernels.  I'm planning
-to
->> fix that rsn.
+------_=_NextPart_001_01C6B194.D8D498EE
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the info, did u mean 16KB would be supported for 32 bit
-kernel also. I also saw code changes in arch/mips/mm/tlb-r8k.c only, is
-there a plan to port it to r4k TLB also.
+Hi all,
+
+=20
+
+I downloaded the SDE lite toolchain from MIPS Technologies. I can use
+the makefiles to build all the examples come with the package and test
+them with the simulator. But when I tried to use sde-gcc to cross
+compile the hello world example directly:
+
+=20
+
+sde-gcc -Wall -mips32 -mtune=3D4kc -EL hello.c -o hello
+
+=20
+
+I got errors like the following:
+
+/home/linuxdev/packages/sde-lite-linux/bin/../lib/gcc/sde/3.4.4/../../..
+/../sde/bin/ld: warning: cannot find entry symbol __start;
+
+ defaulting to 0000000080020000
+
+/tmp/ccEaLxlW.o: In function `main':
+
+hello.c:(.text+0x20): undefined reference to `printf'
+
+hello.c:(.text+0x20): relocation truncated to fit: R_MIPS_26 against
+`printf'
+
+collect2: ld returned 1 exit status
+
+=20
+
+=20
+
+Does that mean the SDE lite package is not a complete cross toolchain,
+can I use it to compile my own application?=20
+
+=20
+
+Any help will be appropriated, thanks very much.
+
+=20
+
+=20
+
+Best Regards,
+
+=20
+
+Shan
 
 
-Help on 2.6.14 and 2.6.17 kernels provide the below info. Does it mean
-some changes are required at user level also.
 
-config PAGE_SIZE_16KB
-        help
-          Note that you will need a suitable Linux distribution to
-support 
-          this.
-          There are also issues with compatibility of user applications
+This message has been scanned by MailController - www.MailController.altohi=
+way.com
 
-Thanks
-Hemanth
+------_=_NextPart_001_01C6B194.D8D498EE
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-  
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
+hemas-microsoft-com:office:word" xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>Hi all,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>I downloaded the SDE lite toolchain from MIPS
+Technologies. I can use the makefiles to build all the examples come with t=
+he
+package and test them with the simulator. But when I tried to use sde-gcc to
+cross compile the hello world example directly:<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>sde-gcc -Wall -mips32 -mtune=3D4kc -EL hello.c -o=
+ hello<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>I got errors like the following:<o:p></o:p></span=
+></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>/home/linuxdev/packages/sde-lite-linux/bin/../lib=
+/gcc/sde/3.4.4/../../../../sde/bin/ld:
+warning: cannot find entry symbol __start;<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>&nbsp;defaulting to 0000000080020000<o:p></o:p></=
+span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>/tmp/ccEaLxlW.o: In function `main':<o:p></o:p></=
+span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>hello.c:(.text+0x20): undefined reference to `pri=
+ntf'<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>hello.c:(.text+0x20): relocation truncated to fit:
+R_MIPS_26 against `printf'<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>collect2: ld returned 1 exit status<o:p></o:p></s=
+pan></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>Does that mean the SDE lite package is not a comp=
+lete
+cross toolchain, can I use it to compile my own application? <o:p></o:p></s=
+pan></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>Any help will be appropriated, thanks very much.<=
+o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>Best Regards,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>Shan<o:p></o:p></span></font></p>
+
+</div>
+
+<br><br>
+<P align=3Dcenter>This message has been scanned by <A href=3D"http://www.ma=
+ilcontroller.altohiway.com/">MailController</A>.</P>
+</body>
+
+</html>
+
+------_=_NextPart_001_01C6B194.D8D498EE--

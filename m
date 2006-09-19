@@ -1,317 +1,476 @@
-Received: from mx1.razamicroelectronics.com ([63.111.213.197]:22995 "EHLO
+Received: from mx1.razamicroelectronics.com ([63.111.213.197]:39184 "EHLO
 	hq-ex-mb01.razamicroelectronics.com") by ftp.linux-mips.org with ESMTP
-	id S20038625AbWISPje (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 19 Sep 2006 16:39:34 +0100
+	id S20038644AbWISQ6B (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 19 Sep 2006 17:58:01 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C6DC01.C95E134A"
-Subject: Differing results from cross and native compilers
-Date: Tue, 19 Sep 2006 08:39:25 -0700
-Message-ID: <2E96546B3C2C8B4CA739323C6058204A0163548B@hq-ex-mb01.razamicroelectronics.com>
+	boundary="----_=_NextPart_001_01C6DC0C.BF680F2A"
+Subject: RE: Differing results from cross and native compilers
+Date: Tue, 19 Sep 2006 09:57:53 -0700
+Message-ID: <2E96546B3C2C8B4CA739323C6058204A0163548C@hq-ex-mb01.razamicroelectronics.com>
 From: "Eric DeVolder" <edevolder@razamicroelectronics.com>
 Return-Path: <edevolder@razamicroelectronics.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20060919153925.zaJqodWjclS4wTsturieV9ID_y4_JvwlW0gA8Xi2Ut0@z>
+To: Thiemo Seufer <ths@networkno.de>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20060919165753.YuzXAZWgURrnrnipEkK8k-1FCzNudfhryoQfiKnkKVg@z>
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C6DC01.C95E134A
+------_=_NextPart_001_01C6DC0C.BF680F2A
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
+Yes, it appears to me that the compiler (cc1) and assembler (as) =
+invocations are the same. I've included the "-v" output of each below =
+for reference. Furthermore, the -save-temps output .i files are =
+effectively the same (differences due to cross vs. native paths, but =
+that is it). Nonetheless, the output assembly source still contains =
+differences!
 =20
-Hi, I have a MIPS native and cross compiler (gcc 3.4.4 and binutils =
-2.15)
-both built using crosstool-0.42. I have an Alchemy system (MIPS32)
-for which I am building code. When I compile a simple example, I get
-different instructions from the cross and native compilers.
+I'm curious if anybody examined the output of a cross and native =
+toolchain of the same (recent) version?
 =20
-Specifically, the source file is:
-=20
- #include <stdio.h>
- int
- main (int argc, char **argv)
- {
-     return -printf("Hello, world!\n");
- }
-=20
-To compile natively, I use:
-=20
- % gcc -c hello.c -o obj1.o
-=20
-To cross compile, I use:
-=20
- % mipsel-unknown-linux-gnu-gcc -c hello.c -o obj2.o
-=20
-If I use the -O0 or -O1 flags with each, I get identical output
-(for the .text), but when I compile in both environments with -O2;
-the compilers produce different results.
-=20
-The native compiler on the Alchemy board results in the following:
-=20
-obj1.o:     file format elf32-tradlittlemips
-Disassembly of section .text:
-00000000 <main>:
-   0:   3c1c0000        lui     gp,0x0
-   4:   279c0000        addiu   gp,gp,0
-   8:   0399e021        addu    gp,gp,t9
-   c:   27bdffe0        addiu   sp,sp,-32
-  10:   afbf0018        sw      ra,24(sp)
-  14:   afbc0010        sw      gp,16(sp)
-  18:   8f840000        lw      a0,0(gp)
-  1c:   00000000        nop
-  20:   24840000        addiu   a0,a0,0
-  24:   8f990000        lw      t9,0(gp)
-  28:   00000000        nop
-  2c:   0320f809        jalr    t9
-  30:   00000000        nop
-  34:   8fbc0010        lw      gp,16(sp)
-  38:   8fbf0018        lw      ra,24(sp)
-  3c:   00021023        negu    v0,v0
-  40:   03e00008        jr      ra
-  44:   27bd0020        addiu   sp,sp,32
-=20
-The cross compiler results in:
-=20
-obj2.o:     file format elf32-tradlittlemips
-Disassembly of section .text:
-00000000 <main>:
-   0:   3c1c0000        lui     gp,0x0
-   4:   279c0000        addiu   gp,gp,0
-   8:   0399e021        addu    gp,gp,t9
-   c:   27bdffe0        addiu   sp,sp,-32
-  10:   afbf0018        sw      ra,24(sp)
-  14:   afbc0010        sw      gp,16(sp)
-  18:   8f840000        lw      a0,0(gp)
-  1c:   8f990000        lw      t9,0(gp)
-  20:   00000000        nop
-  24:   0320f809        jalr    t9
-  28:   24840000        addiu   a0,a0,0
-  2c:   8fbc0010        lw      gp,16(sp)
-  30:   8fbf0018        lw      ra,24(sp)
-  34:   00021023        negu    v0,v0
-  38:   03e00008        jr      ra
-  3c:   27bd0020        addiu   sp,sp,32
-=20
-I would have thought that for this simple example I'd get identical
-results. For reasons I have yet to figure out, the cross compiler is
-finding better optimizations than the native, though both are the
-same gcc version. I checked the specs files, and the two are identical
-other than the "cross_compile" setting.
-=20
-I'd like to solve this little mystery to get to the bigger prize, and
-that is the ability to actually compile code (e.g. the entire system)
-for MIPS32. As is demonstrated above, the compilers are generating
-MIPS1 code (based on the NOPs between the load-to-use), but if I
-could get the compiler to honor -mips32 (this discovery I originally
-made while trying to get native -mips32 to work), I can get even
-tighter code...
-=20
-I've done quite a bit of googling to no avail. I've also done some
-digging into gcc/binutils sources, and it appears that binutils has a
-"from-abi" option for choosing its architecture, which is o32 which
-probably means just MIPS1. I thought about trying to rebuild all the
-tools for mipsisa32-unknown-linux-gnu, but am concerned I'd still
-have the same problem of a particular compiler optimziation option
-not being honored by the compiler.
-=20
-Any tips/advice much appreciated, thanks!
 Eric
 =20
+=20
+0:~$ diff -wbup cross.s native.s
+--- cross.s 2006-09-19 11:38:54.000000000 -0500
++++ native.s     2006-09-19 11:39:07.000000000 -0500
+@@ -17,24 +17,20 @@ main:
+        .fmask  0x00000000,0
+        .set    noreorder
+        .cpload $25
+-       .set    nomacro
+-
++       .set    reorder
+        addiu   $sp,$sp,-32
+        sw      $31,24($sp)
+        .cprestore      16
+-       lw      $4,%got($LC0)($28)
+-       lw      $25,%call16(printf)($28)
+-       nop
+-       jalr    $25
+-       addiu   $4,$4,%lo($LC0)
+-
+-       lw      $28,16($sp)
++       la      $4,$LC0
++       jal     printf
+        lw      $31,24($sp)
+        subu    $2,$0,$2
++       .set    noreorder
++       .set    nomacro
+        j       $31
+        addiu   $sp,$sp,32
+-
+        .set    macro
+        .set    reorder
++
+        .end    main
+        .ident  "GCC: (GNU) 3.4.4"
 
-------_=_NextPart_001_01C6DC01.C95E134A
+For good measure, here's the assembly output from the cross compiler:
+=20
+0:~$ more cross.s
+  .file 1 "t.c"
+  .section .mdebug.abi32
+  .previous
+  .abicalls
+  .section  .rodata.str1.4,"aMS",@progbits,1
+  .align  2
+$LC0:
+  .ascii  "Hello, World!\n\000"
+  .text
+  .align  2
+  .globl  main
+  .ent  main
+  .type main, @function
+main:
+  .frame  $sp,32,$31    # vars=3D 0, regs=3D 1/0, args=3D 16, gp=3D 8
+  .mask 0x80000000,-8
+  .fmask  0x00000000,0
+  .set  noreorder
+  .cpload $25
+  .set  nomacro
+  addiu $sp,$sp,-32
+  sw  $31,24($sp)
+  .cprestore  16
+  lw  $4,%got($LC0)($28)
+  lw  $25,%call16(printf)($28)
+  nop
+  jalr  $25
+  addiu $4,$4,%lo($LC0)
+  lw  $28,16($sp)
+  lw  $31,24($sp)
+  subu  $2,$0,$2
+  j $31
+  addiu $sp,$sp,32
+  .set  macro
+  .set  reorder
+  .end  main
+  .ident  "GCC: (GNU) 3.4.4"
+
+And here is the cross and native screen capture due to -v:
+=20
+=3D=3D=3D=3D cross =3D=3D=3D=3D
+0:~$ mipsel-unknown-linux-gnu-gcc -v -save-temps -O2 -c =
+/opt/oe/target/root/t.c  -o obj2.o
+Reading specs from =
+/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/lib/gcc/mip=
+sel-unknown-linux-gnu/3.4.4/specs
+Configured with: =
+/home/edevolder/downloads/crosstool-0.42/build/mipsel-unknown-linux-gnu/g=
+cc-3.4.4-glibc-2.3.6/gcc-3.4.4/configure =
+--target=3Dmipsel-unknown-linux-gnu =
+--host=3Dx86_64-host_unknown-linux-gnu =
+--prefix=3D/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu =
+--with-sysroot=3D/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linu=
+x-gnu/mipsel-unknown-linux-gnu/sys-root =
+--with-local-prefix=3D/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown=
+-linux-gnu/mipsel-unknown-linux-gnu/sys-root --disable-nls =
+--enable-threads=3Dposix --enable-symvers=3Dgnu --enable-__cxa_atexit =
+--enable-languages=3Dc,c++ --enable-shared --enable-c99 =
+--enable-long-long
+Thread model: posix
+gcc version 3.4.4
+ =
+/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/libexec/gcc=
+/mipsel-unknown-linux-gnu/3.4.4/cc1 -E -quiet -v /opt/oe/target/root/t.c =
+-O2 -o t.i
+ignoring nonexistent directory =
+"/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/mipsel-unk=
+nown-linux-gnu/sys-root/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknow=
+n-linux-gnu/mipsel-unknown-linux-gnu/sys-root/include"
+ignoring nonexistent directory =
+"/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/lib/gcc/mi=
+psel-unknown-linux-gnu/3.4.4/../../../../mipsel-unknown-linux-gnu/include=
+"
+#include "..." search starts here:
+#include <...> search starts here:
+ =
+/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/lib/gcc/mip=
+sel-unknown-linux-gnu/3.4.4/include
+ =
+/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/mipsel-unkn=
+own-linux-gnu/sys-root/usr/include
+End of search list.
+ =
+/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/libexec/gcc=
+/mipsel-unknown-linux-gnu/3.4.4/cc1 -fpreprocessed t.i -quiet -dumpbase =
+t.c -auxbase-strip obj2.o -O2 -version -o t.s
+GNU C version 3.4.4 (mipsel-unknown-linux-gnu)
+        compiled by GNU C version 3.2.3 20030502 (Red Hat Linux =
+3.2.3-54).
+GGC heuristics: --param ggc-min-expand=3D97 --param =
+ggc-min-heapsize=3D126001
+ =
+/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/lib/gcc/mip=
+sel-unknown-linux-gnu/3.4.4/../../../../mipsel-unknown-linux-gnu/bin/as =
+-EL -O2 -no-mdebug -32 -v -KPIC -o obj2.o t.s
+GNU assembler version 2.15 (mipsel-unknown-linux-gnu) using BFD version =
+2.15
+=20
+=3D=3D=3D native =3D=3D=3D
+root@db1200:~# gcc -v -save-temps -O2 -c t.c -o obj1.o
+Reading specs from /usr/lib/gcc/mipsel-unknown-linux-gnu/3.4.4/specs
+Configured with: =
+/home/edevolder/downloads/crosstool-0.42/build/mipsel-unknown-linux-gnu/g=
+cc-3.4.4-glibc-2.3.6/gcc-3.4.4/configure =
+--build=3Dx86_64-build_unknown-linux-gnu =
+--target=3Dmipsel-unknown-linux-gnu --host=3Dmipsel-unknown-linux-gnu =
+--prefix=3D/usr --disable-nls --enable-threads=3Dposix =
+--enable-symvers=3Dgnu --enable-__cxa_atexit --enable-languages=3Dc,c++ =
+--enable-shared --enable-c99 --enable-long-long
+Thread model: posix
+gcc version 3.4.4
+ /usr/libexec/gcc/mipsel-unknown-linux-gnu/3.4.4/cc1 -E -quiet -v t.c =
+-O2 -o t.iignoring nonexistent directory =
+"/usr/lib/gcc/mipsel-unknown-linux-gnu/3.4.4/../../../../mipsel-unknown-l=
+inux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/local/include
+ /usr/lib/gcc/mipsel-unknown-linux-gnu/3.4.4/include
+ /usr/include
+End of search list.
+ /usr/libexec/gcc/mipsel-unknown-linux-gnu/3.4.4/cc1 -fpreprocessed t.i =
+-quiet -dumpbase t.c -auxbase-strip obj1.o -O2 -version -o t.s
+GNU C version 3.4.4 (mipsel-unknown-linux-gnu)
+        compiled by GNU C version 3.4.4.
+GGC heuristics: --param ggc-min-expand=3D47 --param =
+ggc-min-heapsize=3D31868
+ =
+/usr/lib/gcc/mipsel-unknown-linux-gnu/3.4.4/../../../../mipsel-unknown-li=
+nux-gnu/bin/as -EL -O2 -no-mdebug -32 -v -KPIC -o obj1.o t.s
+GNU assembler version 2.15 (mipsel-unknown-linux-gnu) using BFD version =
+2.15
+
+
+________________________________
+
+From: Thiemo Seufer [mailto:ths@networkno.de]
+Sent: Tue 9/19/2006 11:05 AM
+To: Eric DeVolder
+Cc: linux-mips@linux-mips.org
+Subject: Re: Differing results from cross and native compilers
+
+
+
+Eric DeVolder wrote:
+[snip]
+> I would have thought that for this simple example I'd get identical
+> results. For reasons I have yet to figure out, the cross compiler is
+> finding better optimizations than the native, though both are the
+> same gcc version. I checked the specs files, and the two are identical
+> other than the "cross_compile" setting.
+
+Have you checked (with -v) if the assembler gets the same optimisations
+in both cases, and/or (with -save-temps) where in the compile things
+start to diverge?
+
+
+Thiemo
+
+
+
+------_=_NextPart_001_01C6DC0C.BF680F2A
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><HTML =
-DIR=3Dltr><HEAD><META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1"></HEAD><BODY>=0A=
-<DIV><FONT face=3D'Arial' color=3D#000000 size=3D2></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>Hi, I have a MIPS =
-native and cross =0A=
-compiler (gcc 3.4.4 and binutils 2.15)<BR>both built using =
-crosstool-0.42. I =0A=
-have an Alchemy system (MIPS32)<BR>for which I am building code. When I =
-compile =0A=
-a simple example, I get<BR>different instructions from the cross and =
-native =0A=
-compilers.</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>Specifically, the =
-source file =0A=
-is:</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3D"Courier New" size=3D2>&nbsp;#include =0A=
-&lt;stdio.h&gt;<BR>&nbsp;int<BR>&nbsp;main (int argc, char =0A=
-**argv)<BR>&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp; return -printf("Hello, =0A=
-world!\n");<BR>&nbsp;}</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>To compile natively, I =0A=
-use:</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3D"Courier New" size=3D2>&nbsp;% gcc -c =
-hello.c -o =0A=
-obj1.o</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>To cross compile, I =
-use:</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3D"Courier New" size=3D2>&nbsp;% =0A=
-mipsel-unknown-linux-gnu-gcc -c hello.c -o obj2.o</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>If I use the -O0 or -O1 =
-flags with =0A=
-each, I get identical output<BR>(for the .text), but when I compile in =
-both =0A=
-environments with -O2;<BR>the compilers produce different =
-results.</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>The native compiler on =
-the Alchemy =0A=
-board results in the following:</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3D"Courier New" =0A=
-size=3D2>obj1.o:&nbsp;&nbsp;&nbsp;&nbsp; file format =0A=
-elf32-tradlittlemips</FONT></DIV>=0A=
-<DIV><FONT color=3D#000000 face=3D"Courier New" size=3D2>Disassembly of =
-section =0A=
-.text:</FONT></DIV>=0A=
-<DIV><FONT color=3D#000000 face=3D"Courier New" size=3D2>00000000 =0A=
-&lt;main&gt;:<BR>&nbsp;&nbsp; 0:&nbsp;&nbsp; =0A=
-3c1c0000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-lui&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-gp,0x0<BR>&nbsp;&nbsp; 4:&nbsp;&nbsp; =0A=
-279c0000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addiu&nbsp;&nbsp; =0A=
-gp,gp,0<BR>&nbsp;&nbsp; 8:&nbsp;&nbsp; =0A=
-0399e021&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-addu&nbsp;&nbsp;&nbsp; =0A=
-gp,gp,t9<BR>&nbsp;&nbsp; c:&nbsp;&nbsp; =0A=
-27bdffe0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addiu&nbsp;&nbsp; =0A=
-sp,sp,-32<BR>&nbsp; 10:&nbsp;&nbsp; =0A=
-afbf0018&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-sw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ra,24(sp)<BR>&nbsp; 14:&nbsp;&nbsp; =0A=
-afbc0010&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-sw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gp,16(sp)<BR>&nbsp; 18:&nbsp;&nbsp; =0A=
-8f840000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a0,0(gp)<BR>&nbsp; 1c:&nbsp;&nbsp; =0A=
-00000000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nop<BR>&nbsp; =
-20:&nbsp;&nbsp; =0A=
-24840000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addiu&nbsp;&nbsp; =0A=
-a0,a0,0<BR>&nbsp; 24:&nbsp;&nbsp; =0A=
-8f990000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t9,0(gp)<BR>&nbsp; 28:&nbsp;&nbsp; =0A=
-00000000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nop<BR>&nbsp; =
-2c:&nbsp;&nbsp; =0A=
-0320f809&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-jalr&nbsp;&nbsp;&nbsp; =0A=
-t9<BR>&nbsp; 30:&nbsp;&nbsp; =
-00000000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-nop<BR>&nbsp; 34:&nbsp;&nbsp; =
-8fbc0010&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gp,16(sp)<BR>&nbsp; 38:&nbsp;&nbsp; =0A=
-8fbf0018&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ra,24(sp)<BR>&nbsp; 3c:&nbsp;&nbsp; =0A=
-00021023&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-negu&nbsp;&nbsp;&nbsp; =0A=
-v0,v0<BR>&nbsp; 40:&nbsp;&nbsp; =0A=
-03e00008&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-jr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ra<BR>&nbsp; 44:&nbsp;&nbsp; =0A=
-27bd0020&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addiu&nbsp;&nbsp; =0A=
-sp,sp,32</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>The cross compiler =
-results =0A=
-in:</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT color=3D#000000 face=3D"Courier New" =0A=
-size=3D2>obj2.o:&nbsp;&nbsp;&nbsp;&nbsp; file format =0A=
-elf32-tradlittlemips</FONT></DIV>=0A=
-<DIV><FONT color=3D#000000 face=3D"Courier New" size=3D2>Disassembly of =
-section =0A=
-.text:</FONT></DIV>=0A=
-<DIV><FONT color=3D#000000 face=3D"Courier New" size=3D2>00000000 =0A=
-&lt;main&gt;:<BR>&nbsp;&nbsp; 0:&nbsp;&nbsp; =0A=
-3c1c0000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-lui&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-gp,0x0<BR>&nbsp;&nbsp; 4:&nbsp;&nbsp; =0A=
-279c0000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addiu&nbsp;&nbsp; =0A=
-gp,gp,0<BR>&nbsp;&nbsp; 8:&nbsp;&nbsp; =0A=
-0399e021&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-addu&nbsp;&nbsp;&nbsp; =0A=
-gp,gp,t9<BR>&nbsp;&nbsp; c:&nbsp;&nbsp; =0A=
-27bdffe0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addiu&nbsp;&nbsp; =0A=
-sp,sp,-32<BR>&nbsp; 10:&nbsp;&nbsp; =0A=
-afbf0018&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-sw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ra,24(sp)<BR>&nbsp; 14:&nbsp;&nbsp; =0A=
-afbc0010&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-sw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gp,16(sp)<BR>&nbsp; 18:&nbsp;&nbsp; =0A=
-8f840000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a0,0(gp)<BR>&nbsp; 1c:&nbsp;&nbsp; =0A=
-8f990000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t9,0(gp)<BR>&nbsp; 20:&nbsp;&nbsp; =0A=
-00000000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nop<BR>&nbsp; =
-24:&nbsp;&nbsp; =0A=
-0320f809&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-jalr&nbsp;&nbsp;&nbsp; =0A=
-t9<BR>&nbsp; 28:&nbsp;&nbsp; =
-24840000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-addiu&nbsp;&nbsp; a0,a0,0<BR>&nbsp; 2c:&nbsp;&nbsp; =0A=
-8fbc0010&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gp,16(sp)<BR>&nbsp; 30:&nbsp;&nbsp; =0A=
-8fbf0018&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ra,24(sp)<BR>&nbsp; 34:&nbsp;&nbsp; =0A=
-00021023&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-negu&nbsp;&nbsp;&nbsp; =0A=
-v0,v0<BR>&nbsp; 38:&nbsp;&nbsp; =0A=
-03e00008&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-jr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ra<BR>&nbsp; 3c:&nbsp;&nbsp; =0A=
-27bd0020&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addiu&nbsp;&nbsp; =0A=
-sp,sp,32</FONT></DIV>=0A=
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial size=3D2>I would have thought that for this =
-simple example =0A=
-I'd get identical<BR>results. For reasons I have yet to figure out, the =
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">=0A=
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">=0A=
+<HTML>=0A=
+<HEAD>=0A=
+=0A=
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.7226.0">=0A=
+<TITLE>Re: Differing results from cross and native compilers</TITLE>=0A=
+</HEAD>=0A=
+<BODY>=0A=
+<DIV dir=3Dltr id=3DidOWAReplyText18876>=0A=
+<DIV dir=3Dltr><FONT color=3D#000000 face=3DArial size=3D2>Yes, it =
+appears to me that =0A=
+the compiler (cc1) and assembler (as) invocations are the same. I've =
+included =0A=
+the "-v" output of each below for reference. Furthermore, the =
+-save-temps output =0A=
+.i files are effectively the same (differences due to cross vs. native =
+paths, =0A=
+but that is it).&nbsp;Nonetheless, the output assembly source still =
+contains =0A=
+differences!</FONT></DIV>=0A=
+<DIV dir=3Dltr>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial size=3D2>I'm curious if&nbsp;anybody =
+examined the =0A=
+output of a cross and native toolchain of the same (recent) =0A=
+version?</FONT></DIV>=0A=
+<DIV dir=3Dltr>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial size=3D2>Eric</FONT></DIV>=0A=
+<DIV dir=3Dltr>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New">0:~$ diff -wbup cross.s =
+native.s<BR>--- =0A=
+cross.s 2006-09-19 11:38:54.000000000 -0500<BR>+++ =0A=
+native.s&nbsp;&nbsp;&nbsp;&nbsp; 2006-09-19 11:39:07.000000000 =
+-0500<BR>@@ =0A=
+-17,24 +17,20 @@ main:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+.fmask&nbsp; 0x00000000,0<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+.set&nbsp;&nbsp;&nbsp; =
+noreorder<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+.cpload $25<BR>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+.set&nbsp;&nbsp;&nbsp; =0A=
+nomacro<BR>-<BR>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+.set&nbsp;&nbsp;&nbsp; =0A=
+reorder<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addiu&nbsp;&nbsp; =0A=
+$sp,$sp,-32<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+sw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+$31,24($sp)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+.cprestore&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+16<BR>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+$4,%got($LC0)($28)<BR>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+$25,%call16(printf)($28)<BR>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+nop<BR>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jalr&nbsp;&nbsp;&nbsp; =0A=
+$25<BR>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addiu&nbsp;&nbsp; =0A=
+$4,$4,%lo($LC0)<BR>-<BR>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+$28,16($sp)<BR>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+la&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+$4,$LC0<BR>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+jal&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+printf<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+$31,24($sp)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+subu&nbsp;&nbsp;&nbsp; =0A=
+$2,$0,$2<BR>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .set&nbsp;&nbsp;&nbsp; =0A=
+noreorder<BR>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+.set&nbsp;&nbsp;&nbsp; =0A=
+nomacro<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+j&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+$31<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addiu&nbsp;&nbsp; =0A=
+$sp,$sp,32<BR>-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+.set&nbsp;&nbsp;&nbsp; =
+macro<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+.set&nbsp;&nbsp;&nbsp; =0A=
+reorder<BR>+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+.end&nbsp;&nbsp;&nbsp; =
+main<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+.ident&nbsp; "GCC: (GNU) 3.4.4"<BR></FONT></DIV></DIV>=0A=
+<DIV dir=3Dltr>For good measure, here's the assembly output from the =
 cross =0A=
-compiler is<BR>finding better optimizations than the native, though both =
-are =0A=
-the<BR>same gcc version. I checked the specs files, and the two are =0A=
-identical<BR>other than the "cross_compile" setting.</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial size=3D2>I'd like to solve this little mystery =
-to get to the =0A=
-bigger prize, and<BR>that is the ability to actually compile code (e.g. =
+compiler:</DIV>=0A=
+<DIV dir=3Dltr>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New">0:~$ more cross.s<BR>&nbsp; =
+.file 1 =0A=
+"t.c"<BR>&nbsp; .section .mdebug.abi32<BR>&nbsp; .previous<BR>&nbsp; =0A=
+.abicalls<BR>&nbsp; .section&nbsp; =
+.rodata.str1.4,"aMS",@progbits,1<BR>&nbsp; =0A=
+.align&nbsp; 2<BR>$LC0:<BR>&nbsp; .ascii&nbsp; "Hello, =
+World!\n\000"<BR>&nbsp; =0A=
+.text<BR>&nbsp; .align&nbsp; 2<BR>&nbsp; .globl&nbsp; main<BR>&nbsp; =
+.ent&nbsp; =0A=
+main<BR>&nbsp; .type main, @function<BR>main:<BR>&nbsp; .frame&nbsp; =0A=
+$sp,32,$31&nbsp;&nbsp;&nbsp; # vars=3D 0, regs=3D 1/0, args=3D 16, gp=3D =
+8<BR>&nbsp; =0A=
+.mask 0x80000000,-8<BR>&nbsp; .fmask&nbsp; 0x00000000,0<BR>&nbsp; =
+.set&nbsp; =0A=
+noreorder<BR>&nbsp; .cpload $25<BR>&nbsp; .set&nbsp; nomacro</FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New">&nbsp; addiu =
+$sp,$sp,-32<BR>&nbsp; =0A=
+sw&nbsp; $31,24($sp)<BR>&nbsp; .cprestore&nbsp; 16<BR>&nbsp; lw&nbsp; =0A=
+$4,%got($LC0)($28)<BR>&nbsp; lw&nbsp; $25,%call16(printf)($28)<BR>&nbsp; =0A=
+nop<BR>&nbsp; jalr&nbsp; $25<BR>&nbsp; addiu $4,$4,%lo($LC0)</FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New">&nbsp; lw&nbsp; =
+$28,16($sp)<BR>&nbsp; =0A=
+lw&nbsp; $31,24($sp)<BR>&nbsp; subu&nbsp; $2,$0,$2<BR>&nbsp; j =
+$31<BR>&nbsp; =0A=
+addiu $sp,$sp,32</FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New">&nbsp; .set&nbsp; =
+macro<BR>&nbsp; =0A=
+.set&nbsp; reorder<BR>&nbsp; .end&nbsp; main<BR>&nbsp; .ident&nbsp; =
+"GCC: (GNU) =0A=
+3.4.4"<BR></FONT></DIV>=0A=
+<DIV dir=3Dltr>And here is the cross and native screen capture due to =
+-v:</DIV>=0A=
+<DIV dir=3Dltr>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr>=3D=3D=3D=3D cross =3D=3D=3D=3D</DIV>=0A=
+<DIV dir=3Dltr>0:~$ mipsel-unknown-linux-gnu-gcc -v -save-temps -O2 -c =0A=
+/opt/oe/target/root/t.c&nbsp; -o obj2.o<BR>Reading specs from =0A=
+/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/lib/gcc/mip=
+sel-unknown-linux-gnu/3.4.4/specs<BR>Configured =0A=
+with: =0A=
+/home/edevolder/downloads/crosstool-0.42/build/mipsel-unknown-linux-gnu/g=
+cc-3.4.4-glibc-2.3.6/gcc-3.4.4/configure =0A=
+--target=3Dmipsel-unknown-linux-gnu =
+--host=3Dx86_64-host_unknown-linux-gnu =0A=
+--prefix=3D/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu =0A=
+--with-sysroot=3D/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linu=
+x-gnu/mipsel-unknown-linux-gnu/sys-root =0A=
+--with-local-prefix=3D/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown=
+-linux-gnu/mipsel-unknown-linux-gnu/sys-root =0A=
+--disable-nls --enable-threads=3Dposix --enable-symvers=3Dgnu =
+--enable-__cxa_atexit =0A=
+--enable-languages=3Dc,c++ --enable-shared --enable-c99 =0A=
+--enable-long-long<BR>Thread model: posix<BR>gcc version =0A=
+3.4.4<BR>&nbsp;/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-=
+gnu/libexec/gcc/mipsel-unknown-linux-gnu/3.4.4/cc1 =0A=
+-E -quiet -v /opt/oe/target/root/t.c -O2 -o t.i<BR>ignoring nonexistent =0A=
+directory =0A=
+"/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/mipsel-unk=
+nown-linux-gnu/sys-root/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknow=
+n-linux-gnu/mipsel-unknown-linux-gnu/sys-root/include"<BR>ignoring =0A=
+nonexistent directory =0A=
+"/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/lib/gcc/mi=
+psel-unknown-linux-gnu/3.4.4/../../../../mipsel-unknown-linux-gnu/include=
+"<BR>#include =0A=
+"..." search starts here:<BR>#include &lt;...&gt; search starts =0A=
+here:<BR>&nbsp;/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-=
+gnu/lib/gcc/mipsel-unknown-linux-gnu/3.4.4/include<BR>&nbsp;/opt/crosstoo=
+l/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-gnu/mipsel-unknown-linux-gnu=
+/sys-root/usr/include<BR>End =0A=
+of search =0A=
+list.<BR>&nbsp;/opt/crosstool/gcc-3.4.4-glibc-2.3.6/mipsel-unknown-linux-=
+gnu/libexec/gcc/mipsel-unknown-linux-gnu/3.4.4/cc1 =0A=
+-fpreprocessed t.i -quiet -dumpbase t.c -auxbase-strip obj2.o -O2 =
+-version -o =0A=
+t.s<BR>GNU C version 3.4.4 =0A=
+(mipsel-unknown-linux-gnu)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+compiled by GNU C version 3.2.3 20030502 (Red Hat Linux =
+3.2.3-54).<BR>GGC =0A=
+heuristics: --param ggc-min-expand=3D97 --param =0A=
+ggc-min-heapsize=3D126001<BR>&nbsp;/opt/crosstool/gcc-3.4.4-glibc-2.3.6/m=
+ipsel-unknown-linux-gnu/lib/gcc/mipsel-unknown-linux-gnu/3.4.4/../../../.=
+./mipsel-unknown-linux-gnu/bin/as =0A=
+-EL -O2 -no-mdebug -32 -v -KPIC -o obj2.o t.s<BR>GNU assembler version =
+2.15 =0A=
+(mipsel-unknown-linux-gnu) using BFD version 2.15</DIV>=0A=
+<DIV dir=3Dltr>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr>=3D=3D=3D native =3D=3D=3D</DIV>=0A=
+<DIV dir=3Dltr>root@db1200:~# gcc -v -save-temps -O2 -c t.c -o =
+obj1.o<BR>Reading =0A=
+specs from =
+/usr/lib/gcc/mipsel-unknown-linux-gnu/3.4.4/specs<BR>Configured with: =0A=
+/home/edevolder/downloads/crosstool-0.42/build/mipsel-unknown-linux-gnu/g=
+cc-3.4.4-glibc-2.3.6/gcc-3.4.4/configure =0A=
+--build=3Dx86_64-build_unknown-linux-gnu =
+--target=3Dmipsel-unknown-linux-gnu =0A=
+--host=3Dmipsel-unknown-linux-gnu --prefix=3D/usr --disable-nls =0A=
+--enable-threads=3Dposix --enable-symvers=3Dgnu --enable-__cxa_atexit =0A=
+--enable-languages=3Dc,c++ --enable-shared --enable-c99 =0A=
+--enable-long-long<BR>Thread model: posix<BR>gcc version =0A=
+3.4.4<BR>&nbsp;/usr/libexec/gcc/mipsel-unknown-linux-gnu/3.4.4/cc1 -E =
+-quiet -v =0A=
+t.c -O2 -o t.iignoring nonexistent directory =0A=
+"/usr/lib/gcc/mipsel-unknown-linux-gnu/3.4.4/../../../../mipsel-unknown-l=
+inux-gnu/include"<BR>#include =0A=
+"..." search starts here:<BR>#include &lt;...&gt; search starts =0A=
+here:<BR>&nbsp;/usr/local/include<BR>&nbsp;/usr/lib/gcc/mipsel-unknown-li=
+nux-gnu/3.4.4/include<BR>&nbsp;/usr/include<BR>End =0A=
+of search =
+list.<BR>&nbsp;/usr/libexec/gcc/mipsel-unknown-linux-gnu/3.4.4/cc1 =0A=
+-fpreprocessed t.i -quiet -dumpbase t.c -auxbase-strip obj1.o -O2 =
+-version -o =0A=
+t.s<BR>GNU C version 3.4.4 =0A=
+(mipsel-unknown-linux-gnu)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+compiled by GNU C version 3.4.4.<BR>GGC heuristics: --param =
+ggc-min-expand=3D47 =0A=
+--param =0A=
+ggc-min-heapsize=3D31868<BR>&nbsp;/usr/lib/gcc/mipsel-unknown-linux-gnu/3=
+.4.4/../../../../mipsel-unknown-linux-gnu/bin/as =0A=
+-EL -O2 -no-mdebug -32 -v -KPIC -o obj1.o t.s<BR>GNU assembler version =
+2.15 =0A=
+(mipsel-unknown-linux-gnu) using BFD version 2.15<BR></DIV>=0A=
+<DIV dir=3Dltr><BR>=0A=
+<HR tabIndex=3D-1>=0A=
+<FONT face=3DTahoma size=3D2><B>From:</B> Thiemo Seufer =0A=
+[mailto:ths@networkno.de]<BR><B>Sent:</B> Tue 9/19/2006 11:05 =
+AM<BR><B>To:</B> =0A=
+Eric DeVolder<BR><B>Cc:</B> linux-mips@linux-mips.org<BR><B>Subject:</B> =
+Re: =0A=
+Differing results from cross and native compilers<BR></FONT><BR></DIV>=0A=
+<DIV>=0A=
+<P><FONT size=3D2>Eric DeVolder wrote:<BR>[snip]<BR>&gt; I would have =
+thought that =0A=
+for this simple example I'd get identical<BR>&gt; results. For reasons I =
+have =0A=
+yet to figure out, the cross compiler is<BR>&gt; finding better =
+optimizations =0A=
+than the native, though both are the<BR>&gt; same gcc version. I checked =
 the =0A=
-entire system)<BR>for MIPS32. As is demonstrated above, the compilers =
-are =0A=
-generating<BR>MIPS1 code (based on the NOPs between the load-to-use), =
-but if =0A=
-I<BR>could get the compiler to honor -mips32 (this discovery =
-I</FONT><FONT =0A=
-face=3DArial size=3D2> originally</FONT></DIV>=0A=
-<DIV><FONT face=3DArial size=3D2>made while trying to get native -mips32 =
-to work), I =0A=
-can get even</FONT></DIV>=0A=
-<DIV><FONT face=3DArial size=3D2>tighter code...</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial size=3D2>I've done quite a bit of googling to no =
-avail. I've =0A=
-also done some<BR>digging into gcc/binutils sources, and it appears that =0A=
-binutils has a<BR>"from-abi" option for choosing its architecture, which =
-is o32 =0A=
-which<BR>probably means just MIPS1. I thought about trying to rebuild =
-all =0A=
-the<BR>tools for mipsisa32-unknown-linux-gnu, but am concerned I'd =
-still<BR>have =0A=
-the same problem of a particular compiler optimziation option<BR>not =
-being =0A=
-honored by the compiler.</FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial size=3D2>Any tips/advice much appreciated, =0A=
-thanks!<BR>Eric</FONT></DIV>=0A=
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-------_=_NextPart_001_01C6DC01.C95E134A--
+specs files, and the two are identical<BR>&gt; other than the =
+"cross_compile" =0A=
+setting.<BR><BR>Have you checked (with -v) if the assembler gets the =
+same =0A=
+optimisations<BR>in both cases, and/or (with -save-temps) where in the =
+compile =0A=
+things<BR>start to diverge?<BR><BR><BR>Thiemo<BR></FONT></P></DIV>=0A=
+=0A=
+</BODY>=0A=
+</HTML>
+------_=_NextPart_001_01C6DC0C.BF680F2A--

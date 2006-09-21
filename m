@@ -1,28 +1,41 @@
-Received: from mx1.razamicroelectronics.com ([63.111.213.197]:15589 "EHLO
+Received: from mx1.razamicroelectronics.com ([63.111.213.197]:13060 "EHLO
 	hq-ex-mb01.razamicroelectronics.com") by ftp.linux-mips.org with ESMTP
-	id S20038429AbWIUO2T (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 21 Sep 2006 15:28:19 +0100
+	id S20038436AbWIUOye (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 21 Sep 2006 15:54:34 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C6DD8A.285F36F0"
+	boundary="----_=_NextPart_001_01C6DD8D.D54A58FF"
 Subject: RE: Differing results from cross and native compilers
-Date: Thu, 21 Sep 2006 07:26:29 -0700
-Message-ID: <2E96546B3C2C8B4CA739323C6058204A01635493@hq-ex-mb01.razamicroelectronics.com>
+Date: Thu, 21 Sep 2006 07:53:38 -0700
+Message-ID: <2E96546B3C2C8B4CA739323C6058204A01635494@hq-ex-mb01.razamicroelectronics.com>
 From: "Eric DeVolder" <edevolder@razamicroelectronics.com>
 Return-Path: <edevolder@razamicroelectronics.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Jim Wilson <wilson@specifix.com>
 Cc: Thiemo Seufer <ths@networkno.de>, linux-mips@linux-mips.org
-Message-ID: <20060921142629.gdn_zF57ygsOm9Fj0BVSyFqlnPF7m8LXy63Ct9gb14c@z>
+Message-ID: <20060921145338.noyPvKfz5080HHSmeFNdGV98oZiwi4oBJXX2yB_16Bg@z>
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C6DD8A.285F36F0
+------_=_NextPart_001_01C6DD8D.D54A58FF
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+
+oops...ignore the cut-n-paste below, this was from the cross compile =
+which in fact shows using gnu assembler and explicit reloc =
+support...eric=20
+
+________________________________
+
+From: Eric DeVolder
+Sent: Thu 9/21/2006 9:26 AM
+To: Jim Wilson
+Cc: Thiemo Seufer; linux-mips@linux-mips.org
+Subject: RE: Differing results from cross and native compilers
+
 
 Thanks Jim, you hit the nail on the head!
 =20
@@ -74,13 +87,14 @@ Jim Wilson, GNU Tools Support, http://www.specifix.com
 
 
 
-------_=_NextPart_001_01C6DD8A.285F36F0
+------_=_NextPart_001_01C6DD8D.D54A58FF
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 <META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
 charset=3Diso-8859-1">=0A=
+=0A=
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">=0A=
 <HTML>=0A=
 <HEAD>=0A=
@@ -90,6 +104,21 @@ charset=3Diso-8859-1">=0A=
 <TITLE>RE: Differing results from cross and native compilers</TITLE>=0A=
 </HEAD>=0A=
 <BODY>=0A=
+<DIV dir=3Dltr id=3DidOWAReplyText69484>=0A=
+<DIV dir=3Dltr><FONT color=3D#000000 face=3DArial size=3D2>oops...ignore =
+the cut-n-paste =0A=
+below, this was from the cross compile which in fact shows using gnu =
+assembler =0A=
+and explicit reloc support...eric&nbsp;</FONT></DIV></DIV>=0A=
+<DIV dir=3Dltr><BR>=0A=
+<HR tabIndex=3D-1>=0A=
+<FONT face=3DTahoma size=3D2><B>From:</B> Eric DeVolder<BR><B>Sent:</B> =
+Thu =0A=
+9/21/2006 9:26 AM<BR><B>To:</B> Jim Wilson<BR><B>Cc:</B> Thiemo Seufer; =0A=
+linux-mips@linux-mips.org<BR><B>Subject:</B> RE: Differing results from =
+cross =0A=
+and native compilers<BR></FONT><BR></DIV>=0A=
+<DIV>=0A=
 <DIV dir=3Dltr id=3DidOWAReplyText63109>=0A=
 <DIV dir=3Dltr><FONT color=3D#000000 face=3DArial size=3D2>Thanks =
 Jim,&nbsp;you hit the =0A=
@@ -140,8 +169,8 @@ HAVE_AS_EXPLICIT_RELOCS defined and the other doesn't.<BR><BR>--<BR>Jim =
 Wilson, =0A=
 GNU Tools Support, <A =0A=
 href=3D"http://www.specifix.com">http://www.specifix.com</A><BR><BR><BR><=
-BR><BR></FONT></P></DIV>=0A=
+BR><BR></FONT></P></DIV></DIV>=0A=
 =0A=
 </BODY>=0A=
 </HTML>
-------_=_NextPart_001_01C6DD8A.285F36F0--
+------_=_NextPart_001_01C6DD8D.D54A58FF--

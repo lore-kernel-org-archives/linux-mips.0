@@ -1,73 +1,80 @@
-Received: from mx1.razamicroelectronics.com ([63.111.213.197]:27944 "EHLO
+Received: from mx1.razamicroelectronics.com ([63.111.213.197]:15589 "EHLO
 	hq-ex-mb01.razamicroelectronics.com") by ftp.linux-mips.org with ESMTP
-	id S20038655AbWISR5X (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 19 Sep 2006 18:57:23 +0100
+	id S20038429AbWIUO2T (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 21 Sep 2006 15:28:19 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C6DC15.09BBAAFA"
+	boundary="----_=_NextPart_001_01C6DD8A.285F36F0"
 Subject: RE: Differing results from cross and native compilers
-Date: Tue, 19 Sep 2006 10:56:09 -0700
-Message-ID: <2E96546B3C2C8B4CA739323C6058204A0163548E@hq-ex-mb01.razamicroelectronics.com>
+Date: Thu, 21 Sep 2006 07:26:29 -0700
+Message-ID: <2E96546B3C2C8B4CA739323C6058204A01635493@hq-ex-mb01.razamicroelectronics.com>
 From: "Eric DeVolder" <edevolder@razamicroelectronics.com>
 Return-Path: <edevolder@razamicroelectronics.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Thiemo Seufer <ths@networkno.de>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20060919175609.g2Yv2QcdqCZBa5Z8Bd84d5sru3DYzkD7hX0spn45xRs@z>
+To: Jim Wilson <wilson@specifix.com>
+Cc: Thiemo Seufer <ths@networkno.de>, linux-mips@linux-mips.org
+Message-ID: <20060921142629.gdn_zF57ygsOm9Fj0BVSyFqlnPF7m8LXy63Ct9gb14c@z>
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C6DC15.09BBAAFA
+------_=_NextPart_001_01C6DD8A.285F36F0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Thiemo, could you share what the native 3.4 compiler reports as its =
-configuration? (e.g. the "Configured with: " statement)?
+Thanks Jim, you hit the nail on the head!
 =20
-Thanks,
-Eric
+gcc/config.log:target_cpu_default=3D'(MASK_GAS)|MASK_EXPLICIT_RELOCS'
+gcc/config.status:s,@target_cpu_default@,(MASK_GAS)|MASK_EXPLICIT_RELOCS,=
+;t t
+gcc/Makefile:target_cpu_default=3D(MASK_GAS)|MASK_EXPLICIT_RELOCS
+
+So yes, something went awry and the configure stage didn't think gas was =
+in use...
+=20
+Eric=20
 
 ________________________________
 
-From: Thiemo Seufer [mailto:ths@networkno.de]
-Sent: Tue 9/19/2006 12:16 PM
+From: Jim Wilson [mailto:wilson@specifix.com]
+Sent: Tue 9/19/2006 6:22 PM
 To: Eric DeVolder
-Cc: linux-mips@linux-mips.org
-Subject: Re: Differing results from cross and native compilers
+Cc: Thiemo Seufer; linux-mips@linux-mips.org
+Subject: RE: Differing results from cross and native compilers
 
 
 
-Eric DeVolder wrote:
-> Yes, it appears to me that the compiler (cc1) and assembler (as)
-> invocations are the same. I've included the "-v" output of each
-> below for reference. Furthermore, the -save-temps output .i files
-> are effectively the same (differences due to cross vs. native paths,
-> but that is it). Nonetheless, the output assembly source still
-> contains differences!
->=20
-> I'm curious if anybody examined the output of a cross and native
-> toolchain of the same (recent) version?
+On Tue, 2006-09-19 at 09:57 -0700, Eric DeVolder wrote:
 
-I get the same (properly optimised) result from both compilers:
+> -       lw      $4,%got($LC0)($28)
+> +       la      $4,$LC0
 
-  gcc (GCC) 4.1.2 20060901 (prerelease) (Debian 4.1.1-13)
-  mips-linux-gnu-gcc (GCC) 4.1.2 20060901 (prerelease) (Debian 4.1.1-13)
+The difference here is -mexplicit-relocs, which is the default for the
+first one (cross) but not the second one (native).
 
+The explicit-reloc support is enabled by a run-time configure test,
+which tries to run the assembler to see if you have a new enough version
+of GNU as that supports the necessary assembler reloc syntax.
+Apparently this is going wrong with the native build.  Perhaps you have
+a different binutils version, or perhaps there is a problem with your
+PATH, or perhaps binutils and gcc weren't configured with the same
+prefix, etc.
 
-I haven't tried a 3.4 crosscompiler, but the native one also behaves
-as expected:
+If you have the build trees, you can look at the gcc/config.h files and
+note that one has HAVE_AS_EXPLICIT_RELOCS defined and the other doesn't.
 
-  gcc-3.4 (GCC) 3.4.6 (Debian 3.4.6-4)
-
-
-Thiemo
+--
+Jim Wilson, GNU Tools Support, http://www.specifix.com
 
 
 
-------_=_NextPart_001_01C6DC15.09BBAAFA
+
+
+
+
+------_=_NextPart_001_01C6DD8A.285F36F0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -80,50 +87,61 @@ charset=3Diso-8859-1">=0A=
 =0A=
 <META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
 6.5.7226.0">=0A=
-<TITLE>Re: Differing results from cross and native compilers</TITLE>=0A=
+<TITLE>RE: Differing results from cross and native compilers</TITLE>=0A=
 </HEAD>=0A=
 <BODY>=0A=
-<DIV dir=3Dltr id=3DidOWAReplyText25336>=0A=
-<DIV dir=3Dltr><FONT color=3D#000000 face=3DArial size=3D2>Thiemo, could =
-you share what =0A=
-the native 3.4 compiler&nbsp;reports as its configuration?&nbsp;(e.g. =
-the =0A=
-"Configured with: " statement)?</FONT></DIV>=0A=
+<DIV dir=3Dltr id=3DidOWAReplyText63109>=0A=
+<DIV dir=3Dltr><FONT color=3D#000000 face=3DArial size=3D2>Thanks =
+Jim,&nbsp;you hit the =0A=
+nail on the head!</FONT></DIV>=0A=
 <DIV dir=3Dltr>&nbsp;</DIV>=0A=
-<DIV dir=3Dltr><FONT face=3DArial size=3D2>Thanks,</FONT></DIV>=0A=
-<DIV dir=3Dltr><FONT face=3DArial size=3D2>Eric</FONT></DIV></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial =0A=
+size=3D2>gcc/config.log:target_cpu_default=3D'(MASK_GAS)|MASK_EXPLICIT_RE=
+LOCS'<BR>gcc/config.status:s,@target_cpu_default@,(MASK_GAS)|MASK_EXPLICI=
+T_RELOCS,;t =0A=
+t<BR>gcc/Makefile:target_cpu_default=3D(MASK_GAS)|MASK_EXPLICIT_RELOCS<BR=
+></FONT></DIV>=0A=
+<DIV dir=3Dltr>So yes, something went awry and the configure stage =
+didn't think =0A=
+gas was in use...</DIV>=0A=
+<DIV dir=3Dltr>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr>Eric&nbsp;</DIV></DIV>=0A=
 <DIV dir=3Dltr><BR>=0A=
 <HR tabIndex=3D-1>=0A=
-<FONT face=3DTahoma size=3D2><B>From:</B> Thiemo Seufer =0A=
-[mailto:ths@networkno.de]<BR><B>Sent:</B> Tue 9/19/2006 12:16 =
+<FONT face=3DTahoma size=3D2><B>From:</B> Jim Wilson =0A=
+[mailto:wilson@specifix.com]<BR><B>Sent:</B> Tue 9/19/2006 6:22 =
 PM<BR><B>To:</B> =0A=
-Eric DeVolder<BR><B>Cc:</B> linux-mips@linux-mips.org<BR><B>Subject:</B> =
-Re: =0A=
-Differing results from cross and native compilers<BR></FONT><BR></DIV>=0A=
+Eric DeVolder<BR><B>Cc:</B> Thiemo Seufer; =0A=
+linux-mips@linux-mips.org<BR><B>Subject:</B> RE: Differing results from =
+cross =0A=
+and native compilers<BR></FONT><BR></DIV>=0A=
 <DIV>=0A=
-<P><FONT size=3D2>Eric DeVolder wrote:<BR>&gt; Yes, it appears to me =
-that the =0A=
-compiler (cc1) and assembler (as)<BR>&gt; invocations are the same. I've =0A=
-included the "-v" output of each<BR>&gt; below for reference. =
-Furthermore, the =0A=
--save-temps output .i files<BR>&gt; are effectively the same =
-(differences due to =0A=
-cross vs. native paths,<BR>&gt; but that is it). Nonetheless, the output =0A=
-assembly source still<BR>&gt; contains =
-differences!<BR>&gt;&nbsp;<BR>&gt; I'm =0A=
-curious if anybody examined the output of a cross and native<BR>&gt; =
-toolchain =0A=
-of the same (recent) version?<BR><BR>I get the same (properly optimised) =
-result =0A=
-from both compilers:<BR><BR>&nbsp; gcc (GCC) 4.1.2 20060901 (prerelease) =
-(Debian =0A=
-4.1.1-13)<BR>&nbsp; mips-linux-gnu-gcc (GCC) 4.1.2 20060901 (prerelease) =
-(Debian =0A=
-4.1.1-13)<BR><BR><BR>I haven't tried a 3.4 crosscompiler, but the native =
-one =0A=
-also behaves<BR>as expected:<BR><BR>&nbsp; gcc-3.4 (GCC) 3.4.6 (Debian =0A=
-3.4.6-4)<BR><BR><BR>Thiemo<BR></FONT></P></DIV>=0A=
+<P><FONT size=3D2>On Tue, 2006-09-19 at 09:57 -0700, Eric DeVolder =0A=
+wrote:<BR><BR>&gt; -&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+lw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $4,%got($LC0)($28)<BR>&gt; =0A=
++&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; la&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
+$4,$LC0<BR><BR>The difference here is -mexplicit-relocs, which is the =
+default =0A=
+for the<BR>first one (cross) but not the second one (native).<BR><BR>The =0A=
+explicit-reloc support is enabled by a run-time configure test,<BR>which =
+tries =0A=
+to run the assembler to see if you have a new enough version<BR>of GNU =
+as that =0A=
+supports the necessary assembler reloc syntax.<BR>Apparently this is =
+going wrong =0A=
+with the native build.&nbsp; Perhaps you have<BR>a different binutils =
+version, =0A=
+or perhaps there is a problem with your<BR>PATH, or perhaps binutils and =
+gcc =0A=
+weren't configured with the same<BR>prefix, etc.<BR><BR>If you have the =
+build =0A=
+trees, you can look at the gcc/config.h files and<BR>note that one has =0A=
+HAVE_AS_EXPLICIT_RELOCS defined and the other doesn't.<BR><BR>--<BR>Jim =
+Wilson, =0A=
+GNU Tools Support, <A =0A=
+href=3D"http://www.specifix.com">http://www.specifix.com</A><BR><BR><BR><=
+BR><BR></FONT></P></DIV>=0A=
 =0A=
 </BODY>=0A=
 </HTML>
-------_=_NextPart_001_01C6DC15.09BBAAFA--
+------_=_NextPart_001_01C6DD8A.285F36F0--

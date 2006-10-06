@@ -1,72 +1,50 @@
-Received: from nwd2mail11.analog.com ([137.71.25.57]:22368 "EHLO
-	nwd2mail11.analog.com") by ftp.linux-mips.org with ESMTP
-	id S20038488AbWJEKJX convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 5 Oct 2006 11:09:23 +0100
-Received: from nwd2exm4.ad.analog.com (nwd2exm4.ad.analog.com [10.64.53.123])
-	by nwd2mhb2.analog.com (8.9.3 (PHNE_28810+JAGae91741)/8.9.3) with ESMTP id GAA18664
-	for <linux-mips@linux-mips.org>; Thu, 5 Oct 2006 06:09:24 -0400 (EDT)
+Received: from mail.zeugmasystems.com ([192.139.122.66]:9315 "EHLO
+	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
+	id S20039501AbWJGACO convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Sat, 7 Oct 2006 01:02:14 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: R300 Mips Question
-Date: Thu, 5 Oct 2006 06:09:19 -0400
-Message-ID: <7D453D0504B6A2429F98F4D72CBEDE490D7D8795@nwd2exm5.ad.analog.com>
-From: "Kota, Ramgopal" <Ramgopal.Kota@analog.com>
-Return-Path: <Ramgopal.Kota@analog.com>
+Subject: CFE problem: starting secondary CPU.
+Date: Fri, 6 Oct 2006 16:58:37 -0700
+Message-ID: <66910A579C9312469A7DF9ADB54A8B7D3E7324@exchange.ZeugmaSystems.local>
+From: "Kaz Kylheku" <kaz@zeugmasystems.com>
+Return-Path: <kaz@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20061005100919.wdSTBb9HgUeHhMkPa7dDRAi7UpGQAcJLqrwEJCvn9rI@z>
+Message-ID: <20061006235837.2rQ-9WVIiaitUwpxmyzrJ2__81y1zpjcCeQFBAa2mCE@z>
 
-Hi,
+Anyone seen a problem like this? cfe_cpu_start() works fine on a
+32 bit kernel, but not on 64.
 
-I am new to MIPS and uclinux port.I am getting familiarised with 2.6.18
-linux code.
-I see the following code in asm/mips/kernel/genex.S &
-asm/mips/kernel/traps.c
+I added a function to cfe/smp.c:
 
-++++++++++++ Genex.S  +++++++++++++
-NESTED(except_vec3_generic, 0, sp)
-        .set    push
-        .set    noat
-#if R5432_CP0_INTERRUPT_WAR
-        mfc0    k0, CP0_INDEX
-#endif
-        mfc0    k1, CP0_CAUSE
-        andi    k1, k1, 0x7c
-#ifdef CONFIG_64BIT
-        dsll    k1, k1, 1
-#endif
-        PTR_L   k0, exception_handlers(k1)
-        jr      k0
-        .set    pop
-        END(except_vec3_generic)
+  static asmlinkage void dummy()
+  {
+    prom_printf("dummy called\n");
+  }
 
-+++++++++++++ traps.c +++++++++++++++
-        set_except_vector(0, handle_int);
-        set_except_vector(1, handle_tlbm);
-        set_except_vector(2, handle_tlbl);
-        set_except_vector(3, handle_tlbs);
+This serves as the simplest possible "hello world". 
 
-        set_except_vector(4, handle_adel);
-        set_except_vector(5, handle_ades);
+If I substitute this for the function passed to cfe_cpu_start(),
+on a 32 bit kernel, the slave CPU calls the function and the
+message is printed on the serial console.
 
-        set_except_vector(6, handle_ibe);
-        set_except_vector(7, handle_dbe);
+On a 64 bit kernel, the function is never reached. The API call returns,
+but the
+secondary CPU never calls in.
 
-        set_except_vector(8, handle_sys);
-        set_except_vector(9, handle_bp);
-        set_except_vector(10, handle_ri);
-        set_except_vector(11, handle_cpu);
-        set_except_vector(12, handle_ov);
-        set_except_vector(13, handle_tr);
+The sign-extension of the address looks good. The function pointer looks
+like
+FFFFFFFF8XXXXXXX. This is cast to long before being assigned into the
+right field
+of the CFE request structure, where it is converted to 64 bit unsigned.
 
-In R3000 manual , bits 2-6 indicate exception code value. In genex.S ,
-the cause register is anded with 0x7c to extract 2-6 bits. 
-I am not able to understand why it is not shifted the last 2 bits.
+Inside CFE, the CPU is just looping around waiting for the address to
+call with
+a direct jump.
 
-Please try to educate me why this is not done.
-
-Ramgopal Kota 
+So it's a puzzling problem.

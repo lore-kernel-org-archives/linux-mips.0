@@ -1,27 +1,39 @@
-Received: from mx.mips.com ([63.167.95.198]:49139 "EHLO dns0.mips.com")
-	by ftp.linux-mips.org with ESMTP id S20039871AbWJJNtq (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 10 Oct 2006 14:49:46 +0100
-Message-ID: <003301c6ec73$cfe3ba00$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20061010.224652.53335173.anemo@mba.ocn.ne.jp>
-Subject: Re: [PATCH] optimize and cleanup get_saved_sp, set_saved_sp
-Date: Tue, 10 Oct 2006 15:55:56 +0200
+Received: from mail.zeugmasystems.com ([192.139.122.66]:43894 "EHLO
+	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
+	id S20039888AbWJJRUw convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 10 Oct 2006 18:20:52 +0100
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: CFE problem: starting secondary CPU.
+Date: Tue, 10 Oct 2006 10:20:50 -0700
+Message-ID: <66910A579C9312469A7DF9ADB54A8B7D3E73D2@exchange.ZeugmaSystems.local>
+From: "Kaz Kylheku" <kaz@zeugmasystems.com>
+Return-Path: <kaz@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Cc: ralf@linux-mips.org
-Message-ID: <20061010135556.A6NvaY_eLA0ZB_Gi4nB-3cGpCi_YFVrSmbpjZk5mI6s@z>
+To: linux-mips@linux-mips.org
+Cc: mason@broadcom.com
+Message-ID: <20061010172050.rSP4MbgVAyJpfgixUs9E-pREfPTUxRtZNsTJL1ZDn4I@z>
 
-> This patch also fixes 64-bit SMTC version of get_saved_sp() which is
-> broken but harmless since there is no such CPUs for now.
+Mark E Mason: 
+> Kaz Kylheku:
+> > 
+> > Anyone seen a problem like this? cfe_cpu_start() works fine on a
+> > 32 bit kernel, but not on 64.
+> 
+> Which version of CFE are you using?  We'd seen something like 
+> this with
+> the 1480 eval boards, some specific versions of CFE, and 64-bit SMP
+> Linux.
 
-I appreciate and thank you for your prescience, though.  ;o)
+I see in the release notes that something was fixed in 1.2.4 that could
+prevent 64 bit SMP from booting: a bug that was preventing the upper
+halves of registers from being saved. Is that what you are talking
+about?
 
-            Regards,
+We are on 1.3.0.
 
-            Kevin K.
+Thanks.

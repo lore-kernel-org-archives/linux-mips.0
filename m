@@ -1,39 +1,58 @@
-Received: from mail.zeugmasystems.com ([192.139.122.66]:43894 "EHLO
-	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S20039888AbWJJRUw convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 10 Oct 2006 18:20:52 +0100
-Content-class: urn:content-classes:message
+Received: from mail95.messagelabs.com ([216.82.241.67]:18330 "HELO
+	mail95.messagelabs.com") by ftp.linux-mips.org with SMTP
+	id S20038329AbWJLQGE convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 12 Oct 2006 17:06:04 +0100
+Received: from avgw02c.sony.com.sg (avgw02c [43.68.8.33])
+	by inetmg1.sony.com.sg (8.11.7+Sun/8.11.6) with SMTP id k9CG5KQ06678
+	for <linux-mips@linux-mips.org>; Fri, 13 Oct 2006 00:05:20 +0800 (SGT)
+Received: from sgapxbh04.ap.sony.com ([43.68.15.49])
+	by seagw01.sony.com.sg (8.11.6+Sun/8.11.6) with ESMTP id k9CG5Ca12450
+	for <linux-mips@linux-mips.org>; Fri, 13 Oct 2006 00:05:12 +0800 (SGT)
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: CFE problem: starting secondary CPU.
-Date: Tue, 10 Oct 2006 10:20:50 -0700
-Message-ID: <66910A579C9312469A7DF9ADB54A8B7D3E73D2@exchange.ZeugmaSystems.local>
-From: "Kaz Kylheku" <kaz@zeugmasystems.com>
-Return-Path: <kaz@zeugmasystems.com>
+Subject: KProbes Support for MIPS
+Date: Thu, 12 Oct 2006 21:34:40 +0530
+Message-ID: <7CC0A4CCB789A841944E316301AD153817FDED@insardxms01.ap.sony.com>
+From: "Madhvesh Sulibhavi" <madhvesh.s@ap.sony.com>
+Return-Path: <madhvesh.s@ap.sony.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Cc: mason@broadcom.com
-Message-ID: <20061010172050.rSP4MbgVAyJpfgixUs9E-pREfPTUxRtZNsTJL1ZDn4I@z>
+Message-ID: <20061012160440.nCk8ANdA-TbEdVWrDBXyuezYgGMO4MApZwdTC1rFtdM@z>
 
-Mark E Mason: 
-> Kaz Kylheku:
-> > 
-> > Anyone seen a problem like this? cfe_cpu_start() works fine on a
-> > 32 bit kernel, but not on 64.
-> 
-> Which version of CFE are you using?  We'd seen something like 
-> this with
-> the 1480 eval boards, some specific versions of CFE, and 64-bit SMP
-> Linux.
+Hi All,
 
-I see in the release notes that something was fixed in 1.2.4 that could
-prevent 64 bit SMP from booting: a bug that was preventing the upper
-halves of registers from being saved. Is that what you are talking
-about?
+The mainline kernel 2.6.16  (and later) had KProbes support
+for x86, Alpha and PPC64 architectures. In this patch we provide
+an implementation of KProbe for the MIPS arch. It is targetted
+at the 2.6.16-24 kernel and tested on the Toshiba TX49 reference
+platform. The patch is available in the below CELF wiki page 
 
-We are on 1.3.0.
+http://tree.celinuxforum.org/CelfPubWiki/PatchArchive
 
-Thanks.
+The patch can be downloaded from here
+http://tree.celinuxforum.org/CelfPubWiki/PatchArchive?action=AttachFile&
+do=get&target=kprobes-mips-patches-2.6.16.24.tgz
+
+Please see the documentation for usage and limitations.
+
+Look forward to any feedback.
+Thank you
+
+Regards
+Madhvesh
+
+=============================
+Madhvesh Sulibhavi
+Sony India Software Centre
+Bangalore
+=============================
+
+
+
+-------------------------------------------------------------------
+This email is confidential and intended only for the use of the individual or entity named above and may contain information that is privileged. If you are not the intended recipient, you are notified that any dissemination, distribution or copying of this email is strictly prohibited. If you have received this email in error, please notify us immediately by return email or telephone and destroy the original message. - This mail is sent via Sony Asia Pacific Mail Gateway.
+-------------------------------------------------------------------

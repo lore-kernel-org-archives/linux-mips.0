@@ -1,464 +1,68 @@
-Received: from smtp-out.sigp.net ([63.237.78.44]:34480 "EHLO smtp-out.sigp.net")
-	by ftp.linux-mips.org with ESMTP id S20038690AbWJZUjr (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 26 Oct 2006 21:39:47 +0100
-Received: from gamd-ex-001.ss.drs.master (gamd-ex-001.ss.drs.master [172.22.132.94])
-	by smtp-out.sigp.net (8.13.8/8.13.8) with ESMTP id k9QKdgT9023703
-	for <linux-mips@linux-mips.org>; Thu, 26 Oct 2006 16:39:46 -0400 (EDT)
+Received: from smtp-out.sigp.net ([63.237.78.44]:8944 "EHLO smtp-out.sigp.net")
+	by ftp.linux-mips.org with ESMTP id S20037396AbWJ0SHT (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 27 Oct 2006 19:07:19 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C6F93E.DD87FC1D"
-Subject: sanblaze driver -> LSFC929 FiberChannel
-Date: Thu, 26 Oct 2006 16:39:42 -0400
-Message-ID: <DEB94D90ABFC8240851346CFD4ACFF14AD2ADD@gamd-ex-001.ss.drs.master>
+	boundary="----_=_NextPart_001_01C6F9F2.B9FDF2B5"
+Subject: Re: sanblaze driver -> LSFC929 FiberChannel
+Date: Fri, 27 Oct 2006 14:07:12 -0400
+Message-ID: <DEB94D90ABFC8240851346CFD4ACFF1429FF05@gamd-ex-001.ss.drs.master>
 From: "Azer, William" <Bill.Azer@drs-ss.com>
 Return-Path: <Bill.Azer@drs-ss.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20061026203942.95tMcvh2ZWj1caEfRcitrDCzoflATP8TDd5gC94Xtz0@z>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org
+Message-ID: <20061027180712.XIay8Vyf7otetDX3xNwMC9ksWaIuGSHxpe9cJmvUTZs@z>
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C6F93E.DD87FC1D
+------_=_NextPart_001_01C6F9F2.B9FDF2B5
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 
-Hi All,
+SXQgaXMgYSBiY20xNDgwLCB1c2luZyBsaW51eCAyLjYuMTcuNyB3aXRoIHNhbmJsYXplIFBNQw0K
+DQpCaWxsDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBSYWxmIEJhZWNobGUg
+PHJhbGZAbGludXgtbWlwcy5vcmc+DQpUbzogQXplciwgV2lsbGlhbSA8QmlsbC5BemVyQGRycy1z
+cy5jb20+DQpDQzogbGludXgtbWlwc0BsaW51eC1taXBzLm9yZyA8bGludXgtbWlwc0BsaW51eC1t
+aXBzLm9yZz4NClNlbnQ6IFRodSBPY3QgMjYgMTk6MDY6MDkgMjAwNg0KU3ViamVjdDogUmU6IHNh
+bmJsYXplIGRyaXZlciAtPiBMU0ZDOTI5IEZpYmVyQ2hhbm5lbA0KDQpPbiBUaHUsIE9jdCAyNiwg
+MjAwNiBhdCAwNDozOTo0MlBNIC0wNDAwLCBBemVyLCBXaWxsaWFtIHdyb3RlOg0KDQo+IGkgYW0g
+dXNpbmcgdGhlIHNhbmJsYXplIGNhcmQgY29uZmlndXJlZCBpbiB0aGUga2VybmVsIGZvciB0aGUN
+Cj4gZmliZXJjaGFubmVsLiAgaSBlbmFibGVkIHRoZSBtcHQgZnVzaW9uIGZjIGFuZCB0aGUgaW9j
+dGwgZHJpdmVyLCBpIGFsc28NCj4gZW5hYmxlIHNjc2kgZGlzayBzdXBwb3J0LCAuLi4NCg0KVGhp
+cyBpcyB0aGUgZmlyc3QgdXNlciByZXBvcnQgZm9yIHN1Y2ggYSBkZXZpY2Ugb24gTUlQUyBldmVy
+IGFmYWljcy4NCkEgZmV3IG1vcmUgZGV0YWlscyBvbiB5b3VyIHN5c3RlbSwgbWVzc2FnZXMgZXRj
+LiBjb3VsZCBiZSB1c2VmdWwgdG8NCnNvbHZlIHlvdXIgaXNzdWUuDQoNCiAgUmFsZg0K
 
-=20
-
-i am using the sanblaze card configured in the kernel for the
-fiberchannel.  i enabled the mpt fusion fc and the ioctl driver, i also
-enable scsi disk support, ...
-
-=20
-
-I get an error and it hangs.
-
-=20
-
-=20
-
-Has any one used the sanblaze fc driver in the kernel (I am using kernel
-version 2.6.17.7)
-
-=20
-
-=20
-
-Thx,
-
-=20
-
-Bill Azer
-
-=20
-
-i tried loading the drivers and get this error :
-
-=20
-
-bash-2.05b# insmod drivers/message/fusion/mptbase.ko
-
-Fusion MPT base driver 3.03.09
-
-Copyright (c) 1999-2005 LSI Logic Corporation
-
-bash-2.05b# insmod drivers/message/fusion/mptctl.ko
-
-Fusion MPT misc device (ioctl) driver 3.03.09
-
-mptctl: Registered with Fusion MPT base driver
-
-mptctl: /dev/mptctl @ (major,minor=3D10,220)
-
-bash-2.05b# insmod drivers/message/fusion/mptscsih.ko
-
-bash-2.05b# insmod drivers/scsi/scsi_transport_fc.ko
-
-bash-2.05b# insmod
-
-/lib/modules/2.6.17.7/kernel/drivers/message/fusion/mptfc.ko
-
-Fusion MPT FC Host driver 3.03.09
-
-mptbase: Initiating ioc0 bringup
-
-ioc0: FC929: Capabilities=3D{Initiator,Target,LAN}
-
-=20
-
-mptbase: mpt_reply: WARNING - ioc0: Invalid cb_idx (0)!
-
-mptbase: mpt_reply: WARNING - ioc0: Invalid cb_idx (0)!
-
-mptbase: Initiating ioc0 recovery
-
-mptbase: mpt_reply: WARNING - ioc0: Invalid cb_idx (130)!
-
-mptbase: mpt_reply: WARNING - ioc0: Invalid cb_idx (65)!
-
-mptbase: Initiating ioc0 recovery
-
-mptbase: mpt_reply: WARNING - ioc0: Invalid cb_idx (0)!
-
-mptbase: mpt_reply: WARNING - ioc0: Invalid cb_idx (65)!
-
-mptbase: Initiating ioc0 recovery
-
-mptbase: mpt_reply: WARNING - ioc0: Invalid cb_idx (0)!
-
-scsi0 : ioc0: LSIFC929, FwRev=3D02000a00h, Ports=3D1, MaxQ=3D1023, =
-IRQ=3D10
-
-mptbase: mpt_reply: WARNING - ioc0: Invalid cb_idx (65)!
-
-mptbase: Initiating ioc0 recovery
-
-mptbase: mpt_reply: WARNING - ioc0: Invalid cb_idx (0)!
-
-mptbase: mpt_reply: WARNING - ioc0: Invalid cb_idx (65)!
-
-=20
-
-=20
-
-=20
-
-=20
-
-
-------_=_NextPart_001_01C6F93E.DD87FC1D
+------_=_NextPart_001_01C6F9F2.B9FDF2B5
 Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDMuMi8vRU4iPg0KPEhUTUw+
+DQo8SEVBRD4NCjxNRVRBIEhUVFAtRVFVSVY9IkNvbnRlbnQtVHlwZSIgQ09OVEVOVD0idGV4dC9o
+dG1sOyBjaGFyc2V0PXV0Zi04Ij4NCjxNRVRBIE5BTUU9IkdlbmVyYXRvciIgQ09OVEVOVD0iTVMg
+RXhjaGFuZ2UgU2VydmVyIHZlcnNpb24gNi41LjcyMzMuMjgiPg0KPFRJVExFPlJlOiBzYW5ibGF6
+ZSBkcml2ZXIgLSZndDsgTFNGQzkyOSBGaWJlckNoYW5uZWw8L1RJVExFPg0KPC9IRUFEPg0KPEJP
+RFk+DQo8IS0tIENvbnZlcnRlZCBmcm9tIHRleHQvcGxhaW4gZm9ybWF0IC0tPg0KDQo8UD48Rk9O
+VCBTSVpFPTI+SXQgaXMgYSBiY20xNDgwLCB1c2luZyBsaW51eCAyLjYuMTcuNyB3aXRoIHNhbmJs
+YXplIFBNQzxCUj4NCjxCUj4NCkJpbGw8QlI+DQo8QlI+DQotLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
+LS0tLTxCUj4NCkZyb206IFJhbGYgQmFlY2hsZSAmbHQ7cmFsZkBsaW51eC1taXBzLm9yZyZndDs8
+QlI+DQpUbzogQXplciwgV2lsbGlhbSAmbHQ7QmlsbC5BemVyQGRycy1zcy5jb20mZ3Q7PEJSPg0K
+Q0M6IGxpbnV4LW1pcHNAbGludXgtbWlwcy5vcmcgJmx0O2xpbnV4LW1pcHNAbGludXgtbWlwcy5v
+cmcmZ3Q7PEJSPg0KU2VudDogVGh1IE9jdCAyNiAxOTowNjowOSAyMDA2PEJSPg0KU3ViamVjdDog
+UmU6IHNhbmJsYXplIGRyaXZlciAtJmd0OyBMU0ZDOTI5IEZpYmVyQ2hhbm5lbDxCUj4NCjxCUj4N
+Ck9uIFRodSwgT2N0IDI2LCAyMDA2IGF0IDA0OjM5OjQyUE0gLTA0MDAsIEF6ZXIsIFdpbGxpYW0g
+d3JvdGU6PEJSPg0KPEJSPg0KJmd0OyBpIGFtIHVzaW5nIHRoZSBzYW5ibGF6ZSBjYXJkIGNvbmZp
+Z3VyZWQgaW4gdGhlIGtlcm5lbCBmb3IgdGhlPEJSPg0KJmd0OyBmaWJlcmNoYW5uZWwuJm5ic3A7
+IGkgZW5hYmxlZCB0aGUgbXB0IGZ1c2lvbiBmYyBhbmQgdGhlIGlvY3RsIGRyaXZlciwgaSBhbHNv
+PEJSPg0KJmd0OyBlbmFibGUgc2NzaSBkaXNrIHN1cHBvcnQsIC4uLjxCUj4NCjxCUj4NClRoaXMg
+aXMgdGhlIGZpcnN0IHVzZXIgcmVwb3J0IGZvciBzdWNoIGEgZGV2aWNlIG9uIE1JUFMgZXZlciBh
+ZmFpY3MuPEJSPg0KQSBmZXcgbW9yZSBkZXRhaWxzIG9uIHlvdXIgc3lzdGVtLCBtZXNzYWdlcyBl
+dGMuIGNvdWxkIGJlIHVzZWZ1bCB0bzxCUj4NCnNvbHZlIHlvdXIgaXNzdWUuPEJSPg0KPEJSPg0K
+Jm5ic3A7IFJhbGY8QlI+DQo8L0ZPTlQ+DQo8L1A+DQoNCjwvQk9EWT4NCjwvSFRNTD4=
 
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>Hi =
-All,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>i am using the =
-sanblaze card
-configured in the kernel for the fiberchannel.&nbsp; i enabled the mpt =
-fusion fc and
-the ioctl driver, i also enable scsi disk support, =
-...<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>I get an error and =
-it hangs.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>Has any one used =
-the
-sanblaze fc driver in the kernel (I am using kernel version =
-2.6.17.7)<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'>Thx,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>Bill =
-Azer<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>i tried loading the =
-drivers
-and get this error :<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>bash-2.05b# insmod
-drivers/message/fusion/mptbase.ko<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>Fusion MPT base =
-driver
-3.03.09<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>Copyright (c) =
-1999-2005 LSI
-Logic Corporation<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>bash-2.05b# insmod
-drivers/message/fusion/mptctl.ko<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>Fusion MPT misc =
-device
-(ioctl) driver 3.03.09<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptctl: Registered =
-with
-Fusion MPT base driver<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptctl: /dev/mptctl =
-@
-(major,minor=3D10,220)<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>bash-2.05b# insmod
-drivers/message/fusion/mptscsih.ko<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>bash-2.05b# insmod
-drivers/scsi/scsi_transport_fc.ko<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>bash-2.05b# =
-insmod<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'>/lib/modules/2.6.17.7/kernel/drivers/message/fusion/mptfc.ko<o:p></=
-o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>Fusion MPT FC Host =
-driver
-3.03.09<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: Initiating =
-ioc0
-bringup<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>ioc0: FC929:
-Capabilities=3D{Initiator,Target,LAN}<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: mpt_reply: =
-WARNING
-- ioc0: Invalid cb_idx (0)!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: mpt_reply: =
-WARNING
-- ioc0: Invalid cb_idx (0)!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: Initiating =
-ioc0
-recovery<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: mpt_reply: =
-WARNING
-- ioc0: Invalid cb_idx (130)!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: mpt_reply: =
-WARNING
-- ioc0: Invalid cb_idx (65)!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: Initiating =
-ioc0
-recovery<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: mpt_reply: =
-WARNING
-- ioc0: Invalid cb_idx (0)!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: mpt_reply: =
-WARNING
-- ioc0: Invalid cb_idx (65)!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: Initiating =
-ioc0
-recovery<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: mpt_reply: =
-WARNING
-- ioc0: Invalid cb_idx (0)!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>scsi0 : ioc0: =
-LSIFC929,
-FwRev=3D02000a00h, Ports=3D1, MaxQ=3D1023, =
-IRQ=3D10<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: mpt_reply: =
-WARNING
-- ioc0: Invalid cb_idx (65)!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: Initiating =
-ioc0
-recovery<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: mpt_reply: =
-WARNING
-- ioc0: Invalid cb_idx (0)!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>mptbase: mpt_reply: =
-WARNING
-- ioc0: Invalid cb_idx (65)!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier =
-New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C6F93E.DD87FC1D--
+------_=_NextPart_001_01C6F9F2.B9FDF2B5--

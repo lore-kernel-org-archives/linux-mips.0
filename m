@@ -1,140 +1,35 @@
-Received: from mail.gazungle.com ([207.210.240.68]:64957 "HELO
-	mail.gazungle.com") by ftp.linux-mips.org with SMTP
-	id S20037758AbWJ0UWJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 27 Oct 2006 21:22:09 +0100
-Reply-To: <vasbridge@sanblaze.com>
-From: "Vince Asbridge" <vasbridge@sanblaze.com>
-Subject: Drivers for SANBlaze FC card
-Date: Fri, 27 Oct 2006 16:24:46 -0400
-Message-ID: <017901c6fa05$f211a160$4b01a8c0@sanblaze.com>
+Received: from mail.zeugmasystems.com ([192.139.122.66]:65209 "EHLO
+	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
+	id S20038894AbWKACJE convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 1 Nov 2006 02:09:04 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_017A_01C6F9E4.6B000160"
-Return-Path: <vasbridge@sanblaze.com>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-To: ralf@linux-mips.org, Bill.Azer@drs-ss.com
-Cc: linux-mips@linux-mips.org
-Message-ID: <20061027202446.ribwq9YmX0eCHbC1yjF83qfNrOJEJPE5ZPkP7E8f2Vs@z>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_017A_01C6F9E4.6B000160
 Content-Type: text/plain;
 	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Subject: Cannot run N32 binaries.
+Date: Tue, 31 Oct 2006 18:08:56 -0800
+Message-ID: <66910A579C9312469A7DF9ADB54A8B7D44D290@exchange.ZeugmaSystems.local>
+From: "Kaz Kylheku" <kaz@zeugmasystems.com>
+Return-Path: <kaz@zeugmasystems.com>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: linux-mips@linux-mips.org
+Message-ID: <20061101020856.A7GHqX7sJ2Kevecu7sb3J35HLUBFEZa_U0jx2mUyR3o@z>
 
-Ralf,
+Before I start debugging this, I thought I'd poll the mailing list.
 
-Bill Azer from DRS forwarded a mail regarding the SANBlaze FibreChannel card
-on a MIPS processor, and some issues he was having with loading the driver
-set.
+I've built an N32 root filesystem: all binaries and libs are "ELF 32-bit
+N32 MSB MIPS-III ..."
 
-Our card uses the FusionMPT driver from LSI logic, and we were able to
-provide a new kit to Bill which resolved his issue.
+The kernel (2.6.17.7, 64 bit) that I built does have:
 
-If you would like a copy of this latest driver set, please just send me an
-email and I'll send it along.
+CONFIG_MIPS32_N32=y
 
-I expect that LSI Logic will (or maybe even has) update the drivers on
-kernel.org, but if you want a copy of what we sent Bill, just send me an
-email.
+The filesystem doesn't boot: init cannot be found.
+ 
+I copied the N32 filesystem into a subdirectory of an O32 filesystem in
+order to have a look.
 
-Vince Asbridge
-SANBlaze Technology, Inc.
-
-
------Original Message-----
-From: Ralf Baechle <ralf@linux-mips.org>
-To: Azer, William <Bill.Azer@drs-ss.com>
-CC: linux-mips@linux-mips.org <linux-mips@linux-mips.org>
-Sent: Thu Oct 26 19:06:09 2006
-Subject: Re: sanblaze driver -> LSFC929 FiberChannel
-
-On Thu, Oct 26, 2006 at 04:39:42PM -0400, Azer, William wrote:
-
-> i am using the sanblaze card configured in the kernel for the
-> fiberchannel. i enabled the mpt fusion fc and the ioctl driver, i also
-> enable scsi disk support, ...
-
-This is the first user report for such a device on MIPS ever afaics.
-A few more details on your system, messages etc. could be useful to
-solve your issue.
-
-Ralf
-
-
-
-	
-
-------=_NextPart_000_017A_01C6F9E4.6B000160
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7036.0">
-<TITLE>Drivers for SANBlaze FC card</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/rtf format -->
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Ralf,</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Bill Azer from DRS forwarded a mail =
-regarding the SANBlaze FibreChannel card on a MIPS processor, and some =
-issues he was having with loading the driver set.</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Our card uses the FusionMPT driver from =
-LSI logic, and we were able to provide a new kit to Bill which resolved =
-his issue.</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">If you would like a copy of this latest =
-driver set, please just send me an email and I'll send it along.</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">I expect that LSI Logic will (or maybe =
-even has) update the drivers on kernel.org, but if you want a copy of =
-what we sent Bill, just send me an email.</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Vince Asbridge</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">SANBlaze Technology, Inc.</FONT>
-</P>
-<BR>
-
-<P><FONT FACE=3D"Times New Roman">-----Original Message-----<BR>
-From: Ralf Baechle &lt;ralf@linux-mips.org&gt;<BR>
-To: Azer, William &lt;Bill.Azer@drs-ss.com&gt;<BR>
-CC: linux-mips@linux-mips.org &lt;linux-mips@linux-mips.org&gt;<BR>
-Sent: Thu Oct 26 19:06:09 2006<BR>
-Subject: Re: sanblaze driver -&gt; LSFC929 FiberChannel<BR>
-<BR>
-On Thu, Oct 26, 2006 at 04:39:42PM -0400, Azer, William wrote:<BR>
-<BR>
-&gt; i am using the sanblaze card configured in the kernel for the<BR>
-&gt; fiberchannel. i enabled the mpt fusion fc and the ioctl driver, i =
-also<BR>
-&gt; enable scsi disk support, ...<BR>
-<BR>
-This is the first user report for such a device on MIPS ever afaics.<BR>
-A few more details on your system, messages etc. could be useful to<BR>
-solve your issue.<BR>
-<BR>
-Ralf<BR>
-<BR>
-</FONT>
-</P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-</P>
-
-</BODY>
-</HTML>
-------=_NextPart_000_017A_01C6F9E4.6B000160--
+Basically, for any executable that I try to run, the error is: "No such
+file or directory".

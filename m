@@ -1,35 +1,34 @@
-Received: from mail.zeugmasystems.com ([192.139.122.66]:65209 "EHLO
+Received: from mail.zeugmasystems.com ([192.139.122.66]:45764 "EHLO
 	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S20038894AbWKACJE convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 1 Nov 2006 02:09:04 +0000
+	id S20039173AbWKAQcf convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 1 Nov 2006 16:32:35 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: Cannot run N32 binaries.
-Date: Tue, 31 Oct 2006 18:08:56 -0800
-Message-ID: <66910A579C9312469A7DF9ADB54A8B7D44D290@exchange.ZeugmaSystems.local>
+Subject: RE: Cannot run N32 binaries.
+Date: Wed, 1 Nov 2006 08:32:27 -0800
+Message-ID: <66910A579C9312469A7DF9ADB54A8B7D44D2C5@exchange.ZeugmaSystems.local>
 From: "Kaz Kylheku" <kaz@zeugmasystems.com>
 Return-Path: <kaz@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20061101020856.A7GHqX7sJ2Kevecu7sb3J35HLUBFEZa_U0jx2mUyR3o@z>
+Message-ID: <20061101163227.loVO5Z6Rb3vBDTvLDL5jvwXyuuj25b-n1ijGdv2XS2k@z>
 
-Before I start debugging this, I thought I'd poll the mailing list.
+Ilya A. Volynets-Evenbakh wrote:
+> Could be looking for non-existant ld.so.1 (do you have N32 
+> version of it
+> in /lib32?)
 
-I've built an N32 root filesystem: all binaries and libs are "ELF 32-bit
-N32 MSB MIPS-III ..."
+That is correct. If I make a /lib32 -> lib symbolic link, everything
+runs.
 
-The kernel (2.6.17.7, 64 bit) that I built does have:
+I actually built the libs under /lib, but I did not realize that ld
+simply writes a hard-coded path for the dynamic linker into executables.
 
-CONFIG_MIPS32_N32=y
+That is to say, I built an all-n32 system, using /lib and /usr/lib.
 
-The filesystem doesn't boot: init cannot be found.
- 
-I copied the N32 filesystem into a subdirectory of an O32 filesystem in
-order to have a look.
-
-Basically, for any executable that I try to run, the error is: "No such
-file or directory".
+This is elegant, but probably a bad idea, so I will go back to the
+/lib32 scheme.

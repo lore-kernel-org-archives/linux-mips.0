@@ -1,34 +1,32 @@
-Received: from mail.zeugmasystems.com ([192.139.122.66]:45764 "EHLO
-	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S20039173AbWKAQcf convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 1 Nov 2006 16:32:35 +0000
+Received: from ams-iport-1.cisco.com ([144.254.224.140]:28990 "EHLO
+	ams-iport-1.cisco.com") by ftp.linux-mips.org with ESMTP
+	id S20038498AbWKFOmz convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 6 Nov 2006 14:42:55 +0000
+Received: from ams-core-1.cisco.com (ams-core-1.cisco.com [144.254.224.150])
+	by ams-dkim-1.cisco.com (8.12.11.20060308/8.12.11) with ESMTP id kA6EgbkS032147
+	for <linux-mips@linux-mips.org>; Mon, 6 Nov 2006 15:42:37 +0100
+Received: from xbh-ams-331.emea.cisco.com (xbh-ams-331.cisco.com [144.254.231.71])
+	by ams-core-1.cisco.com (8.12.10/8.12.6) with ESMTP id kA6EgZ4Z013558
+	for <linux-mips@linux-mips.org>; Mon, 6 Nov 2006 15:42:37 +0100 (MET)
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: Cannot run N32 binaries.
-Date: Wed, 1 Nov 2006 08:32:27 -0800
-Message-ID: <66910A579C9312469A7DF9ADB54A8B7D44D2C5@exchange.ZeugmaSystems.local>
-From: "Kaz Kylheku" <kaz@zeugmasystems.com>
-Return-Path: <kaz@zeugmasystems.com>
+Subject: Sync operation in atomic_add_return()
+Date: Mon, 6 Nov 2006 15:42:32 +0100
+Message-ID: <E98CBCB9ACC07244969BE4541EC0A78303137105@xmb-ams-33b.emea.cisco.com>
+From: "Gideon Stupp \(gstupp\)" <gstupp@cisco.com>
+Return-Path: <gstupp@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20061101163227.loVO5Z6Rb3vBDTvLDL5jvwXyuuj25b-n1ijGdv2XS2k@z>
+Message-ID: <20061106144232.n0X8ZFbKhSN-qNokV2mCNcp2j4wrcTIySKyuEOmhDIk@z>
 
-Ilya A. Volynets-Evenbakh wrote:
-> Could be looking for non-existant ld.so.1 (do you have N32 
-> version of it
-> in /lib32?)
+Hi,
+I am trying to figure out why there is a sync operation in
+linux/include/asm-mips/atomic.h:atomic_add_return(). 
+I believe it was added in the linux-2.4.19 patch, but can't trace the
+reason. Can anyone help?
 
-That is correct. If I make a /lib32 -> lib symbolic link, everything
-runs.
-
-I actually built the libs under /lib, but I did not realize that ld
-simply writes a hard-coded path for the dynamic linker into executables.
-
-That is to say, I built an all-n32 system, using /lib and /usr/lib.
-
-This is elegant, but probably a bad idea, so I will go back to the
-/lib32 scheme.
+Thanks, Gideon.

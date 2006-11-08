@@ -1,56 +1,48 @@
-Received: from mail.zeugmasystems.com ([192.139.122.66]:23690 "EHLO
-	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S20038545AbWKFSSC convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 6 Nov 2006 18:18:02 +0000
-Content-class: urn:content-classes:message
+Received: from wx-out-0506.google.com ([66.249.82.228]:56704 "EHLO
+	wx-out-0506.google.com") by ftp.linux-mips.org with ESMTP
+	id S20037590AbWKHGEq (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 8 Nov 2006 06:04:46 +0000
+Received: by wx-out-0506.google.com with SMTP id h30so1524341wxd
+        for <linux-mips@linux-mips.org>; Tue, 07 Nov 2006 22:04:44 -0800 (PST)
+From: =?ks_c_5601-1987?B?sei5zsL5?= <barrioskmc@gmail.com>
+Subject: RE: MIPS processors gain GNU/Linux binary prelinker
+Date: Wed, 8 Nov 2006 15:04:41 +0900
+Message-ID: <000801c702fb$c96e89e0$0202fea9@swcenter.sec.samsung.co.kr>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Sync operation in atomic_add_return()
-Date: Mon, 6 Nov 2006 10:17:53 -0800
-Message-ID: <66910A579C9312469A7DF9ADB54A8B7D44D837@exchange.ZeugmaSystems.local>
-From: "Kaz Kylheku" <kaz@zeugmasystems.com>
-Return-Path: <kaz@zeugmasystems.com>
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20061107140437.GD19541@networkno.de>
+Return-Path: <barrioskmc@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20061106181753.oURiQhrKpP6YBNLDA2gBtc1kS5u6HyHzmlLSNFbWS04@z>
+To: 'Thiemo Seufer' <ths@networkno.de>, 'Tim Bird' <tim.bird@am.sony.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20061108060441.jNsNP6k7XUDuZv35xFlhp_-TfK9u8viJwG3MuLFrwTg@z>
 
-Gideon Stupp wrote:
-> Hi,
-> I am trying to figure out why there is a sync operation in
-> linux/include/asm-mips/atomic.h:atomic_add_return(). 
-> I believe it was added in the linux-2.4.19 patch, but can't trace the
-> reason. Can anyone help?
+Who know anymore about prelink for mips architecture? 
+Let me know prelink for mips detaily.
+Thanks in advance.
 
-Is it just unwarranted paranoia? There does not appear to be a need for
-the sync within the atomic_add_return code itself.
 
-But it might be that the code which calls this function needs the sync.
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org [mailto:linux-mips-bounce@linux-mips.
+org] On Behalf Of Thiemo Seufer
+Sent: Tuesday, November 07, 2006 11:05 PM
+To: Tim Bird
+Cc: CE Linux Developers List; linux-mips@linux-mips.org
+Subject: Re: MIPS processors gain GNU/Linux binary prelinker
 
-Without looking at any code whatsoever, here is a general hypothesis.
+Tim Bird wrote:
+> FYI - For those interested in bootup time improvements on MIPS
+> processors, here is some information about the recently
+> developed MIPS prelinking feature, done by CodeSourcery
+> and MIPS Technologies.
 
-In what situation might you /care/ about the return value of an atomic
-add?
+The patches are showing up piecemeal now on the various mailing lists,
+I also dumped a debian-styleish patchset at
+ftp://ftp.linux-mips.org/pub/linux/mips/people/ths/mips-prelinker-patches-
+debian/
 
-Suppose atomic increments and decrements are being used for reference
-counting. If you know that you hold the reference to an object, you can
-call atomic_add to increase the reference count without caring about the
-return value, and no sync is needed in that situation.
 
-Suppose, however, that atomic_add is used to pick up a reference.
-Suppose you have a pool of ``dead'' objects with reference counts of
-zero, and want to recycle an object from such a pool. You might use
-atomic_add_return to examine the reference counts of the objects in this
-pool one by one until you get a 1 return. You might get something other
-than a 1 return if racing against another processor which is tryiing to
-pick up the same object.
-
-In this situation, if you successfully get the object, you do want to do
-a sync, since the object is being handed off between two processors.
-Before the object was put into the pool, its fields were updated, since
-it was being cleaned up. You would not want the new owner, by chance, to
-observe stale values of those fields.
-
-I.e., to put it briefly, atomic_add_return can have "acquire" semantics.
+Thiemo

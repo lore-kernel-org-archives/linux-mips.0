@@ -1,30 +1,39 @@
-Received: from wx-out-0506.google.com ([66.249.82.231]:50026 "EHLO
-	wx-out-0506.google.com") by ftp.linux-mips.org with ESMTP
-	id S20038429AbWKIF5C (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 9 Nov 2006 05:57:02 +0000
-Received: by wx-out-0506.google.com with SMTP id t14so87860wxc
-        for <linux-mips@linux-mips.org>; Wed, 08 Nov 2006 21:56:59 -0800 (PST)
-From: =?ks_c_5601-1987?B?sei5zsL5?= <barrioskmc@gmail.com>
-Subject: upgrade toolchain(gcc-4.1)
-Date: Thu, 9 Nov 2006 14:56:55 +0900
-Message-ID: <000f01c703c3$de5d7000$45a6580a@swcenter.sec.samsung.co.kr>
+Received: from mail.zeugmasystems.com ([192.139.122.66]:54507 "EHLO
+	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
+	id S20037733AbWKITMA convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 9 Nov 2006 19:12:00 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 7bit
-Return-Path: <barrioskmc@gmail.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: swarm IDE fix: missing probing
+Date: Thu, 9 Nov 2006 11:11:50 -0800
+Message-ID: <66910A579C9312469A7DF9ADB54A8B7D44DDBE@exchange.ZeugmaSystems.local>
+From: "Kaz Kylheku" <kaz@zeugmasystems.com>
+Return-Path: <kaz@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Cc: ralf@linux-mips.org
-Message-ID: <20061109055655.nChz3UxOSkEfLluPjgprZv9w4eVfSJYIRUkicdtfZXo@z>
+Message-ID: <20061109191150.PASiYT1UanAEYGHyrNbQG0CmPgp00huMULkcgFYa9hQ@z>
+
+This patch is needed to bring up the compact flash IDE drive.
+
+I think it's missing under 2.6.18 as well.
 
 
-Hi all. 
-Currently I use gcc-3.4.4 in my mips board. 
-I want to update my toolchain(gcc, glibc, binutil etc.. ) to latest new
-toolchains( for example, gcc-4.1)
-But, in http://www.linux-mips.org/wiki/Toolchains, Roll-your-own is
-obsolete. Also, There isn't description about glibc. 
-Thanks for sharing your information. 
-Best Regards.
+Index: linux-2.6.17.7/drivers/ide/mips/swarm.c
+===================================================================
+--- linux-2.6.17.7.orig/drivers/ide/mips/swarm.c	2006-11-09
+12:55:20.000000000 -0800
++++ linux-2.6.17.7/drivers/ide/mips/swarm.c	2006-11-09
+12:56:30.432607488 -0800
+@@ -127,6 +127,7 @@
+ 	memcpy(hwif->io_ports, hwif->hw.io_ports,
+sizeof(hwif->io_ports));
+ 	hwif->irq = hwif->hw.irq;
+ 
++	probe_hwif_init(hwif);
+ 	dev_set_drvdata(dev, hwif);
+ 
+ 	return 0;

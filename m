@@ -1,39 +1,37 @@
-Received: from mail.zeugmasystems.com ([192.139.122.66]:54507 "EHLO
+Received: from mail.zeugmasystems.com ([192.139.122.66]:9298 "EHLO
 	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S20037733AbWKITMA convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 9 Nov 2006 19:12:00 +0000
+	id S20038695AbWKJVvq convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 10 Nov 2006 21:51:46 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: swarm IDE fix: missing probing
-Date: Thu, 9 Nov 2006 11:11:50 -0800
-Message-ID: <66910A579C9312469A7DF9ADB54A8B7D44DDBE@exchange.ZeugmaSystems.local>
+Subject: RE: [Fwd: [Ltt-dev] MIPS atomic operations, "sync"]
+Date: Fri, 10 Nov 2006 13:51:38 -0800
+Message-ID: <66910A579C9312469A7DF9ADB54A8B7D4822E5@exchange.ZeugmaSystems.local>
 From: "Kaz Kylheku" <kaz@zeugmasystems.com>
 Return-Path: <kaz@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20061109191150.PASiYT1UanAEYGHyrNbQG0CmPgp00huMULkcgFYa9hQ@z>
+To: Sergei Shtylyov <sshtylyov@ru.mvista.com>, Linux-MIPS <linux-mips@linux-mips.org>
+Cc: compudj@krystal.dyndns.org, tt-dev@shafik.org
+Message-ID: <20061110215138.XQvRoFEsTtXiMJItG4V64CqfDTRcF8xX0ye88L4X6cc@z>
 
-This patch is needed to bring up the compact flash IDE drive.
+Sergei Shtylyov wrote:
+> I just came across the MIPS atomic.h and system.h 
+> implementations in 2.6.18
+> which brings a question :
+> 
+> Why are the primitives in include/asm-mips/atomic.h using the "sync"
+> instruction even in the UP case ? system.h cmpxchg only uses 
+> the sync in the
+> SMP case.
 
-I think it's missing under 2.6.18 as well.
+There was just a discussion about this in the mailing list. Check the
+archive.
 
+Ralf Baechle mentioned that he has a patch to remove the syncs from
+uniprocessor code, so that would seem to answer your question.
 
-Index: linux-2.6.17.7/drivers/ide/mips/swarm.c
-===================================================================
---- linux-2.6.17.7.orig/drivers/ide/mips/swarm.c	2006-11-09
-12:55:20.000000000 -0800
-+++ linux-2.6.17.7/drivers/ide/mips/swarm.c	2006-11-09
-12:56:30.432607488 -0800
-@@ -127,6 +127,7 @@
- 	memcpy(hwif->io_ports, hwif->hw.io_ports,
-sizeof(hwif->io_ports));
- 	hwif->irq = hwif->hw.irq;
- 
-+	probe_hwif_init(hwif);
- 	dev_set_drvdata(dev, hwif);
- 
- 	return 0;
+Thread subject line: "Sync operation in atomic_add_return()".

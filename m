@@ -1,78 +1,43 @@
-Received: from ams-iport-1.cisco.com ([144.254.224.140]:47400 "EHLO
-	ams-iport-1.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S20037586AbWKLGrc convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Sun, 12 Nov 2006 06:47:32 +0000
-Content-class: urn:content-classes:message
+Received: from krt.tmd.ns.ac.yu ([147.91.177.65]:58402 "HELO krt.neobee.net")
+	by ftp.linux-mips.org with SMTP id S20037799AbWKMJQp (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 13 Nov 2006 09:16:45 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by krt.neobee.net (Postfix) with ESMTP id 47463FCC53
+	for <linux-mips@linux-mips.org>; Mon, 13 Nov 2006 10:16:39 +0100 (CET)
+Received: from krt.neobee.net ([127.0.0.1])
+ by localhost (krt.neobee.net [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 02019-03 for <linux-mips@linux-mips.org>;
+ Mon, 13 Nov 2006 10:16:38 +0100 (CET)
+Received: from had (unknown [192.168.0.92])
+	by krt.neobee.net (Postfix) with ESMTP id 8E57AFCC52
+	for <linux-mips@linux-mips.org>; Mon, 13 Nov 2006 10:16:38 +0100 (CET)
+From: "Mile Davidovic" <Mile.Davidovic@micronasnit.com>
+Subject: Uncached mmap
+Date: Mon, 13 Nov 2006 10:18:52 +0100
+Message-ID: <001201c70704$bc731230$5c00a8c0@niit.micronasnit.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Sync operation in atomic_add_return()
-Date: Sun, 12 Nov 2006 07:46:39 +0100
-Message-ID: <E98CBCB9ACC07244969BE4541EC0A7830317CEE5@xmb-ams-33b.emea.cisco.com>
-From: "Gideon Stupp \(gstupp\)" <gstupp@cisco.com>
-Return-Path: <gstupp@cisco.com>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Mile.Davidovic@micronasnit.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Kaz Kylheku <kaz@zeugmasystems.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20061112064639.RfF8ujNHY9Uw0KUMVN_IR3-_5G0j_df6PCYCrP_wD-k@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20061113091852.UZVLKa1b1n09WCJN0YGkC4uyOWxjdnkEDqJrNm8aL-Y@z>
 
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Kaz Kylheku
-> Sent: Monday, November 06, 2006 8:18 PM
-> To: linux-mips@linux-mips.org
-> Subject: RE: Sync operation in atomic_add_return()
-> 
-> Gideon Stupp wrote:
-> > Hi,
-> > I am trying to figure out why there is a sync operation in 
-> > linux/include/asm-mips/atomic.h:atomic_add_return().
-> > I believe it was added in the linux-2.4.19 patch, but can't 
-> trace the 
-> > reason. Can anyone help?
-> 
-> Is it just unwarranted paranoia? There does not appear to be 
-> a need for the sync within the atomic_add_return code itself.
-> 
-> But it might be that the code which calls this function needs 
-> the sync.
-> 
-> Without looking at any code whatsoever, here is a general hypothesis.
-> 
-> In what situation might you /care/ about the return value of 
-> an atomic add?
-> 
-> Suppose atomic increments and decrements are being used for 
-> reference counting. If you know that you hold the reference 
-> to an object, you can call atomic_add to increase the 
-> reference count without caring about the return value, and no 
-> sync is needed in that situation.
-> 
-> Suppose, however, that atomic_add is used to pick up a reference.
-> Suppose you have a pool of ``dead'' objects with reference 
-> counts of zero, and want to recycle an object from such a 
-> pool. You might use atomic_add_return to examine the 
-> reference counts of the objects in this pool one by one until 
-> you get a 1 return. You might get something other than a 1 
-> return if racing against another processor which is tryiing 
-> to pick up the same object.
-> 
-> In this situation, if you successfully get the object, you do 
-> want to do a sync, since the object is being handed off 
-> between two processors.
-> Before the object was put into the pool, its fields were 
-> updated, since it was being cleaned up. You would not want 
-> the new owner, by chance, to observe stale values of those fields.
-> 
-> I.e., to put it briefly, atomic_add_return can have "acquire" 
-> semantics.
-> 
+Hello to all,
+I am working on fb device and I have general questions regarding cache/uncache
+access to MIPS memory. 
 
-Thanks for the reply.  I also checked the Alpha implementation ( the
-only other architecture I know of with non serializing atomic operations
-) and indeed there is an explicit smp_mb() in atomic_add_return() and
-nowhere else.  So I guess this is the convention.
+User space application use mmap access for r/w access to fb device. If fb use
+cached memory, user space application has to call cacheflush to flush contents
+instruction and/or data cache. In this case there are no limitations regarding
+byte access to this memory. Is this correct statement?
 
-Gideon.
+If fb use uncached memory, there is no need for cacheflush call in user space
+application but limitation is access to mmap uncached memory. There is no byte
+access to uncached mmaped memory. Is this correct statement?
+
+
+Many thanks in advance.
+Best regards Mile

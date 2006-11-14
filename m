@@ -1,21 +1,29 @@
-Received: from krt.tmd.ns.ac.yu ([147.91.177.65]:17769 "HELO krt.neobee.net")
-	by ftp.linux-mips.org with SMTP id S20037749AbWKNK4V (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 14 Nov 2006 10:56:21 +0000
+Received: from krt.tmd.ns.ac.yu ([147.91.177.65]:34923 "HELO krt.neobee.net")
+	by ftp.linux-mips.org with SMTP id S20038487AbWKNLF1 (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 14 Nov 2006 11:05:27 +0000
 From: "Mile Davidovic" <Mile.Davidovic@micronasnit.com>
 Subject: RE: Uncached mmap
-Date: Tue, 14 Nov 2006 11:58:12 +0100
-Message-ID: <013c01c707db$c70cde10$5c00a8c0@niit.micronasnit.com>
+Date: Tue, 14 Nov 2006 12:07:24 +0100
+Message-ID: <013e01c707dd$10680d90$5c00a8c0@niit.micronasnit.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20061113164054.GA31476@linux-mips.org>
+In-Reply-To: <013c01c707db$c70cde10$5c00a8c0@niit.micronasnit.com>
 Return-Path: <Mile.Davidovic@micronasnit.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
+To: 'Mile Davidovic' <Mile.Davidovic@micronasnit.com>, linux-mips@linux-mips.org
 Cc: 'Ralf Baechle' <ralf@linux-mips.org>
-Message-ID: <20061114105812.pGlhTpzw3iZehGEMfybL0TONHOE6mDWuNYOhUsX_nhQ@z>
+Message-ID: <20061114110724.FX5K5qQyzcY3gxZtG7dNe_XAIIFyjbyWEDng9BspgqY@z>
+
+Hello again,
+I just want to make apologies for bothering, I contacted our vendor and it seems
+that uncached DRAM byte accesses on their core (based on MIPS 4Kec) are
+impossible. 
+Thanks a lot for Your effort.
+
+Best regards Mile
 
 Hello all again,
 

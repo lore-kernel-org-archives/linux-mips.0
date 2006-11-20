@@ -1,34 +1,33 @@
-Received: from localhost.localdomain ([127.0.0.1]:25022 "EHLO
-	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
-	id S20038654AbWKNNEi (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 14 Nov 2006 13:04:38 +0000
-Date: Tue, 14 Nov 2006 13:05:03 +0000
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: Portmap on the Encore M3
-Message-ID: <20061114130503.GB28579@linux-mips.org>
-References: <1163443607.6532.9.camel@sandbar.kenati.com> <20061113233802.GA17130@linux-mips.org> <1163469787.6532.26.camel@sandbar.kenati.com>
+Received: from fnoeppeil48.netpark.at ([217.175.205.176]:44047 "EHLO
+	roarinelk.homelinux.net") by ftp.linux-mips.org with ESMTP
+	id S20038189AbWKTMBu (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 20 Nov 2006 12:01:50 +0000
+Date: Mon, 20 Nov 2006 13:01:48 +0100
+From: Manuel Lauss <mano@roarinelk.homelinux.net>
+Subject: Re: au1xmmc.c: does it work?
+Message-ID: <20061120120148.GA13740@roarinelk.homelinux.net>
+References: <20061120094053.GA13509@roarinelk.homelinux.net> <20061120104922.GC32045@dusktilldawn.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1163469787.6532.26.camel@sandbar.kenati.com>
-Return-Path: <ralf@linux-mips.org>
+In-Reply-To: <20061120104922.GC32045@dusktilldawn.nl>
+Return-Path: <mano@roarinelk.homelinux.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ashlesha Shintre <ashlesha@kenati.com>
+To: Freddy Spierenburg <freddy@dusktilldawn.nl>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20061114130503.QEIMyf8RobJKNeakvr5ODbtdk2ibB8sqoG1F8rGN2Qc@z>
+Message-ID: <20061120120148.K42oVjleto8qD7ENt8UOvtU2158jYDF8Oz1xQaMybJo@z>
 
-On Mon, Nov 13, 2006 at 06:03:07PM -0800, Ashlesha Shintre wrote:
+Hi Freddy,
 
-> > > > 16.35 BogoMIPS (lpj=8176)
-> > 
-> > Sounds about right if your CPU clock hapens to be 8MHz so probably not.
-> > Chances the counter was missprogrammed.  Or are you running uncached?
-> > Uncached will completly devastate performance.
-> > 
+On Mon, Nov 20, 2006 at 11:49:22AM +0100, Freddy Spierenburg wrote:
+> On Mon, Nov 20, 2006 at 10:40:53AM +0100, Manuel Lauss wrote:
+> > I insert a known working card, and the mmc cmd trace suggests
+> > CMD9 (send CSD) times out.
 > 
-> For the AU1500 processor, the CPU Clock is derived from the PLL whose
-> input is 12MHz.. Upon reading the value of the SYS_CPUPLL register in
-> the calibrate_delay function, I found out that the multiplying factor is
-> 40, thus, the CPU Clock frequency is 480MHz.. Thus the lpj should be
-> approximately 480000 -- right?
+> Are you working with a real MMC card or with an SD-card?
+
+SD cards so far. MMC seems broken in a different way.
+
+> I myself am not able to get several SD-cards working, even though
+> SD-cards should be able to talk the MMC-protocol (AFAIK).

@@ -1,83 +1,52 @@
-Received: from tool.snarl.nl ([213.84.251.124]:18830 "EHLO tool.snarl.nl")
-	by ftp.linux-mips.org with ESMTP id S20038759AbWKTOSN (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 20 Nov 2006 14:18:13 +0000
-Received: from localhost (tool.local.snarl.nl [127.0.0.1])
-	by tool.snarl.nl (Postfix) with ESMTP id AD4095E00E
-	for <linux-mips@linux-mips.org>; Mon, 20 Nov 2006 15:18:07 +0100 (CET)
-Received: from tool.snarl.nl ([127.0.0.1])
-	by localhost (tool.local.snarl.nl [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id nxjF7iXQxzgs for <linux-mips@linux-mips.org>;
-	Mon, 20 Nov 2006 15:18:06 +0100 (CET)
-Resent-Message-ID: <20061120141806.GH32045@dusktilldawn.nl>
-Resent-To: linux-mips@linux-mips.org
-Date: Mon, 20 Nov 2006 15:16:07 +0100
-From: Freddy Spierenburg <freddy@dusktilldawn.nl>
-Subject: Re: au1xmmc.c: does it work?
-Message-ID: <20061120141607.GG32045@dusktilldawn.nl>
-References: <20061120094053.GA13509@roarinelk.homelinux.net> <20061120104922.GC32045@dusktilldawn.nl> <20061120120148.GA13740@roarinelk.homelinux.net> <20061120123740.GE32045@dusktilldawn.nl> <20061120132226.GB13740@roarinelk.homelinux.net>
+Received: from krt.tmd.ns.ac.yu ([147.91.177.65]:2055 "HELO krt.neobee.net")
+	by ftp.linux-mips.org with SMTP id S20038501AbWKVKwI (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 22 Nov 2006 10:52:08 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by krt.neobee.net (Postfix) with ESMTP id 42BD1E5378
+	for <linux-mips@linux-mips.org>; Wed, 22 Nov 2006 11:52:03 +0100 (CET)
+Received: from krt.neobee.net ([127.0.0.1])
+ by localhost (krt.neobee.net [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 25475-07 for <linux-mips@linux-mips.org>;
+ Wed, 22 Nov 2006 11:52:01 +0100 (CET)
+Received: from had (unknown [192.168.0.92])
+	by krt.neobee.net (Postfix) with ESMTP id 3D88AE5377
+	for <linux-mips@linux-mips.org>; Wed, 22 Nov 2006 11:52:01 +0100 (CET)
+From: "Mile Davidovic" <Mile.Davidovic@micronasnit.com>
+Subject: RE: How to build the glibc for MIPS?
+Date: Wed, 22 Nov 2006 11:54:19 +0100
+Message-ID: <005501c70e24$8f7a7fd0$5c00a8c0@niit.micronasnit.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IbVRjBtIbJdbeK1C"
-Content-Disposition: inline
-In-Reply-To: <20061120132226.GB13740@roarinelk.homelinux.net>
-Return-Path: <freddy@dusktilldawn.nl>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20060929000233.GG3394@linux-mips.org>
+Return-Path: <Mile.Davidovic@micronasnit.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Manuel Lauss <mano@roarinelk.homelinux.net>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20061120141607.XZtg295wHO4yXq5_qCtMMPTKcSGUwH5qMa1S1Cy54jI@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20061122105419.lkNuYsC05eUYDGOjwiIAxERviDW-pnrwr7ola1dAKSk@z>
 
-ntent-Length: 1585
-Lines: 52
+Hello to all,
+is it possible to get quick howto for building glibc? 
 
-
---IbVRjBtIbJdbeK1C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Manuel,
-
-On Mon, Nov 20, 2006 at 02:22:26PM +0100, Manuel Lauss wrote:
-> > Broke in a different way?
->=20
-> continuously issues CMD2 and CMD3 messages to the card, and
-> lots of "au1xx(0): DEBUG: PENDING - 03000090" messages.
-
-I now too see those PENDING messages, which I failed to notice
-more early. Actually I have tried this patch last friday for the
-first time and since it worked right away did not notice all
-those messages.
-
-
-> You only removed parts of the Db/Pb board specific stuff and
-> disabled DMA, correct?
-
-I did not wrote the patch myself, so I can't tell you without
-seriously looking into it myself. As far as I know your statement
-should be correct, but only carefull looking into it will provide
-the true answer. And that's where I do not have time for right
-now. I should not even be writing this email I guess. :)
-
-Good luck!
-
-
---=20
-$ cat ~/.signature
-Freddy Spierenburg <freddy@dusktilldawn.nl>  http://freddy.snarl.nl/
-GnuPG: 0x7941D1E1=3DC948 5851 26D2 FA5C 39F1  E588 6F17 FD5D 7941 D1E1
-$ # Please read http://www.ietf.org/rfc/rfc2015.txt before complain!
-
---IbVRjBtIbJdbeK1C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFFYbinbxf9XXlB0eERAo/yAJoDQEY45xceTnf/oyRP5ltKuoIsiwCg9sJK
-/RANsTrznfcDoWbRLPUVS9g=
-=qIP0
------END PGP SIGNATU
---IbVRjBtIbJdbeK1C--
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org [mailto:linux-mips-bounce@linux-
+> mips.org] On Behalf Of Ralf Baechle
+> Sent: Friday, September 29, 2006 02:03
+> To: Neo
+> Cc: linux-mips@linux-mips.org
+> Subject: Re: How to build the glibc for MIPS?
+> 
+> On Thu, Sep 28, 2006 at 05:58:03PM -0500, Neo wrote:
+> 
+> > I have successfully built the cross toolchain excluding glibc following
+> > the steps of www.linux-mips.org. Now, I am wondering how to build the
+> > glibc for MIPS. The websites provided by linux-mips are not accessible
+> > any more or they cannot be built successfully.
+> 
+> Are you refering to the instructions in the old MIPS-HOWTO document?
+> I've asked LDP to remove it because it was so obsolete.  Building glibc
+> has fortunately become much easier these days; it's mostly a question of
+> getting the build environment right.
+> 
+>   Ralf

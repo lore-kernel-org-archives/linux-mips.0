@@ -1,61 +1,44 @@
-Received: from david.siemens.com.cn ([194.138.202.53]:48004 "EHLO
-	david.siemens.com.cn") by ftp.linux-mips.org with ESMTP
-	id S20038965AbWLEDle convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 5 Dec 2006 03:41:34 +0000
-Content-class: urn:content-classes:message
+Received: from mx.globalone.ru ([194.84.254.251]:47017 "EHLO mx.globalone.ru")
+	by ftp.linux-mips.org with ESMTP id S20039158AbWLGMXa (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 7 Dec 2006 12:23:30 +0000
+Received: from mx.globalone.ru (localhost [127.0.0.1])
+	by mx.globalone.ru (8.13.1/8.13.1) with ESMTP id kB7CNNwF020577
+	for <linux-mips@linux-mips.org>; Thu, 7 Dec 2006 15:23:24 +0300
+Received: from smtp.globalone.ru (smtp.globalone.ru [172.16.38.5])
+	by mx.globalone.ru (8.13.1/8.13.1) with ESMTP id kB7CN9nU020398
+	for <linux-mips@linux-mips.org>; Thu, 7 Dec 2006 15:23:09 +0300
+Received: from voropaya ([172.16.38.7]) by smtp.globalone.ru
+          (Netscape Messaging Server 4.15) with SMTP id J9WL2L00.5GX for
+          <linux-mips@linux-mips.org>; Thu, 7 Dec 2006 15:23:09 +0300
+Message-ID: <385101c719fa$80448100$e90d11ac@spb.in.rosprint.ru>
+From: "Alexander Voropay" <a.voropay@orange-ftgroup.ru>
+References: <S20037871AbWLFUPw/20061206201552Z+14601@ftp.linux-mips.org> <20061207094639.GA30260@lst.de>
+Subject: Re: [MIPS] Import updates from i386's i8259.c
+Date: Thu, 7 Dec 2006 15:21:55 +0300
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: The difference between mips*-gnu and mips*-linux when configure tool-chain
-Date: Tue, 5 Dec 2006 11:41:12 +0800
-Message-ID: <96E7D5519FC3D741BEE27AB88C7387970167840A@PEKW934A.cn001.siemens.net>
-In-Reply-To: <20061203170514.GA11258@nevyn.them.org>
-From: "Fu, He Wei PSE NKG" <hewei.fu@siemens.com>
-Return-Path: <hewei.fu@siemens.com>
+	format=flowed;
+	charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <a.voropay@equant.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Daniel Jacobowitz <dan@debian.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20061205034112.KE_1-yJjBtXQykd3YJYFhObnsMiqYB34FEx5j3_NQck@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20061207122155.OMKgXIFISAkTUoRqZPA_54MdsfZ1boavv-9OoXf9JYI@z>
 
-Thanks, sorry for I missed the mips*-elf for mips*-gnu.
+"Christoph Hellwig" <hch@lst.de> wrote:
 
-I think that for ld,the difference between mips*-elf and mips*-linux
-produces only some minor impact on the default ld script, for the
-behavior of ld itself, it has not serious impact.Is it my understanding
-correct?
+>> Import many updates from i386's i8259.c, especially genirq transitions.
+> 
+> Shouldn't we try to share i8259.c over the various architectures that
+> use this controller?  With the generic hardirq framework that should be
+> possible.
 
-But for bfd, does the difference of these two config-choice have impact
-on the behavior of two different bfd-target? . 
+ The "i8259" should be under "ISA" or "EISA" Kconfig option.
+AFAIK, all known ISA chipsets contains dual i8259 controllers:
+LPC on the PCI-ISA bridge (Cobalt, Malta, ...), 
+Intel 82430 EISA Mongoose chipset (Indigo2 IP22, Magnum/Jazz, SNI RM-200, ...)
 
------Original Message-----
-From: Daniel Jacobowitz [mailto:dan@debian.org] 
-Sent: Monday, December 04, 2006 1:05 AM
-To: Fu, He Wei PSE NKG
-Cc: linux-mips@linux-mips.org
-Subject: Re: The difference between mips*-gnu and mips*-linux when
-configure tool-chain
-
-On Sun, Dec 03, 2006 at 05:15:07PM +0800, Fu, He Wei PSE NKG wrote:
-> Hello everyone.At the time of building tool-chain for mips machine,we
-> can choose mips*-gnu or mips*-linux, I want to know what's the
-> difference between them? The original idea is that mips*-gnu for
-> developing firmware which has not OS-surport, and mips*-linux for
-> developing software on Linux, but it is not suitable for firmware such
-> as bootloaders.But now I think I'm not right,it seems that configure
-> with mips*-linux suit for both linux and bootloader, and configure
-with
-> mips*-gnu means build for OS such as IRIX surport, I'm not very
-> clearly,can anybody help me figour out the difference between them?
-
-mips-gnu is the GNU system (the Hurd kernel).  mips-linux is used for
-the kernel and userspace of a Linux system.  mips-elf is used for bare
-metal targets without an OS.
-
-You should be able to build a Linux bootloader using a mips-linux
-compiler.
-
--- 
-Daniel Jacobowitz
-CodeSourcery
+--
+-=AV=-

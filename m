@@ -1,44 +1,39 @@
-Received: from mx.globalone.ru ([194.84.254.251]:47017 "EHLO mx.globalone.ru")
-	by ftp.linux-mips.org with ESMTP id S20039158AbWLGMXa (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 7 Dec 2006 12:23:30 +0000
-Received: from mx.globalone.ru (localhost [127.0.0.1])
-	by mx.globalone.ru (8.13.1/8.13.1) with ESMTP id kB7CNNwF020577
-	for <linux-mips@linux-mips.org>; Thu, 7 Dec 2006 15:23:24 +0300
-Received: from smtp.globalone.ru (smtp.globalone.ru [172.16.38.5])
-	by mx.globalone.ru (8.13.1/8.13.1) with ESMTP id kB7CN9nU020398
-	for <linux-mips@linux-mips.org>; Thu, 7 Dec 2006 15:23:09 +0300
-Received: from voropaya ([172.16.38.7]) by smtp.globalone.ru
-          (Netscape Messaging Server 4.15) with SMTP id J9WL2L00.5GX for
-          <linux-mips@linux-mips.org>; Thu, 7 Dec 2006 15:23:09 +0300
-Message-ID: <385101c719fa$80448100$e90d11ac@spb.in.rosprint.ru>
-From: "Alexander Voropay" <a.voropay@orange-ftgroup.ru>
-References: <S20037871AbWLFUPw/20061206201552Z+14601@ftp.linux-mips.org> <20061207094639.GA30260@lst.de>
-Subject: Re: [MIPS] Import updates from i386's i8259.c
-Date: Thu, 7 Dec 2006 15:21:55 +0300
+Received: from oola.is.scarlet.be ([193.74.71.23]:57732 "EHLO
+	oola.is.scarlet.be") by ftp.linux-mips.org with ESMTP
+	id S20039494AbWLKSKz convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 11 Dec 2006 18:10:55 +0000
+Date: Mon, 11 Dec 2006 19:10:53 +0100
+Message-ID: <JA4FU5$15B25B9E0AEC49C3D47C4ABD5469CF70@scarlet.be>
+Subject: Re:hwo to improve a video decoder program's timeslice
 MIME-Version: 1.0
-Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
-Return-Path: <a.voropay@equant.ru>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8BIT
+From: "Philippe De Swert" <philippedeswert@scarlet.be>
+Return-Path: <philippedeswert@scarlet.be>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20061207122155.OMKgXIFISAkTUoRqZPA_54MdsfZ1boavv-9OoXf9JYI@z>
+To: "zzh.hust" <zzh.hust@gmail.com>
+Cc: linux-mips <linux-mips@linux-mips.org>
+Message-ID: <20061211181053.Z3_XjZECIPmylNIIGB5vvwYZgS6rAC9AI6JbCgLW_48@z>
 
-"Christoph Hellwig" <hch@lst.de> wrote:
+Hi,
 
->> Import many updates from i386's i8259.c, especially genirq transitions.
-> 
-> Shouldn't we try to share i8259.c over the various architectures that
-> use this controller?  With the generic hardirq framework that should be
-> possible.
+>  i have a video decoder program run as aplication
+> and i now have change the HZ from 1000 to 100, set the decoder program
+> priority as 99.
 
- The "i8259" should be under "ISA" or "EISA" Kconfig option.
-AFAIK, all known ISA chipsets contains dual i8259 controllers:
-LPC on the PCI-ISA bridge (Cobalt, Malta, ...), 
-Intel 82430 EISA Mongoose chipset (Indigo2 IP22, Magnum/Jazz, SNI RM-200, ...)
+Seems you are mixing things here... The HZ change will just change the
+interval of the timer tick. For some more explanations about this, look here :
+http://kerneltrap.org/node/464
 
---
--=AV=-
+> if i want to the video decoder program to get more time to run, is
+> there any other way to improve it ?
+
+Maybe using nice? Try "man nice" in a terminal on your Linux box to get more
+explanations about this.
+
+Cheers,
+
+Philippe---
+Scarlet ONE -  Combine ADSL with unlimited fixed phone and save 400 euros
+http://www.scarlet.be

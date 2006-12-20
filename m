@@ -1,347 +1,91 @@
-Received: from pollux.ds.pg.gda.pl ([153.19.208.7]:15377 "EHLO
-	pollux.ds.pg.gda.pl") by ftp.linux-mips.org with ESMTP
-	id S28582468AbWLTMCQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 20 Dec 2006 12:02:16 +0000
-Date: Wed, 20 Dec 2006 12:02:10 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@linux-mips.org>
-Subject: [PATCH 2.6.20-rc1 07/10] declance: Driver model for the PMAD-A
-Message-ID: <Pine.LNX.4.64N.0612201117120.11005@blysk.ds.pg.gda.pl>
+Received: from mx.mips.com ([63.167.95.198]:2954 "EHLO dns0.mips.com")
+	by ftp.linux-mips.org with ESMTP id S28583249AbWLTOnL (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 20 Dec 2006 14:43:11 +0000
+Message-ID: <056f01c72446$31687b30$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <7925588.post@talk.nabble.com> <7943218.post@talk.nabble.com> <20061219.233410.25911550.anemo@mba.ocn.ne.jp> <20061220.000113.59033093.anemo@mba.ocn.ne.jp> <7949125.post@talk.nabble.com> <20061220.021508.97296486.anemo@mba.ocn.ne.jp> <7987092.post@talk.nabble.com> <458944B9.1050204@ru.mvista.com>
+Subject: Re: 2.6.19 timer API changes
+Date: Wed, 20 Dec 2006 15:50:27 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <macro@linux-mips.org>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Andrew Morton <akpm@osdl.org>, Jeff Garzik <jgarzik@pobox.com>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20061220120210.85rkTcSBYVZHlgVPNmkiCtCLaCMsiPPqpgGlBdsUmaI@z>
+To: Sergei Shtylyov <sshtylyov@ru.mvista.com>, Daniel Laird <danieljlaird@hotmail.com>
+Cc: linux-mips@linux-mips.org, Vitaly Wool <vwool@ru.mvista.com>
+Message-ID: <20061220145027.gdHtmfhJbpgdipXxLqxO_4eDUMYXIAd0cLXf-b6uR-I@z>
 
- This is a set of changes that converts the PMAD-A support to the driver 
-model.
+> > The 32-bit register is both readable and writable through the MTC0 and MFC0
+> > instructions as CP0 register 9. Upon reset, the Count register is set to 0.
+> > Count and Compare together make up Timer_1 in the PR4450 (see Section 3.12).
+> > The timer is active by default. When active, Count register contains a free
+> > running counter; on each processor clock-tick, the value in the register increments
+> > by one. However, when bit ST1 bit[3] in the CP0 Configuration register is enabled,
+> > the timer is stopped. When the ST1 bit is disabled, the timer returns to its default
+> > state. Timer_1 is active when the PR4450 is in Sleep mode, but is switched off when
+> > the PR4450 is in Coma mode.
+> > When active, the register can be reset with the assertion of the TerminalCount
+> > (TC_1) signal, which is asserted when the values in the Count and Compare
+> > registers match. After the Count register is reset, it restarts its count on the next
+> > processor clock-tick.
+> > In the PR4450, the TC_1 signal is fed to the external hardware interrupt
+> > signal to invoke an interrupt handler e.g., the timer interrupt. The TC_1 signal can
+> > only be reset to 0 when the interrupt handler performs a write to the Compare
+> > register.
+> > Consecutive writes to Count will result in undefined contents. At least one
+> > instruction must be inserted between consecutive writes to Count.
+> 
+> > This seems to suggest that writing to the compare register does in fact
+> > clear count.
+> 
+>     It actually doesn't suggest anything alike.  All it says is that "the 
+> register *can* be reset with the assertion of the Terminal Count (TC_1) signal 
+> which is asserted when the values in the Count and Compare registers match".
+> Whtat it doesn't say is what determines if it's really reset by TC_1 assertion 
+> or not.
 
-Signed-off-by: Maciej W. Rozycki <macro@linux-mips.org>
----
+In all fairness, the spec can be read to state that the assertion of TC_1 clears
+the Count register.  Or rather that it "can" - there seems to be some assumed
+mode of behavior that's not otherwise described.  I wonder if they're not 
+talking about behavior specifc to "Coma mode", which was perhaps what
+they are referring to when they begin the next sentence with "When active".
+I can see how someone might think it advantageous to have a mode where
+the Count register auto-resets on a timer tick, so that there's no need to
+recalcuate Compare values.  But I've never seen that implemented on a
+MIPS processor. Free-running Count registers have other uses that can
+be shared with the timer interrupts, so long as it's Compare and not Count
+that gets reprogrammed on an interrupt. I have a hard time believing that
+the 8550 has the auto-reset as default behavior.
 
- Please apply.
+> > If I do the following:
+> > static void __init c0_hpt_timer_init(void)
+> > {
+> > #ifdef CONFIG_SOC_PNX8550 /* pnx8550 resets to zero */
+> >     expirelo = cycles_per_jiffy;
+> > #else
+> >     expirelo = read_c0_count() + cycles_per_jiffy;
+> > #endif
+> >     write_c0_compare(expirelo);
+> >     write_c0_count(cycles_per_jiffy); //Added DJL
+> > }
 
-  Maciej
+First of all, I think the conditional code is broken, even if you
+believe that Count is reset to zero on every interrupt.  This is
+the *init* code, that's getting called once at boot time to set
+up the clock.  It's not a clock interrupt handler.
 
-patch-mips-2.6.18-20060920-tc-pmad-a-10
-diff -up --recursive --new-file linux-mips-2.6.18-20060920.macro/drivers/net/declance.c linux-mips-2.6.18-20060920/drivers/net/declance.c
---- linux-mips-2.6.18-20060920.macro/drivers/net/declance.c	2006-12-16 17:25:24.000000000 +0000
-+++ linux-mips-2.6.18-20060920/drivers/net/declance.c	2006-12-17 02:28:15.000000000 +0000
-@@ -5,7 +5,7 @@
-  *
-  *      adopted from sunlance.c by Richard van den Berg
-  *
-- *      Copyright (C) 2002, 2003, 2005  Maciej W. Rozycki
-+ *      Copyright (C) 2002, 2003, 2005, 2006  Maciej W. Rozycki
-  *
-  *      additional sources:
-  *      - PMAD-AA TURBOchannel Ethernet Module Functional Specification,
-@@ -44,6 +44,8 @@
-  *      v0.010: Fixes for the PMAD mapping of the LANCE buffer and for the
-  *              PMAX requirement to only use halfword accesses to the
-  *              buffer. macro
-+ *
-+ *      v0.011: Converted the PMAD to the driver model. macro
-  */
- 
- #include <linux/crc32.h>
-@@ -58,6 +60,7 @@
- #include <linux/spinlock.h>
- #include <linux/stddef.h>
- #include <linux/string.h>
-+#include <linux/tc.h>
- #include <linux/types.h>
- 
- #include <asm/addrspace.h>
-@@ -69,15 +72,16 @@
- #include <asm/dec/kn01.h>
- #include <asm/dec/machtype.h>
- #include <asm/dec/system.h>
--#include <asm/dec/tc.h>
- 
- static char version[] __devinitdata =
--"declance.c: v0.010 by Linux MIPS DECstation task force\n";
-+"declance.c: v0.011 by Linux MIPS DECstation task force\n";
- 
- MODULE_AUTHOR("Linux MIPS DECstation task force");
- MODULE_DESCRIPTION("DEC LANCE (DECstation onboard, PMAD-xx) driver");
- MODULE_LICENSE("GPL");
- 
-+#define __unused __attribute__ ((unused))
-+
- /*
-  * card types
-  */
-@@ -246,7 +250,6 @@ struct lance_init_block {
- struct lance_private {
- 	struct net_device *next;
- 	int type;
--	int slot;
- 	int dma_irq;
- 	volatile struct lance_regs *ll;
- 
-@@ -288,6 +291,7 @@ struct lance_regs {
- 
- int dec_lance_debug = 2;
- 
-+static struct tc_driver dec_lance_tc_driver;
- static struct net_device *root_lance_dev;
- 
- static inline void writereg(volatile unsigned short *regptr, short value)
-@@ -1025,7 +1029,7 @@ static void lance_set_multicast_retry(un
- 	lance_set_multicast(dev);
- }
- 
--static int __init dec_lance_init(const int type, const int slot)
-+static int __init dec_lance_probe(struct device *bdev, const int type)
- {
- 	static unsigned version_printed;
- 	static const char fmt[] = "declance%d";
-@@ -1033,6 +1037,7 @@ static int __init dec_lance_init(const i
- 	struct net_device *dev;
- 	struct lance_private *lp;
- 	volatile struct lance_regs *ll;
-+	resource_size_t start = 0, len = 0;
- 	int i, ret;
- 	unsigned long esar_base;
- 	unsigned char *esar;
-@@ -1040,14 +1045,18 @@ static int __init dec_lance_init(const i
- 	if (dec_lance_debug && version_printed++ == 0)
- 		printk(version);
- 
--	i = 0;
--	dev = root_lance_dev;
--	while (dev) {
--		i++;
--		lp = (struct lance_private *)dev->priv;
--		dev = lp->next;
-+	if (bdev)
-+		snprintf(name, sizeof(name), "%s", bdev->bus_id);
-+	else {
-+		i = 0;
-+		dev = root_lance_dev;
-+		while (dev) {
-+			i++;
-+			lp = (struct lance_private *)dev->priv;
-+			dev = lp->next;
-+		}
-+		snprintf(name, sizeof(name), fmt, i);
- 	}
--	snprintf(name, sizeof(name), fmt, i);
- 
- 	dev = alloc_etherdev(sizeof(struct lance_private));
- 	if (!dev) {
-@@ -1065,7 +1074,6 @@ static int __init dec_lance_init(const i
- 	spin_lock_init(&lp->lock);
- 
- 	lp->type = type;
--	lp->slot = slot;
- 	switch (type) {
- 	case ASIC_LANCE:
- 		dev->base_addr = CKSEG1ADDR(dec_kn_slot_base + IOASIC_LANCE);
-@@ -1112,12 +1120,22 @@ static int __init dec_lance_init(const i
- 		break;
- #ifdef CONFIG_TC
- 	case PMAD_LANCE:
--		claim_tc_card(slot);
-+		dev_set_drvdata(bdev, dev);
- 
--		dev->mem_start = CKSEG1ADDR(get_tc_base_addr(slot));
-+		start = to_tc_dev(bdev)->resource.start;
-+		len = to_tc_dev(bdev)->resource.end - start + 1;
-+		if (!request_mem_region(start, len, bdev->bus_id)) {
-+			printk(KERN_ERR
-+			       "%s: Unable to reserve MMIO resource\n",
-+			       bdev->bus_id);
-+			ret = -EBUSY;
-+			goto err_out_dev;
-+		}
-+
-+		dev->mem_start = CKSEG1ADDR(start);
- 		dev->mem_end = dev->mem_start + 0x100000;
- 		dev->base_addr = dev->mem_start + 0x100000;
--		dev->irq = get_tc_irq_nr(slot);
-+		dev->irq = to_tc_dev(bdev)->interrupt;
- 		esar_base = dev->mem_start + 0x1c0002;
- 		lp->dma_irq = -1;
- 
-@@ -1176,7 +1194,7 @@ static int __init dec_lance_init(const i
- 		printk(KERN_ERR "%s: declance_init called with unknown type\n",
- 			name);
- 		ret = -ENODEV;
--		goto err_out_free_dev;
-+		goto err_out_dev;
- 	}
- 
- 	ll = (struct lance_regs *) dev->base_addr;
-@@ -1190,7 +1208,7 @@ static int __init dec_lance_init(const i
- 			"%s: Ethernet station address prom not found!\n",
- 			name);
- 		ret = -ENODEV;
--		goto err_out_free_dev;
-+		goto err_out_resource;
- 	}
- 	/* Check the prom contents */
- 	for (i = 0; i < 8; i++) {
-@@ -1200,7 +1218,7 @@ static int __init dec_lance_init(const i
- 			printk(KERN_ERR "%s: Something is wrong with the "
- 				"ethernet station address prom!\n", name);
- 			ret = -ENODEV;
--			goto err_out_free_dev;
-+			goto err_out_resource;
- 		}
- 	}
- 
-@@ -1257,48 +1275,51 @@ static int __init dec_lance_init(const i
- 	if (ret) {
- 		printk(KERN_ERR
- 			"%s: Unable to register netdev, aborting.\n", name);
--		goto err_out_free_dev;
-+		goto err_out_resource;
- 	}
- 
--	lp->next = root_lance_dev;
--	root_lance_dev = dev;
-+	if (!bdev) {
-+		lp->next = root_lance_dev;
-+		root_lance_dev = dev;
-+	}
- 
- 	printk("%s: registered as %s.\n", name, dev->name);
- 	return 0;
- 
--err_out_free_dev:
-+err_out_resource:
-+	if (bdev)
-+		release_mem_region(start, len);
-+
-+err_out_dev:
- 	free_netdev(dev);
- 
- err_out:
- 	return ret;
- }
- 
-+static void __exit dec_lance_remove(struct device *bdev)
-+{
-+	struct net_device *dev = dev_get_drvdata(bdev);
-+	resource_size_t start, len;
-+
-+	unregister_netdev(dev);
-+	start = to_tc_dev(bdev)->resource.start;
-+	len = to_tc_dev(bdev)->resource.end - start + 1;
-+	release_mem_region(start, len);
-+	free_netdev(dev);
-+}
- 
- /* Find all the lance cards on the system and initialize them */
--static int __init dec_lance_probe(void)
-+static int __init dec_lance_platform_probe(void)
- {
- 	int count = 0;
- 
--	/* Scan slots for PMAD-AA cards first. */
--#ifdef CONFIG_TC
--	if (TURBOCHANNEL) {
--		int slot;
--
--		while ((slot = search_tc_card("PMAD-AA")) >= 0) {
--			if (dec_lance_init(PMAD_LANCE, slot) < 0)
--				break;
--			count++;
--		}
--	}
--#endif
--
--	/* Then handle onboard devices. */
- 	if (dec_interrupt[DEC_IRQ_LANCE] >= 0) {
- 		if (dec_interrupt[DEC_IRQ_LANCE_MERR] >= 0) {
--			if (dec_lance_init(ASIC_LANCE, -1) >= 0)
-+			if (dec_lance_probe(NULL, ASIC_LANCE) >= 0)
- 				count++;
- 		} else if (!TURBOCHANNEL) {
--			if (dec_lance_init(PMAX_LANCE, -1) >= 0)
-+			if (dec_lance_probe(NULL, PMAX_LANCE) >= 0)
- 				count++;
- 		}
- 	}
-@@ -1306,21 +1327,70 @@ static int __init dec_lance_probe(void)
- 	return (count > 0) ? 0 : -ENODEV;
- }
- 
--static void __exit dec_lance_cleanup(void)
-+static void __exit dec_lance_platform_remove(void)
- {
- 	while (root_lance_dev) {
- 		struct net_device *dev = root_lance_dev;
- 		struct lance_private *lp = netdev_priv(dev);
- 
- 		unregister_netdev(dev);
--#ifdef CONFIG_TC
--		if (lp->slot >= 0)
--			release_tc_card(lp->slot);
--#endif
- 		root_lance_dev = lp->next;
- 		free_netdev(dev);
- 	}
- }
- 
--module_init(dec_lance_probe);
--module_exit(dec_lance_cleanup);
-+#ifdef CONFIG_TC
-+static int __init dec_lance_tc_probe(struct device *dev);
-+static int __exit dec_lance_tc_remove(struct device *dev);
-+
-+static const struct tc_device_id dec_lance_tc_table[] = {
-+	{ "DEC     ", "PMAD-AA " },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(tc, dec_lance_tc_table);
-+
-+static struct tc_driver dec_lance_tc_driver = {
-+	.id_table	= dec_lance_tc_table,
-+	.driver		= {
-+		.name	= "declance",
-+		.bus	= &tc_bus_type,
-+		.probe	= dec_lance_tc_probe,
-+		.remove	= __exit_p(dec_lance_tc_remove),
-+	},
-+};
-+
-+static int __init dec_lance_tc_probe(struct device *dev)
-+{
-+        int status = dec_lance_probe(dev, PMAD_LANCE);
-+        if (!status)
-+                get_device(dev);
-+        return status;
-+}
-+
-+static int __exit dec_lance_tc_remove(struct device *dev)
-+{
-+        put_device(dev);
-+        dec_lance_remove(dev);
-+        return 0;
-+}
-+#endif
-+
-+static int __init dec_lance_init(void)
-+{
-+	int status;
-+
-+	status = tc_register_driver(&dec_lance_tc_driver);
-+	if (!status)
-+		dec_lance_platform_probe();
-+	return status;
-+}
-+
-+static void __exit dec_lance_exit(void)
-+{
-+	dec_lance_platform_remove();
-+	tc_unregister_driver(&dec_lance_tc_driver);
-+}
-+
-+
-+module_init(dec_lance_init);
-+module_exit(dec_lance_exit);
+It is highly likely that the Count register has already gone
+beyond the value of cycles_per_jiffy by the time this code
+gets hit.  If that's true, programming Compare to zero+delta
+means waiting for the counter to wrap around before the first
+interrupt is delivered - a 10-second-ish hang.  Writing the same
+value to Count that you just wrote to Compare will, on many
+cores, cause a Count=Compare state and a prompt interrupt.
+
+But the real fix is almost certainly to get rid of the conditional.
+
+            Regards,
+
+            Kevin K.

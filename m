@@ -1,11 +1,11 @@
-Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:32898 "EHLO
+Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:35202 "EHLO
 	ebiederm.dsl.xmission.com") by ftp.linux-mips.org with ESMTP
-	id S28580805AbXAPQmB (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 16 Jan 2007 16:42:01 +0000
+	id S28580810AbXAPQmC (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 16 Jan 2007 16:42:02 +0000
 From: "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 31/59] sysctl: C99 convert the ctl_tables in arch/mips/au1000/common/power.c
-Date: Tue, 16 Jan 2007 09:39:36 -0700
-Message-ID: <11689656551180-git-send-email-ebiederm@xmission.com>
+Subject: [PATCH 37/59] sysctl: C99 convert arch/sh64/kernel/traps.c and remove ABI breakage.
+Date: Tue, 16 Jan 2007 09:39:42 -0700
+Message-ID: <11689656622749-git-send-email-ebiederm@xmission.com>
 In-Reply-To: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 References: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 Return-Path: <eric@ebiederm.dsl.xmission.com>
@@ -13,66 +13,90 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: "<Andrew Morton" <akpm@osdl.org>
 Cc: linux-kernel@vger.kernel.org, containers@lists.osdl.org, netdev@vger.kernel.org, xfs-masters@oss.sgi.com, xfs@oss.sgi.com, linux-scsi@vger.kernel.org, James.Bottomley@SteelEye.com, minyard@acm.org, openipmi-developer@lists.sourceforge.net, tony.luck@intel.com, linux-mips@linux-mips.org, ralf@linux-mips.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, linux-390@vm.marist.edu, paulus@samba.org, linuxppc-dev@ozlabs.org, lethal@linux-sh.org, linuxsh-shmedia-dev@lists.sourceforge.net, ak@suse.de, vojtech@suse.cz, clemens@ladisch.de, a.zummo@towertech.it, rtc-linux@googlegroups.com, linux-parport@lists.infradead.org, andrea@suse.de, tim@cyberelk.net, philb@gnu.org, aharkes@cs.cmu.edu, coda@cs.cmu.edu, codalist@TELEMANN.coda.cs.cmu.edu, aia21@cantab.net, linux-ntfs-dev@lists.sourceforge.net, mark.fasheh@oracle.com, kurt.hackel@oracle.com, "Eric W. Biederman" <ebiederm@xmission.com>
-Message-ID: <20070116163936.LfhwBu1Qzu1lxVqPsJv1svODV4uZ9OmicIerP-mk6WM@z>
+Message-ID: <20070116163942.cxMpUsO1DWM69-SEDNk82bxWDNPvDG56m_in_0pgnxU@z>
 
 From: Eric W. Biederman <ebiederm@xmission.com> - unquoted
 
+While doing the C99 conversion I notices that the top level sh64
+directory was using the binary number for CTL_KERN.  That is a
+no-no so I removed the support for the sysctl binary interface
+only leaving sysctl /proc support.
+
+At least the sysctl tables were placed at the end of
+the list so user space did not see this mistake.
+
 Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 ---
- arch/mips/au1000/common/power.c |   38 ++++++++++++++++++++++++++++++++------
- 1 files changed, 32 insertions(+), 6 deletions(-)
+ arch/sh64/kernel/traps.c |   49 +++++++++++++++++++++++++++++++++++----------
+ 1 files changed, 38 insertions(+), 11 deletions(-)
 
-diff --git a/arch/mips/au1000/common/power.c b/arch/mips/au1000/common/power.c
-index b531ab7..31256b8 100644
---- a/arch/mips/au1000/common/power.c
-+++ b/arch/mips/au1000/common/power.c
-@@ -419,15 +419,41 @@ static int pm_do_freq(ctl_table * ctl, int write, struct file *file,
+diff --git a/arch/sh64/kernel/traps.c b/arch/sh64/kernel/traps.c
+index 224b7f5..02cca74 100644
+--- a/arch/sh64/kernel/traps.c
++++ b/arch/sh64/kernel/traps.c
+@@ -910,25 +910,52 @@ static int misaligned_fixup(struct pt_regs *regs)
+ }
  
- 
- static struct ctl_table pm_table[] = {
--	{CTL_UNNUMBERED, "suspend", NULL, 0, 0600, NULL, &pm_do_suspend},
--	{CTL_UNNUMBERED, "sleep", NULL, 0, 0600, NULL, &pm_do_sleep},
--	{CTL_UNNUMBERED, "freq", NULL, 0, 0600, NULL, &pm_do_freq},
+ static ctl_table unaligned_table[] = {
+-	{1, "kernel_reports", &kernel_mode_unaligned_fixup_count,
+-		sizeof(int), 0644, NULL, &proc_dointvec},
++	{
++		.ctl_name	= CTL_UNNUMBERED,
++		.procname	= "kernel_reports",
++		.data		= &kernel_mode_unaligned_fixup_count,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= &proc_dointvec
++	},
+ #if defined(CONFIG_SH64_USER_MISALIGNED_FIXUP)
+-	{2, "user_reports", &user_mode_unaligned_fixup_count,
+-		sizeof(int), 0644, NULL, &proc_dointvec},
+-	{3, "user_enable", &user_mode_unaligned_fixup_enable,
+-		sizeof(int), 0644, NULL, &proc_dointvec},
++	{
++		.ctl_name	= CTL_UNNUMBERED,
++		.procname	= "user_reports",
++		.data		= &user_mode_unaligned_fixup_count,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= &proc_dointvec
++	},
++	{
++		.ctl_name	= CTL_UNNUMBERED,
++		.procname	= "user_enable",
++		.data		= &user_mode_unaligned_fixup_enable,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= &proc_dointvec},
+ #endif
 -	{0}
-+	{
-+		.ctl_name 	= CTL_UNNUMBERED,
-+		.procname	= "suspend",
-+		.data		= NULL,
-+		.maxlen		= 0,
-+		.mode		= 0600,
-+		.proc_handler	= &pm_do_suspend
-+	},
-+	{
-+		.ctl_name	= CTL_UNNUMBERED,
-+		.procname	= "sleep",
-+		.data		= NULL,
-+		.maxlen		= 0,
-+		.mode		= 0600,
-+		.proc_handler	= &pm_do_sleep
-+	},
-+	{
-+		.ctl_name	= CTL_UNNUMBERED,
-+		.procname	= "freq",
-+		.data		= NULL,
-+		.maxlen		= 0,
-+		.mode		= 0600,
-+		.proc_handler	= &pm_do_freq
-+	},
 +	{}
  };
  
- static struct ctl_table pm_dir_table[] = {
--	{CTL_UNNUMBERED, "pm", NULL, 0, 0555, pm_table},
+ static ctl_table unaligned_root[] = {
+-	{1, "unaligned_fixup", NULL, 0, 0555, unaligned_table},
 -	{0}
 +	{
 +		.ctl_name	= CTL_UNNUMBERED,
-+		.procname	= "pm",
++		.procname	= "unaligned_fixup",
 +		.mode		= 0555,
-+		.child		= pm_table
++		unaligned_table
 +	},
 +	{}
  };
  
- /*
+ static ctl_table sh64_root[] = {
+-	{1, "sh64", NULL, 0, 0555, unaligned_root},
+-	{0}
++	{
++		.ctl_name	= CTL_UNNUMBERED,
++		.procname	= "sh64",
++		.mode		= 0555,
++		.child		= unaligned_root
++	},
++	{}
+ };
+ static struct ctl_table_header *sysctl_header;
+ static int __init init_sysctl(void)
 -- 
 1.4.4.1.g278f

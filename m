@@ -1,11 +1,11 @@
-Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:58497 "EHLO
+Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:64897 "EHLO
 	ebiederm.dsl.xmission.com") by ftp.linux-mips.org with ESMTP
-	id S28580791AbXAPQlm (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 16 Jan 2007 16:41:42 +0000
+	id S28580792AbXAPQlo (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 16 Jan 2007 16:41:44 +0000
 From: "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 26/59] sysctl: C99 convert arch/frv/kernel/sysctl.c
-Date: Tue, 16 Jan 2007 09:39:31 -0700
-Message-ID: <11689656454112-git-send-email-ebiederm@xmission.com>
+Subject: [PATCH 17/59] sysctl: mac_hid remove unnecessary insert_at_head flag
+Date: Tue, 16 Jan 2007 09:39:22 -0700
+Message-ID: <11689656343467-git-send-email-ebiederm@xmission.com>
 In-Reply-To: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 References: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 Return-Path: <eric@ebiederm.dsl.xmission.com>
@@ -13,63 +13,29 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: "<Andrew Morton" <akpm@osdl.org>
 Cc: linux-kernel@vger.kernel.org, containers@lists.osdl.org, netdev@vger.kernel.org, xfs-masters@oss.sgi.com, xfs@oss.sgi.com, linux-scsi@vger.kernel.org, James.Bottomley@SteelEye.com, minyard@acm.org, openipmi-developer@lists.sourceforge.net, tony.luck@intel.com, linux-mips@linux-mips.org, ralf@linux-mips.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, linux-390@vm.marist.edu, paulus@samba.org, linuxppc-dev@ozlabs.org, lethal@linux-sh.org, linuxsh-shmedia-dev@lists.sourceforge.net, ak@suse.de, vojtech@suse.cz, clemens@ladisch.de, a.zummo@towertech.it, rtc-linux@googlegroups.com, linux-parport@lists.infradead.org, andrea@suse.de, tim@cyberelk.net, philb@gnu.org, aharkes@cs.cmu.edu, coda@cs.cmu.edu, codalist@TELEMANN.coda.cs.cmu.edu, aia21@cantab.net, linux-ntfs-dev@lists.sourceforge.net, mark.fasheh@oracle.com, kurt.hackel@oracle.com, "Eric W. Biederman" <ebiederm@xmission.com>
-Message-ID: <20070116163931.2zywx8UQCxe4P2QFOekH7BGu4nL0RgbRPu-3KR23MYM@z>
+Message-ID: <20070116163922.jTgwkg4fTRQB17klLRhyuMdxI_BXWB9BlCRrZEFAw14@z>
 
 From: Eric W. Biederman <ebiederm@xmission.com> - unquoted
 
+With unique sysctl binary numbers setting insert_at_head is pointless.
+
 Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 ---
- arch/frv/kernel/sysctl.c |   29 ++++++++++++++++++++++++-----
- 1 files changed, 24 insertions(+), 5 deletions(-)
+ drivers/macintosh/mac_hid.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/frv/kernel/sysctl.c b/arch/frv/kernel/sysctl.c
-index 37528eb..577ad16 100644
---- a/arch/frv/kernel/sysctl.c
-+++ b/arch/frv/kernel/sysctl.c
-@@ -175,11 +175,25 @@ static int procctl_frv_pin_cxnr(ctl_table *table, int write, struct file *filp,
-  */
- static struct ctl_table frv_table[] =
- {
--	{ 1, "cache-mode",	NULL, 0, 0644, NULL, &procctl_frv_cachemode },
-+	{
-+		.ctl_name 	= 1,
-+		.procname 	= "cache-mode",
-+		.data		= NULL,
-+		.maxlen		= 0,
-+		.mode		= 0644,
-+		.proc_handler	= &procctl_frv_cachemode,
-+	},
- #ifdef CONFIG_MMU
--	{ 2, "pin-cxnr",	NULL, 0, 0644, NULL, &procctl_frv_pin_cxnr },
-+	{
-+		.ctl_name	= 2,
-+		.procname	= "pin-cxnr",
-+		.data		= NULL,
-+		.maxlen		= 0,
-+		.mode		= 0644,
-+		.proc_handler	= &procctl_frv_pin_cxnr
-+	},
- #endif
--	{ 0 }
-+	{}
- };
+diff --git a/drivers/macintosh/mac_hid.c b/drivers/macintosh/mac_hid.c
+index ee6b4ca..c676740 100644
+--- a/drivers/macintosh/mac_hid.c
++++ b/drivers/macintosh/mac_hid.c
+@@ -138,7 +138,7 @@ int __init mac_hid_init(void)
+ 		return err;
  
- /*
-@@ -188,8 +202,13 @@ static struct ctl_table frv_table[] =
-  */
- static struct ctl_table frv_dir_table[] =
- {
--	{CTL_FRV, "frv", NULL, 0, 0555, frv_table},
--	{0}
-+	{
-+		.ctl_name	= CTL_FRV,
-+		.procname	= "frv",
-+		.mode 		= 0555,
-+		.child		= frv_table
-+	},
-+	{}
- };
+ #if defined(CONFIG_SYSCTL)
+-	mac_hid_sysctl_header = register_sysctl_table(mac_hid_root_dir, 1);
++	mac_hid_sysctl_header = register_sysctl_table(mac_hid_root_dir, 0);
+ #endif /* CONFIG_SYSCTL */
  
- /*
+ 	return 0;
 -- 
 1.4.4.1.g278f

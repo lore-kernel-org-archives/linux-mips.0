@@ -1,11 +1,11 @@
-Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:62848 "EHLO
+Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:63872 "EHLO
 	ebiederm.dsl.xmission.com") by ftp.linux-mips.org with ESMTP
-	id S20041436AbXAPQlM (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	id S20041441AbXAPQlM (ORCPT <rfc822;linux-mips@linux-mips.org>);
 	Tue, 16 Jan 2007 16:41:12 +0000
 From: "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 20/59] sysctl: cdrom Don't set de->owner
-Date: Tue, 16 Jan 2007 09:39:25 -0700
-Message-ID: <11689656373737-git-send-email-ebiederm@xmission.com>
+Subject: [PATCH 7/59] sysctl: llc remove unnecessary insert_at_head flag
+Date: Tue, 16 Jan 2007 09:39:12 -0700
+Message-ID: <1168965622720-git-send-email-ebiederm@xmission.com>
 In-Reply-To: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 References: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 Return-Path: <eric@ebiederm.dsl.xmission.com>
@@ -13,39 +13,30 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: "<Andrew Morton" <akpm@osdl.org>
 Cc: linux-kernel@vger.kernel.org, containers@lists.osdl.org, netdev@vger.kernel.org, xfs-masters@oss.sgi.com, xfs@oss.sgi.com, linux-scsi@vger.kernel.org, James.Bottomley@SteelEye.com, minyard@acm.org, openipmi-developer@lists.sourceforge.net, tony.luck@intel.com, linux-mips@linux-mips.org, ralf@linux-mips.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, linux-390@vm.marist.edu, paulus@samba.org, linuxppc-dev@ozlabs.org, lethal@linux-sh.org, linuxsh-shmedia-dev@lists.sourceforge.net, ak@suse.de, vojtech@suse.cz, clemens@ladisch.de, a.zummo@towertech.it, rtc-linux@googlegroups.com, linux-parport@lists.infradead.org, andrea@suse.de, tim@cyberelk.net, philb@gnu.org, aharkes@cs.cmu.edu, coda@cs.cmu.edu, codalist@TELEMANN.coda.cs.cmu.edu, aia21@cantab.net, linux-ntfs-dev@lists.sourceforge.net, mark.fasheh@oracle.com, kurt.hackel@oracle.com, "Eric W. Biederman" <ebiederm@xmission.com>
-Message-ID: <20070116163925.EOpT6Kt-DucYUOcVMZ0fe3LerKQ0FMD16hQkkzskLC4@z>
+Message-ID: <20070116163912.yJXiklKGKSj7hlWHwCHXxGkPA9blYiq17-fe2YTb71s@z>
 
 From: Eric W. Biederman <ebiederm@xmission.com> - unquoted
 
-There is no need for open files in /proc/sys/XXX to hold
-a reference count on the module that provides the file
-to prevent module unload races.  While there is code active
-in the module p->used in the sysctl_table_header is incremented,
-preventing the sysctl from being unregisted.  Once the
-sysctl is unregistered it cannot be found.  Open files
-are also not a problem as they revalidate the sysctl information
-and bump p->used before accessing module code.
-
-So setting de->owner is unnecessary, makes for a bad example
-and gets in my way of removing ctl_table->de.
+The sysctl numbers used are unique so setting the insert_at_head
+flag serves no semantis purpose, and is just confusing.
 
 Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 ---
- drivers/cdrom/cdrom.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+ net/llc/sysctl_net_llc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-index f0a6801..14f72c4 100644
---- a/drivers/cdrom/cdrom.c
-+++ b/drivers/cdrom/cdrom.c
-@@ -3554,8 +3554,6 @@ static void cdrom_sysctl_register(void)
- 		return;
+diff --git a/net/llc/sysctl_net_llc.c b/net/llc/sysctl_net_llc.c
+index 45d7dd9..4aab676 100644
+--- a/net/llc/sysctl_net_llc.c
++++ b/net/llc/sysctl_net_llc.c
+@@ -116,7 +116,7 @@ static struct ctl_table_header *llc_table_header;
  
- 	cdrom_sysctl_header = register_sysctl_table(cdrom_root_table, 0);
--	if (cdrom_root_table->ctl_name && cdrom_root_table->child->de)
--		cdrom_root_table->child->de->owner = THIS_MODULE;
+ int __init llc_sysctl_init(void)
+ {
+-	llc_table_header = register_sysctl_table(llc_root_table, 1);
++	llc_table_header = register_sysctl_table(llc_root_table, 0);
  
- 	/* set the defaults */
- 	cdrom_sysctl_settings.autoclose = autoclose;
+ 	return llc_table_header ? 0 : -ENOMEM;
+ }
 -- 
 1.4.4.1.g278f

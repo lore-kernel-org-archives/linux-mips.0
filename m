@@ -1,11 +1,11 @@
-Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:50562 "EHLO
+Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:55170 "EHLO
 	ebiederm.dsl.xmission.com") by ftp.linux-mips.org with ESMTP
-	id S28580818AbXAPQmN (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 16 Jan 2007 16:42:13 +0000
+	id S28580820AbXAPQmQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 16 Jan 2007 16:42:16 +0000
 From: "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 46/59] sysctl: C99 convert coda ctl_tables and remove binary sysctls.
-Date: Tue, 16 Jan 2007 09:39:51 -0700
-Message-ID: <11689656751225-git-send-email-ebiederm@xmission.com>
+Subject: [PATCH 38/59] sysctl: x86_64 Remove unnecessary use of insert_at_head
+Date: Tue, 16 Jan 2007 09:39:43 -0700
+Message-ID: <1168965663675-git-send-email-ebiederm@xmission.com>
 In-Reply-To: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 References: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 Return-Path: <eric@ebiederm.dsl.xmission.com>
@@ -13,98 +13,44 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: "<Andrew Morton" <akpm@osdl.org>
 Cc: linux-kernel@vger.kernel.org, containers@lists.osdl.org, netdev@vger.kernel.org, xfs-masters@oss.sgi.com, xfs@oss.sgi.com, linux-scsi@vger.kernel.org, James.Bottomley@SteelEye.com, minyard@acm.org, openipmi-developer@lists.sourceforge.net, tony.luck@intel.com, linux-mips@linux-mips.org, ralf@linux-mips.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, linux-390@vm.marist.edu, paulus@samba.org, linuxppc-dev@ozlabs.org, lethal@linux-sh.org, linuxsh-shmedia-dev@lists.sourceforge.net, ak@suse.de, vojtech@suse.cz, clemens@ladisch.de, a.zummo@towertech.it, rtc-linux@googlegroups.com, linux-parport@lists.infradead.org, andrea@suse.de, tim@cyberelk.net, philb@gnu.org, aharkes@cs.cmu.edu, coda@cs.cmu.edu, codalist@TELEMANN.coda.cs.cmu.edu, aia21@cantab.net, linux-ntfs-dev@lists.sourceforge.net, mark.fasheh@oracle.com, kurt.hackel@oracle.com, "Eric W. Biederman" <ebiederm@xmission.com>
-Message-ID: <20070116163951.pukf6pzQqjJ-hgP53iClLl5HU9N9ah94EG6N-vuuc7c@z>
+Message-ID: <20070116163943.dNoD55wHa-pqJj93V28SblDV85Paithz7mexYx2XK4w@z>
 
 From: Eric W. Biederman <ebiederm@xmission.com> - unquoted
 
-Will converting the coda sysctl initializers I discovered that
-it is yet another user of sysctl that was stomping CTL_KERN.
-So off with it's sys_sysctl support since it wasn't done
-in a supportable way.
+The only sysctl x86_64 provides are not provided elsewhere,
+so insert_at_head is unnecessary.
 
 Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 ---
- fs/coda/sysctl.c |   58 ++++++++++++++++++++++++++++++++++++++++++++---------
- 1 files changed, 48 insertions(+), 10 deletions(-)
+ arch/x86_64/ia32/ia32_binfmt.c |    2 +-
+ arch/x86_64/mm/init.c          |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/coda/sysctl.c b/fs/coda/sysctl.c
-index 1c82e9a..df682e2 100644
---- a/fs/coda/sysctl.c
-+++ b/fs/coda/sysctl.c
-@@ -32,8 +32,6 @@
+diff --git a/arch/x86_64/ia32/ia32_binfmt.c b/arch/x86_64/ia32/ia32_binfmt.c
+index 543ef4f..75677ad 100644
+--- a/arch/x86_64/ia32/ia32_binfmt.c
++++ b/arch/x86_64/ia32/ia32_binfmt.c
+@@ -408,7 +408,7 @@ static ctl_table abi_root_table2[] = {
  
- static struct ctl_table_header *fs_table_header;
- 
--#define FS_CODA         1       /* Coda file system */
--
- #define CODA_TIMEOUT    3       /* timeout on upcalls to become intrble */
- #define CODA_HARD       5       /* mount type "hard" or "soft" */
- #define CODA_VFS 	 6       /* vfs statistics */
-@@ -184,17 +182,57 @@ static int coda_cache_inv_stats_get_info( char * buffer, char ** start,
+ static __init int ia32_binfmt_init(void)
+ { 
+-	register_sysctl_table(abi_root_table2, 1);
++	register_sysctl_table(abi_root_table2, 0);
+ 	return 0;
  }
+ __initcall(ia32_binfmt_init);
+diff --git a/arch/x86_64/mm/init.c b/arch/x86_64/mm/init.c
+index 2968b90..65aa66c 100644
+--- a/arch/x86_64/mm/init.c
++++ b/arch/x86_64/mm/init.c
+@@ -724,7 +724,7 @@ static ctl_table debug_root_table2[] = {
  
- static ctl_table coda_table[] = {
-- 	{CODA_TIMEOUT, "timeout", &coda_timeout, sizeof(int), 0644, NULL, &proc_dointvec},
-- 	{CODA_HARD, "hard", &coda_hard, sizeof(int), 0644, NULL, &proc_dointvec},
-- 	{CODA_VFS, "vfs_stats", NULL, 0, 0644, NULL, &do_reset_coda_vfs_stats},
-- 	{CODA_CACHE_INV, "cache_inv_stats", NULL, 0, 0644, NULL, &do_reset_coda_cache_inv_stats},
-- 	{CODA_FAKE_STATFS, "fake_statfs", &coda_fake_statfs, sizeof(int), 0600, NULL, &proc_dointvec},
--	{ 0 }
-+	{
-+		.ctl_name	= CTL_UNNUMBERED,
-+		.procname	= "timeout",
-+		.data		= &coda_timeout,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= &proc_dointvec
-+	},
-+	{
-+		.ctl_name	= CTL_UNNUMBERED,
-+		.procname	= "hard",
-+		.data		= &coda_hard,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= &proc_dointvec
-+	},
-+	{
-+		.ctl_name	= CTL_UNNUMBERED,
-+		.procname	= "vfs_stats",
-+		.data		= NULL,
-+		.maxlen		= 0,
-+		.mode		= 0644,
-+		.proc_handler	= &do_reset_coda_vfs_stats
-+	},
-+	{
-+		.ctl_name	= CTL_UNNUMBERED,
-+		.procname	= "cache_inv_stats",
-+		.data		= NULL,
-+		.maxlen		= 0,
-+		.mode		= 0644,
-+		.proc_handler	= &do_reset_coda_cache_inv_stats
-+	},
-+	{
-+		.ctl_name	= CTL_UNNUMBERED,
-+		.procname	= "fake_statfs",
-+		.data		= &coda_fake_statfs,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0600,
-+		.proc_handler	= &proc_dointvec
-+	},
-+	{}
- };
- 
- static ctl_table fs_table[] = {
--       {FS_CODA, "coda",    NULL, 0, 0555, coda_table},
--       {0}
-+	{
-+		.ctl_name	= CTL_UNNUMBERED,
-+		.procname	= "coda",
-+		.mode		= 0555,
-+		.child		= coda_table
-+	},
-+	{}
- };
- 
- 
+ static __init int x8664_sysctl_init(void)
+ { 
+-	register_sysctl_table(debug_root_table2, 1);
++	register_sysctl_table(debug_root_table2, 0);
+ 	return 0;
+ }
+ __initcall(x8664_sysctl_init);
 -- 
 1.4.4.1.g278f

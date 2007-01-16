@@ -1,11 +1,11 @@
-Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:14211 "EHLO
+Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:14723 "EHLO
 	ebiederm.dsl.xmission.com") by ftp.linux-mips.org with ESMTP
-	id S28580836AbXAPQmj (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 16 Jan 2007 16:42:39 +0000
+	id S20041448AbXAPQmk (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 16 Jan 2007 16:42:40 +0000
 From: "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 53/59] sysctl: Remove support for CTL_ANY
-Date: Tue, 16 Jan 2007 09:39:58 -0700
-Message-ID: <11689656972739-git-send-email-ebiederm@xmission.com>
+Subject: [PATCH 16/59] sysctl: md Remove unnecessary insert_at_head flag
+Date: Tue, 16 Jan 2007 09:39:21 -0700
+Message-ID: <1168965633112-git-send-email-ebiederm@xmission.com>
 In-Reply-To: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 References: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 Return-Path: <eric@ebiederm.dsl.xmission.com>
@@ -13,46 +13,30 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: "<Andrew Morton" <akpm@osdl.org>
 Cc: linux-kernel@vger.kernel.org, containers@lists.osdl.org, netdev@vger.kernel.org, xfs-masters@oss.sgi.com, xfs@oss.sgi.com, linux-scsi@vger.kernel.org, James.Bottomley@SteelEye.com, minyard@acm.org, openipmi-developer@lists.sourceforge.net, tony.luck@intel.com, linux-mips@linux-mips.org, ralf@linux-mips.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, linux-390@vm.marist.edu, paulus@samba.org, linuxppc-dev@ozlabs.org, lethal@linux-sh.org, linuxsh-shmedia-dev@lists.sourceforge.net, ak@suse.de, vojtech@suse.cz, clemens@ladisch.de, a.zummo@towertech.it, rtc-linux@googlegroups.com, linux-parport@lists.infradead.org, andrea@suse.de, tim@cyberelk.net, philb@gnu.org, aharkes@cs.cmu.edu, coda@cs.cmu.edu, codalist@TELEMANN.coda.cs.cmu.edu, aia21@cantab.net, linux-ntfs-dev@lists.sourceforge.net, mark.fasheh@oracle.com, kurt.hackel@oracle.com, "Eric W. Biederman" <ebiederm@xmission.com>
-Message-ID: <20070116163958.kjvMlX6szUHgA4tDXwMdRZJKmlDzD5XwQw3KO8pezcQ@z>
+Message-ID: <20070116163921.ClvFnYk8TkpoFzYka_W4TVEstUcJz3nNOFbLGpKW5t8@z>
 
 From: Eric W. Biederman <ebiederm@xmission.com> - unquoted
 
-There are currently no users in the kernel for CTL_ANY and it
-only has effect on the binary interface which is practically
-unused.
-
-So this complicates sysctl lookups for no good reason so just remove it.
+The sysctls used by the md driver are have unique binary numbers
+so remove the insert_at_head flag as it serves no useful purpose.
 
 Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 ---
- include/linux/sysctl.h |    1 -
- kernel/sysctl.c        |    2 +-
- 2 files changed, 1 insertions(+), 2 deletions(-)
+ drivers/md/md.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-index 63e1bac..c99e4bb 100644
---- a/include/linux/sysctl.h
-+++ b/include/linux/sysctl.h
-@@ -53,7 +53,6 @@ struct __sysctl_args {
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index d1cb45f..966e8be 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -5551,7 +5551,7 @@ static int __init md_init(void)
+ 			    md_probe, NULL, NULL);
  
- /* For internal pattern-matching use only: */
- #ifdef __KERNEL__
--#define CTL_ANY		-1	/* Matches any name */
- #define CTL_NONE	0
- #define CTL_UNNUMBERED	CTL_NONE	/* sysctl without a binary number */
- #endif
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 8da6647..e655b11 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -1166,7 +1166,7 @@ repeat:
- 	for ( ; table->ctl_name || table->procname; table++) {
- 		if (!table->ctl_name)
- 			continue;
--		if (n == table->ctl_name || table->ctl_name == CTL_ANY) {
-+		if (n == table->ctl_name) {
- 			int error;
- 			if (table->child) {
- 				if (ctl_perm(table, 001))
+ 	register_reboot_notifier(&md_notifier);
+-	raid_table_header = register_sysctl_table(raid_root_table, 1);
++	raid_table_header = register_sysctl_table(raid_root_table, 0);
+ 
+ 	md_geninit();
+ 	return (0);
 -- 
 1.4.4.1.g278f

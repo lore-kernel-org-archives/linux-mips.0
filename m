@@ -1,11 +1,11 @@
-Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:14210 "EHLO
+Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:26498 "EHLO
 	ebiederm.dsl.xmission.com") by ftp.linux-mips.org with ESMTP
-	id S28580797AbXAPQlt (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 16 Jan 2007 16:41:49 +0000
+	id S28580799AbXAPQlz (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 16 Jan 2007 16:41:55 +0000
 From: "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 33/59] sysctl: s390 move sysctl definitions to sysctl.h
-Date: Tue, 16 Jan 2007 09:39:38 -0700
-Message-ID: <11689656572714-git-send-email-ebiederm@xmission.com>
+Subject: [PATCH 42/59] sysctl: Remove sys_sysctl support from the hpet timer driver.
+Date: Tue, 16 Jan 2007 09:39:47 -0700
+Message-ID: <11689656683585-git-send-email-ebiederm@xmission.com>
 In-Reply-To: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 References: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 Return-Path: <eric@ebiederm.dsl.xmission.com>
@@ -13,87 +13,40 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: "<Andrew Morton" <akpm@osdl.org>
 Cc: linux-kernel@vger.kernel.org, containers@lists.osdl.org, netdev@vger.kernel.org, xfs-masters@oss.sgi.com, xfs@oss.sgi.com, linux-scsi@vger.kernel.org, James.Bottomley@SteelEye.com, minyard@acm.org, openipmi-developer@lists.sourceforge.net, tony.luck@intel.com, linux-mips@linux-mips.org, ralf@linux-mips.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, linux-390@vm.marist.edu, paulus@samba.org, linuxppc-dev@ozlabs.org, lethal@linux-sh.org, linuxsh-shmedia-dev@lists.sourceforge.net, ak@suse.de, vojtech@suse.cz, clemens@ladisch.de, a.zummo@towertech.it, rtc-linux@googlegroups.com, linux-parport@lists.infradead.org, andrea@suse.de, tim@cyberelk.net, philb@gnu.org, aharkes@cs.cmu.edu, coda@cs.cmu.edu, codalist@TELEMANN.coda.cs.cmu.edu, aia21@cantab.net, linux-ntfs-dev@lists.sourceforge.net, mark.fasheh@oracle.com, kurt.hackel@oracle.com, "Eric W. Biederman" <ebiederm@xmission.com>
-Message-ID: <20070116163938.OBUoH7VHMdcZxKtYZI40N4sBzkzhLmV1RCmGG5uxSlA@z>
+Message-ID: <20070116163947.hWa_W2YPECfg9fjW7b5wFWUN6hzun8AdLcbqXTcfv6k@z>
 
 From: Eric W. Biederman <ebiederm@xmission.com> - unquoted
 
-We need to have the the definition of all top level sysctl
-directories registers in sysctl.h so we don't conflict by
-accident and cause abi problems.
+In the binary sysctl interface the hpet driver was claiming to
+be the cdrom driver.  This is a no-no so remove support for the
+binary interface.
 
 Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 ---
- arch/s390/appldata/appldata.h |    3 +--
- arch/s390/kernel/debug.c      |    1 -
- arch/s390/mm/cmm.c            |    4 ----
- include/linux/sysctl.h        |    7 +++++++
- 4 files changed, 8 insertions(+), 7 deletions(-)
+ drivers/char/hpet.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/appldata/appldata.h b/arch/s390/appldata/appldata.h
-index 0429481..4069b81 100644
---- a/arch/s390/appldata/appldata.h
-+++ b/arch/s390/appldata/appldata.h
-@@ -21,8 +21,7 @@
- #define APPLDATA_RECORD_NET_SUM_ID	0x03	/* must be < 256 !     */
- #define APPLDATA_RECORD_PROC_ID		0x04
+diff --git a/drivers/char/hpet.c b/drivers/char/hpet.c
+index 20dc3be..81be1db 100644
+--- a/drivers/char/hpet.c
++++ b/drivers/char/hpet.c
+@@ -703,7 +703,7 @@ int hpet_control(struct hpet_task *tp, unsigned int cmd, unsigned long arg)
  
--#define CTL_APPLDATA 		2120	/* sysctl IDs, must be unique */
--#define CTL_APPLDATA_TIMER 	2121
-+#define CTL_APPLDATA_TIMER 	2121	/* sysctl IDs, must be unique */
- #define CTL_APPLDATA_INTERVAL 	2122
- #define CTL_APPLDATA_MEM	2123
- #define CTL_APPLDATA_OS		2124
-diff --git a/arch/s390/kernel/debug.c b/arch/s390/kernel/debug.c
-index bb57bc0..c81f8e5 100644
---- a/arch/s390/kernel/debug.c
-+++ b/arch/s390/kernel/debug.c
-@@ -852,7 +852,6 @@ debug_finish_entry(debug_info_t * id, debug_entry_t* active, int level,
- static int debug_stoppable=1;
- static int debug_active=1;
+ static ctl_table hpet_table[] = {
+ 	{
+-	 .ctl_name = 1,
++	 .ctl_name = CTL_UNNUMBERED,
+ 	 .procname = "max-user-freq",
+ 	 .data = &hpet_max_freq,
+ 	 .maxlen = sizeof(int),
+@@ -715,7 +715,7 @@ static ctl_table hpet_table[] = {
  
--#define CTL_S390DBF 5677
- #define CTL_S390DBF_STOPPABLE 5678
- #define CTL_S390DBF_ACTIVE 5679
- 
-diff --git a/arch/s390/mm/cmm.c b/arch/s390/mm/cmm.c
-index 607f50e..df733d5 100644
---- a/arch/s390/mm/cmm.c
-+++ b/arch/s390/mm/cmm.c
-@@ -256,10 +256,6 @@ cmm_skip_blanks(char *cp, char **endp)
- }
- 
- #ifdef CONFIG_CMM_PROC
--/* These will someday get removed. */
--#define VM_CMM_PAGES		1111
--#define VM_CMM_TIMED_PAGES	1112
--#define VM_CMM_TIMEOUT		1113
- 
- static struct ctl_table cmm_table[];
- 
-diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-index 71c16b4..56d0161 100644
---- a/include/linux/sysctl.h
-+++ b/include/linux/sysctl.h
-@@ -73,6 +73,8 @@ enum
- 	CTL_SUNRPC=7249,	/* sunrpc debug */
- 	CTL_PM=9899,		/* frv power management */
- 	CTL_FRV=9898,		/* frv specific sysctls */
-+	CTL_S390DBF=5677,	/* s390 debug */
-+	CTL_APPLDATA=2120,	/* s390 appldata */
- };
- 
- /* CTL_BUS names: */
-@@ -205,6 +207,11 @@ enum
- 	VM_PANIC_ON_OOM=33,	/* panic at out-of-memory */
- 	VM_VDSO_ENABLED=34,	/* map VDSO into new processes? */
- 	VM_MIN_SLAB=35,		 /* Percent pages ignored by zone reclaim */
-+
-+	/* s390 vm cmm sysctls */
-+	VM_CMM_PAGES=1111,
-+	VM_CMM_TIMED_PAGES=1112,
-+	VM_CMM_TIMEOUT=1113,
- };
- 
- 
+ static ctl_table hpet_root[] = {
+ 	{
+-	 .ctl_name = 1,
++	 .ctl_name = CTL_UNNUMBERED,
+ 	 .procname = "hpet",
+ 	 .maxlen = 0,
+ 	 .mode = 0555,
 -- 
 1.4.4.1.g278f

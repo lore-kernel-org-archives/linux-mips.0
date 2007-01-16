@@ -1,11 +1,11 @@
-Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:51329 "EHLO
+Received: from ebiederm.dsl.xmission.com ([166.70.28.69]:54401 "EHLO
 	ebiederm.dsl.xmission.com") by ftp.linux-mips.org with ESMTP
-	id S28580787AbXAPQlh (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 16 Jan 2007 16:41:37 +0000
+	id S20041436AbXAPQll (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 16 Jan 2007 16:41:41 +0000
 From: "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 3/59] sysctl: sunrpc Remove unnecessary insert_at_head flag
-Date: Tue, 16 Jan 2007 09:39:08 -0700
-Message-ID: <11689656133336-git-send-email-ebiederm@xmission.com>
+Subject: [PATCH 6/59] sysctl: netrom remove unnecessary insert_at_head flag
+Date: Tue, 16 Jan 2007 09:39:11 -0700
+Message-ID: <11689656204073-git-send-email-ebiederm@xmission.com>
 In-Reply-To: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 References: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
 Return-Path: <eric@ebiederm.dsl.xmission.com>
@@ -13,45 +13,30 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: "<Andrew Morton" <akpm@osdl.org>
 Cc: linux-kernel@vger.kernel.org, containers@lists.osdl.org, netdev@vger.kernel.org, xfs-masters@oss.sgi.com, xfs@oss.sgi.com, linux-scsi@vger.kernel.org, James.Bottomley@SteelEye.com, minyard@acm.org, openipmi-developer@lists.sourceforge.net, tony.luck@intel.com, linux-mips@linux-mips.org, ralf@linux-mips.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, linux-390@vm.marist.edu, paulus@samba.org, linuxppc-dev@ozlabs.org, lethal@linux-sh.org, linuxsh-shmedia-dev@lists.sourceforge.net, ak@suse.de, vojtech@suse.cz, clemens@ladisch.de, a.zummo@towertech.it, rtc-linux@googlegroups.com, linux-parport@lists.infradead.org, andrea@suse.de, tim@cyberelk.net, philb@gnu.org, aharkes@cs.cmu.edu, coda@cs.cmu.edu, codalist@TELEMANN.coda.cs.cmu.edu, aia21@cantab.net, linux-ntfs-dev@lists.sourceforge.net, mark.fasheh@oracle.com, kurt.hackel@oracle.com, "Eric W. Biederman" <ebiederm@xmission.com>
-Message-ID: <20070116163908.GnhZdKT5Pt8cbGa3bS9jou1T5tCyj5tcXU-v_o3PZmI@z>
+Message-ID: <20070116163911.b6GMINMy6l20leI8GAQ9zPD4mEebc9_rRB0qzmlnOaY@z>
 
 From: Eric W. Biederman <ebiederm@xmission.com> - unquoted
 
-Because the sunrpc sysctls don't conflict with any other
-sysctls the setting the insert at head flag to register_sysctl
-has no semantic meaning.
+The sysctl numbers used are unique so setting the insert_at_head
+flag serves no semantic purpose, so it is just confusing.
 
 Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 ---
- net/sunrpc/sysctl.c   |    2 +-
- net/sunrpc/xprtsock.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ net/netrom/sysctl_net_netrom.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/net/sunrpc/sysctl.c b/net/sunrpc/sysctl.c
-index 82b2752..3852689 100644
---- a/net/sunrpc/sysctl.c
-+++ b/net/sunrpc/sysctl.c
-@@ -36,7 +36,7 @@ void
- rpc_register_sysctl(void)
+diff --git a/net/netrom/sysctl_net_netrom.c b/net/netrom/sysctl_net_netrom.c
+index 6bb8dda..09f4246 100644
+--- a/net/netrom/sysctl_net_netrom.c
++++ b/net/netrom/sysctl_net_netrom.c
+@@ -192,7 +192,7 @@ static ctl_table nr_root_table[] = {
+ 
+ void __init nr_register_sysctl(void)
  {
- 	if (!sunrpc_table_header) {
--		sunrpc_table_header = register_sysctl_table(sunrpc_table, 1);
-+		sunrpc_table_header = register_sysctl_table(sunrpc_table, 0);
- #ifdef CONFIG_PROC_FS
- 		if (sunrpc_table[0].de)
- 			sunrpc_table[0].de->owner = THIS_MODULE;
-diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-index 49cabff..98d1af9 100644
---- a/net/sunrpc/xprtsock.c
-+++ b/net/sunrpc/xprtsock.c
-@@ -1630,7 +1630,7 @@ int init_socket_xprt(void)
- {
- #ifdef RPC_DEBUG
- 	if (!sunrpc_table_header) {
--		sunrpc_table_header = register_sysctl_table(sunrpc_table, 1);
-+		sunrpc_table_header = register_sysctl_table(sunrpc_table, 0);
- #ifdef CONFIG_PROC_FS
- 		if (sunrpc_table[0].de)
- 			sunrpc_table[0].de->owner = THIS_MODULE;
+-	nr_table_header = register_sysctl_table(nr_root_table, 1);
++	nr_table_header = register_sysctl_table(nr_root_table, 0);
+ }
+ 
+ void nr_unregister_sysctl(void)
 -- 
 1.4.4.1.g278f

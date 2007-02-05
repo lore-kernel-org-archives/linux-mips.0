@@ -1,75 +1,54 @@
-Received: from smtp.osdl.org ([65.172.181.24]:48829 "EHLO smtp.osdl.org")
-	by ftp.linux-mips.org with ESMTP id S20037494AbXA0Kzj (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Sat, 27 Jan 2007 10:55:39 +0000
-Date: Sat, 27 Jan 2007 02:51:37 -0800
-From: Andrew Morton <akpm@osdl.org>
-Subject: Re: [PATCH 49/59] sysctl: Move init_irq_proc into init/main where
- it belongs
-Message-ID: <20070127025137.9a2c65bb.akpm@osdl.org>
-In-Reply-To: <1168965684147-git-send-email-ebiederm@xmission.com>
-References: <m1ac0jc4no.fsf@ebiederm.dsl.xmission.com>
-	<1168965684147-git-send-email-ebiederm@xmission.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <akpm@osdl.org>
+Received: from mail.baslerweb.com ([145.253.187.130]:3292 "EHLO
+	mail.baslerweb.com") by ftp.linux-mips.org with ESMTP
+	id S20037553AbXBEKjH convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 5 Feb 2007 10:39:07 +0000
+Received: (from smtpd@127.0.0.1) by mail.baslerweb.com (8.13.4/8.13.4)
+	id l15AZvlH029069 for <linux-mips@linux-mips.org>; Mon, 5 Feb 2007 11:35:57 +0100
+MIME-Version: 1.0
+Date: Mon, 5 Feb 2007 11:35:55 +0100
+Message-ID: <C5A8FDEFF7647F4C9CB927D7DEB3077303FCF2C9@ahr075s.basler.corp>
+From: "Koeller, T." <Thomas.Koeller@baslerweb.com>
+Subject: RE: [MIPS] Remove Basler Excite support
+Content-class: urn:content-classes:message
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: 8BIT
+Return-Path: <Thomas.Koeller@baslerweb.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: linux-kernel@vger.kernel.org, containers@lists.osdl.org, netdev@vger.kernel.org, xfs-masters@oss.sgi.com, xfs@oss.sgi.com, linux-scsi@vger.kernel.org, James.Bottomley@SteelEye.com, minyard@acm.org, openipmi-developer@lists.sourceforge.net, tony.luck@intel.com, linux-mips@linux-mips.org, ralf@linux-mips.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, linux-390@vm.marist.edu, paulus@samba.org, linuxppc-dev@ozlabs.org, lethal@linux-sh.org, linuxsh-shmedia-dev@lists.sourceforge.net, ak@suse.de, vojtech@suse.cz, clemens@ladisch.de, a.zummo@towertech.it, rtc-linux@googlegroups.com, linux-parport@lists.infradead.org, andrea@suse.de, tim@cyberelk.net, philb@gnu.org, aharkes@cs.cmu.edu, coda@cs.cmu.edu, codalist@TELEMANN.coda.cs.cmu.edu, aia21@cantab.net, linux-ntfs-dev@lists.sourceforge.net, mark.fasheh@oracle.com, kurt.hackel@oracle.com
-Message-ID: <20070127105137.i4Y5oKl8oNnXmG5oPhxmBrb__PridW8Fv8NH543Ji_o@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20070205103555.aFepZtPmoDiyjuUwevIW4zV4U7SpSGh_EGtUPNVm340@z>
 
-On Tue, 16 Jan 2007 09:39:54 -0700
-"Eric W. Biederman" <ebiederm@xmission.com> wrote:
+> From: linux-git-bounce@linux-mips.org 
+> [mailto:linux-git-bounce@linux-mips.org] On Behalf Of 
+> linux-mips@linux-mips.org
+> Sent: Sunday, February 04, 2007 9:39 PM
+> To: git-commits@linux-mips.org
+> Subject: [MIPS] Remove Basler Excite support
 
-> From: Eric W. Biederman <ebiederm@xmission.com> - unquoted
-> 
-> Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
-> ---
->  init/main.c     |    3 +++
->  kernel/sysctl.c |    3 ---
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/init/main.c b/init/main.c
-> index 8b4a7d7..8af5c6e 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -691,6 +691,9 @@ static void __init do_basic_setup(void)
->  #ifdef CONFIG_SYSCTL
->  	sysctl_init();
->  #endif
-> +#ifdef CONFIG_PROC_FS
-> +	init_irq_proc();
-> +#endif
->  
->  	do_initcalls();
->  }
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 600b333..7420761 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -1172,8 +1172,6 @@ static ctl_table dev_table[] = {
->  	{ .ctl_name = 0 }
->  };
->  
-> -extern void init_irq_proc (void);
-> -
->  static DEFINE_SPINLOCK(sysctl_lock);
->  
->  /* called under sysctl_lock */
-> @@ -1219,7 +1217,6 @@ void __init sysctl_init(void)
->  {
->  #ifdef CONFIG_PROC_SYSCTL
->  	register_proc_table(root_table, proc_sys_root, &root_table_header);
-> -	init_irq_proc();
->  #endif
->  }
+Ralf,
 
-sparc64:
+the last time I worked on it (which is three days ago, while working to make the excite nand flash driver ready for submission), it built and ran just fine, so I really wonder why you are removing it. I now notice that it has been made depending on BROKEN some time ago, which escaped my attention when it happened.
 
-init/main.c: In function `do_basic_setup':
-init/main.c:707: warning: implicit declaration of function `init_irq_proc'
+The reason I did not encounter any build problems is that I always built the code with the yet-to-be-submitted drivers. The compilation error you get when building the excite platform is caused by a dependency upon the rm9k_serial driver, on which the platform depends for serial console support. I haven't yet managed to submit that driver, although I made several attempts. If serial console support were disabled, the code could trivially be fixed to compile without errors.
 
-I couldn't be bothered working out how init/main.c is supposed to get at
-its declaration of init_irq_proc().  It's not allowed to include
-linux/irq.h.
+Can you revert the removal?
+
+Thomas
+_______________________________
+
+Thomas Köller, Software Developer
+
+Basler Vision Technologies
+An der Strusbek 60-62
+22926 Ahrensburg
+Germany
+
+Tel. +49 (0) 4102 - 463 390
+Fax +49 (0) 4102 - 463 390
+
+mailto:thomas.koeller@baslerweb.com
+http://www.baslerweb.com
+
+Vorstand: Dr.-Ing. Dietmar Ley (Vorsitzender) * John P. Jennings * Peter Krumhoff * Aufsichtsratsvorsitzender: Norbert Basler
+Basler AG * Amtsgericht Ahrensburg HRB 4090 * Ust-IdNr.: DE 135 098 121 * Steuer-Nr.: 30 292 04497

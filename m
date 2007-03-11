@@ -1,104 +1,40 @@
-Received: from ozlabs.org ([203.10.76.45]:60038 "EHLO ozlabs.org")
-	by ftp.linux-mips.org with ESMTP id S20021391AbXCFPIP (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 6 Mar 2007 15:08:15 +0000
-From: Michael Ellerman <michael@ellerman.id.au>
-Date: Tue, 06 Mar 2007 16:06:49 +0100
-Subject: [PATCH 2/2] Make pcibios_add_platform_entries() return errors
-In-Reply-To: <1173193568.89821.610708199943.qpush@concordia>
-Message-ID: <20070306150725.68D97DDF36@ozlabs.org>
-Return-Path: <michael@ozlabs.org>
+Received: from localhost.localdomain ([127.0.0.1]:26786 "EHLO
+	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
+	id S20022130AbXCKN6x (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Sun, 11 Mar 2007 13:58:53 +0000
+Date: Sun, 11 Mar 2007 13:56:54 +0000
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: Mips SOC, Linux
+Message-ID: <20070311135654.GA26339@linux-mips.org>
+References: <bf8a8a430703102229k409c4cf5s44fc3510b3e1f64e@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bf8a8a430703102229k409c4cf5s44fc3510b3e1f64e@mail.gmail.com>
+Return-Path: <ralf@linux-mips.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Greg Kroah-Hartman <greg@kroah.com>
-Cc: linux-pci@atrey.karlin.mff.cuni.cz, linuxppc-dev@ozlabs.org, dev-etrax@axis.com, ink@jurassic.park.msu.ru, rth@twiddle.net, kernel@wantstofly.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, gerg@uclinux.org, linux-mips@linux-mips.org, parisc-linux@parisc-linux.org, sparclinux@vger.kernel.org, uclinux-v850@lsi.nec.co.jp, discuss@x86-64.org, chris@zankel.net, dhowells@redhat.com
-Message-ID: <20070306150649.kAPZ51fwDx0vtZXZo7CveRdLfRwHLHuFG_7BpmSNacA@z>
+To: PhilipS <sphilip30@gmail.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20070311135654.opRtSM3uouPg1RPMCnC7W5sXzE2JNrVf6UB5YMqwIwo@z>
 
-Currently pcibios_add_platform_entries() returns void, but could fail,
-so instead have it return an int and propagate errors up to
-pci_create_sysfs_dev_files().
+On Sun, Mar 11, 2007 at 11:59:11AM +0530, PhilipS wrote:
 
-Signed-off-by: Michael Ellerman <michael@ellerman.id.au>
----
- arch/powerpc/kernel/pci_32.c |    4 ++--
- arch/powerpc/kernel/pci_64.c |    4 ++--
- drivers/pci/pci-sysfs.c      |    9 ++++++---
- include/linux/pci.h          |    2 +-
- 4 files changed, 11 insertions(+), 8 deletions(-)
+> Hello All,
+> I am looking for MIPS Development boards for my hobby projects like Linux
+> Porting and Development, I am here by looking for an Expert suggestion to
+> buy a MIPS custom boards, so far on Google I could come across
+> vendor selling MIPS Evaluation target boards which is Obviously expensive
+> which ,I cannot afford to buy. I hope I am asking this question at the right
+> place, else please suggest me where I can post my request if one knows about
+> it.
 
-Index: msi-new/arch/powerpc/kernel/pci_32.c
-===================================================================
---- msi-new.orig/arch/powerpc/kernel/pci_32.c
-+++ msi-new/arch/powerpc/kernel/pci_32.c
-@@ -1037,10 +1037,10 @@ void pcibios_make_OF_bus_map(void)
- #endif /* CONFIG_PPC_OF */
- 
- /* Add sysfs properties */
--void pcibios_add_platform_entries(struct pci_dev *pdev)
-+int pcibios_add_platform_entries(struct pci_dev *pdev)
- {
- #ifdef CONFIG_PPC_OF
--	device_create_file(&pdev->dev, &dev_attr_devspec);
-+	return device_create_file(&pdev->dev, &dev_attr_devspec);
- #endif /* CONFIG_PPC_OF */
- }
- 
-Index: msi-new/arch/powerpc/kernel/pci_64.c
-===================================================================
---- msi-new.orig/arch/powerpc/kernel/pci_64.c
-+++ msi-new/arch/powerpc/kernel/pci_64.c
-@@ -863,9 +863,9 @@ static ssize_t pci_show_devspec(struct d
- }
- static DEVICE_ATTR(devspec, S_IRUGO, pci_show_devspec, NULL);
- 
--void pcibios_add_platform_entries(struct pci_dev *pdev)
-+int pcibios_add_platform_entries(struct pci_dev *pdev)
- {
--	device_create_file(&pdev->dev, &dev_attr_devspec);
-+	return device_create_file(&pdev->dev, &dev_attr_devspec);
- }
- 
- #define ISA_SPACE_MASK 0x1
-Index: msi-new/drivers/pci/pci-sysfs.c
-===================================================================
---- msi-new.orig/drivers/pci/pci-sysfs.c
-+++ msi-new/drivers/pci/pci-sysfs.c
-@@ -600,9 +600,9 @@ static struct bin_attribute pcie_config_
- 	.write = pci_write_config,
- };
- 
--void __attribute__ ((weak)) pcibios_add_platform_entries(struct pci_dev *dev)
-+int __attribute__ ((weak)) pcibios_add_platform_entries(struct pci_dev *dev)
- {
--	return;
-+	return 0;
- }
- 
- int __must_check pci_create_sysfs_dev_files (struct pci_dev *pdev)
-@@ -644,10 +644,13 @@ int __must_check pci_create_sysfs_dev_fi
- 		}
- 	}
- 	/* add platform-specific attributes */
--	pcibios_add_platform_entries(pdev);
-+	if (pcibios_add_platform_entries(pdev))
-+		goto err_rom_attr;
- 
- 	return 0;
- 
-+err_rom_attr:
-+	sysfs_remove_bin_file(&pdev->dev.kobj, rom_attr);
- err_rom:
- 	kfree(rom_attr);
- err_bin_file:
-Index: msi-new/include/linux/pci.h
-===================================================================
---- msi-new.orig/include/linux/pci.h
-+++ msi-new/include/linux/pci.h
-@@ -857,7 +857,7 @@ extern int pci_pci_problems;
- extern unsigned long pci_cardbus_io_size;
- extern unsigned long pci_cardbus_mem_size;
- 
--extern void pcibios_add_platform_entries(struct pci_dev *dev);
-+extern int pcibios_add_platform_entries(struct pci_dev *dev);
- 
- #endif /* __KERNEL__ */
- #endif /* LINUX_PCI_H */
+You're touch a big problem here, so I'm going to use this opportunity to
+post a rant ...
+
+Most of the eval boards are have very high price tags due to low volume and
+esotheric components such as very large and fast FPGAs or pricey matched
+impedance connectors for logic analyzers.  Another factor is that the
+vendors making these boards usually target their commercial customers and
+factor in a fairly generous markup for the post-sale support into the sales
+price of the board.

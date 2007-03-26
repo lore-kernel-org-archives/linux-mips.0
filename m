@@ -1,53 +1,65 @@
-Received: from mail.hcrest.com ([12.173.51.131]:45350 "EHLO mail.hcrest.com")
-	by ftp.linux-mips.org with ESMTP id S20022487AbXCWWRw convert rfc822-to-8bit
+Received: from mail.hcrest.com ([12.173.51.131]:7603 "EHLO mail.hcrest.com")
+	by ftp.linux-mips.org with ESMTP id S20022788AbXCZNdm convert rfc822-to-8bit
 	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 23 Mar 2007 22:17:52 +0000
+	Mon, 26 Mar 2007 14:33:42 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="US-ASCII"
 Content-Transfer-Encoding: 8BIT
 Subject: RE: flush_anon_page for MIPS
-Date: Fri, 23 Mar 2007 18:17:25 -0400
-Message-ID: <36E4692623C5974BA6661C0B18EE8EDF6CD3C5@MAILSERV.hcrest.com>
-In-Reply-To: <20070323190617.GA26884@linux-mips.org>
+Date: Mon, 26 Mar 2007 09:33:10 -0400
+Message-ID: <36E4692623C5974BA6661C0B18EE8EDF6CD3FA@MAILSERV.hcrest.com>
+In-Reply-To: <46046AC9.5070306@avtrex.com>
 From: "Ravi Pratap" <Ravi.Pratap@hillcrestlabs.com>
 Return-Path: <Ravi.Pratap@hillcrestlabs.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
+To: David Daney <ddaney@avtrex.com>, Ralf Baechle <ralf@linux-mips.org>
 Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, miklos@szeredi.hu, linux-mips@linux-mips.org
-Message-ID: <20070323221725.G2B0f7D1fnbULyh1aK1RTXL0d7JHotydsdEwgfp1Gp8@z>
+Message-ID: <20070326133310.ghLSFPnymd7UoWNGpc3uXrh9dyhq_a5gM0XgCNVBtrA@z>
 
-> From: Ralf Baechle [mailto:ralf@linux-mips.org] 
-> Sent: Friday, March 23, 2007 3:06 PM
-> To: Ravi Pratap
-> Cc: Atsushi Nemoto; miklos@szeredi.hu; linux-mips@linux-mips.org
+> From: David Daney [mailto:ddaney@avtrex.com] 
+> Sent: Friday, March 23, 2007 8:03 PM
+> To: Ralf Baechle
+> Cc: Ravi Pratap; Atsushi Nemoto; miklos@szeredi.hu; 
+> linux-mips@linux-mips.org
 > Subject: Re: flush_anon_page for MIPS
 > 
-> On Fri, Mar 23, 2007 at 11:47:20AM -0400, Ravi Pratap wrote:
-> 
-> > ~/fuse/example$ mkdir /tmp/fuse
-> > ~/fuse/example$ ./hello /tmp/fuse
-> > ~/fuse/example$ ls -l /tmp/fuse
-> > total 0
-> > -r--r--r--  1 root root 13 Jan  1  1970 hello
-> > ~/fuse/example$ cat /tmp/fuse/hello
-> > Hello World!
-> > ~/fuse/example$ fusermount -u /tmp/fuse
-> > ~/fuse/example$
+> Ralf Baechle wrote:
+> > On Fri, Mar 23, 2007 at 06:17:25PM -0400, Ravi Pratap wrote:
 > > 
+> >>> Yes, that's perfectly reproducable here (running a VSMP 
+> kernel on a 
+> >>> 34K).
+> >>> So the fix I posted earlier was good but I did a few tweaks to it 
+> >>> anyway.
+> >>> Will commit to all 2.6 -stable branch and master later.
+> >>
+> >> Thanks so much! Will this go into 2.6.15 by any chance?
 > > 
-> > It hangs when you do ls -l /tmp/fuse, in the above example.
+> > I don't recall that there every has been such a kernel release ;-)
+> > 
+> > But seriously, 2.6.15 is as dead as Tutankhamun.
 > 
-> Yes, that's perfectly reproducable here (running a VSMP 
-> kernel on a 34K).
-> So the fix I posted earlier was good but I did a few tweaks 
-> to it anyway.
-> Will commit to all 2.6 -stable branch and master later.
+> Some chip vendors only support that version, so I am assuming 
+> that that was the reason for the question.
+
+That's correct, actually :-)
+
+> It is a classic case of what happens when people do ports 
+> that are not merged.  They say it is good enough as is and 
+> then never move forward or fix bugs.
+
+True, and I don't know why these vendors do it. I wish too that they
+didn't.
 
 
-Thanks so much! Will this go into 2.6.15 by any chance?
+> The good news I guess is that we have the source, so we could 
+> forward port it if we were really motivated.
+
+Yes, but isn't it a lot of work considering the lack of a
+flush_anon_page in 2.6.15?
 
 
 Ravi.

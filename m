@@ -1,15 +1,15 @@
-Received: from mail.hcrest.com ([12.173.51.131]:44144 "EHLO mail.hcrest.com")
-	by ftp.linux-mips.org with ESMTP id S20021815AbXC0Ovt convert rfc822-to-8bit
+Received: from mail.hcrest.com ([12.173.51.131]:22291 "EHLO mail.hcrest.com")
+	by ftp.linux-mips.org with ESMTP id S20023081AbXC1OZg convert rfc822-to-8bit
 	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 27 Mar 2007 15:51:49 +0100
+	Wed, 28 Mar 2007 15:25:36 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="US-ASCII"
 Content-Transfer-Encoding: 8BIT
 Subject: RE: flush_anon_page for MIPS
-Date: Tue, 27 Mar 2007 10:51:10 -0400
-Message-ID: <36E4692623C5974BA6661C0B18EE8EDF6CD4D6@MAILSERV.hcrest.com>
+Date: Wed, 28 Mar 2007 10:25:09 -0400
+Message-ID: <36E4692623C5974BA6661C0B18EE8EDF6CD5B2@MAILSERV.hcrest.com>
 In-Reply-To: <20070327.121733.130850411.nemoto@toshiba-tops.co.jp>
 From: "Ravi Pratap" <Ravi.Pratap@hillcrestlabs.com>
 Return-Path: <Ravi.Pratap@hillcrestlabs.com>
@@ -17,7 +17,7 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 Cc: ralf@linux-mips.org, ddaney@avtrex.com, miklos@szeredi.hu, linux-mips@linux-mips.org
-Message-ID: <20070327145110.W6-pATA3Nolvrs3YPETy22YmdCBumQzi2Un8VkmCZuE@z>
+Message-ID: <20070328142509.gkTUOPjtHIr_p6HnZsumpCW-vDT0upeHcelDO23Ado4@z>
 
 > From: Atsushi Nemoto [mailto:anemo@mba.ocn.ne.jp] 
 > Sent: Monday, March 26, 2007 11:18 PM
@@ -52,8 +52,9 @@ Message-ID: <20070327145110.W6-pATA3Nolvrs3YPETy22YmdCBumQzi2Un8VkmCZuE@z>
 > 
 > If you only needed kmap_coherent, the first one might be enough.
 
-Thanks - the first one, with some minor updates was good enough to apply
-to 2.6.15.
+I just finished backporting your patches to a 2.6.15 kernel and FUSE now
+works just fine. 
 
+Thanks a lot for all your help - you guys are an awesome bunch!
 
 Ravi.

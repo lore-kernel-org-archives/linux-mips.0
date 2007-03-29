@@ -1,312 +1,908 @@
-Received: from mail.hcrest.com ([12.173.51.131]:45626 "EHLO mail.hcrest.com")
-	by ftp.linux-mips.org with ESMTP id S20023114AbXC1SSL (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 28 Mar 2007 19:18:11 +0100
-Content-class: urn:content-classes:message
+Received: from 3phoenix.com ([207.234.209.100]:39869 "EHLO
+	dedicated.3phoenix.com") by ftp.linux-mips.org with ESMTP
+	id S20023203AbXC2S7H (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 29 Mar 2007 19:59:07 +0100
+From: "Gary Smith" <gary.smith@3phoenix.com>
+Subject: 'mem= ' Kernel Boot Parameter on BCM1250/1480 Platform
+Date: Thu, 29 Mar 2007 14:56:49 -0400
+Message-ID: <001301c77234$04d014c0$8eacaac0@3PiGAS>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C77165.601A3FB4"
-Subject: RE: flush_anon_page for MIPS
-Date: Wed, 28 Mar 2007 14:17:42 -0400
-Message-ID: <36E4692623C5974BA6661C0B18EE8EDF6CD5F4@MAILSERV.hcrest.com>
-In-Reply-To: <460AA1A0.1050508@avtrex.com>
-From: "Ravi Pratap" <Ravi.Pratap@hillcrestlabs.com>
-Return-Path: <Ravi.Pratap@hillcrestlabs.com>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0014_01C77212.7DBE74C0"
+Return-Path: <gary.smith@3phoenix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: David Daney <ddaney@avtrex.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20070328181742.B2h01kOYqNLDSI3kL4H3J8CmSbMXtKs_Q54WuBotlOE@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20070329185649.Ut7lF1jV9fStmeLlV4Bi8-uiveKsMmz70FCMwVxaH8Q@z>
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C77165.601A3FB4
+------=_NextPart_000_0014_01C77212.7DBE74C0
 Content-Type: text/plain;
-	charset="US-ASCII"
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Dear Linux-Mips Developers:
+
+ 
+
+I'd like to ask a question about use of the 'mem=' kernel parameter.  When
+booting without this parameter, the kernel automatically detects the amount
+of memory as 989020 kB.  If a kernel parameter is added to specify
+'mem=989020k' a TLB Miss error is encountered.  Do you all have guidance
+about how the memory parameter can be specified without causing the error?
+Since the mem= parameter was set to an identical value as the memory
+reported by meminfo in the /proc filesystem, use of this kernel parameter
+should be OK.  This behavior has been observed on both the BCM1250/1480
+platforms when running Debian linux.  The 2.6.17-2 kernel is used with the
+system.
+
+ 
+
+Thanks,
+
+Gary
+
+--
+
+Gary A. Smith, ABD PhD
+Engineer, 3Phoenix, Inc.
+
+3331 Heritage Trade Drive
+
+Suite 101
+
+Wake Forest, NC  27587
+
+919.562.5333 x107
+
+ <http://www.3Phoenix.com> http://www.3Phoenix.com
+
+Gary.Smith@3Phoenix.com
+
+ 
+
+ 
+
+debian:/proc# more meminfo
+
+MemTotal:       989020 kB
+
+MemFree:        957876 kB
+
+Buffers:          1660 kB
+
+Cached:          12076 kB
+
+SwapCached:          0 kB
+
+Active:          10308 kB
+
+Inactive:         5224 kB
+
+HighTotal:           0 kB
+
+HighFree:            0 kB
+
+LowTotal:       989020 kB
+
+LowFree:        957876 kB
+
+SwapTotal:       72252 kB
+
+SwapFree:        72252 kB
+
+Dirty:             524 kB
+
+Writeback:           0 kB
+
+Mapped:           4496 kB
+
+Slab:             7236 kB
+
+CommitLimit:    566760 kB
+
+Committed_AS:     4360 kB
+
+PageTables:        188 kB
+
+VmallocTotal: 1073741824 kB
+
+VmallocUsed:       916 kB
+
+VmallocChunk: 1073739640 kB
+
+ 
+
+ 
+
+CFE version 1.3.3 for SWARM (64bit,MP,BE,MIPS) Build Date: Tue Dec 19
+06:41:38 EST 2006 (root@static-host) Copyright (C)
+2000,2001,2002,2003,2004,2005 Broadcom Corporation.
+
+ 
+
+Initializing Arena.
+
+Initializing Devices.
+
+SWARM board revision 3
+
+sbeth: found phy 1, vendor 000818 part 0C
+
+sbeth: found phy 1, vendor 000818 part 0C Config switch: 0
+
+CPU: BCM1250 B2
+
+L2 Cache Status: OK
+
+Wafer ID:   0x7F21A009  [Lot 8136, Wafer 13]
+
+Manuf Test: Bin A [2CPU_FI_FD_F2 (OK)]
+
+SysCfg: 0000000008C20800 [PLL_DIV: 16, IOB0_DIV: CPUCLK/4, IOB1_DIV:
+
+CPUCLK/3]
+
+CPU type 0x1040102: 800MHz
+
+Total memory: 0x40000000 bytes (1024MB)
+
+ 
+
+Total memory used by CFE:  0x8FEB3000 - 0x8FFFF520 (1361184)
+
+Initialized Data:          0x8FEF5408 - 0x8FEFD100 (31992)
+
+BSS Area:                  0x8FEFD100 - 0x8FEFD520 (1056)
+
+Local Heap:                0x8FEFD520 - 0x8FFFD520 (1048576)
+
+Stack Area:                0x8FFFD520 - 0x8FFFF520 (8192)
+
+Text (code) segment:       0x8FEB3000 - 0x8FEF4C75 (269429)
+
+Boot area (physical):      0x0FE72000 - 0x0FEB2000
+
+Relocation Factor:         I:F02B3000 - D:F02B3000
+
+ 
+
+ 
+
+*** Autoboot: Trying device 'ide0.0' file  (ide0.0,raw)
+
+ 
+
+Loader:raw Filesys:raw Dev:ide0.0 File: Options:(null)
+
+Loading: ........... 130560 bytes read
+
+Entry at 0x20000000
+
+Starting program at 0x20000000
+
+ 
+
+SiByte Loader, version 2.4.2
+
+Built on Oct  4 2005
+
+Getting configuration file ext2:ide0.0:*:sibyl.conf...
+
+Config file retrieved.
+
+Loading kernel (ELF64):
+
+    4256456@0x80100000
+
+done
+
+Set up command line arguments to: root=/dev/hda3 console=duart0 mem=989020k
+Setting up initial prom_init arguments **Exception 32: EPC=0000000020000BC8,
+Cause=00009008 (TLBMissRd) (CPU0)
+
+                RA=0000000020000BB4, VAddr=0000000000000000, SR=00000082
+
+ 
+
+        0  ($00) = 0000000000000000     AT ($01) = 0000000000000001
+
+        v0 ($02) = FFFFFFFF8FEFCC70     v1 ($03) = 0000000000000000
+
+        a0 ($04) = 0000000000000010     a1 ($05) = 0000000000000000
+
+        a2 ($06) = 000000008FEB3CDC     a3 ($07) = 0000000000000000
+
+        t0 ($08) = 0000000000000080     t1 ($09) = 0000000000000001
+
+        t2 ($10) = 0000000000000001     t3 ($11) = 0000000000000000
+
+        t4 ($12) = 0000000000000000     t5 ($13) = 0000000000000000
+
+        t6 ($14) = 0000000000000015     t7 ($15) = 0000000045000000
+
+        s0 ($16) = FFFFFFFF8FEB3AF4     s1 ($17) = FFFFFFFF8FEFD4E0
+
+        s2 ($18) = FFFFFFFF8FFFF250     s3 ($19) = FFFFFFFF8FEFD0B8
+
+        s4 ($20) = 0000000000000000     s5 ($21) = 0000000000000000
+
+        s6 ($22) = 0000000000000000     s7 ($23) = FFFFFFFF8FEB3000
+
+        t8 ($24) = 0000000000000000     t9 ($25) = 0000000000000000
+
+        k0 ($26) = 0000000000000001     k1 ($27) = 000000008FEB3CDC
+
+        gp ($28) = 00000000200278F0     sp ($29) = FFFFFFFF8FFFECE0
+
+        fp ($30) = FFFFFFFF8FFFECE0     ra ($31) = 0000000020000BB4
+
+
+------=_NextPart_000_0014_01C77212.7DBE74C0
+Content-Type: text/html;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-> From: David Daney [mailto:ddaney@avtrex.com]=20
-> Sent: Wednesday, March 28, 2007 1:11 PM
-> To: Ravi Pratap
-> Cc: linux-mips@linux-mips.org
-> Subject: Re: flush_anon_page for MIPS
->=20
-> > I just finished backporting your patches to a 2.6.15 kernel=20
-> and FUSE=20
-> > now works just fine.
-> >=20
->=20
-> Would you mind posting your patch to this list?
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-Sure, not a problem at all - it's attached.
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Courier New";
+	color:black;
+	font-weight:normal;
+	font-style:normal;
+	text-decoration:none none;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
-Ravi.
+</head>
 
-------_=_NextPart_001_01C77165.601A3FB4
-Content-Type: application/octet-stream;
-	name="1003.fuse-hang.patch"
-Content-Transfer-Encoding: base64
-Content-Description: 1003.fuse-hang.patch
-Content-Disposition: attachment;
-	filename="1003.fuse-hang.patch"
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
 
-ZGlmZiAtciAtdSBsaW51eC5yZWYvYXJjaC9taXBzL21tL2NhY2hlLmMgbGludXgubW9kL2FyY2gv
-bWlwcy9tbS9jYWNoZS5jCi0tLSBsaW51eC5yZWYvYXJjaC9taXBzL21tL2NhY2hlLmMJMjAwNi0w
-MS0yNSAyMzo1MToxMC4wMDAwMDAwMDAgLTA1MDAKKysrIGxpbnV4Lm1vZC9hcmNoL21pcHMvbW0v
-Y2FjaGUuYwkyMDA3LTAzLTI3IDEwOjQxOjQ3LjI0NjA5MTU0NiAtMDQwMApAQCAtMyw3ICszLDgg
-QEAKICAqIExpY2Vuc2UuICBTZWUgdGhlIGZpbGUgIkNPUFlJTkciIGluIHRoZSBtYWluIGRpcmVj
-dG9yeSBvZiB0aGlzIGFyY2hpdmUKICAqIGZvciBtb3JlIGRldGFpbHMuCiAgKgotICogQ29weXJp
-Z2h0IChDKSAxOTk0IC0gMjAwMyBieSBSYWxmIEJhZWNobGUKKyAqIENvcHlyaWdodCAoQykgMTk5
-NCAtIDIwMDMsIDA3IGJ5IFJhbGYgQmFlY2hsZSAocmFsZkBsaW51eC1taXBzLm9yZykKKyAqIENv
-cHlyaWdodCAoQykgMjAwNyBNSVBTIFRlY2hub2xvZ2llcywgSW5jLgogICovCiAjaW5jbHVkZSA8
-bGludXgvY29uZmlnLmg+CiAjaW5jbHVkZSA8bGludXgvaW5pdC5oPgpAQCAtODcsNiArODgsMTkg
-QEAKIAogRVhQT1JUX1NZTUJPTChfX2ZsdXNoX2RjYWNoZV9wYWdlKTsKIAordm9pZCBfX2ZsdXNo
-X2Fub25fcGFnZShzdHJ1Y3QgcGFnZSAqcGFnZSwgdW5zaWduZWQgbG9uZyB2bWFkZHIpCit7CisJ
-aWYgKHBhZ2VzX2RvX2FsaWFzKCh1bnNpZ25lZCBsb25nKXBhZ2VfYWRkcmVzcyhwYWdlKSwgdm1h
-ZGRyKSkgeworCQl2b2lkICprYWRkcjsKKworCQlrYWRkciA9IGttYXBfY29oZXJlbnQocGFnZSwg
-dm1hZGRyKTsKKwkJZmx1c2hfZGF0YV9jYWNoZV9wYWdlKCh1bnNpZ25lZCBsb25nKWthZGRyKTsK
-KwkJa3VubWFwX2NvaGVyZW50KHBhZ2UpOworCX0KK30KKworRVhQT1JUX1NZTUJPTChfX2ZsdXNo
-X2Fub25fcGFnZSk7CisKIHZvaWQgX191cGRhdGVfY2FjaGUoc3RydWN0IHZtX2FyZWFfc3RydWN0
-ICp2bWEsIHVuc2lnbmVkIGxvbmcgYWRkcmVzcywKIAlwdGVfdCBwdGUpCiB7Ck9ubHkgaW4gbGlu
-dXgubW9kL2FyY2gvbWlwcy9tbTogY2FjaGUuYy5vcmlnCmRpZmYgLXIgLXUgbGludXgucmVmL2Fy
-Y2gvbWlwcy9tbS9pbml0LmMgbGludXgubW9kL2FyY2gvbWlwcy9tbS9pbml0LmMKLS0tIGxpbnV4
-LnJlZi9hcmNoL21pcHMvbW0vaW5pdC5jCTIwMDYtMDEtMjUgMjM6NTE6MTAuMDAwMDAwMDAwIC0w
-NTAwCisrKyBsaW51eC5tb2QvYXJjaC9taXBzL21tL2luaXQuYwkyMDA3LTAzLTI3IDEwOjM5OjMy
-Ljk5OTI0ODM0NyAtMDQwMApAQCAtMjksMTEgKzI5LDM0IEBACiAjaW5jbHVkZSA8YXNtL2NhY2hl
-Y3RsLmg+CiAjaW5jbHVkZSA8YXNtL2NwdS5oPgogI2luY2x1ZGUgPGFzbS9kbWEuaD4KKyNpbmNs
-dWRlIDxhc20va21hcF90eXBlcy5oPgogI2luY2x1ZGUgPGFzbS9tbXVfY29udGV4dC5oPgogI2lu
-Y2x1ZGUgPGFzbS9zZWN0aW9ucy5oPgogI2luY2x1ZGUgPGFzbS9wZ3RhYmxlLmg+CiAjaW5jbHVk
-ZSA8YXNtL3BnYWxsb2MuaD4KICNpbmNsdWRlIDxhc20vdGxiLmg+CisjaW5jbHVkZSA8YXNtL2Zp
-eG1hcC5oPgorCisvKiBBdG9taWNpdHkgYW5kIGludGVycnVwdGFiaWxpdHkgKi8KKyNpZmRlZiBD
-T05GSUdfTUlQU19NVF9TTVRDCisKKyNpbmNsdWRlIDxhc20vbWlwc210cmVncy5oPgorCisjZGVm
-aW5lIEVOVEVSX0NSSVRJQ0FMKGZsYWdzKSBcCisJeyBcCisJdW5zaWduZWQgaW50IG12cGZsYWdz
-OyBcCisJbG9jYWxfaXJxX3NhdmUoZmxhZ3MpO1wKKwltdnBmbGFncyA9IGR2cGUoKQorI2RlZmlu
-ZSBFWElUX0NSSVRJQ0FMKGZsYWdzKSBcCisJZXZwZShtdnBmbGFncyk7IFwKKwlsb2NhbF9pcnFf
-cmVzdG9yZShmbGFncyk7IFwKKwl9CisjZWxzZQorCisjZGVmaW5lIEVOVEVSX0NSSVRJQ0FMKGZs
-YWdzKSBsb2NhbF9pcnFfc2F2ZShmbGFncykKKyNkZWZpbmUgRVhJVF9DUklUSUNBTChmbGFncykg
-bG9jYWxfaXJxX3Jlc3RvcmUoZmxhZ3MpCisKKyNlbmRpZiAvKiBDT05GSUdfTUlQU19NVF9TTVRD
-ICovCiAKIERFRklORV9QRVJfQ1BVKHN0cnVjdCBtbXVfZ2F0aGVyLCBtbXVfZ2F0aGVycyk7CiAK
-QEAgLTc4LDEzICsxMDEsMTQyIEBACiAJcmV0dXJuIDFVTCA8PCBvcmRlcjsKIH0KIAotI2lmZGVm
-IENPTkZJR19ISUdITUVNCi1wdGVfdCAqa21hcF9wdGU7Ci1wZ3Byb3RfdCBrbWFwX3Byb3Q7Cisv
-KgorICogVGhlc2UgYXJlIGFsbW9zdCBsaWtlIGttYXBfYXRvbWljIC8ga3VubWFwX2F0bWljIGV4
-Y2VwdCB0aGV5IHRha2UgYW4KKyAqIGFkZGl0aW9uYWwgYWRkcmVzcyBhcmd1bWVudCBhcyB0aGUg
-aGludC4KKyAqLwogCiAjZGVmaW5lIGttYXBfZ2V0X2ZpeG1hcF9wdGUodmFkZHIpCQkJCQlcCiAJ
-cHRlX29mZnNldF9rZXJuZWwocG1kX29mZnNldChwdWRfb2Zmc2V0KHBnZF9vZmZzZXRfayh2YWRk
-ciksICh2YWRkcikpLCAodmFkZHIpKSwgKHZhZGRyKSkKIAorI2lmZGVmIENPTkZJR19NSVBTX01U
-X1NNVEMKK3N0YXRpYyBwdGVfdCAqa21hcF9jb2hlcmVudF9wdGU7CitzdGF0aWMgdm9pZCBfX2lu
-aXQga21hcF9jb2hlcmVudF9pbml0KHZvaWQpCit7CisJdW5zaWduZWQgbG9uZyB2YWRkcjsKKwor
-CS8qIGNhY2hlIHRoZSBmaXJzdCBjb2hlcmVudCBrbWFwIHB0ZSAqLworCXZhZGRyID0gX19maXhf
-dG9fdmlydChGSVhfQ01BUF9CRUdJTik7CisJa21hcF9jb2hlcmVudF9wdGUgPSBrbWFwX2dldF9m
-aXhtYXBfcHRlKHZhZGRyKTsKK30KKyNlbHNlCitzdGF0aWMgaW5saW5lIHZvaWQga21hcF9jb2hl
-cmVudF9pbml0KHZvaWQpIHt9CisjZW5kaWYKKwordm9pZCAqa21hcF9jb2hlcmVudChzdHJ1Y3Qg
-cGFnZSAqcGFnZSwgdW5zaWduZWQgbG9uZyBhZGRyKQoreworCWVudW0gZml4ZWRfYWRkcmVzc2Vz
-IGlkeDsKKwl1bnNpZ25lZCBsb25nIHZhZGRyLCBmbGFncywgZW50cnlsbzsKKwl1bnNpZ25lZCBs
-b25nIG9sZF9jdHg7CisJcHRlX3QgcHRlOworCWludCB0bGJpZHg7CisKKwlpbmNfcHJlZW1wdF9j
-b3VudCgpOworCWlkeCA9IChhZGRyID4+IFBBR0VfU0hJRlQpICYgKEZJWF9OX0NPTE9VUlMgLSAx
-KTsKKyNpZmRlZiBDT05GSUdfTUlQU19NVF9TTVRDCisJaWR4ICs9IEZJWF9OX0NPTE9VUlMgKiBz
-bXBfcHJvY2Vzc29yX2lkKCk7CisjZW5kaWYKKwl2YWRkciA9IF9fZml4X3RvX3ZpcnQoRklYX0NN
-QVBfRU5EIC0gaWR4KTsKKwlwdGUgPSBta19wdGUocGFnZSwgUEFHRV9LRVJORUwpOworI2lmIGRl
-ZmluZWQoQ09ORklHXzY0QklUX1BIWVNfQUREUikgJiYgZGVmaW5lZChDT05GSUdfQ1BVX01JUFMz
-Ml9SMSkKKwllbnRyeWxvID0gcHRlLnB0ZV9oaWdoOworI2Vsc2UKKwllbnRyeWxvID0gcHRlX3Zh
-bChwdGUpID4+IDY7CisjZW5kaWYKKworCUVOVEVSX0NSSVRJQ0FMKGZsYWdzKTsKKwlvbGRfY3R4
-ID0gcmVhZF9jMF9lbnRyeWhpKCk7CisJd3JpdGVfYzBfZW50cnloaSh2YWRkciAmIChQQUdFX01B
-U0sgPDwgMSkpOworCXdyaXRlX2MwX2VudHJ5bG8wKGVudHJ5bG8pOworCXdyaXRlX2MwX2VudHJ5
-bG8xKGVudHJ5bG8pOworI2lmZGVmIENPTkZJR19NSVBTX01UX1NNVEMKKwlzZXRfcHRlKGttYXBf
-Y29oZXJlbnRfcHRlIC0gKEZJWF9DTUFQX0VORCAtIGlkeCksIHB0ZSk7CisJLyogcHJlbG9hZCBU
-TEIgaW5zdGVhZCBvZiBsb2NhbF9mbHVzaF90bGJfb25lKCkgKi8KKwltdGMwX3RsYndfaGF6YXJk
-KCk7CisJdGxiX3Byb2JlKCk7CisJdGxiX3Byb2JlX2hhemFyZCgpOworCXRsYmlkeCA9IHJlYWRf
-YzBfaW5kZXgoKTsKKwltdGMwX3RsYndfaGF6YXJkKCk7CisJaWYgKHRsYmlkeCA8IDApCisJCXRs
-Yl93cml0ZV9yYW5kb20oKTsKKwllbHNlCisJCXRsYl93cml0ZV9pbmRleGVkKCk7CisjZWxzZQor
-CXRsYmlkeCA9IHJlYWRfYzBfd2lyZWQoKTsKKwl3cml0ZV9jMF93aXJlZCh0bGJpZHggKyAxKTsK
-Kwl3cml0ZV9jMF9pbmRleCh0bGJpZHgpOworCW10YzBfdGxid19oYXphcmQoKTsKKwl0bGJfd3Jp
-dGVfaW5kZXhlZCgpOworI2VuZGlmCisJdGxid191c2VfaGF6YXJkKCk7CisJd3JpdGVfYzBfZW50
-cnloaShvbGRfY3R4KTsKKwlFWElUX0NSSVRJQ0FMKGZsYWdzKTsKKworCXJldHVybiAodm9pZCop
-IHZhZGRyOworfQorCisjZGVmaW5lIFVOSVFVRV9FTlRSWUhJKGlkeCkgKENLU0VHMCArICgoaWR4
-KSA8PCAoUEFHRV9TSElGVCArIDEpKSkKKwordm9pZCBrdW5tYXBfY29oZXJlbnQoc3RydWN0IHBh
-Z2UgKnBhZ2UpCit7CisjaWZuZGVmIENPTkZJR19NSVBTX01UX1NNVEMKKwl1bnNpZ25lZCBpbnQg
-d2lyZWQ7CisJdW5zaWduZWQgbG9uZyBmbGFncywgb2xkX2N0eDsKKworCUVOVEVSX0NSSVRJQ0FM
-KGZsYWdzKTsKKwlvbGRfY3R4ID0gcmVhZF9jMF9lbnRyeWhpKCk7CisJd2lyZWQgPSByZWFkX2Mw
-X3dpcmVkKCkgLSAxOworCXdyaXRlX2MwX3dpcmVkKHdpcmVkKTsKKwl3cml0ZV9jMF9pbmRleCh3
-aXJlZCk7CisJd3JpdGVfYzBfZW50cnloaShVTklRVUVfRU5UUllISSh3aXJlZCkpOworCXdyaXRl
-X2MwX2VudHJ5bG8wKDApOworCXdyaXRlX2MwX2VudHJ5bG8xKDApOworCW10YzBfdGxid19oYXph
-cmQoKTsKKwl0bGJfd3JpdGVfaW5kZXhlZCgpOworCXRsYndfdXNlX2hhemFyZCgpOworCXdyaXRl
-X2MwX2VudHJ5aGkob2xkX2N0eCk7CisJRVhJVF9DUklUSUNBTChmbGFncyk7CisjZW5kaWYKKwlk
-ZWNfcHJlZW1wdF9jb3VudCgpOworCXByZWVtcHRfY2hlY2tfcmVzY2hlZCgpOworfQorCit2b2lk
-IGNvcHlfdG9fdXNlcl9wYWdlKHN0cnVjdCB2bV9hcmVhX3N0cnVjdCAqdm1hLAorCXN0cnVjdCBw
-YWdlICpwYWdlLCB1bnNpZ25lZCBsb25nIHZhZGRyLCB2b2lkICpkc3QsIGNvbnN0IHZvaWQgKnNy
-YywKKwl1bnNpZ25lZCBsb25nIGxlbikKK3sKKwlpZiAoY3B1X2hhc19kY19hbGlhc2VzKSB7CisJ
-CXZvaWQgKnZ0byA9IGttYXBfY29oZXJlbnQocGFnZSwgdmFkZHIpICsgKHZhZGRyICYgflBBR0Vf
-TUFTSyk7CisJCW1lbWNweSh2dG8sIHNyYywgbGVuKTsKKwkJa3VubWFwX2NvaGVyZW50KHBhZ2Up
-OworCX0gZWxzZQorCQltZW1jcHkoZHN0LCBzcmMsIGxlbik7CisJaWYgKCh2bWEtPnZtX2ZsYWdz
-ICYgVk1fRVhFQykgJiYgIWNwdV9oYXNfaWNfZmlsbHNfZl9kYykKKwkJZmx1c2hfY2FjaGVfcGFn
-ZSh2bWEsIHZhZGRyLCBwYWdlX3RvX3BmbihwYWdlKSk7Cit9CisKK0VYUE9SVF9TWU1CT0woY29w
-eV90b191c2VyX3BhZ2UpOworCit2b2lkIGNvcHlfZnJvbV91c2VyX3BhZ2Uoc3RydWN0IHZtX2Fy
-ZWFfc3RydWN0ICp2bWEsCisJc3RydWN0IHBhZ2UgKnBhZ2UsIHVuc2lnbmVkIGxvbmcgdmFkZHIs
-IHZvaWQgKmRzdCwgY29uc3Qgdm9pZCAqc3JjLAorCXVuc2lnbmVkIGxvbmcgbGVuKQoreworCWlm
-IChjcHVfaGFzX2RjX2FsaWFzZXMpIHsKKwkJdm9pZCAqdmZyb20gPQorCQkJa21hcF9jb2hlcmVu
-dChwYWdlLCB2YWRkcikgKyAodmFkZHIgJiB+UEFHRV9NQVNLKTsKKwkJbWVtY3B5KGRzdCwgdmZy
-b20sIGxlbik7CisJCWt1bm1hcF9jb2hlcmVudChwYWdlKTsKKwl9IGVsc2UKKwkJbWVtY3B5KGRz
-dCwgc3JjLCBsZW4pOworfQorCitFWFBPUlRfU1lNQk9MKGNvcHlfZnJvbV91c2VyX3BhZ2UpOwor
-CisKKyNpZmRlZiBDT05GSUdfSElHSE1FTQorcHRlX3QgKmttYXBfcHRlOworcGdwcm90X3Qga21h
-cF9wcm90OworCiBzdGF0aWMgdm9pZCBfX2luaXQga21hcF9pbml0KHZvaWQpCiB7CiAJdW5zaWdu
-ZWQgbG9uZyBrbWFwX3ZzdGFydDsKQEAgLTk1LDExICsyNDcsMTIgQEAKIAogCWttYXBfcHJvdCA9
-IFBBR0VfS0VSTkVMOwogfQorI2VuZGlmIC8qIENPTkZJR19ISUdITUVNICovCiAKLSNpZmRlZiBD
-T05GSUdfMzJCSVQKIHZvaWQgX19pbml0IGZpeHJhbmdlX2luaXQodW5zaWduZWQgbG9uZyBzdGFy
-dCwgdW5zaWduZWQgbG9uZyBlbmQsCiAJcGdkX3QgKnBnZF9iYXNlKQogeworI2lmIGRlZmluZWQo
-Q09ORklHX0hJR0hNRU0pIHx8IGRlZmluZWQoQ09ORklHX01JUFNfTVRfU01UQykKIAlwZ2RfdCAq
-cGdkOwogCXB1ZF90ICpwdWQ7CiAJcG1kX3QgKnBtZDsKQEAgLTEyMCw3ICsyNzMsNyBAQAogCQkJ
-Zm9yICg7IChrIDwgUFRSU19QRVJfUE1EKSAmJiAodmFkZHIgIT0gZW5kKTsgcG1kKyssIGsrKykg
-ewogCQkJCWlmIChwbWRfbm9uZSgqcG1kKSkgewogCQkJCQlwdGUgPSAocHRlX3QgKikgYWxsb2Nf
-Ym9vdG1lbV9sb3dfcGFnZXMoUEFHRV9TSVpFKTsKLQkJCQkJc2V0X3BtZChwbWQsIF9fcG1kKHB0
-ZSkpOworCQkJCQlzZXRfcG1kKHBtZCwgX19wbWQoKHVuc2lnbmVkIGxvbmcpcHRlKSk7CiAJCQkJ
-CWlmIChwdGUgIT0gcHRlX29mZnNldF9rZXJuZWwocG1kLCAwKSkKIAkJCQkJCUJVRygpOwogCQkJ
-CX0KQEAgLTEzMCw5ICsyODMsOCBAQAogCQl9CiAJCWogPSAwOwogCX0KKyNlbmRpZgogfQotI2Vu
-ZGlmIC8qIENPTkZJR18zMkJJVCAqLwotI2VuZGlmIC8qIENPTkZJR19ISUdITUVNICovCiAKICNp
-Zm5kZWYgQ09ORklHX05FRURfTVVMVElQTEVfTk9ERVMKIGV4dGVybiB2b2lkIHBhZ2V0YWJsZV9p
-bml0KHZvaWQpOwpAQCAtMTQ3LDYgKzI5OSw3IEBACiAjaWZkZWYgQ09ORklHX0hJR0hNRU0KIAlr
-bWFwX2luaXQoKTsKICNlbmRpZgorCWttYXBfY29oZXJlbnRfaW5pdCgpOwogCiAJbWF4X2RtYSA9
-IHZpcnRfdG9fcGh5cygoY2hhciAqKU1BWF9ETUFfQUREUkVTUykgPj4gUEFHRV9TSElGVDsKIAls
-b3cgPSBtYXhfbG93X3BmbjsKT25seSBpbiBsaW51eC5tb2QvYXJjaC9taXBzL21tOiBpbml0LmMu
-b3JpZwpkaWZmIC1yIC11IGxpbnV4LnJlZi9hcmNoL21pcHMvbW0vcGd0YWJsZS0zMi5jIGxpbnV4
-Lm1vZC9hcmNoL21pcHMvbW0vcGd0YWJsZS0zMi5jCi0tLSBsaW51eC5yZWYvYXJjaC9taXBzL21t
-L3BndGFibGUtMzIuYwkyMDA2LTAxLTI1IDIzOjUxOjEwLjAwMDAwMDAwMCAtMDUwMAorKysgbGlu
-dXgubW9kL2FyY2gvbWlwcy9tbS9wZ3RhYmxlLTMyLmMJMjAwNy0wMy0yNyAxMDoyNzo0Ni44MTAz
-NzYwMjQgLTA0MDAKQEAgLTMyLDkgKzMyLDEwIEBACiAKIHZvaWQgX19pbml0IHBhZ2V0YWJsZV9p
-bml0KHZvaWQpCiB7Ci0jaWZkZWYgQ09ORklHX0hJR0hNRU0KIAl1bnNpZ25lZCBsb25nIHZhZGRy
-OwotCXBnZF90ICpwZ2QsICpwZ2RfYmFzZTsKKwlwZ2RfdCAqcGdkX2Jhc2U7CisjaWZkZWYgQ09O
-RklHX0hJR0hNRU0KKwlwZ2RfdCAqcGdkOwogCXB1ZF90ICpwdWQ7CiAJcG1kX3QgKnBtZDsKIAlw
-dGVfdCAqcHRlOwpAQCAtNDUsNyArNDYsNiBAQAogCXBnZF9pbml0KCh1bnNpZ25lZCBsb25nKXN3
-YXBwZXJfcGdfZGlyCiAJCSArIHNpemVvZihwZ2RfdCkgKiBVU0VSX1BUUlNfUEVSX1BHRCk7CiAK
-LSNpZmRlZiBDT05GSUdfSElHSE1FTQogCXBnZF9iYXNlID0gc3dhcHBlcl9wZ19kaXI7CiAKIAkv
-KgpAQCAtNTQsNiArNTQsNyBAQAogCXZhZGRyID0gX19maXhfdG9fdmlydChfX2VuZF9vZl9maXhl
-ZF9hZGRyZXNzZXMgLSAxKSAmIFBNRF9NQVNLOwogCWZpeHJhbmdlX2luaXQodmFkZHIsIDAsIHBn
-ZF9iYXNlKTsKIAorI2lmZGVmIENPTkZJR19ISUdITUVNCiAJLyoKIAkgKiBQZXJtYW5lbnQga21h
-cHM6CiAJICovCk9ubHkgaW4gbGludXgubW9kL2FyY2gvbWlwcy9tbTogcGd0YWJsZS0zMi5jLm9y
-aWcKZGlmZiAtciAtdSBsaW51eC5yZWYvYXJjaC9taXBzL21tL3BndGFibGUtNjQuYyBsaW51eC5t
-b2QvYXJjaC9taXBzL21tL3BndGFibGUtNjQuYwotLS0gbGludXgucmVmL2FyY2gvbWlwcy9tbS9w
-Z3RhYmxlLTY0LmMJMjAwNi0wMS0yNSAyMzo1MToxMC4wMDAwMDAwMDAgLTA1MDAKKysrIGxpbnV4
-Lm1vZC9hcmNoL21pcHMvbW0vcGd0YWJsZS02NC5jCTIwMDctMDMtMjcgMTA6Mjc6NDYuODEwMzc2
-MDI0IC0wNDAwCkBAIC04LDYgKzgsNyBAQAogICovCiAjaW5jbHVkZSA8bGludXgvaW5pdC5oPgog
-I2luY2x1ZGUgPGxpbnV4L21tLmg+CisjaW5jbHVkZSA8YXNtL2ZpeG1hcC5oPgogI2luY2x1ZGUg
-PGFzbS9wZ3RhYmxlLmg+CiAKIHZvaWQgcGdkX2luaXQodW5zaWduZWQgbG9uZyBwYWdlKQpAQCAt
-NTIsNyArNTMsMTcgQEAKIAogdm9pZCBfX2luaXQgcGFnZXRhYmxlX2luaXQodm9pZCkKIHsKKwl1
-bnNpZ25lZCBsb25nIHZhZGRyOworCXBnZF90ICpwZ2RfYmFzZTsKKwogCS8qIEluaXRpYWxpemUg
-dGhlIGVudGlyZSBwZ2QuICAqLwogCXBnZF9pbml0KCh1bnNpZ25lZCBsb25nKXN3YXBwZXJfcGdf
-ZGlyKTsKIAlwbWRfaW5pdCgodW5zaWduZWQgbG9uZylpbnZhbGlkX3BtZF90YWJsZSwgKHVuc2ln
-bmVkIGxvbmcpaW52YWxpZF9wdGVfdGFibGUpOworCisJcGdkX2Jhc2UgPSBzd2FwcGVyX3BnX2Rp
-cjsKKwkvKgorCSAqIEZpeGVkIG1hcHBpbmdzOgorCSAqLworCXZhZGRyID0gX19maXhfdG9fdmly
-dChfX2VuZF9vZl9maXhlZF9hZGRyZXNzZXMgLSAxKSAmIFBNRF9NQVNLOworCWZpeHJhbmdlX2lu
-aXQodmFkZHIsIDAsIHBnZF9iYXNlKTsKIH0KZGlmZiAtciAtdSBsaW51eC5yZWYvRG9jdW1lbnRh
-dGlvbi9jYWNoZXRsYi50eHQgbGludXgubW9kL0RvY3VtZW50YXRpb24vY2FjaGV0bGIudHh0Ci0t
-LSBsaW51eC5yZWYvRG9jdW1lbnRhdGlvbi9jYWNoZXRsYi50eHQJMjAwNi0wMS0yNSAyMzo1MTox
-OC4wMDAwMDAwMDAgLTA1MDAKKysrIGxpbnV4Lm1vZC9Eb2N1bWVudGF0aW9uL2NhY2hldGxiLnR4
-dAkyMDA3LTAzLTI3IDEwOjM5OjI4LjU3NTAyMzAzMyAtMDQwMApAQCAtMzYyLDYgKzM2MiwxNSBA
-QAogCWxpa2VseSB0aGF0IHlvdSB3aWxsIG5lZWQgdG8gZmx1c2ggdGhlIGluc3RydWN0aW9uIGNh
-Y2hlCiAJZm9yIGNvcHlfdG9fdXNlcl9wYWdlKCkuCiAKKyAgdm9pZCBmbHVzaF9hbm9uX3BhZ2Uo
-c3RydWN0IHBhZ2UgKnBhZ2UsIHVuc2lnbmVkIGxvbmcgdm1hZGRyKQorICAJV2hlbiB0aGUga2Vy
-bmVsIG5lZWRzIHRvIGFjY2VzcyB0aGUgY29udGVudHMgb2YgYW4gYW5vbnltb3VzCisJcGFnZSwg
-aXQgY2FsbHMgdGhpcyBmdW5jdGlvbiAoY3VycmVudGx5IG9ubHkKKwlnZXRfdXNlcl9wYWdlcygp
-KS4gIE5vdGU6IGZsdXNoX2RjYWNoZV9wYWdlKCkgZGVsaWJlcmF0ZWx5CisJZG9lc24ndCB3b3Jr
-IGZvciBhbiBhbm9ueW1vdXMgcGFnZS4gIFRoZSBkZWZhdWx0CisJaW1wbGVtZW50YXRpb24gaXMg
-YSBub3AgKGFuZCBzaG91bGQgcmVtYWluIHNvIGZvciBhbGwgY29oZXJlbnQKKwlhcmNoaXRlY3R1
-cmVzKS4gIEZvciBpbmNvaGVyZW50IGFyY2hpdGVjdHVyZXMsIGl0IHNob3VsZCBmbHVzaAorCXRo
-ZSBjYWNoZSBvZiB0aGUgcGFnZSBhdCB2bWFkZHIgaW4gdGhlIGN1cnJlbnQgdXNlciBwcm9jZXNz
-LgorCiAgIHZvaWQgZmx1c2hfaWNhY2hlX3JhbmdlKHVuc2lnbmVkIGxvbmcgc3RhcnQsIHVuc2ln
-bmVkIGxvbmcgZW5kKQogICAJV2hlbiB0aGUga2VybmVsIHN0b3JlcyBpbnRvIGFkZHJlc3NlcyB0
-aGF0IGl0IHdpbGwgZXhlY3V0ZQogCW91dCBvZiAoZWcgd2hlbiBsb2FkaW5nIG1vZHVsZXMpLCB0
-aGlzIGZ1bmN0aW9uIGlzIGNhbGxlZC4KT25seSBpbiBsaW51eC5tb2QvaW5jbHVkZTogYXNtCmRp
-ZmYgLXIgLXUgbGludXgucmVmL2luY2x1ZGUvYXNtLW1pcHMvY2FjaGVmbHVzaC5oIGxpbnV4Lm1v
-ZC9pbmNsdWRlL2FzbS1taXBzL2NhY2hlZmx1c2guaAotLS0gbGludXgucmVmL2luY2x1ZGUvYXNt
-LW1pcHMvY2FjaGVmbHVzaC5oCTIwMDYtMDEtMjUgMjM6NTE6NTguMDAwMDAwMDAwIC0wNTAwCisr
-KyBsaW51eC5tb2QvaW5jbHVkZS9hc20tbWlwcy9jYWNoZWZsdXNoLmgJMjAwNy0wMy0yNyAxODoz
-NjoyNC40MjI0OTMxNDQgLTA0MDAKQEAgLTQ3LDYgKzQ3LDE1IEBACiAjZGVmaW5lIGZsdXNoX2Rj
-YWNoZV9tbWFwX2xvY2sobWFwcGluZykJCWRvIHsgfSB3aGlsZSAoMCkKICNkZWZpbmUgZmx1c2hf
-ZGNhY2hlX21tYXBfdW5sb2NrKG1hcHBpbmcpCWRvIHsgfSB3aGlsZSAoMCkKIAorI2RlZmluZSBB
-UkNIX0hBU19GTFVTSF9BTk9OX1BBR0UKK2V4dGVybiB2b2lkIF9fZmx1c2hfYW5vbl9wYWdlKHN0
-cnVjdCBwYWdlICosIHVuc2lnbmVkIGxvbmcpOworCitzdGF0aWMgaW5saW5lIHZvaWQgZmx1c2hf
-YW5vbl9wYWdlKHN0cnVjdCBwYWdlICpwYWdlLCB1bnNpZ25lZCBsb25nIHZtYWRkcikKK3sKKwlp
-ZiAoY3B1X2hhc19kY19hbGlhc2VzICYmIFBhZ2VBbm9uKHBhZ2UpKQorCQlfX2ZsdXNoX2Fub25f
-cGFnZShwYWdlLCB2bWFkZHIpOworfQorCiBleHRlcm4gdm9pZCAoKmZsdXNoX2ljYWNoZV9wYWdl
-KShzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSwKIAlzdHJ1Y3QgcGFnZSAqcGFnZSk7CiBleHRl
-cm4gdm9pZCAoKmZsdXNoX2ljYWNoZV9yYW5nZSkodW5zaWduZWQgbG9uZyBfX3VzZXIgc3RhcnQs
-CkBAIC01NCwyNCArNjMsMTIgQEAKICNkZWZpbmUgZmx1c2hfY2FjaGVfdm1hcChzdGFydCwgZW5k
-KQkJZmx1c2hfY2FjaGVfYWxsKCkKICNkZWZpbmUgZmx1c2hfY2FjaGVfdnVubWFwKHN0YXJ0LCBl
-bmQpCQlmbHVzaF9jYWNoZV9hbGwoKQogCi1zdGF0aWMgaW5saW5lIHZvaWQgY29weV90b191c2Vy
-X3BhZ2Uoc3RydWN0IHZtX2FyZWFfc3RydWN0ICp2bWEsCi0Jc3RydWN0IHBhZ2UgKnBhZ2UsIHVu
-c2lnbmVkIGxvbmcgdmFkZHIsIHZvaWQgKmRzdCwgY29uc3Qgdm9pZCAqc3JjLAotCXVuc2lnbmVk
-IGxvbmcgbGVuKQotewotCWlmIChjcHVfaGFzX2RjX2FsaWFzZXMpCi0JCWZsdXNoX2NhY2hlX3Bh
-Z2Uodm1hLCB2YWRkciwgcGFnZV90b19wZm4ocGFnZSkpOwotCW1lbWNweShkc3QsIHNyYywgbGVu
-KTsKLQlmbHVzaF9pY2FjaGVfcGFnZSh2bWEsIHBhZ2UpOwotfQotCi1zdGF0aWMgaW5saW5lIHZv
-aWQgY29weV9mcm9tX3VzZXJfcGFnZShzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSwKLQlzdHJ1
-Y3QgcGFnZSAqcGFnZSwgdW5zaWduZWQgbG9uZyB2YWRkciwgdm9pZCAqZHN0LCBjb25zdCB2b2lk
-ICpzcmMsCi0JdW5zaWduZWQgbG9uZyBsZW4pCi17Ci0JaWYgKGNwdV9oYXNfZGNfYWxpYXNlcykK
-LQkJZmx1c2hfY2FjaGVfcGFnZSh2bWEsIHZhZGRyLCBwYWdlX3RvX3BmbihwYWdlKSk7Ci0JbWVt
-Y3B5KGRzdCwgc3JjLCBsZW4pOwotfQorZXh0ZXJuIHZvaWQgY29weV90b191c2VyX3BhZ2Uoc3Ry
-dWN0IHZtX2FyZWFfc3RydWN0ICp2bWEsCisgICAgc3RydWN0IHBhZ2UgKnBhZ2UsIHVuc2lnbmVk
-IGxvbmcgdmFkZHIsIHZvaWQgKmRzdCwgY29uc3Qgdm9pZCAqc3JjLAorCXVuc2lnbmVkIGxvbmcg
-bGVuKTsKK2V4dGVybiB2b2lkIGNvcHlfZnJvbV91c2VyX3BhZ2Uoc3RydWN0IHZtX2FyZWFfc3Ry
-dWN0ICp2bWEsCisgICAgc3RydWN0IHBhZ2UgKnBhZ2UsIHVuc2lnbmVkIGxvbmcgdmFkZHIsIHZv
-aWQgKmRzdCwgY29uc3Qgdm9pZCAqc3JjLAorCXVuc2lnbmVkIGxvbmcgbGVuKTsKIAogZXh0ZXJu
-IHZvaWQgKCpmbHVzaF9jYWNoZV9zaWd0cmFtcCkodW5zaWduZWQgbG9uZyBhZGRyKTsKIGV4dGVy
-biB2b2lkICgqZmx1c2hfaWNhY2hlX2FsbCkodm9pZCk7CkBAIC05Myw0ICs5MCw3IEBACiAvKiBS
-dW4ga2VybmVsIGNvZGUgdW5jYWNoZWQsIHVzZWZ1bCBmb3IgY2FjaGUgcHJvYmluZyBmdW5jdGlv
-bnMuICovCiB1bnNpZ25lZCBsb25nIF9faW5pdCBydW5fdW5jYWNoZWQodm9pZCAqZnVuYyk7CiAK
-K2V4dGVybiB2b2lkICprbWFwX2NvaGVyZW50KHN0cnVjdCBwYWdlICpwYWdlLCB1bnNpZ25lZCBs
-b25nIGFkZHIpOworZXh0ZXJuIHZvaWQga3VubWFwX2NvaGVyZW50KHN0cnVjdCBwYWdlICpwYWdl
-KTsKKwogI2VuZGlmIC8qIF9BU01fQ0FDSEVGTFVTSF9IICovCk9ubHkgaW4gbGludXgubW9kL2lu
-Y2x1ZGUvYXNtLW1pcHM6IGNhY2hlZmx1c2guaH4KT25seSBpbiBsaW51eC5tb2QvaW5jbHVkZS9h
-c20tbWlwczogY2FjaGVmbHVzaC5oLm9yaWcKT25seSBpbiBsaW51eC5tb2QvaW5jbHVkZS9hc20t
-bWlwczogY2FjaGVmbHVzaC5oLnJlagpkaWZmIC1yIC11IGxpbnV4LnJlZi9pbmNsdWRlL2FzbS1t
-aXBzL2ZpeG1hcC5oIGxpbnV4Lm1vZC9pbmNsdWRlL2FzbS1taXBzL2ZpeG1hcC5oCi0tLSBsaW51
-eC5yZWYvaW5jbHVkZS9hc20tbWlwcy9maXhtYXAuaAkyMDA2LTAxLTI1IDIzOjUxOjU4LjAwMDAw
-MDAwMCAtMDUwMAorKysgbGludXgubW9kL2luY2x1ZGUvYXNtLW1pcHMvZml4bWFwLmgJMjAwNy0w
-My0yNyAxMDozOTowNy44NzM5Njg5NjQgLTA0MDAKQEAgLTQ2LDggKzQ2LDE2IEBACiAgKiBmaXgt
-bWFwcGVkPwogICovCiBlbnVtIGZpeGVkX2FkZHJlc3NlcyB7CisjZGVmaW5lIEZJWF9OX0NPTE9V
-UlMgOAorCUZJWF9DTUFQX0JFR0lOLAorI2lmZGVmIENPTkZJR19NSVBTX01UX1NNVEMKKwlGSVhf
-Q01BUF9FTkQgPSBGSVhfQ01BUF9CRUdJTiArIChGSVhfTl9DT0xPVVJTICogTlJfQ1BVUyksCisj
-ZWxzZQorCUZJWF9DTUFQX0VORCA9IEZJWF9DTUFQX0JFR0lOICsgRklYX05fQ09MT1VSUywKKyNl
-bmRpZgogI2lmZGVmIENPTkZJR19ISUdITUVNCi0JRklYX0tNQVBfQkVHSU4sCS8qIHJlc2VydmVk
-IHB0ZSdzIGZvciB0ZW1wb3Jhcnkga2VybmVsIG1hcHBpbmdzICovCisJLyogcmVzZXJ2ZWQgcHRl
-J3MgZm9yIHRlbXBvcmFyeSBrZXJuZWwgbWFwcGluZ3MgKi8KKwlGSVhfS01BUF9CRUdJTiA9IEZJ
-WF9DTUFQX0VORCArIDEsCiAJRklYX0tNQVBfRU5EID0gRklYX0tNQVBfQkVHSU4rKEtNX1RZUEVf
-TlIqTlJfQ1BVUyktMSwKICNlbmRpZgogCV9fZW5kX29mX2ZpeGVkX2FkZHJlc3NlcwpAQCAtNzAs
-NyArNzgsNyBAQAogICogdGhlIHN0YXJ0IG9mIHRoZSBmaXhtYXAsIGFuZCBsZWF2ZSBvbmUgcGFn
-ZSBlbXB0eQogICogYXQgdGhlIHRvcCBvZiBtZW0uLgogICovCi0jZGVmaW5lIEZJWEFERFJfVE9Q
-CSgweGZmZmZlMDAwVUwpCisjZGVmaW5lIEZJWEFERFJfVE9QCSgodW5zaWduZWQgbG9uZykobG9u
-ZykoaW50KTB4ZmZmZTAwMDApCiAjZGVmaW5lIEZJWEFERFJfU0laRQkoX19lbmRfb2ZfZml4ZWRf
-YWRkcmVzc2VzIDw8IFBBR0VfU0hJRlQpCiAjZGVmaW5lIEZJWEFERFJfU1RBUlQJKEZJWEFERFJf
-VE9QIC0gRklYQUREUl9TSVpFKQogCk9ubHkgaW4gbGludXgubW9kL2luY2x1ZGUvYXNtLW1pcHM6
-IGZpeG1hcC5ofgpPbmx5IGluIGxpbnV4Lm1vZC9pbmNsdWRlL2FzbS1taXBzOiBmaXhtYXAuaC5v
-cmlnCk9ubHkgaW4gbGludXgubW9kL2luY2x1ZGUvYXNtLW1pcHM6IGZpeG1hcC5oLnJlagpkaWZm
-IC1yIC11IGxpbnV4LnJlZi9pbmNsdWRlL2xpbnV4L2hpZ2htZW0uaCBsaW51eC5tb2QvaW5jbHVk
-ZS9saW51eC9oaWdobWVtLmgKLS0tIGxpbnV4LnJlZi9pbmNsdWRlL2xpbnV4L2hpZ2htZW0uaAky
-MDA2LTAxLTI1IDIzOjUyOjAwLjAwMDAwMDAwMCAtMDUwMAorKysgbGludXgubW9kL2luY2x1ZGUv
-bGludXgvaGlnaG1lbS5oCTIwMDctMDMtMjcgMTA6Mzk6MjkuMDQzMDQ2ODY4IC0wNDAwCkBAIC03
-LDYgKzcsMTIgQEAKIAogI2luY2x1ZGUgPGFzbS9jYWNoZWZsdXNoLmg+CiAKKyNpZm5kZWYgQVJD
-SF9IQVNfRkxVU0hfQU5PTl9QQUdFCitzdGF0aWMgaW5saW5lIHZvaWQgZmx1c2hfYW5vbl9wYWdl
-KHN0cnVjdCBwYWdlICpwYWdlLCB1bnNpZ25lZCBsb25nIHZtYWRkcikKK3sKK30KKyNlbmRpZgor
-CiAjaWZkZWYgQ09ORklHX0hJR0hNRU0KIAogI2luY2x1ZGUgPGFzbS9oaWdobWVtLmg+Ck9ubHkg
-aW4gbGludXgubW9kL2luY2x1ZGUvbGludXg6IHZlcnNpb24uaApkaWZmIC1yIC11IGxpbnV4LnJl
-Zi9tbS9tZW1vcnkuYyBsaW51eC5tb2QvbW0vbWVtb3J5LmMKLS0tIGxpbnV4LnJlZi9tbS9tZW1v
-cnkuYwkyMDA2LTAxLTI1IDIzOjUyOjA0LjAwMDAwMDAwMCAtMDUwMAorKysgbGludXgubW9kL21t
-L21lbW9yeS5jCTIwMDctMDMtMjcgMTA6Mzk6MjkuMzYzMDYzMTY1IC0wNDAwCkBAIC0xMDYzLDYg
-KzEwNjMsOCBAQAogCQkJfQogCQkJaWYgKHBhZ2VzKSB7CiAJCQkJcGFnZXNbaV0gPSBwYWdlOwor
-CisJCQkJZmx1c2hfYW5vbl9wYWdlKHBhZ2UsIHN0YXJ0KTsKIAkJCQlmbHVzaF9kY2FjaGVfcGFn
-ZShwYWdlKTsKIAkJCX0KIAkJCWlmICh2bWFzKQpPbmx5IGluIGxpbnV4Lm1vZC9tbTogbWVtb3J5
-LmMub3JpZwpPbmx5IGluIGxpbnV4Lm1vZC9zY3JpcHRzL2Jhc2ljOiBkb2Nwcm9jCk9ubHkgaW4g
-bGludXgubW9kL3NjcmlwdHMvYmFzaWM6IC5kb2Nwcm9jLmNtZApPbmx5IGluIGxpbnV4Lm1vZC9z
-Y3JpcHRzL2Jhc2ljOiBmaXhkZXAKT25seSBpbiBsaW51eC5tb2Qvc2NyaXB0cy9iYXNpYzogLmZp
-eGRlcC5jbWQKT25seSBpbiBsaW51eC5tb2Qvc2NyaXB0cy9iYXNpYzogc3BsaXQtaW5jbHVkZQpP
-bmx5IGluIGxpbnV4Lm1vZC9zY3JpcHRzL2Jhc2ljOiAuc3BsaXQtaW5jbHVkZS5jbWQKT25seSBp
-biBsaW51eC5tb2Qvc2NyaXB0cy9rY29uZmlnOiBjb25mCk9ubHkgaW4gbGludXgubW9kL3Njcmlw
-dHMva2NvbmZpZzogLmNvbmYuY21kCk9ubHkgaW4gbGludXgubW9kL3NjcmlwdHMva2NvbmZpZzog
-Y29uZi5vCk9ubHkgaW4gbGludXgubW9kL3NjcmlwdHMva2NvbmZpZzogLmNvbmYuby5jbWQKT25s
-eSBpbiBsaW51eC5tb2Qvc2NyaXB0cy9rY29uZmlnOiBreGdldHRleHQubwpPbmx5IGluIGxpbnV4
-Lm1vZC9zY3JpcHRzL2tjb25maWc6IC5reGdldHRleHQuby5jbWQKT25seSBpbiBsaW51eC5tb2Qv
-c2NyaXB0cy9rY29uZmlnOiBsZXguemNvbmYuYwpPbmx5IGluIGxpbnV4Lm1vZC9zY3JpcHRzL2tj
-b25maWc6IG1jb25mLm8KT25seSBpbiBsaW51eC5tb2Qvc2NyaXB0cy9rY29uZmlnOiAubWNvbmYu
-by5jbWQKT25seSBpbiBsaW51eC5tb2Qvc2NyaXB0cy9rY29uZmlnOiB6Y29uZi5oYXNoLmMKT25s
-eSBpbiBsaW51eC5tb2Qvc2NyaXB0cy9rY29uZmlnOiB6Y29uZi50YWIuYwpPbmx5IGluIGxpbnV4
-Lm1vZC9zY3JpcHRzL2tjb25maWc6IHpjb25mLnRhYi5vCk9ubHkgaW4gbGludXgubW9kL3Njcmlw
-dHMva2NvbmZpZzogLnpjb25mLnRhYi5vLmNtZAo=
+<div class=3DSection1>
 
-------_=_NextPart_001_01C77165.601A3FB4--
+<p class=3DMsoNormal><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New";color:black'>Dear =
+Linux-Mips
+Developers:<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New";color:black'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New";color:black'>I&#8217;d like
+to ask a question about use of the &#8216;mem=3D&#8217; kernel =
+parameter.&nbsp;
+When booting without this parameter, the kernel automatically detects =
+the
+amount of memory as </span></font><font size=3D2 face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>989020 kB.&nbsp; If =
+a kernel
+parameter is added to specify &#8216;mem=3D989020k&#8217; a TLB Miss =
+error is
+encountered.&nbsp; Do you all have guidance about how the memory =
+parameter can
+be specified without causing the error?&nbsp; Since the mem=3D parameter =
+was set
+to an identical value as the memory reported by meminfo in the /proc
+filesystem, use of this kernel parameter should be OK.&nbsp; This =
+behavior has
+been observed on both the BCM1250/1480 platforms when running Debian =
+linux.&nbsp;
+The 2.6.17-2 kernel is used with the system.<font color=3Dblack><span
+style=3D'color:black'><o:p></o:p></span></font></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New";color:black'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Thanks,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Gary<font color=3Dblack><span =
+style=3D'color:black'><o:p></o:p></span></font></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New";color:black'>--</span></font><font
+color=3Dblack><span style=3D'color:black'><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New";color:black'>Gary A. =
+Smith,
+ABD PhD<br>
+Engineer, 3Phoenix, Inc.</span></font><font color=3Dblack><span =
+style=3D'color:
+black'><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New";color:black'>3331 =
+Heritage
+Trade Drive</span></font><font color=3Dblack><span =
+style=3D'color:black'><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New";color:black'>Suite =
+101</span></font><font
+color=3Dblack><span style=3D'color:black'><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New";color:black'>Wake =
+Forest,
+NC&nbsp; 27587</span></font><font color=3Dblack><span =
+style=3D'color:black'><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New";color:black'>919.562.5333
+x107</span></font><font color=3Dblack><span =
+style=3D'color:black'><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'><a =
+href=3D"http://www.3Phoenix.com"
+title=3D"blocked::http://www.3phoenix.com/"><font size=3D2 =
+face=3D"Courier New"
+title=3D"blocked::http://www.3phoenix.com/"><span
+title=3D"blocked::http://www.3phoenix.com/"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>http://www.3Phoenix.com</span></span></font></a><o:p></o:p></span><=
+/font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New";color:black'>Gary.Smith@3Phoenix.com<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>debian:/proc# more =
+meminfo<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>MemTotal:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+989020
+kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>MemFree:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+957876 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>Buffers:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1660 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>Cached:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+12076 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>SwapCached:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>Active:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+10308 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Inactive:&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;5224 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>HighTotal:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;
+0 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>HighFree:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;
+0 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>LowTotal:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+989020
+kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>LowFree:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+957876 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>SwapTotal:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 72252
+kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>SwapFree:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+72252 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>Dirty:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;
+524 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>Writeback:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;
+0 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>Mapped:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+
+4496 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>Slab:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;
+7236 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>CommitLimit:&nbsp;&nbsp;&nbsp; 566760 =
+kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Committed_AS:&nbsp;&nbsp;&nbsp;&nbsp; 4360 =
+kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>PageTables:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+188 kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>VmallocTotal: 1073741824 =
+kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>VmallocUsed:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 916
+kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>VmallocChunk: 1073739640 =
+kB<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>CFE version 1.3.3 for SWARM =
+(64bit,MP,BE,MIPS) Build
+Date: Tue Dec 19 06:41:38 EST 2006 (root@static-host) Copyright (C)
+2000,2001,2002,2003,2004,2005 Broadcom =
+Corporation.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Initializing =
+Arena.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Initializing =
+Devices.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>SWARM board revision =
+3<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>sbeth: found phy 1, vendor 000818 part =
+0C<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>sbeth: found phy 1, vendor 000818 part 0C =
+Config
+switch: 0<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>CPU: BCM1250 B2<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>L2 Cache Status: =
+OK<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Wafer ID:&nbsp;&nbsp; 0x7F21A009&nbsp; [Lot =
+8136,
+Wafer 13]<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Manuf Test: Bin A [2CPU_FI_FD_F2 =
+(OK)]<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>SysCfg: 0000000008C20800 [PLL_DIV: 16, =
+IOB0_DIV:
+CPUCLK/4, IOB1_DIV:<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>CPUCLK/3]<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>CPU type 0x1040102: =
+800MHz<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Total memory: 0x40000000 bytes =
+(1024MB)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Total memory used by CFE:&nbsp; 0x8FEB3000 -
+0x8FFFF520 (1361184)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Initialized
+Data:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x8FEF5408 -
+0x8FEFD100 (31992)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>BSS
+Area:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0x8FEFD100 - 0x8FEFD520 (1056)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Local
+Heap:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;
+0x8FEFD520 - 0x8FFFD520 (1048576)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Stack
+Area:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;
+0x8FFFD520 - 0x8FFFF520 (8192)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Text (code)
+segment:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x8FEB3000 - 0x8FEF4C75 =
+(269429)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Boot area =
+(physical):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0x0FE72000 - 0x0FEB2000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Relocation
+Factor:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I:F02B3000 - =
+D:F02B3000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>*** Autoboot: Trying device 'ide0.0' =
+file&nbsp;
+(ide0.0,raw)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Loader:raw Filesys:raw Dev:ide0.0 File:
+Options:(null)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Loading: ........... 130560 bytes =
+read<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Entry at =
+0x20000000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Starting program at =
+0x20000000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>SiByte Loader, version =
+2.4.2<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Built on Oct&nbsp; 4 =
+2005<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Getting configuration file
+ext2:ide0.0:*:sibyl.conf...<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Config file =
+retrieved.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Loading kernel =
+(ELF64):<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp; =
+4256456@0x80100000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>done<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Set up command line arguments to: =
+root=3D/dev/hda3
+console=3Dduart0 mem=3D989020k Setting up initial prom_init arguments =
+**Exception
+32: EPC=3D0000000020000BC8, Cause=3D00009008 (TLBMissRd) =
+(CPU0)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;
+RA=3D0000000020000BB4, VAddr=3D0000000000000000, =
+SR=3D00000082<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+0&nbsp;
+($00) =3D 0000000000000000&nbsp;&nbsp;&nbsp;&nbsp; AT ($01) =3D =
+0000000000000001<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v0 =
+($02)
+=3D FFFFFFFF8FEFCC70&nbsp;&nbsp;&nbsp;&nbsp; v1 ($03) =3D =
+0000000000000000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a0 =
+($04)
+=3D 0000000000000010&nbsp;&nbsp;&nbsp;&nbsp; a1 ($05) =3D =
+0000000000000000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a2 =
+($06)
+=3D 000000008FEB3CDC&nbsp;&nbsp;&nbsp;&nbsp; a3 ($07) =3D =
+0000000000000000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t0 =
+($08)
+=3D 0000000000000080&nbsp;&nbsp;&nbsp;&nbsp; t1 ($09) =3D =
+0000000000000001<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t2 =
+($10)
+=3D 0000000000000001&nbsp;&nbsp;&nbsp;&nbsp; t3 ($11) =3D =
+0000000000000000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t4 =
+($12)
+=3D 0000000000000000&nbsp;&nbsp;&nbsp;&nbsp; t5 ($13) =3D =
+0000000000000000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t6 =
+($14)
+=3D 0000000000000015&nbsp;&nbsp;&nbsp;&nbsp; t7 ($15) =3D =
+0000000045000000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s0 =
+($16)
+=3D FFFFFFFF8FEB3AF4&nbsp;&nbsp;&nbsp;&nbsp; s1 ($17) =3D =
+FFFFFFFF8FEFD4E0<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s2 =
+($18)
+=3D FFFFFFFF8FFFF250&nbsp;&nbsp;&nbsp;&nbsp; s3 ($19) =3D =
+FFFFFFFF8FEFD0B8<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s4 =
+($20)
+=3D 0000000000000000&nbsp;&nbsp;&nbsp;&nbsp; s5 ($21) =3D =
+0000000000000000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s6 =
+($22)
+=3D 0000000000000000&nbsp;&nbsp;&nbsp;&nbsp; s7 ($23) =3D =
+FFFFFFFF8FEB3000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t8 =
+($24)
+=3D 0000000000000000&nbsp;&nbsp;&nbsp;&nbsp; t9 ($25) =3D =
+0000000000000000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; k0 =
+($26)
+=3D 0000000000000001&nbsp;&nbsp;&nbsp;&nbsp; k1 ($27) =3D =
+000000008FEB3CDC<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gp =
+($28)
+=3D 00000000200278F0&nbsp;&nbsp;&nbsp;&nbsp; sp ($29) =3D =
+FFFFFFFF8FFFECE0<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fp =
+($30)
+=3D FFFFFFFF8FFFECE0&nbsp;&nbsp;&nbsp;&nbsp; ra ($31) =3D =
+0000000020000BB4<o:p></o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0014_01C77212.7DBE74C0--

@@ -1,44 +1,98 @@
-Received: from mail.infostreet.com ([206.62.140.1]:16489 "EHLO
-	mail.infostreet.com") by ftp.linux-mips.org with ESMTP
-	id S20021546AbXCaBBn convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Sat, 31 Mar 2007 02:01:43 +0100
-Message-ID: <043b01c7732f$b4fa53f0$0202a8c0@server>
-From: "Sandy Perlman" <sp@i-perlman.com>
-Subject: Software Manager Position
+Received: from mail.actions-semi.com ([211.96.231.237]:33883 "EHLO
+	mailgw.actions.com.cn") by ftp.linux-mips.org with ESMTP
+	id S20021669AbXDBGWY (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 2 Apr 2007 07:22:24 +0100
+Received: from mailgw.actions.com.cn (localhost [127.0.0.1])
+	by mailgw.actions.com.cn (8.13.4/8.12.11) with ESMTP id l326Otma020013
+	for <linux-mips@linux-mips.org>; Mon, 2 Apr 2007 14:24:55 +0800
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Date: Sat, 31 Mar 2007 02:01:43 +0100
-Return-Path: <sp@i-perlman.com>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C774EE.7BF409E8"
+Subject: add
+Date: Mon, 2 Apr 2007 14:16:45 +0800
+Message-ID: <53155A9B4A9BD94CBE3E38E75D9F0D5E070203@srv-mail-02.actions.com.cn>
+From: =?gb2312?B?xN/Wvrjf?= <zhigaoni@hitrendtech.com>
+Return-Path: <zhigaoni@hitrendtech.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20070331010143.3EngZJp0iyiZ04Tbri2GRcSpC8e44q8acbyX18qprgg@z>
+Message-ID: <20070402061645.MNXqqPB9qxiMZvNj0mM_eto_DGwhaBY1e77iTqleIoI@z>
 
-I am a working with a Silicon Valley "profitable" start-up company that is looking for full-time Hands-on Software Manager. This is a full-time position is located in Fremont, CA.
+This is a multi-part message in MIME format.
 
-Our client's customers are worldwide leaders in wireless, cellular, avionics, military, video entertainment, broadcasting, automotive.  Their breakthrough patented coding technologies are now being implemented as worldwide standards for upcoming communications designs in international standards bodies. Their technology allows for reliable transmission of data on unreliable wireless or wired networks.
+------_=_NextPart_001_01C774EE.7BF409E8
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: quoted-printable
 
-Primary Responsibilities
-Drives the delivery of embedded software products for IP-based streaming and file delivery applications. Ensures customer success through the delivery of well-designed, flexible, extensible, robust and richly supported software products.
- 
-Leveraging past product successes, provides domain expertise in the area of IP-based networking architectures and protocols. Provides technical guidance on multimedia session/transport protocol implementations, limitations, and applications including IP/UDP, RTP/RTCP, firewalls, and performance enhancing proxies.
+=20
 
-Works closely with development team to ensure that core technology implementations are highly portable and scalable to a broad range of client and server environments.
 
-Required Skills & Experience
-An innovative and technical professional with a proven track record as a technical software manager in the area of IP-based networking protocols. Minimum of 10 years relevant experience, including at least 3 years experience in a management capacity.
+------_=_NextPart_001_01C774EE.7BF409E8
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: quoted-printable
 
-Depth of knowledge in many of the following protocols and technologies: IP/UDP/TCP, NAT/ALG, firewall, VPN, RTP/RTCP, FTP, DHCP, FTP, DiffServ, including a comprehensive knowledge of the architecture, design, development, limitations and use as applied to streaming and file broadcast applications.
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-Proven technical manager; must have practical, hands-on experience in leading teams in the development of complex multimedia networking solutions. Demonstrated success in the early stages of product development through participation in product and roadmap definitions with product management. Strong project execution skills covering task definition, team mentoring, and recruiting. Demonstrated success in delivering best of breed solutions and ensuring customer success.
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; charset=3Dgb2312">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:=CB=CE=CC=E5;
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+@font-face
+	{font-family:"\@=CB=CE=CC=E5";
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	font-size:10.5pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+ /* Page Definitions */
+ @page Section1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;
+	layout-grid:15.6pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
-Bachelor's Degree in CS or EE
+</head>
 
-If you know someone that would be a good fit, please forward this email to him or her. If you want to apply, reply to this email with your resume. For more information, send an email to info@ctsearch.com.
+<body lang=3DZH-CN link=3Dblue vlink=3Dpurple =
+style=3D'text-justify-trim:punctuation'>
 
-Sandy Perlman
-Principal & Senior Recruiter, BSEE
-http://www.ctsearch.com
-https://www.linkedin.com/in/sandyperlman
+<div class=3DSection1 style=3D'layout-grid:15.6pt'>
+
+<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+9.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C774EE.7BF409E8--

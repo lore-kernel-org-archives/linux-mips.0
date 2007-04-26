@@ -1,364 +1,350 @@
-Received: from lizzard.sbs.de ([194.138.37.39]:59986 "EHLO lizzard.sbs.de")
-	by ftp.linux-mips.org with ESMTP id S20023318AbXDZIrl convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 26 Apr 2007 09:47:41 +0100
+Received: from smtp-out.sigp.net ([63.237.78.44]:40685 "EHLO smtp-out.sigp.net")
+	by ftp.linux-mips.org with ESMTP id S20021450AbXDZV46 (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 26 Apr 2007 22:56:58 +0100
+Received: from gamd-ex-001.ss.drs.master (gamd-ex-001.ss.drs.master [172.22.132.94])
+	by smtp-out.sigp.net (8.14.1/8.14.1) with ESMTP id l3QLnRBt014516
+	for <linux-mips@linux-mips.org>; Thu, 26 Apr 2007 17:49:27 -0400 (EDT)
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: pcmcia - failed to initialize IDE interface
-Date: Thu, 26 Apr 2007 10:48:09 +0200
-Message-ID: <D7810733513F4840B4EBAAFA64D9C6A4012D6148@stgw002a.ww002.siemens.net>
-In-Reply-To: <20070425190753.fb8c272d.akpm@linux-foundation.org>
-From: "Aeschbacher, Fabrice" <Fabrice.Aeschbacher@siemens.com>
-Return-Path: <Fabrice.Aeschbacher@siemens.com>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C7884C.C2CDFC39"
+Subject: bug in arch/mips/sibyte/cfe/cfe_api.c ?
+Date: Thu, 26 Apr 2007 17:49:22 -0400
+Message-ID: <DEB94D90ABFC8240851346CFD4ACFF14011DC8CC@gamd-ex-001.ss.drs.master>
+From: "van Tassell, Eric" <Eric.VanTassell@drs-ss.com>
+Return-Path: <Eric.VanTassell@drs-ss.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: lkml <linux-kernel@vger.kernel.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20070426084809.xXlCTiOAQbdlXp0LRhzw1UxPKY-KR3Bh0dvclPjNcRQ@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20070426214922.-z2AeQWT0aQWuIndbHBLels25ujPTodsvpjV5tf0DGo@z>
 
-# cat /proc/ioports
-00102000-00102007 : ide0
-0010200e-0010200e : ide0
-500000300-5000fffff : PCI IO space
+This is a multi-part message in MIME format.
 
-# cat /proc/iomem
-10500000-1050ffff : Au1x00 ENET
-10520000-10520003 : Au1x00 ENET
-11100000-111fffff : serial
-11200000-112fffff : serial
-14020000-1407ffff : au1xxx-ohci.0
-440000000-44fffffff : PCI memory space
-  440000000-447ffffff : 0000:00:0c.0
-  448000000-448ffffff : 0000:00:0c.0
-  449000000-449000fff : 0000:00:0a.0
-    449000000-449000fff : ohci_hcd
-  449001000-449001fff : 0000:00:0a.1
-    449001000-449001fff : ohci_hcd
-  449002000-4490020ff : 0000:00:0a.2
+------_=_NextPart_001_01C7884C.C2CDFC39
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+All,
+
+            The following change which showed up merging from 2.6.20.1
+appears to be a bug.
+
+=20
+
+diff -U 3 linux/arch/mips/sibyte/cfe/cfe_api.c
+linux-2.6.20.1/arch/mips/sibyte/cfe/cfe_api.c
+
+--- linux/arch/mips/sibyte/cfe/cfe_api.c           2007-04-25
+14:33:46.000000000 -0400
+
++++ linux-2.6.20.1/arch/mips/sibyte/cfe/cfe_api.c     2007-02-20
+19:47:41.000000000 -0500
+
+@@ -135,7 +135,7 @@
+
+ {
+
+            cfe_xiocb_t xiocb;
+
+=20
+
+-           xiocb.xiocb_fcode =3D CFE_CMD_ENV_ENUM;
+
++          xiocb.xiocb_fcode =3D CFE_CMD_ENV_SET;
+
+            xiocb.xiocb_status =3D 0;
+
+            xiocb.xiocb_handle =3D 0;
+
+            xiocb.xiocb_flags =3D 0;
+
+=20
+
+=20
+
+-         Eric van Tassell
+
+=20
+
+DRS Intelligence Technologies
+
+Advanced Processing Group
+
+21 Continental Blvd
+
+Merrimack, NH 03054
+
+P: 603.424.3750
+
+www.drs-ss.com
+
+=20
 
 
-# dmesg -s 1000000
-Linux version 2.6.20.7 (kh1af478@kh1r558d) (gcc version 3.3.4) #67 Wed
-Apr 25 16:56:40 CEST 2007
-CPU revision is: 03030200
-Siemens SISTORE CX1 Board
-(PRId 03030200) @ 324MHZ
-BCLK switching enabled!
-Determined physical RAM map:
- memory: 08000000 @ 00000000 (usable)
-On node 0 totalpages: 32768
-  DMA zone: 256 pages used for memmap
-  DMA zone: 0 pages reserved
-  DMA zone: 32512 pages, LIFO batch:7
-  Normal zone: 0 pages used for memmap
-__request_resource: new=System RAM[0-7ffffff], root=PCI
-mem[10000000-fffffffff]
-__request_resource: new=Kernel code[100000-3ddcff], root=System
-RAM[0-7ffffff]
-__request_resource: new=Kernel data[3ddd00-4850bf], root=System
-RAM[0-7ffffff]
-Built 1 zonelists.  Total pages: 32512
-Kernel command line: root=/dev/mtdblock0 rootfstype=jffs2
-console=ttyS1,115200 usb_ohci=base:0x14020000,len:0x60000,irq:26
-Primary instruction cache 16kB, physically tagged, 4-way, linesize 32
-bytes.
-Primary data cache 16kB, 4-way, linesize 32 bytes.
-Synthesized TLB refill handler (17 instructions).
-Synthesized TLB load handler fastpath (34 instructions).
-Synthesized TLB store handler fastpath (34 instructions).
-Synthesized TLB modify handler fastpath (33 instructions).
-PID hash table entries: 512 (order: 9, 2048 bytes)
-calculating r4koff... 0004f1a0(324000)
-CPU frequency 324.00 MHz
-Console: colour dummy device 80x25
-Dentry cache hash table entries: 16384 (order: 4, 65536 bytes)
-Inode-cache hash table entries: 8192 (order: 3, 32768 bytes)
-Memory: 124928k/131072k available (2935k kernel code, 6092k reserved,
-668k data, 148k init, 0k highmem)
-Calibrating delay loop... 322.56 BogoMIPS (lpj=161280)
-Mount-cache hash table entries: 512
-NET: Registered protocol family 16
-__request_resource: new=au1xxx-ohci.0[14020000-1407ffff], root=PCI
-mem[10000000-fffffffff]
-registering PCI controller with io_map_base unset
-Generic PHY: Registered new driver
-SCSI subsystem initialized
-usbcore: registered new interface driver usbfs
-usbcore: registered new interface driver hub
-usbcore: registered new device driver usb
-__request_resource: new=PCI memory space[440000000-44fffffff], root=PCI
-mem[10000000-fffffffff]
-__request_resource: new=PCI IO space[500000300-5000fffff], root=PCI
-IO[1000-fffffffff]
-PCI: Scanning bus 0000:00
-PCI: Found 0000:00:0a.0 [1033/0035] 000c03 00
-PCI: Found 0000:00:0a.1 [1033/0035] 000c03 00
-PCI: Found 0000:00:0a.2 [1033/00e0] 000c03 00
-PCI: Found 0000:00:0c.0 [12d5/1000] 000480 00
-PCI: Fixups for bus 0000:00
-PCI: Bus scan for 0000:00 returning with max=00
-__request_resource: new=0000:00:0c.0[440000000-447ffffff], root=PCI
-memory space[440000000-44fffffff]
-  got res [440000000:447ffffff] bus [40000000:47ffffff] flags 1208 for
-BAR 0 of 0000:00:0c.0
-PCI: moved device 0000:00:0c.0 resource 0 (1208) to 40000000
-__request_resource: new=0000:00:0c.0[448000000-448ffffff], root=PCI
-memory space[440000000-44fffffff]
-  got res [448000000:448ffffff] bus [48000000:48ffffff] flags 200 for
-BAR 1 of 0000:00:0c.0
-PCI: moved device 0000:00:0c.0 resource 1 (200) to 48000000
-__request_resource: new=0000:00:0a.0[449000000-449000fff], root=PCI
-memory space[440000000-44fffffff]
-  got res [449000000:449000fff] bus [49000000:49000fff] flags 200 for
-BAR 0 of 0000:00:0a.0
-PCI: moved device 0000:00:0a.0 resource 0 (200) to 49000000
-__request_resource: new=0000:00:0a.1[449001000-449001fff], root=PCI
-memory space[440000000-44fffffff]
-  got res [449001000:449001fff] bus [49001000:49001fff] flags 200 for
-BAR 0 of 0000:00:0a.1
-PCI: moved device 0000:00:0a.1 resource 0 (200) to 49001000
-__request_resource: new=0000:00:0a.2[449002000-4490020ff], root=PCI
-memory space[440000000-44fffffff]
-  got res [449002000:4490020ff] bus [49002000:490020ff] flags 200 for
-BAR 0 of 0000:00:0a.2
-PCI: moved device 0000:00:0a.2 resource 0 (200) to 49002000
-PCI: fixup irq: (0000:00:0a.0) got 2
-PCI: fixup irq: (0000:00:0a.1) got 5
-PCI: fixup irq: (0000:00:0a.2) got 6
-PCI: fixup irq: (0000:00:0c.0) got 1
-NET: Registered protocol family 2
-IP route cache hash table entries: 1024 (order: 0, 4096 bytes)
-TCP established hash table entries: 4096 (order: 2, 16384 bytes)
-TCP bind hash table entries: 2048 (order: 1, 8192 bytes)
-TCP: Hash tables configured (established 4096 bind 2048)
-TCP reno registered
-Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
-JFFS2 version 2.2. (NAND) (C) 2001-2006 Red Hat, Inc.
-io scheduler noop registered
-io scheduler anticipatory registered
-io scheduler deadline registered
-io scheduler cfq registered (default)
-PCI: Calling quirk 8027fe64 for 0000:00:0a.0
-PCI: Calling quirk 80312674 for 0000:00:0a.0
-PCI: Calling quirk 8027fe64 for 0000:00:0a.1
-PCI: Calling quirk 80312674 for 0000:00:0a.1
-PCI: Calling quirk 8027fe64 for 0000:00:0a.2
-PCI: Calling quirk 80312674 for 0000:00:0a.2
-PCI: Calling quirk 8027fe64 for 0000:00:0c.0
-PCI: Calling quirk 80312674 for 0000:00:0c.0
-Serial: 8250/16550 driver $Revision: 1.90 $ 4 ports, IRQ sharing
-disabled
-__request_resource: new=serial[11100000-111fffff], root=PCI
-mem[10000000-fffffffff]
-serial8250.9: ttyS0 at MMIO 0x11100000 (irq = 0) is a 16550A
-__request_resource: new=serial[11200000-112fffff], root=PCI
-mem[10000000-fffffffff]
-serial8250.9: ttyS1 at MMIO 0x11200000 (irq = 8) is a 16550A
-__request_resource: new=serial[11400000-114fffff], root=PCI
-mem[10000000-fffffffff]
-RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
-loop: loaded (max 8 devices)
-nbd: registered device at major 43
-__request_resource: new=Au1x00 ENET[10500000-1050ffff], root=PCI
-mem[10000000-fffffffff]
-__request_resource: new=Au1x00 ENET[10520000-10520003], root=PCI
-mem[10000000-fffffffff]
-au1000_eth version 1.6 Pete Popov <ppopov@embeddedalley.com>
-eth0: Au1xx0 Ethernet found at 0x10500000, irq 27
-au1000_eth_mii: probed
-eth0: attached PHY driver [Generic PHY] (mii_bus:phy_addr=0:04, irq=-1)
-Uniform Multi-Platform E-IDE driver Revision: 7.00alpha2
-ide: Assuming 33MHz system bus speed for PIO modes; override with
-idebus=xx
-CX1 NOR Flash: probing 16-bit flash bus
-CX1 NOR Flash: Found 1 x16 devices at 0x0 in 16-bit bank
- Amd/Fujitsu Extended Query Table at 0x0040
-CX1 NOR Flash: CFI does not contain boot bank location. Assuming top.
-number of CFI chips: 1
-cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
-Creating 5 MTD partitions on "CX1 NOR Flash":
-0x00000000-0x05000000 : "Root FS"
-0x05000000-0x07000000 : "Data FS"
-0x07000000-0x07c00000 : "Update FS"
-0x07c00000-0x07d00000 : "YAMON"
-0x07d00000-0x07fc0000 : "raw kernel"
-au1x_board_init
-cx1_socket_init
-ohci_hcd: 2006 August 04 USB 1.1 'Open' Host Controller (OHCI) Driver
-(PCI)
-PCI: Enabling device 0000:00:0a.0 (0000 -> 0002)
-__request_resource: new=ohci_hcd[449000000-449000fff], root=PCI
-mem[10000000-fffffffff]
-__request_resource: new=ohci_hcd[449000000-449000fff], root=PCI memory
-space[440000000-44fffffff]
-__request_resource: new=ohci_hcd[449000000-449000fff],
-root=0000:00:0a.0[449000000-449000fff]
-PCI: Enabling bus mastering for device 0000:00:0a.0
-PCI: Setting latency timer of device 0000:00:0a.0 to 64
-ohci_hcd 0000:00:0a.0: OHCI Host Controller
-ohci_hcd 0000:00:0a.0: new USB bus registered, assigned bus number 1
-ohci_hcd 0000:00:0a.0: irq 2, io mem 0x449000000
-cx1_pcmcia_configure_socket: bad Vpp 33
-usb usb1: configuration #1 chosen from 1 choice
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 3 ports detected
-PCI: Enabling device 0000:00:0a.1 (0000 -> 0002)
-__request_resource: new=ohci_hcd[449001000-449001fff], root=PCI
-mem[10000000-fffffffff]
-__request_resource: new=ohci_hcd[449001000-449001fff], root=PCI memory
-space[440000000-44fffffff]
-__request_resource: new=ohci_hcd[449001000-449001fff],
-root=0000:00:0a.1[449001000-449001fff]
-PCI: Enabling bus mastering for device 0000:00:0a.1
-PCI: Setting latency timer of device 0000:00:0a.1 to 64
-ohci_hcd 0000:00:0a.1: OHCI Host Controller
-ohci_hcd 0000:00:0a.1: new USB bus registered, assigned bus number 2
-ohci_hcd 0000:00:0a.1: irq 5, io mem 0x449001000
-usb usb2: configuration #1 chosen from 1 choice
-hub 2-0:1.0: USB hub found
-hub 2-0:1.0: 2 ports detected
-Initializing USB Mass Storage driver...
-usbcore: registered new interface driver usb-storage
-USB Mass Storage support registered.
-usbcore: registered new interface driver hiddev
-usbcore: registered new interface driver usbhid
-drivers/usb/input/hid-core.c: v2.6:USB HID core driver
-i8042.c: i8042 controller selftest failed. (0xf != 0x55)
-i8042: probe of i8042 failed with error -5
-cx1_pcmcia_configure_socket: bad Vpp 33
-cx1_pcmcia_configure_socket: bad Vpp 33
-Trying to free nonexistent resource <0000000000000060-000000000000006f>
-TCP cubic registered
-NET: Registered protocol family 1
-NET: Registered protocol family 17
-pcmcia: ide-cs: invalid hash for product string "TS2GCF120": is
-0xf54a91c8, should be 0x969aa4f2
-pcmcia: see Documentation/pcmcia/devicetable.txt for details
-Time: MIPS clocksource has been installed.
-VFS: Mounted root (jffs2 filesystem) readonly.
-Freeing unused kernel memory: 148k freed
-pccard: PCMCIA card inserted into slot 0
-pcmcia: registering new device pcmcia0.0
-ide_attach()
-ide_config(0x812a4400)
-__request_resource: new=ide0[10200e-10200e], root=PCI IO[1000-fffffffff]
-__request_resource: new=ide0[102000-102007], root=PCI IO[1000-fffffffff]
-Probing IDE interface ide0...
-probing for hda: present=0, media=32, probetype=ATA
-Algorithmics/MIPS FPU Emulator v1.5
-hda: TRANSCEND, CFA DISK drive
-probing for hdb: present=0, media=32, probetype=ATA
-probing for hdb: present=0, media=32, probetype=ATAPI
-calling ide_default_irq(102000)
-ide0: Disabled unable to get IRQ 35.
-ide0: failed to initialize IDE interface
-__request_resource: new=ide0[10200e-10200e], root=PCI IO[1000-fffffffff]
-ide0: I/O resource 0x10200E-0x10200E not free.
-ide0: ports already in use, skipping probe
-__request_resource: new=ide0[10200e-10200e], root=PCI IO[1000-fffffffff]
-ide0: I/O resource 0x10200E-0x10200E not free.
-ide0: ports already in use, skipping probe
-__request_resource: new=ide0[10200e-10200e], root=PCI IO[1000-fffffffff]
-ide0: I/O resource 0x10200E-0x10200E not free.
-ide0: ports already in use, skipping probe
-__request_resource: new=ide0[10200e-10200e], root=PCI IO[1000-fffffffff]
-ide0: I/O resource 0x10200E-0x10200E not free.
-ide0: ports already in use, skipping probe
-__request_resource: new=ide0[10200e-10200e], root=PCI IO[1000-fffffffff]
-ide0: I/O resource 0x10200E-0x10200E not free.
-ide0: ports already in use, skipping probe
-__request_resource: new=ide0[10200e-10200e], root=PCI IO[1000-fffffffff]
-ide0: I/O resource 0x10200E-0x10200E not free.
-ide0: ports already in use, skipping probe
-__request_resource: new=ide0[10200e-10200e], root=PCI IO[1000-fffffffff]
-ide0: I/O resource 0x10200E-0x10200E not free.
-ide0: ports already in use, skipping probe
-__request_resource: new=ide0[10200e-10200e], root=PCI IO[1000-fffffffff]
-ide0: I/O resource 0x10200E-0x10200E not free.
-ide0: ports already in use, skipping probe
-No module found in object
-__request_resource: new=ide0[10200e-10200e], root=PCI IO[1000-fffffffff]
-ide0: I/O resource 0x10200E-0x10200E not free.
-ide0: ports already in use, skipping probe
-ide-cs: ide_register() at 0x102000 & 0x10200e, irq 35 failed
-ide_release(0x812a4400)
-eth0: link up (100/Full)
-eth0: Pass all multicast
-------------------------------------------------------------------------
--
+------_=_NextPart_001_01C7884C.C2CDFC39
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I added some printk() only for debugging raisons (for example in
-__request_resource, as you can see)
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-Best regards,
-Fabrice Aeschbacher
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"PostalCode"/>
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"State"/>
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"City"/>
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"place"/>
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"Street"/>
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"address"/>
+<!--[if !mso]>
+<style>
+st1\:*{behavior:url(#default#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	font-variant:normal !important;
+	color:windowtext;
+	text-transform:none;
+	text-decoration:none none;
+	vertical-align:baseline;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:1575430080;
+	mso-list-type:hybrid;
+	mso-list-template-ids:682938830 -1580966302 67698691 67698693 67698689 =
+67698691 67698693 67698689 67698691 67698693;}
+@list l0:level1
+	{mso-level-start-at:0;
+	mso-level-number-format:bullet;
+	mso-level-text:-;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+@list l0:level2
+	{mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level3
+	{mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level5
+	{mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level6
+	{mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level8
+	{mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level9
+	{mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
 
-> -----Original Message-----
-> From: Andrew Morton [mailto:akpm@linux-foundation.org] 
-> Sent: Donnerstag, 26. April 2007 04:08
-> To: Aeschbacher, Fabrice
-> Cc: lkml; linux-mips@linux-mips.org
-> Subject: Re: pcmcia - failed to initialize IDE interface
-> 
-> On Wed, 25 Apr 2007 15:27:26 +0200 "Aeschbacher, Fabrice" 
-> <Fabrice.Aeschbacher@siemens.com> wrote:
-> 
-> > Hi,
-> > 
-> > [kernel 2.6.20.7, arch=mips, processor=amd au1550]
-> > 
-> > I'm trying to install a 2.6 kernel on an Alchemy au1550, and having 
-> > problem with the pcmcia socket, where I plugged a 
-> CompactFlash card. 
-> > The card seems to be recognized by the kernel, appears in 
-> > /sys/bus/pcmcia/devices, but not in /proc/bus/pccard, and I can't 
-> > access the device (/dev/hda).
-> > 
-> > The relevant console messages:
-> > ----------------------------------------------------------------
-> > pccard: PCMCIA card inserted into slot 0
-> > pcmcia: registering new device pcmcia0.0
-> > hda: SanDisk SDCFB-64, CFA DISK drive
-> > ide0: Disabled unable to get IRQ 35.
-> > ide0: failed to initialize IDE interface
-> > ide0: I/O resource 0x10200E-0x10200E not free.
-> > ide0: ports already in use, skipping probe
-> > ide0: I/O resource 0x10200E-0x10200E not free.
-> > ide0: ports already in use, skipping probe
-> > ide0: I/O resource 0x10200E-0x10200E not free.
-> > ide0: ports already in use, skipping probe
-> > ide0: I/O resource 0x10200E-0x10200E not free.
-> > ide0: ports already in use, skipping probe
-> > ide0: I/O resource 0x10200E-0x10200E not free.
-> > ide0: ports already in use, skipping probe
-> > ide0: I/O resource 0x10200E-0x10200E not free.
-> > ide0: ports already in use, skipping probe
-> > ide0: I/O resource 0x10200E-0x10200E not free.
-> > ide0: ports already in use, skipping probe
-> > ide0: I/O resource 0x10200E-0x10200E not free.
-> > ide0: ports already in use, skipping probe
-> > ide0: I/O resource 0x10200E-0x10200E not free.
-> > ide0: ports already in use, skipping probe
-> > ide-cs: ide_register() at 0x102000 & 0x10200e, irq 35 failed
-> > ----------------------------------------------------------------
-> > 
-> > Here is the relevant part of the kernel config:
-> > CONFIG_IDE=y
-> > CONFIG_IDE_GENERIC=y
-> > CONFIG_BLK_DEV_IDE=y
-> > CONFIG_BLK_DEV_IDECS=y
-> > CONFIG_PCCARD=y
-> > CONFIG_PCMCIA_DEBUG=y
-> > CONFIG_PCMCIA=y
-> > CONFIG_PCMCIA_AU1X00=y
-> > 
-> 
-> (cc'ed linux-mips)
-> 
-> Perhaps /proc/ioports will tell us where the conflict lies.
-> 
-> The output of `dmesg -s 1000000' might also be needed.
-> 
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>All,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; The following change which showed up merging
+from 2.6.20.1 appears to be a bug.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>diff -U 3 linux/arch/mips/sibyte/cfe/cfe_api.c
+linux-2.6.20.1/arch/mips/sibyte/cfe/cfe_api.c<o:p></o:p></span></font></p=
+>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>--- =
+linux/arch/mips/sibyte/cfe/cfe_api.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp; 2007-04-25
+14:33:46.000000000 -0400<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>+++ =
+linux-2.6.20.1/arch/mips/sibyte/cfe/cfe_api.c&nbsp;&nbsp;&nbsp;&nbsp; =
+2007-02-20
+19:47:41.000000000 -0500<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>@@ -135,7 +135,7 @@<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>&nbsp;{<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; cfe_xiocb_t xiocb;<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>&nbsp;<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp; xiocb.xiocb_fcode =3D =
+CFE_CMD_ENV_ENUM;<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+; xiocb.xiocb_fcode =3D CFE_CMD_ENV_SET;<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; xiocb.xiocb_status =3D 0;<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; xiocb.xiocb_handle =3D 0;<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; xiocb.xiocb_flags =3D 0;<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 =
+lfo1'><![if !supportLists]><font
+size=3D3 face=3D"Times New Roman"><span style=3D'font-size:12.0pt'><span
+style=3D'mso-list:Ignore'>-<font size=3D1 face=3D"Times New Roman"><span
+style=3D'font:7.0pt "Times New =
+Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></font></span></span></font><![endif]>Eric van =
+Tassell<o:p></o:p></p>
+
+<p class=3DMsoNormal style=3D'margin-left:.25in'><font size=3D3 =
+face=3D"Times New Roman"><span
+style=3D'font-size:12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'margin-left:.25in'><font size=3D3 =
+face=3D"Times New Roman"><span
+style=3D'font-size:12.0pt'>DRS Intelligence =
+Technologies<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'margin-left:.25in'><font size=3D3 =
+face=3D"Times New Roman"><span
+style=3D'font-size:12.0pt'>Advanced Processing =
+Group<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'margin-left:.25in'><st1:Street =
+w:st=3D"on"><st1:address
+ w:st=3D"on"><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:12.0pt'>21
+  Continental =
+Blvd</span></font></st1:address></st1:Street><o:p></o:p></p>
+
+<p class=3DMsoNormal style=3D'margin-left:.25in'><st1:place =
+w:st=3D"on"><st1:City
+ w:st=3D"on"><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:12.0pt'>Merrimack</span></font></st1:City>,
+ <st1:State w:st=3D"on">NH</st1:State> <st1:PostalCode =
+w:st=3D"on">03054</st1:PostalCode></st1:place><o:p></o:p></p>
+
+<p class=3DMsoNormal style=3D'margin-left:.25in'><font size=3D3 =
+face=3D"Times New Roman"><span
+style=3D'font-size:12.0pt'>P: 603.424.3750<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'margin-left:.25in'><font size=3D3 =
+face=3D"Times New Roman"><span
+style=3D'font-size:12.0pt'>www.drs-ss.com<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C7884C.C2CDFC39--

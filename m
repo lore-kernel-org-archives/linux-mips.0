@@ -1,33 +1,71 @@
-Received: from gecko.sbs.de ([194.138.37.40]:15951 "EHLO gecko.sbs.de")
-	by ftp.linux-mips.org with ESMTP id S20021616AbXD0Ilz convert rfc822-to-8bit
+Received: from mail.cybits.de ([213.139.144.204]:48142 "EHLO mail.cybits.de")
+	by ftp.linux-mips.org with ESMTP id S20022240AbXEKHTV convert rfc822-to-8bit
 	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 27 Apr 2007 09:41:55 +0100
+	Fri, 11 May 2007 08:19:21 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: pcmcia - failed to initialize IDE interface
-Date: Fri, 27 Apr 2007 10:42:31 +0200
-Message-ID: <D7810733513F4840B4EBAAFA64D9C6A401307AC9@stgw002a.ww002.siemens.net>
-In-Reply-To: <D7810733513F4840B4EBAAFA64D9C6A401307A69@stgw002a.ww002.siemens.net>
-From: "Aeschbacher, Fabrice" <Fabrice.Aeschbacher@siemens.com>
-Return-Path: <Fabrice.Aeschbacher@siemens.com>
+Subject: AW: Building a cross kernel for the IP27/Origin System
+Date: Fri, 11 May 2007 09:19:14 +0200
+Message-ID: <3713978C68303748B17B273D85768CD208E68C@CYBIEX01.mz.ads.cybits.de>
+References: <4640911A.4080801@cybits.de> <1178823635.2740.6.camel@localhost.localdomain>
+From: "Claus Herrmann" <che@cybits.de>
+Return-Path: <che@cybits.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Cc: linux-pcmcia@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>
-Message-ID: <20070427084231.f_9Bve-nsqHITZJGsvJ4ufGamXKGC2xEmxTZt-pQ3qk@z>
+To: Jim Wilson <wilson@specifix.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20070511071914.8U2f6v3qk3eJ3n-jiiAV3Tc5aahbhaCnX8tKcfE9wNI@z>
 
-> Which would be the correct way to make pcmcia_request_irq() 
-> use the correct value of 40?
+Hi Jim,
 
-This is in drivers/pcmcia/au1000_db1x00.c:
+thanks for your response. To be honest, the Dwarf Error I ignored. I did nothing special in the configuration. I just selected the IP27 as Machine and off I went.
+And there the first Problems occured. When oyu select the IP27 many options in the ConfigMenu have tob e taken by hand (is this normal?). The Pci Module is not selected (brings linker errors of course (cant find PCI_Probe..), the option for Multi CPU is not selected (same linkererror with "cant find CPU_IRQ or something like this).
 
-db1x00_pcmcia_hw_init():
+I am at the point that I found every packet which the compilation needs and what he doesnt need. But the "multiple definitions"-Error I am at my end. For what it looks to me, it looks like there is a wrong architecture configurations file in the archive. First of all it doesnt make sense, when you select the arcitecture IP27, all required modules (Pci, MultiCpu...) have to be selected by hand. What it seems to me, the automated build scripts seem to compile the general "arch/mips" and the specific "arch/mips/ip27" thus creating the error.
 
-	skt->irq = AU1000_GPIO_8;  /* = 40 */
+Brgds
 
-Now the CF is working fine.
+Claus
 
-Fabrice
+
+
+
+-----Ursprüngliche Nachricht-----
+Von: Jim Wilson [mailto:wilson@specifix.com] 
+Gesendet: Donnerstag, 10. Mai 2007 21:01
+An: Claus Herrmann
+Cc: linux-mips@linux-mips.org
+Betreff: Re: Building a cross kernel for the IP27/Origin System
+
+On Tue, 2007-05-08 at 17:02 +0200, Claus Herrmann wrote:
+> mips-linux-ld: Dwarf Error: found dwarf version '0', this reader only handles version 2 information.
+
+When GNU ld prints an error message, it first looks to see if you
+compiled with debug info, and if you did, it tries to read and parse the
+debug info so it can pretty-print the error message with source file and
+source line number info.  This makes it easier to figure out where the
+problem is.  Unfortunately, this code sometimes fails.  The linker must
+modify the debug info during the linking process by applying
+relocations.  If we try to read the debug info at the wrong time, we may
+get an inconsistent view of it, and may fail to read it correctly.  The
+code is fail soft, so this is harmless, except that you get annoying
+messages that make no sense to you.  Newer GNU ld versions handle this
+much better than older GNU ld versions.  I suspect this is what is
+happening in your case.
+
+Just edit out the annoying and useless dwarf error messages, and you get
+
+> arch/mips/mm/built-in.o: In function `mem_init':
+> : multiple definition of `mem_init'
+> arch/mips/sgi-ip27/built-in.o:: first defined here
+> arch/mips/mm/built-in.o: In function `paging_init':
+> : multiple definition of `paging_init'
+> arch/mips/sgi-ip27/built-in.o:: first defined here
+
+which is your real problem.  Looks like a problem with your mips kernel
+configuration.
+-- 
+Jim Wilson, GNU Tools Support, http://www.specifix.com

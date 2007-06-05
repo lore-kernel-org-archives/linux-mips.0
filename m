@@ -1,45 +1,44 @@
-Received: from outpipe-village-512-1.bc.nu ([81.2.110.250]:1410 "EHLO
-	the-village.bc.nu") by ftp.linux-mips.org with ESMTP
-	id S20022078AbXEXX6w (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 25 May 2007 00:58:52 +0100
-Date: Fri, 25 May 2007 01:00:28 +0100
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: [PATCH] m68k: Enable arbitary speed tty support
-Message-ID: <20070525010028.7ddd3a73@the-village.bc.nu>
-In-Reply-To: <20070524134015.e89843db.akpm@linux-foundation.org>
-References: <20070523174446.37abfa7a@the-village.bc.nu>
-	<Pine.LNX.4.64.0705232117260.10610@anakin>
-	<20070523205645.07b03581@the-village.bc.nu>
-	<20070524134015.e89843db.akpm@linux-foundation.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <alan@lxorguk.ukuu.org.uk>
+Received: from iolanthe.rowland.org ([192.131.102.54]:65465 "HELO
+	iolanthe.rowland.org") by ftp.linux-mips.org with SMTP
+	id S20021863AbXFEVMm (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 5 Jun 2007 22:12:42 +0100
+Date: Tue, 5 Jun 2007 17:12:35 -0400 (EDT)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [linux-usb-devel] [PATCH 11/12] drivers: PMC MSP71xx USB driver
+In-Reply-To: <200706042323.l54NNi6e013258@pasqua.pmc-sierra.bc.ca>
+Message-ID: <Pine.LNX.4.44L0.0706051706550.4003-100000@iolanthe.rowland.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <stern@rowland.harvard.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, rmk@arm.linux.kernel.org, spyro@f2s.com, starvik@axis.com, ysato@users.sourceforge.jp, "Luck, Tony" <tony.luck@intel.com>, takata@linux-m32r.org, chris@zankel.net, uclinux-v850@lsi.nec.co.jp, kyle@parisc-linux.org, linux-mips@linux-mips.org
-Message-ID: <20070525000028.BZt503dCtjL03xdieiyrriO42JhrPpLO-6AFkaJ7qW8@z>
+To: Marc St-Jean <stjeanma@pmc-sierra.com>
+Cc: gregkh@suse.de, linux-mips@linux-mips.org, akpm@linux-foundation.org, linux-usb-devel@lists.sourceforge.net
+Message-ID: <20070605211235.lzxrSa47plHN3IoyQbI750C-XbHHgQTVgbVJKa4xYnY@z>
 
-On Thu, 24 May 2007 13:40:15 -0700
-Andrew Morton <akpm@linux-foundation.org> wrote:
+On Mon, 4 Jun 2007, Marc St-Jean wrote:
 
-> Alan, I'm all dazed and confused about these patches:
+> [PATCH 11/12] drivers: PMC MSP71xx USB driver
 > 
-> arm-enable-arbitary-speed-tty-ioctls-and-split.patch
-> arm26-enable-arbitary-speed-tty-ioctls-and-split.patch
-> ia64-arbitary-speed-tty-ioctl-support.patch
-> xtensa-enable-arbitary-tty-speed-setting-ioctls.patch
-> h8300-enable-arbitary-speed-tty-port-setup.patch
-> m32r-enable-arbitary-speed-tty-rate-setting.patch
-> etrax-enable-arbitary-speed-setting-on-tty-ports.patch
-> v850-enable-arbitary-speed-tty-ioctls.patch
-> lots-of-architectures-enable-arbitary-speed-tty-support.patch
+> Patch to add an USB driver for the PMC-Sierra MSP71xx devices.
 > 
-> are there any interdependencies here, or can the various patches
-> go into the various trees in random order without ill effects?
+> Patches 1 through 10 were posted to linux-mips@linux-mips.org as well
+> as other sub-system lists/maintainers as appropriate. This patch has
+> some dependencies on the first few patches in the set. If you would
+> like to receive these or the entire set, please email me.
 
-The only ordering requirement is that the patch which adds all the
-termios2 structures goes first.
+My personal impressions:
 
-Alan
+This does far too much to be a single patch.  It needs to be broken up.
+
+The change to hub.c looks more complicated than necessary.  You ought 
+to be able to share more of the code.  Turning off power to the 
+overcurrent port would probably be okay for any hub.
+
+The changes to file_storage.c and other gadget drivers look completely 
+unnecessary.  You're apparently trying to disallow 0-length transfers 
+on endpoint 0.  For one thing, that's liable to break some protocols.  
+For another, it would be better to make the test at one place, in your 
+controller driver, instead of spread out among multiple gadget drivers.
+
+Alan Stern

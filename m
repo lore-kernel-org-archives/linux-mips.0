@@ -1,59 +1,83 @@
-Received: from mother.pmc-sierra.com ([216.241.224.12]:52453 "HELO
-	mother.pmc-sierra.bc.ca") by ftp.linux-mips.org with SMTP
-	id S20021956AbXFUXIQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 22 Jun 2007 00:08:16 +0100
-Message-ID: <467B0492.1080007@pmc-sierra.com>
-From: Marc St-Jean <Marc_St-Jean@pmc-sierra.com>
-Subject: Re: build failure due to ROOT_DEV in mtd module (was Re: linux-2.
-	6.22-rc5-g7c8545e build #298 failed ...)
-Date: Thu, 21 Jun 2007 16:06:58 -0700
+Received: from NeSTGROUP.NET ([203.200.158.40]:13787 "EHLO ns2.nestgroup.net")
+	by ftp.linux-mips.org with ESMTP id S20022134AbXFZOaE convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 26 Jun 2007 15:30:04 +0100
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Return-Path: <Marc_St-Jean@pmc-sierra.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: "Segfault/illegal instruction" - udevd - ntpd - glibc
+Date: Tue, 26 Jun 2007 19:56:11 +0530
+Message-ID: <9A1299C7A40D7447A108107E951450CA01C9E04A@MAIL-TVM.tvm.nestgroup.net>
+From: "Sadarul Firos" <sadarul.firos@nestgroup.net>
+Return-Path: <sadarul.firos@nestgroup.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Satyam Sharma <satyam.sharma@gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>, Tom Spink <tspink@gmail.com>, Toralf F?rster <toralf.foerster@gmx.de>, linux-kernel@vger.kernel.org, Paolo Giarrusso <blaisorblade@yahoo.it>, David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org, linux-mips@linux-mips.org, Brian Oostenbrink <Brian_Oostenbrink@pmc-sierra.com>, Dan Doucette <Dan_Doucette@pmc-sierra.com>
-Message-ID: <20070621230658.pQL4i-gmco2Xu8jNVnQVm1RAlLXiSyjucyafRozwrZQ@z>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org
+Message-ID: <20070626142611.vD2Ep_lZ1ZvGDFzQKojnA9rcWHY5HPL5w9YSG1IjK5s@z>
 
-> On Thu, Jun 21, 2007 at 04:13:27 EST, Satyam Sharma wrote:
-> On 6/21/07, Christoph Hellwig <hch@infradead.org> wrote:
->> On Thu, Jun 21, 2007 at 12:22:01PM +0530, Satyam Sharma wrote:
->> > >> The build seems to fail because of:
->> > >> ERROR: "ROOT_DEV" [drivers/mtd/maps/nettel.ko] undefined!
->> > >>
->> > >> After taking a quick look at the code, I can't immediately see why
->> > >> this would be, since there is an include for linux/root_dev.h at the
->> > >> top, there.
->> > >>
->> > >> There's only one occurrence of ROOT_DEV (line 425), and after a quick
->> > >> look at the git history, it seems the include was originally missing,
->> > >> but was put back in, in commit
->> > >> 6cc449c7d0292cb9b993f0df84fd3225e3099492.
->>
->> Please just the reference to ROOT_DEV from this driver.  Just because
->> someone builds this driver there should be no change in the default root
->> device.
-> 
-> I agree, but this (drivers/mtd/maps/nettel.c) isn't the only modular driver
-> referencing ROOT_DEV. We also have drivers/mtd/maps/pmcmsp-ramroot.c
-> using ROOT_DEV (in fact the purpose of that driver seems to be precisely
-> to special-case the root fs and do something with it ...) but considering
-> that other driver's (tristate) Kconfig option depends on another symbol that
-> is non-existent in the mainline tree, there is no way someone can build
-> pmcmsp-ramroot and so we'll never actually  hit that problem even with an
-> allmodconfig build.
-> 
-> Anyway, I'll leave this up to David / linux-mtd to sort out. [ No other
-> modular user of ROOT_DEV in the tree other than the two mtd drivers
-> mentioned here. ]han the two mtd drivers
-> mentioned here. ]]
+Hello Ralf,
 
-Hi Satyam,
+As an immediate workaround I've added a dummy _init/_fini functions in
+nss_dns and nss_compat libraries and no segfault/illegal instruction
+error was observed for over 800 successive reboots. Since I knew
+overriding _init/_fini is dangerous, added constructor/destructor fns
+replacing the dummy _init/_fini. But this time again I got the
+segmentation fault/illegal instruction errors. I think this will give
+you more insight. I'm really stuck up in the problem :(
 
-The support for the platform which introduced drivers/mtd/maps/pmcmsp-ramroot.c
-is being queued in the linux-mips tree at linux-mips.org. At some point it should
-work it's way to the main tree and be buildable.
+-----Original Message-----
+From: Sadarul Firos 
+Sent: Monday, June 18, 2007 3:21 PM
+To: 'ralf@linux-mips.org'
+Cc: 'linux-mips@linux-mips.org'
+Subject: RE: "Segfault/illegal instruction" - udevd - ntpd - glibc
 
-Marc
+
+Thanks Ralf for the reply.
+
+Regarding kernel, I am using the final release version of linux 2.6.18
+kernel with some customizations. Out of the two boards which I have one
+has MSP8150 Multi-Service Processor(MIPS 64) and the other has ITE 8172
+system controller with RM7035C, 64-bit MIPS RISC microprocessor(MIPS V).
+
+-----Original Message-----
+From: Ralf Baechle [mailto:ralf@linux-mips.org] 
+Sent: Sunday, June 17, 2007 1:04 AM
+To: Sadarul Firos
+Cc: linux-mips@linux-mips.org
+Subject: Re: "Segfault/illegal instruction" - udevd - ntpd - glibc
+
+On Fri, Jun 15, 2007 at 09:23:34PM +0530, Sadarul Firos wrote:
+
+> I am working with two MIPS based boards (one is MIPS and the other is
+> MIPSEL) running linux-2.6.18/glibc-2.3.5. I am performing a
+consecutive
+> reboot test on these boards. After some number of reboots (say 80) I
+am
+> getting "segmentaion fault/illegal instruction" while running udevd
+and
+> ntpd during bootup. Upon observing the core dump, it is noted that the
+> segfault occured from the _init function of libnss_dns.so (in the case
+> of ntpd) and libnss_compat.so (in the case of udevd). I assume that
+> there might be a problem somewhere in the call_init function in
+> glibc-2.3.5/elf/dl-init.c. After I put some printf statements for
+> debugging in the call_init function, there is no segfault/illegal
+> instruction in the reboot testing. I have also used gdb to debug the
+> problem but the "segfault/illegal instruction" doesn't occur during
+the
+> reboot test. Could anyone please help me to sort out this problem. The
+> gdb output using coredump is attached.
+
+Normally the address space layout and most other variables during a
+program load should be identical each time so userspace should behave
+identical.   So I sense the scent of a TLB or more likely cache
+managment
+problem.
+
+What 2.6.18 variant exactly are you running, that is where & when did
+download it, what CPU?
+
+  Ralf

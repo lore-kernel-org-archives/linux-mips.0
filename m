@@ -1,83 +1,77 @@
-Received: from NeSTGROUP.NET ([203.200.158.40]:13787 "EHLO ns2.nestgroup.net")
-	by ftp.linux-mips.org with ESMTP id S20022134AbXFZOaE convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 26 Jun 2007 15:30:04 +0100
+Received: from sj-iport-2-in.cisco.com ([171.71.176.71]:11066 "EHLO
+	sj-iport-2.cisco.com") by ftp.linux-mips.org with ESMTP
+	id S20022731AbXF1Up1 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 28 Jun 2007 21:45:27 +0100
+Received: from sj-core-4.cisco.com (sj-core-4.cisco.com [171.68.223.138])
+	by sj-dkim-1.cisco.com (8.12.11/8.12.11) with ESMTP id l5SKjCDD023545
+	for <linux-mips@linux-mips.org>; Thu, 28 Jun 2007 13:45:12 -0700
+Received: from xbh-sjc-211.amer.cisco.com (xbh-sjc-211.cisco.com [171.70.151.144])
+	by sj-core-4.cisco.com (8.12.10/8.12.6) with ESMTP id l5SKisH0005995
+	for <linux-mips@linux-mips.org>; Thu, 28 Jun 2007 20:45:12 GMT
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: "Segfault/illegal instruction" - udevd - ntpd - glibc
-Date: Tue, 26 Jun 2007 19:56:11 +0530
-Message-ID: <9A1299C7A40D7447A108107E951450CA01C9E04A@MAIL-TVM.tvm.nestgroup.net>
-From: "Sadarul Firos" <sadarul.firos@nestgroup.net>
-Return-Path: <sadarul.firos@nestgroup.net>
+Subject: gdbserver
+Date: Thu, 28 Jun 2007 13:45:02 -0700
+Message-ID: <27801B4D04E7CA45825B0E0CE60FE10A0410F0D6@xmb-sjc-237.amer.cisco.com>
+In-Reply-To: <20070628083725.GA23394@lst.de>
+References: <cda58cb80706260820y4db3eacnae4dff0101852d52@mail.gmail.com> <20070627.013312.25479645.anemo@mba.ocn.ne.jp> <20070627153932.GA6016@lst.de> <20070628.112223.96686654.nemoto@toshiba-tops.co.jp> <20070628083725.GA23394@lst.de>
+From: "Ratin Rahman \(mratin\)" <mratin@cisco.com>
+Return-Path: <mratin@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20070626142611.vD2Ep_lZ1ZvGDFzQKojnA9rcWHY5HPL5w9YSG1IjK5s@z>
+To: linux-mips@linux-mips.org
+Cc: "Ratin Rahman (mratin)" <mratin@cisco.com>
+Message-ID: <20070628204502.0eRIDOFf202-IA5bwvb_v5jiGuTkY6P5Hudujwzc2Sg@z>
 
-Hello Ralf,
+Anybody had luck with compiling gdbserver for mipsel? I am using x86
+based machine running Fedora 2.6.11 kernel, the target device is IDT 434
+running Mipsel 2.6.10 kernel. The gcc crosscompiler is mipsel-linux-gcc
+and version 3.2.3.
 
-As an immediate workaround I've added a dummy _init/_fini functions in
-nss_dns and nss_compat libraries and no segfault/illegal instruction
-error was observed for over 800 successive reboots. Since I knew
-overriding _init/_fini is dangerous, added constructor/destructor fns
-replacing the dummy _init/_fini. But this time again I got the
-segmentation fault/illegal instruction errors. I think this will give
-you more insight. I'm really stuck up in the problem :(
+I did a ./configure --host=mipsel-linux-gnu --target=mipsel-linux-gnu
+followed by a make. Make failed with the messages: 
 
------Original Message-----
-From: Sadarul Firos 
-Sent: Monday, June 18, 2007 3:21 PM
-To: 'ralf@linux-mips.org'
-Cc: 'linux-mips@linux-mips.org'
-Subject: RE: "Segfault/illegal instruction" - udevd - ntpd - glibc
+/opt/mipseltools/mipsel-linux/sys-include/sys/ptrace.h:33: syntax error
+before numeric constant
+/opt/mipseltools/mipsel-linux/sys-include/sys/ptrace.h:49: syntax error
+before numeric constant
+/opt/mipseltools/mipsel-linux/sys-include/sys/ptrace.h:61: syntax error
+before numeric constant
+/opt/mipseltools/mipsel-linux/sys-include/sys/ptrace.h:94: syntax error
+before numeric constant
+/opt/mipseltools/mipsel-linux/sys-include/sys/ptrace.h:112: syntax error
+before numeric constant
+linux-low.c: In function `kill_lwp':
+linux-low.c:760: warning: unused variable `tkill_failed'
+make: *** [linux-low.o] Error 1
+[root@Clearnet gdbserver]# nano
+/opt/mipseltools/mipsel-linux/sys-include/sys/ptrace.h
+[root@Clearnet gdbserver]# nano
+/opt/mipseltools/mipsel-linux/sys-include/sys/ptrace.h
 
 
-Thanks Ralf for the reply.
+The content of ptrace.h has the enums declared as 
 
-Regarding kernel, I am using the final release version of linux 2.6.18
-kernel with some customizations. Out of the two boards which I have one
-has MSP8150 Multi-Service Processor(MIPS 64) and the other has ITE 8172
-system controller with RM7035C, 64-bit MIPS RISC microprocessor(MIPS V).
+/* Type of the REQUEST argument to `ptrace.'  */
+enum __ptrace_request
+{
+  /* Indicate that the process making this request should be traced.
+     All signals received by this process can be intercepted by its
+     parent, and its parent can use the other `ptrace' requests.  */
+  PTRACE_TRACEME = 0,
+<==================================line 33
+#define PT_TRACE_ME PTRACE_TRACEME
 
------Original Message-----
-From: Ralf Baechle [mailto:ralf@linux-mips.org] 
-Sent: Sunday, June 17, 2007 1:04 AM
-To: Sadarul Firos
-Cc: linux-mips@linux-mips.org
-Subject: Re: "Segfault/illegal instruction" - udevd - ntpd - glibc
+  /* Return the word in the process's text space at address ADDR.  */
+  PTRACE_PEEKTEXT = 1,
+#define PT_READ_I PTRACE_PEEKTEXT
 
-On Fri, Jun 15, 2007 at 09:23:34PM +0530, Sadarul Firos wrote:
 
-> I am working with two MIPS based boards (one is MIPS and the other is
-> MIPSEL) running linux-2.6.18/glibc-2.3.5. I am performing a
-consecutive
-> reboot test on these boards. After some number of reboots (say 80) I
-am
-> getting "segmentaion fault/illegal instruction" while running udevd
-and
-> ntpd during bootup. Upon observing the core dump, it is noted that the
-> segfault occured from the _init function of libnss_dns.so (in the case
-> of ntpd) and libnss_compat.so (in the case of udevd). I assume that
-> there might be a problem somewhere in the call_init function in
-> glibc-2.3.5/elf/dl-init.c. After I put some printf statements for
-> debugging in the call_init function, there is no segfault/illegal
-> instruction in the reboot testing. I have also used gdb to debug the
-> problem but the "segfault/illegal instruction" doesn't occur during
-the
-> reboot test. Could anyone please help me to sort out this problem. The
-> gdb output using coredump is attached.
+..which looks pretty normal to me , anybod yhave any clue? 
+Thanks,
 
-Normally the address space layout and most other variables during a
-program load should be identical each time so userspace should behave
-identical.   So I sense the scent of a TLB or more likely cache
-managment
-problem.
 
-What 2.6.18 variant exactly are you running, that is where & when did
-download it, what CPU?
-
-  Ralf
+Ratin 

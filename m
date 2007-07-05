@@ -1,244 +1,107 @@
-Received: from sj-iport-2-in.cisco.com ([171.71.176.71]:2024 "EHLO
-	sj-iport-2.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S20022796AbXF2B1K (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 29 Jun 2007 02:27:10 +0100
-Received: from sj-core-2.cisco.com (sj-core-2.cisco.com [171.71.177.254])
-	by sj-dkim-7.cisco.com (8.12.11/8.12.11) with ESMTP id l5T1Q2CA012306
-	for <linux-mips@linux-mips.org>; Thu, 28 Jun 2007 18:26:02 -0700
-Received: from xbh-sjc-231.amer.cisco.com (xbh-sjc-231.cisco.com [128.107.191.100])
-	by sj-core-2.cisco.com (8.12.10/8.12.6) with ESMTP id l5T1Q2mo018083
-	for <linux-mips@linux-mips.org>; Fri, 29 Jun 2007 01:26:02 GMT
+Received: from NeSTGROUP.NET ([203.200.158.40]:5059 "EHLO ns2.nestgroup.net")
+	by ftp.linux-mips.org with ESMTP id S20022066AbXGEEg2 convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 5 Jul 2007 05:36:28 +0100
+Received: from MAIL-TVM.tvm.nestgroup.net ([192.168.192.74])
+	by ns2.nestgroup.net (8.13.1/8.13.1) with ESMTP id l654iARY022023
+	for <linux-mips@linux-mips.org>; Thu, 5 Jul 2007 10:14:11 +0530
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C7B9EC.7441C459"
-Subject: upgrading glibc for mipsel
-Date: Thu, 28 Jun 2007 18:26:01 -0700
-Message-ID: <27801B4D04E7CA45825B0E0CE60FE10A01F971CF@xmb-sjc-237.amer.cisco.com>
-References: <cda58cb80706260820y4db3eacnae4dff0101852d52@mail.gmail.com> <20070627.013312.25479645.anemo@mba.ocn.ne.jp> <20070627153932.GA6016@lst.de> <20070628.112223.96686654.nemoto@toshiba-tops.co.jp> <20070628083725.GA23394@lst.de> <27801B4D04E7CA45825B0E0CE60FE10A0410F0D6@xmb-sjc-237.amer.cisco.com> <46842B05.5050103@avtrex.com>
-From: "Ratin Rahman \(mratin\)" <mratin@cisco.com>
-Return-Path: <mratin@cisco.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: Glibc - Segmentation Fault
+Date: Thu, 5 Jul 2007 10:04:25 +0530
+Message-ID: <9A1299C7A40D7447A108107E951450CA01C9E087@MAIL-TVM.tvm.nestgroup.net>
+From: "Sadarul Firos" <sadarul.firos@nestgroup.net>
+Return-Path: <sadarul.firos@nestgroup.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20070629012601.FT7hDUoAKjlVuneBx9fJxRVrlrbTyxVRgPc9xC5TFu8@z>
+Message-ID: <20070705043425.KLiPyU3xsXiZHDddlaeyf3_4Ls_AKsP6zy5zx9ictD8@z>
 
-This is a multi-part message in MIME format.
+Hi all,
 
-------_=_NextPart_001_01C7B9EC.7441C459
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I have already posted this issue to this list but without more details,
+I think that may be the reason why I am not getting more replies. This
+time I have come up with all the steps which I have tried to solve the
+problem. I think these will give you more insight into the problem.
 
-In an effort to build gdbserver, I am trying to upgrade my glibc and gcc =
-cross compile tools. I am  having=20
-problem while bulding glibc-2.3.3, mipsel compiler version 3.2.3 and =
-current glibc ver
-is 2.2.5.=20
-=20
-I exported all current cross tools and cross compiler with export.=20
-=20
-configured with the options:
-../glibc-2.3.3/configure --prefix=3D/opt/crosstool =
---build=3Di686-pc-linux-gnu --host=3Dmipsel-linux =
---with-binutils=3D/opt/mipseltools/bin/ --enable-add-ons=3Dlinuxthreads
-=20
-did a make and after make went thru for 5 mins or so, it threw this =
-error message:=20
-I get the following error:
-=20
- -Wl,-d -Wl,--whole-archive /workspace/ratin/make_glibc/libc_pic.a
-/opt/mipseltools/bin/mipsel-linux-gcc -mabi=3D32   -shared -Wl,-O1 \
-  -nostdlib -nostartfiles \
-   -Wl,-dynamic-linker=3D/opt/crosstool/lib/ld.so.1  \
-  -Wl,--verbose 2>&1 | \
-  sed > /workspace/ratin/make_glibc/shlib.ldsT \
-      -e =
-'/^=3D=3D=3D=3D=3D=3D=3D=3D=3D/,/^=3D=3D=3D=3D=3D=3D=3D=3D=3D/!d;/^=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D/d' \
-      -e 's/^.*\.hash[  ]*:.*$/  .note.ABI-tag : { *(.note.ABI-tag) } =
-&/' \
-      -e 's/^.*\*(\.dynbss).*$/& \
-         PROVIDE(__start___libc_freeres_ptrs =3D .); \
-         *(__libc_freeres_ptrs) \
-         PROVIDE(__stop___libc_freeres_ptrs =3D .);/'
-mv -f /workspace/ratin/make_glibc/shlib.ldsT =
-/workspace/ratin/make_glibc/shlib.lds
-/opt/mipseltools/bin/mipsel-linux-gcc -mabi=3D32   -shared =
--static-libgcc -Wl,-O1  -Wl,-z,defs =
--Wl,-dynamic-linker=3D/opt/crosstool/lib/ld.so.1  =
--B/workspace/ratin/make_glibc/csu/  =
--Wl,--version-script=3D/workspace/ratin/make_glibc/libc.map =
--Wl,-soname=3Dlibc.so.6  -nostdlib -nostartfiles -e __libc_main =
--L/workspace/ratin/make_glibc -L/workspace/ratin/make_glibc/math =
--L/workspace/ratin/make_glibc/elf -L/workspace/ratin/make_glibc/dlfcn =
--L/workspace/ratin/make_glibc/nss -L/workspace/ratin/make_glibc/nis =
--L/workspace/ratin/make_glibc/rt -L/workspace/ratin/make_glibc/resolv =
--L/workspace/ratin/make_glibc/crypt =
--L/workspace/ratin/make_glibc/linuxthreads =
--Wl,-rpath-link=3D/workspace/ratin/make_glibc:/workspace/ratin/make_glibc=
-/math:/workspace/ratin/make_glibc/elf:/workspace/ratin/make_glibc/dlfcn:/=
-workspace/ratin/make_glibc/nss:/workspace/ratin/make_glibc/nis:/workspace=
-/ratin/make_glibc/rt:/workspace/ratin/make_glibc/resolv:/workspace/ratin/=
-make_glibc/crypt:/workspace/ratin/make_glibc/linuxthreads -o =
-/workspace/ratin/make_glibc/libc.so -T =
-/workspace/ratin/make_glibc/shlib.lds =
-/workspace/ratin/make_glibc/csu/abi-note.o =
-/workspace/ratin/make_glibc/elf/soinit.os =
-/workspace/ratin/make_glibc/libc_pic.os =
-/workspace/ratin/make_glibc/elf/sofini.os =
-/workspace/ratin/make_glibc/elf/interp.os =
-/workspace/ratin/make_glibc/elf/ld.so -lgcc -lgcc_eh
-/workspace/ratin/make_glibc/libc_pic.os: In function =
-`__register_atfork':
-/workspace/ratin/make_glibc/libc_pic.os(.text+0x10d088): undefined =
-reference to `__fork_block'
-/workspace/ratin/make_glibc/libc_pic.os(.text+0x10d0b4): undefined =
-reference to `__fork_block'
-/workspace/ratin/make_glibc/libc_pic.os(.text+0x10d0e0): undefined =
-reference to `__fork_block'
-/workspace/ratin/make_glibc/libc_pic.os(.text+0x10d148): undefined =
-reference to `__fork_block'
-/workspace/ratin/make_glibc/libc_pic.os(.text+0x10d164): undefined =
-reference to `__fork_block'
-/workspace/ratin/make_glibc/libc_pic.os(.text+0x10d214): more undefined =
-references to `__fork_block' follow
-collect2: ld returned 1 exit status
-make[1]: *** [/workspace/ratin/make_glibc/libc.so] Error 1
-make[1]: Leaving directory `/workspace/ratin/glibc-2.3.3'
-make: *** [all] Error 2
+The problem:
+I'm performing continuous reboot test on a MIPS based board running
+linux-2.6.18/glibc-2.3.5/gcc-3.3.6. After several hours of rebooting
+(say after 80, purely random) I've observed Segmentation fault or
+Illegal instruction error while starting the udevd and ntpd programs
+during the startup. The error appears pretty much random, it doesn't
+usually take more than an hour or two to catch an instance of the
+Segfault.
 
-=20
-=20
-=20
-I will appreciate any help if you could provide..
-Thanks
-=20
-Ratin
+Steps I have tried to resolve the problem:
+1. Used environment variable LD_DEBUG=all for debugging ntpd and udevd.
+After a few hours of reboot test I could observe segmentation fault. The
+last line printed on the console at the time of segmentation fault was
+"calling init". From the log file it was observed that the segmentation
+fault occur after the "init" function call of libnss_dns.so (in the case
+of ntpd) and libnss_compat.so/libnss_files.so (in the case of udevd).
+But the function "init" doesn't present in both libraries, I think a
+default "init" would be used if none is present.
 
-------_=_NextPart_001_01C7B9EC.7441C459
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">=0A=
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">=0A=
-<HTML>=0A=
-<HEAD>=0A=
-=0A=
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7651.59">=0A=
-<TITLE>Re: gdbserver</TITLE>=0A=
-</HEAD>=0A=
-<BODY>=0A=
-<DIV id=3DidOWAReplyText96333 dir=3Dltr><FONT face=3DArial size=3D2>=0A=
-<DIV><FONT face=3DArial color=3D#000000>In an effort to build gdbserver, =
-I am trying =0A=
-to upgrade my glibc and gcc&nbsp;cross compile tools. I am &nbsp;having =0A=
-</FONT></DIV>=0A=
-<DIV><FONT face=3DArial color=3D#000000>problem while bulding =
-glibc-2.3.3, mipsel =0A=
-compiler version 3.2.3 and current glibc ver</FONT></DIV>=0A=
-<DIV><FONT face=3DArial>is 2.2.5. </FONT></DIV>=0A=
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial>I exported all current cross tools and cross =
-compiler with =0A=
-export. </FONT></DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV>configured with the options:</DIV>=0A=
-<DIV>../glibc-2.3.3/configure --prefix=3D/opt/crosstool =
---build=3Di686-pc-linux-gnu =0A=
---host=3Dmipsel-linux --with-binutils=3D/opt/mipseltools/bin/ =0A=
---enable-add-ons=3Dlinuxthreads</DIV>=0A=
-<DIV>&nbsp;</DIV>=0A=
-<DIV>did a make and after make went thru&nbsp;for 5&nbsp;mins or so, it =
-threw =0A=
-this error message: </DIV>=0A=
-<DIV><FONT face=3DArial>I get the following error:</FONT></DIV>=0A=
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial>&nbsp;-Wl,-d -Wl,--whole-archive =0A=
-/workspace/ratin/make_glibc/libc_pic.a<BR>/opt/mipseltools/bin/mipsel-lin=
-ux-gcc =0A=
--mabi=3D32&nbsp;&nbsp; -shared -Wl,-O1 \<BR>&nbsp; -nostdlib =
--nostartfiles =0A=
-\<BR>&nbsp;&nbsp; -Wl,-dynamic-linker=3D/opt/crosstool/lib/ld.so.1&nbsp; =0A=
-\<BR>&nbsp; -Wl,--verbose 2&gt;&amp;1 | \<BR>&nbsp; sed &gt; =0A=
-/workspace/ratin/make_glibc/shlib.ldsT =
-\<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -e =0A=
-'/^=3D=3D=3D=3D=3D=3D=3D=3D=3D/,/^=3D=3D=3D=3D=3D=3D=3D=3D=3D/!d;/^=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D/d' \<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
--e 's/^.*\.hash[&nbsp; ]*:.*$/&nbsp; .note.ABI-tag : { *(.note.ABI-tag) =
-} =0A=
-&amp;/' \<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -e =
-'s/^.*\*(\.dynbss).*$/&amp; =0A=
-\<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-PROVIDE(__start___libc_freeres_ptrs =3D .); =0A=
-\<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-*(__libc_freeres_ptrs) =0A=
-\<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =0A=
-PROVIDE(__stop___libc_freeres_ptrs =3D .);/'<BR>mv -f =0A=
-/workspace/ratin/make_glibc/shlib.ldsT =0A=
-/workspace/ratin/make_glibc/shlib.lds<BR>/opt/mipseltools/bin/mipsel-linu=
-x-gcc =0A=
--mabi=3D32&nbsp;&nbsp; -shared -static-libgcc -Wl,-O1&nbsp; -Wl,-z,defs =0A=
--Wl,-dynamic-linker=3D/opt/crosstool/lib/ld.so.1&nbsp; =0A=
--B/workspace/ratin/make_glibc/csu/&nbsp; =0A=
--Wl,--version-script=3D/workspace/ratin/make_glibc/libc.map =0A=
--Wl,-soname=3Dlibc.so.6&nbsp; -nostdlib -nostartfiles -e __libc_main =0A=
--L/workspace/ratin/make_glibc -L/workspace/ratin/make_glibc/math =0A=
--L/workspace/ratin/make_glibc/elf -L/workspace/ratin/make_glibc/dlfcn =0A=
--L/workspace/ratin/make_glibc/nss -L/workspace/ratin/make_glibc/nis =0A=
--L/workspace/ratin/make_glibc/rt -L/workspace/ratin/make_glibc/resolv =0A=
--L/workspace/ratin/make_glibc/crypt =
--L/workspace/ratin/make_glibc/linuxthreads =0A=
--Wl,-rpath-link=3D/workspace/ratin/make_glibc:/workspace/ratin/make_glibc=
-/math:/workspace/ratin/make_glibc/elf:/workspace/ratin/make_glibc/dlfcn:/=
-workspace/ratin/make_glibc/nss:/workspace/ratin/make_glibc/nis:/workspace=
-/ratin/make_glibc/rt:/workspace/ratin/make_glibc/resolv:/workspace/ratin/=
-make_glibc/crypt:/workspace/ratin/make_glibc/linuxthreads =0A=
--o /workspace/ratin/make_glibc/libc.so -T =
-/workspace/ratin/make_glibc/shlib.lds =0A=
-/workspace/ratin/make_glibc/csu/abi-note.o =0A=
-/workspace/ratin/make_glibc/elf/soinit.os =0A=
-/workspace/ratin/make_glibc/libc_pic.os =0A=
-/workspace/ratin/make_glibc/elf/sofini.os =0A=
-/workspace/ratin/make_glibc/elf/interp.os =
-/workspace/ratin/make_glibc/elf/ld.so =0A=
--lgcc -lgcc_eh<BR>/workspace/ratin/make_glibc/libc_pic.os: In function =0A=
-`__register_atfork':<BR>/workspace/ratin/make_glibc/libc_pic.os(.text+0x1=
-0d088): =0A=
-undefined reference to =0A=
-`__fork_block'<BR>/workspace/ratin/make_glibc/libc_pic.os(.text+0x10d0b4)=
-: =0A=
-undefined reference to =0A=
-`__fork_block'<BR>/workspace/ratin/make_glibc/libc_pic.os(.text+0x10d0e0)=
-: =0A=
-undefined reference to =0A=
-`__fork_block'<BR>/workspace/ratin/make_glibc/libc_pic.os(.text+0x10d148)=
-: =0A=
-undefined reference to =0A=
-`__fork_block'<BR>/workspace/ratin/make_glibc/libc_pic.os(.text+0x10d164)=
-: =0A=
-undefined reference to =0A=
-`__fork_block'<BR>/workspace/ratin/make_glibc/libc_pic.os(.text+0x10d214)=
-: more =0A=
-undefined references to `__fork_block' follow<BR>collect2: ld returned 1 =
-exit =0A=
-status<BR>make[1]: *** [/workspace/ratin/make_glibc/libc.so] Error =
-1<BR>make[1]: =0A=
-Leaving directory `/workspace/ratin/glibc-2.3.3'<BR>make: *** [all] =
-Error =0A=
-2<BR></DIV></FONT>=0A=
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial>I will appreciate any help if you could =0A=
-provide..</FONT></DIV>=0A=
-<DIV><FONT face=3DArial>Thanks</FONT></DIV>=0A=
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>=0A=
-<DIV><FONT face=3DArial>Ratin</FONT></DIV></FONT></DIV>=0A=
-=0A=
-</BODY>=0A=
-</HTML>
-------_=_NextPart_001_01C7B9EC.7441C459--
+2. Added printf statements in the call_init function in
+glibc-2.3.5/elf/dl-init.c. Since putting those printf statements into
+the call_init function I have NOT seen a single segfault or illegal
+instruction in over 2400 reboots!
+
+
+3. Run the application udevd and ntpd during startup using gdb. Couldn't
+observe segfault/illegal instruction error for long hours of reboot.
+
+
+4. Registered a signal handler in ntpd and udevd to get the backtrace
+using sigaction at the time of segmentation fault, but got only a single
+address location (NOT a full stack trace). After that, tried to map this
+address with the application using 'nm' utility, but couldn't locate the
+same.
+
+
+5. Generated core dump at the time of segfault. Analyzed the core dump
+using gdb and observed that the segfault occur at init function of
+libnss_compat.so (in the case of udevd) and libnss_dns.so (in the case
+of ntpd). 
+
+6. As per my understanding, the default init that would be used is
+located in sysdep/generic/initfini.c. Compared this file for glibc
+version 2.3.5 and 2.5 but no differences were found. 
+
+
+7. Compiled ntpd and udevd statically and performed the reboot test. But
+segfault was observed after 34 reboots.
+
+
+8. Added a dummy _init/_fini function in both the nss libraries
+(libnss_dns.so and libnss_compat.so) to override the default init
+functions. But segfault was observed after 207 reboots.
+
+
+9. Added constructor/destructor routine in libnss_dns.so and
+libnss_compat.so. Segmentation fault occurred after several hours of
+reboot. 
+
+
+10. Used LD_BIND_NOW option (enabled this option just before
+ntpd/udevd), using this option all symbols will be resolved at the
+loading time. Even after enabling this feature, didn't observe any
+difference in the issue i.e. observed segfault after 265 reboots 
+
+11. Changed the order of invocation of the programs udevd and ntpd.
+Previously, in the init scripts, udevd was started first and ntpd was
+called somewhere near the last stage of init scripts. Now ntpd is
+started immediately after invoking udevd. Surprisingly, the frequency of
+appearing segfault was increased, ie previously it would take nearly 100
+reboots to observe a segfault, but now it would take nearly 10 reboots
+to observe a segfault!
+
+Hope these will give you inputs to comment on this problem. Waiting for
+your valuable replies
+
+Firos

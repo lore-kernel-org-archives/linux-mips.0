@@ -1,40 +1,38 @@
-Received: from mx.mips.com ([63.167.95.198]:35465 "EHLO dns0.mips.com")
-	by ftp.linux-mips.org with ESMTP id S20023048AbXGEQYA (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 5 Jul 2007 17:24:00 +0100
-Message-ID: <01dc01c7bf20$e03f6c20$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <20070705144641.GA20210@linux-mips.org>
-Subject: Re: dead(?) MIPS config stuff
-Date: Thu, 5 Jul 2007 18:23:45 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+Received: from static-72-72-73-123.bstnma.east.verizon.net ([72.72.73.123]:51463
+	"EHLO mail.sicortex.com") by ftp.linux-mips.org with ESMTP
+	id S20021788AbXGJRV3 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 10 Jul 2007 18:21:29 +0100
+From: pwatkins@sicortex.com
+Subject: [PATCH] [MIPS] Fix resume for 64K page size
+Date: Tue, 10 Jul 2007 13:20:51 -0400
+Message-ID: <11840880513393-git-send-email-pwatkins@sicortex.com>
+Return-Path: <pwatkins@sicortex.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, "Robert P. J. Day" <rpjday@mindspring.com>
-Message-ID: <20070705162345.85sz2n2Xk6WSMGGfvd_obuhYizD-l4PeJBha7T08HXo@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: Peter Watkins <pwatkins@sicortex.com>
+Message-ID: <20070710172051.lNr1NYNkCpTjuGdTOHNQkPw-3Du_7Fwy9lk3gkjbSbs@z>
 
-> ========== SMTC_IDLE_HOOK_DEBUG ==========
-> arch/mips/kernel/smtc.c:146:#ifdef CONFIG_SMTC_IDLE_HOOK_DEBUG
-> arch/mips/kernel/smtc.c:181:#endif /* CONFIG_SMTC_IDLE_HOOK_DEBUG */
-> arch/mips/kernel/smtc.c:399:#ifdef CONFIG_SMTC_IDLE_HOOK_DEBUG
-> arch/mips/kernel/smtc.c:402:#endif /* CONFIG_SMTC_IDLE_HOOK_DEBUG */
-> arch/mips/kernel/smtc.c:614:#ifdef CONFIG_SMTC_IDLE_HOOK_DEBUG
-> arch/mips/kernel/smtc.c:828:#ifdef CONFIG_SMTC_IDLE_HOOK_DEBUG
-> arch/mips/kernel/smtc.c:830:#endif /* CONFIG_SMTC_IDLE_HOOK_DEBUG */
-> arch/mips/kernel/smtc.c:1055:#ifdef CONFIG_SMTC_IDLE_HOOK_DEBUG
-> arch/mips/kernel/smtc.c:1148:#endif /* CONFIG_SMTC_IDLE_HOOK_DEBUG */
-> arch/mips/kernel/process.c:54:#ifdef CONFIG_SMTC_IDLE_HOOK_DEBUG
-> arch/mips/Kconfig.debug:40:config CONFIG_SMTC_IDLE_HOOK_DEBUG
+This fixes a bug when running 64K page size on r4k machines. 
 
-It's cruft, but it's cruft that does have some utility when porting SMTC to a new
-platform, as it helps identify interrupt management bugs.  It needs to be eliminated
-or replaced with a revision of the interface between architecture and platform 
-support for SMTC, toward which I've made some small progress recently, 
-but I'd prefer not to see it disappear before reinforcements arrive.
 
-            Regards,
+Signed-off-by: Peter Watkins <pwatkins@sicortex.com>
+---
+ arch/mips/kernel/r4k_switch.S |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-            Kevin K.
+diff --git a/arch/mips/kernel/r4k_switch.S b/arch/mips/kernel/r4k_switch.S
+index 0672959..65f0f91 100644
+--- a/arch/mips/kernel/r4k_switch.S
++++ b/arch/mips/kernel/r4k_switch.S
+@@ -85,7 +85,7 @@ #endif
+ 	move	$28, a2
+ 	cpu_restore_nonscratch a1
+ 
+-#if (_THREAD_SIZE - 32) < 0x10000
++#if (_THREAD_SIZE) < 0x10000
+ 	PTR_ADDIU	t0, $28, _THREAD_SIZE - 32
+ #else
+ 	PTR_LI		t0, _THREAD_SIZE - 32
+-- 
+1.4.2.4

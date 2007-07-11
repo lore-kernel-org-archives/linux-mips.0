@@ -1,50 +1,60 @@
-Received: from phoenix.bawue.net ([193.7.176.60]:39826 "EHLO mail.bawue.net")
-	by ftp.linux-mips.org with ESMTP id S20021805AbXGJRfb (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 10 Jul 2007 18:35:31 +0100
-Date: Tue, 10 Jul 2007 18:34:54 +0100
-From: Thiemo Seufer <ths@networkno.de>
+Received: from localhost.localdomain ([127.0.0.1]:42431 "EHLO
+	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
+	id S20022955AbXGKJ7U (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 11 Jul 2007 10:59:20 +0100
+Date: Wed, 11 Jul 2007 08:36:19 +0100
+From: Ralf Baechle <ralf@linux-mips.org>
 Subject: Re: [PATCH] [MIPS] Fix resume for 64K page size
-Message-ID: <20070710173454.GA30521@networkno.de>
-References: <11840880513393-git-send-email-pwatkins@sicortex.com>
+Message-ID: <20070711073619.GA4056@linux-mips.org>
+References: <11840880513393-git-send-email-pwatkins@sicortex.com> <20070710173454.GA30521@networkno.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <11840880513393-git-send-email-pwatkins@sicortex.com>
-Return-Path: <ths@networkno.de>
+In-Reply-To: <20070710173454.GA30521@networkno.de>
+Return-Path: <ralf@linux-mips.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: pwatkins@sicortex.com
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org
-Message-ID: <20070710173454.qKy8p8Jk5EqZg1LxBNsE0oDzKSF_WByPxGKIlNOrJNc@z>
+To: Thiemo Seufer <ths@networkno.de>
+Cc: pwatkins@sicortex.com, linux-mips@linux-mips.org
+Message-ID: <20070711073619.kjh3ht8Zqi2LQYsWquN7clV3815Mf1bMEvRLc_Agfuo@z>
 
-pwatkins@sicortex.com wrote:
-> This fixes a bug when running 64K page size on r4k machines. 
+On Tue, Jul 10, 2007 at 06:34:54PM +0100, Thiemo Seufer wrote:
+
+> > -#if (_THREAD_SIZE - 32) < 0x10000
+> > +#if (_THREAD_SIZE) < 0x10000
+> >  	PTR_ADDIU	t0, $28, _THREAD_SIZE - 32
+> >  #else
+> >  	PTR_LI		t0, _THREAD_SIZE - 32
 > 
+> This doesn't look right. I think it should be
 > 
-> Signed-off-by: Peter Watkins <pwatkins@sicortex.com>
-> ---
->  arch/mips/kernel/r4k_switch.S |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+> #if (_THREAD_SIZE - 32) < 0x8000
 > 
-> diff --git a/arch/mips/kernel/r4k_switch.S b/arch/mips/kernel/r4k_switch.S
-> index 0672959..65f0f91 100644
-> --- a/arch/mips/kernel/r4k_switch.S
-> +++ b/arch/mips/kernel/r4k_switch.S
-> @@ -85,7 +85,7 @@ #endif
->  	move	$28, a2
->  	cpu_restore_nonscratch a1
->  
-> -#if (_THREAD_SIZE - 32) < 0x10000
-> +#if (_THREAD_SIZE) < 0x10000
->  	PTR_ADDIU	t0, $28, _THREAD_SIZE - 32
->  #else
->  	PTR_LI		t0, _THREAD_SIZE - 32
+> in order to avoid an overflow of the immediate.
 
-This doesn't look right. I think it should be
+Indeed - that's the limitation of the (d)addiu instruction.  But (d)addu
+instead handle large constants just fine, so I'd below patch instead.  So
+why not let the assembler do the dirty work.
 
-#if (_THREAD_SIZE - 32) < 0x8000
+  Ralf
 
-in order to avoid an overflow of the immediate.
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 
-
-Thiemo
+diff --git a/arch/mips/kernel/r4k_switch.S b/arch/mips/kernel/r4k_switch.S
+index 65f0f91..d9bfae5 100644
+--- a/arch/mips/kernel/r4k_switch.S
++++ b/arch/mips/kernel/r4k_switch.S
+@@ -85,12 +85,7 @@
+ 	move	$28, a2
+ 	cpu_restore_nonscratch a1
+ 
+-#if (_THREAD_SIZE) < 0x10000
+-	PTR_ADDIU	t0, $28, _THREAD_SIZE - 32
+-#else
+-	PTR_LI		t0, _THREAD_SIZE - 32
+-	PTR_ADDU	t0, $28
+-#endif
++	PTR_ADDU	t0, $28, _THREAD_SIZE - 32
+ 	set_saved_sp	t0, t1, t2
+ #ifdef CONFIG_MIPS_MT_SMTC
+ 	/* Read-modify-writes of Status must be atomic on a VPE */

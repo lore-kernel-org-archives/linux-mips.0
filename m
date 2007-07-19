@@ -1,116 +1,140 @@
-Received: from smtp3.infineon.com ([203.126.106.229]:51043 "EHLO
-	smtp3.infineon.com") by ftp.linux-mips.org with ESMTP
-	id S20022116AbXGRIVq convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 18 Jul 2007 09:21:46 +0100
-Content-class: urn:content-classes:message
+Received: from bay0-omc3-s35.bay0.hotmail.com ([65.54.246.235]:27108 "EHLO
+	bay0-omc3-s35.bay0.hotmail.com") by ftp.linux-mips.org with ESMTP
+	id S20022629AbXGSURH (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 19 Jul 2007 21:17:07 +0100
+Message-ID: <BAY124-DS362D171D52D42DEA949D3DCFB0@phx.gbl>
+From: <danieljlaird@hotmail.com>
+References: <469F822D.9040209@nxp.com> <469FA03E.7070209@ru.mvista.com>
+Subject: Re: [PATCH] Fix known HW bug with MIPS core on NXP/Philips PNX8550
+Date: Thu, 19 Jul 2007 21:16:52 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: linux-2.6.20 setjmp/longjmp OR how to contain bus-error fornon-existing PCI device during PCI device scan?
-Date: Wed, 18 Jul 2007 16:20:33 +0800
-Message-ID: <31E09F73562D7A4D82119D7F6C172986019B76DC@sinse303.ap.infineon.com>
-References: <31E09F73562D7A4D82119D7F6C172986019B76D7@sinse303.ap.infineon.com> <20070717180247.GA32255@linux-mips.org>
-From: <KokHow.Teh@infineon.com>
-Return-Path: <KokHow.Teh@infineon.com>
+	format=flowed;
+	charset="iso-8859-1";
+	reply-type=response
+Content-Transfer-Encoding: 7bit
+Return-Path: <danieljlaird@hotmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20070718082033.KwAmzy8e_iL5WTxH5dIEJSYzoC_HQrExh5u29H4lJO8@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20070719201652.vhYvDKZGLj6QCoE09v5HP5BD1k7xIFK-3kIvKpDDYfE@z>
 
-Hi Ralf;
- 
->>    I am using linux-2.6.20 on MIPS24KE and I need to know what is the best way to contain bus error during PCI bus >>scan process for non-existing device? I thought of setjmp/longjmp but unfortunately, I have `googled` and `find` the >>whole kernel source tree there is no such support in the kernel for MIPS architecture. Any insight is appreciated.
+Cheers for all comments, will
+1.) remove reinvented code
+2.) Add explanation of exact bug (corruption of TLB)
+3.) Use runtime checking instead of #ifdef
+4.) Not use Thunderbird to post patches!
 
->Welcome to the kernel, there are no setjmp / longjmp.  You can can try to
->use the functions from <asm/paccess.h> to protect your memory accesses
->against bus error exceptions.  Note this won't work for cases where the
->bus error exceptions is imprecise because then the EPC for the exception
->isn't guranteed to have the proper value. 
- 
-Is there any general way to find out if the bus error exception is precise?
- 
-b7000800: <6>Bus Error!
+Cheers
+Dan
 
-Data bus error, epc == 80035ca4, ra == 8042f2dc
 
-Oops[#1]:
+----- Original Message -----
+From: "Sergei Shtylyov" <sshtylyov@ru.mvista.com>
+To: "Daniel Laird" <daniel.j.laird@nxp.com>
+Cc: <linux-mips@linux-mips.org>
+Sent: Thursday, July 19, 2007 6:32 PM
+Subject: Re: [PATCH] Fix known HW bug with MIPS core on NXP/Philips PNX8550
 
-Cpu 0
-
-$ 0 : 00000000 0000000a 0000000e 00000001
-
-$ 4 : 803b575c ffffffff 803fa314 be100c00
-
-$ 8 : 804c0000 001ac70b 0000000b 804cc6e0
-
-$12 : 804c0000 8040470c 00000002 00000000
-
-$16 : b7000800 00000000 803e0000 b7ffffff
-
-$20 : 803da18c 803b0000 00000000 00000000
-
-$24 : 804c0000 0000000c
-
-$28 : 81058000 81059f20 00000000 8042f2dc
-
-Hi : 00000000
-
-Lo : 00000000
-
-epc : 80035ca4 printk+0x4/0x28 Not tainted
-
-ra : 8042f2dc danube_pcibios_init+0x434/0x458
-
-Status: 1100fe03 KERNEL EXL IE
-
-Cause : 0080001c
-
-PrId : 00019641
-
-Modules linked in:
-
-Process swapper (pid: 1, threadinfo=81058000, task=81056868)
-
-Stack : 803fa314 be100c00 80410000 00000103 8042f2c4 8042f21c 00000000 b7000800
-
-803fa314 00000000 80408dbc 80408dc4 80436948 00000000 80430000 00000000
-
-80436b78 00000000 00000000 80002500 00000000 00000000 00000000 00000000
-
-00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-
-00000000 00000000 00000001 00000000 00000000 00000000 00000000 00000000
-
-...
-
-Call Trace:
-
-[<80035ca4>] printk+0x4/0x28
-
-[<8042f2dc>] danube_pcibios_init+0x434/0x458
-
-[<80002500>] init+0xb0/0x3b0
-
-[<8000f9b0>] kernel_thread_helper+0x10/0x18
-
- 
-
-Code: 1000fe4e 00000000 27bdffe8 <afa5001c> 27a5001c afbf0010 afa60020 0c00d55e afa70024
-
-Kernel panic - not syncing: Attempted to kill init!
-
-> The get_dbe / put_dbe functions
->are used just like get_user / put_user from <linux/uaccess.h> except that
->those are meant to protect against TLB exceptions.
-
-I used get_dbe and it still doesn't solve the problem.
-
->Or just temporarily disable the bus error in your PCI config space
->accessors.
-
-I will use this method but I need to know how to find out if the bus error exception is precise.
-
-Thanks & Regards,
-KH
+> Hello.
+>
+> Daniel Laird wrote:
+>
+> > Fix known bug with MIPS core when using TLB on NXP/Philips PNX8550
+>
+>    Would've been god to somehow document it too...
+>
+>> Signed-off-by: Daniel Laird <daniel.j.laird@nxp.com>
+>
+>> Index: linux-2.6.22.1/arch/mips/mm/tlbex.c
+>> ===================================================================
+>> --- linux-2.6.22.1/arch/mips/mm/tlbex.c    (revision 8)
+>> +++ linux-2.6.22.1/arch/mips/mm/tlbex.c    (working copy)
+> [...]
+>> @@ -705,6 +719,7 @@
+>>
+>> /* Some CP0 registers */
+>> #define C0_INDEX    0, 0
+>> +#define C0_RANDOM   1, 0
+>> #define C0_ENTRYLO0    2, 0
+>> #define C0_TCBIND    2, 2
+>> #define C0_ENTRYLO1    3, 0
+>> @@ -712,6 +727,7 @@
+>> #define C0_BADVADDR    8, 0
+>> #define C0_ENTRYHI    10, 0
+>> #define C0_EPC        14, 0
+>> +#define C0_CONFIG    16, 0
+>> #define C0_XCONTEXT    20, 0
+>>
+>> #ifdef CONFIG_64BIT
+>> @@ -734,6 +750,57 @@
+>> static __initdata struct label labels[128];
+>> static __initdata struct reloc relocs[128];
+>>
+>> +#ifdef CONFIG_PNX8550
+>> +static void __init build_pnx8550_bug_fix( u32 **p, struct label **l, 
+>> struct reloc **r)
+>> +{
+>> +#define MFC0(_reg, _cp, _sel)    \
+>> +    ((cop0_op)  << OP_SH    \
+>> +    | (mfc_op) << RS_SH    \
+>> +    | (_reg)   << RT_SH    \
+>> +    | (_cp)    << RD_SH    \
+>> +    | (_sel))
+>> +
+>> +#define MTC0(_reg, _cp, _sel)    \
+>> +    ((cop0_op)  << OP_SH    \
+>> +    | (mtc_op) << RS_SH    \
+>> +    | (_reg)   << RT_SH    \
+>> +    | (_cp)    << RD_SH    \
+>> +    | (_sel))
+>> +
+>
+>    Macro defs inside function, isn't that er... too much?
+>    And don't we already have macro M() doing exactly what these two macros 
+> are doing?
+>
+>> +    /* load epc and badvaddr to k0 and k1 */
+>> +    i_MFC0(p, K0, C0_EPC);
+>> +    i_MFC0(p, K1, C0_BADVADDR);
+>> +
+>> +    /* branch if code entry  */
+>> +    il_beq(p, r, K0, K1, label_pnx8550_bac_reset);
+>> +    i_addiu(p, K0, K0, 4);
+>> +
+>> +    /* branch if code entry in BDS */
+>> +    il_beq(p, r, K0, K1, label_pnx8550_bac_reset);
+>> +    i_nop(p);
+>> +    /* Write data tlb entry 11..31 */
+>> +    i_tlbwr(p);
+>> +    i_eret(p);
+>> +    /* BAC Reset */
+>> +    l_pnx8550_bac_reset(l, *p);
+>> +    **p = MFC0(K0, C0_CONFIG, 7);
+>> +    (*p)++;
+>
+>    Hmmm, why we need another version of i_MFC0? After looking at the 
+> currecnt code it seemed to me that i_M[FT]C0 are just using i_[d]m[ft]c0 
+> incorrectly -- 
+> those are difined to have 3 opcode args (by being built as I_u1u2u3() but 
+> only get passed 2 args.  Hmm, I don't understand how i_[d]m[ft]c0() 
+> invocations used to work before since they're alsway passing only 2 opcode 
+> args where 3 are requiered...
+>    Ah, that must be due to those tricky macros above -- with commas 
+> inside.
+> David, then this trickery is unacceptable -- add the needed macro instead; 
+> and there's no need to use i_M[FT]C0() on a 32-bit only CPU, just use 
+> i_m[ft]c0().
+>
+>> +    i_ori(p, K0, K0, (1<<14));
+>> +
+>> +    **p = MTC0(K0, C0_CONFIG, 7);
+>> +    (*p)++;
+>
+>    So, this also won't do.
+>
+> [...]
+>
+> WBR, Sergei
+>
+> 

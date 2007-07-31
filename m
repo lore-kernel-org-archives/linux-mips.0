@@ -1,105 +1,57 @@
-Received: from madara.hpl.hp.com ([192.6.19.124]:35563 "EHLO madara.hpl.hp.com")
-	by ftp.linux-mips.org with ESMTP id S20022217AbXG3JTF (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 30 Jul 2007 10:19:05 +0100
-Date: Mon, 30 Jul 2007 02:18:41 -0700
-From: Stephane Eranian <eranian@hpl.hp.com>
-Subject: Re: [PATCH] MIPS: add smp_call_function_single()
-Message-ID: <20070730091841.GC25162@frankl.hpl.hp.com>
-Reply-To: eranian@hpl.hp.com
-References: <20070727124451.GC9828@frankl.hpl.hp.com> <20070727125533.GD5118@linux-mips.org> <20070727135323.GF9828@frankl.hpl.hp.com> <20070728091950.GA4642@osiris.boeblingen.de.ibm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20070728091950.GA4642@osiris.boeblingen.de.ibm.com>
-Return-Path: <eranian@hpl.hp.com>
+Received: from [222.92.8.141] ([222.92.8.141]:52448 "HELO lemote.com")
+	by ftp.linux-mips.org with SMTP id S20021622AbXGaJiu (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 31 Jul 2007 10:38:50 +0100
+Message-ID: <46AF02D9.40803@lemote.com>
+Date: Tue, 31 Jul 2007 17:37:29 +0800
+From: Songmao Tian <tiansm@lemote.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH] 16K page size in 32 bit kernel
+References: <20070731130950.GA5540@sw-linux.com>
+In-Reply-To: <20070731130950.GA5540@sw-linux.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <tiansm@lemote.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: mucci@cs.utk.edu, pwatkins@sicortex.com, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.orgmucci@cs.utk.edu, linux-mips@linux-mips.org, ak@suse.de, akpm@linux-foundation.org, Tony Luck <tony.luck@intel.com>, Avi Kivity <avi@qumranet.com>
-Message-ID: <20070730091841.zn_m7Fg_-wpjL1vaeYMgohwcB1d8_p7oM9UGHkSdo-8@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips <linux-mips@linux-mips.org>
+Message-ID: <20070731093729.8FvijgJUmAVxTcjW8p95m0Wzi1QnnnJuOueTU0jmtWY@z>
 
-Hello,
+Thanks Dajie:)
 
-Thanks for catching this. We will resubmit an updated version.
+With 22 PGDIR_SHIFT, 15 extra page tables is populated when a whole 64M 
+address space is accessed, the patch can save memory quite a bit:)
 
-PHil, Peter, would you be able/willing to do this?
-
-thanks.
-
-On Sat, Jul 28, 2007 at 11:19:50AM +0200, Heiko Carstens wrote:
-> On Fri, Jul 27, 2007 at 06:53:23AM -0700, Stephane Eranian wrote:
-> > Ralf,
-> > 
-> > Here is take 2.
-> > 
-> > [MIPS] add smp_call_function_single (take 2)
-> > 
-> > signed-off-by: Stephane Eranian <eranian@hpl.hp.com>
-> > signed-off-by: Phil Mucci <mucci@cs.utk.edu>
-> > 
-> > diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-> > index be7362b..d47234c 100644
-> > --- a/arch/mips/kernel/smp.c
-> > +++ b/arch/mips/kernel/smp.c
-> > @@ -193,6 +193,53 @@ void smp_call_function_interrupt(void)
-> >  	}
-> >  }
-> > 
-> > +int smp_call_function_single(int cpu, void (*func) (void *info), void *info, int retry,
-> > +			     int wait)
-> > +{
-> > +	struct call_data_struct data;
-> > +	int me = smp_processor_id();
-> > +
-> > +	/*
-> > +	 * Can die spectacularly if this CPU isn't yet marked online
-> > +	 */
-> > +	BUG_ON(!cpu_online(me));
-> > +	if (cpu == me) {
-> > +		WARN_ON(1);
-> > +		return -EBUSY;
-> > +	}
-> > +
-> > +	/* Can deadlock when called with interrupts disabled */
-> > +	WARN_ON(irqs_disabled());
-> > +
-> > +	data.func = func;
-> > +	data.info = info;
-> > +	atomic_set(&data.started, 0);
-> > +	data.wait = wait;
-> > +	if (wait)
-> > +		atomic_set(&data.finished, 0);
-> > +
-> > +	spin_lock(&smp_call_lock);
-> > +	call_data = &data;
-> > +	mb();
-> > +
-> > +	/* Send a message to the other CPU */
-> > +	core_send_ipi(cpu, SMP_CALL_FUNCTION);
-> > +
-> > +	/* Wait for response */
-> > +	/* FIXME: lock-up detection, backtrace on lock-up */
-> > +	while (atomic_read(&data.started) != 1)
-> > +		barrier();
-> > +
-> > +	if (wait)
-> > +		while (atomic_read(&data.finished) != 1)
-> > +			barrier();
-> > +	call_data = NULL;
-> > +	spin_unlock(&smp_call_lock);
-> > +
-> > +	return 0;
-> > +}
-> > +EXPORT_SYMBOL(smp_call_function_single);
-> > +
-> >  static void stop_this_cpu(void *dummy)
-> >  {
-> 
-> This will not do the right thing. Semantics of smp_call_function_single()
-> changed recently. It now is supposed to call func() locally with irqs
-> disabled if cpu == smp_processor_id(). See i386/x86_64 and powerpc.
-> Unfortunately ia64 hasn't been changed yet, so it will behave differently.
-
--- 
-
--Stephane
+Dajie Tan wrote:
+> 32-bit Kernel for loongson2e currently use 16KB page size to avoid
+> cache alias problem.So, the definiton of PGDIR_SHIFT muse be 12+14.
+>
+> Using 22 in 16K page size do not lead to a serious problem but the number
+> of pages allocated for page table is more than previous. (cat
+> /proc/vmstat | grep nr_page_table_pages)
+>
+> It's been tested on FuLong mini PC(loongson2e inside).
+>
+>
+> Signed-off-by: Dajie Tan <jiankemeng@gmail.com>
+> ---
+>  include/asm-mips/pgtable-32.h |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/include/asm-mips/pgtable-32.h b/include/asm-mips/pgtable-32.h
+> index 2fbd47e..8d34ebf 100644
+> --- a/include/asm-mips/pgtable-32.h
+> +++ b/include/asm-mips/pgtable-32.h
+> @@ -46,7 +46,7 @@ extern int add_temporary_entry(unsigned long entrylo0, unsigned long entrylo1,
+>  #ifdef CONFIG_64BIT_PHYS_ADDR
+>  #define PGDIR_SHIFT	21
+>  #else
+> -#define PGDIR_SHIFT	22
+> +#define PGDIR_SHIFT	(PAGE_SHIFT + (PAGE_SHIFT + PTE_ORDER - 2))
+>  #endif
+>  #define PGDIR_SIZE	(1UL << PGDIR_SHIFT)
+>  #define PGDIR_MASK	(~(PGDIR_SIZE-1))
+>
+>
+>
+>
+>   

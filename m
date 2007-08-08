@@ -1,57 +1,133 @@
-Received: from [222.92.8.141] ([222.92.8.141]:52448 "HELO lemote.com")
-	by ftp.linux-mips.org with SMTP id S20021622AbXGaJiu (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 31 Jul 2007 10:38:50 +0100
-Message-ID: <46AF02D9.40803@lemote.com>
-Date: Tue, 31 Jul 2007 17:37:29 +0800
-From: Songmao Tian <tiansm@lemote.com>
+Received: from mx.mips.com ([63.167.95.198]:7165 "EHLO dns0.mips.com")
+	by ftp.linux-mips.org with ESMTP id S20026876AbXHHMdo (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 8 Aug 2007 13:33:44 +0100
+Message-ID: <010a01c7d9b7$49c5a280$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <1186573652.31136.19.camel@euskadi> <c58a7a270708080501i61d0cd32q6d5b2795877f4fd1@mail.gmail.com>
+Subject: Re: [Fwd: Problems with NFS boot]
+Date: Wed, 8 Aug 2007 14:26:02 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH] 16K page size in 32 bit kernel
-References: <20070731130950.GA5540@sw-linux.com>
-In-Reply-To: <20070731130950.GA5540@sw-linux.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <tiansm@lemote.com>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips <linux-mips@linux-mips.org>
-Message-ID: <20070731093729.8FvijgJUmAVxTcjW8p95m0Wzi1QnnnJuOueTU0jmtWY@z>
+To: Alex Gonzalez <langabe@gmail.com>, bamakhrama@gmail.com, linux-mips@linux-mips.org
+Message-ID: <20070808122602.Pfrv7KL9UDxQRE3WgdyPdRppAjoGhcx_c_ECOphtpz4@z>
 
-Thanks Dajie:)
+Yeah, I saw that the missing colon before the root path was the fatal typo
+that Ralf mentioned, but I was also a bit worried about not seeing the net
+device name at the end of the string. 
 
-With 22 PGDIR_SHIFT, 15 extra page tables is populated when a whole 64M 
-address space is accessed, the patch can save memory quite a bit:)
+----- Original Message ----- 
+From: "Alex Gonzalez" <langabe@gmail.com>
+To: <bamakhrama@gmail.com>; <linux-mips@linux-mips.org>
+Sent: Wednesday, August 08, 2007 2:01 PM
+Subject: Fwd: [Fwd: Problems with NFS boot]
 
-Dajie Tan wrote:
-> 32-bit Kernel for loongson2e currently use 16KB page size to avoid
-> cache alias problem.So, the definiton of PGDIR_SHIFT muse be 12+14.
->
-> Using 22 in 16K page size do not lead to a serious problem but the number
-> of pages allocated for page table is more than previous. (cat
-> /proc/vmstat | grep nr_page_table_pages)
->
-> It's been tested on FuLong mini PC(loongson2e inside).
->
->
-> Signed-off-by: Dajie Tan <jiankemeng@gmail.com>
-> ---
->  include/asm-mips/pgtable-32.h |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/include/asm-mips/pgtable-32.h b/include/asm-mips/pgtable-32.h
-> index 2fbd47e..8d34ebf 100644
-> --- a/include/asm-mips/pgtable-32.h
-> +++ b/include/asm-mips/pgtable-32.h
-> @@ -46,7 +46,7 @@ extern int add_temporary_entry(unsigned long entrylo0, unsigned long entrylo1,
->  #ifdef CONFIG_64BIT_PHYS_ADDR
->  #define PGDIR_SHIFT	21
->  #else
-> -#define PGDIR_SHIFT	22
-> +#define PGDIR_SHIFT	(PAGE_SHIFT + (PAGE_SHIFT + PTE_ORDER - 2))
->  #endif
->  #define PGDIR_SIZE	(1UL << PGDIR_SHIFT)
->  #define PGDIR_MASK	(~(PGDIR_SIZE-1))
->
->
->
->
->   
+
+> Hi,
+> 
+> I am NFS booting with
+> 
+> root=/dev/nfs nfsroot=192.168.2.30:/tftpboot/rootfs
+> ip=192.168.2.31:192.168.2.30::::eth0
+> 
+> See if it helps,
+> Alex
+> -----------------------------
+> 
+> 
+> Hi list,
+> I have a Malta board for which I was able to build the kernel, load it
+> and start it. The problem comes when it tries to boot through the NFS.
+> 
+> I start the kernel with the following command:
+> go . nfsroot=192.168.1.1/mnt/danube_rootfs ip=192.168.1.4:192.168.1.1:::
+> 
+> The kernel starts up and I get the following output:
+> 
+> ***** BEGIN OUTPUT *****
+> YAMON> go . nfsroot=192.168.1.1/mnt/danube_rootfs ip=192.168.1.4:192.168.1.1:::
+> Linux version 2.6.22.1-default (danube@peng) (gcc version 3.3.6) #3 Tue Aug 7 18
+> :59:37 CEST 2007
+> 
+> LINUX started...
+> Config serial console: console=ttyS0,38400n8r
+> CPU revision is: 00019640
+> Determined physical RAM map:
+> memory: 00001000 @ 00000000 (reserved)
+> memory: 000ef000 @ 00001000 (ROM data)
+> memory: 003cc000 @ 000f0000 (reserved)
+> memory: 03b43000 @ 004bc000 (usable)
+> Wasting 38784 bytes for tracking 1212 unused pages
+> Initrd not found or empty - disabling initrd
+> Built 1 zonelists.  Total pages: 16256
+> Kernel command line: nfsroot=192.168.1.1/mnt/danube_rootfs ip=192.168.1.4:192.16
+> 8.1.1::: console=ttyS0,38400n8r
+> Primary instruction cache 64kB, physically tagged, 4-way, linesize 32 bytes.
+> Primary data cache 64kB, 4-way, linesize 32 bytes.
+> Synthesized TLB refill handler (20 instructions).
+> Synthesized TLB load handler fastpath (32 instructions).
+> Synthesized TLB store handler fastpath (32 instructions).
+> Synthesized TLB modify handler fastpath (31 instructions).
+> Cache parity protection disabled
+> PID hash table entries: 256 (order: 8, 1024 bytes)
+> CPU frequency 33.00 MHz
+> Using 16.501 MHz high precision timer.
+> console handover: boot [early0] -> real [ttyS0]
+> Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
+> Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
+> Memory: 60096k/60684k available (2684k kernel code, 572k reserved, 695k data, 15
+> 6k init, 0k highmem)
+> Security Framework v1.0.0 initialized
+> Mount-cache hash table entries: 512
+> NET: Registered protocol family 16
+> SCSI subsystem initialized
+> Time: MIPS clocksource has been installed.
+> NET: Registered protocol family 2
+> IP route cache hash table entries: 1024 (order: 0, 4096 bytes)
+> TCP established hash table entries: 2048 (order: 2, 16384 bytes)
+> TCP bind hash table entries: 2048 (order: 1, 8192 bytes)
+> TCP: Hash tables configured (established 2048 bind 2048)
+> TCP reno registered
+> audit: initializing netlink socket (disabled)
+> audit(1186573381.443:1): initialized
+> VFS: Disk quotas dquot_6.5.1
+> Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
+> Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
+> io scheduler noop registered
+> io scheduler anticipatory registered
+> io scheduler deadline registered
+> io scheduler cfq registered (default)
+> rtc: SRM (post-2000) epoch (2000) detected
+> Real Time Clock Driver v1.12ac
+> Serial: 8250/16550 driver $Revision: 1.90 $ 4 ports, IRQ sharing enabled
+> serial8250: ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A
+> serial8250: ttyS1 at I/O 0x2f8 (irq = 3) is a 16550A
+> RAMDISK driver initialized: 16 RAM disks of 64000K size 1024 blocksize
+> serio: i8042 KBD port at 0x60,0x64 irq 1
+> serio: i8042 AUX port at 0x60,0x64 irq 12
+> mice: PS/2 mouse device common for all mice
+> atkbd.c: keyboard reset failed on isa0060/serio0
+> atkbd.c: keyboard reset failed on isa0060/serio1
+> oprofile: using mips/24K performance monitoring.
+> NET: Registered protocol family 1
+> md: Autodetecting RAID arrays.
+> md: autorun ...
+> md: ... autorun DONE.
+> VFS: Cannot open root device "<NULL>" or unknown-block(0,0)
+> Please append a correct "root=" boot option; here are the available partitions:
+> Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
+> ***** END OUTPUT *****
+> 
+> 
+> 
+> I am sure that all my NFS settings are correct since I have another
+> board which is working fine with that server. Does anyone know how to
+> boot the board over NFS?
+> 
+> Best regards,
+> 
+> 

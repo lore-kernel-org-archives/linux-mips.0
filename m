@@ -1,133 +1,91 @@
-Received: from host78-221-dynamic.2-87-r.retail.telecomitalia.it ([87.2.221.78]:51978
-	"EHLO eppesuigoccas.homedns.org") by ftp.linux-mips.org with ESMTP
-	id S20022321AbXH3MzS (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 30 Aug 2007 13:55:18 +0100
-Received: from eppesuig3 ([192.168.2.50])
-	by eppesuigoccas.homedns.org with esmtpsa (TLS-1.0:RSA_ARCFOUR_MD5:16)
-	(Exim 4.63)
-	(envelope-from <giuseppe@eppesuigoccas.homedns.org>)
-	id 1IQjVA-00012g-04
-	for linux-mips@linux-mips.org; Thu, 30 Aug 2007 14:52:02 +0200
-Subject: Re: Exception while loading kernel
-From: Giuseppe Sacco <giuseppe@eppesuigoccas.homedns.org>
-In-Reply-To: <F288AA63-099B-4140-81B2-6A8E21887057@27m.se>
-References: <1188030215.13999.14.camel@scarafaggio>
-	 <1188196563.2177.13.camel@scarafaggio>  <46D2CB0F.7020505@27m.se>
-	 <1188321514.6882.3.camel@scarafaggio>
-	 <F288AA63-099B-4140-81B2-6A8E21887057@27m.se>
-Content-Type: text/plain
-Date: Thu, 30 Aug 2007 14:52:22 +0200
-Message-ID: <1188478342.6770.14.camel@scarafaggio>
-Mime-Version: 1.0
+Received: from dns0.mips.com ([63.167.95.198]:43925 "EHLO dns0.mips.com")
+	by ftp.linux-mips.org with ESMTP id S20024666AbXIDKLE (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 4 Sep 2007 11:11:04 +0100
+Message-ID: <006901c7eeda$d8049a50$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <46DD1CD1.5040306@windriver.com>
+Subject: Re: [PATCH] malta4kec hang in calibrate_delay fix
+Date: Tue, 4 Sep 2007 12:03:27 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-Path: <giuseppe@eppesuigoccas.homedns.org>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20070830125222.JZ4h_zmW3vODLf1BbPkOIwYGHFuT2bAENV7LxsN31zg@z>
+To: yshi <yang.shi@windriver.com>, linux-mips@linux-mips.org
+Message-ID: <20070904100327.95h5csC7k_h8xxQ6bQ725JyTPkPrGjFZWk4LEY5z4s8@z>
 
-Hi Markus,
+The 4KEc is a MIPS32 Release 2 processor, for which the implementation
+of the Cause.TI bit (bit 30) is required.  You may have a defective board
+or a bad FPGA bitfile.  Please work with your support contacts at MIPS
+to verify that this is not the case.  It may also be that there's something more
+subtle going on in the interrupt processing, such that the Cause.TI bit is being
+cleared before it can be sampled by the code you've changed.  But while the
+patch below presumably solves the symptoms of your problem, I really
+don't think that a kernel hack based on detecting CoreFPA3 is an appropriate
+solution.  I work every day with Malta/CoreFPGA3 bitfiles and have not
+seen Cause.TI fail to function in any of the Release 2 core bitfiles I've used.
 
-Il giorno mer, 29/08/2007 alle 04.25 +0200, Markus Gothe ha scritto:
-> Use gdb and list the read address.
+            Regards,
 
-I think I understood what you mean. I recompiled the kernel adding the
-debug symbols, stripped it and booted with it.
-There I got those numbers (using the 32bit version):
+            Kevin K.
 
-Exception PC: 0x8021c9fc, Exception RA: 0x804ddc6c
-gpda 0x81060e08, _regs 0x81061008
-arg: 81070000 0 80503518 1
-tmp: 81070000 1000 8051a868 fff8054f ffffffff 81412ef4 a13fab68 7
-sve: 81070000 4083ae51 0 4608a976 0 4085cc91 0 3ed97758
-
-then run gdb and issue those commands:
-
-(gdb) info symbol 0x8021c9fc
-__bzero + 56 in section .text
-(gdb) info symbol 0x804ddc6c
-init_bootmem_core + 196 in section .init.text
-(gdb) list *0x804ddc6c
-0x804ddc6c is in init_bootmem_core (mm/bootmem.c:107).
-102              */
-103             mapsize = get_mapsize(bdata);
-104             memset(bdata->node_bootmem_map, 0xff, mapsize);
-105
-106             return mapsize;
-107     }
-108
-109     /*
-110      * Marks a particular physical memory range as unallocatable. Usable RAM
-111      * might be used for boot-time allocations - or it might get added
-(gdb) list *0x8021c9fc
-No source file for address 0x8021c9fc.
-(gdb) disassemble 0x804ddc6c
-Dump of assembler code for function init_bootmem_core:
-0xffffffff804ddba8 <init_bootmem_core+0>:       daddiu  sp,sp,-32
-0xffffffff804ddbac <init_bootmem_core+4>:       sd      ra,16(sp)
-0xffffffff804ddbb0 <init_bootmem_core+8>:       sd      s1,8(sp)
-0xffffffff804ddbb4 <init_bootmem_core+12>:      sd      s0,0(sp)
-0xffffffff804ddbb8 <init_bootmem_core+16>:      li      v0,-13
-0xffffffff804ddbbc <init_bootmem_core+20>:      ld      s1,648(a0)
-0xffffffff804ddbc0 <init_bootmem_core+24>:      dsll    a1,a1,0xc
-0xffffffff804ddbc4 <init_bootmem_core+28>:      dsll32  v0,v0,0x1b
-0xffffffff804ddbc8 <init_bootmem_core+32>:      daddu   a1,a1,v0
-0xffffffff804ddbcc <init_bootmem_core+36>:      dsll    a2,a2,0xc
-0xffffffff804ddbd0 <init_bootmem_core+40>:      sd      a1,16(s1)
-0xffffffff804ddbd4 <init_bootmem_core+44>:      sd      a3,8(s1)
-0xffffffff804ddbd8 <init_bootmem_core+48>:      sd      a2,0(s1)
-0xffffffff804ddbdc <init_bootmem_core+52>:      lui     v1,0x0
-0xffffffff804ddbe0 <init_bootmem_core+56>:      lui     at,0x8049
-0xffffffff804ddbe4 <init_bootmem_core+60>:      daddiu  v1,v1,0
-0xffffffff804ddbe8 <init_bootmem_core+64>:      dsll32  v1,v1,0x0
-0xffffffff804ddbec <init_bootmem_core+68>:      daddu   v1,v1,at
-0xffffffff804ddbf0 <init_bootmem_core+72>:      ld      v1,2112(v1)
-0xffffffff804ddbf4 <init_bootmem_core+76>:      lui     a1,0x0
-0xffffffff804ddbf8 <init_bootmem_core+80>:      lui     at,0x8049
-0xffffffff804ddbfc <init_bootmem_core+84>:      daddiu  a1,a1,0
-0xffffffff804ddc00 <init_bootmem_core+88>:      daddiu  at,at,2112
-0xffffffff804ddc04 <init_bootmem_core+92>:      dsll32  a1,a1,0x0
-0xffffffff804ddc08 <init_bootmem_core+96>:      daddu   a1,a1,at
-0xffffffff804ddc0c <init_bootmem_core+100>:     bnel    v1,a1,0x804ddc88 <init_bootmem_core+224>
-0xffffffff804ddc10 <init_bootmem_core+104>:     ld      v0,-48(v1)
-0xffffffff804ddc14 <init_bootmem_core+108>:     daddiu  v0,s1,48
-0xffffffff804ddc18 <init_bootmem_core+112>:     sd      a1,48(s1)
-0xffffffff804ddc1c <init_bootmem_core+116>:     move    a0,s1
-0xffffffff804ddc20 <init_bootmem_core+120>:     lui     at,0x0
-0xffffffff804ddc24 <init_bootmem_core+124>:     daddiu  at,at,0
-0xffffffff804ddc28 <init_bootmem_core+128>:     dsll    at,at,0x10
-0xffffffff804ddc2c <init_bootmem_core+132>:     daddiu  at,at,-32695
-0xffffffff804ddc30 <init_bootmem_core+136>:     dsll    at,at,0x10
-0xffffffff804ddc34 <init_bootmem_core+140>:     sd      v0,2120(at)
-0xffffffff804ddc38 <init_bootmem_core+144>:     lui     at,0x0
-0xffffffff804ddc3c <init_bootmem_core+148>:     daddiu  at,at,0
-0xffffffff804ddc40 <init_bootmem_core+152>:     dsll    at,at,0x10
-0xffffffff804ddc44 <init_bootmem_core+156>:     daddiu  at,at,-32695
-0xffffffff804ddc48 <init_bootmem_core+160>:     dsll    at,at,0x10
-0xffffffff804ddc4c <init_bootmem_core+164>:     sd      v0,2112(at)
-0xffffffff804ddc50 <init_bootmem_core+168>:     jal     0x804dd5c8 <get_mapsize>
-0xffffffff804ddc54 <init_bootmem_core+172>:     sd      a1,8(v0)
-0xffffffff804ddc58 <init_bootmem_core+176>:     ld      a0,16(s1)
-0xffffffff804ddc5c <init_bootmem_core+180>:     move    s0,v0
-0xffffffff804ddc60 <init_bootmem_core+184>:     li      a1,255
-0xffffffff804ddc64 <init_bootmem_core+188>:     jal     0x8021c9a0 <memset>
-0xffffffff804ddc68 <init_bootmem_core+192>:     move    a2,v0
-0xffffffff804ddc6c <init_bootmem_core+196>:     move    v0,s0
-0xffffffff804ddc70 <init_bootmem_core+200>:     ld      ra,16(sp)
-0xffffffff804ddc74 <init_bootmem_core+204>:     ld      s1,8(sp)
-0xffffffff804ddc78 <init_bootmem_core+208>:     ld      s0,0(sp)
-0xffffffff804ddc7c <init_bootmem_core+212>:     jr      ra
-[...]
-(gdb) info line *0x804ddc6c
-Line 107 of "mm/bootmem.c" starts at address 0x804ddc6c <init_bootmem_core+196> and ends at 0x804ddc88 <init_bootmem_core+224>.
-(gdb) info line *0x804ddc6b
-Line 104 of "mm/bootmem.c" starts at address 0x804ddc60 <init_bootmem_core+184> and ends at 0x804ddc6c <init_bootmem_core+196>.
+----- Original Message ----- 
+From: "yshi" <yang.shi@windriver.com>
+To: <linux-mips@linux-mips.org>
+Sent: Tuesday, September 04, 2007 10:52 AM
+Subject: [PATCH] malta4kec hang in calibrate_delay fix
 
 
-So, it this what you requested?
-
-From what I understand the problem may be that bdata->node_bootmem_map
-maybe incorrectly initialised for this machine.
-
-Bye,
-Giuseppe
+> perfmon2 patch changed timer interrupt handler of malta board.
+> When kernel handles timer interrupt, interrupt handler will read 30 bit
+> of cause register. If this bit is zero, timer interrupt handler will
+> exit, won't really handle interrupt. Because Malta 4kec board's core
+> revision is CoreFPGA-3, this core's cause register doesn't implement 30
+> bit, so kernel always read zero from this bit. This will cause kernel
+> hang in calibrate_delay.
+> 
+> Signed-off-by: Yang Shi <yang.shi@windriver.com>
+> ---
+> b/arch/mips/mips-boards/generic/time.c |   17 ++++++++++++-----
+> 1 file changed, 12 insertions(+), 5 deletions(-)
+> ---
+> 
+> --- a/arch/mips/mips-boards/generic/time.c
+> +++ b/arch/mips/mips-boards/generic/time.c
+> @@ -136,11 +136,13 @@ irqreturn_t mips_timer_interrupt(int irq
+> #else /* CONFIG_MIPS_MT_SMTC */
+>       int r2 = cpu_has_mips_r2;
+> 
+> -       if (handle_perf_irq(r2))
+> -               goto out;
+> +       if (mips_revision_corid != MIPS_REVISION_CORID_CORE_FPGA3) {
+> +               if (handle_perf_irq(r2))
+> +                       goto out;
+> 
+> -       if (r2 && ((read_c0_cause() & (1 << 30)) == 0))
+> -               goto out;
+> +               if (r2 && ((read_c0_cause() & (1 << 30)) == 0))
+> +                       goto out;
+> +       }
+> 
+>       if (cpu == 0) {
+>               /*
+> @@ -294,7 +296,12 @@ void __init plat_timer_setup(struct irqa
+>       {
+>               if (cpu_has_vint)
+>                       set_vi_handler(cp0_compare_irq, mips_timer_dispatch);
+> -               mips_cpu_timer_irq = MIPS_CPU_IRQ_BASE + cp0_compare_irq;
+> +
+> +               if (mips_revision_corid != MIPS_REVISION_CORID_CORE_FPGA3)
+> +                       mips_cpu_timer_irq = MIPS_CPU_IRQ_BASE + 
+> cp0_compare_irq;
+> +               else
+> +                       mips_cpu_timer_irq = MIPS_CPU_IRQ_BASE +
+> +                                            CP0_LEGACY_COMPARE_IRQ;
+>       }
+> 
+>       /* we are using the cpu counter for timer interrupts */
+> 
+> 

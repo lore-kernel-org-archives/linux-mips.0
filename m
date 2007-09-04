@@ -1,91 +1,46 @@
-Received: from dns0.mips.com ([63.167.95.198]:43925 "EHLO dns0.mips.com")
-	by ftp.linux-mips.org with ESMTP id S20024666AbXIDKLE (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 4 Sep 2007 11:11:04 +0100
-Message-ID: <006901c7eeda$d8049a50$10eca8c0@grendel>
+Received: from mx.mips.com ([63.167.95.198]:16534 "EHLO dns0.mips.com")
+	by ftp.linux-mips.org with ESMTP id S20024655AbXIDLVb (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 4 Sep 2007 12:21:31 +0100
+Message-ID: <006f01c7eee5$bbe77c60$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <46DD1CD1.5040306@windriver.com>
+References: <46DD1CD1.5040306@windriver.com> <006901c7eeda$d8049a50$10eca8c0@grendel> <1188901951.4106.16.camel@yshi.CORP>
 Subject: Re: [PATCH] malta4kec hang in calibrate_delay fix
-Date: Tue, 4 Sep 2007 12:03:27 +0200
+Date: Tue, 4 Sep 2007 13:21:24 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: yshi <yang.shi@windriver.com>, linux-mips@linux-mips.org
-Message-ID: <20070904100327.95h5csC7k_h8xxQ6bQ725JyTPkPrGjFZWk4LEY5z4s8@z>
+To: yshi <yang.shi@windriver.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20070904112124.wsTq9LV1uIF47wZAeqRqJszmxkjiJtD6Atvj54KLGKk@z>
 
-The 4KEc is a MIPS32 Release 2 processor, for which the implementation
-of the Cause.TI bit (bit 30) is required.  You may have a defective board
-or a bad FPGA bitfile.  Please work with your support contacts at MIPS
-to verify that this is not the case.  It may also be that there's something more
-subtle going on in the interrupt processing, such that the Cause.TI bit is being
-cleared before it can be sampled by the code you've changed.  But while the
-patch below presumably solves the symptoms of your problem, I really
-don't think that a kernel hack based on detecting CoreFPA3 is an appropriate
-solution.  I work every day with Malta/CoreFPGA3 bitfiles and have not
-seen Cause.TI fail to function in any of the Release 2 core bitfiles I've used.
+> 在 2007-09-04二的 12:03 +0200，Kevin D. Kissell写道：
+> > The 4KEc is a MIPS32 Release 2 processor, for which the implementation
+> > of the Cause.TI bit (bit 30) is required.  You may have a defective board
+> > or a bad FPGA bitfile.  Please work with your support contacts at MIPS
+> > to verify that this is not the case.  It may also be that there's something more
+> > subtle going on in the interrupt processing, such that the Cause.TI bit is being
+> > cleared before it can be sampled by the code you've changed.  But while the
+> > patch below presumably solves the symptoms of your problem, I really
+> > don't think that a kernel hack based on detecting CoreFPA3 is an appropriate
+> > solution.  I work every day with Malta/CoreFPGA3 bitfiles and have not
+> > seen Cause.TI fail to function in any of the Release 2 core bitfiles I've used.
+>
+> My board's core is Release 1 core. So Cause.TI bit always is zero. Maybe
+> I need update this patch to reflect this, i.e add #ifdef to distinguish
+> Release 1 and Release 2. Thanks.
+
+In that case, your core is a 4Kc and not a 4KEc.  The "r2" value in the
+code you're looking at should therefore be zero.  I don't have the rest
+of the kernel tree you're using in front of me, but I can't help but suspect
+that either cpu_has_mips_r2 has a broken definition, or that handle_iperf_irq()
+isn't correctly setting its return value if the r2 argument is zero.  There
+should in principle be no need to add more #ifdefs than there already are
+in the code in question.
 
             Regards,
 
             Kevin K.
-
------ Original Message ----- 
-From: "yshi" <yang.shi@windriver.com>
-To: <linux-mips@linux-mips.org>
-Sent: Tuesday, September 04, 2007 10:52 AM
-Subject: [PATCH] malta4kec hang in calibrate_delay fix
-
-
-> perfmon2 patch changed timer interrupt handler of malta board.
-> When kernel handles timer interrupt, interrupt handler will read 30 bit
-> of cause register. If this bit is zero, timer interrupt handler will
-> exit, won't really handle interrupt. Because Malta 4kec board's core
-> revision is CoreFPGA-3, this core's cause register doesn't implement 30
-> bit, so kernel always read zero from this bit. This will cause kernel
-> hang in calibrate_delay.
-> 
-> Signed-off-by: Yang Shi <yang.shi@windriver.com>
-> ---
-> b/arch/mips/mips-boards/generic/time.c |   17 ++++++++++++-----
-> 1 file changed, 12 insertions(+), 5 deletions(-)
-> ---
-> 
-> --- a/arch/mips/mips-boards/generic/time.c
-> +++ b/arch/mips/mips-boards/generic/time.c
-> @@ -136,11 +136,13 @@ irqreturn_t mips_timer_interrupt(int irq
-> #else /* CONFIG_MIPS_MT_SMTC */
->       int r2 = cpu_has_mips_r2;
-> 
-> -       if (handle_perf_irq(r2))
-> -               goto out;
-> +       if (mips_revision_corid != MIPS_REVISION_CORID_CORE_FPGA3) {
-> +               if (handle_perf_irq(r2))
-> +                       goto out;
-> 
-> -       if (r2 && ((read_c0_cause() & (1 << 30)) == 0))
-> -               goto out;
-> +               if (r2 && ((read_c0_cause() & (1 << 30)) == 0))
-> +                       goto out;
-> +       }
-> 
->       if (cpu == 0) {
->               /*
-> @@ -294,7 +296,12 @@ void __init plat_timer_setup(struct irqa
->       {
->               if (cpu_has_vint)
->                       set_vi_handler(cp0_compare_irq, mips_timer_dispatch);
-> -               mips_cpu_timer_irq = MIPS_CPU_IRQ_BASE + cp0_compare_irq;
-> +
-> +               if (mips_revision_corid != MIPS_REVISION_CORID_CORE_FPGA3)
-> +                       mips_cpu_timer_irq = MIPS_CPU_IRQ_BASE + 
-> cp0_compare_irq;
-> +               else
-> +                       mips_cpu_timer_irq = MIPS_CPU_IRQ_BASE +
-> +                                            CP0_LEGACY_COMPARE_IRQ;
->       }
-> 
->       /* we are using the cpu counter for timer interrupts */
-> 
-> 

@@ -1,11 +1,11 @@
-Received: from dns0.mips.com ([63.167.95.198]:30870 "EHLO dns0.mips.com")
-	by ftp.linux-mips.org with ESMTP id S20024700AbXIDLza (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 4 Sep 2007 12:55:30 +0100
-Message-ID: <009201c7eee9$6ea3d5d0$10eca8c0@grendel>
+Received: from mx.mips.com ([63.167.95.198]:46742 "EHLO dns0.mips.com")
+	by ftp.linux-mips.org with ESMTP id S20024722AbXIDMTg (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 4 Sep 2007 13:19:36 +0100
+Message-ID: <00a601c7eeed$d8095aa0$10eca8c0@grendel>
 From: "Kevin D. Kissell" <kevink@mips.com>
-References: <46DD1CD1.5040306@windriver.com> <006901c7eeda$d8049a50$10eca8c0@grendel> <1188901951.4106.16.camel@yshi.CORP> <006f01c7eee5$bbe77c60$10eca8c0@grendel> <20070904113325.GA6904@alpha.franken.de>
+References: <46DD1CD1.5040306@windriver.com> <006901c7eeda$d8049a50$10eca8c0@grendel> <1188901951.4106.16.camel@yshi.CORP> <006f01c7eee5$bbe77c60$10eca8c0@grendel> <20070904115527.GA848@networkno.de> <46DD49B9.2090306@mips.com>
 Subject: Re: [PATCH] malta4kec hang in calibrate_delay fix
-Date: Tue, 4 Sep 2007 13:47:53 +0200
+Date: Tue, 4 Sep 2007 14:19:28 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -13,24 +13,42 @@ Content-Transfer-Encoding: 7bit
 Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Nigel Stephens <nigel@mips.com>, Thiemo Seufer <ths@networkno.de>
 Cc: yshi <yang.shi@windriver.com>, linux-mips@linux-mips.org
-Message-ID: <20070904114753.mwTIj8MGwYISjr395bCjH8Wmh_pnowpxBjoo2se5jpA@z>
+Message-ID: <20070904121928.ZUF57rpCGVbXPO4U87vxgl3uM4Pxz1Ydj7CMrJDrU_U@z>
 
-> > In that case, your core is a 4Kc and not a 4KEc.  The "r2" value in the
+> >> In that case, your core is a 4Kc and not a 4KEc.    
+> >
+> > Not quite true, early revisions of the 4KEc were only release 1. This
+> > seems to be a bug in arch/mips/cpu-probe.c:
+> >
+> > static inline void cpu_probe_mips(struct cpuinfo_mips *c)
+> > {
+> >         decode_configs(c);
+> >         switch (c->processor_id & 0xff00) {
+> >         case PRID_IMP_4KC:
+> >                 c->cputype = CPU_4KC;
+> >                 break;
+> >         case PRID_IMP_4KEC:
+> >                 c->cputype = CPU_4KEC;
+> >                 break;
+> >         case PRID_IMP_4KECR2:
+> >                 c->cputype = CPU_4KEC;
+> >                 break;
+> > ...
+> >
+> > The type for PRID_IMP_4KEC should be CPU_4KC.
+> >
+> >   
 > 
-> does that mean all 4KEc must support MIPS32R2 ? TI claims to use
-> an 4KEc core for their AR7/UR8 SoCs, but they only support MIPS32R1.
+> Maybe the probing code should read the ISA revision level from the AR 
+> bits (12:10) of the Config0 register to figure out which revision of the 
+> ISA is implemented.
 
-There are two main differences between the 4K and the 4KE:  Write-back
-caches and MIPS32R2.  I honestly don't know if it's possible to synthesise
-a 4KE so as to inhibit the MIPS32R2 features, but it would be a surprising
-thing to do.  I have no idea what TI actually does, but I could imagine,
-hypothetically, a customer who had done a design based around the original
-4K, and who upgraded it to the 4KE, deciding not to upgrade their chip-level
-testing to cover the Release 2 features, and therefore not wanting to guarantee
-them for their customers.  These things happen.  But, again, I have no idea what
-TI actually does.  I *do* know that the 4KE is a Release 2 part.
+It does.  c->cputype isn't what needs to be modulated here, it's c->isa_level,
+which gets decoded as part of decode_configs(), as near as I can tell correctly
+in the most recent source tree I've got. And it's isa_level that's being tested
+by the cpu_has_mips32r2 et. al. macros.
 
             Regards,
 

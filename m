@@ -1,436 +1,125 @@
-Received: from general-networks3.cust.sloane.cz ([88.146.176.14]:16621 "EHLO
-	server.generalnetworks.cz") by ftp.linux-mips.org with ESMTP
-	id S20023261AbXIHUAs (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Sat, 8 Sep 2007 21:00:48 +0100
-Message-ID: <276116173913632310@pripojeni.net>
-In-reply-to: <30483262301654323266@pripojeni.net>
-Subject: [PATCH 2/2] forbid asm/bitops.h direct inclusion
-From: Jiri Slaby <jirislaby@gmail.com>
-Date: Sat, 8 Sep 2007 21:00:48 +0100
-Return-Path: <xslaby@fi.muni.cz>
+Received: from wip-cdc-wd.wipro.com ([203.91.201.26]:37541 "EHLO
+	wip-cdc-wd.wipro.com") by ftp.linux-mips.org with ESMTP
+	id S20022887AbXISN0g (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 19 Sep 2007 14:26:36 +0100
+Received: from wip-cdc-wd.wipro.com (localhost.localdomain [127.0.0.1])
+	by localhost (Postfix) with ESMTP id 8012C180A6
+	for <linux-mips@linux-mips.org>; Wed, 19 Sep 2007 18:56:51 +0530 (IST)
+Received: from blr-ec-bh02.wipro.com (blr-ec-bh02.wipro.com [10.201.50.92])
+	by wip-cdc-wd.wipro.com (Postfix) with ESMTP id 700A41807A
+	for <linux-mips@linux-mips.org>; Wed, 19 Sep 2007 18:56:51 +0530 (IST)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C7FAC0.D34956AC"
+Subject: Objcopy error
+Date: Wed, 19 Sep 2007 18:57:35 +0530
+Message-ID: <67B72BAF01E9A540B4B1F7D031F6D989076B74B4@BLR-EC-MBX05.wipro.com>
+From: <rahul.hari@wipro.com>
+Return-Path: <rahul.hari@wipro.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Adrian Bunk <bunk@kernel.org>, rth@twiddle.net, hskinnemoen@atmel.com, uclinux-dist-devel@blackfin.uclinux.org, dev-etrax@axis.com, dhowells@redhat.com, discuss@x86-64.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, parisc-linux@parisc-linux.org, sparclinux@vger.kernel.org, chris@zankel.net
-Message-ID: <20070908200048.pwNPJjlcOjIFyr05ahbb7v1Oe-igcFTGTzh_qKtZW2Q@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20070919132735.Gtkyp2DXmGgoGSYqs16NjZ9_e02gkpMLvCT8OzIBOZQ@z>
 
-forbid asm/bitops.h direct inclusion
+This is a multi-part message in MIME format.
 
-Because of compile errors that may occur after bit changes if asm/bitops.h is
-included directly without e.g. linux/kernel.h which includes linux/bitops.h, forbid
-direct inclusion of asm/bitops.h. Thanks to Adrian Bunk.
+------_=_NextPart_001_01C7FAC0.D34956AC
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jiri Slaby <jirislaby@gmail.com>
-Cc: Adrian Bunk <bunk@kernel.org>
+=20
+Hi,
+I am getting an error while building flash_boot_ module  for  mips
+platform. Please specify a solution for this..
+the error log as follows:
+=20
+=20
+make[2]: Leaving directory
+`/export/rahul/perforce/client_myx26_Sep14/flash_boot_recvry/fusiv/apcod
+e'
+mips-linux-uclibc-gcc -Werror -c -Os -march=3Dlx4189 -mips1 =
+-mno-abicalls
+-fno-pic -fomit-frame-pointer -nostdinc -I. -I../fusiv/include
+-I../include -I../inflate -I../shared -I../flash/cepflash -I../flash
+-I../autoclock -DIN_BOOTSTRAP -D_LOADER_RECOVERY_  -Wa,-alh=3Dethap.lst =
+-c
+-o ethap.o ethap.c
+mips-linux-uclibc-ld -Bstatic -EB -e romInit -N -X -Map loader1.map -T
+loader1LinkerMap -o loader1.x loader1.o copyLoader.o lx4080.o itab.o
+dispatch.o loadAP.o ethap.o ../flash/libFlashRCV.a
+../shared/bootShared.a  ../misc/libMisc.a ../autoclock/libAuto.a
+make[1]: Leaving directory
+`/export/rahul/perforce/client_myx26_Sep14/flash_boot_recvry/loader1'
+mips-linux-uclibc-objcopy -S -O binary loader1/loader1.x loader1.bin
+BFD: Warning: Writing section `.text' to huge (ie negative) file offset
+0xbefffe74.
+BFD: Warning: Writing section `.data' to huge (ie negative) file offset
+0xbf0020c4.
+mips-linux-uclibc-objcopy: loader1.bin: File truncated
+make: *** [loader1.bin] Error 1
 
----
-commit cd28a228ae727b2224da736edc613c58a08c5ed9
-tree 483ca1765baaf80996484889ed3078c4af24be03
-parent 3c05eef3d0a98065323d7d6d9a78e0985eba4b10
-author Jiri Slaby <jirislaby@gmail.com> Sat, 08 Sep 2007 21:02:48 +0200
-committer Jiri Slaby <jirislaby@gmail.com> Sat, 08 Sep 2007 21:02:48 +0200
+=20
+=20
+Thanks,
+Rahul
 
- include/asm-alpha/bitops.h     |    4 ++++
- include/asm-arm/bitops.h       |    4 ++++
- include/asm-avr32/bitops.h     |    4 ++++
- include/asm-blackfin/bitops.h  |    4 ++++
- include/asm-cris/bitops.h      |    4 ++++
- include/asm-frv/bitops.h       |    4 ++++
- include/asm-generic/bitops.h   |    4 ++++
- include/asm-h8300/bitops.h     |    5 +++++
- include/asm-i386/bitops.h      |    4 ++++
- include/asm-ia64/bitops.h      |    4 ++++
- include/asm-m32r/bitops.h      |    4 ++++
- include/asm-m68k/bitops.h      |    4 ++++
- include/asm-m68knommu/bitops.h |    4 ++++
- include/asm-mips/bitops.h      |    4 ++++
- include/asm-parisc/bitops.h    |    4 ++++
- include/asm-powerpc/bitops.h   |    4 ++++
- include/asm-s390/bitops.h      |    4 ++++
- include/asm-sh/bitops.h        |    5 +++++
- include/asm-sh64/bitops.h      |    5 +++++
- include/asm-sparc/bitops.h     |    4 ++++
- include/asm-sparc64/bitops.h   |    4 ++++
- include/asm-um/bitops.h        |    4 ++++
- include/asm-v850/bitops.h      |    3 +++
- include/asm-x86_64/bitops.h    |    4 ++++
- include/asm-xtensa/bitops.h    |    4 ++++
- 25 files changed, 102 insertions(+), 0 deletions(-)
+------_=_NextPart_001_01C7FAC0.D34956AC
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/asm-alpha/bitops.h b/include/asm-alpha/bitops.h
-index ffec8a8..6490e50 100644
---- a/include/asm-alpha/bitops.h
-+++ b/include/asm-alpha/bitops.h
-@@ -1,6 +1,10 @@
- #ifndef _ALPHA_BITOPS_H
- #define _ALPHA_BITOPS_H
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <asm/compiler.h>
- 
- /*
-diff --git a/include/asm-arm/bitops.h b/include/asm-arm/bitops.h
-index 52fe058..47a6b08 100644
---- a/include/asm-arm/bitops.h
-+++ b/include/asm-arm/bitops.h
-@@ -19,6 +19,10 @@
- 
- #ifdef __KERNEL__
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <linux/compiler.h>
- #include <asm/system.h>
- 
-diff --git a/include/asm-avr32/bitops.h b/include/asm-avr32/bitops.h
-index f3faddf..1a50b69 100644
---- a/include/asm-avr32/bitops.h
-+++ b/include/asm-avr32/bitops.h
-@@ -8,6 +8,10 @@
- #ifndef __ASM_AVR32_BITOPS_H
- #define __ASM_AVR32_BITOPS_H
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <asm/byteorder.h>
- #include <asm/system.h>
- 
-diff --git a/include/asm-blackfin/bitops.h b/include/asm-blackfin/bitops.h
-index 03ecedc..b39a175 100644
---- a/include/asm-blackfin/bitops.h
-+++ b/include/asm-blackfin/bitops.h
-@@ -11,6 +11,10 @@
- 
- #ifdef __KERNEL__
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <asm-generic/bitops/ffs.h>
- #include <asm-generic/bitops/__ffs.h>
- #include <asm-generic/bitops/sched.h>
-diff --git a/include/asm-cris/bitops.h b/include/asm-cris/bitops.h
-index 617151b..e2f49c2 100644
---- a/include/asm-cris/bitops.h
-+++ b/include/asm-cris/bitops.h
-@@ -14,6 +14,10 @@
- /* Currently this is unsuitable for consumption outside the kernel.  */
- #ifdef __KERNEL__ 
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <asm/arch/bitops.h>
- #include <asm/system.h>
- #include <asm/atomic.h>
-diff --git a/include/asm-frv/bitops.h b/include/asm-frv/bitops.h
-index 8dba74b..e29de71 100644
---- a/include/asm-frv/bitops.h
-+++ b/include/asm-frv/bitops.h
-@@ -21,6 +21,10 @@
- 
- #ifdef __KERNEL__
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <asm-generic/bitops/ffz.h>
- 
- /*
-diff --git a/include/asm-generic/bitops.h b/include/asm-generic/bitops.h
-index e022a0f..15e6f25 100644
---- a/include/asm-generic/bitops.h
-+++ b/include/asm-generic/bitops.h
-@@ -19,6 +19,10 @@
- 
- #ifdef __KERNEL__
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <asm-generic/bitops/sched.h>
- #include <asm-generic/bitops/ffs.h>
- #include <asm-generic/bitops/hweight.h>
-diff --git a/include/asm-h8300/bitops.h b/include/asm-h8300/bitops.h
-index e64ad31..cb18e3b 100644
---- a/include/asm-h8300/bitops.h
-+++ b/include/asm-h8300/bitops.h
-@@ -10,6 +10,11 @@
- #include <asm/system.h>
- 
- #ifdef __KERNEL__
-+
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- /*
-  * Function prototypes to keep gcc -Wall happy
-  */
-diff --git a/include/asm-i386/bitops.h b/include/asm-i386/bitops.h
-index c96641f..3268a34 100644
---- a/include/asm-i386/bitops.h
-+++ b/include/asm-i386/bitops.h
-@@ -5,6 +5,10 @@
-  * Copyright 1992, Linus Torvalds.
-  */
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <linux/compiler.h>
- #include <asm/alternative.h>
- 
-diff --git a/include/asm-ia64/bitops.h b/include/asm-ia64/bitops.h
-index 2144f1a..a977aff 100644
---- a/include/asm-ia64/bitops.h
-+++ b/include/asm-ia64/bitops.h
-@@ -9,6 +9,10 @@
-  * O(1) scheduler patch
-  */
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <linux/compiler.h>
- #include <linux/types.h>
- #include <asm/intrinsics.h>
-diff --git a/include/asm-m32r/bitops.h b/include/asm-m32r/bitops.h
-index 313a02c..6dc9b81 100644
---- a/include/asm-m32r/bitops.h
-+++ b/include/asm-m32r/bitops.h
-@@ -11,6 +11,10 @@
-  *    Copyright (C) 2004  Hirokazu Takata <takata at linux-m32r.org>
-  */
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <linux/compiler.h>
- #include <asm/assembler.h>
- #include <asm/system.h>
-diff --git a/include/asm-m68k/bitops.h b/include/asm-m68k/bitops.h
-index da151f7..2976b5d 100644
---- a/include/asm-m68k/bitops.h
-+++ b/include/asm-m68k/bitops.h
-@@ -8,6 +8,10 @@
-  * for more details.
-  */
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <linux/compiler.h>
- 
- /*
-diff --git a/include/asm-m68knommu/bitops.h b/include/asm-m68knommu/bitops.h
-index b8b2770..f8dfb7b 100644
---- a/include/asm-m68knommu/bitops.h
-+++ b/include/asm-m68knommu/bitops.h
-@@ -10,6 +10,10 @@
- 
- #ifdef __KERNEL__
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <asm-generic/bitops/ffs.h>
- #include <asm-generic/bitops/__ffs.h>
- #include <asm-generic/bitops/sched.h>
-diff --git a/include/asm-mips/bitops.h b/include/asm-mips/bitops.h
-index d00738e..3b773eb 100644
---- a/include/asm-mips/bitops.h
-+++ b/include/asm-mips/bitops.h
-@@ -9,6 +9,10 @@
- #ifndef _ASM_BITOPS_H
- #define _ASM_BITOPS_H
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <linux/compiler.h>
- #include <linux/irqflags.h>
- #include <linux/types.h>
-diff --git a/include/asm-parisc/bitops.h b/include/asm-parisc/bitops.h
-index 03ae287..f8eebcb 100644
---- a/include/asm-parisc/bitops.h
-+++ b/include/asm-parisc/bitops.h
-@@ -1,6 +1,10 @@
- #ifndef _PARISC_BITOPS_H
- #define _PARISC_BITOPS_H
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <linux/compiler.h>
- #include <asm/types.h>		/* for BITS_PER_LONG/SHIFT_PER_LONG */
- #include <asm/byteorder.h>
-diff --git a/include/asm-powerpc/bitops.h b/include/asm-powerpc/bitops.h
-index 27f6106..3c14f0d 100644
---- a/include/asm-powerpc/bitops.h
-+++ b/include/asm-powerpc/bitops.h
-@@ -38,6 +38,10 @@
- 
- #ifdef __KERNEL__
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <linux/compiler.h>
- #include <asm/asm-compat.h>
- #include <asm/synch.h>
-diff --git a/include/asm-s390/bitops.h b/include/asm-s390/bitops.h
-index d756b34..34d9a63 100644
---- a/include/asm-s390/bitops.h
-+++ b/include/asm-s390/bitops.h
-@@ -15,6 +15,10 @@
- 
- #ifdef __KERNEL__
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <linux/compiler.h>
- 
- /*
-diff --git a/include/asm-sh/bitops.h b/include/asm-sh/bitops.h
-index 9d70217..df805f2 100644
---- a/include/asm-sh/bitops.h
-+++ b/include/asm-sh/bitops.h
-@@ -2,6 +2,11 @@
- #define __ASM_SH_BITOPS_H
- 
- #ifdef __KERNEL__
-+
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <asm/system.h>
- /* For __swab32 */
- #include <asm/byteorder.h>
-diff --git a/include/asm-sh64/bitops.h b/include/asm-sh64/bitops.h
-index 444d5ea..600c59e 100644
---- a/include/asm-sh64/bitops.h
-+++ b/include/asm-sh64/bitops.h
-@@ -13,6 +13,11 @@
-  */
- 
- #ifdef __KERNEL__
-+
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <linux/compiler.h>
- #include <asm/system.h>
- /* For __swab32 */
-diff --git a/include/asm-sparc/bitops.h b/include/asm-sparc/bitops.h
-index 00bd0a6..cb3cefa 100644
---- a/include/asm-sparc/bitops.h
-+++ b/include/asm-sparc/bitops.h
-@@ -14,6 +14,10 @@
- 
- #ifdef __KERNEL__
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- extern unsigned long ___set_bit(unsigned long *addr, unsigned long mask);
- extern unsigned long ___clear_bit(unsigned long *addr, unsigned long mask);
- extern unsigned long ___change_bit(unsigned long *addr, unsigned long mask);
-diff --git a/include/asm-sparc64/bitops.h b/include/asm-sparc64/bitops.h
-index dd4bfe9..982ce89 100644
---- a/include/asm-sparc64/bitops.h
-+++ b/include/asm-sparc64/bitops.h
-@@ -7,6 +7,10 @@
- #ifndef _SPARC64_BITOPS_H
- #define _SPARC64_BITOPS_H
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <linux/compiler.h>
- #include <asm/byteorder.h>
- 
-diff --git a/include/asm-um/bitops.h b/include/asm-um/bitops.h
-index 46d7819..e4d38d4 100644
---- a/include/asm-um/bitops.h
-+++ b/include/asm-um/bitops.h
-@@ -1,6 +1,10 @@
- #ifndef __UM_BITOPS_H
- #define __UM_BITOPS_H
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include "asm/arch/bitops.h"
- 
- #endif
-diff --git a/include/asm-v850/bitops.h b/include/asm-v850/bitops.h
-index 8eafdb1..f82f5b4 100644
---- a/include/asm-v850/bitops.h
-+++ b/include/asm-v850/bitops.h
-@@ -13,6 +13,9 @@
- #ifndef __V850_BITOPS_H__
- #define __V850_BITOPS_H__
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
- 
- #include <linux/compiler.h>	/* unlikely  */
- #include <asm/byteorder.h>	/* swab32 */
-diff --git a/include/asm-x86_64/bitops.h b/include/asm-x86_64/bitops.h
-index 2607dbc..4dbf36d 100644
---- a/include/asm-x86_64/bitops.h
-+++ b/include/asm-x86_64/bitops.h
-@@ -5,6 +5,10 @@
-  * Copyright 1992, Linus Torvalds.
-  */
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <asm/alternative.h>
- 
- #if __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 1)
-diff --git a/include/asm-xtensa/bitops.h b/include/asm-xtensa/bitops.h
-index 78db04c..23261e8 100644
---- a/include/asm-xtensa/bitops.h
-+++ b/include/asm-xtensa/bitops.h
-@@ -15,6 +15,10 @@
- 
- #ifdef __KERNEL__
- 
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
- #include <asm/processor.h>
- #include <asm/byteorder.h>
- #include <asm/system.h>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2900.3086" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046042413-19092007>Hi,</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046042413-19092007>I am =
+getting an=20
+error while building flash_boot_ module&nbsp; for &nbsp;mips platform. =
+Please=20
+specify a solution for this..</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046042413-19092007>the =
+error log as=20
+follows:</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>make[2]: Leaving directory=20
+`/export/rahul/perforce/client_myx26_Sep14/flash_boot_recvry/fusiv/apcode=
+'<BR>mips-linux-uclibc-gcc=20
+-Werror -c -Os -march=3Dlx4189 -mips1 -mno-abicalls -fno-pic =
+-fomit-frame-pointer=20
+-nostdinc -I. -I../fusiv/include -I../include -I../inflate -I../shared=20
+-I../flash/cepflash -I../flash -I../autoclock -DIN_BOOTSTRAP=20
+-D_LOADER_RECOVERY_&nbsp; -Wa,-alh=3Dethap.lst -c -o ethap.o=20
+ethap.c<BR>mips-linux-uclibc-ld -Bstatic -EB -e romInit -N -X -Map =
+loader1.map=20
+-T loader1LinkerMap -o loader1.x loader1.o copyLoader.o lx4080.o itab.o=20
+dispatch.o loadAP.o ethap.o ../flash/libFlashRCV.a =
+../shared/bootShared.a&nbsp;=20
+../misc/libMisc.a ../autoclock/libAuto.a<BR>make[1]: Leaving directory=20
+`/export/rahul/perforce/client_myx26_Sep14/flash_boot_recvry/loader1'<BR>=
+mips-linux-uclibc-objcopy=20
+-S -O binary loader1/loader1.x loader1.bin<BR>BFD: Warning: Writing =
+section=20
+`.text' to huge (ie negative) file offset 0xbefffe74.<BR>BFD: Warning: =
+Writing=20
+section `.data' to huge (ie negative) file offset=20
+0xbf0020c4.<BR>mips-linux-uclibc-objcopy: loader1.bin: File =
+truncated<BR>make:=20
+*** [loader1.bin] Error 1<BR></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT><SPAN class=3D046042413-19092007><FONT face=3DArial=20
+size=3D2>Thanks,</FONT></SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046042413-19092007>Rahul</SPAN></FONT><FONT></DIV></FONT></DIV></=
+BODY></HTML>
+
+------_=_NextPart_001_01C7FAC0.D34956AC--

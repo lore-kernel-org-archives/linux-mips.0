@@ -1,125 +1,31 @@
-Received: from wip-cdc-wd.wipro.com ([203.91.201.26]:37541 "EHLO
-	wip-cdc-wd.wipro.com") by ftp.linux-mips.org with ESMTP
-	id S20022887AbXISN0g (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 19 Sep 2007 14:26:36 +0100
-Received: from wip-cdc-wd.wipro.com (localhost.localdomain [127.0.0.1])
-	by localhost (Postfix) with ESMTP id 8012C180A6
-	for <linux-mips@linux-mips.org>; Wed, 19 Sep 2007 18:56:51 +0530 (IST)
-Received: from blr-ec-bh02.wipro.com (blr-ec-bh02.wipro.com [10.201.50.92])
-	by wip-cdc-wd.wipro.com (Postfix) with ESMTP id 700A41807A
-	for <linux-mips@linux-mips.org>; Wed, 19 Sep 2007 18:56:51 +0530 (IST)
+Received: from smtp3.infineon.com ([203.126.106.229]:62045 "EHLO
+	smtp3.infineon.com") by ftp.linux-mips.org with ESMTP
+	id S20023362AbXIUIT3 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 21 Sep 2007 09:19:29 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C7FAC0.D34956AC"
-Subject: Objcopy error
-Date: Wed, 19 Sep 2007 18:57:35 +0530
-Message-ID: <67B72BAF01E9A540B4B1F7D031F6D989076B74B4@BLR-EC-MBX05.wipro.com>
-From: <rahul.hari@wipro.com>
-Return-Path: <rahul.hari@wipro.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: YAMON booting Linux kernels from malta board harddisk....
+Date: Fri, 21 Sep 2007 16:18:19 +0800
+Message-ID: <31E09F73562D7A4D82119D7F6C1729860254C469@sinse303.ap.infineon.com>
+From: <KokHow.Teh@infineon.com>
+Return-Path: <KokHow.Teh@infineon.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20070919132735.Gtkyp2DXmGgoGSYqs16NjZ9_e02gkpMLvCT8OzIBOZQ@z>
+Cc: Friedrich-Nachtmann.External@infineon.com
+Message-ID: <20070921081819.sBWhTLcDecRQo14tcITiLp_UUox7mC1BqrcBnFR71PY@z>
 
-This is a multi-part message in MIME format.
+Hi list;
+	I read of MIPSboot that is loaded into the MBR which is then
+read from YAMON to boot a selection of kernels from the harddisk.
+However, google-ing for "MIPSboot" does not yield any useful result so
+far. Does anybody have any insight and experience to share as to what
+and how to setup the MBR of a harddisk that I can boot a selection of
+Linux kernels from YAMON on Malta board?
+	Thanks.
 
-------_=_NextPart_001_01C7FAC0.D34956AC
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-=20
-Hi,
-I am getting an error while building flash_boot_ module  for  mips
-platform. Please specify a solution for this..
-the error log as follows:
-=20
-=20
-make[2]: Leaving directory
-`/export/rahul/perforce/client_myx26_Sep14/flash_boot_recvry/fusiv/apcod
-e'
-mips-linux-uclibc-gcc -Werror -c -Os -march=3Dlx4189 -mips1 =
--mno-abicalls
--fno-pic -fomit-frame-pointer -nostdinc -I. -I../fusiv/include
--I../include -I../inflate -I../shared -I../flash/cepflash -I../flash
--I../autoclock -DIN_BOOTSTRAP -D_LOADER_RECOVERY_  -Wa,-alh=3Dethap.lst =
--c
--o ethap.o ethap.c
-mips-linux-uclibc-ld -Bstatic -EB -e romInit -N -X -Map loader1.map -T
-loader1LinkerMap -o loader1.x loader1.o copyLoader.o lx4080.o itab.o
-dispatch.o loadAP.o ethap.o ../flash/libFlashRCV.a
-../shared/bootShared.a  ../misc/libMisc.a ../autoclock/libAuto.a
-make[1]: Leaving directory
-`/export/rahul/perforce/client_myx26_Sep14/flash_boot_recvry/loader1'
-mips-linux-uclibc-objcopy -S -O binary loader1/loader1.x loader1.bin
-BFD: Warning: Writing section `.text' to huge (ie negative) file offset
-0xbefffe74.
-BFD: Warning: Writing section `.data' to huge (ie negative) file offset
-0xbf0020c4.
-mips-linux-uclibc-objcopy: loader1.bin: File truncated
-make: *** [loader1.bin] Error 1
-
-=20
-=20
-Thanks,
-Rahul
-
-------_=_NextPart_001_01C7FAC0.D34956AC
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2900.3086" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046042413-19092007>Hi,</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046042413-19092007>I am =
-getting an=20
-error while building flash_boot_ module&nbsp; for &nbsp;mips platform. =
-Please=20
-specify a solution for this..</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046042413-19092007>the =
-error log as=20
-follows:</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>make[2]: Leaving directory=20
-`/export/rahul/perforce/client_myx26_Sep14/flash_boot_recvry/fusiv/apcode=
-'<BR>mips-linux-uclibc-gcc=20
--Werror -c -Os -march=3Dlx4189 -mips1 -mno-abicalls -fno-pic =
--fomit-frame-pointer=20
--nostdinc -I. -I../fusiv/include -I../include -I../inflate -I../shared=20
--I../flash/cepflash -I../flash -I../autoclock -DIN_BOOTSTRAP=20
--D_LOADER_RECOVERY_&nbsp; -Wa,-alh=3Dethap.lst -c -o ethap.o=20
-ethap.c<BR>mips-linux-uclibc-ld -Bstatic -EB -e romInit -N -X -Map =
-loader1.map=20
--T loader1LinkerMap -o loader1.x loader1.o copyLoader.o lx4080.o itab.o=20
-dispatch.o loadAP.o ethap.o ../flash/libFlashRCV.a =
-../shared/bootShared.a&nbsp;=20
-../misc/libMisc.a ../autoclock/libAuto.a<BR>make[1]: Leaving directory=20
-`/export/rahul/perforce/client_myx26_Sep14/flash_boot_recvry/loader1'<BR>=
-mips-linux-uclibc-objcopy=20
--S -O binary loader1/loader1.x loader1.bin<BR>BFD: Warning: Writing =
-section=20
-`.text' to huge (ie negative) file offset 0xbefffe74.<BR>BFD: Warning: =
-Writing=20
-section `.data' to huge (ie negative) file offset=20
-0xbf0020c4.<BR>mips-linux-uclibc-objcopy: loader1.bin: File =
-truncated<BR>make:=20
-*** [loader1.bin] Error 1<BR></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT><SPAN class=3D046042413-19092007><FONT face=3DArial=20
-size=3D2>Thanks,</FONT></SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046042413-19092007>Rahul</SPAN></FONT><FONT></DIV></FONT></DIV></=
-BODY></HTML>
-
-------_=_NextPart_001_01C7FAC0.D34956AC--
+Regards,
+KH

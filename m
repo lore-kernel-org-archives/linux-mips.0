@@ -1,33 +1,31 @@
-Received: from smtp3.infineon.com ([203.126.106.229]:35092 "EHLO
+Received: from smtp3.infineon.com ([203.126.106.229]:58007 "EHLO
 	smtp3.infineon.com") by ftp.linux-mips.org with ESMTP
-	id S20024310AbXIUJvz convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 21 Sep 2007 10:51:55 +0100
+	id S20024866AbXIUK2s convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 21 Sep 2007 11:28:48 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Subject: RE: YAMON booting Linux kernels from malta board harddisk....
-Date: Fri, 21 Sep 2007 17:51:41 +0800
-Message-ID: <31E09F73562D7A4D82119D7F6C1729860254C65D@sinse303.ap.infineon.com>
-In-Reply-To: <46F390C5.402@mips.com>
-References: <31E09F73562D7A4D82119D7F6C1729860254C469@sinse303.ap.infineon.com> <46F390C5.402@mips.com>
+Date: Fri, 21 Sep 2007 18:27:39 +0800
+Message-ID: <31E09F73562D7A4D82119D7F6C1729860254C6D6@sinse303.ap.infineon.com>
+In-Reply-To: <46F39A1D.8090101@mips.com>
+References: <31E09F73562D7A4D82119D7F6C1729860254C469@sinse303.ap.infineon.com> <46F390C5.402@mips.com> <31E09F73562D7A4D82119D7F6C1729860254C65D@sinse303.ap.infineon.com> <46F39A1D.8090101@mips.com>
 From: <KokHow.Teh@infineon.com>
 Return-Path: <KokHow.Teh@infineon.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: beth@mips.com
 Cc: linux-mips@linux-mips.org, Friedrich-Nachtmann.External@infineon.com, kurt@mips.com
-Message-ID: <20070921095141._JykbxXRm0SUOeMpDEiJ1sszyKkINuyOPicvivsXxSo@z>
+Message-ID: <20070921102739.xds33ualaUtvWMjsrQbyb8RHfY61nBfqIYnXyeJUMuE@z>
 
-Hi Beth;
-	Thanks for your prompt reply. I have some questions. This is my
-disk configuration:
+Hi;
 
 [tehkok@linux4:~ 3]$ sudo fdisk -l /dev/hdd
 
-Disk /dev/hdd: 16 heads, 63 sectors, 79656 cylinders
-Units = cylinders of 1008 * 512 bytes
+Disk /dev/hdd: 16 heads, 63 sectors, 79656 cylinders Units = cylinders
+of 1008 * 512 bytes
 
    Device Boot    Start       End    Blocks   Id  System
 /dev/hdd1             1      2081   1048544   83  Linux
@@ -40,88 +38,63 @@ Units = cylinders of 1008 * 512 bytes
 /dev/hdd8         12484     14564   1048568+  83  Linux
 [tehkok@linux4:~ 4]$
 
+	So I `dd if=mb-0.3.bin of=/dev/hdd6 bs=1024 count=150` and hope
+it works. Now there are 2 questions:
 
-	I need to load the mipsboot into /dev/hda1 that reads the
-configuration from /dev/hda1/boot and boots linux kernel from
-/dev/hda1/boot/*.
+(1)	where to put mb.conf?
+(2)	how to specify the 6th partition on YAMON?
 
-[tehkok@linux4:/mnt/hdd1 10]$ l
-total 4
-drwxr-xr-x 3 root root 4096 Sep 22 03:22 boot
-[tehkok@linux4:/mnt/hdd1 11]$ ls boot
-System.map-kernel-aprp-2.6.19-malta.12
-changelog-kernel-exp-2.6.20-malta.6    grub
-vmlinux.srec-kernel-aprp-2.6.19-malta.12
-System.map-kernel-exp-aprp-2.6.20-malta.6
-config-kernel-aprp-2.6.19-malta.12
-vmlinux-kernel-aprp-2.6.19-malta.12
-vmlinux.srec-kernel-exp-aprp-2.6.20-malta.6
-System.map-kernel-exp-smtc-2.6.20-malta.6
-config-kernel-exp-aprp-2.6.20-malta.6
-vmlinux-kernel-exp-aprp-2.6.20-malta.6
-vmlinux.srec-kernel-exp-smtc-2.6.20-malta.6
-System.map-kernel-exp-smvp-2.6.20-malta.6
-config-kernel-exp-smtc-2.6.20-malta.6
-vmlinux-kernel-exp-smtc-2.6.20-malta.6
-vmlinux.srec-kernel-exp-smvp-2.6.20-malta.6
-System.map-kernel-smtc-2.6.19-malta.12
-config-kernel-exp-smvp-2.6.20-malta.6
-vmlinux-kernel-exp-smvp-2.6.20-malta.6
-vmlinux.srec-kernel-smtc-2.6.19-malta.12
-System.map-kernel-smvp-2.6.19-malta.12
-config-kernel-smtc-2.6.19-malta.12
-vmlinux-kernel-smtc-2.6.19-malta.12
-vmlinux.srec-kernel-smvp-2.6.19-malta.12
-changelog-kernel-2.6.19-malta.12
-config-kernel-smvp-2.6.19-malta.12
-vmlinux-kernel-smvp-2.6.19-malta.12
-[tehkok@linux4:/mnt/hdd1 12]$
+	YAMON> disk read hda 3f ff 800d0000; go 800d0000
 
-
-	and /dev/hda1 is formatted as ext3 BOOT partition. Is it
-possible to do that?
 	Thanks.
 
 Regards,
-KH.
-
+KH
 -----Original Message-----
 From: Elizabeth Oldham [mailto:beth@mips.com] 
-Sent: Friday, September 21, 2007 5:37 PM
+Sent: Friday, September 21, 2007 6:17 PM
 To: Teh Kok How (IFAP DC COM WL SD)
 Cc: linux-mips@linux-mips.org; Nachtmann Friedrich (IFAP DC COM WL SD
-External)
+External); kurt@mips.com
 Subject: Re: YAMON booting Linux kernels from malta board harddisk....
 
 KokHow.Teh@infineon.com wrote:
+> 	I need to load the mipsboot into /dev/hda1 that reads the 
+> configuration from /dev/hda1/boot and boots linux kernel from 
+> /dev/hda1/boot/*.
 
-> 	I read of MIPSboot that is loaded into the MBR which is then
-read 
-> from YAMON to boot a selection of kernels from the harddisk.
+Can you leave a partition without a filesystem? The bootloader image
+needs to be dropped into a known position and written as a contiguous
+block...
 
-MIPSboot is my rather hacked bootloader that goes with the MIPS/TimeSys
-Linux distro, and does not as yet sit in the MBR...one day perhaps.
+For comparison the MIPS/TimeSys hard disk configuration:
 
-Anyway, it sits at the beginning of the first partition on disk (which
-should not be formatted with a filesystem and can be very small), and
-then loaded with a YAMON command line like:
+-bash-3.1# fdisk -l
 
-YAMON> disk read hda 3f ff 800d0000; go 800d0000
+Disk /dev/hda: 80.0 GB, 80026361856 bytes
+16 heads, 63 sectors/track, 155061 cylinders Units = cylinders of 1008 *
+512 = 516096 bytes
 
-MIPSboot version 0.3
-Loading /boot/mb.conf . ok
-Choose a kernel image to boot:
-   (0) aprp-2.6.19-glibc         root=/dev/hda3
-   (1) smtc-2.6.19-glibc         root=/dev/hda3
-...
+    Device Boot      Start         End      Blocks   Id  System
+/dev/hda1               1          20       10048+  83  Linux
+/dev/hda2              21       15522     7813008   83  Linux
+/dev/hda3           15523       31024     7813008   83  Linux
+/dev/hda4           31025       71906    20604528    5  Extended
+/dev/hda5           31025       31994      488848+  82  Linux swap
+/dev/hda6           31995       47496     7812976+  83  Linux
+/dev/hda7           47497       62998     7812976+  83  Linux
+/dev/hda8           62999       63968      488848+  83  Linux
+/dev/hda9           63969       64938      488848+  83  Linux
 
-You can put that command line in the "start" environment variable to
-autostart it.
+The first partition is reserved for the bootloader. It doesn't have to
+the first it was just convienent to me, it could be any, so if you can
+shuffle the partitions up slightly and have a couple of MBytes at the
+end perhaps?
 
-I've dropped source and binary tarballs together with an example conf
-file on our ftp site:
+> 	and /dev/hda1 is formatted as ext3 BOOT partition. Is it
+possible to 
+> do that?
 
-    ftp://ftp.mips.com/pub/tools/software/timesys/extras/mipsboot/
+The bootloader will cope with an ext3 filesystem.
 
-If you have any queries about it send me email.
 Beth

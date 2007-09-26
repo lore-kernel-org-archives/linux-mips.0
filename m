@@ -1,77 +1,117 @@
-Received: from smtp3.infineon.com ([203.126.106.229]:6773 "EHLO
-	smtp3.infineon.com") by ftp.linux-mips.org with ESMTP
-	id S20024966AbXIULVK convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 21 Sep 2007 12:21:10 +0100
-Content-class: urn:content-classes:message
+Received: from mx.orange-ftgroup.ru ([194.84.254.251]:40130 "EHLO
+	mx.orange-ftgroup.ru") by ftp.linux-mips.org with ESMTP
+	id S20029798AbXIZQZy (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 26 Sep 2007 17:25:54 +0100
+Received: from mx.orange-ftgroup.ru (localhost [127.0.0.1])
+	by mx.orange-ftgroup.ru (8.13.1/8.13.1) with ESMTP id l8QGPbQw014274
+	for <linux-mips@linux-mips.org>; Wed, 26 Sep 2007 20:25:38 +0400
+Received: from smtp.globalone.ru (smtp.globalone.ru [172.16.38.5])
+	by mx.orange-ftgroup.ru (8.13.1/8.13.1) with ESMTP id l8QGPPh4014246
+	for <linux-mips@linux-mips.org>; Wed, 26 Sep 2007 20:25:25 +0400
+Message-ID: <029001c80059$d7a14960$e90d11ac@spb.in.rosprint.ru>
+Reply-To: "Alexander Voropay" <alec@nwpi.ru>
+From: "Alexander Voropay" <alec@nwpi.ru>
+References: <46E68AA3.2010907@comsys.ro> <20070911125421.GE10713@networkno.de> <46E69AAF.2090509@comsys.ro>
+Subject: Re: [Qemu-devel] Qemu and Linux 2.4
+Date: Wed, 26 Sep 2007 20:25:18 +0400
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: YAMON booting Linux kernels from malta board harddisk....
-Date: Fri, 21 Sep 2007 19:20:01 +0800
-Message-ID: <31E09F73562D7A4D82119D7F6C1729860254C742@sinse303.ap.infineon.com>
-In-Reply-To: <46F3A432.4060903@mips.com>
-References: <31E09F73562D7A4D82119D7F6C1729860254C469@sinse303.ap.infineon.com> <46F390C5.402@mips.com> <31E09F73562D7A4D82119D7F6C1729860254C65D@sinse303.ap.infineon.com> <46F39A1D.8090101@mips.com> <31E09F73562D7A4D82119D7F6C1729860254C6D6@sinse303.ap.infineon.com> <46F3A432.4060903@mips.com>
-From: <KokHow.Teh@infineon.com>
-Return-Path: <KokHow.Teh@infineon.com>
+	format=flowed;
+	charset="ISO-8859-1";
+	reply-type=response
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Return-Path: <alec@nwpi.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: beth@mips.com
-Cc: linux-mips@linux-mips.org, Friedrich-Nachtmann.External@infineon.com, kurt@mips.com
-Message-ID: <20070921112001.RUeoK9XIDUm6JAhWU7pX7l4_BoiNQyAZrafOkGHJOwI@z>
+To: qemu-devel@nongnu.org, Thiemo Seufer <ths@networkno.de>
+Cc: linux-mips@linux-mips.org, vlad@comsys.ro
+Message-ID: <20070926162518.4hdhCbPOuctEBELwBBl0A1oN65-hgdmPUMS3MSzOPuk@z>
 
-Hi Beth
-	My question was which partition to put the md.conf? Does it go
-with the mb.bin or it can be put at any other partition?
+<vlad@comsys.ro> wrote:
 
-Thanks & Regards,
-KH 
+>>> - QEMU malta emulation is not really complete, to put it mildly
+>> Out of curiosity, what parts did you miss?
+> Like, for example, the PCI stuff. So I can use the network card.
 
------Original Message-----
-From: Elizabeth Oldham [mailto:beth@mips.com] 
-Sent: Friday, September 21, 2007 7:00 PM
-To: Teh Kok How (IFAP DC COM WL SD)
-Cc: linux-mips@linux-mips.org; Nachtmann Friedrich (IFAP DC COM WL SD
-External); kurt@mips.com
-Subject: Re: YAMON booting Linux kernels from malta board harddisk....
+ PCI stuff in the QEMU/Malta works fine, but pseudo-bootrom
+does not perform PCI enumeration and leaves uninitialized PCI BARs.
 
-KokHow.Teh@infineon.com wrote:
+ Linux MIPS/Malta 2.4 can not perform PCI enumeration too.  The LANCE
+Ethernet driver *requres* a pre-initialized BARs. The situation even worse,
+since current Linux 2.4 can't be even built with NEW_PCI and PCI_AUTO
+options at all (due to linkage error).
 
-> /dev/hdd6          8323     10403   1048578+  83  Linux
-> 	So I `dd if=mb-0.3.bin of=/dev/hdd6 bs=1024 count=150` and hope
-it 
-> works. Now there are 2 questions:
+http://www.linux-mips.org/wiki/PCI_Subsystem
 
-It will be easier if you change fdisk's units to sectors, so it prints
-the start of the partition for you. I get this from my set up:
+ There is the same PCI problem with NetBSD/evbmips and seems VxWorks/Malta.
 
-Command (m for help): u
-Changing display/entry units to sectors
+> And yes, I am aware of YAMON.
 
-Command (m for help): p
+ AFAIK, YAMON may runs on the MIPS hardware only, and may not
+be redistribuded in the source or binary form.
 
-Disk /dev/hda: 80.0 GB, 80026361856 bytes
-16 heads, 63 sectors/track, 155061 cylinders, total 156301488 sectors
-Units = sectors of 1 * 512 = 512 bytes
+ Anyway, YAMON binary does not work on the Qemu/Malta. The Galileo
+chip is far more complicated then Qemu emulation. It contains four DMA
+channels, four timers e.t.c. e.t.c.
 
-    Device Boot      Start         End      Blocks   Id  System
-/dev/hda1              63       20159       10048+  83  Linux
-/dev/hda2           20160    15646175     7813008   83  Linux
-/dev/hda3        15646176    31272191     7813008   83  Linux
-/dev/hda4        31272192    72481247    20604528    5  Extended
-/dev/hda5        31272255    32249951      488848+  82  Linux swap
-/dev/hda6        32250015    47875967     7812976+  83  Linux
+>> I recommend to improve the Qemu Malta emulation, and make it work with
+>> 2.4 Malta kernels. (ISTR it used to work, so it shouldn't need a lot to
+>> get there.)
+> 
+> I'm sure that improving the Qemu Malta emulation is a very noble goal, 
+> but for people that need a working 2.4 kernel NOW, my patch could be 
+> useful. Having the QEMU target in 2.6 surely helped me.
 
-So (I think, if there are no gotchas - it's a while since I played with
-this stuff) the YAMON command would be:
+ The only thing we need is a good bootrom (BIOS) for the MIPS/Malta
+(Free-YAMON ;)
 
-YAMON> disk read hda 1ec18a0 ff 800d0000; go 800d0000
+ As a quick'n'disty solution you could initialize PCI BARs of the
+device number 12 (0x0b, LANCE) with GDB:
 
-where 1ec18a0 is (32250015 + 1) in hex.
+(gdb) set variable {int}0xbbe00cf8=0x80005810   <--- I/O address
+(gdb) set variable {int}0xbbe00cfc=0x00002001
+(gdb) set variable {int}0xbbe00cf8=0x80005814  <--- Mem address
+(gdb) set variable {int}0xbbe00cfc=0xfc200000
+(gdb) set variable {int}0xbbe00cf8=0x80005804  <--- Enable Mem and I/O
+(gdb) set variable {int}0xbbe00cfc=0x00000003
+(gdb) set variable {int}0xbbe00cf8=0x8000583c   <---- IRQ=10 tied to Pin A
+(gdb) set variable {int}0xbbe00cfc=0xff06010a
+(gdb) cont
+Continuing.
 
-> (1)	where to put mb.conf?
+...
+Linux version 2.4.35.3 (alec@ilias.nwpi.ru) (gcc version 3.3.6) #2 Tue Sep 25 18:59:10 MSD 2007
+...
+pcnet32.c:v1.30h 06.24.2004 tsbogend@alpha.franken.de
+pcnet32: PCnet/PCI II 79C970A at 0x2000, 52 54 00 12 34 56 assigned IRQ 10.
+eth0: registered as PCnet/PCI II 79C970A
+pcnet32: 1 cards_found.
+...
 
-As it stands the bootloader will look in /dev/hda2 if you are running BE
-and /dev/hda3 if LE. For now just try getting MIPSboot to start :)
+# lspci -v
+....
+00:0b.0 Class 0200: 1022:2000 (rev 10)
+        Flags: bus master, fast devsel, latency 64, IRQ 10
+        I/O ports at 2000 [size=32]
+        Memory at fc200000 (32-bit, non-prefetchable) [size=32]
 
-Beth
+
+# ifconfig eth0 192.168.1.1 netmask 255.255.255.0 up
+#
+# ping 192.168.1.1
+PING 192.168.1.1 (192.168.1.1): 56 data bytes
+64 bytes from 192.168.1.1: icmp_seq=0 ttl=64 time=4.2 ms
+
+
+
+--
+-=AV=-
+
+*******************************************************************************************************
+This message and any attachments (the "message") are confidential and intended solely for the addressees. 
+Any unauthorised use or dissemination is prohibited.
+Messages are susceptible to alteration. Orange Business Services shall not be liable for the message if altered, changed or
+falsified. If you are not the intended addressee of this message, please cancel it immediately and inform 
+the sender.
+*******************************************************************************************************

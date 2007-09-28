@@ -1,117 +1,52 @@
-Received: from mx.orange-ftgroup.ru ([194.84.254.251]:40130 "EHLO
-	mx.orange-ftgroup.ru") by ftp.linux-mips.org with ESMTP
-	id S20029798AbXIZQZy (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 26 Sep 2007 17:25:54 +0100
-Received: from mx.orange-ftgroup.ru (localhost [127.0.0.1])
-	by mx.orange-ftgroup.ru (8.13.1/8.13.1) with ESMTP id l8QGPbQw014274
-	for <linux-mips@linux-mips.org>; Wed, 26 Sep 2007 20:25:38 +0400
-Received: from smtp.globalone.ru (smtp.globalone.ru [172.16.38.5])
-	by mx.orange-ftgroup.ru (8.13.1/8.13.1) with ESMTP id l8QGPPh4014246
-	for <linux-mips@linux-mips.org>; Wed, 26 Sep 2007 20:25:25 +0400
-Message-ID: <029001c80059$d7a14960$e90d11ac@spb.in.rosprint.ru>
-Reply-To: "Alexander Voropay" <alec@nwpi.ru>
-From: "Alexander Voropay" <alec@nwpi.ru>
-References: <46E68AA3.2010907@comsys.ro> <20070911125421.GE10713@networkno.de> <46E69AAF.2090509@comsys.ro>
-Subject: Re: [Qemu-devel] Qemu and Linux 2.4
-Date: Wed, 26 Sep 2007 20:25:18 +0400
+Received: from mx.mips.com ([63.167.95.198]:38549 "EHLO dns0.mips.com")
+	by ftp.linux-mips.org with ESMTP id S20022876AbXI1GIr (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 28 Sep 2007 07:08:47 +0100
+Message-ID: <002801c80196$003f4dd0$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <52163af60709272223n72212e2bh197c7e622e3ba155@mail.gmail.com>
+Subject: Re: mapping a userspace thread to a kernelspace thread
+Date: Fri, 28 Sep 2007 08:08:32 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-	format=flowed;
-	charset="ISO-8859-1";
-	reply-type=response
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Return-Path: <alec@nwpi.ru>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: qemu-devel@nongnu.org, Thiemo Seufer <ths@networkno.de>
-Cc: linux-mips@linux-mips.org, vlad@comsys.ro
-Message-ID: <20070926162518.4hdhCbPOuctEBELwBBl0A1oN65-hgdmPUMS3MSzOPuk@z>
+To: Suprasad Mutalik Desai <suprasad.desai@gmail.com>, linux-mips@linux-mips.org
+Message-ID: <20070928060832.BknUlq0aAVxOLkBz5Xd12YKtmT5xJ99zK-AgEzlvCKk@z>
 
-<vlad@comsys.ro> wrote:
+You seem to be laboring under a misconception or two, here.  NPTL is a 1:1 threading
+model (it would have been damned convenient for me for it not to have been).  Both
+linuxthreads and NPTL will create a native, known-to-the-kernel thread, which is what
+I think you mean by a "kernel thread", in response to a pthread_create().  The new thread
+will start life on the same CPU that created it, but normal load balancing will generally
+migrate it elsewhere pretty quickly.  If you want to manage thread->CPU binding
+explicitly, the sys_sched_setaffinity() system call can be used.
 
->>> - QEMU malta emulation is not really complete, to put it mildly
->> Out of curiosity, what parts did you miss?
-> Like, for example, the PCI stuff. So I can use the network card.
+            Regards,
 
- PCI stuff in the QEMU/Malta works fine, but pseudo-bootrom
-does not perform PCI enumeration and leaves uninitialized PCI BARs.
+            Kevin K.
 
- Linux MIPS/Malta 2.4 can not perform PCI enumeration too.  The LANCE
-Ethernet driver *requres* a pre-initialized BARs. The situation even worse,
-since current Linux 2.4 can't be even built with NEW_PCI and PCI_AUTO
-options at all (due to linkage error).
+----- Original Message ----- 
+From: "Suprasad Mutalik Desai" <suprasad.desai@gmail.com>
+To: <linux-mips@linux-mips.org>
+Sent: Friday, September 28, 2007 7:23 AM
+Subject: mapping a userspace thread to a kernelspace thread
 
-http://www.linux-mips.org/wiki/PCI_Subsystem
 
- There is the same PCI problem with NetBSD/evbmips and seems VxWorks/Malta.
-
-> And yes, I am aware of YAMON.
-
- AFAIK, YAMON may runs on the MIPS hardware only, and may not
-be redistribuded in the source or binary form.
-
- Anyway, YAMON binary does not work on the Qemu/Malta. The Galileo
-chip is far more complicated then Qemu emulation. It contains four DMA
-channels, four timers e.t.c. e.t.c.
-
->> I recommend to improve the Qemu Malta emulation, and make it work with
->> 2.4 Malta kernels. (ISTR it used to work, so it shouldn't need a lot to
->> get there.)
+> Hi list ,
 > 
-> I'm sure that improving the Qemu Malta emulation is a very noble goal, 
-> but for people that need a working 2.4 kernel NOW, my patch could be 
-> useful. Having the QEMU target in 2.6 surely helped me.
-
- The only thing we need is a good bootrom (BIOS) for the MIPS/Malta
-(Free-YAMON ;)
-
- As a quick'n'disty solution you could initialize PCI BARs of the
-device number 12 (0x0b, LANCE) with GDB:
-
-(gdb) set variable {int}0xbbe00cf8=0x80005810   <--- I/O address
-(gdb) set variable {int}0xbbe00cfc=0x00002001
-(gdb) set variable {int}0xbbe00cf8=0x80005814  <--- Mem address
-(gdb) set variable {int}0xbbe00cfc=0xfc200000
-(gdb) set variable {int}0xbbe00cf8=0x80005804  <--- Enable Mem and I/O
-(gdb) set variable {int}0xbbe00cfc=0x00000003
-(gdb) set variable {int}0xbbe00cf8=0x8000583c   <---- IRQ=10 tied to Pin A
-(gdb) set variable {int}0xbbe00cfc=0xff06010a
-(gdb) cont
-Continuing.
-
-...
-Linux version 2.4.35.3 (alec@ilias.nwpi.ru) (gcc version 3.3.6) #2 Tue Sep 25 18:59:10 MSD 2007
-...
-pcnet32.c:v1.30h 06.24.2004 tsbogend@alpha.franken.de
-pcnet32: PCnet/PCI II 79C970A at 0x2000, 52 54 00 12 34 56 assigned IRQ 10.
-eth0: registered as PCnet/PCI II 79C970A
-pcnet32: 1 cards_found.
-...
-
-# lspci -v
-....
-00:0b.0 Class 0200: 1022:2000 (rev 10)
-        Flags: bus master, fast devsel, latency 64, IRQ 10
-        I/O ports at 2000 [size=32]
-        Memory at fc200000 (32-bit, non-prefetchable) [size=32]
-
-
-# ifconfig eth0 192.168.1.1 netmask 255.255.255.0 up
-#
-# ping 192.168.1.1
-PING 192.168.1.1 (192.168.1.1): 56 data bytes
-64 bytes from 192.168.1.1: icmp_seq=0 ttl=64 time=4.2 ms
-
-
-
---
--=AV=-
-
-*******************************************************************************************************
-This message and any attachments (the "message") are confidential and intended solely for the addressees. 
-Any unauthorised use or dissemination is prohibited.
-Messages are susceptible to alteration. Orange Business Services shall not be liable for the message if altered, changed or
-falsified. If you are not the intended addressee of this message, please cancel it immediately and inform 
-the sender.
-*******************************************************************************************************
+>             I want to know how can we map a userspace thread to a
+> kernel thread as mentioned in 1:1 threading model (linuxthreads) or
+> M:N model (NPTL)  . Does this happen by just calling a
+> pthread_create() in the userspace program or i need to do something
+> more in the kernel space . i am using 2.6.20 kernel  .
+>        I want to use this for multi threading operation in a SMP
+> environment where in i want to schedule a userspace program on another
+> processor by spawning a thread  . Can anyone help me in this.
+> 
+> Thanks and regards,
+> Suprasad.
+> 
+> 

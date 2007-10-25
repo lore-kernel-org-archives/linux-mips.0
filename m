@@ -1,134 +1,162 @@
-Received: from ug-out-1314.google.com ([66.249.92.175]:39082 "EHLO
-	ug-out-1314.google.com") by ftp.linux-mips.org with ESMTP
-	id S20022326AbXJYIz6 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 25 Oct 2007 09:55:58 +0100
-Received: by ug-out-1314.google.com with SMTP id u2so535917uge
-        for <linux-mips@linux-mips.org>; Thu, 25 Oct 2007 01:55:40 -0700 (PDT)
-Message-ID: <eea8a9c90710250155h7534fdfajf7193921575e96fe@mail.gmail.com>
-Date: Thu, 25 Oct 2007 14:25:40 +0530
-From: kaka <share.kt@gmail.com>
-Subject: Updated:Error opening framebuffer device/Unknown symbol
+Received: from wr-out-0506.google.com ([64.233.184.227]:20784 "EHLO
+	wr-out-0506.google.com") by ftp.linux-mips.org with ESMTP
+	id S20022628AbXJYOQl (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 25 Oct 2007 15:16:41 +0100
+Received: by wr-out-0506.google.com with SMTP id 69so422143wri
+        for <linux-mips@linux-mips.org>; Thu, 25 Oct 2007 07:15:34 -0700 (PDT)
+Message-ID: <b2b2f2320710250715w6d44f826v57bd7360c2b7dca8@mail.gmail.com>
+Date: Thu, 25 Oct 2007 08:15:33 -0600
+From: "Shane McDonald" <mcdonald.shane@gmail.com>
+Subject: Re: Updated:Error opening framebuffer device/Unknown symbol
+In-Reply-To: <eea8a9c90710250155h7534fdfajf7193921575e96fe@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_Part_11159_3084375.1193302540326"
-Return-Path: <share.kt@gmail.com>
+	boundary="----=_Part_1302_16135255.1193321733934"
+References: <eea8a9c90710250155h7534fdfajf7193921575e96fe@mail.gmail.com>
+Return-Path: <mcdonald.shane@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: directfb-users@directfb.org, directfb-dev@directfb.org., linux-mips@linux-mips.org, uclinux-dev@uclinux.org, linux-fbdev-users@lists.sourceforge.net
-Message-ID: <20071025085540.hZJI8aQEKSj6X0S4cgGGXRzmfTnOEjXchD9bpm-fAD0@z>
+To: kaka <share.kt@gmail.com>
+Cc: directfb-users@directfb.org, directfb-dev@directfb.org., linux-mips@linux-mips.org, uclinux-dev@uclinux.org, linux-fbdev-users@lists.sourceforge.net
+Message-ID: <20071025141533.gFM6-0VGnWyQi7L1t98TOdfuRT9Ujo8IBcUitNSeWsE@z>
 
-------=_Part_11159_3084375.1193302540326
+------=_Part_1302_16135255.1193321733934
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-Hi All,
+Do not be surprised at the lack of response.  You have provided very little
+information on your problem, and have not done your homework.
 
-Thanks for the overhelming responses.
-I was able to remove the problem of Unknown symbols by linking the proper
-libraries. Now the problem got reduced to the following messages.
+I would strongly suggest purchasing a copy of Linux Kernel Development, 2nd
+edition, by Robert Love.  It's an excellent book for giving an introduction
+to many aspects of the kernel.  In particular, pages 16 and 17 provide
+answers to your questions, which many of the other readers of these lists
+have already answered.  A quick read through that book will save you time
+when you're confronted with these types of problems.
 
-# insmod brcmstfb.ko
-brcmstfb: Unknown symbol printf
-brcmstfb: Unknown symbol malloc
-brcmstfb: Unknown symbol free
-insmod: cannot insert `brcmstfb.ko': Unknown symbol in module (2): No such
-file or directory
-#
-
-for the above problem i had tried to link "libgcc.a " but those symbols are
-also undefined in it also.
-RECAP:
-While running  the cross compiled directFB example on MIPS chip,*
-We tried to install the framebuffer driver(command given above) after
-creating the node fb0.
-APPROACH:
-Actually the code of frambuffer driver consists of usual kernel framebuffer
-code and properitiary graphics lib code.
-The properitiary graphics lib code is using malloc,print and free from <
-stdlib.h> and that is why those symbols are coming undefined.
-
-Could anybody help in this regard?
-Thanks in advance.
-
-kaka
+Shane
 
 
-
----------- Forwarded message ----------
-From: kaka <share.kt@gmail.com>
-Date: Oct 12, 2007 6:33 PM
-Subject: Error opening framebuffer device/Unknown symbol
-register_framebuffer
-To: directfb-users@directfb.org, directfb-dev@directfb.org .
-
-
-
-> *Hi All,*
+On 10/25/07, kaka <share.kt@gmail.com> wrote:
 >
-> *While running  the cross compiled directFB example on MIPS chip,*
+> Hi All,
 >
-> *
->
->
-> We tried to install the framebuffer driver(command given at the bottom) and we have already created the node fb0.*
->
-> *We are getting the following error, *
->
-> *Can anybody help in this regard ?*
->
-> *Thanks in Advance.*
->
-> # ../../cross_directfb/simple_mips
->
->      =======================|  DirectFB 1.0.0  |=======================
->           (c) 2001-2007  The DirectFB Organization (directfb.org)
->           (c) 2000-2004  Convergence (integrated media) GmbH
->         ------------------------------------------------------------
->
-> (*) DirectFB/Core: Single Application Core. (2007-10-05 14:17)
-> (!) Direct/Util: opening '/dev/fb0' failed
->     --> No such device or address
-> (!) DirectFB/FBDev: Error opening framebuffer device!
-> (!) DirectFB/FBDev: Use 'fbdev' option or set FRAMEBUFFER environment variable.
-> (!) DirectFB/Core: Could not initialize 'system' core!
->     --> Initialization error!simple.c <96>:
->         (#) DirectFBError [DirectFBCreate (&dfb)]: Initialization error!
-> #
->
-> *While running the following command in MIPS chip, we are getting the following error.*
+> Thanks for the overhelming responses.
+> I was able to remove the problem of Unknown symbols by linking the proper
+> libraries. Now the problem got reduced to the following messages.
 >
 > # insmod brcmstfb.ko
-> brcmstfb: Unknown symbol unregister_framebuffer
 > brcmstfb: Unknown symbol printf
 > brcmstfb: Unknown symbol malloc
-> brcmstfb: Unknown symbol fb_find_mode
-> brcmstfb: Unknown symbol fb_dealloc_cmap
-> brcmstfb: Unknown symbol fb_alloc_cmap
-> brcmstfb: Unknown symbol framebuffer_release
 > brcmstfb: Unknown symbol free
-> insmod: cannot insert `brcmstfb.ko': Unknown symbol in module (2): No such file or directory
+> insmod: cannot insert `brcmstfb.ko': Unknown symbol in module (2): No such
+> file or directory
 > #
-> #
+>
+> for the above problem i had tried to link "libgcc.a " but those symbols
+> are also undefined in it also.
+> RECAP:
+> While running  the cross compiled directFB example on MIPS chip,*
+> We tried to install the framebuffer driver(command given above) after
+> creating the node fb0.
+> APPROACH:
+> Actually the code of frambuffer driver consists of usual kernel
+> framebuffer code and properitiary graphics lib code.
+> The properitiary graphics lib code is using malloc,print and free from <
+> stdlib.h> and that is why those symbols are coming undefined.
+>
+> Could anybody help in this regard?
+> Thanks in advance.
+>
+> kaka
 >
 >
 >
+> ---------- Forwarded message ----------
+> From: kaka < share.kt@gmail.com>
+> Date: Oct 12, 2007 6:33 PM
+> Subject: Error opening framebuffer device/Unknown symbol
+> register_framebuffer
+> To: directfb-users@directfb.org, directfb-dev@directfb.org .
 >
+>
+>
+> > *Hi All,*
+> >
+> > *While running  the cross compiled directFB example on MIPS chip,*
+> >
+> > *
+> >
+> >
+> >
+> > We tried to install the framebuffer driver(command given at the bottom) and we have already created the node fb0.*
+> >
+> > *We are getting the following error, *
+> >
+> >
+> > *Can anybody help in this regard ?*
+> >
+> > *Thanks in Advance.*
+> >
+> > # ../../cross_directfb/simple_mips
+> >
+> >      =======================|  DirectFB 1.0.0  |=======================
+> >           (c) 2001-2007  The DirectFB Organization (directfb.org)
+> >           (c) 2000-2004  Convergence (integrated media) GmbH
+> >         ------------------------------------------------------------
+> >
+> > (*) DirectFB/Core: Single Application Core. (2007-10-05 14:17)
+> > (!) Direct/Util: opening '/dev/fb0' failed
+> >     --> No such device or address
+> > (!) DirectFB/FBDev: Error opening framebuffer device!
+> > (!) DirectFB/FBDev: Use 'fbdev' option or set FRAMEBUFFER environment variable.
+> > (!) DirectFB/Core: Could not initialize 'system' core!
+> >     --> Initialization error!simple.c <96>:
+> >         (#) DirectFBError [DirectFBCreate (&dfb)]: Initialization error!
+> > #
+> >
+> > *While running the following command in MIPS chip, we are getting the following error.*
+> >
+> > # insmod brcmstfb.ko
+> > brcmstfb: Unknown symbol unregister_framebuffer
+> > brcmstfb: Unknown symbol printf
+> > brcmstfb: Unknown symbol malloc
+> > brcmstfb: Unknown symbol fb_find_mode
+> > brcmstfb: Unknown symbol fb_dealloc_cmap
+> > brcmstfb: Unknown symbol fb_alloc_cmap
+> > brcmstfb: Unknown symbol framebuffer_release
+> > brcmstfb: Unknown symbol free
+> > insmod: cannot insert `brcmstfb.ko': Unknown symbol in module (2): No such file or directory
+> > #
+> > #
+> >
+> >
+> >
+> >
+>
+>
+> --
+> Thanks & Regards,
+> kaka
+>
+> --
+> Thanks & Regards,
+> kaka
 
-
--- 
-Thanks & Regards,
-kaka
-
--- 
-Thanks & Regards,
-kaka
-
-------=_Part_11159_3084375.1193302540326
+------=_Part_1302_16135255.1193321733934
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+<div>Do not be surprised at the lack of response.&nbsp; You have provided very little information on your problem, and have not done your homework.</div>
+<div>&nbsp;</div>
+<div>I would strongly suggest purchasing a copy of Linux Kernel Development, 2nd edition, by Robert Love.&nbsp; It&#39;s an excellent book for giving an introduction to many aspects of the kernel.&nbsp; In particular, pages 16 and 17 provide answers to your questions, which many of the other readers of these lists have already answered.&nbsp; A quick read through that book will save you time when you&#39;re confronted with these types of problems.
+</div>
+<div>&nbsp;</div>
+<div>Shane<br><br>&nbsp;</div>
+<div><span class="gmail_quote">On 10/25/07, <b class="gmail_sendername">kaka</b> &lt;<a href="mailto:share.kt@gmail.com">share.kt@gmail.com</a>&gt; wrote:</span>
+<blockquote class="gmail_quote" style="PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
 <div>Hi All,</div>
 <div>&nbsp;</div>
 <div>Thanks for the overhelming responses. </div>
@@ -147,7 +175,7 @@ Content-Disposition: inline
 <div>&nbsp;</div>
 <div>kaka<br>&nbsp;</div>
 <div><br><br>---------- Forwarded message ----------<br><span class="gmail_quote">From: <b class="gmail_sendername">kaka</b> &lt;<a onclick="return top.js.OpenExtLink(window,event,this)" href="mailto:share.kt@gmail.com" target="_blank">
-share.kt@gmail.com</a>&gt;<br>Date: Oct 12, 2007 6:33 PM <br>Subject: Error opening framebuffer device/Unknown symbol register_framebuffer<br>To: <a onclick="return top.js.OpenExtLink(window,event,this)" href="mailto:directfb-users@directfb.org" target="_blank">
+ share.kt@gmail.com</a>&gt;<br>Date: Oct 12, 2007 6:33 PM <br>Subject: Error opening framebuffer device/Unknown symbol register_framebuffer<br>To: <a onclick="return top.js.OpenExtLink(window,event,this)" href="mailto:directfb-users@directfb.org" target="_blank">
 directfb-users@directfb.org</a>, <a onclick="return top.js.OpenExtLink(window,event,this)" href="mailto:directfb-dev@directfb.org" target="_blank">directfb-dev@directfb.org </a>.<br><br>&nbsp;</span></div>
 <div>
 <blockquote class="gmail_quote" style="PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
@@ -155,7 +183,9 @@ directfb-users@directfb.org</a>, <a onclick="return top.js.OpenExtLink(window,ev
 
 
 
+
 We tried to install the framebuffer driver(command given at the bottom) and we have already created the node fb0.</font></strong></pre><pre><strong><font color="#000099">We are getting the following error, </font></strong>
+
 
 
 
@@ -187,6 +217,6 @@ brcmstfb: Unknown symbol framebuffer_release
 brcmstfb: Unknown symbol free
 insmod: cannot insert `brcmstfb.ko&#39;: Unknown symbol in module (2): No such file or directory
 #
-#</pre><pre>&nbsp;</pre></div></blockquote></div><br><br clear="all"><br>-- <br>Thanks &amp; Regards,<br><span>kaka </span><br clear="all"><br>-- <br>Thanks &amp; Regards,<br>kaka 
+#</pre><pre>&nbsp;</pre></div></blockquote></div><br><br clear="all"><br>-- <br>Thanks &amp; Regards,<br><span>kaka </span><br clear="all"><br>-- <br>Thanks &amp; Regards,<br><span class="sg">kaka </span></blockquote></div><br>
 
-------=_Part_11159_3084375.1193302540326--
+------=_Part_1302_16135255.1193321733934--

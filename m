@@ -1,99 +1,122 @@
-Received: from dns0.mips.com ([63.167.95.198]:22485 "EHLO dns0.mips.com")
-	by ftp.linux-mips.org with ESMTP id S28575265AbXJ3UEA (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 30 Oct 2007 20:04:00 +0000
+Received: from mx.mips.com ([63.167.95.198]:39131 "EHLO dns0.mips.com")
+	by ftp.linux-mips.org with ESMTP id S28576518AbXJaSdJ (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 31 Oct 2007 18:33:09 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C81B2E.DEB3E9FC"
-Subject: RE: implementation of software suspend on MIPS.
-Date: Tue, 30 Oct 2007 12:55:42 -0700
-Message-ID: <692AB3595F5D76428B34B9BEFE20BC1FDD0219@Exchange.mips.com>
-In-Reply-To: <dd7dc2bc0710301212s7b364392n39a149764a4117cf@mail.gmail.com>
-References: <dd7dc2bc0710301212s7b364392n39a149764a4117cf@mail.gmail.com>
+	boundary="----_=_NextPart_001_01C81BEC.65559B00"
+Subject: RE: implementation of software suspend on MIPS. (system log)
+Date: Wed, 31 Oct 2007 11:32:22 -0700
+Message-ID: <692AB3595F5D76428B34B9BEFE20BC1FDD0276@Exchange.mips.com>
+In-Reply-To: <dd7dc2bc0710311115x51dfab0bt97cdd810d21d120c@mail.gmail.com>
+References: <dd7dc2bc0710301215m1a5b8d7at85c9afc7976dc21d@mail.gmail.com> <20071031132553.GF14187@linux-mips.org> <dd7dc2bc0710311115x51dfab0bt97cdd810d21d120c@mail.gmail.com>
 From: "Uhler, Mike" <uhler@mips.com>
 Return-Path: <uhler@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Hyon Lim <alex@alexlab.net>, linux-mips@linux-mips.org
-Message-ID: <20071030195542.zG-kkqoQdkJrMTHgTFn9VnHNR0Ayny2DL6WgMHy-_Qw@z>
+To: Hyon Lim <alex@alexlab.net>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20071031183222.33Ur8Iv2t8z6RJMdVpJ_CZQ7ZI9-KAsPVGsV3zYRhn0@z>
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C81B2E.DEB3E9FC
+------_=_NextPart_001_01C81BEC.65559B00
 Content-Type: text/plain;
 	charset="ks_c_5601-1987"
 Content-Transfer-Encoding: quoted-printable
 
-I've asked our software team to follow up with you on your questions.
+There are various sources of information available on MIPS assembly =
+language programming.  The easiest way to get what you want is to write =
+the code in C, then push it through the compiler to see what =
+instructions it generates.  You can then hack that code to work in your =
+context.
 =20
+Beyond that, Ralf mentioned the book "See MIPS Run Linux", by Dominic =
+Sweetman.  There is also the GNU gas manual and the MIPS SDE =
+Programmer's Guide (see =
+http://www.mips.com/products/resource-library/product-materials/software)=
+ or other references on MIPS assembly language programming.
+=20
+
 /gmu
 ---
 Michael Uhler, VP Architecture, Software and Platform Engineering
 MIPS Technologies, Inc.   Email: uhler AT mips.com
-1225 Charleston Road      Voice:  (650)567-5025
+1225 Charleston Road      Voice:  (650)567-5025=20
 Mountain View, CA 94043
  =20
+
+ =20
+
+=20
 
 
 ________________________________
 
 	From: linux-mips-bounce@linux-mips.org =
 [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Hyon Lim
-	Sent: Tuesday, October 30, 2007 12:13 PM
-	To: linux-mips@linux-mips.org
-	Subject:  implementation of software suspend on MIPS.
-	Importance: Low
+	Sent: Wednesday, October 31, 2007 11:15 AM
+	To: Ralf Baechle
+	Cc: linux-mips@linux-mips.org
+	Subject: Re: implementation of software suspend on MIPS. (system log)
 =09
 =09
-	Hello.  I need a help for my implementation work on MIPS software =
-suspend.
-	From 3month ago, I've been coding software suspend(swsusp) on MIPS =
-arch.
-	I'm developing with MIPS32 4KEc embedded processor for digital =
-appliance.
+	The problem is resume process.
+	Some page copy and other remaining process wasn't implemented.
+	The code of resume process should be implemented on =
+arch/xxx/power/swsusp.S
+	So it should be implemented by assembly.
+	That's the problem...
+	I've no idea about complex assembly programming. :-)
+	Could you recommend any pdf or website?
 	=20
-	Swsusp has two procedure. the one is suspending procedure and other one =
-is resume procedure.
-	Yesterday, I confirmed suspending procedure working.
-	This is a porting guide of swsusp =
-(http://tree.celinuxforum.org/CelfPubWiki/SwSuspendPortingNotes)
-	I refered this article.
-	=20
-	The problem I faced is assembly language for MIPS.
-	Of course, there are many manuals for this work but, I need a help from =
-MIPS expert.
-	=20
-	This pseudo code should be implemented by MIPS asm.
-	=20
-	        for (j =3D nr_copy_pages; j>0; j--) {=20
-	            src =3D pagedir_nosave[j].src;=20
-	            dst =3D pagedir_nosave[j].dst;=20
-	            for (i=3D0;i<1024;i++) {=20
-	                *dst++ =3D *src++;=20
-	            }=20
-	        }=20
-	=20
-	nr_copy_pages is unsigned long variable.
-	and pagedir_nosave is a suspend_pagedir_t =
-<http://lxr.linux.no/source/kernel/power/ident?v=3D2.6.10;i=3Dsuspend_pag=
-edir_t>  type structure array(pointer). (you can refer following url. =
-Line 101. : http://lxr.linux.no/source/kernel/power/swsusp.c?v=3D2.6.10)
-	code skeleton or useful material will be welcomed. (whatever you have.)
-	=20
-	The second problem is
-	" which register should be prevented? "
-	=20
-	I saved $v0-v1. $a0-$a3. $t0-t7. $s0-s7. $t8-t9. $gp,sp,fp,ra.
+	On 10/31/07, Ralf Baechle <ralf@linux-mips.org> wrote:=20
+
+		On Wed, Oct 31, 2007 at 04:15:57AM +0900, Hyon Lim wrote:
+	=09
+		> [DEBUG] Swsusp_write() @ kernel/power/swsusp.c,874=20
+		> [DEBUG] write_suspend_image(), kernel/power/swsusp.c,407
+		> [DEBUG] init_header(), kernel/power/swsusp.c,337
+		> [DEBUG] dump_info(), kernel/power/swsusp.c,321
+		>  swsusp: Version: 132618
+		>  swsusp: Num Pages: 8192=20
+		>  swsusp: UTS Sys: Linux
+		>  swsusp: UTS Node: (none)
+		>  swsusp: UTS Release: 2.6.10_SELP_MIPS
+		>  swsusp: UTS Version: #95 Wed Oct 30 03:46:35 KST 2007
+		>  swsusp: UTS Machine: mips
+		>  swsusp: UTS Domain: (none)=20
+		>  swsusp: CPUs: 1
+		>  swsusp: Image: 1896 Pages
+		>  swsusp: Pagedir: 0 Pages
+		> [DEBUG] data_write(), kernel/power/swsusp.c,303
+		> Writing data to swap (1896 pages)... done
+		> Writing pagedir (8 pages)=20
+		> S|
+		> Powering off system
+		> Cold reset
+		>
+		> This is system log of my implementation.
+	=09
+		Excellent, this is looking promising.
+	=09
+		Do you still need any help?
+	=09
+		Ralf
+	=09
+
+
+
 
 	--=20
 	Hyon Lim (=C0=D3=C7=F6)
 	Mobile. 010-8212-1240 (Intl' Call : +82-10-8212-1240)
 	Fax. 032-232-0578 (Intl' Available)
-	Homepage : http://www.alexlab.net
+	Homepage : http://www.alexlab.net=20
 	Blog : http://www.alexlab.net/blog=20
 
 
-------_=_NextPart_001_01C81B2E.DEB3E9FC
+------_=_NextPart_001_01C81BEC.65559B00
 Content-Type: text/html;
 	charset="ks_c_5601-1987"
 Content-Transfer-Encoding: quoted-printable
@@ -104,22 +127,43 @@ Content-Transfer-Encoding: quoted-printable
 charset=3Dks_c_5601-1987">
 <META content=3D"MSHTML 6.00.6000.16544" name=3DGENERATOR></HEAD>
 <BODY>
-<DIV dir=3Dltr align=3Dleft><FONT face=3DArial color=3D#0000ff =
-size=3D2><SPAN=20
-class=3D037285419-30102007>I've asked our software team to follow up =
-with you on=20
-your questions.</SPAN></FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2><!-- Converted from text/plain format -->
+<DIV dir=3Dltr align=3Dleft><SPAN class=3D618352618-31102007><FONT =
+face=3DArial=20
+color=3D#0000ff size=3D2>There are various sources of information =
+available on MIPS=20
+assembly language programming.&nbsp; The easiest way to get what you =
+want is to=20
+write the code in C, then push it through the compiler to see what =
+instructions=20
+it generates.&nbsp; You can then hack that code to work in your=20
+context.</FONT></SPAN></DIV>
+<DIV dir=3Dltr align=3Dleft><SPAN class=3D618352618-31102007><FONT =
+face=3DArial=20
+color=3D#0000ff size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV dir=3Dltr align=3Dleft><SPAN class=3D618352618-31102007><FONT =
+face=3DArial=20
+color=3D#0000ff size=3D2>Beyond that, Ralf mentioned the book "See MIPS =
+Run Linux",=20
+by Dominic Sweetman.&nbsp; There is also the GNU gas manual and the MIPS =
+SDE=20
+Programmer's Guide (see <A=20
+href=3D"http://www.mips.com/products/resource-library/product-materials/s=
+oftware">http://www.mips.com/products/resource-library/product-materials/=
+software</A>)=20
+or other references on MIPS assembly language =
+programming.</FONT></SPAN></DIV>
+<DIV>&nbsp;</DIV><!-- Converted from text/plain format -->
+<P><FONT size=3D2><!-- Converted from text/plain format --></P>
 <P><FONT size=3D2>/gmu<BR>---<BR>Michael Uhler, VP Architecture, =
 Software and=20
 Platform Engineering<BR>MIPS Technologies, Inc.&nbsp;&nbsp; Email: uhler =
 AT=20
 mips.com<BR>1225 Charleston Road&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
 Voice:&nbsp;=20
-(650)567-5025<BR>Mountain View, CA=20
-94043<BR>&nbsp;</FONT>&nbsp;</FONT><BR></P></DIV>
-<BLOCKQUOTE dir=3Dltr=20
+(650)567-5025&nbsp;<BR>Mountain View, CA 94043<BR>&nbsp;</FONT> </P>
+<P>&nbsp;</FONT> </P>
+<DIV>&nbsp;</DIV><BR>
+<BLOCKQUOTE=20
 style=3D"PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #0000ff 2px =
 solid; MARGIN-RIGHT: 0px">
   <DIV class=3DOutlookMessageHeader lang=3Den-us dir=3Dltr align=3Dleft>
@@ -127,82 +171,64 @@ solid; MARGIN-RIGHT: 0px">
   <FONT face=3DTahoma size=3D2><B>From:</B> =
 linux-mips-bounce@linux-mips.org=20
   [mailto:linux-mips-bounce@linux-mips.org] <B>On Behalf Of </B>Hyon=20
-  Lim<BR><B>Sent:</B> Tuesday, October 30, 2007 12:13 PM<BR><B>To:</B>=20
-  linux-mips@linux-mips.org<BR><B>Subject:</B>&nbsp; implementation of =
-software=20
-  suspend on MIPS.<BR><B>Importance:</B> Low<BR></FONT><BR></DIV>
+  Lim<BR><B>Sent:</B> Wednesday, October 31, 2007 11:15 AM<BR><B>To:</B> =
+Ralf=20
+  Baechle<BR><B>Cc:</B> linux-mips@linux-mips.org<BR><B>Subject:</B> Re: =
+
+  implementation of software suspend on MIPS. (system =
+log)<BR></FONT><BR></DIV>
   <DIV></DIV>
-  <DIV>Hello.&nbsp; I need a help for my implementation work on MIPS =
-software=20
-  suspend.</DIV>
-  <DIV>From 3month ago, I've been coding software suspend(swsusp) on =
-MIPS=20
-  arch.</DIV>
-  <DIV>I'm developing with MIPS32 4KEc embedded processor for digital=20
-  appliance.</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>Swsusp has two procedure. the one is suspending procedure and =
-other one=20
-  is resume procedure.</DIV>
-  <DIV>Yesterday, I confirmed suspending procedure working.</DIV>
-  <DIV>This is a porting guide of swsusp (<A=20
-  =
-href=3D"http://tree.celinuxforum.org/CelfPubWiki/SwSuspendPortingNotes">h=
-ttp://tree.celinuxforum.org/CelfPubWiki/SwSuspendPortingNotes</A>)</DIV>
-  <DIV>I refered this article.</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>The problem I faced is assembly language for MIPS.</DIV>
-  <DIV>Of course, there are many manuals for this work but, I need a =
-help from=20
-  MIPS expert.</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>This pseudo code should be implemented by MIPS asm.</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (j =3D =
-nr_copy_pages;=20
-  j&gt;0; j--) {=20
-  <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-src =3D=20
-  pagedir_nosave[j].src;=20
-  <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-dst =3D=20
-  pagedir_nosave[j].dst;=20
-  <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-for=20
-  (i=3D0;i&lt;1024;i++) {=20
-  =
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;=20
-  *dst++ =3D *src++;=20
-  <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-}=20
-  <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } <BR>&nbsp;</DIV>
-  <DIV>nr_copy_pages is unsigned long variable.</DIV>
-  <DIV>and pagedir_nosave is a <A=20
-  =
-href=3D"http://lxr.linux.no/source/kernel/power/ident?v=3D2.6.10;i=3Dsusp=
-end_pagedir_t">suspend_pagedir_t</A>=20
-  type structure array(pointer). (you can refer following url. Line =
-101.&nbsp;:=20
-  <A=20
-  =
-href=3D"http://lxr.linux.no/source/kernel/power/swsusp.c?v=3D2.6.10">http=
-://lxr.linux.no/source/kernel/power/swsusp.c?v=3D2.6.10</A>)</DIV>
-  <DIV>code skeleton or useful material will be welcomed. (whatever you=20
-  have.)</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>The second problem is</DIV>
-  <DIV>" which register should be prevented? "</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>I saved $v0-v1. $a0-$a3. $t0-t7. $s0-s7. $t8-t9. =
-$gp,sp,fp,ra.</DIV>
-  <DIV><BR>-- <BR>Hyon Lim (=C0=D3=C7=F6)<BR>Mobile. 010-8212-1240 =
-(Intl' Call :=20
+  <DIV>The problem is resume process.</DIV>
+  <DIV>Some page copy and other remaining process wasn't =
+implemented.</DIV>
+  <DIV>The code of resume process should be implemented on=20
+  arch/xxx/power/swsusp.S</DIV>
+  <DIV>So it should be implemented by assembly.</DIV>
+  <DIV>That's the problem...</DIV>
+  <DIV>I've no idea about complex assembly programming. :-)</DIV>
+  <DIV>Could you recommend any pdf or website?<BR>&nbsp;</DIV>
+  <DIV><SPAN class=3Dgmail_quote>On 10/31/07, <B =
+class=3Dgmail_sendername>Ralf=20
+  Baechle</B> &lt;<A=20
+  href=3D"mailto:ralf@linux-mips.org">ralf@linux-mips.org</A>&gt; =
+wrote:</SPAN>=20
+  <BLOCKQUOTE class=3Dgmail_quote=20
+  style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: =
+#ccc 1px solid">On=20
+    Wed, Oct 31, 2007 at 04:15:57AM +0900, Hyon Lim wrote:<BR><BR>&gt; =
+[DEBUG]=20
+    Swsusp_write() @ kernel/power/swsusp.c,874 <BR>&gt; [DEBUG]=20
+    write_suspend_image(), kernel/power/swsusp.c,407<BR>&gt; [DEBUG]=20
+    init_header(), kernel/power/swsusp.c,337<BR>&gt; [DEBUG] =
+dump_info(),=20
+    kernel/power/swsusp.c,321<BR>&gt;&nbsp;&nbsp;swsusp: Version:=20
+    132618<BR>&gt;&nbsp;&nbsp;swsusp: Num Pages: 8192=20
+    <BR>&gt;&nbsp;&nbsp;swsusp: UTS Sys: =
+Linux<BR>&gt;&nbsp;&nbsp;swsusp: UTS=20
+    Node: (none)<BR>&gt;&nbsp;&nbsp;swsusp: UTS Release:=20
+    2.6.10_SELP_MIPS<BR>&gt;&nbsp;&nbsp;swsusp: UTS Version: #95 Wed Oct =
+30=20
+    03:46:35 KST 2007<BR>&gt;&nbsp;&nbsp;swsusp: UTS Machine:=20
+    mips<BR>&gt;&nbsp;&nbsp;swsusp: UTS Domain: (none)=20
+    <BR>&gt;&nbsp;&nbsp;swsusp: CPUs: 1<BR>&gt;&nbsp;&nbsp;swsusp: =
+Image: 1896=20
+    Pages<BR>&gt;&nbsp;&nbsp;swsusp: Pagedir: 0 Pages<BR>&gt; [DEBUG]=20
+    data_write(), kernel/power/swsusp.c,303<BR>&gt; Writing data to swap =
+(1896=20
+    pages)... done<BR>&gt; Writing pagedir (8 pages) <BR>&gt; S|<BR>&gt; =
+
+    Powering off system<BR>&gt; Cold reset<BR>&gt;<BR>&gt; This is =
+system log of=20
+    my implementation.<BR><BR>Excellent, this is looking =
+promising.<BR><BR>Do=20
+    you still need any help?<BR><BR>Ralf<BR></BLOCKQUOTE></DIV><BR><BR=20
+  clear=3Dall><BR>-- <BR>Hyon Lim (=C0=D3=C7=F6)<BR>Mobile. =
+010-8212-1240 (Intl' Call :=20
   +82-10-8212-1240)<BR>Fax. 032-232-0578 (Intl' Available)<BR>Homepage : =
 <A=20
-  href=3D"http://www.alexlab.net">http://www.alexlab.net</A><BR>Blog : =
+  href=3D"http://www.alexlab.net">http://www.alexlab.net </A><BR>Blog : =
 <A=20
   href=3D"http://www.alexlab.net/blog">http://www.alexlab.net/blog</A>=20
-</DIV></BLOCKQUOTE></BODY></HTML>
+</BLOCKQUOTE></BODY></HTML>
 
-------_=_NextPart_001_01C81B2E.DEB3E9FC--
+------_=_NextPart_001_01C81BEC.65559B00--

@@ -1,54 +1,36 @@
-Received: from mx.mips.com ([63.167.95.198]:43002 "EHLO dns0.mips.com")
-	by ftp.linux-mips.org with ESMTP id S20030957AbXKDS71 (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Sun, 4 Nov 2007 18:59:27 +0000
-Message-ID: <002801c81f14$ddda0900$7b03a8c0@Ulysses>
-From: "Kevin D. Kissell" <KevinK@mips.com>
-References: <31E09F73562D7A4D82119D7F6C17298602B11510@sinse303.ap.infineon.com>
-Subject: Re: Get stuck in wake_up_process(rq->migration_thread);
-Date: Sun, 4 Nov 2007 10:59:45 -0800
+Received: from dns0.mips.com ([63.167.95.198]:62648 "EHLO dns0.mips.com")
+	by ftp.linux-mips.org with ESMTP id S20026641AbXKMOq5 (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 13 Nov 2007 14:46:57 +0000
+Message-ID: <019e01c82602$f5463bf0$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <473957B6.3030202@avtrex.com> <18233.36645.232058.964652@zebedee.pink> <20071113121036.GA6582@linux-mips.org> <cda58cb80711130514x16356ea3x4069616c9ee3caac@mail.gmail.com>
+Subject: Re: Cannot unwind through MIPS signal frames with ICACHE_REFILLS_WORKAROUND_WAR
+Date: Tue, 13 Nov 2007 15:37:39 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <KevinK@mips.com>
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: KokHow.Teh@infineon.com, linux-mips@linux-mips.org
-Message-ID: <20071104185945.VKR_RTsuG_UrvBCpc6f5fklnta9hE5axAED6QX355VY@z>
+To: Franck Bui-Huu <vagabon.xyz@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: Andrew Haley <aph-gcc@littlepinkcloud.com>, David Daney <ddaney@avtrex.com>, linux-mips@linux-mips.org, Richard Sandiford <rsandifo@nildram.co.uk>, gcc@gcc.gnu.org
+Message-ID: <20071113143739.DTtxlTrKBV8XKm9Gm7Asn8Luqg6o1B6Ejz3h5tbsYHU@z>
 
-Your description isn't much to go on, but the first thing I'd look at
-in such a situation would be the state of the Cause and Status registers
-on the two VPEs. Cross-VPE scheduling interrupts on the standard
-emulation platform, which lacks hardware support for cross-VPE
-interrupts, sends IPIs by reaching across using MTTR instructions
-and setting a software interrupt bit on the other VPE.  Other uses
-of the same software interrupt (SW1 by default), or manipulations
-in other kernel code that might clear its IM bit in the Status register,
-could cause that mechanism to break down and cease processing
-interprocessor interrupts.  It's a common failure mode if one botches
-a mod to SMTC, and I've seen it on an SMVP port as well.
+Franck a dit:
+> > Another reason is to get rid of the classic trampoline the kernel installs
+> > on the stack.  On some multiprocessor systems it requires a cacheflush
+> > operation to be performed on all processors which is expensive.  Having
+> > the trampoline in a vDSO would solve that.
+> >
+> 
+> And the stack wouldn't need to have exec permission anymore.
+
+True, though it should perhaps be noted that currently it's only on 4KSc/Sd
+systems (which I know you work on) where it's even possible for the stack
+*not* to have exec permissions, since the classical MIPS MMU gives
+execute permission to any page that is readable.
+
+            Regards,
 
             Kevin K.
-
------ Original Message ----- 
-From: <KokHow.Teh@infineon.com>
-To: <linux-mips@linux-mips.org>
-Sent: Sunday, November 04, 2007 3:26 AM
-Subject: Get stuck in wake_up_process(rq->migration_thread);
-
-
-> Hi;
-> I have a linux-2.6.20 kernel configured with CONFIG_MIPS_MT_SMP
-> (SMVPE) running on a MIPS34KC processor emulation platform. Everything
-> goes fine until the scheduler gets stuck in trying to wake up the
-> migration thread. I configured the kernel with max_cache_size=2097152,
-> having no idea of what the variable is all about. Putting debug messages
-> in kernel/sched.c tells me that the the migration_thread() routine has
-> gone to sleep calling schedul() function and set_cpus_allowed() function
-> gets stuck in wake_up_process(rq->migration_thread); 
-> Any insight is appreciated.
-> 
-> Regards.
-> KH
-> 
-> 

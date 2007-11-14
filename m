@@ -1,46 +1,50 @@
-Received: from mx.mips.com ([63.167.95.198]:30908 "EHLO dns0.mips.com")
-	by ftp.linux-mips.org with ESMTP id S20029005AbXKMW5d (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 13 Nov 2007 22:57:33 +0000
-Message-ID: <02c801c82647$7b0619b0$10eca8c0@grendel>
-From: "Kevin D. Kissell" <kevink@mips.com>
-References: <473957B6.3030202@avtrex.com> <18233.36645.232058.964652@zebedee.pink> <20071113121036.GA6582@linux-mips.org> <cda58cb80711130514x16356ea3x4069616c9ee3caac@mail.gmail.com> <019e01c82602$f5463bf0$10eca8c0@grendel> <20071113150820.GB6582@linux-mips.org>
-Subject: Re: Cannot unwind through MIPS signal frames withICACHE_REFILLS_WORKAROUND_WAR
-Date: Tue, 13 Nov 2007 23:49:38 +0100
+Received: from mail.zeugmasystems.com ([192.139.122.66]:51862 "EHLO
+	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
+	id S20031007AbXKNXUL convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 14 Nov 2007 23:20:11 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <kevink@mips.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: "exportfs -a" -> stale NFS filehandle
+Date: Wed, 14 Nov 2007 15:19:43 -0800
+Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C547AF5B@exchange.ZeugmaSystems.local>
+From: "Kaz Kylheku" <kaz@zeugmasystems.com>
+Return-Path: <kaz@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Franck Bui-Huu <vagabon.xyz@gmail.com>, Andrew Haley <aph-gcc@littlepinkcloud.com>, David Daney <ddaney@avtrex.com>, linux-mips@linux-mips.org, Richard Sandiford <rsandifo@nildram.co.uk>, gcc@gcc.gnu.org
-Message-ID: <20071113224938.qHPvd5r0LRRZgsa_5LYzQ3gLc-_mvXhUN_yQnl7Mus4@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20071114231943.vxYu7NYWKLJfXrzCL4Cqu-wK8CwjzWP0PcaHerrhG1Q@z>
 
-> > True, though it should perhaps be noted that currently it's only on 4KSc/Sd
-> > systems (which I know you work on) where it's even possible for the stack
-> > *not* to have exec permissions, since the classical MIPS MMU gives
-> > execute permission to any page that is readable.
-> 
-> Disabling PROT_EXEC on a mapping tells the kernel it doesn't need to take
-> care of I-cache coherency.  So it's somewhat beneficial even in absence of
-> a protection bit in the actual TLB hardware.
+Hi all,
 
-That depends on just what the consequences of I-cache incoherence might be.
-Without help from the MMU, the kernel cannot *know* that a given location
-isn't in the I-cache, because a program can always compute a pointer-to-function
-to an arbitrary address and dereference it successfully so long as the location
-is readable.  If it's only the user who does this that will suffer as a result of
-I-cache incoherence, one can argue that it serves him right.  But if it can screw
-up the execution of the kernel, or other user processes, I think we have to 
-assume the worst.
+I have an NFS problem on a multi-node MIPS system running kernel
+2.6.17.7. NFS utils is 1.1.0. ABI is n32.
 
-> Some of these performance optimizations are impossible because the kernel
-> can't have definate knowledge that certain addresses have never entered the
-> I-cache.
+One node (call it primary) exports a directory which is mounted by
+several others (the secondaries) as their root filesystem.
 
-Sad but true.
+If I run "exportfs -a" on the primary, the secondary nodes lose their
+root filesystem and so everything stops working.
 
-            Regards,
+I turned on all NFS debugging on a secondary node (sysctl -w
+sunrpc.nfs_debug=65535). What is happening is that NFS operations
+suddenly start returning error -151 (stale NFS filehandle).
 
-            Kevin K.
+I don't see exportfs causing this problem on other systems. If I run
+"exportfs -a" on a big NFS server (Fedora Core 5, i686) which has lots
+of diskless clients, nothing bad happens. (And some of those diskless
+clients are MIPS systems just like this one!)
+
+I'm pretty sure that exportfs -a shouldn't screw up the existing mounted
+clients.
+
+Could there be some ABI problem that corrupts up the effect of the
+re-exporting operation on the server?
+
+(This issure reproduces always. Something which reproduces rarely is a
+kernel crash on a secondary node, inside the nfsd process, also
+apparently in response to the "exportfs -a". I don't yet have enough
+information about that one, such as a call trace, etc. That one I can
+drill into, if I have a program counter and call stack.)

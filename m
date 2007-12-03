@@ -1,44 +1,41 @@
-Received: from mail.zeugmasystems.com ([70.79.96.174]:41001 "EHLO
-	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S28577473AbXK3Bvf convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 30 Nov 2007 01:51:35 +0000
+Received: from mga02.intel.com ([134.134.136.20]:35318 "EHLO mga02.intel.com")
+	by ftp.linux-mips.org with ESMTP id S20026145AbXLCRBF convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 3 Dec 2007 17:01:05 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: Problem in the usage of mmap command(in directFB)
-Date: Thu, 29 Nov 2007 17:51:26 -0800
-Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C552E3F4@exchange.ZeugmaSystems.local>
-In-Reply-To: <eea8a9c90711282148g67ec85e0q9decd3e0e1f4325f@mail.gmail.com>
-From: "Kaz Kylheku" <kaz@zeugmasystems.com>
-Return-Path: <kaz@zeugmasystems.com>
+Subject: RE: [PATCH 2/2] MIPS: vmlinux.lds.S: handle .{init,exit}.bss sections
+Date: Mon, 3 Dec 2007 09:00:49 -0800
+Message-ID: <617E1C2C70743745A92448908E030B2A030FE4C2@scsmsx411.amr.corp.intel.com>
+In-Reply-To: <1196543586-6698-3-git-send-email-fbuihuu@gmail.com>
+References: <1196543586-6698-1-git-send-email-fbuihuu@gmail.com> <1196543586-6698-3-git-send-email-fbuihuu@gmail.com>
+From: "Luck, Tony" <tony.luck@intel.com>
+Return-Path: <tony.luck@intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: kaka <share.kt@gmail.com>, linux-mips@linux-mips.org, uclinux-dev@uclinux.org, celinux-dev@tree.celinuxforum.org, linux-fbdev-users@lists.sourceforge.net
-Cc: directfb-users@directfb.org, directfb-dev@directfb.org
-Message-ID: <20071130015126.HoOOvtZ0ZSg6PnWBbZPOAJRwL2AhgKkKkhtQvm42eFA@z>
+To: Franck Bui-Huu <fbuihuu@gmail.com>, linux-arch@vger.kernel.org
+Cc: macro@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20071203170049.0MlsVvy0M6FFu20nt3MCAjM4UiNq28nAo7j5shjHJbE@z>
 
-Dear Aptly-Named User, 
++	/*
++	 * We keep init/exit bss sections here to have only one
++	 * segment to load. Note that .bss.exit is also discarded
++	 * at runtime for the same reason as above.
++	 */
++	.exit.bss : {
++		*(.bss.exit)
++	}
 
-The first clue you need to get is that you shouldn't send MIME-encoded,
-HTML crap to open source mailing lists. 
+This change would also require an audit of the bootloader or early
+kernel initialization code (whichever handles zeroing of .bss space)
+to make sure that it understands that the kernel will now have an
+extra block of memory that needs to be cleared.  Perhaps nothing
+needs to be done if the code already handled the general case of
+loading an ELF binary with some sections that have an in-memory
+size bigger than the on-disk size.  But worth looking at in case
+the code makes an assumption about what needs to be zeroed.
 
-Repeatedly sending the same question to half a dozen mailing lists won't
-solve your problem. (Everyone heard you the first N times already, and
-it's unlikely that anyone new signed up within the last week who can
-magically fix the failing mmap cll for you.
-
-You have a 100% reproducible problem: no timing dependencies or race
-conditions. Everytime you make the call with more than a certain size,
-you nicely get this predictable EINVAL result. 
-
-You have the source code to everything; you can add debug printk calls
-anywhere you want and rebuild the kernel. If there are multiple places
-that can produce an -EINVAL return value, you can precisely identify
-which one is doing it.
-
-Golly, gee, lucky you! This is like the software equivalent of taking a
-shot against a wide-open net: just kick the ball!
-
-What is missing?
+-Tony

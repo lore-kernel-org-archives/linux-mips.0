@@ -1,41 +1,41 @@
-Received: from mga02.intel.com ([134.134.136.20]:35318 "EHLO mga02.intel.com")
-	by ftp.linux-mips.org with ESMTP id S20026145AbXLCRBF convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 3 Dec 2007 17:01:05 +0000
+Received: from mail.zeugmasystems.com ([192.139.122.66]:42882 "EHLO
+	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
+	id S20030354AbXLCVli convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 3 Dec 2007 21:41:38 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: [PATCH 2/2] MIPS: vmlinux.lds.S: handle .{init,exit}.bss sections
-Date: Mon, 3 Dec 2007 09:00:49 -0800
-Message-ID: <617E1C2C70743745A92448908E030B2A030FE4C2@scsmsx411.amr.corp.intel.com>
-In-Reply-To: <1196543586-6698-3-git-send-email-fbuihuu@gmail.com>
-References: <1196543586-6698-1-git-send-email-fbuihuu@gmail.com> <1196543586-6698-3-git-send-email-fbuihuu@gmail.com>
-From: "Luck, Tony" <tony.luck@intel.com>
-Return-Path: <tony.luck@intel.com>
+Subject: RE: Rename Sibyte duart devices?
+Date: Mon, 3 Dec 2007 13:41:09 -0800
+Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C552E883@exchange.ZeugmaSystems.local>
+In-Reply-To: <20071203130818.GA6466@linux-mips.org>
+From: "Kaz Kylheku" <kaz@zeugmasystems.com>
+Return-Path: <kaz@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Franck Bui-Huu <fbuihuu@gmail.com>, linux-arch@vger.kernel.org
-Cc: macro@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20071203170049.0MlsVvy0M6FFu20nt3MCAjM4UiNq28nAo7j5shjHJbE@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-serial@vger.kernel.org
+Message-ID: <20071203214109.gtSYI0Re-52HP2pJLNVbHSrfcBqUGs_bYT_NqoWMxUY@z>
 
-+	/*
-+	 * We keep init/exit bss sections here to have only one
-+	 * segment to load. Note that .bss.exit is also discarded
-+	 * at runtime for the same reason as above.
-+	 */
-+	.exit.bss : {
-+		*(.bss.exit)
-+	}
+Ralf Baechle wrote:
+> Devices created by udev have been named duart? instead of the common
+> ttyS?.  This is a nuisance because it requires changes to all sorts of
+> config files such as /etc/inittab, /etc/securetty etc. to work.
+> suggest to kill the problem by the root by something like the below
+> patch.  Comments? 
 
-This change would also require an audit of the bootloader or early
-kernel initialization code (whichever handles zeroing of .bss space)
-to make sure that it understands that the kernel will now have an
-extra block of memory that needs to be cleared.  Perhaps nothing
-needs to be done if the code already handled the general case of
-loading an ELF binary with some sections that have an in-memory
-size bigger than the on-disk size.  But worth looking at in case
-the code makes an assumption about what needs to be zeroed.
+I can see this kind of a change being somewhat sneaky; some Linux users
+on SiByte systems have already worked around for the duart naming not by
+patching the kernel but by modifying their text configurations to use
+the duart naming. After they figure out why, after upgrading to a new
+kernel, their system doesn't work any more, they will still have the
+problem that the newer and older kernel require different text
+configuration in the file system with respect to the tty devices. It's
+nice to be able to pull out an older kernel and boot with it, without
+having to remember a list of things to tweak.
 
--Tony
+To be forward and backward compatible, the kernel should perhaps offer
+the device under both aliases: /etc/TTYSx and /etc/duartx.
+
+Kaz "Kompatibility Kurmudgeon" Kylheku

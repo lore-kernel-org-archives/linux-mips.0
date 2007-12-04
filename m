@@ -1,41 +1,37 @@
-Received: from mail.zeugmasystems.com ([192.139.122.66]:42882 "EHLO
-	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S20030354AbXLCVli convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 3 Dec 2007 21:41:38 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Rename Sibyte duart devices?
-Date: Mon, 3 Dec 2007 13:41:09 -0800
-Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C552E883@exchange.ZeugmaSystems.local>
-In-Reply-To: <20071203130818.GA6466@linux-mips.org>
-From: "Kaz Kylheku" <kaz@zeugmasystems.com>
-Return-Path: <kaz@zeugmasystems.com>
+Received: from [81.2.110.250] ([81.2.110.250]:10159 "EHLO the-village.bc.nu")
+	by ftp.linux-mips.org with ESMTP id S20032322AbXLDMv7 (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 4 Dec 2007 12:51:59 +0000
+Date: Tue, 4 Dec 2007 12:45:16 +0000
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [PATCH] SC26XX: New serial driver for SC2681 uarts
+Message-ID: <20071204124516.0120266a@the-village.bc.nu>
+In-Reply-To: <20071204082534.GA5938@alpha.franken.de>
+References: <20071202194346.36E3FDE4C4@solo.franken.de>
+	<20071203155317.772231f9.akpm@linux-foundation.org>
+	<20071203155746.2dc4506d@laptopd505.fenrus.org>
+	<20071204082534.GA5938@alpha.franken.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <alan@lxorguk.ukuu.org.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-serial@vger.kernel.org
-Message-ID: <20071203214109.gtSYI0Re-52HP2pJLNVbHSrfcBqUGs_bYT_NqoWMxUY@z>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arjan van de Ven <arjan@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Andy Whitcroft <apw@shadowen.org>
+Message-ID: <20071204124516.Gqe-H-d3jFQxjsb3lF79F2NNz9hizMrhIiBw-RtOJuA@z>
 
-Ralf Baechle wrote:
-> Devices created by udev have been named duart? instead of the common
-> ttyS?.  This is a nuisance because it requires changes to all sorts of
-> config files such as /etc/inittab, /etc/securetty etc. to work.
-> suggest to kill the problem by the root by something like the below
-> patch.  Comments? 
+On Tue, 4 Dec 2007 09:25:35 +0100
+tsbogend@alpha.franken.de (Thomas Bogendoerfer) wrote:
 
-I can see this kind of a change being somewhat sneaky; some Linux users
-on SiByte systems have already worked around for the duart naming not by
-patching the kernel but by modifying their text configurations to use
-the duart naming. After they figure out why, after upgrading to a new
-kernel, their system doesn't work any more, they will still have the
-problem that the newer and older kernel require different text
-configuration in the file system with respect to the tty devices. It's
-nice to be able to pull out an older kernel and boot with it, without
-having to remember a list of things to tweak.
+> On Mon, Dec 03, 2007 at 03:57:46PM -0800, Arjan van de Ven wrote:
+> > > > +#define SC26XX_MAJOR         204
+> > > > +#define SC26XX_MINOR_START   205
+> > > > +#define SC26XX_NR            2
+> > 
+> > did lanana assign these numbers officially?
+> 
+> I tried to numbers several months ago and didn't get any response 
 
-To be forward and backward compatible, the kernel should perhaps offer
-the device under both aliases: /etc/TTYSx and /etc/duartx.
-
-Kaz "Kompatibility Kurmudgeon" Kylheku
+Please raise it with the relevant people. If our LANANA administrator is
+not doing their job then the Linuxfoundation need to find a replacement,
+or hand control of it over to someone outside.

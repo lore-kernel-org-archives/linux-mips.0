@@ -1,77 +1,43 @@
-Received: from smtp2.linux-foundation.org ([207.189.120.14]:22980 "EHLO
-	smtp2.linux-foundation.org") by ftp.linux-mips.org with ESMTP
-	id S20033745AbXLED17 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 5 Dec 2007 03:27:59 +0000
-Date: Tue, 4 Dec 2007 19:27:38 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] SC26XX: New serial driver for SC2681 uarts
-Message-ID: <20071204192738.54e79a97.akpm@linux-foundation.org>
-In-Reply-To: <20071204234112.GA12352@alpha.franken.de>
-References: <20071202194346.36E3FDE4C4@solo.franken.de>
-	<20071203155317.772231f9.akpm@linux-foundation.org>
-	<20071204234112.GA12352@alpha.franken.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mail.zeugmasystems.com ([70.79.96.174]:6708 "EHLO
+	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
+	id S20032592AbXLEDut (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 5 Dec 2007 03:50:49 +0000
+Message-ID: <802BA59F5D0A495BAB9A037527BB76BB@rocktron>
+From: "Kaz Kylheku" <kaz@zeugmasystems.com>
+References: <20071203181658.GA26631@onstor.com> <20071203230828.GA17960@linux-mips.org>
+In-Reply-To: <20071203230828.GA17960@linux-mips.org>
+Subject: Re: [PATCH] Add support for SB1 hardware watchdog.
+Date: Tue, 4 Dec 2007 19:41:08 -0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	format=flowed;
+	charset="iso-8859-1";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Return-Path: <akpm@linux-foundation.org>
+Return-Path: <kaz@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Andy Whitcroft <apw@shadowen.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
-Message-ID: <20071205032738.eDzj-1K3Q95tqgZ-PfoOKSt-5GC-61R7CAXK3H0JeTk@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20071205034108.7fgHJPjsJenTILNiypLP-hTs04X7tC_Fs1bw95S9NpQ@z>
 
-On Wed, 5 Dec 2007 00:41:12 +0100 tsbogend@alpha.franken.de (Thomas Bogendoerfer) wrote:
+On Mon, Dec 03, 2007, Ralf Baechle wrote:
+> On Mon, Dec 03, 2007 at 10:17:04AM -0800, Andrew Sharp wrote:
+>
+>> +   Watchdog driver for the built in watchdog hardware in Sibyte
+>> +   SoC processors.  There are apparently two watchdog timers
+>> +   on such processors; this driver supports only the first one,
+>> +   because currently Linux only supports exporting one watchdog
+>> +   to userspace.
+>
+> And even four watchdogs in the BCM1480.
+>
+> You'd think they'd trust their hardware more than that ;-)
 
-> On Mon, Dec 03, 2007 at 03:53:17PM -0800, Andrew Morton wrote:
-> > On Sun,  2 Dec 2007 20:43:46 +0100 (CET)
-> > Thomas Bogendoerfer <tsbogend@alpha.franken.de> wrote:
-> > 
-> > > New serial driver for SC2681/SC2691 uarts. Older SNI RM400 machines are
-> > > using these chips for onboard serial ports.
-> > > 
-> > 
-> > Little things...
-> 
-> here is an updated version.
-> 
-> Changes:
->    - use container_of
->    - remove not needed locking
->    - remove inlines
->    - fix macros with double argument reference
-> 
-> Thomas.
-> --
-> 
-> New serial driver for SC2681/SC2691 uarts. Older SNI RM400 machines are
-> using these chips for onboard serial ports.
-> 
+Maybe the dogs can be daisy-chained together. After all, who watches the 
+watcher? And who watches him?
 
-grumble.
+Did I ever tell you how lucky you are?
 
-These:
+http://www.drseussart.com/beewatcher.html
 
-> +#define READ_SC(p, r)        readb((p)->membase + RD_##r)
-> +#define WRITE_SC(p, r, v)    writeb((v), (p)->membase + WR_##r)
-
-and these:
-
-> +#define READ_SC_PORT(p, r)     read_sc_port(p, RD_PORT_##r)
-> +#define WRITE_SC_PORT(p, r, v) write_sc_port(p, WR_PORT_##r, v)
-
-really don't need to exist.  All they do is make the code harder to read.
-
-Think of the poor reader who sees this:
-
-		status = READ_SC_PORT(port, SR);
-
-and then goes madly searching for "SR".  After a while, our confused reader
-might think to go look at the definition of READ_SC_PORT, after which our
-reader will emulate a C preprocessor in wetware and will eventually construct
-then hunt down RD_PORT_SR and will then hopefully remember what the heck he was
-trying to do in the first place.
-
-This sucks.
-
-Code is written once and is read a thousand times.  Please optimise for
-reading.
+http://www.webpages.ttu.edu/sbaugues/fin4323/dr.seuss.pdf

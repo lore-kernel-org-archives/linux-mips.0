@@ -1,28 +1,27 @@
-Received: from localhost.localdomain ([127.0.0.1]:21412 "EHLO
-	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
-	id S20030716AbXLESWc (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 5 Dec 2007 18:22:32 +0000
-Date: Wed, 5 Dec 2007 18:21:06 +0000
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH 2/2] Alchemy: fix IRQ bases
-Message-ID: <20071205182106.GB10697@linux-mips.org>
-References: <200712051908.26703.sshtylyov@ru.mvista.com>
+Received: from blu0-omc1-s6.blu0.hotmail.com ([65.55.162.149]:62569 "EHLO
+	blu0-omc1-s6.blu0.hotmail.com") by ftp.linux-mips.org with ESMTP
+	id S20026788AbXLFQlv convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 6 Dec 2007 16:41:51 +0000
+Message-ID: <BLU127-W10543A7CB1FFFC1CCC77918A6F0@phx.gbl>
+From: Nathan Eggan <nathan_eggan@live.com>
+Subject: Re: Bug in Au1x00 UART or USB drivers for 2.6 kernels?
+Date: Thu, 6 Dec 2007 16:41:23 +0000
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200712051908.26703.sshtylyov@ru.mvista.com>
-Return-Path: <ralf@linux-mips.org>
+Return-Path: <nathan_eggan@live.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Cc: linux-mips@linux-mips.org
+To: linux-mips mailing list <linux-mips@linux-mips.org>
+Message-ID: <20071206164123.Q5AMKOvp_0SDWkjdaycvmv18dJZQYGRhBufGYX0RSs8@z>
 
-On Wed, Dec 05, 2007 at 07:08:26PM +0300, Sergei Shtylyov wrote:
 
-> Do what the commits commits f3e8d1da389fe2e514e31f6e93c690c8e1243849 and
-> 9d360ab4a7568a8d177280f651a8a772ae52b9b9 failed to achieve -- actually
-> convert the Alchemy code to irq_cpu.
+Can anyone see this?  I'm new to Ecartis, so I'm not sure whether any of my messages are getting through.
 
-Applied, thanks.
+Plus, my crappy Microsoft Windows Live Hotmail client could be screwing me up.  I'm not sure I can force it to just send purely plain text email.
 
-  Ralf
+Thanks,
+Nate
+_________________________________________________________________
+You keep typing, we keep giving. Download Messenger and join the i’m Initiative now.
+http://im.live.com/messenger/im/home/?source=TAGLM

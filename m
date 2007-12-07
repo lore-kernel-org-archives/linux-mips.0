@@ -1,29 +1,38 @@
-Received: from localhost.localdomain ([127.0.0.1]:19932 "EHLO
-	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
-	id S20031765AbXLGLh6 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 7 Dec 2007 11:37:58 +0000
-Date: Fri, 7 Dec 2007 01:55:20 +0000
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH] Alchemy: Fix Au1x SD controller IRQ
-Message-ID: <20071207015519.GA1231@linux-mips.org>
-References: <20071206071156.GA20211@roarinelk.homelinux.net>
+Received: from mail.zeugmasystems.com ([70.79.96.174]:52343 "EHLO
+	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
+	id S20022438AbXLGV50 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 7 Dec 2007 21:57:26 +0000
+Content-class: urn:content-classes:message
+Subject: SiByte 1480 & Branch Likely instructions?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20071206071156.GA20211@roarinelk.homelinux.net>
-Return-Path: <ralf@linux-mips.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Date: Fri, 7 Dec 2007 13:54:30 -0800
+Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C5590CF0@exchange.ZeugmaSystems.local>
+From: "Kaz Kylheku" <kaz@zeugmasystems.com>
+Return-Path: <kaz@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Manuel Lauss <mano@roarinelk.homelinux.net>
-Cc: linux-mips@linux-mips.org
+To: linux-mips@linux-mips.org
+Message-ID: <20071207215430.qLmff2uClQ7qVutXrLhtJa5jFkgP0R3-nyWPxHYTUro@z>
 
-On Thu, Dec 06, 2007 at 08:11:56AM +0100, Manuel Lauss wrote:
+Hi All,
 
-> With the introduction of MIPS_CPU_IRQ_BASE, the hardcoded IRQ number
-> of the au1100/au1200 SD controller(s) is no longer valid.
-> 
-> Signed-off-by: Manuel Lauss <mano@roarinelk.homelinux.net>
+Not really a kernel-related question. I've discovered that GCC 4.1.1
+(which I'm not using for kernel compiling, but user space) generates
+branch likely instructions by default, even though the documentation
+says that their use is off by default for MIPS32 and MIPS64, because
+they are considered deprecated. They are documented as obsolete for the
+Broadcom chips I am working with.
 
-Thanks, applied.
+I'm investigating a software anomaly which looks like might be caused by
+failure to annul the delay slot of a branch-likely in the fall-through
+case. 
 
-  Ralf
+In parallel with writing some tests, I thought I would ask whether
+anyone happens know whether or not these instructions are known to
+actually work correctly on the SB1480 silicon (and perhaps any
+additional details, like what revisions, etc)?
+
+Thanks

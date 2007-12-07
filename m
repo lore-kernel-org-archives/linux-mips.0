@@ -1,150 +1,40 @@
-Received: from rtsoft3.corbina.net ([85.21.88.6]:1318 "EHLO
-	buildserver.ru.mvista.com") by ftp.linux-mips.org with ESMTP
-	id S20027331AbXLFR4T (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 6 Dec 2007 17:56:19 +0000
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Subject: [PATCH] Alchemy: fix PCI resource conflict
-Date: Thu, 6 Dec 2007 20:56:06 +0300
+Received: from blu139-omc1-s10.blu139.hotmail.com ([65.55.175.150]:38923 "EHLO
+	blu139-omc1-s10.blu139.hotmail.com") by ftp.linux-mips.org with ESMTP
+	id S20030868AbXLGABM convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 7 Dec 2007 00:01:12 +0000
+Message-ID: <BLU127-W9F2B1A00F26057FD989498A680@phx.gbl>
+From: Nathan Eggan <nathan_eggan@live.com>
+Subject: Re: Bug in Au1x00 UART or USB drivers for 2.6 kernels?
+Date: Fri, 7 Dec 2007 00:00:44 +0000
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200712062056.06326.sshtylyov@ru.mvista.com>
-Return-Path: <sshtylyov@ru.mvista.com>
+Return-Path: <nathan_eggan@live.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
+To: linux-mips mailing list <linux-mips@linux-mips.org>
+Message-ID: <20071207000044.zSYhulio5iaYaBrDPOZNBtxcua6VWCGWcSzjKoCBXow@z>
 
-... by getting the PCI resources back into the 32-bit range -- there's no need
-therefore for CONFIG_RESOURCES_64BIT either. This makes Alchemy PCI work again
-while currently the kernel skips the bus scan.
 
-Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+A'ight... I just finished pulling down a copy of the Linux-mips kernel 2.6.23.9 and building it for my DBAu1500.  I was hoping this would fix the issue I'm experiencing with the serial ports and the USB bus.  (For those that didn't catch the previous emails, I'm suffering byte substitution in a very regular pattern on the Au1500's UARTs when I put activity on the USB bus.)
 
- arch/mips/au1000/Kconfig              |    9 ---------
- arch/mips/au1000/common/pci.c         |    8 ++++----
- include/asm-mips/mach-au1x00/au1000.h |    9 +++++----
- 3 files changed, 9 insertions(+), 17 deletions(-)
+Unfortunately, the new kernel appears to have no effect.  :(  It performs the same as the previous.
 
-Index: linux-2.6/arch/mips/au1000/Kconfig
-===================================================================
---- linux-2.6.orig/arch/mips/au1000/Kconfig
-+++ linux-2.6/arch/mips/au1000/Kconfig
-@@ -7,7 +7,6 @@ config MIPS_MTX1
- 	bool "4G Systems MTX-1 board"
- 	select DMA_NONCOHERENT
- 	select HW_HAS_PCI
--	select RESOURCES_64BIT if PCI
- 	select SOC_AU1500
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 
-@@ -22,7 +21,6 @@ config MIPS_DB1000
- 	select SOC_AU1000
- 	select DMA_NONCOHERENT
- 	select HW_HAS_PCI
--	select RESOURCES_64BIT if PCI
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 
- config MIPS_DB1100
-@@ -44,7 +42,6 @@ config MIPS_DB1500
- 	select DMA_NONCOHERENT
- 	select HW_HAS_PCI
- 	select MIPS_DISABLE_OBSOLETE_IDE
--	select RESOURCES_64BIT if PCI
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 
-@@ -54,7 +51,6 @@ config MIPS_DB1550
- 	select HW_HAS_PCI
- 	select DMA_NONCOHERENT
- 	select MIPS_DISABLE_OBSOLETE_IDE
--	select RESOURCES_64BIT if PCI
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 
- config MIPS_MIRAGE
-@@ -68,7 +64,6 @@ config MIPS_PB1000
- 	select SOC_AU1000
- 	select DMA_NONCOHERENT
- 	select HW_HAS_PCI
--	select RESOURCES_64BIT if PCI
- 	select SWAP_IO_SPACE
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 
-@@ -77,7 +72,6 @@ config MIPS_PB1100
- 	select SOC_AU1100
- 	select DMA_NONCOHERENT
- 	select HW_HAS_PCI
--	select RESOURCES_64BIT if PCI
- 	select SWAP_IO_SPACE
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 
-@@ -86,7 +80,6 @@ config MIPS_PB1200
- 	select SOC_AU1200
- 	select DMA_NONCOHERENT
- 	select MIPS_DISABLE_OBSOLETE_IDE
--	select RESOURCES_64BIT if PCI
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 
- config MIPS_PB1500
-@@ -94,7 +87,6 @@ config MIPS_PB1500
- 	select SOC_AU1500
- 	select DMA_NONCOHERENT
- 	select HW_HAS_PCI
--	select RESOURCES_64BIT if PCI
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 
- config MIPS_PB1550
-@@ -103,7 +95,6 @@ config MIPS_PB1550
- 	select DMA_NONCOHERENT
- 	select HW_HAS_PCI
- 	select MIPS_DISABLE_OBSOLETE_IDE
--	select RESOURCES_64BIT if PCI
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 
- config MIPS_XXS1500
-Index: linux-2.6/arch/mips/au1000/common/pci.c
-===================================================================
---- linux-2.6.orig/arch/mips/au1000/common/pci.c
-+++ linux-2.6/arch/mips/au1000/common/pci.c
-@@ -39,15 +39,15 @@
- 
- /* TBD */
- static struct resource pci_io_resource = {
--	.start	= (resource_size_t)PCI_IO_START,
--	.end	= (resource_size_t)PCI_IO_END,
-+	.start	= PCI_IO_START,
-+	.end	= PCI_IO_END,
- 	.name	= "PCI IO space",
- 	.flags	= IORESOURCE_IO
- };
- 
- static struct resource pci_mem_resource = {
--	.start	= (resource_size_t)PCI_MEM_START,
--	.end	= (resource_size_t)PCI_MEM_END,
-+	.start	= PCI_MEM_START,
-+	.end	= PCI_MEM_END,
- 	.name	= "PCI memory space",
- 	.flags	= IORESOURCE_MEM
- };
-Index: linux-2.6/include/asm-mips/mach-au1x00/au1000.h
-===================================================================
---- linux-2.6.orig/include/asm-mips/mach-au1x00/au1000.h
-+++ linux-2.6/include/asm-mips/mach-au1x00/au1000.h
-@@ -1680,10 +1680,11 @@ enum soc_au1200_ints {
- #define Au1500_PCI_MEM_START      0x440000000ULL
- #define Au1500_PCI_MEM_END        0x44FFFFFFFULL
- 
--#define PCI_IO_START    (Au1500_PCI_IO_START + 0x1000)
--#define PCI_IO_END      (Au1500_PCI_IO_END)
--#define PCI_MEM_START   (Au1500_PCI_MEM_START)
--#define PCI_MEM_END     (Au1500_PCI_MEM_END)
-+#define PCI_IO_START    (u32)(Au1500_PCI_IO_START + 0x1000)
-+#define PCI_IO_END      (u32) Au1500_PCI_IO_END
-+#define PCI_MEM_START   (u32) Au1500_PCI_MEM_START
-+#define PCI_MEM_END     (u32) Au1500_PCI_MEM_END
-+
- #define PCI_FIRST_DEVFN (0<<3)
- #define PCI_LAST_DEVFN  (19<<3)
- 
+For the record, my tested setup was:
+- Linux 2.6.23 with the MIPS patches
+- Busybox 1.7.3 (doubt this is relevant)
+- compiled with uClibc-0.9.28 & gcc-3.4.5 (this probably isn't relevant either)
+
+All the tests I've discussed to date were down with the test code previously included in this thread, and the serial port was set for 115,200bps 8-N-1.  (I've heard the 115k number can be taboo for some unknown reason, but we really need the speed on the UART.  :(  (It's already slow enough!)  So, I'm not sure too many folks would be happy if I halve it 56k to try to make it work.
+
+A few other notes:
+- As previously stated, a 2.4.26 kernel I tried worked fine; so this looks to be a 2.6 kernel issue.  (I've now tried 2.6.17, 2.6.21, and 2.6.23.9 and all have the same issue.)
+- I also tried using an FTDI USB-to-serial dongle and experienced NO errors.  So, this is clearly an interplay issue between the UART and the USB bus.
+
+Any other others?
+
+Thanks again!
+Nate
+_________________________________________________________________
+Put your friends on the big screen with Windows Vista® + Windows Live™.
+http://www.microsoft.com/windows/shop/specialoffers.mspx?ocid=TXT_TAGLM_CPC_MediaCtr_bigscreen_102007

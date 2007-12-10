@@ -1,108 +1,172 @@
-Received: from smtp.nildram.co.uk ([195.112.4.54]:24338 "EHLO
-	smtp.nildram.co.uk") by ftp.linux-mips.org with ESMTP
-	id S20026287AbXLHRwI (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Sat, 8 Dec 2007 17:52:08 +0000
-From: Richard Sandiford <rsandifo@nildram.co.uk>
-Subject: Re: [UPDATED PATCH] IP28 support
-References: <20071129095442.C6679C2B39@solo.franken.de>
-	<20071129130130.GA14655@linux-mips.org> <4756422D.6070305@gentoo.org>
-	<20071205093938.GA6848@alpha.franken.de>
-Date: Sat, 08 Dec 2007 17:52:06 +0000
-In-Reply-To: <20071205093938.GA6848@alpha.franken.de> (Thomas Bogendoerfer's
-	message of "Wed\, 5 Dec 2007 10\:39\:38 +0100")
-Message-ID: <87ejdx6pmh.fsf@firetop.home>
+Received: from blu139-omc1-s2.blu139.hotmail.com ([65.55.175.142]:39560 "EHLO
+	blu139-omc1-s2.blu139.hotmail.com") by ftp.linux-mips.org with ESMTP
+	id S20025054AbXLJRnh convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 10 Dec 2007 17:43:37 +0000
+Message-ID: <BLU127-W1655DCD5A946AF12DE533E8A6B0@phx.gbl>
+From: Nathan Eggan <nathan_eggan@live.com>
+Subject: RE: [PATCH] Alchemy: fix PCI resource conflict (take 2)
+Date: Mon, 10 Dec 2007 17:43:09 +0000
+In-Reply-To: <200712102028.51448.sshtylyov@ru.mvista.com>
+References: <200712102028.51448.sshtylyov@ru.mvista.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-Path: <rsandifo@nildram.co.uk>
+Return-Path: <nathan_eggan@live.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Kumba <kumba@gentoo.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20071208175206.5yPzUTxH6bcRjThKW9Gpr59IbMmov4htXCYcyWM73r0@z>
+To: linux-mips mailing list <linux-mips@linux-mips.org>
+Message-ID: <20071210174309.XZSZPr2QqRgiUYYeJaf0yFgyd0cJ1xPAI5UYS67DXfU@z>
 
-tsbogend@alpha.franken.de (Thomas Bogendoerfer) writes:
-> On Wed, Dec 05, 2007 at 01:16:13AM -0500, Kumba wrote:
->> I've been out of it lately -- did the gcc side of things ever make it in, 
->> or do we need to go push on that some more?
->
-> We need push on that. Looking at 
->
-> http://gcc.gnu.org/ml/gcc-patches/2006-04/msg00291.html
->
-> there seems to be a missing understanding, why the cache
-> barriers are needed.
 
-Heh.  Quite probably.  Which bit of my message don't you agree with?
 
-FWIW, I was going off the original message as posted here:
+Any chance this will help fix my Au1x00 serial + USB issues?  I know the old PCI bus code used to not work with the USB - at least the two could not run together.  It's been a while since I looked at those issues, so that may have been resolved long ago.
 
-    http://gcc.gnu.org/ml/gcc-patches/2006-03/msg00090.html
+Just curious,
+Thanks!
+Nate
 
-The explanation of the chosen workaround seemed to be left to this bit
-of http://mail-index.netbsd.org/port-sgimips/2000/06/29/0006.html:
+----------------------------------------
+> From: sshtylyov@ru.mvista.com
+> To: ralf@linux-mips.org
+> Subject: [PATCH] Alchemy: fix PCI resource conflict (take 2)
+> Date: Mon, 10 Dec 2007 20:28:51 +0300
+> CC: linux-mips@linux-mips.org
+> 
+> ... by getting the PCI resources back into the 32-bit range -- there's no need
+> therefore for CONFIG_RESOURCES_64BIT either. This makes Alchemy PCI work again
+> while currently the kernel skips the bus scan.
+> 
+> Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+> 
+> ---
+>  arch/mips/au1000/Kconfig              |    9 ---------
+>  arch/mips/au1000/common/pci.c         |    8 ++++----
+>  include/asm-mips/mach-au1x00/au1000.h |    9 +++++----
+>  3 files changed, 9 insertions(+), 17 deletions(-)
+> 
+> Index: linux-2.6/arch/mips/au1000/Kconfig
+> ===================================================================
+> --- linux-2.6.orig/arch/mips/au1000/Kconfig
+> +++ linux-2.6/arch/mips/au1000/Kconfig
+> @@ -7,7 +7,6 @@ config MIPS_MTX1
+>  	bool "4G Systems MTX-1 board"
+>  	select DMA_NONCOHERENT
+>  	select HW_HAS_PCI
+> -	select RESOURCES_64BIT if PCI
+>  	select SOC_AU1500
+>  	select SYS_SUPPORTS_LITTLE_ENDIAN
+>  
+> @@ -22,7 +21,6 @@ config MIPS_DB1000
+>  	select SOC_AU1000
+>  	select DMA_NONCOHERENT
+>  	select HW_HAS_PCI
+> -	select RESOURCES_64BIT if PCI
+>  	select SYS_SUPPORTS_LITTLE_ENDIAN
+>  
+>  config MIPS_DB1100
+> @@ -44,7 +42,6 @@ config MIPS_DB1500
+>  	select DMA_NONCOHERENT
+>  	select HW_HAS_PCI
+>  	select MIPS_DISABLE_OBSOLETE_IDE
+> -	select RESOURCES_64BIT if PCI
+>  	select SYS_SUPPORTS_BIG_ENDIAN
+>  	select SYS_SUPPORTS_LITTLE_ENDIAN
+>  
+> @@ -54,7 +51,6 @@ config MIPS_DB1550
+>  	select HW_HAS_PCI
+>  	select DMA_NONCOHERENT
+>  	select MIPS_DISABLE_OBSOLETE_IDE
+> -	select RESOURCES_64BIT if PCI
+>  	select SYS_SUPPORTS_LITTLE_ENDIAN
+>  
+>  config MIPS_MIRAGE
+> @@ -68,7 +64,6 @@ config MIPS_PB1000
+>  	select SOC_AU1000
+>  	select DMA_NONCOHERENT
+>  	select HW_HAS_PCI
+> -	select RESOURCES_64BIT if PCI
+>  	select SWAP_IO_SPACE
+>  	select SYS_SUPPORTS_LITTLE_ENDIAN
+>  
+> @@ -77,7 +72,6 @@ config MIPS_PB1100
+>  	select SOC_AU1100
+>  	select DMA_NONCOHERENT
+>  	select HW_HAS_PCI
+> -	select RESOURCES_64BIT if PCI
+>  	select SWAP_IO_SPACE
+>  	select SYS_SUPPORTS_LITTLE_ENDIAN
+>  
+> @@ -86,7 +80,6 @@ config MIPS_PB1200
+>  	select SOC_AU1200
+>  	select DMA_NONCOHERENT
+>  	select MIPS_DISABLE_OBSOLETE_IDE
+> -	select RESOURCES_64BIT if PCI
+>  	select SYS_SUPPORTS_LITTLE_ENDIAN
+>  
+>  config MIPS_PB1500
+> @@ -94,7 +87,6 @@ config MIPS_PB1500
+>  	select SOC_AU1500
+>  	select DMA_NONCOHERENT
+>  	select HW_HAS_PCI
+> -	select RESOURCES_64BIT if PCI
+>  	select SYS_SUPPORTS_LITTLE_ENDIAN
+>  
+>  config MIPS_PB1550
+> @@ -103,7 +95,6 @@ config MIPS_PB1550
+>  	select DMA_NONCOHERENT
+>  	select HW_HAS_PCI
+>  	select MIPS_DISABLE_OBSOLETE_IDE
+> -	select RESOURCES_64BIT if PCI
+>  	select SYS_SUPPORTS_LITTLE_ENDIAN
+>  
+>  config MIPS_XXS1500
+> Index: linux-2.6/arch/mips/au1000/common/pci.c
+> ===================================================================
+> --- linux-2.6.orig/arch/mips/au1000/common/pci.c
+> +++ linux-2.6/arch/mips/au1000/common/pci.c
+> @@ -39,15 +39,15 @@
+>  
+>  /* TBD */
+>  static struct resource pci_io_resource = {
+> -	.start	= (resource_size_t)PCI_IO_START,
+> -	.end	= (resource_size_t)PCI_IO_END,
+> +	.start	= PCI_IO_START,
+> +	.end	= PCI_IO_END,
+>  	.name	= "PCI IO space",
+>  	.flags	= IORESOURCE_IO
+>  };
+>  
+>  static struct resource pci_mem_resource = {
+> -	.start	= (resource_size_t)PCI_MEM_START,
+> -	.end	= (resource_size_t)PCI_MEM_END,
+> +	.start	= PCI_MEM_START,
+> +	.end	= PCI_MEM_END,
+>  	.name	= "PCI memory space",
+>  	.flags	= IORESOURCE_MEM
+>  };
+> Index: linux-2.6/include/asm-mips/mach-au1x00/au1000.h
+> ===================================================================
+> --- linux-2.6.orig/include/asm-mips/mach-au1x00/au1000.h
+> +++ linux-2.6/include/asm-mips/mach-au1x00/au1000.h
+> @@ -1680,10 +1680,11 @@ enum soc_au1200_ints {
+>  #define Au1500_PCI_MEM_START      0x440000000ULL
+>  #define Au1500_PCI_MEM_END        0x44FFFFFFFULL
+>  
+> -#define PCI_IO_START    (Au1500_PCI_IO_START + 0x1000)
+> -#define PCI_IO_END      (Au1500_PCI_IO_END)
+> -#define PCI_MEM_START   (Au1500_PCI_MEM_START)
+> -#define PCI_MEM_END     (Au1500_PCI_MEM_END)
+> +#define PCI_IO_START	0x00001000
+> +#define PCI_IO_END	0x000FFFFF
+> +#define PCI_MEM_START	0x40000000
+> +#define PCI_MEM_END	0x4FFFFFFF
+> +
+>  #define PCI_FIRST_DEVFN (0<<3)
+>  #define PCI_LAST_DEVFN  (19<<3)
+>  
+> 
+> 
 
-    All is well with coherent IO systems.  On non coherent
-    systems like Indigo2 and O2 this creates a race
-    condition with DMA reads (IO->mem) where a stale
-    cached data can be written back over the DMAed data.
-
-    R10K Indigo2:
-
-    This issue was figured out late the the R10K I2
-    design cycle.  The problem was fixed by modifying
-    the compiler and assembler to issue a cache barrier
-    instruction to address 0(sp) as the first instruction
-    in basic blocks that contain stores to registers
-    other than $0 and $sp.
-
-and from a compiler point of view, it would be nice to know
-_why_ that was a reasonable workaround.  What I was really
-looking for was: (a) a short description of the problem,
-(b) a list of assumptions that the compiler is going to
-make when working around the problem and (c) a description
-of what said workarounds are.
-
-My understanding of (a) is that, if a store is speculatively executed,
-the target of the store might be fetched into cache and marked dirty.
-We therefore want to avoid the speculative execution of stores if:
-
-  (1) the addressed memory might be the target of a later DMA operation.
-      If the DMA completes before the "dirty" cache line is flushed,
-      the cached data might overwrite the DMAed data.
-
-  (2) the addressed memory might be to IO-mapped cached memory
-      (usually through the address being garbage).  The cached
-      data will be written back to the IO region when flushed.
-
-We also want to avoid speculative execution of loads if:
-
-  (3) the addressed memory might be to load-sensitive IO-mapped cached
-      memory (usually through the address being garbage).  The hardware
-      would "see" loads that aren't actually executed.
-
-Is that vaguely accurate?
-
-I tried to piece together (b) by asking questions in the reviews,
-but it would be great to have a single explanation.
-
-The idea behind (c) is simple, of course: we insert a cache barrier
-before the potentially-problematic stores (and, for certain
-configurations, loads, although the original gcc patch had the
-associated macro hard-wired to false).  The key is explaining how,
-from a compiler internals viewpoint, we decide what is "potentially-
-problematic".  This ties in with the assumptions for (b).
-
-I'm sure my attempt at (a) above can be improved upon even if it's
-vaguely right.  But...
-
-> I guess the patch could be improved
-> by pointing directly to the errata section of the R10k
-> user manual.
-
-...I think an integrated explanation of (a), (b) and (c) above
-would be better than quoting large parts of the processor manual.
-The processor manual is aimed at a much broader audience and has
-a lot of superfluous info.  It also doesn't explain what _our_
-assumptions are and what our chosen workaround is.
-
-Richard
+_________________________________________________________________
+Connect and share in new ways with Windows Live.
+http://www.windowslive.com/connect.html?ocid=TXT_TAGLM_Wave2_newways_112007

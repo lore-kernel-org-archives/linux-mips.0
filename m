@@ -1,166 +1,46 @@
-Received: from mail.gnss.com ([209.47.22.10]:38916 "EHLO tormf01.gmi.domain")
-	by ftp.linux-mips.org with ESMTP id S20035727AbXLMDhx (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 13 Dec 2007 03:37:53 +0000
-Received: from tormf01.gmi.domain (127.0.0.1) by tormf01.gmi.domain (MlfMTA v3.2r9) id hc2kh20171s3 for <linux-mips@linux-mips.org>; Wed, 12 Dec 2007 22:37:22 -0500 (envelope-from <Nilanjan.Roychowdhury@gnss.com>)
-Content-class: urn:content-classes:message
+Received: from mail.zeugmasystems.com ([70.79.96.174]:59435 "EHLO
+	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
+	id S28576108AbXLNDFw (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 14 Dec 2007 03:05:52 +0000
+Message-ID: <559073B2DA784D4BABF7618D6D8CA89C@rocktron>
+From: "Kaz Kylheku" <kaz@zeugmasystems.com>
+References: <DDFD17CC94A9BD49A82147DDF7D545C5590D6B@exchange.ZeugmaSystems.local>
+In-Reply-To: <DDFD17CC94A9BD49A82147DDF7D545C5590D6B@exchange.ZeugmaSystems.local>
+Subject: GCC bug affecting MIPS (was Re: SiByte 1480 & Branch Likely instructions?)
+Date: Thu, 13 Dec 2007 19:05:20 -0800
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C83D39.7724DEF1"
-Subject: Inter processor synchronization
-Date: Thu, 13 Dec 2007 09:07:20 +0530
-Message-ID: <9D98C51005D80D43A19A3DF329A61D690106A282@INDEXCH2003.gmi.domain>
-From: "Nilanjan Roychowdhury" <Nilanjan.Roychowdhury@gnss.com>
-Return-Path: <Nilanjan.Roychowdhury@gnss.com>
+Content-Type: text/plain;
+	format=flowed;
+	charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <kaz@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20071213033720.I2T41Jl20slSJHdrDmwO1xNpldZfgpQzIUJPZJLRbA4@z>
+Message-ID: <20071214030520.o-1e4XToRisXhQAwlFf7xARQ_UE3oB3Ml-R80q8lhGs@z>
 
-This is a multi-part message in MIME format.
+"Kaz Kylheku" <kaz@zeugmasystems.com> wrote on December 07, 2007:
+> Kaz wrote:
+>> Hi All,
+>>
+>> Not really a kernel-related question. I've discovered that GCC 4.1.1
+>> (which I'm not using for kernel compiling, but user space) generates
+>> branch likely instructions by default, even though the documentation
+>> says that their use is off by default for MIPS32 and MIPS64, because
+>
+> That's because the compiler is not configured correctly. The default CPU
+> string "from-abi" ends up being used, and so the target ISA is MIPS III.
 
-------_=_NextPart_001_01C83D39.7724DEF1
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
+I managed to root-cause the original problem, and moments ago filed this bug 
+report:
 
-Hi,
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=34456
 
-I have a scenario where two images of the same Linux kernel are running
-on two MIPS cores. One is 24K and another is 4KEC. What is the best way
-to achieve inter processor synchronization between them?
-
-I guess the locks for LL/SC are local to a particular core and can not
-be extended across a multi core system.=20
-
-=20
-
-Will it be easier for me if both of them becomes same core ( like both
-24k) and I run the SMP version of Linux.
-
-Please throw some light.
-
-=20
-
-Thanks,
-
-Nilanjan
-
-=20
-
-=20
-
-
-------_=_NextPart_001_01C83D39.7724DEF1
-Content-Type: text/html;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:"MS Mincho";
-	panose-1:2 2 6 9 4 2 5 8 3 4;}
-@font-face
-	{font-family:"\@MS Mincho";
-	panose-1:0 0 0 0 0 0 0 0 0 0;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hi,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>I have a scenario where two images of the same Linux =
-kernel
-are running on two MIPS cores. One is 24K and another is 4KEC. What is =
-the best
-way to achieve inter processor synchronization between =
-them?<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>I guess the locks for LL/SC are local to a particular =
-core
-and can not be extended across a multi core system. =
-<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Will it be easier for me if both of them becomes same =
-core (
-like both 24k) and I run the SMP version of =
-Linux.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Please throw some light.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Nilanjan<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C83D39.7724DEF1--
+GCC can screw up when doing branch delay slot filling, because in computing 
+register liveness, it makes an incorrectly computed assumption about what 
+registers are clobbered by a CALL_INSN. By unfortunate coincidence, it's 
+possible for an instruction which restores the caller's GP to be wrongly 
+moved into a non-annulled delay slot, wreaking havoc on the fall-through 
+path where GP is in fact used. Jumps and data accesses are then attempted 
+using what is possibly the wrong global offset table.

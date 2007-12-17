@@ -1,68 +1,79 @@
-Received: from miranda.se.axis.com ([193.13.178.8]:59032 "EHLO
-	miranda.se.axis.com") by ftp.linux-mips.org with ESMTP
-	id S20021826AbXLQGpi convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 17 Dec 2007 06:45:38 +0000
-From: "Mikael Starvik" <mikael.starvik@axis.com>
-Subject: RE: GCC 3.4.5 and mftc0
-Date: Mon, 17 Dec 2007 07:45:27 +0100
-Message-ID: <BFECAF9E178F144FAEF2BF4CE739C66804C402C4@exmail1.se.axis.com>
+Received: from mx.mips.com ([63.167.95.198]:37826 "EHLO dns0.mips.com")
+	by ftp.linux-mips.org with ESMTP id S20029072AbXLQQrq (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 17 Dec 2007 16:47:46 +0000
+Message-ID: <017c01c840cb$7a5049c0$10eca8c0@grendel>
+From: "Kevin D. Kissell" <kevink@mips.com>
+References: <73cd086a0712170517i146a452exea775f3942c1d5da@mail.gmail.com>
+Subject: Re: [PATCH][MIPS] fix user_cpus_allowed assignment
+Date: Mon, 17 Dec 2007 17:40:03 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <BFECAF9E178F144FAEF2BF4CE739C668056FE63A@exmail1.se.axis.com>
-Return-Path: <mikael.starvik@axis.com>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <kevink@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: 'Ralf Baechle' <ralf@linux-mips.org>, Mikael Starvik <mikael.starvik@axis.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20071217064527.Pi7x35FcSFJVA514HYu3Kmxhp-5xmuXUcDmD4LNVHbw@z>
+To: Pavel Kiryukhin <vksavl@gmail.com>, linux-mips@linux-mips.org
+Message-ID: <20071217164003.5K7k-tyx5HeAst7Ist8KsUOcaNeEHucqmni7nsxEt9E@z>
 
-Thanks!
+This looks to be a correct fix.  Long term, we really do need to convince
+the scheduler maintainer to provide hooks that will allow hardware-driven
+affinity to be integrated with application-driven affinity in a sensible way,
+without requiring replication (and replicated maintenence) of the system
+call code in private copies like this.  I asked for such hooks in sched.c
+when it first became apparent that dynamic FPU affinity was desirable,
+but was blown off at that time, so, with regret, I perpetrated the local copy
+hack.  But it's silly, and MIPS can't possibly be the only architecture where 
+Linux is used in systems with assymmetric resources where adaptive affinity 
+is useful.
 
-and sorry for the spelling of simulator.
+            Regards,
 
-/Mikael
+            Kevin K.
 
------Original Message-----
-From: Ralf Baechle [mailto:ralf@linux-mips.org] 
-Sent: Friday, December 14, 2007 5:26 PM
-To: Mikael Starvik
-Cc: linux-mips@linux-mips.org
-Subject: Re: GCC 3.4.5 and mftc0
+----- Original Message ----- 
+From: "Pavel Kiryukhin" <vksavl@gmail.com>
+To: <linux-mips@linux-mips.org>
+Cc: <vksavl@gmail.com>
+Sent: Monday, December 17, 2007 2:17 PM
+Subject: [PATCH][MIPS] fix user_cpus_allowed assignment
 
 
-On Fri, Dec 14, 2007 at 10:49:40AM +0100, Mikael Starvik wrote:
-
-> mftc0() is implemented as
->  
->  .word ...
->   move %0, $1
+> Hi,
+> there seems to be a bug in affinity handling for CONFIG_MIPS_MT_FPAFF=y.
+> It can be easily reproduced - for two-cpus system set new mask to 4.
+> Call fails, but next sched_getaffinity() call returns 0 as current
+> mask.
+> Simple fix is below.
 > 
-> With at least gcc 3.4.5 the move is implemented as an addu %0, $1, $0.
-> But in the MIPS sumulator this fails and %0 gets the value 0xffffffff.
-> Implementing this as a or %0, $1, $0 instead gives the expected result.
-
-I wonder what "sumulator" you're using ...
-
-Addu is a perfectly fine implementation of move for 32-bit code.  It's not
-for 64-bit code but that's beside the point here.  The or method is also
-correct but historically the add instruction has been prefered, also
-because some processor - the R4300 afair - processes arithmetic instructions
-(add, sub that is not mul / div) faster than logic operations.
-
-> Any suggestions where the problem is and what the correct solution is?
-
-Fix the sumulator.
-
-> After fixing this my next problem is that IPIs doesn't reach all TCs
-> correctly (it seams like the code doesn't detect IXMT status correctly,
-> but I am still investigating). It is likely that it is caused by
-> something similar to the problem above.
-
-The code certainly works on real silicon, so the cause must be something
-local to your environment.
-
-Cheers,
-
-  Ralf
+> Signed-off-by: Pavel Kiryukhin <vksavl@gmail.com>
+> 
+> diff --git a/arch/mips/kernel/mips-mt-fpaff.c
+> b/arch/mips/kernel/mips-mt-fpaff.cindex 892665b..774f91e 100644
+> --- a/arch/mips/kernel/mips-mt-fpaff.c
+> +++ b/arch/mips/kernel/mips-mt-fpaff.c
+> @@ -87,9 +87,6 @@ asmlinkage long mipsmt_sys_sched_setaffinity(pid_t
+> pid, unsigned int len,
+>         if (retval)
+>                 goto out_unlock;
+> 
+> -       /* Record new user-specified CPU set for future reference */
+> -       p->thread.user_cpus_allowed = new_mask;
+> -
+>         /* Unlock the task list */
+>         read_unlock(&tasklist_lock);
+> 
+> @@ -104,6 +101,10 @@ asmlinkage long
+> mipsmt_sys_sched_setaffinity(pid_t pid, unsigned int len,
+>                 retval = set_cpus_allowed(p, new_mask);
+>         }
+> 
+> +        /* Record new user-specified CPU set for future reference */
+> +       if (!retval)
+> +               p->thread.user_cpus_allowed = new_mask;
+> +
+>  out_unlock:
+>         put_task_struct(p);
+>         unlock_cpu_hotplug();
+> 
+> 

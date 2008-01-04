@@ -1,27 +1,58 @@
-Received: from mail.zeugmasystems.com ([192.139.122.66]:51303 "EHLO
+Received: from mail.zeugmasystems.com ([192.139.122.66]:46020 "EHLO
 	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S20022105AbYADBTW (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 4 Jan 2008 01:19:22 +0000
+	id S20024116AbYADR4v (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 4 Jan 2008 17:56:51 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C84E6F.A6F04519"
-Subject: BUG: BUS error while returning from read() in /dev/oprofile/buffer
-Date: Thu, 3 Jan 2008 17:18:01 -0800
-Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C56440FC@exchange.ZeugmaSystems.local>
+	boundary="----_=_NextPart_001_01C84EFB.2AD3F165"
+Subject: RE: BUS error while returning from read() in /dev/oprofile/buffer
+Date: Fri, 4 Jan 2008 09:56:39 -0800
+Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C56441B8@exchange.ZeugmaSystems.local>
+In-Reply-To: <DDFD17CC94A9BD49A82147DDF7D545C56440FC@exchange.ZeugmaSystems.local>
+References: <DDFD17CC94A9BD49A82147DDF7D545C56440FC@exchange.ZeugmaSystems.local>
 From: "Anirban Sinha" <ASinha@zeugmasystems.com>
 Return-Path: <ASinha@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20080104011801.Y-csK_0c0dat65fh4e4nC5_lUMYzbq9BpKAXLBeIs1o@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20080104175639.BT5VSsLyzFoLeNhEx-IdRfLMtJhbsGLypydmkKvk-_k@z>
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C84E6F.A6F04519
+------_=_NextPart_001_01C84EFB.2AD3F165
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+
+First a correction. My test program does terminate with a bus error on
+receiving signal USR1. Just in case anyone is interested - It turned out
+that the BUS error results from the fact that when coreutils was built,
+it used the signal numbers from the devel machine (x86). These numbers
+are different from our mips kernel on which we want to use oprofile
+(mips has slightly different signal numbers from x86). Many thanks to
+David Daney for drawing my attention to this.
+
+=20
+
+Cheers,
+
+=20
+
+Ani
+
+=20
+
+=20
+
+From: linux-mips-bounce@linux-mips.org
+[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Anirban Sinha
+Sent: Thursday, January 03, 2008 5:18 PM
+To: linux-mips@linux-mips.org; Ralf Baechle
+Subject: BUG: BUS error while returning from read() in
+/dev/oprofile/buffer
+
+=20
 
 Hi:
 
@@ -53,7 +84,7 @@ Ani
 =20
 
 
-------_=_NextPart_001_01C84E6F.A6F04519
+------_=_NextPart_001_01C84EFB.2AD3F165
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -77,6 +108,9 @@ charset=3Dus-ascii">
 @font-face
 	{font-family:Calibri;
 	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
  /* Style Definitions */
  p.MsoNormal, li.MsoNormal, div.MsoNormal
 	{margin:0in;
@@ -92,11 +126,16 @@ a:visited, span.MsoHyperlinkFollowed
 	color:purple;
 	text-decoration:underline;}
 span.EmailStyle17
-	{mso-style-type:personal-compose;
+	{mso-style-type:personal;
 	font-family:"Calibri","sans-serif";
 	color:windowtext;}
+span.EmailStyle18
+	{mso-style-type:personal-reply;
+	font-family:"Calibri","sans-serif";
+	color:#1F497D;}
 .MsoChpDefault
-	{mso-style-type:export-only;}
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
 @page Section1
 	{size:8.5in 11.0in;
 	margin:1.0in 1.0in 1.0in 1.0in;}
@@ -115,6 +154,64 @@ div.Section1
 <body lang=3DEN-US link=3Dblue vlink=3Dpurple>
 
 <div class=3DSection1>
+
+<p class=3DMsoNormal><span style=3D'color:#1F497D'>First a correction. =
+My test
+program does terminate with a bus error on receiving signal USR1. Just =
+in case anyone
+is interested - It turned out that the BUS error results from the fact =
+that
+when coreutils was built, it used the signal numbers from the devel =
+machine
+(x86). These numbers are different from our mips kernel on which we want =
+to use
+oprofile (mips has slightly different signal numbers from x86). Many =
+thanks to
+David Daney for drawing my attention to this.<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span =
+style=3D'color:#1F497D'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span =
+style=3D'color:#1F497D'>Cheers,<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span =
+style=3D'color:#1F497D'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span =
+style=3D'color:#1F497D'>Ani<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span =
+style=3D'color:#1F497D'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span =
+style=3D'color:#1F497D'><o:p>&nbsp;</o:p></span></p>
+
+<div style=3D'border:none;border-left:solid blue 1.5pt;padding:0in 0in =
+0in 4.0pt'>
+
+<div>
+
+<div style=3D'border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt =
+0in 0in 0in'>
+
+<p class=3DMsoNormal><b><span =
+style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'>From:</span>=
+</b><span
+style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'>
+linux-mips-bounce@linux-mips.org =
+[mailto:linux-mips-bounce@linux-mips.org] <b>On
+Behalf Of </b>Anirban Sinha<br>
+<b>Sent:</b> Thursday, January 03, 2008 5:18 PM<br>
+<b>To:</b> linux-mips@linux-mips.org; Ralf Baechle<br>
+<b>Subject:</b> BUG: BUS error while returning from read() in
+/dev/oprofile/buffer<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
 
 <p class=3DMsoNormal>Hi:<o:p></o:p></p>
 
@@ -154,8 +251,10 @@ of time trying to fix this bug.<o:p></o:p></p>
 
 </div>
 
+</div>
+
 </body>
 
 </html>
 
-------_=_NextPart_001_01C84E6F.A6F04519--
+------_=_NextPart_001_01C84EFB.2AD3F165--

@@ -1,55 +1,49 @@
-Received: from fig.raritan.com ([12.144.63.197]:8996 "EHLO fig.raritan.com")
-	by ftp.linux-mips.org with ESMTP id S20037268AbYAOPub (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 15 Jan 2008 15:50:31 +0000
-Message-ID: <478CD639.3040307@raritan.com>
-Date: Tue, 15 Jan 2008 10:50:17 -0500
-From: Gregor Waltz <gregor.waltz@raritan.com>
+Received: from mail.gmx.net ([213.165.64.20]:15068 "HELO mail.gmx.net")
+	by ftp.linux-mips.org with SMTP id S20022283AbYBHJYP (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 8 Feb 2008 09:24:15 +0000
+Message-ID: <47AC1FB5.4060208@gmx.net>
+Date: Fri, 08 Feb 2008 10:24:05 +0100
+From: Andi <opencode@gmx.net>
 MIME-Version: 1.0
-Subject: Re: Toshiba JMR 3927 working setup?
-References: <477E7DAE.2080005@raritan.com>	<20080106.000725.75184768.anemo@mba.ocn.ne.jp>	<4787AC3D.2020604@raritan.com> <20080112.211749.25909440.anemo@mba.ocn.ne.jp>
-In-Reply-To: <20080112.211749.25909440.anemo@mba.ocn.ne.jp>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: Re: Problems booting Linux kernel on Sigma SMP8634
+References: <47AB50DD.2050504@gmx.net> <47AB5614.5010804@avtrex.com>
+In-Reply-To: <47AB5614.5010804@avtrex.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-Path: <Gregor.Waltz@raritan.com>
+Return-Path: <opencode@gmx.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Cc: linux-mips@linux-mips.org
-Message-ID: <20080115155017._mF1rUzAt6CF1Tlrl7R7Iu_UXsPoMhEnzUFLKNGK0WM@z>
+Message-ID: <20080208092405.sP4qQOg4Y6aRMcAxCdTh8lt2ptGhSJatRScGDmX7ftE@z>
 
-Atsushi Nemoto wrote:
-> On Fri, 11 Jan 2008 12:49:49 -0500, Gregor Waltz <gregor.waltz@raritan.com> wrote:
->   
->> I built linux-2.6.23.9 with the above, but the results are still the 
->> same and the EPC is not in System.map.
->>     
->
-> Are you searching the exact EPC value in System.map?
-> Usually you should find a function symbol which contains the EPC value in it.
->
-> Or you can do "mipsel-linux-objdump -d vmlinux" and search the EPC value.
->   
+Hey David,
+
+> You need symbols so that you can interpret the stack trace.  It is
+> impossible to tell anything without that.
+
+Unfortunately, we don't have much more than just the binary kernel
+image. No sources. No memory map.
+How can I find out which functions do correspondent to these addresses?
 
 
-The current error is:
-Exception! EPC=80026290 CAUSE=00000020(Sys)
-80026290 0000000c syscall
+I thought about that this might be a common problem, if one doesn't load
+a certain ucode, maybe the interrupt-handler or so ..
 
-80026290 is not in System.map, however, the objdump is much more 
-informative and does contain that value. That particular syscall is in:
 
-8002628c <kernel_execve>:
-8002628c:       24020fab        li      v0,4011
-80026290:       0000000c        syscall
-80026294:       00401821        move    v1,v0
-80026298:       14e00003        bnez    a3,800262a8 <kernel_execve+0x1c>
-8002629c:       00000000        nop
-800262a0:       03e00008        jr      ra
-800262a4:       00601021        move    v0,v1
-800262a8:       03e00008        jr      ra
-800262ac:       00031023        negu    v0,v1
+>> Determined physical RAM map:
+>>  memory: 05ee0000 @ 10020000 (usable)
+> 
+> This seems like an odd value.  I would expect either 03fe0000 or 07fe0000
 
-Does that provide any clues?
-I have to go now. I will take another look when I return, but I have 
-looked at kernel_execve before.
+This was also my first guess. But this seems to be ok, as you can see on
+the "reference" output here:
+http://www.networkedmediatank.com/viewtopic.php?t=457
 
-Thanks
+This box has a total of 128MB of memory ..
+
+> 
+> David Daney
+> 
+
+Regards,
+	Andi

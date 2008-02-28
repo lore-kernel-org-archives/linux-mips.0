@@ -1,32 +1,60 @@
-Received: from eth-75.36-homell.natm.ru ([89.252.75.36]:31504 "EHLO
-	666-e00d2dd4975") by ftp.linux-mips.org with ESMTP
-	id S28590356AbYB1H7T (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 28 Feb 2008 07:59:19 +0000
-Message-ID: <01c879f8$f6d40700$244bfc59@crisplyud3>
-From: "Giovanni Carney" <crisplyud3@ljfrankpc.com>
-Subject: Microsoft Windows Vista Ultimate includes
-Date: Thu, 28 Feb 2008 10:59:18 +0300
+Received: from smtp-vbr4.xs4all.nl ([194.109.24.24]:56328 "EHLO
+	smtp-vbr4.xs4all.nl") by ftp.linux-mips.org with ESMTP
+	id S28590890AbYB1NFT convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 28 Feb 2008 13:05:19 +0000
+Received: from dealogic.nl (a62-251-87-113.adsl.xs4all.nl [62.251.87.113])
+	by smtp-vbr4.xs4all.nl (8.13.8/8.13.8) with ESMTP id m1SD5CBq042677
+	for <linux-mips@linux-mips.org>; Thu, 28 Feb 2008 14:05:17 +0100 (CET)
+	(envelope-from ncoesel@DEALogic.nl)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
-Return-Path: <crisplyud3@ljfrankpc.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: PNX8550 Broken on Linux 2.6.24 - Interrupt issues?
+Date: Thu, 28 Feb 2008 14:05:11 +0100
+Message-ID: <19CA9E279FDA5246B7D7A1C91A4AF7F40EF68E@dealogicserver.DEALogic.nl>
+From: "Nico Coesel" <ncoesel@DEALogic.nl>
+Return-Path: <ncoesel@DEALogic.nl>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20080228075918.SNewRGEBGeQQcGtWIAWU2Uq2Hgg_KY0ehQPz-AvrSUU@z>
+Message-ID: <20080228130511.R86PQFWGHH7085O-KGrjvqC-L_lSVxlaSsz05BhhxeA@z>
 
-Microsoft Windows Vista Ultimate new features:
-• Mobility-based operating system meets all your computing needs whether you're working from home, working on the road, or searching for entertainment options
-• Combines all the features of a business-focused operating system, all the efficiency features of a mobility-focused operating system, and all of the digital entertainment features of a consumer-focused operating system
+Daniel,
+I've had similar problems on the AU1100 platform. It turned out the
+interrupt enumeration was faulty. You might want to check this.
 
-http://cherikreiserge.blogspot.com
+Nico Coesel
+ 
 
-System Requirements
-
-• 1-gigahertz (GHz) 32-bit (x86) processor or 1-GHz 64-bit (x64) processor
-• 1 GB RAM
-• 40-GB hard disk that has 15 GB of free hard disk space (the 15GB of free space provides room for temporary file storage during the install or upgrade.)
-• Internal or external DVD-burning hardware device
+> -----Oorspronkelijk bericht-----
+> Van: linux-mips-bounce@linux-mips.org 
+> [mailto:linux-mips-bounce@linux-mips.org] Namens Daniel Laird
+> Verzonden: donderdag 28 februari 2008 13:58
+> Aan: linux-mips@linux-mips.org
+> Onderwerp: PNX8550 Broken on Linux 2.6.24 - Interrupt issues?
+> 
+> Hi all.
+> 
+> I have been happily using Linux 2.6.22.1 for ages on PNX8550 (STB810).
+>  I have recently decided to step up and move onto Linux 2.6.24 series.
+> However I am not getting very far. :-(
+> It seems that all the clock stuff has changed again (since 
+> 2.6.22.1) and this is causing issues.
+> The board crashes as soon as local_irq_enable is called in main.c
+> 
+> I was wondering if anyone out there might also be running on 
+> an STB810/JBS PNX8550 based system and have any ideas as to 
+> why I am crashing.
+> I know that PNX8550 does not enable the R4K Clock source 
+> stuff as the chip is a bit 'special' and requires the two 
+> timers to be used instead of one.
+> 
+> As far as I can see I think my interrupts are not being setup.
+> 
+> Any help, ideas etc are appreciated.
+> 
+> Daniel Laird
+> 
+> 

@@ -1,60 +1,384 @@
-Received: from smtp-vbr4.xs4all.nl ([194.109.24.24]:56328 "EHLO
-	smtp-vbr4.xs4all.nl") by ftp.linux-mips.org with ESMTP
-	id S28590890AbYB1NFT convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 28 Feb 2008 13:05:19 +0000
-Received: from dealogic.nl (a62-251-87-113.adsl.xs4all.nl [62.251.87.113])
-	by smtp-vbr4.xs4all.nl (8.13.8/8.13.8) with ESMTP id m1SD5CBq042677
-	for <linux-mips@linux-mips.org>; Thu, 28 Feb 2008 14:05:17 +0100 (CET)
-	(envelope-from ncoesel@DEALogic.nl)
+Received: from dotcorporate.com ([67.50.105.12]:54975 "EHLO
+	dotexchange.dotcorporation.com") by ftp.linux-mips.org with ESMTP
+	id S28601221AbYCDAOL (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 4 Mar 2008 00:14:11 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: PNX8550 Broken on Linux 2.6.24 - Interrupt issues?
-Date: Thu, 28 Feb 2008 14:05:11 +0100
-Message-ID: <19CA9E279FDA5246B7D7A1C91A4AF7F40EF68E@dealogicserver.DEALogic.nl>
-From: "Nico Coesel" <ncoesel@DEALogic.nl>
-Return-Path: <ncoesel@DEALogic.nl>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C87D8C.AABEC29A"
+Subject: Re: smp8634 add memory at dram1
+Date: Mon, 3 Mar 2008 16:14:09 -0800
+Message-ID: <2D30722FBBDE6749973243F4F01BE984A242CA@dotexchange.dotcorporation.com>
+From: "James Zipperer" <jamesz@modsystems.com>
+Return-Path: <jamesz@modsystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20080228130511.R86PQFWGHH7085O-KGrjvqC-L_lSVxlaSsz05BhhxeA@z>
+Message-ID: <20080304001409.BjHqwzIxkK8kJZRhrv8qkkxNev2r_vXf01e6VywRkD8@z>
 
-Daniel,
-I've had similar problems on the AU1100 platform. It turned out the
-interrupt enumeration was faulty. You might want to check this.
+This is a multi-part message in MIME format.
 
-Nico Coesel
- 
+------_=_NextPart_001_01C87D8C.AABEC29A
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 
-> -----Oorspronkelijk bericht-----
-> Van: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] Namens Daniel Laird
-> Verzonden: donderdag 28 februari 2008 13:58
-> Aan: linux-mips@linux-mips.org
-> Onderwerp: PNX8550 Broken on Linux 2.6.24 - Interrupt issues?
-> 
-> Hi all.
-> 
-> I have been happily using Linux 2.6.22.1 for ages on PNX8550 (STB810).
->  I have recently decided to step up and move onto Linux 2.6.24 series.
-> However I am not getting very far. :-(
-> It seems that all the clock stuff has changed again (since 
-> 2.6.22.1) and this is causing issues.
-> The board crashes as soon as local_irq_enable is called in main.c
-> 
-> I was wondering if anyone out there might also be running on 
-> an STB810/JBS PNX8550 based system and have any ideas as to 
-> why I am crashing.
-> I know that PNX8550 does not enable the R4K Clock source 
-> stuff as the chip is a bit 'special' and requires the two 
-> timers to be used instead of one.
-> 
-> As far as I can see I think my interrupts are not being setup.
-> 
-> Any help, ideas etc are appreciated.
-> 
-> Daniel Laird
-> 
-> 
+=20
+David Kuk" <david.kuk@entone.com <mailto:david.kuk%40entone.com> >
+wrote:
+> Dear YH
+>=20
+> I am sorry i have been disturbed by other issues, the memory problem
+seems little bit difficult
+> to me. In our case, i saw that in prom.c under mips/tango2, the
+function prom_init , it shows
+> that :
+> memcfg_t
+> *m=3D(memcfg_t*)KSEG1ADDR(MEM_BASE_dram_controller_0+FM_MEMCFG);=20
+
+
+> it's seems the kernel has hard coded to point the starting memory to
+DRAM controller 0's
+> starting address, if now, i have remap 64mb memory at DRAM controller
+1 at remap register
+> 4, The problem is come, the kernel will ignore any memory before dram
+controller 0's starting
+> address. Even i have add 0x0c000000--0x10000000 as boot memory, it
+still think it's first
+> usable pfn is at 0x10000000.=20
+>=20
+> my solution is 3 steps
+>=20
+> 1, modify the compiler, let the linux start address moved to
+0x0c000000,=20
+> 2. modify the YAMON, and map the DRAM 1 controller to remap register4
+in YAMON stage
+> 3, modify the linux, to set the two piece of memory to the kernel as
+boot memory .=20
+>=20
+> it's this possible, or it have other better solution ?
+>=20
+> thx a lot for your kindly help !
+>=20
+>=20
+> best wishes
+> David
+=20
+I'm running out of memory in linux on the smp86xx and attempting to
+implement this solution.  Did you ever get it to work?  No luck for me
+yet.  I'm still a bit unclear why you must switch linux to run off DRAM
+1 instead of leaving it on DRAM 0 and adding an additional call to
+add_memory_region in prom_init for DRAM 1.  But then again, I haven't
+gotten that to work yet either :)
+=20
+Any info/patches are greatly appreciated.  Thanks!
+=20
+-James
+=20
+
+------_=_NextPart_001_01C87D8C.AABEC29A
+Content-Type: text/html;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DProgId content=3DWord.Document>
+<meta name=3DGenerator content=3D"Microsoft Word 10">
+<meta name=3DOriginator content=3D"Microsoft Word 10">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C87D49.9C9ABB90">
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:View>Normal</w:View>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DocumentKind>DocumentEmail</w:DocumentKind>
+  <w:EnvelopeVis/>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p.MsoPlainText, li.MsoPlainText, div.MsoPlainText
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 77.95pt 1.0in 77.95pt;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */=20
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
+style=3D'tab-interval:.5in'>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>David <span class=3DSpellE>Kuk</span>&quot; &lt;<a
+href=3D"mailto:david.kuk%40entone.com">david.kuk@entone.com</a>&gt; =
+wrote:<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; Dear YH<br>
+&gt; <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; I am sorry <span class=3DSpellE>i</span> have been =
+disturbed by
+other issues, the memory problem seems little bit =
+difficult<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; <span class=3DGramE>to</span> me. In our case, <span =
+class=3DSpellE>i</span>
+saw that in <span class=3DSpellE>prom.c</span> under mips/tango2, the =
+function <span
+class=3DSpellE>prom_<span class=3DGramE>init</span></span><span =
+class=3DGramE> ,</span>
+it shows<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; <span class=3DGramE>that =
+:</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; <span =
+class=3DSpellE>memcfg_t</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; *m<span class=3DGramE>=3D(</span><span =
+class=3DSpellE>memcfg_t</span>*)KSEG1ADDR(MEM_BASE_dram_controller_0+FM_M=
+EMCFG);
+<br style=3D'mso-special-character:line-break'>
+<![if !supportLineBreakNewLine]><br =
+style=3D'mso-special-character:line-break'>
+<![endif]><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; <span class=3DGramE>it's</span> seems the kernel has hard =
+coded to
+point the starting memory to DRAM controller =
+0's<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; starting address, if now, <span class=3DSpellE>i</span> =
+have remap
+64mb memory at DRAM controller 1 at remap =
+register<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; 4, <span class=3DGramE>The</span> problem is come, the =
+kernel will
+ignore any memory before dram controller 0's =
+starting<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; address. Even <span class=3DSpellE>i</span> have add
+0x0c000000--0x10000000 as boot memory, it still think it's =
+first<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; <span class=3DGramE>usable</span> <span =
+class=3DSpellE>pfn</span> is
+at 0x10000000. <br>
+&gt; <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; <span class=3DGramE>my</span> solution is 3 steps<br>
+&gt; <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; 1, modify the compiler, let the <span =
+class=3DSpellE>linux</span>
+start address moved to 0x0c000000, <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; 2. <span class=3DGramE>modify</span> the YAMON, and map the =
+DRAM 1
+controller to remap register4 in YAMON =
+stage<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; 3, modify the <span class=3DSpellE>linux</span>, to set the =
+two
+piece of memory to the kernel as boot <span class=3DGramE>memory =
+.</span> <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; <span class=3DGramE>it's</span> this possible, or it have =
+other
+better solution ?<br>
+&gt; <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; thx a lot for your kindly <span class=3DGramE>help =
+!</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; <span class=3DGramE>best</span> =
+wishes<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&gt; David<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'><o:p>&nbsp;</o:p></span></font></p=
+>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'>I'm running out of memory in =
+<span
+class=3DSpellE>linux</span> on the smp86xx and attempting to implement =
+this
+solution.<span style=3D'mso-spacerun:yes'>&nbsp; </span>Did you ever get =
+it to
+work?<span style=3D'mso-spacerun:yes'>&nbsp; </span>No luck for me =
+yet.<span
+style=3D'mso-spacerun:yes'>&nbsp; </span>I'm still a bit unclear why you =
+must
+switch <span class=3DSpellE>linux</span> to run off DRAM 1 instead of =
+leaving it
+on DRAM 0 and adding an additional call to <span =
+class=3DSpellE>add_memory_region</span>
+in <span class=3DSpellE>prom_init</span> for DRAM 1.<span
+style=3D'mso-spacerun:yes'>&nbsp; </span>But then again, I haven't =
+gotten that to
+work yet either :)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'><o:p>&nbsp;</o:p></span></font></p=
+>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'>Any info/patches are greatly =
+appreciated.<span
+style=3D'mso-spacerun:yes'>&nbsp; =
+</span>Thanks!<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'><o:p>&nbsp;</o:p></span></font></p=
+>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'>-James<o:p></o:p></span></font></p=
+>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'><o:p>&nbsp;</o:p></span></font></p=
+>
+
+</div>
+
+</body>
+
+</html>
+=00
+------_=_NextPart_001_01C87D8C.AABEC29A--

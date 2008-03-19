@@ -1,57 +1,65 @@
-Received: from smtp-vbr13.xs4all.nl ([194.109.24.33]:29714 "EHLO
-	smtp-vbr13.xs4all.nl") by ftp.linux-mips.org with ESMTP
-	id S28605145AbYCRPs6 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 18 Mar 2008 15:48:58 +0000
+Received: from smtp-vbr6.xs4all.nl ([194.109.24.26]:29446 "EHLO
+	smtp-vbr6.xs4all.nl") by ftp.linux-mips.org with ESMTP
+	id S20022308AbYCSJfa convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 19 Mar 2008 09:35:30 +0000
 Received: from dealogic.nl (a62-251-87-113.adsl.xs4all.nl [62.251.87.113])
-	by smtp-vbr13.xs4all.nl (8.13.8/8.13.8) with ESMTP id m2IFmgQx036926
-	for <linux-mips@linux-mips.org>; Tue, 18 Mar 2008 16:48:58 +0100 (CET)
+	by smtp-vbr6.xs4all.nl (8.13.8/8.13.8) with ESMTP id m2J9Yvnh072533
+	for <linux-mips@linux-mips.org>; Wed, 19 Mar 2008 10:35:29 +0100 (CET)
 	(envelope-from ncoesel@DEALogic.nl)
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-Subject: RE: [PATCH][MIPS][5/6]: AR7: serial hack
+Subject: RE: Serial console on Au1100 
 Content-Transfer-Encoding: 8BIT
-Date: Tue, 18 Mar 2008 16:40:23 +0100
-Message-ID: <19CA9E279FDA5246B7D7A1C91A4AF7F40EF85B@dealogicserver.DEALogic.nl>
+Date: Wed, 19 Mar 2008 10:34:40 +0100
+Message-ID: <19CA9E279FDA5246B7D7A1C91A4AF7F40EF86E@dealogicserver.DEALogic.nl>
 From: "Nico Coesel" <ncoesel@DEALogic.nl>
 Return-Path: <ncoesel@DEALogic.nl>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20080318154023.6caa2RamcRTH51cO9_Mwp67TjBZfi-3Yg1OmmBKSdqM@z>
+Message-ID: <20080319093440.Bg7khzrruhdSShCP92KPM7rMjnzr33YAa5hYdA6pNnY@z>
 
-Hello all,
-I didn't follow the entire discussion, but I might have similar problems
-on the AU1100 SoC. The AU1100 also has 16550 style serial ports. The
-serial console doesn't work even though I specify console=/dev/ttyS0 on
-the kernel command line. Once a getty is started, the serial port is
-active and working fine.
+Sergei,
+I'm using kernel 2.6.24 now (before I used 2.6.21-rc4). I do see the
+console messages on the framebuffer device.
 
-Nico
+Kernel options:
+console=ttyS0 root=/dev/mtdblock0 rootfstype=jffs2 rw
+video=au1100fb:panel:KERN_AU1100 tsdev.xres=320 tsdev.yres=234
+console=tty0
+
+If I omit console=tty0, then there is no output on the framebuffer
+device or the serial port. I also tried setting the I/O address and so
+on, but no luck.
+
+Nico Coesel
+ 
 
 > -----Oorspronkelijk bericht-----
-> Van: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] Namens Alan Cox
-> Verzonden: dinsdag 18 maart 2008 15:02
-> Aan: Thomas Bogendoerfer
-> CC: Matteo Croce; linux-mips@linux-mips.org; Florian 
-> Fainelli; Felix Fietkau; Nicolas Thill; 
-> linux-serial@vger.kernel.org; Andrew Morton
-> Onderwerp: Re: [PATCH][MIPS][5/6]: AR7: serial hack
+> Van: Sergei Shtylyov [mailto:sshtylyov@ru.mvista.com] 
+> Verzonden: dinsdag 18 maart 2008 17:44
+> Aan: Nico Coesel
+> CC: linux-mips@linux-mips.org
+> Onderwerp: Serial console on Au1100 
 > 
-> > Is there a good reason, why we don't check for BOTH_EMPTY in
-> > serial8250_console_putchar() ? To match the 2.6.10 behaviour we
+> Hello.
 > 
-> A very good one - we have at least 1 byte of FIFO and the 
-> serial-ethernet magic console devices also use that fifo 
-> emptying entirely to deduce when to send a new packet.
+> Nico Coesel wrote:
 > 
-> > would need that and this would fix the AR7 case without any special 
-> > handling.
+> > Hello all,
+> > I didn't follow the entire discussion, but I might have similar 
+> > problems on the AU1100 SoC. The AU1100 also has 16550 style serial 
+> > ports. The serial console doesn't work even though I specify 
+> > console=/dev/ttyS0 on the kernel command line. Once a getty is 
+> > started, the serial port is active and working fine.
 > 
-> If the AR7 is an 8250 why does it need special handling? and 
-> indeed why does serial work on it except for console - or 
-> does that fail too.
+>     This is not at all related to the discussed issue, so 
+> I've changed the subject. The console works like charm 
+> (seemingly for everybody, which kernel version are you using?
 > 
+> > Nico
+> 
+> WBR, Sergei
 > 

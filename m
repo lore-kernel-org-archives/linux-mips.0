@@ -1,50 +1,59 @@
-Received: from oss.sgi.com ([192.48.170.157]:54696 "EHLO oss.sgi.com")
-	by lappi.linux-mips.net with ESMTP id S1100635AbYCZNEj (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 26 Mar 2008 14:04:39 +0100
-Received: from p549F5321.dip.t-dialin.net (localhost [127.0.0.1])
-	by oss.sgi.com (8.12.11.20060308/8.12.11/SuSE Linux 0.7) with ESMTP id m2QBVULO016060
-	for <linux-mips@linux-mips.org>; Wed, 26 Mar 2008 06:03:58 -0700
-Received: from mms2.broadcom.com ([216.31.210.18]:18962 "EHLO
-	mms2.broadcom.com") by lappi.linux-mips.net with ESMTP
-	id S1102827AbYCZFV0 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 26 Mar 2008 06:21:26 +0100
-Received: from mail-irva-8.broadcom.com (mail-irva-8 [10.10.64.221]) by
- mail-irva-10.broadcom.com (Postfix) with ESMTP id A39182B0 for
- <linux-mips@linux-mips.org>; Tue, 25 Mar 2008 22:20:45 -0700 (PDT)
-Received: from NT-SJCA-0752.brcm.ad.broadcom.com (nt-sjca-0752
- [10.16.192.222]) by mail-sj1-12.sj.broadcom.com (Postfix) with ESMTP id
- CFACF20501 for <linux-mips@linux-mips.org>; Tue, 25 Mar 2008 22:20:44
- -0700 (PDT)
+Received: from smtp-vbr8.xs4all.nl ([194.109.24.28]:19725 "EHLO
+	smtp-vbr8.xs4all.nl") by lappi.linux-mips.net with ESMTP
+	id S524439AbYC0Nr2 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 27 Mar 2008 14:47:28 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Subject: MTD Partitions Permissions at Run Time.
-Date: Tue, 25 Mar 2008 22:20:43 -0700
-Message-ID: <E06E3B7BBC07864CADE892DAF1EB0FBD0641257D@NT-SJCA-0752.brcm.ad.broadcom.com>
-In-Reply-To: <47E7EBFF.6020406@ru.mvista.com>
-References: <47E559B6.9010001@ru.mvista.com>
- <47E7EBFF.6020406@ru.mvista.com>
-From: "Ramgopal Kota" <rkota@broadcom.com>
 Content-Type: text/plain;
- charset=us-ascii
+	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Return-Path: <rkota@broadcom.com>
+Subject: RE: FW: Alchemy power managment code.
+Date: Thu, 27 Mar 2008 14:46:50 +0100
+Message-ID: <19CA9E279FDA5246B7D7A1C91A4AF7F40EF985@dealogicserver.DEALogic.nl>
+From: "Nico Coesel" <ncoesel@DEALogic.nl>
+Return-Path: <ncoesel@DEALogic.nl>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
+To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20080327134650.l0oJHfCTShqPTwGr7jblsBwN8rEwm4QgEOBDekyGDM8@z>
 
-Hi ,
+> -----Oorspronkelijk bericht-----
+> Van: Sergei Shtylyov [mailto:sshtylyov@ru.mvista.com] 
+> Verzonden: woensdag 26 maart 2008 17:32
+> Aan: Nico Coesel
+> CC: linux-mips@linux-mips.org
+> Onderwerp: Re: FW: Alchemy power managment code.
+> 
+> Hello all.
+> 
+> Nico Coesel wrote:
+> 
+> > Ralf,
+> > Funny you ask because I tried this yesterday on a AU1100 
+> system with 
+> > the
+> > 2.6.24 kernel (from kernel.org). I'm afraid I must say the kernel 
+> > crashes when I enable power management. The reason I want 
+> to use power 
+> > management is because I need to send the CPU to sleep when 
+> the system 
+> > shuts down. I hacked power.c and reset.c a bit so 
+> au_sleep() is called 
+> > when the system is shut down. Perhaps someone can confirm the 
+> > powermanagement can be made to work with some fixes (it didn't work 
+> > with
+> > 2.6.21-rc4 either).
+> 
+>     BTW, for anybody interested in Alchemy PM code, here's 
+> the interesting
+> link: [ftp|http]://ftp.enneenne.com/pub/misc/au1100-patches/linux/.
+>     It contains  a lot of unmerged PM patches by Rodolfo 
+> Giometti (and not only that) from around 2.6.17 time.
+> 
 
-Ours is a embedded product with pre-defined flash partitions say "Boot"
-, "Kernel" , "Rootfs" & "ProductData".
-The kernel which is in the box (linux 2.6.14)has Boot partition as "RO"
-(Read Only). We have a requirement in the field that the boot code
-should be upgraded also.
-Is there any possibility of changing the partition permissions at
-run-time? If so how ? 
-Our solution was to create a Kernel image Boot as RW, upgrade the kernel
-& reboot. Later change the Boot code.
+Sergei,
+Is there a reason why these patches didn't make it into the official
+kernel? IIRC Rodolfo has been quite active on this mailing list.
 
-But we are seeing if we can avoid such situation by remounting the MTD
-partition with a RW permission.
-
-Ramgopal Kota
+Nico Coesel

@@ -1,70 +1,75 @@
-Received: from smtp-vbr17.xs4all.nl ([194.109.24.37]:6152 "EHLO
-	smtp-vbr17.xs4all.nl") by lappi.linux-mips.net with ESMTP
-	id S528153AbYC1IWC convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 28 Mar 2008 09:22:02 +0100
+Received: from smtp-vbr5.xs4all.nl ([194.109.24.25]:16143 "EHLO
+	smtp-vbr5.xs4all.nl") by lappi.linux-mips.net with ESMTP
+	id S528876AbYC1QEj convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 28 Mar 2008 17:04:39 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: FW: Alchemy power managment code.
-Date: Fri, 28 Mar 2008 09:21:22 +0100
-Message-ID: <19CA9E279FDA5246B7D7A1C91A4AF7F40EF98E@dealogicserver.DEALogic.nl>
+Subject: RE: Alchemy power managment code.
+Date: Fri, 28 Mar 2008 17:03:59 +0100
+Message-ID: <19CA9E279FDA5246B7D7A1C91A4AF7F40EF9A2@dealogicserver.DEALogic.nl>
 From: "Nico Coesel" <ncoesel@DEALogic.nl>
 Return-Path: <ncoesel@DEALogic.nl>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>, Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20080328082122.98ENwskwqh7G_6RHvLaVtlbD-g7HW8v8wjHn54GSbU8@z>
-
+To: Sergei Shtylyov <sshtylyov@ru.mvista.com>, Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20080328160359.Q4ZRKhoc8QpEQvI43QoLtRe3vf0M0EnWqWQqYsId8bQ@z>
 
 > -----Oorspronkelijk bericht-----
-> Van: Ralf Baechle [mailto:ralf@linux-mips.org] 
-> Verzonden: donderdag 27 maart 2008 23:33
-> Aan: Sergei Shtylyov
-> CC: Nico Coesel; linux-mips@linux-mips.org
-> Onderwerp: Re: FW: Alchemy power managment code.
+> Van: Sergei Shtylyov [mailto:sshtylyov@ru.mvista.com] 
+> Verzonden: vrijdag 28 maart 2008 16:15
+> Aan: Atsushi Nemoto
+> CC: ralf@linux-mips.org; linux-mips@linux-mips.org; Nico Coesel
+> Onderwerp: Re: Alchemy power managment code.
 > 
-> On Wed, Mar 26, 2008 at 07:31:55PM +0300, Sergei Shtylyov wrote:
+> Hello.
 > 
-> >> Funny you ask because I tried this yesterday on a AU1100 
-> system with 
-> >> the
-> >> 2.6.24 kernel (from kernel.org). I'm afraid I must say the kernel 
-> >> crashes when I enable power management. The reason I want to use 
-> >> power management is because I need to send the CPU to 
-> sleep when the 
-> >> system shuts down. I hacked power.c and reset.c a bit so 
-> au_sleep() 
-> >> is called when the system is shut down. Perhaps someone 
-> can confirm 
-> >> the powermanagement can be made to work with some fixes (it didn't 
-> >> work with
-> >> 2.6.21-rc4 either).
-> >
-> >    BTW, for anybody interested in Alchemy PM code, here's the 
-> > interesting
-> > link: [ftp|http]://ftp.enneenne.com/pub/misc/au1100-patches/linux/.
-> >    It contains  a lot of unmerged PM patches by Rodolfo 
-> Giometti (and 
-> > not only that) from around 2.6.17 time.
+> Atsushi Nemoto wrote:
 > 
-> Anybody interested in reviewing these patches and polishing 
-> them to be applied to a recent kernel?
+> >>>Correct - and cevt-r4k won't be usable either.  I guess that means 
+> >>>you leave the user the choice between either these two or 
+> using wait.  
+> >>>Not nice but ...
 > 
->   Ralf
+> >>    The Alchemy code doesn't even try to use CP0 counter when 
+> >>CONFIG_PM=y if you look into 
+> arch/mips/au1000/common/time.c... or at 
+> >>least it didn't before Atsushi removed do_fast_pm_gettimeoffset().
+> 
+> > Oh, yes. At that time I tried to implement clocksource drivers for 
+> > non-standard timers, but it seems I had missied Alchemy PM=y case.
+> 
+> > The driver would be something like this?  Completely untested ;-)
+> 
+> > static cycle_t au1000_hpt_read(void)
+> > {
+> > 	return au_readl(SYS_TOYREAD);
+> > }
+> 
+> > struct clocksource au1000_clocksource = {
+> > 	.name	= "au1000-counter",
+> > 	.rating	= 200,
+> 
+>     Rating should be greater than that of CP0 counter...
+> 
+> > 	.read	= au1000_hpt_read,
+> > 	.mask	= CLOCKSOURCE_MASK(32),
+> > 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
+> > };
+> 
+> > void __init au1000_clocksource_init(unsinged long cpu_speed) {
+> > 	struct clocksource *cs = &au1000_clocksource;
+> > 
+> > 	clocksource_set_clock(cs, cpu_speed);
+> 
+>     Not really, it's clocked by 32768 Hz input, so probably 
+> not very good as a clocksource.
 
-I guess I will have to, but it will probably be somewhere near the end
-of April. Also, I'm leaning towards only fixing the TOY timer during
-sleep so the clock keeps running. IMHO this should be standard behaviour
-which does not depend on power management.
-
-Are diffs against 2.6.24 any good to you guys? The timer stuff Sergei
-seems to be working on right now also sounds interesting. Perhaps I'll
-patch my kernel with the timer patches from Sergei and apply (some of)
-Rodolfo's patches afterwards. I assume there will be quite some overlap
-in these patches.
-
-Nico Coesel
+Why not? If a 32768Hz watch crystal is connected then you'll have a
+stable clocksource. IIRC watch crystals are more precise than the
+crystals used to generate the core frequency.
  
+Nico Coesel

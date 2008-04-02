@@ -1,75 +1,41 @@
-Received: from smtp-vbr5.xs4all.nl ([194.109.24.25]:16143 "EHLO
-	smtp-vbr5.xs4all.nl") by lappi.linux-mips.net with ESMTP
-	id S528876AbYC1QEj convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 28 Mar 2008 17:04:39 +0100
-Content-class: urn:content-classes:message
+Received: from sj-iport-1.cisco.com ([171.71.176.70]:28993 "EHLO
+	sj-iport-1.cisco.com") by lappi.linux-mips.net with ESMTP
+	id S525971AbYDBV6B (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 2 Apr 2008 23:58:01 +0200
+Message-ID: <47F4011F.9020604@cisco.com>
+Date: Wed, 02 Apr 2008 14:56:47 -0700
+From: David VomLehn <dvomlehn@cisco.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Alchemy power managment code.
-Date: Fri, 28 Mar 2008 17:03:59 +0100
-Message-ID: <19CA9E279FDA5246B7D7A1C91A4AF7F40EF9A2@dealogicserver.DEALogic.nl>
-From: "Nico Coesel" <ncoesel@DEALogic.nl>
-Return-Path: <ncoesel@DEALogic.nl>
+Subject: Re: [PATCH 2.6.24][MIPS]Work in progress: fix HIGHMEM-enabled dcache
+ flushing on 32-bit processor
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <dvomlehn@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>, Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20080328160359.Q4ZRKhoc8QpEQvI43QoLtRe3vf0M0EnWqWQqYsId8bQ@z>
+To: "Jon Fraser [jfraser"@broadcom.com, linux-mips@linux-mips.org
+Message-ID: <20080402215647.GxlDtN2DvTQ85aZaeHzNggzH64JTn2ujdXyrDWUREgE@z>
 
-> -----Oorspronkelijk bericht-----
-> Van: Sergei Shtylyov [mailto:sshtylyov@ru.mvista.com] 
-> Verzonden: vrijdag 28 maart 2008 16:15
-> Aan: Atsushi Nemoto
-> CC: ralf@linux-mips.org; linux-mips@linux-mips.org; Nico Coesel
-> Onderwerp: Re: Alchemy power managment code.
+> Did this fix your NFS problem?
 > 
-> Hello.
+> I'm working on discontiguous memory platforms as well.
 > 
-> Atsushi Nemoto wrote:
+> Jon Fraser
 > 
-> >>>Correct - and cevt-r4k won't be usable either.  I guess that means 
-> >>>you leave the user the choice between either these two or 
-> using wait.  
-> >>>Not nice but ...
-> 
-> >>    The Alchemy code doesn't even try to use CP0 counter when 
-> >>CONFIG_PM=y if you look into 
-> arch/mips/au1000/common/time.c... or at 
-> >>least it didn't before Atsushi removed do_fast_pm_gettimeoffset().
-> 
-> > Oh, yes. At that time I tried to implement clocksource drivers for 
-> > non-standard timers, but it seems I had missied Alchemy PM=y case.
-> 
-> > The driver would be something like this?  Completely untested ;-)
-> 
-> > static cycle_t au1000_hpt_read(void)
-> > {
-> > 	return au_readl(SYS_TOYREAD);
-> > }
-> 
-> > struct clocksource au1000_clocksource = {
-> > 	.name	= "au1000-counter",
-> > 	.rating	= 200,
-> 
->     Rating should be greater than that of CP0 counter...
-> 
-> > 	.read	= au1000_hpt_read,
-> > 	.mask	= CLOCKSOURCE_MASK(32),
-> > 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
-> > };
-> 
-> > void __init au1000_clocksource_init(unsinged long cpu_speed) {
-> > 	struct clocksource *cs = &au1000_clocksource;
-> > 
-> > 	clocksource_set_clock(cs, cpu_speed);
-> 
->     Not really, it's clocked by 32768 Hz input, so probably 
-> not very good as a clocksource.
+> On Wed, 2008-03-12 at 19:31 -0700, David VomLehn wrote:
+>> This patch is a work in progress, per Ralf's suggestion from last 
+>> week. It is intended to fix dcache flushing issues when using HIGHMEM 
+>> support. We get much better results with this patch applied, but I 
+>> would not characterize our 2.6.24 port as stable, yet, so there may be other HIGHMEM-related issues.
 
-Why not? If a 32768Hz watch crystal is connected then you'll have a
-stable clocksource. IIRC watch crystals are more precise than the
-crystals used to generate the core frequency.
- 
-Nico Coesel
+Yes, we are able to boot using NFS with this patch. There are some other minor 
+changes that appear necessary for correct cache flushing but which don't seem to 
+be causing any actual issues. (Cache stuff just works that way--you don't know 
+you've got a problem until you get into some obscure corner case). I'll post 
+these as soon as I can get to it.
+
+I can't say whether these are all the changes required for high memory support, 
+but we sure get a lot farther when we use them...
+-- 
+David VomLehn, dvomlehn@cisco.com
+The opinions expressed herein are likely mine, but might not be my employer's...

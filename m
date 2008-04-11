@@ -1,8 +1,8 @@
-Received: from bay0-omc3-s17.bay0.hotmail.com ([65.54.246.217]:12250 "EHLO
-	bay0-omc3-s17.bay0.hotmail.com") by lappi.linux-mips.net with ESMTP
-	id S1786583AbYDKO0I convert rfc822-to-8bit (ORCPT
+Received: from bay0-omc3-s22.bay0.hotmail.com ([65.54.246.222]:47333 "EHLO
+	bay0-omc3-s22.bay0.hotmail.com") by lappi.linux-mips.net with ESMTP
+	id S1786584AbYDKO0I convert rfc822-to-8bit (ORCPT
 	<rfc822;linux-mips@linux-mips.org>); Fri, 11 Apr 2008 16:26:08 +0200
-Message-ID: <BAY141-W485F2B6BCF95F92004A64DC2EF0@phx.gbl>
+Message-ID: <BAY141-W20230983BB721CEFFD0670C2EF0@phx.gbl>
 From: POORNIMA R <rpoornar@hotmail.com>
 Subject: [MIPS]hrt implementation on MIPS
 Date: Fri, 11 Apr 2008 14:25:43 +0000
@@ -14,7 +14,6 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
 Cc: ralf@linux-mips.org
-Message-ID: <20080411142543.TPwnljQYL0blAXZ-g0Jc7vpLyVHaEixilelB6HA9taQ@z>
 
 
 

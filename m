@@ -1,111 +1,59 @@
-Received: from mailhub.zebra.lt ([212.59.31.77]:16132 "EHLO mh.zebra.lt")
-	by ftp.linux-mips.org with ESMTP id S20032213AbYEFVc1 (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 6 May 2008 22:32:27 +0100
-Message-ID: <4820CE63.7050505@teltonika.lt>
-Date: Wed, 07 May 2008 00:32:19 +0300
-From: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
-MIME-Version: 1.0
-Subject: [PATCH] au1k_ir: use netstats in net_device structure
-Content-Type: multipart/mixed;
- boundary="------------030305010008050208030004"
-Return-Path: <paulius.zaleckas@teltonika.lt>
+Received: from zone0.gcu-squad.org ([212.85.147.21]:11592 "EHLO
+	services.gcu-squad.org") by ftp.linux-mips.org with ESMTP
+	id S20025578AbYEHI70 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 8 May 2008 09:59:26 +0100
+Date: Thu, 8 May 2008 10:59:05 +0200
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: [RFC][PATCH 2/4] RTC: SWARM I2C board initialization
+Message-ID: <20080508105905.3209c659@hyperion.delvare>
+In-Reply-To: <Pine.LNX.4.55.0805072145040.25644@cliff.in.clinika.pl>
+References: <Pine.LNX.4.55.0805070031410.16173@cliff.in.clinika.pl>
+	<20080507085953.2c08b854@hyperion.delvare>
+	<Pine.LNX.4.55.0805072145040.25644@cliff.in.clinika.pl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
+Return-Path: <khali@linux-fr.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: linux-mips@linux-mips.org, ppopov@mvista.com
-Message-ID: <20080506213219.0CuJSJCB2IrgiQhARezncIxSfdAr6qPlX53h7FFNIZI@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Alessandro Zummo <a.zummo@towertech.it>, Thomas Gleixner <tglx@linutronix.de>, Andrew Morton <akpm@linux-foundation.org>, rtc-linux@googlegroups.com, i2c@lm-sensors.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20080508085905.OEdFJ5LSKILI9rGIlr5A_Uu0ESs7D4QIg4zptyjJzYE@z>
 
-This is a multi-part message in MIME format.
---------------030305010008050208030004
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi Maciej,
 
-Use net_device_stats from net_device structure instead of local.
-Kill au1k_irda_stats function, because by default it is used
-identical internal_stats function from net/core/dev.c
+On Wed, 7 May 2008 22:13:23 +0100 (BST), Maciej W. Rozycki wrote:
+> Hi Jean,
+> 
+> > Minor corrections which would ideally belong to a separate patch
+> > (there's a whole lot more cleanups that could be done in that driver,
+> > BTW...)
+> 
+>  Not suprising, as usually with most pieces of code for the SWARM and the 
+> SiByte SOC.  That can be done gradually, but mixing a driver overhaul with 
+> functional changes usually only results in confusion later on.
 
-Haven't tried to compile it. Need ack from MIPS people!
+I fully agree.
 
-Signed-off-by: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
+> > I don't think that the minor changes below are enough for you to claim
+> > copyright on that driver.
+> 
+>  Well, I decide whether or not to add one based on how important changes
+> are from the piece's of code point of view.  In this case the change is
+> essential for new-style client drivers to work at all, which I think is
+> more important than e.g. a lot of cosmetical changes throughout would be.  
+> But I do not insist on keeping it -- if you think I misjudged on this
+> occasion, I see no problem with discarding it.
 
---------------030305010008050208030004
-Content-Type: text/x-patch;
- name="au1k_ir_netstats.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="au1k_ir_netstats.patch"
+If you had to add a missing semicolon to a source file to get it to
+build again, it would be an "essential" change (without it nothing
+works) but still, you can't claim you added any intellectual value to
+the source file. So, no copyright. The copyright is about how much
+value you add, not how important the change is in the big picture.
 
-diff --git a/drivers/net/irda/au1000_ircc.h b/drivers/net/irda/au1000_ircc.h
-index 7a31d46..1ed665a 100644
---- a/drivers/net/irda/au1000_ircc.h
-+++ b/drivers/net/irda/au1000_ircc.h
-@@ -107,7 +107,6 @@ struct au1k_private {
- 	iobuff_t rx_buff;
- 
- 	struct net_device *netdev;
--	struct net_device_stats stats;
- 	
- 	struct timeval stamp;
- 	struct timeval now;
-diff --git a/drivers/net/irda/au1k_ir.c b/drivers/net/irda/au1k_ir.c
-index a1e4508..f4e639b 100644
---- a/drivers/net/irda/au1k_ir.c
-+++ b/drivers/net/irda/au1k_ir.c
-@@ -53,7 +53,6 @@ static int au1k_irda_hard_xmit(struct sk_buff *, struct net_device *);
- static int au1k_irda_rx(struct net_device *);
- static void au1k_irda_interrupt(int, void *);
- static void au1k_tx_timeout(struct net_device *);
--static struct net_device_stats *au1k_irda_stats(struct net_device *);
- static int au1k_irda_ioctl(struct net_device *, struct ifreq *, int);
- static int au1k_irda_set_speed(struct net_device *dev, int speed);
- 
-@@ -213,7 +212,6 @@ static int au1k_irda_net_init(struct net_device *dev)
- 	dev->open = au1k_irda_start;
- 	dev->hard_start_xmit = au1k_irda_hard_xmit;
- 	dev->stop = au1k_irda_stop;
--	dev->get_stats = au1k_irda_stats;
- 	dev->do_ioctl = au1k_irda_ioctl;
- 	dev->tx_timeout = au1k_tx_timeout;
- 
-@@ -421,7 +419,7 @@ static inline void
- update_tx_stats(struct net_device *dev, u32 status, u32 pkt_len)
- {
- 	struct au1k_private *aup = netdev_priv(dev);
--	struct net_device_stats *ps = &aup->stats;
-+	struct net_device_stats *ps = &dev->stats;
- 
- 	ps->tx_packets++;
- 	ps->tx_bytes += pkt_len;
-@@ -557,7 +555,7 @@ static inline void
- update_rx_stats(struct net_device *dev, u32 status, u32 count)
- {
- 	struct au1k_private *aup = netdev_priv(dev);
--	struct net_device_stats *ps = &aup->stats;
-+	struct net_device_stats *ps = &dev->stats;
- 
- 	ps->rx_packets++;
- 
-@@ -596,7 +594,7 @@ static int au1k_irda_rx(struct net_device *dev)
- 			update_rx_stats(dev, flags, count);
- 			skb=alloc_skb(count+1,GFP_ATOMIC);
- 			if (skb == NULL) {
--				aup->stats.rx_dropped++;
-+				dev->stats.rx_dropped++;
- 				continue;
- 			}
- 			skb_reserve(skb, 1);
-@@ -833,13 +831,6 @@ au1k_irda_ioctl(struct net_device *dev, struct ifreq *ifreq, int cmd)
- 	return ret;
- }
- 
--
--static struct net_device_stats *au1k_irda_stats(struct net_device *dev)
--{
--	struct au1k_private *aup = netdev_priv(dev);
--	return &aup->stats;
--}
--
- MODULE_AUTHOR("Pete Popov <ppopov@mvista.com>");
- MODULE_DESCRIPTION("Au1000 IrDA Device Driver");
- 
-
---------------030305010008050208030004--
+> > Why do you double the space and the end of comments? Never seen that
+> > before, and I can't see the idea.
+> 
+>  This is mostly habitual -- this is what the GNU Coding Standard specifies
+> for comments and which is enforced for GNU software which I have dealt a
+> lot with.

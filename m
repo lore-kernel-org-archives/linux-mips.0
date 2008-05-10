@@ -1,59 +1,137 @@
-Received: from zone0.gcu-squad.org ([212.85.147.21]:11592 "EHLO
-	services.gcu-squad.org") by ftp.linux-mips.org with ESMTP
-	id S20025578AbYEHI70 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 8 May 2008 09:59:26 +0100
-Date: Thu, 8 May 2008 10:59:05 +0200
-From: Jean Delvare <khali@linux-fr.org>
-Subject: Re: [RFC][PATCH 2/4] RTC: SWARM I2C board initialization
-Message-ID: <20080508105905.3209c659@hyperion.delvare>
-In-Reply-To: <Pine.LNX.4.55.0805072145040.25644@cliff.in.clinika.pl>
-References: <Pine.LNX.4.55.0805070031410.16173@cliff.in.clinika.pl>
-	<20080507085953.2c08b854@hyperion.delvare>
-	<Pine.LNX.4.55.0805072145040.25644@cliff.in.clinika.pl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
-Return-Path: <khali@linux-fr.org>
+Received: from h155.mvista.com ([63.81.120.155]:4847 "EHLO imap.sh.mvista.com")
+	by ftp.linux-mips.org with ESMTP id S20021509AbYEJKA4 (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Sat, 10 May 2008 11:00:56 +0100
+Message-ID: <023101c8b284$b7f67a30$5205a8c0@acerfa265979ef>
+From: "Sergei Shtylyov" <sshtylyov@ru.mvista.com>
+References: <20080507160154.GA17806@roarinelk.homelinux.net> <20080507160634.GE17806@roarinelk.homelinux.net> <4822F4FC.5040107@ru.mvista.com> <20080508130833.GA25971@roarinelk.homelinux.net> <482354D0.9040304@ru.mvista.com> <20080509054010.GA32719@roarinelk.homelinux.net>
+Subject: Re: [PATCH 4/7] Alchemy: db1200/pb1200: register mmc platformdevice and board specific functions
+Date: Sat, 10 May 2008 14:00:45 +0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	format=flowed;
+	charset="ISO-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-Path: <sshtylyov@ru.mvista.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Alessandro Zummo <a.zummo@towertech.it>, Thomas Gleixner <tglx@linutronix.de>, Andrew Morton <akpm@linux-foundation.org>, rtc-linux@googlegroups.com, i2c@lm-sensors.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20080508085905.OEdFJ5LSKILI9rGIlr5A_Uu0ESs7D4QIg4zptyjJzYE@z>
+To: Manuel Lauss <mano@roarinelk.homelinux.net>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20080510100045.Q58SyFpVNO-cilJJ28Ps6qauS4y8pAAkRaChyY18rhk@z>
 
-Hi Maciej,
+----- Original Message ----- 
+From: "Manuel Lauss" <mano@roarinelk.homelinux.net>
+To: "Sergei Shtylyov" <sshtylyov@ru.mvista.com>
+Cc: <linux-mips@linux-mips.org>; <linux-kernel@vger.kernel.org>
+Sent: Friday, May 09, 2008 9:40 AM
+Subject: Re: [PATCH 4/7] Alchemy: db1200/pb1200: register mmc platformdevice 
+and board specific functions
 
-On Wed, 7 May 2008 22:13:23 +0100 (BST), Maciej W. Rozycki wrote:
-> Hi Jean,
-> 
-> > Minor corrections which would ideally belong to a separate patch
-> > (there's a whole lot more cleanups that could be done in that driver,
-> > BTW...)
-> 
->  Not suprising, as usually with most pieces of code for the SWARM and the 
-> SiByte SOC.  That can be done gradually, but mixing a driver overhaul with 
-> functional changes usually only results in confusion later on.
 
-I fully agree.
+> On Thu, May 08, 2008 at 11:30:24PM +0400, Sergei Shtylyov wrote:
+>> Manuel Lauss wrote:
 
-> > I don't think that the minor changes below are enough for you to claim
-> > copyright on that driver.
-> 
->  Well, I decide whether or not to add one based on how important changes
-> are from the piece's of code point of view.  In this case the change is
-> essential for new-style client drivers to work at all, which I think is
-> more important than e.g. a lot of cosmetical changes throughout would be.  
-> But I do not insist on keeping it -- if you think I misjudged on this
-> occasion, I see no problem with discarding it.
+>>>>> diff --git a/arch/mips/au1000/common/platform.c
+>>>>> b/arch/mips/au1000/common/platform.c
+>>>>> index 31d2a22..08a5900 100644
+>>>>> --- a/arch/mips/au1000/common/platform.c
+>>>>> +++ b/arch/mips/au1000/common/platform.c
+>>>>> -
+>>>>> -static struct platform_device au1xxx_mmc_device = {
+>>>>> - .name = "au1xxx-mmc",
+>>>>> - .id = 0,
+>>>>> - .dev = {
+>>>>> - .dma_mask               = &au1xxx_mmc_dmamask,
+>>>>> - .coherent_dma_mask      = 0xffffffff,
+>>>>> - },
+>>>>> - .num_resources  = ARRAY_SIZE(au1xxx_mmc_resources),
+>>>>> - .resource       = au1xxx_mmc_resources,
+>>>>> -};
+>>>>> #endif /* #ifdef CONFIG_SOC_AU1200 */
+>>>>
+>>>>   What board-specific was here?
 
-If you had to add a missing semicolon to a source file to get it to
-build again, it would be an "essential" change (without it nothing
-works) but still, you can't claim you added any intellectual value to
-the source file. So, no copyright. The copyright is about how much
-value you add, not how important the change is in the big picture.
+>>> Nothing in here per se, but a) I don't like this file, it registers
+>>> stuff some boards don't need/want,  b) this part is only interesting
+>>> for pb1200 board anyway.
 
-> > Why do you double the space and the end of comments? Never seen that
-> > before, and I can't see the idea.
-> 
->  This is mostly habitual -- this is what the GNU Coding Standard specifies
-> for comments and which is enforced for GNU software which I have dealt a
-> lot with.
+>>    Sigh. Do you know that Au1100 also has the same MMC controllers? The
+>> platform device is not registered in this case though and the driver
+>> (however small it now actually uses the platform device per se) is
+>> therefore unable to control it (well, I'm not sure it can do that since 
+>> it
+>> seems to be Au1200 centered now (using DBDMA), however it was initially
+>> written for Au1100 as it seems.
+
+> I gathered that from the driver source...
+
+> I assume the PIO paths in the driver are intended for the Au1100, correct?
+> Should not be too hard to force PIO paths when no DDMA IDs are passed
+> through the platform device's resources.
+
+
+   Yes but it should've probably also supported DMA via Au1100 DMA 
+controller (not DBDMA).
+
+>>>>> + return (bcsr->sig_status & au1xmmc_card_table[host->id].bcsrstatus)
+>>>>> + ? 1 : 0;
+>>>>> +}
+>>>>> +
+>>>>> +static struct au1xmmc_platdata db1xmmcpd = {
+>>>>> + .set_power = pb1200mmc_set_power,
+>>>>> + .card_inserted = pb1200mmc_card_inserted,
+>>>>> + .card_readonly = pb1200mmc_card_readonly,
+>>>>> + .cd_setup = NULL, /* use poll-timer in driver */
+
+>>>>   Function ptrs in the platform data?  That's something new -- though 
+>>>> why
+>>>> not? :-)
+
+>>> Is this an accepted way of doing things in the kernel?  If not, I'm open
+>>> to suggestions!
+
+>>    I really don't know -- never seen such trick before.
+
+>>> (I prefer this to globally-visible methods called by the
+>>> driver.  I like it when related things are neatly grouped together).
+
+>>    Yes, this indeed looks better.
+
+> Unless someone else speaks up against it, I'll leave it the way it is.
+
+   I assume just parametrizing the board-level functions using the data 
+about BCSR (like it was done in the driver before) just won't work?
+
+>>>>> + },
+>>>>> + .num_resources  = ARRAY_SIZE(au1200sd0_res),
+>>>>> + .resource       = au1200sd0_res,
+>>>>> +};
+>>>>> +
+>>>>> +#ifndef CONFIG_MIPS_DB1200
+
+>>>>   Wait, SD controller 1 is there regardless of the board, so should be
+>>>> registerred regardless. If however the board doesn't have the necessary
+>>>> resources to support the driver functionality, I think it can be
+>>>> indicated by the board-level platform data, so that the driver could
+>>>> decide whether it wants to support that controller or not.
+
+>>> Won't this cause problems if e.g. you are using PCMCIA (since SD1 pins 
+>>> are
+>>> muxed with pcmcia signals)?
+
+>>    Good point.  I think that the code in 
+>> arch/mips/au1000/common/platform.c
+>> should check the sys_pinfunc register, and not blindly register all
+>> devices.
+
+> Hm, sounds ugly, but I'll add something.
+
+   Why? I think it's smarter than register SoC devices in every instance of 
+board setup code. This way, the board setup code has already programmed 
+sys_pinfunc as it sees fit, and the common code accomodates to this need 
+registering those devices that the coard code have selected.
+
+> Thanks!
+> Manuel Lauss
+
+WBR, Sergei

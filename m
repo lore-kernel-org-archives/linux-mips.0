@@ -1,39 +1,36 @@
-Received: from sj-iport-3.cisco.com ([171.71.176.72]:36656 "EHLO
-	sj-iport-3.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S20024551AbYELROr (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 12 May 2008 18:14:47 +0100
-Message-ID: <48287AEC.6090300@cisco.com>
-Date: Mon, 12 May 2008 10:14:20 -0700
-From: David VomLehn <dvomlehn@cisco.com>
+Received: from pmc216-241-226-184.pmc-sierra.bc.ca ([216.241.226.184]:43712
+	"EHLO pmxedge2.pmc-sierra.bc.ca") by ftp.linux-mips.org with ESMTP
+	id S20032684AbYENS0X convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 14 May 2008 19:26:23 +0100
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Subject: Re: [RFC] [PATCH 1/1] [MIPS] Advanced Kernel Stack Backtrace
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <dvomlehn@cisco.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: Problem with binutils 
+Date: Wed, 14 May 2008 11:26:09 -0700
+Message-ID: <A7DEA48C84FD0B48AAAE33F328C0201401EF0B1B@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
+References: <Pine.LNX.4.64.0805131444360.15369@wrl-59.cs.helsinki.fi> <20080513232507.GA24102@linux-mips.org> <20080513180225.194f400b.akpm@linux-foundation.org> <20080514150859.GA9898@linux-mips.org> <E06E3B7BBC07864CADE892DAF1EB0FBD07CEB326@NT-SJCA-0752.brcm.ad.broadcom.com>
+From: "Anoop P.A." <Anoop_P.A@pmc-sierra.com>
+Return-Path: <Anoop_P.A@pmc-sierra.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Ralf Baechle [ralf"@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20080512171420.12PZtuJECvetSl1cvQ2hIdkwedjkT5XczwwfP4V7YeE@z>
+To: linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org
+Message-ID: <20080514182609.fkU_ZX2fuVgdpe3NfIlzT3bPmZ34M7iyijyMEzcdUZ8@z>
 
-> On Wed, May 07, 2008 at 04:49:53PM -0700, David VomLehn wrote:
-> 
->> This patch contains the kernel stack backtrace code we've been running 
->> for about a year on our MIPS-based settop box. ...
-
->  o Use ARRAY_SIZE() from <linux/kernel.h> instead of numberof.
-
-Oops, missed this one in the port from 2.6.14 to 2.6.24.
-
->  o Please run the patch through scripts/checkpatch.pl and fix the resulting
->    errors.
-
-Will do.
-
->  o Your patch got linewrapped by your mail client.
-
-Ouch. I'll fix that next time.
-
->   Ralf
-
-Thanks!
+Hi,
+ 
+currently I am using binutils 2.15.97 . I though of upgrade binutils 2.18 version( assembler 2.15.97 doesn't have support for mip34k specific instructions used for SMTC) .package is compiling properly and I am able to compile my BSP. But while booting I am unable to detect my embedded rootfs. If you do NFS mount it is booting properly 
+( I am using .incbin directive  to add my rootfile system and I am suspecting problem with incbin directive comes from 2.18 . I am able use same code properly with 2.15.97 toolchain. anybody else faced this issue?). 
+ 
+ 
+One thing I am observing that vmlinux(ELF) built with 2.15.97 contains 39 section while vmlinux built using 2.18 contains 28 sections only.
+I am using GCC 3.4.5 and uClibc. 
+ 
+Somebody please help me
+ 
+Thanks
+Anoop
+ 
+ 

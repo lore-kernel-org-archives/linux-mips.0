@@ -1,31 +1,49 @@
-Received: from localhost.localdomain ([127.0.0.1]:2222 "EHLO
-	bby1mta03.pmc-sierra.bc.ca") by ftp.linux-mips.org with ESMTP
-	id S20021633AbYFEBf6 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 5 Jun 2008 02:35:58 +0100
+Received: from mga11.intel.com ([192.55.52.93]:63881 "EHLO mga11.intel.com")
+	by ftp.linux-mips.org with ESMTP id S20030705AbYFILQE convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 9 Jun 2008 12:16:04 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="US-ASCII"
+	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: Status of PMC MSP71xx support?
-Date: Wed, 4 Jun 2008 18:35:08 -0700
-Message-ID: <92F38F1DC286C7409E29F0C6FBFB6E4F0134B636@BBY1EXM09.pmc_nt.nt.pmc-sierra.bc.ca>
-In-Reply-To: <8A9D56C5E50F774BABE033F1710B35760138FF57@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
-References: <8A9D56C5E50F774BABE033F1710B35760138FF57@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
-From: "Rod Sillett" <Rod_Sillett@pmc-sierra.com>
-Return-Path: <Rod_Sillett@pmc-sierra.com>
+Subject: [patch]modify the MIPS CPU classfication
+Date: Mon, 9 Jun 2008 19:15:58 +0800
+Message-ID: <42DFA526FC41B1429CE7279EF83C6BDC01404341@pdsmsx415.ccr.corp.intel.com>
+From: "Chen, Huacai" <huacai.chen@intel.com>
+Return-Path: <huacai.chen@intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: bunk@kernel.org
-Cc: Brian Oostenbrink <Brian_Oostenbrink@pmc-sierra.com>, linux-mips@linux-mips.org
-Message-ID: <20080605013508.RDgFTwDW4gpRPHIoVse8B1FIiPwRFZqfqJBmrFzlZE0@z>
+To: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20080609111558.VgEJptfXrg8kmfHFs3Z4o55fRL71xDN_TfV0OYA7VHc@z>
 
-Hi Adrian,
+The company ID of Loongson1/Loongson2 is PRID_COMP_LEGACY, but they were
+classified in the list whoes company ID is  PRID_COMP_MIPS. This patch
+move them to the right place.
 
-Yes, the msp71xx platform is still actively supported by PMC. I am
-responsible for merging the changes back to the community. As a first
-step (a learning experience for me) I was planning to submit updated
-GPIO and LED support in the next few weeks. 
+Signed-off-by: Huacai Chen <huacai.chen@intel.com>
 
-Best Regards,
-Rod Sillett
+-----
+diff --git a/include/asm-mips/cpu.h b/include/asm-mips/cpu.h
+index 1c35cac..d3ffe93 100644
+--- a/include/asm-mips/cpu.h
++++ b/include/asm-mips/cpu.h
+@@ -68,6 +68,8 @@
+ #define PRID_IMP_RM9000        0x3400
+ #define PRID_IMP_R5432     0x5400
+ #define PRID_IMP_R5500     0x5500
++#define PRID_IMP_LOONGSON1      0x4200
++#define PRID_IMP_LOONGSON2      0x6300
+
+ #define PRID_IMP_UNKNOWN   0xff00
+
+@@ -90,8 +92,6 @@
+ #define PRID_IMP_24KE      0x9600
+ #define PRID_IMP_74K       0x9700
+ #define PRID_IMP_1004K     0x9900
+-#define PRID_IMP_LOONGSON1      0x4200
+-#define PRID_IMP_LOONGSON2      0x6300
+
+ /*
+  * These are the PRID's for when 23:16 == PRID_COMP_SIBYTE
+-----

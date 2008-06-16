@@ -1,160 +1,73 @@
-Received: from bay0-omc3-s10.bay0.hotmail.com ([65.54.246.210]:44833 "EHLO
-	BAY0-OMC3-S10.bay0.hotmail.com") by ftp.linux-mips.org with ESMTP
-	id S28580368AbYFLTtQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 12 Jun 2008 20:49:16 +0100
-Message-ID: <BAY124-DS40AA7BBF3FEA6F03F0D87DCAD0@phx.gbl>
-From: <danieljlaird@hotmail.com>
-In-Reply-To: <20080612134539.GA20487@cs181133002.pp.htv.fi> <20080612135835.GB20015@linux-mips.org> <20080613.000350.93206311.anemo@mba.ocn.ne.jp> <20080612162350.GA19234@linux-mips.org>
-References: <20080612134539.GA20487@cs181133002.pp.htv.fi> <20080612135835.GB20015@linux-mips.org> <20080613.000350.93206311.anemo@mba.ocn.ne.jp> <20080612162350.GA19234@linux-mips.org>
-Subject: Re: pending mips build fixes
-Date: Thu, 12 Jun 2008 20:49:06 +0100
+Received: from hicks.ciena.com ([63.118.34.22]:63753 "EHLO hicks.ciena.com")
+	by ftp.linux-mips.org with ESMTP id S20039780AbYFPPwJ convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 16 Jun 2008 16:52:09 +0100
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
-Return-Path: <danieljlaird@hotmail.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: [SPAM] linux-2.6.25.4 Porting OOPS
+Date: Mon, 16 Jun 2008 11:52:08 -0400
+Message-ID: <C34407D180E1CD45900A63F8E6448CBFFA44@onmxm01.ciena.com>
+In-Reply-To: <485303CE.8060504@cisco.com>
+References: <dcf6addc0806082001m19d54184pc8ab42b0875c5238@mail.gmail.com> <20B109E2-594E-4329-95C7-F67E9A7882E2@27m.se> <dcf6addc0806120251t4785dc09tc4a6f0854c5cd425@mail.gmail.com> <A3BA2251DD85404FBBEF7478C29D8742F26EFE@onmxm01.ciena.com> <485303CE.8060504@cisco.com>
+From: "Pelton, Dave" <dpelton@ciena.com>
+Return-Path: <dpelton@ciena.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>, Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Cc: bunk@kernel.org, linux-mips@linux-mips.org, mb@bu3sch.de, aurelien@aurel32.net, daniel.j.laird@nxp.com
-Message-ID: <20080612194906.rNvs_OjzBxB5PUvQPs4LALxcxarsQagQz3ruFbwDL28@z>
+To: David VomLehn <dvomlehn@cisco.com>
+Cc: "J.Ma" <sync.jma@gmail.com>, Markus Gothe <markus.gothe@27m.se>, linux-mips@linux-mips.org
+Message-ID: <20080616155208.akCE_oG475ZRMi9FiXOseyYIIpt2cGsl4RtuQUTnf8M@z>
 
-Agree with the changes made
-
-There is a larger problem however which is that I believe the 2.6.24 and 
-later kernels broke PNX8550 support.
-I tried to solve the issues (see some postings some time ago) regarding 
-timer issues and changes made between 2.6.22 (working) and 2.6.24 broken.
-However I could never get the fixes to work properly.  I have also since 
-moved onto pastures new with the PNX833x/893x CPUs which means solving 
-issues for a older CPU is not top of the list. And the lifetime of 8550 
-willbe much shorter than the newer chipsets.
-
-I would be tempted to mark PNX8550 / STB810 support as BROKEN.  Unless other 
-8550 users can prove me wrong.
-I would not remove the code yet incase it can be rescued but would mark as 
-BROKEN in 2.6.27 and remove in 2.6.28
-Cheers
-Dan
-
---------------------------------------------------
-From: "Ralf Baechle" <ralf@linux-mips.org>
-Sent: Thursday, June 12, 2008 5:23 PM
-To: "Atsushi Nemoto" <anemo@mba.ocn.ne.jp>
-Cc: <bunk@kernel.org>; <linux-mips@linux-mips.org>; <mb@bu3sch.de>; 
-<aurelien@aurel32.net>; <daniel.j.laird@nxp.com>
-Subject: Re: pending mips build fixes
-
-> On Fri, Jun 13, 2008 at 12:03:50AM +0900, Atsushi Nemoto wrote:
->
->> This patch fix a breakage by commit
->> 351336929ccf222ae38ff0cb7a8dd5fd5c6236a0 > ([MIPS] Allow setting of
->> the cache attribute at run time.)
->>
->> This patch introduce an weak __coherency_setup() to support PNX8550
->> which needs special handling on cache coherency updating.
->>
->> Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
->
-> Never been a fan of weak functions though depending circumstances they
-> certainly can be less evil than some of the alternatives.  Also what is
-> hidden deep in the PNX board code really is specific to the PNX CPU core,
-> so I moved it to c-r4k.c.  The resulting patch is below.
->
->  Ralf
->
-> Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
->
-> diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-> index 643c8bc..c41ea22 100644
-> --- a/arch/mips/mm/c-r4k.c
-> +++ b/arch/mips/mm/c-r4k.c
-> @@ -1226,6 +1226,28 @@ void au1x00_fixup_config_od(void)
->  }
-> }
->
-> +/* CP0 hazard avoidance. */
-> +#define NXP_BARRIER() \
-> + __asm__ __volatile__( \
-> + ".set noreorder\n\t" \
-> + "nop; nop; nop; nop; nop; nop;\n\t" \
-> + ".set reorder\n\t")
-> +
-> +static void nxp_pr4450_fixup_config(void)
-> +{
-> + unsigned long config0;
-> +
-> + config0 = read_c0_config();
-> +
-> + /* clear all three cache coherency fields */
-> + config0 &= ~(0x7 | (7 << 25) | (7 << 28));
-> + config0 |= (((_page_cachable_default >> _CACHE_SHIFT) <<  0) |
-> +     ((_page_cachable_default >> _CACHE_SHIFT) << 25) |
-> +     ((_page_cachable_default >> _CACHE_SHIFT) << 28));
-> + write_c0_config(config0);
-> + NXP_BARRIER();
-> +}
-> +
-> static int __cpuinitdata cca = -1;
->
-> static int __init cca_setup(char *str)
-> @@ -1271,6 +1293,10 @@ static void __cpuinit coherency_setup(void)
->  case CPU_AU1500: /* rev. AB */
->  au1x00_fixup_config_od();
->  break;
-> +
-> + case PRID_IMP_PR4450:
-> + nxp_pr4450_fixup_config();
-> + break;
->  }
-> }
->
-> diff --git a/arch/mips/nxp/pnx8550/jbs/board_setup.c 
-> b/arch/mips/nxp/pnx8550/jbs/board_setup.c
-> index f92826e..57dd903 100644
-> --- a/arch/mips/nxp/pnx8550/jbs/board_setup.c
-> +++ b/arch/mips/nxp/pnx8550/jbs/board_setup.c
-> @@ -47,16 +47,7 @@
->
-> void __init board_setup(void)
-> {
-> - unsigned long config0, configpr;
-> -
-> - config0 = read_c0_config();
-> -
-> - /* clear all three cache coherency fields */
-> - config0 &= ~(0x7 | (7<<25) | (7<<28));
-> - config0 |= (CONF_CM_DEFAULT | (CONF_CM_DEFAULT<<25) |
-> - (CONF_CM_DEFAULT<<28));
-> - write_c0_config(config0);
-> - BARRIER;
-> + unsigned long configpr;
->
->  configpr = read_c0_config7();
->  configpr |= (1<<19); /* enable tlb */
-> diff --git a/arch/mips/nxp/pnx8550/stb810/board_setup.c 
-> b/arch/mips/nxp/pnx8550/stb810/board_setup.c
-> index 1282c27..af2a55e 100644
-> --- a/arch/mips/nxp/pnx8550/stb810/board_setup.c
-> +++ b/arch/mips/nxp/pnx8550/stb810/board_setup.c
-> @@ -33,15 +33,7 @@
->
-> void __init board_setup(void)
-> {
-> - unsigned long config0, configpr;
-> -
-> - config0 = read_c0_config();
-> -
-> - /* clear all three cache coherency fields */
-> - config0 &= ~(0x7 | (7<<25) | (7<<28));
-> - config0 |= (CONF_CM_DEFAULT | (CONF_CM_DEFAULT<<25) |
-> - (CONF_CM_DEFAULT<<28));
-> - write_c0_config(config0);
-> + unsigned long configpr;
->
->  configpr = read_c0_config7();
->  configpr |= (1<<19); /* enable tlb */
->
+David VomLehn wrote:
+> Pelton, Dave wrote:
+> > <snip>
+> > Normally kseg2 is in the address range 0xC0000000-0xFFFFFFFF.
+However,
+> > on the BMIPS3300 (the embedded MIPS32 core used on my SOC), there is
+a
+> > range of addresses within kseg2 that are reserved
+> > (0xFF200000-0xFFFEFFFF).
+> > This means that the TLB entry that kmap_coherent creates will not
+work
+> > if it falls within the reserved range.  The virtual address space
+used
+> > by kmap_coherent is controlled by FIXADDR_TOP in
+> > include/asm-mips/fixmap.h.
+> > To fix my issue, I changed FIXADDR_TOP to avoid the reserved address
+> > space.
+> <snip>
 > 
+> Is your range of addresses reserved on the BMIPS3300 because it is
+being used as
+> dseg, i.e. because it is being used for debugging? If I read the
+documentation on
+> the processor I am using, the 24Kc, it has a similar issue. I don't
+need to be
+> able to use kmap_coherent because the 24K hardware takes care of data
+coherence
+> issues, i.e. cpu_has_dc_aliases is false, but I'm sort of thinking we
+might just
+> generally want to change FIXADDR_TOP to avoid address in the dseg
+range for all
+> MIPS32 processors. As we work our way through some of the cache
+flushing issues
+> related to using high memory, I'd like to be able to develop code that
+works on
+> processors for which cpu_has_dc_aliases is true. If my kmap_coherent
+is working I
+> can check things out for those processors and then simply use
+kmap_atomic for
+> processors where cpu_has_dc_aliases is false.
+
+Apologies in advance for what my plain-text impaired mail client is
+likely to do to this message.  The reserved range on the BMIPS3300 is
+used by memory mapped registers.  I am not a memory management expert,
+so I am not sure what implications there would be to moving FIXADDR_TOP
+as a general fix.  The impression I have from general MIPS documentation
+is that kseg2 should not be used for memory mapped i/o and hence
+platforms that do this should be treated as an exception case, rather
+than moving the general case to deal with this.
+
+- David Pelton

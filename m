@@ -1,73 +1,117 @@
-Received: from hicks.ciena.com ([63.118.34.22]:63753 "EHLO hicks.ciena.com")
-	by ftp.linux-mips.org with ESMTP id S20039780AbYFPPwJ convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 16 Jun 2008 16:52:09 +0100
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: [SPAM] linux-2.6.25.4 Porting OOPS
-Date: Mon, 16 Jun 2008 11:52:08 -0400
-Message-ID: <C34407D180E1CD45900A63F8E6448CBFFA44@onmxm01.ciena.com>
-In-Reply-To: <485303CE.8060504@cisco.com>
-References: <dcf6addc0806082001m19d54184pc8ab42b0875c5238@mail.gmail.com> <20B109E2-594E-4329-95C7-F67E9A7882E2@27m.se> <dcf6addc0806120251t4785dc09tc4a6f0854c5cd425@mail.gmail.com> <A3BA2251DD85404FBBEF7478C29D8742F26EFE@onmxm01.ciena.com> <485303CE.8060504@cisco.com>
-From: "Pelton, Dave" <dpelton@ciena.com>
-Return-Path: <dpelton@ciena.com>
+Received: from smtp1.linux-foundation.org ([140.211.169.13]:56514 "EHLO
+	smtp1.linux-foundation.org") by ftp.linux-mips.org with ESMTP
+	id S28573828AbYFXVP0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 24 Jun 2008 22:15:26 +0100
+Date: Tue, 24 Jun 2008 14:15:15 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH][1/2] add new Cobalt LCD framebuffer driver
+Message-ID: <20080624141515.f710969a.akpm@linux-foundation.org>
+In-Reply-To: <20080624224654.1ef3d665.yoichi_yuasa@tripeaks.co.jp>
+References: <20080624224654.1ef3d665.yoichi_yuasa@tripeaks.co.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <akpm@linux-foundation.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: David VomLehn <dvomlehn@cisco.com>
-Cc: "J.Ma" <sync.jma@gmail.com>, Markus Gothe <markus.gothe@27m.se>, linux-mips@linux-mips.org
-Message-ID: <20080616155208.akCE_oG475ZRMi9FiXOseyYIIpt2cGsl4RtuQUTnf8M@z>
+To: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+Cc: linux-fbdev-devel@lists.sourceforge.net, ralf@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20080624211515.Rws92TKm3b208dOyGA_VXekWDCKdjNpyKp0Ghqd8i5s@z>
 
-David VomLehn wrote:
-> Pelton, Dave wrote:
-> > <snip>
-> > Normally kseg2 is in the address range 0xC0000000-0xFFFFFFFF.
-However,
-> > on the BMIPS3300 (the embedded MIPS32 core used on my SOC), there is
-a
-> > range of addresses within kseg2 that are reserved
-> > (0xFF200000-0xFFFEFFFF).
-> > This means that the TLB entry that kmap_coherent creates will not
-work
-> > if it falls within the reserved range.  The virtual address space
-used
-> > by kmap_coherent is controlled by FIXADDR_TOP in
-> > include/asm-mips/fixmap.h.
-> > To fix my issue, I changed FIXADDR_TOP to avoid the reserved address
-> > space.
-> <snip>
+On Tue, 24 Jun 2008 22:46:54 +0900
+Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp> wrote:
+
+> Add new Cobalt LCD framebuffer driver.
 > 
-> Is your range of addresses reserved on the BMIPS3300 because it is
-being used as
-> dseg, i.e. because it is being used for debugging? If I read the
-documentation on
-> the processor I am using, the 24Kc, it has a similar issue. I don't
-need to be
-> able to use kmap_coherent because the 24K hardware takes care of data
-coherence
-> issues, i.e. cpu_has_dc_aliases is false, but I'm sort of thinking we
-might just
-> generally want to change FIXADDR_TOP to avoid address in the dseg
-range for all
-> MIPS32 processors. As we work our way through some of the cache
-flushing issues
-> related to using high memory, I'd like to be able to develop code that
-works on
-> processors for which cpu_has_dc_aliases is true. If my kmap_coherent
-is working I
-> can check things out for those processors and then simply use
-kmap_atomic for
-> processors where cpu_has_dc_aliases is false.
+> Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+> 
+>
+> ...
+>
+> +static ssize_t cobalt_lcdfb_read(struct fb_info *info, char __user *buf,
+> +				 size_t count, loff_t *ppos)
+> +{
+> +	char src[LCD_CHARS_MAX];
+> +	unsigned long pos;
+> +	int len, retval;
+> +
+> +	pos = *ppos;
+> +	if (pos >= LCD_CHARS_MAX)
+> +		return 0;
+> +
+> +	if (pos + count >= LCD_CHARS_MAX)
+> +		count = LCD_CHARS_MAX - pos;
 
-Apologies in advance for what my plain-text impaired mail client is
-likely to do to this message.  The reserved range on the BMIPS3300 is
-used by memory mapped registers.  I am not a memory management expert,
-so I am not sure what implications there would be to moving FIXADDR_TOP
-as a general fix.  The impression I have from general MIPS documentation
-is that kseg2 should not be used for memory mapped i/o and hence
-platforms that do this should be treated as an exception case, rather
-than moving the general case to deal with this.
+I think if sizeof(pos) == sizeof(count), and `count' is sufficiently
+large (eg: 0xffffffff) then bad things will happen in this function.
 
-- David Pelton
+> +	for (len = 0; len < count; len++) {
+> +		retval = lcd_busy_wait(info);
+> +		if (retval < 0)
+> +			break;
+> +
+> +		lcd_write_control(info, LCD_TEXT_POS(pos));
+> +
+> +		retval = lcd_busy_wait(info);
+> +		if (retval < 0)
+> +			break;
+> +
+> +		src[len] = lcd_read_data(info);
+> +		if (pos == 0x0f)
+> +			pos = 0x40;
+> +		else
+> +			pos++;
+> +	}
+> +
+> +	if (copy_to_user(buf, src, len))
+> +		return -EFAULT;
+> +
+> +	*ppos += len;
+> +
+> +	return len;
+> +}
+> +
+> +static ssize_t cobalt_lcdfb_write(struct fb_info *info, const char __user *buf,
+> +				  size_t count, loff_t *ppos)
+> +{
+> +	char dst[LCD_CHARS_MAX];
+> +	unsigned long pos;
+> +	int len, retval;
+> +
+> +	pos = *ppos;
+> +	if (pos >= LCD_CHARS_MAX)
+> +		return 0;
+> +
+> +	if (pos + count >= LCD_CHARS_MAX)
+> +		count = LCD_CHARS_MAX - pos;
+
+Ditto.
+
+> +	if (copy_from_user(dst, buf, count))
+> +		return -EFAULT;
+> +
+> +	for (len = 0; len < count; len++) {
+> +		retval = lcd_busy_wait(info);
+> +		if (retval < 0)
+> +			break;
+> +
+> +		lcd_write_control(info, LCD_TEXT_POS(pos));
+> +
+> +		retval = lcd_busy_wait(info);
+> +		if (retval < 0)
+> +			break;
+> +
+> +		lcd_write_data(info, dst[len]);
+> +		if (pos == 0x0f)
+> +			pos = 0x40;
+> +		else
+> +			pos++;
+> +	}
+> +
+> +	*ppos += len;
+> +
+> +	return len;
+> +}
+
+Is there any real benefit in this handling of signal_pending()?  afaict
+it is done correctly, but why did we bother doing it?

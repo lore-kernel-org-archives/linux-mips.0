@@ -1,107 +1,46 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13]:61411 "EHLO
-	smtp1.linux-foundation.org") by ftp.linux-mips.org with ESMTP
-	id S20042755AbYFXVR5 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 24 Jun 2008 22:17:57 +0100
-Date: Tue, 24 Jun 2008 14:17:46 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH][2/2] add new Cobalt LCD platform device register
-Message-ID: <20080624141746.d7ddacc7.akpm@linux-foundation.org>
-In-Reply-To: <20080624224702.5aa7f7ac.yoichi_yuasa@tripeaks.co.jp>
-References: <20080624223004.d54f14fe.yoichi_yuasa@tripeaks.co.jp>
-	<20080624224702.5aa7f7ac.yoichi_yuasa@tripeaks.co.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <akpm@linux-foundation.org>
+Received: from smtp3.infineon.com ([203.126.106.229]:10290 "EHLO
+	smtp3.infineon.com") by ftp.linux-mips.org with ESMTP
+	id S29047646AbYGAGF2 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 1 Jul 2008 07:05:28 +0100
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: Kmem_cache handling in linux-2.6.2x kernel.
+Date: Tue, 1 Jul 2008 14:05:17 +0800
+Message-ID: <31E09F73562D7A4D82119D7F6C172986045B6E80@sinse303.ap.infineon.com>
+From: <KokHow.Teh@infineon.com>
+Return-Path: <KokHow.Teh@infineon.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
-Cc: ralf@linux-mips.org, linux-fbdev-devel@lists.sourceforge.net, linux-mips@linux-mips.org
-Message-ID: <20080624211746.linLcAPWHkVKmaIwYl24tHK01wLJsh-DWrjObHw-rLg@z>
+To: linux-mips@linux-mips.org, bookquestions@oreilly.com
+Cc: Bing-Tao.Xu@infineon.com
+Message-ID: <20080701060517.-aV7z-Sn_E-VpA28iDNUf5icmKo-ax8irMmHPWwd65w@z>
 
-On Tue, 24 Jun 2008 22:47:02 +0900
-Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp> wrote:
+Hi list;
+	I have a question about kmem_cache implemented in Linux-2.6.2x
+kernel. I have an application that allocates and free 64KByte chunks of
+memory (32-byte aligned) quite often. Therefore, I create a lookaside
+cache for that purpose and use kmem_cache_alloc(), kmem_cache_free() to
+allocate and free the caches. The application works very well in this
+model. However, my concern here is if kmem_cache_free() does return the
+cache to the system-wide pool so that it could be used by other
+applications when need arises; when system is low in memory resources,
+for instance. This is a question about the internal workings of the
+memory management system of the Linux-2.6.2x kernel as to how efficient
+it manages this lookasie caches. The concern is valid because if this
+lookaside cache is not managed well, i.e, it is not returned to the
+system-wide pool of free memory pools to be used by other applications,
+this will penalize the performace and throughput of the whole system due
+to the dynamic behaviour of the utilization of system memory resources.
+For example, other applications might be swapping in and out of the
+harddisk and if the kmem_cache_free()'ed memory objects could be used by
+these applications, it will help in this case to reduce the number of
+swaps that happen, thereby freeing the CPU and/or DMA from doing the
+swapping to do other critical tasks.
 
-> Add new Cobalt LCD platform device register.
-> 
-> Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
-> 
-> diff -pruN -X /home/yuasa/Memo/dontdiff linux-orig/arch/mips/cobalt/Makefile linux/arch/mips/cobalt/Makefile
-> --- linux-orig/arch/mips/cobalt/Makefile	2008-06-01 18:01:46.808253360 +0900
-> +++ linux/arch/mips/cobalt/Makefile	2008-06-01 22:55:40.342007921 +0900
-> @@ -2,7 +2,7 @@
->  # Makefile for the Cobalt micro systems family specific parts of the kernel
->  #
->  
-> -obj-y := buttons.o irq.o led.o reset.o rtc.o serial.o setup.o time.o
-> +obj-y := buttons.o irq.o lcd.o led.o reset.o rtc.o serial.o setup.o time.o
->  
->  obj-$(CONFIG_PCI)		+= pci.o
->  obj-$(CONFIG_EARLY_PRINTK)	+= console.o
-> diff -pruN -X /home/yuasa/Memo/dontdiff linux-orig/arch/mips/cobalt/lcd.c linux/arch/mips/cobalt/lcd.c
-> --- linux-orig/arch/mips/cobalt/lcd.c	1970-01-01 09:00:00.000000000 +0900
-> +++ linux/arch/mips/cobalt/lcd.c	2008-06-01 22:55:40.350008376 +0900
-> @@ -0,0 +1,55 @@
-> +/*
-> + *  Registration of Cobalt LCD platform device.
-> + *
-> + *  Copyright (C) 2008  Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
-> + *
-> + *  This program is free software; you can redistribute it and/or modify
-> + *  it under the terms of the GNU General Public License as published by
-> + *  the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + *  This program is distributed in the hope that it will be useful,
-> + *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + *  GNU General Public License for more details.
-> + *
-> + *  You should have received a copy of the GNU General Public License
-> + *  along with this program; if not, write to the Free Software
-> + *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + */
-> +#include <linux/errno.h>
-> +#include <linux/init.h>
-> +#include <linux/ioport.h>
-> +#include <linux/platform_device.h>
-> +
-> +static struct resource cobalt_lcd_resource __initdata = {
-> +	.start	= 0x1f000000,
-> +	.end	= 0x1f00001f,
-> +	.flags	= IORESOURCE_MEM,
-> +};
-> +
-> +static __init int cobalt_lcd_add(void)
-> +{
-> +	struct platform_device *pdev;
-> +	int retval;
-> +
-> +	pdev = platform_device_alloc("cobalt-lcd", -1);
-> +	if (!pdev)
-> +		return -ENOMEM;
-> +
-> +	retval = platform_device_add_resources(pdev, &cobalt_lcd_resource, 1);
-> +	if (retval)
-> +		goto err_free_device;
-> +
-> +	retval = platform_device_add(pdev);
-> +	if (retval)
-> +		goto err_free_device;
-> +
-> +	return 0;
-> +
-> +err_free_device:
-> +	platform_device_put(pdev);
-> +
-> +	return retval;
-> +}
-> +device_initcall(cobalt_lcd_add);
+	Any insight and advice is appreciated.
 
-afacit this driver can be compiled for and loaded on basically any
-platform and architecture.
-
-And that's OK - there are pros and cons to doing this.  But I wonder
-what happens if someone _does_ load this driver on (say) an x86 box? 
-If it malfunctions in some manner then we might need to be stricter in
-Kconfig or at runtime?
+Regards,
+KH

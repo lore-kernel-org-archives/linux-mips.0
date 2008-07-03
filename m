@@ -1,46 +1,36 @@
-Received: from smtp3.infineon.com ([203.126.106.229]:10290 "EHLO
-	smtp3.infineon.com") by ftp.linux-mips.org with ESMTP
-	id S29047646AbYGAGF2 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 1 Jul 2008 07:05:28 +0100
-Content-class: urn:content-classes:message
+Received: from wf-out-1314.google.com ([209.85.200.174]:28023 "EHLO
+	wf-out-1314.google.com") by ftp.linux-mips.org with ESMTP
+	id S20130425AbYGCOun (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 3 Jul 2008 15:50:43 +0100
+Received: by wf-out-1314.google.com with SMTP id 27so926140wfd.21
+        for <linux-mips@linux-mips.org>; Thu, 03 Jul 2008 07:50:40 -0700 (PDT)
+Message-ID: <19f34abd0807030750n31a3bc3t8609f58c9c1f7c7@mail.gmail.com>
+Date: Thu, 3 Jul 2008 16:50:40 +0200
+From: "Vegard Nossum" <vegard.nossum@gmail.com>
+Subject: Re: kernel configuration_ help
+In-Reply-To: <1214997772.16081.3.camel@teclever-desktop>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: Kmem_cache handling in linux-2.6.2x kernel.
-Date: Tue, 1 Jul 2008 14:05:17 +0800
-Message-ID: <31E09F73562D7A4D82119D7F6C172986045B6E80@sinse303.ap.infineon.com>
-From: <KokHow.Teh@infineon.com>
-Return-Path: <KokHow.Teh@infineon.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <1214997772.16081.3.camel@teclever-desktop>
+Return-Path: <vegard.nossum@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org, bookquestions@oreilly.com
-Cc: Bing-Tao.Xu@infineon.com
-Message-ID: <20080701060517.-aV7z-Sn_E-VpA28iDNUf5icmKo-ax8irMmHPWwd65w@z>
+To: saravanakumar <saravanakumar.s@teclever.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Message-ID: <20080703145040.JHbLBctkOoltOpjDVU1BjE0BbEAFrEIdjkIrjIGWNKg@z>
 
-Hi list;
-	I have a question about kmem_cache implemented in Linux-2.6.2x
-kernel. I have an application that allocates and free 64KByte chunks of
-memory (32-byte aligned) quite often. Therefore, I create a lookaside
-cache for that purpose and use kmem_cache_alloc(), kmem_cache_free() to
-allocate and free the caches. The application works very well in this
-model. However, my concern here is if kmem_cache_free() does return the
-cache to the system-wide pool so that it could be used by other
-applications when need arises; when system is low in memory resources,
-for instance. This is a question about the internal workings of the
-memory management system of the Linux-2.6.2x kernel as to how efficient
-it manages this lookasie caches. The concern is valid because if this
-lookaside cache is not managed well, i.e, it is not returned to the
-system-wide pool of free memory pools to be used by other applications,
-this will penalize the performace and throughput of the whole system due
-to the dynamic behaviour of the utilization of system memory resources.
-For example, other applications might be swapping in and out of the
-harddisk and if the kmem_cache_free()'ed memory objects could be used by
-these applications, it will help in this case to reduce the number of
-swaps that happen, thereby freeing the CPU and/or DMA from doing the
-swapping to do other critical tasks.
+On Wed, Jul 2, 2008 at 1:22 PM, saravanakumar
+<saravanakumar.s@teclever.com> wrote:
+> hai,
+> i want my usb to access the root file system,for that what are the
+> changes to be done in kernel code, and  in the configuration, i think
+> changes to be done in do_mount.c for root delay, if its correct where to
+> give the delay.
 
-	Any insight and advice is appreciated.
+Hi,
 
-Regards,
-KH
+If I understand correctly, you have your root filesystem on a USB
+device. It seems that you must pass the rootdelay= option on the
+kernel command line. No changes to the code should be necessary.

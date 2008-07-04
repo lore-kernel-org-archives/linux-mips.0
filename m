@@ -1,36 +1,46 @@
-Received: from wf-out-1314.google.com ([209.85.200.174]:28023 "EHLO
-	wf-out-1314.google.com") by ftp.linux-mips.org with ESMTP
-	id S20130425AbYGCOun (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 3 Jul 2008 15:50:43 +0100
-Received: by wf-out-1314.google.com with SMTP id 27so926140wfd.21
-        for <linux-mips@linux-mips.org>; Thu, 03 Jul 2008 07:50:40 -0700 (PDT)
-Message-ID: <19f34abd0807030750n31a3bc3t8609f58c9c1f7c7@mail.gmail.com>
-Date: Thu, 3 Jul 2008 16:50:40 +0200
-From: "Vegard Nossum" <vegard.nossum@gmail.com>
-Subject: Re: kernel configuration_ help
-In-Reply-To: <1214997772.16081.3.camel@teclever-desktop>
+Received: from ug-out-1314.google.com ([66.249.92.172]:26306 "EHLO
+	ug-out-1314.google.com") by ftp.linux-mips.org with ESMTP
+	id S20187690AbYGDO2l (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 4 Jul 2008 15:28:41 +0100
+Received: by ug-out-1314.google.com with SMTP id 30so802807ugs.39
+        for <linux-mips@linux-mips.org>; Fri, 04 Jul 2008 07:28:38 -0700 (PDT)
+Message-ID: <4ac2955e0807040728g54aeddccj684ea6a5ff6c6509@mail.gmail.com>
+Date: Fri, 4 Jul 2008 19:58:37 +0530
+From: "mahendra varman" <mahendravarman15@gmail.com>
+Subject: cpc700-i2c driver in linux 2.6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1214997772.16081.3.camel@teclever-desktop>
-Return-Path: <vegard.nossum@gmail.com>
+Content-Type: multipart/alternative;
+	boundary="----=_Part_10883_8576246.1215181717428"
+Return-Path: <mahendravarman15@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: saravanakumar <saravanakumar.s@teclever.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Message-ID: <20080703145040.JHbLBctkOoltOpjDVU1BjE0BbEAFrEIdjkIrjIGWNKg@z>
+To: linuxppc-embedded@ozlabs.org., linux-kernel@vger.kernel.org, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Message-ID: <20080704142837.prLMaf0QCpoEwkP9-wpC1_EnSPnE17xQhnEn_JgbnXQ@z>
 
-On Wed, Jul 2, 2008 at 1:22 PM, saravanakumar
-<saravanakumar.s@teclever.com> wrote:
-> hai,
-> i want my usb to access the root file system,for that what are the
-> changes to be done in kernel code, and  in the configuration, i think
-> changes to be done in do_mount.c for root delay, if its correct where to
-> give the delay.
+------=_Part_10883_8576246.1215181717428
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Hi,
+Hi all
 
-If I understand correctly, you have your root filesystem on a USB
-device. It seems that you must pass the rootdelay= option on the
-kernel command line. No changes to the code should be necessary.
+Iam porting linux 2.6 in one of my board containing cpc700 system controller
+and ppc processor
+Iam using the spruce platform
+I could not find the cpc700-i2c file in linux 2.6 under drivers/i2c section
+
+If any of you already tried the above means plzz provide me the cpc700-i2c
+file in 2.6
+
+
+Thanks in advance
+
+------=_Part_10883_8576246.1215181717428
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Hi all<br><br>Iam porting linux 2.6 in one of my board containing cpc700 system controller and ppc processor<br>Iam using the spruce platform <br>I could not find the cpc700-i2c file in linux 2.6 under drivers/i2c section<br>
+<br>If any of you already tried the above means plzz provide me the cpc700-i2c file in 2.6<br><br><br>Thanks in advance<br><br>
+
+------=_Part_10883_8576246.1215181717428--

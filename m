@@ -1,65 +1,70 @@
-Received: from sj-iport-2.cisco.com ([171.71.176.71]:22369 "EHLO
-	sj-iport-2.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S20038976AbYGNQby (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 14 Jul 2008 17:31:54 +0100
-Received: from sj-core-1.cisco.com (sj-core-1.cisco.com [171.71.177.237])
-	by sj-dkim-4.cisco.com (8.12.11/8.12.11) with ESMTP id m6EGUrse006252
-	for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 09:30:53 -0700
+Received: from sj-iport-3.cisco.com ([171.71.176.72]:31521 "EHLO
+	sj-iport-3.cisco.com") by ftp.linux-mips.org with ESMTP
+	id S20038991AbYGNR0j (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 14 Jul 2008 18:26:39 +0100
+Received: from sj-core-5.cisco.com (sj-core-5.cisco.com [171.71.177.238])
+	by sj-dkim-1.cisco.com (8.12.11/8.12.11) with ESMTP id m6EHPUtK031284
+	for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 10:25:30 -0700
 Received: from sausatlsmtp2.sciatl.com ([192.133.217.159])
-	by sj-core-1.cisco.com (8.13.8/8.13.8) with ESMTP id m6EGUr71000358
-	for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 16:30:53 GMT
+	by sj-core-5.cisco.com (8.13.8/8.13.8) with ESMTP id m6EHPUK3013594
+	for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 17:25:30 GMT
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C8E5CE.F68CA842"
-Subject: sparse or discontiguous  memory on 32bit mips platform
-Date: Mon, 14 Jul 2008 09:30:44 -0700
-Message-ID: <D331130DD3DA194B96EF57DA3415F50A026331BC@SAUSCUPEXCH01.corp.sa.net>
+	boundary="----_=_NextPart_001_01C8E5D6.994654D1"
+Subject: RE: sparse or discontiguous  memory on 32bit mips platform
+Date: Mon, 14 Jul 2008 10:20:54 -0700
+Message-ID: <D331130DD3DA194B96EF57DA3415F50A026331BE@SAUSCUPEXCH01.corp.sa.net>
+References: <D331130DD3DA194B96EF57DA3415F50A026331BB@SAUSCUPEXCH01.corp.sa.net> <1216054738.30304.45.camel@chaos.ne.broadcom.com>
 From: "Sundius, Michael" <michael.sundius@sciatl.com>
 Return-Path: <michael.sundius@sciatl.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Cc: msundius@sundius.com
-Message-ID: <20080714163044.kghv72BbocJll1zvmbhh5nAuJWQnN4FXVNp6c3O9Q00@z>
+To: jfraser@broadcom.com
+Cc: linux-mips@linux-mips.org, msundius@sundius.com
+Message-ID: <20080714172054.EXjWXta8ngC8dJORjczdLRcn4Es1FyGzl0q2JrD0e00@z>
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C8E5CE.F68CA842
+------_=_NextPart_001_01C8E5D6.994654D1
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Hi, 
 
-I'm looking into turning on either sparse memory or discontiguous
-memory for a 32 Mips platform (single processor) since we have 2 
-large memory banks that are nowhere near each other in physical memory.
+| I have something similar.  Under 2.6.24, I have the following
+| configured:
+| 
+| CONFIG_HIGHMEM=3Dy
+| CONFIG_CPU_SUPPORTS_HIGHMEM=3Dy
+| CONFIG_SYS_SUPPORTS_HIGHMEM=3Dy
+| CONFIG_ARCH_FLATMEM_ENABLE=3Dy
+| CONFIG_ARCH_DISCONTIGMEM_ENABLE=3Dy
+| CONFIG_DISCONTIGMEM=3Dy
+| CONFIG_FLAT_NODE_MEM_MAP=3Dy
+| CONFIG_ARCH_POPULATES_NODE_MAP=3Dy
+| CONFIG_NODES_SHIFT=3D6
+| CONFIG_FLAT_NODE_MEM_MAP=3Dy
+| CONFIG_NEED_MULTIPLE_NODES=3Dy
+|
+|
+| Each bank of memory is in a separate node. I did have to write
+| some code in arch/mips/kernel/setup.c to setup the multiple memory
+| regions.  I used some of the PPC NUMA code as an example, IIRC.
+| 
+| Because my second bank of mem starts at 0x20000000,
+| I use HIGHMEM to access it.  There been some HIGHMEM info
+| posted to this list in the last 6 months.
+|
+| I didn't think my efforts were general enough to post, but maybe
+| more people are doing these discontiguous memory platforms.
 
-What has been done in hardware, has been done and so be it.
-But since we are an embedded system, we do have memroy constraints and
-wish to conserve as much space as possible, we are trying to avoid creati=
-ng 
-pagetables for the whole space. 
+Oh, yes, that is very similar to what I want to do. we currently
+use HIGHMEM to access our 2nd bank of memory, and so its the 
+setup of the additional node that we'd like to use. I'd be
+interested in seeing that patch if possible. 
 
-That said, I have a few questions.
-
-1) Are there any 32 Mips platforms where either sparsemem or
-discontigmem have been supported?
-
-2) It seems like sparesemem is the wave of the future, am I 
-correct in assuming that this is simmplier / more efficient /
-"better" way to go? 
-
-3) Is there anywhere (besides the code) where I can find an article
-or some documentation on how sparsemem and/or discontig work? or how
-to go about adding support for them in a here to for unsupported 
-platform?
-
-all info, pointers, hints, advice and comments are much appreciated. 
-
-thanks
-Mike
+thanks Mike
 
 
 
@@ -79,7 +84,7 @@ r any
 part of it. If you have received this e-mail in error, please notify the =
 sender 
 immediately by return e-mail and delete it from your computer.
-------_=_NextPart_001_01C8E5CE.F68CA842
+------_=_NextPart_001_01C8E5D6.994654D1
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -91,43 +96,48 @@ Content-Transfer-Encoding: quoted-printable
 9-1">
 <META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version 6.5.7652.2=
 4">
-<TITLE>sparse or discontiguous  memory on 32bit mips platform</TITLE>
+<TITLE>RE: sparse or discontiguous  memory on 32bit mips platform</TITLE>
 </HEAD>
 <BODY><P>
 <!-- Converted from text/plain format -->
+<BR>
 
-<P><FONT SIZE=3D2>Hi,<BR>
-<BR>
-I'm looking into turning on either sparse memory or discontiguous<BR>
-memory for a 32 Mips platform (single processor) since we have 2<BR>
-large memory banks that are nowhere near each other in physical memory.<B=
-R>
-<BR>
-What has been done in hardware, has been done and so be it.<BR>
-But since we are an embedded system, we do have memroy constraints and<BR=
+<P><FONT SIZE=3D2>| I have something similar.&nbsp; Under 2.6.24, I have =
+the following<BR>
+| configured:<BR>
+|<BR>
+| CONFIG_HIGHMEM=3Dy<BR>
+| CONFIG_CPU_SUPPORTS_HIGHMEM=3Dy<BR>
+| CONFIG_SYS_SUPPORTS_HIGHMEM=3Dy<BR>
+| CONFIG_ARCH_FLATMEM_ENABLE=3Dy<BR>
+| CONFIG_ARCH_DISCONTIGMEM_ENABLE=3Dy<BR>
+| CONFIG_DISCONTIGMEM=3Dy<BR>
+| CONFIG_FLAT_NODE_MEM_MAP=3Dy<BR>
+| CONFIG_ARCH_POPULATES_NODE_MAP=3Dy<BR>
+| CONFIG_NODES_SHIFT=3D6<BR>
+| CONFIG_FLAT_NODE_MEM_MAP=3Dy<BR>
+| CONFIG_NEED_MULTIPLE_NODES=3Dy<BR>
+|<BR>
+|<BR>
+| Each bank of memory is in a separate node. I did have to write<BR>
+| some code in arch/mips/kernel/setup.c to setup the multiple memory<BR>
+| regions.&nbsp; I used some of the PPC NUMA code as an example, IIRC.<BR=
 >
-wish to conserve as much space as possible, we are trying to avoid creati=
-ng<BR>
-pagetables for the whole space.<BR>
+|<BR>
+| Because my second bank of mem starts at 0x20000000,<BR>
+| I use HIGHMEM to access it.&nbsp; There been some HIGHMEM info<BR>
+| posted to this list in the last 6 months.<BR>
+|<BR>
+| I didn't think my efforts were general enough to post, but maybe<BR>
+| more people are doing these discontiguous memory platforms.<BR>
 <BR>
-That said, I have a few questions.<BR>
+Oh, yes, that is very similar to what I want to do. we currently<BR>
+use HIGHMEM to access our 2nd bank of memory, and so its the<BR>
+setup of the additional node that we'd like to use. I'd be<BR>
+interested in seeing that patch if possible.<BR>
 <BR>
-1) Are there any 32 Mips platforms where either sparsemem or<BR>
-discontigmem have been supported?<BR>
-<BR>
-2) It seems like sparesemem is the wave of the future, am I<BR>
-correct in assuming that this is simmplier / more efficient /<BR>
-&quot;better&quot; way to go?<BR>
-<BR>
-3) Is there anywhere (besides the code) where I can find an article<BR>
-or some documentation on how sparsemem and/or discontig work? or how<BR>
-to go about adding support for them in a here to for unsupported<BR>
-platform?<BR>
-<BR>
-all info, pointers, hints, advice and comments are much appreciated.<BR>
-<BR>
-thanks<BR>
-Mike</FONT>
+thanks Mike<BR>
+</FONT>
 </P>
 
 </P>
@@ -158,4 +168,4 @@ sender <BR>immediately by return e-mail and delete it from your computer.=
 </BODY>
 </HTML>
 
-------_=_NextPart_001_01C8E5CE.F68CA842--
+------_=_NextPart_001_01C8E5D6.994654D1--

@@ -1,31 +1,31 @@
-Received: from rtp-iport-1.cisco.com ([64.102.122.148]:30793 "EHLO
-	rtp-iport-1.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S28578063AbYGNQao (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 14 Jul 2008 17:30:44 +0100
-Received: from rtp-core-1.cisco.com (rtp-core-1.cisco.com [64.102.124.12])
-	by rtp-dkim-2.cisco.com (8.12.11/8.12.11) with ESMTP id m6EGUY4w007658
-	for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 12:30:34 -0400
-Received: from sausatlsmtp1.sciatl.com ([192.133.217.33])
-	by rtp-core-1.cisco.com (8.13.8/8.13.8) with ESMTP id m6EGUY4T003972
-	for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 16:30:34 GMT
+Received: from sj-iport-2.cisco.com ([171.71.176.71]:22369 "EHLO
+	sj-iport-2.cisco.com") by ftp.linux-mips.org with ESMTP
+	id S20038976AbYGNQby (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 14 Jul 2008 17:31:54 +0100
+Received: from sj-core-1.cisco.com (sj-core-1.cisco.com [171.71.177.237])
+	by sj-dkim-4.cisco.com (8.12.11/8.12.11) with ESMTP id m6EGUrse006252
+	for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 09:30:53 -0700
+Received: from sausatlsmtp2.sciatl.com ([192.133.217.159])
+	by sj-core-1.cisco.com (8.13.8/8.13.8) with ESMTP id m6EGUr71000358
+	for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 16:30:53 GMT
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C8E5CE.EE641206"
+	boundary="----_=_NextPart_001_01C8E5CE.F68CA842"
 Subject: sparse or discontiguous  memory on 32bit mips platform
-Date: Mon, 14 Jul 2008 09:30:30 -0700
-Message-ID: <D331130DD3DA194B96EF57DA3415F50A026331BB@SAUSCUPEXCH01.corp.sa.net>
+Date: Mon, 14 Jul 2008 09:30:44 -0700
+Message-ID: <D331130DD3DA194B96EF57DA3415F50A026331BC@SAUSCUPEXCH01.corp.sa.net>
 From: "Sundius, Michael" <michael.sundius@sciatl.com>
 Return-Path: <michael.sundius@sciatl.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
 Cc: msundius@sundius.com
-Message-ID: <20080714163030.pqsTqzWWHuluwnOTyYZH0w556s4qVcN3V6Lbhz_vzMA@z>
+Message-ID: <20080714163044.kghv72BbocJll1zvmbhh5nAuJWQnN4FXVNp6c3O9Q00@z>
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C8E5CE.EE641206
+------_=_NextPart_001_01C8E5CE.F68CA842
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -79,7 +79,7 @@ r any
 part of it. If you have received this e-mail in error, please notify the =
 sender 
 immediately by return e-mail and delete it from your computer.
-------_=_NextPart_001_01C8E5CE.EE641206
+------_=_NextPart_001_01C8E5CE.F68CA842
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -158,4 +158,4 @@ sender <BR>immediately by return e-mail and delete it from your computer.=
 </BODY>
 </HTML>
 
-------_=_NextPart_001_01C8E5CE.EE641206--
+------_=_NextPart_001_01C8E5CE.F68CA842--

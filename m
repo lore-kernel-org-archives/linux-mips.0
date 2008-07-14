@@ -1,171 +1,119 @@
-Received: from sj-iport-3.cisco.com ([171.71.176.72]:31521 "EHLO
-	sj-iport-3.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S20038991AbYGNR0j (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 14 Jul 2008 18:26:39 +0100
-Received: from sj-core-5.cisco.com (sj-core-5.cisco.com [171.71.177.238])
-	by sj-dkim-1.cisco.com (8.12.11/8.12.11) with ESMTP id m6EHPUtK031284
-	for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 10:25:30 -0700
-Received: from sausatlsmtp2.sciatl.com ([192.133.217.159])
-	by sj-core-5.cisco.com (8.13.8/8.13.8) with ESMTP id m6EHPUK3013594
-	for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 17:25:30 GMT
-Content-class: urn:content-classes:message
+Received: from qb-out-1314.google.com ([72.14.204.169]:11672 "EHLO
+	qb-out-1314.google.com") by ftp.linux-mips.org with ESMTP
+	id S20039079AbYGNT1i (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 14 Jul 2008 20:27:38 +0100
+Received: by qb-out-1314.google.com with SMTP id q19so5345622qbq.24
+        for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 12:27:37 -0700 (PDT)
+Message-ID: <6ab498a80807141227n35953147pffb76475aeb46c27@mail.gmail.com>
+Date: Mon, 14 Jul 2008 20:27:20 +0100
+From: "Zainab Abdulkarim" <z.abdulkarim1@gmail.com>
+Subject: Assalamo Alaykom(GREETINGS IN THE NAME OF GOD)
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C8E5D6.994654D1"
-Subject: RE: sparse or discontiguous  memory on 32bit mips platform
-Date: Mon, 14 Jul 2008 10:20:54 -0700
-Message-ID: <D331130DD3DA194B96EF57DA3415F50A026331BE@SAUSCUPEXCH01.corp.sa.net>
-References: <D331130DD3DA194B96EF57DA3415F50A026331BB@SAUSCUPEXCH01.corp.sa.net> <1216054738.30304.45.camel@chaos.ne.broadcom.com>
-From: "Sundius, Michael" <michael.sundius@sciatl.com>
-Return-Path: <michael.sundius@sciatl.com>
+	boundary="----=_Part_26800_12118846.1216063640775"
+Return-Path: <z.abdulkarim1@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: jfraser@broadcom.com
-Cc: linux-mips@linux-mips.org, msundius@sundius.com
-Message-ID: <20080714172054.EXjWXta8ngC8dJORjczdLRcn4Es1FyGzl0q2JrD0e00@z>
+Message-ID: <20080714192720.z9cGNtiRt_U8-y2UkiODLdkAdSXXMwNBLmx2d78gvWA@z>
 
-This is a multi-part message in MIME format.
+------=_Part_26800_12118846.1216063640775
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-------_=_NextPart_001_01C8E5D6.994654D1
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Assalamo Alaykom.
+Wasalaam to you(GREETINGS IN THE NAME OF GOD),and how
+are you doing?.IN THE NAME OF ALLAH THE BENEFICENT;
+THE MERCIFUL THE MASTER OF THE DAY AND JUDGMENTS.
+I GREET YOU IN THE NAME OF ALLAH THE BENEFICENT
+THE MERCIFUL TO WHOM ALL THE PRAISE(HQ;31:26;17:111)
+AND THE MOST BEAUTIFUL
+NAMES(HQ:7:180;17:110;20:8;59:
+24) BELONGS..
 
+I am HAJIA ZAINAB ABDULKARIM from Libya. I am married
+to Late Mallam OSMAN ABDULKARIM of blessed memory was
+an oil explorer in Libya and Kuwait for twelve years
+before he died in the year 2000. We were married for
+twelve years without a child. He died after a brief
+illness that lasted for only four days. Before his
+death we were both devoted Muslims. Since his death I
+too have been battling with both Cancer and fibroid
+problems. When my late Husband was alive he made a
+huge deposit in millions of US dollars with a Deposit
+Company in oversea. (I will tell you the amount as we
+proceed). Recently, my doctor told me that I have only
+six months to live due to cancer problem. Though what
+disturbs me most is my stroke sickness. Having known
+my condition I decided to donate this fund to either a
 
-| I have something similar.  Under 2.6.24, I have the following
-| configured:
-| 
-| CONFIG_HIGHMEM=3Dy
-| CONFIG_CPU_SUPPORTS_HIGHMEM=3Dy
-| CONFIG_SYS_SUPPORTS_HIGHMEM=3Dy
-| CONFIG_ARCH_FLATMEM_ENABLE=3Dy
-| CONFIG_ARCH_DISCONTIGMEM_ENABLE=3Dy
-| CONFIG_DISCONTIGMEM=3Dy
-| CONFIG_FLAT_NODE_MEM_MAP=3Dy
-| CONFIG_ARCH_POPULATES_NODE_MAP=3Dy
-| CONFIG_NODES_SHIFT=3D6
-| CONFIG_FLAT_NODE_MEM_MAP=3Dy
-| CONFIG_NEED_MULTIPLE_NODES=3Dy
-|
-|
-| Each bank of memory is in a separate node. I did have to write
-| some code in arch/mips/kernel/setup.c to setup the multiple memory
-| regions.  I used some of the PPC NUMA code as an example, IIRC.
-| 
-| Because my second bank of mem starts at 0x20000000,
-| I use HIGHMEM to access it.  There been some HIGHMEM info
-| posted to this list in the last 6 months.
-|
-| I didn't think my efforts were general enough to post, but maybe
-| more people are doing these discontiguous memory platforms.
+Muslem organization or devoted Muslim individual that
+will utilize this money the way I am going to
+instructs herein. I want this Muslim organization or
+individual to use this money in all sincerity to fund
+mosques, orphanages, widows, and also propagating the
+word of ALLAH and to ensure that the society upholds
+the views and belief of the Holy Quran. The Holy Quran
+emphasizes so much on ALLAH'S benevolence and this has
+encourage me to take the bold step. I took this
+decision because I don't have any child that will
+inherit this money and my husband relatives are
+into some radical organisations and I don't want a
+situation where this money will be used in an Unholy
+manner.
 
-Oh, yes, that is very similar to what I want to do. we currently
-use HIGHMEM to access our 2nd bank of memory, and so its the 
-setup of the additional node that we'd like to use. I'd be
-interested in seeing that patch if possible. 
+Hence the reasons for this bold decision. I know that
+after death I will be with ALLAH the most beneficent
+and the most merciful. I don't need any telephone
+communication in this regard because of my health,
+because of the presence of my husband's relatives
+around me always. I don't want them to know about this
+development. With ALLAH all things are possible. As
+soon as I receive your reply on zainababdulkarim@personal.ro
+I shall give you the contact information of the Deposit Company in
+oversea where the money was deposited. I will also
+issue a letter of authority to the Deposit Company
+authorizing them that the said fund Have being willed
+to you and a copy of such authorization will be
+forwarded to you. I want you and the Muslim community
+where you reside to always pray for me.
+My happiness is that I lived a true devoted Muslims
+worthy of emulation. Whoever that wants to serve ALLAH
+must serve him in truth and in fairness. I will not
+stipulate any precise amount to reward you as it will
+have to be on pre-negotiated terms,based on your level
+of involvment.
 
-thanks Mike
+Please always be prayerful all through your life. Any
+delay in your reply will give room in sourcing for a
+Muslim organization or a devoted Muslim for this same
+purpose. Until I hear from you my dreams will
+rest squarely on your shoulders.
 
+May the Almighty ALLAH continue to guide and protect
+you.
+Allah Hafiz.
+HAJIA ZAINAB ABDULKARIM
 
+------=_Part_26800_12118846.1216063640775
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
+Assalamo Alaykom.<br>Wasalaam to you(GREETINGS IN THE NAME OF GOD),and how<br>are you doing?.IN THE NAME OF ALLAH THE BENEFICENT;<br>THE MERCIFUL THE MASTER OF THE DAY AND JUDGMENTS.<br>I GREET YOU IN THE NAME OF ALLAH THE BENEFICENT<br>
+THE MERCIFUL TO WHOM ALL THE PRAISE(HQ;31:26;17:111)<br>AND THE MOST BEAUTIFUL<br>NAMES(HQ:7:180;17:110;20:8;59:<br>24) BELONGS..<br><br>I am HAJIA ZAINAB ABDULKARIM from Libya. I am married<br>to Late Mallam OSMAN ABDULKARIM of blessed memory was<br>
+an oil explorer in Libya and Kuwait for twelve years<br>before he died in the year 2000. We were married for<br>twelve years without a child. He died after a brief<br>illness that lasted for only four days. Before his<br>
+death we were both devoted Muslims. Since his death I<br>too have been battling with both Cancer and fibroid<br>problems. When my late Husband was alive he made a<br>huge deposit in millions of US dollars with a Deposit<br>
+Company in oversea. (I will tell you the amount as we<br>proceed). Recently, my doctor told me that I have only<br>six months to live due to cancer problem. Though what<br>disturbs me most is my stroke sickness. Having known<br>
+my condition I decided to donate this fund to either a<br><br>Muslem organization or devoted Muslim individual that<br>will utilize this money the way I am going to<br>instructs herein. I want this Muslim organization or<br>
+individual to use this money in all sincerity to fund<br>mosques, orphanages, widows, and also propagating the<br>word of ALLAH and to ensure that the society upholds<br>the views and belief of the Holy Quran. The Holy Quran<br>
+emphasizes so much on ALLAH&#39;S benevolence and this has<br>encourage me to take the bold step. I took this<br>decision because I don&#39;t have any child that will<br>inherit this money and my husband relatives are<br>
+into some radical organisations and I don&#39;t want a<br>situation where this money will be used in an Unholy<br>manner.<br><br>Hence the reasons for this bold decision. I know that<br>after death I will be with ALLAH the most beneficent<br>
+and the most merciful. I don&#39;t need any telephone<br>communication in this regard because of my health,<br>because of the presence of my husband&#39;s relatives<br>around me always. I don&#39;t want them to know about this<br>
+development. With ALLAH all things are possible. As<br>soon as I receive your reply on <a href="mailto:zainababdulkarim@personal.ro">zainababdulkarim@personal.ro</a><br>I shall give you the contact information of the Deposit Company in<br>
+oversea where the money was deposited. I will also<br>issue a letter of authority to the Deposit Company<br>authorizing them that the said fund Have being willed<br>to you and a copy of such authorization will be<br>forwarded to you. I want you and the Muslim community<br>
+where you reside to always pray for me.<br>My happiness is that I lived a true devoted Muslims<br>worthy of emulation. Whoever that wants to serve ALLAH<br>must serve him in truth and in fairness. I will not<br>stipulate any precise amount to reward you as it will<br>
+have to be on pre-negotiated terms,based on your level<br>of involvment.<br><br>Please always be prayerful all through your life. Any<br>delay in your reply will give room in sourcing for a<br>Muslim organization or a devoted Muslim for this same<br>
+purpose. Until I hear from you my dreams will<br>rest squarely on your shoulders.<br><br>May the Almighty ALLAH continue to guide and protect<br>you.<br>Allah Hafiz.<br>HAJIA ZAINAB ABDULKARIM<br>
 
-     - - - - -                              Cisco                        =
-    - - - - -         
-This e-mail and any attachments may contain information which is confiden=
-tial, 
-proprietary, privileged or otherwise protected by law. The information is=
- solely 
-intended for the named addressee (or a person responsible for delivering =
-it to 
-the addressee). If you are not the intended recipient of this message, yo=
-u are 
-not authorized to read, print, retain, copy or disseminate this message o=
-r any 
-part of it. If you have received this e-mail in error, please notify the =
-sender 
-immediately by return e-mail and delete it from your computer.
-------_=_NextPart_001_01C8E5D6.994654D1
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Diso-885=
-9-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version 6.5.7652.2=
-4">
-<TITLE>RE: sparse or discontiguous  memory on 32bit mips platform</TITLE>
-</HEAD>
-<BODY><P>
-<!-- Converted from text/plain format -->
-<BR>
-
-<P><FONT SIZE=3D2>| I have something similar.&nbsp; Under 2.6.24, I have =
-the following<BR>
-| configured:<BR>
-|<BR>
-| CONFIG_HIGHMEM=3Dy<BR>
-| CONFIG_CPU_SUPPORTS_HIGHMEM=3Dy<BR>
-| CONFIG_SYS_SUPPORTS_HIGHMEM=3Dy<BR>
-| CONFIG_ARCH_FLATMEM_ENABLE=3Dy<BR>
-| CONFIG_ARCH_DISCONTIGMEM_ENABLE=3Dy<BR>
-| CONFIG_DISCONTIGMEM=3Dy<BR>
-| CONFIG_FLAT_NODE_MEM_MAP=3Dy<BR>
-| CONFIG_ARCH_POPULATES_NODE_MAP=3Dy<BR>
-| CONFIG_NODES_SHIFT=3D6<BR>
-| CONFIG_FLAT_NODE_MEM_MAP=3Dy<BR>
-| CONFIG_NEED_MULTIPLE_NODES=3Dy<BR>
-|<BR>
-|<BR>
-| Each bank of memory is in a separate node. I did have to write<BR>
-| some code in arch/mips/kernel/setup.c to setup the multiple memory<BR>
-| regions.&nbsp; I used some of the PPC NUMA code as an example, IIRC.<BR=
->
-|<BR>
-| Because my second bank of mem starts at 0x20000000,<BR>
-| I use HIGHMEM to access it.&nbsp; There been some HIGHMEM info<BR>
-| posted to this list in the last 6 months.<BR>
-|<BR>
-| I didn't think my efforts were general enough to post, but maybe<BR>
-| more people are doing these discontiguous memory platforms.<BR>
-<BR>
-Oh, yes, that is very similar to what I want to do. we currently<BR>
-use HIGHMEM to access our 2nd bank of memory, and so its the<BR>
-setup of the additional node that we'd like to use. I'd be<BR>
-interested in seeing that patch if possible.<BR>
-<BR>
-thanks Mike<BR>
-</FONT>
-</P>
-
-</P>
-<HR style=3D"HEIGHT: 1px">
-
-<DIV></DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - - - - 
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cisco&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-&nbsp;&nbsp;&nbsp; - - - - 
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>This e-mail an=
-d any 
-attachments may contain information which is confidential, <BR>proprietar=
-y, 
-privileged or otherwise protected by law. The information is solely <BR>i=
-ntended 
-for the named addressee (or a person responsible for delivering it to <BR=
->the 
-addressee). If you are not the intended recipient of this message, you ar=
-e 
-<BR>not authorized to read, print, retain, copy or disseminate this messa=
-ge or 
-any <BR>part of it. If you have received this e-mail in error, please not=
-ify the 
-sender <BR>immediately by return e-mail and delete it from your computer.=
-</BODY>
-</HTML>
-
-------_=_NextPart_001_01C8E5D6.994654D1--
+------=_Part_26800_12118846.1216063640775--

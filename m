@@ -1,119 +1,154 @@
-Received: from qb-out-1314.google.com ([72.14.204.169]:11672 "EHLO
-	qb-out-1314.google.com") by ftp.linux-mips.org with ESMTP
-	id S20039079AbYGNT1i (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 14 Jul 2008 20:27:38 +0100
-Received: by qb-out-1314.google.com with SMTP id q19so5345622qbq.24
-        for <linux-mips@linux-mips.org>; Mon, 14 Jul 2008 12:27:37 -0700 (PDT)
-Message-ID: <6ab498a80807141227n35953147pffb76475aeb46c27@mail.gmail.com>
-Date: Mon, 14 Jul 2008 20:27:20 +0100
-From: "Zainab Abdulkarim" <z.abdulkarim1@gmail.com>
-Subject: Assalamo Alaykom(GREETINGS IN THE NAME OF GOD)
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_26800_12118846.1216063640775"
-Return-Path: <z.abdulkarim1@gmail.com>
+Received: from smtp1.linux-foundation.org ([140.211.169.13]:37272 "EHLO
+	smtp1.linux-foundation.org") by ftp.linux-mips.org with ESMTP
+	id S28583153AbYGQAcD (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 17 Jul 2008 01:32:03 +0100
+Date: Wed, 16 Jul 2008 17:31:54 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3] add new Cobalt LCD framebuffer driver
+Message-ID: <20080716173154.8cb87400.akpm@linux-foundation.org>
+In-Reply-To: <20080715222751.86091a71.yoichi_yuasa@tripeaks.co.jp>
+References: <20080715222751.86091a71.yoichi_yuasa@tripeaks.co.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <akpm@linux-foundation.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Message-ID: <20080714192720.z9cGNtiRt_U8-y2UkiODLdkAdSXXMwNBLmx2d78gvWA@z>
+To: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+Cc: adaplas@pol.net, linux-fbdev-devel@lists.sourceforge.net, ralf@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20080717003154.ZhIWHnbVeFh1mx4BbSpYNzA7qaMx0G1nqoYTJcoJrok@z>
 
-------=_Part_26800_12118846.1216063640775
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Tue, 15 Jul 2008 22:27:51 +0900
+Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp> wrote:
 
-Assalamo Alaykom.
-Wasalaam to you(GREETINGS IN THE NAME OF GOD),and how
-are you doing?.IN THE NAME OF ALLAH THE BENEFICENT;
-THE MERCIFUL THE MASTER OF THE DAY AND JUDGMENTS.
-I GREET YOU IN THE NAME OF ALLAH THE BENEFICENT
-THE MERCIFUL TO WHOM ALL THE PRAISE(HQ;31:26;17:111)
-AND THE MOST BEAUTIFUL
-NAMES(HQ:7:180;17:110;20:8;59:
-24) BELONGS..
+> I update cobalt_lcdfb driver.
+> 
+> v3
+> - fix read/write count boundary check.
+> - add <include/uaccess.h>.
+> - fix MODULE_AUTHOR.
+> 
+> v2
+> - add dpends MIPS_COBALT in Kconfig.
+> - add handling of signal_pending().
+> - check overflow of read/write count.
+> 
+> v1
+> - first release.
 
-I am HAJIA ZAINAB ABDULKARIM from Libya. I am married
-to Late Mallam OSMAN ABDULKARIM of blessed memory was
-an oil explorer in Libya and Kuwait for twelve years
-before he died in the year 2000. We were married for
-twelve years without a child. He died after a brief
-illness that lasted for only four days. Before his
-death we were both devoted Muslims. Since his death I
-too have been battling with both Cancer and fibroid
-problems. When my late Husband was alive he made a
-huge deposit in millions of US dollars with a Deposit
-Company in oversea. (I will tell you the amount as we
-proceed). Recently, my doctor told me that I have only
-six months to live due to cancer problem. Though what
-disturbs me most is my stroke sickness. Having known
-my condition I decided to donate this fund to either a
+This driver has been merged into the subsystem tree for a long time and
+has been reviewed and has been perhaps tested by others.  Sending a
+complete new version of the entire thing is really quite an unfriendly
+act.  It basically invalidates all the review and test work which
+everyone else has done.
 
-Muslem organization or devoted Muslim individual that
-will utilize this money the way I am going to
-instructs herein. I want this Muslim organization or
-individual to use this money in all sincerity to fund
-mosques, orphanages, widows, and also propagating the
-word of ALLAH and to ensure that the society upholds
-the views and belief of the Holy Quran. The Holy Quran
-emphasizes so much on ALLAH'S benevolence and this has
-encourage me to take the bold step. I took this
-decision because I don't have any child that will
-inherit this money and my husband relatives are
-into some radical organisations and I don't want a
-situation where this money will be used in an Unholy
-manner.
+This is why I will almost always turn replacement patches into
+incremental patches - so I can see what changed.  But that's only good
+for me.  Everyone else who is reading your new version won't bother
+doing that.
 
-Hence the reasons for this bold decision. I know that
-after death I will be with ALLAH the most beneficent
-and the most merciful. I don't need any telephone
-communication in this regard because of my health,
-because of the presence of my husband's relatives
-around me always. I don't want them to know about this
-development. With ALLAH all things are possible. As
-soon as I receive your reply on zainababdulkarim@personal.ro
-I shall give you the contact information of the Deposit Company in
-oversea where the money was deposited. I will also
-issue a letter of authority to the Deposit Company
-authorizing them that the said fund Have being willed
-to you and a copy of such authorization will be
-forwarded to you. I want you and the Muslim community
-where you reside to always pray for me.
-My happiness is that I lived a true devoted Muslims
-worthy of emulation. Whoever that wants to serve ALLAH
-must serve him in truth and in fairness. I will not
-stipulate any precise amount to reward you as it will
-have to be on pre-negotiated terms,based on your level
-of involvment.
 
-Please always be prayerful all through your life. Any
-delay in your reply will give room in sourcing for a
-Muslim organization or a devoted Muslim for this same
-purpose. Until I hear from you my dreams will
-rest squarely on your shoulders.
+So I generated the incremental patch and:
 
-May the Almighty ALLAH continue to guide and protect
-you.
-Allah Hafiz.
-HAJIA ZAINAB ABDULKARIM
+- The driver I have already includes linux/uaccess.h, so that change
+  was unneeded.
 
-------=_Part_26800_12118846.1216063640775
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+- The driver I have has already fixed the reject in
+  drivers/video/Makefile, so I get to fix it again, ho hum.
 
-Assalamo Alaykom.<br>Wasalaam to you(GREETINGS IN THE NAME OF GOD),and how<br>are you doing?.IN THE NAME OF ALLAH THE BENEFICENT;<br>THE MERCIFUL THE MASTER OF THE DAY AND JUDGMENTS.<br>I GREET YOU IN THE NAME OF ALLAH THE BENEFICENT<br>
-THE MERCIFUL TO WHOM ALL THE PRAISE(HQ;31:26;17:111)<br>AND THE MOST BEAUTIFUL<br>NAMES(HQ:7:180;17:110;20:8;59:<br>24) BELONGS..<br><br>I am HAJIA ZAINAB ABDULKARIM from Libya. I am married<br>to Late Mallam OSMAN ABDULKARIM of blessed memory was<br>
-an oil explorer in Libya and Kuwait for twelve years<br>before he died in the year 2000. We were married for<br>twelve years without a child. He died after a brief<br>illness that lasted for only four days. Before his<br>
-death we were both devoted Muslims. Since his death I<br>too have been battling with both Cancer and fibroid<br>problems. When my late Husband was alive he made a<br>huge deposit in millions of US dollars with a Deposit<br>
-Company in oversea. (I will tell you the amount as we<br>proceed). Recently, my doctor told me that I have only<br>six months to live due to cancer problem. Though what<br>disturbs me most is my stroke sickness. Having known<br>
-my condition I decided to donate this fund to either a<br><br>Muslem organization or devoted Muslim individual that<br>will utilize this money the way I am going to<br>instructs herein. I want this Muslim organization or<br>
-individual to use this money in all sincerity to fund<br>mosques, orphanages, widows, and also propagating the<br>word of ALLAH and to ensure that the society upholds<br>the views and belief of the Holy Quran. The Holy Quran<br>
-emphasizes so much on ALLAH&#39;S benevolence and this has<br>encourage me to take the bold step. I took this<br>decision because I don&#39;t have any child that will<br>inherit this money and my husband relatives are<br>
-into some radical organisations and I don&#39;t want a<br>situation where this money will be used in an Unholy<br>manner.<br><br>Hence the reasons for this bold decision. I know that<br>after death I will be with ALLAH the most beneficent<br>
-and the most merciful. I don&#39;t need any telephone<br>communication in this regard because of my health,<br>because of the presence of my husband&#39;s relatives<br>around me always. I don&#39;t want them to know about this<br>
-development. With ALLAH all things are possible. As<br>soon as I receive your reply on <a href="mailto:zainababdulkarim@personal.ro">zainababdulkarim@personal.ro</a><br>I shall give you the contact information of the Deposit Company in<br>
-oversea where the money was deposited. I will also<br>issue a letter of authority to the Deposit Company<br>authorizing them that the said fund Have being willed<br>to you and a copy of such authorization will be<br>forwarded to you. I want you and the Muslim community<br>
-where you reside to always pray for me.<br>My happiness is that I lived a true devoted Muslims<br>worthy of emulation. Whoever that wants to serve ALLAH<br>must serve him in truth and in fairness. I will not<br>stipulate any precise amount to reward you as it will<br>
-have to be on pre-negotiated terms,based on your level<br>of involvment.<br><br>Please always be prayerful all through your life. Any<br>delay in your reply will give room in sourcing for a<br>Muslim organization or a devoted Muslim for this same<br>
-purpose. Until I hear from you my dreams will<br>rest squarely on your shoulders.<br><br>May the Almighty ALLAH continue to guide and protect<br>you.<br>Allah Hafiz.<br>HAJIA ZAINAB ABDULKARIM<br>
+Here's what I ended up committing:
 
-------=_Part_26800_12118846.1216063640775--
+ drivers/video/Kconfig        |    2 +-
+ drivers/video/cobalt_lcdfb.c |   24 ++++++++++++++++++------
+ 2 files changed, 19 insertions(+), 7 deletions(-)
+
+diff -puN drivers/video/Kconfig~add-new-cobalt-lcd-framebuffer-driver drivers/video/Kconfig
+--- a/drivers/video/Kconfig~add-new-cobalt-lcd-framebuffer-driver
++++ a/drivers/video/Kconfig
+@@ -1989,7 +1989,7 @@ config FB_AM200EPD
+ 
+ config FB_COBALT
+ 	tristate "Cobalt server LCD frame buffer support"
+-	depends on FB
++	depends on FB && MIPS_COBALT
+ 
+ config FB_VIRTUAL
+ 	tristate "Virtual Frame Buffer support (ONLY FOR TESTING!)"
+diff -puN drivers/video/Makefile~add-new-cobalt-lcd-framebuffer-driver drivers/video/Makefile
+diff -puN drivers/video/cobalt_lcdfb.c~add-new-cobalt-lcd-framebuffer-driver drivers/video/cobalt_lcdfb.c
+--- a/drivers/video/cobalt_lcdfb.c~add-new-cobalt-lcd-framebuffer-driver
++++ a/drivers/video/cobalt_lcdfb.c
+@@ -137,13 +137,16 @@ static ssize_t cobalt_lcdfb_read(struct 
+ {
+ 	char src[LCD_CHARS_MAX];
+ 	unsigned long pos;
+-	int len, retval;
++	int len, retval = 0;
+ 
+ 	pos = *ppos;
+-	if (pos >= LCD_CHARS_MAX)
++	if (pos >= LCD_CHARS_MAX || count == 0)
+ 		return 0;
+ 
+-	if (pos + count >= LCD_CHARS_MAX)
++	if (count > LCD_CHARS_MAX)
++		count = LCD_CHARS_MAX;
++
++	if (pos + count > LCD_CHARS_MAX)
+ 		count = LCD_CHARS_MAX - pos;
+ 
+ 	for (len = 0; len < count; len++) {
+@@ -164,6 +167,9 @@ static ssize_t cobalt_lcdfb_read(struct 
+ 			pos++;
+ 	}
+ 
++	if (retval < 0 && signal_pending(current))
++		return -ERESTARTSYS;
++
+ 	if (copy_to_user(buf, src, len))
+ 		return -EFAULT;
+ 
+@@ -177,13 +183,16 @@ static ssize_t cobalt_lcdfb_write(struct
+ {
+ 	char dst[LCD_CHARS_MAX];
+ 	unsigned long pos;
+-	int len, retval;
++	int len, retval = 0;
+ 
+ 	pos = *ppos;
+-	if (pos >= LCD_CHARS_MAX)
++	if (pos >= LCD_CHARS_MAX || count == 0)
+ 		return 0;
+ 
+-	if (pos + count >= LCD_CHARS_MAX)
++	if (count > LCD_CHARS_MAX)
++		count = LCD_CHARS_MAX;
++
++	if (pos + count > LCD_CHARS_MAX)
+ 		count = LCD_CHARS_MAX - pos;
+ 
+ 	if (copy_from_user(dst, buf, count))
+@@ -207,6 +216,9 @@ static ssize_t cobalt_lcdfb_write(struct
+ 			pos++;
+ 	}
+ 
++	if (retval < 0 && signal_pending(current))
++		return -ERESTARTSYS;
++
+ 	*ppos += len;
+ 
+ 	return len;
+_
+
+
+and I'm a bit uncertain about it.
+
+- the test for (count > LCD_CHARS_MAX) appear to be unneeded, given
+  the follwing test for (pos + count > LCD_CHARS_MAX).
+
+  Or perhaps it is an obscure test for very large tests of `count',
+  which would cause overflows in `count+pos'?  Can it all be simplified?
+
+- Do we need to test for `count == 0'?  I have a feeling that this
+  case is handled at the higher levels of read(), but I cannot find
+  that piece of code at present.  Perhaps I dreamed it.

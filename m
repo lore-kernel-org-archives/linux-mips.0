@@ -1,122 +1,187 @@
-Received: from mail.zeugmasystems.com ([192.139.122.66]:16446 "EHLO
-	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S20029049AbYHETLp convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 5 Aug 2008 20:11:45 +0100
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
+Received: from ws02.shaidc.com ([218.78.208.152]:38637 "HELO ws01.shaidc.com")
+	by ftp.linux-mips.org with SMTP id S20023167AbYHGETq convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 7 Aug 2008 05:19:46 +0100
+From: "maowy" <maowy@avit.org.cn>
+Subject: Au1550 Nandflash
+Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+      charset="GB2312"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: looking for help interpreting softlockup/stack trace
-Date: Tue, 5 Aug 2008 12:11:34 -0700
-Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C5FC8DD5@exchange.ZeugmaSystems.local>
-In-Reply-To: <48989AFE.5000500@nortel.com>
-From: "Kaz Kylheku" <KKylheku@zeugmasystems.com>
-Return-Path: <KKylheku@zeugmasystems.com>
+Date: Thu, 7 Aug 2008 12:16:19 +0800
+Message-ID: <S20023167AbYHGETq/20080807041946Z+558223@ftp.linux-mips.org>
+Return-Path: <maowy@avit.org.cn>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Chris Friesen <cfriesen@nortel.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
-Message-ID: <20080805191134.lD3VsunSZZadVXjau-yHak1DjOEVRw5e6a5oYPyR7Ew@z>
+To: borasah@netone.com.trborasah@netone.com.tr
+Cc: linux-mips-bounce@linux-mips.orglinux-mips-bounce@linux-mips.org, linux-mips@linux-mips.orglinux-mips@linux-mips.org
+Message-ID: <20080807041619.kqOooqrFyvLqO1Ff2WsIOSD4k5qzhoRxdnUXYvk1ops@z>
 
-Chris Friesem wrote:
-> I've run into an interesting issue with an Octeon-based
-> board, where it
-> just seems to hang.  I suspect we're hitting some kind of
-> locking bug,
-> and I'm trying to track it down.  If it matters, the kernel
-> is quite old
-> (heavily patched 2.6.14) and I've got no chance of upgrading
-> it.  (The
-> usual embedded scenario.)
-> 
-> I've added some scheduler instrumentation, as well as adding a stack
-> dump to the output of the softlockup code.
-> 
-> In the trace below, is "epc" the program counter at the time of the
-> timer interrupt?  How does "ra" fit into this, given that the function
-> whose address it contains isn't seen in the stack trace until quite a
-> ways down?
+borasah，您好！
+	I have the same problem with you when using nandflash.
+    Our kernel can recognize nandflash but it seems to be all bad block.
+	How dou you successfully solve this problem of  nandflash .
+	Can you tell how to solve this problem.
+	Hope to receive your letter as soon as possible.Thanks.
+	
 
-Hi Chris
+our platform:AU1550
+OS:linux-2.6.13
 
-The contents of RA may or may not be useful. RA is used to hold the
-return address when some branch instructions are executed. The contents
-of RA may provide some kind of clue about what the
-processor was doing previously. Often, RA can give you the parent
-function, but not always.
+Our kernel information is following:
+	
 
-Here it looks it does give the parent function; it is apparently
-inside a kernel module called "vnb", which called _read_lock
-and got stuck there.
+Kernel command line: root=/dev/nfs rw nfsroot=192.168.15.6:/nfs noinitrd init=/linuxrc ip=192.168.15.4::192.168.15.254:255.255.255.0:DVR:eth0:off console=ttyS0,115200
+Primary instruction cache 16kB, physically tagged, 4-way, linesize 32 bytes.
+Primary data cache 16kB, 4-way, linesize 32 bytes.
+Synthesized TLB refill handler (17 instructions).
+Synthesized TLB load handler fastpath (34 instructions).
+Synthesized TLB store handler fastpath (34 instructions).
+Synthesized TLB modify handler fastpath (33 instructions).
+PID hash table entries: 512 (order: 9, 8192 bytes)
+calculating r4koff... 00060ae0(396000)
+Using 396.000 MHz high precision timer.
+Console: colour dummy device 80x25
+Dentry cache hash table entries: 16384 (order: 4, 65536 bytes)
+Inode-cache hash table entries: 8192 (order: 3, 32768 bytes)
+Memory: 59520k/65536k available (3296k kernel code, 5948k reserved, 704k data, 148k init, 0k highmem)
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+Checking for 'wait' instruction...  unavailable.
+NET: Registered protocol family 16
+virt_io_addr = 0xc0000000
+mhd : start AUTO SCAN !!!!!!!!!!!!!!!!!!!!!!!!!
+mhd : test is test by mhd!
+Autoconfig PCI channel 0x804c1f5c
+Scanning bus 00, I/O 0x00001000:0x00100000, Mem 0x40000000:0x50000000
+MHD : Scanning  bus 00 ....
+Liqiang: pci configuration space read devfn = 00, vendor id = ffff
+Liqiang: pci configuration space read devfn = 08, vendor id = ffff
+Liqiang: pci configuration space read devfn = 10, vendor id = ffff
+Liqiang: pci configuration space read devfn = 18, vendor id = ffff
+Liqiang: pci configuration space read devfn = 20, vendor id = ffff
+Liqiang: pci configuration space read devfn = 28, vendor id = ffff
+Liqiang: pci configuration space read devfn = 30, vendor id = ffff
+Liqiang: pci configuration space read devfn = 38, vendor id = ffff
+Liqiang: pci configuration space read devfn = 40, vendor id = ffff
+Liqiang: pci configuration space read devfn = 48, vendor id = ffff
+Liqiang: pci configuration space read devfn = 50, vendor id = ffff
+Liqiang: pci configuration space read devfn = 58, vendor id = ffff
+Liqiang: pci configuration space read devfn = 60, vendor id = 16f4
+00:0c.0 Class 0400: 16f4:8000
+        Mem at 0x40000000 [size=0x20000]
+        Mem at 0x40020000 [size=0x1000]
+        Mem at 0x40021000 [size=0x1000]
+Liqiang: pci configuration space read devfn = 68, vendor id = ffff
+Liqiang: pci configuration space read devfn = 70, vendor id = ffff
+Liqiang: pci configuration space read devfn = 78, vendor id = ffff
+Liqiang: pci configuration space read devfn = 80, vendor id = ffff
+Liqiang: pci configuration space read devfn = 88, vendor id = ffff
+Liqiang: pci configuration space read devfn = 90, vendor id = ffff
+mhd : AUTO SCAN FINISHED!!!!!!!!!!!!!!!!!!!!!!!!!
+Scanning bus 00
+Found 00:60 [16f4/8000] 000400 00
+Fixups for bus 00
+Bus scan for 00 returning with max=00
+mhd : pin=0x1, slot=0xc
+PCI fixup irq: (0000:00:0c.0) got 1
+Au1XXX Real Time Clock Driver v1.0
+Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
+JFFS2 version 2.2. (C) 2001-2003 Red Hat, Inc.
+SGI XFS with no debug enabled
+yaffs Jul 30 2008 15:35:27 Installing. 
+Initializing Cryptographic API
+pci_hotplug: PCI Hot Plug PCI Core version: 0.5
+i2c /dev entries driver
+Au1550 I2C: <7>i2c_adapter i2c-0: Registered as minor 0
+Au1550 I2C initialized.
+Serial: Au1x00 driver
+ttyS0 at I/O 0xb1100000 (irq = 0) is a AU1X00_UART
+ttyS1 at I/O 0xb1200000 (irq = 8) is a AU1X00_UART
+ttyS2 at I/O 0xb1400000 (irq = 9) is a AU1X00_UART
+io scheduler noop registered
+io scheduler anticipatory registered
+io scheduler deadline registered
+io scheduler cfq registered
+RAMDISK driver initialized: 16 RAM disks of 16384K size 1024 blocksize
+loop: loaded (max 8 devices)
+au1000eth version 1.5 Pete Popov <ppopov@embeddedalley.com>
+eth0: Au1x Ethernet found at 0xb0500000, irq 27
+mhd: get PHY ID = 0 8201 
+eth0: REALTEK RTL8201CP 10/1000 BaseT PHY at phy address 1
 
-Mind you, these Linux MIPS stack traces are not completely
-trustworthy; the routine just walks the stack one word at a time
-and prints out anything that looks like the address of code.
-So the stack trace may include stale stack data from previous
-call chains that have already returned. It also might not
-include the full call chain, because the return address is not
-always stored on the stack. For instance, here it looks like
-RA is pointing into a kernel module. But you don't actually
-see this in the fake stack trace. Nowhere in the stack trace
-do you see _read_lock being called by c000000001b4ab9c.
+ begin to init the network-mac0 and mac1
+Mac0_MII_CONTROL_phy_addr: 00000001 
+Mac0_MII_CONTROL_val_before_write: 00003100 
+Mac0_MII_CONTROL_value_after_write: 00002100 
+Mac0_10/100 and Half/Full duplex val_before wrtie: 000001e1 
+Mac0_10/100 and Half/Full duplex val_after write: 000001e1 
+Mac0_Restart auto-negotiatio val before  berfore write: 00002100 
+Mac0_Restart auto-negotiatio val before write: 00002100 
+Mac0_Restart auto-negotiation val_after write: 00002100 
+eth0: Using REALTEK RTL8201CP 10/1000 BaseT PHY as default
+eth1: Au1x Ethernet found at 0xb0510000, irq 28
+mhd: get PHY ID = 0 8201 
+eth1: REALTEK RTL8201CP 10/1000 BaseT PHY at phy address 2
 
-I would proceed by inspecting this vnb module and its use of locks.
-
-> 
-> Any insights are greatly appreciated...
-> 
-> Chris
-> 
-> cpu9: jiffies: 4295366417, hrtime: 552015654907, 500 ms
-> without calling
-> schedule() since scheduler requested
-> cpu1: jiffies: 4295366418, hrtime: 552016450325, 500 ms
-> without calling
-> schedule() since scheduler requested
-> cpu3: jiffies: 4295366442, hrtime: 552034584838, 500 ms
-> without calling
-> schedule() since scheduler requested
-> cpu9: jiffies: 4295367258, hrtime: 552646827014, 841 ms between
-> scheduler_tick() calls BUG: soft lockup detected on CPU#0!
-> Cpu 0
-> $ 0   : 0000000000000000 0000000000000000 ffffffff80000000
-> ffffffff00000000 $ 4   : a8000000db3ce808 0000000000000084
-> a8000000d34cb1ea a8000000d34cb1ea $ 8   : 0000000045000084
-> 0000000000000002 0000000000000001 ffffffff8165e1e0 $12   :
-> 0000000000000000 ffffffff812dedac 0000500000008000 0000100000000000
-> $16   : a8000000d3a40b68 a8000000db3ce580 a8000000d3a40b00
-> ffffffff8151e448 $20   : a8000000db3ce808 ffffffff81593808
-> a8000000d3a40b00 0000000000000000 $24   : 0000000000000030
-> c000000001ae1820 $28   : ffffffff81590000 ffffffff81593680
-> ffffffff81593810 c000000001b4ab9c Hi    : 0000000000000000 
-> Lo    : 0000000000000000
-> epc   : ffffffff8151e44c _read_lock+0x4/0x20     Tainted: P
-> ra    : c000000001b4ab9c $LBB378+0x0/0x18 [vnb]
-> Status: 1000ffe3    KX SX UX KERNEL EXL IE
-> Cause : 40808000
-> PrId  : 000d0301
-> Call Trace:
->   [<ffffffff811a251c>] softlockup_tick+0x12c/0x158
->   [<ffffffff811126dc>] timer_interrupt+0xd4/0x4c8
->   [<ffffffff81112890>] timer_interrupt+0x288/0x4c8
->   [<ffffffff81101d50>] octeon_main_timer_interrupt+0x78/0x90
->   [<ffffffff811a2c24>] handle_IRQ_event+0x45c/0x1528
->   [<ffffffff811a3dc4>] __do_IRQ+0xd4/0x230
->   [<ffffffff8151e448>] _read_lock+0x0/0x20
-
-This read lock is almost certainly a red herring; it's
-stuff left over on the stack that hasn't been overwritten
-by new activation chains.
-
->   [<ffffffff8110c4a8>] do_IRQ+0x440/0x1520
-
-This is the timer interrupt going off, which ends up
-detecting the lockup. So the problem is above here.
+ begin to init the network-mac0 and mac1
+Mac0_MII_CONTROL_phy_addr: 00000002 
+Mac0_MII_CONTROL_val_before_write: 00003000 
+Mac0_MII_CONTROL_value_after_write: 00002000 
+Mac0_10/100 and Half/Full duplex val_before wrtie: 000001e1 
+Mac0_10/100 and Half/Full duplex val_after write: 000001e1 
+Mac0_Restart auto-negotiatio val before  berfore write: 00002000 
+Mac0_Restart auto-negotiatio val before write: 00002100 
+Mac0_Restart auto-negotiation val_after write: 00002100 
+eth1: Using REALTEK RTL8201CP 10/1000 BaseT PHY as default
+INFTL: inftlcore.c $Revision: 1.18 $, inftlmount.c $Revision: 1.16 $
+mhd MTD: probing 32-bit flash bus
+Db1550 Flash: Found 2 x16 devices at 0x0 in 32-bit bank
+ Amd/Fujitsu Extended Query Table at 0x0040
+Db1550 Flash: CFI does not contain boot bank location. Assuming top.
+number of CFI chips: 1
+cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+Creating 5 MTD partitions on "Db1550 Flash":
+0x00000000-0x00600000 : "Kernel"
+0x00600000-0x01600000 : "Ramdisk"
+0x01600000-0x01b00000 : "User Fs"
+0x01b00000-0x01c00000 : "Fs Bak"
+0x01c00000-0x02000000 : "YAMON Bootloader"
+NAND device: Manufacturer ID: 0xec, Chip ID: 0xd3 (Samsung NAND 1GiB 3,3V 8-bit)
+Scanning device for bad blocks
+Bad eraseblock 0 at 0x00000000
+Bad eraseblock 1 at 0x00020000
+Bad eraseblock 2 at 0x00040000
+Bad eraseblock 3 at 0x00060000
+Bad eraseblock 4 at 0x00080000
+Bad eraseblock 5 at 0x000a0000
+Bad eraseblock 6 at 0x000c0000
+Bad eraseblock 7 at 0x000e0000
+........
 
 
->   [<ffffffff8139263c>] neigh_lookup+0xb4/0x128
 
-This may also be garbage. Basically, the stack
-trace is not that useful, except that it provides
-some additional circumstantial evidence implicating
-the vnb module.
+	
+
+　　　　　　　　致
+礼！
+ 				
+
+maowy
+maowy@avit.org.cn
+2008-08-07
+*******************************************
+maowy(毛伟勇)
+
+上海精视信息技术有限责任公司
+Shanghai Accurate Video Info_Tech Co.,Ltd.
+
+地址:上海市徐汇区乐山路33号1号楼306室
+ADD:Room 306,No.1 Building,No.33 Leshan Rd.,Shanghai
+邮编:200030
+
+电话:021-51556408/09转17分机
+传真:021-51556407
+Mail:maowy@avit.org.cn
+
+网址:http://www.avit.org.cn
+********************************************

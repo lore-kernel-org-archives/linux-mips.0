@@ -1,44 +1,144 @@
-Received: from qb-out-1314.google.com ([72.14.204.171]:36202 "EHLO
-	qb-out-1314.google.com") by ftp.linux-mips.org with ESMTP
-	id S28658301AbYICKSu (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 3 Sep 2008 11:18:50 +0100
-Received: by qb-out-1314.google.com with SMTP id q14so3833306qbq.32
-        for <linux-mips@linux-mips.org>; Wed, 03 Sep 2008 03:18:48 -0700 (PDT)
-From: Jakub Narebski <jnareb@gmail.com>
-Subject: [ANNOUNCE] Git User's Survey 2008
-Date: Wed, 3 Sep 2008 12:18:41 +0200
-References: <200808312329.17312.jnareb@gmail.com>
-In-Reply-To: <200808312329.17312.jnareb@gmail.com>
+Received: from mx1.razamicroelectronics.com ([63.111.213.197]:1635 "EHLO
+	hq-ex-mb01.razamicroelectronics.com") by ftp.linux-mips.org with ESMTP
+	id S62086341AbYIOTjB (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 15 Sep 2008 20:39:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-2"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-ID: <200809031218.42768.jnareb@gmail.com>
-Return-Path: <jnareb@gmail.com>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C91768.F2EF7E62"
+Content-class: urn:content-classes:message
+Subject: Re: [PATCH] Au1200 USB Device Controller and device-only OTG
+Date: Mon, 15 Sep 2008 12:26:28 -0700
+Message-ID: <1221506788.6680.11.camel@kh-d820-ubuntu.razamicroelectronics.com>
+In-Reply-To: <200809151216.02148.david-b@pacbell.net>
+References: <> <1221155967-25502-1-git-send-email-khickey@rmicorp.com> <200809151216.02148.david-b@pacbell.net>
+From: "Kevin Hickey" <khickey@rmicorp.com>
+Return-Path: <khickey@rmicorp.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Message-ID: <20080903101841.KZaSAjG16XgZjdy57yrLTpNH351u6kF8HmRmwcOM4RU@z>
+To: David Brownell <david-b@pacbell.net>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, linux-usb@vger.kernel.org, mano@roarinelk.homelinux.net
+Message-ID: <20080915192628.g8Z40I6m2D935_V8cXYUKKArX_QR3mM_2IJbzfisxhA@z>
 
-Hi all,
+This is a multi-part message in MIME format.
 
-We would like to ask you a few questions about your use of the Git
-version control system. This survey is mainly to understand who is
-using Git, how and why.
+------_=_NextPart_001_01C91768.F2EF7E62
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-The results will be published on the Git Wiki
-  http://git.or.cz/gitwiki/GitSurvey2008
-and discussed on the git mailing list.
+On Mon, 2008-09-15 at 12:16 -0700, David Brownell wrote:
+> On Thursday 11 September 2008, Kevin Hickey wrote:
+> > basic device-only OTG (On-The-Go) support
+>=20
+> That does't look like it's done right.  For starters, it abuses
+> Kconfig to handle a board-specific config option.  Put that data
+> in platform_data instead ...
+I don't understand what you mean by this.  Can you be more specific?
+>=20
+> Second, it breaks some previously-working code.
+Can you be more specific?
+>=20
+> Third, it misbehaves even on an x86 config.  Needs something like
+> the appended patch.
+Does it only misbehave on an x86 config or also on a MIPS config?  I
+have no problems when building for DB1200. =20
+>=20
+> - Dave
+>=20
+>=20
+> --- g26.orig/drivers/usb/gadget/Kconfig	2008-09-15 12:10:22.000000000 =
+-0700
+> +++ g26/drivers/usb/gadget/Kconfig	2008-09-15 12:10:06.000000000 -0700
+> @@ -490,7 +490,7 @@ config USB_GADGET_DUALSPEED
+> =20
+>  config USB_PORT_AU1200OTG
+>  	boolean "AU1200 USB portmux control (On-The-Go support)"
+> -	depends on USB_GADGET_AU1200 || USB_EHCI_HCD || USB_OHCI_HCD
+> +	depends on USB_GADGET_AU1200 && (USB_EHCI_HCD || USB_OHCI_HCD)
+>  	default n
+>  	help
+>  	   The AU1200 and Au1200 USB device port can be used as either a =
+host
+>=20
+--=20
+Kevin Hickey
+Alchemy Solutions
+RMI Corporation
+khickey@rmicorp.com
+P: 512.691.8044
 
-The survey would be open from 1 September till 10 October.
+------_=_NextPart_001_01C91768.F2EF7E62
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Please devote a bit of your time to fill this simple questionnaire;
-it will help a lot the Git community to understand your needs,
-what you like of Git, and of course what you don't like  of it.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.7652.24">
+<TITLE>Re: [PATCH] Au1200 USB Device Controller and device-only =
+OTG</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
 
-The survey can be found here:
-  http://www.survs.com/survey?id=M3PIVU72&channel=2WXE4BVTW8
-  http://tinyurl.com/GitSurvey2008
+<P><FONT SIZE=3D2>On Mon, 2008-09-15 at 12:16 -0700, David Brownell =
+wrote:<BR>
+&gt; On Thursday 11 September 2008, Kevin Hickey wrote:<BR>
+&gt; &gt; basic device-only OTG (On-The-Go) support<BR>
+&gt;<BR>
+&gt; That does't look like it's done right.&nbsp; For starters, it =
+abuses<BR>
+&gt; Kconfig to handle a board-specific config option.&nbsp; Put that =
+data<BR>
+&gt; in platform_data instead ...<BR>
+I don't understand what you mean by this.&nbsp; Can you be more =
+specific?<BR>
+&gt;<BR>
+&gt; Second, it breaks some previously-working code.<BR>
+Can you be more specific?<BR>
+&gt;<BR>
+&gt; Third, it misbehaves even on an x86 config.&nbsp; Needs something =
+like<BR>
+&gt; the appended patch.<BR>
+Does it only misbehave on an x86 config or also on a MIPS config?&nbsp; =
+I<BR>
+have no problems when building for DB1200.&nbsp;<BR>
+&gt;<BR>
+&gt; - Dave<BR>
+&gt;<BR>
+&gt;<BR>
+&gt; --- =
+g26.orig/drivers/usb/gadget/Kconfig&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+2008-09-15 12:10:22.000000000 -0700<BR>
+&gt; +++ g26/drivers/usb/gadget/Kconfig&nbsp;&nbsp;&nbsp; 2008-09-15 =
+12:10:06.000000000 -0700<BR>
+&gt; @@ -490,7 +490,7 @@ config USB_GADGET_DUALSPEED<BR>
+&gt;&nbsp;<BR>
+&gt;&nbsp; config USB_PORT_AU1200OTG<BR>
+&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; boolean &quot;AU1200 USB portmux =
+control (On-The-Go support)&quot;<BR>
+&gt; -&nbsp;&nbsp;&nbsp;&nbsp; depends on USB_GADGET_AU1200 || =
+USB_EHCI_HCD || USB_OHCI_HCD<BR>
+&gt; +&nbsp;&nbsp;&nbsp;&nbsp; depends on USB_GADGET_AU1200 &amp;&amp; =
+(USB_EHCI_HCD || USB_OHCI_HCD)<BR>
+&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; default n<BR>
+&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; help<BR>
+&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; The AU1200 and Au1200 =
+USB device port can be used as either a host<BR>
+&gt;<BR>
+--<BR>
+Kevin Hickey<BR>
+Alchemy Solutions<BR>
+RMI Corporation<BR>
+khickey@rmicorp.com<BR>
+P: 512.691.8044<BR>
+</FONT>
+</P>
 
--- 
-Git Development Community
+</BODY>
+</HTML>
+------_=_NextPart_001_01C91768.F2EF7E62--

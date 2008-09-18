@@ -1,144 +1,356 @@
-Received: from mx1.razamicroelectronics.com ([63.111.213.197]:1635 "EHLO
-	hq-ex-mb01.razamicroelectronics.com") by ftp.linux-mips.org with ESMTP
-	id S62086341AbYIOTjB (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 15 Sep 2008 20:39:01 +0100
+Received: from outbound-dub.frontbridge.com ([213.199.154.16]:28447 "EHLO
+	IE1EHSOBE006.bigfish.com") by ftp.linux-mips.org with ESMTP
+	id S20050127AbYIRLjw (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 18 Sep 2008 12:39:52 +0100
+Received: from mail52-dub (localhost.localdomain [127.0.0.1])	by
+ mail52-dub-R.bigfish.com (Postfix) with ESMTP id EB9A714101B7	for
+ <linux-mips@linux-mips.org>; Thu, 18 Sep 2008 11:39:44 +0000 (UTC)
+Received: from sggdcex1ns01.sony.com.sg (sggdcex1ns01.sony.com.sg
+ [121.100.32.134])	(using TLSv1 with cipher EDH-RSA-DES-CBC3-SHA (168/168
+ bits))	(No client certificate requested)	by mail52-dub.bigfish.com (Postfix)
+ with ESMTP id 251DC808071	for <linux-mips@linux-mips.org>; Thu, 18 Sep 2008
+ 11:39:41 +0000 (UTC)
+Received: from sggdcwn1vs01.sony.com.sg (sggdcwn1vs01 [43.68.8.23])	by
+ sggdcex1ns01.sony.com.sg (8.13.7+Sun/8.13.7) with SMTP id m8IBdcVI000410	for
+ <linux-mips@linux-mips.org>; Thu, 18 Sep 2008 19:39:39 +0800 (SGT)
+Received: from sgapxbh05.ap.sony.com (sgapxbh05.ap.sony.com [43.68.17.37])	by
+ sgsesgdcid02.sony.com.sg (8.13.7+Sun/8.13.7) with ESMTP id m8IBdcLx028460	for
+ <linux-mips@linux-mips.org>; Thu, 18 Sep 2008 19:39:38 +0800 (SGT)
+Content-Class: urn:content-classes:message
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C91768.F2EF7E62"
-Content-class: urn:content-classes:message
-Subject: Re: [PATCH] Au1200 USB Device Controller and device-only OTG
-Date: Mon, 15 Sep 2008 12:26:28 -0700
-Message-ID: <1221506788.6680.11.camel@kh-d820-ubuntu.razamicroelectronics.com>
-In-Reply-To: <200809151216.02148.david-b@pacbell.net>
-References: <> <1221155967-25502-1-git-send-email-khickey@rmicorp.com> <200809151216.02148.david-b@pacbell.net>
-From: "Kevin Hickey" <khickey@rmicorp.com>
-Return-Path: <khickey@rmicorp.com>
+	boundary="----_=_NextPart_001_01C91983.39F24AAB"
+Subject: execve errno setting on MIPS
+Date: Thu, 18 Sep 2008 17:09:35 +0530
+Message-ID: <7B7EF7F090B9804A830ACC82F2CDE95D53F553@insardxms01.ap.sony.com>
+From: "Sadashiiv, Halesh" <halesh.sadashiv@ap.sony.com>
+Return-Path: <halesh.sadashiv@ap.sony.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: David Brownell <david-b@pacbell.net>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, linux-usb@vger.kernel.org, mano@roarinelk.homelinux.net
-Message-ID: <20080915192628.g8Z40I6m2D935_V8cXYUKKArX_QR3mM_2IJbzfisxhA@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20080918113935.KEZ36wIs1Phlbzlhg6kiXOaDdr64qR2m6J3L1ukVrRU@z>
 
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01C91768.F2EF7E62
-Content-Type: text/plain;
-	charset="iso-8859-1"
+------_=_NextPart_001_01C91983.39F24AAB
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2008-09-15 at 12:16 -0700, David Brownell wrote:
-> On Thursday 11 September 2008, Kevin Hickey wrote:
-> > basic device-only OTG (On-The-Go) support
->=20
-> That does't look like it's done right.  For starters, it abuses
-> Kconfig to handle a board-specific config option.  Put that data
-> in platform_data instead ...
-I don't understand what you mean by this.  Can you be more specific?
->=20
-> Second, it breaks some previously-working code.
-Can you be more specific?
->=20
-> Third, it misbehaves even on an x86 config.  Needs something like
-> the appended patch.
-Does it only misbehave on an x86 config or also on a MIPS config?  I
-have no problems when building for DB1200. =20
->=20
-> - Dave
->=20
->=20
-> --- g26.orig/drivers/usb/gadget/Kconfig	2008-09-15 12:10:22.000000000 =
--0700
-> +++ g26/drivers/usb/gadget/Kconfig	2008-09-15 12:10:06.000000000 -0700
-> @@ -490,7 +490,7 @@ config USB_GADGET_DUALSPEED
-> =20
->  config USB_PORT_AU1200OTG
->  	boolean "AU1200 USB portmux control (On-The-Go support)"
-> -	depends on USB_GADGET_AU1200 || USB_EHCI_HCD || USB_OHCI_HCD
-> +	depends on USB_GADGET_AU1200 && (USB_EHCI_HCD || USB_OHCI_HCD)
->  	default n
->  	help
->  	   The AU1200 and Au1200 USB device port can be used as either a =
-host
->=20
---=20
-Kevin Hickey
-Alchemy Solutions
-RMI Corporation
-khickey@rmicorp.com
-P: 512.691.8044
+Hi all,
+=20
+Please find the below testcase..
+=20
+#include <stdio.h>
+#include <limits.h>
+#include <errno.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+=20
+#define EXE_NAME "./exe"
+=20
+char e2BIG[ARG_MAX+1][10];
+char *envList[]=3D{NULL};
+=20
+int main(void)
+{
+  int ret,ind;
+=20
+  for(ind =3D 0; ind < ARG_MAX+1; ind++)
+    strcpy(e2BIG[ind], "helloword");
+=20
+  if ((ret =3D chmod(EXE_NAME,0744)) !=3D 0){
+    printf("chmod failed\n");
+    exit(1);
+  }
+=20
+  /* whne arg list is too long */
+  if ((ret =3D execve(EXE_NAME,e2BIG,envList)) =3D=3D -1) {
+    if ( errno =3D=3D E2BIG)
+      printf("Test Pass\n");
+    else
+      printf("Test Fail : Got Errno %d\n", errno);
+    exit(0);
+  }
+  else
+    printf("execve worked out of limit\n");
+  exit(1);
+}
+=20
+On MIPS E2BIG is not getting set as errno instead EFAULT is set, while
+on=20
+other archs like ARM, PowerPC and i686 I am able to get E2BIG.
+=20
+Please let me know about the issue...
+=20
+Let EXE_NAME be any executable....
+=20
+Thanks,
+Halesh
 
-------_=_NextPart_001_01C91768.F2EF7E62
-Content-Type: text/html;
-	charset="iso-8859-1"
+=20
+
+
+
+-------------------------------------------------------------------
+This email is confidential and intended only for the use of the =
+individual or entity named above and may contain information that is =
+privileged. If you are not the intended recipient, you are notified that =
+any dissemination, distribution or copying of this email is strictly =
+prohibited. If you have received this email in error, please notify us =
+immediately by return email or telephone and destroy the original =
+message. - This mail is sent via Sony Asia Pacific Mail Gateway.
+-------------------------------------------------------------------
+
+------_=_NextPart_001_01C91983.39F24AAB
+Content-Type: text/html; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
 <META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7652.24">
-<TITLE>Re: [PATCH] Au1200 USB Device Controller and device-only =
-OTG</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"State"/>
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"place" downloadurl=3D"http://www.5iantlavalamp.com/"/>
+<!--[if !mso]>
+<style>
+st1\:*{behavior:url(#default#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	color:black;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
-<P><FONT SIZE=3D2>On Mon, 2008-09-15 at 12:16 -0700, David Brownell =
-wrote:<BR>
-&gt; On Thursday 11 September 2008, Kevin Hickey wrote:<BR>
-&gt; &gt; basic device-only OTG (On-The-Go) support<BR>
-&gt;<BR>
-&gt; That does't look like it's done right.&nbsp; For starters, it =
-abuses<BR>
-&gt; Kconfig to handle a board-specific config option.&nbsp; Put that =
-data<BR>
-&gt; in platform_data instead ...<BR>
-I don't understand what you mean by this.&nbsp; Can you be more =
-specific?<BR>
-&gt;<BR>
-&gt; Second, it breaks some previously-working code.<BR>
-Can you be more specific?<BR>
-&gt;<BR>
-&gt; Third, it misbehaves even on an x86 config.&nbsp; Needs something =
-like<BR>
-&gt; the appended patch.<BR>
-Does it only misbehave on an x86 config or also on a MIPS config?&nbsp; =
-I<BR>
-have no problems when building for DB1200.&nbsp;<BR>
-&gt;<BR>
-&gt; - Dave<BR>
-&gt;<BR>
-&gt;<BR>
-&gt; --- =
-g26.orig/drivers/usb/gadget/Kconfig&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-2008-09-15 12:10:22.000000000 -0700<BR>
-&gt; +++ g26/drivers/usb/gadget/Kconfig&nbsp;&nbsp;&nbsp; 2008-09-15 =
-12:10:06.000000000 -0700<BR>
-&gt; @@ -490,7 +490,7 @@ config USB_GADGET_DUALSPEED<BR>
-&gt;&nbsp;<BR>
-&gt;&nbsp; config USB_PORT_AU1200OTG<BR>
-&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; boolean &quot;AU1200 USB portmux =
-control (On-The-Go support)&quot;<BR>
-&gt; -&nbsp;&nbsp;&nbsp;&nbsp; depends on USB_GADGET_AU1200 || =
-USB_EHCI_HCD || USB_OHCI_HCD<BR>
-&gt; +&nbsp;&nbsp;&nbsp;&nbsp; depends on USB_GADGET_AU1200 &amp;&amp; =
-(USB_EHCI_HCD || USB_OHCI_HCD)<BR>
-&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; default n<BR>
-&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; help<BR>
-&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; The AU1200 and Au1200 =
-USB device port can be used as either a host<BR>
-&gt;<BR>
---<BR>
-Kevin Hickey<BR>
-Alchemy Solutions<BR>
-RMI Corporation<BR>
-khickey@rmicorp.com<BR>
-P: 512.691.8044<BR>
-</FONT>
-</P>
+</head>
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C91768.F2EF7E62--
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1><pre><font size=3D2 color=3Dblack face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt'>Hi =
+all,<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>Please find the below =
+testcase..<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>#include =
+&lt;stdio.h&gt;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>#include =
+&lt;limits.h&gt;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>#include =
+&lt;errno.h&gt;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>#include =
+&lt;unistd.h&gt;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>#include =
+&lt;stdlib.h&gt;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>#include =
+&lt;string.h&gt;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>#include =
+&lt;sys/types.h&gt;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>#include =
+&lt;sys/stat.h&gt;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>#define EXE_NAME =
+&quot;./exe&quot;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>char =
+e2BIG[ARG_MAX+1][10];<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>char =
+*envList[]=3D{NULL};<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>int =
+main(void)<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>{<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp; int ret,<st1:State
+w:st=3D"on"><st1:place =
+w:st=3D"on">ind</st1:place></st1:State>;<o:p></o:p></span></font></pre><p=
+re><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp; for(<st1:State
+w:st=3D"on">ind</st1:State> =3D 0; <st1:State =
+w:st=3D"on">ind</st1:State> &lt; ARG_MAX+1; <st1:State
+w:st=3D"on"><st1:place =
+w:st=3D"on">ind++</st1:place></st1:State>)<o:p></o:p></span></font></pre>=
+<pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp; strcpy(e2BIG[<st1:State
+w:st=3D"on"><st1:place w:st=3D"on">ind</st1:place></st1:State>], =
+&quot;helloword&quot;);<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp; if ((ret =3D chmod(EXE_NAME,0744)) =
+!=3D 0){<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp; printf(&quot;chmod =
+failed\n&quot;);<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp; =
+exit(1);<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp; =
+}<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp; /* whne arg list is too long =
+*/<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp; if ((ret =3D =
+execve(EXE_NAME,e2BIG,envList)) =3D=3D -1) =
+{<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp; if ( errno =3D=3D =
+E2BIG)<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+printf(&quot;Test =
+Pass\n&quot;);<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp; =
+else<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+printf(&quot;Test Fail : Got Errno %d\n&quot;, =
+errno);<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp; =
+exit(0);<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp; =
+}<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp; =
+else<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp; printf(&quot;execve worked =
+out of limit\n&quot;);<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>&nbsp; =
+exit(1);<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>}<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>On MIPS E2BIG is not getting set as errno =
+instead EFAULT is set, while on =
+<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>other archs like ARM, PowerPC and i686 I am =
+able to get E2BIG.<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>Please let me know about the =
+issue...<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>Let EXE_NAME be any =
+executable....<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></font></pre><pre><fon=
+t
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>Thanks,<o:p></o:p></span></font></pre><pre><fo=
+nt
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt'>Halesh<o:p></o:p></span></font></pre>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+<p></p><hr><br>This email is confidential and intended only for the use =
+of the individual or entity named above and may contain information that =
+is privileged. If you are not the intended recipient, you are notified =
+that any dissemination, distribution or copying of this email is =
+strictly prohibited. If you have received this email in error, please =
+notify us immediately by return email or telephone and destroy the =
+original message. - This mail is sent via Sony Asia Pacific Mail =
+Gateway.<hr></body>
+
+</html>
+
+------_=_NextPart_001_01C91983.39F24AAB--

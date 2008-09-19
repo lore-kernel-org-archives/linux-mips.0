@@ -1,58 +1,43 @@
-Received: from outbound-va3.frontbridge.com ([216.32.180.16]:20370 "EHLO
-	VA3EHSOBE003.bigfish.com") by ftp.linux-mips.org with ESMTP
-	id S28786208AbYISD1l (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 19 Sep 2008 04:27:41 +0100
+Received: from outbound-va3.frontbridge.com ([216.32.180.16]:24241 "EHLO
+	VA3EHSOBE005.bigfish.com") by ftp.linux-mips.org with ESMTP
+	id S28661601AbYISDao (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 19 Sep 2008 04:30:44 +0100
 Content-Class: urn:content-classes:message
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C91A07.9E5192B7"
+	boundary="----_=_NextPart_001_01C91A08.0F514503"
 Subject: Re: execve errno setting on MIPS
-Date: Fri, 19 Sep 2008 08:57:17 +0530
-Message-ID: <7B7EF7F090B9804A830ACC82F2CDE95D56DA35@insardxms01.ap.sony.com>
+Date: Fri, 19 Sep 2008 09:00:27 +0530
+Message-ID: <7B7EF7F090B9804A830ACC82F2CDE95D56DA36@insardxms01.ap.sony.com>
 From: "Sadashiiv, Halesh" <halesh.sadashiv@ap.sony.com>
 Return-Path: <halesh.sadashiv@ap.sony.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: tsbogend@alpha.franken.de
+To: ralf@linux-mips.org
 Cc: linux-mips@linux-mips.org
-Message-ID: <20080919032717.YXqSpfNU-yP16k2QnjtHHin7s5YxQxDQ36gsqK797QI@z>
+Message-ID: <20080919033027.o0LAM0pU0ApqM2RqExVAEMfi9W0IQ21KDmPgFbXaYuU@z>
 
-------_=_NextPart_001_01C91A07.9E5192B7
+------_=_NextPart_001_01C91A08.0F514503
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
->this is broken and does cause an EFAULT on x86 as well (you should
->take the warning from gcc about the second argument of execve serious).
 =20
- Thanks, you are right.
 =20
->Try:
+>> The one is two dimensional array, the other an array of pointers to
+char.
 =20
->char *e2BIG[ARG_MAX+1];
->char *envList[]=3D{NULL};
->=20
->int main(void)
->{
->  int ret,ind;
->=20
->   for(ind =3D 0; ind < ARG_MAX+1; ind++)
->        e2BIG[ind] =3D strdup("helloword");
->=20
->=20
- It wroks on X86 and other Archs.
->=20
->=20
->And it looks like the ARG_MAX limit is bigger than my installed glibc
->thinks, because it works at least on x86. When I increase the array two
->2 * ARG_MAX I'll get the wanted E2BIG.
+Yes, Fixed the problem,=20
+But on MIPS, ARG_MAX is not considered, I was able to get the E2BIG on
+2*ARG_MAX.
 =20
- Yes, on MIPS we need to increase the ARM_MAX to 2*ARG_MAX to get E2BIG.
+Check
+http://www.linux-mips.org/archives/linux-mips/2008-09/msg00136.html =20
 =20
-Thanks,
-Halesh
 
-=20
+Thanks,
+
+Halesh
 
 
 
@@ -66,30 +51,18 @@ immediately by return email or telephone and destroy the original =
 message. - This mail is sent via Sony Asia Pacific Mail Gateway.
 -------------------------------------------------------------------
 
-------_=_NextPart_001_01C91A07.9E5192B7
+------_=_NextPart_001_01C91A08.0F514503
 Content-Type: text/html; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
 <html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
 xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
 xmlns=3D"http://www.w3.org/TR/REC-html40">
 
 <head>
 <META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
 charset=3Dus-ascii">
 <meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"State"/>
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"place" downloadurl=3D"http://www.5iantlavalamp.com/"/>
-<!--[if !mso]>
-<style>
-st1\:*{behavior:url(#default#ieooui) }
-</style>
-<![endif]-->
 <style>
 <!--
  /* Font Definitions */
@@ -134,109 +107,47 @@ div.Section1
 
 <div class=3DSection1><pre><font size=3D2 color=3Dblack face=3D"Courier =
 New"><span
-style=3D'font-size:10.0pt;color:black'>&gt;this is broken and does cause =
-an EFAULT on x86 as well (you =
-should<o:p></o:p></span></font></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;take the warning from gcc =
-about the second argument of execve =
-serious).<o:p></o:p></span></font></pre><pre><font
+style=3D'font-size:10.0pt;color:black'><o:p>&nbsp;</o:p></span></font></p=
+re><pre><font
 size=3D2 color=3Dblack face=3D"Courier New"><span =
 style=3D'font-size:10.0pt;color:black'><o:p>&nbsp;</o:p></span></font></p=
 re><pre><font
 size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'> Thanks, you are =
-right.<o:p></o:p></span></font></pre><pre><font
+style=3D'font-size:10.0pt;color:black'>&gt;&gt; The one is two =
+dimensional array, the other an array of pointers to =
+char.<o:p></o:p></span></font></pre><pre><font
 size=3D2 color=3Dblack face=3D"Courier New"><span =
 style=3D'font-size:10.0pt;color:black'><o:p>&nbsp;</o:p></span></font></p=
 re><pre><font
 size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;Try:<o:p></o:p></span></font><=
-/pre><pre><font
+style=3D'font-size:10.0pt;color:black'>Yes, Fixed the problem, =
+<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;color:black'>But on MIPS, ARG_MAX is not =
+considered, I was able to get the E2BIG on =
+2*ARG_MAX.<o:p></o:p></span></font></pre><pre><font
 size=3D2 color=3Dblack face=3D"Courier New"><span =
 style=3D'font-size:10.0pt;color:black'><o:p>&nbsp;</o:p></span></font></p=
 re><pre><font
 size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;char =
-*e2BIG[ARG_MAX+1];<o:p></o:p></span></font></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;char =
-*envList[]=3D{NULL};<o:p></o:p></span></font></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;<o:p>&nbsp;</o:p></span></font=
-></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;int =
-main(void)<o:p></o:p></span></font></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;{<o:p></o:p></span></font></pr=
+style=3D'font-size:10.0pt;color:black'>Check<o:p></o:p></span></font></pr=
 e><pre><font
 size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;&nbsp; int ret,<st1:State
-w:st=3D"on"><st1:place =
-w:st=3D"on">ind</st1:place></st1:State>;<o:p></o:p></span></font></pre><p=
-re><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;<o:p>&nbsp;</o:p></span></font=
-></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;&nbsp;&nbsp; for(<st1:State
-w:st=3D"on">ind</st1:State> =3D 0; <st1:State =
-w:st=3D"on">ind</st1:State> &lt; ARG_MAX+1; <st1:State
-w:st=3D"on"><st1:place =
-w:st=3D"on">ind++</st1:place></st1:State>)<o:p></o:p></span></font></pre>=
-<pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp; e2BIG[<st1:State
-w:st=3D"on"><st1:place w:st=3D"on">ind</st1:place></st1:State>] =3D =
-strdup(&quot;helloword&quot;);<o:p></o:p></span></font></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;<o:p>&nbsp;</o:p></span></font=
-></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;<o:p>&nbsp;</o:p></span></font=
-></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'> It wroks on X86 and other =
-Archs.<o:p></o:p></span></font></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;<o:p>&nbsp;</o:p></span></font=
-></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;<o:p>&nbsp;</o:p></span></font=
-></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;And it looks like the ARG_MAX =
-limit is bigger than my installed =
-glibc<o:p></o:p></span></font></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;thinks, because it works at =
-least on x86. When I increase the array =
-two<o:p></o:p></span></font></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>&gt;2 * ARG_MAX I'll get the =
-wanted E2BIG.<o:p></o:p></span></font></pre><pre><font
+style=3D'font-size:10.0pt;color:black'><a
+href=3D"http://www.linux-mips.org/archives/linux-mips/2008-09/msg00136.ht=
+ml">http://www.linux-mips.org/archives/linux-mips/2008-09/msg00136.html</=
+a>&nbsp; <o:p></o:p></span></font></pre><pre><font
 size=3D2 color=3Dblack face=3D"Courier New"><span =
 style=3D'font-size:10.0pt;color:black'><o:p>&nbsp;</o:p></span></font></p=
-re><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'> Yes, on MIPS we need to increase =
-the ARM_MAX to 2*ARG_MAX to get =
-E2BIG.<o:p></o:p></span></font></pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'><o:p>&nbsp;</o:p></span></font></p=
-re><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>Thanks,<o:p></o:p></span></font></=
-pre><pre><font
-size=3D2 color=3Dblack face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;color:black'>Halesh<o:p></o:p></span></font></p=
 re>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+font-family:Arial'>Thanks,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Halesh<o:p></o:p></span></font></p>
 
 </div>
 
@@ -251,4 +162,4 @@ Gateway.<hr></body>
 
 </html>
 
-------_=_NextPart_001_01C91A07.9E5192B7--
+------_=_NextPart_001_01C91A08.0F514503--

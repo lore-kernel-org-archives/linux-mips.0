@@ -1,38 +1,131 @@
-Received: from mba.ocn.ne.jp ([122.1.235.107]:45541 "HELO smtp.mba.ocn.ne.jp")
-	by ftp.linux-mips.org with SMTP id S21920237AbYJTOPQ (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 20 Oct 2008 15:15:16 +0100
-Date: Mon, 20 Oct 2008 23:15:24 +0900 (JST)
-Message-ID: <20081020.231524.52129378.anemo@mba.ocn.ne.jp>
-Subject: Re: [PATCH] ide: Add tx4938ide driver
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-In-Reply-To: <48FB610D.3020901@ru.mvista.com>
-References: <20081017.231130.82350696.anemo@mba.ocn.ne.jp>
-	<48FB610D.3020901@ru.mvista.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-Path: <anemo@mba.ocn.ne.jp>
+Received: from mail.zeugmasystems.com ([192.139.122.66]:5165 "EHLO
+	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
+	id S21939935AbYJTTFw convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 20 Oct 2008 20:05:52 +0100
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: panic logic defeats arch dependent code 
+Date: Mon, 20 Oct 2008 12:05:43 -0700
+Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C501307489@exchange.ZeugmaSystems.local>
+In-Reply-To: <20081018124358.GC17322@linux-mips.org>
+References: <DDFD17CC94A9BD49A82147DDF7D545C50130734A@exchange.ZeugmaSystems.local> <20081018124358.GC17322@linux-mips.org>
+From: "Anirban Sinha" <ASinha@zeugmasystems.com>
+Return-Path: <ASinha@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: sshtylyov@ru.mvista.com
-Cc: linux-mips@linux-mips.org, linux-ide@vger.kernel.org, bzolnier@gmail.com, ralf@linux-mips.org
-Message-ID: <20081020141524.EnH-qyKpW6Jc-TimPOlGisupKw5HB_ZLXB2ZRnAFH-Q@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20081020190543.lzWik-oTocXl4CsVUkfWydQjqATMBgQrRnjM8VHtDSE@z>
 
-On Sun, 19 Oct 2008 20:32:13 +0400, Sergei Shtylyov <sshtylyov@ru.mvista.com> wrote:
-> > +	/* IORDY setup time: 35ns */
-> > +	wt = (35 + cycle - 1) / cycle;
-> 
->     It's not that simple I'm afraid: you can't just wait IORDY for 35 ns as 
-> that won't guarantee the minimum DIOx- actime time for the current PIO mode; 
-> so t->act8 (since it's >= t->act) should be part of the equation here, 
-> possibly with subtraction of couple cycles, if I'm interpreting the timing 
-> diagrams in the datasheet correctly...
+Hi Ralf:
 
-Hmm... so, does this statement seems correct?
+Thanks for responding and posting the patch. There is actually a another
+important issue of a more general nature. I have already posted this in
+the general Linux kernel mailing list under the subject "panic() logic".
+The crux of the issue is:
 
-	wt = (t->act8b + 35 + cycle - 1) / cycle - 2;
+The panic() call does a smp_send_stop() pretty early in the call
+process for SMP systems. smp_send_stop basically marks all the other
+cores as 'down' and
+updates the cpu bitmap. One implication of this is that you cannot do
+an IPI later on to other cores. However, interestingly, mips sibyte
+processor tries to do a cfe_exit() through an IPI as a part of
+emergency_reboot() that is called pretty late in the panic() logic. 
 
-> > +	/* actual wait-cycle is max(wt & ~1, 1) */
-> 
->     I got an impression that WT[0] bit is used otherwise in the ready mode, 
-> and PWT[1:0]:WT[3:1] = 00000 would mean 0 cycles, not 1...
+As a consequence of this, if a panic happens on a back core, the system
+simply hangs and never actually does a "rebooting in 5 sec" thing. 
+
+I believe the way panic logic is organized is in conflict with the
+requirements of some archs, for example our mips sibyte arch. Currently,
+the arch independent logic defeats the main purpose of the arch
+dependent emergency_restart() function which is to restart the system.
+In a vast majority of the cases, we do have a perfectly sane and
+functional front core and we are just not able to gracefully reboot the
+system because we are limited by the way panic() handles the shutdown
+logic. If there are other archs that does a similar specific operation
+for the front core as a part of 'emergency restart', they are all
+defeated.
+
+I believe, the way to solve this problem is that the archs themselves
+take the responsibility of shutting down the core and not the generic
+panic() call. The actual power down mechanism is arch dependent anyway,
+so I guess it can be made to be a part of emergency_shutdown(). The arch
+independent kernel code will then simply do the necessary arch
+independent things to handle panic and simply call emergency_reboot() to
+do the rest of the arch specific stuff, including powering down the
+cores.
+
+What do you think? 
+
+Thanks.
+
+Ani
+
+
+>-----Original Message-----
+>From: Ralf Baechle [mailto:ralf@linux-mips.org]
+>Sent: Saturday, October 18, 2008 5:44 AM
+>To: Anirban Sinha
+>Cc: linux-mips@linux-mips.org
+>Subject: Re: stop_this_cpu - redundant code?
+>
+>On Fri, Oct 17, 2008 at 07:57:12PM -0700, Anirban Sinha wrote:
+>
+>> This function  (stop_this_cpu) in /arch/mips/kernel/smp.c does a
+>> local_irq_enable() and the adjacent comment says that it's because it
+>> may need to service _machine_restart IPI. Unfortunately,
+>> smp_call_function only sends IPIs to cores that are still online ( it
+>> uses the cpu_online_map U all_but_myself_map in
+>> smp_call_function_map()).
+>
+>Usually a system would be restarted through some hardware mechanism -
+>probably a reset - anyway.
+>
+>> So the bottom-line is, should we still keep the local irqs enabled or
+>is
+>> this code totally redundant? I have seen other similar functions in
+>> other archs where they actually disable the local irqs.
+>
+>You're right.  The code is ancient old and once uppon a time it made
+>sense
+>to do things this way but the MIPS version was never updates.
+>Stop_this_cpu
+>also should try to minimize the power consumption by using the WAIT
+>instruction or whatever else a particular process has to offer.
+>
+>I didn't try to optimize this for the 34K where a TC could try to halt
+>itself - there isn't really a point, I think.
+>
+>A few other architectures are explicitly disabling interrupts but
+that's
+>also redundant because smp_call_function() invokes the function on
+other
+>processors with interrupts disabled.
+>
+>Thanks for posting this,
+>
+>  Ralf
+>
+>Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+>
+>diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+>index 7b59cfb..b79ea70 100644
+>--- a/arch/mips/kernel/smp.c
+>+++ b/arch/mips/kernel/smp.c
+>@@ -163,8 +163,10 @@ static void stop_this_cpu(void *dummy)
+> 	 * Remove this CPU:
+> 	 */
+> 	cpu_clear(smp_processor_id(), cpu_online_map);
+>-	local_irq_enable();	/* May need to service _machine_restart
+>IPI */
+>-	for (;;);		/* Wait if available. */
+>+	for (;;) {
+>+		if (cpu_wait)
+>+			(*cpu_wait)();		/* Wait if available. */
+>+	}
+> }
+>
+> void smp_send_stop(void)

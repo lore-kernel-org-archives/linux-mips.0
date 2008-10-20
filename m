@@ -1,153 +1,38 @@
-Received: from mail.zeugmasystems.com ([192.139.122.66]:53462 "EHLO
-	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S21750705AbYJRC5U (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Sat, 18 Oct 2008 03:57:20 +0100
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C930CD.38BB1D5C"
-Subject: stop_this_cpu - redundant code?
-Date: Fri, 17 Oct 2008 19:57:12 -0700
-Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C50130734A@exchange.ZeugmaSystems.local>
-From: "Anirban Sinha" <ASinha@zeugmasystems.com>
-Return-Path: <ASinha@zeugmasystems.com>
+Received: from mba.ocn.ne.jp ([122.1.235.107]:45541 "HELO smtp.mba.ocn.ne.jp")
+	by ftp.linux-mips.org with SMTP id S21920237AbYJTOPQ (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 20 Oct 2008 15:15:16 +0100
+Date: Mon, 20 Oct 2008 23:15:24 +0900 (JST)
+Message-ID: <20081020.231524.52129378.anemo@mba.ocn.ne.jp>
+Subject: Re: [PATCH] ide: Add tx4938ide driver
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <48FB610D.3020901@ru.mvista.com>
+References: <20081017.231130.82350696.anemo@mba.ocn.ne.jp>
+	<48FB610D.3020901@ru.mvista.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-Path: <anemo@mba.ocn.ne.jp>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20081018025712.zRwnpHF-G8LxRfUlIOsDlJIHXuZ1wJVrIYXs05XejtE@z>
+To: sshtylyov@ru.mvista.com
+Cc: linux-mips@linux-mips.org, linux-ide@vger.kernel.org, bzolnier@gmail.com, ralf@linux-mips.org
+Message-ID: <20081020141524.EnH-qyKpW6Jc-TimPOlGisupKw5HB_ZLXB2ZRnAFH-Q@z>
 
-This is a multi-part message in MIME format.
+On Sun, 19 Oct 2008 20:32:13 +0400, Sergei Shtylyov <sshtylyov@ru.mvista.com> wrote:
+> > +	/* IORDY setup time: 35ns */
+> > +	wt = (35 + cycle - 1) / cycle;
+> 
+>     It's not that simple I'm afraid: you can't just wait IORDY for 35 ns as 
+> that won't guarantee the minimum DIOx- actime time for the current PIO mode; 
+> so t->act8 (since it's >= t->act) should be part of the equation here, 
+> possibly with subtraction of couple cycles, if I'm interpreting the timing 
+> diagrams in the datasheet correctly...
 
-------_=_NextPart_001_01C930CD.38BB1D5C
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hmm... so, does this statement seems correct?
 
-Hi All:
+	wt = (t->act8b + 35 + cycle - 1) / cycle - 2;
 
-=20
-
-This function  (stop_this_cpu) in /arch/mips/kernel/smp.c does a
-local_irq_enable() and the adjacent comment says that it's because it
-may need to service _machine_restart IPI. Unfortunately,
-smp_call_function only sends IPIs to cores that are still online ( it
-uses the cpu_online_map U all_but_myself_map in
-smp_call_function_map()).
-
-=20
-
-So the bottom-line is, should we still keep the local irqs enabled or is
-this code totally redundant? I have seen other similar functions in
-other archs where they actually disable the local irqs.
-
-=20
-
-Cheers,
-
-=20
-
-Ani
-
-=20
-
-
-------_=_NextPart_001_01C930CD.38BB1D5C
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
-xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<meta http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 12 (filtered medium)">
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:Calibri;
-	panose-1:2 15 5 2 2 2 4 3 2 4;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:11.0pt;
-	font-family:"Calibri","sans-serif";}
-a:link, span.MsoHyperlink
-	{mso-style-priority:99;
-	color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{mso-style-priority:99;
-	color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:"Calibri","sans-serif";
-	color:windowtext;}
-.MsoChpDefault
-	{mso-style-type:export-only;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.0in 1.0in 1.0in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-<!--[if gte mso 9]><xml>
- <o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <o:shapelayout v:ext=3D"edit">
-  <o:idmap v:ext=3D"edit" data=3D"1" />
- </o:shapelayout></xml><![endif]-->
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal>Hi All:<o:p></o:p></p>
-
-<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
-
-<p class=3DMsoNormal>This function &nbsp;(stop_this_cpu) in
-/arch/mips/kernel/smp.c does a local_irq_enable() and the adjacent =
-comment says
-that it&#8217;s because it may need to service _<i>machine_restart</i> =
-IPI. Unfortunately,
-smp_call_function only sends IPIs to cores that are still online ( it =
-uses the
-cpu_online_map U all_but_myself_map in =
-smp_call_function_map()).<o:p></o:p></p>
-
-<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
-
-<p class=3DMsoNormal>So the bottom-line is, should we still keep the =
-local irqs
-enabled or is this code totally redundant? I have seen other similar =
-functions
-in other archs where they actually disable the local =
-irqs.<o:p></o:p></p>
-
-<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
-
-<p class=3DMsoNormal>Cheers,<o:p></o:p></p>
-
-<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
-
-<p class=3DMsoNormal>Ani<o:p></o:p></p>
-
-<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C930CD.38BB1D5C--
+> > +	/* actual wait-cycle is max(wt & ~1, 1) */
+> 
+>     I got an impression that WT[0] bit is used otherwise in the ready mode, 
+> and PWT[1:0]:WT[3:1] = 00000 would mean 0 cycles, not 1...

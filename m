@@ -1,131 +1,30 @@
-Received: from mail.zeugmasystems.com ([192.139.122.66]:5165 "EHLO
-	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S21939935AbYJTTFw convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 20 Oct 2008 20:05:52 +0100
-Content-class: urn:content-classes:message
+Received: from mail3.caviumnetworks.com ([12.108.191.235]:10840 "EHLO
+	mail3.caviumnetworks.com") by ftp.linux-mips.org with ESMTP
+	id S22594246AbYJ1QOG (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 28 Oct 2008 16:14:06 +0000
+Message-ID: <49073A38.3070808@caviumnetworks.com>
+Date: Tue, 28 Oct 2008 09:13:44 -0700
+From: Chad Reese <kreese@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: panic logic defeats arch dependent code 
-Date: Mon, 20 Oct 2008 12:05:43 -0700
-Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C501307489@exchange.ZeugmaSystems.local>
-In-Reply-To: <20081018124358.GC17322@linux-mips.org>
-References: <DDFD17CC94A9BD49A82147DDF7D545C50130734A@exchange.ZeugmaSystems.local> <20081018124358.GC17322@linux-mips.org>
-From: "Anirban Sinha" <ASinha@zeugmasystems.com>
-Return-Path: <ASinha@zeugmasystems.com>
+Subject: Re: [PATCH 11/36] MIPSR2 ebase isn't just CAC_BASE
+References: <1225152181-3221-2-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-3-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-4-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-5-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-6-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-7-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-8-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-9-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-10-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-11-git-send-email-ddaney@caviumnetworks.com> <20081028095655.GB18610@linux-mips.org> <alpine.LFD.1.10.0810281604250.27396@ftp.linux-mips.org>
+In-Reply-To: <alpine.LFD.1.10.0810281604250.27396@ftp.linux-mips.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-Path: <Kenneth.Reese@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20081020190543.lzWik-oTocXl4CsVUkfWydQjqATMBgQrRnjM8VHtDSE@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, David Daney <ddaney@caviumnetworks.com>, linux-mips@linux-mips.org, Tomaso Paoletti <tpaoletti@caviumnetworks.com>
+Message-ID: <20081028161344.fRt59Bzppav4n2u2WNV__sxLr1IOO5zYRlqRBOIzSRI@z>
 
-Hi Ralf:
-
-Thanks for responding and posting the patch. There is actually a another
-important issue of a more general nature. I have already posted this in
-the general Linux kernel mailing list under the subject "panic() logic".
-The crux of the issue is:
-
-The panic() call does a smp_send_stop() pretty early in the call
-process for SMP systems. smp_send_stop basically marks all the other
-cores as 'down' and
-updates the cpu bitmap. One implication of this is that you cannot do
-an IPI later on to other cores. However, interestingly, mips sibyte
-processor tries to do a cfe_exit() through an IPI as a part of
-emergency_reboot() that is called pretty late in the panic() logic. 
-
-As a consequence of this, if a panic happens on a back core, the system
-simply hangs and never actually does a "rebooting in 5 sec" thing. 
-
-I believe the way panic logic is organized is in conflict with the
-requirements of some archs, for example our mips sibyte arch. Currently,
-the arch independent logic defeats the main purpose of the arch
-dependent emergency_restart() function which is to restart the system.
-In a vast majority of the cases, we do have a perfectly sane and
-functional front core and we are just not able to gracefully reboot the
-system because we are limited by the way panic() handles the shutdown
-logic. If there are other archs that does a similar specific operation
-for the front core as a part of 'emergency restart', they are all
-defeated.
-
-I believe, the way to solve this problem is that the archs themselves
-take the responsibility of shutting down the core and not the generic
-panic() call. The actual power down mechanism is arch dependent anyway,
-so I guess it can be made to be a part of emergency_shutdown(). The arch
-independent kernel code will then simply do the necessary arch
-independent things to handle panic and simply call emergency_reboot() to
-do the rest of the arch specific stuff, including powering down the
-cores.
-
-What do you think? 
-
-Thanks.
-
-Ani
-
-
->-----Original Message-----
->From: Ralf Baechle [mailto:ralf@linux-mips.org]
->Sent: Saturday, October 18, 2008 5:44 AM
->To: Anirban Sinha
->Cc: linux-mips@linux-mips.org
->Subject: Re: stop_this_cpu - redundant code?
->
->On Fri, Oct 17, 2008 at 07:57:12PM -0700, Anirban Sinha wrote:
->
->> This function  (stop_this_cpu) in /arch/mips/kernel/smp.c does a
->> local_irq_enable() and the adjacent comment says that it's because it
->> may need to service _machine_restart IPI. Unfortunately,
->> smp_call_function only sends IPIs to cores that are still online ( it
->> uses the cpu_online_map U all_but_myself_map in
->> smp_call_function_map()).
->
->Usually a system would be restarted through some hardware mechanism -
->probably a reset - anyway.
->
->> So the bottom-line is, should we still keep the local irqs enabled or
->is
->> this code totally redundant? I have seen other similar functions in
->> other archs where they actually disable the local irqs.
->
->You're right.  The code is ancient old and once uppon a time it made
->sense
->to do things this way but the MIPS version was never updates.
->Stop_this_cpu
->also should try to minimize the power consumption by using the WAIT
->instruction or whatever else a particular process has to offer.
->
->I didn't try to optimize this for the 34K where a TC could try to halt
->itself - there isn't really a point, I think.
->
->A few other architectures are explicitly disabling interrupts but
-that's
->also redundant because smp_call_function() invokes the function on
-other
->processors with interrupts disabled.
->
->Thanks for posting this,
->
->  Ralf
->
->Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
->
->diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
->index 7b59cfb..b79ea70 100644
->--- a/arch/mips/kernel/smp.c
->+++ b/arch/mips/kernel/smp.c
->@@ -163,8 +163,10 @@ static void stop_this_cpu(void *dummy)
-> 	 * Remove this CPU:
-> 	 */
-> 	cpu_clear(smp_processor_id(), cpu_online_map);
->-	local_irq_enable();	/* May need to service _machine_restart
->IPI */
->-	for (;;);		/* Wait if available. */
->+	for (;;) {
->+		if (cpu_wait)
->+			(*cpu_wait)();		/* Wait if available. */
->+	}
-> }
->
-> void smp_send_stop(void)
+Maciej W. Rozycki wrote:
+> On Tue, 28 Oct 2008, Ralf Baechle wrote:
+> 
+>> Another thing I noticed is that we don't use write_c0_ebase(), so the
+>> firmware better setup this correctly or we crash and burn.  We better
+>> should initialize that right ...
+> 
+>  Well, your version still does not do it...
+> 
+>   Maciej

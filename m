@@ -1,30 +1,29 @@
-Received: from mail3.caviumnetworks.com ([12.108.191.235]:10840 "EHLO
-	mail3.caviumnetworks.com") by ftp.linux-mips.org with ESMTP
-	id S22594246AbYJ1QOG (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 28 Oct 2008 16:14:06 +0000
-Message-ID: <49073A38.3070808@caviumnetworks.com>
-Date: Tue, 28 Oct 2008 09:13:44 -0700
-From: Chad Reese <kreese@caviumnetworks.com>
+Received: from ausxippc101.us.dell.com ([143.166.85.207]:35344 "EHLO
+	ausxippc101.us.dell.com") by ftp.linux-mips.org with ESMTP
+	id S23063459AbYKCQv7 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 3 Nov 2008 16:51:59 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Subject: Re: [PATCH 11/36] MIPSR2 ebase isn't just CAC_BASE
-References: <1225152181-3221-2-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-3-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-4-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-5-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-6-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-7-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-8-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-9-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-10-git-send-email-ddaney@caviumnetworks.com> <1225152181-3221-11-git-send-email-ddaney@caviumnetworks.com> <20081028095655.GB18610@linux-mips.org> <alpine.LFD.1.10.0810281604250.27396@ftp.linux-mips.org>
-In-Reply-To: <alpine.LFD.1.10.0810281604250.27396@ftp.linux-mips.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-Path: <Kenneth.Reese@caviumnetworks.com>
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: RE: [PATCH]: R10000 Needs LL/SC Workaround in Gcc
+Date: Mon, 3 Nov 2008 10:51:49 -0600
+Message-ID: <B135486A342E6244AEE1EB13118903BA01A222DD@ausx3mpc106.aus.amer.dell.com>
+In-Reply-To: <alpine.LFD.1.10.0811021036330.20461@ftp.linux-mips.org>
+References: <490A90F4.6040601@gentoo.org> <490C05A9.9070707@gentoo.org> <87abcjibsl.fsf@firetop.home> <490CA4C8.40904@gentoo.org> <87tzargrn4.fsf@firetop.home> <490CEDB9.6030600@gentoo.org> <alpine.LFD.1.10.0811021036330.20461@ftp.linux-mips.org>
+From: <Paul_Koning@Dell.com>
+Return-Path: <Paul_Koning@Dell.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, David Daney <ddaney@caviumnetworks.com>, linux-mips@linux-mips.org, Tomaso Paoletti <tpaoletti@caviumnetworks.com>
-Message-ID: <20081028161344.fRt59Bzppav4n2u2WNV__sxLr1IOO5zYRlqRBOIzSRI@z>
+To: macro@linux-mips.org, kumba@gentoo.org
+Cc: gcc-patches@gcc.gnu.org, linux-mips@linux-mips.org, rdsandiford@googlemail.com
+Message-ID: <20081103165149.5i43N2-ABVDFgUk7hg0c_k1SGJBeADWdsruPKX0m_DI@z>
 
-Maciej W. Rozycki wrote:
-> On Tue, 28 Oct 2008, Ralf Baechle wrote:
-> 
->> Another thing I noticed is that we don't use write_c0_ebase(), so the
->> firmware better setup this correctly or we crash and burn.  We better
->> should initialize that right ...
-> 
->  Well, your version still does not do it...
-> 
->   Maciej
+PkZyb206IE1hY2llaiBXLiBSb3p5Y2tpIFttYWlsdG86bWFjcm9AbGludXgtbWlwcy5vcmddIA0K
+Pg0KPiBJIGJlbGlldmUgKGJ1dCBoYXZlIG5vdCBjaGVja2VkKSB0aGF0IGFsbCBDUFVzL0lTQXMg
+dGhhdCBhcmUgd2l0aGluIHRoZSANCj5NSVBTIElJIC0gTUlQUyBJViByYW5nZSBlbmFibGUgLW1i
+cmFuY2gtbGlrZWx5IGJ5IGRlZmF1bHQsIA0KDQpOb3QgcXVpdGUuICBzYjEgaGFzIG5vLWJyYW5j
+aC1saWtlbHkuICBJdCBhY3R1YWxseSBkb2VzIGltcGxlbWVudCB0aGUgaW5zdHJ1Y3Rpb24gYnV0
+IHRoZSBkb2N1bWVudGF0aW9uIGNsZWFybHkgc3RhdGVzIHRoYXQgaXQgc2hvdWxkIGJlIGF2b2lk
+ZWQuDQoNCglwYXVsDQo=

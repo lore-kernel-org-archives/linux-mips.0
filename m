@@ -1,135 +1,38 @@
-Received: from mail.zeugmasystems.com ([192.139.122.66]:2612 "EHLO
-	zeugmasystems.com") by ftp.linux-mips.org with ESMTP
-	id S23755906AbYKSATI convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 19 Nov 2008 00:19:08 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: [PATCH] ptrace syscall cleanups for mips compat archs
-Date: Tue, 18 Nov 2008 16:18:58 -0800
-Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C50144C46B@exchange.ZeugmaSystems.local>
-From: "Anirban Sinha" <ASinha@zeugmasystems.com>
-Return-Path: <ASinha@zeugmasystems.com>
+Received: from [81.2.110.250] ([81.2.110.250]:17373 "EHLO lxorguk.ukuu.org.uk")
+	by ftp.linux-mips.org with ESMTP id S23796355AbYKTUCp (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 20 Nov 2008 20:02:45 +0000
+Date: Thu, 20 Nov 2008 20:02:12 +0000
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [PATCH 20/26] 8250: Serial driver changes to support future
+ Cavium OCTEON serial patches.
+Message-ID: <20081120200212.17e67add@lxorguk.ukuu.org.uk>
+In-Reply-To: <1227047057-4911-2-git-send-email-ddaney@caviumnetworks.com>
+References: <49233FDE.3010404@caviumnetworks.com>
+	<1227047057-4911-2-git-send-email-ddaney@caviumnetworks.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <alan@lxorguk.ukuu.org.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20081119001858.93sgZq5eZf6jwoAk0w74n3vE-qrkLhoiWiTayDDnTyI@z>
+To: David Daney <ddaney@caviumnetworks.com>
+Cc: linux-mips@linux-mips.org, linux-serial@vger.kernel.org, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, Tomaso Paoletti <tpaoletti@caviumnetworks.com>
+Message-ID: <20081120200212.KS-2fQgUa5FWvNHtpjuvLOHrNQm_PJct7MWxZLC-AL0@z>
 
-Can someone please respond to this patch please? Even something like
-"it's a total crap" would be fine! 
+On Tue, 18 Nov 2008 14:24:14 -0800
+David Daney <ddaney@caviumnetworks.com> wrote:
 
+> In order to use Cavium OCTEON specific serial i/o drivers, we first
+> patch the 8250 driver to use replaceable I/O functions.  Compatible
+> I/O functions are added for existing iotypeS.
+> 
+> An added benefit of this change is that it makes it easy to factor
+> some of the existing special cases out to board/SOC specific support
+> code.
+> 
+> The alternative is to load up 8250.c with a bunch of OCTEON specific
+> iotype code and bug work-arounds.
 
-Index: mips-git/arch/mips/kernel/ptrace32.c
-===================================================================
---- mips-git.orig/arch/mips/kernel/ptrace32.c
-+++ mips-git/arch/mips/kernel/ptrace32.c
-@@ -49,19 +49,6 @@ long compat_arch_ptrace(struct task_stru
- 	int ret;
- 
- 	switch (request) {
--	/* when I and D space are separate, these will need to be fixed.
-*/
--	case PTRACE_PEEKTEXT: /* read word at location addr. */
--	case PTRACE_PEEKDATA: {
--		unsigned int tmp;
--		int copied;
--
--		copied = access_process_vm(child, addr, &tmp,
-sizeof(tmp), 0);
--		ret = -EIO;
--		if (copied != sizeof(tmp))
--			break;
--		ret = put_user(tmp, (unsigned int __user *) (unsigned
-long) data);
--		break;
--	}
- 
- 	/*
- 	 * Read 4 bytes of the other process' storage
-@@ -208,16 +195,6 @@ long compat_arch_ptrace(struct task_stru
- 		break;
- 	}
- 
--	/* when I and D space are separate, this will have to be fixed.
-*/
--	case PTRACE_POKETEXT: /* write the word at location addr. */
--	case PTRACE_POKEDATA:
--		ret = 0;
--		if (access_process_vm(child, addr, &data, sizeof(data),
-1)
--		    == sizeof(data))
--			break;
--		ret = -EIO;
--		break;
--
- 	/*
- 	 * Write 4 bytes into the other process' storage
- 	 *  data is the 4 bytes that the user wants written
-@@ -332,50 +309,11 @@ long compat_arch_ptrace(struct task_stru
- 		ret = ptrace_setfpregs(child, (__u32 __user *) (__u64)
-data);
- 		break;
- 
--	case PTRACE_SYSCALL: /* continue and stop at next (return from)
-syscall */
--	case PTRACE_CONT: { /* restart after signal. */
--		ret = -EIO;
--		if (!valid_signal(data))
--			break;
--		if (request == PTRACE_SYSCALL) {
--			set_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
--		}
--		else {
--			clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
--		}
--		child->exit_code = data;
--		wake_up_process(child);
--		ret = 0;
--		break;
--	}
--
--	/*
--	 * make the child exit.  Best I can do is send it a sigkill.
--	 * perhaps it should be put in the status that it wants to
--	 * exit.
--	 */
--	case PTRACE_KILL:
--		ret = 0;
--		if (child->exit_state == EXIT_ZOMBIE)	/* already dead
-*/
--			break;
--		child->exit_code = SIGKILL;
--		wake_up_process(child);
--		break;
--
- 	case PTRACE_GET_THREAD_AREA:
- 		ret = put_user(task_thread_info(child)->tp_value,
- 				(unsigned int __user *) (unsigned long)
-data);
- 		break;
- 
--	case PTRACE_DETACH: /* detach a process that was attached. */
--		ret = ptrace_detach(child, data);
--		break;
--
--	case PTRACE_GETEVENTMSG:
--		ret = put_user(child->ptrace_message,
--			       (unsigned int __user *) (unsigned long)
-data);
--		break;
--
- 	case PTRACE_GET_THREAD_AREA_3264:
- 		ret = put_user(task_thread_info(child)->tp_value,
- 				(unsigned long __user *) (unsigned long)
-data);
-@@ -392,7 +330,7 @@ long compat_arch_ptrace(struct task_stru
- 		break;
- 
- 	default:
--		ret = ptrace_request(child, request, addr, data);
-+		ret = compat_ptrace_request(child, request, addr, data);
- 		break;
- 	}
- out:
+Neither are pretty but this looks the better option I agree. Only niggle
+is the use of "_fn" - Linux generally doesn't put types into variable
+names.

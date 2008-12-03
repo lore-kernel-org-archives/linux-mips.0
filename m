@@ -1,47 +1,72 @@
-Received: from accolon.hansenpartnership.com ([76.243.235.52]:17325 "EHLO
-	accolon.hansenpartnership.com") by ftp.linux-mips.org with ESMTP
-	id S24081604AbYLCRIv (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 3 Dec 2008 17:08:51 +0000
-Subject: Re: [PATCH] SCSI: fix the return type of the remove() method in
-	sgiwd93.c
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-In-Reply-To: <46353.88.114.226.209.1228321494.squirrel@webmail.movial.fi>
+Received: from smtp.movial.fi ([62.236.91.34]:16537 "EHLO smtp.movial.fi")
+	by ftp.linux-mips.org with ESMTP id S24084248AbYLCSmW (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 3 Dec 2008 18:42:22 +0000
+Message-ID: <35647.88.114.226.209.1228329736.squirrel@webmail.movial.fi>
+In-Reply-To: <1228327306.5551.36.camel@localhost.localdomain>
 References: <1227140357-29921-1-git-send-email-dmitri.vorobiev@movial.fi>
-	 <46353.88.114.226.209.1228321494.squirrel@webmail.movial.fi>
-Content-Type: text/plain
-Date: Wed, 03 Dec 2008 11:08:43 -0600
-Message-ID: <1228324123.5551.25.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-Path: <James.Bottomley@HansenPartnership.com>
+    <46353.88.114.226.209.1228321494.squirrel@webmail.movial.fi>
+    <1228324123.5551.25.camel@localhost.localdomain>
+    <ac3eb2510812030952k5b57a9c7qb68e3684de170d75@mail.gmail.com>
+    <1228327306.5551.36.camel@localhost.localdomain>
+Date: Wed, 3 Dec 2008 20:42:16 +0200 (EET)
+Subject: Re: [PATCH] SCSI: fix the return type of the remove() method in
+     sgiwd93.c
+From: "Vorobiev Dmitri" <dmitri.vorobiev@movial.fi>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-Path: <dmitri.vorobiev@movial.fi>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Vorobiev Dmitri <dmitri.vorobiev@movial.fi>
-Cc: linux-scsi@vger.kernel.org, linux-mips@linux-mips.org, Greg KH <greg@kroah.com>, Kay Sievers <kay.sievers@vrfy.org>
-Message-ID: <20081203170843.r36cij9iXGDiaht5te_5tSSR3LosL3fPu6o2BLMkSUM@z>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Kay Sievers <kay.sievers@vrfy.org>, Vorobiev Dmitri <dmitri.vorobiev@movial.fi>, linux-scsi@vger.kernel.org, linux-mips@linux-mips.org, Greg KH <greg@kroah.com>
+Message-ID: <20081203184216.68zPmXkU7q5Zx9KJRa61zYl-gOO6NVtjKDdFtf9HKC8@z>
 
-On Wed, 2008-12-03 at 18:24 +0200, Vorobiev Dmitri wrote:
-> > This patch fixes the following compilation warning:
-> >
-> >   CC [M]  drivers/scsi/sgiwd93.o
-> > drivers/scsi/sgiwd93.c:314: warning: initialization from incompatible
-> > pointer type
-> >
-> 
-> Hello James,
-> 
-> Any news about this one? I think this patch should go via linux-scsi,
-> unless you would be insisting on pushing it via linux-mips, in which case
-> I'll politely bug Ralf about it. :)
+> On Wed, 2008-12-03 at 18:52 +0100, Kay Sievers wrote:
+>> On Wed, Dec 3, 2008 at 18:08, James Bottomley
+>> <James.Bottomley@hansenpartnership.com> wrote:
+>> > On Wed, 2008-12-03 at 18:24 +0200, Vorobiev Dmitri wrote:
+>> >> > This patch fixes the following compilation warning:
+>> >> >
+>> >> >   CC [M]  drivers/scsi/sgiwd93.o
+>> >> > drivers/scsi/sgiwd93.c:314: warning: initialization from
+>> incompatible
+>> >> > pointer type
+>> >>
+>> >> Any news about this one? I think this patch should go via linux-scsi,
+>> >> unless you would be insisting on pushing it via linux-mips, in which
+>> case
+>> >> I'll politely bug Ralf about it. :)
+>> >
+>> > Looks OK for the local change.
+>> >
+>> > Globally, having driver->remove and platform_driver->remove return int
+>> > instead of void looks wrong.  Particularly when the only use cases are
+>> > in drivers/base/ and they all ignore the return code.
+>> >
+>> > Greg and Kay ... shouldn't we simply redefine the return values for
+>> the
+>> > remove methods in these structures to return void (and thus match the
+>> > use case)?
+>>
+>> Aren't there many many drivers across the tree, using the "int remove"
+>> version?
+>
+> Yes ... since it's a function prototype.
+>
+> However, if drivers/base simply discards the return, it's a trap we
+> shouldn't be setting.
 
-Looks OK for the local change.
+Hmmm, it does look like the return value is discarded, please see
+drivers/base/dd.c::__device_release_driver() for details.
 
-Globally, having driver->remove and platform_driver->remove return int
-instead of void looks wrong.  Particularly when the only use cases are
-in drivers/base/ and they all ignore the return code.
+Does this not deserve a good cleanup?
 
-Greg and Kay ... shouldn't we simply redefine the return values for the
-remove methods in these structures to return void (and thus match the
-use case)?
+Dmitri
 
-James
+>
+> James
+>
+>
+>
+>

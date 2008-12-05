@@ -1,97 +1,40 @@
-Received: from smtp.movial.fi ([62.236.91.34]:40637 "EHLO smtp.movial.fi")
-	by ftp.linux-mips.org with ESMTP id S24084697AbYLCTKf (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 3 Dec 2008 19:10:35 +0000
-Message-ID: <44471.88.114.226.209.1228331429.squirrel@webmail.movial.fi>
-In-Reply-To: <51634.88.114.226.209.1228331254.squirrel@webmail.movial.fi>
-References: <1227140357-29921-1-git-send-email-dmitri.vorobiev@movial.fi>
-    <46353.88.114.226.209.1228321494.squirrel@webmail.movial.fi>
-    <1228324123.5551.25.camel@localhost.localdomain>
-    <ac3eb2510812030952k5b57a9c7qb68e3684de170d75@mail.gmail.com>
-    <1228327306.5551.36.camel@localhost.localdomain>
-    <35647.88.114.226.209.1228329736.squirrel@webmail.movial.fi>
-    <ac3eb2510812031051k9d9312bma119bfae35afc230@mail.gmail.com>
-    <51634.88.114.226.209.1228331254.squirrel@webmail.movial.fi>
-Date: Wed, 3 Dec 2008 21:10:29 +0200 (EET)
-Subject: Re: [PATCH] SCSI: fix the return type of the remove() method in    
-       sgiwd93.c
-From: "Vorobiev Dmitri" <dmitri.vorobiev@movial.fi>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-Path: <dmitri.vorobiev@movial.fi>
+Received: from vps1.tull.net ([66.180.172.116]:44938 "HELO vps1.tull.net")
+	by ftp.linux-mips.org with SMTP id S24119813AbYLEAhF (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 5 Dec 2008 00:37:05 +0000
+Date: Fri, 05 Dec 2008 11:36:54 +1100
+From: Nick Andrew <nick@nick-andrew.net>
+Subject: Fix incorrect use of loose in vpe.c
+Message-ID: <S24119813AbYLEAhF/20081205003705Z+68377@ftp.linux-mips.org>
+Return-Path: <nick@nick-andrew.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Vorobiev Dmitri <dmitri.vorobiev@movial.fi>
-Cc: Kay Sievers <kay.sievers@vrfy.org>, James Bottomley <james.bottomley@hansenpartnership.com>, linux-scsi@vger.kernel.org, linux-mips@linux-mips.org, Greg KH <greg@kroah.com>
-Message-ID: <20081203191029.tZB0IPPRq4GreV4_Zbr4nHXpfQWFZaPnJWwWFvSICC8@z>
+To: Jonathan Corbet <corbet@lwn.net>, "Kevin D. Kissell" <kevink@mips.com>, Lucas Woods <woodzy@gmail.com>, Nick Andrew <nick@nick-andrew.net>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-ID: <20081205003654.tPO4H6N_SuwVJ2P1vjN89ang1CSzgfo6gF2ARr4E8Wg@z>
 
->> On Wed, Dec 3, 2008 at 19:42, Vorobiev Dmitri
->> <dmitri.vorobiev@movial.fi>
->> wrote:
->>>> On Wed, 2008-12-03 at 18:52 +0100, Kay Sievers wrote:
->>>>> On Wed, Dec 3, 2008 at 18:08, James Bottomley
->>>>> <James.Bottomley@hansenpartnership.com> wrote:
->>>>> > On Wed, 2008-12-03 at 18:24 +0200, Vorobiev Dmitri wrote:
->>>>> >> > This patch fixes the following compilation warning:
->>>>> >> >
->>>>> >> >   CC [M]  drivers/scsi/sgiwd93.o
->>>>> >> > drivers/scsi/sgiwd93.c:314: warning: initialization from
->>>>> incompatible
->>>>> >> > pointer type
->>>>> >>
->>>>> >> Any news about this one? I think this patch should go via
->>>>> linux-scsi,
->>>>> >> unless you would be insisting on pushing it via linux-mips, in
->>>>> which
->>>>> case
->>>>> >> I'll politely bug Ralf about it. :)
->>>>> >
->>>>> > Looks OK for the local change.
->>>>> >
->>>>> > Globally, having driver->remove and platform_driver->remove return
->>>>> int
->>>>> > instead of void looks wrong.  Particularly when the only use cases
->>>>> are
->>>>> > in drivers/base/ and they all ignore the return code.
->>>>> >
->>>>> > Greg and Kay ... shouldn't we simply redefine the return values for
->>>>> the
->>>>> > remove methods in these structures to return void (and thus match
->>>>> the
->>>>> > use case)?
->>>>>
->>>>> Aren't there many many drivers across the tree, using the "int
->>>>> remove"
->>>>> version?
->>>>
->>>> Yes ... since it's a function prototype.
->>>>
->>>> However, if drivers/base simply discards the return, it's a trap we
->>>> shouldn't be setting.
->>>
->>> Hmmm, it does look like the return value is discarded, please see
->>> drivers/base/dd.c::__device_release_driver() for details.
->>>
->>> Does this not deserve a good cleanup?
->>
->> Sure, it might be. If you want to patch hundreds of files, send
->> patches to maintainers, patch drivers you can not even compile, we
->> could do that.
->>
->> We are already in the middle of a ~400 files "struct device" bus_id
->> conversion, and only very few maintainers respond to these patches. We
->> also never got any reply to the SCSI bus_id patch we sent weeks ago.
->> :)
->>
->> Even when it's "a good cleanup", with maintainers not responding, and
->> supporting it, it's a real pain to change things like this. But, if
->> you want to go ahead and do that, let us know.
->
-> Well, I don't really want to look like a coward, but I guess this a good
-> project for Kernel Janitors, and I'm Cc:ing their mailing list now.
+Fix incorrect use of loose in vpe.c
 
-...and meanwhile, could you James please apply the original patch to
-silence the compiler warning until the void (*remove)() is introduced?
+From: Nick Andrew <nick@nick-andrew.net>
 
-Thanks,
-Dmitri
+It should be 'lose', not 'loose'.
+
+Signed-off-by: Nick Andrew <nick@nick-andrew.net>
+---
+
+ arch/mips/kernel/vpe.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+
+diff --git a/arch/mips/kernel/vpe.c b/arch/mips/kernel/vpe.c
+index 972b2d2..a1b3da6 100644
+--- a/arch/mips/kernel/vpe.c
++++ b/arch/mips/kernel/vpe.c
+@@ -1134,7 +1134,7 @@ static int vpe_release(struct inode *inode, struct file *filp)
+ 
+ 	/* It's good to be able to run the SP and if it chokes have a look at
+ 	   the /dev/rt?. But if we reset the pointer to the shared struct we
+-	   loose what has happened. So perhaps if garbage is sent to the vpe
++	   lose what has happened. So perhaps if garbage is sent to the vpe
+ 	   device, use it as a trigger for the reset. Hopefully a nice
+ 	   executable will be along shortly. */
+ 	if (ret < 0)

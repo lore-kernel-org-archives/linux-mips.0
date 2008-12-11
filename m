@@ -1,86 +1,96 @@
-Received: from sj-iport-1.cisco.com ([171.71.176.70]:32967 "EHLO
-	sj-iport-1.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S24163331AbYLFKbR convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Sat, 6 Dec 2008 10:31:17 +0000
-Received: from sj-core-1.cisco.com (sj-core-1.cisco.com [171.71.177.237])
-	by sj-dkim-1.cisco.com (8.12.11/8.12.11) with ESMTP id mB6AVAHd002674
-	for <linux-mips@linux-mips.org>; Sat, 6 Dec 2008 02:31:10 -0800
-Received: from sausatlsmtp1.sciatl.com (sausatlsmtp1.cisco.com [192.133.217.33])
-	by sj-core-1.cisco.com (8.13.8/8.13.8) with ESMTP id mB6AV6jx010146
-	for <linux-mips@linux-mips.org>; Sat, 6 Dec 2008 10:31:07 GMT
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: question regarding system memory whatever
-Date: Fri, 5 Dec 2008 21:46:12 -0500
-Message-ID: <1C18506EA6ACF94097F87E8D358338F501F558@sausatlexch4.corp.sa.net>
-In-Reply-To: <20081205181737.2fc890bc@ripper.onstor.net>
+Received: from exch1.onstor.com ([66.201.51.80]:27588 "EHLO exch1.onstor.com")
+	by ftp.linux-mips.org with ESMTP id S24207725AbYLKSvj (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 11 Dec 2008 18:51:39 +0000
+Date: Thu, 11 Dec 2008 10:51:28 -0800
+From: Andrew Sharp <andy.sharp@onstor.com>
+Subject: Re: question regarding system memory whatever
+Message-ID: <20081211105128.77be77d1@ripper.onstor.net>
+In-Reply-To: <493D52D3.3000503@cisco.com>
 References: <20081205181737.2fc890bc@ripper.onstor.net>
-From: "VomLehn, David" <dvomlehn@cisco.com>
-Return-Path: <dvomlehn@cisco.com>
+ <1C18506EA6ACF94097F87E8D358338F501F557@sausatlexch4.corp.sa.net>
+ <493D52D3.3000503@cisco.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+Return-Path: <andy.sharp@onstor.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Andrew Sharp <andy.sharp@onstor.com>, linux-mips@linux-mips.org
-Message-ID: <20081206024612.c1TCD8_SIJIjr6Leo1Rx3SNwcIFkP9gyMBdxJ7IK6dk@z>
+Cc: "linux-mips@" <linux-mips.org linux-mips@linux-mips.org>
+Message-ID: <20081211185128.uDSzebD7XdI2tSYhPBTZCwItkWojnhvPyxCRkWaAsOA@z>
 
-(Resend, the linux-mips email address was mangled the first time)
- 
-Er, it's kind of a good news/bad news joke...
+Resending because list address was garbled on the first try.
 
-The bad news is that MIPS Linux isn't smart enough, at least as of
-2.6.24, to use memory that precedes the kernel.
+On Mon, 8 Dec 2008 09:01:07 -0800 Michael Sundius <msundius@cisco.com>
+wrote:
 
-The good news is that we've got changes that will handle this.
+> well, attached is a patch for arch/mips/kernel/setup.c
+> 
+> we've done lots of other stuff to this file this but I think  this is 
+> the essential
+> part you need to make sure that the bootmem allocator knows
+> about the memory before your kernel.
+> 
+> note that I  moved the call to memory_present() not for this issue but
+> to make sparsemem work (though I've changed that again
+> to call memory_present() from add_memory_region() since it
+> seems to make more sense to call it there.
+> 
+> you may also want to think about using sparse memory model
+> as it will likely give your ap developers even more room.
 
-The bad news is that I'm so backed up even getting a basic patchset to
-add our platform to the kernel mainline that I don't know how long it
-will take until I'm be able to get these additional patches out.
+Well thanks for this, it seems pretty straight forward.  I thought
+maybe there was something more nefarious preventing this from working
+so I'll work it in and see how it goes.
 
-I'll cc the guy who did the changes to see if he can extract a patch for
-this.
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Andrew Sharp
-> Sent: Friday, December 05, 2008 6:18 PM
-> To: linux-mips@
-> Subject: question regarding system memory whatever
-> 
-> I recently changed plat_mem_setup() or equivalent in my platform code
-> to not mark the first 32M of memory as BOOT_MEM_ROM_DATA and instead
-> have the first BOOT_MEM_RAM memory region start at 0.  Here is the two
-> lines of output from mem_init() for the two different versions:
-> 
-> Memory: 433408k/475136k available (2202k kernel code, 41556k 
-> reserved, 690k data, 112k init, 0k highmem)
-> 
-> Memory: 433408k/507904k available (2202k kernel code, 74324k 
-> reserved, 689k data, 112k init, 0k highmem)
-> 
-> As you can see, the 32M got added to "reserved" memory (?) and only
-> added to the right hand number of the "available".  OK, so what does
-> that mean?  I promised our monkey userspace programmers that they
-> would have another 32M of memory to slosh around in, but before I
-> release this change on them I'd like to know what these numbers are
-> telling me.
-> 
-> This is on 2.6.22 from l.m.o on a Sibyte 1125 in 64bit LE.
-> CONFIG_FLATMEM=y which was the fashion at the time.
-> 
-> Cheers,
-> 
-> a
-> 
-> 
+Cheers,
 
+a
 
-
-     - - - - -                              Cisco                            - - - - -         
-This e-mail and any attachments may contain information which is confidential, 
-proprietary, privileged or otherwise protected by law. The information is solely 
-intended for the named addressee (or a person responsible for delivering it to 
-the addressee). If you are not the intended recipient of this message, you are 
-not authorized to read, print, retain, copy or disseminate this message or any 
-part of it. If you have received this e-mail in error, please notify the sender 
-immediately by return e-mail and delete it from your computer.
+> good luck.
+> Mike
+> 
+> VomLehn, David wrote:
+> > Er, it's kind of a good news/bad news joke...
+> >
+> > The bad news is that MIPS Linux isn't smart enough, at least as of
+> > 2.6.24, to use memory that precedes the kernel.
+> >
+> > The good news is that we've got changes that will handle this.
+> >
+> > The bad news is that I'm so backed up even getting a basic patchset
+> > to add our platform to the kernel mainline that I don't know how
+> > long it will take until I'm be able to get these additional patches
+> > out.
+> >
+> > I'll cc the guy who did the changes to see if he can extract a
+> > patch for this.
+> >
+> >   
+> >> -----Original Message-----
+> >> From: linux-mips-bounce@linux-mips.org 
+> >> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Andrew Sharp
+> >> Sent: Friday, December 05, 2008 6:18 PM
+> >> To: linux-mips@
+> >> Subject: question regarding system memory whatever
+> >>
+> >> I recently changed plat_mem_setup() or equivalent in my platform
+> >> code to not mark the first 32M of memory as BOOT_MEM_ROM_DATA and
+> >> instead have the first BOOT_MEM_RAM memory region start at 0.
+> >> Here is the two lines of output from mem_init() for the two
+> >> different versions:
+> >>
+> >> Memory: 433408k/475136k available (2202k kernel code, 41556k 
+> >> reserved, 690k data, 112k init, 0k highmem)
+> >>
+> >> Memory: 433408k/507904k available (2202k kernel code, 74324k 
+> >> reserved, 689k data, 112k init, 0k highmem)
+> >>
+> >> As you can see, the 32M got added to "reserved" memory (?) and only
+> >> added to the right hand number of the "available".  OK, so what
+> >> does that mean?  I promised our monkey userspace programmers that
+> >> they would have another 32M of memory to slosh around in, but
+> >> before I release this change on them I'd like to know what these
+> >> numbers are telling me.
+> >>
+> >> This is on 2.6.22 from l.m.o on a Sibyte 1125 in 64bit LE.
+> >> CONFIG_FLATMEM=y which was the fashion at the time.

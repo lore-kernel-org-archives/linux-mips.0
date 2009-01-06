@@ -1,35 +1,79 @@
-Received: from smtp1.dnsmadeeasy.com ([205.234.170.134]:39070 "EHLO
-	smtp1.dnsmadeeasy.com") by ftp.linux-mips.org with ESMTP
-	id S24063297AbZAEDfT convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 5 Jan 2009 03:35:19 +0000
+Received: from rtp-iport-1.cisco.com ([64.102.122.148]:33128 "EHLO
+	rtp-iport-1.cisco.com") by ftp.linux-mips.org with ESMTP
+	id S21102852AbZAFVqf convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 6 Jan 2009 21:46:35 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE:  SMP8634 Linux boot
-Date: Sun, 4 Jan 2009 19:35:05 -0800
-Message-ID: <01049E563C8ECC43AD6B53A5AF419B380128FE3B@avtrex-server2.hq2.avtrex.com>
-In-Reply-To: <gjqihv$h6m$1@ger.gmane.org>
-From: "Mark Edson" <medson@avtrex.com>
-Return-Path: <medson@avtrex.com>
+Subject: RE: [PATCH] MIPS: unsigned result is always greater than 0
+Date: Tue, 6 Jan 2009 16:46:19 -0500
+Message-ID: <FF038EB85946AA46B18DFEE6E6F8A2896606BB@xmb-rtp-218.amer.cisco.com>
+In-Reply-To: <495E2E47.6080605@gmail.com>
+References: <495E2E47.6080605@gmail.com>
+From: "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
+Return-Path: <dvomlehn@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Andi <opencode@gmx.net>, linux-mips@linux-mips.org
-Message-ID: <20090105033505.rwtb8YwHO2jOuLfBMAGj16WGT3-uxSa2HcZk8kBnJKI@z>
+To: Roel Kluin <roel.kluin@gmail.com>, ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org
+Message-ID: <20090106214619.zUKLrLzjqwlYjn62SG6mqIeT6ank_90s3WlZGNskxkg@z>
 
-We use MAJIC-LT boot loader.  Our steps on the MAJIC-LT host are:
-	$ cd /opt/edtm/targets/sigma_vantage
-	$ /opt/edtm/bin/monice -v4kec -d majic-lt:e -l    (monice should
-report connected)
-	MON> ew 0xa003fffc =3
-	MON> ew 0xa003fffc =2
-	MON> ew 0xa0030000 =0xE34111BA
-	MON> ew 0xa003fffc =0xa4444
-	MON> ew 0xa003fffc =0
-	MON> ew 0xa006f000 = 0x60000
-	MON> l yamon.elf
-	MON> l reset.elf
-	Mon> g 
+ 
 
-And that gives us a YAMON> prompt on the serial console of the 8634.
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org 
+> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Roel Kluin
+> Sent: Friday, January 02, 2009 7:10 AM
+> To: ralf@linux-mips.org
+> Cc: linux-mips@linux-mips.org
+> Subject: [PATCH] MIPS: unsigned result is always greater than 0
+> 
+> unsigned result is always greater than 0
+> 
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> ---
+> I cannot determine whether the same bug occurs as well in assembly.
+> Also shouldn't similar checks occur in atomic64_sub_return and in
+> atomic64_add_return for negative values of i?
+> 
+> diff --git a/arch/mips/include/asm/atomic.h 
+> b/arch/mips/include/asm/atomic.h
+> index 1232be3..3cd07a9 100644
+> --- a/arch/mips/include/asm/atomic.h
+> +++ b/arch/mips/include/asm/atomic.h
+> @@ -296,9 +296,10 @@ static __inline__ int 
+> atomic_sub_if_positive(int i, atomic_t * v)
+>  
+>  		raw_local_irq_save(flags);
+>  		result = v->counter;
+> -		result -= i;
+> -		if (result >= 0)
+> +		if (i <= result) {
+> +			result -= i;
+>  			v->counter = result;
+> +		}
+>  		raw_local_irq_restore(flags);
+>  	}
+>  
+> @@ -677,9 +678,10 @@ static __inline__ long 
+> atomic64_sub_if_positive(long i, atomic64_t * v)
+>  
+>  		raw_local_irq_save(flags);
+>  		result = v->counter;
+> -		result -= i;
+> -		if (result >= 0)
+> +		if (i >= result) {
+> +			result -= i;
+>  			v->counter = result;
+> +		}
+>  		raw_local_irq_restore(flags);
+>  	}
+
+I agree that the code as it exists is wrong, but, as I see it, the
+problem is that the type of result should be changed from unsigned long
+to int. This fixes the comparison so it works correctly. In addition,
+such a change means that result would be the same type as the counter
+element of atomic_t, avoiding possible surprises should longs be larger
+than ints.

@@ -1,79 +1,91 @@
-Received: from rtp-iport-1.cisco.com ([64.102.122.148]:33128 "EHLO
-	rtp-iport-1.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S21102852AbZAFVqf convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 6 Jan 2009 21:46:35 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: [PATCH] MIPS: unsigned result is always greater than 0
-Date: Tue, 6 Jan 2009 16:46:19 -0500
-Message-ID: <FF038EB85946AA46B18DFEE6E6F8A2896606BB@xmb-rtp-218.amer.cisco.com>
-In-Reply-To: <495E2E47.6080605@gmail.com>
-References: <495E2E47.6080605@gmail.com>
-From: "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
-Return-Path: <dvomlehn@cisco.com>
+Received: from relay3.sgi.com ([192.48.171.31]:36230 "EHLO relay.sgi.com")
+	by ftp.linux-mips.org with ESMTP id S21103411AbZALWFa (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 12 Jan 2009 22:05:30 +0000
+Message-ID: <20090112220520.303833000@polaris-admin.engr.sgi.com>
+References: <20090112220519.566749000@polaris-admin.engr.sgi.com>
+Date: Mon, 12 Jan 2009 14:05:24 -0800
+From: Mike Travis <travis@sgi.com>
+Subject: [PATCH 5/8] mips irq: update mips for new irq_desc
+Content-Disposition: inline; filename=irq:update-mips-to-new-irq_desc
+Return-Path: <travis@cthulhu.engr.sgi.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Roel Kluin <roel.kluin@gmail.com>, ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20090106214619.zUKLrLzjqwlYjn62SG6mqIeT6ank_90s3WlZGNskxkg@z>
+To: Ingo Molnar <mingo@redhat.com>
+Cc: Rusty Russell <rusty@rustcorp.com.au>, Andrew Morton <akpm@linux-foundation.org>, Jack Steiner <steiner@sgi.com>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20090112220524.x_RjWTXAG4ctx5pXWeHPo1AticI-StDsLDJGwFiuig4@z>
 
+Impact: cleanup, update to new cpumask API
+
+Irq_desc.affinity and irq_desc.pending_mask are now cpumask_var_t's
+so access to them should be using the new cpumask API.
+
+Signed-off-by: Mike Travis <travis@sgi.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: <linux-mips@linux-mips.org>
+---
+ arch/mips/include/asm/irq.h      |    2 +-
+ arch/mips/kernel/irq-gic.c       |    2 +-
+ arch/mips/kernel/smtc.c          |    2 +-
+ arch/mips/mti-malta/malta-smtc.c |    5 +++--
+ 4 files changed, 6 insertions(+), 5 deletions(-)
+
+--- linux-2.6-for-ingo.orig/arch/mips/include/asm/irq.h
++++ linux-2.6-for-ingo/arch/mips/include/asm/irq.h
+@@ -66,7 +66,7 @@ extern void smtc_forward_irq(unsigned in
+  */
+ #define IRQ_AFFINITY_HOOK(irq)						\
+ do {									\
+-    if (!cpu_isset(smp_processor_id(), irq_desc[irq].affinity)) {	\
++    if (!cpumask_test_cpu(smp_processor_id(), irq_desc[irq].affinity)) {\
+ 	smtc_forward_irq(irq);						\
+ 	irq_exit();							\
+ 	return;								\
+--- linux-2.6-for-ingo.orig/arch/mips/kernel/irq-gic.c
++++ linux-2.6-for-ingo/arch/mips/kernel/irq-gic.c
+@@ -187,7 +187,7 @@ static void gic_set_affinity(unsigned in
+ 		set_bit(irq, pcpu_masks[first_cpu(tmp)].pcpu_mask);
  
+ 	}
+-	irq_desc[irq].affinity = *cpumask;
++	cpumask_copy(irq_desc[irq].affinity, cpumask);
+ 	spin_unlock_irqrestore(&gic_lock, flags);
+ 
+ }
+--- linux-2.6-for-ingo.orig/arch/mips/kernel/smtc.c
++++ linux-2.6-for-ingo/arch/mips/kernel/smtc.c
+@@ -686,7 +686,7 @@ void smtc_forward_irq(unsigned int irq)
+ 	 * and efficiency, we just pick the easiest one to find.
+ 	 */
+ 
+-	target = first_cpu(irq_desc[irq].affinity);
++	target = cpumask_first(irq_desc[irq].affinity);
+ 
+ 	/*
+ 	 * We depend on the platform code to have correctly processed
+--- linux-2.6-for-ingo.orig/arch/mips/mti-malta/malta-smtc.c
++++ linux-2.6-for-ingo/arch/mips/mti-malta/malta-smtc.c
+@@ -116,7 +116,7 @@ struct plat_smp_ops msmtc_smp_ops = {
+ 
+ void plat_set_irq_affinity(unsigned int irq, const struct cpumask *affinity)
+ {
+-	cpumask_t tmask = *affinity;
++	cpumask_t tmask;
+ 	int cpu = 0;
+ 	void smtc_set_irq_affinity(unsigned int irq, cpumask_t aff);
+ 
+@@ -139,11 +139,12 @@ void plat_set_irq_affinity(unsigned int 
+ 	 * be made to forward to an offline "CPU".
+ 	 */
+ 
++	cpumask_copy(&tmask, affinity);
+ 	for_each_cpu(cpu, affinity) {
+ 		if ((cpu_data[cpu].vpe_id != 0) || !cpu_online(cpu))
+ 			cpu_clear(cpu, tmask);
+ 	}
+-	irq_desc[irq].affinity = tmask;
++	cpumask_copy(irq_desc[irq].affinity, &tmask);
+ 
+ 	if (cpus_empty(tmask))
+ 		/*
 
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Roel Kluin
-> Sent: Friday, January 02, 2009 7:10 AM
-> To: ralf@linux-mips.org
-> Cc: linux-mips@linux-mips.org
-> Subject: [PATCH] MIPS: unsigned result is always greater than 0
-> 
-> unsigned result is always greater than 0
-> 
-> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
-> ---
-> I cannot determine whether the same bug occurs as well in assembly.
-> Also shouldn't similar checks occur in atomic64_sub_return and in
-> atomic64_add_return for negative values of i?
-> 
-> diff --git a/arch/mips/include/asm/atomic.h 
-> b/arch/mips/include/asm/atomic.h
-> index 1232be3..3cd07a9 100644
-> --- a/arch/mips/include/asm/atomic.h
-> +++ b/arch/mips/include/asm/atomic.h
-> @@ -296,9 +296,10 @@ static __inline__ int 
-> atomic_sub_if_positive(int i, atomic_t * v)
->  
->  		raw_local_irq_save(flags);
->  		result = v->counter;
-> -		result -= i;
-> -		if (result >= 0)
-> +		if (i <= result) {
-> +			result -= i;
->  			v->counter = result;
-> +		}
->  		raw_local_irq_restore(flags);
->  	}
->  
-> @@ -677,9 +678,10 @@ static __inline__ long 
-> atomic64_sub_if_positive(long i, atomic64_t * v)
->  
->  		raw_local_irq_save(flags);
->  		result = v->counter;
-> -		result -= i;
-> -		if (result >= 0)
-> +		if (i >= result) {
-> +			result -= i;
->  			v->counter = result;
-> +		}
->  		raw_local_irq_restore(flags);
->  	}
-
-I agree that the code as it exists is wrong, but, as I see it, the
-problem is that the type of result should be changed from unsigned long
-to int. This fixes the comparison so it works correctly. In addition,
-such a change means that result would be the same type as the counter
-element of atomic_t, avoiding possible surprises should longs be larger
-than ints.
+-- 

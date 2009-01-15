@@ -1,78 +1,37 @@
-Received: from yx-out-1718.google.com ([74.125.44.154]:7651 "EHLO
-	yx-out-1718.google.com") by ftp.linux-mips.org with ESMTP
-	id S21365088AbZANWUd (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 14 Jan 2009 22:20:33 +0000
-Received: by yx-out-1718.google.com with SMTP id 36so310251yxh.24
-        for <linux-mips@linux-mips.org>; Wed, 14 Jan 2009 14:20:31 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <496E615E.9060006@ru.mvista.com>
-References: <1231943742.8457.6.camel@EPBYMINW0568>
-	 <496E615E.9060006@ru.mvista.com>
-Date: Thu, 15 Jan 2009 00:20:30 +0200
-Message-ID: <fce2a370901141420g64194488h85f6ef777ab57083@mail.gmail.com>
-Subject: Re: [PATCH] Don't use ttyS* serial device name for board specific
-	PNX8XXX UART serial
-From: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Received: from earthlight.etchedpixels.co.uk ([81.2.110.250]:32722 "EHLO
+	lxorguk.ukuu.org.uk") by ftp.linux-mips.org with ESMTP
+	id S21365986AbZAOVNT (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 15 Jan 2009 21:13:19 +0000
+Date: Thu, 15 Jan 2009 21:13:33 +0000
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [PATCH 2/2] libata: New driver for OCTEON SOC Compact Flash
+ interface (v6).
+Message-ID: <20090115211333.1440db46@lxorguk.ukuu.org.uk>
+In-Reply-To: <1232053053-16232-2-git-send-email-ddaney@caviumnetworks.com>
+References: <496FA2E9.9030403@caviumnetworks.com>
+	<1232053053-16232-2-git-send-email-ddaney@caviumnetworks.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-Path: <ihar.hrachyshka@gmail.com>
+Return-Path: <alan@lxorguk.ukuu.org.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20090114222030.Id9X7ng7gk7iGyOZFW5wuKHSBaX5QDVgmSkQis5Jyi8@z>
+To: David Daney <ddaney@caviumnetworks.com>
+Cc: linux-ide@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20090115211333.8-rB6bJgSh-TBDeEYxie7D7Syy7UEiJX327Hhsqghdg@z>
 
-On Thu, Jan 15, 2009 at 12:04 AM, Sergei Shtylyov
-<sshtylyov@ru.mvista.com> wrote:
-> Hello.
->
-> Ihar Hrachyshka wrote:
->>
->> I think that's a better solution for the problem I said so please commit
->> this patch rather previous one...
->>
->
->  Such comments are to be placed after --- tearline. Using several such
-> tearlines makes it harder to apply your patch...
->  And why do you expect the MIPS maintainer to commit a patch to the serial
-> driver? Such patches should be addressed to linux-serial@vger.kernel.org and
-> (most probably) Alan Cox...
+> +	reg_cfg.s.orbit = 0;	/* Don't combine with previos region */
 
-I thought that if it's a driver for mips piece of hardware then I need
-to send it to mips guys. Ok, I'll send it to linux-serial.
+previous ...
 
->
->> ---
->>
->> Don't use ttyS[0-1] serial device name for board specific PNX8XXX UART
->> serial. Rather create ttyPNX[0-1]. Also changed minor number to be
->> different with sa1100 serial driver one.
->>
->> Signed-off-by: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>
->>
->
-> [...]
->>
->> diff --git a/drivers/serial/pnx8xxx_uart.c b/drivers/serial/pnx8xxx_uart.c
->> index 22e30d2..96870f1 100644
->> --- a/drivers/serial/pnx8xxx_uart.c
->> +++ b/drivers/serial/pnx8xxx_uart.c
->> @@ -34,9 +34,8 @@
->>  #include <asm/io.h>
->>  #include <asm/irq.h>
->>  -/* We'll be using StrongARM sa1100 serial port major/minor */
->>  #define SERIAL_PNX8XXX_MAJOR   204
->> -#define MINOR_START            5
->> +#define MINOR_START            96
->>
->
->  This major-minor pair is reserved for the Altix serial cards. Have you
-> tried registering the minor on http://www.lanana.org
 
-Thanks for info. I sent the request.
+> +static unsigned int octeon_cf_qc_issue(struct ata_queued_cmd *qc)
+> +	case ATAPI_PROT_DMA:
+> +		dev_err(ap->dev, "Error, ATAPI not supported\n");
+> +		BUG();
 
->
-> WBR, Sergei
->
->
->
+Looks as if you should also have a check_atapi_dma function that always
+returns non zero (or a mode filter for atapi -> pio)
+
+
+Looks good to me.

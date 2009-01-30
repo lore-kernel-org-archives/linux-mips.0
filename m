@@ -1,60 +1,63 @@
-Received: from rtp-iport-1.cisco.com ([64.102.122.148]:50047 "EHLO
+Received: from rtp-iport-1.cisco.com ([64.102.122.148]:29201 "EHLO
 	rtp-iport-1.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S21365766AbZA3Djr convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 30 Jan 2009 03:39:47 +0000
+	id S21366066AbZA3Snw convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Fri, 30 Jan 2009 18:43:52 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: memcpy and prefetch
-Date: Thu, 29 Jan 2009 22:39:37 -0500
-Message-ID: <FF038EB85946AA46B18DFEE6E6F8A2898237E1@xmb-rtp-218.amer.cisco.com>
-In-Reply-To: <20090129155854.GC29521@linux-mips.org>
-References: <20090128103753.GC2234@linux-mips.org> <20090129.002850.118974677.anemo@mba.ocn.ne.jp> <20090128183047.GA1691@linux-mips.org> <20090129.213613.128618730.anemo@mba.ocn.ne.jp> <20090129155854.GC29521@linux-mips.org>
+Subject: [PATCH] MIPS: Allocate exception vector on 64 KiB boundary
+Date: Fri, 30 Jan 2009 13:43:42 -0500
+Message-ID: <FF038EB85946AA46B18DFEE6E6F8A28982392E@xmb-rtp-218.amer.cisco.com>
 From: "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
 Return-Path: <dvomlehn@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>, Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Cc: ddaney@caviumnetworks.com, "Michael Sundius -X (msundius - Yoh Services LLC at Cisco)" <msundius@cisco.com>, linux-mips@linux-mips.org, msundius@sundius.com
-Message-ID: <20090130033937.AlLY_KkwKj7qOpbKHnU-T4axrXbQfisTyrvH-wwjgBA@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org, David Daney <ddaney@caviumnetworks.com>
+Message-ID: <20090130184342.LygTdwlFUCNWrSXFLbfP1KUVGKKJfSQCf9xJdgyzAOo@z>
 
-> The idea here is that we have two issues with prefetching:
-> 
->  o Prefetching beyond the end of the source or destination range on a
->    in-coherent range might bring back stale values from a DMA I/O
->    buffer resulting in data corruption.  Hardware DMA coherency will
->    avoid this issue.
-> 
->  o IP27 has full blown hardware coherency.  Historically 
-> CONFIG_DMA_COHERENT
->    was not able to cope with something of the complexity of IP27, so
->    there was a separate CONFIG_DMA_IP27 and the broken logic 
-> expression
->    was meant to treat CONFIG_DMA_COHERENT and CONFIG_DMA_IP27 the same
->    as for prefetching.
-> 
->  o Prefetching beyond the end of physical memory can cause 
-> exceptions on
->    some systems.  The Malta has this problem.
-> 
-> Thus no prefetching on Malta or non-coherent systems.
-> 
->   Ralf
+Fix problem with code that incorrectly modifies ebase.
 
-It seems to me as though we could avoid the first and third problems
-with a memcpy that doesn't prefetch past the end of the buffer, the
-thought being that if we are reading or writing a memory region, we
-really shouldn't be doing DMA to or from that location. This would
-probably be slightly suboptimal, performance-wise, for those systems
-that do have DMA coherence. It seems as though we could have two
-mutually exclusive versions, selectable via the CONFIG_DMA_COHERENT
-flag. For those of us without DMA coherence, it would probably give our
-memcpy performance a bit of a kick in the pants over using no prefetch
-at all.
+Commit 566f74f6b2f8b85d5b8d6caaf97e5672cecd3e3e had a change that
+incorrectly
+modified ebase. This backs out the lines that modified ebase and then
+modified
+the code to allocate the exception vector with an alignment that
+guarantees
+that bits 15..12 are always zero. This is a good thing in any case as it
+will work regardless of the interrupt vector spacing, and may be what
+the
+original code was attempting to accomplish.
 
-If this makes sense, we might be able to sign up to do the work. Anyone
-have a good, caching-aware memcpy test?
---
-David VomLehn, dvomlehn@cisco.com
+Signed-off-by: David VomLehn <dvomlehn@cisco.com>
+---
+ arch/mips/kernel/traps.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 3530561..a0ce7fc 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -1571,8 +1571,6 @@ void __cpuinit set_uncached_handler(unsigned long
+offset, void *addr,
+ #ifdef CONFIG_64BIT
+ 	unsigned long uncached_ebase = TO_UNCAC(ebase);
+ #endif
+-	if (cpu_has_mips_r2)
+-		ebase += (read_c0_ebase() & 0x3ffff000);
+ 
+ 	if (!addr)
+ 		panic(panic_null_cerr);
+@@ -1605,7 +1603,8 @@ void __init trap_init(void)
+ #endif
+ 
+ 	if (cpu_has_veic || cpu_has_vint)
+-		ebase = (unsigned long) alloc_bootmem_low_pages(0x200 +
+VECTORSPACING*64);
++		ebase = (unsigned long)
++			__alloc_bootmem(0x200 + VECTORSPACING*64, 1 <<
+16, 0);
+ 	else {
+ 		ebase = CAC_BASE;
+ 		if (cpu_has_mips_r2)

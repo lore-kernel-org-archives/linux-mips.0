@@ -1,63 +1,79 @@
-Received: from rtp-iport-1.cisco.com ([64.102.122.148]:29201 "EHLO
-	rtp-iport-1.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S21366066AbZA3Snw convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 30 Jan 2009 18:43:52 +0000
-Content-class: urn:content-classes:message
+Received: from h5.dl5rb.org.uk ([81.2.74.5]:12943 "EHLO h5.dl5rb.org.uk")
+	by ftp.linux-mips.org with ESMTP id S21103491AbZBDV15 (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 4 Feb 2009 21:27:57 +0000
+Date: Wed, 4 Feb 2009 21:27:46 +0000
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: memcpy and prefetch
+Message-ID: <20090204212746.GB13138@linux-mips.org>
+References: <20090128103753.GC2234@linux-mips.org> <20090129.002850.118974677.anemo@mba.ocn.ne.jp> <20090128183047.GA1691@linux-mips.org> <20090129.213613.128618730.anemo@mba.ocn.ne.jp> <20090129155854.GC29521@linux-mips.org> <FF038EB85946AA46B18DFEE6E6F8A2898237E1@xmb-rtp-218.amer.cisco.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: [PATCH] MIPS: Allocate exception vector on 64 KiB boundary
-Date: Fri, 30 Jan 2009 13:43:42 -0500
-Message-ID: <FF038EB85946AA46B18DFEE6E6F8A28982392E@xmb-rtp-218.amer.cisco.com>
-From: "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
-Return-Path: <dvomlehn@cisco.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <FF038EB85946AA46B18DFEE6E6F8A2898237E1@xmb-rtp-218.amer.cisco.com>
+Return-Path: <ralf@h5.dl5rb.org.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org, ralf@linux-mips.org, David Daney <ddaney@caviumnetworks.com>
-Message-ID: <20090130184342.LygTdwlFUCNWrSXFLbfP1KUVGKKJfSQCf9xJdgyzAOo@z>
+To: "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
+Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, ddaney@caviumnetworks.com, "Michael Sundius -X (msundius - Yoh Services LLC at Cisco)" <msundius@cisco.com>, linux-mips@linux-mips.org, msundius@sundius.com
+Message-ID: <20090204212746.9Rr0GNANjdFeGfUCyDhLwepLKPJqQ7_zTvE57PSDdk8@z>
 
-Fix problem with code that incorrectly modifies ebase.
+On Thu, Jan 29, 2009 at 10:39:37PM -0500, David VomLehn (dvomlehn) wrote:
 
-Commit 566f74f6b2f8b85d5b8d6caaf97e5672cecd3e3e had a change that
-incorrectly
-modified ebase. This backs out the lines that modified ebase and then
-modified
-the code to allocate the exception vector with an alignment that
-guarantees
-that bits 15..12 are always zero. This is a good thing in any case as it
-will work regardless of the interrupt vector spacing, and may be what
-the
-original code was attempting to accomplish.
+> > The idea here is that we have two issues with prefetching:
+> > 
+> >  o Prefetching beyond the end of the source or destination range on a
+> >    in-coherent range might bring back stale values from a DMA I/O
+> >    buffer resulting in data corruption.  Hardware DMA coherency will
+> >    avoid this issue.
+> > 
+> >  o IP27 has full blown hardware coherency.  Historically 
+> > CONFIG_DMA_COHERENT
+> >    was not able to cope with something of the complexity of IP27, so
+> >    there was a separate CONFIG_DMA_IP27 and the broken logic 
+> > expression
+> >    was meant to treat CONFIG_DMA_COHERENT and CONFIG_DMA_IP27 the same
+> >    as for prefetching.
+> > 
+> >  o Prefetching beyond the end of physical memory can cause 
+> > exceptions on
+> >    some systems.  The Malta has this problem.
+> > 
+> > Thus no prefetching on Malta or non-coherent systems.
 
-Signed-off-by: David VomLehn <dvomlehn@cisco.com>
----
- arch/mips/kernel/traps.c |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
+> It seems to me as though we could avoid the first and third problems
+> with a memcpy that doesn't prefetch past the end of the buffer, the
+> thought being that if we are reading or writing a memory region, we
+> really shouldn't be doing DMA to or from that location. This would
+> probably be slightly suboptimal, performance-wise, for those systems
+> that do have DMA coherence. It seems as though we could have two
+> mutually exclusive versions, selectable via the CONFIG_DMA_COHERENT
+> flag. For those of us without DMA coherence, it would probably give our
+> memcpy performance a bit of a kick in the pants over using no prefetch
+> at all.
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 3530561..a0ce7fc 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -1571,8 +1571,6 @@ void __cpuinit set_uncached_handler(unsigned long
-offset, void *addr,
- #ifdef CONFIG_64BIT
- 	unsigned long uncached_ebase = TO_UNCAC(ebase);
- #endif
--	if (cpu_has_mips_r2)
--		ebase += (read_c0_ebase() & 0x3ffff000);
- 
- 	if (!addr)
- 		panic(panic_null_cerr);
-@@ -1605,7 +1603,8 @@ void __init trap_init(void)
- #endif
- 
- 	if (cpu_has_veic || cpu_has_vint)
--		ebase = (unsigned long) alloc_bootmem_low_pages(0x200 +
-VECTORSPACING*64);
-+		ebase = (unsigned long)
-+			__alloc_bootmem(0x200 + VECTORSPACING*64, 1 <<
-16, 0);
- 	else {
- 		ebase = CAC_BASE;
- 		if (cpu_has_mips_r2)
+Unnecessary prefetching can come at a high cost due to memory latencies
+and cache pollution.  So you want to avoid unnecessary prefetches rather
+than hoping for hardware cache coherency to sorts out the mess software
+left behind.
+
+The general expectation is that prefetching will help - but depending on
+the pipeline structure prefetching can be hard to exploit optimally.  For
+example there are MIPS cores were the optimal sequence is something like
+
+  load store load store load store load store
+
+But on others it's
+
+  load load load load store store store store
+
+Placing prefetching instructions into loops built from such blocks can
+result in very surprising result.
+
+> If this makes sense, we might be able to sign up to do the work. Anyone
+> have a good, caching-aware memcpy test?
+
+Testing memcpy is an interesting little project.  Correctness is one
+thing but a good implementation needs to do a few performance tradeoffs
+which are best meassure with real world, not synthetic workloads.
+
+  Ralf

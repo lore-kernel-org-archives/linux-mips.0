@@ -1,55 +1,65 @@
-Received: from sj-iport-1.cisco.com ([171.71.176.70]:64519 "EHLO
+Received: from sj-iport-1.cisco.com ([171.71.176.70]:7782 "EHLO
 	sj-iport-1.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S21366256AbZCESXp convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2009 18:23:45 +0000
+	id S20808936AbZCEWI3 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2009 22:08:29 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Subject: RE: [PATCH, RFC] MIPS: Implement the getcontext API
-Date: Thu, 5 Mar 2009 13:23:31 -0500
-Message-ID: <FF038EB85946AA46B18DFEE6E6F8A289BE0DC1@xmb-rtp-218.amer.cisco.com>
-In-Reply-To: <49B004AA.8050006@caviumnetworks.com>
-References: <alpine.DEB.1.10.0902282326580.4064@tp.orcam.me.uk> <49AD6139.60209@caviumnetworks.com> <alpine.DEB.1.10.0903051530080.6558@tp.orcam.me.uk> <49B004AA.8050006@caviumnetworks.com>
+Date: Thu, 5 Mar 2009 17:08:18 -0500
+Message-ID: <FF038EB85946AA46B18DFEE6E6F8A289BE0EF8@xmb-rtp-218.amer.cisco.com>
+In-Reply-To: <Pine.LNX.4.64.0903052148500.12710@digraph.polyomino.org.uk>
+References: <alpine.DEB.1.10.0902282326580.4064@tp.orcam.me.uk> <49AD6139.60209@caviumnetworks.com> <alpine.DEB.1.10.0903051530080.6558@tp.orcam.me.uk> <49B004AA.8050006@caviumnetworks.com> <FF038EB85946AA46B18DFEE6E6F8A289BE0DC1@xmb-rtp-218.amer.cisco.com> <20090305213653.GB12355@linux-mips.org> <Pine.LNX.4.64.0903052148500.12710@digraph.polyomino.org.uk>
 From: "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
 Return-Path: <dvomlehn@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: David Daney <ddaney@caviumnetworks.com>, "Maciej W. Rozycki" <macro@codesourcery.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, libc-ports@sourceware.org, "Maciej W. Rozycki" <macro@linux-mips.org>, Richard Sandiford <rdsandiford@googlemail.com>
-Message-ID: <20090305182331.INumtiGSkvz8g9HBVneWEPRkyFkvJerrTnMg0eQjl_0@z>
+To: Joseph Myers <joseph@codesourcery.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: David Daney <ddaney@caviumnetworks.com>, "Maciej W. Rozycki" <macro@codesourcery.com>, linux-mips@linux-mips.org, libc-ports@sourceware.org, "Maciej W. Rozycki" <macro@linux-mips.org>, Richard Sandiford <rdsandiford@googlemail.com>
+Message-ID: <20090305220818.4vXeCSz4hf9h_5-fOhoycyCQG8ZBMJBuhtNVDWA1MY0@z>
 
 > -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of David Daney
-> Sent: Thursday, March 05, 2009 8:58 AM
-> To: Maciej W. Rozycki
-> Cc: Ralf Baechle; linux-mips@linux-mips.org; 
-> libc-ports@sourceware.org; Maciej W. Rozycki; Richard Sandiford
+> From: Joseph Myers [mailto:joseph@codesourcery.com] 
+> Sent: Thursday, March 05, 2009 1:53 PM
+> To: Ralf Baechle
+> Cc: David VomLehn (dvomlehn); David Daney; Maciej W. Rozycki; 
+> linux-mips@linux-mips.org; libc-ports@sourceware.org; Maciej 
+> W. Rozycki; Richard Sandiford
 > Subject: Re: [PATCH, RFC] MIPS: Implement the getcontext API
 > 
-> Adding Richard S. as he may be interested...
+> On Thu, 5 Mar 2009, Ralf Baechle wrote:
 > 
-> Maciej W. Rozycki wrote:
-> > On Tue, 3 Mar 2009, David Daney wrote:
-> > 
-> >> Note the libgcc currently makes the assumption that the 
-> layout of the stack
-> >> for signal handlers is fixed.  The DWARF2 unwinder needs 
-> this information to
-> >> be able to unwind through signal frames (see 
-> gcc/config/mips/linux-unwind.h),
-> >> so it is already a de facto part of the ABI.
-> > 
-> >  I do hope it was agreed upon at some point.
+> > stillborn EABI and NUBI variants.  Add various Linux and 
+> GNU specific
+> > enhancements and deviations from the previously mentioned 
+> documents for
+> > example for TLS.  Frequently the documentation really is 
+> just in the code,
+> > a mailing list archive or in the back of somebody's brain ...
 > 
-> As with many things, there was no formal agreement.
+> (Although it took a while for the documentation to catch up with the 
+> implementation and changes made in the course of patch 
+> review, as far as I 
+> know <http://www.linux-mips.org/wiki/NPTL> is now an accurate 
+> description 
+> of TLS for MIPS.)
+> 
+> > Somebody could probably earn a medal by writing a single 
+> consolidated
+> > and readable piece of documentation.
+> 
+> Anyone seriously wishing to produce a complete and current and 
+> copyright-clean description of what the MIPS ABIs now are 
+> might wish to 
+> note that a similar project for (32-bit) Power Architecture 
+> has been going 
+> on since late 2006 and we still haven't quite got to the point of 
+> releasing a public review draft.  There is a lot of work involved.
 
-To the best of my knowledge, there is no formal ABI for MIPS Linux,
-period. The closest we have is the MIPS psABI, which documented the o32
-ABI as it stood ten years ago. What we have now does not conform to that
-document in some subtle, but non-trivial, ways. If I'm wrong, I'd love
-to know where I could find documentation.
-
-David VomLehn
+I spent two years as Chair of the MIPS ABI Group Technical Committee
+working on the MIPS psABI and I can attest to how much work it is.
+Still, if there were enough of people involved from the kernel,
+compiler/library, and appropriate utility communities willing to try to
+pull things together, I could see spending time on it.

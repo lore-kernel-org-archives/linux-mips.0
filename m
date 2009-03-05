@@ -1,65 +1,55 @@
-Received: from sj-iport-3.cisco.com ([171.71.176.72]:41373 "EHLO
-	sj-iport-3.cisco.com") by ftp.linux-mips.org with ESMTP
-	id S21365695AbZCDWZo convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 4 Mar 2009 22:25:44 +0000
+Received: from sj-iport-1.cisco.com ([171.71.176.70]:64519 "EHLO
+	sj-iport-1.cisco.com") by ftp.linux-mips.org with ESMTP
+	id S21366256AbZCESXp convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2009 18:23:45 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Subject: RE: [PATCH, RFC] MIPS: Implement the getcontext API
-Date: Wed, 4 Mar 2009 17:25:35 -0500
-Message-ID: <FF038EB85946AA46B18DFEE6E6F8A289BE0B68@xmb-rtp-218.amer.cisco.com>
-In-Reply-To: <20090304154418.GA13464@linux-mips.org>
-References: <alpine.DEB.1.10.0902282326580.4064@tp.orcam.me.uk> <49AD6139.60209@caviumnetworks.com> <200903040919.29294.brian.foster@innova-card.com> <20090304154418.GA13464@linux-mips.org>
+Date: Thu, 5 Mar 2009 13:23:31 -0500
+Message-ID: <FF038EB85946AA46B18DFEE6E6F8A289BE0DC1@xmb-rtp-218.amer.cisco.com>
+In-Reply-To: <49B004AA.8050006@caviumnetworks.com>
+References: <alpine.DEB.1.10.0902282326580.4064@tp.orcam.me.uk> <49AD6139.60209@caviumnetworks.com> <alpine.DEB.1.10.0903051530080.6558@tp.orcam.me.uk> <49B004AA.8050006@caviumnetworks.com>
 From: "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
 Return-Path: <dvomlehn@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>, Brian Foster <brian.foster@innova-card.com>
-Cc: David Daney <ddaney@caviumnetworks.com>, "Maciej W. Rozycki" <macro@codesourcery.com>, linux-mips@linux-mips.org, libc-ports@sourceware.org, "Maciej W. Rozycki" <macro@linux-mips.org>
-Message-ID: <20090304222535.A1PRZAoLncHAo5OfasE_UI17kX7xhTQRDsVm1ve0xOc@z>
+To: David Daney <ddaney@caviumnetworks.com>, "Maciej W. Rozycki" <macro@codesourcery.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, libc-ports@sourceware.org, "Maciej W. Rozycki" <macro@linux-mips.org>, Richard Sandiford <rdsandiford@googlemail.com>
+Message-ID: <20090305182331.INumtiGSkvz8g9HBVneWEPRkyFkvJerrTnMg0eQjl_0@z>
 
 > -----Original Message-----
 > From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Ralf Baechle
-> Sent: Wednesday, March 04, 2009 7:44 AM
-> To: Brian Foster
-> Cc: David Daney; Maciej W. Rozycki; 
-> linux-mips@linux-mips.org; libc-ports@sourceware.org; Maciej 
-> W. Rozycki
+> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of David Daney
+> Sent: Thursday, March 05, 2009 8:58 AM
+> To: Maciej W. Rozycki
+> Cc: Ralf Baechle; linux-mips@linux-mips.org; 
+> libc-ports@sourceware.org; Maciej W. Rozycki; Richard Sandiford
 > Subject: Re: [PATCH, RFC] MIPS: Implement the getcontext API
 > 
-> On Wed, Mar 04, 2009 at 09:19:28AM +0100, Brian Foster wrote:
+> Adding Richard S. as he may be interested...
 > 
-> > On Tuesday 03 March 2009 17:56:25 David Daney wrote:
-> > >[ ... ]
-> > > When (and if) we move the sigreturn trampoline to a vdso 
-> we should be
-> > > able to maintain the ABI.
+> Maciej W. Rozycki wrote:
+> > On Tue, 3 Mar 2009, David Daney wrote:
 > > 
-> >  it's more a matter of "when" rather than "if".
-> >  there is still an intention here to use XI (we
-> >  have SmartMIPS), which requires not using the
-> >  signal (or FP) trampoline on the stack.
+> >> Note the libgcc currently makes the assumption that the 
+> layout of the stack
+> >> for signal handlers is fixed.  The DWARF2 unwinder needs 
+> this information to
+> >> be able to unwind through signal frames (see 
+> gcc/config/mips/linux-unwind.h),
+> >> so it is already a de facto part of the ABI.
 > > 
-> >  moving the signal trampoline to a vdso (which
-> >  is(? was?) called, maybe misleadingly, 'vsyscall',
-> >  on other architectures) is the obvious solution to
-> >  that part of the puzzle.  and yes, it is possible
-> >  to maintain the ABI; the signal trampoline is still
-> >  also put on the stack, and modulo XI, would work if
-> >  used - the trampoline-on-stack is simply not used
-> >  if there is a vdso with the signal trampoline.
+> >  I do hope it was agreed upon at some point.
 > 
-> We generally want to get rid of stack trampolines.  
-> Trampolines require
-> cacheflushing which especially on SMP systems can be a rather 
-> expensive
-> operation.
+> As with many things, there was no formal agreement.
 
-If I understand this correctly, using a vdso would allow a stack without
-execute permission on those processors that differentiate between read
-and execute permission. This defeats attaches that use buffer overrun to
-write code to be executed onto the stack, a nice thing for more secure
-systems.
+To the best of my knowledge, there is no formal ABI for MIPS Linux,
+period. The closest we have is the MIPS psABI, which documented the o32
+ABI as it stood ten years ago. What we have now does not conform to that
+document in some subtle, but non-trivial, ways. If I'm wrong, I'd love
+to know where I could find documentation.
+
+David VomLehn

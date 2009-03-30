@@ -1,43 +1,32 @@
-Received: from mailsqr.mstarsemi.com ([59.120.57.249]:52304 "EHLO
-	mailsqr2.mstarsemi.com") by ftp.linux-mips.org with ESMTP
-	id S28573926AbZCYOhw (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 25 Mar 2009 14:37:52 +0000
-Received: from msnb6444 ([172.16.90.126])
-	(authenticated bits=0)
-	by mailsqr2.mstarsemi.com with ESMTP id n2PEbgtV045406
-	for <linux-mips@linux-mips.org>; Wed, 25 Mar 2009 22:37:45 +0800 (CST)
-	(envelope-from alan.wu@mstarsemi.com)
-From: "Alan Wu" <alan.wu@mstarsemi.com>
-Subject: VPE loader support on 34K
-Date: Wed, 25 Mar 2009 22:37:20 +0800
-Message-ID: <B34CE01D80AD4D309E259934BA1361AA@mstarsemi.com.tw>
+Received: from rtitmf2.realtek.com.tw ([60.250.210.236]:64262 "EHLO
+	mf2.realtek.com.tw") by ftp.linux-mips.org with ESMTP
+	id S20022713AbZC3EG5 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Mon, 30 Mar 2009 05:06:57 +0100
+Message-ID: <9BDA961341E843F29C1C1ECDB54FD0CF@realtek.com.tw>
+From: =?big5?B?qkyr2KZ3?= <colin@realtek.com.tw>
+Subject: The impact to change page size to 16k for cache alias
+Date: Mon, 30 Mar 2009 12:06:51 +0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="big5"; reply-type=original
 Content-Transfer-Encoding: 7bit
-Return-Path: <alan.wu@mstarsemi.com>
+Return-Path: <colin@realtek.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20090325143720.v77pTLTbHy76E0pmvJFGpnPZDp4gnGnafKTtVnr31Gw@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20090330040651.5KQfzHyQYmqyJuN2n4-NdEACuFiniltJ46KtQ0fPcx8@z>
 
 
-Hello,
+Hi all,
+We are willing to use 16k page size to avoid cache alias problem.
+The Linux version we use is 2.6.12. If we just upgrade mm system to support 
+16k page size, what else problems will happen?
+There is already one thing we know that applications of ELF format 
+applications should be transformed to be 16k alignment.
+Another one, we think, highly suspected to be problematic is that many 
+drivers will be ok for 4k page size but fails for 16k.
+That is because 4k page size had been seemed to be natural for a very long 
+long time.
+Any other problem that shall happen for 16k page size?
 
-I'm porting 2.6.26 Linux on the platform of MIPS 34K. Currently, the uni-processor 
-kernel model(1 VPE) and SMP model (2 VPE) are up and work perfectly.
-
-Now, I need to port the AP/SP model on a normal Linux uniprocessor kernel model. 
-I'd like to load an application program (ELF ?) into kernel space where this 
-application will run on a Secondary VPE undisturbed by the Linux kernel.
-
-After I enabled the MIPS_VPE_LOADER [=y] in .config , the kernel is up without
-any error/warning message.
-
-Please help :
-
-1. How to load the application into VPE1 from VPE0 ? (cat XYZapp >/dev/vpe1 ?)
-2. Is there any sample "Hello World" application for this ? 
-3. Any specific tool chain needed ?
-
-Thanks.
+Regards,
+Colin 

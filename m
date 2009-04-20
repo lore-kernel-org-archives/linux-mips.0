@@ -1,70 +1,70 @@
-Received: from yx-out-1718.google.com ([74.125.44.153]:61343 "EHLO
-	yx-out-1718.google.com") by ftp.linux-mips.org with ESMTP
-	id S20021665AbZDOGJD (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 15 Apr 2009 07:09:03 +0100
-Received: by yx-out-1718.google.com with SMTP id 3so1816685yxi.24
-        for <linux-mips@linux-mips.org>; Tue, 14 Apr 2009 23:09:01 -0700 (PDT)
+Received: from rtp-iport-2.cisco.com ([64.102.122.149]:38420 "EHLO
+	rtp-iport-2.cisco.com") by ftp.linux-mips.org with ESMTP
+	id S20031223AbZDTUHV convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 20 Apr 2009 21:07:21 +0100
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Date: Wed, 15 Apr 2009 11:39:01 +0530
-Message-ID: <d77cedf30904142309na4355e6w63ecea63b0966c92@mail.gmail.com>
-Subject: in mips how to change the start address to the new second boot loader
-	?
-From: nagalakshmi veeramallu <lucky.veeramallu@gmail.com>
-Content-Type: multipart/alternative; boundary=00163698966fac35d2046791c8bb
-Return-Path: <lucky.veeramallu@gmail.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: Boot program interface
+Date: Mon, 20 Apr 2009 16:07:11 -0400
+Message-ID: <FF038EB85946AA46B18DFEE6E6F8A2890105326D@xmb-rtp-218.amer.cisco.com>
+In-Reply-To: <200904201057.04833.florian@openwrt.org>
+References: <1240213045.49ec26350fa49@www.sysgo.com> <200904201057.04833.florian@openwrt.org>
+From: "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
+Return-Path: <dvomlehn@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20090415060901.0bNP99JI-hetnVBXTMcWxqyRVcX594dKBD08cyAFGwA@z>
+To: Florian Fainelli <florian@openwrt.org>, Carlos Mitidieri <cam@sysgo.com>
+Cc: linux-mips@linux-mips.org, "Dezhong Diao (dediao)" <dediao@cisco.com>, "Tony Colclough (colclot)" <colclot@cisco.com>
+Message-ID: <20090420200711.7wYBdoMwwlDhrjceixq68NH6J93D8i4PjjTbZLBLlb0@z>
 
---00163698966fac35d2046791c8bb
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+We have a working version of the device tree for MIPS. I'll see if we can expedite a patch. 
 
-Hi ,
- I have a KMC board with mips VR4131 processor. The target board already
- having cmon boot loader on flash. Now I need to put my yamon boot loader
- which I modified according to the requirement on the flash. As we know MIPS
- have fixed starting address 0xbfc00000, how to change this address to other
- address so that after power on it can enter to the new address (boot
- loader).
-If any one have some idea, please help me
-Thanks in advance.
-
-
-
-Regards,
-
-Lucky
-
---00163698966fac35d2046791c8bb
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<p class=3D"MsoNormal">Hi ,<br>
-<span style=3D"mso-spacerun:yes">=A0</span>I have a KMC board with mips VR4=
-131
-processor. The target board already<br>
-<span style=3D"mso-spacerun:yes">=A0</span>having cmon boot loader on flash=
-. Now I
-need to put my yamon boot loader<br>
-<span style=3D"mso-spacerun:yes">=A0</span>which I modified according to th=
-e
-requirement on the flash. As we know MIPS<br>
-<span style=3D"mso-spacerun:yes">=A0</span>have fixed starting address 0xbf=
-c00000,
-how to change this address to other<br>
-<span style=3D"mso-spacerun:yes">=A0</span>address so that after power on i=
-t can
-enter to the new address (boot<br>
-<span style=3D"mso-spacerun:yes">=A0</span>loader).<br>
-If any one have some idea, please help me<br>
-Thanks in advance.</p>
-
-<p class=3D"MsoNormal">=A0</p>
-
-<p class=3D"MsoNormal">Regards,</p>
-
-<p class=3D"MsoNormal">Lucky</p>
-
---00163698966fac35d2046791c8bb--
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org 
+> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of 
+> Florian Fainelli
+> Sent: Monday, April 20, 2009 1:57 AM
+> To: Carlos Mitidieri
+> Cc: linux-mips@linux-mips.org
+> Subject: Re: Boot program interface
+> 
+> Hi Carlos,
+> 
+> Le Monday 20 April 2009 09:37:25 Carlos Mitidieri, vous avez écrit :
+> > Hello,
+> >
+> > I am working on a project that requires an extensive boot program
+> > interface.
+> >
+> > It turns out that the device tree used on PPC architecture meets the
+> > requirements.
+> >
+> > I have been looking, and I could not find any similar 
+> concept implemented
+> > for MIPS.
+> 
+> I do not know any MIPS board using a device tree either.
+> 
+> >
+> > So, I am now considering to port the OFDT library into the 
+> MIPS arch.
+> >
+> > What do you think about this? Is there anyone working on a 
+> similar project?
+> 
+> You should see how Sparc, PowerPC and Microblaze use it and 
+> how they do share 
+> code. Also condiser seeing how u-boot handles device trees, 
+> specifically on 
+> PowerPC and Microblaze.
+> 
+> Hope that helps.
+> -- 
+> Best regards, Florian Fainelli
+> Email : florian@openwrt.org
+> http://openwrt.org
+> -------------------------------
+> 

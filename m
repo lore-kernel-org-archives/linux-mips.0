@@ -1,126 +1,128 @@
-Received: from yx-out-1718.google.com ([74.125.44.157]:54404 "EHLO
-	yx-out-1718.google.com") by ftp.linux-mips.org with ESMTP
-	id S20022607AbZDUGuq (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 21 Apr 2009 07:50:46 +0100
-Received: by yx-out-1718.google.com with SMTP id 4so872576yxp.24
-        for <linux-mips@linux-mips.org>; Mon, 20 Apr 2009 23:50:44 -0700 (PDT)
+Received: from an-out-0708.google.com ([209.85.132.246]:27655 "EHLO
+	an-out-0708.google.com") by ftp.linux-mips.org with ESMTP
+	id S20024295AbZDUNqY (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 21 Apr 2009 14:46:24 +0100
+Received: by an-out-0708.google.com with SMTP id c37so1229917anc.24
+        for <linux-mips@linux-mips.org>; Tue, 21 Apr 2009 06:46:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20090420.085929.-1089997132.imp@bsdimp.com>
+In-Reply-To: <49EDC965.60507@paralogos.com>
 References: <d77cedf30904142309na4355e6w63ecea63b0966c92@mail.gmail.com>
 	 <200904201100.39164.florian@openwrt.org>
 	 <20090420.085929.-1089997132.imp@bsdimp.com>
-Date: Tue, 21 Apr 2009 12:20:43 +0530
-Message-ID: <d77cedf30904202350g602c740dh26641f145677ddd5@mail.gmail.com>
+	 <d77cedf30904202350g602c740dh26641f145677ddd5@mail.gmail.com>
+	 <49EDC965.60507@paralogos.com>
+Date: Tue, 21 Apr 2009 19:16:19 +0530
+Message-ID: <d77cedf30904210646v2ea71655ye83c8b57fecab761@mail.gmail.com>
 Subject: Re: in mips how to change the start address to the new second boot
 	loader ?
 From: nagalakshmi veeramallu <lucky.veeramallu@gmail.com>
-Content-Type: multipart/alternative; boundary=0016e64355e4e1303d04680b1023
+Content-Type: multipart/alternative; boundary=0016e644c37e2748f6046810df8c
 Return-Path: <lucky.veeramallu@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "M. Warner Losh" <imp@bsdimp.com>
-Cc: florian@openwrt.org, linux-mips@linux-mips.org
-Message-ID: <20090421065043.mQUhT2TNR-ivHJC3KiVg0K4jJvmL3aX02USlmkA4YVQ@z>
+To: "Kevin D. Kissell" <kevink@paralogos.com>
+Cc: "M. Warner Losh" <imp@bsdimp.com>, florian@openwrt.org, linux-mips@linux-mips.org
+Message-ID: <20090421134619.jEZjyBLBD2kCKXoIeccPBqat5w7hFlrLcVW16xkdcDY@z>
 
---0016e64355e4e1303d04680b1023
+--0016e644c37e2748f6046810df8c
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+hi,
+         --          if we set environmental variable =93start=94 as =93go
+new_address=94, will it go directly to the new bootloader in the next
+power-on.
 
-Thanks for your reply.
+what about using system environmental "start" ,can you tell me at which
+context after power on environmental variables come onto picture.
 
-            Actual YAMON doesn=92t have support for KMC board, hence we
-modified yamon source code according to the KMC board. Now we want to put
-our code into FUJITSU flash memory for testing purpose and  previous boot
-loader cmon has to be protected. After power on the board, instead of cmon
-we have to run our modified Yamon.
-
-            CMON is executing perfectly, is there any possible way to go
-directly to the new boot loader code directly. i have some idea, is this
-approach will work
-
--          if we set environmental variable =93start=94 as =93go new_addres=
-s=94,
-will it go directly to the new bootloader in the next power-on.
-
--           Mips atlas board has jumper  which will redirect accesses from
-=93Bootcode=94 range to either =93Monitor flash=94 (0x1e000000) or the uppe=
-r 4MB of
-=93System flash=94 (0x1dc00000) based on jumper settings. if my kmc board h=
-ave
-some jumper like this, can I redirect the start address.
-
-Thanks in advance
-
- Regards,
-
+Regards,
 Lucky
 
---0016e64355e4e1303d04680b1023
+On Tue, Apr 21, 2009 at 6:55 PM, Kevin D. Kissell <kevink@paralogos.com>wro=
+te:
+
+>  nagalakshmi veeramallu wrote:
+>
+>  -           Mips atlas board has jumper  which will redirect accesses
+> from =93Bootcode=94 range to either =93Monitor flash=94 (0x1e000000) or t=
+he upper
+> 4MB of =93System flash=94 (0x1dc00000) based on jumper settings. if my km=
+c
+> board have some jumper like this, can I redirect the start address.
+>
+> Of course, what is really happening there is that the Atlas boot ROM has =
+a
+> vector at 0x1fc00000 which reads the jumper and jumps to one address or t=
+he
+> other depending on the jumper setting. If you control what is in ROM at
+> 0x1fc00000 and you have a software-readable jumper on your KMC board, you
+> can do the same thing.
+>
+>           Regards,
+>
+>           Kevin K.
+>
+>
+
+--0016e644c37e2748f6046810df8c
 Content-Type: text/html; charset=windows-1252
 Content-Transfer-Encoding: quoted-printable
 
-<p><span style=3D"font-size:10.0pt;font-family:Arial;color:black">Hi,</span=
-></p>
+hi,<div><br></div><div>=A0=A0 =A0 =A0 =A0 -<span class=3D"Apple-style-span"=
+ style=3D"border-collapse: collapse; "><span style=3D"font-size: 10pt; font=
+-family: Arial; color: black; "><span>-<span style=3D"font: normal normal n=
+ormal 7pt/normal &#39;Times New Roman&#39;; ">=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0</span></span></span><span style=3D"font-size: 10pt; font-family: Arial;=
+ color: black; ">if we set environmental variable =93start=94 as =93go new_=
+address=94, will it go directly to the new bootloader in the next power-on.=
+</span></span></div>
+<div><div><span class=3D"Apple-style-span" style=3D"border-collapse: collap=
+se;"><br></span></div><div>what about using system environmental &quot;star=
+t&quot; ,can you tell me at which context after power on environmental vari=
+ables come onto picture.</div>
+<div><br></div><div>Regards,</div><div>Lucky<br><br><div class=3D"gmail_quo=
+te">On Tue, Apr 21, 2009 at 6:55 PM, Kevin D. Kissell <span dir=3D"ltr">&lt=
+;<a href=3D"mailto:kevink@paralogos.com">kevink@paralogos.com</a>&gt;</span=
+> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex;">
 
-<p><span style=3D"font-size:10.0pt;font-family:Arial;color:black">Thanks fo=
-r your
-reply.</span></p>
 
-<p><span style=3D"font-size:10.0pt;font-family:Arial;color:black">=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0<span class=3D"apple-converted-space">=A0</span>Act=
-ual YAMON doesn=92t have support for
-KMC board, hence we modified yamon source code according to the KMC board. =
-Now
-we want to put our code into FUJITSU flash memory for testing purpose and<s=
-pan style=3D"mso-spacerun:yes">=A0 </span>previous boot loader cmon has to =
-be
-protected. After power on the board, instead of cmon we have to run our mod=
-ified
-Yamon.</span></p>
+ =20
+ =20
 
-<p><span style=3D"font-size:10.0pt;font-family:Arial;color:black">=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0<span class=3D"apple-converted-space">=A0CMON</span=
-> is executing perfectly, is there
-any possible way to go directly to the new boot loader code directly. i hav=
-e
-some idea, is this approach will work</span></p>
+<div bgcolor=3D"#ffffff" text=3D"#000000"><div class=3D"im">
+nagalakshmi veeramallu wrote:
+<blockquote type=3D"cite">
+  <p><span style=3D"font-size:10pt;font-family:Arial;color:black"><span></s=
+pan></span></p>
+  <p style=3D"margin-left:0.5in;text-indent:-0.25in"><span style=3D"font-si=
+ze:10pt;font-family:Arial;color:black"><span>-<span style=3D"font-family:&q=
+uot;Times New Roman&quot;;font-style:normal;font-variant:normal;font-weight=
+:normal;font-size:7pt;line-height:normal;font-size-adjust:none;font-stretch=
+:normal">=A0=A0=A0=A0=A0=A0=A0=A0=A0
+  </span></span></span><span style=3D"font-size:10pt;font-family:Arial;colo=
+r:black"><span>=A0</span>Mips atlas board has jumper
+  <span>=A0</span>which will redirect accesses from =93Bootcode=94
+range to either =93Monitor flash=94 (0x1e000000) or the upper 4MB of
+=93System flash=94
+(0x1dc00000) based on jumper settings. if<span>=A0</span>my kmc
+board have some jumper like this, can I redirect the start address.</span><=
+/p>
+</blockquote></div>
+Of course, what is really happening there is that the Atlas boot ROM
+has a vector at 0x1fc00000 which reads the jumper and jumps to one
+address or the other depending on the jumper setting. If you control
+what is in ROM at 0x1fc00000 and you have a software-readable jumper on
+your KMC board, you can do the same thing.<br>
+<br>
+=A0=A0=A0 =A0=A0 =A0=A0 Regards,<br>
+<br>
+=A0=A0=A0 =A0=A0 =A0=A0 Kevin K.<br>
+<br>
+</div>
 
-<p style=3D"margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .5in"><span style=3D"font-size:10.0pt;
-font-family:Arial;mso-fareast-font-family:Arial;color:black"><span style=3D=
-"mso-list:Ignore">-<span style=3D"font:7.0pt &quot;Times New Roman&quot;">=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0
-</span></span></span><span style=3D"font-size:10.0pt;font-family:Arial;
-color:black">if we set environmental variable =93start=94 as =93go new_addr=
-ess=94, will
-it go directly to the new bootloader in the next power-on.</span></p>
+</blockquote></div><br></div></div>
 
-<p style=3D"margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 lfo1;
-tab-stops:list .5in"><span style=3D"font-size:10.0pt;
-font-family:Arial;mso-fareast-font-family:Arial;color:black"><span style=3D=
-"mso-list:Ignore">-<span style=3D"font:7.0pt &quot;Times New Roman&quot;">=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0
-</span></span></span><span style=3D"font-size:10.0pt;font-family:Arial;
-color:black"><span style=3D"mso-spacerun:yes">=A0</span>Mips atlas board ha=
-s jumper
-<span style=3D"mso-spacerun:yes">=A0</span>which will redirect accesses fro=
-m =93Bootcode=94
-range to either =93Monitor flash=94 (0x1e000000) or the upper 4MB of =93Sys=
-tem flash=94
-(0x1dc00000) based on jumper settings. if<span style=3D"mso-spacerun:yes">=
-=A0</span>my kmc board have some jumper like this, can I redirect the start=
- address.</span></p>
-
-<p><span style=3D"font-size:10.0pt;font-family:Arial;color:#500050">Thanks =
-in
-advance</span></p>
-
-<p><span style=3D"font-size:10.0pt;font-family:Arial;color:#500050">=A0Rega=
-rds,</span></p>
-
-<p><span style=3D"font-size:10.0pt;font-family:Arial;color:#500050">Lucky</=
-span></p>
-
---0016e64355e4e1303d04680b1023--
+--0016e644c37e2748f6046810df8c--

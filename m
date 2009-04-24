@@ -1,25 +1,37 @@
-Received: from mail-gx0-f157.google.com ([209.85.217.157]:18355 "EHLO
-	mail-gx0-f157.google.com") by ftp.linux-mips.org with ESMTP
-	id S20021975AbZDXBqe (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Fri, 24 Apr 2009 02:46:34 +0100
-Received: by gxk1 with SMTP id 1so1851454gxk.0
-        for <linux-mips@linux-mips.org>; Thu, 23 Apr 2009 18:46:27 -0700 (PDT)
+Received: from yx-out-1718.google.com ([74.125.44.155]:62 "EHLO
+	yx-out-1718.google.com") by ftp.linux-mips.org with ESMTP
+	id S20021971AbZDXBy1 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 24 Apr 2009 02:54:27 +0100
+Received: by yx-out-1718.google.com with SMTP id 4so536277yxp.24
+        for <linux-mips@linux-mips.org>; Thu, 23 Apr 2009 18:54:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0483452db22e72f57289e63fcf097120d94c2a37.1240533480.git@localhost>
-References: <0483452db22e72f57289e63fcf097120d94c2a37.1240533480.git@localhost>
-Date: Fri, 24 Apr 2009 09:46:27 +0800
-Message-ID: <777f39b10904231846v1d5419bby3deaebd826848e1a@mail.gmail.com>
-Subject: Re: [PATCH 0/3] MIPS: Extend plat_* abstractions, cache support
+Date: Fri, 24 Apr 2009 09:54:24 +0800
+Message-ID: <777f39b10904231854m13605b8ayf4ff89e9a853c077@mail.gmail.com>
+Subject: kernel panic when resume ( I am porting suspend2 patch into MIPS
+	architecture)
 From: Bob Zhang <2004.zhang@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-Path: <2004.zhang@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org
-Message-ID: <20090424014627.NDfvLPrk61ahgpIzIlQbelYSCDLpPpsTl5iYScu7I8A@z>
+To: alex@alexlab.net
+Cc: linux-mips@linux-mips.org, "bob.zhang2004" <bob.zhang2004@gmail.com>, Bob Zhang <2004.zhang@gmail.com>
+Message-ID: <20090424015424.eGX0vLJIAsNdyB_d-Zx8M6twZ6dYDvLs1ejpYlDL-Po@z>
 
+Hi alex ,
+
+from this url :
+http://www.linux-mips.org/archives/linux-mips/2007-11/msg00034.html ,I
+am very happly to know you are doing similar thing , it is too good
+for me.
+I want to know if you have fixed this bug ?
+
+now I have the similar bug. any comments will be welcome.
+thanks a lot.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++
 Now , I have ported suspend2 code (based on 2.4.21 patch) into mips
 architecture, my kernel version is 2.4.21.
 

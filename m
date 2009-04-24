@@ -1,193 +1,117 @@
-Received: from yx-out-1718.google.com ([74.125.44.157]:29029 "EHLO
-	yx-out-1718.google.com") by ftp.linux-mips.org with ESMTP
-	id S20026873AbZDUOUw (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 21 Apr 2009 15:20:52 +0100
-Received: by yx-out-1718.google.com with SMTP id 4so960051yxp.24
-        for <linux-mips@linux-mips.org>; Tue, 21 Apr 2009 07:20:48 -0700 (PDT)
+Received: from mail-gx0-f157.google.com ([209.85.217.157]:18355 "EHLO
+	mail-gx0-f157.google.com") by ftp.linux-mips.org with ESMTP
+	id S20021975AbZDXBqe (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 24 Apr 2009 02:46:34 +0100
+Received: by gxk1 with SMTP id 1so1851454gxk.0
+        for <linux-mips@linux-mips.org>; Thu, 23 Apr 2009 18:46:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <10f740e80904210710sdc9e5c2ic310e689ca6677b5@mail.gmail.com>
-References: <d77cedf30904142309na4355e6w63ecea63b0966c92@mail.gmail.com>
-	 <200904201100.39164.florian@openwrt.org>
-	 <20090420.085929.-1089997132.imp@bsdimp.com>
-	 <d77cedf30904202350g602c740dh26641f145677ddd5@mail.gmail.com>
-	 <49EDC965.60507@paralogos.com>
-	 <d77cedf30904210646v2ea71655ye83c8b57fecab761@mail.gmail.com>
-	 <10f740e80904210710sdc9e5c2ic310e689ca6677b5@mail.gmail.com>
-Date: Tue, 21 Apr 2009 19:50:48 +0530
-Message-ID: <d77cedf30904210720m1a5862ccx220fea16f3a0f01a@mail.gmail.com>
-Subject: Re: in mips how to change the start address to the new second boot
-	loader ?
-From: nagalakshmi veeramallu <lucky.veeramallu@gmail.com>
-Content-Type: multipart/alternative; boundary=001485f945a679e0870468115a2d
-Return-Path: <lucky.veeramallu@gmail.com>
+In-Reply-To: <0483452db22e72f57289e63fcf097120d94c2a37.1240533480.git@localhost>
+References: <0483452db22e72f57289e63fcf097120d94c2a37.1240533480.git@localhost>
+Date: Fri, 24 Apr 2009 09:46:27 +0800
+Message-ID: <777f39b10904231846v1d5419bby3deaebd826848e1a@mail.gmail.com>
+Subject: Re: [PATCH 0/3] MIPS: Extend plat_* abstractions, cache support
+From: Bob Zhang <2004.zhang@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-Path: <2004.zhang@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "Kevin D. Kissell" <kevink@paralogos.com>, "M. Warner Losh" <imp@bsdimp.com>, florian@openwrt.org, linux-mips@linux-mips.org
-Message-ID: <20090421142048.54sqYEQ_7QH6yR7XB4ak9az1b3s4Qndfmnpbwd60pJk@z>
+To: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org
+Message-ID: <20090424014627.NDfvLPrk61ahgpIzIlQbelYSCDLpPpsTl5iYScu7I8A@z>
 
---001485f945a679e0870468115a2d
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+Now , I have ported suspend2 code (based on 2.4.21 patch) into mips
+architecture, my kernel version is 2.4.21.
 
-Hi,
-will this approach work? if i used "start" environmental variable will it g=
-o
-to new boot loader address directly.
-
-Regards,
-Lucky
+My Environment:
+kernel:2.4.21
+Architecture:mips 32: 4KEc
+tty device : only has a serial port.
 
 
-On Tue, Apr 21, 2009 at 7:40 PM, Geert Uytterhoeven <geert@linux-m68k.org>w=
-rote:
 
-> On Tue, Apr 21, 2009 at 15:46, nagalakshmi veeramallu
-> <lucky.veeramallu@gmail.com> wrote:
-> > hi,
-> >          --          if we set environmental variable =93start=94 as =
-=93go
-> > new_address=94, will it go directly to the new bootloader in the next
-> > power-on.
-> > what about using system environmental "start" ,can you tell me at which
-> > context after power on environmental variables come onto picture.
->
-> Environment variables are parsed by the boot loader, whose code resides a=
-t,
-> guess what, 0x1fc00000...
->
-> > On Tue, Apr 21, 2009 at 6:55 PM, Kevin D. Kissell <kevink@paralogos.com=
->
-> > wrote:
-> >>
-> >> nagalakshmi veeramallu wrote:
-> >>
-> >> -           Mips atlas board has jumper  which will redirect accesses
-> from
-> >> =93Bootcode=94 range to either =93Monitor flash=94 (0x1e000000) or the=
- upper 4MB
-> of
-> >> =93System flash=94 (0x1dc00000) based on jumper settings. if my kmc bo=
-ard
-> have
-> >> some jumper like this, can I redirect the start address.
-> >>
-> >> Of course, what is really happening there is that the Atlas boot ROM h=
-as
-> a
-> >> vector at 0x1fc00000 which reads the jumper and jumps to one address o=
-r
-> the
-> >> other depending on the jumper setting. If you control what is in ROM a=
-t
-> >> 0x1fc00000 and you have a software-readable jumper on your KMC board,
-> you
-> >> can do the same thing.
-> >>
-> >>           Regards,
-> >>
-> >>           Kevin K.
-> >>
-> >
-> >
->
->
->
-> --
-> Gr{oetje,eeting}s,
->
->                                                Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 --
-> geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker.
-> But
-> when I'm talking to journalists I just say "programmer" or something like
-> that.
->                                                            -- Linus
-> Torvalds
->
+Now, we have finish 99% work-load, but at last ,we found a problem,
+kernel panic after resume code has been executed completely , kernel
+code has return the code after hibernate. but system have not return
+console, it happened kernel panic.
 
---001485f945a679e0870468115a2d
-Content-Type: text/html; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+in resume code, I added debugging code, I am sure, resume code has
+been executed completely.
+including ,reading pageset1 and pageset2,and copy kernel to original
+location, restore cpu context and unfroze processes.
 
-<div>Hi,</div>will this=A0approach=A0work? if i used &quot;start&quot; envi=
-ronmental variable will it go to new boot loader address directly.<div><br>=
-<br></div><div>Regards,</div><div>Lucky</div><div><br></div><div><br><div c=
-lass=3D"gmail_quote">
-On Tue, Apr 21, 2009 at 7:40 PM, Geert Uytterhoeven <span dir=3D"ltr">&lt;<=
-a href=3D"mailto:geert@linux-m68k.org">geert@linux-m68k.org</a>&gt;</span> =
-wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;bord=
-er-left:1px #ccc solid;padding-left:1ex;">
-On Tue, Apr 21, 2009 at 15:46, nagalakshmi veeramallu<br>
-<div class=3D"im">&lt;<a href=3D"mailto:lucky.veeramallu@gmail.com">lucky.v=
-eeramallu@gmail.com</a>&gt; wrote:<br>
-</div><div class=3D"im">&gt; hi,<br>
-&gt; =A0=A0 =A0 =A0 =A0 --=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0if we set environme=
-ntal variable =93start=94 as =93go<br>
-&gt; new_address=94, will it go directly to the new bootloader in the next<=
-br>
-&gt; power-on.<br>
-&gt; what about using system environmental &quot;start&quot; ,can you tell =
-me at which<br>
-&gt; context after power on environmental variables come onto picture.<br>
-<br>
-</div>Environment variables are parsed by the boot loader, whose code resid=
-es at,<br>
-guess what, 0x1fc00000...<br>
-<div class=3D"im"><br>
-&gt; On Tue, Apr 21, 2009 at 6:55 PM, Kevin D. Kissell &lt;<a href=3D"mailt=
-o:kevink@paralogos.com">kevink@paralogos.com</a>&gt;<br>
-&gt; wrote:<br>
-&gt;&gt;<br>
-&gt;&gt; nagalakshmi veeramallu wrote:<br>
-&gt;&gt;<br>
-&gt;&gt; -=A0=A0=A0=A0=A0=A0=A0=A0=A0 =A0Mips atlas board has jumper =A0whi=
-ch will redirect accesses from<br>
-&gt;&gt; =93Bootcode=94 range to either =93Monitor flash=94 (0x1e000000) or=
- the upper 4MB of<br>
-&gt;&gt; =93System flash=94 (0x1dc00000) based on jumper settings. if=A0my =
-kmc board have<br>
-&gt;&gt; some jumper like this, can I redirect the start address.<br>
-&gt;&gt;<br>
-&gt;&gt; Of course, what is really happening there is that the Atlas boot R=
-OM has a<br>
-&gt;&gt; vector at 0x1fc00000 which reads the jumper and jumps to one addre=
-ss or the<br>
-&gt;&gt; other depending on the jumper setting. If you control what is in R=
-OM at<br>
-&gt;&gt; 0x1fc00000 and you have a software-readable jumper on your KMC boa=
-rd, you<br>
-&gt;&gt; can do the same thing.<br>
-&gt;&gt;<br>
-&gt;&gt; =A0=A0=A0 =A0=A0 =A0=A0 Regards,<br>
-&gt;&gt;<br>
-&gt;&gt; =A0=A0=A0 =A0=A0 =A0=A0 Kevin K.<br>
-&gt;&gt;<br>
-&gt;<br>
-&gt;<br>
-<br>
-<br>
-<br>
-</div>--<br>
-Gr{oetje,eeting}s,<br>
-<br>
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0Geert<br>
-<font color=3D"#888888"><br>
---<br>
-Geert Uytterhoeven -- There&#39;s lots of Linux beyond ia32 -- <a href=3D"m=
-ailto:geert@linux-m68k.org">geert@linux-m68k.org</a><br>
-<br>
-In personal conversations with technical people, I call myself a hacker. Bu=
-t<br>
-when I&#39;m talking to journalists I just say &quot;programmer&quot; or so=
-mething like that.<br>
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0-- Linus Torvalds<br>
-</font></blockquote></div><br></div>
+Could you please give me some ideas and suggestions ? thanks very much!
 
---001485f945a679e0870468115a2d--
+
+----------
+Error output is like this;
+
+Waking     5: bdflush.
+Waking     6: kupdated.
+Waking     7: mtdblockd.
+Waking     8: khubd.
+Waking    65: lircd.
+Waking    67: inetd.
+Waking    80: pure-ftpd.
+Waking    81: sh.
+Waking    86: hibernate.
+Waking   163: hibernate.
+Waking   164: tee.
+About to restore original console.
+swsusp_default_console_level = 1
+console_loglevel=7
+default_message_loglevel = 4
+orig_default_message_loglevel=0
+at end of do_software_suspend
+Kernel unaligned instruction access in unaligned.c::do_ade, line 446:
+
+CPU Regs : ===========================================================
+$0 : 00000000 80290000 00000100 fffdffff 00000007 00000006 802342cc 820e83d4
+$8 : 00000000 00000000 00000000 820e83dc 820e83f4 820e8000 80278010 00000000
+$16: 8028f7b8 0000debe 00001ebe 802a53a0 0000dee0 7fff7d48 00000004 00000014
+$24: 8200000c 2abe4090                   820e8000 820e9e70 00000000 0000000a
+Hi : 0000007a
+Lo : 000000b7
+epc   : 0000000a    Tainted: G Z
+Status: 10008403
+Cause : 10800010
+PrId  : 0001906c
+Process init (pid: 1, stackpage=820e8000)
+show_stack ============================================================
+Stack:    80287ce0 0000003e 0000003c 800b93cc 00000000 00000400 80111bb0
+ 00000000 00001ee0 ffffffff 0000dee0 10008400 00000001 800b9460 0000000b
+ 00000189 00000004 00000001 10008400 802a4fc4 80287cf0 10008400 00000001
+ 0000000a 80287ce0 0000003c 800b9ac0 800b99bc 80239200 10008400 802391bc
+ 80239200 802a4fc2 802a4fc4 800b9868 820b6d94 00000189 820b72e0 80238b12
+ 7fff7ba8 00000022 00000000 8028a23c 80287cdc 80239200 802391bc 802391bc
+ 80239200 80287cdc 00000014 00000005 800da9e4 80238af0 19669944 83feb000
+ 8028a9d4 00000202 00000000 0000000b 7fff7ba8 00000000 00000001 00008400
+ 820b1ea0 00000000 00000002 8028a9d4 00000003 820e9ef8 00000002 00000000
+ 7fff7ba8 0000000b 00000000 7fff7a28 7fff7d48 00000004 00000014 00000000
+ 2ab61a30 00000000 00000000 2abe7bf0 7fff79b8 00000005 0040709c 00000000
+ 00000000 2ab61a94 00000008 00008413 10800020 fbbffffe fb7fefff ffffdffb
+ bbefefef fdf67ffe b6e5efbd f7f7fff6 efedffff
+show_trace =============================================================
+
+
+Call Trace:
+[<800b93cc>__call_console_drivers ]
+[<80111bb0>do_select]
+[<800b9460> _call_console_drivers ]
+[<800b9ac0>release_console_sem]
+[<800b99bc>release_console_sem]
+
+[<80239200>] [<802391bc>] [<80239200>] [<800b9868>] [<80238b12>] [<80239200>]
+ [<802391bc>] [<802391bc>] [<80239200>] [<800da9e4>] [<80238af0>]
+show_code ==============================================================
+
+Code:<7>init: Forwarding exception at [<800acfe0>] (80256a18)
+ (Bad address in epc)
+
+Kernel panic: Attempted to kill init!
+ UART_MSR_ANY_DELTA
+
+
+
+
+===================================Error Output End ======================

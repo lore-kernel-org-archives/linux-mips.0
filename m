@@ -1,226 +1,104 @@
-Received: from rv-out-0708.google.com ([209.85.198.240]:5175 "EHLO
-	rv-out-0708.google.com" rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org
-	with ESMTP id S20023692AbZEECLu (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 5 May 2009 03:11:50 +0100
-Received: by rv-out-0708.google.com with SMTP id b17so1662320rvf.0
-        for <linux-mips@linux-mips.org>; Mon, 04 May 2009 19:11:47 -0700 (PDT)
-Message-ID: <02e101c9cd26$d5de5960$9b01a8c0@khushiraj>
-From: "Jokes of the Day - GHL" <info@goahelpline.com>
-Subject: Fw: Increase brain power, 27 Health Tips & Womens Health & Thyroid
-Date: Tue, 5 May 2009 07:35:00 +0530
+Received: from mail-fx0-f175.google.com ([209.85.220.175]:42210 "EHLO
+	mail-fx0-f175.google.com" rhost-flags-OK-OK-OK-OK)
+	by ftp.linux-mips.org with ESMTP id S20023899AbZEFL2p (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 6 May 2009 12:28:45 +0100
+Received: by fxm23 with SMTP id 23so8766fxm.0
+        for <linux-mips@linux-mips.org>; Wed, 06 May 2009 04:28:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0226_01C9CD53.FF0706C0"
-Return-Path: <info@goahelpline.com>
+Date: Wed, 6 May 2009 12:27:57 +0100
+Message-ID: <b75795430905060427j11be0346g7021bda2b642b823@mail.gmail.com>
+Subject: Fidelity Management and Research LLC (FMR LLC),
+From: Mr peter lynch <peter_lynch2009@yahoo.com.hk>
+Content-Type: multipart/alternative; boundary=001636c5ac7a787b0304693cb2b7
+Return-Path: <titifani2@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Undisclosed-Recipient
-Message-ID: <20090505020500.rbbVgrS5NLMm9iqxccjc_yO3ZzyWxOXhwM3IMl7HWUE@z>
+Message-ID: <20090506112757.tR-QuLuHOVcGVlMvBXFMgpCHeKy2riMD68_XPBp47u0@z>
 
-This is a multi-part message in MIME format.
+--001636c5ac7a787b0304693cb2b7
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-------=_NextPart_000_0226_01C9CD53.FF0706C0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Fidelity Management and Research LLC (FMR LLC),
+From: Peter Lynch (Fund Manager / Shareholder)
+Email:peter_lynch2009@yahoo.com.hk <Email%3Apeter_lynch2009@yahoo.com.hk>
+Phone:+447045718192.
+Attn: Sir / Madam,
+
+Good day, I want to drop you a quick note because I did not hear back from
+you concerning the information I sent to you the other day.Incase you did
+not receive the letter introducing my intent.
+
+
+I am contacting you individually for a business transaction involving GBP5.5
+Trillion Million and I hope that you will contact me at your earliest
+convenient for this possible business transaction.This letter might surprise
+you because we have neither met in person nor by correspondence. But it is
+one day that you get to know someone.
+
+I am Mr. Peter Lynch, Funds Manager of Fidelity Investment International.
+The World Largest Funds Management Company with over GBP1.2 Trillion Capital
+Investment Funds, Nevertheless, as Fidelity Funds Manager, I handle all our
+Investor's Direct Capital Funds and secretly extracted 1.2% Excess Maximum
+Return Capital Profit (EMRCP) per annum on each of the Investor's Marginal
+Capital Funds. As a result, I have made over GBP5.5m from the Investor's
+EMRCP and hereby looking for someone to trust who will stand-in as an
+Investor to receive the funds as Annual Investment Proceed from Fidelity
+Marginal Capital Funds.
+
+All confirmable documents to back up the claims will be made available to
+you on your acceptance. Meanwhile, I have worked out the technicalities
+whereby the funds can be claimed in any of our 6 Clearing Houses without
+hitches. Our sharing ratio will be 50-40 while 0.5% will be for expenses
+during action and another 5% will go for charity both in our countries.
+Should you be interested, Please email me immediately for a detailed
+discussion of this transaction.
+
+Sincerely,
+
+From: Peter Lynch (Fund Manager / Shareholder)
+
+Email:peter_lynch2009@yahoo.com.hk <Email%3Apeter_lynch2009@yahoo.com.hk>
+
+--001636c5ac7a787b0304693cb2b7
+Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
+<p>Fidelity Management and Research LLC (FMR LLC),<br>From: Peter Lynch (Fu=
+nd Manager / Shareholder)<br><a href=3D"mailto:Email%3Apeter_lynch2009@yaho=
+o.com.hk">Email:peter_lynch2009@yahoo.com.hk</a><br>Phone:+447045718192. <b=
+r>
+Attn: Sir / Madam,</p>
+<p>Good day, I want to drop you a quick note because I did not hear back fr=
+om you concerning the information I sent to you the other day.Incase you di=
+d not receive the letter introducing my intent.</p>
+<p><br>I am contacting you individually for a business transaction involvin=
+g GBP5.5 Trillion Million and I hope that you will contact me at your earli=
+est convenient for this possible business transaction.This letter might sur=
+prise you because we have neither met in person nor by correspondence. But =
+it is one day that you get to know someone. </p>
 
-Increase your Brain Power
+<p>I am Mr. Peter Lynch, Funds Manager of Fidelity Investment International=
+. The World Largest Funds Management Company with over GBP1.2 Trillion Capi=
+tal Investment Funds, Nevertheless, as Fidelity Funds Manager, I handle all=
+ our Investor&#39;s Direct Capital Funds and secretly extracted 1.2% Excess=
+ Maximum Return Capital Profit (EMRCP) per annum on each of the Investor&#3=
+9;s Marginal Capital Funds. As a result, I have made over GBP5.5m from the =
+Investor&#39;s EMRCP and hereby looking for someone to trust who will stand=
+-in as an Investor to receive the funds as Annual Investment Proceed from F=
+idelity Marginal Capital Funds. </p>
 
-Read More : http://dhristi.co.in/increase_brain_power.html
+<p>All confirmable documents to back up the claims will be made available t=
+o you on your acceptance. Meanwhile, I have worked out the technicalities w=
+hereby the funds can be claimed in any of our 6 Clearing Houses without hit=
+ches. Our sharing ratio will be 50-40 while 0.5% will be for expenses durin=
+g action and another 5% will go for charity both in our countries. Should y=
+ou be interested, Please email me immediately for a detailed discussion of =
+this transaction.</p>
 
-=20
+<p>Sincerely,</p>
+<p>From: Peter Lynch (Fund Manager / Shareholder)</p>
+<p><a href=3D"mailto:Email%3Apeter_lynch2009@yahoo.com.hk">Email:peter_lync=
+h2009@yahoo.com.hk</a></p>
 
-=20
-
-Womens Health Guide
-
-Read More : http://dhristi.co.in/womenshealth.html
-
-=20
-
-=20
-
-Breast Care & Guide
-
-Read More : http://dhristi.co.in/breast_cancer.html
-
-=20
-
-27 Health Tips !!! Really useful
-
-Read More : http://dhristi.co.in/17_health_tips.html
-
-=20
-
-=20
-
-AIDS - Know How ?
-
-Read More : http://dhristi.co.in/all_about_aids.html
-
- =20
-
-Top Rated Jokes (Adult, Female, etc)
-
-Read More : http://khushiwebworld.com=20
-
-=20
-
-Thyroid - Know How ?
-
-Read More : http://dhristi.co.in/thyroid.html
-
-=20
-
-------=_NextPart_000_0226_01C9CD53.FF0706C0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML xmlns:o =3D "urn:schemas-microsoft-com:office:office"><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.5730.11" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><STRONG><SPAN=20
-style=3D"FONT-SIZE: 24pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'">Increase=20
-your Brain Power</SPAN></STRONG></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><STRONG><SPAN=20
-style=3D"FONT-SIZE: 18pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'">Read More=20
-: <A=20
-href=3D"http://dhristi.co.in/increase_brain_power.html">http://dhristi.co=
-.in/increase_brain_power.html</A></SPAN></STRONG></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'">&nbsp;<o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT size=3D3><FONT=20
-face=3DCalibri>&nbsp;<SPAN=20
-style=3D"FONT-SIZE: 12pt; FONT-FAMILY: 'Times New =
-Roman','serif'"><o:p></o:p></SPAN></FONT></FONT></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><STRONG><SPAN=20
-style=3D"FONT-SIZE: 24pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'">Womens=20
-Health Guide</SPAN></STRONG><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><STRONG><SPAN=20
-style=3D"FONT-SIZE: 18pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'">Read More=20
-: </SPAN></STRONG><STRONG><SPAN=20
-style=3D"FONT-SIZE: 10pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'"><A=20
-href=3D"http://dhristi.co.in/womenshealth.html"><SPAN=20
-style=3D"FONT-SIZE: =
-18pt">http://dhristi.co.in/womenshealth.html</SPAN></A></SPAN></STRONG><S=
-PAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'">&nbsp;<o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT size=3D3><FONT=20
-face=3DCalibri>&nbsp;<SPAN=20
-style=3D"FONT-SIZE: 12pt; FONT-FAMILY: 'Times New =
-Roman','serif'"><o:p></o:p></SPAN></FONT></FONT></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><STRONG><SPAN=20
-style=3D"FONT-SIZE: 24pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'">Breast=20
-Care &amp; Guide</SPAN></STRONG><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 18pt; COLOR: black; FONT-FAMILY: =
-'Arial','sans-serif'">Read=20
-More : <A=20
-href=3D"http://dhristi.co.in/breast_cancer.html">http://dhristi.co.in/bre=
-ast_cancer.html</A></SPAN><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'">&nbsp;<o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><STRONG><SPAN=20
-style=3D"FONT-SIZE: 24pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'">27 Health=20
-Tips !!! Really useful</SPAN></STRONG><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><STRONG><SPAN=20
-style=3D"FONT-SIZE: 18pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'">Read More=20
-: </SPAN></STRONG><STRONG><SPAN=20
-style=3D"FONT-SIZE: 10pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'"><A=20
-href=3D"http://dhristi.co.in/17_health_tips.html"><SPAN=20
-style=3D"FONT-SIZE: =
-18pt">http://dhristi.co.in/17_health_tips.html</SPAN></A></SPAN></STRONG>=
-<SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'">&nbsp;<o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'">&nbsp;<o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><STRONG><SPAN=20
-style=3D"FONT-SIZE: 24pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'">AIDS -=20
-Know How ?</SPAN></STRONG><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 18pt; COLOR: black; FONT-FAMILY: =
-'Arial','sans-serif'">Read=20
-More : <A=20
-href=3D"http://dhristi.co.in/all_about_aids.html">http://dhristi.co.in/al=
-l_about_aids.html</A></SPAN><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: 'Arial','sans-serif'">&nbsp;=20
-<o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><STRONG><SPAN=20
-style=3D"FONT-SIZE: 24pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'">Top Rated=20
-Jokes (Adult, Female, etc)</SPAN></STRONG><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 18pt; COLOR: black; FONT-FAMILY: =
-'Arial','sans-serif'">Read=20
-More : <A =
-href=3D"http://khushiwebworld.com/">http://khushiwebworld.com</A>=20
-</SPAN><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'">&nbsp;<o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><STRONG><SPAN=20
-style=3D"FONT-SIZE: 24pt; COLOR: red; FONT-FAMILY: =
-'Arial','sans-serif'">Thyroid -=20
-Know How ?</SPAN></STRONG><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 18pt; COLOR: black; FONT-FAMILY: =
-'Arial','sans-serif'">Read=20
-More : <A=20
-href=3D"http://dhristi.co.in/thyroid.html">http://dhristi.co.in/thyroid.h=
-tml</A></SPAN><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-'Arial','sans-serif'"><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><o:p><FONT =
-face=3DCalibri=20
-size=3D3>&nbsp;</FONT></o:p></P></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0226_01C9CD53.FF0706C0--
+--001636c5ac7a787b0304693cb2b7--

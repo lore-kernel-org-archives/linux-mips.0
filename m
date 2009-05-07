@@ -1,13 +1,13 @@
-Received: from mx1.redhat.com ([66.187.233.31]:47423 "EHLO mx1.redhat.com"
+Received: from mx1.redhat.com ([66.187.233.31]:47499 "EHLO mx1.redhat.com"
 	rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org with ESMTP
-	id S20024828AbZEGHkG (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 7 May 2009 08:40:06 +0100
+	id S20024828AbZEGHkt (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 7 May 2009 08:40:49 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 From: Roland McGrath <roland@redhat.com>
 Subject: Re: [PATCH 2/2] x86-64: seccomp: fix 32/64 syscall hole
-In-Reply-To: Markus Gutschke ( =?ISO-8859-1?Q?=C3=A9=C2=A1=C2=A7=C3=A5=C2=AD=C3=A5=C2=A4?=)'s message of  Wednesday, 6 May 2009 14:46:02 -0700 <904b25810905061446m73c42040nfff47c9b8950bcfa@mail.gmail.com>
+In-Reply-To: Markus Gutschke's message of  Wednesday, 6 May 2009 14:46:02 -0700 <904b25810905061446m73c42040nfff47c9b8950bcfa@mail.gmail.com>
 References: <20090228030226.C0D34FC3DA@magilla.sf.frob.com>
 	<20090228030413.5B915FC3DA@magilla.sf.frob.com>
 	<alpine.LFD.2.00.0902271932520.3111@localhost.localdomain>
@@ -17,14 +17,14 @@ References: <20090228030226.C0D34FC3DA@magilla.sf.frob.com>
 	<904b25810905061146ged374f2se0afd24e9e3c1f06@mail.gmail.com>
 	<20090506212913.GC4861@elte.hu>
 	<904b25810905061446m73c42040nfff47c9b8950bcfa@mail.gmail.com>
-Message-ID: <20090507073020.1517BFC39E@magilla.sf.frob.com>
-Date: Thu,  7 May 2009 00:30:20 -0700 (PDT)
+Message-ID: <20090507073121.2FAADFC39E@magilla.sf.frob.com>
+Date: Thu,  7 May 2009 00:31:21 -0700 (PDT)
 Return-Path: <roland@redhat.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: markus@google.com
 Cc: Ingo Molnar <mingo@elte.hu>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org, linux-kernel@vger.kernel.org, stable@kernel.org, linux-mips@linux-mips.org, sparclinux@vger.kernel.org, linuxppc-dev@ozlabs.org
-Message-ID: <20090507073020.3y0XrXBkEu__XOiKzKekYAENXqtif9gD-sRom2_umCE@z>
+Message-ID: <20090507073121.ZT5tD_7TybHwl3d7jc1hLhkzeaSusLGrvXEiMTGluQU@z>
 
 > Ptrace has performance and/or reliability problems when used to
 > sandbox threaded applications due to potential race conditions when

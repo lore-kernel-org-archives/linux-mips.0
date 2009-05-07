@@ -1,54 +1,73 @@
-Received: from mms3.broadcom.com ([216.31.210.19]:4264 "EHLO MMS3.broadcom.com"
+Received: from mx1.redhat.com ([66.187.233.31]:47423 "EHLO mx1.redhat.com"
 	rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org with ESMTP
-	id S20024435AbZEFQoX (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 6 May 2009 17:44:23 +0100
-Subject: Re: [PATCH 2/3] mips:powertv: Make kernel command line size
- configurable (resend)
-From: "Jon Fraser" <jfraser@broadcom.com>
-Reply-to: jfraser@broadcom.com
-In-Reply-To: <20090506163518.GA19624@linux-mips.org>
-References: <20090504225719.GA22417@cuplxvomd02.corp.sa.net>
- <20090506163518.GA19624@linux-mips.org>
-Date: Wed, 6 May 2009 12:44:00 -0400
-Message-ID: <1241628240.10498.4.camel@chaos.ne.broadcom.com>
+	id S20024828AbZEGHkG (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Thu, 7 May 2009 08:40:06 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-Path: <jfraser@broadcom.com>
+From: Roland McGrath <roland@redhat.com>
+Subject: Re: [PATCH 2/2] x86-64: seccomp: fix 32/64 syscall hole
+In-Reply-To: Markus Gutschke ( =?ISO-8859-1?Q?=C3=A9=C2=A1=C2=A7=C3=A5=C2=AD=C3=A5=C2=A4?=)'s message of  Wednesday, 6 May 2009 14:46:02 -0700 <904b25810905061446m73c42040nfff47c9b8950bcfa@mail.gmail.com>
+References: <20090228030226.C0D34FC3DA@magilla.sf.frob.com>
+	<20090228030413.5B915FC3DA@magilla.sf.frob.com>
+	<alpine.LFD.2.00.0902271932520.3111@localhost.localdomain>
+	<alpine.LFD.2.00.0902271948570.3111@localhost.localdomain>
+	<20090228072554.CFEA6FC3DA@magilla.sf.frob.com>
+	<alpine.LFD.2.00.0902280916470.3111@localhost.localdomain>
+	<904b25810905061146ged374f2se0afd24e9e3c1f06@mail.gmail.com>
+	<20090506212913.GC4861@elte.hu>
+	<904b25810905061446m73c42040nfff47c9b8950bcfa@mail.gmail.com>
+Message-ID: <20090507073020.1517BFC39E@magilla.sf.frob.com>
+Date: Thu,  7 May 2009 00:30:20 -0700 (PDT)
+Return-Path: <roland@redhat.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: jfraser@broadcom.com, David VomLehn <dvomlehn@cisco.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Message-ID: <20090506164400.etjWexzvRX3V_HvgfD73nYY6PqrhPewLEfbv6Ph9JUU@z>
+To: markus@google.com
+Cc: Ingo Molnar <mingo@elte.hu>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org, linux-kernel@vger.kernel.org, stable@kernel.org, linux-mips@linux-mips.org, sparclinux@vger.kernel.org, linuxppc-dev@ozlabs.org
+Message-ID: <20090507073020.3y0XrXBkEu__XOiKzKekYAENXqtif9gD-sRom2_umCE@z>
+
+> Ptrace has performance and/or reliability problems when used to
+> sandbox threaded applications due to potential race conditions when
+> inspecting system call arguments. We hope that we can avoid this
+> problem with seccomp.
+
+ptrace certainly has performance issues.  I take it the only "reliability
+problems" you are talking about are MT races with modifications to user
+memory that is relevant to a system call.  (Is there something else?)
+That is not a "ptrace problem" per se at all.  It's an intrinsic problem
+with any method based on "generic" syscall interception, if the filtering
+and enforcement decisions depend on examining user memory.  By the same
+token, no such method has a "reliability problem" if the filtering checks
+only examine the registers (or other thread-synchronous state).
+
+In the sense that I mean, seccomp is "generic syscall interception" too.
+(That is, the checks/enforcement are "around" the call, rather than inside
+it with direct atomicity controls binding the checks and uses together.)
+The only reason seccomp does not have this "reliability problem" is that
+its filtering is trivial and depends only on registers (in fact, only on
+one register, the syscall number).
+
+If you want to do checks that depend on shared or volatile state, then
+syscall interception is really not the proper mechanism for you.  (Likely
+examples include user memory, e.g. for file names in open calls, or ioctl
+struct contents, etc., fd tables or filesystem details, etc.)  For that
+you need mechanisms that look at stable kernel copies of user data that
+are what the syscall will actually use, such as is done by audit, LSM, etc.
+
+If you only have checks confined to thread-synchronous state such as the
+user registers, then you don't have any "reliability problem" regardless
+of the the particular syscall interception mechanism you use.  (ptrace has
+many problems for this or any other purpose, but this is not one of them.)
+That's unless you are referring to some other "reliability problem" that
+I'm not aware of.  (And I'll leave aside the "is it registers or is it
+user memory?" issue on ia64 as irrelevant, since, you know, it's ia64.)
+
+If syscall interception is indeed an appropriate mechanism for your needs
+and you want something tailored more specifically to your exact use in
+future kernels, a module doing this would be easy to implement using the
+utrace API.  (That might be a "compelling use" of utrace by virtue of the
+Midas brand name effect, if nothing else. ;-)
 
 
-
-David,
-
-We found huge command lines to be awkward.  In our platform support
-code, we can pass environment variables from our bootstrap (CFE) to the
-kernel.  Would something like this work for you?
-
-I have no objection to making the command line buffer size bigger.
-
-Jon
-
-
-
-On Wed, 2009-05-06 at 09:35 -0700, Ralf Baechle wrote:
-> On Mon, May 04, 2009 at 03:57:19PM -0700, David VomLehn wrote:
-> 
-> > Most platforms can get by perfectly well with the default command line size,
-> > but some platforms need more. This patch allows the command line size to
-> > be configured for those platforms that need it. The default remains 256
-> > characters.
-> > 
-> > Signed-off-by: David VomLehn <dvomlehn@cisco.com>
-> 
-> How big of a command line do you need?  For no scientific reason other
-> than there not being any obvious need for a larger size MIPS is using 256
-> and I think unless you're asking for a huge number it will be better to
-> just raise that constant.
-> 
->   Ralf
-> 
-> 
+Thanks,
+Roland

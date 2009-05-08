@@ -1,73 +1,77 @@
-Received: from mx1.redhat.com ([66.187.233.31]:47499 "EHLO mx1.redhat.com"
-	rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org with ESMTP
-	id S20024828AbZEGHkt (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Thu, 7 May 2009 08:40:49 +0100
+Received: from mail-gx0-f157.google.com ([209.85.217.157]:59349 "EHLO
+	mail-gx0-f157.google.com" rhost-flags-OK-OK-OK-OK)
+	by ftp.linux-mips.org with ESMTP id S20025089AbZEHPZm convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Fri, 8 May 2009 16:25:42 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-From: Roland McGrath <roland@redhat.com>
-Subject: Re: [PATCH 2/2] x86-64: seccomp: fix 32/64 syscall hole
-In-Reply-To: Markus Gutschke's message of  Wednesday, 6 May 2009 14:46:02 -0700 <904b25810905061446m73c42040nfff47c9b8950bcfa@mail.gmail.com>
-References: <20090228030226.C0D34FC3DA@magilla.sf.frob.com>
-	<20090228030413.5B915FC3DA@magilla.sf.frob.com>
-	<alpine.LFD.2.00.0902271932520.3111@localhost.localdomain>
-	<alpine.LFD.2.00.0902271948570.3111@localhost.localdomain>
-	<20090228072554.CFEA6FC3DA@magilla.sf.frob.com>
-	<alpine.LFD.2.00.0902280916470.3111@localhost.localdomain>
-	<904b25810905061146ged374f2se0afd24e9e3c1f06@mail.gmail.com>
-	<20090506212913.GC4861@elte.hu>
-	<904b25810905061446m73c42040nfff47c9b8950bcfa@mail.gmail.com>
-Message-ID: <20090507073121.2FAADFC39E@magilla.sf.frob.com>
-Date: Thu,  7 May 2009 00:31:21 -0700 (PDT)
-Return-Path: <roland@redhat.com>
+In-Reply-To: <20090504225719.GA22417@cuplxvomd02.corp.sa.net>
+References: <20090504225719.GA22417@cuplxvomd02.corp.sa.net>
+Date: Fri, 8 May 2009 11:25:35 -0400
+Message-ID: <7d1d9c250905080825n62f46b2bk254a736d3bce2ec6@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mips:powertv: Make kernel command line size
+	configurable (resend)
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
+Return-Path: <paul.gortmaker@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: markus@google.com
-Cc: Ingo Molnar <mingo@elte.hu>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org, linux-kernel@vger.kernel.org, stable@kernel.org, linux-mips@linux-mips.org, sparclinux@vger.kernel.org, linuxppc-dev@ozlabs.org
-Message-ID: <20090507073121.ZT5tD_7TybHwl3d7jc1hLhkzeaSusLGrvXEiMTGluQU@z>
+To: David VomLehn <dvomlehn@cisco.com>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org
+Message-ID: <20090508152535.m_I7J86Q2UkaysJyeKgl_rJxZDw5kb59eGSxfbt0cvI@z>
 
-> Ptrace has performance and/or reliability problems when used to
-> sandbox threaded applications due to potential race conditions when
-> inspecting system call arguments. We hope that we can avoid this
-> problem with seccomp.
+On Mon, May 4, 2009 at 6:57 PM, David VomLehn <dvomlehn@cisco.com> wrote:
+> Most platforms can get by perfectly well with the default command line size,
+> but some platforms need more. This patch allows the command line size to
+> be configured for those platforms that need it. The default remains 256
+> characters.
 
-ptrace certainly has performance issues.  I take it the only "reliability
-problems" you are talking about are MT races with modifications to user
-memory that is relevant to a system call.  (Is there something else?)
-That is not a "ptrace problem" per se at all.  It's an intrinsic problem
-with any method based on "generic" syscall interception, if the filtering
-and enforcement decisions depend on examining user memory.  By the same
-token, no such method has a "reliability problem" if the filtering checks
-only examine the registers (or other thread-synchronous state).
+The one thing I see when I look at this patch, is that it lands in the
+arch/mips/Kconfig -- but is there really anything fundamentally
+architecture specific about the allowed length of the kernel command
+line?.  It probably belongs somewhere alongside the setting for
+LOG_BUF_LEN or similar (and then add the other respective changes
+to make all arch actually respect the setting.)
 
-In the sense that I mean, seccomp is "generic syscall interception" too.
-(That is, the checks/enforcement are "around" the call, rather than inside
-it with direct atomicity controls binding the checks and uses together.)
-The only reason seccomp does not have this "reliability problem" is that
-its filtering is trivial and depends only on registers (in fact, only on
-one register, the syscall number).
+Paul.
 
-If you want to do checks that depend on shared or volatile state, then
-syscall interception is really not the proper mechanism for you.  (Likely
-examples include user memory, e.g. for file names in open calls, or ioctl
-struct contents, etc., fd tables or filesystem details, etc.)  For that
-you need mechanisms that look at stable kernel copies of user data that
-are what the syscall will actually use, such as is done by audit, LSM, etc.
-
-If you only have checks confined to thread-synchronous state such as the
-user registers, then you don't have any "reliability problem" regardless
-of the the particular syscall interception mechanism you use.  (ptrace has
-many problems for this or any other purpose, but this is not one of them.)
-That's unless you are referring to some other "reliability problem" that
-I'm not aware of.  (And I'll leave aside the "is it registers or is it
-user memory?" issue on ia64 as irrelevant, since, you know, it's ia64.)
-
-If syscall interception is indeed an appropriate mechanism for your needs
-and you want something tailored more specifically to your exact use in
-future kernels, a module doing this would be easy to implement using the
-utrace API.  (That might be a "compelling use" of utrace by virtue of the
-Midas brand name effect, if nothing else. ;-)
-
-
-Thanks,
-Roland
+>
+> Signed-off-by: David VomLehn <dvomlehn@cisco.com>
+> ---
+>  arch/mips/Kconfig             |    7 +++++++
+>  arch/mips/include/asm/setup.h |    2 +-
+>  2 files changed, 8 insertions(+), 1 deletions(-)
+>
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 998e5db..99f7b6d 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -780,6 +780,13 @@ config EARLY_PRINTK
+>  config SYS_HAS_EARLY_PRINTK
+>        bool
+>
+> +config COMMAND_LINE_SIZE
+> +       int "Maximum size of command line passed to kernel from bootloader"
+> +       default 256
+> +       help
+> +         Most systems work well with the default value, but some bootloaders pass more
+> +         information on the command line than others. A smaller value is good here.
+> +
+>  config HOTPLUG_CPU
+>        bool
+>        default n
+> diff --git a/arch/mips/include/asm/setup.h b/arch/mips/include/asm/setup.h
+> index e600ced..132e397 100644
+> --- a/arch/mips/include/asm/setup.h
+> +++ b/arch/mips/include/asm/setup.h
+> @@ -1,7 +1,7 @@
+>  #ifndef _MIPS_SETUP_H
+>  #define _MIPS_SETUP_H
+>
+> -#define COMMAND_LINE_SIZE      256
+> +#define COMMAND_LINE_SIZE      CONFIG_COMMAND_LINE_SIZE
+>
+>  #ifdef  __KERNEL__
+>  extern void setup_early_printk(void);
+>
+>

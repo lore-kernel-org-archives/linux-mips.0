@@ -1,128 +1,103 @@
-Received: from mx1.moondrake.net ([212.85.150.166]:57754 "EHLO
-	mx1.mandriva.com" rhost-flags-OK-OK-OK-FAIL) by ftp.linux-mips.org
-	with ESMTP id S20024315AbZE0TPN (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Wed, 27 May 2009 20:15:13 +0100
-From: Arnaud Patard <apatard@mandriva.com>
-Subject: Re: [loongson-PATCH-v2 19/23] Loongson2F cpufreq support
-References: <cover.1243362545.git.wuzj@lemote.com>
-	<1a75bd9d59ff0c92250ddb7238509a7a4b154505.1243362545.git.wuzj@lemote.com>
-	<m3skiqop3b.fsf@anduin.mandriva.com>
-	<1243445879.11263.116.camel@falcon>
-Date: Wed, 27 May 2009 21:18:11 +0200
-In-Reply-To: <1243445879.11263.116.camel@falcon> (Wu Zhangjin's message of "Thu, 28 May 2009 01:37:59 +0800")
-Message-ID: <m363fmnymk.fsf@anduin.mandriva.com>
+Received: from mail-qy0-f126.google.com ([209.85.221.126]:51062 "EHLO
+	mail-qy0-f126.google.com" rhost-flags-OK-OK-OK-OK)
+	by ftp.linux-mips.org with ESMTP id S20021938AbZE1Kxl (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 28 May 2009 11:53:41 +0100
+Received: by qyk32 with SMTP id 32so675347qyk.22
+        for <linux-mips@linux-mips.org>; Thu, 28 May 2009 03:53:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-Path: <arnaud.patard@mandriva.com>
+Date: Thu, 28 May 2009 16:22:49 +0530
+Message-ID: <277176450905280352g1d361b11p2e9e629447eabca2@mail.gmail.com>
+Subject: Sindhi Bandhan
+From: priya shrivastava <priyashri186@gmail.com>
+Content-Type: multipart/alternative; boundary=0016364ed386515568046af6c573
+Return-Path: <priyashri186@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: wuzhangjin@gmail.com
-Cc: Yan Hua <yanh@lemote.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Philippe Vachon <philippe@cowpig.ca>, Zhang Le <r0bertz@gentoo.org>, Zhang Fuxin <zhangfx@lemote.com>, loongson-dev <loongson-dev@googlegroups.com>, Nicholas Mc Guire <der.herr@hofr.at>, Liu Junliang <liujl@lemote.com>, Erwan Lerale <erwan@thiscow.com>
-Message-ID: <20090527191811.SB_f3epW5SHAAe3CEbVD0KAlwqNd1UOeOGdw2oyGjJA@z>
+Message-ID: <20090528105249.jKXUTaay4ICT4yw7vKkGFEExEqwmKXOf_tujAkm3N3Y@z>
 
-Wu Zhangjin <wuzhangjin@gmail.com> writes:
+--0016364ed386515568046af6c573
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Hi,
+Sindhi Bandhan
 
-> Hi,
->
-> On Wed, 2009-05-27 at 11:46 +0200, Arnaud Patard wrote:
->> > Loongson2F add a new capability to dynamic scaling cpu frequency.  However the
->> > cpu count timer depends on cpu frequency. So an alternative clock must be used
->> > if this driver is enabled. Besides, the CPU enter wait state when the frequency
->> > is setting zero. All these features help power save.
->> >
->> > In fuloong(2f) and yeeloong(2f), if you want to use this feature, you
->> > should enable the cs5536 mfgpt timer.
-> [...]
->> > diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
->> > index 74efb43..aa8cd64 100644
->> > --- a/arch/mips/Kconfig
->> > +++ b/arch/mips/Kconfig
->> > @@ -2136,6 +2136,23 @@ source "kernel/power/Kconfig"
->> >  
->> >  endmenu
->> >  
->> > +menu "CPU Frequency scaling"
->> > +
->> > +source "drivers/cpufreq/Kconfig"
->> > +
->> > +config LOONGSON2F_CPU_FREQ
->> > +	bool "Loongson-2F CPU Frequency driver"
->> > +	depends on CPU_LOONGSON2F && CPU_FREQ && CS5536_MFGPT
->> 
->> If I have a clock from (for instance) a i8253 compatible source, one will
->> have to add something here. I'm not sure it's a good idea. Did you try
->> with something like "select  LOONGSON2F_CPU_FREQ" in the machine Kconfig
->> entry ?
->> 
->
-> something like "select LOONGSON2F_CPU_FREQ" not work, because users may
-> do not need LOONGSON2F_CPU_FREQ.
->  
-> what about this solution?
->
-> +config LOONGSON2F_CPU_FREQ +	bool "Loongson-2F CPU Frequency driver"
-> +	depends on CPU_LOONGSON2F && CPU_FREQ && (CS5536_MFGPT || I8253)
+*Here Is A Website Dedicated to Sindhi Community from
+*<http://sindhibandhan.com/>
 
-well, I was thinking about something like :
+*A* <http://sindhibandhan.com/>*ll over the World
 
-config LOONGSON2F_EXTERNAL_CLOCK
-  bool
+This Website Provides Information About Various Sindhi
+*<http://sindhibandhan.com/>
+*People* <http://sindhibandhan.com/>
 
-config LOONGSON2F_CPU_FREQ
-  bool "Loongson-2F CPU Frequency driver"
-  depends on CPU_LOONGSON2F && CPU_FREQ && LOONGSON2F_EXTERNAL_CLOCK
+**********
 
-Maybe it's overkill. Don't know.
+*Sindhi: ( Bhaibhand, Bhanusali, Bhatia, * <http://sindhibandhan.com/>*Sahiti,
+Sakkhar,  Shikarpuri, etc.)*
+<http://sindhibandhan.com/>
 
->
->
->> > diff --git a/arch/mips/kernel/loongson2f_freq.c b/arch/mips/kernel/loongson2f_freq.c
->> > new file mode 100644
->> > index 0000000..183f36b
-> [...]
->> > +static int __init loongson2f_cpufreq_module_init(void)
->> > +{
->> > +	struct cpuinfo_mips *c = &cpu_data[0];
->> > +	int result;
->> > +
->> > +	if (c->processor_id != PRID_IMP_LOONGSON2F)
->> > +		return -ENODEV;
->> 
->> How can this happen ? the Kconfig entry depends on CPU_LOONGSON2F so I
->> would expect this is useless.
->> 
->
-> i just removed it, thanks!
->
->> > diff --git a/arch/mips/loongson/common/clock.c b/arch/mips/loongson/common/clock.c
->> > new file mode 100644
->> > index 0000000..a8c648d
->> > --- /dev/null
->> > +++ b/arch/mips/loongson/common/clock.c
-> [...]
->> > +/*
->> > + * This is the simple version of Loongson-2F wait
->> > + * Maybe we need do this in interrupt disabled content
->> > + */
->> > +DEFINE_SPINLOCK(loongson2f_wait_lock);
->> > +void loongson2f_cpu_wait(void)
->> > +{
->> > +	u32 cpu_freq;
->> > +	unsigned long flags;
->> > +
->> > +	spin_lock_irqsave(&loongson2f_wait_lock, flags);
->> > +	cpu_freq = LOONGSON_CHIPCFG0;
->> > +	LOONGSON_CHIPCFG0 &= ~0x7;	/* Put CPU into wait mode */
->> 
->> by doing this, if you want to "wake up" the 2f, you need an external
->> interrupt source otherwise your only solution is to power down your
->> machine. Are you sure that it's really safe to enable it by default ?
->> 
->
-> sorry, I am not clear why Yanhua use a loongson-specific cpu_wait
-> here(seems used in loongson2f_freq.c)? perhaps he can explain it. and I
-> also have a question about it: why not use the "wait" instruction
-> directly here like r4k_wait() does? or just use the r4k_wait() function
-> via adding some code in arch/mips/kernel/cpu-probe.c:
+**********
+
+*
+If You Or Your Relative Is One Of Those, Then It Is Worth Looking At The
+Website for A Match
+
+The Website Is http://sindhibandhan.com
+* <http://sindhibandhan.com/>
+
+**********************
+You have receive this mail because either you bought a product from one of
+our affiliates or  enquired about the services or have been referred by a
+friend. If you don't wish to receive any mails regarding this, you can
+remove your e-mail by clicking the link below
+
+*http://sindhibandhan.com/block.html* <http://sindhibandhan.com/block.html>
+
+--0016364ed386515568046af6c573
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<font color=3D"#ffffff" size=3D"1">Sindhi Bandhan<br></font>
+<table width=3D"450" bgcolor=3D"#ffccff" border=3D"1">
+<tbody>
+<tr>
+<td>
+<p align=3D"center"><font size=3D"2"><a href=3D"http://sindhibandhan.com/" =
+target=3D"_blank"><u><font color=3D"#0000ff">Here Is A Website Dedicated to=
+ </font><font color=3D"#ff0000">Sindhi</font><font color=3D"#0000ff"> Commu=
+nity from=A0</font></u></a></font></p>
+
+<p align=3D"center"><font size=3D"2"><font color=3D"#0000ff"><a href=3D"htt=
+p://sindhibandhan.com/" target=3D"_blank"><u>A</u></a></font><a href=3D"htt=
+p://sindhibandhan.com/" target=3D"_blank"><u><font color=3D"#0000ff">ll ove=
+r the World<br>
+<br>This Website Provides Information About Various=A0</font><font color=3D=
+"#ff0000">Sindhi</font><font color=3D"#0000ff"> </font></u></a></font><font=
+ color=3D"#0000ff" size=3D"2"><a href=3D"http://sindhibandhan.com/" target=
+=3D"_blank"><u>People</u></a></font></p>
+
+<p align=3D"center"><font size=3D"2"><u>********</u></font></p>
+<p align=3D"center"><font size=3D"2"><a href=3D"http://sindhibandhan.com/" =
+target=3D"_blank"><font color=3D"#ff0000"><b><u>Sindhi: ( Bhaibhand, Bhanus=
+ali, Bhatia, </u></b></font></a></font><font size=3D"2"><a href=3D"http://s=
+indhibandhan.com/" target=3D"_blank"><font color=3D"#ff0000"><b><u>Sahiti, =
+Sakkhar,=A0 Shikarpuri, etc.)</u></b><br>
+</font></a></font></p>
+<p align=3D"center"><font size=3D"2"><u>********</u></font></p>
+<p align=3D"center"><font color=3D"#0000ff" size=3D"2"><a href=3D"http://si=
+ndhibandhan.com/" target=3D"_blank"><u><br>If You Or Your Relative Is One O=
+f Those, Then It Is Worth Looking At The Website for A Match<br><br>The Web=
+site Is <b>http://sindhibandhan.com</b><br>
+</u></a></font></p></td></tr>
+<tr>
+<td>
+<p align=3D"center">**********************<br><font size=3D"2">You have rec=
+eive this mail because either you bought a product from one of our affiliat=
+es or=A0 enquired about the services or have been referred by a friend. If =
+you don&#39;t wish to receive any mails regarding this, you can remove your=
+ e-mail by clicking the link below<br>
+</font><br><a href=3D"http://sindhibandhan.com/block.html" target=3D"_blank=
+"><b><font color=3D"#0000ff" size=3D"3"><u>http://sindhibandhan.com/block.h=
+tml</u></font></b></a></p></td></tr></tbody></table>
+
+--0016364ed386515568046af6c573--

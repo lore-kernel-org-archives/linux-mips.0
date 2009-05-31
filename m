@@ -1,103 +1,97 @@
-Received: from mail-qy0-f126.google.com ([209.85.221.126]:51062 "EHLO
-	mail-qy0-f126.google.com" rhost-flags-OK-OK-OK-OK)
-	by ftp.linux-mips.org with ESMTP id S20021938AbZE1Kxl (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 28 May 2009 11:53:41 +0100
-Received: by qyk32 with SMTP id 32so675347qyk.22
-        for <linux-mips@linux-mips.org>; Thu, 28 May 2009 03:53:31 -0700 (PDT)
-MIME-Version: 1.0
-Date: Thu, 28 May 2009 16:22:49 +0530
-Message-ID: <277176450905280352g1d361b11p2e9e629447eabca2@mail.gmail.com>
-Subject: Sindhi Bandhan
-From: priya shrivastava <priyashri186@gmail.com>
-Content-Type: multipart/alternative; boundary=0016364ed386515568046af6c573
-Return-Path: <priyashri186@gmail.com>
+Received: from mba.ocn.ne.jp ([122.1.235.107]:65197 "HELO smtp.mba.ocn.ne.jp"
+	rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org with SMTP
+	id S20023910AbZEaQpZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Sun, 31 May 2009 17:45:25 +0100
+Date: Mon, 01 Jun 2009 01:45:17 +0900 (JST)
+Message-ID: <20090601.014517.169682203.anemo@mba.ocn.ne.jp>
+Subject: Re: [PATCH] hwrng: Add TX4939 RNG driver
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <20090529162907.9cb1bba2.akpm@linux-foundation.org>
+References: <1243350141-883-1-git-send-email-anemo@mba.ocn.ne.jp>
+	<20090529162907.9cb1bba2.akpm@linux-foundation.org>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-Path: <anemo@mba.ocn.ne.jp>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Message-ID: <20090528105249.jKXUTaay4ICT4yw7vKkGFEExEqwmKXOf_tujAkm3N3Y@z>
+To: akpm@linux-foundation.org
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au, mpm@selenic.com
+Message-ID: <20090531164517.rHq0MpOjJTVof5JTN-4VbHVHm3AKIm4D99ZgS3bEok4@z>
 
---0016364ed386515568046af6c573
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+On Fri, 29 May 2009 16:29:07 -0700, Andrew Morton <akpm@linux-foundation.org> wrote:
+> I assume that the MIPS patch "[PATCH] TXx9: Add TX4939 RNG support"
+> depends upon this patch?
 
-Sindhi Bandhan
+To build kernel or driver, no dependencies.  To use this device
+actually, both patches are needed.
 
-*Here Is A Website Dedicated to Sindhi Community from
-*<http://sindhibandhan.com/>
+> > +static u64 read_rng(void __iomem *base, unsigned int offset)
+> > +{
+> > +	/* Caller must disable interrupts */
+> > +	return ____raw_readq(base + offset);
+> > +}
+> 
+> What is the reasoning behind the local_irq_disable() requirement?
+> 
+> Because I'm wondering whether this is safe on SMP?
 
-*A* <http://sindhibandhan.com/>*ll over the World
+As Ralf replied, These local_irq_disable stuff are just for 64-bit
+access on 32-bit kernel.  Maybe something like this is preferred?
 
-This Website Provides Information About Various Sindhi
-*<http://sindhibandhan.com/>
-*People* <http://sindhibandhan.com/>
+static void ____raw_io_start(void)
+{
+#ifndef CONFIG_64BIT
+	/* some comments... */
+	local_irq_enable();
+#endif
+}
 
-**********
+static void ____raw_io_end(void)
+{
+#ifndef CONFIG_64BIT
+	/* see above */
+	local_irq_disable();
+#endif
+}
 
-*Sindhi: ( Bhaibhand, Bhanusali, Bhatia, * <http://sindhibandhan.com/>*Sahiti,
-Sakkhar,  Shikarpuri, etc.)*
-<http://sindhibandhan.com/>
+For SMP concurrent access, these rountines are protected by mutex in
+rng-core.  Also this SoC does not support SMP.  There should be no
+problem here.
 
-**********
+> > +	for (i = 0; i < 20; i++) {
+...
+> > +		udelay(1);
+> > +	}
+> > +	return rngdev->data_avail;
+> > +}
+> 
+> The mysterious udelay() needs a comment, because there is no way in
+> which the reader can otherwise work out why it is there.
 
-*
-If You Or Your Relative Is One Of Those, Then It Is Worth Looking At The
-Website for A Match
+Well, this comments can be applied most RNG drivers ;)
 
-The Website Is http://sindhibandhan.com
-* <http://sindhibandhan.com/>
+Anyway, I will add some comment here.  I take this loop (20 loops with
+udelay) from other drivers and changed to udelay(1) because the
+datasheed states "90 bus clock cycles by default" for generation
+(typically 450ns for this SoC).
 
-**********************
-You have receive this mail because either you bought a product from one of
-our affiliates or  enquired about the services or have been referred by a
-friend. If you don't wish to receive any mails regarding this, you can
-remove your e-mail by clicking the link below
+> > +static int tx4939_rng_data_read(struct hwrng *rng, u32 *buffer)
+> > +{
+> > +	struct tx4939_rng *rngdev = container_of(rng, struct tx4939_rng, rng);
+> > +
+> > +	rngdev->data_avail--;
+> > +	*buffer = *((u32 *)&rngdev->databuf + rngdev->data_avail);
+> > +	return sizeof(u32);
+> > +}
+> 
+> Concurrent callers can corrupt rngdev->data_avail ?
 
-*http://sindhibandhan.com/block.html* <http://sindhibandhan.com/block.html>
+This is protected by rng_mutex in rng-core.
 
---0016364ed386515568046af6c573
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<font color=3D"#ffffff" size=3D"1">Sindhi Bandhan<br></font>
-<table width=3D"450" bgcolor=3D"#ffccff" border=3D"1">
-<tbody>
-<tr>
-<td>
-<p align=3D"center"><font size=3D"2"><a href=3D"http://sindhibandhan.com/" =
-target=3D"_blank"><u><font color=3D"#0000ff">Here Is A Website Dedicated to=
- </font><font color=3D"#ff0000">Sindhi</font><font color=3D"#0000ff"> Commu=
-nity from=A0</font></u></a></font></p>
-
-<p align=3D"center"><font size=3D"2"><font color=3D"#0000ff"><a href=3D"htt=
-p://sindhibandhan.com/" target=3D"_blank"><u>A</u></a></font><a href=3D"htt=
-p://sindhibandhan.com/" target=3D"_blank"><u><font color=3D"#0000ff">ll ove=
-r the World<br>
-<br>This Website Provides Information About Various=A0</font><font color=3D=
-"#ff0000">Sindhi</font><font color=3D"#0000ff"> </font></u></a></font><font=
- color=3D"#0000ff" size=3D"2"><a href=3D"http://sindhibandhan.com/" target=
-=3D"_blank"><u>People</u></a></font></p>
-
-<p align=3D"center"><font size=3D"2"><u>********</u></font></p>
-<p align=3D"center"><font size=3D"2"><a href=3D"http://sindhibandhan.com/" =
-target=3D"_blank"><font color=3D"#ff0000"><b><u>Sindhi: ( Bhaibhand, Bhanus=
-ali, Bhatia, </u></b></font></a></font><font size=3D"2"><a href=3D"http://s=
-indhibandhan.com/" target=3D"_blank"><font color=3D"#ff0000"><b><u>Sahiti, =
-Sakkhar,=A0 Shikarpuri, etc.)</u></b><br>
-</font></a></font></p>
-<p align=3D"center"><font size=3D"2"><u>********</u></font></p>
-<p align=3D"center"><font color=3D"#0000ff" size=3D"2"><a href=3D"http://si=
-ndhibandhan.com/" target=3D"_blank"><u><br>If You Or Your Relative Is One O=
-f Those, Then It Is Worth Looking At The Website for A Match<br><br>The Web=
-site Is <b>http://sindhibandhan.com</b><br>
-</u></a></font></p></td></tr>
-<tr>
-<td>
-<p align=3D"center">**********************<br><font size=3D"2">You have rec=
-eive this mail because either you bought a product from one of our affiliat=
-es or=A0 enquired about the services or have been referred by a friend. If =
-you don&#39;t wish to receive any mails regarding this, you can remove your=
- e-mail by clicking the link below<br>
-</font><br><a href=3D"http://sindhibandhan.com/block.html" target=3D"_blank=
-"><b><font color=3D"#0000ff" size=3D"3"><u>http://sindhibandhan.com/block.h=
-tml</u></font></b></a></p></td></tr></tbody></table>
-
---0016364ed386515568046af6c573--
+> > +	/* Start RNG */
+> > +	write_rng(TX4939_RNG_RCSR_ST, rngdev->base, TX4939_RNG_RCSR);
+> > +	local_irq_enable();
+> > +	/* drop first two results */
+> 
+> The comment doesn't provide the reason for doing this?

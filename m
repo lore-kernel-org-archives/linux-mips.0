@@ -1,97 +1,169 @@
-Received: from mba.ocn.ne.jp ([122.1.235.107]:65197 "HELO smtp.mba.ocn.ne.jp"
-	rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org with SMTP
-	id S20023910AbZEaQpZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Sun, 31 May 2009 17:45:25 +0100
-Date: Mon, 01 Jun 2009 01:45:17 +0900 (JST)
-Message-ID: <20090601.014517.169682203.anemo@mba.ocn.ne.jp>
-Subject: Re: [PATCH] hwrng: Add TX4939 RNG driver
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-In-Reply-To: <20090529162907.9cb1bba2.akpm@linux-foundation.org>
-References: <1243350141-883-1-git-send-email-anemo@mba.ocn.ne.jp>
-	<20090529162907.9cb1bba2.akpm@linux-foundation.org>
+Received: from mail-px0-f187.google.com ([209.85.216.187]:50563 "EHLO
+	mail-px0-f187.google.com" rhost-flags-OK-OK-OK-OK)
+	by ftp.linux-mips.org with ESMTP id S20022670AbZFAHln (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 1 Jun 2009 08:41:43 +0100
+Received: by pxi17 with SMTP id 17so6608562pxi.22
+        for <linux-mips@linux-mips.org>; Mon, 01 Jun 2009 00:41:36 -0700 (PDT)
+Subject: Re: [loongson-PATCH-v1 16/27] Add Siliconmotion 712 framebuffer
+ driver
+From: Wu Zhangjin <wuzhangjin@gmail.com>
+Reply-To: wuzhangjin@gmail.com
+In-Reply-To: <4A1FE338.5010802@emlix.com>
+References: <cover.1242855716.git.wuzhangjin@gmail.com>
+	 <ad533255eec0400e4fed72671c0865472dd68d02.1242855716.git.wuzhangjin@gmail.com>
+	 <4A1FE338.5010802@emlix.com>
+Content-Type: text/plain
+Date: Mon, 01 Jun 2009 15:41:30 +0800
+Message-ID: <1243842090.5760.175.camel@falcon>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-Path: <anemo@mba.ocn.ne.jp>
+Return-Path: <wuzhangjin@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: akpm@linux-foundation.org
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au, mpm@selenic.com
-Message-ID: <20090531164517.rHq0MpOjJTVof5JTN-4VbHVHm3AKIm4D99ZgS3bEok4@z>
+To: Simon Braunschmidt <sb@emlix.com>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20090601074130.sDmY49zUk4R4zkP0TiRjGRmsdIT3j0JcE0zb5Gfq10w@z>
 
-On Fri, 29 May 2009 16:29:07 -0700, Andrew Morton <akpm@linux-foundation.org> wrote:
-> I assume that the MIPS patch "[PATCH] TXx9: Add TX4939 RNG support"
-> depends upon this patch?
+hi, 
 
-To build kernel or driver, no dependencies.  To use this device
-actually, both patches are needed.
-
-> > +static u64 read_rng(void __iomem *base, unsigned int offset)
-> > +{
-> > +	/* Caller must disable interrupts */
-> > +	return ____raw_readq(base + offset);
-> > +}
+> As i have seen lots of functionality are guarded by
+> #ifdef __BIG_ENDIAN
 > 
-> What is the reasoning behind the local_irq_disable() requirement?
+> Is there a way to setup a different mode than 1024x600 on 
+> kernel-commandline or from userspace, e.g. with fbset?
 > 
-> Because I'm wondering whether this is safe on SMP?
 
-As Ralf replied, These local_irq_disable stuff are just for 64-bit
-access on 32-bit kernel.  Maybe something like this is preferred?
+I just removed some of #ifdef __BIG_ENDIAN ... #endif, and tuned the
+vesa_mode values, now, we can pass it in kernel-commandline like this:
 
-static void ____raw_io_start(void)
-{
-#ifndef CONFIG_64BIT
-	/* some comments... */
-	local_irq_enable();
-#endif
-}
+vga=1024x600x24
 
-static void ____raw_io_end(void)
-{
-#ifndef CONFIG_64BIT
-	/* see above */
-	local_irq_disable();
-#endif
-}
+the latest SMI video driver patch with this modification will be sent
+out later, but you can get this one if you need it immediately:
 
-For SMP concurrent access, these rountines are protected by mutex in
-rng-core.  Also this SoC does not support SMP.  There should be no
-problem here.
+From 34e4afa8b64f794e4fef0dd622ef576dbfecc851 Mon Sep 17 00:00:00 2001
+From: Wu Zhangjin <wuzj@lemote.com>
+Date: Mon, 1 Jun 2009 15:31:26 +0800
+Subject: [PATCH] enable the vga command line in SMI video driver
 
-> > +	for (i = 0; i < 20; i++) {
-...
-> > +		udelay(1);
-> > +	}
-> > +	return rngdev->data_avail;
-> > +}
+there is no need to define a screen_info again so remove it, because it
+is defined in arch/mips/kernel/setup.c and not relative to big endian or
+little endian, and here I think its better use something like
+1024x600x24 than 0x318, so replace all of the magic numbers to an
+understandable one.
+
+Signed-off-by: Wu Zhangjin <wuzj@lemote.com>
+---
+ drivers/video/smi/smtcfb.c |   42
+++++++++++++++++++------------------------
+ 1 files changed, 18 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/video/smi/smtcfb.c b/drivers/video/smi/smtcfb.c
+index ebc6371..4fe940b 100644
+--- a/drivers/video/smi/smtcfb.c
++++ b/drivers/video/smi/smtcfb.c
+@@ -52,10 +52,6 @@
+ #define smdbg(format, arg...)
+ #endif
+ 
+-#ifdef __BIG_ENDIAN
+-struct screen_info screen_info;
+-#endif
+-
+ /*
+ * Private structure
+ */
+@@ -96,32 +92,32 @@ struct par_info {
+ 	u8 chipRevID;
+ };
+ 
+-#ifdef __BIG_ENDIAN
+ struct vesa_mode_table {
+-	char mode_index[6];
++	char mode_index[15];
+ 	u16 lfb_width;
+ 	u16 lfb_height;
+ 	u16 lfb_depth;
+ };
+ 
+ static struct vesa_mode_table vesa_mode[] = {
+-	{"0x301", 640, 480, 8},
+-	{"0x303", 800, 600, 8},
+-	{"0x305", 1024, 768, 8},
+-	{"0x307", 1280, 1024, 8},
+-
+-	{"0x311", 640, 480, 16},
+-	{"0x314", 800, 600, 16},
+-	{"0x317", 1024, 768, 16},
+-	{"0x31A", 1280, 1024, 16},
+-
+-	{"0x312", 640, 480, 24},
+-	{"0x315", 800, 600, 24},
+-	{"0x318", 1024, 768, 24},
+-	{"0x31B", 1280, 1024, 24},
+-
++	{"640x480x8", 640, 480, 8},
++	{"800x480x8", 800, 480, 8},
++	{"800x600x8", 800, 600, 8},
++	{"1024x768x8", 1024, 768, 8},
++	{"1280x1024x8", 1280, 1024, 8},
++
++	{"640x480x16", 640, 480, 16},
++	{"800x480x16", 800, 480, 16},
++	{"800x600x16", 800, 600, 16},
++	{"1024x768x16", 1024, 768, 16},
++	{"1280x1024x16", 1280, 1024, 16},
++
++	{"640x480x24", 640, 480, 24},
++	{"800x480x24", 800, 480, 24},
++	{"800x600x24", 800, 600, 24},
++	{"1024x768x24", 1024, 768, 24},
++	{"1280x1024x24", 1280, 1024, 24},
+ };
+-#endif
+ 
+ char __iomem *smtc_RegBaseAddress;	/* Memory Map IO starting address */
+ char __iomem *smtc_VRAMBaseAddress;	/* video memory starting address */
+@@ -1100,7 +1096,6 @@ static int __init sm712be_setup(char *options)
+ 
+ __setup("sm712be=", sm712be_setup);
+ 
+-#ifdef __BIG_ENDIAN
+ /*
+  *	sm712vga_setup - process command line options, get vga parameter
+  *	@options: string of options
+@@ -1136,7 +1131,6 @@ static int __init sm712vga_setup(char *options)
+ }
+ 
+ __setup("vga=", sm712vga_setup);
+-#endif
+ 
+ MODULE_AUTHOR("Siliconmotion ");
+ MODULE_DESCRIPTION("Framebuffer driver for SMI Graphic Cards");
+-- 
+1.6.0.4
+
+
+with the support of this patch, the users of 7inch yeeloong and 8.9inch
+yeeloong can use the same kernel(not totally, the shutdown logic is a
+little different, a patch is also ready for it).
+
+there is only a need to add such kernel command line for 7inch yeeloong:
+
+vga=800x480x24
+
+> What I currently do is
+> picking appropriate values form the table VGAMode in smtcfb.h and 
+> hardcoding them.
 > 
-> The mysterious udelay() needs a comment, because there is no way in
-> which the reader can otherwise work out why it is there.
-
-Well, this comments can be applied most RNG drivers ;)
-
-Anyway, I will add some comment here.  I take this loop (20 loops with
-udelay) from other drivers and changed to udelay(1) because the
-datasheed states "90 bus clock cycles by default" for generation
-(typically 450ns for this SoC).
-
-> > +static int tx4939_rng_data_read(struct hwrng *rng, u32 *buffer)
-> > +{
-> > +	struct tx4939_rng *rngdev = container_of(rng, struct tx4939_rng, rng);
-> > +
-> > +	rngdev->data_avail--;
-> > +	*buffer = *((u32 *)&rngdev->databuf + rngdev->data_avail);
-> > +	return sizeof(u32);
-> > +}
+> I tried 800x600x16bit@60hz, which worked also, but 1024x768x24bit@60hz 
+> left me with a corrupted display output (distored colors, missing 
+> regions), i did not check further wheter it also crashed.
 > 
-> Concurrent callers can corrupt rngdev->data_avail ?
 
-This is protected by rng_mutex in rng-core.
+no all of the Vesa mode is suitable to your screen, you should choose
+one for you, for example, only 800x480 is suitable to yeeloong 7inch
+screen, but the 8.9 inch yeeloong, need 1024x600.
 
-> > +	/* Start RNG */
-> > +	write_rng(TX4939_RNG_RCSR_ST, rngdev->base, TX4939_RNG_RCSR);
-> > +	local_irq_enable();
-> > +	/* drop first two results */
-> 
-> The comment doesn't provide the reason for doing this?
+best regards,
+Wu Zhangjin

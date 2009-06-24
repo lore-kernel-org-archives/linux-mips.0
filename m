@@ -1,43 +1,122 @@
-Received: from smtp.zeugmasystems.com ([70.79.96.174]:24477 "EHLO
+Received: from smtp.zeugmasystems.com ([70.79.96.174]:26353 "EHLO
 	zeugmasystems.com" rhost-flags-OK-OK-OK-FAIL) by ftp.linux-mips.org
-	with ESMTP id S1492439AbZFWVs6 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Tue, 23 Jun 2009 23:48:58 +0200
+	with ESMTP id S1493227AbZFXWWD convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 25 Jun 2009 00:22:03 +0200
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: Silly 100% CPU behavior on a SIG_IGN-ored SIGBUS.
-Date: Tue, 23 Jun 2009 14:45:34 -0700
-Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C501C35128@exchange.ZeugmaSystems.local>
+Subject: RE: Broadcom Swarm support
+Date: Wed, 24 Jun 2009 15:18:24 -0700
+Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C501C3539B@exchange.ZeugmaSystems.local>
+In-Reply-To: <20090624063453.GA16846@volta.aurel32.net>
 From: "Kaz Kylheku" <KKylheku@zeugmasystems.com>
 Return-Path: <KKylheku@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20090623214534.5hwJRNdEA45ZeJqqw_xb7kAv83A48Xns9sKSC1hXtVs@z>
+To: Aurelien Jarno <aurelien@aurel32.net>, linux-mips@linux-mips.org
+Message-ID: <20090624221824.ZwhE0Jpq-vyMdqNp-2VKt3q3lIKPsKnPySgcEpn7Vm4@z>
 
-Hi all,
+Aurelien Jarno wrote:
+> Hi all,
+> 
+> I am still trying to get a Broadcom Swarm boot on a recent kernel. I
+> have made some progress, but I am now stuck on another problem.
+> 
+> I am using a lmo 2.6.30 kernel, using the defconfig 
 
-On kernel 2.6.26, glibc 2.5 (n32), SiByte SB-1 core, the following
-program goes into 100% CPU, chewing up about 80% kernel time and
-20% user.
+[ snip ]
 
-#include <stdio.h>
-#include <signal.h>
+> | Kernel panic - not syncing: Attempted to kill init!
+> | Rebooting in 5 seconds..Passing control back to CFE...
 
-int main(void)
-{
-  int *deadbeef = (int *) 0xdeadbeef;
-  signal(SIGBUS, SIG_IGN);
-  printf("*deadbeef == %d\n", *deadbeef);
-  return 0;
-}
+What kernel were you running prior to trying 30?
 
-If any fatal exception is ignored, the program should be killed
-if that exception happens. 100% CPU is not a useful response.
+When I migrated from 2.6.17 to 2.6.26, on a Broadcom
+1480 based board, I discovered that there is some kind
+of instruction cache problem, which causes userland to
+fetch garbage instead of code from its mmap-ped executables.
+I could not get init to execute successfully.
 
-(If there is a handler, and that handler returns without doing anything
-to
-prevent a recurrence of the exception when the instruction is re-tried,
-that's different).
+Sorry, I can no longer remember whether this problem was
+SMP specific or not (like what you're experiencing);
+it might have been.
+
+At some point in the kernel history, Ralfie decided that
+the flush_icache_page function is unnecessary and
+turned it into a MIPS-wide noop. But the SB1 core, which has
+a VIVT instruction cache, it appears that there
+is some kind of issue whereby when it
+is handling a fault for a not-present virtual page,
+it somehow ends up with bad data in the instruction
+cache---perhaps an inconsistent state due to not having
+been able to complete the fetch, but having initiated
+a cache update on the expectation that the fetch
+will complete. It seems that the the fault handler
+is expected to do a flush.
+
+Anyway, see if you can work this patch (based on 2.6.26)
+into your kernel, and report whether it makes any difference.
+
+Index: include/asm-mips/cacheflush.h
+===================================================================
+--- include/asm-mips/cacheflush.h	(revision 2677)
++++ include/asm-mips/cacheflush.h	(revision 2678)
+@@ -37,6 +37,7 @@
+ 	unsigned long start, unsigned long end);
+ extern void (*flush_cache_page)(struct vm_area_struct *vma, unsigned
+long page, unsigned long pfn);
+ extern void __flush_dcache_page(struct page *page);
++extern void __flush_icache_page(struct vm_area_struct *vma, struct page
+*page);
+ 
+ static inline void flush_dcache_page(struct page *page)
+ {
+@@ -57,11 +58,6 @@
+ 		__flush_anon_page(page, vmaddr);
+ }
+ 
+-static inline void flush_icache_page(struct vm_area_struct *vma,
+-	struct page *page)
+-{
+-}
+-
+ extern void (*flush_icache_range)(unsigned long start, unsigned long
+end);
+ 
+ extern void (*__flush_cache_vmap)(void);
+@@ -93,6 +89,13 @@
+ extern void (*local_flush_data_cache_page)(void * addr);
+ extern void (*flush_data_cache_page)(unsigned long addr);
+ 
++static inline void flush_icache_page(struct vm_area_struct *vma,
++	struct page *page)
++{
++        __flush_icache_page(vma, page);
++}
++
++
+ /*
+  * This flag is used to indicate that the page pointed to by a pte
+  * is dirty and requires cleaning before returning it to the user.
+Index: arch/mips/mm/cache.c
+===================================================================
+--- arch/mips/mm/cache.c	(revision 2677)
++++ arch/mips/mm/cache.c	(revision 2678)
+@@ -93,6 +93,14 @@
+ 
+ EXPORT_SYMBOL(__flush_dcache_page);
+ 
++void __flush_icache_page(struct vm_area_struct *vma, struct page *page)
++{
++	if (vma->vm_flags & VM_EXEC)
++		flush_icache_range((unsigned long) page_address(page),
+PAGE_SIZE); 
++}
++
++EXPORT_SYMBOL(__flush_icache_page);
++
+ void __flush_anon_page(struct page *page, unsigned long vmaddr)
+ {
+ 	unsigned long addr = (unsigned long) page_address(page);

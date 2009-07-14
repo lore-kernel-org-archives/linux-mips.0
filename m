@@ -1,38 +1,32 @@
-Received: from dns1.mips.com ([63.167.95.197]:44892 "EHLO dns1.mips.com"
+Received: from epo-int2.asu.edu ([129.219.187.21]:19580 "EHLO epo-int2.asu.edu"
 	rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org with ESMTP
-	id S1492222AbZGJRxl convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Fri, 10 Jul 2009 19:53:41 +0200
-Content-class: urn:content-classes:message
+	id S1492687AbZGNWKo convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Wed, 15 Jul 2009 00:10:44 +0200
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: [PATCH] Due to some broken bitfiles, we can't trust IntCtl
-Date: Fri, 10 Jul 2009 10:53:09 -0700
-Message-ID: <94BD67F8AF3ED34FA362C662BA1F12C503BEE116@MTVEXCHANGE.mips.com>
-In-Reply-To: <20090710161358.GC1288@linux-mips.org>
-References: <20090710084942.25804.864.stgit@linux-raghu> <20090710161358.GC1288@linux-mips.org>
-From: "Gandham, Raghu" <raghu@mips.com>
-Return-Path: <raghu@mips.com>
+Subject: Batch: R3/A312-59? Contact Your Claims Agent Via Email (charleslambert.uk@w.cn)?
+Date: Tue, 14 Jul 2009 15:06:56 -0700
+Message-ID: <538501A6356466468F591791864669BC058137F8@EX02.asurite.ad.asu.edu>
+From: Brookelyn Loeffler <bloeffle@mainex1.asu.edu>
+Return-Path: <bloeffle@mainex1.asu.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, "Dearman, Chris" <chris@mips.com>
-Message-ID: <20090710175309.Z3Bo9FCpjABlIwi07qC_ForWf96Al2t1yyMDiolKwQE@z>
+Message-ID: <20090714220656.HocPnM1T9U7osD17Bz7jxklWIg_l4Rs0wxyPfYqcLEY@z>
 
- 
-
-> 
-> Is there still any point in applying this patch?  I thought 
-> only a bunch of early bitfiles were affected but it was never 
-> actually taped out?
-
-The earlier bitfiles which had the problem never taped out. Please skip
-this patch. 
-
-Thanks,
-Raghu
-
-> 
->   Ralf
-> 
+Ref: LSUK/2031/8161/05
+Batch: R3/A312-59
+Dear Email Owner
+This is to inform you that your email address have just
+won a cash price of £850,000 .00 Pounds in the
+UK National e-Lottery Online Sweepstakes
+you are to contact the online claims agent.
+Name: Barrister Charles Lambert
+Email: charleslambert.uk@w.cn
+Provide the Following Information:
+Name, Address, Age, Sex, Tel, Occupation
+Online Coordinator
+Katie Anne Longacre
+Brookelyn Loeffler
+For claims proceedures Send your details to ( charleslambert.uk@w.cn )Only.

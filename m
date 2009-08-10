@@ -1,88 +1,98 @@
-Received: from mgw1.diku.dk ([130.225.96.91]:35355 "EHLO mgw1.diku.dk"
-	rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org with ESMTP
-	id S1492240AbZHIJsm (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Sun, 9 Aug 2009 11:48:42 +0200
-Date: Sun, 9 Aug 2009 11:42:32 +0200 (CEST)
-From: Julia Lawall <julia@diku.dk>
-Subject: Re: [Linux-fbdev-devel] [PATCH 3/3] drivers/video: Correct use of
- request_region/request_mem_region
-In-Reply-To: <10f740e80908090224p13d2119do9e4f4d7730ed001e@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.0908091141150.13271@ask.diku.dk>
-References: <Pine.LNX.4.64.0908090943560.13271@ask.diku.dk>
- <10f740e80908090224p13d2119do9e4f4d7730ed001e@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <julia@diku.dk>
+Received: from smtp1.linux-foundation.org ([140.211.169.13]:51136 "EHLO
+	smtp1.linux-foundation.org" rhost-flags-OK-OK-OK-OK)
+	by ftp.linux-mips.org with ESMTP id S1493553AbZHJWfl (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 11 Aug 2009 00:35:41 +0200
+Date: Mon, 10 Aug 2009 15:35:03 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/2] MIPS: Octeon:  Add hardware RNG platform device.
+Message-ID: <20090810153503.07dee9c4.akpm@linux-foundation.org>
+In-Reply-To: <1249929025-29625-1-git-send-email-ddaney@caviumnetworks.com>
+References: <4A806529.3060609@caviumnetworks.com>
+	<1249929025-29625-1-git-send-email-ddaney@caviumnetworks.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <akpm@linux-foundation.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Geert Uytterhoeven <geert.uytterhoeven@gmail.com>
-Cc: linux-fbdev-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20090809094232.bOTNqSaidutm4fwFFaB1doDOacBndcab19bY1YxpSE8@z>
+To: David Daney <ddaney@caviumnetworks.com>
+Cc: ralf@linux-mips.org, torvalds@linux-foundation.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20090810223503.8oD0V2gbcz3B_C1BmimYsGp8GdHjbyvA7lGPbs6i_1E@z>
 
-From: Julia Lawall <julia@diku.dk>
+On Mon, 10 Aug 2009 11:30:24 -0700
+David Daney <ddaney@caviumnetworks.com> wrote:
 
-request_region should be used with release_region, not request_mem_region.
+> Add a platform device for the Octeon Random Number Generator (RNG).
+> 
+> ...
+>
+>  device_initcall(octeon_cf_device_init);
+> +
+> +/* Octeon Random Number Generator.  */
+> +static int __init octeon_rng_device_init(void)
+> +{
+> +	struct platform_device *pd;
+> +	struct resource rng_resources[2];
+> +	unsigned int res_count;
+> +	int ret = 0;
+> +
+> +	memset(rng_resources, 0, sizeof(rng_resources));
+> +	res_count = 0;
+> +	rng_resources[res_count].flags = IORESOURCE_MEM;
+> +	rng_resources[res_count].start = XKPHYS_TO_PHYS(CVMX_RNM_CTL_STATUS);
+> +	rng_resources[res_count].end = rng_resources[res_count].start + 0xf;
+> +	res_count++;
+> +
+> +	rng_resources[res_count].flags = IORESOURCE_MEM;
+> +	rng_resources[res_count].start = cvmx_build_io_address(8, 0);
+> +	rng_resources[res_count].end = rng_resources[res_count].start + 0x7;
+> +	res_count++;
 
-Geert Uytterhoeven pointed out that in the case of drivers/video/gbefb.c,
-the problem is actually the other way around; request_mem_region should be
-used instead of request_region.
+You could do
 
-The semantic patch that finds/fixes this problem is as follows:
-(http://coccinelle.lip6.fr/)
+	strut resource rng_resources[2] = {
+		{
+			.flags = IORESOURCE_MEM,
+			.start = XKPHYS_TO_PHYS(CVMX_RNM_CTL_STATUS),
+	{etc}
 
-// <smpl>
-@r1@
-expression start;
-@@
+here. 
 
-request_region(start,...)
+> +	pd = platform_device_alloc("octeon_rng", -1);
+> +	if (!pd) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	ret = platform_device_add_resources(pd, rng_resources, res_count);
 
-@b1@
-expression r1.start;
-@@
+use ARRAY_SIZE() here.
 
-request_mem_region(start,...)
+> +	if (ret)
+> +		goto fail;
+> +
+> +	ret = platform_device_add(pd);
+> +	if (ret)
+> +		goto fail;
+> +
+> +	return ret;
+> +fail:
+> +	platform_device_put(pd);
+> +
+> +out:
+> +	return ret;
+> +}
 
-@depends on !b1@
-expression r1.start;
-expression E;
-@@
+Or not bother ;)  It doesn't make any difference.
 
-- release_mem_region
-+ release_region
-  (start,E)
-// </smpl>
+> --- /dev/null
+> +++ b/arch/mips/include/asm/octeon/cvmx-rnm-defs.h
+>
+> ...
+>
+> +	uint64_t u64;
+>
+> ...
+>
 
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- drivers/video/gbefb.c  |    2 +-
- drivers/video/tdfxfb.c |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff -u -p a/drivers/video/gbefb.c b/drivers/video/gbefb.c
---- a/drivers/video/gbefb.c
-+++ b/drivers/video/gbefb.c
-@@ -1147,7 +1147,7 @@ static int __init gbefb_probe(struct pla
- 	gbefb_setup(options);
- #endif
- 
--	if (!request_region(GBE_BASE, sizeof(struct sgi_gbe), "GBE")) {
-+	if (!request_mem_region(GBE_BASE, sizeof(struct sgi_gbe), "GBE")) {
- 		printk(KERN_ERR "gbefb: couldn't reserve mmio region\n");
- 		ret = -EBUSY;
- 		goto out_release_framebuffer;
-diff -u -p a/drivers/video/tdfxfb.c b/drivers/video/tdfxfb.c
---- a/drivers/video/tdfxfb.c
-+++ b/drivers/video/tdfxfb.c
-@@ -1571,8 +1571,8 @@ out_err_iobase:
- 	if (default_par->mtrr_handle >= 0)
- 		mtrr_del(default_par->mtrr_handle, info->fix.smem_start,
- 			 info->fix.smem_len);
--	release_mem_region(pci_resource_start(pdev, 2),
--			   pci_resource_len(pdev, 2));
-+	release_region(pci_resource_start(pdev, 2),
-+		       pci_resource_len(pdev, 2));
- out_err_screenbase:
- 	if (info->screen_base)
- 		iounmap(info->screen_base);
+This file should include types.h (at least).

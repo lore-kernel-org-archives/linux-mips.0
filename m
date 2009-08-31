@@ -1,41 +1,61 @@
-Received: from mail-ew0-f225.google.com ([209.85.219.225]:49445 "EHLO
-	mail-ew0-f225.google.com" rhost-flags-OK-OK-OK-OK)
-	by ftp.linux-mips.org with ESMTP id S1492963AbZHRQBv convert rfc822-to-8bit
+Received: from mail-fx0-f220.google.com ([209.85.220.220]:47372 "EHLO
+	mail-fx0-f220.google.com" rhost-flags-OK-OK-OK-OK)
+	by ftp.linux-mips.org with ESMTP id S1492097AbZHaGb5 convert rfc822-to-8bit
 	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Tue, 18 Aug 2009 18:01:51 +0200
-From: Florian Fainelli <florian@openwrt.org>
-Subject: Re: [PATCH 1/2] alchemy: add au1000-eth platform device
-Date: Tue, 18 Aug 2009 18:01:40 +0200
-References: <200908170105.38154.florian@openwrt.org> <4A8AC125.3020602@ru.mvista.com>
-In-Reply-To: <4A8AC125.3020602@ru.mvista.com>
+	Mon, 31 Aug 2009 08:31:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+In-Reply-To: <200908170028.27210.florian@openwrt.org>
+References: <200908170028.27210.florian@openwrt.org>
+Date: Mon, 31 Aug 2009 08:31:48 +0200
+Message-ID: <f861ec6f0908302331p7f44a584pdae29cafce7ef950@mail.gmail.com>
+Subject: Re: [PATCH 1/2] au1000: fix build failure for db1x00 configured for
+	Au1100 SoC
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
-Message-ID: <200908181801.41602.florian@openwrt.org>
-Return-Path: <f.fainelli@gmail.com>
+Return-Path: <manuel.lauss@googlemail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Manuel Lauss <manuel.lauss@googlemail.com>, David Miller <davem@davemloft.net>, netdev@vger.kernel.org
-Message-ID: <20090818160140.Z5DXUA8UckwVzVPI_pBaRMBF-MALns_9mrvyLfpwo7I@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Florian Fainelli <florian@openwrt.org>
+Message-ID: <20090831063148.rQWdF7mJBPECLeMmkxMR0lFFah9C3EO1JkSjhzrmkk4@z>
 
-Le Tuesday 18 August 2009 16:56:37 Sergei Shtylyov, vous avez écrit :
-> Hello.
->
-> Florian Fainelli wrote:
-> > This patch adds the board code to register a per-board au1000-eth
-> > platform device to be used wit the au1000-eth platform driver in a
-> > subsequent patch. Note that the au1000-eth driver knows about the
-> > default driver settings such that we do not need to pass any
-> > platform_data informations in most cases except db1x00.
->
->     Sigh, NAK...
->     Please don't register the SoC device per board, do it in
-> alchemy/common/platfrom.c and find a way to pass the board specific
-> platform data from the board file there instead -- something like
-> arch/arm/mach-davinci/usb.c does.
+Hi Ralf,
 
-Ok, like I promised, this was the per-board device registration. Do you prefer something like this:
---
+Please add Florian's patch below to your patchqueue!
+
+On Mon, Aug 17, 2009 at 12:28 AM, Florian Fainelli<florian@openwrt.org> wrote:
+> Hi Ralf,
+>
+> This patch should apply to both -master and -queue. Thanks !
+> --
+> From: Florian Fainelli <florian@openwrt.org>
+> Subject: [PATCH 1/2] au1000: fix build failure for db1x00 configured for Au1100 SoC
+>
+> This patch fixes the following warning, which becomes an error due to
+> -Werror to be turned on:
+>  CC      arch/mips/alchemy/common/gpiolib-au1000.o
+> cc1: warnings being treated as errors
+> arch/mips/alchemy/common/gpiolib-au1000.c: In function 'au1100_gpio2_to_irq':
+> /home/florian/dev/kernel/linux-queue/arch/mips/include/asm/mach-au1x00/gpio-au1000.h:107: warning: control reaches end of non-void function
+>
+> Signed-off-by: Florian Fainelli <florian@openwrt.org>
+> ---
+> diff --git a/arch/mips/include/asm/mach-au1x00/gpio-au1000.h b/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
+> index 127d4ed..4d54d40 100644
+> --- a/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
+> +++ b/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
+> @@ -104,6 +104,8 @@ static inline int au1100_gpio2_to_irq(int gpio)
+>
+>        if ((gpio >= 8) && (gpio <= 15))
+>                return MAKE_IRQ(0, 29);         /* shared GPIO208_215 */
+> +
+> +       return -ENXIO;
+>  }
+>
+>  #ifdef CONFIG_SOC_AU1100
+
+
+Thanks!
+
+     Manuel Lauss

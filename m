@@ -1,56 +1,37 @@
-Received: from mail-px0-f180.google.com ([209.85.216.180]:41891 "EHLO
-	mail-px0-f180.google.com" rhost-flags-OK-OK-OK-OK)
-	by ftp.linux-mips.org with ESMTP id S1491870AbZICDtG (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 3 Sep 2009 05:49:06 +0200
-Received: by pxi10 with SMTP id 10so1259434pxi.24
-        for <linux-mips@linux-mips.org>; Wed, 02 Sep 2009 20:48:59 -0700 (PDT)
+Received: from mail-yw0-f177.google.com ([209.85.211.177]:50216 "EHLO
+	mail-yw0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+	by ftp.linux-mips.org with ESMTP id S1493229AbZIIXzB (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 10 Sep 2009 01:55:01 +0200
+Received: by ywh7 with SMTP id 7so7092692ywh.21
+        for <linux-mips@linux-mips.org>; Wed, 09 Sep 2009 16:54:55 -0700 (PDT)
 MIME-Version: 1.0
-Date: Thu, 3 Sep 2009 11:48:59 +0800
-Message-ID: <91b13c310909022048q467dff7cl90284b57132f4f14@mail.gmail.com>
-Subject: How to debug glibc-2.10.1 mips on linux multilib o32 ld or libc
-	Segmentation fault?
-From: Cheng Renquan <crquan@gmail.com>
+In-Reply-To: <1252531371-14866-1-git-send-email-w.sang@pengutronix.de>
+References: <1252531371-14866-1-git-send-email-w.sang@pengutronix.de>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Wed, 9 Sep 2009 19:54:34 -0400
+Message-ID: <8bd0f97a0909091654h290180e5ob79178583aca143f@mail.gmail.com>
+Subject: Re: [Uclinux-dist-devel] Removing deprecated drivers from
+	drivers/i2c/chips
 Content-Type: text/plain; charset=UTF-8
-Return-Path: <crquan@gmail.com>
+Return-Path: <vapier.adi@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: libc-help@sourceware.org, linux-mips@linux-mips.org, issues@eglibc.org
-Message-ID: <20090903034859.sMfzpUHPDAlV7aFiJRco3K_i04hhlSDpN_j0Zn86TQQ@z>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: linux-i2c@vger.kernel.org, linuxppc-dev@ozlabs.org, uclinux-dist-devel@blackfin.uclinux.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org
+Message-ID: <20090909235434.U_H8t39bgzow4KUXws24W2iTncgUg6xndzh4zWiScD8@z>
 
-Hello, all,
-  Recently I have cross compiled GCC-4.4.1 with eglibc-2.10.1,
-with a multilib configuration, o32/n32/n64, the result is that n32/n64
-can work well, while o32 libs always Segmentation fault,
+On Wed, Sep 9, 2009 at 17:22, Wolfram Sang wrote:
+> continuing the quest to clean up and ultimately remove the drivers/i2c/chips
+> directory, this patch series removes three drivers for GPIO-expanders which are
+> obsoleted and marked as deprecated for more than a year. The newer (and better)
+> drivers can be found in drivers/gpio.
+>
+> As it is ensured that the newer drivers cover the same i2c_device_ids, all
+> platform_devices will still match. Some defconfig updates may be necessary
+> though, but according to [1] this is left to the arch|platform-maintainers
+> (also as most defconfigs are quite outdated). For that reason, I put the
+> relevant arch-mailing-lists to Cc. Comments are welcome.
 
-I have read this but still have no good idea on how to debug,
-
-http://sources.redhat.com/glibc/wiki/Debugging/Development_Debugging
-
-then I run it like this,
-
-$ LD_DEBUG=all eglibc-install-root-o32/lib/ld.so.1 --library-path
-$PWD/eglibc-install-root-o32/lib
-eglibc-install-root-o32/usr/bin/locale
-
-it ends with:
-
-     30257:	symbol=__stack_chk_guard;  lookup in
-file=eglibc-install-root-o32/usr/bin/locale [0]
-     30257:	symbol=__stack_chk_guard;  lookup in
-file=/mnt/nas/yutech/homes/user/eglibc-install-root-o32/lib/libc.so.6
-[0]
-     30257:	symbol=__stack_chk_guard;  lookup in
-file=eglibc-install-root-o32/lib/ld.so.1 [0]
-     30257:	binding file eglibc-install-root-o32/lib/ld.so.1 [0] to
-eglibc-install-root-o32/lib/ld.so.1 [0]: normal symbol
-`__stack_chk_guard' [GLIBC_2.4]
-     30257:	
-     30257:	calling init:
-/mnt/nas/yutech/homes/user/eglibc-install-root-o32/lib/libc.so.6
-     30257:	
-Segmentation fault
-
-So please give some inputs on how to resolve this? Thanks,
-
--- 
-Cheng Renquan
+the Blackfin defconfigs refer to an input driver for the PCF8574, not
+the I2C client driver
+-mike

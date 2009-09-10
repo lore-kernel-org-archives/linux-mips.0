@@ -1,15 +1,17 @@
-Received: from mail-yw0-f177.google.com ([209.85.211.177]:50216 "EHLO
+Received: from mail-yw0-f177.google.com ([209.85.211.177]:36113 "EHLO
 	mail-yw0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-	by ftp.linux-mips.org with ESMTP id S1493229AbZIIXzB (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 10 Sep 2009 01:55:01 +0200
-Received: by ywh7 with SMTP id 7so7092692ywh.21
-        for <linux-mips@linux-mips.org>; Wed, 09 Sep 2009 16:54:55 -0700 (PDT)
+	by ftp.linux-mips.org with ESMTP id S1492355AbZIJH4D (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Thu, 10 Sep 2009 09:56:03 +0200
+Received: by ywh7 with SMTP id 7so7443847ywh.21
+        for <linux-mips@linux-mips.org>; Thu, 10 Sep 2009 00:55:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1252531371-14866-1-git-send-email-w.sang@pengutronix.de>
+In-Reply-To: <20090910062609.GA26454@pengutronix.de>
 References: <1252531371-14866-1-git-send-email-w.sang@pengutronix.de>
+	<8bd0f97a0909091654h290180e5ob79178583aca143f@mail.gmail.com>
+	<20090910062609.GA26454@pengutronix.de>
 From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Wed, 9 Sep 2009 19:54:34 -0400
-Message-ID: <8bd0f97a0909091654h290180e5ob79178583aca143f@mail.gmail.com>
+Date: Thu, 10 Sep 2009 03:55:36 -0400
+Message-ID: <8bd0f97a0909100055n3192deeka93dc853f0139bfc@mail.gmail.com>
 Subject: Re: [Uclinux-dist-devel] Removing deprecated drivers from
 	drivers/i2c/chips
 Content-Type: text/plain; charset=UTF-8
@@ -18,20 +20,16 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Wolfram Sang <w.sang@pengutronix.de>
 Cc: linux-i2c@vger.kernel.org, linuxppc-dev@ozlabs.org, uclinux-dist-devel@blackfin.uclinux.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org
-Message-ID: <20090909235434.U_H8t39bgzow4KUXws24W2iTncgUg6xndzh4zWiScD8@z>
+Message-ID: <20090910075536.Frke2Cvw_cHc-_iuz-5COZUI2FEhqKfIPjeASzECAWI@z>
 
-On Wed, Sep 9, 2009 at 17:22, Wolfram Sang wrote:
-> continuing the quest to clean up and ultimately remove the drivers/i2c/chips
-> directory, this patch series removes three drivers for GPIO-expanders which are
-> obsoleted and marked as deprecated for more than a year. The newer (and better)
-> drivers can be found in drivers/gpio.
+On Thu, Sep 10, 2009 at 02:26, Wolfram Sang wrote:
+>> the Blackfin defconfigs refer to an input driver for the PCF8574, not
+>> the I2C client driver
 >
-> As it is ensured that the newer drivers cover the same i2c_device_ids, all
-> platform_devices will still match. Some defconfig updates may be necessary
-> though, but according to [1] this is left to the arch|platform-maintainers
-> (also as most defconfigs are quite outdated). For that reason, I put the
-> relevant arch-mailing-lists to Cc. Comments are welcome.
+> Yup, I am aware of that. With the exception of:
+>
+> blackfin/configs/PNAV-10_defconfig:773:CONFIG_SENSORS_PCF8574=m
 
-the Blackfin defconfigs refer to an input driver for the PCF8574, not
-the I2C client driver
+thanks for double checking.  i'm not sure this board even has this
+device.  i'll review the hardware.
 -mike

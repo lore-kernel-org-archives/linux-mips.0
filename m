@@ -1,35 +1,58 @@
-Received: from mail-yw0-f177.google.com ([209.85.211.177]:36113 "EHLO
-	mail-yw0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-	by ftp.linux-mips.org with ESMTP id S1492355AbZIJH4D (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Thu, 10 Sep 2009 09:56:03 +0200
-Received: by ywh7 with SMTP id 7so7443847ywh.21
-        for <linux-mips@linux-mips.org>; Thu, 10 Sep 2009 00:55:56 -0700 (PDT)
+Received: from mail-pz0-f196.google.com ([209.85.222.196]:43114 "EHLO
+	mail-pz0-f196.google.com" rhost-flags-OK-OK-OK-OK)
+	by ftp.linux-mips.org with ESMTP id S1492489AbZILHWv convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Sat, 12 Sep 2009 09:22:51 +0200
 MIME-Version: 1.0
-In-Reply-To: <20090910062609.GA26454@pengutronix.de>
-References: <1252531371-14866-1-git-send-email-w.sang@pengutronix.de>
-	<8bd0f97a0909091654h290180e5ob79178583aca143f@mail.gmail.com>
-	<20090910062609.GA26454@pengutronix.de>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 10 Sep 2009 03:55:36 -0400
-Message-ID: <8bd0f97a0909100055n3192deeka93dc853f0139bfc@mail.gmail.com>
-Subject: Re: [Uclinux-dist-devel] Removing deprecated drivers from
-	drivers/i2c/chips
+In-Reply-To: <4AAA73A4.9010601@caviumnetworks.com>
+References: <4AA991C1.1050800@caviumnetworks.com>
+	 <1252627011-2933-1-git-send-email-ddaney@caviumnetworks.com>
+	 <200909111633.00665.mb@bu3sch.de>
+	 <4AAA73A4.9010601@caviumnetworks.com>
+Date: Sat, 12 Sep 2009 09:22:43 +0200
+Message-ID: <10f740e80909120022m72ad5ea7t692fba93cd3114e9@mail.gmail.com>
+Subject: Re: [PATCH 01/10] Add support for GCC-4.5's __builtin_unreachable()
+	to compiler.h
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8
-Return-Path: <vapier.adi@gmail.com>
+Content-Transfer-Encoding: 8BIT
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: linux-i2c@vger.kernel.org, linuxppc-dev@ozlabs.org, uclinux-dist-devel@blackfin.uclinux.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org
-Message-ID: <20090910075536.Frke2Cvw_cHc-_iuz-5COZUI2FEhqKfIPjeASzECAWI@z>
+To: David Daney <ddaney@caviumnetworks.com>
+Cc: Michael Buesch <mb@bu3sch.de>, linuxppc-dev@lists.ozlabs.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux-mips@linux-mips.org, Heiko Carstens <heiko.carstens@de.ibm.com>, linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org, linux-am33-list@redhat.com, Helge Deller <deller@gmx.de>, x86@kernel.org, Ingo Molnar <mingo@redhat.com>, Mike Frysinger <vapier@gentoo.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, uclinux-dist-devel@blackfin.uclinux.org, Thomas Gleixner <tglx@linutronix.de>, Richard Henderson <rth@twiddle.net>, Haavard Skinnemoen <hskinnemoen@atmel.com>, linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, ralf@linux-mips.org, Kyle McMartin <kyle@mcmartin.ca>, linux-alpha@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux390@de.ibm.com, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>
+Message-ID: <20090912072243.sqj2OLOesgEX9nvWVcuZX4_APej9KMWv_gK56h-SsUQ@z>
 
-On Thu, Sep 10, 2009 at 02:26, Wolfram Sang wrote:
->> the Blackfin defconfigs refer to an input driver for the PCF8574, not
->> the I2C client driver
+On Fri, Sep 11, 2009 at 17:58, David Daney<ddaney@caviumnetworks.com> wrote:
+> Michael Buesch wrote:
+>>
+>> On Friday 11 September 2009 01:56:42 David Daney wrote:
+>>>
+>>> +/* Unreachable code */
+>>> +#ifndef unreachable
+>>> +# define unreachable() do { for (;;) ; } while (0)
+>>> +#endif
+>>
+>> # define unreachable() do { } while (1)
+>>
+>> ? :)
 >
-> Yup, I am aware of that. With the exception of:
->
-> blackfin/configs/PNAV-10_defconfig:773:CONFIG_SENSORS_PCF8574=m
+> Clearly I was not thinking clearly when I wrote that part.  RTH noted the
+> same thing.  I will fix it.
 
-thanks for double checking.  i'm not sure this board even has this
-device.  i'll review the hardware.
--mike
+However, people are so used to seeing the `do { } while (0)' idiom,
+that they might miss
+there's a `1' here, not a `0'.
+
+So perhaps it's better to use plain `for (;;)' for infinite loops?
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds

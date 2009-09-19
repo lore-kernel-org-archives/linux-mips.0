@@ -1,58 +1,44 @@
-Received: from mail-pz0-f196.google.com ([209.85.222.196]:43114 "EHLO
-	mail-pz0-f196.google.com" rhost-flags-OK-OK-OK-OK)
-	by ftp.linux-mips.org with ESMTP id S1492489AbZILHWv convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Sat, 12 Sep 2009 09:22:51 +0200
+Received: from [65.98.92.6] ([65.98.92.6]:1696 "EHLO b32.net"
+	rhost-flags-FAIL-FAIL-OK-OK) by ftp.linux-mips.org with ESMTP
+	id S1491787AbZISCVu (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Sat, 19 Sep 2009 04:21:50 +0200
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Fri, 18 Sep 2009 19:12:45 -0700
+Subject: [PATCH] MIPS: Avoid destructive invalidation on partial L2 cachelines
+Message-ID: <de70b67245e012ab0c11b520a721989b@localhost>
 MIME-Version: 1.0
-In-Reply-To: <4AAA73A4.9010601@caviumnetworks.com>
-References: <4AA991C1.1050800@caviumnetworks.com>
-	 <1252627011-2933-1-git-send-email-ddaney@caviumnetworks.com>
-	 <200909111633.00665.mb@bu3sch.de>
-	 <4AAA73A4.9010601@caviumnetworks.com>
-Date: Sat, 12 Sep 2009 09:22:43 +0200
-Message-ID: <10f740e80909120022m72ad5ea7t692fba93cd3114e9@mail.gmail.com>
-Subject: Re: [PATCH 01/10] Add support for GCC-4.5's __builtin_unreachable()
-	to compiler.h
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-Path: <geert.uytterhoeven@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Return-Path: <cernekee@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: Michael Buesch <mb@bu3sch.de>, linuxppc-dev@lists.ozlabs.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux-mips@linux-mips.org, Heiko Carstens <heiko.carstens@de.ibm.com>, linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org, linux-am33-list@redhat.com, Helge Deller <deller@gmx.de>, x86@kernel.org, Ingo Molnar <mingo@redhat.com>, Mike Frysinger <vapier@gentoo.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, uclinux-dist-devel@blackfin.uclinux.org, Thomas Gleixner <tglx@linutronix.de>, Richard Henderson <rth@twiddle.net>, Haavard Skinnemoen <hskinnemoen@atmel.com>, linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, ralf@linux-mips.org, Kyle McMartin <kyle@mcmartin.ca>, linux-alpha@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux390@de.ibm.com, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>
-Message-ID: <20090912072243.sqj2OLOesgEX9nvWVcuZX4_APej9KMWv_gK56h-SsUQ@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20090919021245.FQFsQhL48QUf4X5ViOOkH2sP6m8QlnfMntV3qt-iQtQ@z>
 
-On Fri, Sep 11, 2009 at 17:58, David Daney<ddaney@caviumnetworks.com> wrote:
-> Michael Buesch wrote:
->>
->> On Friday 11 September 2009 01:56:42 David Daney wrote:
->>>
->>> +/* Unreachable code */
->>> +#ifndef unreachable
->>> +# define unreachable() do { for (;;) ; } while (0)
->>> +#endif
->>
->> # define unreachable() do { } while (1)
->>
->> ? :)
->
-> Clearly I was not thinking clearly when I wrote that part.  RTH noted the
-> same thing.  I will fix it.
+This extends commit a8ca8b64e3fdfec17679cba0ca5ce6e3ffed092d to cover
+the board cache code.
 
-However, people are so used to seeing the `do { } while (0)' idiom,
-that they might miss
-there's a `1' here, not a `0'.
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ arch/mips/mm/sc-mips.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-So perhaps it's better to use plain `for (;;)' for infinite loops?
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
+index b55c2d1..5ab5fa8 100644
+--- a/arch/mips/mm/sc-mips.c
++++ b/arch/mips/mm/sc-mips.c
+@@ -32,6 +32,11 @@ static void mips_sc_wback_inv(unsigned long addr, unsigned long size)
+  */
+ static void mips_sc_inv(unsigned long addr, unsigned long size)
+ {
++	unsigned long lsize = cpu_scache_line_size();
++	unsigned long almask = ~(lsize - 1);
++
++	cache_op(Hit_Writeback_Inv_SD, addr & almask);
++	cache_op(Hit_Writeback_Inv_SD, (addr + size - 1) & almask);
+ 	blast_inv_scache_range(addr, addr + size);
+ }
+ 
+-- 
+1.6.3.1

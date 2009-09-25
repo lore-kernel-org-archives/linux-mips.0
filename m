@@ -1,44 +1,65 @@
-Received: from [65.98.92.6] ([65.98.92.6]:1696 "EHLO b32.net"
-	rhost-flags-FAIL-FAIL-OK-OK) by ftp.linux-mips.org with ESMTP
-	id S1491787AbZISCVu (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Sat, 19 Sep 2009 04:21:50 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Fri, 18 Sep 2009 19:12:45 -0700
-Subject: [PATCH] MIPS: Avoid destructive invalidation on partial L2 cachelines
-Message-ID: <de70b67245e012ab0c11b520a721989b@localhost>
+Received: from smtp.zeugmasystems.com ([70.79.96.174]:28828 "EHLO
+	zeugmasystems.com" rhost-flags-OK-OK-OK-FAIL) by ftp.linux-mips.org
+	with ESMTP id S1493455AbZIYXGr convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Sat, 26 Sep 2009 01:06:47 +0200
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Return-Path: <cernekee@gmail.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: Strange bad accesses in compat_exit_robust_list (2.6.26, n32 ABI).
+Date: Fri, 25 Sep 2009 16:06:37 -0700
+Message-ID: <DDFD17CC94A9BD49A82147DDF7D545C501F7053D@exchange.ZeugmaSystems.local>
+From: "Kaz Kylheku" <KKylheku@zeugmasystems.com>
+Return-Path: <KKylheku@zeugmasystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20090919021245.FQFsQhL48QUf4X5ViOOkH2sP6m8QlnfMntV3qt-iQtQ@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20090925230637.EIHvIs0HsmLFX9arHScwxj5wiBT3EKdzBhTI1kiPjMc@z>
 
-This extends commit a8ca8b64e3fdfec17679cba0ca5ce6e3ffed092d to cover
-the board cache code.
+Hi all,
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- arch/mips/mm/sc-mips.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+We made a strange discovery some time ago. After adding some tracing
+printk's
+to the compat_exit_robust_list function for all the cases where fetching
+the
+robust entry fails, we discovered that, from time to time, it's being
+reported
+for processes that don't even use threads.
 
-diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
-index b55c2d1..5ab5fa8 100644
---- a/arch/mips/mm/sc-mips.c
-+++ b/arch/mips/mm/sc-mips.c
-@@ -32,6 +32,11 @@ static void mips_sc_wback_inv(unsigned long addr, unsigned long size)
-  */
- static void mips_sc_inv(unsigned long addr, unsigned long size)
- {
-+	unsigned long lsize = cpu_scache_line_size();
-+	unsigned long almask = ~(lsize - 1);
-+
-+	cache_op(Hit_Writeback_Inv_SD, addr & almask);
-+	cache_op(Hit_Writeback_Inv_SD, (addr + size - 1) & almask);
- 	blast_inv_scache_range(addr, addr + size);
- }
- 
--- 
-1.6.3.1
+[16:20:13.406162] [futex] ("iptables")(pid=2543)
+compat_exit_robust_list:unable to fetch robust entry.
+uaddr=000000002aad37e0
+[16:20:13.587506] device eth0 entered promiscuous mode
+[16:20:13.883648] device eth1 entered promiscuous mode
+[16:20:15.419965] [futex] ("ifconfig")(pid=2552)
+compat_exit_robust_list:unable to fetch robust entry.
+uaddr=00000000301d64f0
+[16:20:15.497954] [futex] ("ifconfig")(pid=2574)
+compat_exit_robust_list:unable to fetch robust entry.
+uaddr=00000000301d64f0
+[16:20:15.547260] [futex] ("iptables")(pid=2544)
+compat_exit_robust_list:unable to fetch robust entry.
+uaddr=000000002aad37e0
+[16:20:16.002251] eth1: link available: 100base-FD
+[00:32:56.240290] [futex] ("gzip")(pid=14397)
+compat_exit_robust_list:unable to fetch the next robust entry.
+uaddr=0000000000000000
+[00:33:06.769279] [futex] ("gzip")(pid=14413)
+compat_exit_robust_list:unable to fetch the next robust entry.
+uaddr=0000000000000000
+[00:33:11.964047] [futex] ("bzip2")(pid=14416)
+compat_exit_robust_list:unable to fetch the next robust entry.
+uaddr=0000000000000000
+[16:41:50.024024] [futex] ("bzip2")(pid=32595)
+compat_exit_robust_list:unable to fetch the next robust entry.
+uaddr=0000000000000000
+
+Sometimes the pointer to the robust list head is bad (``unable to fetch
+robust
+entry'').  Sometimes that pointer works, but walking the list is bad
+(``unable
+to fetch the next robust entry'').
+
+These programs shouldn't even be invoking the compat_set_robust_list
+system call, and don't even link to libpthread.so.

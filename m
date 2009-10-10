@@ -1,61 +1,68 @@
-Received: from mail-bw0-f208.google.com ([209.85.218.208]:65193 "EHLO
-	mail-bw0-f208.google.com" rhost-flags-OK-OK-OK-OK)
-	by ftp.linux-mips.org with ESMTP id S1493142AbZJEJoK convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 5 Oct 2009 11:44:10 +0200
-MIME-Version: 1.0
-In-Reply-To: <f861ec6f0908302331p7f44a584pdae29cafce7ef950@mail.gmail.com>
-References: <200908170028.27210.florian@openwrt.org>
-	 <f861ec6f0908302331p7f44a584pdae29cafce7ef950@mail.gmail.com>
-Date: Mon, 5 Oct 2009 11:44:04 +0200
-Message-ID: <f861ec6f0910050244l32173c9ar4662d467cc4f9ee8@mail.gmail.com>
-Subject: Re: [PATCH 1/2] au1000: fix build failure for db1x00 configured for
-	Au1100 SoC
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
-Return-Path: <manuel.lauss@googlemail.com>
+Received: from bhuna.collabora.co.uk ([93.93.128.226]:49135 "EHLO
+	bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org
+	with ESMTP id S1492843AbZJJPf3 (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Sat, 10 Oct 2009 17:35:29 +0200
+Date: Sat, 10 Oct 2009 11:34:36 -0400
+From: Andres Salomon <dilinger@collabora.co.uk>
+Subject: Re: [PATCH] CS5535: Remove the X86 platform dependence of
+ SND_CS5535AUDIO
+Message-ID: <20091010113436.2bfa0bb6@mycelium.queued.net>
+In-Reply-To: <1255185134.6883.20.camel@falcon>
+References: <1255059842-12160-1-git-send-email-wuzhangjin@gmail.com>
+	<1255060287.16819.1.camel@falcon>
+	<20091009005318.7174938c@mycelium.queued.net>
+	<1255185134.6883.20.camel@falcon>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <dilinger@collabora.co.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Florian Fainelli <florian@openwrt.org>
-Message-ID: <20091005094404.pLgDHLnSRjQnn8OD0pt0juC-s7G6-7VdvESe-wRFoNc@z>
+To: wuzhangjin@gmail.com
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-mips <linux-mips@linux-mips.org>, Jaya Kumar <jayakumar.lkml@gmail.com>, Jaroslav Kysela <perex@perex.cz>, loongson-dev@googlegroups.com
+Message-ID: <20091010153436.IteRcB-07x6ENOdFgkaaiYrlFvCZD9vXWcqJ23BUGo8@z>
 
-Ping?
+On Sat, 10 Oct 2009 22:32:14 +0800
+Wu Zhangjin <wuzhangjin@gmail.com> wrote:
 
-On Mon, Aug 31, 2009 at 8:31 AM, Manuel Lauss
-<manuel.lauss@googlemail.com> wrote:
-> Hi Ralf,
->
-> Please add Florian's patch below to your patchqueue!
->
-> On Mon, Aug 17, 2009 at 12:28 AM, Florian Fainelli<florian@openwrt.org> wrote:
->> Hi Ralf,
->>
->> This patch should apply to both -master and -queue. Thanks !
->> --
->> From: Florian Fainelli <florian@openwrt.org>
->> Subject: [PATCH 1/2] au1000: fix build failure for db1x00 configured for Au1100 SoC
->>
->> This patch fixes the following warning, which becomes an error due to
->> -Werror to be turned on:
->>  CC      arch/mips/alchemy/common/gpiolib-au1000.o
->> cc1: warnings being treated as errors
->> arch/mips/alchemy/common/gpiolib-au1000.c: In function 'au1100_gpio2_to_irq':
->> /home/florian/dev/kernel/linux-queue/arch/mips/include/asm/mach-au1x00/gpio-au1000.h:107: warning: control reaches end of non-void function
->>
->> Signed-off-by: Florian Fainelli <florian@openwrt.org>
->> ---
->> diff --git a/arch/mips/include/asm/mach-au1x00/gpio-au1000.h b/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
->> index 127d4ed..4d54d40 100644
->> --- a/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
->> +++ b/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
->> @@ -104,6 +104,8 @@ static inline int au1100_gpio2_to_irq(int gpio)
->>
->>        if ((gpio >= 8) && (gpio <= 15))
->>                return MAKE_IRQ(0, 29);         /* shared GPIO208_215 */
->> +
->> +       return -ENXIO;
->>  }
->>
->>  #ifdef CONFIG_SOC_AU1100
+> Hello,
+> 
+> On Fri, 2009-10-09 at 00:53 -0400, Andres Salomon wrote:
+> > On Fri, 09 Oct 2009 11:51:27 +0800
+> > Wu Zhangjin <wuzhangjin@gmail.com> wrote:
+> > 
+> > > On Fri, 2009-10-09 at 11:44 +0800, Wu Zhangjin wrote:
+> > > > There is no platform dependence of SND_CS5535AUDIO before
+> > > > 2.6.31, Not sure who have touched this part, but
+> > > > SND_CS5535AUDIO is at least available on Loongson family
+> > > > machines, so, Remove the platform dependence directly.
+> > > > 
+> > > > Reported-by: rixed@happyleptic.org
+> > > > Signed-off-by: Wu Zhangjin <wuzhangjin@gmail.com>
+> > > > ---
+> > > >  sound/pci/Kconfig |    1 -
+> > > >  1 files changed, 0 insertions(+), 1 deletions(-)
+> > > > 
+> > > > diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
+> > > > index fb5ee3c..75c602b 100644
+> > > > --- a/sound/pci/Kconfig
+> > > > +++ b/sound/pci/Kconfig
+> > > > @@ -259,7 +259,6 @@ config SND_CS5530
+> > > >  
+> > > >  config SND_CS5535AUDIO
+> > > >  	tristate "CS5535/CS5536 Audio"
+> > > > -	depends on X86 && !X86_64
+> > > 
+[...]
+> 
+> Just checked the SND_CS5536AUDIO(=y and =m) option with ARCH=x86_64,
+> no compiling warnings & errors, but I don't have such a chip in a
+> x86-64 machine, so, did not test the kernel yet.
+> 
+> Regards,
+> 	Wu Zhangjin
+> 
+
+Great, feel free to add
+
+Acked-by: Andres Salomon <dilinger@collabora.co.uk>

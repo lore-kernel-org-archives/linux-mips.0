@@ -1,68 +1,104 @@
-Received: from bhuna.collabora.co.uk ([93.93.128.226]:49135 "EHLO
-	bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org
-	with ESMTP id S1492843AbZJJPf3 (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Sat, 10 Oct 2009 17:35:29 +0200
-Date: Sat, 10 Oct 2009 11:34:36 -0400
-From: Andres Salomon <dilinger@collabora.co.uk>
-Subject: Re: [PATCH] CS5535: Remove the X86 platform dependence of
- SND_CS5535AUDIO
-Message-ID: <20091010113436.2bfa0bb6@mycelium.queued.net>
-In-Reply-To: <1255185134.6883.20.camel@falcon>
-References: <1255059842-12160-1-git-send-email-wuzhangjin@gmail.com>
-	<1255060287.16819.1.camel@falcon>
-	<20091009005318.7174938c@mycelium.queued.net>
-	<1255185134.6883.20.camel@falcon>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <dilinger@collabora.co.uk>
+Received: from dns1.mips.com ([63.167.95.197]:52476 "EHLO dns1.mips.com"
+	rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org with ESMTP
+	id S1493403AbZJLUU7 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 12 Oct 2009 22:20:59 +0200
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: [PATCH 15/15] Do not rely on the initial state of TC/VPEbindings when doing cross VPE writes
+Date: Mon, 12 Oct 2009 13:20:49 -0700
+Message-ID: <94BD67F8AF3ED34FA362C662BA1F12C50439A11F@MTVEXCHANGE.mips.com>
+In-Reply-To: <20091012161751.GB21183@linux-mips.org>
+References: <20090702023938.23268.65453.stgit@linux-raghu> <20090702024331.23268.98671.stgit@linux-raghu> <4A4C314B.2070907@paralogos.com> <94BD67F8AF3ED34FA362C662BA1F12C503BED88E@MTVEXCHANGE.mips.com> <20091012161751.GB21183@linux-mips.org>
+From: "Gandham, Raghu" <raghu@mips.com>
+Return-Path: <raghu@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: wuzhangjin@gmail.com
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-mips <linux-mips@linux-mips.org>, Jaya Kumar <jayakumar.lkml@gmail.com>, Jaroslav Kysela <perex@perex.cz>, loongson-dev@googlegroups.com
-Message-ID: <20091010153436.IteRcB-07x6ENOdFgkaaiYrlFvCZD9vXWcqJ23BUGo8@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: "Kevin D. Kissell" <kevink@paralogos.com>, linux-mips@linux-mips.org, "Dearman, Chris" <chris@mips.com>
+Message-ID: <20091012202049.jUIQSQQtBu8-w392d7TN1Af8PB6opgLqrRjfjmjGPrs@z>
 
-On Sat, 10 Oct 2009 22:32:14 +0800
-Wu Zhangjin <wuzhangjin@gmail.com> wrote:
+ 
 
-> Hello,
+> -----Original Message-----
+> From: Ralf Baechle [mailto:ralf@linux-mips.org] 
+> Sent: Monday, October 12, 2009 9:18 AM
+> To: Gandham, Raghu
+> Cc: Kevin D. Kissell; linux-mips@linux-mips.org; Dearman, Chris
+> Subject: Re: [PATCH 15/15] Do not rely on the initial state 
+> of TC/VPEbindings when doing cross VPE writes
 > 
-> On Fri, 2009-10-09 at 00:53 -0400, Andres Salomon wrote:
-> > On Fri, 09 Oct 2009 11:51:27 +0800
-> > Wu Zhangjin <wuzhangjin@gmail.com> wrote:
-> > 
-> > > On Fri, 2009-10-09 at 11:44 +0800, Wu Zhangjin wrote:
-> > > > There is no platform dependence of SND_CS5535AUDIO before
-> > > > 2.6.31, Not sure who have touched this part, but
-> > > > SND_CS5535AUDIO is at least available on Loongson family
-> > > > machines, so, Remove the platform dependence directly.
-> > > > 
-> > > > Reported-by: rixed@happyleptic.org
-> > > > Signed-off-by: Wu Zhangjin <wuzhangjin@gmail.com>
-> > > > ---
-> > > >  sound/pci/Kconfig |    1 -
-> > > >  1 files changed, 0 insertions(+), 1 deletions(-)
-> > > > 
-> > > > diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-> > > > index fb5ee3c..75c602b 100644
-> > > > --- a/sound/pci/Kconfig
-> > > > +++ b/sound/pci/Kconfig
-> > > > @@ -259,7 +259,6 @@ config SND_CS5530
-> > > >  
-> > > >  config SND_CS5535AUDIO
-> > > >  	tristate "CS5535/CS5536 Audio"
-> > > > -	depends on X86 && !X86_64
+> On Thu, Jul 02, 2009 at 02:46:33PM -0700, Gandham, Raghu wrote:
+> 
+> > > From: Kevin D. Kissell [mailto:kevink@paralogos.com]
+> > > Sent: Wednesday, July 01, 2009 9:02 PM
+> > > To: Gandham, Raghu
+> > > Cc: linux-mips@linux-mips.org; Dearman, Chris
+> > > Subject: Re: [PATCH 15/15] Do not rely on the initial state of 
+> > > TC/VPE bindings when doing cross VPE writes
 > > > 
-[...]
+> > > Note that, regardless of the reset state, smtc_configure_tlb() 
+> > > should have at least temporarily bound TC 1 to VPE1, which may be 
+> > > why this never seemed to be a problem on the 34K.  If one 
+> wants to 
+> > > support designs with more than 2 VPEs, then this is 
+> probably one of 
+> > > the things that needs to be fixed.  That having been said, rather 
+> > > than adding a usually-redundant write_vpe_c0_vpeconf0() in that 
+> > > clause, wouldn't it
+> > be
+> > > cleaner to just move the MVP setting from the top of the 
+> loop to the 
+> > > point in the loop just after the TCs have been bound to 
+> the VPE in 
+> > > question, i.e.,
+> > > 
+> > >  454                 if (slop) {
+> > >  455                         if (tc != 0) {
+> > >  456                                 smtc_tc_setup(vpe,tc, cpu);
+> > >  457                                 cpu++;
+> > >  458                         }
+> > >  459                         printk(" %d", tc);
+> > >  460                         tc++;
+> > >  461                         slop--;
+> > >  462                 }
+> > > 
+> > >                         
+> write_vpe_c0_vpeconf0(read_vpe_c0_vpeconf0() 
+> > > | VPECONF0_MVP);
+> > > 
+> > >  463                 if (vpe != 0) {
+> > >  464                         /*
+> > >  465                          * Clear any stale software 
+> interrupts
+> > from
+> > > VPE's Cause
+> > >  466                          */
+> > > 
+> > > This should definitely be OK for a 34K, because it's 
+> being executed 
+> > > by TC0 in VPE0 and the reset state of VPE0 has MVP set.  If it 
+> > > weren't,
+> > > smtc_configure_tlb() would have failed.
+> > > 
+> > >           Regards,
+> > > 
+> > >           Kevin K.
+> > 
+> > 
+> > I will resend this patch with your suggestion.
 > 
-> Just checked the SND_CS5536AUDIO(=y and =m) option with ARCH=x86_64,
-> no compiling warnings & errors, but I don't have such a chip in a
-> x86-64 machine, so, did not test the kernel yet.
-> 
-> Regards,
-> 	Wu Zhangjin
-> 
+> Ping?  Don't think I ever received that, if you sent it.
+I resent the patch and it got checked-in. It is not appended to this
+mail thread though. 
+http://www.linux-mips.org/git?p=linux.git;a=commitdiff;h=d8e5f9fe5dab0e0
+7985f2456cb6cc57788f53131
 
-Great, feel free to add
+Thanks,
+Raghu
 
-Acked-by: Andres Salomon <dilinger@collabora.co.uk>
+> 
+>   Ralf
+> 

@@ -1,104 +1,91 @@
-Received: from dns1.mips.com ([63.167.95.197]:52476 "EHLO dns1.mips.com"
-	rhost-flags-OK-OK-OK-OK) by ftp.linux-mips.org with ESMTP
-	id S1493403AbZJLUU7 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 12 Oct 2009 22:20:59 +0200
-Content-class: urn:content-classes:message
+Received: from mail-vw0-f199.google.com ([209.85.212.199]:62481 "EHLO
+	mail-vw0-f199.google.com" rhost-flags-OK-OK-OK-OK)
+	by ftp.linux-mips.org with ESMTP id S1492004AbZJSFR6 (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 19 Oct 2009 07:17:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: [PATCH 15/15] Do not rely on the initial state of TC/VPEbindings when doing cross VPE writes
-Date: Mon, 12 Oct 2009 13:20:49 -0700
-Message-ID: <94BD67F8AF3ED34FA362C662BA1F12C50439A11F@MTVEXCHANGE.mips.com>
-In-Reply-To: <20091012161751.GB21183@linux-mips.org>
-References: <20090702023938.23268.65453.stgit@linux-raghu> <20090702024331.23268.98671.stgit@linux-raghu> <4A4C314B.2070907@paralogos.com> <94BD67F8AF3ED34FA362C662BA1F12C503BED88E@MTVEXCHANGE.mips.com> <20091012161751.GB21183@linux-mips.org>
-From: "Gandham, Raghu" <raghu@mips.com>
-Return-Path: <raghu@mips.com>
+In-Reply-To: <1255819715-19763-1-git-send-email-linus.walleij@stericsson.com>
+References: <1255819715-19763-1-git-send-email-linus.walleij@stericsson.com>
+Date: Sun, 18 Oct 2009 23:17:47 -0600
+Message-ID: <b2b2f2320910182217m31ce0a96g4912eeb9bea5f817@mail.gmail.com>
+Subject: Re: [PATCH] Make MIPS dynamic clocksource/clockevent clock code
+	generic
+From: Shane McDonald <mcdonald.shane@gmail.com>
+Content-Type: multipart/alternative; boundary=001517576e08ce08ab047642dd3b
+Return-Path: <mcdonald.shane@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: "Kevin D. Kissell" <kevink@paralogos.com>, linux-mips@linux-mips.org, "Dearman, Chris" <chris@mips.com>
-Message-ID: <20091012202049.jUIQSQQtBu8-w392d7TN1Af8PB6opgLqrRjfjmjGPrs@z>
+To: Linus Walleij <linus.walleij@stericsson.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, Thomas Gleixner <tglx@linutronix.de>, Mikael Pettersson <mikpe@it.uu.se>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20091019051747.fpS4pmi8fHf4-f01ltJPtc-fbOOH97QmcM-n9ye0wts@z>
 
- 
+--001517576e08ce08ab047642dd3b
+Content-Type: text/plain; charset=ISO-8859-1
 
-> -----Original Message-----
-> From: Ralf Baechle [mailto:ralf@linux-mips.org] 
-> Sent: Monday, October 12, 2009 9:18 AM
-> To: Gandham, Raghu
-> Cc: Kevin D. Kissell; linux-mips@linux-mips.org; Dearman, Chris
-> Subject: Re: [PATCH 15/15] Do not rely on the initial state 
-> of TC/VPEbindings when doing cross VPE writes
-> 
-> On Thu, Jul 02, 2009 at 02:46:33PM -0700, Gandham, Raghu wrote:
-> 
-> > > From: Kevin D. Kissell [mailto:kevink@paralogos.com]
-> > > Sent: Wednesday, July 01, 2009 9:02 PM
-> > > To: Gandham, Raghu
-> > > Cc: linux-mips@linux-mips.org; Dearman, Chris
-> > > Subject: Re: [PATCH 15/15] Do not rely on the initial state of 
-> > > TC/VPE bindings when doing cross VPE writes
-> > > 
-> > > Note that, regardless of the reset state, smtc_configure_tlb() 
-> > > should have at least temporarily bound TC 1 to VPE1, which may be 
-> > > why this never seemed to be a problem on the 34K.  If one 
-> wants to 
-> > > support designs with more than 2 VPEs, then this is 
-> probably one of 
-> > > the things that needs to be fixed.  That having been said, rather 
-> > > than adding a usually-redundant write_vpe_c0_vpeconf0() in that 
-> > > clause, wouldn't it
-> > be
-> > > cleaner to just move the MVP setting from the top of the 
-> loop to the 
-> > > point in the loop just after the TCs have been bound to 
-> the VPE in 
-> > > question, i.e.,
-> > > 
-> > >  454                 if (slop) {
-> > >  455                         if (tc != 0) {
-> > >  456                                 smtc_tc_setup(vpe,tc, cpu);
-> > >  457                                 cpu++;
-> > >  458                         }
-> > >  459                         printk(" %d", tc);
-> > >  460                         tc++;
-> > >  461                         slop--;
-> > >  462                 }
-> > > 
-> > >                         
-> write_vpe_c0_vpeconf0(read_vpe_c0_vpeconf0() 
-> > > | VPECONF0_MVP);
-> > > 
-> > >  463                 if (vpe != 0) {
-> > >  464                         /*
-> > >  465                          * Clear any stale software 
-> interrupts
-> > from
-> > > VPE's Cause
-> > >  466                          */
-> > > 
-> > > This should definitely be OK for a 34K, because it's 
-> being executed 
-> > > by TC0 in VPE0 and the reset state of VPE0 has MVP set.  If it 
-> > > weren't,
-> > > smtc_configure_tlb() would have failed.
-> > > 
-> > >           Regards,
-> > > 
-> > >           Kevin K.
-> > 
-> > 
-> > I will resend this patch with your suggestion.
-> 
-> Ping?  Don't think I ever received that, if you sent it.
-I resent the patch and it got checked-in. It is not appended to this
-mail thread though. 
-http://www.linux-mips.org/git?p=linux.git;a=commitdiff;h=d8e5f9fe5dab0e0
-7985f2456cb6cc57788f53131
+Hello:
 
-Thanks,
-Raghu
+On Sat, Oct 17, 2009 at 4:48 PM, Linus Walleij <linus.walleij@stericsson.com
+> wrote:
 
-> 
->   Ralf
-> 
+> This moves the clocksource_set_clock() and clockevent_set_clock()
+> from the MIPS timer code into clockchips and clocksource where
+> it belongs. The patch was triggered by code posted by Mikael
+> Pettersson duplicating this code for the IOP ARM system. The
+> function signatures where altered slightly to fit into their
+> destination header files, unsigned int changed to u32 and inlined.
+>
+> Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Mikael Pettersson <mikpe@it.uu.se>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> ---
+> Ralf has stated in earlier conversation that this should be moved,
+> now we risk duplicating code so let's move it.
+>
+> I don't have access to a MIPS cross-compiler so please can the
+> MIPS people test this?
+>
+
+I have tested this patch on an RM7000-based MIPS system.  The patch compiles
+fine, and the kernel successfully runs.  You can add my:
+
+Tested-by: Shane McDonald <mcdonald.shane@gmail.com>
+
+Shane
+
+--001517576e08ce08ab047642dd3b
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hello:<br><br>On Sat, Oct 17, 2009 at 4:48 PM, Linus Walleij <span dir=3D"l=
+tr">&lt;<a href=3D"mailto:linus.walleij@stericsson.com">linus.walleij@steri=
+csson.com</a>&gt;</span> wrote:<br><div class=3D"gmail_quote"><blockquote c=
+lass=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, 204, 204); ma=
+rgin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+This moves the clocksource_set_clock() and clockevent_set_clock()<br>
+from the MIPS timer code into clockchips and clocksource where<br>
+it belongs. The patch was triggered by code posted by Mikael<br>
+Pettersson duplicating this code for the IOP ARM system. The<br>
+function signatures where altered slightly to fit into their<br>
+destination header files, unsigned int changed to u32 and inlined.<br>
+<br>
+Signed-off-by: Linus Walleij &lt;<a href=3D"mailto:linus.walleij@stericsson=
+.com">linus.walleij@stericsson.com</a>&gt;<br>
+Cc: Thomas Gleixner &lt;<a href=3D"mailto:tglx@linutronix.de">tglx@linutron=
+ix.de</a>&gt;<br>
+Cc: Mikael Pettersson &lt;<a href=3D"mailto:mikpe@it.uu.se">mikpe@it.uu.se<=
+/a>&gt;<br>
+Cc: Ralf Baechle &lt;<a href=3D"mailto:ralf@linux-mips.org">ralf@linux-mips=
+.org</a>&gt;<br>
+---<br>
+Ralf has stated in earlier conversation that this should be moved,<br>
+now we risk duplicating code so let&#39;s move it.<br>
+<br>
+I don&#39;t have access to a MIPS cross-compiler so please can the<br>
+MIPS people test this?<br></blockquote></div><br>I have tested this patch o=
+n an RM7000-based MIPS system.=A0 The patch compiles fine, and the kernel s=
+uccessfully runs.=A0 You can add my:<br><br>Tested-by: Shane McDonald &lt;<=
+a href=3D"mailto:mcdonald.shane@gmail.com">mcdonald.shane@gmail.com</a>&gt;=
+<br>
+<br>Shane<br>
+
+--001517576e08ce08ab047642dd3b--

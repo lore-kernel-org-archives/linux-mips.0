@@ -1,34 +1,46 @@
-Received: from mail-bw0-f221.google.com ([209.85.218.221]:53983 "EHLO
+Received: from mail-bw0-f221.google.com ([209.85.218.221]:50448 "EHLO
 	mail-bw0-f221.google.com" rhost-flags-OK-OK-OK-OK)
-	by ftp.linux-mips.org with ESMTP id S1492544AbZJSLMW (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 19 Oct 2009 13:12:22 +0200
+	by ftp.linux-mips.org with ESMTP id S1493575AbZJTV2D (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 20 Oct 2009 23:28:03 +0200
 MIME-Version: 1.0
-In-Reply-To: <200910181604.11732.florian@openwrt.org>
-References: <200910181604.11732.florian@openwrt.org>
-Date: Mon, 19 Oct 2009 13:12:15 +0200
-Message-ID: <f861ec6f0910190412i3910246dgcdf6b8b56a8ed5b3@mail.gmail.com>
-Subject: Re: [PATCH 1/2] alchemy: fix warnings in db1x00/pb1000/pb1550 board
-	setup code
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Content-Type: multipart/alternative; boundary=0023545bddb8776449047647d153
-Return-Path: <manuel.lauss@googlemail.com>
+In-Reply-To: <alpine.LFD.2.00.0910200454300.2863@localhost.localdomain>
+References: <1255819715-19763-1-git-send-email-linus.walleij@stericsson.com>
+	 <alpine.LFD.2.00.0910200454300.2863@localhost.localdomain>
+Date: Tue, 20 Oct 2009 23:27:55 +0200
+Message-ID: <63386a3d0910201427i1dd8c789i1c9bceeea250d98c@mail.gmail.com>
+Subject: Re: [PATCH] Make MIPS dynamic clocksource/clockevent clock code
+	generic
+From: Linus Walleij <linus.ml.walleij@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-Path: <linus.ml.walleij@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Florian Fainelli <florian@openwrt.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20091019111215.1PBT5TKTSA3u-WMPTc2iZm2FFou4Wy5i7jLW-69-B94@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Linus Walleij <linus.walleij@stericsson.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, Mikael Pettersson <mikpe@it.uu.se>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20091020212755.U-cKZ_KqT8XSnjbXjZyDMBKADlCsUpJURuUz-lHouv8@z>
 
---0023545bddb8776449047647d153
-Content-Type: text/plain; charset=ISO-8859-1
+2009/10/20 Thomas Gleixner <tglx@linutronix.de>:
 
-I like it, thank you!
+> On Sun, 18 Oct 2009, Linus Walleij wrote:
+>> This moves the clocksource_set_clock() and clockevent_set_clock()
+>> from the MIPS timer code into clockchips and clocksource where
+>> it belongs.
+> (...)
+> Please do not make that functions inline. They are too large and there
+> is no benefit of inlining them.
 
-        Manuel
+I think there is, because these functions in MIPS if I'm not misreading it, are
+used once each in one and one spot only in the clocksource/clockevent
+set-up at boot time for each platform in which they are currently used.
 
---0023545bddb8776449047647d153
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Further these spots tend to be __init or even __cpuinit code segments,
+so they will be discarded and if we inline the code it will be discarded
+after boot as well.
 
-I like it, thank you!<br><br>=A0=A0=A0=A0=A0=A0=A0 Manuel<br>
+If you foresee that the code will be used in other ways under other
+circumstances, I will make them non-inlined of course, but I have a
+hard time seeing that.
 
---0023545bddb8776449047647d153--
+OK?
+
+Linus Walleij

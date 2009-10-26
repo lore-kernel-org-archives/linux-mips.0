@@ -1,107 +1,92 @@
-Received: from mail-fx0-f225.google.com ([209.85.220.225]:41643 "EHLO
-	mail-fx0-f225.google.com" rhost-flags-OK-OK-OK-OK)
-	by ftp.linux-mips.org with ESMTP id S1492989AbZJZA1Y convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Mon, 26 Oct 2009 01:27:24 +0100
-MIME-Version: 1.0
-In-Reply-To: <49b3c441a57f4db423732f81432a3450ccb3240e.1256483735.git.wuzhangjin@gmail.com>
-References: <cover.1256482555.git.wuzhangjin@gmail.com>
-	 <028867b99ec532b84963a35e7d552becc783cafc.1256483735.git.wuzhangjin@gmail.com>
-	 <2f73eae542c47ac5bbb9f7280e6c0271d193e90d.1256483735.git.wuzhangjin@gmail.com>
-	 <3e0c2d7d8b8f196a8153beb41ea7f3cbf42b3d84.1256483735.git.wuzhangjin@gmail.com>
-	 <54c417629e91f40b2bbb4e08cda2a4e6527824c0.1256483735.git.wuzhangjin@gmail.com>
-	 <29bccff04932e993ecd9f516d8b6dcf84e2ceecf.1256483735.git.wuzhangjin@gmail.com>
-	 <72f2270f7b6e01ca7a4cdf4ac8c21778e5d9652f.1256483735.git.wuzhangjin@gmail.com>
-	 <cover.1256483735.git.wuzhangjin@gmail.com>
-	 <6140dd8f4e1783e5ac30977cf008bb98e4698322.1256483735.git.wuzhangjin@gmail.com>
-	 <49b3c441a57f4db423732f81432a3450ccb3240e.1256483735.git.wuzhangjin@gmail.com>
-Date: Mon, 26 Oct 2009 01:27:18 +0100
-Message-ID: <c62985530910251727o23beafcco539870e4b2f84637@mail.gmail.com>
-Subject: Re: [PATCH -v5 08/11] tracing: not trace mips_timecounter_init() in
-	MIPS
-From: Frederic Weisbecker <fweisbec@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
-Return-Path: <fweisbec@gmail.com>
+Received: from hrndva-omtalb.mail.rr.com ([71.74.56.122]:61074 "EHLO
+	hrndva-omtalb.mail.rr.com" rhost-flags-OK-OK-OK-OK)
+	by ftp.linux-mips.org with ESMTP id S1493201AbZJZP5b (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Mon, 26 Oct 2009 16:57:31 +0100
+Subject: Re: [PATCH -v6 05/13] tracing: enable
+ HAVE_FUNCTION_TRACE_MCOUNT_TEST for MIPS
+From: Steven Rostedt <rostedt@goodmis.org>
+Reply-To: rostedt@goodmis.org
+In-Reply-To: <4AE5C344.4020104@ru.mvista.com>
+References: <cover.1256569489.git.wuzhangjin@gmail.com>
+	 <747deea2f18d5ccffe842df95a9dd1c86251a958.1256569489.git.wuzhangjin@gmail.com>
+	 <3f47087b70a965fd679b17a59521671296457df1.1256569489.git.wuzhangjin@gmail.com>
+	 <f290e125634d164ec65b09b24b269815f78455ab.1256569489.git.wuzhangjin@gmail.com>
+	 <07dc907ec62353b1aca99b2850d3b2e4b734189a.1256569489.git.wuzhangjin@gmail.com>
+	 <374da7039d2e1b97083edd8bcd7811356884d427.1256569489.git.wuzhangjin@gmail.com>
+	 <4AE5C344.4020104@ru.mvista.com>
+Content-Type: text/plain
+Date: Mon, 26 Oct 2009 11:57:20 -0400
+Message-ID: <1256572640.26028.302.camel@gandalf.stny.rr.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Return-Path: <rostedt@goodmis.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Wu Zhangjin <wuzhangjin@gmail.com>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, Thomas Gleixner <tglx@linutronix.de>, Ralf Baechle <ralf@linux-mips.org>, Nicholas Mc Guire <der.herr@hofr.at>, Richard Sandiford <rdsandiford@googlemail.com>, David Daney <ddaney@caviumnetworks.com>, Adam Nemet <anemet@caviumnetworks.com>, Patrik Kluba <kpajko79@gmail.com>
-Message-ID: <20091026002718.4IJQBdRmJVWcFH4sDaj1pWvNrgvpvVpM4_QA9Tphztw@z>
+To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Cc: Wu Zhangjin <wuzhangjin@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Frederic Weisbecker <fweisbec@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Ralf Baechle <ralf@linux-mips.org>, Richard Sandiford <rdsandiford@googlemail.com>, Nicholas Mc Guire <der.herr@hofr.at>, David Daney <ddaney@caviumnetworks.com>, Adam Nemet <anemet@caviumnetworks.com>, Patrik Kluba <kpajko79@gmail.com>
+Message-ID: <20091026155720.nymVcIHuR75T7xJwPh5rtAHXT-OOlQY9iIO50mNQ-j0@z>
 
-2009/10/25 Wu Zhangjin <wuzhangjin@gmail.com>:
-> -static inline u64 mips_timecounter_read(void)
-> +static inline u64 notrace mips_timecounter_read(void)
+On Mon, 2009-10-26 at 18:41 +0300, Sergei Shtylyov wrote:
+> Hello.
+> 
+> Wu Zhangjin wrote:
+> 
+> > There is an exisiting common ftrace_test_stop_func() in
+> > kernel/trace/ftrace.c, which is used to check the global variable
+> > ftrace_trace_stop to determine whether stop the function tracing.
+> 
+> > This patch implepment the MIPS specific one to speedup the procedure.
+> 
+> > Thanks goes to Zhang Le for Cleaning it up.
+> 
+> > Signed-off-by: Wu Zhangjin <wuzhangjin@gmail.com>
+> 
+> [...]
+> 
+> > diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
+> > index 0c39bc8..5dfaca8 100644
+> > --- a/arch/mips/kernel/mcount.S
+> > +++ b/arch/mips/kernel/mcount.S
+> > @@ -64,6 +64,10 @@
+> >  	.endm
+> >  
+> >  NESTED(_mcount, PT_SIZE, ra)
+> > +	lw	t0, function_trace_stop
+> > +	bnez	t0, ftrace_stub
+> > +	nop
+> 
+> 1) unless .set noreorder is specified in this file, explicit nop is not needed;
 
+From patch 4:
 
-You don't need to set notrace functions, unless their addresses
-are referenced somewhere, which unfortunately might happen
-for some functions but this is rare.
++++ b/arch/mips/kernel/mcount.S
+@@ -0,0 +1,89 @@
++/*
++ * MIPS specific _mcount support
++ *
++ * This file is subject to the terms and conditions of the GNU General
+Public
++ * License.  See the file "COPYING" in the main directory of this
+archive for
++ * more details.
++ *
++ * Copyright (C) 2009 Lemote Inc. & DSLab, Lanzhou University, China
++ * Author: Wu Zhangjin <wuzj@lemote.com>
++ */
++
++#include <asm/regdef.h>
++#include <asm/stackframe.h>
++#include <asm/ftrace.h>
++
++       .text
++       .set noreorder
++       .set noat
 
+-- Steve
 
->  {
->  #ifdef CONFIG_CSRC_R4K
->        return r4k_timecounter_read();
-> diff --git a/arch/mips/kernel/csrc-r4k.c b/arch/mips/kernel/csrc-r4k.c
-> index 4e7705f..0690bea 100644
-> --- a/arch/mips/kernel/csrc-r4k.c
-> +++ b/arch/mips/kernel/csrc-r4k.c
-> @@ -42,7 +42,7 @@ static struct timecounter r4k_tc = {
->        .cc = NULL,
->  };
->
-> -static cycle_t r4k_cc_read(const struct cyclecounter *cc)
-> +static cycle_t notrace r4k_cc_read(const struct cyclecounter *cc)
->  {
->        return read_c0_count();
->  }
-> @@ -66,7 +66,7 @@ int __init init_r4k_timecounter(void)
->        return 0;
->  }
->
-> -u64 r4k_timecounter_read(void)
-> +u64 notrace r4k_timecounter_read(void)
->  {
->        u64 clock;
->
-> diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-> index 83d2fbd..2a02992 100644
-> --- a/include/linux/clocksource.h
-> +++ b/include/linux/clocksource.h
-> @@ -73,7 +73,7 @@ struct timecounter {
->  * XXX - This could use some mult_lxl_ll() asm optimization. Same code
->  * as in cyc2ns, but with unsigned result.
->  */
-> -static inline u64 cyclecounter_cyc2ns(const struct cyclecounter *cc,
-> +static inline u64 notrace cyclecounter_cyc2ns(const struct cyclecounter
-
-ditto here.
-
-
-*cc,
->                                      cycle_t cycles)
->  {
->        u64 ret = (u64)cycles;
-> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> index 5e18c6a..9ce9d02 100644
-> --- a/kernel/time/clocksource.c
-> +++ b/kernel/time/clocksource.c
-> @@ -52,7 +52,7 @@ EXPORT_SYMBOL(timecounter_init);
->  * The first call to this function for a new time counter initializes
->  * the time tracking and returns an undefined result.
->  */
-> -static u64 timecounter_read_delta(struct timecounter *tc)
-> +static u64 notrace timecounter_read_delta(struct timecounter *tc)
->  {
->        cycle_t cycle_now, cycle_delta;
->        u64 ns_offset;
-> @@ -72,7 +72,7 @@ static u64 timecounter_read_delta(struct timecounter
-
-
-Hmm yeah this is not very nice to do that in core functions because
-of a specific arch problem.
-At least you have __notrace_funcgraph, this is a notrace
-that only applies if CONFIG_FUNCTION_GRAPH_TRACER
-so that it's still traceable by the function tracer in this case.
-
-But I would rather see a __mips_notrace on these two core functions.
+> 
+> 2) delay slot instruction is usually denoted by adding extra space on its 
+> left, like this:
+> 
+> 	bnez	t0, ftrace_stub
+> 	 nop

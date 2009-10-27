@@ -1,92 +1,73 @@
-Received: from hrndva-omtalb.mail.rr.com ([71.74.56.122]:61074 "EHLO
-	hrndva-omtalb.mail.rr.com" rhost-flags-OK-OK-OK-OK)
-	by ftp.linux-mips.org with ESMTP id S1493201AbZJZP5b (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 26 Oct 2009 16:57:31 +0100
-Subject: Re: [PATCH -v6 05/13] tracing: enable
- HAVE_FUNCTION_TRACE_MCOUNT_TEST for MIPS
-From: Steven Rostedt <rostedt@goodmis.org>
-Reply-To: rostedt@goodmis.org
-In-Reply-To: <4AE5C344.4020104@ru.mvista.com>
-References: <cover.1256569489.git.wuzhangjin@gmail.com>
-	 <747deea2f18d5ccffe842df95a9dd1c86251a958.1256569489.git.wuzhangjin@gmail.com>
-	 <3f47087b70a965fd679b17a59521671296457df1.1256569489.git.wuzhangjin@gmail.com>
-	 <f290e125634d164ec65b09b24b269815f78455ab.1256569489.git.wuzhangjin@gmail.com>
-	 <07dc907ec62353b1aca99b2850d3b2e4b734189a.1256569489.git.wuzhangjin@gmail.com>
-	 <374da7039d2e1b97083edd8bcd7811356884d427.1256569489.git.wuzhangjin@gmail.com>
-	 <4AE5C344.4020104@ru.mvista.com>
-Content-Type: text/plain
-Date: Mon, 26 Oct 2009 11:57:20 -0400
-Message-ID: <1256572640.26028.302.camel@gandalf.stny.rr.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-Path: <rostedt@goodmis.org>
+Received: from mail-pz0-f194.google.com ([209.85.222.194]:60965 "EHLO
+	mail-pz0-f194.google.com" rhost-flags-OK-OK-OK-OK)
+	by ftp.linux-mips.org with ESMTP id S1492570AbZJ0N1v (ORCPT
+	<rfc822;linux-mips@linux-mips.org>); Tue, 27 Oct 2009 14:27:51 +0100
+Received: by pzk32 with SMTP id 32so89132pzk.21
+        for <linux-mips@linux-mips.org>; Tue, 27 Oct 2009 06:27:43 -0700 (PDT)
+MIME-Version: 1.0
+Date: Tue, 27 Oct 2009 21:27:43 +0800
+Message-ID: <3a665c760910270627u784d43b8t2978731110c920a4@mail.gmail.com>
+Subject: kernel panic about kernel unaligned access
+From: loody <miloody@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-Path: <miloody@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Cc: Wu Zhangjin <wuzhangjin@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Frederic Weisbecker <fweisbec@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Ralf Baechle <ralf@linux-mips.org>, Richard Sandiford <rdsandiford@googlemail.com>, Nicholas Mc Guire <der.herr@hofr.at>, David Daney <ddaney@caviumnetworks.com>, Adam Nemet <anemet@caviumnetworks.com>, Patrik Kluba <kpajko79@gmail.com>
-Message-ID: <20091026155720.nymVcIHuR75T7xJwPh5rtAHXT-OOlQY9iIO50mNQ-j0@z>
+To: linux-mips <linux-mips@linux-mips.org>, Kernel Newbies <kernelnewbies@nl.linux.org>
+Message-ID: <20091027132743._-q8oC_zl8DGJqSPw6f74c8mORjVZfpLdl6LpbLqbyU@z>
 
-On Mon, 2009-10-26 at 18:41 +0300, Sergei Shtylyov wrote:
-> Hello.
-> 
-> Wu Zhangjin wrote:
-> 
-> > There is an exisiting common ftrace_test_stop_func() in
-> > kernel/trace/ftrace.c, which is used to check the global variable
-> > ftrace_trace_stop to determine whether stop the function tracing.
-> 
-> > This patch implepment the MIPS specific one to speedup the procedure.
-> 
-> > Thanks goes to Zhang Le for Cleaning it up.
-> 
-> > Signed-off-by: Wu Zhangjin <wuzhangjin@gmail.com>
-> 
-> [...]
-> 
-> > diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
-> > index 0c39bc8..5dfaca8 100644
-> > --- a/arch/mips/kernel/mcount.S
-> > +++ b/arch/mips/kernel/mcount.S
-> > @@ -64,6 +64,10 @@
-> >  	.endm
-> >  
-> >  NESTED(_mcount, PT_SIZE, ra)
-> > +	lw	t0, function_trace_stop
-> > +	bnez	t0, ftrace_stub
-> > +	nop
-> 
-> 1) unless .set noreorder is specified in this file, explicit nop is not needed;
+Dear all:
+I use kernel 2.6.18 and I get the kernel panic as below:
+Unhandled kernel unaligned access[#1]:
+Cpu 0
+$ 0   : 00000000 11000001 0000040a 8721f0d8
+$ 4   : 874a6c00 80001d18 00000000 00000000
+$ 8   : 00000000 ffffa438 00000000 874c2000
+$12   : 00000000 00000000 00005800 00011000
+$16   : 80001d10 874a6c40 874a6c00 87d7bf00
+$20   : 874a6c78 871a0000 87370000 874a6c80
+$24   : 00000000 2aacc770
+$28   : 87d7a000 87d7be88 ffffa438 8709ed20
+Hi    : 00000000
+Lo    : 00000000
+epc   : 8709e72c sync_sb_inodes+0x9c/0x320     Not tainted
+ra    : 8709ed20 writeback_inodes+0xb4/0x160
+Status: 11000003    KERNEL EXL IE
+Cause : 00808010
+BadVA : 00000442
+PrId  : 00019654
+Modules linked in:
+Process pdflush (pid: 38, threadinfo=87d7a000, task=87d695b8)
+Stack : ffffffff ffffffff 871c0000 87cae4d8 874a6c00 874a6c40 87d7bf00 871c4290
+        87d7bf64 871a0000 87370000 00000000 00000000 8709ed20 ffffffff ffffffff
+        8735e380 874bb8a8 00000400 0000034b ffffa62c 87d7bf00 87057f9c 00000000
+        87189270 87188b20 00000000 87189564 ffff9880 87362d58 00000000 00000000
+        87d7bef8 00000400 00000000 00000000 00000000 00000000 00000000 00000000
+        ...
+Call Trace:
+ [<8709ed20>] writeback_inodes+0xb4/0x160
+ [<87057f9c>] wb_kupdate+0xb8/0x154
+ [<87189270>] __schedule+0x998/0xb34
+ [<87188b20>] __schedule+0x248/0xb34
+ [<87189564>] preempt_schedule+0x68/0xac
+ [<87058d74>] pdflush+0x188/0x284
+ [<87058cfc>] pdflush+0x110/0x284
+ [<8703b9e4>] kthread+0x14c/0x1b8
+ [<87057ee4>] wb_kupdate+0x0/0x154
+ [<87058bec>] pdflush+0x0/0x284
+ [<8703ba00>] kthread+0x168/0x1b8
+ [<87003398>] kernel_thread_helper+0x10/0x18
+ [<87003388>] kernel_thread_helper+0x0/0x18
 
-From patch 4:
 
-+++ b/arch/mips/kernel/mcount.S
-@@ -0,0 +1,89 @@
-+/*
-+ * MIPS specific _mcount support
-+ *
-+ * This file is subject to the terms and conditions of the GNU General
-Public
-+ * License.  See the file "COPYING" in the main directory of this
-archive for
-+ * more details.
-+ *
-+ * Copyright (C) 2009 Lemote Inc. & DSLab, Lanzhou University, China
-+ * Author: Wu Zhangjin <wuzj@lemote.com>
-+ */
-+
-+#include <asm/regdef.h>
-+#include <asm/stackframe.h>
-+#include <asm/ftrace.h>
-+
-+       .text
-+       .set noreorder
-+       .set noat
+Code: 8e450084  24b0fff8  8e02009c <8c510038> 8e220008  30420002
+1040000f  00000000  8ca20000
+note: pdflush[38] exited with preempt_count 1
 
--- Steve
-
-> 
-> 2) delay slot instruction is usually denoted by adding extra space on its 
-> left, like this:
-> 
-> 	bnez	t0, ftrace_stub
-> 	 nop
+my questions are:
+1. what does "Not tainted" mean?
+2. I grep the kernel and I find the above message comes from do_ade in
+unaligned.c, If I guess correctly.
+    but from the call trace I cannot find out who call it.
+    who and how kernel pass the information to do_ade?
+3. as far as i know, inode is the data structure we used to record file.

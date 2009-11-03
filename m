@@ -1,38 +1,41 @@
-Received: from mail-bw0-f221.google.com ([209.85.218.221]:52643 "EHLO
+Received: from mail-bw0-f221.google.com ([209.85.218.221]:37270 "EHLO
 	mail-bw0-f221.google.com" rhost-flags-OK-OK-OK-OK)
-	by ftp.linux-mips.org with ESMTP id S1493838AbZKBLn0 (ORCPT
-	<rfc822;linux-mips@linux-mips.org>); Mon, 2 Nov 2009 12:43:26 +0100
+	by ftp.linux-mips.org with ESMTP id S1492370AbZKCNvu convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Tue, 3 Nov 2009 14:51:50 +0100
 MIME-Version: 1.0
-In-Reply-To: <20091102112955.GA2821@linux-mips.org>
-References: <200910181604.11732.florian@openwrt.org>
-	 <f861ec6f0910190412i3910246dgcdf6b8b56a8ed5b3@mail.gmail.com>
-	 <20091102112955.GA2821@linux-mips.org>
-Date: Mon, 2 Nov 2009 12:43:20 +0100
-Message-ID: <f861ec6f0911020343v69c8d82q16ad1af7691471af@mail.gmail.com>
-Subject: Re: [PATCH 1/2] alchemy: fix warnings in db1x00/pb1000/pb1550 board
-	setup code
-From: Manuel Lauss <manuel.lauss@googlemail.com>
+In-Reply-To: <63386a3d0910251518i42149642g183f2d3f6c43384f@mail.gmail.com>
+References: <1256078002-27919-1-git-send-email-linus.walleij@stericsson.com>
+	 <63386a3d0910251518i42149642g183f2d3f6c43384f@mail.gmail.com>
+Date: Tue, 3 Nov 2009 14:51:41 +0100
+Message-ID: <63386a3d0911030551j1accd6fby7038895df544385b@mail.gmail.com>
+Subject: Re: [PATCH] Make MIPS dynamic clocksource/clockevent clock code
+	generic v2
+From: Linus Walleij <linus.ml.walleij@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Return-Path: <manuel.lauss@googlemail.com>
+Content-Transfer-Encoding: 8BIT
+Return-Path: <linus.ml.walleij@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Florian Fainelli <florian@openwrt.org>, linux-mips@linux-mips.org
-Message-ID: <20091102114320.oO8W0J1mQGxtBTAm3lf9Yz-pmxr5l93pLSqPBKxSAeY@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Linus Walleij <linus.walleij@stericsson.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, Mikael Pettersson <mikpe@it.uu.se>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20091103135141.GKLubJjhrWbxK2QmMlu94iwoFy0MYBUSjBMt_HNFnV0@z>
 
-On Mon, Nov 2, 2009 at 12:29 PM, Ralf Baechle <ralf@linux-mips.org> wrote:
-> On Mon, Oct 19, 2009 at 01:12:15PM +0200, Manuel Lauss wrote:
+2009/10/25 Linus Walleij <linus.ml.walleij@gmail.com>:
+> 2009/10/21 Linus Walleij <linus.walleij@stericsson.com>:
 >
->> I like it, thank you!
+>> Changes v1->v2:
+>> - Fixed Mikaels comments: spelling, terminology.
+>> - Kept the functions inline: all uses and foreseen uses
+>>  are once per kernel and all are in __init or __cpuinit sections.
+>> - Unable to break out common code - the code is not common and
+>>  implementing two execution paths will be more awkward.
+>> - Hoping the tglx likes it anyway.
 >
-> Except that it a) does things the comments don't mention and b) doesn't
+> Ping on tglx on this, I will uninline the functions if you think
+> it's better in the long run, just tell me, else can you pick this
+> patch?
 
-It does eliminate all the "variable may be unused"-type warnings...
+Ping again...
 
-
-> apply on top of master or -queue ...
-
-It did apply against -queue when Floarian initally sent it.  If he doesn't
-resurface in the next few days I'll send an update version.
-
-Manuel
+Linus Walleij

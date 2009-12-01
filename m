@@ -1,14 +1,14 @@
-Received: from 60-248-150-25.HINET-IP.hinet.net ([60.248.150.25]:47728 "EHLO
+Received: from 60-248-150-25.HINET-IP.hinet.net ([60.248.150.25]:41294 "EHLO
         dns.allplus-cn.com" rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org
-        with ESMTP id S1492002AbZLAFaB convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 1 Dec 2009 06:30:01 +0100
+        with ESMTP id S1492070AbZLAFd3 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 1 Dec 2009 06:33:29 +0100
 From: "jack_lu" <jacklu@allplus-cn.com>
 References: <74D96A2497124516897C6F4D06D8B5AB@DELLPC> <1259644416.5139.11.camel@falcon.domain.org>
 In-Reply-To: <1259644416.5139.11.camel@falcon.domain.org>
 Subject: =?gb2312?B?tPC4tDogaGVsbG8hIGNhbiB5b3UgaGVscCBtZSBmb3IgY29tcGlsaQ==?=
         =?gb2312?B?bmcgdGhlIGxpbnV4IGtlcm5lbD8=?=
-Date: Tue, 1 Dec 2009 13:29:32 +0800
-Message-ID: <1A667674F8FA4416BF13CA3E9B322994@DELLPC>
+Date: Tue, 1 Dec 2009 13:33:11 +0800
+Message-ID: <505B44E810DF4EFDA65D25549FF81605@DELLPC>
 MIME-Version: 1.0
 Content-Type: text/plain;
         charset="gb2312"
@@ -18,20 +18,13 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: wuzhangjin@gmail.com
 Cc: linux-mips@linux-mips.org
-Message-ID: <20091201052932.WtmcqI4-fE0ApEy4g1jHLuogUU00sKOA4TH_RGG8Rjg@z>
+Message-ID: <20091201053311.4fSz3pIJxJNd8-K_B6AUVitIpV0zTFMTMgZup-hUyXs@z>
 
-Dear Wu，
-     The demo board is ONU. It is used in EPON systerm.
-     I copy the cross-compilation to /opt,then modify CROSS_COMPILE
-=/opt/openwrt/kamikaze_7.09/staging_dir_mips/bin/mips-linux-uclibc- in
-mklzma.sh and Makefile.
-     Then make config,and compile kernel.
-     Use make command or sh mklzma.sh command can compile kernel.the same
-errors come when excute one of two commands
-
-Best Wishes
+Dear Wu,
+     I tried to add #include <asm-mips/ipmux.h> or extern __init
+opipmux_gel_init,but can not resolve these errors.
+Thanks,
 Jack Lu
-
 
 -----邮件原件-----
 发件人: Wu Zhangjin [mailto:wuzhangjin@gmail.com] 

@@ -1,126 +1,345 @@
-Received: from 60-248-150-25.HINET-IP.hinet.net ([60.248.150.25]:41294 "EHLO
-        dns.allplus-cn.com" rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org
-        with ESMTP id S1492070AbZLAFd3 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 1 Dec 2009 06:33:29 +0100
-From: "jack_lu" <jacklu@allplus-cn.com>
-References: <74D96A2497124516897C6F4D06D8B5AB@DELLPC> <1259644416.5139.11.camel@falcon.domain.org>
-In-Reply-To: <1259644416.5139.11.camel@falcon.domain.org>
-Subject: =?gb2312?B?tPC4tDogaGVsbG8hIGNhbiB5b3UgaGVscCBtZSBmb3IgY29tcGlsaQ==?=
-        =?gb2312?B?bmcgdGhlIGxpbnV4IGtlcm5lbD8=?=
-Date: Tue, 1 Dec 2009 13:33:11 +0800
-Message-ID: <505B44E810DF4EFDA65D25549FF81605@DELLPC>
+Received: from mail.hstx.com ([64.95.133.106]:9615 "EHLO mail.hstx.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1492435AbZLBLPT (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 2 Dec 2009 12:15:19 +0100
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="gb2312"
-Content-Transfer-Encoding: 8BIT
-Return-Path: <jacklu@allplus-cn.com>
+Content-Type: multipart/alternative;
+        boundary="----_=_NextPart_001_01CA7340.B5457A50"
+Subject: Reserved instruction in kernel code
+Date: Wed, 2 Dec 2009 11:15:06 -0000
+Message-ID: <C5BD21D6E1A3114C8765C8FBBD0087BA330A85@exchtxuk2.HSTX.global.vpn>
+From: "Ales Mulej" <Ales.Mulej@HSTX.com>
+Return-Path: <Ales.Mulej@HSTX.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: wuzhangjin@gmail.com
-Cc: linux-mips@linux-mips.org
-Message-ID: <20091201053311.4fSz3pIJxJNd8-K_B6AUVitIpV0zTFMTMgZup-hUyXs@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20091202111506.TCz_3eoGEXDQ6APxySBAYyqdno-adUETW1x0SnT65zk@z>
 
-Dear Wu,
-     I tried to add #include <asm-mips/ipmux.h> or extern __init
-opipmux_gel_init,but can not resolve these errors.
-Thanks,
-Jack Lu
+This is a multi-part message in MIME format.
 
------邮件原件-----
-发件人: Wu Zhangjin [mailto:wuzhangjin@gmail.com] 
-发送时间: 2009年12月1日 13:14
-收件人: jack_lu
-抄送: linux-mips@linux-mips.org
-主题: Re: hello! can you help me for compiling the linux kernel?
+------_=_NextPart_001_01CA7340.B5457A50
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2009-12-01 at 11:52 +0800, jack_lu wrote:
-> Dear Sir,
-> 　　hello! can you help me for compiling the linux kernel?
-> 　　Linux version is linux-2.6.21.5.
-> 　　CPU:mips
-> 　　Cross-compilation tools is eldk and openwrt file packages.
+Hi,
 
-Hello,
+=20
 
-Which board are you using? and did you try the corresponding defconfig
-file under arch/mips/configs/.
+I'm porting linux(2.6.31.6) to the Wintegra WINHDP2 refrence board.
+
+As a refrence I already have an old BSP from Wintegra based on kernel
+2.6.10.
+
+=20
+
+During the kernel start up process I receive following error:
+
+=20
+
+Reserved instruction in kernel code[#1]:
+
+Cpu 0
+
+$ 0   : 00000000 1000fc00 802be630 00000001
+
+$ 4   : 802be670 802be674 ffffffff 802f4d4c
+
+$ 8   : 1000fc01 1000001f 00000001 0000002b
+
+$12   : 00000000 000001f5 07a0d380 00000000
+
+$16   : 00000000 00000000 00000000 1000fc00
+
+$20   : 802e9674 bd030f04 3e490000 00000a72
+
+$24   : 00000008 8000167c                 =20
+
+$28   : 802ba000 802bbd30 ffffffff 802f4d4c
+
+Hi    : 000000fb
+
+Lo    : 00000001
+
+epc   : 801013a0 handle_ri_int+0x18/0x38
+
+    Not tainted
+
+ra    : 802f4d4c __log_buf+0x0/0x20000
+
+Status: 1000fc03    KERNEL EXL IE=20
+
+Cause : 50808000
+
+PrId  : 00019365 (MIPS 24Kc)
+
+Modules linked in:
+
+Process swapper (pid: 0, threadinfo=3D802ba000, task=3D802bc000,
+tls=3D00000000)
+
+Stack : 1000fc00 1000001f 00000001 0000002b 00000000 000001f5 00000000
+1000fc00
+
+        802be630 00000001 802be670 802be674 ffffffff 802f4d4c 1000fc00
+1000001f
+
+        00000001 0000002b 00000000 000001f5 07a0d380 00000000 00000000
+00000000
+
+        00000000 1000fc00 802e9674 bd030f04 3e490000 00000a72 00000008
+8000167c
+
+        802bbe94 802a2954 802ba000 802bbde0 ffffffff 802f4d4c 1000fc02
+000000fb
+
+        ...
+
+Call Trace:
+
+[<801013a0>] handle_ri_int+0x18/0x38
+
+=20
+
+=20
+
+Code: 01094025  3908001e  40886000 <00000040> 00000040  00000040
+000000c0  03a02021  3c1f8010=20
+
+Disabling lock debugging due to kernel taint
+
+Kernel panic - not syncing: Attempted to kill the idle task!
+
+=20
+
+=20
+
+Does anybody know where is the problem?
+
+I suspect, that the problem is in my interrupt routine, because I
+receive this error as soon as the tick timer start's up.
+
+=20
 
 Regards,
-	Wu zhangjin
 
-> 　　Errors are the followings.
-> 　　init/built-in.o: In function `init':
-> 　　init/main.c:833: undefined reference to `opipmux_gel_init'
-> 　　init/main.c:833: relocation truncated to fit: R_MIPS_26 against
-`opipmux_gel_init'
-> 　　init/main.c:835: undefined reference to `ip_auto_config'
-> 　　init/main.c:835: relocation truncated to fit: R_MIPS_26 against
-`ip_auto_config'
-> 　　init/built-in.o: In function `start_kernel':
-> 　　init/main.c:525: undefined reference to `setup_prom_printf'
-> 　　init/main.c:525: relocation truncated to fit: R_MIPS_26 against
-`setup_prom_printf'
-> 　　init/main.c:527: undefined reference to `prom_printf'
-> 　　init/main.c:527: relocation truncated to fit: R_MIPS_26 against
-`prom_printf'
-> 　　init/main.c:530: undefined reference to `prom_printf'
-> 　　init/main.c:530: relocation truncated to fit: R_MIPS_26 against
-`prom_printf'
-> 　　arch/mips/kernel/built-in.o: In function `test_setdata':
-> 　　arch/mips/kernel/syscall.c:461: undefined reference to
-`set_ipmux_el_tx_buf_data'
-> 　　arch/mips/kernel/syscall.c:461: relocation truncated to fit: R_MIPS_26
-against `set_ipmux_el_tx_buf_data'
-> 　　arch/mips/kernel/built-in.o: In function `test_getdata':
-> 　　arch/mips/kernel/syscall.c:453: undefined reference to
-`get_ipmux_el_rx_buf_data'
-> 　　arch/mips/kernel/syscall.c:453: relocation truncated to fit: R_MIPS_26
-against `get_ipmux_el_rx_buf_data'
-> 　　arch/mips/kernel/built-in.o: In function `test_waitinterrupt':
-> 　　arch/mips/kernel/syscall.c:446: undefined reference to
-`wait_for_host_test_interrupt'
-> 　　arch/mips/kernel/syscall.c:446: relocation truncated to fit: R_MIPS_26
-against `wait_for_host_test_interrupt'
-> 　　kernel/built-in.o: In function `free_module':
-> 　　kernel/module.c:1231: undefined reference to `kfree1'
-> 　　kernel/module.c:1231: relocation truncated to fit: R_MIPS_26 against
-`kfree1'
-> 　　drivers/built-in.o: In function `snapshot_map':
-> 　　drivers/md/dm-snap.c:900: undefined reference to `__cmpdi2'
-> 　　drivers/md/dm-snap.c:900: relocation truncated to fit: R_MIPS_26
-against `__cmpdi2'
-> 　　make: *** [.tmp_vmlinux1] Error 1
-> 　　make: *** No rule to make target `../vmlinux', needed by `piggy.lzma'.
-Stop.
-> 　　copyed to ../wrt_uImage
-> 　　cp: cannot stat `uImageLzma': No such file or directory
-> 　　ls: cannot access ../wrt_uImage: No such file or directory
-> 　　===============================================================
-> 　　    output files:                           
-> 　　         wrt_uImage : the kernel image      
-> 　　
-> 　　
-> 　　Thanks &Best Wishes,
-> 　　Jack_Lu(鲁红刚)
->    益满颖贸易（上海）有限公司
->    上海市愚园路168号环球大厦A座2101室
->    电话：+86 21 62495328/29/30/31 分机：820
->    传真：+86 21 62490538
->    MSN: luhongang@163.com
-> 
-> 　　
-> 
-> 
+Ales
+
+=20
+
+=20
+
+=20
 
 
+------_=_NextPart_001_01CA7340.B5457A50
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 12 (filtered medium)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Calibri","sans-serif";
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:70.85pt 70.85pt 70.85pt 70.85pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext=3D"edit">
+  <o:idmap v:ext=3D"edit" data=3D"1" />
+ </o:shapelayout></xml><![endif]-->
+</head>
 
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+<body lang=3DSL link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal>Hi,<o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal>I'm porting linux(2.6.31.6) to the Wintegra WINHDP2 =
+refrence
+board.<o:p></o:p></p>
+
+<p class=3DMsoNormal>As a refrence I already have an old BSP from =
+Wintegra based
+on kernel 2.6.10.<o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal>During the kernel start up process I receive =
+following
+error:<o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal>Reserved instruction in kernel =
+code[#1]:<o:p></o:p></p>
+
+<p class=3DMsoNormal>Cpu 0<o:p></o:p></p>
+
+<p class=3DMsoNormal>$ 0&nbsp;&nbsp; : 00000000 1000fc00 802be630 =
+00000001<o:p></o:p></p>
+
+<p class=3DMsoNormal>$ 4&nbsp;&nbsp; : 802be670 802be674 ffffffff =
+802f4d4c<o:p></o:p></p>
+
+<p class=3DMsoNormal>$ 8&nbsp;&nbsp; : 1000fc01 1000001f 00000001 =
+0000002b<o:p></o:p></p>
+
+<p class=3DMsoNormal>$12&nbsp;&nbsp; : 00000000 000001f5 07a0d380 =
+00000000<o:p></o:p></p>
+
+<p class=3DMsoNormal>$16&nbsp;&nbsp; : 00000000 00000000 00000000 =
+1000fc00<o:p></o:p></p>
+
+<p class=3DMsoNormal>$20&nbsp;&nbsp; : 802e9674 bd030f04 3e490000 =
+00000a72<o:p></o:p></p>
+
+<p class=3DMsoNormal>$24&nbsp;&nbsp; : 00000008
+8000167c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></p>
+
+<p class=3DMsoNormal>$28&nbsp;&nbsp; : 802ba000 802bbd30 ffffffff =
+802f4d4c<o:p></o:p></p>
+
+<p class=3DMsoNormal>Hi&nbsp;&nbsp;&nbsp; : 000000fb<o:p></o:p></p>
+
+<p class=3DMsoNormal>Lo&nbsp;&nbsp;&nbsp; : 00000001<o:p></o:p></p>
+
+<p class=3DMsoNormal>epc&nbsp;&nbsp; : 801013a0 =
+handle_ri_int+0x18/0x38<o:p></o:p></p>
+
+<p class=3DMsoNormal>&nbsp;&nbsp;&nbsp; Not tainted<o:p></o:p></p>
+
+<p class=3DMsoNormal>ra&nbsp;&nbsp;&nbsp; : 802f4d4c =
+__log_buf+0x0/0x20000<o:p></o:p></p>
+
+<p class=3DMsoNormal>Status: 1000fc03&nbsp;&nbsp;&nbsp; KERNEL EXL IE =
+<o:p></o:p></p>
+
+<p class=3DMsoNormal>Cause : 50808000<o:p></o:p></p>
+
+<p class=3DMsoNormal>PrId&nbsp; : 00019365 (MIPS 24Kc)<o:p></o:p></p>
+
+<p class=3DMsoNormal>Modules linked in:<o:p></o:p></p>
+
+<p class=3DMsoNormal>Process swapper (pid: 0, threadinfo=3D802ba000, =
+task=3D802bc000,
+tls=3D00000000)<o:p></o:p></p>
+
+<p class=3DMsoNormal>Stack : 1000fc00 1000001f 00000001 0000002b =
+00000000
+000001f5 00000000 1000fc00<o:p></o:p></p>
+
+<p class=3DMsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 802be630 =
+00000001
+802be670 802be674 ffffffff 802f4d4c 1000fc00 1000001f<o:p></o:p></p>
+
+<p class=3DMsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 00000001 =
+0000002b
+00000000 000001f5 07a0d380 00000000 00000000 00000000<o:p></o:p></p>
+
+<p class=3DMsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 00000000 =
+1000fc00
+802e9674 bd030f04 3e490000 00000a72 00000008 8000167c<o:p></o:p></p>
+
+<p class=3DMsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 802bbe94 =
+802a2954
+802ba000 802bbde0 ffffffff 802f4d4c 1000fc02 000000fb<o:p></o:p></p>
+
+<p class=3DMsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+...<o:p></o:p></p>
+
+<p class=3DMsoNormal>Call Trace:<o:p></o:p></p>
+
+<p class=3DMsoNormal>[&lt;801013a0&gt;] =
+handle_ri_int+0x18/0x38<o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal>Code: 01094025&nbsp; 3908001e&nbsp; 40886000
+&lt;00000040&gt; 00000040&nbsp; 00000040&nbsp; 000000c0&nbsp; =
+03a02021&nbsp;
+3c1f8010 <o:p></o:p></p>
+
+<p class=3DMsoNormal>Disabling lock debugging due to kernel =
+taint<o:p></o:p></p>
+
+<p class=3DMsoNormal>Kernel panic - not syncing: Attempted to kill the =
+idle task!<o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal>Does anybody know where is the =
+problem?<o:p></o:p></p>
+
+<p class=3DMsoNormal>I suspect, that the problem is in my interrupt =
+routine,
+because I receive this error as soon as the tick timer start's =
+up.<o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal>Regards,<o:p></o:p></p>
+
+<p class=3DMsoNormal>Ales<o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01CA7340.B5457A50--

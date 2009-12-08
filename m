@@ -1,175 +1,189 @@
-Received: from mail-pz0-f197.google.com ([209.85.222.197]:48143 "EHLO
-        mail-pz0-f197.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1493372AbZLDPR7 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Dec 2009 16:17:59 +0100
-Received: by pzk35 with SMTP id 35so2409006pzk.22
-        for <linux-mips@linux-mips.org>; Fri, 04 Dec 2009 07:17:53 -0800 (PST)
-Subject: Re: [HELP] is it some issue about HIGHMEM for mips32?
-From: "Figo.zhang" <figo1802@gmail.com>
-In-Reply-To: <1259935679.8314.0.camel@falcon.domain.org>
-References: <1259935069.2070.8.camel@myhost>
-         <1259935679.8314.0.camel@falcon.domain.org>
+Received: from mail-gx0-f210.google.com ([209.85.217.210]:38967 "EHLO
+        mail-gx0-f210.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491037AbZLHG57 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Dec 2009 07:57:59 +0100
+Subject: Re: [PATCH v7 4/8] Loongson: YeeLoong: add battery driver
+From: Wu Zhangjin <wuzhangjin@gmail.com>
+Reply-To: wuzhangjin@gmail.com
+In-Reply-To: <059fa216d70771a6341edb2db4cc559e958273e9.1259932036.git.wuzhangjin@gmail.com>
+References: <cover.1259932036.git.wuzhangjin@gmail.com>
+         <059fa216d70771a6341edb2db4cc559e958273e9.1259932036.git.wuzhangjin@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 04 Dec 2009 23:20:07 +0800
-Message-ID: <1259940007.2070.48.camel@myhost>
+Date: Tue, 08 Dec 2009 14:57:17 +0800
+Message-ID: <1260255437.3315.35.camel@falcon.domain.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-Path: <figo1802@gmail.com>
+Return-Path: <wuzhangjin@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: wuzhangjin@gmail.com
-Cc: rostedt@goodmis.org, zhangfx@lemote.com, "Thomas.Koeller" <Thomas.Koeller@baslerweb.com>, linux-mips@linux-mips.org
-Message-ID: <20091204152007.JcuFCM2RrfBj9ZE6SyXML86_G4TaBZhSW91uZN3cmmw@z>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: akpm@linux-foundation.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "Rafael J. Wysocki" <rjw@sisk.pl>, zhangfx@lemote.com, Stephen Rothwell <sfr@canb.auug.org.au>, linux-laptop@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20091208065717.Zb_L2uZPFHkE-JxzkbnwVWva2B9n89xmIRu1kKFr86E@z>
 
-On Fri, 2009-12-04 at 22:07 +0800, Wu Zhangjin wrote:
-> On Fri, 2009-12-04 at 21:57 +0800, Figo.zhang wrote:
-> > hi,
-> > i am using 24KC soc, and linux2.6.21.5 kernel and set CONFIG_HIGHMEM
-> > enable. if my realy physic RAM is not more than HIGHMEM, such as only
-> > 32MB, it is some issue about kernel, i dont know how to fix it? I try
-> > linux-2.6.31.4, it is no this issue, is it some change , how to fix it?
-> 
-> Hello, here is the unique commit about the higmem I can found:
-> 
-> commit bb86bf28aec6d0a207ae09f38a43e94133d4d6db
-> Author: Ralf Baechle <ralf@linux-mips.org>
-> Date:   Sat Apr 25 11:25:34 2009 +0200
-> 
->     MIPS: Fix highmem.
->     
->     Commit 351336929ccf222ae38ff0cb7a8dd5fd5c6236a0 (kernel.org) rsp.
->     b3594a089f1c17ff919f8f78505c3f20e1f6f8ce (linux-mips.org):
->     
->     > From: Chris Dearman <chris@mips.com>
->     > Date: Wed, 19 Sep 2007 00:58:24 +0100
->     > Subject: [PATCH] [MIPS] Allow setting of the cache attribute at
-> run time.
->     >
->     > Slightly tacky, but there is a precedent in the sparc archirecture
-> code.
->     
->     introduces the variable _page_cachable_default, which defaults to
-> zero and.
->     is used to create the prototype PTE for __kmap_atomic in
->     arch/mips/mm/init.c:kmap_init before initialization in
->     arch/mips/mm/c-r4k.c:coherency_setup, so the default value of 0 will
-> be
->     used as the CCA of kmap atomic pages which on many processors is not
-> a
->     defined CCA value and may result in writes to kmap_atomic pages
-> getting
->     corrupted.  Debugged by Jon Fraser (jfraser@broadcom.com).
-> 
-> Could you please try to apply it, and test it again?
+Hi, Pavel
 
-hi , i have apply the patch by manual,
+Seems you have reviewed this patch, can I get your Acked-by:?
 
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=bb86bf28aec6d0a207ae09f38a43e94133d4d6db
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=351336929ccf222ae38ff0cb7a8dd5fd5c6236a0
- 
+Thanks!
+	Wu Zhangjin
 
-but the issue still. so what is the problem?
-
-Best,
-Figo.zhang
-
-
+On Fri, 2009-12-04 at 21:34 +0800, Wu Zhangjin wrote:
+> From: Wu Zhangjin <wuzhangjin@gmail.com>
 > 
-> >  
-> > here is my kernel log:
-> > Linux version 2.6.21.5 (figo@myhost) (gcc version 4.1.2) #22 Fri Dec 4
-> > 10:33:25 CST 2009
-> > CPU revision is: 00019655
-> > Determined physical RAM map:
-> > memory: start:0x0,size=0x2000000,type=0x1
-> > (usable)
-> > User-defined physical RAM map:
-> > memory: start:0x0,size=0x2000000,type=0x1
-> > (usable)
-> > Initrd not found or empty - disabling initrd
-> > Built 1 zonelists.  Total pages: 8128
-> > Kernel command line: console=ttyS0,115200 rdinit=/linuxrc mem=32M nofpu
-> > mac=00:aa:aa:bb:bb:99
-> > Updated MAC address from u-boot: 8024ff24M
-> > Primary instruction cache 32kB, physically tagged, 4-way, linesize 32
-> > bytes.
-> > Primary data cache 32kB, 4-way, linesize 32 bytes.
-> > Synthesized TLB refill handler (20 instructions).
-> > Synthesized TLB load handler fastpath (32 instructions).
-> > Synthesized TLB store handler fastpath (32 instructions).
-> > Synthesized TLB modify handler fastpath (31 instructions).
-> > Cache parity protection disabled
-> > arch/mips/mach-opulan/optrann/irq.c,arch_init_irq
-> > PID hash table entries: 128 (order: 7, 512 bytes)
-> > Using 150.000 MHz high precision timer.
-> > arch/mips/mach-opulan/optrann/time.c,plat_timer_setup
-> > Dentry cache hash table entries: 4096 (order: 2, 16384 bytes)
-> > Inode-cache hash table entries: 2048 (order: 1, 8192 bytes)
-> > Memory: 29012k/32768k available (1798k kernel code, 3756k reserved, 369k
-> > data, 900k init, 0k highmem)
-> > Mount-cache hash table entries: 512
-> > NET: Registered protocol family 16
-> > Generic PHY: Registered new driver
-> > Time: MIPS clocksource has been installed.
-> > NET: Registered protocol family 2
-> > IP route cache hash table entries: 1024 (order: 0, 4096 bytes)
-> > TCP established hash table entries: 1024 (order: 1, 8192 bytes)
-> > TCP bind hash table entries: 1024 (order: 0, 4096 bytes)
-> > TCP: Hash tables configured (established 1024 bind 1024)
-> > TCP reno registered
-> > Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
-> > io scheduler noop registered
-> > io scheduler anticipatory registered (default)
-> > io scheduler deadline registered
-> > io scheduler cfq registered
-> > Serial: optrann serial driver $Revision: 1.0
-> > uart_register_driver finished
-> > ttyS0 at MMIO map 0xbf004000 mem 0xbf004000 (irq = 23) is a UART 0
-> > RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
-> > loop: loaded (max 8 devices)
-> > nbd: registered device at major 43
-> > optrann_fe_ether Ethernet driver, V1.00
-> > FE:dmac_regs =0xbf014000,msg_regs=0xbf028000, irq=26
-> > FE MAC: 00:aa:aa:bb:bb:99
-> > TCP cubic registered
-> > Freeing unused kernel memory: 900k freed
-> > ramdisk_execute_command=/linuxrc, execute_command=<NULL>
-> > Bad pte = 0135c79f, process = linuxrc, vm_flags = 100073, vaddr =
-> > 2aaae000
-> > Call Trace:
-> > [<80048d70>] dump_stack+0x8/0x34
-> > [<8009ebb0>] vm_normal_page+0x68/0x90
-> > [<8009f850>] unmap_vmas+0x1e8/0x5e8
-> > [<800a3428>] unmap_region+0x9c/0x184
-> > [<800a4268>] do_munmap+0x1b0/0x25c
-> > [<800a4358>] sys_munmap+0x44/0x70
-> > [<8004af40>] stack_done+0x20/0x3c
-> > Bad pte = 0135e79f, process = linuxrc, vm_flags = 100073, vaddr =
-> > 2aaae000
-> > Call Trace:
-> > [<80048d70>] dump_stack+0x8/0x34
-> > [<8009ebb0>] vm_normal_page+0x68/0x90
-> > [<8009f850>] unmap_vmas+0x1e8/0x5e8
-> > [<800a3428>] unmap_region+0x9c/0x184
-> > [<800a4268>] do_munmap+0x1b0/0x25c
-> > [<800a4358>] sys_munmap+0x44/0x70
-> > [<8004af40>] stack_done+0x20/0x3c
-> > Bad pte = 0026079f, process = linuxrc, vm_flags = 100073, vaddr =
-> > 2aaae000
-> > Call Trace:
-> > [<80048d70>] dump_stack+0x8/0x34
-> > [<8009ebb0>] vm_normal_page+0x68/0x90
-> > [<8009f850>] unmap_vmas+0x1e8/0x5e8
-> > [<800a3428>] unmap_region+0x9c/0x184
-> > [<800a4268>] do_munmap+0x1b0/0x25c
-> > [<800a4358>] sys_munmap+0x44/0x70
-> > [<8004af40>] stack_done+0x20/0x3c
-> >  
-> > .........
-> >  
-> > 
-> > Best,
-> > Figo.zhang
-> > 
+> This patch adds APM emulated Battery Driver, it provides standard
+> interface(/proc/apm) for user-space applications(e.g. kpowersave,
+> gnome-power-manager) to manage the battery.
 > 
+> Signed-off-by: Wu Zhangjin <wuzhangjin@gmail.com>
+> ---
+>  drivers/platform/mips/Kconfig           |    2 +
+>  drivers/platform/mips/yeeloong_laptop.c |  104 +++++++++++++++++++++++++++++++
+>  2 files changed, 106 insertions(+), 0 deletions(-)
 > 
+> diff --git a/drivers/platform/mips/Kconfig b/drivers/platform/mips/Kconfig
+> index f7a3705..0c6b5ad 100644
+> --- a/drivers/platform/mips/Kconfig
+> +++ b/drivers/platform/mips/Kconfig
+> @@ -18,6 +18,8 @@ config LEMOTE_YEELOONG2F
+>  	tristate "Lemote YeeLoong Laptop"
+>  	depends on LEMOTE_MACH2F
+>  	select BACKLIGHT_CLASS_DEVICE
+> +	select SYS_SUPPORTS_APM_EMULATION
+> +	select APM_EMULATION
+>  	default m
+>  	help
+>  	  YeeLoong netbook is a mini laptop made by Lemote, which is basically
+> diff --git a/drivers/platform/mips/yeeloong_laptop.c b/drivers/platform/mips/yeeloong_laptop.c
+> index fbc4ebb..729e368 100644
+> --- a/drivers/platform/mips/yeeloong_laptop.c
+> +++ b/drivers/platform/mips/yeeloong_laptop.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/backlight.h>	/* for backlight subdriver */
+>  #include <linux/fb.h>
+> +#include <linux/apm-emulation.h>/* for battery subdriver */
+>  
+>  #include <ec_kb3310b.h>
+>  
+> @@ -83,6 +84,106 @@ static void yeeloong_backlight_exit(void)
+>  	}
+>  }
+>  
+> +/* battery subdriver */
+> +
+> +static void get_fixed_battery_info(void)
+> +{
+> +	int design_cap, full_charged_cap, design_vol, vendor, cell_count;
+> +
+> +	design_cap = (ec_read(REG_BAT_DESIGN_CAP_HIGH) << 8)
+> +	    | ec_read(REG_BAT_DESIGN_CAP_LOW);
+> +	full_charged_cap = (ec_read(REG_BAT_FULLCHG_CAP_HIGH) << 8)
+> +	    | ec_read(REG_BAT_FULLCHG_CAP_LOW);
+> +	design_vol = (ec_read(REG_BAT_DESIGN_VOL_HIGH) << 8)
+> +	    | ec_read(REG_BAT_DESIGN_VOL_LOW);
+> +	vendor = ec_read(REG_BAT_VENDOR);
+> +	cell_count = ec_read(REG_BAT_CELL_COUNT);
+> +
+> +	if (vendor != 0) {
+> +		pr_info("battery vendor(%s), cells count(%d), "
+> +		       "with designed capacity(%d),designed voltage(%d),"
+> +		       " full charged capacity(%d)\n",
+> +		       (vendor ==
+> +			FLAG_BAT_VENDOR_SANYO) ? "SANYO" : "SIMPLO",
+> +		       (cell_count == FLAG_BAT_CELL_3S1P) ? 3 : 6,
+> +		       design_cap, design_vol,
+> +		       full_charged_cap);
+> +	}
+> +}
+> +
+> +#define APM_CRITICAL		5
+> +
+> +static void get_power_status(struct apm_power_info *info)
+> +{
+> +	unsigned char bat_status;
+> +
+> +	info->battery_status = APM_BATTERY_STATUS_UNKNOWN;
+> +	info->battery_flag = APM_BATTERY_FLAG_UNKNOWN;
+> +	info->units = APM_UNITS_MINS;
+> +
+> +	info->battery_life = (ec_read(REG_BAT_RELATIVE_CAP_HIGH) << 8) |
+> +		(ec_read(REG_BAT_RELATIVE_CAP_LOW));
+> +
+> +	info->ac_line_status = (ec_read(REG_BAT_POWER) & BIT_BAT_POWER_ACIN) ?
+> +		APM_AC_ONLINE : APM_AC_OFFLINE;
+> +
+> +	bat_status = ec_read(REG_BAT_STATUS);
+> +
+> +	if (!(bat_status & BIT_BAT_STATUS_IN)) {
+> +		/* no battery inserted */
+> +		info->battery_status = APM_BATTERY_STATUS_NOT_PRESENT;
+> +		info->battery_flag = APM_BATTERY_FLAG_NOT_PRESENT;
+> +		info->time = 0x00;
+> +		return;
+> +	}
+> +
+> +	/* adapter inserted */
+> +	if (info->ac_line_status == APM_AC_ONLINE) {
+> +		if (!(bat_status & BIT_BAT_STATUS_FULL)) {
+> +			/* battery is not fully charged */
+> +			info->battery_status = APM_BATTERY_STATUS_CHARGING;
+> +			info->battery_flag = APM_BATTERY_FLAG_CHARGING;
+> +		} else {
+> +			/* battery is fully charged */
+> +			info->battery_status = APM_BATTERY_STATUS_HIGH;
+> +			info->battery_flag = APM_BATTERY_FLAG_HIGH;
+> +			info->battery_life = 100;
+> +		}
+> +	} else {
+> +		/* battery is too low */
+> +		if (bat_status & BIT_BAT_STATUS_LOW) {
+> +			info->battery_status = APM_BATTERY_STATUS_LOW;
+> +			info->battery_flag = APM_BATTERY_FLAG_LOW;
+> +			if (info->battery_life <= APM_CRITICAL) {
+> +				/* we should power off the system now */
+> +				info->battery_status =
+> +					APM_BATTERY_STATUS_CRITICAL;
+> +				info->battery_flag = APM_BATTERY_FLAG_CRITICAL;
+> +			}
+> +		} else {
+> +			/* assume the battery is high enough. */
+> +			info->battery_status = APM_BATTERY_STATUS_HIGH;
+> +			info->battery_flag = APM_BATTERY_FLAG_HIGH;
+> +		}
+> +	}
+> +	info->time = ((info->battery_life - 3) * 54 + 142) / 60;
+> +}
+> +
+> +static int yeeloong_battery_init(void)
+> +{
+> +	get_fixed_battery_info();
+> +
+> +	apm_get_power_status = get_power_status;
+> +
+> +	return 0;
+> +}
+> +
+> +static void yeeloong_battery_exit(void)
+> +{
+> +	if (apm_get_power_status == get_power_status)
+> +		apm_get_power_status = NULL;
+> +}
+> +
+>  static struct platform_device_id platform_device_ids[] = {
+>  	{
+>  		.name = "yeeloong_laptop",
+> @@ -120,11 +221,14 @@ static int __init yeeloong_init(void)
+>  		return ret;
+>  	}
+>  
+> +	yeeloong_battery_init();
+> +
+>  	return 0;
+>  }
+>  
+>  static void __exit yeeloong_exit(void)
+>  {
+> +	yeeloong_battery_exit();
+>  	yeeloong_backlight_exit();
+>  	platform_driver_unregister(&platform_driver);
+>  

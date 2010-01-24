@@ -1,89 +1,54 @@
-Received: from mga14.intel.com ([143.182.124.37]:10859 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1492403Ab0AVTyk (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 22 Jan 2010 20:54:40 +0100
-Message-ID: <20100122033004.193166010@intel.com>
-Date: Fri, 22 Jan 2010 11:21:03 +0800
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH 1/3] resources: introduce generic page_is_ram()
-References: <20100122032102.137106635@intel.com>
-Content-Disposition: inline; filename=page-is-ram.patch
+Received: from bby1mta03.pmc-sierra.com ([216.241.235.118]:57072 "EHLO
+        bby1mta03.pmc-sierra.bc.ca" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1492812Ab0AXR6e convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 24 Jan 2010 18:58:34 +0100
+Received: from bby1mta03.pmc-sierra.bc.ca (localhost.pmc-sierra.bc.ca [127.0.0.1])
+        by localhost (Postfix) with SMTP id 5A6F21070072
+        for <linux-mips@linux-mips.org>; Sun, 24 Jan 2010 09:58:23 -0800 (PST)
+Received: from bby1exg02.pmc_nt.nt.pmc-sierra.bc.ca (BBY1EXG02.pmc-sierra.bc.ca [216.241.231.167])
+        by bby1mta03.pmc-sierra.bc.ca (Postfix) with SMTP id 51D8D1070071
+        for <linux-mips@linux-mips.org>; Sun, 24 Jan 2010 09:58:23 -0800 (PST)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: 1 GB RAM with RM9000 SOC
+Date: Sun, 24 Jan 2010 09:58:21 -0800
+Message-ID: <A7DEA48C84FD0B48AAAE33F328C020140474B674@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
+In-Reply-To: <20100124002352.GB3251@linux-mips.org>
+References: <4B56475F.8070608@gmail.com> <20100124002352.GB3251@linux-mips.org>
+From: "Anoop P.A." <Anoop_P.A@pmc-sierra.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Chen Liqin <liqin.chen@sunplusct.com>, Lennox Wu <lennox.wu@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, =?UTF-8?q?Am=C3=A9rico=20Wang?= <xiyou.wangcong@gmail.com>, linux-mips@linux-mips.org, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Yinghai Lu <yinghai@kernel.org>, Wu Fengguang <fengguang.wu@intel.com>, x86@kernel.org, LKML <linux-kernel@vger.kernel.org>, Andi Kleen <andi@firstfloor.org>, shaohui.zheng@intel.com
-Message-ID: <20100122032103.Pg5wFgnyTbnuSRxBczKsduG4iO4qUWwCg4yURxla_MM@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20100124175821.7XV7eI-kHdvoJ7b6N9F4Ih8wcBMN5tuxpJxGZJbxB00@z>
 
-It's based on walk_system_ram_range(), for archs that don't have
-their own page_is_ram().
+Hi list,
 
-The static verions in MIPS and SCORE are also made global.
+ 
 
-CC: Chen Liqin <liqin.chen@sunplusct.com>
-CC: Lennox Wu <lennox.wu@gmail.com>
-CC: Ralf Baechle <ralf@linux-mips.org>
-CC: Américo Wang <xiyou.wangcong@gmail.com>
-CC: linux-mips@linux-mips.org
-CC: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com> 
-CC: Yinghai Lu <yinghai@kernel.org>
-Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
----
- arch/mips/mm/init.c    |    2 +-
- arch/score/mm/init.c   |    2 +-
- include/linux/ioport.h |    2 ++
- kernel/resource.c      |   11 +++++++++++
- 4 files changed, 15 insertions(+), 2 deletions(-)
+Any of you successfully used >512MB ram with MIPS SOC's.  I have a
+requirement where I have to use 1 GB ram with RM9000 based SOC. 
 
---- linux-mm.orig/kernel/resource.c	2010-01-22 11:20:34.000000000 +0800
-+++ linux-mm/kernel/resource.c	2010-01-22 11:20:35.000000000 +0800
-@@ -327,6 +327,17 @@ int walk_system_ram_range(unsigned long 
+I have enabled 64 Bit support and so far it is working with 512 MB of
+RAM. How ever if I increase memory beyond 512MB I am getting kernel
+panic.
+
  
- #endif
+
+ I am adding memory region from 0x00 add_memory_region(0 ,0x40000000 ,
+BOOT_MEM_RAM). (PMON maps RAM from 0x0 to 0x40000000)  Am I wrong here?
+
  
-+#define PAGE_IS_RAM	24
-+static int __is_ram(unsigned long pfn, unsigned long nr_pages, void *arg)
-+{
-+	return PAGE_IS_RAM;
-+}
-+int __attribute__((weak)) page_is_ram(unsigned long pfn)
-+{
-+	return PAGE_IS_RAM == walk_system_ram_range(pfn, 1, NULL, __is_ram);
-+}
-+#undef PAGE_IS_RAM
-+
- /*
-  * Find empty slot in the resource tree given range and alignment.
-  */
---- linux-mm.orig/include/linux/ioport.h	2010-01-22 11:20:34.000000000 +0800
-+++ linux-mm/include/linux/ioport.h	2010-01-22 11:20:35.000000000 +0800
-@@ -191,5 +191,7 @@ extern int
- walk_system_ram_range(unsigned long start_pfn, unsigned long nr_pages,
- 		void *arg, int (*func)(unsigned long, unsigned long, void *));
+
+It will be great if you can give some suggestion /point me to a working
+implementation. I am using 2.6.18 kernel.
+
  
-+extern int page_is_ram(unsigned long pfn);
-+
- #endif /* __ASSEMBLY__ */
- #endif	/* _LINUX_IOPORT_H */
---- linux-mm.orig/arch/score/mm/init.c	2010-01-22 11:20:34.000000000 +0800
-+++ linux-mm/arch/score/mm/init.c	2010-01-22 11:20:35.000000000 +0800
-@@ -59,7 +59,7 @@ static unsigned long setup_zero_page(voi
- }
- 
- #ifndef CONFIG_NEED_MULTIPLE_NODES
--static int __init page_is_ram(unsigned long pagenr)
-+int page_is_ram(unsigned long pagenr)
- {
- 	if (pagenr >= min_low_pfn && pagenr < max_low_pfn)
- 		return 1;
---- linux-mm.orig/arch/mips/mm/init.c	2010-01-22 11:20:34.000000000 +0800
-+++ linux-mm/arch/mips/mm/init.c	2010-01-22 11:20:35.000000000 +0800
-@@ -298,7 +298,7 @@ void __init fixrange_init(unsigned long 
- }
- 
- #ifndef CONFIG_NEED_MULTIPLE_NODES
--static int __init page_is_ram(unsigned long pagenr)
-+int page_is_ram(unsigned long pagenr)
- {
- 	int i;
- 
+
+Thanks
+
+Anoop

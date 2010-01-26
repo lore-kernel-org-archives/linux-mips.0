@@ -1,52 +1,68 @@
-Received: from mail-yw0-f182.google.com ([209.85.211.182]:35859 "EHLO
-        mail-yw0-f182.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1493394Ab0AZSM7 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 26 Jan 2010 19:12:59 +0100
-Subject: Re: [PATCH -queue v3] MIPS: Cleanup the debugging of compressed
- kernel support
-From: Wu Zhangjin <wuzhangjin@gmail.com>
-Reply-To: wuzhangjin@gmail.com
-In-Reply-To: <f861ec6f1001261007k4f71244fqcc92e2b6b1c9234c@mail.gmail.com>
-References: <cf2781a56090637044a5ad3837caef468a674ee4.1264524254.git.wuzhangjin@gmail.com>
-         <f861ec6f1001261007k4f71244fqcc92e2b6b1c9234c@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 27 Jan 2010 02:06:48 +0800
-Message-ID: <1264529208.11605.3.camel@falcon>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from gv-out-0910.google.com ([216.239.58.185]:25046 "EHLO
+        gv-out-0910.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1493424Ab0AZSks convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 26 Jan 2010 19:40:48 +0100
+Received: by gv-out-0910.google.com with SMTP id r4so349419gve.2
+        for <linux-mips@linux-mips.org>; Tue, 26 Jan 2010 10:40:47 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <f861ec6f1001260958n5d011155p8dd95346b6e57239@mail.gmail.com>
+References: <1264527242-9214-1-git-send-email-manuel.lauss@gmail.com>
+         <4B5F29EE.1060906@caviumnetworks.com>
+         <f861ec6f1001260958n5d011155p8dd95346b6e57239@mail.gmail.com>
+Date: Tue, 26 Jan 2010 19:40:47 +0100
+Message-ID: <f861ec6f1001261040k79588f8fy9221ac31cdb3064b@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Alchemy: fix dbdma ring destruction memory
+        debugcheck.
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20100126180648.3AOrlC1byr-FmXrs4OqiE3KpcPRVceVeAKd9wTJv1sA@z>
+To: David Daney <ddaney@caviumnetworks.com>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
+Message-ID: <20100126184047.xTXuGYLPhpFKbjqZ5fLxWzXtxoL8D941ESl8blXcQzg@z>
 
-On Tue, 2010-01-26 at 19:07 +0100, Manuel Lauss wrote:
-> Hi!
-> 
-> On Tue, Jan 26, 2010 at 6:01 PM, Wu Zhangjin <wuzhangjin@gmail.com> wrote:
-> > From: Wu Zhangjin <wuzhangjin@gmail.com>
-> >
-> > --- a/arch/mips/boot/compressed/Makefile
-> > +++ b/arch/mips/boot/compressed/Makefile
-> > @@ -32,7 +32,9 @@ KBUILD_AFLAGS := $(LINUXINCLUDE) $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
-> >
-> >  obj-y := $(obj)/head.o $(obj)/decompress.o $(obj)/dbg.o
-> >
-> > +ifdef DEBUG_ZBOOT
-> 
-> The above doesn't work in my testing, but this does:
-> ifeq ($(CONFIG_DEBUG_ZBOOT),y)
+David,
 
-oh, my god, I have forgotten the prefix CONFIG_, perhaps Ralf will help to fix it ;)
+On Tue, Jan 26, 2010 at 6:58 PM, Manuel Lauss
+<manuel.lauss@googlemail.com> wrote:
+> On Tue, Jan 26, 2010 at 6:44 PM, David Daney <ddaney@caviumnetworks.com> wrote:
+>> Manuel Lauss wrote:
+>>>
+>>> DBDMA descriptors need to be located at 32-byte aligned addresses;
+>>> however kmalloc rarely delivers such addresses.  The dbdma code
+>>> works around that by allocating 63 bytes and re-aligning the
+>>> descriptor base afterwards.  Hoewever when freeing memory it does
+>>> not account for this adjustment and trips the kfree debugcheck:
+>>>
+>>
+>> Correct me if I am wrong, but don't kmalloc et al. return blocks aligned
+>>  boundaries of the size rounded up the the next power of two?  So if you
+>> need 32-byte aligned addresses, just use a size value of 32 or greater.  You
+>> wouldn't have to add 63 and do masking and remember the membase value as you
+>> do in the patch.
+>
+> The description is not completely correct (I suck a writing those):
+> It allocates a number
+> of descriptor entries (64 bytes each) specified by the driver in a single block:
+>
+>        desc_base = (u32)kmalloc(entries * sizeof(au1x_ddma_desc_t),
+>                                 GFP_KERNEL|GFP_DMA);
+>        if (desc_base == 0)
+>                return 0;
+>
+>        if (desc_base & 0x1f) {
+>
+> So far the 3 users I have (mmc, spi, audio) always return true on the above
+> check (2 descriptors for audio for instance).
 
-it should be:
+... but only if CONFIG_DEBUG_SLAB is enabled.  You are correct in that
+kmalloc() returns aligned blocks with a non-debug slab allocator and this
+fix becomes superfluous.   I'll try to confirm this with the other
+allocators and
+resend with a fixed description.
 
-ifdef CONFIG_DEBUG_ZBOOT
-...
-endif
-
-of course, your ifeq version also works ;)
-
-Thanks & Regards!
-	Wu Zhangjin
+Thank you for the pointer!
+     Manuel Lauss

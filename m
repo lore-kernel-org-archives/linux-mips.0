@@ -1,80 +1,49 @@
-Received: from bby1mta03.pmc-sierra.com ([216.241.235.118]:39900 "EHLO
-        bby1mta03.pmc-sierra.bc.ca" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1493176Ab0AYRe6 convert rfc822-to-8bit
+Received: from gv-out-0910.google.com ([216.239.58.186]:39553 "EHLO
+        gv-out-0910.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1493360Ab0AZP3B convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 25 Jan 2010 18:34:58 +0100
-Content-class: urn:content-classes:message
+        Tue, 26 Jan 2010 16:29:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
+In-Reply-To: <8c337354c30ac911207df81abd13197c897b2380.1264517495.git.wuzhangjin@gmail.com>
+References: <8c337354c30ac911207df81abd13197c897b2380.1264517495.git.wuzhangjin@gmail.com>
+Date: Tue, 26 Jan 2010 16:28:59 +0100
+Message-ID: <f861ec6f1001260728x64c54ec7m65bc6ebc0ee64a80@mail.gmail.com>
+Subject: Re: [PATCH -queue v2] MIPS: Cleanup the debugging of compressed
+        kernel support
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8BIT
-Subject: RE: 1 GB RAM with RM9000 SOC
-Date: Mon, 25 Jan 2010 09:34:43 -0800
-Message-ID: <A7DEA48C84FD0B48AAAE33F328C020140474B761@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
-In-Reply-To: <4B5DD1A9.6020306@caviumnetworks.com>
-References: <4B56475F.8070608@gmail.com> <20100124002352.GB3251@linux-mips.org> <A7DEA48C84FD0B48AAAE33F328C020140474B674@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca> <4B5DD1A9.6020306@caviumnetworks.com>
-From: "Anoop P.A." <Anoop_P.A@pmc-sierra.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20100125173443.5OaJ1Oa_1O3chSiJxqRygHJcCy8D8fN4hPvJ6XWMpDU@z>
+To: Wu Zhangjin <wuzhangjin@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20100126152859.U0l98dmNQPVi_KddkOiqC4ojrQrEmSiW3QPEZk4-_o4@z>
 
-Hi David,
+Hi,
 
-Thanks for the info. In which version of LMO kernel , I could find your
-working source ?.
+On Tue, Jan 26, 2010 at 4:02 PM, Wu Zhangjin <wuzhangjin@gmail.com> wrote:
+> Changes from v1 (feedbacks from Ralf):
+>
+>  o make DEBUG_ZBOOT also depend on DEBUG_KERNEL
+>
+>  o DEBUG_ZBOOT already depends on SYS_SUPPORTS_ZBOOT_UART16550 so simplify the
 
-Thanks
-Anoop
+Not every chip has a standard 16550, unfortunately.  I liked your
+first iteration better:
+DEBUG_ZBOOT visible at all times (or depend on DEBUG_KERNEL)  another
+(invisible)
+config symbol selecting the code to build (i.e. SYS_SUPPORTS_ZBOOT_UART16550
+for your loongson boxes, MACH_ALCHEMY for alchemy, and nothing for unsupported
+chips).
 
-> -----Original Message-----
-> From: David Daney [mailto:ddaney@caviumnetworks.com]
-> Sent: Monday, January 25, 2010 10:45 PM
-> To: Anoop P.A.
-> Cc: linux-mips@linux-mips.org
-> Subject: Re: 1 GB RAM with RM9000 SOC
-> 
-> Anoop P.A. wrote:
-> > Hi list,
-> >
-> >
-> >
-> > Any of you successfully used >512MB ram with MIPS SOC's.
-> 
-> Does Cavium Octeon count as a MIPS SOC?  If so, then yes.
-> 
-> I have many boards with both 2GB and 4GB.  All of them Linux just fine
-> when using all available RAM.
-> 
-> > I have a
-> > requirement where I have to use 1 GB ram with RM9000 based SOC.
-> >
-> > I have enabled 64 Bit support and so far it is working with 512 MB
-of
-> > RAM. How ever if I increase memory beyond 512MB I am getting kernel
-> > panic.
-> >
-> >
-> >
-> >  I am adding memory region from 0x00 add_memory_region(0 ,0x40000000
-,
-> > BOOT_MEM_RAM). (PMON maps RAM from 0x0 to 0x40000000)  Am I wrong
-here?
-> >
-> >
-> >
-> > It will be great if you can give some suggestion /point me to a
-working
-> > implementation. I am using 2.6.18 kernel.
-> >
-> >
-> >
-> > Thanks
-> >
-> > Anoop
-> >
-> >
-> >
-> >
+
+>  obj-$(CONFIG_DEBUG_ZBOOT_UART16550) into just obj-$(CONFIG_DEBUG_ZBOOT) and
+>  no ifdef.
+
+The last hunk does something else:
+
+> -obj-$(CONFIG_SYS_SUPPORTS_ZBOOT_UART16550) += $(obj)/uart-16550.o
+> +obj-$(CONFIG_SYS_SUPPORTS_ZBOOT) += $(obj)/uart-16550.o
+
+Manuel

@@ -1,56 +1,56 @@
-Received: from gv-out-0910.google.com ([216.239.58.185]:63606 "EHLO
+Received: from gv-out-0910.google.com ([216.239.58.186]:27487 "EHLO
         gv-out-0910.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492063Ab0AZQak convert rfc822-to-8bit
+        by eddie.linux-mips.org with ESMTP id S1493392Ab0AZR6o convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 26 Jan 2010 17:30:40 +0100
+        Tue, 26 Jan 2010 18:58:44 +0100
+Received: by gv-out-0910.google.com with SMTP id r4so334251gve.2
+        for <linux-mips@linux-mips.org>; Tue, 26 Jan 2010 09:58:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1264521494.24895.28.camel@falcon>
-References: <8c337354c30ac911207df81abd13197c897b2380.1264517495.git.wuzhangjin@gmail.com>
-         <f861ec6f1001260728x64c54ec7m65bc6ebc0ee64a80@mail.gmail.com>
-         <1264521494.24895.28.camel@falcon>
-Date: Tue, 26 Jan 2010 17:30:39 +0100
-Message-ID: <f861ec6f1001260830x6facb42fi37074dcc1c2afade@mail.gmail.com>
-Subject: Re: [PATCH -queue v2] MIPS: Cleanup the debugging of compressed
-        kernel support
+In-Reply-To: <4B5F29EE.1060906@caviumnetworks.com>
+References: <1264527242-9214-1-git-send-email-manuel.lauss@gmail.com>
+         <4B5F29EE.1060906@caviumnetworks.com>
+Date: Tue, 26 Jan 2010 18:58:42 +0100
+Message-ID: <f861ec6f1001260958n5d011155p8dd95346b6e57239@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Alchemy: fix dbdma ring destruction memory
+        debugcheck.
 From: Manuel Lauss <manuel.lauss@googlemail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8BIT
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: wuzhangjin@gmail.com
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20100126163039.vfiMMDPIl8eqLlGF_ca64GaSlLv2biSGN06bb2lnxXs@z>
+To: David Daney <ddaney@caviumnetworks.com>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
+Message-ID: <20100126175842.OIuzGrlbmOoNAfBx7l6YgxqMJXpUTOahbepuu6NuQSo@z>
 
-On Tue, Jan 26, 2010 at 4:58 PM, Wu Zhangjin <wuzhangjin@gmail.com> wrote:
-> On Tue, 2010-01-26 at 16:28 +0100, Manuel Lauss wrote:
->> Hi,
+On Tue, Jan 26, 2010 at 6:44 PM, David Daney <ddaney@caviumnetworks.com> wrote:
+> Manuel Lauss wrote:
 >>
->> On Tue, Jan 26, 2010 at 4:02 PM, Wu Zhangjin <wuzhangjin@gmail.com> wrote:
->> > Changes from v1 (feedbacks from Ralf):
->> >
->> >  o make DEBUG_ZBOOT also depend on DEBUG_KERNEL
->> >
->> >  o DEBUG_ZBOOT already depends on SYS_SUPPORTS_ZBOOT_UART16550 so simplify the
->>
->> Not every chip has a standard 16550, unfortunately.  I liked your
->> first iteration better:
->> DEBUG_ZBOOT visible at all times (or depend on DEBUG_KERNEL)  another
->> (invisible)
->> config symbol selecting the code to build (i.e. SYS_SUPPORTS_ZBOOT_UART16550
->> for your loongson boxes, MACH_ALCHEMY for alchemy, and nothing for unsupported
->> chips).
+>> DBDMA descriptors need to be located at 32-byte aligned addresses;
+>> however kmalloc rarely delivers such addresses.  The dbdma code
+>> works around that by allocating 63 bytes and re-aligning the
+>> descriptor base afterwards.  Hoewever when freeing memory it does
+>> not account for this adjustment and trips the kfree debugcheck:
 >>
 >
-> Yes, It will be not convenient for a new serial port debugging support
-> with the current modification, for example, if you add UARTXXXX, we need
-> to select it for the new board and also add it under the "depends" of
-> DEBUG_ZBOOT. how about this?
+> Correct me if I am wrong, but don't kmalloc et al. return blocks aligned
+>  boundaries of the size rounded up the the next power of two?  So if you
+> need 32-byte aligned addresses, just use a size value of 32 or greater.  You
+> wouldn't have to add 63 and do masking and remember the membase value as you
+> do in the patch.
 
-[...]
+The description is not completely correct (I suck a writing those):
+It allocates a number
+of descriptor entries (64 bytes each) specified by the driver in a single block:
 
-Fine with me.  I'll resend an updated Alchemy zboot debug patch once
-this has been applied.
+        desc_base = (u32)kmalloc(entries * sizeof(au1x_ddma_desc_t),
+                                 GFP_KERNEL|GFP_DMA);
+        if (desc_base == 0)
+                return 0;
 
-Thank you!
-     Manuel Lauss
+        if (desc_base & 0x1f) {
+
+So far the 3 users I have (mmc, spi, audio) always return true on the above
+check (2 descriptors for audio for instance).
+
+Manuel

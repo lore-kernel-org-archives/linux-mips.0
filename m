@@ -1,44 +1,65 @@
-Received: from mail-fx0-f214.google.com ([209.85.220.214]:32927 "EHLO
-        mail-fx0-f214.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491839Ab0A1IYD convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 28 Jan 2010 09:24:03 +0100
+Received: from netrider.rowland.org ([192.131.102.5]:46806 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S1493062Ab0AaCLs (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 31 Jan 2010 03:11:48 +0100
+Date: Sat, 30 Jan 2010 21:11:45 -0500 (EST)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH 2/2] USB: add Broadcom 63xx integrated EHCI controller
+ support.
+In-Reply-To: <1264874071-28851-3-git-send-email-mbizon@freebox.fr>
+Message-ID: <Pine.LNX.4.44L0.1001302110520.14199-100000@netrider.rowland.org>
 MIME-Version: 1.0
-In-Reply-To: <20100127221818.GB26426@linux-mips.org>
-References: <1264534773-24909-1-git-send-email-manuel.lauss@gmail.com>
-         <20100127221818.GB26426@linux-mips.org>
-Date: Thu, 28 Jan 2010 09:23:56 +0100
-Message-ID: <f861ec6f1001280023n7753c77wfd626d731ddc690a@mail.gmail.com>
-Subject: Re: [PATCH v2] MIPS: Alchemy: fix dbdma ring destruction memory
-        debugcheck.
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
-Message-ID: <20100128082356._73EQXVTTAR8WUtzRolbST4sxYWsCp699hJE4R9Ge5k@z>
+To: Maxime Bizon <mbizon@freebox.fr>
+Cc: David Brownell <dbrownell@users.sourceforge.net>, linux-usb@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20100131021145.5rs8YKSQmurlhuhbUpVZdOm-Gx4jBU6C4-PFGncDecI@z>
 
->> This fix is only necessary with the SLAB allocator and CONFIG_DEBUG_SLAB
->> enabled;  non-debug SLAB, SLUB do return nicely aligned addresses,
->> debug-enabled SLUB currently panics early in the boot process.
->
-> Queued for 2.6.34 - should this also go into 2.6.33?
+On Sat, 30 Jan 2010, Maxime Bizon wrote:
 
-2.6.33 and .32 at least.  That code has been in there since the dawn of 2.6;
-the fact that nobody has tripped over this so far means that noone build kernels
-with slab debugging (I tripped over this while looking for something else) or
-the slab allocator behaviour changed recently.
+> Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
+> ---
+>  drivers/usb/host/ehci-bcm63xx.c |  154 +++++++++++++++++++++++++++++++++++++++
+>  drivers/usb/host/ehci-hcd.c     |    5 +
+>  2 files changed, 159 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/usb/host/ehci-bcm63xx.c
+> 
+> diff --git a/drivers/usb/host/ehci-bcm63xx.c b/drivers/usb/host/ehci-bcm63xx.c
+> new file mode 100644
+> index 0000000..50638f7
+> --- /dev/null
+> +++ b/drivers/usb/host/ehci-bcm63xx.c
 
+> +static const struct hc_driver ehci_bcm63xx_hc_driver = {
+> +	.description =		hcd_name,
+> +	.product_desc =		"BCM63XX integrated EHCI controller",
+> +	.hcd_priv_size =	sizeof(struct ehci_hcd),
+> +
+> +	.irq =			ehci_irq,
+> +	.flags =		HCD_MEMORY | HCD_USB2,
+> +
+> +	.reset =		ehci_bcm63xx_setup,
+> +	.start =		ehci_run,
+> +	.stop =			ehci_stop,
+> +	.shutdown =		ehci_shutdown,
+> +
+> +	.urb_enqueue =		ehci_urb_enqueue,
+> +	.urb_dequeue =		ehci_urb_dequeue,
+> +	.endpoint_disable =	ehci_endpoint_disable,
+> +
+> +	.get_frame_number =	ehci_get_frame,
+> +
+> +	.hub_status_data =	ehci_hub_status_data,
+> +	.hub_control =		ehci_hub_control,
+> +	.bus_suspend =		ehci_bus_suspend,
+> +	.bus_resume =		ehci_bus_resume,
+> +	.relinquish_port =	ehci_relinquish_port,
+> +	.port_handed_over =	ehci_port_handed_over,
+> +};
 
-> Have you considered increasing the value ARCH_KMALLOC_MINALIGN which
-> defaults to 8?  Or your own slab cache of suitable alignment?  The latter
-> is more something for frequent allocations.
+You'll run into trouble if you don't include the standard 
+endpoint_reset method pointer.
 
-I have to admit I know nothing about Linux' memory management.  Are slab
-caches not affected by the what I presume are "guard bytes" inserted into
-the memory areas when slab debug is on?
-
-Manuel
+Alan Stern

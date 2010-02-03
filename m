@@ -1,65 +1,35 @@
-Received: from netrider.rowland.org ([192.131.102.5]:46806 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with SMTP id S1493062Ab0AaCLs (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 31 Jan 2010 03:11:48 +0100
-Date: Sat, 30 Jan 2010 21:11:45 -0500 (EST)
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH 2/2] USB: add Broadcom 63xx integrated EHCI controller
- support.
-In-Reply-To: <1264874071-28851-3-git-send-email-mbizon@freebox.fr>
-Message-ID: <Pine.LNX.4.44L0.1001302110520.14199-100000@netrider.rowland.org>
+Received: from bby1mta02.pmc-sierra.com ([216.241.235.117]:54059 "EHLO
+        bby1mta02.pmc-sierra.bc.ca" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1492308Ab0BCLiC convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 3 Feb 2010 12:38:02 +0100
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: Cached Base address difference.
+Date: Wed, 3 Feb 2010 03:34:25 -0800
+Message-ID: <A7DEA48C84FD0B48AAAE33F328C0201404809DE0@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
+In-Reply-To: <20100203012934.GA20375@linux-mips.org>
+References: <1265015455-32553-1-git-send-email-wuzhangjin@gmail.com> <b2b2f2321002011903m7a090481m52d84a664beb5468@mail.gmail.com> <20100203012934.GA20375@linux-mips.org>
+From: "Anoop P.A." <Anoop_P.A@pmc-sierra.com>
+Return-Path: <Anoop_P.A@pmc-sierra.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Maxime Bizon <mbizon@freebox.fr>
-Cc: David Brownell <dbrownell@users.sourceforge.net>, linux-usb@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20100131021145.5rs8YKSQmurlhuhbUpVZdOm-Gx4jBU6C4-PFGncDecI@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20100203113425.14OAyEMJtH0cuKTu6zd9PkmeZ4Lw7ktNBnVZVs0twnc@z>
 
-On Sat, 30 Jan 2010, Maxime Bizon wrote:
 
-> Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
-> ---
->  drivers/usb/host/ehci-bcm63xx.c |  154 +++++++++++++++++++++++++++++++++++++++
->  drivers/usb/host/ehci-hcd.c     |    5 +
->  2 files changed, 159 insertions(+), 0 deletions(-)
->  create mode 100644 drivers/usb/host/ehci-bcm63xx.c
-> 
-> diff --git a/drivers/usb/host/ehci-bcm63xx.c b/drivers/usb/host/ehci-bcm63xx.c
-> new file mode 100644
-> index 0000000..50638f7
-> --- /dev/null
-> +++ b/drivers/usb/host/ehci-bcm63xx.c
+Hi list,
 
-> +static const struct hc_driver ehci_bcm63xx_hc_driver = {
-> +	.description =		hcd_name,
-> +	.product_desc =		"BCM63XX integrated EHCI controller",
-> +	.hcd_priv_size =	sizeof(struct ehci_hcd),
-> +
-> +	.irq =			ehci_irq,
-> +	.flags =		HCD_MEMORY | HCD_USB2,
-> +
-> +	.reset =		ehci_bcm63xx_setup,
-> +	.start =		ehci_run,
-> +	.stop =			ehci_stop,
-> +	.shutdown =		ehci_shutdown,
-> +
-> +	.urb_enqueue =		ehci_urb_enqueue,
-> +	.urb_dequeue =		ehci_urb_dequeue,
-> +	.endpoint_disable =	ehci_endpoint_disable,
-> +
-> +	.get_frame_number =	ehci_get_frame,
-> +
-> +	.hub_status_data =	ehci_hub_status_data,
-> +	.hub_control =		ehci_hub_control,
-> +	.bus_suspend =		ehci_bus_suspend,
-> +	.bus_resume =		ehci_bus_resume,
-> +	.relinquish_port =	ehci_relinquish_port,
-> +	.port_handed_over =	ehci_port_handed_over,
-> +};
+I am seeing a address conflict in asm-generic/spaces.h  . in spaces.h (
+64 bit)CAC_BASE has been defined as 0x9800000000000000 however see mips
+run says it is 0x9000000000000000
+http://books.google.co.in/books?id=kk8G2gK4Tw8C&lpg=PP1&dq=see%20mips%20
+run&pg=PA51#v=onepage&q=&f=false
 
-You'll run into trouble if you don't include the standard 
-endpoint_reset method pointer.
+Is this intentional?
 
-Alan Stern
+Thanks
+Anoop

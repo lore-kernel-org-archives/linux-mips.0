@@ -1,77 +1,190 @@
-Received: from bby1mta03.pmc-sierra.com ([216.241.235.118]:51728 "EHLO
-        bby1mta03.pmc-sierra.bc.ca" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492528Ab0BCNjZ convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 3 Feb 2010 14:39:25 +0100
-Content-class: urn:content-classes:message
+Received: from sj-iport-3.cisco.com ([171.71.176.72]:48790 "EHLO
+        sj-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1492334Ab0BVWh3 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Feb 2010 23:37:29 +0100
+Date: Mon, 22 Feb 2010 14:37:21 -0800
+From: David VomLehn <dvomlehn@cisco.com>
+Subject: Eliminate duplicate opcode definition macros
+Message-ID: <20100222223721.GA27005@dvomlehn-lnx2.corp.sa.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Cached Base address difference.
-Date: Wed, 3 Feb 2010 05:38:28 -0800
-Message-ID: <A7DEA48C84FD0B48AAAE33F328C0201404809DEA@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
-In-Reply-To: <20100203123331.GB20375@linux-mips.org>
-References: <1265015455-32553-1-git-send-email-wuzhangjin@gmail.com> <b2b2f2321002011903m7a090481m52d84a664beb5468@mail.gmail.com> <20100203012934.GA20375@linux-mips.org> <A7DEA48C84FD0B48AAAE33F328C0201404809DE0@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca> <20100203123331.GB20375@linux-mips.org>
-From: "Anoop P.A." <Anoop_P.A@pmc-sierra.com>
-Return-Path: <Anoop_P.A@pmc-sierra.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Return-Path: <dvomlehn@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20100203133828.JV-cfXBBWqwO067eFF5YFtthrqwCHxflU6Wz4I5OesM@z>
+To: to@dvomlehn-lnx2.corp.sa.net, "linux-mips@linux-mips.org"@cisco.comlinux-mips@linux-mips.org
+Cc: ralf@linux-mips.org
+Message-ID: <20100222223721.LjVGom3AF7nJt0lAq3SpnxpHH4TSciMdz8ibEZ6Vb48@z>
 
-Hi Ralf,
+Change to different macros for assembler macros since the old names in
+powertv_setup.c were co-opted for use in asm/asm.h. This broken the
+build for the powertv platform. This patch introduces new macros based on
+the new macros in asm.h to take the place of the old macro values.
 
-I am sorry if it is not clear from my last mail.
+Signed-off-by: David VomLehn <dvomlehn@cisco.com>
+---
+ arch/mips/powertv/powertv_setup.c |   99 ++++++++++++++++++-------------------
+ 1 files changed, 48 insertions(+), 51 deletions(-)
 
-What I want to convey is, 
-
-"See MIPS Run" explains "window on physical memory (cached)" will start
-@ 0x9000_0000_0000_0000.  
-
-You can see "See MIPS Run" page under suspect from this link
-http://books.google.co.in/books?id=kk8G2gK4Tw8C&lpg=PP1&dq=see%20mips%20
-run&pg=PA51#v=onepage&q=&f=false
-
-How ever as you mentioned Linux source defines CAC_BASE
-0x98000000_00000000
-
-Thanks
-Anoop 
-
-> -----Original Message-----
-> From: Ralf Baechle [mailto:ralf@linux-mips.org]
-> Sent: Wednesday, February 03, 2010 6:04 PM
-> To: Anoop P.A.
-> Cc: linux-mips@linux-mips.org
-> Subject: Re: Cached Base address difference.
-> 
-> On Wed, Feb 03, 2010 at 03:34:25AM -0800, Anoop P.A. wrote:
-> 
-> > I am seeing a address conflict in asm-generic/spaces.h  . in
-spaces.h (
-> > 64 bit)CAC_BASE has been defined as 0x9800000000000000 however see
-mips
-> > run says it is 0x9000000000000000
-> >
-http://books.google.co.in/books?id=kk8G2gK4Tw8C&lpg=PP1&dq=see%20mips%20
-> > run&pg=PA51#v=onepage&q=&f=false
-> >
-> > Is this intentional?
-> 
-> <asm/mach-generic/spaces.h> defines:
-> 
-> #ifndef CAC_BASE
-> #ifdef CONFIG_DMA_NONCOHERENT
-> #define CAC_BASE                _AC(0x9800000000000000, UL)
-> #else
-> #define CAC_BASE                _AC(0xa800000000000000, UL)
-> #endif
-> #endif
-> 
-> No 0x9000000000000000 anywhere - and it would be wrong because it
-stands
-> for uncached.
-> 
->   Ralf
+diff --git a/arch/mips/powertv/powertv_setup.c b/arch/mips/powertv/powertv_setup.c
+index 698b1ea..9bac903 100644
+--- a/arch/mips/powertv/powertv_setup.c
++++ b/arch/mips/powertv/powertv_setup.c
+@@ -32,35 +32,32 @@
+ #include <asm/mips-boards/generic.h>
+ #include <asm/mips-boards/prom.h>
+ #include <asm/dma.h>
++#include <asm/asm.h>
+ #include <linux/time.h>
+ #include <asm/traps.h>
+ #include <asm/asm-offsets.h>
+ #include "reset.h"
++#include <asm/asm.h>
+ 
+ #define VAL(n)		STR(n)
+ 
+ /*
+  * Macros for loading addresses and storing registers:
+- * PTR_LA	Load the address into a register
+- * LONG_S	Store the full width of the given register.
+- * LONG_L	Load the full width of the given register
+- * PTR_ADDIU	Add a constant value to a register used as a pointer
++ * LONG_L_	Stringified version of LONG_L for use in asm() statement
++ * LONG_S_	Stringified version of LONG_S for use in asm() statement
++ * PTR_LA_	Stringified version of PTR_LA for use in asm() statement
+  * REG_SIZE	Number of 8-bit bytes in a full width register
+  */
++#define LONG_L_		VAL(LONG_L) " "
++#define LONG_S_		VAL(LONG_S) " "
++#define PTR_LA_		VAL(PTR_LA) " "
++
+ #ifdef CONFIG_64BIT
+ #warning TODO: 64-bit code needs to be verified
+-#define PTR_LA		"dla	"
+-#define LONG_S		"sd	"
+-#define LONG_L		"ld	"
+-#define PTR_ADDIU	"daddiu	"
+ #define REG_SIZE	"8"		/* In bytes */
+ #endif
+ 
+ #ifdef CONFIG_32BIT
+-#define PTR_LA		"la	"
+-#define LONG_S		"sw	"
+-#define LONG_L		"lw	"
+-#define PTR_ADDIU	"addiu	"
+ #define REG_SIZE	"4"		/* In bytes */
+ #endif
+ 
+@@ -113,9 +110,9 @@ static int panic_handler(struct notifier_block *notifier_block,
+ 		 * structure. */
+ 		__asm__ __volatile__ (
+ 			".set	noat\n"
+-			LONG_S		"$at, %[at]\n"
+-			LONG_S		"$2, %[v0]\n"
+-			LONG_S		"$3, %[v1]\n"
++			LONG_S_		"$at, %[at]\n"
++			LONG_S_		"$2, %[v0]\n"
++			LONG_S_		"$3, %[v1]\n"
+ 		:
+ 			[at] "=m" (at),
+ 			[v0] "=m" (v0),
+@@ -129,54 +126,54 @@ static int panic_handler(struct notifier_block *notifier_block,
+ 			"move		$at, %[pt_regs]\n"
+ 
+ 			/* Argument registers */
+-			LONG_S		"$4, " VAL(PT_R4) "($at)\n"
+-			LONG_S		"$5, " VAL(PT_R5) "($at)\n"
+-			LONG_S		"$6, " VAL(PT_R6) "($at)\n"
+-			LONG_S		"$7, " VAL(PT_R7) "($at)\n"
++			LONG_S_		"$4, " VAL(PT_R4) "($at)\n"
++			LONG_S_		"$5, " VAL(PT_R5) "($at)\n"
++			LONG_S_		"$6, " VAL(PT_R6) "($at)\n"
++			LONG_S_		"$7, " VAL(PT_R7) "($at)\n"
+ 
+ 			/* Temporary regs */
+-			LONG_S		"$8, " VAL(PT_R8) "($at)\n"
+-			LONG_S		"$9, " VAL(PT_R9) "($at)\n"
+-			LONG_S		"$10, " VAL(PT_R10) "($at)\n"
+-			LONG_S		"$11, " VAL(PT_R11) "($at)\n"
+-			LONG_S		"$12, " VAL(PT_R12) "($at)\n"
+-			LONG_S		"$13, " VAL(PT_R13) "($at)\n"
+-			LONG_S		"$14, " VAL(PT_R14) "($at)\n"
+-			LONG_S		"$15, " VAL(PT_R15) "($at)\n"
++			LONG_S_		"$8, " VAL(PT_R8) "($at)\n"
++			LONG_S_		"$9, " VAL(PT_R9) "($at)\n"
++			LONG_S_		"$10, " VAL(PT_R10) "($at)\n"
++			LONG_S_		"$11, " VAL(PT_R11) "($at)\n"
++			LONG_S_		"$12, " VAL(PT_R12) "($at)\n"
++			LONG_S_		"$13, " VAL(PT_R13) "($at)\n"
++			LONG_S_		"$14, " VAL(PT_R14) "($at)\n"
++			LONG_S_		"$15, " VAL(PT_R15) "($at)\n"
+ 
+ 			/* "Saved" registers */
+-			LONG_S		"$16, " VAL(PT_R16) "($at)\n"
+-			LONG_S		"$17, " VAL(PT_R17) "($at)\n"
+-			LONG_S		"$18, " VAL(PT_R18) "($at)\n"
+-			LONG_S		"$19, " VAL(PT_R19) "($at)\n"
+-			LONG_S		"$20, " VAL(PT_R20) "($at)\n"
+-			LONG_S		"$21, " VAL(PT_R21) "($at)\n"
+-			LONG_S		"$22, " VAL(PT_R22) "($at)\n"
+-			LONG_S		"$23, " VAL(PT_R23) "($at)\n"
++			LONG_S_		"$16, " VAL(PT_R16) "($at)\n"
++			LONG_S_		"$17, " VAL(PT_R17) "($at)\n"
++			LONG_S_		"$18, " VAL(PT_R18) "($at)\n"
++			LONG_S_		"$19, " VAL(PT_R19) "($at)\n"
++			LONG_S_		"$20, " VAL(PT_R20) "($at)\n"
++			LONG_S_		"$21, " VAL(PT_R21) "($at)\n"
++			LONG_S_		"$22, " VAL(PT_R22) "($at)\n"
++			LONG_S_		"$23, " VAL(PT_R23) "($at)\n"
+ 
+ 			/* Add'l temp regs */
+-			LONG_S		"$24, " VAL(PT_R24) "($at)\n"
+-			LONG_S		"$25, " VAL(PT_R25) "($at)\n"
++			LONG_S_		"$24, " VAL(PT_R24) "($at)\n"
++			LONG_S_		"$25, " VAL(PT_R25) "($at)\n"
+ 
+ 			/* Kernel temp regs */
+-			LONG_S		"$26, " VAL(PT_R26) "($at)\n"
+-			LONG_S		"$27, " VAL(PT_R27) "($at)\n"
++			LONG_S_		"$26, " VAL(PT_R26) "($at)\n"
++			LONG_S_		"$27, " VAL(PT_R27) "($at)\n"
+ 
+ 			/* Global pointer, stack pointer, frame pointer and
+ 			 * return address */
+-			LONG_S		"$gp, " VAL(PT_R28) "($at)\n"
+-			LONG_S		"$sp, " VAL(PT_R29) "($at)\n"
+-			LONG_S		"$fp, " VAL(PT_R30) "($at)\n"
+-			LONG_S		"$ra, " VAL(PT_R31) "($at)\n"
++			LONG_S_		"$gp, " VAL(PT_R28) "($at)\n"
++			LONG_S_		"$sp, " VAL(PT_R29) "($at)\n"
++			LONG_S_		"$fp, " VAL(PT_R30) "($at)\n"
++			LONG_S_		"$ra, " VAL(PT_R31) "($at)\n"
+ 
+ 			/* Now we can get the $at and v0 registers back and
+ 			 * store them */
+-			LONG_L		"$8, %[at]\n"
+-			LONG_S		"$8, " VAL(PT_R1) "($at)\n"
+-			LONG_L		"$8, %[v0]\n"
+-			LONG_S		"$8, " VAL(PT_R2) "($at)\n"
+-			LONG_L		"$8, %[v1]\n"
+-			LONG_S		"$8, " VAL(PT_R3) "($at)\n"
++			LONG_L_		"$8, %[at]\n"
++			LONG_S_		"$8, " VAL(PT_R1) "($at)\n"
++			LONG_L_		"$8, %[v0]\n"
++			LONG_S_		"$8, " VAL(PT_R2) "($at)\n"
++			LONG_L_		"$8, %[v1]\n"
++			LONG_S_		"$8, " VAL(PT_R3) "($at)\n"
+ 		:
+ 		:
+ 			[at] "m" (at),
+@@ -191,8 +188,8 @@ static int panic_handler(struct notifier_block *notifier_block,
+ 		__asm__ __volatile__ (
+ 			".set	noat\n"
+ 		"1:\n"
+-			PTR_LA		"$at, 1b\n"
+-			LONG_S		"$at, %[cp0_epc]\n"
++			PTR_LA_		"$at, 1b\n"
++			LONG_S_		"$at, %[cp0_epc]\n"
+ 		:
+ 			[cp0_epc] "=m" (my_regs.cp0_epc)
+ 		:

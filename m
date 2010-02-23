@@ -1,11 +1,11 @@
-Received: from sj-iport-3.cisco.com ([171.71.176.72]:48790 "EHLO
-        sj-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1492334Ab0BVWh3 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Feb 2010 23:37:29 +0100
-Date: Mon, 22 Feb 2010 14:37:21 -0800
+Received: from sj-iport-5.cisco.com ([171.68.10.87]:55142 "EHLO
+        sj-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1491888Ab0BWAbW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Feb 2010 01:31:22 +0100
+Date: Mon, 22 Feb 2010 16:31:13 -0800
 From: David VomLehn <dvomlehn@cisco.com>
-Subject: Eliminate duplicate opcode definition macros
-Message-ID: <20100222223721.GA27005@dvomlehn-lnx2.corp.sa.net>
+Subject: [V2] Eliminate duplicate opcode definition macros
+Message-ID: <20100223003113.GA8599@dvomlehn-lnx2.corp.sa.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -14,7 +14,7 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: to@dvomlehn-lnx2.corp.sa.net, "linux-mips@linux-mips.org"@cisco.comlinux-mips@linux-mips.org
 Cc: ralf@linux-mips.org
-Message-ID: <20100222223721.LjVGom3AF7nJt0lAq3SpnxpHH4TSciMdz8ibEZ6Vb48@z>
+Message-ID: <20100223003113.zNySVTJnnQ9J62khhTTrNujOM0iwtMr8gNVuWiV8voY@z>
 
 Change to different macros for assembler macros since the old names in
 powertv_setup.c were co-opted for use in asm/asm.h. This broken the
@@ -23,25 +23,32 @@ the new macros in asm.h to take the place of the old macro values.
 
 Signed-off-by: David VomLehn <dvomlehn@cisco.com>
 ---
- arch/mips/powertv/powertv_setup.c |   99 ++++++++++++++++++-------------------
- 1 files changed, 48 insertions(+), 51 deletions(-)
+ arch/mips/powertv/powertv_setup.c |  102 ++++++++++++++++++-------------------
+ 1 files changed, 49 insertions(+), 53 deletions(-)
 
 diff --git a/arch/mips/powertv/powertv_setup.c b/arch/mips/powertv/powertv_setup.c
-index 698b1ea..9bac903 100644
+index 698b1ea..af2cae0 100644
 --- a/arch/mips/powertv/powertv_setup.c
 +++ b/arch/mips/powertv/powertv_setup.c
-@@ -32,35 +32,32 @@
+@@ -25,14 +25,15 @@
+ #include <linux/etherdevice.h>
+ #include <linux/if_ether.h>
+ #include <linux/ctype.h>
+-
+ #include <linux/cpu.h>
++#include <linux/time.h>
++
+ #include <asm/bootinfo.h>
+ #include <asm/irq.h>
  #include <asm/mips-boards/generic.h>
  #include <asm/mips-boards/prom.h>
  #include <asm/dma.h>
+-#include <linux/time.h>
 +#include <asm/asm.h>
- #include <linux/time.h>
  #include <asm/traps.h>
  #include <asm/asm-offsets.h>
  #include "reset.h"
-+#include <asm/asm.h>
- 
- #define VAL(n)		STR(n)
+@@ -41,26 +42,21 @@
  
  /*
   * Macros for loading addresses and storing registers:
@@ -75,7 +82,7 @@ index 698b1ea..9bac903 100644
  #define REG_SIZE	"4"		/* In bytes */
  #endif
  
-@@ -113,9 +110,9 @@ static int panic_handler(struct notifier_block *notifier_block,
+@@ -113,9 +109,9 @@ static int panic_handler(struct notifier_block *notifier_block,
  		 * structure. */
  		__asm__ __volatile__ (
  			".set	noat\n"
@@ -88,7 +95,7 @@ index 698b1ea..9bac903 100644
  		:
  			[at] "=m" (at),
  			[v0] "=m" (v0),
-@@ -129,54 +126,54 @@ static int panic_handler(struct notifier_block *notifier_block,
+@@ -129,54 +125,54 @@ static int panic_handler(struct notifier_block *notifier_block,
  			"move		$at, %[pt_regs]\n"
  
  			/* Argument registers */
@@ -177,7 +184,7 @@ index 698b1ea..9bac903 100644
  		:
  		:
  			[at] "m" (at),
-@@ -191,8 +188,8 @@ static int panic_handler(struct notifier_block *notifier_block,
+@@ -191,8 +187,8 @@ static int panic_handler(struct notifier_block *notifier_block,
  		__asm__ __volatile__ (
  			".set	noat\n"
  		"1:\n"

@@ -1,197 +1,159 @@
-Received: from sj-iport-5.cisco.com ([171.68.10.87]:55142 "EHLO
-        sj-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1491888Ab0BWAbW (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Feb 2010 01:31:22 +0100
-Date: Mon, 22 Feb 2010 16:31:13 -0800
-From: David VomLehn <dvomlehn@cisco.com>
-Subject: [V2] Eliminate duplicate opcode definition macros
-Message-ID: <20100223003113.GA8599@dvomlehn-lnx2.corp.sa.net>
+Received: from TYO201.gate.nec.co.jp ([202.32.8.193]:56016 "EHLO
+        tyo201.gate.nec.co.jp" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491039Ab0BWFmt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Feb 2010 06:42:49 +0100
+Message-ID: <4B836AD2.20602@necel.com>
+Date: Tue, 23 Feb 2010 14:42:42 +0900
+From: Shinya Kuribayashi <shinya.kuribayashi@necel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Return-Path: <dvomlehn@cisco.com>
+Subject: compare_change_hazard (was Re: SMTC Patches [3 of 3])
+References: <48C6DD4D.9090600@paralogos.com>
+In-Reply-To: <48C6DD4D.9090600@paralogos.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <shinya.kuribayashi@necel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: to@dvomlehn-lnx2.corp.sa.net, "linux-mips@linux-mips.org"@cisco.comlinux-mips@linux-mips.org
-Cc: ralf@linux-mips.org
-Message-ID: <20100223003113.zNySVTJnnQ9J62khhTTrNujOM0iwtMr8gNVuWiV8voY@z>
+To: "Kevin D. Kissell" <kevink@paralogos.com>
+Cc: Linux MIPS Org <linux-mips@linux-mips.org>
+Message-ID: <20100223054242.IqkZO2Ct8Em-WjnuLHQWdu6dtoHwOyCa49TUMH1udXU@z>
 
-Change to different macros for assembler macros since the old names in
-powertv_setup.c were co-opted for use in asm/asm.h. This broken the
-build for the powertv platform. This patch introduces new macros based on
-the new macros in asm.h to take the place of the old macro values.
+Hi Kevin and folks,
 
-Signed-off-by: David VomLehn <dvomlehn@cisco.com>
----
- arch/mips/powertv/powertv_setup.c |  102 ++++++++++++++++++-------------------
- 1 files changed, 49 insertions(+), 53 deletions(-)
+Recently I have encountered an awkward timer interrupt behavior
+on a MIPS32r2 core running at 500+MHz, and find a useful comment
+left in the kernel.
 
-diff --git a/arch/mips/powertv/powertv_setup.c b/arch/mips/powertv/powertv_setup.c
-index 698b1ea..af2cae0 100644
---- a/arch/mips/powertv/powertv_setup.c
-+++ b/arch/mips/powertv/powertv_setup.c
-@@ -25,14 +25,15 @@
- #include <linux/etherdevice.h>
- #include <linux/if_ether.h>
- #include <linux/ctype.h>
--
- #include <linux/cpu.h>
-+#include <linux/time.h>
-+
- #include <asm/bootinfo.h>
- #include <asm/irq.h>
- #include <asm/mips-boards/generic.h>
- #include <asm/mips-boards/prom.h>
- #include <asm/dma.h>
--#include <linux/time.h>
-+#include <asm/asm.h>
- #include <asm/traps.h>
- #include <asm/asm-offsets.h>
- #include "reset.h"
-@@ -41,26 +42,21 @@
- 
- /*
-  * Macros for loading addresses and storing registers:
-- * PTR_LA	Load the address into a register
-- * LONG_S	Store the full width of the given register.
-- * LONG_L	Load the full width of the given register
-- * PTR_ADDIU	Add a constant value to a register used as a pointer
-+ * LONG_L_	Stringified version of LONG_L for use in asm() statement
-+ * LONG_S_	Stringified version of LONG_S for use in asm() statement
-+ * PTR_LA_	Stringified version of PTR_LA for use in asm() statement
-  * REG_SIZE	Number of 8-bit bytes in a full width register
-  */
-+#define LONG_L_		VAL(LONG_L) " "
-+#define LONG_S_		VAL(LONG_S) " "
-+#define PTR_LA_		VAL(PTR_LA) " "
-+
- #ifdef CONFIG_64BIT
- #warning TODO: 64-bit code needs to be verified
--#define PTR_LA		"dla	"
--#define LONG_S		"sd	"
--#define LONG_L		"ld	"
--#define PTR_ADDIU	"daddiu	"
- #define REG_SIZE	"8"		/* In bytes */
- #endif
- 
- #ifdef CONFIG_32BIT
--#define PTR_LA		"la	"
--#define LONG_S		"sw	"
--#define LONG_L		"lw	"
--#define PTR_ADDIU	"addiu	"
- #define REG_SIZE	"4"		/* In bytes */
- #endif
- 
-@@ -113,9 +109,9 @@ static int panic_handler(struct notifier_block *notifier_block,
- 		 * structure. */
- 		__asm__ __volatile__ (
- 			".set	noat\n"
--			LONG_S		"$at, %[at]\n"
--			LONG_S		"$2, %[v0]\n"
--			LONG_S		"$3, %[v1]\n"
-+			LONG_S_		"$at, %[at]\n"
-+			LONG_S_		"$2, %[v0]\n"
-+			LONG_S_		"$3, %[v1]\n"
- 		:
- 			[at] "=m" (at),
- 			[v0] "=m" (v0),
-@@ -129,54 +125,54 @@ static int panic_handler(struct notifier_block *notifier_block,
- 			"move		$at, %[pt_regs]\n"
- 
- 			/* Argument registers */
--			LONG_S		"$4, " VAL(PT_R4) "($at)\n"
--			LONG_S		"$5, " VAL(PT_R5) "($at)\n"
--			LONG_S		"$6, " VAL(PT_R6) "($at)\n"
--			LONG_S		"$7, " VAL(PT_R7) "($at)\n"
-+			LONG_S_		"$4, " VAL(PT_R4) "($at)\n"
-+			LONG_S_		"$5, " VAL(PT_R5) "($at)\n"
-+			LONG_S_		"$6, " VAL(PT_R6) "($at)\n"
-+			LONG_S_		"$7, " VAL(PT_R7) "($at)\n"
- 
- 			/* Temporary regs */
--			LONG_S		"$8, " VAL(PT_R8) "($at)\n"
--			LONG_S		"$9, " VAL(PT_R9) "($at)\n"
--			LONG_S		"$10, " VAL(PT_R10) "($at)\n"
--			LONG_S		"$11, " VAL(PT_R11) "($at)\n"
--			LONG_S		"$12, " VAL(PT_R12) "($at)\n"
--			LONG_S		"$13, " VAL(PT_R13) "($at)\n"
--			LONG_S		"$14, " VAL(PT_R14) "($at)\n"
--			LONG_S		"$15, " VAL(PT_R15) "($at)\n"
-+			LONG_S_		"$8, " VAL(PT_R8) "($at)\n"
-+			LONG_S_		"$9, " VAL(PT_R9) "($at)\n"
-+			LONG_S_		"$10, " VAL(PT_R10) "($at)\n"
-+			LONG_S_		"$11, " VAL(PT_R11) "($at)\n"
-+			LONG_S_		"$12, " VAL(PT_R12) "($at)\n"
-+			LONG_S_		"$13, " VAL(PT_R13) "($at)\n"
-+			LONG_S_		"$14, " VAL(PT_R14) "($at)\n"
-+			LONG_S_		"$15, " VAL(PT_R15) "($at)\n"
- 
- 			/* "Saved" registers */
--			LONG_S		"$16, " VAL(PT_R16) "($at)\n"
--			LONG_S		"$17, " VAL(PT_R17) "($at)\n"
--			LONG_S		"$18, " VAL(PT_R18) "($at)\n"
--			LONG_S		"$19, " VAL(PT_R19) "($at)\n"
--			LONG_S		"$20, " VAL(PT_R20) "($at)\n"
--			LONG_S		"$21, " VAL(PT_R21) "($at)\n"
--			LONG_S		"$22, " VAL(PT_R22) "($at)\n"
--			LONG_S		"$23, " VAL(PT_R23) "($at)\n"
-+			LONG_S_		"$16, " VAL(PT_R16) "($at)\n"
-+			LONG_S_		"$17, " VAL(PT_R17) "($at)\n"
-+			LONG_S_		"$18, " VAL(PT_R18) "($at)\n"
-+			LONG_S_		"$19, " VAL(PT_R19) "($at)\n"
-+			LONG_S_		"$20, " VAL(PT_R20) "($at)\n"
-+			LONG_S_		"$21, " VAL(PT_R21) "($at)\n"
-+			LONG_S_		"$22, " VAL(PT_R22) "($at)\n"
-+			LONG_S_		"$23, " VAL(PT_R23) "($at)\n"
- 
- 			/* Add'l temp regs */
--			LONG_S		"$24, " VAL(PT_R24) "($at)\n"
--			LONG_S		"$25, " VAL(PT_R25) "($at)\n"
-+			LONG_S_		"$24, " VAL(PT_R24) "($at)\n"
-+			LONG_S_		"$25, " VAL(PT_R25) "($at)\n"
- 
- 			/* Kernel temp regs */
--			LONG_S		"$26, " VAL(PT_R26) "($at)\n"
--			LONG_S		"$27, " VAL(PT_R27) "($at)\n"
-+			LONG_S_		"$26, " VAL(PT_R26) "($at)\n"
-+			LONG_S_		"$27, " VAL(PT_R27) "($at)\n"
- 
- 			/* Global pointer, stack pointer, frame pointer and
- 			 * return address */
--			LONG_S		"$gp, " VAL(PT_R28) "($at)\n"
--			LONG_S		"$sp, " VAL(PT_R29) "($at)\n"
--			LONG_S		"$fp, " VAL(PT_R30) "($at)\n"
--			LONG_S		"$ra, " VAL(PT_R31) "($at)\n"
-+			LONG_S_		"$gp, " VAL(PT_R28) "($at)\n"
-+			LONG_S_		"$sp, " VAL(PT_R29) "($at)\n"
-+			LONG_S_		"$fp, " VAL(PT_R30) "($at)\n"
-+			LONG_S_		"$ra, " VAL(PT_R31) "($at)\n"
- 
- 			/* Now we can get the $at and v0 registers back and
- 			 * store them */
--			LONG_L		"$8, %[at]\n"
--			LONG_S		"$8, " VAL(PT_R1) "($at)\n"
--			LONG_L		"$8, %[v0]\n"
--			LONG_S		"$8, " VAL(PT_R2) "($at)\n"
--			LONG_L		"$8, %[v1]\n"
--			LONG_S		"$8, " VAL(PT_R3) "($at)\n"
-+			LONG_L_		"$8, %[at]\n"
-+			LONG_S_		"$8, " VAL(PT_R1) "($at)\n"
-+			LONG_L_		"$8, %[v0]\n"
-+			LONG_S_		"$8, " VAL(PT_R2) "($at)\n"
-+			LONG_L_		"$8, %[v1]\n"
-+			LONG_S_		"$8, " VAL(PT_R3) "($at)\n"
- 		:
- 		:
- 			[at] "m" (at),
-@@ -191,8 +187,8 @@ static int panic_handler(struct notifier_block *notifier_block,
- 		__asm__ __volatile__ (
- 			".set	noat\n"
- 		"1:\n"
--			PTR_LA		"$at, 1b\n"
--			LONG_S		"$at, %[cp0_epc]\n"
-+			PTR_LA_		"$at, 1b\n"
-+			LONG_S_		"$at, %[cp0_epc]\n"
- 		:
- 			[cp0_epc] "=m" (my_regs.cp0_epc)
- 		:
+Here I have some question about compare_change_hazard(), which was
+introduced by the commit.  See below: 
+
+Kevin D. Kissell wrote:
+From ac801c3b5c31eb0d53bf08538965f82f59f5f39d Mon Sep 17 00:00:00 2001
+>From: Kevin D. Kissell <kevink@paralogos.com>
+>Date: Tue, 9 Sep 2008 21:48:52 +0200
+>Subject: [PATCH] Rework of SMTC support to make it work with the new clock event
+> system, allowing "tickless" operation, and to make it compatible
+> with the use of the "wait_irqoff" idle loop.  The new clocking
+> scheme means that the previously optional IPI instant replay
+> mechanism is now required, and has been made more robust.
+> Signed-off-by: Kevin D. Kissell <kevink@paralogos.com>
+>
+>---
+> arch/mips/Kconfig                        |   26 +--
+> arch/mips/kernel/Makefile                |    1 +
+> arch/mips/kernel/cevt-r4k.c              |  173 +++++------------
+> arch/mips/kernel/cevt-smtc.c             |  321 ++++++++++++++++++++++++++++++
+> arch/mips/kernel/cpu-probe.c             |   10 +-
+> arch/mips/kernel/genex.S                 |    4 +-
+> arch/mips/kernel/smtc.c                  |  254 +++++++++++++-----------
+> arch/mips/mips-boards/malta/malta_smtc.c |    9 +-
+> include/asm-mips/cevt-r4k.h              |   46 +++++
+> include/asm-mips/irqflags.h              |   26 ++-
+> include/asm-mips/smtc.h                  |    8 +-
+> 11 files changed, 598 insertions(+), 280 deletions(-)
+> create mode 100644 arch/mips/kernel/cevt-smtc.c
+> create mode 100644 include/asm-mips/cevt-r4k.h
+[snip]
+>diff --git a/arch/mips/kernel/cevt-r4k.c b/arch/mips/kernel/cevt-r4k.c
+>index 24a2d90..4a4c59f 100644
+>--- a/arch/mips/kernel/cevt-r4k.c
+>+++ b/arch/mips/kernel/cevt-r4k.c
+[snip]
+>@@ -177,7 +99,23 @@ static int c0_compare_int_pending(void)
+> 	return (read_c0_cause() >> cp0_compare_irq) & 0x100;
+> }
+> 
+>-static int c0_compare_int_usable(void)
+>+/*
+>+ * Compare interrupt can be routed and latched outside the core,
+>+ * so a single execution hazard barrier may not be enough to give
+>+ * it time to clear as seen in the Cause register.  4 time the
+>+ * pipeline depth seems reasonably conservative, and empirically
+>+ * works better in configurations with high CPU/bus clock ratios.
+>+ */
+>+
+>+#define compare_change_hazard() \
+>+	do { \
+>+		irq_disable_hazard(); \
+>+		irq_disable_hazard(); \
+>+		irq_disable_hazard(); \
+>+		irq_disable_hazard(); \
+>+	} while (0)
+>+
+>+int c0_compare_int_usable(void)
+> {
+> 	unsigned int delta;
+> 	unsigned int cnt;
+
+Above commets reasonably make sense and do help me, thanks :-)
+On the other hand, the implementation of compare_change_hazard()
+makes me wonder how this hazard works internally.
+
+For MIPS32r2 cores (except for Octeon), irq_disable_hazard() will
+be translated into "ehb" instruction, so the resulting compare_
+change_hazard() is going to be
+
+compare_change_hazard:
+        ehb
+        ehb
+        ehb
+        ehb
+
+And I wonder how these instructions work.  I think the first ehb
+instruction will clear all execution hazards created by preceding
+instruction(s) at that moment, this is fine.  But I wonder,
+
+* HOW do subsequent three "ehb" instructions work in the pipeline?
+  Do they make any "real" effect, or just work as "nop"?
+
+* Kevin noted that "4 time the pipeline depth seems reasonably
+  convervative."  Is current form of compare_change_hazard()
+  implemented in accordance with his comments?
+
+* How many pipline clokcs are consumed for subsequent "ehb"
+  instruction?
+
+and so on.  I'd like to ask hardware people later, separately, but
+any comments are appreciated.
+
+Thanks in adavance.
+
+  Shinya
+
+
+>@@ -187,7 +125,7 @@ static int c0_compare_int_usable(void)
+> 	 */
+> 	if (c0_compare_int_pending()) {
+> 		write_c0_compare(read_c0_count());
+>-		irq_disable_hazard();
+>+		compare_change_hazard();
+> 		if (c0_compare_int_pending())
+> 			return 0;
+> 	}
+>@@ -196,7 +134,7 @@ static int c0_compare_int_usable(void)
+> 		cnt = read_c0_count();
+> 		cnt += delta;
+> 		write_c0_compare(cnt);
+>-		irq_disable_hazard();
+>+		compare_change_hazard();
+> 		if ((int)(read_c0_count() - cnt) < 0)
+> 		    break;
+> 		/* increase delta if the timer was already expired */
+>@@ -205,11 +143,12 @@ static int c0_compare_int_usable(void)
+> 	while ((int)(read_c0_count() - cnt) <= 0)
+> 		;	/* Wait for expiry  */
+> 
+>+	compare_change_hazard();
+> 	if (!c0_compare_int_pending())
+> 		return 0;
+> 
+> 	write_c0_compare(read_c0_count());
+>-	irq_disable_hazard();
+>+	compare_change_hazard();
+> 	if (c0_compare_int_pending())
+> 		return 0;
+> 
+
+-- 
+Shinya Kuribayashi
+NEC Electronics

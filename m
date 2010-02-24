@@ -1,159 +1,51 @@
-Received: from TYO201.gate.nec.co.jp ([202.32.8.193]:56016 "EHLO
-        tyo201.gate.nec.co.jp" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491039Ab0BWFmt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Feb 2010 06:42:49 +0100
-Message-ID: <4B836AD2.20602@necel.com>
-Date: Tue, 23 Feb 2010 14:42:42 +0900
-From: Shinya Kuribayashi <shinya.kuribayashi@necel.com>
+Received: from mail-fx0-f217.google.com ([209.85.220.217]:55671 "EHLO
+        mail-fx0-f217.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491081Ab0BXH5d convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 24 Feb 2010 08:57:33 +0100
 MIME-Version: 1.0
-Subject: compare_change_hazard (was Re: SMTC Patches [3 of 3])
-References: <48C6DD4D.9090600@paralogos.com>
-In-Reply-To: <48C6DD4D.9090600@paralogos.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <shinya.kuribayashi@necel.com>
+In-Reply-To: <20100223230618.GD21949@linux-mips.org>
+References: <1266956534-24753-1-git-send-email-manuel.lauss@gmail.com>
+         <20100223230618.GD21949@linux-mips.org>
+Date: Wed, 24 Feb 2010 08:57:27 +0100
+Message-ID: <f861ec6f1002232357l112e2396qd063fd1c1bbdb46@mail.gmail.com>
+Subject: Re: [PATCH -queue v2] MIPS: Alchemy: use 36bit addresses for PCMCIA
+        resources.
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
+Return-Path: <manuel.lauss@googlemail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Kevin D. Kissell" <kevink@paralogos.com>
-Cc: Linux MIPS Org <linux-mips@linux-mips.org>
-Message-ID: <20100223054242.IqkZO2Ct8Em-WjnuLHQWdu6dtoHwOyCa49TUMH1udXU@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
+Message-ID: <20100224075727.0UT0In1HLnzXqF8YoaGSaLK44A6pmauEs-LlT_nhvo0@z>
 
-Hi Kevin and folks,
-
-Recently I have encountered an awkward timer interrupt behavior
-on a MIPS32r2 core running at 500+MHz, and find a useful comment
-left in the kernel.
-
-Here I have some question about compare_change_hazard(), which was
-introduced by the commit.  See below: 
-
-Kevin D. Kissell wrote:
-From ac801c3b5c31eb0d53bf08538965f82f59f5f39d Mon Sep 17 00:00:00 2001
->From: Kevin D. Kissell <kevink@paralogos.com>
->Date: Tue, 9 Sep 2008 21:48:52 +0200
->Subject: [PATCH] Rework of SMTC support to make it work with the new clock event
-> system, allowing "tickless" operation, and to make it compatible
-> with the use of the "wait_irqoff" idle loop.  The new clocking
-> scheme means that the previously optional IPI instant replay
-> mechanism is now required, and has been made more robust.
-> Signed-off-by: Kevin D. Kissell <kevink@paralogos.com>
+On Wed, Feb 24, 2010 at 12:06 AM, Ralf Baechle <ralf@linux-mips.org> wrote:
+> On Tue, Feb 23, 2010 at 09:22:14PM +0100, Manuel Lauss wrote:
 >
->---
-> arch/mips/Kconfig                        |   26 +--
-> arch/mips/kernel/Makefile                |    1 +
-> arch/mips/kernel/cevt-r4k.c              |  173 +++++------------
-> arch/mips/kernel/cevt-smtc.c             |  321 ++++++++++++++++++++++++++++++
-> arch/mips/kernel/cpu-probe.c             |   10 +-
-> arch/mips/kernel/genex.S                 |    4 +-
-> arch/mips/kernel/smtc.c                  |  254 +++++++++++++-----------
-> arch/mips/mips-boards/malta/malta_smtc.c |    9 +-
-> include/asm-mips/cevt-r4k.h              |   46 +++++
-> include/asm-mips/irqflags.h              |   26 ++-
-> include/asm-mips/smtc.h                  |    8 +-
-> 11 files changed, 598 insertions(+), 280 deletions(-)
-> create mode 100644 arch/mips/kernel/cevt-smtc.c
-> create mode 100644 include/asm-mips/cevt-r4k.h
-[snip]
->diff --git a/arch/mips/kernel/cevt-r4k.c b/arch/mips/kernel/cevt-r4k.c
->index 24a2d90..4a4c59f 100644
->--- a/arch/mips/kernel/cevt-r4k.c
->+++ b/arch/mips/kernel/cevt-r4k.c
-[snip]
->@@ -177,7 +99,23 @@ static int c0_compare_int_pending(void)
-> 	return (read_c0_cause() >> cp0_compare_irq) & 0x100;
-> }
-> 
->-static int c0_compare_int_usable(void)
->+/*
->+ * Compare interrupt can be routed and latched outside the core,
->+ * so a single execution hazard barrier may not be enough to give
->+ * it time to clear as seen in the Cause register.  4 time the
->+ * pipeline depth seems reasonably conservative, and empirically
->+ * works better in configurations with high CPU/bus clock ratios.
->+ */
->+
->+#define compare_change_hazard() \
->+	do { \
->+		irq_disable_hazard(); \
->+		irq_disable_hazard(); \
->+		irq_disable_hazard(); \
->+		irq_disable_hazard(); \
->+	} while (0)
->+
->+int c0_compare_int_usable(void)
-> {
-> 	unsigned int delta;
-> 	unsigned int cnt;
+>> On Alchemy the PCMCIA area lies at the end of the chips 36bit system
+>> bus area.  Currently, addresses at the far end of the 32bit area
+>> are assumed to belong to the PCMCIA area and fixed up to the real
+>> 36bit address before being passed to ioremap().
+>>
+>> A previous commit enabled 64 bit physical size for the resource
+>> datatype on Alchemy and this allows to use the correct
+>> 36bit addresses when registering the PCMCIA sockets.
+>>
+>> This patch removes the 32-to-36bit address fixup and registers the
+>> Alchemy demoboard pcmcia socket with the correct 36bit physical
+>> addresses.
+>>
+>> Tested on DB1200, with a CF card (ide-cs driver) and a 3c589 pcmcia
+>> ethernet card.
+>>
+>> Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
+>
+> Thanks, queued for 2.6.34.
 
-Above commets reasonably make sense and do help me, thanks :-)
-On the other hand, the implementation of compare_change_hazard()
-makes me wonder how this hazard works internally.
+Please drop this one for now, I forgot to change the XXS1500 board
+and driver code.  I'll resend an updated version.
 
-For MIPS32r2 cores (except for Octeon), irq_disable_hazard() will
-be translated into "ehb" instruction, so the resulting compare_
-change_hazard() is going to be
-
-compare_change_hazard:
-        ehb
-        ehb
-        ehb
-        ehb
-
-And I wonder how these instructions work.  I think the first ehb
-instruction will clear all execution hazards created by preceding
-instruction(s) at that moment, this is fine.  But I wonder,
-
-* HOW do subsequent three "ehb" instructions work in the pipeline?
-  Do they make any "real" effect, or just work as "nop"?
-
-* Kevin noted that "4 time the pipeline depth seems reasonably
-  convervative."  Is current form of compare_change_hazard()
-  implemented in accordance with his comments?
-
-* How many pipline clokcs are consumed for subsequent "ehb"
-  instruction?
-
-and so on.  I'd like to ask hardware people later, separately, but
-any comments are appreciated.
-
-Thanks in adavance.
-
-  Shinya
-
-
->@@ -187,7 +125,7 @@ static int c0_compare_int_usable(void)
-> 	 */
-> 	if (c0_compare_int_pending()) {
-> 		write_c0_compare(read_c0_count());
->-		irq_disable_hazard();
->+		compare_change_hazard();
-> 		if (c0_compare_int_pending())
-> 			return 0;
-> 	}
->@@ -196,7 +134,7 @@ static int c0_compare_int_usable(void)
-> 		cnt = read_c0_count();
-> 		cnt += delta;
-> 		write_c0_compare(cnt);
->-		irq_disable_hazard();
->+		compare_change_hazard();
-> 		if ((int)(read_c0_count() - cnt) < 0)
-> 		    break;
-> 		/* increase delta if the timer was already expired */
->@@ -205,11 +143,12 @@ static int c0_compare_int_usable(void)
-> 	while ((int)(read_c0_count() - cnt) <= 0)
-> 		;	/* Wait for expiry  */
-> 
->+	compare_change_hazard();
-> 	if (!c0_compare_int_pending())
-> 		return 0;
-> 
-> 	write_c0_compare(read_c0_count());
->-	irq_disable_hazard();
->+	compare_change_hazard();
-> 	if (c0_compare_int_pending())
-> 		return 0;
-> 
-
--- 
-Shinya Kuribayashi
-NEC Electronics
+Thanks,
+     Manuel Lauss

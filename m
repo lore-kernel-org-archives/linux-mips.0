@@ -1,70 +1,52 @@
-Received: from bby1mta03.pmc-sierra.com ([216.241.235.118]:44908 "EHLO
-        bby1mta03.pmc-sierra.bc.ca" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492050Ab0BZLlo convert rfc822-to-8bit
+Received: from mail-fx0-f227.google.com ([209.85.220.227]:49284 "EHLO
+        mail-fx0-f227.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1492507Ab0CILpq convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 26 Feb 2010 12:41:44 +0100
-Received: from bby1mta03.pmc-sierra.bc.ca (localhost.pmc-sierra.bc.ca [127.0.0.1])
-        by localhost (Postfix) with SMTP id E1F9A107006C
-        for <linux-mips@linux-mips.org>; Fri, 26 Feb 2010 03:41:32 -0800 (PST)
-Received: from bby1exg02.pmc_nt.nt.pmc-sierra.bc.ca (BBY1EXG02.pmc-sierra.bc.ca [216.241.231.167])
-        by bby1mta03.pmc-sierra.bc.ca (Postfix) with SMTP id D8944107006B
-        for <linux-mips@linux-mips.org>; Fri, 26 Feb 2010 03:41:32 -0800 (PST)
-Content-class: urn:content-classes:message
+        Tue, 9 Mar 2010 12:45:46 +0100
+Received: by fxm27 with SMTP id 27so2641296fxm.28
+        for <linux-mips@linux-mips.org>; Tue, 09 Mar 2010 03:45:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
+In-Reply-To: <4B963210.7030906@ru.mvista.com>
+References: <1268076181-29642-1-git-send-email-manuel.lauss@gmail.com>
+         <1268076181-29642-3-git-send-email-manuel.lauss@gmail.com>
+         <4B963210.7030906@ru.mvista.com>
+Date: Tue, 9 Mar 2010 12:45:39 +0100
+Message-ID: <f861ec6f1003090345n53570102je68aef14e8b3f3fb@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Alchemy: move MMC driver registration to board
+        code.
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8BIT
-Subject: blast_dcache32 problem with PREEMPT kernel
-Date: Fri, 26 Feb 2010 03:41:34 -0800
-Message-ID: <A7DEA48C84FD0B48AAAE33F328C020140497CB0F@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
-In-Reply-To: <6ec4247d1002251934h2168a03fqdcb8e6f0132aa547@mail.gmail.com>
-References: <4B861890.6090002@gmail.com>         <201002250852.09638.florian@openwrt.org>         <6ec4247d1002251312h37f409bdp2384d7fcbddbb321@mail.gmail.com>         <4B872904.6070208@metafoo.de> <6ec4247d1002251934h2168a03fqdcb8e6f0132aa547@mail.gmail.com>
-From: "Anoop P.A." <Anoop_P.A@pmc-sierra.com>
-Return-Path: <Anoop_P.A@pmc-sierra.com>
+Return-Path: <manuel.lauss@googlemail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20100226114134.6SrenCvnQvDWc8UbMGzrJ_98GZYDZXGe6GrrJFBCsCY@z>
+To: Sergei Shtylyov <sshtylyov@mvista.com>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
+Message-ID: <20100309114539.TmLe-snCJCIH3clzYs22yTZCfnDzrYN9Dc0MEaceNgc@z>
 
-Hi list,
+On Tue, Mar 9, 2010 at 12:33 PM, Sergei Shtylyov <sshtylyov@mvista.com> wrote:
+> Hello.
+>
+> Manuel Lauss wrote:
+>
+>> Where it really belongs to.
+>>
+>
+>  I disagree (again). SoC platform devices dont belong with the board code.
 
-I am hitting following bug with CONFIG_PREEMP enabled VSMP kernel (
-2.6.24) compiled for mips34K core.
+Figured as much.  However with additional boards the #ifdef mess in
+common/platform.c
+is only going to get worse. MUCH worse. Just look at the au1000-eth
+platform data situation!
+I have these platform devices on Au1200/Au1300 even thought they don't have
+a built-in MAC.
 
+The board which uses the device should register it.  The UARTs are
+kind of a special
+case since they need to be fixed up with the correct busclock, but
+that too could be
+exported to an initialization wrapper.
 
-BUG: using smp_processor_id() in preemptible [00000001] code:
-usb-storage/190
-caller is blast_dcache32+0x30/0x25c
-Call Trace:
-[<8012f338>] vprintk+0x2e8/0x584
-[<8012f354>] vprintk+0x304/0x584
-[<801111a0>] blast_dcache32+0x30/0x25c
-[<80387d5c>] debug_smp_processor_id+0xcc/0xe0
-[<801111a0>] blast_dcache32+0x30/0x25c
-[<80387d5c>] debug_smp_processor_id+0xcc/0xe0
-[<801111a0>] blast_dcache32+0x30/0x25c
-[<8010d9e4>] dma_map_sg+0x128/0x144
-[<80410a84>] urb_destroy+0x0/0x38
-[<801827b0>] kfree+0x8c/0x20c
-[<80411944>] usb_sg_init+0x310/0x324
-[<8042a708>] usb_stor_bulk_transfer_sg+0xd0/0x174
-[<8042a914>] usb_stor_Bulk_transport+0x168/0x324
-[<80121a94>] enqueue_entity+0xcc/0x130
-[<8042a3f4>] usb_stor_invoke_transport+0x38/0x27c
-[<80149ee8>] remove_wait_queue+0x1c/0x60
-[<8054568c>] _spin_unlock_irqrestore+0x24/0x44
-[<805425fc>] __down_interruptible+0x144/0x1e4
-[<801239f0>] default_wake_function+0x0/0x8
-[<8042bd58>] usb_stor_control_thread+0x268/0x320
-[<801497c0>] kthread+0x0/0xa4
-[<80149800>] kthread+0x40/0xa4
-[<801241d8>] complete+0x4c/0x6c
-[<8042baf0>] usb_stor_control_thread+0x0/0x320
-[<80149818>] kthread+0x58/0xa4
-[<8010476c>] kernel_thread_helper+0x10/0x18
+But, consider the patch withdrawn.
 
-Any pointers to debug this / fix this will be greatly appreciated.
-
-Thanking you,
-
-Anoop
+Manuel

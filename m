@@ -1,19 +1,19 @@
-Received: from mail-fx0-f227.google.com ([209.85.220.227]:43812 "EHLO
-        mail-fx0-f227.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492509Ab0CIMD7 convert rfc822-to-8bit
+Received: from mail-fx0-f217.google.com ([209.85.220.217]:44138 "EHLO
+        mail-fx0-f217.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1492620Ab0CJSeH convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 9 Mar 2010 13:03:59 +0100
-Received: by fxm27 with SMTP id 27so2658572fxm.28
-        for <linux-mips@linux-mips.org>; Tue, 09 Mar 2010 04:03:52 -0800 (PST)
+        Wed, 10 Mar 2010 19:34:07 +0100
 MIME-Version: 1.0
-In-Reply-To: <4B96364E.5050202@mvista.com>
+In-Reply-To: <20100310164824.GC15118@linux-mips.org>
 References: <1268076181-29642-1-git-send-email-manuel.lauss@gmail.com>
          <1268076181-29642-3-git-send-email-manuel.lauss@gmail.com>
          <4B963210.7030906@ru.mvista.com>
          <f861ec6f1003090345n53570102je68aef14e8b3f3fb@mail.gmail.com>
          <4B96364E.5050202@mvista.com>
-Date: Tue, 9 Mar 2010 13:03:51 +0100
-Message-ID: <f861ec6f1003090403j190d0ddbp7e245d0990a62a51@mail.gmail.com>
+         <f861ec6f1003090403j190d0ddbp7e245d0990a62a51@mail.gmail.com>
+         <20100310164824.GC15118@linux-mips.org>
+Date: Wed, 10 Mar 2010 19:34:00 +0100
+Message-ID: <f861ec6f1003101034u25d2acdcjd6dedc4c2221037e@mail.gmail.com>
 Subject: Re: [PATCH] MIPS: Alchemy: move MMC driver registration to board
         code.
 From: Manuel Lauss <manuel.lauss@googlemail.com>
@@ -22,56 +22,36 @@ Content-Transfer-Encoding: 8BIT
 Return-Path: <manuel.lauss@googlemail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
-Message-ID: <20100309120351.s67YReueKkJLTRhXSHvB8TXSHnERBCvzdMcyUVAh5Bg@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Sergei Shtylyov <sshtylyov@mvista.com>, Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
+Message-ID: <20100310183400.r3s94nd4acBc24RhKQhvZUIUAdQoeSC6Dp0UF0hLTLY@z>
 
-On Tue, Mar 9, 2010 at 12:51 PM, Sergei Shtylyov <sshtylyov@mvista.com> wrote:
-> Manuel Lauss wrote:
+On Wed, Mar 10, 2010 at 5:48 PM, Ralf Baechle <ralf@linux-mips.org> wrote:
+> On Tue, Mar 09, 2010 at 01:03:51PM +0100, Manuel Lauss wrote:
 >
->>>> Where it really belongs to.
->>>
->>> I disagree (again). SoC platform devices dont belong with the board code.
->>>
->>
->> Figured as much.  However with additional boards the #ifdef mess in
->> common/platform.c
->> is only going to get worse. MUCH worse.
+>> And on a personal note, that file just bothers me.  It's messy, can
+>> cause merge conflicts,
 >
->  We could probably eliminate the board #ifdef in platfrom.c by not supplying
-> the platfrom data for MMC1.
-
-What if I wanted to build a kernel which supports multiple different
-Au1200-based systems, like the SH-port does with its mach vector?
-
-
->> Just look at the au1000-eth platform data situation!
->> I have these platform devices on Au1200/Au1300 even thought they don't
->> have
->> a built-in MAC.
->>
+> Eye cancer.
 >
->  Need to add the SoC type checks then when registering the devices. Or at
-> least the #ifdef's. :-)
-
-I'd like to get rid of the ifdefs, not encourage them to mate and multiply ;-)
-
-
->> The board which uses the device should register it.
+>> it references structures defined inside board-specific code. In short,
+>> it just plain annoys
+>> my sense of aesthetics.
 >
->  Contrarywise, the SoC that has the devices, should register them.
+> Indeed - and I don't think Sergej disagrees with that.  I agree with him
+> that device registration code should primarily be done in the SOC code -
 
-My point is that most drivers require additional information from the board, and
-maybe due to hardware design the ids may need to be swapped.  Rather than
-#ifdeffing these cases for every board in a central file I'd let the board using
-the devices sort this out.
+For things like fixed internal interrupts, sure.  But for pieces that depend
+on where the (and which) chip is used, not so much.
 
-In my case, I don't need UART0 of the Au1200, but need UART1 to be ttyS0.
+By this logic there should be tons of ifdefs in the interrupt tables for every
+in-tree board.
 
-And on a personal note, that file just bothers me.  It's messy, can
-cause merge conflicts,
-it references structures defined inside board-specific code. In short,
-it just plain annoys
-my sense of aesthetics.
+
+> but you'll need to somehow get that code to communicate with the platform
+> code about what really needs to be done then register the remainder of
+> the truely platform-specific platform devices.  Something like that.
+
+I prefer a simpler solution.
 
 Manuel

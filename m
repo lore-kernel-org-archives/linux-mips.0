@@ -1,57 +1,40 @@
-Received: from mail-fx0-f217.google.com ([209.85.220.217]:44138 "EHLO
-        mail-fx0-f217.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492620Ab0CJSeH convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 10 Mar 2010 19:34:07 +0100
+Received: from rojo2.usc.es ([193.144.75.10]:33201 "EHLO rojo2.usc.es"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1492620Ab0CWAdU (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 23 Mar 2010 01:33:20 +0100
+Message-ID: <20100323003306.otnjwjy4e84wwoow@correoweb.usc.es>
+Date: Tue, 23 Mar 2010 00:33:06 +0100
+From: UBS International Holdings BV <carlos.guitian@usc.es>
+Reply-To: hhbeuker@live.nl
+Subject: 
 MIME-Version: 1.0
-In-Reply-To: <20100310164824.GC15118@linux-mips.org>
-References: <1268076181-29642-1-git-send-email-manuel.lauss@gmail.com>
-         <1268076181-29642-3-git-send-email-manuel.lauss@gmail.com>
-         <4B963210.7030906@ru.mvista.com>
-         <f861ec6f1003090345n53570102je68aef14e8b3f3fb@mail.gmail.com>
-         <4B96364E.5050202@mvista.com>
-         <f861ec6f1003090403j190d0ddbp7e245d0990a62a51@mail.gmail.com>
-         <20100310164824.GC15118@linux-mips.org>
-Date: Wed, 10 Mar 2010 19:34:00 +0100
-Message-ID: <f861ec6f1003101034u25d2acdcjd6dedc4c2221037e@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: Alchemy: move MMC driver registration to board
-        code.
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
-Return-Path: <manuel.lauss@googlemail.com>
+Content-Type: text/plain;
+        charset=ISO-8859-1;
+        DelSp="Yes";
+        format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Return-Path: <carlos.guitian@usc.es>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Sergei Shtylyov <sshtylyov@mvista.com>, Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
-Message-ID: <20100310183400.r3s94nd4acBc24RhKQhvZUIUAdQoeSC6Dp0UF0hLTLY@z>
+Message-ID: <20100322233306.uZHS0M6JDlpA8VVlESVbubRDUP4V2qgt_d2zLNKVh_I@z>
 
-On Wed, Mar 10, 2010 at 5:48 PM, Ralf Baechle <ralf@linux-mips.org> wrote:
-> On Tue, Mar 09, 2010 at 01:03:51PM +0100, Manuel Lauss wrote:
->
->> And on a personal note, that file just bothers me.  It's messy, can
->> cause merge conflicts,
->
-> Eye cancer.
->
->> it references structures defined inside board-specific code. In short,
->> it just plain annoys
->> my sense of aesthetics.
->
-> Indeed - and I don't think Sergej disagrees with that.  I agree with him
-> that device registration code should primarily be done in the SOC code -
+UBS International Holdings BV
+Herengracht 600
+NL-1017 CJ Amsterdam, Netherlands.
+www.ubs.com/investmentbank
 
-For things like fixed internal interrupts, sure.  But for pieces that depend
-on where the (and which) chip is used, not so much.
+Greetings,
 
-By this logic there should be tons of ifdefs in the interrupt tables for every
-in-tree board.
+I am an investment consultant working with UBS International Holdings BV
+in the Netherlands. I will be happy to work a transaction of $8.5million
+out with you if you have a corporate or personal bank Account. I look
+forward to hearing from you as soon as possible via my email;
+hhbeuker@live.nl
 
+Thank you for your time and attention.
 
-> but you'll need to somehow get that code to communicate with the platform
-> code about what really needs to be done then register the remainder of
-> the truely platform-specific platform devices.  Something like that.
-
-I prefer a simpler solution.
-
-Manuel
+Warmest Regards,
+Mr. Beuker Hendrik
+Investment Consultant.
+UBS.

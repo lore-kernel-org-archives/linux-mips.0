@@ -1,42 +1,23 @@
-Received: from rojo2.usc.es ([193.144.75.10]:34461 "EHLO rojo2.usc.es"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491069Ab0CYDYI (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 25 Mar 2010 04:24:08 +0100
-Message-ID: <20100325010136.5ofxgxt5www0s4ks@correoweb.usc.es>
-Date: Thu, 25 Mar 2010 01:01:36 +0100
-From: UBS International Holdings BV <hbeuker@usc.es>
-Reply-To: hhbeuker@live.nl
-Subject: 
+Received: from mail-ww0-f49.google.com ([74.125.82.49]:57417 "EHLO
+        mail-ww0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1492185Ab0DHSwH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 8 Apr 2010 20:52:07 +0200
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset=ISO-8859-1;
-        DelSp="Yes";
-        format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Return-Path: <hbeuker@usc.es>
+Date: Thu, 8 Apr 2010 20:52:00 +0200
+Message-ID: <s2y10f740e81004081152u53d1520fp812bd2defe886220@mail.gmail.com>
+Subject: [PATCH] mips/txx9: Add missing MODULE_ALIAS definitions for txx9
+        platform devices
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Message-ID: <20100325000136.jeA9rt4akA122hUeF-dAEyQ_iWpXiGxAQCotZZcZPpM@z>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Ralf Baechle <ralf@linux-mips.org>
+Cc: Linux MIPS Mailing List <linux-mips@linux-mips.org>
+Message-ID: <20100408185200.-i2abfaKk9-9jwSHIR1mBoy1TtfTPWG7pBaPJrZ6EX8@z>
 
+Hi Nemoto-san, Ralf-san,
 
-UBS International Holdings BV
-Herengracht 600
-NL-1017 CJ Amsterdam, Netherlands.
-www.ubs.com/investmentbank
-
-Greetings,
-
-I am an investment consultant working with UBS International Holdings BV
-in the Netherlands. I will be happy to work a transaction of $8.5million
-out with you if you have a corporate or personal bank Account. If you are
-interested, get back to me via my private email for further informations;
-hhbeuker@live.nl
-
-I look forward to hearing from you as soon as possible and thank you for
-your time and attention.
-
-Warmest Regards,
-Mr. Beuker Hendrik
-Investment Consultant.
-UBS.
+I need the patch below to enable autoloading of the TXx9 sound driver
+on my RBTX4927.
+It works very nice as a low-power MPD player.

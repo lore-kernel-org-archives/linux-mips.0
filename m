@@ -1,38 +1,45 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49]:43610 "EHLO
-        mail-vw0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492338Ab0DVPbo (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Apr 2010 17:31:44 +0200
-Received: by vws3 with SMTP id 3so1913486vws.36
-        for <linux-mips@linux-mips.org>; Thu, 22 Apr 2010 08:31:36 -0700 (PDT)
+Received: from anti.mobis.co.kr ([211.217.52.67]:34087 "HELO
+        sniper.mobis.co.kr" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S1491036Ab0DWFin convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 23 Apr 2010 07:38:43 +0200
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <j2sdf5e30c51004172251z9fd01867h562b99c1f1044c26@mail.gmail.com>
-References: <j2sdf5e30c51004172251z9fd01867h562b99c1f1044c26@mail.gmail.com>
-Date: Thu, 22 Apr 2010 23:31:34 +0800
-Message-ID: <m2qdf5e30c51004220831n66ff859fxd71f6bd14a5af56f@mail.gmail.com>
-Subject: Re: Ask help:why my 64-bit ELF file could not run at the 64-bit mips
-        cpu
-From: Jian Wang <dominicwj@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Return-Path: <dominicwj@gmail.com>
+Content-Type: text/plain;
+        charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: Porting U-boot on MIPS (Au1350)
+Date: Fri, 23 Apr 2010 14:38:30 +0900
+Message-ID: <5858DE952C53A441BDA3408A0524130104CCE08F@mkegmal01>
+From: =?iso-8859-1?Q?=A0Gurumurthy_G_M?= <Gurumurthy.Gowdar@gmobis.com>
+Return-Path: <Gurumurthy.Gowdar@gmobis.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20100422153134.u_IFZdPEBjAcsLMXLtE8VkDojrhUPZc49P86i3J9HDQ@z>
+Message-ID: <20100423053830.ejBthEcJ9hmJqYPGk5zdlMkS3gXwpzYAvOT8UbIUWjg@z>
 
-Hi,
 
- I have a 64-bit mips cpu, and compiled a 64-bit application, but this
- application could not run. (the target is running Linux)
- The details is:
- 1)if I compile the application with -mabi=n64, this program could not
- run, when I run it in the shell, it prompts "command not found"
- 2)but if I compile the application with -mabi=n32, it runs well and
- gives the correct result.
 
- I am wondering why with "-mabi=n64", this program could not run? I
- checked the CP0(status register), Bit px=0b0, KX=0b1, SX=0b1, UX=0b1,
- it seems that in User Mode, it accepts 64-bit operation.
+Hi All,
+       we are porting U-boot 1.2.0 to MIPS32 Au1350 Processor. i am using ELDK 4.1 for MIPS32. 
 
- Anybody could give me some help? Any comments is much appreciated!!
+Thanks wolfgang now am able to compile toolchain for mips after using ELDK for MIPS.
 
- BR/Dominic
+Now while porting U-boot to Au1350 MIPS32 we are facing following problems mentioned below. 
+
+We have a MIPS CPU which has reset address 0xBFC00000 , this is mapped to NOR flash with XIP in place. The boot block  ( ie 0xBFC00000) is in the top block of the NOR flash and its of 16KB. U-Boot shall be put from address 0xBFC00000 in the NOR flash for CPU boot up , since it is the last block (16KB only) we cannot put complete U-Boot , some part of the U-Boot should go to lower blocks . To do this u-boot need to be divided into blocks and we shall provide a jump from the top block to other blocks of NOR flash. We have BDI3000 debugger for flashing the NOR flash and bdiGDB for MIPS.
+
+Is there any NOR flash drivers available which can support the below chip?
+
+NOR Flash chip : M29W160ET --> AM29BX16
+NOR Flash chip size is 0x00200000 --> 2MB
+
+MIPS CPU Clock is 660MHz
+System Bus is 330MHz
+SDRAM bus clock is 165MHz
+
+
+please let me know if am going wrong anywhere or missing out something.
+
+With Regards,
+Gurumurthy Gowdar
+KPIT Cummins Infosystems Ltd

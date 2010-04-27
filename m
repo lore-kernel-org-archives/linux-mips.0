@@ -1,73 +1,73 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49]:61200 "EHLO
-        mail-vw0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492475Ab0DZMBD convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 26 Apr 2010 14:01:03 +0200
-Received: by vws16 with SMTP id 16so186958vws.36
-        for <linux-mips@linux-mips.org>; Mon, 26 Apr 2010 05:00:56 -0700 (PDT)
+Received: from mail-wy0-f176.google.com ([74.125.82.176]:43242 "EHLO
+        mail-wy0-f176.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1492147Ab0D0QLH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 27 Apr 2010 18:11:07 +0200
+Received: by wyb40 with SMTP id 40so3094315wyb.35
+        for <linux-mips@linux-mips.org>; Tue, 27 Apr 2010 09:11:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <v568a7-oj5.ln1@chipmunk.wormnet.eu>
-References: <j2sdf5e30c51004172251z9fd01867h562b99c1f1044c26@mail.gmail.com>
-         <q2odf5e30c51004220901l8bfa979ftc9c6a7b633569460@mail.gmail.com>
-         <4BD08329.80804@adax.com>
-         <h2hdf5e30c51004230142q21184429pffcaa9351510bc2d@mail.gmail.com>
-         <v568a7-oj5.ln1@chipmunk.wormnet.eu>
-Date: Mon, 26 Apr 2010 20:00:51 +0800
-Message-ID: <q2xdf5e30c51004260500t15cc000g3391808fed24fb95@mail.gmail.com>
-Subject: Re: Ask help:why my 64-bit ELF file could not run at the 64-bit mips
-        cpu
-From: Dominic <dominicwj@gmail.com>
+Date: Tue, 27 Apr 2010 09:11:00 -0700
+Message-ID: <o2n545ef25e1004270911m5d96ff8by38fa55c7172401a4@mail.gmail.com>
+Subject: issue with gdb load_symbol_file command when loading symbols for MIPS
+        kernel modules
+From: David Olien <dmo.lists@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
-Return-Path: <dominicwj@gmail.com>
+Return-Path: <dmo.lists@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Alexander Clouter <alex@digriz.org.uk>, Jan Rovins <janr@adax.com>, geert@linux-m68k.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20100426120051.V5ezBp6DMUnmkDT1ffkBpDyVH6DYessLipzP_QgpE7M@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20100427161100.nDo6bwtWsnhLNOQtwkEx-U68PJObiW8eEJfGFTb36fw@z>
 
-Hi Alexander, Jan & Greet
+I am using gdb version 6.8-1, running on an x86-64 platform with
+kernel version 2.6.26-2-686
+(it's a Debian distrubtion) to debug a remote MIPS kernel, 2.6.22.  I
+have built the gdb on the
+x86 machine, using the configuration parameter
+--target=mipsel-unknown-linux-gnu.
 
-Much thanks for your advice, I have solve this problem, thanks a lot!
+After loading the kernel modules on the remote mips machine, I get the
+module load addresses
+from /proc/modules on the remote machine, and try to add them to the
+gdb's symbol table on
+ the local machine, using the command:
 
-BR/Dominic
+add-symbol-file {path to local copy of the remote machine's .ko file}
+                 {module load address retreived from remote machine's
+                 /proc/modules}
 
-On Fri, Apr 23, 2010 at 5:34 PM, Alexander Clouter <alex@digriz.org.uk> wrote:
-> Dominic <dominicwj@gmail.com> wrote:
->>
->> Thanks a lot for your precious reply! I try to use -static to compile
->> the program, then the 64-bit program can run, so it should be the
->> library related other than 64-bit instruction or addressing related.
->> Then I stored the 64-bit libraries in nfs, and mount it on the target
->> board, after adding the path to ld.so.conf and 'ldconfig', the program
->> compiled without -static still does not run. Shall I miss something?
->>
-> On your host, you can type something like:
-> ----
-> alex@berk:/usr/src/wag54g$ readelf -d buildroot/output/target/usr/sbin/ip6tables-multi  | grep Shared
->  0x00000001 (NEEDED)                     Shared library: [libip6tc.so.0]
->  0x00000001 (NEEDED)                     Shared library: [libxtables.so.4]
->  0x00000001 (NEEDED)                     Shared library: [libdl.so.0]
->  0x00000001 (NEEDED)                     Shared library: [libm.so.0]
->  0x00000001 (NEEDED)                     Shared library: [libc.so.0]
-> ----
->
-> This will list all the libraries that you need installed[1], I'm guessin
-> you have missed one.
->
-> You can look at the output of 'readelf -a' to try to see what might be
-> missing.
->
-> Cheers
->
-> [1] in addition to the interpreter required (for example 'ld-uClibc')
->        and the main C library being used:
->        readelf -l buildroot/output/target/usr/sbin/ip6tables-multi
->
-> --
-> Alexander Clouter
-> .sigmonster says: "Ninety percent of baseball is half mental."
->                                -- Yogi Berra
->
->
->
+After I do this, I can see that .text symbols are translated correctly
+to their memory address on the
+remote machine.
+
+But sumbols from the .bss and .data sections are NOT translated
+properly. In fact, the translate to
+addresses that are not even in the range of addresses valid for the kernel.
+
+Since then, I tried calculating which sections are loaded from the
+.ko, and where each section gets
+loaded into kernel memory (I put print statements in the remote
+kernel's kernel/modules.c source file).
+
+If I then give add-symbol-file the address of every loaded section,
+then I get properly translated
+symbols for .data and .bss.
+
+I have noticed that the address caluclation code in gdb's symfile.c is
+similar to but different from
+ that in the kernel's module.c file.
+
+I am suspecting that the MIPS compiler tools are producing .ko files
+that are different enough in
+some way to confuse gdb's code in symbfile.c.
+
+Has anyone else encountered this, or have any suggestions?  As a work
+around, I'm planning to
+write a utility with code stolen from kernel/modules.c  that will
+calculate for me the section addresses
+ based on the module loading address.  But it would be nice if gdb did
+that calculation for me,
+as I suspect it would for an x86 system.
+
+Any suggestions?
+
+Thanks!
+Dave

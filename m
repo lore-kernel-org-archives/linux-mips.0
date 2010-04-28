@@ -1,73 +1,30 @@
-Received: from mail-wy0-f176.google.com ([74.125.82.176]:43242 "EHLO
-        mail-wy0-f176.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492147Ab0D0QLH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 27 Apr 2010 18:11:07 +0200
-Received: by wyb40 with SMTP id 40so3094315wyb.35
-        for <linux-mips@linux-mips.org>; Tue, 27 Apr 2010 09:11:01 -0700 (PDT)
+Received: from anti.mobis.co.kr ([211.217.52.67]:35305 "HELO
+        sniper.mobis.co.kr" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S1492148Ab0D1Mrc convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 28 Apr 2010 14:47:32 +0200
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Date: Tue, 27 Apr 2010 09:11:00 -0700
-Message-ID: <o2n545ef25e1004270911m5d96ff8by38fa55c7172401a4@mail.gmail.com>
-Subject: issue with gdb load_symbol_file command when loading symbols for MIPS
-        kernel modules
-From: David Olien <dmo.lists@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Return-Path: <dmo.lists@gmail.com>
+Content-Type: text/plain;
+        charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: MIPS ROM Exception Handler Error
+Date: Wed, 28 Apr 2010 21:47:20 +0900
+Message-ID: <5858DE952C53A441BDA3408A0524130104CCE09C@mkegmal01>
+From: =?iso-8859-1?Q?=A0Gurumurthy_G_M?= <Gurumurthy.Gowdar@gmobis.com>
+Return-Path: <Gurumurthy.Gowdar@gmobis.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-mips@linux-mips.org
-Message-ID: <20100427161100.nDo6bwtWsnhLNOQtwkEx-U68PJObiW8eEJfGFTb36fw@z>
+Message-ID: <20100428124720.vVQvqw6VzwboRea8GZKS569QJFphT0JPW5XCwFbzQ28@z>
 
-I am using gdb version 6.8-1, running on an x86-64 platform with
-kernel version 2.6.26-2-686
-(it's a Debian distrubtion) to debug a remote MIPS kernel, 2.6.22.  I
-have built the gdb on the
-x86 machine, using the configuration parameter
---target=mipsel-unknown-linux-gnu.
 
-After loading the kernel modules on the remote mips machine, I get the
-module load addresses
-from /proc/modules on the remote machine, and try to add them to the
-gdb's symbol table on
- the local machine, using the command:
 
-add-symbol-file {path to local copy of the remote machine's .ko file}
-                 {module load address retreived from remote machine's
-                 /proc/modules}
+Hi all,
+       I am porting U-boot-2010.03 on MIPS32 Architecture ( au1350 processor). u-boot is compiled for little endian and downloaded the u-boot.bin file to NOR Flash.After reset followed by go command , I observe that cpu hangs at 0xbfc00570 (ROM Exception Handler).
 
-After I do this, I can see that .text symbols are translated correctly
-to their memory address on the
-remote machine.
+we are using BDI3000 debugger and bdiGDB for programming.
 
-But sumbols from the .bss and .data sections are NOT translated
-properly. In fact, the translate to
-addresses that are not even in the range of addresses valid for the kernel.
+please let me know where is the problem? whether I am missing something.
 
-Since then, I tried calculating which sections are loaded from the
-.ko, and where each section gets
-loaded into kernel memory (I put print statements in the remote
-kernel's kernel/modules.c source file).
-
-If I then give add-symbol-file the address of every loaded section,
-then I get properly translated
-symbols for .data and .bss.
-
-I have noticed that the address caluclation code in gdb's symfile.c is
-similar to but different from
- that in the kernel's module.c file.
-
-I am suspecting that the MIPS compiler tools are producing .ko files
-that are different enough in
-some way to confuse gdb's code in symbfile.c.
-
-Has anyone else encountered this, or have any suggestions?  As a work
-around, I'm planning to
-write a utility with code stolen from kernel/modules.c  that will
-calculate for me the section addresses
- based on the module loading address.  But it would be nice if gdb did
-that calculation for me,
-as I suspect it would for an x86 system.
-
-Any suggestions?
-
-Thanks!
-Dave
+Regards,
+Gurumurthy

@@ -1,96 +1,30 @@
-Received: from [69.28.251.93] ([69.28.251.93]:54971 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1492384Ab0EBVxp (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 2 May 2010 23:53:45 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Sun, 2 May 2010 14:43:52 -0700
-Subject: [PATCH] MIPS: nofpu and nodsp only affect CPU0
-Message-ID: <0b6db1ee1efbe0daa1320b59ab5093ba5af377b8@localhost.localdomain>
+Received: from rtp-iport-2.cisco.com ([64.102.122.149]:3452 "EHLO
+        rtp-iport-2.cisco.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1492343Ab0ECXkL convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 4 May 2010 01:40:11 +0200
+Received: from xbh-rcd-202.cisco.com (xbh-rcd-202.cisco.com [72.163.62.201])
+        by rcdn-core-4.cisco.com (8.14.3/8.14.3) with ESMTP id o43Ne4p8015600
+        for <linux-mips@linux-mips.org>; Mon, 3 May 2010 23:40:04 GMT
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Return-Path: <cernekee@gmail.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: [PATCH] Apply kmap_high_get with MIPS
+Date: Mon, 3 May 2010 18:40:04 -0500
+Message-ID: <7A9214B0DEB2074FBCA688B30B04400DBBA5E5@XMB-RCD-208.cisco.com>
+From: "Dezhong Diao (dediao)" <dediao@cisco.com>
+Return-Path: <dediao@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20100502214352.Ioj-NaLf9etkmghKdUP2x2ltKtzfYQGcEwnSTvEO1A4@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20100503234004.QBOT0OWWmG1btdFcrv73tfi0z_kadxZ8GbiwwJmhEO4@z>
 
-The "nofpu" and "nodsp" kernel command line options currently do not
-affect CPUs that are brought online later in the boot process or
-hotplugged at runtime.  It is desirable to apply the nofpu/nodsp options
-to all CPUs in the system, so that surprising results are not seen when
-a process migrates from one CPU to another.
+Hi all,
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- arch/mips/include/asm/cpu-info.h |    2 ++
- arch/mips/kernel/cpu-probe.c     |    6 ++++++
- arch/mips/kernel/setup.c         |   11 +++++++----
- 3 files changed, 15 insertions(+), 4 deletions(-)
+The changes mentioned in the link below are intended to apply on MIPS
+dma functions.
 
-diff --git a/arch/mips/include/asm/cpu-info.h b/arch/mips/include/asm/cpu-info.h
-index b39def3..55b156b 100644
---- a/arch/mips/include/asm/cpu-info.h
-+++ b/arch/mips/include/asm/cpu-info.h
-@@ -84,6 +84,8 @@ extern struct cpuinfo_mips cpu_data[];
- #define current_cpu_data cpu_data[smp_processor_id()]
- #define raw_current_cpu_data cpu_data[raw_smp_processor_id()]
- 
-+extern int mips_fpu_disabled, mips_dsp_disabled;
-+
- extern void cpu_probe(void);
- extern void cpu_report(void);
- 
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index be5bb16..baba603 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -982,6 +982,12 @@ __cpuinit void cpu_probe(void)
- 	 */
- 	BUG_ON(current_cpu_type() != c->cputype);
- 
-+	if (mips_fpu_disabled)
-+		c->options &= ~MIPS_CPU_FPU;
-+
-+	if (mips_dsp_disabled)
-+		c->ases &= ~MIPS_ASE_DSP;
-+
- 	if (c->options & MIPS_CPU_FPU) {
- 		c->fpu_id = cpu_get_fpu_id();
- 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index f9513f9..1664dc2 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -569,21 +569,24 @@ void __init setup_arch(char **cmdline_p)
- 	plat_smp_setup();
- }
- 
-+int __cpuinitdata mips_fpu_disabled;
-+
- static int __init fpu_disable(char *s)
- {
--	int i;
--
--	for (i = 0; i < NR_CPUS; i++)
--		cpu_data[i].options &= ~MIPS_CPU_FPU;
-+	cpu_data[0].options &= ~MIPS_CPU_FPU;
-+	mips_fpu_disabled = 1;
- 
- 	return 1;
- }
- 
- __setup("nofpu", fpu_disable);
- 
-+int __cpuinitdata mips_dsp_disabled;
-+
- static int __init dsp_disable(char *s)
- {
- 	cpu_data[0].ases &= ~MIPS_ASE_DSP;
-+	mips_dsp_disabled = 1;
- 
- 	return 1;
- }
--- 
-1.6.3.1
+
+http://lkml.org/lkml/2009/3/7/137

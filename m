@@ -1,112 +1,42 @@
-Received: from mail-qy0-f192.google.com ([209.85.221.192]:62054 "EHLO
-        mail-qy0-f192.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492424Ab0EDJzo (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 4 May 2010 11:55:44 +0200
-Received: by mail-qy0-f192.google.com with SMTP id 30so5119599qyk.16
-        for <linux-mips@linux-mips.org>; Tue, 04 May 2010 02:55:44 -0700 (PDT)
+Received: from mail-gy0-f177.google.com ([209.85.160.177]:64246 "EHLO
+        mail-gy0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491000Ab0EGDMm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 7 May 2010 05:12:42 +0200
 MIME-Version: 1.0
-Date: Tue, 4 May 2010 17:55:43 +0800
-Message-ID: <m2j180e2c241005040255r8e89fd33hd821a0852120ee57@mail.gmail.com>
-Subject: [PATCH 11/12] start the panel which is enabled earlier than other
-        panel.
-From: yajin <yajinzhou@vm-kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <yajinzhou@vm-kernel.org>
+In-Reply-To: <1273164852.23734.6.camel@localhost>
+References: <1273067734-4758-1-git-send-email-dengcheng.zhu@gmail.com>
+         <1273067734-4758-2-git-send-email-dengcheng.zhu@gmail.com>
+         <1273162909.23734.4.camel@localhost>
+         <1273164852.23734.6.camel@localhost>
+Date: Fri, 7 May 2010 11:12:35 +0800
+Message-ID: <l2o1b4d75291005062012hd00ceb1cqe5045ac854212f38@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] MIPS/Oprofile: extract PMU defines/helper
+        functions for sharing
+From: Deng-Cheng Zhu <dengcheng.zhu@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-Path: <dengcheng.zhu@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org, loongson-dev <loongson-dev@googlegroups.com>, wuzhangjin@gmail.com, apatard@mandriva.com, vince@simtec.co.uk, ben@simtec.co.uk
-Message-ID: <20100504095543.6C9E5bkwa6Onba26_RQ6npGdLr2i5YxUCZGbmq7fIu4@z>
+To: wuzhangjin@gmail.com
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, a.p.zijlstra@chello.nl, paulus@samba.org, mingo@elte.hu, acme@redhat.com, jamie.iles@picochip.com
+Message-ID: <20100507031235.vg36ZCoEHuxYstBAuI3BN7-TJrWDCJrUj6QM_8lPiZY@z>
 
-SM501 has two panels, one is LCD panel and the other is CRT panel. We
-need to start the panel which is enabled earlier than the other panel.
+>> For we will use the save_perf_irq in the common function:
+>> mipspmu_get_irq() of the next patch, so, we need to move the definition
+>> of it out of the #if ... and put it before the #if:
+>>
+>> ...
+>> +static int (*save_perf_irq)(void);
+>>
+>> #if defined(CONFIG_CPU_MIPS32)
+>> ...
+>
+> oh, no, For Oprofile not use it, we can define it before
+> mipspmu_get_irq() directly.
+>
 
-Signed-off-by: yajin <yajin@vm-kernel.org>
----
- drivers/video/sm501fb.c |   42 +++++++++++++++++++++++++++++-------------
- 1 files changed, 29 insertions(+), 13 deletions(-)
+Thanks for your comments!
 
-diff --git a/drivers/video/sm501fb.c b/drivers/video/sm501fb.c
-index f2c69ca..c3b717b 100644
---- a/drivers/video/sm501fb.c
-+++ b/drivers/video/sm501fb.c
-@@ -1895,7 +1895,11 @@ static int __devinit sm501fb_probe(struct
-platform_device *pdev)
- {
- 	struct sm501fb_info *info;
- 	struct device *dev = &pdev->dev;
-+	unsigned int panel_enabled, head[2];
-+	char *driver_name[2];
-+	unsigned long ctrl;
- 	int ret;
-+	int i;
-
- 	/* allocate our framebuffers */
-
-@@ -1946,23 +1950,37 @@ static int __devinit sm501fb_probe(struct
-platform_device *pdev)
- 		goto err_probed_panel;
- 	}
-
--	ret = sm501fb_start_one(info, HEAD_CRT, driver_name_crt);
--	if (ret) {
--		dev_err(dev, "failed to start CRT\n");
--		goto err_started;
-+	ctrl = readl(info->regs + SM501_DC_PANEL_CONTROL);
-+	panel_enabled = (ctrl & SM501_DC_PANEL_CONTROL_EN) ? 1 : 0;
-+	if (panel_enabled) {
-+		head[0] = HEAD_PANEL;
-+		driver_name[0] = driver_name_pnl;
-+		head[1] = HEAD_CRT;
-+		driver_name[1] = driver_name_crt;
-+	} else {
-+		head[0] = HEAD_CRT;
-+		driver_name[0] = driver_name_crt;
-+		head[1] = HEAD_PANEL;
-+		driver_name[1] = driver_name_pnl;
- 	}
-
--	ret = sm501fb_start_one(info, HEAD_PANEL, driver_name_pnl);
--	if (ret) {
--		dev_err(dev, "failed to start Panel\n");
--		goto err_started_crt;
-+	for (i = 0; i < ARRAY_SIZE(head); i++) {
-+		ret = sm501fb_start_one(info, head[i], driver_name[i]);
-+		if (ret) {
-+			dev_err(dev, "failed to start %s\n", driver_name[i]);
-+			if (i == 1) {
-+				unregister_framebuffer(info->fb[head[0]]);
-+				sm501_free_init_fb(info, head[0]);
-+			}
-+			goto err_start_one;
-+		}
- 	}
-
- 	/* create device files */
-
- 	ret = device_create_file(dev, &dev_attr_crt_src);
- 	if (ret)
--		goto err_started_panel;
-+		goto err_started;
-
- 	ret = device_create_file(dev, &dev_attr_fbregs_pnl);
- 	if (ret)
-@@ -1981,15 +1999,13 @@ err_attached_pnlregs_file:
- err_attached_crtsrc_file:
- 	device_remove_file(dev, &dev_attr_crt_src);
-
--err_started_panel:
-+err_started:
- 	unregister_framebuffer(info->fb[HEAD_PANEL]);
- 	sm501_free_init_fb(info, HEAD_PANEL);
--
--err_started_crt:
- 	unregister_framebuffer(info->fb[HEAD_CRT]);
- 	sm501_free_init_fb(info, HEAD_CRT);
-
--err_started:
-+err_start_one:
- 	sm501fb_stop(info);
-
- err_probed_panel:
--- 
-1.5.6.5
+Just a correction: op_model_mipsxx.c will also use save_perf_irq. So
+when taking your 2nd solution, we need to define another static
+save_perf_irq in op_model_mipsxx.c.

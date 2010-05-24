@@ -1,26 +1,33 @@
-Received: from h5.dl5rb.org.uk ([81.2.74.5]:58125 "EHLO h5.dl5rb.org.uk"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491940Ab0EUXcG (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 22 May 2010 01:32:06 +0200
-Date: Sat, 22 May 2010 00:32:03 +0100
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH] MIPS:POWERTV: Correct ASIC device register names and
- locations
-Message-ID: <20100521233157.GB2954@linux-mips.org>
-References: <20100521182559.GA3401@dvomlehn-lnx2.corp.sa.net>
+Received: from mail-vw0-f49.google.com ([209.85.212.49]:38729 "EHLO
+        mail-vw0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491912Ab0EXNNn (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 24 May 2010 15:13:43 +0200
+Received: by vws4 with SMTP id 4so1432459vws.36
+        for <linux-mips@linux-mips.org>; Mon, 24 May 2010 06:13:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20100521182559.GA3401@dvomlehn-lnx2.corp.sa.net>
-Return-Path: <ralf@linux-mips.org>
+In-Reply-To: <4BD08329.80804@adax.com>
+References: <j2sdf5e30c51004172251z9fd01867h562b99c1f1044c26@mail.gmail.com>
+         <q2odf5e30c51004220901l8bfa979ftc9c6a7b633569460@mail.gmail.com>
+         <4BD08329.80804@adax.com>
+Date: Mon, 24 May 2010 21:13:35 +0800
+Message-ID: <AANLkTinU_HjzlgYCuvd3q0v4LD3uS6e1PUSFxfmkkeWf@mail.gmail.com>
+Subject: Re: Ask help:why my 64-bit ELF file could not run at the 64-bit mips
+        cpu
+From: Dominic <dominicwj@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-Path: <dominicwj@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: David VomLehn <dvomlehn@cisco.com>
-Cc: to@dvomlehn-lnx2.corp.sa.net, "linux-mips@linux-mips.org"@cisco.comlinux-mips@linux-mips.org
-Message-ID: <20100521233203.5VXkIOO50TbBC3bXZ6ul8fQHsM8144WfEdGxzkI4Y5w@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20100524131335.qc3e2SjgTloVRlIoZZSP0b_CvUjzItg1aBy2OlKS9bI@z>
 
-Queued for 2.6.36 - but may go upstream earlier than that.  Let's see.
+Hi,
 
-Thanks,
+I am trying to understand the boot process of Linux Kernel, especially
+on MIPS, I am pretty new to these. Could anybody introduce some
+documents or the boot logs on some MIPS platform? Any reply is much
+appreciated!
 
-  Ralf
+Thank you!
+
+BR/Dominic

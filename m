@@ -1,16 +1,16 @@
-Received: from mail-yw0-f201.google.com ([209.85.211.201]:47381 "EHLO
-        mail-yw0-f201.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491031Ab0E2DGN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 29 May 2010 05:06:13 +0200
+Received: from mail-yx0-f177.google.com ([209.85.213.177]:58151 "EHLO
+        mail-yx0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491031Ab0E2DIs (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 29 May 2010 05:08:48 +0200
 MIME-Version: 1.0
-In-Reply-To: <4BFEE8B6.6040605@gmail.com>
+In-Reply-To: <4BFEF327.2020701@gmail.com>
 References: <1274965420-5091-1-git-send-email-dengcheng.zhu@gmail.com>
-        <1274965420-5091-2-git-send-email-dengcheng.zhu@gmail.com>
-        <4BFEE8B6.6040605@gmail.com>
-Date: Sat, 29 May 2010 11:06:05 +0800
-Message-ID: <AANLkTilx-yMwFE0cj3jQu1BZEx_XW2_sj-lRAfzNO88o@mail.gmail.com>
-Subject: Re: [PATCH v5 01/12] MIPS/Oprofile: extract PMU defines/helper
-        functions for sharing
+        <1274965420-5091-5-git-send-email-dengcheng.zhu@gmail.com>
+        <4BFEF327.2020701@gmail.com>
+Date: Sat, 29 May 2010 11:08:41 +0800
+Message-ID: <AANLkTik8wDrdH3vTbvRDsoCUBk9fEI3KmNHRPRBnneXq@mail.gmail.com>
+Subject: Re: [PATCH v5 04/12] MIPS: add support for hardware performance
+        events (skeleton)
 From: Deng-Cheng Zhu <dengcheng.zhu@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Return-Path: <dengcheng.zhu@gmail.com>
@@ -18,47 +18,42 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: David Daney <david.s.daney@gmail.com>
 Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, a.p.zijlstra@chello.nl, paulus@samba.org, mingo@elte.hu, acme@redhat.com, jamie.iles@picochip.com, will.deacon@arm.com
-Message-ID: <20100529030605.dmmi-1xC6VNKio-AzJ8EDoOIG0kMCnsLeFWJP7YyCYs@z>
-
-Hi, David
-
-
-Thanks for your comments! I'm replying to you in the patch order. If my
-comments are wrong or are bad ideas, please point out.
-
+Message-ID: <20100529030841.HZ_u1YrEKY3P9m3W_CbSS3sV5OcMvm5cPagRfKkexL0@z>
 
 2010/5/28 David Daney <david.s.daney@gmail.com>:
-> Why predicate the entire contents of the file?
->
-> In any event, if you keep it, it shold probably be something like:
->
->    #if defined(CONFIG_CPU_MIPSR1) || defined(CONFIG_CPU_MIPSR2)
-[DC]:
-1) This line is not for the "entire" contents of the file, other CPUs
-LOONGSON2 and RM9000 are here.
-2) The CONFIG_CPU* came from the Makefile of oprofile. If other CPUs are
-newly supported, we can add into the #if #elif.
-3) The perf counter helper functions are special to mipsxx/loongson2/rm9000
-espcially the reset_counter() will be implemented respectively. Although
-they will be moved to perf_event_$cpu.c when Oprofile uses Perf-events as
-backend, they are currently shared by Oprofile and Perf-events to reduce
-code copying.
+> This depends on not consistent with the #if conditions in [01/12] for pmu.h.
+>  They should be I think.
+[DC]: It's a subset. If the code passes the test on other CPUs (such as
+CPU_SB1), we can add them here.
 
 
-> Some or all of that should probably go in asm/mipsregs.h
-[DC]: Now that we create pmu.h and these #define's are originally in
-op_model_$cpu.c not in mipsregs.h, how about keeping them here? BTW, after
-making Oprofile use Perf-events as backend (patches 8~12 do this), pmu.h
-will only contain register definitions (no static function definitions),
-then we can consider deleting pmu.h and moving its contents to mipsregs.h,
-is it OK?
+> Probably removing the tests from pmu.h and encoding them here is better.
+[DC]: According to my comments for [1/12], how about keeping them untouched
+for now?
 
 
-> Are 0 and 1 really the only conceivable values?
-[DC]: This is also from Oprofile. If we use:
-#define vpe_id()       (cpu_has_mipsmt_pertccounters ? \
-                       0 : cpu_data[smp_processor_id()].vpe_id)
-The possible return value is supposed to be 0 or 1.
+> IANAL, but who holds the copyright?  You or MTI ?
+[DC]: OK. Will change like this:
+Copyright (C) 2010 MIPS Technologies, Inc.
+Author: Deng-Cheng Zhu
+
+
+> This shadows the declaration in asm/time.h.  Declare it in exactly one place
+> please.
+[DC]: OK.
+
+
+> Same thing about the copyright.
+[DC]: OK.
+
+
+> Not quite true.  They use the high bit, that can be either 31 or 63
+> depending on the width of the counters.
+[DC]: OK. Will change to consider 64-bit counters.
+
+
+> Counters can be 64-bits wide, unsigned int is only 32-bits wide.
+[DC]: OK.
 
 
 Deng-Cheng

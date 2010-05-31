@@ -1,79 +1,19 @@
-Received: from [69.28.251.93] ([69.28.251.93]:44137 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491169Ab0E3Hud (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 30 May 2010 09:50:33 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Sun, 30 May 2010 00:35:58 -0700
-Subject: [PATCH 2/2] MIPS: Fix deferred console messages during CPU hotplug
-Message-ID: <526fcbfa605500d9da9b04ac0f93ef2beddca6ed@localhost.localdomain>
-In-Reply-To: <1b31306f28573a4bee56f164b1f74962fced9bc5@localhost.localdomain>
-References: <1b31306f28573a4bee56f164b1f74962fced9bc5@localhost.localdomain>
+Received: from pqueuea.post.tele.dk ([193.162.153.9]:34416 "EHLO
+        pqueuea.post.tele.dk" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1492190Ab0EaSDf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 31 May 2010 20:03:35 +0200
+Date: Mon, 31 May 2010 20:03:21 +0200
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: [PATCH] mips: fix build with O=...
+Message-ID: <20100531180321.GA27518@merkur.ravnborg.org>
+References: <20100530141939.GA22153@merkur.ravnborg.org> <AANLkTilwqYZc9-vtHsdBg1JwIOiYEPBtuRG-Rqg6nxNC@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Return-Path: <cernekee@gmail.com>
+In-Reply-To: <AANLkTilwqYZc9-vtHsdBg1JwIOiYEPBtuRG-Rqg6nxNC@mail.gmail.com>
+Return-Path: <sam@ravnborg.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20100530073558.n_8mZKcE4q0P2cdmasS0Rq6yo_sc7PrHTxUogkzdr_E@z>
-
-When a secondary CPU is booting up in start_secondary(), cpu_probe() and
-calibrate_delay() are called while cpu_online(smp_processor_id()) == 0.
-This means that can_use_console() will return 0 on many systems:
-
-static inline int can_use_console(unsigned int cpu)
-{
-	return cpu_online(cpu) || have_callable_console();
-}
-
-If (can_use_console() == 0), printk() will spool its output to log_buf
-and it will be visible in "dmesg", but that output will NOT be echoed to
-the console until somebody calls release_console_sem() from a CPU that
-is online.  Effectively this means that the cpu_probe() and
-calibrate_delay() messages will sit in limbo, and will only get dumped
-to the screen the next time printk() happens to get called.
-
-At boot time, more printk() messages are invariably generated after SMP
-initialization as the kernel boot proceeds, so this problem is unlikely
-to be noticed.  But when using the CPU hotplug feature to reactivate a
-dormant processor, the new CPU's boot messages could be stuck in limbo
-for quite a while since nothing is necessarily printed to the kernel log
-afterward.
-
-The proposed workaround is to acquire and release console_sem from
-__cpu_up(), so any queued messages can be flushed out to the console by
-a CPU that is definitely known to be online.
-
-This issue was seen on 2.6.34.
-
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- arch/mips/kernel/smp.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
-
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index 6cdca19..bf8923f 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -33,6 +33,7 @@
- #include <linux/cpu.h>
- #include <linux/err.h>
- #include <linux/ftrace.h>
-+#include <linux/console.h>
- 
- #include <asm/atomic.h>
- #include <asm/cpu.h>
-@@ -219,6 +220,10 @@ int __cpuinit __cpu_up(unsigned int cpu)
- 
- 	cpu_set(cpu, cpu_online_map);
- 
-+	/* Flush out any buffered log messages from the new CPU */
-+	if (try_acquire_console_sem() == 0)
-+		release_console_sem();
-+
- 	return 0;
- }
- 
--- 
-1.7.0.4
+To: Manuel Lauss <manuel.lauss@googlemail.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips <linux-mips@linux-mips.org>, Wu Zhangjin <wuzhangjin@gmail.com>
+Message-ID: <20100531180321.Ca0S3xwgXmzu8I8p7lvfNi_YRM9xfI8zoOEBIMfQNjI@z>

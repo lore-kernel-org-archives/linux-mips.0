@@ -1,96 +1,72 @@
-Received: from [69.28.251.93] ([69.28.251.93]:41975 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1492410Ab0FAAHl (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 1 Jun 2010 02:07:41 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Mon, 31 May 2010 16:57:15 -0700
-Subject: [PATCH v2] printk: fix delayed messages from CPU hotplug events
-Message-ID: <ede63b5a20af951c755736f035d1e787772d7c28@localhost>
+Received: from mail-gy0-f177.google.com ([209.85.160.177]:55993 "EHLO
+        mail-gy0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1492272Ab0FAGXa convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 1 Jun 2010 08:23:30 +0200
+Received: by gyb11 with SMTP id 11so3401178gyb.36
+        for <linux-mips@linux-mips.org>; Mon, 31 May 2010 23:23:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20100531211842.GA795@merkur.ravnborg.org>
+References: <1275332878-19762-1-git-send-email-manuel.lauss@googlemail.com>
+        <20100531211842.GA795@merkur.ravnborg.org>
+Date: Tue, 1 Jun 2010 08:23:21 +0200
+Message-ID: <AANLkTilUtwCpTjAdUxLJSjnwUe3i2aKlIrdnQ_ZBH6j5@mail.gmail.com>
+Subject: Re: [PATCH -queue] MIPS: Move Alchemy Makefile parts to their own
+        Platform file.
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: mingo@elte.hu, akpm@linux-foundation.org, simon.kagstrom@netinsight.net, David.Woodhouse@intel.com, rgetz@analog.com, lethal@linux-sh.org
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20100531235715.IzZQXe1xg5dkPEgnUMp0YH1dLKRO8ew9eIIO4q3YlIc@z>
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>
+Message-ID: <20100601062321.3YbylAgw8sEmUQxDzoT1ch0Ewd1Y5qGnP0jIVLXdgik@z>
 
-When a secondary CPU is being brought up, it is not uncommon for
-printk() to be invoked when cpu_online(smp_processor_id()) == 0.  The
-case that I witnessed personally was on MIPS:
+Hi Sam,
+On Mon, May 31, 2010 at 11:18 PM, Sam Ravnborg <sam@ravnborg.org> wrote:
 
-http://lkml.org/lkml/2010/5/30/4
+>> --- a/arch/mips/Kbuild.platforms
+>> +++ b/arch/mips/Kbuild.platforms
+>> @@ -1,6 +1,6 @@
+>>  # All platforms listed in alphabetic order
+>>
+>> -platforms += ar7
+>> +platforms += alchemy ar7
+>
+> One line per paltform is better.
+> Then the risk for conflicts are less and merging in easier.
+> Like this:
+>
+> platforms += ar7
+> platforms += alchemy
 
-If (can_use_console() == 0), printk() will spool its output to log_buf
-and it will be visible in "dmesg", but that output will NOT be echoed to
-the console until somebody calls release_console_sem() from a CPU that
-is online.  Therefore, the boot time messages from the new CPU can get
-stuck in "limbo" for a long time, and might suddenly appear on the
-screen when a completely unrelated event (e.g. "eth0: link is down")
-occurs.
+Done,
 
-This patch modifies the console code so that any pending messages are
-automatically flushed out to the console whenever a CPU hotplug
-operation completes successfully or aborts.
 
-The issue was seen on 2.6.34.
+>> diff --git a/arch/mips/alchemy/Platform b/arch/mips/alchemy/Platform
+>> new file mode 100644
+>> index 0000000..1994fdc
+>> --- /dev/null
+>> +++ b/arch/mips/alchemy/Platform
+>> @@ -0,0 +1,103 @@
+>> +#
+>> +# Common Alchemy Au1x00 stuff
+>> +#
+>> +core-$(CONFIG_SOC_AU1X00)    += arch/mips/alchemy/common/
+>
+> The above is actually wrong - despite that it works.
+> You are supposed to use:
+>
+> platform-$(CONFIG_SOC_AU1X00) += alchemy/common/
+>
+> Then arch/mips/Kbuild will pick it up.
+> And then subdirs-ccflags-y := -Werror will also take effect.
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- kernel/printk.c |   33 +++++++++++++++++++++++++++++++++
- 1 files changed, 33 insertions(+), 0 deletions(-)
+Ah, interesting.  I shall look at the full commandline in the future.
 
-diff --git a/kernel/printk.c b/kernel/printk.c
-index 444b770..9c04719 100644
---- a/kernel/printk.c
-+++ b/kernel/printk.c
-@@ -37,6 +37,8 @@
- #include <linux/ratelimit.h>
- #include <linux/kmsg_dump.h>
- #include <linux/syslog.h>
-+#include <linux/cpu.h>
-+#include <linux/notifier.h>
- 
- #include <asm/uaccess.h>
- 
-@@ -985,6 +987,37 @@ void resume_console(void)
- }
- 
- /**
-+ * console_cpu_notify - print deferred console messages after CPU hotplug
-+ *
-+ * If printk() is called from a CPU that is not online yet, the messages
-+ * will be spooled but will not show up on the console.  This function is
-+ * called when a new CPU comes online and ensures that any such output
-+ * gets printed.
-+ */
-+static int __cpuinit console_cpu_notify(struct notifier_block *self,
-+	unsigned long action, void *hcpu)
-+{
-+	switch (action) {
-+	case CPU_ONLINE:
-+	case CPU_UP_CANCELED:
-+		if (try_acquire_console_sem() == 0)
-+			release_console_sem();
-+	}
-+	return NOTIFY_OK;
-+}
-+
-+static struct notifier_block __cpuinitdata console_nb = {
-+	.notifier_call		= console_cpu_notify,
-+};
-+
-+static int __init console_notifier_init(void)
-+{
-+	register_cpu_notifier(&console_nb);
-+	return 0;
-+}
-+late_initcall(console_notifier_init);
-+
-+/**
-  * acquire_console_sem - lock the console system for exclusive use.
-  *
-  * Acquires a semaphore which guarantees that the caller has
--- 
-1.7.0.4
+I'll do a build of all alchemy boards and resend when there are
+no breakages.
+
+Thank you!
+     Manuel Lauss

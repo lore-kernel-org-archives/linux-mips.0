@@ -1,17 +1,17 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177]:55993 "EHLO
+Received: from mail-gy0-f177.google.com ([209.85.160.177]:45961 "EHLO
         mail-gy0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492272Ab0FAGXa convert rfc822-to-8bit
+        by eddie.linux-mips.org with ESMTP id S1491129Ab0FAQsX convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 1 Jun 2010 08:23:30 +0200
-Received: by gyb11 with SMTP id 11so3401178gyb.36
-        for <linux-mips@linux-mips.org>; Mon, 31 May 2010 23:23:23 -0700 (PDT)
+        Tue, 1 Jun 2010 18:48:23 +0200
+Received: by gyb11 with SMTP id 11so3865343gyb.36
+        for <linux-mips@linux-mips.org>; Tue, 01 Jun 2010 09:48:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20100531211842.GA795@merkur.ravnborg.org>
-References: <1275332878-19762-1-git-send-email-manuel.lauss@googlemail.com>
-        <20100531211842.GA795@merkur.ravnborg.org>
-Date: Tue, 1 Jun 2010 08:23:21 +0200
-Message-ID: <AANLkTilUtwCpTjAdUxLJSjnwUe3i2aKlIrdnQ_ZBH6j5@mail.gmail.com>
-Subject: Re: [PATCH -queue] MIPS: Move Alchemy Makefile parts to their own
+In-Reply-To: <20100601163528.GA5216@merkur.ravnborg.org>
+References: <1275405795-9009-1-git-send-email-manuel.lauss@googlemail.com>
+        <20100601163528.GA5216@merkur.ravnborg.org>
+Date: Tue, 1 Jun 2010 18:47:59 +0200
+Message-ID: <AANLkTikIiKmqjhuZKnguhyNeuCXnPeBLHSSeolCTf3d0@mail.gmail.com>
+Subject: Re: [PATCH -queue v2] MIPS: Move Alchemy Makefile parts to their own
         Platform file.
 From: Manuel Lauss <manuel.lauss@googlemail.com>
 Content-Type: text/plain; charset=ISO-8859-1
@@ -21,52 +21,82 @@ Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: Sam Ravnborg <sam@ravnborg.org>
 Cc: Linux-MIPS <linux-mips@linux-mips.org>
-Message-ID: <20100601062321.3YbylAgw8sEmUQxDzoT1ch0Ewd1Y5qGnP0jIVLXdgik@z>
+Message-ID: <20100601164759.Tgyu3NAkyszSzbQjua3gr2smQdT-FiEyn09PGqhNuic@z>
 
-Hi Sam,
-On Mon, May 31, 2010 at 11:18 PM, Sam Ravnborg <sam@ravnborg.org> wrote:
-
->> --- a/arch/mips/Kbuild.platforms
->> +++ b/arch/mips/Kbuild.platforms
->> @@ -1,6 +1,6 @@
->>  # All platforms listed in alphabetic order
->>
->> -platforms += ar7
->> +platforms += alchemy ar7
+On Tue, Jun 1, 2010 at 6:35 PM, Sam Ravnborg <sam@ravnborg.org> wrote:
+> On Tue, Jun 01, 2010 at 05:23:15PM +0200, Manuel Lauss wrote:
+>> Cc: Sam Ravnborg <sam@ravnborg.org>
+>> Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
+>> ---
+>> On top of latest mips-queue.  The changes to the mtx1/xx1500 Makefiles were
+>> necessary to work around vmlinux link failures.
 >
-> One line per paltform is better.
-> Then the risk for conflicts are less and merging in easier.
-> Like this:
->
-> platforms += ar7
-> platforms += alchemy
+> Was this something the platform patches introduced or
+> is it needed to fix the build?
 
-Done,
+Maybe.  Link failures with the "lib-y" parts do crop up occasionally.
+Usually, the lib-y parts are built as the last files (along with other
+arch/mips/lib code); with your changes they're built with the other
+files in a directory:
+ CC      arch/mips/alchemy/mtx-1/platform.o
+  LD      arch/mips/alchemy/mtx-1/built-in.o
+  CC      arch/mips/alchemy/mtx-1/board_setup.o
+  CC      arch/mips/alchemy/mtx-1/init.o
+  AR      arch/mips/alchemy/mtx-1/lib.a
+
+That lib.a is apparently not picked up by the linker:
+  LD      .tmp_vmlinux1
+arch/mips/built-in.o: In function `plat_mem_setup':
+/mnt/data/_home/mano/db1200/kernel/linux-2.6.git/arch/mips/alchemy/common/setup.c:55:
+undefined reference to `board_setup'
+/mnt/data/_home/mano/db1200/kernel/linux-2.6.git/arch/mips/alchemy/common/setup.c:55:
+relocation truncated to fit: R_MIPS_26 against `board_setup'
+arch/mips/built-in.o: In function `setup_arch':
+/mnt/data/_home/mano/db1200/kernel/linux-2.6.git/arch/mips/kernel/setup.c:550:
+undefined reference to `prom_init'
+/mnt/data/_home/mano/db1200/kernel/linux-2.6.git/arch/mips/kernel/setup.c:550:
+relocation truncated to fit: R_MIPS_26 against `prom_init'
+[...]
+make[1]: *** [.tmp_vmlinux1] Error 1
+make: *** [sub-make] Error 2
+
+Using obj-y is much more reliable.  I have no idea why some boards have
+lib-y code; maybe Ralf knows more.
 
 
 >> diff --git a/arch/mips/alchemy/Platform b/arch/mips/alchemy/Platform
 >> new file mode 100644
->> index 0000000..1994fdc
+>> index 0000000..495cc9a
 >> --- /dev/null
 >> +++ b/arch/mips/alchemy/Platform
->> @@ -0,0 +1,103 @@
+>
+> ...
 >> +#
->> +# Common Alchemy Au1x00 stuff
+>> +# 4G-Systems eval board
 >> +#
->> +core-$(CONFIG_SOC_AU1X00)    += arch/mips/alchemy/common/
+>> +platform-$(CONFIG_MIPS_MTX1) += alchemy/mtx-1/
+>> +load-$(CONFIG_MIPS_MTX1)     += 0xffffffff80100000
 >
-> The above is actually wrong - despite that it works.
-> You are supposed to use:
+>> diff --git a/arch/mips/alchemy/mtx-1/Makefile b/arch/mips/alchemy/mtx-1/Makefile
+>> index 4a53815..4d1367e 100644
+>> --- a/arch/mips/alchemy/mtx-1/Makefile
+>> +++ b/arch/mips/alchemy/mtx-1/Makefile
+>> @@ -6,7 +6,6 @@
+>>  # Makefile for 4G Systems MTX-1 board.
+>>  #
+>>
+>> -lib-y := init.o board_setup.o
+>> -obj-y := platform.o
+>> +obj-y := init.o board_setup.o platform.o
+>>
+>>  EXTRA_CFLAGS += -Werror
 >
-> platform-$(CONFIG_SOC_AU1X00) += alchemy/common/
+> In the above we added alchemy/mtx-1/ to platform-y
+> so mtx-1/ is automatically covered by -Werror by arch/mips/Kbuild
 >
-> Then arch/mips/Kbuild will pick it up.
-> And then subdirs-ccflags-y := -Werror will also take effect.
+> So the above assignment to EXTRA_CFLAGS is now redundant and can be dropped.
 
-Ah, interesting.  I shall look at the full commandline in the future.
+Okay, they're gone.
 
-I'll do a build of all alchemy boards and resend when there are
-no breakages.
-
-Thank you!
+Thank you,
      Manuel Lauss

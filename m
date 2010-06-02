@@ -1,125 +1,85 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177]:59314 "EHLO
-        mail-iw0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491801Ab0FAUND convert rfc822-to-8bit
+Received: from mail-pv0-f177.google.com ([74.125.83.177]:65237 "EHLO
+        mail-pv0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491203Ab0FBCbL convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 1 Jun 2010 22:13:03 +0200
-Received: by iwn34 with SMTP id 34so282010iwn.36
-        for <linux-mips@linux-mips.org>; Tue, 01 Jun 2010 13:13:00 -0700 (PDT)
+        Wed, 2 Jun 2010 04:31:11 +0200
 MIME-Version: 1.0
-In-Reply-To: <20100601200200.GA5438@merkur.ravnborg.org>
-References: <1275405795-9009-1-git-send-email-manuel.lauss@googlemail.com>
-        <20100601163528.GA5216@merkur.ravnborg.org>
-        <AANLkTikIiKmqjhuZKnguhyNeuCXnPeBLHSSeolCTf3d0@mail.gmail.com>
-        <20100601200200.GA5438@merkur.ravnborg.org>
-Date: Tue, 1 Jun 2010 22:12:59 +0200
-Message-ID: <AANLkTimJXcCxazHZXLOA2tfVuc326LyQty9uAfW7V11i@mail.gmail.com>
-Subject: Re: [PATCH -queue v2] MIPS: Move Alchemy Makefile parts to their own
-        Platform file.
-From: Manuel Lauss <manuel.lauss@googlemail.com>
+In-Reply-To: <1275388144-5998-1-git-send-email-wuzhangjin@gmail.com>
+References: <1275388144-5998-1-git-send-email-wuzhangjin@gmail.com>
+Date: Wed, 2 Jun 2010 10:31:02 +0800
+Message-ID: <AANLkTimphf48ZsNVS29mUNwx4NHSd7FeicoFcHsdmd58@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: arch/mips/boot/compressed/Makefile: Unify the
+        suffix of compressed vmlinux.bin
+From: wu zhangjin <wuzhangjin@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8BIT
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: Linux-MIPS <linux-mips@linux-mips.org>
-Message-ID: <20100601201259.PQm5xc-jQWoBcZcjy7gMlb3Q8yQEfjlc66ACCrl1u0c@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips <linux-mips@linux-mips.org>
+Cc: Alexander Clouter <alex@digriz.org.uk>, Manuel Lauss <manuel.lauss@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, Wu Zhangjin <wuzhangjin@gmail.com>
+Message-ID: <20100602023102.0I3x31LLGT47079sy8gpNcIUlTAdflgQBtcJPxSexBY@z>
 
-On Tue, Jun 1, 2010 at 10:02 PM, Sam Ravnborg <sam@ravnborg.org> wrote:
-> On Tue, Jun 01, 2010 at 06:47:59PM +0200, Manuel Lauss wrote:
->> On Tue, Jun 1, 2010 at 6:35 PM, Sam Ravnborg <sam@ravnborg.org> wrote:
->> > On Tue, Jun 01, 2010 at 05:23:15PM +0200, Manuel Lauss wrote:
->> >> Cc: Sam Ravnborg <sam@ravnborg.org>
->> >> Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
->> >> ---
->> >> On top of latest mips-queue.  The changes to the mtx1/xx1500 Makefiles were
->> >> necessary to work around vmlinux link failures.
->> >
->> > Was this something the platform patches introduced or
->> > is it needed to fix the build?
->>
->> Maybe.  Link failures with the "lib-y" parts do crop up occasionally.
->> Usually, the lib-y parts are built as the last files (along with other
->> arch/mips/lib code); with your changes they're built with the other
->> files in a directory:
->>  CC      arch/mips/alchemy/mtx-1/platform.o
->>   LD      arch/mips/alchemy/mtx-1/built-in.o
->>   CC      arch/mips/alchemy/mtx-1/board_setup.o
->>   CC      arch/mips/alchemy/mtx-1/init.o
->>   AR      arch/mips/alchemy/mtx-1/lib.a
->>
->> That lib.a is apparently not picked up by the linker:
->>   LD      .tmp_vmlinux1
+Hi,
+
+I will use vmlinux.bin.z in the next revision of this patch.
+
+Regards,
+
+
+On Tue, Jun 1, 2010 at 6:29 PM, Wu Zhangjin <wuzhangjin@gmail.com> wrote:
+> The compressed vmlinux.{gz,bz2,lzo,lzma} are only temp files, we can use the
+> same suffix for them to remove several lines and simpify the maintaining.
 >
-> ...
+> Signed-off-by: Wu Zhangjin <wuzhangjin@gmail.com>
+> ---
+>  arch/mips/boot/compressed/Makefile |   12 ++++--------
+>  1 files changed, 4 insertions(+), 8 deletions(-)
 >
->> > ...
->> >> +#
->> >> +# 4G-Systems eval board
->> >> +#
->> >> +platform-$(CONFIG_MIPS_MTX1) += alchemy/mtx-1/
->> >> +load-$(CONFIG_MIPS_MTX1)     += 0xffffffff80100000
->> >
->> >> diff --git a/arch/mips/alchemy/mtx-1/Makefile b/arch/mips/alchemy/mtx-1/Makefile
->> >> index 4a53815..4d1367e 100644
->> >> --- a/arch/mips/alchemy/mtx-1/Makefile
->> >> +++ b/arch/mips/alchemy/mtx-1/Makefile
->> >> @@ -6,7 +6,6 @@
->> >>  # Makefile for 4G Systems MTX-1 board.
->> >>  #
->> >>
->> >> -lib-y := init.o board_setup.o
->> >> -obj-y := platform.o
->> >> +obj-y := init.o board_setup.o platform.o
->> >>
->> >>  EXTRA_CFLAGS += -Werror
->> >
+> diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+> index 74a52d7..7204dfc 100644
+> --- a/arch/mips/boot/compressed/Makefile
+> +++ b/arch/mips/boot/compressed/Makefile
+> @@ -48,23 +48,19 @@ OBJCOPYFLAGS_vmlinux.bin := $(OBJCOPYFLAGS) -O binary -R .comment -S
+>  $(obj)/vmlinux.bin: $(KBUILD_IMAGE) FORCE
+>        $(call if_changed,objcopy)
 >
-> So the original ocde looked like this:
+> -suffix_$(CONFIG_KERNEL_GZIP)  = gz
+> -suffix_$(CONFIG_KERNEL_BZIP2) = bz2
+> -suffix_$(CONFIG_KERNEL_LZMA)  = lzma
+> -suffix_$(CONFIG_KERNEL_LZO)   = lzo
+>  tool_$(CONFIG_KERNEL_GZIP)    = gzip
+>  tool_$(CONFIG_KERNEL_BZIP2)   = bzip2
+>  tool_$(CONFIG_KERNEL_LZMA)    = lzma
+>  tool_$(CONFIG_KERNEL_LZO)     = lzo
 >
-> arch/mips/Makefile:
-> libs-$(CONFIG_MIPS_MTX1)        += arch/mips/alchemy/mtx-1/
+> -targets += vmlinux.gz vmlinux.bz2 vmlinux.lzma vmlinux.lzo
+> -$(obj)/vmlinux.$(suffix_y): $(obj)/vmlinux.bin FORCE
+> +targets += vmlinux.z
+> +$(obj)/vmlinux.z: $(obj)/vmlinux.bin FORCE
+>        $(call if_changed,$(tool_y))
 >
-> The above is used to tell that it shall look for a lib.a
-> in the directory: arch/mips/alchemy/mtx-1/
-> It also tell kbuild to build any built-in or modules in the same dir.
+>  targets += piggy.o
+> -OBJCOPYFLAGS_piggy.o := --add-section=.image=$(obj)/vmlinux.$(suffix_y) \
+> +OBJCOPYFLAGS_piggy.o := --add-section=.image=$(obj)/vmlinux.z \
+>                         --set-section-flags=.image=contents,alloc,load,readonly,data
+> -$(obj)/piggy.o: $(obj)/dummy.o $(obj)/vmlinux.$(suffix_y) FORCE
+> +$(obj)/piggy.o: $(obj)/dummy.o $(obj)/vmlinux.z FORCE
+>        $(call if_changed,objcopy)
 >
-> In your conversion this became:
-> platform-$(CONFIG_MIPS_MTX1) += alchemy/mtx-1/
+>  LDFLAGS_vmlinuz := $(LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T
+> --
+> 1.6.5
 >
-> The above tells kbuild to build objects as built-in or modules
-> in the directory. It does not say anything about libs.
 >
-> So we loose the information about the lib.a in the directory.
-> I know that kbuild will build it - but it happens
-> to forget all about it when done.
->
-> The right fixs seems to keep the libs-$(...) assignments in
-> the Platform files and let kbuild pick them up due to
-> the include in arch/mips/Makefile.
-
-That doesn't work, I get errors for instance when doing "make clean":
-
-linux-2.6.git/scripts/Makefile.clean:17:
-linux-2.6.git/alchemy/mtx-1/Makefile: No such file or directory
 
 
-> Getting rid of the libs like you did is also an option.
 
-I'll send new patches doing exactly that and pile this one on
-top of it.
-
-
-> Does the lib files contain stuff that is only used in some
-> confgurations or does the content end up being linked
-> in always anyway?
-
-Nope, just usual board initialization and platform data.
-
-
-> Also are there any linker order constrains to tke care of?
-
-None that I'm aware of, at least for the affected boards.
-
-
-        Manuel
+-- 
+Studying engineer. Wu Zhangjin
+Lanzhou University      http://www.lzu.edu.cn
+Distributed & Embedded System Lab      http://dslab.lzu.edu.cn
+School of Information Science and Engeneering         http://xxxy.lzu.edu.cn
+wuzhangjin@gmail.com         http://falcon.oss.lzu.edu.cn
+Address:Tianshui South Road 222,Lanzhou,P.R.China    Zip Code:730000
+Tel:+86-931-8912025

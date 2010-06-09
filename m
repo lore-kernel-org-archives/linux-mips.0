@@ -1,122 +1,48 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13]:52040 "EHLO
-        smtp1.linux-foundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491164Ab0FDF7K (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Jun 2010 07:59:10 +0200
-Date: Thu, 3 Jun 2010 22:58:24 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3] printk: fix delayed messages from CPU hotplug events
-Message-ID: <20100603225824.8de77fba.akpm@linux-foundation.org>
-In-Reply-To: <ee1bf4f9c158983acad0a4548229586128afad67@localhost>
-References: <ee1bf4f9c158983acad0a4548229586128afad67@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mx3-v2.alinto.net ([83.145.109.33]:49363 "EHLO
+        mx3-v2.alinto.net" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1491832Ab0FIOs5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Jun 2010 16:48:57 +0200
+Message-ID: <1276094926.4c0fa9ce566aa@www.inmano.com>
+Date: Wed, 09 Jun 2010 16:48:46 +0200
+From: octane indice <octane@alinto.com>
+Subject: Re: Cross compiling MIPS kernel under x86
+In-Reply-To: <op.vdz4mmlornd9a3@poker>
+References: <1274711094.4bfa8c3675983@www.inmano.com> <AANLkTinOaPkOXm128trTQ39jNGWMcvPhVUGWSQz6hLjR@mail.gmail.com> <20100525131341.GA26500@linux-mips.org> <1274795905.4bfbd781a17fa@www.inmano.com> <20100525144400.GA30900@linux-mips.org> <1274879482.4bfd1dfa91e70@www.inmano.com> <AANLkTikbZmTWh8X4KOKLAUaJxKS5-PO39hmiTVICB5Zm@mail.gmail.com> <1274977788.4bfe9dfc7680f@www.inmano.com> <4BFEE551.8000306@gmail.com>
+ <op.vdz4mmlornd9a3@poker>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Kevin Cernekee <cernekee@gmail.com>
-Cc: mingo@elte.hu, simon.kagstrom@netinsight.net, David.Woodhouse@intel.com, lethal@linux-sh.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20100604055824.yfE2jfPjIE8w7ZEuv9zzpKTwbzauvAZRSWfBmBeDhwc@z>
+To: phils@windriver.comPhil Staub <phils@windriver.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20100609144846.R5YtAjg8QCOs-15QKAh-KpLxAGNUZHbtlQxzDdGLXOI@z>
 
-On Thu, 3 Jun 2010 22:11:25 -0700 Kevin Cernekee <cernekee@gmail.com> wrote:
-
-> [Changes from v2:
+En réponse à Phil Staub <phils@windriver.com> :
+> In the top level Makefile, you'll find this:
 > 
-> Use hotcpu_notifier - fix will only apply to hotplug events, not
-> initial SMP boot
+> # Use --build-id when available.
+> LDFLAGS_BUILD_ID = $(patsubst -Wl$(comma)%,%,\
+> 			      $(call cc-ldoption, -Wl$(comma)--build-id,))
 > 
-> Kerneldocify function arguments
-> 
-> Use acquire_console_sem() instead of try_acquire_console_sem()
-> 
-> Reuse the existing disable_boot_consoles() initcall instead of making a
-> new one]
-> 
-> When a secondary CPU is being brought up, it is not uncommon for
-> printk() to be invoked when cpu_online(smp_processor_id()) == 0.  The
-> case that I witnessed personally was on MIPS:
-> 
-> http://lkml.org/lkml/2010/5/30/4
-> 
-> If (can_use_console() == 0), printk() will spool its output to log_buf
-> and it will be visible in "dmesg", but that output will NOT be echoed to
-> the console until somebody calls release_console_sem() from a CPU that
-> is online.  Therefore, the boot time messages from the new CPU can get
-> stuck in "limbo" for a long time, and might suddenly appear on the
-> screen when a completely unrelated event (e.g. "eth0: link is down")
-> occurs.
-> 
-> This patch modifies the console code so that any pending messages are
-> automatically flushed out to the console whenever a CPU hotplug
-> operation completes successfully or aborts.
-> 
-> The issue was seen on 2.6.34.
-> 
-> ...
+> Comment that out and it should fix you up.
 >
-> +static int __cpuinit console_cpu_notify(struct notifier_block *self,
-> +	unsigned long action, void *hcpu)
-> +{
-> +	switch (action) {
-> +	case CPU_ONLINE:
-> +	case CPU_UP_CANCELED:
-> +		acquire_console_sem();
-> +		release_console_sem();
-> +	}
-> +	return NOTIFY_OK;
-> +}
-> +
-> +static struct notifier_block __cpuinitdata console_nb = {
-> +	.notifier_call		= console_cpu_notify,
-> +};
-> +
-> +/**
->   * acquire_console_sem - lock the console system for exclusive use.
->   *
->   * Acquires a semaphore which guarantees that the caller has
-> @@ -1371,7 +1400,7 @@ int unregister_console(struct console *console)
->  }
->  EXPORT_SYMBOL(unregister_console);
->  
-> -static int __init disable_boot_consoles(void)
-> +static int __init printk_late_init(void)
->  {
->  	struct console *con;
->  
-> @@ -1382,9 +1411,10 @@ static int __init disable_boot_consoles(void)
->  			unregister_console(con);
->  		}
->  	}
-> +	register_hotcpu_notifier(&console_nb);
+Excellent. It boots. It fails next because it can't find
+the root device, but I know how to manage that 
 
-gack, we seem to have made these interfaces as hard to use and as documentation-free
-as we possibly could :(
 
-This:
-
---- a/kernel/printk.c~printk-fix-delayed-messages-from-cpu-hotplug-events-fix
-+++ a/kernel/printk.c
-@@ -1009,10 +1009,6 @@ static int __cpuinit console_cpu_notify(
- 	return NOTIFY_OK;
- }
+> Phil
+>
+Thanks
  
--static struct notifier_block __cpuinitdata console_nb = {
--	.notifier_call		= console_cpu_notify,
--};
--
- /**
-  * acquire_console_sem - lock the console system for exclusive use.
-  *
-@@ -1411,7 +1407,7 @@ static int __init printk_late_init(void)
- 			unregister_console(con);
- 		}
- 	}
--	register_hotcpu_notifier(&console_nb);
-+	hotcpu_notifier(console_cpu_notify, 0);
- 	return 0;
- }
- late_initcall(printk_late_init);
+> -- 
+> Phil Staub, Senior Member of Technical Staff, Wind River
+> Direct: 702.290.0470 Fax: 702.982.0085
+> 
 
 
-There are numerous other register_hotcpu_notifier() callsites which can
-probably be converted.
+
+
+
+Envoyé avec Inmano, ma messagerie renversante et gratuite : http://www.inmano.com

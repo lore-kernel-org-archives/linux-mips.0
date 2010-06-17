@@ -1,42 +1,94 @@
-Received: from bby1mta03.pmc-sierra.com ([216.241.235.118]:58526 "EHLO
-        bby1mta03.pmc-sierra.bc.ca" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492143Ab0FKOGN convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 11 Jun 2010 16:06:13 +0200
-Content-class: urn:content-classes:message
+Received: from ossa.mas.viperplatform.net.au ([202.147.75.25]:49589 "EHLO
+        ossa.mas.viperplatform.net.au" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491861Ab0FQKr5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Jun 2010 12:47:57 +0200
+Received: from mail by ossa.mas.viperplatform.net.au with spam-scanned (Exim 4.43)
+        id 1OPCdK-0001hu-Vf
+        for linux-mips@linux-mips.org; Thu, 17 Jun 2010 20:47:44 +1000
+Received: from [203.94.56.252] (helo=longlandclan.yi.org)
+        by ossa.mas.viperplatform.net.au with esmtp (Exim 4.43)
+        id 1OPCdJ-0001hB-29
+        for linux-mips@linux-mips.org; Thu, 17 Jun 2010 20:47:42 +1000
+Date: Thu, 17 Jun 2010 20:47:40 +1000
+From: Stuart Longland <redhatter@gentoo.org>
+Subject: Re: [PATCH v4 00/16] Cleanup Lemote FuLoong2e Support
+Message-ID: <20100617104735.GC24561@www.longlandclan.yi.org>
+References: <cover.1246546684.git.wuzhangjin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Subject: 
-Date: Fri, 11 Jun 2010 07:06:07 -0700
-Message-ID: <BE430C874DBA6841A75E65151DCC6E1C0407668F@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
-From: "Jabir M" <Jabir_M@pmc-sierra.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1246546684.git.wuzhangjin@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-mips@linux-mips.org
-Cc: ralf@linux-mips.org
-Message-ID: <20100611140607.s299yxLMlGBa2Wmghpk7CxUzUbznwHULLDR289gpowM@z>
-
+To: Wu <wuzhangjin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org, Yan Hua <yanh@lemote.com>, Philippe Vachon <philippe@cowpig.ca>, Zhang Le <r0bertz@gentoo.org>, Zhang Fuxin <zhangfx@lemote.com>, loongson-dev <loongson-dev@googlegroups.com>, Liu Junliang <liujl@lemote.com>, Erwan Lerale <erwan@thiscow.com>, Arnaud Patard <apatard@mandriva.com>
+Message-ID: <20100617104740.nsoet1C5CW-JU0ADJfUg1UphOubrOf3UKp_85j4GcWI@z>
 
 Hi,
+On Thu, Jul 02, 2009 at 11:15:52PM +0800, Wu wrote:
+> From: Wu Zhangjin <wuzhangjin@gmail.com>
+>
+> This patch series is the -v4 version of the loongson-PATCH-v3 series, but it
+> only include the cleanup for fuloong2e support and necessary preparation for
+> future fuloong-2f and yeeloong-2f support.
+>
+> The git branch of this patch series is:
+>
+> 	git://dev.lemote.com/rt4ls.git linux-loongson/dev/fuloong2e
+>
+> 	or
+>
+> 	http://dev.lemote.com/cgit/rt4ls.git/log/?h=linux-loongson/dev/fuloong2e
 
-    I am working on a FPU-less 34k MIPS platform with linux-2.6.24
-kernel. After running a Darwin media streaming server on the board
-for a while, my oprofile results shows high utilization on
-fpu_emulator_cop1Handler() & r4k_wait().
+stuartl@duron ~/linux-fulong2e $ git fetch rt4ls
+remote: Counting objects: 476834, done.
+remote: Compressing objects: 100% (90281/90281), done.
+remote: Total 452782 (delta 393459), reused 411290 (delta 359631)
+Receiving objects: 100% (452782/452782), 152.90 MiB | 50 KiB/s, done.
+Resolving deltas: 100% (393459/393459), completed with 15512 local
+objects.
+From git://dev.lemote.com/rt4ls
+ * [new branch]      linux-loongson/2.6.29/rt-preempt ->
+ 			rt4ls/linux-loongson/2.6.29/rt-preempt
+ * [new branch]      linux-loongson/2.6.29/stable ->
+			rt4ls/linux-loongson/2.6.29/stable
+ * [new branch]      linux-loongson/2.6.30/stable ->
+			rt4ls/linux-loongson/2.6.30/stable
+ * [new branch]      linux-loongson/2.6.31/rt-preempt ->
+			rt4ls/linux-loongson/2.6.31/rt-preempt
+ * [new branch]      linux-loongson/2.6.31/stable ->
+			rt4ls/linux-loongson/2.6.31/stable
+ * [new branch]      linux-loongson/2.6.32/stable ->
+			rt4ls/linux-loongson/2.6.32/stable
+ * [new branch]      linux-loongson/2.6.33/stable ->
+			rt4ls/linux-loongson/2.6.33/stable
+ * [new branch]      linux-loongson/dev/2.6.30-gdium ->
+			rt4ls/linux-loongson/dev/2.6.30-gdium
+ * [new branch]      linux-loongson/dev/2.6.33-gdium ->
+			rt4ls/linux-loongson/dev/2.6.33-gdium
+ * [new branch]      linux-loongson/dev/kft ->
+			rt4ls/linux-loongson/dev/kft
+ * [new branch]      linux-loongson/dev/kgcov ->
+			rt4ls/linux-loongson/dev/kgcov
+ * [new branch]      master     -> rt4ls/master
+ * [new branch]      rt/2.6.31/loongson -> rt4ls/rt/2.6.31/loongson
+ * [new branch]      rt/2.6.31/mips -> rt4ls/rt/2.6.31/mips
+ * [new branch]      rt/2.6.33/loongson -> rt4ls/rt/2.6.33/loongson
+...
 
-wiki page http://www.linux-mips.org/wiki/Floating_point says gcc will
-use hard float as default and soft float is best suited model for a
-fpu less processor.  Could anyone kindly help me in understanding use
-of -msoft-float .
-Whether I need to compile
+I can't seem to find a linux-loongson/dev/fuloong2e branch... did I miss
+the boat?  I'm looking to update the kernels on the two Fulongs 2Es
+here... as I'm having grief compiling Python 2.6 -- hard locks always at
+the same point, and I have a feeling it's the
+kernel+kernel-build-toolchain combo that's possibly to blame.
 
-1. kernel with -msoft-float ? or
-2. Glibc ? or
-3. Application ? or
-4. All the above ?
+Regards,
+--
+Stuart Longland (aka Redhatter, VK4MSL)      .'''.
+Gentoo Linux/MIPS Cobalt and Docs Developer  '.'` :
+. . . . . . . . . . . . . . . . . . . . . .   .'.'
+http://dev.gentoo.org/~redhatter             :.'
 
-Thanks in Advance
-
-Jabir
+I haven't lost my mind...
+  ...it's backed up on a tape somewhere.

@@ -1,94 +1,297 @@
-Received: from ossa.mas.viperplatform.net.au ([202.147.75.25]:49589 "EHLO
-        ossa.mas.viperplatform.net.au" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491861Ab0FQKr5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Jun 2010 12:47:57 +0200
-Received: from mail by ossa.mas.viperplatform.net.au with spam-scanned (Exim 4.43)
-        id 1OPCdK-0001hu-Vf
-        for linux-mips@linux-mips.org; Thu, 17 Jun 2010 20:47:44 +1000
-Received: from [203.94.56.252] (helo=longlandclan.yi.org)
-        by ossa.mas.viperplatform.net.au with esmtp (Exim 4.43)
-        id 1OPCdJ-0001hB-29
-        for linux-mips@linux-mips.org; Thu, 17 Jun 2010 20:47:42 +1000
-Date: Thu, 17 Jun 2010 20:47:40 +1000
-From: Stuart Longland <redhatter@gentoo.org>
-Subject: Re: [PATCH v4 00/16] Cleanup Lemote FuLoong2e Support
-Message-ID: <20100617104735.GC24561@www.longlandclan.yi.org>
-References: <cover.1246546684.git.wuzhangjin@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1246546684.git.wuzhangjin@gmail.com>
+Received: from bamako.nerim.net ([62.4.17.28]:63089 "EHLO bamako.nerim.net"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491131Ab0FSIgh (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 19 Jun 2010 10:36:37 +0200
+Date: Sat, 19 Jun 2010 10:36:34 +0200
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: [lm-sensors] [PATCH v2 23/26] hwmon: Add JZ4740 ADC driver
+Message-ID: <20100619103634.3da9c7b3@hyperion.delvare>
+In-Reply-To: <1276924111-11158-24-git-send-email-lars@metafoo.de>
+References: <1276924111-11158-1-git-send-email-lars@metafoo.de>
+        <1276924111-11158-24-git-send-email-lars@metafoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Wu <wuzhangjin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org, Yan Hua <yanh@lemote.com>, Philippe Vachon <philippe@cowpig.ca>, Zhang Le <r0bertz@gentoo.org>, Zhang Fuxin <zhangfx@lemote.com>, loongson-dev <loongson-dev@googlegroups.com>, Liu Junliang <liujl@lemote.com>, Erwan Lerale <erwan@thiscow.com>, Arnaud Patard <apatard@mandriva.com>
-Message-ID: <20100617104740.nsoet1C5CW-JU0ADJfUg1UphOubrOf3UKp_85j4GcWI@z>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Jonathan Cameron <kernel@jic23.retrosnub.co.uk>, linux-kernel@vger.kernel.org, lm-sensors@lm-sensors.org
+Message-ID: <20100619083634.pxm-zPr9-bNjKOGUqX05rl96zif8ndLFZrZPpbzY1_s@z>
 
-Hi,
-On Thu, Jul 02, 2009 at 11:15:52PM +0800, Wu wrote:
-> From: Wu Zhangjin <wuzhangjin@gmail.com>
->
-> This patch series is the -v4 version of the loongson-PATCH-v3 series, but it
-> only include the cleanup for fuloong2e support and necessary preparation for
-> future fuloong-2f and yeeloong-2f support.
->
-> The git branch of this patch series is:
->
-> 	git://dev.lemote.com/rt4ls.git linux-loongson/dev/fuloong2e
->
-> 	or
->
-> 	http://dev.lemote.com/cgit/rt4ls.git/log/?h=linux-loongson/dev/fuloong2e
+On Sat, 19 Jun 2010 07:08:28 +0200, Lars-Peter Clausen wrote:
+> This patch adds support for reading the ADCIN pin of ADC unit on JZ4740 SoCs.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Jonathan Cameron <kernel@jic23.retrosnub.co.uk>
+> Cc: lm-sensors@lm-sensors.org
+> 
+> ---
+> Changes since v1
+> - Move ADC core access synchronizing from the HWMON driver to a MFD driver. The
+>   ADC driver now only reads the adcin value.
+> ---
+>  drivers/hwmon/Kconfig        |   11 +++
+>  drivers/hwmon/Makefile       |    1 +
+>  drivers/hwmon/jz4740-hwmon.c |  206 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 218 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/hwmon/jz4740-hwmon.c
+> 
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 569082c..51fc2f6 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -446,6 +446,17 @@ config SENSORS_IT87
+>  	  This driver can also be built as a module.  If so, the module
+>  	  will be called it87.
+>  
+> +config SENSORS_JZ4740
+> +	tristate "Ingenic JZ4740 SoC ADC driver"
+> +	depends on MACH_JZ4740
+> +    help
+> +      If you say yes here you get support for the Ingenic JZ4740 SoC ADC core.
+> +      It is required for the JZ4740 battery and touchscreen driver and is used
+> +      to synchronize access to the adc module between those two.
+> +
+> +      This driver can also be build as a module. If so, the module will be
+> +      called jz4740-adc.
+> +
+>  config SENSORS_LM63
+>  	tristate "National Semiconductor LM63 and LM64"
+>  	depends on I2C
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index bca0d45..dffbdff 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -55,6 +55,7 @@ obj-$(CONFIG_SENSORS_I5K_AMB)	+= i5k_amb.o
+>  obj-$(CONFIG_SENSORS_IBMAEM)	+= ibmaem.o
+>  obj-$(CONFIG_SENSORS_IBMPEX)	+= ibmpex.o
+>  obj-$(CONFIG_SENSORS_IT87)	+= it87.o
+> +obj-$(CONFIG_SENSORS_JZ4740)	+= jz4740-hwmon.o
+>  obj-$(CONFIG_SENSORS_K8TEMP)	+= k8temp.o
+>  obj-$(CONFIG_SENSORS_K10TEMP)	+= k10temp.o
+>  obj-$(CONFIG_SENSORS_LIS3LV02D) += lis3lv02d.o hp_accel.o
+> diff --git a/drivers/hwmon/jz4740-hwmon.c b/drivers/hwmon/jz4740-hwmon.c
+> new file mode 100644
+> index 0000000..f53d15e
+> --- /dev/null
+> +++ b/drivers/hwmon/jz4740-hwmon.c
+> @@ -0,0 +1,206 @@
+> +/*
+> + * Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+> + * JZ4740 SoC HWMON driver
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under  the terms of the GNU General  Public License as published by the
+> + * Free Software Foundation;  either version 2 of the License, or (at your
+> + * option) any later version.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write to the Free Software Foundation, Inc.,
+> + * 675 Mass Ave, Cambridge, MA 02139, USA.
+> + *
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +
+> +#include <linux/mfd/core.h>
+> +
+> +#include <linux/hwmon.h>
+> +#include <linux/hwmon-sysfs.h>
+> +
+> +struct jz4740_hwmon {
+> +	struct resource *mem;
+> +	void __iomem *base;
+> +
+> +	int irq;
+> +
+> +	struct mfd_cell *cell;
+> +	struct device *hwmon;
+> +
+> +	struct completion read_completion;
+> +
+> +	struct mutex lock;
+> +};
+> +
+> +static irqreturn_t jz4740_hwmon_irq(int irq, void *data)
+> +{
+> +	struct jz4740_hwmon *hwmon = data;
+> +
+> +	complete(&hwmon->read_completion);
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static ssize_t jz4740_hwmon_read_adcin(struct device *dev,
+> +	struct device_attribute *dev_attr, char *buf)
+> +{
+> +	struct jz4740_hwmon *hwmon = dev_get_drvdata(dev);
+> +	unsigned long t;
+> +	uint16_t val;
+> +	int ret;
+> +
+> +	mutex_lock(&hwmon->lock);
+> +
+> +	INIT_COMPLETION(hwmon->read_completion);
+> +
+> +	enable_irq(hwmon->irq);
+> +	hwmon->cell->enable(to_platform_device(dev));
+> +
+> +	t = wait_for_completion_interruptible_timeout(&hwmon->read_completion, HZ);
+> +
+> +	if (t > 0) {
+> +		val = readw(hwmon->base);
+> +		ret = sprintf(buf, "%d\n", val);
 
-stuartl@duron ~/linux-fulong2e $ git fetch rt4ls
-remote: Counting objects: 476834, done.
-remote: Compressing objects: 100% (90281/90281), done.
-remote: Total 452782 (delta 393459), reused 411290 (delta 359631)
-Receiving objects: 100% (452782/452782), 152.90 MiB | 50 KiB/s, done.
-Resolving deltas: 100% (393459/393459), completed with 15512 local
-objects.
-From git://dev.lemote.com/rt4ls
- * [new branch]      linux-loongson/2.6.29/rt-preempt ->
- 			rt4ls/linux-loongson/2.6.29/rt-preempt
- * [new branch]      linux-loongson/2.6.29/stable ->
-			rt4ls/linux-loongson/2.6.29/stable
- * [new branch]      linux-loongson/2.6.30/stable ->
-			rt4ls/linux-loongson/2.6.30/stable
- * [new branch]      linux-loongson/2.6.31/rt-preempt ->
-			rt4ls/linux-loongson/2.6.31/rt-preempt
- * [new branch]      linux-loongson/2.6.31/stable ->
-			rt4ls/linux-loongson/2.6.31/stable
- * [new branch]      linux-loongson/2.6.32/stable ->
-			rt4ls/linux-loongson/2.6.32/stable
- * [new branch]      linux-loongson/2.6.33/stable ->
-			rt4ls/linux-loongson/2.6.33/stable
- * [new branch]      linux-loongson/dev/2.6.30-gdium ->
-			rt4ls/linux-loongson/dev/2.6.30-gdium
- * [new branch]      linux-loongson/dev/2.6.33-gdium ->
-			rt4ls/linux-loongson/dev/2.6.33-gdium
- * [new branch]      linux-loongson/dev/kft ->
-			rt4ls/linux-loongson/dev/kft
- * [new branch]      linux-loongson/dev/kgcov ->
-			rt4ls/linux-loongson/dev/kgcov
- * [new branch]      master     -> rt4ls/master
- * [new branch]      rt/2.6.31/loongson -> rt4ls/rt/2.6.31/loongson
- * [new branch]      rt/2.6.31/mips -> rt4ls/rt/2.6.31/mips
- * [new branch]      rt/2.6.33/loongson -> rt4ls/rt/2.6.33/loongson
-...
+What is the unit of "val"? The value returned to userspace must be in
+mV, so in most cases a simple conversion is needed in the driver.
 
-I can't seem to find a linux-loongson/dev/fuloong2e branch... did I miss
-the boat?  I'm looking to update the kernels on the two Fulongs 2Es
-here... as I'm having grief compiling Python 2.6 -- hard locks always at
-the same point, and I have a feeling it's the
-kernel+kernel-build-toolchain combo that's possibly to blame.
+> +	} else {
+> +		ret = t ? t : -ETIMEDOUT;
+> +	}
+> +
+> +	hwmon->cell->disable(to_platform_device(dev));
+> +	disable_irq(hwmon->irq);
+> +
+> +	mutex_unlock(&hwmon->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static SENSOR_DEVICE_ATTR(in0_input, S_IRUGO, jz4740_hwmon_read_adcin, NULL, 0);
+> +
+> +static int __devinit jz4740_hwmon_probe(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +	struct jz4740_hwmon *hwmon;
+> +
+> +	hwmon = kmalloc(sizeof(*hwmon), GFP_KERNEL);
+> +
+> +	hwmon->cell = pdev->dev.platform_data;
+> +
+> +	hwmon->irq = platform_get_irq(pdev, 0);
+> +	if (hwmon->irq < 0) {
+> +		ret = hwmon->irq;
+> +		dev_err(&pdev->dev, "Failed to get platform irq: %d\n", ret);
+> +		goto err_free;
+> +	}
+> +
+> +	hwmon->mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!hwmon->mem) {
+> +		ret = -ENOENT;
+> +		dev_err(&pdev->dev, "Failed to get platform mmio resource\n");
+> +		goto err_free;
+> +	}
+> +
+> +	hwmon->mem = request_mem_region(hwmon->mem->start,
+> +					resource_size(hwmon->mem), pdev->name);
+> +	if (!hwmon->mem) {
+> +		ret = -EBUSY;
+> +		dev_err(&pdev->dev, "Failed to request mmio memory region\n");
+> +		goto err_free;
+> +	}
+> +
+> +	hwmon->base = ioremap_nocache(hwmon->mem->start, resource_size(hwmon->mem));
+> +	if (!hwmon->base) {
+> +		ret = -EBUSY;
+> +		dev_err(&pdev->dev, "Failed to ioremap mmio memory\n");
+> +		goto err_release_mem_region;
+> +	}
+> +
+> +	init_completion(&hwmon->read_completion);
+> +	mutex_init(&hwmon->lock);
+> +
+> +	platform_set_drvdata(pdev, hwmon);
+> +
+> +	ret = request_irq(hwmon->irq, jz4740_hwmon_irq, 0, pdev->name, hwmon);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to request irq: %d\n", ret);
+> +		goto err_iounmap;
+> +	}
+> +	disable_irq(hwmon->irq);
+> +
+> +	ret = device_create_file(&pdev->dev, &sensor_dev_attr_in0_input.dev_attr);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to create sysfs file: %d\n", ret);
+> +		goto err_free_irq;
+> +	}
 
-Regards,
---
-Stuart Longland (aka Redhatter, VK4MSL)      .'''.
-Gentoo Linux/MIPS Cobalt and Docs Developer  '.'` :
-. . . . . . . . . . . . . . . . . . . . . .   .'.'
-http://dev.gentoo.org/~redhatter             :.'
+You must create a name attribute as well, if you want your device to be
+supported by libsensors.
 
-I haven't lost my mind...
-  ...it's backed up on a tape somewhere.
+> +
+> +	hwmon->hwmon = hwmon_device_register(&pdev->dev);
+> +	if (IS_ERR(hwmon->hwmon)) {
+> +		ret = PTR_ERR(hwmon->hwmon);
+> +		goto err_remove_file;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_remove_file:
+> +	device_remove_file(&pdev->dev, &sensor_dev_attr_in0_input.dev_attr);
+> +err_free_irq:
+> +	free_irq(hwmon->irq, hwmon);
+> +err_iounmap:
+> +	platform_set_drvdata(pdev, NULL);
+> +	iounmap(hwmon->base);
+> +err_release_mem_region:
+> +	release_mem_region(hwmon->mem->start, resource_size(hwmon->mem));
+> +err_free:
+> +	kfree(hwmon);
+> +
+> +	return ret;
+> +}
+> +
+> +static int __devexit jz4740_hwmon_remove(struct platform_device *pdev)
+> +{
+> +	struct jz4740_hwmon *hwmon = platform_get_drvdata(pdev);
+> +
+> +	hwmon_device_unregister(hwmon->hwmon);
+> +	device_remove_file(&pdev->dev, &sensor_dev_attr_in0_input.dev_attr);
+> +
+> +	free_irq(hwmon->irq, hwmon);
+> +
+> +	iounmap(hwmon->base);
+> +	release_mem_region(hwmon->mem->start, resource_size(hwmon->mem));
+> +
+> +	platform_set_drvdata(pdev, NULL);
+> +	kfree(hwmon);
+> +
+> +	return 0;
+> +}
+> +
+> +struct platform_driver jz4740_hwmon_driver = {
+> +	.probe	= jz4740_hwmon_probe,
+> +	.remove = __devexit_p(jz4740_hwmon_remove),
+> +	.driver = {
+> +		.name = "jz4740-hwmon",
+> +		.owner = THIS_MODULE,
+> +	},
+> +};
+> +
+> +static int __init jz4740_hwmon_init(void)
+> +{
+> +	return platform_driver_register(&jz4740_hwmon_driver);
+> +}
+> +module_init(jz4740_hwmon_init);
+> +
+> +static void __exit jz4740_hwmon_exit(void)
+> +{
+> +	platform_driver_unregister(&jz4740_hwmon_driver);
+> +}
+> +module_exit(jz4740_hwmon_exit);
+> +
+> +MODULE_DESCRIPTION("JZ4740 SoC HWMON driver");
+> +MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:jz4740-hwmon");
+
+
+-- 
+Jean Delvare

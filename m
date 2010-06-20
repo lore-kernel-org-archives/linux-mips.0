@@ -1,74 +1,53 @@
-Received: from arkanian.console-pimps.org ([212.110.184.194]:53187 "EHLO
-        arkanian.console-pimps.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491192Ab0FSOq0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 19 Jun 2010 16:46:26 +0200
-From: Matt Fleming <matt@console-pimps.org>
-Subject: Re: [PATCH v2 18/26] MMC: Add JZ4740 mmc driver
-In-Reply-To: <1276924111-11158-19-git-send-email-lars@metafoo.de>
-References: <1276924111-11158-1-git-send-email-lars@metafoo.de> <1276924111-11158-19-git-send-email-lars@metafoo.de>
-Date: Sat, 19 Jun 2010 15:46:25 +0100
-Message-ID: <87ocf7ozb2.fsf@linux-g6p1.site>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from bamako.nerim.net ([62.4.17.28]:53768 "EHLO bamako.nerim.net"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1490958Ab0FTGc2 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 20 Jun 2010 08:32:28 +0200
+Date: Sun, 20 Jun 2010 08:32:21 +0200
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: [lm-sensors] [PATCH v4] hwmon: Add JZ4740 ADC driver
+Message-ID: <20100620083221.6738211e@hyperion.delvare>
+In-Reply-To: <1276975978-25778-1-git-send-email-lars@metafoo.de>
+References: <1276958820-8862-1-git-send-email-lars@metafoo.de>
+        <1276975978-25778-1-git-send-email-lars@metafoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linux-mmc@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20100619144625.mmYs0-V_cdG7Qz6haXhNQHVYtFKh5sdae0UF6PjOsMs@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, lm-sensors@lm-sensors.org
+Message-ID: <20100620063221.xPfrUG1RGID5k7MT6wLVhmGSknQTyu2Bo98JRv529CU@z>
 
-On Sat, 19 Jun 2010 07:08:23 +0200, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> This patch adds support for the mmc controller on JZ4740 SoCs.
+On Sat, 19 Jun 2010 21:32:58 +0200, Lars-Peter Clausen wrote:
+> This patch adds support for reading the ADCIN pin of ADC unit on JZ4740 SoCs.
 > 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: lm-sensors@lm-sensors.org
+> 
+> --
+> Changes since v1
+> - Move ADC core access synchronizing from the HWMON driver to a MFD driver. The
+>   ADC driver now only reads the adcin value.
+> 
+> Changes since v2
+>   - Add name sysfs attribute
+>   - Report adcin in value in millivolts
+> 
+> Changes since v3
+>   - Fix Kconfig entry
+>   - Add include to completion.h
+>   - Break overlong lines
+>   - Use DEVICE_ATTR instead of SENSOR_DEVICE_ATTR for the adcin sys file.
+> ---
+>  drivers/hwmon/Kconfig        |   10 ++
+>  drivers/hwmon/Makefile       |    1 +
+>  drivers/hwmon/jz4740-hwmon.c |  226 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 237 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/hwmon/jz4740-hwmon.c
+> (...)
 
-Hey Lars-Peter,
+Acked-by: Jean Delvare <khali@linux-fr.org>
 
-I had a quick look over this patch and it looks OK. Just a few comments.
-
-> +static void jz4740_mmc_timeout(unsigned long data)
-> +{
-> +	struct jz4740_mmc_host *host = (struct jz4740_mmc_host *)data;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&host->lock, flags);
-> +	if (!host->waiting) {
-> +		spin_unlock_irqrestore(&host->lock, flags);
-> +		return;
-> +	}
-> +
-> +	host->waiting = 0;
-> +
-> +	spin_unlock_irqrestore(&host->lock, flags);
-> +
-> +	host->req->cmd->error = -ETIMEDOUT;
-> +	jz4740_mmc_request_done(host);
-> +}
-> +
-
-Taking a spinlock and disabling interrupts seems like too much overhead
-to simply test and clear a bit. Wouldn't it be better to implement this
-with test_and_clear_bit(), which on MIPS will likely be implemented with
-ll/sc instructions? It's particularly important to keep this
-low-overhead since this bit is modified in the interrupt handler.
-
-> +static void jz4740_mmc_request_done(struct jz4740_mmc_host *host)
-> +{
-> +	struct mmc_request *req;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&host->lock, flags);
-> +	req = host->req;
-> +	host->req = NULL;
-> +	host->waiting = 0;
-> +	spin_unlock_irqrestore(&host->lock, flags);
-> +
-> +	if (!unlikely(req))
-> +		return;
-> +
-> +	mmc_request_done(host->mmc, req);
-> +}
-> +
-
-Am I right in thinking that this spinlock guards against the interrupt
-handler and the timeout function running at the same time? So it's not
-really possible to drop the spinlock from here?
+-- 
+Jean Delvare

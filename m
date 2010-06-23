@@ -1,38 +1,49 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49]:38800 "EHLO
-        mail-ww0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491070Ab0FVKCh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Jun 2010 12:02:37 +0200
-Received: by wwb34 with SMTP id 34so1265373wwb.36
-        for <linux-mips@linux-mips.org>; Tue, 22 Jun 2010 03:02:31 -0700 (PDT)
-Subject: Re: [PATCH v3] alsa: ASoC: JZ4740: Add qi_lb60 board driver
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-In-Reply-To: <1276959082-9184-1-git-send-email-1276924111-11158-27-git-send-email-lars@metafoo.de>
-References: <1276959082-9184-1-git-send-email-1276924111-11158-27-git-send-email-lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 22 Jun 2010 11:02:28 +0100
-Message-ID: <1277200948.4537.0.camel@odin>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from bby1mta02.pmc-sierra.com ([216.241.235.117]:42517 "EHLO
+        bby1mta02.pmc-sierra.bc.ca" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491201Ab0FWLZ4 convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 23 Jun 2010 13:25:56 +0200
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Subject: RE: soft-float
+Date: Wed, 23 Jun 2010 04:25:39 -0700
+Message-ID: <BE430C874DBA6841A75E65151DCC6E1C04076696@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
+References: <BE430C874DBA6841A75E65151DCC6E1C0407668F@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca><AANLkTimHTt3jCTPrlIDAkdDc8WheBf7bdEThk3JO8yNO@mail.gmail.com><4C126D2A.6040305@caviumnetworks.com><4C127358.3030905@paralogos.com> <AANLkTikIur8HkXppazHT7AT2oUkNz2Mf3qvDZiLR-r25@mail.gmail.com>
+From: "Jabir M" <Jabir_M@pmc-sierra.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: 1276924111-11158-27-git-send-email-lars@metafoo.de
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
-Message-ID: <20100622100228.ZVOCLLxHzfNMejjRQYurn5A71nfmlijiQz_bHPY77iQ@z>
+To: Manuel Lauss <manuel.lauss@googlemail.com>, "Kevin D. Kissell" <kevink@paralogos.com>
+Cc: David Daney <ddaney@caviumnetworks.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
+Message-ID: <20100623112539.SF8hC2D0Mm7BZ9IvhtN672iL84g04-3DoeUGl-2XPYQ@z>
 
-On Sat, 2010-06-19 at 16:51 +0200,
-1276924111-11158-27-git-send-email-lars@metafoo.de wrote:
-> From: Lars-Peter Clausen <lars@metafoo.de>
-> 
-> This patch adds ASoC support for the qi_lb60 board.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
-> Cc: alsa-devel@alsa-project.org
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+
+
+ 
+On Fri, Jun 11, 2010 at 7:33 PM, Kevin D. Kissell <kevink@paralogos.com> wrote:
+>> An optimized, assembly-language soft-float library implementation is *much*
+>> faster than the kernel emulator, but I benchmarked it once upon a time
+>> against a portable gnu soft-float library in C, and the difference wasn't
+>> nearly as dramatic.
+
+> The in-kernel emulator always works.  The float conformance test app Ralf
+> pointed out a few weeks ago doesn't run correctly when built with a recent
+> softfloat gcc with any optimization higher than O0 (tested with 4.4.4, 4.3.4).
+> I'd take correctness over speed any day of the week...
+
+Thank you all for your comments. I have compiled a new crosstoolchain( gcc 4.3.3 binutils 2.19.1 and glibc 2.9) and library with soft float enabled. I could see considerable performance improvement with my application.
+Coming back to correctnes , I ran paranoia.c [1] for verification and I got following result
+
+"No failures, defects nor flaws have been discovered.
+Rounding appears to conform to the proposed IEEE standard P754.
+The arithmetic diagnosed appears to be Excellent!"
+
+Shall I beleive the results and go ahead with soft float ?. Is there any other test to verify reliability of soft float ?.
+
+Thanks and Regards
+Jabir
+
+[1] http://www.netlib.org/paranoia/paranoia.c

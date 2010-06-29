@@ -1,49 +1,41 @@
-Received: from bby1mta02.pmc-sierra.com ([216.241.235.117]:42517 "EHLO
-        bby1mta02.pmc-sierra.bc.ca" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491201Ab0FWLZ4 convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 23 Jun 2010 13:25:56 +0200
-Content-class: urn:content-classes:message
+Received: from arkanian.console-pimps.org ([212.110.184.194]:34148 "EHLO
+        arkanian.console-pimps.org" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491158Ab0F2URB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Jun 2010 22:17:01 +0200
+From: Matt Fleming <matt@console-pimps.org>
+Subject: Re: [PATCH v3] MMC: Add JZ4740 mmc driver
+In-Reply-To: <1277688041-23522-1-git-send-email-lars@metafoo.de>
+References: <1276924111-11158-19-git-send-email-lars@metafoo.de> <1277688041-23522-1-git-send-email-lars@metafoo.de>
+Date: Tue, 29 Jun 2010 21:17:00 +0100
+Message-ID: <87aaqd1tmr.fsf@linux-g6p1.site>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Subject: RE: soft-float
-Date: Wed, 23 Jun 2010 04:25:39 -0700
-Message-ID: <BE430C874DBA6841A75E65151DCC6E1C04076696@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
-References: <BE430C874DBA6841A75E65151DCC6E1C0407668F@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca><AANLkTimHTt3jCTPrlIDAkdDc8WheBf7bdEThk3JO8yNO@mail.gmail.com><4C126D2A.6040305@caviumnetworks.com><4C127358.3030905@paralogos.com> <AANLkTikIur8HkXppazHT7AT2oUkNz2Mf3qvDZiLR-r25@mail.gmail.com>
-From: "Jabir M" <Jabir_M@pmc-sierra.com>
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Manuel Lauss <manuel.lauss@googlemail.com>, "Kevin D. Kissell" <kevink@paralogos.com>
-Cc: David Daney <ddaney@caviumnetworks.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
-Message-ID: <20100623112539.SF8hC2D0Mm7BZ9IvhtN672iL84g04-3DoeUGl-2XPYQ@z>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linux-mmc@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20100629201700.qdA2WGMtTytzvbyB3R_AClvjdCx0_1kHOrvFqoA0ZZM@z>
 
+On Mon, 28 Jun 2010 03:20:41 +0200, Lars-Peter Clausen <lars@metafoo.de> wrote:
+> This patch adds support for the mmc controller on JZ4740 SoCs.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matt Fleming <matt@console-pimps.org>
+> Cc: linux-mmc@vger.kernel.org
+> 
+> ---
+> Changes since v1
+> - Do not request IRQ with IRQF_DISABLED since it is a noop now
+> - Use a generous slack for the timeout timer. It does not need to be accurate.
+> Changes since v2
+> - Use sg_mapping_to iterate over sg elements in mmc read and write functions
+> - Use bitops instead of a spinlock and a variable for testing whether a request
+>   has been finished.
+> - Rework irq and timeout handling in order to get rid of locking in hot paths
 
+Acked-by: Matt Fleming <matt@console-pimps.org>
 
-
- 
-On Fri, Jun 11, 2010 at 7:33 PM, Kevin D. Kissell <kevink@paralogos.com> wrote:
->> An optimized, assembly-language soft-float library implementation is *much*
->> faster than the kernel emulator, but I benchmarked it once upon a time
->> against a portable gnu soft-float library in C, and the difference wasn't
->> nearly as dramatic.
-
-> The in-kernel emulator always works.  The float conformance test app Ralf
-> pointed out a few weeks ago doesn't run correctly when built with a recent
-> softfloat gcc with any optimization higher than O0 (tested with 4.4.4, 4.3.4).
-> I'd take correctness over speed any day of the week...
-
-Thank you all for your comments. I have compiled a new crosstoolchain( gcc 4.3.3 binutils 2.19.1 and glibc 2.9) and library with soft float enabled. I could see considerable performance improvement with my application.
-Coming back to correctnes , I ran paranoia.c [1] for verification and I got following result
-
-"No failures, defects nor flaws have been discovered.
-Rounding appears to conform to the proposed IEEE standard P754.
-The arithmetic diagnosed appears to be Excellent!"
-
-Shall I beleive the results and go ahead with soft float ?. Is there any other test to verify reliability of soft float ?.
-
-Thanks and Regards
-Jabir
-
-[1] http://www.netlib.org/paranoia/paranoia.c
+Are you planning on maintaining this driver? If so, it'd be a good idea
+to update MAINTAINERS.

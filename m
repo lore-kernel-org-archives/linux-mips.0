@@ -1,24 +1,65 @@
-Received: from rtp-iport-1.cisco.com ([64.102.122.148]:52017 "EHLO
+Received: from rtp-iport-1.cisco.com ([64.102.122.148]:52643 "EHLO
         rtp-iport-1.cisco.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491778Ab0GAV5B convert rfc822-to-8bit
+        by eddie.linux-mips.org with ESMTP id S1492124Ab0GBBoQ convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 1 Jul 2010 23:57:01 +0200
+        Fri, 2 Jul 2010 03:44:16 +0200
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
         charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Subject: RE: [PATCH] Apply kmap_high_get with MIPS
-Date: Thu, 1 Jul 2010 16:56:54 -0500
-Message-ID: <7A9214B0DEB2074FBCA688B30B04400D0116BA36@XMB-RCD-208.cisco.com>
-In-Reply-To: <AANLkTikIqTozI-VK-U2iSoMjXGJLckZM2-N2xqIGRfBy@mail.gmail.com>
+Date: Thu, 1 Jul 2010 20:44:07 -0500
+Message-ID: <7A9214B0DEB2074FBCA688B30B04400D0116BADD@XMB-RCD-208.cisco.com>
+In-Reply-To: <7A9214B0DEB2074FBCA688B30B04400D0116BA36@XMB-RCD-208.cisco.com>
 From: "Dezhong Diao (dediao)" <dediao@cisco.com>
 Return-Path: <dediao@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Kevin Cernekee <cernekee@gmail.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20100701215654.l8w_DfAqaGhoIYALEAxulNv6KKZFUfzFJ7KPRvTpQUo@z>
+Message-ID: <20100702014407.dmgmRo425GTvBFdnBIOB0yG4Vi9sCaPa1kc-TaMLQsw@z>
+
+In terms of my previous email, the changes are intended to be made in
+"__dma_sync_contiguous" so that "addr == 0" case can be satisfied. 
+
+
++static inline void __dma_sync_contiguous(struct page *page,
++	unsigned long offset, size_t size, enum dma_data_direction
+direction) 
++{
++	unsigned long addr;
++
++	if (!PageHighMem(page)) {
++		addr = (unsigned long)page_address(page) + offset;
++		__dma_sync_virtual(addr, size, direction);
++	} else {
++		addr = (unsigned long)kmap_high_get(page);
++		if (addr) {
++			addr += offset;
++			__dma_sync_virtual(addr, size, direction);
++			kunmap_high(page);
++		} else {
++			addr = (unsigned long)kmap_atomic(page,
+KM_MIPS_SYNC_PAGE);
++			flush_data_cache_page(addr + offset);
++			kunmap_atomic((void *)addr, KM_MIPS_SYNC_PAGE);
++           }           
++	} 
++}
++
+
+
+Dezhong
+
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org
+[mailto:linux-mips-bounce@linux-mips.org] On Behalf Of Dezhong Diao
+(dediao)
+Sent: Thursday, July 01, 2010 2:57 PM
+To: Kevin Cernekee
+Cc: linux-mips@linux-mips.org
+Subject: RE: [PATCH] Apply kmap_high_get with MIPS
 
 The issue (addr == 0) you mentioned had been discussed before
 (http://www.linux-mips.org/archives/linux-mips/2008-03/msg00011.html).
@@ -34,8 +75,7 @@ resolved in ARM.
 Dezhong
 
 
-void __flush_dcache_page(struct page *page)
-{
+void __flush_dcache_page(struct page *page) {
   struct address_space *mapping = page_mapping(page);
   void *addr;
 

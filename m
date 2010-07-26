@@ -1,39 +1,60 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177]:56302 "EHLO
-        mail-iw0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492022Ab0GUHrU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Jul 2010 09:47:20 +0200
-Received: by iwn40 with SMTP id 40so8111553iwn.36
-        for <linux-mips@linux-mips.org>; Wed, 21 Jul 2010 00:47:18 -0700 (PDT)
+Received: from rtp-iport-2.cisco.com ([64.102.122.149]:10340 "EHLO
+        rtp-iport-2.cisco.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1490951Ab0GZUoY convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 26 Jul 2010 22:44:24 +0200
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <4C45762E.70909@grandegger.com>
-References: <1279544125-28104-1-git-send-email-manuel.lauss@googlemail.com>
-        <4C45762E.70909@grandegger.com>
-Date: Wed, 21 Jul 2010 09:47:18 +0200
-Message-ID: <AANLkTim3A0zcXbKFWdh=bVHzbzkBRHK3W2nyt3pz721g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] au1000_eth: get ethernet address from
-        platform_data
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Return-Path: <manuel.lauss@googlemail.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: [PATCH] MIPS: Apply kmap_high_get on DMA functions.
+Date: Mon, 26 Jul 2010 15:44:13 -0500
+Message-ID: <7A9214B0DEB2074FBCA688B30B04400D013F9D97@XMB-RCD-208.cisco.com>
+In-Reply-To: <AANLkTinBb3SN1DRL9Zt8Mu1fAYgsx9VRm4FwBz4oNfdq@mail.gmail.com>
+From: "Dezhong Diao (dediao)" <dediao@cisco.com>
+Return-Path: <dediao@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, Wolfgang Grandegger <wg@denx.de>, Florian Fainelli <florian@openwrt.org>
-Message-ID: <20100721074718.DeQzanbPicnJWShWxK2qnFjei35E3mZn91MDevhn4UU@z>
+To: Kevin Cernekee <cernekee@gmail.com>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
+Message-ID: <20100726204413.trEBAE_FKC2LFcAZ1x5jJgo73ivpyuUPk0lIglte5HU@z>
 
-On Tue, Jul 20, 2010 at 12:10 PM, Wolfgang Grandegger <wg@grandegger.com> wrote:
-> On 07/19/2010 02:55 PM, Manuel Lauss wrote:
->> Modify au1000_eth to receive an ethernet address from platform data,
->> or choose a random one.
->>
->> The default address is usually provided by the firmware; modify
->> platform device registration to use it if the board code has not
->> already overridden it.
+It is not a problem our hardware supports DMA directly to high memory.
 
-> I gave the patch a try. The kernel builds and runs fine. The eth's are
-> realized in the correct order and do work properly. Feel free to add my
-> "Tested-by: Wolfgang Grandegger <wg@denx.de>".
+It reminds me we submitted a patch which fixed problem when the high
+memory is used for DMA, but it wasn't accepted.
 
-Thank you, much appreciated.
 
-Manuel
+Dezhong
+
+
+-----Original Message-----
+From: Kevin Cernekee [mailto:cernekee@gmail.com] 
+Sent: Friday, July 23, 2010 8:04 PM
+To: Dezhong Diao (dediao)
+Cc: linux-mips@linux-mips.org; ralf@linux-mips.org; David VomLehn
+(dvomlehn)
+Subject: Re: [PATCH] MIPS: Apply kmap_high_get on DMA functions.
+
+On Fri, Jul 23, 2010 at 6:43 PM, Dezhong Diao <dediao@cisco.com> wrote:
+> I don't recommend to do that in such a way (such as ARM does). In 
+> MIPS, we normally setup the mapping before the dma function is
+invoked. That means there is something wrong if addr is 0.
+
+I don't understand the HIGHMEM / VM code well enough yet to
+intelligently comment on this assumption.  And it looks like the ARM
+developers are still trying to sort out whether their code is doing the
+right thing in all circumstances:
+
+http://www.spinics.net/lists/arm-kernel/msg89465.html
+
+But if the (addr == 0) condition should never occur on a properly
+functioning system, I would rather see an error message than be forced
+to debug a mysterious coherency problem caused by missing flushes.
+
+Any chance you could add a BUG() in the else clause?
+
+BTW: are you supporting DMA directly to high memory?
+
+Thanks.

@@ -1,116 +1,204 @@
-Received: from rtp-iport-1.cisco.com ([64.102.122.148]:35553 "EHLO
-        rtp-iport-1.cisco.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492801Ab0G1Urb (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 28 Jul 2010 22:47:31 +0200
-Content-class: urn:content-classes:message
+Received: from mail-pz0-f49.google.com ([209.85.210.49]:39170 "EHLO
+        mail-pz0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1492196Ab0G2BYO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Jul 2010 03:24:14 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-        boundary="----_=_NextPart_001_01CB2E96.148AEE28"
-Subject: RE: [PATCH v2 1/2] MIPS: Add device tree support to MIPS
-Date: Wed, 28 Jul 2010 15:47:20 -0500
-Message-ID: <7A9214B0DEB2074FBCA688B30B04400D013FA46D@XMB-RCD-208.cisco.com>
-In-Reply-To: <AANLkTi=74zoQziQTmAGo-cNtF9FAT77h+KZagsNEFjEf@mail.gmail.com>
-From: "Dezhong Diao (dediao)" <dediao@cisco.com>
-Return-Path: <dediao@cisco.com>
+In-Reply-To: <503ec883993ca4be3a5680bf52091bf0fcf37357.1270655886.git.wuzhangjin@gmail.com>
+References: <cover.1270655886.git.wuzhangjin@gmail.com>
+        <cover.1270653461.git.wuzhangjin@gmail.com>
+        <503ec883993ca4be3a5680bf52091bf0fcf37357.1270655886.git.wuzhangjin@gmail.com>
+Date: Thu, 29 Jul 2010 09:24:07 +0800
+Message-ID: <AANLkTikq5_XDmtOz9T9txzfF1nr2bFDXJCvRXiG4_g5r@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] MIPS: cavium-octeon: rewrite the sched_clock()
+        based on mips_cyc2ns()
+From: wu zhangjin <wuzhangjin@gmail.com>
+Content-Type: multipart/alternative; boundary=000e0cd29c9c3610be048c7c97de
+Return-Path: <wuzhangjin@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Grant Likely <grant.likely@secretlab.ca>, David Daney <ddaney@caviumnetworks.com>
-Cc: devicetree-discuss@lists.ozlabs.org, linux-mips@linux-mips.org, ralf@linux-mips.org, "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
-Message-ID: <20100728204720.NRufeJ9bxYVEDnRIJ21EwtPstACKKyCkRl5Fifwlq74@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Wu Zhangjin <wuzhangjin@gmail.com>, linux-mips@linux-mips.org, David Daney <ddaney@caviumnetworks.com>, =?ISO-8859-1?Q?Ralf_R=F6sch?= <roesch.ralf@web.de>
+Message-ID: <20100729012407.hezAGkYTQBHUydsCrhLvp2xAuV4cahFie8sqKd3ZFjE@z>
 
-This is a multi-part message in MIME format.
+--000e0cd29c9c3610be048c7c97de
+Content-Type: text/plain; charset=ISO-8859-1
 
-------_=_NextPart_001_01CB2E96.148AEE28
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Hi, Ralf
+
+This may be not applicable for the original version is changed by
+
+[PATCH] OCTEON: workaround linking failures with gcc-4.4.x 32-bits
+toolchains
+
+from Florian Fainelli.
+
+Regards,
+Wu Zhangjin
+
+On Thu, Apr 8, 2010 at 12:05 AM, Wu Zhangin <wuzhangjin@gmail.com> wrote:
+
+> From: Wu Zhangjin <wuzhangjin@gmail.com>
+>
+> Changes from v1:
+>
+>  o use the new interface mips_cyc2ns() intead of the old
+>  mips_sched_clock().
+>
+> The commit "MIPS: add a common mips_cyc2ns()" have abstracted the
+> solution of the 64bit calculation's overflow problem into a common
+> mips_cyc2ns() function in arch/mips/include/asm/time.h, This patch just
+> rewrites the sched_clock() for cavium-octeon on it.
+>
+> Signed-off-by: Wu Zhangjin <wuzhangjin@gmail.com>
+> ---
+>  arch/mips/cavium-octeon/csrc-octeon.c |   29 ++---------------------------
+>  1 files changed, 2 insertions(+), 27 deletions(-)
+>
+> diff --git a/arch/mips/cavium-octeon/csrc-octeon.c
+> b/arch/mips/cavium-octeon/csrc-octeon.c
+> index 0bf4bbe..bca0004 100644
+> --- a/arch/mips/cavium-octeon/csrc-octeon.c
+> +++ b/arch/mips/cavium-octeon/csrc-octeon.c
+> @@ -52,34 +52,9 @@ static struct clocksource clocksource_mips = {
+>
+>  unsigned long long notrace sched_clock(void)
+>  {
+> -       /* 64-bit arithmatic can overflow, so use 128-bit.  */
+> -#if (__GNUC__ < 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ <= 3))
+> -       u64 t1, t2, t3;
+> -       unsigned long long rv;
+> -       u64 mult = clocksource_mips.mult;
+> -       u64 shift = clocksource_mips.shift;
+> -       u64 cnt = read_c0_cvmcount();
+> +       u64 cyc = read_c0_cvmcount();
+>
+> -       asm (
+> -               "dmultu\t%[cnt],%[mult]\n\t"
+> -               "nor\t%[t1],$0,%[shift]\n\t"
+> -               "mfhi\t%[t2]\n\t"
+> -               "mflo\t%[t3]\n\t"
+> -               "dsll\t%[t2],%[t2],1\n\t"
+> -               "dsrlv\t%[rv],%[t3],%[shift]\n\t"
+> -               "dsllv\t%[t1],%[t2],%[t1]\n\t"
+> -               "or\t%[rv],%[t1],%[rv]\n\t"
+> -               : [rv] "=&r" (rv), [t1] "=&r" (t1), [t2] "=&r" (t2), [t3]
+> "=&r" (t3)
+> -               : [cnt] "r" (cnt), [mult] "r" (mult), [shift] "r" (shift)
+> -               : "hi", "lo");
+> -       return rv;
+> -#else
+> -       /* GCC > 4.3 do it the easy way.  */
+> -       unsigned int __attribute__((mode(TI))) t;
+> -       t = read_c0_cvmcount();
+> -       t = t * clocksource_mips.mult;
+> -       return (unsigned long long)(t >> clocksource_mips.shift);
+> -#endif
+> +       return mips_cyc2ns(cyc, clocksource_mips.mult,
+> clocksource_mips.shift);
+>  }
+>
+>  void __init plat_time_init(void)
+> --
+> 1.7.0.1
+>
+>
+
+
+-- 
+MSN+Gtalk: wuzhangjin@gmail.com
+Blog: http://falcon.oss.lzu.edu.cn
+Tel:+86-18710032278
+
+--000e0cd29c9c3610be048c7c97de
+Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-Grant,
+Hi, Ralf<br><br>This may be not applicable for the original version is chan=
+ged by<br><br>[PATCH] OCTEON: workaround linking failures with gcc-4.4.x 32=
+-bits toolchains<br><br>from <span class=3D"gI">Florian Fainelli.<br><br>Re=
+gards,<br>
+Wu Zhangjin<br></span><br><div class=3D"gmail_quote">On Thu, Apr 8, 2010 at=
+ 12:05 AM, Wu Zhangin <span dir=3D"ltr">&lt;<a href=3D"mailto:wuzhangjin@gm=
+ail.com">wuzhangjin@gmail.com</a>&gt;</span> wrote:<br><blockquote class=3D=
+"gmail_quote" style=3D"margin: 0pt 0pt 0pt 0.8ex; border-left: 1px solid rg=
+b(204, 204, 204); padding-left: 1ex;">
+From: Wu Zhangjin &lt;<a href=3D"mailto:wuzhangjin@gmail.com">wuzhangjin@gm=
+ail.com</a>&gt;<br>
+<br>
+Changes from v1:<br>
+<br>
+ =A0o use the new interface mips_cyc2ns() intead of the old<br>
+ =A0mips_sched_clock().<br>
+<br>
+The commit &quot;MIPS: add a common mips_cyc2ns()&quot; have abstracted the=
+<br>
+solution of the 64bit calculation&#39;s overflow problem into a common<br>
+mips_cyc2ns() function in arch/mips/include/asm/time.h, This patch just<br>
+rewrites the sched_clock() for cavium-octeon on it.<br>
+<br>
+Signed-off-by: Wu Zhangjin &lt;<a href=3D"mailto:wuzhangjin@gmail.com">wuzh=
+angjin@gmail.com</a>&gt;<br>
+---<br>
+=A0arch/mips/cavium-octeon/csrc-octeon.c | =A0 29 ++-----------------------=
+----<br>
+=A01 files changed, 2 insertions(+), 27 deletions(-)<br>
+<br>
+diff --git a/arch/mips/cavium-octeon/csrc-octeon.c b/arch/mips/cavium-octeo=
+n/csrc-octeon.c<br>
+index 0bf4bbe..bca0004 100644<br>
+--- a/arch/mips/cavium-octeon/csrc-octeon.c<br>
++++ b/arch/mips/cavium-octeon/csrc-octeon.c<br>
+@@ -52,34 +52,9 @@ static struct clocksource clocksource_mips =3D {<br>
+<br>
+=A0unsigned long long notrace sched_clock(void)<br>
+=A0{<br>
+- =A0 =A0 =A0 /* 64-bit arithmatic can overflow, so use 128-bit. =A0*/<br>
+-#if (__GNUC__ &lt; 4) || ((__GNUC__ =3D=3D 4) &amp;&amp; (__GNUC_MINOR__ &=
+lt;=3D 3))<br>
+- =A0 =A0 =A0 u64 t1, t2, t3;<br>
+- =A0 =A0 =A0 unsigned long long rv;<br>
+- =A0 =A0 =A0 u64 mult =3D clocksource_mips.mult;<br>
+- =A0 =A0 =A0 u64 shift =3D clocksource_mips.shift;<br>
+- =A0 =A0 =A0 u64 cnt =3D read_c0_cvmcount();<br>
++ =A0 =A0 =A0 u64 cyc =3D read_c0_cvmcount();<br>
+<br>
+- =A0 =A0 =A0 asm (<br>
+- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;dmultu\t%[cnt],%[mult]\n\t&quot;<br>
+- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;nor\t%[t1],$0,%[shift]\n\t&quot;<br>
+- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;mfhi\t%[t2]\n\t&quot;<br>
+- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;mflo\t%[t3]\n\t&quot;<br>
+- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;dsll\t%[t2],%[t2],1\n\t&quot;<br>
+- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;dsrlv\t%[rv],%[t3],%[shift]\n\t&quot;<b=
+r>
+- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;dsllv\t%[t1],%[t2],%[t1]\n\t&quot;<br>
+- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;or\t%[rv],%[t1],%[rv]\n\t&quot;<br>
+- =A0 =A0 =A0 =A0 =A0 =A0 =A0 : [rv] &quot;=3D&amp;r&quot; (rv), [t1] &quot=
+;=3D&amp;r&quot; (t1), [t2] &quot;=3D&amp;r&quot; (t2), [t3] &quot;=3D&amp;=
+r&quot; (t3)<br>
+- =A0 =A0 =A0 =A0 =A0 =A0 =A0 : [cnt] &quot;r&quot; (cnt), [mult] &quot;r&q=
+uot; (mult), [shift] &quot;r&quot; (shift)<br>
+- =A0 =A0 =A0 =A0 =A0 =A0 =A0 : &quot;hi&quot;, &quot;lo&quot;);<br>
+- =A0 =A0 =A0 return rv;<br>
+-#else<br>
+- =A0 =A0 =A0 /* GCC &gt; 4.3 do it the easy way. =A0*/<br>
+- =A0 =A0 =A0 unsigned int __attribute__((mode(TI))) t;<br>
+- =A0 =A0 =A0 t =3D read_c0_cvmcount();<br>
+- =A0 =A0 =A0 t =3D t * clocksource_mips.mult;<br>
+- =A0 =A0 =A0 return (unsigned long long)(t &gt;&gt; clocksource_mips.shift=
+);<br>
+-#endif<br>
++ =A0 =A0 =A0 return mips_cyc2ns(cyc, clocksource_mips.mult, clocksource_mi=
+ps.shift);<br>
+=A0}<br>
+<br>
+=A0void __init plat_time_init(void)<br>
+<font color=3D"#888888">--<br>
+1.7.0.1<br>
+<br>
+</font></blockquote></div><br><br clear=3D"all"><br>-- <br>MSN+Gtalk: <a hr=
+ef=3D"mailto:wuzhangjin@gmail.com">wuzhangjin@gmail.com</a><br>Blog: <a hre=
+f=3D"http://falcon.oss.lzu.edu.cn">http://falcon.oss.lzu.edu.cn</a><br>Tel:=
++86-18710032278<br>
 
-I agree with your approach. Please go ahead to make changes and get the =
-patches working with latest code in test tree. Or I am able to make =
-changes in terms of your comments too.
 
-It is best we can have MIPS OF support in 2.6.36, but I have you and =
-Ralf decide it.
-
-
-Thanks.
-
-
-Dezhong =20
-
------Original Message-----
-From: glikely@secretlab.ca [mailto:glikely@secretlab.ca] On Behalf Of =
-Grant Likely
-Sent: Wednesday, July 28, 2010 12:26 PM
-To: David Daney
-Cc: Dezhong Diao (dediao); devicetree-discuss@lists.ozlabs.org; =
-linux-mips@linux-mips.org; ralf@linux-mips.org; David VomLehn (dvomlehn)
-Subject: Re: [PATCH v2 1/2] MIPS: Add device tree support to MIPS
-
-On Wed, Jul 28, 2010 at 1:19 PM, David Daney <ddaney@caviumnetworks.com> =
-wrote:
-> On 07/28/2010 11:54 AM, Grant Likely wrote:
->>
->> Hi Dezhong,
->
-> [...]
->>
->> Very nice clean patch, thanks! =A0How/when would you like to see MIPS =
-
->> OF support go into mainline?
->>
->
-> I can't speak for the patch authors, but my preference would be to=20
-> have MIPS OF support go in to 2.6.36 if possible.
->
-> How? To me it doesn't matter. =A0I would let you and Ralf fight it =
-out.
-
-It would probably be best if I at least pick up the first patch into my =
-test tree to give it a spin with the latest changes.  I'd be happy to =
-take the 2nd too to avoid ordering issues.
-
-Cheers,
-g.
-
-------_=_NextPart_001_01CB2E96.148AEE28
-Content-Type: application/octet-stream;
-	name="8KG6-DeviceTree-512MB.dts"
-Content-Transfer-Encoding: base64
-Content-Description: 8KG6-DeviceTree-512MB.dts
-Content-Disposition: attachment;
-	filename="8KG6-DeviceTree-512MB.dts"
-
-L2R0cy12MS87CgovIHsKCW1vZGVsID0gIkV4cGxvcmVyIjsKCWNvbXBhdGlibGUgPSAiRXhwbG9y
-ZXIiLCAiQ2FsbGlvcGUiOwoJY29weXJpZ2h0ID0gIkNvcHlyaWdodCAoYykgMjAwOCBDaXNjbyBT
-eXN0ZW1zLCBJbmMuICBBbGwgUmlnaHRzIFJlc2VydmVkLiI7CgkjYWRkcmVzcy1jZWxscyA9IDww
-eDE+OwoJI3NpemUtY2VsbHMgPSA8MHgxPjsKCgljcHVzIHsKCQluYW1lID0gImNwdXMiOwoJCSNh
-ZGRyZXNzLWNlbGxzID0gPDB4MT47CgkJI3NpemUtY2VsbHMgPSA8MHgwPjsKCgkJMjRrQDAgewoJ
-CQlkZXZpY2VfdHlwZSA9ICJjcHUiOwoJCQlyZWcgPSA8MHgwPjsKCQkJY2xvY2stZnJlcXVlbmN5
-ID0gPDB4NWY1ZTEwMDA+OwoJCQl0aW1lYmFzZS1mcmVxdWVuY3kgPSA8MHgxZmNhMDU1PjsKCQkJ
-aS1jYWNoZS1zaXplID0gPDB4ODAwMD47CgkJCWQtY2FjaGUtc2l6ZSA9IDwweDgwMDA+OwoJCX07
-Cgl9OwoKCW1lbW9yaWVzIHsKCQluYW1lID0gIm1lbW9yaWVzIjsKCQlkZXZpY2VfdHlwZSA9ICJt
-ZW1vcnkiOwoJCSNhZGRyZXNzLWNlbGxzID0gPDB4Mz47CgkJI3NpemUtY2VsbHMgPSA8MHgwPjsK
-CgkJbWVtb3J5QDAgewoJCQltZW1vcnlfdHlwZSA9ICJsb3ciOwoJCQlyZWcgPSA8MHgxMDAwMDAw
-MCAweDIwMDAwMDAwIDB4ZmMwMDAwMD47CgkJfTsKCgkJbWVtb3J5QDEgewoJCQltZW1vcnlfdHlw
-ZSA9ICJNSVBTIHJlc2V0IHZlY3RvciI7CgkJCXJlZyA9IDwweDFmYzAwMDAwIDB4N2ZjZmZmZiAw
-eDQwMDAwMD47CgkJfTsKCgkJbWVtb3J5QDIgewoJCQltZW1vcnlfdHlwZSA9ICJncC1zcmFtIjsK
-CQkJcmVnID0gPDB4OTA0MDAwMCAweDkwNDAwMDAgMHgzMDAwMD47CgkJfTsKCgkJbWVtb3J5QDMg
-ewoJCQltZW1vcnlfdHlwZSA9ICJoaWdoIjsKCQkJcmVnID0gPDB4MmZjMDAwMDAgMHgyZmMwMDAw
-MCAweDQwMDAwMD47CgkJfTsKCgkJbWVtb3J5QDQgewoJCQltZW1vcnlfdHlwZSA9ICJoaWdoIjsK
-CQkJcmVnID0gPDB4NjAwMDAwMDAgMHg2MDAwMDAwMCAweDEwMDAwMDAwPjsKCQl9OwoJfTsKCglv
-cHRpb25zIHsKCQluYW1lID0gIm9wdGlvbnMiOwoJCW1vY2EtcG9wdWxhdGVkID0gInRydWUiOwoJ
-CWhkLXBvcHVsYXRlZCA9ICJmYWxzZSI7CgkJaXItcHJvdG9jb2wgPSAiTU9UIjsKCQludm0tc2l6
-ZSA9IDwweDEwMD47CgkJZnJvbnQtcGFuZWwtYnV0dG9uID0gImJ1dHRvbiI7CgkJcHVzaC1idXR0
-b24tbWF0cml4ID0gIm1hdHJpeCI7CgkJdHVuaW5nLXJhbmdlID0gPDB4MzM0MjhmMDA+OwoJCXJl
-YXItdXNiID0gInRydWUiOwoJCXZpZGVvLXN1cHBvcnQgPSAidHJ1ZSI7CgkJY2FibGUtY2FyZCA9
-ICJmYWxzZSI7CgkJZXRoZXJuZXQgPSAidHJ1ZSI7CgkJbW9jYS1yYW5nZSA9ICJEMS1EOCI7CgkJ
-dXNiLTIwLWh1YiA9ICJmYWxzZSI7CgkJc2Vjb25kLXFwc2stcnggPSAidHJ1ZSI7CgkJZnJvbnQt
-cGFuZWwgPSAiZm91ciI7CgkJdHVuZXItaWMyLWNsb2NrLWZyZXEgPSA8MHgzMj47CgkJbWVtb3J5
-LWVuY3J5cHRpb24tc2NoZW1lID0gImZpeGVkLWtleSI7Cgl9OwoKCWNob3NlbiB7CgkJbmFtZSA9
-ICJjaG9zZW4iOwoJCWJvb3RhcmdzID0gInJvb3Q9L2Rldi9zZGEyIjsKCQlsaW51eCxwbGF0Zm9y
-bSA9ICIxa2c2IjsKCX07Cn07Cg==
-
-------_=_NextPart_001_01CB2E96.148AEE28--
+--000e0cd29c9c3610be048c7c97de--

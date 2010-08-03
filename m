@@ -1,204 +1,213 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49]:39170 "EHLO
-        mail-pz0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1492196Ab0G2BYO (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Jul 2010 03:24:14 +0200
+Received: from ausxipps301.us.dell.com ([143.166.148.223]:53803 "EHLO
+        ausxipps301.us.dell.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491981Ab0HCTHp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 3 Aug 2010 21:07:45 +0200
+From: <Ryan_D_Phillips@Dell.com>
+Date: Tue, 3 Aug 2010 14:07:30 -0500
+Subject: mips, eglibc, and toolchain compilation error
+Message-ID: <017987BD9AB15445B9968338EC889BB107D3ECEC72@AUSX7MCPS301.AMER.DELL.COM>
+Content-Language: en-US
+Content-Type: multipart/alternative;
+        boundary="_000_017987BD9AB15445B9968338EC889BB107D3ECEC72AUSX7MCPS301A_"
 MIME-Version: 1.0
-In-Reply-To: <503ec883993ca4be3a5680bf52091bf0fcf37357.1270655886.git.wuzhangjin@gmail.com>
-References: <cover.1270655886.git.wuzhangjin@gmail.com>
-        <cover.1270653461.git.wuzhangjin@gmail.com>
-        <503ec883993ca4be3a5680bf52091bf0fcf37357.1270655886.git.wuzhangjin@gmail.com>
-Date: Thu, 29 Jul 2010 09:24:07 +0800
-Message-ID: <AANLkTikq5_XDmtOz9T9txzfF1nr2bFDXJCvRXiG4_g5r@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] MIPS: cavium-octeon: rewrite the sched_clock()
-        based on mips_cyc2ns()
-From: wu zhangjin <wuzhangjin@gmail.com>
-Content-Type: multipart/alternative; boundary=000e0cd29c9c3610be048c7c97de
-Return-Path: <wuzhangjin@gmail.com>
+Return-Path: <Ryan_D_Phillips@Dell.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Wu Zhangjin <wuzhangjin@gmail.com>, linux-mips@linux-mips.org, David Daney <ddaney@caviumnetworks.com>, =?ISO-8859-1?Q?Ralf_R=F6sch?= <roesch.ralf@web.de>
-Message-ID: <20100729012407.hezAGkYTQBHUydsCrhLvp2xAuV4cahFie8sqKd3ZFjE@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20100803190730.nGE6rBKr4Qz7VBvsyPNvAYjz8hYD1vZGJNtJzC-y-as@z>
 
---000e0cd29c9c3610be048c7c97de
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi, Ralf
-
-This may be not applicable for the original version is changed by
-
-[PATCH] OCTEON: workaround linking failures with gcc-4.4.x 32-bits
-toolchains
-
-from Florian Fainelli.
-
-Regards,
-Wu Zhangjin
-
-On Thu, Apr 8, 2010 at 12:05 AM, Wu Zhangin <wuzhangjin@gmail.com> wrote:
-
-> From: Wu Zhangjin <wuzhangjin@gmail.com>
->
-> Changes from v1:
->
->  o use the new interface mips_cyc2ns() intead of the old
->  mips_sched_clock().
->
-> The commit "MIPS: add a common mips_cyc2ns()" have abstracted the
-> solution of the 64bit calculation's overflow problem into a common
-> mips_cyc2ns() function in arch/mips/include/asm/time.h, This patch just
-> rewrites the sched_clock() for cavium-octeon on it.
->
-> Signed-off-by: Wu Zhangjin <wuzhangjin@gmail.com>
-> ---
->  arch/mips/cavium-octeon/csrc-octeon.c |   29 ++---------------------------
->  1 files changed, 2 insertions(+), 27 deletions(-)
->
-> diff --git a/arch/mips/cavium-octeon/csrc-octeon.c
-> b/arch/mips/cavium-octeon/csrc-octeon.c
-> index 0bf4bbe..bca0004 100644
-> --- a/arch/mips/cavium-octeon/csrc-octeon.c
-> +++ b/arch/mips/cavium-octeon/csrc-octeon.c
-> @@ -52,34 +52,9 @@ static struct clocksource clocksource_mips = {
->
->  unsigned long long notrace sched_clock(void)
->  {
-> -       /* 64-bit arithmatic can overflow, so use 128-bit.  */
-> -#if (__GNUC__ < 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ <= 3))
-> -       u64 t1, t2, t3;
-> -       unsigned long long rv;
-> -       u64 mult = clocksource_mips.mult;
-> -       u64 shift = clocksource_mips.shift;
-> -       u64 cnt = read_c0_cvmcount();
-> +       u64 cyc = read_c0_cvmcount();
->
-> -       asm (
-> -               "dmultu\t%[cnt],%[mult]\n\t"
-> -               "nor\t%[t1],$0,%[shift]\n\t"
-> -               "mfhi\t%[t2]\n\t"
-> -               "mflo\t%[t3]\n\t"
-> -               "dsll\t%[t2],%[t2],1\n\t"
-> -               "dsrlv\t%[rv],%[t3],%[shift]\n\t"
-> -               "dsllv\t%[t1],%[t2],%[t1]\n\t"
-> -               "or\t%[rv],%[t1],%[rv]\n\t"
-> -               : [rv] "=&r" (rv), [t1] "=&r" (t1), [t2] "=&r" (t2), [t3]
-> "=&r" (t3)
-> -               : [cnt] "r" (cnt), [mult] "r" (mult), [shift] "r" (shift)
-> -               : "hi", "lo");
-> -       return rv;
-> -#else
-> -       /* GCC > 4.3 do it the easy way.  */
-> -       unsigned int __attribute__((mode(TI))) t;
-> -       t = read_c0_cvmcount();
-> -       t = t * clocksource_mips.mult;
-> -       return (unsigned long long)(t >> clocksource_mips.shift);
-> -#endif
-> +       return mips_cyc2ns(cyc, clocksource_mips.mult,
-> clocksource_mips.shift);
->  }
->
->  void __init plat_time_init(void)
-> --
-> 1.7.0.1
->
->
-
-
--- 
-MSN+Gtalk: wuzhangjin@gmail.com
-Blog: http://falcon.oss.lzu.edu.cn
-Tel:+86-18710032278
-
---000e0cd29c9c3610be048c7c97de
-Content-Type: text/html; charset=ISO-8859-1
+--_000_017987BD9AB15445B9968338EC889BB107D3ECEC72AUSX7MCPS301A_
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Ralf<br><br>This may be not applicable for the original version is chan=
-ged by<br><br>[PATCH] OCTEON: workaround linking failures with gcc-4.4.x 32=
--bits toolchains<br><br>from <span class=3D"gI">Florian Fainelli.<br><br>Re=
-gards,<br>
-Wu Zhangjin<br></span><br><div class=3D"gmail_quote">On Thu, Apr 8, 2010 at=
- 12:05 AM, Wu Zhangin <span dir=3D"ltr">&lt;<a href=3D"mailto:wuzhangjin@gm=
-ail.com">wuzhangjin@gmail.com</a>&gt;</span> wrote:<br><blockquote class=3D=
-"gmail_quote" style=3D"margin: 0pt 0pt 0pt 0.8ex; border-left: 1px solid rg=
-b(204, 204, 204); padding-left: 1ex;">
-From: Wu Zhangjin &lt;<a href=3D"mailto:wuzhangjin@gmail.com">wuzhangjin@gm=
-ail.com</a>&gt;<br>
-<br>
-Changes from v1:<br>
-<br>
- =A0o use the new interface mips_cyc2ns() intead of the old<br>
- =A0mips_sched_clock().<br>
-<br>
-The commit &quot;MIPS: add a common mips_cyc2ns()&quot; have abstracted the=
-<br>
-solution of the 64bit calculation&#39;s overflow problem into a common<br>
-mips_cyc2ns() function in arch/mips/include/asm/time.h, This patch just<br>
-rewrites the sched_clock() for cavium-octeon on it.<br>
-<br>
-Signed-off-by: Wu Zhangjin &lt;<a href=3D"mailto:wuzhangjin@gmail.com">wuzh=
-angjin@gmail.com</a>&gt;<br>
----<br>
-=A0arch/mips/cavium-octeon/csrc-octeon.c | =A0 29 ++-----------------------=
-----<br>
-=A01 files changed, 2 insertions(+), 27 deletions(-)<br>
-<br>
-diff --git a/arch/mips/cavium-octeon/csrc-octeon.c b/arch/mips/cavium-octeo=
-n/csrc-octeon.c<br>
-index 0bf4bbe..bca0004 100644<br>
---- a/arch/mips/cavium-octeon/csrc-octeon.c<br>
-+++ b/arch/mips/cavium-octeon/csrc-octeon.c<br>
-@@ -52,34 +52,9 @@ static struct clocksource clocksource_mips =3D {<br>
-<br>
-=A0unsigned long long notrace sched_clock(void)<br>
-=A0{<br>
-- =A0 =A0 =A0 /* 64-bit arithmatic can overflow, so use 128-bit. =A0*/<br>
--#if (__GNUC__ &lt; 4) || ((__GNUC__ =3D=3D 4) &amp;&amp; (__GNUC_MINOR__ &=
-lt;=3D 3))<br>
-- =A0 =A0 =A0 u64 t1, t2, t3;<br>
-- =A0 =A0 =A0 unsigned long long rv;<br>
-- =A0 =A0 =A0 u64 mult =3D clocksource_mips.mult;<br>
-- =A0 =A0 =A0 u64 shift =3D clocksource_mips.shift;<br>
-- =A0 =A0 =A0 u64 cnt =3D read_c0_cvmcount();<br>
-+ =A0 =A0 =A0 u64 cyc =3D read_c0_cvmcount();<br>
-<br>
-- =A0 =A0 =A0 asm (<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;dmultu\t%[cnt],%[mult]\n\t&quot;<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;nor\t%[t1],$0,%[shift]\n\t&quot;<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;mfhi\t%[t2]\n\t&quot;<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;mflo\t%[t3]\n\t&quot;<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;dsll\t%[t2],%[t2],1\n\t&quot;<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;dsrlv\t%[rv],%[t3],%[shift]\n\t&quot;<b=
-r>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;dsllv\t%[t1],%[t2],%[t1]\n\t&quot;<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 &quot;or\t%[rv],%[t1],%[rv]\n\t&quot;<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 : [rv] &quot;=3D&amp;r&quot; (rv), [t1] &quot=
-;=3D&amp;r&quot; (t1), [t2] &quot;=3D&amp;r&quot; (t2), [t3] &quot;=3D&amp;=
-r&quot; (t3)<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 : [cnt] &quot;r&quot; (cnt), [mult] &quot;r&q=
-uot; (mult), [shift] &quot;r&quot; (shift)<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 : &quot;hi&quot;, &quot;lo&quot;);<br>
-- =A0 =A0 =A0 return rv;<br>
--#else<br>
-- =A0 =A0 =A0 /* GCC &gt; 4.3 do it the easy way. =A0*/<br>
-- =A0 =A0 =A0 unsigned int __attribute__((mode(TI))) t;<br>
-- =A0 =A0 =A0 t =3D read_c0_cvmcount();<br>
-- =A0 =A0 =A0 t =3D t * clocksource_mips.mult;<br>
-- =A0 =A0 =A0 return (unsigned long long)(t &gt;&gt; clocksource_mips.shift=
-);<br>
--#endif<br>
-+ =A0 =A0 =A0 return mips_cyc2ns(cyc, clocksource_mips.mult, clocksource_mi=
-ps.shift);<br>
-=A0}<br>
-<br>
-=A0void __init plat_time_init(void)<br>
-<font color=3D"#888888">--<br>
-1.7.0.1<br>
-<br>
-</font></blockquote></div><br><br clear=3D"all"><br>-- <br>MSN+Gtalk: <a hr=
-ef=3D"mailto:wuzhangjin@gmail.com">wuzhangjin@gmail.com</a><br>Blog: <a hre=
-f=3D"http://falcon.oss.lzu.edu.cn">http://falcon.oss.lzu.edu.cn</a><br>Tel:=
-+86-18710032278<br>
+Hi All,
+
+I'm trying to get openembedded to build me a 32bit MIPS toolchain using EGL=
+IBC. GCC 4.4.4 seems to compile ok, but when I get to eglibc 2.10 and 2.11 =
+the compiler spits this error:
+
+| /home/rphillips/sdk/build-dell-tor-angstrom/tmp/work/mips-angstrom-linux/=
+eglibc-2.11-r11.6/build-mips-angstrom-linux/libc_pic.os: In function `_mcou=
+nt':
+| (.debug_macinfo+0x5d7a7a8): relocation truncated to fit: R_MIPS_HI16 agai=
+nst `_gp_disp'
+| collect2: ld returned 1 exit status
+| make[1]: *** [/home/rphillips/sdk/build-dell-tor-angstrom/tmp/work/mips-a=
+ngstrom-linux/eglibc-2.11-r11.6/build-mips-angstrom-linux/libc.so] Error 1
+| make[1]: Leaving directory `/home/rphillips/sdk/build-dell-tor-angstrom/t=
+mp/work/mips-angstrom-linux/eglibc-2.11-r11.6/eglibc-2_11/libc'
+| make: *** [all] Error 2
+| FATAL: oe_runmake failed
+NOTE: Task failed: /home/rphillips/sdk/build-dell-tor-angstrom/tmp/work/mip=
+s-angstrom-linux/eglibc-2.11-r11.6/temp/log.do_compile.10164
+ERROR: TaskFailed event exception, aborting
+ERROR: Build of /home/rphillips/work/mips/sdk/openembedded/recipes/eglibc/e=
+glibc_2.11.bb do_compile failed
+ERROR: Task 9 (/home/rphillips/work/mips/sdk/openembedded/recipes/eglibc/eg=
+libc_2.11.bb, do_compile) failed
+NOTE: Tasks Summary: Attempted 475 tasks of which 159 didn't need to be rer=
+un and 1 failed.
+ERROR: '/home/rphillips/work/mips/sdk/openembedded/recipes/eglibc/eglibc_2.=
+11.bb' failed
+
+It appears the Debian MIPS stack uses EGLIBC and GCC 4 successfully. Does a=
+nyone know what the problem is, and how I can fix it?
+
+Google has been of limited use for this error.
+
+Regards,
+Ryan Phillips
 
 
---000e0cd29c9c3610be048c7c97de--
+--_000_017987BD9AB15445B9968338EC889BB107D3ECEC72AUSX7MCPS301A_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3DGenerator content=3D"Microsoft Word 12 (filtered medium)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:SimSun;
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:"\@SimSun";
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Calibri","sans-serif";
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext=3D"edit">
+  <o:idmap v:ext=3D"edit" data=3D"1" />
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DWordSection1>
+
+<p class=3DMsoNormal>Hi All,<o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal>I&#8217;m trying to get openembedded to build me a 32b=
+it
+MIPS toolchain using EGLIBC. GCC 4.4.4 seems to compile ok, but when I get =
+to
+eglibc 2.10 and 2.11 the compiler spits this error:<o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal>| /home/rphillips/sdk/build-dell-tor-angstrom/tmp/work=
+/mips-angstrom-linux/eglibc-2.11-r11.6/build-mips-angstrom-linux/libc_pic.o=
+s:
+In function `_mcount':<o:p></o:p></p>
+
+<p class=3DMsoNormal>| (.debug_macinfo+0x5d7a7a8): relocation truncated to =
+fit:
+R_MIPS_HI16 against `_gp_disp'<o:p></o:p></p>
+
+<p class=3DMsoNormal>| collect2: ld returned 1 exit status<o:p></o:p></p>
+
+<p class=3DMsoNormal>| make[1]: ***
+[/home/rphillips/sdk/build-dell-tor-angstrom/tmp/work/mips-angstrom-linux/e=
+glibc-2.11-r11.6/build-mips-angstrom-linux/libc.so]
+Error 1<o:p></o:p></p>
+
+<p class=3DMsoNormal>| make[1]: Leaving directory
+`/home/rphillips/sdk/build-dell-tor-angstrom/tmp/work/mips-angstrom-linux/e=
+glibc-2.11-r11.6/eglibc-2_11/libc'<o:p></o:p></p>
+
+<p class=3DMsoNormal>| make: *** [all] Error 2<o:p></o:p></p>
+
+<p class=3DMsoNormal>| FATAL: oe_runmake failed<o:p></o:p></p>
+
+<p class=3DMsoNormal>NOTE: Task failed:
+/home/rphillips/sdk/build-dell-tor-angstrom/tmp/work/mips-angstrom-linux/eg=
+libc-2.11-r11.6/temp/log.do_compile.10164<o:p></o:p></p>
+
+<p class=3DMsoNormal>ERROR: TaskFailed event exception, aborting<o:p></o:p>=
+</p>
+
+<p class=3DMsoNormal>ERROR: Build of
+/home/rphillips/work/mips/sdk/openembedded/recipes/eglibc/eglibc_2.11.bb
+do_compile failed<o:p></o:p></p>
+
+<p class=3DMsoNormal>ERROR: Task 9
+(/home/rphillips/work/mips/sdk/openembedded/recipes/eglibc/eglibc_2.11.bb,
+do_compile) failed<o:p></o:p></p>
+
+<p class=3DMsoNormal>NOTE: Tasks Summary: Attempted 475 tasks of which 159 =
+didn't
+need to be rerun and 1 failed.<o:p></o:p></p>
+
+<p class=3DMsoNormal>ERROR:
+'/home/rphillips/work/mips/sdk/openembedded/recipes/eglibc/eglibc_2.11.bb'
+failed<o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal>It appears the Debian MIPS stack uses EGLIBC and GCC 4
+successfully. Does anyone know what the problem is, and how I can fix it? <=
+o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal>Google has been of limited use for this error.<o:p></o=
+:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=3DMsoNormal>Regards,<o:p></o:p></p>
+
+<p class=3DMsoNormal>Ryan Phillips<o:p></o:p></p>
+
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+</body>
+
+</html>
+
+--_000_017987BD9AB15445B9968338EC889BB107D3ECEC72AUSX7MCPS301A_--

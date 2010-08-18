@@ -1,62 +1,42 @@
-Received: from chilli.pcug.org.au ([203.10.76.44]:44445 "EHLO smtps.tip.net.au"
+Received: from mxout1.idt.com ([157.165.5.25]:40567 "EHLO mxout1.idt.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491195Ab0HQDku (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 17 Aug 2010 05:40:50 +0200
-Date: Tue, 17 Aug 2010 13:40:39 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH v2 1/2] MIPS: Add device tree support to MIPS
-Message-ID: <20100817134039.fc1108c7.sfr@canb.auug.org.au>
-In-Reply-To: <20100816204211.GA17571@angua.secretlab.ca>
-References: <AANLkTi=74zoQziQTmAGo-cNtF9FAT77h+KZagsNEFjEf@mail.gmail.com>
-        <7A9214B0DEB2074FBCA688B30B04400D013FA46D@XMB-RCD-208.cisco.com>
-        <20100816204211.GA17571@angua.secretlab.ca>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Tue__17_Aug_2010_13_40_39_+1000_loXQi+2twtQLFo7/"
-Return-Path: <sfr@canb.auug.org.au>
+        id S1491159Ab0HRNbv convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Aug 2010 15:31:51 +0200
+Received: from mail.idt.com (localhost [127.0.0.1])
+        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id o7IDViXf021736
+        for <linux-mips@linux-mips.org>; Wed, 18 Aug 2010 06:31:44 -0700
+Received: from corpml1.corp.idt.com (corpml1.corp.idt.com [157.165.140.20])
+        by mail.idt.com (8.13.8/8.13.8) with ESMTP id o7IDViwd029479
+        for <linux-mips@linux-mips.org>; Wed, 18 Aug 2010 06:31:44 -0700 (PDT)
+Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
+        by corpml1.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id o7IDVhl22879
+        for <linux-mips@linux-mips.org>; Wed, 18 Aug 2010 06:31:43 -0700 (PDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: Does Mips Linux rely on Yamon h/w initialization (other than DDR memory which is strictly necessary)?
+Date: Wed, 18 Aug 2010 06:31:42 -0700
+Message-ID: <AEA634773855ED4CAD999FBB1A66D076FC3BDF@CORPEXCH1.na.ads.idt.com>
+From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
+Return-Path: <Andrei.Ardelean@idt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: "Dezhong Diao (dediao)" <dediao@cisco.com>, linux-mips@linux-mips.org, devicetree-discuss@lists.ozlabs.org, David Daney <ddaney@caviumnetworks.com>, ralf@linux-mips.org, "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
-Message-ID: <20100817034039.YMYF6tS8y5WS5FIhZhSFsD9B9MXVadYgrYlwEkQMOcs@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20100818133142.zSaxtFjx7yQqL5XPLwDvxlyNjh5-UPPpdkV47oJ8z_A@z>
 
---Signature=_Tue__17_Aug_2010_13_40_39_+1000_loXQi+2twtQLFo7/
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi Grant,
+Malta board has Yamon monitor which initializes the DDR memory and other
+h/w. Does Mips Linux rely on Yamon h/w initialization (except memory)
+like PCI, NET, UART, etc in order to boot? Does Mips Linux re-initialize
+the h/w again? 
+I am booting Linux on Malta with a small monitor which initializes only
+the memory. I pass the environment vars array, command line arguments
+and memory size as Yamon would do. The ASCII display shows "Linux on
+Malta" scrolling text so Linux kernel it seems that at least it started
+but there is no NET activity and no messages on UART.
 
-On Mon, 16 Aug 2010 14:42:11 -0600 Grant Likely <grant.likely@secretlab.ca>=
- wrote:
->
-> I'll also make sure to start build testing on MIPS.  Ralf, any suggestion=
-s on defconfigs I should use?
-
-Linux-next does defconfig, allnoconfig, allmodconfig (which has failed
-for a long time) and ip32_defconfig for mips and mipsel.  I am not sure
-if all these are still relevant.
-
-(http://kisskb.ellerman.id.au/kisskb/branch/9/)
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
-
---Signature=_Tue__17_Aug_2010_13_40_39_+1000_loXQi+2twtQLFo7/
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQEcBAEBAgAGBQJMagS3AAoJEDMEi1NhKgbsNZsH/A5oh++2w0Bdc0dp0+XzlFXI
-5grlYLJ5CKPuCxd1VQ2BBLopeuzUR9YzvdyMkILLTONReWu7KJiUoTnNiZC95V/Z
-/THxQuHo6gpMxketzgRU+VjfOSe4oVq8Ttk7tzKygIh/2WXbTqbBqI1IHFvWD10+
-56hCEiQHyow0n1ME03urhBwlB5Wq0pHFAvnGKQ/HUmcSlVEzjvkNyP+kM6U1xHry
-NDUkXk5NEARTWL8VqOT3HR77rg/0bNISmSnIIu6tpDcU4uMz4CkZVG/vgf1Fp75Z
-lbJBs/DVWqvmGFbaW54FcYUaiuNMs0yCqgrmRUh2M/pJTHtVHBtBp85m9g8emBE=
-=pXMp
------END PGP SIGNATURE-----
-
---Signature=_Tue__17_Aug_2010_13_40_39_+1000_loXQi+2twtQLFo7/--
+Thanks,
+Andrei

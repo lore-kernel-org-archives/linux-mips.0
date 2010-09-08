@@ -1,101 +1,329 @@
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:49091 "HELO
-        dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with SMTP id S1490945Ab0IHGA2 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 8 Sep 2010 08:00:28 +0200
-Date: Wed, 8 Sep 2010 15:50:43 +1000
-From: Greg Ungerer <gerg@snapgear.com>
-Message-ID: <201009080550.o885ohjD014188@goober.internal.moreton.com.au>
-Subject: [PATCH] mips: fix start of free memory when using initrd
+Received: from [69.28.251.93] ([69.28.251.93]:50041 "EHLO b32.net"
+        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491026Ab0IHXLT (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 9 Sep 2010 01:11:19 +0200
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Wed, 8 Sep 2010 16:02:12 -0700
+Subject: [PATCH v2 1/3] MIPS: HIGHMEM DMA on noncoherent MIPS32 processors
+Message-ID: <064bb0722da5d8c271c2bd9fe0a521cc@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-mips@linux-mips.org
-Cc: gerg@uclinux.org
-Message-ID: <20100908055043.h7Jrzldr7nOJPW0uBrpbVxNhJvCivjD7fa2QJdHG1ds@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: dediao@cisco.com, dvomlehn@cisco.com, sshtylyov@mvista.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20100908230212.LAWaKMtrtH3l8lbDuLjELdplOIXokK5KMBgYQ1giBKA@z>
 
+[v2: Formatting changes only.]
 
-Hi All,
+The MIPS DMA coherency functions do not work properly (i.e. kernel oops)
+when HIGHMEM pages are passed in as arguments.  This patch uses the PPC
+approach of calling kmap_atomic() with IRQs disabled to temporarily map
+high pages, in order to flush them out to memory.
 
-I have a typical Cavium/Octeon (5010) based system, that I sometimes
-use a kernel and traditional initrd setup on. In a typical layout the
-kernel is loaded into low physical RAM (via boot loader) and the initrd
-is loaded somewhere above it. Everything runs fine, but the region
-occupied by the initrd is effectively lost from usable RAM.
-
-For example, with these boot args "rd_start=0x84000000 rd_size=0x00206000"
-where the initrd is loaded at 64MB (and is just over 2MB in size) I end
-up with:
-
-Memory: 59620k/127152k available (2193k kernel code, 67532k reserved, 563k data, 192k init, 0k highmem)
-
-Ouch!  A lot of RAM not usable.
-
-It looks to me that the logic of setting the bootmem is not quite right
-for the initrd case. If I patch arch/mips/kernel/setup.c with the patch
-below I get all that memory back, and everything seems to work:
-
-Memory: 121044k/127152k available (2193k kernel code, 6108k reserved, 563k data, 192k init, 0k highmem)
-
-The patch just sets the bootmem map to always be the end of the kernel.
-Then the bootmem reserve initrd logic does its work as expected.
-(A little more cleaning up could be done I guess, but I want to know
-the approach is correct first :-)
-
-Am I mis-understanding how this is supposed to work?
-Other architectures seem to set the bootmem to the end of the kernel.
-Sparc has some extra checks to make sure that the bootmem setup data
-doesn't overwrite the initrd, but otherwise is similar.
-
-Regards
-Greg
-
-
-
-mips: fix start of free memory when using initrd
-
-Currently when using an initrd on a MIPS system the start of the bootmem
-region of memory is set to the larger of the end of the kernel bss region
-(_end) or the end of the initrd. In a typical memory layout where the
-initrd is at some address above the kernel image this means that the
-start of the bootmem region will be the end of the initrd. But when
-we are done processing/loading the initrd we have no way to reclaim the
-memory region it occupied, and we lose a large chunk of now otherwise
-empty RAM from our final running system.
-
-The bootmem code is designed to allow this initrd to be reserved (and
-the code in finalize_initrd() currently does this). When the initrd is
-finally processed/loaded its reserved memory is freed.
-
-Fix the setting of the start of the bootmem map to be the end of the
-kernel.
-
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Signed-off-by: Dezhong Diao <dediao@cisco.com>
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 ---
- arch/mips/kernel/setup.c |   11 ++++++-----
- 1 files changed, 6 insertions(+), 5 deletions(-)
+ arch/mips/mm/dma-default.c |  159 ++++++++++++++++++++++----------------------
+ 1 files changed, 80 insertions(+), 79 deletions(-)
 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 85aef3f..df8ed83 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -259,12 +259,13 @@ static void __init bootmem_init(void)
+diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
+index 469d401..79dfb9c 100644
+--- a/arch/mips/mm/dma-default.c
++++ b/arch/mips/mm/dma-default.c
+@@ -15,18 +15,18 @@
+ #include <linux/scatterlist.h>
+ #include <linux/string.h>
+ #include <linux/gfp.h>
++#include <linux/highmem.h>
+ 
+ #include <asm/cache.h>
+ #include <asm/io.h>
+ 
+ #include <dma-coherence.h>
+ 
+-static inline unsigned long dma_addr_to_virt(struct device *dev,
++static inline struct page *dma_addr_to_page(struct device *dev,
+ 	dma_addr_t dma_addr)
+ {
+-	unsigned long addr = plat_dma_addr_to_phys(dev, dma_addr);
+-
+-	return (unsigned long)phys_to_virt(addr);
++	return pfn_to_page(
++		plat_dma_addr_to_phys(dev, dma_addr) >> PAGE_SHIFT);
+ }
+ 
+ /*
+@@ -153,20 +153,20 @@ void dma_free_coherent(struct device *dev, size_t size, void *vaddr,
+ 
+ EXPORT_SYMBOL(dma_free_coherent);
+ 
+-static inline void __dma_sync(unsigned long addr, size_t size,
++static inline void __dma_sync_virtual(void *addr, size_t size,
+ 	enum dma_data_direction direction)
+ {
+ 	switch (direction) {
+ 	case DMA_TO_DEVICE:
+-		dma_cache_wback(addr, size);
++		dma_cache_wback((unsigned long)addr, size);
+ 		break;
+ 
+ 	case DMA_FROM_DEVICE:
+-		dma_cache_inv(addr, size);
++		dma_cache_inv((unsigned long)addr, size);
+ 		break;
+ 
+ 	case DMA_BIDIRECTIONAL:
+-		dma_cache_wback_inv(addr, size);
++		dma_cache_wback_inv((unsigned long)addr, size);
+ 		break;
+ 
+ 	default:
+@@ -174,13 +174,53 @@ static inline void __dma_sync(unsigned long addr, size_t size,
+ 	}
+ }
+ 
++/*
++ * A single sg entry may refer to multiple physically contiguous
++ * pages. But we still need to process highmem pages individually.
++ * If highmem is not configured then the bulk of this loop gets
++ * optimized out.
++ */
++static inline void __dma_sync(struct page *page,
++	unsigned long offset, size_t size, enum dma_data_direction direction)
++{
++	size_t left = size;
++
++	BUG_ON(direction == DMA_NONE);
++
++	do {
++		size_t len = left;
++
++		if (PageHighMem(page)) {
++			unsigned long flags;
++			void *addr;
++
++			if (offset + len > PAGE_SIZE) {
++				if (offset >= PAGE_SIZE) {
++					page += offset >> PAGE_SHIFT;
++					offset &= ~PAGE_MASK;
++				}
++				len = PAGE_SIZE - offset;
++			}
++
++			local_irq_save(flags);
++			addr = kmap_atomic(page, KM_SYNC_DCACHE);
++			__dma_sync_virtual(addr + offset, len, direction);
++			kunmap_atomic(addr, KM_SYNC_DCACHE);
++			local_irq_restore(flags);
++		} else
++			__dma_sync_virtual(page_address(page) + offset,
++				size, direction);
++		offset = 0;
++		page++;
++		left -= len;
++	} while (left);
++}
++
+ dma_addr_t dma_map_single(struct device *dev, void *ptr, size_t size,
+ 	enum dma_data_direction direction)
+ {
+-	unsigned long addr = (unsigned long) ptr;
+-
+ 	if (!plat_device_is_coherent(dev))
+-		__dma_sync(addr, size, direction);
++		__dma_sync_virtual(ptr, size, direction);
+ 
+ 	return plat_map_dma_mem(dev, ptr, size);
+ }
+@@ -191,8 +231,8 @@ void dma_unmap_single(struct device *dev, dma_addr_t dma_addr, size_t size,
+ 	enum dma_data_direction direction)
+ {
+ 	if (cpu_is_noncoherent_r10000(dev))
+-		__dma_sync(dma_addr_to_virt(dev, dma_addr), size,
+-		           direction);
++		__dma_sync(dma_addr_to_page(dev, dma_addr),
++			   dma_addr & ~PAGE_MASK, size, direction);
+ 
+ 	plat_unmap_dma_mem(dev, dma_addr, size, direction);
+ }
+@@ -204,16 +244,12 @@ int dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ {
  	int i;
  
- 	/*
--	 * Init any data related to initrd. It's a nop if INITRD is
--	 * not selected. Once that done we can determine the low bound
--	 * of usable memory.
-+	 * Sanity check any INITRD first. We don't take it into account
-+	 * for bootmem setup initially, rely on the end-of-kernel-code
-+	 * as our memory range starting point. Once bootmem is inited we
-+	 * will reserve the area used for the initrd.
- 	 */
--	reserved_end = max(init_initrd(),
--			   (unsigned long) PFN_UP(__pa_symbol(&_end)));
-+	init_initrd();
-+	reserved_end = (unsigned long) PFN_UP(__pa_symbol(&_end));
+-	BUG_ON(direction == DMA_NONE);
+-
+ 	for (i = 0; i < nents; i++, sg++) {
+-		unsigned long addr;
+-
+-		addr = (unsigned long) sg_virt(sg);
+-		if (!plat_device_is_coherent(dev) && addr)
+-			__dma_sync(addr, sg->length, direction);
+-		sg->dma_address = plat_map_dma_mem(dev,
+-				                   (void *)addr, sg->length);
++		if (!plat_device_is_coherent(dev))
++			__dma_sync(sg_page(sg), sg->offset, sg->length,
++				   direction);
++		sg->dma_address = plat_map_dma_mem_page(dev, sg_page(sg)) +
++				  sg->offset;
+ 	}
  
- 	/*
- 	 * max_low_pfn is not a number of pages. The number of pages
+ 	return nents;
+@@ -224,14 +260,8 @@ EXPORT_SYMBOL(dma_map_sg);
+ dma_addr_t dma_map_page(struct device *dev, struct page *page,
+ 	unsigned long offset, size_t size, enum dma_data_direction direction)
+ {
+-	BUG_ON(direction == DMA_NONE);
+-
+-	if (!plat_device_is_coherent(dev)) {
+-		unsigned long addr;
+-
+-		addr = (unsigned long) page_address(page) + offset;
+-		__dma_sync(addr, size, direction);
+-	}
++	if (!plat_device_is_coherent(dev))
++		__dma_sync(page, offset, size, direction);
+ 
+ 	return plat_map_dma_mem_page(dev, page) + offset;
+ }
+@@ -241,18 +271,13 @@ EXPORT_SYMBOL(dma_map_page);
+ void dma_unmap_sg(struct device *dev, struct scatterlist *sg, int nhwentries,
+ 	enum dma_data_direction direction)
+ {
+-	unsigned long addr;
+ 	int i;
+ 
+-	BUG_ON(direction == DMA_NONE);
+-
+ 	for (i = 0; i < nhwentries; i++, sg++) {
+ 		if (!plat_device_is_coherent(dev) &&
+-		    direction != DMA_TO_DEVICE) {
+-			addr = (unsigned long) sg_virt(sg);
+-			if (addr)
+-				__dma_sync(addr, sg->length, direction);
+-		}
++		    direction != DMA_TO_DEVICE)
++			__dma_sync(sg_page(sg), sg->offset, sg->length,
++				   direction);
+ 		plat_unmap_dma_mem(dev, sg->dma_address, sg->length, direction);
+ 	}
+ }
+@@ -262,14 +287,9 @@ EXPORT_SYMBOL(dma_unmap_sg);
+ void dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle,
+ 	size_t size, enum dma_data_direction direction)
+ {
+-	BUG_ON(direction == DMA_NONE);
+-
+-	if (cpu_is_noncoherent_r10000(dev)) {
+-		unsigned long addr;
+-
+-		addr = dma_addr_to_virt(dev, dma_handle);
+-		__dma_sync(addr, size, direction);
+-	}
++	if (cpu_is_noncoherent_r10000(dev))
++		__dma_sync(dma_addr_to_page(dev, dma_handle),
++			   dma_handle & ~PAGE_MASK, size, direction);
+ }
+ 
+ EXPORT_SYMBOL(dma_sync_single_for_cpu);
+@@ -277,15 +297,10 @@ EXPORT_SYMBOL(dma_sync_single_for_cpu);
+ void dma_sync_single_for_device(struct device *dev, dma_addr_t dma_handle,
+ 	size_t size, enum dma_data_direction direction)
+ {
+-	BUG_ON(direction == DMA_NONE);
+-
+ 	plat_extra_sync_for_device(dev);
+-	if (!plat_device_is_coherent(dev)) {
+-		unsigned long addr;
+-
+-		addr = dma_addr_to_virt(dev, dma_handle);
+-		__dma_sync(addr, size, direction);
+-	}
++	if (!plat_device_is_coherent(dev))
++		__dma_sync(dma_addr_to_page(dev, dma_handle),
++			   dma_handle & ~PAGE_MASK, size, direction);
+ }
+ 
+ EXPORT_SYMBOL(dma_sync_single_for_device);
+@@ -293,14 +308,9 @@ EXPORT_SYMBOL(dma_sync_single_for_device);
+ void dma_sync_single_range_for_cpu(struct device *dev, dma_addr_t dma_handle,
+ 	unsigned long offset, size_t size, enum dma_data_direction direction)
+ {
+-	BUG_ON(direction == DMA_NONE);
+-
+-	if (cpu_is_noncoherent_r10000(dev)) {
+-		unsigned long addr;
+-
+-		addr = dma_addr_to_virt(dev, dma_handle);
+-		__dma_sync(addr + offset, size, direction);
+-	}
++	if (cpu_is_noncoherent_r10000(dev))
++		__dma_sync(dma_addr_to_page(dev, dma_handle), offset, size,
++			   direction);
+ }
+ 
+ EXPORT_SYMBOL(dma_sync_single_range_for_cpu);
+@@ -308,15 +318,10 @@ EXPORT_SYMBOL(dma_sync_single_range_for_cpu);
+ void dma_sync_single_range_for_device(struct device *dev, dma_addr_t dma_handle,
+ 	unsigned long offset, size_t size, enum dma_data_direction direction)
+ {
+-	BUG_ON(direction == DMA_NONE);
+-
+ 	plat_extra_sync_for_device(dev);
+-	if (!plat_device_is_coherent(dev)) {
+-		unsigned long addr;
+-
+-		addr = dma_addr_to_virt(dev, dma_handle);
+-		__dma_sync(addr + offset, size, direction);
+-	}
++	if (!plat_device_is_coherent(dev))
++		__dma_sync(dma_addr_to_page(dev, dma_handle), offset, size,
++			   direction);
+ }
+ 
+ EXPORT_SYMBOL(dma_sync_single_range_for_device);
+@@ -326,13 +331,11 @@ void dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg, int nelems,
+ {
+ 	int i;
+ 
+-	BUG_ON(direction == DMA_NONE);
+-
+ 	/* Make sure that gcc doesn't leave the empty loop body.  */
+ 	for (i = 0; i < nelems; i++, sg++) {
+ 		if (cpu_is_noncoherent_r10000(dev))
+-			__dma_sync((unsigned long)page_address(sg_page(sg)),
+-			           sg->length, direction);
++			__dma_sync(sg_page(sg), sg->offset, sg->length,
++				   direction);
+ 	}
+ }
+ 
+@@ -343,13 +346,11 @@ void dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg, int nele
+ {
+ 	int i;
+ 
+-	BUG_ON(direction == DMA_NONE);
+-
+ 	/* Make sure that gcc doesn't leave the empty loop body.  */
+ 	for (i = 0; i < nelems; i++, sg++) {
+ 		if (!plat_device_is_coherent(dev))
+-			__dma_sync((unsigned long)page_address(sg_page(sg)),
+-			           sg->length, direction);
++			__dma_sync(sg_page(sg), sg->offset, sg->length,
++				   direction);
+ 	}
+ }
+ 
+@@ -376,7 +377,7 @@ void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
+ 
+ 	plat_extra_sync_for_device(dev);
+ 	if (!plat_device_is_coherent(dev))
+-		__dma_sync((unsigned long)vaddr, size, direction);
++		__dma_sync_virtual(vaddr, size, direction);
+ }
+ 
+ EXPORT_SYMBOL(dma_cache_sync);
+-- 
+1.7.0.4

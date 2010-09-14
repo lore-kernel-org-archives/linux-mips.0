@@ -1,234 +1,37 @@
-Received: from [69.28.251.93] ([69.28.251.93]:50208 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491055Ab0IHXMj (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 9 Sep 2010 01:12:39 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Wed, 8 Sep 2010 16:02:16 -0700
-Subject: [PATCH 3/3] MIPS: DMA: Add plat_extra_sync_for_cpu()
-Message-ID: <99a0868bdbcfa8785a92b4af4f6d9b99@localhost>
-In-Reply-To: <064bb0722da5d8c271c2bd9fe0a521cc@localhost>
-References: <064bb0722da5d8c271c2bd9fe0a521cc@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: from mx1.redhat.com ([209.132.183.28]:44786 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491095Ab0INJQn (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 14 Sep 2010 11:16:43 +0200
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <cover.1284406638.git.joe@perches.com>
+References: <cover.1284406638.git.joe@perches.com>
+Date: Tue, 14 Sep 2010 10:14:45 +0100
+Message-ID: <28081.1284455685@redhat.com>
+Subject: (no subject)
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20100908230216.uRmRvjI9VRKKZKYpDpomQ3l-qnPezZvnI4YxesZO1C8@z>
+To: Joe Perches <joe@perches.com>
+Cc: dhowells@redhat.com, linux-kernel@vger.kernel.org, Amit Kumar Salecha <amit.salecha@qlogic.com>, linux-fbdev@vger.kernel.org, Greg Kroah-Hartman <gregkh@suse.de>, James Smart <james.smart@emulex.com>, linux-mips@linux-mips.org, "VMware, Inc." <pv-drivers@vmware.com>, PJ Waskiewicz <peter.p.waskiewicz.jr@intel.com>, Shreyas Bhatewara <sbhatewara@vmware.com>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, "J. Bruce Fields" <bfields@fieldses.org>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Paul Mackerras <paulus@samba.org>, linux-i2c@vger.kernel.org, Brett Rudley <brudley@broadcom.com>, sparclinux@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, linux-acpi@vger.kernel.org, linux-scsi@vger.kernel.org, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, e1000-devel@lists.sourceforge.net, Trond Myklebust <Trond.Myklebust@netapp.com>, Jesse Brandeburg <jesse.brandeburg@intel.com>, Neil Brown <neilb@suse.de>, Jeff Kirsher <jeffrey.t.kirsher@intel.com>, linux-wireless@vger.kernel.org, Ingo Molnar <mingo@elte.hu>, linux-usb@vger.kernel.org, Len Brown <lenb@kernel.org>, Alex Duyck <alexander.h.duyck@intel.com>, Peter Zijlstra <a.p.zijlstra@chello.nl>, Henry Ptasinski <henryp@broadcom.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Thomas Winischhofer <thomas@winischhofer.net>, Mauro Carvalho Chehab <mchehab@infradead.org>, Arnaldo Carvalho de Melo <acme@redhat.com>, "Jean Delvare (PC drivers, core)" <khali@linux-fr.org>, mjpeg-users@lists.sourceforge.net, "Ben Dooks (embedded platforms)" <ben-linux@fluff.org>, linux-nfs@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Neela Syam Kolli <megaraidlinux@lsi.com>, Karsten Keil <isdn@linux-pingi.de>, Linus Walleij <linus.walleij@stericsson.com>, netdev@vger.kernel.org, Anirban Chakraborty <anirban.chakraborty@qlogic.com>, Bruce Allan <bruce.w.allan@intel.com>
+Message-ID: <20100914091445.2jM5LF2ohELD3LlFU8N8-E8ykQlOIFrpvc1E87-mOH4@z>
 
-On noncoherent processors with a readahead cache, an extra platform-
-specific invalidation is required during the dma_sync_*_for_cpu()
-operations to keep drivers from seeing stale prefetched data.
+Joe Perches <joe@perches.com> wrote:
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- .../include/asm/mach-cavium-octeon/dma-coherence.h |   13 +++++++++++++
- arch/mips/include/asm/mach-generic/dma-coherence.h |   13 +++++++++++++
- arch/mips/include/asm/mach-ip27/dma-coherence.h    |   13 +++++++++++++
- arch/mips/include/asm/mach-ip32/dma-coherence.h    |   13 +++++++++++++
- arch/mips/include/asm/mach-jazz/dma-coherence.h    |   13 +++++++++++++
- .../mips/include/asm/mach-loongson/dma-coherence.h |   13 +++++++++++++
- arch/mips/include/asm/mach-powertv/dma-coherence.h |   13 +++++++++++++
- arch/mips/mm/dma-default.c                         |    3 +++
- 8 files changed, 94 insertions(+), 0 deletions(-)
+> Using static const char foo[] = "bar" can save some
+> code and text space, so change the places where it's possible.
 
-diff --git a/arch/mips/include/asm/mach-cavium-octeon/dma-coherence.h b/arch/mips/include/asm/mach-cavium-octeon/dma-coherence.h
-index 17d5794..8192683 100644
---- a/arch/mips/include/asm/mach-cavium-octeon/dma-coherence.h
-+++ b/arch/mips/include/asm/mach-cavium-octeon/dma-coherence.h
-@@ -52,6 +52,19 @@ static inline void plat_extra_sync_for_device(struct device *dev)
- 	mb();
- }
- 
-+static inline void plat_extra_sync_for_cpu(struct device *dev,
-+	dma_addr_t dma_handle, unsigned long offset, size_t size,
-+	enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
-+static inline void plat_extra_sync_for_cpu_sg(struct device *dev,
-+	struct scatterlist *sg, enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
- static inline int plat_device_is_coherent(struct device *dev)
- {
- 	return 1;
-diff --git a/arch/mips/include/asm/mach-generic/dma-coherence.h b/arch/mips/include/asm/mach-generic/dma-coherence.h
-index 8da9807..20728eb 100644
---- a/arch/mips/include/asm/mach-generic/dma-coherence.h
-+++ b/arch/mips/include/asm/mach-generic/dma-coherence.h
-@@ -52,6 +52,19 @@ static inline void plat_extra_sync_for_device(struct device *dev)
- 	return;
- }
- 
-+static inline void plat_extra_sync_for_cpu(struct device *dev,
-+	dma_addr_t dma_handle, unsigned long offset, size_t size,
-+	enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
-+static inline void plat_extra_sync_for_cpu_sg(struct device *dev,
-+	struct scatterlist *sg, enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
- static inline int plat_dma_mapping_error(struct device *dev,
- 					 dma_addr_t dma_addr)
- {
-diff --git a/arch/mips/include/asm/mach-ip27/dma-coherence.h b/arch/mips/include/asm/mach-ip27/dma-coherence.h
-index d3d0401..b1cb862 100644
---- a/arch/mips/include/asm/mach-ip27/dma-coherence.h
-+++ b/arch/mips/include/asm/mach-ip27/dma-coherence.h
-@@ -62,6 +62,19 @@ static inline void plat_extra_sync_for_device(struct device *dev)
- 	return;
- }
- 
-+static inline void plat_extra_sync_for_cpu(struct device *dev,
-+	dma_addr_t dma_handle, unsigned long offset, size_t size,
-+	enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
-+static inline void plat_extra_sync_for_cpu_sg(struct device *dev,
-+	struct scatterlist *sg, enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
- static inline int plat_dma_mapping_error(struct device *dev,
- 					 dma_addr_t dma_addr)
- {
-diff --git a/arch/mips/include/asm/mach-ip32/dma-coherence.h b/arch/mips/include/asm/mach-ip32/dma-coherence.h
-index 3785595..c870003 100644
---- a/arch/mips/include/asm/mach-ip32/dma-coherence.h
-+++ b/arch/mips/include/asm/mach-ip32/dma-coherence.h
-@@ -84,6 +84,19 @@ static inline void plat_extra_sync_for_device(struct device *dev)
- 	return;
- }
- 
-+static inline void plat_extra_sync_for_cpu(struct device *dev,
-+	dma_addr_t dma_handle, unsigned long offset, size_t size,
-+	enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
-+static inline void plat_extra_sync_for_cpu_sg(struct device *dev,
-+	struct scatterlist *sg, enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
- static inline int plat_dma_mapping_error(struct device *dev,
- 					 dma_addr_t dma_addr)
- {
-diff --git a/arch/mips/include/asm/mach-jazz/dma-coherence.h b/arch/mips/include/asm/mach-jazz/dma-coherence.h
-index f93aee5..dd7b8e3 100644
---- a/arch/mips/include/asm/mach-jazz/dma-coherence.h
-+++ b/arch/mips/include/asm/mach-jazz/dma-coherence.h
-@@ -52,6 +52,19 @@ static inline void plat_extra_sync_for_device(struct device *dev)
- 	return;
- }
- 
-+static inline void plat_extra_sync_for_cpu(struct device *dev,
-+	dma_addr_t dma_handle, unsigned long offset, size_t size,
-+	enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
-+static inline void plat_extra_sync_for_cpu_sg(struct device *dev,
-+	struct scatterlist *sg, enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
- static inline int plat_dma_mapping_error(struct device *dev,
- 					 dma_addr_t dma_addr)
- {
-diff --git a/arch/mips/include/asm/mach-loongson/dma-coherence.h b/arch/mips/include/asm/mach-loongson/dma-coherence.h
-index 981c75f..7565bbc 100644
---- a/arch/mips/include/asm/mach-loongson/dma-coherence.h
-+++ b/arch/mips/include/asm/mach-loongson/dma-coherence.h
-@@ -58,6 +58,19 @@ static inline void plat_extra_sync_for_device(struct device *dev)
- 	return;
- }
- 
-+static inline void plat_extra_sync_for_cpu(struct device *dev,
-+	dma_addr_t dma_handle, unsigned long offset, size_t size,
-+	enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
-+static inline void plat_extra_sync_for_cpu_sg(struct device *dev,
-+	struct scatterlist *sg, enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
- static inline int plat_dma_mapping_error(struct device *dev,
- 					 dma_addr_t dma_addr)
- {
-diff --git a/arch/mips/include/asm/mach-powertv/dma-coherence.h b/arch/mips/include/asm/mach-powertv/dma-coherence.h
-index f76029c..1134961 100644
---- a/arch/mips/include/asm/mach-powertv/dma-coherence.h
-+++ b/arch/mips/include/asm/mach-powertv/dma-coherence.h
-@@ -105,6 +105,19 @@ static inline void plat_extra_sync_for_device(struct device *dev)
- 	return;
- }
- 
-+static inline void plat_extra_sync_for_cpu(struct device *dev,
-+	dma_addr_t dma_handle, unsigned long offset, size_t size,
-+	enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
-+static inline void plat_extra_sync_for_cpu_sg(struct device *dev,
-+	struct scatterlist *sg, enum dma_data_direction direction)
-+{
-+	return;
-+}
-+
- static inline int plat_dma_mapping_error(struct device *dev,
- 					 dma_addr_t dma_addr)
- {
-diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
-index 79dfb9c..ed1baaf 100644
---- a/arch/mips/mm/dma-default.c
-+++ b/arch/mips/mm/dma-default.c
-@@ -287,6 +287,7 @@ EXPORT_SYMBOL(dma_unmap_sg);
- void dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle,
- 	size_t size, enum dma_data_direction direction)
- {
-+	plat_extra_sync_for_cpu(dev, dma_handle, 0, size, direction);
- 	if (cpu_is_noncoherent_r10000(dev))
- 		__dma_sync(dma_addr_to_page(dev, dma_handle),
- 			   dma_handle & ~PAGE_MASK, size, direction);
-@@ -308,6 +309,7 @@ EXPORT_SYMBOL(dma_sync_single_for_device);
- void dma_sync_single_range_for_cpu(struct device *dev, dma_addr_t dma_handle,
- 	unsigned long offset, size_t size, enum dma_data_direction direction)
- {
-+	plat_extra_sync_for_cpu(dev, dma_handle, offset, size, direction);
- 	if (cpu_is_noncoherent_r10000(dev))
- 		__dma_sync(dma_addr_to_page(dev, dma_handle), offset, size,
- 			   direction);
-@@ -333,6 +335,7 @@ void dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg, int nelems,
- 
- 	/* Make sure that gcc doesn't leave the empty loop body.  */
- 	for (i = 0; i < nelems; i++, sg++) {
-+		plat_extra_sync_for_cpu_sg(dev, sg, direction);
- 		if (cpu_is_noncoherent_r10000(dev))
- 			__dma_sync(sg_page(sg), sg->offset, sg->length,
- 				   direction);
--- 
-1.7.0.4
+That's reasonable.
+
+> Also change the places that use
+> 	char foo[] = "barX";
+> 	...
+> 	foo[3] = value + '0';
+> where X is typically changed
+> 	char foo[sizeof("barX")];
+> 	...
+> 	sprintf(foo, "bar%c", value + '0');
+
+You haven't said what this gains.  I can see what it may cost, though
+(depending on how gcc loads foo[]).
+
+David

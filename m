@@ -1,37 +1,36 @@
-Received: from mx1.redhat.com ([209.132.183.28]:44786 "EHLO mx1.redhat.com"
+Received: from mxout1.idt.com ([157.165.5.25]:45028 "EHLO mxout1.idt.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491095Ab0INJQn (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 14 Sep 2010 11:16:43 +0200
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <cover.1284406638.git.joe@perches.com>
-References: <cover.1284406638.git.joe@perches.com>
-Date: Tue, 14 Sep 2010 10:14:45 +0100
-Message-ID: <28081.1284455685@redhat.com>
-Subject: (no subject)
+        id S1491194Ab0IOTqw convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Sep 2010 21:46:52 +0200
+Received: from mail.idt.com (localhost [127.0.0.1])
+        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id o8FJkgpL000926
+        for <linux-mips@linux-mips.org>; Wed, 15 Sep 2010 12:46:44 -0700
+Received: from corpml3.corp.idt.com (corpml3.corp.idt.com [157.165.140.25])
+        by mail.idt.com (8.13.8/8.13.8) with ESMTP id o8FJkfS1015830
+        for <linux-mips@linux-mips.org>; Wed, 15 Sep 2010 12:46:41 -0700 (PDT)
+Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
+        by corpml3.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id o8FJkee08207
+        for <linux-mips@linux-mips.org>; Wed, 15 Sep 2010 12:46:41 -0700 (PDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: What is CONFIG_MIPS_MT_SMTC configuration and when is this recommended to be used? 
+Date: Wed, 15 Sep 2010 12:46:21 -0700
+Message-ID: <AEA634773855ED4CAD999FBB1A66D076010CFA3B@CORPEXCH1.na.ads.idt.com>
+From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Joe Perches <joe@perches.com>
-Cc: dhowells@redhat.com, linux-kernel@vger.kernel.org, Amit Kumar Salecha <amit.salecha@qlogic.com>, linux-fbdev@vger.kernel.org, Greg Kroah-Hartman <gregkh@suse.de>, James Smart <james.smart@emulex.com>, linux-mips@linux-mips.org, "VMware, Inc." <pv-drivers@vmware.com>, PJ Waskiewicz <peter.p.waskiewicz.jr@intel.com>, Shreyas Bhatewara <sbhatewara@vmware.com>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, "J. Bruce Fields" <bfields@fieldses.org>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Paul Mackerras <paulus@samba.org>, linux-i2c@vger.kernel.org, Brett Rudley <brudley@broadcom.com>, sparclinux@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, linux-acpi@vger.kernel.org, linux-scsi@vger.kernel.org, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, e1000-devel@lists.sourceforge.net, Trond Myklebust <Trond.Myklebust@netapp.com>, Jesse Brandeburg <jesse.brandeburg@intel.com>, Neil Brown <neilb@suse.de>, Jeff Kirsher <jeffrey.t.kirsher@intel.com>, linux-wireless@vger.kernel.org, Ingo Molnar <mingo@elte.hu>, linux-usb@vger.kernel.org, Len Brown <lenb@kernel.org>, Alex Duyck <alexander.h.duyck@intel.com>, Peter Zijlstra <a.p.zijlstra@chello.nl>, Henry Ptasinski <henryp@broadcom.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Thomas Winischhofer <thomas@winischhofer.net>, Mauro Carvalho Chehab <mchehab@infradead.org>, Arnaldo Carvalho de Melo <acme@redhat.com>, "Jean Delvare (PC drivers, core)" <khali@linux-fr.org>, mjpeg-users@lists.sourceforge.net, "Ben Dooks (embedded platforms)" <ben-linux@fluff.org>, linux-nfs@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Neela Syam Kolli <megaraidlinux@lsi.com>, Karsten Keil <isdn@linux-pingi.de>, Linus Walleij <linus.walleij@stericsson.com>, netdev@vger.kernel.org, Anirban Chakraborty <anirban.chakraborty@qlogic.com>, Bruce Allan <bruce.w.allan@intel.com>
-Message-ID: <20100914091445.2jM5LF2ohELD3LlFU8N8-E8ykQlOIFrpvc1E87-mOH4@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20100915194621.zMwgf4w9ewwOlR-jN_ZgL89ZM9XeODd4k5vKZ_7Tesg@z>
 
-Joe Perches <joe@perches.com> wrote:
+Hi,
 
-> Using static const char foo[] = "bar" can save some
-> code and text space, so change the places where it's possible.
+I use Linux on MALTA board. My final goal is to port Linux on new board
+based on MIPS. What is CONFIG_MIPS_MT_SMTC configuration and when is
+this recommended to be used? 
 
-That's reasonable.
-
-> Also change the places that use
-> 	char foo[] = "barX";
-> 	...
-> 	foo[3] = value + '0';
-> where X is typically changed
-> 	char foo[sizeof("barX")];
-> 	...
-> 	sprintf(foo, "bar%c", value + '0');
-
-You haven't said what this gains.  I can see what it may cost, though
-(depending on how gcc loads foo[]).
-
-David
+Thanks,
+Andrei

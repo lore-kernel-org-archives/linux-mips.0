@@ -1,47 +1,44 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49]:60287 "EHLO
-        mail-pw0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491000Ab0ITNUB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 20 Sep 2010 15:20:01 +0200
-Received: by pwj3 with SMTP id 3so1642754pwj.36
-        for <linux-mips@linux-mips.org>; Mon, 20 Sep 2010 06:19:54 -0700 (PDT)
-Subject: [PATCH] MIPS: Fix syscall 64 bit number comments
-From: Philby John <pjohn@mvista.com>
-Reply-To: pjohn@mvista.com
-Content-Type: text/plain
-Date: Mon, 20 Sep 2010 18:50:04 +0530
-Message-ID: <1284988804.4442.4.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from mxout1.idt.com ([157.165.5.25]:34984 "EHLO mxout1.idt.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491199Ab0IVStj convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 22 Sep 2010 20:49:39 +0200
+Received: from mail.idt.com (localhost [127.0.0.1])
+        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id o8MInVWI003714
+        for <linux-mips@linux-mips.org>; Wed, 22 Sep 2010 11:49:31 -0700
+Received: from corpml3.corp.idt.com (corpml3.corp.idt.com [157.165.140.25])
+        by mail.idt.com (8.13.8/8.13.8) with ESMTP id o8MInSea016459
+        for <linux-mips@linux-mips.org>; Wed, 22 Sep 2010 11:49:30 -0700 (PDT)
+Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
+        by corpml3.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id o8MInQk10343
+        for <linux-mips@linux-mips.org>; Wed, 22 Sep 2010 11:49:27 -0700 (PDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: Which Linux driver (source code) is used for tty0 (console) on MALTA? 
+Date: Wed, 22 Sep 2010 11:49:25 -0700
+Message-ID: <AEA634773855ED4CAD999FBB1A66D07601113E58@CORPEXCH1.na.ads.idt.com>
+From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: linux-mips@linux-mips.org
-Cc: David Daney <ddaney@caviumnetworks.com>
-Message-ID: <20100920132004.5SPx5I3ghyY_HPKE6Obd9V2zp_s2sRz3Fh-i5FY8Ss0@z>
+Message-ID: <20100922184925.en4t9-acK88pQovQFrqmXlRHnYY_sNYj4IJkmpRtY2c@z>
 
-From 4e2dbfb145d898b8f3fa1798e0ec10ac3f34d6c6 Mon Sep 17 00:00:00 2001
-From: Philby John <pjohn@mvista.com>
-Date: Mon, 20 Sep 2010 18:44:48 +0530
-Subject: [PATCH] MIPS: Fix syscall 64 bit number comments
+Hi,
 
-Signed-off-by: Philby John <pjohn@mvista.com>
-Cc: David Daney <ddaney@caviumnetworks.com>
----
- arch/mips/kernel/scall64-64.S |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+I am using MALTA and my goal is to port MIPS Linux on a new platform.
+Which driver (source code) is used for tty0 (console)? I see the support
+for "early console" but I think that this is not the real Linux driver
+used after boot stage.
 
-diff --git a/arch/mips/kernel/scall64-64.S b/arch/mips/kernel/scall64-64.S
-index a8a6c59..b16db4b 100644
---- a/arch/mips/kernel/scall64-64.S
-+++ b/arch/mips/kernel/scall64-64.S
-@@ -416,7 +416,7 @@ sys_call_table:
- 	PTR	sys_pipe2
- 	PTR	sys_inotify_init1
- 	PTR	sys_preadv
--	PTR	sys_pwritev			/* 5390 */
-+	PTR	sys_pwritev			/* 5290 */
- 	PTR	sys_rt_tgsigqueueinfo
- 	PTR	sys_perf_event_open
- 	PTR	sys_accept4
--- 
-1.6.3.3.333.g4d53f
+More general, how to find which code source is used for an embedded
+driver (part of the Kernel at compiling time) for each h/w resource.
+MIPS Linux distribution comes with a lot of drivers but I have
+difficulties to figure out which one is used for MALTA. Is it a files
+where all those are registered?
+
+Thanks,
+Andrei
+  

@@ -1,65 +1,42 @@
-Received: from mail.windriver.com ([147.11.1.11]:45961 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1491200Ab0IWBOU convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Sep 2010 03:14:20 +0200
+Received: from mxout1.idt.com ([157.165.5.25]:46718 "EHLO mxout1.idt.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491122Ab0IXVp2 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Sep 2010 23:45:28 +0200
+Received: from mail.idt.com (localhost [127.0.0.1])
+        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id o8OLjKhX013172
+        for <linux-mips@linux-mips.org>; Fri, 24 Sep 2010 14:45:21 -0700
+Received: from corpml3.corp.idt.com (corpml3.corp.idt.com [157.165.140.25])
+        by mail.idt.com (8.13.8/8.13.8) with ESMTP id o8OLjEmb012192
+        for <linux-mips@linux-mips.org>; Fri, 24 Sep 2010 14:45:15 -0700 (PDT)
+Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
+        by corpml3.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id o8OLjCI28208
+        for <linux-mips@linux-mips.org>; Fri, 24 Sep 2010 14:45:13 -0700 (PDT)
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-        charset="US-ASCII"
+        charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: Which Linux driver (source code) is used for tty0 (console) on MALTA? 
-Date: Thu, 23 Sep 2010 03:13:57 +0200
-Message-ID: <52CF90264091A14888078A031D780F4306C8C0F6@ism-mail03.corp.ad.wrs.com>
-In-Reply-To: <AEA634773855ED4CAD999FBB1A66D07601113E58@CORPEXCH1.na.ads.idt.com>
-References: <AEA634773855ED4CAD999FBB1A66D07601113E58@CORPEXCH1.na.ads.idt.com>
-From: "Chen, Tiejun" <Tiejun.Chen@windriver.com>
+Subject: Does Linux MIPS use scratch pad ram?
+Date: Fri, 24 Sep 2010 14:45:11 -0700
+Message-ID: <AEA634773855ED4CAD999FBB1A66D07601159CB4@CORPEXCH1.na.ads.idt.com>
+From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>, linux-mips@linux-mips.org
-Message-ID: <20100923011357.eX9NoUmH1RdahW4qpkSmWpcUJdB9w3ZeWO5_3WYex6U@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20100924214511.wvLOPmlra2WSJhBj-F92pOjtqj4Uu5bKG3DMfJipNUs@z>
 
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org 
-> [mailto:linux-mips-bounce@linux-mips.org] On Behalf Of 
-> Ardelean, Andrei
-> Sent: Thursday, September 23, 2010 2:49 AM
-> To: linux-mips@linux-mips.org
-> Subject: Which Linux driver (source code) is used for tty0 
-> (console) on MALTA? 
-> 
-> Hi,
-> 
-> I am using MALTA and my goal is to port MIPS Linux on a new platform.
-> Which driver (source code) is used for tty0 (console)? I see 
-> the support for "early console" but I think that this is not 
-> the real Linux driver used after boot stage.
+Hi,
 
-$ cat arch/mips/configs/malta_defconfig | grep SERIAL
-# CONFIG_SERIAL_NONSTANDARD is not set
-CONFIG_SERIAL_8250=y
-CONFIG_SERIAL_8250_CONSOLE=y
-CONFIG_SERIAL_8250_PCI=y
-CONFIG_SERIAL_8250_NR_UARTS=4
-CONFIG_SERIAL_8250_RUNTIME_UARTS=4
-# CONFIG_SERIAL_8250_EXTENDED is not set
-CONFIG_SERIAL_CORE=y
-CONFIG_SERIAL_CORE_CONSOLE=y
-# CONFIG_SERIAL_JSM is not set
+I am using MALTA platform and try to port Linux on a new platform.
+It seems to me that in spram.c the sprams are probed  if they are
+available or not but I cannot see Linux really using those afterwards.
+My platform has no spram so I am trying to avoid this probing. The
+problem is that spram.c is not MALTA specific but as the comment says in
+spram.c there are some MALTA specific addresses. Unfortunately I have
+some Flash at those addresses.
+How to fix this issue?
 
-Cheers
-Tiejun
-
-> 
-> More general, how to find which code source is used for an 
-> embedded driver (part of the Kernel at compiling time) for 
-> each h/w resource.
-> MIPS Linux distribution comes with a lot of drivers but I 
-> have difficulties to figure out which one is used for MALTA. 
-> Is it a files where all those are registered?
-> 
-> Thanks,
-> Andrei
->   
-> 
-> 
+Thanks,
+Andrei
+  

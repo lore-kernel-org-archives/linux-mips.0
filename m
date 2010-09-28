@@ -1,75 +1,86 @@
-Received: from eu1sys200aog117.obsmtp.com ([207.126.144.143]:41426 "EHLO
-        eu1sys200aog117.obsmtp.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491049Ab0I1KfV convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 28 Sep 2010 12:35:21 +0200
-From: Arun MURTHY <arun.murthy@stericsson.com>
-Date: Tue, 28 Sep 2010 12:33:08 +0200
-Subject: RE: [PATCH 4/7] pwm: Align existing pwm drivers with pwm-core driver
-Message-ID: <F45880696056844FA6A73F415B568C69532DC2FC76@EXDCVYMBSTM006.EQ1STM.local>
-References: <1285659648-21409-1-git-send-email-arun.murthy@stericsson.com>
- <1285659648-21409-5-git-send-email-arun.murthy@stericsson.com>
- <4CA1AE21.8070306@metafoo.de>
- <F45880696056844FA6A73F415B568C69532DC2FB98@EXDCVYMBSTM006.EQ1STM.local>
- <4CA1BF2D.2070609@metafoo.de>
-In-Reply-To: <4CA1BF2D.2070609@metafoo.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Received: from eu1sys200aog111.obsmtp.com ([207.126.144.131]:33294 "EHLO
+        eu1sys200aog111.obsmtp.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491956Ab0I1Kfy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Sep 2010 12:35:54 +0200
+From: Arun Murthy <arun.murthy@stericsson.com>
+Subject: [PATCH 0/7] PWM core driver for pwm based led and backlight driver
+Date: Tue, 28 Sep 2010 16:05:27 +0530
+Message-ID: <1285670134-18063-1-git-send-email-arun.murthy@stericsson.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "eric.y.miao@gmail.com" <eric.y.miao@gmail.com>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "grinberg@compulab.co.il" <grinberg@compulab.co.il>, "mike@compulab.co.il" <mike@compulab.co.il>, "robert.jarzmik@free.fr" <robert.jarzmik@free.fr>, "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "drwyrm@gmail.com" <drwyrm@gmail.com>, "stefan@openezx.org" <stefan@openezx.org>, "laforge@openezx.org" <laforge@openezx.org>, "ospite@studenti.unina.it" <ospite@studenti.unina.it>, "philipp.zabel@gmail.com" <philipp.zabel@gmail.com>, "mad_soft@inbox.ru" <mad_soft@inbox.ru>, "maz@misterjones.org" <maz@misterjones.org>, "daniel@caiaq.de" <daniel@caiaq.de>, "haojian.zhuang@marvell.com" <haojian.zhuang@marvell.com>, "timur@freescale.com" <timur@freescale.com>, "ben-linux@fluff.org" <ben-linux@fluff.org>, "support@simtec.co.uk" <support@simtec.co.uk>, "arnaud.patard@rtp-net.org" <arnaud.patard@rtp-net.org>, "dgreenday@gmail.com" <dgreenday@gmail.com>, "anarsoul@gmail.com" <anarsoul@gmail.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "mcuelenaere@gmail.com" <mcuelenaere@gmail.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "andre.goddard@gmail.com" <andre.goddard@gmail.com>, "jkosina@suse.cz" <jkosina@suse.cz>, "tj@kernel.org" <tj@kernel.org>, "hsweeten@visionengravers.com" <hsweeten@visionengravers.com>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "mroth@nessie.de" <mroth@nessie.de>, "randy.dunlap@oracle.com" <randy.dunlap@oracle.com>, "lethal@linux-sh.org" <lethal@linux-sh.org>, "rusty@rustcorp.com.au" <rusty@rustcorp.com.au>, "damm@opensource.se" <damm@opensource.se>, "mst@redhat.com" <mst@redhat.com>, "rpurdie@rpsys.net" <rpurdie@rpsys.net>, "sguinot@lacie.co" <sguinot@lacie.co>, "sameo@linux.intel.com" <sameo@linux.intel.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "balajitk@ti.com" <balajitk@ti.com>, "rnayak@ti.com" <rnayak@ti.com>, "santosh.shilimkar@ti.com" <santosh.shilimkar@ti.com>, "hemanthv@ti.com" <hemanthv@ti.com>, "michael.hennerich@analog.com" <michael.hennerich@analog.com>, "vapier@gentoo.org" <vapier@gentoo.org>, "khali@linux-fr.org" <khali@linux-fr.org>, "jic23@cam.ac.uk" <jic23@cam.ac.uk>, "re.emese@gmail.com" <re.emese@gmail.com>, "linux@simtec.co.uk" <linux@simtec.co.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Linus WALLEIJ <linus.walleij@stericsson.com>, Mattias WALLIN <mattias.wallin@stericsson.com>
-Message-ID: <20100928103308.P5wFUX1pH9ywGYdT_Epqz6pyLOF6GgN3rUXmX89hTJ0@z>
+To: lars@metafoo.de, akpm@linux-foundation.org, kernel@pengutronix.de, philipp.zabel@gmail.com, robert.jarzmik@free.fr, marek.vasut@gmail.com, eric.y.miao@gmail.com, rpurdie@rpsys.net, sameo@linux.intel.com, kgene.kim@samsung.com, linux-omap@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, arun.murthy@stericsson.com, STEricsson_nomadik_linux@list.st.com
+Message-ID: <20100928103527.LUil2zrVvpO274ny_stUa2reRVm9IYnfqo3ojiIOZS0@z>
 
-> Arun MURTHY wrote:
-> >>> mips-jz4740: pwm: Align with new pwm core driver
-> >>>
-> >>> PWM core driver has been added and has been enabled only for ARM
-> >>> platform. The same can be utilised for mips also.
-> >>> Please align with the pwm core driver(drivers/pwm-core.c).
-> >>
-> >> Is there any reason for artificially limiting it to ARM?
-> >
-> > No not at all, right now I have aligned all existing pwm drivers in
-> ARM to make use of the pwm core driver.
-> > But faced difficulty in aligning the mips-jz4740 pwm driver, without
-> having much knowledge about the device/data sheet.
-> > Hence I have let it to the maintainer of that driver to align and
-> thereafter this limitation will be removed.
-> > Have also comments the same as TODO in the driver.
-> >
-> 
-> Ok, I'll take care of adjusting the jz4740 pwm driver once the pwm-core
-> is in proper
-> shape.
-> But I still think it would be better to have a config symbol which
-> would be selected
-> by SoC code and on which PWM_CORE would depend. Then it would be
-> possible for SoC
-> implementation to device whether it wants to provide it's own PWM API
-> implementation
-> or use pwm-core.
+The series of patch add a new pwm core driver.
+Align the existing pwm drivers to make use of the pwm core driver.
 
-My intention is to make it a generic pwm driver. Like the one we do to register a led class driver / backlight class driver.
+Arun Murthy (7):
+  pwm: Add pwm core driver
+  backlight:pwm: add an element 'name' to platform data
+  leds: pwm: add a new element 'name' to platform data
+  pwm: Align existing pwm drivers with pwm-core driver
+  platform: Update the pwm based led and backlight platform data
+  pwm: move existing pwm driver to drivers/pwm
+  pwm: Modify backlight and led Kconfig aligning to pwm core
 
-> >>
-> >> Why can't these changes be in the initial patch which adds pwm-core?
-> >>
-> > Since by default this driver is enabled, and if there is some other
-> pwm driver enabled, both happen to export the same
-> function(pwm_enable/pwm_disable,..) After applying the first patch
-> build may fail.
-> >
-> I would understand that if you were just moving code around, but the
-> pwm_device
-> struct looks completly different now.
-Yes, that's the reason, I have modified all the existing pwm drivers except the mips to align with this.
-And this looks more generic.
-For example the element pwm_id, dev, data in pwm_device are all specific to a device and irrespective of any number of pwm devices each and every device will require this information, hence so.
+ arch/arm/mach-pxa/cm-x300.c               |    1 +
+ arch/arm/mach-pxa/colibri-pxa270-income.c |    1 +
+ arch/arm/mach-pxa/ezx.c                   |    1 +
+ arch/arm/mach-pxa/hx4700.c                |    1 +
+ arch/arm/mach-pxa/lpd270.c                |    1 +
+ arch/arm/mach-pxa/magician.c              |    1 +
+ arch/arm/mach-pxa/mainstone.c             |    1 +
+ arch/arm/mach-pxa/mioa701.c               |    1 +
+ arch/arm/mach-pxa/palm27x.c               |    1 +
+ arch/arm/mach-pxa/palmtc.c                |    1 +
+ arch/arm/mach-pxa/palmte2.c               |    1 +
+ arch/arm/mach-pxa/pcm990-baseboard.c      |    1 +
+ arch/arm/mach-pxa/raumfeld.c              |    1 +
+ arch/arm/mach-pxa/tavorevb.c              |    2 +
+ arch/arm/mach-pxa/viper.c                 |    1 +
+ arch/arm/mach-pxa/z2.c                    |    2 +
+ arch/arm/mach-pxa/zylonite.c              |    1 +
+ arch/arm/mach-s3c2410/mach-h1940.c        |    1 +
+ arch/arm/mach-s3c2440/mach-rx1950.c       |    1 +
+ arch/arm/mach-s3c64xx/mach-hmt.c          |    1 +
+ arch/arm/mach-s3c64xx/mach-smartq.c       |    1 +
+ arch/arm/plat-mxc/pwm.c                   |  166 +++++++++------------
+ arch/arm/plat-pxa/pwm.c                   |  210 ++++++++++++--------------
+ arch/arm/plat-samsung/pwm.c               |  235 +++++++++++++----------------
+ arch/mips/jz4740/pwm.c                    |    2 +-
+ drivers/Kconfig                           |    2 +
+ drivers/Makefile                          |    1 +
+ drivers/leds/Kconfig                      |    2 +-
+ drivers/leds/leds-pwm.c                   |    4 +-
+ drivers/mfd/Kconfig                       |    9 -
+ drivers/mfd/Makefile                      |    1 -
+ drivers/mfd/twl-core.c                    |   13 ++
+ drivers/mfd/twl6030-pwm.c                 |  163 --------------------
+ drivers/misc/Kconfig                      |    9 -
+ drivers/misc/Makefile                     |    1 -
+ drivers/misc/ab8500-pwm.c                 |  168 --------------------
+ drivers/pwm/Kconfig                       |   33 ++++
+ drivers/pwm/Makefile                      |    4 +
+ drivers/pwm/pwm-ab8500.c                  |  157 +++++++++++++++++++
+ drivers/pwm/pwm-core.c                    |  124 +++++++++++++++
+ drivers/pwm/pwm-twl6040.c                 |  196 ++++++++++++++++++++++++
+ drivers/video/backlight/Kconfig           |    2 +-
+ drivers/video/backlight/pwm_bl.c          |    4 +-
+ include/linux/leds_pwm.h                  |    1 +
+ include/linux/pwm.h                       |   29 ++++-
+ include/linux/pwm_backlight.h             |    1 +
+ 46 files changed, 864 insertions(+), 696 deletions(-)
+ delete mode 100644 drivers/mfd/twl6030-pwm.c
+ delete mode 100644 drivers/misc/ab8500-pwm.c
+ create mode 100644 drivers/pwm/Kconfig
+ create mode 100644 drivers/pwm/Makefile
+ create mode 100644 drivers/pwm/pwm-ab8500.c
+ create mode 100644 drivers/pwm/pwm-core.c
+ create mode 100644 drivers/pwm/pwm-twl6040.c
 
-Thanks and Regards,
-Arun R Murthy
--------------
+-- 
+1.7.2.dirty

@@ -1,16 +1,16 @@
-Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137]:53440 "EHLO
-        eu1sys200aog114.obsmtp.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491049Ab0I1JUl convert rfc822-to-8bit
+Received: from eu1sys200aog117.obsmtp.com ([207.126.144.143]:52897 "EHLO
+        eu1sys200aog117.obsmtp.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491049Ab0I1J2X convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 28 Sep 2010 11:20:41 +0200
+        Tue, 28 Sep 2010 11:28:23 +0200
 From: Arun MURTHY <arun.murthy@stericsson.com>
-Date: Tue, 28 Sep 2010 11:18:40 +0200
-Subject: RE: [PATCH 1/7] pwm: Add pwm core driver
-Message-ID: <F45880696056844FA6A73F415B568C69532DC2FB6B@EXDCVYMBSTM006.EQ1STM.local>
+Date: Tue, 28 Sep 2010 11:26:59 +0200
+Subject: RE: [PATCH 4/7] pwm: Align existing pwm drivers with pwm-core driver
+Message-ID: <F45880696056844FA6A73F415B568C69532DC2FB98@EXDCVYMBSTM006.EQ1STM.local>
 References: <1285659648-21409-1-git-send-email-arun.murthy@stericsson.com>
- <1285659648-21409-2-git-send-email-arun.murthy@stericsson.com>
- <4CA1AD2B.8000905@metafoo.de>
-In-Reply-To: <4CA1AD2B.8000905@metafoo.de>
+ <1285659648-21409-5-git-send-email-arun.murthy@stericsson.com>
+ <4CA1AE21.8070306@metafoo.de>
+In-Reply-To: <4CA1AE21.8070306@metafoo.de>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
@@ -20,73 +20,43 @@ Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: "eric.y.miao@gmail.com" <eric.y.miao@gmail.com>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "grinberg@compulab.co.il" <grinberg@compulab.co.il>, "mike@compulab.co.il" <mike@compulab.co.il>, "robert.jarzmik@free.fr" <robert.jarzmik@free.fr>, "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "drwyrm@gmail.com" <drwyrm@gmail.com>, "stefan@openezx.org" <stefan@openezx.org>, "laforge@openezx.org" <laforge@openezx.org>, "ospite@studenti.unina.it" <ospite@studenti.unina.it>, "philipp.zabel@gmail.com" <philipp.zabel@gmail.com>, "mad_soft@inbox.ru" <mad_soft@inbox.ru>, "maz@misterjones.org" <maz@misterjones.org>, "daniel@caiaq.de" <daniel@caiaq.de>, "haojian.zhuang@marvell.com" <haojian.zhuang@marvell.com>, "timur@freescale.com" <timur@freescale.com>, "ben-linux@fluff.org" <ben-linux@fluff.org>, "support@simtec.co.uk" <support@simtec.co.uk>, "arnaud.patard@rtp-net.org" <arnaud.patard@rtp-net.org>, "dgreenday@gmail.com" <dgreenday@gmail.com>, "anarsoul@gmail.com" <anarsoul@gmail.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "mcuelenaere@gmail.com" <mcuelenaere@gmail.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "andre.goddard@gmail.com" <andre.goddard@gmail.com>, "jkosina@suse.cz" <jkosina@suse.cz>, "tj@kernel.org" <tj@kernel.org>, "hsweeten@visionengravers.com" <hsweeten@visionengravers.com>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "dilinger@collabora.co.uk" <dilinger@collabora.co.uk>, "mroth@nessie.de" <mroth@nessie.de>, "randy.dunlap@oracle.com" <randy.dunlap@oracle.com>, "lethal@linux-sh.org" <lethal@linux-sh.org>, "rusty@rustcorp.com.au" <rusty@rustcorp.com.au>, "damm@opensource.se" <damm@opensource.se>, "mst@redhat.com" <mst@redhat.com>, "rpurdie@rpsys.net" <rpurdie@rpsys.net>, "sguinot@lacie.co" <sguinot@lacie.co>, "sameo@linux.intel.com" <sameo@linux.intel.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "balajitk@ti.com" <balajitk@ti.com>, "rnayak@ti.com" <rnayak@ti.com>, "santosh.shilimkar@ti.com" <santosh.shilimkar@ti.com>, "hemanthv@ti.com" <hemanthv@ti.com>, "michael.hennerich@analog.com" <michael.hennerich@analog.com>, "vapier@gentoo.org" <vapier@gentoo.org>, "khali@linux-fr.org" <khali@linux-fr.org>, "jic23@cam.ac.uk" <jic23@cam.ac.uk>, "re.emese@gmail.com" <re.emese@gmail.com>, "linux@simtec.co.uk" <linux@simtec.co.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Linus WALLEIJ <linus.walleij@stericsson.com>, Mattias WALLIN <mattias.wallin@stericsson.com>
-Message-ID: <20100928091840.wyZzPEt-mGdkwomO2YtjIq8Zusf5BOqWZEYLx9Diemk@z>
+Message-ID: <20100928092659.hZeNN2m1l40lcvJ6hY56eTgjC2exvC5htLFshzT6NVw@z>
 
-> > +menuconfig PWM_DEVICES
-> > +	bool "PWM devices"
-> > +	default y
-> > +	---help---
-> > +	  Say Y here to get to see options for device drivers from
+> > mips-jz4740: pwm: Align with new pwm core driver
+> >
+> > PWM core driver has been added and has been enabled only for ARM
+> > platform. The same can be utilised for mips also.
+> > Please align with the pwm core driver(drivers/pwm-core.c).
+> 
+> 
+> Is there any reason for artificially limiting it to ARM?
+
+No not at all, right now I have aligned all existing pwm drivers in ARM to make use of the pwm core driver.
+But faced difficulty in aligning the mips-jz4740 pwm driver, without having much knowledge about the device/data sheet.
+Hence I have let it to the maintainer of that driver to align and thereafter this limitation will be removed.
+Have also comments the same as TODO in the driver.
+
+> > diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> > index 5d10106..a88640c 100644
+> > --- a/drivers/pwm/Kconfig
+> > +++ b/drivers/pwm/Kconfig
+> > @@ -4,6 +4,7 @@
+> >
+> >  menuconfig PWM_DEVICES
+> >  	bool "PWM devices"
+> > +	depends on ARM
+> >  	default y
+> >  	---help---
+> >  	  Say Y here to get to see options for device drivers from
 > various
-> > +	  different categories. This option alone does not add any kernel
-> code.
-> > +
-> > +	  If you say N, all options in this submenu will be skipped and
-> disabled.
-> > +
+> > diff --git a/drivers/pwm/pwm-core.c b/drivers/pwm/pwm-core.c
+> > index b84027a..3a0d426 100644
 > 
-> Shouldn't PWM_DEVICES select HAVE_PWM?
-
-
-No not required, the entire concept is to remove HAVE_PWM and use PWM_CORE.
-
-> > +struct pwm_dev_info {
-> > +	struct pwm_device *pwm_dev;
-> > +	struct list_head list;
-> > +};
-> > +static struct pwm_dev_info *di;
 > 
-> Why not embed the list head into pwm_device. That would certainly make
-> pwm_device_unregister much simpler.
-pwm_device will be passed to each and every pwm driver that are registered as client with pwm core.
-The list consists of the registered pwm drivers and is to be handled by pwm core.
-Why should each and every pwm driver get to know about the entire pwm driver list?
-And also since the pwm_request/register/unregister are the one which require this list having this list inst in local/static device information structure seems to be right.
-
-> > +	}
-> > +	pwm->pwm_dev = pwm_dev;
-> > +	list_add_tail(&pwm->list, &di->list);
-> > +	up_write(&pwm_list_lock);
-> > +
 > 
-> I guess you only need to lock the list when accessing the list and
-> adding the new
-> pwm_dev.
-
-Oops, thanks for pointing out, will implement this in the v2 patch.
-> > +struct pwm_ops {
-> > +	int (*pwm_config)(struct pwm_device *pwm, int duty_ns, int
-> period_ns);
-> > +	int (*pwm_enable)(struct pwm_device *pwm);
-> > +	int (*pwm_disable)(struct pwm_device *pwm);
-> > +	char *name;
-> > +};
-> > +
+> Why can't these changes be in the initial patch which adds pwm-core?
 > 
-> Shouldn't name be part of the pwm_device? That would allow the ops to
-> be shared
-> between different devices.
-Good catch, the reason being that 2 or more devices can share the same ops and get registered to pwm core.
-But the catch lies while identifying the pwm device while the clients are requesting for.
-The pwm backlight will request the pwm driver by name. This is parameter that distinguishes among different pwm devices irrespective of same ops or not.
-
-> > +int pwm_device_register(struct pwm_device *pwm_dev);
-> > +int pwm_device_unregister(struct pwm_device *pwm_dev);
-> > +
-> >  #endif /* __LINUX_PWM_H */
-> 
-> It might be also a good idea to add a device class for pwm devices.
-Sure, but can you please explain with an example the use case.
+Since by default this driver is enabled, and if there is some other pwm driver enabled, both happen to export the same function(pwm_enable/pwm_disable,..) After applying the first patch build may fail.
 
 Thanks and Regards,
 Arun R Murthy

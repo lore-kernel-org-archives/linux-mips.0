@@ -1,78 +1,32 @@
-Received: from eu1sys200aog116.obsmtp.com ([207.126.144.141]:42501 "EHLO
-        eu1sys200aog116.obsmtp.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491951Ab0I1Hr1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Sep 2010 09:47:27 +0200
-From: Arun Murthy <arun.murthy@stericsson.com>
-Subject: [PATCH 7/7] pwm: Modify backlight and led Kconfig aligning to pwm core
-Date: Tue, 28 Sep 2010 13:10:48 +0530
-Message-ID: <1285659648-21409-8-git-send-email-arun.murthy@stericsson.com>
-In-Reply-To: <1285659648-21409-1-git-send-email-arun.murthy@stericsson.com>
+Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137]:54418 "EHLO
+        eu1sys200aog114.obsmtp.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491049Ab0I1Ijk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Sep 2010 10:39:40 +0200
+From: Arun MURTHY <arun.murthy@stericsson.com>
+Date: Tue, 28 Sep 2010 10:36:29 +0200
+Subject: RE: [PATCH 3/7] leds: pwm: add a new element 'name' to platform data
+Message-ID: <F45880696056844FA6A73F415B568C69532DC2FA80@EXDCVYMBSTM006.EQ1STM.local>
 References: <1285659648-21409-1-git-send-email-arun.murthy@stericsson.com>
+ <1285659648-21409-4-git-send-email-arun.murthy@stericsson.com>
+ <AANLkTi=0xKWPNn+b1kfPyMTs_mxsYqx+Cd+R1aTZiycg@mail.gmail.com>
+In-Reply-To: <AANLkTi=0xKWPNn+b1kfPyMTs_mxsYqx+Cd+R1aTZiycg@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: eric.y.miao@gmail.com, linux@arm.linux.org.uk, grinberg@compulab.co.il, mike@compulab.co.il, robert.jarzmik@free.fr, marek.vasut@gmail.com, drwyrm@gmail.com, stefan@openezx.org, laforge@openezx.org, ospite@studenti.unina.it, philipp.zabel@gmail.com, mad_soft@inbox.ru, maz@misterjones.org, daniel@caiaq.de, haojian.zhuang@marvell.com, timur@freescale.com, ben-linux@fluff.org, support@simtec.co.uk, arnaud.patard@rtp-net.org, dgreenday@gmail.com, anarsoul@gmail.com, akpm@linux-foundation.org, mcuelenaere@gmail.com, kernel@pengutronix.de, andre.goddard@gmail.com, jkosina@suse.cz, tj@kernel.org, hsweeten@visionengravers.com, u.kleine-koenig@pengutronix.de, kgene.kim@samsung.com, ralf@linux-mips.org, lars@metafoo.de, dilinger@collabora.co.uk, mroth@nessie.de, randy.dunlap@oracle.com, lethal@linux-sh.org, rusty@rustcorp.com.au, damm@opensource.se, mst@redhat.com, rpurdie@rpsys.net, sguinot@lacie.co, sameo@linux.intel.com, broonie@opensource.wolfsonmicro.com, balajitk@ti.com, rnayak@ti.com, santosh.shilimkar@ti.com, hemanthv@ti.com, michael.hennerich@analog.com, vapier@gentoo.org, khali@linux-fr.org, jic23@cam.ac.uk, re.emese@gmail.com, linux@simtec.co.uk
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, arun.murthy@stericsson.com, linus.walleij@stericsson.com, mattias.wallin@stericsson.com
-Message-ID: <20100928074048.emDRdDW-9taNrSYqNjNlU4z7bh9t4QO86JSLSLtNYU4@z>
+To: Eric Miao <eric.y.miao@gmail.com>
+Cc: "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "grinberg@compulab.co.il" <grinberg@compulab.co.il>, "mike@compulab.co.il" <mike@compulab.co.il>, "robert.jarzmik@free.fr" <robert.jarzmik@free.fr>, "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "drwyrm@gmail.com" <drwyrm@gmail.com>, "stefan@openezx.org" <stefan@openezx.org>, "laforge@openezx.org" <laforge@openezx.org>, "ospite@studenti.unina.it" <ospite@studenti.unina.it>, "philipp.zabel@gmail.com" <philipp.zabel@gmail.com>, "mad_soft@inbox.ru" <mad_soft@inbox.ru>, "maz@misterjones.org" <maz@misterjones.org>, "daniel@caiaq.de" <daniel@caiaq.de>, "haojian.zhuang@marvell.com" <haojian.zhuang@marvell.com>, "timur@freescale.com" <timur@freescale.com>, "ben-linux@fluff.org" <ben-linux@fluff.org>, "support@simtec.co.uk" <support@simtec.co.uk>, "arnaud.patard@rtp-net.org" <arnaud.patard@rtp-net.org>, "dgreenday@gmail.com" <dgreenday@gmail.com>, "anarsoul@gmail.com" <anarsoul@gmail.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "mcuelenaere@gmail.com" <mcuelenaere@gmail.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "andre.goddard@gmail.com" <andre.goddard@gmail.com>, "jkosina@suse.cz" <jkosina@suse.cz>, "tj@kernel.org" <tj@kernel.org>, "hsweeten@visionengravers.com" <hsweeten@visionengravers.com>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "lars@metafoo.de" <lars@metafoo.de>, "dilinger@collabora.co.uk" <dilinger@collabora.co.uk>, "mroth@nessie.de" <mroth@nessie.de>, "randy.dunlap@oracle.com" <randy.dunlap@oracle.com>, "lethal@linux-sh.org" <lethal@linux-sh.org>, "rusty@rustcorp.com.au" <rusty@rustcorp.com.au>, "damm@opensource.se" <damm@opensource.se>, "mst@redhat.com" <mst@redhat.com>, "rpurdie@rpsys.net" <rpurdie@rpsys.net>, "sguinot@lacie.co" <sguinot@lacie.co>, "sameo@linux.intel.com" <sameo@linux.intel.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "balajitk@ti.com" <balajitk@ti.com>, "rnayak@ti.com" <rnayak@ti.com>, "santosh.shilimkar@ti.com" <santosh.shilimkar@ti.com>, "hemanthv@ti.com" <hemanthv@ti.com>, "michael.hennerich@analog.com" <michael.hennerich@analog.com>, "vapier@gentoo.org" <vapier@gentoo.org>, "khali@linux-fr.org" <khali@linux-fr.org>, "jic23@cam.ac.uk" <jic23@cam.ac.uk>, "re.emese@gmail.com" <re.emese@gmail.com>, "linux@simtec.co.uk" <linux@simtec.co.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Linus WALLEIJ <linus.walleij@stericsson.com>, Mattias WALLIN <mattias.wallin@stericsson.com>
+Message-ID: <20100928083629.nWr-wbmcNyGrFJE4xcEpObW1Wdv9ZYqwJW3Y9NTxOJQ@z>
 
-PWM based backlight and led driver will not be calling the pwm drivers
-through the pwm core driver and hence adding dependancy on the same.
-
-Signed-off-by: Arun Murthy <arun.murthy@stericsson.com>
-Acked-by: Linus Walleij <linus.walleij@stericsson.com>
----
- drivers/leds/Kconfig            |    2 +-
- drivers/pwm/Kconfig             |    2 --
- drivers/video/backlight/Kconfig |    2 +-
- 3 files changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index e411262..eba388f 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -244,7 +244,7 @@ config LEDS_DAC124S085
- 
- config LEDS_PWM
- 	tristate "PWM driven LED Support"
--	depends on HAVE_PWM
-+	depends on HAVE_PWM || PWM_CORE
- 	help
- 	  This option enables support for pwm driven LEDs
- 
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index e347365..1f8cbc0 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -17,7 +17,6 @@ if PWM_DEVICES
- config AB8500_PWM
- 	bool "AB8500 PWM support"
- 	depends on AB8500_CORE
--	select HAVE_PWM
- 	help
- 	  This driver exports functions to enable/disble/config/free Pulse
- 	  Width Modulation in the Analog Baseband Chip AB8500.
-@@ -26,7 +25,6 @@ config AB8500_PWM
- config TWL6030_PWM
- 	tristate "TWL6030 PWM (Pulse Width Modulator) Support"
- 	depends on TWL4030_CORE
--	select HAVE_PWM
- 	default n
- 	help
- 	  Say yes here if you want support for TWL6030 PWM.
-diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
-index e54a337..73fc17b 100644
---- a/drivers/video/backlight/Kconfig
-+++ b/drivers/video/backlight/Kconfig
-@@ -217,7 +217,7 @@ config BACKLIGHT_CARILLO_RANCH
- 
- config BACKLIGHT_PWM
- 	tristate "Generic PWM based Backlight Driver"
--	depends on HAVE_PWM
-+	depends on HAVE_PWM || PWM_CORE
- 	help
- 	  If you have a LCD backlight adjustable by PWM, say Y to enable
- 	  this driver.
--- 
-1.7.2.dirty
+PiBPbiBUdWUsIFNlcCAyOCwgMjAxMCBhdCAzOjQwIFBNLCBBcnVuIE11cnRoeQ0KPiA8YXJ1bi5t
+dXJ0aHlAc3Rlcmljc3Nvbi5jb20+IHdyb3RlOg0KPiA+IEEgbmV3IGVsZW1lbnQgJ25hbWUnIGlz
+IGFkZGVkIHRvIHB3bSBsZWQgcGxhdGZvcm0gZGF0YSBzdHJ1Y3R1cmUuDQo+ID4gVGhpcyBpcyBy
+ZXF1aXJlZCB0byBpZGVudGlmeSB0aGUgcHdtIGRldmljZS4NCj4gDQo+IEkgY2Fubm90IHNlZSB3
+aGF0IHRoaXMgbmFtZSBpcyB1c2VkIGZvcj8NCj4gDQpUaGlzIG5hbWUgaXMgcmVmZXJlbmNlZCBp
+biBsZWRzLXB3bS5jIGFuZCBwd21fYmwuYy4gSXQgaXMgcGFzc2VkIGFzIGEgcGFyYW1ldGVyIGlu
+IHB3bV9yZXF1ZXN0KCkgZnVuY3Rpb24uKHBsZWFzZSByZWZlciB0aGUgbmV4dCBwYXRjaCBpLmUg
+UEFUSEMgNC83KQ0KSXQgaXMgdXNlZCB0byBpZGVudGlmeSB0aGUgcHdtIGRyaXZlciBieSBuYW1l
+Lg0KDQpUaGFua3MgYW5kIFJlZ2FyZHMsDQpBcnVuIFIgTXVydGh5DQotLS0tLS0tLS0tLS0tDQo=

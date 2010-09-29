@@ -1,79 +1,55 @@
-Received: from mxout1.idt.com ([157.165.5.25]:54264 "EHLO mxout1.idt.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491135Ab0I2Qwv convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 29 Sep 2010 18:52:51 +0200
-Content-class: urn:content-classes:message
+Received: from mail-fx0-f49.google.com ([209.85.161.49]:57339 "EHLO
+        mail-fx0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491099Ab0I2XUl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Sep 2010 01:20:41 +0200
+Received: by fxm15 with SMTP id 15so1191309fxm.36
+        for <linux-mips@linux-mips.org>; Wed, 29 Sep 2010 16:20:35 -0700 (PDT)
+From: Jakub Narebski <jnareb@gmail.com>
+Subject: [ANNOUNCE] Git User's Survey 2010 is now up!
+Date: Thu, 30 Sep 2010 01:20:21 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: How to setup interrupts for a new board?
-Date: Wed, 29 Sep 2010 09:52:39 -0700
-Message-ID: <AEA634773855ED4CAD999FBB1A66D0760115A691@CORPEXCH1.na.ads.idt.com>
-In-Reply-To: <4CA36859.2050506@caviumnetworks.com>
-References: <AEA634773855ED4CAD999FBB1A66D0760115A5BC@CORPEXCH1.na.ads.idt.com> <4CA36859.2050506@caviumnetworks.com>
-From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
+  charset="iso-8859-2"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-ID: <201009300120.25173.jnareb@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20100929165239.IpjgPzAktJC9btIGepneMLAxoRC5EZBB1azE_PtX4PA@z>
+Message-ID: <20100929232021.H8cQteX0heuEquxfzMkqm-p4jB6RZKuB1q8vrmxqlpk@z>
 
-Hi David,
+Hello all,
 
-I checked in the MIPS documentation and I couldn't find relevant
-information about this particular way of implementation. Unfortunately
-in the MIPS kernel source there are no enough comments.
+This announcement is sent to this mailing list because yout project
+uses Git as a version control system.
 
-Thanks,
-Andrei
+We would like to ask you a few questions about your use of the Git
+version control system. This survey is mainly to understand who is
+using Git, how and why.
 
------Original Message-----
-From: David Daney [mailto:ddaney@caviumnetworks.com] 
-Sent: Wednesday, September 29, 2010 12:25 PM
-To: Ardelean, Andrei
-Cc: linux-mips@linux-mips.org
-Subject: Re: How to setup interrupts for a new board?
-
-On 09/29/2010 07:06 AM, Ardelean, Andrei wrote:
-> Hi,
->
-> I created new board specific files gd_xxxx similar with malta_xxxx and
-I
-> am trying to configure Linux interrupts in gd-int.c.
-> My board has no external interrupt controller like Malta has, it has
-no
-> PCI, I use Vectored interrupt mode and a mux routes the external
-> interrupts to the MIPS h/w interrupts.
-> Wthat is the meaning of the following switches and how to set them:
-> cpu_has_divec		
-> cpu_has_vce		
-> cpu_has_llsc
-> cpu_has_counter
-> cpu_has_vint
->
-> What is the difference between:
-> setup_irq()
-> set_irq_handler()
-> set_vi_handler()
->
-> Can you point me to document regarding interrupts implementation in
-MIPS
-> Linux?
-
-Other than the Linux Kernel source code, make sure you have a copy of:
-
-MD00090-2B-MIPS32PRA-AFP, the "MIPS32(r) Architecture for Programmers 
-Volume III: The MIPS32(r) Privileged Resource Architecture"
-
-It can be downloaded from mips.com
-
-David Daney
+The results will be published to the Git wiki on the GitSurvey2010
+page (https://git.wiki.kernel.org/index.php/GitSurvey2010) and
+discussed on the git mailing list (git@vger.kernel.org).
 
 
->
-> Thanks,
-> Andrei
->
->
+The survey would be open from 1 September till 15 October 2010.
+
+
+Please devote a few minutes of your time to fill this simple
+questionnaire, it will help a lot the git community to understand your
+needs, what you like of Git, and of course what you don't like  of it.
+
+The survey can be found here:
+  http://tinyurl.com/GitSurvey2010
+  https://www.survs.com/survey/MUPYR8UJ4B
+
+
+Git User's Survey 2010 was originally announced on git mailing list
+in the following mail:
+  http://article.gmane.org/gmane.comp.version-control.git/154986
+
+-- 
+Jakub Narebski
+on behalf of
+Git Development Community
+http://git-scm.com

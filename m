@@ -1,55 +1,86 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49]:57339 "EHLO
-        mail-fx0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491099Ab0I2XUl (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Sep 2010 01:20:41 +0200
-Received: by fxm15 with SMTP id 15so1191309fxm.36
-        for <linux-mips@linux-mips.org>; Wed, 29 Sep 2010 16:20:35 -0700 (PDT)
-From: Jakub Narebski <jnareb@gmail.com>
-Subject: [ANNOUNCE] Git User's Survey 2010 is now up!
-Date: Thu, 30 Sep 2010 01:20:21 +0200
+Received: from mxout1.idt.com ([157.165.5.25]:51312 "EHLO mxout1.idt.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491950Ab0I3Nbi convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Sep 2010 15:31:38 +0200
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-2"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-ID: <201009300120.25173.jnareb@gmail.com>
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: How to setup interrupts for a new board?
+Date: Thu, 30 Sep 2010 06:31:23 -0700
+Message-ID: <AEA634773855ED4CAD999FBB1A66D0760115A95C@CORPEXCH1.na.ads.idt.com>
+In-Reply-To: <alpine.LFD.2.00.1009300306230.21189@eddie.linux-mips.org>
+References: <AEA634773855ED4CAD999FBB1A66D0760115A5BC@CORPEXCH1.na.ads.idt.com> <4CA36859.2050506@caviumnetworks.com> <AEA634773855ED4CAD999FBB1A66D0760115A691@CORPEXCH1.na.ads.idt.com> <alpine.LFD.2.00.1009300306230.21189@eddie.linux-mips.org>
+From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-Message-ID: <20100929232021.H8cQteX0heuEquxfzMkqm-p4jB6RZKuB1q8vrmxqlpk@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: David Daney <ddaney@caviumnetworks.com>, linux-mips@linux-mips.org
+Message-ID: <20100930133123.t7QTXPopKJtlcVw8LsuTpQ41KSNcz_WyzXeQTH-jhw0@z>
 
-Hello all,
+Hi Maciej,
 
-This announcement is sent to this mailing list because yout project
-uses Git as a version control system.
+I have read all the books you suggested and I work having all of them on
+my desk. I come back to them frequently to check diverse stuff. My
+problems are: 
+- Why Malta implementation doesn't activate cpu_has_veic although they
+have 8259 external interrupt controller? Malta implementation doesn't
+activate cpu_has_vint too although Vectored interrupt mode should be the
+minimum recommended mode if external controller is not present.
+- Looking at Malta_xxxx specific files, it seems to me that they do not
+follow Linux Porting Guide document I have read on MIPS Linux.
 
-We would like to ask you a few questions about your use of the Git
-version control system. This survey is mainly to understand who is
-using Git, how and why.
+In addition, my company pays Timesys for support and regarding
+cpu-feature.h define switches, they said that they know nothing.
 
-The results will be published to the Git wiki on the GitSurvey2010
-page (https://git.wiki.kernel.org/index.php/GitSurvey2010) and
-discussed on the git mailing list (git@vger.kernel.org).
-
-
-The survey would be open from 1 September till 15 October 2010.
-
-
-Please devote a few minutes of your time to fill this simple
-questionnaire, it will help a lot the git community to understand your
-needs, what you like of Git, and of course what you don't like  of it.
-
-The survey can be found here:
-  http://tinyurl.com/GitSurvey2010
-  https://www.survs.com/survey/MUPYR8UJ4B
+What I was hoping was to find a MIPS Linux implementation which uses
+Vectored Interrupt Mode (VI) with few h/w interrupts including the timer
+routed to the MIPS processor or at least some document with some details
+of implementation. That will shorten significantly my porting. Sure, if
+I find nothing, I'll write from scratch as I understand, but it takes
+for sure much longer and is worth to try first finding a close example.
+    
+Thanks,
+Andrei
 
 
-Git User's Survey 2010 was originally announced on git mailing list
-in the following mail:
-  http://article.gmane.org/gmane.comp.version-control.git/154986
 
--- 
-Jakub Narebski
-on behalf of
-Git Development Community
-http://git-scm.com
+-----Original Message-----
+From: Maciej W. Rozycki [mailto:macro@linux-mips.org] 
+Sent: Wednesday, September 29, 2010 10:32 PM
+To: Ardelean, Andrei
+Cc: David Daney; linux-mips@linux-mips.org
+Subject: RE: How to setup interrupts for a new board?
+
+Hi Andrei,
+
+> I checked in the MIPS documentation and I couldn't find relevant
+> information about this particular way of implementation. Unfortunately
+> in the MIPS kernel source there are no enough comments.
+
+ With reasonable understanding what the MIPS architecture features
+covered 
+by these macros, functions, etc. are you should be able to infer from 
+Linux code what it actually does.
+
+ May I suggest some reading on the architecture first then?  I realise 
+MIPS Technologies' architecture specifications may not be the best way
+to 
+learn how the architecture works, so why not try a MIPS textbook
+instead, 
+such as Dominic Sweetman's excellent "See MIPS Run Linux" (ISBN 
+978-0-12-088421-6)?  While not covering such details of Linux as you are
+
+looking for, it includes related introductory subjects to get you
+started.  
+And of course it covers the MIPS architecture itself.  You may be able
+to 
+find the book at your nearby (or less near) library.
+
+ I think it's about as much as we can help -- you need to get down to 
+understanding the details yourself or you'll be bound to asking around 
+helplessly all the time.
+
+  Maciej

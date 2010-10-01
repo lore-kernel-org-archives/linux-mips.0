@@ -1,86 +1,72 @@
-Received: from mxout1.idt.com ([157.165.5.25]:51312 "EHLO mxout1.idt.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491950Ab0I3Nbi convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Sep 2010 15:31:38 +0200
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
+Received: from eu1sys200aog108.obsmtp.com ([207.126.144.125]:47225 "EHLO
+        eu1sys200aog108.obsmtp.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1490968Ab0JAD1v convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 1 Oct 2010 05:27:51 +0200
+From: Arun MURTHY <arun.murthy@stericsson.com>
+Date: Fri, 1 Oct 2010 05:25:54 +0200
+Subject: RE: [PATCH 1/7] pwm: Add pwm core driver
+Message-ID: <F45880696056844FA6A73F415B568C69532DCF32BC@EXDCVYMBSTM006.EQ1STM.local>
+References: <1285659648-21409-1-git-send-email-arun.murthy@stericsson.com>
+        <1285659648-21409-2-git-send-email-arun.murthy@stericsson.com>
+        <4CA1AD2B.8000905@metafoo.de>
+        <F45880696056844FA6A73F415B568C69532DC2FB6B@EXDCVYMBSTM006.EQ1STM.local>
+        <4CA1BC16.3020702@metafoo.de>
+        <F45880696056844FA6A73F415B568C69532DC2FC60@EXDCVYMBSTM006.EQ1STM.local>
+        <4CA25841.4090702@metafoo.de>
+        <F45880696056844FA6A73F415B568C69532DC8B7E4@EXDCVYMBSTM006.EQ1STM.local>
+ <AANLkTingb8ox5h5rN1YrxONibfrWLicoiS6yqKf_v5bJ@mail.gmail.com>
+In-Reply-To: <AANLkTingb8ox5h5rN1YrxONibfrWLicoiS6yqKf_v5bJ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: How to setup interrupts for a new board?
-Date: Thu, 30 Sep 2010 06:31:23 -0700
-Message-ID: <AEA634773855ED4CAD999FBB1A66D0760115A95C@CORPEXCH1.na.ads.idt.com>
-In-Reply-To: <alpine.LFD.2.00.1009300306230.21189@eddie.linux-mips.org>
-References: <AEA634773855ED4CAD999FBB1A66D0760115A5BC@CORPEXCH1.na.ads.idt.com> <4CA36859.2050506@caviumnetworks.com> <AEA634773855ED4CAD999FBB1A66D0760115A691@CORPEXCH1.na.ads.idt.com> <alpine.LFD.2.00.1009300306230.21189@eddie.linux-mips.org>
-From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
+MIME-Version: 1.0
+Return-Path: <arun.murthy@stericsson.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Return-Path: <linux-mips-bounce@linux-mips.org>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: David Daney <ddaney@caviumnetworks.com>, linux-mips@linux-mips.org
-Message-ID: <20100930133123.t7QTXPopKJtlcVw8LsuTpQ41KSNcz_WyzXeQTH-jhw0@z>
+To: Trilok Soni <soni.trilok@gmail.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, "eric.y.miao@gmail.com" <eric.y.miao@gmail.com>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "philipp.zabel@gmail.com" <philipp.zabel@gmail.com>, "robert.jarzmik@free.fr" <robert.jarzmik@free.fr>, Marek Vasut <marek.vasut@gmail.com>, "rpurdie@rpsys.net" <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linus WALLEIJ <linus.walleij@stericsson.com>, Mattias WALLIN <mattias.wallin@stericsson.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, STEricsson_nomadik_linux <STEricsson_nomadik_linux@list.st.com>, Bill Gatliff <bgat@billgatliff.com>
+Message-ID: <20101001032554.Dog1U_pRJCdbz2L6VHAdZdIV9gWqD1WRjBqtWXIxreM@z>
 
-Hi Maciej,
+Hi Trilok,
 
-I have read all the books you suggested and I work having all of them on
-my desk. I come back to them frequently to check diverse stuff. My
-problems are: 
-- Why Malta implementation doesn't activate cpu_has_veic although they
-have 8259 external interrupt controller? Malta implementation doesn't
-activate cpu_has_vint too although Vectored interrupt mode should be the
-minimum recommended mode if external controller is not present.
-- Looking at Malta_xxxx specific files, it seems to me that they do not
-follow Linux Porting Guide document I have read on MIPS Linux.
+> Hi Arun,
+> 
+> Adding Bill Gatliff (anyway, CC list already crowded)
+> 
+> On Wed, Sep 29, 2010 at 10:19 AM, Arun MURTHY
+> <arun.murthy@stericsson.com> wrote:
+> >> Arun MURTHY wrote:
+> >> >>>> Shouldn't PWM_DEVICES select HAVE_PWM?
+> >> >>>
+> >> >>> No not required, the entire concept is to remove HAVE_PWM and
+> use
+> >> >> PWM_CORE.
+> 
+> There is already nice and clean framework written by Bill for PWM, if
+> you grep the LKML and linux-embedded mailing list archive then you
+> will get his patches, and it seems that he had promised to send the
+> updated version few week back, but not heard from him (may be because
+> he was travelling as per FB status).
+> 
+> Please evaluate that framework too.
+> 
+Thanks for this information, I did search in linux-embedded mailing list
+archive. Below are my views on that patch set.
+Many of the functions that has been defined in pwm core driver
+written by Bill Gatliff is not being used by the most of the pwm drivers
+except Atmel PWM driver. I rather felt the pwm core driver was an attempt
+made to generalize the Atmel pwm driver.
+And moreover this was posted long back somewhere in the beginning of this
+year i.e Feb and the thread is dead thereafter.
 
-In addition, my company pays Timesys for support and regarding
-cpu-feature.h define switches, they said that they know nothing.
+This patch has been submitted focusing all the existing pwm drivers and
+only these are the functions that are being used by pwm drivers.
+This patch set also included patch to align all the existing pwm driver
+with the pwm core driver.
+So it is an attempt to generalize most of the pwm drivers and
+conclude with a pwm core driver.
 
-What I was hoping was to find a MIPS Linux implementation which uses
-Vectored Interrupt Mode (VI) with few h/w interrupts including the timer
-routed to the MIPS processor or at least some document with some details
-of implementation. That will shorten significantly my porting. Sure, if
-I find nothing, I'll write from scratch as I understand, but it takes
-for sure much longer and is worth to try first finding a close example.
-    
-Thanks,
-Andrei
-
-
-
------Original Message-----
-From: Maciej W. Rozycki [mailto:macro@linux-mips.org] 
-Sent: Wednesday, September 29, 2010 10:32 PM
-To: Ardelean, Andrei
-Cc: David Daney; linux-mips@linux-mips.org
-Subject: RE: How to setup interrupts for a new board?
-
-Hi Andrei,
-
-> I checked in the MIPS documentation and I couldn't find relevant
-> information about this particular way of implementation. Unfortunately
-> in the MIPS kernel source there are no enough comments.
-
- With reasonable understanding what the MIPS architecture features
-covered 
-by these macros, functions, etc. are you should be able to infer from 
-Linux code what it actually does.
-
- May I suggest some reading on the architecture first then?  I realise 
-MIPS Technologies' architecture specifications may not be the best way
-to 
-learn how the architecture works, so why not try a MIPS textbook
-instead, 
-such as Dominic Sweetman's excellent "See MIPS Run Linux" (ISBN 
-978-0-12-088421-6)?  While not covering such details of Linux as you are
-
-looking for, it includes related introductory subjects to get you
-started.  
-And of course it covers the MIPS architecture itself.  You may be able
-to 
-find the book at your nearby (or less near) library.
-
- I think it's about as much as we can help -- you need to get down to 
-understanding the details yourself or you'll be bound to asking around 
-helplessly all the time.
-
-  Maciej
+Thanks and Regards,
+Arun R Murthy
+-------------

@@ -1,11 +1,11 @@
-Received: from eu1sys200aog109.obsmtp.com ([207.126.144.127]:42273 "EHLO
-        eu1sys200aog109.obsmtp.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491025Ab0JEMBu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Oct 2010 14:01:50 +0200
+Received: from eu1sys200aog111.obsmtp.com ([207.126.144.131]:34338 "EHLO
+        eu1sys200aog111.obsmtp.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491029Ab0JEMBw (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Oct 2010 14:01:52 +0200
 From: Arun Murthy <arun.murthy@stericsson.com>
-Subject: [PATCHv2 7/7] pwm: Modify backlight and led Kconfig aligning to pwm core
-Date: Tue, 5 Oct 2010 17:30:02 +0530
-Message-ID: <1286280002-1636-8-git-send-email-arun.murthy@stericsson.com>
+Subject: [PATCHv2 3/7] leds: pwm: add a new element 'name' to platform data
+Date: Tue, 5 Oct 2010 17:29:58 +0530
+Message-ID: <1286280002-1636-4-git-send-email-arun.murthy@stericsson.com>
 In-Reply-To: <1286280002-1636-1-git-send-email-arun.murthy@stericsson.com>
 References: <1286280002-1636-1-git-send-email-arun.murthy@stericsson.com>
 MIME-Version: 1.0
@@ -15,64 +15,48 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: lars@metafoo.de, akpm@linux-foundation.org, kernel@pengutronix.de, philipp.zabel@gmail.com, robert.jarzmik@free.fr, marek.vasut@gmail.com, eric.y.miao@gmail.com, rpurdie@rpsys.net, sameo@linux.intel.com, kgene.kim@samsung.com, linux-omap@vger.kernel.org
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, STEricsson_nomadik_linux@list.st.com, arun.murthy@stericsson.com, bgat@billgatliff.com
-Message-ID: <20101005120002.DNQpiF3WbwDkpNwFFy3n3VgV_x38XufwdrRm7dO8tcA@z>
+Message-ID: <20101005115958.P5VdavYwDrHn65OslZr5OmSbkxBCcmGOOpriV1TduYY@z>
 
-PWM based backlight and led driver will not be calling the pwm drivers
-through the pwm core driver and hence adding dependancy on the same.
+A new element 'name' is added to pwm led platform data structure.
+This is required to identify the pwm device.
 
 Signed-off-by: Arun Murthy <arun.murthy@stericsson.com>
 Acked-by: Linus Walleij <linus.walleij@stericsson.com>
 ---
- drivers/leds/Kconfig            |    2 +-
- drivers/pwm/Kconfig             |    2 --
- drivers/video/backlight/Kconfig |    2 +-
- 3 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/leds/leds-pwm.c  |    4 +++-
+ include/linux/leds_pwm.h |    3 ++-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index e411262..8324dd0 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -244,7 +244,7 @@ config LEDS_DAC124S085
+diff --git a/drivers/leds/leds-pwm.c b/drivers/leds/leds-pwm.c
+index da3fa8d..8da2be6 100644
+--- a/drivers/leds/leds-pwm.c
++++ b/drivers/leds/leds-pwm.c
+@@ -66,8 +66,10 @@ static int led_pwm_probe(struct platform_device *pdev)
+ 		cur_led = &pdata->leds[i];
+ 		led_dat = &leds_data[i];
  
- config LEDS_PWM
- 	tristate "PWM driven LED Support"
--	depends on HAVE_PWM
-+	depends on HAVE_PWM || PWM_DEVICES
- 	help
- 	  This option enables support for pwm driven LEDs
++		if (!pdata->name)
++			pdata->name = cur_led->name;
+ 		led_dat->pwm = pwm_request(cur_led->pwm_id,
+-				cur_led->name);
++				pdata->name);
+ 		if (IS_ERR(led_dat->pwm)) {
+ 			dev_err(&pdev->dev, "unable to request PWM %d\n",
+ 					cur_led->pwm_id);
+diff --git a/include/linux/leds_pwm.h b/include/linux/leds_pwm.h
+index 33a0711..dbc925a 100644
+--- a/include/linux/leds_pwm.h
++++ b/include/linux/leds_pwm.h
+@@ -14,8 +14,9 @@ struct led_pwm {
+ };
  
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index e4ef199..4acc0a6 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -19,7 +19,6 @@ if PWM_DEVICES
- config AB8500_PWM
- 	bool "AB8500 PWM support"
- 	depends on AB8500_CORE
--	select HAVE_PWM
- 	help
- 	  This driver exports functions to enable/disble/config/free Pulse
- 	  Width Modulation in the Analog Baseband Chip AB8500.
-@@ -28,7 +27,6 @@ config AB8500_PWM
- config TWL6030_PWM
- 	tristate "TWL6030 PWM (Pulse Width Modulator) Support"
- 	depends on TWL4030_CORE
--	select HAVE_PWM
- 	default n
- 	help
- 	  Say yes here if you want support for TWL6030 PWM.
-diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
-index e54a337..c07fc16 100644
---- a/drivers/video/backlight/Kconfig
-+++ b/drivers/video/backlight/Kconfig
-@@ -217,7 +217,7 @@ config BACKLIGHT_CARILLO_RANCH
+ struct led_pwm_platform_data {
+-	int			num_leds;
++	int		num_leds;
+ 	struct led_pwm	*leds;
++	char		*name;
+ };
  
- config BACKLIGHT_PWM
- 	tristate "Generic PWM based Backlight Driver"
--	depends on HAVE_PWM
-+	depends on HAVE_PWM || PWM_DEVICES
- 	help
- 	  If you have a LCD backlight adjustable by PWM, say Y to enable
- 	  this driver.
+ #endif
 -- 
 1.7.2.dirty

@@ -1,44 +1,49 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49]:56721 "EHLO
-        mail-yw0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491083Ab0JFTpv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 6 Oct 2010 21:45:51 +0200
-Received: by ywh2 with SMTP id 2so2013301ywh.36
-        for <linux-mips@linux-mips.org>; Wed, 06 Oct 2010 12:45:44 -0700 (PDT)
-From: Kevin Hilman <khilman@deeprootsystems.com>
-Subject: Re: [PATCHv2 1/7] pwm: Add pwm core driver
-References: <1286280002-1636-1-git-send-email-arun.murthy@stericsson.com>
-        <1286280002-1636-2-git-send-email-arun.murthy@stericsson.com>
-        <20101005122225.6dda30ff.akpm@linux-foundation.org>
-        <F45880696056844FA6A73F415B568C6953571D4F05@EXDCVYMBSTM006.EQ1STM.local>
-Date: Wed, 06 Oct 2010 12:45:40 -0700
-In-Reply-To: <F45880696056844FA6A73F415B568C6953571D4F05@EXDCVYMBSTM006.EQ1STM.local>
-        (Arun MURTHY's message of "Wed, 6 Oct 2010 06:03:28 +0200")
-Message-ID: <87ocb7jeaj.fsf@deeprootsystems.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-Path: <khilman@deeprootsystems.com>
+Received: from [203.94.56.252] ([203.94.56.252]:36475 "EHLO
+        atomos.dmz.longlandclan.yi.org" rhost-flags-FAIL-FAIL-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491201Ab0JHBpg (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 8 Oct 2010 03:45:36 +0200
+From: Stuart Longland <redhatter@gentoo.org>
+Subject: [RFC MIPS] Update buildtar for MIPS
+Date: Fri,  8 Oct 2010 11:45:37 +1000
+Message-ID: <1286502337-23882-1-git-send-email-redhatter@gentoo.org>
+Return-Path: <redhatter@gentoo.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Arun MURTHY <arun.murthy@stericsson.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, "lars@metafoo.de" <lars@metafoo.de>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "philipp.zabel@gmail.com" <philipp.zabel@gmail.com>, "robert.jarzmik@free.fr" <robert.jarzmik@free.fr>, "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "eric.y.miao@gmail.com" <eric.y.miao@gmail.com>, "rpurdie@rpsys.net" <rpurdie@rpsys.net>, "sameo@linux.intel.com" <sameo@linux.intel.com>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, STEricsson_nomadik_linux <STEricsson_nomadik_linux@list.st.com>, "bgat@billgatliff.com" <bgat@billgatliff.com>
-Message-ID: <20101006194540.Kit5QktD4AiOtXERsB3DKRaTwMvcZp5ug1FO869R30c@z>
+To: linux-mips@linux-mips.orglinux-mips@linux-mips.org
+Cc: ralf@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20101008014537.Wer0-_mrdh5fi_--ToKlw7QjGuNdvjHDncgPFxCngoU@z>
 
-Arun MURTHY <arun.murthy@stericsson.com> writes:
+A lot of 64-bit systems supported by Linux/MIPS have boot firmware or
+bootloaders that only understand 32-bit ELF files, and as such, the vmlinux.32
+target exists to support these systems.  Therefore, it'd be nice if the tar-pkg
+target recognised this, and included the right version when packaging up a
+binary of the kernel.
 
-[...]
+This updates buildtar to support MIPS targets.  MIPS may use 'vmlinux'
+or 'vmlinux.32' depending on the target system.  This uses 'vmlinux.32'
+in preference to 'vmlinux' where present (although I should check which
+is newer), including either file as /boot/vmlinux-${version}.
+---
+ scripts/package/buildtar |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
->> 
->> I suggest that you work on Kevin's comments before making any code
->> changes though.
->
-> This pwm driver also supports the Davinci pwm driver as suggested by
-> Kelvin.
-
-My concern isn't whether it supports davinci or not.  Adapting existing
-drivers is the easy part.
-
-My concern is that there are now two proposals for a generic PWM
-framework, and I would prefer to see that those projects are aligned
-before anything merges.
-
-Kevin
+diff --git a/scripts/package/buildtar b/scripts/package/buildtar
+index 51b2aa0..988c3bd 100644
+--- a/scripts/package/buildtar
++++ b/scripts/package/buildtar
+@@ -83,6 +83,13 @@ case "${ARCH}" in
+ 		[ -f "${objtree}/vmlinux.SYS" ] && cp -v -- "${objtree}/vmlinux.SYS" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}.SYS"
+ 		[ -f "${objtree}/vmlinux.dsk" ] && cp -v -- "${objtree}/vmlinux.dsk" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}.dsk"
+ 		;;
++	mips)
++		if [ -f "${objtree}/vmlinux.32" ] ; then
++			cp -v -- "${objtree}/vmlinux.32" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
++		elif [ -f "${objtree}/vmlinux" ] ; then
++			cp -v -- "${objtree}/vmlinux" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
++		fi
++		;;
+ 	*)
+ 		[ -f "${KBUILD_IMAGE}" ] && cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinux-kbuild-${KERNELRELEASE}"
+ 		echo "" >&2
+-- 
+1.7.1

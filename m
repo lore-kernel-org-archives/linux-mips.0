@@ -1,49 +1,43 @@
-Received: from [203.94.56.252] ([203.94.56.252]:36475 "EHLO
-        atomos.dmz.longlandclan.yi.org" rhost-flags-FAIL-FAIL-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491201Ab0JHBpg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 8 Oct 2010 03:45:36 +0200
-From: Stuart Longland <redhatter@gentoo.org>
-Subject: [RFC MIPS] Update buildtar for MIPS
-Date: Fri,  8 Oct 2010 11:45:37 +1000
-Message-ID: <1286502337-23882-1-git-send-email-redhatter@gentoo.org>
-Return-Path: <redhatter@gentoo.org>
+Received: from mxout1.idt.com ([157.165.5.25]:43751 "EHLO mxout1.idt.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491201Ab0JHPZ4 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 8 Oct 2010 17:25:56 +0200
+Received: from mail.idt.com (localhost [127.0.0.1])
+        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id o98FPj75002085
+        for <linux-mips@linux-mips.org>; Fri, 8 Oct 2010 08:25:46 -0700
+Received: from corpml1.corp.idt.com (corpml1.corp.idt.com [157.165.140.20])
+        by mail.idt.com (8.13.8/8.13.8) with ESMTP id o98FPjm6012618
+        for <linux-mips@linux-mips.org>; Fri, 8 Oct 2010 08:25:45 -0700 (PDT)
+Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
+        by corpml1.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id o98FPjp13370
+        for <linux-mips@linux-mips.org>; Fri, 8 Oct 2010 08:25:45 -0700 (PDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: How to add Ethernet and USB drivers to the Linux Kernel?
+Date: Fri, 8 Oct 2010 08:25:43 -0700
+Message-ID: <AEA634773855ED4CAD999FBB1A66D076011E62CF@CORPEXCH1.na.ads.idt.com>
+From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
+Return-Path: <Andrei.Ardelean@idt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.orglinux-mips@linux-mips.org
-Cc: ralf@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20101008014537.Wer0-_mrdh5fi_--ToKlw7QjGuNdvjHDncgPFxCngoU@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20101008152543.h5Hzpg6ci2tNNo15Dr1oT35wRLgNmpy5AGE-X5zjGpI@z>
 
-A lot of 64-bit systems supported by Linux/MIPS have boot firmware or
-bootloaders that only understand 32-bit ELF files, and as such, the vmlinux.32
-target exists to support these systems.  Therefore, it'd be nice if the tar-pkg
-target recognised this, and included the right version when packaging up a
-binary of the kernel.
+Hi,
 
-This updates buildtar to support MIPS targets.  MIPS may use 'vmlinux'
-or 'vmlinux.32' depending on the target system.  This uses 'vmlinux.32'
-in preference to 'vmlinux' where present (although I should check which
-is newer), including either file as /boot/vmlinux-${version}.
----
- scripts/package/buildtar |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+I am porting MIPS Linux from Malta board to a new board. On Malta board
+network and USB devices reside on PCI bus. In my case the new video
+processor contains MIPS core, network and USB controllers, and those
+controllers registers are in the direct memory map of MIPS core, there
+is no PCI bus. Give me some advice how to add Ethernet and USB drivers
+to the Kernel. Do I need to create a new virtual platform bus/device or
+the Kernel has already what I need? If all the peripheral h/w blocks are
+memory mapped directly in MIPS processor core space, can I have a single
+bus for all of them?  
 
-diff --git a/scripts/package/buildtar b/scripts/package/buildtar
-index 51b2aa0..988c3bd 100644
---- a/scripts/package/buildtar
-+++ b/scripts/package/buildtar
-@@ -83,6 +83,13 @@ case "${ARCH}" in
- 		[ -f "${objtree}/vmlinux.SYS" ] && cp -v -- "${objtree}/vmlinux.SYS" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}.SYS"
- 		[ -f "${objtree}/vmlinux.dsk" ] && cp -v -- "${objtree}/vmlinux.dsk" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}.dsk"
- 		;;
-+	mips)
-+		if [ -f "${objtree}/vmlinux.32" ] ; then
-+			cp -v -- "${objtree}/vmlinux.32" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
-+		elif [ -f "${objtree}/vmlinux" ] ; then
-+			cp -v -- "${objtree}/vmlinux" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
-+		fi
-+		;;
- 	*)
- 		[ -f "${KBUILD_IMAGE}" ] && cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinux-kbuild-${KERNELRELEASE}"
- 		echo "" >&2
--- 
-1.7.1
+Thanks,
+Andrei
+  

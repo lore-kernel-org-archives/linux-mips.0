@@ -1,43 +1,165 @@
-Received: from mxout1.idt.com ([157.165.5.25]:43751 "EHLO mxout1.idt.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491201Ab0JHPZ4 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 8 Oct 2010 17:25:56 +0200
-Received: from mail.idt.com (localhost [127.0.0.1])
-        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id o98FPj75002085
-        for <linux-mips@linux-mips.org>; Fri, 8 Oct 2010 08:25:46 -0700
-Received: from corpml1.corp.idt.com (corpml1.corp.idt.com [157.165.140.20])
-        by mail.idt.com (8.13.8/8.13.8) with ESMTP id o98FPjm6012618
-        for <linux-mips@linux-mips.org>; Fri, 8 Oct 2010 08:25:45 -0700 (PDT)
-Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
-        by corpml1.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id o98FPjp13370
-        for <linux-mips@linux-mips.org>; Fri, 8 Oct 2010 08:25:45 -0700 (PDT)
-Content-class: urn:content-classes:message
+Received: from [69.28.251.93] ([69.28.251.93]:52227 "EHLO b32.net"
+        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491791Ab0JJB41 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 10 Oct 2010 03:56:27 +0200
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Sat, 9 Oct 2010 18:50:13 -0700
+Subject: [PATCH 1/2] MIPS: Reinstate plat_map_dma_mem_page()
+Message-ID: <9ab1e21b7c9b1b40a3de371d3a35ebd3@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: How to add Ethernet and USB drivers to the Linux Kernel?
-Date: Fri, 8 Oct 2010 08:25:43 -0700
-Message-ID: <AEA634773855ED4CAD999FBB1A66D076011E62CF@CORPEXCH1.na.ads.idt.com>
-From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
-Return-Path: <Andrei.Ardelean@idt.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Return-Path: <cernekee@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20101008152543.h5Hzpg6ci2tNNo15Dr1oT35wRLgNmpy5AGE-X5zjGpI@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: ddaney@caviumnetworks.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20101010015013.ZBckpvBbyM-NJgXF4KX07QLYpCGs6VFmME3itOx_e3g@z>
 
-Hi,
+[Patch is against linux-queue.git]
 
-I am porting MIPS Linux from Malta board to a new board. On Malta board
-network and USB devices reside on PCI bus. In my case the new video
-processor contains MIPS core, network and USB controllers, and those
-controllers registers are in the direct memory map of MIPS core, there
-is no PCI bus. Give me some advice how to add Ethernet and USB drivers
-to the Kernel. Do I need to create a new virtual platform bus/device or
-the Kernel has already what I need? If all the peripheral h/w blocks are
-memory mapped directly in MIPS processor core space, can I have a single
-bus for all of them?  
+plat_map_dma_mem_page() is required in order to translate a "struct page"
+directly to a physical address.  plat_map_dma_mem() is not effective on
+HIGHMEM pages.
 
-Thanks,
-Andrei
-  
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ .../include/asm/mach-cavium-octeon/dma-coherence.h |    6 ++++++
+ arch/mips/include/asm/mach-generic/dma-coherence.h |    6 ++++++
+ arch/mips/include/asm/mach-ip27/dma-coherence.h    |    8 ++++++++
+ arch/mips/include/asm/mach-ip32/dma-coherence.h    |   13 +++++++++++++
+ arch/mips/include/asm/mach-jazz/dma-coherence.h    |    6 ++++++
+ .../mips/include/asm/mach-loongson/dma-coherence.h |    6 ++++++
+ arch/mips/include/asm/mach-powertv/dma-coherence.h |    6 ++++++
+ 7 files changed, 51 insertions(+), 0 deletions(-)
+
+diff --git a/arch/mips/include/asm/mach-cavium-octeon/dma-coherence.h b/arch/mips/include/asm/mach-cavium-octeon/dma-coherence.h
+index a3f6676..dfdcf49 100644
+--- a/arch/mips/include/asm/mach-cavium-octeon/dma-coherence.h
++++ b/arch/mips/include/asm/mach-cavium-octeon/dma-coherence.h
+@@ -23,6 +23,12 @@ static inline dma_addr_t plat_map_dma_mem(struct device *dev, void *addr,
+ 	BUG();
+ }
+ 
++static inline dma_addr_t plat_map_dma_mem_page(struct device *dev,
++	struct page *page)
++{
++	BUG();
++}
++
+ static inline unsigned long plat_dma_addr_to_phys(struct device *dev,
+ 	dma_addr_t dma_addr)
+ {
+diff --git a/arch/mips/include/asm/mach-generic/dma-coherence.h b/arch/mips/include/asm/mach-generic/dma-coherence.h
+index 8259966..8da9807 100644
+--- a/arch/mips/include/asm/mach-generic/dma-coherence.h
++++ b/arch/mips/include/asm/mach-generic/dma-coherence.h
+@@ -17,6 +17,12 @@ static inline dma_addr_t plat_map_dma_mem(struct device *dev, void *addr,
+ 	return virt_to_phys(addr);
+ }
+ 
++static inline dma_addr_t plat_map_dma_mem_page(struct device *dev,
++	struct page *page)
++{
++	return page_to_phys(page);
++}
++
+ static inline unsigned long plat_dma_addr_to_phys(struct device *dev,
+ 	dma_addr_t dma_addr)
+ {
+diff --git a/arch/mips/include/asm/mach-ip27/dma-coherence.h b/arch/mips/include/asm/mach-ip27/dma-coherence.h
+index 2a55c55..016d098 100644
+--- a/arch/mips/include/asm/mach-ip27/dma-coherence.h
++++ b/arch/mips/include/asm/mach-ip27/dma-coherence.h
+@@ -26,6 +26,14 @@ static inline dma_addr_t plat_map_dma_mem(struct device *dev, void *addr,
+ 	return pa;
+ }
+ 
++static inline dma_addr_t plat_map_dma_mem_page(struct device *dev,
++	struct page *page)
++{
++	dma_addr_t pa = dev_to_baddr(dev, page_to_phys(page));
++
++	return pa;
++}
++
+ static inline unsigned long plat_dma_addr_to_phys(struct device *dev,
+ 	dma_addr_t dma_addr)
+ {
+diff --git a/arch/mips/include/asm/mach-ip32/dma-coherence.h b/arch/mips/include/asm/mach-ip32/dma-coherence.h
+index f204a1f..c8fb5aa 100644
+--- a/arch/mips/include/asm/mach-ip32/dma-coherence.h
++++ b/arch/mips/include/asm/mach-ip32/dma-coherence.h
+@@ -37,6 +37,19 @@ static inline dma_addr_t plat_map_dma_mem(struct device *dev, void *addr,
+ 	return pa;
+ }
+ 
++static inline dma_addr_t plat_map_dma_mem_page(struct device *dev,
++	struct page *page)
++{
++	dma_addr_t pa;
++
++	pa = page_to_phys(page) & RAM_OFFSET_MASK;
++
++	if (dev == NULL)
++		pa += CRIME_HI_MEM_BASE;
++
++	return pa;
++}
++
+ /* This is almost certainly wrong but it's what dma-ip32.c used to use  */
+ static inline unsigned long plat_dma_addr_to_phys(struct device *dev,
+ 	dma_addr_t dma_addr)
+diff --git a/arch/mips/include/asm/mach-jazz/dma-coherence.h b/arch/mips/include/asm/mach-jazz/dma-coherence.h
+index f2bc39a..302101b 100644
+--- a/arch/mips/include/asm/mach-jazz/dma-coherence.h
++++ b/arch/mips/include/asm/mach-jazz/dma-coherence.h
+@@ -17,6 +17,12 @@ static inline dma_addr_t plat_map_dma_mem(struct device *dev, void *addr, size_t
+ 	return vdma_alloc(virt_to_phys(addr), size);
+ }
+ 
++static inline dma_addr_t plat_map_dma_mem_page(struct device *dev,
++	struct page *page)
++{
++	return vdma_alloc(page_to_phys(page), PAGE_SIZE);
++}
++
+ static inline unsigned long plat_dma_addr_to_phys(struct device *dev,
+ 	dma_addr_t dma_addr)
+ {
+diff --git a/arch/mips/include/asm/mach-loongson/dma-coherence.h b/arch/mips/include/asm/mach-loongson/dma-coherence.h
+index 8daeaee..981c75f 100644
+--- a/arch/mips/include/asm/mach-loongson/dma-coherence.h
++++ b/arch/mips/include/asm/mach-loongson/dma-coherence.h
+@@ -19,6 +19,12 @@ static inline dma_addr_t plat_map_dma_mem(struct device *dev, void *addr,
+ 	return virt_to_phys(addr) | 0x80000000;
+ }
+ 
++static inline dma_addr_t plat_map_dma_mem_page(struct device *dev,
++					       struct page *page)
++{
++	return page_to_phys(page) | 0x80000000;
++}
++
+ static inline unsigned long plat_dma_addr_to_phys(struct device *dev,
+ 	dma_addr_t dma_addr)
+ {
+diff --git a/arch/mips/include/asm/mach-powertv/dma-coherence.h b/arch/mips/include/asm/mach-powertv/dma-coherence.h
+index 647de8c..f76029c 100644
+--- a/arch/mips/include/asm/mach-powertv/dma-coherence.h
++++ b/arch/mips/include/asm/mach-powertv/dma-coherence.h
+@@ -70,6 +70,12 @@ static inline dma_addr_t plat_map_dma_mem(struct device *dev, void *addr,
+ 		return phys_to_dma(virt_to_phys(addr));
+ }
+ 
++static inline dma_addr_t plat_map_dma_mem_page(struct device *dev,
++	struct page *page)
++{
++	return phys_to_dma(page_to_phys(page));
++}
++
+ static inline unsigned long plat_dma_addr_to_phys(struct device *dev,
+ 	dma_addr_t dma_addr)
+ {
+-- 
+1.7.0.4

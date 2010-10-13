@@ -1,258 +1,44 @@
-Received: from [69.28.251.93] ([69.28.251.93]:52542 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491791Ab0JJB5z (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 10 Oct 2010 03:57:55 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Sat, 9 Oct 2010 18:53:42 -0700
-Subject: [PATCH v3 2/2] MIPS: HIGHMEM DMA on noncoherent MIPS32 processors
-Message-ID: <f3f140ca90dc9dac2f645748bc3a0150@localhost>
+Received: from mxout1.idt.com ([157.165.5.25]:53186 "EHLO mxout1.idt.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491123Ab0JMWUY convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 14 Oct 2010 00:20:24 +0200
+Received: from mail.idt.com (localhost [127.0.0.1])
+        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id o9DMKGcL019027
+        for <linux-mips@linux-mips.org>; Wed, 13 Oct 2010 15:20:17 -0700
+Received: from corpml3.corp.idt.com (corpml3.corp.idt.com [157.165.140.25])
+        by mail.idt.com (8.13.8/8.13.8) with ESMTP id o9DMKGMU022649
+        for <linux-mips@linux-mips.org>; Wed, 13 Oct 2010 15:20:16 -0700 (PDT)
+Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
+        by corpml3.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id o9DMKFB00966
+        for <linux-mips@linux-mips.org>; Wed, 13 Oct 2010 15:20:15 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Return-Path: <cernekee@gmail.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: How to configure Platform NAND driver?
+Date: Wed, 13 Oct 2010 15:20:13 -0700
+Message-ID: <AEA634773855ED4CAD999FBB1A66D076011E6CC3@CORPEXCH1.na.ads.idt.com>
+From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
+Return-Path: <Andrei.Ardelean@idt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: dediao@cisco.com, ddaney@caviumnetworks.com, dvomlehn@cisco.com, sshtylyov@mvista.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20101010015342.ZF7g-yPdJEiE6Eel_ElYzoPDMe0v-M96Dt-PTg4SHMU@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20101013222013.Ju1ilIJe7nR8NZcw8cX2Yl13U4XIfVGu30FMKff_Iyc@z>
 
-[v3: Patch has been rebased against linux-queue.git, which uses the new
-dma-mapping-common.h API.]
+Hi,
 
-The MIPS DMA coherency functions do not work properly (i.e. kernel oops)
-when HIGHMEM pages are passed in as arguments.  This patch uses the PPC
-approach of calling kmap_atomic() with IRQs disabled to temporarily map
-high pages, in order to flush them out to memory.
+I am porting MIPS Linux on a new board and I have a MICRON NAND part
+(MT29F4G08). I look in nand-ids.c and it seems that this part is already
+supported. I assume that this support is in the plat_nand.c platform
+driver. How can I configure this platform driver to use my own
+read/write low level functions? How can I configure this driver with my
+own mtd_partition structure?
 
-Signed-off-by: Dezhong Diao <dediao@cisco.com>
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- arch/mips/mm/dma-default.c |  117 ++++++++++++++++++++++++++-----------------
- 1 files changed, 71 insertions(+), 46 deletions(-)
+I see some other people wrote their own NAND driver in
+.../drivers/mtd/nand folder. Do I need to do that or can I use
+plat_nand.c driver?
 
-diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
-index 4fc1a0f..035c191 100644
---- a/arch/mips/mm/dma-default.c
-+++ b/arch/mips/mm/dma-default.c
-@@ -15,18 +15,18 @@
- #include <linux/scatterlist.h>
- #include <linux/string.h>
- #include <linux/gfp.h>
-+#include <linux/highmem.h>
- 
- #include <asm/cache.h>
- #include <asm/io.h>
- 
- #include <dma-coherence.h>
- 
--static inline unsigned long dma_addr_to_virt(struct device *dev,
-+static inline struct page *dma_addr_to_page(struct device *dev,
- 	dma_addr_t dma_addr)
- {
--	unsigned long addr = plat_dma_addr_to_phys(dev, dma_addr);
--
--	return (unsigned long)phys_to_virt(addr);
-+	return pfn_to_page(
-+		plat_dma_addr_to_phys(dev, dma_addr) >> PAGE_SHIFT);
- }
- 
- /*
-@@ -148,20 +148,20 @@ static void mips_dma_free_coherent(struct device *dev, size_t size, void *vaddr,
- 	free_pages(addr, get_order(size));
- }
- 
--static inline void __dma_sync(unsigned long addr, size_t size,
-+static inline void __dma_sync_virtual(void *addr, size_t size,
- 	enum dma_data_direction direction)
- {
- 	switch (direction) {
- 	case DMA_TO_DEVICE:
--		dma_cache_wback(addr, size);
-+		dma_cache_wback((unsigned long)addr, size);
- 		break;
- 
- 	case DMA_FROM_DEVICE:
--		dma_cache_inv(addr, size);
-+		dma_cache_inv((unsigned long)addr, size);
- 		break;
- 
- 	case DMA_BIDIRECTIONAL:
--		dma_cache_wback_inv(addr, size);
-+		dma_cache_wback_inv((unsigned long)addr, size);
- 		break;
- 
- 	default:
-@@ -169,12 +169,52 @@ static inline void __dma_sync(unsigned long addr, size_t size,
- 	}
- }
- 
-+/*
-+ * A single sg entry may refer to multiple physically contiguous
-+ * pages. But we still need to process highmem pages individually.
-+ * If highmem is not configured then the bulk of this loop gets
-+ * optimized out.
-+ */
-+static inline void __dma_sync(struct page *page,
-+	unsigned long offset, size_t size, enum dma_data_direction direction)
-+{
-+	size_t left = size;
-+
-+	do {
-+		size_t len = left;
-+
-+		if (PageHighMem(page)) {
-+			unsigned long flags;
-+			void *addr;
-+
-+			if (offset + len > PAGE_SIZE) {
-+				if (offset >= PAGE_SIZE) {
-+					page += offset >> PAGE_SHIFT;
-+					offset &= ~PAGE_MASK;
-+				}
-+				len = PAGE_SIZE - offset;
-+			}
-+
-+			local_irq_save(flags);
-+			addr = kmap_atomic(page, KM_SYNC_DCACHE);
-+			__dma_sync_virtual(addr + offset, len, direction);
-+			kunmap_atomic(addr, KM_SYNC_DCACHE);
-+			local_irq_restore(flags);
-+		} else
-+			__dma_sync_virtual(page_address(page) + offset,
-+					   size, direction);
-+		offset = 0;
-+		page++;
-+		left -= len;
-+	} while (left);
-+}
-+
- static void mips_dma_unmap_page(struct device *dev, dma_addr_t dma_addr,
- 	size_t size, enum dma_data_direction direction, struct dma_attrs *attrs)
- {
- 	if (cpu_is_noncoherent_r10000(dev))
--		__dma_sync(dma_addr_to_virt(dev, dma_addr), size,
--		           direction);
-+		__dma_sync(dma_addr_to_page(dev, dma_addr),
-+			   dma_addr & ~PAGE_MASK, size, direction);
- 
- 	plat_unmap_dma_mem(dev, dma_addr, size, direction);
- }
-@@ -185,13 +225,11 @@ static int mips_dma_map_sg(struct device *dev, struct scatterlist *sg,
- 	int i;
- 
- 	for (i = 0; i < nents; i++, sg++) {
--		unsigned long addr;
--
--		addr = (unsigned long) sg_virt(sg);
--		if (!plat_device_is_coherent(dev) && addr)
--			__dma_sync(addr, sg->length, direction);
--		sg->dma_address = plat_map_dma_mem(dev,
--				                   (void *)addr, sg->length);
-+		if (!plat_device_is_coherent(dev))
-+			__dma_sync(sg_page(sg), sg->offset, sg->length,
-+				   direction);
-+		sg->dma_address = plat_map_dma_mem_page(dev, sg_page(sg)) +
-+				  sg->offset;
- 	}
- 
- 	return nents;
-@@ -201,30 +239,23 @@ static dma_addr_t mips_dma_map_page(struct device *dev, struct page *page,
- 	unsigned long offset, size_t size, enum dma_data_direction direction,
- 	struct dma_attrs *attrs)
- {
--	unsigned long addr;
--
--	addr = (unsigned long) page_address(page) + offset;
--
- 	if (!plat_device_is_coherent(dev))
--		__dma_sync(addr, size, direction);
-+		__dma_sync(page, offset, size, direction);
- 
--	return plat_map_dma_mem(dev, (void *)addr, size);
-+	return plat_map_dma_mem_page(dev, page) + offset;
- }
- 
- static void mips_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
- 	int nhwentries, enum dma_data_direction direction,
- 	struct dma_attrs *attrs)
- {
--	unsigned long addr;
- 	int i;
- 
- 	for (i = 0; i < nhwentries; i++, sg++) {
- 		if (!plat_device_is_coherent(dev) &&
--		    direction != DMA_TO_DEVICE) {
--			addr = (unsigned long) sg_virt(sg);
--			if (addr)
--				__dma_sync(addr, sg->length, direction);
--		}
-+		    direction != DMA_TO_DEVICE)
-+			__dma_sync(sg_page(sg), sg->offset, sg->length,
-+				   direction);
- 		plat_unmap_dma_mem(dev, sg->dma_address, sg->length, direction);
- 	}
- }
-@@ -232,24 +263,18 @@ static void mips_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
- static void mips_dma_sync_single_for_cpu(struct device *dev,
- 	dma_addr_t dma_handle, size_t size, enum dma_data_direction direction)
- {
--	if (cpu_is_noncoherent_r10000(dev)) {
--		unsigned long addr;
--
--		addr = dma_addr_to_virt(dev, dma_handle);
--		__dma_sync(addr, size, direction);
--	}
-+	if (cpu_is_noncoherent_r10000(dev))
-+		__dma_sync(dma_addr_to_page(dev, dma_handle),
-+			   dma_handle & ~PAGE_MASK, size, direction);
- }
- 
- static void mips_dma_sync_single_for_device(struct device *dev,
- 	dma_addr_t dma_handle, size_t size, enum dma_data_direction direction)
- {
- 	plat_extra_sync_for_device(dev);
--	if (!plat_device_is_coherent(dev)) {
--		unsigned long addr;
--
--		addr = dma_addr_to_virt(dev, dma_handle);
--		__dma_sync(addr, size, direction);
--	}
-+	if (!plat_device_is_coherent(dev))
-+		__dma_sync(dma_addr_to_page(dev, dma_handle),
-+			   dma_handle & ~PAGE_MASK, size, direction);
- }
- 
- static void mips_dma_sync_sg_for_cpu(struct device *dev,
-@@ -260,8 +285,8 @@ static void mips_dma_sync_sg_for_cpu(struct device *dev,
- 	/* Make sure that gcc doesn't leave the empty loop body.  */
- 	for (i = 0; i < nelems; i++, sg++) {
- 		if (cpu_is_noncoherent_r10000(dev))
--			__dma_sync((unsigned long)page_address(sg_page(sg)),
--			           sg->length, direction);
-+			__dma_sync(sg_page(sg), sg->offset, sg->length,
-+				   direction);
- 	}
- }
- 
-@@ -273,8 +298,8 @@ static void mips_dma_sync_sg_for_device(struct device *dev,
- 	/* Make sure that gcc doesn't leave the empty loop body.  */
- 	for (i = 0; i < nelems; i++, sg++) {
- 		if (!plat_device_is_coherent(dev))
--			__dma_sync((unsigned long)page_address(sg_page(sg)),
--			           sg->length, direction);
-+			__dma_sync(sg_page(sg), sg->offset, sg->length,
-+				   direction);
- 	}
- }
- 
-@@ -295,7 +320,7 @@ void mips_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
- 
- 	plat_extra_sync_for_device(dev);
- 	if (!plat_device_is_coherent(dev))
--		__dma_sync((unsigned long)vaddr, size, direction);
-+		__dma_sync_virtual(vaddr, size, direction);
- }
- 
- static struct dma_map_ops mips_default_dma_map_ops = {
--- 
-1.7.0.4
+Thanks,
+Andrei
+  

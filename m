@@ -1,258 +1,61 @@
-Received: from [69.28.251.93] ([69.28.251.93]:60093 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491123Ab0JNAQb (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 14 Oct 2010 02:16:31 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Wed, 13 Oct 2010 16:57:35 -0700
-Subject: [PATCH v4] MIPS: HIGHMEM DMA on noncoherent MIPS32 processors
-Message-ID: <002fbbeb01a5a51fff8015af85d5d101@localhost>
+Received: from rtp-iport-1.cisco.com ([64.102.122.148]:8703 "EHLO
+        rtp-iport-1.cisco.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491151Ab0JORa6 convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 15 Oct 2010 19:30:58 +0200
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Return-Path: <cernekee@gmail.com>
+Content-Type: text/plain;
+        charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: Device Tree questions WRT MIPS/Octeon SOCs.
+Date: Fri, 15 Oct 2010 12:30:48 -0500
+Message-ID: <7A9214B0DEB2074FBCA688B30B04400D01B50901@XMB-RCD-208.cisco.com>
+In-Reply-To: <AANLkTi=dqMHa04=-+RjnxuPGL3ZsqNCiaxUPT0VpV6kC@mail.gmail.com>
+References: <4CB79D93.6090500@caviumnetworks.com> <AANLkTi=UM2p26JJMqv-cNh8xACS_KPf_dCst5cgmh5VR@mail.gmail.com> <20101014.191309.515504596.imp@bsdimp.com> <AANLkTi=dqMHa04=-+RjnxuPGL3ZsqNCiaxUPT0VpV6kC@mail.gmail.com>
+From: "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
+Return-Path: <dvomlehn@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: dediao@cisco.com, ddaney@caviumnetworks.com, dvomlehn@cisco.com, sshtylyov@mvista.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20101013235735.06QM2IlpkQ5468-2PvTDqNIDQlmrsdkW9-L69yEuoek@z>
+To: Grant Likely <grant.likely@secretlab.ca>, Warner Losh <imp@bsdimp.com>
+Cc: ddaney@caviumnetworks.com, prasun.kapoor@caviumnetworks.com, linux-mips@linux-mips.org, devicetree-discuss@lists.ozlabs.org
+Message-ID: <20101015173048.5A9SUgRH-x65DegPhbHi5LilIVco0Jo5LxX58wvTsrw@z>
 
-[v4: Patch applies to linux-queue.git with kmap_atomic patches:
- https://patchwork.kernel.org/patch/189932/
- https://patchwork.kernel.org/patch/194552/
- https://patchwork.kernel.org/patch/189912/ ]
+If this is really a question of needing to dynamically generate the device tree, then you have no choice. It's worth mentioning, though, that the device tree compiler (dtc) does have the ability to include files, making it easier to create and maintain device trees that are static but which share devices.
 
-The MIPS DMA coherency functions do not work properly (i.e. kernel oops)
-when HIGHMEM pages are passed in as arguments.  Use kmap_atomic() to
-temporarily map high pages for cache maintenance operations.
-
-Tested on a 2.6.36-rc7 1GB HIGHMEM SMP no-alias system.
-
-Signed-off-by: Dezhong Diao <dediao@cisco.com>
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- arch/mips/mm/dma-default.c |  114 ++++++++++++++++++++++++++------------------
- 1 files changed, 68 insertions(+), 46 deletions(-)
-
-diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
-index 4fc1a0f..1e20758 100644
---- a/arch/mips/mm/dma-default.c
-+++ b/arch/mips/mm/dma-default.c
-@@ -15,18 +15,18 @@
- #include <linux/scatterlist.h>
- #include <linux/string.h>
- #include <linux/gfp.h>
-+#include <linux/highmem.h>
- 
- #include <asm/cache.h>
- #include <asm/io.h>
- 
- #include <dma-coherence.h>
- 
--static inline unsigned long dma_addr_to_virt(struct device *dev,
-+static inline struct page *dma_addr_to_page(struct device *dev,
- 	dma_addr_t dma_addr)
- {
--	unsigned long addr = plat_dma_addr_to_phys(dev, dma_addr);
--
--	return (unsigned long)phys_to_virt(addr);
-+	return pfn_to_page(
-+		plat_dma_addr_to_phys(dev, dma_addr) >> PAGE_SHIFT);
- }
- 
- /*
-@@ -148,20 +148,20 @@ static void mips_dma_free_coherent(struct device *dev, size_t size, void *vaddr,
- 	free_pages(addr, get_order(size));
- }
- 
--static inline void __dma_sync(unsigned long addr, size_t size,
-+static inline void __dma_sync_virtual(void *addr, size_t size,
- 	enum dma_data_direction direction)
- {
- 	switch (direction) {
- 	case DMA_TO_DEVICE:
--		dma_cache_wback(addr, size);
-+		dma_cache_wback((unsigned long)addr, size);
- 		break;
- 
- 	case DMA_FROM_DEVICE:
--		dma_cache_inv(addr, size);
-+		dma_cache_inv((unsigned long)addr, size);
- 		break;
- 
- 	case DMA_BIDIRECTIONAL:
--		dma_cache_wback_inv(addr, size);
-+		dma_cache_wback_inv((unsigned long)addr, size);
- 		break;
- 
- 	default:
-@@ -169,12 +169,49 @@ static inline void __dma_sync(unsigned long addr, size_t size,
- 	}
- }
- 
-+/*
-+ * A single sg entry may refer to multiple physically contiguous
-+ * pages. But we still need to process highmem pages individually.
-+ * If highmem is not configured then the bulk of this loop gets
-+ * optimized out.
-+ */
-+static inline void __dma_sync(struct page *page,
-+	unsigned long offset, size_t size, enum dma_data_direction direction)
-+{
-+	size_t left = size;
-+
-+	do {
-+		size_t len = left;
-+
-+		if (PageHighMem(page)) {
-+			void *addr;
-+
-+			if (offset + len > PAGE_SIZE) {
-+				if (offset >= PAGE_SIZE) {
-+					page += offset >> PAGE_SHIFT;
-+					offset &= ~PAGE_MASK;
-+				}
-+				len = PAGE_SIZE - offset;
-+			}
-+
-+			addr = kmap_atomic(page);
-+			__dma_sync_virtual(addr + offset, len, direction);
-+			kunmap_atomic(addr);
-+		} else
-+			__dma_sync_virtual(page_address(page) + offset,
-+					   size, direction);
-+		offset = 0;
-+		page++;
-+		left -= len;
-+	} while (left);
-+}
-+
- static void mips_dma_unmap_page(struct device *dev, dma_addr_t dma_addr,
- 	size_t size, enum dma_data_direction direction, struct dma_attrs *attrs)
- {
- 	if (cpu_is_noncoherent_r10000(dev))
--		__dma_sync(dma_addr_to_virt(dev, dma_addr), size,
--		           direction);
-+		__dma_sync(dma_addr_to_page(dev, dma_addr),
-+			   dma_addr & ~PAGE_MASK, size, direction);
- 
- 	plat_unmap_dma_mem(dev, dma_addr, size, direction);
- }
-@@ -185,13 +222,11 @@ static int mips_dma_map_sg(struct device *dev, struct scatterlist *sg,
- 	int i;
- 
- 	for (i = 0; i < nents; i++, sg++) {
--		unsigned long addr;
--
--		addr = (unsigned long) sg_virt(sg);
--		if (!plat_device_is_coherent(dev) && addr)
--			__dma_sync(addr, sg->length, direction);
--		sg->dma_address = plat_map_dma_mem(dev,
--				                   (void *)addr, sg->length);
-+		if (!plat_device_is_coherent(dev))
-+			__dma_sync(sg_page(sg), sg->offset, sg->length,
-+				   direction);
-+		sg->dma_address = plat_map_dma_mem_page(dev, sg_page(sg)) +
-+				  sg->offset;
- 	}
- 
- 	return nents;
-@@ -201,30 +236,23 @@ static dma_addr_t mips_dma_map_page(struct device *dev, struct page *page,
- 	unsigned long offset, size_t size, enum dma_data_direction direction,
- 	struct dma_attrs *attrs)
- {
--	unsigned long addr;
--
--	addr = (unsigned long) page_address(page) + offset;
--
- 	if (!plat_device_is_coherent(dev))
--		__dma_sync(addr, size, direction);
-+		__dma_sync(page, offset, size, direction);
- 
--	return plat_map_dma_mem(dev, (void *)addr, size);
-+	return plat_map_dma_mem_page(dev, page) + offset;
- }
- 
- static void mips_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
- 	int nhwentries, enum dma_data_direction direction,
- 	struct dma_attrs *attrs)
- {
--	unsigned long addr;
- 	int i;
- 
- 	for (i = 0; i < nhwentries; i++, sg++) {
- 		if (!plat_device_is_coherent(dev) &&
--		    direction != DMA_TO_DEVICE) {
--			addr = (unsigned long) sg_virt(sg);
--			if (addr)
--				__dma_sync(addr, sg->length, direction);
--		}
-+		    direction != DMA_TO_DEVICE)
-+			__dma_sync(sg_page(sg), sg->offset, sg->length,
-+				   direction);
- 		plat_unmap_dma_mem(dev, sg->dma_address, sg->length, direction);
- 	}
- }
-@@ -232,24 +260,18 @@ static void mips_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
- static void mips_dma_sync_single_for_cpu(struct device *dev,
- 	dma_addr_t dma_handle, size_t size, enum dma_data_direction direction)
- {
--	if (cpu_is_noncoherent_r10000(dev)) {
--		unsigned long addr;
--
--		addr = dma_addr_to_virt(dev, dma_handle);
--		__dma_sync(addr, size, direction);
--	}
-+	if (cpu_is_noncoherent_r10000(dev))
-+		__dma_sync(dma_addr_to_page(dev, dma_handle),
-+			   dma_handle & ~PAGE_MASK, size, direction);
- }
- 
- static void mips_dma_sync_single_for_device(struct device *dev,
- 	dma_addr_t dma_handle, size_t size, enum dma_data_direction direction)
- {
- 	plat_extra_sync_for_device(dev);
--	if (!plat_device_is_coherent(dev)) {
--		unsigned long addr;
--
--		addr = dma_addr_to_virt(dev, dma_handle);
--		__dma_sync(addr, size, direction);
--	}
-+	if (!plat_device_is_coherent(dev))
-+		__dma_sync(dma_addr_to_page(dev, dma_handle),
-+			   dma_handle & ~PAGE_MASK, size, direction);
- }
- 
- static void mips_dma_sync_sg_for_cpu(struct device *dev,
-@@ -260,8 +282,8 @@ static void mips_dma_sync_sg_for_cpu(struct device *dev,
- 	/* Make sure that gcc doesn't leave the empty loop body.  */
- 	for (i = 0; i < nelems; i++, sg++) {
- 		if (cpu_is_noncoherent_r10000(dev))
--			__dma_sync((unsigned long)page_address(sg_page(sg)),
--			           sg->length, direction);
-+			__dma_sync(sg_page(sg), sg->offset, sg->length,
-+				   direction);
- 	}
- }
- 
-@@ -273,8 +295,8 @@ static void mips_dma_sync_sg_for_device(struct device *dev,
- 	/* Make sure that gcc doesn't leave the empty loop body.  */
- 	for (i = 0; i < nelems; i++, sg++) {
- 		if (!plat_device_is_coherent(dev))
--			__dma_sync((unsigned long)page_address(sg_page(sg)),
--			           sg->length, direction);
-+			__dma_sync(sg_page(sg), sg->offset, sg->length,
-+				   direction);
- 	}
- }
- 
-@@ -295,7 +317,7 @@ void mips_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
- 
- 	plat_extra_sync_for_device(dev);
- 	if (!plat_device_is_coherent(dev))
--		__dma_sync((unsigned long)vaddr, size, direction);
-+		__dma_sync_virtual(vaddr, size, direction);
- }
- 
- static struct dma_map_ops mips_default_dma_map_ops = {
--- 
-1.7.0.4
+> -----Original Message-----
+> From: linux-mips-bounce@linux-mips.org [mailto:linux-mips-bounce@linux-
+> mips.org] On Behalf Of Grant Likely
+> Sent: Thursday, October 14, 2010 6:29 PM
+> To: Warner Losh
+> Cc: ddaney@caviumnetworks.com; prasun.kapoor@caviumnetworks.com; linux-
+> mips@linux-mips.org; devicetree-discuss@lists.ozlabs.org
+> Subject: Re: Device Tree questions WRT MIPS/Octeon SOCs.
+> 
+> On Thu, Oct 14, 2010 at 7:13 PM, Warner Losh <imp@bsdimp.com> wrote:
+> > In message: <AANLkTi=UM2p26JJMqv-
+> cNh8xACS_KPf_dCst5cgmh5VR@mail.gmail.com>
+> >            Grant Likely <grant.likely@secretlab.ca> writes:
+> > : Overall the plan makes sense, however I would suggest the
+> following.
+> > : instead of 'live' modifying the tree, another option is to carry a
+> set
+> > : of 'stock' device trees in the kernel; one per board.  Of course
+> this
+> > : assumes that your current ad-hoc code is keying on the specific
+> board.
+> > :  If it is interpreting data provided by the firmware, then your
+> > : suggestion of modifying a single stock tree probably makes more
+> sense,
+> > : or possibly a combination of the too.  In general you should avoid
+> > : live modification as much as possible.
+> >
+> > The one draw back on this is that there's lots of different "stock"
+> > boards that the Cavium Octeon SDK supports.  These will be difficult
+> > to drag along for every kernel.  And they'd be mostly the same to,
+> > which is why I think that David is suggesting the live modification
+> > thing...
+> 
+> Okay.  Do what makes the most sense for your platform.
+> 
+> g.

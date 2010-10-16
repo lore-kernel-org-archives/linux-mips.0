@@ -1,99 +1,247 @@
-Received: from rtp-iport-2.cisco.com ([64.102.122.149]:61414 "EHLO
-        rtp-iport-2.cisco.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491837Ab0JORtE convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 15 Oct 2010 19:49:04 +0200
-Content-class: urn:content-classes:message
+Received: from [69.28.251.93] ([69.28.251.93]:52752 "EHLO b32.net"
+        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491179Ab0JPVnx (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 16 Oct 2010 23:43:53 +0200
+From: Kevin Cernekee <cernekee@gmail.com>
+Subject: [PATCH 1/9] MIPS: Decouple BMIPS CPU support from bcm47xx/bcm63xx SoC code
+Date: Sat, 16 Oct 2010 14:22:30 -0700
+Message-ID: <17ebecce124618ddf83ec6fe8e526f93@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Device Tree questions WRT MIPS/Octeon SOCs.
-Date: Fri, 15 Oct 2010 12:48:55 -0500
-Message-ID: <7A9214B0DEB2074FBCA688B30B04400D01B50924@XMB-RCD-208.cisco.com>
-In-Reply-To: <4CB89275.8020502@caviumnetworks.com>
-References: <4CB79D93.6090500@caviumnetworks.com> <AANLkTi=UM2p26JJMqv-cNh8xACS_KPf_dCst5cgmh5VR@mail.gmail.com> <20101014.191309.515504596.imp@bsdimp.com> <AANLkTi=dqMHa04=-+RjnxuPGL3ZsqNCiaxUPT0VpV6kC@mail.gmail.com> <7A9214B0DEB2074FBCA688B30B04400D01B50901@XMB-RCD-208.cisco.com> <4CB89275.8020502@caviumnetworks.com>
-From: "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
-Return-Path: <dvomlehn@cisco.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Return-Path: <cernekee@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, Warner Losh <imp@bsdimp.com>, prasun.kapoor@caviumnetworks.com, linux-mips@linux-mips.org, devicetree-discuss@lists.ozlabs.org
-Message-ID: <20101015174855.lWHdgw18saBt9wLQlYPMBl1YE55DMyJWWE4QNjmSCOA@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: ffainelli@freebox.fr, mbizon@freebox.fr, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20101016212230.zlC7amvfeQt1DvGQmiSkjc3Uy03oxSoux1uKhbESxzU@z>
 
-We're in much the same situation. Almost all of the device tree is
-static, but we add on/overwrite little bits. I'm not the device tree
-expert, but if I understand correctly, you can even have dtc emit labels
-that you can reference to make the fix-up simpler.
+BMIPS processor cores are used in 50+ different chipsets spread across
+5+ product lines.  In many cases the chipsets do not share the same
+peripheral register layouts, the same register blocks, the same
+interrupt controllers, the same memory maps, or much of anything else.
 
-> -----Original Message-----
-> From: David Daney [mailto:ddaney@caviumnetworks.com]
-> Sent: Friday, October 15, 2010 10:42 AM
-> To: David VomLehn (dvomlehn)
-> Cc: Grant Likely; Warner Losh; prasun.kapoor@caviumnetworks.com;
-linux-
-> mips@linux-mips.org; devicetree-discuss@lists.ozlabs.org
-> Subject: Re: Device Tree questions WRT MIPS/Octeon SOCs.
-> 
-> On 10/15/2010 10:30 AM, David VomLehn (dvomlehn) wrote:
-> 
-> > If this is really a question of needing to dynamically generate the
-> > device tree, then you have no choice. It's worth mentioning, though,
-> > that the device tree compiler (dtc) does have the ability to include
-> > files, making it easier to create and maintain device trees that are
-> > static but which share devices.
-> 
-> Some experimentation will be necessary.  We will have to patch in some
-> properties like the Ethernet MAC address as that is stored in a
-> separate eeprom.  Also some boards have pluggable I/O modules, so we
-> may not know at dtb generation time what is there.
-> 
-> David Daney
-> 
-> 
-> >> -----Original Message-----
-> >> From: linux-mips-bounce@linux-mips.org [mailto:linux-mips-
-> bounce@linux-
-> >> mips.org] On Behalf Of Grant Likely
-> >> Sent: Thursday, October 14, 2010 6:29 PM
-> >> To: Warner Losh
-> >> Cc: ddaney@caviumnetworks.com; prasun.kapoor@caviumnetworks.com;
-> linux-
-> >> mips@linux-mips.org; devicetree-discuss@lists.ozlabs.org
-> >> Subject: Re: Device Tree questions WRT MIPS/Octeon SOCs.
-> >>
-> >> On Thu, Oct 14, 2010 at 7:13 PM, Warner Losh<imp@bsdimp.com>
-wrote:
-> >>> In message:<AANLkTi=UM2p26JJMqv-
-> >> cNh8xACS_KPf_dCst5cgmh5VR@mail.gmail.com>
-> >>>             Grant Likely<grant.likely@secretlab.ca>  writes:
-> >>> : Overall the plan makes sense, however I would suggest the
-> >> following.
-> >>> : instead of 'live' modifying the tree, another option is to carry
-> a
-> >> set
-> >>> : of 'stock' device trees in the kernel; one per board.  Of course
-> >> this
-> >>> : assumes that your current ad-hoc code is keying on the specific
-> >> board.
-> >>> :  If it is interpreting data provided by the firmware, then your
-> >>> : suggestion of modifying a single stock tree probably makes more
-> >> sense,
-> >>> : or possibly a combination of the too.  In general you should
-> avoid
-> >>> : live modification as much as possible.
-> >>>
-> >>> The one draw back on this is that there's lots of different
-"stock"
-> >>> boards that the Cavium Octeon SDK supports.  These will be
-> difficult
-> >>> to drag along for every kernel.  And they'd be mostly the same to,
-> >>> which is why I think that David is suggesting the live
-modification
-> >>> thing...
-> >>
-> >> Okay.  Do what makes the most sense for your platform.
-> >>
-> >> g.
-> >
-> >
+But, across radically different SoCs that share nothing more than the
+same BMIPS CPU, a few things are still mostly constant:
+
+SMP operations
+Access to performance counters
+DMA cache coherency quirks
+Cache and memory bus configuration
+
+So, it makes sense to treat each BMIPS processor type as a generic
+"building block," rather than tying it to a specific SoC.  This makes it
+easier to support a large number of BMIPS-based chipsets without
+unnecessary duplication of code, and provides the infrastructure needed
+to support BMIPS-proprietary features.
+
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ arch/mips/bcm63xx/cpu.c      |   30 ++++++++++----------
+ arch/mips/include/asm/cpu.h  |   23 ++++++++-------
+ arch/mips/kernel/cpu-probe.c |   62 ++++++++++++++++++++++-------------------
+ arch/mips/mm/tlbex.c         |   11 +++----
+ 4 files changed, 65 insertions(+), 61 deletions(-)
+
+diff --git a/arch/mips/bcm63xx/cpu.c b/arch/mips/bcm63xx/cpu.c
+index cbb7caf..7c7e4d4 100644
+--- a/arch/mips/bcm63xx/cpu.c
++++ b/arch/mips/bcm63xx/cpu.c
+@@ -10,7 +10,9 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/cpu.h>
++#include <asm/cpu.h>
+ #include <asm/cpu-info.h>
++#include <asm/mipsregs.h>
+ #include <bcm63xx_cpu.h>
+ #include <bcm63xx_regs.h>
+ #include <bcm63xx_io.h>
+@@ -296,26 +298,24 @@ void __init bcm63xx_cpu_init(void)
+ 	expected_cpu_id = 0;
+ 
+ 	switch (c->cputype) {
+-	/*
+-	 * BCM6338 as the same PrId as BCM3302 see arch/mips/kernel/cpu-probe.c
+-	 */
+-	case CPU_BCM3302:
+-		__cpu_name[cpu] = "Broadcom BCM6338";
+-		expected_cpu_id = BCM6338_CPU_ID;
+-		bcm63xx_regs_base = bcm96338_regs_base;
+-		bcm63xx_irqs = bcm96338_irqs;
++	case CPU_BMIPS3300:
++		if ((read_c0_prid() & 0xff00) == PRID_IMP_BMIPS3300_ALT) {
++			expected_cpu_id = BCM6348_CPU_ID;
++			bcm63xx_regs_base = bcm96348_regs_base;
++			bcm63xx_irqs = bcm96348_irqs;
++		} else {
++			__cpu_name[cpu] = "Broadcom BCM6338";
++			expected_cpu_id = BCM6338_CPU_ID;
++			bcm63xx_regs_base = bcm96338_regs_base;
++			bcm63xx_irqs = bcm96338_irqs;
++		}
+ 		break;
+-	case CPU_BCM6345:
++	case CPU_BMIPS32:
+ 		expected_cpu_id = BCM6345_CPU_ID;
+ 		bcm63xx_regs_base = bcm96345_regs_base;
+ 		bcm63xx_irqs = bcm96345_irqs;
+ 		break;
+-	case CPU_BCM6348:
+-		expected_cpu_id = BCM6348_CPU_ID;
+-		bcm63xx_regs_base = bcm96348_regs_base;
+-		bcm63xx_irqs = bcm96348_irqs;
+-		break;
+-	case CPU_BCM6358:
++	case CPU_BMIPS4350:
+ 		expected_cpu_id = BCM6358_CPU_ID;
+ 		bcm63xx_regs_base = bcm96358_regs_base;
+ 		bcm63xx_irqs = bcm96358_irqs;
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index b201a8f..bd2033b 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -111,14 +111,16 @@
+  * These are the PRID's for when 23:16 == PRID_COMP_BROADCOM
+  */
+ 
+-#define PRID_IMP_BCM4710	0x4000
+-#define PRID_IMP_BCM3302	0x9000
+-#define PRID_IMP_BCM6338	0x9000
+-#define PRID_IMP_BCM6345	0x8000
+-#define PRID_IMP_BCM6348	0x9100
+-#define PRID_IMP_BCM4350	0xA000
+-#define PRID_REV_BCM6358	0x0010
+-#define PRID_REV_BCM6368	0x0030
++#define PRID_IMP_BMIPS4KC	0x4000
++#define PRID_IMP_BMIPS32	0x8000
++#define PRID_IMP_BMIPS3300	0x9000
++#define PRID_IMP_BMIPS3300_ALT	0x9100
++#define PRID_IMP_BMIPS3300_BUG	0x0000
++#define PRID_IMP_BMIPS43XX	0xa000
++#define PRID_IMP_BMIPS5000	0x5a00
++
++#define PRID_REV_BMIPS4380_LO	0x0040
++#define PRID_REV_BMIPS4380_HI	0x006f
+ 
+ /*
+  * These are the PRID's for when 23:16 == PRID_COMP_CAVIUM
+@@ -223,9 +225,8 @@ enum cpu_type_enum {
+ 	 * MIPS32 class processors
+ 	 */
+ 	CPU_4KC, CPU_4KEC, CPU_4KSC, CPU_24K, CPU_34K, CPU_1004K, CPU_74K,
+-	CPU_ALCHEMY, CPU_PR4450, CPU_BCM3302, CPU_BCM4710,
+-	CPU_BCM6338, CPU_BCM6345, CPU_BCM6348, CPU_BCM6358,
+-	CPU_JZRISC,
++	CPU_ALCHEMY, CPU_PR4450, CPU_BMIPS32, CPU_BMIPS3300, CPU_BMIPS4350,
++	CPU_BMIPS4380, CPU_BMIPS5000, CPU_JZRISC,
+ 
+ 	/*
+ 	 * MIPS64 class processors
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index b1b304e..259cbfa 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -181,10 +181,10 @@ void __init check_wait(void)
+ 	case CPU_5KC:
+ 	case CPU_25KF:
+ 	case CPU_PR4450:
+-	case CPU_BCM3302:
+-	case CPU_BCM6338:
+-	case CPU_BCM6348:
+-	case CPU_BCM6358:
++	case CPU_BMIPS3300:
++	case CPU_BMIPS4350:
++	case CPU_BMIPS4380:
++	case CPU_BMIPS5000:
+ 	case CPU_CAVIUM_OCTEON:
+ 	case CPU_CAVIUM_OCTEON_PLUS:
+ 	case CPU_JZRISC:
+@@ -902,33 +902,37 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ {
+ 	decode_configs(c);
+ 	switch (c->processor_id & 0xff00) {
+-	case PRID_IMP_BCM3302:
+-	 /* same as PRID_IMP_BCM6338 */
+-		c->cputype = CPU_BCM3302;
+-		__cpu_name[cpu] = "Broadcom BCM3302";
+-		break;
+-	case PRID_IMP_BCM4710:
+-		c->cputype = CPU_BCM4710;
+-		__cpu_name[cpu] = "Broadcom BCM4710";
+-		break;
+-	case PRID_IMP_BCM6345:
+-		c->cputype = CPU_BCM6345;
+-		__cpu_name[cpu] = "Broadcom BCM6345";
++	case PRID_IMP_BMIPS32:
++		c->cputype = CPU_BMIPS32;
++		__cpu_name[cpu] = "Broadcom BMIPS32";
++		break;
++	case PRID_IMP_BMIPS3300:
++	case PRID_IMP_BMIPS3300_ALT:
++	case PRID_IMP_BMIPS3300_BUG:
++		c->cputype = CPU_BMIPS3300;
++		__cpu_name[cpu] = "Broadcom BMIPS3300";
++		break;
++	case PRID_IMP_BMIPS43XX: {
++		int rev = c->processor_id & 0xff;
++
++		if (rev >= PRID_REV_BMIPS4380_LO &&
++				rev <= PRID_REV_BMIPS4380_HI) {
++			c->cputype = CPU_BMIPS4380;
++			__cpu_name[cpu] = "Broadcom BMIPS4380";
++		} else {
++			c->cputype = CPU_BMIPS4350;
++			__cpu_name[cpu] = "Broadcom BMIPS4350";
++		}
+ 		break;
+-	case PRID_IMP_BCM6348:
+-		c->cputype = CPU_BCM6348;
+-		__cpu_name[cpu] = "Broadcom BCM6348";
++	}
++	case PRID_IMP_BMIPS5000:
++		c->cputype = CPU_BMIPS5000;
++		__cpu_name[cpu] = "Broadcom BMIPS5000";
++		c->options |= MIPS_CPU_ULRI;
+ 		break;
+-	case PRID_IMP_BCM4350:
+-		switch (c->processor_id & 0xf0) {
+-		case PRID_REV_BCM6358:
+-			c->cputype = CPU_BCM6358;
+-			__cpu_name[cpu] = "Broadcom BCM6358";
+-			break;
+-		default:
+-			c->cputype = CPU_UNKNOWN;
+-			break;
+-		}
++	case PRID_IMP_BMIPS4KC:
++		c->cputype = CPU_4KC;
++		__cpu_name[cpu] = "MIPS 4Kc";
+ 		break;
+ 	}
+ }
+diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
+index 4510e61..93816f3 100644
+--- a/arch/mips/mm/tlbex.c
++++ b/arch/mips/mm/tlbex.c
+@@ -338,13 +338,12 @@ static void __cpuinit build_tlb_write_entry(u32 **p, struct uasm_label **l,
+ 	case CPU_4KSC:
+ 	case CPU_20KC:
+ 	case CPU_25KF:
+-	case CPU_BCM3302:
+-	case CPU_BCM4710:
++	case CPU_BMIPS32:
++	case CPU_BMIPS3300:
++	case CPU_BMIPS4350:
++	case CPU_BMIPS4380:
++	case CPU_BMIPS5000:
+ 	case CPU_LOONGSON2:
+-	case CPU_BCM6338:
+-	case CPU_BCM6345:
+-	case CPU_BCM6348:
+-	case CPU_BCM6358:
+ 	case CPU_R5500:
+ 		if (m4kc_tlbp_war())
+ 			uasm_i_nop(p);
+-- 
+1.7.0.4

@@ -1,11 +1,11 @@
-Received: from [69.28.251.93] ([69.28.251.93]:44521 "EHLO b32.net"
+Received: from [69.28.251.93] ([69.28.251.93]:43617 "EHLO b32.net"
         rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1490951Ab0JUDXF (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 21 Oct 2010 05:23:05 +0200
+        id S1491134Ab0JUQHu (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 21 Oct 2010 18:07:50 +0200
 From: Kevin Cernekee <cernekee@gmail.com>
-Subject: [PATCH v2 8/9] MIPS: Honor L2 bypass bit
-Date: Wed, 20 Oct 2010 20:05:42 -0700
-Message-ID: <74b5d3ba9506b2e6d885546bd6dcdaec@localhost>
+Subject: [PATCH v3 8/9] MIPS: Honor L2 bypass bit
+Date: Thu, 21 Oct 2010 08:59:48 -0700
+Message-ID: <2e65c61bf8fd3a7b2aa4e24013cb0dba@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -14,25 +14,43 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20101021030542.-rd4HXkTqmquMxs-At-mOCYFkF05EbgtxQEW5maKedM@z>
+Message-ID: <20101021155948.vavOavLdlaOWNlGf_9yEIEv4D-wawwf4fyHErYdsgXA@z>
+
+[v3: Fix build errors]
 
 On many of the newer MIPS32 cores, CP0 CONFIG2 bit 12 (L2B) indicates
 that the L2 cache is disabled and therefore Linux should not attempt
 to use it.
 
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+Cc: linux-mips@linux-mips.org>
+Cc: <linux-kernel@vger.kernel.org>
 ---
- arch/mips/mm/sc-mips.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+ arch/mips/mm/sc-mips.c |   38 ++++++++++++++++++++++++++++++++++----
+ 1 files changed, 34 insertions(+), 4 deletions(-)
 
 diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
-index 5ab5fa8..f2e2886 100644
+index 5ab5fa8..ef625eb 100644
 --- a/arch/mips/mm/sc-mips.c
 +++ b/arch/mips/mm/sc-mips.c
-@@ -79,6 +79,17 @@ static inline int __init mips_sc_probe(void)
- 		return 0;
+@@ -57,6 +57,38 @@ static struct bcache_ops mips_sc_ops = {
+ 	.bc_inv = mips_sc_inv
+ };
  
- 	config2 = read_c0_config2();
++/*
++ * Check if the L2 cache controller is activated on a particular platform.
++ * MTI's L2 controller and the L2 cache controller of Broadcom's BMIPS
++ * cores both use c0_config2's bit 12 as "L2 Bypass" bit, that is the
++ * cache being disabled.  However there is no guarantee for this to be
++ * true on all platforms.  In an act of stupidity the spec defined bits
++ * 12..15 as implementation defined so below function will eventually have
++ * to be replaced by a platform specific probe.
++ */
++static inline int mips_sc_is_activated(struct cpuinfo_mips *c,
++	unsigned int config2)
++{
++	unsigned int tmp;
 +
 +	/* Check the bypass bit (L2B) */
 +	switch (c->cputype) {
@@ -44,8 +62,29 @@ index 5ab5fa8..f2e2886 100644
 +			return 0;
 +	}
 +
- 	tmp = (config2 >> 4) & 0x0f;
- 	if (0 < tmp && tmp <= 7)
- 		c->scache.linesz = 2 << tmp;
++	tmp = (config2 >> 4) & 0x0f;
++	if (0 < tmp && tmp <= 7)
++		c->scache.linesz = 2 << tmp;
++	else
++		return 0;
++	return 1;
++}
++
+ static inline int __init mips_sc_probe(void)
+ {
+ 	struct cpuinfo_mips *c = &current_cpu_data;
+@@ -79,10 +111,8 @@ static inline int __init mips_sc_probe(void)
+ 		return 0;
+ 
+ 	config2 = read_c0_config2();
+-	tmp = (config2 >> 4) & 0x0f;
+-	if (0 < tmp && tmp <= 7)
+-		c->scache.linesz = 2 << tmp;
+-	else
++
++	if (!mips_sc_is_activated(c, config2))
+ 		return 0;
+ 
+ 	tmp = (config2 >> 8) & 0x0f;
 -- 
 1.7.0.4

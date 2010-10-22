@@ -1,90 +1,43 @@
-Received: from [69.28.251.93] ([69.28.251.93]:43617 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491134Ab0JUQHu (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 21 Oct 2010 18:07:50 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Subject: [PATCH v3 8/9] MIPS: Honor L2 bypass bit
-Date: Thu, 21 Oct 2010 08:59:48 -0700
-Message-ID: <2e65c61bf8fd3a7b2aa4e24013cb0dba@localhost>
+Received: from mxout1.idt.com ([157.165.5.25]:44287 "EHLO mxout1.idt.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491065Ab0JVTZx convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Oct 2010 21:25:53 +0200
+Received: from mail.idt.com (localhost [127.0.0.1])
+        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id o9MJPjVZ026827
+        for <linux-mips@linux-mips.org>; Fri, 22 Oct 2010 12:25:46 -0700
+Received: from corpml1.corp.idt.com (corpml1.corp.idt.com [157.165.140.20])
+        by mail.idt.com (8.13.8/8.13.8) with ESMTP id o9MJPhxY014622
+        for <linux-mips@linux-mips.org>; Fri, 22 Oct 2010 12:25:45 -0700 (PDT)
+Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
+        by corpml1.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id o9MJPgI08171
+        for <linux-mips@linux-mips.org>; Fri, 22 Oct 2010 12:25:43 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Return-Path: <cernekee@gmail.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: Is it any serial8250 platform driver available?
+Date: Fri, 22 Oct 2010 12:23:49 -0700
+Message-ID: <AEA634773855ED4CAD999FBB1A66D0760126B496@CORPEXCH1.na.ads.idt.com>
+From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
+Return-Path: <Andrei.Ardelean@idt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20101021155948.vavOavLdlaOWNlGf_9yEIEv4D-wawwf4fyHErYdsgXA@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20101022192349.X2Wk4Xaaw8FLFEhStzlNybl-GzcJuSj6k6wV95KR9Oc@z>
 
-[v3: Fix build errors]
+Hi,
 
-On many of the newer MIPS32 cores, CP0 CONFIG2 bit 12 (L2B) indicates
-that the L2 cache is disabled and therefore Linux should not attempt
-to use it.
+I am porting MIPS Linux from MALTA to a new board. I ported early
+console code from malta_console.c and I am looking now to use a
+interrupt driven driver for TTY. My UART is compatible with 8250 (1 UART
+port only) but the UART registers are directly mapped in CPU memory map.
+There is no PCI bus. My problem is that the driver implemented in 8250.c
+is very complex and it seems to be hardcode for ISA bus, is it any
+simple platform UART driver available to be directly mapped in the CPU
+space? Can you give me some advice what would be a good approach for my
+case?
 
-Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
-Cc: linux-mips@linux-mips.org>
-Cc: <linux-kernel@vger.kernel.org>
----
- arch/mips/mm/sc-mips.c |   38 ++++++++++++++++++++++++++++++++++----
- 1 files changed, 34 insertions(+), 4 deletions(-)
-
-diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
-index 5ab5fa8..ef625eb 100644
---- a/arch/mips/mm/sc-mips.c
-+++ b/arch/mips/mm/sc-mips.c
-@@ -57,6 +57,38 @@ static struct bcache_ops mips_sc_ops = {
- 	.bc_inv = mips_sc_inv
- };
- 
-+/*
-+ * Check if the L2 cache controller is activated on a particular platform.
-+ * MTI's L2 controller and the L2 cache controller of Broadcom's BMIPS
-+ * cores both use c0_config2's bit 12 as "L2 Bypass" bit, that is the
-+ * cache being disabled.  However there is no guarantee for this to be
-+ * true on all platforms.  In an act of stupidity the spec defined bits
-+ * 12..15 as implementation defined so below function will eventually have
-+ * to be replaced by a platform specific probe.
-+ */
-+static inline int mips_sc_is_activated(struct cpuinfo_mips *c,
-+	unsigned int config2)
-+{
-+	unsigned int tmp;
-+
-+	/* Check the bypass bit (L2B) */
-+	switch (c->cputype) {
-+	case CPU_34K:
-+	case CPU_74K:
-+	case CPU_1004K:
-+	case CPU_BMIPS5000:
-+		if (config2 & (1 << 12))
-+			return 0;
-+	}
-+
-+	tmp = (config2 >> 4) & 0x0f;
-+	if (0 < tmp && tmp <= 7)
-+		c->scache.linesz = 2 << tmp;
-+	else
-+		return 0;
-+	return 1;
-+}
-+
- static inline int __init mips_sc_probe(void)
- {
- 	struct cpuinfo_mips *c = &current_cpu_data;
-@@ -79,10 +111,8 @@ static inline int __init mips_sc_probe(void)
- 		return 0;
- 
- 	config2 = read_c0_config2();
--	tmp = (config2 >> 4) & 0x0f;
--	if (0 < tmp && tmp <= 7)
--		c->scache.linesz = 2 << tmp;
--	else
-+
-+	if (!mips_sc_is_activated(c, config2))
- 		return 0;
- 
- 	tmp = (config2 >> 8) & 0x0f;
--- 
-1.7.0.4
+Thanks,
+Andrei
+  

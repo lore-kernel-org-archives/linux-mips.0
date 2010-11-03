@@ -1,69 +1,71 @@
-Received: from mxout1.idt.com ([157.165.5.25]:33360 "EHLO mxout1.idt.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1490954Ab0JYPhm convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 25 Oct 2010 17:37:42 +0200
-Content-class: urn:content-classes:message
+Received: from [69.28.251.93] ([69.28.251.93]:45853 "EHLO b32.net"
+        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1490990Ab0KCFcf (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 3 Nov 2010 06:32:35 +0100
+From: Kevin Cernekee <cernekee@gmail.com>
+Subject: [PATCH] MIPS: Fix build errors in sc-mips.c
+Date: Tue, 02 Nov 2010 22:28:01 -0700
+Message-ID: <01184c101e5d39225a6380cce3c5bad5@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Is it any serial8250 platform driver available?
-Date: Mon, 25 Oct 2010 08:37:31 -0700
-Message-ID: <AEA634773855ED4CAD999FBB1A66D0760126B6FC@CORPEXCH1.na.ads.idt.com>
-In-Reply-To: <4CC1E677.1090404@caviumnetworks.com>
-References: <AEA634773855ED4CAD999FBB1A66D0760126B496@CORPEXCH1.na.ads.idt.com> <4CC1E677.1090404@caviumnetworks.com>
-From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
-Return-Path: <Andrei.Ardelean@idt.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Return-Path: <cernekee@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20101025153731.T5AIZjDFaTrcjE42pJTdnHoafH2sqc5wg_zoSvfcrkU@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20101103052801.amxwVw5lIy521Xz9-9a2KaoyIw1-189oJDZUV3bhYI0@z>
 
-Hi David,
+Seen with malta_defconfig on Linus' tree:
 
-I studied this driver and few other examples and I have one question
-regarding the driver configuration:
-Which field must be initialized in the plat_serial8250_port structure: 
-	unsigned long	iobase;		/* io base address */
-	void __iomem	*membase;	/* ioremap cookie or NULL */
-	resource_size_t	mapbase;	/* resource base */ 
-Some drivers init only one of them, other two fields. 
+  CC      arch/mips/mm/sc-mips.o
+arch/mips/mm/sc-mips.c: In function 'mips_sc_is_activated':
+arch/mips/mm/sc-mips.c:77: error: 'config2' undeclared (first use in this function)
+arch/mips/mm/sc-mips.c:77: error: (Each undeclared identifier is reported only once
+arch/mips/mm/sc-mips.c:77: error: for each function it appears in.)
+arch/mips/mm/sc-mips.c:81: error: 'tmp' undeclared (first use in this function)
+make[2]: *** [arch/mips/mm/sc-mips.o] Error 1
+make[1]: *** [arch/mips/mm] Error 2
+make: *** [arch/mips] Error 2
 
-My UART is located at 0x1bf01000, can I put this value in all those
-fields?
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ arch/mips/mm/sc-mips.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
 
-Thanks,
-Andrei
-
-
------Original Message-----
-From: David Daney [mailto:ddaney@caviumnetworks.com] 
-Sent: Friday, October 22, 2010 3:31 PM
-To: Ardelean, Andrei
-Cc: linux-mips@linux-mips.org
-Subject: Re: Is it any serial8250 platform driver available?
-
-On 10/22/2010 12:23 PM, Ardelean, Andrei wrote:
-> Hi,
->
-> I am porting MIPS Linux from MALTA to a new board. I ported early
-> console code from malta_console.c and I am looking now to use a
-> interrupt driven driver for TTY. My UART is compatible with 8250 (1
-UART
-> port only) but the UART registers are directly mapped in CPU memory
-map.
-> There is no PCI bus. My problem is that the driver implemented in
-8250.c
-> is very complex and it seems to be hardcode for ISA bus, is it any
-> simple platform UART driver available to be directly mapped in the CPU
-> space? Can you give me some advice what would be a good approach for
-my
-> case?
->
-
-Many chips have 8250 compatible ports and use 8250.c.
-
-See arch/mips/cavium-octeon/serial.c
-
-David Daeny
+diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
+index 505feca..ef625eb 100644
+--- a/arch/mips/mm/sc-mips.c
++++ b/arch/mips/mm/sc-mips.c
+@@ -66,8 +66,11 @@ static struct bcache_ops mips_sc_ops = {
+  * 12..15 as implementation defined so below function will eventually have
+  * to be replaced by a platform specific probe.
+  */
+-static inline int mips_sc_is_activated(struct cpuinfo_mips *c)
++static inline int mips_sc_is_activated(struct cpuinfo_mips *c,
++	unsigned int config2)
+ {
++	unsigned int tmp;
++
+ 	/* Check the bypass bit (L2B) */
+ 	switch (c->cputype) {
+ 	case CPU_34K:
+@@ -83,6 +86,7 @@ static inline int mips_sc_is_activated(struct cpuinfo_mips *c)
+ 		c->scache.linesz = 2 << tmp;
+ 	else
+ 		return 0;
++	return 1;
+ }
+ 
+ static inline int __init mips_sc_probe(void)
+@@ -108,7 +112,7 @@ static inline int __init mips_sc_probe(void)
+ 
+ 	config2 = read_c0_config2();
+ 
+-	if (!mips_sc_is_activated(c))
++	if (!mips_sc_is_activated(c, config2))
+ 		return 0;
+ 
+ 	tmp = (config2 >> 8) & 0x0f;
+-- 
+1.7.0.4

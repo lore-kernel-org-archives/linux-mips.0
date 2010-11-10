@@ -1,71 +1,44 @@
-Received: from [69.28.251.93] ([69.28.251.93]:45853 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1490990Ab0KCFcf (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 3 Nov 2010 06:32:35 +0100
-From: Kevin Cernekee <cernekee@gmail.com>
-Subject: [PATCH] MIPS: Fix build errors in sc-mips.c
-Date: Tue, 02 Nov 2010 22:28:01 -0700
-Message-ID: <01184c101e5d39225a6380cce3c5bad5@localhost>
+Received: from mxout1.idt.com ([157.165.5.25]:42575 "EHLO mxout1.idt.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491189Ab0KJPtk convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 10 Nov 2010 16:49:40 +0100
+Received: from mail.idt.com (localhost [127.0.0.1])
+        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id oAAFnWPB031635
+        for <linux-mips@linux-mips.org>; Wed, 10 Nov 2010 07:49:32 -0800
+Received: from corpml1.corp.idt.com (corpml1.corp.idt.com [157.165.140.20])
+        by mail.idt.com (8.13.8/8.13.8) with ESMTP id oAAFnUBo008726
+        for <linux-mips@linux-mips.org>; Wed, 10 Nov 2010 07:49:31 -0800 (PST)
+Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
+        by corpml1.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id oAAFnUU19135
+        for <linux-mips@linux-mips.org>; Wed, 10 Nov 2010 07:49:30 -0800 (PST)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Return-Path: <cernekee@gmail.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: Kernel is stuck in Calibrating delay loop 
+Date: Wed, 10 Nov 2010 07:49:27 -0800
+Message-ID: <AEA634773855ED4CAD999FBB1A66D0760132BB00@CORPEXCH1.na.ads.idt.com>
+From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
+Return-Path: <Andrei.Ardelean@idt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20101103052801.amxwVw5lIy521Xz9-9a2KaoyIw1-189oJDZUV3bhYI0@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20101110154927.aqqzJqhV-osHi7yP8ojXwKFEVsLgSVf6XVWb6F-Viqg@z>
 
-Seen with malta_defconfig on Linus' tree:
+Hi,
 
-  CC      arch/mips/mm/sc-mips.o
-arch/mips/mm/sc-mips.c: In function 'mips_sc_is_activated':
-arch/mips/mm/sc-mips.c:77: error: 'config2' undeclared (first use in this function)
-arch/mips/mm/sc-mips.c:77: error: (Each undeclared identifier is reported only once
-arch/mips/mm/sc-mips.c:77: error: for each function it appears in.)
-arch/mips/mm/sc-mips.c:81: error: 'tmp' undeclared (first use in this function)
-make[2]: *** [arch/mips/mm/sc-mips.o] Error 1
-make[1]: *** [arch/mips/mm] Error 2
-make: *** [arch/mips] Error 2
+I am porting MIPS Malta on a new platform and during the boot process
+the Kernel remains in a infinite loop in "Calibrating delay loop ..." in
+calibrate.c.
+I checked and the timer interrupt which is supposed to be wired on h/w 5
+interrupt (MIPS 7 irq) is not activated in MIPS Status.IM7 register.
+Where in the Kernel the MIPS irq wired to the timer interrupt needs to
+be enabled?  Can I use enable_irq()?
+On my platform I don't have any 8259 and I am trying to use MIPS
+Count/Compare internal timer for Kernel tick.
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- arch/mips/mm/sc-mips.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+Thanks,
+Andrei
 
-diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
-index 505feca..ef625eb 100644
---- a/arch/mips/mm/sc-mips.c
-+++ b/arch/mips/mm/sc-mips.c
-@@ -66,8 +66,11 @@ static struct bcache_ops mips_sc_ops = {
-  * 12..15 as implementation defined so below function will eventually have
-  * to be replaced by a platform specific probe.
-  */
--static inline int mips_sc_is_activated(struct cpuinfo_mips *c)
-+static inline int mips_sc_is_activated(struct cpuinfo_mips *c,
-+	unsigned int config2)
- {
-+	unsigned int tmp;
-+
- 	/* Check the bypass bit (L2B) */
- 	switch (c->cputype) {
- 	case CPU_34K:
-@@ -83,6 +86,7 @@ static inline int mips_sc_is_activated(struct cpuinfo_mips *c)
- 		c->scache.linesz = 2 << tmp;
- 	else
- 		return 0;
-+	return 1;
- }
- 
- static inline int __init mips_sc_probe(void)
-@@ -108,7 +112,7 @@ static inline int __init mips_sc_probe(void)
- 
- 	config2 = read_c0_config2();
- 
--	if (!mips_sc_is_activated(c))
-+	if (!mips_sc_is_activated(c, config2))
- 		return 0;
- 
- 	tmp = (config2 >> 8) & 0x0f;
--- 
-1.7.0.4
+  

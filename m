@@ -1,15 +1,15 @@
-Received: from mxout1.idt.com ([157.165.5.25]:56179 "EHLO mxout1.idt.com"
+Received: from mxout1.idt.com ([157.165.5.25]:39368 "EHLO mxout1.idt.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491981Ab0KVQiH convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Nov 2010 17:38:07 +0100
+        id S1492039Ab0KVUwL convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Nov 2010 21:52:11 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
         charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Subject: RE: The new "real" console doesn't display printk() messages like "early" console!
-Date: Mon, 22 Nov 2010 08:37:53 -0800
-Message-ID: <AEA634773855ED4CAD999FBB1A66D0760136A7D3@CORPEXCH1.na.ads.idt.com>
+Date: Mon, 22 Nov 2010 12:51:56 -0800
+Message-ID: <AEA634773855ED4CAD999FBB1A66D0760136A91F@CORPEXCH1.na.ads.idt.com>
 In-Reply-To: <4CE6A103.8030009@mvista.com>
 References: <AEA634773855ED4CAD999FBB1A66D0760136A102@CORPEXCH1.na.ads.idt.com><4CE57C92.6030705@mvista.com><AEA634773855ED4CAD999FBB1A66D0760136A151@CORPEXCH1.na.ads.idt.com> <AANLkTinEXDoXQFa1gN6prRQYjqkvc9vSA_H7JOXPLsPw@mail.gmail.com> <AEA634773855ED4CAD999FBB1A66D0760136A1F3@CORPEXCH1.na.ads.idt.com> <4CE6A103.8030009@mvista.com>
 From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
@@ -18,35 +18,25 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 To: Sergei Shtylyov <sshtylyov@mvista.com>
 Cc: Ricardo Mendoza <ricmm@gentoo.org>, linux-mips@linux-mips.org
-Message-ID: <20101122163753.tBXzDleYVq_CS4nb-qpwbOEnznDy2hEA38lmuAqvl_o@z>
+Message-ID: <20101122205156.3RmzhqqqoXOSPnkq_jDljkxNGVqIjHxVwnQqCIsn2OA@z>
 
 Hi Sergei,
 
-- I will clean up the things you highlighted in the code, they come from
-octeon code.
-- Regarding PORT_GD, I added it in driver/serial/8250.c like octeon
-model:
+"     Are your UART registers identity mapped to virtual address space?"
 
-	[PORT_OCTEON] = {
-		.name		= "OCTEON",
-		.fifo_size	= 64,
-		.tx_loadsz	= 64,
-		.fcr		= UART_FCR_ENABLE_FIFO |
-UART_FCR_R_TRIG_10,
-		.flags		= UART_CAP_FIFO,
-	},
-	[PORT_GD] = {
-		.name		= "GD",
-		.fifo_size	= 16,
-		.tx_loadsz	= 16,
-		.fcr		= UART_FCR_ENABLE_FIFO |
-UART_FCR_R_TRIG_10,
-		.flags		= UART_CAP_FIFO,
-	},
+My system has DDR memory 0x80000000..0x90000000 (kseg0) and UART is
+mapped starting with bbf01000 (kseg1). Can you give me some details
+about your question? 
+
+I didn't do anything special for the port other than 
+	set_io_port_base(GD_PORT_BASE); 
+in gd-init.c
 
 
 Thanks,
 Andrei
+ 
+
 
 
 -----Original Message-----

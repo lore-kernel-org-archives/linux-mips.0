@@ -1,194 +1,85 @@
-Received: from mxout1.idt.com ([157.165.5.25]:39368 "EHLO mxout1.idt.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1492039Ab0KVUwL convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Nov 2010 21:52:11 +0100
-Content-class: urn:content-classes:message
+Received: from [69.28.251.93] ([69.28.251.93]:50541 "EHLO b32.net"
+        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491931Ab0KWScB (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 23 Nov 2010 19:32:01 +0100
+From: Kevin Cernekee <cernekee@gmail.com>
+Subject: [PATCH RESEND 1/7] MIPS: sync after cacheflush
+Date: Tue, 23 Nov 2010 10:26:39 -0800
+Message-ID: <8a8eee995454c8b271cceb440e31699a@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: The new "real" console doesn't display printk() messages like "early" console!
-Date: Mon, 22 Nov 2010 12:51:56 -0800
-Message-ID: <AEA634773855ED4CAD999FBB1A66D0760136A91F@CORPEXCH1.na.ads.idt.com>
-In-Reply-To: <4CE6A103.8030009@mvista.com>
-References: <AEA634773855ED4CAD999FBB1A66D0760136A102@CORPEXCH1.na.ads.idt.com><4CE57C92.6030705@mvista.com><AEA634773855ED4CAD999FBB1A66D0760136A151@CORPEXCH1.na.ads.idt.com> <AANLkTinEXDoXQFa1gN6prRQYjqkvc9vSA_H7JOXPLsPw@mail.gmail.com> <AEA634773855ED4CAD999FBB1A66D0760136A1F3@CORPEXCH1.na.ads.idt.com> <4CE6A103.8030009@mvista.com>
-From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
-Return-Path: <Andrei.Ardelean@idt.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Return-Path: <cernekee@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Cc: Ricardo Mendoza <ricmm@gentoo.org>, linux-mips@linux-mips.org
-Message-ID: <20101122205156.3RmzhqqqoXOSPnkq_jDljkxNGVqIjHxVwnQqCIsn2OA@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: macro@linux-mips.org, skuribay@pobox.com, raiko@niisi.msk.ru, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20101123182639.B1NrMTxx0DRKBZAbc7cbsLkBATUaB1NzpN1Mlfwgsxk@z>
 
-Hi Sergei,
+On processors with deep write buffers, it is likely that many cycles
+will pass between a CACHE instruction and the time the data actually
+gets written out to DRAM.  Add a SYNC instruction to ensure that the
+buffers get emptied before the flush functions return.
 
-"     Are your UART registers identity mapped to virtual address space?"
+Actual problem seen in the wild:
 
-My system has DDR memory 0x80000000..0x90000000 (kseg0) and UART is
-mapped starting with bbf01000 (kseg1). Can you give me some details
-about your question? 
+1) dma_alloc_coherent() allocates cached memory
 
-I didn't do anything special for the port other than 
-	set_io_port_base(GD_PORT_BASE); 
-in gd-init.c
+2) memset() is called to clear the new pages
 
+3) dma_cache_wback_inv() is called to flush the zero data out to memory
 
-Thanks,
-Andrei
+4) dma_alloc_coherent() returns an uncached (kseg1) pointer to the
+freshly allocated pages
+
+5) Caller writes data through the kseg1 pointer
+
+6) Buffered writeback data finally gets flushed out to DRAM
+
+7) Part of caller's data is inexplicably zeroed out
+
+This patch adds SYNC between steps 3 and 4, which fixed the problem.
+
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ arch/mips/mm/c-r4k.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index b4923a7..dc5d9c4 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -604,6 +604,7 @@ static void r4k_dma_cache_wback_inv(unsigned long addr, unsigned long size)
+ 			r4k_blast_scache();
+ 		else
+ 			blast_scache_range(addr, addr + size);
++		__sync();
+ 		return;
+ 	}
  
-
-
-
------Original Message-----
-From: Sergei Shtylyov [mailto:sshtylyov@mvista.com] 
-Sent: Friday, November 19, 2010 11:09 AM
-To: Ardelean, Andrei
-Cc: Ricardo Mendoza; linux-mips@linux-mips.org
-Subject: Re: The new "real" console doesn't display printk() messages
-like "early" console!
-
-Ardelean, Andrei wrote:
-
-> Hi Ricardo,
-
-> I implemented serial platform driver taking as model serial.c from
-> cavium-octeon.
-
-    I think you should really have used something simpler as an example.
-
-> Here is my code:
-
-
-> /*
->  * This file is subject to the terms and conditions of the GNU General
-> Public
->  * License.  See the file "COPYING" in the main directory of this
-> archive
->  * for more details.
->  *
->  * Copyright (C) 2004-2007 Cavium Networks
->  */
->  
-> #include <linux/console.h>
-> #include <linux/module.h>
-> #include <linux/init.h>
-> #include <linux/platform_device.h>
-> #include <linux/serial.h>
-> #include <linux/serial_8250.h>
-> #include <linux/serial_reg.h>
-> #include <linux/tty.h>
-> #include <asm/time.h>
-> #include <sys_defs.h>
-> 
-> 
-> #ifdef CONFIG_GDB_CONSOLE
-
-    This is never defined for MIPS. And there shouldn't be such
-dependencies.
-
-> #define DEBUG_UART 0
-> #else
-> #define DEBUG_UART 1
-> #endif
-> 
-> unsigned int gd_serial_in(struct uart_port *up, int offset)
-> {
-> 	int rv = inl((unsigned int)(up->membase + (offset << 2)));
-
-    Should be an empty line here.
-
-> 	if (offset == UART_IIR && (rv & 0xf) == 7) {
-
-    Are you sure this Octeon specific quirk also allpies to your UART?
-
-> 		/* Busy interrupt, read the USR (39) and try again. */
-> 		inl((unsigned int)(up->membase + (39 << 2)));
-> 		rv = inl((unsigned int)(up->membase + (offset << 2)));
-> 	}
-> 	return rv;
-> }
-> 
-> void gd_serial_out(struct uart_port *up, int offset, int value)
-> {
-> 	outl( value & 0xff, (unsigned int)(up->membase + (offset <<
-
-    No spaces allowed after (.
-
-> 2)));
-> }
-> 
-> /*
->  * Allocated in .bss, so it is all zeroed.
->  */
-> #define GD_MAX_UARTS 1
-
-    Then how DEBUG_UART can be 1?
-
-> static struct plat_serial8250_port gd_uart8250_data[GD_MAX_UARTS + 1];
-> static struct platform_device gd_uart8250_device = {
-> 	.name			= "serial8250",
-> 	.id			= PLAT8250_DEV_PLATFORM,
-> 	.dev			= {
-> 		.platform_data	= gd_uart8250_data,
-
-    Where is 'gd_uart8250_data'?
-
-> 	},
-> };
-
-> static void __init gd_uart_set_common(struct plat_serial8250_port *p)
-> {
-> 	p->flags = ASYNC_SKIP_TEST | UPF_SHARE_IRQ | UPF_FIXED_TYPE;
-> 	p->type = PORT_GD;
-
-    What is PORT_GD?
-
-> 	p->iotype = UPIO_MEM;
-
-    Judging from your code, it should be UPIO_MEM32.
-
-> 	p->regshift = 2;	/* I/O addresses are every 4 bytes */
-> 	p->uartclk = UART_CLK;  
-> 	p->serial_in = gd_serial_in;
-> 	p->serial_out = gd_serial_out;
-> }
-> 
-> static int __init gd_serial_init(void)
-> {
-> 	int enable_uart0;
-> 	struct plat_serial8250_port *p;
-> 
-> 	enable_uart0 = 1;
-
-    What's the point in existence of this variable?
-
-> 	p = gd_uart8250_data;
-> 	if (enable_uart0) {
-> 		/* Add a ttyS device for hardware uart 0 */
-> 		gd_uart_set_common(p);
-> 		p->membase = (void *) offMCU_UART_THR_OR_RBR_OR_DLL;
-> 		p->mapbase = offMCU_UART_THR_OR_RBR_OR_DLL;
-
-     Are your UART registers identity mapped to virtual address space?
-You are not obliged to pass 'membase', unless you have pre-existing
-mapping but 
-in this case you also need to pass UPF_IOREMAP in 'flags'.
-
-> 		p->irq = MIPSCPU_INT_UART;
-> 		p++;
-> 	}
-
-> 	return platform_device_register(&gd_uart8250_device);
-> }
-> 
-> device_initcall(gd_serial_init);
-
-
->
-------------------------------------------------------------------------
-> -----------------------
-> 
-> Thanks,
-> Andrei
-
-WBR, Sergei
+@@ -620,6 +621,7 @@ static void r4k_dma_cache_wback_inv(unsigned long addr, unsigned long size)
+ 	}
+ 
+ 	bc_wback_inv(addr, size);
++	__sync();
+ }
+ 
+ static void r4k_dma_cache_inv(unsigned long addr, unsigned long size)
+@@ -647,6 +649,7 @@ static void r4k_dma_cache_inv(unsigned long addr, unsigned long size)
+ 				 (addr + size - 1) & almask);
+ 			blast_inv_scache_range(addr, addr + size);
+ 		}
++		__sync();
+ 		return;
+ 	}
+ 
+@@ -663,6 +666,7 @@ static void r4k_dma_cache_inv(unsigned long addr, unsigned long size)
+ 	}
+ 
+ 	bc_inv(addr, size);
++	__sync();
+ }
+ #endif /* CONFIG_DMA_NONCOHERENT */
+ 
+-- 
+1.7.0.4

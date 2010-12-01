@@ -1,43 +1,143 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49]:41896 "EHLO
-        mail-fx0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1493015Ab0LAQK1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 1 Dec 2010 17:10:27 +0100
-Subject: Subject: [RFC 0/3] VSMP support for msp71xx platforms
+Received: from mail-gy0-f177.google.com ([209.85.160.177]:51576 "EHLO
+        mail-gy0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1493021Ab0LAQPm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 1 Dec 2010 17:15:42 +0100
+Subject: [RFC 1/3] VSMP support for msp71xx family of platforms.
 From: Anoop P A <anoop.pa@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 01 Dec 2010 21:43:11 +0530
-Message-ID: <1291219991.31413.8.camel@paanoop1-desktop>
+Date: Wed, 01 Dec 2010 21:48:27 +0530
+Message-ID: <1291220307.31413.14.camel@paanoop1-desktop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-Path: <anoop.pa@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, mcdonald.shane@gmail.com, "Kevin D. Kissell" <kevink@paralogos.com>
-Message-ID: <20101201161311.v2QwVxJXP0yZvt4nsD82qRMFLmUPgwi_f2E6pCXvA4Q@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, mcdonald.shane@gmail.com
+Message-ID: <20101201161827.mYuQAkW9bAjRLMuPBE2hl4eTvacWYPVSqO8qrhejrug@z>
 
-From 5bfd3ba210e521df2b493862446b4535bcdb0cdf Mon Sep 17 00:00:00 2001
-Message-Id: <cover.1291219118.git.anoop.pa@gmail.com>
+From e5148874243f0b2b610cd6b077084bd782961d94 Mon Sep 17 00:00:00 2001
+Message-Id:
+<e5148874243f0b2b610cd6b077084bd782961d94.1291219118.git.anoop.pa@gmail.com>
+In-Reply-To: <cover.1291219118.git.anoop.pa@gmail.com>
+References: <cover.1291219118.git.anoop.pa@gmail.com>
 From: Anoop P A <anoop.pa@gmail.com>
-Date: Wed, 1 Dec 2010 21:28:38 +0530
-Subject: [RFC 0/3] VSMP support for msp71xx platforms
+Date: Wed, 1 Dec 2010 20:58:28 +0530
+Subject: [RFC 1/3] VSMP support for msp71xx family of platforms.
+ 
 Cc: anoop.pa@gmail.com
 
-Following series patches add VSMP support for MSP71xx series of SoC's.
+msp_smp.c initiliase IPI call and resched irq.
 
-
-Anoop P A (3):
-  VSMP support for msp71xx family of platforms.
-  SMP support MSP CIC and PER cascaded interrupt subsystem.
-  VSMP support for MSP71xx family.
-
- arch/mips/pmc-sierra/msp71xx/Makefile      |    3 +-
- arch/mips/pmc-sierra/msp71xx/msp_irq.c     |   49 +++++-
- arch/mips/pmc-sierra/msp71xx/msp_irq_cic.c |  245
-+++++++++++++++++++---------
- arch/mips/pmc-sierra/msp71xx/msp_irq_per.c |  175 ++++++++++++++++++++
- arch/mips/pmc-sierra/msp71xx/msp_setup.c   |    3 +
- arch/mips/pmc-sierra/msp71xx/msp_smp.c     |   75 +++++++++
- arch/mips/pmc-sierra/msp71xx/msp_time.c    |    2 +-
- 7 files changed, 463 insertions(+), 89 deletions(-)
- create mode 100644 arch/mips/pmc-sierra/msp71xx/msp_irq_per.c
+Signed-off-by: Anoop P A <anoop.pa@gmail.com>
+---
+ arch/mips/pmc-sierra/msp71xx/Makefile  |    3 +-
+ arch/mips/pmc-sierra/msp71xx/msp_smp.c |   75
+++++++++++++++++++++++++++++++++
+ 2 files changed, 77 insertions(+), 1 deletions(-)
  create mode 100644 arch/mips/pmc-sierra/msp71xx/msp_smp.c
+
+diff --git a/arch/mips/pmc-sierra/msp71xx/Makefile
+b/arch/mips/pmc-sierra/msp71xx/Makefile
+index e107f79..09627ae 100644
+--- a/arch/mips/pmc-sierra/msp71xx/Makefile
++++ b/arch/mips/pmc-sierra/msp71xx/Makefile
+@@ -6,7 +6,8 @@ obj-y += msp_prom.o msp_setup.o msp_irq.o \
+ obj-$(CONFIG_HAVE_GPIO_LIB) += gpio.o gpio_extended.o
+ obj-$(CONFIG_PMC_MSP7120_GW) += msp_hwbutton.o
+ obj-$(CONFIG_IRQ_MSP_SLP) += msp_irq_slp.o
+-obj-$(CONFIG_IRQ_MSP_CIC) += msp_irq_cic.o
++obj-$(CONFIG_IRQ_MSP_CIC) += msp_irq_cic.o msp_irq_per.o
+ obj-$(CONFIG_PCI) += msp_pci.o
+ obj-$(CONFIG_MSPETH) += msp_eth.o
+ obj-$(CONFIG_USB_MSP71XX) += msp_usb.o
++obj-$(CONFIG_MIPS_MT_SMP) += msp_smp.o
+diff --git a/arch/mips/pmc-sierra/msp71xx/msp_smp.c
+b/arch/mips/pmc-sierra/msp71xx/msp_smp.c
+new file mode 100644
+index 0000000..31a6c72
+--- /dev/null
++++ b/arch/mips/pmc-sierra/msp71xx/msp_smp.c
+@@ -0,0 +1,75 @@
++/*
++ * Copyright (C) 2000, 2001, 2004 MIPS Technologies, Inc.
++ * Copyright (C) 2001 Ralf Baechle
++ * Copyright (C) 2010 PMC-Sierra, Inc.
++ *
++ *  VSMP support for MSP platforms . Derived from malta vsmp support.
++ *
++ *  This program is free software; you can distribute it and/or modify
+it
++ *  under the terms of the GNU General Public License (Version 2) as
++ *  published by the Free Software Foundation.
++ *
++ *  This program is distributed in the hope it will be useful, but
+WITHOUT
++ *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or
++ *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+License
++ *  for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
+along
++ *  with this program; if not, write to the Free Software Foundation,
+Inc.,
++ *  59 Temple Place - Suite 330, Boston MA 02111-1307, USA.
++ *
++ */
++#include <linux/smp.h>
++#include <linux/interrupt.h>
++
++#ifdef CONFIG_MIPS_MT_SMP
++#define MIPS_CPU_IPI_RESCHED_IRQ 0	/* SW int 0 for resched */
++#define MIPS_CPU_IPI_CALL_IRQ 1		/* SW int 1 for call */
++
++
++static void ipi_resched_dispatch(void)
++{
++	do_IRQ(MIPS_CPU_IPI_RESCHED_IRQ);
++}
++
++static void ipi_call_dispatch(void)
++{
++	do_IRQ(MIPS_CPU_IPI_CALL_IRQ);
++}
++
++static irqreturn_t ipi_resched_interrupt(int irq, void *dev_id)
++{
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t ipi_call_interrupt(int irq, void *dev_id)
++{
++	smp_call_function_interrupt();
++
++	return IRQ_HANDLED;
++}
++
++static struct irqaction irq_resched = {
++	.handler	= ipi_resched_interrupt,
++	.flags		= IRQF_DISABLED|IRQF_PERCPU,
++	.name		= "IPI_resched"
++};
++
++static struct irqaction irq_call = {
++	.handler	= ipi_call_interrupt,
++	.flags		= IRQF_DISABLED|IRQF_PERCPU,
++	.name		= "IPI_call"
++};
++void __init arch_init_ipiirq(int irq, struct irqaction *action)
++{
++	setup_irq(irq, action);
++	set_irq_handler(irq, handle_percpu_irq);
++}
++void __init msp_vsmp_int_init(void)
++{
++	set_vi_handler (MIPS_CPU_IPI_RESCHED_IRQ, ipi_resched_dispatch);
++	set_vi_handler (MIPS_CPU_IPI_CALL_IRQ, ipi_call_dispatch);
++	arch_init_ipiirq(MIPS_CPU_IPI_RESCHED_IRQ, &irq_resched);
++	arch_init_ipiirq(MIPS_CPU_IPI_CALL_IRQ, &irq_call);
++}
++#endif /* CONFIG_MIPS_MT_SMP */
+-- 
+1.7.0.4

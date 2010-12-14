@@ -1,73 +1,454 @@
-Received: from bby1mta02.pmc-sierra.com ([216.241.235.117]:37498 "EHLO
-        bby1mta02.pmc-sierra.bc.ca" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491164Ab0LHNtX convert rfc822-to-8bit
+Received: from bby1mta03.pmc-sierra.com ([216.241.235.118]:57196 "EHLO
+        bby1mta03.pmc-sierra.bc.ca" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491056Ab0LNP0G convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 8 Dec 2010 14:49:23 +0100
-Received: from bby1mta02.pmc-sierra.bc.ca (localhost.pmc-sierra.bc.ca [127.0.0.1])
-        by localhost (Postfix) with SMTP id D3D578E00BC
-        for <linux-mips@linux-mips.org>; Wed,  8 Dec 2010 05:49:06 -0800 (PST)
-Received: from bby1exg02.pmc_nt.nt.pmc-sierra.bc.ca (bby1exg02 [216.241.231.167])
-        by bby1mta02.pmc-sierra.bc.ca (Postfix) with SMTP id C76298E00B9
-        for <linux-mips@linux-mips.org>; Wed,  8 Dec 2010 05:49:06 -0800 (PST)
+        Tue, 14 Dec 2010 16:26:06 +0100
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-        charset="iso-8859-1"
+        charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: SMTC support status in latest git head.
-Date: Wed, 8 Dec 2010 05:48:48 -0800
-Message-ID: <A7DEA48C84FD0B48AAAE33F328C02014033DADDA@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
+Subject: RE: SMTC support status in latest git head.
+Date: Tue, 14 Dec 2010 07:25:53 -0800
+Message-ID: <A7DEA48C84FD0B48AAAE33F328C020140595CEB0@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca>
+In-Reply-To: <4D012560.6020003@paralogos.com>
+References: <A7DEA48C84FD0B48AAAE33F328C02014033DADDA@BBY1EXM11.pmc_nt.nt.pmc-sierra.bc.ca> <4D012560.6020003@paralogos.com>
 From: "Anoop P.A." <Anoop_P.A@pmc-sierra.com>
 Return-Path: <Anoop_P.A@pmc-sierra.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20101208134848.k9Oh9s6hhhG43gqJtLEnNtPUvCQPHaX4SWVq8ob1EGQ@z>
+To: "Kevin D. Kissell" <kevink@paralogos.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20101214152553.1gvVI_XIlUNhSoCfkidco_7U8YrtyNvTbyjhHJOV4C4@z>
 
-Hi list,
+> it ended up being cleaner and more efficient to have *some* hooks in
+> platform specific timer code.  It was there for Malta in the
+kernel.org
+> mainline once upon a time, and I *thought* we'd propagated working
+code
+> for the initial PMC-Sierra 34K-based SoC's at least as far as
+[Anoop P.A.] 
+I was able to boot 2.6.24-7 git sources with a change in cevt-r4k.c (
+c0_compare_int_pending changed as following "return (read_c0_cause() >>
+cp0_compare_irq_shift) & (1ul << CAUSEB_IP)"
+ 
+> linux-mips.org, but the source tree has been considerably reorganized
+-
+> there was a time when some of the hooks were under
+> arch/mips/mips-boards/generic, which no longer exists - and I'm not
+sure
+> where to point you.  Git and grep are your friends.
+[Anoop P.A.]malta code has been moved to arch/mips/mti-malta/
+Can you recollect the version of l-m-o kernel with a known working SMTC
+support ?.
 
-Any body is aware of SMTC support status in latest git sources?. I have tried testing SMTC kernel for malta in qemu / OVP without any success ( emulators not working for 34k). 
+> 
+> The first order of business is to break into that hung timer
+calibration
+> loop and dump the CP0 registers for the VPE and the TCs, in particular
+> checking the interrupt enable mask in Status against the pending
+> interrupts in the Cause register.   If you're seeing the timer
+> interrupt's bit set in Cause, but clear in Status, you need to fix the
+> SMTC interrupt mask hook for your platform timer.  
+[Anoop P.A.] 
+I tried dumping registers from calibration while loop.
+It looks like the timer interrupt bit stay high on both cause and status
+register ( in my case timer interrupt is connected to Cascaded CIC
+interrupt which is connected to irq -6 ( C_IRQ4)). Detailed log pasted
+below
 
-I am trying to bring up SMTC Linux support for an mips34K based soc ( MSP71xx family).
+> check to see if you're building for "tickless" operation.  Tickless
+ends
+> up being really important for SMTC, and I did get it working properly
+> back in 2008, but I the SMTC-specific cevt-smtc.c code uses common
+> functions in cevt-r4k.c, and I've seen some patches to cevt-r4k.c
+going
+> by that I rather doubt were ever tested against an SMTC
+build/platform.
+> There might have been breakage there, and configuring to use a fixed
+> interval timer (say, 100Hz) would be a way to test that hypothesis.
 
-While booting , kernel getting hung on calibrate loop delay. I am getting only one interrupt from timer. With similar smtc platform support file (  changed to map smp_ops structure)  2.6.24-stable branch kernel ( where latest timer structure introduced) boots fine. 
+[Anoop P.A.] I have tried both tickles and fixed interval timer.
 
-[    0.000000] Linux version 2.6.37-rc1-pmc-00197-g5bfd3ba-dirty (paanoop1@paanoop1-desktop) (gcc version 4.5.1 (GCC) ) #168 SMP PREEMPT Wed Dec 8 19:19:490
-[    0.000000] DSPRAM0: PA=1c100000,Size=00008000,enabled
-[    0.000000] UART clock set to 50000000
-[    0.000000] CPU revision is: 00019548 (MIPS 34Kc)
-[    0.000000] Determined physical RAM map:
-[    0.000000]  memory: 00001000 @ 00000000 (reserved)
-[    0.000000]  memory: 000ff000 @ 00001000 (usable)
-[    0.000000]  memory: 003f2000 @ 00100000 (reserved)
-[    0.000000]  memory: 0fad9200 @ 004f2000 (usable)
-[    0.000000] Wasting 32 bytes for tracking 1 unused pages
-[    0.000000] Zone PFN ranges:
-[    0.000000]   Normal   0x00000000 -> 0x0000ffcb
-[    0.000000] Movable zone start PFN for each node
-[    0.000000] early_node_map[1] active PFN ranges
-[    0.000000]     0: 0x00000000 -> 0x0000ffcb
-[    0.000000] 6 available secondary CPU TC(s)
-[    0.000000] PERCPU: Embedded 7 pages/cpu @81203000 s6464 r8192 d14016 u32768
-[    0.000000] pcpu-alloc: s6464 r8192 d14016 u32768 alloc=8*4096
-[    0.000000] pcpu-alloc: [0] 0 [0] 1 [0] 2 [0] 3 [0] 4 [0] 5 [0] 6
-[    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 64971
-[    0.000000] Kernel command line: console=ttyS0,57600
-[    0.000000] PID hash table entries: 1024 (order: 0, 4096 bytes)
-[    0.000000] Dentry cache hash table entries: 32768 (order: 5, 131072 bytes)
-[    0.000000] Inode-cache hash table entries: 16384 (order: 4, 65536 bytes)
-[    0.000000] Primary instruction cache 64kB, VIPT, 4-way, linesize 32 bytes.
-[    0.000000] Primary data cache 64kB, 4-way, PIPT, no aliases, linesize 32 bytes
+> 
+>              Regards,
+> 
+>              Kevin K.
+
+
+[Anoop P.A.] Thanks much for your and Ralf's detailed response. 
+> 
+[Anoop P.A.] 
 [    0.000000] Writing ErrCtl register=00000000
 [    0.000000] Readback ErrCtl register=00000000
-[    0.000000] Memory: 254360k/257888k available (3081k kernel code, 3528k reserved, 653k data, 200k init, 0k highmem)
+[    0.000000] Memory: 254384k/257912k available (3062k kernel code,
+3528k reserved, 648k data, 200k init, 0k highmem)
 [    0.000000] Preemptable hierarchical RCU implementation.
 [    0.000000] NR_IRQS:128
 [    0.000000] console [ttyS0] enabled
 [    0.000000] Clock rate set to 600000000
-[    0.000000] Calibrating delay loop...
-
-Any idea to debug the issue ?.
-
-Thanks,
-Anoop
+[    0.000000] Calibrating delay loop... === MIPS MT State Dump ===
+[    0.000000] -- Global State --
+[    0.000000]    MVPControl Passed: 00000000
+[    0.000000]    MVPControl Read: 00000000
+[    0.000000]    MVPConf0 : a8008406
+[    0.000000] -- per-VPE State --
+[    0.000000]   VPE 0
+[    0.000000]    VPEControl : 00000000
+[    0.000000]    VPEConf0 : 800f0003
+[    0.000000]    VPE0.Status : 11004001
+[    0.000000]    VPE0.EPC : 80100000 _stext+0x0/0x10
+[    0.000000]    VPE0.Cause : 40804000
+[    0.000000]    VPE0.Config7 : 00010000
+[    0.000000]   VPE 1
+[    0.000000]    VPEControl : 00060000
+[    0.000000]    VPEConf0 : 800f0000
+[    0.000000]    VPE1.Status : 00408305
+[    0.000000]    VPE1.EPC : 801024e0 except_vec_vi+0x0/0x84
+[    0.000000]    VPE1.Cause : 40000200
+[    0.000000]    VPE1.Config7 : 00010000
+[    0.000000] -- per-TC State --
+[    0.000000]   TC 0 (current TC with VPE EPC above)
+[    0.000000]    TCStatus : 00000000
+[    0.000000]    TCBind : 00000000
+[    0.000000]    TCRestart : 8010d860 mips_mt_regdump+0x2f0/0x3c4
+[    0.000000]    TCHalt : 00000000
+[    0.000000]    TCContext : 00000000
+[    0.000000]   TC 1
+[    0.000000]    TCStatus : 00000000
+[    0.000000]    TCBind : 00200001
+[    0.000000]    TCRestart : 80104b64 copy_thread+0x2ac/0x2b4
+[    0.000000]    TCHalt : 00000001
+[    0.000000]    TCContext : 00180000
+[    0.000000]   TC 2
+[    0.000000]    TCStatus : 00000000
+[    0.000000]    TCBind : 00400001
+[    0.000000]    TCRestart : 7ffffffc 0x7ffffffc
+[    0.000000]    TCHalt : 00000001
+[    0.000000]    TCContext : 00300000
+[    0.000000]   TC 3
+[    0.000000]    TCStatus : 00000000
+[    0.000000]    TCBind : 00600001
+[    0.000000]    TCRestart : fff7ffae 0xfff7ffae
+[    0.000000]    TCHalt : 00000001
+[    0.000000]    TCContext : 00480000
+[    0.000000]   TC 4
+[    0.000000]    TCStatus : 00000000
+[    0.000000]    TCBind : 00800001
+[    0.000000]    TCRestart : f3fff7fe 0xf3fff7fe
+[    0.000000]    TCHalt : 00000001
+[    0.000000]    TCContext : 00600000
+[    0.000000]   TC 5
+[    0.000000]    TCStatus : 00000000
+[    0.000000]    TCBind : 00a00001
+[    0.000000]    TCRestart : 7ffffbfe 0x7ffffbfe
+[    0.000000]    TCHalt : 00000001
+[    0.000000]    TCContext : 00780000
+[    0.000000]   TC 6
+[    0.000000]    TCStatus : 00000000
+[    0.000000]    TCBind : 00c00001
+[    0.000000]    TCRestart : ffff7ffe 0xffff7ffe
+[    0.000000]    TCHalt : 00000001
+[    0.000000]    TCContext : 00900000
+[    0.000000] Counter Interrupts taken per CPU (TC)
+[    0.000000] 0: 0
+[    0.000000] 1: 0
+[    0.000000] 2: 0
+[    0.000000] 3: 0
+[    0.000000] 4: 0
+[    0.000000] 5: 0
+[    0.000000] 6: 0
+[    0.000000] 7: 0
+[    0.000000] Self-IPI invocations:
+[    0.000000] 0: 0
+[    0.000000] 1: 0
+[    0.000000] 2: 0
+[    0.000000] 3: 0
+[    0.000000] 4: 0
+[    0.000000] 5: 0
+[    0.000000] 6: 0
+[    0.000000] 7: 0
+[    0.000000] IPIQ[0]: head = 0x0, tail = 0x0, depth = 0
+[    0.000000] IPIQ[1]: head = 0x0, tail = 0x0, depth = 0
+[    0.000000] IPIQ[2]: head = 0x0, tail = 0x0, depth = 0
+[    0.000000] IPIQ[3]: head = 0x0, tail = 0x0, depth = 0
+[    0.000000] IPIQ[4]: head = 0x0, tail = 0x0, depth = 0
+[    0.000000] IPIQ[5]: head = 0x0, tail = 0x0, depth = 0
+[    0.000000] IPIQ[6]: head = 0x0, tail = 0x0, depth = 0
+[    0.000000] IPIQ[7]: head = 0x0, tail = 0x0, depth = 0
+[    0.000000] 0 Recoveries of "stolen" FPU
+[    0.000000] ===========================
+[    0.000000] In platform cic dispatch cic_mask=0x22000 stat=0x2402000f
+pend=0x20000
+[    0.010000] === MIPS MT State Dump ===
+[    0.010000] -- Global State --
+[    0.010000]    MVPControl Passed: 00000000
+[    0.010000]    MVPControl Read: 00000000
+[    0.010000]    MVPConf0 : a8008406
+[    0.010000] -- per-VPE State --
+[    0.010000]   VPE 0
+[    0.010000]    VPEControl : 00000000
+[    0.010000]    VPEConf0 : 800f0003
+[    0.010000]    VPE0.Status : 18004000
+[    0.010000]    VPE0.EPC : 8010d900 mips_mt_regdump+0x390/0x3c4
+[    0.010000]    VPE0.Cause : 40804000
+[    0.010000]    VPE0.Config7 : 00010000
+[    0.010000]   VPE 1
+[    0.010000]    VPEControl : 00060000
+[    0.010000]    VPEConf0 : 800f0000
+[    0.010000]    VPE1.Status : 00408305
+[    0.010000]    VPE1.EPC : 801024e0 except_vec_vi+0x0/0x84
+[    0.010000]    VPE1.Cause : 40000200
+[    0.010000]    VPE1.Config7 : 00010000
+[    0.010000] -- per-TC State --
+[    0.010000]   TC 0 (current TC with VPE EPC above)
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00000000
+[    0.010000]    TCRestart : 803f791c printk+0xc/0x30
+[    0.010000]    TCHalt : 00000000
+[    0.010000]    TCContext : 00000000
+[    0.010000]   TC 1
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00200001
+[    0.010000]    TCRestart : 80104b64 copy_thread+0x2ac/0x2b4
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00180000
+[    0.010000]   TC 2
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00400001
+[    0.010000]    TCRestart : 7ffffffc 0x7ffffffc
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00300000
+[    0.010000]   TC 3
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00600001
+[    0.010000]    TCRestart : fff7ffae 0xfff7ffae
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00480000
+[    0.010000]   TC 4
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00800001
+[    0.010000]    TCRestart : f3fff7fe 0xf3fff7fe
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00600000
+[    0.010000]   TC 5
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00a00001
+[    0.010000]    TCRestart : 7ffffbfe 0x7ffffbfe
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00780000
+[    0.010000]   TC 6
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00c00001
+[    0.010000]    TCRestart : ffff7ffe 0xffff7ffe
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00900000
+[    0.010000] Counter Interrupts taken per CPU (TC)
+[    0.010000] 0: 0
+[    0.010000] 1: 0
+[    0.010000] 2: 0
+[    0.010000] 3: 0
+[    0.010000] 4: 0
+[    0.010000] 5: 0
+[    0.010000] 6: 0
+[    0.010000] 7: 0
+[    0.010000] Self-IPI invocations:
+[    0.010000] 0: 0
+[    0.010000] 1: 0
+[    0.010000] 2: 0
+[    0.010000] 3: 0
+[    0.010000] 4: 0
+[    0.010000] 5: 0
+[    0.010000] 6: 0
+[    0.010000] 7: 0
+[    0.010000] IPIQ[0]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[1]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[2]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[3]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[4]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[5]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[6]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[7]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] 0 Recoveries of "stolen" FPU
+[    0.010000] ===========================
+[    0.010000] === MIPS MT State Dump ===
+[    0.010000] -- Global State --
+[    0.010000]    MVPControl Passed: 00000000
+[    0.010000]    MVPControl Read: 00000000
+[    0.010000]    MVPConf0 : a8008406
+[    0.010000] -- per-VPE State --
+[    0.010000]   VPE 0
+[    0.010000]    VPEControl : 00000000
+[    0.010000]    VPEConf0 : 800f0003
+[    0.010000]    VPE0.Status : 18004000
+[    0.010000]    VPE0.EPC : 8010d900 mips_mt_regdump+0x390/0x3c4
+[    0.010000]    VPE0.Cause : 40804000
+[    0.010000]    VPE0.Config7 : 00010000
+[    0.010000]   VPE 1
+[    0.010000]    VPEControl : 00060000
+[    0.010000]    VPEConf0 : 800f0000
+[    0.010000]    VPE1.Status : 00408305
+[    0.010000]    VPE1.EPC : 801024e0 except_vec_vi+0x0/0x84
+[    0.010000]    VPE1.Cause : 40000200
+[    0.010000]    VPE1.Config7 : 00010000
+[    0.010000] -- per-TC State --
+[    0.010000]   TC 0 (current TC with VPE EPC above)
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00000000
+[    0.010000]    TCRestart : 803f791c printk+0xc/0x30
+[    0.010000]    TCHalt : 00000000
+[    0.010000]    TCContext : 00000000
+[    0.010000]   TC 1
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00200001
+[    0.010000]    TCRestart : 80104b64 copy_thread+0x2ac/0x2b4
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00180000
+[    0.010000]   TC 2
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00400001
+[    0.010000]    TCRestart : 7ffffffc 0x7ffffffc
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00300000
+[    0.010000]   TC 3
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00600001
+[    0.010000]    TCRestart : fff7ffae 0xfff7ffae
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00480000
+[    0.010000]   TC 4
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00800001
+[    0.010000]    TCRestart : f3fff7fe 0xf3fff7fe
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00600000
+[    0.010000]   TC 5
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00a00001
+[    0.010000]    TCRestart : 7ffffbfe 0x7ffffbfe
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00780000
+[    0.010000]   TC 6
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00c00001
+[    0.010000]    TCRestart : ffff7ffe 0xffff7ffe
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00900000
+[    0.010000] Counter Interrupts taken per CPU (TC)
+[    0.010000] 0: 0
+[    0.010000] 1: 0
+[    0.010000] 2: 0
+[    0.010000] 3: 0
+[    0.010000] 4: 0
+[    0.010000] 5: 0
+[    0.010000] 6: 0
+[    0.010000] 7: 0
+[    0.010000] Self-IPI invocations:
+[    0.010000] 0: 0
+[    0.010000] 1: 0
+[    0.010000] 2: 0
+[    0.010000] 3: 0
+[    0.010000] 4: 0
+[    0.010000] 5: 0
+[    0.010000] 6: 0
+[    0.010000] 7: 0
+[    0.010000] IPIQ[0]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[1]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[2]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[3]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[4]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[5]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[6]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[7]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] 0 Recoveries of "stolen" FPU
+[    0.010000] ===========================
+[    0.010000] === MIPS MT State Dump ===
+[    0.010000] -- Global State --
+[    0.010000]    MVPControl Passed: 00000000
+[    0.010000]    MVPControl Read: 00000000
+[    0.010000]    MVPConf0 : a8008406
+[    0.010000] -- per-VPE State --
+[    0.010000]   VPE 0
+[    0.010000]    VPEControl : 00000000
+[    0.010000]    VPEConf0 : 800f0003
+[    0.010000]    VPE0.Status : 18004000
+[    0.010000]    VPE0.EPC : 8010d900 mips_mt_regdump+0x390/0x3c4
+[    0.010000]    VPE0.Cause : 40804000
+[    0.010000]    VPE0.Config7 : 00010000
+[    0.010000]   VPE 1
+[    0.010000]    VPEControl : 00060000
+[    0.010000]    VPEConf0 : 800f0000
+[    0.010000]    VPE1.Status : 00408305
+[    0.010000]    VPE1.EPC : 801024e0 except_vec_vi+0x0/0x84
+[    0.010000]    VPE1.Cause : 40000200
+[    0.010000]    VPE1.Config7 : 00010000
+[    0.010000] -- per-TC State --
+[    0.010000]   TC 0 (current TC with VPE EPC above)
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00000000
+[    0.010000]    TCRestart : 803f791c printk+0xc/0x30
+[    0.010000]    TCHalt : 00000000
+[    0.010000]    TCContext : 00000000
+[    0.010000]   TC 1
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00200001
+[    0.010000]    TCRestart : 80104b64 copy_thread+0x2ac/0x2b4
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00180000
+[    0.010000]   TC 2
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00400001
+[    0.010000]    TCRestart : 7ffffffc 0x7ffffffc
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00300000
+[    0.010000]   TC 3
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00600001
+[    0.010000]    TCRestart : fff7ffae 0xfff7ffae
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00480000
+[    0.010000]   TC 4
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00800001
+[    0.010000]    TCRestart : f3fff7fe 0xf3fff7fe
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00600000
+[    0.010000]   TC 5
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00a00001
+[    0.010000]    TCRestart : 7ffffbfe 0x7ffffbfe
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00780000
+[    0.010000]   TC 6
+[    0.010000]    TCStatus : 00000000
+[    0.010000]    TCBind : 00c00001
+[    0.010000]    TCRestart : ffff7ffe 0xffff7ffe
+[    0.010000]    TCHalt : 00000001
+[    0.010000]    TCContext : 00900000
+[    0.010000] Counter Interrupts taken per CPU (TC)
+[    0.010000] 0: 0
+[    0.010000] 1: 0
+[    0.010000] 2: 0
+[    0.010000] 3: 0
+[    0.010000] 4: 0
+[    0.010000] 5: 0
+[    0.010000] 6: 0
+[    0.010000] 7: 0
+[    0.010000] Self-IPI invocations:
+[    0.010000] 0: 0
+[    0.010000] 1: 0
+[    0.010000] 2: 0
+[    0.010000] 3: 0
+[    0.010000] 4: 0
+[    0.010000] 5: 0
+[    0.010000] 6: 0
+[    0.010000] 7: 0
+[    0.010000] IPIQ[0]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[1]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[2]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[3]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[4]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[5]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[6]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] IPIQ[7]: head = 0x0, tail = 0x0, depth = 0
+[    0.010000] 0 Recoveries of "stolen" FPU

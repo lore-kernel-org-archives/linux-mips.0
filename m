@@ -1,36 +1,75 @@
-Received: from p02c12o141.mxlogic.net ([208.65.145.74]:34833 "EHLO
-        p02c12o141.mxlogic.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491814Ab0LNV2Z convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 14 Dec 2010 22:28:25 +0100
+Received: from p02c12o148.mxlogic.net ([208.65.145.81]:47584 "EHLO
+        p02c12o148.mxlogic.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491984Ab0LPPjg (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 16 Dec 2010 16:39:36 +0100
 Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: Re: SMTC support status in latest git head
-Date: Tue, 14 Dec 2010 15:27:51 -0600
-Message-ID: <8F242B230AD6474C8E7815DE0B4982D7179FB87A@EXV1.corp.adtran.com>
+Content-Type: multipart/alternative;
+        boundary="----_=_NextPart_001_01CB9D37.329CD4D4"
+Subject: Re: SMTC support status in latest git head.
+Date: Thu, 16 Dec 2010 09:37:50 -0600
+Message-ID: <8F242B230AD6474C8E7815DE0B4982D7179FB880@EXV1.corp.adtran.com>
 From: STUART VENTERS <stuart.venters@adtran.com>
 Return-Path: <stuart.venters@adtran.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: kevink@paralogos.com
-Cc: linux-mips@linux-mips.org
-Message-ID: <20101214212751.MMMEM6RSvircJgGG2FVte20oqmnmWVEsOWgihUjm52Q@z>
+To: kevink@paralogos.com, anoop.pa@gmail.com
+Cc: linux-mips@linux-mips.org, Anoop_P.A@pmc-sierra.com
+Message-ID: <20101216153750.mds6Gc1FPaVFHG5spYbZTXJjpLtQ21oZen3oF4L2FFU@z>
 
-Kevin,
+------_=_NextPart_001_01CB9D37.329CD4D4
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-It turns out we are also looking at Linux SMTC support for 34kc.
-   (For a different pmc part.)
+Two other possible clues:
 
-You said you remembered seeing it work on at least one version of the kernel.
+The EVP is clear in the MVPControl register.
+   Does this say that only VPE0, T0 gets to run?
 
-Could you help us find that version by bracketing the search a bit?
+Also the EXCPT bits in VPEControl for VPE1 indicate a Gating Storage =
+Exception dispatch.
+   But that seems to conflict the EVP bit above.
 
-Maybe a date and/or version range to look in.
+Perhaps these are an artifact of getting to a good state to dump things =
+out.
 
+------_=_NextPart_001_01CB9D37.329CD4D4
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.7651.59">
+<TITLE>Re: SMTC support status in latest git head.</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
 
-Stuart Venters
-Adtran
+<P><FONT SIZE=3D2 FACE=3D"Arial">Two other possible clues:</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">The EVP is clear in the MVPControl =
+register.</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp; Does this say that only =
+VPE0, T0 gets to run?</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Also the EXCPT bits in VPEControl for =
+VPE1 indicate a Gating Storage Exception dispatch.</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp; But that seems to =
+conflict the EVP bit above.</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Perhaps these are an artifact of =
+getting to a good state to dump things out.</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01CB9D37.329CD4D4--

@@ -1,75 +1,144 @@
-Received: from p02c12o148.mxlogic.net ([208.65.145.81]:47584 "EHLO
-        p02c12o148.mxlogic.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491984Ab0LPPjg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 16 Dec 2010 16:39:36 +0100
-Content-Class: urn:content-classes:message
+Received: from netrider.rowland.org ([192.131.102.5]:50186 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S1492663Ab0LUQAF (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 21 Dec 2010 17:00:05 +0100
+Date: Tue, 21 Dec 2010 11:00:02 -0500 (EST)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH] EHCI support for on-chip PMC MSP USB controller.
+In-Reply-To: <1292929580-5829-1-git-send-email-anoop.pa@gmail.com>
+Message-ID: <Pine.LNX.4.44L0.1012211050470.31667-100000@netrider.rowland.org>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="----_=_NextPart_001_01CB9D37.329CD4D4"
-Subject: Re: SMTC support status in latest git head.
-Date: Thu, 16 Dec 2010 09:37:50 -0600
-Message-ID: <8F242B230AD6474C8E7815DE0B4982D7179FB880@EXV1.corp.adtran.com>
-From: STUART VENTERS <stuart.venters@adtran.com>
-Return-Path: <stuart.venters@adtran.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <stern+4d08bae8@rowland.harvard.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: kevink@paralogos.com, anoop.pa@gmail.com
-Cc: linux-mips@linux-mips.org, Anoop_P.A@pmc-sierra.com
-Message-ID: <20101216153750.mds6Gc1FPaVFHG5spYbZTXJjpLtQ21oZen3oF4L2FFU@z>
+To: Anoop P <anoop.pa@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, gregkh@suse.de, dbrownell@users.sourceforge.net, sarah.a.sharp@linux.intel.com, andiry.xu@amd.com, agust@denx.de, ddaney@caviumnetworks.com, gadiyar@ti.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Message-ID: <20101221160002.5f7PDhvvB2vRUvDfwFXLwe9Xf6WBtZUpjo_RYqKjTP4@z>
 
-------_=_NextPart_001_01CB9D37.329CD4D4
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Tue, 21 Dec 2010, Anoop P wrote:
 
-Two other possible clues:
+> From: Anoop P A <anoop.pa@gmail.com>
+> 
+> This patch includes.
+> 
+> 1. USB host driver for MSP71xx family SoC on-chip USB controller.
+> 2. Platform support for USB controller.
 
-The EVP is clear in the MVPControl register.
-   Does this say that only VPE0, T0 gets to run?
+It also contains changes to the core USB hub driver code.  You should 
+mention things like that in the patch description.
 
-Also the EXCPT bits in VPEControl for VPE1 indicate a Gating Storage =
-Exception dispatch.
-   But that seems to conflict the EVP bit above.
+...
 
-Perhaps these are an artifact of getting to a good state to dump things =
-out.
+> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> index 27115b4..f2a45ba 100644
+> --- a/drivers/usb/core/hub.c
+> +++ b/drivers/usb/core/hub.c
+> @@ -3377,12 +3377,43 @@ static void hub_events(void)
+>  			}
+>  			
+>  			if (portchange & USB_PORT_STAT_C_OVERCURRENT) {
+> +#ifdef CONFIG_USB_EHCI_HCD_PMC_MSP
+> +#define OVER_CURR_DELAY 100
 
-------_=_NextPart_001_01CB9D37.329CD4D4
-Content-Type: text/html; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+What happens if CONFIG_USB_EHCI_HCD_PMC_MSP is defined, but an 
+overcurrent status is detected on an external hub instead of the root 
+hub?
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7651.59">
-<TITLE>Re: SMTC support status in latest git head.</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/rtf format -->
+> +				/* clear OCC bit */
+> +				clear_port_feature(hdev, i,
+> +					USB_PORT_FEAT_C_OVER_CURRENT);
+> +
+> +				/* This step is required to toggle the PP bit
+> +				 * to 0 and 1 (by hub_power_on) in order the
+> +				 * CSC bit to be transitioned
+> +				 * properly for device hotplug
+> +				 */
+> +				/* clear PP bit */
+> +				clear_port_feature(hdev, i,
+> +				USB_PORT_FEAT_POWER);
+> +
+> +				/* resume power */
+> +				hub_power_on(hub, true);
+> +
+> +				/* delay 100 usec */
+> +				udelay(OVER_CURR_DELAY);
+> +
+> +				/* read OCA bit */
+> +				if (portstatus &
+> +					(1<<USB_PORT_FEAT_OVER_CURRENT)) {
+> +					/* declare overcurrent */
+> +					dev_err(hub_dev,
+> +						"over-current change on port %d\n",
+> +						i);
+> +				}
+> +#else
+>  				dev_err (hub_dev,
+>  					"over-current change on port %d\n",
+>  					i);
+>  				clear_port_feature(hdev, i,
+>  					USB_PORT_FEAT_C_OVER_CURRENT);
+>  				hub_power_on(hub, true);
+> +#endif
+>  			}
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Two other possible clues:</FONT>
-</P>
+"#ifdef" inside code like this is strongly discouraged.  This should be 
+written using a separate subroutine.
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">The EVP is clear in the MVPControl =
-register.</FONT>
+...
 
-<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp; Does this say that only =
-VPE0, T0 gets to run?</FONT>
-</P>
+> diff --git a/drivers/usb/host/ehci-pmcmsp.c b/drivers/usb/host/ehci-pmcmsp.c
+> new file mode 100644
+> index 0000000..b1b4f21
+> --- /dev/null
+> +++ b/drivers/usb/host/ehci-pmcmsp.c
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Also the EXCPT bits in VPEControl for =
-VPE1 indicate a Gating Storage Exception dispatch.</FONT>
+> +static const struct hc_driver ehci_msp_hc_driver = {
+> +	.description =		hcd_name,
+> +	.product_desc =		"PMC MSP EHCI",
+> +	.hcd_priv_size =	sizeof(struct ehci_hcd),
+> +
+> +	/*
+> +	 * generic hardware linkage
+> +	 */
+> +#ifdef CONFIG_MSP_HAS_DUAL_USB
+> +	.irq =			ehci_msp_irq,
+> +#else
+> +	.irq =			ehci_irq,
+> +#endif
+> +	.flags =		HCD_MEMORY | HCD_USB2,
+> +
+> +	/*
+> +	 * basic lifecycle operations
+> +	 */
+> +	.reset =		ehci_msp_setup,
+> +	.start =		ehci_run,
+> +#ifdef	CONFIG_PM
+> +	.suspend =		ehci_msp_suspend,
+> +	.resume =		ehci_msp_resume,
+> +#endif /*CONFIG_PM*/
+> +	.stop =			ehci_stop,
+> +
+> +	/*
+> +	 * managing i/o requests and associated device resources
+> +	 */
+> +	.urb_enqueue =		ehci_urb_enqueue,
+> +	.urb_dequeue =		ehci_urb_dequeue,
+> +	.endpoint_disable =	ehci_endpoint_disable,
+> +
+> +	/*
+> +	 * scheduling support
+> +	 */
+> +	.get_frame_number =	ehci_get_frame,
+> +
+> +	/*
+> +	 * root hub support
+> +	 */
+> +	.hub_status_data =	ehci_hub_status_data,
+> +	.hub_control =		ehci_hub_control,
+> +};
 
-<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp; But that seems to =
-conflict the EVP bit above.</FONT>
-</P>
+This appears to have been copied from a really old version of 
+ehci-pci.c.  You should start with the most up-to-date code.
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Perhaps these are an artifact of =
-getting to a good state to dump things out.</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01CB9D37.329CD4D4--
+Alan Stern

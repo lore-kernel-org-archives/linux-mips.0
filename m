@@ -1,112 +1,43 @@
-Received: from p02c11o145.mxlogic.net ([208.65.144.78]:60789 "EHLO
-        p02c11o145.mxlogic.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491000Ab0L0PtJ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Dec 2010 16:49:09 +0100
-Content-Class: urn:content-classes:message
+Received: from netrider.rowland.org ([192.131.102.5]:42702 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S1491926Ab1ABOtL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 2 Jan 2011 15:49:11 +0100
+Date: Sun, 2 Jan 2011 09:49:01 -0500 (EST)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: is there dummy r/w in mips kernel API
+In-Reply-To: <AANLkTinBYUHdsaz40216BRadvU3mx2H5F4Hfp1J0NibB@mail.gmail.com>
+Message-ID: <Pine.LNX.4.44L0.1101020948030.22996-100000@netrider.rowland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: RE: SMTC support status in latest git head.
-Date: Mon, 27 Dec 2010 09:49:04 -0600
-Message-ID: <8F242B230AD6474C8E7815DE0B4982D7179FB88F@EXV1.corp.adtran.com>
-In-Reply-To: <4D152DFA.5090504@paralogos.com>
-From: STUART VENTERS <stuart.venters@adtran.com>
-Return-Path: <stuart.venters@adtran.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <stern+4d39b18a@rowland.harvard.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: "Kevin D. Kissell" <kevink@paralogos.com>, Anoop P A <anoop.pa@gmail.com>
-Cc: "Anoop P.A." <Anoop_P.A@pmc-sierra.com>, linux-mips@linux-mips.org
-Message-ID: <20101227154904._alUUVOxiKcx2JQTceT23kvoqcCr0OwYOr15DzJdShM@z>
+To: loody <miloody@gmail.com>
+Cc: Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-usb@vger.kernel.org
+Message-ID: <20110102144901.08AHIfsmrGaGuyNVHZkO46nW0s-wLnyaotr_9WQ07zM@z>
 
-S2V2aW4sDQoNCk91dHN0YW5kaW5nLCBzb21ldGltZXMgaXQncyBiZXR0ZXIgdG8gYmUgbHVja3kg
-dGhhbiBnb29kLg0KDQoNCkFub29wLA0KDQpNYXliZSB3ZSBjYW4gZ2V0IGx1Y2t5IGFnYWluLg0K
-DQpJZiB5b3UgY2FuIGlzb2xhdGUgdGhlIC4zMyB3b3Jrcy8uMzcgd29ya3Nfbm90IGJ1ZyB0byBh
-IHNwZWNpZmljIHBhaXIgb2YgdmVyc2lvbnMsIA0KICAgSSdsbCBiZSBoYXBweSB0byBkbyBhbm90
-aGVyIGRpZmYuDQoNCg0KSG9wZSB5b3UnbGwgaGF2ZSBoYWQgYSBnb29kIENocmlzdG1hcyBhcyB3
-ZWxsLg0KICBXZSd2ZSBoYWQgc25vdyBpbiBBbGFiYW1hIHNpbmNlIENocmlzdG1hcyBldmUhDQoN
-Cg0KUmVnYXJkcywNCg0KU3R1YXJ0DQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZy
-b206IEtldmluIEQuIEtpc3NlbGwgW21haWx0bzprZXZpbmtAcGFyYWxvZ29zLmNvbV0NClNlbnQ6
-IEZyaWRheSwgRGVjZW1iZXIgMjQsIDIwMTAgNTozNCBQTQ0KVG86IEFub29wIFAgQQ0KQ2M6IFNU
-VUFSVCBWRU5URVJTOyBBbm9vcCBQLkEuOyBsaW51eC1taXBzQGxpbnV4LW1pcHMub3JnDQpTdWJq
-ZWN0OiBSZTogU01UQyBzdXBwb3J0IHN0YXR1cyBpbiBsYXRlc3QgZ2l0IGhlYWQuDQoNCg0KQWgs
-IHdlbGwsIGF0IGxlYXN0IHdlIGhhdmUgYSBzdGFja2ZyYW1lLmggZml4IHRoYXQgcHJlc2VydmVz
-IERhdmlkJ3MgDQpwZXJmb3JtYW5jZSB0d2VhayBmb3IgdGhlIGRlZXBlciBwaXBlbGluZWQgcHJv
-Y2Vzc29ycy4gIEluIGxvb2tpbmcgZm9yIA0KdGhpcywgSSBkaWQgbm90aWNlIHRoYXQgc29tZW9u
-ZSBkaWQgc29tZSBtb2RpZmljYXRpb24gdG8gdGhlIFNNVEMgY2xvY2sgDQp0aWNrIGxvZ2ljIHRo
-YXQgSSB3YXMgc2tlcHRpY2FsIGhhZCBldmVyIGJlZW4gdGVzdGVkLiAgSWYgeW91J3ZlIHN0aWxs
-IA0KZ290IHRoYXQga2VybmVsIGJpbmFyeSBoYW5keSwgeW91IG1pZ2h0IGNoZWNrIHRvIHNlZSBp
-ZiBpdCBib290cyB3aXRoIA0KbWF4dGNzPTEgbWF4dnBlcz0xLCBtYXh0Y3M9MiBtYXh2cGVzPTEs
-IGFuZC9vciBtYXh0Y3M9MiBtYXh2cGVzPTIuDQoNCk9oLCB5ZXMsIGFuZCBNZXJyeSBDaHJpc3Rt
-YXMgb25lIGFuZCBhbGwhDQoNCiAgICAgICAgICAgICBSZWdhcmRzLA0KDQogICAgICAgICAgICAg
-S2V2aW4gSy4NCg0KT24gMTIvMjQvMTAgODowMiBBTSwgQW5vb3AgUCBBIHdyb3RlOg0KPiBPbiBG
-cmksIDIwMTAtMTItMjQgYXQgMDY6NTMgLTA4MDAsIEtldmluIEQuIEtpc3NlbGwgd3JvdGU6DQo+
-PiBFeGNlbGxlbnQhICBOb3csIGRvZXMgdGhlIGF0dGFjaGVkIHBhdGNoIChyZWxhdGl2ZSB0byAy
-LjYuMzcuMTEpIGFsc28NCj4+IGZpeCB0aGluZ3MsIHdoaWxlIHByZXNlcnZpbmcgdGhlIG90aGVy
-IGZpeGVzIGFuZCBwZXJmb3JtYW5jZSBlbmhhbmNlbWVudHM/DQo+Pg0KPiBJIGhhdmUgdGVzdGVk
-IHRoYXQgcGF0Y2ggd2l0aCAyLjYuMzcgYnJhbmNoIGl0IHdlbGwgcGFzc2VzIGNhbGlicmF0aW9u
-DQo+IGxvb3AgYnV0IGhhbmdzIGFmdGVyIHN3aXRjaGluZyB0byBtaXBzIGNsb3NvdXJjZQ0KPg0K
-PiBUQyA2IGdvaW5nIG9uLWxpbmUgYXMgQ1BVIDYNCj4gQnJvdWdodCB1cCA3IENQVXMNCj4gYmlv
-OiBjcmVhdGUgc2xhYjxiaW8tMD4gIGF0IDANCj4gU0NTSSBzdWJzeXN0ZW0gaW5pdGlhbGl6ZWQN
-Cj4gU3dpdGNoaW5nIHRvIGNsb2Nrc291cmNlIE1JUFMNCj4NCj4gSSBQcmVzdW1lIHRoaXMgaXMg
-YSBkaWZmZXJlbnQgaXNzdWUgYXMgcmVzdG9yaW5nIG9sZGVyIGZpbGUgZGlkbid0IGhlbHANCj4g
-bXVjaCB0byBnZXQgcmlkIG9mIHRoaXMgaGFuZy4NCj4NCj4gZGlmZiAtLWdpdCBhL2FyY2gvbWlw
-cy9pbmNsdWRlL2FzbS9zdGFja2ZyYW1lLmgNCj4gYi9hcmNoL21pcHMvaW5jbHVkZS9hc20vc3Rh
-Y2tmcmFtZS5oDQo+IGluZGV4IDU4NzMwYzUuLjdmYzlmMTAgMTAwNjQ0DQo+IC0tLSBhL2FyY2gv
-bWlwcy9pbmNsdWRlL2FzbS9zdGFja2ZyYW1lLmgNCj4gKysrIGIvYXJjaC9taXBzL2luY2x1ZGUv
-YXNtL3N0YWNrZnJhbWUuaA0KPiBAQCAtMTk1LDkgKzE5NSw5IEBADQo+ICAgCQkgKiB0byBjb3Zl
-ciB0aGUgcGlwZWxpbmUgZGVsYXkuDQo+ICAgCQkgKi8NCj4gICAJCS5zZXQJbWlwczMyDQo+IC0J
-CW1mYzAJdjEsIENQMF9UQ1NUQVRVUw0KPiArCQltZmMwCXYwLCBDUDBfVENTVEFUVVMNCj4gICAJ
-CS5zZXQJbWlwczANCj4gLQkJTE9OR19TCXYxLCBQVF9UQ1NUQVRVUyhzcCkNCj4gKwkJTE9OR19T
-CXYwLCBQVF9UQ1NUQVRVUyhzcCkNCj4gICAjZW5kaWYgLyogQ09ORklHX01JUFNfTVRfU01UQyAq
-Lw0KPiAgIAkJTE9OR19TCSQ0LCBQVF9SNChzcCkNCj4gICAJCUxPTkdfUwkkNSwgUFRfUjUoc3Ap
-DQo+DQo+DQo+PiAvSy4NCj4+DQo+PiBPbiAxMi8yNC8xMCA2OjM5IEFNLCBBbm9vcCBQIEEgd3Jv
-dGU6DQo+Pj4gSGkgS2V2aW4sIFN0dWFydCAsDQo+Pj4NCj4+PiBXb29ob29vIFlvdSBndXlzIHNw
-b3R0ZWQgIS4NCj4+Pg0KPj4+ICAgIGh0dHA6Ly9naXQubGludXgtbWlwcy5vcmcvP3A9bGludXgu
-Z2l0O2E9Y29tbWl0O2g9ZDVlYzZlM2Mgc2VlbXMgdG8gYmUNCj4+PiB0aGUgY3VscHJpdA0KPj4+
-DQo+Pj4gT25jZSBJIHJlc3RvcmVkIHByZXZpb3VzIHZlcnNpb24gb2Ygc3RhY2tmcmFtZS5oIDIu
-Ni4zMy1zdGFibGUgc3RhcnRlZA0KPj4+IGJvb3RpbmcgIS4NCj4+Pg0KPj4+IFRoYW5rcywNCj4+
-PiBBbm9vcA0KPj4+DQo+Pj4gT24gRnJpLCAyMDEwLTEyLTI0IGF0IDA0OjMyIC0wODAwLCBLZXZp
-biBELiBLaXNzZWxsIHdyb3RlOg0KPj4+PiBUaGFuayB5b3UsIFN0dWFydCEgIEkndmUgc3BvdHRl
-ZCBzb21lIGRlZmluaXRlIGJyZWFrYWdlIHRvIFNNVEMgYmV0d2Vlbg0KPj4+PiB0aG9zZSB2ZXJz
-aW9ucy4gIEluIGFyY2gvbWlwcy9pbmNsdWRlL2FzbS9zdGFja2ZyYW1lLmgsIHNvbWVvbmUgbW92
-ZWQNCj4+Pj4gdGhlIHN0b3JlIG9mIHRoZSBTdGF0dXMgcmVnaXN0ZXIgdmFsdWUgaW4gU0FWRV9T
-T01FIChsaW5lIDE2OSBvciAyMDQsDQo+Pj4+IGRlcGVuZGluZyBvbiB0aGUgdmVyc2lvbikgZnJv
-bSB0d28gaW5zdHJ1Y3Rpb25zIGFmdGVyIHRoZSBtZmMwIHRvIGENCj4+Pj4gcG9pbnQgYWZ0ZXIg
-dGhlICNpZmRlZiBmb3IgU01UQywgcHJlc3VtYWJseSB0byBnZXQgYmV0dGVyIHBpcGVsaW5pbmcg
-b2YNCj4+Pj4gdGhlIHJlZ2lzdGVyIGFjY2Vzcy4gIFVuZm9ydHVuYXRlbHksIHRoZSB2MSByZWdp
-c3RlciBpcyBhbHNvIHVzZWQgaW4gdGhlDQo+Pj4+IFNNVEMtc3BlY2lmaWMgZnJhZ21lbnQgdG8g
-c2F2ZSBUQ1N0YXR1cywgc28gdGhlIFN0YXR1cyB2YWx1ZSBnZXRzDQo+Pj4+IGNsb2JiZXJlZCBi
-ZWZvcmUgaXQgZ2V0cyBzdG9yZWQuICBUaGlzIHdpbGwgZXZlbnR1YWxseSByZXN1bHQgaW4gdGhl
-DQo+Pj4+IFN0YXR1cyByZWdpc3RlciBnZXR0aW5nIGEgVENTdGF0dXMgdmFsdWUsIHdoaWNoIGhh
-cyBzb21lIGJpdHMgb24gY29tbW9uLA0KPj4+PiBidXQgaXNuJ3QgaWRlbnRpY2FsIGFuZCBzb29u
-ZXIgb3IgbGF0ZXIgQmFkIFRoaW5ncyB3aWxsIGhhcHBlbi4NCj4+Pj4NCj4+Pj4gSSdtIGEgbGl0
-dGxlIHN1cnByaXNlZCB0aGlzIHdhc24ndCBjYXVnaHQgYnkgdmlzdWFsIGluc3BlY3Rpb24gb2Yg
-dGhlIHBhdGNoLg0KPj4+Pg0KPj4+PiBQb3NzaWJsZSBzb2x1dGlvbnMgd291bGQgaW5jbHVkZSBy
-ZXZlcnRpbmcgdGhlIHN0b3JlIG9mIHRoZSBDUDBfU1RBVFVTDQo+Pj4+IHZhbHVlIHRvIHRoZSBi
-bG9jayBhYm92ZSB0aGUgI2lmZGVmLCBvciwgdG8gcmV0YWluIHdoYXRldmVyIHBlcmZvcm1hbmNl
-DQo+Pj4+IGFkdmFudGFnZSB3YXMgb2J0YWluZWQgYnkgbW92aW5nIHRoZSBzdG9yZSBkb3dud2Fy
-ZCwgdG8gdXNlIHYwLyQyDQo+Pj4+IGluc3RlYWQgb2YgdjEvJDMsIGFzIHRoZSBzdGFnaW5nIHJl
-Z2lzdGVyIGZvciB0aGUgVENTdGF0dXMgdmFsdWUuICBJJ2QNCj4+Pj4gbGVhbiB0b3dhcmQgdGhl
-IHNlY29uZCBvcHRpb24sIGJ1dCBJJ20gbm90IGluIGEgcG9zaXRpb24gdG8gdGVzdCBhbmQNCj4+
-Pj4gc3VibWl0IGEgcGF0Y2gganVzdCBub3cuDQo+Pj4+DQo+Pj4+ICAgICAgICAgICAgICAgIFJl
-Z2FyZHMsDQo+Pj4+DQo+Pj4+ICAgICAgICAgICAgICAgIEtldmluIEsuDQo+Pj4+DQo+Pj4+IE9u
-IDEyLzIzLzEwIDE6MDkgUE0sIFNUVUFSVCBWRU5URVJTIHdyb3RlOg0KPj4+Pj4gS2V2aW4sDQo+
-Pj4+Pg0KPj4+Pj4gSSdtIG5vdCBzdXJlIGlmIGl0J3MgdXNlZnVsLA0KPj4+Pj4gICAgICAgYnV0
-IGZpbmFsbHkgSSBnb3QgdGhlIHRpbWUgdG8gbG9vayBhdCB0aGUgdHdvIGtlcm5lbCB2ZXJzaW9u
-cyBBbm9vcCBwb2ludGVkIG91dC4NCj4+Pj4+ICAgICAgICB3b3JrcyAgIDIuNi4zMi1zdGFibGUg
-d2l0aCBwYXRjaCA4MDQNCj4+Pj4+ICAgICAgICB3b3Jrc19ub3QgMi42LjMzLXN0YWJsZQ0KPj4+
-Pj4NCj4+Pj4+IGdyZXBpbmcgZm9yIGZpbGVzIHdpdGggQ09ORklHX01JUFNfTVRfU01UQw0KPj4+
-Pj4gICAgICAgYW5kIGxvb2tpbmcgZm9yIHRpbWVyIGludGVycnVwdCByZWxhdGVkIHN0dWZmIGZv
-dW5kIHRoZSBmb2xsb3dpbmcgZGlmZmVyZW5jZXM6DQo+Pj4+Pg0KPj4+Pj4NCj4+Pj4+IGFyY2gv
-bWlwcy9pbmNsdWRlL2FzbS9pcnEuaA0KPj4+Pj4gYXJjaC9taXBzL2tlcm5lbC9pcnEuYw0KPj4+
-Pj4gICAgICBkb19JUlENCj4+Pj4+DQo+Pj4+PiBhcmNoL21pcHMvaW5jbHVkZS9hc20vc3RhY2tm
-cmFtZS5oDQo+Pj4+PiAgICAgIFNBVkVfU09NRSBTQVZFX1RFTVAgZ2V0L3NldF9zYXZlZF9zcA0K
-Pj4+Pj4NCj4+Pj4+IGFyY2gvbWlwcy9pbmNsdWRlL2FzbS90aW1lLmgNCj4+Pj4+ICAgICAgY2xv
-Y2tzb3VyY2Vfc2V0X2Nsb2NrDQo+Pj4+Pg0KPj4+Pj4gYXJjaC9taXBzL2tlcm5lbC9wcm9jZXNz
-LmMNCj4+Pj4+ICAgICAgY3B1X2lkbGUNCj4+Pj4+DQo+Pj4+PiBhcmNoL21pcHMva2VybmVsL3Nt
-dGMuYw0KPj4+Pj4gICAgICBfX2lycV9lbnRyeQ0KPj4+Pj4gICAgICBpcGlfZGVjb2RlDQo+Pj4+
-PiAgICAgICAgICBTTVRDX0NMT0NLX1RJQ0sNCj4+Pj4+DQo+Pj4+Pg0KPj4+Pj4gRW5jbG9zZWQg
-YXJlIHRoZSB0d28gc3Vic2V0cyBvZiBmaWxlcyBmb3IgYSBtb3JlIGV4cGVydCBsb29rLg0KPj4+
-Pj4NCj4+Pj4+IEknbGwgdHJ5IHRvIGxvb2sgaW4gbW9yZSBkZXRhaWwgYWZ0ZXIgQ2hyaXN0bWFz
-Lg0KPj4+Pj4NCj4+Pj4+DQo+Pj4+PiBDaGVlcnMsDQo+Pj4+Pg0KPj4+Pj4gU3R1YXJ0DQo+Pj4+
-Pg0KPj4+Pj4NCj4+Pj4+DQo+Pj4+Pg0KPg0KDQo=
+On Sun, 2 Jan 2011, loody wrote:
+
+> Dear all:
+> I am trying porting usb on mips platform.
+> Due to hw limitation, I have to do the dummy read to make sure data
+> has been written to the memory, so I announce an volatile parameter,
+> tmp, such that cpu will read the same address back to me.
+> 
+> Below is what I try to do in usb driver:
+>                         wmb ();
+>     389c:       0000000f        sync
+>                         dummy->hw_token = token;
+>     38a0:       ae740008        sw      s4,8(s3)
+>                         tmp = dummy->hw_token;
+>     38a4:       afb40010        sw      s4,16(sp)
+> as you can see, the compiler is so smart that he read the register
+> content instead of re-read the memory for accelerating the read speed.
+> unfortunately, that isn't I want. Is there already exist kernel API can help me?
+> appreciate your help,
+
+You can try doing:
+
+		tmp = ACCESS_ONCE(dummy->hw_token);
+
+Alan Stern

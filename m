@@ -1,62 +1,105 @@
-Received: from mail-qy0-f170.google.com ([209.85.216.170]:52978 "EHLO
-        mail-qy0-f170.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491022Ab1AHKYh convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 8 Jan 2011 11:24:37 +0100
-Received: by qyk10 with SMTP id 10so228758qyk.15
-        for <linux-mips@linux-mips.org>; Sat, 08 Jan 2011 02:24:30 -0800 (PST)
+Received: from [69.28.251.93] ([69.28.251.93]:54488 "EHLO b32.net"
+        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1492828Ab1ANB4R (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 14 Jan 2011 02:56:17 +0100
+From: Kevin Cernekee <cernekee@gmail.com>
+Subject: [PATCH v2 1/6] MIPS: Sync after cacheflush on BMIPS processors
+Date: Thu, 13 Jan 2011 17:52:12 -0800
+Message-ID: <491015d51e5d3d36c517da09e038ecaf@localhost>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTi=zq=Tq+UxZMxdJRXWz=EZQ-oyf1gorm0uysPjk@mail.gmail.com>
-References: <AANLkTikFNZiM9=Ym2sfZpstjse-zR69fh28OZ_aedUFe@mail.gmail.com>
-        <AANLkTi=b52Aprg7G-bXo84W+_Ru6=VigUHRHGGDf-Y51@mail.gmail.com>
-        <AANLkTimiXgBQr1arUdGgxGXnfqtoMvCMQivcujYc9VS0@mail.gmail.com>
-        <AANLkTi=E7Q9kJvG1KUPv2xS3WK_12byksSrVH_g2UST2@mail.gmail.com>
-        <AANLkTimR7PyJS000BsA-Q=pRXXY9Wht6_QtkRowv=OLM@mail.gmail.com>
-        <AANLkTi=TgZd8XS410kYfiLp79M-=-8etgg0VEZGUme3N@mail.gmail.com>
-        <AANLkTi=zq=Tq+UxZMxdJRXWz=EZQ-oyf1gorm0uysPjk@mail.gmail.com>
-Date: Sat, 8 Jan 2011 15:54:30 +0530
-Message-ID: <AANLkTimGNYeg=xZJy4qr9KmSpAMsy5Ss_pF18mwi1KrM@mail.gmail.com>
-Subject: Re: Questions about complete
-From: Rajat Sharma <fs.rajat@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
-Return-Path: <fs.rajat@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Return-Path: <cernekee@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: loody <miloody@gmail.com>
-Cc: Linux MIPS Mailing List <linux-mips@linux-mips.org>, kernelnewbies@kernelnewbies.org
-Message-ID: <20110108102430.WGUvgpbhA1HaGq0OGeRRBJYua1hi5CjM3MSxSHksYOg@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: macro@linux-mips.org, skuribay@pobox.com, raiko@niisi.msk.ru, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20110114015212.jOgM2AGYHApeDz1NbttYKVacPz2BXJgx-G9WmJtfA4Q@z>
 
-> B try to complete but cpu timer keep firing and at 8 it is time out.
-> My platform is mips and is there any possibility to only let cpu timer
-> be preemptible?
->
+On BMIPS processors, cache writeback operations may complete before the
+data has actually been written out to memory.  Subsequent uncached reads
+(or I/O operations) may see stale data unless a sync instruction is
+executed after the writeback loop.
 
-This seems really strange because when B calls complete, it sets up
-condition variable value i.e. completion->done++ by disabling the
-local interrupts. Following is code snippet from complete function:
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ arch/mips/include/asm/hazards.h |   21 +++++++++++++++++++++
+ arch/mips/mm/c-r4k.c            |    5 +++++
+ 2 files changed, 26 insertions(+), 0 deletions(-)
 
-        spin_lock_irqsave(&x->wait.lock, flags);
-                   // This will disable interrupts
-        x->done++;
-                            // signals completion
-        __wake_up_common(&x->wait, TASK_NORMAL, 1, 0, NULL);
-        spin_unlock_irqrestore(&x->wait.lock, flags);
-
-So now even if process A does not get a chance to execute and
-completion timeout occurs before that, as you have shown in your
-example, process A would still correctly knows about completion
-because x->done was already set. Pleas look at the code snippet for
-do_wait_for_common called from wait_for_completion_timeout:
-
-          if (!x->done) {
-                 ....
-                 do {
-                          ....
-                 } while (!x->done && timeout);
-                __remove_wait_queue(&x->wait, &wait);
-                if (!x->done)
-                        return timeout;
-        }
-        x->done--;
-        return timeout ?: 1;
+diff --git a/arch/mips/include/asm/hazards.h b/arch/mips/include/asm/hazards.h
+index 4e33216..655da05 100644
+--- a/arch/mips/include/asm/hazards.h
++++ b/arch/mips/include/asm/hazards.h
+@@ -270,4 +270,25 @@ ASMMACRO(disable_fpu_hazard,
+ )
+ #endif
+ 
++/*
++ * Some processors will "pipeline" cache writeback operations, and need an
++ * extra sync instruction to ensure that they are actually flushed out to
++ * memory.  Performing an uncached read (or an I/O operation) without the
++ * flush may cause stale data to be fetched.
++ */
++
++#if defined(CONFIG_CPU_BMIPS3300) || defined(CONFIG_CPU_BMIPS4350) || \
++    defined(CONFIG_CPU_BMIPS4380) || defined(CONFIG_CPU_BMIPS5000)
++
++#define cacheflush_hazard()						\
++do {									\
++	__sync();							\
++} while (0)
++
++#else
++
++#define cacheflush_hazard() do { } while (0)
++
++#endif
++
+ #endif /* _ASM_HAZARDS_H */
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index b4923a7..6c113cd 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -33,6 +33,7 @@
+ #include <asm/mmu_context.h>
+ #include <asm/war.h>
+ #include <asm/cacheflush.h> /* for run_uncached() */
++#include <asm/hazards.h>
+ 
+ 
+ /*
+@@ -604,6 +605,7 @@ static void r4k_dma_cache_wback_inv(unsigned long addr, unsigned long size)
+ 			r4k_blast_scache();
+ 		else
+ 			blast_scache_range(addr, addr + size);
++		cacheflush_hazard();
+ 		return;
+ 	}
+ 
+@@ -620,6 +622,7 @@ static void r4k_dma_cache_wback_inv(unsigned long addr, unsigned long size)
+ 	}
+ 
+ 	bc_wback_inv(addr, size);
++	cacheflush_hazard();
+ }
+ 
+ static void r4k_dma_cache_inv(unsigned long addr, unsigned long size)
+@@ -647,6 +650,7 @@ static void r4k_dma_cache_inv(unsigned long addr, unsigned long size)
+ 				 (addr + size - 1) & almask);
+ 			blast_inv_scache_range(addr, addr + size);
+ 		}
++		cacheflush_hazard();
+ 		return;
+ 	}
+ 
+@@ -663,6 +667,7 @@ static void r4k_dma_cache_inv(unsigned long addr, unsigned long size)
+ 	}
+ 
+ 	bc_inv(addr, size);
++	cacheflush_hazard();
+ }
+ #endif /* CONFIG_DMA_NONCOHERENT */
+ 
+-- 
+1.7.0.4

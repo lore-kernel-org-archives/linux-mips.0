@@ -1,77 +1,56 @@
-Received: from [69.28.251.93] ([69.28.251.93]:54550 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1492832Ab1ANB4a (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 14 Jan 2011 02:56:30 +0100
-From: Kevin Cernekee <cernekee@gmail.com>
-Subject: [PATCH RESEND 6/6] MIPS: Limit fixrange_init() to the FIXMAP region
-Date: Thu, 13 Jan 2011 17:52:17 -0800
-Message-ID: <701f7c96d791acbfc7a8d913ca60426b@localhost>
-In-Reply-To: <491015d51e5d3d36c517da09e038ecaf@localhost>
-References: <491015d51e5d3d36c517da09e038ecaf@localhost>
+Received: from mail-iy0-f177.google.com ([209.85.210.177]:39277 "EHLO
+        mail-iy0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1493206Ab1APOix (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 16 Jan 2011 15:38:53 +0100
+Received: by iyj21 with SMTP id 21so4080185iyj.36
+        for <linux-mips@linux-mips.org>; Sun, 16 Jan 2011 06:38:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Return-Path: <cernekee@gmail.com>
+In-Reply-To: <AANLkTik8hQfd8cvNj=qeq5U=6zpQHw33a9hfK-q8+x1Z@mail.gmail.com>
+References: <AANLkTinvdEPwQ=DmcF8nnTAa0Py_O=+p7x1pobcTNHom@mail.gmail.com>
+        <AANLkTik8hQfd8cvNj=qeq5U=6zpQHw33a9hfK-q8+x1Z@mail.gmail.com>
+Date: Sun, 16 Jan 2011 22:38:47 +0800
+Message-ID: <AANLkTikpUBtg2zz8tcbcz2rcG-O+fTFwb_pTi88uZe0h@mail.gmail.com>
+Subject: Re: about udelay in mips
+From: loody <miloody@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-Path: <miloody@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20110114015217.tDk22_F2KmHCdq2LHoU_YapTa3QDMRMpAWZZQcIHfqg@z>
+Cc: Linux MIPS Mailing List <linux-mips@linux-mips.org>
+Message-ID: <20110116143847.nrzUzfh8HrFHvWVpF0589QkwWYd2RDquRt6KZ48HQOg@z>
 
-fixrange_init() allocates page tables for all addresses higher than
-FIXADDR_TOP.  On processors that override the default FIXADDR_TOP
-address of 0xfffe_0000, this can consume up to 4 pages (1 page per 4MB)
-for pgd's that are never used.
-
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- arch/mips/mm/init.c       |    6 +++---
- arch/mips/mm/pgtable-32.c |    2 +-
- arch/mips/mm/pgtable-64.c |    2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 45447cd..14a89bd 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -279,11 +279,11 @@ void __init fixrange_init(unsigned long start, unsigned long end,
- 	k = __pmd_offset(vaddr);
- 	pgd = pgd_base + i;
- 
--	for ( ; (i < PTRS_PER_PGD) && (vaddr != end); pgd++, i++) {
-+	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
- 		pud = (pud_t *)pgd;
--		for ( ; (j < PTRS_PER_PUD) && (vaddr != end); pud++, j++) {
-+		for ( ; (j < PTRS_PER_PUD) && (vaddr < end); pud++, j++) {
- 			pmd = (pmd_t *)pud;
--			for (; (k < PTRS_PER_PMD) && (vaddr != end); pmd++, k++) {
-+			for (; (k < PTRS_PER_PMD) && (vaddr < end); pmd++, k++) {
- 				if (pmd_none(*pmd)) {
- 					pte = (pte_t *) alloc_bootmem_low_pages(PAGE_SIZE);
- 					set_pmd(pmd, __pmd((unsigned long)pte));
-diff --git a/arch/mips/mm/pgtable-32.c b/arch/mips/mm/pgtable-32.c
-index 575e401..adc6911 100644
---- a/arch/mips/mm/pgtable-32.c
-+++ b/arch/mips/mm/pgtable-32.c
-@@ -52,7 +52,7 @@ void __init pagetable_init(void)
- 	 * Fixed mappings:
- 	 */
- 	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
--	fixrange_init(vaddr, 0, pgd_base);
-+	fixrange_init(vaddr, vaddr + FIXADDR_SIZE, pgd_base);
- 
- #ifdef CONFIG_HIGHMEM
- 	/*
-diff --git a/arch/mips/mm/pgtable-64.c b/arch/mips/mm/pgtable-64.c
-index 78eaa4f..cda4e30 100644
---- a/arch/mips/mm/pgtable-64.c
-+++ b/arch/mips/mm/pgtable-64.c
-@@ -76,5 +76,5 @@ void __init pagetable_init(void)
- 	 * Fixed mappings:
- 	 */
- 	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
--	fixrange_init(vaddr, 0, pgd_base);
-+	fixrange_init(vaddr, vaddr + FIXADDR_SIZE, pgd_base);
- }
--- 
-1.7.0.4
+hi wu, winfred:
+Thanks for your reply ;)
+2011/1/14 wu zhangjin <wuzhangjin@gmail.com>:
+> On Thu, Jan 13, 2011 at 6:02 PM, loody <miloody@gmail.com> wrote:
+>> hi all:
+>> If i trace source in the correct place, I found udelay(100) is
+>> implemented as a loop which decrease 1 per iteration until the count,
+>> 100, as 0.
+>> What makes me confused is since the speed of cpus are different and
+>> that will make udelay not precise on different platform, right?
+>
+> Yeah, it may be not precise, so, some processors, like Cavium octeon
+> have added their own timestamp register based delay functions, please
+> refer to:
+>
+> arch/mips/cavium-octeon/csrc-octeon.c
+>
+> The delay_tsc() for X86 defined in arch/x86/lib/delay.c is similar.
+>
+> But both of them are 64bit timestamp registers.
+>
+> We can also apply similar method to add the precise delays for the
+> other CPUs, but we may need to take extra notice:
+>
+> 1. If the CPU only provides 32bit timestamp registers(e.g R4K MIPS),
+> overflow should be considered.
+> 2. If the CPU support dynamic CPU frequency and the frequency of the
+> timestamp binds to the CPU's frequency, the scaled down timestamp
+> should be converted to the real timestamp.
+below is the formula about calculating the delay
+(us  *   0x000010c7   *   HZ   *   lpj   )) >> 32)
+I cannot figure out why we need to multiply 0x10c7, and what lpj mean?
+Does lpj mean if jiffies increase 1, how many "subu    %0, 1" may need?
+Regards,
+miloody

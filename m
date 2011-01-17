@@ -1,56 +1,46 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177]:39277 "EHLO
-        mail-iy0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1493206Ab1APOix (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 16 Jan 2011 15:38:53 +0100
-Received: by iyj21 with SMTP id 21so4080185iyj.36
-        for <linux-mips@linux-mips.org>; Sun, 16 Jan 2011 06:38:47 -0800 (PST)
+Received: from usmamail.tilera.com ([206.83.70.70]:58254 "EHLO
+        USMAMAIL.TILERA.COM" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1493451Ab1AQNwf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Jan 2011 14:52:35 +0100
+Message-ID: <4D344995.80701@tilera.com>
+Date: Mon, 17 Jan 2011 08:52:21 -0500
+From: Chris Metcalf <cmetcalf@tilera.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTik8hQfd8cvNj=qeq5U=6zpQHw33a9hfK-q8+x1Z@mail.gmail.com>
-References: <AANLkTinvdEPwQ=DmcF8nnTAa0Py_O=+p7x1pobcTNHom@mail.gmail.com>
-        <AANLkTik8hQfd8cvNj=qeq5U=6zpQHw33a9hfK-q8+x1Z@mail.gmail.com>
-Date: Sun, 16 Jan 2011 22:38:47 +0800
-Message-ID: <AANLkTikpUBtg2zz8tcbcz2rcG-O+fTFwb_pTi88uZe0h@mail.gmail.com>
-Subject: Re: about udelay in mips
-From: loody <miloody@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Return-Path: <miloody@gmail.com>
+Subject: Re: [PATCH] sched: provide scheduler_ipi() callback in response to
+ smp_send_reschedule()
+References: <1295262433.30950.53.camel@laptop>   <20110117112637.GA18599@n2100.arm.linux.org.uk>         <1295263884.30950.54.camel@laptop> <1295264509.30950.59.camel@laptop>
+In-Reply-To: <1295264509.30950.59.camel@laptop>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <cmetcalf@tilera.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: Linux MIPS Mailing List <linux-mips@linux-mips.org>
-Message-ID: <20110116143847.nrzUzfh8HrFHvWVpF0589QkwWYd2RDquRt6KZ48HQOg@z>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Mike Frysinger <vapier@gentoo.org>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Hirokazu Takata <takata@linux-m32r.org>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Paul Mundt <lethal@linux-sh.org>, "David S. Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeremy Fitzhardinge <jeremy.fitzhardinge@citrix.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, xen-devel@lists.xensource.com, virtualization@lists.osdl.org, Linux-Arch <linux-arch@vger.kernel.org>
+Message-ID: <20110117135221.ZjMEgTwRDuIB8iSRLc3UfoYxaPL9sbDMz9sXvc_LvlA@z>
 
-hi wu, winfred:
-Thanks for your reply ;)
-2011/1/14 wu zhangjin <wuzhangjin@gmail.com>:
-> On Thu, Jan 13, 2011 at 6:02 PM, loody <miloody@gmail.com> wrote:
->> hi all:
->> If i trace source in the correct place, I found udelay(100) is
->> implemented as a loop which decrease 1 per iteration until the count,
->> 100, as 0.
->> What makes me confused is since the speed of cpus are different and
->> that will make udelay not precise on different platform, right?
+On 1/17/2011 6:41 AM, Peter Zijlstra wrote:
+> Index: linux-2.6/arch/tile/kernel/smp.c
+> ===================================================================
+> --- linux-2.6.orig/arch/tile/kernel/smp.c
+> +++ linux-2.6/arch/tile/kernel/smp.c
+> @@ -184,12 +184,8 @@ void flush_icache_range(unsigned long st
+>  /* Called when smp_send_reschedule() triggers IRQ_RESCHEDULE. */
+>  static irqreturn_t handle_reschedule_ipi(int irq, void *token)
+>  {
+> -       /*
+> -        * Nothing to do here; when we return from interrupt, the
+> -        * rescheduling will occur there. But do bump the interrupt
+> -        * profiler count in the meantime.
+> -        */
+>         __get_cpu_var(irq_stat).irq_resched_count++;
+> +       scheduler_ipi();
 >
-> Yeah, it may be not precise, so, some processors, like Cavium octeon
-> have added their own timestamp register based delay functions, please
-> refer to:
->
-> arch/mips/cavium-octeon/csrc-octeon.c
->
-> The delay_tsc() for X86 defined in arch/x86/lib/delay.c is similar.
->
-> But both of them are 64bit timestamp registers.
->
-> We can also apply similar method to add the precise delays for the
-> other CPUs, but we may need to take extra notice:
->
-> 1. If the CPU only provides 32bit timestamp registers(e.g R4K MIPS),
-> overflow should be considered.
-> 2. If the CPU support dynamic CPU frequency and the frequency of the
-> timestamp binds to the CPU's frequency, the scaled down timestamp
-> should be converted to the real timestamp.
-below is the formula about calculating the delay
-(us  *   0x000010c7   *   HZ   *   lpj   )) >> 32)
-I cannot figure out why we need to multiply 0x10c7, and what lpj mean?
-Does lpj mean if jiffies increase 1, how many "subu    %0, 1" may need?
-Regards,
-miloody
+>         return IRQ_HANDLED;
+>  }
+
+Acked-by: Chris Metcalf <cmetcalf@tilera.com>
+
+-- 
+Chris Metcalf, Tilera Corp.
+http://www.tilera.com

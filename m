@@ -1,56 +1,103 @@
-Received: from ra.se.axis.com ([195.60.68.13]:41612 "EHLO ra.se.axis.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1493451Ab1AQN72 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 17 Jan 2011 14:59:28 +0100
-Date: Mon, 17 Jan 2011 14:58:53 +0100
-From: Jesper Nilsson <jesper.nilsson@axis.com>
-Subject: Re: [PATCH] sched: provide scheduler_ipi() callback in response to
-        smp_send_reschedule()
-Message-ID: <20110117135852.GI9874@axis.com>
-References: <1295262433.30950.53.camel@laptop> <20110117112637.GA18599@n2100.arm.linux.org.uk> <1295263884.30950.54.camel@laptop> <1295264509.30950.59.camel@laptop>
+Received: from mail-iy0-f177.google.com ([209.85.210.177]:58346 "EHLO
+        mail-iy0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491076Ab1ASOXh convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 19 Jan 2011 15:23:37 +0100
+Received: by iyj21 with SMTP id 21so827167iyj.36
+        for <linux-mips@linux-mips.org>; Wed, 19 Jan 2011 06:23:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1295264509.30950.59.camel@laptop>
-Return-Path: <jesper.nilsson@axis.com>
+In-Reply-To: <AANLkTi=zfr5YuwBCcvH2Jas50UxnUtvzp_CDyN25sT5h@mail.gmail.com>
+References: <AANLkTinvdEPwQ=DmcF8nnTAa0Py_O=+p7x1pobcTNHom@mail.gmail.com>
+        <AANLkTik8hQfd8cvNj=qeq5U=6zpQHw33a9hfK-q8+x1Z@mail.gmail.com>
+        <AANLkTikpUBtg2zz8tcbcz2rcG-O+fTFwb_pTi88uZe0h@mail.gmail.com>
+        <AANLkTi=zfr5YuwBCcvH2Jas50UxnUtvzp_CDyN25sT5h@mail.gmail.com>
+Date: Wed, 19 Jan 2011 22:23:21 +0800
+Message-ID: <AANLkTim_swh58fCUxZ4e6MDrM9Lqrbm+1ufnp8W767JL@mail.gmail.com>
+Subject: Re: about udelay in mips
+From: loody <miloody@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
+Return-Path: <miloody@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Mike Frysinger <vapier@gentoo.org>, Mikael Starvik <starvik@axis.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Hirokazu Takata <takata@linux-m32r.org>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, "linux390@de.ibm.com" <linux390@de.ibm.com>, Paul Mundt <lethal@linux-sh.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@tilera.com>, Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>, Jeremy Fitzhardinge <jeremy.fitzhardinge@citrix.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, linux-cris-kernel <linux-cris-kernel@axis.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, "xen-devel@lists.xensource.com" <xen-devel@lists.xensource.com>, "virtualization@lists.osdl.org" <virtualization@lists.osdl.org>, Linux-Arch <linux-arch@vger.kernel.org>
-Message-ID: <20110117135853.b6Ux2NOO4dWM6iJCzPekQJlVtTmMGAQ50jdzJx4T978@z>
+Cc: Linux MIPS Mailing List <linux-mips@linux-mips.org>
+Message-ID: <20110119142321.phuuQKkcKQjj8Rwt609KrKsEIwl1cOODRBt647aIWHA@z>
 
-On Mon, Jan 17, 2011 at 12:41:49PM +0100, Peter Zijlstra wrote:
-> Index: linux-2.6/arch/cris/arch-v32/kernel/smp.c
-> ===================================================================
-> --- linux-2.6.orig/arch/cris/arch-v32/kernel/smp.c
-> +++ linux-2.6/arch/cris/arch-v32/kernel/smp.c
-> @@ -340,15 +340,18 @@ irqreturn_t crisv32_ipi_interrupt(int ir
-> 
->         ipi = REG_RD(intr_vect, irq_regs[smp_processor_id()], rw_ipi);
-> 
-> +       if (ipi.vector & IPI_SCHEDULE) {
-> +               scheduler_ipi();
-> +       }
->         if (ipi.vector & IPI_CALL) {
-> -                func(info);
-> +               func(info);
->         }
->         if (ipi.vector & IPI_FLUSH_TLB) {
-> -                    if (flush_mm == FLUSH_ALL)
-> -                        __flush_tlb_all();
-> -                    else if (flush_vma == FLUSH_ALL)
-> +               if (flush_mm == FLUSH_ALL)
-> +                       __flush_tlb_all();
-> +               else if (flush_vma == FLUSH_ALL)
->                         __flush_tlb_mm(flush_mm);
-> -                    else
-> +               else
->                         __flush_tlb_page(flush_vma, flush_addr);
->         }
-> 
+hi all:
+thanks for your kind help :)
 
-Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
+2011/1/17 Winfred Lu <winfred.lu@gmail.com>:
+> 2011/1/16 loody <miloody@gmail.com>
+>>
+>> below is the formula about calculating the delay
+>> (us  *   0x000010c7   *   HZ   *   lpj   )) >> 32)
+>> I cannot figure out why we need to multiply 0x10c7, and what lpj mean?
+>
+> 0x10c7 is the rounded up value of (2 ^ 32) / 1,000,000.
+>
+> The 1,000,000 comes from that 1 second is equal to 1,000,000 micro seconds.
+> That the value multiplied by (2 ^ 32) and shifted 32 bit right after is
+> equal to
+> that the value multiplied by 1.
+I found my kernel will compile udelay(xx) as zero no matter what xx I filled in.
+below are the dis-assemblies:
+(as you can see the v0 = v1 = zero.)
+My version is 2.6.30.9:
+void __udelay(unsigned long us)
+{
+        unsigned int lpj = current_cpu_data.udelay_val;
 
-/^JN - Jesper Nilsson
--- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
+        __delay(((unsigned long long)(us * 0x000010c7 * HZ * lpj)) >> 32);
+80306ed0:       00001821        move    v1,zero
+80306ed4:       00601021        move    v0,v1
+#include <asm/compiler.h>
+#include <asm/war.h>
+
+inline void __delay(unsigned int loops)
+{
+        __asm__ __volatile__ (
+80306ed8:       1440ffff        bnez    v0,80306ed8 <__udelay+0x8>
+80306edc:       2442ffff        addiu   v0,v0,-1
+void __udelay(unsigned long us)
+
+I have double checked the __delay source code of 2.6.33.4
+and the dis-assemblies:
+
+void __udelay(unsigned long us)
+{
+        unsigned int lpj = current_cpu_data.udelay_val;
+
+        __delay((us * 0x000010c7ull * HZ * lpj) >> 32);
+802f7310:       3c02804f        lui     v0,0x804f
+802f7314:       8c429360        lw      v0,-27808(v0)
+802f7318:       3c050010        lui     a1,0x10
+802f731c:       34a56256        ori     a1,a1,0x6256
+802f7320:       00450019        multu   v0,a1
+802f7324:       00002821        move    a1,zero
+802f7328:       00001012        mflo    v0
+802f732c:       00001810        mfhi    v1
+802f7330:       00a20018        mult    a1,v0
+802f7334:       70640000        madd    v1,a0
+802f7338:       00003012        mflo    a2
+802f733c:       00440019        multu   v0,a0
+802f7340:       00001810        mfhi    v1
+802f7344:       00c31021        addu    v0,a2,v1
+#include <asm/compiler.h>
+#include <asm/war.h>
+
+inline void __delay(unsigned int loops)
+{
+        __asm__ __volatile__ (
+802f7348:       1440ffff        bnez    v0,802f7348 <__udelay+0x38>
+802f734c:       2442ffff        addiu   v0,v0,-1
+void __udelay(unsigned long us)
+{
+        unsigned int lpj = current_cpu_data.udelay_val;
+
+        __delay((us * 0x000010c7ull * HZ * lpj) >> 32);
+}
+802f7350:       03e00008        jr      ra
+
+Does that mean "unsigned long long" not workable?
+appreciate your help,
+miloody

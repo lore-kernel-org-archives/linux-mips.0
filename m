@@ -1,103 +1,148 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177]:58346 "EHLO
-        mail-iy0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491076Ab1ASOXh convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 19 Jan 2011 15:23:37 +0100
-Received: by iyj21 with SMTP id 21so827167iyj.36
-        for <linux-mips@linux-mips.org>; Wed, 19 Jan 2011 06:23:21 -0800 (PST)
+Received: from rtp-iport-1.cisco.com ([64.102.122.148]:42650 "EHLO
+        rtp-iport-1.cisco.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491833Ab1AUVz5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 21 Jan 2011 22:55:57 +0100
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <AANLkTi=zfr5YuwBCcvH2Jas50UxnUtvzp_CDyN25sT5h@mail.gmail.com>
-References: <AANLkTinvdEPwQ=DmcF8nnTAa0Py_O=+p7x1pobcTNHom@mail.gmail.com>
-        <AANLkTik8hQfd8cvNj=qeq5U=6zpQHw33a9hfK-q8+x1Z@mail.gmail.com>
-        <AANLkTikpUBtg2zz8tcbcz2rcG-O+fTFwb_pTi88uZe0h@mail.gmail.com>
-        <AANLkTi=zfr5YuwBCcvH2Jas50UxnUtvzp_CDyN25sT5h@mail.gmail.com>
-Date: Wed, 19 Jan 2011 22:23:21 +0800
-Message-ID: <AANLkTim_swh58fCUxZ4e6MDrM9Lqrbm+1ufnp8W767JL@mail.gmail.com>
-Subject: Re: about udelay in mips
-From: loody <miloody@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
-Return-Path: <miloody@gmail.com>
+Content-Type: multipart/alternative;
+        boundary="----_=_NextPart_001_01CBB9B5.F74B8172"
+Subject: RE: 24k data cache, PIPT or VIPT?
+Date: Fri, 21 Jan 2011 15:54:35 -0600
+Message-ID: <7A9214B0DEB2074FBCA688B30B04400D1756AB@XMB-RCD-208.cisco.com>
+References: <AB43F607AA1BE0439402E9061AC9519D011EF513EB8D@rtitmbs7.realtek.com.tw>
+From: "David VomLehn (dvomlehn)" <dvomlehn@cisco.com>
+Return-Path: <dvomlehn@cisco.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-Cc: Linux MIPS Mailing List <linux-mips@linux-mips.org>
-Message-ID: <20110119142321.phuuQKkcKQjj8Rwt609KrKsEIwl1cOODRBt647aIWHA@z>
+To: COLin <colin@realtek.com>, ralf@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20110121215435.UxbvShWBWMDONqZhVOIpPTyz4qwWJpdzLb-AeMkpmg8@z>
 
-hi all:
-thanks for your kind help :)
+This is a multi-part message in MIME format.
 
-2011/1/17 Winfred Lu <winfred.lu@gmail.com>:
-> 2011/1/16 loody <miloody@gmail.com>
->>
->> below is the formula about calculating the delay
->> (us  *   0x000010c7   *   HZ   *   lpj   )) >> 32)
->> I cannot figure out why we need to multiply 0x10c7, and what lpj mean?
->
-> 0x10c7 is the rounded up value of (2 ^ 32) / 1,000,000.
->
-> The 1,000,000 comes from that 1 second is equal to 1,000,000 micro seconds.
-> That the value multiplied by (2 ^ 32) and shifted 32 bit right after is
-> equal to
-> that the value multiplied by 1.
-I found my kernel will compile udelay(xx) as zero no matter what xx I filled in.
-below are the dis-assemblies:
-(as you can see the v0 = v1 = zero.)
-My version is 2.6.30.9:
-void __udelay(unsigned long us)
-{
-        unsigned int lpj = current_cpu_data.udelay_val;
+------_=_NextPart_001_01CBB9B5.F74B8172
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-        __delay(((unsigned long long)(us * 0x000010c7 * HZ * lpj)) >> 32);
-80306ed0:       00001821        move    v1,zero
-80306ed4:       00601021        move    v0,v1
-#include <asm/compiler.h>
-#include <asm/war.h>
+No, it just means that there is special hardware to detect aliases and =
+handle them as if the addresses were not aliased.
 
-inline void __delay(unsigned int loops)
-{
-        __asm__ __volatile__ (
-80306ed8:       1440ffff        bnez    v0,80306ed8 <__udelay+0x8>
-80306edc:       2442ffff        addiu   v0,v0,-1
-void __udelay(unsigned long us)
 
-I have double checked the __delay source code of 2.6.33.4
-and the dis-assemblies:
+-----Original Message-----
+From: linux-mips-bounce@linux-mips.org on behalf of COLin
+Sent: Fri 1/21/2011 12:52 AM
+To: ralf@linux-mips.org; linux-mips@linux-mips.org
+Subject: 24k data cache, PIPT or VIPT?
+=20
 
-void __udelay(unsigned long us)
-{
-        unsigned int lpj = current_cpu_data.udelay_val;
+Hi all,
+I found that there is this information while Linux is booting:
+    [Primary data cache 32kB, 4-way, PIPT, no aliases, linesize 32 =
+bytes]
+I thought the latest MIPS CPUs all use VIPT. I didn't find anything =
+about PIPT on 24k Software User's Manual, either.
+The code related to this is here:
+        case CPU_24K:
+        case CPU_34K:
+        case CPU_74K:
+        case CPU_1004K:
+                if ((read_c0_config7() & (1 << 16))) {
+                        /* effectively physically indexed dcache,
+                           thus no virtual aliases. */=20
+                        c->dcache.flags |=3D MIPS_CACHE_PINDEX;
+                        break;
 
-        __delay((us * 0x000010c7ull * HZ * lpj) >> 32);
-802f7310:       3c02804f        lui     v0,0x804f
-802f7314:       8c429360        lw      v0,-27808(v0)
-802f7318:       3c050010        lui     a1,0x10
-802f731c:       34a56256        ori     a1,a1,0x6256
-802f7320:       00450019        multu   v0,a1
-802f7324:       00002821        move    a1,zero
-802f7328:       00001012        mflo    v0
-802f732c:       00001810        mfhi    v1
-802f7330:       00a20018        mult    a1,v0
-802f7334:       70640000        madd    v1,a0
-802f7338:       00003012        mflo    a2
-802f733c:       00440019        multu   v0,a0
-802f7340:       00001810        mfhi    v1
-802f7344:       00c31021        addu    v0,a2,v1
-#include <asm/compiler.h>
-#include <asm/war.h>
+The 16's bit of config 7 register:
+    [Alias removed: This bit indicates that the data cache is organized =
+to
+avoid virtual aliasing problems. This bit is only set if the data cache
+config and MMU type would normally cause aliasing - i.e., only for
+the 32KB and larger data cache and TLB-based MMU.]
 
-inline void __delay(unsigned int loops)
-{
-        __asm__ __volatile__ (
-802f7348:       1440ffff        bnez    v0,802f7348 <__udelay+0x38>
-802f734c:       2442ffff        addiu   v0,v0,-1
-void __udelay(unsigned long us)
-{
-        unsigned int lpj = current_cpu_data.udelay_val;
+Does it imply that the CPU is using PIPT?
 
-        __delay((us * 0x000010c7ull * HZ * lpj) >> 32);
-}
-802f7350:       03e00008        jr      ra
+Thanks and regards,
+Colin
 
-Does that mean "unsigned long long" not workable?
-appreciate your help,
-miloody
+
+
+
+
+
+------_=_NextPart_001_01CBB9B5.F74B8172
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.7655.10">
+<TITLE>RE: 24k data cache, PIPT or VIPT?</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
+
+<P><FONT SIZE=3D2>No, it just means that there is special hardware to =
+detect aliases and handle them as if the addresses were not aliased.<BR>
+<BR>
+<BR>
+-----Original Message-----<BR>
+From: linux-mips-bounce@linux-mips.org on behalf of COLin<BR>
+Sent: Fri 1/21/2011 12:52 AM<BR>
+To: ralf@linux-mips.org; linux-mips@linux-mips.org<BR>
+Subject: 24k data cache, PIPT or VIPT?<BR>
+<BR>
+<BR>
+Hi all,<BR>
+I found that there is this information while Linux is booting:<BR>
+&nbsp;&nbsp;&nbsp; [Primary data cache 32kB, 4-way, PIPT, no aliases, =
+linesize 32 bytes]<BR>
+I thought the latest MIPS CPUs all use VIPT. I didn't find anything =
+about PIPT on 24k Software User's Manual, either.<BR>
+The code related to this is here:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case CPU_24K:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case CPU_34K:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case CPU_74K:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case CPU_1004K:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp; if ((read_c0_config7() &amp; (1 &lt;&lt; 16))) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* =
+effectively physically indexed dcache,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp; thus no virtual aliases. */<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+c-&gt;dcache.flags |=3D MIPS_CACHE_PINDEX;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+break;<BR>
+<BR>
+The 16's bit of config 7 register:<BR>
+&nbsp;&nbsp;&nbsp; [Alias removed: This bit indicates that the data =
+cache is organized to<BR>
+avoid virtual aliasing problems. This bit is only set if the data =
+cache<BR>
+config and MMU type would normally cause aliasing - i.e., only for<BR>
+the 32KB and larger data cache and TLB-based MMU.]<BR>
+<BR>
+Does it imply that the CPU is using PIPT?<BR>
+<BR>
+Thanks and regards,<BR>
+Colin<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01CBB9B5.F74B8172--

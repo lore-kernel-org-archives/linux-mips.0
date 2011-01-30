@@ -1,51 +1,57 @@
-Received: from ixqw-mail-out.ixiacom.com ([66.77.12.12]:20606 "EHLO
-        ixqw-mail-out.ixiacom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491081Ab1A1FAF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Jan 2011 06:00:05 +0100
-Message-ID: <4D424D4B.5090002@ixiacom.com>
-Date: Thu, 27 Jan 2011 20:59:55 -0800
-From: Earl Chew <echew@ixiacom.com>
-MIME-Version: 1.0
-Subject: Publishing mips_hpt_frequency in /proc/cpuinfo
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <EChew@ixiacom.com>
+Received: from moutng.kundenserver.de ([212.227.126.187]:53922 "EHLO
+        moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491197Ab1A3Ul5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 30 Jan 2011 21:41:57 +0100
+From: Stefan Weil <weil@mail.berlios.de>
+Subject: [PATCH] MIPS: Loongson: Fix potentially wrong string handling
+Date: Sun, 30 Jan 2011 21:41:44 +0100
+Message-ID: <1296420104-5679-1-git-send-email-weil@mail.berlios.de>
+Return-Path: <stefan@weilnetz.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20110128045955.H8zTYxcowuvsVlU0ViJYTXyLDsK_OOcFl878W34AP40@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Stefan Weil <weil@mail.berlios.de>, Wu Zhangjin <wuzhangjin@gmail.com>, Arnaud Patard <apatard@mandriva.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20110130204144.6ZJriZscIPUD73IzwJYLwyAOhrThPQnenmUmFdVRCUg@z>
 
-The CPU frequency is known to the Linux kernel. For example:
+This error was reported by cppcheck:
+arch/mips/loongson/common/machtype.c:56: error: Dangerous usage of 'str' (strncpy doesn't always 0-terminate it)
 
-> CPU revision is: 00019374 (MIPS 24Kc)
-> Atheros AR7161 rev 2, CPU:680.000 MHz, AHB:170.000 MHz, DDR:340.000 MHz
-> ...
-> Calibrating delay loop... 452.19 BogoMIPS (lpj=2260992)
+If strncpy copied MACHTYPE_LEN bytes, the destination string str
+was not terminated.
 
-Unfortunately that information is not available from userspace:
+The patch adds one more byte to str and makes sure that this byte is
+always 0.
 
-> cpu model               : MIPS 24Kc V7.4
-> BogoMIPS                : 452.19
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Wu Zhangjin <wuzhangjin@gmail.com>
+Cc: Arnaud Patard <apatard@mandriva.com>
+Cc: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Stefan Weil <weil@mail.berlios.de>
+---
+ arch/mips/loongson/common/machtype.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-This makes it difficult to use CPU timers (rdhwr) from user space
-applications.
-
-
-Is there any reason not to publish mips_hpt_frequency in /proc/cpuinfo ?
-
-
-Earl
-
-
---- proc.c      2011-01-17 14:05:16.397444347 -0800
-+++ /tmp/proc.c 2011-01-27 20:56:18.807454356 -0800
-@@ -43,6 +43,9 @@
-        seq_printf(m, "BogoMIPS\t\t: %u.%02u\n",
-                      cpu_data[n].udelay_val / (500000/HZ),
-                      (cpu_data[n].udelay_val / (5000/HZ)) % 100);
-+       seq_printf(m, "timer frequency\t: %u.%03u\n",
-+                     mips_hpt_frequency / 1000000,
-+                     mips_hpt_frequency % 1000000 / 1000);
-        seq_printf(m, "wait instruction\t: %s\n", cpu_wait ? "yes" : "no");
-        seq_printf(m, "microsecond timers\t: %s\n",
-                      cpu_has_counter ? "yes" : "no");
+diff --git a/arch/mips/loongson/common/machtype.c b/arch/mips/loongson/common/machtype.c
+index 81fbe6b..2efd5d9 100644
+--- a/arch/mips/loongson/common/machtype.c
++++ b/arch/mips/loongson/common/machtype.c
+@@ -41,7 +41,7 @@ void __weak __init mach_prom_init_machtype(void)
+ 
+ void __init prom_init_machtype(void)
+ {
+-	char *p, str[MACHTYPE_LEN];
++	char *p, str[MACHTYPE_LEN + 1];
+ 	int machtype = MACH_LEMOTE_FL2E;
+ 
+ 	mips_machtype = LOONGSON_MACHTYPE;
+@@ -53,6 +53,7 @@ void __init prom_init_machtype(void)
+ 	}
+ 	p += strlen("machtype=");
+ 	strncpy(str, p, MACHTYPE_LEN);
++	str[MACHTYPE_LEN] = '\0';
+ 	p = strstr(str, " ");
+ 	if (p)
+ 		*p = '\0';
+-- 
+1.7.2.3

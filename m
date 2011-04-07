@@ -1,93 +1,47 @@
-Received: from [69.28.251.93] ([69.28.251.93]:41302 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491816Ab1DAAic (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 1 Apr 2011 02:38:32 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Subject: [PATCH v2] MIPS: Kernel crashes on boot with SPARSEMEM + HIGHMEM enabled
-Date: Thu, 31 Mar 2011 17:27:07 -0700
-Message-ID: <c300b67a7a723369872c0b9a023d0b2e@localhost>
+Received: from mxout1.idt.com ([157.165.5.25]:60501 "EHLO mxout1.idt.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491115Ab1DGRbM convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Apr 2011 19:31:12 +0200
+Received: from mail.idt.com (localhost [127.0.0.1])
+        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id p37HV4Wo009474
+        for <linux-mips@linux-mips.org>; Thu, 7 Apr 2011 10:31:04 -0700
+Received: from corpml3.corp.idt.com (corpml3.corp.idt.com [157.165.140.25])
+        by mail.idt.com (8.13.8/8.13.8) with ESMTP id p37HV4Pj005336
+        for <linux-mips@linux-mips.org>; Thu, 7 Apr 2011 10:31:04 -0700 (PDT)
+Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
+        by corpml3.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id p37HV2g14496
+        for <linux-mips@linux-mips.org>; Thu, 7 Apr 2011 10:31:03 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Return-Path: <cernekee@gmail.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Subject: After writing successfully a NAND block is this reliable ar reading as a NOR sector? 
+Date: Thu, 7 Apr 2011 10:31:01 -0700
+Message-ID: <AEA634773855ED4CAD999FBB1A66D0760190AFDD@CORPEXCH1.na.ads.idt.com>
+From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
+Return-Path: <Andrei.Ardelean@idt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Michael Sundius <msundius@cisco.com>, David VomLehn <dvomlehn@cisco.com>, Dave Hansen <dave@linux.vnet.ibm.com>, Andy Whitcroft <apw@shadowen.org>, Jon Fraser <jfraser@broadcom.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, stable@kernel.org
-Message-ID: <20110401002707.Bku5QuLCeDhNnNKEcOssLZa3HEGs1u3iFovnHUf30aI@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20110407173101.e8tUmiIusH5hUmpV2dZ3_Z3VX9zjVPU1jvRNUD34DVw@z>
 
-From: Michael Sundius <msundius@cisco.com>
+Hi,
 
-Fix 3 problems in the MIPS SPARSEMEM implementation:
+Am interested in using MT29F2G08AABWP NAND Flash memory for a new
+embedded design and I couldn't find a clear specification regarding how
+reliable is the NAND flash vs. NOR for reading operation.
 
-1) mem_init() sets/clears PG_reserved on all pages in the HIGHMEM range
-without checking to see whether the page descriptor actually exists.
+If I program successfully a NAND block, read back and verify
+successfully the information and never erase or program that particular
+block again, can I assume that block will remain a good block and the
+information written there is safe for READING, roughly as safe as a NOR
+sector?
 
-2) bootmem_init() never calls memory_present() on HIGHMEM pages, so
-page descriptors are never created for them if SPARSEMEM is enabled.
-
-3) bootmem_init() calls memory_present() on lowmem pages before bootmem
-is fully set up.  This is bad because memory_present() can allocate
-bootmem in some circumstances (e.g. if SPARSEMEM_EXTREME ever got
-enabled).
-
-Signed-off-by: Michael Sundius <msundius@cisco.com>
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
-Cc: stable@kernel.org
----
- arch/mips/kernel/setup.c |   18 +++++++++++++++++-
- arch/mips/mm/init.c      |    3 +++
- 2 files changed, 20 insertions(+), 1 deletions(-)
-
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 8ad1d56..1f9f902 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -390,7 +390,6 @@ static void __init bootmem_init(void)
+Is it any reason to keep in NAND copies of Kernel, bootloader or RFS? Is
+it a standard practice in the industry to keep copies in NAND even
+though we do not erase/program those during the normal operation? 
  
- 		/* Register lowmem ranges */
- 		free_bootmem(PFN_PHYS(start), size << PAGE_SHIFT);
--		memory_present(0, start, end);
- 	}
- 
- 	/*
-@@ -402,6 +401,23 @@ static void __init bootmem_init(void)
- 	 * Reserve initrd memory if needed.
- 	 */
- 	finalize_initrd();
-+
-+	/*
-+	 * Call memory_present() on all valid ranges, for SPARSEMEM.
-+	 * This must be done after setting up bootmem, since memory_present()
-+	 * may allocate bootmem.
-+	 */
-+	for (i = 0; i < boot_mem_map.nr_map; i++) {
-+		unsigned long start, end;
-+
-+		if (boot_mem_map.map[i].type != BOOT_MEM_RAM)
-+			continue;
-+
-+		start = PFN_UP(boot_mem_map.map[i].addr);
-+		end   = PFN_DOWN(boot_mem_map.map[i].addr
-+				    + boot_mem_map.map[i].size);
-+		memory_present(0, start, end);
-+	}
- }
- 
- #endif	/* CONFIG_SGI_IP27 */
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 279599e..78a4cf2 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -392,6 +392,9 @@ void __init mem_init(void)
- 	for (tmp = highstart_pfn; tmp < highend_pfn; tmp++) {
- 		struct page *page = pfn_to_page(tmp);
- 
-+		if (!pfn_valid(tmp))
-+			continue;
-+
- 		if (!page_is_ram(tmp)) {
- 			SetPageReserved(page);
- 			continue;
--- 
-1.7.4.2
+
+Thank you,
+Andrei

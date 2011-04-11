@@ -1,47 +1,47 @@
-Received: from mxout1.idt.com ([157.165.5.25]:60501 "EHLO mxout1.idt.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491115Ab1DGRbM convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Apr 2011 19:31:12 +0200
-Received: from mail.idt.com (localhost [127.0.0.1])
-        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id p37HV4Wo009474
-        for <linux-mips@linux-mips.org>; Thu, 7 Apr 2011 10:31:04 -0700
-Received: from corpml3.corp.idt.com (corpml3.corp.idt.com [157.165.140.25])
-        by mail.idt.com (8.13.8/8.13.8) with ESMTP id p37HV4Pj005336
-        for <linux-mips@linux-mips.org>; Thu, 7 Apr 2011 10:31:04 -0700 (PDT)
-Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
-        by corpml3.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id p37HV2g14496
-        for <linux-mips@linux-mips.org>; Thu, 7 Apr 2011 10:31:03 -0700 (PDT)
-Content-class: urn:content-classes:message
+Received: from iolanthe.rowland.org ([192.131.102.54]:58017 "HELO
+        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S1491143Ab1DKSyE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 11 Apr 2011 20:54:04 +0200
+Date: Mon, 11 Apr 2011 14:53:53 -0400 (EDT)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH 2/3] USB: ehci: add workaround for Synopsys HC bug
+In-Reply-To: <1302465900-16814-2-git-send-email-juhosg@openwrt.org>
+Message-ID: <Pine.LNX.4.44L0.1104111452040.1975-100000@iolanthe.rowland.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: After writing successfully a NAND block is this reliable ar reading as a NOR sector? 
-Date: Thu, 7 Apr 2011 10:31:01 -0700
-Message-ID: <AEA634773855ED4CAD999FBB1A66D0760190AFDD@CORPEXCH1.na.ads.idt.com>
-From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
-Return-Path: <Andrei.Ardelean@idt.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <stern+4dbee946@rowland.harvard.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20110407173101.e8tUmiIusH5hUmpV2dZ3_Z3VX9zjVPU1jvRNUD34DVw@z>
+To: Gabor Juhos <juhosg@openwrt.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Greg Kroah-Hartman <gregkh@suse.de>, linux-usb@vger.kernel.org
+Message-ID: <20110411185353.xsP1KRKrMYoKLtFpTQYagIxXi-7rQS_0CtIihPg5mrY@z>
 
-Hi,
+On Sun, 10 Apr 2011, Gabor Juhos wrote:
 
-Am interested in using MT29F2G08AABWP NAND Flash memory for a new
-embedded design and I couldn't find a clear specification regarding how
-reliable is the NAND flash vs. NOR for reading operation.
+> A Synopsys USB core used in various SoCs has a bug which might cause
+> that the host controller not issuing ping.
+> 
+> When software uses the Doorbell mechanism to remove queue heads, the
+> host controller still has references to the removed queue head even
+> after indicating an Interrupt on Async Advance. This happens if the last
+> executed queue head's Next Link queue head is removed.
+> 
+> Consequences of the defect:
+> The Host controller fetches the removed queue head, using memory that
+> would otherwise be deallocated.This results in incorrect transactions on
+> both the USB and system memory. This may result in undefined behavior.
 
-If I program successfully a NAND block, read back and verify
-successfully the information and never erase or program that particular
-block again, can I assume that block will remain a good block and the
-information written there is safe for READING, roughly as safe as a NOR
-sector?
+> --- a/drivers/usb/host/ehci-q.c
+> +++ b/drivers/usb/host/ehci-q.c
+> @@ -1183,6 +1183,9 @@ static void end_unlink_async (struct ehci_hcd *ehci)
+>  		ehci->reclaim = NULL;
+>  		start_unlink_async (ehci, next);
+>  	}
+> +
+> +	if (ehci->has_synopsys_hc_bug)
+> +		writel((u32)ehci->async->qh_dma, &ehci->regs->async_next);
+>  }
 
-Is it any reason to keep in NAND copies of Kernel, bootloader or RFS? Is
-it a standard practice in the industry to keep copies in NAND even
-though we do not erase/program those during the normal operation? 
- 
+This should be ehci_writel(ehci, ...).
 
-Thank you,
-Andrei
+Alan Stern

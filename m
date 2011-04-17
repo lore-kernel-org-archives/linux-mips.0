@@ -1,66 +1,57 @@
-Received: from iolanthe.rowland.org ([192.131.102.54]:36330 "HELO
-        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with SMTP id S1491765Ab1DMPIZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 13 Apr 2011 17:08:25 +0200
-Date: Wed, 13 Apr 2011 11:08:21 -0400 (EDT)
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH v2 2/3] USB: ehci: add workaround for Synopsys HC bug
-In-Reply-To: <1302684864-12484-2-git-send-email-juhosg@openwrt.org>
-Message-ID: <Pine.LNX.4.44L0.1104131108040.2005-100000@iolanthe.rowland.org>
+Received: from [69.28.251.93] ([69.28.251.93]:55953 "EHLO b32.net"
+        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1492955Ab1DQTIa (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 17 Apr 2011 21:08:30 +0200
+From: Kevin Cernekee <cernekee@gmail.com>
+Subject: [PATCH] MIPS: Squash pci_fixup_irqs() compiler warning
+Date: Sun, 17 Apr 2011 12:01:08 -0700
+Message-ID: <cb01d61712b1374a8c62bc765094ea7e@localhost>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <stern+4dbee946@rowland.harvard.edu>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Return-Path: <cernekee@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Gabor Juhos <juhosg@openwrt.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Greg Kroah-Hartman <gregkh@suse.de>, linux-usb@vger.kernel.org
-Message-ID: <20110413150821.lYbJRqrxjTX6gf-flL1D01M9yVeSu7ATfTowhHRRkNA@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Wu Zhangjin <wuzhangjin@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20110417190108.03XJdiwA4jYRjMb7K4JxQubv4TQRQAJ7hX5bGouwEg8@z>
 
-On Wed, 13 Apr 2011, Gabor Juhos wrote:
+MIPS Linux is unique in that it uses a "const struct pci_dev *" argument
+to discourage bad coding practices in pcibios_map_irq().  Add a cast so
+that this warning goes away:
 
-> A Synopsys USB core used in various SoCs has a bug which might cause
-> that the host controller not issuing ping.
-> 
-> When software uses the Doorbell mechanism to remove queue heads, the
-> host controller still has references to the removed queue head even
-> after indicating an Interrupt on Async Advance. This happens if the last
-> executed queue head's Next Link queue head is removed.
-> 
-> Consequences of the defect:
-> The Host controller fetches the removed queue head, using memory that
-> would otherwise be deallocated.This results in incorrect transactions on
-> both the USB and system memory. This may result in undefined behavior.
-> 
-> Workarounds:
-> 
-> 1) If no queue head is active (no Status field's Active bit is set)
-> after removing the queue heads, the software can write one of the valid
-> queue head addresses to the ASYNCLISTADDR register and deallocate the
-> removed queue head's memory after 2 microframes.
-> 
-> If one or more of the queue heads is active (the Active bit is set in
-> the Status field) after removing the queue heads, the software can delay
-> memory deallocation after time X, where X is the time required for the
-> Host Controller to go through all the queue heads once. X varies with
-> the number of queue heads and the time required to process periodic
-> transactions: if more periodic transactions must be performed, the Host
-> Controller has less time to process asynchronous transaction processing.
-> 
-> 2) Do not use the Doorbell mechanism to remove the queue heads. Disable
-> the Asynchronous Schedule Enable bit instead.
-> 
-> The bug has been discussed on the linux-usb-devel mailing-list
-> four years ago, the original thread can be found here:
-> http://www.mail-archive.com/linux-usb-devel@lists.sourceforge.net/msg45345.html
-> 
-> This patch implements the first workaround as suggested by David Brownell.
-> 
-> The built-in USB host controller of the Atheros AR7130/AR7141/AR7161 SoCs
-> requires this to work properly.
-> 
-> Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
-> Cc: Greg Kroah-Hartman <gregkh@suse.de>
-> Cc: Alan Stern <stern@rowland.harvard.edu>
-> Cc: linux-usb@vger.kernel.org
+arch/mips/pci/pci.c: In function 'pcibios_init':
+arch/mips/pci/pci.c:165:45: warning: passing argument 2 of 'pci_fixup_irqs' from incompatible pointer type
+include/linux/pci.h:856:6: note: expected 'int (*)(struct pci_dev *, u8,  u8)' but argument is of type 'struct pci_dev *'
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+
+Reference:
+
+http://www.mail-archive.com/gnewsense-dev@nongnu.org/msg00706.html
+
+It's been two years since the original discussion, and the warning is
+still there.  It is now the only warning left in my kernel build.
+
+I was hoping we could get this resolved for good (one way or another).
+
+ arch/mips/pci/pci.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/arch/mips/pci/pci.c b/arch/mips/pci/pci.c
+index 33bba7b..9a35cd6 100644
+--- a/arch/mips/pci/pci.c
++++ b/arch/mips/pci/pci.c
+@@ -157,7 +157,8 @@ static int __init pcibios_init(void)
+ 	for (hose = hose_head; hose; hose = hose->next)
+ 		pcibios_scanbus(hose);
+ 
+-	pci_fixup_irqs(pci_common_swizzle, pcibios_map_irq);
++	pci_fixup_irqs(pci_common_swizzle,
++		       (int (*)(struct pci_dev *, u8, u8))pcibios_map_irq);
+ 
+ 	pci_initialized = 1;
+ 
+-- 
+1.7.4.3

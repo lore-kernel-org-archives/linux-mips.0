@@ -1,43 +1,32 @@
-Received: from mxout1.idt.com ([157.165.5.25]:34212 "EHLO mxout1.idt.com"
+Received: from mxout1.idt.com ([157.165.5.25]:41490 "EHLO mxout1.idt.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1493075Ab1DRPl7 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Apr 2011 17:41:59 +0200
-Received: from mail.idt.com (localhost [127.0.0.1])
-        by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id p3IFfpg5009262
-        for <linux-mips@linux-mips.org>; Mon, 18 Apr 2011 08:41:51 -0700
-Received: from corpml1.corp.idt.com (corpml1.corp.idt.com [157.165.140.20])
-        by mail.idt.com (8.13.8/8.13.8) with ESMTP id p3IFfp17017699
-        for <linux-mips@linux-mips.org>; Mon, 18 Apr 2011 08:41:51 -0700 (PDT)
-Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
-        by corpml1.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id p3IFfoD00568
-        for <linux-mips@linux-mips.org>; Mon, 18 Apr 2011 08:41:50 -0700 (PDT)
+        id S1493114Ab1DRSOn convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Apr 2011 20:14:43 +0200
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
         charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: How can I access h/w registers in user space?
-Date: Mon, 18 Apr 2011 08:41:48 -0700
-Message-ID: <AEA634773855ED4CAD999FBB1A66D07601988DFA@CORPEXCH1.na.ads.idt.com>
+Subject: RE: How can I access h/w registers in user space?
+Date: Mon, 18 Apr 2011 11:14:32 -0700
+Message-ID: <AEA634773855ED4CAD999FBB1A66D07601988EC8@CORPEXCH1.na.ads.idt.com>
+In-Reply-To: <BANLkTi=QLZe68o2=1Vk+4QTu-ru1T6H=vQ@mail.gmail.com>
+References: <AEA634773855ED4CAD999FBB1A66D07601988DFA@CORPEXCH1.na.ads.idt.com> <BANLkTi=QLZe68o2=1Vk+4QTu-ru1T6H=vQ@mail.gmail.com>
 From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
 Return-Path: <Andrei.Ardelean@idt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-mips@linux-mips.org
-Message-ID: <20110418154148.az2QeuZCOId_N6VdlhjR66DVf-6TGN_wTXujh-O9Uo8@z>
+To: Manuel Lauss <manuel.lauss@googlemail.com>, linux-mips@linux-mips.org
+Message-ID: <20110418181432.ADeZKhAJVBc4FrmMFf7rdOYqwdWjUOUdiYb7sShTTYw@z>
 
 Hi,
 
-1. My video processor has many h/w registers mapped in MIPS CPU physical
-memory space. Do I have in Linux MIPS something like iopl() to allow me
-to access h/w registers in user space? Is it anything similar available?
-
-2. I studied mmap() solution but what I found unpleased is that I need
-to malloc() space in user space equal to the IO memory space I want to
-access which it is quite lot and it takes from system DDR RAM available
-I have here. What I need is just to access a physical space which I know
-that is mapped on internal registers.     
+Mmap() worked fine for one io memory region, but when I tried to open
+twice for different io memory regions with different base addresses and
+sizes it didn't work. It returned the same memory pointer value in both
+cases. In my design the h/w guys put those h/w registers in two distinct
+memory mapped regions with a large reserved area in between. Is it any
+solution for this case?
 
 Thanks,
 Andrei
-  

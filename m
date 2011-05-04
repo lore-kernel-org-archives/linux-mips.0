@@ -1,35 +1,33 @@
-Received: from mx0.aculab.com ([213.249.233.131]:36997 "HELO mx0.aculab.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with SMTP
-        id S1490983Ab1EDIG4 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 4 May 2011 10:06:56 +0200
-Received: from mx0.aculab.com ([127.0.0.1])
- by localhost (mx0.aculab.com [127.0.0.1]) (amavisd-new, port 10024) with SMTP
- id 00592-02 for <linux-mips@linux-mips.org>;
- Wed,  4 May 2011 09:06:44 +0100 (BST)
-Content-class: urn:content-classes:message
+Received: from anubis.se.axis.com ([195.60.68.12]:46258 "EHLO
+        anubis.se.axis.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1490984Ab1EDKsy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 4 May 2011 12:48:54 +0200
+Date: Wed, 4 May 2011 12:48:41 +0200
+From: Jesper Nilsson <jesper.nilsson@axis.com>
+Subject: Re: [PATCH] atomic: add *_dec_not_zero
+Message-ID: <20110504104841.GE16179@axis.com>
+References: <1304458235-28473-1-git-send-email-sven@narfation.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: [PATCH] atomic: add *_dec_not_zero
-Date: Wed, 4 May 2011 09:05:53 +0100
-Message-ID: <AE90C24D6B3A694183C094C60CF0A2F6D8AD0D@saturn3.aculab.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <1304458235-28473-1-git-send-email-sven@narfation.org>
-From: "David Laight" <David.Laight@ACULAB.COM>
-Return-Path: <David.Laight@ACULAB.COM>
+Return-Path: <jesper.nilsson@axis.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Sven Eckelmann <sven@narfation.org>, linux-kernel@vger.kernel.org
-Cc: linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-m32r@ml.linux-m32r.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, x86@kernel.org, Chris Metcalf <cmetcalf@tilera.com>, David Howells <dhowells@redhat.com>, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-Message-ID: <20110504080553.X-dhjo6cnfLfmdwdTf-mQ16pmoA9ogZ4zqQCQjOCzTY@z>
+To: Sven Eckelmann <sven@narfation.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-m32r@ml.linux-m32r.org" <linux-m32r@ml.linux-m32r.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, linux-cris-kernel <linux-cris-kernel@axis.com>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, Chris Metcalf <cmetcalf@tilera.com>, David Howells <dhowells@redhat.com>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20110504104841.jJ0587YOGB7jiHX2t1jir1JCBUCssNvTFslrQVomifE@z>
 
- 
+On Tue, May 03, 2011 at 11:30:35PM +0200, Sven Eckelmann wrote:
 > Introduce an *_dec_not_zero operation.  Make this a special case of
 > *_add_unless because batman-adv uses atomic_dec_not_zero in different
 > places like re-broadcast queue or aggregation queue management. There
 > are other non-final patches which may also want to use this macro.
 
-Isn't there a place where a default definition of this can be
-defined? Instead of adding it separately to every architecture.
+For the CRIS-part:
 
-	David
+Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
+
+/^JN - Jesper Nilsson
+-- 
+               Jesper Nilsson -- jesper.nilsson@axis.com

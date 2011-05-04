@@ -1,32 +1,35 @@
-Received: from mxout1.idt.com ([157.165.5.25]:41490 "EHLO mxout1.idt.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1493114Ab1DRSOn convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Apr 2011 20:14:43 +0200
+Received: from mx0.aculab.com ([213.249.233.131]:36997 "HELO mx0.aculab.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with SMTP
+        id S1490983Ab1EDIG4 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 4 May 2011 10:06:56 +0200
+Received: from mx0.aculab.com ([127.0.0.1])
+ by localhost (mx0.aculab.com [127.0.0.1]) (amavisd-new, port 10024) with SMTP
+ id 00592-02 for <linux-mips@linux-mips.org>;
+ Wed,  4 May 2011 09:06:44 +0100 (BST)
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
         charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Subject: RE: How can I access h/w registers in user space?
-Date: Mon, 18 Apr 2011 11:14:32 -0700
-Message-ID: <AEA634773855ED4CAD999FBB1A66D07601988EC8@CORPEXCH1.na.ads.idt.com>
-In-Reply-To: <BANLkTi=QLZe68o2=1Vk+4QTu-ru1T6H=vQ@mail.gmail.com>
-References: <AEA634773855ED4CAD999FBB1A66D07601988DFA@CORPEXCH1.na.ads.idt.com> <BANLkTi=QLZe68o2=1Vk+4QTu-ru1T6H=vQ@mail.gmail.com>
-From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
-Return-Path: <Andrei.Ardelean@idt.com>
+Subject: RE: [PATCH] atomic: add *_dec_not_zero
+Date: Wed, 4 May 2011 09:05:53 +0100
+Message-ID: <AE90C24D6B3A694183C094C60CF0A2F6D8AD0D@saturn3.aculab.com>
+In-Reply-To: <1304458235-28473-1-git-send-email-sven@narfation.org>
+From: "David Laight" <David.Laight@ACULAB.COM>
+Return-Path: <David.Laight@ACULAB.COM>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Manuel Lauss <manuel.lauss@googlemail.com>, linux-mips@linux-mips.org
-Message-ID: <20110418181432.ADeZKhAJVBc4FrmMFf7rdOYqwdWjUOUdiYb7sShTTYw@z>
+To: Sven Eckelmann <sven@narfation.org>, linux-kernel@vger.kernel.org
+Cc: linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-m32r@ml.linux-m32r.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, x86@kernel.org, Chris Metcalf <cmetcalf@tilera.com>, David Howells <dhowells@redhat.com>, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+Message-ID: <20110504080553.X-dhjo6cnfLfmdwdTf-mQ16pmoA9ogZ4zqQCQjOCzTY@z>
 
-Hi,
+ 
+> Introduce an *_dec_not_zero operation.  Make this a special case of
+> *_add_unless because batman-adv uses atomic_dec_not_zero in different
+> places like re-broadcast queue or aggregation queue management. There
+> are other non-final patches which may also want to use this macro.
 
-Mmap() worked fine for one io memory region, but when I tried to open
-twice for different io memory regions with different base addresses and
-sizes it didn't work. It returned the same memory pointer value in both
-cases. In my design the h/w guys put those h/w registers in two distinct
-memory mapped regions with a large reserved area in between. Is it any
-solution for this case?
+Isn't there a place where a default definition of this can be
+defined? Instead of adding it separately to every architecture.
 
-Thanks,
-Andrei
+	David

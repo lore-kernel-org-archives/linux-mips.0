@@ -1,37 +1,174 @@
-Received: from tundra.namei.org ([65.99.196.166]:47533 "EHLO tundra.namei.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491069Ab1EQNaa (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 17 May 2011 15:30:30 +0200
-Date: Tue, 17 May 2011 23:29:36 +1000 (EST)
-From: James Morris <jmorris@namei.org>
-Subject: Re: [PATCH 3/5] v2 seccomp_filters: Enable ftrace-based system call
- filtering
-In-Reply-To: <20110517131058.GE21441@elte.hu>
-Message-ID: <alpine.LRH.2.00.1105172317060.5404@tundra.namei.org>
-References: <1304017638.18763.205.camel@gandalf.stny.rr.com> <1305169376-2363-1-git-send-email-wad@chromium.org> <20110512074850.GA9937@elte.hu> <alpine.LRH.2.00.1105122133500.31507@tundra.namei.org> <20110512130104.GA2912@elte.hu>
- <alpine.LRH.2.00.1105131018040.3047@tundra.namei.org> <20110513121034.GG21022@elte.hu> <alpine.LRH.2.00.1105161006340.21749@tundra.namei.org> <20110516150837.GA513@elte.hu> <alpine.LRH.2.00.1105171214330.31710@tundra.namei.org>
- <20110517131058.GE21441@elte.hu>
+Received: from mail161.messagelabs.com ([216.82.253.115]:19069 "EHLO
+        mail161.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491095Ab1ETIJ4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 20 May 2011 10:09:56 +0200
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <jmorris@namei.org>
+Content-Type: multipart/alternative;
+        boundary="----_=_NextPart_001_01CC16C5.3A957AB0"
+Subject: Need your help on setting of  INITIAL_JIFFIES
+Date: Fri, 20 May 2011 09:09:23 +0100
+Message-ID: <CF80A1E11D28944EA2838FF532D25C3E03324CCB@zuk35exm65.ds.mot.com>
+From: "MOHANTY CHANDAN-WJKD64" <chandanmohanty@motorolasolutions.com>
+Return-Path: <chandanmohanty@motorolasolutions.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: Ingo Molnar <mingo@elte.hu>
-Cc: Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>, Frederic Weisbecker <fweisbec@gmail.com>, Eric Paris <eparis@redhat.com>, kees.cook@canonical.com, agl@chromium.org, Peter Zijlstra <a.p.zijlstra@chello.nl>, "Serge E. Hallyn" <serge@hallyn.com>, Ingo Molnar <mingo@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, Michal Marek <mmarek@suse.cz>, Oleg Nesterov <oleg@redhat.com>, Jiri Slaby <jslaby@suse.cz>, Russell King <linux@arm.linux.org.uk>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Paul Mundt <lethal@linux-sh.org>, "David S. Miller" <davem@davemloft.net>, Thomas Gleixner <tglx@linutronix.de>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Peter Zijlstra <peterz@infradead.org>, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <20110517132936.culd69K7TzCf1MmYU4Tjv37g44WWIg5sz13ppI_gex0@z>
+To: sshtylyov@ru.mvista.com, hvr@gnu.org, linux-mips@linux-mips.org, clem.taylor@gmail.com, linux-mips-bounce@linux-mips.org, 4468F40F.80902@ru.mvista.com, 4468EE9B.4000009@ru.mvista.com
+Cc: MOHANTY CHANDAN-WJKD64 <chandanmohanty@motorolasolutions.com>
+Message-ID: <20110520080923.C5Sh_CAJbTqMwHy0IVrnIh6lfgwMAe43JLPfKs9LOg8@z>
 
-On Tue, 17 May 2011, Ingo Molnar wrote:
+This is a multi-part message in MIME format.
 
-> I'm not sure i get your point.
+------_=_NextPart_001_01CC16C5.3A957AB0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 
-Your example was not complete as described.  After an apparently simple 
-specification, you've since added several qualifiers and assumptions, and 
-I still doubt that it's complete.
+Hi,
+My greetings to all the enlightened Linux Souls.
+=20
+ I got all the mail ids from one of Linux based mail chain/URL
+http://www.linux-mips.org/archives/linux-mips/2006-05/msg00193.html
+=20
+Pls guide me on the usage of  INITIAL_JIFFIES.
+=20
+=20
+=20
+=20
+In the source of linux kernel \include\linux\jiffies.h there is code
+like this
+=20
+/*
+ * Have the 32 bit jiffies value wrap 5 minutes after boot
+ * so jiffies wrap bugs show up earlier.
+ */
+#define INITIAL_JIFFIES ((unsigned long)(unsigned int) (-300*HZ))
+=20
+=20
+ This sets the initial jiffies value to 0x00000000fffb6c20, which can
+trigger 32-bit wraparound bugs .It is an offset to the jiffies
+counter,so that it begins from a large value instead of zero. So the
+wrap-around happens earlier,making it possible to detect any counter
+wrap-around bugs much quicker regardless of the HZ setting.
+=20
+=20
+=20
+=20
+1.Suppose I want to simulate the jiffies wraparound after 30
+mins(1800sec) of reboot.Can I change code as below in kernel?
+=20
+#define INITIAL_JIFFIES ((unsigned long)(unsigned int) (-1800*HZ))
+u64 jiffies_64 =3D INITIAL_JIFFIES;
+=20
+=20
+2.How to verify/test that wraparound has happened?
+=20
+=20
+Regards
+Chandan
 
-A higher level goal would look like
+------_=_NextPart_001_01CC16C5.3A957AB0
+Content-Type: text/html;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 
-"Allow a sandbox app access only to approved resources, to contain the 
-effects of flaws in the app", or similar.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Dus-ascii" =
+http-equiv=3DContent-Type>
+<META name=3DGENERATOR content=3D"MSHTML 8.00.6001.19046"></HEAD>
+<BODY>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
+face=3DArial>Hi,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff =
+face=3DArial>My greetings=20
+to all the enlightened Linux Souls.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><FONT face=3DArial><FONT color=3D#0000ff><SPAN =
+class=3D198195407-20052011>&nbsp;I=20
+got all the mail ids from one of Linux based mail chain/URL </SPAN><SPAN =
 
-Note that this includes a threat model (remote attacker taking control of 
-the app) and a general and fully stated strategy for dealing with it.
+class=3D198195407-20052011>&nbsp;<A=20
+href=3D"http://www.linux-mips.org/archives/linux-mips/2006-05/msg00193.ht=
+ml">http://www.linux-mips.org/archives/linux-mips/2006-05/msg00193.html</=
+A></SPAN></FONT></FONT></DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT face=3DArial><FONT =
+color=3D#0000ff>Pls=20
+guide me on the usage of&nbsp;=20
+<EM>INITIAL_JIFFIES.</EM></FONT></FONT></SPAN></DIV>
+<DIV><SPAN class=3D198195407-20052011><EM><FONT color=3D#0000ff=20
+face=3DArial></FONT></EM></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><EM><FONT color=3D#0000ff=20
+face=3DArial></FONT></EM></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><EM><FONT color=3D#0000ff=20
+face=3DArial></FONT></EM></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff =
+face=3DArial>In the source=20
+of linux kernel \include\linux\jiffies.h there is code like=20
+this</FONT></SPAN></DIV>
+<DIV><SPAN class=3D198195407-20052011></SPAN><SPAN=20
+class=3D198195407-20052011></SPAN><FONT color=3D#0000ff=20
+face=3DArial></FONT>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff =
+face=3DArial>/*<BR>&nbsp;*=20
+Have the 32 bit jiffies value wrap 5 minutes after boot<BR>&nbsp;* so =
+jiffies=20
+wrap bugs show up earlier.<BR>&nbsp;*/<BR>#define INITIAL_JIFFIES =
+((unsigned=20
+long)(unsigned int) (-300*HZ))</FONT></SPAN></DIV>
+<DIV><FONT color=3D#0000ff face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial><FONT color=3D#0000ff><SPAN=20
+class=3D198195407-20052011>&nbsp;<BR>&nbsp;This sets the initial jiffies =
+value to=20
+0x00000000fffb6c20, which can trigger 32-bit wraparound bugs&nbsp;.It is =
+an=20
+offset to the jiffies counter,so that it begins from a large value =
+instead of=20
+zero. So the wrap-around happens </SPAN><SPAN=20
+class=3D198195407-20052011>earlier,making it possible to detect any =
+counter=20
+wrap-around bugs much quicker regardless of the HZ=20
+setting.</SPAN></FONT></FONT></DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT =
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT =
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT =
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080 =
+face=3DArial>1.Suppose I=20
+want to simulate the jiffies wraparound after 30 mins(1800sec) of =
+reboot.Can I=20
+change code as below in kernel?</FONT></SPAN></DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080=20
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080 =
+face=3DArial>#define=20
+INITIAL_JIFFIES ((unsigned long)(unsigned int) =
+(-1800*HZ))</FONT></SPAN></DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080 =
+face=3DArial>u64=20
+jiffies_64 =3D INITIAL_JIFFIES;</FONT></SPAN></DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080 =
+face=3DArial>2.How=20
+to&nbsp;verify/test that wraparound has happened?</FONT></SPAN></DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080=20
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080=20
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
+face=3DArial>Regards</FONT></SPAN></DIV>
+<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
+face=3DArial>Chandan</FONT></SPAN></DIV></BODY></HTML>
+
+------_=_NextPart_001_01CC16C5.3A957AB0--

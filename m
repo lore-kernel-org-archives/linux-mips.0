@@ -1,174 +1,63 @@
-Received: from mail161.messagelabs.com ([216.82.253.115]:19069 "EHLO
-        mail161.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491095Ab1ETIJ4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 20 May 2011 10:09:56 +0200
-Content-class: urn:content-classes:message
+Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]:35112 "EHLO
+        TX2EHSOBE001.bigfish.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491161Ab1EXInE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 24 May 2011 10:43:04 +0200
+Date: Tue, 24 May 2011 10:42:50 +0200
+From: Robert Richter <robert.richter@amd.com>
+Subject: Re: [PATCH 0/2] MIPS: oprofile: callgraph support
+Message-ID: <20110524084250.GR20052@erda.amd.com>
+References: <1305290285-13818-1-git-send-email-gergely@homejinni.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="----_=_NextPart_001_01CC16C5.3A957AB0"
-Subject: Need your help on setting of  INITIAL_JIFFIES
-Date: Fri, 20 May 2011 09:09:23 +0100
-Message-ID: <CF80A1E11D28944EA2838FF532D25C3E03324CCB@zuk35exm65.ds.mot.com>
-From: "MOHANTY CHANDAN-WJKD64" <chandanmohanty@motorolasolutions.com>
-Return-Path: <chandanmohanty@motorolasolutions.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1305290285-13818-1-git-send-email-gergely@homejinni.com>
+Return-Path: <robert.richter@amd.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-To: sshtylyov@ru.mvista.com, hvr@gnu.org, linux-mips@linux-mips.org, clem.taylor@gmail.com, linux-mips-bounce@linux-mips.org, 4468F40F.80902@ru.mvista.com, 4468EE9B.4000009@ru.mvista.com
-Cc: MOHANTY CHANDAN-WJKD64 <chandanmohanty@motorolasolutions.com>
-Message-ID: <20110520080923.C5Sh_CAJbTqMwHy0IVrnIh6lfgwMAe43JLPfKs9LOg8@z>
+To: Gergely Kis <gergely@homejinni.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Daniel Kalmar <kalmard@homejinni.com>, "oprofile-list@lists.sourceforge.net" <oprofile-list@lists.sourceforge.net>
+Message-ID: <20110524084250.c7rKtsGmkQ-hJ1mWXAYfl9LRNAwqRxM5ha-8ii4K8PI@z>
 
-This is a multi-part message in MIME format.
+On 13.05.11 08:38:03, Gergely Kis wrote:
+> From: Daniel Kalmar <kalmard@homejinni.com>
+> 
+> These patches add callgraph/backtrace support to oprofile on MIPS.
+> 
+> Stack unwinding is done by code examination. For kernelspace, the
+> already existing unwind function is utilized that uses kallsyms to
+> quickly find the beginning of functions. For userspace a new function
+> was added that examines code at and before the pc.
+> 
+> Daniel Kalmar (2):
+>   MIPS: Add unwind_stack_by_address to support unwinding from any
+>     kernel code address
+>   MIPS: oprofile: Add callgraph support
+> 
+>  arch/mips/include/asm/stacktrace.h |    4 +
+>  arch/mips/kernel/process.c         |   18 +++-
+>  arch/mips/oprofile/Makefile        |    2 +-
+>  arch/mips/oprofile/backtrace.c     |  173 ++++++++++++++++++++++++++++++++++++
+>  arch/mips/oprofile/common.c        |    1 +
+>  arch/mips/oprofile/op_impl.h       |    2 +
+>  6 files changed, 194 insertions(+), 6 deletions(-)
+>  create mode 100644 arch/mips/oprofile/backtrace.c
 
-------_=_NextPart_001_01CC16C5.3A957AB0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
+Daniel and Gergely,
 
-Hi,
-My greetings to all the enlightened Linux Souls.
-=20
- I got all the mail ids from one of Linux based mail chain/URL
-http://www.linux-mips.org/archives/linux-mips/2006-05/msg00193.html
-=20
-Pls guide me on the usage of  INITIAL_JIFFIES.
-=20
-=20
-=20
-=20
-In the source of linux kernel \include\linux\jiffies.h there is code
-like this
-=20
-/*
- * Have the 32 bit jiffies value wrap 5 minutes after boot
- * so jiffies wrap bugs show up earlier.
- */
-#define INITIAL_JIFFIES ((unsigned long)(unsigned int) (-300*HZ))
-=20
-=20
- This sets the initial jiffies value to 0x00000000fffb6c20, which can
-trigger 32-bit wraparound bugs .It is an offset to the jiffies
-counter,so that it begins from a large value instead of zero. So the
-wrap-around happens earlier,making it possible to detect any counter
-wrap-around bugs much quicker regardless of the HZ setting.
-=20
-=20
-=20
-=20
-1.Suppose I want to simulate the jiffies wraparound after 30
-mins(1800sec) of reboot.Can I change code as below in kernel?
-=20
-#define INITIAL_JIFFIES ((unsigned long)(unsigned int) (-1800*HZ))
-u64 jiffies_64 =3D INITIAL_JIFFIES;
-=20
-=20
-2.How to verify/test that wraparound has happened?
-=20
-=20
-Regards
-Chandan
+the patches look good so far. I fixed the coding style to have the
+opening brace of functions at the beginning of the next line. After
+the MIPS maintainer's ack I will apply them to the oprofile tree.
 
-------_=_NextPart_001_01CC16C5.3A957AB0
-Content-Type: text/html;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
+Thanks for your contribution.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Dus-ascii" =
-http-equiv=3DContent-Type>
-<META name=3DGENERATOR content=3D"MSHTML 8.00.6001.19046"></HEAD>
-<BODY>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
-face=3DArial>Hi,</FONT></SPAN></DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff =
-face=3DArial>My greetings=20
-to all the enlightened Linux Souls.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><FONT face=3DArial><FONT color=3D#0000ff><SPAN =
-class=3D198195407-20052011>&nbsp;I=20
-got all the mail ids from one of Linux based mail chain/URL </SPAN><SPAN =
+Ralf,
 
-class=3D198195407-20052011>&nbsp;<A=20
-href=3D"http://www.linux-mips.org/archives/linux-mips/2006-05/msg00193.ht=
-ml">http://www.linux-mips.org/archives/linux-mips/2006-05/msg00193.html</=
-A></SPAN></FONT></FONT></DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT face=3DArial><FONT =
-color=3D#0000ff>Pls=20
-guide me on the usage of&nbsp;=20
-<EM>INITIAL_JIFFIES.</EM></FONT></FONT></SPAN></DIV>
-<DIV><SPAN class=3D198195407-20052011><EM><FONT color=3D#0000ff=20
-face=3DArial></FONT></EM></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><EM><FONT color=3D#0000ff=20
-face=3DArial></FONT></EM></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><EM><FONT color=3D#0000ff=20
-face=3DArial></FONT></EM></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff =
-face=3DArial>In the source=20
-of linux kernel \include\linux\jiffies.h there is code like=20
-this</FONT></SPAN></DIV>
-<DIV><SPAN class=3D198195407-20052011></SPAN><SPAN=20
-class=3D198195407-20052011></SPAN><FONT color=3D#0000ff=20
-face=3DArial></FONT>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff =
-face=3DArial>/*<BR>&nbsp;*=20
-Have the 32 bit jiffies value wrap 5 minutes after boot<BR>&nbsp;* so =
-jiffies=20
-wrap bugs show up earlier.<BR>&nbsp;*/<BR>#define INITIAL_JIFFIES =
-((unsigned=20
-long)(unsigned int) (-300*HZ))</FONT></SPAN></DIV>
-<DIV><FONT color=3D#0000ff face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial><FONT color=3D#0000ff><SPAN=20
-class=3D198195407-20052011>&nbsp;<BR>&nbsp;This sets the initial jiffies =
-value to=20
-0x00000000fffb6c20, which can trigger 32-bit wraparound bugs&nbsp;.It is =
-an=20
-offset to the jiffies counter,so that it begins from a large value =
-instead of=20
-zero. So the wrap-around happens </SPAN><SPAN=20
-class=3D198195407-20052011>earlier,making it possible to detect any =
-counter=20
-wrap-around bugs much quicker regardless of the HZ=20
-setting.</SPAN></FONT></FONT></DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT =
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT =
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT =
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080 =
-face=3DArial>1.Suppose I=20
-want to simulate the jiffies wraparound after 30 mins(1800sec) of =
-reboot.Can I=20
-change code as below in kernel?</FONT></SPAN></DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080=20
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080 =
-face=3DArial>#define=20
-INITIAL_JIFFIES ((unsigned long)(unsigned int) =
-(-1800*HZ))</FONT></SPAN></DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080 =
-face=3DArial>u64=20
-jiffies_64 =3D INITIAL_JIFFIES;</FONT></SPAN></DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080 =
-face=3DArial>2.How=20
-to&nbsp;verify/test that wraparound has happened?</FONT></SPAN></DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080=20
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#008080=20
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
-face=3DArial>Regards</FONT></SPAN></DIV>
-<DIV><SPAN class=3D198195407-20052011><FONT color=3D#0000ff=20
-face=3DArial>Chandan</FONT></SPAN></DIV></BODY></HTML>
+please ack.
 
-------_=_NextPart_001_01CC16C5.3A957AB0--
+Thanks,
+
+-Robert
+
+-- 
+Advanced Micro Devices, Inc.
+Operating System Research Center

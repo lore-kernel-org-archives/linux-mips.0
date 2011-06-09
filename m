@@ -1,90 +1,48 @@
-Received: from mail.windriver.com ([147.11.1.11]:56649 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1490945Ab1FICUB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Jun 2011 04:20:01 +0200
-Message-ID: <4DF02DAA.7070902@windriver.com>
-Date: Thu, 9 Jun 2011 10:19:22 +0800
-From: Tonyliu <Bo.Liu@windriver.com>
-Reply-To: <Bo.Liu@windriver.com>
-MIME-Version: 1.0
-Subject: Re: Converting MIPS to Device Tree
-References: <20110606010753.GA16202@linux-mips.org>
-In-Reply-To: <20110606010753.GA16202@linux-mips.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+Received: from nbd.name ([46.4.11.11]:34065 "EHLO nbd.name"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491051Ab1FISNu (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 9 Jun 2011 20:13:50 +0200
+From: John Crispin <blogic@openwrt.org>
+Subject: [PATCH V2 1/2] MIPS: lantiq: adds missing clk.h functions
+Date: Thu,  9 Jun 2011 20:15:21 +0200
+Message-ID: <1307643321-10457-1-git-send-email-blogic@openwrt.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Grant Likely <grant.likely@secretlab.ca>, Imre Kaloz <kaloz@openwrt.org>, Gabor Juhos <juhosg@openwrt.org>, John Crispin <blogic@openwrt.org>, Dezhong Diao <dediao@cisco.com>, Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <20110609021922.ZwwzP7IQFkBBcs4uBKOvLz_V1HGAaWwG0k5zTYetvME@z>
+Cc: John Crispin <blogic@openwrt.org>, linux-mips@linux-mips.org
+Message-ID: <20110609181521.gOcGipVT08zIB_FVqyrZIQbFnBJ3oxZ3gvvcC0ADCrM@z>
 
-于 2011年06月06日 09:07, Ralf Baechle 写道:
-> Over the past few days I've started to convert arch/mips to use DT.  So
-> far none of the platforms (except maybe PowerTV?) seems to have a
-> firmware that is passing a DT nor is there any 2nd stage bootloader that
-> could do so.
->
-> So as the 2nd best thing I've been working on .dts files to be compiled
-> into the images.
->
-> I've put a git tree of my current working tree online.  It's absolutely
-> work in progress so expect to encounter bugs.
->
->    http://git.linux-mips.org/?p=linux-dt.git;a=summary (Gitweb)
->    git://git.linux-mips.org/linux-dt.git
->    
-should be git://git.linux-mips.org/pub/scm/linux-dt.git
+The 2 functions clk_enable() and clk_disable were missing.
 
-tonyliu@tonyliu-laptop:/opt/git-root$ git clone 
-git://git.linux-mips.org/linux-dt.git dt-linux_mips
-Initialized empty Git repository in /opt/git-root/dt-linux_mips/.git/
-fatal: The remote end hung up unexpectedly
-tonyliu@tonyliu-laptop:/opt/git-root$ git clone 
-git://git.linux-mips.org/pub/scm/linux-dt.git dt-linux_mips
-Initialized empty Git repository in /opt/git-root/dt-linux_mips/.git/
-remote: Counting objects: 2448486, done.
-remote: Compressing objects: 100% (446507/446507), done.
-Receiving objects: 0% (14786/2448486), 5.26 MiB | 7 KiB/s
-Receiving objects: 0% (18463/2448486), 6.56 MiB | 12 KiB/s
-Receiving objects: 2% (67572/2448486), 24.25 MiB | 11 KiB/s
-Receiving objects: 100% (2448486/2448486), 611.83 MiB | 309 KiB/s, done.
-remote: Total 2448486 (delta 2040537), reused 2388725 (delta 1982106)
-Resolving deltas: 100% (2040537/2040537), done.
-Checking out files: 100% (36749/36749), done.
+Signed-of-by: John Crispin <blogic@openwrt.org>
+Cc: linux-mips@linux-mips.org
+---
+ arch/mips/lantiq/clk.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
 
-Tony
->    http://www.linux-mips.org/wiki/Device_Tree (brief documentation&  links)
->
-> An incomplete to do list:
->
->    o Sort out interface for firmware to pass a DT to the kernel.  Because we
->      have so many different firmware implementations this one might get a
->      slight bit interesting.
->    o Interface to select one of several builtin DT images.  I am thinking of
->      extending the existing MIPS_MACHINE() / machtype mechanism to play
->      nicely with DT.
->    o Finish and test AR7, Cobalt, Jazz, Malta, MIPSsim and SNI ports.
->    o Convert the remaining platforms; find if it's actually sensible to
->      convert all platforms.
->    o I'm considering to make DT support a requirement for future MIPS
->      platforms so you might as well start beating your firmware monkeys /
->      ask Santa to put you a shiny new bootloader blob into the boot now.
->    o Write more of the required infrastructure.
->    o Write documentation
->
-> Contributions and comments welcome,
->
->    Ralf
->
->
->    
-
-
+diff --git a/arch/mips/lantiq/clk.c b/arch/mips/lantiq/clk.c
+index 9456089..7e9c0ff 100644
+--- a/arch/mips/lantiq/clk.c
++++ b/arch/mips/lantiq/clk.c
+@@ -100,6 +100,19 @@ void clk_put(struct clk *clk)
+ }
+ EXPORT_SYMBOL(clk_put);
+ 
++int clk_enable(struct clk *clk)
++{
++	/* not used */
++	return 0;
++}
++EXPORT_SYMBOL(clk_enable);
++
++void clk_disable(struct clk *clk)
++{
++	/* not used */
++}
++EXPORT_SYMBOL(clk_disable);
++
+ static inline u32 ltq_get_counter_resolution(void)
+ {
+ 	u32 res;
 -- 
-Tony Liu | Liu Bo
--------------------------------------------------------------
-WIND RIVER | China Development Center
-Tel: 86-10-8477-8542 ext: 8542 |  Fax: 86-10-64790367
-(M): 86-136-7117-3612
-Address: 15/F, Wangjing TowerB, Chaoyang District, Beijing, P.R.China
+1.7.2.3

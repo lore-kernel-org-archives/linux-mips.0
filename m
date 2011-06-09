@@ -1,74 +1,90 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177]:51769 "EHLO
-        mail-iy0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491821Ab1EaRYw convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 31 May 2011 19:24:52 +0200
+Received: from mail.windriver.com ([147.11.1.11]:56649 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1490945Ab1FICUB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Jun 2011 04:20:01 +0200
+Message-ID: <4DF02DAA.7070902@windriver.com>
+Date: Thu, 9 Jun 2011 10:19:22 +0800
+From: Tonyliu <Bo.Liu@windriver.com>
+Reply-To: <Bo.Liu@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <20110524084250.GR20052@erda.amd.com>
-References: <1305290285-13818-1-git-send-email-gergely@homejinni.com> <20110524084250.GR20052@erda.amd.com>
-From: Gergely Kis <gergely@homejinni.com>
-Date: Tue, 31 May 2011 19:24:26 +0200
-Message-ID: <BANLkTik2RN+DDamEZ96XKBABUwirij1Ydg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] MIPS: oprofile: callgraph support
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
-Return-Path: <gergely@homejinni.com>
+Subject: Re: Converting MIPS to Device Tree
+References: <20110606010753.GA16202@linux-mips.org>
+In-Reply-To: <20110606010753.GA16202@linux-mips.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
+Return-Path: <linux-mips-bounce@linux-mips.org>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Robert Richter <robert.richter@amd.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Daniel Kalmar <kalmard@homejinni.com>, "oprofile-list@lists.sourceforge.net" <oprofile-list@lists.sourceforge.net>
-Message-ID: <20110531172426.P__MjltMKytZ9pqtKeFhqLMlTHgv8OmfeHJkudl7iuk@z>
+Cc: linux-mips@linux-mips.org, Grant Likely <grant.likely@secretlab.ca>, Imre Kaloz <kaloz@openwrt.org>, Gabor Juhos <juhosg@openwrt.org>, John Crispin <blogic@openwrt.org>, Dezhong Diao <dediao@cisco.com>, Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <20110609021922.ZwwzP7IQFkBBcs4uBKOvLz_V1HGAaWwG0k5zTYetvME@z>
 
-Dear Ralf,
+äºŽ 2011å¹´06æœˆ06æ—¥ 09:07, Ralf Baechle å†™é“:
+> Over the past few days I've started to convert arch/mips to use DT.  So
+> far none of the platforms (except maybe PowerTV?) seems to have a
+> firmware that is passing a DT nor is there any 2nd stage bootloader that
+> could do so.
+>
+> So as the 2nd best thing I've been working on .dts files to be compiled
+> into the images.
+>
+> I've put a git tree of my current working tree online.  It's absolutely
+> work in progress so expect to encounter bugs.
+>
+>    http://git.linux-mips.org/?p=linux-dt.git;a=summary (Gitweb)
+>    git://git.linux-mips.org/linux-dt.git
+>    
+should be git://git.linux-mips.org/pub/scm/linux-dt.git
 
-Did you have a chance to look at our oprofile callgraph patch?
+tonyliu@tonyliu-laptop:/opt/git-root$ git clone 
+git://git.linux-mips.org/linux-dt.git dt-linux_mips
+Initialized empty Git repository in /opt/git-root/dt-linux_mips/.git/
+fatal: The remote end hung up unexpectedly
+tonyliu@tonyliu-laptop:/opt/git-root$ git clone 
+git://git.linux-mips.org/pub/scm/linux-dt.git dt-linux_mips
+Initialized empty Git repository in /opt/git-root/dt-linux_mips/.git/
+remote: Counting objects: 2448486, done.
+remote: Compressing objects: 100% (446507/446507), done.
+Receiving objects: 0% (14786/2448486), 5.26 MiB | 7 KiB/s
+Receiving objects: 0% (18463/2448486), 6.56 MiB | 12 KiB/s
+Receiving objects: 2% (67572/2448486), 24.25 MiB | 11 KiB/s
+Receiving objects: 100% (2448486/2448486), 611.83 MiB | 309 KiB/s, done.
+remote: Total 2448486 (delta 2040537), reused 2388725 (delta 1982106)
+Resolving deltas: 100% (2040537/2040537), done.
+Checking out files: 100% (36749/36749), done.
 
-Thank you,
-Gergely
+Tony
+>    http://www.linux-mips.org/wiki/Device_Tree (brief documentation&  links)
+>
+> An incomplete to do list:
+>
+>    o Sort out interface for firmware to pass a DT to the kernel.  Because we
+>      have so many different firmware implementations this one might get a
+>      slight bit interesting.
+>    o Interface to select one of several builtin DT images.  I am thinking of
+>      extending the existing MIPS_MACHINE() / machtype mechanism to play
+>      nicely with DT.
+>    o Finish and test AR7, Cobalt, Jazz, Malta, MIPSsim and SNI ports.
+>    o Convert the remaining platforms; find if it's actually sensible to
+>      convert all platforms.
+>    o I'm considering to make DT support a requirement for future MIPS
+>      platforms so you might as well start beating your firmware monkeys /
+>      ask Santa to put you a shiny new bootloader blob into the boot now.
+>    o Write more of the required infrastructure.
+>    o Write documentation
+>
+> Contributions and comments welcome,
+>
+>    Ralf
+>
+>
+>    
 
-On Tue, May 24, 2011 at 10:42 AM, Robert Richter <robert.richter@amd.com> wrote:
-> On 13.05.11 08:38:03, Gergely Kis wrote:
->> From: Daniel Kalmar <kalmard@homejinni.com>
->>
->> These patches add callgraph/backtrace support to oprofile on MIPS.
->>
->> Stack unwinding is done by code examination. For kernelspace, the
->> already existing unwind function is utilized that uses kallsyms to
->> quickly find the beginning of functions. For userspace a new function
->> was added that examines code at and before the pc.
->>
->> Daniel Kalmar (2):
->>   MIPS: Add unwind_stack_by_address to support unwinding from any
->>     kernel code address
->>   MIPS: oprofile: Add callgraph support
->>
->>  arch/mips/include/asm/stacktrace.h |    4 +
->>  arch/mips/kernel/process.c         |   18 +++-
->>  arch/mips/oprofile/Makefile        |    2 +-
->>  arch/mips/oprofile/backtrace.c     |  173 ++++++++++++++++++++++++++++++++++++
->>  arch/mips/oprofile/common.c        |    1 +
->>  arch/mips/oprofile/op_impl.h       |    2 +
->>  6 files changed, 194 insertions(+), 6 deletions(-)
->>  create mode 100644 arch/mips/oprofile/backtrace.c
->
-> Daniel and Gergely,
->
-> the patches look good so far. I fixed the coding style to have the
-> opening brace of functions at the beginning of the next line. After
-> the MIPS maintainer's ack I will apply them to the oprofile tree.
->
-> Thanks for your contribution.
->
-> Ralf,
->
-> please ack.
->
-> Thanks,
->
-> -Robert
->
-> --
-> Advanced Micro Devices, Inc.
-> Operating System Research Center
->
->
+
+-- 
+Tony Liu | Liu Bo
+-------------------------------------------------------------
+WIND RIVER | China Development Center
+Tel: 86-10-8477-8542 ext: 8542 |  Fax: 86-10-64790367
+(M): 86-136-7117-3612
+Address: 15/F, Wangjing TowerB, Chaoyang District, Beijing, P.R.China

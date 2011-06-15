@@ -1,58 +1,43 @@
-Received: from db3ehsobe003.messaging.microsoft.com ([213.199.154.141]:7961
-        "EHLO DB3EHSOBE003.bigfish.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1490982Ab1FOM4H (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Jun 2011 14:56:07 +0200
-Date: Wed, 15 Jun 2011 14:55:53 +0200
-From: Robert Richter <robert.richter@amd.com>
-Subject: Re: [PATCH 0/2] MIPS: oprofile: callgraph support
-Message-ID: <20110615125553.GC20052@erda.amd.com>
-References: <1305290285-13818-1-git-send-email-gergely@homejinni.com>
- <20110524084250.GR20052@erda.amd.com>
- <20110610123557.GQ20052@erda.amd.com>
+Received: from imr3.ericy.com ([198.24.6.13]:40961 "EHLO imr3.ericy.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491098Ab1FOOqS (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 15 Jun 2011 16:46:18 +0200
+Date: Wed, 15 Jun 2011 07:36:34 -0700
+From: Guenter Roeck <guenter.roeck@ericsson.com>
+Subject: Re: [RFC,PATCH] Cleanup PC parallel port Kconfig
+Message-ID: <20110615143634.GA12757@ericsson.com>
+References: <20110614190850.GA13526@linux-mips.org>
+ <4DF7C3CA.9050902@zytor.com>
+ <20110614223404.GA30057@linux-mips.org>
+ <4DF8329C.7000904@zytor.com>
+ <20110615083437.GA32624@linux-mips.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20110610123557.GQ20052@erda.amd.com>
+In-Reply-To: <20110615083437.GA32624@linux-mips.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Daniel Kalmar <kalmard@homejinni.com>
-Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Gergely Kis <gergely@homejinni.com>, Ralf Baechle <ralf@linux-mips.org>, "oprofile-list@lists.sourceforge.net" <oprofile-list@lists.sourceforge.net>
-Message-ID: <20110615125553.AQmtuC-zT-qg1ngu-pXKIUkYA1Vg6NLmGfnoJYZOAog@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Chen Liqin <liqin.chen@sunplusct.com>, Chris Metcalf <cmetcalf@tilera.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jesper Nilsson <jesper.nilsson@axis.com>, Kyle McMartin <kyle@mcmartin.ca>, Lennox Wu <lennox.wu@gmail.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Mikael Starvik <starvik@axis.com>, Paul Mackerras <paulus@samba.org>, Paul Mundt <lethal@linux-sh.org>, Richard Henderson <rth@twiddle.net>, Russell King <linux@arm.linux.org.uk>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, "x86@kernel.org" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, "microblaze-uclinux@itee.uq.edu.au" <microblaze-uclinux@itee.uq.edu.au>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>
+Message-ID: <20110615143634.dJk-XOSHVlZFiYrZlDHXvDUxWsrbFeWJrSPhqyhcp38@z>
 
-On 10.06.11 14:35:57, Robert Richter wrote:
-> On 24.05.11 10:42:50, Robert Richter wrote:
-> > On 13.05.11 08:38:03, Gergely Kis wrote:
-> > > From: Daniel Kalmar <kalmard@homejinni.com>
-> > > 
-> > > These patches add callgraph/backtrace support to oprofile on MIPS.
-> > > 
-> > > Stack unwinding is done by code examination. For kernelspace, the
-> > > already existing unwind function is utilized that uses kallsyms to
-> > > quickly find the beginning of functions. For userspace a new function
-> > > was added that examines code at and before the pc.
-> > > 
-> > > Daniel Kalmar (2):
-> > >   MIPS: Add unwind_stack_by_address to support unwinding from any
-> > >     kernel code address
-> > >   MIPS: oprofile: Add callgraph support
-> > > 
-> > >  arch/mips/include/asm/stacktrace.h |    4 +
-> > >  arch/mips/kernel/process.c         |   18 +++-
-> > >  arch/mips/oprofile/Makefile        |    2 +-
-> > >  arch/mips/oprofile/backtrace.c     |  173 ++++++++++++++++++++++++++++++++++++
-> > >  arch/mips/oprofile/common.c        |    1 +
-> > >  arch/mips/oprofile/op_impl.h       |    2 +
-> > >  6 files changed, 194 insertions(+), 6 deletions(-)
-> > >  create mode 100644 arch/mips/oprofile/backtrace.c
+On Wed, Jun 15, 2011 at 04:34:37AM -0400, Ralf Baechle wrote:
+> On Tue, Jun 14, 2011 at 09:18:36PM -0700, H. Peter Anvin wrote:
 > 
-> If there are no objections I will apply the patches next week to the
-> oprofile tree.
+> > On 06/14/2011 03:34 PM, Ralf Baechle wrote:
+> > > 
+> > > There is no point in offering to build something that couldn't possibly be
+> > > used.  It just makes the kernel harder to configure and inflates the test
+> > > matrix for no good reason.
+> > > 
+> > 
+> > I see... that's why a bunch of devices that only exist on ARM and MIPS
+> > SoCs are offered on x86 platforms?
+> 
+> Well, if you notice one of those, yell.  Or send patches.  Most of those
+> have been fixed.
+> 
+I think he was being sarcastic, and wanted to say that it should be that way.
 
-Applied to oprofile/core. Thanks Daniel.
-
--Robert
-
--- 
-Advanced Micro Devices, Inc.
-Operating System Research Center
+Guenter

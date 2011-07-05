@@ -1,171 +1,194 @@
-Received: from [69.28.251.93] ([69.28.251.93]:57856 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491134Ab1FRSiL (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 18 Jun 2011 20:38:11 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Subject: [PATCH -queue] MIPS: Trivial style cleanups in mmap.c
-Date: Sat, 18 Jun 2011 11:28:48 -0700
-Message-ID: <50c16d4ef04b5213459ba15d14e30459@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: from mail-ww0-f43.google.com ([74.125.82.43]:39364 "EHLO
+        mail-ww0-f43.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491977Ab1GEOHF (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Jul 2011 16:07:05 +0200
+From: Ohad Ben-Cohen <ohad@wizery.com>
+Subject: [RFC] virtio: expose for non-virtualization users too
+Date: Tue,  5 Jul 2011 17:06:14 +0300
+Message-ID: <1309874774-31689-1-git-send-email-ohad@wizery.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Jian Peng <jipeng2005@gmail.com>, David Daney <ddaney@caviumnetworks.com>, linux-mips@linux-mips.org
-Message-ID: <20110618182848.evcuqUiZdzLyQKYY5cPBjeMyTcpQIBOJyrApuvX1HcU@z>
+To: Rusty Russell <rusty@rustcorp.com.au>, virtualization@lists.linux-foundation.org
+Cc: Grant Likely <grant.likely@secretlab.ca>, Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Xiantao Zhang <xiantao.zhang@intel.com>, Avi Kivity <avi@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Ralf Baechle <ralf@linux-mips.org>, Alexander Graf <agraf@suse.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Carsten Otte <cotte@de.ibm.com>, Christian Borntraeger <borntraeger@de.ibm.com>, linux390@de.ibm.com, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Paul Mundt <lethal@linux-sh.org>, Chris Metcalf <cmetcalf@tilera.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, Ohad Ben-Cohen <ohad@wizery.com>, Russell King <rmk+kernel@arm.linux.org.uk>, John Stultz <john.stultz@linaro.org>, Andrew Morton <akpm@linux-foundation.org>, kvm-ia64@vger.kernel.org, kvm@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org
+Message-ID: <20110705140614.vpfgNyWRcZL6ixl0H7gYKROFL9dEH07FWF3KAT2cMfE@z>
 
-Fix checkpatch warnings.  Rename arch_get_unmapped_area_foo() to
-arch_get_unmapped_area_common().  Make indentations and spacing more
-consistent.  Add <linux/compiler.h> for likely/unlikely.
+virtio has been so far used only in the context of virtualization,
+and the virtio Kconfig was sourced directly by the relevant arch
+Kconfigs when VIRTUALIZATION was selected.
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+Now that we start using virtio for inter-processor communications,
+we need to source the virtio Kconfig outside of the virtualization
+scope too.
+
+Moreover, some architectures might use virtio for both virtualization
+and inter-processor communications, so directly sourcing virtio
+might yield unexpected results due to conflicting selections.
+
+The simple solution offered by this patch is to always source virtio's
+Kconfig in drivers/Kconfig, and remove it from the appropriate arch
+Kconfigs. Additionally, a virtio menu entry has been added so virtio
+drivers don't show up in the general drivers menu.
+
+This way anyone can use virtio, though it's arguably less accessible
+(and neat!) for virtualization users now.
+
+Note: some architectures (mips and sh) seem to have a VIRTUALIZATION
+menu merely for sourcing virtio's Kconfig, so that menu is removed too.
+
+Signed-off-by: Ohad Ben-Cohen <ohad@wizery.com>
 ---
- arch/mips/mm/mmap.c |   48 +++++++++++++++++++++++++-----------------------
- 1 files changed, 25 insertions(+), 23 deletions(-)
+The motivation behind this patch is: https://lkml.org/lkml/2011/6/21/47
 
-diff --git a/arch/mips/mm/mmap.c b/arch/mips/mm/mmap.c
-index 9ff5d0f..302d779 100644
---- a/arch/mips/mm/mmap.c
-+++ b/arch/mips/mm/mmap.c
-@@ -6,6 +6,7 @@
-  * Copyright (C) 2011 Wind River Systems,
-  *   written by Ralf Baechle <ralf@linux-mips.org>
-  */
-+#include <linux/compiler.h>
- #include <linux/errno.h>
- #include <linux/mm.h>
- #include <linux/mman.h>
-@@ -15,12 +16,11 @@
- #include <linux/sched.h>
+If the general approach is agreed upon, we can either merge the patch
+independently, or add it to the AMP patch set.
+
+ arch/ia64/kvm/Kconfig    |    1 -
+ arch/mips/Kconfig        |   16 ----------------
+ arch/powerpc/kvm/Kconfig |    1 -
+ arch/s390/kvm/Kconfig    |    1 -
+ arch/sh/Kconfig          |   16 ----------------
+ arch/tile/kvm/Kconfig    |    1 -
+ arch/x86/kvm/Kconfig     |    1 -
+ drivers/Kconfig          |    2 ++
+ drivers/virtio/Kconfig   |    3 +++
+ 9 files changed, 5 insertions(+), 37 deletions(-)
+
+diff --git a/arch/ia64/kvm/Kconfig b/arch/ia64/kvm/Kconfig
+index fa4d1e5..9806e55 100644
+--- a/arch/ia64/kvm/Kconfig
++++ b/arch/ia64/kvm/Kconfig
+@@ -49,6 +49,5 @@ config KVM_INTEL
+ 	  extensions.
  
- unsigned long shm_align_mask = PAGE_SIZE - 1;	/* Sane caches */
+ source drivers/vhost/Kconfig
+-source drivers/virtio/Kconfig
+ 
+ endif # VIRTUALIZATION
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 653da62..a627a2c 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2489,20 +2489,4 @@ source "security/Kconfig"
+ 
+ source "crypto/Kconfig"
+ 
+-menuconfig VIRTUALIZATION
+-	bool "Virtualization"
+-	default n
+-	---help---
+-	  Say Y here to get to see options for using your Linux host to run other
+-	  operating systems inside virtual machines (guests).
+-	  This option alone does not add any kernel code.
 -
- EXPORT_SYMBOL(shm_align_mask);
- 
- /* gap between mmap and stack */
- #define MIN_GAP (128*1024*1024UL)
--#define MAX_GAP        ((TASK_SIZE)/6*5)
-+#define MAX_GAP ((TASK_SIZE)/6*5)
- 
- static int mmap_is_legacy(void)
- {
-@@ -57,13 +57,13 @@ static inline unsigned long COLOUR_ALIGN_DOWN(unsigned long addr,
- 	return base - off;
- }
- 
--#define COLOUR_ALIGN(addr,pgoff)				\
-+#define COLOUR_ALIGN(addr, pgoff)				\
- 	((((addr) + shm_align_mask) & ~shm_align_mask) +	\
- 	 (((pgoff) << PAGE_SHIFT) & shm_align_mask))
- 
- enum mmap_allocation_direction {UP, DOWN};
- 
--static unsigned long arch_get_unmapped_area_foo(struct file *filp,
-+static unsigned long arch_get_unmapped_area_common(struct file *filp,
- 	unsigned long addr0, unsigned long len, unsigned long pgoff,
- 	unsigned long flags, enum mmap_allocation_direction dir)
- {
-@@ -103,16 +103,16 @@ static unsigned long arch_get_unmapped_area_foo(struct file *filp,
- 
- 		vma = find_vma(mm, addr);
- 		if (TASK_SIZE - len >= addr &&
--		   (!vma || addr + len <= vma->vm_start))
-+		    (!vma || addr + len <= vma->vm_start))
- 			return addr;
- 	}
- 
- 	if (dir == UP) {
- 		addr = mm->mmap_base;
--			if (do_color_align)
--				addr = COLOUR_ALIGN(addr, pgoff);
--			else
--				addr = PAGE_ALIGN(addr);
-+		if (do_color_align)
-+			addr = COLOUR_ALIGN(addr, pgoff);
-+		else
-+			addr = PAGE_ALIGN(addr);
- 
- 		for (vma = find_vma(current->mm, addr); ; vma = vma->vm_next) {
- 			/* At this point:  (!vma || addr < vma->vm_end). */
-@@ -131,28 +131,30 @@ static unsigned long arch_get_unmapped_area_foo(struct file *filp,
- 			mm->free_area_cache = mm->mmap_base;
- 		}
- 
--		/* either no address requested or can't fit in requested address hole */
-+		/*
-+		 * either no address requested, or the mapping can't fit into
-+		 * the requested address hole
-+		 */
- 		addr = mm->free_area_cache;
--			if (do_color_align) {
--				unsigned long base =
--					COLOUR_ALIGN_DOWN(addr - len, pgoff);
+-	  If you say N, all options in this submenu will be skipped and disabled.
 -
-+		if (do_color_align) {
-+			unsigned long base =
-+				COLOUR_ALIGN_DOWN(addr - len, pgoff);
- 			addr = base + len;
--		 }
-+		}
+-if VIRTUALIZATION
+-
+-source drivers/virtio/Kconfig
+-
+-endif # VIRTUALIZATION
+-
+ source "lib/Kconfig"
+diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
+index b7baff7..105b691 100644
+--- a/arch/powerpc/kvm/Kconfig
++++ b/arch/powerpc/kvm/Kconfig
+@@ -99,6 +99,5 @@ config KVM_E500
+ 	  If unsure, say N.
  
- 		/* make sure it can fit in the remaining address space */
- 		if (likely(addr > len)) {
- 			vma = find_vma(mm, addr - len);
- 			if (!vma || addr <= vma->vm_start) {
--				/* remember the address as a hint for next time */
--				return mm->free_area_cache = addr-len;
-+				/* cache the address as a hint for next time */
-+				return mm->free_area_cache = addr - len;
- 			}
- 		}
+ source drivers/vhost/Kconfig
+-source drivers/virtio/Kconfig
  
- 		if (unlikely(mm->mmap_base < len))
- 			goto bottomup;
+ endif # VIRTUALIZATION
+diff --git a/arch/s390/kvm/Kconfig b/arch/s390/kvm/Kconfig
+index f66a1bd..a216341 100644
+--- a/arch/s390/kvm/Kconfig
++++ b/arch/s390/kvm/Kconfig
+@@ -37,6 +37,5 @@ config KVM
+ # OK, it's a little counter-intuitive to do this, but it puts it neatly under
+ # the virtualization menu.
+ source drivers/vhost/Kconfig
+-source drivers/virtio/Kconfig
  
--		addr = mm->mmap_base-len;
-+		addr = mm->mmap_base - len;
- 		if (do_color_align)
- 			addr = COLOUR_ALIGN_DOWN(addr, pgoff);
+ endif # VIRTUALIZATION
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index bbdeb48..748ff19 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -897,20 +897,4 @@ source "security/Kconfig"
  
-@@ -163,8 +165,8 @@ static unsigned long arch_get_unmapped_area_foo(struct file *filp,
- 			 * return with success:
- 			 */
- 			vma = find_vma(mm, addr);
--			if (likely(!vma || addr+len <= vma->vm_start)) {
--				/* remember the address as a hint for next time */
-+			if (likely(!vma || addr + len <= vma->vm_start)) {
-+				/* cache the address as a hint for next time */
- 				return mm->free_area_cache = addr;
- 			}
+ source "crypto/Kconfig"
  
-@@ -173,7 +175,7 @@ static unsigned long arch_get_unmapped_area_foo(struct file *filp,
- 				mm->cached_hole_size = vma->vm_start - addr;
+-menuconfig VIRTUALIZATION
+-	bool "Virtualization"
+-	default n
+-	---help---
+-	  Say Y here to get to see options for using your Linux host to run other
+-	  operating systems inside virtual machines (guests).
+-	  This option alone does not add any kernel code.
+-
+-	  If you say N, all options in this submenu will be skipped and disabled.
+-
+-if VIRTUALIZATION
+-
+-source drivers/virtio/Kconfig
+-
+-endif # VIRTUALIZATION
+-
+ source "lib/Kconfig"
+diff --git a/arch/tile/kvm/Kconfig b/arch/tile/kvm/Kconfig
+index b88f9c0..669fcdb 100644
+--- a/arch/tile/kvm/Kconfig
++++ b/arch/tile/kvm/Kconfig
+@@ -33,6 +33,5 @@ config KVM
+ 	  If unsure, say N.
  
- 			/* try just below the current vma->vm_start */
--			addr = vma->vm_start-len;
-+			addr = vma->vm_start - len;
- 			if (do_color_align)
- 				addr = COLOUR_ALIGN_DOWN(addr, pgoff);
- 		} while (likely(len < vma->vm_start));
-@@ -201,7 +203,7 @@ bottomup:
- unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr0,
- 	unsigned long len, unsigned long pgoff, unsigned long flags)
- {
--	return arch_get_unmapped_area_foo(filp,
-+	return arch_get_unmapped_area_common(filp,
- 			addr0, len, pgoff, flags, UP);
- }
+ source drivers/vhost/Kconfig
+-source drivers/virtio/Kconfig
  
-@@ -213,7 +215,7 @@ unsigned long arch_get_unmapped_area_topdown(struct file *filp,
- 	unsigned long addr0, unsigned long len, unsigned long pgoff,
- 	unsigned long flags)
- {
--	return arch_get_unmapped_area_foo(filp,
-+	return arch_get_unmapped_area_common(filp,
- 			addr0, len, pgoff, flags, DOWN);
- }
+ endif # VIRTUALIZATION
+diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+index 50f6364..65cf823 100644
+--- a/arch/x86/kvm/Kconfig
++++ b/arch/x86/kvm/Kconfig
+@@ -76,6 +76,5 @@ config KVM_MMU_AUDIT
+ # the virtualization menu.
+ source drivers/vhost/Kconfig
+ source drivers/lguest/Kconfig
+-source drivers/virtio/Kconfig
  
+ endif # VIRTUALIZATION
+diff --git a/drivers/Kconfig b/drivers/Kconfig
+index 3bb154d..795218e 100644
+--- a/drivers/Kconfig
++++ b/drivers/Kconfig
+@@ -114,6 +114,8 @@ source "drivers/uio/Kconfig"
+ 
+ source "drivers/vlynq/Kconfig"
+ 
++source "drivers/virtio/Kconfig"
++
+ source "drivers/xen/Kconfig"
+ 
+ source "drivers/staging/Kconfig"
+diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
+index 3dd6294..57e493b 100644
+--- a/drivers/virtio/Kconfig
++++ b/drivers/virtio/Kconfig
+@@ -7,6 +7,8 @@ config VIRTIO_RING
+ 	tristate
+ 	depends on VIRTIO
+ 
++menu "Virtio drivers"
++
+ config VIRTIO_PCI
+ 	tristate "PCI driver for virtio devices (EXPERIMENTAL)"
+ 	depends on PCI && EXPERIMENTAL
+@@ -33,3 +35,4 @@ config VIRTIO_BALLOON
+ 
+ 	 If unsure, say M.
+ 
++endmenu
 -- 
-1.7.5
+1.7.1

@@ -1,81 +1,50 @@
-Received: from mail-pz0-f53.google.com ([209.85.210.53]:54058 "EHLO
-        mail-pz0-f53.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491803Ab1GORoz convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 15 Jul 2011 19:44:55 +0200
-Received: by pzk6 with SMTP id 6so1939552pzk.26
-        for <linux-mips@linux-mips.org>; Fri, 15 Jul 2011 10:44:48 -0700 (PDT)
+Received: from inx.pm.waw.pl ([195.116.170.130]:58534 "EHLO inx.pm.waw.pl"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491144Ab1GUROr convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Jul 2011 19:14:47 +0200
+From: Krzysztof Halasa <khc@pm.waw.pl>
+Subject: Re: [PATCH] PCI: Make the struct pci_dev * argument of pci_fixup_irqs const.
+References: <20110610143021.GA26043@linux-mips.org>
+Date: Thu, 21 Jul 2011 21:14:24 +0200
+In-Reply-To: <20110610143021.GA26043@linux-mips.org> (Ralf Baechle's message
+        of "Fri, 10 Jun 2011 15:30:21 +0100")
+Message-ID: <m3hb6fe99r.fsf@intrepid.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <CALGOZk2M8Hn_EA+Mqg3frZzLGZgr0bbj3VV8mUqUB1taCdwXJg@mail.gmail.com>
-References: <CALGOZk2M8Hn_EA+Mqg3frZzLGZgr0bbj3VV8mUqUB1taCdwXJg@mail.gmail.com>
-Date: Fri, 15 Jul 2011 10:44:48 -0700
-Message-ID: <CAJiQ=7Chq8zP9LHLvnQ_3Hi-YSD4PTbxT73ZLc=M2jLSZpW_cA@mail.gmail.com>
-Subject: Re: Confusion with vmlinux objcopy translation
-From: Kevin Cernekee <cernekee@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8BIT
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: David Peverley <pev@sketchymonkey.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20110715174448.6VQZtoxEWzAkIIlScw3567ItswQQm7eHKyhjQ6U9_10@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Jesse Barnes <jbarnes@virtuousgeek.org>, linux-pci@vger.kernel.org, Anton Vorontsov <avorontsov@mvista.com>, Chris Metcalf <cmetcalf@tilera.com>, Colin Cross <ccross@android.com>, "David S. Miller" <davem@davemloft.net>, Eric Miao <eric.y.miao@gmail.com>, Erik Gilling <konkers@android.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, "H. Peter Anvin" <hpa@zytor.com>, Imre Kaloz <kaloz@openwrt.org>, Ingo Molnar <mingo@redhat.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Lennert Buytenhek <kernel@wantstofly.org>, Matt Turner <mattst88@gmail.com>, Nicolas Pitre <nico@fluxnic.net>, Olof Johansson <olof@lixom.net>, Paul Mundt <lethal@linux-sh.org>, Richard Henderson <rth@twiddle.net>, Russell King <linux@arm.linux.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Andrew Morton <akpm@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, linux -tegra@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Message-ID: <20110721191424.vXjnU2U1r918JzQklGp8RYDKLS3OJibCRj2ef1yN4m4@z>
 
-On Fri, Jul 15, 2011 at 7:56 AM, David Peverley <pev@sketchymonkey.com> wrote:
-> Checking via GDB to see what the code looks like :
->  (gdb) disassemble kernel_entry
->  Dump of assembler code for function kernel_entry:
->  0x80504590 <kernel_entry+0>:    add    %ah,0x8(%eax)
->  0x80504593 <kernel_entry+3>:    inc    %eax
+Ralf Baechle <ralf@linux-mips.org> writes:
 
-In the future, you may want to use "disass/r kernel_entry" to see the
-hex instructions, and correlate that output to what you see in the
-file.
-
-It would also be helpful to use a cross gdb built for MIPS.
-
-But the "objdump -d" output is probably enough to go on.  e.g.
-mipsel-percello-linux-gnu-objdump -d vmlinux | grep -A5
-'kernel_entry.:'
-
-> I then convert this vmlinux file to a binary image :
->  $ mipsel-percello-linux-gnu-objcopy -O binary ./vmlinux ./vmlinux.bin.test
+> Aside of the usual motivation for constification,  this function has a
+> history of being abused a hook for interrupt and other fixups so I turned
+> this function const ages ago in the MIPS code but it should be done
+> treewide.
 >
-> and then hexdump to see what's at the kernel_entry offset :
->  $ xxd -g xxd -g 4 -s 0x4550 -l 0x80 ./vmlinux.bin.test
->  0004550: 00600840 0010013c 1f002134 25400101  .`.@...<..!4%@..
->  0004560: 1f000839 00608840 c0000000 5080083c  ...9.`.@....P..<
->  0004570: bc450825 08000001 00000000 9c80083c  .E.%...........<
->  0004580: 00700825 000000ad a180093c dcb22925  .p.%.......<..)%
->  0004590: 04000825 feff0915 000000ad 9c80013c  ...%...........<
->  00045a0: 647624ac 9c80013c 687625ac 9c80013c  dv$....<hv%....<
->  00045b0: 6c7626ac 9c80013c 707627ac 00208040  lv&....<pv'.. .@
->  00045c0: 96801c3c 00609c27 e01f1d24 21e8bc03  ...<.`.'...$!...
->
-> The code for kernel_entry seems to be at an offset of 0x0004550. This
-> is -0x40 bytes below where I'd expected! Am I missing something? I can
-> confirm this by using my bootloader to load vmlinux.bin a
-> (load_address + 0x40) and it runs just fine.
+> Due to function pointer passing in varous places a few other functions
+> had to be constified as well.
 
-I think the key here is the load address of the first ELF section.
-From the objcopy man page:
+>  arch/arm/mach-ixp4xx/avila-pci.c               |    2 +-
+>  arch/arm/mach-ixp4xx/coyote-pci.c              |    2 +-
+>  arch/arm/mach-ixp4xx/dsmg600-pci.c             |    2 +-
+>  arch/arm/mach-ixp4xx/fsg-pci.c                 |    2 +-
+>  arch/arm/mach-ixp4xx/gateway7001-pci.c         |    3 ++-
+>  arch/arm/mach-ixp4xx/goramo_mlr.c              |    2 +-
+>  arch/arm/mach-ixp4xx/gtwx5715-pci.c            |    2 +-
+>  arch/arm/mach-ixp4xx/ixdp425-pci.c             |    2 +-
+>  arch/arm/mach-ixp4xx/ixdpg425-pci.c            |    2 +-
+>  arch/arm/mach-ixp4xx/nas100d-pci.c             |    2 +-
+>  arch/arm/mach-ixp4xx/nslu2-pci.c               |    2 +-
+>  arch/arm/mach-ixp4xx/vulcan-pci.c              |    2 +-
+>  arch/arm/mach-ixp4xx/wg302v2-pci.c             |    2 +-
 
-"objcopy can be used to generate a raw binary file by using an output
-target of binary (e.g., use -O binary).  When objcopy generates a raw
-binary file, it will essentially produce a memory dump of the contents
-of the input object file.  All symbols and relocation information will
-be discarded.  The memory dump will start at the load address of the
-lowest section copied into the output file."
+The IXP4xx part looks good to me.
 
-So, the kernel_entry address really does not matter in this context.
-Although obviously it's good to know whether the kernel_entry code is
-getting loaded into the right memory location.
-
-Posting the output from "objdump -x vmlinux" (or maybe even a URL from
-which to download your vmlinux file) may help shed light on what is
-happening.
-
-BTW: I enable CONFIG_BOOT_RAW on my images so that I don't have to
-worry about finding the ELF start address after converting vmlinux
-into a raw binary image.  This lets me jump to a fixed start address,
-even if the address of kernel_entry moves around.
+Acked-by: Krzysztof Hałasa <khc@pm.waw.pl>
+-- 
+Krzysztof Halasa

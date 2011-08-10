@@ -1,253 +1,195 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49]:45013 "EHLO
-        mail-fx0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491762Ab1HBRvi (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Aug 2011 19:51:38 +0200
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: [PATCH 12/15] MMC: au1xmmc: remove Alchemy CPU subtype dependencies
-Date: Tue,  2 Aug 2011 19:51:07 +0200
-Message-ID: <1312307470-6841-13-git-send-email-manuel.lauss@googlemail.com>
-In-Reply-To: <1312307470-6841-1-git-send-email-manuel.lauss@googlemail.com>
-References: <1312307470-6841-1-git-send-email-manuel.lauss@googlemail.com>
+Received: from gandharva.secretlabs.de ([78.46.147.237]:26895 "EHLO
+        gandharva.secretlabs.de" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491116Ab1HJHYe (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 10 Aug 2011 09:24:34 +0200
+Received: from [172.31.14.96] (unknown [222.128.194.2])
+        by gandharva.secretlabs.de (Postfix) with ESMTPSA id A7C9C1B10C0F
+        for <linux-mips@linux-mips.org>; Wed, 10 Aug 2011 07:35:29 +0000 (UTC)
+Message-ID: <4E423228.2080309@freyther.de>
+Date: Wed, 10 Aug 2011 09:24:24 +0200
+From: Holger Hans Peter Freyther <holger@freyther.de>
+MIME-Version: 1.0
+Subject: [RFC][PATCH] Implement perf_callchain_user for o32 ABI (on mipsel)
+Content-Type: multipart/mixed;
+ boundary="------------060009060802060709030201"
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Linux-MIPS <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>
-Cc: Manuel Lauss <manuel.lauss@googlemail.com>, linux-mmc@vger.kernel.org
-Message-ID: <20110802175107.gGOL2XAaMdre4KnT8NQWASGk1ROVuPapaibsr6PtS2I@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20110810072424.A-I94mki4gCVSEh4UpspgVoJWjLjOHDzNQsTRYbM_QY@z>
 
-Replace all occurrences of CONFIG_SOC_AU1??? with runtime feature
-detection.
+This is a multi-part message in MIME format.
+--------------060009060802060709030201
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Cc: <linux-mmc@vger.kernel.org>
-Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
+Hi all,
+
+I wanted to use perf to profile my userspace application on MIPS but I saw
+that there is no solution for that. I have written some code to scan the
+prologue of the function to identify the stack size and where in the stack the
+return address is stored.
+
+   0:	27bdffd8 	addiu	sp,sp,-40 <-- used to find prev. stack
+   4:	afbf0024 	sw	ra,36(sp) <-- stored return addr.
+   8:	afbe0020 	sw	s8,32(sp)
+   c:	03a0f021 	move	s8,sp
+  10:	3c1c0000 	lui	gp,0x0
+  14:	279c0000 	addiu	gp,gp,0
+
+The code appears to work in qemu-system-mipsel (not where I am going to do my
+profiling) with my simple test application.
+
+The code is missing a S-o-b because I would like to get feedback if something
+like this would ever be accepted upstream. The other question is also about
+security, other ABIs, 32/64 bit...
+
+comments more than welcome
+	holger
+
+--------------060009060802060709030201
+Content-Type: text/x-patch;
+ name="0001-mips-Implement-perf_callchain_user-by-scanning-the-p.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-mips-Implement-perf_callchain_user-by-scanning-the-p.pa";
+ filename*1="tch"
+
+From 7a8b1fcf942dbbd1bebbf41facdc77c0d9552811 Mon Sep 17 00:00:00 2001
+From: Holger Hans Peter Freyther <zecke@selfish.org>
+Date: Wed, 10 Aug 2011 08:56:59 +0200
+Subject: [PATCH] mips: Implement perf_callchain_user by scanning the prologue
+
+Scan the prologue for two instructions. The first one is adjusting
+the stack pointer for the current frame, the next one is storing
+the return address to the stack. Try to find both of these
+instructions to identify the caller of this function. It might be
+that the RA has not been written yet, in that case we will use the
+address from pt_regs.
+
+For all other frames try to find the two instructions again, exit
+when accessing the text or stack is failing, or too many
+instructions have been searched.
+
+http://elinux.org/images/6/68/ELC2008_-_Back-tracing_in_MIPS-based_Linux_Systems.pdf
+has helped to understand the prologue and was used in userspace
+for the first attempts.
 ---
-I'd like for this patch to go in via the mips tree since a few more depend
-on it.
+ arch/mips/kernel/perf_event.c |   93 +++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 93 insertions(+), 0 deletions(-)
 
- drivers/mmc/host/au1xmmc.c |   93 +++++++++++++++++++++++--------------------
- 1 files changed, 50 insertions(+), 43 deletions(-)
-
-diff --git a/drivers/mmc/host/au1xmmc.c b/drivers/mmc/host/au1xmmc.c
-index ef72e87..56e7834 100644
---- a/drivers/mmc/host/au1xmmc.c
-+++ b/drivers/mmc/host/au1xmmc.c
-@@ -64,11 +64,8 @@
- #define AU1XMMC_DESCRIPTOR_COUNT 1
+diff --git a/arch/mips/kernel/perf_event.c b/arch/mips/kernel/perf_event.c
+index a824485..623d63a 100644
+--- a/arch/mips/kernel/perf_event.c
++++ b/arch/mips/kernel/perf_event.c
+@@ -536,12 +536,105 @@ handle_associated_event(struct cpu_hw_events *cpuc,
+ /* Callchain handling code. */
  
- /* max DMA seg size: 64KB on Au1100, 4MB on Au1200 */
--#ifdef CONFIG_SOC_AU1100
--#define AU1XMMC_DESCRIPTOR_SIZE 0x0000ffff
--#else	/* Au1200 */
--#define AU1XMMC_DESCRIPTOR_SIZE 0x003fffff
--#endif
-+#define AU1100_MMC_DESCRIPTOR_SIZE 0x0000ffff
-+#define AU1200_MMC_DESCRIPTOR_SIZE 0x003fffff
- 
- #define AU1XMMC_OCR (MMC_VDD_27_28 | MMC_VDD_28_29 | MMC_VDD_29_30 | \
- 		     MMC_VDD_30_31 | MMC_VDD_31_32 | MMC_VDD_32_33 | \
-@@ -127,6 +124,7 @@ struct au1xmmc_host {
- #define HOST_F_XMIT	0x0001
- #define HOST_F_RECV	0x0002
- #define HOST_F_DMA	0x0010
-+#define HOST_F_DBDMA	0x0020
- #define HOST_F_ACTIVE	0x0100
- #define HOST_F_STOP	0x1000
- 
-@@ -151,6 +149,16 @@ struct au1xmmc_host {
- #define DMA_CHANNEL(h)	\
- 	(((h)->flags & HOST_F_XMIT) ? (h)->tx_chan : (h)->rx_chan)
- 
-+static inline int has_dbdma(void)
-+{
-+	switch (alchemy_get_cputype()) {
-+	case ALCHEMY_CPU_AU1200:
-+		return 1;
-+	default:
-+		return 0;
-+	}
-+}
+ /*
++ * Userspace code
++ */
 +
- static inline void IRQ_ON(struct au1xmmc_host *host, u32 mask)
++/*
+  * Leave userspace callchain empty for now. When we find a way to trace
+  * the user stack callchains, we add here.
+  */
+ void perf_callchain_user(struct perf_callchain_entry *entry,
+ 		    struct pt_regs *regs)
  {
- 	u32 val = au_readl(HOST_CONFIG(host));
-@@ -353,14 +361,12 @@ static void au1xmmc_data_complete(struct au1xmmc_host *host, u32 status)
- 	data->bytes_xfered = 0;
- 
- 	if (!data->error) {
--		if (host->flags & HOST_F_DMA) {
--#ifdef CONFIG_SOC_AU1200	/* DBDMA */
-+		if (host->flags & (HOST_F_DMA | HOST_F_DBDMA)) {
- 			u32 chan = DMA_CHANNEL(host);
- 
- 			chan_tab_t *c = *((chan_tab_t **)chan);
- 			au1x_dma_chan_t *cp = c->chan_ptr;
- 			data->bytes_xfered = cp->ddma_bytecnt;
--#endif
- 		} else
- 			data->bytes_xfered =
- 				(data->blocks * data->blksz) - host->pio.len;
-@@ -570,11 +576,10 @@ static void au1xmmc_cmd_complete(struct au1xmmc_host *host, u32 status)
- 
- 	host->status = HOST_S_DATA;
- 
--	if (host->flags & HOST_F_DMA) {
--#ifdef CONFIG_SOC_AU1200	/* DBDMA */
-+	if ((host->flags & (HOST_F_DMA | HOST_F_DBDMA))) {
- 		u32 channel = DMA_CHANNEL(host);
- 
--		/* Start the DMA as soon as the buffer gets something in it */
-+		/* Start the DBDMA as soon as the buffer gets something in it */
- 
- 		if (host->flags & HOST_F_RECV) {
- 			u32 mask = SD_STATUS_DB | SD_STATUS_NE;
-@@ -584,7 +589,6 @@ static void au1xmmc_cmd_complete(struct au1xmmc_host *host, u32 status)
- 		}
- 
- 		au1xxx_dbdma_start(channel);
--#endif
- 	}
- }
- 
-@@ -633,8 +637,7 @@ static int au1xmmc_prepare_data(struct au1xmmc_host *host,
- 
- 	au_writel(data->blksz - 1, HOST_BLKSIZE(host));
- 
--	if (host->flags & HOST_F_DMA) {
--#ifdef CONFIG_SOC_AU1200	/* DBDMA */
-+	if (host->flags & (HOST_F_DMA | HOST_F_DBDMA)) {
- 		int i;
- 		u32 channel = DMA_CHANNEL(host);
- 
-@@ -663,7 +666,6 @@ static int au1xmmc_prepare_data(struct au1xmmc_host *host,
- 
- 			datalen -= len;
- 		}
--#endif
- 	} else {
- 		host->pio.index = 0;
- 		host->pio.offset = 0;
-@@ -838,7 +840,6 @@ static irqreturn_t au1xmmc_irq(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
--#ifdef CONFIG_SOC_AU1200
- /* 8bit memory DMA device */
- static dbdev_tab_t au1xmmc_mem_dbdev = {
- 	.dev_id		= DSCR_CMD0_ALWAYS,
-@@ -905,7 +906,7 @@ static int au1xmmc_dbdma_init(struct au1xmmc_host *host)
- 	au1xxx_dbdma_ring_alloc(host->rx_chan, AU1XMMC_DESCRIPTOR_COUNT);
- 
- 	/* DBDMA is good to go */
--	host->flags |= HOST_F_DMA;
-+	host->flags |= HOST_F_DMA | HOST_F_DBDMA;
- 
- 	return 0;
- }
-@@ -918,7 +919,6 @@ static void au1xmmc_dbdma_shutdown(struct au1xmmc_host *host)
- 		au1xxx_dbdma_chan_free(host->rx_chan);
- 	}
- }
--#endif
- 
- static void au1xmmc_enable_sdio_irq(struct mmc_host *mmc, int en)
- {
-@@ -997,8 +997,16 @@ static int __devinit au1xmmc_probe(struct platform_device *pdev)
- 	mmc->f_min =   450000;
- 	mmc->f_max = 24000000;
- 
--	mmc->max_seg_size = AU1XMMC_DESCRIPTOR_SIZE;
--	mmc->max_segs = AU1XMMC_DESCRIPTOR_COUNT;
-+	switch (alchemy_get_cputype()) {
-+	case ALCHEMY_CPU_AU1100:
-+		mmc->max_seg_size = AU1100_MMC_DESCRIPTOR_SIZE;
-+		mmc->max_segs = AU1XMMC_DESCRIPTOR_COUNT;
-+		break;
-+	case ALCHEMY_CPU_AU1200:
-+		mmc->max_seg_size = AU1200_MMC_DESCRIPTOR_SIZE;
-+		mmc->max_segs = AU1XMMC_DESCRIPTOR_COUNT;
-+		break;
-+	}
- 
- 	mmc->max_blk_size = 2048;
- 	mmc->max_blk_count = 512;
-@@ -1028,11 +1036,12 @@ static int __devinit au1xmmc_probe(struct platform_device *pdev)
- 	tasklet_init(&host->finish_task, au1xmmc_tasklet_finish,
- 			(unsigned long)host);
- 
--#ifdef CONFIG_SOC_AU1200
--	ret = au1xmmc_dbdma_init(host);
--	if (ret)
--		printk(KERN_INFO DRIVER_NAME ": DBDMA init failed; using PIO\n");
--#endif
-+	if (has_dbdma()) {
-+		ret = au1xmmc_dbdma_init(host);
-+		if (ret)
-+			printk(KERN_INFO DRIVER_NAME ": DBDMA init failed; "
-+						     "using PIO\n");
-+	}
- 
- #ifdef CONFIG_LEDS_CLASS
- 	if (host->platdata && host->platdata->led) {
-@@ -1073,9 +1082,8 @@ out5:
- 	au_writel(0, HOST_CONFIG2(host));
- 	au_sync();
- 
--#ifdef CONFIG_SOC_AU1200
--	au1xmmc_dbdma_shutdown(host);
--#endif
-+	if (host->flags & HOST_F_DBDMA)
-+		au1xmmc_dbdma_shutdown(host);
- 
- 	tasklet_kill(&host->data_task);
- 	tasklet_kill(&host->finish_task);
-@@ -1120,9 +1128,9 @@ static int __devexit au1xmmc_remove(struct platform_device *pdev)
- 		tasklet_kill(&host->data_task);
- 		tasklet_kill(&host->finish_task);
- 
--#ifdef CONFIG_SOC_AU1200
--		au1xmmc_dbdma_shutdown(host);
--#endif
-+		if (host->flags & HOST_F_DBDMA)
-+			au1xmmc_dbdma_shutdown(host);
++#define ADDIU_SP_INSTR		0x27bd0000
++#define SW_RA_INSTR		0xafbf0000
++	/*
++	 * Find the first RA and FrameSize.
++	 */
++	unsigned long ra_addr = regs->regs[31];
++	unsigned long sp_addr = regs->regs[29];
++	unsigned long pc_addr = regs->cp0_epc;
++	unsigned long ra = 0;
++	unsigned int limit;
++	size_t stack_size = 0;
++	size_t ra_offset = 0;
 +
- 		au1xmmc_set_power(host, 0);
- 
- 		free_irq(host->irq, host);
-@@ -1181,24 +1189,23 @@ static struct platform_driver au1xmmc_driver = {
- 
- static int __init au1xmmc_init(void)
- {
--#ifdef CONFIG_SOC_AU1200
--	/* DSCR_CMD0_ALWAYS has a stride of 32 bits, we need a stride
--	 * of 8 bits.  And since devices are shared, we need to create
--	 * our own to avoid freaking out other devices.
--	 */
--	memid = au1xxx_ddma_add_device(&au1xmmc_mem_dbdev);
--	if (!memid)
--		printk(KERN_ERR "au1xmmc: cannot add memory dbdma dev\n");
--#endif
-+	if (has_dbdma()) {
-+		/* DSCR_CMD0_ALWAYS has a stride of 32 bits, we need a stride
-+		* of 8 bits.  And since devices are shared, we need to create
-+		* our own to avoid freaking out other devices.
-+		*/
-+		memid = au1xxx_ddma_add_device(&au1xmmc_mem_dbdev);
-+		if (!memid)
-+			printk(KERN_ERR "au1xmmc: cannot add memory dbdma\n");
++	/*
++	 * Try to find the initial stack size and the return address. It
++	 * is possible that the code is still in the prologue and the
++	 * return address might not have been stored to the stack yet
++	 */
++	for (limit = 0, pc_addr = regs->cp0_epc;
++	     limit < (PAGE_SIZE / 4) && (!ra_offset || !stack_size);
++	     --pc_addr, ++limit) {
++		int instr;
++		if (!access_ok(VERIFY_READ, pc_addr, sizeof(instr)))
++			return;
++		if (__copy_from_user_inatomic(&instr, (void *) pc_addr, sizeof(instr)))
++			return;
++		switch (instr & 0xffff0000) {
++		case ADDIU_SP_INSTR:
++			stack_size = abs((short)(instr & 0xffff));
++			goto __out_of_loop;
++			break;
++		case SW_RA_INSTR:
++			ra_offset = instr & 0xffff;
++			break;
++		}
 +	}
- 	return platform_driver_register(&au1xmmc_driver);
- }
- 
- static void __exit au1xmmc_exit(void)
- {
--#ifdef CONFIG_SOC_AU1200
--	if (memid)
-+	if (has_dbdma() && memid)
- 		au1xxx_ddma_del_device(memid);
--#endif
 +
- 	platform_driver_unregister(&au1xmmc_driver);
++__out_of_loop:
++	if (stack_size == 0)
++		return;
++
++	if (ra_offset) {
++		ra_addr = sp_addr + ra_offset;
++		if (!access_ok(VERIFY_READ, ra_addr, sizeof(ra)))
++			return;
++		if (__copy_from_user_inatomic(&ra, (void *) ra_addr, sizeof(ra)))
++			return;
++	}
++
++	sp_addr = sp_addr + stack_size;
++
++
++	/* now try to walk from the return address we found */
++	limit = 0;
++	while (entry->nr < PERF_MAX_STACK_DEPTH && ra != 0) {
++		perf_callchain_store(entry, ra);
++		ra_offset = stack_size = 0;
++
++		for (pc_addr = ra;
++		     (!ra_offset || !stack_size) && limit < PAGE_SIZE/4/2;
++		     --pc_addr, ++limit) {
++			int instr;
++			if (!access_ok(VERIFY_READ, pc_addr, sizeof(instr)))
++				return;
++			if (__copy_from_user_inatomic(&instr, (void *) pc_addr, sizeof(instr)))
++				return;
++			switch (instr & 0xffff0000) {
++			case ADDIU_SP_INSTR:
++				stack_size = abs((short)(instr & 0xffff));
++				break;
++			case SW_RA_INSTR:
++				ra_offset = instr & 0xffff;
++				break;
++			}
++		}
++
++		/* must have hit a limit */
++		if (!ra_offset || !stack_size)
++			return;
++
++		ra_addr = sp_addr + ra_offset;
++		if (!access_ok(VERIFY_READ, ra_addr, sizeof(ra)))
++			return;
++		if (__copy_from_user_inatomic(&ra, (void *) ra_addr, sizeof(ra)))
++			return;
++		sp_addr = sp_addr + stack_size;
++	}
++
++	return;
  }
  
+ static void save_raw_perf_callchain(struct perf_callchain_entry *entry,
 -- 
-1.7.6
+1.7.4.1
+
+
+--------------060009060802060709030201--

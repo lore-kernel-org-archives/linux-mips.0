@@ -1,55 +1,39 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49]:33383 "EHLO
+Received: from mail-fx0-f49.google.com ([209.85.161.49]:58508 "EHLO
         mail-fx0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491204Ab1HLJj6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 12 Aug 2011 11:39:58 +0200
+        by eddie.linux-mips.org with ESMTP id S1491882Ab1HLSMp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 12 Aug 2011 20:12:45 +0200
 From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: [PATCH 1/8] MIPS: Alchemy: abstract USB block control register access
-Date: Fri, 12 Aug 2011 11:39:38 +0200
-Message-ID: <1313141985-5830-2-git-send-email-manuel.lauss@googlemail.com>
-In-Reply-To: <1313141985-5830-1-git-send-email-manuel.lauss@googlemail.com>
-References: <1313141985-5830-1-git-send-email-manuel.lauss@googlemail.com>
+Subject: [PATCH V2 1/8] MIPS: Alchemy: abstract USB block control register access
+Date: Fri, 12 Aug 2011 20:12:33 +0200
+Message-ID: <1313172753-31088-1-git-send-email-manuel.lauss@googlemail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: Linux-MIPS <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>
 Cc: Manuel Lauss <manuel.lauss@googlemail.com>, linux-usb@vger.kernel.org, Greg Kroah-Hartman <gregkh@suse.de>
-Message-ID: <20110812093938.gwViAkNLQ80ssFHHYRjAUaprBGaILQVU3PbKQXWk6u0@z>
+Message-ID: <20110812181233.KLvK93cFyu-gAFrhh6Ej6cz9e0RgJt_dw-oQSpaNtAs@z>
 
 Alchemy chips have one or more registers which control access
 to the usb blocks as well as PHY configuration.  I don't want
 the OHCI/EHCI glues to know about the different registers and bits;
-new arch code hides the gory details of USB configuration from them.
+new code hides the gory details of USB configuration from them.
 
 Cc: linux-usb@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@suse.de>  (USB glue parts)
 Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
 ---
-CC'ed Greg for an Ack on the USB glue parts.  I'd like this to go through the
- MIPS tree since other changes in it depend on it.
+V2: moved the chip-specific parts from arch home to usb/host/alchemy-common.c
 
- arch/mips/alchemy/common/Makefile          |    2 +-
  arch/mips/alchemy/common/dma.c             |   12 +-
  arch/mips/alchemy/common/power.c           |   42 ----
- arch/mips/alchemy/common/usb.c             |  337 ++++++++++++++++++++++++++++
  arch/mips/include/asm/mach-au1x00/au1000.h |   84 ++------
+ drivers/usb/host/Makefile                  |    1 +
+ drivers/usb/host/alchemy-common.c          |  337 ++++++++++++++++++++++++++++
  drivers/usb/host/ehci-au1xxx.c             |   77 +------
  drivers/usb/host/ohci-au1xxx.c             |  110 +--------
- 7 files changed, 382 insertions(+), 282 deletions(-)
- create mode 100644 arch/mips/alchemy/common/usb.c
+ 7 files changed, 382 insertions(+), 281 deletions(-)
+ create mode 100644 drivers/usb/host/alchemy-common.c
 
-diff --git a/arch/mips/alchemy/common/Makefile b/arch/mips/alchemy/common/Makefile
-index 62f0d39..31728e0 100644
---- a/arch/mips/alchemy/common/Makefile
-+++ b/arch/mips/alchemy/common/Makefile
-@@ -6,7 +6,7 @@
- #
- 
- obj-y += prom.o time.o clocks.o platform.o power.o setup.o \
--	sleeper.o dma.o dbdma.o
-+	sleeper.o dma.o dbdma.o usb.o
- 
- obj-$(CONFIG_ALCHEMY_GPIOINT_AU1000) += irq.o
- 
 diff --git a/arch/mips/alchemy/common/dma.c b/arch/mips/alchemy/common/dma.c
 index 347980e..6652a23 100644
 --- a/arch/mips/alchemy/common/dma.c
@@ -140,11 +124,176 @@ index 9ec8559..bdd6651 100644
  	/* Restore the static memory controller configuration. */
  	au_writel(sleep_static_memctlr[0][0], MEM_STCFG0);
  	au_writel(sleep_static_memctlr[0][1], MEM_STTIME0);
-diff --git a/arch/mips/alchemy/common/usb.c b/arch/mips/alchemy/common/usb.c
+diff --git a/arch/mips/include/asm/mach-au1x00/au1000.h b/arch/mips/include/asm/mach-au1x00/au1000.h
+index f260ebe..3b0a1e7 100644
+--- a/arch/mips/include/asm/mach-au1x00/au1000.h
++++ b/arch/mips/include/asm/mach-au1x00/au1000.h
+@@ -245,6 +245,15 @@ void alchemy_sleep_au1000(void);
+ void alchemy_sleep_au1550(void);
+ void au_sleep(void);
+ 
++/* USB: drivers/usb/host/alchemy-common.c */
++enum alchemy_usb_block {
++	ALCHEMY_USB_OHCI0,
++	ALCHEMY_USB_UDC0,
++	ALCHEMY_USB_EHCI0,
++	ALCHEMY_USB_OTG0,
++};
++int alchemy_usb_control(int block, int enable);
++
+ 
+ /* SOC Interrupt numbers */
+ 
+@@ -687,7 +696,8 @@ enum soc_au1200_ints {
+  */
+ 
+ #define AU1000_AC97_PHYS_ADDR		0x10000000 /* 012 */
+-#define AU1000_USBD_PHYS_ADDR		0x10200000 /* 0123 */
++#define AU1000_USB_OHCI_PHYS_ADDR	0x10100000 /* 012 */
++#define AU1000_USB_UDC_PHYS_ADDR	0x10200000 /* 0123 */
+ #define AU1000_IC0_PHYS_ADDR		0x10400000 /* 01234 */
+ #define AU1000_MAC0_PHYS_ADDR		0x10500000 /* 023 */
+ #define AU1000_MAC1_PHYS_ADDR		0x10510000 /* 023 */
+@@ -710,12 +720,17 @@ enum soc_au1200_ints {
+ #define AU1550_DBDMA_CONF_PHYS_ADDR	0x14003000 /* 34 */
+ #define AU1000_MACDMA0_PHYS_ADDR	0x14004000 /* 0123 */
+ #define AU1000_MACDMA1_PHYS_ADDR	0x14004200 /* 0123 */
++#define AU1550_USB_OHCI_PHYS_ADDR	0x14020000 /* 3 */
++#define AU1200_USB_CTL_PHYS_ADDR	0x14020000 /* 4 */
++#define AU1200_USB_OTG_PHYS_ADDR	0x14020020 /* 4 */
++#define AU1200_USB_OHCI_PHYS_ADDR	0x14020100 /* 4 */
++#define AU1200_USB_EHCI_PHYS_ADDR	0x14020200 /* 4 */
++#define AU1200_USB_UDC_PHYS_ADDR	0x14022000 /* 4 */
+ 
+ 
+ #ifdef CONFIG_SOC_AU1000
+ #define	MEM_PHYS_ADDR		0x14000000
+ #define	STATIC_MEM_PHYS_ADDR	0x14001000
+-#define	USBH_PHYS_ADDR		0x10100000
+ #define	IRDA_PHYS_ADDR		0x10300000
+ #define	SSI0_PHYS_ADDR		0x11600000
+ #define	SSI1_PHYS_ADDR		0x11680000
+@@ -729,7 +744,6 @@ enum soc_au1200_ints {
+ #ifdef CONFIG_SOC_AU1500
+ #define	MEM_PHYS_ADDR		0x14000000
+ #define	STATIC_MEM_PHYS_ADDR	0x14001000
+-#define	USBH_PHYS_ADDR		0x10100000
+ #define PCI_PHYS_ADDR		0x14005000
+ #define PCI_MEM_PHYS_ADDR	0x400000000ULL
+ #define PCI_IO_PHYS_ADDR	0x500000000ULL
+@@ -745,7 +759,6 @@ enum soc_au1200_ints {
+ #ifdef CONFIG_SOC_AU1100
+ #define	MEM_PHYS_ADDR		0x14000000
+ #define	STATIC_MEM_PHYS_ADDR	0x14001000
+-#define	USBH_PHYS_ADDR		0x10100000
+ #define	IRDA_PHYS_ADDR		0x10300000
+ #define	SSI0_PHYS_ADDR		0x11600000
+ #define	SSI1_PHYS_ADDR		0x11680000
+@@ -760,7 +773,6 @@ enum soc_au1200_ints {
+ #ifdef CONFIG_SOC_AU1550
+ #define	MEM_PHYS_ADDR		0x14000000
+ #define	STATIC_MEM_PHYS_ADDR	0x14001000
+-#define	USBH_PHYS_ADDR		0x14020000
+ #define PCI_PHYS_ADDR		0x14005000
+ #define PE_PHYS_ADDR		0x14008000
+ #define PSC0_PHYS_ADDR		0x11A00000
+@@ -783,8 +795,6 @@ enum soc_au1200_ints {
+ #define	STATIC_MEM_PHYS_ADDR	0x14001000
+ #define AES_PHYS_ADDR		0x10300000
+ #define CIM_PHYS_ADDR		0x14004000
+-#define USBM_PHYS_ADDR		0x14020000
+-#define	USBH_PHYS_ADDR		0x14020100
+ #define PSC0_PHYS_ADDR	 	0x11A00000
+ #define PSC1_PHYS_ADDR	 	0x11B00000
+ #define LCD_PHYS_ADDR		0x15000000
+@@ -868,21 +878,6 @@ enum soc_au1200_ints {
+ #define USB_EHCI_LEN		0x100
+ #define USB_UDC_BASE		0x14022000
+ #define USB_UDC_LEN		0x2000
+-#define USB_MSR_BASE		0xB4020000
+-#define USB_MSR_MCFG		4
+-#define USBMSRMCFG_OMEMEN	0
+-#define USBMSRMCFG_OBMEN	1
+-#define USBMSRMCFG_EMEMEN	2
+-#define USBMSRMCFG_EBMEN	3
+-#define USBMSRMCFG_DMEMEN	4
+-#define USBMSRMCFG_DBMEN	5
+-#define USBMSRMCFG_GMEMEN	6
+-#define USBMSRMCFG_OHCCLKEN	16
+-#define USBMSRMCFG_EHCCLKEN	17
+-#define USBMSRMCFG_UDCCLKEN	18
+-#define USBMSRMCFG_PHYPLLEN	19
+-#define USBMSRMCFG_RDCOMB	30
+-#define USBMSRMCFG_PFEN 	31
+ 
+ #define FOR_PLATFORM_C_USB_HOST_INT AU1200_USB_INT
+ 
+@@ -963,51 +958,6 @@ enum soc_au1200_ints {
+ #define USB_OHCI_LEN		0x00100000
+ #endif
+ 
+-#ifndef CONFIG_SOC_AU1200
+-
+-/* USB Device Controller */
+-#define USBD_EP0RD		0xB0200000
+-#define USBD_EP0WR		0xB0200004
+-#define USBD_EP2WR		0xB0200008
+-#define USBD_EP3WR		0xB020000C
+-#define USBD_EP4RD		0xB0200010
+-#define USBD_EP5RD		0xB0200014
+-#define USBD_INTEN		0xB0200018
+-#define USBD_INTSTAT		0xB020001C
+-#  define USBDEV_INT_SOF	(1 << 12)
+-#  define USBDEV_INT_HF_BIT	6
+-#  define USBDEV_INT_HF_MASK	(0x3f << USBDEV_INT_HF_BIT)
+-#  define USBDEV_INT_CMPLT_BIT	0
+-#  define USBDEV_INT_CMPLT_MASK (0x3f << USBDEV_INT_CMPLT_BIT)
+-#define USBD_CONFIG		0xB0200020
+-#define USBD_EP0CS		0xB0200024
+-#define USBD_EP2CS		0xB0200028
+-#define USBD_EP3CS		0xB020002C
+-#define USBD_EP4CS		0xB0200030
+-#define USBD_EP5CS		0xB0200034
+-#  define USBDEV_CS_SU		(1 << 14)
+-#  define USBDEV_CS_NAK 	(1 << 13)
+-#  define USBDEV_CS_ACK 	(1 << 12)
+-#  define USBDEV_CS_BUSY	(1 << 11)
+-#  define USBDEV_CS_TSIZE_BIT	1
+-#  define USBDEV_CS_TSIZE_MASK	(0x3ff << USBDEV_CS_TSIZE_BIT)
+-#  define USBDEV_CS_STALL	(1 << 0)
+-#define USBD_EP0RDSTAT		0xB0200040
+-#define USBD_EP0WRSTAT		0xB0200044
+-#define USBD_EP2WRSTAT		0xB0200048
+-#define USBD_EP3WRSTAT		0xB020004C
+-#define USBD_EP4RDSTAT		0xB0200050
+-#define USBD_EP5RDSTAT		0xB0200054
+-#  define USBDEV_FSTAT_FLUSH	(1 << 6)
+-#  define USBDEV_FSTAT_UF	(1 << 5)
+-#  define USBDEV_FSTAT_OF	(1 << 4)
+-#  define USBDEV_FSTAT_FCNT_BIT 0
+-#  define USBDEV_FSTAT_FCNT_MASK (0x0f << USBDEV_FSTAT_FCNT_BIT)
+-#define USBD_ENABLE		0xB0200058
+-#  define USBDEV_ENABLE 	(1 << 1)
+-#  define USBDEV_CE		(1 << 0)
+-
+-#endif /* !CONFIG_SOC_AU1200 */
+ 
+ /* Ethernet Controllers  */
+ 
+diff --git a/drivers/usb/host/Makefile b/drivers/usb/host/Makefile
+index 624a362..436cd71 100644
+--- a/drivers/usb/host/Makefile
++++ b/drivers/usb/host/Makefile
+@@ -35,3 +35,4 @@ obj-$(CONFIG_USB_HWA_HCD)	+= hwa-hc.o
+ obj-$(CONFIG_USB_IMX21_HCD)	+= imx21-hcd.o
+ obj-$(CONFIG_USB_FSL_MPH_DR_OF)	+= fsl-mph-dr-of.o
+ obj-$(CONFIG_USB_OCTEON2_COMMON) += octeon2-common.o
++obj-$(CONFIG_MIPS_ALCHEMY)	+= alchemy-common.o
+diff --git a/drivers/usb/host/alchemy-common.c b/drivers/usb/host/alchemy-common.c
 new file mode 100644
 index 0000000..b4192c9
 --- /dev/null
-+++ b/arch/mips/alchemy/common/usb.c
++++ b/drivers/usb/host/alchemy-common.c
 @@ -0,0 +1,337 @@
 +/*
 + * USB block power/access management abstraction.
@@ -483,162 +632,6 @@ index 0000000..b4192c9
 +	return 0;
 +}
 +arch_initcall(alchemy_usb_init);
-diff --git a/arch/mips/include/asm/mach-au1x00/au1000.h b/arch/mips/include/asm/mach-au1x00/au1000.h
-index f260ebe..73e0d79 100644
---- a/arch/mips/include/asm/mach-au1x00/au1000.h
-+++ b/arch/mips/include/asm/mach-au1x00/au1000.h
-@@ -245,6 +245,15 @@ void alchemy_sleep_au1000(void);
- void alchemy_sleep_au1550(void);
- void au_sleep(void);
- 
-+/* USB: arch/mips/alchemy/common/usb.c */
-+enum alchemy_usb_block {
-+	ALCHEMY_USB_OHCI0,
-+	ALCHEMY_USB_UDC0,
-+	ALCHEMY_USB_EHCI0,
-+	ALCHEMY_USB_OTG0,
-+};
-+int alchemy_usb_control(int block, int enable);
-+
- 
- /* SOC Interrupt numbers */
- 
-@@ -687,7 +696,8 @@ enum soc_au1200_ints {
-  */
- 
- #define AU1000_AC97_PHYS_ADDR		0x10000000 /* 012 */
--#define AU1000_USBD_PHYS_ADDR		0x10200000 /* 0123 */
-+#define AU1000_USB_OHCI_PHYS_ADDR	0x10100000 /* 012 */
-+#define AU1000_USB_UDC_PHYS_ADDR	0x10200000 /* 0123 */
- #define AU1000_IC0_PHYS_ADDR		0x10400000 /* 01234 */
- #define AU1000_MAC0_PHYS_ADDR		0x10500000 /* 023 */
- #define AU1000_MAC1_PHYS_ADDR		0x10510000 /* 023 */
-@@ -710,12 +720,17 @@ enum soc_au1200_ints {
- #define AU1550_DBDMA_CONF_PHYS_ADDR	0x14003000 /* 34 */
- #define AU1000_MACDMA0_PHYS_ADDR	0x14004000 /* 0123 */
- #define AU1000_MACDMA1_PHYS_ADDR	0x14004200 /* 0123 */
-+#define AU1550_USB_OHCI_PHYS_ADDR	0x14020000 /* 3 */
-+#define AU1200_USB_CTL_PHYS_ADDR	0x14020000 /* 4 */
-+#define AU1200_USB_OTG_PHYS_ADDR	0x14020020 /* 4 */
-+#define AU1200_USB_OHCI_PHYS_ADDR	0x14020100 /* 4 */
-+#define AU1200_USB_EHCI_PHYS_ADDR	0x14020200 /* 4 */
-+#define AU1200_USB_UDC_PHYS_ADDR	0x14022000 /* 4 */
- 
- 
- #ifdef CONFIG_SOC_AU1000
- #define	MEM_PHYS_ADDR		0x14000000
- #define	STATIC_MEM_PHYS_ADDR	0x14001000
--#define	USBH_PHYS_ADDR		0x10100000
- #define	IRDA_PHYS_ADDR		0x10300000
- #define	SSI0_PHYS_ADDR		0x11600000
- #define	SSI1_PHYS_ADDR		0x11680000
-@@ -729,7 +744,6 @@ enum soc_au1200_ints {
- #ifdef CONFIG_SOC_AU1500
- #define	MEM_PHYS_ADDR		0x14000000
- #define	STATIC_MEM_PHYS_ADDR	0x14001000
--#define	USBH_PHYS_ADDR		0x10100000
- #define PCI_PHYS_ADDR		0x14005000
- #define PCI_MEM_PHYS_ADDR	0x400000000ULL
- #define PCI_IO_PHYS_ADDR	0x500000000ULL
-@@ -745,7 +759,6 @@ enum soc_au1200_ints {
- #ifdef CONFIG_SOC_AU1100
- #define	MEM_PHYS_ADDR		0x14000000
- #define	STATIC_MEM_PHYS_ADDR	0x14001000
--#define	USBH_PHYS_ADDR		0x10100000
- #define	IRDA_PHYS_ADDR		0x10300000
- #define	SSI0_PHYS_ADDR		0x11600000
- #define	SSI1_PHYS_ADDR		0x11680000
-@@ -760,7 +773,6 @@ enum soc_au1200_ints {
- #ifdef CONFIG_SOC_AU1550
- #define	MEM_PHYS_ADDR		0x14000000
- #define	STATIC_MEM_PHYS_ADDR	0x14001000
--#define	USBH_PHYS_ADDR		0x14020000
- #define PCI_PHYS_ADDR		0x14005000
- #define PE_PHYS_ADDR		0x14008000
- #define PSC0_PHYS_ADDR		0x11A00000
-@@ -783,8 +795,6 @@ enum soc_au1200_ints {
- #define	STATIC_MEM_PHYS_ADDR	0x14001000
- #define AES_PHYS_ADDR		0x10300000
- #define CIM_PHYS_ADDR		0x14004000
--#define USBM_PHYS_ADDR		0x14020000
--#define	USBH_PHYS_ADDR		0x14020100
- #define PSC0_PHYS_ADDR	 	0x11A00000
- #define PSC1_PHYS_ADDR	 	0x11B00000
- #define LCD_PHYS_ADDR		0x15000000
-@@ -868,21 +878,6 @@ enum soc_au1200_ints {
- #define USB_EHCI_LEN		0x100
- #define USB_UDC_BASE		0x14022000
- #define USB_UDC_LEN		0x2000
--#define USB_MSR_BASE		0xB4020000
--#define USB_MSR_MCFG		4
--#define USBMSRMCFG_OMEMEN	0
--#define USBMSRMCFG_OBMEN	1
--#define USBMSRMCFG_EMEMEN	2
--#define USBMSRMCFG_EBMEN	3
--#define USBMSRMCFG_DMEMEN	4
--#define USBMSRMCFG_DBMEN	5
--#define USBMSRMCFG_GMEMEN	6
--#define USBMSRMCFG_OHCCLKEN	16
--#define USBMSRMCFG_EHCCLKEN	17
--#define USBMSRMCFG_UDCCLKEN	18
--#define USBMSRMCFG_PHYPLLEN	19
--#define USBMSRMCFG_RDCOMB	30
--#define USBMSRMCFG_PFEN 	31
- 
- #define FOR_PLATFORM_C_USB_HOST_INT AU1200_USB_INT
- 
-@@ -963,51 +958,6 @@ enum soc_au1200_ints {
- #define USB_OHCI_LEN		0x00100000
- #endif
- 
--#ifndef CONFIG_SOC_AU1200
--
--/* USB Device Controller */
--#define USBD_EP0RD		0xB0200000
--#define USBD_EP0WR		0xB0200004
--#define USBD_EP2WR		0xB0200008
--#define USBD_EP3WR		0xB020000C
--#define USBD_EP4RD		0xB0200010
--#define USBD_EP5RD		0xB0200014
--#define USBD_INTEN		0xB0200018
--#define USBD_INTSTAT		0xB020001C
--#  define USBDEV_INT_SOF	(1 << 12)
--#  define USBDEV_INT_HF_BIT	6
--#  define USBDEV_INT_HF_MASK	(0x3f << USBDEV_INT_HF_BIT)
--#  define USBDEV_INT_CMPLT_BIT	0
--#  define USBDEV_INT_CMPLT_MASK (0x3f << USBDEV_INT_CMPLT_BIT)
--#define USBD_CONFIG		0xB0200020
--#define USBD_EP0CS		0xB0200024
--#define USBD_EP2CS		0xB0200028
--#define USBD_EP3CS		0xB020002C
--#define USBD_EP4CS		0xB0200030
--#define USBD_EP5CS		0xB0200034
--#  define USBDEV_CS_SU		(1 << 14)
--#  define USBDEV_CS_NAK 	(1 << 13)
--#  define USBDEV_CS_ACK 	(1 << 12)
--#  define USBDEV_CS_BUSY	(1 << 11)
--#  define USBDEV_CS_TSIZE_BIT	1
--#  define USBDEV_CS_TSIZE_MASK	(0x3ff << USBDEV_CS_TSIZE_BIT)
--#  define USBDEV_CS_STALL	(1 << 0)
--#define USBD_EP0RDSTAT		0xB0200040
--#define USBD_EP0WRSTAT		0xB0200044
--#define USBD_EP2WRSTAT		0xB0200048
--#define USBD_EP3WRSTAT		0xB020004C
--#define USBD_EP4RDSTAT		0xB0200050
--#define USBD_EP5RDSTAT		0xB0200054
--#  define USBDEV_FSTAT_FLUSH	(1 << 6)
--#  define USBDEV_FSTAT_UF	(1 << 5)
--#  define USBDEV_FSTAT_OF	(1 << 4)
--#  define USBDEV_FSTAT_FCNT_BIT 0
--#  define USBDEV_FSTAT_FCNT_MASK (0x0f << USBDEV_FSTAT_FCNT_BIT)
--#define USBD_ENABLE		0xB0200058
--#  define USBDEV_ENABLE 	(1 << 1)
--#  define USBDEV_CE		(1 << 0)
--
--#endif /* !CONFIG_SOC_AU1200 */
- 
- /* Ethernet Controllers  */
- 
 diff --git a/drivers/usb/host/ehci-au1xxx.c b/drivers/usb/host/ehci-au1xxx.c
 index 42ae574..e480dc1 100644
 --- a/drivers/usb/host/ehci-au1xxx.c

@@ -1,93 +1,50 @@
-Received: from mail.windriver.com ([147.11.1.11]:39321 "EHLO
+Received: from mail.windriver.com ([147.11.1.11]:51939 "EHLO
         mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1492042Ab1HQBzF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 17 Aug 2011 03:55:05 +0200
+        with ESMTP id S1490968Ab1HRCdC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Aug 2011 04:33:02 +0200
+Date: Thu, 18 Aug 2011 10:32:47 +0800
 From: Yong Zhang <yong.zhang@windriver.com>
-Subject: [PATCH] MIPS: use 32-bit wrapper for compat_sys_futex
-Date: Wed, 17 Aug 2011 09:54:54 +0800
-Message-ID: <1313546094-11882-1-git-send-email-yong.zhang@windriver.com>
+Subject: Re: [PATCH] MIPS: use 32-bit wrapper for compat_sys_futex
+Message-ID: <20110818023247.GA3750@windriver.com>
+Reply-To: Yong Zhang <yong.zhang@windriver.com>
+References: <1313546094-11882-1-git-send-email-yong.zhang@windriver.com>
+ <4E4BF7C0.80703@cavium.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <4E4BF7C0.80703@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20110817015454.NJd5XoAhlWnDQ5CrQ0DBSz6ba3LpGU0QDUP6-m8C0tU@z>
+To: David Daney <david.daney@cavium.com>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20110818023247.B9oYWi_PTP5zDJbgdO8m0a6sUt7pikos74DJZZQ7co4@z>
 
-We can't trust in the caller(userspace) to give signed-extend
-parameter, thus futex-wait may fail in some special case.
+On Wed, Aug 17, 2011 at 10:17:52AM -0700, David Daney wrote:
+> >diff --git a/arch/mips/kernel/scall64-o32.S b/arch/mips/kernel/scall64-o32.S
+> >index 46c4763..f48b18e 100644
+> >--- a/arch/mips/kernel/scall64-o32.S
+> >+++ b/arch/mips/kernel/scall64-o32.S
+> >@@ -441,7 +441,7 @@ sys_call_table:
+> >  	PTR	sys_fremovexattr		/* 4235 */
+> >  	PTR	sys_tkill
+> >  	PTR	sys_sendfile64
+> >-	PTR	compat_sys_futex
+> >+	PTR	sys_32_futex
+> 
+> This change is redundant, scall64-o32.S already does the right thing
 
-For example, if 'val' is too big and bit-31 is 1,
-the caller may enter endless loop at:
-futex_wait_setup()
-{
-	...
+My first virsion(not sent out) doesn't include scall64-o32.S either.
 
-	if (uval != val) {
-		queue_unlock(q, *hb);
-		ret = -EWOULDBLOCK;
+> so additional zero extending is not needed and is just extra
+> instructions to execute for no reason.
 
-	...
-}
+Why I'm adding it here is for:
+1)code consistent, otherwise we must move SYSCALL_DEFINE6(32_futex,...)
+  under CONFIG_MIPS32_N32;
+2)I'm afraid there may be some other way to touch the high 32-bit of a
+  register, so touching scall64-o32.S is also for safety(due to unknown
+  reason, fix me if I'm wrong).
 
-Below assembler code will make it more easy to understand how
-the patch take effect :)
-
-Dump of assembler code for function SyS_32_futex:
-   0xffffffff811b6fe8 <+0>:	sll	a1,a1,0x0
-   0xffffffff811b6fec <+4>:	sll	a2,a2,0x0
-   0xffffffff811b6ff0 <+8>:	j	0xffffffff8121a240 <compat_sys_futex>
-   0xffffffff811b6ff4 <+12>:	sll	a5,a5,0x0
-
-Signed-off-by: Yong Zhang <yong.zhang@windriver.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
----
- arch/mips/kernel/linux32.c     |    7 +++++++
- arch/mips/kernel/scall64-n32.S |    2 +-
- arch/mips/kernel/scall64-o32.S |    2 +-
- 3 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/kernel/linux32.c b/arch/mips/kernel/linux32.c
-index 876a75c..922a554 100644
---- a/arch/mips/kernel/linux32.c
-+++ b/arch/mips/kernel/linux32.c
-@@ -349,3 +349,10 @@ SYSCALL_DEFINE6(32_fanotify_mark, int, fanotify_fd, unsigned int, flags,
- 	return sys_fanotify_mark(fanotify_fd, flags, merge_64(a3, a4),
- 				 dfd, pathname);
- }
-+
-+SYSCALL_DEFINE6(32_futex, u32 __user *, uaddr, int, op, u32, val,
-+		struct compat_timespec __user *, utime, u32 __user *, uaddr2,
-+		u32, val3)
-+{
-+	return compat_sys_futex(uaddr, op, val, utime, uaddr2, val3);
-+}
-diff --git a/arch/mips/kernel/scall64-n32.S b/arch/mips/kernel/scall64-n32.S
-index b85842f..c956cc9 100644
---- a/arch/mips/kernel/scall64-n32.S
-+++ b/arch/mips/kernel/scall64-n32.S
-@@ -315,7 +315,7 @@ EXPORT(sysn32_call_table)
- 	PTR	sys_fremovexattr
- 	PTR	sys_tkill
- 	PTR	sys_ni_syscall
--	PTR	compat_sys_futex
-+	PTR	sys_32_futex
- 	PTR	compat_sys_sched_setaffinity	/* 6195 */
- 	PTR	compat_sys_sched_getaffinity
- 	PTR	sys_cacheflush
-diff --git a/arch/mips/kernel/scall64-o32.S b/arch/mips/kernel/scall64-o32.S
-index 46c4763..f48b18e 100644
---- a/arch/mips/kernel/scall64-o32.S
-+++ b/arch/mips/kernel/scall64-o32.S
-@@ -441,7 +441,7 @@ sys_call_table:
- 	PTR	sys_fremovexattr		/* 4235 */
- 	PTR	sys_tkill
- 	PTR	sys_sendfile64
--	PTR	compat_sys_futex
-+	PTR	sys_32_futex
- 	PTR	compat_sys_sched_setaffinity
- 	PTR	compat_sys_sched_getaffinity	/* 4240 */
- 	PTR	compat_sys_io_setup
--- 
-1.7.4.1
+Thanks,
+Yong

@@ -1,82 +1,120 @@
-Received: from mail.windriver.com ([147.11.1.11]:53492 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1490968Ab1HRCof (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Aug 2011 04:44:35 +0200
-Date: Thu, 18 Aug 2011 10:44:22 +0800
-From: Yong Zhang <yong.zhang@windriver.com>
-Subject: Re: [PATCH] MIPS: use 32-bit wrapper for compat_sys_futex
-Message-ID: <20110818024422.GB3750@windriver.com>
-Reply-To: Yong Zhang <yong.zhang@windriver.com>
-References: <1313546094-11882-1-git-send-email-yong.zhang@windriver.com>
- <4E4BF7C0.80703@cavium.com>
+Received: from imr3.ericy.com ([198.24.6.13]:56892 "EHLO imr3.ericy.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1492164Ab1HSAKL (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 19 Aug 2011 02:10:11 +0200
+Received: from eusaamw0711.eamcs.ericsson.se ([147.117.20.178])
+        by imr3.ericy.com (8.13.8/8.13.8) with ESMTP id p7J0A4Y8011333
+        (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+        for <linux-mips@linux-mips.org>; Thu, 18 Aug 2011 19:10:04 -0500
+Message-ID: <4E4DA9DA.60305@ericsson.com>
+Date: Thu, 18 Aug 2011 17:10:02 -0700
+From: Jason Kwon <jason.kwon@ericsson.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <4E4BF7C0.80703@cavium.com>
+Subject: Problems booting 3.0.3 kernel on Octeon CN58XX board
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: David Daney <david.daney@cavium.com>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20110818024422.ldPoxIcZ3s9qgQk8h5hKe6_zg9_W9922f3jT87j8WiY@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20110819001002.JCZF8nOJjfVH80Xw4whg475Vj9Z2xderCfFCUtMM5yM@z>
 
-On Wed, Aug 17, 2011 at 10:17:52AM -0700, David Daney wrote:
-> >  	PTR	compat_sys_sched_setaffinity
-> >  	PTR	compat_sys_sched_getaffinity	/* 4240 */
-> >  	PTR	compat_sys_io_setup
-> 
-> But really I think this patch fixes things at the wrong level.  Each
-> architecture potentially needs a similar patch.  What would happen if
-> we did something like:
+Attempting to boot a 3.0.3 kernel on a CN58XX board produced the 
+following oops:
 
-I have thought about it but finally I decide to keep it under arch code;
-because sparc64 and s390 have the same issue and they all smooth the
-concern by themselves.
+CPU 4 Unable to handle kernel paging request at virtual address 
+0000000001c00000, epc == ffffffff811aa9f4, ra == ffffffff811aaa98
+Oops[#1]:
+Cpu 4
+$ 0   : 0000000000000000 0000000010008ce0 ffffffff821d2b80 0000000001c00000
+$ 4   : 0000000001c00038 000000000000017c 0000000000080000 0000000000080072
+$ 8   : 0000000000000008 0000000000000002 0000000000000003 a800000002284520
+$12   : 0000000000000002 ffffffff8186ee80 ffffffffffffff80 0000000000000030
+$16   : 0000000000080072 0000000000000001 0000000001bfa8f0 0000000001bfa928
+$20   : a800000003aff8f0 00000000000f0000 ffffffff8186ee80 ffffffff821d2a80
+$24   : 0000000000000001 0000000000000038
+$28   : a80000041fc48000 a80000041fc4bd90 fffffffffffffffc ffffffff811aaa98
+Hi    : 0000000000000000
+Lo    : 0000000000000000
+epc   : ffffffff811aa9f4 setup_per_zone_wmarks+0x19c/0x2d8
+     Not tainted
+ra    : ffffffff811aaa98 setup_per_zone_wmarks+0x240/0x2d8
+Status: 10008ce2    KX SX UX KERNEL EXL
+Cause : 40808408
+BadVA : 0000000001c00000
+PrId  : 000d0301 (Cavium Octeon+)
+Modules linked in:
+Process swapper (pid: 1, threadinfo=a80000041fc48000, 
+task=a80000041fc44038, tls=0000000000000000)
+Stack : 0000000000000000 000000000006f75d ffffffff8186eec0 0000000000000001
+         0000000000000547 ffffffff81825598 ffffffff81a80000 ffffffff818b3e68
+         ffffffff818a40ac 0000000000000000 ffffffff81a80000 0000000000000000
+         0000000000000000 0000000000000000 0000000000000000 ffffffff818a40f0
+         ffffffff81a80000 ffffffff81100438 ffffffff818b4198 ffffffff818b3e68
+         ffffffff818b46c8 0000000000000000 0000000000000000 ffffffff818721d0
+         0000000000000000 0000000000000000 0000000000000000 ffffffff81109bb0
+         0000000000000000 0000000000000000 0000000000000000 0000000000000000
+         0000000000000000 0000000000000000 0000000000000000 ffffffff818720f8
+         0000000000000000 0000000000000000 0000000000000000 0000000000000000
+         ...
+Call Trace:
+[<ffffffff811aa9f4>] setup_per_zone_wmarks+0x19c/0x2d8
+[<ffffffff818a40f0>] init_per_zone_wmark_min+0x44/0xe0
+[<ffffffff81100438>] do_one_initcall+0x38/0x160
+[<ffffffff818721d0>] kernel_init+0xd8/0x178
+[<ffffffff81109bb0>] kernel_thread_helper+0x10/0x18
 
-For sparc64:
-arch/sparc/kernel/sys32.S:
-91: SIGN3(sys32_futex, compat_sys_futex, %o1, %o2, %o5)
 
-For s390:
-arch/s390/kernel/compat_wrapper.S
-ENTRY(compat_sys_futex_wrapper)
-        llgtr   %r2,%r2                 # u32 *
-	lgfr    %r3,%r3                 # int
-	lgfr    %r4,%r4                 # int
-	llgtr   %r5,%r5                 # struct compat_timespec *
-	llgtr   %r6,%r6                 # u32 *
-	lgf     %r0,164(%r15)           # int
-	stg     %r0,160(%r15)
-	jg	compat_sys_futex	# branch to system call
+Code: 007e1824  0064182d  64840038 <dc620000> c84afff5  64c60001  
+66020200  66737000  1220000c
 
-Maybe we can consolidate all of this like your patch in the future,
-but it's a different issue.
+All code
+========
+    0:    24 18                    and    $0x18,%al
+    2:    7e 00                    jle    0x4
+    4:    2d 18 64 00 38           sub    $0x38006418,%eax
+    9:    00 84 64 00 00 62 dc     add    %al,-0x239e0000(%rsp,%riz,2)
+   10:    f5                       cmc
+   11:    ff 4a c8                 decl   -0x38(%rdx)
+   14:    01 00                    add    %eax,(%rax)
+   16:    c6                       (bad)
+   17:    64 00 02                 add    %al,%fs:(%rdx)
+   1a:    02 66 00                 add    0x0(%rsi),%ah
+   1d:    70 73                    jo     0x92
+   1f:    66                       data16
+   20:    0c 00                    or     $0x0,%al
+   22:    20 12                    and    %dl,(%rdx)
 
-Thanks,
-Yong
+Code starting with the faulting instruction
+===========================================
+    0:    00 00                    add    %al,(%rax)
+    2:    62                       (bad)
+    3:    dc f5                    fdiv   %st,%st(5)
+    5:    ff 4a c8                 decl   -0x38(%rdx)
+    8:    01 00                    add    %eax,(%rax)
+    a:    c6                       (bad)
+    b:    64 00 02                 add    %al,%fs:(%rdx)
+    e:    02 66 00                 add    0x0(%rsi),%ah
+   11:    70 73                    jo     0x86
+   13:    66                       data16
+   14:    0c 00                    or     $0x0,%al
+   16:    20 12                    and    %dl,(%rdx)
 
-> 
-> 
-> diff --git a/kernel/futex_compat.c b/kernel/futex_compat.c
-> index 5f9e689..74ada65 100644
-> --- a/kernel/futex_compat.c
-> +++ b/kernel/futex_compat.c
-> @@ -180,9 +180,9 @@ err_unlock:
->  	return ret;
->  }
-> 
-> -asmlinkage long compat_sys_futex(u32 __user *uaddr, int op, u32 val,
-> -		struct compat_timespec __user *utime, u32 __user *uaddr2,
-> -		u32 val3)
-> +SYSCALL_DEFINE6(compat_sys_futex, u32 __user *, uaddr, int , op, u32, val,
-> +		struct compat_timespec __user *, utime, u32 __user *, uaddr2,
-> +		u32, val3)
->  {
->  	struct timespec ts;
->  	ktime_t t, *tp = NULL;
-> 
-> Obviously the function name is wrong, but a varient of
-> SYSCALL_DEFINE*() could be created so the proper function names are
-> produced.
-> 
-> David Daney
+(gdb) list *setup_per_zone_wmarks+0x19c
+0x811aa9f4 is in setup_per_zone_wmarks 
+(include/asm-generic/bitops/non-atomic.h:105).
+100     * @nr: bit number to test
+101     * @addr: Address to start counting from
+102     */
+103    static inline int test_bit(int nr, const volatile unsigned long 
+*addr)
+104    {
+105        return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+106    }
+107
+108    #endif /* _ASM_GENERIC_BITOPS_NON_ATOMIC_H_ */
+(gdb)
+
+I am able to boot 2.6.39.3 on this board.  Is this a known issue?  Thanks,
+
+Jason

@@ -1,120 +1,64 @@
-Received: from imr3.ericy.com ([198.24.6.13]:56892 "EHLO imr3.ericy.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1492164Ab1HSAKL (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 19 Aug 2011 02:10:11 +0200
-Received: from eusaamw0711.eamcs.ericsson.se ([147.117.20.178])
-        by imr3.ericy.com (8.13.8/8.13.8) with ESMTP id p7J0A4Y8011333
-        (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-        for <linux-mips@linux-mips.org>; Thu, 18 Aug 2011 19:10:04 -0500
-Message-ID: <4E4DA9DA.60305@ericsson.com>
-Date: Thu, 18 Aug 2011 17:10:02 -0700
-From: Jason Kwon <jason.kwon@ericsson.com>
+Received: from mail.windriver.com ([147.11.1.11]:46586 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1492167Ab1HSB4W (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Aug 2011 03:56:22 +0200
+Date: Fri, 19 Aug 2011 09:56:07 +0800
+From: Yong Zhang <yong.zhang@windriver.com>
+Subject: Re: [PATCH] MIPS: use 32-bit wrapper for compat_sys_futex
+Message-ID: <20110819015607.GA2798@windriver.com>
+Reply-To: Yong Zhang <yong.zhang@windriver.com>
+References: <1313546094-11882-1-git-send-email-yong.zhang@windriver.com>
+ <4E4BF7C0.80703@cavium.com>
+ <20110818023247.GA3750@windriver.com>
+ <4E4D3C8D.1040707@cavium.com>
 MIME-Version: 1.0
-Subject: Problems booting 3.0.3 kernel on Octeon CN58XX board
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <4E4D3C8D.1040707@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-mips@linux-mips.org
-Message-ID: <20110819001002.JCZF8nOJjfVH80Xw4whg475Vj9Z2xderCfFCUtMM5yM@z>
+To: David Daney <david.daney@cavium.com>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20110819015607.NibTng9xAJvnaoCj-R_KoDj9yjIaDCaFzwnje9fT1mo@z>
 
-Attempting to boot a 3.0.3 kernel on a CN58XX board produced the 
-following oops:
+On Thu, Aug 18, 2011 at 09:23:41AM -0700, David Daney wrote:
+> On 08/17/2011 07:32 PM, Yong Zhang wrote:
+> >On Wed, Aug 17, 2011 at 10:17:52AM -0700, David Daney wrote:
+> >>>diff --git a/arch/mips/kernel/scall64-o32.S b/arch/mips/kernel/scall64-o32.S
+> >>>index 46c4763..f48b18e 100644
+> >>>--- a/arch/mips/kernel/scall64-o32.S
+> >>>+++ b/arch/mips/kernel/scall64-o32.S
+> >>>@@ -441,7 +441,7 @@ sys_call_table:
+> >>>  	PTR	sys_fremovexattr		/* 4235 */
+> >>>  	PTR	sys_tkill
+> >>>  	PTR	sys_sendfile64
+> >>>-	PTR	compat_sys_futex
+> >>>+	PTR	sys_32_futex
+> >>
+> >>This change is redundant, scall64-o32.S already does the right thing
+> >
+> >My first virsion(not sent out) doesn't include scall64-o32.S either.
+> >
+> >>so additional zero extending is not needed and is just extra
+> >>instructions to execute for no reason.
+> >
+> >Why I'm adding it here is for:
+> >1)code consistent, otherwise we must move SYSCALL_DEFINE6(32_futex,...)
+> >   under CONFIG_MIPS32_N32;
+> 
+> No, you don't have to move it.  Just don't call it.
+> 
+> 
+> >2)I'm afraid there may be some other way to touch the high 32-bit of a
+> >   register, so touching scall64-o32.S is also for safety(due to unknown
+> >   reason, fix me if I'm wrong).
+> 
+> OK: You are mistaken.  You claim you don't understand what the code
+> does.  That is really a poor justification for modifying it.
 
-CPU 4 Unable to handle kernel paging request at virtual address 
-0000000001c00000, epc == ffffffff811aa9f4, ra == ffffffff811aaa98
-Oops[#1]:
-Cpu 4
-$ 0   : 0000000000000000 0000000010008ce0 ffffffff821d2b80 0000000001c00000
-$ 4   : 0000000001c00038 000000000000017c 0000000000080000 0000000000080072
-$ 8   : 0000000000000008 0000000000000002 0000000000000003 a800000002284520
-$12   : 0000000000000002 ffffffff8186ee80 ffffffffffffff80 0000000000000030
-$16   : 0000000000080072 0000000000000001 0000000001bfa8f0 0000000001bfa928
-$20   : a800000003aff8f0 00000000000f0000 ffffffff8186ee80 ffffffff821d2a80
-$24   : 0000000000000001 0000000000000038
-$28   : a80000041fc48000 a80000041fc4bd90 fffffffffffffffc ffffffff811aaa98
-Hi    : 0000000000000000
-Lo    : 0000000000000000
-epc   : ffffffff811aa9f4 setup_per_zone_wmarks+0x19c/0x2d8
-     Not tainted
-ra    : ffffffff811aaa98 setup_per_zone_wmarks+0x240/0x2d8
-Status: 10008ce2    KX SX UX KERNEL EXL
-Cause : 40808408
-BadVA : 0000000001c00000
-PrId  : 000d0301 (Cavium Octeon+)
-Modules linked in:
-Process swapper (pid: 1, threadinfo=a80000041fc48000, 
-task=a80000041fc44038, tls=0000000000000000)
-Stack : 0000000000000000 000000000006f75d ffffffff8186eec0 0000000000000001
-         0000000000000547 ffffffff81825598 ffffffff81a80000 ffffffff818b3e68
-         ffffffff818a40ac 0000000000000000 ffffffff81a80000 0000000000000000
-         0000000000000000 0000000000000000 0000000000000000 ffffffff818a40f0
-         ffffffff81a80000 ffffffff81100438 ffffffff818b4198 ffffffff818b3e68
-         ffffffff818b46c8 0000000000000000 0000000000000000 ffffffff818721d0
-         0000000000000000 0000000000000000 0000000000000000 ffffffff81109bb0
-         0000000000000000 0000000000000000 0000000000000000 0000000000000000
-         0000000000000000 0000000000000000 0000000000000000 ffffffff818720f8
-         0000000000000000 0000000000000000 0000000000000000 0000000000000000
-         ...
-Call Trace:
-[<ffffffff811aa9f4>] setup_per_zone_wmarks+0x19c/0x2d8
-[<ffffffff818a40f0>] init_per_zone_wmark_min+0x44/0xe0
-[<ffffffff81100438>] do_one_initcall+0x38/0x160
-[<ffffffff818721d0>] kernel_init+0xd8/0x178
-[<ffffffff81109bb0>] kernel_thread_helper+0x10/0x18
+If you don't like it and you are sure there is no potential security problem,
+just make a patch to remove it. Go ahead.
 
-
-Code: 007e1824  0064182d  64840038 <dc620000> c84afff5  64c60001  
-66020200  66737000  1220000c
-
-All code
-========
-    0:    24 18                    and    $0x18,%al
-    2:    7e 00                    jle    0x4
-    4:    2d 18 64 00 38           sub    $0x38006418,%eax
-    9:    00 84 64 00 00 62 dc     add    %al,-0x239e0000(%rsp,%riz,2)
-   10:    f5                       cmc
-   11:    ff 4a c8                 decl   -0x38(%rdx)
-   14:    01 00                    add    %eax,(%rax)
-   16:    c6                       (bad)
-   17:    64 00 02                 add    %al,%fs:(%rdx)
-   1a:    02 66 00                 add    0x0(%rsi),%ah
-   1d:    70 73                    jo     0x92
-   1f:    66                       data16
-   20:    0c 00                    or     $0x0,%al
-   22:    20 12                    and    %dl,(%rdx)
-
-Code starting with the faulting instruction
-===========================================
-    0:    00 00                    add    %al,(%rax)
-    2:    62                       (bad)
-    3:    dc f5                    fdiv   %st,%st(5)
-    5:    ff 4a c8                 decl   -0x38(%rdx)
-    8:    01 00                    add    %eax,(%rax)
-    a:    c6                       (bad)
-    b:    64 00 02                 add    %al,%fs:(%rdx)
-    e:    02 66 00                 add    0x0(%rsi),%ah
-   11:    70 73                    jo     0x86
-   13:    66                       data16
-   14:    0c 00                    or     $0x0,%al
-   16:    20 12                    and    %dl,(%rdx)
-
-(gdb) list *setup_per_zone_wmarks+0x19c
-0x811aa9f4 is in setup_per_zone_wmarks 
-(include/asm-generic/bitops/non-atomic.h:105).
-100     * @nr: bit number to test
-101     * @addr: Address to start counting from
-102     */
-103    static inline int test_bit(int nr, const volatile unsigned long 
-*addr)
-104    {
-105        return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
-106    }
-107
-108    #endif /* _ASM_GENERIC_BITOPS_NON_ATOMIC_H_ */
-(gdb)
-
-I am able to boot 2.6.39.3 on this board.  Is this a known issue?  Thanks,
-
-Jason
+Thanks,
+Yong

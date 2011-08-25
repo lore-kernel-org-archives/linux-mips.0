@@ -1,53 +1,43 @@
-Received: from e39.co.us.ibm.com ([32.97.110.160]:40926 "EHLO
-        e39.co.us.ibm.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1492163Ab1HSUeo (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Aug 2011 22:34:44 +0200
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com [9.17.195.227])
-        by e39.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id p7JKJOJq010254
-        for <linux-mips@linux-mips.org>; Fri, 19 Aug 2011 14:19:24 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-        by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id p7JKYYoc157558
-        for <linux-mips@linux-mips.org>; Fri, 19 Aug 2011 14:34:34 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-        by d03av01.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id p7JKYYWb020122
-        for <linux-mips@linux-mips.org>; Fri, 19 Aug 2011 14:34:34 -0600
-Subject: Re: select() to /dev/rtc0 to wait for clock tick timed out
-From: john stultz <johnstul@us.ibm.com>
-In-Reply-To: <CAEdQ38H5NC6B+T=gsF4-8Ue2DA=rfrFCi_i+RKC-=DFijjK2=g@mail.gmail.com>
-References: <CAEdQ38HGfd9YWE+WLuirE4Km6UE6N26toTj=-1BuXAQUux6t5g@mail.gmail.com>
-         <1313777242.2970.131.camel@work-vm>
-         <CAEdQ38F4zi76ug+ABZPnPLcLvGfUFRhr6SKzYCN+24Otq+qAAQ@mail.gmail.com>
-         <1313783990.2970.136.camel@work-vm>
-         <CAEdQ38H5NC6B+T=gsF4-8Ue2DA=rfrFCi_i+RKC-=DFijjK2=g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 19 Aug 2011 13:34:30 -0700
-Message-ID: <1313786070.2970.144.camel@work-vm>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from dns1.mips.com ([12.201.5.69]:45803 "EHLO dns1.mips.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491996Ab1HYLSx (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 25 Aug 2011 13:18:53 +0200
+From: Deng-Cheng Zhu <dczhu@mips.com>
+Subject: [PATCH v2 0/2] Pass resources to pci_create_bus() and fix MIPS PCI resources
+Date: Thu, 25 Aug 2011 19:18:35 +0800
+Message-ID: <1314271117-32717-1-git-send-email-dczhu@mips.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Matt Turner <mattst88@gmail.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20110819203430.RHSHEyO1wOD3IcCvU4lOptEy8J2TYGwpvVSHEDDBMbw@z>
+To: jbarnes@virtuousgeek.org, ralf@linux-mips.org
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, eyal@mips.com, zenon@mips.com, dczhu@mips.com, dengcheng.zhu@gmail.com
+Message-ID: <20110825111835.w7Ch-bp9RairMkYkAOmfWxmUMOo4rA8LE0qLEBaLp8g@z>
 
-On Fri, 2011-08-19 at 16:06 -0400, Matt Turner wrote:
-> Nope, just hangs.
-> 
-> Current RTC date/time is 19-8-2011, 00:20:51.
-> Alarm time now set to 00:20:56.
-> Waiting 5 seconds for alarm...
+Change the pci_create_bus() interface to pass in available resources to get them
+settled down early. This is to avoid possible resource conflicts while doing
+pci_scan_slot() in pci_scan_child_bus(). Note that pcibios_fixup_bus() can get
+rid of such conflicts, but it's done AFTER scanning slots.
 
-Ok. That confirms the alarm irq isn't working.
+In addition, MIPS PCI resources are now fixed using this new interface.
 
-> Would it at least help if I booted 2.6.37 to confirm that this test
-> program works there? I'd hate to waste a bunch of your time only to
-> find out that it's a problem with my patches.
+-- Changes --
+v2 - v1:
+o Merge [PATCH 1/3] to [PATCH 3/3], so now 2 patches in total.
+o Add more info to patch description.
+o Fix arch breaks in default resource setup discovered by Bjorn Helgaas.
 
-Yea, that's probably a good idea.
+Deng-Cheng Zhu (2):
+  PCI: Pass available resources into pci_create_bus()
+  MIPS: PCI: Pass controller's resources to pci_create_bus() in
+    pcibios_scanbus()
 
-From there we can instrument the code to see why the alarm irq isn't
-working.
-
-Thanks again for the testing!
--john
+ arch/microblaze/pci/pci-common.c |    3 +-
+ arch/mips/pci/pci.c              |   53 ++++++++++++++++++++++++++++++++++---
+ arch/powerpc/kernel/pci-common.c |    3 +-
+ arch/sparc/kernel/pci.c          |    3 +-
+ arch/x86/pci/acpi.c              |    2 +-
+ drivers/pci/probe.c              |   15 ++++++++---
+ include/linux/pci.h              |    3 +-
+ 7 files changed, 68 insertions(+), 14 deletions(-)

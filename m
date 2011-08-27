@@ -1,134 +1,37 @@
-Received: from dns1.mips.com ([12.201.5.69]:36087 "EHLO dns1.mips.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491841Ab1HZJHj (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 26 Aug 2011 11:07:39 +0200
-From: Deng-Cheng Zhu <dczhu@mips.com>
-Subject: [PATCH v3 2/2] MIPS: PCI: Pass controller's resources to pci_create_bus() in pcibios_scanbus()
-Date: Fri, 26 Aug 2011 17:07:13 +0800
-Message-ID: <1314349633-13155-3-git-send-email-dczhu@mips.com>
-In-Reply-To: <1314349633-13155-1-git-send-email-dczhu@mips.com>
-References: <1314349633-13155-1-git-send-email-dczhu@mips.com>
+Received: from mx1.netlogicmicro.com ([12.203.210.36]:2762 "EHLO
+        orion5.netlogicmicro.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S1493831Ab1H0BjD convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 27 Aug 2011 03:39:03 +0200
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Subject: How to chip->startup() with IRQs disabled
+Date: Fri, 26 Aug 2011 18:39:17 -0700
+Message-ID: <74B0AE1BA53C37449DE49BB274F9A2DBC4D052@orion8.netlogicmicro.com>
+From: "Om Narasimhan" <onarasimhan@netlogicmicro.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: jbarnes@virtuousgeek.org, ralf@linux-mips.org
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, eyal@mips.com, zenon@mips.com, dczhu@mips.com, dengcheng.zhu@gmail.com
-Message-ID: <20110826090713.HwvR4TXKok-FGBknisMApwUivsSGj19ntn_8_h5xe5Q@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20110827013917.TbeiHTxvqEDPlQi5BdWXUKeHILSyZPKbOQpzffdhu74@z>
 
-Use the new interface of pci_create_bus() so that system controller's
-resources are added to the root bus upon bus creation, thereby avoiding
-conflicts with PCI quirks before pcibios_fixup_bus() gets the chance to do
-right things in pci_scan_child_bus().
+Hi,
+I am working on a chip with multiple cores. I have defined 
+static struct irq_chip new_plat_chip = {
+...
+	.startup = n_irq_startup,
+	.mask = n_irq_shutdown,
+...
+};
 
-Signed-off-by: Deng-Cheng Zhu <dczhu@mips.com>
----
-Changes (v3 - v2):
-o Do not do fixups for root buses in pcibios_fixup_bus().
-o Skip bus creation when bus resources cannot be allocated.
-o PCI domain/bus numbers added to the error info in controller_resources().
-o Patch description modified according to the changes above.
+In n_irq_startup(), I have to make sure that all cores have set RVEC bit and corresponding EIMR bit. So, I try using on_each_cpu() (because EIMR can be set only by running code on that particular cpu) to run a function to set EIMR.
 
-Changes (v2 - v1):
-o Merge [PATCH 1/3] to [PATCH 3/3] of v1.
-o Add more info to patch description.
+n_irq_startup() is called as chip->startup() from __setup_irq() (from request_threaded_irq, in turn from request_irq() ) with a spin lock held (desc->lock, in kernel/irq/manage.c).  This causes a stack dump from on_each_cpu(). Since it is wrong to call on_each_cpu with interrupts disabled, I want to change this piece of code.
 
- arch/mips/pci/pci.c |   61 ++++++++++++++++++++++++++++++++++++++++++++------
- 1 files changed, 53 insertions(+), 8 deletions(-)
+I am wondering how other SMP mips system implement this. Any comments or pointers will be helpful.
 
-diff --git a/arch/mips/pci/pci.c b/arch/mips/pci/pci.c
-index 33bba7b..c76fb30 100644
---- a/arch/mips/pci/pci.c
-+++ b/arch/mips/pci/pci.c
-@@ -76,11 +76,42 @@ pcibios_align_resource(void *data, const struct resource *res,
- 	return start;
- }
- 
-+static struct pci_bus_resource *
-+controller_resources(const struct pci_controller *ctrl, int domain, int busno)
-+{
-+	struct pci_bus_resource *mem_res, *io_res;
-+
-+	mem_res = kzalloc(sizeof(struct pci_bus_resource), GFP_KERNEL);
-+	if (!mem_res)
-+		goto err_out;
-+
-+	mem_res->res = ctrl->mem_resource;
-+	mem_res->flags = 0;
-+	INIT_LIST_HEAD(&mem_res->list);
-+
-+	io_res = kzalloc(sizeof(struct pci_bus_resource), GFP_KERNEL);
-+	if (!io_res) {
-+		kfree(mem_res);
-+		goto err_out;
-+	}
-+
-+	io_res->res = ctrl->io_resource;
-+	io_res->flags = 0;
-+	list_add(&io_res->list, &mem_res->list);
-+
-+	return mem_res;
-+err_out:
-+	printk(KERN_ERR "PCI bus %04x:%02x: Can't allocate bus resource.\n",
-+		domain, busno);
-+	return NULL;
-+}
-+
- static void __devinit pcibios_scanbus(struct pci_controller *hose)
- {
- 	static int next_busno;
- 	static int need_domain_info;
--	struct pci_bus *bus;
-+	struct pci_bus *bus = NULL;
-+	struct pci_bus_resource *bus_res;
- 
- 	if (!hose->iommu)
- 		PCI_DMA_BUS_IS_PHYS = 1;
-@@ -88,7 +119,22 @@ static void __devinit pcibios_scanbus(struct pci_controller *hose)
- 	if (hose->get_busno && pci_probe_only)
- 		next_busno = (*hose->get_busno)();
- 
--	bus = pci_scan_bus(next_busno, hose->pci_ops, hose);
-+	bus_res = controller_resources(hose, hose->index, next_busno);
-+	if (bus_res) {
-+		bus = pci_create_bus(NULL, next_busno, hose->pci_ops,
-+				     hose, bus_res);
-+		if (bus) {
-+			bus->subordinate = pci_scan_child_bus(bus);
-+			pci_bus_add_devices(bus);
-+		} else {
-+			/* io_resource */
-+			kfree(list_first_entry(&bus_res->list,
-+				struct pci_bus_resource, list));
-+			/* mem_resource */
-+			kfree(bus_res);
-+		}
-+	}
-+
- 	hose->bus = bus;
- 
- 	need_domain_info = need_domain_info || hose->index;
-@@ -265,15 +311,14 @@ void __devinit pcibios_fixup_bus(struct pci_bus *bus)
- {
- 	/* Propagate hose info into the subordinate devices.  */
- 
--	struct pci_controller *hose = bus->sysdata;
- 	struct list_head *ln;
- 	struct pci_dev *dev = bus->self;
- 
--	if (!dev) {
--		bus->resource[0] = hose->io_resource;
--		bus->resource[1] = hose->mem_resource;
--	} else if (pci_probe_only &&
--		   (dev->class >> 8) == PCI_CLASS_BRIDGE_PCI) {
-+	/*
-+	 * Root bus resources should already be set up correctly in
-+	 * pci_create_bus(), so don't do fixups for it.
-+	 */
-+	if (pci_probe_only && (dev->class >> 8) == PCI_CLASS_BRIDGE_PCI) {
- 		pci_read_bridge_bases(bus);
- 		pcibios_fixup_device_resources(dev, bus);
- 	}
--- 
-1.7.1
+I am not in the mailing list, please CC me in replies.
+
+Om.

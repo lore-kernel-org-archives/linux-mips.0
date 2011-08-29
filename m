@@ -1,56 +1,90 @@
-Received: from mx1.netlogicmicro.com ([12.203.210.36]:3191 "EHLO
-        orion5.netlogicmicro.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S1491913Ab1H0CaQ convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 27 Aug 2011 04:30:16 +0200
-Content-class: urn:content-classes:message
+Received: from mail3.caviumnetworks.com ([12.108.191.235]:10069 "EHLO
+        mail3.caviumnetworks.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1491754Ab1H2Xpb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 30 Aug 2011 01:45:31 +0200
+Message-ID: <4E5C2490.6040203@cavium.com>
+Date: Mon, 29 Aug 2011 16:45:20 -0700
+From: David Daney <david.daney@cavium.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Subject: RE: How to chip->startup() with IRQs disabled
-Date: Fri, 26 Aug 2011 19:30:42 -0700
-Message-ID: <74B0AE1BA53C37449DE49BB274F9A2DBC4D053@orion8.netlogicmicro.com>
-References: <74B0AE1BA53C37449DE49BB274F9A2DBC4D052@orion8.netlogicmicro.com> <CA+7sy7CSauuSAgF1Ai8dRbcVzVkdj7zWxVjOuyUJw2WSUwk5bg@mail.gmail.com>
-From: "Om Narasimhan" <onarasimhan@netlogicmicro.com>
+Subject: Re: [PATCH] MIPS: SMTC: Correct saving of CP0_STATUS
+References: <20110829232029.GA15763@zapo>
+In-Reply-To: <20110829232029.GA15763@zapo>
+Content-Type: multipart/mixed;
+ boundary="------------000507060707010301070801"
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: "Jayachandran C." <jayachandranc@netlogicmicro.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20110827023042.jhy8zCPpkmbTY-WzqsjlSdKy9LTSV571_9qNUYX1Eao@z>
+To: "Edgar E. Iglesias" <edgar.iglesias@gmail.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20110829234520.A521dnOMOl2aQ7pdMe0MNfbOBZwWKxceIShIcs8f2xM@z>
 
->On Sat, Aug 27, 2011 at 7:09 AM, Om Narasimhan
-><onarasimhan@netlogicmicro.com> wrote:
->> Hi,
->> I am working on a chip with multiple cores. I have defined
->> static struct irq_chip new_plat_chip = {
->> ...
->>        .startup = n_irq_startup,
->>        .mask = n_irq_shutdown,
->> ...
->> };
->>
->> In n_irq_startup(), I have to make sure that all cores have set RVEC bit and
->> corresponding EIMR bit. So, I try using on_each_cpu() (because EIMR can be set
->> only by running code on that particular cpu) to run a function to set EIMR.
->>
->> n_irq_startup() is called as chip->startup() from __setup_irq() (from
->> request_threaded_irq, in turn from request_irq() ) with a spin lock held
->> (desc->lock, in kernel/irq/manage.c).  This causes a stack dump from
->> on_each_cpu(). Since it is wrong to call on_each_cpu with interrupts disabled,
->> I want to change this piece of code.
+This is a multi-part message in MIME format.
+--------------000507060707010301070801
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 08/29/2011 04:20 PM, Edgar E. Iglesias wrote:
+> Hi,
 >
->>In XLR code
->>(http://git.linux-mips.org/?p=linux.git;a=blob;f=arch/mips/netlogic/xlr/smp.c)
->>we do the initialization of EIMR in nlm_init_secondary() which is
->>registered as .init_secondary method in smp_ops.  on_each_cpu() may not be the
->>right way to do this.
+> Commit 362e696428590f7d0a5d0971a2d04b0372a761b8
+> reorders a bunch of insns to improve the flow of the pipeline but
+> for MT_SMTC kernels, AFAICT, the saving of CP0_STATUS seems wrong.
 
-There is a problem with that approach. At initialization time one has no idea
-about the interrupts that should be set. E.g, in our system, PCIe interrupts
-need be enabled only if there is a device attached to one of the pcie bus.
-Moreover, whether the device requests Intx, MSI or MSI-X is determinable only at
-the event of request_irq(). That means, it is imperative that we defer setting
-EIMR till request_irq()
+Indeed.
 
-Om.
+>
+> Am I missing something?
+>
+
+It does look like in the MIPS_MT_SMTC case we are clobbering the value 
+in v1.
+
+> If not here is a patch, tested with qemu.
+>
+
+How about the attached completely untested one instead?
+
+David Daney
+
+--------------000507060707010301070801
+Content-Type: text/plain;
+ name="0001-MIPS-Don-t-clobber-CP0_STATUS-vaue-for-CONFIG_MIPS_M.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-MIPS-Don-t-clobber-CP0_STATUS-vaue-for-CONFIG_MIPS_M.pa";
+ filename*1="tch"
+
+From d0035295ae34bcf84d601b1e25e2642fe0802752 Mon Sep 17 00:00:00 2001
+From: David Daney <david.daney@cavium.com>
+Date: Mon, 29 Aug 2011 16:42:12 -0700
+Subject: [PATCH] MIPS: Don't clobber CP0_STATUS vaue for CONFIG_MIPS_MT_SMTC
+
+Untested, but it looks nice.
+
+Reported-by: Edgar E. Iglesias <edgar.iglesias@gmail.com>
+Signed-off-by: David Daney <david.daney@cavium.com>
+---
+ arch/mips/include/asm/stackframe.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/include/asm/stackframe.h b/arch/mips/include/asm/stackframe.h
+index 569681e..51a3a0c 100644
+--- a/arch/mips/include/asm/stackframe.h
++++ b/arch/mips/include/asm/stackframe.h
+@@ -195,9 +195,9 @@
+ 		 * to cover the pipeline delay.
+ 		 */
+ 		.set	mips32
+-		mfc0	v1, CP0_TCSTATUS
++		mfc0	k0, CP0_TCSTATUS
+ 		.set	mips0
+-		LONG_S	v1, PT_TCSTATUS(sp)
++		LONG_S	k0, PT_TCSTATUS(sp)
+ #endif /* CONFIG_MIPS_MT_SMTC */
+ 		LONG_S	$4, PT_R4(sp)
+ 		LONG_S	$5, PT_R5(sp)
+-- 
+1.7.2.3
+
+
+--------------000507060707010301070801--

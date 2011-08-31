@@ -1,90 +1,56 @@
-Received: from mail3.caviumnetworks.com ([12.108.191.235]:10069 "EHLO
-        mail3.caviumnetworks.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491754Ab1H2Xpb (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 30 Aug 2011 01:45:31 +0200
-Message-ID: <4E5C2490.6040203@cavium.com>
-Date: Mon, 29 Aug 2011 16:45:20 -0700
-From: David Daney <david.daney@cavium.com>
+Received: from dns1.mips.com ([12.201.5.69]:42305 "EHLO dns1.mips.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1491036Ab1HaEvS (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 31 Aug 2011 06:51:18 +0200
+Message-ID: <4E5DBDB0.4070505@mips.com>
+Date: Wed, 31 Aug 2011 12:50:56 +0800
+From: Deng-Cheng Zhu <dczhu@mips.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: SMTC: Correct saving of CP0_STATUS
-References: <20110829232029.GA15763@zapo>
-In-Reply-To: <20110829232029.GA15763@zapo>
-Content-Type: multipart/mixed;
- boundary="------------000507060707010301070801"
+Subject: Re: [PATCH v3 0/2] Pass resources to pci_create_bus() and fix MIPS
+ PCI resources
+References: <1314349633-13155-1-git-send-email-dczhu@mips.com> <CAErSpo5PgXs4tuihh_JZCePzD8FWWzwp=-VHxFGCCuRKRKOYFQ@mail.gmail.com> <CAErSpo506Mz3QSxxdpbxyCUuZvqMTNL+fT5R81ivoj7cDTFyJg@mail.gmail.com>
+In-Reply-To: <CAErSpo506Mz3QSxxdpbxyCUuZvqMTNL+fT5R81ivoj7cDTFyJg@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: "Edgar E. Iglesias" <edgar.iglesias@gmail.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20110829234520.A521dnOMOl2aQ7pdMe0MNfbOBZwWKxceIShIcs8f2xM@z>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: jbarnes@virtuousgeek.org, ralf@linux-mips.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, eyal@mips.com, zenon@mips.com, dengcheng.zhu@gmail.com
+Message-ID: <20110831045056.ZQZ89TPnvGaSGbL8mdhcp7jzwIwMmkcor4XCFNWWYMI@z>
 
-This is a multi-part message in MIME format.
---------------000507060707010301070801
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi, Bjorn
 
-On 08/29/2011 04:20 PM, Edgar E. Iglesias wrote:
-> Hi,
+
+Thanks for your constructive review.
+
+> One logistical issue here is that the first patch touches several
+> architectures at once, which puts Jesse in a bit of a pinch.  If he
+> applies it, there's always the possibility that an arch patch will
+> conflict with it, which makes merging harder.
+
+In case the conflicts happen, the effort to resolve them should be
+trivial (a matter of an extra NULL argument), I suppose. Also, the odds
+of other incoming arch patches making a reference to pci_create_bus()
+should not be great.
+
+> It might be easier if, instead of changing the pci_create_bus()
+> interface, you added a new one (it could call pci_create_bus() then
+> replace the resources, so the implementation could still be mostly
+> shared.)  We already have a plethora of "create bus" methods
+> (pci_create_bus(), pci_scan_bus_parented(), pci_scan_bus()), but if
+> you added a pci_create_root_bus() or something similar, maybe we could
+> try to converge on it and obsolete the others.
 >
-> Commit 362e696428590f7d0a5d0971a2d04b0372a761b8
-> reorders a bunch of insns to improve the flow of the pipeline but
-> for MT_SMTC kernels, AFAICT, the saving of CP0_STATUS seems wrong.
-
-Indeed.
-
->
-> Am I missing something?
+> Then the first patch would touch only the PCI core, and the second
+> would touch only MIPS, which would make merging more straightforward.
 >
 
-It does look like in the MIPS_MT_SMTC case we are clobbering the value 
-in v1.
-
-> If not here is a patch, tested with qemu.
->
-
-How about the attached completely untested one instead?
-
-David Daney
-
---------------000507060707010301070801
-Content-Type: text/plain;
- name="0001-MIPS-Don-t-clobber-CP0_STATUS-vaue-for-CONFIG_MIPS_M.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-MIPS-Don-t-clobber-CP0_STATUS-vaue-for-CONFIG_MIPS_M.pa";
- filename*1="tch"
-
-From d0035295ae34bcf84d601b1e25e2642fe0802752 Mon Sep 17 00:00:00 2001
-From: David Daney <david.daney@cavium.com>
-Date: Mon, 29 Aug 2011 16:42:12 -0700
-Subject: [PATCH] MIPS: Don't clobber CP0_STATUS vaue for CONFIG_MIPS_MT_SMTC
-
-Untested, but it looks nice.
-
-Reported-by: Edgar E. Iglesias <edgar.iglesias@gmail.com>
-Signed-off-by: David Daney <david.daney@cavium.com>
----
- arch/mips/include/asm/stackframe.h |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/include/asm/stackframe.h b/arch/mips/include/asm/stackframe.h
-index 569681e..51a3a0c 100644
---- a/arch/mips/include/asm/stackframe.h
-+++ b/arch/mips/include/asm/stackframe.h
-@@ -195,9 +195,9 @@
- 		 * to cover the pipeline delay.
- 		 */
- 		.set	mips32
--		mfc0	v1, CP0_TCSTATUS
-+		mfc0	k0, CP0_TCSTATUS
- 		.set	mips0
--		LONG_S	v1, PT_TCSTATUS(sp)
-+		LONG_S	k0, PT_TCSTATUS(sp)
- #endif /* CONFIG_MIPS_MT_SMTC */
- 		LONG_S	$4, PT_R4(sp)
- 		LONG_S	$5, PT_R5(sp)
--- 
-1.7.2.3
+Hmm.. Adding a wrapper of pci_create_bus() does leave other
+architectures alone for this merging. But before all of them converge on
+it (a long way to go), the wrapper is adding naming confusion to the
+PCI core. Personally I think the current low-level transparent change to
+pci_create_bus() is appropriate enough. Does anybody have comments?
 
 
---------------000507060707010301070801--
+Deng-Cheng

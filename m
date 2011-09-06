@@ -1,135 +1,51 @@
-Received: from dns1.mips.com ([12.201.5.69]:48744 "EHLO dns1.mips.com"
+Received: from mga09.intel.com ([134.134.136.24]:11191 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491890Ab1IAC6D (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 1 Sep 2011 04:58:03 +0200
-From: Deng-Cheng Zhu <dczhu@mips.com>
-Subject: [RESEND PATCH v3 2/2] MIPS: PCI: Pass controller's resources to pci_create_bus() in pcibios_scanbus()
-Date: Thu, 1 Sep 2011 10:48:29 +0800
-Message-ID: <1314845309-3277-3-git-send-email-dczhu@mips.com>
-In-Reply-To: <1314845309-3277-1-git-send-email-dczhu@mips.com>
-References: <1314845309-3277-1-git-send-email-dczhu@mips.com>
+        id S1491067Ab1IFD0A (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 6 Sep 2011 05:26:00 +0200
+From: "Zou, Yi" <yi.zou@intel.com>
+Date: Mon, 5 Sep 2011 20:25:39 -0700
+Subject: RE: [patch net-next-2.6 v3] net: consolidate and fix
+ ethtool_ops->get_settings calling
+Message-ID: <5A9BD224CEA58D4CB62235967D650C160A1B7D1C@orsmsx509.amr.corp.intel.com>
+References: <1314905304-16485-1-git-send-email-jpirko@redhat.com>
+         <20110902122630.GC1991@minipsycho> <1314989161.3419.5.camel@bwh-desktop>
+         <20110903133428.GA2821@minipsycho> <1315057614.3092.160.camel@deadeye>
+In-Reply-To: <1315057614.3092.160.camel@deadeye>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: bhelgaas@google.com, jbarnes@virtuousgeek.org, ralf@linux-mips.org, monstr@monstr.eu, benh@kernel.crashing.org, paulus@samba.org, davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, eyal@mips.com, zenon@mips.com, dczhu@mips.com, dengcheng.zhu@gmail.com
-Message-ID: <20110901024829.JUhmoZ2cvFgShb81-0ja2wmwb_ArgFrlaMLayn2rcYs@z>
+To: Ben Hutchings <bhutchings@solarflare.com>, Jiri Pirko <jpirko@redhat.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "fubar@us.ibm.com" <fubar@us.ibm.com>, "andy@greyhouse.net" <andy@greyhouse.net>, "kaber@trash.net" <kaber@trash.net>, "bprakash@broadcom.com" <bprakash@broadcom.com>, "JBottomley@parallels.com" <JBottomley@parallels.com>, "Love, Robert W" <robert.w.love@intel.com>, "davem@davemloft.net" <davem@davemloft.net>, "shemminger@linux-foundation.org" <shemminger@linux-foundation.org>, "decot@google.com" <decot@google.com>, "mirq-linux@rere.qmqm.pl" <mirq-linux@rere.qmqm.pl>, "Duyck, Alexander H" <alexander.h.duyck@intel.com>, "amit.salecha@qlogic.com" <amit.salecha@qlogic.com>, "eric.dumazet@gmail.com" <eric.dumazet@gmail.com>, "therbert@google.com" <therbert@google.com>, "paulmck@linux.vnet.ibm.com" <paulmck@linux.vnet.ibm.com>, "laijs@cn.fujitsu.com" <laijs@cn.fujitsu.com>, "xiaosuo@gmail.com" <xiaosuo@gmail.com>, "greearb@candelatech.com" <greearb@candelatech.com>, "loke.chetan@gmail.com" <loke.chetan@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, "devel@open-fcoe.org" <devel@open-fcoe.org>, "bridge@lists.linux-foundation.org" <bridge@lists.linux-foundation.org>
+Message-ID: <20110906032539.XKDD32Jc9CXguke84CgbRjAORJXsmei9LMXF0n5AJBA@z>
 
-Use the new interface of pci_create_bus() so that system controller's
-resources are added to the root bus upon bus creation, thereby avoiding
-conflicts with PCI quirks before pcibios_fixup_bus() gets the chance to do
-right things in pci_scan_child_bus().
-
-Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Deng-Cheng Zhu <dczhu@mips.com>
----
-Changes (v3 - v2):
-o Do not do fixups for root buses in pcibios_fixup_bus().
-o Skip bus creation when bus resources cannot be allocated.
-o PCI domain/bus numbers added to the error info in controller_resources().
-o Patch description modified according to the changes above.
-
-Changes (v2 - v1):
-o Merge [PATCH 1/3] to [PATCH 3/3] of v1.
-o Add more info to patch description.
-
- arch/mips/pci/pci.c |   61 ++++++++++++++++++++++++++++++++++++++++++++------
- 1 files changed, 53 insertions(+), 8 deletions(-)
-
-diff --git a/arch/mips/pci/pci.c b/arch/mips/pci/pci.c
-index 33bba7b..c76fb30 100644
---- a/arch/mips/pci/pci.c
-+++ b/arch/mips/pci/pci.c
-@@ -76,11 +76,42 @@ pcibios_align_resource(void *data, const struct resource *res,
- 	return start;
- }
- 
-+static struct pci_bus_resource *
-+controller_resources(const struct pci_controller *ctrl, int domain, int busno)
-+{
-+	struct pci_bus_resource *mem_res, *io_res;
-+
-+	mem_res = kzalloc(sizeof(struct pci_bus_resource), GFP_KERNEL);
-+	if (!mem_res)
-+		goto err_out;
-+
-+	mem_res->res = ctrl->mem_resource;
-+	mem_res->flags = 0;
-+	INIT_LIST_HEAD(&mem_res->list);
-+
-+	io_res = kzalloc(sizeof(struct pci_bus_resource), GFP_KERNEL);
-+	if (!io_res) {
-+		kfree(mem_res);
-+		goto err_out;
-+	}
-+
-+	io_res->res = ctrl->io_resource;
-+	io_res->flags = 0;
-+	list_add(&io_res->list, &mem_res->list);
-+
-+	return mem_res;
-+err_out:
-+	printk(KERN_ERR "PCI bus %04x:%02x: Can't allocate bus resource.\n",
-+		domain, busno);
-+	return NULL;
-+}
-+
- static void __devinit pcibios_scanbus(struct pci_controller *hose)
- {
- 	static int next_busno;
- 	static int need_domain_info;
--	struct pci_bus *bus;
-+	struct pci_bus *bus = NULL;
-+	struct pci_bus_resource *bus_res;
- 
- 	if (!hose->iommu)
- 		PCI_DMA_BUS_IS_PHYS = 1;
-@@ -88,7 +119,22 @@ static void __devinit pcibios_scanbus(struct pci_controller *hose)
- 	if (hose->get_busno && pci_probe_only)
- 		next_busno = (*hose->get_busno)();
- 
--	bus = pci_scan_bus(next_busno, hose->pci_ops, hose);
-+	bus_res = controller_resources(hose, hose->index, next_busno);
-+	if (bus_res) {
-+		bus = pci_create_bus(NULL, next_busno, hose->pci_ops,
-+				     hose, bus_res);
-+		if (bus) {
-+			bus->subordinate = pci_scan_child_bus(bus);
-+			pci_bus_add_devices(bus);
-+		} else {
-+			/* io_resource */
-+			kfree(list_first_entry(&bus_res->list,
-+				struct pci_bus_resource, list));
-+			/* mem_resource */
-+			kfree(bus_res);
-+		}
-+	}
-+
- 	hose->bus = bus;
- 
- 	need_domain_info = need_domain_info || hose->index;
-@@ -265,15 +311,14 @@ void __devinit pcibios_fixup_bus(struct pci_bus *bus)
- {
- 	/* Propagate hose info into the subordinate devices.  */
- 
--	struct pci_controller *hose = bus->sysdata;
- 	struct list_head *ln;
- 	struct pci_dev *dev = bus->self;
- 
--	if (!dev) {
--		bus->resource[0] = hose->io_resource;
--		bus->resource[1] = hose->mem_resource;
--	} else if (pci_probe_only &&
--		   (dev->class >> 8) == PCI_CLASS_BRIDGE_PCI) {
-+	/*
-+	 * Root bus resources should already be set up correctly in
-+	 * pci_create_bus(), so don't do fixups for it.
-+	 */
-+	if (pci_probe_only && (dev->class >> 8) == PCI_CLASS_BRIDGE_PCI) {
- 		pci_read_bridge_bases(bus);
- 		pcibios_fixup_device_resources(dev, bus);
- 	}
--- 
-1.7.1
+PiANCj4gT24gU2F0LCAyMDExLTA5LTAzIGF0IDE1OjM0ICswMjAwLCBKaXJpIFBpcmtvIHdyb3Rl
+Og0KPiA+IFRoaXMgcGF0Y2ggZG9lcyBzZXZlcmFsIHRoaW5nczoNCj4gPiAtIGludHJvZHVjZXMg
+X19ldGh0b29sX2dldF9zZXR0aW5ncyB3aGljaCBpcyBjYWxsZWQgZnJvbSBldGh0b29sIGNvZGUN
+Cj4gYW5kDQo+ID4gICBmcm9tIGRyaXZlcnMgYXMgd2VsbC4gUHV0IEFTU0VSVF9SVE5MIHRoZXJl
+Lg0KPiA+IC0gZGV2X2V0aHRvb2xfZ2V0X3NldHRpbmdzKCkgaXMgcmVwbGFjZWQgYnkgX19ldGh0
+b29sX2dldF9zZXR0aW5ncygpDQo+ID4gLSBjaGFuZ2VzIGNhbGxpbmcgaW4gZHJpdmVycyBzbyBy
+dG5sIGxvY2tpbmcgaXMgcmVzcGVjdGVkLiBJbg0KPiA+ICAgaWJvZV9nZXRfcmF0ZSB3YXMgcHJl
+dmlvdXNseSAtPmdldF9zZXR0aW5ncygpIGNhbGxlZCB1bmxvY2tlZC4gVGhpcw0KPiA+ICAgZml4
+ZXMgaXQuIEFsc28gcHJiX2NhbGNfcmV0aXJlX2Jsa190bW8oKSBpbiBhZl9wYWNrZXQuYyBoYWQg
+dGhlIHNhbWUNCj4gPiAgIHByb2JsZW0uIEFsc28gZml4ZWQgYnkgY2FsbGluZyBfX2Rldl9nZXRf
+YnlfaW5kZXgoKSBpbnN0ZWFkIG9mDQo+ID4gICBkZXZfZ2V0X2J5X2luZGV4KCkgYW5kIGhvbGRp
+bmcgcnRubF9sb2NrIGZvciBib3RoIGNhbGxzLg0KPiA+IC0gaW50cm9kdWNlcyBydG5sX2xvY2sg
+aW4gYm54MmZjX3Zwb3J0X2NyZWF0ZSgpIGFuZCBmY29lX3Zwb3J0X2NyZWF0ZSgpDQo+ID4gICBz
+byBibngyZmNfaWZfY3JlYXRlKCkgYW5kIGZjb2VfaWZfY3JlYXRlKCkgYXJlIGNhbGxlZCBsb2Nr
+ZWQgYXMgdGhleQ0KPiA+ICAgYXJlIGZyb20gb3RoZXIgcGxhY2VzLg0KPiA+IC0gdXNlIF9fZXRo
+dG9vbF9nZXRfc2V0dGluZ3MoKSBpbiBib25kaW5nIGNvZGUNCj4gPg0KPiA+IFNpZ25lZC1vZmYt
+Ynk6IEppcmkgUGlya28gPGpwaXJrb0ByZWRoYXQuY29tPg0KPiBSZXZpZXdlZC1ieTogQmVuIEh1
+dGNoaW5ncyA8Ymh1dGNoaW5nc0Bzb2xhcmZsYXJlLmNvbT4gW2V4Y2VwdCBGQ29FIGJpdHNdDQo+
+IA0KPiBCZW4uDQpGQ29FIGJpdHMgbG9vayBvayB0byBtZS4gVGhhbmtzLA0KDQpSZXZpZXdlZC1i
+eTogWWkgWm91IDx5aS56b3VAaW50ZWwuY29tPg0KDQo+IA0KPiAtLQ0KPiBCZW4gSHV0Y2hpbmdz
+LCBTdGFmZiBFbmdpbmVlciwgU29sYXJmbGFyZQ0KPiBOb3Qgc3BlYWtpbmcgZm9yIG15IGVtcGxv
+eWVyOyB0aGF0J3MgdGhlIG1hcmtldGluZyBkZXBhcnRtZW50J3Mgam9iLg0KPiBUaGV5IGFza2Vk
+IHVzIHRvIG5vdGUgdGhhdCBTb2xhcmZsYXJlIHByb2R1Y3QgbmFtZXMgYXJlIHRyYWRlbWFya2Vk
+Lg0KPiANCj4gLS0NCj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxp
+bmUgInVuc3Vic2NyaWJlIGxpbnV4LXNjc2kiIGluDQo+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0
+byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnDQo+IE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0
+dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbA0K

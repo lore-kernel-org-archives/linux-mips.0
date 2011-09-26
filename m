@@ -1,48 +1,50 @@
-Received: from ixqw-mail-out.ixiacom.com ([66.77.12.12]:16884 "EHLO
-        ixqw-mail-out.ixiacom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491029Ab1IOMBn (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Sep 2011 14:01:43 +0200
-From: Cosmin Ratiu <cratiu@ixiacom.com>
-Subject: Re: Octeon crash in virt_to_page(&core0_stack_variable)
-Date: Thu, 15 Sep 2011 15:01:30 +0300
-References: <201109091623.29000.cratiu@ixiacom.com> <4E6A45D9.6090706@cavium.com>
-In-Reply-To: <4E6A45D9.6090706@cavium.com>
+Received: from mail.windriver.com ([147.11.1.11]:64063 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1491985Ab1IZBID (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Sep 2011 03:08:03 +0200
+From: <rongqing.li@windriver.com>
+Subject: [PATCH] staging/octeon: Software should check the checksum of no tcp/udp packets
+Date: Mon, 26 Sep 2011 09:08:00 +0800
+Message-ID: <1316999280-11999-1-git-send-email-rongqing.li@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <201109151501.30037.cratiu@ixiacom.com>
+Content-Type: text/plain
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: David Daney <david.daney@cavium.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20110915120130.M228Ef8ljM0tSVnMx_o1IRZgYEAed1c5g4T3WCZPpWA@z>
+To: linux-mips@linux-mips.org, netdev@vger.kernel.org
+Cc: ralf@linux-mips.org, david.daney@cavium.com
+Message-ID: <20110926010800.GHKa-Jkp7FaxwMTdyiqTI3DOCcL27LHB1Ls1pHYfsgw@z>
 
-On Friday 09 September 2011 19:59:05 David Daney wrote:
-> 
-> > [ 2040.300/0] Call Trace:
-> > [ 2040.300/0] [<ffffffffc123a054>] vcrash+0x54/0x80 [vcrash]
-> > [ 2040.300/0] [<ffffffffc0065f28>] run_timer_softirq+0x198/0x23c
-> > [ 2040.300/0] [<ffffffffc00609e0>] __do_softirq+0xd8/0x188
-> 
->                    ^^^^^^^^^ CKSEG2 addresses detected!
-> 
-> You are using the out-of-tree mapped kernel patch which mucks about with
-> the implementation of virt_to_phys().
-> 
-> Can you reproduce the TCP related crash in an unpatched kernel?
-> 
-> If not, then it would point to problems in the out-of-tree patches you
-> have applied.
+From: Roy.Li <rongqing.li@windriver.com>
 
-You are right, we use your mapped kernel patch.
-I tried running without it, but it doesn't work due to external tools' 
-assumptions.
+Icmp packets with wrong checksum are never dropped since
+skb->ip_summed is set to CHECKSUM_UNNECESSARY.
 
-I also looked over your patch, but I am not sufficiently familiar with mips to 
-fully understand what's going on. Can you please point me to where exactly in 
-the patch would the CKSEG2 addresses be translated to physical?
+When icmp packets with wrong checksum pass through the octeon
+net driver, the not_IP, IP_exc, L4_error hardware indicators
+show no error. so the driver sets CHECKSUM_UNNECESSARY on
+skb->ip_summed.
 
-If you need any other information, let me know.
+L4_error only works for TCP/UDP, not for ICMP.
 
-Cosmin.
+Signed-off-by: Roy.Li <rongqing.li@windriver.com>
+---
+ drivers/staging/octeon/ethernet-rx.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/staging/octeon/ethernet-rx.c b/drivers/staging/octeon/ethernet-rx.c
+index 1a7c19a..1747024 100644
+--- a/drivers/staging/octeon/ethernet-rx.c
++++ b/drivers/staging/octeon/ethernet-rx.c
+@@ -411,7 +411,8 @@ static int cvm_oct_napi_poll(struct napi_struct *napi, int budget)
+ 				skb->protocol = eth_type_trans(skb, dev);
+ 				skb->dev = dev;
+ 
+-				if (unlikely(work->word2.s.not_IP || work->word2.s.IP_exc || work->word2.s.L4_error))
++				if (unlikely(work->word2.s.not_IP || work->word2.s.IP_exc ||
++					work->word2.s.L4_error || !work->word2.s.tcp_or_udp))
+ 					skb->ip_summed = CHECKSUM_NONE;
+ 				else
+ 					skb->ip_summed = CHECKSUM_UNNECESSARY;
+-- 
+1.7.1

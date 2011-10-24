@@ -1,11 +1,11 @@
-Received: from dns1.mips.com ([12.201.5.69]:55744 "EHLO dns1.mips.com"
+Received: from dns1.mips.com ([12.201.5.69]:55746 "EHLO dns1.mips.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491071Ab1JXK5L (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 24 Oct 2011 12:57:11 +0200
+        id S1491073Ab1JXK5N (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 24 Oct 2011 12:57:13 +0200
 From: Deng-Cheng Zhu <dczhu@mips.com>
-Subject: [PATCH 3/4] MIPS/Perf-events: temporarily connect event to its pmu at event init
-Date: Mon, 24 Oct 2011 18:56:01 +0800
-Message-ID: <1319453762-12962-4-git-send-email-dczhu@mips.com>
+Subject: [PATCH 2/4] MIPS/Perf-events: remove erroneous check on active_events
+Date: Mon, 24 Oct 2011 18:56:00 +0800
+Message-ID: <1319453762-12962-3-git-send-email-dczhu@mips.com>
 In-Reply-To: <1319453762-12962-1-git-send-email-dczhu@mips.com>
 References: <1319453762-12962-1-git-send-email-dczhu@mips.com>
 MIME-Version: 1.0
@@ -15,17 +15,21 @@ Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: Deng-Cheng Zhu <dczhu@mips.com>, Peter Zijlstra <a.p.zijlstra@chello.nl>, Paul Mackerras <paulus@samba.org>, Ingo Molnar <mingo@elte.hu>, Arnaldo Carvalho de Melo <acme@ghostprotocols.net>, David Daney <david.daney@cavium.com>
-Message-ID: <20111024105601.uKGKMmeChXJsfrX6Vwva4N2K252MkaUCu77OwxzhUO0@z>
+Message-ID: <20111024105600.18dmC29wL27oGanl0DsAIyp9TaKDic_esY_xp3FXH9w@z>
 
-When arch level event init is called, the event is not yet connected to
-the PMU, thereby causing validate_group() to always do dummy work. On MIPS,
-this is due to the following lines in validate_event() called by
-validate_group():
+Port the following patch for ARM by Mark Rutland:
 
-if (event->pmu != &pmu || event->state <= PERF_EVENT_STATE_OFF)
-        return 1;
+- 57ce9bb39b476accf8fba6e16aea67ed76ea523d
+    ARM: 6902/1: perf: Remove erroneous check on active_events
 
-This patch fixes it.
+    When initialising a PMU, there is a check to protect against races with
+    other CPUs filling all of the available event slots. Since armpmu_add
+    checks that an event can be scheduled, we do not need to do this at
+    initialisation time. Furthermore the current code is broken because it
+    assumes that atomic_inc_not_zero will unconditionally increment
+    active_counts and then tries to decrement it again on failure.
+
+    This patch removes the broken, redundant code.
 
 Signed-off-by: Deng-Cheng Zhu <dczhu@mips.com>
 Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>
@@ -34,44 +38,24 @@ Cc: Ingo Molnar <mingo@elte.hu>
 Cc: Arnaldo Carvalho de Melo <acme@ghostprotocols.net>
 Cc: David Daney <david.daney@cavium.com>
 ---
- arch/mips/kernel/perf_event_mipsxx.c |   17 +++++++++++++----
- 1 files changed, 13 insertions(+), 4 deletions(-)
+ arch/mips/kernel/perf_event.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-index 1f654ca..c804fdd 100644
---- a/arch/mips/kernel/perf_event_mipsxx.c
-+++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -548,6 +548,7 @@ static int __hw_perf_event_init(struct perf_event *event)
- 	struct perf_event_attr *attr = &event->attr;
- 	struct hw_perf_event *hwc = &event->hw;
- 	const struct mips_perf_event *pev;
-+	struct pmu *tmp;
- 	int err;
+diff --git a/arch/mips/kernel/perf_event.c b/arch/mips/kernel/perf_event.c
+index 0aee944..b1d51b5 100644
+--- a/arch/mips/kernel/perf_event.c
++++ b/arch/mips/kernel/perf_event.c
+@@ -385,11 +385,6 @@ static int mipspmu_event_init(struct perf_event *event)
+ 		return -ENODEV;
  
- 	/* Returning MIPS event descriptor for generic perf event. */
-@@ -611,11 +612,19 @@ static int __hw_perf_event_init(struct perf_event *event)
- 	}
- 
- 	err = 0;
--	if (event->group_leader != event) {
-+
-+	/*
-+	 * we temporarily connect event to its pmu such that
-+	 * validate_event() in validate_group() can classify
-+	 * it as a MIPS event by passing (event->pmu == &pmu).
-+	 */
-+	tmp = event->pmu;
-+	event->pmu = &pmu;
-+
-+	if (event->group_leader != event)
- 		err = validate_group(event);
--		if (err)
--			return -EINVAL;
--	}
-+
-+	event->pmu = tmp;
- 
- 	event->destroy = hw_perf_event_destroy;
- 
+ 	if (!atomic_inc_not_zero(&active_events)) {
+-		if (atomic_read(&active_events) > MIPS_MAX_HWEVENTS) {
+-			atomic_dec(&active_events);
+-			return -ENOSPC;
+-		}
+-
+ 		mutex_lock(&pmu_reserve_mutex);
+ 		if (atomic_read(&active_events) == 0)
+ 			err = mipspmu_get_irq();
 -- 
 1.7.1

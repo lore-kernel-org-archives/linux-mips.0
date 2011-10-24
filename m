@@ -1,11 +1,11 @@
-Received: from dns1.mips.com ([12.201.5.69]:55740 "EHLO dns1.mips.com"
+Received: from dns1.mips.com ([12.201.5.69]:55744 "EHLO dns1.mips.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1491062Ab1JXK5I (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 24 Oct 2011 12:57:08 +0200
+        id S1491071Ab1JXK5L (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 24 Oct 2011 12:57:11 +0200
 From: Deng-Cheng Zhu <dczhu@mips.com>
-Subject: [PATCH 1/4] MIPS/Perf-events: update the map of unsupported events for 74K
-Date: Mon, 24 Oct 2011 18:55:59 +0800
-Message-ID: <1319453762-12962-2-git-send-email-dczhu@mips.com>
+Subject: [PATCH 3/4] MIPS/Perf-events: temporarily connect event to its pmu at event init
+Date: Mon, 24 Oct 2011 18:56:01 +0800
+Message-ID: <1319453762-12962-4-git-send-email-dczhu@mips.com>
 In-Reply-To: <1319453762-12962-1-git-send-email-dczhu@mips.com>
 References: <1319453762-12962-1-git-send-email-dczhu@mips.com>
 MIME-Version: 1.0
@@ -15,9 +15,17 @@ Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: Deng-Cheng Zhu <dczhu@mips.com>, Peter Zijlstra <a.p.zijlstra@chello.nl>, Paul Mackerras <paulus@samba.org>, Ingo Molnar <mingo@elte.hu>, Arnaldo Carvalho de Melo <acme@ghostprotocols.net>, David Daney <david.daney@cavium.com>
-Message-ID: <20111024105559.BDtrOmjz3Buhs9VuMYaJhoq7nFOHIUaYVCBlgY13Q-E@z>
+Message-ID: <20111024105601.uKGKMmeChXJsfrX6Vwva4N2K252MkaUCu77OwxzhUO0@z>
 
-Update the raw event info for 74K according to the latest document.
+When arch level event init is called, the event is not yet connected to
+the PMU, thereby causing validate_group() to always do dummy work. On MIPS,
+this is due to the following lines in validate_event() called by
+validate_group():
+
+if (event->pmu != &pmu || event->state <= PERF_EVENT_STATE_OFF)
+        return 1;
+
+This patch fixes it.
 
 Signed-off-by: Deng-Cheng Zhu <dczhu@mips.com>
 Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>
@@ -26,35 +34,44 @@ Cc: Ingo Molnar <mingo@elte.hu>
 Cc: Arnaldo Carvalho de Melo <acme@ghostprotocols.net>
 Cc: David Daney <david.daney@cavium.com>
 ---
- arch/mips/kernel/perf_event_mipsxx.c |   15 +++++++++------
- 1 files changed, 9 insertions(+), 6 deletions(-)
+ arch/mips/kernel/perf_event_mipsxx.c |   17 +++++++++++++----
+ 1 files changed, 13 insertions(+), 4 deletions(-)
 
 diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-index e5ad09a..1f654ca 100644
+index 1f654ca..c804fdd 100644
 --- a/arch/mips/kernel/perf_event_mipsxx.c
 +++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -858,13 +858,16 @@ mipsxx_pmu_disable_event(int idx)
- #endif
+@@ -548,6 +548,7 @@ static int __hw_perf_event_init(struct perf_event *event)
+ 	struct perf_event_attr *attr = &event->attr;
+ 	struct hw_perf_event *hwc = &event->hw;
+ 	const struct mips_perf_event *pev;
++	struct pmu *tmp;
+ 	int err;
  
- /* 74K */
-+/*
-+ * MIPS document MD00519 (MIPS32(r) 74K(tm) Processor Core Family Software
-+ * User's Manual, Revision 01.05)
-+ */
- #define IS_UNSUPPORTED_74K_EVENT(r, b)					\
--	((r) == 5 || ((r) >= 135 && (r) <= 137) ||			\
--	 ((b) >= 10 && (b) <= 12) || (b) == 22 || (b) == 27 ||		\
--	 (b) == 33 || (b) == 34 || ((b) >= 47 && (b) <= 49) ||		\
--	 (r) == 178 || (b) == 55 || (b) == 57 || (b) == 60 ||		\
--	 (b) == 61 || (r) == 62 || (r) == 191 ||			\
--	 ((b) >= 64 && (b) <= 127))
-+	((r) == 5 || (r) == 135 || ((b) >= 10 && (b) <= 12) ||		\
-+	 (b) == 27 || (b) == 33 || (b) == 34 || (b) == 47 ||		\
-+	 (b) == 48 || (r) == 178 || (r) == 187 || (b) == 60 ||		\
-+	 (b) == 61 || (r) == 191 || (r) == 71 || (r) == 72 ||		\
-+	 (b) == 73 || ((b) >= 77 && (b) <= 127))
- #define IS_BOTH_COUNTERS_74K_EVENT(b)					\
- 	((b) == 0 || (b) == 1)
+ 	/* Returning MIPS event descriptor for generic perf event. */
+@@ -611,11 +612,19 @@ static int __hw_perf_event_init(struct perf_event *event)
+ 	}
+ 
+ 	err = 0;
+-	if (event->group_leader != event) {
++
++	/*
++	 * we temporarily connect event to its pmu such that
++	 * validate_event() in validate_group() can classify
++	 * it as a MIPS event by passing (event->pmu == &pmu).
++	 */
++	tmp = event->pmu;
++	event->pmu = &pmu;
++
++	if (event->group_leader != event)
+ 		err = validate_group(event);
+-		if (err)
+-			return -EINVAL;
+-	}
++
++	event->pmu = tmp;
+ 
+ 	event->destroy = hw_perf_event_destroy;
  
 -- 
 1.7.1

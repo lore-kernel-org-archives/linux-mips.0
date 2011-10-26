@@ -1,165 +1,198 @@
-Received: from eu1sys200aog113.obsmtp.com ([207.126.144.135]:53118 "EHLO
-        eu1sys200aog113.obsmtp.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1490991Ab1JYIUX (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 25 Oct 2011 10:20:23 +0200
-Message-ID: <4EA6716A.80307@st.com>
-Date: Tue, 25 Oct 2011 10:20:58 +0200
+Received: from eu1sys200aog102.obsmtp.com ([207.126.144.113]:55641 "EHLO
+        eu1sys200aog102.obsmtp.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1490949Ab1JZHVm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 26 Oct 2011 09:21:42 +0200
+Message-ID: <4EA7B4D7.9000101@st.com>
+Date: Wed, 26 Oct 2011 09:20:55 +0200
 From: Giuseppe CAVALLARO <peppe.cavallaro@st.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH V2 2/4] MIPS: Add board support for Loongson1B
-References: <1319192888-21465-1-git-send-email-keguang.zhang@gmail.com> <1319192888-21465-2-git-send-email-keguang.zhang@gmail.com> <CAD+V5YKBkW52_md9rBeVZ1RXq2FGEXt=Ergsw+z8txMreZdNsA@mail.gmail.com> <4EA5117C.3000402@st.com> <CAJhJPsVSzXXmBOwLaGNtOsxhVEyC0fAJtiBvEWzcKcSDC8NEcA@mail.gmail.com> <4EA557B2.4020504@st.com> <CAJhJPsXxUAuF9HdivLd66MQC45mz-iYAuF1SdGdU=-duxJJ5bQ@mail.gmail.com> <4EA585B5.5030405@st.com> <CAJhJPsVu7hahhmUvPQ=s=AqvXGhU-05x=GqQ29Mo6PZ8cTtefA@mail.gmail.com> <4EA660C0.1020901@st.com>
-In-Reply-To: <4EA660C0.1020901@st.com>
+References: <1319192888-21465-1-git-send-email-keguang.zhang@gmail.com> <1319192888-21465-2-git-send-email-keguang.zhang@gmail.com> <CAD+V5YKBkW52_md9rBeVZ1RXq2FGEXt=Ergsw+z8txMreZdNsA@mail.gmail.com> <4EA5117C.3000402@st.com> <CAJhJPsVSzXXmBOwLaGNtOsxhVEyC0fAJtiBvEWzcKcSDC8NEcA@mail.gmail.com> <4EA557B2.4020504@st.com> <CAJhJPsXxUAuF9HdivLd66MQC45mz-iYAuF1SdGdU=-duxJJ5bQ@mail.gmail.com> <4EA585B5.5030405@st.com> <CAJhJPsVu7hahhmUvPQ=s=AqvXGhU-05x=GqQ29Mo6PZ8cTtefA@mail.gmail.com> <4EA660C0.1020901@st.com> <4EA6716A.80307@st.com> <CAJhJPsU3KMNuGcKaKf3H4pUCeu1+vnEz4DgO_jbm+wDQb1G4OA@mail.gmail.com>
+In-Reply-To: <CAJhJPsU3KMNuGcKaKf3H4pUCeu1+vnEz4DgO_jbm+wDQb1G4OA@mail.gmail.com>
 Content-Type: multipart/mixed;
- boundary="------------090809010806010703010802"
+ boundary="------------070509020002010306020205"
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: Kelvin Cheung <keguang.zhang@gmail.com>
 Cc: Wu Zhangjin <wuzhangjin@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, ralf@linux-mips.org, r0bertz@gentoo.org, netdev@vger.kernel.org
-Message-ID: <20111025082058.59WtdJCR4Nmx3as5deuFCnEefWEVRJ5_H61YzPUc0HY@z>
+Message-ID: <20111026072055.8bbCpXrmBKHFS9fkfclvpU6gT47Rk74KXwieRzFKkZg@z>
 
 This is a multi-part message in MIME format.
---------------090809010806010703010802
+--------------070509020002010306020205
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
-On 10/25/2011 9:09 AM, Giuseppe CAVALLARO wrote:
-> On 10/25/2011 4:12 AM, Kelvin Cheung wrote:
->> 2011/10/24, Giuseppe CAVALLARO <peppe.cavallaro@st.com>:
->>> On 10/24/2011 4:05 PM, Kelvin Cheung wrote:
->>>> 2011/10/24, Giuseppe CAVALLARO <peppe.cavallaro@st.com>:
->>>>> Hello Kelvin.
->>>>>
->>>>> On 10/24/2011 12:36 PM, Kelvin Cheung wrote:
->>>>>
->>>>> [snip]
->>>>>
->>>>>> According to datasheet of Loongson 1B, the buffer size in RX/TX
->>>>>> descriptor is only 2KB. So the Loongson1B's GMAC could not handle
->>>>>> jumbo frames. And the second buffer is useless in this case. Am I
->>>>>> right? Is there a better way than ifdef CONFIG_MACH_LOONGSON1 to
->>>>>> avoid duplicate code?
->>>>>
->>>>> Sorry for my misunderstanding.
->>>>>
->>>>> I think you have to use the normal descriptor and remove the enh_desc
->>>>> from the platform w/o modifying the driver at all.
->>>>>
->>>>> The driver will be able to select/configure all automatically (also
->>>>> jumbo).
->>>>>
->>>>> Let me know.
->>>>
->>>> That's the problem.
->>>> The bitfield definition of Loongson1B is also different from normal
->>>> descriptor.
->>>
->>> The problem is not in the Loongson1B gmac.
->>
->> I found that the bit checksum_insertion is not existed in normal descriptor.
->>
->>> The normal descriptor fields in the stmmac refer to an old synopsys
->>> databook.
->>
->> Could you send me the new databook of Synopsys GMAC?
->>
->>> New chips have the same structure you have added; so we should fix this
->>> in the driver w/o breaking the compatibility for old chips.
->>
->> Agree.
->>
->>> I kindly ask you to confirm if the currently normal descriptor structure
->>> (w/o your changes) doesn't work on your platform.
->>> Did you test it?
->>
->> Well, the normal descriptor works on my platform except TX checksum offload.
-> 
-> ok! I suspected that.
-> 
-> 
->>>> Moreover, I want to enable the TX checksum offload function which is
->>>> not supported in normal descriptor.
->>>> Any suggestions?
->>>
->>> It is supported but you have to pass from the platform: tx_coe = 1.
->>
->> I noticed that the flag csum_insertion is passed to
->> ndesc_prepare_tx_desc() in stmmac_xmit(). But ndesc_prepare_tx_desc()
->> just ignores it.
->> In other words, the TX checksum offload function is disabled in normal
->> descriptor currently.
->>
->> Should we fix this problem for normal descriptor?
-> 
-> Yes, we should. If you agree, I'll update the normal descriptor
-> structure to yours. This is the normal descriptor used in newer GMAC.
-> Tx csum will be done for normal descriptors in case of these GMAC
-> devices and not for old MAC10/100. For the MAC10/100 some bits for
-> normal descriptors are reserved and won't be used at all.
-> 
-> I'll also verify that the patch doesn't break the back-compatibility
-> with old MAC10/100. I have the HW where doing the tests.
-> 
-> After that, I'll prepare the patch for net-next and for your kernel.
-
 Hello Kelvin
 
-attached the patch tested on my development kernel.
-It runs fine on old and new mac devices.
+On 10/26/2011 6:27 AM, Kelvin Cheung wrote:
+> Hi Giuseppe,
+> 
+> This patch works well on Loongson1B platform except one thing.
+> The rx checksum offload of normal descriptor is disabled by default.
+> So, I enabled this functon. And one minor tweak is added to your patch.
+> What about your opinion?
 
-Can you try it on your side? Hmm, it is likely it won't apply fine on
-your tree but you know the changes ;-).
+Yes, I had not enabled the rx coe. I'm resending your patch (v3) where I
+fixed a problem. Old mac10/100 has no rx csum in HW. So I added an extra
+check.
+Let me consider it the final version. ;-)
 
-If ok, I'll rework it for net-next and send it to the mailing list.
+Thanks a lot for you effort.
+I'll send it for net-next now.
 
-Thanks
+Regards
 Peppe
 
 > 
->>
->>> Peppe
->>>>
->>>>> Note:
->>>>> IIRC, there is a bit difference in case of normal descriptors for
->>>>> Synopsys databook newer than the 1.91 (I used for testing this mode).
->>>>> In any case, I remember that, on some platforms, the normal descriptors
->>>>> have been used w/o problems also on these new chip generations.
+> BTW, tx checksum insertion works now.
+> 
+> 2011/10/25, Giuseppe CAVALLARO <peppe.cavallaro@st.com>:
+>> On 10/25/2011 9:09 AM, Giuseppe CAVALLARO wrote:
+>>> On 10/25/2011 4:12 AM, Kelvin Cheung wrote:
+>>>> 2011/10/24, Giuseppe CAVALLARO <peppe.cavallaro@st.com>:
+>>>>> On 10/24/2011 4:05 PM, Kelvin Cheung wrote:
+>>>>>> 2011/10/24, Giuseppe CAVALLARO <peppe.cavallaro@st.com>:
+>>>>>>> Hello Kelvin.
+>>>>>>>
+>>>>>>> On 10/24/2011 12:36 PM, Kelvin Cheung wrote:
+>>>>>>>
+>>>>>>> [snip]
+>>>>>>>
+>>>>>>>> According to datasheet of Loongson 1B, the buffer size in RX/TX
+>>>>>>>> descriptor is only 2KB. So the Loongson1B's GMAC could not handle
+>>>>>>>> jumbo frames. And the second buffer is useless in this case. Am I
+>>>>>>>> right? Is there a better way than ifdef CONFIG_MACH_LOONGSON1 to
+>>>>>>>> avoid duplicate code?
+>>>>>>>
+>>>>>>> Sorry for my misunderstanding.
+>>>>>>>
+>>>>>>> I think you have to use the normal descriptor and remove the enh_desc
+>>>>>>> from the platform w/o modifying the driver at all.
+>>>>>>>
+>>>>>>> The driver will be able to select/configure all automatically (also
+>>>>>>> jumbo).
+>>>>>>>
+>>>>>>> Let me know.
+>>>>>>
+>>>>>> That's the problem.
+>>>>>> The bitfield definition of Loongson1B is also different from normal
+>>>>>> descriptor.
 >>>>>
+>>>>> The problem is not in the Loongson1B gmac.
+>>>>
+>>>> I found that the bit checksum_insertion is not existed in normal
+>>>> descriptor.
+>>>>
+>>>>> The normal descriptor fields in the stmmac refer to an old synopsys
+>>>>> databook.
+>>>>
+>>>> Could you send me the new databook of Synopsys GMAC?
+>>>>
+>>>>> New chips have the same structure you have added; so we should fix this
+>>>>> in the driver w/o breaking the compatibility for old chips.
+>>>>
+>>>> Agree.
+>>>>
+>>>>> I kindly ask you to confirm if the currently normal descriptor structure
+>>>>> (w/o your changes) doesn't work on your platform.
+>>>>> Did you test it?
+>>>>
+>>>> Well, the normal descriptor works on my platform except TX checksum
+>>>> offload.
+>>>
+>>> ok! I suspected that.
+>>>
+>>>
+>>>>>> Moreover, I want to enable the TX checksum offload function which is
+>>>>>> not supported in normal descriptor.
+>>>>>> Any suggestions?
+>>>>>
+>>>>> It is supported but you have to pass from the platform: tx_coe = 1.
+>>>>
+>>>> I noticed that the flag csum_insertion is passed to
+>>>> ndesc_prepare_tx_desc() in stmmac_xmit(). But ndesc_prepare_tx_desc()
+>>>> just ignores it.
+>>>> In other words, the TX checksum offload function is disabled in normal
+>>>> descriptor currently.
+>>>>
+>>>> Should we fix this problem for normal descriptor?
+>>>
+>>> Yes, we should. If you agree, I'll update the normal descriptor
+>>> structure to yours. This is the normal descriptor used in newer GMAC.
+>>> Tx csum will be done for normal descriptors in case of these GMAC
+>>> devices and not for old MAC10/100. For the MAC10/100 some bits for
+>>> normal descriptors are reserved and won't be used at all.
+>>>
+>>> I'll also verify that the patch doesn't break the back-compatibility
+>>> with old MAC10/100. I have the HW where doing the tests.
+>>>
+>>> After that, I'll prepare the patch for net-next and for your kernel.
+>>
+>> Hello Kelvin
+>>
+>> attached the patch tested on my development kernel.
+>> It runs fine on old and new mac devices.
+>>
+>> Can you try it on your side? Hmm, it is likely it won't apply fine on
+>> your tree but you know the changes ;-).
+>>
+>> If ok, I'll rework it for net-next and send it to the mailing list.
+>>
+>> Thanks
+>> Peppe
+>>
+>>>
+>>>>
 >>>>> Peppe
+>>>>>>
+>>>>>>> Note:
+>>>>>>> IIRC, there is a bit difference in case of normal descriptors for
+>>>>>>> Synopsys databook newer than the 1.91 (I used for testing this mode).
+>>>>>>> In any case, I remember that, on some platforms, the normal
+>>>>>>> descriptors
+>>>>>>> have been used w/o problems also on these new chip generations.
+>>>>>>>
+>>>>>>> Peppe
+>>>>>>>
+>>>>>>>
+>>>>>>
+>>>>>>
 >>>>>
 >>>>>
 >>>>
 >>>>
 >>>
+>>> --
+>>> To unsubscribe from this list: send the line "unsubscribe netdev" in
+>>> the body of a message to majordomo@vger.kernel.org
+>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >>>
 >>
 >>
 > 
-> --
-> To unsubscribe from this list: send the line "unsubscribe netdev" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 > 
 
 
---------------090809010806010703010802
+--------------070509020002010306020205
 Content-Type: text/x-patch;
- name="0002-stmmac-update-normal-descriptor-structure.patch"
+ name="0001-stmmac-update-normal-descriptor-structure-v3.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
- filename*0="0002-stmmac-update-normal-descriptor-structure.patch"
+ filename*0="0001-stmmac-update-normal-descriptor-structure-v3.patch"
 
-From 85da9c92eace0b56148e9eedad1061ed72271409 Mon Sep 17 00:00:00 2001
+From 324c8e56e728046590bae14d14e8ff09978b71b4 Mon Sep 17 00:00:00 2001
 From: Giuseppe Cavallaro <peppe.cavallaro@st.com>
 Date: Tue, 25 Oct 2011 09:46:41 +0200
-Subject: [PATCH (sh-2.6.32.y) 2/2] stmmac: update normal descriptor structure
+Subject: [PATCH (sh-2.6.32.y)] stmmac: update normal descriptor structure
+ (v3)
 
 This patch updates the normal descriptor structure
 to work fine on new GMAC Synopsys chips.
 
 Normal descriptors were designed on the old MAC10/100
 databook 1.91 where some bits were reserved: for example
-the tx checksum insertion.
+the tx checksum insertion and rx checksum offload.
 
 The patch maintains the back-compatibility with old
 MAC devices (tested on STx7109 MAC10/100) and adds new
@@ -176,11 +209,12 @@ GMAC on Loongson1B.
 Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
 Signed-off-by: Giuseppe Cavallaro <peppe.cavallaro@st.com>
 ---
- drivers/net/stmmac/common.h         |    8 ++++----
- drivers/net/stmmac/descs.h          |   31 ++++++++++++++++++-------------
- drivers/net/stmmac/norm_desc.c      |   34 ++++++++++++++++++++--------------
- drivers/net/stmmac/stmmac_ethtool.c |    8 ++++----
- 4 files changed, 46 insertions(+), 35 deletions(-)
+ drivers/net/stmmac/common.h         |    8 +++---
+ drivers/net/stmmac/descs.h          |   31 +++++++++++++++-----------
+ drivers/net/stmmac/norm_desc.c      |   40 ++++++++++++++++++++--------------
+ drivers/net/stmmac/stmmac_ethtool.c |    8 +++---
+ drivers/net/stmmac/stmmac_main.c    |    4 +-
+ 5 files changed, 51 insertions(+), 40 deletions(-)
 
 diff --git a/drivers/net/stmmac/common.h b/drivers/net/stmmac/common.h
 index 9100c10..2cc1192 100644
@@ -290,7 +324,7 @@ index 63a03e2..9820ec8 100644
  			u32 last_segment:1;
  			u32 interrupt:1;
 diff --git a/drivers/net/stmmac/norm_desc.c b/drivers/net/stmmac/norm_desc.c
-index f7e8ba7..c7c1522 100644
+index f7e8ba7..3955ae7 100644
 --- a/drivers/net/stmmac/norm_desc.c
 +++ b/drivers/net/stmmac/norm_desc.c
 @@ -50,11 +50,12 @@ static int ndesc_get_tx_status(void *data, struct stmmac_extra_stats *x,
@@ -311,6 +345,22 @@ index f7e8ba7..c7c1522 100644
  	if (unlikely(p->des01.tx.deferred))
  		x->tx_deferred++;
  
+@@ -68,12 +69,12 @@ static int ndesc_get_tx_len(struct dma_desc *p)
+ 
+ /* This function verifies if each incoming frame has some errors
+  * and, if required, updates the multicast statistics.
+- * In case of success, it returns csum_none because the device
+- * is not able to compute the csum in HW. */
++ * In case of success, it returns good_frame because the GMAC device
++ * is supposed to be able to compute the csum in HW. */
+ static int ndesc_get_rx_status(void *data, struct stmmac_extra_stats *x,
+ 			       struct dma_desc *p)
+ {
+-	int ret = csum_none;
++	int ret = good_frame;
+ 	struct net_device_stats *stats = (struct net_device_stats *)data;
+ 
+ 	if (unlikely(p->des01.rx.last_descriptor == 0)) {
 @@ -86,12 +87,12 @@ static int ndesc_get_rx_status(void *data, struct stmmac_extra_stats *x,
  	if (unlikely(p->des01.rx.error_summary)) {
  		if (unlikely(p->des01.rx.descriptor_error))
@@ -382,8 +432,23 @@ index d81cf20..6831cf2 100644
  	STMMAC_STAT(rx_collision),
  	STMMAC_STAT(rx_crc),
  	STMMAC_STAT(rx_length),
+diff --git a/drivers/net/stmmac/stmmac_main.c b/drivers/net/stmmac/stmmac_main.c
+index 3a3efb1..18e614b 100644
+--- a/drivers/net/stmmac/stmmac_main.c
++++ b/drivers/net/stmmac/stmmac_main.c
+@@ -1318,8 +1318,8 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit)
+ #endif
+ 			skb->protocol = eth_type_trans(skb, priv->dev);
+ 
+-			if (unlikely(status == csum_none)) {
+-				/* always for the old mac 10/100 */
++			if (unlikely(!priv->plat->has_gmac)) {
++				/* No csum for the old mac 10/100 devices */
+ 				skb->ip_summed = CHECKSUM_NONE;
+ 				netif_receive_skb(skb);
+ 			} else {
 -- 
 1.7.4.4
 
 
---------------090809010806010703010802--
+--------------070509020002010306020205--

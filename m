@@ -1,30 +1,73 @@
-Received: from zone0.gcu-squad.org ([212.85.147.21]:23286 "EHLO
-        services.gcu-squad.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903553Ab1JaJyH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 31 Oct 2011 10:54:07 +0100
-Date: Mon, 31 Oct 2011 10:53:54 +0100
-From: Jean Delvare <khali@linux-fr.org>
-Subject: Re: [PATCH] I2C: SiByte: Convert the driver to make use of
- interrupts
-Message-ID: <20111031105354.4b888e44@endymion.delvare>
-In-Reply-To: <20110903103036.161616a5@endymion.delvare>
-References: <1313710991-3596-1-git-send-email-mattst88@gmail.com>
-        <20110903103036.161616a5@endymion.delvare>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from smtp4-g21.free.fr ([212.27.42.4]:51758 "EHLO smtp4-g21.free.fr"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1904133Ab1KDSLz (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 4 Nov 2011 19:11:55 +0100
+From: Maxime Bizon <mbizon@freebox.fr>
+Subject: [PATCH v2 00/11] MIPS: BCM63XX: add support for Broadcom 6368 CPU.
+Date: Fri,  4 Nov 2011 19:09:24 +0100
+Message-ID: <1320430175-13725-1-git-send-email-mbizon@freebox.fr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Matt Turner <mattst88@gmail.com>
-Cc: linux-i2c@vger.kernel.org, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Guenter Roeck <guenter.roeck@ericsson.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
-Message-ID: <20111031095354.iPz8eu3LK6ukI_-Kj-hr-70iq7T1U1hzeYwe0J9zCns@z>
+To: ralf@linux-mips.orgralf@linux-mips.org
+Cc: Maxime Bizon <mbizon@freebox.fr>, linux-mips@linux-mips.org
+Message-ID: <20111104180924.32CzyZWsUyZ5k48IVhmfXwhW-GB5CH4b1PYwAQKdZI8@z>
 
-On Sat, 3 Sep 2011 10:30:36 +0200, Jean Delvare wrote:
-> Please address my concerns where you agree and send an updated patch.
 
-Matt, care to send an updated patch addressing my concerns? Otherwise
-it will be lost again.
+New in v2:
 
--- 
-Jean Delvare
+Addressed all Jonas comments but the SPI register set. Since Florian
+and you have upcoming SPI drivers to submit, I'll let you decide which
+block deserves its own register set.
+
+External IRQ support has been changed slightly to handle more than 4
+irq, it now uses a fixed number range above 100. It has been tested on
+6348/58/68.
+
+To make it easier to test, a complete patchset with USB/ethernet/board
+support is here http://88.191.35.171/pub/bcm_6368_patches/
+
+I will post remaining patches once this serie has been merged.
+
+
+v1:
+
+These patches add support for 6368 CPU to the existing bcm63xx code.
+
+Basic CPU support for now, ethernet and board support will come soon.
+
+
+
+Maxime Bizon (11):
+  MIPS: BCM63XX: set default pci cache line size.
+  MIPS: BCM63XX: hook up plat_ioremap to intercept soc registers
+    remapping.
+  MIPS: BCM63XX: call board_register_device from device_initcall()
+  MIPS: BCM63XX: introduce bcm_readll & bcm_writell.
+  MIPS: BCM63XX: cleanup cpu registers.
+  MIPS: BCM63XX: add more register sets & missing register definitions.
+  MIPS: BCM63XX: change irq code to prepare for per-cpu peculiarity.
+  MIPS: BCM63XX: prepare irq code to handle different external irq
+    hardware implementation.
+  MIPS: BCM63XX: handle 64 bits irq stat register in irq code.
+  MIPS: BCM63XX: add external irq support for non 6348 CPUs.
+  MIPS: BCM63XX: add support for bcm6368 CPU.
+
+ arch/mips/bcm63xx/Kconfig                         |    4 +
+ arch/mips/bcm63xx/clk.c                           |   70 +++-
+ arch/mips/bcm63xx/cpu.c                           |  255 +++------
+ arch/mips/bcm63xx/dev-uart.c                      |    2 +-
+ arch/mips/bcm63xx/irq.c                           |  403 ++++++++++++---
+ arch/mips/bcm63xx/prom.c                          |    7 +-
+ arch/mips/bcm63xx/setup.c                         |   32 +-
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h  |  595 +++++++++++++--------
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_gpio.h |    2 +
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_io.h   |    2 +
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_irq.h  |   12 +-
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_regs.h |  228 ++++++++-
+ arch/mips/include/asm/mach-bcm63xx/ioremap.h      |   42 ++
+ arch/mips/include/asm/mach-bcm63xx/irq.h          |    8 +
+ arch/mips/pci/pci-bcm63xx.c                       |    6 +-
+ 15 files changed, 1182 insertions(+), 486 deletions(-)
+ create mode 100644 arch/mips/include/asm/mach-bcm63xx/ioremap.h
+ create mode 100644 arch/mips/include/asm/mach-bcm63xx/irq.h

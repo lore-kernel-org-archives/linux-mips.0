@@ -1,55 +1,130 @@
-Received: from dns1.mips.com ([12.201.5.69]:56345 "EHLO dns1.mips.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1903680Ab1KJKJU (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 10 Nov 2011 11:09:20 +0100
-Message-ID: <4EBBA2AA.6000901@mips.com>
-Date: Thu, 10 Nov 2011 18:08:42 +0800
-From: Deng-Cheng Zhu <dczhu@mips.com>
+Received: from mx1.netlogicmicro.com ([12.203.210.36]:4961 "EHLO
+        orion5.netlogicmicro.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S1903544Ab1KKLfL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Nov 2011 12:35:11 +0100
+Date: Fri, 11 Nov 2011 17:07:07 +0530
+From: Jayachandran C <jayachandranc@netlogicmicro.com>
+Subject: [PATCH 00/12] MIPS: Support for Netlogic XLP processors
+Message-ID: <cover.1321010998.git.jayachandranc@netlogicmicro.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/4] MIPS/Perf-events: update the map of unsupported events
- for 74K
-References: <1319453762-12962-1-git-send-email-dczhu@mips.com> <1319453762-12962-2-git-send-email-dczhu@mips.com> <20111109204020.GB13280@linux-mips.org>
-In-Reply-To: <20111109204020.GB13280@linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Peter Zijlstra <a.p.zijlstra@chello.nl>, Paul Mackerras <paulus@samba.org>, Ingo Molnar <mingo@elte.hu>, Arnaldo Carvalho de Melo <acme@ghostprotocols.net>, David Daney <david.daney@cavium.com>
-Message-ID: <20111110100842.HsFicfrz3aDOZo4VX-T7TTTrBIMAztJTQKIZjNg80iE@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org
+Message-ID: <20111111113707.kcPh36v9Fk_h80OjOIhIMGOtfm9F8a3xtKDg8sstBwk@z>
 
-On 11/10/2011 04:40 AM, Ralf Baechle wrote:
-> On Mon, Oct 24, 2011 at 06:55:59PM +0800, Deng-Cheng Zhu wrote:
->
->> Update the raw event info for 74K according to the latest document.
->
->> +/*
->> + * MIPS document MD00519 (MIPS32(r) 74K(tm) Processor Core Family Software
->> + * User's Manual, Revision 01.05)
->> + */
->>   #define IS_UNSUPPORTED_74K_EVENT(r, b)					\
->> -	((r) == 5 || ((r)>= 135&&  (r)<= 137) ||			\
->> -	 ((b)>= 10&&  (b)<= 12) || (b) == 22 || (b) == 27 ||		\
->> -	 (b) == 33 || (b) == 34 || ((b)>= 47&&  (b)<= 49) ||		\
->> -	 (r) == 178 || (b) == 55 || (b) == 57 || (b) == 60 ||		\
->> -	 (b) == 61 || (r) == 62 || (r) == 191 ||			\
->> -	 ((b)>= 64&&  (b)<= 127))
->> +	((r) == 5 || (r) == 135 || ((b)>= 10&&  (b)<= 12) ||		\
->> +	 (b) == 27 || (b) == 33 || (b) == 34 || (b) == 47 ||		\
->> +	 (b) == 48 || (r) == 178 || (r) == 187 || (b) == 60 ||		\
->> +	 (b) == 61 || (r) == 191 || (r) == 71 || (r) == 72 ||		\
->> +	 (b) == 73 || ((b)>= 77&&  (b)<= 127))
->
-> ...
-> Afair there are MIPS licensee who have modified the counters to count
-> extra events so I sense some madness in that direction.
+[Here's is the patchset again, it has been re-based on top of the
+ralf/upstream-sfr.git and few conflicts there have been resolved.]
 
-A good point. Now that the user is working with raw events, the manual 
-is being used for sure. The user should have known what will be counted. 
-But we should keep the mappings for event cntr_mask and range. Although 
-they are also subject to changes by Arch licensees, patches will be 
-needed for their CPU in that case.
+This patchset adds support for Netlogic's XLP processor family.
 
+The first few patches are to update XLR and move common files to a new
+netlogic/common directory.
 
-Deng-Cheng
+As always, comments and suggestions welcome. More details on the chip at
+http://www.netlogicmicro.com/Products/ProductBriefs/MultiCore/XLP832.htm
+
+Changes from  version:
+ - merge smp wakeup code of XLR and XLP
+ - common support for booting with 1/2/4 threads per core
+ - Add supprt for XLP 3xx processors
+ - mark netlogic chips SMT capable
+
+Hillf Danton (1):
+  MIPS: Netlogic: Mark Netlogic chips as SMT capable
+
+Jayachandran C (11):
+  MIPS: Netlogic: Style fixes for Platform
+  MIPS: Netlogic: Use CPU_XLR instead of NLM_XLR
+  MIPS: Netlogic: No need to set -Werror in mips/xlr
+  MIPS: Netlogic: Move code common with XLP to common/
+  MIPS: Netlogic: Update default config
+  MIPS: Netlogic: XLP CPU support.
+  MIPS: Netlogic: Add XLP platform files for XLP SoC
+  MIPS: Netlogic: Add XLP makefiles and config
+  MIPS: Netlogic: Add default XLP config.
+  MIPS: Netlogic: Merge some of XLR/XLP wakup code
+  MIPS: Netlogic: Add support for XLP 3XX cores
+
+ arch/mips/Kconfig                                  |   44 ++-
+ arch/mips/configs/nlm_xlp_defconfig                |  570 ++++++++++++++++++++
+ arch/mips/configs/nlm_xlr_defconfig                |   16 +-
+ arch/mips/include/asm/cpu.h                        |    5 +-
+ .../asm/mach-netlogic/cpu-feature-overrides.h      |   18 +-
+ arch/mips/include/asm/module.h                     |    2 +
+ arch/mips/include/asm/netlogic/common.h            |   76 +++
+ arch/mips/include/asm/netlogic/haldefs.h           |  163 ++++++
+ arch/mips/include/asm/netlogic/xlp-hal/bridge.h    |  187 +++++++
+ .../mips/include/asm/netlogic/xlp-hal/cpucontrol.h |   83 +++
+ arch/mips/include/asm/netlogic/xlp-hal/iomap.h     |  153 ++++++
+ arch/mips/include/asm/netlogic/xlp-hal/pic.h       |  411 ++++++++++++++
+ arch/mips/include/asm/netlogic/xlp-hal/sys.h       |  129 +++++
+ arch/mips/include/asm/netlogic/xlp-hal/uart.h      |  191 +++++++
+ arch/mips/include/asm/netlogic/xlp-hal/xlp.h       |   51 ++
+ arch/mips/include/asm/netlogic/xlr/iomap.h         |   22 -
+ arch/mips/include/asm/netlogic/xlr/pic.h           |   69 ++-
+ arch/mips/include/asm/netlogic/xlr/xlr.h           |   13 +-
+ arch/mips/kernel/Makefile                          |    1 +
+ arch/mips/kernel/cpu-probe.c                       |   20 +-
+ arch/mips/lib/Makefile                             |    1 +
+ arch/mips/mm/Makefile                              |    1 +
+ arch/mips/mm/c-r4k.c                               |    3 +
+ arch/mips/netlogic/Kconfig                         |    3 -
+ arch/mips/netlogic/Makefile                        |    3 +
+ arch/mips/netlogic/Platform                        |   13 +-
+ arch/mips/netlogic/common/Makefile                 |    3 +
+ arch/mips/netlogic/common/earlycons.c              |   60 ++
+ arch/mips/netlogic/common/irq.c                    |  238 ++++++++
+ arch/mips/netlogic/common/smp.c                    |  270 +++++++++
+ arch/mips/netlogic/common/smpboot.S                |  272 ++++++++++
+ arch/mips/netlogic/common/time.c                   |   51 ++
+ arch/mips/netlogic/xlp/Makefile                    |    2 +
+ arch/mips/netlogic/xlp/nlm_hal.c                   |  111 ++++
+ arch/mips/netlogic/xlp/platform.c                  |  108 ++++
+ arch/mips/netlogic/xlp/setup.c                     |  105 ++++
+ arch/mips/netlogic/xlp/wakeup.c                    |  102 ++++
+ arch/mips/netlogic/xlr/Makefile                    |    7 +-
+ arch/mips/netlogic/xlr/irq.c                       |  305 -----------
+ arch/mips/netlogic/xlr/platform.c                  |   31 +-
+ arch/mips/netlogic/xlr/setup.c                     |   31 +-
+ arch/mips/netlogic/xlr/smp.c                       |  220 --------
+ arch/mips/netlogic/xlr/smpboot.S                   |  100 ----
+ arch/mips/netlogic/xlr/time.c                      |   51 --
+ arch/mips/netlogic/xlr/wakeup.c                    |   68 +++
+ arch/mips/netlogic/xlr/xlr_console.c               |   46 --
+ arch/mips/pci/Makefile                             |    2 +-
+ arch/mips/pci/pci-xlr.c                            |   77 +++
+ 48 files changed, 3679 insertions(+), 829 deletions(-)
+ create mode 100644 arch/mips/configs/nlm_xlp_defconfig
+ create mode 100644 arch/mips/include/asm/netlogic/common.h
+ create mode 100644 arch/mips/include/asm/netlogic/haldefs.h
+ create mode 100644 arch/mips/include/asm/netlogic/xlp-hal/bridge.h
+ create mode 100644 arch/mips/include/asm/netlogic/xlp-hal/cpucontrol.h
+ create mode 100644 arch/mips/include/asm/netlogic/xlp-hal/iomap.h
+ create mode 100644 arch/mips/include/asm/netlogic/xlp-hal/pic.h
+ create mode 100644 arch/mips/include/asm/netlogic/xlp-hal/sys.h
+ create mode 100644 arch/mips/include/asm/netlogic/xlp-hal/uart.h
+ create mode 100644 arch/mips/include/asm/netlogic/xlp-hal/xlp.h
+ create mode 100644 arch/mips/netlogic/Makefile
+ create mode 100644 arch/mips/netlogic/common/Makefile
+ create mode 100644 arch/mips/netlogic/common/earlycons.c
+ create mode 100644 arch/mips/netlogic/common/irq.c
+ create mode 100644 arch/mips/netlogic/common/smp.c
+ create mode 100644 arch/mips/netlogic/common/smpboot.S
+ create mode 100644 arch/mips/netlogic/common/time.c
+ create mode 100644 arch/mips/netlogic/xlp/Makefile
+ create mode 100644 arch/mips/netlogic/xlp/nlm_hal.c
+ create mode 100644 arch/mips/netlogic/xlp/platform.c
+ create mode 100644 arch/mips/netlogic/xlp/setup.c
+ create mode 100644 arch/mips/netlogic/xlp/wakeup.c
+ delete mode 100644 arch/mips/netlogic/xlr/irq.c
+ delete mode 100644 arch/mips/netlogic/xlr/smp.c
+ delete mode 100644 arch/mips/netlogic/xlr/smpboot.S
+ delete mode 100644 arch/mips/netlogic/xlr/time.c
+ create mode 100644 arch/mips/netlogic/xlr/wakeup.c
+ delete mode 100644 arch/mips/netlogic/xlr/xlr_console.c
+
+-- 
+1.7.5.4

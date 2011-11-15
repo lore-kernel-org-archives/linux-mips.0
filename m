@@ -1,205 +1,191 @@
-Received: from mail3.caviumnetworks.com ([12.108.191.235]:16255 "EHLO
-        mail3.caviumnetworks.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903689Ab1KKUpk (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Nov 2011 21:45:40 +0100
-Message-ID: <4EBD8971.2090408@caviumnetworks.com>
-Date: Fri, 11 Nov 2011 12:45:37 -0800
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from mail-yx0-f177.google.com ([209.85.213.177]:35176 "EHLO
+        mail-yx0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903601Ab1KOALL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 15 Nov 2011 01:11:11 +0100
+Message-ID: <4EC1AE15.3090101@gmail.com>
+Date: Mon, 14 Nov 2011 16:11:01 -0800
+From: David Daney <ddaney.cavm@gmail.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/8] MIPS: Octeon: Add irq_create_of_mapping() and GPIO
- interrupts.
-References: <1320978124-13042-1-git-send-email-ddaney.cavm@gmail.com> <1320978124-13042-4-git-send-email-ddaney.cavm@gmail.com> <4EBD4868.7040809@gmail.com> <4EBD7C5D.7080606@gmail.com> <4EBD8867.30205@gmail.com>
-In-Reply-To: <4EBD8867.30205@gmail.com>
+Subject: Re: [PATCH 0/2] irq/of: Enchance irq_domain support.
+References: <1321062616-28317-1-git-send-email-ddaney.cavm@gmail.com> <4EBDEE3D.1000000@gmail.com> <4EC156D8.1080803@gmail.com> <4EC19900.5000806@gmail.com>
+In-Reply-To: <4EC19900.5000806@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Rob Herring <robherring2@gmail.com>
-Cc: David Daney <ddaney.cavm@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Daney <david.daney@cavium.com>
-Message-ID: <20111111204537.-eAPZlzdmuPs-1sjVgmyFFtzYAsNiuTCiYLkUtHCOFc@z>
+To: Rob Herring <robherring2@gmail.com>, "tglx@linutronix.de" <tglx@linutronix.de>
+Cc: David Daney <ddaney.cavm@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, David Daney <david.daney@cavium.com>
+Message-ID: <20111115001101.lZ2Z8Lzl-XjdYFaJpgy1f2jbU_nlOZRtGOTh2NBtjEM@z>
 
-On 11/11/2011 12:41 PM, Rob Herring wrote:
-> David,
->
-> On 11/11/2011 01:49 PM, David Daney wrote:
->> On 11/11/2011 08:08 AM, Rob Herring wrote:
->>> On 11/10/2011 08:21 PM, ddaney.cavm@gmail.com wrote:
+On 11/14/2011 02:41 PM, Rob Herring wrote:
+> On 11/14/2011 11:58 AM, David Daney wrote:
+>> On 11/11/2011 07:55 PM, Rob Herring wrote:
+>>> On 11/11/2011 07:50 PM, ddaney.cavm@gmail.com wrote:
 >>>> From: David Daney<david.daney@cavium.com>
 >>>>
->>>> This is needed for Octeon to use the Device Tree.
+>>>> This is the first cut at hooking up my Octeon port to the irq_domain
+>>>> things.
 >>>>
->>>> The GPIO interrupts are configured based on Device Tree properties
+>>>> The Octeon specific patches are part of a larger set, and will need to
+>>>> be applied with that set, the first patch is stand-alone.
 >>>>
->>>> Signed-off-by: David Daney<david.daney@cavium.com>
->>>> ---
->>>>    arch/mips/cavium-octeon/octeon-irq.c |  188
->>>> +++++++++++++++++++++++++++++++++-
->>>>    1 files changed, 187 insertions(+), 1 deletions(-)
+>>>> The basic problem being solved taken from one of my other e-mails:
 >>>>
->>>> diff --git a/arch/mips/cavium-octeon/octeon-irq.c
->>>> b/arch/mips/cavium-octeon/octeon-irq.c
->>>> index ffd4ae6..bb10546 100644
->>>> --- a/arch/mips/cavium-octeon/octeon-irq.c
->>>> +++ b/arch/mips/cavium-octeon/octeon-irq.c
->>>> @@ -8,11 +8,14 @@
+>>>>      Unfortunately, although a good idea, kernel/irq/irqdomain.c makes a
+>>>>      bunch of assumptions that don't hold for Octeon.  We may be able to
+>>>>      improve it so that it flexible enough to suit us.
 >>>>
->>>>    #include<linux/interrupt.h>
->>>>    #include<linux/bitops.h>
->>>> +#include<linux/module.h>
->>>>    #include<linux/percpu.h>
->>>> +#include<linux/of_irq.h>
->>>>    #include<linux/irq.h>
->>>>    #include<linux/smp.h>
 >>>>
->>>>    #include<asm/octeon/octeon.h>
->>>> +#include<asm/octeon/cvmx-gpio-defs.h>
+>>>>      Here are the problems I see:
 >>>>
->>>>    static DEFINE_RAW_SPINLOCK(octeon_irq_ciu0_lock);
->>>>    static DEFINE_RAW_SPINLOCK(octeon_irq_ciu1_lock);
->>>> @@ -58,6 +61,95 @@ static void __init octeon_irq_set_ciu_mapping(int
->>>> irq, int line, int bit,
->>>>        octeon_irq_ciu_to_irq[line][bit] = irq;
->>>>    }
+>>>>      1) It is assumed that there is some sort of linear correspondence
+>>>>      between 'hwirq' and 'irq', and that the range of valid values is
+>>>>      contiguous.
 >>>>
->>>> +static unsigned int octeon_irq_gpio_mapping(struct device_node
->>>> *controller,
->>>> +                        const u32 *intspec,
->>>> +                        unsigned int intsize)
->>>> +{
->>>> +    struct of_irq oirq;
->>>> +    int i;
->>>> +    unsigned int irq = 0;
->>>> +    unsigned int type;
->>>> +    unsigned int ciu = 0, bit = 0;
->>>> +    unsigned int pin = be32_to_cpup(intspec);
->>>> +    unsigned int trigger = be32_to_cpup(intspec + 1);
->>>> +    bool set_edge_handler = false;
->>>> +
->>>> +    if (pin>= 16)
->>>> +        goto err;
->>>> +    i = of_irq_map_one(controller, 0,&oirq);
->>>> +    if (i)
->>>> +        goto err;
->>>> +    if (oirq.size != 2)
->>>> +        goto err_put;
->>>> +
->>>> +    ciu = oirq.specifier[0];
->>>> +    bit = oirq.specifier[1] + pin;
->>>> +
->>>> +    if (ciu>= 8 || bit>= 64)
->>>> +        goto err_put;
->>>> +
->>>> +    irq = octeon_irq_ciu_to_irq[ciu][bit];
->>>> +    if (!irq)
->>>> +        goto err_put;
->>>> +
->>>> +    switch (trigger&   0xf) {
->>>> +    case 1:
->>>> +        type = IRQ_TYPE_EDGE_RISING;
->>>> +        set_edge_handler = true;
->>>> +        break;
->>>> +    case 2:
->>>> +        type = IRQ_TYPE_EDGE_FALLING;
->>>> +        set_edge_handler = true;
->>>> +        break;
->>>> +    case 4:
->>>> +        type = IRQ_TYPE_LEVEL_HIGH;
->>>> +        break;
->>>> +    case 8:
->>>> +        type = IRQ_TYPE_LEVEL_LOW;
->>>> +        break;
->>>> +    default:
->>>> +        pr_err("Error: Invalid irq trigger specification: %x\n",
->>>> +               trigger);
->>>> +        type = IRQ_TYPE_LEVEL_LOW;
->>>> +        break;
->>>> +    }
->>>> +
->>>> +    irq_set_irq_type(irq, type);
->>>> +
->>>> +    if (set_edge_handler)
->>>> +        __irq_set_handler(irq, handle_edge_irq, 0, NULL);
->>>> +
->>>> +err_put:
->>>> +    of_node_put(oirq.controller);
->>>> +err:
->>>> +    return irq;
->>>> +}
->>>> +
->>>> +/*
->>>> + * irq_create_of_mapping - Hook to resolve OF irq specifier into a
->>>> Linux irq#
->>>> + *
->>>> + * Octeon irq maps are a pair of indexes.  The first selects either
->>>> + * ciu0 or ciu1, the second is the bit within the ciu register.
->>>> + */
->>>> +unsigned int irq_create_of_mapping(struct device_node *controller,
->>>> +                   const u32 *intspec, unsigned int intsize)
->>>> +{
->>>> +    unsigned int irq = 0;
->>>> +    unsigned int ciu, bit;
->>>> +
->>>> +    if (of_device_is_compatible(controller, "cavium,octeon-3860-gpio"))
->>>> +        return octeon_irq_gpio_mapping(controller, intspec, intsize);
->>>> +
->>>> +    ciu = be32_to_cpup(intspec);
->>>> +    bit = be32_to_cpup(intspec + 1);
->>>> +
->>>> +    if (ciu<   8&&   bit<   64)
->>>> +        irq = octeon_irq_ciu_to_irq[ciu][bit];
->>>> +
->>>> +    return irq;
->>>> +}
->>>> +EXPORT_SYMBOL_GPL(irq_create_of_mapping);
+>>>>      2) It is assumed that the concepts of nr_irq, irq_base and
+>>>>      hwirq_base have easy to determine values and you can do iteration
+>>>>      over their ranges by adding indexes to the bases.
+>>>>
 >>>
->>> Have you looked at irq_domains (kernel/irq/irqdomain.c)? That is what
->>> you should be using for your (gpio) interrupt controller and then use
->>> the common irq_create_of_mapping.
+>>> I still think this is the wrong approach.
+>>>
+>>> Are the gpio interrupts the source of your problem here?
+>>
+>> No.
+>>
+>>> That's how I read it.
+>>
+>> Take a look at Patch 2/2, since the GPIO irqs are contiguous over both
+>> irq and hwirq numbers, I use the existing infrastructure with no
+>> modifications.
+>>
+>
+> I did. You are adding GPIO support to the existing support.
+
+No, I am adding DT support.  For that I need a working 
+irq_create_of_mapping() for non-GPIO interrupts.  I am also adding GPIO, 
+but that is not the part giving us problems.
+
+You may recall that in an earlier e-mail you asked me to use irq_domain 
+support for my irq_create_of_mapping() rather than my previous ad hoc 
+approach.  I agree that this is a good idea, and now we are here.
+
+> It would be
+> nice to separate that from add DT support.
+
+Granted, the non-GPIO support for irq_create_of_mapping() and GPIO 
+support could be separated into two patches, but that is somewhat of an 
+orthogonal issue.  Since that part is isolated in arch/mips, Ralf and I 
+can discuss doing that.  For now I would like to concentrate on figuring 
+out if it is advantageous to adjust the irq_domain core implementation.
+
+>
+>>> You have 16 GPIO irqs directly connected into lines on your
+>>> primary interrupt controller which has 128 lines. So for a Linux irq
+>>> number, you want to translate to a GPIO hwirq number and/or a CIU hwirq
+>>> number. Trying to have 2 hwirq mappings for 1 Linux irq number just
+>>> won't work. It seems to me you should use a chained handler here because
+>>> you need to process the interrupt at both the primary ctrlr and gpio
+>>> ctrlr levels.
 >>>
 >>
->> Unfortunatly, although a good idea, kernel/irq/irqdomain.c makes a bunch
->> of assumptions that don't hold for Octeon.  We may be able to improve it
->> so that it flexible enough to suit us.
+>> All moot as it is based on the false predicate of GPIO irqs being the
+>> problem.
 >>
+> Let me rephrase, if you completely ignore GPIO for a minute, what is the
+> issue.
+
+Yes, let's do that.  It is clouding the issue.
+
+> Just that irq_descs are sparsely allocated for the primary
+> controller. Then the GPIO interrupts are inserted into the middle of
+> that irq space. Handling sparse irqs is a potentially common problem, so
+> we should address that in the core irqdomain code.
+
+This is precisely the issue, and what patch 1/2 is doing.
+
+My Patch 2/2 was just included to show how I would be using the changes.
+
+>
 >>
->> Here are the problems I see:
+>> The root of the problem are all of the irqs that are not GPIO.  I have:
 >>
->> 1) It is assumed that there is some sort of linear correspondence
->> between 'hwirq' and 'irq', and that the range of valid values is
->> contiguous.
+>> o irq numbers currently in the range [9..196], with holes for any given
+>> SOC/Board implementation.  SOCs currently in development will have
+>> additional irq numbers with even more holes.
+>>
+>> o Two different interrupt controllers.  One with 128 lines, the other
+>> with  512 or more lines, both sparsely populated.  The mapping of hwirq
+>> to irq is done at boot time based on the hardware the kernel image is
+>> running on.  Note that the second type of irq controller support is not
+>> in the kernel.org kernel, but it exists, and I intend on getting support
+>> for it merged ASAP.
 >
-> That's not true if you implement .to_irq for your domain.
+> To be clear, those are not holes in hwirq's, but many lines don't have
+> connections so you are not allocating Linux irqs for them. hwirq should
+> reflect interrupt numbers from the controller's perspective and be
+> directly usable to index to the correct register and bit mask. There's
+> no storage associated with a hwirq, so the only cost is iterating over
+> them which is not done frequently.
 
-It is true.  irq_domain_add() iterates.
+Yes, this is essentially correct.
+
+There are two iterators defined:
+
+1) irq_domain_each_hwirq()
+
+2) irq_domain_for_each_irq()
+
+Yet struct irq_domain has only nr_irq, this clearly cannot be used as 
+the range of both iterators.  Furthermore I think the concept of a 
+linear iteration through irq values is fundamentally broken.
 
 >
->> 2) It is assumed that the concepts of nr_irq, irq_base and hwirq_base
->> have easy to determin values and you can do iteration over their ranges
->> by adding indexes to the bases.
->
-> That's true for hwirq numbering, but not for Linux irq numbering.
-> irq_base is only used if you don't provide .to_irq. hwirq_base is just
-> to allow a linear range that doesn't start with 0.
->
->> I think we can fix this by adding iteration helper functions to struct
->> irq_domain.  If these are present, we would just ignore the irq_base,
->> nr_irq and hwirq_base elements of the structure.
->> irq_domain_for_each_hwirq() and irq_domain_for_each_irq() would be
->> modified to use the iteration helper functions.
->
-> Expanding irqdomain is certainly the intention and right direction.
+> There is not a clean separation of the primary interrupt controller's
+> hwirq numbers and Linux irq numbers in your patch.
 
-I have a patch.  It should be ready in a couple of hours.
+?? I don't get what you mean.  They are clearly separate concepts, my 
+interrupt controller code even goes as far as having a map to translate 
+between the two.
 
->
-> It seems to me you just need something different than an irq. controller
-> with a linear range of irq lines. Perhaps sparsely allocated hwirq's?
-> Can you describe the h/w?
->
-> Also, you could have a different domain per irqdesc if you really needed to.
+> Then you are
+> overlaying the GPIO interrupts into the Linux irq space.
 >
 
-Too ugly.
+Indeed I am, but its only effect is to introduce an additional hole 
+(among many others) in the irq number space of the primary controller. 
+It is only tangentially related to the real issues of this discussion.
+
+
+>> At a minimum the loop in irq_domain_add() where we iterate over a linear
+>> range of irq numbers is not flexible enough.  You may not like my
+>> iterator functions in irq_domain_ops, but we need to provide something
+>> better than the irq_domain_for_each_irq() macro.
+>
+> I'm just trying to back-up some and understand the problem.
+>
+> How about if .to_irq returns 0, the loop can just continue and skip over
+> that hwirq without error.
+>
+
+Ok, now we are getting somewhere.
+
+However I am not sufficiently clever to design an iteration macro like 
+irq_domain_for_each_irq(), that would use the return value of zero from 
+.to_irq to determine if we should continue to the next hwirq value 
+without entering the body of the loop.
+
+I am left with my callback iterator thing that is in the patch 1/2.
+
+> I don't think .each_hwirq is being used, so you can delete that.
+
+Yes, I noticed that.  There are two options:
+
+1) Remove it as you suggest, along with irq_domain_for_each_hwirq() and 
+irq_domain_each_hwirq().
+
+2) Leave it on the grounds that irq_domain_for_each_hwirq() is there for 
+a reason.
 
 David Daney

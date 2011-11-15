@@ -1,191 +1,402 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177]:35176 "EHLO
-        mail-yx0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903601Ab1KOALL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 15 Nov 2011 01:11:11 +0100
-Message-ID: <4EC1AE15.3090101@gmail.com>
-Date: Mon, 14 Nov 2011 16:11:01 -0800
-From: David Daney <ddaney.cavm@gmail.com>
+Received: from smtpgw1.netlogicmicro.com ([12.203.210.53]:55875 "EHLO
+        smtpgw1.netlogicmicro.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903725Ab1KORzV (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 15 Nov 2011 18:55:21 +0100
+From: "Jayachandran C." <jayachandranc@netlogicmicro.com>
+Subject: [PATCH] i2c: Support for Netlogic XLR/XLS I2C controller.
+Date: Tue, 15 Nov 2011 23:24:45 +0530
+Message-ID: <1321379685-475-1-git-send-email-jayachandranc@netlogicmicro.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 0/2] irq/of: Enchance irq_domain support.
-References: <1321062616-28317-1-git-send-email-ddaney.cavm@gmail.com> <4EBDEE3D.1000000@gmail.com> <4EC156D8.1080803@gmail.com> <4EC19900.5000806@gmail.com>
-In-Reply-To: <4EC19900.5000806@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Rob Herring <robherring2@gmail.com>, "tglx@linutronix.de" <tglx@linutronix.de>
-Cc: David Daney <ddaney.cavm@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, David Daney <david.daney@cavium.com>
-Message-ID: <20111115001101.lZ2Z8Lzl-XjdYFaJpgy1f2jbU_nlOZRtGOTh2NBtjEM@z>
+To: linux-i2c@vger.kernel.org
+Cc: ben-linux@fluff.org, linux-mips@linux-mips.org, Ganesan Ramalingam <ganesanr@netlogicmicro.com>, Jayachandran C <jayachandranc@netlogicmicro.com>
+Message-ID: <20111115175445.-BkDus6ufmLiHjDYegiUTTvvY8kfeA1xaA4yUTSw9YY@z>
 
-On 11/14/2011 02:41 PM, Rob Herring wrote:
-> On 11/14/2011 11:58 AM, David Daney wrote:
->> On 11/11/2011 07:55 PM, Rob Herring wrote:
->>> On 11/11/2011 07:50 PM, ddaney.cavm@gmail.com wrote:
->>>> From: David Daney<david.daney@cavium.com>
->>>>
->>>> This is the first cut at hooking up my Octeon port to the irq_domain
->>>> things.
->>>>
->>>> The Octeon specific patches are part of a larger set, and will need to
->>>> be applied with that set, the first patch is stand-alone.
->>>>
->>>> The basic problem being solved taken from one of my other e-mails:
->>>>
->>>>      Unfortunately, although a good idea, kernel/irq/irqdomain.c makes a
->>>>      bunch of assumptions that don't hold for Octeon.  We may be able to
->>>>      improve it so that it flexible enough to suit us.
->>>>
->>>>
->>>>      Here are the problems I see:
->>>>
->>>>      1) It is assumed that there is some sort of linear correspondence
->>>>      between 'hwirq' and 'irq', and that the range of valid values is
->>>>      contiguous.
->>>>
->>>>      2) It is assumed that the concepts of nr_irq, irq_base and
->>>>      hwirq_base have easy to determine values and you can do iteration
->>>>      over their ranges by adding indexes to the bases.
->>>>
->>>
->>> I still think this is the wrong approach.
->>>
->>> Are the gpio interrupts the source of your problem here?
->>
->> No.
->>
->>> That's how I read it.
->>
->> Take a look at Patch 2/2, since the GPIO irqs are contiguous over both
->> irq and hwirq numbers, I use the existing infrastructure with no
->> modifications.
->>
->
-> I did. You are adding GPIO support to the existing support.
+From: Ganesan Ramalingam <ganesanr@netlogicmicro.com>
 
-No, I am adding DT support.  For that I need a working 
-irq_create_of_mapping() for non-GPIO interrupts.  I am also adding GPIO, 
-but that is not the part giving us problems.
+Add support for the intergrated I2C controller on Netlogic
+XLR/XLS MIPS SoC.
 
-You may recall that in an earlier e-mail you asked me to use irq_domain 
-support for my irq_create_of_mapping() rather than my previous ad hoc 
-approach.  I agree that this is a good idea, and now we are here.
+The changes are to add a new file i2c/buses/i2c-xlr.c, containing the
+i2c bus implementation, and to update i2c/buses/{Kconfig,Makefile} to
+add the CONFIG_I2C_XLR option.
 
-> It would be
-> nice to separate that from add DT support.
+Signed-off-by: Ganesan Ramalingam <ganesanr@netlogicmicro.com>
+Signed-off-by: Jayachandran C <jayachandranc@netlogicmicro.com>
+---
 
-Granted, the non-GPIO support for irq_create_of_mapping() and GPIO 
-support could be separated into two patches, but that is somewhat of an 
-orthogonal issue.  Since that part is isolated in arch/mips, Ralf and I 
-can discuss doing that.  For now I would like to concentrate on figuring 
-out if it is advantageous to adjust the irq_domain core implementation.
+Changes from the last version is to remove the custom IO functions from
+netlogic headers and use __raw_readl/__raw_writel
 
->
->>> You have 16 GPIO irqs directly connected into lines on your
->>> primary interrupt controller which has 128 lines. So for a Linux irq
->>> number, you want to translate to a GPIO hwirq number and/or a CIU hwirq
->>> number. Trying to have 2 hwirq mappings for 1 Linux irq number just
->>> won't work. It seems to me you should use a chained handler here because
->>> you need to process the interrupt at both the primary ctrlr and gpio
->>> ctrlr levels.
->>>
->>
->> All moot as it is based on the false predicate of GPIO irqs being the
->> problem.
->>
-> Let me rephrase, if you completely ignore GPIO for a minute, what is the
-> issue.
+This has been sent out too many times now, please let me know if there 
+are any comments.
 
-Yes, let's do that.  It is clouding the issue.
+ drivers/i2c/busses/Kconfig   |   11 ++
+ drivers/i2c/busses/Makefile  |    1 +
+ drivers/i2c/busses/i2c-xlr.c |  318 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 330 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/i2c/busses/i2c-xlr.c
 
-> Just that irq_descs are sparsely allocated for the primary
-> controller. Then the GPIO interrupts are inserted into the middle of
-> that irq space. Handling sparse irqs is a potentially common problem, so
-> we should address that in the core irqdomain code.
-
-This is precisely the issue, and what patch 1/2 is doing.
-
-My Patch 2/2 was just included to show how I would be using the changes.
-
->
->>
->> The root of the problem are all of the irqs that are not GPIO.  I have:
->>
->> o irq numbers currently in the range [9..196], with holes for any given
->> SOC/Board implementation.  SOCs currently in development will have
->> additional irq numbers with even more holes.
->>
->> o Two different interrupt controllers.  One with 128 lines, the other
->> with  512 or more lines, both sparsely populated.  The mapping of hwirq
->> to irq is done at boot time based on the hardware the kernel image is
->> running on.  Note that the second type of irq controller support is not
->> in the kernel.org kernel, but it exists, and I intend on getting support
->> for it merged ASAP.
->
-> To be clear, those are not holes in hwirq's, but many lines don't have
-> connections so you are not allocating Linux irqs for them. hwirq should
-> reflect interrupt numbers from the controller's perspective and be
-> directly usable to index to the correct register and bit mask. There's
-> no storage associated with a hwirq, so the only cost is iterating over
-> them which is not done frequently.
-
-Yes, this is essentially correct.
-
-There are two iterators defined:
-
-1) irq_domain_each_hwirq()
-
-2) irq_domain_for_each_irq()
-
-Yet struct irq_domain has only nr_irq, this clearly cannot be used as 
-the range of both iterators.  Furthermore I think the concept of a 
-linear iteration through irq values is fundamentally broken.
-
->
-> There is not a clean separation of the primary interrupt controller's
-> hwirq numbers and Linux irq numbers in your patch.
-
-?? I don't get what you mean.  They are clearly separate concepts, my 
-interrupt controller code even goes as far as having a map to translate 
-between the two.
-
-> Then you are
-> overlaying the GPIO interrupts into the Linux irq space.
->
-
-Indeed I am, but its only effect is to introduce an additional hole 
-(among many others) in the irq number space of the primary controller. 
-It is only tangentially related to the real issues of this discussion.
-
-
->> At a minimum the loop in irq_domain_add() where we iterate over a linear
->> range of irq numbers is not flexible enough.  You may not like my
->> iterator functions in irq_domain_ops, but we need to provide something
->> better than the irq_domain_for_each_irq() macro.
->
-> I'm just trying to back-up some and understand the problem.
->
-> How about if .to_irq returns 0, the loop can just continue and skip over
-> that hwirq without error.
->
-
-Ok, now we are getting somewhere.
-
-However I am not sufficiently clever to design an iteration macro like 
-irq_domain_for_each_irq(), that would use the return value of zero from 
-.to_irq to determine if we should continue to the next hwirq value 
-without entering the body of the loop.
-
-I am left with my callback iterator thing that is in the patch 1/2.
-
-> I don't think .each_hwirq is being used, so you can delete that.
-
-Yes, I noticed that.  There are two options:
-
-1) Remove it as you suggest, along with irq_domain_for_each_hwirq() and 
-irq_domain_each_hwirq().
-
-2) Leave it on the grounds that irq_domain_for_each_hwirq() is there for 
-a reason.
-
-David Daney
+diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+index a3afac4..c9f3db3 100644
+--- a/drivers/i2c/busses/Kconfig
++++ b/drivers/i2c/busses/Kconfig
+@@ -308,6 +308,17 @@ config I2C_AU1550
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called i2c-au1550.
+ 
++config I2C_XLR
++	tristate "XLR I2C support"
++	depends on CPU_XLR
++	help
++	  This driver enables support for the on-chip I2C interface of
++	  the Netlogic XLR/XLS MIPS processors.
++
++	  Say yes to this option if you have a Netlogic XLR/XLS based
++	  board and you need to access the I2C devices (typically the
++	  RTC, sensors, EEPROM) connected to this interface.
++
+ config I2C_BLACKFIN_TWI
+ 	tristate "Blackfin TWI I2C support"
+ 	depends on BLACKFIN
+diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
+index fba6da6..4372dee 100644
+--- a/drivers/i2c/busses/Makefile
++++ b/drivers/i2c/busses/Makefile
+@@ -68,6 +68,7 @@ obj-$(CONFIG_I2C_TEGRA)		+= i2c-tegra.o
+ obj-$(CONFIG_I2C_VERSATILE)	+= i2c-versatile.o
+ obj-$(CONFIG_I2C_OCTEON)	+= i2c-octeon.o
+ obj-$(CONFIG_I2C_XILINX)	+= i2c-xiic.o
++obj-$(CONFIG_I2C_XLR)           += i2c-xlr.o
+ obj-$(CONFIG_I2C_EG20T)         += i2c-eg20t.o
+ 
+ # External I2C/SMBus adapter drivers
+diff --git a/drivers/i2c/busses/i2c-xlr.c b/drivers/i2c/busses/i2c-xlr.c
+new file mode 100644
+index 0000000..cc2f0a5
+--- /dev/null
++++ b/drivers/i2c/busses/i2c-xlr.c
+@@ -0,0 +1,318 @@
++/*
++ * Copyright 2011, Netlogic Microsystems Inc.
++ * Copyright 2004, Matt Porter <mporter@kernel.crashing.org>
++ *
++ * This file is licensed under the terms of the GNU General Public
++ * License version 2.  This program is licensed "as is" without any
++ * warranty of any kind, whether express or implied.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/init.h>
++#include <linux/ioport.h>
++#include <linux/delay.h>
++#include <linux/errno.h>
++#include <linux/i2c.h>
++#include <linux/io.h>
++#include <linux/platform_device.h>
++
++/* XLR I2C REGISTERS */
++#define XLR_I2C_CFG		0x00
++#define XLR_I2C_CLKDIV		0x01
++#define XLR_I2C_DEVADDR		0x02
++#define XLR_I2C_ADDR		0x03
++#define XLR_I2C_DATAOUT		0x04
++#define XLR_I2C_DATAIN		0x05
++#define XLR_I2C_STATUS		0x06
++#define XLR_I2C_STARTXFR	0x07
++#define XLR_I2C_BYTECNT		0x08
++#define XLR_I2C_HDSTATIM	0x09
++
++/* XLR I2C REGISTERS FLAGS */
++#define XLR_I2C_BUS_BUSY	0x01
++#define XLR_I2C_SDOEMPTY	0x02
++#define XLR_I2C_RXRDY		0x04
++#define XLR_I2C_ACK_ERR		0x08
++#define XLR_I2C_ARB_STARTERR	0x30
++
++/* Register Programming Values!! Change as required */
++#define XLR_I2C_CFG_ADDR	0xF8    /* 8-Bit dev Addr + POR Values */
++#define XLR_I2C_CFG_NOADDR	0xFA    /* 8-Bit reg Addr + POR Values */
++#define XLR_I2C_STARTXFR_ND	0x02    /* No data , only addr */
++#define XLR_I2C_STARTXFR_RD	0x01    /* Read */
++#define XLR_I2C_STARTXFR_WR	0x00    /* Write */
++#define XLR_I2C_CLKDIV_DEF	0x14A   /* 0x00000052 */
++#define XLR_I2C_HDSTATIM_DEF	0x107   /* 0x00000000 */
++
++#define XLR_I2C_IO_SIZE		0x1000
++
++
++/* 
++ * Need un-swapped IO for the SoC I2C registers, use __raw_ IO
++ */
++static inline void xlr_i2c_wreg(u32 __iomem *base, unsigned int reg, u32 val)
++{
++	base += reg;
++	__raw_writel(val, base);
++}
++
++static inline u32 xlr_i2c_rdreg(u32 __iomem *base, unsigned int reg)
++{
++	base += reg;
++	return __raw_readl(base);
++}
++
++struct xlr_i2c_private {
++	struct i2c_adapter adap;
++	u32 __iomem *iobase;
++};
++
++static int xlr_i2c_tx(struct xlr_i2c_private *priv,  u16 len,
++		u8 *buf, u16 addr)
++{
++	u32 i2c_status = 0x00;
++	u8 nb;
++	int pos, timeout = 0;
++	struct i2c_adapter *adap = &priv->adap;
++	u8 offset = buf[0];
++
++	xlr_i2c_wreg(priv->iobase, XLR_I2C_ADDR, offset);
++	xlr_i2c_wreg(priv->iobase, XLR_I2C_DEVADDR, addr);
++	xlr_i2c_wreg(priv->iobase, XLR_I2C_CFG, XLR_I2C_CFG_ADDR);
++	xlr_i2c_wreg(priv->iobase, XLR_I2C_BYTECNT, len-1);
++
++retry:
++	timeout = 0;
++	pos = 1;
++	if (len == 1) {
++		xlr_i2c_wreg(priv->iobase, XLR_I2C_STARTXFR,
++				XLR_I2C_STARTXFR_ND);
++	} else {
++		xlr_i2c_wreg(priv->iobase, XLR_I2C_DATAOUT, buf[pos]);
++		xlr_i2c_wreg(priv->iobase, XLR_I2C_STARTXFR,
++				XLR_I2C_STARTXFR_WR);
++	}
++
++	while (1) {
++		if (timeout++ > 0x1000) {
++			dev_err(&adap->dev, "XLR_I2C_STARTXFR_RD Rx Timeout\n");
++			return -ETIMEDOUT;
++		}
++
++		i2c_status = xlr_i2c_rdreg(priv->iobase,
++				XLR_I2C_STATUS);
++
++		if (i2c_status & XLR_I2C_SDOEMPTY) {
++			pos++;
++			nb = (pos < len) ? buf[pos] : 0;
++			xlr_i2c_wreg(priv->iobase, XLR_I2C_DATAOUT, nb);
++		}
++
++		if (i2c_status & XLR_I2C_ARB_STARTERR)
++			goto retry;
++
++		if (i2c_status & XLR_I2C_ACK_ERR) {
++			return -EIO;
++		}
++
++		if (i2c_status & XLR_I2C_BUS_BUSY) {
++			udelay(1);
++			continue;
++		}
++
++		if (pos >= len)
++			break;
++	}
++
++	return 0;
++}
++
++static int xlr_i2c_rx(struct xlr_i2c_private *priv, u16 len,
++		u8 *buf, u16 addr)
++{
++	u32 i2c_status = 0x00;
++	int pos = 0;
++	int timeout = 0;
++	struct i2c_adapter *adap = &priv->adap;
++
++	xlr_i2c_wreg(priv->iobase, XLR_I2C_CFG, XLR_I2C_CFG_NOADDR);
++	xlr_i2c_wreg(priv->iobase, XLR_I2C_BYTECNT, len);
++	xlr_i2c_wreg(priv->iobase, XLR_I2C_DEVADDR, addr);
++
++retry:
++	timeout = 0;
++	xlr_i2c_wreg(priv->iobase, XLR_I2C_STARTXFR,
++			XLR_I2C_STARTXFR_RD);
++
++	while (1) {
++		if (timeout++ > 0x1000) {
++			dev_err(&adap->dev, "XLR_I2C_STARTXFR_RD Rx Timeout\n");
++			return -ETIMEDOUT;
++		}
++
++		i2c_status = xlr_i2c_rdreg(priv->iobase,
++				XLR_I2C_STATUS);
++		if (i2c_status & XLR_I2C_RXRDY) {
++			buf[pos++] = (u8)xlr_i2c_rdreg(priv->iobase,
++					XLR_I2C_DATAIN);
++		}
++
++		if (i2c_status & XLR_I2C_ARB_STARTERR)
++			goto retry;
++
++		if (i2c_status & XLR_I2C_ACK_ERR) {
++			dev_err(&adap->dev, "XLR_I2C_STARTXFR_RD ACK ERR\n");
++			return -EIO;
++		}
++
++		if ((i2c_status & XLR_I2C_BUS_BUSY) == 0)
++			break;
++		udelay(1);
++	}
++	return 0;
++}
++
++static int xlr_i2c_xfer(struct i2c_adapter *adap,
++		struct i2c_msg *msgs, int num)
++{
++	struct i2c_msg *msg;
++	int i;
++	int ret = 0;
++	struct xlr_i2c_private *priv = i2c_get_adapdata(adap);
++
++	for (i = 0; ret == 0 && i < num; i++) {
++		msg = &msgs[i];
++		if (msg->flags & I2C_M_RD)
++			ret = xlr_i2c_rx(priv, msg->len, &msg->buf[0],
++					msg->addr);
++		else
++			ret = xlr_i2c_tx(priv, msg->len, &msg->buf[0],
++					msg->addr);
++	}
++
++	return (ret != 0) ? ret : num;
++}
++
++static u32 xlr_func(struct i2c_adapter *adap)
++{
++	/* Emulate SMBUS over I2C */
++	return I2C_FUNC_SMBUS_EMUL | I2C_FUNC_I2C;
++}
++
++static struct i2c_algorithm xlr_i2c_algo = {
++	.master_xfer	= xlr_i2c_xfer,
++	.functionality	= xlr_func,
++};
++
++static int xlr_i2c_add_bus(struct xlr_i2c_private *priv)
++{
++	priv->adap.owner	= THIS_MODULE;
++	priv->adap.algo_data	= priv;
++	priv->adap.nr		= 1;
++	priv->adap.algo		= &xlr_i2c_algo;
++	priv->adap.class	= I2C_CLASS_HWMON | I2C_CLASS_SPD;
++	snprintf(priv->adap.name, sizeof(priv->adap.name),
++			"SMBus XLR I2C Adapter");
++	i2c_set_adapdata(&priv->adap, priv);
++	/* register new adapter to i2c module... */
++	if (i2c_add_numbered_adapter(&priv->adap))
++		return -1;
++
++	return 0;
++}
++
++static int __devinit xlr_i2c_probe(struct platform_device *pdev)
++{
++	struct xlr_i2c_private  *priv;
++	struct resource *res;
++	int ret;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++
++	if (!res) {
++		ret = -ENXIO;
++		goto err1;
++	}
++
++	if (!request_mem_region(res->start, XLR_I2C_IO_SIZE, pdev->name)) {
++		dev_err(&pdev->dev, "request_mem_region failed\n");
++		ret = -ENOMEM;
++		goto err1;
++	}
++
++	priv = kzalloc(sizeof(struct xlr_i2c_private), GFP_KERNEL);
++	if (!priv) {
++		ret = -ENOMEM;
++		goto err2;
++	}
++
++	priv->adap.dev.parent = &pdev->dev;
++	priv->iobase = (u32 *)ioremap(res->start, XLR_I2C_IO_SIZE);
++	if (!priv->iobase) {
++		ret = -ENOMEM;
++		goto err3;
++	}
++
++	platform_set_drvdata(pdev, priv);
++	ret = xlr_i2c_add_bus(priv);
++
++	if (ret < 0) {
++		dev_err(&priv->adap.dev, "Failed to add i2c bus\n");
++		ret = -ENXIO;
++		goto err4;
++	} else
++		dev_info(&priv->adap.dev, "Added I2C Bus.\n");
++
++	return 0;
++err4:
++	iounmap(priv->iobase);
++	platform_set_drvdata(pdev, NULL);
++err3:
++	kfree(priv);
++err2:
++	release_mem_region(res->start, IORESOURCE_MEM);
++err1:
++	return ret;
++}
++
++static int __devexit xlr_i2c_remove(struct platform_device *pdev)
++{
++	struct xlr_i2c_private *priv = platform_get_drvdata(pdev);
++	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++
++	i2c_del_adapter(&priv->adap);
++	iounmap(priv->iobase);
++	kfree(priv);
++	release_mem_region(res->start, IORESOURCE_MEM);
++	platform_set_drvdata(pdev, NULL);
++	return 0;
++}
++
++static struct platform_driver xlr_i2c_driver = {
++	.probe  = xlr_i2c_probe,
++	.remove = __devexit_p(xlr_i2c_remove),
++	.driver = {
++		.owner  = THIS_MODULE,
++		.name   = "xlr-i2cbus",
++	},
++};
++
++static int __init xlr_i2c_init(void)
++{
++	return platform_driver_register(&xlr_i2c_driver);
++}
++
++static void __exit xlr_i2c_exit(void)
++{
++	platform_driver_unregister(&xlr_i2c_driver);
++}
++
++MODULE_AUTHOR("Ganesan Ramalingam <ganesanr@netlogicmicro.com>");
++MODULE_DESCRIPTION("XLR I2C SMBus driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:xlr-i2cbus");
++
++module_init(xlr_i2c_init);
++module_exit(xlr_i2c_exit);
+-- 
+1.7.5.4

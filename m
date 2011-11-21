@@ -1,71 +1,61 @@
-Received: from wolverine02.qualcomm.com ([199.106.114.251]:27854 "EHLO
-        wolverine02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1904058Ab1KQTHF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Nov 2011 20:07:05 +0100
-Message-ID: <4EC55B4A.7050001@qca.qualcomm.com>
-Date: Thu, 17 Nov 2011 21:06:50 +0200
-From: Kalle Valo <kvalo@qca.qualcomm.com>
+Received: from smtp2.infineon.com ([217.10.60.23]:33832 "EHLO
+        smtp2.infineon.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1903777Ab1KUPbB convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 21 Nov 2011 16:31:01 +0100
+From: <thomas.langer@lantiq.com>
+Subject: RE: [PATCH V2 4/6] MIPS: lantiq: add basic support for FALC-ON
+Date: Mon, 21 Nov 2011 15:30:53 +0000
+Message-ID: <0509FD3B91656A408BE277C2D2CD5B3B0FFAAD@MUCSE501.eu.infineon.com>
+References: <1321882525-13780-1-git-send-email-blogic@openwrt.org>
+ <1321882525-13780-4-git-send-email-blogic@openwrt.org>
+In-Reply-To: <1321882525-13780-4-git-send-email-blogic@openwrt.org>
+Content-Language: de-DE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath9k: rename ath9k_platform.h to ath_platform.h
-References: <1321356224-5053-1-git-send-email-sangwook.lee@linaro.org>  <4EC29534.7010502@adurom.com> <CADPsn1YDOu9Xyu1yDfs5Z0LjGzBL-Rx6Fk35AT8n-8oOPhPzHA@mail.gmail.com>
-In-Reply-To: <CADPsn1YDOu9Xyu1yDfs5Z0LjGzBL-Rx6Fk35AT8n-8oOPhPzHA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Sangwook Lee <sangwook.lee@linaro.org>
-Cc: mcgrof@frijolero.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-wireless@vger.kernel.org, ath9k-devel@lists.ath9k.org, ralf@linux-mips.org, juhosg@openwrt.org, rodrigue@qca.qualcomm.com, linville@tuxdriver.com, rmanohar@qca.qualcomm.com, patches@linaro.org
-Message-ID: <20111117190650.jgId82xPe8OTSOcU7oQMkC3d1TX-SmQo-OncKZ9xPEo@z>
+To: blogic@openwrt.org, ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org
+Message-ID: <20111121153053.OiyV6jhqYgvI-BOIsX6n_4zCba13gxeAW7QXEzlaG_M@z>
 
-Hi Sangwook,
+Hello John,
 
-On 11/16/2011 01:34 PM, Sangwook Lee wrote:
+I found an issue with the machine_restart function.
 
-> 
-> On 15 November 2011 16:37, Kalle Valo <kvalo@adurom.com
-> <mailto:kvalo@adurom.com>> wrote:
-> 
->     Hi Sangwook,
-> 
->     On 11/15/2011 01:23 PM, Sangwook Lee wrote:
->     > The patch series proposes to rename ath9k_platform.h to
->     "ath_platform.h
->     > This header file handles platform data used only for ath9k,
->     > but it can used by ath6k as well. We can take "wl12xx.h" as
->     > as a example. Please let us change this file name so that
->     > other Atheors WLANs use this file for their own platform data
-> 
->     ath9k and ath6kl are very different devices, I'm not sure if sharing a
->     platfrom struct between the two is really a good idea. Most likely there
->     is very little the two drivers can share. What are your plans here?
->      
-> 
-> 
-> As you know, if ath6kl is not SDIO powered (in most of cases, including
-> mine)
-> we need to use platform struct in order to control reset/power line,
-> because ath6k is designed for mobile and embedded devices.
+> +
+> +static void
+> +ltq_machine_restart(char *command)
+> +{
+> +	pr_notice("System restart\n");
+> +	local_irq_disable();
+> +
+> +	/* reboot magic */
+> +	ltq_w32(BOOT_PW1, (void *)BOOT_PW1_REG); /* 'LTQ\0' */
+> +	ltq_w32(BOOT_PW2, (void *)BOOT_PW2_REG); /* '\0QTL' */
+> +	ltq_w32(0, (void *)BOOT_REG_BASE); /* reset Bootreg RVEC */
+> +
+> +	/* watchdog magic */
+> +	ltq_w32(WDT_PW1, (void *)WDT_REG_BASE);
+> +	ltq_w32(WDT_PW2 |
+> +		(0x3 << 26) | /* PWL */
+> +		(0x2 << 24) | /* CLKDIV */
+> +		(0x1 << 31) | /* enable */
+> +		(1), /* reload */
+> +		(void *)WDT_REG_BASE);
 
-We have been actually planning to do the same, but it's still on our
-todo list. If you can do this it would be awesome.
+The watchdog needs some time for the reset (1 tick of watchdog but many
+ticks of the cpu). With unreachable(), there is no valid code after the
+register access. Please add some loop like
+	while(1)
+		;
+here (and a comment).
 
-Also we need to provide some clock configuration from the board file and
-I'm sure there will be more in the future. But let's start with the
-power control.
+> +	unreachable();
+> +}
 
-> so I found out that there is already header file for ath9k's platform
-> struct. How about using the one header file instead of
-> "include/linux/ath9k_platform.h"
-> , and "include/linux/ath6k_platform.h" ?
->  
-> 
->     I myself was thinking that we would have include/linux/ath6kl.h
->     dedicated just for ath6kl. That would makes things simpler.
-> 
-> But since I don't know much about ath9k, if you want to make the
-> separate header file for ath6kl's own struct, It would be fine as well.
+Can you please create and send an updated patch?
 
-Yeah, I really would like to use separate file for ath6kl.
-
-Kalle
+Thanks,
+Thomas

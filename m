@@ -1,69 +1,51 @@
-Received: from dns1.mips.com ([12.201.5.69]:39660 "EHLO dns1.mips.com"
+Received: from mga09.intel.com ([134.134.136.24]:42641 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1903706Ab1KVD3j (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 22 Nov 2011 04:29:39 +0100
-From: Deng-Cheng Zhu <dczhu@mips.com>
-Subject: [PATCH v2 4/5] MIPS/Perf-events: Cleanup event->destroy at event init
-Date: Tue, 22 Nov 2011 11:28:48 +0800
-Message-ID: <1321932528-21098-5-git-send-email-dczhu@mips.com>
-In-Reply-To: <1321932528-21098-1-git-send-email-dczhu@mips.com>
-References: <1321932528-21098-1-git-send-email-dczhu@mips.com>
+        id S1903818Ab1KVUmD (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 22 Nov 2011 21:42:03 +0100
+From: Andi Kleen <andi@firstfloor.org>
+Subject: Re: [patch] hugetlb: remove dummy definitions of HPAGE_MASK and HPAGE_SIZE
+References: <1321567050-13197-1-git-send-email-ddaney.cavm@gmail.com>
+        <alpine.DEB.2.00.1111171520130.20133@chino.kir.corp.google.com>
+        <alpine.DEB.2.00.1111171522131.20133@chino.kir.corp.google.com>
+        <4ECACF68.3020701@gmail.com>
+        <CA+55aFwZxqHfEOemj+OJNKCj2toqGf3rkK-9iuS39L7iZsoH1Q@mail.gmail.com>
+        <4ECADD83.3090108@caviumnetworks.com>
+        <CA+55aFzSNqCOFuvtEc2V1THVOsOVnz6NOa1U_9p5=Y4E=sj6qg@mail.gmail.com>
+        <20111121155024.33b1b881.akpm@linux-foundation.org>
+Date: Tue, 22 Nov 2011 12:41:55 -0800
+In-Reply-To: <20111121155024.33b1b881.akpm@linux-foundation.org> (Andrew
+        Morton's message of "Mon, 21 Nov 2011 15:50:24 -0800")
+Message-ID: <m2sjlfvqi4.fsf@firstfloor.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: ralf@linux-mips.org, linux-mips@linux-mips.org
-Cc: eyal@mips.com, zenon@mips.com, Deng-Cheng Zhu <dczhu@mips.com>, Peter Zijlstra <a.p.zijlstra@chello.nl>, Paul Mackerras <paulus@samba.org>, Ingo Molnar <mingo@elte.hu>, Arnaldo Carvalho de Melo <acme@ghostprotocols.net>, David Daney <david.daney@cavium.com>
-Message-ID: <20111122032848.s2-cWBEH8amEnIraOmjJP21yd7nARCt05qNNE-1ZJP0@z>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, David Daney <ddaney@caviumnetworks.com>, David Daney <ddaney.cavm@gmail.com>, David Rientjes <rientjes@google.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Daney <david.daney@cavium.com>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Robin Holt <holt@sgi.com>
+Message-ID: <20111122204155.OjyROwQ04-Drxu8zXxZcbBIBN6gi1BvF-prad5igQxo@z>
 
-Simplify the code by changing the place of event->destroy().
+Andrew Morton <akpm@linux-foundation.org> writes:
+>> 
+>> I wish people whose code had stuff like that would take a deep look at it.
+>> 
+>
+> The original decision way back when was that huge pages shouldn't mess
+> up the core VM too much.  One way in which we addressed that was to
 
-Signed-off-by: Deng-Cheng Zhu <dczhu@mips.com>
-Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Ingo Molnar <mingo@elte.hu>
-Cc: Arnaldo Carvalho de Melo <acme@ghostprotocols.net>
-Cc: David Daney <david.daney@cavium.com>
----
- arch/mips/kernel/perf_event_mipsxx.c |   15 ++++++---------
- 1 files changed, 6 insertions(+), 9 deletions(-)
+IMHO this decision should really be revisited now.  Originally hugetlb
+was pretty simple, but these days it has most of the functionality of a
+full VM now. In fact with THP we have 3 different VM systems now, all
+subtle different with different issues. And with THP hugetlb will be
+even more widely used than it is today.
 
-diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-index b22cc5f..bda4bc9 100644
---- a/arch/mips/kernel/perf_event_mipsxx.c
-+++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -633,11 +633,7 @@ static int mipspmu_event_init(struct perf_event *event)
- 	if (err)
- 		return err;
- 
--	err = __hw_perf_event_init(event);
--	if (err)
--		hw_perf_event_destroy(event);
--
--	return err;
-+	return __hw_perf_event_init(event);
- }
- 
- static struct pmu pmu = {
-@@ -1262,13 +1258,14 @@ static int __hw_perf_event_init(struct perf_event *event)
- 	}
- 
- 	err = 0;
--	if (event->group_leader != event) {
-+	if (event->group_leader != event)
- 		err = validate_group(event);
--		if (err)
--			return -EINVAL;
--	}
- 
- 	event->destroy = hw_perf_event_destroy;
-+
-+	if (err)
-+		event->destroy(event);
-+
- 	return err;
- }
- 
+On the other hand there are strange gaps now, like shared memory
+doesn't work with THP, but only with hugetlbfs.
+
+It would be far better to think about unifying these three VMs. Then with
+less ifdefs it would also not need hacks like this anymore.
+
+-Andi
+
 -- 
-1.7.1
+ak@linux.intel.com -- Speaking for myself only

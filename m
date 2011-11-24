@@ -1,11 +1,11 @@
-Received: from mx1.redhat.com ([209.132.183.28]:62566 "EHLO mx1.redhat.com"
+Received: from mx1.redhat.com ([209.132.183.28]:35732 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1904622Ab1KXURw (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 24 Nov 2011 21:17:52 +0100
-Date: Thu, 24 Nov 2011 22:18:37 +0200
+        id S1904618Ab1KXUSn (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 24 Nov 2011 21:18:43 +0100
+Date: Thu, 24 Nov 2011 22:19:34 +0200
 From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH-RFC 06/10] mips: switch to GENERIC_PCI_IOMAP
-Message-ID: <66457f7750d7d14229fcf8d0b011aba63185a75d.1322163031.git.mst@redhat.com>
+Subject: [PATCH-RFC 07/10] parisc: switch to GENERIC_PCI_IOMAP
+Message-ID: <9dab609cdf0c22a35f58b0f821a10230a487480d.1322163031.git.mst@redhat.com>
 References: <cover.1322163031.git.mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -15,41 +15,39 @@ Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Russell King <linux@arm.linux.org.uk>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Jonas Bonn <jonas@southpole.se>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Chen Liqin <liqin.chen@sunplusct.com>, Lennox Wu <lennox.wu@gmail.com>, Paul Mundt <lethal@linux-sh.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, "Michael S. Tsirkin" <mst@redhat.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, Paul Bolle <pebolle@tiscali.nl>, Olof Johansson <olof@lixom.net>, Rob Herring <rob.herring@calxeda.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, Kumar Gala <galak@kernel.crashing.org>, Michael Ellerman <michael@ellerman.id.au>, Fabio Baltieri <fabio.baltieri@gmail.com>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, "John W. Linville" <linville@tuxdriver.com>, Lasse Collin <lasse.collin@tukaani.org>, Arend van Spriel <arend@broadcom.com>, Franky Lin <frankyl@broadcom.com>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, microblaze-uclinux@itee.uq.edu.au, linux-mips@linux-mips.org, linux@openrisc.net, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, Jesse Barnes <jbarnes@virtuousgeek.org>, linux-pci@vger.kernel.org
-Message-ID: <20111124201837.Jbe0gHDH_3Kz5kKlseeTHd7hb8eVwH2jjhWvjHfn2Nc@z>
+Message-ID: <20111124201934.65dqe19GpgXcbnc7DLXz3t9FZgjSfbzHKWiXigkkj8A@z>
 
-mips copied pci_iomap from generic code, probably to avoid
+parisc copied pci_iomap from generic code, probably to avoid
 pulling the rest of iomap.c in.  Since that's in
 a separate file now, we can reuse the common implementation.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- arch/mips/Kconfig         |    1 +
- arch/mips/lib/iomap-pci.c |   26 --------------------------
- 2 files changed, 1 insertions(+), 26 deletions(-)
+ arch/parisc/Kconfig     |    1 +
+ arch/parisc/lib/iomap.c |   23 -----------------------
+ 2 files changed, 1 insertions(+), 23 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d46f1da..b70c96f 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2317,6 +2317,7 @@ config PCI
- 	bool "Support for PCI controller"
- 	depends on HW_HAS_PCI
- 	select PCI_DOMAINS
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index fdfd8be..242a1b7 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -14,6 +14,7 @@ config PARISC
+ 	select GENERIC_ATOMIC64 if !64BIT
+ 	select HAVE_GENERIC_HARDIRQS
+ 	select GENERIC_IRQ_PROBE
 +	select GENERIC_PCI_IOMAP
- 	help
- 	  Find out whether you have a PCI motherboard. PCI is the name of a
- 	  bus system, i.e. the way the CPU talks to the other stuff inside
-diff --git a/arch/mips/lib/iomap-pci.c b/arch/mips/lib/iomap-pci.c
-index 2ab899c..2635b1a 100644
---- a/arch/mips/lib/iomap-pci.c
-+++ b/arch/mips/lib/iomap-pci.c
-@@ -40,32 +40,6 @@ static void __iomem *ioport_map_pci(struct pci_dev *dev,
- 	return (void __iomem *) (ctrl->io_map_base + port);
+ 	select IRQ_PER_CPU
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 
+diff --git a/arch/parisc/lib/iomap.c b/arch/parisc/lib/iomap.c
+index 8f470c9..fb8e10a 100644
+--- a/arch/parisc/lib/iomap.c
++++ b/arch/parisc/lib/iomap.c
+@@ -436,28 +436,6 @@ void ioport_unmap(void __iomem *addr)
+ 	}
  }
  
--/*
-- * Create a virtual mapping cookie for a PCI BAR (memory or IO)
-- */
+-/* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
 -void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
 -{
 -	resource_size_t start = pci_resource_start(dev, bar);
@@ -61,7 +59,7 @@ index 2ab899c..2635b1a 100644
 -	if (maxlen && len > maxlen)
 -		len = maxlen;
 -	if (flags & IORESOURCE_IO)
--		return ioport_map_pci(dev, start, len);
+-		return ioport_map(start, len);
 -	if (flags & IORESOURCE_MEM) {
 -		if (flags & IORESOURCE_CACHEABLE)
 -			return ioremap(start, len);
@@ -71,10 +69,14 @@ index 2ab899c..2635b1a 100644
 -	return NULL;
 -}
 -
--EXPORT_SYMBOL(pci_iomap);
--
  void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
  {
- 	iounmap(addr);
+ 	if (!INDIRECT_ADDR(addr)) {
+@@ -483,5 +461,4 @@ EXPORT_SYMBOL(iowrite16_rep);
+ EXPORT_SYMBOL(iowrite32_rep);
+ EXPORT_SYMBOL(ioport_map);
+ EXPORT_SYMBOL(ioport_unmap);
+-EXPORT_SYMBOL(pci_iomap);
+ EXPORT_SYMBOL(pci_iounmap);
 -- 
 1.7.5.53.gc233e

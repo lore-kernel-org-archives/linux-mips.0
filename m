@@ -1,45 +1,70 @@
-Received: from mx0.aculab.com ([213.249.233.131]:41891 "HELO mx0.aculab.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with SMTP
-        id S1903609Ab1LELo2 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 5 Dec 2011 12:44:28 +0100
-Received: from mx0.aculab.com ([127.0.0.1])
- by localhost (mx0.aculab.com [127.0.0.1]) (amavisd-new, port 10024) with SMTP
- id 12870-04 for <linux-mips@linux-mips.org>;
- Mon,  5 Dec 2011 11:44:20 +0000 (GMT)
-Content-class: urn:content-classes:message
+Received: from iolanthe.rowland.org ([192.131.102.54]:46564 "HELO
+        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S1903622Ab2AQPW5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Jan 2012 16:22:57 +0100
+Date: Tue, 17 Jan 2012 10:22:50 -0500 (EST)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH V6 4/5] USB: Add EHCI bus glue for Loongson1x SoCs
+In-Reply-To: <1326777160-9930-5-git-send-email-keguang.zhang@gmail.com>
+Message-ID: <Pine.LNX.4.44L0.1201171021320.1818-100000@iolanthe.rowland.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Subject: RE: Re: [PATCHv5] atomic: add *_dec_not_zero
-Date: Mon, 5 Dec 2011 11:44:10 -0000
-Message-ID: <AE90C24D6B3A694183C094C60CF0A2F6D8AEFE@saturn3.aculab.com>
-In-Reply-To: <20111204221850.GC14542@n2100.arm.linux.org.uk>
-From: "David Laight" <David.Laight@ACULAB.COM>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>, Sven Eckelmann <sven@narfation.org>
-Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Randy Dunlap <rdunlap@xenotime.net>, Paul Mackerras <paulus@samba.org>, Helge Deller <deller@gmx.de>, sparclinux@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Hirokazu Takata <takata@linux-m32r.org>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>, Matt Turner <mattst88@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>, Arnd Bergma nn <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, Chris Metcalf <cmetcalf@tilera.com>, linux-m32r@ml.linux-m32r.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org, Richard Henderson <rth@twiddle.net>, Tony Luck <tony.luck@intel.com>, linux-parisc@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Kyle McMartin <kyle@mcmartin.ca>, linux-alpha@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux390@de.ibm.com, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
-Message-ID: <20111205114410.SBR3jCmnCmOEjxazisvliNWT0Df8ba4gNOCWdYlGrFs@z>
+To: Kelvin Cheung <keguang.zhang@gmail.com>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org, linux-usb@vger.kernel.org, gregkh@suse.de, zhzhl555@gmail.com, peppe.cavallaro@st.com, wuzhangjin@gmail.com, linux-kernel@vger.kernel.org
+Message-ID: <20120117152250.V3INZkGCOo3q94RXT9kFiQNp2rEg9XuYpADQz5C4JXc@z>
 
-Looking at this:
+On Tue, 17 Jan 2012, Kelvin Cheung wrote:
 
-> #ifndef atomic_inc_unless_negative
-> static inline int atomic_inc_unless_negative(atomic_t *p)
-> {
->         int v, v1;
->         for (v = 0; v >= 0; v = v1) {
->                 v1 = atomic_cmpxchg(p, v, v + 1);
->                 if (likely(v1 == v))
->                         return 1;
->         }
->         return 0;
-> }
-> #endif
+> The Loongson1x SoCs have a built-in EHCI controller.
+> This patch adds the necessary glue code to make the generic EHCI
+> driver usable for them.
 
-why is it optimised for '*p' being zero??
-I'd have though the initial assignment to 'v' should
-be made by reading '*p' without any memory barriers (etc).
+> --- /dev/null
+> +++ b/drivers/usb/host/ehci-ls1x.c
+> @@ -0,0 +1,170 @@
+> +/*
+> + *  Bus Glue for Loongson LS1X built-in EHCI controller.
+> + *
+> + *  Copyright (c) 2012 Zhang, Keguang <keguang.zhang@gmail.com>
+> + *
+> + *  This program is free software; you can redistribute it and/or modify it
+> + *  under the terms of the GNU General Public License version 2 as published
+> + *  by the Free Software Foundation.
+> + */
+> +
+> +
+> +#include <linux/platform_device.h>
+> +
+> +static int ehci_ls1x_setup(struct usb_hcd *hcd)
+> +{
+> +	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
+> +	int ret;
+> +
+> +	ehci->caps = hcd->regs;
+> +	ehci->regs = hcd->regs +
+> +		HC_LENGTH(ehci, ehci_readl(ehci, &ehci->caps->hc_capbase));
+> +	dbg_hcs_params(ehci, "reset");
+> +	dbg_hcc_params(ehci, "reset");
+> +
+> +	/* cache this readonly data; minimize chip reads */
+> +	ehci->hcs_params = ehci_readl(ehci, &ehci->caps->hcs_params);
+> +	ehci->sbrn = 0x20;
+> +
+> +	ehci_reset(ehci);
+> +
+> +	/* data structure init */
+> +	ret = ehci_init(hcd);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ehci_port_power(ehci, 0);
+> +
+> +	return 0;
+> +}
 
-	David
+Most of this routine should be replaced with a call to ehci_setup().
+
+Alan Stern

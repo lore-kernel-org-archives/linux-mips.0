@@ -1,70 +1,97 @@
-Received: from iolanthe.rowland.org ([192.131.102.54]:46564 "HELO
-        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with SMTP id S1903622Ab2AQPW5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Jan 2012 16:22:57 +0100
-Date: Tue, 17 Jan 2012 10:22:50 -0500 (EST)
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH V6 4/5] USB: Add EHCI bus glue for Loongson1x SoCs
-In-Reply-To: <1326777160-9930-5-git-send-email-keguang.zhang@gmail.com>
-Message-ID: <Pine.LNX.4.44L0.1201171021320.1818-100000@iolanthe.rowland.org>
+Received: from mho-02-ewr.mailhop.org ([204.13.248.72]:62725 "EHLO
+        mho-02-ewr.mailhop.org" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903680Ab2ASUkW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Jan 2012 21:40:22 +0100
+Received: from 117.235.221.87.dynamic.jazztel.es ([87.221.235.117] helo=mail.viric.name)
+        by mho-02-ewr.mailhop.org with esmtpsa (TLSv1:AES256-SHA:256)
+        (Exim 4.72)
+        (envelope-from <viric@viric.name>)
+        id 1RnymO-000FoO-22
+        for linux-mips@linux-mips.org; Thu, 19 Jan 2012 20:40:16 +0000
+Date: Thu, 19 Jan 2012 21:40:10 +0100
+From: =?iso-8859-1?Q?Llu=EDs?= Batlle i Rossell <viric@viric.name>
+Subject: Remove a Kconfig warning on 3.2.1 for fuloong2f
+Message-ID: <20120119204010.GR21947@vicerveza.homeunix.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="HSQ3hISbU3Um6hch"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Kelvin Cheung <keguang.zhang@gmail.com>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org, linux-usb@vger.kernel.org, gregkh@suse.de, zhzhl555@gmail.com, peppe.cavallaro@st.com, wuzhangjin@gmail.com, linux-kernel@vger.kernel.org
-Message-ID: <20120117152250.V3INZkGCOo3q94RXT9kFiQNp2rEg9XuYpADQz5C4JXc@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20120119204010.hsJdSccdLdTkoQZb6g_lLrFk0jfyZFesGDNmUbvZXPU@z>
 
-On Tue, 17 Jan 2012, Kelvin Cheung wrote:
 
-> The Loongson1x SoCs have a built-in EHCI controller.
-> This patch adds the necessary glue code to make the generic EHCI
-> driver usable for them.
+--HSQ3hISbU3Um6hch
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> --- /dev/null
-> +++ b/drivers/usb/host/ehci-ls1x.c
-> @@ -0,0 +1,170 @@
-> +/*
-> + *  Bus Glue for Loongson LS1X built-in EHCI controller.
-> + *
-> + *  Copyright (c) 2012 Zhang, Keguang <keguang.zhang@gmail.com>
-> + *
-> + *  This program is free software; you can redistribute it and/or modify it
-> + *  under the terms of the GNU General Public License version 2 as published
-> + *  by the Free Software Foundation.
-> + */
-> +
-> +
-> +#include <linux/platform_device.h>
-> +
-> +static int ehci_ls1x_setup(struct usb_hcd *hcd)
-> +{
-> +	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
-> +	int ret;
-> +
-> +	ehci->caps = hcd->regs;
-> +	ehci->regs = hcd->regs +
-> +		HC_LENGTH(ehci, ehci_readl(ehci, &ehci->caps->hc_capbase));
-> +	dbg_hcs_params(ehci, "reset");
-> +	dbg_hcc_params(ehci, "reset");
-> +
-> +	/* cache this readonly data; minimize chip reads */
-> +	ehci->hcs_params = ehci_readl(ehci, &ehci->caps->hcs_params);
-> +	ehci->sbrn = 0x20;
-> +
-> +	ehci_reset(ehci);
-> +
-> +	/* data structure init */
-> +	ret = ehci_init(hcd);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ehci_port_power(ehci, 0);
-> +
-> +	return 0;
-> +}
+Hello,
 
-Most of this routine should be replaced with a call to ehci_setup().
+building the kernel 3.2.1 for the fuloong2f I hit a warning at every 'mak=
+e
+nconfig'.
 
-Alan Stern
+Here is a patch that takes out the warning, but someone that understands =
+better
+than me should check I did not break anything.
+
+Regards,
+Llu=EDs.
+
+--HSQ3hISbU3Um6hch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="0001-Remove-a-warning-I-saw-on-make-nconfig-for-the-Fuloo.patch"
+
+From 4dd3da2b4290b5e790e07d24d2e6daa7cb989ee3 Mon Sep 17 00:00:00 2001
+From: Lluis Batlle <viric@vicerveza.homeunix.net>
+Date: Thu, 19 Jan 2012 21:35:44 +0100
+Subject: [PATCH] Remove a warning I saw on 'make nconfig' for the Fuloong2F.
+
+The warning was:
+warning: (LEMOTE_FULOONG2E && LEMOTE_MACH2F && DEXXON_GDIUM) selects
+ARCH_SPARSEMEM_ENABLE which has unmet direct dependencies
+(CPU_CAVIUM_OCTEON)
+
+I followed advices from daney on irc.
+
+I don't know how to test it, but now I don't see the warning at least.
+---
+ arch/mips/Kconfig               |    1 +
+ arch/mips/cavium-octeon/Kconfig |    4 ----
+ 2 files changed, 1 insertions(+), 4 deletions(-)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index d46f1da..330800d 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -1404,6 +1404,7 @@ config CPU_CAVIUM_OCTEON
+ 	select WEAK_ORDERING
+ 	select CPU_SUPPORTS_HIGHMEM
+ 	select CPU_SUPPORTS_HUGEPAGES
++	select ARCH_SPARSEMEM_ENABLE
+ 	help
+ 	  The Cavium Octeon processor is a highly integrated chip containing
+ 	  many ethernet hardware widgets for networking tasks. The processor
+diff --git a/arch/mips/cavium-octeon/Kconfig b/arch/mips/cavium-octeon/Kconfig
+index cad555e..15ba565 100644
+--- a/arch/mips/cavium-octeon/Kconfig
++++ b/arch/mips/cavium-octeon/Kconfig
+@@ -82,10 +82,6 @@ config CAVIUM_OCTEON_LOCK_L2_MEMCPY
+ 	help
+ 	  Lock the kernel's implementation of memcpy() into L2.
+ 
+-config ARCH_SPARSEMEM_ENABLE
+-	def_bool y
+-	select SPARSEMEM_STATIC
+-
+ config CAVIUM_OCTEON_HELPER
+ 	def_bool y
+ 	depends on OCTEON_ETHERNET || PCI
+-- 
+1.7.8
+
+
+--HSQ3hISbU3Um6hch--

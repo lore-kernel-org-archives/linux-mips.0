@@ -1,107 +1,93 @@
-Received: from mail.windriver.com ([147.11.1.11]:62234 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1901161Ab2AUDZu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 21 Jan 2012 04:25:50 +0100
-Message-ID: <4F1A2F96.2040106@windriver.com>
-Date: Sat, 21 Jan 2012 11:23:02 +0800
-From: Zumeng Chen <zumeng.chen@windriver.com>
+Received: from netrider.rowland.org ([192.131.102.5]:59977 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S1901167Ab2AVDla (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Jan 2012 04:41:30 +0100
+Date: Sat, 21 Jan 2012 22:41:26 -0500 (EST)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH 4/7] USB: EHCI: Add a generic platform device driver
+In-Reply-To: <1327184367-8824-5-git-send-email-hauke@hauke-m.de>
+Message-ID: <Pine.LNX.4.44L0.1201212235050.32266-100000@netrider.rowland.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] mm: msync: fix issues of sys_msync on tmpfs
-References: <1327036719-1965-1-git-send-email-zumeng.chen@windriver.com>
-In-Reply-To: <1327036719-1965-1-git-send-email-zumeng.chen@windriver.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-mm@kvack.org, linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, mingo@elte.hu, ralf@linux-mips.org, bruce.ashfield@gmail.com
-Message-ID: <20120121032302.Z6RCblRQpE232VBDpztvbedQ2n36-FNy5_T-3Gx5cSs@z>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org, USB list <linux-usb@vger.kernel.org>, zajec5@gmail.com, linux-wireless@vger.kernel.org, m@bues.ch, george@znau.edu.ua
+Message-ID: <20120122034126.Z1SwNHKYQkpx6t7B5YXZywv5mt8wz7RRSHkapONLc9g@z>
 
-To: linux-mm@kvack.org, and linux-mips@linux-mips.org
+On Sat, 21 Jan 2012, Hauke Mehrtens wrote:
 
-于 2012年01月20日 13:18, Zumeng Chen 写道:
-> This patch fixes two issues as follows:
->
-> For some filesystem with fsync == noop_fsync, there is not so much thing
-> to do, so sys_msync just passes by for all arches but some CPUs.
->
-> For some CPUs with cache aliases(dmesg|grep alias), it maybe has an issue,
-> which reported by msync test suites in ltp-full when the memory of memset
-> used by msync01 runs into cache alias randomly.
->
-> Consider the following scenario used by msync01 in ltp-full:
->   fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0);
->   .../* initialization fildes by write(fildes); */
->   addr = mmap(0, page_sz, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED,
-> 	 fildes, 0);
->   /* set buf with memset */
->   memset(addr + OFFSET_1, 1, BUF_SIZE);
->
->   /* msync the addr before using, or MS_SYNC*/
->   msync(addr, page_sz, MS_ASYNC)
->
->   /* Tries to read fildes */
->   lseek(fildes, (off_t) OFFSET_1, SEEK_SET) != (off_t) OFFSET_1) {
->   nread = read(fildes, read_buf, sizeof(read_buf));
->
->   /* Then test the result */
->   if (read_buf[count] != 1) {
->
-> The test result is random too for CPUs with cache alias. So in this
-> situation, we have to flush the related vma to make sure the read is
-> correct.
->
-> Signed-off-by: Zumeng Chen <zumeng.chen@windriver.com>
-> ---
->  mm/msync.c |   30 ++++++++++++++++++++++++++++++
->  1 files changed, 30 insertions(+), 0 deletions(-)
->
-> diff --git a/mm/msync.c b/mm/msync.c
-> index 632df45..0021a7e 100644
-> --- a/mm/msync.c
-> +++ b/mm/msync.c
-> @@ -13,6 +13,14 @@
->  #include <linux/file.h>
->  #include <linux/syscalls.h>
->  #include <linux/sched.h>
-> +#include <asm/cacheflush.h>
+> This adds a generic driver for platform devices. It works like the PCI
+> driver and is based on it. This is for devices which do not have an own
+> bus but their EHCI controller works like a PCI controller. It will be
+> used for the Broadcom bcma and ssb USB EHCI controller.
+
+Before adding a generic platform driver for EHCI, you should give some
+to thought to how it might be generalized.  There are a lot of EHCI
+platform drivers, all differing in various major or minor respects.  
+It should be possible to replace a lot of them with the generic driver, 
+but first it will need some way to cope with a few minor quirks.
+
+Please consider this, and think about which of the existing drivers 
+could be replaced.
+
+> --- /dev/null
+> +++ b/drivers/usb/host/ehci-platform.c
+> @@ -0,0 +1,211 @@
+> +/*
+> + * Generic platform ehci driver
+> + *
+> + * Copyright 2007 Steven Brown <sbrown@cortland.com>
+> + * Copyright 2010-2011 Hauke Mehrtens <hauke@hauke-m.de>
+> + *
+> + * Derived from the ohci-ssb driver
+> + * Copyright 2007 Michael Buesch <m@bues.ch>
+> + *
+> + * Derived from the EHCI-PCI driver
+> + * Copyright (c) 2000-2004 by David Brownell
+> + *
+> + * Derived from the ohci-pci driver
+> + * Copyright 1999 Roman Weissgaerber
+> + * Copyright 2000-2002 David Brownell
+> + * Copyright 1999 Linus Torvalds
+> + * Copyright 1999 Gregory P. Smith
+> + *
+> + * Licensed under the GNU/GPL. See COPYING for details.
+> + */
+> +#include <linux/platform_device.h>
 > +
-> +/* Cache aliases should be taken into accounts when msync. */
-> +#ifdef cpu_has_dc_aliases
-> +#define CPU_HAS_CACHE_ALIAS cpu_has_dc_aliases
-> +#else
-> +#define CPU_HAS_CACHE_ALIAS 0
-> +#endif
->  
->  /*
->   * MS_SYNC syncs the entire file - including mappings.
-> @@ -78,6 +86,28 @@ SYSCALL_DEFINE3(msync, unsigned long, start, size_t, len, int, flags)
->  		}
->  		file = vma->vm_file;
->  		start = vma->vm_end;
+> +static int ehci_platform_reset(struct usb_hcd *hcd)
+> +{
+> +	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
+> +	int retval;
 > +
-> +		/*
-> +		 * For some filesystems with fsync == noop_fsync, msync just
-> +		 * passes by but some CPUs.
-> +		 * For CPUs with cache alias, msync has to flush the related
-> +		 * vma explicitly to make sure data coherency between memory
-> +		 * and cache, which includes MS_SYNC or MS_ASYNC. That is to
-> +		 * say, cache aliases should not be an async factor, so does
-> +		 * msync on other arches without cache aliases.
-> +		 */
-> +		if (file && file->f_op && file->f_op->fsync == noop_fsync) {
-> +			if (CPU_HAS_CACHE_ALIAS)
-> +				flush_cache_range(vma, vma->vm_start,
-> +							vma->vm_end);
-> +			if (start >= end) {
-> +				error = 0;
-> +				goto out_unlock;
-> +			}
-> +			vma = find_vma(mm, start);
-> +			continue;
-> +		}
+> +	ehci->caps = hcd->regs;
+> +	ehci->regs = hcd->regs +
+> +		HC_LENGTH(ehci, ehci_readl(ehci, &ehci->caps->hc_capbase));
 > +
->  		if ((flags & MS_SYNC) && file &&
->  				(vma->vm_flags & VM_SHARED)) {
->  			get_file(file);
+> +	dbg_hcs_params(ehci, "reset");
+> +	dbg_hcc_params(ehci, "reset");
+> +
+> +	/* cache this readonly data; minimize chip reads */
+> +	ehci->hcs_params = ehci_readl(ehci, &ehci->caps->hcs_params);
+> +
+> +	retval = ehci_halt(ehci);
+> +	if (retval)
+> +		return retval;
+> +
+> +	/* data structure init */
+> +	retval = ehci_init(hcd);
+> +	if (retval)
+> +		return retval;
+> +
+> +	ehci_reset(ehci);
+> +
+> +	ehci_port_power(ehci, 1);
+> +
+> +	return retval;
+> +}
+
+Most of this routine should be replaced with a call to ehci_setup.
+
+Alan Stern

@@ -1,93 +1,81 @@
-Received: from netrider.rowland.org ([192.131.102.5]:59977 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with SMTP id S1901167Ab2AVDla (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Jan 2012 04:41:30 +0100
-Date: Sat, 21 Jan 2012 22:41:26 -0500 (EST)
+Received: from iolanthe.rowland.org ([192.131.102.54]:56272 "HELO
+        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S1903806Ab2AWQ3q (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jan 2012 17:29:46 +0100
+Date: Mon, 23 Jan 2012 11:29:43 -0500 (EST)
 From: Alan Stern <stern@rowland.harvard.edu>
 Subject: Re: [PATCH 4/7] USB: EHCI: Add a generic platform device driver
-In-Reply-To: <1327184367-8824-5-git-send-email-hauke@hauke-m.de>
-Message-ID: <Pine.LNX.4.44L0.1201212235050.32266-100000@netrider.rowland.org>
+In-Reply-To: <20120122192346.GA1691@kroah.com>
+Message-ID: <Pine.LNX.4.44L0.1201231115280.1372-100000@iolanthe.rowland.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Hauke Mehrtens <hauke@hauke-m.de>
+To: Hauke Mehrtens <hauke@hauke-m.de>, Greg KH <greg@kroah.com>
 Cc: ralf@linux-mips.org, linux-mips@linux-mips.org, USB list <linux-usb@vger.kernel.org>, zajec5@gmail.com, linux-wireless@vger.kernel.org, m@bues.ch, george@znau.edu.ua
-Message-ID: <20120122034126.Z1SwNHKYQkpx6t7B5YXZywv5mt8wz7RRSHkapONLc9g@z>
+Message-ID: <20120123162943.izQe9rbcq5TnEe7uRaGR8E_zoKPVwkwS1vgXzkTQPTk@z>
 
-On Sat, 21 Jan 2012, Hauke Mehrtens wrote:
+On Sun, 22 Jan 2012, Greg KH wrote:
 
-> This adds a generic driver for platform devices. It works like the PCI
-> driver and is based on it. This is for devices which do not have an own
-> bus but their EHCI controller works like a PCI controller. It will be
-> used for the Broadcom bcma and ssb USB EHCI controller.
+> On Sun, Jan 22, 2012 at 04:02:13PM +0100, Hauke Mehrtens wrote:
+> > On 01/22/2012 04:41 AM, Alan Stern wrote:
+> > > On Sat, 21 Jan 2012, Hauke Mehrtens wrote:
+> > > 
+> > >> This adds a generic driver for platform devices. It works like the PCI
+> > >> driver and is based on it. This is for devices which do not have an own
+> > >> bus but their EHCI controller works like a PCI controller. It will be
+> > >> used for the Broadcom bcma and ssb USB EHCI controller.
+> > > 
+> > > Before adding a generic platform driver for EHCI, you should give some
+> > > to thought to how it might be generalized.  There are a lot of EHCI
+> > > platform drivers, all differing in various major or minor respects.  
+> > > It should be possible to replace a lot of them with the generic driver, 
+> > > but first it will need some way to cope with a few minor quirks.
+> > > 
+> > > Please consider this, and think about which of the existing drivers 
+> > > could be replaced.
+> > 
+> > For now I just build this for bcma and ssb based SoCs. Yes there are
+> > some drivers which could be replaced with this one, but most (all ??) of
+> > them do something special in the device probing and this have to be
+> > moved to somewhere else e.g. where the platform device is created.
+> > I could rename it so it would not be generic any more, but I think it is
+> > the wrong approach. ;-)
+> > I am not able and do not have the time to convert all EHCI platform
+> > drivers, where it is possible  to this generic platform driver, as I do
+> > not have the devices to test this and time is limited.
+> 
+> Time is not limited for us, sorry, this seems like the correct thing to
+> do, and because of that, we (well I at least) will not accept this patch
+> as-is.
+> 
+> Please go rework it to be as Alan suggested.
+> 
+> > If someone else wants to improve something on these "generic" platform
+> > drivers to make them work with an other device I am totally fine with it.
+> 
+> I think that someone just became you :)
+> 
+> Yes, this isn't fair, but it's how Linux kernel development works,
+> sorry.
 
-Before adding a generic platform driver for EHCI, you should give some
-to thought to how it might be generalized.  There are a lot of EHCI
-platform drivers, all differing in various major or minor respects.  
-It should be possible to replace a lot of them with the generic driver, 
-but first it will need some way to cope with a few minor quirks.
+The work doesn't have to be all done right away.  Still, I think it 
+makes sense to separate out the "generic platform" drivers from the 
+rest of this patch series.
 
-Please consider this, and think about which of the existing drivers 
-could be replaced.
+Some platform drivers require additional storage for things like
+pointers to clocks or OTG transceivers.  For example see ehci-mv.c,
+which allocates its own ehci_hcd_mv structure along with ehci_hcd.  
+Some other drivers even define their own private version of ehci_hcd,
+such as ehci-fsl.c.  If you can figure out a good way to expend the
+ehci_hcd structure so that it can accomodate the extra fields needed by
+all these drivers in a generic way, that would be an excellent start
+and well worth merging.  Maybe just adding a "void *platform_data"
+field would be enough.
 
-> --- /dev/null
-> +++ b/drivers/usb/host/ehci-platform.c
-> @@ -0,0 +1,211 @@
-> +/*
-> + * Generic platform ehci driver
-> + *
-> + * Copyright 2007 Steven Brown <sbrown@cortland.com>
-> + * Copyright 2010-2011 Hauke Mehrtens <hauke@hauke-m.de>
-> + *
-> + * Derived from the ohci-ssb driver
-> + * Copyright 2007 Michael Buesch <m@bues.ch>
-> + *
-> + * Derived from the EHCI-PCI driver
-> + * Copyright (c) 2000-2004 by David Brownell
-> + *
-> + * Derived from the ohci-pci driver
-> + * Copyright 1999 Roman Weissgaerber
-> + * Copyright 2000-2002 David Brownell
-> + * Copyright 1999 Linus Torvalds
-> + * Copyright 1999 Gregory P. Smith
-> + *
-> + * Licensed under the GNU/GPL. See COPYING for details.
-> + */
-> +#include <linux/platform_device.h>
-> +
-> +static int ehci_platform_reset(struct usb_hcd *hcd)
-> +{
-> +	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
-> +	int retval;
-> +
-> +	ehci->caps = hcd->regs;
-> +	ehci->regs = hcd->regs +
-> +		HC_LENGTH(ehci, ehci_readl(ehci, &ehci->caps->hc_capbase));
-> +
-> +	dbg_hcs_params(ehci, "reset");
-> +	dbg_hcc_params(ehci, "reset");
-> +
-> +	/* cache this readonly data; minimize chip reads */
-> +	ehci->hcs_params = ehci_readl(ehci, &ehci->caps->hcs_params);
-> +
-> +	retval = ehci_halt(ehci);
-> +	if (retval)
-> +		return retval;
-> +
-> +	/* data structure init */
-> +	retval = ehci_init(hcd);
-> +	if (retval)
-> +		return retval;
-> +
-> +	ehci_reset(ehci);
-> +
-> +	ehci_port_power(ehci, 1);
-> +
-> +	return retval;
-> +}
-
-Most of this routine should be replaced with a call to ehci_setup.
+As for special activities during device probing...  Many of these can 
+be handled later on, easily enough, by adding appropriate quirk flags.  
+We don't have to worry about that part right now.
 
 Alan Stern

@@ -1,40 +1,55 @@
-Received: from iolanthe.rowland.org ([192.131.102.54]:56370 "HELO
-        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with SMTP id S1903866Ab2AWVeE (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jan 2012 22:34:04 +0100
-Date: Mon, 23 Jan 2012 16:34:02 -0500 (EST)
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH 4/7] USB: EHCI: Add a generic platform device driver
-In-Reply-To: <4F1DC9D4.8090008@hauke-m.de>
-Message-ID: <Pine.LNX.4.44L0.1201231626080.1372-100000@iolanthe.rowland.org>
+Received: from [69.28.251.93] ([69.28.251.93]:46856 "EHLO b32.net"
+        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1903662Ab2A1XMo (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 29 Jan 2012 00:12:44 +0100
+From: Kevin Cernekee <cernekee@gmail.com>
+Subject: [PATCH] MIPS: Fix duplicate instances of ARCH_SPARSEMEM_ENABLE
+Date: Sat, 28 Jan 2012 15:07:49 -0800
+Message-ID: <0736d2becb10905c35eec74f04c63970@localhost>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: Greg KH <greg@kroah.com>, ralf@linux-mips.org, linux-mips@linux-mips.org, USB list <linux-usb@vger.kernel.org>, zajec5@gmail.com, linux-wireless@vger.kernel.org, m@bues.ch, george@znau.edu.ua
-Message-ID: <20120123213402.z_HWQ2xjRgkNainpaM8TA0jmmS3ms_l5Nj98P62qEKE@z>
+To: Ralf Baechle <ralf@linux-mips.org>, David Daney <ddaney@caviumnetworks.com>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20120128230749.VowB6lXwgMQt4ajy0ceMD5ylYt0TOhyP_pIh8EFq_xs@z>
 
-On Mon, 23 Jan 2012, Hauke Mehrtens wrote:
+"config ARCH_SPARSEMEM_ENABLE" exists in both arch/mips/Kconfig and
+arch/mips/cavium-octeon/Kconfig, but the dependencies are not the same.
+This results in warnings when a non-Cavium platform tries to select
+ARCH_SPARSEMEM_ENABLE:
 
-> > The work doesn't have to be all done right away.  Still, I think it 
-> > makes sense to separate out the "generic platform" drivers from the 
-> > rest of this patch series.
-> Ok, but how should these patches being merged as my plan is to get them
-> all into 3.4 in some way? The bcma hcd driver depends on changes in
-> drivers/bcma and will also depend on these generic platform driver.
+    $ make lemote2f_defconfig ARCH=mips
+    warning: (LEMOTE_FULOONG2E && LEMOTE_MACH2F) selects ARCH_SPARSEMEM_ENABLE which has unmet direct dependencies (CPU_CAVIUM_OCTEON)
+    warning: (LEMOTE_FULOONG2E && LEMOTE_MACH2F) selects ARCH_SPARSEMEM_ENABLE which has unmet direct dependencies (CPU_CAVIUM_OCTEON)
+    #
+    # configuration written to .config
+    #
 
-Like I said, we don't need a fully general generic platform driver
-right away.  If you make a small number of additions so that it is
-clear how to use the two generic drivers instead of some of the
-existing platform drivers, and then submit the generic drivers as a
-separate standalone patch series, that should be good enough.  Greg
-will probably be very happy to merge it, if it includes an explicit
-plan for replacing some existing drivers.
+Proposed workaround is to use a Cavium-specific config option which
+"select"s the desired options.
 
-Then the bcma stuff can be added on top, as a separate patch series.  
-Once that's done, we can start making an effort to assimilate the
-platform drivers into the generic drivers.
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ arch/mips/cavium-octeon/Kconfig |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-Alan Stern
+diff --git a/arch/mips/cavium-octeon/Kconfig b/arch/mips/cavium-octeon/Kconfig
+index f9e275a..eda8266 100644
+--- a/arch/mips/cavium-octeon/Kconfig
++++ b/arch/mips/cavium-octeon/Kconfig
+@@ -82,8 +82,9 @@ config CAVIUM_OCTEON_LOCK_L2_MEMCPY
+ 	help
+ 	  Lock the kernel's implementation of memcpy() into L2.
+ 
+-config ARCH_SPARSEMEM_ENABLE
++config CAVIUM_OCTEON_SPARSEMEM_ENABLE
+ 	def_bool y
++	select ARCH_SPARSEMEM_ENABLE
+ 	select SPARSEMEM_STATIC
+ 
+ config IOMMU_HELPER
+-- 
+1.7.6.3

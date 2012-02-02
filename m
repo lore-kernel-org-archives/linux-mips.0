@@ -1,151 +1,87 @@
-Received: from mail.windriver.com ([147.11.1.11]:54626 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1903548Ab2BAIxX (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 1 Feb 2012 09:53:23 +0100
-Message-ID: <4F28FCFC.4000601@windriver.com>
-Date: Wed, 1 Feb 2012 16:51:08 +0800
-From: Zumeng Chen <zumeng.chen@windriver.com>
+Received: from smtpgw1.netlogicmicro.com ([12.203.210.53]:46713 "EHLO
+        smtpgw1.netlogicmicro.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1904104Ab2BBOi4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Feb 2012 15:38:56 +0100
+From: Jayachandran C <jayachandranc@netlogicmicro.com>
+Subject: [PATCH 00/11] Netlogic XLR/XLP fixes and updates.
+Date: Thu, 2 Feb 2012 20:12:54 +0530
+Message-ID: <cover.1328189941.git.jayachandranc@netlogicmicro.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] mm: msync: fix issues of sys_msync on tmpfs
-References: <1327036719-1965-1-git-send-email-zumeng.chen@windriver.com> <alpine.LSU.2.00.1201211206380.1290@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.00.1201211206380.1290@eggly.anvils>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Hugh Dickins <hughd@google.com>
-Cc: linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, mingo@elte.hu, ralf@linux-mips.org, bruce.ashfield@windriver.com, linux-mm@kvack.org, linux-mips@linux-mips.org
-Message-ID: <20120201085108.PeH_t-cvG6zqspGqSSp-0kI9uAp0DR9DUAyKHm0hf9s@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: Jayachandran C <jayachandranc@netlogicmicro.com>
+Message-ID: <20120202144254.Q2QvrtWZDX5N4h3ZuZoXridoNNBgb7jWJfjAe_80Pn8@z>
 
-于 2012年01月22日 04:53, Hugh Dickins 写道:
-> On Fri, 20 Jan 2012, Zumeng Chen wrote:
->
->> This patch fixes two issues as follows:
-> Two issues?  You write of a cache aliasing issue, I don't see a second.
-Hi Hugh,
+Here are the updates to Netlogic code for the next kernel.
+The changes include fixes to the current code and new features.
 
-I'm very sorry for delay reply due to the Spring Festival holiday.
-Yes, I missed one due to just a cosmetic one :-)
->> For some filesystem with fsync == noop_fsync, there is not so much thing
->> to do, so sys_msync just passes by for all arches but some CPUs.
->>
->> For some CPUs with cache aliases(dmesg|grep alias), it maybe has an issue,
->> which reported by msync test suites in ltp-full when the memory of memset
->> used by msync01 runs into cache alias randomly.
->>
->> Consider the following scenario used by msync01 in ltp-full:
->>    fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666))<  0);
->>    .../* initialization fildes by write(fildes); */
->>    addr = mmap(0, page_sz, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED,
->> 	 fildes, 0);
->>    /* set buf with memset */
->>    memset(addr + OFFSET_1, 1, BUF_SIZE);
->>
->>    /* msync the addr before using, or MS_SYNC*/
->>    msync(addr, page_sz, MS_ASYNC)
-> Actually, that MS_ASYNC msync() does nothing at all but validate its
-> arguments these days, even on filesystems with an effective fsync().
-> We write out dirty pages to disk in good time, msync() or not.
-You are absolutely right here, although MS_SYNC is still
-failure in ltp's msync01.
+* Fixes for the  current code
+  XLR PCI irq fix, XLP TLB size fix, XLP smp boot sequence
+  fixup, remove unused code in XLR PCI.
 
->>    /* Tries to read fildes */
->>    lseek(fildes, (off_t) OFFSET_1, SEEK_SET) != (off_t) OFFSET_1) {
->>    nread = read(fildes, read_buf, sizeof(read_buf));
-> My grasp of cache aliasing issues is very poor, please excuse me if I'm
-> wrong; but I don't think a patch to msync() should be necessary at all
-> (and ltp's msync01 test is testing nothing more than args to msync()).
-Agreed, you are right. It is not a good way to fix this issue
-in mm level.
-> In the case of tmpfs, that read() system call above should route through
-> to mm/shmem.c do_shmem_file_read(), which contains these same lines as
-> the more common mm/filemap.c do_generic_file_read():
->
-> 	/* If users can be writing to this page using arbitrary
-> 	 * virtual addresses, take care about potential aliasing
-> 	 * before reading the page on the kernel side.
-> 	 */
-> 	if (mapping_writably_mapped(mapping))
-> 		flush_dcache_page(page);
-Yes, this is good start here, thanks Hugh.
-> The mapping_writably_mapped() test ought to be succeeding in this case
-> (please check with printk's, perhaps some change has messed that up),
-> so flush_dcache_page(page) should be called, and any aliasing issues
-> resolved before the data is copied back to userspace.
-I guess we have to flush from INDEX_BASE to waysize instead
-of only current page passed from msync.
-> I assume your problem is on MIPS, since you copied Ralf and linux-mips:
-> if the MIPS flush_dcache_page() is not working right, then you'll need
-> to follow up with them.
-Since some MIPS CPUs have cache alias, so we have to
-flush_dcache_range instead of flush_dcache_page to avoid
-cache alias. I'll send to Ralf for more knowledges.
+* New features
+  XLR platform USB code, XLR platform NAND/NOR flash support,
+  XLR oprofile driver, XLP initial PCI support and XLP USB support.
 
-Regards,
-Zumeng
+Let me know if there are any comments or concerns.
 
-> Hugh
->
->>    /* Then test the result */
->>    if (read_buf[count] != 1) {
->>
->> The test result is random too for CPUs with cache alias. So in this
->> situation, we have to flush the related vma to make sure the read is
->> correct.
->>
->> Signed-off-by: Zumeng Chen<zumeng.chen@windriver.com>
->> ---
->>   mm/msync.c |   30 ++++++++++++++++++++++++++++++
->>   1 files changed, 30 insertions(+), 0 deletions(-)
->>
->> diff --git a/mm/msync.c b/mm/msync.c
->> index 632df45..0021a7e 100644
->> --- a/mm/msync.c
->> +++ b/mm/msync.c
->> @@ -13,6 +13,14 @@
->>   #include<linux/file.h>
->>   #include<linux/syscalls.h>
->>   #include<linux/sched.h>
->> +#include<asm/cacheflush.h>
->> +
->> +/* Cache aliases should be taken into accounts when msync. */
->> +#ifdef cpu_has_dc_aliases
->> +#define CPU_HAS_CACHE_ALIAS cpu_has_dc_aliases
->> +#else
->> +#define CPU_HAS_CACHE_ALIAS 0
->> +#endif
->>
->>   /*
->>    * MS_SYNC syncs the entire file - including mappings.
->> @@ -78,6 +86,28 @@ SYSCALL_DEFINE3(msync, unsigned long, start, size_t, len, int, flags)
->>   		}
->>   		file = vma->vm_file;
->>   		start = vma->vm_end;
->> +
->> +		/*
->> +		 * For some filesystems with fsync == noop_fsync, msync just
->> +		 * passes by but some CPUs.
->> +		 * For CPUs with cache alias, msync has to flush the related
->> +		 * vma explicitly to make sure data coherency between memory
->> +		 * and cache, which includes MS_SYNC or MS_ASYNC. That is to
->> +		 * say, cache aliases should not be an async factor, so does
->> +		 * msync on other arches without cache aliases.
->> +		 */
->> +		if (file&&  file->f_op&&  file->f_op->fsync == noop_fsync) {
->> +			if (CPU_HAS_CACHE_ALIAS)
->> +				flush_cache_range(vma, vma->vm_start,
->> +							vma->vm_end);
->> +			if (start>= end) {
->> +				error = 0;
->> +				goto out_unlock;
->> +			}
->> +			vma = find_vma(mm, start);
->> +			continue;
->> +		}
->> +
->>   		if ((flags&  MS_SYNC)&&  file&&
->>   				(vma->vm_flags&  VM_SHARED)) {
->>   			get_file(file);
->> -- 
->> 1.7.0.4
+Thanks,
+JC.
+  
+Ganesan Ramalingam (3):
+  MIPS: Netlogic: Platform NAND/NOR flash support
+  MIPS: Netlogic: XLP PCIe controller support.
+  MIPS: Netlogic: USB support for XLP
+
+Jayachandran C (7):
+  MIPS: Netlogic: Fix PCIX irq on XLR chips
+  MIPS: Netlogic: platform changes for XLS USB.
+  MIPS: Netlogic: Remove unused pcibios_fixups
+  MIPS: Netlogic: Update comments in smpboot.S
+  MIPS: Netlogic: SMP wakeup code update
+  MIPS: Netlogic: Fix TLB size of boot CPU.
+  MIPS: Netlogic: Remove NETLOGIC_ prefix
+
+Madhusudan Bhat (1):
+  MIPS: Netlogic: Oprofile driver for XLR/XLS
+
+ arch/mips/Kconfig                                  |    3 +-
+ .../mips/include/asm/netlogic/xlp-hal/cpucontrol.h |    4 +-
+ arch/mips/include/asm/netlogic/xlp-hal/iomap.h     |    5 +-
+ arch/mips/include/asm/netlogic/xlp-hal/pcibus.h    |   76 ++++++
+ arch/mips/include/asm/netlogic/xlp-hal/pic.h       |    4 +
+ arch/mips/include/asm/netlogic/xlp-hal/usb.h       |   64 +++++
+ arch/mips/include/asm/netlogic/xlp-hal/xlp.h       |   14 +-
+ arch/mips/include/asm/netlogic/xlr/bridge.h        |  104 ++++++++
+ arch/mips/include/asm/netlogic/xlr/flash.h         |   55 +++++
+ arch/mips/include/asm/netlogic/xlr/gpio.h          |   59 +++---
+ arch/mips/netlogic/common/smpboot.S                |  159 ++++++++-----
+ arch/mips/netlogic/xlp/Makefile                    |    1 +
+ arch/mips/netlogic/xlp/nlm_hal.c                   |   40 ++++
+ arch/mips/netlogic/xlp/platform.c                  |    2 +-
+ arch/mips/netlogic/xlp/setup.c                     |    8 +-
+ arch/mips/netlogic/xlp/usb-init.c                  |  125 ++++++++++
+ arch/mips/netlogic/xlr/Makefile                    |    2 +-
+ arch/mips/netlogic/xlr/platform-flash.c            |  220 +++++++++++++++++
+ arch/mips/netlogic/xlr/platform.c                  |   89 +++++++
+ arch/mips/netlogic/xlr/setup.c                     |    2 +-
+ arch/mips/oprofile/Makefile                        |    1 +
+ arch/mips/oprofile/common.c                        |    1 +
+ arch/mips/oprofile/op_model_mipsxx.c               |   29 +++
+ arch/mips/pci/Makefile                             |    1 +
+ arch/mips/pci/pci-xlp.c                            |  247 ++++++++++++++++++++
+ arch/mips/pci/pci-xlr.c                            |    6 +-
+ 26 files changed, 1222 insertions(+), 99 deletions(-)
+ create mode 100644 arch/mips/include/asm/netlogic/xlp-hal/pcibus.h
+ create mode 100644 arch/mips/include/asm/netlogic/xlp-hal/usb.h
+ create mode 100644 arch/mips/include/asm/netlogic/xlr/bridge.h
+ create mode 100644 arch/mips/include/asm/netlogic/xlr/flash.h
+ create mode 100644 arch/mips/netlogic/xlp/usb-init.c
+ create mode 100644 arch/mips/netlogic/xlr/platform-flash.c
+ create mode 100644 arch/mips/pci/pci-xlp.c
+
+-- 
+1.7.5.4

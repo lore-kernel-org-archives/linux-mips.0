@@ -1,109 +1,54 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49]:50049 "EHLO
-        mail-pw0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903560Ab2CDFJm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 4 Mar 2012 06:09:42 +0100
-Message-ID: <4F52F90C.5060306@gmail.com>
-Date: Sat, 03 Mar 2012 21:09:32 -0800
-From: David Daney <david.s.daney@gmail.com>
+Received: from mail.windriver.com ([147.11.1.11]:39697 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1903657Ab2CFTUq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 6 Mar 2012 20:20:46 +0100
+Message-ID: <4F566384.5050501@windriver.com>
+Date: Tue, 6 Mar 2012 14:20:36 -0500
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v6 4/5] MIPS: Octeon: Setup irq_domains for interrupts.
-References: <1330563422-14078-1-git-send-email-ddaney.cavm@gmail.com> <1330563422-14078-5-git-send-email-ddaney.cavm@gmail.com> <4F50D7C2.7080204@gmail.com> <4F510B8E.3070201@cavium.com> <20120302190744.571E03E1C63@localhost> <4F511FB0.5070901@cavium.com> <4F527285.1020500@gmail.com>
-In-Reply-To: <4F527285.1020500@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: Re: [PATCH 0/5] MIPS: module.h usage cleanup.
+References: <1330457088-14587-1-git-send-email-paul.gortmaker@windriver.com> <20120306190826.GJ4519@linux-mips.org>
+In-Reply-To: <20120306190826.GJ4519@linux-mips.org>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Rob Herring <robherring2@gmail.com>
-Cc: David Daney <david.daney@cavium.com>, Grant Likely <grant.likely@secretlab.ca>, David Daney <ddaney.cavm@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20120304050932.Wv7LUUUqeRp232--2J20RIhFnOAwbBOGTP1l0SNG-ok@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20120306192036.yAkEXh3XYX7lC3e5YcbSYXOEeQOhlTtYtaiKB9mZTeo@z>
 
-On 03/03/2012 11:35 AM, Rob Herring wrote:
-> On 03/02/2012 01:29 PM, David Daney wrote:
->> On 03/02/2012 11:07 AM, Grant Likely wrote:
->>> +static void __init octeon_irq_set_ciu_mapping(unsigned int irq,
->>> +                          unsigned int line,
->>> +                          unsigned int bit,
->>> +                          struct irq_domain *domain,
->>>                               struct irq_chip *chip,
->>>                               irq_flow_handler_t handler)
->>>     {
->>> +    struct irq_data *irqd;
->>>         union octeon_ciu_chip_data cd;
->>>
->>>         irq_set_chip_and_handler(irq, chip, handler);
->>> -
->>>         cd.l = 0;
->>>         cd.s.line = line;
->>>         cd.s.bit = bit;
->>>
->>>         irq_set_chip_data(irq, cd.p);
->>>         octeon_irq_ciu_to_irq[line][bit] = irq;
->>> +
->>> +    irqd = irq_get_irq_data(irq);
->>> +    irqd->hwirq = line<<    6 | bit;
->>> +    irqd->domain = domain;
->>>>> I think the domain code will set these.
->>>> It is my understanding that the domain code only does this for:
->>>>
->>>> o irq_domain_add_legacy()
->>>>
->>>> o irq_create_direct_mapping()
->>>>
->>>> o irq_create_mapping()
->>>>
->>>> We use none of those.  So I do it here.
->>>>
->>>> If there is a better way, I am open to suggestions.
->>> irq_create_mapping is called by irq_create_of_mapping() which is
->>> in turn called by irq_of_parse_and-map().  irq_domain always
->>> manages the hwirq and domain values.  Driver code cannot manipulate
->>> them manually.
->>>
->> I really must be missing something.
+On 12-03-06 02:08 PM, Ralf Baechle wrote:
+> On Tue, Feb 28, 2012 at 02:24:43PM -0500, Paul Gortmaker wrote:
+> 
+>> Hi Ralf,
 >>
->> Given:
+>> Not a lot to see here, really.  MIPS had usages of module.h tucked
+>> away in a couple asm files, and that was masking some of the other
+>> implicit users, plus preventing MIPS from getting the full benefit
+>> of not having to feed module.h to cpp 35,000 times.
 >>
->> 1) I must have a mapping between hwirq and irq that I control so that
->> non-OF code using the OCTEON_IRQ_* constants continues to work.
-> Those defines are what you need to work to get rid of.
-
-We are not starting from a blank slate here.  There is a lot of in-tree 
-code using these symbols.  We cannot make them disappear with wishful 
-thinking.
-
-The first step is a switch to irq_domains using the existing mappings.
-
-After we do that, I have patches to transition some drivers to use the 
-OF mapping via irq_domains.  After those are merged, we can work toward 
-getting rid of OCTEON_IRQ_*.  But I think it must be the last step in 
-the process, not the first.
->
->> 2) irq_create_mapping() will allocate a random irq value if none is
->> already assigned to the hwirq.
+>> I've left the two drivers/serial commits separate, in case there
+>> is a desire to have them go in via Greg's trees, but they are a
+>> required dependency for the arch/mips fixes, so I think it makes
+>> sense they stay together with the other changes here.
 >>
->> Therefore: To avoid having random irq values assigned, I must manually
->> assign them.
->>
-> So you should be using legacy domain if you need to maintain fixed hwirq
-> to linux irq numbers. "linear" is a bit confusing as it doesn't mean
-> linear 1:1 irq number assignment, but linear search.
+>> I will have some arch independent module.h cleanups (in fs and lib)
+>> that will require me to create a module.h tree for 3.4, so I can
+>> carry this there if required.  But this lot is all self-contained
+>> to MIPS and so I'd be fine with (and actually prefer) this going in
+>> via the MIPS tree.  No strong preference - either way, let me know.
+> 
+> Haven't received any comment and the patches are trivial so I'm going
+> to queue them hopeing that Alan Cox (not on cc ...) doesn't mind ...
 
-My reading of Grant's code in linux-next directly contradicts this 
-statement.  There is no code in irqdomain.c, that I can see, that allows 
-me to have an arbitrary mapping of irq <--> hwirq values.
+I stuck them in linux-next for additional sanity testing above the
+defconfig builds that I did and nothing caught fire.  I'll back
+them out from my for-next branch now that I know you've got them queued
+via the mips for-next.
 
+Thanks!
+Paul.
 
->
-> Ultimately, for DT boot you should use of_irq_init to scan the dts, and
-> then create a linear domain for each interrupt controller node. You may
-> need to decide on linear vs. legacy at runtime based on having a DT node
-> pointer or not.
-
-Perhaps, but we need to take the first step before gradually arriving at 
-some Ultimate Solution.
-
-We will also need to handle irq controllers with 2^20 sparsely populated 
-hwirq values, so linear domains will probably be out of the question there.
-
-David Daney
+> 
+>   Ralf

@@ -1,54 +1,94 @@
-Received: from mail.windriver.com ([147.11.1.11]:39697 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1903657Ab2CFTUq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 6 Mar 2012 20:20:46 +0100
-Message-ID: <4F566384.5050501@windriver.com>
-Date: Tue, 6 Mar 2012 14:20:36 -0500
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Received: from relay1.mentorg.com ([192.94.38.131]:44012 "EHLO
+        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1903657Ab2CFU3M (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 6 Mar 2012 21:29:12 +0100
+Date: Tue, 6 Mar 2012 20:28:54 +0000
+From: "Maciej W. Rozycki" <macro@codesourcery.com>
+Subject: [ping][PATCH] Handle COP3 Unusable exception as COP1X for FP
+ emulation
+Message-ID: <alpine.DEB.1.10.1203062024030.14492@tp.orcam.me.uk>
 MIME-Version: 1.0
-Subject: Re: [PATCH 0/5] MIPS: module.h usage cleanup.
-References: <1330457088-14587-1-git-send-email-paul.gortmaker@windriver.com> <20120306190826.GJ4519@linux-mips.org>
-In-Reply-To: <20120306190826.GJ4519@linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20120306192036.yAkEXh3XYX7lC3e5YcbSYXOEeQOhlTtYtaiKB9mZTeo@z>
+Cc: "Maciej W. Rozycki" <macro@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20120306202854.7_gqYpE6XX_o2IU-GBuG6ZwlIfOzgolSJg0KmgjsXaI@z>
 
-On 12-03-06 02:08 PM, Ralf Baechle wrote:
-> On Tue, Feb 28, 2012 at 02:24:43PM -0500, Paul Gortmaker wrote:
-> 
->> Hi Ralf,
->>
->> Not a lot to see here, really.  MIPS had usages of module.h tucked
->> away in a couple asm files, and that was masking some of the other
->> implicit users, plus preventing MIPS from getting the full benefit
->> of not having to feed module.h to cpp 35,000 times.
->>
->> I've left the two drivers/serial commits separate, in case there
->> is a desire to have them go in via Greg's trees, but they are a
->> required dependency for the arch/mips fixes, so I think it makes
->> sense they stay together with the other changes here.
->>
->> I will have some arch independent module.h cleanups (in fs and lib)
->> that will require me to create a module.h tree for 3.4, so I can
->> carry this there if required.  But this lot is all self-contained
->> to MIPS and so I'd be fine with (and actually prefer) this going in
->> via the MIPS tree.  No strong preference - either way, let me know.
-> 
-> Haven't received any comment and the patches are trivial so I'm going
-> to queue them hopeing that Alan Cox (not on cc ...) doesn't mind ...
 
-I stuck them in linux-next for additional sanity testing above the
-defconfig builds that I did and nothing caught fire.  I'll back
-them out from my for-next branch now that I know you've got them queued
-via the mips for-next.
+ Our FP emulator is hardcoded for the MIPS IV FP instruction set and does 
+not match the FP ISA with the general ISA.  However for the few MIPS IV FP 
+instructions that use the COP1X major opcode it relies on the Coprocessor 
+Unusable exception to be delivered as a COP1 rather than COP3 exception.  
+This includes indexed transfer (LDXC1, etc.) and FP multiply-accumulate 
+(MADD.D, etc.) instructions.
 
-Thanks!
-Paul.
+ All the MIPS I and MIPS II processors and some newer chips that do not 
+implement the FPU use the COP3 exception however.  Therefore I believe the 
+kernel should follow and redirect any COP3 Unusable traps to the emulator 
+unless an actual FPU part or core is present.
 
-> 
->   Ralf
+ This is a change that implements it.  Any minor opcode encodings that are 
+not recognised as valid FP instructions are rejected by the emulator and 
+will result in a SIGILL signal being delivered as they currently do.  We 
+do not support vendor-specific coprocessor 3 implementations supported 
+with MIPS I and MIPS II ISA processors; we never set CP0.Status.CU3.
+
+ If matching between the CPU and the FPU ISA is considered required one 
+day, this can still be done in the emulator itself.  I think the CpU 
+exception dispatcher is not the right place to do this anyway, as there 
+are further differences between MIPS I, MIPS II, MIPS III, MIPS IV and 
+MIPS32 FP ISAs.
+
+ Corresponding explanation of this implementation is included within the 
+change itself.
+
+Signed-off-by: Maciej W. Rozycki <macro@codesourcery.com>
+---
+Ralf,
+
+ Any progress with this change?
+
+  Maciej
+
+patch-3.2.0-rc4-do-cpu-cop3-1
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index c6fc6a0..b86eb3d 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -1066,6 +1066,24 @@ asmlinkage void do_cpu(struct pt_regs *regs)
+ 
+ 		return;
+ 
++	case 3:
++		/*
++		 * Old (MIPS I and MIPS II) processors will set this code
++		 * for COP1X opcode instructions that replaced the original
++		 * COP3 space.  We don't limit COP1 space instructions in
++		 * the emulator according to the CPU ISA, so we want to
++		 * treat COP1X instructions consistently regardless of which
++		 * code the CPU chose.  Therefore we redirect this trap to
++		 * the FP emulator too.
++		 *
++		 * Then some newer FPU-less processors use this code
++		 * erroneously too, so they are covered by this choice
++		 * as well.
++		 */
++		if (raw_cpu_has_fpu)
++			break;
++		/* Fall through.  */
++
+ 	case 1:
+ 		if (used_math())	/* Using the FPU again.  */
+ 			own_fpu(1);
+@@ -1089,9 +1107,6 @@ asmlinkage void do_cpu(struct pt_regs *regs)
+ 	case 2:
+ 		raw_notifier_call_chain(&cu2_chain, CU2_EXCEPTION, regs);
+ 		return;
+-
+-	case 3:
+-		break;
+ 	}
+ 
+ 	force_sig(SIGILL, current);

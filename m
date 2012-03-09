@@ -1,64 +1,47 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:37041 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1903692Ab2CIQjs (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 9 Mar 2012 17:39:48 +0100
-From: Thomas Schwinge <thomas@codesourcery.com>
-Subject: [PATCH 5/7] USB: r8a66597-hcd: restore big-endian operation.
-Date: Fri, 9 Mar 2012 17:38:51 +0100
-Message-ID: <1331311133-26937-5-git-send-email-thomas@codesourcery.com>
-In-Reply-To: <1331311133-26937-1-git-send-email-thomas@codesourcery.com>
-References: <1331311133-26937-1-git-send-email-thomas@codesourcery.com>
+Received: from mail3.caviumnetworks.com ([12.108.191.235]:4512 "EHLO
+        mail3.caviumnetworks.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903694Ab2CIR7F (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 9 Mar 2012 18:59:05 +0100
+Message-ID: <4F5A44E5.6090300@cavium.com>
+Date: Fri, 09 Mar 2012 09:59:01 -0800
+From: David Daney <david.daney@cavium.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH v6 2/2] of: Make of_find_node_by_path() traverse /aliases
+ for relative paths.
+References: <1330543264-18103-1-git-send-email-ddaney.cavm@gmail.com> <1330543264-18103-3-git-send-email-ddaney.cavm@gmail.com> <20120309013324.64DF53E0901@localhost>
+In-Reply-To: <20120309013324.64DF53E0901@localhost>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-Cc: Thomas Schwinge <thomas@codesourcery.com>, Paul Mundt <lethal@linux-sh.org>, linux-sh@vger.kernel.org, linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org
-Message-ID: <20120309163851.Fjn02b0Ew0_h02hEOvhifl057J6CC1d_SQFhJyb6lD8@z>
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: David Daney <ddaney.cavm@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <20120309175901.tAwfjKPlabPp_q1_6UvpcLH4xavw_wCCNoHjg-QBgzI@z>
 
-On SH, as of 37b7a97884ba64bf7d403351ac2a9476ab4f1bba we have to use the
-endianess-agnostic I/O accessor functions.
+On 03/08/2012 05:33 PM, Grant Likely wrote:
+> On Wed, 29 Feb 2012 11:21:04 -0800, David Daney<ddaney.cavm@gmail.com>  wrote:
+>> From: David Daney<david.daney@cavium.com>
+>>
+>> Currently all paths passed to of_find_node_by_path() must begin with a
+>> '/', indicating a full path to the desired node.
+>>
+>> Augment the look-up code so that if a path does *not* begin with '/',
+>> the path is used as the name of an /aliases property.  The value of
+>> this alias is then used as the full node path to be found.
+>>
+>> Signed-off-by: David Daney<david.daney@cavium.com>
+[...]
+>
+> All the aliases are already decoded at boot time now.  See
+> of_alias_scan().  Instead of open-coding this, you can add an
+> of_alias_lookup() function something like this (untested):
+>
 
-This driver is also enabled in ARM's viper_defconfig as well as MIPS'
-bcm47xx_defconfig and fuloong2e_defconfig -- I suppose none of these are
-operating in big-endian mode, or this issue should already have been noticed
-before.
+After objections from davem, and a bit of thought, I already indicated 
+on a different branch of this thread that we should drop this patch.
 
-The device is now recognized correctly for both litte-endian and big-endian
-sh7785lcr, but I have not tested this any further, as the board is situated in
-a remote data center.
+I have improved my code so that it is no longer needed.
 
-Signed-off-by: Thomas Schwinge <thomas@codesourcery.com>
-Cc: Paul Mundt <lethal@linux-sh.org>
-Cc: linux-sh@vger.kernel.org
-Cc: linux-usb@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mips@linux-mips.org
----
- drivers/usb/host/r8a66597.h |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/host/r8a66597.h b/drivers/usb/host/r8a66597.h
-index f28782d..c2ea6d1 100644
---- a/drivers/usb/host/r8a66597.h
-+++ b/drivers/usb/host/r8a66597.h
-@@ -170,7 +170,7 @@ static inline struct urb *r8a66597_get_urb(struct r8a66597 *r8a66597,
- 
- static inline u16 r8a66597_read(struct r8a66597 *r8a66597, unsigned long offset)
- {
--	return ioread16(r8a66597->reg + offset);
-+	return __raw_readw(r8a66597->reg + offset);
- }
- 
- static inline void r8a66597_read_fifo(struct r8a66597 *r8a66597,
-@@ -198,7 +198,7 @@ static inline void r8a66597_read_fifo(struct r8a66597 *r8a66597,
- static inline void r8a66597_write(struct r8a66597 *r8a66597, u16 val,
- 				  unsigned long offset)
- {
--	iowrite16(val, r8a66597->reg + offset);
-+	__raw_writew(val, r8a66597->reg + offset);
- }
- 
- static inline void r8a66597_mdfy(struct r8a66597 *r8a66597,
--- 
-1.7.4.1
+Thanks,
+David Daney

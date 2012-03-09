@@ -1,110 +1,64 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177]:63652 "EHLO
-        mail-iy0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903554Ab2CIF5O (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 9 Mar 2012 06:57:14 +0100
-Received: by iaky10 with SMTP id y10so2163019iak.36
-        for <linux-mips@linux-mips.org>; Thu, 08 Mar 2012 21:57:07 -0800 (PST)
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH v6 4/5] MIPS: Octeon: Setup irq_domains for interrupts.
-In-Reply-To: <4F52F90C.5060306@gmail.com>
-References: <1330563422-14078-1-git-send-email-ddaney.cavm@gmail.com> <1330563422-14078-5-git-send-email-ddaney.cavm@gmail.com> <4F50D7C2.7080204@gmail.com> <4F510B8E.3070201@cavium.com> <20120302190744.571E03E1C63@localhost> <4F511FB0.5070901@cavium.com> <4F527285.1020500@gmail.com> <4F52F90C.5060306@gmail.com>
-Date: Thu, 08 Mar 2012 22:57:04 -0700
-Message-ID: <20120309055704.465823E0901@localhost>
+Received: from relay1.mentorg.com ([192.94.38.131]:37041 "EHLO
+        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1903692Ab2CIQjs (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 9 Mar 2012 17:39:48 +0100
+From: Thomas Schwinge <thomas@codesourcery.com>
+Subject: [PATCH 5/7] USB: r8a66597-hcd: restore big-endian operation.
+Date: Fri, 9 Mar 2012 17:38:51 +0100
+Message-ID: <1331311133-26937-5-git-send-email-thomas@codesourcery.com>
+In-Reply-To: <1331311133-26937-1-git-send-email-thomas@codesourcery.com>
+References: <1331311133-26937-1-git-send-email-thomas@codesourcery.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: David Daney <david.s.daney@gmail.com>, Rob Herring <robherring2@gmail.com>
-Cc: David Daney <david.daney@cavium.com>, David Daney <ddaney.cavm@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20120309055704.DxNluwqpHhG9RAfFn-W6BLVvLa2W8C_CjRWtNqh92bk@z>
+Cc: Thomas Schwinge <thomas@codesourcery.com>, Paul Mundt <lethal@linux-sh.org>, linux-sh@vger.kernel.org, linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org
+Message-ID: <20120309163851.Fjn02b0Ew0_h02hEOvhifl057J6CC1d_SQFhJyb6lD8@z>
 
-On Sat, 03 Mar 2012 21:09:32 -0800, David Daney <david.s.daney@gmail.com> wrote:
-> On 03/03/2012 11:35 AM, Rob Herring wrote:
-> > On 03/02/2012 01:29 PM, David Daney wrote:
-> >> On 03/02/2012 11:07 AM, Grant Likely wrote:
-> >>> +static void __init octeon_irq_set_ciu_mapping(unsigned int irq,
-> >>> +                          unsigned int line,
-> >>> +                          unsigned int bit,
-> >>> +                          struct irq_domain *domain,
-> >>>                               struct irq_chip *chip,
-> >>>                               irq_flow_handler_t handler)
-> >>>     {
-> >>> +    struct irq_data *irqd;
-> >>>         union octeon_ciu_chip_data cd;
-> >>>
-> >>>         irq_set_chip_and_handler(irq, chip, handler);
-> >>> -
-> >>>         cd.l = 0;
-> >>>         cd.s.line = line;
-> >>>         cd.s.bit = bit;
-> >>>
-> >>>         irq_set_chip_data(irq, cd.p);
-> >>>         octeon_irq_ciu_to_irq[line][bit] = irq;
-> >>> +
-> >>> +    irqd = irq_get_irq_data(irq);
-> >>> +    irqd->hwirq = line<<    6 | bit;
-> >>> +    irqd->domain = domain;
-> >>>>> I think the domain code will set these.
-> >>>> It is my understanding that the domain code only does this for:
-> >>>>
-> >>>> o irq_domain_add_legacy()
-> >>>>
-> >>>> o irq_create_direct_mapping()
-> >>>>
-> >>>> o irq_create_mapping()
-> >>>>
-> >>>> We use none of those.  So I do it here.
-> >>>>
-> >>>> If there is a better way, I am open to suggestions.
-> >>> irq_create_mapping is called by irq_create_of_mapping() which is
-> >>> in turn called by irq_of_parse_and-map().  irq_domain always
-> >>> manages the hwirq and domain values.  Driver code cannot manipulate
-> >>> them manually.
-> >>>
-> >> I really must be missing something.
-> >>
-> >> Given:
-> >>
-> >> 1) I must have a mapping between hwirq and irq that I control so that
-> >> non-OF code using the OCTEON_IRQ_* constants continues to work.
-> > Those defines are what you need to work to get rid of.
-> 
-> We are not starting from a blank slate here.  There is a lot of in-tree 
-> code using these symbols.  We cannot make them disappear with wishful 
-> thinking.
-> 
-> The first step is a switch to irq_domains using the existing mappings.
-> 
-> After we do that, I have patches to transition some drivers to use the 
-> OF mapping via irq_domains.  After those are merged, we can work toward 
-> getting rid of OCTEON_IRQ_*.  But I think it must be the last step in 
-> the process, not the first.
-> >
-> >> 2) irq_create_mapping() will allocate a random irq value if none is
-> >> already assigned to the hwirq.
-> >>
-> >> Therefore: To avoid having random irq values assigned, I must manually
-> >> assign them.
-> >>
-> > So you should be using legacy domain if you need to maintain fixed hwirq
-> > to linux irq numbers. "linear" is a bit confusing as it doesn't mean
-> > linear 1:1 irq number assignment, but linear search.
-> 
-> My reading of Grant's code in linux-next directly contradicts this 
-> statement.  There is no code in irqdomain.c, that I can see, that allows 
-> me to have an arbitrary mapping of irq <--> hwirq values.
+On SH, as of 37b7a97884ba64bf7d403351ac2a9476ab4f1bba we have to use the
+endianess-agnostic I/O accessor functions.
 
-There are 4 kinds of mappings available; legacy, linear, radix and nomap.
+This driver is also enabled in ARM's viper_defconfig as well as MIPS'
+bcm47xx_defconfig and fuloong2e_defconfig -- I suppose none of these are
+operating in big-endian mode, or this issue should already have been noticed
+before.
 
-Ignore nomap and radix; you don't want them.
+The device is now recognized correctly for both litte-endian and big-endian
+sh7785lcr, but I have not tested this any further, as the board is situated in
+a remote data center.
 
-legacy maps a contiguous range of hwirq numbers to a contiguous range of
-linux irq numbers.  To preserve the exising #define mappings but still add
-DT support, this is the one that you want.  The downside is that it requires
-all the irq_descs to be allocated ahead of time (which probably isn't a
-problem for you).
+Signed-off-by: Thomas Schwinge <thomas@codesourcery.com>
+Cc: Paul Mundt <lethal@linux-sh.org>
+Cc: linux-sh@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mips@linux-mips.org
+---
+ drivers/usb/host/r8a66597.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-The linear map has a linear reverse map lookup table that allows arbitrary
-irq <--> hwirq mappings.  This mapping is preferred, but it doesn't work
-if you need to preserve #defined irq mappings.
-
-g.
+diff --git a/drivers/usb/host/r8a66597.h b/drivers/usb/host/r8a66597.h
+index f28782d..c2ea6d1 100644
+--- a/drivers/usb/host/r8a66597.h
++++ b/drivers/usb/host/r8a66597.h
+@@ -170,7 +170,7 @@ static inline struct urb *r8a66597_get_urb(struct r8a66597 *r8a66597,
+ 
+ static inline u16 r8a66597_read(struct r8a66597 *r8a66597, unsigned long offset)
+ {
+-	return ioread16(r8a66597->reg + offset);
++	return __raw_readw(r8a66597->reg + offset);
+ }
+ 
+ static inline void r8a66597_read_fifo(struct r8a66597 *r8a66597,
+@@ -198,7 +198,7 @@ static inline void r8a66597_read_fifo(struct r8a66597 *r8a66597,
+ static inline void r8a66597_write(struct r8a66597 *r8a66597, u16 val,
+ 				  unsigned long offset)
+ {
+-	iowrite16(val, r8a66597->reg + offset);
++	__raw_writew(val, r8a66597->reg + offset);
+ }
+ 
+ static inline void r8a66597_mdfy(struct r8a66597 *r8a66597,
+-- 
+1.7.4.1

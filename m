@@ -1,64 +1,25 @@
-Received: from iolanthe.rowland.org ([192.131.102.54]:44884 "HELO
-        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with SMTP id S1903614Ab2CLO2Z (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 12 Mar 2012 15:28:25 +0100
-Date: Mon, 12 Mar 2012 10:28:22 -0400 (EDT)
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH 6/7] USB: OHCI: remove old SSB OHCI driver
-In-Reply-To: <1331496505-18697-7-git-send-email-hauke@hauke-m.de>
-Message-ID: <Pine.LNX.4.44L0.1203121023490.1216-100000@iolanthe.rowland.org>
+Received: from smtp2.infineon.com ([217.10.60.23]:14027 "EHLO
+        smtp2.infineon.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1903646Ab2CNJKc convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 14 Mar 2012 10:10:32 +0100
+Received: from MUCSE595.eu.infineon.com (mucse595.eu.infineon.com [172.23.7.84])
+        by mucxv003.muc.infineon.com (Postfix) with ESMTPS
+        for <linux-mips@linux-mips.org>; Wed, 14 Mar 2012 10:10:25 +0100 (CET)
+From: <Narendra.Puttaswamy@lantiq.com>
+Subject: Sys exception behavior
+Date: Wed, 14 Mar 2012 09:10:20 +0000
+Message-ID: <93D430A75FD60048911C7ED0A8F56E830AF688@MUCSE501.eu.infineon.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: gregkh@linuxfoundation.org, linux-mips@linux-mips.org, ralf@linux-mips.org, m@bues.ch, linux-usb@vger.kernel.org
-Message-ID: <20120312142822.azMnln6ivMyz0TIwgSvICTaZDqEoX0WeyfwmqhkY-p0@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20120314091020.hjWRJdMTZW7kpwGALIbo5dsoKGApQQMTm_TFBS_z-hg@z>
 
-On Sun, 11 Mar 2012, Hauke Mehrtens wrote:
 
-> This is now replaced by the new ssb USB driver, which also supports
-> devices with an EHCI controller.
-> 
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> ---
->  drivers/usb/host/Kconfig    |   13 --
->  drivers/usb/host/ohci-hcd.c |   21 +----
->  drivers/usb/host/ohci-ssb.c |  260 -------------------------------------------
->  3 files changed, 1 insertions(+), 293 deletions(-)
->  delete mode 100644 drivers/usb/host/ohci-ssb.c
-> 
-> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
-> index eab27d5..665fb89 100644
-> --- a/drivers/usb/host/Kconfig
-> +++ b/drivers/usb/host/Kconfig
-> @@ -360,19 +360,6 @@ config USB_OHCI_HCD_PCI
->  	  Enables support for PCI-bus plug-in USB controller cards.
->  	  If unsure, say Y.
->  
-> -config USB_OHCI_HCD_SSB
-> -	bool "OHCI support for Broadcom SSB OHCI core"
-> -	depends on USB_OHCI_HCD && (SSB = y || SSB = USB_OHCI_HCD) && EXPERIMENTAL
-> -	default n
-> -	---help---
-> -	  Support for the Sonics Silicon Backplane (SSB) attached
-> -	  Broadcom USB OHCI core.
-> -
-> -	  This device is present in some embedded devices with
-> -	  Broadcom based SSB bus.
-> -
-> -	  If unsure, say N.
-> -
+Soon after "syscall" instruction is executed in the user mode, does the processor ensure that it raises an exception with the appropriate exception code (sys)  set in Cause register *irrespective* of other high priority exception (for example, an interrupt) that may have occurred at that time.
 
-I don't like the idea of removing this section entirely.  It will leave 
-people wondering what happened to their driver.
-
-Instead, for the next few kernel releases, how about leaving this
-section in place and causing it to select USB_OHCI_HCD_PLATFORM?  Maybe 
-also add a line to the help section explaining that from now on, this 
-driver has been replaced by the generic OHCI platform driver.
-
-And likewise for the SSB EHCI driver, of course.
-
-Alan Stern
+Looking into the source code of scall32-o32.S file, I infer the above. Can somebody please confirm the behavior?

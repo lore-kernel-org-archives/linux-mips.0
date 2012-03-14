@@ -1,25 +1,51 @@
-Received: from smtp2.infineon.com ([217.10.60.23]:14027 "EHLO
-        smtp2.infineon.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1903646Ab2CNJKc convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 14 Mar 2012 10:10:32 +0100
-Received: from MUCSE595.eu.infineon.com (mucse595.eu.infineon.com [172.23.7.84])
-        by mucxv003.muc.infineon.com (Postfix) with ESMTPS
-        for <linux-mips@linux-mips.org>; Wed, 14 Mar 2012 10:10:25 +0100 (CET)
-From: <Narendra.Puttaswamy@lantiq.com>
-Subject: Sys exception behavior
-Date: Wed, 14 Mar 2012 09:10:20 +0000
-Message-ID: <93D430A75FD60048911C7ED0A8F56E830AF688@MUCSE501.eu.infineon.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Received: from wolverine01.qualcomm.com ([199.106.114.254]:14345 "EHLO
+        wolverine01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903740Ab2CNSdS (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 14 Mar 2012 19:33:18 +0100
+Date: Wed, 14 Mar 2012 11:33:11 -0700
+From: "Luis R. Rodriguez" <rodrigue@qca.qualcomm.com>
+Subject: Re: [PATCH v2 13/13] MIPS: ath79: add initial support for the
+ Atheros DB120 board
+Message-ID: <20120314183311.GA8265@tux>
+References: <1331721931-4334-1-git-send-email-juhosg@openwrt.org>
+ <1331721931-4334-14-git-send-email-juhosg@openwrt.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1331721931-4334-14-git-send-email-juhosg@openwrt.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-mips@linux-mips.org
-Message-ID: <20120314091020.hjWRJdMTZW7kpwGALIbo5dsoKGApQQMTm_TFBS_z-hg@z>
+To: Gabor Juhos <juhosg@openwrt.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, mcgrof@infradead.org
+Message-ID: <20120314183311.lBvg3Xb_4UjpKsIljxV0OfnxIc1dx4HnrxdEltUdqms@z>
 
+On Wed, Mar 14, 2012 at 11:45:31AM +0100, Gabor Juhos wrote:
+> Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+> Acked-by: Luis R. Rodriguez <mcgrof@qca.qualcomm.com>
+> ---
+> v2: - remove USB controller registration, it will be added
+>       by a separate patch-set
+> 
+> Ralf,
+> 
+> The mach-db120.c file is licensed under the Clear BSD license. That
+> is based on the modified BSD license and the FSF's [1] site states
+> that it is compatible with both the GPLv2 and GPLv3.
+> 
+> However if you have concerns about the copyright we can resubmit
+> this file under the ISC license [2]. The ISC license is already
+> used upstream by the ath6kl and ath9k drivers.
+> 
+> Thanks,
+> Gabor
+> 
+> 1. http://www.gnu.org/licenses/license-list.html#clearbsd
+> 2. http://www.gnu.org/licenses/license-list.html#ISC
 
-Soon after "syscall" instruction is executed in the user mode, does the processor ensure that it raises an exception with the appropriate exception code (sys)  set in Cause register *irrespective* of other high priority exception (for example, an interrupt) that may have occurred at that time.
+Gabor, please resubmit under the ISC license. The patch
+has been pending since December and I really do not
+want to wait any longer. You can just resubmit this
+one single patch.
 
-Looking into the source code of scall32-o32.S file, I infer the above. Can somebody please confirm the behavior?
+  Luis

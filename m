@@ -1,133 +1,90 @@
-Received: from mail3.caviumnetworks.com ([12.108.191.235]:3704 "EHLO
-        mail3.caviumnetworks.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903689Ab2C2Bqa (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Mar 2012 03:46:30 +0200
-Message-ID: <4F73BEF3.8060500@cavium.com>
-Date: Wed, 28 Mar 2012 18:46:27 -0700
-From: David Daney <david.daney@cavium.com>
-MIME-Version: 1.0
+Received: from mail-pz0-f49.google.com ([209.85.210.49]:48581 "EHLO
+        mail-pz0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903699Ab2CaAe2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 31 Mar 2012 02:34:28 +0200
+Received: by dadq36 with SMTP id q36so82758dad.36
+        for <linux-mips@linux-mips.org>; Fri, 30 Mar 2012 17:34:21 -0700 (PDT)
+From: Grant Likely <grant.likely@secretlab.ca>
 Subject: Re: [PATCH v7 2/4] MIPS: Octeon: Setup irq_domains for interrupts.
-References: <1332790281-9648-1-git-send-email-ddaney.cavm@gmail.com> <1332790281-9648-3-git-send-email-ddaney.cavm@gmail.com> <4F711E69.1080302@gmail.com> <4F7205F3.3000108@cavium.com> <4F7239A4.7070905@gmail.com> <4F723FDD.4080708@cavium.com> <4F731E69.8030907@gmail.com> <4F733945.6000804@cavium.com> <20120328220839.599E13E0C26@localhost>
-In-Reply-To: <20120328220839.599E13E0C26@localhost>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <4F73BDAF.7020206@cavium.com>
+References: <1332790281-9648-1-git-send-email-ddaney.cavm@gmail.com> <1332790281-9648-3-git-send-email-ddaney.cavm@gmail.com> <4F711E69.1080302@gmail.com> <4F7205F3.3000108@cavium.com> <20120328222246.8AFA83E0CFE@localhost> <4F73BDAF.7020206@cavium.com>
+Date: Fri, 30 Mar 2012 15:54:30 -0600
+Message-ID: <20120330215430.47FAA3E04D5@localhost>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: Rob Herring <robherring2@gmail.com>, David Daney <ddaney.cavm@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20120329014627.Q4hk6uJn2Wj-at8EJil7G3vIhxLbBDDU58bVfpNXWZw@z>
+To: David Daney <david.daney@cavium.com>
+Cc: Rob Herring <robherring2@gmail.com>, David Daney <ddaney.cavm@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <20120330215430.0xK2FPDv3dh8fUviBmu28LZuXhWkel6i55C4Qp7Madw@z>
 
-On 03/28/2012 03:08 PM, Grant Likely wrote:
-> On Wed, 28 Mar 2012 09:16:05 -0700, David Daney<david.daney@cavium.com>  wrote:
->> On 03/28/2012 07:21 AM, Rob Herring wrote:
->>> On 03/27/2012 05:31 PM, David Daney wrote:
->>>> On 03/27/2012 03:05 PM, Rob Herring wrote:
->>>>> On 03/27/2012 01:24 PM, David Daney wrote:
->>>>>> On 03/26/2012 06:56 PM, Rob Herring wrote:
->>>>>>> On 03/26/2012 02:31 PM, David Daney wrote:
->>>>>>>> From: David Daney<david.daney@cavium.com>
->>>>>> [...]
->>>>>>>> +static bool octeon_irq_ciu_is_edge(unsigned int line, unsigned int
->>>>>>>> bit)
->>>>>>>> +{
->>>>>>>> +    bool edge = false;
->>>>>>>> +
->>>>>>>> +    if (line == 0)
->>>>>>>> +        switch (bit) {
->>>>>>>> +        case 48 ... 49: /* GMX DRP */
->>>>>>>> +        case 50: /* IPD_DRP */
->>>>>>>> +        case 52 ... 55: /* Timers */
->>>>>>>> +        case 58: /* MPI */
->>>>>>>> +            edge = true;
->>>>>>>> +            break;
->>>>>>>> +        default:
->>>>>>>> +            break;
->>>>>>>> +        }
->>>>>>>> +    else /* line == 1 */
->>>>>>>> +        switch (bit) {
->>>>>>>> +        case 47: /* PTP */
->>>>>>>> +            edge = true;
->>>>>>>> +            break;
->>>>>>>> +        default:
->>>>>>>> +            break;
->>>>>>>> +        }
->>>>>>>> +    return edge;
->>>>>>>
->>>>>>> Moving in the right direction, but I still don't get why this is not in
->>>>>>> the CIU binding as a 3rd cell?
->>>>>>
->>>>>> There are a several reasons, in no particular order they are:
->>>>>>
->>>>>> o There is no 3rd cell.  The bindings were discussed with Grant here:
->>>>>>      http://www.linux-mips.org/archives/linux-mips/2011-05/msg00355.html
->>>>>>
->>>>>
->>>>> Then add one.
->>>>
->>>> I can't.  The dtb is already programmed into the bootloader ROMs,
->>>> changing the kernel code will not change that.  It is fait accompli.
->>>>
->>>>>
->>>>>> o The edge/level thing cannot be changed, and the irq lines don't leave
->>>>>> the SOC, so hard coding it is possible.
->>>>>
->>>>> Right, but DT describes h/w connections and this is an aspect of the
->>>>> connection. This may be fixed for the SOC, but it's not fixed for the
->>>>> CIU (i.e. could change in future chips), right?
->>>>
->>>> In theory yes.  However:
->>>>
->>>> 1) The chip designers will not change it.
->>>>
->>>> 2) There will likely be no more designs with either CIU or CIU2, so we
->>>> know what all the different possibilities are today.
->>>>
->>>> When CIU3 is deployed, we will use the lessons we have learned to do
->>>> things the Right Way.
->>>>
->>>>>
->>>>> There's 2 reasons why you would not put this into DTS:
->>>>>
->>>>> - All irq lines' trigger type are the same, fixed and known.
->>>>> - You can read a register to tell you the trigger type.
->>>>>
->>>>> Even if it's not going to change ever, it's still worth putting into the
->>>>> DTS as it is well suited for holding that data and it is just data.
->>>>
->>>> Agreed that it could be in the DTS, and retrospect it probably should
->>>> have been put in the DTS, but it wasn't.  So I think what we have now is
->>>> a workable solution, and has the added attraction of working with
->>>> already deployed boards.
->>>
->>> Aren't you building in the dtb to the kernel?
->>
->> No.  This seems like a bit of a disconnect in this discussion.  From the
->> cover-letter:
->>
->> o A device tree template is statically linked into the kernel image.
->>     Based on SOC type and board type, legacy configuration probing code
->>     is used to prune and patch the device tree template.
->>
->> o New SOCs and boards will directly use a device tree passed by the
->>     bootloader.
->
-> I think the real surprise here is that Octeron is depending on a
-> masked-in copy of the device tree.  It has alwasy been a strong
-> recommendation to store the .dtb along side the kernel in reflashable
-> storage for exactly the reason that updates may be required.  Review
-> is vitally important, but nobody can foresee all the implications
-> until the bindings are actually used.
->
-> I'm not going to harp over this, I understand that you're hamstrung
-> here, but please do pass on to the firmware engineers that storing the
-> .dtb in masked rom is risky.
->
+On Wed, 28 Mar 2012 18:41:03 -0700, David Daney <david.daney@cavium.com> wrote:
+> On 03/28/2012 03:22 PM, Grant Likely wrote:
+> > On Tue, 27 Mar 2012 11:24:51 -0700, David Daney<david.daney@cavium.com>  wrote:
+> >> On 03/26/2012 06:56 PM, Rob Herring wrote:
+> >>> On 03/26/2012 02:31 PM, David Daney wrote:
+> >>>> From: David Daney<david.daney@cavium.com>
+> >> [...]
+> >>>> +static int octeon_irq_ciu_map(struct irq_domain *d,
+> >>>> +			      unsigned int virq, irq_hw_number_t hw)
+> >>>> +{
+> >>>> +	unsigned int line = hw>>   6;
+> >>>> +	unsigned int bit = hw&   63;
+> >>>> +
+> >>>> +	if (virq>= 256)
+> >>>> +		return -EINVAL;
+> >>>
+> >>> Drop this. You should not care what the virq numbers are.
+> >>
+> >>
+> >> I care that they don't overflow the width of octeon_irq_ciu_to_irq (a u8).
+> >>
+> >> So really I want to say:
+> >>
+> >>      if (virq>= (1<<  sizeof (octeon_irq_ciu_to_irq[0][0]))) {
+> >>          WARN(...);
+> >>          return -EINVAL;
+> >>      }
+> >>
+> >>
+> >> I need a map external to any one irq_domain.  The irq handling code
+> >> handles sources that come from two separate irq_domains, as well as irqs
+> >> that are not part of any domain.
+> >
+> > You can get past this limitation by using the struct irq_data .hwirq and
+> > .domain members for the irq ==>  hwirq translation, and for hwirq ==>
+> > irq the code should already have the context to know which user it is.
+> >
+> > For the irqs that are not covered by an irq_domain, the driver is free
+> > to set the .hwirq value directly.  Ultimately however, it will
+> > probably be best to add an irq domain for those users also.
+> >
+> > ...
+> >
+> > Howver, I don't understand where the risk is in overflowing
+> > octeon_irq_ciu_to_irq[][].  From what I can see, the virq value isn't
+> > used at all to calculate the array dereference.  line and bit are
+> > calculated from the hwirq value.  What am I missing?
+> >
+> 
+> We do the opposite.  We extract the hwirq value from the interrupt 
+> controller and then look up virq in the table.  If the range of virq 
+> overflows the width of u8, we would end up calling do_IRQ() with a bad 
+> value.  Also this dispatch code is not aware of the various irq_domains 
+> and non irq_domain irqs, it is a single function that handles them all 
+> calling do_IRQ() with whatever it looks up in the table.
+> 
+> We could use a wider type for this lookup array, but that would increase 
+> the cache footprint of the irq dispatcher...
 
-Well in most cases it is not masked ROM, but rather some sort of 
-persistent but modifiable storage.  But still getting people (both 
-internal and external) to update it is not as easy as living with the 
-status quo.  The idea is that someone should be able to get a kernel.orq 
-kernel and use it, without having to re-flash their board's bootloader.
+Ah, I missed that octeon_irq_ciu_to_irq was a u8.  You're using Linux
+though; your cache footprint is already trashed.  :-) Please just use
+unsigned int for all irq storage since that is the type used by all
+core interrupt handling code.  Anything else smells like premature
+optimization.  :-)
 
-David Daney
+Besides, now that we have it you should plan to switch to the common
+mechanism of irq_domain for hwirq->irq reverse mapping anyway.  It
+doesn't make any sense for each platform to reinvent it's own reverse
+mapping scheme.
+
+g.

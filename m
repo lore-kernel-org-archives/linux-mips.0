@@ -1,90 +1,68 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49]:48581 "EHLO
-        mail-pz0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903699Ab2CaAe2 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 31 Mar 2012 02:34:28 +0200
-Received: by dadq36 with SMTP id q36so82758dad.36
-        for <linux-mips@linux-mips.org>; Fri, 30 Mar 2012 17:34:21 -0700 (PDT)
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH v7 2/4] MIPS: Octeon: Setup irq_domains for interrupts.
-In-Reply-To: <4F73BDAF.7020206@cavium.com>
-References: <1332790281-9648-1-git-send-email-ddaney.cavm@gmail.com> <1332790281-9648-3-git-send-email-ddaney.cavm@gmail.com> <4F711E69.1080302@gmail.com> <4F7205F3.3000108@cavium.com> <20120328222246.8AFA83E0CFE@localhost> <4F73BDAF.7020206@cavium.com>
-Date: Fri, 30 Mar 2012 15:54:30 -0600
-Message-ID: <20120330215430.47FAA3E04D5@localhost>
+Received: from ozlabs.org ([203.10.76.45]:38444 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1903638Ab2DAF4Y (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 1 Apr 2012 07:56:24 +0200
+From: Rusty Russell <rusty@rustcorp.com.au>
+Subject: [PULL] cpumask cleanups
+Date: Sun, 01 Apr 2012 15:25:50 +0930
+Message-ID: <87sjgovvvd.fsf@rustcorp.com.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: David Daney <david.daney@cavium.com>
-Cc: Rob Herring <robherring2@gmail.com>, David Daney <ddaney.cavm@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20120330215430.0xK2FPDv3dh8fUviBmu28LZuXhWkel6i55C4Qp7Madw@z>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Chris Metcalf <cmetcalf@tilera.com>, cpufreq@vger.kernel.org, Dave Jones <davej@redhat.com>, Helge Deller <deller@gmx.de>, Jonas Aaberg <jonas.aberg@stericsson.com>, Kyle McMartin <kyle@mcmartin.ca>, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-mips@linux-mips.org, Martin Persson <martin.persson@stericsson.com>, Ralf Baechle <ralf@linux-mips.org>, Richard Kuo <rkuo@codeaurora.org>, Russell King <linux@arm.linux.org.uk>, Sundar Iyer <sundar.iyer@stericsson.com>, user-mode-linux-devel@lists.sourceforge.net
+Message-ID: <20120401055550.kYnXmR0skGkTjut_mylwkYr8kDQdy4e6sT8A6rmA12g@z>
 
-On Wed, 28 Mar 2012 18:41:03 -0700, David Daney <david.daney@cavium.com> wrote:
-> On 03/28/2012 03:22 PM, Grant Likely wrote:
-> > On Tue, 27 Mar 2012 11:24:51 -0700, David Daney<david.daney@cavium.com>  wrote:
-> >> On 03/26/2012 06:56 PM, Rob Herring wrote:
-> >>> On 03/26/2012 02:31 PM, David Daney wrote:
-> >>>> From: David Daney<david.daney@cavium.com>
-> >> [...]
-> >>>> +static int octeon_irq_ciu_map(struct irq_domain *d,
-> >>>> +			      unsigned int virq, irq_hw_number_t hw)
-> >>>> +{
-> >>>> +	unsigned int line = hw>>   6;
-> >>>> +	unsigned int bit = hw&   63;
-> >>>> +
-> >>>> +	if (virq>= 256)
-> >>>> +		return -EINVAL;
-> >>>
-> >>> Drop this. You should not care what the virq numbers are.
-> >>
-> >>
-> >> I care that they don't overflow the width of octeon_irq_ciu_to_irq (a u8).
-> >>
-> >> So really I want to say:
-> >>
-> >>      if (virq>= (1<<  sizeof (octeon_irq_ciu_to_irq[0][0]))) {
-> >>          WARN(...);
-> >>          return -EINVAL;
-> >>      }
-> >>
-> >>
-> >> I need a map external to any one irq_domain.  The irq handling code
-> >> handles sources that come from two separate irq_domains, as well as irqs
-> >> that are not part of any domain.
-> >
-> > You can get past this limitation by using the struct irq_data .hwirq and
-> > .domain members for the irq ==>  hwirq translation, and for hwirq ==>
-> > irq the code should already have the context to know which user it is.
-> >
-> > For the irqs that are not covered by an irq_domain, the driver is free
-> > to set the .hwirq value directly.  Ultimately however, it will
-> > probably be best to add an irq domain for those users also.
-> >
-> > ...
-> >
-> > Howver, I don't understand where the risk is in overflowing
-> > octeon_irq_ciu_to_irq[][].  From what I can see, the virq value isn't
-> > used at all to calculate the array dereference.  line and bit are
-> > calculated from the hwirq value.  What am I missing?
-> >
-> 
-> We do the opposite.  We extract the hwirq value from the interrupt 
-> controller and then look up virq in the table.  If the range of virq 
-> overflows the width of u8, we would end up calling do_IRQ() with a bad 
-> value.  Also this dispatch code is not aware of the various irq_domains 
-> and non irq_domain irqs, it is a single function that handles them all 
-> calling do_IRQ() with whatever it looks up in the table.
-> 
-> We could use a wider type for this lookup array, but that would increase 
-> the cache footprint of the irq dispatcher...
+(Somehow forgot to send this out; it's been sitting in linux-next, and
+if you don't want it, it can sit there another cycle)
 
-Ah, I missed that octeon_irq_ciu_to_irq was a u8.  You're using Linux
-though; your cache footprint is already trashed.  :-) Please just use
-unsigned int for all irq storage since that is the type used by all
-core interrupt handling code.  Anything else smells like premature
-optimization.  :-)
+To git@github.com:rustyrussell/linux.git
+   f946eeb..615399c  master -> master
+ + 9dcbe9d...6ac67b9 for-linus -> for-linus (forced update)
+The following changes since commit b5174fa3a7f4f8f150bfa3b917c92608953dfa0f:
 
-Besides, now that we have it you should plan to switch to the common
-mechanism of irq_domain for hwirq->irq reverse mapping anyway.  It
-doesn't make any sense for each platform to reinvent it's own reverse
-mapping scheme.
+  Merge tag 'mmc-merge-for-3.4-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/cjb/mmc (2012-03-28 20:59:45 -0700)
 
-g.
+are available in the git repository at:
+
+  git://github.com/rustyrussell/linux.git master
+
+Rusty Russell (4):
+      remove references to cpu_*_map in arch/
+      drivers/cpufreq/db8500-cpufreq: remove references to cpu_*_map.
+      documentation: remove references to cpu_*_map.
+      cpumask: remove old cpu_*_map.
+
+ Documentation/cgroups/cpusets.txt   |    2 +-
+ Documentation/cpu-hotplug.txt       |   22 +++++++++++-----------
+ arch/alpha/kernel/smp.c             |    2 +-
+ arch/arm/kernel/kprobes.c           |    4 ++--
+ arch/arm/kernel/smp.c               |    7 ++++---
+ arch/hexagon/kernel/smp.c           |    8 ++++----
+ arch/ia64/kernel/acpi.c             |    2 +-
+ arch/mips/cavium-octeon/smp.c       |    4 ++--
+ arch/mips/kernel/mips-mt-fpaff.c    |    2 +-
+ arch/mips/kernel/proc.c             |    2 +-
+ arch/mips/kernel/smp-bmips.c        |    2 +-
+ arch/mips/kernel/smp.c              |   27 ++++++++++++---------------
+ arch/mips/kernel/smtc.c             |    2 +-
+ arch/mips/mm/c-octeon.c             |    6 +++---
+ arch/mips/netlogic/common/smp.c     |    6 +++---
+ arch/mips/pmc-sierra/yosemite/smp.c |    8 ++++----
+ arch/mips/sgi-ip27/ip27-smp.c       |    2 +-
+ arch/mips/sibyte/bcm1480/smp.c      |    7 +++----
+ arch/mips/sibyte/sb1250/smp.c       |    7 +++----
+ arch/sparc/kernel/leon_kernel.c     |    6 +++---
+ arch/tile/kernel/setup.c            |    8 ++++----
+ arch/um/kernel/skas/process.c       |    2 +-
+ arch/um/kernel/smp.c                |    9 ++++-----
+ arch/x86/xen/enlighten.c            |    2 +-
+ drivers/cpufreq/db8500-cpufreq.c    |    2 +-
+ include/linux/cpumask.h             |    6 ------
+ init/Kconfig                        |    4 ++--
+ kernel/cpuset.c                     |   10 +++++-----
+ 28 files changed, 80 insertions(+), 91 deletions(-)
+-- 
+  How could I marry someone with more hair than me?  http://baldalex.org

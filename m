@@ -1,68 +1,44 @@
-Received: from ozlabs.org ([203.10.76.45]:38444 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1903638Ab2DAF4Y (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 1 Apr 2012 07:56:24 +0200
-From: Rusty Russell <rusty@rustcorp.com.au>
-Subject: [PULL] cpumask cleanups
-Date: Sun, 01 Apr 2012 15:25:50 +0930
-Message-ID: <87sjgovvvd.fsf@rustcorp.com.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from mail-gx0-f177.google.com ([209.85.161.177]:34061 "EHLO
+        mail-gx0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1904093Ab2DGBv4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 7 Apr 2012 03:51:56 +0200
+Received: by ggnk1 with SMTP id k1so1609492ggn.36
+        for <linux-mips@linux-mips.org>; Fri, 06 Apr 2012 18:51:50 -0700 (PDT)
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH] irq/irq_domain: Quit ignoring error returns from irq_alloc_desc_from().
+In-Reply-To: <4F7F1BDD.4070205@gmail.com>
+References: <1333669933-25267-1-git-send-email-ddaney.cavm@gmail.com> <4F7E64E4.3080509@gmail.com> <4F7F1BDD.4070205@gmail.com>
+Date: Fri, 06 Apr 2012 16:56:07 -0700
+Message-ID: <20120406235607.DCCD53E15E9@localhost>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Chris Metcalf <cmetcalf@tilera.com>, cpufreq@vger.kernel.org, Dave Jones <davej@redhat.com>, Helge Deller <deller@gmx.de>, Jonas Aaberg <jonas.aberg@stericsson.com>, Kyle McMartin <kyle@mcmartin.ca>, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-mips@linux-mips.org, Martin Persson <martin.persson@stericsson.com>, Ralf Baechle <ralf@linux-mips.org>, Richard Kuo <rkuo@codeaurora.org>, Russell King <linux@arm.linux.org.uk>, Sundar Iyer <sundar.iyer@stericsson.com>, user-mode-linux-devel@lists.sourceforge.net
-Message-ID: <20120401055550.kYnXmR0skGkTjut_mylwkYr8kDQdy4e6sT8A6rmA12g@z>
+To: David Daney <ddaney.cavm@gmail.com>, Rob Herring <robherring2@gmail.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc: devicetree-discuss@lists.ozlabs.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <20120406235607.D5_0bGclDVmx6knhmSMoqklbJ3q61T6DdwU9LMqI4Bg@z>
 
-(Somehow forgot to send this out; it's been sitting in linux-next, and
-if you don't want it, it can sit there another cycle)
+On Fri, 06 Apr 2012 09:37:49 -0700, David Daney <ddaney.cavm@gmail.com> wrote:
+> On 04/05/2012 08:37 PM, Rob Herring wrote:
+> > On 04/05/2012 06:52 PM, David Daney wrote:
+> >> From: David Daney<david.daney@cavium.com>
+> >> @@ -380,14 +381,14 @@ unsigned int irq_create_mapping(struct irq_domain *domain,
+> >>   	hint = hwirq % irq_virq_count;
+> >>   	if (hint == 0)
+> >>   		hint++;
+> >> -	virq = irq_alloc_desc_from(hint, 0);
+> >
+> > You are not looking at mainline. hint was removed in later versions, and
+> > the referenced commit ids don't exist.
+> 
+> Please look at Linus' tree before making incorrect statements about 
+> whether or not code exists on the 'mainline'
 
-To git@github.com:rustyrussell/linux.git
-   f946eeb..615399c  master -> master
- + 9dcbe9d...6ac67b9 for-linus -> for-linus (forced update)
-The following changes since commit b5174fa3a7f4f8f150bfa3b917c92608953dfa0f:
+Rob is indeed mistaken here, but please let's keep things civil.  I
+did write the patches to remove the hint, but I avoided merging them
+because I think they are risky.  I wanted to get the core irq_domain
+changes in first.  The removal of hint will be applied during the next
+merge window.
 
-  Merge tag 'mmc-merge-for-3.4-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/cjb/mmc (2012-03-28 20:59:45 -0700)
+I will take your bug fix and get it pushed up to Linus soon.
 
-are available in the git repository at:
-
-  git://github.com/rustyrussell/linux.git master
-
-Rusty Russell (4):
-      remove references to cpu_*_map in arch/
-      drivers/cpufreq/db8500-cpufreq: remove references to cpu_*_map.
-      documentation: remove references to cpu_*_map.
-      cpumask: remove old cpu_*_map.
-
- Documentation/cgroups/cpusets.txt   |    2 +-
- Documentation/cpu-hotplug.txt       |   22 +++++++++++-----------
- arch/alpha/kernel/smp.c             |    2 +-
- arch/arm/kernel/kprobes.c           |    4 ++--
- arch/arm/kernel/smp.c               |    7 ++++---
- arch/hexagon/kernel/smp.c           |    8 ++++----
- arch/ia64/kernel/acpi.c             |    2 +-
- arch/mips/cavium-octeon/smp.c       |    4 ++--
- arch/mips/kernel/mips-mt-fpaff.c    |    2 +-
- arch/mips/kernel/proc.c             |    2 +-
- arch/mips/kernel/smp-bmips.c        |    2 +-
- arch/mips/kernel/smp.c              |   27 ++++++++++++---------------
- arch/mips/kernel/smtc.c             |    2 +-
- arch/mips/mm/c-octeon.c             |    6 +++---
- arch/mips/netlogic/common/smp.c     |    6 +++---
- arch/mips/pmc-sierra/yosemite/smp.c |    8 ++++----
- arch/mips/sgi-ip27/ip27-smp.c       |    2 +-
- arch/mips/sibyte/bcm1480/smp.c      |    7 +++----
- arch/mips/sibyte/sb1250/smp.c       |    7 +++----
- arch/sparc/kernel/leon_kernel.c     |    6 +++---
- arch/tile/kernel/setup.c            |    8 ++++----
- arch/um/kernel/skas/process.c       |    2 +-
- arch/um/kernel/smp.c                |    9 ++++-----
- arch/x86/xen/enlighten.c            |    2 +-
- drivers/cpufreq/db8500-cpufreq.c    |    2 +-
- include/linux/cpumask.h             |    6 ------
- init/Kconfig                        |    4 ++--
- kernel/cpuset.c                     |   10 +++++-----
- 28 files changed, 80 insertions(+), 91 deletions(-)
--- 
-  How could I marry someone with more hair than me?  http://baldalex.org
+g.

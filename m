@@ -1,44 +1,204 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177]:34061 "EHLO
-        mail-gx0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1904093Ab2DGBv4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 7 Apr 2012 03:51:56 +0200
-Received: by ggnk1 with SMTP id k1so1609492ggn.36
-        for <linux-mips@linux-mips.org>; Fri, 06 Apr 2012 18:51:50 -0700 (PDT)
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH] irq/irq_domain: Quit ignoring error returns from irq_alloc_desc_from().
-In-Reply-To: <4F7F1BDD.4070205@gmail.com>
-References: <1333669933-25267-1-git-send-email-ddaney.cavm@gmail.com> <4F7E64E4.3080509@gmail.com> <4F7F1BDD.4070205@gmail.com>
-Date: Fri, 06 Apr 2012 16:56:07 -0700
-Message-ID: <20120406235607.DCCD53E15E9@localhost>
+Received: from netrider.rowland.org ([192.131.102.5]:42767 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S1904117Ab2DGTpn (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 7 Apr 2012 21:45:43 +0200
+Date: Sat, 7 Apr 2012 15:45:37 -0400 (EDT)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH 10/10] usb: host: mips: sead3: USB Host controller support
+ for SEAD-3 platform.
+In-Reply-To: <1333817979-30288-1-git-send-email-sjhill@mips.com>
+Message-ID: <Pine.LNX.4.44L0.1204071527590.32196-100000@netrider.rowland.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: David Daney <ddaney.cavm@gmail.com>, Rob Herring <robherring2@gmail.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc: devicetree-discuss@lists.ozlabs.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <20120406235607.D5_0bGclDVmx6knhmSMoqklbJ3q61T6DdwU9LMqI4Bg@z>
+To: "Steven J. Hill" <sjhill@mips.com>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, linux-usb@vger.kernel.org, Chris Dearman <chris@mips.com>
+Message-ID: <20120407194537.F71TESYarsECRMwLbGYxM7ffpll4kN22sTYYdmXJQMg@z>
 
-On Fri, 06 Apr 2012 09:37:49 -0700, David Daney <ddaney.cavm@gmail.com> wrote:
-> On 04/05/2012 08:37 PM, Rob Herring wrote:
-> > On 04/05/2012 06:52 PM, David Daney wrote:
-> >> From: David Daney<david.daney@cavium.com>
-> >> @@ -380,14 +381,14 @@ unsigned int irq_create_mapping(struct irq_domain *domain,
-> >>   	hint = hwirq % irq_virq_count;
-> >>   	if (hint == 0)
-> >>   		hint++;
-> >> -	virq = irq_alloc_desc_from(hint, 0);
-> >
-> > You are not looking at mainline. hint was removed in later versions, and
-> > the referenced commit ids don't exist.
+On Sat, 7 Apr 2012, Steven J. Hill wrote:
+
+> From: "Steven J. Hill" <sjhill@mips.com>
 > 
-> Please look at Linus' tree before making incorrect statements about 
-> whether or not code exists on the 'mainline'
+> Add EHCI driver for MIPS SEAD-3 development platform.
+> 
+> Signed-off-by: Chris Dearman <chris@mips.com>
+> Signed-off-by: Steven J. Hill <sjhill@mips.com>
+> ---
+>  drivers/usb/host/Kconfig      |    4 +-
+>  drivers/usb/host/ehci-hcd.c   |    5 +
+>  drivers/usb/host/ehci-sead3.c |  299 +++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 306 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/usb/host/ehci-sead3.c
+> 
+> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+> index f788eb8..db29a9f 100644
+> --- a/drivers/usb/host/Kconfig
+> +++ b/drivers/usb/host/Kconfig
+> @@ -110,13 +110,13 @@ config USB_EHCI_BIG_ENDIAN_MMIO
+>  	depends on USB_EHCI_HCD && (PPC_CELLEB || PPC_PS3 || 440EPX || \
+>  				    ARCH_IXP4XX || XPS_USB_HCD_XILINX || \
+>  				    PPC_MPC512x || CPU_CAVIUM_OCTEON || \
+> -				    PMC_MSP || SPARC_LEON)
+> +				    PMC_MSP || SPARC_LEON || MIPS_SEAD3)
+>  	default y
+>  
+>  config USB_EHCI_BIG_ENDIAN_DESC
+>  	bool
+>  	depends on USB_EHCI_HCD && (440EPX || ARCH_IXP4XX || XPS_USB_HCD_XILINX || \
+> -				    PPC_MPC512x || PMC_MSP || SPARC_LEON)
+> +				    PPC_MPC512x || PMC_MSP || SPARC_LEON || MIPS_SEAD3)
 
-Rob is indeed mistaken here, but please let's keep things civil.  I
-did write the patches to remove the hint, but I avoided merging them
-because I think they are risky.  I wanted to get the core irq_domain
-changes in first.  The removal of hint will be applied during the next
-merge window.
+How about wrapping this to another line, to respect the 80-column 
+limit?
 
-I will take your bug fix and get it pushed up to Linus soon.
+>  	default y
+>  
+>  config XPS_USB_HCD_XILINX
 
-g.
+> --- /dev/null
+> +++ b/drivers/usb/host/ehci-sead3.c
+
+> +#ifdef CONFIG_PM
+> +static void mips_start_ehc(void)
+> +{
+> +	pr_debug("mips_start_ehc\n");
+> +}
+> +#endif
+> +
+> +static void mips_stop_ehc(void)
+> +{
+> +	pr_debug("mips_start_ehc\n");
+> +}
+
+Do these really need to be separate functions?
+
+Also, you should use ehci_dbg() instead of pr_debug().  Likewise throughout
+the rest of this file.
+
+> +
+> +static int mips_run(struct usb_hcd *hcd)
+> +{
+> +	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
+> +	u32 temp;
+> +
+> +	temp = ehci_reset(ehci);
+> +	if (temp != 0) {
+> +		ehci_mem_cleanup(ehci);
+> +		return temp;
+> +	}
+> +
+> +	return ehci_run(hcd);
+> +}
+> +
+> +const struct hc_driver ehci_mips_hc_driver = {
+> +	.description		= hcd_name,
+> +	.product_desc		= "MIPS EHCI",
+> +	.hcd_priv_size		= sizeof(struct ehci_hcd),
+> +
+> +	/*
+> +	 * generic hardware linkage
+> +	 */
+> +	.irq			= ehci_irq,
+> +	.flags			= HCD_MEMORY | HCD_USB2,
+> +
+> +	/*
+> +	 * basic lifecycle operations
+> +	 *
+> +	 */
+> +	.reset			= ehci_init,
+> +	.start			= mips_run,
+> +	.stop			= ehci_stop,
+> +	.shutdown		= ehci_shutdown,
+> +
+> +	/*
+> +	 * managing i/o requests and associated device resources
+> +	 */
+> +	.urb_enqueue		= ehci_urb_enqueue,
+> +	.urb_dequeue		= ehci_urb_dequeue,
+> +	.endpoint_disable	= ehci_endpoint_disable,
+> +
+> +	/*
+> +	 * scheduling support
+> +	 */
+> +	.get_frame_number	= ehci_get_frame,
+> +
+> +	/*
+> +	 * root hub support
+> +	 */
+> +	.hub_status_data	= ehci_hub_status_data,
+> +	.hub_control		= ehci_hub_control,
+> +	.bus_suspend		= ehci_bus_suspend,
+> +	.bus_resume		= ehci_bus_resume,
+> +	.relinquish_port	= ehci_relinquish_port,
+> +	.port_handed_over	= ehci_port_handed_over,
+> +};
+
+This looks like it was copied from a rather old copy of ehci-au1xxx.
+You should allways base new work on the current version.
+
+> +static int ehci_hcd_mips_drv_probe(struct platform_device *pdev)
+> +{
+> +	struct usb_hcd *hcd;
+> +	struct ehci_hcd *ehci;
+> +	int ret;
+> +
+> +	if (usb_disabled())
+> +		return -ENODEV;
+> +
+> +	if (pdev->resource[1].flags != IORESOURCE_IRQ) {
+> +		pr_debug("resource[1] is not IORESOURCE_IRQ");
+> +		return -ENOMEM;
+> +	}
+> +	hcd = usb_create_hcd(&ehci_mips_hc_driver, &pdev->dev, "MIPS");
+> +	if (!hcd)
+> +		return -ENOMEM;
+> +
+> +	hcd->rsrc_start = pdev->resource[0].start;
+> +	hcd->rsrc_len = pdev->resource[0].end - pdev->resource[0].start + 1;
+> +
+> +	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len, hcd_name)) {
+> +		pr_debug("request_mem_region failed");
+> +		ret = -EBUSY;
+> +		goto err1;
+> +	}
+> +
+> +	hcd->regs = ioremap(hcd->rsrc_start, hcd->rsrc_len);
+> +	if (!hcd->regs) {
+> +		pr_debug("ioremap failed");
+> +		ret = -ENOMEM;
+> +		goto err2;
+> +	}
+> +
+> +	hcd->has_tt = 1;
+> +
+> +	ehci = hcd_to_ehci(hcd);
+> +	ehci->caps = hcd->regs + 0x100;
+
+Some of this (along with mips_run() above) can be replaced with a call
+to ehci_setup().
+
+> +	ehci->regs = hcd->regs + 0x100 +
+> +		HC_LENGTH(ehci, readl(&ehci->caps->hc_capbase));
+> +	/* cache this readonly data; minimize chip reads */
+> +	ehci->hcs_params = readl(&ehci->caps->hcs_params);
+> +
+> +	/* SEAD-3 EHCI matches CPU endianness. */
+> +#ifdef __BIG_ENDIAN
+> +	ehci->big_endian_mmio = 1;
+> +	ehci->big_endian_desc = 1;
+> +#endif
+> +
+> +	/* Set burst length to 16 words */
+> +	/* FIXME: should be tunable */
+> +	ehci_writel(ehci, 0x1010, &ehci->regs->reserved[1]);
+> +
+> +	ret = usb_add_hcd(hcd, pdev->resource[1].start,
+> +			  IRQF_DISABLED | IRQF_SHARED);
+> +	if (ret == 0) {
+> +		platform_set_drvdata(pdev, hcd);
+> +		return ret;
+> +	}
+
+Alan Stern

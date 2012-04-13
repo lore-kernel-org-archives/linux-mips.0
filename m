@@ -1,95 +1,91 @@
-Received: from iolanthe.rowland.org ([192.131.102.54]:45685 "HELO
-        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with SMTP id S1903647Ab2DLPAt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 12 Apr 2012 17:00:49 +0200
-Date: Thu, 12 Apr 2012 11:00:45 -0400 (EDT)
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH v3 10/10] usb: host: mips: sead3: USB Host controller
- support for SEAD-3 platform.
-In-Reply-To: <1334175197-9049-1-git-send-email-sjhill@mips.com>
-Message-ID: <Pine.LNX.4.44L0.1204121056330.1496-100000@iolanthe.rowland.org>
+Received: from server19320154104.serverpool.info ([193.201.54.104]:60281 "EHLO
+        hauke-m.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1903547Ab2DML6u (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 13 Apr 2012 13:58:50 +0200
+Message-ID: <4F8814EE.2050406@hauke-m.de>
+Date: Fri, 13 Apr 2012 13:58:38 +0200
+From: Hauke Mehrtens <hauke@hauke-m.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Re: [PATCH v5 1/4] bcma: scan for extra address space
+References: <1331851799-5968-1-git-send-email-hauke@hauke-m.de> <1331851799-5968-2-git-send-email-hauke@hauke-m.de>
+In-Reply-To: <1331851799-5968-2-git-send-email-hauke@hauke-m.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: "Steven J. Hill" <sjhill@mips.com>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, linux-usb@vger.kernel.org, Chris Dearman <chris@mips.com>
-Message-ID: <20120412150045.aEu4L7I_JQlNR-AfqeAkgmPVPLgtnp19ywBvmMKNYhs@z>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: gregkh@linuxfoundation.org, stern@rowland.harvard.edu, linux-mips@linux-mips.org, ralf@linux-mips.org, m@bues.ch, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org
+Message-ID: <20120413115838.565L0hvZPa_NNXZRE1JSONcCsOSXmmFmQtpw3tR5VqA@z>
 
-On Wed, 11 Apr 2012, Steven J. Hill wrote:
+Hi Rafał,
 
-> From: "Steven J. Hill" <sjhill@mips.com>
+could you give me an Acked-by line as the Maintainer of bcma for this
+patch if you are ok with this patch please.
+
+Hauke
+
+On 03/15/2012 11:49 PM, Hauke Mehrtens wrote:
+> Some cores like the USB core have two address spaces. In the USB host
+> controller one address space is used for the OHCI and the other for the
+> EHCI controller interface. The USB controller is the only core I found
+> with two address spaces. This code is based on the AI scan function
+> ai_scan() in shared/aiutils.c in the Broadcom SDK.
 > 
-> Add EHCI driver for MIPS SEAD-3 development platform.
+> CC: Rafał Miłecki <zajec5@gmail.com>
+> CC: linux-wireless@vger.kernel.org
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> ---
+>  drivers/bcma/scan.c       |   19 ++++++++++++++++++-
+>  include/linux/bcma/bcma.h |    1 +
+>  2 files changed, 19 insertions(+), 1 deletions(-)
 > 
-> Signed-off-by: Chris Dearman <chris@mips.com>
-> Signed-off-by: Steven J. Hill <sjhill@mips.com>
-
-Even better than before.  But...
-
-> +const struct hc_driver ehci_sead3_hc_driver = {
-> +	.description		= hcd_name,
-> +	.product_desc		= "SEAD-3 EHCI",
-> +	.hcd_priv_size		= sizeof(struct ehci_hcd),
-> +
-> +	/*
-> +	 * generic hardware linkage
+> diff --git a/drivers/bcma/scan.c b/drivers/bcma/scan.c
+> index 3a2f672..1fa10ed 100644
+> --- a/drivers/bcma/scan.c
+> +++ b/drivers/bcma/scan.c
+> @@ -286,6 +286,23 @@ static int bcma_get_next_core(struct bcma_bus *bus, u32 __iomem **eromptr,
+>  			return -EILSEQ;
+>  	}
+>  
+> +	/* First Slave Address Descriptor should be port 0:
+> +	 * the main register space for the core
 > +	 */
-> +	.irq			= ehci_irq,
-> +	.flags			= HCD_MEMORY | HCD_USB2,
-> +
-> +	/*
-> +	 * basic lifecycle operations
-> +	 *
-> +	 */
-> +	.reset			= ehci_setup,
-
-You no longer care about the ehci->need_io_watchdog setting?
-
-> +static int ehci_hcd_sead3_drv_probe(struct platform_device *pdev)
-> +{
-> +	struct usb_hcd *hcd;
-> +	struct ehci_hcd *ehci;
-> +	struct resource *res;
-> +	int ret;
-> +
-> +	if (usb_disabled())
-> +		return -ENODEV;
-> +
-> +	if (pdev->resource[1].flags != IORESOURCE_IRQ) {
-> +		pr_debug("resource[1] is not IORESOURCE_IRQ");
-> +		return -ENOMEM;
+> +	tmp = bcma_erom_get_addr_desc(bus, eromptr, SCAN_ADDR_TYPE_SLAVE, 0);
+> +	if (tmp <= 0) {
+> +		/* Try again to see if it is a bridge */
+> +		tmp = bcma_erom_get_addr_desc(bus, eromptr,
+> +					      SCAN_ADDR_TYPE_BRIDGE, 0);
+> +		if (tmp <= 0) {
+> +			return -EILSEQ;
+> +		} else {
+> +			pr_info("Bridge found\n");
+> +			return -ENXIO;
+> +		}
 > +	}
-> +	hcd = usb_create_hcd(&ehci_sead3_hc_driver, &pdev->dev, "SEAD-3");
-> +	if (!hcd)
-> +		return -ENOMEM;
+> +	core->addr = tmp;
 > +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	hcd->rsrc_start = res->start;
-> +	hcd->rsrc_len = resource_size(res);
-> +
-> +	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len, hcd_name)) {
-> +		pr_debug("request_mem_region failed");
-> +		ret = -EBUSY;
-> +		goto err1;
-> +	}
-> +
-> +	hcd->regs = ioremap(hcd->rsrc_start, hcd->rsrc_len);
-> +	if (!hcd->regs) {
-> +		pr_debug("ioremap failed");
-> +		ret = -ENOMEM;
-> +		goto err2;
-> +	}
-> +
-> +	ehci = hcd_to_ehci(hcd);
-> +	ehci->caps = hcd->regs + 0x100;
-> +	ehci->regs = hcd->regs + 0x100 +
-> +		HC_LENGTH(ehci, readl(&ehci->caps->hc_capbase));
-> +	/* cache this readonly data; minimize chip reads */
-> +	ehci->hcs_params = readl(&ehci->caps->hcs_params);
-
-The last four lines above are duplicates of code that is already
-present in ehci_setup.
-
-Alan Stern
+>  	/* get & parse slave ports */
+>  	for (i = 0; i < ports[1]; i++) {
+>  		for (j = 0; ; j++) {
+> @@ -298,7 +315,7 @@ static int bcma_get_next_core(struct bcma_bus *bus, u32 __iomem **eromptr,
+>  				break;
+>  			} else {
+>  				if (i == 0 && j == 0)
+> -					core->addr = tmp;
+> +					core->addr1 = tmp;
+>  			}
+>  		}
+>  	}
+> diff --git a/include/linux/bcma/bcma.h b/include/linux/bcma/bcma.h
+> index 83c209f..7fe41e1 100644
+> --- a/include/linux/bcma/bcma.h
+> +++ b/include/linux/bcma/bcma.h
+> @@ -138,6 +138,7 @@ struct bcma_device {
+>  	u8 core_index;
+>  
+>  	u32 addr;
+> +	u32 addr1;
+>  	u32 wrap;
+>  
+>  	void __iomem *io_addr;

@@ -1,91 +1,113 @@
-Received: from server19320154104.serverpool.info ([193.201.54.104]:60281 "EHLO
-        hauke-m.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1903547Ab2DML6u (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 13 Apr 2012 13:58:50 +0200
-Message-ID: <4F8814EE.2050406@hauke-m.de>
-Date: Fri, 13 Apr 2012 13:58:38 +0200
-From: Hauke Mehrtens <hauke@hauke-m.de>
-MIME-Version: 1.0
-Subject: Re: [PATCH v5 1/4] bcma: scan for extra address space
-References: <1331851799-5968-1-git-send-email-hauke@hauke-m.de> <1331851799-5968-2-git-send-email-hauke@hauke-m.de>
-In-Reply-To: <1331851799-5968-2-git-send-email-hauke@hauke-m.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Received: from mail-ob0-f177.google.com ([209.85.214.177]:53569 "EHLO
+        mail-ob0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903686Ab2DQBDr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Apr 2012 03:03:47 +0200
+Received: by obcni5 with SMTP id ni5so253540obc.36
+        for <linux-mips@linux-mips.org>; Mon, 16 Apr 2012 18:03:41 -0700 (PDT)
+From: David Daney <ddaney.cavm@gmail.com>
+Subject: [PATCH v3 1/3] netdev/of/phy: New function: of_mdio_find_bus().
+Date: Mon, 16 Apr 2012 18:03:26 -0700
+Message-ID: <1334624608-26667-2-git-send-email-ddaney.cavm@gmail.com>
+In-Reply-To: <1334624608-26667-1-git-send-email-ddaney.cavm@gmail.com>
+References: <1334624608-26667-1-git-send-email-ddaney.cavm@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: gregkh@linuxfoundation.org, stern@rowland.harvard.edu, linux-mips@linux-mips.org, ralf@linux-mips.org, m@bues.ch, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org
-Message-ID: <20120413115838.565L0hvZPa_NNXZRE1JSONcCsOSXmmFmQtpw3tR5VqA@z>
+To: Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, devicetree-discuss@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, afleming@gmail.com, galak@kernel.crashing.org, David Daney <david.daney@cavium.com>
+Message-ID: <20120417010326.u0O5oU8IkDedtkJM8O9KYjeR9_hmdnREMsPpQy8yr2o@z>
 
-Hi Rafał,
+From: David Daney <david.daney@cavium.com>
 
-could you give me an Acked-by line as the Maintainer of bcma for this
-patch if you are ok with this patch please.
+Add of_mdio_find_bus() which allows an mii_bus to be located given its
+associated the device tree node.
 
-Hauke
+This is needed by the follow-on patch to add a driver for MDIO bus
+multiplexers.
 
-On 03/15/2012 11:49 PM, Hauke Mehrtens wrote:
-> Some cores like the USB core have two address spaces. In the USB host
-> controller one address space is used for the OHCI and the other for the
-> EHCI controller interface. The USB controller is the only core I found
-> with two address spaces. This code is based on the AI scan function
-> ai_scan() in shared/aiutils.c in the Broadcom SDK.
-> 
-> CC: Rafał Miłecki <zajec5@gmail.com>
-> CC: linux-wireless@vger.kernel.org
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> ---
->  drivers/bcma/scan.c       |   19 ++++++++++++++++++-
->  include/linux/bcma/bcma.h |    1 +
->  2 files changed, 19 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/bcma/scan.c b/drivers/bcma/scan.c
-> index 3a2f672..1fa10ed 100644
-> --- a/drivers/bcma/scan.c
-> +++ b/drivers/bcma/scan.c
-> @@ -286,6 +286,23 @@ static int bcma_get_next_core(struct bcma_bus *bus, u32 __iomem **eromptr,
->  			return -EILSEQ;
->  	}
->  
-> +	/* First Slave Address Descriptor should be port 0:
-> +	 * the main register space for the core
-> +	 */
-> +	tmp = bcma_erom_get_addr_desc(bus, eromptr, SCAN_ADDR_TYPE_SLAVE, 0);
-> +	if (tmp <= 0) {
-> +		/* Try again to see if it is a bridge */
-> +		tmp = bcma_erom_get_addr_desc(bus, eromptr,
-> +					      SCAN_ADDR_TYPE_BRIDGE, 0);
-> +		if (tmp <= 0) {
-> +			return -EILSEQ;
-> +		} else {
-> +			pr_info("Bridge found\n");
-> +			return -ENXIO;
-> +		}
-> +	}
-> +	core->addr = tmp;
-> +
->  	/* get & parse slave ports */
->  	for (i = 0; i < ports[1]; i++) {
->  		for (j = 0; ; j++) {
-> @@ -298,7 +315,7 @@ static int bcma_get_next_core(struct bcma_bus *bus, u32 __iomem **eromptr,
->  				break;
->  			} else {
->  				if (i == 0 && j == 0)
-> -					core->addr = tmp;
-> +					core->addr1 = tmp;
->  			}
->  		}
->  	}
-> diff --git a/include/linux/bcma/bcma.h b/include/linux/bcma/bcma.h
-> index 83c209f..7fe41e1 100644
-> --- a/include/linux/bcma/bcma.h
-> +++ b/include/linux/bcma/bcma.h
-> @@ -138,6 +138,7 @@ struct bcma_device {
->  	u8 core_index;
->  
->  	u32 addr;
-> +	u32 addr1;
->  	u32 wrap;
->  
->  	void __iomem *io_addr;
+The of_mdiobus_register() function is modified so that the device tree
+node is recorded in the mii_bus.  Then we can find it again by
+iterating over all mdio_bus_class devices.
+
+Because the OF device tree has now become an integral part of the
+kernel, this can live in mdio_bus.c (which contains the needed
+mdio_bus_class structure) instead of of_mdio.c.
+
+Signed-off-by: David Daney <david.daney@cavium.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: "David S. Miller" <davem@davemloft.net>
+---
+ drivers/net/phy/mdio_bus.c |   32 ++++++++++++++++++++++++++++++++
+ drivers/of/of_mdio.c       |    2 ++
+ include/linux/of_mdio.h    |    2 ++
+ 3 files changed, 36 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 8985cc6..46e7dc5 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -88,6 +88,38 @@ static struct class mdio_bus_class = {
+ 	.dev_release	= mdiobus_release,
+ };
+ 
++#ifdef CONFIG_OF_MDIO
++/* Helper function for of_phy_find_device */
++static int of_mii_bus_match(struct device *dev, void *mii_bus_np)
++{
++	return dev->of_node == mii_bus_np;
++}
++/**
++ * of_mdio_find_bus - Given an mii_bus node, find the mii_bus.
++ * @mdio_np: Pointer to the mii_bus.
++ *
++ * Returns a pointer to the mii_bus, or NULL if none found.
++ *
++ * Because the association of a device_node and mii_bus is made via
++ * of_mdiobus_register(), the mii_bus cannot be found before it is
++ * registered with of_mdiobus_register().
++ *
++ */
++struct mii_bus *of_mdio_find_bus(struct device_node *mdio_np)
++{
++	struct device *d;
++
++	if (!mdio_np)
++		return NULL;
++
++	d = class_find_device(&mdio_bus_class, NULL,  mdio_np,
++			      of_mii_bus_match);
++
++	return d ? to_mii_bus(d) : NULL;
++}
++EXPORT_SYMBOL(of_mdio_find_bus);
++#endif
++
+ /**
+  * mdiobus_register - bring up all the PHYs on a given bus and attach them to bus
+  * @bus: target mii_bus
+diff --git a/drivers/of/of_mdio.c b/drivers/of/of_mdio.c
+index 483c0ad..2574abd 100644
+--- a/drivers/of/of_mdio.c
++++ b/drivers/of/of_mdio.c
+@@ -45,6 +45,8 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
+ 		for (i=0; i<PHY_MAX_ADDR; i++)
+ 			mdio->irq[i] = PHY_POLL;
+ 
++	mdio->dev.of_node = np;
++
+ 	/* Register the MDIO bus */
+ 	rc = mdiobus_register(mdio);
+ 	if (rc)
+diff --git a/include/linux/of_mdio.h b/include/linux/of_mdio.h
+index 53b94e0..912c27a 100644
+--- a/include/linux/of_mdio.h
++++ b/include/linux/of_mdio.h
+@@ -22,4 +22,6 @@ extern struct phy_device *of_phy_connect_fixed_link(struct net_device *dev,
+ 					 void (*hndlr)(struct net_device *),
+ 					 phy_interface_t iface);
+ 
++extern struct mii_bus *of_mdio_find_bus(struct device_node *mdio_np);
++
+ #endif /* __LINUX_OF_MDIO_H */
+-- 
+1.7.2.3

@@ -1,21 +1,21 @@
-Received: from mail-ob0-f177.google.com ([209.85.214.177]:53569 "EHLO
+Received: from mail-ob0-f177.google.com ([209.85.214.177]:45610 "EHLO
         mail-ob0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903686Ab2DQBDr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Apr 2012 03:03:47 +0200
-Received: by obcni5 with SMTP id ni5so253540obc.36
-        for <linux-mips@linux-mips.org>; Mon, 16 Apr 2012 18:03:41 -0700 (PDT)
+        by eddie.linux-mips.org with ESMTP id S1903724Ab2DQRdP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Apr 2012 19:33:15 +0200
+Received: by obcni5 with SMTP id ni5so1455733obc.36
+        for <linux-mips@linux-mips.org>; Tue, 17 Apr 2012 10:33:09 -0700 (PDT)
 From: David Daney <ddaney.cavm@gmail.com>
-Subject: [PATCH v3 1/3] netdev/of/phy: New function: of_mdio_find_bus().
-Date: Mon, 16 Apr 2012 18:03:26 -0700
-Message-ID: <1334624608-26667-2-git-send-email-ddaney.cavm@gmail.com>
-In-Reply-To: <1334624608-26667-1-git-send-email-ddaney.cavm@gmail.com>
-References: <1334624608-26667-1-git-send-email-ddaney.cavm@gmail.com>
+Subject: [PATCH v4 1/3] netdev/of/phy: New function: of_mdio_find_bus().
+Date: Tue, 17 Apr 2012 10:32:44 -0700
+Message-ID: <1334683966-12112-2-git-send-email-ddaney.cavm@gmail.com>
+In-Reply-To: <1334683966-12112-1-git-send-email-ddaney.cavm@gmail.com>
+References: <1334683966-12112-1-git-send-email-ddaney.cavm@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, devicetree-discuss@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, afleming@gmail.com, galak@kernel.crashing.org, David Daney <david.daney@cavium.com>
-Message-ID: <20120417010326.u0O5oU8IkDedtkJM8O9KYjeR9_hmdnREMsPpQy8yr2o@z>
+Message-ID: <20120417173244.MFkPTX9nahKjDRn_qYwtbudY0NENMdscpUu_8zFCBxY@z>
 
 From: David Daney <david.daney@cavium.com>
 
@@ -43,7 +43,7 @@ Cc: "David S. Miller" <davem@davemloft.net>
  3 files changed, 36 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 8985cc6..46e7dc5 100644
+index 8985cc6..83d5c9f 100644
 --- a/drivers/net/phy/mdio_bus.c
 +++ b/drivers/net/phy/mdio_bus.c
 @@ -88,6 +88,38 @@ static struct class mdio_bus_class = {
@@ -51,10 +51,10 @@ index 8985cc6..46e7dc5 100644
  };
  
 +#ifdef CONFIG_OF_MDIO
-+/* Helper function for of_phy_find_device */
-+static int of_mii_bus_match(struct device *dev, void *mii_bus_np)
++/* Helper function for of_mdio_find_bus */
++static int of_mdio_bus_match(struct device *dev, void *mdio_bus_np)
 +{
-+	return dev->of_node == mii_bus_np;
++	return dev->of_node == mdio_bus_np;
 +}
 +/**
 + * of_mdio_find_bus - Given an mii_bus node, find the mii_bus.
@@ -67,15 +67,15 @@ index 8985cc6..46e7dc5 100644
 + * registered with of_mdiobus_register().
 + *
 + */
-+struct mii_bus *of_mdio_find_bus(struct device_node *mdio_np)
++struct mii_bus *of_mdio_find_bus(struct device_node *mdio_bus_np)
 +{
 +	struct device *d;
 +
-+	if (!mdio_np)
++	if (!mdio_bus_np)
 +		return NULL;
 +
-+	d = class_find_device(&mdio_bus_class, NULL,  mdio_np,
-+			      of_mii_bus_match);
++	d = class_find_device(&mdio_bus_class, NULL,  mdio_bus_np,
++			      of_mdio_bus_match);
 +
 +	return d ? to_mii_bus(d) : NULL;
 +}

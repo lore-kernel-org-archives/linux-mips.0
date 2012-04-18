@@ -1,113 +1,73 @@
-Received: from mail-ob0-f177.google.com ([209.85.214.177]:45610 "EHLO
-        mail-ob0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903724Ab2DQRdP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Apr 2012 19:33:15 +0200
-Received: by obcni5 with SMTP id ni5so1455733obc.36
-        for <linux-mips@linux-mips.org>; Tue, 17 Apr 2012 10:33:09 -0700 (PDT)
-From: David Daney <ddaney.cavm@gmail.com>
-Subject: [PATCH v4 1/3] netdev/of/phy: New function: of_mdio_find_bus().
-Date: Tue, 17 Apr 2012 10:32:44 -0700
-Message-ID: <1334683966-12112-2-git-send-email-ddaney.cavm@gmail.com>
-In-Reply-To: <1334683966-12112-1-git-send-email-ddaney.cavm@gmail.com>
-References: <1334683966-12112-1-git-send-email-ddaney.cavm@gmail.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35]:46921 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903614Ab2DRPQf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Apr 2012 17:16:35 +0200
+Date: Wed, 18 Apr 2012 17:16:21 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH 1/5] i2c: Convert i2c-octeon.c to use device tree.
+Message-ID: <20120418151621.GF19802@pengutronix.de>
+References: <1332808075-8333-1-git-send-email-ddaney.cavm@gmail.com>
+ <1332808075-8333-2-git-send-email-ddaney.cavm@gmail.com>
+ <4F7115FA.6080507@gmail.com>
+ <4F7117FD.7000700@cavium.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="i3lJ51RuaGWuFYNw"
+Content-Disposition: inline
+In-Reply-To: <4F7117FD.7000700@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, devicetree-discuss@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, afleming@gmail.com, galak@kernel.crashing.org, David Daney <david.daney@cavium.com>
-Message-ID: <20120417173244.MFkPTX9nahKjDRn_qYwtbudY0NENMdscpUu_8zFCBxY@z>
+To: David Daney <david.daney@cavium.com>
+Cc: Rob Herring <robherring2@gmail.com>, David Daney <ddaney.cavm@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, "Ben Dooks (embedded platforms)" <ben-linux@fluff.org>, "Jean Delvare (PC drivers, core)" <khali@linux-fr.org>
+Message-ID: <20120418151621.B015raX29KGNap0WPcx_4dUITS-mDMMfmYJ2xGlaMEQ@z>
 
-From: David Daney <david.daney@cavium.com>
 
-Add of_mdio_find_bus() which allows an mii_bus to be located given its
-associated the device tree node.
+--i3lJ51RuaGWuFYNw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is needed by the follow-on patch to add a driver for MDIO bus
-multiplexers.
+> >>-	if (i2c_data =3D=3D NULL) {
+> >>-		dev_err(i2c->dev, "no I2C frequency data\n");
+> >>+	/*
+> >>+	 * "clock-rate" is a legacy binding, the official binding is
+> >>+	 * "clock-frequency".  Try the official one first and then
+> >>+	 * fall back if it doesn't exist.
+> >>+	 */
+> >>+	data =3D of_get_property(pdev->dev.of_node, "clock-frequency",&len);
+> >>+	if (!data || len !=3D sizeof(*data))
+> >>+		data =3D of_get_property(pdev->dev.of_node, "clock-rate",&len);
+> >>+	if (data&&  len =3D=3D sizeof(*data)) {
+> >>+		i2c->twsi_freq =3D be32_to_cpup(data);
+> >
+> >Can't you use of_property_read_u32?
+>=20
+> I will investigate, and use it if possible.
 
-The of_mdiobus_register() function is modified so that the device tree
-node is recorded in the mii_bus.  Then we can find it again by
-iterating over all mdio_bus_class devices.
+Any outcome?
 
-Because the OF device tree has now become an integral part of the
-kernel, this can live in mdio_bus.c (which contains the needed
-mdio_bus_class structure) instead of of_mdio.c.
+And shouldn't the bindings be documented? Or are they only standard and
+we hide the legacy one?
 
-Signed-off-by: David Daney <david.daney@cavium.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>
-Cc: "David S. Miller" <davem@davemloft.net>
----
- drivers/net/phy/mdio_bus.c |   32 ++++++++++++++++++++++++++++++++
- drivers/of/of_mdio.c       |    2 ++
- include/linux/of_mdio.h    |    2 ++
- 3 files changed, 36 insertions(+), 0 deletions(-)
+Regards,
 
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 8985cc6..83d5c9f 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -88,6 +88,38 @@ static struct class mdio_bus_class = {
- 	.dev_release	= mdiobus_release,
- };
- 
-+#ifdef CONFIG_OF_MDIO
-+/* Helper function for of_mdio_find_bus */
-+static int of_mdio_bus_match(struct device *dev, void *mdio_bus_np)
-+{
-+	return dev->of_node == mdio_bus_np;
-+}
-+/**
-+ * of_mdio_find_bus - Given an mii_bus node, find the mii_bus.
-+ * @mdio_np: Pointer to the mii_bus.
-+ *
-+ * Returns a pointer to the mii_bus, or NULL if none found.
-+ *
-+ * Because the association of a device_node and mii_bus is made via
-+ * of_mdiobus_register(), the mii_bus cannot be found before it is
-+ * registered with of_mdiobus_register().
-+ *
-+ */
-+struct mii_bus *of_mdio_find_bus(struct device_node *mdio_bus_np)
-+{
-+	struct device *d;
-+
-+	if (!mdio_bus_np)
-+		return NULL;
-+
-+	d = class_find_device(&mdio_bus_class, NULL,  mdio_bus_np,
-+			      of_mdio_bus_match);
-+
-+	return d ? to_mii_bus(d) : NULL;
-+}
-+EXPORT_SYMBOL(of_mdio_find_bus);
-+#endif
-+
- /**
-  * mdiobus_register - bring up all the PHYs on a given bus and attach them to bus
-  * @bus: target mii_bus
-diff --git a/drivers/of/of_mdio.c b/drivers/of/of_mdio.c
-index 483c0ad..2574abd 100644
---- a/drivers/of/of_mdio.c
-+++ b/drivers/of/of_mdio.c
-@@ -45,6 +45,8 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
- 		for (i=0; i<PHY_MAX_ADDR; i++)
- 			mdio->irq[i] = PHY_POLL;
- 
-+	mdio->dev.of_node = np;
-+
- 	/* Register the MDIO bus */
- 	rc = mdiobus_register(mdio);
- 	if (rc)
-diff --git a/include/linux/of_mdio.h b/include/linux/of_mdio.h
-index 53b94e0..912c27a 100644
---- a/include/linux/of_mdio.h
-+++ b/include/linux/of_mdio.h
-@@ -22,4 +22,6 @@ extern struct phy_device *of_phy_connect_fixed_link(struct net_device *dev,
- 					 void (*hndlr)(struct net_device *),
- 					 phy_interface_t iface);
- 
-+extern struct mii_bus *of_mdio_find_bus(struct device_node *mdio_np);
-+
- #endif /* __LINUX_OF_MDIO_H */
--- 
-1.7.2.3
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--i3lJ51RuaGWuFYNw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iEYEARECAAYFAk+O2sUACgkQD27XaX1/VRv/CQCgl1wkMkth8GAy711B8Qinp3Ke
+rfsAoL2TfKfwpc5sEuiwNqyAxNWDIiS2
+=Qn9J
+-----END PGP SIGNATURE-----
+
+--i3lJ51RuaGWuFYNw--

@@ -1,73 +1,56 @@
-Received: from metis.ext.pengutronix.de ([92.198.50.35]:46921 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903614Ab2DRPQf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Apr 2012 17:16:35 +0200
-Date: Wed, 18 Apr 2012 17:16:21 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH 1/5] i2c: Convert i2c-octeon.c to use device tree.
-Message-ID: <20120418151621.GF19802@pengutronix.de>
-References: <1332808075-8333-1-git-send-email-ddaney.cavm@gmail.com>
- <1332808075-8333-2-git-send-email-ddaney.cavm@gmail.com>
- <4F7115FA.6080507@gmail.com>
- <4F7117FD.7000700@cavium.com>
+Received: from mail3.caviumnetworks.com ([12.108.191.235]:3916 "EHLO
+        mail3.caviumnetworks.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903631Ab2DRQUc (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Apr 2012 18:20:32 +0200
+Message-ID: <4F8EE9CC.20000@cavium.com>
+Date: Wed, 18 Apr 2012 09:20:28 -0700
+From: David Daney <david.daney@cavium.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="i3lJ51RuaGWuFYNw"
-Content-Disposition: inline
-In-Reply-To: <4F7117FD.7000700@cavium.com>
+Subject: Re: [PATCH 1/5] i2c: Convert i2c-octeon.c to use device tree.
+References: <1332808075-8333-1-git-send-email-ddaney.cavm@gmail.com> <1332808075-8333-2-git-send-email-ddaney.cavm@gmail.com> <4F7115FA.6080507@gmail.com> <4F7117FD.7000700@cavium.com> <20120418151621.GF19802@pengutronix.de>
+In-Reply-To: <20120418151621.GF19802@pengutronix.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: David Daney <david.daney@cavium.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
 Cc: Rob Herring <robherring2@gmail.com>, David Daney <ddaney.cavm@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, "Ben Dooks (embedded platforms)" <ben-linux@fluff.org>, "Jean Delvare (PC drivers, core)" <khali@linux-fr.org>
-Message-ID: <20120418151621.B015raX29KGNap0WPcx_4dUITS-mDMMfmYJ2xGlaMEQ@z>
+Message-ID: <20120418162028.ldwujsM-HSYiyyz6ub4hyzN2e5pLInqdnn7yQ_sNRco@z>
 
+On 04/18/2012 08:16 AM, Wolfram Sang wrote:
+>>>> -	if (i2c_data == NULL) {
+>>>> -		dev_err(i2c->dev, "no I2C frequency data\n");
+>>>> +	/*
+>>>> +	 * "clock-rate" is a legacy binding, the official binding is
+>>>> +	 * "clock-frequency".  Try the official one first and then
+>>>> +	 * fall back if it doesn't exist.
+>>>> +	 */
+>>>> +	data = of_get_property(pdev->dev.of_node, "clock-frequency",&len);
+>>>> +	if (!data || len != sizeof(*data))
+>>>> +		data = of_get_property(pdev->dev.of_node, "clock-rate",&len);
+>>>> +	if (data&&   len == sizeof(*data)) {
+>>>> +		i2c->twsi_freq = be32_to_cpup(data);
+>>>
+>>> Can't you use of_property_read_u32?
+>>
+>> I will investigate, and use it if possible.
+>
+> Any outcome?
 
---i3lJ51RuaGWuFYNw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, I have implemented Rob's suggestions.  A new patch set reflecting 
+this is coming soon.
 
-> >>-	if (i2c_data =3D=3D NULL) {
-> >>-		dev_err(i2c->dev, "no I2C frequency data\n");
-> >>+	/*
-> >>+	 * "clock-rate" is a legacy binding, the official binding is
-> >>+	 * "clock-frequency".  Try the official one first and then
-> >>+	 * fall back if it doesn't exist.
-> >>+	 */
-> >>+	data =3D of_get_property(pdev->dev.of_node, "clock-frequency",&len);
-> >>+	if (!data || len !=3D sizeof(*data))
-> >>+		data =3D of_get_property(pdev->dev.of_node, "clock-rate",&len);
-> >>+	if (data&&  len =3D=3D sizeof(*data)) {
-> >>+		i2c->twsi_freq =3D be32_to_cpup(data);
-> >
-> >Can't you use of_property_read_u32?
->=20
-> I will investigate, and use it if possible.
+>
+> And shouldn't the bindings be documented? Or are they only standard and
+> we hide the legacy one?
+>
 
-Any outcome?
+Yes, they are documented here:
 
-And shouldn't the bindings be documented? Or are they only standard and
-we hide the legacy one?
+http://patchwork.linux-mips.org/patch/3536/
 
-Regards,
+look in the cavium-i2c.txt file.
 
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---i3lJ51RuaGWuFYNw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iEYEARECAAYFAk+O2sUACgkQD27XaX1/VRv/CQCgl1wkMkth8GAy711B8Qinp3Ke
-rfsAoL2TfKfwpc5sEuiwNqyAxNWDIiS2
-=Qn9J
------END PGP SIGNATURE-----
-
---i3lJ51RuaGWuFYNw--
+Thanks,
+David Daney

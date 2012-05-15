@@ -1,92 +1,58 @@
-Received: from mail1.windriver.com ([147.11.146.13]:61409 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1903656Ab2EJOoq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 10 May 2012 16:44:46 +0200
-Message-ID: <4FABD436.7070402@windriver.com>
-Date: Thu, 10 May 2012 10:44:06 -0400
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH 3/4] kbuild: link of vmlinux moved to a script
-References: <20120428205651.GA7426@merkur.ravnborg.org> <20120428205919.GC7442@merkur.ravnborg.org> <4FA460AB.6060309@suse.cz> <20120505082916.GA14006@merkur.ravnborg.org> <CA+8MBbKd9zAouJy5JvUnLwUHMJ65HsYgCTfBgv42nm32EnMPFA@mail.gmail.com> <20120508165118.GA11750@merkur.ravnborg.org> <CAP=VYLobO--uwxv_hiMYBnjD-AU_0fqyQJD6argQygnkHnm5Vg@mail.gmail.com> <20120510122210.GA17550@sepie.suse.cz>
-In-Reply-To: <20120510122210.GA17550@sepie.suse.cz>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Received: from mail-pb0-f49.google.com ([209.85.160.49]:47687 "EHLO
+        mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903662Ab2EOAFB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 15 May 2012 02:05:01 +0200
+From: David Daney <ddaney.cavm@gmail.com>
+Subject: [PATCH v2 0/5] MIPS: Move cache setup earlier.
+Date: Mon, 14 May 2012 17:04:45 -0700
+Message-ID: <1337040290-16015-1-git-send-email-ddaney.cavm@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Michal Marek <mmarek@suse.cz>
-Cc: Sam Ravnborg <sam@ravnborg.org>, Tony Luck <tony.luck@gmail.com>, linux arch <linux-arch@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, Richard Weinberger <richard@nod.at>, "David S. Miller" <davem@davemloft.net>, Arnaud Lacombe <lacombar@gmail.com>, Andi Kleen <andi@firstfloor.org>, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20120510144406.xKMtZzVRg2GP_yDLqZCwBLapfHZh5scoklf0ZyWVKzA@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: David Daney <david.daney@cavium.com>
+Message-ID: <20120515000445.Tx5k-BhEpsPf-WWMNCAaPVwB3hjiQtA6bvXHdKv7wfs@z>
 
-On 12-05-10 08:22 AM, Michal Marek wrote:
-> On Wed, May 09, 2012 at 06:58:16PM -0400, Paul Gortmaker wrote:
->> On Tue, May 8, 2012 at 12:51 PM, Sam Ravnborg <sam@ravnborg.org> wrote:
->>> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
->>> index 26c5b65..1f4c27b 100644
->>> --- a/scripts/link-vmlinux.sh
->>> +++ b/scripts/link-vmlinux.sh
->>> @@ -78,8 +78,8 @@ kallsyms()
->>>                kallsymopt=--all-symbols
->>>        fi
->>>
->>> -       local aflags="${KBUILD_AFLAGS} ${NOSTDINC_FLAGS}                     \
->>> -                     ${LINUXINCLUDE} ${KBUILD_CPPFLAGS}"
->>> +       local aflags="${KBUILD_AFLAGS} ${KBUILD_AFLAGS_KERNEL}               \
->>> +                     ${NOSTDINC_FLAGS} ${LINUXINCLUDE} ${KBUILD_CPPFLAGS}"
->>
->> All the linux-next builds for mips are failing, which I tracked down to this.
->> Applying the above update doesn't help.  What is happening is that MIPS
->> gets KBUILD_CPPFLAGS double-quoted, and then you get:
->>
->> + mips-wrs-linux-gnu-nm -n .tmp_vmlinux1
->> + scripts/kallsyms
->> + mips-wrs-linux-gnu-gcc -D__ASSEMBLY__ <..snip..>  -D__KERNEL__
->> '-D"VMLINUX_LOAD_ADDRESS=0xffffffff81100000"' '-D"DATAOFFSET=0"' -c -o
->> .tmp_kallsyms1.o -x assembler-with-cpp -
->> <command-line>:0: error: macro names must be identifiers
->> <command-line>:0: error: macro names must be identifiers
->> make[1]: *** [vmlinux] Error 1
->>
->> Note the  '-D"VMLINUX_LOAD_ADDRESS=0xffffffff81100000"' '-D"DATAOFFSET=0"'
->> part -- that is what triggers the two above errors.
-> 
-> I think it should be as simple as the below patch. But I have no mips
-> machine to verify myself.
+From: David Daney <david.daney@cavium.com>
 
-Well I haven't boot tested it on anything either, but it does
-seem to resolve the double quoting that caused the compile failure.
+v2: Rebased to 3.4-rc7
 
-Thanks,
-Paul.
---
+From v1:
 
-> 
-> Michal
-> 
-> From d801533d5e6e509d5e115d2fb47655267c4c5ed4 Mon Sep 17 00:00:00 2001
-> From: Michal Marek <mmarek@suse.cz>
-> Date: Thu, 10 May 2012 14:15:49 +0200
-> Subject: [PATCH] mips: Fix KBUILD_CPPFLAGS definition
-> 
-> The KBUILD_CPPFLAGS variable is no longer passed to sh -c 'gcc ...',
-> but exported and used by the link-vmlinux.sh script. This means that the
-> double-quotes will not be evaluated by the shell.
-> 
-> Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> Signed-off-by: Michal Marek <mmarek@suse.cz>
-> 
-> diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-> index 4fedf5a..722e04a 100644
-> --- a/arch/mips/Makefile
-> +++ b/arch/mips/Makefile
-> @@ -219,8 +219,8 @@ endif
->  
->  KBUILD_AFLAGS	+= $(cflags-y)
->  KBUILD_CFLAGS	+= $(cflags-y)
-> -KBUILD_CPPFLAGS += -D"VMLINUX_LOAD_ADDRESS=$(load-y)"
-> -KBUILD_CPPFLAGS += -D"DATAOFFSET=$(if $(dataoffset-y),$(dataoffset-y),0)"
-> +KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y)
-> +KBUILD_CPPFLAGS += -DDATAOFFSET=$(if $(dataoffset-y),$(dataoffset-y),0)
->  
->  LDFLAGS			+= -m $(ld-emul)
->  
+Found on 3.2-rc4, if jump label things are enabled, the kernel will
+not boot on MIPS.
+
+As noted in patch 5/5, this was caused by: commit
+97ce2c88f9ad42e3c60a9beb9fca87abf3639faa (jump-label: initialize
+jump-label subsystem much earlier).
+
+The fix is to make flush_icache_range() usable earlier.  I do this by
+calling cpu_cache_init() from setup_arch().  For the boot CPU we can
+no longer call this from per_cpu_trap_init(), so I add a flag to that
+function so we can skip the call if on the boot CPU.
+
+Some of the code in the various cpu_cache_init() functions however
+could not be called this early, so I moved it into functions called by
+the new board_cache_error_setup() hook.
+
+Tested on Octeon and ip32-R5000
+
+David Daney (5):
+  MIPS: Introduce board_cache_error_setup() hook.
+  MIPS: Make set_handler() __cpuinit.
+  MIPS: Octeon: Use board_cache_error_setup for cache error handler
+    setup.
+  MIPS: Use board_cache_error_setup for r4k cache error handler setup.
+  MIPS: Move cache setup to setup_arch().
+
+ arch/mips/include/asm/setup.h |    3 ++-
+ arch/mips/include/asm/traps.h |    1 +
+ arch/mips/kernel/setup.c      |    2 ++
+ arch/mips/kernel/smp.c        |    2 +-
+ arch/mips/kernel/traps.c      |   16 ++++++++++------
+ arch/mips/mm/c-octeon.c       |   14 ++++++++------
+ arch/mips/mm/c-r4k.c          |   14 ++++++++++----
+ 7 files changed, 34 insertions(+), 18 deletions(-)
+
+-- 
+1.7.2.3

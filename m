@@ -1,58 +1,49 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49]:47687 "EHLO
-        mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903662Ab2EOAFB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 15 May 2012 02:05:01 +0200
-From: David Daney <ddaney.cavm@gmail.com>
-Subject: [PATCH v2 0/5] MIPS: Move cache setup earlier.
-Date: Mon, 14 May 2012 17:04:45 -0700
-Message-ID: <1337040290-16015-1-git-send-email-ddaney.cavm@gmail.com>
+Received: from dns0.mips.com ([12.201.5.70]:53429 "EHLO dns0.mips.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1903636Ab2EQIvm (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 17 May 2012 10:51:42 +0200
+From: Deng-Cheng Zhu <dczhu@mips.com>
+Subject: [PATCH v2 0/2] MIPS: enable APRP (APSP) and add features - v2
+Date: Thu, 17 May 2012 16:51:18 +0800
+Message-ID: <1337244680-29968-1-git-send-email-dczhu@mips.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org
-Cc: David Daney <david.daney@cavium.com>
-Message-ID: <20120515000445.Tx5k-BhEpsPf-WWMNCAaPVwB3hjiQtA6bvXHdKv7wfs@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org, kevink@paralogos.com
+Cc: dczhu@mips.com
+Message-ID: <20120517085118.eSYmoAs7l33Ev3_x5zsvdeTjLnkBOoUDxMT-px_sNy0@z>
 
-From: David Daney <david.daney@cavium.com>
+The APRP model makes it possible that one or more CPUs run the Linux
+kernel whereas a dedicated CPU runs special real-time or signal processing
+program.
 
-v2: Rebased to 3.4-rc7
+This patchset adds the following to the current APRP support:
+1. Several bug fixes;
+2. Running floating point heavy jobs on the RP side;
+3. Waking up RP side read by interrupt;
+4. CPS multicore APRP support.
 
-From v1:
+A mp3 player program was ported to run in the APRP (APSP exactly) model.
+Considerable performance benefits were observed on the player program.
 
-Found on 3.2-rc4, if jump label things are enabled, the kernel will
-not boot on MIPS.
+Changes:
+v2 - v1:
+o Rebase the patches to the latest kernel, and fix a bunch of warnings and
+  errors reported by the current scripts/checkpatch.pl.
+o Add MIPS_MALTA dependency to Kconfig since modifications of Malta files
+  are needed. But it should be easy to port changes to other platforms.
 
-As noted in patch 5/5, this was caused by: commit
-97ce2c88f9ad42e3c60a9beb9fca87abf3639faa (jump-label: initialize
-jump-label subsystem much earlier).
+Deng-Cheng Zhu (2):
+  MIPS: fix/enrich 34K APRP (APSP) functionalities
+  MIPS: enable CPS multicore APRP (APSP)
 
-The fix is to make flush_icache_range() usable earlier.  I do this by
-calling cpu_cache_init() from setup_arch().  For the boot CPU we can
-no longer call this from per_cpu_trap_init(), so I add a flag to that
-function so we can skip the call if on the boot CPU.
-
-Some of the code in the various cpu_cache_init() functions however
-could not be called this early, so I moved it into functions called by
-the new board_cache_error_setup() hook.
-
-Tested on Octeon and ip32-R5000
-
-David Daney (5):
-  MIPS: Introduce board_cache_error_setup() hook.
-  MIPS: Make set_handler() __cpuinit.
-  MIPS: Octeon: Use board_cache_error_setup for cache error handler
-    setup.
-  MIPS: Use board_cache_error_setup for r4k cache error handler setup.
-  MIPS: Move cache setup to setup_arch().
-
- arch/mips/include/asm/setup.h |    3 ++-
- arch/mips/include/asm/traps.h |    1 +
- arch/mips/kernel/setup.c      |    2 ++
- arch/mips/kernel/smp.c        |    2 +-
- arch/mips/kernel/traps.c      |   16 ++++++++++------
- arch/mips/mm/c-octeon.c       |   14 ++++++++------
- arch/mips/mm/c-r4k.c          |   14 ++++++++++----
- 7 files changed, 34 insertions(+), 18 deletions(-)
-
--- 
-1.7.2.3
+ arch/mips/Kconfig                                  |   10 +-
+ .../include/asm/mach-malta/cpu-feature-overrides.h |    3 +
+ arch/mips/include/asm/rtlx.h                       |    5 +
+ arch/mips/kernel/kspd.c                            |   26 ++-
+ arch/mips/kernel/rtlx.c                            |  183 ++++++++++++--
+ arch/mips/kernel/vpe.c                             |  255 ++++++++++++++++++--
+ arch/mips/mti-malta/malta-int.c                    |   29 +++-
+ 7 files changed, 453 insertions(+), 58 deletions(-)

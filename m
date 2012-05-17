@@ -1,925 +1,704 @@
-Received: from dns0.mips.com ([12.201.5.70]:53432 "EHLO dns0.mips.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1903643Ab2EQIvv (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 17 May 2012 10:51:51 +0200
-From: Deng-Cheng Zhu <dczhu@mips.com>
-Subject: [PATCH v2 2/2] MIPS: enable CPS multicore APRP (APSP)
-Date: Thu, 17 May 2012 16:51:20 +0800
-Message-ID: <1337244680-29968-3-git-send-email-dczhu@mips.com>
-In-Reply-To: <1337244680-29968-1-git-send-email-dczhu@mips.com>
-References: <1337244680-29968-1-git-send-email-dczhu@mips.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mail-pz0-f49.google.com ([209.85.210.49]:63607 "EHLO
+        mail-pz0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903632Ab2EQSZb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 17 May 2012 20:25:31 +0200
+Received: by dadm1 with SMTP id m1so3147702dad.36
+        for <linux-mips@linux-mips.org>; Thu, 17 May 2012 11:25:24 -0700 (PDT)
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH V3 1/3] GPIO: MIPS: lantiq: move gpio-stp and gpio-ebu to the subsystem folder
+In-Reply-To: <1337201394-11431-1-git-send-email-blogic@openwrt.org>
+References: <1337201394-11431-1-git-send-email-blogic@openwrt.org>
+Date: Thu, 17 May 2012 12:25:21 -0600
+Message-ID: <20120517182521.C874D3E0621@localhost>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org, kevink@paralogos.com
-Cc: dczhu@mips.com
-Message-ID: <20120517085120.yW1xWCzHKp1BJlXfANc6w4k_VL-elN-p9cna_BnMtgQ@z>
+To: John Crispin <blogic@openwrt.org>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20120517182521.U77eIWu6jSfN1fuIo5iFjfBTeylsObgidAs38phAAEM@z>
 
-From: Deng-Cheng Zhu <dczhu@mips.com>
+On Wed, 16 May 2012 22:49:52 +0200, John Crispin <blogic@openwrt.org> wrote:
+> Move the 2 drivers from arch/mips/lantiq/xway/ to the subsystem and make them
+> buildable.
+> 
+> The following 2 patches will convert the drivers to OF.
+> 
+> Signed-off-by: John Crispin <blogic@openwrt.org>
+> Cc: Grant Likely <grant.likely@secretlab.ca>
+> Cc: linux-kernel@vger.kernel.org
+> ---
 
-Now CPS such as 1004K can run programs in APRP (APSP) model. For example, a
-3 core 1004K CPU can run SMVP Linux on the first 2 cores and leave a VPE of
-the 3rd core to run RTOS or signal processing program. The kernel command
-line option "maxcpus=" needs to be appointed.
+Acked-by: Grant Likely <grant.likely@secretlab.ca>
 
-Basically I think the way we are doing with rtlx/kspd/vpe_loader can be
-extended to other architectures, despite of the low-level register details.
+Next time can you use the -M flag to git diff so that file moves show
+up without a big diffstat?
 
-To handle the AP/RP communication interrupt, we hook our ISR into the ipi
-resched interrupt.
+Thanks,
+g.
 
-Known issue: When we define CONFIG_MIPS_CMP to let 1004K run SMVP Linux and
-RP program, currently we can only load the RP program 1 time. Loading it
-multiple times won't affect the kernel, but only the 1st time works as
-expected. This is not a top priority issue I suppose, since normally we
-build RP programs to keep alive as kind of server programs -- They wait
-for requests in the CPU "wait" mode.
+> This patch is part of a series moving the mips/lantiq target to OF and clkdev
+> support. The patch, once Acked, should go upstream via Ralf's MIPS tree.
+> 
+>  arch/mips/lantiq/xway/Makefile   |    2 +-
+>  arch/mips/lantiq/xway/gpio_ebu.c |  126 -------------------------------
+>  arch/mips/lantiq/xway/gpio_stp.c |  152 --------------------------------------
+>  drivers/gpio/Kconfig             |   18 +++++
+>  drivers/gpio/Makefile            |    2 +
+>  drivers/gpio/gpio-mm-lantiq.c    |  126 +++++++++++++++++++++++++++++++
+>  drivers/gpio/gpio-stp-xway.c     |  152 ++++++++++++++++++++++++++++++++++++++
+>  7 files changed, 299 insertions(+), 279 deletions(-)
+>  delete mode 100644 arch/mips/lantiq/xway/gpio_ebu.c
+>  delete mode 100644 arch/mips/lantiq/xway/gpio_stp.c
+>  create mode 100644 drivers/gpio/gpio-mm-lantiq.c
+>  create mode 100644 drivers/gpio/gpio-stp-xway.c
+> 
+> diff --git a/arch/mips/lantiq/xway/Makefile b/arch/mips/lantiq/xway/Makefile
+> index edef6c5..dc3194f 100644
+> --- a/arch/mips/lantiq/xway/Makefile
+> +++ b/arch/mips/lantiq/xway/Makefile
+> @@ -1 +1 @@
+> -obj-y := prom.o sysctrl.o clk.o reset.o gpio.o gpio_stp.o gpio_ebu.o dma.o
+> +obj-y := prom.o sysctrl.o clk.o reset.o gpio.o dma.o
+> diff --git a/arch/mips/lantiq/xway/gpio_ebu.c b/arch/mips/lantiq/xway/gpio_ebu.c
+> deleted file mode 100644
+> index b91c7f1..0000000
+> --- a/arch/mips/lantiq/xway/gpio_ebu.c
+> +++ /dev/null
+> @@ -1,126 +0,0 @@
+> -/*
+> - *  This program is free software; you can redistribute it and/or modify it
+> - *  under the terms of the GNU General Public License version 2 as published
+> - *  by the Free Software Foundation.
+> - *
+> - *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
+> - */
+> -
+> -#include <linux/init.h>
+> -#include <linux/export.h>
+> -#include <linux/types.h>
+> -#include <linux/platform_device.h>
+> -#include <linux/mutex.h>
+> -#include <linux/gpio.h>
+> -#include <linux/io.h>
+> -
+> -#include <lantiq_soc.h>
+> -
+> -/*
+> - * By attaching hardware latches to the EBU it is possible to create output
+> - * only gpios. This driver configures a special memory address, which when
+> - * written to outputs 16 bit to the latches.
+> - */
+> -
+> -#define LTQ_EBU_BUSCON	0x1e7ff		/* 16 bit access, slowest timing */
+> -#define LTQ_EBU_WP	0x80000000	/* write protect bit */
+> -
+> -/* we keep a shadow value of the last value written to the ebu */
+> -static int ltq_ebu_gpio_shadow = 0x0;
+> -static void __iomem *ltq_ebu_gpio_membase;
+> -
+> -static void ltq_ebu_apply(void)
+> -{
+> -	unsigned long flags;
+> -
+> -	spin_lock_irqsave(&ebu_lock, flags);
+> -	ltq_ebu_w32(LTQ_EBU_BUSCON, LTQ_EBU_BUSCON1);
+> -	*((__u16 *)ltq_ebu_gpio_membase) = ltq_ebu_gpio_shadow;
+> -	ltq_ebu_w32(LTQ_EBU_BUSCON | LTQ_EBU_WP, LTQ_EBU_BUSCON1);
+> -	spin_unlock_irqrestore(&ebu_lock, flags);
+> -}
+> -
+> -static void ltq_ebu_set(struct gpio_chip *chip, unsigned offset, int value)
+> -{
+> -	if (value)
+> -		ltq_ebu_gpio_shadow |= (1 << offset);
+> -	else
+> -		ltq_ebu_gpio_shadow &= ~(1 << offset);
+> -	ltq_ebu_apply();
+> -}
+> -
+> -static int ltq_ebu_direction_output(struct gpio_chip *chip, unsigned offset,
+> -	int value)
+> -{
+> -	ltq_ebu_set(chip, offset, value);
+> -
+> -	return 0;
+> -}
+> -
+> -static struct gpio_chip ltq_ebu_chip = {
+> -	.label = "ltq_ebu",
+> -	.direction_output = ltq_ebu_direction_output,
+> -	.set = ltq_ebu_set,
+> -	.base = 72,
+> -	.ngpio = 16,
+> -	.can_sleep = 1,
+> -	.owner = THIS_MODULE,
+> -};
+> -
+> -static int ltq_ebu_probe(struct platform_device *pdev)
+> -{
+> -	int ret = 0;
+> -	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -
+> -	if (!res) {
+> -		dev_err(&pdev->dev, "failed to get memory resource\n");
+> -		return -ENOENT;
+> -	}
+> -
+> -	res = devm_request_mem_region(&pdev->dev, res->start,
+> -		resource_size(res), dev_name(&pdev->dev));
+> -	if (!res) {
+> -		dev_err(&pdev->dev, "failed to request memory resource\n");
+> -		return -EBUSY;
+> -	}
+> -
+> -	ltq_ebu_gpio_membase = devm_ioremap_nocache(&pdev->dev, res->start,
+> -		resource_size(res));
+> -	if (!ltq_ebu_gpio_membase) {
+> -		dev_err(&pdev->dev, "Failed to ioremap mem region\n");
+> -		return -ENOMEM;
+> -	}
+> -
+> -	/* grab the default shadow value passed form the platform code */
+> -	ltq_ebu_gpio_shadow = (unsigned int) pdev->dev.platform_data;
+> -
+> -	/* tell the ebu controller which memory address we will be using */
+> -	ltq_ebu_w32(pdev->resource->start | 0x1, LTQ_EBU_ADDRSEL1);
+> -
+> -	/* write protect the region */
+> -	ltq_ebu_w32(LTQ_EBU_BUSCON | LTQ_EBU_WP, LTQ_EBU_BUSCON1);
+> -
+> -	ret = gpiochip_add(&ltq_ebu_chip);
+> -	if (!ret)
+> -		ltq_ebu_apply();
+> -	return ret;
+> -}
+> -
+> -static struct platform_driver ltq_ebu_driver = {
+> -	.probe = ltq_ebu_probe,
+> -	.driver = {
+> -		.name = "ltq_ebu",
+> -		.owner = THIS_MODULE,
+> -	},
+> -};
+> -
+> -static int __init ltq_ebu_init(void)
+> -{
+> -	int ret = platform_driver_register(&ltq_ebu_driver);
+> -
+> -	if (ret)
+> -		pr_info("ltq_ebu : Error registering platfom driver!");
+> -	return ret;
+> -}
+> -
+> -postcore_initcall(ltq_ebu_init);
+> diff --git a/arch/mips/lantiq/xway/gpio_stp.c b/arch/mips/lantiq/xway/gpio_stp.c
+> deleted file mode 100644
+> index d674f1b..0000000
+> --- a/arch/mips/lantiq/xway/gpio_stp.c
+> +++ /dev/null
+> @@ -1,152 +0,0 @@
+> -/*
+> - *  This program is free software; you can redistribute it and/or modify it
+> - *  under the terms of the GNU General Public License version 2 as published
+> - *  by the Free Software Foundation.
+> - *
+> - *  Copyright (C) 2007 John Crispin <blogic@openwrt.org>
+> - *
+> - */
+> -
+> -#include <linux/slab.h>
+> -#include <linux/init.h>
+> -#include <linux/export.h>
+> -#include <linux/types.h>
+> -#include <linux/platform_device.h>
+> -#include <linux/mutex.h>
+> -#include <linux/io.h>
+> -#include <linux/gpio.h>
+> -
+> -#include <lantiq_soc.h>
+> -
+> -#define LTQ_STP_CON0		0x00
+> -#define LTQ_STP_CON1		0x04
+> -#define LTQ_STP_CPU0		0x08
+> -#define LTQ_STP_CPU1		0x0C
+> -#define LTQ_STP_AR		0x10
+> -
+> -#define LTQ_STP_CON_SWU		(1 << 31)
+> -#define LTQ_STP_2HZ		0
+> -#define LTQ_STP_4HZ		(1 << 23)
+> -#define LTQ_STP_8HZ		(2 << 23)
+> -#define LTQ_STP_10HZ		(3 << 23)
+> -#define LTQ_STP_SPEED_MASK	(0xf << 23)
+> -#define LTQ_STP_UPD_FPI		(1 << 31)
+> -#define LTQ_STP_UPD_MASK	(3 << 30)
+> -#define LTQ_STP_ADSL_SRC	(3 << 24)
+> -
+> -#define LTQ_STP_GROUP0		(1 << 0)
+> -
+> -#define LTQ_STP_RISING		0
+> -#define LTQ_STP_FALLING		(1 << 26)
+> -#define LTQ_STP_EDGE_MASK	(1 << 26)
+> -
+> -#define ltq_stp_r32(reg)	__raw_readl(ltq_stp_membase + reg)
+> -#define ltq_stp_w32(val, reg)	__raw_writel(val, ltq_stp_membase + reg)
+> -#define ltq_stp_w32_mask(clear, set, reg) \
+> -		ltq_w32((ltq_r32(ltq_stp_membase + reg) & ~(clear)) | (set), \
+> -		ltq_stp_membase + (reg))
+> -
+> -static int ltq_stp_shadow = 0xffff;
+> -static void __iomem *ltq_stp_membase;
+> -
+> -static void ltq_stp_set(struct gpio_chip *chip, unsigned offset, int value)
+> -{
+> -	if (value)
+> -		ltq_stp_shadow |= (1 << offset);
+> -	else
+> -		ltq_stp_shadow &= ~(1 << offset);
+> -	ltq_stp_w32(ltq_stp_shadow, LTQ_STP_CPU0);
+> -}
+> -
+> -static int ltq_stp_direction_output(struct gpio_chip *chip, unsigned offset,
+> -	int value)
+> -{
+> -	ltq_stp_set(chip, offset, value);
+> -
+> -	return 0;
+> -}
+> -
+> -static struct gpio_chip ltq_stp_chip = {
+> -	.label = "ltq_stp",
+> -	.direction_output = ltq_stp_direction_output,
+> -	.set = ltq_stp_set,
+> -	.base = 48,
+> -	.ngpio = 24,
+> -	.can_sleep = 1,
+> -	.owner = THIS_MODULE,
+> -};
+> -
+> -static int ltq_stp_hw_init(void)
+> -{
+> -	/* sane defaults */
+> -	ltq_stp_w32(0, LTQ_STP_AR);
+> -	ltq_stp_w32(0, LTQ_STP_CPU0);
+> -	ltq_stp_w32(0, LTQ_STP_CPU1);
+> -	ltq_stp_w32(LTQ_STP_CON_SWU, LTQ_STP_CON0);
+> -	ltq_stp_w32(0, LTQ_STP_CON1);
+> -
+> -	/* rising or falling edge */
+> -	ltq_stp_w32_mask(LTQ_STP_EDGE_MASK, LTQ_STP_FALLING, LTQ_STP_CON0);
+> -
+> -	/* per default stp 15-0 are set */
+> -	ltq_stp_w32_mask(0, LTQ_STP_GROUP0, LTQ_STP_CON1);
+> -
+> -	/* stp are update periodically by the FPI bus */
+> -	ltq_stp_w32_mask(LTQ_STP_UPD_MASK, LTQ_STP_UPD_FPI, LTQ_STP_CON1);
+> -
+> -	/* set stp update speed */
+> -	ltq_stp_w32_mask(LTQ_STP_SPEED_MASK, LTQ_STP_8HZ, LTQ_STP_CON1);
+> -
+> -	/* tell the hardware that pin (led) 0 and 1 are controlled
+> -	 *  by the dsl arc
+> -	 */
+> -	ltq_stp_w32_mask(0, LTQ_STP_ADSL_SRC, LTQ_STP_CON0);
+> -
+> -	ltq_pmu_enable(PMU_LED);
+> -	return 0;
+> -}
+> -
+> -static int __devinit ltq_stp_probe(struct platform_device *pdev)
+> -{
+> -	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	int ret = 0;
+> -
+> -	if (!res)
+> -		return -ENOENT;
+> -	res = devm_request_mem_region(&pdev->dev, res->start,
+> -		resource_size(res), dev_name(&pdev->dev));
+> -	if (!res) {
+> -		dev_err(&pdev->dev, "failed to request STP memory\n");
+> -		return -EBUSY;
+> -	}
+> -	ltq_stp_membase = devm_ioremap_nocache(&pdev->dev, res->start,
+> -		resource_size(res));
+> -	if (!ltq_stp_membase) {
+> -		dev_err(&pdev->dev, "failed to remap STP memory\n");
+> -		return -ENOMEM;
+> -	}
+> -	ret = gpiochip_add(&ltq_stp_chip);
+> -	if (!ret)
+> -		ret = ltq_stp_hw_init();
+> -
+> -	return ret;
+> -}
+> -
+> -static struct platform_driver ltq_stp_driver = {
+> -	.probe = ltq_stp_probe,
+> -	.driver = {
+> -		.name = "ltq_stp",
+> -		.owner = THIS_MODULE,
+> -	},
+> -};
+> -
+> -int __init ltq_stp_init(void)
+> -{
+> -	int ret = platform_driver_register(&ltq_stp_driver);
+> -
+> -	if (ret)
+> -		pr_info("ltq_stp: error registering platfom driver");
+> -	return ret;
+> -}
+> -
+> -postcore_initcall(ltq_stp_init);
+> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> index e03653d..8fae079 100644
+> --- a/drivers/gpio/Kconfig
+> +++ b/drivers/gpio/Kconfig
+> @@ -96,6 +96,14 @@ config GPIO_EP93XX
+>  	depends on ARCH_EP93XX
+>  	select GPIO_GENERIC
+>  
+> +config GPIO_MM_LANTIQ
+> +	bool "Lantiq Memory mapped GPIOs"
+> +	depends on LANTIQ && SOC_XWAY
+> +	help
+> +	  This enables support for memory mapped GPIOs on the External Bus Unit
+> +	  (EBU) found on Lantiq SoCs. The gpios are output only as they are
+> +	  created by attaching a 16bit latch to the bus.
+> +
+>  config GPIO_MPC5200
+>  	def_bool y
+>  	depends on PPC_MPC52xx
+> @@ -306,6 +314,16 @@ config GPIO_STMPE
+>  	  This enables support for the GPIOs found on the STMPE I/O
+>  	  Expanders.
+>  
+> +config GPIO_STP_XWAY
+> +	bool "XWAY STP GPIOs"
+> +	depends on SOC_XWAY
+> +	help
+> +	  This enables support for the Serial To Parallel (STP) unit found on
+> +	  XWAY SoC. The STP allows the SoC to drive a shift registers cascade,
+> +	  that can be up to 24 bit. This peripheral is aimed at driving leds.
+> +	  Some of the gpios/leds can be auto updated by the soc with dsl and
+> +	  phy status.
+> +
+>  config GPIO_TC3589X
+>  	bool "TC3589X GPIOs"
+>  	depends on MFD_TC3589X
+> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+> index 007f54b..ed1c96d 100644
+> --- a/drivers/gpio/Makefile
+> +++ b/drivers/gpio/Makefile
+> @@ -30,6 +30,7 @@ obj-$(CONFIG_GPIO_MC33880)	+= gpio-mc33880.o
+>  obj-$(CONFIG_GPIO_MC9S08DZ60)	+= gpio-mc9s08dz60.o
+>  obj-$(CONFIG_GPIO_MCP23S08)	+= gpio-mcp23s08.o
+>  obj-$(CONFIG_GPIO_ML_IOH)	+= gpio-ml-ioh.o
+> +obj-$(CONFIG_GPIO_MM_LANTIQ)	+= gpio-mm-lantiq.o
+>  obj-$(CONFIG_GPIO_MPC5200)	+= gpio-mpc5200.o
+>  obj-$(CONFIG_GPIO_MPC8XXX)	+= gpio-mpc8xxx.o
+>  obj-$(CONFIG_GPIO_MSM_V1)	+= gpio-msm-v1.o
+> @@ -49,6 +50,7 @@ obj-$(CONFIG_ARCH_SA1100)	+= gpio-sa1100.o
+>  obj-$(CONFIG_GPIO_SCH)		+= gpio-sch.o
+>  obj-$(CONFIG_GPIO_SODAVILLE)	+= gpio-sodaville.o
+>  obj-$(CONFIG_GPIO_STMPE)	+= gpio-stmpe.o
+> +obj-$(CONFIG_GPIO_STP_XWAY)	+= gpio-stp-xway.o
+>  obj-$(CONFIG_GPIO_SX150X)	+= gpio-sx150x.o
+>  obj-$(CONFIG_GPIO_TC3589X)	+= gpio-tc3589x.o
+>  obj-$(CONFIG_ARCH_TEGRA)	+= gpio-tegra.o
+> diff --git a/drivers/gpio/gpio-mm-lantiq.c b/drivers/gpio/gpio-mm-lantiq.c
+> new file mode 100644
+> index 0000000..b91c7f1
+> --- /dev/null
+> +++ b/drivers/gpio/gpio-mm-lantiq.c
+> @@ -0,0 +1,126 @@
+> +/*
+> + *  This program is free software; you can redistribute it and/or modify it
+> + *  under the terms of the GNU General Public License version 2 as published
+> + *  by the Free Software Foundation.
+> + *
+> + *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/export.h>
+> +#include <linux/types.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/mutex.h>
+> +#include <linux/gpio.h>
+> +#include <linux/io.h>
+> +
+> +#include <lantiq_soc.h>
+> +
+> +/*
+> + * By attaching hardware latches to the EBU it is possible to create output
+> + * only gpios. This driver configures a special memory address, which when
+> + * written to outputs 16 bit to the latches.
+> + */
+> +
+> +#define LTQ_EBU_BUSCON	0x1e7ff		/* 16 bit access, slowest timing */
+> +#define LTQ_EBU_WP	0x80000000	/* write protect bit */
+> +
+> +/* we keep a shadow value of the last value written to the ebu */
+> +static int ltq_ebu_gpio_shadow = 0x0;
+> +static void __iomem *ltq_ebu_gpio_membase;
+> +
+> +static void ltq_ebu_apply(void)
+> +{
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&ebu_lock, flags);
+> +	ltq_ebu_w32(LTQ_EBU_BUSCON, LTQ_EBU_BUSCON1);
+> +	*((__u16 *)ltq_ebu_gpio_membase) = ltq_ebu_gpio_shadow;
+> +	ltq_ebu_w32(LTQ_EBU_BUSCON | LTQ_EBU_WP, LTQ_EBU_BUSCON1);
+> +	spin_unlock_irqrestore(&ebu_lock, flags);
+> +}
+> +
+> +static void ltq_ebu_set(struct gpio_chip *chip, unsigned offset, int value)
+> +{
+> +	if (value)
+> +		ltq_ebu_gpio_shadow |= (1 << offset);
+> +	else
+> +		ltq_ebu_gpio_shadow &= ~(1 << offset);
+> +	ltq_ebu_apply();
+> +}
+> +
+> +static int ltq_ebu_direction_output(struct gpio_chip *chip, unsigned offset,
+> +	int value)
+> +{
+> +	ltq_ebu_set(chip, offset, value);
+> +
+> +	return 0;
+> +}
+> +
+> +static struct gpio_chip ltq_ebu_chip = {
+> +	.label = "ltq_ebu",
+> +	.direction_output = ltq_ebu_direction_output,
+> +	.set = ltq_ebu_set,
+> +	.base = 72,
+> +	.ngpio = 16,
+> +	.can_sleep = 1,
+> +	.owner = THIS_MODULE,
+> +};
+> +
+> +static int ltq_ebu_probe(struct platform_device *pdev)
+> +{
+> +	int ret = 0;
+> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "failed to get memory resource\n");
+> +		return -ENOENT;
+> +	}
+> +
+> +	res = devm_request_mem_region(&pdev->dev, res->start,
+> +		resource_size(res), dev_name(&pdev->dev));
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "failed to request memory resource\n");
+> +		return -EBUSY;
+> +	}
+> +
+> +	ltq_ebu_gpio_membase = devm_ioremap_nocache(&pdev->dev, res->start,
+> +		resource_size(res));
+> +	if (!ltq_ebu_gpio_membase) {
+> +		dev_err(&pdev->dev, "Failed to ioremap mem region\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	/* grab the default shadow value passed form the platform code */
+> +	ltq_ebu_gpio_shadow = (unsigned int) pdev->dev.platform_data;
+> +
+> +	/* tell the ebu controller which memory address we will be using */
+> +	ltq_ebu_w32(pdev->resource->start | 0x1, LTQ_EBU_ADDRSEL1);
+> +
+> +	/* write protect the region */
+> +	ltq_ebu_w32(LTQ_EBU_BUSCON | LTQ_EBU_WP, LTQ_EBU_BUSCON1);
+> +
+> +	ret = gpiochip_add(&ltq_ebu_chip);
+> +	if (!ret)
+> +		ltq_ebu_apply();
+> +	return ret;
+> +}
+> +
+> +static struct platform_driver ltq_ebu_driver = {
+> +	.probe = ltq_ebu_probe,
+> +	.driver = {
+> +		.name = "ltq_ebu",
+> +		.owner = THIS_MODULE,
+> +	},
+> +};
+> +
+> +static int __init ltq_ebu_init(void)
+> +{
+> +	int ret = platform_driver_register(&ltq_ebu_driver);
+> +
+> +	if (ret)
+> +		pr_info("ltq_ebu : Error registering platfom driver!");
+> +	return ret;
+> +}
+> +
+> +postcore_initcall(ltq_ebu_init);
+> diff --git a/drivers/gpio/gpio-stp-xway.c b/drivers/gpio/gpio-stp-xway.c
+> new file mode 100644
+> index 0000000..d674f1b
+> --- /dev/null
+> +++ b/drivers/gpio/gpio-stp-xway.c
+> @@ -0,0 +1,152 @@
+> +/*
+> + *  This program is free software; you can redistribute it and/or modify it
+> + *  under the terms of the GNU General Public License version 2 as published
+> + *  by the Free Software Foundation.
+> + *
+> + *  Copyright (C) 2007 John Crispin <blogic@openwrt.org>
+> + *
+> + */
+> +
+> +#include <linux/slab.h>
+> +#include <linux/init.h>
+> +#include <linux/export.h>
+> +#include <linux/types.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/mutex.h>
+> +#include <linux/io.h>
+> +#include <linux/gpio.h>
+> +
+> +#include <lantiq_soc.h>
+> +
+> +#define LTQ_STP_CON0		0x00
+> +#define LTQ_STP_CON1		0x04
+> +#define LTQ_STP_CPU0		0x08
+> +#define LTQ_STP_CPU1		0x0C
+> +#define LTQ_STP_AR		0x10
+> +
+> +#define LTQ_STP_CON_SWU		(1 << 31)
+> +#define LTQ_STP_2HZ		0
+> +#define LTQ_STP_4HZ		(1 << 23)
+> +#define LTQ_STP_8HZ		(2 << 23)
+> +#define LTQ_STP_10HZ		(3 << 23)
+> +#define LTQ_STP_SPEED_MASK	(0xf << 23)
+> +#define LTQ_STP_UPD_FPI		(1 << 31)
+> +#define LTQ_STP_UPD_MASK	(3 << 30)
+> +#define LTQ_STP_ADSL_SRC	(3 << 24)
+> +
+> +#define LTQ_STP_GROUP0		(1 << 0)
+> +
+> +#define LTQ_STP_RISING		0
+> +#define LTQ_STP_FALLING		(1 << 26)
+> +#define LTQ_STP_EDGE_MASK	(1 << 26)
+> +
+> +#define ltq_stp_r32(reg)	__raw_readl(ltq_stp_membase + reg)
+> +#define ltq_stp_w32(val, reg)	__raw_writel(val, ltq_stp_membase + reg)
+> +#define ltq_stp_w32_mask(clear, set, reg) \
+> +		ltq_w32((ltq_r32(ltq_stp_membase + reg) & ~(clear)) | (set), \
+> +		ltq_stp_membase + (reg))
+> +
+> +static int ltq_stp_shadow = 0xffff;
+> +static void __iomem *ltq_stp_membase;
+> +
+> +static void ltq_stp_set(struct gpio_chip *chip, unsigned offset, int value)
+> +{
+> +	if (value)
+> +		ltq_stp_shadow |= (1 << offset);
+> +	else
+> +		ltq_stp_shadow &= ~(1 << offset);
+> +	ltq_stp_w32(ltq_stp_shadow, LTQ_STP_CPU0);
+> +}
+> +
+> +static int ltq_stp_direction_output(struct gpio_chip *chip, unsigned offset,
+> +	int value)
+> +{
+> +	ltq_stp_set(chip, offset, value);
+> +
+> +	return 0;
+> +}
+> +
+> +static struct gpio_chip ltq_stp_chip = {
+> +	.label = "ltq_stp",
+> +	.direction_output = ltq_stp_direction_output,
+> +	.set = ltq_stp_set,
+> +	.base = 48,
+> +	.ngpio = 24,
+> +	.can_sleep = 1,
+> +	.owner = THIS_MODULE,
+> +};
+> +
+> +static int ltq_stp_hw_init(void)
+> +{
+> +	/* sane defaults */
+> +	ltq_stp_w32(0, LTQ_STP_AR);
+> +	ltq_stp_w32(0, LTQ_STP_CPU0);
+> +	ltq_stp_w32(0, LTQ_STP_CPU1);
+> +	ltq_stp_w32(LTQ_STP_CON_SWU, LTQ_STP_CON0);
+> +	ltq_stp_w32(0, LTQ_STP_CON1);
+> +
+> +	/* rising or falling edge */
+> +	ltq_stp_w32_mask(LTQ_STP_EDGE_MASK, LTQ_STP_FALLING, LTQ_STP_CON0);
+> +
+> +	/* per default stp 15-0 are set */
+> +	ltq_stp_w32_mask(0, LTQ_STP_GROUP0, LTQ_STP_CON1);
+> +
+> +	/* stp are update periodically by the FPI bus */
+> +	ltq_stp_w32_mask(LTQ_STP_UPD_MASK, LTQ_STP_UPD_FPI, LTQ_STP_CON1);
+> +
+> +	/* set stp update speed */
+> +	ltq_stp_w32_mask(LTQ_STP_SPEED_MASK, LTQ_STP_8HZ, LTQ_STP_CON1);
+> +
+> +	/* tell the hardware that pin (led) 0 and 1 are controlled
+> +	 *  by the dsl arc
+> +	 */
+> +	ltq_stp_w32_mask(0, LTQ_STP_ADSL_SRC, LTQ_STP_CON0);
+> +
+> +	ltq_pmu_enable(PMU_LED);
+> +	return 0;
+> +}
+> +
+> +static int __devinit ltq_stp_probe(struct platform_device *pdev)
+> +{
+> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	int ret = 0;
+> +
+> +	if (!res)
+> +		return -ENOENT;
+> +	res = devm_request_mem_region(&pdev->dev, res->start,
+> +		resource_size(res), dev_name(&pdev->dev));
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "failed to request STP memory\n");
+> +		return -EBUSY;
+> +	}
+> +	ltq_stp_membase = devm_ioremap_nocache(&pdev->dev, res->start,
+> +		resource_size(res));
+> +	if (!ltq_stp_membase) {
+> +		dev_err(&pdev->dev, "failed to remap STP memory\n");
+> +		return -ENOMEM;
+> +	}
+> +	ret = gpiochip_add(&ltq_stp_chip);
+> +	if (!ret)
+> +		ret = ltq_stp_hw_init();
+> +
+> +	return ret;
+> +}
+> +
+> +static struct platform_driver ltq_stp_driver = {
+> +	.probe = ltq_stp_probe,
+> +	.driver = {
+> +		.name = "ltq_stp",
+> +		.owner = THIS_MODULE,
+> +	},
+> +};
+> +
+> +int __init ltq_stp_init(void)
+> +{
+> +	int ret = platform_driver_register(&ltq_stp_driver);
+> +
+> +	if (ret)
+> +		pr_info("ltq_stp: error registering platfom driver");
+> +	return ret;
+> +}
+> +
+> +postcore_initcall(ltq_stp_init);
+> -- 
+> 1.7.9.1
+> 
 
-Signed-off-by: Deng-Cheng Zhu <dczhu@mips.com>
----
-Changes:
-v2 - v1:
-o Rebase the patch to the latest kernel, and fix a bunch of warnings and
-  errors reported by the current scripts/checkpatch.pl. However, there are
-  still 2 warnings that I decide to leave alone for now:
-  1) externs should be avoided in .c files
-     #261: FILE: arch/mips/kernel/rtlx.c:382:
-     +	extern struct plat_smp_ops cmp_smp_ops;
-  Currently, in smp-ops.h, {up|cmp|vsmp}_smp_ops are not externed globally.
-  Maybe we can do it in a separate patch.
-  2) Use of volatile is usually wrong:
-     see Documentation/volatile-considered-harmful.txt
-     #456: FILE: arch/mips/kernel/vpe.c:698:
-     +	volatile struct cpulaunch *launch =
-  The volatile is really needed in here. The content pointed to by launch
-  will be updated by YAMON.
-
- arch/mips/include/asm/rtlx.h    |    5 +-
- arch/mips/kernel/kspd.c         |   26 +++-
- arch/mips/kernel/rtlx.c         |  158 ++++++++++++++++++++----
- arch/mips/kernel/vpe.c          |  253 +++++++++++++++++++++++++++++++++++----
- arch/mips/mti-malta/malta-int.c |   16 ++-
- 5 files changed, 397 insertions(+), 61 deletions(-)
-
-diff --git a/arch/mips/include/asm/rtlx.h b/arch/mips/include/asm/rtlx.h
-index cf23a8c..478349e 100644
---- a/arch/mips/include/asm/rtlx.h
-+++ b/arch/mips/include/asm/rtlx.h
-@@ -28,7 +28,7 @@ extern ssize_t rtlx_write(int index, const void __user *buffer, size_t count);
- extern unsigned int rtlx_read_poll(int index, int can_sleep);
- extern unsigned int rtlx_write_poll(int index);
- 
--extern void (*aprp_dispatch)(void);
-+extern void (*aprp_hook)(void);
- 
- enum rtlx_state {
- 	RTLX_STATE_UNUSED = 0,
-@@ -60,6 +60,9 @@ struct rtlx_channel {
- struct rtlx_info {
- 	unsigned long id;
- 	enum rtlx_state state;
-+#ifdef CONFIG_MIPS_CMP
-+	int ap_int_pending;
-+#endif
- 
- 	struct rtlx_channel channel[RTLX_CHANNELS];
- };
-diff --git a/arch/mips/kernel/kspd.c b/arch/mips/kernel/kspd.c
-index 84d0639..bb8d26d 100644
---- a/arch/mips/kernel/kspd.c
-+++ b/arch/mips/kernel/kspd.c
-@@ -31,6 +31,9 @@
- #include <asm/rtlx.h>
- #include <asm/kspd.h>
- 
-+#ifdef CONFIG_MIPS_CMP
-+static int cpu_idx;
-+#endif
- static struct workqueue_struct *workqueue;
- static struct work_struct work;
- 
-@@ -208,6 +211,7 @@ void sp_work_handle_request(void)
- 
- 	char *vcwd;
- 	int size;
-+	int index;
- 
- 	ret.retval = -1;
- 
-@@ -230,11 +234,16 @@ void sp_work_handle_request(void)
- 		}
- 	}
- 
-+#ifdef CONFIG_MIPS_CMP
-+	index = cpu_idx;
-+#else
-+	index = tclimit;
-+#endif
- 	/* Run the syscall at the privilege of the user who loaded the
- 	   SP program */
- 
--	if (vpe_getuid(tclimit)) {
--		err = sp_setfsuidgid(vpe_getuid(tclimit), vpe_getgid(tclimit));
-+	if (vpe_getuid(index)) {
-+		err = sp_setfsuidgid(vpe_getuid(index), vpe_getgid(index));
- 		if (!err)
- 			pr_err("Change of creds failed\n");
- 	}
-@@ -256,7 +265,7 @@ void sp_work_handle_request(void)
- 
-  	case MTSP_SYSCALL_EXIT:
- 		list_for_each_entry(n, &kspd_notifylist, list)
--			n->kspd_sp_exit(tclimit);
-+			n->kspd_sp_exit(index);
- 		sp_stopping = 1;
- 
- 		printk(KERN_DEBUG "KSPD got exit syscall from SP exitcode %d\n",
-@@ -266,7 +275,7 @@ void sp_work_handle_request(void)
-  	case MTSP_SYSCALL_OPEN:
-  		generic.arg1 = translate_open_flags(generic.arg1);
- 
--		vcwd = vpe_getcwd(tclimit);
-+		vcwd = vpe_getcwd(index);
- 
- 		/* change to cwd of the process that loaded the SP program */
- 		old_fs = get_fs();
-@@ -294,7 +303,7 @@ void sp_work_handle_request(void)
- 		break;
-  	} /* switch */
- 
--	if (vpe_getuid(tclimit)) {
-+	if (vpe_getuid(index)) {
- 		err = sp_setfsuidgid(0, 0);
- 		if (!err)
- 			pr_err("restoring old creds failed\n");
-@@ -399,13 +408,18 @@ void kspd_notify(struct kspd_notifications *notify)
- }
- 
- static struct vpe_notifications notify;
--static int kspd_module_init(void)
-+static int __init kspd_module_init(void)
- {
- 	INIT_LIST_HEAD(&kspd_notifylist);
- 
- 	notify.start = startwork;
- 	notify.stop = stopwork;
-+#ifdef CONFIG_MIPS_CMP
-+	cpu_idx = setup_max_cpus;
-+	vpe_notify(cpu_idx, &notify);
-+#else
- 	vpe_notify(tclimit, &notify);
-+#endif
- 
- 	return 0;
- }
-diff --git a/arch/mips/kernel/rtlx.c b/arch/mips/kernel/rtlx.c
-index 9522aa5..7c02f02 100644
---- a/arch/mips/kernel/rtlx.c
-+++ b/arch/mips/kernel/rtlx.c
-@@ -54,17 +54,38 @@ static struct chan_waitqueues {
- 
- static struct vpe_notifications notify;
- static int sp_stopping;
--static void (*save_aprp_dispatch)(void);
-+static void (*save_aprp_hook)(void);
- 
- extern void *vpe_get_shared(int index);
- 
-+#ifdef CONFIG_MIPS_CMP
-+static int cpu_idx;
-+static void rtlx_interrupt(void)
-+{
-+	int i;
-+	struct rtlx_info *info;
-+	struct rtlx_info **p = vpe_get_shared(cpu_idx);
-+
-+	if (p == NULL || *p == NULL)
-+		return;
-+
-+	info = *p;
-+
-+	if (info->ap_int_pending == 1 && smp_processor_id() == 0) {
-+		for (i = 0; i < RTLX_CHANNELS; i++) {
-+			wake_up(&channel_wqs[i].lx_queue);
-+			wake_up(&channel_wqs[i].rt_queue);
-+		}
-+		info->ap_int_pending = 0;
-+	}
-+}
-+#else
- static void rtlx_dispatch(void)
- {
- 	if (read_c0_cause() & read_c0_status() & C_SW0)
- 		do_IRQ(MIPS_CPU_IRQ_BASE + MIPS_CPU_RTLX_IRQ);
- }
- 
--
- /* Interrupt handler may be called before rtlx_init has otherwise had
-    a chance to run.
- */
-@@ -83,12 +104,13 @@ static irqreturn_t rtlx_interrupt(int irq, void *dev_id)
- 	local_irq_restore(flags);
- 
- 	for (i = 0; i < RTLX_CHANNELS; i++) {
--			wake_up(&channel_wqs[i].lx_queue);
--			wake_up(&channel_wqs[i].rt_queue);
-+		wake_up(&channel_wqs[i].lx_queue);
-+		wake_up(&channel_wqs[i].rt_queue);
- 	}
- 
- 	return IRQ_HANDLED;
- }
-+#endif
- 
- static void __used dump_rtlx(void)
- {
-@@ -157,6 +179,7 @@ int rtlx_open(int index, int can_sleep)
- 	struct rtlx_channel *chan;
- 	enum rtlx_state state;
- 	int ret = 0;
-+	int cpu_index;
- 
- 	if (index >= RTLX_CHANNELS) {
- 		printk(KERN_DEBUG "rtlx_open index out of range\n");
-@@ -170,19 +193,27 @@ int rtlx_open(int index, int can_sleep)
- 		goto out_fail;
- 	}
- 
-+#ifdef CONFIG_MIPS_CMP
-+	cpu_index = cpu_idx;
-+#else
-+	cpu_index = tclimit;
-+#endif
-+
- 	if (rtlx == NULL) {
--		if( (p = vpe_get_shared(tclimit)) == NULL) {
--		    if (can_sleep) {
--			__wait_event_interruptible(channel_wqs[index].lx_queue,
--				(p = vpe_get_shared(tclimit)), ret);
--			if (ret)
-+		p = vpe_get_shared(cpu_index);
-+		if (p == NULL) {
-+			if (can_sleep) {
-+				__wait_event_interruptible(
-+					channel_wqs[index].lx_queue,
-+					(p = vpe_get_shared(cpu_index)), ret);
-+				if (ret)
-+					goto out_fail;
-+			} else {
-+				printk(KERN_DEBUG
-+				       "No SP program loaded, and device opened with O_NONBLOCK\n");
-+				ret = -ENOSYS;
- 				goto out_fail;
--		    } else {
--			printk(KERN_DEBUG "No SP program loaded, and device "
--					"opened with O_NONBLOCK\n");
--			ret = -ENOSYS;
--			goto out_fail;
--		    }
-+			}
- 		}
- 
- 		smp_rmb();
-@@ -345,6 +376,14 @@ out:
- 	return count;
- }
- 
-+#ifdef CONFIG_MIPS_CMP
-+static void _interrupt_sp(void)
-+{
-+	extern struct plat_smp_ops cmp_smp_ops;
-+
-+	cmp_smp_ops.send_ipi_single(cpu_idx, SMP_RESCHEDULE_YOURSELF);
-+}
-+#else
- static void _interrupt_sp(void)
- {
- 	unsigned long flags;
-@@ -356,6 +395,7 @@ static void _interrupt_sp(void)
- 	evpe(EVPE_ENABLE);
- 	local_irq_restore(flags);
- }
-+#endif
- 
- ssize_t rtlx_write(int index, const void __user *buffer, size_t count)
- {
-@@ -486,6 +526,75 @@ static const struct file_operations rtlx_fops = {
- 	.llseek =  noop_llseek,
- };
- 
-+static char register_chrdev_failed[] __initdata =
-+	KERN_ERR "rtlx_module_init: unable to register device\n";
-+
-+#ifdef CONFIG_MIPS_CMP
-+static int __init rtlx_module_init(void)
-+{
-+	struct device *dev;
-+	int i, err;
-+
-+	if (!cpu_has_mipsmt) {
-+		printk(KERN_WARNING
-+		       "VPE loader: not a MIPS MT capable processor\n");
-+		return -ENODEV;
-+	}
-+
-+	cpu_idx = setup_max_cpus;
-+
-+	if (num_possible_cpus() - cpu_idx < 1) {
-+		printk(KERN_WARNING
-+		       "No TCs reserved for AP/SP, not initializing RTLX.\n"
-+		       "Pass maxcpus=<n> argument as kernel argument\n");
-+
-+		return -ENODEV;
-+	}
-+
-+	major = register_chrdev(0, module_name, &rtlx_fops);
-+	if (major < 0) {
-+		printk(register_chrdev_failed);
-+		return major;
-+	}
-+
-+	/* initialise the wait queues */
-+	for (i = 0; i < RTLX_CHANNELS; i++) {
-+		init_waitqueue_head(&channel_wqs[i].rt_queue);
-+		init_waitqueue_head(&channel_wqs[i].lx_queue);
-+		atomic_set(&channel_wqs[i].in_open, 0);
-+		mutex_init(&channel_wqs[i].mutex);
-+
-+		dev = device_create(mt_class, NULL, MKDEV(major, i), NULL,
-+				    "%s%d", module_name, i);
-+		if (IS_ERR(dev)) {
-+			err = PTR_ERR(dev);
-+			goto out_chrdev;
-+		}
-+	}
-+
-+	/* set up notifiers */
-+	notify.start = starting;
-+	notify.stop = stopping;
-+	vpe_notify(cpu_idx, &notify);
-+
-+	if (cpu_has_vint) {
-+		save_aprp_hook = aprp_hook;
-+		aprp_hook = rtlx_interrupt;
-+	} else {
-+		pr_err("APRP RTLX init on non-vectored-interrupt processor\n");
-+		err = -ENODEV;
-+		goto out_chrdev;
-+	}
-+
-+	return 0;
-+
-+out_chrdev:
-+	for (i = 0; i < RTLX_CHANNELS; i++)
-+		device_destroy(mt_class, MKDEV(major, i));
-+
-+	return err;
-+}
-+#else
- static struct irqaction rtlx_irq = {
- 	.handler	= rtlx_interrupt,
- 	.name		= "RTLX",
-@@ -493,23 +602,21 @@ static struct irqaction rtlx_irq = {
- 
- static int rtlx_irq_num = MIPS_CPU_IRQ_BASE + MIPS_CPU_RTLX_IRQ;
- 
--static char register_chrdev_failed[] __initdata =
--	KERN_ERR "rtlx_module_init: unable to register device\n";
--
- static int __init rtlx_module_init(void)
- {
- 	struct device *dev;
- 	int i, err;
- 
- 	if (!cpu_has_mipsmt) {
--		printk("VPE loader: not a MIPS MT capable processor\n");
-+		printk(KERN_WARNING
-+		       "VPE loader: not a MIPS MT capable processor\n");
- 		return -ENODEV;
- 	}
- 
- 	if (tclimit == 0) {
--		printk(KERN_WARNING "No TCs reserved for AP/SP, not "
--		       "initializing RTLX.\nPass maxtcs=<n> argument as kernel "
--		       "argument\n");
-+		printk(KERN_WARNING
-+		       "No TCs reserved for AP/SP, not initializing RTLX.\n"
-+		       "Pass maxtcs=<n> argument as kernel argument\n");
- 
- 		return -ENODEV;
- 	}
-@@ -546,8 +653,8 @@ static int __init rtlx_module_init(void)
- 		 * gets set, a hw interrupt is signaled as well. Here we
- 		 * are hooking it into platform specific dispatch.
- 		 */
--		save_aprp_dispatch = aprp_dispatch;
--		aprp_dispatch = rtlx_dispatch;
-+		save_aprp_hook = aprp_hook;
-+		aprp_hook = rtlx_dispatch;
- 	} else {
- 		pr_err("APRP RTLX init on non-vectored-interrupt processor\n");
- 		err = -ENODEV;
-@@ -565,6 +672,7 @@ out_chrdev:
- 
- 	return err;
- }
-+#endif
- 
- static void __exit rtlx_module_exit(void)
- {
-@@ -574,7 +682,7 @@ static void __exit rtlx_module_exit(void)
- 		device_destroy(mt_class, MKDEV(major, i));
- 
- 	unregister_chrdev(major, module_name);
--	aprp_dispatch = save_aprp_dispatch;
-+	aprp_hook = save_aprp_hook;
- }
- 
- module_init(rtlx_module_init);
-diff --git a/arch/mips/kernel/vpe.c b/arch/mips/kernel/vpe.c
-index b1f69f2..1ac3fd4 100644
---- a/arch/mips/kernel/vpe.c
-+++ b/arch/mips/kernel/vpe.c
-@@ -51,6 +51,10 @@
- #include <asm/processor.h>
- #include <asm/vpe.h>
- #include <asm/kspd.h>
-+#ifdef CONFIG_MIPS_CMP
-+#include <asm/amon.h>
-+#include <asm/mips-boards/launch.h>
-+#endif
- 
- typedef void *vpe_handle;
- 
-@@ -64,7 +68,11 @@ typedef void *vpe_handle;
- /*
-  * The number of TCs and VPEs physically available on the core
-  */
-+#ifdef CONFIG_MIPS_CMP
-+static int cpu_idx;
-+#else
- static int hw_tcs, hw_vpes;
-+#endif
- static char module_name[] = "vpe";
- static int major;
- static const int minor = 1;	/* fixed for now  */
-@@ -176,7 +184,7 @@ static struct vpe *get_vpe(int minor)
- }
- 
- /* get the vpe associated with this minor */
--static struct tc *get_tc(int index)
-+static __attribute__((__unused__)) struct tc *get_tc(int index)
- {
- 	struct tc *res, *t;
- 
-@@ -681,6 +689,46 @@ static void dump_elfsymbols(Elf_Shdr * sechdrs, unsigned int symindex,
- }
- #endif
- 
-+#ifdef CONFIG_MIPS_CMP
-+#ifdef CONFIG_MIPS_MALTA
-+/* Borrowed from amon_cpu_start() in arch/mips/mti-malta/malta-amon.c */
-+static int vpe_run(struct vpe *v)
-+{
-+	struct vpe_notifications *n;
-+	volatile struct cpulaunch *launch =
-+		(struct cpulaunch  *)CKSEG0ADDR(CPULAUNCH);
-+
-+	if (!amon_cpu_avail(cpu_idx))
-+		return -1;
-+	if (cpu_idx == smp_processor_id()) {
-+		printk(KERN_WARNING "launch: I am cpu%d!\n", cpu_idx);
-+		return -1;
-+	}
-+	launch += cpu_idx;
-+
-+	printk(KERN_INFO "launch: starting cpu%d\n", cpu_idx);
-+
-+	launch->pc = v->__start;
-+	launch->gp = 0;
-+	launch->sp = 0;
-+	launch->a0 = 0;
-+
-+	smp_wmb();
-+	launch->flags |= LAUNCH_FGO;
-+	smp_wmb();
-+
-+	while ((launch->flags & LAUNCH_FGONE) == 0)
-+		;
-+	smp_rmb();
-+	printk(KERN_INFO "launch: cpu%d gone!\n", cpu_idx);
-+
-+	list_for_each_entry(n, &v->notify, list)
-+		n->start(minor);
-+
-+	return 0;
-+}
-+#endif
-+#else
- /* We are prepared so configure and start the VPE... */
- static int vpe_run(struct vpe * v)
- {
-@@ -810,6 +858,7 @@ static int vpe_run(struct vpe * v)
- 
- 	return 0;
- }
-+#endif /* CONFIG_MIPS_CMP */
- 
- static int find_vpe_symbols(struct vpe * v, Elf_Shdr * sechdrs,
- 				      unsigned int symindex, const char *strtab,
-@@ -1008,6 +1057,7 @@ static int vpe_elfload(struct vpe * v)
- 	return 0;
- }
- 
-+#ifndef CONFIG_MIPS_CMP
- static void cleanup_tc(struct tc *tc)
- {
- 	unsigned long flags;
-@@ -1039,6 +1089,7 @@ static void cleanup_tc(struct tc *tc)
- 	emt(mtflags);
- 	local_irq_restore(flags);
- }
-+#endif
- 
- static int getcwd(char *buff, int size)
- {
-@@ -1061,7 +1112,13 @@ static int vpe_open(struct inode *inode, struct file *filp)
- 	enum vpe_state state;
- 	struct vpe_notifications *not;
- 	struct vpe *v;
--	int ret;
-+	int ret, index;
-+
-+#ifdef CONFIG_MIPS_CMP
-+	index = cpu_idx;
-+#else
-+	index = tclimit;
-+#endif
- 
- 	if (minor != iminor(inode)) {
- 		/* assume only 1 device at the moment. */
-@@ -1070,7 +1127,8 @@ static int vpe_open(struct inode *inode, struct file *filp)
- 		return -ENODEV;
- 	}
- 
--	if ((v = get_vpe(tclimit)) == NULL) {
-+	v = get_vpe(index);
-+	if (v == NULL) {
- 		pr_warning("VPE loader: unable to get vpe\n");
- 
- 		return -ENODEV;
-@@ -1081,11 +1139,13 @@ static int vpe_open(struct inode *inode, struct file *filp)
- 		printk(KERN_DEBUG "VPE loader: tc in use dumping regs\n");
- 
- 		list_for_each_entry(not, &v->notify, list) {
--			not->stop(tclimit);
-+			not->stop(index);
- 		}
- 
- 		release_progmem(v->load_addr);
--		cleanup_tc(get_tc(tclimit));
-+#ifndef CONFIG_MIPS_CMP
-+		cleanup_tc(get_tc(index));
-+#endif
- 	}
- 
- 	/* this of-course trashes what was there before... */
-@@ -1126,7 +1186,11 @@ static int vpe_release(struct inode *inode, struct file *filp)
- 	Elf_Ehdr *hdr;
- 	int ret = 0;
- 
-+#ifdef CONFIG_MIPS_CMP
-+	v = get_vpe(cpu_idx);
-+#else
- 	v = get_vpe(tclimit);
-+#endif
- 	if (v == NULL)
- 		return -ENODEV;
- 
-@@ -1166,7 +1230,11 @@ static ssize_t vpe_write(struct file *file, const char __user * buffer,
- 	if (iminor(file->f_path.dentry->d_inode) != minor)
- 		return -ENODEV;
- 
-+#ifdef CONFIG_MIPS_CMP
-+	v = get_vpe(cpu_idx);
-+#else
- 	v = get_vpe(tclimit);
-+#endif
- 	if (v == NULL)
- 		return -ENODEV;
- 
-@@ -1192,6 +1260,7 @@ static const struct file_operations vpe_fops = {
- 	.llseek = noop_llseek,
- };
- 
-+#ifndef CONFIG_MIPS_CMP
- /* module wrapper entry points */
- /* give me a vpe */
- vpe_handle vpe_alloc(void)
-@@ -1279,6 +1348,7 @@ int vpe_free(vpe_handle vpe)
- }
- 
- EXPORT_SYMBOL(vpe_free);
-+#endif /* CONFIG_MIPS_CMP */
- 
- void *vpe_get_shared(int index)
- {
-@@ -1341,8 +1411,59 @@ char *vpe_getcwd(int index)
- 
- EXPORT_SYMBOL(vpe_getcwd);
- 
-+#ifdef CONFIG_MIPS_CMP
- #ifdef CONFIG_MIPS_APSP_KSPD
--static void kspd_sp_exit( int sp_id)
-+static void kspd_sp_exit(int sp_id)
-+{
-+	/* Do nothing to the SP core. */
-+}
-+#endif
-+
-+static ssize_t store_kill(struct device *dev, struct device_attribute *attr,
-+			  const char *buf, size_t len)
-+{
-+	struct vpe *vpe = get_vpe(cpu_idx);
-+	struct vpe_notifications *not;
-+
-+	list_for_each_entry(not, &vpe->notify, list) {
-+		not->stop(cpu_idx);
-+	}
-+
-+	release_progmem(vpe->load_addr);
-+	vpe->state = VPE_STATE_UNUSED;
-+
-+	return len;
-+}
-+
-+static ssize_t show_ntcs(struct device *cd, struct device_attribute *attr,
-+			 char *buf)
-+{
-+	struct vpe *vpe = get_vpe(cpu_idx);
-+
-+	return sprintf(buf, "%d\n", vpe->ntcs);
-+}
-+
-+static ssize_t store_ntcs(struct device *dev, struct device_attribute *attr,
-+			  const char *buf, size_t len)
-+{
-+	struct vpe *vpe = get_vpe(cpu_idx);
-+	unsigned long new;
-+	int ret;
-+
-+	ret = kstrtoul(buf, 0, &new);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (new != 1)
-+		return -EINVAL;
-+
-+	vpe->ntcs = new;
-+
-+	return len;
-+}
-+#else
-+#ifdef CONFIG_MIPS_APSP_KSPD
-+static void kspd_sp_exit(int sp_id)
- {
- 	cleanup_tc(get_tc(sp_id));
- }
-@@ -1379,22 +1500,20 @@ static ssize_t store_ntcs(struct device *dev, struct device_attribute *attr,
- {
- 	struct vpe *vpe = get_vpe(tclimit);
- 	unsigned long new;
--	char *endp;
-+	int ret;
- 
--	new = simple_strtoul(buf, &endp, 0);
--	if (endp == buf)
--		goto out_einval;
-+	ret = kstrtoul(buf, 0, &new);
-+	if (ret < 0)
-+		return ret;
- 
- 	if (new == 0 || new > (hw_tcs - tclimit))
--		goto out_einval;
-+		return -EINVAL;
- 
- 	vpe->ntcs = new;
- 
- 	return len;
--
--out_einval:
--	return -EINVAL;
- }
-+#endif /* CONFIG_MIPS_CMP */
- 
- static struct device_attribute vpe_class_attributes[] = {
- 	__ATTR(kill, S_IWUSR, NULL, store_kill),
-@@ -1416,6 +1535,90 @@ struct class vpe_class = {
- 
- struct device vpe_device;
- 
-+#ifdef CONFIG_MIPS_CMP
-+static int __init vpe_module_init(void)
-+{
-+	struct vpe *v = NULL;
-+	struct tc *t;
-+	int err;
-+
-+	if (!cpu_has_mipsmt) {
-+		printk(KERN_WARNING
-+		       "VPE loader: not a MIPS MT capable processor\n");
-+		return -ENODEV;
-+	}
-+
-+	cpu_idx = setup_max_cpus;
-+
-+	if (num_possible_cpus() - cpu_idx < 1) {
-+		printk(KERN_WARNING
-+		       "No VPEs reserved for AP/SP, not initialize VPE loader\n"
-+		       "Pass maxcpus=<n> argument as kernel argument\n");
-+		return -ENODEV;
-+	}
-+
-+	major = register_chrdev(0, module_name, &vpe_fops);
-+	if (major < 0) {
-+		printk(KERN_WARNING
-+		       "VPE loader: unable to register character device\n");
-+		return major;
-+	}
-+
-+	err = class_register(&vpe_class);
-+	if (err) {
-+		printk(KERN_ERR "vpe_class registration failed\n");
-+		goto out_chrdev;
-+	}
-+
-+	device_initialize(&vpe_device);
-+	vpe_device.class	= &vpe_class,
-+	vpe_device.parent	= NULL,
-+	dev_set_name(&vpe_device, "vpe_sp");
-+	vpe_device.devt = MKDEV(major, minor);
-+	err = device_add(&vpe_device);
-+	if (err) {
-+		printk(KERN_ERR "Adding vpe_device failed\n");
-+		goto out_class;
-+	}
-+
-+	t = alloc_tc(cpu_idx);
-+	if (!t) {
-+		printk(KERN_WARNING "VPE: unable to allocate TC\n");
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	/* VPE */
-+	v = alloc_vpe(cpu_idx);
-+	if (v == NULL) {
-+		printk(KERN_WARNING "VPE: unable to allocate VPE\n");
-+		kfree(t);
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	v->ntcs = 1;
-+
-+	/* add the tc to the list of this vpe's tc's. */
-+	list_add(&t->tc, &v->tc);
-+
-+	/* TC */
-+	t->pvpe = v;	/* set the parent vpe */
-+
-+#ifdef CONFIG_MIPS_APSP_KSPD
-+	kspd_events.kspd_sp_exit = kspd_sp_exit;
-+#endif
-+	return 0;
-+
-+out_class:
-+	class_unregister(&vpe_class);
-+out_chrdev:
-+	unregister_chrdev(major, module_name);
-+
-+out:
-+	return err;
-+}
-+#else
- static int __init vpe_module_init(void)
- {
- 	unsigned int mtflags, vpflags;
-@@ -1425,29 +1628,31 @@ static int __init vpe_module_init(void)
- 	int tc, err;
- 
- 	if (!cpu_has_mipsmt) {
--		printk("VPE loader: not a MIPS MT capable processor\n");
-+		printk(KERN_WARNING
-+		       "VPE loader: not a MIPS MT capable processor\n");
- 		return -ENODEV;
- 	}
- 
- 	if (vpelimit == 0) {
--		printk(KERN_WARNING "No VPEs reserved for AP/SP, not "
--		       "initializing VPE loader.\nPass maxvpes=<n> argument as "
--		       "kernel argument\n");
-+		printk(KERN_WARNING
-+		       "No VPEs reserved for AP/SP, not initialize VPE loader\n"
-+		       "Pass maxvpes=<n> argument as kernel argument\n");
- 
- 		return -ENODEV;
- 	}
- 
- 	if (tclimit == 0) {
--		printk(KERN_WARNING "No TCs reserved for AP/SP, not "
--		       "initializing VPE loader.\nPass maxtcs=<n> argument as "
--		       "kernel argument\n");
-+		printk(KERN_WARNING
-+		       "No TCs reserved for AP/SP, not initialize VPE loader\n"
-+		       "Pass maxtcs=<n> argument as kernel argument\n");
- 
- 		return -ENODEV;
- 	}
- 
- 	major = register_chrdev(0, module_name, &vpe_fops);
- 	if (major < 0) {
--		printk("VPE loader: unable to register character device\n");
-+		printk(KERN_WARNING
-+		       "VPE loader: unable to register character device\n");
- 		return major;
- 	}
- 
-@@ -1505,7 +1710,8 @@ static int __init vpe_module_init(void)
- 		if (tc < hw_tcs) {
- 			settc(tc);
- 
--			if ((v = alloc_vpe(tc)) == NULL) {
-+			v = alloc_vpe(tc);
-+			if (v == NULL) {
- 				printk(KERN_WARNING "VPE: unable to allocate VPE\n");
- 
- 				goto out_reenable;
-@@ -1598,6 +1804,7 @@ out_chrdev:
- out:
- 	return err;
- }
-+#endif /* CONFIG_MIPS_CMP */
- 
- static void __exit vpe_module_exit(void)
- {
-diff --git a/arch/mips/mti-malta/malta-int.c b/arch/mips/mti-malta/malta-int.c
-index 62d77df..1a15fd6 100644
---- a/arch/mips/mti-malta/malta-int.c
-+++ b/arch/mips/mti-malta/malta-int.c
-@@ -119,12 +119,12 @@ static inline int get_int(void)
- }
- 
- #ifdef CONFIG_MIPS_VPE_APSP_API
--static void null_aprp_dispatch(void)
-+static void null_aprp_hook(void)
- {
- }
- 
--void (*aprp_dispatch)(void);
--EXPORT_SYMBOL(aprp_dispatch);
-+void (*aprp_hook)(void);
-+EXPORT_SYMBOL(aprp_hook);
- #endif
- 
- static void malta_hw0_irqdispatch(void)
-@@ -139,13 +139,13 @@ static void malta_hw0_irqdispatch(void)
- 
- 	do_IRQ(MALTA_INT_BASE + irq);
- 
--#ifdef CONFIG_MIPS_VPE_APSP_API
-+#if defined(CONFIG_MIPS_VPE_APSP_API) && !defined(CONFIG_MIPS_CMP)
- 	/*
- 	 * When sw0 gets set, a spurious hw interrupt is signaled as well.
- 	 * The sw0 will not be handled until the hw interrupt is cleared.
- 	 * We use the hook to handle sw0 and the hw interrupt gets cleared.
- 	 */
--	aprp_dispatch();
-+	aprp_hook();
- #endif
- }
- 
-@@ -328,6 +328,10 @@ static void ipi_call_dispatch(void)
- 
- static irqreturn_t ipi_resched_interrupt(int irq, void *dev_id)
- {
-+#if defined(CONFIG_MIPS_VPE_APSP_API) && defined(CONFIG_MIPS_CMP)
-+	aprp_hook();
-+#endif
-+
- 	scheduler_ipi();
- 
- 	return IRQ_HANDLED;
-@@ -640,7 +644,7 @@ void __init arch_init_irq(void)
- 	}
- 
- #ifdef CONFIG_MIPS_VPE_APSP_API
--	aprp_dispatch = null_aprp_dispatch;
-+	aprp_hook = null_aprp_hook;
- #endif
- }
- 
 -- 
-1.7.1
+Grant Likely, B.Sc, P.Eng.
+Secret Lab Technologies, Ltd.

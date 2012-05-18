@@ -1,50 +1,53 @@
-Received: from mail3.caviumnetworks.com ([12.108.191.235]:19701 "EHLO
-        mail3.caviumnetworks.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903710Ab2EQVhq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 May 2012 23:37:46 +0200
-Message-ID: <4FB56FA7.9070401@cavium.com>
-Date: Thu, 17 May 2012 14:37:43 -0700
-From: David Daney <david.daney@cavium.com>
+Received: from dns0.mips.com ([12.201.5.70]:56233 "EHLO dns0.mips.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1901167Ab2ERIKy (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 18 May 2012 10:10:54 +0200
+Message-ID: <4FB60403.3080700@mips.com>
+Date: Fri, 18 May 2012 16:10:43 +0800
+From: Deng-Cheng Zhu <dczhu@mips.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] gpio/MIPS/OCTEON: Add a driver for OCTEON's on-chip
- GPIO pins.
-References: <1334275820-7791-1-git-send-email-ddaney.cavm@gmail.com> <1334275820-7791-3-git-send-email-ddaney.cavm@gmail.com> <20120517205044.81B1C3E0621@localhost>
-In-Reply-To: <20120517205044.81B1C3E0621@localhost>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: Re: [PATCH v2 1/2] MIPS: fix/enrich 34K APRP (APSP) functionalities
+References: <1337244680-29968-1-git-send-email-dczhu@mips.com> <1337244680-29968-2-git-send-email-dczhu@mips.com> <4FB4EF81.10005@phrozen.org>
+In-Reply-To: <4FB4EF81.10005@phrozen.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Grant Likely <grant.likely@secretlab.ca>, "ralf@linux-mips.org" <ralf@linux-mips.org>
-Cc: David Daney <ddaney.cavm@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Linus Walleij <linus.walleij@stericsson.com>, Rob Herring <rob.herring@calxeda.com>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20120517213743.IUby3_y75LGQwr5flO6wRtQDQMUZ7BIQkqWQaDGNUxA@z>
+To: John Crispin <john@phrozen.org>
+Cc: linux-mips@linux-mips.org, kevink@paralogos.com
+Message-ID: <20120518081043.4h8f6N0hFp1sWgsgIB2vUK1Pxkr-EvaI6hRgtviNZmo@z>
 
-On 05/17/2012 01:50 PM, Grant Likely wrote:
-> On Thu, 12 Apr 2012 17:10:20 -0700, David Daney<ddaney.cavm@gmail.com>  wrote:
->> From: David Daney<david.daney@cavium.com>
+Thanks for reviewing the code.
+
+
+On 05/17/2012 08:30 PM, John Crispin wrote:
+> Hi,
+>
+>> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+>> index ce30e2f..8205afe 100644
+>> --- a/arch/mips/Kconfig
+>> +++ b/arch/mips/Kconfig
+>> @@ -1925,7 +1925,7 @@ config MIPS_MT_FPAFF
 >>
->> The SOCs in the OCTEON family have 16 (or in some cases 20) on-chip
->> GPIO pins, this driver handles them all.  Configuring the pins as
->> interrupt sources is handled elsewhere (OCTEON's irq handling code).
->>
->> Signed-off-by: David Daney<david.daney@cavium.com>
+>>   config MIPS_VPE_LOADER
+>>   	bool "VPE loader support."
+>> -	depends on SYS_SUPPORTS_MULTITHREADING
+>> +	depends on SYS_SUPPORTS_MULTITHREADING&&  MIPS_MALTA
 >
-> Aside from the bugs already pointed out;
+> This would lead to the second user of the API having to patch this piece
+> of code to make it work.
 >
-> Acked-by: Grant Likely<grant.likely@secretlab.ca>
->
-> Will you merge this series via the MIPS tree, or do I need to pick it
-> up?
+> You could introduce a ARCH_HAS_APRP which any platform can then select ?
 
-Thanks Grant.
+Hmm... This is a good idea. Maybe the name could be SYS_SUPPORTS_APRP?
 
-I will make the fixes and resubmit.  I expect Ralf can merge these along 
-with the rest of the pile of OCTEON patches.
+> I think it would also make sense to split changes to generic and malta
+> code into separate patches if that is possible.
 
-David Daney
+Yes, that's possible. Will do it in the next version.
 
->
->> ---
->>   drivers/gpio/Kconfig       |    8 ++
->>   drivers/gpio/Makefile      |    1 +
->>   drivers/gpio/gpio-octeon.c |  166 ++++++++++++++++++++++++++++++++++++++++++++
+
+Regards,
+
+Deng-Cheng

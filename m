@@ -1,126 +1,78 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49]:46577 "EHLO
-        mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1901761Ab2ESFrV (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 19 May 2012 07:47:21 +0200
-Received: by pbbrq13 with SMTP id rq13so5495181pbb.36
-        for <linux-mips@linux-mips.org>; Fri, 18 May 2012 22:47:14 -0700 (PDT)
+Received: from mail-pz0-f49.google.com ([209.85.210.49]:58043 "EHLO
+        mail-pz0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903258Ab2ETFQ7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 20 May 2012 07:16:59 +0200
+Received: by dadm1 with SMTP id m1so6272013dad.36
+        for <linux-mips@linux-mips.org>; Sat, 19 May 2012 22:16:53 -0700 (PDT)
 From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH V4 1/3] GPIO: MIPS: lantiq: move gpio-stp and gpio-ebu to the subsystem folder
-In-Reply-To: <1337355777-1680-1-git-send-email-blogic@openwrt.org>
-References: <1337355777-1680-1-git-send-email-blogic@openwrt.org>
-Date: Fri, 18 May 2012 23:47:12 -0600
-Message-ID: <20120519054712.EF0903E046E@localhost>
+Subject: Re: [PATCH V3 16/17] SPI: MIPS: lantiq: add FALCON spi driver
+In-Reply-To: <1337025642-31194-1-git-send-email-blogic@openwrt.org>
+References: <1337025642-31194-1-git-send-email-blogic@openwrt.org>
+Date: Sat, 19 May 2012 23:16:51 -0600
+Message-ID: <20120520051651.388013E03B8@localhost>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: John Crispin <blogic@openwrt.org>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20120519054712.5iJkgk444sRzkuz2ajdlfJYI3OChKle-0WXcZ9ZP5bs@z>
+Cc: linux-mips@linux-mips.org, spi-devel-general@lists.sourceforge.net, Thomas Langer <thomas.langer@lantiq.com>
+Message-ID: <20120520051651._Kzd1X8ExuOgfztKToxHhaAdQvhUgbNIdH7rNWTFsVA@z>
 
-On Fri, 18 May 2012 17:42:55 +0200, John Crispin <blogic@openwrt.org> wrote:
-> Move the 2 drivers from arch/mips/lantiq/xway/ to the subsystem and make them
-> buildable.
+On Mon, 14 May 2012 22:00:42 +0200, John Crispin <blogic@openwrt.org> wrote:
+> From: Thomas Langer <thomas.langer@lantiq.com>
 > 
-> The following 2 patches will convert the drivers to OF.
+> The external bus unit (EBU) found on the FALCON SoC has spi emulation that is
+> designed for serial flash access. This driver has only been tested with m25p80
+> type chips. The hardware has no support for other types of spi peripherals.
 > 
+> Signed-off-by: Thomas Langer <thomas.langer@lantiq.com>
 > Signed-off-by: John Crispin <blogic@openwrt.org>
-> Cc: Grant Likely <grant.likely@secretlab.ca>
-> Cc: linux-kernel@vger.kernel.org
+> Cc: spi-devel-general@lists.sourceforge.net
+> ---
+> This patch was previously Acked in V2 by Grant
+> http://www.mail-archive.com/spi-devel-general@lists.sourceforge.net/msg07874.html
 
-for all 3:
+Which mostly stands except for (something I didn't notice before)....
 
-Acked-by: Grant Likely <grant.likely@secretlab.ca>
+> +static int __devinit falcon_sflash_probe(struct platform_device *pdev)
+> +{
+> +	struct falcon_sflash *priv;
+> +	const __be32 *prop;
+> +	struct spi_master *master;
+> +	int ret, len;
+> +
+> +	if (ltq_boot_select() != BS_SPI) {
+> +		dev_err(&pdev->dev, "invalid bootstrap options\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	master = spi_alloc_master(&pdev->dev, sizeof(*priv));
+> +	if (!master)
+> +		return -ENOMEM;
+> +
+> +	priv = spi_master_get_devdata(master);
+> +	priv->master = master;
+> +
+> +	master->mode_bits = SPI_MODE_3;
+> +	master->num_chipselect = 1;
+> +	master->bus_num = -1;
+> +	master->setup = falcon_sflash_setup;
+> +	master->prepare_transfer_hardware = falcon_sflash_prepare_xfer;
+> +	master->transfer_one_message = falcon_sflash_xfer_one;
+> +	master->unprepare_transfer_hardware = falcon_sflash_unprepare_xfer;
+> +	master->dev.of_node = pdev->dev.of_node;
+> +
+> +	prop = of_get_property(pdev->dev.of_node, "busnum", &len);
+> +	if (prop && (len == sizeof(*prop)))
+> +		master->bus_num = be32_to_cpup(prop);
+
+Drop this bit.  spi bus numbers are dynamically assigned for DT usage.
+Using a property to override the bus number should not be done.
+
+Userspace can determine the bus number for a given device from sysfs.
+
+If you still **really** need a bus to have a specific number, then the
+correct way of handling it is to use a property in the /aliases node,
+and there is some infrastructure in drivers/of/base.c.  Look for
+of_alias_get_id().
 
 g.
-
-> ---
-> This patch is part of a series moving the mips/lantiq target to OF and clkdev
-> support. The patch, once Acked, should go upstream via Ralf's MIPS tree.
-> 
->  arch/mips/lantiq/xway/Makefile                     |    2 +-
->  drivers/gpio/Kconfig                               |   18 ++++++++++++++++++
->  drivers/gpio/Makefile                              |    2 ++
->  .../gpio_ebu.c => drivers/gpio/gpio-mm-lantiq.c    |    0
->  .../gpio_stp.c => drivers/gpio/gpio-stp-xway.c     |    0
->  5 files changed, 21 insertions(+), 1 deletions(-)
->  rename arch/mips/lantiq/xway/gpio_ebu.c => drivers/gpio/gpio-mm-lantiq.c (100%)
->  rename arch/mips/lantiq/xway/gpio_stp.c => drivers/gpio/gpio-stp-xway.c (100%)
-> 
-> diff --git a/arch/mips/lantiq/xway/Makefile b/arch/mips/lantiq/xway/Makefile
-> index edef6c5..dc3194f 100644
-> --- a/arch/mips/lantiq/xway/Makefile
-> +++ b/arch/mips/lantiq/xway/Makefile
-> @@ -1 +1 @@
-> -obj-y := prom.o sysctrl.o clk.o reset.o gpio.o gpio_stp.o gpio_ebu.o dma.o
-> +obj-y := prom.o sysctrl.o clk.o reset.o gpio.o dma.o
-> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> index e03653d..8fae079 100644
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -96,6 +96,14 @@ config GPIO_EP93XX
->  	depends on ARCH_EP93XX
->  	select GPIO_GENERIC
->  
-> +config GPIO_MM_LANTIQ
-> +	bool "Lantiq Memory mapped GPIOs"
-> +	depends on LANTIQ && SOC_XWAY
-> +	help
-> +	  This enables support for memory mapped GPIOs on the External Bus Unit
-> +	  (EBU) found on Lantiq SoCs. The gpios are output only as they are
-> +	  created by attaching a 16bit latch to the bus.
-> +
->  config GPIO_MPC5200
->  	def_bool y
->  	depends on PPC_MPC52xx
-> @@ -306,6 +314,16 @@ config GPIO_STMPE
->  	  This enables support for the GPIOs found on the STMPE I/O
->  	  Expanders.
->  
-> +config GPIO_STP_XWAY
-> +	bool "XWAY STP GPIOs"
-> +	depends on SOC_XWAY
-> +	help
-> +	  This enables support for the Serial To Parallel (STP) unit found on
-> +	  XWAY SoC. The STP allows the SoC to drive a shift registers cascade,
-> +	  that can be up to 24 bit. This peripheral is aimed at driving leds.
-> +	  Some of the gpios/leds can be auto updated by the soc with dsl and
-> +	  phy status.
-> +
->  config GPIO_TC3589X
->  	bool "TC3589X GPIOs"
->  	depends on MFD_TC3589X
-> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-> index 007f54b..ed1c96d 100644
-> --- a/drivers/gpio/Makefile
-> +++ b/drivers/gpio/Makefile
-> @@ -30,6 +30,7 @@ obj-$(CONFIG_GPIO_MC33880)	+= gpio-mc33880.o
->  obj-$(CONFIG_GPIO_MC9S08DZ60)	+= gpio-mc9s08dz60.o
->  obj-$(CONFIG_GPIO_MCP23S08)	+= gpio-mcp23s08.o
->  obj-$(CONFIG_GPIO_ML_IOH)	+= gpio-ml-ioh.o
-> +obj-$(CONFIG_GPIO_MM_LANTIQ)	+= gpio-mm-lantiq.o
->  obj-$(CONFIG_GPIO_MPC5200)	+= gpio-mpc5200.o
->  obj-$(CONFIG_GPIO_MPC8XXX)	+= gpio-mpc8xxx.o
->  obj-$(CONFIG_GPIO_MSM_V1)	+= gpio-msm-v1.o
-> @@ -49,6 +50,7 @@ obj-$(CONFIG_ARCH_SA1100)	+= gpio-sa1100.o
->  obj-$(CONFIG_GPIO_SCH)		+= gpio-sch.o
->  obj-$(CONFIG_GPIO_SODAVILLE)	+= gpio-sodaville.o
->  obj-$(CONFIG_GPIO_STMPE)	+= gpio-stmpe.o
-> +obj-$(CONFIG_GPIO_STP_XWAY)	+= gpio-stp-xway.o
->  obj-$(CONFIG_GPIO_SX150X)	+= gpio-sx150x.o
->  obj-$(CONFIG_GPIO_TC3589X)	+= gpio-tc3589x.o
->  obj-$(CONFIG_ARCH_TEGRA)	+= gpio-tegra.o
-> diff --git a/arch/mips/lantiq/xway/gpio_ebu.c b/drivers/gpio/gpio-mm-lantiq.c
-> similarity index 100%
-> rename from arch/mips/lantiq/xway/gpio_ebu.c
-> rename to drivers/gpio/gpio-mm-lantiq.c
-> diff --git a/arch/mips/lantiq/xway/gpio_stp.c b/drivers/gpio/gpio-stp-xway.c
-> similarity index 100%
-> rename from arch/mips/lantiq/xway/gpio_stp.c
-> rename to drivers/gpio/gpio-stp-xway.c
-> -- 
-> 1.7.9.1
-> 
-
--- 
-Grant Likely, B.Sc, P.Eng.
-Secret Lab Technologies, Ltd.

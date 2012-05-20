@@ -1,78 +1,41 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49]:58043 "EHLO
-        mail-pz0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903258Ab2ETFQ7 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 20 May 2012 07:16:59 +0200
-Received: by dadm1 with SMTP id m1so6272013dad.36
-        for <linux-mips@linux-mips.org>; Sat, 19 May 2012 22:16:53 -0700 (PDT)
+Received: from mail-pb0-f49.google.com ([209.85.160.49]:61497 "EHLO
+        mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903541Ab2ETF1B (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 20 May 2012 07:27:01 +0200
+Received: by pbbrq13 with SMTP id rq13so6400313pbb.36
+        for <linux-mips@linux-mips.org>; Sat, 19 May 2012 22:26:55 -0700 (PDT)
 From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH V3 16/17] SPI: MIPS: lantiq: add FALCON spi driver
-In-Reply-To: <1337025642-31194-1-git-send-email-blogic@openwrt.org>
-References: <1337025642-31194-1-git-send-email-blogic@openwrt.org>
-Date: Sat, 19 May 2012 23:16:51 -0600
-Message-ID: <20120520051651.388013E03B8@localhost>
+Subject: Re: [PATCH 2/2] spi: Add SPI master controller for OCTEON SOCs.
+In-Reply-To: <4FB14B55.4070604@gmail.com>
+References: <1336772086-17248-1-git-send-email-ddaney.cavm@gmail.com> <1336772086-17248-3-git-send-email-ddaney.cavm@gmail.com> <CAM=Q2csSQWbCOCQpubDok1=hmPvHU0MTEUg+-FGhp91=O5L6Hw@mail.gmail.com> <4FB14B55.4070604@gmail.com>
+Date: Sat, 19 May 2012 23:26:53 -0600
+Message-ID: <20120520052653.590673E03B8@localhost>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: John Crispin <blogic@openwrt.org>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, spi-devel-general@lists.sourceforge.net, Thomas Langer <thomas.langer@lantiq.com>
-Message-ID: <20120520051651._Kzd1X8ExuOgfztKToxHhaAdQvhUgbNIdH7rNWTFsVA@z>
+To: David Daney <ddaney.cavm@gmail.com>, Shubhrajyoti Datta <omaplinuxkernel@gmail.com>
+Cc: devicetree-discuss@lists.ozlabs.org, Rob Herring <rob.herring@calxeda.com>, spi-devel-general@lists.sourceforge.net, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Message-ID: <20120520052653.2fzXe4ConDND5qWEwvZ95119dINX8eg1JZOvnLqzI3I@z>
 
-On Mon, 14 May 2012 22:00:42 +0200, John Crispin <blogic@openwrt.org> wrote:
-> From: Thomas Langer <thomas.langer@lantiq.com>
+On Mon, 14 May 2012 11:13:41 -0700, David Daney <ddaney.cavm@gmail.com> wrote:
+> On 05/13/2012 10:46 PM, Shubhrajyoti Datta wrote:
+> > Hi David,
+> > A few comments.
+> >
+> > On Sat, May 12, 2012 at 3:04 AM, David Daney<ddaney.cavm@gmail.com>  wrote:
+> [...]
 > 
-> The external bus unit (EBU) found on the FALCON SoC has spi emulation that is
-> designed for serial flash access. This driver has only been tested with m25p80
-> type chips. The hardware has no support for other types of spi peripherals.
+> >> +
+> >> +#define DRV_VERSION "2.0" /* Version 1 was the out-of-tree driver */
+> > This could be given a miss. As it is less meaningful once accepted.
 > 
-> Signed-off-by: Thomas Langer <thomas.langer@lantiq.com>
-> Signed-off-by: John Crispin <blogic@openwrt.org>
-> Cc: spi-devel-general@lists.sourceforge.net
-> ---
-> This patch was previously Acked in V2 by Grant
-> http://www.mail-archive.com/spi-devel-general@lists.sourceforge.net/msg07874.html
+> 
+> Well, this leads to the question, what is the purpose of the 
+> 'MODULE_VERSION()' macro?  If I use that, I need to populate it with a 
+> value.
 
-Which mostly stands except for (something I didn't notice before)....
-
-> +static int __devinit falcon_sflash_probe(struct platform_device *pdev)
-> +{
-> +	struct falcon_sflash *priv;
-> +	const __be32 *prop;
-> +	struct spi_master *master;
-> +	int ret, len;
-> +
-> +	if (ltq_boot_select() != BS_SPI) {
-> +		dev_err(&pdev->dev, "invalid bootstrap options\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	master = spi_alloc_master(&pdev->dev, sizeof(*priv));
-> +	if (!master)
-> +		return -ENOMEM;
-> +
-> +	priv = spi_master_get_devdata(master);
-> +	priv->master = master;
-> +
-> +	master->mode_bits = SPI_MODE_3;
-> +	master->num_chipselect = 1;
-> +	master->bus_num = -1;
-> +	master->setup = falcon_sflash_setup;
-> +	master->prepare_transfer_hardware = falcon_sflash_prepare_xfer;
-> +	master->transfer_one_message = falcon_sflash_xfer_one;
-> +	master->unprepare_transfer_hardware = falcon_sflash_unprepare_xfer;
-> +	master->dev.of_node = pdev->dev.of_node;
-> +
-> +	prop = of_get_property(pdev->dev.of_node, "busnum", &len);
-> +	if (prop && (len == sizeof(*prop)))
-> +		master->bus_num = be32_to_cpup(prop);
-
-Drop this bit.  spi bus numbers are dynamically assigned for DT usage.
-Using a property to override the bus number should not be done.
-
-Userspace can determine the bus number for a given device from sysfs.
-
-If you still **really** need a bus to have a specific number, then the
-correct way of handling it is to use a property in the /aliases node,
-and there is some infrastructure in drivers/of/base.c.  Look for
-of_alias_get_id().
+Don't use MODULE_VERSION.  Just because it is there doesn't mean you
+need to use it.  :-)  You'll notice that none of the other spi drivers
+have it.
 
 g.

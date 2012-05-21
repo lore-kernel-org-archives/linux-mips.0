@@ -1,41 +1,43 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49]:61497 "EHLO
-        mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903541Ab2ETF1B (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 20 May 2012 07:27:01 +0200
-Received: by pbbrq13 with SMTP id rq13so6400313pbb.36
-        for <linux-mips@linux-mips.org>; Sat, 19 May 2012 22:26:55 -0700 (PDT)
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH 2/2] spi: Add SPI master controller for OCTEON SOCs.
-In-Reply-To: <4FB14B55.4070604@gmail.com>
-References: <1336772086-17248-1-git-send-email-ddaney.cavm@gmail.com> <1336772086-17248-3-git-send-email-ddaney.cavm@gmail.com> <CAM=Q2csSQWbCOCQpubDok1=hmPvHU0MTEUg+-FGhp91=O5L6Hw@mail.gmail.com> <4FB14B55.4070604@gmail.com>
-Date: Sat, 19 May 2012 23:26:53 -0600
-Message-ID: <20120520052653.590673E03B8@localhost>
+Received: from dns0.mips.com ([12.201.5.70]:51863 "EHLO dns0.mips.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1901346Ab2EUDXk (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 21 May 2012 05:23:40 +0200
+Message-ID: <4FB9B52F.908@mips.com>
+Date: Mon, 21 May 2012 11:23:27 +0800
+From: Deng-Cheng Zhu <dczhu@mips.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH v2 1/2] MIPS: fix/enrich 34K APRP (APSP) functionalities
+References: <1337244680-29968-1-git-send-email-dczhu@mips.com> <1337244680-29968-2-git-send-email-dczhu@mips.com> <4FB4EF81.10005@phrozen.org> <4FB60403.3080700@mips.com> <4FB68FA2.1030404@phrozen.org> <alpine.LFD.2.00.1205202231400.3701@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.00.1205202231400.3701@eddie.linux-mips.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: David Daney <ddaney.cavm@gmail.com>, Shubhrajyoti Datta <omaplinuxkernel@gmail.com>
-Cc: devicetree-discuss@lists.ozlabs.org, Rob Herring <rob.herring@calxeda.com>, spi-devel-general@lists.sourceforge.net, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Message-ID: <20120520052653.2fzXe4ConDND5qWEwvZ95119dINX8eg1JZOvnLqzI3I@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: John Crispin <john@phrozen.org>, linux-mips@linux-mips.org, kevink@paralogos.com
+Message-ID: <20120521032327.u6vkWsT_R2_A3q8fTtWwrHPRKflmvi0Rd5_hFZOSR4A@z>
 
-On Mon, 14 May 2012 11:13:41 -0700, David Daney <ddaney.cavm@gmail.com> wrote:
-> On 05/13/2012 10:46 PM, Shubhrajyoti Datta wrote:
-> > Hi David,
-> > A few comments.
-> >
-> > On Sat, May 12, 2012 at 3:04 AM, David Daney<ddaney.cavm@gmail.com>  wrote:
-> [...]
-> 
-> >> +
-> >> +#define DRV_VERSION "2.0" /* Version 1 was the out-of-tree driver */
-> > This could be given a miss. As it is less meaningful once accepted.
-> 
-> 
-> Well, this leads to the question, what is the purpose of the 
-> 'MODULE_VERSION()' macro?  If I use that, I need to populate it with a 
-> value.
+On 05/21/2012 05:32 AM, Maciej W. Rozycki wrote:
+> On Fri, 18 May 2012, John Crispin wrote:
+>
+>>>> You could introduce a ARCH_HAS_APRP which any platform can then select ?
+>>>
+>>> Hmm... This is a good idea. Maybe the name could be SYS_SUPPORTS_APRP?
+>>
+>> You are correct
+>
+>   What's so Malta-specific in the VPE loader anyway?  It's a CPU feature,
+> not a board-specific one.
 
-Don't use MODULE_VERSION.  Just because it is there doesn't mean you
-need to use it.  :-)  You'll notice that none of the other spi drivers
-have it.
+Well, first off, for VPE loader itself, when it comes to CPS we have
+vpe_run() that derives from amon_cpu_start() in arch/mips/mti-malta/malta-
+amon.c. There is no implementation of amon_cpu_start() on other platforms.
+Secondly, I suppose VPE loader works uniquely for APRP, and part of APRP
+(such as IRQ related stuff) depends on platform code. So it makes sense
+(IMO) to impose the dependency of APRP on the root (VPE loader).
 
-g.
+
+Thanks,
+
+Deng-Cheng

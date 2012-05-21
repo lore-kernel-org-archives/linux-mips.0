@@ -1,43 +1,70 @@
-Received: from dns0.mips.com ([12.201.5.70]:51863 "EHLO dns0.mips.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1901346Ab2EUDXk (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 21 May 2012 05:23:40 +0200
-Message-ID: <4FB9B52F.908@mips.com>
-Date: Mon, 21 May 2012 11:23:27 +0800
-From: Deng-Cheng Zhu <dczhu@mips.com>
+Received: from e28smtp07.in.ibm.com ([122.248.162.7]:58040 "EHLO
+        e28smtp07.in.ibm.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1903565Ab2EUKtO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 21 May 2012 12:49:14 +0200
+Received: from /spool/local
+        by e28smtp07.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-mips@linux-mips.org> from <srivatsa.bhat@linux.vnet.ibm.com>;
+        Mon, 21 May 2012 16:18:26 +0530
+Message-ID: <4FBA1B54.3@linux.vnet.ibm.com>
+Date: Mon, 21 May 2012 16:09:16 +0530
+From: "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/2] MIPS: fix/enrich 34K APRP (APSP) functionalities
-References: <1337244680-29968-1-git-send-email-dczhu@mips.com> <1337244680-29968-2-git-send-email-dczhu@mips.com> <4FB4EF81.10005@phrozen.org> <4FB60403.3080700@mips.com> <4FB68FA2.1030404@phrozen.org> <alpine.LFD.2.00.1205202231400.3701@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.00.1205202231400.3701@eddie.linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Subject: Re: [PATCH 6/8] MIPS: call set_cpu_online() on the uping cpu with
+ irq disabled
+References: <1337580008-7280-1-git-send-email-yong.zhang0@gmail.com> <1337580008-7280-7-git-send-email-yong.zhang0@gmail.com>
+In-Reply-To: <1337580008-7280-7-git-send-email-yong.zhang0@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: John Crispin <john@phrozen.org>, linux-mips@linux-mips.org, kevink@paralogos.com
-Message-ID: <20120521032327.u6vkWsT_R2_A3q8fTtWwrHPRKflmvi0Rd5_hFZOSR4A@z>
+To: Yong Zhang <yong.zhang0@gmail.com>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, ralf@linux-mips.org, sshtylyov@mvista.com, david.daney@cavium.comsshtylyov@mvista.com, "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>
+Message-ID: <20120521103916.7S49wHYSoeN80b0UNYS2QM_mcTfRP9Xvmzg6i9oYU8U@z>
 
-On 05/21/2012 05:32 AM, Maciej W. Rozycki wrote:
-> On Fri, 18 May 2012, John Crispin wrote:
->
->>>> You could introduce a ARCH_HAS_APRP which any platform can then select ?
->>>
->>> Hmm... This is a good idea. Maybe the name could be SYS_SUPPORTS_APRP?
->>
->> You are correct
->
->   What's so Malta-specific in the VPE loader anyway?  It's a CPU feature,
-> not a board-specific one.
+On 05/21/2012 11:30 AM, Yong Zhang wrote:
 
-Well, first off, for VPE loader itself, when it comes to CPS we have
-vpe_run() that derives from amon_cpu_start() in arch/mips/mti-malta/malta-
-amon.c. There is no implementation of amon_cpu_start() on other platforms.
-Secondly, I suppose VPE loader works uniquely for APRP, and part of APRP
-(such as IRQ related stuff) depends on platform code. So it makes sense
-(IMO) to impose the dependency of APRP on the root (VPE loader).
+> From: Yong Zhang <yong.zhang@windriver.com>
+> 
+> To prevent a problem as commit 5fbd036b [sched: Cleanup cpu_active madness]
+> and commit 2baab4e9 [sched: Fix select_fallback_rq() vs cpu_active/cpu_online]
+> try to resolve, move set_cpu_online() to the brought up CPU and with irq
+> disabled.
+> 
+> Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
+> Acked-by: David Daney <david.daney@cavium.com>
+> ---
+>  arch/mips/kernel/smp.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+> index 73a268a..042145f 100644
+> --- a/arch/mips/kernel/smp.c
+> +++ b/arch/mips/kernel/smp.c
+> @@ -122,6 +122,8 @@ asmlinkage __cpuinit void start_secondary(void)
+> 
+>  	notify_cpu_starting(cpu);
+> 
+> +	set_cpu_online(cpu, true);
+> +
 
 
-Thanks,
+You will also need to use ipi_call_lock/unlock() around this.
+See how x86 does it. (MIPS also selects USE_GENERIC_SMP_HELPERS).
 
-Deng-Cheng
+Regards,
+Srivatsa S. Bhat
+
+>  	set_cpu_sibling_map(cpu);
+> 
+>  	cpu_set(cpu, cpu_callin_map);
+> @@ -249,8 +251,6 @@ int __cpuinit __cpu_up(unsigned int cpu)
+>  	while (!cpu_isset(cpu, cpu_callin_map))
+>  		udelay(100);
+> 
+> -	set_cpu_online(cpu, true);
+> -
+>  	return 0;
+>  }
+> 

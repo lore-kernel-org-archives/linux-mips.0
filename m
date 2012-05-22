@@ -1,66 +1,70 @@
-Received: from dns0.mips.com ([12.201.5.70]:46684 "EHLO dns0.mips.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1901163Ab2EVHGH (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 22 May 2012 09:06:07 +0200
-Message-ID: <4FBB3AD2.1040802@mips.com>
-Date: Tue, 22 May 2012 15:05:54 +0800
-From: Deng-Cheng Zhu <dczhu@mips.com>
+Received: from mail3.caviumnetworks.com ([12.108.191.235]:17636 "EHLO
+        mail3.caviumnetworks.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903700Ab2EVS06 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 May 2012 20:26:58 +0200
+Message-ID: <4FBBDA70.8020307@cavium.com>
+Date: Tue, 22 May 2012 11:26:56 -0700
+From: David Daney <david.daney@cavium.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/2] MIPS: fix/enrich 34K APRP (APSP) functionalities
-References: <1337244680-29968-1-git-send-email-dczhu@mips.com> <1337244680-29968-2-git-send-email-dczhu@mips.com> <4FB4EF81.10005@phrozen.org> <4FB60403.3080700@mips.com> <4FB68FA2.1030404@phrozen.org> <alpine.LFD.2.00.1205202231400.3701@eddie.linux-mips.org> <4FB9B52F.908@mips.com> <alpine.LFD.2.00.1205212350070.3701@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.00.1205212350070.3701@eddie.linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Subject: Re: [PATCH 4/5] netdev/phy: Add driver for Broadcom BCM87XX 10G Ethernet
+ PHYs
+References: <1337709592-23347-1-git-send-email-ddaney.cavm@gmail.com>    <1337709592-23347-5-git-send-email-ddaney.cavm@gmail.com> <1337710660.3432.8.camel@joe2Laptop>
+In-Reply-To: <1337710660.3432.8.camel@joe2Laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: John Crispin <john@phrozen.org>, linux-mips@linux-mips.org, kevink@paralogos.com
-Message-ID: <20120522070554.rIqtXxZyt6PFNf8Z4Pj45sQESF-uxBUd-sHwa04PHn0@z>
+To: Joe Perches <joe@perches.com>
+Cc: David Daney <ddaney.cavm@gmail.com>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, "David S. Miller" <davem@davemloft.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Fleming Andy-AFLEMING <afleming@freescale.com>
+Message-ID: <20120522182656.9LSwr2QVE7mVpkyUiwYpeIEGxCPUs6HGEsobvhEMsBo@z>
 
-On 05/22/2012 07:17 AM, Maciej W. Rozycki wrote:
-> On Mon, 21 May 2012, Deng-Cheng Zhu wrote:
+On 05/22/2012 11:17 AM, Joe Perches wrote:
+> On Tue, 2012-05-22 at 10:59 -0700, David Daney wrote:
+>> From: David Daney<david.daney@cavium.com>
 >
->>>    What's so Malta-specific in the VPE loader anyway?  It's a CPU feature,
->>> not a board-specific one.
->>
->> Well, first off, for VPE loader itself, when it comes to CPS we have
->> vpe_run() that derives from amon_cpu_start() in arch/mips/mti-malta/malta-
->> amon.c. There is no implementation of amon_cpu_start() on other platforms.
+> trivia:
+
+As long as we are splitting hairs...
+
 >
->   Hmm, there's nothing platform-specific there, the file is pretty generic,
-> it could be moved to arch/mips/kernel/ or thereabouts.  That applies to
-> <asm/mips-boards/launch.h>  too, before you ask
-
-Yeah, agree with you. I didn't do it simply because I'm not sure :)
-
-> (you may want to use alloc_bootmem or suchlike instead of hardcoding the
-> trampoline page, though it's probably pretty safe to assume the end of
-> the exception handler page is available everywhere).
-
-I'm not quite clear about this. Do you mean to bypass the arbitrary monitor
-in vpe_run() (in other words, to directly bring up the vpe in vpe_run())?
-Why do we need to worry about writing to the cpulaunch data?
-
->> Secondly, I suppose VPE loader works uniquely for APRP, and part of APRP
->> (such as IRQ related stuff) depends on platform code. So it makes sense
->> (IMO) to impose the dependency of APRP on the root (VPE loader).
+>> diff --git a/drivers/net/phy/bcm87xx.c b/drivers/net/phy/bcm87xx.c
+> []
+>> @@ -0,0 +1,237 @@
 >
->   Hmm, does it really?  It sounds wrong to me, it shouldn't use any
-> hardware interrupts, and software interrupts again are available
-> everywhere, at least on the MT processors now in existence.
+>> +static int bcm87xx_of_reg_init(struct phy_device *phydev)
+>> +{
+>> +	const __be32 *paddr;
+>> +	int len, i, ret;
+>> +
+>> +	if (!phydev->dev.of_node)
+>> +		return 0;
+>> +
+>> +	paddr = of_get_property(phydev->dev.of_node,
+>> +				"broadcom,c45-reg-init",&len);
+>> +	if (!paddr || len<  (4 * sizeof(*paddr)))
+>> +		return 0;
+>> +
+>> +	ret = 0;
+>> +	len /= sizeof(*paddr);
+>> +	for (i = 0; i<  len - 3; i += 4) {
+>> +		u16 devid = be32_to_cpup(paddr + i);
+>> +		u16 reg = be32_to_cpup(paddr + i + 1);
+>> +		u16 mask = be32_to_cpup(paddr + i + 2);
+>> +		u16 val_bits = be32_to_cpup(paddr + i + 3);
+>> +		int val;
 >
->   There's nothing platform-specific referred to from arch/mips/kernel/vpe.c
-> AFAICT (and I trust in Beth having got this piece right).  I reckon it
-> used to work with CONFIG_MIPS_SIM too, though I could imagine the
-> configuration got neglected a bit as it is somewhat unusual.
+> These might read better as
+>
+> 	len /= 4;
 
-Oh, When I said IRQ related stuff I meant the interrupt specific changes in
-rtlx.c (not vpe.c) which correspond to those in malta-int.c. They are
-there to resolve some issues (Please refer to the code changes and added
-comments in these 2 files in PATCH #1 and #2.).
+Where did the magic value of 4 come from?
 
+> 	for (i = 0; i<  len; i++) {
+> 		u16 devid	= be32_to_cpu(*paddr++);
+> 		u16 reg		= be32_to_cpu(*paddr++);
+> 		u16 mask	= be32_to_cpu(*paddr++);
+> 		u16 val_bits	= be32_to_cpu(*paddr++);
 
-Thanks for your review,
-
-Deng-Cheng
+Is the main problem that they didn't align, or that the index was 
+explicit instead of implicit?

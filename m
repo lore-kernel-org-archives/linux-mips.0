@@ -1,60 +1,92 @@
-Received: from mail3.caviumnetworks.com ([12.108.191.235]:2424 "EHLO
-        mail3.caviumnetworks.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903700Ab2EVT0t (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 May 2012 21:26:49 +0200
-Message-ID: <4FBBE83E.9090307@cavium.com>
-Date: Tue, 22 May 2012 12:25:50 -0700
-From: David Daney <david.daney@cavium.com>
+Received: from mail-pb0-f49.google.com ([209.85.160.49]:35491 "EHLO
+        mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903711Ab2EVTpQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 May 2012 21:45:16 +0200
+Received: by pbbrq13 with SMTP id rq13so9976052pbb.36
+        for <linux-mips@linux-mips.org>; Tue, 22 May 2012 12:45:10 -0700 (PDT)
+Message-ID: <4FBBECC2.10503@gmail.com>
+Date: Tue, 22 May 2012 12:45:06 -0700
+From: David Daney <ddaney.cavm@gmail.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 5/5] netdev/phy: Add driver for Cortina cs4321 quad 10G
- PHY.
-References: <1337709592-23347-1-git-send-email-ddaney.cavm@gmail.com> <1337709592-23347-6-git-send-email-ddaney.cavm@gmail.com> <20120522185032.GR4038@decadent.org.uk>
-In-Reply-To: <20120522185032.GR4038@decadent.org.uk>
+Subject: Re: [PATCH 1/3] of: Add prefix parameter to of_modalias_node().
+References: <1336773923-17866-1-git-send-email-ddaney.cavm@gmail.com> <1336773923-17866-2-git-send-email-ddaney.cavm@gmail.com> <20120520055436.13AF03E03B8@localhost> <20120520060802.03CE73E03B8@localhost>
+In-Reply-To: <20120520060802.03CE73E03B8@localhost>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: David Daney <ddaney.cavm@gmail.com>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, "David S. Miller" <davem@davemloft.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Fleming Andy-AFLEMING <afleming@freescale.com>
-Message-ID: <20120522192550.rkIgNbcgLPieQgOvuy4H3q1SBTxS2eXJgRAtRNaCoPE@z>
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: David Daney <ddaney.cavm@gmail.com>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "spi-devel-general@lists.sourceforge.net" <spi-devel-general@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Liam Girdwood <lrg@ti.com>, Tabi Timur-B04825 <B04825@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Message-ID: <20120522194506.FnVusd6yhRAgpCUKukEBIWmwvPjEAwk-bjJB9LFV31s@z>
 
-On 05/22/2012 11:50 AM, Ben Hutchings wrote:
-> On Tue, May 22, 2012 at 10:59:52AM -0700, David Daney wrote:
-> [...]
->> --- /dev/null
->> +++ b/drivers/net/phy/cs4321-ucode.h
->> @@ -0,0 +1,4378 @@
->> +/*
->> + *    Copyright (C) 2011 by Cortina Systems, Inc.
->> + *
->> + *    This program is free software; you can redistribute it and/or modify
->> + *    it under the terms of the GNU General Public License as published by
->> + *    the Free Software Foundation; either version 2 of the License, or
->> + *    (at your option) any later version.
->> + *
->> + *    This program is distributed in the hope that it will be useful,
->> + *    but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + *    GNU General Public License for more details.
->> + *
->> + */
-> [...]
+On 05/19/2012 11:08 PM, Grant Likely wrote:
+> On Sat, 19 May 2012 23:54:36 -0600, Grant Likely<grant.likely@secretlab.ca>  wrote:
+>> On Fri, 11 May 2012 15:05:21 -0700, David Daney<ddaney.cavm@gmail.com>  wrote:
+>>> From: David Daney<david.daney@cavium.com>
+>>>
+>>> When generating MODALIASes, it is convenient to add things like "spi:"
+>>> or "i2c:" to the front of the strings.  This allows the standard
+>>> modprobe to find the right driver when automatically populating bus
+>>> children from the device tree structure.
+>>>
+>>> Add a prefix parameter, and adjust callers.  For
+>>> of_register_spi_devices() use the "spi:" prefix.
+>>>
+>>> Signed-off-by: David Daney<david.daney@cavium.com>
+>>
+>> Applied, thanks.  Some notes below...
 >
-> So where's the real source code for it?
+> Wait... why is this necessary?
 
-I wish I knew.  The vendor released the array of random numbers as GPL 
-to us. :-(
+Because in of_register_spi_devices() in of_spi.c, you do:
+
+	request_module(spi->modalias);
+
+The string passed to request_module() must have the "spi:" prefix.
+
+
+> The module type prefix isn't stored in
+> the modalias value for any other bus type as far as I can see,
+
+It is only useful with the prefix, so I though I would add it to the 
+stored value.
+
+> and
+> with this series it appears that the "spi:" prefix may or may not be
+> present in the modalias.  That doesn't look right.
+
+Perhaps, but the with the combination of patches 1/3 and 2/3 I tried to 
+ensure that the prefix would always be present for SPI devices.
 
 >
-> If you won't (or can't) provide source code for the microcode then it
-> should instead be submitted to linux-firmware with a binary
-> redistribution licence, and the driver should load it with
-> request_firmware().
+> Why isn't prefixing spi: at uevent time sufficient?
 
-I will attempt to do that.
+Because udev may not be loading the driver.
 
-The .c file contains plenty of other pseudo-random numbers, but those 
-cannot really be considered 'firmware'
+> IIUC, modprobe
+> depends on either UEVENT or the modalias attribute to know which
+> driver to probe.  It does look like the attribute is missing the spi:
+> prefix though.  Does the following change work instead of these two
+> patches?
+>
 
-David Daney
+No.
+
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index 3d8f662..da8aac7 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -51,7 +51,7 @@ modalias_show(struct device *dev, struct device_attribute *a, char *buf)
+>   {
+>          const struct spi_device *spi = to_spi_device(dev);
+>
+> -       return sprintf(buf, "%s\n", spi->modalias);
+> +       return sprintf(buf, "%s%s\n", SPI_MODULE_PREFIX, spi->modalias);
+>   }
+>
+> So, I've dropped this patch from my tree.  If the change above works
+> for you then I'll push it out.
+>
+> g.
+>

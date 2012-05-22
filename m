@@ -1,90 +1,60 @@
-Received: from perches-mx.perches.com ([206.117.179.246]:49920 "EHLO
-        labridge.com" rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org
-        with ESMTP id S1903700Ab2EVSek (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 May 2012 20:34:40 +0200
-Message-ID: <1337711674.8664.5.camel@joe2Laptop>
-Subject: Re: [PATCH 4/5] netdev/phy: Add driver for Broadcom BCM87XX 10G
- Ethernet PHYs
-From: Joe Perches <joe@perches.com>
-Date: Tue, 22 May 2012 11:34:34 -0700
-In-Reply-To: <4FBBDA70.8020307@cavium.com>
-References: <1337709592-23347-1-git-send-email-ddaney.cavm@gmail.com>
-         <1337709592-23347-5-git-send-email-ddaney.cavm@gmail.com>
-         <1337710660.3432.8.camel@joe2Laptop> <4FBBDA70.8020307@cavium.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail3.caviumnetworks.com ([12.108.191.235]:2424 "EHLO
+        mail3.caviumnetworks.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903700Ab2EVT0t (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 May 2012 21:26:49 +0200
+Message-ID: <4FBBE83E.9090307@cavium.com>
+Date: Tue, 22 May 2012 12:25:50 -0700
+From: David Daney <david.daney@cavium.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH 5/5] netdev/phy: Add driver for Cortina cs4321 quad 10G
+ PHY.
+References: <1337709592-23347-1-git-send-email-ddaney.cavm@gmail.com> <1337709592-23347-6-git-send-email-ddaney.cavm@gmail.com> <20120522185032.GR4038@decadent.org.uk>
+In-Reply-To: <20120522185032.GR4038@decadent.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: David Daney <david.daney@cavium.com>
+To: Ben Hutchings <ben@decadent.org.uk>
 Cc: David Daney <ddaney.cavm@gmail.com>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, "David S. Miller" <davem@davemloft.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Fleming Andy-AFLEMING <afleming@freescale.com>
-Message-ID: <20120522183434.ydu_xmtE_bcdzzNE6vi5QwjbcQPLbkLmG7XNCsu2g_8@z>
+Message-ID: <20120522192550.rkIgNbcgLPieQgOvuy4H3q1SBTxS2eXJgRAtRNaCoPE@z>
 
-On Tue, 2012-05-22 at 11:26 -0700, David Daney wrote:
-> On 05/22/2012 11:17 AM, Joe Perches wrote:
-> > On Tue, 2012-05-22 at 10:59 -0700, David Daney wrote:
-> >> From: David Daney<david.daney@cavium.com>
-> >
-> > trivia:
-> 
-> As long as we are splitting hairs...
+On 05/22/2012 11:50 AM, Ben Hutchings wrote:
+> On Tue, May 22, 2012 at 10:59:52AM -0700, David Daney wrote:
+> [...]
+>> --- /dev/null
+>> +++ b/drivers/net/phy/cs4321-ucode.h
+>> @@ -0,0 +1,4378 @@
+>> +/*
+>> + *    Copyright (C) 2011 by Cortina Systems, Inc.
+>> + *
+>> + *    This program is free software; you can redistribute it and/or modify
+>> + *    it under the terms of the GNU General Public License as published by
+>> + *    the Free Software Foundation; either version 2 of the License, or
+>> + *    (at your option) any later version.
+>> + *
+>> + *    This program is distributed in the hope that it will be useful,
+>> + *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> + *    GNU General Public License for more details.
+>> + *
+>> + */
+> [...]
+>
+> So where's the real source code for it?
 
-and zooming in and enhancing...
+I wish I knew.  The vendor released the array of random numbers as GPL 
+to us. :-(
 
-> >
-> >> diff --git a/drivers/net/phy/bcm87xx.c b/drivers/net/phy/bcm87xx.c
-> > []
-> >> @@ -0,0 +1,237 @@
-> >
-> >> +static int bcm87xx_of_reg_init(struct phy_device *phydev)
-> >> +{
-> >> +	const __be32 *paddr;
-> >> +	int len, i, ret;
-> >> +
-> >> +	if (!phydev->dev.of_node)
-> >> +		return 0;
-> >> +
-> >> +	paddr = of_get_property(phydev->dev.of_node,
-> >> +				"broadcom,c45-reg-init",&len);
-> >> +	if (!paddr || len<  (4 * sizeof(*paddr)))
-> >> +		return 0;
-> >> +
-> >> +	ret = 0;
-> >> +	len /= sizeof(*paddr);
-> >> +	for (i = 0; i<  len - 3; i += 4) {
-> >> +		u16 devid = be32_to_cpup(paddr + i);
-> >> +		u16 reg = be32_to_cpup(paddr + i + 1);
-> >> +		u16 mask = be32_to_cpup(paddr + i + 2);
-> >> +		u16 val_bits = be32_to_cpup(paddr + i + 3);
-> >> +		int val;
-> >
-> > These might read better as
-> >
-> > 	len /= 4;
-> 
-> Where did the magic value of 4 come from?
+>
+> If you won't (or can't) provide source code for the microcode then it
+> should instead be submitted to linux-firmware with a binary
+> redistribution licence, and the driver should load it with
+> request_firmware().
 
-equivalence to the original for loop
+I will attempt to do that.
 
-	for (i = 0; i < len - 3; i += 4) {
+The .c file contains plenty of other pseudo-random numbers, but those 
+cannot really be considered 'firmware'
 
-> > 	for (i = 0; i<  len; i++) {
-
-> > 		u16 devid	= be32_to_cpu(*paddr++);
-> > 		u16 reg		= be32_to_cpu(*paddr++);
-> > 		u16 mask	= be32_to_cpu(*paddr++);
-> > 		u16 val_bits	= be32_to_cpu(*paddr++);
-> 
-> Is the main problem that they didn't align, or that the index was 
-> explicit instead of implicit?
-
-There's no real problem, it's just that
-i++, be32_to_cpu and *addr++ is a bit
-more common and perhaps more easily read.
-
-The alignment's just a visual nicety.
-
-Ignore it if you choose.
-
-cheers, Joe
+David Daney

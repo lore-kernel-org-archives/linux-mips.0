@@ -1,109 +1,78 @@
-Received: from dns0.mips.com ([12.201.5.70]:48702 "EHLO dns0.mips.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1903599Ab2EWJHU (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 23 May 2012 11:07:20 +0200
-Message-ID: <4FBCA8B9.8060604@mips.com>
-Date: Wed, 23 May 2012 17:07:05 +0800
-From: Deng-Cheng Zhu <dczhu@mips.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/2] MIPS: fix/enrich 34K APRP (APSP) functionalities
-References: <1337244680-29968-1-git-send-email-dczhu@mips.com> <1337244680-29968-2-git-send-email-dczhu@mips.com> <4FB4EF81.10005@phrozen.org> <4FB60403.3080700@mips.com> <4FB68FA2.1030404@phrozen.org> <alpine.LFD.2.00.1205202231400.3701@eddie.linux-mips.org> <4FB9B52F.908@mips.com> <alpine.LFD.2.00.1205212350070.3701@eddie.linux-mips.org> <4FBB3AD2.1040802@mips.com> <alpine.LFD.2.00.1205222251580.3701@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.00.1205222251580.3701@eddie.linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from mail-pb0-f49.google.com ([209.85.160.49]:45460 "EHLO
+        mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903684Ab2EYXZv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 26 May 2012 01:25:51 +0200
+From: David Daney <ddaney.cavm@gmail.com>
+Subject: [PATCH] MIPS: Properly align the .data..init_task section.
+Date: Fri, 25 May 2012 16:25:34 -0700
+Message-ID: <1337988334-7693-1-git-send-email-ddaney.cavm@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: John Crispin <john@phrozen.org>, linux-mips@linux-mips.org, kevink@paralogos.com
-Message-ID: <20120523090705.rSRmSJo2FozDFr0Zr4MGDToSnEQcdd4oiSwqsCUt2bs@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: David Daney <david.daney@cavium.com>, stable@vger.kernel.org
+Message-ID: <20120525232534.sGOPuCwesqf3BrXYgZ0HOQ0K2NiA3cfmIwAlOEaGdN4@z>
 
-Thanks for your detailed explanation! Please see my comments below.
+From: David Daney <david.daney@cavium.com>
 
-On 05/23/2012 06:12 AM, Maciej W. Rozycki wrote:
-> On Tue, 22 May 2012, Deng-Cheng Zhu wrote:
->
->>>    Hmm, there's nothing platform-specific there, the file is pretty generic,
->>> it could be moved to arch/mips/kernel/ or thereabouts.  That applies to
->>> <asm/mips-boards/launch.h>   too, before you ask
->>
->> Yeah, agree with you. I didn't do it simply because I'm not sure :)
->
->   I can see you've copied the whole contents over to arch/mips/kernel/vpe.c
-> now.  Please don't do that.  This code is modular for a reason.  Either
-> modify original code to suit your needs while preserving functionality or,
-> if infeasible, copy it over to a new module selected based on
-> configuration.  Common parts should be abstracted and extracted to a
-> common dependency, either a shared header or another module, as
-> applicable.
+Improper alignment can lead to unbootable systems and/or random
+crashes.
 
-OK. Good advice!
+Signed-off-by: David Daney <david.daney@cavium.com>
+Cc: <stable@vger.kernel.org>
+---
+ arch/mips/include/asm/thread_info.h |    4 ++--
+ arch/mips/kernel/vmlinux.lds.S      |    3 ++-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
->>> (you may want to use alloc_bootmem or suchlike instead of hardcoding the
->>> trampoline page, though it's probably pretty safe to assume the end of
->>> the exception handler page is available everywhere).
->>
->> I'm not quite clear about this. Do you mean to bypass the arbitrary monitor
->> in vpe_run() (in other words, to directly bring up the vpe in vpe_run())?
->> Why do we need to worry about writing to the cpulaunch data?
->
->   The location of RAM is platform-specific, CKSEG0ADDR mustn't be used to
-> "allocate" kernel memory.  But as I say the exception handlers' page is
-> generally pretty safe, although the addition of the CP0 EBase register to
-> the architecture stopped it being guaranteed at one point.
->
->   Ultimately I think this memory should be properly allocated, but this is
-> preexisting code, so there is no requirement that you fix that on this
-> occasion (or at all), unless you'd really like to.
-
-OK. I'll let it be for now.
-
->>>    There's nothing platform-specific referred to from arch/mips/kernel/vpe.c
->>> AFAICT (and I trust in Beth having got this piece right).  I reckon it
->>> used to work with CONFIG_MIPS_SIM too, though I could imagine the
->>> configuration got neglected a bit as it is somewhat unusual.
->>
->> Oh, When I said IRQ related stuff I meant the interrupt specific changes in
->> rtlx.c (not vpe.c) which correspond to those in malta-int.c. They are
->> there to resolve some issues (Please refer to the code changes and added
->> comments in these 2 files in PATCH #1 and #2.).
->
->   I still can't see anything platform-specific in rtlx.c (also written by
-> Beth, BTW) -- it's all software interrupts that are architectural.  What
-> pieces of code and comments are you specifically referring to?
-
-I meant some interrupt specific changes in rtlx.c correspond to platform-
-specific ones in malta-int.c. You may simply refer to the latter for the
-issues I addressed. The changes to malta-int.c led to the platform
-dependency and it seems the issues could not be tackled in generic layer.
-
->   Also in some places you do stuff like:
->
-> #ifdef CONFIG_MIPS_CMP
-> int foo(void)
-> {
-> [something...]
-> }
-> #else
-> int foo(void)
-> {
-> [something else...]
-> }
-> #endif
->
-> Please don't.  Again these pieces should be separate modules selected by
-> configuration, e.g. rtlx.c, rtlx-mt.c and rtlx-cmp.c with the former
-> holding the common stuff, and the two latters non-CMP- and CMP-specific
-> pieces, respectively (assuming that they are mutually exclusive and can't
-> be enabled both at a time in a single kernel binary for some reason).
-
-Thanks, good point.
-
->   It may make sense to move this whole stuff to a subdirectory at one
-> point.
-
-Do you mean to move things like vpe.c, kspd.c and rtlx.c (and the proposed
--mt/-cmp variants) into a directory such as arch/mips/kernel/aprp/?
-
-
-Deng-Cheng
+diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
+index e2eca7d..ca97e0e 100644
+--- a/arch/mips/include/asm/thread_info.h
++++ b/arch/mips/include/asm/thread_info.h
+@@ -60,6 +60,8 @@ struct thread_info {
+ register struct thread_info *__current_thread_info __asm__("$28");
+ #define current_thread_info()  __current_thread_info
+ 
++#endif /* !__ASSEMBLY__ */
++
+ /* thread information allocation */
+ #if defined(CONFIG_PAGE_SIZE_4KB) && defined(CONFIG_32BIT)
+ #define THREAD_SIZE_ORDER (1)
+@@ -85,8 +87,6 @@ register struct thread_info *__current_thread_info __asm__("$28");
+ 
+ #define STACK_WARN	(THREAD_SIZE / 8)
+ 
+-#endif /* !__ASSEMBLY__ */
+-
+ #define PREEMPT_ACTIVE		0x10000000
+ 
+ /*
+diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+index 924da5e..df243a6 100644
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -1,5 +1,6 @@
+ #include <asm/asm-offsets.h>
+ #include <asm/page.h>
++#include <asm/thread_info.h>
+ #include <asm-generic/vmlinux.lds.h>
+ 
+ #undef mips
+@@ -72,7 +73,7 @@ SECTIONS
+ 	.data : {	/* Data */
+ 		. = . + DATAOFFSET;		/* for CONFIG_MAPPED_KERNEL */
+ 
+-		INIT_TASK_DATA(PAGE_SIZE)
++		INIT_TASK_DATA(THREAD_SIZE)
+ 		NOSAVE_DATA
+ 		CACHELINE_ALIGNED_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+ 		READ_MOSTLY_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+-- 
+1.7.2.3

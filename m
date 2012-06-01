@@ -1,15 +1,20 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49]:55750 "EHLO
-        mail-pz0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903551Ab2E3HXX (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 30 May 2012 09:23:23 +0200
-Received: by dadm1 with SMTP id m1so7000325dad.36
-        for <linux-mips@linux-mips.org>; Wed, 30 May 2012 00:23:17 -0700 (PDT)
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: RE: [PATCH V5 16/17] SPI: MIPS: lantiq: add FALCON spi driver
-In-Reply-To: <593AEF6C47F46446852B067021A273D6049FCE@MUCSE039.lantiq.com>
-References: <1337521579-1597-1-git-send-email-blogic@openwrt.org> <20120525233845.BD93C3E0BD2@localhost> <4FC0DEEC.8050204@openwrt.org> <593AEF6C47F46446852B067021A273D6049FCE@MUCSE039.lantiq.com>
-Date: Wed, 30 May 2012 15:23:13 +0800
-Message-ID: <20120530072314.04A153E065C@localhost>
+Received: from e28smtp02.in.ibm.com ([122.248.162.2]:45503 "EHLO
+        e28smtp02.in.ibm.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1903605Ab2FAJN3 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Jun 2012 11:13:29 +0200
+Received: from /spool/local
+        by e28smtp02.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-mips@linux-mips.org> from <srivatsa.bhat@linux.vnet.ibm.com>;
+        Fri, 1 Jun 2012 14:43:21 +0530
+From: "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>
+Subject: [PATCH 10/27] mips, smpboot: Use generic SMP booting infrastructure
+Date: Fri, 01 Jun 2012 14:42:32 +0530
+Message-ID: <20120601091226.31979.62223.stgit@srivatsabhat.in.ibm.com>
+In-Reply-To: <20120601090952.31979.24799.stgit@srivatsabhat.in.ibm.com>
+References: <20120601090952.31979.24799.stgit@srivatsabhat.in.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,42 +25,159 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: "Langer Thomas (LQDE CPE AE SW)" <thomas.langer@lantiq.com>, John Crispin <blogic@openwrt.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "spi-devel-general@lists.sourceforge.net" <spi-devel-general@lists.sourceforge.net>
-Message-ID: <20120530072313.hDe-6S_uL-SPnFjyfVdh5m5M-Jj8w3PH3nLdsoc7ATU@z>
+To: tglx@linutronix.de, peterz@infradead.org, paulmck@linux.vnet.ibm.com
+Cc: rusty@rustcorp.com.au, mingo@kernel.org, yong.zhang0@gmail.com, akpm@linux-foundation.org, vatsa@linux.vnet.ibm.com, rjw@sisk.pl, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, srivatsa.bhat@linux.vnet.ibm.com, nikunj@linux.vnet.ibm.com, Ralf Baechle <ralf@linux-mips.org>Andrew Morton <akpm@linux-foundation.org>, Eric Dumazet <eric.dumazet@gmail.com>, Mike Frysinger <vapier@gentoo.org>, David Howells <dhowells@redhat.com>, Arun Sharma <asharma@fb.com>Rusty Russell <rusty@rustcorp.com.au>, linux-mips@linux-mips.org
+Message-ID: <20120601091232.GA5hvq1cwrAooCQUhv3PF4dzdqwB4HASkXzCGuKOYB4@z>
 
-On Tue, 29 May 2012 13:05:18 +0000, "Langer Thomas (LQDE CPE AE SW)" <thomas.langer@lantiq.com> wrote:
-> Hello Grant, hello John,
-> 
-> John Crispin wrote on 2012-05-26:
-> > 
-> >> What exactly does this mean?  How does it not support any other type
-> >> of SPI peripheral?  SPI is a really simple protocol, so what is it
-> >> about this hardware that prevents it being used with other SPI
-> >> hardware?
-> >> 
-> >> I see a big state machine that appears to interpret the messages and
-> >> pretend to be an SPI slave instead of telling linux about the real
-> >> device.  /me wonders if it should this instead be a block device
-> >> driver?
-> >> 
-> > Thomas will need to comment on this part
-> > 
-> The hardware is an "EBU" (External Bus Unit) for different type of memories 
-> and flashes (NOR, NAND and serial).
-> One of the features of this EBU is the "execute in place" for serial flashes.
-> This shows that there is some logic in the hardware for automatic reading,
-> all other actions must be done using a specific cmd register.
-> 
-> Even if there are some restrictions from the hardware state machine,
-> the goal was to use the standard driver for serial flash devices (m25p80).
-> Otherwise, with a dedicated block device driver, we would have to duplicate
-> much of this code and had to maintain an own list of supported flash chips.
-> 
-> I hope this reason is good enough for getting this driver accepted.
+Convert mips to use the generic framework to boot secondary CPUs.
 
-To be clear, I'm not going to nack the driver over this issue; but it
-bothers me that I cannot understand what it is doing and I do wonder
-if there is a better approach.
+Notes:
+1. The boot processor was setting the secondary cpu in cpu_online_mask!
+Instead, leave it up to the secondary cpu (... and it will be done by the
+generic code now).
 
-g.
+2. Make the boot cpu wait for the secondary cpu to be set in cpu_online_mask
+before returning.
+
+3. Don't enable interrupts in cmp_smp_finish() and vsmp_smp_finish().
+Do it much later, in generic code.
+
+4. In synchronise_count_slave(), use local_save_flags() instead of
+local_irq_save() because irqs are still disabled.
+
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Mike Frysinger <vapier@gentoo.org>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Arun Sharma <asharma@fb.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Rusty Russell <rusty@rustcorp.com.au>
+Cc: linux-mips@linux-mips.org
+Signed-off-by: Srivatsa S. Bhat <srivatsa.bhat@linux.vnet.ibm.com>
+---
+
+ arch/mips/kernel/smp-cmp.c  |    8 ++++----
+ arch/mips/kernel/smp-mt.c   |    2 --
+ arch/mips/kernel/smp.c      |   23 +++++++++++++++--------
+ arch/mips/kernel/sync-r4k.c |    3 ++-
+ 4 files changed, 21 insertions(+), 15 deletions(-)
+
+diff --git a/arch/mips/kernel/smp-cmp.c b/arch/mips/kernel/smp-cmp.c
+index e7e03ec..7ecd6db 100644
+--- a/arch/mips/kernel/smp-cmp.c
++++ b/arch/mips/kernel/smp-cmp.c
+@@ -108,7 +108,9 @@ static void cmp_init_secondary(void)
+ 
+ static void cmp_smp_finish(void)
+ {
+-	pr_debug("SMPCMP: CPU%d: %s\n", smp_processor_id(), __func__);
++	unsigned int cpu = smp_processor_id();
++
++	pr_debug("SMPCMP: CPU%d: %s\n", cpu, __func__);
+ 
+ 	/* CDFIXME: remove this? */
+ 	write_c0_compare(read_c0_count() + (8 * mips_hpt_frequency / HZ));
+@@ -116,10 +118,8 @@ static void cmp_smp_finish(void)
+ #ifdef CONFIG_MIPS_MT_FPAFF
+ 	/* If we have an FPU, enroll ourselves in the FPU-full mask */
+ 	if (cpu_has_fpu)
+-		cpu_set(smp_processor_id(), mt_fpu_cpumask);
++		cpumask_set_cpu(cpu, &mt_fpu_cpumask);
+ #endif /* CONFIG_MIPS_MT_FPAFF */
+-
+-	local_irq_enable();
+ }
+ 
+ static void cmp_cpus_done(void)
+diff --git a/arch/mips/kernel/smp-mt.c b/arch/mips/kernel/smp-mt.c
+index ff17868..25f7b09 100644
+--- a/arch/mips/kernel/smp-mt.c
++++ b/arch/mips/kernel/smp-mt.c
+@@ -171,8 +171,6 @@ static void __cpuinit vsmp_smp_finish(void)
+ 	if (cpu_has_fpu)
+ 		cpu_set(smp_processor_id(), mt_fpu_cpumask);
+ #endif /* CONFIG_MIPS_MT_FPAFF */
+-
+-	local_irq_enable();
+ }
+ 
+ static void vsmp_cpus_done(void)
+diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+index 71a95f5..4453d4d 100644
+--- a/arch/mips/kernel/smp.c
++++ b/arch/mips/kernel/smp.c
+@@ -33,6 +33,7 @@
+ #include <linux/cpu.h>
+ #include <linux/err.h>
+ #include <linux/ftrace.h>
++#include <linux/smpboot.h>
+ 
+ #include <linux/atomic.h>
+ #include <asm/cpu.h>
+@@ -98,8 +99,11 @@ __cpuinit void register_smp_ops(struct plat_smp_ops *ops)
+  */
+ asmlinkage __cpuinit void start_secondary(void)
+ {
+-	unsigned int cpu;
++	smpboot_start_secondary(NULL);
++}
+ 
++void __cpuinit __cpu_pre_starting(void *unused)
++{
+ #ifdef CONFIG_MIPS_MT_SMTC
+ 	/* Only do cpu_probe for first TC of CPU */
+ 	if ((read_c0_tcbind() & TCBIND_CURTC) == 0)
+@@ -116,20 +120,22 @@ asmlinkage __cpuinit void start_secondary(void)
+ 	 */
+ 
+ 	calibrate_delay();
+-	preempt_disable();
+-	cpu = smp_processor_id();
+-	cpu_data[cpu].udelay_val = loops_per_jiffy;
++	cpu_data[smp_processor_id()].udelay_val = loops_per_jiffy;
++}
+ 
+-	notify_cpu_starting(cpu);
++void __cpuinit __cpu_pre_online(void *unused)
++{
++	unsigned int cpu = smp_processor_id();
+ 
+ 	mp_ops->smp_finish();
+ 	set_cpu_sibling_map(cpu);
+ 
+ 	cpu_set(cpu, cpu_callin_map);
++}
+ 
++void __cpuinit __cpu_post_online(void *unused)
++{
+ 	synchronise_count_slave();
+-
+-	cpu_idle();
+ }
+ 
+ /*
+@@ -196,7 +202,8 @@ int __cpuinit __cpu_up(unsigned int cpu, struct task_struct *tidle)
+ 	while (!cpu_isset(cpu, cpu_callin_map))
+ 		udelay(100);
+ 
+-	set_cpu_online(cpu, true);
++	while (!cpu_online(cpu))
++		udelay(100);
+ 
+ 	return 0;
+ }
+diff --git a/arch/mips/kernel/sync-r4k.c b/arch/mips/kernel/sync-r4k.c
+index 99f913c..7f43069 100644
+--- a/arch/mips/kernel/sync-r4k.c
++++ b/arch/mips/kernel/sync-r4k.c
+@@ -46,7 +46,8 @@ void __cpuinit synchronise_count_master(void)
+ 	printk(KERN_INFO "Synchronize counters across %u CPUs: ",
+ 	       num_online_cpus());
+ 
+-	local_irq_save(flags);
++	/* IRQs are already disabled. So just save the flags */
++	local_save_flags(flags);
+ 
+ 	/*
+ 	 * Notify the slaves that it's time to start

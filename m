@@ -1,11 +1,17 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49]:61115 "EHLO
-        mail-pz0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903717Ab2FFX2p (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Jun 2012 01:28:45 +0200
-From: David Daney <ddaney.cavm@gmail.com>
-Subject: [PATCH v3 0/5] MIPS: OCTEON: Convert some device to use Device Tree.
-Date: Wed,  6 Jun 2012 16:28:29 -0700
-Message-ID: <1339025314-24216-1-git-send-email-ddaney.cavm@gmail.com>
+Received: from mail-pb0-f49.google.com ([209.85.160.49]:38784 "EHLO
+        mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903730Ab2FGION (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Jun 2012 10:14:13 +0200
+Received: by pbbrq13 with SMTP id rq13so748925pbb.36
+        for <linux-mips@linux-mips.org>; Thu, 07 Jun 2012 01:14:06 -0700 (PDT)
+Subject: [PATCH 1/2] Octeon 6xxx: Initial commit porting executive files
+ from sdk2.3
+From: philby john <pjohn@mvista.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 07 Jun 2012 13:45:40 +0530
+Message-ID: <1339056940.15045.9.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,65 +22,446 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org, devicetree-discuss@lists.ozlabs.org, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>
-Cc: linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>
-Message-ID: <20120606232829.fLRZD56tynHJUVW8nFFJrXHD1E2d_aPLJ3NETCI1pPw@z>
+To: linux-mips@linux-mips.org
+Cc: david.daney@caviumnetworks.com, ralf@linux-mips.org, prasun.kapoor@caviumnetworks.com
+Message-ID: <20120607081540.DE6Yzm1XqNMcPFwrXHzvLfPEgQKpFcIF1tP10dUabNo@z>
 
-From: David Daney <david.daney@cavium.com>
+From eb9d86c9ac6d23f36f01e6b8b364c3922e550fff Mon Sep 17 00:00:00 2001
+From: Philby John <pjohn@mvista.com>
+Date: Thu, 7 Jun 2012 11:49:32 +0530
+Subject: [PATCH] Octeon 6xxx: Initial commit porting executive files from sdk2.3
 
-This patch set depends on the previous set to add Device Tree to
-OCTEON.  That set can be found among other places here:
+Initial commit that sets up the internal functions
+needed for implementing Power Throttling for Octeon
+6xxx and above.
 
-http://www.linux-mips.org/archives/linux-mips/2012-06/msg00081.html
+Additional functionality such as setting throttle feedback
+cvmx_init_throttle_feedback(), calculating throttle percentage
+cvmx_power_throttle_get_powlim(), and other bugfixes not present
+in the SDK have been implemented.
 
-For v3:
+Signed-off-by: Philby John <pjohn@mvista.com>
+---
+ arch/mips/cavium-octeon/executive/Makefile         |    2 +-
+ .../cavium-octeon/executive/cvmx-power-throttle.c  |  287 ++++++++++++++++++++
+ arch/mips/include/asm/octeon/cvmx-power-throttle.h |  103 +++++++
+ 3 files changed, 391 insertions(+), 1 deletions(-)
+ create mode 100644 arch/mips/cavium-octeon/executive/cvmx-power-throttle.c
+ create mode 100644 arch/mips/include/asm/octeon/cvmx-power-throttle.h
 
-No functional changes, Added more Acked-bys, rebased to avoid merge
-conflicts.
-
-For v2:
-
-No functional changes, but minor clean-ups to use some new device tree
-helper functions.
-
-Some Acked-bys added.
-
-I am suggesting that all these go via Ralf's linux-mips.org tree as
-they depend on other patches in that tree.
-
-From v1:
-
-The patches are for drivers scattered throughout the tree, but there
-is an order dependency as well as the dependency mentioned above, so
-it may be preferable to merge them all via Ralf's linux-mips.org tree
-rather that separately via the various device sub-system maintainers.
-
-The mdio-octeon.c and octeon_mgmt patches were already Acked-by davem.
-
-The i2c has been seen before, but to my knowledge was never acked.
-
-The octeon_ethernet patch is in staging and has also been seen before.
-
-The serial patch is new.
-
-David Daney (5):
-  i2c: Convert i2c-octeon.c to use device tree.
-  netdev: mdio-octeon.c: Convert to use device tree.
-  netdev: octeon_mgmt: Convert to use device tree.
-  staging: octeon_ethernet: Convert to use device tree.
-  MIPS: Octeon: Use device tree to register serial ports.
-
- arch/mips/cavium-octeon/octeon-irq.c      |    8 -
- arch/mips/cavium-octeon/octeon-platform.c |  176 ----------------
- arch/mips/cavium-octeon/serial.c          |  134 +++++--------
- arch/mips/include/asm/octeon/octeon.h     |    5 -
- drivers/i2c/busses/i2c-octeon.c           |   92 +++++----
- drivers/net/ethernet/octeon/octeon_mgmt.c |  312 +++++++++++++++++++----------
- drivers/net/phy/mdio-octeon.c             |   92 ++++++---
- drivers/staging/octeon/ethernet-mdio.c    |   28 ++--
- drivers/staging/octeon/ethernet.c         |  153 +++++++++-----
- drivers/staging/octeon/octeon-ethernet.h  |    3 +
- 10 files changed, 484 insertions(+), 519 deletions(-)
-
+diff --git a/arch/mips/cavium-octeon/executive/Makefile b/arch/mips/cavium-octeon/executive/Makefile
+index b6d6e84..659cd9e 100644
+--- a/arch/mips/cavium-octeon/executive/Makefile
++++ b/arch/mips/cavium-octeon/executive/Makefile
+@@ -14,6 +14,6 @@ obj-y += cvmx-pko.o cvmx-spi.o cvmx-cmd-queue.o \
+ 	cvmx-helper-board.o cvmx-helper.o cvmx-helper-xaui.o \
+ 	cvmx-helper-rgmii.o cvmx-helper-sgmii.o cvmx-helper-npi.o \
+ 	cvmx-helper-loop.o cvmx-helper-spi.o cvmx-helper-util.o \
+-	cvmx-interrupt-decodes.o cvmx-interrupt-rsl.o
++	cvmx-interrupt-decodes.o cvmx-interrupt-rsl.o cvmx-power-throttle.o
+ 
+ obj-y += cvmx-helper-errata.o cvmx-helper-jtag.o
+diff --git a/arch/mips/cavium-octeon/executive/cvmx-power-throttle.c b/arch/mips/cavium-octeon/executive/cvmx-power-throttle.c
+new file mode 100644
+index 0000000..daa7f5a
+--- /dev/null
++++ b/arch/mips/cavium-octeon/executive/cvmx-power-throttle.c
+@@ -0,0 +1,287 @@
++/***********************license start***************
++ * Copyright (c) 2003-2010  Cavium Inc. (support@cavium.com). All rights
++ * reserved.
++ *
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are
++ * met:
++ *
++ *   * Redistributions of source code must retain the above copyright
++ *     notice, this list of conditions and the following disclaimer.
++ *
++ *   * Redistributions in binary form must reproduce the above
++ *     copyright notice, this list of conditions and the following
++ *     disclaimer in the documentation and/or other materials provided
++ *     with the distribution.
++
++ *   * Neither the name of Cavium Inc. nor the names of
++ *     its contributors may be used to endorse or promote products
++ *     derived from this software without specific prior written
++ *     permission.
++
++ * This Software, including technical data, may be subject to U.S. export
++ * control laws, including the U.S. Export Administration Act and its
++ * associated regulations, and may be subject to export or import  regulations
++ * in other countries.
++
++ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED "AS IS"
++ * AND WITH ALL FAULTS AND CAVIUM INC. MAKES NO PROMISES, REPRESENTATIONS OR
++ * WARRANTIES, EITHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, WITH RESPECT
++ * TO THE SOFTWARE, INCLUDING ITS CONDITION, ITS CONFORMITY TO ANY
++ * REPRESENTATION OR DESCRIPTION, OR THE EXISTENCE OF ANY LATENT OR PATENT
++ * DEFECTS, AND CAVIUM SPECIFICALLY DISCLAIMS ALL IMPLIED (IF ANY)
++ * WARRANTIES OF TITLE, MERCHANTABILITY, NONINFRINGEMENT, FITNESS FOR A
++ * PARTICULAR PURPOSE, LACK OF VIRUSES, ACCURACY OR COMPLETENESS, QUIET
++ * ENJOYMENT QUIET POSSESSION OR CORRESPONDENCE TO DESCRIPTION. THE ENTIRE
++ * RISK ARISING OUT OF USE OR PERFORMANCE OF THE SOFTWARE LIES WITH YOU.
++ ***********************license end**************************************/
++
++/**
++ * @file
++ *
++ * Interface to power-throttle control, measurement, and debugging
++ * facilities.
++ *
++ */
++
++#include <asm/octeon/cvmx.h>
++#include <asm/octeon/cvmx-asm.h>
++#include <asm/octeon/cvmx-power-throttle.h>
++#include <asm/octeon/octeon.h>
++
++#define CVMX_PTH_GET_MASK(len, pos)	\
++	((((uint64_t)1 << (len)) - 1) << (pos))
++
++#define CVMX_PTH_AVAILABLE		\
++	(cvmx_power_throttle_get_register(0) != (uint64_t)-1)
++
++/*
++ * a field of the POWTHROTTLE register
++ */
++static struct cvmx_power_throttle_rfield_t {
++	char	name[16];	/* the field's name */
++	int32_t	pos;		/* position of the field's LSb */
++	int32_t	len;		/* the field's length */
++	int	present;	/* 1 for present */
++} cvmx_power_throttle_rfield[] = {
++	{"MAXPOW",   56,  8, 0},
++	{"POWER" ,   48,  8, 0},
++	{"THROTT",   40,  8, 0},
++	{"Reserved", 28, 12, 0},
++	{"DISTAG",   27,  1, 0},
++	{"PERIOD",   24,  3, 0},
++	{"POWLIM",   16,  8, 0},
++	{"MAXTHR",    8,  8, 0},
++	{"MINTHR",    0,  8, 0},
++	{"HRMPOWADJ", 32,  8, 0},
++	{"OVRRD",    28,  1, 0}
++};
++
++static uint64_t cvmx_power_throttle_csr_addr(int ppid);
++
++static int cvmx_power_throttle_initialized;
++
++/*
++ * @INTERNAL
++ * Initialize cvmx_power_throttle_rfield[] based on model.
++ */
++static void cvmx_power_throttle_init(void)
++{
++	/* Turn on the fields for a model */
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
++		int i;
++		struct cvmx_power_throttle_rfield_t *p;
++
++		for (i = 0; i < CVMX_PTH_INDEX_MAX; i++)
++			cvmx_power_throttle_rfield[i].present = 1;
++
++		if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++			/*
++			 * These fields do not come with o63
++			 */
++			p =
++			&cvmx_power_throttle_rfield[CVMX_PTH_INDEX_HRMPOWADJ];
++			p->present = 0;
++			p = &cvmx_power_throttle_rfield[CVMX_PTH_INDEX_OVRRD];
++			p->present = 0;
++		} else {
++			/*
++			 * The reserved field shrinks in models newer than o63
++			 */
++			p =
++			&cvmx_power_throttle_rfield[CVMX_PTH_INDEX_RESERVED];
++			p->pos = 29;
++			p->len = 3;
++		}
++	}
++}
++
++uint64_t cvmx_power_throttle_get_field(uint64_t r,
++	enum cvmx_power_throttle_field_index i)
++{
++	uint64_t m;
++	struct cvmx_power_throttle_rfield_t *p;
++
++	if (i > CVMX_PTH_INDEX_MAX)
++		return -EINVAL;
++
++	p = &cvmx_power_throttle_rfield[i];
++	if (!p->present)
++		return (uint64_t) -1;
++	m = CVMX_PTH_GET_MASK(p->len, p->pos);
++
++	return (r & m) >> p->pos;
++}
++
++/*
++ * @INTERNAL
++ * Set the i'th field of power-throttle register r to v.
++ */
++static int cvmx_power_throttle_set_field(int i, uint64_t r, uint64_t v)
++{
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
++		uint64_t m;
++		struct cvmx_power_throttle_rfield_t *p;
++
++		if (i > CVMX_PTH_INDEX_MAX)
++			return -EINVAL;
++
++		p = &cvmx_power_throttle_rfield[i];
++		m = CVMX_PTH_GET_MASK(p->len, p->pos);
++
++		return (~m & r) | ((v << p->pos) & m);
++	}
++	return 0;
++}
++
++int cvmx_init_throttle_feedback(cpu)
++{
++	uint64_t csr_addr, r;
++
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
++		csr_addr = cvmx_power_throttle_csr_addr(cpu);
++		r = cvmx_read_csr(csr_addr);
++		r =
++		cvmx_power_throttle_set_field(CVMX_PTH_INDEX_MINTHR, r, 0x0);
++		cvmx_write_csr(csr_addr, r);
++		r = cvmx_read_csr(csr_addr);
++		r =
++		cvmx_power_throttle_set_field(CVMX_PTH_INDEX_MAXTHR, r, 0xFF);
++		cvmx_write_csr(csr_addr, r);
++		return 0;
++	}
++	return -EINVAL;
++}
++
++/**
++ * @INTERNAL
++ * Get the POWLIM field as percentage% of the MAXPOW field in r.
++ */
++int cvmx_power_throttle_get_powlim(int cpu)
++{
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
++		uint64_t t, csr_addr, r, s;
++
++		csr_addr = cvmx_power_throttle_csr_addr(cpu);
++		r = cvmx_read_csr(csr_addr);
++
++		t = cvmx_power_throttle_get_field(r, CVMX_PTH_INDEX_MAXPOW);
++		if (!OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++			s = cvmx_power_throttle_get_field(r,
++				CVMX_PTH_INDEX_HRMPOWADJ);
++			if (t < s)
++				return -EINVAL;
++			t = t - s;
++		}
++		s = cvmx_power_throttle_get_field(r, CVMX_PTH_INDEX_POWLIM);
++		return (s * 100)/t;
++	}
++	return 0;
++}
++
++/**
++ * @INTERNAL
++ * Set the POWLIM field as percentage% of the MAXPOW field in r.
++ */
++static uint64_t cvmx_power_throttle_set_powlim(int ppid,
++	uint8_t percentage)
++{
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
++		uint64_t t, csr_addr, r;
++
++		if (percentage > 101)
++			return -EINVAL;
++		csr_addr = cvmx_power_throttle_csr_addr(ppid);
++		r = cvmx_read_csr(csr_addr);
++		t = cvmx_power_throttle_get_field(r, CVMX_PTH_INDEX_MAXPOW);
++		if (!OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++			uint64_t s;
++			s = cvmx_power_throttle_get_field(r,
++				CVMX_PTH_INDEX_HRMPOWADJ);
++			if (t < s)
++				return -EINVAL;
++			t = t - s;
++		}
++		if (percentage > 0)
++			t = percentage * t / 100;
++		else
++			t = 0;
++		r = cvmx_power_throttle_set_field(CVMX_PTH_INDEX_POWLIM, r, t);
++		cvmx_write_csr(csr_addr, r);
++		return r;
++	}
++	return 0;
++}
++
++/*
++ * @INTERNAL
++ * Given ppid, calculate its PowThrottle register's L2C_COP0_MAP CSR
++ * address. (ppid == PTH_PPID_BCAST is for broadcasting)
++ */
++static uint64_t cvmx_power_throttle_csr_addr(int ppid)
++{
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
++		uint64_t csr_addr, reg_num, reg_reg, reg_sel;
++
++		if (ppid > CVMX_MAX_CORES)
++			return -EINVAL;
++		/*
++		 * register 11 selection 6
++		 */
++		reg_reg = 11;
++		reg_sel = 6;
++		reg_num = (ppid << 8) + (reg_reg << 3) + reg_sel;
++		csr_addr = CVMX_L2C_COP0_MAPX(0) + ((reg_num) << 3);
++		return csr_addr;
++	}
++	return 0;
++}
++
++int cvmx_power_throttle(uint8_t percentage, uint64_t cpu)
++{
++	int ret = 0;
++
++	if (!CVMX_PTH_AVAILABLE)
++		return -EINVAL;
++
++	if (cvmx_power_throttle_set_powlim(cpu, percentage) == 0)
++		ret = -EINVAL;
++
++	return ret;
++}
++
++uint64_t cvmx_power_throttle_get_register(int ppid)
++{
++	uint64_t csr_addr;
++
++	if (!cvmx_power_throttle_initialized) {
++		cvmx_power_throttle_init();
++		cvmx_power_throttle_initialized = 1;
++	}
++	csr_addr = cvmx_power_throttle_csr_addr(ppid);
++	if (csr_addr == 0)
++		return -EINVAL;
++
++	return cvmx_read_csr(csr_addr);
++}
+diff --git a/arch/mips/include/asm/octeon/cvmx-power-throttle.h b/arch/mips/include/asm/octeon/cvmx-power-throttle.h
+new file mode 100644
+index 0000000..f0e6bb8
+--- /dev/null
++++ b/arch/mips/include/asm/octeon/cvmx-power-throttle.h
+@@ -0,0 +1,103 @@
++/***********************license start***************
++ * Copyright (c) 2003-2010  Cavium Inc. (support@cavium.com). All rights
++ * reserved.
++ *
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are
++ * met:
++ *
++ *   * Redistributions of source code must retain the above copyright
++ *     notice, this list of conditions and the following disclaimer.
++ *
++ *   * Redistributions in binary form must reproduce the above
++ *     copyright notice, this list of conditions and the following
++ *     disclaimer in the documentation and/or other materials provided
++ *     with the distribution.
++
++ *   * Neither the name of Cavium Inc. nor the names of
++ *     its contributors may be used to endorse or promote products
++ *     derived from this software without specific prior written
++ *     permission.
++
++ * This Software, including technical data, may be subject to U.S. export
++ * control laws, including the U.S. Export Administration Act and its
++ * associated regulations, and may be subject to export or import  regulations
++ * in other countries.
++
++ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED "AS IS"
++ * AND WITH ALL FAULTS AND CAVIUM INC. MAKES NO PROMISES, REPRESENTATIONS OR
++ * WARRANTIES, EITHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, WITH RESPECT
++ * TO THE SOFTWARE, INCLUDING ITS CONDITION, ITS CONFORMITY TO ANY
++ * REPRESENTATION OR DESCRIPTION, OR THE EXISTENCE OF ANY LATENT OR PATENT
++ * DEFECTS, AND CAVIUM SPECIFICALLY DISCLAIMS ALL IMPLIED (IF ANY)
++ * WARRANTIES OF TITLE, MERCHANTABILITY, NONINFRINGEMENT, FITNESS FOR A
++ * PARTICULAR PURPOSE, LACK OF VIRUSES, ACCURACY OR COMPLETENESS, QUIET
++ * ENJOYMENT QUIET POSSESSION OR CORRESPONDENCE TO DESCRIPTION. THE ENTIRE
++ * RISK ARISING OUT OF USE OR PERFORMANCE OF THE SOFTWARE LIES WITH YOU.
++ ***********************license end**************************************/
++
++/*
++ * @file
++ *
++ * Interface to power-throttle control, measurement, and debugging
++ * facilities.
++ *
++ */
++
++#ifndef __CVMX_POWER_THROTTLE_H__
++#define __CVMX_POWER_THROTTLE_H__
++
++enum cvmx_power_throttle_field_index {
++	CVMX_PTH_INDEX_MAXPOW,
++	CVMX_PTH_INDEX_POWER,
++	CVMX_PTH_INDEX_THROTT,
++	CVMX_PTH_INDEX_RESERVED,
++	CVMX_PTH_INDEX_DISTAG,
++	CVMX_PTH_INDEX_PERIOD,
++	CVMX_PTH_INDEX_POWLIM,
++	CVMX_PTH_INDEX_MAXTHR,
++	CVMX_PTH_INDEX_MINTHR,
++	CVMX_PTH_INDEX_HRMPOWADJ,
++	CVMX_PTH_INDEX_OVRRD,
++	CVMX_PTH_INDEX_MAX
++};
++
++extern int cvmx_power_throttle_get_powlim(int cpu);
++
++/*
++ * For maximum POWLIM feedback control freedom, set MINTHR = 0 and MAXTHR = 0xFF
++ */
++extern int cvmx_init_throttle_feedback(int cpu);
++
++/**
++ * Throttle power to percentage% of configured maximum (MAXPOW)
++ * for the cores identified in coremask.
++ *
++ * @param percentage	0 to 100
++ * @param coremask	bit mask where each bit identifies a core.
++ * @return 0 for success and -1 for error.
++ */
++extern int cvmx_power_throttle(uint8_t percentage, uint64_t coremask);
++
++/**
++ * Get the i'th field of the power throttle register
++ *
++ * @param r is the value of the power throttle register
++ * @param i is the index of the field
++ *
++ * @return (uint64_t)-1 on failure.
++ */
++extern uint64_t cvmx_power_throttle_get_field(uint64_t r,
++	enum cvmx_power_throttle_field_index i);
++
++/**
++ * Retrieve the content of the power throttle register of a core
++ *
++ * @param ppid is the core id
++ *
++ * @return (uint64_t)-1 on failure.
++ */
++extern uint64_t cvmx_power_throttle_get_register(int ppid);
++
++#endif /* __CVMX_POWER_THROTTLE_H__ */
 -- 
-1.7.2.3
+1.6.3.3.338.ge89ce

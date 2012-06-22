@@ -1,20 +1,16 @@
-Received: from mail.windriver.com ([147.11.1.11]:53373 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1903609Ab2FTGhA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 20 Jun 2012 08:37:00 +0200
-Date: Wed, 20 Jun 2012 14:36:42 +0800
-From: Yong Zhang <yong.zhang@windriver.com>
-Subject: Re: [PATCH V2 15/16] MIPS: Loongson 3: Add CPU Hotplug support.
-Message-ID: <20120620063642.GA8544@windriver.com>
-Reply-To: Yong Zhang <yong.zhang@windriver.com>
-References: <1340088624-25550-1-git-send-email-chenhc@lemote.com>
- <1340088624-25550-16-git-send-email-chenhc@lemote.com>
- <20120619093113.GB305@windriver.com>
- <CAAhV-H5cErPcKYV1Onc-b5S4qRunKbwZOACe2B8NLF0af6TrZQ@mail.gmail.com>
+Received: from va3ehsobe001.messaging.microsoft.com ([216.32.180.11]:38652
+        "EHLO va3outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903701Ab2FVRyV (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Jun 2012 19:54:21 +0200
+Message-ID: <4FE4B13E.10709@caviumnetworks.com>
+Date: Fri, 22 Jun 2012 10:54:06 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <CAAhV-H5cErPcKYV1Onc-b5S4qRunKbwZOACe2B8NLF0af6TrZQ@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: fix bug.h MIPS build regression
+References: <1339962373-3224-1-git-send-email-geert@linux-m68k.org> <CAMuHMdVfLjgrtWoPpvbLf12+=ApE6W9dNcweqD-_2Benr-D7NQ@mail.gmail.com> <20120620152759.2caceb8c.yuasa@linux-mips.org> <20120620161249.GB29196@linux-mips.org>
+In-Reply-To: <20120620161249.GB29196@linux-mips.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,37 +21,20 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Huacai Chen <chenhuacai@gmail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Huacai Chen <chenhc@lemote.com>, Hongliang Tao <taohl@lemote.com>, Hua Yan <yanh@lemote.com>, David Daney <ddaney@caviumnetworks.com>
-Message-ID: <20120620063642.5f_XLQkGiKlN-IdNNxmEgbK1cQ4td1aYy13kMk3XNRQ@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Yoichi Yuasa <yuasa@linux-mips.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Mundt <lethal@linux-sh.org>, linux-kernel@vger.kernel.org, Linuxppc-dev <linuxppc-dev@ozlabs.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-sh list <linux-sh@vger.kernel.org>, Chris Zankel <chris@zankel.net>
+Message-ID: <20120622175406.OcqwUGdge4JvwNKJo5X9LVkEICetqDNYyQrfBqzrQ1o@z>
 
-On Tue, Jun 19, 2012 at 06:51:07PM +0800, Huacai Chen wrote:
-> On Tue, Jun 19, 2012 at 5:31 PM, Yong Zhang <yong.zhang@windriver.com> wrote:
-> > On Tue, Jun 19, 2012 at 02:50:23PM +0800, Huacai Chen wrote:
-> >> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-> >> index e9a5fd7..69b17a9 100644
-> >> --- a/arch/mips/kernel/process.c
-> >> +++ b/arch/mips/kernel/process.c
-> >> @@ -72,9 +72,7 @@ void __noreturn cpu_idle(void)
-> >> ? ? ? ? ? ? ? ? ? ? ? }
-> >> ? ? ? ? ? ? ? }
-> >> ?#ifdef CONFIG_HOTPLUG_CPU
-> >> - ? ? ? ? ? ? if (!cpu_online(cpu) && !cpu_isset(cpu, cpu_callin_map) &&
-> >> - ? ? ? ? ? ? ? ? (system_state == SYSTEM_RUNNING ||
-> >> - ? ? ? ? ? ? ? ? ?system_state == SYSTEM_BOOTING))
-> >> + ? ? ? ? ? ? if (!cpu_online(cpu) && !cpu_isset(cpu, cpu_callin_map))
-> >> ? ? ? ? ? ? ? ? ? ? ? play_dead();
-> >
-> > I think patch like this should be separated from BSP code.
-> >
-> > BTW, what's the story behind this change?
-> When poweroff, disable_nonboot_cpus() is called, and if HOTPLUG_CPU is
-> configured, disable_nonboot_cpus() is not an empty function but try to
-> offline nonboot cores. If without this change, poweroff fails.
+On 06/20/2012 09:12 AM, Ralf Baechle wrote:
+> On Wed, Jun 20, 2012 at 03:27:59PM +0900, Yoichi Yuasa wrote:
+>
+>> Commit: 3777808873b0c49c5cf27e44c948dfb02675d578 breaks all MIPS builds.
+>
+> Thanks, fix applied.
+>
 
-Yeah. It's an issue. I think Cavium is also affected (Cc'ing David).
+Where was it applied?
 
-So mind making this a single patch? We should also send it to -stable IMHO.
+It doesn't show up in linux-next for 20120622, which is where it is needed.
 
-Thanks,
-Yong
+David Daney

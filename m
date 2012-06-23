@@ -1,16 +1,14 @@
-Received: from va3ehsobe001.messaging.microsoft.com ([216.32.180.11]:38652
-        "EHLO va3outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903701Ab2FVRyV (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Jun 2012 19:54:21 +0200
-Message-ID: <4FE4B13E.10709@caviumnetworks.com>
-Date: Fri, 22 Jun 2012 10:54:06 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from [69.28.251.93] ([69.28.251.93]:53253 "EHLO b32.net"
+        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1901171Ab2FWFXn (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 23 Jun 2012 07:23:43 +0200
+From: Kevin Cernekee <cernekee@gmail.com>
+Subject: [PATCH 0/7] Prerequisites for BCM63XX UDC driver
+Date: Fri, 22 Jun 2012 22:14:50 -0700
+Message-ID: <0f67eabbb0d5c59add27e42a08b94944@localhost>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: fix bug.h MIPS build regression
-References: <1339962373-3224-1-git-send-email-geert@linux-m68k.org> <CAMuHMdVfLjgrtWoPpvbLf12+=ApE6W9dNcweqD-_2Benr-D7NQ@mail.gmail.com> <20120620152759.2caceb8c.yuasa@linux-mips.org> <20120620161249.GB29196@linux-mips.org>
-In-Reply-To: <20120620161249.GB29196@linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,20 +19,25 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Yoichi Yuasa <yuasa@linux-mips.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Mundt <lethal@linux-sh.org>, linux-kernel@vger.kernel.org, Linuxppc-dev <linuxppc-dev@ozlabs.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-sh list <linux-sh@vger.kernel.org>, Chris Zankel <chris@zankel.net>
-Message-ID: <20120622175406.OcqwUGdge4JvwNKJo5X9LVkEICetqDNYyQrfBqzrQ1o@z>
+To: ralf@linux-mips.org
+Cc: ffainelli@freebox.fr, mbizon@freebox.fr, jonas.gorski@gmail.com, linux-mips@linux-mips.org
+Message-ID: <20120623051450.Y_G4zIAZgp3upOg2uUqqJXRlxumsOZQhyu9dZ--FxFc@z>
 
-On 06/20/2012 09:12 AM, Ralf Baechle wrote:
-> On Wed, Jun 20, 2012 at 03:27:59PM +0900, Yoichi Yuasa wrote:
->
->> Commit: 3777808873b0c49c5cf27e44c948dfb02675d578 breaks all MIPS builds.
->
-> Thanks, fix applied.
->
+These patches are intended to lay the groundwork for a new USB Device
+Controller (gadget UDC) driver.  arch/mips/bcm63xx updates include:
 
-Where was it applied?
+Clock enable bits
+DMA descriptor updates
+New register and IRQ definitions
+Create platform_device and platform_data
 
-It doesn't show up in linux-next for 20120622, which is where it is needed.
+Baseline is:
 
-David Daney
+git://git.linux-mips.org/pub/scm/ralf/upstream-sfr.git #mips-for-linux-next
+
+Note that this is not an OTG-capable controller.  Therefore, boards are
+permanently wired up for either host mode or device mode.  Device vs.
+host can be determined in board_bcm963xx.c based on the detected board ID.
+Some boards have connectors/pads for both modes, but need to be
+reworked to run in device mode; usually this involves moving 0-ohm
+resistors on the D+ and D- lines.

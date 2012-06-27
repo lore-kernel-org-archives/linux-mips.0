@@ -1,16 +1,13 @@
-Received: from [69.28.251.93] ([69.28.251.93]:53322 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1903696Ab2FWFYC (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 23 Jun 2012 07:24:02 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Subject: [PATCH 7/7] MIPS: BCM63XX: Create platform_device for USBD
-Date: Fri, 22 Jun 2012 22:14:57 -0700
-Message-ID: <e2aacdca2b2e2f5b7ee20563032bf1ee@localhost>
-In-Reply-To: <0f67eabbb0d5c59add27e42a08b94944@localhost>
-References: <0f67eabbb0d5c59add27e42a08b94944@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: from mail-pz0-f49.google.com ([209.85.210.49]:40857 "EHLO
+        mail-pz0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903540Ab2F0Rdy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 27 Jun 2012 19:33:54 +0200
+Received: by dadm1 with SMTP id m1so1815742dad.36
+        for <linux-mips@linux-mips.org>; Wed, 27 Jun 2012 10:33:47 -0700 (PDT)
+From: David Daney <ddaney.cavm@gmail.com>
+Subject: [PATCH v2 0/4] netdev/phy: 10G PHY support.
+Date: Wed, 27 Jun 2012 10:33:34 -0700
+Message-ID: <1340818418-10382-1-git-send-email-ddaney.cavm@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,198 +18,53 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: ralf@linux-mips.org
-Cc: ffainelli@freebox.fr, mbizon@freebox.fr, jonas.gorski@gmail.com, linux-mips@linux-mips.org
-Message-ID: <20120623051457.aZgd0FSavuIOTmCWgi_sWHAYOkgoC0ZoSLnwz9tEo_Q@z>
+To: Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, devicetree-discuss@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, afleming@gmail.com, David Daney <david.daney@cavium.com>
+Message-ID: <20120627173334._xwVyuDN9fs7wsRDRqVmIa_0dvOurBVKcv6Ru0lqUCI@z>
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- arch/mips/bcm63xx/Makefile                         |  2 +-
- arch/mips/bcm63xx/boards/board_bcm963xx.c          | 10 +++
- arch/mips/bcm63xx/dev-usb-usbd.c                   | 72 ++++++++++++++++++++++
- .../asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h        | 17 +++++
- .../mips/include/asm/mach-bcm63xx/board_bcm963xx.h |  5 ++
- 5 files changed, 105 insertions(+), 1 deletion(-)
- create mode 100644 arch/mips/bcm63xx/dev-usb-usbd.c
- create mode 100644 arch/mips/include/asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h
+From: David Daney <david.daney@cavium.com>
 
-diff --git a/arch/mips/bcm63xx/Makefile b/arch/mips/bcm63xx/Makefile
-index 833af72..9bbb30a 100644
---- a/arch/mips/bcm63xx/Makefile
-+++ b/arch/mips/bcm63xx/Makefile
-@@ -1,6 +1,6 @@
- obj-y		+= clk.o cpu.o cs.o gpio.o irq.o prom.o setup.o timer.o \
- 		   dev-dsp.o dev-enet.o dev-flash.o dev-pcmcia.o dev-rng.o \
--		   dev-spi.o dev-uart.o dev-wdt.o
-+		   dev-spi.o dev-uart.o dev-wdt.o dev-usb-usbd.o
- obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
- 
- obj-y		+= boards/
-diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-index feb0525..ea4ea77 100644
---- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-+++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-@@ -24,6 +24,7 @@
- #include <bcm63xx_dev_flash.h>
- #include <bcm63xx_dev_pcmcia.h>
- #include <bcm63xx_dev_spi.h>
-+#include <bcm63xx_dev_usb_usbd.h>
- #include <board_bcm963xx.h>
- 
- #define PFX	"board_bcm963xx: "
-@@ -42,6 +43,12 @@ static struct board_info __initdata board_96328avng = {
- 
- 	.has_uart0			= 1,
- 	.has_pci			= 1,
-+	.has_usbd			= 0,
-+
-+	.usbd = {
-+		.use_fullspeed		= 0,
-+		.port_no		= 0,
-+	},
- 
- 	.leds = {
- 		{
-@@ -888,6 +895,9 @@ int __init board_register_devices(void)
- 	    !board_get_mac_address(board.enet1.mac_addr))
- 		bcm63xx_enet_register(1, &board.enet1);
- 
-+	if (board.has_usbd)
-+		bcm63xx_usbd_register(&board.usbd);
-+
- 	if (board.has_dsp)
- 		bcm63xx_dsp_register(&board.dsp);
- 
-diff --git a/arch/mips/bcm63xx/dev-usb-usbd.c b/arch/mips/bcm63xx/dev-usb-usbd.c
-new file mode 100644
-index 0000000..5aeae2b
---- /dev/null
-+++ b/arch/mips/bcm63xx/dev-usb-usbd.c
-@@ -0,0 +1,72 @@
-+/*
-+ * This file is subject to the terms and conditions of the GNU General Public
-+ * License.  See the file "COPYING" in the main directory of this archive
-+ * for more details.
-+ *
-+ * Copyright (C) 2008 Maxime Bizon <mbizon@freebox.fr>
-+ * Copyright (C) 2012 Kevin Cernekee <cernekee@gmail.com>
-+ * Copyright (C) 2012 Broadcom Corporation
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/platform_device.h>
-+#include <linux/dma-mapping.h>
-+#include <bcm63xx_cpu.h>
-+#include <bcm63xx_dev_usb_usbd.h>
-+
-+static struct resource usbd_resources[] = {
-+	{
-+		.start		= -1, /* filled at runtime */
-+		.end		= -1, /* filled at runtime */
-+		.flags		= IORESOURCE_MEM,
-+	},
-+	{
-+		.start		= -1, /* filled at runtime */
-+		.end		= -1, /* filled at runtime */
-+		.flags		= IORESOURCE_MEM,
-+	},
-+	{
-+		.start		= -1, /* filled at runtime */
-+		.flags		= IORESOURCE_IRQ,
-+	},
-+	{
-+		.start		= -1, /* filled at runtime */
-+		.end		= -1, /* filled at runtime */
-+		.flags		= IORESOURCE_IRQ,
-+	},
-+};
-+
-+static u64 usbd_dmamask = DMA_BIT_MASK(32);
-+
-+static struct platform_device bcm63xx_usbd_device = {
-+	.name		= "bcm63xx_udc",
-+	.id		= 0,
-+	.num_resources	= ARRAY_SIZE(usbd_resources),
-+	.resource	= usbd_resources,
-+	.dev		= {
-+		.dma_mask		= &usbd_dmamask,
-+		.coherent_dma_mask	= DMA_BIT_MASK(32),
-+	},
-+};
-+
-+int __init bcm63xx_usbd_register(const struct bcm63xx_usbd_platform_data *pd)
-+{
-+	if (!BCMCPU_IS_6328() && !BCMCPU_IS_6368())
-+		return 0;
-+
-+	usbd_resources[0].start = bcm63xx_regset_address(RSET_USBD);
-+	usbd_resources[0].end = usbd_resources[0].start + RSET_USBD_SIZE - 1;
-+
-+	usbd_resources[1].start = bcm63xx_regset_address(RSET_USBDMA);
-+	usbd_resources[1].end = usbd_resources[1].start + RSET_USBDMA_SIZE - 1;
-+
-+	usbd_resources[2].start = bcm63xx_get_irq_number(IRQ_USBD);
-+
-+	usbd_resources[3].start = bcm63xx_get_irq_number(IRQ_USBDMA_RXDMA0);
-+	usbd_resources[3].end = bcm63xx_get_irq_number(IRQ_USBDMA_TXDMA5);
-+
-+	platform_device_add_data(&bcm63xx_usbd_device, pd, sizeof(*pd));
-+
-+	return platform_device_register(&bcm63xx_usbd_device);
-+}
-diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h
-new file mode 100644
-index 0000000..5d6d698
---- /dev/null
-+++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h
-@@ -0,0 +1,17 @@
-+#ifndef BCM63XX_DEV_USB_USBD_H_
-+#define BCM63XX_DEV_USB_USBD_H_
-+
-+/*
-+ * usb device platform data
-+ */
-+struct bcm63xx_usbd_platform_data {
-+	/* board can only support full speed (USB 1.1) */
-+	int use_fullspeed;
-+
-+	/* 0-based port index, for chips with >1 USB PHY */
-+	int port_no;
-+};
-+
-+int bcm63xx_usbd_register(const struct bcm63xx_usbd_platform_data *pd);
-+
-+#endif /* BCM63XX_DEV_USB_USBD_H_ */
-diff --git a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
-index 474daaa..b0dd4bb 100644
---- a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
-+++ b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
-@@ -5,6 +5,7 @@
- #include <linux/gpio.h>
- #include <linux/leds.h>
- #include <bcm63xx_dev_enet.h>
-+#include <bcm63xx_dev_usb_usbd.h>
- #include <bcm63xx_dev_dsp.h>
- 
- /*
-@@ -44,6 +45,7 @@ struct board_info {
- 	unsigned int	has_pccard:1;
- 	unsigned int	has_ohci0:1;
- 	unsigned int	has_ehci0:1;
-+	unsigned int	has_usbd:1;
- 	unsigned int	has_dsp:1;
- 	unsigned int	has_uart0:1;
- 	unsigned int	has_uart1:1;
-@@ -52,6 +54,9 @@ struct board_info {
- 	struct bcm63xx_enet_platform_data enet0;
- 	struct bcm63xx_enet_platform_data enet1;
- 
-+	/* USB config */
-+	struct bcm63xx_usbd_platform_data usbd;
-+
- 	/* DSP config */
- 	struct bcm63xx_dsp_platform_data dsp;
- 
+The only non-cosmetic change from v1 is to pass an additional argument
+to get_phy_device() that indicates that the PHY uses 802.3 clause 45
+signaling, previously I had been using a high order bit of the addr
+parameter for this.
+
+There are also changes from v1 in the code and comment formatting.
+These should now be closer to what David Miller prefers.
+
+From v1:
+
+The existing PHY driver infrastructure supports IEEE 802.3 Clause 22
+PHYs used with 10/100/1000MB Ethernet.  For 10G Ethernet, many PHYs
+use 802.3 Clause 45.  These patches attempt to add core support for
+this as well as a driver for BCM87XX 10G PHY devices.
+
+This is reworked from patches I send about 9 months ago:
+
+http://marc.info/?l=linux-netdev&m=131844282403852
+
+Several of the patches have device tree bindings in them, so the
+device tree people get to enjoy them too.
+
+David Daney (4):
+  netdev/phy: Handle IEEE802.3 clause 45 Ethernet PHYs
+  netdev/phy/of: Handle IEEE802.3 clause 45 Ethernet PHYs in
+    of_mdiobus_register()
+  netdev/phy/of: Add more methods for binding PHY devices to drivers.
+  netdev/phy: Add driver for Broadcom BCM87XX 10G Ethernet PHYs
+
+ .../devicetree/bindings/net/broadcom-bcm87xx.txt   |   29 +++
+ Documentation/devicetree/bindings/net/phy.txt      |   12 +-
+ drivers/net/phy/Kconfig                            |    5 +
+ drivers/net/phy/Makefile                           |    1 +
+ drivers/net/phy/bcm87xx.c                          |  238 ++++++++++++++++++++
+ drivers/net/phy/mdio_bus.c                         |    9 +-
+ drivers/net/phy/phy_device.c                       |  105 ++++++++-
+ drivers/of/of_mdio.c                               |   16 +-
+ include/linux/phy.h                                |   24 ++-
+ 9 files changed, 424 insertions(+), 15 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/broadcom-bcm87xx.txt
+ create mode 100644 drivers/net/phy/bcm87xx.c
+
 -- 
-1.7.11.1
+1.7.2.3

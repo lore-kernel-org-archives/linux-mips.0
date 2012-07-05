@@ -1,13 +1,17 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49]:40857 "EHLO
-        mail-pz0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903540Ab2F0Rdy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 27 Jun 2012 19:33:54 +0200
-Received: by dadm1 with SMTP id m1so1815742dad.36
-        for <linux-mips@linux-mips.org>; Wed, 27 Jun 2012 10:33:47 -0700 (PDT)
-From: David Daney <ddaney.cavm@gmail.com>
-Subject: [PATCH v2 0/4] netdev/phy: 10G PHY support.
-Date: Wed, 27 Jun 2012 10:33:34 -0700
-Message-ID: <1340818418-10382-1-git-send-email-ddaney.cavm@gmail.com>
+Received: from mail-gh0-f177.google.com ([209.85.160.177]:36154 "EHLO
+        mail-gh0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903721Ab2GEMLw (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Jul 2012 14:11:52 +0200
+Received: by ghbf11 with SMTP id f11so7901930ghb.36
+        for <linux-mips@linux-mips.org>; Thu, 05 Jul 2012 05:11:46 -0700 (PDT)
+Subject: [PATCH v2] Octeon 6xxx: Add Power Throttling support for CN6xxx
+ and above
+From: philby john <pjohn@mvista.com>
+Content-Type: text/plain; charset="ansi_x3.4-1968"
+Date: Thu, 05 Jul 2012 17:40:03 +0530
+Message-ID: <1341490203.28372.3.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,53 +22,427 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, devicetree-discuss@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, afleming@gmail.com, David Daney <david.daney@cavium.com>
-Message-ID: <20120627173334._xwVyuDN9fs7wsRDRqVmIa_0dvOurBVKcv6Ru0lqUCI@z>
+To: linux-mips@linux-mips.org
+Cc: "Daney, David" <David.Daney@caviumnetworks.com>, "Kapoor, Prasun" <Prasun.Kapoor@caviumnetworks.com>, "ralf@linux-mips.org" <ralf@linux-mips.org>
+Message-ID: <20120705121003.ZQq8nwrCar4wWy5B9UWATEf0hzUIL2Qb8QrG_HdyvXA@z>
 
-From: David Daney <david.daney@cavium.com>
+From 51898ada30d5eae7bff92dfb774df5a05ff670a4 Mon Sep 17 00:00:00 2001
+From: Philby John <pjohn@mvista.com>
+Date: Thu, 5 Jul 2012 17:35:45 +0530
+Subject: [PATCH v2] Octeon 6xxx: Add Power Throttling support for CN6xxx and above
 
-The only non-cosmetic change from v1 is to pass an additional argument
-to get_phy_device() that indicates that the PHY uses 802.3 clause 45
-signaling, previously I had been using a high order bit of the addr
-parameter for this.
+This patch adds the sysfs primitives for power throttling.
 
-There are also changes from v1 in the code and comment formatting.
-These should now be closer to what David Miller prefers.
+Octeon2 supports dynamic power control which aids to cut down power
+consumption. The code exposes a "percentage" power throttling
+limiter by means of /sys interface for each available cpu. Setting
+this value to 0 will set power consumption to a minimum as it will
+only execute a couple instructions every PERIOD as set in the
+PowThrottle register. If set to 100% for that particular cpu, it
+will consume maximum power.
 
-From v1:
+Functionality tested on an Octeon 63xx.
 
-The existing PHY driver infrastructure supports IEEE 802.3 Clause 22
-PHYs used with 10/100/1000MB Ethernet.  For 10G Ethernet, many PHYs
-use 802.3 Clause 45.  These patches attempt to add core support for
-this as well as a driver for BCM87XX 10G PHY devices.
+Signed-off-by: Philby John <pjohn@mvista.com>
+---
+ arch/mips/cavium-octeon/Makefile            |    1 +
+ arch/mips/cavium-octeon/octeon-pwr-throtl.c |  379 +++++++++++++++++++++++++++
+ 2 files changed, 380 insertions(+), 0 deletions(-)
+ create mode 100644 arch/mips/cavium-octeon/octeon-pwr-throtl.c
 
-This is reworked from patches I send about 9 months ago:
-
-http://marc.info/?l=linux-netdev&m=131844282403852
-
-Several of the patches have device tree bindings in them, so the
-device tree people get to enjoy them too.
-
-David Daney (4):
-  netdev/phy: Handle IEEE802.3 clause 45 Ethernet PHYs
-  netdev/phy/of: Handle IEEE802.3 clause 45 Ethernet PHYs in
-    of_mdiobus_register()
-  netdev/phy/of: Add more methods for binding PHY devices to drivers.
-  netdev/phy: Add driver for Broadcom BCM87XX 10G Ethernet PHYs
-
- .../devicetree/bindings/net/broadcom-bcm87xx.txt   |   29 +++
- Documentation/devicetree/bindings/net/phy.txt      |   12 +-
- drivers/net/phy/Kconfig                            |    5 +
- drivers/net/phy/Makefile                           |    1 +
- drivers/net/phy/bcm87xx.c                          |  238 ++++++++++++++++++++
- drivers/net/phy/mdio_bus.c                         |    9 +-
- drivers/net/phy/phy_device.c                       |  105 ++++++++-
- drivers/of/of_mdio.c                               |   16 +-
- include/linux/phy.h                                |   24 ++-
- 9 files changed, 424 insertions(+), 15 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/broadcom-bcm87xx.txt
- create mode 100644 drivers/net/phy/bcm87xx.c
-
+diff --git a/arch/mips/cavium-octeon/Makefile b/arch/mips/cavium-octeon/Makefile
+index 19eb043..115ceb5 100644
+--- a/arch/mips/cavium-octeon/Makefile
++++ b/arch/mips/cavium-octeon/Makefile
+@@ -15,3 +15,4 @@ obj-y += octeon-memcpy.o
+ obj-y += executive/
+ 
+ obj-$(CONFIG_SMP)                     += smp.o
++obj-$(CONFIG_SYSFS)                   += octeon-pwr-throtl.o
+diff --git a/arch/mips/cavium-octeon/octeon-pwr-throtl.c b/arch/mips/cavium-octeon/octeon-pwr-throtl.c
+new file mode 100644
+index 0000000..5a340f4
+--- /dev/null
++++ b/arch/mips/cavium-octeon/octeon-pwr-throtl.c
+@@ -0,0 +1,379 @@
++/*
++ * octeon-pwr-throtl.c - interface for controlling power throttling on Octeon
++ * based platforms 6xxx and above.
++ * Octeon2 supports dynamic power control which aids to cut down power
++ * consumption. The code exposes a "percentage" power throttling limiter by
++ * means of /sys interface for each available cpu. Setting this value to 0
++ * will set power consumption to a minimum as it will only execute a couple
++ * instructions every PERIOD as set in the PowThrottle register.
++ * If set to 100% for that particular cpu, it will consume maximum power.
++ *
++ * Copyright (C) 2012 MontaVista LLC.
++ * Author: Philby John <pjohn@mvista.com>
++ * Credits: This driver is derived from Dmitriy Zavin's (dmitriyz@google.com)
++ * thermal throttle event support code.
++ */
++
++#include <linux/notifier.h>
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <linux/init.h>
++#include <linux/smp.h>
++#include <linux/cpu.h>
++#include <linux/mutex.h>
++
++#include <asm/octeon/cvmx.h>
++#include <asm/octeon/cvmx-asm.h>
++#include <asm/octeon/octeon.h>
++
++
++enum cvmx_power_throttle_field_index {
++	CVMX_PTH_INDEX_MAXPOW,
++	CVMX_PTH_INDEX_POWER,
++	CVMX_PTH_INDEX_THROTT,
++	CVMX_PTH_INDEX_RESERVED,
++	CVMX_PTH_INDEX_DISTAG,
++	CVMX_PTH_INDEX_PERIOD,
++	CVMX_PTH_INDEX_POWLIM,
++	CVMX_PTH_INDEX_MAXTHR,
++	CVMX_PTH_INDEX_MINTHR,
++	CVMX_PTH_INDEX_HRMPOWADJ,
++	CVMX_PTH_INDEX_OVRRD,
++	CVMX_PTH_INDEX_MAX
++};
++
++#define CVMX_PTH_GET_MASK(len, pos)	\
++	((((uint64_t)1 << (len)) - 1) << (pos))
++
++/*
++ * a field of the POWTHROTTLE register
++ */
++static struct cvmx_power_throttle_rfield_t {
++	char	name[16];	/* the field's name */
++	int32_t	pos;		/* position of the field's LSb */
++	int32_t	len;		/* the field's length */
++	int	present;	/* 1 for present */
++} cvmx_power_throttle_rfield[] = {
++	{"MAXPOW",   56,  8, 0},
++	{"POWER" ,   48,  8, 0},
++	{"THROTT",   40,  8, 0},
++	{"Reserved", 28, 12, 0},
++	{"DISTAG",   27,  1, 0},
++	{"PERIOD",   24,  3, 0},
++	{"POWLIM",   16,  8, 0},
++	{"MAXTHR",    8,  8, 0},
++	{"MINTHR",    0,  8, 0},
++	{"HRMPOWADJ", 32,  8, 0},
++	{"OVRRD",    28,  1, 0}
++};
++
++static uint64_t cvmx_power_throttle_csr_addr(int ppid);
++
++static int cvmx_power_throttle_initialized;
++
++/*
++ * Initialize cvmx_power_throttle_rfield[] based on model.
++ */
++static void cvmx_power_throttle_init(void)
++{
++	int i;
++	struct cvmx_power_throttle_rfield_t *p;
++
++	for (i = 0; i < CVMX_PTH_INDEX_MAX; i++)
++		cvmx_power_throttle_rfield[i].present = 1;
++
++	if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++		/*
++		 * These fields do not come with o63
++		 */
++		p = &cvmx_power_throttle_rfield[CVMX_PTH_INDEX_HRMPOWADJ];
++		p->present = 0;
++		p = &cvmx_power_throttle_rfield[CVMX_PTH_INDEX_OVRRD];
++		p->present = 0;
++	} else {
++		/*
++		 * The reserved field shrinks in models newer than o63
++		 */
++		p = &cvmx_power_throttle_rfield[CVMX_PTH_INDEX_RESERVED];
++		p->pos = 29;
++		p->len = 3;
++	}
++}
++
++static uint64_t cvmx_power_throttle_get_field(uint64_t r,
++	enum cvmx_power_throttle_field_index i)
++{
++	uint64_t m;
++	struct cvmx_power_throttle_rfield_t *p;
++
++	if (i > CVMX_PTH_INDEX_MAX)
++		return -EINVAL;
++
++	p = &cvmx_power_throttle_rfield[i];
++	if (!p->present)
++		return (uint64_t) -1;
++	m = CVMX_PTH_GET_MASK(p->len, p->pos);
++
++	return (r & m) >> p->pos;
++}
++
++/*
++ * Set the i'th field of power-throttle register r to v.
++ */
++static int cvmx_power_throttle_set_field(int i, uint64_t r, uint64_t v)
++{
++	uint64_t m;
++	struct cvmx_power_throttle_rfield_t *p;
++
++	if (i > CVMX_PTH_INDEX_MAX)
++		return -EINVAL;
++
++	p = &cvmx_power_throttle_rfield[i];
++	m = CVMX_PTH_GET_MASK(p->len, p->pos);
++
++	return (~m & r) | ((v << p->pos) & m);
++}
++
++static void cvmx_init_throttle_feedback(unsigned int cpu)
++{
++	uint64_t csr_addr, r;
++
++	csr_addr = cvmx_power_throttle_csr_addr(cpu);
++	r = cvmx_read_csr(csr_addr);
++	r = cvmx_power_throttle_set_field(CVMX_PTH_INDEX_MINTHR, r, 0x0);
++	cvmx_write_csr(csr_addr, r);
++	r = cvmx_read_csr(csr_addr);
++	r = cvmx_power_throttle_set_field(CVMX_PTH_INDEX_MAXTHR, r, 0xFF);
++	cvmx_write_csr(csr_addr, r);
++}
++
++/*
++ * Get the POWLIM field as percentage% of the MAXPOW field in r.
++ */
++static int cvmx_power_throttle_get_powlim(unsigned int cpu)
++{
++	uint64_t t, csr_addr, r, s;
++
++	csr_addr = cvmx_power_throttle_csr_addr(cpu);
++	r = cvmx_read_csr(csr_addr);
++	t = cvmx_power_throttle_get_field(r, CVMX_PTH_INDEX_MAXPOW);
++	if (!OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++		s = cvmx_power_throttle_get_field(r, CVMX_PTH_INDEX_HRMPOWADJ);
++		if (t < s)
++			return -EINVAL;
++		t = t - s;
++	}
++	s = cvmx_power_throttle_get_field(r, CVMX_PTH_INDEX_POWLIM);
++	r = (s * 100)/t;
++	return r > 100 ? 100 : r;
++}
++
++/*
++ * Set the POWLIM field as percentage% of the MAXPOW field in r.
++ */
++static uint64_t cvmx_power_throttle_set_powlim(int ppid,
++	uint8_t percentage)
++{
++	uint64_t t, csr_addr, r;
++
++	if (percentage > 101)
++		return -EINVAL;
++	csr_addr = cvmx_power_throttle_csr_addr(ppid);
++	r = cvmx_read_csr(csr_addr);
++	t = cvmx_power_throttle_get_field(r, CVMX_PTH_INDEX_MAXPOW);
++	if (!OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++		uint64_t s;
++		s = cvmx_power_throttle_get_field(r, CVMX_PTH_INDEX_HRMPOWADJ);
++		if (t < s)
++			return -EINVAL;
++		t = t - s;
++	}
++	if (percentage > 0)
++		t = percentage * t / 100;
++	else
++		t = 0;
++	r = cvmx_power_throttle_set_field(CVMX_PTH_INDEX_POWLIM, r, t);
++	cvmx_write_csr(csr_addr, r);
++	return r;
++}
++
++/*
++ * Given ppid, calculate its PowThrottle register's L2C_COP0_MAP CSR
++ * address. (ppid == PTH_PPID_BCAST is for broadcasting)
++ */
++static uint64_t cvmx_power_throttle_csr_addr(int ppid)
++{
++	uint64_t csr_addr, reg_num, reg_reg, reg_sel;
++
++	if (ppid > CVMX_MAX_CORES)
++		return -EINVAL;
++	/*
++	 * register 11 selection 6
++	 */
++	reg_reg = 11;
++	reg_sel = 6;
++	reg_num = (ppid << 8) + (reg_reg << 3) + reg_sel;
++	csr_addr = CVMX_L2C_COP0_MAPX(0) + ((reg_num) << 3);
++	return csr_addr;
++}
++
++static uint64_t cvmx_power_throttle_get_register(int ppid)
++{
++	uint64_t csr_addr;
++
++	if (!cvmx_power_throttle_initialized) {
++		cvmx_power_throttle_init();
++		cvmx_power_throttle_initialized = 1;
++	}
++	csr_addr = cvmx_power_throttle_csr_addr(ppid);
++	if (csr_addr == 0)
++		return -EINVAL;
++
++	return cvmx_read_csr(csr_addr);
++}
++
++#define CVMX_PTH_AVAILABLE		\
++	(cvmx_power_throttle_get_register(0) != (uint64_t)-1)
++
++#define define_pwr_throttle_one_rw(_name)				\
++	static DEVICE_ATTR(_name, 0644, power_throt_show_##_name,	\
++			power_throt_store_##_name)			\
++
++#define define_pwr_throttle_show_func(name)				\
++									\
++static ssize_t power_throt_show_##name(					\
++			struct device *dev,				\
++			struct device_attribute *attr,			\
++			char *buf)					\
++{									\
++	unsigned int cpu = dev->id;					\
++	ssize_t ret;							\
++									\
++	preempt_disable();	/* CPU hotplug */			\
++	if (cpu_online(cpu))						\
++		ret = sprintf(buf, "%d\n",				\
++			cvmx_power_throttle_get_powlim(cpu));		\
++	else								\
++		ret = 0;						\
++	preempt_enable();						\
++									\
++	return ret;							\
++}
++
++#define define_pwr_throttle_store_func(name)				\
++									\
++static ssize_t power_throt_store_##name(				\
++			struct device *dev,				\
++			struct device_attribute *attr,			\
++			const char *buf,				\
++			size_t size)					\
++{									\
++	unsigned int cpu = dev->id;					\
++	unsigned long val;						\
++	int error;							\
++									\
++	error = kstrtoul(buf, 0, &val);					\
++	if (error)							\
++		return error;						\
++									\
++	preempt_disable();						\
++	cvmx_power_throttle_set_powlim(cpu, val);			\
++	preempt_enable();						\
++									\
++	return size;							\
++}
++
++define_pwr_throttle_store_func(percentage);
++define_pwr_throttle_show_func(percentage);
++define_pwr_throttle_one_rw(percentage);
++
++static struct attribute *pwr_throttle_attrs[] = {
++	&dev_attr_percentage.attr,
++	NULL
++};
++
++static struct attribute_group pwr_throttle_attr_group = {
++	.attrs	= pwr_throttle_attrs,
++	.name	= "power_throttle"
++};
++
++/* Mutex protecting device creation against CPU hotplug: */
++static DEFINE_MUTEX(pwr_throttl_cpu_lock);
++
++static __cpuinit int power_throttle_add_dev(struct device *dev)
++{
++	int err;
++
++	err =  sysfs_create_group(&dev->kobj, &pwr_throttle_attr_group);
++	if (err)
++		return err;
++	return err;
++}
++
++static __cpuinit void power_throttle_remove_dev(struct device *dev)
++{
++	sysfs_remove_group(&dev->kobj, &pwr_throttle_attr_group);
++}
++
++static __cpuinit int
++power_throttle_cpu_callback(struct notifier_block *nfb,
++			      unsigned long action,
++			      void *hcpu)
++{
++	unsigned int cpu = (unsigned long)hcpu;
++	struct device *dev;
++	int err = 0;
++
++	dev = get_cpu_device(cpu);
++
++	switch (action) {
++	case CPU_ONLINE:
++	case CPU_DOWN_FAILED:
++	case CPU_UP_PREPARE:
++	case CPU_UP_PREPARE_FROZEN:
++		mutex_lock(&pwr_throttl_cpu_lock);
++		err = power_throttle_add_dev(dev);
++		mutex_unlock(&pwr_throttl_cpu_lock);
++		WARN_ON(err);
++		break;
++	case CPU_UP_CANCELED:
++	case CPU_UP_CANCELED_FROZEN:
++	case CPU_DEAD:
++	case CPU_DEAD_FROZEN:
++	case CPU_DOWN_PREPARE:
++		mutex_lock(&pwr_throttl_cpu_lock);
++		power_throttle_remove_dev(dev);
++		mutex_unlock(&pwr_throttl_cpu_lock);
++		break;
++	}
++	return err ? NOTIFY_BAD : NOTIFY_OK;
++}
++
++static struct notifier_block power_throttle_cpu_notifier = {
++	.notifier_call = power_throttle_cpu_callback,
++};
++
++static __init int power_throtl_init(void)
++{
++	unsigned int cpu = 0;
++	int err = 0;
++
++	if (CVMX_PTH_AVAILABLE) {
++#ifdef CONFIG_HOTPLUG_CPU
++		register_hotcpu_notifier(&power_throttle_cpu_notifier);
++		mutex_lock(&pwr_throttl_cpu_lock);
++#endif
++		/* connect live CPUs to sysfs */
++		for_each_online_cpu(cpu) {
++			err = power_throttle_add_dev(get_cpu_device(cpu));
++			WARN_ON(err);
++			cvmx_init_throttle_feedback(cpu);
++		}
++#ifdef CONFIG_HOTPLUG_CPU
++		mutex_unlock(&pwr_throttl_cpu_lock);
++#endif
++		return err;
++	}
++	return 0;
++}
++device_initcall(power_throtl_init);
 -- 
-1.7.2.3
+1.6.3.3.340.g77d18

@@ -1,13 +1,11 @@
-Received: from [69.28.251.93] ([69.28.251.93]:45228 "EHLO b32.net"
+Received: from [69.28.251.93] ([69.28.251.93]:33853 "EHLO b32.net"
         rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1903507Ab2GICsB (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 9 Jul 2012 04:48:01 +0200
+        id S1903495Ab2GNTLK (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 14 Jul 2012 21:11:10 +0200
 From: Kevin Cernekee <cernekee@gmail.com>
-Subject: [PATCH V2 7/7] MIPS: BCM63XX: Create platform_device for USBD
-Date: Sun, 08 Jul 2012 19:41:21 -0700
-Message-ID: <f4d807368fd4ae22c30c31eb237c1768@localhost>
-In-Reply-To: <a4b88fe5a7ef864d5adce1145d8bbf6c@localhost>
-References: <a4b88fe5a7ef864d5adce1145d8bbf6c@localhost>
+Subject: [PATCH V3 7/7] MIPS: BCM63XX: Create platform_device for USBD
+Date: Sat, 14 Jul 2012 12:01:09 -0700
+Message-ID: <a403b82eaffa0faf3c17058c91f047e9@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -23,24 +21,29 @@ List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: ralf@linux-mips.org
 Cc: ffainelli@freebox.fr, mbizon@freebox.fr, jonas.gorski@gmail.com, linux-mips@linux-mips.org
-Message-ID: <20120709024121.F5Q3EiOaPLKb59u9jpwWcSeaTBBXIpjg7qpnUVfuqVY@z>
+Message-ID: <20120714190109.yyiJsdqNTqsg4axluYIVikF4tCfN2ngnlTPmqZj_Riw@z>
 
 Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 ---
  arch/mips/bcm63xx/Makefile                         |  2 +-
- arch/mips/bcm63xx/boards/board_bcm963xx.c          | 10 +++
- arch/mips/bcm63xx/dev-usb-usbd.c                   | 72 ++++++++++++++++++++++
- .../asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h        | 17 +++++
+ arch/mips/bcm63xx/boards/board_bcm963xx.c          | 10 ++++
+ arch/mips/bcm63xx/dev-usb-usbd.c                   | 65 ++++++++++++++++++++++
+ .../asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h        | 17 ++++++
  .../mips/include/asm/mach-bcm63xx/board_bcm963xx.h |  5 ++
- 5 files changed, 105 insertions(+), 1 deletion(-)
+ 5 files changed, 98 insertions(+), 1 deletion(-)
  create mode 100644 arch/mips/bcm63xx/dev-usb-usbd.c
  create mode 100644 arch/mips/include/asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h
 
-V2:
+V3:
 
-Use the newly changed IRQ names.
+Jonas pointed out that one of the newer platforms does not use
+consecutive IRQ numbers for the IUDMA interrupts.  So we will have to
+eventually pass in individual IRQ resources, instead of a range.  Might
+as well do this up front to avoid hassles later.
 
-Use platform_device ID -1, as is customary on UDC drivers.
+I will roll this into a new bundle:
+
+http://patchwork.linux-mips.org/bundle/cernekee/bcm63xx-udc-prereq-v3/
 
 diff --git a/arch/mips/bcm63xx/Makefile b/arch/mips/bcm63xx/Makefile
 index 833af72..9bbb30a 100644
@@ -91,10 +94,10 @@ index feb0525..ea4ea77 100644
  
 diff --git a/arch/mips/bcm63xx/dev-usb-usbd.c b/arch/mips/bcm63xx/dev-usb-usbd.c
 new file mode 100644
-index 0000000..cfad216
+index 0000000..508bd9d
 --- /dev/null
 +++ b/arch/mips/bcm63xx/dev-usb-usbd.c
-@@ -0,0 +1,72 @@
+@@ -0,0 +1,65 @@
 +/*
 + * This file is subject to the terms and conditions of the GNU General Public
 + * License.  See the file "COPYING" in the main directory of this archive
@@ -112,27 +115,10 @@ index 0000000..cfad216
 +#include <bcm63xx_cpu.h>
 +#include <bcm63xx_dev_usb_usbd.h>
 +
-+static struct resource usbd_resources[] = {
-+	{
-+		.start		= -1, /* filled at runtime */
-+		.end		= -1, /* filled at runtime */
-+		.flags		= IORESOURCE_MEM,
-+	},
-+	{
-+		.start		= -1, /* filled at runtime */
-+		.end		= -1, /* filled at runtime */
-+		.flags		= IORESOURCE_MEM,
-+	},
-+	{
-+		.start		= -1, /* filled at runtime */
-+		.flags		= IORESOURCE_IRQ,
-+	},
-+	{
-+		.start		= -1, /* filled at runtime */
-+		.end		= -1, /* filled at runtime */
-+		.flags		= IORESOURCE_IRQ,
-+	},
-+};
++#define NUM_MMIO		2
++#define NUM_IRQ			7
++
++static struct resource usbd_resources[NUM_MMIO + NUM_IRQ];
 +
 +static u64 usbd_dmamask = DMA_BIT_MASK(32);
 +
@@ -149,19 +135,29 @@ index 0000000..cfad216
 +
 +int __init bcm63xx_usbd_register(const struct bcm63xx_usbd_platform_data *pd)
 +{
++	const int irq_list[NUM_IRQ] = { IRQ_USBD,
++		IRQ_USBD_RXDMA0, IRQ_USBD_TXDMA0,
++		IRQ_USBD_RXDMA1, IRQ_USBD_TXDMA1,
++		IRQ_USBD_RXDMA2, IRQ_USBD_TXDMA2 };
++	int i;
++
 +	if (!BCMCPU_IS_6328() && !BCMCPU_IS_6368())
 +		return 0;
 +
 +	usbd_resources[0].start = bcm63xx_regset_address(RSET_USBD);
 +	usbd_resources[0].end = usbd_resources[0].start + RSET_USBD_SIZE - 1;
++	usbd_resources[0].flags = IORESOURCE_MEM;
 +
 +	usbd_resources[1].start = bcm63xx_regset_address(RSET_USBDMA);
 +	usbd_resources[1].end = usbd_resources[1].start + RSET_USBDMA_SIZE - 1;
++	usbd_resources[1].flags = IORESOURCE_MEM;
 +
-+	usbd_resources[2].start = bcm63xx_get_irq_number(IRQ_USBD);
++	for (i = 0; i < NUM_IRQ; i++) {
++		struct resource *r = &usbd_resources[NUM_MMIO + i];
 +
-+	usbd_resources[3].start = bcm63xx_get_irq_number(IRQ_USBD_RXDMA0);
-+	usbd_resources[3].end = bcm63xx_get_irq_number(IRQ_USBD_TXDMA2);
++		r->start = r->end = bcm63xx_get_irq_number(irq_list[i]);
++		r->flags = IORESOURCE_IRQ;
++	}
 +
 +	platform_device_add_data(&bcm63xx_usbd_device, pd, sizeof(*pd));
 +

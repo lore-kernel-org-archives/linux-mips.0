@@ -1,14 +1,16 @@
-Received: from [69.28.251.93] ([69.28.251.93]:33853 "EHLO b32.net"
-        rhost-flags-FAIL-FAIL-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1903495Ab2GNTLK (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 14 Jul 2012 21:11:10 +0200
-From: Kevin Cernekee <cernekee@gmail.com>
-Subject: [PATCH V3 7/7] MIPS: BCM63XX: Create platform_device for USBD
-Date: Sat, 14 Jul 2012 12:01:09 -0700
-Message-ID: <a403b82eaffa0faf3c17058c91f047e9@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: from mail-gh0-f177.google.com ([209.85.160.177]:37374 "EHLO
+	mail-gh0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+	by eddie.linux-mips.org with ESMTP id S1903827Ab2GZVVk (ORCPT
+	<rfc822; linux-mips@linux-mips.org>); Thu, 26 Jul 2012 23:21:40 +0200
+Received: by ghbf11 with SMTP id f11so2625512ghb.36
+	for <linux-mips@linux-mips.org>; Thu, 26 Jul 2012 14:21:34 -0700 (PDT)
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [ 14/23] MIPS: Properly align the .data..init_task section.
+Date: Thu, 26 Jul 2012 14:19:53 -0700
+Message-ID: <20120726211407.157467961@linuxfoundation.org>
+In-Reply-To: <20120726211405.959857593@linuxfoundation.org>
+References: <20120726211420.GA7678@kroah.com>
+	<20120726211405.959857593@linuxfoundation.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,202 +21,278 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: ralf@linux-mips.org
-Cc: ffainelli@freebox.fr, mbizon@freebox.fr, jonas.gorski@gmail.com, linux-mips@linux-mips.org
-Message-ID: <20120714190109.yyiJsdqNTqsg4axluYIVikF4tCfN2ngnlTPmqZj_Riw@z>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Greg KH <gregkh@linuxfoundation.org>, torvalds@linux-foundation.org, akpm@linux-foundation.org, alan@lxorguk.ukuu.org.uk, David Daney <david.daney@cavium.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20120726211953.0ZWsTccoWCwqjirWBz2R0ic1V22yb-oC3ouwm1DKYwQ@z>
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+From: Greg KH <gregkh@linuxfoundation.org>
+
+3.0-stable review patch.  If anyone has any objections, please let me know.
+
+------------------
+
+From: David Daney <david.daney@cavium.com>
+
+commit 7b1c0d26a8e272787f0f9fcc5f3e8531df3b3409 upstream.
+
+Improper alignment can lead to unbootable systems and/or random
+crashes.
+
+[ralf@linux-mips.org: This is a lond standing bug since
+6eb10bc9e2deab06630261cd05c4cb1e9a60e980 (kernel.org) rsp.
+c422a10917f75fd19fa7fe070aaaa23e384dae6f (lmo) [MIPS: Clean up linker script
+using new linker script macros.] so dates back to 2.6.32.]
+
+Signed-off-by: David Daney <david.daney@cavium.com>
+Cc: linux-mips@linux-mips.org
+Patchwork: https://patchwork.linux-mips.org/patch/3881/
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/mips/bcm63xx/Makefile                         |  2 +-
- arch/mips/bcm63xx/boards/board_bcm963xx.c          | 10 ++++
- arch/mips/bcm63xx/dev-usb-usbd.c                   | 65 ++++++++++++++++++++++
- .../asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h        | 17 ++++++
- .../mips/include/asm/mach-bcm63xx/board_bcm963xx.h |  5 ++
- 5 files changed, 98 insertions(+), 1 deletion(-)
- create mode 100644 arch/mips/bcm63xx/dev-usb-usbd.c
- create mode 100644 arch/mips/include/asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h
+arch/mips/include/asm/thread_info.h |    4 ++--
+ arch/mips/kernel/vmlinux.lds.S      |    3 ++-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-V3:
-
-Jonas pointed out that one of the newer platforms does not use
-consecutive IRQ numbers for the IUDMA interrupts.  So we will have to
-eventually pass in individual IRQ resources, instead of a range.  Might
-as well do this up front to avoid hassles later.
-
-I will roll this into a new bundle:
-
-http://patchwork.linux-mips.org/bundle/cernekee/bcm63xx-udc-prereq-v3/
-
-diff --git a/arch/mips/bcm63xx/Makefile b/arch/mips/bcm63xx/Makefile
-index 833af72..9bbb30a 100644
---- a/arch/mips/bcm63xx/Makefile
-+++ b/arch/mips/bcm63xx/Makefile
-@@ -1,6 +1,6 @@
- obj-y		+= clk.o cpu.o cs.o gpio.o irq.o prom.o setup.o timer.o \
- 		   dev-dsp.o dev-enet.o dev-flash.o dev-pcmcia.o dev-rng.o \
--		   dev-spi.o dev-uart.o dev-wdt.o
-+		   dev-spi.o dev-uart.o dev-wdt.o dev-usb-usbd.o
- obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+--- a/arch/mips/include/asm/thread_info.h
++++ b/arch/mips/include/asm/thread_info.h
+@@ -60,6 +60,8 @@ struct thread_info {
+ register struct thread_info *__current_thread_info __asm__("$28");
+ #define current_thread_info()  __current_thread_info
  
- obj-y		+= boards/
-diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-index feb0525..ea4ea77 100644
---- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-+++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-@@ -24,6 +24,7 @@
- #include <bcm63xx_dev_flash.h>
- #include <bcm63xx_dev_pcmcia.h>
- #include <bcm63xx_dev_spi.h>
-+#include <bcm63xx_dev_usb_usbd.h>
- #include <board_bcm963xx.h>
++#endif /* !__ASSEMBLY__ */
++
+ /* thread information allocation */
+ #if defined(CONFIG_PAGE_SIZE_4KB) && defined(CONFIG_32BIT)
+ #define THREAD_SIZE_ORDER (1)
+@@ -97,8 +99,6 @@ register struct thread_info *__current_t
  
- #define PFX	"board_bcm963xx: "
-@@ -42,6 +43,12 @@ static struct board_info __initdata board_96328avng = {
+ #define free_thread_info(info) kfree(info)
  
- 	.has_uart0			= 1,
- 	.has_pci			= 1,
-+	.has_usbd			= 0,
-+
-+	.usbd = {
-+		.use_fullspeed		= 0,
-+		.port_no		= 0,
-+	},
- 
- 	.leds = {
- 		{
-@@ -888,6 +895,9 @@ int __init board_register_devices(void)
- 	    !board_get_mac_address(board.enet1.mac_addr))
- 		bcm63xx_enet_register(1, &board.enet1);
- 
-+	if (board.has_usbd)
-+		bcm63xx_usbd_register(&board.usbd);
-+
- 	if (board.has_dsp)
- 		bcm63xx_dsp_register(&board.dsp);
- 
-diff --git a/arch/mips/bcm63xx/dev-usb-usbd.c b/arch/mips/bcm63xx/dev-usb-usbd.c
-new file mode 100644
-index 0000000..508bd9d
---- /dev/null
-+++ b/arch/mips/bcm63xx/dev-usb-usbd.c
-@@ -0,0 +1,65 @@
-+/*
-+ * This file is subject to the terms and conditions of the GNU General Public
-+ * License.  See the file "COPYING" in the main directory of this archive
-+ * for more details.
-+ *
-+ * Copyright (C) 2008 Maxime Bizon <mbizon@freebox.fr>
-+ * Copyright (C) 2012 Kevin Cernekee <cernekee@gmail.com>
-+ * Copyright (C) 2012 Broadcom Corporation
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/platform_device.h>
-+#include <linux/dma-mapping.h>
-+#include <bcm63xx_cpu.h>
-+#include <bcm63xx_dev_usb_usbd.h>
-+
-+#define NUM_MMIO		2
-+#define NUM_IRQ			7
-+
-+static struct resource usbd_resources[NUM_MMIO + NUM_IRQ];
-+
-+static u64 usbd_dmamask = DMA_BIT_MASK(32);
-+
-+static struct platform_device bcm63xx_usbd_device = {
-+	.name		= "bcm63xx_udc",
-+	.id		= -1,
-+	.num_resources	= ARRAY_SIZE(usbd_resources),
-+	.resource	= usbd_resources,
-+	.dev		= {
-+		.dma_mask		= &usbd_dmamask,
-+		.coherent_dma_mask	= DMA_BIT_MASK(32),
-+	},
-+};
-+
-+int __init bcm63xx_usbd_register(const struct bcm63xx_usbd_platform_data *pd)
-+{
-+	const int irq_list[NUM_IRQ] = { IRQ_USBD,
-+		IRQ_USBD_RXDMA0, IRQ_USBD_TXDMA0,
-+		IRQ_USBD_RXDMA1, IRQ_USBD_TXDMA1,
-+		IRQ_USBD_RXDMA2, IRQ_USBD_TXDMA2 };
-+	int i;
-+
-+	if (!BCMCPU_IS_6328() && !BCMCPU_IS_6368())
-+		return 0;
-+
-+	usbd_resources[0].start = bcm63xx_regset_address(RSET_USBD);
-+	usbd_resources[0].end = usbd_resources[0].start + RSET_USBD_SIZE - 1;
-+	usbd_resources[0].flags = IORESOURCE_MEM;
-+
-+	usbd_resources[1].start = bcm63xx_regset_address(RSET_USBDMA);
-+	usbd_resources[1].end = usbd_resources[1].start + RSET_USBDMA_SIZE - 1;
-+	usbd_resources[1].flags = IORESOURCE_MEM;
-+
-+	for (i = 0; i < NUM_IRQ; i++) {
-+		struct resource *r = &usbd_resources[NUM_MMIO + i];
-+
-+		r->start = r->end = bcm63xx_get_irq_number(irq_list[i]);
-+		r->flags = IORESOURCE_IRQ;
-+	}
-+
-+	platform_device_add_data(&bcm63xx_usbd_device, pd, sizeof(*pd));
-+
-+	return platform_device_register(&bcm63xx_usbd_device);
-+}
-diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h
-new file mode 100644
-index 0000000..5d6d698
---- /dev/null
-+++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_dev_usb_usbd.h
-@@ -0,0 +1,17 @@
-+#ifndef BCM63XX_DEV_USB_USBD_H_
-+#define BCM63XX_DEV_USB_USBD_H_
-+
-+/*
-+ * usb device platform data
-+ */
-+struct bcm63xx_usbd_platform_data {
-+	/* board can only support full speed (USB 1.1) */
-+	int use_fullspeed;
-+
-+	/* 0-based port index, for chips with >1 USB PHY */
-+	int port_no;
-+};
-+
-+int bcm63xx_usbd_register(const struct bcm63xx_usbd_platform_data *pd);
-+
-+#endif /* BCM63XX_DEV_USB_USBD_H_ */
-diff --git a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
-index 474daaa..b0dd4bb 100644
---- a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
-+++ b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
-@@ -5,6 +5,7 @@
- #include <linux/gpio.h>
- #include <linux/leds.h>
- #include <bcm63xx_dev_enet.h>
-+#include <bcm63xx_dev_usb_usbd.h>
- #include <bcm63xx_dev_dsp.h>
+-#endif /* !__ASSEMBLY__ */
+-
+ #define PREEMPT_ACTIVE		0x10000000
  
  /*
-@@ -44,6 +45,7 @@ struct board_info {
- 	unsigned int	has_pccard:1;
- 	unsigned int	has_ohci0:1;
- 	unsigned int	has_ehci0:1;
-+	unsigned int	has_usbd:1;
- 	unsigned int	has_dsp:1;
- 	unsigned int	has_uart0:1;
- 	unsigned int	has_uart1:1;
-@@ -52,6 +54,9 @@ struct board_info {
- 	struct bcm63xx_enet_platform_data enet0;
- 	struct bcm63xx_enet_platform_data enet1;
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -1,5 +1,6 @@
+ #include <asm/asm-offsets.h>
+ #include <asm/page.h>
++#include <asm/thread_info.h>
+ #include <asm-generic/vmlinux.lds.h>
  
-+	/* USB config */
-+	struct bcm63xx_usbd_platform_data usbd;
+ #undef mips
+@@ -73,7 +74,7 @@ SECTIONS
+ 	.data : {	/* Data */
+ 		. = . + DATAOFFSET;		/* for CONFIG_MAPPED_KERNEL */
+ 
+-		INIT_TASK_DATA(PAGE_SIZE)
++		INIT_TASK_DATA(THREAD_SIZE)
+ 		NOSAVE_DATA
+ 		CACHELINE_ALIGNED_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+ 		READ_MOSTLY_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+From patchwork Thu Jul 26 21:19:53 2012
+Received: from localhost.localdomain ([127.0.0.1]:49942 "EHLO
+	eddie.linux-mips.org" rhost-flags-OK-OK-OK-FAIL)
+	by eddie.linux-mips.org with ESMTP id S1903787Ab2GZVal (ORCPT
+	<rfc822;patchwork@linux-mips.org>); Thu, 26 Jul 2012 23:30:41 +0200
+Received: with ECARTIS (v1.0.0; list linux-mips);
+	Thu, 26 Jul 2012 23:30:24 +0200 (CEST)
+Received: from mail-gg0-f177.google.com ([209.85.161.177]:38446 "EHLO
+	mail-gg0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+	by eddie.linux-mips.org with ESMTP id S1903782Ab2GZVaT (ORCPT
+	<rfc822; linux-mips@linux-mips.org>); Thu, 26 Jul 2012 23:30:19 +0200
+Received: by ggcs5 with SMTP id s5so2630301ggc.36
+	for <linux-mips@linux-mips.org>; Thu, 26 Jul 2012 14:30:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=google.com; s=20120113;
+	h=from:to:cc:subject:date:message-id:x-mailer:in-reply-to:references
+	:user-agent:x-gm-message-state;
+	bh=MiDzq5Kk0iwo/c1nHYZO3Ozr7JXCWxeXk7Z2OZl37pw=;
+	b=AUabfj3IfkIGfqF42OdAI8ssH0FY6AzKkDHil+FI6MZZ8j/C0qOwaQNEwrELQ5doKo
+	UFOr//IMnWkQsX7XJCKp8BKS4MOpc6wfcKNyKzni5rl+SKNv293KlmoPPY3SF9tFSARI
+	CSDulxkEtmGvHGKWpgaVnzi2qa+3qi1GUozjRLWKV/G7UZT+VvD2CULAFO8cuchiJHsZ
+	HvoAxNqMUNclangSGcajUP6yraf7mMNJUcEY9M02IGr8ngBJ2Sk2MI+Z/QLK7ZziZbgw
+	oJxioAD82LprZdQAnPb43jCwFClJ60Jq1ePjuRXHzvWTJNh47c0CQu6Ef0xXXhALkhhK
+	5Ikw==
+Received: by 10.66.87.2 with SMTP id t2mr560252paz.22.1343338212476;
+	Thu, 26 Jul 2012 14:30:12 -0700 (PDT)
+Received: from localhost (c-67-168-183-230.hsd1.wa.comcast.net.
+	[67.168.183.230])
+	by mx.google.com with ESMTPS id wi6sm433224pbc.35.2012.07.26.14.30.10
+	(version=TLSv1/SSLv3 cipher=OTHER);
+	Thu, 26 Jul 2012 14:30:11 -0700 (PDT)
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Greg KH <gregkh@linuxfoundation.org>,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	alan@lxorguk.ukuu.org.uk, David Daney <david.daney@cavium.com>,
+	Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Subject: [ 04/40] MIPS: Properly align the .data..init_task section.
+Date: Thu, 26 Jul 2012 14:29:22 -0700
+Message-Id: <20120726211411.443368067@linuxfoundation.org>
+X-Mailer: git-send-email 1.7.10.1.362.g242cab3
+In-Reply-To: <20120726211411.164006056@linuxfoundation.org>
+References: <20120726211424.GA7709@kroah.com>
+	<20120726211411.164006056@linuxfoundation.org>
+User-Agent: quilt/0.60-20.4
+X-Gm-Message-State: ALoCoQlyrynR6POXahUUboagsvOGcv8ctEaTKn6doJyP7M5vVFpgr2dd7NMsA4SRca6CLT3gzroR
+X-archive-position: 33989
+X-ecartis-version: Ecartis v1.0.0
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+X-original-sender: gregkh@linuxfoundation.org
+Precedence: bulk
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+X-List-ID: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+X-list: linux-mips
+Return-Path: <linux-mips-bounce@linux-mips.org>
+Content-Length: 2076
+Lines: 66
+
+From: Greg KH <gregkh@linuxfoundation.org>
+
+3.4-stable review patch.  If anyone has any objections, please let me know.
+
+------------------
+
+From: David Daney <david.daney@cavium.com>
+
+commit 7b1c0d26a8e272787f0f9fcc5f3e8531df3b3409 upstream.
+
+Improper alignment can lead to unbootable systems and/or random
+crashes.
+
+[ralf@linux-mips.org: This is a lond standing bug since
+6eb10bc9e2deab06630261cd05c4cb1e9a60e980 (kernel.org) rsp.
+c422a10917f75fd19fa7fe070aaaa23e384dae6f (lmo) [MIPS: Clean up linker script
+using new linker script macros.] so dates back to 2.6.32.]
+
+Signed-off-by: David Daney <david.daney@cavium.com>
+Cc: linux-mips@linux-mips.org
+Patchwork: https://patchwork.linux-mips.org/patch/3881/
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+arch/mips/include/asm/thread_info.h |    4 ++--
+ arch/mips/kernel/vmlinux.lds.S      |    3 ++-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+--- a/arch/mips/include/asm/thread_info.h
++++ b/arch/mips/include/asm/thread_info.h
+@@ -60,6 +60,8 @@ struct thread_info {
+ register struct thread_info *__current_thread_info __asm__("$28");
+ #define current_thread_info()  __current_thread_info
+ 
++#endif /* !__ASSEMBLY__ */
 +
- 	/* DSP config */
- 	struct bcm63xx_dsp_platform_data dsp;
+ /* thread information allocation */
+ #if defined(CONFIG_PAGE_SIZE_4KB) && defined(CONFIG_32BIT)
+ #define THREAD_SIZE_ORDER (1)
+@@ -97,8 +99,6 @@ register struct thread_info *__current_t
  
+ #define free_thread_info(info) kfree(info)
+ 
+-#endif /* !__ASSEMBLY__ */
+-
+ #define PREEMPT_ACTIVE		0x10000000
+ 
+ /*
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -1,5 +1,6 @@
+ #include <asm/asm-offsets.h>
+ #include <asm/page.h>
++#include <asm/thread_info.h>
+ #include <asm-generic/vmlinux.lds.h>
+ 
+ #undef mips
+@@ -72,7 +73,7 @@ SECTIONS
+ 	.data : {	/* Data */
+ 		. = . + DATAOFFSET;		/* for CONFIG_MAPPED_KERNEL */
+ 
+-		INIT_TASK_DATA(PAGE_SIZE)
++		INIT_TASK_DATA(THREAD_SIZE)
+ 		NOSAVE_DATA
+ 		CACHELINE_ALIGNED_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+ 		READ_MOSTLY_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+From linux-mips-bounce@linux-mips.org  Fri Jul 27 11:38:48 2012
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on eddie.linux-mips.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	FREEMAIL_FROM,RDNS_NONE,T_TO_NO_BRKTS_FREEMAIL autolearn=no version=3.3.2
+Received: from localhost.localdomain ([127.0.0.1]:47262 "EHLO
+        eddie.linux-mips.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S1903523Ab2G0Jir (ORCPT
+        <rfc822;ralf@linux-mips.org>); Fri, 27 Jul 2012 11:38:47 +0200
+Received: with ECARTIS (v1.0.0; list linux-mips); Fri, 27 Jul 2012 11:38:31 +0200 (CEST)
+Received: from sam.nabble.com ([216.139.236.26]:55450 "EHLO sam.nabble.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1903480Ab2G0Ji0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 27 Jul 2012 11:38:26 +0200
+Received: from telerig.nabble.com ([192.168.236.162])
+        by sam.nabble.com with esmtp (Exim 4.72)
+        (envelope-from <lists@nabble.com>)
+        id 1Suh04-0007sg-9f
+        for linux-mips@linux-mips.org; Fri, 27 Jul 2012 02:38:24 -0700
+Message-ID: <34219711.post@talk.nabble.com>
+Date:   Fri, 27 Jul 2012 02:38:24 -0700 (PDT)
+From:   JoeJ <tttechmail@gmail.com>
+To:     linux-mips@linux-mips.org
+Subject: SMVP Support on MIPS34KC (linux-2.6.35)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Nabble-From: tttechmail@gmail.com
+X-archive-position: 33990
+X-ecartis-version: Ecartis v1.0.0
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+X-original-sender: tttechmail@gmail.com
+Precedence: bulk
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+X-List-ID: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+X-list: linux-mips
+Return-Path: <linux-mips-bounce@linux-mips.org>
+Content-Length: 1040
+Lines: 24
+
+
+Hi,
+ we are using mips34Kc processor & are facing some issues while enabling
+SMVP (2 VPEs with 1 TC attached to each VPE) support on the same. We are
+using linux-2.6.35 kernel downloaded from malta repository. The issue is
+seen during system boot-up with the control looping in the function
+stop_machine_cpu_stop. The CPU freezes after the message "Switching to
+clocksource" . On further debugging, we observed that the function
+stop_machine_cpu_stop (defined in kernel/stop_machine.c) loops continuously
+in the 'do while' loop with the condition 'if (smdata->state != curstate)'
+never matching. The value of curstate is '1' even after we try to
+re-initialize to 0. What could be going wrong here?
+
+We use External timer interrupt as clocksource. One timer interrupt routed
+on to vpe0 & another timer interrupt routed on to vpe1. 
+
+Regards,
+Joe
+
+
 -- 
-1.7.11.1
+View this message in context: http://old.nabble.com/SMVP-Support-on-MIPS34KC-%28linux-2.6.35%29-tp34219711p34219711.html
+Sent from the linux-mips main mailing list archive at Nabble.com.

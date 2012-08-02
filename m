@@ -1,298 +1,124 @@
-Received: from mail-gh0-f177.google.com ([209.85.160.177]:37374 "EHLO
-	mail-gh0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-	by eddie.linux-mips.org with ESMTP id S1903827Ab2GZVVk (ORCPT
-	<rfc822; linux-mips@linux-mips.org>); Thu, 26 Jul 2012 23:21:40 +0200
-Received: by ghbf11 with SMTP id f11so2625512ghb.36
-	for <linux-mips@linux-mips.org>; Thu, 26 Jul 2012 14:21:34 -0700 (PDT)
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [ 14/23] MIPS: Properly align the .data..init_task section.
-Date: Thu, 26 Jul 2012 14:19:53 -0700
-Message-ID: <20120726211407.157467961@linuxfoundation.org>
-In-Reply-To: <20120726211405.959857593@linuxfoundation.org>
-References: <20120726211420.GA7678@kroah.com>
-	<20120726211405.959857593@linuxfoundation.org>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Greg KH <gregkh@linuxfoundation.org>, torvalds@linux-foundation.org, akpm@linux-foundation.org, alan@lxorguk.ukuu.org.uk, David Daney <david.daney@cavium.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20120726211953.0ZWsTccoWCwqjirWBz2R0ic1V22yb-oC3ouwm1DKYwQ@z>
-
-From: Greg KH <gregkh@linuxfoundation.org>
-
-3.0-stable review patch.  If anyone has any objections, please let me know.
-
-------------------
-
-From: David Daney <david.daney@cavium.com>
-
-commit 7b1c0d26a8e272787f0f9fcc5f3e8531df3b3409 upstream.
-
-Improper alignment can lead to unbootable systems and/or random
-crashes.
-
-[ralf@linux-mips.org: This is a lond standing bug since
-6eb10bc9e2deab06630261cd05c4cb1e9a60e980 (kernel.org) rsp.
-c422a10917f75fd19fa7fe070aaaa23e384dae6f (lmo) [MIPS: Clean up linker script
-using new linker script macros.] so dates back to 2.6.32.]
-
-Signed-off-by: David Daney <david.daney@cavium.com>
-Cc: linux-mips@linux-mips.org
-Patchwork: https://patchwork.linux-mips.org/patch/3881/
-Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
-arch/mips/include/asm/thread_info.h |    4 ++--
- arch/mips/kernel/vmlinux.lds.S      |    3 ++-
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
---- a/arch/mips/include/asm/thread_info.h
-+++ b/arch/mips/include/asm/thread_info.h
-@@ -60,6 +60,8 @@ struct thread_info {
- register struct thread_info *__current_thread_info __asm__("$28");
- #define current_thread_info()  __current_thread_info
- 
-+#endif /* !__ASSEMBLY__ */
-+
- /* thread information allocation */
- #if defined(CONFIG_PAGE_SIZE_4KB) && defined(CONFIG_32BIT)
- #define THREAD_SIZE_ORDER (1)
-@@ -97,8 +99,6 @@ register struct thread_info *__current_t
- 
- #define free_thread_info(info) kfree(info)
- 
--#endif /* !__ASSEMBLY__ */
--
- #define PREEMPT_ACTIVE		0x10000000
- 
- /*
---- a/arch/mips/kernel/vmlinux.lds.S
-+++ b/arch/mips/kernel/vmlinux.lds.S
-@@ -1,5 +1,6 @@
- #include <asm/asm-offsets.h>
- #include <asm/page.h>
-+#include <asm/thread_info.h>
- #include <asm-generic/vmlinux.lds.h>
- 
- #undef mips
-@@ -73,7 +74,7 @@ SECTIONS
- 	.data : {	/* Data */
- 		. = . + DATAOFFSET;		/* for CONFIG_MAPPED_KERNEL */
- 
--		INIT_TASK_DATA(PAGE_SIZE)
-+		INIT_TASK_DATA(THREAD_SIZE)
- 		NOSAVE_DATA
- 		CACHELINE_ALIGNED_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
- 		READ_MOSTLY_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
-From patchwork Thu Jul 26 21:19:53 2012
-Received: from localhost.localdomain ([127.0.0.1]:49942 "EHLO
-	eddie.linux-mips.org" rhost-flags-OK-OK-OK-FAIL)
-	by eddie.linux-mips.org with ESMTP id S1903787Ab2GZVal (ORCPT
-	<rfc822;patchwork@linux-mips.org>); Thu, 26 Jul 2012 23:30:41 +0200
-Received: with ECARTIS (v1.0.0; list linux-mips);
-	Thu, 26 Jul 2012 23:30:24 +0200 (CEST)
-Received: from mail-gg0-f177.google.com ([209.85.161.177]:38446 "EHLO
-	mail-gg0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-	by eddie.linux-mips.org with ESMTP id S1903782Ab2GZVaT (ORCPT
-	<rfc822; linux-mips@linux-mips.org>); Thu, 26 Jul 2012 23:30:19 +0200
-Received: by ggcs5 with SMTP id s5so2630301ggc.36
-	for <linux-mips@linux-mips.org>; Thu, 26 Jul 2012 14:30:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=google.com; s=20120113;
-	h=from:to:cc:subject:date:message-id:x-mailer:in-reply-to:references
-	:user-agent:x-gm-message-state;
-	bh=MiDzq5Kk0iwo/c1nHYZO3Ozr7JXCWxeXk7Z2OZl37pw=;
-	b=AUabfj3IfkIGfqF42OdAI8ssH0FY6AzKkDHil+FI6MZZ8j/C0qOwaQNEwrELQ5doKo
-	UFOr//IMnWkQsX7XJCKp8BKS4MOpc6wfcKNyKzni5rl+SKNv293KlmoPPY3SF9tFSARI
-	CSDulxkEtmGvHGKWpgaVnzi2qa+3qi1GUozjRLWKV/G7UZT+VvD2CULAFO8cuchiJHsZ
-	HvoAxNqMUNclangSGcajUP6yraf7mMNJUcEY9M02IGr8ngBJ2Sk2MI+Z/QLK7ZziZbgw
-	oJxioAD82LprZdQAnPb43jCwFClJ60Jq1ePjuRXHzvWTJNh47c0CQu6Ef0xXXhALkhhK
-	5Ikw==
-Received: by 10.66.87.2 with SMTP id t2mr560252paz.22.1343338212476;
-	Thu, 26 Jul 2012 14:30:12 -0700 (PDT)
-Received: from localhost (c-67-168-183-230.hsd1.wa.comcast.net.
-	[67.168.183.230])
-	by mx.google.com with ESMTPS id wi6sm433224pbc.35.2012.07.26.14.30.10
-	(version=TLSv1/SSLv3 cipher=OTHER);
-	Thu, 26 Jul 2012 14:30:11 -0700 (PDT)
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Greg KH <gregkh@linuxfoundation.org>,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	alan@lxorguk.ukuu.org.uk, David Daney <david.daney@cavium.com>,
-	Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Subject: [ 04/40] MIPS: Properly align the .data..init_task section.
-Date: Thu, 26 Jul 2012 14:29:22 -0700
-Message-Id: <20120726211411.443368067@linuxfoundation.org>
-X-Mailer: git-send-email 1.7.10.1.362.g242cab3
-In-Reply-To: <20120726211411.164006056@linuxfoundation.org>
-References: <20120726211424.GA7709@kroah.com>
-	<20120726211411.164006056@linuxfoundation.org>
-User-Agent: quilt/0.60-20.4
-X-Gm-Message-State: ALoCoQlyrynR6POXahUUboagsvOGcv8ctEaTKn6doJyP7M5vVFpgr2dd7NMsA4SRca6CLT3gzroR
-X-archive-position: 33989
-X-ecartis-version: Ecartis v1.0.0
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-X-original-sender: gregkh@linuxfoundation.org
-Precedence: bulk
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-X-List-ID: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-X-list: linux-mips
-Return-Path: <linux-mips-bounce@linux-mips.org>
-Content-Length: 2076
-Lines: 66
-
-From: Greg KH <gregkh@linuxfoundation.org>
-
-3.4-stable review patch.  If anyone has any objections, please let me know.
-
-------------------
-
-From: David Daney <david.daney@cavium.com>
-
-commit 7b1c0d26a8e272787f0f9fcc5f3e8531df3b3409 upstream.
-
-Improper alignment can lead to unbootable systems and/or random
-crashes.
-
-[ralf@linux-mips.org: This is a lond standing bug since
-6eb10bc9e2deab06630261cd05c4cb1e9a60e980 (kernel.org) rsp.
-c422a10917f75fd19fa7fe070aaaa23e384dae6f (lmo) [MIPS: Clean up linker script
-using new linker script macros.] so dates back to 2.6.32.]
-
-Signed-off-by: David Daney <david.daney@cavium.com>
-Cc: linux-mips@linux-mips.org
-Patchwork: https://patchwork.linux-mips.org/patch/3881/
-Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
-arch/mips/include/asm/thread_info.h |    4 ++--
- arch/mips/kernel/vmlinux.lds.S      |    3 ++-
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
---- a/arch/mips/include/asm/thread_info.h
-+++ b/arch/mips/include/asm/thread_info.h
-@@ -60,6 +60,8 @@ struct thread_info {
- register struct thread_info *__current_thread_info __asm__("$28");
- #define current_thread_info()  __current_thread_info
- 
-+#endif /* !__ASSEMBLY__ */
-+
- /* thread information allocation */
- #if defined(CONFIG_PAGE_SIZE_4KB) && defined(CONFIG_32BIT)
- #define THREAD_SIZE_ORDER (1)
-@@ -97,8 +99,6 @@ register struct thread_info *__current_t
- 
- #define free_thread_info(info) kfree(info)
- 
--#endif /* !__ASSEMBLY__ */
--
- #define PREEMPT_ACTIVE		0x10000000
- 
- /*
---- a/arch/mips/kernel/vmlinux.lds.S
-+++ b/arch/mips/kernel/vmlinux.lds.S
-@@ -1,5 +1,6 @@
- #include <asm/asm-offsets.h>
- #include <asm/page.h>
-+#include <asm/thread_info.h>
- #include <asm-generic/vmlinux.lds.h>
- 
- #undef mips
-@@ -72,7 +73,7 @@ SECTIONS
- 	.data : {	/* Data */
- 		. = . + DATAOFFSET;		/* for CONFIG_MAPPED_KERNEL */
- 
--		INIT_TASK_DATA(PAGE_SIZE)
-+		INIT_TASK_DATA(THREAD_SIZE)
- 		NOSAVE_DATA
- 		CACHELINE_ALIGNED_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
- 		READ_MOSTLY_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
-From linux-mips-bounce@linux-mips.org  Fri Jul 27 11:38:48 2012
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on eddie.linux-mips.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	FREEMAIL_FROM,RDNS_NONE,T_TO_NO_BRKTS_FREEMAIL autolearn=no version=3.3.2
-Received: from localhost.localdomain ([127.0.0.1]:47262 "EHLO
-        eddie.linux-mips.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S1903523Ab2G0Jir (ORCPT
-        <rfc822;ralf@linux-mips.org>); Fri, 27 Jul 2012 11:38:47 +0200
-Received: with ECARTIS (v1.0.0; list linux-mips); Fri, 27 Jul 2012 11:38:31 +0200 (CEST)
-Received: from sam.nabble.com ([216.139.236.26]:55450 "EHLO sam.nabble.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1903480Ab2G0Ji0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 27 Jul 2012 11:38:26 +0200
-Received: from telerig.nabble.com ([192.168.236.162])
-        by sam.nabble.com with esmtp (Exim 4.72)
-        (envelope-from <lists@nabble.com>)
-        id 1Suh04-0007sg-9f
-        for linux-mips@linux-mips.org; Fri, 27 Jul 2012 02:38:24 -0700
-Message-ID: <34219711.post@talk.nabble.com>
-Date:   Fri, 27 Jul 2012 02:38:24 -0700 (PDT)
-From:   JoeJ <tttechmail@gmail.com>
-To:     linux-mips@linux-mips.org
-Subject: SMVP Support on MIPS34KC (linux-2.6.35)
+Received: from mail.windriver.com ([147.11.1.11]:41828 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1903482Ab2HBDb0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Aug 2012 05:31:26 +0200
+From: Fan Du <fdu@windriver.com>
+Subject: [PATCH] MIPS: oops when show backtrace of all active cpu
+Date: Thu, 2 Aug 2012 11:31:14 +0800
+Message-ID: <1343878276-4108-1-git-send-email-fdu@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Nabble-From: tttechmail@gmail.com
-X-archive-position: 33990
-X-ecartis-version: Ecartis v1.0.0
+Content-Type: text/plain
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
-X-original-sender: tttechmail@gmail.com
-Precedence: bulk
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
 List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
 List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-X-List-ID: linux-mips <linux-mips.eddie.linux-mips.org>
 List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-X-list: linux-mips
 Return-Path: <linux-mips-bounce@linux-mips.org>
-Content-Length: 1040
-Lines: 24
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20120802033114.4lhhNAu1RXyv3TwE4O-Ou9nwcSi7CKxGzV-4hfLgsj8@z>
 
+show_backtrace must have an valid task when calling unwind_stack,
+so fix it by checking first.
 
-Hi,
- we are using mips34Kc processor & are facing some issues while enabling
-SMVP (2 VPEs with 1 TC attached to each VPE) support on the same. We are
-using linux-2.6.35 kernel downloaded from malta repository. The issue is
-seen during system boot-up with the control looping in the function
-stop_machine_cpu_stop. The CPU freezes after the message "Switching to
-clocksource" . On further debugging, we observed that the function
-stop_machine_cpu_stop (defined in kernel/stop_machine.c) loops continuously
-in the 'do while' loop with the condition 'if (smdata->state != curstate)'
-never matching. The value of curstate is '1' even after we try to
-re-initialize to 0. What could be going wrong here?
+root@romashell:/root> echo l > /proc/sysrq-trigger
+SysRq : Show backtrace of all active CPUs
+Stack : ffffffff81bf0000 ffffffff81ce0000root@octeon:/root>  ffffffff81bf0000 0000000000000036
+        ffffffff81bf0000 0000000000000003 a80000041b60b850 ffffffff811dfa8c
+        0000000000004000 a80000041fc0c060 a80000041b60b870 ffffffff8124c42c
+        0000000000000038 ffffffff811b8efc a800000003abbc00 ffffffff81be0980
+        ffffffff81be4200 0000000000000038 ffffffff81ce0000 0000000000000000
+        ffffffff81b92c40 a80000041b60b8c0 ffffffff81b92c40 ffffffff8157b0d8
+        0000000000000000 0000000000004000 0000000000004000 0000000000000000
+        ffffffff81be0990 a80000041b60b810 a80000041b60b910 ffffffff8157b0e4
+        a80000041b60b958 a800000003b9b358 0000000000000001 ffffffff81d70000
+        0000000000000000 ffffffff811a1ac8 a80000041b60b990 ffffffff8157b0d8
+        ...
+Call Trace:
+[<ffffffff811a1ac8>] show_stack+0xd8/0x100
+CPU 14 Unable to handle kernel paging request at virtual address 0000000000000008, epc == ffffffff8119c6a4, ra == ffffffff811a0664
+Oops[#1]:
+Cpu 14
+$ 0   : 0000000000000000 ffffffff811a0664 000000000000002e 0000000000020003
+$ 4   : 0000000000000000 a80000041b60b770 ffffffff811a1ac8 a80000041b60b778
+$ 8   : ffffffffffffffff 0000000000003fff 000000000000282d 0000000000000001
+$12   : ffffffff811a19a8 000000001000001f a80000041fe68000 0000000000000000
+$16   : 0000000000000000 ffffffff81b5ae70 a80000041b60b770 ffffffff811a1ac8
+$20   : a80000041b60b810 0000000000000000 ffffffff81b5ae98 0000000000200200
+$24   : 0000000000000000 000000002b6e8c94
+$28   : a80000041b608000 a80000041b60b700 a80000041b60b700 ffffffff811a0664
+Hi    : 0000000000000002
+Lo    : bf7889a5a0000000
+epc   : ffffffff8119c6a4 unwind_stack+0x2c/0x180
+    Not tainted
+ra    : ffffffff811a0664 show_backtrace+0x15c/0x178
+Status: 10008ce2    KX SX UX KERNEL EXL
+Cause : 40808008
+BadVA : 0000000000000008
+PrId  : 000d030b (Cavium Octeon+)
+Modules linked in:
+Process klogd (pid: 1163, threadinfo=a80000041b608000, task=a80000041c271600, tls=000000002aed3f70)
+Stack : 0000000000000000 0000000000000000 ffffffff81b5ae70 a80000041b60b778
+        a80000041b60b770 ffffffff811a0650 a80000041b60b740 ffffffff811a1ac8
+        ffffffff811a1ac8 0000000000000000 ffffffff81b5ae70 a80000041b60b778
+        a80000041b60b770 ffffffff811a0664 a80000041b60b810 ffffffff8157b0e4
+        0000000000000000 a80000041b60b950 0000000000000028 0000000000000000
+        ffffffff81b5abe0 a80000041b60b810 a80000041b60b7c0 ffffffff811a075c
+        a80000041b60b7d0 0000000000000000 0000000000000000 0000000000000000
+        0000000000004000 0000000000004000 0000000000000000 ffffffff81be0990
+        a80000041b60b810 ffffffff811a1a30 ffffffff81bf0000 ffffffff81ce0000
+        ffffffff81bf0000 0000000000000036 ffffffff81bf0000 0000000000000003
+        ...
+Call Trace:
+[<ffffffff8119c6a4>] unwind_stack+0x2c/0x180
+[<ffffffff811a0664>] show_backtrace+0x15c/0x178
+[<ffffffff811a075c>] show_stacktrace+0xdc/0x138
+[<ffffffff811a1a30>] show_stack+0x40/0x100
+[<ffffffff8157b0e4>] showacpu+0x84/0x98
+[<ffffffff8121dd54>] generic_smp_call_function_interrupt+0x174/0x250
+[<ffffffff817581d4>] smp_call_function_interrupt+0x34/0x50
+[<ffffffff81105518>] mailbox_interrupt+0x78/0x80
+[<ffffffff8124c42c>] handle_IRQ_event+0x9c/0x368
+[<ffffffff8124f5b8>] handle_percpu_irq+0x70/0xd0
+[<ffffffff81758180>] do_IRQ+0x40/0x60
+[<ffffffff811025f0>] native_plat_irq_dispatch+0xf8/0x188
+[<ffffffff811024e4>] plat_irq_dispatch+0x24/0x38
+[<ffffffff811a3e60>] ret_from_irq+0x0/0x4
+[<ffffffff817572a8>] _raw_spin_unlock_irq+0x38/0x70
+[<ffffffff811e07b8>] do_syslog+0x408/0x590
+[<ffffffff81344b50>] kmsg_read+0x48/0x98
+[<ffffffff81337200>] proc_reg_read+0xa0/0xf0
+[<ffffffff812d47ec>] vfs_read+0xcc/0x160
+[<ffffffff812d4a44>] SyS_read+0x6c/0x168
+[<ffffffff811ad564>] handle_sysn32+0x44/0x84
 
-We use External timer interrupt as clocksource. One timer interrupt routed
-on to vpe0 & another timer interrupt routed on to vpe1. 
+Code: 00000000  00000000  00a0902d <dc900008> 1200002d  00c0882d  3c02811a  64423e60  10c20033
+Disabling lock debugging due to kernel taint
+Kernel panic - not syncing: Fatal exception in interrupt
 
-Regards,
-Joe
+Signed-off-by: Fan Du <fdu@windriver.com>
+---
+ arch/mips/kernel/traps.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index b25b921..99c6611 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -151,6 +151,10 @@ static void show_backtrace(struct task_struct *task, const struct pt_regs *regs)
+ 		show_raw_backtrace(sp);
+ 		return;
+ 	}
++
++	if (task == NULL)
++		task = current;
++
+ 	printk("Call Trace:\n");
+ 	do {
+ 		print_ip_sym(pc);
 -- 
-View this message in context: http://old.nabble.com/SMVP-Support-on-MIPS34KC-%28linux-2.6.35%29-tp34219711p34219711.html
-Sent from the linux-mips main mailing list archive at Nabble.com.
+1.7.0.5

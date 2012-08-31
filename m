@@ -1,17 +1,19 @@
-Received: from localhost.localdomain ([127.0.0.1]:40441 "EHLO linux-mips.org"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S1903052Ab2H1WZq (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 29 Aug 2012 00:25:46 +0200
-Date: Wed, 29 Aug 2012 00:25:43 +0200
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH 1/2] asm-offsets.c: adding #define to break circular
- dependency
-Message-ID: <20120828222543.GC23288@linux-mips.org>
-References: <1346029009-20199-1-git-send-email-jim2101024@gmail.com>
+Received: from mail-pb0-f49.google.com ([209.85.160.49]:57867 "EHLO
+        mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S1903289Ab2HaSZA convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 31 Aug 2012 20:25:00 +0200
+Received: by pbbrq8 with SMTP id rq8so5547314pbb.36
+        for <linux-mips@linux-mips.org>; Fri, 31 Aug 2012 11:24:53 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1346029009-20199-1-git-send-email-jim2101024@gmail.com>
+Content-Transfer-Encoding: 8BIT
+From: Mike Turquette <mturquette@linaro.org>
+In-Reply-To: <1345457135-12737-1-git-send-email-keguang.zhang@gmail.com>
+References: <1345457135-12737-1-git-send-email-keguang.zhang@gmail.com>
+Message-ID: <20120831182437.26807.56140@nucleus>
+Subject: Re: [PATCH v3] clk: add Loongson1B clock support
+Date: Fri, 31 Aug 2012 11:24:37 -0700
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,226 +24,155 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Jim Quinlan <jim2101024@gmail.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20120828222543.AJ1yULHwHO6mHEq-kRlaZ7ZhZx3YsNh8lBLN6GTuqcg@z>
+To: Kelvin Cheung <keguang.zhang@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, Russell King <linux@arm.linux.org.uk>
+Message-ID: <20120831182437.7b9OKk0-3cunKbOizlD-nyyNfouRGdCXLHSA0HR7KyU@z>
 
-On Sun, Aug 26, 2012 at 05:56:49PM -0700, Jim Quinlan wrote:
-
-> irqflags.h depends on asm-offsets.h, but asm-offsets.h depends
-> on irqflags.h when generating asm-offsets.h.  Adding a definition
-> to the top of asm-offsets.c allows us to break this circle.  There
-> is a similar define in bounds.c
+Quoting Kelvin Cheung (2012-08-20 03:05:35)
+> This adds clock support to Loongson1B SoC using the common clock
+> infrastructure.
 > 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
+
+Looks good.  I've taken this into clk-next.
+
+Thanks,
+Mike
+
 > ---
->  arch/mips/kernel/asm-offsets.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
+>  drivers/clk/Makefile   |    1 +
+>  drivers/clk/clk-ls1x.c |  111 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 112 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/clk/clk-ls1x.c
 > 
-> diff --git a/arch/mips/kernel/asm-offsets.c b/arch/mips/kernel/asm-offsets.c
-> index 6b30fb2..035f167 100644
-> --- a/arch/mips/kernel/asm-offsets.c
-> +++ b/arch/mips/kernel/asm-offsets.c
-> @@ -8,6 +8,7 @@
->   * Kevin Kissell, kevink@mips.com and Carsten Langgaard, carstenl@mips.com
->   * Copyright (C) 2000 MIPS Technologies, Inc.
->   */
-> +#define __GENERATING_OFFSETS_S
->  #include <linux/compat.h>
->  #include <linux/types.h>
->  #include <linux/sched.h>
-> -- 
-> 1.7.6
-> 
-> 
-> >From ab76333c041140e4fc1835b581044ff42906881c Mon Sep 17 00:00:00 2001
-
-Something went seriously, seriously wrong in submission of this patch.
-
-First your two part series ended up in a single email.  I was able to
-verify that it actually arrived as a single email on linux-mips.org from
-your mailserver.
-
-Next it at some point of processing got split into two emails at above
-From line resulting in the 2nd email being archived with improper headers
-in linux-mips.org's email archive.  So there's at least one bug at each
-end.
-
-> From: Jim Quinlan <jim2101024@gmail.com>
-> Date: Sun, 26 Aug 2012 18:08:43 -0400
-> Subject: [PATCH 2/2] MIPS: irqflags.h: make funcs preempt-safe for non-mipsr2
-> 
-> For non MIPSr2 processors, such as the BMIPS 5000, calls to
-> arch_local_irq_disable() and others may be preempted, and in doing
-> so a stale value may be restored to c0_status.  This fix disables
-> preemption for such processors prior to the call and enables it
-> after the call.
-> 
-> This bug was observed in a BMIPS 5000, occuring once every few hours
-> in a continuous reboot test.  It was traced to the write_lock_irq()
-> function which was being invoked in release_task() in exit.c.
-> By placing a number of "nops" inbetween the mfc0/mtc0 pair in
-> arch_local_irq_disable(), which is called by write_lock_irq(), we
-> were able to greatly increase the occurance of this bug.  Similarly,
-> the application of this commit silenced the bug.
-> 
-> It is better to use the preemption functions declared in <linux/preempt.h>
-> rather than defining new ones as is done in this commit.  However,
-> including that file from irqflags effected many compiler errors.
-
-This is the 2nd time non-atomic RMW operations on c0_status bite in the
-kernel.
-
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> ---
->  arch/mips/include/asm/irqflags.h |   81 ++++++++++++++++++++++++++++++++++++++
->  1 files changed, 81 insertions(+), 0 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/irqflags.h b/arch/mips/include/asm/irqflags.h
-> index 309cbcd..2732f5f 100644
-> --- a/arch/mips/include/asm/irqflags.h
-> +++ b/arch/mips/include/asm/irqflags.h
-> @@ -16,6 +16,71 @@
->  #include <linux/compiler.h>
->  #include <asm/hazards.h>
+> diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+> index 5869ea3..018ec57 100644
+> --- a/drivers/clk/Makefile
+> +++ b/drivers/clk/Makefile
+> @@ -10,6 +10,7 @@ obj-$(CONFIG_ARCH_SOCFPGA)    += socfpga/
+>  obj-$(CONFIG_PLAT_SPEAR)       += spear/
+>  obj-$(CONFIG_ARCH_U300)                += clk-u300.o
+>  obj-$(CONFIG_ARCH_INTEGRATOR)  += versatile/
+> +obj-$(CONFIG_MACH_LOONGSON1)   += clk-ls1x.o
 >  
-> +#if defined(__GENERATING_BOUNDS_H) || defined(__GENERATING_OFFSETS_S)
-> +#define __TI_PRE_COUNT (-1)
-> +#else
-> +#include <asm/asm-offsets.h>
-> +#define __TI_PRE_COUNT TI_PRE_COUNT
-> +#endif
-
-This part is too ugly to live.  Yet it seems it needs to live.
-
-> +
-> +
-> +/* 
-> + * Non-mipsr2 processors executing functions such as arch_local_irq_disable()
-> + * are not preempt-safe: if preemption occurs between the mfc0 and the mtc0,
-> + * a stale status value may be stored.  To prevent this, we define 
-> + * here arch_local_preempt_disable() and arch_local_preempt_enable(), which 
-> + * are called before the mfc0 and after the mtc0, respectively.  A better 
-> + * solution would "#include <linux/preempt.h> and use its declared routines, 
-> + * but that is not viable due to numerous compile errors.
+>  # Chip specific
+>  obj-$(CONFIG_COMMON_CLK_WM831X) += clk-wm831x.o
+> diff --git a/drivers/clk/clk-ls1x.c b/drivers/clk/clk-ls1x.c
+> new file mode 100644
+> index 0000000..f20b750
+> --- /dev/null
+> +++ b/drivers/clk/clk-ls1x.c
+> @@ -0,0 +1,111 @@
+> +/*
+> + * Copyright (c) 2012 Zhang, Keguang <keguang.zhang@gmail.com>
 > + *
-> + * MipsR2 processors with atomic interrupt enable/disable instructions 
-> + * (ei/di) do not have this issue.
+> + * This program is free software; you can redistribute  it and/or modify it
+> + * under  the terms of  the GNU General  Public License as published by the
+> + * Free Software Foundation;  either version 2 of the  License, or (at your
+> + * option) any later version.
 > + */
-> +__asm__(
-> +	"	.macro	arch_local_preempt_disable ti_pre_count		\n"
-> +	"	.set	push						\n"
-> +	"	.set	noat						\n"
-> +	"	lw	$1, \\ti_pre_count($28)				\n"
-> +	"	addi	$1, $1, 1					\n"
-> +	"	sw	$1, \\ti_pre_count($28)				\n"
-> +	"	.set	pop						\n"
-> +	"	.endm");
-> +static inline void arch_local_preempt_disable(void)
+> +
+> +#include <linux/clkdev.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/io.h>
+> +#include <linux/slab.h>
+> +#include <linux/err.h>
+> +
+> +#include <loongson1.h>
+> +
+> +#define OSC    33
+> +
+> +static DEFINE_SPINLOCK(_lock);
+> +
+> +static int ls1x_pll_clk_enable(struct clk_hw *hw)
 > +{
-> +#if defined(CONFIG_PREEMPT) && !defined(CONFIG_CPU_MIPSR2)
-> +	__asm__ __volatile__(
-> +		"arch_local_preempt_disable\t%0"
-> +		: /* no outputs */
-> +		: "n" (__TI_PRE_COUNT)
-> +		: "memory");
-> +	barrier();
-> +#endif
+> +       return 0;
 > +}
 > +
-> +
-> +__asm__(
-> +	"	.macro	arch_local_preempt_enable ti_pre_count		\n"
-> +	"	.set	push						\n"
-> +	"	.set	noat						\n"
-> +	"	lw	$1, \\ti_pre_count($28)				\n"
-> +	"	addi	$1, $1, -1					\n"
-> +	"	sw	$1, \\ti_pre_count($28)				\n"
-> +	"	.set	pop						\n"
-> +	"	.endm");
-> +
-> +static inline void arch_local_preempt_enable(void)
+> +static void ls1x_pll_clk_disable(struct clk_hw *hw)
 > +{
-> +#if defined(CONFIG_PREEMPT) && !defined(CONFIG_CPU_MIPSR2)
-> +	__asm__ __volatile__(
-> +		"arch_local_preempt_enable\t%0"
-> +		: /* no outputs */
-> +		: "n" (__TI_PRE_COUNT)
-> +		: "memory");
-> +	barrier();
-> +#endif
 > +}
 > +
+> +static unsigned long ls1x_pll_recalc_rate(struct clk_hw *hw,
+> +                                            unsigned long parent_rate)
+> +{
+> +       u32 pll, rate;
 > +
->  __asm__(
->  	"	.macro	arch_local_irq_enable				\n"
->  	"	.set	push						\n"
-> @@ -99,11 +164,15 @@ __asm__(
->  
->  static inline void arch_local_irq_disable(void)
->  {
-> +	arch_local_preempt_disable();
+> +       pll = __raw_readl(LS1X_CLK_PLL_FREQ);
+> +       rate = ((12 + (pll & 0x3f)) * 1000000) +
+> +               ((((pll >> 8) & 0x3ff) * 1000000) >> 10);
+> +       rate *= OSC;
+> +       rate >>= 1;
 > +
->  	__asm__ __volatile__(
->  		"arch_local_irq_disable"
->  		: /* no outputs */
->  		: /* no inputs */
->  		: "memory");
+> +       return rate;
+> +}
 > +
-> +	arch_local_preempt_enable();
->  }
->  
->  __asm__(
-> @@ -153,10 +222,15 @@ __asm__(
->  static inline unsigned long arch_local_irq_save(void)
->  {
->  	unsigned long flags;
+> +static const struct clk_ops ls1x_pll_clk_ops = {
+> +       .enable = ls1x_pll_clk_enable,
+> +       .disable = ls1x_pll_clk_disable,
+> +       .recalc_rate = ls1x_pll_recalc_rate,
+> +};
 > +
-> +	arch_local_preempt_disable();
+> +static struct clk * __init clk_register_pll(struct device *dev,
+> +        const char *name, const char *parent_name, unsigned long flags)
+> +{
+> +       struct clk_hw *hw;
+> +       struct clk *clk;
+> +       struct clk_init_data init;
 > +
->  	asm volatile("arch_local_irq_save\t%0"
->  		     : "=r" (flags)
->  		     : /* no inputs */
->  		     : "memory");
+> +       /* allocate the divider */
+> +       hw = kzalloc(sizeof(struct clk_hw), GFP_KERNEL);
+> +       if (!hw) {
+> +               pr_err("%s: could not allocate clk_hw\n", __func__);
+> +               return ERR_PTR(-ENOMEM);
+> +       }
 > +
-> +	arch_local_preempt_enable();
->  	return flags;
->  }
->  
-> @@ -214,23 +288,30 @@ static inline void arch_local_irq_restore(unsigned long flags)
->  	if (unlikely(!(flags & 0x0400)))
->  		smtc_ipi_replay();
->  #endif
-> +	arch_local_preempt_disable();
->  
->  	__asm__ __volatile__(
->  		"arch_local_irq_restore\t%0"
->  		: "=r" (__tmp1)
->  		: "0" (flags)
->  		: "memory");
+> +       init.name = name;
+> +       init.ops = &ls1x_pll_clk_ops;
+> +       init.flags = flags | CLK_IS_BASIC;
+> +       init.parent_names = (parent_name ? &parent_name : NULL);
+> +       init.num_parents = (parent_name ? 1 : 0);
+> +       hw->init = &init;
 > +
-> +	arch_local_preempt_enable();
->  }
->  
->  static inline void __arch_local_irq_restore(unsigned long flags)
->  {
->  	unsigned long __tmp1;
->  
-> +	arch_local_preempt_disable();
+> +       /* register the clock */
+> +       clk = clk_register(dev, hw);
 > +
->  	__asm__ __volatile__(
->  		"arch_local_irq_restore\t%0"
->  		: "=r" (__tmp1)
->  		: "0" (flags)
->  		: "memory");
+> +       if (IS_ERR(clk))
+> +               kfree(hw);
 > +
-> +	arch_local_preempt_enable();
->  }
->  
->  static inline int arch_irqs_disabled_flags(unsigned long flags)
+> +       return clk;
+> +}
+> +
+> +void __init ls1x_clk_init(void)
+> +{
+> +       struct clk *clk;
+> +
+> +       clk = clk_register_pll(NULL, "pll_clk", NULL, CLK_IS_ROOT);
+> +       clk_prepare_enable(clk);
+> +
+> +       clk = clk_register_divider(NULL, "cpu_clk", "pll_clk",
+> +                       CLK_SET_RATE_PARENT, LS1X_CLK_PLL_DIV, DIV_CPU_SHIFT,
+> +                       DIV_CPU_WIDTH, CLK_DIVIDER_ONE_BASED, &_lock);
+> +       clk_prepare_enable(clk);
+> +       clk_register_clkdev(clk, "cpu", NULL);
+> +
+> +       clk = clk_register_divider(NULL, "dc_clk", "pll_clk",
+> +                       CLK_SET_RATE_PARENT, LS1X_CLK_PLL_DIV, DIV_DC_SHIFT,
+> +                       DIV_DC_WIDTH, CLK_DIVIDER_ONE_BASED, &_lock);
+> +       clk_prepare_enable(clk);
+> +       clk_register_clkdev(clk, "dc", NULL);
+> +
+> +       clk = clk_register_divider(NULL, "ahb_clk", "pll_clk",
+> +                       CLK_SET_RATE_PARENT, LS1X_CLK_PLL_DIV, DIV_DDR_SHIFT,
+> +                       DIV_DDR_WIDTH, CLK_DIVIDER_ONE_BASED, &_lock);
+> +       clk_prepare_enable(clk);
+> +       clk_register_clkdev(clk, "ahb", NULL);
+> +       clk_register_clkdev(clk, "stmmaceth", NULL);
+> +
+> +       clk = clk_register_fixed_factor(NULL, "apb_clk", "ahb_clk", 0, 1, 2);
+> +       clk_prepare_enable(clk);
+> +       clk_register_clkdev(clk, "apb", NULL);
+> +       clk_register_clkdev(clk, "serial8250", NULL);
+> +}
 > -- 
-> 1.7.6
-> 
-> 
-
-  Ralf
+> 1.7.1

@@ -1,19 +1,11 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49]:57867 "EHLO
-        mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1903289Ab2HaSZA convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 31 Aug 2012 20:25:00 +0200
-Received: by pbbrq8 with SMTP id rq8so5547314pbb.36
-        for <linux-mips@linux-mips.org>; Fri, 31 Aug 2012 11:24:53 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-From: Mike Turquette <mturquette@linaro.org>
-In-Reply-To: <1345457135-12737-1-git-send-email-keguang.zhang@gmail.com>
-References: <1345457135-12737-1-git-send-email-keguang.zhang@gmail.com>
-Message-ID: <20120831182437.26807.56140@nucleus>
-Subject: Re: [PATCH v3] clk: add Loongson1B clock support
-Date: Fri, 31 Aug 2012 11:24:37 -0700
+Received: from arrakis.dune.hu ([78.24.191.176]:46516 "EHLO arrakis.dune.hu"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S1903298Ab2IAQqQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 1 Sep 2012 18:46:16 +0200
+From: Gabor Juhos <juhosg@openwrt.org>
+Subject: [PATCH] MIPS: ath79: use correct fractional dividers for {CPU,DDR}_PLL on AR934x
+Date: Sat,  1 Sep 2012 18:46:00 +0200
+Message-ID: <1346517960-13537-1-git-send-email-juhosg@openwrt.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,155 +16,54 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Kelvin Cheung <keguang.zhang@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, Russell King <linux@arm.linux.org.uk>
-Message-ID: <20120831182437.7b9OKk0-3cunKbOizlD-nyyNfouRGdCXLHSA0HR7KyU@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Gabor Juhos <juhosg@openwrt.org>, stable@vger.kernel.org, "[3.5+]"@arrakis.dune.hu
+Message-ID: <20120901164600.kOyZw4CCMYuS_VDN0fcslXV_V5w-fTvZoLiH3X6ivl8@z>
 
-Quoting Kelvin Cheung (2012-08-20 03:05:35)
-> This adds clock support to Loongson1B SoC using the common clock
-> infrastructure.
-> 
-> Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
+The current dividers in the code are wrong and this
+leads to broken CPU frequency calculation on boards
+where the fractional part is used.
 
-Looks good.  I've taken this into clk-next.
+For example, if the SoC is running from a 40MHz
+reference clock, refdiv=1, nint=14, outdiv=0 and
+nfrac=31 the real frequency is 579.375MHz but the
+current code calculates 569.687MHz instead.
 
-Thanks,
-Mike
+Because the system time is indirectly related to
+the CPU frequency the broken computation causes
+drift in the system time.
 
-> ---
->  drivers/clk/Makefile   |    1 +
->  drivers/clk/clk-ls1x.c |  111 ++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 112 insertions(+), 0 deletions(-)
->  create mode 100644 drivers/clk/clk-ls1x.c
-> 
-> diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-> index 5869ea3..018ec57 100644
-> --- a/drivers/clk/Makefile
-> +++ b/drivers/clk/Makefile
-> @@ -10,6 +10,7 @@ obj-$(CONFIG_ARCH_SOCFPGA)    += socfpga/
->  obj-$(CONFIG_PLAT_SPEAR)       += spear/
->  obj-$(CONFIG_ARCH_U300)                += clk-u300.o
->  obj-$(CONFIG_ARCH_INTEGRATOR)  += versatile/
-> +obj-$(CONFIG_MACH_LOONGSON1)   += clk-ls1x.o
->  
->  # Chip specific
->  obj-$(CONFIG_COMMON_CLK_WM831X) += clk-wm831x.o
-> diff --git a/drivers/clk/clk-ls1x.c b/drivers/clk/clk-ls1x.c
-> new file mode 100644
-> index 0000000..f20b750
-> --- /dev/null
-> +++ b/drivers/clk/clk-ls1x.c
-> @@ -0,0 +1,111 @@
-> +/*
-> + * Copyright (c) 2012 Zhang, Keguang <keguang.zhang@gmail.com>
-> + *
-> + * This program is free software; you can redistribute  it and/or modify it
-> + * under  the terms of  the GNU General  Public License as published by the
-> + * Free Software Foundation;  either version 2 of the  License, or (at your
-> + * option) any later version.
-> + */
-> +
-> +#include <linux/clkdev.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/io.h>
-> +#include <linux/slab.h>
-> +#include <linux/err.h>
-> +
-> +#include <loongson1.h>
-> +
-> +#define OSC    33
-> +
-> +static DEFINE_SPINLOCK(_lock);
-> +
-> +static int ls1x_pll_clk_enable(struct clk_hw *hw)
-> +{
-> +       return 0;
-> +}
-> +
-> +static void ls1x_pll_clk_disable(struct clk_hw *hw)
-> +{
-> +}
-> +
-> +static unsigned long ls1x_pll_recalc_rate(struct clk_hw *hw,
-> +                                            unsigned long parent_rate)
-> +{
-> +       u32 pll, rate;
-> +
-> +       pll = __raw_readl(LS1X_CLK_PLL_FREQ);
-> +       rate = ((12 + (pll & 0x3f)) * 1000000) +
-> +               ((((pll >> 8) & 0x3ff) * 1000000) >> 10);
-> +       rate *= OSC;
-> +       rate >>= 1;
-> +
-> +       return rate;
-> +}
-> +
-> +static const struct clk_ops ls1x_pll_clk_ops = {
-> +       .enable = ls1x_pll_clk_enable,
-> +       .disable = ls1x_pll_clk_disable,
-> +       .recalc_rate = ls1x_pll_recalc_rate,
-> +};
-> +
-> +static struct clk * __init clk_register_pll(struct device *dev,
-> +        const char *name, const char *parent_name, unsigned long flags)
-> +{
-> +       struct clk_hw *hw;
-> +       struct clk *clk;
-> +       struct clk_init_data init;
-> +
-> +       /* allocate the divider */
-> +       hw = kzalloc(sizeof(struct clk_hw), GFP_KERNEL);
-> +       if (!hw) {
-> +               pr_err("%s: could not allocate clk_hw\n", __func__);
-> +               return ERR_PTR(-ENOMEM);
-> +       }
-> +
-> +       init.name = name;
-> +       init.ops = &ls1x_pll_clk_ops;
-> +       init.flags = flags | CLK_IS_BASIC;
-> +       init.parent_names = (parent_name ? &parent_name : NULL);
-> +       init.num_parents = (parent_name ? 1 : 0);
-> +       hw->init = &init;
-> +
-> +       /* register the clock */
-> +       clk = clk_register(dev, hw);
-> +
-> +       if (IS_ERR(clk))
-> +               kfree(hw);
-> +
-> +       return clk;
-> +}
-> +
-> +void __init ls1x_clk_init(void)
-> +{
-> +       struct clk *clk;
-> +
-> +       clk = clk_register_pll(NULL, "pll_clk", NULL, CLK_IS_ROOT);
-> +       clk_prepare_enable(clk);
-> +
-> +       clk = clk_register_divider(NULL, "cpu_clk", "pll_clk",
-> +                       CLK_SET_RATE_PARENT, LS1X_CLK_PLL_DIV, DIV_CPU_SHIFT,
-> +                       DIV_CPU_WIDTH, CLK_DIVIDER_ONE_BASED, &_lock);
-> +       clk_prepare_enable(clk);
-> +       clk_register_clkdev(clk, "cpu", NULL);
-> +
-> +       clk = clk_register_divider(NULL, "dc_clk", "pll_clk",
-> +                       CLK_SET_RATE_PARENT, LS1X_CLK_PLL_DIV, DIV_DC_SHIFT,
-> +                       DIV_DC_WIDTH, CLK_DIVIDER_ONE_BASED, &_lock);
-> +       clk_prepare_enable(clk);
-> +       clk_register_clkdev(clk, "dc", NULL);
-> +
-> +       clk = clk_register_divider(NULL, "ahb_clk", "pll_clk",
-> +                       CLK_SET_RATE_PARENT, LS1X_CLK_PLL_DIV, DIV_DDR_SHIFT,
-> +                       DIV_DDR_WIDTH, CLK_DIVIDER_ONE_BASED, &_lock);
-> +       clk_prepare_enable(clk);
-> +       clk_register_clkdev(clk, "ahb", NULL);
-> +       clk_register_clkdev(clk, "stmmaceth", NULL);
-> +
-> +       clk = clk_register_fixed_factor(NULL, "apb_clk", "ahb_clk", 0, 1, 2);
-> +       clk_prepare_enable(clk);
-> +       clk_register_clkdev(clk, "apb", NULL);
-> +       clk_register_clkdev(clk, "serial8250", NULL);
-> +}
-> -- 
-> 1.7.1
+The correct divider is 2^6 for the CPU PLL and 2^10
+for the DDR PLL. Use the correct values to fix the
+issue.
+
+Cc: <stable@vger.kernel.org>  [3.5+]
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ arch/mips/ath79/clock.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/ath79/clock.c b/arch/mips/ath79/clock.c
+index b91ad3e..d272857 100644
+--- a/arch/mips/ath79/clock.c
++++ b/arch/mips/ath79/clock.c
+@@ -189,7 +189,7 @@ static void __init ar934x_clocks_init(void)
+ 	       AR934X_PLL_CPU_CONFIG_NFRAC_MASK;
+ 
+ 	cpu_pll = nint * ath79_ref_clk.rate / ref_div;
+-	cpu_pll += frac * ath79_ref_clk.rate / (ref_div * (2 << 6));
++	cpu_pll += frac * ath79_ref_clk.rate / (ref_div * (1 << 6));
+ 	cpu_pll /= (1 << out_div);
+ 
+ 	pll = ath79_pll_rr(AR934X_PLL_DDR_CONFIG_REG);
+@@ -203,7 +203,7 @@ static void __init ar934x_clocks_init(void)
+ 	       AR934X_PLL_DDR_CONFIG_NFRAC_MASK;
+ 
+ 	ddr_pll = nint * ath79_ref_clk.rate / ref_div;
+-	ddr_pll += frac * ath79_ref_clk.rate / (ref_div * (2 << 10));
++	ddr_pll += frac * ath79_ref_clk.rate / (ref_div * (1 << 10));
+ 	ddr_pll /= (1 << out_div);
+ 
+ 	clk_ctrl = ath79_pll_rr(AR934X_PLL_CPU_DDR_CLK_CTRL_REG);
+-- 
+1.7.10

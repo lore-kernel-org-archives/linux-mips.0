@@ -1,15 +1,15 @@
-Received: from bear.ext.ti.com ([192.94.94.41]:51376 "EHLO bear.ext.ti.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S1903340Ab2ILSDU (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 12 Sep 2012 20:03:20 +0200
-Message-ID: <5050CE33.9060909@ti.com>
-Date: Wed, 12 Sep 2012 14:02:27 -0400
+Received: from devils.ext.ti.com ([198.47.26.153]:49657 "EHLO
+        devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1903508Ab2ILXrd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Sep 2012 01:47:33 +0200
+Message-ID: <50511EB5.800@ti.com>
+Date: Wed, 12 Sep 2012 19:45:57 -0400
 From: Cyril Chemparathy <cyril@ti.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH] of: specify initrd location using 64-bit
-References: <1347465937-7056-1-git-send-email-cyril@ti.com> <CAMuHMdUuQzD0bq8PifBea2-0Pk7RhmPA0-GAFprsk+vMxMGjGw@mail.gmail.com>
-In-Reply-To: <CAMuHMdUuQzD0bq8PifBea2-0Pk7RhmPA0-GAFprsk+vMxMGjGw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+References: <1347465937-7056-1-git-send-email-cyril@ti.com> <5050EF3F.6030003@gmail.com>
+In-Reply-To: <5050EF3F.6030003@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,12 +21,12 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux@openrisc.net, linuxppc-dev@lists.ozlabs.org, microblaze-uclinux@itee.uq.edu.au, a-jacquiot@ti.com, arnd@arndb.de, benh@kernel.crashing.org, bigeasy@linutronix.de, blogic@openwrt.org, david.daney@cavium.com, dhowells@redhat.com, grant.likely@secretlab.ca, hpa@zytor.com, jonas@southpole.se, linus.walleij@linaro.org, linux@arm.linux.org.uk, m.szyprowski@samsung.com, mahesh@linux.vnet.ibm.com, mingo@redhat.com, monstr@monstr.eu, msalter@redhat.com, nico@linaro.org, paul.gortmaker@windriver.com, paulus@samba.org, ralf@linux-mips.org, rob.herring@calxeda.com, suzuki@in.ibm.com, tglx@linutronix.de, tj@kernel.org, x86@kernel.org
-Message-ID: <20120912180227.1OfU5PNWdmfFTB7QV57_S7lgehSpiY88nJuTRoXNvCw@z>
+To: Rob Herring <robherring2@gmail.com>
+Cc: devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux@openrisc.net, linuxppc-dev@lists.ozlabs.org, microblaze-uclinux@itee.uq.edu.au, x86@kernel.org, david.daney@cavium.com, benh@kernel.crashing.org, bigeasy@linutronix.de, grant.likely@secretlab.ca, paul.gortmaker@windriver.com, paulus@samba.org, hpa@zytor.com, m.szyprowski@samsung.com, jonas@southpole.se, linux@arm.linux.org.uk, nico@linaro.org, a-jacquiot@ti.com, mingo@redhat.com, suzuki@in.ibm.com, mahesh@linux.vnet.ibm.com, linus.walleij@linaro.org, arnd@arndb.de, msalter@redhat.com, rob.herring@calxeda.com, tglx@linutronix.de, blogic@openwrt.org, dhowells@redhat.com, monstr@monstr.eu, ralf@linux-mips.org, tj@kernel.org
+Message-ID: <20120912234557.FAYoqF2DFj7zrzDnqgZaMCo4ZtirfLyhBI7H_kAroAY@z>
 
-On 9/12/2012 12:16 PM, Geert Uytterhoeven wrote:
-> On Wed, Sep 12, 2012 at 6:05 PM, Cyril Chemparathy <cyril@ti.com> wrote:
+On 9/12/2012 4:23 PM, Rob Herring wrote:
+> On 09/12/2012 11:05 AM, Cyril Chemparathy wrote:
 >> On some PAE architectures, the entire range of physical memory could reside
 >> outside the 32-bit limit.  These systems need the ability to specify the
 >> initrd location using 64-bit numbers.
@@ -34,26 +34,35 @@ On 9/12/2012 12:16 PM, Geert Uytterhoeven wrote:
 >> This patch globally modifies the early_init_dt_setup_initrd_arch() function to
 >> use 64-bit numbers instead of the current unsigned long.
 >
+> S-o-B?
+>
+
+Sorry about that, will include in v2.
+
+[...]
+>> --- a/arch/arm/mm/init.c
+>> +++ b/arch/arm/mm/init.c
+>> @@ -76,7 +76,7 @@ static int __init parse_tag_initrd2(const struct tag *tag)
+>>   __tagtable(ATAG_INITRD2, parse_tag_initrd2);
+>>
+>>   #ifdef CONFIG_OF_FLATTREE
 >> -void __init early_init_dt_setup_initrd_arch(unsigned long start, unsigned long end)
 >> +void __init early_init_dt_setup_initrd_arch(u64 start, u64 end)
 >
-> Why not phys_addr_t?
+> phys_initrd_start/size need to change too. Not sure about similar things
+> on other arches.
 >
 
-The rest of the memory specific bits of the device-tree code use u64 for 
-addresses, and I kept it the same for consistency.
+I've fixed phys_initrd_start (not size) in another patch, please see [1].
 
-> Gr{oetje,eeting}s,
+> Does u-boot need similar fixes?
 >
->                          Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
->
+
+We aren't there yet :-)  We are currently running this platform without 
+u-boot.
+
+
+[1] http://permalink.gmane.org/gmane.linux.kernel/1356713
 
 -- 
 Thanks

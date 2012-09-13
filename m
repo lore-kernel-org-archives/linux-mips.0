@@ -1,16 +1,13 @@
-Received: from devils.ext.ti.com ([198.47.26.153]:49657 "EHLO
-        devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1903508Ab2ILXrd (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Sep 2012 01:47:33 +0200
-Message-ID: <50511EB5.800@ti.com>
-Date: Wed, 12 Sep 2012 19:45:57 -0400
-From: Cyril Chemparathy <cyril@ti.com>
+Received: from relay1.mentorg.com ([192.94.38.131]:36455 "EHLO
+        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S1903378Ab2IMUXp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Sep 2012 22:23:45 +0200
+Date: Thu, 13 Sep 2012 21:23:25 +0100
+From: "Maciej W. Rozycki" <macro@codesourcery.com>
+Subject: [PATCH] Malta: Remove RTC Data Mode bootstrap breakage
+Message-ID: <alpine.DEB.1.10.1209132106000.28358@tp.orcam.me.uk>
 MIME-Version: 1.0
-Subject: Re: [PATCH] of: specify initrd location using 64-bit
-References: <1347465937-7056-1-git-send-email-cyril@ti.com> <5050EF3F.6030003@gmail.com>
-In-Reply-To: <5050EF3F.6030003@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,49 +18,53 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Rob Herring <robherring2@gmail.com>
-Cc: devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux@openrisc.net, linuxppc-dev@lists.ozlabs.org, microblaze-uclinux@itee.uq.edu.au, x86@kernel.org, david.daney@cavium.com, benh@kernel.crashing.org, bigeasy@linutronix.de, grant.likely@secretlab.ca, paul.gortmaker@windriver.com, paulus@samba.org, hpa@zytor.com, m.szyprowski@samsung.com, jonas@southpole.se, linux@arm.linux.org.uk, nico@linaro.org, a-jacquiot@ti.com, mingo@redhat.com, suzuki@in.ibm.com, mahesh@linux.vnet.ibm.com, linus.walleij@linaro.org, arnd@arndb.de, msalter@redhat.com, rob.herring@calxeda.com, tglx@linutronix.de, blogic@openwrt.org, dhowells@redhat.com, monstr@monstr.eu, ralf@linux-mips.org, tj@kernel.org
-Message-ID: <20120912234557.FAYoqF2DFj7zrzDnqgZaMCo4ZtirfLyhBI7H_kAroAY@z>
-
-On 9/12/2012 4:23 PM, Rob Herring wrote:
-> On 09/12/2012 11:05 AM, Cyril Chemparathy wrote:
->> On some PAE architectures, the entire range of physical memory could reside
->> outside the 32-bit limit.  These systems need the ability to specify the
->> initrd location using 64-bit numbers.
->>
->> This patch globally modifies the early_init_dt_setup_initrd_arch() function to
->> use 64-bit numbers instead of the current unsigned long.
->
-> S-o-B?
->
-
-Sorry about that, will include in v2.
-
-[...]
->> --- a/arch/arm/mm/init.c
->> +++ b/arch/arm/mm/init.c
->> @@ -76,7 +76,7 @@ static int __init parse_tag_initrd2(const struct tag *tag)
->>   __tagtable(ATAG_INITRD2, parse_tag_initrd2);
->>
->>   #ifdef CONFIG_OF_FLATTREE
->> -void __init early_init_dt_setup_initrd_arch(unsigned long start, unsigned long end)
->> +void __init early_init_dt_setup_initrd_arch(u64 start, u64 end)
->
-> phys_initrd_start/size need to change too. Not sure about similar things
-> on other arches.
->
-
-I've fixed phys_initrd_start (not size) in another patch, please see [1].
-
-> Does u-boot need similar fixes?
->
-
-We aren't there yet :-)  We are currently running this platform without 
-u-boot.
+To: linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20120913202325.qP2afzpYDvllsy-W_C3SBMPHpQl5WFA7_aWHqzmSJkI@z>
 
 
-[1] http://permalink.gmane.org/gmane.linux.kernel/1356713
+ YAMON requires and enforces the RTC Data Mode (Register B, DM bit) to 
+binary, that is the bit is set every time the board goes through the 
+firmware bootstrap sequence.  Likewise its calendar manipulation commands 
+interpret or set the RTC registers unconditionally as binary, never 
+actually checking what the value of the DM bit is, under the (correct) 
+assumption that it has been previously set, to indicate the binary mode.
 
--- 
-Thanks
-- Cyril
+ A change to Linux a while ago however introduced a platform-specific 
+tweak that clears that bit and therefore forces the data mode to BCD.  
+This causes clock corruption and misinterpretation that has to be fixed up 
+by user-mode tools in system startup scripts as the initial clock is often 
+incorrect according to the BCD interpretation forced.
+
+ This change removes the hack; a comment included refers to alarm code, 
+but even if it was broken at one point by requiring the BCD mode, it 
+should have been trivially corrected and even if not, given how rarely the 
+alarm feature is used, that was not really a reasonable justification to 
+break the system clock that is indeed used by virtually everything.  And 
+either way the alarm code has been since fixed anyway.
+
+Signed-off-by: Maciej W. Rozycki <macro@codesourcery.com>
+---
+
+ Please apply -- this ends a long battle trying to track down where the 
+annoying clock corruption has come from.
+
+  Maciej
+
+linux-malta-rtc.diff
+diff --git a/arch/mips/mti-malta/malta-platform.c b/arch/mips/mti-malta/malta-platform.c
+index 4c35301..80562b8 100644
+--- a/arch/mips/mti-malta/malta-platform.c
++++ b/arch/mips/mti-malta/malta-platform.c
+@@ -138,11 +138,6 @@ static int __init malta_add_devices(void)
+ 	if (err)
+ 		return err;
+ 
+-	/*
+-	 * Set RTC to BCD mode to support current alarm code.
+-	 */
+-	CMOS_WRITE(CMOS_READ(RTC_CONTROL) & ~RTC_DM_BINARY, RTC_CONTROL);
+-
+ 	return 0;
+ }
+ 

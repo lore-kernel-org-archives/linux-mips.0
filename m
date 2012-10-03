@@ -1,13 +1,15 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:36455 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S1903378Ab2IMUXp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Sep 2012 22:23:45 +0200
-Date: Thu, 13 Sep 2012 21:23:25 +0100
-From: "Maciej W. Rozycki" <macro@codesourcery.com>
-Subject: [PATCH] Malta: Remove RTC Data Mode bootstrap breakage
-Message-ID: <alpine.DEB.1.10.1209132106000.28358@tp.orcam.me.uk>
+Received: from iolanthe.rowland.org ([192.131.102.54]:39921 "HELO
+        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S6870194Ab2JDNgmOgBm2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 4 Oct 2012 15:36:42 +0200
+Date: Wed, 3 Oct 2012 12:01:22 -0400 (EDT)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH 06/25] USB: ehci: allow need_io_watchdog to be passed to
+ ehci-platform driver
+In-Reply-To: <1349276601-8371-7-git-send-email-florian@openwrt.org>
+Message-ID: <Pine.LNX.4.44L0.1210031154400.1441-100000@iolanthe.rowland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,53 +20,59 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-mips@linux-mips.org
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20120913202325.qP2afzpYDvllsy-W_C3SBMPHpQl5WFA7_aWHqzmSJkI@z>
+To: Florian Fainelli <florian@openwrt.org>
+Cc: linux-usb@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gabor Juhos <juhosg@openwrt.org>, Hauke Mehrtens <hauke@hauke-m.de>, Kelvin Cheung <keguang.zhang@gmail.com>, Jayachandran C <jayachandranc@netlogicmicro.com>, Dan Carpenter <dan.carpenter@oracle.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20121003160122.4ClDbJoWY8-B70C0ULWL3WJY3DcjIwTEX6SWbXr2L5g@z>
 
+On Wed, 3 Oct 2012, Florian Fainelli wrote:
 
- YAMON requires and enforces the RTC Data Mode (Register B, DM bit) to 
-binary, that is the bit is set every time the board goes through the 
-firmware bootstrap sequence.  Likewise its calendar manipulation commands 
-interpret or set the RTC registers unconditionally as binary, never 
-actually checking what the value of the DM bit is, under the (correct) 
-assumption that it has been previously set, to indicate the binary mode.
+> And convert all the existing users of ehci-platform to specify a correct
+> need_io_watchdog value.
 
- A change to Linux a while ago however introduced a platform-specific 
-tweak that clears that bit and therefore forces the data mode to BCD.  
-This causes clock corruption and misinterpretation that has to be fixed up 
-by user-mode tools in system startup scripts as the initial clock is often 
-incorrect according to the BCD interpretation forced.
+IMO (and I realize that not everybody agrees), the patch description 
+should not be considered an extension of the patch title, as though the 
+title were the first sentence and the description the remainder of the 
+same paragraph.  Descriptions should stand on their own and be 
+comprehensible even to somebody who hasn't read the title.
 
- This change removes the hack; a comment included refers to alarm code, 
-but even if it was broken at one point by requiring the BCD mode, it 
-should have been trivially corrected and even if not, given how rarely the 
-alarm feature is used, that was not really a reasonable justification to 
-break the system clock that is indeed used by virtually everything.  And 
-either way the alarm code has been since fixed anyway.
+> Signed-off-by: Florian Fainelli <florian@openwrt.org>
+> ---
+>  arch/mips/ath79/dev-usb.c             |    2 ++
+>  arch/mips/loongson1/common/platform.c |    1 +
+>  arch/mips/netlogic/xlr/platform.c     |    1 +
+>  drivers/usb/host/bcma-hcd.c           |    1 +
+>  drivers/usb/host/ehci-platform.c      |    1 +
+>  drivers/usb/host/ssb-hcd.c            |    1 +
+>  include/linux/usb/ehci_pdriver.h      |    3 +++
+>  7 files changed, 10 insertions(+)
 
-Signed-off-by: Maciej W. Rozycki <macro@codesourcery.com>
----
+More importantly...  Nearly every driver will have need_io_watchdog
+set.  Only a few of them explicitly turn it off.  The approach you're 
+using puts an extra burden on most of the drivers.
 
- Please apply -- this ends a long battle trying to track down where the 
-annoying clock corruption has come from.
+> diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
+> index 764e010..08d5dec 100644
+> --- a/drivers/usb/host/ehci-platform.c
+> +++ b/drivers/usb/host/ehci-platform.c
+> @@ -32,6 +32,7 @@ static int ehci_platform_reset(struct usb_hcd *hcd)
+>  	ehci->has_synopsys_hc_bug = pdata->has_synopsys_hc_bug;
+>  	ehci->big_endian_desc = pdata->big_endian_desc;
+>  	ehci->big_endian_mmio = pdata->big_endian_mmio;
+> +	ehci->need_io_watchdog = pdata->need_io_watchdog;
 
-  Maciej
+> --- a/include/linux/usb/ehci_pdriver.h
+> +++ b/include/linux/usb/ehci_pdriver.h
+> @@ -29,6 +29,8 @@
+>   *			initialization.
+>   * @port_power_off:	set to 1 if the controller needs to be powered down
+>   *			after initialization.
+> + * @need_io_watchdog:	set to 1 if the controller needs the I/O watchdog to
+> + *			run.
 
-linux-malta-rtc.diff
-diff --git a/arch/mips/mti-malta/malta-platform.c b/arch/mips/mti-malta/malta-platform.c
-index 4c35301..80562b8 100644
---- a/arch/mips/mti-malta/malta-platform.c
-+++ b/arch/mips/mti-malta/malta-platform.c
-@@ -138,11 +138,6 @@ static int __init malta_add_devices(void)
- 	if (err)
- 		return err;
- 
--	/*
--	 * Set RTC to BCD mode to support current alarm code.
--	 */
--	CMOS_WRITE(CMOS_READ(RTC_CONTROL) & ~RTC_DM_BINARY, RTC_CONTROL);
--
- 	return 0;
- }
- 
+Instead, how about adding a no_io_watchdog flag?  Then after 
+ehci-platform.c calls ehci_setup(), it can see whether to turn off 
+ehci->need_io_watchdog.
+
+This way, most of this patch would become unnecessary.
+
+Alan Stern

@@ -1,15 +1,17 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177]:42149 "EHLO
-        mail-we0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6825910Ab2KOLvjNSfbG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Nov 2012 12:51:39 +0100
-Received: by mail-we0-f177.google.com with SMTP id u50so497110wey.36
-        for <linux-mips@linux-mips.org>; Thu, 15 Nov 2012 03:51:33 -0800 (PST)
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH V5 1/2] kbuild: centralize .dts->.dtb rule
-Date: Thu, 15 Nov 2012 11:51:24 +0000
-Message-ID: <1352980284-2819-1-git-send-email-grant.likely@secretlab.ca>
-In-Reply-To: <CACxGe6vhd_4rcBbYyqtvbySVaY6XpNE+HQq42PZhKe5yt=zcaA@mail.gmail.com>
-References: <CACxGe6vhd_4rcBbYyqtvbySVaY6XpNE+HQq42PZhKe5yt=zcaA@mail.gmail.com>
+Received: from multi.imgtec.com ([194.200.65.239]:51592 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6825924Ab2KORuSGxa3S (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 15 Nov 2012 18:50:18 +0100
+Message-ID: <50A52B45.6030907@imgtec.com>
+Date: Thu, 15 Nov 2012 17:49:57 +0000
+From: James Hogan <james.hogan@imgtec.com>
+MIME-Version: 1.0
+Subject: Re: [RFC PATCH v1 26/31] ARC: Build system: Makefiles, Kconfig, Linker
+ script
+References: <1352281674-2186-1-git-send-email-vgupta@synopsys.com> <1352281674-2186-27-git-send-email-vgupta@synopsys.com>
+In-Reply-To: <1352281674-2186-27-git-send-email-vgupta@synopsys.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,95 +22,21 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-Cc: linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, Grant Likely <grant.likely@secretlab.ca>, Stephen Warren <swarren@nvidia.com>, Sam Ravnborg <sam@ravnborg.org>
-Message-ID: <20121115115124.Nb7NDXP20_13_owsJY51IL2-4sp2UHba6RxGmjPUYUk@z>
+To: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20121115174957.NgveHIQxnLZaj0aeyvFPvhK4kJnjgoZZGJFr8wh9fsM@z>
 
-Grant Likely wrote:
-> Or how about: I could pick up the patch with only the MIPS hunk and
-> every other user can be fixed up independently to use the new rule.
+Hi Vineet,
 
-Here's a trial patch to fix up ARM. Does this look correct? This patch
-depends on the generic dtb build rule already being applied.
+On 07/11/12 09:47, Vineet Gupta wrote:
+> +config ARC
 
-g.
+I just came across arch/mips/Kconfig which also defines ARC (and ARC32).
+It's only used within arch/mips/, however it's probably more likely that
+your ARC/CONFIG_ARC will find it's way into the generic bits of the
+kernel which could get hit when the other ARC is defined.
 
----
+Perhaps it's worth getting the other ARC renamed just in case?
 
-arm/of: Change .dtb build rules to build in dts directory
-
-The current rules have the .dtb files build in a different directory
-from the .dts files. The only reason for this is that it was what
-PowerPC has done historically. This patch changes ARM to use the generic
-dtb rule which builds .dtb files in the same directory as the source .dts.
-
-Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
-Cc: Stephen Warren <swarren@nvidia.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
----
- arch/arm/Makefile          |    4 ++--
- arch/arm/boot/Makefile     |   12 ------------
- arch/arm/boot/dts/Makefile |    4 ++++
- 3 files changed, 6 insertions(+), 14 deletions(-)
-
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 5f914fc..c35baf1 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -292,10 +292,10 @@ zinstall uinstall install: vmlinux
- 	$(Q)$(MAKE) $(build)=$(boot) MACHINE=$(MACHINE) $@
- 
- %.dtb: scripts
--	$(Q)$(MAKE) $(build)=$(boot) MACHINE=$(MACHINE) $(boot)/$@
-+	$(Q)$(MAKE) $(build)=$(boot)/dts MACHINE=$(MACHINE) $(boot)/dts/$@
- 
- dtbs: scripts
--	$(Q)$(MAKE) $(build)=$(boot) MACHINE=$(MACHINE) $(boot)/$@
-+	$(Q)$(MAKE) $(build)=$(boot)/dts MACHINE=$(MACHINE) dtbs
- 
- # We use MRPROPER_FILES and CLEAN_FILES now
- archclean:
-diff --git a/arch/arm/boot/Makefile b/arch/arm/boot/Makefile
-index f2aa09e..801b92c 100644
---- a/arch/arm/boot/Makefile
-+++ b/arch/arm/boot/Makefile
-@@ -15,8 +15,6 @@ ifneq ($(MACHINE),)
- include $(srctree)/$(MACHINE)/Makefile.boot
- endif
- 
--include $(srctree)/arch/arm/boot/dts/Makefile
--
- # Note: the following conditions must always be true:
- #   ZRELADDR == virt_to_phys(PAGE_OFFSET + TEXT_OFFSET)
- #   PARAMS_PHYS must be within 4MB of ZRELADDR
-@@ -59,16 +57,6 @@ $(obj)/zImage:	$(obj)/compressed/vmlinux FORCE
- 
- endif
- 
--targets += $(dtb-y)
--
--# Rule to build device tree blobs
--$(obj)/%.dtb: $(src)/dts/%.dts FORCE
--	$(call if_changed_dep,dtc)
--
--$(obj)/dtbs: $(addprefix $(obj)/, $(dtb-y))
--
--clean-files := *.dtb
--
- ifneq ($(LOADADDR),)
-   UIMAGE_LOADADDR=$(LOADADDR)
- else
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index f37cf9f..2aef042 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -104,4 +104,8 @@ dtb-$(CONFIG_ARCH_VT8500) += vt8500-bv07.dtb \
- 	wm8505-ref.dtb \
- 	wm8650-mid.dtb
- 
-+targets += dtbs
- endif
-+
-+dtbs: $(addprefix $(obj)/, $(dtb-y))
-+clean-files := *.dtb
--- 
-1.7.10.4
+Cheers
+James

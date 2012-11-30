@@ -1,13 +1,13 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49]:63013 "EHLO
-        mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6829664Ab2K3CDYpIlDZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Nov 2012 03:03:24 +0100
-Received: by mail-pb0-f49.google.com with SMTP id un15so60007pbc.36
-        for <linux-mips@linux-mips.org>; Thu, 29 Nov 2012 18:03:15 -0800 (PST)
-Subject: Patch "MPI: Fix compilation on MIPS with GCC 4.4 and newer" has been added to the 3.4-stable tree
+Received: from mail-pa0-f49.google.com ([209.85.220.49]:48300 "EHLO
+        mail-pa0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6829664Ab2K3CEKCTGHa (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Nov 2012 03:04:10 +0100
+Received: by mail-pa0-f49.google.com with SMTP id bi1so7265198pad.36
+        for <linux-mips@linux-mips.org>; Thu, 29 Nov 2012 18:04:03 -0800 (PST)
+Subject: Patch "MPI: Fix compilation on MIPS with GCC 4.4 and newer" has been added to the 3.6-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Thu, 29 Nov 2012 18:03:03 -0800
-Message-ID: <13542409833804@kroah.org>
+Date: Thu, 29 Nov 2012 18:03:15 -0800
+Message-ID: <13542409951790@kroah.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ASCII
 Content-Transfer-Encoding: 8bit
@@ -23,19 +23,19 @@ List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: manuel.lauss@gmail.com, dmitry.kasatkin@intel.com, gregkh@linuxfoundation.org, jmorris@namei.org, linux-mips@linux-mips.org, ralf@linux-mips.org, shuah.khan@hp.com
 Cc: stable@vger.kernel.org, stable-commits@vger.kernel.org
-Message-ID: <20121130020303.75s06ZO3z-G_xFvJB6fTFX5ElT1y6NsbLvjhxQ1rNK4@z>
+Message-ID: <20121130020315.qlOI_aQVP5zydASZwewRvbY9_jjWUJh6A2uVIo_icjA@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
     MPI: Fix compilation on MIPS with GCC 4.4 and newer
 
-to the 3.4-stable tree which can be found at:
+to the 3.6-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mpi-fix-compilation-on-mips-with-gcc-4.4-and-newer.patch
-and it can be found in the queue-3.4 subdirectory.
+and it can be found in the queue-3.6 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -111,4 +111,4 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from manuel.lauss@gmail.com are
 
-queue-3.4/mpi-fix-compilation-on-mips-with-gcc-4.4-and-newer.patch
+queue-3.6/mpi-fix-compilation-on-mips-with-gcc-4.4-and-newer.patch

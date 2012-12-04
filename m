@@ -1,11 +1,11 @@
-Received: from dns1.mips.com ([12.201.5.69]:33043 "EHLO dns1.mips.com"
+Received: from dns1.mips.com ([12.201.5.69]:33044 "EHLO dns1.mips.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6831648Ab2LDXzZqlx6m (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 5 Dec 2012 00:55:25 +0100
+        id S6831651Ab2LDXz0lK6zi (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 5 Dec 2012 00:55:26 +0100
 From: Deng-Cheng Zhu <dczhu@mips.com>
-Subject: [PATCH v3 3/5] MIPS: APRP (APSP): remove kspd.h
-Date: Tue, 4 Dec 2012 15:54:30 -0800
-Message-ID: <1354665272-22759-4-git-send-email-dczhu@mips.com>
+Subject: [PATCH v3 5/5] MIPS: APRP (APSP): malta board support
+Date: Tue, 4 Dec 2012 15:54:32 -0800
+Message-ID: <1354665272-22759-6-git-send-email-dczhu@mips.com>
 In-Reply-To: <1354665272-22759-1-git-send-email-dczhu@mips.com>
 References: <1354665272-22759-1-git-send-email-dczhu@mips.com>
 MIME-Version: 1.0
@@ -22,53 +22,120 @@ List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: linux-mips@linux-mips.org, ralf@linux-mips.org, kevink@paralogos.com, macro@linux-mips.org, john@phrozen.org
 Cc: dczhu@mips.com
-Message-ID: <20121204235430.dwfsENQwUQNGv22Luux2v-zyA4_s65B5K80HtvkCch0@z>
+Message-ID: <20121204235432.Ft8XfrWG7bgBCXs1qqtUQu5FZLt34D2_AIOa8OPpekQ@z>
 
-Now that KSPD is gone, kspd.h has no reason to be there.
+APRP is supposed to be platform independent, however, this patch is needed
+for Malta for various reasons, see code and code comments.
 
 Signed-off-by: Deng-Cheng Zhu <dczhu@mips.com>
 ---
- arch/mips/include/asm/kspd.h |   32 --------------------------------
- 1 files changed, 0 insertions(+), 32 deletions(-)
- delete mode 100644 arch/mips/include/asm/kspd.h
+ .../include/asm/mach-malta/cpu-feature-overrides.h |    3 ++
+ arch/mips/kernel/vpe-cmp.c                         |   17 +++++++++++++++
+ arch/mips/mti-malta/malta-int.c                    |   22 +++++++++++++++++++-
+ 3 files changed, 41 insertions(+), 1 deletions(-)
 
-diff --git a/arch/mips/include/asm/kspd.h b/arch/mips/include/asm/kspd.h
-deleted file mode 100644
-index ec68329..0000000
---- a/arch/mips/include/asm/kspd.h
-+++ /dev/null
-@@ -1,32 +0,0 @@
--/*
-- * Copyright (C) 2005 MIPS Technologies, Inc.  All rights reserved.
-- *
-- *  This program is free software; you can distribute it and/or modify it
-- *  under the terms of the GNU General Public License (Version 2) as
-- *  published by the Free Software Foundation.
-- *
-- *  This program is distributed in the hope it will be useful, but WITHOUT
-- *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-- *  for more details.
-- *
-- *  You should have received a copy of the GNU General Public License along
-- *  with this program; if not, write to the Free Software Foundation, Inc.,
-- *  59 Temple Place - Suite 330, Boston MA 02111-1307, USA.
-- *
-- */
--
--#ifndef _ASM_KSPD_H
--#define _ASM_KSPD_H
--
--struct kspd_notifications {
--	void (*kspd_sp_exit)(int sp_id);
--
--	struct list_head list;
--};
--
--static inline void kspd_notify(struct kspd_notifications *notify)
--{
--}
--
--#endif
+diff --git a/arch/mips/include/asm/mach-malta/cpu-feature-overrides.h b/arch/mips/include/asm/mach-malta/cpu-feature-overrides.h
+index 37e3583..0bf3872 100644
+--- a/arch/mips/include/asm/mach-malta/cpu-feature-overrides.h
++++ b/arch/mips/include/asm/mach-malta/cpu-feature-overrides.h
+@@ -17,6 +17,9 @@
+ #define cpu_has_tlb		1
+ #define cpu_has_4kex		1
+ #define cpu_has_4k_cache	1
++#ifdef CONFIG_MIPS_SP_FP_INTENSIVE
++#define cpu_has_fpu		0
++#endif
+ /* #define cpu_has_fpu		? */
+ /* #define cpu_has_32fpr	? */
+ #define cpu_has_counter		1
+diff --git a/arch/mips/kernel/vpe-cmp.c b/arch/mips/kernel/vpe-cmp.c
+index 9d0c375..20f4497 100644
+--- a/arch/mips/kernel/vpe-cmp.c
++++ b/arch/mips/kernel/vpe-cmp.c
+@@ -25,7 +25,24 @@
+ 
+ static int major;
+ 
++#ifdef CONFIG_MIPS_MALTA
++#include <asm/amon.h>
++
++int vpe_run(struct vpe *v)
++{
++	struct vpe_notifications *n;
++
++	if (amon_cpu_start(aprp_cpu_index(), v->__start, 0, 0, 0) < 0)
++		return -1;
++
++	list_for_each_entry(n, &v->notify, list)
++		n->start(VPE_MODULE_MINOR);
++
++	return 0;
++}
++#else
+ #error CMP vpe_run() not implemented!
++#endif
+ 
+ void cleanup_tc(struct tc *tc)
+ {
+diff --git a/arch/mips/mti-malta/malta-int.c b/arch/mips/mti-malta/malta-int.c
+index 647b863..cddda99 100644
+--- a/arch/mips/mti-malta/malta-int.c
++++ b/arch/mips/mti-malta/malta-int.c
+@@ -1,6 +1,6 @@
+ /*
+  * Carsten Langgaard, carstenl@mips.com
+- * Copyright (C) 2000, 2001, 2004 MIPS Technologies, Inc.
++ * Copyright (C) 2000, 2001, 2004, 2012 MIPS Technologies, Inc.
+  * Copyright (C) 2001 Ralf Baechle
+  *
+  *  This program is free software; you can distribute it and/or modify it
+@@ -45,6 +45,9 @@
+ #include <asm/gic.h>
+ #include <asm/gcmpregs.h>
+ #include <asm/setup.h>
++#ifdef CONFIG_MIPS_VPE_APSP_API
++#include <asm/rtlx.h>
++#endif
+ 
+ int gcmp_present = -1;
+ int gic_present;
+@@ -128,6 +131,15 @@ static void malta_hw0_irqdispatch(void)
+ 	}
+ 
+ 	do_IRQ(MALTA_INT_BASE + irq);
++
++#if defined(CONFIG_MIPS_VPE_APSP_API) && !defined(CONFIG_MIPS_CMP)
++	/*
++	 * When sw0 gets set, a spurious hw interrupt is signaled as well.
++	 * The sw0 will not be handled until the hw interrupt is cleared.
++	 * We use the hook to handle sw0 and the hw interrupt gets cleared.
++	 */
++	aprp_hook();
++#endif
+ }
+ 
+ static void malta_ipi_irqdispatch(void)
+@@ -312,6 +324,10 @@ static void ipi_call_dispatch(void)
+ 
+ static irqreturn_t ipi_resched_interrupt(int irq, void *dev_id)
+ {
++#if defined(CONFIG_MIPS_VPE_APSP_API) && defined(CONFIG_MIPS_CMP)
++	aprp_hook();
++#endif
++
+ 	scheduler_ipi();
+ 
+ 	return IRQ_HANDLED;
+@@ -622,6 +638,10 @@ void __init arch_init_irq(void)
+ 		arch_init_ipiirq(cpu_ipi_call_irq, &irq_call);
+ #endif
+ 	}
++
++#ifdef CONFIG_MIPS_VPE_APSP_API
++	aprp_hook = null_aprp_hook;
++#endif
+ }
+ 
+ void malta_be_init(void)
 -- 
 1.7.1

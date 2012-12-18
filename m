@@ -1,15 +1,24 @@
-Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]:30852 "EHLO
-        tx2outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6831898Ab2LFTRJzkZ31 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Dec 2012 20:17:09 +0100
-Message-ID: <50C0EF2C.3080705@caviumnetworks.com>
-Date: Thu, 6 Dec 2012 11:17:00 -0800
-From: David Daney <ddaney@caviumnetworks.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Check BITS_PER_LONG instead of __SIZEOF_LONG__
-References: <1354821137-7562-1-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1354821137-7562-1-git-send-email-geert@linux-m68k.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Received: from zoneX.GCU-Squad.org ([194.213.125.0]:6834 "EHLO
+        services.gcu-squad.org" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6824761Ab2LRMIcUqxMw (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 18 Dec 2012 13:08:32 +0100
+Date: Tue, 18 Dec 2012 13:08:23 +0100
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: [PATCH] I2C: SiByte: Convert the driver to make use of
+ interrupts
+Message-ID: <20121218130823.183a0322@endymion.delvare>
+In-Reply-To: <alpine.LFD.2.00.1207160208570.12288@eddie.linux-mips.org>
+References: <1313710991-3596-1-git-send-email-mattst88@gmail.com>
+        <20110903103036.161616a5@endymion.delvare>
+        <20111031105354.4b888e44@endymion.delvare>
+        <20120110153834.531664db@endymion.delvare>
+        <CAEdQ38FpG11m50pwg2=tu1fJRRg=zixFKLsPmVPOzWNBCjbNBg@mail.gmail.com>
+        <20120331082346.26cc95cb@endymion.delvare>
+        <CAEdQ38Ez+8DudAaJY7HZu9jbisk_KMbBO5h=s+P4pjJ0Va-zWw@mail.gmail.com>
+        <CAEdQ38EDKndUcdBu1tZ_dOuhweVRW6aA=YKb6kUE3gUQJiwWoQ@mail.gmail.com>
+        <alpine.LFD.2.00.1207160208570.12288@eddie.linux-mips.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,46 +30,24 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Ralf Baechle <ralf@linux-mips.org>
-Cc: David Daney <david.daney@cavium.com>, linux-mips@linux-mips.org
-Message-ID: <20121206191700.jJwgsjgEVJ4djTkQx3cpn2K51Rl3r6AWiRbfYv73VCs@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>, Matt Turner <mattst88@gmail.com>
+Cc: linux-i2c@vger.kernel.org, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Guenter Roeck <guenter.roeck@ericsson.com>
+Message-ID: <20121218120823.OpTbETfcqTzUen1FrYSfPt3LHSITjjpVYPh-6sBKvQA@z>
 
-On 12/06/2012 11:12 AM, Geert Uytterhoeven wrote:
-> When building a 32-bit kernel for RBTX4927 with gcc version 4.1.2 20061115
-> (prerelease) (Ubuntu 4.1.1-21), I get:
->
-> arch/mips/lib/delay.c:24:5: warning: "__SIZEOF_LONG__" is not defined
->
-> As a consequence, __delay() always uses the 64-bit "dsubu" instruction.
->
-> Replace the check for "__SIZEOF_LONG__ == 4" by "BITS_PER_LONG == 32" to
-> fix this.
->
-> Introduced by commit 5210edcd527773c227465ad18e416a894966324f ("MIPS: Make
-> __{,n,u}delay declarations match definitions and generic delay.h")
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Thu, 19 Jul 2012 22:01:08 +0100 (BST), Maciej W. Rozycki wrote:
+> On Sat, 30 Jun 2012, Matt Turner wrote:
+> 
+> > I'm not going to have time to do this. :(
+> > 
+> > I had another look at the code, and I'm not sure I really understand
+> > it well enough to address your concerns.
+> 
+>  I'll try then, as soon as I can.
 
-Acked-by: David Daney <david.daney@cavium.com>
+I'm giving up on this one, sorry. I've been waiting for an update for
+over a year, this is simply too much. I just don't get why this patch
+was ever submitted if there was no intent to actually get it included.
+This has been a waste of many people's time :(
 
-> --
-> Untested on real hardware.
-> Ralf, is this sufficient to prevent you from nuking RBTX4927 support? ;-)
-> ---
->   arch/mips/lib/delay.c |    2 +-
->   1 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/arch/mips/lib/delay.c b/arch/mips/lib/delay.c
-> index dc81ca8..288f795 100644
-> --- a/arch/mips/lib/delay.c
-> +++ b/arch/mips/lib/delay.c
-> @@ -21,7 +21,7 @@ void __delay(unsigned long loops)
->   	"	.set	noreorder				\n"
->   	"	.align	3					\n"
->   	"1:	bnez	%0, 1b					\n"
-> -#if __SIZEOF_LONG__ == 4
-> +#if BITS_PER_LONG == 32
->   	"	subu	%0, 1					\n"
->   #else
->   	"	dsubu	%0, 1					\n"
->
+-- 
+Jean Delvare

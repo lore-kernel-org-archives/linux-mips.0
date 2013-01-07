@@ -1,25 +1,13 @@
-Received: from zoneX.GCU-Squad.org ([194.213.125.0]:6834 "EHLO
-        services.gcu-squad.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6824761Ab2LRMIcUqxMw (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 18 Dec 2012 13:08:32 +0100
-Date: Tue, 18 Dec 2012 13:08:23 +0100
-From: Jean Delvare <khali@linux-fr.org>
-Subject: Re: [PATCH] I2C: SiByte: Convert the driver to make use of
- interrupts
-Message-ID: <20121218130823.183a0322@endymion.delvare>
-In-Reply-To: <alpine.LFD.2.00.1207160208570.12288@eddie.linux-mips.org>
-References: <1313710991-3596-1-git-send-email-mattst88@gmail.com>
-        <20110903103036.161616a5@endymion.delvare>
-        <20111031105354.4b888e44@endymion.delvare>
-        <20120110153834.531664db@endymion.delvare>
-        <CAEdQ38FpG11m50pwg2=tu1fJRRg=zixFKLsPmVPOzWNBCjbNBg@mail.gmail.com>
-        <20120331082346.26cc95cb@endymion.delvare>
-        <CAEdQ38Ez+8DudAaJY7HZu9jbisk_KMbBO5h=s+P4pjJ0Va-zWw@mail.gmail.com>
-        <CAEdQ38EDKndUcdBu1tZ_dOuhweVRW6aA=YKb6kUE3gUQJiwWoQ@mail.gmail.com>
-        <alpine.LFD.2.00.1207160208570.12288@eddie.linux-mips.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from dns1.mips.com ([12.201.5.69]:44297 "EHLO dns1.mips.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6822501Ab3AGSFoZU4Kw (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 7 Jan 2013 19:05:44 +0100
+From: Deng-Cheng Zhu <dczhu@mips.com>
+Subject: [RESEND PATCH v3 0/5] MIPS: enable APRP (APSP) and add features - v3
+Date: Mon, 7 Jan 2013 10:05:09 -0800
+Message-ID: <1357581914-4589-1-git-send-email-dczhu@mips.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -30,24 +18,62 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>, Matt Turner <mattst88@gmail.com>
-Cc: linux-i2c@vger.kernel.org, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Guenter Roeck <guenter.roeck@ericsson.com>
-Message-ID: <20121218120823.OpTbETfcqTzUen1FrYSfPt3LHSITjjpVYPh-6sBKvQA@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org, kevink@paralogos.com, macro@linux-mips.org, john@phrozen.org
+Cc: sjhill@mips.com, dczhu@mips.com
+Message-ID: <20130107180509.59lc8W4k5ip0zwx32ZyG51l9Z8x8qFJfUl67NKrPRxM@z>
 
-On Thu, 19 Jul 2012 22:01:08 +0100 (BST), Maciej W. Rozycki wrote:
-> On Sat, 30 Jun 2012, Matt Turner wrote:
-> 
-> > I'm not going to have time to do this. :(
-> > 
-> > I had another look at the code, and I'm not sure I really understand
-> > it well enough to address your concerns.
-> 
->  I'll try then, as soon as I can.
+The APRP model makes it possible that one or more CPUs run the Linux
+kernel whereas a dedicated CPU runs special real-time or signal processing
+program.
 
-I'm giving up on this one, sorry. I've been waiting for an update for
-over a year, this is simply too much. I just don't get why this patch
-was ever submitted if there was no intent to actually get it included.
-This has been a waste of many people's time :(
+This patchset adds the following to the current APRP support:
+1. Several bug fixes;
+2. Running floating point heavy jobs on the RP side;
+3. Waking up RP side read by interrupt;
+4. CPS multicore APRP support.
 
--- 
-Jean Delvare
+A mp3 player program was ported to run in the APRP (APSP exactly) model.
+Considerable performance benefits were observed on the player program.
+CodeSourcery tools instead of the old SDE tools were used to build the
+example.
+
+Changes:
+v3 - v2:
+o Split CMP/MT flavors into different files -cmp/-mt.
+o Put Malta needed changes into a separate patch.
+o Code style adjustments in rtlx/vpe files.
+o Remove kspd.h which might have been left out in Ralf's kspd removal.
+v2 - v1:
+o Rebase the patches to the latest kernel, and fix a bunch of warnings and
+  errors reported by the current scripts/checkpatch.pl.
+o Add MIPS_MALTA dependency to Kconfig since modifications of Malta files
+  are needed. But it should be easy to port changes to other platforms.
+
+Deng-Cheng Zhu (5):
+  MIPS: APRP (APSP): fix/enrich functionality
+  MIPS: APRP (APSP): split vpe-loader and rtlx into cmp/mt flavors
+  MIPS: APRP (APSP): remove kspd.h
+  MIPS: let amon_cpu_start() report results
+  MIPS: APRP (APSP): malta board support
+
+ arch/mips/Kconfig                                  |    9 +
+ arch/mips/include/asm/amon.h                       |    2 +-
+ arch/mips/include/asm/kspd.h                       |   32 -
+ .../include/asm/mach-malta/cpu-feature-overrides.h |    3 +
+ arch/mips/include/asm/rtlx.h                       |   45 +-
+ arch/mips/include/asm/vpe.h                        |  118 +++-
+ arch/mips/kernel/Makefile                          |    9 +-
+ arch/mips/kernel/rtlx-cmp.c                        |  125 +++
+ arch/mips/kernel/rtlx-mt.c                         |  160 ++++
+ arch/mips/kernel/rtlx.c                            |  205 +----
+ arch/mips/kernel/vpe-cmp.c                         |  202 +++++
+ arch/mips/kernel/vpe-mt.c                          |  534 +++++++++++++
+ arch/mips/kernel/vpe.c                             |  815 +++-----------------
+ arch/mips/mti-malta/malta-amon.c                   |    8 +-
+ arch/mips/mti-malta/malta-int.c                    |   22 +-
+ 15 files changed, 1351 insertions(+), 938 deletions(-)
+ delete mode 100644 arch/mips/include/asm/kspd.h
+ create mode 100644 arch/mips/kernel/rtlx-cmp.c
+ create mode 100644 arch/mips/kernel/rtlx-mt.c
+ create mode 100644 arch/mips/kernel/vpe-cmp.c
+ create mode 100644 arch/mips/kernel/vpe-mt.c

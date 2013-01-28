@@ -1,17 +1,15 @@
-Received: from co9ehsobe003.messaging.microsoft.com ([207.46.163.26]:38944
-        "EHLO co9outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6832231Ab3APR5KCYuq3 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 16 Jan 2013 18:57:10 +0100
-Message-ID: <50F6E9B3.5010202@caviumnetworks.com>
-Date: Wed, 16 Jan 2013 09:56:03 -0800
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from iolanthe.rowland.org ([192.131.102.54]:41874 "HELO
+        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S6833254Ab3A1UIYZcxGj (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 28 Jan 2013 21:08:24 +0100
+Date: Mon, 28 Jan 2013 15:08:21 -0500 (EST)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH 11/13] USB: EHCI: add ignore_oc flag to disable overcurrent
+ checking
+In-Reply-To: <1359399991-2236-12-git-send-email-florian@openwrt.org>
+Message-ID: <Pine.LNX.4.44L0.1301281500530.1997-100000@iolanthe.rowland.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mpis: cavium-octeon/executive/cvmx-l2c.c: fix uninitialized
- variable
-References: <1358200025-15994-1-git-send-email-dinggnu@gmail.com> <20130116105757.GB26569@linux-mips.org>
-In-Reply-To: <20130116105757.GB26569@linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,59 +20,47 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Cong Ding <dinggnu@gmail.com>, Jim Quinlan <jim2101024@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20130116175603.YdYGw-_xMiR4_waP_EMYZJkRGVw6RJZk9USZGMCj8Nk@z>
+To: Florian Fainelli <florian@openwrt.org>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, jogo@openwrt.org, mbizon@freebox.fr, cenerkee@gmail.com, linux-usb@vger.kernel.org, gregkh@linuxfoundation.org, blogic@openwrt.org
+Message-ID: <20130128200821.pd7WhTAHbjeUtrFyhpQ8P8gbpmEpg3KUsXZxhAyqoaE@z>
 
-On 01/16/2013 02:57 AM, Ralf Baechle wrote:
-> On Mon, Jan 14, 2013 at 10:47:03PM +0100, Cong Ding wrote:
->
->> the variable dummy is used without initialization.
->
-> Interesting - I wonder how you found this one.  My compiler (gcc 4.7)
-> doesn't warn about this one.
->
+On Mon, 28 Jan 2013, Florian Fainelli wrote:
 
-I get no warnings either.  So I wonder what the point of churning up the 
-code is.
+> This patch adds an ignore_oc flag which can be set by EHCI controller
+> not supporting or wanting to disable overcurrent checking. The EHCI
+> platform data in include/linux/usb/ehci_pdriver.h is also augmented to
+> take advantage of this new flag.
+> 
+> Signed-off-by: Florian Fainelli <florian@openwrt.org>
+> ---
+>  drivers/usb/host/ehci-hcd.c      |    2 +-
+>  drivers/usb/host/ehci-hub.c      |    4 ++--
+>  drivers/usb/host/ehci.h          |    1 +
+>  include/linux/usb/ehci_pdriver.h |    1 +
+>  4 files changed, 5 insertions(+), 3 deletions(-)
 
-David Daney
+You forgot to add
 
-> Nor does gcc notice that the whole summing up business is wasted efford.
->
-> So here's my counter proposal.  It works because ptr is a volatile pointer
-> so the compiler will always dereference it even if the returned value is
-> not being used.  The resulting code is a bit smaller.
->
->    Ralf
->
-> Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
->
->   arch/mips/cavium-octeon/executive/cvmx-l2c.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/mips/cavium-octeon/executive/cvmx-l2c.c b/arch/mips/cavium-octeon/executive/cvmx-l2c.c
-> index 9f883bf..ec3e059 100644
-> --- a/arch/mips/cavium-octeon/executive/cvmx-l2c.c
-> +++ b/arch/mips/cavium-octeon/executive/cvmx-l2c.c
-> @@ -286,7 +286,7 @@ uint64_t cvmx_l2c_read_perf(uint32_t counter)
->   static void fault_in(uint64_t addr, int len)
->   {
->   	volatile char *ptr;
-> -	volatile char dummy;
-> +
->   	/*
->   	 * Adjust addr and length so we get all cache lines even for
->   	 * small ranges spanning two cache lines.
-> @@ -300,7 +300,7 @@ static void fault_in(uint64_t addr, int len)
->   	 */
->   	CVMX_DCACHE_INVALIDATE;
->   	while (len > 0) {
-> -		dummy += *ptr;
-> +		*ptr;
->   		len -= CVMX_CACHE_LINE_SIZE;
->   		ptr += CVMX_CACHE_LINE_SIZE;
->   	}
->
->
->
+	ehci->ignore_oc = pdata->ignore_oc;
+
+to ehci_platform_reset().  This makes me wonder: Either the patches 
+were not tested very well or else the new ignore_oc stuff isn't needed.
+
+> diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
+> index c97503b..bd435ac 100644
+> --- a/drivers/usb/host/ehci-hcd.c
+> +++ b/drivers/usb/host/ehci-hcd.c
+> @@ -634,7 +634,7 @@ static int ehci_run (struct usb_hcd *hcd)
+>  		"USB %x.%x started, EHCI %x.%02x%s\n",
+>  		((ehci->sbrn & 0xf0)>>4), (ehci->sbrn & 0x0f),
+>  		temp >> 8, temp & 0xff,
+> -		ignore_oc ? ", overcurrent ignored" : "");
+> +		(ignore_oc || ehci->ignore_oc) ? ", overcurrent ignored" : "");
+
+You could simplify the code here and other places if you add
+
+	ehci->ignore_oc ||= ignore_oc;
+
+to ehci_init().  Then you wouldn't need to test ignore_oc all the time.
+
+Alan Stern

@@ -1,22 +1,11 @@
-Received: from bear.ext.ti.com ([192.94.94.41]:37765 "EHLO bear.ext.ti.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6822668Ab3A2HiEUEKel (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 29 Jan 2013 08:38:04 +0100
-Date: Tue, 29 Jan 2013 09:37:35 +0200
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH 03/13] MIPS: BCM63XX: move code touching the USB private
- register
-Message-ID: <20130129073735.GE8708@arwen.pp.htv.fi>
-Reply-To: <balbi@ti.com>
-References: <1359399991-2236-1-git-send-email-florian@openwrt.org>
- <1359399991-2236-4-git-send-email-florian@openwrt.org>
- <20130128204114.GA5509@arwen.pp.htv.fi>
- <2622165.icySTsWGzL@bender>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="mSxgbZZZvrAyzONB"
-Content-Disposition: inline
-In-Reply-To: <2622165.icySTsWGzL@bender>
+Received: from phoenix3.szarvasnet.hu ([87.101.127.16]:53171 "EHLO
+        mail.szarvasnet.hu" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6824769Ab3A2JTUYWaDI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Jan 2013 10:19:20 +0100
+From: Gabor Juhos <juhosg@openwrt.org>
+Subject: [PATCH 1/2] MIPS: ath79: fix GPIO function selection for AR934x SoCs
+Date: Tue, 29 Jan 2013 10:19:12 +0100
+Message-ID: <1359451153-13335-1-git-send-email-juhosg@openwrt.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,72 +16,115 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Florian Fainelli <florian@openwrt.org>
-Cc: linux-mips@linux-mips.org, balbi@ti.com, ralf@linux-mips.org, jogo@openwrt.org, mbizon@freebox.fr, cernekee@gmail.com, linux-usb@vger.kernel.org, stern@rowland.harvard.edu, gregkh@linuxfoundation.org, blogic@openwrt.org
-Message-ID: <20130129073735.R9aKcM2xN86ysyO4UWpV1DCPGphJWQF-bSOyN_AwrqE@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: John Crispin <blogic@openwrt.org>, linux-mips <linux-mips@linux-mips.org>, Gabor Juhos <juhosg@openwrt.org>, stable@vger.kernel.org
+Message-ID: <20130129091912.oRJDW7oCflCZVX-ay0i18vW0cZvh5wUWDJG8pyfbhTU@z>
 
---mSxgbZZZvrAyzONB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+GPIO function selection is not working on the AR934x
+SoCs because the offset of the function selection
+register is different on those.
 
-Hi,
+Add a helper routine which returns the correct
+register address based on the SoC type, and use
+that in the 'ath79_gpio_function_*' routines.
 
-On Mon, Jan 28, 2013 at 10:17:15PM +0100, Florian Fainelli wrote:
-> On Monday 28 January 2013 22:41:14 Felipe Balbi wrote:
-> > Hi,
-> >=20
-> > On Mon, Jan 28, 2013 at 08:06:21PM +0100, Florian Fainelli wrote:
-> > > diff --git a/drivers/usb/gadget/bcm63xx_udc.c b/drivers/usb/gadget/bc=
-m63xx_udc.c
-> > > index ad17533..af450c4 100644
-> > > --- a/drivers/usb/gadget/bcm63xx_udc.c
-> > > +++ b/drivers/usb/gadget/bcm63xx_udc.c
-> > > @@ -41,6 +41,7 @@
-> > >  #include <bcm63xx_dev_usb_usbd.h>
-> > >  #include <bcm63xx_io.h>
-> > >  #include <bcm63xx_regs.h>
-> > > +#include <bcm63xx_usb_priv.h>
-> >=20
-> > actually, I want to see this arch dependency vanish. The whole
-> > "phy_mode" stuff should be a PHY driver, care to implement this properly
-> > using the PHY layer ?
->=20
-> Ok, but then I won't be able to use the generic OHCI and EHCI platform dr=
-ivers
-> because they are not yet aware of clocks, PHY slave device etc... For now=
- I
-> would like to stick with that since this is also very BCM63xx centric.
->=20
-> Would that be ok with you?
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ arch/mips/ath79/gpio.c                         |   38 ++++++++++++++++--------
+ arch/mips/include/asm/mach-ath79/ar71xx_regs.h |    2 ++
+ 2 files changed, 28 insertions(+), 12 deletions(-)
 
-sure, but we need to see a move towards making all of this generic and,
-perhaps more importantly (at least to me), compilable on all arches so
-we can make proper use of linux-next and Fengguang's build systems.
-
---=20
-balbi
-
---mSxgbZZZvrAyzONB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRB3w+AAoJEIaOsuA1yqREaAIP/jdGWZWQAFC7MtHU+jpjLhO0
-aInZS9AzJ0b7mH39WRspAo3wuxSmzT11qjJDeQE6VBCosjZaVNGh3gltQ0OR+cbV
-3ZjXjpLXSYF4bSElhNy3M7uQid2HkYA5FJ0Ei2+PPqXwsi6Q0IvCG0FMmkGJqQ0d
-Xyezuh8Iz0NFhVjJMoexnTtLsGzpS7jzmrlCr209Y74uenKlyddDefdONm/1VVtQ
-xAdztQbVUzXjEwpVbt7pJvPFMoemjdhq1qNzdGmKZ3zzvhTwurdBfdS8jFqeHdgm
-ojU9bQv8r8cGm7HOSrL8wMeLq0SjJyV9KtZkz/8BdaybcGdzXYXiZwL6f3PGzxk9
-V++fISFqP7h5xMS+hq1zMhrW1FDjXuelw15yTW47nhd8cOBu6dWZWBJ3Rcb72B7L
-ZQBNXXVTlXlU6++f60C6b7idP7fe7f+VasZGBcftmRLgVvo3+IZWJuiWhypwu9ZP
-3hXDjwVxeKIF67BoCZ94U5eArLPfINUa60UgqZGzxeXVeTe5Fx2ch7wcqaiSUpvs
-C0zlarLH+BGT7NQCa2jTPyuX8cNTTsNiXzKtMF923EQml5lT2dxOE/QO/0vyl8pb
-NZ9hUvQjV+VC4A0UnHUnFsoKbKOnJby1JZEFvM9Uripw6dCFtQx35CWbuyPzc66/
-jHjKEvJhkoLA+o+Mzcc/
-=lQx9
------END PGP SIGNATURE-----
-
---mSxgbZZZvrAyzONB--
+diff --git a/arch/mips/ath79/gpio.c b/arch/mips/ath79/gpio.c
+index 48fe762..662a10e 100644
+--- a/arch/mips/ath79/gpio.c
++++ b/arch/mips/ath79/gpio.c
+@@ -137,47 +137,61 @@ static struct gpio_chip ath79_gpio_chip = {
+ 	.base			= 0,
+ };
+ 
++static void __iomem *ath79_gpio_get_function_reg(void)
++{
++	u32 reg = 0;
++
++	if (soc_is_ar71xx() ||
++	    soc_is_ar724x() ||
++	    soc_is_ar913x() ||
++	    soc_is_ar933x())
++		reg = AR71XX_GPIO_REG_FUNC;
++	else if (soc_is_ar934x())
++		reg = AR934X_GPIO_REG_FUNC;
++	else
++		BUG();
++
++	return ath79_gpio_base + reg;
++}
++
+ void ath79_gpio_function_enable(u32 mask)
+ {
+-	void __iomem *base = ath79_gpio_base;
++	void __iomem *reg = ath79_gpio_get_function_reg();
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&ath79_gpio_lock, flags);
+ 
+-	__raw_writel(__raw_readl(base + AR71XX_GPIO_REG_FUNC) | mask,
+-		     base + AR71XX_GPIO_REG_FUNC);
++	__raw_writel(__raw_readl(reg) | mask, reg);
+ 	/* flush write */
+-	__raw_readl(base + AR71XX_GPIO_REG_FUNC);
++	__raw_readl(reg);
+ 
+ 	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
+ }
+ 
+ void ath79_gpio_function_disable(u32 mask)
+ {
+-	void __iomem *base = ath79_gpio_base;
++	void __iomem *reg = ath79_gpio_get_function_reg();
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&ath79_gpio_lock, flags);
+ 
+-	__raw_writel(__raw_readl(base + AR71XX_GPIO_REG_FUNC) & ~mask,
+-		     base + AR71XX_GPIO_REG_FUNC);
++	__raw_writel(__raw_readl(reg) & ~mask, reg);
+ 	/* flush write */
+-	__raw_readl(base + AR71XX_GPIO_REG_FUNC);
++	__raw_readl(reg);
+ 
+ 	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
+ }
+ 
+ void ath79_gpio_function_setup(u32 set, u32 clear)
+ {
+-	void __iomem *base = ath79_gpio_base;
++	void __iomem *reg = ath79_gpio_get_function_reg();
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&ath79_gpio_lock, flags);
+ 
+-	__raw_writel((__raw_readl(base + AR71XX_GPIO_REG_FUNC) & ~clear) | set,
+-		     base + AR71XX_GPIO_REG_FUNC);
++	__raw_writel((__raw_readl(reg) & ~clear) | set, reg);
+ 	/* flush write */
+-	__raw_readl(base + AR71XX_GPIO_REG_FUNC);
++	__raw_readl(reg);
+ 
+ 	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
+ }
+diff --git a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
+index a5e0f17..7d44b5d 100644
+--- a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
++++ b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
+@@ -401,6 +401,8 @@
+ #define AR71XX_GPIO_REG_INT_ENABLE	0x24
+ #define AR71XX_GPIO_REG_FUNC		0x28
+ 
++#define AR934X_GPIO_REG_FUNC		0x6c
++
+ #define AR71XX_GPIO_COUNT		16
+ #define AR7240_GPIO_COUNT		18
+ #define AR7241_GPIO_COUNT		20
+-- 
+1.7.10

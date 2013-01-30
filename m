@@ -1,11 +1,16 @@
-Received: from phoenix3.szarvasnet.hu ([87.101.127.16]:53171 "EHLO
-        mail.szarvasnet.hu" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6824769Ab3A2JTUYWaDI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Jan 2013 10:19:20 +0100
-From: Gabor Juhos <juhosg@openwrt.org>
-Subject: [PATCH 1/2] MIPS: ath79: fix GPIO function selection for AR934x SoCs
-Date: Tue, 29 Jan 2013 10:19:12 +0100
-Message-ID: <1359451153-13335-1-git-send-email-juhosg@openwrt.org>
+Received: from webmail.solarflare.com ([12.187.104.25]:14398 "EHLO
+        webmail.solarflare.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6833269Ab3A3BLodZpEq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 30 Jan 2013 02:11:44 +0100
+Message-ID: <1359508293.4144.29.camel@bwh-desktop.uk.solarflarecom.com>
+Subject: Re: [PATCH 1/2] NET: ethernet/netlogic: Netlogic XLR/XLS GMAC driver
+From: Ben Hutchings <bhutchings@solarflare.com>
+Date: Wed, 30 Jan 2013 01:11:33 +0000
+In-Reply-To: <1359450699-26141-1-git-send-email-ganesanr@broadcom.com>
+References: <1359450699-26141-1-git-send-email-ganesanr@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,115 +21,130 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: John Crispin <blogic@openwrt.org>, linux-mips <linux-mips@linux-mips.org>, Gabor Juhos <juhosg@openwrt.org>, stable@vger.kernel.org
-Message-ID: <20130129091912.oRJDW7oCflCZVX-ay0i18vW0cZvh5wUWDJG8pyfbhTU@z>
+To: ganesanr@broadcom.com
+Cc: linux-mips@linux-mips.org, netdev@vger.kernel.org
+Message-ID: <20130130011133.0WevQ-nsftqxZqxh8ObF3S5kZMX0nIMnFufktsTLgPI@z>
 
-GPIO function selection is not working on the AR934x
-SoCs because the offset of the function selection
-register is different on those.
+On Tue, 2013-01-29 at 14:41 +0530, ganesanr@broadcom.com wrote:
+> From: Ganesan Ramalingam <ganesanr@broadcom.com>
+> 
+> Add support for the Network Accelerator Engine on Netlogic XLR/XLS
+> MIPS SoCs. The XLR/XLS NAE blocks can be configured as one 10G
+> interface or four 1G interfaces. This driver supports blocks
+> with 1G ports.
+> 
+> Signed-off-by: Ganesan Ramalingam <ganesanr@broadcom.com>
+> ---
+>  This patch has to be merged through netdev tree.
+>  Please review and let me know if there are any comments or suggestions.
+> 
+>  drivers/net/ethernet/Kconfig            |    1 +
+>  drivers/net/ethernet/Makefile           |    1 +
+>  drivers/net/ethernet/netlogic/Kconfig   |    8 +
+>  drivers/net/ethernet/netlogic/Makefile  |    1 +
+>  drivers/net/ethernet/netlogic/xlr_net.c | 1132 +++++++++++++++++++++++++++++++
+>  drivers/net/ethernet/netlogic/xlr_net.h | 1098 ++++++++++++++++++++++++++++++
+>  6 files changed, 2241 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/net/ethernet/netlogic/Kconfig
+>  create mode 100644 drivers/net/ethernet/netlogic/Makefile
+>  create mode 100644 drivers/net/ethernet/netlogic/xlr_net.c
+>  create mode 100644 drivers/net/ethernet/netlogic/xlr_net.h
 
-Add a helper routine which returns the correct
-register address based on the SoC type, and use
-that in the 'ath79_gpio_function_*' routines.
+Why add a netlogic directory when the company is now a part of Broadcom?
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
----
- arch/mips/ath79/gpio.c                         |   38 ++++++++++++++++--------
- arch/mips/include/asm/mach-ath79/ar71xx_regs.h |    2 ++
- 2 files changed, 28 insertions(+), 12 deletions(-)
+[...]
+> --- /dev/null
+> +++ b/drivers/net/ethernet/netlogic/xlr_net.c
+[...]
+> +/* Ethtool operation */
+> +static int xlr_get_settings(struct net_device *ndev, struct ethtool_cmd *ecmd)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int xlr_set_settings(struct net_device *ndev, struct ethtool_cmd *ecmd)
+> +{
+> +	return 0;
+> +}
+> +
+> +static void xlr_get_drvinfo(struct net_device *ndev,
+> +		struct ethtool_drvinfo *drvinfo)
+> +{
+> +	return;
+> +}
+> +
+> +static u32 xlr_get_link(struct net_device *ndev)
+> +{
+> +	return 0;
+> +}
+> +
+> +static struct ethtool_ops xlr_ethtool_ops = {
+> +	.get_settings = xlr_get_settings,
+> +	.set_settings = xlr_set_settings,
+> +	.get_drvinfo = xlr_get_drvinfo,
+> +	.get_link = xlr_get_link,
+> +};
 
-diff --git a/arch/mips/ath79/gpio.c b/arch/mips/ath79/gpio.c
-index 48fe762..662a10e 100644
---- a/arch/mips/ath79/gpio.c
-+++ b/arch/mips/ath79/gpio.c
-@@ -137,47 +137,61 @@ static struct gpio_chip ath79_gpio_chip = {
- 	.base			= 0,
- };
- 
-+static void __iomem *ath79_gpio_get_function_reg(void)
-+{
-+	u32 reg = 0;
-+
-+	if (soc_is_ar71xx() ||
-+	    soc_is_ar724x() ||
-+	    soc_is_ar913x() ||
-+	    soc_is_ar933x())
-+		reg = AR71XX_GPIO_REG_FUNC;
-+	else if (soc_is_ar934x())
-+		reg = AR934X_GPIO_REG_FUNC;
-+	else
-+		BUG();
-+
-+	return ath79_gpio_base + reg;
-+}
-+
- void ath79_gpio_function_enable(u32 mask)
- {
--	void __iomem *base = ath79_gpio_base;
-+	void __iomem *reg = ath79_gpio_get_function_reg();
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&ath79_gpio_lock, flags);
- 
--	__raw_writel(__raw_readl(base + AR71XX_GPIO_REG_FUNC) | mask,
--		     base + AR71XX_GPIO_REG_FUNC);
-+	__raw_writel(__raw_readl(reg) | mask, reg);
- 	/* flush write */
--	__raw_readl(base + AR71XX_GPIO_REG_FUNC);
-+	__raw_readl(reg);
- 
- 	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
- }
- 
- void ath79_gpio_function_disable(u32 mask)
- {
--	void __iomem *base = ath79_gpio_base;
-+	void __iomem *reg = ath79_gpio_get_function_reg();
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&ath79_gpio_lock, flags);
- 
--	__raw_writel(__raw_readl(base + AR71XX_GPIO_REG_FUNC) & ~mask,
--		     base + AR71XX_GPIO_REG_FUNC);
-+	__raw_writel(__raw_readl(reg) & ~mask, reg);
- 	/* flush write */
--	__raw_readl(base + AR71XX_GPIO_REG_FUNC);
-+	__raw_readl(reg);
- 
- 	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
- }
- 
- void ath79_gpio_function_setup(u32 set, u32 clear)
- {
--	void __iomem *base = ath79_gpio_base;
-+	void __iomem *reg = ath79_gpio_get_function_reg();
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&ath79_gpio_lock, flags);
- 
--	__raw_writel((__raw_readl(base + AR71XX_GPIO_REG_FUNC) & ~clear) | set,
--		     base + AR71XX_GPIO_REG_FUNC);
-+	__raw_writel((__raw_readl(reg) & ~clear) | set, reg);
- 	/* flush write */
--	__raw_readl(base + AR71XX_GPIO_REG_FUNC);
-+	__raw_readl(reg);
- 
- 	spin_unlock_irqrestore(&ath79_gpio_lock, flags);
- }
-diff --git a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
-index a5e0f17..7d44b5d 100644
---- a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
-+++ b/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
-@@ -401,6 +401,8 @@
- #define AR71XX_GPIO_REG_INT_ENABLE	0x24
- #define AR71XX_GPIO_REG_FUNC		0x28
- 
-+#define AR934X_GPIO_REG_FUNC		0x6c
-+
- #define AR71XX_GPIO_COUNT		16
- #define AR7240_GPIO_COUNT		18
- #define AR7241_GPIO_COUNT		20
+Either implement them or don't.  I'm guessing that phylib can handle
+get_settings and set_settings for you.
+
+[...]
+> +static netdev_tx_t xlr_net_start_xmit(struct sk_buff *skb,
+> +               struct net_device *ndev)
+> +{
+> +       struct nlm_fmn_msg msg;
+> +       struct xlr_net_priv *priv = netdev_priv(ndev);
+> +       int ret;
+> +       u16 qmap;
+> +       u32 flags;
+> +
+> +       qmap = skb->queue_mapping;
+> +       xlr_make_tx_desc(&msg, virt_to_phys(skb->data), skb);
+> +       flags = nlm_cop2_enable();
+> +       ret = nlm_fmn_send(2, 0, priv->nd->tx_stnid, &msg);
+> +       nlm_cop2_restore(flags);
+> +       return NETDEV_TX_OK;
+> +}
+
+If nlm_fmn_send() fails then you need to free the skbuff.
+
+[...]
+> +static void xlr_stats(struct net_device *ndev, struct net_device_stats *stats)
+> +{
+> +	struct xlr_net_priv *priv = netdev_priv(ndev);
+> +
+> +	stats->rx_packets = nlm_read_reg(priv->base_addr, RX_PACKET_COUNTER);
+> +	stats->tx_packets = nlm_read_reg(priv->base_addr, TX_PACKET_COUNTER);
+> +	stats->rx_bytes = nlm_read_reg(priv->base_addr, RX_BYTE_COUNTER);
+> +	stats->tx_bytes = nlm_read_reg(priv->base_addr, TX_BYTE_COUNTER);
+
+32-bit byte counters for a 1G/10G device?  Seriously?
+
+[...]
+> +struct net_device_stats *xlr_get_stats(struct net_device *ndev)
+> +{
+> +	struct net_device_stats *stats = &ndev->stats;
+> +
+> +	xlr_stats(ndev, stats);
+> +	return stats;
+> +}
+
+You should probably be implementing ndo_get_stats64 to provide 64-bit
+stats even on a 32-bit kernel.
+
+> +static int xlr_net_probe(struct platform_device *pdev)
+> +{
+[...]
+> +	ndev->watchdog_timeo = 1000 * HZ;
+[...]
+
+A watchdog timeout of 1000 seconds is ridiculous.  I guess someone just
+kept seeing the watchdog fire and increasing the timeout, and never
+thought about *why* this was happening.
+
+Ben.
+
 -- 
-1.7.10
+Ben Hutchings, Staff Engineer, Solarflare
+Not speaking for my employer; that's the marketing department's job.
+They asked us to note that Solarflare product names are trademarked.

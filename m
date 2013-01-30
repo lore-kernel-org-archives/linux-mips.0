@@ -1,16 +1,18 @@
-Received: from webmail.solarflare.com ([12.187.104.25]:14398 "EHLO
-        webmail.solarflare.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6833269Ab3A3BLodZpEq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 30 Jan 2013 02:11:44 +0100
-Message-ID: <1359508293.4144.29.camel@bwh-desktop.uk.solarflarecom.com>
-Subject: Re: [PATCH 1/2] NET: ethernet/netlogic: Netlogic XLR/XLS GMAC driver
-From: Ben Hutchings <bhutchings@solarflare.com>
-Date: Wed, 30 Jan 2013 01:11:33 +0000
-In-Reply-To: <1359450699-26141-1-git-send-email-ganesanr@broadcom.com>
-References: <1359450699-26141-1-git-send-email-ganesanr@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from localhost.localdomain ([127.0.0.1]:38278 "EHLO linux-mips.org"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S6818018Ab3A3OexyIykt (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 30 Jan 2013 15:34:53 +0100
+Date: Wed, 30 Jan 2013 15:34:51 +0100
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: Distincting very similar CPUs in cpu-probe.c
+Message-ID: <20130130143451.GA19182@linux-mips.org>
+References: <CACna6ryTefwz2McxQOaafwsGJJA7Kf46TYAP+BqGLxirYrEP7A@mail.gmail.com>
+ <CACna6rxRDreFEVMMrrHtMg+NB5mtzCuOQeppq7=qFKRHRvPGmQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACna6rxRDreFEVMMrrHtMg+NB5mtzCuOQeppq7=qFKRHRvPGmQ@mail.gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,130 +23,63 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: ganesanr@broadcom.com
-Cc: linux-mips@linux-mips.org, netdev@vger.kernel.org
-Message-ID: <20130130011133.0WevQ-nsftqxZqxh8ObF3S5kZMX0nIMnFufktsTLgPI@z>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20130130143451.c_jBSjclMWpfJagNzqwRQ1UtPtyNSIHbawhffzkpkzY@z>
 
-On Tue, 2013-01-29 at 14:41 +0530, ganesanr@broadcom.com wrote:
-> From: Ganesan Ramalingam <ganesanr@broadcom.com>
+On Wed, Jan 30, 2013 at 11:03:12AM +0100, Rafał Miłecki wrote:
+
+> 2013/1/30 Rafał Miłecki <zajec5@gmail.com>:
+> > I can see current code in cpu-probe.c handles some (very slightly)
+> > different CPUs in the same way:
+> >
+> > case PRID_IMP_24K:
+> > case PRID_IMP_24KE:
+> >         c->cputype = CPU_24K;
+> >         __cpu_name[cpu] = "MIPS 24Kc";
+> >         break;
+> >
+> > There is almost nothing wrong about this, but setting the same name is
+> > a little confusing for users. I wish to see different names in
+> > /proc/cpuinfo for PRID_IMP_24K==24Kc and PRID_IMP_24KE==24KEc.
+> >
+> > Is there a preferred way of handling this? The simplest one seems to
+> > be using separated "cases" while still using CPU_24K:
+> > case PRID_IMP_24K:
+> >         c->cputype = CPU_24K;
+> >         __cpu_name[cpu] = "MIPS 24Kc";
+> >         break;
+> > case PRID_IMP_24KE:
+> >         c->cputype = CPU_24K;
+> >         __cpu_name[cpu] = "MIPS 24KEc";
+> >         break;
+> >
+> > What do you think about this? Is this acceptable?
+> >
+> > For some reason I'm not aware of you may prefer adding CPU_24KE at the
+> > same time. Does it make any sense?
 > 
-> Add support for the Network Accelerator Engine on Netlogic XLR/XLS
-> MIPS SoCs. The XLR/XLS NAE blocks can be configured as one 10G
-> interface or four 1G interfaces. This driver supports blocks
-> with 1G ports.
+> Yet another option would be to use
+> __cpu_name[cpu] = "MIPS 24Kc / MIPS 24KEc";
 > 
-> Signed-off-by: Ganesan Ramalingam <ganesanr@broadcom.com>
-> ---
->  This patch has to be merged through netdev tree.
->  Please review and let me know if there are any comments or suggestions.
-> 
->  drivers/net/ethernet/Kconfig            |    1 +
->  drivers/net/ethernet/Makefile           |    1 +
->  drivers/net/ethernet/netlogic/Kconfig   |    8 +
->  drivers/net/ethernet/netlogic/Makefile  |    1 +
->  drivers/net/ethernet/netlogic/xlr_net.c | 1132 +++++++++++++++++++++++++++++++
->  drivers/net/ethernet/netlogic/xlr_net.h | 1098 ++++++++++++++++++++++++++++++
->  6 files changed, 2241 insertions(+), 0 deletions(-)
->  create mode 100644 drivers/net/ethernet/netlogic/Kconfig
->  create mode 100644 drivers/net/ethernet/netlogic/Makefile
->  create mode 100644 drivers/net/ethernet/netlogic/xlr_net.c
->  create mode 100644 drivers/net/ethernet/netlogic/xlr_net.h
+> User still won't know which CPU he has, but at least we won't make
+> aware MIPS 24KEc owners confused.
 
-Why add a netlogic directory when the company is now a part of Broadcom?
+Yes, the MIPS naming is confusing.  A 1004K is basically a bunch of 34Ks,
+a 1074K a bunch of 74Ks.  1004K/1074K is more the product name of the
+whole cluster of CPUs so what should we call the individual CPU cores,
+would 34K / 74K be better?
 
-[...]
-> --- /dev/null
-> +++ b/drivers/net/ethernet/netlogic/xlr_net.c
-[...]
-> +/* Ethtool operation */
-> +static int xlr_get_settings(struct net_device *ndev, struct ethtool_cmd *ecmd)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int xlr_set_settings(struct net_device *ndev, struct ethtool_cmd *ecmd)
-> +{
-> +	return 0;
-> +}
-> +
-> +static void xlr_get_drvinfo(struct net_device *ndev,
-> +		struct ethtool_drvinfo *drvinfo)
-> +{
-> +	return;
-> +}
-> +
-> +static u32 xlr_get_link(struct net_device *ndev)
-> +{
-> +	return 0;
-> +}
-> +
-> +static struct ethtool_ops xlr_ethtool_ops = {
-> +	.get_settings = xlr_get_settings,
-> +	.set_settings = xlr_set_settings,
-> +	.get_drvinfo = xlr_get_drvinfo,
-> +	.get_link = xlr_get_link,
-> +};
+Unfortunately marketing-based naming has a long history in the MIPS world.
+From a software perspective the R4000 and R4400 are virtually identical
+processors except the different (8kB vs 16kB) primary caches.  Then again
+more significant changes to a core happened that were not reflected in a
+change of the marketing name, for example there are MIPS32 R1 and R2
+variants of 4K series cores.
 
-Either implement them or don't.  I'm guessing that phylib can handle
-get_settings and set_settings for you.
+Maybe we should use the marketing-names in /proc/cpuinfo primarily for human
+consumption but software should rather rely on ISA, ASE and other features
+indicates elsewhere.  The patch to export the cp0 config registers in sysfs
+by Steven Hill is a good step into that direction.
 
-[...]
-> +static netdev_tx_t xlr_net_start_xmit(struct sk_buff *skb,
-> +               struct net_device *ndev)
-> +{
-> +       struct nlm_fmn_msg msg;
-> +       struct xlr_net_priv *priv = netdev_priv(ndev);
-> +       int ret;
-> +       u16 qmap;
-> +       u32 flags;
-> +
-> +       qmap = skb->queue_mapping;
-> +       xlr_make_tx_desc(&msg, virt_to_phys(skb->data), skb);
-> +       flags = nlm_cop2_enable();
-> +       ret = nlm_fmn_send(2, 0, priv->nd->tx_stnid, &msg);
-> +       nlm_cop2_restore(flags);
-> +       return NETDEV_TX_OK;
-> +}
-
-If nlm_fmn_send() fails then you need to free the skbuff.
-
-[...]
-> +static void xlr_stats(struct net_device *ndev, struct net_device_stats *stats)
-> +{
-> +	struct xlr_net_priv *priv = netdev_priv(ndev);
-> +
-> +	stats->rx_packets = nlm_read_reg(priv->base_addr, RX_PACKET_COUNTER);
-> +	stats->tx_packets = nlm_read_reg(priv->base_addr, TX_PACKET_COUNTER);
-> +	stats->rx_bytes = nlm_read_reg(priv->base_addr, RX_BYTE_COUNTER);
-> +	stats->tx_bytes = nlm_read_reg(priv->base_addr, TX_BYTE_COUNTER);
-
-32-bit byte counters for a 1G/10G device?  Seriously?
-
-[...]
-> +struct net_device_stats *xlr_get_stats(struct net_device *ndev)
-> +{
-> +	struct net_device_stats *stats = &ndev->stats;
-> +
-> +	xlr_stats(ndev, stats);
-> +	return stats;
-> +}
-
-You should probably be implementing ndo_get_stats64 to provide 64-bit
-stats even on a 32-bit kernel.
-
-> +static int xlr_net_probe(struct platform_device *pdev)
-> +{
-[...]
-> +	ndev->watchdog_timeo = 1000 * HZ;
-[...]
-
-A watchdog timeout of 1000 seconds is ridiculous.  I guess someone just
-kept seeing the watchdog fire and increasing the timeout, and never
-thought about *why* this was happening.
-
-Ben.
-
--- 
-Ben Hutchings, Staff Engineer, Solarflare
-Not speaking for my employer; that's the marketing department's job.
-They asked us to note that Solarflare product names are trademarked.
+  Ralf

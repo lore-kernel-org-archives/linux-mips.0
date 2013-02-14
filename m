@@ -1,15 +1,15 @@
-Received: from mail-qa0-f47.google.com ([209.85.216.47]:58044 "EHLO
-        mail-qa0-f47.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6816409Ab3BNGKgJ0O57 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 14 Feb 2013 07:10:36 +0100
+Received: from mga14.intel.com ([143.182.124.37]:62945 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6823072Ab3BNLHLPTpip (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 14 Feb 2013 12:07:11 +0100
+From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Subject: Re: [PATCH 5/5] usb: chipidea: Fix incorrect check of function return value
+In-Reply-To: <1360791538-6332-6-git-send-email-svetoslav@neykov.name>
+References: <1360791538-6332-1-git-send-email-svetoslav@neykov.name> <1360791538-6332-6-git-send-email-svetoslav@neykov.name>
+Date: Thu, 14 Feb 2013 13:08:36 +0200
+Message-ID: <87a9r7b1aj.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPqjbnARFK0=BZwKoXqMVp=HvbWfqNSwd1zh635spau3in2=ng@mail.gmail.com>
-References: <CAPqjbnARFK0=BZwKoXqMVp=HvbWfqNSwd1zh635spau3in2=ng@mail.gmail.com>
-Date: Thu, 14 Feb 2013 03:10:29 -0300
-Message-ID: <CAPqjbnBOKs1OPgZDxqePP3OMubwMhowmX4-Nn0XCtofUecWX-A@mail.gmail.com>
-Subject: ALI
-From: =?ISO-8859-1?B?TWF07WFz?= <matiasbaruchinsaurralde@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,10 +20,16 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
-To: Linux-MIPS <linux-mips@linux-mips.org>mips@linux-mips.org
-Message-ID: <20130214061029.r4nXgPlyumks2VPE_7HfIsIxwUrlGyD2rx5pUcO4VLE@z>
+To: Svetoslav Neykov <svetoslav@neykov.name>, Ralf Baechle <ralf@linux-mips.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gabor Juhos <juhosg@openwrt.org>, John Crispin <blogic@openwrt.org>, Alan Stern <stern@rowland.harvard.edu>, "Luis R. Rodriguez" <mcgrof@qca.qualcomm.com>
+Cc: linux-mips@linux-mips.org, linux-usb@vger.kernel.org
+Message-ID: <20130214110836.dPzOBRSpdsk6kHpbSGGv3pBoUGfYPikd9TCDPYUzcko@z>
 
-Hello, have you got any experience with ALi M3329*? Just got a board with
-it.
+Svetoslav Neykov <svetoslav@neykov.name> writes:
 
-Thanks!
+> Use the correct variable to check for the return value of the last function.
+
+This one is fixed already by Julia Lawall: 5c6e9bf0
+
+Regards,
+--
+Alex

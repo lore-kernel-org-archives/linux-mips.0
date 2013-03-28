@@ -1,15 +1,15 @@
-Received: from mail-ee0-f54.google.com ([74.125.83.54]:42644 "EHLO
-        mail-ee0-f54.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6834891Ab3C1WXtq90bf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Mar 2013 23:23:49 +0100
-Received: by mail-ee0-f54.google.com with SMTP id e51so8459eek.41
-        for <linux-mips@linux-mips.org>; Thu, 28 Mar 2013 15:23:43 -0700 (PDT)
+Received: from mail-ea0-f178.google.com ([209.85.215.178]:63908 "EHLO
+        mail-ea0-f178.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6834890Ab3C1WZNor3fE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Mar 2013 23:25:13 +0100
+Received: by mail-ea0-f178.google.com with SMTP id o10so9326eaj.23
+        for <linux-mips@linux-mips.org>; Thu, 28 Mar 2013 15:25:08 -0700 (PDT)
 From: "Svetoslav Neykov" <svetoslav@neykov.name>
-References: <1362176257-2328-1-git-send-email-svetoslav@neykov.name> <1362176257-2328-3-git-send-email-svetoslav@neykov.name> <87r4izivgp.fsf@ashishki-desk.ger.corp.intel.com>
-In-Reply-To: <87r4izivgp.fsf@ashishki-desk.ger.corp.intel.com>
-Subject: RE: [PATCH v2 2/2] usb: chipidea: AR933x platform support for the chipidea driver
-Date: Fri, 29 Mar 2013 00:23:37 +0200
-Message-ID: <023b01ce2c02$e5faf8f0$b1f0ead0$@neykov.name>
+References: <1362176257-2328-1-git-send-email-svetoslav@neykov.name> <1362176257-2328-2-git-send-email-svetoslav@neykov.name> <878v57kh4v.fsf@ashishki-desk.ger.corp.intel.com>
+In-Reply-To: <878v57kh4v.fsf@ashishki-desk.ger.corp.intel.com>
+Subject: RE: [PATCH v2 1/2] usb: chipidea: big-endian support
+Date: Fri, 29 Mar 2013 00:25:02 +0200
+Message-ID: <023c01ce2c03$1886e220$4994a660$@neykov.name>
 MIME-Version: 1.0
 Content-Type: text/plain;
         charset="us-ascii"
@@ -27,18 +27,23 @@ List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Return-Path: <linux-mips-bounce@linux-mips.org>
 To: 'Alexander Shishkin' <alexander.shishkin@linux.intel.com>, 'Ralf Baechle' <ralf@linux-mips.org>, 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>, 'Gabor Juhos' <juhosg@openwrt.org>, 'John Crispin' <blogic@openwrt.org>, 'Alan Stern' <stern@rowland.harvard.edu>, "'Luis R. Rodriguez'" <mcgrof@qca.qualcomm.com>
 Cc: linux-mips@linux-mips.org, linux-usb@vger.kernel.org
-Message-ID: <20130328222337.g6TYRrTeECWbfE-72wMydLpTLwjXZQpPh66hx75zQEE@z>
+Message-ID: <20130328222502.PhxNvF42aTR_EZafTtThcVX3AoaN3K1FB4jI0_QyMuY@z>
 
 Alexander Shishkin wrote:
->No need to initialize it like this, it should save a few bytes in
->.data.
-Ok.
+> Svetoslav Neykov <svetoslav@neykov.name> writes:
+>
+>> Convert between big-endian and little-endian format when accessing the
+usb controller structures which are little-endian by specification.
+>> Fix cases where the little-endian memory layout is taken for granted.
+>> The patch doesn't have any effect on the already supported
+>> little-endian architectures.
+>
+>Applied to my branch of things that are aiming at v3.10. Next time
+>please make sure that it applies cleanly.
 
->Why can't you just use ci13xxx_platform_data?
->It looks like you don't need a glue driver is drivers/usb/chipidea at
->all, you can register ci_hdrc right from the ath79/dev-usb.c
+I am a bit confused about the workflow and which repository to base my work
+on. Should I use github/virtuoso/linux-ci for my future patches? Or
+linux-next?
 
-You are right. I will register ci_hdrc in ath79/dev-usb.c.
-
-Regards.
+Regards,
 Svetoslav.

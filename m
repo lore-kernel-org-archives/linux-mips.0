@@ -1,13 +1,16 @@
-Received: from multi.imgtec.com ([194.200.65.239]:18029 "EHLO multi.imgtec.com"
+Received: from mga01.intel.com ([192.55.52.88]:1786 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6823099Ab3DATQNUERWD (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 1 Apr 2013 21:16:13 +0200
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH] MIPS: fix ISA level which causes secondary cache init bypassing and more
-Date: Mon, 1 Apr 2013 12:14:28 -0700
-Message-ID: <1364843668-17707-1-git-send-email-dengcheng.zhu@imgtec.com>
+        id S6819996Ab3DDHtJDTEr7 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 4 Apr 2013 09:49:09 +0200
+From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Subject: Re: [PATCH v3 0/1] Chipidea driver support for the AR933x platform
+In-Reply-To: <1365026686-4131-1-git-send-email-svetoslav@neykov.name>
+References: <1365026686-4131-1-git-send-email-svetoslav@neykov.name>
+Date: Thu, 04 Apr 2013 10:51:02 +0300
+Message-ID: <87zjxeentl.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Return-Path: <alexander.shishkin@linux.intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -17,97 +20,20 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Return-Path: <linux-mips-bounce@linux-mips.org>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org
-Cc: Steven.Hill@imgtec.com, dengcheng.zhu@imgtec.com
-Message-ID: <20130401191428.d87Q2hFMz5zwpZ_bdipNaJedbFdAEBe00laFiPVica4@z>
+To: Svetoslav Neykov <svetoslav@neykov.name>, linux-mips@linux-mips.org, linux-usb@vger.kernel.org
+Cc: Ralf Baechle <ralf@linux-mips.org>, Gabor Juhos <juhosg@openwrt.org>, John Crispin <blogic@openwrt.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Alan Stern <stern@rowland.harvard.edu>, "Luis R. Rodriguez" <mcgrof@qca.qualcomm.com>
+Message-ID: <20130404075102.iYkFLPWh9WGvmreug1E-qx04nkHkWw44U0nU9XB4ozA@z>
 
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Svetoslav Neykov <svetoslav@neykov.name> writes:
 
-The commit a96102be70 introduced set_isa() where compatible ISA info is
-also set aside from the one gets passed in. It means, for example, 1004K
-will have MIPS_CPU_ISA_M32R2/M32R1/II/I flags. This leads to things like
-the following inappropriate:
+> Add support for the usb controller in AR933x platform.
+> The controller supports both host or device mode (defined at startup) 
+> but not OTG. 
+> The patches are tested on WR703n router running OpenWRT in device mode.
 
-if (c->isa_level == MIPS_CPU_ISA_M32R1 ||
-    c->isa_level == MIPS_CPU_ISA_M32R2 ||
-    c->isa_level == MIPS_CPU_ISA_M64R1 ||
-    c->isa_level == MIPS_CPU_ISA_M64R2)
+You forgot to mention the dependencies, dr_mode in usb core and dr_mode
+in ci13xxx_platform_data, which are not there yet.
 
-This patch fixes it.
-
-Cc: Steven J. Hill <Steven.Hill@imgtec.com>
-Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
----
- arch/mips/kernel/cpu-probe.c |    6 ++----
- arch/mips/kernel/traps.c     |    2 +-
- arch/mips/mm/c-r4k.c         |    6 ++----
- arch/mips/mm/sc-mips.c       |    6 ++----
- 4 files changed, 7 insertions(+), 13 deletions(-)
-
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index d069a19..5fe66a0 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -1227,10 +1227,8 @@ __cpuinit void cpu_probe(void)
- 	if (c->options & MIPS_CPU_FPU) {
- 		c->fpu_id = cpu_get_fpu_id();
- 
--		if (c->isa_level == MIPS_CPU_ISA_M32R1 ||
--		    c->isa_level == MIPS_CPU_ISA_M32R2 ||
--		    c->isa_level == MIPS_CPU_ISA_M64R1 ||
--		    c->isa_level == MIPS_CPU_ISA_M64R2) {
-+		if (c->isa_level & (MIPS_CPU_ISA_M32R1 | MIPS_CPU_ISA_M32R2 |
-+				    MIPS_CPU_ISA_M64R1 | MIPS_CPU_ISA_M64R2)) {
- 			if (c->fpu_id & MIPS_FPIR_3D)
- 				c->ases |= MIPS_ASE_MIPS3D;
- 		}
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index a200b5b..c3abb88 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -1571,7 +1571,7 @@ void __cpuinit per_cpu_trap_init(bool is_boot_cpu)
- #ifdef CONFIG_64BIT
- 	status_set |= ST0_FR|ST0_KX|ST0_SX|ST0_UX;
- #endif
--	if (current_cpu_data.isa_level == MIPS_CPU_ISA_IV)
-+	if (current_cpu_data.isa_level & MIPS_CPU_ISA_IV)
- 		status_set |= ST0_XX;
- 	if (cpu_has_dsp)
- 		status_set |= ST0_MX;
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index ecca559..2078915 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -1247,10 +1247,8 @@ static void __cpuinit setup_scache(void)
- 		return;
- 
- 	default:
--		if (c->isa_level == MIPS_CPU_ISA_M32R1 ||
--		    c->isa_level == MIPS_CPU_ISA_M32R2 ||
--		    c->isa_level == MIPS_CPU_ISA_M64R1 ||
--		    c->isa_level == MIPS_CPU_ISA_M64R2) {
-+		if (c->isa_level & (MIPS_CPU_ISA_M32R1 | MIPS_CPU_ISA_M32R2 |
-+				    MIPS_CPU_ISA_M64R1 | MIPS_CPU_ISA_M64R2)) {
- #ifdef CONFIG_MIPS_CPU_SCACHE
- 			if (mips_sc_init ()) {
- 				scache_size = c->scache.ways * c->scache.sets * c->scache.linesz;
-diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
-index 93d937b..df96da7 100644
---- a/arch/mips/mm/sc-mips.c
-+++ b/arch/mips/mm/sc-mips.c
-@@ -98,10 +98,8 @@ static inline int __init mips_sc_probe(void)
- 	c->scache.flags |= MIPS_CACHE_NOT_PRESENT;
- 
- 	/* Ignore anything but MIPSxx processors */
--	if (c->isa_level != MIPS_CPU_ISA_M32R1 &&
--	    c->isa_level != MIPS_CPU_ISA_M32R2 &&
--	    c->isa_level != MIPS_CPU_ISA_M64R1 &&
--	    c->isa_level != MIPS_CPU_ISA_M64R2)
-+	if (!(c->isa_level & (MIPS_CPU_ISA_M32R1 | MIPS_CPU_ISA_M32R2 |
-+			      MIPS_CPU_ISA_M64R1 | MIPS_CPU_ISA_M64R2)))
- 		return 0;
- 
- 	/* Does this MIPS32/MIPS64 CPU have a config2 register? */
--- 
-1.7.1
+Regards,
+--
+Alex

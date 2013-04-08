@@ -1,21 +1,14 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49]:63262 "EHLO
-        mail-wg0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6823043Ab3DDIXwdQ-Ic (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 4 Apr 2013 10:23:52 +0200
-Received: by mail-wg0-f49.google.com with SMTP id e11so2500224wgh.16
-        for <linux-mips@linux-mips.org>; Thu, 04 Apr 2013 01:23:47 -0700 (PDT)
-From: "Svetoslav Neykov" <svetoslav@neykov.name>
-References: <1365026686-4131-1-git-send-email-svetoslav@neykov.name> <87zjxeentl.fsf@ashishki-desk.ger.corp.intel.com>
-In-Reply-To: <87zjxeentl.fsf@ashishki-desk.ger.corp.intel.com>
-Subject: RE: [PATCH v3 0/1] Chipidea driver support for the AR933x platform
-Date: Thu, 4 Apr 2013 11:23:39 +0300
-Message-ID: <0b0301ce310d$b739afb0$25ad0f10$@neykov.name>
+Received: from multi.imgtec.com ([194.200.65.239]:1381 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6822429Ab3DHQxQOMoP3 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 8 Apr 2013 18:53:16 +0200
+From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Subject: [PATCH v4 0/5] MIPS: enable APRP (APSP) and add features - v4
+Date: Mon, 8 Apr 2013 09:52:57 -0700
+Message-ID: <1365439982-4117-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Language: bg
-Return-Path: <svetoslav@neykov.name>
+Content-Type: text/plain
+Return-Path: <DengCheng.Zhu@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,22 +18,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: 'Alexander Shishkin' <alexander.shishkin@linux.intel.com>, linux-mips@linux-mips.org, linux-usb@vger.kernel.org
-Cc: 'Ralf Baechle' <ralf@linux-mips.org>, 'Gabor Juhos' <juhosg@openwrt.org>, 'John Crispin' <blogic@openwrt.org>, 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>, 'Alan Stern' <stern@rowland.harvard.edu>, "'Luis R. Rodriguez'" <mcgrof@qca.qualcomm.com>
-Message-ID: <20130404082339.WF1FS2-FDwhm8517dye0Bq9KubvmnRju1mHJcR9YlnY@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org, kevink@paralogos.com, macro@linux-mips.org, john@phrozen.org
+Cc: Steven.Hill@imgtec.com, dengcheng.zhu@imgtec.com
+Message-ID: <20130408165257.EZsLRGO0qgoCWxxnvblMWmateDGt8wstrI_kZ2YG2Ww@z>
 
-From: Alexander Shishkin [mailto:alexander.shishkin@linux.intel.com] 
->Svetoslav Neykov <svetoslav@neykov.name> writes:
->
->> Add support for the usb controller in AR933x platform.
->> The controller supports both host or device mode (defined at startup) 
->> but not OTG. 
->> The patches are tested on WR703n router running OpenWRT in device mode.
->
->You forgot to mention the dependencies, dr_mode in usb core and dr_mode
->in ci13xxx_platform_data, which are not there yet.
+The APRP model makes it possible that one or more CPUs run the Linux
+kernel whereas a dedicated CPU runs special real-time or signal processing
+program.
 
-Yes, you are right, I forgot to state it explicitly.
+This patchset adds the following to the current APRP support:
+1. Several bug fixes;
+2. Running floating point heavy jobs on the RP side;
+3. Waking up RP side read by interrupt;
+4. CPS multicore APRP support.
 
-Thanks,
-Svetoslav.
+A mp3 player program was ported to run in the APRP (APSP exactly) model.
+Considerable performance benefits were observed on the player program.
+CodeSourcery tools instead of the old SDE tools were used to build the
+example.
+
+Changes:
+v4 - v3:
+o Rebase onto HEAD of master (3.9-rc6 as of now).
+v3 - v2:
+o Split CMP/MT flavors into different files -cmp/-mt.
+o Put Malta needed changes into a separate patch.
+o Code style adjustments in rtlx/vpe files.
+o Remove kspd.h which might have been left out in Ralf's kspd removal.
+v2 - v1:
+o Rebase the patches to the latest kernel, and fix a bunch of warnings and
+  errors reported by the current scripts/checkpatch.pl.
+o Add MIPS_MALTA dependency to Kconfig since modifications of Malta files
+  are needed. But it should be easy to port changes to other platforms.
+
+Deng-Cheng Zhu (5):
+  MIPS: APRP (APSP): fix/enrich functionality
+  MIPS: APRP (APSP): split vpe-loader and rtlx into cmp/mt flavors
+  MIPS: APRP (APSP): remove kspd.h
+  MIPS: let amon_cpu_start() report results
+  MIPS: APRP (APSP): malta board support
+
+ arch/mips/Kconfig                                  |    9 +
+ arch/mips/include/asm/amon.h                       |    2 +-
+ arch/mips/include/asm/kspd.h                       |   32 -
+ .../include/asm/mach-malta/cpu-feature-overrides.h |    3 +
+ arch/mips/include/asm/rtlx.h                       |   47 +-
+ arch/mips/include/asm/vpe.h                        |  117 +++-
+ arch/mips/kernel/Makefile                          |    9 +-
+ arch/mips/kernel/rtlx-cmp.c                        |  126 ++++
+ arch/mips/kernel/rtlx-mt.c                         |  161 +++++
+ arch/mips/kernel/rtlx.c                            |  203 ++-----
+ arch/mips/kernel/vpe-cmp.c                         |  203 ++++++
+ arch/mips/kernel/vpe-mt.c                          |  526 ++++++++++++++
+ arch/mips/kernel/vpe.c                             |  732 ++------------------
+ arch/mips/mti-malta/malta-amon.c                   |    8 +-
+ arch/mips/mti-malta/malta-int.c                    |   21 +
+ 15 files changed, 1307 insertions(+), 892 deletions(-)
+ delete mode 100644 arch/mips/include/asm/kspd.h
+ create mode 100644 arch/mips/kernel/rtlx-cmp.c
+ create mode 100644 arch/mips/kernel/rtlx-mt.c
+ create mode 100644 arch/mips/kernel/vpe-cmp.c
+ create mode 100644 arch/mips/kernel/vpe-mt.c

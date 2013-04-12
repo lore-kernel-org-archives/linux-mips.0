@@ -1,17 +1,17 @@
-Received: from multi.imgtec.com ([194.200.65.239]:1434 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6835010Ab3DHQ7DRBzqS (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 8 Apr 2013 18:59:03 +0200
-Message-ID: <5162F74C.8090206@imgtec.com>
-Date: Mon, 8 Apr 2013 09:58:52 -0700
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]:35595
+        "EHLO ch1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6835071Ab3DLRK4wtFif (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 12 Apr 2013 19:10:56 +0200
+Message-ID: <51684012.2020602@caviumnetworks.com>
+Date: Fri, 12 Apr 2013 10:10:42 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 0/5] MIPS: enable APRP (APSP) and add features - v4
-References: <1365439982-4117-1-git-send-email-dengcheng.zhu@imgtec.com>
-In-Reply-To: <1365439982-4117-1-git-send-email-dengcheng.zhu@imgtec.com>
+Subject: Re: [PATCH V2] Octeon: fix broken plat_mem_setup()
+References: <51683BCB.8060209@nsn.com>
+In-Reply-To: <51683BCB.8060209@nsn.com>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <DengCheng.Zhu@imgtec.com>
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,76 +21,118 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>, Steven.Hill@imgtec.com
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, kevink@paralogos.com, macro@linux-mips.org, john@phrozen.org
-Message-ID: <20130408165852.s1dTc0GmNUAhDKGhTuXkQwqinS7TuQED5YGXhDCTpnY@z>
+To: Alexander Sverdlin <alexander.sverdlin.ext@nsn.com>
+Cc: linux-mips@linux-mips.org, david.daney@cavium.com, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20130412171042.V-eOwqWSngHgDo2f2-4uRba7GiUF3Gsw6P7aw90xo7I@z>
 
-Hi, Steven
-
-
-Your Tested-by is welcome.
-
-
-Thanks,
-
-Deng-Cheng
-
-On 04/08/2013 09:52 AM, Deng-Cheng Zhu wrote:
-> The APRP model makes it possible that one or more CPUs run the Linux
-> kernel whereas a dedicated CPU runs special real-time or signal processing
-> program.
+On 04/12/2013 09:52 AM, Alexander Sverdlin wrote:
+> Octeon: fix broken plat_mem_setup()
 >
-> This patchset adds the following to the current APRP support:
-> 1. Several bug fixes;
-> 2. Running floating point heavy jobs on the RP side;
-> 3. Waking up RP side read by interrupt;
-> 4. CPS multicore APRP support.
+> Upstream patch abe77f90dc9c65a7c9a4d61c2cbb8db4d5566e4f (MIPS: Octeon:
+> Add kexec
+> and kdump support) seems to be untested and broken Linux 3.8 on Octeon
+> -- in
+> comparison with 3.7 Linux crashes with
 >
-> A mp3 player program was ported to run in the APRP (APSP exactly) model.
-> Considerable performance benefits were observed on the player program.
-> CodeSourcery tools instead of the old SDE tools were used to build the
-> example.
+[...]
+> [    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
 >
-> Changes:
-> v4 - v3:
-> o Rebase onto HEAD of master (3.9-rc6 as of now).
-> v3 - v2:
-> o Split CMP/MT flavors into different files -cmp/-mt.
-> o Put Malta needed changes into a separate patch.
-> o Code style adjustments in rtlx/vpe files.
-> o Remove kspd.h which might have been left out in Ralf's kspd removal.
-> v2 - v1:
-> o Rebase the patches to the latest kernel, and fix a bunch of warnings and
->    errors reported by the current scripts/checkpatch.pl.
-> o Add MIPS_MALTA dependency to Kconfig since modifications of Malta files
->    are needed. But it should be easy to port changes to other platforms.
+> There are at least couple of issues in the patch:
 >
-> Deng-Cheng Zhu (5):
->    MIPS: APRP (APSP): fix/enrich functionality
->    MIPS: APRP (APSP): split vpe-loader and rtlx into cmp/mt flavors
->    MIPS: APRP (APSP): remove kspd.h
->    MIPS: let amon_cpu_start() report results
->    MIPS: APRP (APSP): malta board support
+> 1. reason for add_memory_region(memory, mem_alloc_size, BOOT_MEM_RAM)
+> instead of
+> add_memory_region(memory, size, BOOT_MEM_RAM) is unclear, especially
+> because it
+> will discard corrections performed by two preceding calls to
+> memory_exclude_page().
+> This is fixed using size again instead of mem_alloc_size, moreover,
+> block sizes
+> calculation could be simplified.
 >
->   arch/mips/Kconfig                                  |    9 +
->   arch/mips/include/asm/amon.h                       |    2 +-
->   arch/mips/include/asm/kspd.h                       |   32 -
->   .../include/asm/mach-malta/cpu-feature-overrides.h |    3 +
->   arch/mips/include/asm/rtlx.h                       |   47 +-
->   arch/mips/include/asm/vpe.h                        |  117 +++-
->   arch/mips/kernel/Makefile                          |    9 +-
->   arch/mips/kernel/rtlx-cmp.c                        |  126 ++++
->   arch/mips/kernel/rtlx-mt.c                         |  161 +++++
->   arch/mips/kernel/rtlx.c                            |  203 ++-----
->   arch/mips/kernel/vpe-cmp.c                         |  203 ++++++
->   arch/mips/kernel/vpe-mt.c                          |  526 ++++++++++++++
->   arch/mips/kernel/vpe.c                             |  732 ++------------------
->   arch/mips/mti-malta/malta-amon.c                   |    8 +-
->   arch/mips/mti-malta/malta-int.c                    |   21 +
->   15 files changed, 1307 insertions(+), 892 deletions(-)
->   delete mode 100644 arch/mips/include/asm/kspd.h
->   create mode 100644 arch/mips/kernel/rtlx-cmp.c
->   create mode 100644 arch/mips/kernel/rtlx-mt.c
->   create mode 100644 arch/mips/kernel/vpe-cmp.c
->   create mode 100644 arch/mips/kernel/vpe-mt.c
+> 2. add_memory_region(kernel_start, kernel_size, BOOT_MEM_RAM) marks
+> kernel body
+> as RAM available for allocation, that's why the kernel later crashes
+> overwritting
+> itself. Marking it as BOOT_MEM_INIT_RAM solves the crash and still
+> allows to load
+> the same kernel with kexec (tested also).
+>
+
+I have a different patch I am testing that gets rid of all this crap.
+
+The strategy we are using is to use cvmx_bootmem named blocks for all 
+memory in a KEXEC environment.
+
+David Daney
+
+
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin.ext@nsn.com>
+> Cc: David Daney <david.daney@cavium.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> ---
+>
+> Changes in V2:
+> * corrected "end" calculation, simplified "size" calculation
+> * Mapped the kernel correctly as INIT RAM, instead of throwing this code
+> out
+>
+> As a result, kernel not only boots succefully, but also able to load itself
+> with "kexec -l <image>".
+>
+> --- linux.orig/arch/mips/cavium-octeon/setup.c
+> +++ linux/arch/mips/cavium-octeon/setup.c
+> @@ -936,14 +936,14 @@ void __init plat_mem_setup(void)
+>                           CVMX_PCIE_BAR1_PHYS_SIZE,
+>                           &memory, &size);
+>   #ifdef CONFIG_KEXEC
+> -            end = memory + mem_alloc_size;
+> +            end = memory + size;
+>
+>               /*
+>                * This function automatically merges address regions
+>                * next to each other if they are received in
+>                * incrementing order
+>                */
+> -            if (memory < crashk_base && end >  crashk_end) {
+> +            if (memory < crashk_base && end > crashk_end) {
+>                   /* region is fully in */
+>                   add_memory_region(memory,
+>                             crashk_base - memory,
+> @@ -969,20 +969,20 @@ void __init plat_mem_setup(void)
+>                    * Overlap with the beginning of the region,
+>                    * reserve the beginning.
+>                     */
+> -                mem_alloc_size -= crashk_end - memory;
+> +                size = end - crashk_end;
+>                   memory = crashk_end;
+>               } else if (memory < crashk_base && end > crashk_base &&
+> -                   end < crashk_end)
+> +                   end < crashk_end) {
+>                   /*
+>                    * Overlap with the beginning of the region,
+>                    * chop of end.
+>                    */
+> -                mem_alloc_size -= end - crashk_base;
+> +                size = crashk_base - memory;
+> +            }
+>   #endif
+> -            add_memory_region(memory, mem_alloc_size, BOOT_MEM_RAM);
+> +            if (size)
+> +                add_memory_region(memory, size, BOOT_MEM_RAM);
+>               total += mem_alloc_size;
+> -            /* Recovering mem_alloc_size */
+> -            mem_alloc_size = 4 << 20;
+>           } else {
+>               break;
+>           }
+> @@ -994,7 +994,7 @@ void __init plat_mem_setup(void)
+>
+>       /* Adjust for physical offset. */
+>       kernel_start &= ~0xffffffff80000000ULL;
+> -    add_memory_region(kernel_start, kernel_size, BOOT_MEM_RAM);
+> +    add_memory_region(kernel_start, kernel_size, BOOT_MEM_INIT_RAM);
+>   #endif /* CONFIG_CRASH_DUMP */
+>
+>   #ifdef CONFIG_CAVIUM_RESERVE32
+>
 >

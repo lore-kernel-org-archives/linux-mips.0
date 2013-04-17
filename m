@@ -1,15 +1,21 @@
-Received: from smtp.eu.citrix.com ([46.33.159.39]:49779 "EHLO
-        SMTP.EU.CITRIX.COM" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6835154Ab3DXKsyQ8xI8 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Apr 2013 12:48:54 +0200
-Message-ID: <1366800525.20256.266.camel@zakaz.uk.xensource.com>
-Subject: [RFC] device-tree.git automatic sync from linux.git
-From: Ian Campbell <Ian.Campbell@citrix.com>
-Date: Wed, 24 Apr 2013 11:48:45 +0100
-Content-Type: text/plain; charset="UTF-8"
+Received: from mho-02-ewr.mailhop.org ([204.13.248.72]:34763 "EHLO
+        mho-02-ewr.mailhop.org" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6816285Ab3DQQK6GBv2B (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 17 Apr 2013 18:10:58 +0200
+Date: Wed, 17 Apr 2013 12:10:36 -0400
+From: Jason Cooper <jason@lakedaemon.net>
+Subject: Re: [PATCH v7 1/3] of/pci: Unify pci_process_bridge_OF_ranges from
+ Microblaze and PowerPC
+Message-ID: <20130417161036.GB27197@titan.lakedaemon.net>
+References: <1366107508-12672-1-git-send-email-Andrew.Murray@arm.com>
+ <1366107508-12672-2-git-send-email-Andrew.Murray@arm.com>
+ <20130416103005.GB12726@arm.com>
+ <20130417160015.777453E2B73@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-Path: <Ian.Campbell@citrix.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20130417160015.777453E2B73@localhost>
+Return-Path: <jason@lakedaemon.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,72 +25,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: Grant Likely <grant.likely@secretlab.ca>, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, microblaze-uclinux@itee.uq.edu.au, linux-mips@linux-mips.org, linux@lists.openrisc.net, linuxppc-dev@lists.ozlabs.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
-Message-ID: <20130424104845.TWVe2OGV-RXvMLUGbPMOXuy0UqIx5YYuUCchvzQBqzU@z>
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: Andrew Murray <andrew.murray@arm.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "siva.kallam@samsung.com" <siva.kallam@samsung.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>, "thierry.reding@avionic-design.de" <thierry.reding@avionic-design.de>, Liviu Dudau <Liviu.Dudau@arm.com>, "paulus@samba.org" <paulus@samba.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "jg1.han@samsung.com" <jg1.han@samsung.com>, "jgunthorpe@obsidianresearch.com" <jgunthorpe@obsidianresearch.com>, "thomas.abraham@linaro.org" <thomas.abraham@linaro.org>, "benh@kernel.crashing.org" <benh@kernel.crashing.org>, "arnd@arndb.de" <arnd@arndb.de>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, "bhelgaas@google.com" <bhelgaas@google.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "thomas.petazzoni@free-electrons.com" <thomas.petazzoni@free-electrons.com>, "monstr@monstr.eu" <monstr@monstr.eu>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "suren.reddy@samsung.com" <suren.reddy@samsung.com>, Olof Johansson <olof@lixom.net>, Andrew Lunn <andrew@lunn.ch>, Gregory CLEMENT <gregory.clement@free-electrons.com>
+Message-ID: <20130417161036.G0yD_A8QpY3f5skqMT8m0oBY-pIJ1NFBCBTOUz16Aq4@z>
 
-Hi,
+On Wed, Apr 17, 2013 at 05:00:15PM +0100, Grant Likely wrote:
+> On Tue, 16 Apr 2013 11:30:06 +0100, Andrew Murray <andrew.murray@arm.com> wrote:
+> > On Tue, Apr 16, 2013 at 11:18:26AM +0100, Andrew Murray wrote:
+> > > The pci_process_bridge_OF_ranges function, used to parse the "ranges"
+> > > property of a PCI host device, is found in both Microblaze and PowerPC
+> > > architectures. These implementations are nearly identical. This patch
+> > > moves this common code to a common place.
+> > > 
+> > > Signed-off-by: Andrew Murray <Andrew.Murray@arm.com>
+> > > Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+> > > Reviewed-by: Rob Herring <rob.herring@calxeda.com>
+> > > Tested-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+> > > Tested-by: Linus Walleij <linus.walleij@linaro.org>
+> > > Acked-by: Michal Simek <monstr@monstr.eu>
+> > > ---
+> > >  arch/microblaze/include/asm/pci-bridge.h |    5 +-
+> > >  arch/microblaze/pci/pci-common.c         |  192 ----------------------------
+> > >  arch/powerpc/include/asm/pci-bridge.h    |    5 +-
+> > >  arch/powerpc/kernel/pci-common.c         |  192 ----------------------------
+> > 
+> > Is there anyone on linuxppc-dev/linux-mips that can help test this patchset?
+> > 
+> > I've tested that it builds on powerpc with a variety of configs (some which
+> > include fsl_pci.c implementation). Though I don't have hardware to verify that
+> > it works.
+> > 
+> > I haven't tested this builds or runs on MIPS.
+> > 
+> > You shouldn't see any difference in behaviour or new warnings and PCI devices
+> > should continue to operate as before.
+> 
+> I've got through a line-by-line comparison between powerpc, microblaze,
+> and then new code. The differences are purely cosmetic, so I have
+> absolutely no concerns about this patch. I've applied it to my tree.
 
-First off apologies for the large CC list -- I think this catches the
-arch list for all the arches with device tree source in the tree.
+oops.  Due to the number of dependencies the mvebu-pcie series has (this
+being one of them, we (arm-soc/mvebu) asked if we could take this
+through our tree.  Rob Herring agreed to this several days ago.  Is this
+a problem for you?
 
-Various folks have expressed an interest in eventually splitting the
-device tree bindings out of the Linux git repository into a separate
-tree. This should help reduce the cross talk between the code and the
-bindings and to make it difficult to accidentally "co-evolve" the
-bindings and the code (i.e. break compatibility) etc. There are also
-other projects (such as Xen) which would also like to use device-tree as
-an OS agnostic description of the hardware.
+It would truly (dogs and cats living together) upset the apple cart for
+us at this stage to pipe these through a different tree...
 
-I was talking to Grant about this at this Spring's LinaroConnect in Hong
-Kong and as a first step he was interested in a device-tree.git
-repository which is automatically kept insync with the main Linux tree.
-Somehow I found myself volunteering to set up that tree.
+thx,
 
-An RFC repository can be found at:
-        http://xenbits.xen.org/gitweb/?p=people/ianc/device-tree-rebasing.git
-
-This is created using git filter-branch and retains the full history for
-the device tree source files up to v3.9-rc8.
-
-The master branch contains everything including the required build
-infrastructure while upstream/master and upstream/dts contain the most
-recently converted upstream master branch and the pristine converted
-version respectively. Each upstream tag T is paired with a tag T-dts
-which is the converted version of that tag.
-
-Note that the tree will be potentially rebasing (hence the name) for the
-time being while I'm still smoothing out the conversion process.
-
-The paths to include in the conversion are described in
-scripts/rewrite-paths.sed. The generic cases are:
-        arch/ARCH/boot/dts/*.dts and *.dts? (for dtsi and dtsp etc)
-	arch/ARCH/boot/*.dts and *.dts?
-        arch/ARCH/include/dts/* (currently unused?)
-which become src/ARCH/*.dts and *.dts? plus src/ARCH/include/*
-
-There are also some special cases for some arches which don't follow
-this pattern and for older versions of the kernel which were less
-consistent. The paths were gleaned from git ls-tree + grep on every tag
-in the tree, so if a file was added and moved between two rcs then the
-original path may not be covered (so the move will look like it just
-adds the files).
-
-In principal this supports the new .dtsp files and includes the required
-include paths in the conversion but none of them seem to be in mainline
-yet, so we'll have to see!
-
-The initial conversion took in excess of 40 hours (running out of a
-ramdisk) so even if the result is stable in terms of commit ids etc a
-fresh conversion every time isn't an option for a ~daily sync so I had
-to create a slightly hacked around git-filter-branch (found in
-scripts/git-filter-branch) to support incremental filtering, which I
-intend to send to the git folks soon. 
-
-Please let me know what you think.
-
-Ian.
-
-[0] real    2533m32.142s
-    user    2393m35.039s
-    sys     343m44.385s
+Jason.

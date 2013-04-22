@@ -1,20 +1,17 @@
-Received: from fw-tnat.cambridge.arm.com ([217.140.96.21]:33620 "EHLO
-        cam-smtp0.cambridge.arm.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S6835024Ab3DVK5jmZFNt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Apr 2013 12:57:39 +0200
-Date: Mon, 22 Apr 2013 11:57:24 +0100
-From: Andrew Murray <andrew.murray@arm.com>
-Subject: Re: [PATCH v7 2/3] of/pci: Provide support for parsing PCI DT
- ranges property
-Message-ID: <20130422105724.GB17007@arm.com>
-References: <1366107508-12672-1-git-send-email-Andrew.Murray@arm.com>
- <1366107508-12672-3-git-send-email-Andrew.Murray@arm.com>
- <20130418134401.84AEE3E1319@localhost>
+Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]:32935
+        "EHLO va3outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6816635Ab3DVRd1A7yDf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Apr 2013 19:33:27 +0200
+Message-ID: <5175744D.5020404@caviumnetworks.com>
+Date: Mon, 22 Apr 2013 10:33:01 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20130418134401.84AEE3E1319@localhost>
-Return-Path: <andrew.murray@arm.com>
+Subject: Re: [PATCH] mips: Fix invalid interrupt name in cavium-octeon
+References: <2202498.1401366325451851.JavaMail.weblogic@epv6ml11> <20130422132203.GB31642@linux-mips.org>
+In-Reply-To: <20130422132203.GB31642@linux-mips.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,89 +21,72 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "jgunthorpe@obsidianresearch.com" <jgunthorpe@obsidianresearch.com>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "siva.kallam@samsung.com" <siva.kallam@samsung.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "jg1.han@samsung.com" <jg1.han@samsung.com>, Liviu Dudau <Liviu.Dudau@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, "bhelgaas@google.com" <bhelgaas@google.com>, "suren.reddy@samsung.com" <suren.reddy@samsung.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "monstr@monstr.eu" <monstr@monstr.eu>, "benh@kernel.crashing.org" <benh@kernel.crashing.org>, "paulus@samba.org" <paulus@samba.org>, "thomas.petazzoni@free-electrons.com" <thomas.petazzoni@free-electrons.com>, "thierry.reding@avionic-design.de" <thierry.reding@avionic-design.de>, "thomas.abraham@linaro.org" <thomas.abraham@linaro.org>, "arnd@arndb.de" <arnd@arndb.de>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>
-Message-ID: <20130422105724.If5HDovqZIzc2-Pw9Drb-49pewn6l95f5P2B-QbHk7A@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: EUNBONG SONG <eunb.song@samsung.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20130422173301._QMhuEVMAWP2UtGlE5wew6A7ZayOTDaoM38qAZgPzuE@z>
 
-On Thu, Apr 18, 2013 at 02:44:01PM +0100, Grant Likely wrote:
-> On Tue, 16 Apr 2013 11:18:27 +0100, Andrew Murray <Andrew.Murray@arm.com> wrote:
+On 04/22/2013 06:22 AM, Ralf Baechle wrote:
+> On Thu, Apr 18, 2013 at 10:50:52PM +0000, EUNBONG SONG wrote:
+>
+>> Change interrupt name from "RML/RSL" to "RMLRSL".
+>> This fixes following warning message.
+>>
+>> [   24.938793] WARNING: at fs/proc/generic.c:307 __xlate_proc_name+0x124/0x160()
+>> [   24.945926] name 'RML/RSL'
+>> [   24.948642] Modules linked in:
+>> [   24.951707] Call Trace:
+>> [   24.954157] [<ffffffff8069fe18>] dump_stack+0x8/0x34
+>> [   24.959136] [<ffffffff80290d90>] warn_slowpath_common+0x78/0xa8
+>> [   24.965056] [<ffffffff80290e60>] warn_slowpath_fmt+0x38/0x48
+>> [   24.970723] [<ffffffff803cbc8c>] __xlate_proc_name+0x124/0x160
+>> [   24.976556] [<ffffffff803cbe78>] __proc_create+0x78/0x128
+>> [   24.981963] [<ffffffff803cd044>] proc_mkdir_mode+0x2c/0x70
+>> [   24.987451] [<ffffffff80302418>] register_handler_proc+0x108/0x130
+>> [   24.993642] [<ffffffff802fd078>] __setup_irq+0x210/0x540
+>> [   24.998963] [<ffffffff802fd67c>] request_threaded_irq+0x114/0x1a0
+>> [   25.005060] [<ffffffff80262e0c>] prom_free_prom_memory+0xd4/0x588
+>> [   25.011164] [<ffffffff80691820>] free_initmem+0x10/0xc0
+>> [   25.016390] [<ffffffff80691720>] kernel_init+0x20/0x100
+>> [   25.021624] [<ffffffff8026c7e0>] ret_from_kernel_thread+0x10/0x18
+>>
+>> Signed-off-by: Eunbong Song <eunb.song@samsung.com>
+>> ---
+>>   arch/mips/cavium-octeon/setup.c |    2 +-
+>>   1 files changed, 1 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
+>> index b0baa29..92c3150 100644
+>> --- a/arch/mips/cavium-octeon/setup.c
+>> +++ b/arch/mips/cavium-octeon/setup.c
+>> @@ -1066,7 +1066,7 @@ void prom_free_prom_memory(void)
+>>
+>>   	/* Add an interrupt handler for general failures. */
+>>   	if (request_irq(OCTEON_IRQ_RML, octeon_rlm_interrupt, IRQF_SHARED,
+>> -			"RML/RSL", octeon_rlm_interrupt)) {
+>> +			"RMLRSL", octeon_rlm_interrupt)) {
+>>   		panic("Unable to request_irq(OCTEON_IRQ_RML)");
+>>   	}
+>>   #endif
+>
+> Interesting.  While your patch certainly is correct, you seem to have
+> further modifications in your tree.
+>
+> David, Above code is wrapped by #ifdef CONFIG_CAVIUM_DECODE_RSL but doesn't
+> seem to get defined anywhere.  What shall we do about this?
 
-> 
-> Acked-by: Grant Likely <grant.likely@secretlab.ca>
-> 
-> But comments below...
-> 
+It seems to be a vestige of the out-of-tree version.  I was going to 
+send a patch to remove it all, and perhaps another to replace it with 
+something better.
 
-I've updated the patchset (now v8) to reflect your feedback, after a closer
-look...
+David Daney
 
-> > -
-> > -		pr_debug("pci_space: 0x%08x pci_addr:0x%016llx ",
-> > -				pci_space, pci_addr);
-> > -		pr_debug("cpu_addr:0x%016llx size:0x%016llx\n",
-> > -					cpu_addr, size);
-> > -
-> > -		ranges += np;
-> > +		pr_debug("pci_space: 0x%08x pci_addr: 0x%016llx ",
-> > +				range.pci_space, range.pci_addr);
-> > +		pr_debug("cpu_addr: 0x%016llx size: 0x%016llx\n",
-> > +				range.cpu_addr, range.size);
-> 
-> Nit: the patch changed whitespace on the pr_debug() statements, so even
-> though the first line of each is identical, they look different in the
-> patch.
-> 
 
-Actually the first line isn't identical, the original file was inconsistent
-with its use of spaces between ':' and '0x%0' - my patch ensured that there
-was always a space. I guess this could have been done as a separate patch.
-
-> >  
-> >  		/* If we failed translation or got a zero-sized region
-> >  		 * (some FW try to feed us with non sensical zero sized regions
-> >  		 * such as power3 which look like some kind of attempt
-> >  		 * at exposing the VGA memory hole)
-> >  		 */
-> > -		if (cpu_addr == OF_BAD_ADDR || size == 0)
-> > +		if (range.cpu_addr == OF_BAD_ADDR || range.size == 0)
-> >  			continue;
-> 
-> Can this also be rolled into the parsing iterator?
-> 
-
-I decided not to do this. Mainly because ARM drivers use the parser directly
-(instead of pci_process_bridge_OF_ranges function) and it seemed perfectly
-valid for the parser to return a range of size 0 if that is what was present in
-the DT.
-
-> >  
-> > -		/* Now consume following elements while they are contiguous */
-> > -		for (; rlen >= np * sizeof(u32);
-> > -		     ranges += np, rlen -= np * 4) {
-> > -			if (ranges[0] != pci_space)
-> > -				break;
-> > -			pci_next = of_read_number(ranges + 1, 2);
-> > -			cpu_next = of_translate_address(dev, ranges + 3);
-> > -			if (pci_next != pci_addr + size ||
-> > -			    cpu_next != cpu_addr + size)
-> > -				break;
-> > -			size += of_read_number(ranges + pna + 3, 2);
-> > -		}
-> > -
-> >  		/* Act based on address space type */
-> >  		res = NULL;
-> > -		switch ((pci_space >> 24) & 0x3) {
-> > -		case 1:		/* PCI IO space */
-> > +		res_type = range.flags & IORESOURCE_TYPE_BITS;
-> > +		if (res_type == IORESOURCE_IO) {
-> 
-> Why the change from switch() to an if/else if sequence?
-
-I think this was an artifact of the patches evolution, I've reverted back to
-the switch.
-
-> 
-> But those are mostly nitpicks. If this is deferred to v3.10 then I would
-> suggest fixing them up and posting for another round of review.
-
-Andrew Murray
+>
+>    Ralf
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+>
+>

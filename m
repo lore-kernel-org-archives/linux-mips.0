@@ -1,23 +1,20 @@
-Received: from mailout3.samsung.com ([203.254.224.33]:27598 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6823043Ab3EAE5J2qPHG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 1 May 2013 06:57:09 +0200
-Received: from epcpsbgr2.samsung.com
- (u142.gpu120.samsung.co.kr [203.254.230.142])
- by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MM3005JISERTKA0@mailout3.samsung.com> for
- linux-mips@linux-mips.org; Wed, 01 May 2013 13:57:00 +0900 (KST)
-Date: Wed, 01 May 2013 04:57:00 +0000 (GMT)
-From: EUNBONG SONG <eunb.song@samsung.com>
-Subject: mips; boot fail after merge 3.9+
-Reply-to: eunb.song@samsung.com
-MIME-version: 1.0
-Content-transfer-encoding: base64
-Content-type: text/plain; charset=euc-kr
-MIME-version: 1.0
-Message-id: <20522420.158691367384219315.JavaMail.weblogic@epml17>
-Return-Path: <eunb.song@samsung.com>
+Received: from fw-tnat.cambridge.arm.com ([217.140.96.21]:40373 "EHLO
+        cam-smtp0.cambridge.arm.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S6822508Ab3EGICJi7tcO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 7 May 2013 10:02:09 +0200
+Date: Tue, 7 May 2013 09:01:42 +0100
+From: Andrew Murray <andrew.murray@arm.com>
+Subject: Re: [PATCH v8 1/3] of/pci: Unify pci_process_bridge_OF_ranges from
+ Microblaze and PowerPC
+Message-ID: <20130507080142.GA8808@arm.com>
+References: <1366627295-16964-1-git-send-email-Andrew.Murray@arm.com>
+ <1366627295-16964-2-git-send-email-Andrew.Murray@arm.com>
+ <1367721709.11982.37.camel@pasglop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1367721709.11982.37.camel@pasglop>
+Return-Path: <andrew.murray@arm.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,96 +24,75 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "ralf@linux-mips.org" <ralf@linux-mips.org>, tglx@linutronix.de, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "jgunthorpe@obsidianresearch.com" <jgunthorpe@obsidianresearch.com>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "siva.kallam@samsung.com" <siva.kallam@samsung.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "jg1.han@samsung.com" <jg1.han@samsung.com>, Liviu Dudau <Liviu.Dudau@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, "bhelgaas@google.com" <bhelgaas@google.com>, "suren.reddy@samsung.com" <suren.reddy@samsung.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "monstr@monstr.eu" <monstr@monstr.eu>, "paulus@samba.org" <paulus@samba.org>, "thomas.petazzoni@free-electrons.com" <thomas.petazzoni@free-electrons.com>, "thierry.reding@avionic-design.de" <thierry.reding@avionic-design.de>, "thomas.abraham@linaro.org" <thomas.abraham@linaro.org>, "arnd@arndb.de" <arnd@arndb.de>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>, "juhosg@openwrt.org" <juhosg@openwrt.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, Rob Herring <robherring2@gmail.com>
+Message-ID: <20130507080142.AqX5Gq4fzoBj2JBalA5pTAB3PuDwUvQ0kWrCFwVNLh8@z>
 
-DQpIZWxsby4gDQpBZnRlciBtZXJnZSBjYXZpdW0gYm9hcmQgYm9vdHMgZmFpbCwgYm9vdCBsb2cg
-bWVzc2FnZXMgYXJlIGFzIGZvbGxvd3MuDQpJIGVuYWJsZWQgaW5pdGNhbGxfZGVidWcgZm9yIGRl
-YnVnZ2luZy4gDQoNClsgICAgMC4wMDAwMDBdIEluaXRpYWxpemluZyBjZ3JvdXAgc3Vic3lzIGNw
-dXNldA0KWyAgICAwLjAwMDAwMF0gSW5pdGlhbGl6aW5nIGNncm91cCBzdWJzeXMgY3B1YWNjdA0K
-WyAgICAwLjAwMDAwMF0gTGludXggdmVyc2lvbiAzLjkuMCsgKGVic29uZ0B1YmkpIChnY2MgdmVy
-c2lvbiA0LjQuMSAoTW9udGFWaXN0YSBMaW51eCBHKysgNC40LTEzMDIwMTIxMzgpICkgIzIzIFNN
-UCBQUkVFTVBUIFdlZCBNYXkgMSAxMzo0NzoyNSBLU1QgMjAxMw0KWyAgICAwLjAwMDAwMF0gb2N0
-ZW9uX2Jvb3RpbmZvLT5kcmFtX3NpemU6IDQwMDANClsgICAgMC4wMDAwMDBdIEVuYWJsaW5nIHRh
-ZDEgZXJyb3IgaW50ZXJydXB0DQpbICAgIDAuMDAwMDAwXSBFbmFibGluZyB0YWQyIGVycm9yIGlu
-dGVycnVwdA0KWyAgICAwLjAwMDAwMF0gRW5hYmxpbmcgdGFkMyBlcnJvciBpbnRlcnJ1cHQNClsg
-ICAgMC4wMDAwMDBdIENWTVNFRyBzaXplOiAyIGNhY2hlIGxpbmVzICgyNTYgYnl0ZXMpDQpbICAg
-IDAuMDAwMDAwXSBDYXZpdW0gTmV0d29ya3MgU0RLLTIuMS4wLXA3IGJ1aWxkIDQ0Mg0KWyAgICAw
-LjAwMDAwMF0gYm9vdGNvbnNvbGUgW2Vhcmx5MF0gZW5hYmxlZA0KWyAgICAwLjAwMDAwMF0gQ1BV
-IHJldmlzaW9uIGlzOiAwMDBkOTEwMSAoQ2F2aXVtIE9jdGVvbiBJSSkNClsgICAgMC4wMDAwMDBd
-IENoZWNraW5nIGZvciB0aGUgbXVsdGlwbHkvc2hpZnQgYnVnLi4uIG5vLg0KWyAgICAwLjAwMDAw
-MF0gQ2hlY2tpbmcgZm9yIHRoZSBkYWRkaXUgYnVnLi4uIG5vLg0KWyAgICAwLjAwMDAwMF0gRGV0
-ZXJtaW5lZCBwaHlzaWNhbCBSQU0gbWFwOg0KWyAgICAwLjAwMDAwMF0gIG1lbW9yeTogMDAwMDAw
-MDAwNmMwMDAwMCBAIDAwMDAwMDAwMDExMDAwMDAgKHVzYWJsZSkNClsgICAgMC4wMDAwMDBdICBt
-ZW1vcnk6IDAwMDAwMDAwMDdjMDAwMDAgQCAwMDAwMDAwMDA4MjAwMDAwICh1c2FibGUpDQpbICAg
-IDAuMDAwMDAwXSAgbWVtb3J5OiAwMDAwMDAwMDExODAwMDAwIEAgMDAwMDAwMDAzMDAwMDAwMCAo
-dXNhYmxlKQ0KWyAgICAwLjAwMDAwMF0gIG1lbW9yeTogMDAwMDAwMDAwMGY4NTc0MCBAIDAwMDAw
-MDAwMDAxMDAwMDAgKHVzYWJsZSkNClsgICAgMC4wMDAwMDBdIFdhc3RpbmcgMTQzMzYgYnl0ZXMg
-Zm9yIHRyYWNraW5nIDI1NiB1bnVzZWQgcGFnZXMNClsgICAgMC4wMDAwMDBdIEluaXRyZCBub3Qg
-Zm91bmQgb3IgZW1wdHkgLSBkaXNhYmxpbmcgaW5pdHJkDQpbICAgIDAuMDAwMDAwXSBzb2Z0d2Fy
-ZSBJTyBUTEIgW21lbSAweDAxYjhhMDAwLTB4MDFiY2EwMDBdICgwTUIpIG1hcHBlZCBhdCBbYTgw
-MDAwMDAwMWI4YTAwMC1hODAwMDAwMDAxYmM5ZmZmXQ0KWyAgICAwLjAwMDAwMF0gWm9uZSByYW5n
-ZXM6DQpbICAgIDAuMDAwMDAwXSAgIERNQTMyICAgIFttZW0gMHgwMDEwMDAwMC0weGVmZmZmZmZm
-XQ0KWyAgICAwLjAwMDAwMF0gICBOb3JtYWwgICBlbXB0eQ0KWyAgICAwLjAwMDAwMF0gTW92YWJs
-ZSB6b25lIHN0YXJ0IGZvciBlYWNoIG5vZGUNClsgICAgMC4wMDAwMDBdIEVhcmx5IG1lbW9yeSBu
-b2RlIHJhbmdlcw0KWyAgICAwLjAwMDAwMF0gICBub2RlICAgMDogW21lbSAweDAwMTAwMDAwLTB4
-MDEwODRmZmZdDQpbICAgIDAuMDAwMDAwXSAgIG5vZGUgICAwOiBbbWVtIDB4MDExMDAwMDAtMHgw
-N2NmZmZmZl0NClsgICAgMC4wMDAwMDBdICAgbm9kZSAgIDA6IFttZW0gMHgwODIwMDAwMC0weDBm
-ZGZmZmZmXQ0KWyAgICAwLjAwMDAwMF0gICBub2RlICAgMDogW21lbSAweDMwMDAwMDAwLTB4NDE3
-ZmZmZmZdDQpbICAgIDAuMDAwMDAwXSBDYXZpdW0gSG90cGx1ZzogQXZhaWxhYmxlIGNvcmVtYXNr
-IDB4ZmZmZmZmMDANClsgICAgMC4wMDAwMDBdIFByaW1hcnkgaW5zdHJ1Y3Rpb24gY2FjaGUgMzdr
-QiwgdmlydHVhbGx5IHRhZ2dlZCwgMzcgd2F5LCA4IHNldHMsIGxpbmVzaXplIDEyOCBieXRlcy4N
-ClsgICAgMC4wMDAwMDBdIFByaW1hcnkgZGF0YSBjYWNoZSAzMmtCLCAzMi13YXksIDggc2V0cywg
-bGluZXNpemUgMTI4IGJ5dGVzLg0KWyAgICAwLjAwMDAwMF0gUEVSQ1BVOiBFbWJlZGRlZCAxMSBw
-YWdlcy9jcHUgQGE4MDAwMDAwMDFiZWIwMDAgczEyODAwIHI4MTkyIGQyNDA2NCB1NDUwNTYNClsg
-ICAgMC4wMDAwMDBdIEJ1aWx0IDEgem9uZWxpc3RzIGluIFpvbmUgb3JkZXIsIG1vYmlsaXR5IGdy
-b3VwaW5nIG9uLiAgVG90YWwgcGFnZXM6IDEzMzE5OA0KWyAgICAwLjAwMDAwMF0gS2VybmVsIGNv
-bW1hbmQgbGluZTogIHJvb3Q9L2Rldi9uZnMgcncgbmZzcm9vdD0xNjUuMjEzLjE3Ni4xNDU6L2hv
-bWUvZWJzb25nL3Byb2plY3QvcHJlc21iL2FwYy9Qa2cvbmZzcm9vdC93ZWM4NTAwIGlwPTE2NS4y
-MTMuMTc2LjEwODoxNjUuMjEzLjE3Ni4xNDU6MTY1LjIxMy4xNzYuMToyNTUuMjU1LjI1NS4wOjpt
-Z210MCBjb25zb2xlPXR0eVMwLDExNTIwMA0KWyAgICAwLjAwMDAwMF0gUElEIGhhc2ggdGFibGUg
-ZW50cmllczogNDA5NiAob3JkZXI6IDMsIDMyNzY4IGJ5dGVzKQ0KWyAgICAwLjAwMDAwMF0gRGVu
-dHJ5IGNhY2hlIGhhc2ggdGFibGUgZW50cmllczogMTMxMDcyIChvcmRlcjogOCwgMTA0ODU3NiBi
-eXRlcykNClsgICAgMC4wMDAwMDBdIElub2RlLWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogNjU1
-MzYgKG9yZGVyOiA3LCA1MjQyODggYnl0ZXMpDQpbICAgIDAuMDAwMDAwXSBNZW1vcnk6IDUxMDE2
-MGsvNTQwMTgwayBhdmFpbGFibGUgKDU4MTFrIGtlcm5lbCBjb2RlLCAzMDAyMGsgcmVzZXJ2ZWQs
-IDg5MzNrIGRhdGEsIDI5MmsgaW5pdCwgMGsgaGlnaG1lbSkNClsgICAgMC4wMDAwMDBdIFByZWVt
-cHRpYmxlIGhpZXJhcmNoaWNhbCBSQ1UgaW1wbGVtZW50YXRpb24uDQpbICAgIDAuMDAwMDAwXSBO
-Ul9JUlFTOjQ1Mw0KWyAgICAwLjAwMDAwMF0gQ29uc29sZTogY29sb3VyIGR1bW15IGRldmljZSA4
-MHgyNQ0KWyAgIDI2LjcwMTE2N10gQ2FsaWJyYXRpbmcgZGVsYXkgbG9vcCAoc2tpcHBlZCkgcHJl
-c2V0IHZhbHVlLi4gMjQwMC4wMCBCb2dvTUlQUyAobHBqPTEyMDAwMDAwKQ0KWyAgIDI2LjcwOTUw
-N10gcGlkX21heDogZGVmYXVsdDogMzI3NjggbWluaW11bTogMzAxDQpbICAgMjYuNzE0MTYyXSBT
-ZWN1cml0eSBGcmFtZXdvcmsgaW5pdGlhbGl6ZWQNClsgICAyNi43MTgyMThdIE1vdW50LWNhY2hl
-IGhhc2ggdGFibGUgZW50cmllczogMjU2DQpbICAgMjYuNzIzMzk4XSBJbml0aWFsaXppbmcgY2dy
-b3VwIHN1YnN5cyBkZXZpY2VzDQpbICAgMjYuNzI3NjY5XSBJbml0aWFsaXppbmcgY2dyb3VwIHN1
-YnN5cyBmcmVlemVyDQpbICAgMjYuNzMyMTMxXSBDaGVja2luZyBmb3IgdGhlIGRhZGRpIGJ1Zy4u
-LiBuby4NClsgICAyNi43MzY2MDddIGNhbGxpbmcgIGNubWlwc19jdTJfc2V0dXArMHgwLzB4YyBA
-IDENClsgICAyNi43NDExMzldIGluaXRjYWxsIGNubWlwc19jdTJfc2V0dXArMHgwLzB4YyByZXR1
-cm5lZCAwIGFmdGVyIDAgdXNlY3MNClsgICAyNi43NDc2NTldIGNhbGxpbmcgIHNwYXduX2tzb2Z0
-aXJxZCsweDAvMHgzNCBAIDENCg0KSSBmb3VuZCB0aGlzIGlzc3VlIGFmdGVyIGNkYmVkYzYxYzhk
-MDEyMmFkNjgyODE1OTM2ZjBkMTFkZjFmZTVmNTcuIA0KQW5kIGkgZm91bmQgc29tZXRoaW5nIHN0
-cmFuZ2UuIEkgcmFuIHRoZSBnaXQgc2hvdyBmb3IgdGhpcyBjb21taXQuDQpBcyBiZWxvdyAic2Vs
-ZWN0IEdFTkVSSUNfSURMRV9MT09QIiBpcyBhZGRlZCBmb3IgQ09ORklHX01JUFMuIA0KYnV0IHRo
-ZSBsYXRlc3QgYXJjaC9taXBzL0tjb25maWcgZmlsZSBoYXMgbm90IHRoaXMgb25lLiBJIGhhdmUg
-dHJpZWQgdG8gZmluZCB3aGVuIHRoaXMgaXMgZ29uZS4gYnV0IGkgY2FuJ3QgZmluZC4NCklzIHRo
-ZXJlIGFueSBwcm9ibGVtIHdpdGggdGhpcz8gDQoNCg0KY29tbWl0IGNkYmVkYzYxYzhkMDEyMmFk
-NjgyODE1OTM2ZjBkMTFkZjFmZTVmNTcNCkF1dGhvcjogVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxp
-bnV0cm9uaXguZGU+DQpEYXRlOiAgIFRodSBNYXIgMjEgMjI6NDk6NTIgMjAxMyArMDEwMA0KDQog
-ICAgbWlwczogVXNlIGdlbmVyaWMgaWRsZSBsb29wDQoNCiAgICBTaWduZWQtb2ZmLWJ5OiBUaG9t
-YXMgR2xlaXhuZXIgPHRnbHhAbGludXRyb25peC5kZT4NCiAgICBDYzogTGludXMgVG9ydmFsZHMg
-PHRvcnZhbGRzQGxpbnV4LWZvdW5kYXRpb24ub3JnPg0KICAgIENjOiBSdXN0eSBSdXNzZWxsIDxy
-dXN0eUBydXN0Y29ycC5jb20uYXU+DQogICAgQ2M6IFBhdWwgTWNLZW5uZXkgPHBhdWxtY2tAbGlu
-dXgudm5ldC5pYm0uY29tPg0KICAgIENjOiBQZXRlciBaaWpsc3RyYSA8cGV0ZXJ6QGluZnJhZGVh
-ZC5vcmc+DQogICAgUmV2aWV3ZWQtYnk6IENjOiBTcml2YXRzYSBTLiBCaGF0IDxzcml2YXRzYS5i
-aGF0QGxpbnV4LnZuZXQuaWJtLmNvbT4NCiAgICBDYzogTWFnbnVzIERhbW0gPG1hZ251cy5kYW1t
-QGdtYWlsLmNvbT4NCiAgICBDYzogUmFsZiBCYWVjaGxlIDxyYWxmQGxpbnV4LW1pcHMub3JnPg0K
-ICAgIExpbms6IGh0dHA6Ly9sa21sLmtlcm5lbC5vcmcvci8yMDEzMDMyMTIxNTIzNC43NTQ5NTQ4
-NzFAbGludXRyb25peC5kZQ0KICAgIFNpZ25lZC1vZmYtYnk6IFRob21hcyBHbGVpeG5lciA8dGds
-eEBsaW51dHJvbml4LmRlPg0KDQpkaWZmIC0tZ2l0IGEvYXJjaC9taXBzL0tjb25maWcgYi9hcmNo
-L21pcHMvS2NvbmZpZw0KaW5kZXggNTEyNDRiZi4uZTFhM2QwMiAxMDA2NDQNCi0tLSBhL2FyY2gv
-bWlwcy9LY29uZmlnDQorKysgYi9hcmNoL21pcHMvS2NvbmZpZw0KQEAgLTM0LDYgKzM0LDcgQEAg
-Y29uZmlnIE1JUFMNCiAgICAgICAgc2VsZWN0IEhBVkVfTUVNQkxPQ0tfTk9ERV9NQVANCiAgICAg
-ICAgc2VsZWN0IEFSQ0hfRElTQ0FSRF9NRU1CTE9DSw0KICAgICAgICBzZWxlY3QgR0VORVJJQ19T
-TVBfSURMRV9USFJFQUQNCisgICAgICAgc2VsZWN0IEdFTkVSSUNfSURMRV9MT09QDQogICAgICAg
-IHNlbGVjdCBCVUlMRFRJTUVfRVhUQUJMRV9TT1JUDQogICAgICAgIHNlbGVjdCBHRU5FUklDX0NM
-T0NLRVZFTlRTDQogICAgICAgIHNlbGVjdCBHRU5FUklDX0NNT1NfVVBEQVRFDQo=
+On Sun, May 05, 2013 at 03:41:49AM +0100, Benjamin Herrenschmidt wrote:
+> On Mon, 2013-04-22 at 11:41 +0100, Andrew Murray wrote:
+> > The pci_process_bridge_OF_ranges function, used to parse the "ranges"
+> > property of a PCI host device, is found in both Microblaze and PowerPC
+> > architectures. These implementations are nearly identical. This patch
+> > moves this common code to a common place.
+> 
+> What's happening with this ? I'd like to avoid that patch for now
+> as I'm doing some changes to pci_process_bridge_OF_ranges
+> which are fairly urgent (I might even stick them in the current
+> merge window) to deal with memory windows having separate offsets.
+
+There were no objections to this latest revision until now and it is
+currently sitting with Jason Cooper (mvebu-next/pcie). [1]
+
+> 
+> There's also a few hacks in there that are really ppc specific...
+> 
+> I think the right long term approach is to change the way powerpc
+> (and microblaze ?) initializes PCI host bridges. Move it away from
+> setup_arch() (which is a PITA anyway since it's way too early) to
+> an early init call of some sort, and encapsulate the new struct
+> pci_host_bridge.
+> 
+> We can then directly configure the host bridge windows rather
+> than having this "intermediary" set of resources in our pci_controller
+> and in fact move most of the fields from pci_controller to
+> pci_host_bridge to the point where the former can remain as a
+> simple platform specific wrapper if needed.
+
+This is a view that was also shared by Bjorn [2] when I attempted to
+submit a patchset which moves struct pci_controller to asm-generic.
+
+> 
+> So for new stuff (hint: DT based ARM PCI) or stuff that has to deal with
+> a lot less archaic platforms (hint: Microblaze), I'd recommend going
+> straight for that approach rather than perpetuating the PowerPC code
+> which I'll try to deal with in the next few monthes.
+
+The motativation for my patchsets were to give a way for ARM PCI host
+bridge drivers to parse the DT ranges property, but this snow-balled into
+unifying pci_process_bridge_OF_ranges.
+
+My v8 patchset provides a of_pci_range_parser which is used directly by a
+few ARM PCI DT host bridge drivers, this has been generally accepted and
+tested. I don't see why this can't remain and so I'd really like to keep this
+around. 
+
+Grant, Benjamin would you be happy for me to resubmit this series which provides
+the of_pci_range_parser which will be used by the separate implementations of
+pci_process_bridge_OF_ranges in PowerPC/Microblaze?
+
+Benjamin are you able to still use of_pci_range_parser in your
+'Support per-aperture memory offset' patch?
+
+Thanks,
+
+Andrew Murray
+
+[1] https://lkml.org/lkml/2013/4/22/505
+[2] https://patchwork.kernel.org/patch/2487671
+
+> 
+> Cheers,
+> Ben.
+>  
+> 
+> 

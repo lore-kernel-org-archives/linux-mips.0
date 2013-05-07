@@ -1,20 +1,18 @@
-Received: from gate.crashing.org ([63.228.1.57]:59831 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6822675Ab3EGKUN0oNE9 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 7 May 2013 12:20:13 +0200
-Message-ID: <1367921958.25488.8.camel@pasglop>
-Subject: Re: [PATCH v8 1/3] of/pci: Unify pci_process_bridge_OF_ranges from
- Microblaze and PowerPC
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Date: Tue, 07 May 2013 20:19:18 +1000
-In-Reply-To: <20130507080142.GA8808@arm.com>
-References: <1366627295-16964-1-git-send-email-Andrew.Murray@arm.com>
-         <1366627295-16964-2-git-send-email-Andrew.Murray@arm.com>
-         <1367721709.11982.37.camel@pasglop> <20130507080142.GA8808@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from co1ehsobe004.messaging.microsoft.com ([216.32.180.187]:40353
+        "EHLO co1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6825736Ab3EGRHj2jHxX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 7 May 2013 19:07:39 +0200
+Message-ID: <518934CC.8050600@caviumnetworks.com>
+Date: Tue, 7 May 2013 10:07:24 -0700
+From: David Daney <ddaney@caviumnetworks.com>
+MIME-Version: 1.0
+Subject: Re: MIPS: Test reault for  enable interrupts before WAIT instruction
+ patch
+References: <15709790.301941367908253064.JavaMail.weblogic@epml12>
+In-Reply-To: <15709790.301941367908253064.JavaMail.weblogic@epml12>
+Content-Type: text/plain; charset="EUC-KR"
 Content-Transfer-Encoding: 7bit
-Return-Path: <benh@kernel.crashing.org>
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,52 +22,129 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andrew Murray <andrew.murray@arm.com>
-Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "jgunthorpe@obsidianresearch.com" <jgunthorpe@obsidianresearch.com>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "siva.kallam@samsung.com" <siva.kallam@samsung.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "jg1.han@samsung.com" <jg1.han@samsung.com>, Liviu Dudau <Liviu.Dudau@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, "bhelgaas@google.com" <bhelgaas@google.com>, "suren.reddy@samsung.com" <suren.reddy@samsung.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "monstr@monstr.eu" <monstr@monstr.eu>, "paulus@samba.org" <paulus@samba.org>, "thomas.petazzoni@free-electrons.com" <thomas.petazzoni@free-electrons.com>, "thierry.reding@avionic-design.de" <thierry.reding@avionic-design.de>, "thomas.abraham@linaro.org" <thomas.abraham@linaro.org>, "arnd@arndb.de" <arnd@arndb.de>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>, "juhosg@openwrt.org" <juhosg@openwrt.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, Rob Herring <robherring2@gmail.com>
-Message-ID: <20130507101918.yDAJr63Q0ApEcB2xQk15WTh3gmD7B1HdNg0wmSz_3_s@z>
+To: eunb.song@samsung.com
+Cc: "david.daney@cavium.com" <david.daney@cavium.com>, "tglx@linutronix.de" <tglx@linutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "jogo@openwrt.org" <jogo@openwrt.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, manuel.lauss@gmail.com
+Message-ID: <20130507170724.N7qxzUJ6uuq0GQIiTsj6dmPXCTShMr2t2FxVVTGU2mI@z>
 
-On Tue, 2013-05-07 at 09:01 +0100, Andrew Murray wrote:
+On 05/06/2013 11:30 PM, EUNBONG SONG wrote:
 > 
-> There were no objections to this latest revision until now and it is
-> currently sitting with Jason Cooper (mvebu-next/pcie). [1]
+> Hello. I  tested with two patches.
+> The first one is thomas gleixner's patch. The patch is as follow.
+> This patch works well without any problem.
 
-Ok, well I've just sent Linus a pull request for my changes so at least
-drop the powerpc changes from your tree for the time being.
+You don't need them both.  When we fix it, it will be one or the other,
+not both.
 
-> This is a view that was also shared by Bjorn [2] when I attempted to
-> submit a patchset which moves struct pci_controller to asm-generic.
 
-Right, it's the logical way to go
+> 
+> Index: linux-2.6/arch/mips/kernel/process.c
+> ===================================================================
+> --- linux-2.6.orig/arch/mips/kernel/process.c
+> +++ linux-2.6/arch/mips/kernel/process.c
+> @@ -50,13 +50,18 @@ void arch_cpu_idle_dead(void)
+>   }
+>   #endif
+> 
+> -void arch_cpu_idle(void)
+> +static void smtc_idle_hook(void)
+>   {
+>   #ifdef CONFIG_MIPS_MT_SMTC
+>          extern void smtc_idle_loop_hook(void);
+> -
+>          smtc_idle_loop_hook();
+>   #endif
+> +}
+> +
+> +void arch_cpu_idle(void)
+> +{
+> +       local_irq_enable();
+> +       smtc_idle_hook();
+>          if (cpu_wait)
+>                  (*cpu_wait)();
+>          else
 
-> The motativation for my patchsets were to give a way for ARM PCI host
-> bridge drivers to parse the DT ranges property, but this snow-balled
-> into unifying pci_process_bridge_OF_ranges.
+Although I wrote the other patch, I now think that Thomas Gleixner's
+patch (above), is the best option.
 
-Which I understand, I would probably have done the same thing in your
-shoes :-)
+There are many cpu_wait() implementations.  Fixing a bunch of different
+assembly implementations, most of which I cannot test, is a recipe for
+disaster.
 
-> My v8 patchset provides a of_pci_range_parser which is used directly
-> by a few ARM PCI DT host bridge drivers, this has been generally
-> accepted and tested. I don't see why this can't remain and so I'd
-> really like to keep this around. 
 
-Sure, no objection, in fact I should/could probably update my new code
-to use it as well.
-
-> Grant, Benjamin would you be happy for me to resubmit this series
-> which provides the of_pci_range_parser which will be used by the
-> separate implementations of pci_process_bridge_OF_ranges in
-> PowerPC/Microblaze?
-
-Sure, in fact feel free to update my new code if you have more bandwidth
-than I do, it should hit Linus tree soon hopefully unless he objects to
-me having a second pull request this merge window...
-
-> Benjamin are you able to still use of_pci_range_parser in your
-> 'Support per-aperture memory offset' patch?
-
-I see no reason why not. I just haven't looked into it much, I admit,
-being bogged down with a pile of new HW bringup in the lab etc...
-
-Cheers,
-Ben.
+> --
+> 
+> The second one is david daney's patch.  The patch is as follow.
+> arch/mips/kernel/genex.S | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> index ecb347c..57cda9a 100644
+> --- a/arch/mips/kernel/genex.S
+> +++ b/arch/mips/kernel/genex.S
+> @@ -132,12 +132,13 @@ LEAF(r4k_wait)
+>          .set    noreorder
+>          /* start of rollback region */
+>          LONG_L  t0, TI_FLAGS($28)
+> -       nop
+>          andi    t0, _TIF_NEED_RESCHED
+>          bnez    t0, 1f
+>           nop
+> -       nop
+> -       nop
+> +       /* Enable interrupts so WAIT will complete */
+> +       mfc0    t0, CP0_STATUS
+> +       ori     t0, ST0_IE
+> +       mtc0    t0, CP0_STATUS
+>          .set    mips3
+>          wait
+>          /* end of rollback region (the region size must be power of two) */
+> 
+> After apply this patch. I got two error message.
+> The first one is as follow
+> [  124.661211] Checking for the daddi bug... no.
+> [  124.665737] ------------[ cut here ]------------
+> [  124.670187] WARNING: at kernel/cpu/idle.c:96 cpu_startup_entry+0x150/0x178()
+> [  124.677209] Modules linked in:
+> [  124.680251] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 3.9.0+ #40
+> [  124.686237] Stack : 0000000000000004 0000000000000034 ffffffff80fa0000 ffffffff80292558
+>            0000000000000000 ffffffff80fa0000 0000000000000001 ffffffff80293810
+>            0000000000000000 0000000000000000 ffffffff81080000 ffffffff81080000
+>            ffffffff80e2acf0 ffffffff80f8f977 ffffffff80f8fa80 ffffffff80e31730
+>            0000000000000001 0000000000000004 ffffffff00000000 0000000000000004
+>            ffffffffc05633f0 ffffffff806ef728 ffffffff80f57d08 ffffffff80290a74
+>            ffffffffc05633f0 ffffffff80293c40 000000000000003e ffffffff80e2acf0
+>            0000000000000000 ffffffff80f57c30 00ffffff80f8fdc0 ffffffff802908c0
+>            0000000000000000 0000000000000000 0000000000000000 0000000000000000
+>            0000000000000000 ffffffff80272498 0000000000000000 0000000000000000
+>            ...
+> [  124.751163] Call Trace:
+> [  124.753599] [<ffffffff80272498>] show_stack+0x68/0x80
+> [  124.758634] [<ffffffff802908c0>] warn_slowpath_common+0x78/0xa8
+> [  124.764533] [<ffffffff802d4448>] cpu_startup_entry+0x150/0x178
+> [  124.770351] [<ffffffff80fd6b04>] start_kernel+0x440/0x45c
+> [  124.775728]
+> [  124.777219] ---[ end trace 9179e654e5693e72 ]---
+> 
+> After boot process is done the follow error message is printed periodically.
+> 
+> [  284.751007] INFO: rcu_preempt detected stalls on CPUs/tasks: { 6} (detected by 1, t=14712 jiffies, g=18446744073709551344, c=18446744073709551343, q=2437)
+> [  284.764878] Task dump for CPU 6:
+> [  284.768105] swapper/6       R  running task        0     0      1 0x00100000
+> [  284.775174] Stack : 0000005311112000 ffffffff80f60000 ffffffff80f60000 a800000001d2d950
+>            0000000000000018 ffffffff81080000 ffffffff81080000 0000000000000000
+>            ffffffff81010000 ffffffff8030893c 4256e5715da6083d 800000040f800000
+>            0000000000000018 ffffffff81080000 ffffffff81080000 ffffffff80264f3c
+>            ffffffff80e31730 0000000000000000 ffffffff80e31730 ffffffff80f90000
+>            ffffffff80fd0000 ffffffff8026c760 0000000000000000 0000000010008ce1
+>            0000000000100000 a8000000414e4010 ffffffff80f8bb18 0000000000000000
+>            0000005311112000 0000000000000001 0000000000000001 0000000000000000
+>            ffffffff80f8bc58 a800000001d32c60 a8000000414e7fe0 0000000000008c00
+>            a80000003f7d8000 0000000000000000 ffffffff80fd0000 ffffffff80e31730
+>            ...
+> [  284.840704] Call Trace:
+> [  284.843153] [<ffffffff806f1a48>] __schedule+0x3b0/0x938
+> [  284.848377]
+> 
+> 
+> Thanks
+> 

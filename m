@@ -1,17 +1,21 @@
-Received: from co1ehsobe004.messaging.microsoft.com ([216.32.180.187]:6461
-        "EHLO co1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6825888Ab3EGR6dABhPL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 7 May 2013 19:58:33 +0200
-Message-ID: <518940BB.3080307@caviumnetworks.com>
-Date: Tue, 7 May 2013 10:58:19 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from mail-ea0-f172.google.com ([209.85.215.172]:45213 "EHLO
+        mail-ea0-f172.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6823763Ab3EIVW7UnntO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 9 May 2013 23:22:59 +0200
+Received: by mail-ea0-f172.google.com with SMTP id r16so1897528ead.31
+        for <linux-mips@linux-mips.org>; Thu, 09 May 2013 14:22:53 -0700 (PDT)
+From: "Svetoslav Neykov" <svetoslav@neykov.name>
+References: <1362176257-2328-1-git-send-email-svetoslav@neykov.name> <1362176257-2328-2-git-send-email-svetoslav@neykov.name> <878v57kh4v.fsf@ashishki-desk.ger.corp.intel.com> <5154508B.6050509@pengutronix.de>
+In-Reply-To: <5154508B.6050509@pengutronix.de>
+Subject: RE: [PATCH v2 1/2] usb: chipidea: big-endian support
+Date: Fri, 10 May 2013 00:22:41 +0300
+Message-ID: <013d01ce4cfb$5830ab90$089202b0$@neykov.name>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Make virt_to_phys() work for all unmapped addresses.
-References: <1367947427-21649-1-git-send-email-ddaney.cavm@gmail.com>
-In-Reply-To: <1367947427-21649-1-git-send-email-ddaney.cavm@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-language: bg
+Return-Path: <svetoslav@neykov.name>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,93 +25,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Jiang Liu <liuj97@gmail.com>, eunb.song@samsung.com, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>
-Message-ID: <20130507175819.pLGT8gS54uininM8EYkCdMi91aVN3v7irUbWOJFZcmE@z>
+To: 'Marc Kleine-Budde' <mkl@pengutronix.de>, 'Alexander Shishkin' <alexander.shishkin@linux.intel.com>
+Cc: 'Ralf Baechle' <ralf@linux-mips.org>, 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>, 'Gabor Juhos' <juhosg@openwrt.org>, 'John Crispin' <blogic@openwrt.org>, 'Alan Stern' <stern@rowland.harvard.edu>, "'Luis R. Rodriguez'" <mcgrof@qca.qualcomm.com>, linux-mips@linux-mips.org, linux-usb@vger.kernel.org
+Message-ID: <20130509212241.BAIImTpC2BS-TG7tEDVlQRao2wmVvfGOuQWhMGoapn4@z>
 
-It doesn't apply anymore.  It was against v3.4.
+Hi Marc,
 
-I will send one against Linus' tree soon.
+Marc Kleine-Budde [mailto:mkl@pengutronix.de] (On Thursday, March 28, 2013
+4:16 PM)
+>On 03/28/2013 10:28 AM, Alexander Shishkin wrote:
+>> Svetoslav Neykov <svetoslav@neykov.name> writes:
+>> 
+>>> Convert between big-endian and little-endian format when accessing
+>>> the usb controller structures which are little-endian by
+>>> specification. Fix cases where the little-endian memory layout is
+>>> taken for granted. The patch doesn't have any effect on the already
+>>> supported little-endian architectures.
+>
+>Has anyone tested how the cpu_to_le32 and vice versa effects the
+>load/store operations? Does the compiler generate full 32 bit accesses
+>on mips (and big endian arm) or is a byte-shift-or pattern used?
 
-David Daney
+Better late than never... I have checked your question, the value is loaded
+in a register and then swapped, so the read is performed only once.
 
-
-On 05/07/2013 10:23 AM, David Daney wrote:
-> From: David Daney <david.daney@cavium.com>
->
-> As reported:
->    This problem was discovered when doing BGP traffic with the TCP MD5 option
->    activated, where the following call chain caused a crash:
->
->     * tcp_v4_rcv
->     *  tcp_v4_timewait_ack
->     *   tcp_v4_send_ack -> follow stack variable rep.th
->     *    tcp_v4_md5_hash_hdr
->     *     tcp_md5_hash_header
->     *      sg_init_one
->     *       sg_set_buf
->     *        virt_to_page
->
->    I noticed that tcp_v4_send_reset uses a similar stack variable and
->    also calls tcp_v4_md5_hash_hdr, so it has the same problem.
->
-> The networking core can indirectly call virt_to_phys() on stack
-> addresses, if this is done from PID 0, the stack will usually be in
-> CKSEG0, so virt_to_phys() needs to work there as well
->
-> Signed-off-by: David Daney <david.daney@cavium.com>
-> ---
->
-> Not tested against kernel.org kernel, but it may still apply
->
-> This could also fix problems noted by Eunbong Song with the
-> free_initmem_default() call.
->
->   arch/mips/include/asm/io.h   | 2 +-
->   arch/mips/include/asm/page.h | 5 +++--
->   2 files changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-> index a58f229..37fa957 100644
-> --- a/arch/mips/include/asm/io.h
-> +++ b/arch/mips/include/asm/io.h
-> @@ -116,7 +116,7 @@ static inline void set_io_port_base(unsigned long base)
->    */
->   static inline unsigned long virt_to_phys(volatile const void *address)
->   {
-> -	return (unsigned long)address - PAGE_OFFSET + PHYS_OFFSET;
-> +	return __pa(address);
->   }
->
->   /*
-> diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-> index cee3893..e09bff9 100644
-> --- a/arch/mips/include/asm/page.h
-> +++ b/arch/mips/include/asm/page.h
-> @@ -48,7 +48,6 @@
->   #ifndef __ASSEMBLY__
->
->   #include <linux/pfn.h>
-> -#include <asm/io.h>
->
->   extern void build_clear_page(void);
->   extern void build_copy_page(void);
-> @@ -139,7 +138,6 @@ typedef struct { unsigned long pgprot; } pgprot_t;
->    */
->   #define ptep_buddy(x)	((pte_t *)((unsigned long)(x) ^ sizeof(pte_t)))
->
-> -#endif /* !__ASSEMBLY__ */
->
->   /*
->    * __pa()/__va() should be used only during mem init.
-> @@ -156,6 +154,9 @@ typedef struct { unsigned long pgprot; } pgprot_t;
->   #endif
->   #define __va(x)		((void *)((unsigned long)(x) + PAGE_OFFSET - PHYS_OFFSET))
->
-> +#include <asm/io.h>
-> +#endif /* !__ASSEMBLY__ */
-> +
->   /*
->    * RELOC_HIDE was originally added by 6007b903dfe5f1d13e0c711ac2894bdd4a61b1ad
->    * (lmo) rsp. 8431fd094d625b94d364fe393076ccef88e6ce18 (kernel.org).  The
->
+Regards,
+Svetoslav.

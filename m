@@ -1,14 +1,12 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65]:17467 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6816906Ab3EQEuWN-Ul3 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 17 May 2013 06:50:22 +0200
-Message-ID: <5195B6D6.7030504@huawei.com>
-Date: Fri, 17 May 2013 12:49:26 +0800
+Received: from szxga01-in.huawei.com ([119.145.14.64]:15159 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6816822Ab3EQGV6izu87 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 17 May 2013 08:21:58 +0200
+Message-ID: <5195CC6B.1000607@huawei.com>
+Date: Fri, 17 May 2013 14:21:31 +0800
 From: Libo Chen <clbchenlibo.chen@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] usb: omap2430: fix memleak in err case
-References: <5192E650.3070303@huawei.com> <519377C4.1040800@cogentembedded.com>
-In-Reply-To: <519377C4.1040800@cogentembedded.com>
+Subject: [PATCH] MIPS: drivers: fix clk leak
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-Path: <libo.chen@huawei.com>
@@ -21,28 +19,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: grant.likely@linaro.org, rob.herring@calxeda.com, linux-mips@linux-mips.org, LKML <linux-kernel@vger.kernel.org>, devicetree-discuss@lists.ozlabs.org, Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <20130517044926.xLXd9tkkjpwAqtCZ9siaO-NpK6kHOSU8i5PASYnEqro@z>
+To: ralf@linux-mips.org, grant.likely@linaro.org, rob.herring@calxeda.com
+Cc: linux-mips@linux-mips.org, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Li Zefan <lizefan@huawei.com>
+Message-ID: <20130517062131.QAtnexIWr8cOw5uqYCakVYJKeMbXSH_XPWu82cWllnY@z>
 
-On 2013/5/15 19:55, Sergei Shtylyov wrote:
-> Hello.
-> 
-> On 15-05-2013 5:35, Libo Chen wrote:
-> 
->> when omap_get_control_dev fail, we should release relational platform_device
-> 
->    s/fail/fails/, s/relational/related/?
-> 
->> Signed-off-by: Libo Chen <libo.chen@huawei.com>
-> 
->    You've posted this to the wrong mailing list, linux-mips; devicetree-discuss also seems hardly related.
-> 
-> WBR, Sergei
-> 
-> 
-> 
 
-Hi Sergei,
+when gptu_r32 fail, we should put clk before return
 
-Thank you for your remind.
+Signed-off-by: Libo Chen <libo.chen@huawei.com>
+---
+ arch/mips/lantiq/xway/gptu.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/arch/mips/lantiq/xway/gptu.c b/arch/mips/lantiq/xway/gptu.c
+index 9861c86..4fa577c 100644
+--- a/arch/mips/lantiq/xway/gptu.c
++++ b/arch/mips/lantiq/xway/gptu.c
+@@ -169,6 +169,8 @@ static int gptu_probe(struct platform_device *pdev)
+ 	if (((gptu_r32(GPTU_ID) >> 8) & 0xff) != GPTU_MAGIC) {
+ 		dev_err(&pdev->dev, "Failed to find magic\n");
+ 		gptu_hwexit();
++		clk_disable(clk);
++		clk_put(clk);
+ 		return -ENAVAIL;
+ 	}
+
+-- 
+1.7.1

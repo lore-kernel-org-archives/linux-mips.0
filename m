@@ -1,15 +1,18 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64]:15159 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6816822Ab3EQGV6izu87 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 17 May 2013 08:21:58 +0200
-Message-ID: <5195CC6B.1000607@huawei.com>
-Date: Fri, 17 May 2013 14:21:31 +0800
-From: Libo Chen <clbchenlibo.chen@huawei.com>
+Received: from co9ehsobe004.messaging.microsoft.com ([207.46.163.27]:19585
+        "EHLO co9outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6824104Ab3EUQV1HQGIN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 21 May 2013 18:21:27 +0200
+Message-ID: <519B9EF2.8020107@caviumnetworks.com>
+Date: Tue, 21 May 2013 09:21:06 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Subject: [PATCH] MIPS: drivers: fix clk leak
-Content-Type: text/plain; charset="ISO-8859-1"
+Subject: Re: [PATCH v3 5/5] mips/kvm: Fix ABI by moving manipulation of CP0
+ registers to KVM_{G,S}ET_MSRS
+References: <1369083686-27524-1-git-send-email-ddaney.cavm@gmail.com> <1369083686-27524-6-git-send-email-ddaney.cavm@gmail.com> <20130521153752.GD14287@redhat.com>
+In-Reply-To: <20130521153752.GD14287@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <libo.chen@huawei.com>
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,30 +22,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org, grant.likely@linaro.org, rob.herring@calxeda.com
-Cc: linux-mips@linux-mips.org, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Li Zefan <lizefan@huawei.com>
-Message-ID: <20130517062131.QAtnexIWr8cOw5uqYCakVYJKeMbXSH_XPWu82cWllnY@z>
+To: Gleb Natapov <gleb@redhat.com>
+Cc: David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, ralf@linux-mips.org, kvm@vger.kernel.org, Sanjay Lal <sanjayl@kymasys.com>, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>
+Message-ID: <20130521162106.MOPwzbmLW3UEwTlWDy-rHefG7ZHwK8aOfIDg10RrQlo@z>
 
+On 05/21/2013 08:37 AM, Gleb Natapov wrote:
+> On Mon, May 20, 2013 at 02:01:26PM -0700, David Daney wrote:
+>> From: David Daney <david.daney@cavium.com>
+>>
+>> Because not all 256 CP0 registers are ever implemented, we need a
+>> different method of manipulating them.  Use the
+>> KVM_GET_MSRS/KVM_SET_MSRS mechanism as x86 does for its MSRs.
+>>
+> Have you looked at KVM_(GET|SET)_ONE_REG interface (not used by x86, but is
+> used bu arm/ppc/s390). It looks like it is more suitable for your case.
+> Actually you can use it instead of KVM_(GET|SET)_REGS for all registers.
 
-when gptu_r32 fail, we should put clk before return
+Yes, I suppose it could be used.  One problem it has is that there is no 
+way to query the set of supported registers.  Also you have to make 
+multiple calls to set multiple registers, which involves vcpu_{load,put} 
+for each register.
 
-Signed-off-by: Libo Chen <libo.chen@huawei.com>
----
- arch/mips/lantiq/xway/gptu.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+We will definitely implement it for all the FP and General Purpose 
+registers.
 
-diff --git a/arch/mips/lantiq/xway/gptu.c b/arch/mips/lantiq/xway/gptu.c
-index 9861c86..4fa577c 100644
---- a/arch/mips/lantiq/xway/gptu.c
-+++ b/arch/mips/lantiq/xway/gptu.c
-@@ -169,6 +169,8 @@ static int gptu_probe(struct platform_device *pdev)
- 	if (((gptu_r32(GPTU_ID) >> 8) & 0xff) != GPTU_MAGIC) {
- 		dev_err(&pdev->dev, "Failed to find magic\n");
- 		gptu_hwexit();
-+		clk_disable(clk);
-+		clk_put(clk);
- 		return -ENAVAIL;
- 	}
-
--- 
-1.7.1
+>
+>> Code related to implementing KVM_GET_MSRS/KVM_SET_MSRS is consolidated

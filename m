@@ -1,14 +1,14 @@
-Received: from mail-db8lp0184.outbound.messaging.microsoft.com ([213.199.154.184]:16290
-        "EHLO db8outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6823056Ab3EVVzrWtA9l (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 22 May 2013 23:55:47 +0200
-Message-ID: <519D3ED0.20703@caviumnetworks.com>
-Date: Wed, 22 May 2013 14:55:28 -0700
+Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]:4221
+        "EHLO ch1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6822681Ab3EVWhEKb0Lm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 23 May 2013 00:37:04 +0200
+Message-ID: <519D4883.9050905@caviumnetworks.com>
+Date: Wed, 22 May 2013 15:36:51 -0700
 From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] MIPS: OCTEON: Get rid of CONFIG_CAVIUM_OCTEON_HW_FIX_UNALIGNED
-References: <1369259204-29164-1-git-send-email-ddaney.cavm@gmail.com>
-In-Reply-To: <1369259204-29164-1-git-send-email-ddaney.cavm@gmail.com>
+Subject: Re: [PATCH] MIPS: Enable interrupts before WAIT instruction.
+References: <CA+55aFwDGyHOzu=Qh7SJOBK6QvAwAh7pMDL6LfMUE=AW_kapAw@mail.gmail.com> <1367527692-25809-1-git-send-email-ddaney.cavm@gmail.com> <20130522223225.GH31836@blackmetal.musicnaut.iki.fi>
+In-Reply-To: <20130522223225.GH31836@blackmetal.musicnaut.iki.fi>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <David.Daney@caviumnetworks.com>
@@ -21,28 +21,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, David Daney <david.daney@cavium.com>
-Message-ID: <20130522215528.jU2AbB7JDuc9DzIgFXpNp8B8JQjUdaQg0mRja0EYTk4@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, ralf@linux-mips.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Thomas Gleixner <tglx@linutronix.de>, Jonas Gorski <jogo@openwrt.org>
+Message-ID: <20130522223651.pChl0SqoS7C7txbmEt0DZ7OYVDVRPg8XCWtiwH06wrY@z>
 
-On 05/22/2013 02:46 PM, David Daney wrote:
-> From: David Daney <david.daney@cavium.com>
+On 05/22/2013 03:32 PM, Aaro Koskinen wrote:
+> Hi,
 >
-> When you turn it off, the kernel is unusable, so get rid of the option
-> and always allow unaligned access.
+> On Thu, May 02, 2013 at 01:48:12PM -0700, David Daney wrote:
+>> From: David Daney <david.daney@cavium.com>
+>>
+>> As noted by Thomas Gleixner:
+>>
+>>     commit cdbedc61c8 (mips: Use generic idle loop) broke MIPS as I did
+>>     not realize that MIPS wants to invoke the wait instructions with
+>>     interrupts enabled.
+>>
+>> Instead of enabling interrupts in arch_cpu_idle() as Thomas' initial
+>> patch does, we follow Linus' suggestion of doing it in the assembly
+>> code to prevent the compiler from rearranging things.
+>>
+>> Signed-off-by: David Daney <david.daney@cavium.com>
+>> Reported-by: EunBong Song <eunb.song@samsung.com>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Jonas Gorski <jogo@openwrt.org>
+>> ---
+>>
+>> This is only very lightly tested, we need more testing before
+>> declaring it the definitive fix.
 >
-> The Octeon specific memcpy intentionally does unaligned accesses and it
-> must not fault.
+> I wonder what is the status of this patch? Or is there some alternative
+> fix?
 >
-> Signed-off-by: David Daney <david.daney@cavium.com>
-> ---
->   arch/mips/cavium-octeon/Kconfig                              | 11 -----------
->   arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h |  7 +------
->   2 files changed, 1 insertion(+), 17 deletions(-)
+> I have Octeon+ board that hangs during 3.10-rc2 boot in spawn_ksoftirqd()
+> without this. Also, this patch does not apply cleanly to 3.10-rc2
+> anymore...
+>
+> A.
 >
 
-This patch is stand-alone too. So subject should be [PATCH 1/1] ...
+Ralf has an alternate fix here:
 
-Still mergeable though.
+http://git.linux-mips.org/pub/scm/ralf/upstream-linus.git
+
+If all goes well, it will be merged soon.
 
 David Daney

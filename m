@@ -1,17 +1,14 @@
-Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]:4221
-        "EHLO ch1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6822681Ab3EVWhEKb0Lm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 23 May 2013 00:37:04 +0200
-Message-ID: <519D4883.9050905@caviumnetworks.com>
-Date: Wed, 22 May 2013 15:36:51 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from relay1.mentorg.com ([192.94.38.131]:51584 "EHLO
+        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6817975Ab3EWPbjLNWQu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 23 May 2013 17:31:39 +0200
+Date: Thu, 23 May 2013 16:31:23 +0100
+From: "Maciej W. Rozycki" <macro@codesourcery.com>
+Subject: [PATCH] MIPS: Trap exception handling fixes
+Message-ID: <alpine.DEB.1.10.1305230253140.26443@tp.orcam.me.uk>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Enable interrupts before WAIT instruction.
-References: <CA+55aFwDGyHOzu=Qh7SJOBK6QvAwAh7pMDL6LfMUE=AW_kapAw@mail.gmail.com> <1367527692-25809-1-git-send-email-ddaney.cavm@gmail.com> <20130522223225.GH31836@blackmetal.musicnaut.iki.fi>
-In-Reply-To: <20130522223225.GH31836@blackmetal.musicnaut.iki.fi>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej_Rozycki@mentor.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,49 +18,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, ralf@linux-mips.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Thomas Gleixner <tglx@linutronix.de>, Jonas Gorski <jogo@openwrt.org>
-Message-ID: <20130522223651.pChl0SqoS7C7txbmEt0DZ7OYVDVRPg8XCWtiwH06wrY@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20130523153123.ljlJP_fdvdGbC8v5_7BfzazlPrDOxo4v5jmyaIkAa2E@z>
 
-On 05/22/2013 03:32 PM, Aaro Koskinen wrote:
-> Hi,
->
-> On Thu, May 02, 2013 at 01:48:12PM -0700, David Daney wrote:
->> From: David Daney <david.daney@cavium.com>
->>
->> As noted by Thomas Gleixner:
->>
->>     commit cdbedc61c8 (mips: Use generic idle loop) broke MIPS as I did
->>     not realize that MIPS wants to invoke the wait instructions with
->>     interrupts enabled.
->>
->> Instead of enabling interrupts in arch_cpu_idle() as Thomas' initial
->> patch does, we follow Linus' suggestion of doing it in the assembly
->> code to prevent the compiler from rearranging things.
->>
->> Signed-off-by: David Daney <david.daney@cavium.com>
->> Reported-by: EunBong Song <eunb.song@samsung.com>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Jonas Gorski <jogo@openwrt.org>
->> ---
->>
->> This is only very lightly tested, we need more testing before
->> declaring it the definitive fix.
->
-> I wonder what is the status of this patch? Or is there some alternative
-> fix?
->
-> I have Octeon+ board that hangs during 3.10-rc2 boot in spawn_ksoftirqd()
-> without this. Also, this patch does not apply cleanly to 3.10-rc2
-> anymore...
->
-> A.
->
+2a0b24f56c2492b932f1aed617ae80fb23500d21 broke Trap exception handling in 
+the standard MIPS mode.  Additionally the microMIPS-mode trap code mask is 
+wrong, as it's a 4-bit field.  Here's a fix.
 
-Ralf has an alternate fix here:
+Signed-off-by: Maciej W. Rozycki <macro@codesourcery.com>
+---
+Ralf, please apply.  Also the mention of: "A few NOP instructions are used 
+to maintain the correct alignment[...]" in the commit referred makes me 
+feel scared -- there is that .align pseudo-op, you know...  Maciej
 
-http://git.linux-mips.org/pub/scm/ralf/upstream-linus.git
+linux-mips-do-tr.diff
 
-If all goes well, it will be merged soon.
+ arch/mips/kernel/traps.c |   28 +++++++++++++++-------------
+ 1 files changed, 15 insertions(+), 13 deletions(-)
 
-David Daney
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index e3be670..a75ae40 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -897,22 +897,24 @@ out_sigsegv:
+ 
+ asmlinkage void do_tr(struct pt_regs *regs)
+ {
+-	unsigned int opcode, tcode = 0;
++	u32 opcode, tcode = 0;
+ 	u16 instr[2];
+-	unsigned long epc = exception_epc(regs);
++	unsigned long epc = msk_isa16_mode(exception_epc(regs));
+ 
+-	if ((__get_user(instr[0], (u16 __user *)msk_isa16_mode(epc))) ||
+-		(__get_user(instr[1], (u16 __user *)msk_isa16_mode(epc + 2))))
++	if (get_isa16_mode(regs->cp0_epc)) {
++		if (__get_user(instr[0], (u16 __user *)(epc + 0)) ||
++		    __get_user(instr[1], (u16 __user *)(epc + 2)))
+ 			goto out_sigsegv;
+-	opcode = (instr[0] << 16) | instr[1];
+-
+-	/* Immediate versions don't provide a code.  */
+-	if (!(opcode & OPCODE)) {
+-		if (get_isa16_mode(regs->cp0_epc))
+-			/* microMIPS */
+-			tcode = (opcode >> 12) & 0x1f;
+-		else
+-			tcode = ((opcode >> 6) & ((1 << 10) - 1));
++		opcode = (instr[0] << 16) | instr[1];
++		/* Immediate versions don't provide a code.  */
++		if (!(opcode & OPCODE))
++			tcode = (opcode >> 12) & ((1 << 4) - 1);
++	} else {
++		if (__get_user(opcode, (u32 __user *)epc))
++			goto out_sigsegv;
++		/* Immediate versions don't provide a code.  */
++		if (!(opcode & OPCODE))
++			tcode = (opcode >> 6) & ((1 << 10) - 1);
+ 	}
+ 
+ 	do_trap_or_bp(regs, tcode, "Trap");

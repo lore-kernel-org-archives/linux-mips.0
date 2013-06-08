@@ -1,15 +1,14 @@
-Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]:42422
-        "EHLO co1outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6835254Ab3FGXPKyxrnc (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 8 Jun 2013 01:15:10 +0200
-Message-ID: <51B26974.5000306@caviumnetworks.com>
-Date: Fri, 7 Jun 2013 16:15:00 -0700
+Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]:44067
+        "EHLO co9outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6834832Ab3FHAPuOJPBy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 8 Jun 2013 02:15:50 +0200
+Message-ID: <51B2779F.3030903@caviumnetworks.com>
+Date: Fri, 7 Jun 2013 17:15:27 -0700
 From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 00/31] KVM/MIPS: Implement hardware virtualization via
- the MIPS-VZ extensions.
-References: <1370646215-6543-1-git-send-email-ddaney.cavm@gmail.com>
-In-Reply-To: <1370646215-6543-1-git-send-email-ddaney.cavm@gmail.com>
+Subject: Re: [PATCH 20/31] mips/kvm: Hook into TLB fault handlers.
+References: <1370646215-6543-1-git-send-email-ddaney.cavm@gmail.com> <1370646215-6543-21-git-send-email-ddaney.cavm@gmail.com> <51B26E02.8070802@cogentembedded.com>
+In-Reply-To: <51B26E02.8070802@cogentembedded.com>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <David.Daney@caviumnetworks.com>
@@ -22,131 +21,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>, kvm@vger.kernel.org
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Sanjay Lal <sanjayl@kymasys.com>, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>
-Message-ID: <20130607231500.ZwfF7lwVAvSlUmRK1Rme9vvoDU3eH1HPAOqmLo4tpgg@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, ralf@linux-mips.org, kvm@vger.kernel.org, Sanjay Lal <sanjayl@kymasys.com>, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>
+Message-ID: <20130608001527.YB9-C0JzjLEBNgaubXVl1K335-niZ1206HzFYpM_ZXc@z>
 
-I should also add that I will shortly send patches for the kvm tool 
-required to drive this VM as well as a small set of patches that create 
-a para-virtualized MIPS/Linux guest kernel.
+On 06/07/2013 04:34 PM, Sergei Shtylyov wrote:
+> Hello.
+>
+> On 06/08/2013 03:03 AM, David Daney wrote:
+>
+>> From: David Daney <david.daney@cavium.com>
+>>
+>> If the CPU is operating in guest mode when a TLB related excpetion
+>> occurs, give KVM a chance to do emulation.
+>>
+>> Signed-off-by: David Daney <david.daney@cavium.com>
+>> ---
+>>   arch/mips/mm/fault.c       | 8 ++++++++
+>>   arch/mips/mm/tlbex-fault.S | 6 ++++++
+>>   2 files changed, 14 insertions(+)
+>>
+>> diff --git a/arch/mips/mm/fault.c b/arch/mips/mm/fault.c
+>> index 0fead53..9391da49 100644
+>> --- a/arch/mips/mm/fault.c
+>> +++ b/arch/mips/mm/fault.c
+> [...]
+>> @@ -50,6 +51,13 @@ asmlinkage void __kprobes do_page_fault(struct
+>> pt_regs *regs, unsigned long writ
+>>              field, regs->cp0_epc);
+>>   #endif
+>> +#ifdef CONFIG_KVM_MIPSVZ
+>> +    if (test_tsk_thread_flag(current, TIF_GUESTMODE)) {
+>> +        if (mipsvz_page_fault(regs, write, address))
+>
+>     Any reason not to collapse these into single *if*?
+>
 
-The idea is that because there is no standard SMP linux system, we 
-create a standard para-virtualized system that uses a handful of 
-hypercalls, but mostly just uses virtio devices.  It has no emulated 
-real hardware (no 8250 UART, no emulated legacy anything...)
+It makes the conditional call to mipsvz_page_fault() less obvious.
+
+Certainly the same semantics can be achieved several different ways.
 
 David Daney
 
 
-On 06/07/2013 04:03 PM, David Daney wrote:
-> From: David Daney <david.daney@cavium.com>
+>> +            return;
+>> +    }
+>> +#endif
+>> +
+>>
 >
-> These patches take a somewhat different approach to MIPS
-> virtualization via the MIPS-VZ extensions than the patches previously
-> sent by Sanjay Lal.
->
-> Several facts about the code:
->
-> o Existing exception handlers are modified to hook in to KVM instead
->    of intercepting all exceptions via the EBase register, and then
->    chaining to real exception handlers.
->
-> o Able to boot 64-bit SMP guests that use the FPU (I have booted 4-way
->    SMP 64-bit MIPS/Linux).
->
-> o Additional overhead on every exception even when *no* vCPU is running.
->
-> o Lower interrupt overhead, than the EBase interception method, when
->    vCPU *is* running.
->
-> o This code is somewhat smaller than the existing trap/emulate
->    implementation (about 2100 lines vs. about 5300 lines)
->
-> o Currently probably only usable on the OCTEON III CPU model, as some
->    MIPS-VZ implementation-defined behaviors were assumed to have the
->    OCTEON III behavior.
->
-> Note: I think Ralf already has the 17/31 (MIPS: Quit exposing Kconfig
-> symbols in uapi headers.) queued, but I also include it here.
->
-> David Daney (31):
->    MIPS: Move allocate_kscratch to cpu-probe.c and make it public.
->    MIPS: Save and restore K0/K1 when CONFIG_KVM_MIPSVZ
->    mips/kvm: Fix 32-bitisms in kvm_locore.S
->    mips/kvm: Add casts to avoid pointer width mismatch build failures.
->    mips/kvm: Use generic cache flushing functions.
->    mips/kvm: Rename kvm_vcpu_arch.pc to  kvm_vcpu_arch.epc
->    mips/kvm: Rename VCPU_registername to KVM_VCPU_ARCH_registername
->    mips/kvm: Fix code formatting in arch/mips/kvm/kvm_locore.S
->    mips/kvm: Factor trap-and-emulate support into a pluggable
->      implementation.
->    mips/kvm: Implement ioctls to get and set FPU registers.
->    MIPS: Rearrange branch.c so it can be used by kvm code.
->    MIPS: Add instruction format information for WAIT, MTC0, MFC0, et al.
->    mips/kvm: Add accessors for MIPS VZ registers.
->    mips/kvm: Add thread_info flag to indicate operation in MIPS VZ Guest
->      Mode.
->    mips/kvm: Exception handling to leave and reenter guest mode.
->    mips/kvm: Add exception handler for MIPSVZ Guest exceptions.
->    MIPS: Quit exposing Kconfig symbols in uapi headers.
->    mips/kvm: Add pt_regs slots for BadInstr and BadInstrP
->    mips/kvm: Add host definitions for MIPS VZ based host.
->    mips/kvm: Hook into TLB fault handlers.
->    mips/kvm: Allow set_except_vector() to be used from MIPSVZ code.
->    mips/kvm: Split get_new_mmu_context into two parts.
->    mips/kvm: Hook into CP unusable exception handler.
->    mips/kvm: Add thread_struct fields used by MIPSVZ hosts.
->    mips/kvm: Add some asm-offsets constants used by MIPSVZ.
->    mips/kvm: Split up Kconfig and Makefile definitions in preperation
->      for MIPSVZ.
->    mips/kvm: Gate the use of kvm_local_flush_tlb_all() by KVM_MIPSTE
->    mips/kvm: Only use KVM_COALESCED_MMIO_PAGE_OFFSET with KVM_MIPSTE
->    mips/kvm: Add MIPSVZ support.
->    mips/kvm: Enable MIPSVZ in Kconfig/Makefile
->    mips/kvm: Allow for upto 8 KVM vcpus per vm.
->
->   arch/mips/Kconfig                   |    1 +
->   arch/mips/include/asm/branch.h      |    7 +
->   arch/mips/include/asm/kvm_host.h    |  622 +-----------
->   arch/mips/include/asm/kvm_mips_te.h |  589 +++++++++++
->   arch/mips/include/asm/kvm_mips_vz.h |   29 +
->   arch/mips/include/asm/mipsregs.h    |  264 +++++
->   arch/mips/include/asm/mmu_context.h |   12 +-
->   arch/mips/include/asm/processor.h   |    6 +
->   arch/mips/include/asm/ptrace.h      |   36 +
->   arch/mips/include/asm/stackframe.h  |  150 ++-
->   arch/mips/include/asm/thread_info.h |    2 +
->   arch/mips/include/asm/uasm.h        |    2 +-
->   arch/mips/include/uapi/asm/inst.h   |   23 +-
->   arch/mips/include/uapi/asm/ptrace.h |   17 +-
->   arch/mips/kernel/asm-offsets.c      |  124 ++-
->   arch/mips/kernel/branch.c           |   63 +-
->   arch/mips/kernel/cpu-probe.c        |   34 +
->   arch/mips/kernel/genex.S            |    8 +
->   arch/mips/kernel/scall64-64.S       |   12 +
->   arch/mips/kernel/scall64-n32.S      |   12 +
->   arch/mips/kernel/traps.c            |   15 +-
->   arch/mips/kvm/Kconfig               |   23 +-
->   arch/mips/kvm/Makefile              |   15 +-
->   arch/mips/kvm/kvm_locore.S          |  980 +++++++++---------
->   arch/mips/kvm/kvm_mips.c            |  768 ++------------
->   arch/mips/kvm/kvm_mips_comm.h       |    1 +
->   arch/mips/kvm/kvm_mips_commpage.c   |    9 +-
->   arch/mips/kvm/kvm_mips_dyntrans.c   |    4 +-
->   arch/mips/kvm/kvm_mips_emul.c       |  312 +++---
->   arch/mips/kvm/kvm_mips_int.c        |   53 +-
->   arch/mips/kvm/kvm_mips_int.h        |    2 -
->   arch/mips/kvm/kvm_mips_stats.c      |    6 +-
->   arch/mips/kvm/kvm_mipsvz.c          | 1894 +++++++++++++++++++++++++++++++++++
->   arch/mips/kvm/kvm_mipsvz_guest.S    |  234 +++++
->   arch/mips/kvm/kvm_tlb.c             |  140 +--
->   arch/mips/kvm/kvm_trap_emul.c       |  932 +++++++++++++++--
->   arch/mips/mm/fault.c                |    8 +
->   arch/mips/mm/tlbex-fault.S          |    6 +
->   arch/mips/mm/tlbex.c                |   45 +-
->   39 files changed, 5299 insertions(+), 2161 deletions(-)
->   create mode 100644 arch/mips/include/asm/kvm_mips_te.h
->   create mode 100644 arch/mips/include/asm/kvm_mips_vz.h
->   create mode 100644 arch/mips/kvm/kvm_mipsvz.c
->   create mode 100644 arch/mips/kvm/kvm_mipsvz_guest.S
 >

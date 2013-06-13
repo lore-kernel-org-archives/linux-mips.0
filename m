@@ -1,12 +1,14 @@
-Received: from mail-pd0-f176.google.com ([209.85.192.176]:39913 "EHLO
-        mail-pd0-f176.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6827897Ab3FLS2taEALf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 12 Jun 2013 20:28:49 +0200
-From: David Daney <ddaney.cavm@gmail.com>
-Subject: [PATCH] MIPS: OCTEON: Don't clobber bootloader data structures.
-Date: Wed, 12 Jun 2013 11:28:33 -0700
-Message-ID: <1371061713-29028-1-git-send-email-ddaney.cavm@gmail.com>
-Return-Path: <ddaney.cavm@gmail.com>
+Received: from multi.imgtec.com ([194.200.65.239]:60417 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6835266Ab3FMPnoiT0bO (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 13 Jun 2013 17:43:44 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: Kconfig: Select USB_EHCI_HCD if USB_SUPPORt is enabled
+Date: Thu, 13 Jun 2013 16:42:14 +0100
+Message-ID: <1371138134-21216-1-git-send-email-markos.chandras@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,46 +18,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org
-Cc: David Daney <david.daney@cavium.com>, stable@vger.kernel.org
-Message-ID: <20130612182833.pYv-jgdawe_9NQRxsfVnTZE-2MpfB2cI3KoxUY8Ta4M@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20130613154214.RohJphNiGQqjfjxcJojj5WRHYBJe2hr4gb78M9S2OTI@z>
 
-From: David Daney <david.daney@cavium.com>
+Commit 94d83649e1c2f25c87dc4ead9c2ab073305
+"USB: remove USB_EHCI_BIG_ENDIAN_{DESC,MMIO} depends on architecture symbol"
 
-Commit abe77f90dc (MIPS: Octeon: Add kexec and kdump support) added a
-bootmem region for the kernel image itself.  The problem is that this
-is rounded up to a 0x100000 boundary, which is memory that may not be
-owned by the kernel.  Depending on the kernel's configuration based
-size, this 'extra' memory may contain data passed from the bootloader
-to the kernel itself, which if clobbered makes the kernel crash in
-various ways.
+caused the following regression in cavium_octeon_defconfig:
 
-The fix: Quit rounding the size up, so that we only use memory
-assigned to the kernel.
+warning: (MIPS_SEAD3 && PMC_MSP && CPU_CAVIUM_OCTEON) selects
+USB_EHCI_BIG_ENDIAN_MMIO which has unmet direct dependencies
+(USB_SUPPORT && USB && USB_EHCI_HCD)
 
-Can be applied to v3.8 and later.
+We fix this problem by selecting the USB_EHCI_HCD missing dependency
+if USB_SUPPORT is enabled.
 
-Signed-off-by: David Daney <david.daney@cavium.com>
-Cc: <stable@vger.kernel.org>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+Acked-by: Steven J. Hill <Steven.Hill@imgtec.com> 
 ---
+This patch is for the upstream-sfr/mips-for-linux-next
+---
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-This should probably go into 3.10
-
- arch/mips/cavium-octeon/setup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
-index 01b1b3f..1e1e18c 100644
---- a/arch/mips/cavium-octeon/setup.c
-+++ b/arch/mips/cavium-octeon/setup.c
-@@ -996,7 +996,7 @@ void __init plat_mem_setup(void)
- 	cvmx_bootmem_unlock();
- 	/* Add the memory region for the kernel. */
- 	kernel_start = (unsigned long) _text;
--	kernel_size = ALIGN(_end - _text, 0x100000);
-+	kernel_size = _end - _text;
- 
- 	/* Adjust for physical offset. */
- 	kernel_start &= ~0xffffffff80000000ULL;
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 87ddac9..a058ba8 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -1411,6 +1411,7 @@ config CPU_CAVIUM_OCTEON
+ 	select CPU_SUPPORTS_HUGEPAGES
+ 	select LIBFDT
+ 	select USE_OF
++	select USB_EHCI_HCD if USB_SUPPORT
+ 	select USB_EHCI_BIG_ENDIAN_MMIO
+ 	help
+ 	  The Cavium Octeon processor is a highly integrated chip containing
 -- 
-1.7.11.7
+1.8.2.1

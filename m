@@ -1,17 +1,18 @@
-Received: from multi.imgtec.com ([194.200.65.239]:60254 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:19078 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6835275Ab3FMVA3kYc0S (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 13 Jun 2013 23:00:29 +0200
-Message-ID: <51BA32E3.7090006@imgtec.com>
-Date: Thu, 13 Jun 2013 16:00:19 -0500
-From: "Steven J. Hill" <Steven.Hill@imgtec.com>
+        id S6822998Ab3FNI0Ywnz7X (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 14 Jun 2013 10:26:24 +0200
+Message-ID: <51BAD3B0.9060605@imgtec.com>
+Date: Fri, 14 Jun 2013 09:26:24 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: sead3: Fix incorrect values for soft reset.
-References: <1371075656-21374-1-git-send-email-Steven.Hill@imgtec.com> <20130613141820.GB22906@linux-mips.org>
-In-Reply-To: <20130613141820.GB22906@linux-mips.org>
+Subject: Re: [PATCH] MIPS: Kconfig: Select USB_EHCI_HCD if USB_SUPPORt is
+ enabled
+References: <1371138134-21216-1-git-send-email-markos.chandras@imgtec.com> <51B9F634.30506@gmail.com>
+In-Reply-To: <51B9F634.30506@gmail.com>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Steven.Hill@imgtec.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,25 +22,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20130613210019.hSaVMQxWtFgdy6L3VFMM5G8R2b9NO-LnkA60Mt8IrT0@z>
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: USB list <linux-usb@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20130614082624.nGElQxuV62lNFsqbY5uQIREtOJ_kXTXqI2BI_eBZuw4@z>
 
-On 06/13/2013 09:18 AM, Ralf Baechle wrote:
-> On Wed, Jun 12, 2013 at 05:20:56PM -0500, Steven J. Hill wrote:
+On 06/13/13 17:41, David Daney wrote:
+> On 06/13/2013 08:42 AM, Markos Chandras wrote:
+>> Commit 94d83649e1c2f25c87dc4ead9c2ab073305
+>> "USB: remove USB_EHCI_BIG_ENDIAN_{DESC,MMIO} depends on architecture
+>> symbol"
+>>
+>> caused the following regression in cavium_octeon_defconfig:
+>>
+>> warning: (MIPS_SEAD3 && PMC_MSP && CPU_CAVIUM_OCTEON) selects
+>> USB_EHCI_BIG_ENDIAN_MMIO which has unmet direct dependencies
+>> (USB_SUPPORT && USB && USB_EHCI_HCD)
+>>
+>> We fix this problem by selecting the USB_EHCI_HCD missing dependency
+>> if USB_SUPPORT is enabled.
+>>
+>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+>> Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>
 >
-> I think this is going to break Malta.  We used to have:
+> NAK.  This is incorrect.
 >
->      #define SOFTRES_REG       0x1e800050
->      #define GORESET           0x4d
+> It is completely backwards and forces us to have EHCI unconditionally.
 >
-> for SEAD
+> The proper fix is to move USB_EHCI_BIG_ENDIAN_MMIO (and similar other
+> Kconifg variables) out of the conditional section and make them
+> universally visible/usable.
 >
-Yes, it does break Malta. The #define values are defined in two places 
-and I missed one of them. I have submitted a patchset to these cleaned 
-up. Both platforms can now perform soft resets. Also, the 0x1e800050 is 
-not correct. I check all the way back in our 2.6.32.15 tree and that 
-value does not show up anywhere. The value in the patchset for SEAD-3 is 
-the correct one.
+> David Daney
+>
+>
 
--Steve
+Hi David,
+
+Thanks. I will prepare a new patch.
+
+-- 
+markos

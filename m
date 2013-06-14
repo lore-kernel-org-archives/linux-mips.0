@@ -1,18 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:19078 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:26538 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6822998Ab3FNI0Ywnz7X (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 14 Jun 2013 10:26:24 +0200
-Message-ID: <51BAD3B0.9060605@imgtec.com>
-Date: Fri, 14 Jun 2013 09:26:24 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        id S6823020Ab3FNQFIHCe68 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 14 Jun 2013 18:05:08 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH v2] MIPS: Reduce _NSIG from 128 to 127 to avoid BUG_ON
+Date: Fri, 14 Jun 2013 17:03:45 +0100
+Message-ID: <1371225825-8225-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Kconfig: Select USB_EHCI_HCD if USB_SUPPORt is
- enabled
-References: <1371138134-21216-1-git-send-email-markos.chandras@imgtec.com> <51B9F634.30506@gmail.com>
-In-Reply-To: <51B9F634.30506@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,43 +18,70 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: USB list <linux-usb@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20130614082624.nGElQxuV62lNFsqbY5uQIREtOJ_kXTXqI2BI_eBZuw4@z>
+To: linux-kernel@vger.kernel.org
+Cc: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>, Oleg Nesterov <oleg@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, David Howells <dhowells@redhat.com>, Dave Jones <davej@redhat.com>, linux-mips@linux-mips.org
+Message-ID: <20130614160345.NQxcmT0TLdhFIjd30XwBo5xVHM6hTYAqQidlokMssAk@z>
 
-On 06/13/13 17:41, David Daney wrote:
-> On 06/13/2013 08:42 AM, Markos Chandras wrote:
->> Commit 94d83649e1c2f25c87dc4ead9c2ab073305
->> "USB: remove USB_EHCI_BIG_ENDIAN_{DESC,MMIO} depends on architecture
->> symbol"
->>
->> caused the following regression in cavium_octeon_defconfig:
->>
->> warning: (MIPS_SEAD3 && PMC_MSP && CPU_CAVIUM_OCTEON) selects
->> USB_EHCI_BIG_ENDIAN_MMIO which has unmet direct dependencies
->> (USB_SUPPORT && USB && USB_EHCI_HCD)
->>
->> We fix this problem by selecting the USB_EHCI_HCD missing dependency
->> if USB_SUPPORT is enabled.
->>
->> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
->> Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>
->
-> NAK.  This is incorrect.
->
-> It is completely backwards and forces us to have EHCI unconditionally.
->
-> The proper fix is to move USB_EHCI_BIG_ENDIAN_MMIO (and similar other
-> Kconifg variables) out of the conditional section and make them
-> universally visible/usable.
->
-> David Daney
->
->
+MIPS has 128 signals, the highest of which has the number 128 (they
+start from 1). The following command causes get_signal_to_deliver() to
+pass this signal number straight through to do_group_exit() as the exit
+code:
 
-Hi David,
+  strace sleep 10 & sleep 1 && kill -128 `pidof sleep`
 
-Thanks. I will prepare a new patch.
+However do_group_exit() checks for the core dump bit (0x80) in the exit
+code which matches in this particular case and the kernel panics:
 
+  BUG_ON(exit_code & 0x80); /* core dumps don't get here */
+
+Lets avoid this by changing the ABI by reducing the number of signals to
+127 (so that the maximum signal number is 127). Glibc incorrectly sets
+[__]SIGRTMAX to 127 already. uClibc sets it to 128 so it's conceivable
+that programs built against uClibc which intentionally uses RT signals
+from the top (SIGRTMAX-n, n>=0) would need an updated uClibc (and a
+rebuild if it's crazy enough to use __SIGRTMAX).
+
+Note that the signals man page seems to make clear that signals should
+be referred to from SIGRTMIN, and it seems unlikely that any portable
+program would ever need to use 96 RT signals:
+
+  "programs should never refer to real-time signals using hard-coded
+  numbers, but instead should always refer to real-time signals using
+  the notation SIGRTMIN+n, and include suitable (run-time) checks that
+  SIGRTMIN+n does not exceed SIGRTMAX."
+
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: David Daney <david.daney@cavium.com>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Dave Jones <davej@redhat.com>
+Cc: linux-mips@linux-mips.org
+---
+As discussed on IRC, another possibility is to reduce the number of
+signals down to 64 to match other arches and reduce the number of
+sigset_t words, but I think that's riskier as it would affect glibc too.
+
+ arch/mips/include/uapi/asm/signal.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/include/uapi/asm/signal.h b/arch/mips/include/uapi/asm/signal.h
+index addb9f5..40e944d 100644
+--- a/arch/mips/include/uapi/asm/signal.h
++++ b/arch/mips/include/uapi/asm/signal.h
+@@ -11,9 +11,9 @@
+ 
+ #include <linux/types.h>
+ 
+-#define _NSIG		128
++#define _NSIG		127
+ #define _NSIG_BPW	(sizeof(unsigned long) * 8)
+-#define _NSIG_WORDS	(_NSIG / _NSIG_BPW)
++#define _NSIG_WORDS	((_NSIG + _NSIG_BPW - 1) / _NSIG_BPW)
+ 
+ typedef struct {
+ 	unsigned long sig[_NSIG_WORDS];
 -- 
-markos
+1.8.1.2

@@ -1,18 +1,14 @@
-Received: from mail-bl2lp0206.outbound.protection.outlook.com ([207.46.163.206]:9668
-        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6825866Ab3FNRvIDAl2C (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 14 Jun 2013 19:51:08 +0200
-Message-ID: <51BB57F4.9000106@caviumnetworks.com>
-Date: Fri, 14 Jun 2013 10:50:44 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from multi.imgtec.com ([194.200.65.239]:17172 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6827479Ab3FOQgYbAwJv (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 15 Jun 2013 18:36:24 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] mips: fix execution hazard during watchpoint register probe
+Date: Sat, 15 Jun 2013 17:34:40 +0100
+Message-ID: <1371314080-48198-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS/OCTEON: Override default address space layout.
-References: <1371157847-17066-1-git-send-email-ddaney.cavm@gmail.com> <20130614084125.GA11911@linux-mips.org>
-In-Reply-To: <20130614084125.GA11911@linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,26 +18,90 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
-Message-ID: <20130614175044.id88CHf__DaWKtBFX0rtwqPliCISjJlekgeo5_D569g@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20130615163440.El5qLAe3mgofUWKxFjEZQwxvFcVi1DyeS94RyHPrTkY@z>
 
-On 06/14/2013 01:41 AM, Ralf Baechle wrote:
-> On Thu, Jun 13, 2013 at 02:10:47PM -0700, David Daney wrote:
->
->> From: David Daney <david.daney@cavium.com>
->>
->> OCTEON II cannot execute code in the default CAC_BASE space, so we
->> supply a value (0x8000000000000000) that does work.
->>
->> Signed-off-by: David Daney <david.daney@cavium.com>
->
-> Thanks, applied.
->
-> I assume this also should be applied to all -stable branches?
->
+Writing a value to a WatchLo* register creates an execution hazard, so
+if its value is then read before that hazard is cleared then said value
+may be invalid. The mips_probe_watch_registers function must therefore
+clear the execution hazard between setting the match bits in a WatchLo*
+register & reading the register back in order to check which are set.
 
-It is really only needed in conjunction with kexec, and that is somewhat 
-broken at the moment
+This fixes intermittent incorrect watchpoint register probing on some
+MIPS cores such as interAptiv & proAptiv.
 
-David.
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
+Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>
+---
+ arch/mips/kernel/watch.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/mips/kernel/watch.c b/arch/mips/kernel/watch.c
+index 7726f61..cbdc4de 100644
+--- a/arch/mips/kernel/watch.c
++++ b/arch/mips/kernel/watch.c
+@@ -111,6 +111,7 @@ __cpuinit void mips_probe_watch_registers(struct cpuinfo_mips *c)
+ 	 * disable the register.
+ 	 */
+ 	write_c0_watchlo0(7);
++	back_to_back_c0_hazard();
+ 	t = read_c0_watchlo0();
+ 	write_c0_watchlo0(0);
+ 	c->watch_reg_masks[0] = t & 7;
+@@ -121,12 +122,14 @@ __cpuinit void mips_probe_watch_registers(struct cpuinfo_mips *c)
+ 	c->watch_reg_use_cnt = 1;
+ 	t = read_c0_watchhi0();
+ 	write_c0_watchhi0(t | 0xff8);
++	back_to_back_c0_hazard();
+ 	t = read_c0_watchhi0();
+ 	c->watch_reg_masks[0] |= (t & 0xff8);
+ 	if ((t & 0x80000000) == 0)
+ 		return;
+ 
+ 	write_c0_watchlo1(7);
++	back_to_back_c0_hazard();
+ 	t = read_c0_watchlo1();
+ 	write_c0_watchlo1(0);
+ 	c->watch_reg_masks[1] = t & 7;
+@@ -135,12 +138,14 @@ __cpuinit void mips_probe_watch_registers(struct cpuinfo_mips *c)
+ 	c->watch_reg_use_cnt = 2;
+ 	t = read_c0_watchhi1();
+ 	write_c0_watchhi1(t | 0xff8);
++	back_to_back_c0_hazard();
+ 	t = read_c0_watchhi1();
+ 	c->watch_reg_masks[1] |= (t & 0xff8);
+ 	if ((t & 0x80000000) == 0)
+ 		return;
+ 
+ 	write_c0_watchlo2(7);
++	back_to_back_c0_hazard();
+ 	t = read_c0_watchlo2();
+ 	write_c0_watchlo2(0);
+ 	c->watch_reg_masks[2] = t & 7;
+@@ -149,12 +154,14 @@ __cpuinit void mips_probe_watch_registers(struct cpuinfo_mips *c)
+ 	c->watch_reg_use_cnt = 3;
+ 	t = read_c0_watchhi2();
+ 	write_c0_watchhi2(t | 0xff8);
++	back_to_back_c0_hazard();
+ 	t = read_c0_watchhi2();
+ 	c->watch_reg_masks[2] |= (t & 0xff8);
+ 	if ((t & 0x80000000) == 0)
+ 		return;
+ 
+ 	write_c0_watchlo3(7);
++	back_to_back_c0_hazard();
+ 	t = read_c0_watchlo3();
+ 	write_c0_watchlo3(0);
+ 	c->watch_reg_masks[3] = t & 7;
+@@ -163,6 +170,7 @@ __cpuinit void mips_probe_watch_registers(struct cpuinfo_mips *c)
+ 	c->watch_reg_use_cnt = 4;
+ 	t = read_c0_watchhi3();
+ 	write_c0_watchhi3(t | 0xff8);
++	back_to_back_c0_hazard();
+ 	t = read_c0_watchhi3();
+ 	c->watch_reg_masks[3] |= (t & 0xff8);
+ 	if ((t & 0x80000000) == 0)
+-- 
+1.8.3.1

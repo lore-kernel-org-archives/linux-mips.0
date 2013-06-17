@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:32343 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:32336 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6835146Ab3FQOBc7Q21D (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 17 Jun 2013 16:01:32 +0200
+        id S6835155Ab3FQOBdCsHPf (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 17 Jun 2013 16:01:33 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 1/7] MIPS: sibyte: Fix build for SIBYTE_BW_TRACE
-Date: Mon, 17 Jun 2013 15:00:35 +0100
-Message-ID: <1371477641-7989-2-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH 7/7] MIPS: sibyte: Remove unused variable.
+Date: Mon, 17 Jun 2013 15:00:41 +0100
+Message-ID: <1371477641-7989-8-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1371477641-7989-1-git-send-email-markos.chandras@imgtec.com>
 References: <1371477641-7989-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -22,38 +22,33 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>, sibyte-users@bitmover.com
-Message-ID: <20130617140035.pgKy_jh8V6fUyKgOqB17_oY3Hl73U6rtPTq5FeIKYjA@z>
+Message-ID: <20130617140041.6nwZZcsJ2EMp4LA1FEMyDLLIRGJDahUchWPf-7NyGrA@z>
 
-The M_BCM1480_SCD_TRACE_CFG_FREEZE macro removed in
-8deab1144b553548fb2f1b51affdd36dcd652aaa
-"[MIPS] Updated Sibyte headers"
+Fixes the following build problem:
 
-This broke the build for the sibyte platfrom when
-SIBYTE_BW_TRACE is enabled:
-arch/mips/mm/cerr-sb1.c:186:2: error: 'M_BCM1480_SCD_TRACE_CFG_FREEZE'
-undeclared (first use in this function)
-
-We fix this by replacing it with the M_BCM1480_SYS_RESERVED4 macro
+arch/mips/sibyte/sb1250/bus_watcher.c: In function 'sibyte_bw_int':
+arch/mips/sibyte/sb1250/bus_watcher.c:179:7: error: unused variable 'bw_buf'
+[-Werror=unused-variable]
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>
 Cc: sibyte-users@bitmover.com
 ---
- arch/mips/mm/cerr-sb1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/sibyte/sb1250/bus_watcher.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/mips/mm/cerr-sb1.c b/arch/mips/mm/cerr-sb1.c
-index 576add3..1a24534 100644
---- a/arch/mips/mm/cerr-sb1.c
-+++ b/arch/mips/mm/cerr-sb1.c
-@@ -183,7 +183,7 @@ asmlinkage void sb1_cache_error(void)
+diff --git a/arch/mips/sibyte/sb1250/bus_watcher.c b/arch/mips/sibyte/sb1250/bus_watcher.c
+index 8871e33..d0ca7b9 100644
+--- a/arch/mips/sibyte/sb1250/bus_watcher.c
++++ b/arch/mips/sibyte/sb1250/bus_watcher.c
+@@ -175,9 +175,6 @@ static irqreturn_t sibyte_bw_int(int irq, void *data)
  #ifdef CONFIG_SIBYTE_BW_TRACE
- 	/* Freeze the trace buffer now */
- #if defined(CONFIG_SIBYTE_BCM1x55) || defined(CONFIG_SIBYTE_BCM1x80)
--	csr_out32(M_BCM1480_SCD_TRACE_CFG_FREEZE, IOADDR(A_SCD_TRACE_CFG));
-+	csr_out32(M_BCM1480_SYS_RESERVED4, IOADDR(A_SCD_TRACE_CFG));
- #else
- 	csr_out32(M_SCD_TRACE_CFG_FREEZE, IOADDR(A_SCD_TRACE_CFG));
+ 	int i;
  #endif
+-#ifndef CONFIG_PROC_FS
+-	char bw_buf[1024];
+-#endif
+ 
+ #ifdef CONFIG_SIBYTE_BW_TRACE
+ 	csr_out32(M_SCD_TRACE_CFG_FREEZE, IOADDR(A_SCD_TRACE_CFG));
 -- 
 1.8.2.1

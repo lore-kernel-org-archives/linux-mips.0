@@ -1,19 +1,14 @@
-Received: from localhost.localdomain ([127.0.0.1]:37762 "EHLO linux-mips.org"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6817548Ab3FPItXx-Lwr (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 16 Jun 2013 10:49:23 +0200
-Date: Sun, 16 Jun 2013 10:49:07 +0200
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH 19/31] mips/kvm: Add host definitions for MIPS VZ based
- host.
-Message-ID: <20130616084907.GA20046@linux-mips.org>
-References: <1370646215-6543-1-git-send-email-ddaney.cavm@gmail.com>
- <1370646215-6543-20-git-send-email-ddaney.cavm@gmail.com>
+Received: from multi.imgtec.com ([194.200.65.239]:49756 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6823098Ab3FQImMZCKnU (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 17 Jun 2013 10:42:12 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: ath79: Fix argument for the ap136_pc_init function
+Date: Mon, 17 Jun 2013 09:42:11 +0100
+Message-ID: <1371458531-4988-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1370646215-6543-20-git-send-email-ddaney.cavm@gmail.com>
-Return-Path: <ralf@linux-mips.org>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,9 +18,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: linux-mips@linux-mips.org, kvm@vger.kernel.org, Sanjay Lal <sanjayl@kymasys.com>, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20130617084211.cAiUZTU5Marr7xr4TgREQjHPeolYI1o6jfcMYbDZ4iU@z>
 
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
+ap136_pci_init expects a u8 pointer as an argument.
 
-  Ralf
+Fixes the following build problem on a randconfig:
+arch/mips/ath79/mach-ap136.c:151:2: error:
+too many arguments to function 'ap136_pci_init'
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+This patch is for the upstream-sfr/mips-for-linux-next tree
+---
+ arch/mips/ath79/mach-ap136.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/ath79/mach-ap136.c b/arch/mips/ath79/mach-ap136.c
+index 479dd4b..07eac58 100644
+--- a/arch/mips/ath79/mach-ap136.c
++++ b/arch/mips/ath79/mach-ap136.c
+@@ -132,7 +132,7 @@ static void __init ap136_pci_init(u8 *eeprom)
+ 	ath79_register_pci();
+ }
+ #else
+-static inline void ap136_pci_init(void) {}
++static inline void ap136_pci_init(u8 *eeprom) {}
+ #endif /* CONFIG_PCI */
+ 
+ static void __init ap136_setup(void)
+-- 
+1.8.2.1

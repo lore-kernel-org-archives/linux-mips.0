@@ -1,17 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:61050 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:32336 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6835146Ab3FQKgckgMv8 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 17 Jun 2013 12:36:32 +0200
-Message-ID: <51BEE6A8.2050307@imgtec.com>
-Date: Mon, 17 Jun 2013 11:36:24 +0100
-From: James Hogan <james.hogan@imgtec.com>
+        id S6818472Ab3FQOBcfpjyz (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 17 Jun 2013 16:01:32 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH 0/7] MIPS: sibyte build fixes
+Date: Mon, 17 Jun 2013 15:00:34 +0100
+Message-ID: <1371477641-7989-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] MIPS: Reduce _NSIG from 128 to 127 to avoid BUG_ON
-References: <1371225825-8225-1-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1371225825-8225-1-git-send-email-james.hogan@imgtec.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,68 +18,34 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>, Oleg Nesterov <oleg@redhat.com>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Al Viro <viro@zeniv.linux.org.uk>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, David Howells <dhowells@redhat.com>, Dave Jones <davej@redhat.com>
-Message-ID: <20130617103624.hZ8N9XjQnJ6XOR0KSzqjEw3RLWylXWpmUt18pGe_xpc@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20130617140034.uVX2ZT59zoeAxhB16kaw_FERA09v7OjrQKYyP0sIjo0@z>
 
-On 14/06/13 17:03, James Hogan wrote:
-> MIPS has 128 signals, the highest of which has the number 128 (they
-> start from 1). The following command causes get_signal_to_deliver() to
-> pass this signal number straight through to do_group_exit() as the exit
-> code:
-> 
->   strace sleep 10 & sleep 1 && kill -128 `pidof sleep`
-> 
-> However do_group_exit() checks for the core dump bit (0x80) in the exit
-> code which matches in this particular case and the kernel panics:
-> 
->   BUG_ON(exit_code & 0x80); /* core dumps don't get here */
-> 
-> Lets avoid this by changing the ABI by reducing the number of signals to
-> 127 (so that the maximum signal number is 127). Glibc incorrectly sets
-> [__]SIGRTMAX to 127 already. uClibc sets it to 128 so it's conceivable
-> that programs built against uClibc which intentionally uses RT signals
-> from the top (SIGRTMAX-n, n>=0) would need an updated uClibc (and a
-> rebuild if it's crazy enough to use __SIGRTMAX).
+Hi,
 
-Hmm, although this works around the BUG_ON, this doesn't actually seem
-to be sufficient to behave correctly.
+The following patches aim to fix multiple build problems on 
+sibyte. These patches should be applied to the
+upstream-sfr/mips-for-linux-next tree.
 
-So it appears the exit status is constructed like this:
-bits	purpose
-0x007f	signal number (0-127)
-0x0080	core dump
-0xff00	exit status
+Markos Chandras (7):
+  MIPS: sibyte: Fix build for SIBYTE_BW_TRACE
+  MIPS: sibyte: Declare the cfe_write() buffer as constant
+  MIPS: sibyte: Add missing sched.h header
+  MIPS: sibyte: Amend dependencies for SIBYTE_BUS_WATCHER
+  drivers: watchdog: sb_wdog: Fix 32bit linking problems
+  drivers: ssb: Kconfig: Amend SSB_EMBEDDED dependencies
+  MIPS: sibyte: Remove unused variable.
 
-but the macros in waitstatus.h and wait.h in libc
-(see also "man 2 wait"):
-WIFEXITED:   status & 0x7f == 0
-WIFSIGNALED: status & 0x7f in [1..126] (i.e. not 0 or 127)
-WIFSTOPPED:  status & 0xff == 127
+ arch/mips/fw/cfe/cfe_api.c             | 4 ++--
+ arch/mips/include/asm/fw/cfe/cfe_api.h | 4 ++--
+ arch/mips/mm/cerr-sb1.c                | 2 +-
+ arch/mips/sibyte/Kconfig               | 3 ++-
+ arch/mips/sibyte/common/sb_tbprof.c    | 1 +
+ arch/mips/sibyte/sb1250/bus_watcher.c  | 3 ---
+ drivers/ssb/Kconfig                    | 2 +-
+ drivers/watchdog/sb_wdog.c             | 5 ++++-
+ 8 files changed, 13 insertions(+), 11 deletions(-)
 
-So termination due to SIG127 looks like it's been stopped instead of
-terminated via a signal, unless a core dump occurs in which case none of
-the above match.
-
-(And termination due to SIG128 hits BUG_ON, otherwise would appear to
-have exited normally with core dump).
-
-
-Reducing number of signals to 126 to avoid this will change the glibc
-ABI too, in which case we may as well reduce to 64 to match other
-arches, which is more likely to break something (I'm not really
-comfortable making that change).
-
-Reducing to 127 (this patch) still leaves incorrect exit status codes
-for SIG127, in which case we may as well leave it at 128, workaround the
-BUG_ON and just accept that exit codes may refer to the wrong signal
-number in the "terminated by SIG127 or SIG128" cases (something like the
-first patch I sent, but with maximum reduced to 126). It would probably
-be sensible to then reduce number of signals hardcoded in the C
-libraries to avoid these problematic signals (which wouldn't be an ABI
-break).
-
-Any further thoughts/opinions?
-
-Cheers
-James
+-- 
+1.8.2.1

@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:50379 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:50463 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6835024Ab3FSVujFd05t (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 19 Jun 2013 23:50:39 +0200
-Message-ID: <51C227AA.6060604@imgtec.com>
-Date: Wed, 19 Jun 2013 16:50:34 -0500
+        id S6835001Ab3FSVzQnl-HP (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 19 Jun 2013 23:55:16 +0200
+Message-ID: <51C22869.6050909@imgtec.com>
+Date: Wed, 19 Jun 2013 16:53:45 -0500
 From: "Steven J. Hill" <Steven.Hill@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/3] MIPS: Only set cpu_has_mmips if SYS_SUPPORTS_MICROMIPS
-References: <1369432450-13583-1-git-send-email-ddaney.cavm@gmail.com> <1369432450-13583-4-git-send-email-ddaney.cavm@gmail.com>
-In-Reply-To: <1369432450-13583-4-git-send-email-ddaney.cavm@gmail.com>
+Subject: Re: [PATCH v4 1/3] MIPS: microMIPS: Fix POOL16C minor opcode enum
+References: <20130527124421.GA32322@hades>
+In-Reply-To: <20130527124421.GA32322@hades>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Steven.Hill@imgtec.com>
@@ -21,27 +21,16 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: linux-mips@linux-mips.org, Jonas Gorski <jogo@openwrt.org>
-Message-ID: <20130619215034.Cm7YeCF3CIEPNEq_ZuyMJ2VXiZG-W_CSkIRctLar3do@z>
+To: Tony Wu <tung7970@gmail.com>
+Cc: macro@linux-mips.org, david.daney@cavium.com, linux-mips@linux-mips.org
+Message-ID: <20130619215345.R3x8SsCOIdNJ2b-hY1sPvRBXt9Ptz2QCKChQ47B44As@z>
 
-On 05/24/2013 04:54 PM, David Daney wrote:
-> From: David Daney <david.daney@cavium.com>
+On 05/27/2013 07:44 AM, Tony Wu wrote:
+> As pointed out by Maciej, POOL16C minor opcodes were mostly shifted
+> by one bit. Correct those opcodes, and also add jraddiusp to the enum.
 >
-> As Jonas Gorske said in his patch:
->
->     Disable cpu_has_mmips for everything but SEAD3 and MALTA. Most of
->     these platforms are from before the micromips introduction, so they
->     are very unlikely to implement it.
->
->     Reduces an -Os compiled, uncompressed kernel image by 8KiB for
->     BCM63XX.
->
-> This patch taks a different approach than his, we gate the runtime
-> test for microMIPS by the config symbol SYS_SUPPORTS_MICROMIPS.
->
-> Signed-off-by: David Daney <david.daney@cavium.com>
-> Cc: Jonas Gorski <jogo@openwrt.org>
+> Signed-off-by: Tony Wu <tung7970@gmail.com>
+> Cc: Maciej W. Rozycki <macro@linux-mips.org>
 > Cc: Steven J. Hill <Steven.Hill@imgtec.com>
 >
 Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>

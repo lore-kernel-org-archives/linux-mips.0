@@ -1,21 +1,18 @@
-Received: from perches-mx.perches.com ([206.117.179.246]:45724 "EHLO
-        labridge.com" rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org
-        with ESMTP id S6834875Ab3FTSnfhwg4f (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Jun 2013 20:43:35 +0200
-Message-ID: <1371753812.2146.37.camel@joe-AO722>
-Subject: Re: [PATCH] gpio MIPS/OCTEON: Add a driver for OCTEON's on-chip
- GPIO pins.
-From: Joe Perches <joe@perches.com>
-Date: Thu, 20 Jun 2013 11:43:32 -0700
-In-Reply-To: <51C3497D.2050107@gmail.com>
-References: <1371251915-18271-1-git-send-email-ddaney.cavm@gmail.com>
-         <CACRpkdYHzBBbPNujYRGkMFGuQRzeYKs9jgfc3e3HWyxQFahvRQ@mail.gmail.com>
-         <51C34584.8070301@gmail.com> <1371752324.2146.25.camel@joe-AO722>
-         <51C3497D.2050107@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
+Received: from mail-pd0-f175.google.com ([209.85.192.175]:41681 "EHLO
+        mail-pd0-f175.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6818712Ab3FTSv3kNZVH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Jun 2013 20:51:29 +0200
+Message-ID: <51C34F28.403@gmail.com>
+Date: Thu, 20 Jun 2013 11:51:20 -0700
+From: David Daney <ddaney.cavm@gmail.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH] gpio MIPS/OCTEON: Add a driver for OCTEON's on-chip GPIO
+ pins.
+References: <1371251915-18271-1-git-send-email-ddaney.cavm@gmail.com>  <CACRpkdYHzBBbPNujYRGkMFGuQRzeYKs9jgfc3e3HWyxQFahvRQ@mail.gmail.com>  <51C34584.8070301@gmail.com> <1371752324.2146.25.camel@joe-AO722>  <51C3497D.2050107@gmail.com> <1371753812.2146.37.camel@joe-AO722>
+In-Reply-To: <1371753812.2146.37.camel@joe-AO722>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <joe@perches.com>
+Return-Path: <ddaney.cavm@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,44 +22,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
+To: Joe Perches <joe@perches.com>
 Cc: Linus Walleij <linus.walleij@linaro.org>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, David Daney <david.daney@cavium.com>
-Message-ID: <20130620184332.ic5uiKbxydIoUIG1iUvDCteHYpxNnbsDwDgYt5wAVi0@z>
+Message-ID: <20130620185120.8yopf1oqd88M0KzH07Z4ZVJCG9CNFmfaXXUctMP14-M@z>
 
-On Thu, 2013-06-20 at 11:27 -0700, David Daney wrote:
-> On 06/20/2013 11:18 AM, Joe Perches wrote:
-> > On Thu, 2013-06-20 at 11:10 -0700, David Daney wrote:
-> >> Sorry for not responding earlier, but my e-mail system seems to have
-> >> malfunctioned with respect to this message...
-> > []
-> >> On 06/17/2013 01:51 AM, Linus Walleij wrote:
-> >>>> +static int octeon_gpio_get(struct gpio_chip *chip, unsigned offset)
-> >>>> +{
-> >>>> +       struct octeon_gpio *gpio = container_of(chip, struct octeon_gpio, chip);
-> >>>> +       u64 read_bits = cvmx_read_csr(gpio->register_base + RX_DAT);
-> >>>> +
-> >>>> +       return ((1ull << offset) & read_bits) != 0;
-> >>>
-> >>> A common idiom we use for this is:
-> >>>
-> >>> return !!(read_bits & (1ull << offset));
-> >>
-> >> I hate that idiom, but if its use is a condition of accepting the patch,
-> >> I will change it.
-> >
-> > Or use an even more common idiom and change the
-> > function to return bool and let the compiler do it.
-> >
-> 
-> ... but it is part of the gpiochip system interface, so it would have to 
-> be done kernel wide.
+On 06/20/2013 11:43 AM, Joe Perches wrote:
+> On Thu, 2013-06-20 at 11:27 -0700, David Daney wrote:
+>> On 06/20/2013 11:18 AM, Joe Perches wrote:
+>>> On Thu, 2013-06-20 at 11:10 -0700, David Daney wrote:
+>>>> Sorry for not responding earlier, but my e-mail system seems to have
+>>>> malfunctioned with respect to this message...
+>>> []
+>>>> On 06/17/2013 01:51 AM, Linus Walleij wrote:
+>>>>>> +static int octeon_gpio_get(struct gpio_chip *chip, unsigned offset)
+>>>>>> +{
+>>>>>> +       struct octeon_gpio *gpio = container_of(chip, struct octeon_gpio, chip);
+>>>>>> +       u64 read_bits = cvmx_read_csr(gpio->register_base + RX_DAT);
+>>>>>> +
+>>>>>> +       return ((1ull << offset) & read_bits) != 0;
+>>>>>
+>>>>> A common idiom we use for this is:
+>>>>>
+>>>>> return !!(read_bits & (1ull << offset));
+>>>>
+>>>> I hate that idiom, but if its use is a condition of accepting the patch,
+>>>> I will change it.
+>>>
+>>> Or use an even more common idiom and change the
+>>> function to return bool and let the compiler do it.
+>>>
+>>
+>> ... but it is part of the gpiochip system interface, so it would have to
+>> be done kernel wide.
+>
+> Not really.  It's a local static function.
 
-Not really.  It's a local static function.
+... which we generate a pointer to, and then assign that pointer to a 
+variable with a type defined in the gpiochip system interface.  So If we 
+do what you suggest, the result is:
 
-> Really I don't like the idea of GPIO lines having Boolean truth values 
-> associated with them.  Some represent things that are active-high and 
-> others active-low.  Converting the pin voltage being above or below a 
-> given threshold to something other than zero or one would in my opinion 
-> be confusing.
+   CC      drivers/gpio/gpio-octeon.o
+drivers/gpio/gpio-octeon.c: In function 'octeon_gpio_probe':
+drivers/gpio/gpio-octeon.c:113:12: warning: assignment from incompatible 
+pointer type [enabled by default]
 
-No worries, just offering options.  Your code, your choice.
+
+
+>
+>> Really I don't like the idea of GPIO lines having Boolean truth values
+>> associated with them.  Some represent things that are active-high and
+>> others active-low.  Converting the pin voltage being above or below a
+>> given threshold to something other than zero or one would in my opinion
+>> be confusing.
+>
+> No worries, just offering options.  Your code, your choice.
+>
+>
+>

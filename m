@@ -1,18 +1,23 @@
-Received: from mail-by2lp0241.outbound.protection.outlook.com ([207.46.163.241]:36934
-        "EHLO na01-by2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6834832Ab3FTBrpXCSE0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 20 Jun 2013 03:47:45 +0200
-Message-ID: <51C25F36.1040202@caviumnetworks.com>
-Date: Wed, 19 Jun 2013 18:47:34 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from mx0.aculab.com ([213.249.233.131]:49075 "HELO mx0.aculab.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with SMTP
+        id S6823083Ab3FTLfg2gjyp convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Jun 2013 13:35:36 +0200
+Received: from mx0.aculab.com ([127.0.0.1])
+ by localhost (mx0.aculab.com [127.0.0.1]) (amavisd-new, port 10024) with SMTP
+ id 23840-01 for <linux-mips@linux-mips.org>;
+ Thu, 20 Jun 2013 12:35:28 +0100 (BST)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] netdev: octeon_mgmt: Correct tx IFG workaround.
-References: <1371688820-4585-1-git-send-email-ddaney.cavm@gmail.com>  <1371688820-4585-2-git-send-email-ddaney.cavm@gmail.com>  <1371690487.2146.5.camel@joe-AO722> <51C25ACA.1070907@gmail.com> <1371692239.2146.7.camel@joe-AO722>
-In-Reply-To: <1371692239.2146.7.camel@joe-AO722>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain;
+        charset="Windows-1252"
+Content-Transfer-Encoding: 8BIT
+Subject: RE: [PATCH 2/2] netdev: octeon_mgmt: Fix structure layout for little-endian.
+Date: Thu, 20 Jun 2013 10:47:57 +0100
+Message-ID: <AE90C24D6B3A694183C094C60CF0A2F6026B729B@saturn3.aculab.com>
+In-Reply-To: <1371688820-4585-3-git-send-email-ddaney.cavm@gmail.com>
+References: <1371688820-4585-1-git-send-email-ddaney.cavm@gmail.com> <1371688820-4585-3-git-send-email-ddaney.cavm@gmail.com>
+From: "David Laight" <David.Laight@ACULAB.COM>
+Return-Path: <David.Laight@ACULAB.COM>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,49 +27,15 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Joe Perches <joe@perches.com>
-Cc: David Daney <ddaney.cavm@gmail.com>, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
-Message-ID: <20130620014734.L6_geQfp3rfO84S110-mYbiFl7lNTP-RyTMtf5Q54LU@z>
+To: David Daney <ddaney.cavm@gmail.com>, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
+Cc: linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
+Message-ID: <20130620094757.QiPs8zU19GkM5Vou-QwpJoPRj9I2gpDMvKASiSRIJQM@z>
 
-On 06/19/2013 06:37 PM, Joe Perches wrote:
-> On Wed, 2013-06-19 at 18:28 -0700, David Daney wrote:
->> On 06/19/2013 06:08 PM, Joe Perches wrote:
->>> On Wed, 2013-06-19 at 17:40 -0700, David Daney wrote:
->>>> From: David Daney <david.daney@cavium.com>
->>>>
->>>> The previous fix was still too agressive to meet ieee specs.  Increase
->>>> to (14, 10).
->>> []
->>>> diff --git a/drivers/net/ethernet/octeon/octeon_mgmt.c b/drivers/net/ethernet/octeon/octeon_mgmt.c
->>> []
->>>> @@ -1141,10 +1141,13 @@ static int octeon_mgmt_open(struct net_device *netdev)
->>>>    		/* For compensation state to lock. */
->>>>    		ndelay(1040 * NS_PER_PHY_CLK);
->>>>
->>>> -		/* Some Ethernet switches cannot handle standard
->>>> -		 * Interframe Gap, increase to 16 bytes.
->>>> +		/* Default Interframe Gaps are too small.  Recommended
->>>> +		 * workaround is.
->>>> +		 *
->>>> +		 * AGL_GMX_TX_IFG[IFG1]=14
->>>> +		 * AGL_GMX_TX_IFG[IFG2]=10
->>>
->>> Why isn't the TX IFG just 96 bit times?
->>
->> I don't have a full understanding of how the transistors are wired up on
->> the chip, so I cannot accurately answer your question.  But I can say
->> that after I empirically found the previous values to get the thing to
->> work, the hardware designers independently found that the values
->> supplied in this patch are required to achieve industry standard IFGs
->> with this hardware.
->
-> For one specific chip or for the Octeon entire family?
->
+> The C ABI reverses the bitfield fill order when compiled as
+> little-endian.
 
-You will notice, if you look at the code, that there is an if statement 
-that controls which chips get the special IFG treatment.
+No - it is completely implementation defined.
+The general concensus is not to use bitfields if you
+care at all about the bit assignments.
 
-But to summarize: Only chips that have 1Gig MII ports are affected. 
-Older versions (that only support 10M and 100M) do not get the adjustment.
-
-David Daney
+	David

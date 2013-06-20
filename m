@@ -1,19 +1,18 @@
-Received: from mail-ie0-f180.google.com ([209.85.223.180]:61205 "EHLO
-        mail-ie0-f180.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6824104Ab3F1KATMpIAc (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Jun 2013 12:00:19 +0200
-Received: by mail-ie0-f180.google.com with SMTP id f4so3420839iea.25
-        for <linux-mips@linux-mips.org>; Fri, 28 Jun 2013 03:00:13 -0700 (PDT)
+Received: from mail-pd0-f175.google.com ([209.85.192.175]:53621 "EHLO
+        mail-pd0-f175.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6823001Ab3FTSKVgCI5A (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Jun 2013 20:10:21 +0200
+Message-ID: <51C34584.8070301@gmail.com>
+Date: Thu, 20 Jun 2013 11:10:12 -0700
+From: David Daney <ddaney.cavm@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <51CCA67C.2010803@gmail.com>
-References: <1371775956-16453-1-git-send-email-santosh.shilimkar@ti.com>
- <51C4171C.9050908@linutronix.de> <51C48B5A.2040404@ti.com> <51CCA67C.2010803@gmail.com>
-From: Grant Likely <grant.likely@linaro.org>
-Date: Fri, 28 Jun 2013 10:59:52 +0100
-Message-ID: <CACxGe6vOH0sCFVVXrYqD3dbYdOvithVu7-d1cvy5885i8x_Myw@mail.gmail.com>
-Subject: Re: [PATCH] of: Specify initrd location using 64-bit
-Content-Type: text/plain; charset=ISO-8859-1
-Return-Path: <glikely@secretlab.ca>
+Subject: Re: Re: [PATCH] gpio MIPS/OCTEON: Add a driver for OCTEON's on-chip
+ GPIO pins.
+References: <1371251915-18271-1-git-send-email-ddaney.cavm@gmail.com> <CACRpkdYHzBBbPNujYRGkMFGuQRzeYKs9jgfc3e3HWyxQFahvRQ@mail.gmail.com>
+In-Reply-To: <CACRpkdYHzBBbPNujYRGkMFGuQRzeYKs9jgfc3e3HWyxQFahvRQ@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <ddaney.cavm@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,50 +22,187 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Herring <robherring2@gmail.com>
-Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <a-jacquiot@ti.com>, James Hogan <james.hogan@imgtec.com>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Jonas Bonn <jonas@southpole.se>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, x86@kernel.org, arm@kernel.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, linux-mips <linux-mips@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-xtensa@linux-xtensa.org, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>
-Message-ID: <20130628095952.hsN37tm6Bowpx0VIOvaCQCEGhTEyJAbC0z6L8IUXOag@z>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, David Daney <david.daney@cavium.com>
+Message-ID: <20130620181012.v5zTwQ0NzEoWbElgaZEB8WVJDkLIAwvczuFHDgxxO7A@z>
 
-On Thu, Jun 27, 2013 at 9:54 PM, Rob Herring <robherring2@gmail.com> wrote:
-> On 06/21/2013 12:20 PM, Santosh Shilimkar wrote:
->> On Friday 21 June 2013 05:04 AM, Sebastian Andrzej Siewior wrote:
->>> On 06/21/2013 02:52 AM, Santosh Shilimkar wrote:
->>>> diff --git a/arch/microblaze/kernel/prom.c b/arch/microblaze/kernel/prom.c
->>>> index 0a2c68f..62e2e8f 100644
->>>> --- a/arch/microblaze/kernel/prom.c
->>>> +++ b/arch/microblaze/kernel/prom.c
->>>> @@ -136,8 +136,7 @@ void __init early_init_devtree(void *params)
->>>>  }
->>>>
->>>>  #ifdef CONFIG_BLK_DEV_INITRD
->>>> -void __init early_init_dt_setup_initrd_arch(unsigned long start,
->>>> -           unsigned long end)
->>>> +void __init early_init_dt_setup_initrd_arch(u64 start, u64 end)
->>>>  {
->>>>     initrd_start = (unsigned long)__va(start);
->>>>     initrd_end = (unsigned long)__va(end);
->>>
->>> I think it would better to go here for phys_addr_t instead of u64. This
->>> would force you in of_flat_dt_match() to check if the value passed from
->>> DT specifies a memory address outside of 32bit address space and the
->>> kernel can't deal with this because its phys_addr_t is 32bit only due
->>> to a Kconfig switch.
->>>
->>> For x86, the initrd has to remain in the 32bit address space so passing
->>> the initrd in the upper range would violate the ABI. Not sure if this
->>> is true for other archs as well (ARM obviously not).
->>>
->> That pretty much means phys_addr_t. It will work for me as well but
->> in last thread from consistency with memory and reserved node, Rob
->> insisted to keep it as u64. So before I re-spin another version,
->> would like to here what Rob has to say considering the x86 requirement.
->>
->> Rob,
->> Are you ok with phys_addr_t since your concern was about rest
->> of the memory specific bits of the device-tree code use u64 ?
+Sorry for not responding earlier, but my e-mail system seems to have 
+malfunctioned with respect to this message...
+
+
+On 06/17/2013 01:51 AM, Linus Walleij wrote:
+> On Sat, Jun 15, 2013 at 1:18 AM, David Daney <ddaney.cavm@gmail.com> wrote:
 >
-> No. I still think it should be u64 for same reasons I said originally.
+>> From: David Daney <david.daney@cavium.com>
+>>
+>> The SOCs in the OCTEON family have 16 (or in some cases 20) on-chip
+>> GPIO pins, this driver handles them all.  Configuring the pins as
+>> interrupt sources is handled elsewhere (OCTEON's irq handling code).
+>>
+>> Signed-off-by: David Daney <david.daney@cavium.com>
+>
+>> This patch depends somewhat on patches in Ralf's MIPS/Linux -next tree
+>> where we have patches that enable the Kconfig CAVIUM_OCTEON_SOC and
+>> ARCH_REQUIRE_GPIOLIB symbols.  Apart from that it is stand-alone and
+>> is probably suitable for merging via the GPIO tree.
+>
+> Really? You're using this:
+>
+> +#include <asm/octeon/octeon.h>
+> +#include <asm/octeon/cvmx-gpio-defs.h>
+>
+> I cannot find this in my tree.
 
-+1
+Weird, I see them here:
 
-g.
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/arch/mips/include/asm/octeon/cvmx-gpio-defs.h
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/arch/mips/include/asm/octeon/octeon.h
+
+Do you not have these?
+
+>
+> Further I ask why that second file is not part of *this* patch?
+> It surely seems GPIO-related, and would probably need to
+> go into include/linux/platform_data/gpio-octeon.h or something
+> rather than such platform dirs.
+>
+> (...)
+>> +config GPIO_OCTEON
+>> +       tristate "Cavium OCTEON GPIO"
+>> +       depends on GPIOLIB && CAVIUM_OCTEON_SOC
+>
+> depend on OF as well right? Or does the CAVIUM_OCTEON_SOC already
+> imply that?
+
+We already have 'select USE_OF', so I think adding OF here would be 
+redundant.
+
+
+>
+> (...)
+>> +++ b/drivers/gpio/gpio-octeon.c
+>
+>
+>> +#define RX_DAT 0x80
+>> +#define TX_SET 0x88
+>> +#define TX_CLEAR 0x90
+>
+>
+>> +/*
+>> + * The address offset of the GPIO configuration register for a given
+>> + * line.
+>> + */
+>> +static unsigned int bit_cfg_reg(unsigned int gpio)
+
+>
+> Maybe the passed variable shall be named "offset" here, as it is named
+> offset on all call sites, and it surely local for this instance?
+
+Well it is the gpio line, so perhaps it should universally be change to 
+"line" or "pin"
+
+
+>
+>> +{
+>> +       if (gpio < 16)
+>> +               return 8 * gpio;
+>> +       else
+>> +               return 8 * (gpio - 16) + 0x100;
+>
+> Put this 0x100 in the #defines above with the name something like
+> STRIDE.
+
+But it is not a 'STRIDE', it is a discontinuity compensation and used in 
+exactly one place.
+
+
+>
+>> +struct octeon_gpio {
+>> +       struct gpio_chip chip;
+>> +       u64 register_base;
+>> +};
+>
+> OMG everything is 64 bit. Well has to come to this I guess.
+
+Not everything.  This is custom logic in an SoC with 64-bit wide 
+internal address buses, what would you suggest?
+
+
+>
+>> +static void octeon_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+>> +{
+>> +       struct octeon_gpio *gpio = container_of(chip, struct octeon_gpio, chip);
+>> +       u64 mask = 1ull << offset;
+>
+> And now BIT(offset) does not work anymore because it is defined as
+> #define BIT(nr)                 (1UL << (nr))
+> OK we will have to live with this FTM I guess.
+>
+>> +static int octeon_gpio_dir_out(struct gpio_chip *chip, unsigned offset,
+>> +                              int value)
+>> +{
+>> +       struct octeon_gpio *gpio = container_of(chip, struct octeon_gpio, chip);
+>> +       union cvmx_gpio_bit_cfgx cfgx;
+>> +
+>> +       octeon_gpio_set(chip, offset, value);
+>> +
+>> +       cfgx.u64 = 0;
+>> +       cfgx.s.tx_oe = 1;
+>
+> This makes me want to review that magic header file of yours,
+> I guess this comes from <asm/octeon/cvmx-gpio-defs.h>?
+
+Not really magic, but yes that is where it comes from.
+
+>
+> Should not this latter variable be a bool?
+
+I don't think so, it is not the result of a comparison operator.
+
+>
+> I'm not a fan of packed bitfields like this, I prefer if you just
+> OR | and AND & the bits together in the driver.
+>
+>> +static int octeon_gpio_get(struct gpio_chip *chip, unsigned offset)
+>> +{
+>> +       struct octeon_gpio *gpio = container_of(chip, struct octeon_gpio, chip);
+>> +       u64 read_bits = cvmx_read_csr(gpio->register_base + RX_DAT);
+>> +
+>> +       return ((1ull << offset) & read_bits) != 0;
+>
+> A common idiom we use for this is:
+>
+> return !!(read_bits & (1ull << offset));
+
+I hate that idiom, but if its use is a condition of accepting the patch, 
+I will change it.
+
+>
+>> +       pdev->dev.platform_data = chip;
+>> +       chip->label = "octeon-gpio";
+>> +       chip->dev = &pdev->dev;
+>> +       chip->owner = THIS_MODULE;
+>> +       chip->base = 0;
+>> +       chip->can_sleep = 0;
+>> +       chip->ngpio = 20;
+>> +       chip->direction_input = octeon_gpio_dir_in;
+>> +       chip->get = octeon_gpio_get;
+>> +       chip->direction_output = octeon_gpio_dir_out;
+>> +       chip->set = octeon_gpio_set;
+>> +       err = gpiochip_add(chip);
+>> +       if (err)
+>> +               goto out;
+>> +
+>> +       dev_info(&pdev->dev, "OCTEON GPIO\n");
+>
+> This is like shouting "REAL MADRID!" in the bootlog, be a bit more
+> precise: "octeon GPIO driver probed\n" or something so we know what
+> is happening.
+
+No, more akin to 'Real Madrid', as 'OCTEON' is the correct spelling of 
+its given name.
+
+I will happily add "driver probed", and grudgingly switch to lower case 
+if it is a necessary condition of patch acceptance.
+
+David Daney

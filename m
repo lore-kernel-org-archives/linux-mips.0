@@ -1,18 +1,18 @@
-Received: from mail.windriver.com ([147.11.1.11]:42962 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6835001Ab3FTA1ecmEVv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Jun 2013 02:27:34 +0200
-Date: Wed, 19 Jun 2013 20:28:07 -0400
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: [PATCH v2] mips: delete __cpuinit/__CPUINIT usage from MIPS code
-Message-ID: <20130620002806.GA15693@windriver.com>
-References: <1371566339-18336-1-git-send-email-paul.gortmaker@windriver.com>
- <51C22E75.3020001@gmail.com>
+Received: from mail-by2lp0241.outbound.protection.outlook.com ([207.46.163.241]:36934
+        "EHLO na01-by2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S6834832Ab3FTBrpXCSE0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 20 Jun 2013 03:47:45 +0200
+Message-ID: <51C25F36.1040202@caviumnetworks.com>
+Date: Wed, 19 Jun 2013 18:47:34 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <51C22E75.3020001@gmail.com>
-Return-Path: <Paul.Gortmaker@windriver.com>
+Subject: Re: [PATCH 1/2] netdev: octeon_mgmt: Correct tx IFG workaround.
+References: <1371688820-4585-1-git-send-email-ddaney.cavm@gmail.com>  <1371688820-4585-2-git-send-email-ddaney.cavm@gmail.com>  <1371690487.2146.5.camel@joe-AO722> <51C25ACA.1070907@gmail.com> <1371692239.2146.7.camel@joe-AO722>
+In-Reply-To: <1371692239.2146.7.camel@joe-AO722>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,116 +22,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20130620002807.IvM0HqX8kjOwjmjH81SjnCFUPkfqlbaGfqb33_Vyf0U@z>
+To: Joe Perches <joe@perches.com>
+Cc: David Daney <ddaney.cavm@gmail.com>, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
+Message-ID: <20130620014734.L6_geQfp3rfO84S110-mYbiFl7lNTP-RyTMtf5Q54LU@z>
 
-[Re: [PATCH v2] mips: delete __cpuinit/__CPUINIT usage from MIPS code] On 19/06/2013 (Wed 15:19) David Daney wrote:
+On 06/19/2013 06:37 PM, Joe Perches wrote:
+> On Wed, 2013-06-19 at 18:28 -0700, David Daney wrote:
+>> On 06/19/2013 06:08 PM, Joe Perches wrote:
+>>> On Wed, 2013-06-19 at 17:40 -0700, David Daney wrote:
+>>>> From: David Daney <david.daney@cavium.com>
+>>>>
+>>>> The previous fix was still too agressive to meet ieee specs.  Increase
+>>>> to (14, 10).
+>>> []
+>>>> diff --git a/drivers/net/ethernet/octeon/octeon_mgmt.c b/drivers/net/ethernet/octeon/octeon_mgmt.c
+>>> []
+>>>> @@ -1141,10 +1141,13 @@ static int octeon_mgmt_open(struct net_device *netdev)
+>>>>    		/* For compensation state to lock. */
+>>>>    		ndelay(1040 * NS_PER_PHY_CLK);
+>>>>
+>>>> -		/* Some Ethernet switches cannot handle standard
+>>>> -		 * Interframe Gap, increase to 16 bytes.
+>>>> +		/* Default Interframe Gaps are too small.  Recommended
+>>>> +		 * workaround is.
+>>>> +		 *
+>>>> +		 * AGL_GMX_TX_IFG[IFG1]=14
+>>>> +		 * AGL_GMX_TX_IFG[IFG2]=10
+>>>
+>>> Why isn't the TX IFG just 96 bit times?
+>>
+>> I don't have a full understanding of how the transistors are wired up on
+>> the chip, so I cannot accurately answer your question.  But I can say
+>> that after I empirically found the previous values to get the thing to
+>> work, the hardware designers independently found that the values
+>> supplied in this patch are required to achieve industry standard IFGs
+>> with this hardware.
+>
+> For one specific chip or for the Octeon entire family?
+>
 
-> On 06/18/2013 07:38 AM, Paul Gortmaker wrote:
-> >The __cpuinit type of throwaway sections might have made sense
-> >some time ago when RAM was more constrained, but now the savings
-> >do not offset the cost and complications.  For example, the fix in
-> >commit 5e427ec2d0 ("x86: Fix bit corruption at CPU resume time")
-> >is a good example of the nasty type of bugs that can be created
-> >with improper use of the various __init prefixes.
-> >
-> >After a discussion on LKML[1] it was decided that cpuinit should go
-> >the way of devinit and be phased out.  Once all the users are gone,
-> >we can then finally remove the macros themselves from linux/init.h.
-> >
-> >Note that some harmless section mismatch warnings may result, since
-> >notify_cpu_starting() and cpu_up() are arch independent (kernel/cpu.c)
-> >and are flagged as __cpuinit  -- so if we remove the __cpuinit from
-> >the arch specific callers, we will also get section mismatch warnings.
-> >As an intermediate step, we intend to turn the linux/init.h cpuinit
-> >related content into no-ops as early as possible, since that will get
-> >rid of these warnings.  In any case, they are temporary and harmless.
-> >
-> >Here, we remove all the MIPS __cpuinit from C code and __CPUINIT
-> >from asm files.  MIPS is interesting in this respect, because there
-> >are also uasm users hiding behind their own renamed versions of the
-> >__cpuinit macros.
-> >
-> >[1] https://lkml.org/lkml/2013/5/20/589
-> >
-> >Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> 
-> I get:
-> 
-> 
-> WARNING: vmlinux.o(.text+0x18640): Section mismatch in reference
-> from the function register_cavium_notifier() to the variable
-> .cpuinit.data:octeon_cpu_callback_nb.37045
-> The function register_cavium_notifier() references
-> the variable __cpuinitdata octeon_cpu_callback_nb.37045.
-> This is often because register_cavium_notifier lacks a __cpuinitdata
-> annotation or the annotation of octeon_cpu_callback_nb.37045 is wrong.
-> 
-> WARNING: vmlinux.o(.text+0x18650): Section mismatch in reference
-> from the function register_cavium_notifier() to the variable
-> .cpuinit.data:octeon_cpu_callback_nb.37045
-> The function register_cavium_notifier() references
-> the variable __cpuinitdata octeon_cpu_callback_nb.37045.
-> This is often because register_cavium_notifier lacks a __cpuinitdata
-> annotation or the annotation of octeon_cpu_callback_nb.37045 is wrong.
-> 
-> WARNING: vmlinux.o(.text+0x24778): Section mismatch in reference
-> from the function start_secondary() to the function
-> .cpuinit.text:calibrate_delay()
-> The function start_secondary() references
-> the function __cpuinit calibrate_delay().
-> This is often because start_secondary lacks a __cpuinit
-> annotation or the annotation of calibrate_delay is wrong.
-> 
-> WARNING: vmlinux.o(.text+0x247b4): Section mismatch in reference
-> from the function start_secondary() to the function
-> .cpuinit.text:notify_cpu_starting()
-> The function start_secondary() references
-> the function __cpuinit notify_cpu_starting().
-> This is often because start_secondary lacks a __cpuinit
-> annotation or the annotation of notify_cpu_starting is wrong.
+You will notice, if you look at the code, that there is an if statement 
+that controls which chips get the special IFG treatment.
 
-Yes, see above commit log reference....
+But to summarize: Only chips that have 1Gig MII ports are affected. 
+Older versions (that only support 10M and 100M) do not get the adjustment.
 
-> 
-> 
-> 
-> So I think an alternate approach is required.
-> 
-> Really I think we need to leave all existing __cpuinitdata and
-> __cpuinit annotations in place.
-> 
-> Instead we would first change the definitions of these two to be empyt:
-> 
-> #define __cpuinit
-> #define __cpuinitdata
-
-Again, see above commit log; specifically:
-
-   As an intermediate step, we intend to turn the linux/init.h cpuinit
-   related content into no-ops as early as possible, since that will get
-   rid of these warnings.  
-
-I am literally in the middle of typing up a mail to linux-arch that
-explains this, and that the no-op step comes in at the beginning of the
-merge window, and that the big purge comes at the end.
-
-However, I do not want that process to be set in stone ; as Ralf indicated,
-he expected some changes to the mips tree and wanted to deal with the
-conflicts himself (which is fine by me!) and so we can do that at the
-expense of some temporary section warnings.  This is why I explicitly
-called them out in the above commit log.
-
-> Once that is working, we would make a second pass and remove the
-> symbols themselves.
-
-Yep, thanks for looking at things; it sounds like we are in alignment
-with how to proceed here -- only that I wasn't quick enough in getting
-the steps published and the no-op phase into linux-next.
-
-Paul.
---
-
-> 
-> David Daney
+David Daney

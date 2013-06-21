@@ -1,17 +1,18 @@
-Received: from devils.ext.ti.com ([198.47.26.153]:53496 "EHLO
-        devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6827465Ab3FURUynRvOx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 21 Jun 2013 19:20:54 +0200
-Message-ID: <51C48B5A.2040404@ti.com>
-Date: Fri, 21 Jun 2013 13:20:26 -0400
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Received: from mail-by2lp0238.outbound.protection.outlook.com ([207.46.163.238]:1218
+        "EHLO na01-by2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S6835001Ab3FUUqKqWNNd (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 21 Jun 2013 22:46:10 +0200
+Message-ID: <51C4BB86.1020004@caviumnetworks.com>
+Date: Fri, 21 Jun 2013 13:45:58 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] of: Specify initrd location using 64-bit
-References: <1371775956-16453-1-git-send-email-santosh.shilimkar@ti.com> <51C4171C.9050908@linutronix.de>
-In-Reply-To: <51C4171C.9050908@linutronix.de>
-Content-Type: text/plain; charset="ISO-8859-1"
+Subject: Re: [PATCH v3] kernel/signal.c: fix BUG_ON with SIG128 (MIPS)
+References: <1371821962-9151-1-git-send-email-james.hogan@imgtec.com> <51C47864.9030200@gmail.com> <20130621202244.GA16610@redhat.com>
+In-Reply-To: <20130621202244.GA16610@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <santosh.shilimkar@ti.com>
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,45 +22,45 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, robherring2@gmail.com
-Cc: linux-kernel@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <a-jacquiot@ti.com>, James Hogan <james.hogan@imgtec.com>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Jonas Bonn <jonas@southpole.se>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, x86@kernel.org, arm@kernel.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org, devicetree-discuss@lists.ozlabs.org
-Message-ID: <20130621172026.eBLXUGmLCC0KTF6HNwQmBKpm5SmgvQmu61ZG_swkX04@z>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: David Daney <ddaney.cavm@gmail.com>, James Hogan <james.hogan@imgtec.com>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, David Daney <david.daney@cavium.com>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, David Howells <dhowells@redhat.com>, Dave Jones <davej@redhat.com>, linux-mips@linux-mips.org
+Message-ID: <20130621204558.0D0wkvr-omnV4id1Q-AStkgUyqtEeIjNlbPMuU4uAE4@z>
 
-On Friday 21 June 2013 05:04 AM, Sebastian Andrzej Siewior wrote:
-> On 06/21/2013 02:52 AM, Santosh Shilimkar wrote:
->> diff --git a/arch/microblaze/kernel/prom.c b/arch/microblaze/kernel/prom.c
->> index 0a2c68f..62e2e8f 100644
->> --- a/arch/microblaze/kernel/prom.c
->> +++ b/arch/microblaze/kernel/prom.c
->> @@ -136,8 +136,7 @@ void __init early_init_devtree(void *params)
->>  }
->>  
->>  #ifdef CONFIG_BLK_DEV_INITRD
->> -void __init early_init_dt_setup_initrd_arch(unsigned long start,
->> -		unsigned long end)
->> +void __init early_init_dt_setup_initrd_arch(u64 start, u64 end)
->>  {
->>  	initrd_start = (unsigned long)__va(start);
->>  	initrd_end = (unsigned long)__va(end);
-> 
-> I think it would better to go here for phys_addr_t instead of u64. This
-> would force you in of_flat_dt_match() to check if the value passed from
-> DT specifies a memory address outside of 32bit address space and the
-> kernel can't deal with this because its phys_addr_t is 32bit only due
-> to a Kconfig switch.
-> 
-> For x86, the initrd has to remain in the 32bit address space so passing
-> the initrd in the upper range would violate the ABI. Not sure if this
-> is true for other archs as well (ARM obviously not).
-> 
-That pretty much means phys_addr_t. It will work for me as well but
-in last thread from consistency with memory and reserved node, Rob
-insisted to keep it as u64. So before I re-spin another version,
-would like to here what Rob has to say considering the x86 requirement.
+On 06/21/2013 01:22 PM, Oleg Nesterov wrote:
+> On 06/21, David Daney wrote:
+>>
+>> On 06/21/2013 06:39 AM, James Hogan wrote:
+>>> Therefore add sig_to_exitcode() and exitcode_to_sig() functions which
+>>> map signal numbers > 126 to exit code 126 and puts the remainder (i.e.
+>>> sig - 126) in higher bits. This allows WIFSIGNALED() to return true for
+>>> both SIG127 and SIG128, and allows WTERMSIG to be later updated to read
+>>> the correct signal number for SIG127 and SIG128.
+>>
+>> I really hate this approach.
+>>
+>> Can we just change the ABI to reduce the number of signals so that all
+>> the standard C library wait related macros don't have to be changed?
+>>
+>> Think about it, any user space program using signal numbers 127 and 128
+>> doesn't work correctly as things exist today, so removing those two will
+>> be no great loss.
+>
+> Oh, I agree.
+>
+> Besides, this changes ABI anyway. And if we change it we can do this in
+> a more clean way, afaics. MIPS should simply use 2 bytes in exit_code for
+> signal number.
 
-Rob,
-Are you ok with phys_addr_t since your concern was about rest
-of the memory specific bits of the device-tree code use u64 ?
+Wouldn't that break *all* existing programs that use signals?  Perhaps I 
+misunderstand what you are suggesting.
 
-Regards,
-Santosh
+I am proposing that we just reduce the number of usable signals such 
+that existing libc status checking macros/functions don't change in any way.
+
+  Yes, this means we need replace 0x80/0x7f in exit.c by
+> ifdef'ed numbers. And yes, this means that WIFSIGNALED/etc should be
+> updated too, but this is also true with this patch.
+>
+> Oleg.
+>
+>

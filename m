@@ -1,18 +1,17 @@
-Received: from mail-pd0-f175.google.com ([209.85.192.175]:53621 "EHLO
-        mail-pd0-f175.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6823001Ab3FTSKVgCI5A (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Jun 2013 20:10:21 +0200
-Message-ID: <51C34584.8070301@gmail.com>
-Date: Thu, 20 Jun 2013 11:10:12 -0700
-From: David Daney <ddaney.cavm@gmail.com>
+Received: from multi.imgtec.com ([194.200.65.239]:19540 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6823013Ab3F1MHtYzTdg (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 28 Jun 2013 14:07:49 +0200
+Message-ID: <51CD7C8C.4050807@imgtec.com>
+Date: Fri, 28 Jun 2013 13:07:40 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: Re: [PATCH] gpio MIPS/OCTEON: Add a driver for OCTEON's on-chip
- GPIO pins.
-References: <1371251915-18271-1-git-send-email-ddaney.cavm@gmail.com> <CACRpkdYHzBBbPNujYRGkMFGuQRzeYKs9jgfc3e3HWyxQFahvRQ@mail.gmail.com>
-In-Reply-To: <CACRpkdYHzBBbPNujYRGkMFGuQRzeYKs9jgfc3e3HWyxQFahvRQ@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: Re: [PATCH v3] kernel/signal.c: fix BUG_ON with SIG128 (MIPS)
+References: <51C47864.9030200@gmail.com> <20130621202244.GA16610@redhat.com> <51C4BB86.1020004@caviumnetworks.com> <20130622190940.GA14150@redhat.com> <51C80CF0.4070608@imgtec.com> <20130625144015.1e4e70a0ac888f4ccf5c6a8f@linux-foundation.org> <CAAG0J9-5J6=c=1VxEW6FevMHKsjShtbjM8G6Q1vu1P+LurQqoQ@mail.gmail.com> <51CACB80.5020706@imgtec.com> <20130626161452.GA2888@redhat.com> <20130626165900.GF7171@linux-mips.org> <20130626171551.GA5830@redhat.com>
+In-Reply-To: <20130626171551.GA5830@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <ddaney.cavm@gmail.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,187 +21,94 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, David Daney <david.daney@cavium.com>
-Message-ID: <20130620181012.v5zTwQ0NzEoWbElgaZEB8WVJDkLIAwvczuFHDgxxO7A@z>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Andrew Morton <akpm@linux-foundation.org>, David Daney <ddaney@caviumnetworks.com>, David Daney <ddaney.cavm@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Kees Cook <keescook@chromium.org>, David Daney <david.daney@cavium.com>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, David Howells <dhowells@redhat.com>, Dave Jones <davej@redhat.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20130628120740.wAVHfp4WO77J9AvRSIWlwIdI7-5f6-F4xKl-LXHcUXE@z>
 
-Sorry for not responding earlier, but my e-mail system seems to have 
-malfunctioned with respect to this message...
-
-
-On 06/17/2013 01:51 AM, Linus Walleij wrote:
-> On Sat, Jun 15, 2013 at 1:18 AM, David Daney <ddaney.cavm@gmail.com> wrote:
->
->> From: David Daney <david.daney@cavium.com>
+On 26/06/13 18:15, Oleg Nesterov wrote:
+> On 06/26, Ralf Baechle wrote:
 >>
->> The SOCs in the OCTEON family have 16 (or in some cases 20) on-chip
->> GPIO pins, this driver handles them all.  Configuring the pins as
->> interrupt sources is handled elsewhere (OCTEON's irq handling code).
+>> On Wed, Jun 26, 2013 at 06:14:52PM +0200, Oleg Nesterov wrote:
 >>
->> Signed-off-by: David Daney <david.daney@cavium.com>
->
->> This patch depends somewhat on patches in Ralf's MIPS/Linux -next tree
->> where we have patches that enable the Kconfig CAVIUM_OCTEON_SOC and
->> ARCH_REQUIRE_GPIOLIB symbols.  Apart from that it is stand-alone and
->> is probably suitable for merging via the GPIO tree.
->
-> Really? You're using this:
->
-> +#include <asm/octeon/octeon.h>
-> +#include <asm/octeon/cvmx-gpio-defs.h>
->
-> I cannot find this in my tree.
+>>> Or simply remove the BUG_ON(), this can equally confuse wait(status).
+>>> 128 & 0x7f == 0.
+>>>
+>>> Still I think it would be better to change _NSIG on mips.
+>>
+>> If it was that easy.  That's going to outright break binary compatibility,
+>> see kernel/signal.c:
+>>
+>> SYSCALL_DEFINE4(rt_sigprocmask, int, how, sigset_t __user *, nset,
+>>                 sigset_t __user *, oset, size_t, sigsetsize)
+>> {
+>>         sigset_t old_set, new_set;
+>>         int error;
+>>
+>>         /* XXX: Don't preclude handling different sized sigset_t's.  */
+>>         if (sigsetsize != sizeof(sigset_t))
+>>                 return -EINVAL;
+> 
+> I meant the minimal hack like
+> 
+> 	--- x/arch/mips/include/uapi/asm/signal.h
+> 	+++ x/arch/mips/include/uapi/asm/signal.h
+> 	@@ -11,9 +11,9 @@
+> 	 
+> 	 #include <linux/types.h>
+> 	 
+> 	-#define _NSIG		128
+> 	+#define _NSIG		127
+> 	 #define _NSIG_BPW	(sizeof(unsigned long) * 8)
+> 	-#define _NSIG_WORDS	(_NSIG / _NSIG_BPW)
+> 	+#define _NSIG_WORDS	DIV_ROUND_UP(_NSIG / _NSIG_BPW)
+> 	 
+> 	 typedef struct {
+> 		unsigned long sig[_NSIG_WORDS];
+> 
+> just to avoid BUG_ON().
+> 
+> I agree that _NSIG == 126 or 64 needs more discussion. Although personally
+> I think this is the only choice in the long term, or we should change ABI
+> and break user-space completely.
+> 
+> And, just in case, the hack above doesn't kill SIG_128 completely.
+> Say, the task can block/unblock it.
 
-Weird, I see them here:
+Well it prevents a handler being added or the signal being sent, so it
+pretty much does kill it (patch v2 did this). Since glibc already has
+SIGRTMAX=127, nothing running glibc should be affected unless it's being
+really stupid (uClibc and bionic is a different matter).
 
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/arch/mips/include/asm/octeon/cvmx-gpio-defs.h
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/arch/mips/include/asm/octeon/octeon.h
+I've booted debian with only 64 signals and an appropriate printk in
+do_sigaction, and although various things try and set all the handlers,
+I didn't found anything that breaks because of them being missing.
 
-Do you not have these?
+I've also audited all the binaries installed on my desktop (Fedora 17)
+which contain libc_current_sigrtmax to see if I can find anything
+problematic. Various things iterate all the signals (which doesn't do
+any harm if a bunch are missing, especially when EINVAL is often
+expected for SIGRTMIN..SIGRTMIN+2 because of libc using them). High
+level language bindings open up some potential for breakage since
+SIGRTMAX etc can be exposed to higher levels. The only real problem I've
+found though is openjdk:
 
->
-> Further I ask why that second file is not part of *this* patch?
-> It surely seems GPIO-related, and would probably need to
-> go into include/linux/platform_data/gpio-octeon.h or something
-> rather than such platform dirs.
->
-> (...)
->> +config GPIO_OCTEON
->> +       tristate "Cavium OCTEON GPIO"
->> +       depends on GPIOLIB && CAVIUM_OCTEON_SOC
->
-> depend on OF as well right? Or does the CAVIUM_OCTEON_SOC already
-> imply that?
+http://hg.openjdk.java.net/jdk7/jsn/jdk/file/tip/src/solaris/native/java/net/linux_close.c
+57 /*
+58  * Signal to unblock thread
+59  */
+60 static int sigWakeup = (__SIGRTMAX - 2);
 
-We already have 'select USE_OF', so I think adding OF here would be 
-redundant.
+It sets up a signal handler when the library is loaded (without any
+error checking), and tries to send the signal to all threads blocked on
+a file descriptor to wake them up (again without error checking), called
+from NET_Dup2 and NET_SocketClose. Clearly this could easily break
+backwards compatibility if SIGRTMAX is reduced any lower than 126.
 
+Obviously this isn't exhaustive (I haven't tried android etc or actually
+running many applications, and open source software probably isn't the
+best example of badly written code), but it looks like it may be safe to
+reduce _NSIG to 127 for a stable fix if nobody objects, and possibly to
+126 in the future to avoid the wait exit status problem.
 
->
-> (...)
->> +++ b/drivers/gpio/gpio-octeon.c
->
->
->> +#define RX_DAT 0x80
->> +#define TX_SET 0x88
->> +#define TX_CLEAR 0x90
->
->
->> +/*
->> + * The address offset of the GPIO configuration register for a given
->> + * line.
->> + */
->> +static unsigned int bit_cfg_reg(unsigned int gpio)
-
->
-> Maybe the passed variable shall be named "offset" here, as it is named
-> offset on all call sites, and it surely local for this instance?
-
-Well it is the gpio line, so perhaps it should universally be change to 
-"line" or "pin"
-
-
->
->> +{
->> +       if (gpio < 16)
->> +               return 8 * gpio;
->> +       else
->> +               return 8 * (gpio - 16) + 0x100;
->
-> Put this 0x100 in the #defines above with the name something like
-> STRIDE.
-
-But it is not a 'STRIDE', it is a discontinuity compensation and used in 
-exactly one place.
-
-
->
->> +struct octeon_gpio {
->> +       struct gpio_chip chip;
->> +       u64 register_base;
->> +};
->
-> OMG everything is 64 bit. Well has to come to this I guess.
-
-Not everything.  This is custom logic in an SoC with 64-bit wide 
-internal address buses, what would you suggest?
-
-
->
->> +static void octeon_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
->> +{
->> +       struct octeon_gpio *gpio = container_of(chip, struct octeon_gpio, chip);
->> +       u64 mask = 1ull << offset;
->
-> And now BIT(offset) does not work anymore because it is defined as
-> #define BIT(nr)                 (1UL << (nr))
-> OK we will have to live with this FTM I guess.
->
->> +static int octeon_gpio_dir_out(struct gpio_chip *chip, unsigned offset,
->> +                              int value)
->> +{
->> +       struct octeon_gpio *gpio = container_of(chip, struct octeon_gpio, chip);
->> +       union cvmx_gpio_bit_cfgx cfgx;
->> +
->> +       octeon_gpio_set(chip, offset, value);
->> +
->> +       cfgx.u64 = 0;
->> +       cfgx.s.tx_oe = 1;
->
-> This makes me want to review that magic header file of yours,
-> I guess this comes from <asm/octeon/cvmx-gpio-defs.h>?
-
-Not really magic, but yes that is where it comes from.
-
->
-> Should not this latter variable be a bool?
-
-I don't think so, it is not the result of a comparison operator.
-
->
-> I'm not a fan of packed bitfields like this, I prefer if you just
-> OR | and AND & the bits together in the driver.
->
->> +static int octeon_gpio_get(struct gpio_chip *chip, unsigned offset)
->> +{
->> +       struct octeon_gpio *gpio = container_of(chip, struct octeon_gpio, chip);
->> +       u64 read_bits = cvmx_read_csr(gpio->register_base + RX_DAT);
->> +
->> +       return ((1ull << offset) & read_bits) != 0;
->
-> A common idiom we use for this is:
->
-> return !!(read_bits & (1ull << offset));
-
-I hate that idiom, but if its use is a condition of accepting the patch, 
-I will change it.
-
->
->> +       pdev->dev.platform_data = chip;
->> +       chip->label = "octeon-gpio";
->> +       chip->dev = &pdev->dev;
->> +       chip->owner = THIS_MODULE;
->> +       chip->base = 0;
->> +       chip->can_sleep = 0;
->> +       chip->ngpio = 20;
->> +       chip->direction_input = octeon_gpio_dir_in;
->> +       chip->get = octeon_gpio_get;
->> +       chip->direction_output = octeon_gpio_dir_out;
->> +       chip->set = octeon_gpio_set;
->> +       err = gpiochip_add(chip);
->> +       if (err)
->> +               goto out;
->> +
->> +       dev_info(&pdev->dev, "OCTEON GPIO\n");
->
-> This is like shouting "REAL MADRID!" in the bootlog, be a bit more
-> precise: "octeon GPIO driver probed\n" or something so we know what
-> is happening.
-
-No, more akin to 'Real Madrid', as 'OCTEON' is the correct spelling of 
-its given name.
-
-I will happily add "driver probed", and grudgingly switch to lower case 
-if it is a necessary condition of patch acceptance.
-
-David Daney
+Cheers
+James

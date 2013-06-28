@@ -1,24 +1,14 @@
-Received: from 15.mo1.mail-out.ovh.net ([188.165.38.232]:47010 "EHLO
-        mo1.mail-out.ovh.net" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S6817387Ab3F1N4OLA0j0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Jun 2013 15:56:14 +0200
-Received: from mail405.ha.ovh.net (b6.ovh.net [213.186.33.56])
-        by mo1.mail-out.ovh.net (Postfix) with SMTP id 62E9EFFA9C5
-        for <linux-mips@linux-mips.org>; Fri, 28 Jun 2013 15:56:13 +0200 (CEST)
-Date: Fri, 28 Jun 2013 15:49:31 +0200
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH] of: Specify initrd location using 64-bit
-Message-ID: <20130628134931.GD21034@game.jcrosoft.org>
-References: <1371775956-16453-1-git-send-email-santosh.shilimkar@ti.com>
- <51C4171C.9050908@linutronix.de>
- <51C48B5A.2040404@ti.com>
- <51CCA67C.2010803@gmail.com>
- <CACxGe6vOH0sCFVVXrYqD3dbYdOvithVu7-d1cvy5885i8x_Myw@mail.gmail.com>
+Received: from multi.imgtec.com ([194.200.65.239]:34135 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6827424Ab3F1VXZxrPjq (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 28 Jun 2013 23:23:25 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH v4] MIPS: Reduce _NSIG from 128 to 127 to avoid BUG_ON
+Date: Fri, 28 Jun 2013 22:22:42 +0100
+Message-ID: <1372454562-1513-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACxGe6vOH0sCFVVXrYqD3dbYdOvithVu7-d1cvy5885i8x_Myw@mail.gmail.com>
-Return-Path: <plagnioj@jcrosoft.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -28,56 +18,80 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Grant Likely <grant.likely@linaro.org>
-Cc: Rob Herring <robherring2@gmail.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips <linux-mips@linux-mips.org>, Aurelien Jacquiot <a-jacquiot@ti.com>, Catalin Marinas <catalin.marinas@arm.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Will Deacon <will.deacon@arm.com>, Max Filippov <jcmvbkbc@gmail.com>, Paul Mackerras <paulus@samba.org>, Jonas Bonn <jonas@southpole.se>, Russell King <linux@arm.linux.org.uk>, linux-c6x-dev@linux-c6x.org, x86@kernel.org, arm@kernel.org, linux-xtensa@linux-xtensa.org, James Hogan <james.hogan@imgtec.com>, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Chris Zankel <chris@zankel.net>, Vineet Gupta <vgupta@synopsys.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Santosh Shilimkar <santosh.shilimkar@ti.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Message-ID: <20130628134931.86rinSX90dOlEmAo9tkx6AQdVCq_BwEnJ7pjSu3mQ_4@z>
+To: linux-kernel@vger.kernel.org
+Cc: David Daney <david.daney@cavium.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Oleg Nesterov <oleg@redhat.com>, Denys Vlasenko <vda.linux@googlemail.com>, Andrew Morton <akpm@linux-foundation.org>, Al Viro <viro@zeniv.linux.org.uk>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, David Howells <dhowells@redhat.com>, Dave Jones <davej@redhat.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20130628212242.Ok1q_NXTry04Fc8GzCKIc5RwDmk80mwxEwwdwqlCP_k@z>
 
-On 10:59 Fri 28 Jun     , Grant Likely wrote:
-> On Thu, Jun 27, 2013 at 9:54 PM, Rob Herring <robherring2@gmail.com> wrote:
-> > On 06/21/2013 12:20 PM, Santosh Shilimkar wrote:
-> >> On Friday 21 June 2013 05:04 AM, Sebastian Andrzej Siewior wrote:
-> >>> On 06/21/2013 02:52 AM, Santosh Shilimkar wrote:
-> >>>> diff --git a/arch/microblaze/kernel/prom.c b/arch/microblaze/kernel/prom.c
-> >>>> index 0a2c68f..62e2e8f 100644
-> >>>> --- a/arch/microblaze/kernel/prom.c
-> >>>> +++ b/arch/microblaze/kernel/prom.c
-> >>>> @@ -136,8 +136,7 @@ void __init early_init_devtree(void *params)
-> >>>>  }
-> >>>>
-> >>>>  #ifdef CONFIG_BLK_DEV_INITRD
-> >>>> -void __init early_init_dt_setup_initrd_arch(unsigned long start,
-> >>>> -           unsigned long end)
-> >>>> +void __init early_init_dt_setup_initrd_arch(u64 start, u64 end)
-> >>>>  {
-> >>>>     initrd_start = (unsigned long)__va(start);
-> >>>>     initrd_end = (unsigned long)__va(end);
-> >>>
-> >>> I think it would better to go here for phys_addr_t instead of u64. This
-> >>> would force you in of_flat_dt_match() to check if the value passed from
-> >>> DT specifies a memory address outside of 32bit address space and the
-> >>> kernel can't deal with this because its phys_addr_t is 32bit only due
-> >>> to a Kconfig switch.
-> >>>
-> >>> For x86, the initrd has to remain in the 32bit address space so passing
-> >>> the initrd in the upper range would violate the ABI. Not sure if this
-> >>> is true for other archs as well (ARM obviously not).
-> >>>
-> >> That pretty much means phys_addr_t. It will work for me as well but
-> >> in last thread from consistency with memory and reserved node, Rob
-> >> insisted to keep it as u64. So before I re-spin another version,
-> >> would like to here what Rob has to say considering the x86 requirement.
-> >>
-> >> Rob,
-> >> Are you ok with phys_addr_t since your concern was about rest
-> >> of the memory specific bits of the device-tree code use u64 ?
-> >
-> > No. I still think it should be u64 for same reasons I said originally.
-> 
-> +1
-> 
-+1
+MIPS has 128 signals, the highest of which has the number 128 (they
+start from 1). The following command causes get_signal_to_deliver() to
+pass this signal number straight through to do_group_exit() as the exit
+code:
 
-fix type
+  strace sleep 10 & sleep 1 && kill -128 `pidof sleep`
 
-Best Regards,
-J.
+However do_group_exit() checks for the core dump bit (0x80) in the exit
+code which matches in this particular case and the kernel panics:
+
+  BUG_ON(exit_code & 0x80); /* core dumps don't get here */
+
+Lets avoid this by changing the ABI by reducing the number of signals to
+127 (so that the maximum signal number is 127). This is not the final
+solution, since signal 127 also has its own share of problems, but it's
+impact should be fairly minimal since Glibc already incorrectly sets
+[__]SIGRTMAX to 127. uClibc used to set it to 128 so it's conceivable
+that programs built against uClibc which intentionally use RT signals
+from the top (SIGRTMAX-n, n>=0) would need an updated uClibc (and a
+rebuild if it's crazy enough to use __SIGRTMAX).
+
+Note that the signals man page seems to make clear that signals should
+be referred to from SIGRTMIN, and it seems unlikely that any portable
+program would ever need to use 96 RT signals:
+
+  "programs should never refer to real-time signals using hard-coded
+  numbers, but instead should always refer to real-time signals using
+  the notation SIGRTMIN+n, and include suitable (run-time) checks that
+  SIGRTMIN+n does not exceed SIGRTMAX."
+
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Acked-by: David Daney <david.daney@cavium.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Denys Vlasenko <vda.linux@googlemail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Dave Jones <davej@redhat.com>
+Cc: linux-mips@linux-mips.org
+Cc: stable@vger.kernel.org
+---
+Thanks for all the feedback on the patches.
+
+This is a resend of v2 with tweaks to the commit message:
+* add David Daney's Acked-by
+* cc stable
+* make clear it's not the final solution
+* uClibc *used to* set __SIGRTMAX to 128 but is now fixed to match glibc
+  (thanks Denys)
+
+ arch/mips/include/uapi/asm/signal.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/include/uapi/asm/signal.h b/arch/mips/include/uapi/asm/signal.h
+index addb9f5..40e944d 100644
+--- a/arch/mips/include/uapi/asm/signal.h
++++ b/arch/mips/include/uapi/asm/signal.h
+@@ -11,9 +11,9 @@
+ 
+ #include <linux/types.h>
+ 
+-#define _NSIG		128
++#define _NSIG		127
+ #define _NSIG_BPW	(sizeof(unsigned long) * 8)
+-#define _NSIG_WORDS	(_NSIG / _NSIG_BPW)
++#define _NSIG_WORDS	((_NSIG + _NSIG_BPW - 1) / _NSIG_BPW)
+ 
+ typedef struct {
+ 	unsigned long sig[_NSIG_WORDS];
+-- 
+1.8.1.2

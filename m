@@ -1,14 +1,24 @@
-Received: from multi.imgtec.com ([194.200.65.239]:20771 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6823608Ab3F1MZfKULMV (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 28 Jun 2013 14:25:35 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: Kconfig: Add missing MODULES dependency to VPE_LOADER
-Date: Fri, 28 Jun 2013 13:25:27 +0100
-Message-ID: <1372422327-21814-1-git-send-email-markos.chandras@imgtec.com>
+Received: from 15.mo1.mail-out.ovh.net ([188.165.38.232]:47010 "EHLO
+        mo1.mail-out.ovh.net" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S6817387Ab3F1N4OLA0j0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Jun 2013 15:56:14 +0200
+Received: from mail405.ha.ovh.net (b6.ovh.net [213.186.33.56])
+        by mo1.mail-out.ovh.net (Postfix) with SMTP id 62E9EFFA9C5
+        for <linux-mips@linux-mips.org>; Fri, 28 Jun 2013 15:56:13 +0200 (CEST)
+Date: Fri, 28 Jun 2013 15:49:31 +0200
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Subject: Re: [PATCH] of: Specify initrd location using 64-bit
+Message-ID: <20130628134931.GD21034@game.jcrosoft.org>
+References: <1371775956-16453-1-git-send-email-santosh.shilimkar@ti.com>
+ <51C4171C.9050908@linutronix.de>
+ <51C48B5A.2040404@ti.com>
+ <51CCA67C.2010803@gmail.com>
+ <CACxGe6vOH0sCFVVXrYqD3dbYdOvithVu7-d1cvy5885i8x_Myw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACxGe6vOH0sCFVVXrYqD3dbYdOvithVu7-d1cvy5885i8x_Myw@mail.gmail.com>
+Return-Path: <plagnioj@jcrosoft.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,40 +28,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130628122527.QJRa5hPMh9Dire9Nozx74B8hILE-BOkNvJhGknqM-6A@z>
+To: Grant Likely <grant.likely@linaro.org>
+Cc: Rob Herring <robherring2@gmail.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips <linux-mips@linux-mips.org>, Aurelien Jacquiot <a-jacquiot@ti.com>, Catalin Marinas <catalin.marinas@arm.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Will Deacon <will.deacon@arm.com>, Max Filippov <jcmvbkbc@gmail.com>, Paul Mackerras <paulus@samba.org>, Jonas Bonn <jonas@southpole.se>, Russell King <linux@arm.linux.org.uk>, linux-c6x-dev@linux-c6x.org, x86@kernel.org, arm@kernel.org, linux-xtensa@linux-xtensa.org, James Hogan <james.hogan@imgtec.com>, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Chris Zankel <chris@zankel.net>, Vineet Gupta <vgupta@synopsys.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Santosh Shilimkar <santosh.shilimkar@ti.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Message-ID: <20130628134931.86rinSX90dOlEmAo9tkx6AQdVCq_BwEnJ7pjSu3mQ_4@z>
 
-The vpe.c code uses the 'struct module' which is only available if
-CONFIG_MODULES is selected.
+On 10:59 Fri 28 Jun     , Grant Likely wrote:
+> On Thu, Jun 27, 2013 at 9:54 PM, Rob Herring <robherring2@gmail.com> wrote:
+> > On 06/21/2013 12:20 PM, Santosh Shilimkar wrote:
+> >> On Friday 21 June 2013 05:04 AM, Sebastian Andrzej Siewior wrote:
+> >>> On 06/21/2013 02:52 AM, Santosh Shilimkar wrote:
+> >>>> diff --git a/arch/microblaze/kernel/prom.c b/arch/microblaze/kernel/prom.c
+> >>>> index 0a2c68f..62e2e8f 100644
+> >>>> --- a/arch/microblaze/kernel/prom.c
+> >>>> +++ b/arch/microblaze/kernel/prom.c
+> >>>> @@ -136,8 +136,7 @@ void __init early_init_devtree(void *params)
+> >>>>  }
+> >>>>
+> >>>>  #ifdef CONFIG_BLK_DEV_INITRD
+> >>>> -void __init early_init_dt_setup_initrd_arch(unsigned long start,
+> >>>> -           unsigned long end)
+> >>>> +void __init early_init_dt_setup_initrd_arch(u64 start, u64 end)
+> >>>>  {
+> >>>>     initrd_start = (unsigned long)__va(start);
+> >>>>     initrd_end = (unsigned long)__va(end);
+> >>>
+> >>> I think it would better to go here for phys_addr_t instead of u64. This
+> >>> would force you in of_flat_dt_match() to check if the value passed from
+> >>> DT specifies a memory address outside of 32bit address space and the
+> >>> kernel can't deal with this because its phys_addr_t is 32bit only due
+> >>> to a Kconfig switch.
+> >>>
+> >>> For x86, the initrd has to remain in the 32bit address space so passing
+> >>> the initrd in the upper range would violate the ABI. Not sure if this
+> >>> is true for other archs as well (ARM obviously not).
+> >>>
+> >> That pretty much means phys_addr_t. It will work for me as well but
+> >> in last thread from consistency with memory and reserved node, Rob
+> >> insisted to keep it as u64. So before I re-spin another version,
+> >> would like to here what Rob has to say considering the x86 requirement.
+> >>
+> >> Rob,
+> >> Are you ok with phys_addr_t since your concern was about rest
+> >> of the memory specific bits of the device-tree code use u64 ?
+> >
+> > No. I still think it should be u64 for same reasons I said originally.
+> 
+> +1
+> 
++1
 
-Also fixes the following build problem on a lantiq allmodconfig:
-In file included from arch/mips/kernel/vpe.c:41:0:
-include/linux/moduleloader.h: In function 'apply_relocate':
-include/linux/moduleloader.h:48:63: error: dereferencing pointer
-to incomplete type
-include/linux/moduleloader.h: In function 'apply_relocate_add':
-include/linux/moduleloader.h:70:63: error: dereferencing pointer
-to incomplete type
+fix type
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
----
- arch/mips/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 8f5e646..77a6598 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1929,7 +1929,7 @@ config MIPS_MT_FPAFF
- 
- config MIPS_VPE_LOADER
- 	bool "VPE loader support."
--	depends on SYS_SUPPORTS_MULTITHREADING
-+	depends on SYS_SUPPORTS_MULTITHREADING && MODULES
- 	select CPU_MIPSR2_IRQ_VI
- 	select CPU_MIPSR2_IRQ_EI
- 	select MIPS_MT
--- 
-1.8.2.1
+Best Regards,
+J.

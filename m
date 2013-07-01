@@ -1,17 +1,17 @@
-Received: from multi.imgtec.com ([194.200.65.239]:43000 "EHLO multi.imgtec.com"
+Received: from comal.ext.ti.com ([198.47.26.152]:54286 "EHLO comal.ext.ti.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6816668Ab3GANGOmPtSQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 1 Jul 2013 15:06:14 +0200
-Message-ID: <51D17EBE.7000902@imgtec.com>
-Date: Mon, 1 Jul 2013 14:06:06 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        id S6825731Ab3GAN7Rd-0b- (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 1 Jul 2013 15:59:17 +0200
+Message-ID: <51D18B0B.1060906@ti.com>
+Date: Mon, 1 Jul 2013 09:58:35 -0400
+From: Santosh Shilimkar <santosh.shilimkar@ti.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: bcm63xx: clk: Add dummy clk_set_rate() function
-References: <1372676244-1399-1-git-send-email-markos.chandras@imgtec.com> <51D1629A.6040700@metafoo.de>
-In-Reply-To: <51D1629A.6040700@metafoo.de>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Subject: Re: [PATCH] of: Specify initrd location using 64-bit
+References: <1371775956-16453-1-git-send-email-santosh.shilimkar@ti.com> <51C4171C.9050908@linutronix.de> <51C48B5A.2040404@ti.com> <51CCA67C.2010803@gmail.com> <CACxGe6vOH0sCFVVXrYqD3dbYdOvithVu7-d1cvy5885i8x_Myw@mail.gmail.com> <20130628134931.GD21034@game.jcrosoft.org> <51CE1F92.3070802@ti.com> <51D1345B.8020509@linutronix.de> <CAMuHMdV6YM3-hASqjxkguEukZjnjK80gBjDNiabxjfQtC=c8ag@mail.gmail.com>
+In-Reply-To: <CAMuHMdV6YM3-hASqjxkguEukZjnjK80gBjDNiabxjfQtC=c8ag@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Return-Path: <santosh.shilimkar@ti.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,51 +21,45 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20130701130606.7koKzUcBrEM2KQ7i8tajU7pigvuSaHni8lgg3FJ20o8@z>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips <linux-mips@linux-mips.org>, Aurelien Jacquiot <a-jacquiot@ti.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Max Filippov <jcmvbkbc@gmail.com>, Paul Mackerras <paulus@samba.org>, Jonas Bonn <jonas@southpole.se>, Russell King <linux@arm.linux.org.uk>, linux-c6x-dev@linux-c6x.org, the arch/x86 maintainers <x86@kernel.org>, "arm@kernel.org" <arm@kernel.org>, Rob Herring <robherring2@gmail.com>, Grant Likely <grant.likely@linaro.org>, Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, linux-xtensa@linux-xtensa.org, James Hogan <james.hogan@imgtec.com>, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Chris Zankel <chris@zankel.net>, Vineet Gupta <vgupta@synopsys.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Message-ID: <20130701135835.5Lso_A1KFoGgP3IdWChiw9VLVy_RY2-8IqZ9qbfcKAY@z>
 
-On 07/01/13 12:06, Lars-Peter Clausen wrote:
-> On 07/01/2013 12:57 PM, Markos Chandras wrote:
->> Several drivers use the clk_set_rate() function that needs
->> to be defined in the platform's clock code. The Broadcom
->> BCM63xx platform hardcodes the clock rate so we create a new
->> dummy clk_set_rate() function which just returns -EINVAL.
+On Monday 01 July 2013 03:59 AM, Geert Uytterhoeven wrote:
+> On Mon, Jul 1, 2013 at 9:48 AM, Sebastian Andrzej Siewior
+> <bigeasy@linutronix.de> wrote:
+>> On 06/29/2013 01:43 AM, Santosh Shilimkar wrote:
+>>> Apart from waste of 32bit, what is the other concern you
+>>> have ?
 >>
->> Also fixes the following build problem on a randconfig:
->> drivers/built-in.o: In function `nop_usb_xceiv_probe':
->> phy-nop.c:(.text+0x3ec26c): undefined reference to `clk_set_rate'
+>> You pass a u64 as a physical address which is represented in other
+>> parts of the kernel (for a good reason) by phys_addr_t.
 >>
->> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
->> Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>
->
-> To make the set complete clk_round_rate() should be added as well
->
->> ---
->> This patch is for the upstream-sfr/mips-for-linux-next tree
->> ---
->>   arch/mips/bcm63xx/clk.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
+>>> I really want to converge on this patch because it
+>>> has been a open ended discussion for quite some time. Does
+>>> that really break any thing on x86 or your concern is more
+>>> from semantics of the physical address.
+>> You want to have your code in so you can continue with your work, that
+>> is okay. The other two arguments why u64 here is a good thing was "due
+>> to what I said earlier" and "+1" and I don't have the time to look
+>> that up.
 >>
->> diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
->> index c726a97..70dcc52 100644
->> --- a/arch/mips/bcm63xx/clk.c
->> +++ b/arch/mips/bcm63xx/clk.c
->> @@ -318,6 +318,12 @@ unsigned long clk_get_rate(struct clk *clk)
+>> There should be no problems on x86 if this goes in as it is now.
 >>
->>   EXPORT_SYMBOL(clk_get_rate);
->>
->> +int clk_set_rate(struct clk *clk, unsigned long rate)
->> +{
->> +	return -EINVAL;
->> +}
->> +EXPORT_SYMBOL_GPL(clk_set_rate);
->> +
->>   struct clk *clk_get(struct device *dev, const char *id)
->>   {
->>   	if (!strcmp(id, "enet0"))
->
+>> But think about this: What happens if you boot your ARM device without
+>> PAE and your initrd is in the upper region? If you are lucky the kernel
+>> looks at a different place where it also has a read permission, notices
+>> nothing sane is there, writes a message and continues. And if it is not
+>> allowed to read? It is clearly the user's fault for booting a non-PAE
+>> kernel.
+> 
+> That's actual the original reason: DT has it as 64 bit, and passes it to a
+> 32 bit kernel when running in 32 bit mode without PAE.
+> 
+Thanks all for comments and useful discussion. I will resubmit the
+patch with update to fix the printk warnings reported by Vineet and
+James post the $subject change.
 
-Hi Lars,
+Am assuming the patch will go via Grant Likely's tree.
 
-Thanks. I will submit a new patch
+Regards,
+Santosh

@@ -1,22 +1,17 @@
-Received: from mail-pa0-f54.google.com ([209.85.220.54]:38073 "EHLO
-        mail-pa0-f54.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6817128Ab3F2IeebJ4bC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 29 Jun 2013 10:34:34 +0200
+Received: from www.linutronix.de ([62.245.132.108]:54465 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6823690Ab3GAHtLB0MOd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 1 Jul 2013 09:49:11 +0200
+Message-ID: <51D1345B.8020509@linutronix.de>
+Date: Mon, 01 Jul 2013 09:48:43 +0200
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <51CE1F92.3070802@ti.com>
-References: <1371775956-16453-1-git-send-email-santosh.shilimkar@ti.com>
-        <51C4171C.9050908@linutronix.de>
-        <51C48B5A.2040404@ti.com>
-        <51CCA67C.2010803@gmail.com>
-        <CACxGe6vOH0sCFVVXrYqD3dbYdOvithVu7-d1cvy5885i8x_Myw@mail.gmail.com>
-        <20130628134931.GD21034@game.jcrosoft.org>
-        <51CE1F92.3070802@ti.com>
-Date: Sat, 29 Jun 2013 10:34:27 +0200
-Message-ID: <CAMuHMdWjaakS-hvor7Ftyr=g-iF2kbrLryn_+YFXDDN5tS_QOw@mail.gmail.com>
 Subject: Re: [PATCH] of: Specify initrd location using 64-bit
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <geert.uytterhoeven@gmail.com>
+References: <1371775956-16453-1-git-send-email-santosh.shilimkar@ti.com> <51C4171C.9050908@linutronix.de> <51C48B5A.2040404@ti.com> <51CCA67C.2010803@gmail.com> <CACxGe6vOH0sCFVVXrYqD3dbYdOvithVu7-d1cvy5885i8x_Myw@mail.gmail.com> <20130628134931.GD21034@game.jcrosoft.org> <51CE1F92.3070802@ti.com>
+In-Reply-To: <51CE1F92.3070802@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-Path: <bigeasy@linutronix.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,45 +21,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Herring <robherring2@gmail.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, Grant Likely <grant.likely@linaro.org>, Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips <linux-mips@linux-mips.org>, Aurelien Jacquiot <a-jacquiot@ti.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Max Filippov <jcmvbkbc@gmail.com>, Paul Mackerras <paulus@samba.org>, Jonas Bonn <jonas@southpole.se>, Russell King <linux@arm.linux.org.uk>, linux-c6x-dev@linux-c6x.org, the arch/x86 maintainers <x86@kernel.org>, "arm@kernel.org" <arm@kernel.org>, linux-xtensa@linux-xtensa.org, James Hogan <james.hogan@imgtec.com>, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Chris Zankel <chris@zankel.net>, Vineet Gupta <vgupta@synopsys.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Message-ID: <20130629083427.kZy05j6UXK8kozQd-st3aOtzT7Y_hJAPf_WAmMWMgUg@z>
+To: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robherring2@gmail.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips <linux-mips@linux-mips.org>, Aurelien Jacquiot <a-jacquiot@ti.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Max Filippov <jcmvbkbc@gmail.com>, Paul Mackerras <paulus@samba.org>, Jonas Bonn <jonas@southpole.se>, Russell King <linux@arm.linux.org.uk>, linux-c6x-dev@linux-c6x.org, x86@kernel.org, arm@kernel.org, linux-xtensa@linux-xtensa.org, James Hogan <james.hogan@imgtec.com>, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Chris Zankel <chris@zankel.net>, Vineet Gupta <vgupta@synopsys.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Message-ID: <20130701074843.-DXSLsmuvTXfnNiYpcIK2s9PXxFdbczJo1BUpZQv3G4@z>
 
-On Sat, Jun 29, 2013 at 1:43 AM, Santosh Shilimkar
-<santosh.shilimkar@ti.com> wrote:
->>>>> Rob,
->>>>> Are you ok with phys_addr_t since your concern was about rest
->>>>> of the memory specific bits of the device-tree code use u64 ?
->>>>
->>>> No. I still think it should be u64 for same reasons I said originally.
->>>
->>> +1
->>>
->> +1
->>
->> fix type
->>
+On 06/29/2013 01:43 AM, Santosh Shilimkar wrote:
+> 
+> Sebastian,
+> 
 > Apart from waste of 32bit, what is the other concern you
-> have ? I really want to converge on this patch because it
+> have ?
+
+You pass a u64 as a physical address which is represented in other
+parts of the kernel (for a good reason) by phys_addr_t.
+
+> I really want to converge on this patch because it
 > has been a open ended discussion for quite some time. Does
 > that really break any thing on x86 or your concern is more
 > from semantics of the physical address.
+You want to have your code in so you can continue with your work, that
+is okay. The other two arguments why u64 here is a good thing was "due
+to what I said earlier" and "+1" and I don't have the time to look
+that up.
 
-As the "original reasons" were not in this thread, I had to search a bit.
-I suppose you mean this one: https://lkml.org/lkml/2012/9/13/544 ?
+There should be no problems on x86 if this goes in as it is now.
 
-Summarized:
-| The address to load the initrd is decided by the bootloader/user and set
-| at that point later in time.
-| The dtb should not be tied to the kernel you are booting.
+But think about this: What happens if you boot your ARM device without
+PAE and your initrd is in the upper region? If you are lucky the kernel
+looks at a different place where it also has a read permission, notices
+nothing sane is there, writes a message and continues. And if it is not
+allowed to read? It is clearly the user's fault for booting a non-PAE
+kernel.
 
-Gr{oetje,eeting}s,
+> 
+> Thanks for help.
+> 
+> Regards,
+> Santosh
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Sebastian

@@ -1,17 +1,14 @@
-Received: from www.linutronix.de ([62.245.132.108]:54602 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6817030Ab3GAIJx4ulAh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 1 Jul 2013 10:09:53 +0200
-Message-ID: <51D1393E.6060001@linutronix.de>
-Date: Mon, 01 Jul 2013 10:09:34 +0200
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Received: from multi.imgtec.com ([194.200.65.239]:28067 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6822972Ab3GAKik4alwT (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 1 Jul 2013 12:38:40 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: boot: compressed: Remove -fstack-protector from CFLAGS
+Date: Mon, 1 Jul 2013 11:38:30 +0100
+Message-ID: <1372675110-1301-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] of: Specify initrd location using 64-bit
-References: <1371775956-16453-1-git-send-email-santosh.shilimkar@ti.com> <51C4171C.9050908@linutronix.de> <51C48B5A.2040404@ti.com> <51CCA67C.2010803@gmail.com> <CACxGe6vOH0sCFVVXrYqD3dbYdOvithVu7-d1cvy5885i8x_Myw@mail.gmail.com> <20130628134931.GD21034@game.jcrosoft.org> <51CE1F92.3070802@ti.com> <51D1345B.8020509@linutronix.de> <CAMuHMdV6YM3-hASqjxkguEukZjnjK80gBjDNiabxjfQtC=c8ag@mail.gmail.com>
-In-Reply-To: <CAMuHMdV6YM3-hASqjxkguEukZjnjK80gBjDNiabxjfQtC=c8ag@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-Path: <bigeasy@linutronix.de>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,22 +18,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips <linux-mips@linux-mips.org>, Aurelien Jacquiot <a-jacquiot@ti.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Max Filippov <jcmvbkbc@gmail.com>, Paul Mackerras <paulus@samba.org>, Jonas Bonn <jonas@southpole.se>, Russell King <linux@arm.linux.org.uk>, linux-c6x-dev@linux-c6x.org, the arch/x86 maintainers <x86@kernel.org>, "arm@kernel.org" <arm@kernel.org>, Rob Herring <robherring2@gmail.com>, Grant Likely <grant.likely@linaro.org>, Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, linux-xtensa@linux-xtensa.org, James Hogan <james.hogan@imgtec.com>, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Chris Zankel <chris@zankel.net>, Vineet Gupta <vgupta@synopsys.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Message-ID: <20130701080934.sz_yvW3IDRDBPCwWSBhwReAFHqg2JFFfJxkG-o8RVNY@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20130701103830.m0Fxt2DlEx8QREC1y9z4Eh8ctle_oXpYjk_d49IxtTA@z>
 
-On 07/01/2013 09:59 AM, Geert Uytterhoeven wrote:
-> That's actual the original reason: DT has it as 64 bit, and passes it to a
-> 32 bit kernel when running in 32 bit mode without PAE.
+When building with -fstack-protector, gcc emits the
+__stack_chk_guard and __stack_chk_fail symbols to check for
+stack stability. These symbols are defined in vmlinux but
+the generated vmlinux.bin that is used to create the
+compressed vmlinuz image has no symbol table so the linker
+can't find these symbols during the final linking phase.
+As a result of which, we need either to redefine these symbols
+just for the compressed image or drop the -fstack-protector
+option when building the compressed image. This patch implements
+the latter of two options.
 
-And I think the DT code should check if the u64 fits in phys_addr_t and
-if does not it should write an error message and act like no initrd was
-specified (instead of passing "something" to the architecture).
+Fixes the following linking problem:
 
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+dbg.c:(.text+0x7c): undefined reference to `__stack_chk_guard'
+dbg.c:(.text+0x80): undefined reference to `__stack_chk_guard'
+dbg.c:(.text+0xd4): undefined reference to `__stack_chk_guard'
+dbg.c:(.text+0xec): undefined reference to `__stack_chk_fail'
 
-Sebastian
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+This patch is for the upstream-sfr/mips-for-linux-next tree
+---
+ arch/mips/boot/compressed/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+index bbaa1d4..bb1dbf4 100644
+--- a/arch/mips/boot/compressed/Makefile
++++ b/arch/mips/boot/compressed/Makefile
+@@ -18,6 +18,8 @@ BOOT_HEAP_SIZE := 0x400000
+ # Disable Function Tracer
+ KBUILD_CFLAGS := $(shell echo $(KBUILD_CFLAGS) | sed -e "s/-pg//")
+ 
++KBUILD_CFLAGS := $(filter-out -fstack-protector, $(KBUILD_CFLAGS))
++
+ KBUILD_CFLAGS := $(LINUXINCLUDE) $(KBUILD_CFLAGS) -D__KERNEL__ \
+ 	-DBOOT_HEAP_SIZE=$(BOOT_HEAP_SIZE) -D"VMLINUX_LOAD_ADDRESS_ULL=$(VMLINUX_LOAD_ADDRESS)ull"
+ 
+-- 
+1.8.2.1

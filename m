@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:10499 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:33660 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6819996Ab3GDIiiwgQKk (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 4 Jul 2013 10:38:38 +0200
+        id S6835021Ab3GIIVzPPDe0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 9 Jul 2013 10:21:55 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: loongson: Hide the pci code behind CONFIG_PCI
-Date: Thu, 4 Jul 2013 09:38:29 +0100
-Message-ID: <1372927109-21498-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: pnx833x: PNX8335_PCI_ETHERNET_INT depends on CONFIG_SOC_PNX8335
+Date: Tue, 9 Jul 2013 09:21:35 +0100
+Message-ID: <1373358095-14213-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -20,40 +20,40 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130704083829.iCmev-TPqpxQPxlIrX7Nyth6qqPkWUH79gt4mjZ1Qiw@z>
+Message-ID: <20130709082135.YcHM2TYB5P4vn-2tTWwN6Ul5Ms-ohAul26-q72pRdKw@z>
 
-The pci.c code depends on symbols which are only visible
-if CONFIG_PCI is selected.
+The PNX8335_PCI_ETHERNET_INT macro is defined in
+arch/mips/include/asm/mach-pnx833x/irq-mapping.h
+only if CONFIG_SOC_PNX8335 is selected.
 
-Also fixes the following problem on loongson allnoconfig:
-arch/mips/built-in.o: In function `pcibios_init':
-pci.c:(.init.text+0x528):
-undefined reference to `register_pci_controller'
-arch/mips/built-in.o:(.data+0xc):
-undefined reference to `loongson_pci_ops'
+Fixes the following randconfig problem:
+arch/mips/pnx833x/common/platform.c:210:12:
+error: 'PNX8335_PIC_ETHERNET_INT' undeclared here
+(not in a function)
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-Acked-by: Steven J. Hill <Steven.Hill@imgtec.com> 
+Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>
 ---
-This patch is for the upstream-sfr/mips-for-linux-next tree
----
- arch/mips/loongson/common/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/mips/pnx833x/common/platform.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/loongson/common/Makefile b/arch/mips/loongson/common/Makefile
-index 4c57b3e..9e4484c 100644
---- a/arch/mips/loongson/common/Makefile
-+++ b/arch/mips/loongson/common/Makefile
-@@ -3,8 +3,9 @@
- #
+diff --git a/arch/mips/pnx833x/common/platform.c b/arch/mips/pnx833x/common/platform.c
+index d22dc0d..2b7e837 100644
+--- a/arch/mips/pnx833x/common/platform.c
++++ b/arch/mips/pnx833x/common/platform.c
+@@ -206,11 +206,13 @@ static struct resource pnx833x_ethernet_resources[] = {
+ 		.end   = PNX8335_IP3902_PORTS_END,
+ 		.flags = IORESOURCE_MEM,
+ 	},
++#ifdef CONFIG_SOC_PNX8335
+ 	[1] = {
+ 		.start = PNX8335_PIC_ETHERNET_INT,
+ 		.end   = PNX8335_PIC_ETHERNET_INT,
+ 		.flags = IORESOURCE_IRQ,
+ 	},
++#endif
+ };
  
- obj-y += setup.o init.o cmdline.o env.o time.o reset.o irq.o \
--    pci.o bonito-irq.o mem.o machtype.o platform.o
-+    bonito-irq.o mem.o machtype.o platform.o
- obj-$(CONFIG_GPIOLIB) += gpio.o
-+obj-$(CONFIG_PCI) += pci.o
- 
- #
- # Serial port support
+ static struct platform_device pnx833x_ethernet_device = {
 -- 
 1.8.2.1

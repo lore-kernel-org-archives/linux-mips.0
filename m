@@ -1,15 +1,18 @@
-Received: from multi.imgtec.com ([194.200.65.239]:53741 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6827823Ab3GPTRz6UlWh (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 16 Jul 2013 21:17:55 +0200
-Message-ID: <51E59BFF.3030808@imgtec.com>
-Date: Tue, 16 Jul 2013 14:16:15 -0500
-From: "Steven J. Hill" <Steven.Hill@imgtec.com>
+Received: from mail-bn1lp0156.outbound.protection.outlook.com ([207.46.163.156]:51782
+        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S6827417Ab3GRUhpUq-7F (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 18 Jul 2013 22:37:45 +0200
+Message-ID: <51E8520E.2050604@caviumnetworks.com>
+Date: Thu, 18 Jul 2013 13:37:34 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Subject: Complete kernel source trees for ERLite-3.
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Subject: Re: [PATCH] mips/ftrace: Fix function tracing return address to match
+References: <1373926637-24627-1-git-send-email-ddaney.cavm@gmail.com>  <1374178262.6458.266.camel@gandalf.local.home> <51E84CBC.80206@gmail.com> <1374179160.6458.269.camel@gandalf.local.home>
+In-Reply-To: <1374179160.6458.269.camel@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Steven.Hill@imgtec.com>
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,44 +22,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Message-ID: <20130716191615.3OBd-t_wy0yL8GLuae6OkQMOxrRkiZWP40IB_oRlQVU@z>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, ralf@linux-mips.org, Corey Minyard <cminyard@mvista.com>, David Daney <david.daney@cavium.com>
+Message-ID: <20130718203734.8zSrfvCFbC0nsOGJFMvp9T8v1Qip9D-_pOyedGmuqYM@z>
 
-Hello.
+On 07/18/2013 01:26 PM, Steven Rostedt wrote:
+> On Thu, 2013-07-18 at 13:14 -0700, David Daney wrote:
+>
+>> There is an mcount ABI difference based on which GCC version you are
+>> using, although I wouldn't think it would effect this bit.
+>>
+>> We are using GCC-4.7 FWIW.
+>>
+>> David Daney
+>
+> I'm using 4.6.3 which I downloaded from
+> https://www.kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.3/
 
-If anyone is interested I have created the complete original kernel 
-source trees for the v1.0.2, v1.1.0 and v1.2.0 firmware releases on the 
-ERLite-3. They were made from the following components:
+I would expect that version to be fine too.  The option in question is 
+-mmcount-ra-address, which I added to GCC-4.5
 
-    COMMON
-    * Cavium SDK 2.0.0 - free download from <cnusers.org>
-    * git tag '2.6.32.13'
-
-    V1.0.2
-    * GPL.ERLite-3.v1.0.2.4507738.tbz2 - free download from <ubnt.com>
-      * source/kernel_4503552-gcc4cdf7.tgz
-      * source/cavm-executive_4493936-g009d77b.tgz
-
-    V1.1.0
-     * GPL.ER-e100.v1.1.0.4543695.tbz2 - free download from <ubnt.com>
-       * source/kernel_4539683-g7b3312f.tgz
-       * source/cavm-executive_4539683-g6868fcf.tgz
-
-    V1.2.0
-     * GPL.ER-e100.v1.2.0.4574253.tbz2 - free download from <ubnt.com>
-       * source/kernel_4567941-g0568484.tgz
-       * source/cavm-executive_4567941-gcc0028b.tgz
-
-git repo:   git://git.linux-mips.org/pub/scm/sjhill/linux-sjhill.git
-   branch:   erlite3-2.6
-     tags:   erlite3-v1.0.2, erlite3-v1.1.0, erlite3-v1.2.0
-
-I also created a 'arch/mips/configs/erlite3_defconfig' config file to 
-make things easier. I can confirm that using the 'erlite3-v1.0.2' tag my 
-built kernel worked perfectly with my ERLite-3, since it has not had a 
-firmware upgrade yet. All the existing modules including the proprietary 
-ones worked. However, do not mix kernel and firmware versions if you are 
-going to build the kernel from source. Special thanks to An-Cheng Huang 
-for his help and answering all my questions.
-
-Steve
+>
+> I can down load the 4.7 version and see if that makes a difference.
+>
+> -- Steve
+>
+>
+>

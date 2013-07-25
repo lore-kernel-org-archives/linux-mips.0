@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:13398 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:48097 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6824793Ab3GWOlOImp-I (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 23 Jul 2013 16:41:14 +0200
+        id S6823013Ab3GYPLiFfUfc (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 25 Jul 2013 17:11:38 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: Set default CPU type for BCM47XX platforms
-Date: Tue, 23 Jul 2013 15:40:37 +0100
-Message-ID: <1374590437-18150-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: powertv: Fix arguments for free_reserved_area()
+Date: Thu, 25 Jul 2013 16:11:28 +0100
+Message-ID: <1374765088-27101-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -20,45 +20,41 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130723144037.yCpoSAj6S_i6vUPx5FZhLgayc-k-If88GIa0YsZl9bQ@z>
+Message-ID: <20130725151128.vg5zRcS-7MYYtThKbaJMa9eq5QZdO6NPCsPaDN0GypI@z>
 
-If neither BCM47XX_SSD nor BCM47XX_BCMA is selected, then no
-CPU type is available leading to build problems. We fix
-this problem by using MIPS32r1 as the default CPU type for
-the BCM47XX platform.
+Commit 6e7582bf35b8a5a330fd08b398ae445bac86917a
+"MIPS: PowerTV: use free_reserved_area() to simplify code"
+
+merged in 3.11-rc1, broke the build for the powertv defconfig with
+the following build error:
+
+arch/mips/powertv/asic/asic_devices.c: In function 'platform_release_memory':
+arch/mips/powertv/asic/asic_devices.c:533:7: error: passing argument 1 of
+'free_reserved_area' makes pointer from integer without a cast [-Werror]
+
+The free_reserved_area() function expects a void * pointer for the start
+address and a void * pointer for the end one.
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>
 ---
 This patch is for the upstream-sfr/mips-for-linux-next tree
 ---
- arch/mips/Kconfig         | 1 +
- arch/mips/bcm47xx/Kconfig | 1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/powertv/asic/asic_devices.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index c3abed3..e12764c 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -114,6 +114,7 @@ config BCM47XX
- 	select FW_CFE
- 	select HW_HAS_PCI
- 	select IRQ_CPU
-+	select SYS_HAS_CPU_MIPS32_R1
- 	select NO_EXCEPT_FILL
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
-diff --git a/arch/mips/bcm47xx/Kconfig b/arch/mips/bcm47xx/Kconfig
-index ba61192..2b8b118 100644
---- a/arch/mips/bcm47xx/Kconfig
-+++ b/arch/mips/bcm47xx/Kconfig
-@@ -2,7 +2,6 @@ if BCM47XX
+diff --git a/arch/mips/powertv/asic/asic_devices.c b/arch/mips/powertv/asic/asic_devices.c
+index 9f64c23..0238af1 100644
+--- a/arch/mips/powertv/asic/asic_devices.c
++++ b/arch/mips/powertv/asic/asic_devices.c
+@@ -529,8 +529,7 @@ EXPORT_SYMBOL(asic_resource_get);
+  */
+ void platform_release_memory(void *ptr, int size)
+ {
+-	free_reserved_area((unsigned long)ptr, (unsigned long)(ptr + size),
+-			   -1, NULL);
++	free_reserved_area(ptr, ptr + size, -1, NULL);
+ }
+ EXPORT_SYMBOL(platform_release_memory);
  
- config BCM47XX_SSB
- 	bool "SSB Support for Broadcom BCM47XX"
--	select SYS_HAS_CPU_MIPS32_R1
- 	select SSB
- 	select SSB_DRIVER_MIPS
- 	select SSB_DRIVER_EXTIF
 -- 
 1.8.3.2

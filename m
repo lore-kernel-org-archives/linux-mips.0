@@ -1,18 +1,17 @@
-Received: from mail-bn1lp0150.outbound.protection.outlook.com ([207.46.163.150]:22741
-        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6824790Ab3HEQwhdSz7B (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 5 Aug 2013 18:52:37 +0200
-Message-ID: <51FFD848.6050104@caviumnetworks.com>
-Date: Mon, 5 Aug 2013 09:52:24 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from multi.imgtec.com ([194.200.65.239]:13152 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6865306Ab3HHLS43js7G (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 8 Aug 2013 13:18:56 +0200
+Message-ID: <52037E98.2040902@imgtec.com>
+Date: Thu, 8 Aug 2013 12:18:48 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/3] mips/kvm: Improve code formatting in arch/mips/kvm/kvm_locore.S
-References: <1375388555-4045-1-git-send-email-ddaney.cavm@gmail.com> <1375388555-4045-2-git-send-email-ddaney.cavm@gmail.com> <51FFA5CD.3010406@imgtec.com> <20130805132157.GB3470@linux-mips.org> <20130805134326.GA15901@redhat.com>
-In-Reply-To: <20130805134326.GA15901@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Subject: Re: [PATCH] MIPS: ralink: add support for periodic timer irq
+References: <1375959950-31024-1-git-send-email-blogic@openwrt.org>
+In-Reply-To: <1375959950-31024-1-git-send-email-blogic@openwrt.org>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,55 +21,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Gleb Natapov <gleb@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, kvm@vger.kernel.org, Sanjay Lal <sanjayl@kymasys.com>, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>
-Message-ID: <20130805165224.pfrglxNpHOfx3c3YTYYquU_dFOUoZWc6i03XeF-PgWY@z>
+To: John Crispin <blogic@openwrt.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20130808111848.Hr4FjmAAi7XQujAZUwYmUPiMvhv1Mrw8O6qDJ9D-K-8@z>
 
-On 08/05/2013 06:43 AM, Gleb Natapov wrote:
-> On Mon, Aug 05, 2013 at 03:21:57PM +0200, Ralf Baechle wrote:
->> On Mon, Aug 05, 2013 at 02:17:01PM +0100, James Hogan wrote:
->>
->>>
->>> On 01/08/13 21:22, David Daney wrote:
->>>> From: David Daney <david.daney@cavium.com>
->>>>
->>>> No code changes, just reflowing some comments and consistently using
->>>> tabs and spaces.  Object code is verified to be unchanged.
->>>>
->>>> Signed-off-by: David Daney <david.daney@cavium.com>
->>>> Acked-by: Ralf Baechle <ralf@linux-mips.org>
->>>
->>>
->>>> +   	 /* Put the saved pointer to vcpu (s1) back into the DDATA_LO Register */
->>>
->>> git am detects a whitespace error here ("space before tab in indent").
->>> It's got spaces before and after the tab actually.
->>>
->>>>       /* load the guest context from VCPU and return */
->>>
->>> this comment could have it's indentation fixed too
->>>
->>> Otherwise, for all 3 patches:
->>>
->>> Reviewed-by: James Hogan <james.hogan@imgtec.com>
->>
->> I'm happy with the patch series as well and will fix this issue when
->> applying the patch.
->>
-> kvm fixes usually go through kvm.git tree for all arches. Any special
-> reasons you want to get those through mips tree?
->
+Hi John,
 
-I don't really care which tree takes this particular patch set.
+On 08/08/13 12:05, John Crispin wrote:
+> +static int rt_timer_probe(struct platform_device *pdev)
+> +{
+> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	struct rt_timer *rt;
+> +	struct clk *clk;
+> +
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "no memory resource found\n");
+> +		return -EINVAL;
+> +	}
 
-However, in the near future, I will be sending revised versions of 
-patches needed by MIPS/KVM that are in files outside of the 
-arch/mips/kvm directory and it is possible that those may suffer patch 
-ordering problems if merged through a 'foreign tree'.
+devm_request_and_ioremap already error checks res so you don't need to
+check it yourself (see devm_request_and_ioremap kerneldoc comment in
+lib/devres.c).
 
-In any event, there is the problem with the whitespace error in the 
-comment.  I blame checkpatch.pl for not flagging it, but that is not 
-really a good excuse.  If it goes by the KVM tree, do you want me to 
-send a corrected patch?  Or can you fix it when you merge it.
+> +
+> +	rt = devm_kzalloc(&pdev->dev, sizeof(*rt), GFP_KERNEL);
+> +	if (!rt) {
+> +		dev_err(&pdev->dev, "failed to allocate memory\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	rt->irq = platform_get_irq(pdev, 0);
+> +	if (!rt->irq) {
+> +		dev_err(&pdev->dev, "failed to load irq\n");
+> +		return -ENOENT;
+> +	}
+> +
+> +	rt->membase = devm_request_and_ioremap(&pdev->dev, res);
+> +	if (!rt->membase) {
+> +		dev_err(&pdev->dev, "failed to ioremap\n");
+> +		return -ENOMEM;
+> +	}
 
-David Daney
+Cheers
+James

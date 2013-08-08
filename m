@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:50106 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:50124 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6817904Ab3HHOsMnaZAX (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 8 Aug 2013 16:48:12 +0200
-Message-ID: <5203AF83.30101@imgtec.com>
-Date: Thu, 8 Aug 2013 15:47:31 +0100
+        id S6824814Ab3HHOvD7JQQ2 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 8 Aug 2013 16:51:03 +0200
+Message-ID: <5203B020.1080909@imgtec.com>
+Date: Thu, 8 Aug 2013 15:50:08 +0100
 From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] serial: MIPS: lantiq: add clk_enable() call to driver
-References: <1375968687-8704-1-git-send-email-blogic@openwrt.org>
-In-Reply-To: <1375968687-8704-1-git-send-email-blogic@openwrt.org>
+Subject: Re: [PATCH 2/2] serial: MIPS: lantiq: make driver use pinctrl
+References: <1375968687-8704-1-git-send-email-blogic@openwrt.org> <1375968687-8704-2-git-send-email-blogic@openwrt.org>
+In-Reply-To: <1375968687-8704-2-git-send-email-blogic@openwrt.org>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-Path: <James.Hogan@imgtec.com>
@@ -23,31 +23,30 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: John Crispin <blogic@openwrt.org>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-serial@vger.kernel.org, linux-mips@linux-mips.org, Thomas Langer <thomas.langer@lantiq.com>
-Message-ID: <20130808144731.RIx5pLLhiPcnjwLhB3M4TROkuaHG9LQryTLhf3uvvzU@z>
+Message-ID: <20130808145008.kBlrOlgw3LMxiIu0WsE5NVbyWdIvDtFmV0q4S58Mr38@z>
 
 On 08/08/13 14:31, John Crispin wrote:
 > From: Thomas Langer <thomas.langer@lantiq.com>
 > 
-> Enable the clock if one is present when setting up the console.
+> Add use of devm_pinctrl_get_select_default to active default pinctrl settings.
 > 
 > Signed-off-by: Thomas Langer <thomas.langer@lantiq.com>
 > Acked-by: John Crispin <blogic@openwrt.org>
 > ---
->  drivers/tty/serial/lantiq.c |    3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/lantiq.c b/drivers/tty/serial/lantiq.c
-> index 15733da..ce1ea35 100644
-> --- a/drivers/tty/serial/lantiq.c
-> +++ b/drivers/tty/serial/lantiq.c
-> @@ -636,6 +636,9 @@ lqasc_console_setup(struct console *co, char *options)
->  
->  	port = &ltq_port->port;
->  
-> +	if (ltq_port->clk)
+>  drivers/tty/serial/lantiq.c |    7 +++++++
+>  1 file changed, 7 insertions(+)
 
-I think that should be !IS_ERR(ltq_port->clk)? The same problem appears
-to be elsewhere in that file too.
+
+> @@ -719,6 +722,10 @@ lqasc_probe(struct platform_device *pdev)
+>  	port->irq	= irqres[0].start;
+>  	port->mapbase	= mmres->start;
+>  
+> +	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
+> +	if (IS_ERR(pinctrl))
+> +		dev_warn(&pdev->dev, "pins are not configured from the driver\n");
+
+I believe since v3.9 (specifically commit ab78029) this happens
+automatically.
 
 Cheers
 James

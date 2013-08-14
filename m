@@ -1,14 +1,18 @@
-Received: from multi.imgtec.com ([194.200.65.239]:1668 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6817128Ab3HNI5vxTv46 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 14 Aug 2013 10:57:51 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: txx9: Fix build error if CONFIG_TOSHIBA_JMR3927 is not selected
-Date: Wed, 14 Aug 2013 09:57:16 +0100
-Message-ID: <1376470636-18534-1-git-send-email-markos.chandras@imgtec.com>
+Received: from mail-bl2lp0206.outbound.protection.outlook.com ([207.46.163.206]:47661
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S6865328Ab3HNTRFiEnlB (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 14 Aug 2013 21:17:05 +0200
+Message-ID: <520BD79A.50307@caviumnetworks.com>
+Date: Wed, 14 Aug 2013 12:16:42 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH v2 0/2] OCTEON GPIO support.
+References: <1375133350-18828-1-git-send-email-ddaney.cavm@gmail.com>
+In-Reply-To: <1375133350-18828-1-git-send-email-ddaney.cavm@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,40 +22,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130814085716.M3gcHpMCd-HlPfBfSJA1LW-KZe_zvCLI07CKTuMWWM8@z>
+To: linux-gpio@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>
+Message-ID: <20130814191642.jnEJmfJbhrpuadzK_nQ4Ud4rjYFSncxg0wLm0WTo5Co@z>
 
-The jmr3927_vec txx9_board_vec struct is defined in
-txx9/jmr3927/setup.c which is only built if
-CONFIG_TOSHIBA_JMR3927 is selected. This patch fixes the following
-build problem:
+Ping.
 
-arch/mips/txx9/generic/setup.c: In function 'select_board':
-arch/mips/txx9/generic/setup.c:354:20: error:
-'jmr3927_vec' undeclared (first use in this function)
-arch/mips/txx9/generic/setup.c:354:20: note: each undeclared
-identifier is reported only once for each function it appears in
-make[3]: *** [arch/mips/txx9/generic/setup.o] Error 1
+Hi Linus,
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>
----
- arch/mips/txx9/generic/setup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I wonder if you have had a chance to look at these...
 
-diff --git a/arch/mips/txx9/generic/setup.c b/arch/mips/txx9/generic/setup.c
-index 681e7f8..2b0b83c 100644
---- a/arch/mips/txx9/generic/setup.c
-+++ b/arch/mips/txx9/generic/setup.c
-@@ -350,7 +350,7 @@ static void __init select_board(void)
- 	}
- 
- 	/* select "default" board */
--#ifdef CONFIG_CPU_TX39XX
-+#ifdef CONFIG_TOSHIBA_JMR3927
- 	txx9_board_vec = &jmr3927_vec;
- #endif
- #ifdef CONFIG_CPU_TX49XX
--- 
-1.8.3.2
+David Daney
+
+
+On 07/29/2013 02:29 PM, David Daney wrote:
+> From: David Daney <david.daney@cavium.com>
+>
+> The Cavium, OCTEON is a MIPS based SoC.  Here we add support for its
+> on-chip GPIO lines.
+>
+> Changes from v1: Cleaned up variable names, messages and added some
+> comments as suggested by Linus Walleij.
+>
+> The second patch depends on the first, but is in code maintained by
+> Ralf.  It may be best to mrege both of these together, perhaps from
+> the GPIO tree, with Ralf's Acked-by.
+>
+> David Daney (2):
+>    MIPS: OCTEON: Select ARCH_REQUIRE_GPIOLIB
+>    gpio MIPS/OCTEON: Add a driver for OCTEON's on-chip GPIO pins.
+>
+>   arch/mips/Kconfig                               |   1 +
+>   arch/mips/include/asm/mach-cavium-octeon/gpio.h |  21 ++++
+>   drivers/gpio/Kconfig                            |   8 ++
+>   drivers/gpio/Makefile                           |   1 +
+>   drivers/gpio/gpio-octeon.c                      | 157 ++++++++++++++++++++++++
+>   5 files changed, 188 insertions(+)
+>   create mode 100644 arch/mips/include/asm/mach-cavium-octeon/gpio.h
+>   create mode 100644 drivers/gpio/gpio-octeon.c
+>

@@ -1,18 +1,14 @@
-Received: from mail-bl2lp0206.outbound.protection.outlook.com ([207.46.163.206]:47661
-        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6865328Ab3HNTRFiEnlB (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 14 Aug 2013 21:17:05 +0200
-Message-ID: <520BD79A.50307@caviumnetworks.com>
-Date: Wed, 14 Aug 2013 12:16:42 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from multi.imgtec.com ([194.200.65.239]:48044 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6825906Ab3HOI22nSUSL (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 15 Aug 2013 10:28:28 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: netlogic: xlr: Serial support depends on CONFIG_SERIAL_8250
+Date: Thu, 15 Aug 2013 09:27:47 +0100
+Message-ID: <1376555267-1633-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 0/2] OCTEON GPIO support.
-References: <1375133350-18828-1-git-send-email-ddaney.cavm@gmail.com>
-In-Reply-To: <1375133350-18828-1-git-send-email-ddaney.cavm@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,42 +18,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-gpio@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>
-Message-ID: <20130814191642.jnEJmfJbhrpuadzK_nQ4Ud4rjYFSncxg0wLm0WTo5Co@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20130815082747.An4wD2rk6346r4FN59wN5A603vfD_cjdnJlCZcLX0gY@z>
 
-Ping.
+The nlm_early_serial_setup code needs the early_serial_setup symbol
+which is only available if CONFIG_SERIAL_8250 is selected.
+Fixes the following build problem:
 
-Hi Linus,
+arch/mips/built-in.o: In function `nlm_early_serial_setup':
+setup.c:(.init.text+0x274): undefined reference to `early_serial_setup'
+make: *** [vmlinux] Error 1
 
-I wonder if you have had a chance to look at these...
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+This patch is for the upstream-sfr/mips-for-linux-next tree
+---
+ arch/mips/netlogic/xlr/setup.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-David Daney
-
-
-On 07/29/2013 02:29 PM, David Daney wrote:
-> From: David Daney <david.daney@cavium.com>
->
-> The Cavium, OCTEON is a MIPS based SoC.  Here we add support for its
-> on-chip GPIO lines.
->
-> Changes from v1: Cleaned up variable names, messages and added some
-> comments as suggested by Linus Walleij.
->
-> The second patch depends on the first, but is in code maintained by
-> Ralf.  It may be best to mrege both of these together, perhaps from
-> the GPIO tree, with Ralf's Acked-by.
->
-> David Daney (2):
->    MIPS: OCTEON: Select ARCH_REQUIRE_GPIOLIB
->    gpio MIPS/OCTEON: Add a driver for OCTEON's on-chip GPIO pins.
->
->   arch/mips/Kconfig                               |   1 +
->   arch/mips/include/asm/mach-cavium-octeon/gpio.h |  21 ++++
->   drivers/gpio/Kconfig                            |   8 ++
->   drivers/gpio/Makefile                           |   1 +
->   drivers/gpio/gpio-octeon.c                      | 157 ++++++++++++++++++++++++
->   5 files changed, 188 insertions(+)
->   create mode 100644 arch/mips/include/asm/mach-cavium-octeon/gpio.h
->   create mode 100644 drivers/gpio/gpio-octeon.c
->
+diff --git a/arch/mips/netlogic/xlr/setup.c b/arch/mips/netlogic/xlr/setup.c
+index 214d123..60769f7 100644
+--- a/arch/mips/netlogic/xlr/setup.c
++++ b/arch/mips/netlogic/xlr/setup.c
+@@ -60,6 +60,7 @@ unsigned int  nlm_threads_per_core = 1;
+ struct nlm_soc_info nlm_nodes[NLM_NR_NODES];
+ cpumask_t nlm_cpumask = CPU_MASK_CPU0;
+ 
++#ifdef CONFIG_SERIAL_8250
+ static void __init nlm_early_serial_setup(void)
+ {
+ 	struct uart_port s;
+@@ -78,6 +79,7 @@ static void __init nlm_early_serial_setup(void)
+ 	s.membase	= (unsigned char __iomem *)uart_base;
+ 	early_serial_setup(&s);
+ }
++#endif
+ 
+ static void nlm_linux_exit(void)
+ {
+@@ -214,8 +216,9 @@ void __init prom_init(void)
+ 	memset(reset_vec, 0, RESET_VEC_SIZE);
+ 	memcpy(reset_vec, (void *)nlm_reset_entry,
+ 			(nlm_reset_entry_end - nlm_reset_entry));
+-
++#ifdef CONFIG_SERIAL_8250
+ 	nlm_early_serial_setup();
++#endif
+ 	build_arcs_cmdline(argv);
+ 	prom_add_memory();
+ 
+-- 
+1.8.3.2

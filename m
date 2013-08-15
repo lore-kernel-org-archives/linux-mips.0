@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:48044 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:48889 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6825906Ab3HOI22nSUSL (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 15 Aug 2013 10:28:28 +0200
+        id S6865342Ab3HOM7qaRbT- (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 15 Aug 2013 14:59:46 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: netlogic: xlr: Serial support depends on CONFIG_SERIAL_8250
-Date: Thu, 15 Aug 2013 09:27:47 +0100
-Message-ID: <1376555267-1633-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH v2] MIPS: netlogic: xlr: Serial support depends on CONFIG_SERIAL_8250
+Date: Thu, 15 Aug 2013 13:59:35 +0100
+Message-ID: <1376571575-29037-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -20,7 +20,7 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130815082747.An4wD2rk6346r4FN59wN5A603vfD_cjdnJlCZcLX0gY@z>
+Message-ID: <20130815125935.B6Qs7tBb2b2mnrEMIJ54LBqE800lM6fT9eVq2jZHUIg@z>
 
 The nlm_early_serial_setup code needs the early_serial_setup symbol
 which is only available if CONFIG_SERIAL_8250 is selected.
@@ -32,13 +32,11 @@ make: *** [vmlinux] Error 1
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
-This patch is for the upstream-sfr/mips-for-linux-next tree
----
- arch/mips/netlogic/xlr/setup.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/mips/netlogic/xlr/setup.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/arch/mips/netlogic/xlr/setup.c b/arch/mips/netlogic/xlr/setup.c
-index 214d123..60769f7 100644
+index 214d123..6d7d75e 100644
 --- a/arch/mips/netlogic/xlr/setup.c
 +++ b/arch/mips/netlogic/xlr/setup.c
 @@ -60,6 +60,7 @@ unsigned int  nlm_threads_per_core = 1;
@@ -49,24 +47,15 @@ index 214d123..60769f7 100644
  static void __init nlm_early_serial_setup(void)
  {
  	struct uart_port s;
-@@ -78,6 +79,7 @@ static void __init nlm_early_serial_setup(void)
+@@ -78,6 +79,9 @@ static void __init nlm_early_serial_setup(void)
  	s.membase	= (unsigned char __iomem *)uart_base;
  	early_serial_setup(&s);
  }
++#else
++static inline void nlm_early_serial_setup(void) {}
 +#endif
  
  static void nlm_linux_exit(void)
  {
-@@ -214,8 +216,9 @@ void __init prom_init(void)
- 	memset(reset_vec, 0, RESET_VEC_SIZE);
- 	memcpy(reset_vec, (void *)nlm_reset_entry,
- 			(nlm_reset_entry_end - nlm_reset_entry));
--
-+#ifdef CONFIG_SERIAL_8250
- 	nlm_early_serial_setup();
-+#endif
- 	build_arcs_cmdline(argv);
- 	prom_add_memory();
- 
 -- 
 1.8.3.2

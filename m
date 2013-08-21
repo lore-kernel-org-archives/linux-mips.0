@@ -1,14 +1,21 @@
-Received: from multi.imgtec.com ([194.200.65.239]:2280 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6832092Ab3HUPCRHMpV8 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 21 Aug 2013 17:02:17 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: Kconfig: Drop obsolete NR_CPUS_DEFAULT_{1,2} options
-Date: Wed, 21 Aug 2013 16:01:48 +0100
-Message-ID: <1377097308-24215-1-git-send-email-markos.chandras@imgtec.com>
+Received: from mail-oa0-f52.google.com ([209.85.219.52]:63493 "EHLO
+        mail-oa0-f52.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6839078Ab3HURZUA2UBL convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 21 Aug 2013 19:25:20 +0200
+Received: by mail-oa0-f52.google.com with SMTP id f4so446169oah.11
+        for <linux-mips@linux-mips.org>; Wed, 21 Aug 2013 10:25:13 -0700 (PDT)
+Date: Wed, 21 Aug 2013 12:25:11 -0500
+From: Rob Landley <rob@landley.net>
+Subject: Re: [RFC] Get rid of SUBARCH
+In-Reply-To: <CAMuHMdWk-EPTNmPB1O1+F7YVQLjhQsFJznYwA3t6UCGUU1T9PQ@mail.gmail.com>
+        (from geert@linux-m68k.org on Wed Aug 21 07:07:33 2013)
+Message-ID: <1377105911.2737.94@driftwood>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain; charset=us-ascii; DelSp=Yes; Format=Flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+Return-Path: <rob@landley.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,103 +25,62 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130821150148.4yz7EC-sopGKmPTM73PdS7VDg_ad6OgVBwX3ypjqTws@z>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Richard Weinberger <richard@nod.at>, Linux-Arch <linux-arch@vger.kernel.org>, Michal Marek <mmarek@suse.cz>, Ralf Baechle <ralf@linux-mips.org>, Paul Mundt <lethal@linux-sh.org>, Jeff Dike <jdike@addtoit.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-sh list <linux-sh@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Message-ID: <20130821172511.HZNYaIaynJGc-Pjd5QUPsUk7sq0G0dPrE_31gVcHWsw@z>
 
-The NR_CPUS_DEFAULT_1 introduced as an aid for the QEMU
-platform in 72ede9b18967e7a8a62a88f164f003193f6d891f
-"[MIPS] Qemu: Fix Symmetric Uniprocessor support"
-which was later removed in
-302922e5f6901eb6f29c58539631f71b3d9746b8
-"[MIPS] Qemu: Remove platform."
+On 08/21/2013 07:07:33 AM, Geert Uytterhoeven wrote:
+> On Wed, Aug 21, 2013 at 10:19 AM, Richard Weinberger <richard@nod.at>  
+> wrote:
+> > This series is an attempt to remove the SUBARCH make parameter.
+> > It as introduced at the times of Linux 2.5 for UML to tell the UML
+> > build system what the real architecture is.
+> >
+> > But we actually don't need SUBARCH, we can store this information
+> > in the .config file.
+> 
+> Haha, now you have OS_ARCH (shouldn't that be called HOST_ARCH?)  
+> instead,
+> which is available only for UM?
+> 
+> > The series touches also m68k, sh, mips and unicore32.
+> > These architectures magically select a cross compiler if ARCH !=  
+> SUBARCH.
+> > Do really need that behavior?
+> 
+> This does remove functionality.
+> It allows to build a kernel using e.g. "make ARCH=m68k".
 
-On certain randconfigs it may happen for NR_CPUS to have an
-empty value because not all SMP platforms select a suitable
-NR_CPUS_DEFAULT_* value. We fix this by restoring the range
-of NR_CPUS to 2..64 and drop the NR_CPUS_DEFAULT_{1,2} symbols.
-The first one is no longer used and the latter is not needed since
-NR_CPUS=2 is now the default value.
+   make ARCH=m68k CROSS_COMPILE=m68k-
+   make ARCH=arm CROSS_COMPILE=armv5l-
+   make ARCH=sparc CROSS_COMPILE=sparc-
+   make ARCH=ppc CROSS_COMPILE=powerpc-
+   make ARCH=sh CROSS_COMPILE=sh4-
+   make ARCH=mips CROSS_COMPILE=mipsel-
+   make ARCH=x86 CROSS_COMPILE=i686-
+   make ARCH=alpha CROSS_COMPILE=alpha-
 
-Fixes the following problem on a randconfig:
-.config:164:warning: symbol value '' invalid for NR_CPUS
+Works the same way on all the targets I've tried so far. You specify  
+the architecture, you specify the cross compiler prefix, you feed it a  
+config file, you build.
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-Acked-by: Steven J. Hill <Steven.Hill@imgtec.com> 
----
-This patch is for the upstream-sfr/mips-for-linux-next tree
----
- arch/mips/Kconfig | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+(If a target supplies its own default cross compiler prefix I just have  
+to override it with what mine's called anyway...)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index e12764c..b69b4e4 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -131,7 +131,6 @@ config BCM63XX
- 	select IRQ_CPU
- 	select SYS_HAS_CPU_MIPS32_R1
- 	select SYS_HAS_CPU_BMIPS4350 if !BCM63XX_CPU_6338 && !BCM63XX_CPU_6345 && !BCM63XX_CPU_6348
--	select NR_CPUS_DEFAULT_2
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_HAS_EARLY_PRINTK
-@@ -609,7 +608,6 @@ config SIBYTE_SWARM
- 	select BOOT_ELF32
- 	select DMA_COHERENT
- 	select HAVE_PATA_PLATFORM
--	select NR_CPUS_DEFAULT_2
- 	select SIBYTE_SB1250
- 	select SWAP_IO_SPACE
- 	select SYS_HAS_CPU_SB1
-@@ -623,7 +621,6 @@ config SIBYTE_LITTLESUR
- 	select BOOT_ELF32
- 	select DMA_COHERENT
- 	select HAVE_PATA_PLATFORM
--	select NR_CPUS_DEFAULT_2
- 	select SIBYTE_SB1250
- 	select SWAP_IO_SPACE
- 	select SYS_HAS_CPU_SB1
-@@ -635,7 +632,6 @@ config SIBYTE_SENTOSA
- 	bool "Sibyte BCM91250E-Sentosa"
- 	select BOOT_ELF32
- 	select DMA_COHERENT
--	select NR_CPUS_DEFAULT_2
- 	select SIBYTE_SB1250
- 	select SWAP_IO_SPACE
- 	select SYS_HAS_CPU_SB1
-@@ -1862,7 +1858,6 @@ config MIPS_MT_SMP
- 	select CPU_MIPSR2_IRQ_VI
- 	select CPU_MIPSR2_IRQ_EI
- 	select MIPS_MT
--	select NR_CPUS_DEFAULT_2
- 	select SMP
- 	select SYS_SUPPORTS_SCHED_SMT if SMP
- 	select SYS_SUPPORTS_SMP
-@@ -2173,12 +2168,6 @@ config SYS_SUPPORTS_MIPS_CMP
- config SYS_SUPPORTS_SMP
- 	bool
- 
--config NR_CPUS_DEFAULT_1
--	bool
--
--config NR_CPUS_DEFAULT_2
--	bool
--
- config NR_CPUS_DEFAULT_4
- 	bool
- 
-@@ -2196,10 +2185,8 @@ config NR_CPUS_DEFAULT_64
- 
- config NR_CPUS
- 	int "Maximum number of CPUs (2-64)"
--	range 1 64 if NR_CPUS_DEFAULT_1
-+	range 2 64
- 	depends on SMP
--	default "1" if NR_CPUS_DEFAULT_1
--	default "2" if NR_CPUS_DEFAULT_2
- 	default "4" if NR_CPUS_DEFAULT_4
- 	default "8" if NR_CPUS_DEFAULT_8
- 	default "16" if NR_CPUS_DEFAULT_16
--- 
-1.8.3.2
+> Perhaps this can be moved to generic code? Most (not all!)  
+> cross-toolchains
+> are called $ARCH-{unknown-,}linux{,-gnu}.
+> Exceptions are e.g. am33_2.0-linux and bfin-uclinux.
+
+The linaro toolchain is arm-linux-gnueabihf- and the one on kernel.org  
+is arm-unknown-linux-gnueabi- and the one I build is armv5l- (because  
+the FSF's  
+$ARCH-unknown-gnu-format-tuple-all-hail-stallman-gnu-gnu-gnu-dammit-gcc  
+is just nuts: why would I say -linux- in a linux-to-linux toolchain? Do  
+windows toolchains say -windows-?)
+
+Other toolchain sources use other prefixes (-unknown- is often  
+-$VENDORNAME-), and then of course there's llvm... which is why you  
+specify CROSS_COMPILE= on the make command line.
+
+Rob

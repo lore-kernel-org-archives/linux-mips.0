@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:2894 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:1996 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6826530Ab3HUKswZ4RG9 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 21 Aug 2013 12:48:52 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH v2] MIPS: ath79: Avoid using unitialized 'reg' variable
-Date: Wed, 21 Aug 2013 11:47:22 +0100
-Message-ID: <1377082042-4219-1-git-send-email-markos.chandras@imgtec.com>
+        id S6825655Ab3HUOgcFv1M- (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 21 Aug 2013 16:36:32 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] MIPS: add <dt-bindings/> symlink
+Date: Wed, 21 Aug 2013 15:36:02 +0100
+Message-ID: <1377095762-18926-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,54 +18,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130821104722.CXM8OXnLCqbntcSOchMZsJWoV_sYzj9hR4MF9pCfr8M@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, Stephen Warren <swarren@nvidia.com>, Michal Marek <mmarek@suse.cz>, Shawn Guo <shawn.guo@linaro.org>, Ian Campbell <ian.campbell@citrix.com>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <rob.herring@calxeda.com>, linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org
+Message-ID: <20130821143602.iWnZFGJ2hwIWH0fMXAAJRDU7RLzmg1-3gVxYiytgxpU@z>
 
-Fixes the following build error:
-arch/mips/include/asm/mach-ath79/ath79.h:139:20: error: 'reg' may be used
-uninitialized in this function [-Werror=maybe-uninitialized]
-arch/mips/ath79/common.c:62:6: note: 'reg' was declared here
-In file included from arch/mips/ath79/common.c:20:0:
-arch/mips/ath79/common.c: In function 'ath79_device_reset_clear':
-arch/mips/include/asm/mach-ath79/ath79.h:139:20:
-error: 'reg' may be used uninitialized in this function
-[-Werror=maybe-uninitialized]
-arch/mips/ath79/common.c:90:6: note: 'reg' was declared here
+Add symlink to include/dt-bindings from arch/mips/boot/dts/include/ to
+match the ones in ARM and Meta architectures so that preprocessed device
+tree files can include various useful constant definitions.
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+See commit c58299a (kbuild: create an "include chroot" for DT bindings)
+merged in v3.10-rc1 for details.
+
+MIPS structures it's dts files a little differently to other
+architectures, having a separate dts directory for each SoC/platform,
+but most of the definitions in the dt-bindings/ directory are common so
+for now lets just have a single "include chroot" for all MIPS platforms.
+
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Reviewed-by: Steven. J. Hill <steven.hill@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Stephen Warren <swarren@nvidia.com>
+Cc: Michal Marek <mmarek@suse.cz>
+Cc: Shawn Guo <shawn.guo@linaro.org>
+Cc: Ian Campbell <ian.campbell@citrix.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Pawel Moll <pawel.moll@arm.com>
+Cc: Rob Herring <rob.herring@calxeda.com>
+Cc: linux-mips@linux-mips.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kbuild@vger.kernel.org
 ---
-Changes since v1:
-http://www.linux-mips.org/archives/linux-mips/2013-08/msg00126.html
-- Remove BUG(). panic() is enough.
-http://www.linux-mips.org/archives/linux-mips/2013-08/msg00133.html
-- Change panic() message to be more accurate.
-http://www.linux-mips.org/archives/linux-mips/2013-08/msg00164.html
----
- arch/mips/ath79/common.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/mips/boot/dts/include/dt-bindings | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 120000 arch/mips/boot/dts/include/dt-bindings
 
-diff --git a/arch/mips/ath79/common.c b/arch/mips/ath79/common.c
-index eb3966c..6d7a9d4 100644
---- a/arch/mips/ath79/common.c
-+++ b/arch/mips/ath79/common.c
-@@ -75,7 +75,7 @@ void ath79_device_reset_set(u32 mask)
- 	else if (soc_is_qca955x())
- 		reg = QCA955X_RESET_REG_RESET_MODULE;
- 	else
--		BUG();
-+		panic("Reset register not defined for this SOC");
- 
- 	spin_lock_irqsave(&ath79_device_reset_lock, flags);
- 	t = ath79_reset_rr(reg);
-@@ -103,7 +103,7 @@ void ath79_device_reset_clear(u32 mask)
- 	else if (soc_is_qca955x())
- 		reg = QCA955X_RESET_REG_RESET_MODULE;
- 	else
--		BUG();
-+		panic("Reset register not defined for this SOC");
- 
- 	spin_lock_irqsave(&ath79_device_reset_lock, flags);
- 	t = ath79_reset_rr(reg);
+diff --git a/arch/mips/boot/dts/include/dt-bindings b/arch/mips/boot/dts/include/dt-bindings
+new file mode 120000
+index 0000000..08c00e4
+--- /dev/null
++++ b/arch/mips/boot/dts/include/dt-bindings
+@@ -0,0 +1 @@
++../../../../../include/dt-bindings
+\ No newline at end of file
 -- 
-1.8.3.2
+1.8.1.2

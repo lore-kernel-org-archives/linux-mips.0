@@ -1,21 +1,25 @@
-Received: from mms3.broadcom.com ([216.31.210.19]:1066 "EHLO mms3.broadcom.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6853184Ab3HVAn3tTQQx convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Aug 2013 02:43:29 +0200
-From: "Sherman Yin" <syin@broadcom.com>
-Subject: RE: [PATCH] pinctrl: Pass all configs to driver on
- pin_config_set()
-Date: Thu, 22 Aug 2013 00:43:10 +0000
-Message-ID: <051069C10411E24D9749790C498526FA1BDD9D27@SJEXCHMB12.corp.ad.broadcom.com>
-References: <1376606573-15093-1-git-send-email-syin@broadcom.com>
- <CACRpkdaUacAbLd+i4Y=DXv=aSaUwBSz6-icPV9SVjxZkUjheww@mail.gmail.com>
-In-Reply-To: <CACRpkdaUacAbLd+i4Y=DXv=aSaUwBSz6-icPV9SVjxZkUjheww@mail.gmail.com>
-Content-Language: en-US
+Received: from mail-oa0-f48.google.com ([209.85.219.48]:54092 "EHLO
+        mail-oa0-f48.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6867659Ab3HVUlWxqaXm convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 22 Aug 2013 22:41:22 +0200
+Received: by mail-oa0-f48.google.com with SMTP id o17so4389401oag.7
+        for <linux-mips@linux-mips.org>; Thu, 22 Aug 2013 13:41:16 -0700 (PDT)
+Date: Thu, 22 Aug 2013 15:41:09 -0500
+From: Rob Landley <rob@landley.net>
+Subject: Re: [RFC] Get rid of SUBARCH
+References: <1377073172-3662-1-git-send-email-richard@nod.at>
+        <CAMuHMdWk-EPTNmPB1O1+F7YVQLjhQsFJznYwA3t6UCGUU1T9PQ@mail.gmail.com>
+        <20130821195157.GA18191@merkur.ravnborg.org>
+        <CAMuHMdWqwQxxky7UDnh-oxN13C-sxfnxKVBuBz1GU_RtJvbf3A@mail.gmail.com>
+In-Reply-To: <CAMuHMdWqwQxxky7UDnh-oxN13C-sxfnxKVBuBz1GU_RtJvbf3A@mail.gmail.com>
+        (from geert@linux-m68k.org on Thu Aug 22 07:58:26 2013)
+Message-ID: <1377204069.2737.108@driftwood>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; DelSp=Yes; Format=Flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8BIT
-Return-Path: <syin@broadcom.com>
+Return-Path: <rob@landley.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,33 +29,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "matt.porter@linaro.org" <matt.porter@linaro.org>, Christian Daudt <csd@broadcom.com>, Markus Mayer <mmayer@broadcom.com>, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20130822004310.NCgy_c0W63oz6vgpb1QEVBZP0pHY_P5t6LmuRO1NrN4@z>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>, Richard Weinberger <richard@nod.at>, Linux-Arch <linux-arch@vger.kernel.org>, Michal Marek <mmarek@suse.cz>, Ralf Baechle <ralf@linux-mips.org>, Paul Mundt <lethal@linux-sh.org>, Jeff Dike <jdike@addtoit.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-sh list <linux-sh@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Message-ID: <20130822204109.Sfy-3pLzB6PZdiQnhqA3MlQiCrvhh8fiJO03_sUkQCw@z>
 
-Hi Linus,
+On 08/22/2013 07:58:26 AM, Geert Uytterhoeven wrote:
+> On Wed, Aug 21, 2013 at 9:51 PM, Sam Ravnborg <sam@ravnborg.org>  
+> wrote:
+> >> > The series touches also m68k, sh, mips and unicore32.
+> >> > These architectures magically select a cross compiler if ARCH !=  
+> SUBARCH.
+> >> > Do really need that behavior?
+> >>
+> >> This does remove functionality.
+> >> It allows to build a kernel using e.g. "make ARCH=m68k".
+> >>
+> >> Perhaps this can be moved to generic code? Most (not all!)  
+> cross-toolchains
+> >> are called $ARCH-{unknown-,}linux{,-gnu}.
+> >> Exceptions are e.g. am33_2.0-linux and bfin-uclinux.
+> >
+> > Today you can specify CROSS_COMPILE in Kconfig.
+> > With this we should be able to remove these hacks.
+> 
+> The correct CROSS_COMPILE value depends on the host environment, not
+> on the target configuration.
 
->Right now this does not apply to my "devel" branch, so I'd like you
->to rebase on that right now. (This is what will go into v3.12).
->
->This is also late in the development cycle so I believe this is going to
->be v3.13 material unless there are more release candidates.
->
->You can also hold on until after the v3.12 merge window and then
->rebase it and we'll merge it as a first patch in the v3.13 development
->cycle.
->
->What do you say?
+Actually it depends on _both_.
 
-You mean the "devel" branch in this tree, right?  Please let me know 
-if you're talking about another tree/branch.
-
-git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
-
-I cherry-picked my commit on top of devel, and there was just a simple
-conflict in pinctrl-sunxi.c.  It's easy enough to fix, so I'll send out v2 
-that's based on "devel" instead of rc6 anyway.  I can just do another
-rebase after v3.12 merge window if needed. 
-
-Thanks!
-Sherman
+Rob

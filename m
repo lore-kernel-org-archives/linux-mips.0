@@ -1,21 +1,14 @@
-Received: from mail-ob0-f173.google.com ([209.85.214.173]:45016 "EHLO
-        mail-ob0-f173.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6853519Ab3HVVdLjxZ8Z convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 22 Aug 2013 23:33:11 +0200
-Received: by mail-ob0-f173.google.com with SMTP id ta17so4715596obb.18
-        for <linux-mips@linux-mips.org>; Thu, 22 Aug 2013 14:33:05 -0700 (PDT)
-Date: Thu, 22 Aug 2013 16:32:55 -0500
-From: Rob Landley <rob@landley.net>
-Subject: Re: [RFC] Get rid of SUBARCH
-In-Reply-To: <52167AB8.4060206@gmail.com> (from ddaney.cavm@gmail.com on Thu
-        Aug 22 15:55:20 2013)
-Message-ID: <1377207175.2737.113@driftwood>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; DelSp=Yes; Format=Flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-Return-Path: <rob@landley.net>
+Received: from arrakis.dune.hu ([78.24.191.176]:41453 "EHLO arrakis.dune.hu"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6817128Ab3HWGbtUv18e (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 23 Aug 2013 08:31:49 +0200
+From: Gabor Juhos <juhosg@openwrt.org>
+Subject: [PATCH v2 3/3] MIPS: ralink: mt7620: add spi clock definition
+Date: Fri, 23 Aug 2013 08:31:32 +0200
+Message-Id: <1377239492-10802-3-git-send-email-juhosg@openwrt.org>
+In-Reply-To: <1377239492-10802-1-git-send-email-juhosg@openwrt.org>
+References: <1377239492-10802-1-git-send-email-juhosg@openwrt.org>
+Return-Path: <juhosg@openwrt.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,52 +18,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Geert Uytterhoeven <geert@linux-m68k.org>, Sam Ravnborg <sam@ravnborg.org>, Linux-Arch <linux-arch@vger.kernel.org>, Michal Marek <mmarek@suse.cz>, Ralf Baechle <ralf@linux-mips.org>, Paul Mundt <lethal@linux-sh.org>, Jeff Dike <jdike@addtoit.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-sh list <linux-sh@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Message-ID: <20130822213255.5XG5mTVddKxrD6RXjteZq4MwZ3wAc9WbkB89-T9Gsm4@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, John Crispin <blogic@openwrt.org>, Gabor Juhos <juhosg@openwrt.org>
 
-On 08/22/2013 03:55:20 PM, David Daney wrote:
-> On 08/22/2013 01:41 PM, Rob Landley wrote:
->> On 08/22/2013 07:58:26 AM, Geert Uytterhoeven wrote:
->>> On Wed, Aug 21, 2013 at 9:51 PM, Sam Ravnborg <sam@ravnborg.org>  
->>> wrote:
->>> >> > The series touches also m68k, sh, mips and unicore32.
->>> >> > These architectures magically select a cross compiler if ARCH  
->>> !=
->>> SUBARCH.
->>> >> > Do really need that behavior?
->>> >>
->>> >> This does remove functionality.
->>> >> It allows to build a kernel using e.g. "make ARCH=m68k".
->>> >>
->>> >> Perhaps this can be moved to generic code? Most (not all!)
->>> cross-toolchains
->>> >> are called $ARCH-{unknown-,}linux{,-gnu}.
->>> >> Exceptions are e.g. am33_2.0-linux and bfin-uclinux.
->>> >
->>> > Today you can specify CROSS_COMPILE in Kconfig.
->>> > With this we should be able to remove these hacks.
->>> 
->>> The correct CROSS_COMPILE value depends on the host environment, not
->>> on the target configuration.
->> 
->> Actually it depends on _both_.
->> 
-> 
-> I think the important issue is not the exact dependencies of the  
-> value of CROSS_COMPILE, but rather that it varies enough that  
-> automatically choosing a value based on SUBARCH often gives the wrong  
-> result.
-> 
-> Removing SUBARCH and setting CROSS_COMPILE either from the make  
-> command line (or environment) or the config file, is a good idea  
-> because it simplifies the build system, makes things clearer, and  
-> yields more predictable results.
-> 
-> David Daney
+From: John Crispin <blogic@openwrt.org>
 
-Agreed. Expecting the build to guess the right $CROSS_COMPILE is like  
-expecting it to guess the right $PATH. It should be specified, not  
-heuristically probed.
+Register a clock device for the SPI block of the
+MT7620 SoC. The clock device will be used by the
+SPI host controller driver to determine the base
+clock of the controller.
 
-Rob
+Signed-off-by: John Crispin <blogic@openwrt.org>
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+Changes since v1:
+  - rebase against the mips-for-linux-next branch of the
+    upstream-sfr.git tree
+
+This makes the following patch obsolete:
+  https://patchwork.linux-mips.org/patch/5672/
+---
+ arch/mips/ralink/mt7620.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/mips/ralink/mt7620.c b/arch/mips/ralink/mt7620.c
+index 6c37c9d..988324b 100644
+--- a/arch/mips/ralink/mt7620.c
++++ b/arch/mips/ralink/mt7620.c
+@@ -318,6 +318,7 @@ void __init ralink_clk_init(void)
+ 	ralink_clk_add("10000100.timer", periph_rate);
+ 	ralink_clk_add("10000120.watchdog", periph_rate);
+ 	ralink_clk_add("10000500.uart", periph_rate);
++	ralink_clk_add("10000b00.spi", sys_rate);
+ 	ralink_clk_add("10000c00.uartlite", periph_rate);
+ }
+ 
+-- 
+1.7.10

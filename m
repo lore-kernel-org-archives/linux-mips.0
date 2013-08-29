@@ -1,22 +1,17 @@
-Received: from mms1.broadcom.com ([216.31.210.17]:2184 "EHLO mms1.broadcom.com"
+Received: from multi.imgtec.com ([194.200.65.239]:29745 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6817537Ab3HZCrRx02I1 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Aug 2013 04:47:17 +0200
-From: "Sherman Yin" <syin@broadcom.com>
-Subject: RE: [PATCH v2] pinctrl: Pass all configs to driver on
- pin_config_set()
-Date: Mon, 26 Aug 2013 02:46:56 +0000
-Message-ID: <051069C10411E24D9749790C498526FA1BDDCD3B@SJEXCHMB12.corp.ad.broadcom.com>
-References: <1376606573-15093-1-git-send-email-syin@broadcom.com>
- <1377134300-25480-1-git-send-email-syin@broadcom.com>
- <CACRpkdZeET601+jOsjQxu-VAhi1owgtMX60Fij=uU489eGVFXg@mail.gmail.com>
-In-Reply-To: <CACRpkdZeET601+jOsjQxu-VAhi1owgtMX60Fij=uU489eGVFXg@mail.gmail.com>
-Content-Language: en-US
+        id S6822678Ab3H2MyIdrViU (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 29 Aug 2013 14:54:08 +0200
+Message-ID: <521F4469.6020507@imgtec.com>
+Date: Thu, 29 Aug 2013 13:54:01 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Return-Path: <syin@broadcom.com>
+Subject: Re: [PATCH] MIPS: do not allow building vmlinuz when !ZBOOT
+References: <1377704569-21331-1-git-send-email-f.fainelli@gmail.com>
+In-Reply-To: <1377704569-21331-1-git-send-email-f.fainelli@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,23 +21,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Matt Porter <matt.porter@linaro.org>, "Stephen Warren (swarren@wwwdotorg.org)" <swarren@wwwdotorg.org>
-Message-ID: <20130826024656.jN-Cu9-1LTkApo6XeoE6tX_LsOwTj9WyULBaRdx6qwA@z>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, blogic@openwrt.org, richard@nod.at
+Message-ID: <20130829125401.gaAaE7dVorm3tioariLAztlAUcpa9YbejJcUR5aahYQ@z>
 
-Hi Linus,
+Hi Florian,
 
->Didn't you get review from Stephen Warren?
+On 28/08/13 16:42, Florian Fainelli wrote:
+> +ifdef CONFIG_SYS_SUPPORTS_ZBOOT
+>  # boot/compressed
+>  vmlinuz vmlinuz.bin vmlinuz.ecoff vmlinuz.srec: $(vmlinux-32) FORCE
+>  	$(Q)$(MAKE) $(build)=arch/mips/boot/compressed \
+>  	   VMLINUX_LOAD_ADDRESS=$(load-y) 32bit-bfd=$(32bit-bfd) $@
+> +else
+> +vmlinuz:
 
-Yes, just wasn't sure when those tags should be added.  They have been 
-added to v3 now.
+Does this need a dependency on FORCE so that if you switched config and
+had a valid vmlinuz lying around it doesn't do nothing as a result of
+vmlinuz having no dependencies and existing?
 
->Please try to put all the maintainers for the above files on the To: line
->so they get a chance to review/ack the patch.
+> +	@echo '   CONFIG_SYS_SUPPORTS_ZBOOT is not enabled'
 
-Ok.  I've added the emails from get_maintainer.pl for each of the files.
-v3 has been rebased today and I also applied the API changes to 
-pinctrl-palmas.c
+Also it may be worth adding false here too so that make's exit code
+reports failure correctly.
 
-Regards,
-Sherman
+Cheers
+James

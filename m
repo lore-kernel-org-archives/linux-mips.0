@@ -1,17 +1,18 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64]:23052 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6827342Ab3HaAyxMNtAJ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 31 Aug 2013 02:54:53 +0200
-Message-ID: <52213EBD.8060609@huawei.com>
-Date: Sat, 31 Aug 2013 08:54:21 +0800
-From: Jianguo Wu <wujianguo@huawei.com>
+Received: from Smtp1.Lantiq.com ([195.219.66.200]:57217 "EHLO smtp1.lantiq.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6817237Ab3IBJvbwe5yl convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 2 Sep 2013 11:51:31 +0200
+From: <thomas.langer@lantiq.com>
+Subject: RE: [PATCH] MIPS: lantiq: add defconfig for xway SoC
+Date: Mon, 2 Sep 2013 09:51:24 +0000
+Message-ID: <593AEF6C47F46446852B067021A273D6D983C8C9@MUCSE039.lantiq.com>
+References: <1378054268-4722-1-git-send-email-blogic@openwrt.org>
+In-Reply-To: <1378054268-4722-1-git-send-email-blogic@openwrt.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Subject: Re: [PATCH 4/4] mm/arch: use NUMA_NODE
-References: <521FFE3B.7040801@huawei.com>
-In-Reply-To: <521FFE3B.7040801@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <wujianguo@huawei.com>
+Return-Path: <thomas.langer@lantiq.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,115 +22,18 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org, linux-mm@kvack.org
-Message-ID: <20130831005421.HHzY5yd-AKHpdVp8Ux6XqoQ0lwLOAaDe7SxdpwnAGU0@z>
+To: blogic@openwrt.org, ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org
+Message-ID: <20130902095124.0j--kHFsi5GpWkqiZC2bRSvDP_8iJEWHqcmD9ei_00w@z>
 
-Cc linux-mm@kvack.org
+Hello John,
 
-On 2013/8/30 10:06, Jianguo Wu wrote:
+> +CONFIG_SERIAL_8250=y
+> +CONFIG_SERIAL_8250_CONSOLE=y
+> +CONFIG_SERIAL_8250_RUNTIME_UARTS=2
 
-> Use more appropriate NUMA_NO_NODE instead of -1 in some archs' module_alloc()
-> 
-> Signed-off-by: Jianguo Wu <wujianguo@huawei.com>
-> ---
->  arch/arm/kernel/module.c    |    2 +-
->  arch/arm64/kernel/module.c  |    2 +-
->  arch/mips/kernel/module.c   |    2 +-
->  arch/parisc/kernel/module.c |    2 +-
->  arch/s390/kernel/module.c   |    2 +-
->  arch/sparc/kernel/module.c  |    2 +-
->  arch/x86/kernel/module.c    |    2 +-
->  7 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/arm/kernel/module.c b/arch/arm/kernel/module.c
-> index 85c3fb6..8f4cff3 100644
-> --- a/arch/arm/kernel/module.c
-> +++ b/arch/arm/kernel/module.c
-> @@ -40,7 +40,7 @@
->  void *module_alloc(unsigned long size)
->  {
->  	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
-> -				GFP_KERNEL, PAGE_KERNEL_EXEC, -1,
-> +				GFP_KERNEL, PAGE_KERNEL_EXEC, NUMA_NO_NODE,
->  				__builtin_return_address(0));
->  }
->  #endif
-> diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
-> index ca0e3d5..8f898bd 100644
-> --- a/arch/arm64/kernel/module.c
-> +++ b/arch/arm64/kernel/module.c
-> @@ -29,7 +29,7 @@
->  void *module_alloc(unsigned long size)
->  {
->  	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
-> -				    GFP_KERNEL, PAGE_KERNEL_EXEC, -1,
-> +				    GFP_KERNEL, PAGE_KERNEL_EXEC, NUMA_NO_NODE,
->  				    __builtin_return_address(0));
->  }
->  
-> diff --git a/arch/mips/kernel/module.c b/arch/mips/kernel/module.c
-> index 977a623..b507e07 100644
-> --- a/arch/mips/kernel/module.c
-> +++ b/arch/mips/kernel/module.c
-> @@ -46,7 +46,7 @@ static DEFINE_SPINLOCK(dbe_lock);
->  void *module_alloc(unsigned long size)
->  {
->  	return __vmalloc_node_range(size, 1, MODULE_START, MODULE_END,
-> -				GFP_KERNEL, PAGE_KERNEL, -1,
-> +				GFP_KERNEL, PAGE_KERNEL, NUMA_NO_NODE,
->  				__builtin_return_address(0));
->  }
->  #endif
-> diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
-> index 2a625fb..50dfafc 100644
-> --- a/arch/parisc/kernel/module.c
-> +++ b/arch/parisc/kernel/module.c
-> @@ -219,7 +219,7 @@ void *module_alloc(unsigned long size)
->  	 * init_data correctly */
->  	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
->  				    GFP_KERNEL | __GFP_HIGHMEM,
-> -				    PAGE_KERNEL_RWX, -1,
-> +				    PAGE_KERNEL_RWX, NUMA_NO_NODE,
->  				    __builtin_return_address(0));
->  }
->  
-> diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
-> index 7845e15..b89b591 100644
-> --- a/arch/s390/kernel/module.c
-> +++ b/arch/s390/kernel/module.c
-> @@ -50,7 +50,7 @@ void *module_alloc(unsigned long size)
->  	if (PAGE_ALIGN(size) > MODULES_LEN)
->  		return NULL;
->  	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
-> -				    GFP_KERNEL, PAGE_KERNEL, -1,
-> +				    GFP_KERNEL, PAGE_KERNEL, NUMA_NO_NODE,
->  				    __builtin_return_address(0));
->  }
->  #endif
-> diff --git a/arch/sparc/kernel/module.c b/arch/sparc/kernel/module.c
-> index 4435488..97655e0 100644
-> --- a/arch/sparc/kernel/module.c
-> +++ b/arch/sparc/kernel/module.c
-> @@ -29,7 +29,7 @@ static void *module_map(unsigned long size)
->  	if (PAGE_ALIGN(size) > MODULES_LEN)
->  		return NULL;
->  	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
-> -				GFP_KERNEL, PAGE_KERNEL, -1,
-> +				GFP_KERNEL, PAGE_KERNEL, NUMA_NO_NODE,
->  				__builtin_return_address(0));
->  }
->  #else
-> diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-> index 216a4d7..18be189 100644
-> --- a/arch/x86/kernel/module.c
-> +++ b/arch/x86/kernel/module.c
-> @@ -49,7 +49,7 @@ void *module_alloc(unsigned long size)
->  		return NULL;
->  	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
->  				GFP_KERNEL | __GFP_HIGHMEM, PAGE_KERNEL_EXEC,
-> -				-1, __builtin_return_address(0));
-> +				NUMA_NO_NODE, __builtin_return_address(0));
->  }
->  
->  #ifdef CONFIG_X86_32
+I think this is wrong. Instead I would expect CONFIG_SERIAL_LANTIQ=y somewhere.
+
+
+Best Regards,
+Thomas

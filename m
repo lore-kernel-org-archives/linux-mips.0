@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:35266 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:33423 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6817237Ab3IBKLuXjW8Q (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 2 Sep 2013 12:11:50 +0200
-Message-ID: <52246461.1010808@imgtec.com>
-Date: Mon, 2 Sep 2013 11:11:45 +0100
+        id S6824004Ab3ICODpZdWXu (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 3 Sep 2013 16:03:45 +0200
+Message-ID: <5225EC3B.1070701@imgtec.com>
+Date: Tue, 3 Sep 2013 15:03:39 +0100
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: powertv: Drop BOOTLOADER_DRIVER Kconfig symbol
-References: <1377075213-22398-1-git-send-email-markos.chandras@imgtec.com> <52237C76.4010608@phrozen.org>
-In-Reply-To: <52237C76.4010608@phrozen.org>
+Subject: Re: [PATCH v2] MIPS: ath79: Avoid using unitialized 'reg' variable
+References: <1377082042-4219-1-git-send-email-markos.chandras@imgtec.com> <20130903133839.GA10563@linux-mips.org>
+In-Reply-To: <20130903133839.GA10563@linux-mips.org>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -21,57 +21,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: John Crispin <john@phrozen.org>
+To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20130902101145._4iWY_XYg9tLbbb5btLVfgfnqCQnae8sBo75K8kpdno@z>
+Message-ID: <20130903140339.dcsjOzkXYdRI8lQjhfra-vKRXAGyD1UCA_3674wk0T8@z>
 
-On 09/01/13 18:42, John Crispin wrote:
-> On 21/08/13 10:53, Markos Chandras wrote:
->> The kbldr.h header file required for this was neither committed in the
->> original submission in a3a0f8c8ed2e2470f4dcd6da95020d41fed84747
->> "MIPS: PowerTV: Base files for Cisco PowerTV platform"
->> nor it was ever present in the git tree so this option never worked.
->> Fixes the following build problem:
->> arch/mips/powertv/reset.c:25:36: fatal error:
->> asm/mach-powertv/kbldr.h: No such
->> file or directory
->> compilation terminated.
+On 09/03/13 14:38, Ralf Baechle wrote:
+> On Wed, Aug 21, 2013 at 11:47:22AM +0100, Markos Chandras wrote:
+>
+>> Fixes the following build error:
+>> arch/mips/include/asm/mach-ath79/ath79.h:139:20: error: 'reg' may be used
+>> uninitialized in this function [-Werror=maybe-uninitialized]
+>> arch/mips/ath79/common.c:62:6: note: 'reg' was declared here
+>> In file included from arch/mips/ath79/common.c:20:0:
+>> arch/mips/ath79/common.c: In function 'ath79_device_reset_clear':
+>> arch/mips/include/asm/mach-ath79/ath79.h:139:20:
+>> error: 'reg' may be used uninitialized in this function
+>> [-Werror=maybe-uninitialized]
+>> arch/mips/ath79/common.c:90:6: note: 'reg' was declared here
 >>
->> Signed-off-by: Markos Chandras<markos.chandras@imgtec.com>
->> Acked-by: Steven J. Hill<Steven.Hill@imgtec.com>
+>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 >> ---
->> This patch is for the upstream-sfr/mips-for-linux-next tree
+>> Changes since v1:
+>> http://www.linux-mips.org/archives/linux-mips/2013-08/msg00126.html
+>> - Remove BUG(). panic() is enough.
+>> http://www.linux-mips.org/archives/linux-mips/2013-08/msg00133.html
+>> - Change panic() message to be more accurate.
+>> http://www.linux-mips.org/archives/linux-mips/2013-08/msg00164.html
 >> ---
->>   arch/mips/Kconfig                     |  1 +
->>   arch/mips/powertv/Kconfig             |  9 +--------
->>   arch/mips/powertv/asic/asic_devices.c | 15 +++------------
->>   arch/mips/powertv/init.c              |  4 ----
->>   arch/mips/powertv/reset.c             | 12 ------------
->>   5 files changed, 5 insertions(+), 36 deletions(-)
+>>   arch/mips/ath79/common.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
 >>
->> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
->> index e12764c..d08a3a6 100644
->> --- a/arch/mips/Kconfig
->> +++ b/arch/mips/Kconfig
->> @@ -416,6 +416,7 @@ config PMC_MSP
->>   config POWERTV
->>       bool "Cisco PowerTV"
->>       select BOOT_ELF32
->> +    select BOOTLOADER_FAMILY
->>       select CEVT_R4K
->>       select CPU_MIPSR2_IRQ_VI
->>       select CPU_MIPSR2_IRQ_EI
+>> diff --git a/arch/mips/ath79/common.c b/arch/mips/ath79/common.c
+>> index eb3966c..6d7a9d4 100644
+>> --- a/arch/mips/ath79/common.c
+>> +++ b/arch/mips/ath79/common.c
+>> @@ -75,7 +75,7 @@ void ath79_device_reset_set(u32 mask)
+>>   	else if (soc_is_qca955x())
+>>   		reg = QCA955X_RESET_REG_RESET_MODULE;
+>>   	else
+>> -		BUG();
+>> +		panic("Reset register not defined for this SOC");
+>>
+>>   	spin_lock_irqsave(&ath79_device_reset_lock, flags);
+>>   	t = ath79_reset_rr(reg);
+>> @@ -103,7 +103,7 @@ void ath79_device_reset_clear(u32 mask)
+>>   	else if (soc_is_qca955x())
+>>   		reg = QCA955X_RESET_REG_RESET_MODULE;
+>>   	else
+>> -		BUG();
+>> +		panic("Reset register not defined for this SOC");
+>>
+>>   	spin_lock_irqsave(&ath79_device_reset_lock, flags);
+>>   	t = ath79_reset_rr(reg);
 >
-> Hi,
+> Looks more like the implementation of BUG() is wrong and gcc doesn't
+> notice that BUG() won't return.
 >
-> BOOTLOADER_FAMILY is a string causing the select to spew this error
+> Was this triggered by CONFIG_BUG=n?
 >
-> -> arch/mips/Kconfig:420:warning: 'BOOTLOADER_FAMILY' has wrong type.
-> 'select' only accept arguments of boolean and tristate type
+>    Ralf
 >
->      John
 
-Hi John,
+Hi Ralf,
 
-Hmm strange I haven't seen this problem when I tested this patch. I will 
-double check and submit a new patch.
+Yes it was triggered by CONFIG_BUG=n

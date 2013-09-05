@@ -1,14 +1,19 @@
-Received: from multi.imgtec.com ([194.200.65.239]:33559 "EHLO multi.imgtec.com"
+Received: from mail-bn1lp0154.outbound.protection.outlook.com ([207.46.163.154]:58616
+        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6816822Ab3ICO2DRVzzh (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 3 Sep 2013 16:28:03 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: sead3: Select NEW_LEDS, LEDS_CLASS and I2C symbols
-Date: Tue, 3 Sep 2013 15:27:00 +0100
-Message-ID: <1378218420-28011-1-git-send-email-markos.chandras@imgtec.com>
+        id S6837145Ab3IES4iJCF3q (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 5 Sep 2013 20:56:38 +0200
+Message-ID: <5228D3B7.505@caviumnetworks.com>
+Date: Thu, 5 Sep 2013 11:55:51 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH 1/3] staging: octeon-ethernet: make dropped packets to
+ consume NAPI budget
+References: <1378406641-16530-1-git-send-email-aaro.koskinen@iki.fi> <1378406641-16530-2-git-send-email-aaro.koskinen@iki.fi>
+In-Reply-To: <1378406641-16530-2-git-send-email-aaro.koskinen@iki.fi>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,48 +23,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130903142700.PT105IqMXXT9OLl-wVVUvuwIRRcUd8EdZa9JkF87kKo@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, "Jason A. Donenfeld" <Jason@zx2c4.com>, richard@nod.at
+Message-ID: <20130905185551.JyRNh_7sv92D4dkPjnqGMqqtKOKFLohfnjDb2WsIamg@z>
 
-Select NEW_LEDS and LEDS_CLASS since they export symbols
-needed by leds-sead3.c. Fixes the following build problem:
+On 09/05/2013 11:43 AM, Aaro Koskinen wrote:
+> We should count also dropped packets, otherwise the NAPI handler may
+> end up running too long.
 
-leds-sead3.c:(.text+0xf0c): undefined
-reference to `led_classdev_unregister'
-leds-sead3.c:(.text+0xf18): undefined
-reference to `led_classdev_unregister'
+Is this actually a problem?
 
-Also select I2C since it's needed by sead3-pic32-i2c-drv.c
-Fixes the following build problem:
-arch/mips/mti-sead3/sead3-pic32-i2c-drv.c:350:2: error:
-implicit declaration of
-function 'i2c_add_numbered_adapter'
-[-Werror=implicit-function-declaration]
+If so ... the patch looks sane and you and add Acked-by me.
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
-This patch is for the upstream-sfr/mips-for-linux-next tree
----
- arch/mips/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index fdaf628..04bdd82 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -342,9 +342,12 @@ config MIPS_SEAD3
- 	select CPU_MIPSR2_IRQ_VI
- 	select CPU_MIPSR2_IRQ_EI
- 	select DMA_NONCOHERENT
-+	select I2C
- 	select IRQ_CPU
- 	select IRQ_GIC
-+	select LEDS_CLASS
- 	select MIPS_MSC
-+	select NEW_LEDS
- 	select SYS_HAS_CPU_MIPS32_R1
- 	select SYS_HAS_CPU_MIPS32_R2
- 	select SYS_HAS_CPU_MIPS64_R1
--- 
-1.8.3.2
+>
+> Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+> ---
+>   drivers/staging/octeon/ethernet-rx.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/staging/octeon/ethernet-rx.c b/drivers/staging/octeon/ethernet-rx.c
+> index 34afc16..10e5416 100644
+> --- a/drivers/staging/octeon/ethernet-rx.c
+> +++ b/drivers/staging/octeon/ethernet-rx.c
+> @@ -303,6 +303,7 @@ static int cvm_oct_napi_poll(struct napi_struct *napi, int budget)
+>   			if (backlog > budget * cores_in_use && napi != NULL)
+>   				cvm_oct_enable_one_cpu();
+>   		}
+> +		rx_count++;
+>
+>   		skb_in_hw = USE_SKBUFFS_IN_HW && work->word2.s.bufs == 1;
+>   		if (likely(skb_in_hw)) {
+> @@ -429,7 +430,6 @@ static int cvm_oct_napi_poll(struct napi_struct *napi, int budget)
+>   #endif
+>   				}
+>   				netif_receive_skb(skb);
+> -				rx_count++;
+>   			} else {
+>   				/* Drop any packet received for a device that isn't up */
+>   				/*
+>

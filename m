@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:14241 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6815989Ab3IFJswLU11G (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 6 Sep 2013 11:48:52 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: Kconfig: CMP support needs to select SMP as well
-Date: Fri, 6 Sep 2013 10:47:26 +0100
-Message-ID: <1378460846-961-1-git-send-email-markos.chandras@imgtec.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Received: from hrndva-omtalb.mail.rr.com ([71.74.56.122]:2280 "EHLO
+        hrndva-omtalb.mail.rr.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6819547Ab3IKE5K0q-b8 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Sep 2013 06:57:10 +0200
+Message-ID: <20130911042923.766638906@goodmis.org>
+Date: Wed, 11 Sep 2013 00:30:17 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+Subject: [190/251] MIPS: Expose missing pci_io{map,unmap} declarations
+References: <20130911042707.738353451@goodmis.org>
+Content-Disposition: inline; filename=0190-MIPS-Expose-missing-pci_io-map-unmap-declarations.patch
+Return-Path: <rostedt@goodmis.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,55 +18,79 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130906094726.lfpVIwQvtnaDzbF4KfQATa_D_bA4OkVmKYcHoG_Vai4@z>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20130911043017.bdvL1IKlhA_y8tOzkzX8XcDKRlpNUn6Ba_E0qJUzjEs@z>
 
-The CMP code is only designed to work with SMP configurations.
-Fixes multiple build problems on certain randconfigs:
+3.6.11.9-rc1 stable review patch.
+If anyone has any objections, please let me know.
 
-In file included from arch/mips/kernel/smp-cmp.c:34:0:
-arch/mips/include/asm/smp.h:28:0:
-error: "raw_smp_processor_id" redefined [-Werror]
+------------------
 
-In file included from include/linux/sched.h:30:0,
-from arch/mips/kernel/smp-cmp.c:22:
-include/linux/smp.h:135:0: note: this is the location of the
-previous definition
+From: Markos Chandras <markos.chandras@imgtec.com>
 
-In file included from arch/mips/kernel/smp-cmp.c:34:0:
-arch/mips/include/asm/smp.h:57:20:
-error: redefinition of 'smp_send_reschedule'
+[ Upstream commit 78857614104a26cdada4c53eea104752042bf5a1 ]
 
-In file included from include/linux/sched.h:30:0,
-from arch/mips/kernel/smp-cmp.c:22:
-include/linux/smp.h:179:20: note: previous
-definition of 'smp_send_reschedule' was here
+The GENERIC_PCI_IOMAP does not depend on CONFIG_PCI so move
+it to the CONFIG_MIPS symbol so it's always selected for MIPS.
+This fixes the missing pci_iomap declaration for MIPS.
+Moreover, the pci_iounmap function was not defined in the
+io.h header file if the CONFIG_PCI symbol is not set,
+but it should since MIPS is not using CONFIG_GENERIC_IOMAP.
 
-In file included from arch/mips/kernel/smp-cmp.c:34:0:
-arch/mips/include/asm/smp.h: In function 'smp_send_reschedule':
-arch/mips/include/asm/smp.h:61:8:
-error: dereferencing pointer to incomplete type
-[...]
+This fixes the following problem on a allyesconfig:
+
+drivers/net/ethernet/3com/3c59x.c:1031:2: error: implicit declaration of
+function 'pci_iomap' [-Werror=implicit-function-declaration]
+drivers/net/ethernet/3com/3c59x.c:1044:3: error: implicit declaration of
+function 'pci_iounmap' [-Werror=implicit-function-declaration]
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>
+Cc: linux-mips@linux-mips.org
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+Patchwork: https://patchwork.linux-mips.org/patch/5478/
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 ---
-This patch is for the upstream-sfr/mips-for-linux-next tree
----
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/Kconfig          |    2 +-
+ arch/mips/include/asm/io.h |    5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 04bdd82..6d8082d 100644
+index faf6528..5367804 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -1985,6 +1985,7 @@ config MIPS_VPE_APSP_API
- config MIPS_CMP
- 	bool "MIPS CMP framework support"
- 	depends on SYS_SUPPORTS_MIPS_CMP
-+	select SMP
- 	select SYNC_R4K
- 	select SYS_SUPPORTS_SMP
- 	select SYS_SUPPORTS_SCHED_SMT if SMP
+@@ -26,6 +26,7 @@ config MIPS
+ 	select HAVE_GENERIC_HARDIRQS
+ 	select GENERIC_IRQ_PROBE
+ 	select GENERIC_IRQ_SHOW
++	select GENERIC_PCI_IOMAP
+ 	select HAVE_ARCH_JUMP_LABEL
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select IRQ_FORCED_THREADING
+@@ -2392,7 +2393,6 @@ config PCI
+ 	bool "Support for PCI controller"
+ 	depends on HW_HAS_PCI
+ 	select PCI_DOMAINS
+-	select GENERIC_PCI_IOMAP
+ 	select NO_GENERIC_PCI_IOPORT_MAP
+ 	help
+ 	  Find out whether you have a PCI motherboard. PCI is the name of a
+diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+index 29d9c23..98ca652 100644
+--- a/arch/mips/include/asm/io.h
++++ b/arch/mips/include/asm/io.h
+@@ -169,6 +169,11 @@ static inline void * isa_bus_to_virt(unsigned long address)
+ extern void __iomem * __ioremap(phys_t offset, phys_t size, unsigned long flags);
+ extern void __iounmap(const volatile void __iomem *addr);
+ 
++#ifndef CONFIG_PCI
++struct pci_dev;
++static inline void pci_iounmap(struct pci_dev *dev, void __iomem *addr) {}
++#endif
++
+ static inline void __iomem * __ioremap_mode(phys_t offset, unsigned long size,
+ 	unsigned long flags)
+ {
 -- 
-1.8.3.2
+1.7.10.4

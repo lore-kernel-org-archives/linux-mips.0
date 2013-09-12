@@ -1,17 +1,17 @@
-Received: from multi.imgtec.com ([194.200.65.239]:61816 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:61688 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6817237Ab3ILJjZwAcR4 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 12 Sep 2013 11:39:25 +0200
-Message-ID: <52318BC6.7030903@imgtec.com>
-Date: Thu, 12 Sep 2013 10:39:18 +0100
-From: Paul Burton <paul.burton@imgtec.com>
+        id S6822585Ab3ILQCqbW8Zi (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 12 Sep 2013 18:02:46 +0200
+Message-ID: <5231E587.9030403@imgtec.com>
+Date: Thu, 12 Sep 2013 11:02:15 -0500
+From: "Steven J. Hill" <Steven.Hill@imgtec.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH] MIPS: Fix errata for some 1074K cores.
-References: <1378929708-7253-1-git-send-email-Steven.Hill@imgtec.com>
-In-Reply-To: <1378929708-7253-1-git-send-email-Steven.Hill@imgtec.com>
+References: <1378929708-7253-1-git-send-email-Steven.Hill@imgtec.com> <52318BC6.7030903@imgtec.com> <j0d17e3bxlvp3famj4e32xv9.1378997855738@email.android.com> <CAGVrzcY_OWUSK4dfZ8fnV49ELSYE6exSYQi5AwxuGoKnvx5Rtg@mail.gmail.com> <5231D9E5.2080002@imgtec.com> <5231DE0F.8080302@imgtec.com> <CAGVrzcYxyWv2F1HDkOUCo2Ezicxq+UsxouOsUtz+UZAWFew18A@mail.gmail.com>
+In-Reply-To: <CAGVrzcYxyWv2F1HDkOUCo2Ezicxq+UsxouOsUtz+UZAWFew18A@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Paul.Burton@imgtec.com>
+Return-Path: <Steven.Hill@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,47 +21,24 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Cc: "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
-Message-ID: <20130912093918.0PeL1WSaO-1klCa1LVMUdKj-MPllxBJ8T9gPgol1sPw@z>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20130912160215.zrJZoy3ija-0PYy9FfUcpW5mWMtfiBPsGgv7LgjUjVc@z>
 
-Could you expand on that please? What is errata E16, what are "some 
-problems" and how does this fix those problems? The commit message is 
-somewhat lacking...
+On 09/12/2013 10:50 AM, Florian Fainelli wrote:
+>
+> Are there any reasons why you cannot quote an internal note about this
+> errata which would give a better idea of what this code is about?
+> Sorry but the diff really does not help understand what is happening
+> without a proper explanation of why this is required. At first glance
+> it would like some revisions of the CPU are affected by some D$ bug?
+>
+Okaaay. How about we just stop here. I posted a poor quality patch that 
+did not have enough information. I will post a second version that will 
+have the details of what E16 is and what is being fixed. This will 
+involve me talking to hardware engineers to get something I can put in 
+the patch. My sincere apologies to everyone. I will go crawl back under 
+my rock and finish my work for this week. You should see the corrected 
+version the first part of next week. Cheers.
 
-Paul
-
-On 11/09/13 21:01, Steven J. Hill wrote:
-> From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
->
-> Fixes errata E16 for some problems on 1074K cores.
->
-> Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-> Signed-off-by: Steven J. Hill <Steven.Hill@imgtec.com>
-> ---
->   arch/mips/mm/c-r4k.c |   12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-> index f749f68..8d3ed32 100644
-> --- a/arch/mips/mm/c-r4k.c
-> +++ b/arch/mips/mm/c-r4k.c
-> @@ -786,12 +786,12 @@ static inline void alias_74k_erratum(struct cpuinfo_mips *c)
->   	 * aliases. In this case it is better to treat the cache as always
->   	 * having aliases.
->   	 */
-> -	if ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(2, 4, 0))
-> -		c->dcache.flags |= MIPS_CACHE_VTAG;
-> -	if ((c->processor_id & 0xff) == PRID_REV_ENCODE_332(2, 4, 0))
-> -		write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
-> -	if (((c->processor_id & 0xff00) == PRID_IMP_1074K) &&
-> -	    ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(1, 1, 0))) {
-> +	if ((c->processor_id & 0xff00) != PRID_IMP_1074K) {
-> +		if ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(2, 4, 0))
-> +			c->dcache.flags |= MIPS_CACHE_VTAG;
-> +		if ((c->processor_id & 0xff) == PRID_REV_ENCODE_332(2, 4, 0))
-> +			write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
-> +	} else if ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(1, 1, 0)) {
->   		c->dcache.flags |= MIPS_CACHE_VTAG;
->   		write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
->   	}
+Steve

@@ -1,14 +1,17 @@
-Received: from multi.imgtec.com ([194.200.65.239]:10902 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:61816 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6823012Ab3IKMSKemOft (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 11 Sep 2013 14:18:10 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: kernel: vpe: Make vpe_attrs an array of pointers.
-Date: Wed, 11 Sep 2013 13:17:52 +0100
-Message-ID: <1378901872-20683-1-git-send-email-markos.chandras@imgtec.com>
+        id S6817237Ab3ILJjZwAcR4 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 12 Sep 2013 11:39:25 +0200
+Message-ID: <52318BC6.7030903@imgtec.com>
+Date: Thu, 12 Sep 2013 10:39:18 +0100
+From: Paul Burton <paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH] MIPS: Fix errata for some 1074K cores.
+References: <1378929708-7253-1-git-send-email-Steven.Hill@imgtec.com>
+In-Reply-To: <1378929708-7253-1-git-send-email-Steven.Hill@imgtec.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,42 +21,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, John Crispin <blogic@openwrt.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Message-ID: <20130911121752.oJVoBDS1joRSPd3P9-Ukpr6H6nXGaGHyXqMavpPhWlU@z>
+To: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Cc: "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
+Message-ID: <20130912093918.0PeL1WSaO-1klCa1LVMUdKj-MPllxBJ8T9gPgol1sPw@z>
 
-Commit 567b21e973ccf5b0d13776e408d7c67099749eb8
-"mips: convert vpe_class to use dev_groups"
+Could you expand on that please? What is errata E16, what are "some 
+problems" and how does this fix those problems? The commit message is 
+somewhat lacking...
 
-broke the build on MIPS since vpe_attrs should be an array
-of 'struct device_attribute' pointers.
+Paul
 
-Fixes the following build problem:
-arch/mips/kernel/vpe.c:1372:2: error: missing braces around initializer
-[-Werror=missing-braces]
-arch/mips/kernel/vpe.c:1372:2: error: (near initialization for 'vpe_attrs[0]')
-[-Werror=missing-braces]
-
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: John Crispin <blogic@openwrt.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/kernel/vpe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/kernel/vpe.c b/arch/mips/kernel/vpe.c
-index faf84c5..59b2b3c 100644
---- a/arch/mips/kernel/vpe.c
-+++ b/arch/mips/kernel/vpe.c
-@@ -1368,7 +1368,7 @@ out_einval:
- }
- static DEVICE_ATTR_RW(ntcs);
- 
--static struct attribute vpe_attrs[] = {
-+static struct attribute *vpe_attrs[] = {
- 	&dev_attr_kill.attr,
- 	&dev_attr_ntcs.attr,
- 	NULL,
--- 
-1.8.3.2
+On 11/09/13 21:01, Steven J. Hill wrote:
+> From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+>
+> Fixes errata E16 for some problems on 1074K cores.
+>
+> Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+> Signed-off-by: Steven J. Hill <Steven.Hill@imgtec.com>
+> ---
+>   arch/mips/mm/c-r4k.c |   12 ++++++------
+>   1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+> index f749f68..8d3ed32 100644
+> --- a/arch/mips/mm/c-r4k.c
+> +++ b/arch/mips/mm/c-r4k.c
+> @@ -786,12 +786,12 @@ static inline void alias_74k_erratum(struct cpuinfo_mips *c)
+>   	 * aliases. In this case it is better to treat the cache as always
+>   	 * having aliases.
+>   	 */
+> -	if ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(2, 4, 0))
+> -		c->dcache.flags |= MIPS_CACHE_VTAG;
+> -	if ((c->processor_id & 0xff) == PRID_REV_ENCODE_332(2, 4, 0))
+> -		write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
+> -	if (((c->processor_id & 0xff00) == PRID_IMP_1074K) &&
+> -	    ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(1, 1, 0))) {
+> +	if ((c->processor_id & 0xff00) != PRID_IMP_1074K) {
+> +		if ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(2, 4, 0))
+> +			c->dcache.flags |= MIPS_CACHE_VTAG;
+> +		if ((c->processor_id & 0xff) == PRID_REV_ENCODE_332(2, 4, 0))
+> +			write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
+> +	} else if ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(1, 1, 0)) {
+>   		c->dcache.flags |= MIPS_CACHE_VTAG;
+>   		write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
+>   	}

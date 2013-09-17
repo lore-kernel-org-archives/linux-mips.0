@@ -1,17 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:17445 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:13480 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6816671Ab3IMGZj63Csy (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 13 Sep 2013 08:25:39 +0200
-Message-ID: <523206B9.6000201@imgtec.com>
-Date: Thu, 12 Sep 2013 11:23:53 -0700
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+        id S6822664Ab3IQJnhYBTns (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 17 Sep 2013 11:43:37 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: Fix accessing to per-cpu data when flushing the cache
+Date: Tue, 17 Sep 2013 10:43:25 +0100
+Message-ID: <1379411005-20829-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] MIPS: GIC: Select R4K counter as fallback.
-References: <1378929101-7021-1-git-send-email-Steven.Hill@imgtec.com> <52316D28.5000100@metafoo.de>
-In-Reply-To: <52316D28.5000100@metafoo.de>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,25 +18,107 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
-Message-ID: <20130912182353.pH7pxSclRkobZjyT0gv9S06xnmNJ1xE89yfHpDWvISk@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20130917094325.hs7xwXtNGTdUBBdaRN89FXbOW4zNyrk8LIo9r0v_N7o@z>
 
-On 09/12/2013 12:28 AM, Lars-Peter Clausen wrote:
-> On 09/11/2013 09:51 PM, Steven J. Hill wrote:
->> From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
->>
->> If CONFIG_CSRC_GIC is selected and the GIC is not found during
->> boot, then fallback to the R4K counter gracefully.
-> Is there any reason not to always register the r4k clocksource, no matter
-> whether the gic clocksource is present or not? The timekeeping core of the
-> kernel will make sure to use the best available clocksource based on the
-> clocksource's rating.
->
-> - Lars
-If you do power saving by switching some core OFF then you should do an 
-additional clock sync after core revival.
-GIC is free from that but R4K is not. It was a primary reason for GIC 
-clocksource.
+The cache flushing code uses the current_cpu_data macro which
+may cause problems in preemptive kernels because it relies on
+smp_processor_id() to get the current cpu number. Per cpu-data
+needs to be protected so we disable preemption around the flush
+caching code. We enable it back when we are about to return.
 
-- Leonid.
+Fixes the following problem:
+
+BUG: using smp_processor_id() in preemptible [00000000] code: kjournald/1761
+caller is blast_dcache32+0x30/0x254
+Call Trace:
+[<8047f02c>] dump_stack+0x8/0x34
+[<802e7e40>] debug_smp_processor_id+0xe0/0xf0
+[<80114d94>] blast_dcache32+0x30/0x254
+[<80118484>] r4k_dma_cache_wback_inv+0x200/0x288
+[<80110ff0>] mips_dma_map_sg+0x108/0x180
+[<80355098>] ide_dma_prepare+0xf0/0x1b8
+[<8034eaa4>] do_rw_taskfile+0x1e8/0x33c
+[<8035951c>] ide_do_rw_disk+0x298/0x3e4
+[<8034a3c4>] do_ide_request+0x2e0/0x704
+[<802bb0dc>] __blk_run_queue+0x44/0x64
+[<802be000>] queue_unplugged.isra.36+0x1c/0x54
+[<802beb94>] blk_flush_plug_list+0x18c/0x24c
+[<802bec6c>] blk_finish_plug+0x18/0x48
+[<8026554c>] journal_commit_transaction+0x3b8/0x151c
+[<80269648>] kjournald+0xec/0x238
+[<8014ac00>] kthread+0xb8/0xc0
+[<8010268c>] ret_from_kernel_thread+0x14/0x1c
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+This patch is for the upstream-sfr/mips-for-linux-next tree
+---
+ arch/mips/include/asm/r4kcache.h | 30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
+
+diff --git a/arch/mips/include/asm/r4kcache.h b/arch/mips/include/asm/r4kcache.h
+index a0b2650..8f1a6a1 100644
+--- a/arch/mips/include/asm/r4kcache.h
++++ b/arch/mips/include/asm/r4kcache.h
+@@ -344,18 +344,21 @@ static inline void invalidate_tcache_page(unsigned long addr)
+ static inline void blast_##pfx##cache##lsize(void)			\
+ {									\
+ 	unsigned long start = INDEX_BASE;				\
+-	unsigned long end = start + current_cpu_data.desc.waysize;	\
+-	unsigned long ws_inc = 1UL << current_cpu_data.desc.waybit;	\
+-	unsigned long ws_end = current_cpu_data.desc.ways <<		\
+-			       current_cpu_data.desc.waybit;		\
+-	unsigned long ws, addr;						\
++	unsigned long end, ws_inc, ws_end, ws, addr;			\
+ 									\
+ 	__##pfx##flush_prologue						\
++	preempt_disable();						\
++									\
++	end = start + current_cpu_data.desc.waysize;			\
++	ws_inc = 1UL << current_cpu_data.desc.waybit;			\
++	ws_end = current_cpu_data.desc.ways <<				\
++		 current_cpu_data.desc.waybit;				\
+ 									\
+ 	for (ws = 0; ws < ws_end; ws += ws_inc)				\
+ 		for (addr = start; addr < end; addr += lsize * 32)	\
+ 			cache##lsize##_unroll32(addr|ws, indexop);	\
+ 									\
++	preempt_enable();						\
+ 	__##pfx##flush_epilogue						\
+ }									\
+ 									\
+@@ -376,20 +379,23 @@ static inline void blast_##pfx##cache##lsize##_page(unsigned long page) \
+ 									\
+ static inline void blast_##pfx##cache##lsize##_page_indexed(unsigned long page) \
+ {									\
+-	unsigned long indexmask = current_cpu_data.desc.waysize - 1;	\
+-	unsigned long start = INDEX_BASE + (page & indexmask);		\
+-	unsigned long end = start + PAGE_SIZE;				\
+-	unsigned long ws_inc = 1UL << current_cpu_data.desc.waybit;	\
+-	unsigned long ws_end = current_cpu_data.desc.ways <<		\
+-			       current_cpu_data.desc.waybit;		\
+-	unsigned long ws, addr;						\
++	unsigned long indexmask, end, start, ws_inc, ws_end, ws, addr;	\
+ 									\
+ 	__##pfx##flush_prologue						\
++	preempt_disable();						\
++									\
++	indexmask = current_cpu_data.desc.waysize - 1;			\
++	start = INDEX_BASE + (page & indexmask);			\
++	end = start + PAGE_SIZE;					\
++	ws_inc = 1UL << current_cpu_data.desc.waybit;			\
++	ws_end = current_cpu_data.desc.ways <<				\
++		 current_cpu_data.desc.waybit;				\
+ 									\
+ 	for (ws = 0; ws < ws_end; ws += ws_inc)				\
+ 		for (addr = start; addr < end; addr += lsize * 32)	\
+ 			cache##lsize##_unroll32(addr|ws, indexop);	\
+ 									\
++	preempt_enable();						\
+ 	__##pfx##flush_epilogue						\
+ }
+ 
+-- 
+1.8.3.2

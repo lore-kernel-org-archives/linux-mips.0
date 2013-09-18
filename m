@@ -1,15 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:14215 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:48764 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6822664Ab3IQK4GyPb9Q (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 17 Sep 2013 12:56:06 +0200
-Message-ID: <5238353B.9050001@imgtec.com>
-Date: Tue, 17 Sep 2013 11:55:55 +0100
+        id S6824104Ab3IRL3VufV3Z (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 18 Sep 2013 13:29:21 +0200
+Message-ID: <52398E51.6050306@imgtec.com>
+Date: Wed, 18 Sep 2013 12:28:17 +0100
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Fix accessing to per-cpu data when flushing the
- cache
-References: <1379411005-20829-1-git-send-email-markos.chandras@imgtec.com> <20130917104431.GB22468@linux-mips.org>
-In-Reply-To: <20130917104431.GB22468@linux-mips.org>
+Subject: Re: [PATCH] MIPS: Kconfig: CMP support needs to select SMP as well
+References: <1378460846-961-1-git-send-email-markos.chandras@imgtec.com> <20130918111053.GK22468@linux-mips.org>
+In-Reply-To: <20130918111053.GK22468@linux-mips.org>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -24,33 +23,22 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20130917105555.Id1aK8lhd5ynKJKFPVQI1OQtp4tNHbC_6LWMsgOCJT8@z>
+Message-ID: <20130918112817.T3WNymu16aNOhbYJXSL5jIdd5-KBFHd3E6gZ79dSl9w@z>
 
-On 09/17/13 11:44, Ralf Baechle wrote:
-> On Tue, Sep 17, 2013 at 10:43:25AM +0100, Markos Chandras wrote:
+On 09/18/13 12:10, Ralf Baechle wrote:
+> On Fri, Sep 06, 2013 at 10:47:26AM +0100, Markos Chandras wrote:
 >
->> The cache flushing code uses the current_cpu_data macro which
->> may cause problems in preemptive kernels because it relies on
->> smp_processor_id() to get the current cpu number. Per cpu-data
->> needs to be protected so we disable preemption around the flush
->> caching code. We enable it back when we are about to return.
->>
->> Fixes the following problem:
->>
->> BUG: using smp_processor_id() in preemptible [00000000] code: kjournald/1761
->> caller is blast_dcache32+0x30/0x254
+>> The CMP code is only designed to work with SMP configurations.
+>> Fixes multiple build problems on certain randconfigs:
 >
-> Just what I feared - these messages popping out from all over the tree.
+> Applied - but I think the logic here may be backwards from a user's
+> perspective.  Shouldn't a user be asked for SMP first, then for
+> possible platform suboptions (CMP, VSMP, SMTC) of SMP?
 >
-> I'd prefer if we change the caller otherwise depending on the platform
-> a single cache flush might involve several preempt_disable/-enable
-> invocations.  Something like below.
+>    Ralf
 >
-> And it also keeps the header file more usable outside the core kernel
-> which Florian's recent zboot a little easier.
->
-
 Hi Ralf,
 
-Changing the caller instead of the function in the header file looks 
-good to me. Thanks for fixing it.
+Well, for example, you can have VSMP with or without CMP so CMP is not
+another SMP option but rather an "add-on". However, it might be 
+preferred to move the SMP option higher in the menu.

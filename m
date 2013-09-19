@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:18425 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:34695 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6823043Ab3ISJ2HV0c1o (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 19 Sep 2013 11:28:07 +0200
+        id S6817546Ab3ISRCE2BZ-s (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 19 Sep 2013 19:02:04 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: pci: pci-bcm1480: Include missing vt.h header
-Date: Thu, 19 Sep 2013 10:27:52 +0100
-Message-ID: <1379582872-5482-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: kernel: smp-cmp: MIPS MT code needs CONFIG_MIPS_MT
+Date: Thu, 19 Sep 2013 18:00:29 +0100
+Message-ID: <1379610029-7433-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -20,37 +20,43 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130919092752.W3gObTlKtPNKzzH1wGvC50JYNUcg-hjoB7hUKhYB9tE@z>
+Message-ID: <20130919170029.gf_FnR9NfLxcou7ou3ZyOEfBE2OxpYAXKitgWB5ujRo@z>
 
-It's needed for the MAX_NR_CONSOLES macro.
+The mips_mt_* symbols are only built and exported if
+CONFIG_MIPS_MT is enabled.
 
-Fixes the following build problem on a randconfig:
+Fixes the following build problem when CONFIG_SMP is enabled
+but CONFIG_MIPS_MT is not.
 
-arch/mips/pci/pci-bcm1480.c: In function 'bcm1480_pcibios_init':
-arch/mips/pci/pci-bcm1480.c:261:36: error: 'MAX_NR_CONSOLES'
-undeclared (first use in this function)
-arch/mips/pci/pci-bcm1480.c:261:36: note: each undeclared
-identifier is reported only once for each function it appears in
-make[1]: *** [arch/mips/pci/pci-bcm1480.o] Error 1
+arch/mips/built-in.o: In function `cmp_prepare_cpus':
+arch/mips/kernel/smp-cmp.c:197:
+undefined reference to `mips_mt_set_cpuoptions'
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
 This patch is for the upstream-sfr/mips-for-linux-next tree
 ---
- arch/mips/pci/pci-bcm1480.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/kernel/smp-cmp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/mips/pci/pci-bcm1480.c b/arch/mips/pci/pci-bcm1480.c
-index 44dd5aa..5ec2a7b 100644
---- a/arch/mips/pci/pci-bcm1480.c
-+++ b/arch/mips/pci/pci-bcm1480.c
-@@ -39,6 +39,7 @@
- #include <linux/mm.h>
- #include <linux/console.h>
- #include <linux/tty.h>
-+#include <linux/vt.h>
+diff --git a/arch/mips/kernel/smp-cmp.c b/arch/mips/kernel/smp-cmp.c
+index 5969f1e..1b925d8 100644
+--- a/arch/mips/kernel/smp-cmp.c
++++ b/arch/mips/kernel/smp-cmp.c
+@@ -199,11 +199,14 @@ void __init cmp_prepare_cpus(unsigned int max_cpus)
+ 	pr_debug("SMPCMP: CPU%d: %s max_cpus=%d\n",
+ 		 smp_processor_id(), __func__, max_cpus);
  
- #include <asm/sibyte/bcm1480_regs.h>
- #include <asm/sibyte/bcm1480_scd.h>
++#ifdef CONFIG_MIPS_MT
+ 	/*
+ 	 * FIXME: some of these options are per-system, some per-core and
+ 	 * some per-cpu
+ 	 */
+ 	mips_mt_set_cpuoptions();
++#endif
++
+ }
+ 
+ struct plat_smp_ops cmp_smp_ops = {
 -- 
 1.8.3.2

@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:34695 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:47918 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6817546Ab3ISRCE2BZ-s (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 19 Sep 2013 19:02:04 +0200
+        id S6817546Ab3ISRTqpryxL (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 19 Sep 2013 19:19:46 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: kernel: smp-cmp: MIPS MT code needs CONFIG_MIPS_MT
-Date: Thu, 19 Sep 2013 18:00:29 +0100
-Message-ID: <1379610029-7433-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: mm: c-r4k: Panic if IL or DL fields have a reserved value
+Date: Thu, 19 Sep 2013 18:18:41 +0100
+Message-ID: <1379611121-12977-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -20,43 +20,61 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130919170029.gf_FnR9NfLxcou7ou3ZyOEfBE2OxpYAXKitgWB5ujRo@z>
+Message-ID: <20130919171841.dB74R5xIWmMDeG1GZ6Ukh6JpyoFYtHJnd9iFfDN7ZJA@z>
 
-The mips_mt_* symbols are only built and exported if
-CONFIG_MIPS_MT is enabled.
-
-Fixes the following build problem when CONFIG_SMP is enabled
-but CONFIG_MIPS_MT is not.
-
-arch/mips/built-in.o: In function `cmp_prepare_cpus':
-arch/mips/kernel/smp-cmp.c:197:
-undefined reference to `mips_mt_set_cpuoptions'
+According to MIPS32 and MIPS64 PRA documents,
+a value of 7 in IL and DL fields is marked as "Reserved"
+so panic if the core uses this value in the config1 register.
+Also simplify the code a little bit.
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
 This patch is for the upstream-sfr/mips-for-linux-next tree
 ---
- arch/mips/kernel/smp-cmp.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/mm/c-r4k.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/arch/mips/kernel/smp-cmp.c b/arch/mips/kernel/smp-cmp.c
-index 5969f1e..1b925d8 100644
---- a/arch/mips/kernel/smp-cmp.c
-+++ b/arch/mips/kernel/smp-cmp.c
-@@ -199,11 +199,14 @@ void __init cmp_prepare_cpus(unsigned int max_cpus)
- 	pr_debug("SMPCMP: CPU%d: %s max_cpus=%d\n",
- 		 smp_processor_id(), __func__, max_cpus);
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index 73ca8c5..618994e 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -987,10 +987,14 @@ static void probe_pcache(void)
+ 		 */
+ 		config1 = read_c0_config1();
  
-+#ifdef CONFIG_MIPS_MT
- 	/*
- 	 * FIXME: some of these options are per-system, some per-core and
- 	 * some per-cpu
- 	 */
- 	mips_mt_set_cpuoptions();
-+#endif
+-		if ((lsize = ((config1 >> 19) & 7)))
+-			c->icache.linesz = 2 << lsize;
+-		else
+-			c->icache.linesz = lsize;
++		lsize = (config1 >> 19) & 7;
 +
- }
++		/* IL == 7 is reserved */
++		if (lsize == 7)
++			panic("Invalid icache line size");
++
++		c->icache.linesz = lsize ? 2 << lsize : 0;
++
+ 		c->icache.sets = 32 << (((config1 >> 22) + 1) & 7);
+ 		c->icache.ways = 1 + ((config1 >> 16) & 7);
  
- struct plat_smp_ops cmp_smp_ops = {
+@@ -1007,10 +1011,14 @@ static void probe_pcache(void)
+ 		 */
+ 		c->dcache.flags = 0;
+ 
+-		if ((lsize = ((config1 >> 10) & 7)))
+-			c->dcache.linesz = 2 << lsize;
+-		else
+-			c->dcache.linesz= lsize;
++		lsize = (config1 >> 10) & 7;
++
++		/* DL == 7 is reserved */
++		if (lsize == 7)
++			panic("Invalid dcache line size");
++
++		c->dcache.linesz = lsize ? 2 << lsize : 0;
++
+ 		c->dcache.sets = 32 << (((config1 >> 13) + 1) & 7);
+ 		c->dcache.ways = 1 + ((config1 >> 7) & 7);
+ 
 -- 
 1.8.3.2

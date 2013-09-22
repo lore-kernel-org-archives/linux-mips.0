@@ -1,14 +1,17 @@
-Received: from multi.imgtec.com ([194.200.65.239]:47918 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6817546Ab3ISRTqpryxL (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 19 Sep 2013 19:19:46 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: mm: c-r4k: Panic if IL or DL fields have a reserved value
-Date: Thu, 19 Sep 2013 18:18:41 +0100
-Message-ID: <1379611121-12977-1-git-send-email-markos.chandras@imgtec.com>
+Received: from mail-qe0-f43.google.com ([209.85.128.43]:52318 "EHLO
+        mail-qe0-f43.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6818702Ab3IVVIck0gAe (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Sep 2013 23:08:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+In-Reply-To: <1379510692-32435-8-git-send-email-treding@nvidia.com>
+References: <1379510692-32435-1-git-send-email-treding@nvidia.com>
+        <1379510692-32435-8-git-send-email-treding@nvidia.com>
+Date: Sun, 22 Sep 2013 16:08:26 -0500
+Message-ID: <CAL_JsqJ+4P26hRrJcrbBmwfNPDAS+1GhXj12B+UvqmZZGjqT0g@mail.gmail.com>
+Subject: Re: [PATCH v2 07/10] of/irq: Propagate errors in of_irq_to_resource_table()
+From: Rob Herring <robherring2@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-Path: <robherring2@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,63 +21,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130919171841.dB74R5xIWmMDeG1GZ6Ukh6JpyoFYtHJnd9iFfDN7ZJA@z>
+To: Thierry Reding <thierry.reding@gmail.com>
+Cc: Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Ralf Baechle <ralf@linux-mips.org>, Russell King <linux@arm.linux.org.uk>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, sparclinux@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <20130922210826.dJJtUYIHEAnz4dcDY-glCtLO-j8OSl9k5_n7ZRWpf8w@z>
 
-According to MIPS32 and MIPS64 PRA documents,
-a value of 7 in IL and DL fields is marked as "Reserved"
-so panic if the core uses this value in the config1 register.
-Also simplify the code a little bit.
+On Wed, Sep 18, 2013 at 8:24 AM, Thierry Reding
+<thierry.reding@gmail.com> wrote:
+> Now that all helpers return precise error codes, this function can
+> propagate these errors to the caller properly.
+>
+> Signed-off-by: Thierry Reding <treding@nvidia.com>
+> ---
+> Changes in v2:
+> - return 0 on success or a negative error code on failure
+> - convert callers to new calling convention
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
-This patch is for the upstream-sfr/mips-for-linux-next tree
----
- arch/mips/mm/c-r4k.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+[snip]
 
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index 73ca8c5..618994e 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -987,10 +987,14 @@ static void probe_pcache(void)
- 		 */
- 		config1 = read_c0_config1();
- 
--		if ((lsize = ((config1 >> 19) & 7)))
--			c->icache.linesz = 2 << lsize;
--		else
--			c->icache.linesz = lsize;
-+		lsize = (config1 >> 19) & 7;
-+
-+		/* IL == 7 is reserved */
-+		if (lsize == 7)
-+			panic("Invalid icache line size");
-+
-+		c->icache.linesz = lsize ? 2 << lsize : 0;
-+
- 		c->icache.sets = 32 << (((config1 >> 22) + 1) & 7);
- 		c->icache.ways = 1 + ((config1 >> 16) & 7);
- 
-@@ -1007,10 +1011,14 @@ static void probe_pcache(void)
- 		 */
- 		c->dcache.flags = 0;
- 
--		if ((lsize = ((config1 >> 10) & 7)))
--			c->dcache.linesz = 2 << lsize;
--		else
--			c->dcache.linesz= lsize;
-+		lsize = (config1 >> 10) & 7;
-+
-+		/* DL == 7 is reserved */
-+		if (lsize == 7)
-+			panic("Invalid dcache line size");
-+
-+		c->dcache.linesz = lsize ? 2 << lsize : 0;
-+
- 		c->dcache.sets = 32 << (((config1 >> 13) + 1) & 7);
- 		c->dcache.ways = 1 + ((config1 >> 7) & 7);
- 
--- 
-1.8.3.2
+> diff --git a/drivers/of/irq.c b/drivers/of/irq.c
+> index e4f38c0..6d7f824 100644
+> --- a/drivers/of/irq.c
+> +++ b/drivers/of/irq.c
+> @@ -397,18 +397,20 @@ int of_irq_count(struct device_node *dev)
+>   * @res: array of resources to fill in
+>   * @nr_irqs: the number of IRQs (and upper bound for num of @res elements)
+
+You are effectively changing this to require an exact match rather
+than an upper bound. That seems to be okay since that is what all the
+callers want, but the documentation should be updated.
+
+>   *
+> - * Returns the size of the filled in table (up to @nr_irqs).
+> + * Returns 0 on success or a negative error code on failure.
+>   */
+>  int of_irq_to_resource_table(struct device_node *dev, struct resource *res,
+>                 int nr_irqs)
+>  {
+> -       int i;
+> +       int i, ret;
+>
+> -       for (i = 0; i < nr_irqs; i++, res++)
+> -               if (!of_irq_to_resource(dev, i, res))
+
+The error handling here needs to be updated in the previous patch.
+
+> -                       break;
+> +       for (i = 0; i < nr_irqs; i++, res++) {
+> +               ret = of_irq_to_resource(dev, i, res);
+> +               if (ret < 0)
+> +                       return ret;
+> +       }
+>
+> -       return i;
+> +       return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(of_irq_to_resource_table);
+>

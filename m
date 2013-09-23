@@ -1,12 +1,12 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65]:64485 "EHLO
+Received: from szxga02-in.huawei.com ([119.145.14.65]:36812 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6819540Ab3IWKiiH8QMa (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Sep 2013 12:38:38 +0200
-Message-ID: <524019D0.9070706@huawei.com>
-Date: Mon, 23 Sep 2013 18:37:04 +0800
+        by eddie.linux-mips.org with ESMTP id S6819540Ab3IWKne5Lv1d (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Sep 2013 12:43:34 +0200
+Message-ID: <52401AB2.8000605@huawei.com>
+Date: Mon, 23 Sep 2013 18:40:50 +0800
 From: Jianguo Wu <wujianguo@huawei.com>
 MIME-Version: 1.0
-Subject: [Resend with ACK][PATCH] mm/arch: use NUMA_NODE
+Subject: [Resend with ACK][PATCH] mm/arch: use NUMA_NO_NODE
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-Path: <wujianguo@huawei.com>
@@ -20,8 +20,8 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, David Rientjes <rientjes@google.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Message-ID: <20130923103704.7ZCdJgvRotpVoJ87lJ4ESaOBiHfMtPpwvTrGZKMvw7o@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, David Rientjes <rientjes@google.com>, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org, linux-parisc@vger.kernel.org
+Message-ID: <20130923104050.XQiZc2InPaCSxe56iPLskNAYWfJKwwpHbIrwVde4IaA@z>
 
 Use more appropriate NUMA_NO_NODE instead of -1 in all archs' module_alloc()
 

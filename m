@@ -1,12 +1,17 @@
-Received: from mga02.intel.com ([134.134.136.20]:26746 "EHLO mga02.intel.com"
+Received: from multi.imgtec.com ([194.200.65.239]:54183 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6815989Ab3IXVYANcEeb (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 24 Sep 2013 23:24:00 +0200
-From: "Timothy Pepper" <timothy.c.pepper@linux.intel.com>
-Subject: mm: insure topdown mmap chooses addresses above security minimum
-Date: Tue, 24 Sep 2013 14:23:31 -0700
-Message-ID: <1380057811-5352-1-git-send-email-timothy.c.pepper@linux.intel.com>
-Return-Path: <timothy.c.pepper@linux.intel.com>
+        id S6816233Ab3IYNTKN5-h4 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 25 Sep 2013 15:19:10 +0200
+Message-ID: <5242E2CF.8030709@imgtec.com>
+Date: Wed, 25 Sep 2013 14:19:11 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH] MIPS: mm: Move some checks out of 'for' loop in DMA operations
+References: <1380114065-9761-1-git-send-email-jchandra@broadcom.com>
+In-Reply-To: <1380114065-9761-1-git-send-email-jchandra@broadcom.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,188 +21,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Cc: Tim Pepper <timothy.c.pepper@linux.intel.com>, linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org, Paul Mundt <lethal@linux-sh.org>, linux-sh@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-Message-ID: <20130924212331.FIzNiHINJPJdWulnUGDO4wUIvdgMkASgTSKJ8q4FwYE@z>
+To: Jayachandran C <jchandra@broadcom.com>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20130925131911.f7EP4DYxTNkXxt0v5o_phzBKoDM2C5FqREtxtXqfLeg@z>
 
-A security check is performed on mmap addresses in
-security/security.c:security_mmap_addr().  It uses mmap_min_addr to insure
-mmaps don't get addresses lower than a user configurable guard value
-(/proc/sys/vm/mmap_min_addr).  The arch specific mmap topdown searches
-look for a map candidate address all the way down to a low_limit that is
-currently hard coded as PAGE_SIZE.  Depending on compile time options
-and userspace setting the procfs tunable, the security check's view of
-the minimum allowable address may be something greater than PAGE_SIZE.
-This leaves a gap where get_unmapped_area()'s call to get_area() might
-return an address above PAGE_SIZE, but below mmap_min_addr, and thus
-get_unmapped_area() fails.
+On 09/25/13 14:01, Jayachandran C wrote:
+> The check cpu_needs_post_dma_flush() in mips_dma_sync_sg_for_cpu() and
+> the check !plat_device_is_coherent() in mips_dma_sync_sg_for_device()
+> can be moved outside the for loop.
+>
+> As a side effect, this also avoids a GCC bug that caused kernel compile
+> to fail with the error:
+>
+> arch/mips/mm/dma-default.c: In function 'mips_dma_sync_sg_for_cpu':
+> arch/mips/mm/dma-default.c:316:1: internal compiler error: in add_insn_before, at emit-rtl.c:3852
+>
+> This gcc failure is seen in Code Sourcery toolchains [e.g. gcc version
+> 4.7.2 (Sourcery CodeBench Lite 2012.09-99)] after commit "MIPS: Optimize
+> current_cpu_type() for better code."
+> ---
+>   arch/mips/mm/dma-default.c |   12 ++++--------
+>   1 file changed, 4 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
+> index e45e4b0..2e94185 100644
+> --- a/arch/mips/mm/dma-default.c
+> +++ b/arch/mips/mm/dma-default.c
+> @@ -307,12 +307,10 @@ static void mips_dma_sync_sg_for_cpu(struct device *dev,
+>   {
+>   	int i;
+>
+> -	/* Make sure that gcc doesn't leave the empty loop body.  */
+> -	for (i = 0; i < nelems; i++, sg++) {
+> -		if (cpu_needs_post_dma_flush(dev))
+> +	if (cpu_needs_post_dma_flush(dev))
+> +		for (i = 0; i < nelems; i++, sg++)
+>   			__dma_sync(sg_page(sg), sg->offset, sg->length,
+>   				   direction);
+> -	}
+>   }
+>
+>   static void mips_dma_sync_sg_for_device(struct device *dev,
+> @@ -320,12 +318,10 @@ static void mips_dma_sync_sg_for_device(struct device *dev,
+>   {
+>   	int i;
+>
+> -	/* Make sure that gcc doesn't leave the empty loop body.  */
+> -	for (i = 0; i < nelems; i++, sg++) {
+> -		if (!plat_device_is_coherent(dev))
+> +	if (!plat_device_is_coherent(dev))
+> +		for (i = 0; i < nelems; i++, sg++)
+>   			__dma_sync(sg_page(sg), sg->offset, sg->length,
+>   				   direction);
+> -	}
+>   }
+>
+>   int mips_dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
+>
 
-This was seen on x86_64 in the case of a topdown address space and a large
-stack rlimit, with mmap_min_addr having been set to 32k by the distro.
-This left a 28k gap where the get area search intends to place a small
-mmap, but then get_unmapped_area() stumbles at the security check.
+Hi,
 
-What should have happened is the address search wraps back to a higher
-address, the search continues and perhaps succeeds.  Indeed an mmap of
-a larger size gets a topdown search that does wrap around back up into
-the rlimit stack reserve and succeeds assuming suitable free space.
-But a small mmap fits in the low gap and always fails.  It becomes
-possible to make large mmaps but not small ones.
+The patch looks good to me and it fixes the gcc problem indeed (the bug 
+is also present in gcc-4.7.3  from the 2013.05 release)
 
-When an explicit address hint is given, mm/mmap.c's round_hint_to_min()
-will round up to mmap_min_addr.
-
-A topdown search's low_limit should similarly consider mmap_min_addr
-instead of just PAGE_SIZE.
-
-Signed-off-by: Tim Pepper <timothy.c.pepper@linux.intel.com>
-Cc: linux-mm@kvack.org
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: x86@kernel.org
-Cc: Russell King <linux@arm.linux.org.uk>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: Paul Mundt <lethal@linux-sh.org>
-Cc: linux-sh@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: sparclinux@vger.kernel.org
---
- arch/arm/mm/mmap.c               | 3 ++-
- arch/mips/mm/mmap.c              | 3 ++-
- arch/powerpc/mm/slice.c          | 3 ++-
- arch/sh/mm/mmap.c                | 3 ++-
- arch/sparc/kernel/sys_sparc_64.c | 3 ++-
- arch/x86/kernel/sys_x86_64.c     | 3 ++-
- 6 files changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/arch/arm/mm/mmap.c b/arch/arm/mm/mmap.c
-index 0c63562..0e7355d 100644
---- a/arch/arm/mm/mmap.c
-+++ b/arch/arm/mm/mmap.c
-@@ -9,6 +9,7 @@
- #include <linux/io.h>
- #include <linux/personality.h>
- #include <linux/random.h>
-+#include <linux/security.h>
- #include <asm/cachetype.h>
- 
- #define COLOUR_ALIGN(addr,pgoff)		\
-@@ -146,7 +147,7 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
- 
- 	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
- 	info.length = len;
--	info.low_limit = PAGE_SIZE;
-+	info.low_limit = max(PAGE_SIZE, PAGE_ALIGN(mmap_min_addr));
- 	info.high_limit = mm->mmap_base;
- 	info.align_mask = do_align ? (PAGE_MASK & (SHMLBA - 1)) : 0;
- 	info.align_offset = pgoff << PAGE_SHIFT;
-diff --git a/arch/mips/mm/mmap.c b/arch/mips/mm/mmap.c
-index f1baadd..8c0deb7 100644
---- a/arch/mips/mm/mmap.c
-+++ b/arch/mips/mm/mmap.c
-@@ -14,6 +14,7 @@
- #include <linux/personality.h>
- #include <linux/random.h>
- #include <linux/sched.h>
-+#include <linux/security.h>
- 
- unsigned long shm_align_mask = PAGE_SIZE - 1;	/* Sane caches */
- EXPORT_SYMBOL(shm_align_mask);
-@@ -102,7 +103,7 @@ static unsigned long arch_get_unmapped_area_common(struct file *filp,
- 
- 	if (dir == DOWN) {
- 		info.flags = VM_UNMAPPED_AREA_TOPDOWN;
--		info.low_limit = PAGE_SIZE;
-+		info.low_limit = max(PAGE_SIZE, PAGE_ALIGN(mmap_min_addr));
- 		info.high_limit = mm->mmap_base;
- 		addr = vm_unmapped_area(&info);
- 
-diff --git a/arch/powerpc/mm/slice.c b/arch/powerpc/mm/slice.c
-index 3e99c14..34fc601 100644
---- a/arch/powerpc/mm/slice.c
-+++ b/arch/powerpc/mm/slice.c
-@@ -30,6 +30,7 @@
- #include <linux/err.h>
- #include <linux/spinlock.h>
- #include <linux/export.h>
-+#include <linux/security.h>
- #include <asm/mman.h>
- #include <asm/mmu.h>
- #include <asm/spu.h>
-@@ -338,7 +339,7 @@ static unsigned long slice_find_area_topdown(struct mm_struct *mm,
- 			addr = prev;
- 			goto prev_slice;
- 		}
--		info.low_limit = addr;
-+		info.low_limit = max(addr, PAGE_ALIGN(mmap_min_addr));
- 
- 		found = vm_unmapped_area(&info);
- 		if (!(found & ~PAGE_MASK))
-diff --git a/arch/sh/mm/mmap.c b/arch/sh/mm/mmap.c
-index 6777177..1e0c53d 100644
---- a/arch/sh/mm/mmap.c
-+++ b/arch/sh/mm/mmap.c
-@@ -11,6 +11,7 @@
- #include <linux/mm.h>
- #include <linux/mman.h>
- #include <linux/module.h>
-+#include <linux/security.h>
- #include <asm/page.h>
- #include <asm/processor.h>
- 
-@@ -119,7 +120,7 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
- 
- 	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
- 	info.length = len;
--	info.low_limit = PAGE_SIZE;
-+	info.low_limit = max(PAGE_SIZE, PAGE_ALIGN(mmap_min_addr));
- 	info.high_limit = mm->mmap_base;
- 	info.align_mask = do_colour_align ? (PAGE_MASK & shm_align_mask) : 0;
- 	info.align_offset = pgoff << PAGE_SHIFT;
-diff --git a/arch/sparc/kernel/sys_sparc_64.c b/arch/sparc/kernel/sys_sparc_64.c
-index 51561b8..dab0a5d 100644
---- a/arch/sparc/kernel/sys_sparc_64.c
-+++ b/arch/sparc/kernel/sys_sparc_64.c
-@@ -24,6 +24,7 @@
- #include <linux/personality.h>
- #include <linux/random.h>
- #include <linux/export.h>
-+#include <linux/security.h>
- 
- #include <asm/uaccess.h>
- #include <asm/utrap.h>
-@@ -188,7 +189,7 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
- 
- 	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
- 	info.length = len;
--	info.low_limit = PAGE_SIZE;
-+	info.low_limit = max(PAGE_SIZE, PAGE_ALIGN(mmap_min_addr));
- 	info.high_limit = mm->mmap_base;
- 	info.align_mask = do_color_align ? (PAGE_MASK & (SHMLBA - 1)) : 0;
- 	info.align_offset = pgoff << PAGE_SHIFT;
-diff --git a/arch/x86/kernel/sys_x86_64.c b/arch/x86/kernel/sys_x86_64.c
-index 30277e2..93e563e 100644
---- a/arch/x86/kernel/sys_x86_64.c
-+++ b/arch/x86/kernel/sys_x86_64.c
-@@ -15,6 +15,7 @@
- #include <linux/random.h>
- #include <linux/uaccess.h>
- #include <linux/elf.h>
-+#include <linux/security.h>
- 
- #include <asm/ia32.h>
- #include <asm/syscalls.h>
-@@ -172,7 +173,7 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
- 
- 	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
- 	info.length = len;
--	info.low_limit = PAGE_SIZE;
-+	info.low_limit = max(PAGE_SIZE, PAGE_ALIGN(mmap_min_addr));
- 	info.high_limit = mm->mmap_base;
- 	info.align_mask = filp ? get_align_mask() : 0;
- 	info.align_offset = pgoff << PAGE_SHIFT;
+Reviewed-by/Tested-by: Markos Chandras <markos.chandras@imgtec.com>

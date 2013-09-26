@@ -1,16 +1,13 @@
-Received: from multi.imgtec.com ([194.200.65.239]:54183 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:55074 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6816233Ab3IYNTKN5-h4 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 25 Sep 2013 15:19:10 +0200
-Message-ID: <5242E2CF.8030709@imgtec.com>
-Date: Wed, 25 Sep 2013 14:19:11 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        id S6816841Ab3IZJfrAeEof (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 26 Sep 2013 11:35:47 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: kernel: traps: Remove useless BUG_ON()
+Date: Thu, 26 Sep 2013 10:35:31 +0100
+Message-ID: <1380188131-28792-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: mm: Move some checks out of 'for' loop in DMA operations
-References: <1380114065-9761-1-git-send-email-jchandra@broadcom.com>
-In-Reply-To: <1380114065-9761-1-git-send-email-jchandra@broadcom.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,67 +18,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jayachandran C <jchandra@broadcom.com>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20130925131911.f7EP4DYxTNkXxt0v5o_phzBKoDM2C5FqREtxtXqfLeg@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20130926093531.UHwdVaixqbCH5oAZEPEJdhWjXA_RzfiahOmgfisuGlU@z>
 
-On 09/25/13 14:01, Jayachandran C wrote:
-> The check cpu_needs_post_dma_flush() in mips_dma_sync_sg_for_cpu() and
-> the check !plat_device_is_coherent() in mips_dma_sync_sg_for_device()
-> can be moved outside the for loop.
->
-> As a side effect, this also avoids a GCC bug that caused kernel compile
-> to fail with the error:
->
-> arch/mips/mm/dma-default.c: In function 'mips_dma_sync_sg_for_cpu':
-> arch/mips/mm/dma-default.c:316:1: internal compiler error: in add_insn_before, at emit-rtl.c:3852
->
-> This gcc failure is seen in Code Sourcery toolchains [e.g. gcc version
-> 4.7.2 (Sourcery CodeBench Lite 2012.09-99)] after commit "MIPS: Optimize
-> current_cpu_type() for better code."
-> ---
->   arch/mips/mm/dma-default.c |   12 ++++--------
->   1 file changed, 4 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
-> index e45e4b0..2e94185 100644
-> --- a/arch/mips/mm/dma-default.c
-> +++ b/arch/mips/mm/dma-default.c
-> @@ -307,12 +307,10 @@ static void mips_dma_sync_sg_for_cpu(struct device *dev,
->   {
->   	int i;
->
-> -	/* Make sure that gcc doesn't leave the empty loop body.  */
-> -	for (i = 0; i < nelems; i++, sg++) {
-> -		if (cpu_needs_post_dma_flush(dev))
-> +	if (cpu_needs_post_dma_flush(dev))
-> +		for (i = 0; i < nelems; i++, sg++)
->   			__dma_sync(sg_page(sg), sg->offset, sg->length,
->   				   direction);
-> -	}
->   }
->
->   static void mips_dma_sync_sg_for_device(struct device *dev,
-> @@ -320,12 +318,10 @@ static void mips_dma_sync_sg_for_device(struct device *dev,
->   {
->   	int i;
->
-> -	/* Make sure that gcc doesn't leave the empty loop body.  */
-> -	for (i = 0; i < nelems; i++, sg++) {
-> -		if (!plat_device_is_coherent(dev))
-> +	if (!plat_device_is_coherent(dev))
-> +		for (i = 0; i < nelems; i++, sg++)
->   			__dma_sync(sg_page(sg), sg->offset, sg->length,
->   				   direction);
-> -	}
->   }
->
->   int mips_dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
->
+Checking for n<0 && n>9 makes no sense because it can never
+be true. Moreover, we can have up to 64 vectored interrupts
+so BUG_ON(n>9) was wrong anyway.
 
-Hi,
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>
+---
+This patch is for the upstream-sfr/mips-for-linux-next tree
+---
+ arch/mips/kernel/traps.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-The patch looks good to me and it fixes the gcc problem indeed (the bug 
-is also present in gcc-4.7.3  from the 2013.05 release)
-
-Reviewed-by/Tested-by: Markos Chandras <markos.chandras@imgtec.com>
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 524841f..f2ae9cb 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -1554,7 +1554,6 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ 	unsigned char *b;
+ 
+ 	BUG_ON(!cpu_has_veic && !cpu_has_vint);
+-	BUG_ON((n < 0) && (n > 9));
+ 
+ 	if (addr == NULL) {
+ 		handler = (unsigned long) do_default_vi;
+-- 
+1.8.3.2

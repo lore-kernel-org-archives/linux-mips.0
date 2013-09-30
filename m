@@ -1,19 +1,17 @@
-Received: from mail-by2lp0243.outbound.protection.outlook.com ([207.46.163.243]:8275
-        "EHLO na01-by2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6823043Ab3I3VIqSvWo2 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 30 Sep 2013 23:08:46 +0200
-Message-ID: <5249E84F.2070008@caviumnetworks.com>
-Date: Mon, 30 Sep 2013 14:08:31 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from multi.imgtec.com ([194.200.65.239]:26572 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6823043Ab3I3V3Kf09yh (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 30 Sep 2013 23:29:10 +0200
+Message-ID: <5249ED1E.4050106@imgtec.com>
+Date: Mon, 30 Sep 2013 14:29:02 -0700
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] staging: octeon-ethernet: don't assume that CPU 0
- is special
-References: <1380397834-14286-1-git-send-email-aaro.koskinen@iki.fi> <5249B37E.4050000@caviumnetworks.com> <20130930193502.GE4572@blackmetal.musicnaut.iki.fi> <5249D407.2090904@caviumnetworks.com> <20130930195642.GF4572@blackmetal.musicnaut.iki.fi>
-In-Reply-To: <20130930195642.GF4572@blackmetal.musicnaut.iki.fi>
+Subject: Re: 74K/1074K support
+References: <20130925052715.GB473@linux-mips.org>
+In-Reply-To: <20130925052715.GB473@linux-mips.org>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,44 +21,45 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: devel@driverdev.osuosl.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, richard@nod.at, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Message-ID: <20130930210831.iJKYyQPxIVqYAHWlQLnPDATs6Qu42xUfkn6nsnGZJFc@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, "Steven J. Hill" <Steven.Hill@imgtec.com>
+Message-ID: <20130930212902.F1y8Glfy77VPKHum1I_s9j9hOWk_fmrwWoJFhZ0GXRg@z>
 
-On 09/30/2013 12:56 PM, Aaro Koskinen wrote:
-> Hi,
+On 09/24/2013 10:27 PM, Ralf Baechle wrote:
+> Commit 006a851b10a395955c153a145ad8241494d43688 adds 74K support in c-r4k.c:
 >
-> On Mon, Sep 30, 2013 at 12:41:59PM -0700, David Daney wrote:
->> On 09/30/2013 12:35 PM, Aaro Koskinen wrote:
->>> No, the original logic was already broken. The code assumed that the
->>> NAPI scheduled by the driver init gets executed always on CPU 0. The
->>> IRQ got enabled just because we are lucky.
->>
->> No.  The default affinity for all irqs is CPU0 for just this reason.
->> So there was no luck involved.
+> +static inline void alias_74k_erratum(struct cpuinfo_mips *c)
+> +{
+> +       /*
+> +        * Early versions of the 74K do not update the cache tags on a
+> +        * vtag miss/ptag hit which can occur in the case of KSEG0/KUSEG
+> +        * aliases. In this case it is better to treat the cache as always
+> +        * having aliases.
+> +        */
+> +       if ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(2, 4, 0))
+> +               c->dcache.flags |= MIPS_CACHE_VTAG;
+> +       if ((c->processor_id & 0xff) == PRID_REV_ENCODE_332(2, 4, 0))
+> +               write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
+> +       if (((c->processor_id & 0xff00) == PRID_IMP_1074K) &&
+> +           ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(1, 1, 0))) {
+> +               c->dcache.flags |= MIPS_CACHE_VTAG;
+> +               write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
+> +       }
+> +}
 >
-> According the Kconfig, this driver can be compiled as a module:
+> But MIPS D-caches are never virtually tagged, so there is nothing in
+> the kernel that ever tests the MIPS_CACHE_VTAG flag in a D-cache
+> descriptor.
 >
->> config OCTEON_ETHERNET
->> 	tristate "Cavium Networks Octeon Ethernet support"
-> [...]
->> 	To compile this driver as a module, choose M here.  The module
->> 	will be called octeon-ethernet.
+> Cargo cult programming at its finest?  Or was MIPS_CACHE_ALIASES what
+> really was meant to be set?
 >
-> What guarantees that CPU0 is around (or the smp_affinity is at its
-> default value) by the time user executes modprobe?
+>    Ralf
 
-Nothing enforced by the kernel.  Just don't take CPU0 off-line and you 
-should be good to go.
+There is a problem on early versions of 74K/1074K which can be effectively cured by setting MIPS_CACHE_VTAG.
+It enforces the needed cache handling.
+I hope it will go away as customers replace RTL for newer versions.
+  
+But I prefer the patch version from Maciej W. Rozycki, it is more clear.
 
-There is a lot of room for improvement in the driver.
-
-Really this whole thing of starting NAPI on multiple CPUs for the same 
-input queue is not good.  It leads to loss of packet ordering when 
-forwarding.
-
-What we really want is to have one POW group (input queue) per CPU and 
-only run one CPU per group.  If we did that, we wouldn't have all these 
-affinity issues.
-
-David Daney
+- Leonid.

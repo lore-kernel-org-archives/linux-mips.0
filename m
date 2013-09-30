@@ -1,16 +1,16 @@
-Received: from mail-bl2lp0208.outbound.protection.outlook.com ([207.46.163.208]:13624
-        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+Received: from mail-by2lp0243.outbound.protection.outlook.com ([207.46.163.243]:8275
+        "EHLO na01-by2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6823043Ab3I3TmgORWK2 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 30 Sep 2013 21:42:36 +0200
-Message-ID: <5249D407.2090904@caviumnetworks.com>
-Date: Mon, 30 Sep 2013 12:41:59 -0700
+        id S6823043Ab3I3VIqSvWo2 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 30 Sep 2013 23:08:46 +0200
+Message-ID: <5249E84F.2070008@caviumnetworks.com>
+Date: Mon, 30 Sep 2013 14:08:31 -0700
 From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH 1/2] staging: octeon-ethernet: don't assume that CPU 0
  is special
-References: <1380397834-14286-1-git-send-email-aaro.koskinen@iki.fi> <5249B37E.4050000@caviumnetworks.com> <20130930193502.GE4572@blackmetal.musicnaut.iki.fi>
-In-Reply-To: <20130930193502.GE4572@blackmetal.musicnaut.iki.fi>
+References: <1380397834-14286-1-git-send-email-aaro.koskinen@iki.fi> <5249B37E.4050000@caviumnetworks.com> <20130930193502.GE4572@blackmetal.musicnaut.iki.fi> <5249D407.2090904@caviumnetworks.com> <20130930195642.GF4572@blackmetal.musicnaut.iki.fi>
+In-Reply-To: <20130930195642.GF4572@blackmetal.musicnaut.iki.fi>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <David.Daney@caviumnetworks.com>
@@ -24,106 +24,43 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: devel@driverdev.osuosl.org, linux-mips@linux-mips.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, David Daney <david.daney@cavium.com>, richard@nod.at
-Message-ID: <20130930194159.a2NwvXuwuk2Ic8RYfYyW1TlWp6sgVKWTOaxzlnGKiac@z>
+Cc: devel@driverdev.osuosl.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, richard@nod.at, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Message-ID: <20130930210831.iJKYyQPxIVqYAHWlQLnPDATs6Qu42xUfkn6nsnGZJFc@z>
 
-On 09/30/2013 12:35 PM, Aaro Koskinen wrote:
+On 09/30/2013 12:56 PM, Aaro Koskinen wrote:
 > Hi,
 >
-> On Mon, Sep 30, 2013 at 10:23:10AM -0700, David Daney wrote:
->> On 09/28/2013 12:50 PM, Aaro Koskinen wrote:
->>> Currently the driver assumes that CPU 0 is handling all the hard IRQs.
->>> This is wrong in Linux SMP systems where user is allowed to assign to
->>> hardware IRQs to any CPU. The driver will stop working if user sets
->>> smp_affinity so that interrupts end up being handled by other than CPU
->>> 0. The patch fixes that.
->>>
->>> Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
->>> ---
->>>   drivers/staging/octeon/ethernet-rx.c | 12 ++++++------
->>>   1 file changed, 6 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/drivers/staging/octeon/ethernet-rx.c b/drivers/staging/octeon/ethernet-rx.c
->>> index e14a1bb..de831c1 100644
->>> --- a/drivers/staging/octeon/ethernet-rx.c
->>> +++ b/drivers/staging/octeon/ethernet-rx.c
->>> @@ -80,6 +80,8 @@ struct cvm_oct_core_state {
->>>
->>>   static struct cvm_oct_core_state core_state __cacheline_aligned_in_smp;
->>>
->>> +static int cvm_irq_cpu = -1;
->>> +
->>>   static void cvm_oct_enable_napi(void *_)
->>>   {
->>>   	int cpu = smp_processor_id();
->>> @@ -112,11 +114,7 @@ static void cvm_oct_no_more_work(void)
->>>   {
->>>   	int cpu = smp_processor_id();
->>>
->>> -	/*
->>> -	 * CPU zero is special.  It always has the irq enabled when
->>> -	 * waiting for incoming packets.
->>> -	 */
->>> -	if (cpu == 0) {
->>> +	if (cpu == cvm_irq_cpu) {
->>>   		enable_irq(OCTEON_IRQ_WORKQ0 + pow_receive_group);
->>>   		return;
->>>   	}
->>> @@ -135,6 +133,7 @@ static irqreturn_t cvm_oct_do_interrupt(int cpl, void *dev_id)
->>>   {
->>>   	/* Disable the IRQ and start napi_poll. */
->>>   	disable_irq_nosync(OCTEON_IRQ_WORKQ0 + pow_receive_group);
->>> +	cvm_irq_cpu = smp_processor_id();
->>>   	cvm_oct_enable_napi(NULL);
->>>
->>>   	return IRQ_HANDLED;
->>> @@ -547,8 +546,9 @@ void cvm_oct_rx_initialize(void)
->>>   	cvmx_write_csr(CVMX_POW_WQ_INT_PC, int_pc.u64);
->>>
->>>
->>> -	/* Scheduld NAPI now.  This will indirectly enable interrupts. */
->>> +	/* Schedule NAPI now. */
->>>   	cvm_oct_enable_one_cpu();
->>> +	enable_irq(OCTEON_IRQ_WORKQ0 + pow_receive_group);
+> On Mon, Sep 30, 2013 at 12:41:59PM -0700, David Daney wrote:
+>> On 09/30/2013 12:35 PM, Aaro Koskinen wrote:
+>>> No, the original logic was already broken. The code assumed that the
+>>> NAPI scheduled by the driver init gets executed always on CPU 0. The
+>>> IRQ got enabled just because we are lucky.
 >>
->> The fact that you have to manually enable irqs here indicates that
->> the patch is not good.
->>
->> Either the enable_irq() is unnecessary, or you broke the logic for
->> enabling NAPI on more than one CPU.
->>
->> I am not sure which is the case, but I think it would be best if you
->> supplied a fixed patch set that corrects whichever happens to be the
->> case.
+>> No.  The default affinity for all irqs is CPU0 for just this reason.
+>> So there was no luck involved.
 >
-> No, the original logic was already broken. The code assumed that the
-> NAPI scheduled by the driver init gets executed always on CPU 0. The
-> IRQ got enabled just because we are lucky.
+> According the Kconfig, this driver can be compiled as a module:
+>
+>> config OCTEON_ETHERNET
+>> 	tristate "Cavium Networks Octeon Ethernet support"
+> [...]
+>> 	To compile this driver as a module, choose M here.  The module
+>> 	will be called octeon-ethernet.
+>
+> What guarantees that CPU0 is around (or the smp_affinity is at its
+> default value) by the time user executes modprobe?
 
-No.  The default affinity for all irqs is CPU0 for just this reason.  So 
-there was no luck involved.
+Nothing enforced by the kernel.  Just don't take CPU0 off-line and you 
+should be good to go.
 
->
-> The patch removes such assumption. During the driver init, the IRQ is
-> disabled and cvm_irq_cpu is -1. So when the NAPI scheduled (on whatever
-> CPU) by the init is done, the check in cvm_oct_no_more_work() will be
-> false and the IRQ remains disabled. So the init routine has to enable IRQ
-> "manually". This is a special case only for the driver initialization.
+There is a lot of room for improvement in the driver.
 
-No.  We schedule NAPI at this point.  If there are no packets available, 
-the normal driver logic enables the irq.  There is no need to explicitly 
-enable it in cvm_oct_rx_initialize().
+Really this whole thing of starting NAPI on multiple CPUs for the same 
+input queue is not good.  It leads to loss of packet ordering when 
+forwarding.
 
-If this doesn't work, and you need to have an additional place that you 
-enable the irq, then you broke something.
+What we really want is to have one POW group (input queue) per CPU and 
+only run one CPU per group.  If we did that, we wouldn't have all these 
+affinity issues.
 
-
->
-> During the normal operation, the IRQ handler record the CPU (on which
-> it's going the schedule for the first NAPI poll) in cvm_irq_cpu so
-> cvm_oct_no_more_work() will always re-enable the IRQ correctly.
->
-> A.
->
->
->
+David Daney

@@ -1,14 +1,19 @@
-Received: from multi.imgtec.com ([194.200.65.239]:14597 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6867712Ab3I3IiCPg4u6 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 30 Sep 2013 10:38:02 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: bcm63xx: cpu: Replace BUG() with panic()
-Date: Mon, 30 Sep 2013 09:38:00 +0100
-Message-ID: <1380530280-6467-1-git-send-email-markos.chandras@imgtec.com>
+Received: from mail-bl2lp0209.outbound.protection.outlook.com ([207.46.163.209]:51527
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S6823120Ab3I3RXdUkM4u (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 30 Sep 2013 19:23:33 +0200
+Message-ID: <5249B37E.4050000@caviumnetworks.com>
+Date: Mon, 30 Sep 2013 10:23:10 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH 1/2] staging: octeon-ethernet: don't assume that CPU 0
+ is special
+References: <1380397834-14286-1-git-send-email-aaro.koskinen@iki.fi>
+In-Reply-To: <1380397834-14286-1-git-send-email-aaro.koskinen@iki.fi>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,52 +23,79 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20130930083800.dtsqzyVtF9cnvjmVbDvs7qt9FVW_aHBtjFV42B9f6hk@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: devel@driverdev.osuosl.org, linux-mips@linux-mips.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, David Daney <david.daney@cavium.com>, richard@nod.at
+Message-ID: <20130930172310.YypglU3BooosvFdAspHWBmkgklBbDYf2YjZbsVb6NPY@z>
 
-BUG() can be a noop if CONFIG_BUG is not selected,
-leading to the following build problem on a randconfig:
+On 09/28/2013 12:50 PM, Aaro Koskinen wrote:
+> Currently the driver assumes that CPU 0 is handling all the hard IRQs.
+> This is wrong in Linux SMP systems where user is allowed to assign to
+> hardware IRQs to any CPU. The driver will stop working if user sets
+> smp_affinity so that interrupts end up being handled by other than CPU
+> 0. The patch fixes that.
+>
+> Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+> ---
+>   drivers/staging/octeon/ethernet-rx.c | 12 ++++++------
+>   1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/staging/octeon/ethernet-rx.c b/drivers/staging/octeon/ethernet-rx.c
+> index e14a1bb..de831c1 100644
+> --- a/drivers/staging/octeon/ethernet-rx.c
+> +++ b/drivers/staging/octeon/ethernet-rx.c
+> @@ -80,6 +80,8 @@ struct cvm_oct_core_state {
+>
+>   static struct cvm_oct_core_state core_state __cacheline_aligned_in_smp;
+>
+> +static int cvm_irq_cpu = -1;
+> +
+>   static void cvm_oct_enable_napi(void *_)
+>   {
+>   	int cpu = smp_processor_id();
+> @@ -112,11 +114,7 @@ static void cvm_oct_no_more_work(void)
+>   {
+>   	int cpu = smp_processor_id();
+>
+> -	/*
+> -	 * CPU zero is special.  It always has the irq enabled when
+> -	 * waiting for incoming packets.
+> -	 */
+> -	if (cpu == 0) {
+> +	if (cpu == cvm_irq_cpu) {
+>   		enable_irq(OCTEON_IRQ_WORKQ0 + pow_receive_group);
+>   		return;
+>   	}
+> @@ -135,6 +133,7 @@ static irqreturn_t cvm_oct_do_interrupt(int cpl, void *dev_id)
+>   {
+>   	/* Disable the IRQ and start napi_poll. */
+>   	disable_irq_nosync(OCTEON_IRQ_WORKQ0 + pow_receive_group);
+> +	cvm_irq_cpu = smp_processor_id();
+>   	cvm_oct_enable_napi(NULL);
+>
+>   	return IRQ_HANDLED;
+> @@ -547,8 +546,9 @@ void cvm_oct_rx_initialize(void)
+>   	cvmx_write_csr(CVMX_POW_WQ_INT_PC, int_pc.u64);
+>
+>
+> -	/* Scheduld NAPI now.  This will indirectly enable interrupts. */
+> +	/* Schedule NAPI now. */
+>   	cvm_oct_enable_one_cpu();
+> +	enable_irq(OCTEON_IRQ_WORKQ0 + pow_receive_group);
 
-arch/mips/bcm63xx/cpu.c: In function 'detect_cpu_clock':
-arch/mips/bcm63xx/cpu.c:254:1: error: control reaches end of
-non-void function [-Werror=return-type]
+The fact that you have to manually enable irqs here indicates that the 
+patch is not good.
 
-We fix this problem by replacing BUG() with panic() since it's
-best to handle the case of an unknown board instead of silently
-returning a random clock frequency.
+Either the enable_irq() is unnecessary, or you broke the logic for 
+enabling NAPI on more than one CPU.
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-Acked-by: Steven J. Hill <Steven.Hill@imgtec.com>
----
-This patch is for the upstream-sfr/mips-for-linux-next tree
----
- arch/mips/bcm63xx/cpu.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+I am not sure which is the case, but I think it would be best if you 
+supplied a fixed patch set that corrects whichever happens to be the case.
 
-diff --git a/arch/mips/bcm63xx/cpu.c b/arch/mips/bcm63xx/cpu.c
-index b713cd6..88c57cc 100644
---- a/arch/mips/bcm63xx/cpu.c
-+++ b/arch/mips/bcm63xx/cpu.c
-@@ -123,7 +123,9 @@ unsigned int bcm63xx_get_memory_size(void)
- 
- static unsigned int detect_cpu_clock(void)
- {
--	switch (bcm63xx_get_cpu_id()) {
-+	u16 cpu_id = bcm63xx_get_cpu_id();
-+
-+	switch (cpu_id) {
- 	case BCM3368_CPU_ID:
- 		return 300000000;
- 
-@@ -249,7 +251,7 @@ static unsigned int detect_cpu_clock(void)
- 	}
- 
- 	default:
--		BUG();
-+		panic("Failed to detect clock for CPU with id=%04d\n", cpu_id);
- 	}
- }
- 
--- 
-1.8.3.2
+David Daney
+
+
+
+>   }
+>
+>   void cvm_oct_rx_shutdown(void)
+>

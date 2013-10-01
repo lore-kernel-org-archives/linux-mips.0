@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:26572 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:1120 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6823043Ab3I3V3Kf09yh (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 30 Sep 2013 23:29:10 +0200
-Message-ID: <5249ED1E.4050106@imgtec.com>
-Date: Mon, 30 Sep 2013 14:29:02 -0700
+        id S6868556Ab3JASHehuoOk (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 1 Oct 2013 20:07:34 +0200
+Message-ID: <524B0F40.5090708@imgtec.com>
+Date: Tue, 1 Oct 2013 11:06:56 -0700
 From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
 Subject: Re: 74K/1074K support
-References: <20130925052715.GB473@linux-mips.org>
-In-Reply-To: <20130925052715.GB473@linux-mips.org>
+References: <20130925052715.GB473@linux-mips.org> <5249ED1E.4050106@imgtec.com> <20131001125420.GA12616@linux-mips.org>
+In-Reply-To: <20131001125420.GA12616@linux-mips.org>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Leonid.Yegoshin@imgtec.com>
@@ -23,43 +23,73 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org, "Steven J. Hill" <Steven.Hill@imgtec.com>
-Message-ID: <20130930212902.F1y8Glfy77VPKHum1I_s9j9hOWk_fmrwWoJFhZ0GXRg@z>
+Message-ID: <20131001180656.2NNx3JUsu75qWsdcjZQlkcinjReueI-08c0ATpnzMOE@z>
 
-On 09/24/2013 10:27 PM, Ralf Baechle wrote:
-> Commit 006a851b10a395955c153a145ad8241494d43688 adds 74K support in c-r4k.c:
+On 10/01/2013 05:54 AM, Ralf Baechle wrote:
+> On Mon, Sep 30, 2013 at 02:29:02PM -0700, Leonid Yegoshin wrote:
 >
-> +static inline void alias_74k_erratum(struct cpuinfo_mips *c)
-> +{
-> +       /*
-> +        * Early versions of the 74K do not update the cache tags on a
-> +        * vtag miss/ptag hit which can occur in the case of KSEG0/KUSEG
-> +        * aliases. In this case it is better to treat the cache as always
-> +        * having aliases.
-> +        */
-> +       if ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(2, 4, 0))
-> +               c->dcache.flags |= MIPS_CACHE_VTAG;
-> +       if ((c->processor_id & 0xff) == PRID_REV_ENCODE_332(2, 4, 0))
-> +               write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
-> +       if (((c->processor_id & 0xff00) == PRID_IMP_1074K) &&
-> +           ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(1, 1, 0))) {
-> +               c->dcache.flags |= MIPS_CACHE_VTAG;
-> +               write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
-> +       }
-> +}
+>> On 09/24/2013 10:27 PM, Ralf Baechle wrote:
+>>> Commit 006a851b10a395955c153a145ad8241494d43688 adds 74K support in c-r4k.c:
+>>>
+>>> +static inline void alias_74k_erratum(struct cpuinfo_mips *c)
+>>> +{
+>>> +       /*
+>>> +        * Early versions of the 74K do not update the cache tags on a
+>>> +        * vtag miss/ptag hit which can occur in the case of KSEG0/KUSEG
+>>> +        * aliases. In this case it is better to treat the cache as always
+>>> +        * having aliases.
+>>> +        */
+>>> +       if ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(2, 4, 0))
+>>> +               c->dcache.flags |= MIPS_CACHE_VTAG;
+>>> +       if ((c->processor_id & 0xff) == PRID_REV_ENCODE_332(2, 4, 0))
+>>> +               write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
+>>> +       if (((c->processor_id & 0xff00) == PRID_IMP_1074K) &&
+>>> +           ((c->processor_id & 0xff) <= PRID_REV_ENCODE_332(1, 1, 0))) {
+>>> +               c->dcache.flags |= MIPS_CACHE_VTAG;
+>>> +               write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
+>>> +       }
+>>> +}
+>>>
+>>> But MIPS D-caches are never virtually tagged, so there is nothing in
+>>> the kernel that ever tests the MIPS_CACHE_VTAG flag in a D-cache
+>>> descriptor.
+>>>
+>>> Cargo cult programming at its finest?  Or was MIPS_CACHE_ALIASES what
+>>> really was meant to be set?
+>>>
+>>>    Ralf
+>> There is a problem on early versions of 74K/1074K which can be effectively cured by setting MIPS_CACHE_VTAG.
+>> It enforces the needed cache handling.
+>> I hope it will go away as customers replace RTL for newer versions.
+>> But I prefer the patch version from Maciej W. Rozycki, it is more clear.
+> There is nothing in the kernel that _reads_ that flag if it's set in an
+> I-cache descriptor.  See:
 >
-> But MIPS D-caches are never virtually tagged, so there is nothing in
-> the kernel that ever tests the MIPS_CACHE_VTAG flag in a D-cache
-> descriptor.
+> arch/mips/include/asm/cpu-features.h:#define cpu_has_vtag_icache        (cpu_data[0].icache.flags & MIPS_CACHE_VTAG)
+> arch/mips/include/asm/cpu-info.h:#define MIPS_CACHE_VTAG                0x00000002      /* Virtually tagged cache */
+> arch/mips/mm/c-octeon.c:                c->icache.flags |= MIPS_CACHE_VTAG;
+> arch/mips/mm/c-octeon.c:                c->icache.flags |= MIPS_CACHE_VTAG;
+> arch/mips/mm/c-octeon.c:                c->icache.flags |= MIPS_CACHE_VTAG;
+> arch/mips/mm/c-r4k.c:                   c->dcache.flags |= MIPS_CACHE_VTAG;
+> arch/mips/mm/c-r4k.c:                   c->dcache.flags |= MIPS_CACHE_VTAG;
+> arch/mips/mm/c-r4k.c:                   c->icache.flags |= MIPS_CACHE_VTAG;
+> arch/mips/mm/c-r4k.c:           c->icache.flags |= MIPS_CACHE_VTAG;
+> arch/mips/mm/c-r4k.c:          c->icache.flags & MIPS_CACHE_VTAG ? "VIVT" : "VIPT",
 >
-> Cargo cult programming at its finest?  Or was MIPS_CACHE_ALIASES what
-> really was meant to be set?
+> There simply is not support whatsoever for virtually tagged D-caches in
+> the kernel, so setting that flag may feel good - but achieves nothing.
+> See, the sole test for the MIPS_CACHE_VTAG above tests it in a D-cache
+> descriptor.  So I'm not sure what the intention is.  Maybe there is some
+> code that has not yet been merged?
 >
 >    Ralf
+Damn, you are right - it requires a patch
 
-There is a problem on early versions of 74K/1074K which can be effectively cured by setting MIPS_CACHE_VTAG.
-It enforces the needed cache handling.
-I hope it will go away as customers replace RTL for newer versions.
-  
-But I prefer the patch version from Maciej W. Rozycki, it is more clear.
+       http://patchwork.linux-mips.org/patch/5939/
+
+to work. There is cpu_has_vtag_dcache definition and an appropriate code 
+in it.
+It seems to happen during unfortunate internal patch merge/split, 
+initially all that stuff was in separate patch from HIGHMEM.
 
 - Leonid.

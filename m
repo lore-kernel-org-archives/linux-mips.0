@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:47194 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:57323 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6868722Ab3JGLK3n-QmY (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 7 Oct 2013 13:10:29 +0200
+        id S6868725Ab3JGLPGlm82z (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 7 Oct 2013 13:15:06 +0200
 From: James Hogan <james.hogan@imgtec.com>
 Subject: [PATCH] MIPS: stack protector: Fix per-task canary switch
-Date: Mon, 7 Oct 2013 12:08:42 +0100
-Message-ID: <1381144122-19554-1-git-send-email-james.hogan@imgtec.com>
+Date: Mon, 7 Oct 2013 12:14:26 +0100
+Message-ID: <1381144466-19736-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <James.Hogan@imgtec.com>
@@ -19,8 +19,8 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, Gregory Fong <gregory.0xf0@gmail.com>, linux-mips@linux-mips.org, stable@vger.kernel.org#3.11
-Message-ID: <20131007110842.adNtb9SR4tkh3ZE3ms_uvFVH9PbhMqc6o-p8pGzERuM@z>
+Cc: James Hogan <james.hogan@imgtec.com>, Gregory Fong <gregory.0xf0@gmail.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20131007111426.Rwo8R_YUb__C0gPTD-_kAVO4sY7rNc05zeGIDxfVDRQ@z>
 
 Commit 1400eb6 (MIPS: r4k,octeon,r2300: stack protector: change canary
 per task) was merged in v3.11 and introduced assembly in the MIPS resume
@@ -58,9 +58,11 @@ Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: Gregory Fong <gregory.0xf0@gmail.com>
 Cc: linux-mips@linux-mips.org
-Cc: stable@vger.kernel.org #3.11
+Cc: <stable@vger.kernel.org> #3.11
 ---
 Ralf: This is a regression in v3.11, so please consider for v3.12.
+
+(Sorry, resent to Cc stable correctly)
 
  arch/mips/kernel/octeon_switch.S | 2 +-
  arch/mips/kernel/r2300_switch.S  | 2 +-

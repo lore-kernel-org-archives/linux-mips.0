@@ -1,13 +1,16 @@
-Received: from multi.imgtec.com ([194.200.65.239]:54714 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:54727 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6868731Ab3JGQHo7WDxj (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 7 Oct 2013 18:07:44 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: Hide initrd code behind the CONFIG_BLK_DEV_INITRD macro
-Date: Mon, 7 Oct 2013 17:07:49 +0100
-Message-ID: <1381162069-12001-1-git-send-email-markos.chandras@imgtec.com>
+        id S6868730Ab3JGQKTQhykM (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 7 Oct 2013 18:10:19 +0200
+Message-ID: <5252DCEB.8070909@imgtec.com>
+Date: Mon, 7 Oct 2013 17:10:19 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH] MIPS: fix mapstart when using initrd
+References: <1379945426-32205-1-git-send-email-ashoks@broadcom.com> <20131007160821.GA1615@linux-mips.org>
+In-Reply-To: <20131007160821.GA1615@linux-mips.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -19,48 +22,48 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20131007160749.eqy0Fr6VGR16wFsfkZR382zkTo88NSVMn6MWg0e8OGo@z>
+Message-ID: <20131007161019.Z6s9uPhHj_ffXf9VOwTiwH1Q6ZKjF9Bp8q-DiVVRToE@z>
 
-Commit 5395d97b675986e7e8f3140f9e0819d20b1d22cd
-"MIPS: Fix start of free memory when using initrd"
+On 10/07/13 17:08, Ralf Baechle wrote:
+> On Mon, Sep 23, 2013 at 07:40:26PM +0530, Ashok Kumar wrote:
+>> Date:   Mon, 23 Sep 2013 19:40:26 +0530
+>> From: Ashok Kumar <ashoks@broadcom.com>
+>> To: linux-mips@linux-mips.org, gerg@uclinux.org
+>> cc: ralf@linux-mips.org, Ashok Kumar <ashoks@broadcom.com>
+>> Subject: [PATCH] MIPS: fix mapstart when using initrd
+>> Content-Type: text/plain
+>>
+>> When initrd is present in the PFN right after the _end, bootmem
+>> bitmap(mapstart) overwrites it. So check for initrd_end in
+>> mapstart calculation.
+>>
+>> Signed-off-by: Ashok Kumar <ashoks@broadcom.com>
+>> ---
+>> This is seen after the commit
+>> "mips: fix start of free memory when using initrd"
+>> in git://git.linux-mips.org/pub/scm/ralf/upstream-sfr.git branch
+>>
+>> Tested the image on MIPS platform creating the above
+>> said scenario and initrd was corrupted.
+>
+> And it gloriously breaks the build if CONFIG_BLK_DEV_INITRD is disabled.
+> Now most configurations will fail with something like:
+>
+> [...]
+>    LD      vmlinux
+> arch/mips/built-in.o: In function `setup_arch':
+> (.init.text+0xff8): undefined reference to `initrd_end'
+> arch/mips/built-in.o: In function `setup_arch':
+> (.init.text+0xffc): undefined reference to `initrd_end'
+> make[2]: *** [vmlinux] Error 1
+> make[1]: *** [sub-make] Error 2
+> make: *** [all] Error 2
+> make: Leaving directory `/home/ralf/src/linux/obj/lasat-build'
+>
+>    Ralf
+>
+Hi Ralf,
 
-uses the 'initrd_end' symbol even if CONFIG_BLK_DEV_INITRD is
-not enabled. This causes linking problems like this:
+I just sent a patch for that
 
-arch/mips/built-in.o: In function `setup_arch':
-(.init.text+0x1b8c): undefined reference to `initrd_end'
-arch/mips/built-in.o: In function `setup_arch':
-(.init.text+0x1b90): undefined reference to `initrd_end'
-
-We fix this problem by adding the missing CONFIG_BLK_DEV_INITRD
-macro
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
-The build problem is currently reproducible on linux-next and
-upstream-sfr/mips-for-linux-next so this patch needs to be
-applied to that tree.
----
- arch/mips/kernel/setup.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index dfb8585..9d5d31d 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -363,10 +363,12 @@ static void __init bootmem_init(void)
- 		max_low_pfn = PFN_DOWN(HIGHMEM_START);
- 	}
- 
-+#ifdef CONFIG_BLK_DEV_INITRD
- 	/*
- 	 * mapstart should be after initrd_end
- 	 */
- 	mapstart = max(mapstart, (unsigned long)PFN_UP(__pa(initrd_end)));
-+#endif
- 
- 	/*
- 	 * Initialize the boot-time allocator with low memory only.
--- 
-1.8.3.2
+http://patchwork.linux-mips.org/patch/6028/

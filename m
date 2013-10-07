@@ -1,14 +1,17 @@
-Received: from multi.imgtec.com ([194.200.65.239]:57323 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:47836 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6868725Ab3JGLPGlm82z (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 7 Oct 2013 13:15:06 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: stack protector: Fix per-task canary switch
-Date: Mon, 7 Oct 2013 12:14:26 +0100
-Message-ID: <1381144466-19736-1-git-send-email-james.hogan@imgtec.com>
+        id S6868729Ab3JGP24dRgW9 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 7 Oct 2013 17:28:56 +0200
+Message-ID: <5252D343.6090100@imgtec.com>
+Date: Mon, 7 Oct 2013 16:29:07 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Subject: Re: [PATCH] MIPS: SmartMIPS: Fix build
+References: <1381158642-10598-1-git-send-email-treding@nvidia.com>
+In-Reply-To: <1381158642-10598-1-git-send-email-treding@nvidia.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,95 +21,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, Gregory Fong <gregory.0xf0@gmail.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20131007111426.Rwo8R_YUb__C0gPTD-_kAVO4sY7rNc05zeGIDxfVDRQ@z>
+To: Thierry Reding <thierry.reding@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20131007152907.gAVQyiutopqwZ2nd6ofoH3TpjYQ8PhXPZIEibx64xDc@z>
 
-Commit 1400eb6 (MIPS: r4k,octeon,r2300: stack protector: change canary
-per task) was merged in v3.11 and introduced assembly in the MIPS resume
-functions to update the value of the current canary in
-__stack_chk_guard. However it used PTR_L resulting in a load of the
-canary value, instead of PTR_LA to construct its address. The value is
-intended to be random but is then treated as an address in the
-subsequent LONG_S (store).
+On 10/07/13 16:10, Thierry Reding wrote:
+> All CONFIG_CPU_HAS_SMARTMIPS #ifdefs have been removed from code, but
+> the ACX register declaration in struct pt_regs is still protected by it,
+> causing builds to fail. Remove the #ifdef protection and always declare
+> the register.
+>
+> Signed-off-by: Thierry Reding <treding@nvidia.com>
+> ---
+>   arch/mips/include/asm/ptrace.h | 2 --
+>   1 file changed, 2 deletions(-)
+>
+> diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
+> index 7bba9da..d47bdce 100644
+> --- a/arch/mips/include/asm/ptrace.h
+> +++ b/arch/mips/include/asm/ptrace.h
+> @@ -33,9 +33,7 @@ struct pt_regs {
+>   	unsigned long cp0_status;
+>   	unsigned long hi;
+>   	unsigned long lo;
+> -#ifdef CONFIG_CPU_HAS_SMARTMIPS
+>   	unsigned long acx;
+> -#endif
+>   	unsigned long cp0_badvaddr;
+>   	unsigned long cp0_cause;
+>   	unsigned long cp0_epc;
+>
 
-This was observed to cause a fault and panic:
+Hi Thierry,
 
-CPU 0 Unable to handle kernel paging request at virtual address 139fea20, epc == 8000cc0c, ra == 8034f2a4
-Oops[#1]:
-...
-$24   : 139fea20 1e1f7cb6
-...
-Call Trace:
-[<8000cc0c>] resume+0xac/0x118
-[<8034f2a4>] __schedule+0x5f8/0x78c
-[<8034f4e0>] schedule_preempt_disabled+0x20/0x2c
-[<80348eec>] rest_init+0x74/0x84
-[<804dc990>] start_kernel+0x43c/0x454
-Code: 3c18804b  8f184030  8cb901f8 <af190000> 00c0e021  8cb002f0 8cb102f4  8cb202f8  8cb302fc
+Looks good to me. Thanks!
 
-This can also be forced by modifying
-arch/mips/include/asm/stackprotector.h so that the default
-__stack_chk_guard value is more likely to be a bad (or unaligned)
-pointer.
-
-Fix it to use PTR_LA instead, to load the address of the canary value,
-which the LONG_S can then use to write into it.
-
-Reported-by: bobjones (via #mipslinux on IRC)
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Gregory Fong <gregory.0xf0@gmail.com>
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> #3.11
----
-Ralf: This is a regression in v3.11, so please consider for v3.12.
-
-(Sorry, resent to Cc stable correctly)
-
- arch/mips/kernel/octeon_switch.S | 2 +-
- arch/mips/kernel/r2300_switch.S  | 2 +-
- arch/mips/kernel/r4k_switch.S    | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/mips/kernel/octeon_switch.S b/arch/mips/kernel/octeon_switch.S
-index 4204d76..029e002 100644
---- a/arch/mips/kernel/octeon_switch.S
-+++ b/arch/mips/kernel/octeon_switch.S
-@@ -73,7 +73,7 @@
- 3:
- 
- #if defined(CONFIG_CC_STACKPROTECTOR) && !defined(CONFIG_SMP)
--	PTR_L	t8, __stack_chk_guard
-+	PTR_LA	t8, __stack_chk_guard
- 	LONG_L	t9, TASK_STACK_CANARY(a1)
- 	LONG_S	t9, 0(t8)
- #endif
-diff --git a/arch/mips/kernel/r2300_switch.S b/arch/mips/kernel/r2300_switch.S
-index 38af83f..20b7b04 100644
---- a/arch/mips/kernel/r2300_switch.S
-+++ b/arch/mips/kernel/r2300_switch.S
-@@ -67,7 +67,7 @@ LEAF(resume)
- 1:
- 
- #if defined(CONFIG_CC_STACKPROTECTOR) && !defined(CONFIG_SMP)
--	PTR_L	t8, __stack_chk_guard
-+	PTR_LA	t8, __stack_chk_guard
- 	LONG_L	t9, TASK_STACK_CANARY(a1)
- 	LONG_S	t9, 0(t8)
- #endif
-diff --git a/arch/mips/kernel/r4k_switch.S b/arch/mips/kernel/r4k_switch.S
-index 921238a..078de5e 100644
---- a/arch/mips/kernel/r4k_switch.S
-+++ b/arch/mips/kernel/r4k_switch.S
-@@ -69,7 +69,7 @@
- 1:
- 
- #if defined(CONFIG_CC_STACKPROTECTOR) && !defined(CONFIG_SMP)
--	PTR_L	t8, __stack_chk_guard
-+	PTR_LA	t8, __stack_chk_guard
- 	LONG_L	t9, TASK_STACK_CANARY(a1)
- 	LONG_S	t9, 0(t8)
- #endif
--- 
-1.8.1.2
+Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>

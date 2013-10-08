@@ -1,18 +1,17 @@
-Received: from Smtp1.Lantiq.com ([195.219.66.200]:7895 "EHLO smtp1.lantiq.com"
+Received: from multi.imgtec.com ([194.200.65.239]:20637 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6832655Ab3JHLtA6Vvwa convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Oct 2013 13:49:00 +0200
-From: <thomas.langer@lantiq.com>
-Subject: RE: [PATCH] MIPS: Print correct PC in trace dump after NMI exception
-Date: Tue, 8 Oct 2013 11:48:54 +0000
-Message-ID: <593AEF6C47F46446852B067021A273D6D990182F@MUCSE039.lantiq.com>
-References: <1381232371-25017-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1381232371-25017-1-git-send-email-markos.chandras@imgtec.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S6832655Ab3JHMU6LYxgZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 8 Oct 2013 14:20:58 +0200
+Message-ID: <5253F8B3.3070700@imgtec.com>
+Date: Tue, 8 Oct 2013 13:21:07 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Return-Path: <thomas.langer@lantiq.com>
+Subject: Re: [PATCH] MIPS: Print correct PC in trace dump after NMI exception
+References: <1381232371-25017-1-git-send-email-markos.chandras@imgtec.com> <593AEF6C47F46446852B067021A273D6D990182F@MUCSE039.lantiq.com>
+In-Reply-To: <593AEF6C47F46446852B067021A273D6D990182F@MUCSE039.lantiq.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,45 +21,19 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: markos.chandras@imgtec.com, linux-mips@linux-mips.org
+To: thomas.langer@lantiq.com, linux-mips@linux-mips.org
 Cc: Leonid.Yegoshin@imgtec.com
-Message-ID: <20131008114854.b8gzUBDDOYi9gFa4inddhx2HTXqsiwjByEPpPJhL58A@z>
+Message-ID: <20131008122107.ydLMWLG83TtthI00Lrwh1nKFzGRVaOUrxQ2yKYjt36c@z>
 
-Hello Markos,
+On 10/08/13 12:48, thomas.langer@lantiq.com wrote:
+> Hello Markos,
+>
+> If this is a YAMON specific fix, why is it done in a common file?
+>
+Hi Thomas,
 
-Markos Chandras wrote on 2013-10-08:
-> From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-> 
-> An NMI exception delivered from YAMON delivers the PC in ErrorPC
-> instead of EPC. It's also necessary to clear the Status.BEV
-> bit for the page fault exception handler to work properly.
-> 
-> Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
-
-
-> @@ -1506,10 +1511,14 @@ int register_nmi_notifier(struct notifier_block
-> *nb)
-> 
->  void __noreturn nmi_exception_handler(struct pt_regs *regs)
->  {
-> +	char str[100];
-> +
->  	raw_notifier_call_chain(&nmi_chain, 0, regs);
->  	bust_spinlocks(1);
-> -	printk("NMI taken!!!!\n");
-> -	die("NMI", regs);
-> +	snprintf(str, 100, "CPU%d NMI taken, CP0_EPC=%lx\n",
-> +		 smp_processor_id(), regs->cp0_epc);
-> +	regs->cp0_epc = read_c0_errorepc();
-
-If this is a YAMON specific fix, why is it done in a common file?
-
-> +	die(str, regs);
->  }
->  
->  #define VECTORSPACING 0x100	/* for EI/VI mode */
-
-Best Regards,
-Thomas
+I can see how the commit message can be a bit misleading. However, it's 
+not YAMON specific. The NMI was just delivered by YAMON because we patch 
+the default NMI location in YAMON (see mti-malta/malta-init.c).
+NMI, Reset and Cache Error exceptions use ErrorEPC instead of EPC so 
+this patch is platform independent.

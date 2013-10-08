@@ -1,20 +1,14 @@
-Received: from Smtp1.Lantiq.com ([195.219.66.200]:13795 "EHLO smtp1.lantiq.com"
+Received: from multi.imgtec.com ([194.200.65.239]:2025 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6868728Ab3JHM5YBe5gL convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Oct 2013 14:57:24 +0200
-From: <thomas.langer@lantiq.com>
-Subject: RE: [PATCH] MIPS: Print correct PC in trace dump after NMI exception
-Date: Tue, 8 Oct 2013 12:57:17 +0000
-Message-ID: <593AEF6C47F46446852B067021A273D6D9901A5C@MUCSE039.lantiq.com>
-References: <1381232371-25017-1-git-send-email-markos.chandras@imgtec.com>
- <593AEF6C47F46446852B067021A273D6D990182F@MUCSE039.lantiq.com>
- <20131008122905.GJ1615@linux-mips.org>
-In-Reply-To: <20131008122905.GJ1615@linux-mips.org>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S6822674Ab3JHPSDdU1tA (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 8 Oct 2013 17:18:03 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS/Perf-events: Fix 74K cache map
+Date: Tue, 8 Oct 2013 16:17:48 +0100
+Message-ID: <1381245468-1726-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Return-Path: <thomas.langer@lantiq.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,48 +18,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: markos.chandras@imgtec.com, linux-mips@linux-mips.org, Leonid.Yegoshin@imgtec.com
-Message-ID: <20131008125717.wsbamLTRPRrnZSkBecYTotUdyEBjsAbZ2hcSskTzISA@z>
+To: linux-mips@linux-mips.org
+Cc: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20131008151748.eT2D7PgnFmboHSazZA2EGagDNaqMy4Ml4Pp1XRBJcQ8@z>
 
-Hello Ralf,
+From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 
-Ralf Baechle wrote on 2013-10-08:
+According to Software User's Manual, the event of last-level-cache
+read/write misses is mapped to even counters. Odd counters of that
+event number count miss cycles.
 
-> On Tue, Oct 08, 2013 at 11:48:54AM +0000, thomas.langer@lantiq.com wrote:
-> 
->>>  void __noreturn nmi_exception_handler(struct pt_regs *regs)
->>>  {
->>> +	char str[100];
->>> +
->>>  	raw_notifier_call_chain(&nmi_chain, 0, regs);
->>>  	bust_spinlocks(1);
->>> -	printk("NMI taken!!!!\n");
->>> -	die("NMI", regs);
->>> +	snprintf(str, 100, "CPU%d NMI taken, CP0_EPC=%lx\n",
->>> +		 smp_processor_id(), regs->cp0_epc);
->>> +	regs->cp0_epc = read_c0_errorepc();
->> 
->> If this is a YAMON specific fix, why is it done in a common file?
-> 
-> The installation of an NMI handler is platform specific - this handler
-> however in all its simplicity is generic - or at least trying to.
-> 
-> The NMI on MIPS is notoriously hard to use.  The vectors is pointing to
-> the boot ROM so firmware first gets its grubby hands on a fresh NMI and
-> on most systems it'll do the firmware equivalent of a panic or reset
-> the system outright.  If that's still working - it's about the worst
-> tested functionality of firmware ...
+Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+This patch is for the upstream-sfr/mips-for-linux-next tree
+---
+ arch/mips/kernel/perf_event_mipsxx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I know, I am working on a chip which has working wrapper implemented in its bootrom:
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/arch/mips/lantiq/falcon/prom.c#n90
-Therefore I was triggered by the keyword NMI ;-)
-
-So if this has nothing to do with YAMON and is some generic NMI specific fix:
-Acked-By: Thomas Langer <thomas.langer@lantiq.com>
-
-> 
->   Ralf
-
-Best Regards,
-Thomas
+diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
+index 45f1ffc..24cdf64 100644
+--- a/arch/mips/kernel/perf_event_mipsxx.c
++++ b/arch/mips/kernel/perf_event_mipsxx.c
+@@ -971,11 +971,11 @@ static const struct mips_perf_event mipsxx74Kcore_cache_map
+ [C(LL)] = {
+ 	[C(OP_READ)] = {
+ 		[C(RESULT_ACCESS)]	= { 0x1c, CNTR_ODD, P },
+-		[C(RESULT_MISS)]	= { 0x1d, CNTR_EVEN | CNTR_ODD, P },
++		[C(RESULT_MISS)]	= { 0x1d, CNTR_EVEN, P },
+ 	},
+ 	[C(OP_WRITE)] = {
+ 		[C(RESULT_ACCESS)]	= { 0x1c, CNTR_ODD, P },
+-		[C(RESULT_MISS)]	= { 0x1d, CNTR_EVEN | CNTR_ODD, P },
++		[C(RESULT_MISS)]	= { 0x1d, CNTR_EVEN, P },
+ 	},
+ },
+ [C(ITLB)] = {
+-- 
+1.8.3.2

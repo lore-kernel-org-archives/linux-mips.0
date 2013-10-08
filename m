@@ -1,17 +1,20 @@
-Received: from multi.imgtec.com ([194.200.65.239]:29832 "EHLO multi.imgtec.com"
+Received: from Smtp1.Lantiq.com ([195.219.66.200]:13795 "EHLO smtp1.lantiq.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6827313Ab3JHMn2XWhqv (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 8 Oct 2013 14:43:28 +0200
-Message-ID: <5253FDFC.80007@imgtec.com>
-Date: Tue, 8 Oct 2013 13:43:40 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        id S6868728Ab3JHM5YBe5gL convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Oct 2013 14:57:24 +0200
+From: <thomas.langer@lantiq.com>
+Subject: RE: [PATCH] MIPS: Print correct PC in trace dump after NMI exception
+Date: Tue, 8 Oct 2013 12:57:17 +0000
+Message-ID: <593AEF6C47F46446852B067021A273D6D9901A5C@MUCSE039.lantiq.com>
+References: <1381232371-25017-1-git-send-email-markos.chandras@imgtec.com>
+ <593AEF6C47F46446852B067021A273D6D990182F@MUCSE039.lantiq.com>
+ <20131008122905.GJ1615@linux-mips.org>
+In-Reply-To: <20131008122905.GJ1615@linux-mips.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Print correct PC in trace dump after NMI exception
-References: <1381232371-25017-1-git-send-email-markos.chandras@imgtec.com> <20131008121546.GI1615@linux-mips.org> <5253FB20.7050909@imgtec.com> <20131008123859.GK1615@linux-mips.org>
-In-Reply-To: <20131008123859.GK1615@linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Return-Path: <thomas.langer@lantiq.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,33 +24,48 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Message-ID: <20131008124340.Znz4FyujKzbn73ywppqXVQE1wQKR1ai8avWeeKxB_B8@z>
+To: ralf@linux-mips.org
+Cc: markos.chandras@imgtec.com, linux-mips@linux-mips.org, Leonid.Yegoshin@imgtec.com
+Message-ID: <20131008125717.wsbamLTRPRrnZSkBecYTotUdyEBjsAbZ2hcSskTzISA@z>
 
+Hello Ralf,
 
+Ralf Baechle wrote on 2013-10-08:
 
-markos
+> On Tue, Oct 08, 2013 at 11:48:54AM +0000, thomas.langer@lantiq.com wrote:
+> 
+>>>  void __noreturn nmi_exception_handler(struct pt_regs *regs)
+>>>  {
+>>> +	char str[100];
+>>> +
+>>>  	raw_notifier_call_chain(&nmi_chain, 0, regs);
+>>>  	bust_spinlocks(1);
+>>> -	printk("NMI taken!!!!\n");
+>>> -	die("NMI", regs);
+>>> +	snprintf(str, 100, "CPU%d NMI taken, CP0_EPC=%lx\n",
+>>> +		 smp_processor_id(), regs->cp0_epc);
+>>> +	regs->cp0_epc = read_c0_errorepc();
+>> 
+>> If this is a YAMON specific fix, why is it done in a common file?
+> 
+> The installation of an NMI handler is platform specific - this handler
+> however in all its simplicity is generic - or at least trying to.
+> 
+> The NMI on MIPS is notoriously hard to use.  The vectors is pointing to
+> the boot ROM so firmware first gets its grubby hands on a fresh NMI and
+> on most systems it'll do the firmware equivalent of a panic or reset
+> the system outright.  If that's still working - it's about the worst
+> tested functionality of firmware ...
 
-On 10/08/13 13:38, Ralf Baechle wrote:
-> On Tue, Oct 08, 2013 at 01:31:28PM +0100, Markos Chandras wrote:
->
->>> If you were afraid gas might use $1 expanding this macro instruction - no,
->>> it won't.  A belt & suspenders approach might be to drop in a ".set noat";
->>> it would make the assembler throw an error if should ever see the need to
->>> use $1.
->>>
->> yeah i don't think the assembler would pick $1 in this case but we
->> could add ".set noat" just to be safe i suppose.
->>
->> Thanks for the review. Could you fix these problems for me or should
->> i submit a new patch?
->
-> It's trivial enough so I'm going to do it.
->
-> The NMI handler btw. was already wrapped with .set push; .set noat; ...
-> .set pop.
->
->    Ralf
->
-yeah i just noticed. Thank you!
+I know, I am working on a chip which has working wrapper implemented in its bootrom:
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/arch/mips/lantiq/falcon/prom.c#n90
+Therefore I was triggered by the keyword NMI ;-)
+
+So if this has nothing to do with YAMON and is some generic NMI specific fix:
+Acked-By: Thomas Langer <thomas.langer@lantiq.com>
+
+> 
+>   Ralf
+
+Best Regards,
+Thomas

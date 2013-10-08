@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:28690 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:29832 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6827313Ab3JHMbPsDmJo (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 8 Oct 2013 14:31:15 +0200
-Message-ID: <5253FB20.7050909@imgtec.com>
-Date: Tue, 8 Oct 2013 13:31:28 +0100
+        id S6827313Ab3JHMn2XWhqv (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 8 Oct 2013 14:43:28 +0200
+Message-ID: <5253FDFC.80007@imgtec.com>
+Date: Tue, 8 Oct 2013 13:43:40 +0100
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH] MIPS: Print correct PC in trace dump after NMI exception
-References: <1381232371-25017-1-git-send-email-markos.chandras@imgtec.com> <20131008121546.GI1615@linux-mips.org>
-In-Reply-To: <20131008121546.GI1615@linux-mips.org>
+References: <1381232371-25017-1-git-send-email-markos.chandras@imgtec.com> <20131008121546.GI1615@linux-mips.org> <5253FB20.7050909@imgtec.com> <20131008123859.GK1615@linux-mips.org>
+In-Reply-To: <20131008123859.GK1615@linux-mips.org>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -23,33 +23,31 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Message-ID: <20131008123128.MZrPPb6yMzYyxt8b2D3WwvrxK3LTqs-9X_eL2ITXbck@z>
+Message-ID: <20131008124340.Znz4FyujKzbn73ywppqXVQE1wQKR1ai8avWeeKxB_B8@z>
 
-On 10/08/13 13:15, Ralf Baechle wrote:
-> On Tue, Oct 08, 2013 at 12:39:31PM +0100, Markos Chandras wrote:
->
->> +	/*
->> +	 * Clear ERL - restore segment mapping
->> +	 * Clear BEV - required for page fault exception handler to work
->> +	 */
->> +	mfc0	k0, CP0_STATUS
->> +	ori     k0, k0, ST0_EXL
->> +	lui     k1, %hi(~ST0_BEV)
->> +	ori     k1, k1, %lo(~ST0_ERL)
->
-> Why not:
->
-> 	li	k1 ~(ST0_BEV | ST0_ERL)
 
-I have no answer to that :) Looks good to me.
->
-> If you were afraid gas might use $1 expanding this macro instruction - no,
-> it won't.  A belt & suspenders approach might be to drop in a ".set noat";
-> it would make the assembler throw an error if should ever see the need to
-> use $1.
->
-yeah i don't think the assembler would pick $1 in this case but we could 
-add ".set noat" just to be safe i suppose.
 
-Thanks for the review. Could you fix these problems for me or should i 
-submit a new patch?
+markos
+
+On 10/08/13 13:38, Ralf Baechle wrote:
+> On Tue, Oct 08, 2013 at 01:31:28PM +0100, Markos Chandras wrote:
+>
+>>> If you were afraid gas might use $1 expanding this macro instruction - no,
+>>> it won't.  A belt & suspenders approach might be to drop in a ".set noat";
+>>> it would make the assembler throw an error if should ever see the need to
+>>> use $1.
+>>>
+>> yeah i don't think the assembler would pick $1 in this case but we
+>> could add ".set noat" just to be safe i suppose.
+>>
+>> Thanks for the review. Could you fix these problems for me or should
+>> i submit a new patch?
+>
+> It's trivial enough so I'm going to do it.
+>
+> The NMI handler btw. was already wrapped with .set push; .set noat; ...
+> .set pop.
+>
+>    Ralf
+>
+yeah i just noticed. Thank you!

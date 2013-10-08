@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:20637 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:28690 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6832655Ab3JHMU6LYxgZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 8 Oct 2013 14:20:58 +0200
-Message-ID: <5253F8B3.3070700@imgtec.com>
-Date: Tue, 8 Oct 2013 13:21:07 +0100
+        id S6827313Ab3JHMbPsDmJo (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 8 Oct 2013 14:31:15 +0200
+Message-ID: <5253FB20.7050909@imgtec.com>
+Date: Tue, 8 Oct 2013 13:31:28 +0100
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH] MIPS: Print correct PC in trace dump after NMI exception
-References: <1381232371-25017-1-git-send-email-markos.chandras@imgtec.com> <593AEF6C47F46446852B067021A273D6D990182F@MUCSE039.lantiq.com>
-In-Reply-To: <593AEF6C47F46446852B067021A273D6D990182F@MUCSE039.lantiq.com>
+References: <1381232371-25017-1-git-send-email-markos.chandras@imgtec.com> <20131008121546.GI1615@linux-mips.org>
+In-Reply-To: <20131008121546.GI1615@linux-mips.org>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -21,19 +21,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: thomas.langer@lantiq.com, linux-mips@linux-mips.org
-Cc: Leonid.Yegoshin@imgtec.com
-Message-ID: <20131008122107.ydLMWLG83TtthI00Lrwh1nKFzGRVaOUrxQ2yKYjt36c@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Message-ID: <20131008123128.MZrPPb6yMzYyxt8b2D3WwvrxK3LTqs-9X_eL2ITXbck@z>
 
-On 10/08/13 12:48, thomas.langer@lantiq.com wrote:
-> Hello Markos,
+On 10/08/13 13:15, Ralf Baechle wrote:
+> On Tue, Oct 08, 2013 at 12:39:31PM +0100, Markos Chandras wrote:
 >
-> If this is a YAMON specific fix, why is it done in a common file?
+>> +	/*
+>> +	 * Clear ERL - restore segment mapping
+>> +	 * Clear BEV - required for page fault exception handler to work
+>> +	 */
+>> +	mfc0	k0, CP0_STATUS
+>> +	ori     k0, k0, ST0_EXL
+>> +	lui     k1, %hi(~ST0_BEV)
+>> +	ori     k1, k1, %lo(~ST0_ERL)
 >
-Hi Thomas,
+> Why not:
+>
+> 	li	k1 ~(ST0_BEV | ST0_ERL)
 
-I can see how the commit message can be a bit misleading. However, it's 
-not YAMON specific. The NMI was just delivered by YAMON because we patch 
-the default NMI location in YAMON (see mti-malta/malta-init.c).
-NMI, Reset and Cache Error exceptions use ErrorEPC instead of EPC so 
-this patch is platform independent.
+I have no answer to that :) Looks good to me.
+>
+> If you were afraid gas might use $1 expanding this macro instruction - no,
+> it won't.  A belt & suspenders approach might be to drop in a ".set noat";
+> it would make the assembler throw an error if should ever see the need to
+> use $1.
+>
+yeah i don't think the assembler would pick $1 in this case but we could 
+add ".set noat" just to be safe i suppose.
+
+Thanks for the review. Could you fix these problems for me or should i 
+submit a new patch?

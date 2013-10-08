@@ -1,14 +1,21 @@
-Received: from multi.imgtec.com ([194.200.65.239]:37947 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6822674Ab3JHRfIABS0V (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 8 Oct 2013 19:35:08 +0200
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH v2] MIPS/Malta: Incorporate PIIX4 ACPI I/O region in PCI controller resources
-Date: Tue, 8 Oct 2013 10:33:53 -0700
-Message-ID: <1381253633-599-1-git-send-email-dengcheng.zhu@imgtec.com>
+Received: from mx0b-0016ce01.pphosted.com ([67.231.156.153]:58556 "EHLO
+        mx0b-0016ce01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6832660Ab3JHWv1Ny1lQ convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 9 Oct 2013 00:51:27 +0200
+From: Himanshu Madhani <himanshu.madhani@qlogic.com>
+Subject: RE: [PATCH RFC 63/77] qlcnic: Update MSI/MSI-X interrupts
+ enablement code
+Date: Tue, 8 Oct 2013 22:46:51 +0000
+Message-ID: <ADFE82A996F10145934E45547759F7638C923C26@avmb3.qlogic.org>
+References: <cover.1380703262.git.agordeev@redhat.com>
+ <c92efbde96541d08f37510422c096d543bb01279.1380703263.git.agordeev@redhat.com>
+In-Reply-To: <c92efbde96541d08f37510422c096d543bb01279.1380703263.git.agordeev@redhat.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <DengCheng.Zhu@imgtec.com>
+Return-Path: <himanshu.madhani@qlogic.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,60 +25,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org
-Cc: Steven.Hill@imgtec.com, Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Message-ID: <20131008173353.d_XJWj8y-BQW5XY805Hd8t0Y1BAzHf3IDrex1gJy59w@z>
+To: Alexander Gordeev <agordeev@redhat.com>, linux-kernel <linux-kernel@vger.kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Ralf Baechle <ralf@linux-mips.org>, Michael Ellerman <michael@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Andy King <acking@vmware.com>, Jon Mason <jon.mason@intel.com>, Matt Porter <mporter@kernel.crashing.org>, linux-pci <linux-pci@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux390@de.ibm.com" <linux390@de.ibm.com>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>, "iss_storagedev@hp.com" <iss_storagedev@hp.com>, "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, netdev <netdev@vger.kernel.org>, "e1000-devel@lists.sourceforge.net" <e1000-devel@lists.sourceforge.net>, Dept-Eng Linux Driver <Linux-Driver@qlogic.com>, Solarflare linux maintainers <linux-net-drivers@solarflare.com>, "VMware, Inc." <pv-drivers@vmware.com>, linux-scsi <linux-scsi@vger.kernel.org>
+Message-ID: <20131008224651.xKNyU6FdkthD3hgLGXMPBFurGq9iXdaSJmOgf29N3FE@z>
 
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+> -----Original Message-----
+> From: Alexander Gordeev [mailto:agordeev@redhat.com]
+> Sent: Wednesday, October 02, 2013 3:49 AM
+> To: linux-kernel
+> Cc: Alexander Gordeev; Bjorn Helgaas; Ralf Baechle; Michael Ellerman;
+> Benjamin Herrenschmidt; Martin Schwidefsky; Ingo Molnar; Tejun Heo; Dan
+> Williams; Andy King; Jon Mason; Matt Porter; linux-pci; linux-mips@linux-
+> mips.org; linuxppc-dev@lists.ozlabs.org; linux390@de.ibm.com; linux-
+> s390@vger.kernel.org; x86@kernel.org; linux-ide@vger.kernel.org;
+> iss_storagedev@hp.com; linux-nvme@lists.infradead.org; linux-
+> rdma@vger.kernel.org; netdev; e1000-devel@lists.sourceforge.net; Dept-
+> Eng Linux Driver; Solarflare linux maintainers; VMware, Inc.; linux-scsi
+> Subject: [PATCH RFC 63/77] qlcnic: Update MSI/MSI-X interrupts enablement
+> code
+> 
+> As result of recent re-design of the MSI/MSI-X interrupts enabling pattern
+> this driver has to be updated to use the new technique to obtain a optimal
+> number of MSI/MSI-X interrupts required.
+> 
+ "We will test this change for the driver and provide feedback."
 
-Boot log says:
+> Signed-off-by: Alexander Gordeev <agordeev@redhat.com>
 
-pci 0000:00:0a.3: no compatible bridge window for [io  0x1000-0x103f]
-pci 0000:00:0a.3: no compatible bridge window for [io  0x1100-0x110f]
-
-The io resource starting point on Malta was modified by c5de50dada (MIPS:
-Malta: Change start address to avoid conflicts.) to avoid conflicts with
-ACPI and SMB devices. In fact, that was not needed (and now causing
-southbridge ACPI missing) since 166c637075 (PCI: add pci_create_root_bus()
-that accepts resource list) and 7c090e5bfa (mips/PCI: convert to
-pci_scan_root_bus() for correct root bus resources) had already done the
-correct fix.
-
-This patch actually reverts the change made by c5de50dada. And with this
-fix, log says:
-
-pci 0000:00:0a.3: quirk: [io  0x1000-0x103f] claimed by PIIX4 ACPI
-pci 0000:00:0a.3: quirk: [io  0x1100-0x110f] claimed by PIIX4 SMB
-
-These things may not be used but as part of platform resources are better
-off to be included.
-
-Cc: Steven J. Hill <Steven.Hill@imgtec.com>
-Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
----
-Changes:
-v2 - v1:
-o Add more information to the commit message.
-
- arch/mips/pci/pci-malta.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/mips/pci/pci-malta.c b/arch/mips/pci/pci-malta.c
-index 37134dd..f1a7389 100644
---- a/arch/mips/pci/pci-malta.c
-+++ b/arch/mips/pci/pci-malta.c
-@@ -241,9 +241,9 @@ void __init mips_pcibios_init(void)
- 		return;
- 	}
- 
--	/* Change start address to avoid conflicts with ACPI and SMB devices */
--	if (controller->io_resource->start < 0x00002000UL)
--		controller->io_resource->start = 0x00002000UL;
-+	/* PIIX4 ACPI starts at 0x1000 */
-+	if (controller->io_resource->start < 0x00001000UL)
-+		controller->io_resource->start = 0x00001000UL;
- 
- 	iomem_resource.end &= 0xfffffffffULL;			/* 64 GB */
- 	ioport_resource.end = controller->io_resource->end;
--- 
-1.7.1
+Thanks,
+Himanshu

@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:18356 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:37189 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6818997Ab3JIPrUQRsnk (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 9 Oct 2013 17:47:20 +0200
+        id S6822451Ab3JJI7M4SIwl (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 10 Oct 2013 10:59:12 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: GIC: Send IPIs using the GIC
-Date: Wed, 9 Oct 2013 16:47:23 +0100
-Message-ID: <1381333643-17205-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH v2] MIPS: Add printing of ES bit for Imgtec cores when cache error occurs.
+Date: Thu, 10 Oct 2013 09:58:59 +0100
+Message-ID: <1381395539-30063-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -19,66 +19,60 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: "Steven J. Hill" <Steven.Hill@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20131009154723.VF0ztBdl3wCCIp8I44_MBSlS_rh9VwK_SeATvyeCIGw@z>
+Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20131010085859.TxtvfpSFU0FDO1Ch2uFM6o_2wdxsVBqJcuXZeGYC1FM@z>
 
-From: "Steven J. Hill" <Steven.Hill@imgtec.com>
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 
-If GIC is present, then use it to send IPIs between the cores.
-Using GIC for IPIs is simpler and is usable for multicore
-systems compared to the existing way of doing IPIs where all VPEs
-had to be disabled for another VPE to access the Cause register
-in one of the TCs and enable all the VPEs back.
+The cacheer register is always implemented in the same way in the
+MIPS32r2 Imgtec cores so print the ES bit when an cache error
+occurs.
 
-Signed-off-by: Steven J. Hill <Steven.Hill@imgtec.com>
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/kernel/smp-mt.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ arch/mips/kernel/traps.c | 29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
 
-diff --git a/arch/mips/kernel/smp-mt.c b/arch/mips/kernel/smp-mt.c
-index 35f8d22..0fb8cef 100644
---- a/arch/mips/kernel/smp-mt.c
-+++ b/arch/mips/kernel/smp-mt.c
-@@ -113,12 +113,39 @@ static void __init smvp_tc_init(unsigned int tc, unsigned int mvpconf0)
- 	write_tc_c0_tchalt(TCHALT_H);
- }
- 
-+#ifdef CONFIG_IRQ_GIC
-+static void mp_send_ipi_single(int cpu, unsigned int action)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+
-+	switch (action) {
-+	case SMP_CALL_FUNCTION:
-+		gic_send_ipi(plat_ipi_call_int_xlate(cpu));
-+		break;
-+
-+	case SMP_RESCHEDULE_YOURSELF:
-+		gic_send_ipi(plat_ipi_resched_int_xlate(cpu));
-+		break;
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 524841f..2a5523e 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -1416,14 +1416,27 @@ asmlinkage void cache_parity_error(void)
+ 	printk("Decoded c0_cacheerr: %s cache fault in %s reference.\n",
+ 	       reg_val & (1<<30) ? "secondary" : "primary",
+ 	       reg_val & (1<<31) ? "data" : "insn");
+-	printk("Error bits: %s%s%s%s%s%s%s\n",
+-	       reg_val & (1<<29) ? "ED " : "",
+-	       reg_val & (1<<28) ? "ET " : "",
+-	       reg_val & (1<<26) ? "EE " : "",
+-	       reg_val & (1<<25) ? "EB " : "",
+-	       reg_val & (1<<24) ? "EI " : "",
+-	       reg_val & (1<<23) ? "E1 " : "",
+-	       reg_val & (1<<22) ? "E0 " : "");
++	if (cpu_has_mips_r2 &&
++	    ((current_cpu_data.processor_id && 0xff0000) == PRID_COMP_MIPS)) {
++		pr_err("Error bits: %s%s%s%s%s%s%s%s\n",
++			reg_val & (1<<29) ? "ED " : "",
++			reg_val & (1<<28) ? "ET " : "",
++			reg_val & (1<<27) ? "ES " : "",
++			reg_val & (1<<26) ? "EE " : "",
++			reg_val & (1<<25) ? "EB " : "",
++			reg_val & (1<<24) ? "EI " : "",
++			reg_val & (1<<23) ? "E1 " : "",
++			reg_val & (1<<22) ? "E0 " : "");
++	} else {
++		pr_err("Error bits: %s%s%s%s%s%s%s\n",
++			reg_val & (1<<29) ? "ED " : "",
++			reg_val & (1<<28) ? "ET " : "",
++			reg_val & (1<<26) ? "EE " : "",
++			reg_val & (1<<25) ? "EB " : "",
++			reg_val & (1<<24) ? "EI " : "",
++			reg_val & (1<<23) ? "E1 " : "",
++			reg_val & (1<<22) ? "E0 " : "");
 +	}
-+
-+	local_irq_restore(flags);
-+}
-+#endif
-+
- static void vsmp_send_ipi_single(int cpu, unsigned int action)
- {
- 	int i;
- 	unsigned long flags;
- 	int vpflags;
+ 	printk("IDX: 0x%08x\n", reg_val & ((1<<22)-1));
  
-+#ifdef CONFIG_IRQ_GIC
-+	if (gic_present) {
-+		mp_send_ipi_single(cpu, action);
-+		return;
-+	}
-+#endif
- 	local_irq_save(flags);
- 
- 	vpflags = dvpe();	/* can't access the other CPU's registers whilst MVPE enabled */
+ #if defined(CONFIG_CPU_MIPS32) || defined(CONFIG_CPU_MIPS64)
 -- 
 1.8.3.2

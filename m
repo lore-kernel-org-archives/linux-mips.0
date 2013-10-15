@@ -1,15 +1,15 @@
-Received: from mail-wg0-f54.google.com ([74.125.82.54]:32852 "EHLO
-        mail-wg0-f54.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6827335Ab3JOWmysOYO9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 16 Oct 2013 00:42:54 +0200
-Received: by mail-wg0-f54.google.com with SMTP id c11so3617237wgh.21
-        for <linux-mips@linux-mips.org>; Tue, 15 Oct 2013 15:42:48 -0700 (PDT)
+Received: from mail-wi0-f177.google.com ([209.85.212.177]:49138 "EHLO
+        mail-wi0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6827335Ab3JOWzbpLQN1 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 16 Oct 2013 00:55:31 +0200
+Received: by mail-wi0-f177.google.com with SMTP id h11so1583902wiv.4
+        for <linux-mips@linux-mips.org>; Tue, 15 Oct 2013 15:55:26 -0700 (PDT)
 From: Grant Likely <grant.likely@linaro.org>
 Subject: Re: [PATCH v2 01/10] of/irq: Rework of_irq_count()
 In-Reply-To: <CAL_JsqLE8aj511oF-gK7Gu5QfmHsQO3+oJ0KFkv0wmuo7i6eiw@mail.gmail.com>
 References: <1379510692-32435-1-git-send-email-treding@nvidia.com> <1379510692-32435-2-git-send-email-treding@nvidia.com> <CAL_JsqLE8aj511oF-gK7Gu5QfmHsQO3+oJ0KFkv0wmuo7i6eiw@mail.gmail.com>
-Date: Tue, 15 Oct 2013 23:42:44 +0100
-Message-ID: <20131015224245.0B071C40099@trevor.secretlab.ca>
+Date: Tue, 15 Oct 2013 23:55:23 +0100
+Message-ID: <20131015225523.2A9C1C40099@trevor.secretlab.ca>
 Return-Path: <glikely@secretlab.ca>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,7 +22,7 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Rob Herring <robherring2@gmail.com>, Thierry Reding <thierry.reding@gmail.com>
 Cc: Rob Herring <rob.herring@calxeda.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, Russell King <linux@arm.linux.org.uk>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, sparclinux@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Message-ID: <20131015224244.NbYgXbu6a7ZgHxG7-SYyune4mV6AnsqnaRvdB_4rF1M@z>
+Message-ID: <20131015225523.e1JhlCHhJ_rwcySxKfe_GAAtlprTw00fpQUH7gZpeYA@z>
 
 On Sun, 22 Sep 2013 16:19:27 -0500, Rob Herring <robherring2@gmail.com> wrote:
 > On Wed, Sep 18, 2013 at 8:24 AM, Thierry Reding
@@ -40,8 +40,7 @@ On Sun, 22 Sep 2013 16:19:27 -0500, Rob Herring <robherring2@gmail.com> wrote:
 > 
 > Acked-by: Rob Herring <rob.herring@calxeda.com>
 
-Applied (and fixed to match the of_irq_map_one --> of_irq_parse_one
-rename that I'm going to merge in v3.13).
+Applied, thanks.
 
 g.
 

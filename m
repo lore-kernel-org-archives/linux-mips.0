@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:48530 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:21811 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6817315Ab3JNItPi0d-5 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 14 Oct 2013 10:49:15 +0200
+        id S6823088Ab3JOONjfJgZ4 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 15 Oct 2013 16:13:39 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: Malta: Remove ttyS2 serial for CMP platforms
-Date: Mon, 14 Oct 2013 09:49:25 +0100
-Message-ID: <1381740565-17243-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: MT: proc: Add support for printing VPE and TC ids
+Date: Tue, 15 Oct 2013 15:13:02 +0100
+Message-ID: <1381846382-26437-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -19,47 +19,39 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20131014084925.UhWOEy0xul1JKjsuzNQUxz4-CdmB_N7FAvK8IKi-Tzk@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20131015141302.QTOM3i7ccVTsSa0DaErG9QMzH2Ax91WoO4QvnWOko5E@z>
 
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Add support for including VPE and TC ids in /proc/cpuinfo output as
+appropriate when MT/SMTC is enabled.
 
-Commit 225ae5fd9a320e22841410049c3bdb6cf14a5841
-"MIPS: Malta: Fix interupt number of CBUS UART"
-
-fixed the IRQ number for the ttyS2 CBUS UART. However, this now
-conflicts with the GIC IPI1 interrupt in CMP platforms. The Malta
-interrupt code arbitrarily binds IPIs to INT2 and INT3 and since
-ttyS2 uses the INT2 IRQ line, closing the device disables the
-INT2 interrupt and this effectively disables the IPI1 interrupt
-as well. This patch is mainly a workaround until the Malta code
-is fixed properly.
-
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/mti-malta/malta-platform.c | 2 ++
- 1 file changed, 2 insertions(+)
+This patch is for the upstream-sfr/mips-for-linux-next tree
+---
+ arch/mips/kernel/proc.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/mti-malta/malta-platform.c b/arch/mips/mti-malta/malta-platform.c
-index 132f866..e1dd1c1 100644
---- a/arch/mips/mti-malta/malta-platform.c
-+++ b/arch/mips/mti-malta/malta-platform.c
-@@ -47,6 +47,7 @@
- static struct plat_serial8250_port uart8250_data[] = {
- 	SMC_PORT(0x3F8, 4),
- 	SMC_PORT(0x2F8, 3),
-+#ifndef CONFIG_MIPS_CMP
- 	{
- 		.mapbase	= 0x1f000900,	/* The CBUS UART */
- 		.irq		= MIPS_CPU_IRQ_BASE + MIPSCPU_INT_MB2,
-@@ -55,6 +56,7 @@ static struct plat_serial8250_port uart8250_data[] = {
- 		.flags		= CBUS_UART_FLAGS,
- 		.regshift	= 3,
- 	},
+diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+index 8c58d8a..db49bfa 100644
+--- a/arch/mips/kernel/proc.c
++++ b/arch/mips/kernel/proc.c
+@@ -107,7 +107,14 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+ 	seq_printf(m, "kscratch registers\t: %d\n",
+ 		      hweight8(cpu_data[n].kscratch_mask));
+ 	seq_printf(m, "core\t\t\t: %d\n", cpu_data[n].core);
+-
++#if defined(CONFIG_MIPS_MT_SMP) || defined(CONFIG_MIPS_MT_SMTC)
++	if (cpu_has_mipsmt) {
++		seq_printf(m, "VPE\t\t\t: %d\n", cpu_data[n].vpe_id);
++#if defined(CONFIG_MIPS_MT_SMTC)
++		seq_printf(m, "TC\t\t\t: %d\n", cpu_data[n].tc_id);
 +#endif
- 	{ },
- };
- 
++	}
++#endif
+ 	sprintf(fmt, "VCE%%c exceptions\t\t: %s\n",
+ 		      cpu_has_vce ? "%u" : "not available");
+ 	seq_printf(m, fmt, 'D', vced_count);
 -- 
 1.8.3.2

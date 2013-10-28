@@ -1,17 +1,18 @@
-Received: from mail3.moravian.edu ([204.186.176.38]:36389 "EHLO
-        MAIL3.moravian.edu" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6822995Ab3JRXaEGxpLc convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 19 Oct 2013 01:30:04 +0200
-From: "DesJardin, Jean" <jldesjardin@moravian.edu>
-Content-Class: urn:content-classes:message
-Date: Fri, 18 Oct 2013 19:28:08 -0400
-Subject: 
-Message-ID: <815F4EBD-4C3D-474C-90E4-FCD992D0306F@mimectl>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+Received: from multi.imgtec.com ([194.200.65.239]:35037 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6823034Ab3J1Oh1IIZ2X (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 28 Oct 2013 15:37:27 +0100
+Message-ID: <526E7673.6050308@imgtec.com>
+Date: Mon, 28 Oct 2013 14:36:35 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Return-Path: <jldesjardin@moravian.edu>
+Subject: Re: [PATCH mips-for-linux-next] MIPS: fix genex.S build for non MIPS32r2
+ class processors
+References: <1382725617-32561-1-git-send-email-f.fainelli@gmail.com>
+In-Reply-To: <1382725617-32561-1-git-send-email-f.fainelli@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,7 +22,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Message-ID: <20131018232808.ejejsqGskXUi0IgWrOFdpFYe-sQsVYv-CtfxWMgRsgE@z>
+To: Florian Fainelli <f.fainelli@gmail.com>, linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org, blogic@openwrt.org, Leonid.Yegoshin@imgtec.com, jim2101024@gmail.com
+Message-ID: <20131028143635.5hls9NWYLWqxALUgfBkUlfrdrUtw0AFcLdb_xGq68c0@z>
 
+On 25/10/2013 07:26 μμ, Florian Fainelli wrote:
+> Commit d712357d ("MIPS: Print correct PC in trace dump after NMI
+> exception") introduced assembly code which uses the "ehb" instruction,
+> which is only available in MIPS32r2 class processors and causes such
+> build errors on MIPS32r1 processors:
+>
+>    AS      arch/mips/kernel/genex.o
+> arch/mips/kernel/genex.S: Assembler messages:
+> arch/mips/kernel/genex.S:386: Error: opcode not supported on this
+> processor: mips32 (mips32) `ehb'
+> make[2]: *** [arch/mips/kernel/genex.o] Error 1
+> make[1]: *** [arch/mips/kernel] Error 2
+> make[1]: *** Waiting for unfinished jobs....
+>
+> Use _ehb which properly substitutes to a nop or a real ehb depending on
+> the processor we are building for.
+>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
 
-Loan offer at 3% interest rate, Apply now with Name:Country:Phone:Loan:Amount:Duration Via: daisy.hernandez051@gmail.com<mailto:daisy.hernandez051@gmail.com>
+Yep that looks good to me. Thanks for fixing it
+
+Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
+
+-- 
+markos

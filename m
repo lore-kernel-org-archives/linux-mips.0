@@ -1,14 +1,20 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:43545 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6822679Ab3KAXrWTIWBh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 2 Nov 2013 00:47:22 +0100
-Date: Fri, 1 Nov 2013 23:47:05 +0000
-From: "Maciej W. Rozycki" <macro@codesourcery.com>
-Subject: [PATCH] MIPS: Random whitespace clean-ups
-Message-ID: <alpine.DEB.1.10.1311012342550.12843@tp.orcam.me.uk>
+Received: from mail-ie0-f179.google.com ([209.85.223.179]:41422 "EHLO
+        mail-ie0-f179.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6822679Ab3KDIn1QoDF0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 4 Nov 2013 09:43:27 +0100
+Received: by mail-ie0-f179.google.com with SMTP id aq17so11412078iec.24
+        for <linux-mips@linux-mips.org>; Mon, 04 Nov 2013 00:43:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej_Rozycki@mentor.com>
+In-Reply-To: <5273D9CD.2010800@gmail.com>
+References: <1383076268-8984-1-git-send-email-s.nawrocki@samsung.com>
+        <CACmBeS2TiiTJ_n0bEzXGKN8B=U9EKXeVtrE2q0jgxsxf5TBivw@mail.gmail.com>
+        <5273D9CD.2010800@gmail.com>
+Date: Mon, 4 Nov 2013 09:43:20 +0100
+Message-ID: <CACmBeS3DhHnQR7Ze8oZVAC9HThmXR4n7f90yje+R=8uRq9Nvsg@mail.gmail.com>
+Subject: Re: [PATCH v7 0/5] clk: clock deregistration support
+From: Jonas Jensen <jonas.jensen@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <jonas.jensen@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,77 +24,26 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20131101234705.XNjsTzR3rft6bmgvqvse4Vf6dnh3eSr4ZfxEFx3ik1k@z>
+To: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Mike Turquette <mturquette@linaro.org>, linux-mips@linux-mips.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-sh@vger.kernel.org, jiada_wang@mentor.com, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kyungmin Park <kyungmin.park@samsung.com>, laurent.pinchart@ideasonboard.com, uclinux-dist-devel@blackfin.uclinux.org
+Message-ID: <20131104084320.h9-wQxYqcUdNp3bS0Hc_Y4c_ACU2tTm1yg7LO21kcTE@z>
 
-Another whitespace clean-up, this removes tabs from between sentences in 
-some comments.
+On 1 November 2013 17:41, Sylwester Nawrocki
+<sylvester.nawrocki@gmail.com> wrote:
+> It is recommended to quote also human readable patch summary line,
+> so it's more immediately clear which patch you refer to.
 
-Signed-off-by: Maciej W. Rozycki <macro@codesourcery.com>
----
-linux-space.diff
-Index: linux/arch/mips/include/asm/addrspace.h
-===================================================================
---- linux.orig/arch/mips/include/asm/addrspace.h
-+++ linux/arch/mips/include/asm/addrspace.h
-@@ -58,7 +58,7 @@
- 
- /*
-  * Memory segments (64bit kernel mode addresses)
-- * The compatibility segments use the full 64-bit sign extended value.	Note
-+ * The compatibility segments use the full 64-bit sign extended value.  Note
-  * the R8000 doesn't have them so don't reference these in generic MIPS code.
-  */
- #define XKUSEG			_CONST64_(0x0000000000000000)
-@@ -131,7 +131,7 @@
- 
- /*
-  * The ultimate limited of the 64-bit MIPS architecture:  2 bits for selecting
-- * the region, 3 bits for the CCA mode.	 This leaves 59 bits of which the
-+ * the region, 3 bits for the CCA mode.  This leaves 59 bits of which the
-  * R8000 implements most with its 48-bit physical address space.
-  */
- #define TO_PHYS_MASK	_CONST64_(0x07ffffffffffffff)	/* 2^^59 - 1 */
-Index: linux/arch/mips/include/asm/atomic.h
-===================================================================
---- linux.orig/arch/mips/include/asm/atomic.h
-+++ linux/arch/mips/include/asm/atomic.h
-@@ -1,5 +1,5 @@
- /*
-- * Atomic operations that C can't guarantee us.	 Useful for
-+ * Atomic operations that C can't guarantee us.  Useful for
-  * resource counting etc..
-  *
-  * But use these as seldom as possible since they are much more slower
-Index: linux/arch/mips/include/asm/barrier.h
-===================================================================
---- linux.orig/arch/mips/include/asm/barrier.h
-+++ linux/arch/mips/include/asm/barrier.h
-@@ -18,7 +18,7 @@
-  * over this barrier.  All reads preceding this primitive are guaranteed
-  * to access memory (but not necessarily other CPUs' caches) before any
-  * reads following this primitive that depend on the data return by
-- * any of the preceding reads.	This primitive is much lighter weight than
-+ * any of the preceding reads.  This primitive is much lighter weight than
-  * rmb() on most CPUs, and is never heavier weight than is
-  * rmb().
-  *
-@@ -43,7 +43,7 @@
-  * </programlisting>
-  *
-  * because the read of "*q" depends on the read of "p" and these
-- * two reads are separated by a read_barrier_depends().	 However,
-+ * two reads are separated by a read_barrier_depends().  However,
-  * the following code, with the same initial values for "a" and "b":
-  *
-  * <programlisting>
-@@ -57,7 +57,7 @@
-  * </programlisting>
-  *
-  * does not enforce ordering, since there is no data dependency between
-- * the read of "a" and the read of "b".	 Therefore, on some CPUs, such
-+ * the read of "a" and the read of "b".  Therefore, on some CPUs, such
-  * as Alpha, "y" could be set to 3 and "x" to 0.  Use rmb()
-  * in cases like this where there are no data dependencies.
-  */
+Sorry about that. This was tested on a clean (some added moxart
+drivers but no other patches) next-20131031, reverting the following
+patch:
+"clkdev: Fix race condition in clock lookup from device tree" -
+0b35b92fb3600a2f9ca114a6142db95f760d55f5
+
+> Is the warning still triggered when you apply this patch:
+> http://www.spinics.net/lists/arm-kernel/msg283550.html
+> onto next-20131031 instead of reverting ?
+
+After patch, the warning is no longer triggered.
+
+Thanks,
+Jonas

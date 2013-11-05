@@ -1,14 +1,16 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:52605 "EHLO
+Received: from relay1.mentorg.com ([192.94.38.131]:35399 "EHLO
         relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6824820Ab3KEBE52xdep (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Nov 2013 02:04:57 +0100
-Date: Tue, 5 Nov 2013 01:04:45 +0000
+        with ESMTP id S6823083Ab3KEPNhdi8bV (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Nov 2013 16:13:37 +0100
+Date: Tue, 5 Nov 2013 15:13:23 +0000
 From: "Joseph S. Myers" <joseph@codesourcery.com>
 Subject: Re: prlimit64: inconsistencies between kernel and userland
-In-Reply-To: <20131104.194519.1657797548878784116.davem@davemloft.net>
-Message-ID: <Pine.LNX.4.64.1311050058580.9883@digraph.polyomino.org.uk>
+In-Reply-To: <20131105012203.GA24286@brightrain.aerifal.cx>
+Message-ID: <Pine.LNX.4.64.1311051510010.23472@digraph.polyomino.org.uk>
 References: <20130628133835.GA21839@hall.aurel32.net> <20131104213756.GD18700@hall.aurel32.net>
  <20131104.194519.1657797548878784116.davem@davemloft.net>
+ <Pine.LNX.4.64.1311050058580.9883@digraph.polyomino.org.uk>
+ <20131105012203.GA24286@brightrain.aerifal.cx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <joseph_myers@mentor.com>
@@ -21,36 +23,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Miller <davem@davemloft.net>
-Cc: aurelien@aurel32.net, linux-mips@linux-mips.org, libc-alpha@sourceware.org
-Message-ID: <20131105010445.YhW0FH6Z9qgdkHkUXKK9_PaKJ3Ef8GkM71ru7I2Lc8E@z>
+To: Rich Felker <dalias@aerifal.cx>
+Cc: David Miller <davem@davemloft.net>, aurelien@aurel32.net, linux-mips@linux-mips.org, libc-alpha@sourceware.org
+Message-ID: <20131105151323.D1ai4ikpwcdpRUYCz9lKOFjBkH_uYRs9GJUwDfVgiUE@z>
 
-On Mon, 4 Nov 2013, David Miller wrote:
+On Mon, 4 Nov 2013, Rich Felker wrote:
 
-> From: Aurelien Jarno <aurelien@aurel32.net>
-> Date: Mon, 4 Nov 2013 22:37:56 +0100
+> > Surely you can create new symbol versions for getrlimit64 and setrlimit64, 
+> > with the old versions just using the 32-bit syscalls (or otherwise 
+> > translating between conventions, but using the 32-bit syscalls is the 
+> > simplest approach)?  I see no need to break compatibility with existing 
+> > binaries.
+> > 
+> > As I noted in 
+> > <https://sourceware.org/ml/libc-ports/2006-05/msg00020.html>, at that time 
+> > the value of RLIM64_INFINITY for o32/n32 was purely a glibc convention the 
+> > kernel didn't see at all.  It's only with the use of newer syscalls that 
+> > this glibc convention is any sort of problem.
 > 
-> > Any news about this issue? It really starts to causes a lot of issues in
-> > Debian. I have added a Cc: to libc people so that we can also hear their
-> > opinion.
-> 
-> I had the same exact problem on sparc several years ago, I simply fixed
-> the glibc header value, it's the only way to fix this.
-> 
-> Yes, that means you then have to recompile applications and libraries
-> that reference this value.
+> Why not just make them convert any value >= 0x7fffffffffffffff to
+> infinity before making the syscall? There's certainly no meaningful
+> use for finite values in that range...
 
-Surely you can create new symbol versions for getrlimit64 and setrlimit64, 
-with the old versions just using the 32-bit syscalls (or otherwise 
-translating between conventions, but using the 32-bit syscalls is the 
-simplest approach)?  I see no need to break compatibility with existing 
-binaries.
-
-As I noted in 
-<https://sourceware.org/ml/libc-ports/2006-05/msg00020.html>, at that time 
-the value of RLIM64_INFINITY for o32/n32 was purely a glibc convention the 
-kernel didn't see at all.  It's only with the use of newer syscalls that 
-this glibc convention is any sort of problem.
+It might be possible to do such a conversion in setrlimit64 - I'm not sure 
+offhand if such a conversion for large finite values is valid, and a new 
+symbol version is certainly the more conservative option - but getrlimit64 
+in existing binaries should return results using the existing 
+RLIM64_INFINITY, in case binaries compare against that, so if you change 
+the header value to match the kernel I don't think you can avoid the new 
+symbol version for getrlimit64, and versioning both together seems safer.
 
 -- 
 Joseph S. Myers

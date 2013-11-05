@@ -1,16 +1,17 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:35399 "EHLO
+Received: from relay1.mentorg.com ([192.94.38.131]:53849 "EHLO
         relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6823083Ab3KEPNhdi8bV (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Nov 2013 16:13:37 +0100
-Date: Tue, 5 Nov 2013 15:13:23 +0000
+        with ESMTP id S6824820Ab3KEWgecvBCQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Nov 2013 23:36:34 +0100
+Date: Tue, 5 Nov 2013 22:36:24 +0000
 From: "Joseph S. Myers" <joseph@codesourcery.com>
 Subject: Re: prlimit64: inconsistencies between kernel and userland
-In-Reply-To: <20131105012203.GA24286@brightrain.aerifal.cx>
-Message-ID: <Pine.LNX.4.64.1311051510010.23472@digraph.polyomino.org.uk>
+In-Reply-To: <52793C50.9030300@gmail.com>
+Message-ID: <Pine.LNX.4.64.1311052234420.30260@digraph.polyomino.org.uk>
 References: <20130628133835.GA21839@hall.aurel32.net> <20131104213756.GD18700@hall.aurel32.net>
  <20131104.194519.1657797548878784116.davem@davemloft.net>
  <Pine.LNX.4.64.1311050058580.9883@digraph.polyomino.org.uk>
- <20131105012203.GA24286@brightrain.aerifal.cx>
+ <20131105012203.GA24286@brightrain.aerifal.cx> <20131105085859.GE28240@mails.so.argh.org>
+ <20131105183732.GB24286@brightrain.aerifal.cx> <52793C50.9030300@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <joseph_myers@mentor.com>
@@ -23,35 +24,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rich Felker <dalias@aerifal.cx>
-Cc: David Miller <davem@davemloft.net>, aurelien@aurel32.net, linux-mips@linux-mips.org, libc-alpha@sourceware.org
-Message-ID: <20131105151323.D1ai4ikpwcdpRUYCz9lKOFjBkH_uYRs9GJUwDfVgiUE@z>
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: Rich Felker <dalias@aerifal.cx>, "Pinski, Andrew" <Andrew.Pinski@caviumnetworks.com>, Andreas Barth <aba@ayous.org>, David Miller <davem@davemloft.net>, aurelien@aurel32.net, linux-mips@linux-mips.org, libc-alpha@sourceware.org
+Message-ID: <20131105223624.AogItg52f10Gt6vA589GjGSvQ5fOz_ndC_NSb0yIoug@z>
 
-On Mon, 4 Nov 2013, Rich Felker wrote:
+On Tue, 5 Nov 2013, David Daney wrote:
 
-> > Surely you can create new symbol versions for getrlimit64 and setrlimit64, 
-> > with the old versions just using the 32-bit syscalls (or otherwise 
-> > translating between conventions, but using the 32-bit syscalls is the 
-> > simplest approach)?  I see no need to break compatibility with existing 
-> > binaries.
-> > 
-> > As I noted in 
-> > <https://sourceware.org/ml/libc-ports/2006-05/msg00020.html>, at that time 
-> > the value of RLIM64_INFINITY for o32/n32 was purely a glibc convention the 
-> > kernel didn't see at all.  It's only with the use of newer syscalls that 
-> > this glibc convention is any sort of problem.
+> Why can't the default version of the functions in question be fixed so that
+> they do the right thing?  That way you wouldn't have to rebuild old binaries.
 > 
-> Why not just make them convert any value >= 0x7fffffffffffffff to
-> infinity before making the syscall? There's certainly no meaningful
-> use for finite values in that range...
+> Do we really need new function versions at all?
 
-It might be possible to do such a conversion in setrlimit64 - I'm not sure 
-offhand if such a conversion for large finite values is valid, and a new 
-symbol version is certainly the more conservative option - but getrlimit64 
-in existing binaries should return results using the existing 
-RLIM64_INFINITY, in case binaries compare against that, so if you change 
-the header value to match the kernel I don't think you can avoid the new 
-symbol version for getrlimit64, and versioning both together seems safer.
+If we change RLIM64_INFINITY to match the kernel, then the right thing for 
+at least getrlimit64 depends on whether it's an old or new binary (for old 
+binaries it should return the old value of RLIM64_INFINITY and for new 
+ones it should return the new value).
 
 -- 
 Joseph S. Myers

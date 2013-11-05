@@ -1,20 +1,17 @@
-Received: from mail-ie0-f179.google.com ([209.85.223.179]:41422 "EHLO
-        mail-ie0-f179.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6822679Ab3KDIn1QoDF0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 4 Nov 2013 09:43:27 +0100
-Received: by mail-ie0-f179.google.com with SMTP id aq17so11412078iec.24
-        for <linux-mips@linux-mips.org>; Mon, 04 Nov 2013 00:43:20 -0800 (PST)
+Received: from relay1.mentorg.com ([192.94.38.131]:52605 "EHLO
+        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6824820Ab3KEBE52xdep (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Nov 2013 02:04:57 +0100
+Date: Tue, 5 Nov 2013 01:04:45 +0000
+From: "Joseph S. Myers" <joseph@codesourcery.com>
+Subject: Re: prlimit64: inconsistencies between kernel and userland
+In-Reply-To: <20131104.194519.1657797548878784116.davem@davemloft.net>
+Message-ID: <Pine.LNX.4.64.1311050058580.9883@digraph.polyomino.org.uk>
+References: <20130628133835.GA21839@hall.aurel32.net> <20131104213756.GD18700@hall.aurel32.net>
+ <20131104.194519.1657797548878784116.davem@davemloft.net>
 MIME-Version: 1.0
-In-Reply-To: <5273D9CD.2010800@gmail.com>
-References: <1383076268-8984-1-git-send-email-s.nawrocki@samsung.com>
-        <CACmBeS2TiiTJ_n0bEzXGKN8B=U9EKXeVtrE2q0jgxsxf5TBivw@mail.gmail.com>
-        <5273D9CD.2010800@gmail.com>
-Date: Mon, 4 Nov 2013 09:43:20 +0100
-Message-ID: <CACmBeS3DhHnQR7Ze8oZVAC9HThmXR4n7f90yje+R=8uRq9Nvsg@mail.gmail.com>
-Subject: Re: [PATCH v7 0/5] clk: clock deregistration support
-From: Jonas Jensen <jonas.jensen@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <jonas.jensen@gmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <joseph_myers@mentor.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,26 +21,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Mike Turquette <mturquette@linaro.org>, linux-mips@linux-mips.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-sh@vger.kernel.org, jiada_wang@mentor.com, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kyungmin Park <kyungmin.park@samsung.com>, laurent.pinchart@ideasonboard.com, uclinux-dist-devel@blackfin.uclinux.org
-Message-ID: <20131104084320.h9-wQxYqcUdNp3bS0Hc_Y4c_ACU2tTm1yg7LO21kcTE@z>
+To: David Miller <davem@davemloft.net>
+Cc: aurelien@aurel32.net, linux-mips@linux-mips.org, libc-alpha@sourceware.org
+Message-ID: <20131105010445.YhW0FH6Z9qgdkHkUXKK9_PaKJ3Ef8GkM71ru7I2Lc8E@z>
 
-On 1 November 2013 17:41, Sylwester Nawrocki
-<sylvester.nawrocki@gmail.com> wrote:
-> It is recommended to quote also human readable patch summary line,
-> so it's more immediately clear which patch you refer to.
+On Mon, 4 Nov 2013, David Miller wrote:
 
-Sorry about that. This was tested on a clean (some added moxart
-drivers but no other patches) next-20131031, reverting the following
-patch:
-"clkdev: Fix race condition in clock lookup from device tree" -
-0b35b92fb3600a2f9ca114a6142db95f760d55f5
+> From: Aurelien Jarno <aurelien@aurel32.net>
+> Date: Mon, 4 Nov 2013 22:37:56 +0100
+> 
+> > Any news about this issue? It really starts to causes a lot of issues in
+> > Debian. I have added a Cc: to libc people so that we can also hear their
+> > opinion.
+> 
+> I had the same exact problem on sparc several years ago, I simply fixed
+> the glibc header value, it's the only way to fix this.
+> 
+> Yes, that means you then have to recompile applications and libraries
+> that reference this value.
 
-> Is the warning still triggered when you apply this patch:
-> http://www.spinics.net/lists/arm-kernel/msg283550.html
-> onto next-20131031 instead of reverting ?
+Surely you can create new symbol versions for getrlimit64 and setrlimit64, 
+with the old versions just using the 32-bit syscalls (or otherwise 
+translating between conventions, but using the 32-bit syscalls is the 
+simplest approach)?  I see no need to break compatibility with existing 
+binaries.
 
-After patch, the warning is no longer triggered.
+As I noted in 
+<https://sourceware.org/ml/libc-ports/2006-05/msg00020.html>, at that time 
+the value of RLIM64_INFINITY for o32/n32 was purely a glibc convention the 
+kernel didn't see at all.  It's only with the use of newer syscalls that 
+this glibc convention is any sort of problem.
 
-Thanks,
-Jonas
+-- 
+Joseph S. Myers
+joseph@codesourcery.com

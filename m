@@ -1,11 +1,12 @@
-Received: from mail-out.m-online.net ([212.18.0.10]:56552 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6823083Ab3KEXwYYgmbB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 6 Nov 2013 00:52:24 +0100
-From: Andreas Schwab <schwab@linux-m68k.org>
+Received: from smtp2.Stanford.EDU ([171.67.219.82]:48145 "EHLO
+        smtp.stanford.edu" rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org
+        with ESMTP id S6826046Ab3KFAXOw70Uh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 6 Nov 2013 01:23:14 +0100
+From: Russ Allbery <eagle@eyrie.org>
 Subject: Re: prlimit64: inconsistencies between kernel and userland
-References: <20130628133835.GA21839@hall.aurel32.net>
-        <20131104213756.GD18700@hall.aurel32.net>
+In-Reply-To: <20131105235505.GK24286@brightrain.aerifal.cx> (Rich Felker's
+        message of "Tue, 5 Nov 2013 18:55:05 -0500")
+References: <20131104213756.GD18700@hall.aurel32.net>
         <20131104.194519.1657797548878784116.davem@davemloft.net>
         <Pine.LNX.4.64.1311050058580.9883@digraph.polyomino.org.uk>
         <20131105012203.GA24286@brightrain.aerifal.cx>
@@ -14,13 +15,13 @@ References: <20130628133835.GA21839@hall.aurel32.net>
         <52793C50.9030300@gmail.com>
         <Pine.LNX.4.64.1311052234420.30260@digraph.polyomino.org.uk>
         <20131105223953.GG24286@brightrain.aerifal.cx>
-Date: Wed, 06 Nov 2013 00:52:14 +0100
-In-Reply-To: <20131105223953.GG24286@brightrain.aerifal.cx> (Rich Felker's
-        message of "Tue, 5 Nov 2013 17:39:53 -0500")
-Message-ID: <87ppqez9sh.fsf@igel.home>
+        <87ppqez9sh.fsf@igel.home>
+        <20131105235505.GK24286@brightrain.aerifal.cx>
+Date: Tue, 05 Nov 2013 16:23:01 -0800
+Message-ID: <87bo1ycra2.fsf@windlord.stanford.edu>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <whitebox@nefkom.net>
+Content-Type: text/plain; charset=us-ascii
+Return-Path: <eagle@eyrie.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -31,21 +32,20 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Rich Felker <dalias@aerifal.cx>
-Cc: "Joseph S. Myers" <joseph@codesourcery.com>, David Daney <ddaney.cavm@gmail.com>, "Pinski, Andrew" <Andrew.Pinski@caviumnetworks.com>, Andreas Barth <aba@ayous.org>, David Miller <davem@davemloft.net>, aurelien@aurel32.net, linux-mips@linux-mips.org, libc-alpha@sourceware.org
-Message-ID: <20131105235214.RzNb4bbmhpi2gZ96cDgx0dm1_jGdvJgUXk-sU5xIKrk@z>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, "Joseph S. Myers" <joseph@codesourcery.com>, David Daney <ddaney.cavm@gmail.com>, "Pinski, Andrew" <Andrew.Pinski@caviumnetworks.com>, Andreas Barth <aba@ayous.org>, David Miller <davem@davemloft.net>, aurelien@aurel32.net, linux-mips@linux-mips.org, libc-alpha@sourceware.org
+Message-ID: <20131106002301.7LM0T_WanI_VMO5liwmE_t30WxTLwrVCe_Bp5ccDcqA@z>
 
 Rich Felker <dalias@aerifal.cx> writes:
 
-> BTW, what happens on a distro where -dev packages are separate and the
-> user compiles with old headers (not having upgraded the dev package)
-> but new libc.so? :-)
+> That doesn't help. The problem is that the non-devel package gets
+> upgraded and ldconfig re-links the .so to the .so.X.Y.Z for the new
+> version.
 
-The devel package must either be self-contained or require the matching
-non-devel package.
+Require the upgrades happen in lockstep.
 
-Andreas.
+Package: libc6-dev
+Version: 2.17-93
+Depends: libc6 (= 2.17-93), libc-dev-bin (= 2.17-93), linux-libc-dev
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+Russ Allbery (eagle@eyrie.org)              <http://www.eyrie.org/~eagle/>

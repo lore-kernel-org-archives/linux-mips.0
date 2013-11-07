@@ -1,27 +1,16 @@
-Received: from smtp2.Stanford.EDU ([171.67.219.82]:48145 "EHLO
-        smtp.stanford.edu" rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org
-        with ESMTP id S6826046Ab3KFAXOw70Uh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 6 Nov 2013 01:23:14 +0100
-From: Russ Allbery <eagle@eyrie.org>
-Subject: Re: prlimit64: inconsistencies between kernel and userland
-In-Reply-To: <20131105235505.GK24286@brightrain.aerifal.cx> (Rich Felker's
-        message of "Tue, 5 Nov 2013 18:55:05 -0500")
-References: <20131104213756.GD18700@hall.aurel32.net>
-        <20131104.194519.1657797548878784116.davem@davemloft.net>
-        <Pine.LNX.4.64.1311050058580.9883@digraph.polyomino.org.uk>
-        <20131105012203.GA24286@brightrain.aerifal.cx>
-        <20131105085859.GE28240@mails.so.argh.org>
-        <20131105183732.GB24286@brightrain.aerifal.cx>
-        <52793C50.9030300@gmail.com>
-        <Pine.LNX.4.64.1311052234420.30260@digraph.polyomino.org.uk>
-        <20131105223953.GG24286@brightrain.aerifal.cx>
-        <87ppqez9sh.fsf@igel.home>
-        <20131105235505.GK24286@brightrain.aerifal.cx>
-Date: Tue, 05 Nov 2013 16:23:01 -0800
-Message-ID: <87bo1ycra2.fsf@windlord.stanford.edu>
+Received: from multi.imgtec.com ([194.200.65.239]:52389 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6818702Ab3KGMszBVuVW (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 7 Nov 2013 13:48:55 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 2/6] mips: microMIPS: mfhc1 & mthc1 support for the FPU emulator
+Date: Thu, 7 Nov 2013 12:48:29 +0000
+Message-ID: <1383828513-28462-3-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1383828513-28462-1-git-send-email-paul.burton@imgtec.com>
+References: <1383828513-28462-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-Path: <eagle@eyrie.org>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -31,21 +20,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rich Felker <dalias@aerifal.cx>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, "Joseph S. Myers" <joseph@codesourcery.com>, David Daney <ddaney.cavm@gmail.com>, "Pinski, Andrew" <Andrew.Pinski@caviumnetworks.com>, Andreas Barth <aba@ayous.org>, David Miller <davem@davemloft.net>, aurelien@aurel32.net, linux-mips@linux-mips.org, libc-alpha@sourceware.org
-Message-ID: <20131106002301.7LM0T_WanI_VMO5liwmE_t30WxTLwrVCe_Bp5ccDcqA@z>
+To: linux-mips@linux-mips.org
+Cc: "Steven J. Hill" <Steven.Hill@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20131107124829.F56Cgg-agE8f10hD5zcOOBK_9K1mUqEU3vLz46FK1ko@z>
 
-Rich Felker <dalias@aerifal.cx> writes:
+From: "Steven J. Hill" <Steven.Hill@imgtec.com>
 
-> That doesn't help. The problem is that the non-devel package gets
-> upgraded and ldconfig re-links the .so to the .so.X.Y.Z for the new
-> version.
+This patch adds support for microMIPS encodings of the mfhc1 & mthc1
+instructions introduced in release 2 of the mips32 & mips64
+architectures, converting them to their mips32 equivalents for the FPU
+emulator.
 
-Require the upgrades happen in lockstep.
+Signed-off-by: Steven J. Hill <Steven.Hill@imgtec.com>
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+---
+ arch/mips/include/uapi/asm/inst.h | 2 ++
+ arch/mips/math-emu/cp1emu.c       | 8 +++++++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-Package: libc6-dev
-Version: 2.17-93
-Depends: libc6 (= 2.17-93), libc-dev-bin (= 2.17-93), linux-libc-dev
-
+diff --git a/arch/mips/include/uapi/asm/inst.h b/arch/mips/include/uapi/asm/inst.h
+index 0ee9656..b39ba25 100644
+--- a/arch/mips/include/uapi/asm/inst.h
++++ b/arch/mips/include/uapi/asm/inst.h
+@@ -398,8 +398,10 @@ enum mm_32f_73_minor_op {
+ 	mm_movt1_op = 0xa5,
+ 	mm_ftruncw_op = 0xac,
+ 	mm_fneg1_op = 0xad,
++	mm_mfhc1_op = 0xc0,
+ 	mm_froundl_op = 0xcc,
+ 	mm_fcvtd1_op = 0xcd,
++	mm_mthc1_op = 0xe0,
+ 	mm_froundw_op = 0xec,
+ 	mm_fcvts1_op = 0xed,
+ };
+diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
+index 20a51d0..4b37961 100644
+--- a/arch/mips/math-emu/cp1emu.c
++++ b/arch/mips/math-emu/cp1emu.c
+@@ -417,14 +417,20 @@ static int microMIPS32_to_MIPS32(union mips_instruction *insn_ptr)
+ 			case mm_mtc1_op:
+ 			case mm_cfc1_op:
+ 			case mm_ctc1_op:
++			case mm_mfhc1_op:
++			case mm_mthc1_op:
+ 				if (insn.mm_fp1_format.op == mm_mfc1_op)
+ 					op = mfc_op;
+ 				else if (insn.mm_fp1_format.op == mm_mtc1_op)
+ 					op = mtc_op;
+ 				else if (insn.mm_fp1_format.op == mm_cfc1_op)
+ 					op = cfc_op;
+-				else
++				else if (insn.mm_fp1_format.op == mm_ctc1_op)
+ 					op = ctc_op;
++				else if (insn.mm_fp1_format.op == mm_mfhc1_op)
++					op = mfhc_op;
++				else
++					op = mthc_op;
+ 				mips32_insn.fp1_format.opcode = cop1_op;
+ 				mips32_insn.fp1_format.op = op;
+ 				mips32_insn.fp1_format.rt =
 -- 
-Russ Allbery (eagle@eyrie.org)              <http://www.eyrie.org/~eagle/>
+1.8.4.1

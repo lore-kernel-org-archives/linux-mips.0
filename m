@@ -1,15 +1,18 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:65080 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6823013Ab3KGSgMNC9L5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Nov 2013 19:36:12 +0100
-Date: Thu, 7 Nov 2013 18:35:54 +0000
-From: "Maciej W. Rozycki" <macro@codesourcery.com>
-Subject: [PATCH] MIPS: copy_to_user_page: Avoid ptrace(2) I-cache
- incoherency
-Message-ID: <alpine.DEB.1.10.1311071758410.21686@tp.orcam.me.uk>
+Received: from multi.imgtec.com ([194.200.65.239]:41297 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6823060Ab3KHMIdLsN3y (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 8 Nov 2013 13:08:33 +0100
+Message-ID: <527CD403.8040407@imgtec.com>
+Date: Fri, 8 Nov 2013 12:07:31 +0000
+From: Paul Burton <paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej_Rozycki@mentor.com>
+Subject: Re: [PATCH 5/6] mips: use per-mm page to execute FP branch delay
+ slots
+References: <1383828513-28462-1-git-send-email-paul.burton@imgtec.com> <1383828513-28462-6-git-send-email-paul.burton@imgtec.com> <527BD537.4040903@gmail.com>
+In-Reply-To: <527BD537.4040903@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,69 +22,157 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
+To: David Daney <ddaney.cavm@gmail.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20131107183554.-a_u5zCy8-xEImWK7MykDQShLIs_a7MGcdMboMThAdY@z>
+Message-ID: <20131108120731.UJmP-MENYkocrIMQ3gkxbtZibeEnjQJjBKy9UGsE7j8@z>
 
-We currently support no MIPS processor that has its I-cache coherent with 
-the D-cache, no such processor may even exist.  We apparently have two 
-configurations that have fully coherent D-caches and therefore set 
-cpu_has_ic_fills_f_dc, and these are the Alchemy and NetLogic processor 
-families.  I have checked relevant CPU documentation I was able to track 
-down and in both cases the respective documents[1][2] clearly state that 
-the I-cache provides no hardware coherency and whenever instructions in 
-memory are modified then the I-cache has to be synchronized by software 
-even though the D-caches are fully coherent.
+On 07/11/13 18:00, David Daney wrote:
+> Nice work...
+>
+> On 11/07/2013 04:48 AM, Paul Burton wrote:
+> [...]
+>> -     * Algorithmics used a system call instruction, and
+>> -     * borrowed that vector.  MIPS/Linux version is a bit
+>> -     * more heavyweight in the interests of portability and
+>> -     * multiprocessor support.  For Linux we generate a
+>> -     * an unaligned access and force an address error exception.
+>> +     *  1) Be a bug in the userland code, because it has a
+>> branch/jump in
+>> +     *     a branch delay slot. So if we run out of emuframes and the
+>> +     *     userland code hangs it's not exactly the kernels fault.
+>
+> s/kernels/kernel's/
+>
 
-Therefore we cannot ever avoid the call to flush_cache_page in 
-copy_to_user_page and here is a change that reflects this observation.  
-The implementation of flush_cache_page may then choose freely whether it 
-needs to perform a full cache synchronization with D-cache writeback and 
-invalidation requests or whether a lone I-cache invalidation will suffice.  
-The c-r4k.c implementation already respects the setting of 
-cpu_has_ic_fills_f_dc and avoids touching the D-cache unless necessary.
+Yup, thanks.
 
-The lack of I-cache synchronization is typically seen in debugging 
-sessions e.g. with GDB where software breakpoints are used.  When such a 
-breakpoint is hit and subsequently replaced using a ptrace(2) call with 
-the original instruction, the BREAK instruction previously executed 
-sometimes remains in the I-cache and causes the breakpoint just removed to 
-hit again regardless, resulting in a spurious SIGTRAP signal delivery that 
-debuggers typically complain about (e.g. "Program received signal SIGTRAP, 
-Trace/breakpoint trap" in the case of GDB).  Of course the I-cache line 
-containing the BREAK instruction may have since been randomly replaced, in 
-which case no problem occurs.
+>
+>>        *
+>> -     * For embedded systems (stand-alone) we prefer to use a
+>> -     * non-existing CP1 instruction. This prevents us from emulating
+>> -     * branches, but gives us a cleaner interface to the exception
+>> -     * handler (single entry point).
+>> +     *  2) Only affect that userland process, since emuframes are
+>> allocated
+>> +     *     per-mm and kernel threads don't use them at all.
+>>        */
+>> +    if (!get_isa16_mode(regs->cp0_epc)) {
+>> +        if (!ir) {
+>> +            /* typical NOP encoding: sll r0, r0, r0 */
+>> +is_nop:
+>> +            regs->cp0_epc = cpc;
+>> +            regs->cp0_cause &= ~CAUSEF_BD;
+>> +            return 0;
+>> +        }
+>>
+>> -    /* Ensure that the two instructions are in the same cache line */
+>> -    fr = (struct emuframe __user *)
+>> -        ((regs->regs[29] - sizeof(struct emuframe)) & ~0x7);
+>> +        switch (inst.j_format.opcode) {
+>> +        case bcond_op:
+>> +            switch (inst.i_format.rt) {
+>> +            case bltz_op:
+>> +            case bgez_op:
+>> +            case bltzl_op:
+>> +            case bgezl_op:
+>> +            case bltzal_op:
+>> +            case bgezal_op:
+>> +            case bltzall_op:
+>> +            case bgezall_op:
+>> +                goto is_branch;
+>> +            }
+>> +            break;
+>
+> Is there any way to use the support in arch/mips/kernel/branch.c instead
+> of duplicating the code here?
+>
+> It may require some refactoring to make it work, but I think it would be
+> worth it.
+>
 
-[1] "AMD Alchemy Au1200 Processor Data Book", AMD Alchemy, January, 2005, 
-    Publication ID: 32798A
+Ah (how had I not spotted that code?) :)
 
-[2] "XLP Processor Family Programming Reference Manual", NetLogic 
-    Microsystems, Revision Level 1.10, February, 2011, Document Number 
-    10724V110PM-CR (regrettably not publicly available)
+It may fit better with the (mm_)isBranchInstr functions in 
+arch/mips/math-emu/cp1emu.c since they already return a value specifying 
+whether or not the instruction is a branch. The microMIPS variant is 
+already used elsewhere too. I'll take a look at it.
 
-Signed-off-by: Maciej W. Rozycki <macro@codesourcery.com>
----
-Ralf,
+Thanks,
+     Paul
 
- Please apply.  I've seen these SIGTRAPs in some NetLogic GDB testing and 
-the removal of this cpu_has_ic_fills_f_dc condition from copy_to_user_page 
-is really necessary; also the Au1200 document is very explicit about the 
-requirement of I-cache invalidation in software (see Section 2.3.7.3 
-"Instruction Cache Coherency").
-
-  Maciej
-
-linux-mips-exec-cache-sync.diff
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 3e0eb5f..1251d86 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -239,7 +239,7 @@ void copy_to_user_page(struct vm_area_struct *vma,
- 		if (cpu_has_dc_aliases)
- 			SetPageDcacheDirty(page);
- 	}
--	if ((vma->vm_flags & VM_EXEC) && !cpu_has_ic_fills_f_dc)
-+	if (vma->vm_flags & VM_EXEC)
- 		flush_cache_page(vma, vaddr, page_to_pfn(page));
- }
- 
+>>
+>> -    /* Verify that the stack pointer is not competely insane */
+>> -    if (unlikely(!access_ok(VERIFY_WRITE, fr, sizeof(struct emuframe))))
+>> +        case cop1_op:
+>> +            switch (inst.i_format.rs) {
+>> +            case bc_op:
+>> +                goto is_branch;
+>> +            }
+>> +            break;
+>> +
+>> +        case j_op:
+>> +        case jal_op:
+>> +        case beq_op:
+>> +        case bne_op:
+>> +        case blez_op:
+>> +        case bgtz_op:
+>> +        case beql_op:
+>> +        case bnel_op:
+>> +        case blezl_op:
+>> +        case bgtzl_op:
+>> +        case jalx_op:
+>> +is_branch:
+>> +            pr_warn("PID %d has a branch in an FP branch delay slot
+>> at 0x%08lx\n",
+>> +                current->pid, regs->cp0_epc);
+>> +            goto is_nop;
+>> +        }
+>> +    } else {
+>> +        if ((ir >> 16) == MM_NOP16)
+>> +            goto is_nop;
+>> +
+>> +        switch (inst.mm_i_format.opcode) {
+>> +        case mm_beqz16_op:
+>> +        case mm_beq32_op:
+>> +        case mm_bnez16_op:
+>> +        case mm_bne32_op:
+>> +        case mm_b16_op:
+>> +        case mm_j32_op:
+>> +        case mm_jalx32_op:
+>> +        case mm_jal32_op:
+>> +            goto is_branch;
+>> +
+>> +        case mm_pool32i_op:
+>> +            switch (inst.mm_i_format.rt) {
+>> +            case mm_bltz_op:
+>> +            case mm_bltzal_op:
+>> +            case mm_bgez_op:
+>> +            case mm_bgezal_op:
+>> +            case mm_blez_op:
+>> +            case mm_bnezc_op:
+>> +            case mm_bgtz_op:
+>> +            case mm_beqzc_op:
+>> +            case mm_bltzals_op:
+>> +            case mm_bgezals_op:
+>> +            case mm_bc2f_op:
+>> +            case mm_bc2t_op:
+>> +            case mm_bc1f_op:
+>> +            case mm_bc1t_op:
+>> +                goto is_branch;
+>> +            }
+>> +            break;
+>> +
+>> +        case mm_pool16c_op:
+>> +            switch (inst.mm16_r5_format.rt) {
+>> +            case mm_jr16_op:
+>> +            case mm_jrc_op:
+>> +            case mm_jalr16_op:
+>> +            case mm_jalrs16_op:
+>> +            case mm_jraddiusp_op:
+>> +                goto is_branch;
+>> +            }
+>> +            break;
+>> +        }
+>> +    }
+>> +
+>>

@@ -1,16 +1,13 @@
-Received: from multi.imgtec.com ([194.200.65.239]:52263 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:1073 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6852087Ab3KLJl5naUd0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 12 Nov 2013 10:41:57 +0100
-Message-ID: <5281F7E3.6070802@imgtec.com>
-Date: Tue, 12 Nov 2013 09:41:55 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        id S6835101Ab3KNQMmKmoiD (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 14 Nov 2013 17:12:42 +0100
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH v2 00/12] Add support for the proAptiv cores
+Date: Thu, 14 Nov 2013 16:12:20 +0000
+Message-ID: <1384445552-30573-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/6] MIPS: Add support for the proAptiv cores
-References: <1383844120-29601-1-git-send-email-markos.chandras@imgtec.com> <1383844120-29601-4-git-send-email-markos.chandras@imgtec.com> <5281370C.8040707@gmail.com>
-In-Reply-To: <5281370C.8040707@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,48 +18,74 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: linux-mips@linux-mips.org, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Message-ID: <20131112094155.wobGPdxhRoi4w_b4-9W0WYhblWDaDziqOz8AqADFDEM@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20131114161220.ubU1u2w9n6icnrxPZyB4h238ctFvb6x-W9OpvJ0IfMo@z>
 
-On 11/11/2013 07:59 PM, David Daney wrote:
->
-> This patch is a big collection of small unrelated changes.
->
-> Can you break it up so that there is one patch per change?
->
-> o Add new identifiers
-> o Probe for them.
-> o Add new cpu-features.
-> o tlb.h change.
-> o All the places you add 'case CPU_PROAPTIV'
->
+Hi,
 
-Hi David,
+This is v2 of my previous patchset for adding support for the
+proAptiv cores.
 
-Ok thanks I will split this patch into smaller patches.
+v2:
+Review comments:
+http://www.linux-mips.org/archives/linux-mips/2013-11/msg00067.html
+http://www.linux-mips.org/archives/linux-mips/2013-11/msg00065.html
 
-> [...]
->> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
->> index c814287..8168e29 100644
->> --- a/arch/mips/kernel/cpu-probe.c
->> +++ b/arch/mips/kernel/cpu-probe.c
->> @@ -286,6 +286,13 @@ static inline unsigned int decode_config4(struct
->> cpuinfo_mips *c)
->>           && cpu_has_tlb)
->>           c->tlbsize += (config4 & MIPS_CONF4_MMUSIZEEXT) * 0x40;
->>
->> +    if (cpu_has_tlb) {
->> +        if (((config4 & MIPS_CONF4_IE) >> 29) == 2) {
->> +            c->options |= MIPS_CPU_TLBINV;
->> +            pr_info("TLBINV/F supported, config4=0x%0x\n", config4);
->
-> ... The probing functions don't print messages, so don't add this
-> pr_info().
+- Split proAptiv support into smaller patches
+-- Add TLBINV feature
+-- Add Segmentation Control feature
+-- Use EHINV for TLB invalidation
+-- Add proAptiv processor PRIDs
+-- Add support for proAptiv cores
+-- Probe for proAptiv cores
+- Drop pr_info() from probe functions
+- Split TLBINV usage into smaller patches
+-- Add function for using the TLBINVF instruction for flushing the TLB
+-- Use that function for TLBINVF capable cores to flush the TLB
 
-Ok will do
+Leonid Yegoshin (9):
+  MIPS: Add missing bits for Config registers
+  MIPS: features: Add initial support for TLBINVF capable cores
+  MIPS: tlb: Set the EHINV bit for TLBINVF cores when invalidating the
+    TLB
+  MIPS: Add processor identifiers for the proAptiv processors
+  MIPS: Add support for the proAptiv cores
+  MIPS: kernel: cpu-probe: Add support for probing proAptiv cores
+  MIPS: Add function for flushing the TLB using the TLBINV instruction
+  MIPS: mm: Use the TLBINVF instruction to flush the VTLB
+  MIPS: Add support for FTLBs
 
-Thanks for the review
+Markos Chandras (1):
+  MIPS: mm: Move UNIQUE_ENTRYHI macro to a header file
+
+Steven J. Hill (2):
+  MIPS: features: Add initial support for Segmentation Control registers
+  MIPS: Add debugfs file to print the segmentation control registers
+
+ arch/mips/include/asm/cpu-features.h |   7 +++
+ arch/mips/include/asm/cpu-info.h     |   3 +
+ arch/mips/include/asm/cpu-type.h     |   1 +
+ arch/mips/include/asm/cpu.h          |   6 +-
+ arch/mips/include/asm/mipsregs.h     |  84 +++++++++++++++++++++++++-
+ arch/mips/include/asm/page.h         |  25 ++++++++
+ arch/mips/include/asm/tlb.h          |   4 ++
+ arch/mips/kernel/Makefile            |   1 +
+ arch/mips/kernel/cpu-probe.c         |  93 +++++++++++++++++++++++++++--
+ arch/mips/kernel/genex.S             |   1 +
+ arch/mips/kernel/idle.c              |   1 +
+ arch/mips/kernel/segment.c           | 110 +++++++++++++++++++++++++++++++++++
+ arch/mips/kernel/spram.c             |   1 +
+ arch/mips/kernel/traps.c             |  31 ++++++++++
+ arch/mips/mm/c-r4k.c                 |   1 +
+ arch/mips/mm/init.c                  |   2 -
+ arch/mips/mm/sc-mips.c               |   1 +
+ arch/mips/mm/tlb-r4k.c               |  48 ++++++++++-----
+ arch/mips/mm/tlbex.c                 |   1 +
+ arch/mips/oprofile/common.c          |   1 +
+ arch/mips/oprofile/op_model_mipsxx.c |   4 ++
+ 21 files changed, 399 insertions(+), 27 deletions(-)
+ create mode 100644 arch/mips/kernel/segment.c
 
 -- 
-markos
+1.8.4.3

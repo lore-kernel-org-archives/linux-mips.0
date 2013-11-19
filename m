@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:2614 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:2626 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6820491Ab3KSRcSEjAw9 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 19 Nov 2013 18:32:18 +0100
+        id S6821114Ab3KSRc1xqpt6 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 19 Nov 2013 18:32:27 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 5/6] mips: replace open-coded init_dsp
-Date: Tue, 19 Nov 2013 17:30:38 +0000
-Message-ID: <1384882239-17965-6-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 6/6] mips: update outdated comment
+Date: Tue, 19 Nov 2013 17:30:39 +0000
+Message-ID: <1384882239-17965-7-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1384882239-17965-1-git-send-email-paul.burton@imgtec.com>
 References: <1384882239-17965-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,31 +22,34 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20131119173038.bz07jFhS1Mx_Y93Fyv3ckAW7sqAAVnx1pqHhEchUGiM@z>
+Message-ID: <20131119173039.lBnuyQh31HIdRuFz_aAg8gmky2arV3S0PDAQhBEyw2w@z>
 
-There is already an init_dsp function which checks cpu_has_dsp & calls
-__init_dsp if it does. Make use of it instead of duplicating the same
-code.
+The hard-coded offsets mentioned in this comment seem to not exist
+anymore, so remove mention of them from the comment.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Reviewed-by: Qais Yousef <qais.yousef@imgtec.com>
 ---
- arch/mips/kernel/process.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/mips/include/asm/processor.h | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-index 0219502..a1b94c5 100644
---- a/arch/mips/kernel/process.c
-+++ b/arch/mips/kernel/process.c
-@@ -65,8 +65,7 @@ void start_thread(struct pt_regs * regs, unsigned long pc, unsigned long sp)
- 	regs->cp0_status = status;
- 	clear_used_math();
- 	clear_fpu_owner();
--	if (cpu_has_dsp)
--		__init_dsp();
-+	init_dsp();
- 	regs->cp0_epc = pc;
- 	regs->regs[29] = sp;
- }
+diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
+index 622b2ba..4cf6dbf 100644
+--- a/arch/mips/include/asm/processor.h
++++ b/arch/mips/include/asm/processor.h
+@@ -126,10 +126,9 @@ BUILD_FPR_ACCESS(32)
+ BUILD_FPR_ACCESS(64)
+ 
+ /*
+- * It would be nice to add some more fields for emulator statistics, but there
+- * are a number of fixed offsets in offset.h and elsewhere that would have to
+- * be recalculated by hand.  So the additional information will be private to
+- * the FPU emulator for now.  See asm-mips/fpu_emulator.h.
++ * It would be nice to add some more fields for emulator statistics,
++ * the additional information is private to the FPU emulator for now.
++ * See arch/mips/include/asm/fpu_emulator.h.
+  */
+ 
+ struct mips_fpu_struct {
 -- 
 1.8.4.2

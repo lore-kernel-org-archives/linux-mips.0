@@ -1,17 +1,15 @@
-Received: from multi.imgtec.com ([194.200.65.239]:30135 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:42216 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6826005Ab3KUQs7XRrzq (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 21 Nov 2013 17:48:59 +0100
-Message-ID: <528E396F.2060609@imgtec.com>
-Date: Thu, 21 Nov 2013 16:48:47 +0000
+        id S6815748Ab3KVNM0WxVnJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 22 Nov 2013 14:12:26 +0100
 From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH v3 4/6] mips: support for 64-bit FP with O32 binaries
+Date: Fri, 22 Nov 2013 13:12:07 +0000
+Message-ID: <1385125927-8688-1-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1384518910-21129-1-git-send-email-paul.burton@imgtec.com>
+References: <1384518910-21129-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 5/6] mips: use per-mm page to execute FP branch delay
- slots
-References: <527CD403.8040407@imgtec.com> <1383922212-20403-1-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1383922212-20403-1-git-send-email-paul.burton@imgtec.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,619 +21,1245 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: ddaney.cavm@gmail.com, Paul Burton <paul.burton@imgtec.com>, "ralf@linux-mips.org" <ralf@linux-mips.org>
-Message-ID: <20131121164847.ndY-ypPAn3vRWmAeHJtthJjbYp0bcZ81c7UqTUCphYY@z>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20131122131207.ysfHfHa55VUGm1thLPf6PSo42dpAyDIi7XVhnD60YgY@z>
 
-Hmm, I believe there may still be an issue with this patch. If the
-instruction in the branch delay slot being "emulated" traps to the
-kernel, and the kernel does a force_sig then that signal won't get
-processed because signals are being temporarily ignored. So I think
-we'd go back off to userland & execute the same instruction from the
-branch delay slot again, trap again, force_sig again, go back to
-userland etc etc. I need to think about this...
+CPUs implementing mips32r2 may include a 64-bit FPU, just as mips64 CPUs
+do. In order to preserve backwards compatibility a 64-bit FPU will act
+like a 32-bit FPU (by accessing doubles from the least significant 32
+bits of an even-odd pair of FP registers) when the Status.FR bit is
+zero, again just like a mips64 CPU. The standard O32 ABI is defined
+expecting a 32-bit FPU, however recent toolchains support use of a
+64-bit FPU from an O32 mips32 executable. When an ELF executable is
+built to use a 64-bit FPU a new flag (EF_MIPS_FP64) is set in the ELF
+header.
 
-In the meantime, Ralf: if you get to merging this series please drop
-this patch & 6/6 (the stack exec change) for the time being. The "Some
-(mostly FP) cleanups" series I submitted will still apply after only
-the first 4 patches of this series.
+With this patch the kernel will check the EF_MIPS_FP64 flag when
+executing an O32 binary, and set Status.FR accordingly. The addition
+of O32 64-bit FP support lessens the opportunity for optimisation in
+the FPU emulator, so a CONFIG_MIPS_O32_FP64_SUPPORT Kconfig option is
+introduced to allow this support to be disabled for those that don't
+require it.
 
-Thanks,
-     Paul
+Inspired by an earlier patch by Leonid Yegoshin, but implemented more
+cleanly & correctly.
 
-On 08/11/13 14:50, Paul Burton wrote:
-> If a floating point branch instruction (bc1[ft]l?) is emulated,
-> typically because we're running on a core with no FPU, then we need to
-> execute the instruction in its branch delay slot too. This is done by
-> writing that instruction to memory followed by a trap, as part of an
-> "emuframe", and executing it. This avoids the requirement of an emulator
-> for the entire MIPS instruction set. Prior to this patch such emuframes
-> are written to the user stack and executed from there.
->
-> This patch moves FP branch delay emuframes off of the user stack and
-> into a per-mm page. Allocating a page per-mm leaves userland with access
-> to only what it had access to previously, and prevents processes
-> interfering with each other as they might if a single system-wide page
-> were used. The book-keeping required to track the allocation of
-> emuframes is not cheap, but given that invoking the FP emulator is
-> already very expensive I don't expect this to be an issue.
->
-> The biggest issue with executing the instruction from an FP branch delay
-> is that we must ensure that we free the frame from which we ran it. That
-> means that we must trap back to the kernel after executing that
-> instruction, which means that we must take special care not to let the
-> PC be changed as a result of that instruction. Fortunately since we're
-> executing an instruction we found in a branch delay the result is
-> unpredictable if that instruction is a branch or jump, so we can simply
-> treat those as NOPs and avoid them causing a problem. However there is
-> still the possibility that a signal may be handled whilst executing the
-> branch delay instruction. This would usually be fine as we would simply
-> execute our trap back to the kernel after sigreturn, however it is
-> possible for userland to simply not return from the signal handler - for
-> example if it executes something like a longjmp. In that case we would
-> never trap back to the kernel and never free the frame. For that reason
-> a TIF_FP_BD_EMU flag is introduced and set whilst we are executing an FP
-> branch delay instruction. Whilst this flag is set, signals will be
-> ignored. This isn't exactly pretty, but it's simpler than most of the
-> alternatives. One other simple option I considered would be to just
-> kill a process if we find a branch in an FP branch delay slot, but I
-> chose the current approach because its result is closer to what would
-> previously happen.
->
-> The primary benefit of this patch is that we are now free to mark the
-> user stack non-executable where that is possible.
->
-> Additionally the FP emuframes themselves are simplified somewhat. The
-> cookie field is removed since we can be pretty certain that we're
-> looking at an emuframe by virtue of it being located in the page
-> allocated for them. The PC to continue from is moved into struct
-> thread_struct since the control flow of a thread can no longer be
-> modified for the duration of the 'emulation', meaning there will now
-> only ever be a single emuframe required for a thread at any given time.
->
-> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> ---
-> Changes in v2:
->    - s/kernels/kernel's/
->    - Use (mm_)isBranchInstr in mips_dsemul rather than duplicating
->      similar logic.
-> ---
->   arch/mips/include/asm/fpu_emulator.h |   4 +
->   arch/mips/include/asm/mmu.h          |  12 ++
->   arch/mips/include/asm/mmu_context.h  |   7 +
->   arch/mips/include/asm/processor.h    |   7 +-
->   arch/mips/include/asm/thread_info.h  |   2 +
->   arch/mips/kernel/entry.S             |  13 +-
->   arch/mips/kernel/process.c           |   2 +
->   arch/mips/kernel/vdso.c              |   2 +-
->   arch/mips/math-emu/cp1emu.c          |   4 +-
->   arch/mips/math-emu/dsemul.c          | 266 ++++++++++++++++++++++++-----------
->   10 files changed, 226 insertions(+), 93 deletions(-)
->
-> diff --git a/arch/mips/include/asm/fpu_emulator.h b/arch/mips/include/asm/fpu_emulator.h
-> index 2abb587..16f7b0b 100644
-> --- a/arch/mips/include/asm/fpu_emulator.h
-> +++ b/arch/mips/include/asm/fpu_emulator.h
-> @@ -51,6 +51,8 @@ do {									\
->   #define MIPS_FPU_EMU_INC_STATS(M) do { } while (0)
->   #endif /* CONFIG_DEBUG_FS */
->
-> +extern void dsemul_thread_cleanup(void);
-> +extern void dsemul_mm_cleanup(struct mm_struct *mm);
->   extern int mips_dsemul(struct pt_regs *regs, mips_instruction ir,
->   	unsigned long cpc);
->   extern int do_dsemulret(struct pt_regs *xcp);
-> @@ -58,6 +60,8 @@ extern int fpu_emulator_cop1Handler(struct pt_regs *xcp,
->   				    struct mips_fpu_struct *ctx, int has_fpu,
->   				    void *__user *fault_addr);
->   int process_fpemu_return(int sig, void __user *fault_addr);
-> +int isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
-> +		  unsigned long *contpc);
->   int mm_isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
->   		     unsigned long *contpc);
->
-> diff --git a/arch/mips/include/asm/mmu.h b/arch/mips/include/asm/mmu.h
-> index c436138..08214da 100644
-> --- a/arch/mips/include/asm/mmu.h
-> +++ b/arch/mips/include/asm/mmu.h
-> @@ -1,9 +1,21 @@
->   #ifndef __ASM_MMU_H
->   #define __ASM_MMU_H
->
-> +#include <linux/mutex.h>
-> +#include <linux/wait.h>
-> +
->   typedef struct {
->   	unsigned long asid[NR_CPUS];
->   	void *vdso;
-> +
-> +	/* address of page used to hold FP branch delay emulation frames */
-> +	unsigned long fp_bd_emupage;
-> +	/* bitmap tracking allocation of fp_bd_emupage */
-> +	unsigned long *fp_bd_emupage_allocmap;
-> +	/* mutex to be held whilst modifying fp_bd_emupage(_allocmap) */
-> +	struct mutex fp_bd_emupage_mutex;
-> +	/* wait queue for threads requiring an emuframe */
-> +	wait_queue_head_t fp_bd_emupage_queue;
->   } mm_context_t;
->
->   #endif /* __ASM_MMU_H */
-> diff --git a/arch/mips/include/asm/mmu_context.h b/arch/mips/include/asm/mmu_context.h
-> index e277bba..c55e864 100644
-> --- a/arch/mips/include/asm/mmu_context.h
-> +++ b/arch/mips/include/asm/mmu_context.h
-> @@ -16,6 +16,7 @@
->   #include <linux/smp.h>
->   #include <linux/slab.h>
->   #include <asm/cacheflush.h>
-> +#include <asm/fpu_emulator.h>
->   #include <asm/hazards.h>
->   #include <asm/tlbflush.h>
->   #ifdef CONFIG_MIPS_MT_SMTC
-> @@ -133,6 +134,11 @@ init_new_context(struct task_struct *tsk, struct mm_struct *mm)
->   	for_each_possible_cpu(i)
->   		cpu_context(i, mm) = 0;
->
-> +	mm->context.fp_bd_emupage = 0;
-> +	mm->context.fp_bd_emupage_allocmap = NULL;
-> +	mutex_init(&mm->context.fp_bd_emupage_mutex);
-> +	init_waitqueue_head(&mm->context.fp_bd_emupage_queue);
-> +
->   	return 0;
->   }
->
-> @@ -199,6 +205,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
->    */
->   static inline void destroy_context(struct mm_struct *mm)
->   {
-> +	dsemul_mm_cleanup(mm);
->   }
->
->   #define deactivate_mm(tsk, mm)	do { } while (0)
-> diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
-> index 3605b84..683a3d6 100644
-> --- a/arch/mips/include/asm/processor.h
-> +++ b/arch/mips/include/asm/processor.h
-> @@ -38,9 +38,10 @@ extern unsigned int vced_count, vcei_count;
->
->   /*
->    * A special page (the vdso) is mapped into all processes at the very
-> - * top of the virtual memory space.
-> + * top of the virtual memory space. The page below it is used for FP
-> + * emulator branch delay slot executions.
->    */
-> -#define SPECIAL_PAGES_SIZE PAGE_SIZE
-> +#define SPECIAL_PAGES_SIZE (PAGE_SIZE * 2)
->
->   #ifdef CONFIG_32BIT
->   #ifdef CONFIG_KVM_GUEST
-> @@ -226,6 +227,8 @@ struct thread_struct {
->
->   	/* Saved fpu/fpu emulator stuff. */
->   	struct mips_fpu_struct fpu;
-> +	/* PC to continue from following an FP branch delay 'emulation' */
-> +	unsigned long fp_bd_emu_cpc;
->   #ifdef CONFIG_MIPS_MT_FPAFF
->   	/* Emulated instruction count */
->   	unsigned long emulated_fp;
-> diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
-> index b6da8b7..eee6e18 100644
-> --- a/arch/mips/include/asm/thread_info.h
-> +++ b/arch/mips/include/asm/thread_info.h
-> @@ -118,6 +118,7 @@ static inline struct thread_info *current_thread_info(void)
->   #define TIF_LOAD_WATCH		25	/* If set, load watch registers */
->   #define TIF_SYSCALL_TRACEPOINT	26	/* syscall tracepoint instrumentation */
->   #define TIF_32BIT_FPREGS	27	/* 32-bit floating point registers */
-> +#define TIF_FP_BD_EMU		28	/* executing an FP branch delay */
->   #define TIF_SYSCALL_TRACE	31	/* syscall trace active */
->
->   #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
-> @@ -135,6 +136,7 @@ static inline struct thread_info *current_thread_info(void)
->   #define _TIF_FPUBOUND		(1<<TIF_FPUBOUND)
->   #define _TIF_LOAD_WATCH		(1<<TIF_LOAD_WATCH)
->   #define _TIF_32BIT_FPREGS	(1<<TIF_32BIT_FPREGS)
-> +#define _TIF_FP_BD_EMU		(1<<TIF_FP_BD_EMU)
->   #define _TIF_SYSCALL_TRACEPOINT	(1<<TIF_SYSCALL_TRACEPOINT)
->
->   #define _TIF_WORK_SYSCALL_ENTRY	(_TIF_NOHZ | _TIF_SYSCALL_TRACE |	\
-> diff --git a/arch/mips/kernel/entry.S b/arch/mips/kernel/entry.S
-> index e578685..24707d7 100644
-> --- a/arch/mips/kernel/entry.S
-> +++ b/arch/mips/kernel/entry.S
-> @@ -168,10 +168,15 @@ work_resched:
->   	andi	t0, a2, _TIF_NEED_RESCHED
->   	bnez	t0, work_resched
->
-> -work_notifysig:				# deal with pending signals and
-> -					# notify-resume requests
-> -	move	a0, sp
-> -	li	a1, 0
-> +work_notifysig:
-> +	and	t0, a2, _TIF_FP_BD_EMU	# are we currently 'emulating' the
-> +					# delay slot of an FP branch?
-> +	beqz	t0, 1f			# no, continue below
-> +	and	a2, a2, ~_TIF_SIGPENDING	# yes, skip handling signals
-> +	beqz	a2, restore_all		# which leaves us nothing to do
-> +
-> +1:	move	a0, sp			# deal with pending signals and
-> +	li	a1, 0			# notify-resume requests
->   	jal	do_notify_resume	# a2 already loaded
->   	j	resume_userspace_check
->
-> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-> index 747a6cf..0219502 100644
-> --- a/arch/mips/kernel/process.c
-> +++ b/arch/mips/kernel/process.c
-> @@ -32,6 +32,7 @@
->   #include <asm/cpu.h>
->   #include <asm/dsp.h>
->   #include <asm/fpu.h>
-> +#include <asm/fpu_emulator.h>
->   #include <asm/pgtable.h>
->   #include <asm/mipsregs.h>
->   #include <asm/processor.h>
-> @@ -72,6 +73,7 @@ void start_thread(struct pt_regs * regs, unsigned long pc, unsigned long sp)
->
->   void exit_thread(void)
->   {
-> +	dsemul_thread_cleanup();
->   }
->
->   void flush_thread(void)
-> diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
-> index 0f1af58..213d871 100644
-> --- a/arch/mips/kernel/vdso.c
-> +++ b/arch/mips/kernel/vdso.c
-> @@ -78,7 +78,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
->
->   	down_write(&mm->mmap_sem);
->
-> -	addr = vdso_addr(mm->start_stack);
-> +	addr = vdso_addr(mm->start_stack) + PAGE_SIZE;
->
->   	addr = get_unmapped_area(NULL, addr, PAGE_SIZE, 0, 0);
->   	if (IS_ERR_VALUE(addr)) {
-> diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-> index 22f7b11..a0566c8 100644
-> --- a/arch/mips/math-emu/cp1emu.c
-> +++ b/arch/mips/math-emu/cp1emu.c
-> @@ -665,8 +665,8 @@ int mm_isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
->    * a single subroutine should be used across both
->    * modules.
->    */
-> -static int isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
-> -			 unsigned long *contpc)
-> +int isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
-> +		  unsigned long *contpc)
->   {
->   	union mips_instruction insn = (union mips_instruction)dec_insn.insn;
->   	unsigned int fcr31;
-> diff --git a/arch/mips/math-emu/dsemul.c b/arch/mips/math-emu/dsemul.c
-> index 7ea622a..3e64b17 100644
-> --- a/arch/mips/math-emu/dsemul.c
-> +++ b/arch/mips/math-emu/dsemul.c
-> @@ -1,6 +1,8 @@
->   #include <linux/compiler.h>
-> +#include <linux/err.h>
->   #include <linux/mm.h>
->   #include <linux/signal.h>
-> +#include <linux/slab.h>
->   #include <linux/smp.h>
->
->   #include <asm/asm.h>
-> @@ -45,52 +47,173 @@
->   struct emuframe {
->   	mips_instruction	emul;
->   	mips_instruction	badinst;
-> -	mips_instruction	cookie;
-> -	unsigned long		epc;
->   };
->
-> +static const int emupage_frame_count = PAGE_SIZE / sizeof(struct emuframe);
-> +
-> +static struct emuframe __user *alloc_emuframe(void)
-> +{
-> +	mm_context_t *mm_ctx = &current->mm->context;
-> +	struct emuframe __user *fr = NULL;
-> +	unsigned long addr;
-> +	int idx;
-> +
-> +retry:
-> +	mutex_lock(&mm_ctx->fp_bd_emupage_mutex);
-> +
-> +	/* Ensure we have a page allocated for emuframes */
-> +	if (!mm_ctx->fp_bd_emupage) {
-> +		addr = mmap_region(NULL, STACK_TOP, PAGE_SIZE,
-> +				   VM_READ|VM_WRITE|VM_EXEC|
-> +				   VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC,
-> +				   0);
-> +		if (IS_ERR_VALUE(addr))
-> +			goto out_unlock;
-> +
-> +		mm_ctx->fp_bd_emupage = addr;
-> +		pr_debug("allocate emupage at 0x%08lx to %d\n", addr,
-> +			 current->pid);
-> +	}
-> +
-> +	/* Ensure we have an allocation bitmap */
-> +	if (!mm_ctx->fp_bd_emupage_allocmap) {
-> +		mm_ctx->fp_bd_emupage_allocmap =
-> +			kcalloc(BITS_TO_LONGS(emupage_frame_count),
-> +					      sizeof(unsigned long),
-> +				GFP_KERNEL);
-> +
-> +		if (!mm_ctx->fp_bd_emupage_allocmap)
-> +			goto out_unlock;
-> +	}
-> +
-> +	/* Attempt to allocate a single bit/frame */
-> +	idx = bitmap_find_free_region(mm_ctx->fp_bd_emupage_allocmap,
-> +				      emupage_frame_count, 0);
-> +	if (idx < 0) {
-> +		/*
-> +		 * Failed to allocate a frame. We'll wait until one becomes
-> +		 * available. The mutex is unlocked so that other threads
-> +		 * actually get the opportunity to free their frames, which
-> +		 * means technically the result of bitmap_full may be incorrect.
-> +		 * However the worst case is that we repeat all this and end up
-> +		 * back here again.
-> +		 */
-> +		mutex_unlock(&mm_ctx->fp_bd_emupage_mutex);
-> +		if (!wait_event_killable(mm_ctx->fp_bd_emupage_queue,
-> +			!bitmap_full(mm_ctx->fp_bd_emupage_allocmap,
-> +				     emupage_frame_count)))
-> +			goto retry;
-> +
-> +		/* Received a fatal signal - just give in */
-> +		return NULL;
-> +	}
-> +
-> +	/* Success! */
-> +	fr = (struct emuframe __user *)mm_ctx->fp_bd_emupage + idx;
-> +	pr_debug("allocate emuframe %d to %d\n", idx, current->pid);
-> +out_unlock:
-> +	mutex_unlock(&mm_ctx->fp_bd_emupage_mutex);
-> +	return fr;
-> +}
-> +
-> +static void free_emuframe(struct emuframe __user *frame)
-> +{
-> +	mm_context_t *mm_ctx = &current->mm->context;
-> +	int idx;
-> +
-> +	mutex_lock(&mm_ctx->fp_bd_emupage_mutex);
-> +
-> +	idx = frame - (struct emuframe __user *)mm_ctx->fp_bd_emupage;
-> +	pr_debug("free emuframe %d from %d\n", idx, current->pid);
-> +	bitmap_clear(mm_ctx->fp_bd_emupage_allocmap, idx, 1);
-> +
-> +	/* If some thread is waiting for a frame, now's its chance */
-> +	wake_up(&mm_ctx->fp_bd_emupage_queue);
-> +
-> +	mutex_unlock(&mm_ctx->fp_bd_emupage_mutex);
-> +}
-> +
-> +void dsemul_thread_cleanup(void)
-> +{
-> +	/*
-> +	 * We should always have passed through do_dsemulret prior to the
-> +	 * thread exiting, so TIF_FP_BD_EMU should never be set here.
-> +	 */
-> +	BUG_ON(test_thread_flag(TIF_FP_BD_EMU));
-> +}
-> +
-> +void dsemul_mm_cleanup(struct mm_struct *mm)
-> +{
-> +	mm_context_t *mm_ctx = &mm->context;
-> +
-> +	kfree(mm_ctx->fp_bd_emupage_allocmap);
-> +}
-> +
->   int mips_dsemul(struct pt_regs *regs, mips_instruction ir, unsigned long cpc)
->   {
-> -	extern asmlinkage void handle_dsemulret(void);
-> +	struct mm_decoded_insn mm_inst = { .insn = ir };
->   	struct emuframe __user *fr;
-> -	int err;
-> +	struct pt_regs dummy_regs;
-> +	unsigned long dummy_cpc;
-> +	int err, is_mm;
->
-> -	if ((get_isa16_mode(regs->cp0_epc) && ((ir >> 16) == MM_NOP16)) ||
-> -		(ir == 0)) {
-> -		/* NOP is easy */
-> +	/*
-> +	 * Trivially handle typical NOP encodings:
-> +	 *
-> +	 *   MIPS32:		sll	r0, r0, r0
-> +	 *   microMIPS:		move16	r0, r0
-> +	 */
-> +	is_mm = get_isa16_mode(regs->cp0_epc);
-> +	if ((!is_mm && !ir) || (is_mm && ((ir >> 16) == MM_NOP16))) {
-> +is_nop:
->   		regs->cp0_epc = cpc;
->   		regs->cp0_cause &= ~CAUSEF_BD;
->   		return 0;
->   	}
-> -#ifdef DSEMUL_TRACE
-> -	printk("dsemul %lx %lx\n", regs->cp0_epc, cpc);
-> -
-> -#endif
->
->   	/*
-> -	 * The strategy is to push the instruction onto the user stack
-> -	 * and put a trap after it which we can catch and jump to
-> -	 * the required address any alternative apart from full
-> -	 * instruction emulation!!.
-> +	 * In order for us to clean up the emuframe properly, we'll need to
-> +	 * execute a break instruction after ir. If ir is a branch then we may
-> +	 * never reach that break instruction and thus never free the emuframe.
->   	 *
-> -	 * Algorithmics used a system call instruction, and
-> -	 * borrowed that vector.  MIPS/Linux version is a bit
-> -	 * more heavyweight in the interests of portability and
-> -	 * multiprocessor support.  For Linux we generate a
-> -	 * an unaligned access and force an address error exception.
-> +	 * Fortunately we know that ir is in a branch delay slot and thus if
-> +	 * it is a branch then its operation is unpredictable. So we can just
-> +	 * treat branches as NOPs and skip the 'emulation' entirely.
->   	 *
-> -	 * For embedded systems (stand-alone) we prefer to use a
-> -	 * non-existing CP1 instruction. This prevents us from emulating
-> -	 * branches, but gives us a cleaner interface to the exception
-> -	 * handler (single entry point).
-> +	 * If the worst happens and we miss a branch/jump instruction here, or
-> +	 * some processor implements a custom one, then it would be possible
-> +	 * for us to allocate an emuframe and never free it. Fortunately this
-> +	 * would:
-> +	 *
-> +	 *  1) Be a bug in the userland code, because it has a branch/jump in
-> +	 *     a branch delay slot. So if we run out of emuframes and the
-> +	 *     userland code hangs it's not exactly the kernel's fault.
-> +	 *
-> +	 *  2) Only affect that userland process, since emuframes are allocated
-> +	 *     per-mm and kernel threads don't use them at all.
->   	 */
-> +	if ((!is_mm && isBranchInstr(&dummy_regs, mm_inst, &dummy_cpc)) ||
-> +	    (is_mm && mm_isBranchInstr(&dummy_regs, mm_inst, &dummy_cpc))) {
-> +		pr_warn("PID %d has a branch in an FP branch delay slot at 0x%08lx\n",
-> +			current->pid, regs->cp0_epc);
-> +		goto is_nop;
-> +	}
->
-> -	/* Ensure that the two instructions are in the same cache line */
-> -	fr = (struct emuframe __user *)
-> -		((regs->regs[29] - sizeof(struct emuframe)) & ~0x7);
-> +	pr_debug("dsemul 0x%08lx cont at 0x%08lx\n", regs->cp0_epc, cpc);
->
-> -	/* Verify that the stack pointer is not competely insane */
-> -	if (unlikely(!access_ok(VERIFY_WRITE, fr, sizeof(struct emuframe))))
-> +	/*
-> +	 * The strategy is to write the instruction to a per-mm page followed
-> +	 * by a trap which we can catch to return to the required address. Any
-> +	 * alternative to full instruction emulation!!
-> +	 *
-> +	 * Algorithmics used a system call instruction, and borrowed that
-> +	 * vector.  MIPS/Linux version is a bit more heavyweight in the
-> +	 * interests of portability and multiprocessor support.  For Linux we
-> +	 * generate a BREAK instruction with a break code reserved for this
-> +	 * purpose.
-> +	 */
-> +	fr = alloc_emuframe();
-> +	if (!fr)
->   		return SIGBUS;
->
->   	if (get_isa16_mode(regs->cp0_epc)) {
-> @@ -103,17 +226,18 @@ int mips_dsemul(struct pt_regs *regs, mips_instruction ir, unsigned long cpc)
->   		err |= __put_user((mips_instruction)BREAK_MATH, &fr->badinst);
->   	}
->
-> -	err |= __put_user((mips_instruction)BD_COOKIE, &fr->cookie);
-> -	err |= __put_user(cpc, &fr->epc);
-> -
->   	if (unlikely(err)) {
->   		MIPS_FPU_EMU_INC_STATS(errors);
-> +		free_emuframe(fr);
->   		return SIGBUS;
->   	}
->
->   	regs->cp0_epc = ((unsigned long) &fr->emul) |
->   		get_isa16_mode(regs->cp0_epc);
->
-> +	current->thread.fp_bd_emu_cpc = cpc;
-> +	set_thread_flag(TIF_FP_BD_EMU);
-> +
->   	flush_cache_sigtramp((unsigned long)&fr->badinst);
->
->   	return SIGILL;		/* force out of emulation loop */
-> @@ -121,64 +245,38 @@ int mips_dsemul(struct pt_regs *regs, mips_instruction ir, unsigned long cpc)
->
->   int do_dsemulret(struct pt_regs *xcp)
->   {
-> -	struct emuframe __user *fr;
-> -	unsigned long epc;
-> -	u32 insn, cookie;
-> -	int err = 0;
-> -	u16 instr[2];
-> -
-> -	fr = (struct emuframe __user *)
-> -		(msk_isa16_mode(xcp->cp0_epc) - sizeof(mips_instruction));
-> -
-> -	/*
-> -	 * If we can't even access the area, something is very wrong, but we'll
-> -	 * leave that to the default handling
-> -	 */
-> -	if (!access_ok(VERIFY_READ, fr, sizeof(struct emuframe)))
-> -		return 0;
-> -
-> -	/*
-> -	 * Do some sanity checking on the stackframe:
-> -	 *
-> -	 *  - Is the instruction pointed to by the EPC an BREAK_MATH?
-> -	 *  - Is the following memory word the BD_COOKIE?
-> -	 */
-> -	if (get_isa16_mode(xcp->cp0_epc)) {
-> -		err = __get_user(instr[0], (u16 __user *)(&fr->badinst));
-> -		err |= __get_user(instr[1], (u16 __user *)((long)(&fr->badinst) + 2));
-> -		insn = (instr[0] << 16) | instr[1];
-> -	} else {
-> -		err = __get_user(insn, &fr->badinst);
-> -	}
-> -	err |= __get_user(cookie, &fr->cookie);
-> +	mm_context_t *mm_ctx = &current->mm->context;
-> +	struct emuframe __user *fr = NULL;
-> +	unsigned long fr_addr;
-> +	int success = 0;
->
-> -	if (unlikely(err || (insn != BREAK_MATH) || (cookie != BD_COOKIE))) {
-> -		MIPS_FPU_EMU_INC_STATS(errors);
-> -		return 0;
-> -	}
-> +	/* If we don't have TIF_FP_BD_EMU set... */
-> +	if (!test_and_clear_thread_flag(TIF_FP_BD_EMU))
-> +		goto out;
->
->   	/*
-> -	 * At this point, we are satisfied that it's a BD emulation trap.  Yes,
-> -	 * a user might have deliberately put two malformed and useless
-> -	 * instructions in a row in his program, in which case he's in for a
-> -	 * nasty surprise - the next instruction will be treated as a
-> -	 * continuation address!  Alas, this seems to be the only way that we
-> -	 * can handle signals, recursion, and longjmps() in the context of
-> -	 * emulating the branch delay instruction.
-> +	 * ...or EPC is outside of the expected page or misaligned then
-> +	 * something is wrong. Leave it to the default trap/break code to
-> +	 * handle.
->   	 */
-> +	fr_addr = msk_isa16_mode(xcp->cp0_epc) - sizeof(mips_instruction);
-> +	if ((fr_addr < mm_ctx->fp_bd_emupage) ||
-> +	    (fr_addr > (mm_ctx->fp_bd_emupage + PAGE_SIZE - sizeof(*fr))) ||
-> +	    (fr_addr & (sizeof(*fr) - 1)))
-> +		goto out;
->
-> -#ifdef DSEMUL_TRACE
-> -	printk("dsemulret\n");
-> -#endif
-> -	if (__get_user(epc, &fr->epc)) {		/* Saved EPC */
-> -		/* This is not a good situation to be in */
-> -		force_sig(SIGBUS, current);
-> -
-> -		return 0;
-> -	}
-> +	/* At this point, we are satisfied that it's a BD emulation trap. */
-> +	fr = (struct emuframe __user *)fr_addr;
->
->   	/* Set EPC to return to post-branch instruction */
-> -	xcp->cp0_epc = epc;
-> +	xcp->cp0_epc = current->thread.fp_bd_emu_cpc;
-> +	success = 1;
->
-> -	return 1;
-> +	pr_debug("dsemulret to 0x%08lx\n", xcp->cp0_epc);
-> +out:
-> +	if (fr)
-> +		free_emuframe(fr);
-> +	if (!success)
-> +		MIPS_FPU_EMU_INC_STATS(errors);
-> +	return success;
->   }
->
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+---
+Changes in v3:
+  - Drop dependency on CONFIG_CPU_MIPSR2.
+  - Refuse to execute O32 binaries requiring 64 bit FP when the kernel
+    doesn't include support for it (via elf_check_arch), rather than
+    killing the process later once it executes an FP instruction.
+
+Changes in v2:
+  - Handle TIF_32BIT_FPREGS in PTRACE_P{EEK,OKE}USR.
+---
+ arch/mips/Kconfig                   |  17 ++++++
+ arch/mips/include/asm/asmmacro-32.h |  42 --------------
+ arch/mips/include/asm/asmmacro-64.h |  96 --------------------------------
+ arch/mips/include/asm/asmmacro.h    | 107 ++++++++++++++++++++++++++++++++++++
+ arch/mips/include/asm/elf.h         |  31 ++++++++++-
+ arch/mips/include/asm/fpu.h         |  91 +++++++++++++++++++++++++-----
+ arch/mips/include/asm/thread_info.h |   4 +-
+ arch/mips/kernel/binfmt_elfo32.c    |  14 +++++
+ arch/mips/kernel/cpu-probe.c        |   2 +-
+ arch/mips/kernel/process.c          |   3 -
+ arch/mips/kernel/ptrace.c           |  60 +++++++++++---------
+ arch/mips/kernel/ptrace32.c         |  53 ++++++++++--------
+ arch/mips/kernel/r4k_fpu.S          |  74 +++++++++++++++++++++++--
+ arch/mips/kernel/r4k_switch.S       |  45 ++++++++++++++-
+ arch/mips/kernel/signal.c           |  10 ++--
+ arch/mips/kernel/signal32.c         |  10 ++--
+ arch/mips/kernel/traps.c            |  10 ++--
+ arch/mips/math-emu/cp1emu.c         |  10 ++--
+ arch/mips/math-emu/kernel_linkage.c |   6 +-
+ 19 files changed, 449 insertions(+), 236 deletions(-)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 17cc7ff..3c3cb32 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2335,6 +2335,23 @@ config CC_STACKPROTECTOR
+ 
+ 	  This feature requires gcc version 4.2 or above.
+ 
++config MIPS_O32_FP64_SUPPORT
++	bool "Support for O32 binaries using 64-bit FP"
++	depends on 32BIT || MIPS32_O32
++	default y
++	help
++	  When this is enabled, the kernel will support use of 64-bit floating
++	  point registers with binaries using the O32 ABI along with the
++	  EF_MIPS_FP64 ELF header flag (typically built with -mfp64). On
++	  mips32 systems this support is at the cost of increasing the size
++	  and complexity of the compiled FPU emulator. Thus if you are running
++	  a mips32 system and know that none of your userland binaries will
++	  require 64-bit floating point, you may wish to reduce the size of
++	  your kernel & potentially improve FP emulation performance by saying
++	  N here.
++
++	  If unsure, say Y.
++
+ config USE_OF
+ 	bool
+ 	select OF
+diff --git a/arch/mips/include/asm/asmmacro-32.h b/arch/mips/include/asm/asmmacro-32.h
+index 2413afe..70e1f17 100644
+--- a/arch/mips/include/asm/asmmacro-32.h
++++ b/arch/mips/include/asm/asmmacro-32.h
+@@ -12,27 +12,6 @@
+ #include <asm/fpregdef.h>
+ #include <asm/mipsregs.h>
+ 
+-	.macro	fpu_save_double thread status tmp1=t0
+-	cfc1	\tmp1,  fcr31
+-	sdc1	$f0,  THREAD_FPR0(\thread)
+-	sdc1	$f2,  THREAD_FPR2(\thread)
+-	sdc1	$f4,  THREAD_FPR4(\thread)
+-	sdc1	$f6,  THREAD_FPR6(\thread)
+-	sdc1	$f8,  THREAD_FPR8(\thread)
+-	sdc1	$f10, THREAD_FPR10(\thread)
+-	sdc1	$f12, THREAD_FPR12(\thread)
+-	sdc1	$f14, THREAD_FPR14(\thread)
+-	sdc1	$f16, THREAD_FPR16(\thread)
+-	sdc1	$f18, THREAD_FPR18(\thread)
+-	sdc1	$f20, THREAD_FPR20(\thread)
+-	sdc1	$f22, THREAD_FPR22(\thread)
+-	sdc1	$f24, THREAD_FPR24(\thread)
+-	sdc1	$f26, THREAD_FPR26(\thread)
+-	sdc1	$f28, THREAD_FPR28(\thread)
+-	sdc1	$f30, THREAD_FPR30(\thread)
+-	sw	\tmp1, THREAD_FCR31(\thread)
+-	.endm
+-
+ 	.macro	fpu_save_single thread tmp=t0
+ 	cfc1	\tmp,  fcr31
+ 	swc1	$f0,  THREAD_FPR0(\thread)
+@@ -70,27 +49,6 @@
+ 	sw	\tmp, THREAD_FCR31(\thread)
+ 	.endm
+ 
+-	.macro	fpu_restore_double thread status tmp=t0
+-	lw	\tmp, THREAD_FCR31(\thread)
+-	ldc1	$f0,  THREAD_FPR0(\thread)
+-	ldc1	$f2,  THREAD_FPR2(\thread)
+-	ldc1	$f4,  THREAD_FPR4(\thread)
+-	ldc1	$f6,  THREAD_FPR6(\thread)
+-	ldc1	$f8,  THREAD_FPR8(\thread)
+-	ldc1	$f10, THREAD_FPR10(\thread)
+-	ldc1	$f12, THREAD_FPR12(\thread)
+-	ldc1	$f14, THREAD_FPR14(\thread)
+-	ldc1	$f16, THREAD_FPR16(\thread)
+-	ldc1	$f18, THREAD_FPR18(\thread)
+-	ldc1	$f20, THREAD_FPR20(\thread)
+-	ldc1	$f22, THREAD_FPR22(\thread)
+-	ldc1	$f24, THREAD_FPR24(\thread)
+-	ldc1	$f26, THREAD_FPR26(\thread)
+-	ldc1	$f28, THREAD_FPR28(\thread)
+-	ldc1	$f30, THREAD_FPR30(\thread)
+-	ctc1	\tmp, fcr31
+-	.endm
+-
+ 	.macro	fpu_restore_single thread tmp=t0
+ 	lw	\tmp, THREAD_FCR31(\thread)
+ 	lwc1	$f0,  THREAD_FPR0(\thread)
+diff --git a/arch/mips/include/asm/asmmacro-64.h b/arch/mips/include/asm/asmmacro-64.h
+index 08a527d..38ea609 100644
+--- a/arch/mips/include/asm/asmmacro-64.h
++++ b/arch/mips/include/asm/asmmacro-64.h
+@@ -13,102 +13,6 @@
+ #include <asm/fpregdef.h>
+ #include <asm/mipsregs.h>
+ 
+-	.macro	fpu_save_16even thread tmp=t0
+-	cfc1	\tmp, fcr31
+-	sdc1	$f0,  THREAD_FPR0(\thread)
+-	sdc1	$f2,  THREAD_FPR2(\thread)
+-	sdc1	$f4,  THREAD_FPR4(\thread)
+-	sdc1	$f6,  THREAD_FPR6(\thread)
+-	sdc1	$f8,  THREAD_FPR8(\thread)
+-	sdc1	$f10, THREAD_FPR10(\thread)
+-	sdc1	$f12, THREAD_FPR12(\thread)
+-	sdc1	$f14, THREAD_FPR14(\thread)
+-	sdc1	$f16, THREAD_FPR16(\thread)
+-	sdc1	$f18, THREAD_FPR18(\thread)
+-	sdc1	$f20, THREAD_FPR20(\thread)
+-	sdc1	$f22, THREAD_FPR22(\thread)
+-	sdc1	$f24, THREAD_FPR24(\thread)
+-	sdc1	$f26, THREAD_FPR26(\thread)
+-	sdc1	$f28, THREAD_FPR28(\thread)
+-	sdc1	$f30, THREAD_FPR30(\thread)
+-	sw	\tmp, THREAD_FCR31(\thread)
+-	.endm
+-
+-	.macro	fpu_save_16odd thread
+-	sdc1	$f1,  THREAD_FPR1(\thread)
+-	sdc1	$f3,  THREAD_FPR3(\thread)
+-	sdc1	$f5,  THREAD_FPR5(\thread)
+-	sdc1	$f7,  THREAD_FPR7(\thread)
+-	sdc1	$f9,  THREAD_FPR9(\thread)
+-	sdc1	$f11, THREAD_FPR11(\thread)
+-	sdc1	$f13, THREAD_FPR13(\thread)
+-	sdc1	$f15, THREAD_FPR15(\thread)
+-	sdc1	$f17, THREAD_FPR17(\thread)
+-	sdc1	$f19, THREAD_FPR19(\thread)
+-	sdc1	$f21, THREAD_FPR21(\thread)
+-	sdc1	$f23, THREAD_FPR23(\thread)
+-	sdc1	$f25, THREAD_FPR25(\thread)
+-	sdc1	$f27, THREAD_FPR27(\thread)
+-	sdc1	$f29, THREAD_FPR29(\thread)
+-	sdc1	$f31, THREAD_FPR31(\thread)
+-	.endm
+-
+-	.macro	fpu_save_double thread status tmp
+-	sll	\tmp, \status, 5
+-	bgez	\tmp, 2f
+-	fpu_save_16odd \thread
+-2:
+-	fpu_save_16even \thread \tmp
+-	.endm
+-
+-	.macro	fpu_restore_16even thread tmp=t0
+-	lw	\tmp, THREAD_FCR31(\thread)
+-	ldc1	$f0,  THREAD_FPR0(\thread)
+-	ldc1	$f2,  THREAD_FPR2(\thread)
+-	ldc1	$f4,  THREAD_FPR4(\thread)
+-	ldc1	$f6,  THREAD_FPR6(\thread)
+-	ldc1	$f8,  THREAD_FPR8(\thread)
+-	ldc1	$f10, THREAD_FPR10(\thread)
+-	ldc1	$f12, THREAD_FPR12(\thread)
+-	ldc1	$f14, THREAD_FPR14(\thread)
+-	ldc1	$f16, THREAD_FPR16(\thread)
+-	ldc1	$f18, THREAD_FPR18(\thread)
+-	ldc1	$f20, THREAD_FPR20(\thread)
+-	ldc1	$f22, THREAD_FPR22(\thread)
+-	ldc1	$f24, THREAD_FPR24(\thread)
+-	ldc1	$f26, THREAD_FPR26(\thread)
+-	ldc1	$f28, THREAD_FPR28(\thread)
+-	ldc1	$f30, THREAD_FPR30(\thread)
+-	ctc1	\tmp, fcr31
+-	.endm
+-
+-	.macro	fpu_restore_16odd thread
+-	ldc1	$f1,  THREAD_FPR1(\thread)
+-	ldc1	$f3,  THREAD_FPR3(\thread)
+-	ldc1	$f5,  THREAD_FPR5(\thread)
+-	ldc1	$f7,  THREAD_FPR7(\thread)
+-	ldc1	$f9,  THREAD_FPR9(\thread)
+-	ldc1	$f11, THREAD_FPR11(\thread)
+-	ldc1	$f13, THREAD_FPR13(\thread)
+-	ldc1	$f15, THREAD_FPR15(\thread)
+-	ldc1	$f17, THREAD_FPR17(\thread)
+-	ldc1	$f19, THREAD_FPR19(\thread)
+-	ldc1	$f21, THREAD_FPR21(\thread)
+-	ldc1	$f23, THREAD_FPR23(\thread)
+-	ldc1	$f25, THREAD_FPR25(\thread)
+-	ldc1	$f27, THREAD_FPR27(\thread)
+-	ldc1	$f29, THREAD_FPR29(\thread)
+-	ldc1	$f31, THREAD_FPR31(\thread)
+-	.endm
+-
+-	.macro	fpu_restore_double thread status tmp
+-	sll	\tmp, \status, 5
+-	bgez	\tmp, 1f				# 16 register mode?
+-
+-	fpu_restore_16odd \thread
+-1:	fpu_restore_16even \thread \tmp
+-	.endm
+-
+ 	.macro	cpu_save_nonscratch thread
+ 	LONG_S	s0, THREAD_REG16(\thread)
+ 	LONG_S	s1, THREAD_REG17(\thread)
+diff --git a/arch/mips/include/asm/asmmacro.h b/arch/mips/include/asm/asmmacro.h
+index 6c8342a..3220c93 100644
+--- a/arch/mips/include/asm/asmmacro.h
++++ b/arch/mips/include/asm/asmmacro.h
+@@ -62,6 +62,113 @@
+ 	.endm
+ #endif /* CONFIG_MIPS_MT_SMTC */
+ 
++	.macro	fpu_save_16even thread tmp=t0
++	cfc1	\tmp, fcr31
++	sdc1	$f0,  THREAD_FPR0(\thread)
++	sdc1	$f2,  THREAD_FPR2(\thread)
++	sdc1	$f4,  THREAD_FPR4(\thread)
++	sdc1	$f6,  THREAD_FPR6(\thread)
++	sdc1	$f8,  THREAD_FPR8(\thread)
++	sdc1	$f10, THREAD_FPR10(\thread)
++	sdc1	$f12, THREAD_FPR12(\thread)
++	sdc1	$f14, THREAD_FPR14(\thread)
++	sdc1	$f16, THREAD_FPR16(\thread)
++	sdc1	$f18, THREAD_FPR18(\thread)
++	sdc1	$f20, THREAD_FPR20(\thread)
++	sdc1	$f22, THREAD_FPR22(\thread)
++	sdc1	$f24, THREAD_FPR24(\thread)
++	sdc1	$f26, THREAD_FPR26(\thread)
++	sdc1	$f28, THREAD_FPR28(\thread)
++	sdc1	$f30, THREAD_FPR30(\thread)
++	sw	\tmp, THREAD_FCR31(\thread)
++	.endm
++
++	.macro	fpu_save_16odd thread
++	.set	push
++	.set	mips64r2
++	sdc1	$f1,  THREAD_FPR1(\thread)
++	sdc1	$f3,  THREAD_FPR3(\thread)
++	sdc1	$f5,  THREAD_FPR5(\thread)
++	sdc1	$f7,  THREAD_FPR7(\thread)
++	sdc1	$f9,  THREAD_FPR9(\thread)
++	sdc1	$f11, THREAD_FPR11(\thread)
++	sdc1	$f13, THREAD_FPR13(\thread)
++	sdc1	$f15, THREAD_FPR15(\thread)
++	sdc1	$f17, THREAD_FPR17(\thread)
++	sdc1	$f19, THREAD_FPR19(\thread)
++	sdc1	$f21, THREAD_FPR21(\thread)
++	sdc1	$f23, THREAD_FPR23(\thread)
++	sdc1	$f25, THREAD_FPR25(\thread)
++	sdc1	$f27, THREAD_FPR27(\thread)
++	sdc1	$f29, THREAD_FPR29(\thread)
++	sdc1	$f31, THREAD_FPR31(\thread)
++	.set	pop
++	.endm
++
++	.macro	fpu_save_double thread status tmp
++#if defined(CONFIG_MIPS64) || defined(CONFIG_CPU_MIPS32_R2)
++	sll	\tmp, \status, 5
++	bgez	\tmp, 10f
++	fpu_save_16odd \thread
++10:
++#endif
++	fpu_save_16even \thread \tmp
++	.endm
++
++	.macro	fpu_restore_16even thread tmp=t0
++	lw	\tmp, THREAD_FCR31(\thread)
++	ldc1	$f0,  THREAD_FPR0(\thread)
++	ldc1	$f2,  THREAD_FPR2(\thread)
++	ldc1	$f4,  THREAD_FPR4(\thread)
++	ldc1	$f6,  THREAD_FPR6(\thread)
++	ldc1	$f8,  THREAD_FPR8(\thread)
++	ldc1	$f10, THREAD_FPR10(\thread)
++	ldc1	$f12, THREAD_FPR12(\thread)
++	ldc1	$f14, THREAD_FPR14(\thread)
++	ldc1	$f16, THREAD_FPR16(\thread)
++	ldc1	$f18, THREAD_FPR18(\thread)
++	ldc1	$f20, THREAD_FPR20(\thread)
++	ldc1	$f22, THREAD_FPR22(\thread)
++	ldc1	$f24, THREAD_FPR24(\thread)
++	ldc1	$f26, THREAD_FPR26(\thread)
++	ldc1	$f28, THREAD_FPR28(\thread)
++	ldc1	$f30, THREAD_FPR30(\thread)
++	ctc1	\tmp, fcr31
++	.endm
++
++	.macro	fpu_restore_16odd thread
++	.set	push
++	.set	mips64r2
++	ldc1	$f1,  THREAD_FPR1(\thread)
++	ldc1	$f3,  THREAD_FPR3(\thread)
++	ldc1	$f5,  THREAD_FPR5(\thread)
++	ldc1	$f7,  THREAD_FPR7(\thread)
++	ldc1	$f9,  THREAD_FPR9(\thread)
++	ldc1	$f11, THREAD_FPR11(\thread)
++	ldc1	$f13, THREAD_FPR13(\thread)
++	ldc1	$f15, THREAD_FPR15(\thread)
++	ldc1	$f17, THREAD_FPR17(\thread)
++	ldc1	$f19, THREAD_FPR19(\thread)
++	ldc1	$f21, THREAD_FPR21(\thread)
++	ldc1	$f23, THREAD_FPR23(\thread)
++	ldc1	$f25, THREAD_FPR25(\thread)
++	ldc1	$f27, THREAD_FPR27(\thread)
++	ldc1	$f29, THREAD_FPR29(\thread)
++	ldc1	$f31, THREAD_FPR31(\thread)
++	.set	pop
++	.endm
++
++	.macro	fpu_restore_double thread status tmp
++#if defined(CONFIG_MIPS64) || defined(CONFIG_CPU_MIPS32_R2)
++	sll	\tmp, \status, 5
++	bgez	\tmp, 10f				# 16 register mode?
++
++	fpu_restore_16odd \thread
++10:
++#endif
++	fpu_restore_16even \thread \tmp
++	.endm
++
+ /*
+  * Temporary until all gas have MT ASE support
+  */
+diff --git a/arch/mips/include/asm/elf.h b/arch/mips/include/asm/elf.h
+index a66359e..d414405 100644
+--- a/arch/mips/include/asm/elf.h
++++ b/arch/mips/include/asm/elf.h
+@@ -36,6 +36,7 @@
+ #define EF_MIPS_ABI2		0x00000020
+ #define EF_MIPS_OPTIONS_FIRST	0x00000080
+ #define EF_MIPS_32BITMODE	0x00000100
++#define EF_MIPS_FP64		0x00000200
+ #define EF_MIPS_ABI		0x0000f000
+ #define EF_MIPS_ARCH		0xf0000000
+ 
+@@ -176,6 +177,18 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
+ #ifdef CONFIG_32BIT
+ 
+ /*
++ * In order to be sure that we don't attempt to execute an O32 binary which
++ * requires 64 bit FP (FR=1) on a system which does not support it we refuse
++ * to execute any binary which has bits specified by the following macro set
++ * in its ELF header flags.
++ */
++#ifdef CONFIG_MIPS_O32_FP64_SUPPORT
++# define __MIPS_O32_FP64_MUST_BE_ZERO	0
++#else
++# define __MIPS_O32_FP64_MUST_BE_ZERO	EF_MIPS_FP64
++#endif
++
++/*
+  * This is used to ensure we don't load something for the wrong architecture.
+  */
+ #define elf_check_arch(hdr)						\
+@@ -192,6 +205,8 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
+ 	if (((__h->e_flags & EF_MIPS_ABI) != 0) &&			\
+ 	    ((__h->e_flags & EF_MIPS_ABI) != EF_MIPS_ABI_O32))		\
+ 		__res = 0;						\
++	if (__h->e_flags & __MIPS_O32_FP64_MUST_BE_ZERO)		\
++		__res = 0;						\
+ 									\
+ 	__res;								\
+ })
+@@ -249,6 +264,11 @@ extern struct mips_abi mips_abi_n32;
+ 
+ #define SET_PERSONALITY(ex)						\
+ do {									\
++	if ((ex).e_flags & EF_MIPS_FP64)				\
++		clear_thread_flag(TIF_32BIT_FPREGS);			\
++	else								\
++		set_thread_flag(TIF_32BIT_FPREGS);			\
++									\
+ 	if (personality(current->personality) != PER_LINUX)		\
+ 		set_personality(PER_LINUX);				\
+ 									\
+@@ -271,14 +291,18 @@ do {									\
+ #endif
+ 
+ #ifdef CONFIG_MIPS32_O32
+-#define __SET_PERSONALITY32_O32()					\
++#define __SET_PERSONALITY32_O32(ex)					\
+ 	do {								\
+ 		set_thread_flag(TIF_32BIT_REGS);			\
+ 		set_thread_flag(TIF_32BIT_ADDR);			\
++									\
++		if (!((ex).e_flags & EF_MIPS_FP64))			\
++			set_thread_flag(TIF_32BIT_FPREGS);		\
++									\
+ 		current->thread.abi = &mips_abi_32;			\
+ 	} while (0)
+ #else
+-#define __SET_PERSONALITY32_O32()					\
++#define __SET_PERSONALITY32_O32(ex)					\
+ 	do { } while (0)
+ #endif
+ 
+@@ -289,7 +313,7 @@ do {									\
+ 	     ((ex).e_flags & EF_MIPS_ABI) == 0)				\
+ 		__SET_PERSONALITY32_N32();				\
+ 	else								\
+-		__SET_PERSONALITY32_O32();				\
++		__SET_PERSONALITY32_O32(ex);                            \
+ } while (0)
+ #else
+ #define __SET_PERSONALITY32(ex) do { } while (0)
+@@ -300,6 +324,7 @@ do {									\
+ 	unsigned int p;							\
+ 									\
+ 	clear_thread_flag(TIF_32BIT_REGS);				\
++	clear_thread_flag(TIF_32BIT_FPREGS);				\
+ 	clear_thread_flag(TIF_32BIT_ADDR);				\
+ 									\
+ 	if ((ex).e_ident[EI_CLASS] == ELFCLASS32)			\
+diff --git a/arch/mips/include/asm/fpu.h b/arch/mips/include/asm/fpu.h
+index 3bf023f..cfe092f 100644
+--- a/arch/mips/include/asm/fpu.h
++++ b/arch/mips/include/asm/fpu.h
+@@ -33,11 +33,48 @@ extern void _init_fpu(void);
+ extern void _save_fp(struct task_struct *);
+ extern void _restore_fp(struct task_struct *);
+ 
+-#define __enable_fpu()							\
+-do {									\
+-	set_c0_status(ST0_CU1);						\
+-	enable_fpu_hazard();						\
+-} while (0)
++/*
++ * This enum specifies a mode in which we want the FPU to operate, for cores
++ * which implement the Status.FR bit. Note that FPU_32BIT & FPU_64BIT
++ * purposefully have the values 0 & 1 respectively, so that an integer value
++ * of Status.FR can be trivially casted to the corresponding enum fpu_mode.
++ */
++enum fpu_mode {
++	FPU_32BIT = 0,		/* FR = 0 */
++	FPU_64BIT,		/* FR = 1 */
++	FPU_AS_IS,
++};
++
++static inline int __enable_fpu(enum fpu_mode mode)
++{
++	int fr;
++
++	switch (mode) {
++	case FPU_AS_IS:
++		/* just enable the FPU in its current mode */
++		set_c0_status(ST0_CU1);
++		enable_fpu_hazard();
++		return 0;
++
++	case FPU_64BIT:
++#if !(defined(CONFIG_CPU_MIPS32_R2) || defined(CONFIG_MIPS64))
++		/* we only have a 32-bit FPU */
++		return SIGFPE;
++#endif
++		/* fall through */
++	case FPU_32BIT:
++		/* set CU1 & change FR appropriately */
++		fr = (int)mode;
++		change_c0_status(ST0_CU1 | ST0_FR, ST0_CU1 | (fr ? ST0_FR : 0));
++		enable_fpu_hazard();
++
++		/* check FR has the desired value */
++		return (!!(read_c0_status() & ST0_FR) == !!fr) ? 0 : SIGFPE;
++
++	default:
++		BUG();
++	}
++}
+ 
+ #define __disable_fpu()							\
+ do {									\
+@@ -57,27 +94,46 @@ static inline int is_fpu_owner(void)
+ 	return cpu_has_fpu && __is_fpu_owner();
+ }
+ 
+-static inline void __own_fpu(void)
++static inline int __own_fpu(void)
+ {
+-	__enable_fpu();
++	enum fpu_mode mode;
++	int ret;
++
++	mode = !test_thread_flag(TIF_32BIT_FPREGS);
++	ret = __enable_fpu(mode);
++	if (ret)
++		return ret;
++
+ 	KSTK_STATUS(current) |= ST0_CU1;
++	if (mode == FPU_64BIT)
++		KSTK_STATUS(current) |= ST0_FR;
++	else /* mode == FPU_32BIT */
++		KSTK_STATUS(current) &= ~ST0_FR;
++
+ 	set_thread_flag(TIF_USEDFPU);
++	return 0;
+ }
+ 
+-static inline void own_fpu_inatomic(int restore)
++static inline int own_fpu_inatomic(int restore)
+ {
++	int ret = 0;
++
+ 	if (cpu_has_fpu && !__is_fpu_owner()) {
+-		__own_fpu();
+-		if (restore)
++		ret = __own_fpu();
++		if (restore && !ret)
+ 			_restore_fp(current);
+ 	}
++	return ret;
+ }
+ 
+-static inline void own_fpu(int restore)
++static inline int own_fpu(int restore)
+ {
++	int ret;
++
+ 	preempt_disable();
+-	own_fpu_inatomic(restore);
++	ret = own_fpu_inatomic(restore);
+ 	preempt_enable();
++	return ret;
+ }
+ 
+ static inline void lose_fpu(int save)
+@@ -93,16 +149,21 @@ static inline void lose_fpu(int save)
+ 	preempt_enable();
+ }
+ 
+-static inline void init_fpu(void)
++static inline int init_fpu(void)
+ {
++	int ret = 0;
++
+ 	preempt_disable();
+ 	if (cpu_has_fpu) {
+-		__own_fpu();
+-		_init_fpu();
++		ret = __own_fpu();
++		if (!ret)
++			_init_fpu();
+ 	} else {
+ 		fpu_emulator_init_fpu();
+ 	}
++
+ 	preempt_enable();
++	return ret;
+ }
+ 
+ static inline void save_fp(struct task_struct *tsk)
+diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
+index f9b24bf..b6da8b7 100644
+--- a/arch/mips/include/asm/thread_info.h
++++ b/arch/mips/include/asm/thread_info.h
+@@ -112,11 +112,12 @@ static inline struct thread_info *current_thread_info(void)
+ #define TIF_NOHZ		19	/* in adaptive nohz mode */
+ #define TIF_FIXADE		20	/* Fix address errors in software */
+ #define TIF_LOGADE		21	/* Log address errors to syslog */
+-#define TIF_32BIT_REGS		22	/* also implies 16/32 fprs */
++#define TIF_32BIT_REGS		22	/* 32-bit general purpose registers */
+ #define TIF_32BIT_ADDR		23	/* 32-bit address space (o32/n32) */
+ #define TIF_FPUBOUND		24	/* thread bound to FPU-full CPU set */
+ #define TIF_LOAD_WATCH		25	/* If set, load watch registers */
+ #define TIF_SYSCALL_TRACEPOINT	26	/* syscall tracepoint instrumentation */
++#define TIF_32BIT_FPREGS	27	/* 32-bit floating point registers */
+ #define TIF_SYSCALL_TRACE	31	/* syscall trace active */
+ 
+ #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
+@@ -133,6 +134,7 @@ static inline struct thread_info *current_thread_info(void)
+ #define _TIF_32BIT_ADDR		(1<<TIF_32BIT_ADDR)
+ #define _TIF_FPUBOUND		(1<<TIF_FPUBOUND)
+ #define _TIF_LOAD_WATCH		(1<<TIF_LOAD_WATCH)
++#define _TIF_32BIT_FPREGS	(1<<TIF_32BIT_FPREGS)
+ #define _TIF_SYSCALL_TRACEPOINT	(1<<TIF_SYSCALL_TRACEPOINT)
+ 
+ #define _TIF_WORK_SYSCALL_ENTRY	(_TIF_NOHZ | _TIF_SYSCALL_TRACE |	\
+diff --git a/arch/mips/kernel/binfmt_elfo32.c b/arch/mips/kernel/binfmt_elfo32.c
+index 202e581..7faf5f2 100644
+--- a/arch/mips/kernel/binfmt_elfo32.c
++++ b/arch/mips/kernel/binfmt_elfo32.c
+@@ -28,6 +28,18 @@ typedef double elf_fpreg_t;
+ typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
+ 
+ /*
++ * In order to be sure that we don't attempt to execute an O32 binary which
++ * requires 64 bit FP (FR=1) on a system which does not support it we refuse
++ * to execute any binary which has bits specified by the following macro set
++ * in its ELF header flags.
++ */
++#ifdef CONFIG_MIPS_O32_FP64_SUPPORT
++# define __MIPS_O32_FP64_MUST_BE_ZERO	0
++#else
++# define __MIPS_O32_FP64_MUST_BE_ZERO	EF_MIPS_FP64
++#endif
++
++/*
+  * This is used to ensure we don't load something for the wrong architecture.
+  */
+ #define elf_check_arch(hdr)						\
+@@ -44,6 +56,8 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
+ 	if (((__h->e_flags & EF_MIPS_ABI) != 0) &&			\
+ 	    ((__h->e_flags & EF_MIPS_ABI) != EF_MIPS_ABI_O32))		\
+ 		__res = 0;						\
++	if (__h->e_flags & __MIPS_O32_FP64_MUST_BE_ZERO)		\
++		__res = 0;						\
+ 									\
+ 	__res;								\
+ })
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index c814287..e2b2d20 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -112,7 +112,7 @@ static inline unsigned long cpu_get_fpu_id(void)
+ 	unsigned long tmp, fpu_id;
+ 
+ 	tmp = read_c0_status();
+-	__enable_fpu();
++	__enable_fpu(FPU_AS_IS);
+ 	fpu_id = read_32bit_cp1_register(CP1_REVISION);
+ 	write_c0_status(tmp);
+ 	return fpu_id;
+diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+index ddc7610..747a6cf 100644
+--- a/arch/mips/kernel/process.c
++++ b/arch/mips/kernel/process.c
+@@ -60,9 +60,6 @@ void start_thread(struct pt_regs * regs, unsigned long pc, unsigned long sp)
+ 
+ 	/* New thread loses kernel privileges. */
+ 	status = regs->cp0_status & ~(ST0_CU0|ST0_CU1|ST0_FR|KU_MASK);
+-#ifdef CONFIG_64BIT
+-	status |= test_thread_flag(TIF_32BIT_REGS) ? 0 : ST0_FR;
+-#endif
+ 	status |= KU_USER;
+ 	regs->cp0_status = status;
+ 	clear_used_math();
+diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
+index b52e1d2..7da9b76 100644
+--- a/arch/mips/kernel/ptrace.c
++++ b/arch/mips/kernel/ptrace.c
+@@ -137,13 +137,13 @@ int ptrace_getfpregs(struct task_struct *child, __u32 __user *data)
+ 		if (cpu_has_mipsmt) {
+ 			unsigned int vpflags = dvpe();
+ 			flags = read_c0_status();
+-			__enable_fpu();
++			__enable_fpu(FPU_AS_IS);
+ 			__asm__ __volatile__("cfc1\t%0,$0" : "=r" (tmp));
+ 			write_c0_status(flags);
+ 			evpe(vpflags);
+ 		} else {
+ 			flags = read_c0_status();
+-			__enable_fpu();
++			__enable_fpu(FPU_AS_IS);
+ 			__asm__ __volatile__("cfc1\t%0,$0" : "=r" (tmp));
+ 			write_c0_status(flags);
+ 		}
+@@ -408,6 +408,7 @@ long arch_ptrace(struct task_struct *child, long request,
+ 	/* Read the word at location addr in the USER area. */
+ 	case PTRACE_PEEKUSR: {
+ 		struct pt_regs *regs;
++		fpureg_t *fregs;
+ 		unsigned long tmp = 0;
+ 
+ 		regs = task_pt_regs(child);
+@@ -418,26 +419,28 @@ long arch_ptrace(struct task_struct *child, long request,
+ 			tmp = regs->regs[addr];
+ 			break;
+ 		case FPR_BASE ... FPR_BASE + 31:
+-			if (tsk_used_math(child)) {
+-				fpureg_t *fregs = get_fpu_regs(child);
++			if (!tsk_used_math(child)) {
++				/* FP not yet used */
++				tmp = -1;
++				break;
++			}
++			fregs = get_fpu_regs(child);
+ 
+ #ifdef CONFIG_32BIT
++			if (test_thread_flag(TIF_32BIT_FPREGS)) {
+ 				/*
+ 				 * The odd registers are actually the high
+ 				 * order bits of the values stored in the even
+ 				 * registers - unless we're using r2k_switch.S.
+ 				 */
+ 				if (addr & 1)
+-					tmp = (unsigned long) (fregs[((addr & ~1) - 32)] >> 32);
++					tmp = fregs[(addr & ~1) - 32] >> 32;
+ 				else
+-					tmp = (unsigned long) (fregs[(addr - 32)] & 0xffffffff);
+-#endif
+-#ifdef CONFIG_64BIT
+-				tmp = fregs[addr - FPR_BASE];
+-#endif
+-			} else {
+-				tmp = -1;	/* FP not yet used  */
++					tmp = fregs[addr - 32];
++				break;
+ 			}
++#endif
++			tmp = fregs[addr - FPR_BASE];
+ 			break;
+ 		case PC:
+ 			tmp = regs->cp0_epc;
+@@ -483,13 +486,13 @@ long arch_ptrace(struct task_struct *child, long request,
+ 			if (cpu_has_mipsmt) {
+ 				unsigned int vpflags = dvpe();
+ 				flags = read_c0_status();
+-				__enable_fpu();
++				__enable_fpu(FPU_AS_IS);
+ 				__asm__ __volatile__("cfc1\t%0,$0": "=r" (tmp));
+ 				write_c0_status(flags);
+ 				evpe(vpflags);
+ 			} else {
+ 				flags = read_c0_status();
+-				__enable_fpu();
++				__enable_fpu(FPU_AS_IS);
+ 				__asm__ __volatile__("cfc1\t%0,$0": "=r" (tmp));
+ 				write_c0_status(flags);
+ 			}
+@@ -554,22 +557,25 @@ long arch_ptrace(struct task_struct *child, long request,
+ 				child->thread.fpu.fcr31 = 0;
+ 			}
+ #ifdef CONFIG_32BIT
+-			/*
+-			 * The odd registers are actually the high order bits
+-			 * of the values stored in the even registers - unless
+-			 * we're using r2k_switch.S.
+-			 */
+-			if (addr & 1) {
+-				fregs[(addr & ~1) - FPR_BASE] &= 0xffffffff;
+-				fregs[(addr & ~1) - FPR_BASE] |= ((unsigned long long) data) << 32;
+-			} else {
+-				fregs[addr - FPR_BASE] &= ~0xffffffffLL;
+-				fregs[addr - FPR_BASE] |= data;
++			if (test_thread_flag(TIF_32BIT_FPREGS)) {
++				/*
++				 * The odd registers are actually the high
++				 * order bits of the values stored in the even
++				 * registers - unless we're using r2k_switch.S.
++				 */
++				if (addr & 1) {
++					fregs[(addr & ~1) - FPR_BASE] &=
++						0xffffffff;
++					fregs[(addr & ~1) - FPR_BASE] |=
++						((u64)data) << 32;
++				} else {
++					fregs[addr - FPR_BASE] &= ~0xffffffffLL;
++					fregs[addr - FPR_BASE] |= data;
++				}
++				break;
+ 			}
+ #endif
+-#ifdef CONFIG_64BIT
+ 			fregs[addr - FPR_BASE] = data;
+-#endif
+ 			break;
+ 		}
+ 		case PC:
+diff --git a/arch/mips/kernel/ptrace32.c b/arch/mips/kernel/ptrace32.c
+index 9486055..b8aa2dd 100644
+--- a/arch/mips/kernel/ptrace32.c
++++ b/arch/mips/kernel/ptrace32.c
+@@ -80,6 +80,7 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+ 	/* Read the word at location addr in the USER area. */
+ 	case PTRACE_PEEKUSR: {
+ 		struct pt_regs *regs;
++		fpureg_t *fregs;
+ 		unsigned int tmp;
+ 
+ 		regs = task_pt_regs(child);
+@@ -90,21 +91,25 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+ 			tmp = regs->regs[addr];
+ 			break;
+ 		case FPR_BASE ... FPR_BASE + 31:
+-			if (tsk_used_math(child)) {
+-				fpureg_t *fregs = get_fpu_regs(child);
+-
++			if (!tsk_used_math(child)) {
++				/* FP not yet used */
++				tmp = -1;
++				break;
++			}
++			fregs = get_fpu_regs(child);
++			if (test_thread_flag(TIF_32BIT_FPREGS)) {
+ 				/*
+ 				 * The odd registers are actually the high
+ 				 * order bits of the values stored in the even
+ 				 * registers - unless we're using r2k_switch.S.
+ 				 */
+ 				if (addr & 1)
+-					tmp = (unsigned long) (fregs[((addr & ~1) - 32)] >> 32);
++					tmp = fregs[(addr & ~1) - 32] >> 32;
+ 				else
+-					tmp = (unsigned long) (fregs[(addr - 32)] & 0xffffffff);
+-			} else {
+-				tmp = -1;	/* FP not yet used  */
++					tmp = fregs[addr - 32];
++				break;
+ 			}
++			tmp = fregs[addr - FPR_BASE];
+ 			break;
+ 		case PC:
+ 			tmp = regs->cp0_epc;
+@@ -147,13 +152,13 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+ 			if (cpu_has_mipsmt) {
+ 				unsigned int vpflags = dvpe();
+ 				flags = read_c0_status();
+-				__enable_fpu();
++				__enable_fpu(FPU_AS_IS);
+ 				__asm__ __volatile__("cfc1\t%0,$0": "=r" (tmp));
+ 				write_c0_status(flags);
+ 				evpe(vpflags);
+ 			} else {
+ 				flags = read_c0_status();
+-				__enable_fpu();
++				__enable_fpu(FPU_AS_IS);
+ 				__asm__ __volatile__("cfc1\t%0,$0": "=r" (tmp));
+ 				write_c0_status(flags);
+ 			}
+@@ -236,20 +241,24 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+ 				       sizeof(child->thread.fpu));
+ 				child->thread.fpu.fcr31 = 0;
+ 			}
+-			/*
+-			 * The odd registers are actually the high order bits
+-			 * of the values stored in the even registers - unless
+-			 * we're using r2k_switch.S.
+-			 */
+-			if (addr & 1) {
+-				fregs[(addr & ~1) - FPR_BASE] &= 0xffffffff;
+-				fregs[(addr & ~1) - FPR_BASE] |= ((unsigned long long) data) << 32;
+-			} else {
+-				fregs[addr - FPR_BASE] &= ~0xffffffffLL;
+-				/* Must cast, lest sign extension fill upper
+-				   bits!  */
+-				fregs[addr - FPR_BASE] |= (unsigned int)data;
++			if (test_thread_flag(TIF_32BIT_FPREGS)) {
++				/*
++				 * The odd registers are actually the high
++				 * order bits of the values stored in the even
++				 * registers - unless we're using r2k_switch.S.
++				 */
++				if (addr & 1) {
++					fregs[(addr & ~1) - FPR_BASE] &=
++						0xffffffff;
++					fregs[(addr & ~1) - FPR_BASE] |=
++						((u64)data) << 32;
++				} else {
++					fregs[addr - FPR_BASE] &= ~0xffffffffLL;
++					fregs[addr - FPR_BASE] |= data;
++				}
++				break;
+ 			}
++			fregs[addr - FPR_BASE] = data;
+ 			break;
+ 		}
+ 		case PC:
+diff --git a/arch/mips/kernel/r4k_fpu.S b/arch/mips/kernel/r4k_fpu.S
+index 55ffe14..253b2fb 100644
+--- a/arch/mips/kernel/r4k_fpu.S
++++ b/arch/mips/kernel/r4k_fpu.S
+@@ -35,7 +35,15 @@
+ LEAF(_save_fp_context)
+ 	cfc1	t1, fcr31
+ 
+-#ifdef CONFIG_64BIT
++#if defined(CONFIG_64BIT) || defined(CONFIG_MIPS32_R2)
++	.set	push
++#ifdef CONFIG_MIPS32_R2
++	.set	mips64r2
++	mfc0	t0, CP0_STATUS
++	sll	t0, t0, 5
++	bgez	t0, 1f			# skip storing odd if FR=0
++	 nop
++#endif
+ 	/* Store the 16 odd double precision registers */
+ 	EX	sdc1 $f1, SC_FPREGS+8(a0)
+ 	EX	sdc1 $f3, SC_FPREGS+24(a0)
+@@ -53,6 +61,7 @@ LEAF(_save_fp_context)
+ 	EX	sdc1 $f27, SC_FPREGS+216(a0)
+ 	EX	sdc1 $f29, SC_FPREGS+232(a0)
+ 	EX	sdc1 $f31, SC_FPREGS+248(a0)
++1:	.set	pop
+ #endif
+ 
+ 	/* Store the 16 even double precision registers */
+@@ -82,7 +91,31 @@ LEAF(_save_fp_context)
+ LEAF(_save_fp_context32)
+ 	cfc1	t1, fcr31
+ 
+-	EX	sdc1 $f0, SC32_FPREGS+0(a0)
++	mfc0	t0, CP0_STATUS
++	sll	t0, t0, 5
++	bgez	t0, 1f			# skip storing odd if FR=0
++	 nop
++
++	/* Store the 16 odd double precision registers */
++	EX      sdc1 $f1, SC32_FPREGS+8(a0)
++	EX      sdc1 $f3, SC32_FPREGS+24(a0)
++	EX      sdc1 $f5, SC32_FPREGS+40(a0)
++	EX      sdc1 $f7, SC32_FPREGS+56(a0)
++	EX      sdc1 $f9, SC32_FPREGS+72(a0)
++	EX      sdc1 $f11, SC32_FPREGS+88(a0)
++	EX      sdc1 $f13, SC32_FPREGS+104(a0)
++	EX      sdc1 $f15, SC32_FPREGS+120(a0)
++	EX      sdc1 $f17, SC32_FPREGS+136(a0)
++	EX      sdc1 $f19, SC32_FPREGS+152(a0)
++	EX      sdc1 $f21, SC32_FPREGS+168(a0)
++	EX      sdc1 $f23, SC32_FPREGS+184(a0)
++	EX      sdc1 $f25, SC32_FPREGS+200(a0)
++	EX      sdc1 $f27, SC32_FPREGS+216(a0)
++	EX      sdc1 $f29, SC32_FPREGS+232(a0)
++	EX      sdc1 $f31, SC32_FPREGS+248(a0)
++
++	/* Store the 16 even double precision registers */
++1:	EX	sdc1 $f0, SC32_FPREGS+0(a0)
+ 	EX	sdc1 $f2, SC32_FPREGS+16(a0)
+ 	EX	sdc1 $f4, SC32_FPREGS+32(a0)
+ 	EX	sdc1 $f6, SC32_FPREGS+48(a0)
+@@ -114,7 +147,16 @@ LEAF(_save_fp_context32)
+  */
+ LEAF(_restore_fp_context)
+ 	EX	lw t0, SC_FPC_CSR(a0)
+-#ifdef CONFIG_64BIT
++
++#if defined(CONFIG_64BIT) || defined(CONFIG_MIPS32_R2)
++	.set	push
++#ifdef CONFIG_MIPS32_R2
++	.set	mips64r2
++	mfc0	t0, CP0_STATUS
++	sll	t0, t0, 5
++	bgez	t0, 1f			# skip loading odd if FR=0
++	 nop
++#endif
+ 	EX	ldc1 $f1, SC_FPREGS+8(a0)
+ 	EX	ldc1 $f3, SC_FPREGS+24(a0)
+ 	EX	ldc1 $f5, SC_FPREGS+40(a0)
+@@ -131,6 +173,7 @@ LEAF(_restore_fp_context)
+ 	EX	ldc1 $f27, SC_FPREGS+216(a0)
+ 	EX	ldc1 $f29, SC_FPREGS+232(a0)
+ 	EX	ldc1 $f31, SC_FPREGS+248(a0)
++1:	.set pop
+ #endif
+ 	EX	ldc1 $f0, SC_FPREGS+0(a0)
+ 	EX	ldc1 $f2, SC_FPREGS+16(a0)
+@@ -157,7 +200,30 @@ LEAF(_restore_fp_context)
+ LEAF(_restore_fp_context32)
+ 	/* Restore an o32 sigcontext.  */
+ 	EX	lw t0, SC32_FPC_CSR(a0)
+-	EX	ldc1 $f0, SC32_FPREGS+0(a0)
++
++	mfc0	t0, CP0_STATUS
++	sll	t0, t0, 5
++	bgez	t0, 1f			# skip loading odd if FR=0
++	 nop
++
++	EX      ldc1 $f1, SC32_FPREGS+8(a0)
++	EX      ldc1 $f3, SC32_FPREGS+24(a0)
++	EX      ldc1 $f5, SC32_FPREGS+40(a0)
++	EX      ldc1 $f7, SC32_FPREGS+56(a0)
++	EX      ldc1 $f9, SC32_FPREGS+72(a0)
++	EX      ldc1 $f11, SC32_FPREGS+88(a0)
++	EX      ldc1 $f13, SC32_FPREGS+104(a0)
++	EX      ldc1 $f15, SC32_FPREGS+120(a0)
++	EX      ldc1 $f17, SC32_FPREGS+136(a0)
++	EX      ldc1 $f19, SC32_FPREGS+152(a0)
++	EX      ldc1 $f21, SC32_FPREGS+168(a0)
++	EX      ldc1 $f23, SC32_FPREGS+184(a0)
++	EX      ldc1 $f25, SC32_FPREGS+200(a0)
++	EX      ldc1 $f27, SC32_FPREGS+216(a0)
++	EX      ldc1 $f29, SC32_FPREGS+232(a0)
++	EX      ldc1 $f31, SC32_FPREGS+248(a0)
++
++1:	EX	ldc1 $f0, SC32_FPREGS+0(a0)
+ 	EX	ldc1 $f2, SC32_FPREGS+16(a0)
+ 	EX	ldc1 $f4, SC32_FPREGS+32(a0)
+ 	EX	ldc1 $f6, SC32_FPREGS+48(a0)
+diff --git a/arch/mips/kernel/r4k_switch.S b/arch/mips/kernel/r4k_switch.S
+index 078de5e..cc78dd9 100644
+--- a/arch/mips/kernel/r4k_switch.S
++++ b/arch/mips/kernel/r4k_switch.S
+@@ -123,7 +123,7 @@
+  * Save a thread's fp context.
+  */
+ LEAF(_save_fp)
+-#ifdef CONFIG_64BIT
++#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2)
+ 	mfc0	t0, CP0_STATUS
+ #endif
+ 	fpu_save_double a0 t0 t1		# clobbers t1
+@@ -134,7 +134,7 @@ LEAF(_save_fp)
+  * Restore a thread's fp context.
+  */
+ LEAF(_restore_fp)
+-#ifdef CONFIG_64BIT
++#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2)
+ 	mfc0	t0, CP0_STATUS
+ #endif
+ 	fpu_restore_double a0 t0 t1		# clobbers t1
+@@ -228,6 +228,47 @@ LEAF(_init_fpu)
+ 	mtc1	t1, $f29
+ 	mtc1	t1, $f30
+ 	mtc1	t1, $f31
++
++#ifdef CONFIG_CPU_MIPS32_R2
++	.set    push
++	.set    mips64r2
++	sll     t0, t0, 5			# is Status.FR set?
++	bgez    t0, 1f				# no: skip setting upper 32b
++
++	mthc1   t1, $f0
++	mthc1   t1, $f1
++	mthc1   t1, $f2
++	mthc1   t1, $f3
++	mthc1   t1, $f4
++	mthc1   t1, $f5
++	mthc1   t1, $f6
++	mthc1   t1, $f7
++	mthc1   t1, $f8
++	mthc1   t1, $f9
++	mthc1   t1, $f10
++	mthc1   t1, $f11
++	mthc1   t1, $f12
++	mthc1   t1, $f13
++	mthc1   t1, $f14
++	mthc1   t1, $f15
++	mthc1   t1, $f16
++	mthc1   t1, $f17
++	mthc1   t1, $f18
++	mthc1   t1, $f19
++	mthc1   t1, $f20
++	mthc1   t1, $f21
++	mthc1   t1, $f22
++	mthc1   t1, $f23
++	mthc1   t1, $f24
++	mthc1   t1, $f25
++	mthc1   t1, $f26
++	mthc1   t1, $f27
++	mthc1   t1, $f28
++	mthc1   t1, $f29
++	mthc1   t1, $f30
++	mthc1   t1, $f31
++1:	.set    pop
++#endif /* CONFIG_CPU_MIPS32_R2 */
+ #else
+ 	.set	mips3
+ 	dmtc1	t1, $f0
+diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+index 2f285ab..5199563 100644
+--- a/arch/mips/kernel/signal.c
++++ b/arch/mips/kernel/signal.c
+@@ -71,8 +71,9 @@ static int protected_save_fp_context(struct sigcontext __user *sc)
+ 	int err;
+ 	while (1) {
+ 		lock_fpu_owner();
+-		own_fpu_inatomic(1);
+-		err = save_fp_context(sc); /* this might fail */
++		err = own_fpu_inatomic(1);
++		if (!err)
++			err = save_fp_context(sc); /* this might fail */
+ 		unlock_fpu_owner();
+ 		if (likely(!err))
+ 			break;
+@@ -91,8 +92,9 @@ static int protected_restore_fp_context(struct sigcontext __user *sc)
+ 	int err, tmp __maybe_unused;
+ 	while (1) {
+ 		lock_fpu_owner();
+-		own_fpu_inatomic(0);
+-		err = restore_fp_context(sc); /* this might fail */
++		err = own_fpu_inatomic(0);
++		if (!err)
++			err = restore_fp_context(sc); /* this might fail */
+ 		unlock_fpu_owner();
+ 		if (likely(!err))
+ 			break;
+diff --git a/arch/mips/kernel/signal32.c b/arch/mips/kernel/signal32.c
+index 57de8b7..7c1024b 100644
+--- a/arch/mips/kernel/signal32.c
++++ b/arch/mips/kernel/signal32.c
+@@ -85,8 +85,9 @@ static int protected_save_fp_context32(struct sigcontext32 __user *sc)
+ 	int err;
+ 	while (1) {
+ 		lock_fpu_owner();
+-		own_fpu_inatomic(1);
+-		err = save_fp_context32(sc); /* this might fail */
++		err = own_fpu_inatomic(1);
++		if (!err)
++			err = save_fp_context32(sc); /* this might fail */
+ 		unlock_fpu_owner();
+ 		if (likely(!err))
+ 			break;
+@@ -105,8 +106,9 @@ static int protected_restore_fp_context32(struct sigcontext32 __user *sc)
+ 	int err, tmp __maybe_unused;
+ 	while (1) {
+ 		lock_fpu_owner();
+-		own_fpu_inatomic(0);
+-		err = restore_fp_context32(sc); /* this might fail */
++		err = own_fpu_inatomic(0);
++		if (!err)
++			err = restore_fp_context32(sc); /* this might fail */
+ 		unlock_fpu_owner();
+ 		if (likely(!err))
+ 			break;
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index f9c8746..f40f688 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -1080,7 +1080,7 @@ asmlinkage void do_cpu(struct pt_regs *regs)
+ 	unsigned long old_epc, old31;
+ 	unsigned int opcode;
+ 	unsigned int cpid;
+-	int status;
++	int status, err;
+ 	unsigned long __maybe_unused flags;
+ 
+ 	prev_state = exception_enter();
+@@ -1153,19 +1153,19 @@ asmlinkage void do_cpu(struct pt_regs *regs)
+ 
+ 	case 1:
+ 		if (used_math())	/* Using the FPU again.	 */
+-			own_fpu(1);
++			err = own_fpu(1);
+ 		else {			/* First time FPU user.	 */
+-			init_fpu();
++			err = init_fpu();
+ 			set_used_math();
+ 		}
+ 
+-		if (!raw_cpu_has_fpu) {
++		if (!raw_cpu_has_fpu || err) {
+ 			int sig;
+ 			void __user *fault_addr = NULL;
+ 			sig = fpu_emulator_cop1Handler(regs,
+ 						       &current->thread.fpu,
+ 						       0, &fault_addr);
+-			if (!process_fpemu_return(sig, fault_addr))
++			if (!process_fpemu_return(sig, fault_addr) && !err)
+ 				mt_ase_fp_affinity();
+ 		}
+ 
+diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
+index 4b37961..22f7b11 100644
+--- a/arch/mips/math-emu/cp1emu.c
++++ b/arch/mips/math-emu/cp1emu.c
+@@ -859,20 +859,20 @@ static int isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
+  * In the Linux kernel, we support selection of FPR format on the
+  * basis of the Status.FR bit.	If an FPU is not present, the FR bit
+  * is hardwired to zero, which would imply a 32-bit FPU even for
+- * 64-bit CPUs so we rather look at TIF_32BIT_REGS.
++ * 64-bit CPUs so we rather look at TIF_32BIT_FPREGS.
+  * FPU emu is slow and bulky and optimizing this function offers fairly
+  * sizeable benefits so we try to be clever and make this function return
+  * a constant whenever possible, that is on 64-bit kernels without O32
+- * compatibility enabled and on 32-bit kernels.
++ * compatibility enabled and on 32-bit without 64-bit FPU support.
+  */
+ static inline int cop1_64bit(struct pt_regs *xcp)
+ {
+ #if defined(CONFIG_64BIT) && !defined(CONFIG_MIPS32_O32)
+ 	return 1;
+-#elif defined(CONFIG_64BIT) && defined(CONFIG_MIPS32_O32)
+-	return !test_thread_flag(TIF_32BIT_REGS);
+-#else
++#elif defined(CONFIG_32BIT) && !defined(CONFIG_MIPS_O32_FP64_SUPPORT)
+ 	return 0;
++#else
++	return !test_thread_flag(TIF_32BIT_FPREGS);
+ #endif
+ }
+ 
+diff --git a/arch/mips/math-emu/kernel_linkage.c b/arch/mips/math-emu/kernel_linkage.c
+index 1c58657..3aeae07 100644
+--- a/arch/mips/math-emu/kernel_linkage.c
++++ b/arch/mips/math-emu/kernel_linkage.c
+@@ -89,8 +89,9 @@ int fpu_emulator_save_context32(struct sigcontext32 __user *sc)
+ {
+ 	int i;
+ 	int err = 0;
++	int inc = test_thread_flag(TIF_32BIT_FPREGS) ? 2 : 1;
+ 
+-	for (i = 0; i < 32; i+=2) {
++	for (i = 0; i < 32; i += inc) {
+ 		err |=
+ 		    __put_user(current->thread.fpu.fpr[i], &sc->sc_fpregs[i]);
+ 	}
+@@ -103,8 +104,9 @@ int fpu_emulator_restore_context32(struct sigcontext32 __user *sc)
+ {
+ 	int i;
+ 	int err = 0;
++	int inc = test_thread_flag(TIF_32BIT_FPREGS) ? 2 : 1;
+ 
+-	for (i = 0; i < 32; i+=2) {
++	for (i = 0; i < 32; i += inc) {
+ 		err |=
+ 		    __get_user(current->thread.fpu.fpr[i], &sc->sc_fpregs[i]);
+ 	}
+-- 
+1.8.4.2

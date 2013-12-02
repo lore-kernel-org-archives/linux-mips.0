@@ -1,13 +1,13 @@
-Received: from multi.imgtec.com ([194.200.65.239]:51756 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:18600 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6826484Ab3K2RH1AC9iR (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 29 Nov 2013 18:07:27 +0100
+        id S6824789Ab3LBQtAHat1j (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 2 Dec 2013 17:49:00 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 2/2] MIPS: sead3: remove unused cpu_khz variable
-Date: Fri, 29 Nov 2013 17:07:14 +0000
-Message-ID: <1385744834-18115-2-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1385744834-18115-1-git-send-email-paul.burton@imgtec.com>
-References: <1385744834-18115-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 2/3] MIPS: Malta: mux & enable SERIRQ interrupt
+Date: Mon, 2 Dec 2013 16:48:37 +0000
+Message-ID: <1386002918-32270-3-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1386002918-32270-1-git-send-email-paul.burton@imgtec.com>
+References: <1386002918-32270-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -22,39 +22,76 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20131129170714.WBE07mzo92PDUTrezwrSX5LBpJIbVlPOLvN2b3mweB8@z>
+Message-ID: <20131202164837.M2U-HQBoEQVptM_3uQ1AVm1BwMh9DEYE8wQc-88r0kM@z>
 
-This variable seems to have been copied from Malta when SEAD3 support
-was introduced, but is likewise unused. Remove it.
+This patch causes the kernel to mux the SERIRQ interrupt to the SERIRQ
+pin of the PIIX4 and to enable that interrupt. The kernel depends upon
+the interrupt when using the SuperIO UARTs (ttyS0 & ttyS1) but
+previously would not configure it, instead relying upon the bootloader
+having done so. If that is not the case then the typical result is that
+the system appears to hang once it reaches userland as no output is
+displayed on the UART.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
 ---
- arch/mips/mti-sead3/sead3-time.c | 4 ----
- 1 file changed, 4 deletions(-)
+ arch/mips/include/asm/mips-boards/piix4.h |  7 +++++++
+ arch/mips/pci/fixup-malta.c               | 11 +++++++++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/arch/mips/mti-sead3/sead3-time.c b/arch/mips/mti-sead3/sead3-time.c
-index 552d26c..678d03d 100644
---- a/arch/mips/mti-sead3/sead3-time.c
-+++ b/arch/mips/mti-sead3/sead3-time.c
-@@ -13,8 +13,6 @@
- #include <asm/irq.h>
- #include <asm/mips-boards/generic.h>
+diff --git a/arch/mips/include/asm/mips-boards/piix4.h b/arch/mips/include/asm/mips-boards/piix4.h
+index e332279..836e2ed 100644
+--- a/arch/mips/include/asm/mips-boards/piix4.h
++++ b/arch/mips/include/asm/mips-boards/piix4.h
+@@ -26,6 +26,10 @@
+ #define   PIIX4_FUNC0_PIRQRC_IRQ_ROUTING_DISABLE	(1 << 7)
+ #define   PIIX4_FUNC0_PIRQRC_IRQ_ROUTING_MASK		0xf
+ #define   PIIX4_FUNC0_PIRQRC_IRQ_ROUTING_MAX		16
++/* SERIRQ Control */
++#define PIIX4_FUNC0_SERIRQC			0x64
++#define   PIIX4_FUNC0_SERIRQC_EN			(1 << 7)
++#define   PIIX4_FUNC0_SERIRQC_CONT			(1 << 6)
+ /* Top Of Memory */
+ #define PIIX4_FUNC0_TOM				0x69
+ #define   PIIX4_FUNC0_TOM_TOP_OF_MEMORY_MASK		0xf0
+@@ -34,6 +38,9 @@
+ #define   PIIX4_FUNC0_DLC_USBPR_EN			(1 << 2)
+ #define   PIIX4_FUNC0_DLC_PASSIVE_RELEASE_EN		(1 << 1)
+ #define   PIIX4_FUNC0_DLC_DELAYED_TRANSACTION_EN	(1 << 0)
++/* General Configuration */
++#define PIIX4_FUNC0_GENCFG			0xb0
++#define   PIIX4_FUNC0_GENCFG_SERIRQ			(1 << 16)
  
--unsigned long cpu_khz;
--
- static int mips_cpu_timer_irq;
- static int mips_cpu_perf_irq;
+ /* IDE Timing */
+ #define PIIX4_FUNC1_IDETIM_PRIMARY_LO		0x40
+diff --git a/arch/mips/pci/fixup-malta.c b/arch/mips/pci/fixup-malta.c
+index df36e23..7a0eda7 100644
+--- a/arch/mips/pci/fixup-malta.c
++++ b/arch/mips/pci/fixup-malta.c
+@@ -54,6 +54,7 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
+ static void malta_piix_func0_fixup(struct pci_dev *pdev)
+ {
+ 	unsigned char reg_val;
++	u32 reg_val32;
+ 	/* PIIX PIRQC[A:D] irq mappings */
+ 	static int piixirqmap[PIIX4_FUNC0_PIRQRC_IRQ_ROUTING_MAX] = {
+ 		0,  0,	0,  3,
+@@ -83,6 +84,16 @@ static void malta_piix_func0_fixup(struct pci_dev *pdev)
+ 		pci_write_config_byte(pdev, PIIX4_FUNC0_TOM, reg_val |
+ 				PIIX4_FUNC0_TOM_TOP_OF_MEMORY_MASK);
+ 	}
++
++	/* Mux SERIRQ to its pin */
++	pci_read_config_dword(pdev, PIIX4_FUNC0_GENCFG, &reg_val32);
++	pci_write_config_dword(pdev, PIIX4_FUNC0_GENCFG,
++			       reg_val32 | PIIX4_FUNC0_GENCFG_SERIRQ);
++
++	/* Enable SERIRQ */
++	pci_read_config_byte(pdev, PIIX4_FUNC0_SERIRQC, &reg_val);
++	reg_val |= PIIX4_FUNC0_SERIRQC_EN | PIIX4_FUNC0_SERIRQC_CONT;
++	pci_write_config_byte(pdev, PIIX4_FUNC0_SERIRQC, reg_val);
+ }
  
-@@ -109,8 +107,6 @@ void __init plat_time_init(void)
- 	pr_debug("CPU frequency %d.%02d MHz\n", (est_freq / 1000000),
- 		(est_freq % 1000000) * 100 / 1000000);
- 
--	cpu_khz = est_freq / 1000;
--
- 	mips_scroll_message();
- 
- 	plat_perf_setup();
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82371AB_0,
 -- 
 1.8.4.2

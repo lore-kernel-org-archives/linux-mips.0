@@ -1,15 +1,16 @@
-Received: from multi.imgtec.com ([194.200.65.239]:9188 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6867293Ab3LDQAYH0a8R (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 4 Dec 2013 17:00:24 +0100
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH] crash_dump: fix compilation error (on MIPS at least)
-Date: Wed, 4 Dec 2013 15:58:22 +0000
-Message-ID: <1386172702-31266-1-git-send-email-qais.yousef@imgtec.com>
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:61673 "EHLO
+        mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6838329Ab3LFC0dflxDc (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 6 Dec 2013 03:26:33 +0100
+From: Florian Fainelli <florian@openwrt.org>
+Subject: [PATCH 2/5] tty: serial: bcm63xx_uart: drop bcm_{readl,writel} macros
+Date: Thu, 5 Dec 2013 18:26:05 -0800
+Message-ID: <1386296768-20204-3-git-send-email-florian@openwrt.org>
+In-Reply-To: <1386296768-20204-1-git-send-email-florian@openwrt.org>
+References: <1386296768-20204-1-git-send-email-florian@openwrt.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Content-Type: text/plain
+Return-Path: <florian@openwrt.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,47 +20,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: Qais Yousef <qais.yousef@imgtec.com>, Andrew Morton <akpm@linux-foundation.org>, Michael Holzheu <holzheu@linux.vnet.ibm.com>, Vivek Goyal <vgoyal@redhat.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20131204155822.d3UdVjqmVtIfLU7YECYuL5FOe1PWj6ldRE_NSZFfzyc@z>
+To: linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org, blogic@openwrt.org, jogo@openwrt.org, mbizon@freebox.fr, cernekee@gmail.com, gregkh@linuxfoundation.org, linux-serial@vger.kernel.org, Florian Fainelli <florian@openwrt.org>
+Message-ID: <20131206022605.-BqOVt0qWk_S6calheaLFSIxAw3sluAlvUeqpAngNGE@z>
 
-  In file included from kernel/crash_dump.c:2:0:
-  include/linux/crash_dump.h:22:27: error: unknown type name ‘pgprot_t’
+bcm_{readl,writel} macros expand to __raw_{readl,writel}, use these
+directly such that we do not rely on the platform to provide these for
+us. As a result, we no longer use bcm63xx_io.h, so remove that inclusion
+too.
 
-when CONFIG_CRASH_DUMP=y
-
-The error was traced back to this commit:
-
-  9cb218131de1 vmcore: introduce remap_oldmem_pfn_range()
-
-include <asm/pgtable.h> to get the missing definition
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michael Holzheu <holzheu@linux.vnet.ibm.com>
-Cc: Vivek Goyal <vgoyal@redhat.com>
-Cc: <linux-mips@linux-mips.org>
-Cc: <stable@vger.kernel.org> # 3.12
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
-Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
+Signed-off-by: Florian Fainelli <florian@openwrt.org>
 ---
-I haven't tried any other architecture except mips.
-If OK this should be considered for stable 3.12 (CCed).
+ drivers/tty/serial/bcm63xx_uart.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
- include/linux/crash_dump.h |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
-index fe68a5a..7032518 100644
---- a/include/linux/crash_dump.h
-+++ b/include/linux/crash_dump.h
-@@ -6,6 +6,8 @@
- #include <linux/proc_fs.h>
- #include <linux/elf.h>
+diff --git a/drivers/tty/serial/bcm63xx_uart.c b/drivers/tty/serial/bcm63xx_uart.c
+index 2e72752..6d773a3 100644
+--- a/drivers/tty/serial/bcm63xx_uart.c
++++ b/drivers/tty/serial/bcm63xx_uart.c
+@@ -31,7 +31,6 @@
+ #include <linux/serial_core.h>
  
-+#include <asm/pgtable.h> /* for pgprot_t */
-+
- #define ELFCORE_ADDR_MAX	(-1ULL)
- #define ELFCORE_ADDR_ERR	(-2ULL)
+ #include <bcm63xx_regs.h>
+-#include <bcm63xx_io.h>
  
+ #define BCM63XX_NR_UARTS	2
+ 
+@@ -80,13 +79,13 @@ static struct uart_port ports[BCM63XX_NR_UARTS];
+ static inline unsigned int bcm_uart_readl(struct uart_port *port,
+ 					 unsigned int offset)
+ {
+-	return bcm_readl(port->membase + offset);
++	return __raw_readl(port->membase + offset);
+ }
+ 
+ static inline void bcm_uart_writel(struct uart_port *port,
+ 				  unsigned int value, unsigned int offset)
+ {
+-	bcm_writel(value, port->membase + offset);
++	__raw_writel(value, port->membase + offset);
+ }
+ 
+ /*
 -- 
-1.7.1
+1.8.3.2

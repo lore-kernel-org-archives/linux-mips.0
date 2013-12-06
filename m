@@ -1,11 +1,13 @@
-Received: from mail-gw1-out.broadcom.com ([216.31.210.62]:19372 "EHLO
-        mail-gw1-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6867248Ab3LFC0pu0nFu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 6 Dec 2013 03:26:45 +0100
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:61673 "EHLO
+        mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6867165Ab3LFC0i4Vq5J (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 6 Dec 2013 03:26:38 +0100
 From: Florian Fainelli <florian@openwrt.org>
-Subject: [PATCH 0/5] tty: serial: bcm63xx_uart: do not depend on MIPS
-Date: Thu, 5 Dec 2013 18:26:03 -0800
-Message-ID: <1386296768-20204-1-git-send-email-florian@openwrt.org>
+Subject: [PATCH 4/5] tty: serial: bcm63xx_uart: use linux/serial_bcm63xx.h
+Date: Thu, 5 Dec 2013 18:26:07 -0800
+Message-ID: <1386296768-20204-5-git-send-email-florian@openwrt.org>
+In-Reply-To: <1386296768-20204-1-git-send-email-florian@openwrt.org>
+References: <1386296768-20204-1-git-send-email-florian@openwrt.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <florian@openwrt.org>
@@ -20,32 +22,30 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: ralf@linux-mips.org, blogic@openwrt.org, jogo@openwrt.org, mbizon@freebox.fr, cernekee@gmail.com, gregkh@linuxfoundation.org, linux-serial@vger.kernel.org, Florian Fainelli <florian@openwrt.org>
-Message-ID: <20131206022603.D4tedzfxlocSXjiaZEgNkpwUIDxcnhlqJtnu7Ym_VIg@z>
+Message-ID: <20131206022607.mC6dm_ZnQw5JVPjzmaqjwwdF8gLlYdmJQwx_KNFuIAo@z>
 
-Hi all,
+Now that the UART block defines have been moved to a separate file,
+include that one and do not longer rely on the MIPS-specific
+bcm63xx_regs.h header file.
 
-This patchset reduces the dependency of the bcm63xx_uart on the MIPS BCM63XX
-SoC support code in preparation for being used on different architectures
-such as ARM.
+Signed-off-by: Florian Fainelli <florian@openwrt.org>
+---
+ drivers/tty/serial/bcm63xx_uart.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Due to the MIPS patch which breaks down the register defines, this series
-should ideally go via the MIPS tree.
-
-Thanks!
-
-Florian Fainelli (5):
-  tty: serial: bcm63xx_uart: remove unused inclusion
-  tty: serial: bcm63xx_uart: drop bcm_{readl,writel} macros
-  MIPS: BCM63XX: move UART register definitions
-  tty: serial: bcm63xx_uart: use linux/serial_bcm63xx.h
-  MIPS: BCM63XX: use linux/serial_bcm63xx.h
-
- arch/mips/bcm63xx/early_printk.c                  |   2 +-
- arch/mips/include/asm/mach-bcm63xx/bcm63xx_regs.h | 120 ----------------------
- drivers/tty/serial/bcm63xx_uart.c                 |   9 +-
- include/linux/serial_bcm63xx.h                    | 119 +++++++++++++++++++++
- 4 files changed, 123 insertions(+), 127 deletions(-)
- create mode 100644 include/linux/serial_bcm63xx.h
-
+diff --git a/drivers/tty/serial/bcm63xx_uart.c b/drivers/tty/serial/bcm63xx_uart.c
+index 6d773a3..78e82b0 100644
+--- a/drivers/tty/serial/bcm63xx_uart.c
++++ b/drivers/tty/serial/bcm63xx_uart.c
+@@ -29,8 +29,7 @@
+ #include <linux/sysrq.h>
+ #include <linux/serial.h>
+ #include <linux/serial_core.h>
+-
+-#include <bcm63xx_regs.h>
++#include <linux/serial_bcm63xx.h>
+ 
+ #define BCM63XX_NR_UARTS	2
+ 
 -- 
 1.8.3.2

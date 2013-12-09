@@ -1,17 +1,15 @@
-Received: from multi.imgtec.com ([194.200.65.239]:41643 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:41712 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6823068Ab3LIJmpqBEO1 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 9 Dec 2013 10:42:45 +0100
-Message-ID: <52A59099.3000506@imgtec.com>
-Date: Mon, 9 Dec 2013 09:42:49 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        id S6821408Ab3LIJt4BfHjB (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 9 Dec 2013 10:49:56 +0100
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: [PATCH v2] mips/include/asm/mipsregs.h: include linux/types.h
+Date: Mon, 9 Dec 2013 09:49:45 +0000
+Message-ID: <1386582585-20867-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: microMIPS: Remove unsupported compiler flag.
-References: <1386265069-21930-1-git-send-email-Steven.Hill@imgtec.com>
-In-Reply-To: <1386265069-21930-1-git-send-email-Steven.Hill@imgtec.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,40 +20,36 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Message-ID: <20131209094249.25-A45khO8rJo1fcXsFZFZrLgbWBS7DMonyoRtYVNE4@z>
+Cc: Qais Yousef <qais.yousef@imgtec.com>
+Message-ID: <20131209094945.mbh9bXR9XzWp7hb71hthhsu-NPmngla_BoRhEr5-fHA@z>
 
-On 12/05/2013 05:37 PM, Steven J. Hill wrote:
-> From: "Steven J. Hill" <Steven.Hill@imgtec.com>
->
-> Remove usage of -mno-jals compiler flag when building a pure
-> microMIPS kernel. The -mno-jals flag only ever existed within
-> Mentor toolchains. Dropping this flag allows all FSF toolchains
-> to work.
->
-> Signed-off-by: Steven J. Hill <Steven.Hill@imgtec.com>
-> Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
->   arch/mips/Makefile |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-> index de300b9..873a0ca 100644
-> --- a/arch/mips/Makefile
-> +++ b/arch/mips/Makefile
-> @@ -114,7 +114,7 @@ cflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(shell $(CC) -dumpmachine |grep -q 'mips.*e
->   cflags-$(CONFIG_CPU_LITTLE_ENDIAN)	+= $(shell $(CC) -dumpmachine |grep -q 'mips.*el-.*' || echo -EL $(undef-all) $(predef-le))
->
->   cflags-$(CONFIG_CPU_HAS_SMARTMIPS)	+= $(call cc-option,-msmartmips)
-> -cflags-$(CONFIG_CPU_MICROMIPS) += $(call cc-option,-mmicromips -mno-jals)
-> +cflags-$(CONFIG_CPU_MICROMIPS) += $(call cc-option,-mmicromips)
->
->   cflags-$(CONFIG_SB1XXX_CORELIS)	+= $(call cc-option,-mno-sched-prolog) \
->   				   -fno-omit-frame-pointer
->
+The file uses u16 type but doesn't include its definition explicitly
 
-Ralf,
+I was getting this error when including this header in my driver:
 
-Do you think we can have this in v3.13 (and maybe stable)?
+  arch/mips/include/asm/mipsregs.h:644:33: error: unknown type name ‘u16’
 
+Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
+Reviewed-by: Steven J. Hill <Steven.Hill@imgtec.com>
+---
+changes since v1:
+	- include linux/types.h instead of s/u16/unsigned short/
+	- amend commit message accordingly
+
+ arch/mips/include/asm/mipsregs.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index e033141..86479bb 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -14,6 +14,7 @@
+ #define _ASM_MIPSREGS_H
+ 
+ #include <linux/linkage.h>
++#include <linux/types.h>
+ #include <asm/hazards.h>
+ #include <asm/war.h>
+ 
 -- 
-markos
+1.7.1

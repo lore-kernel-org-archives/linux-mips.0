@@ -1,15 +1,18 @@
-Received: from multi.imgtec.com ([194.200.65.239]:41712 "EHLO multi.imgtec.com"
+Received: from mga11.intel.com ([192.55.52.93]:52067 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6821408Ab3LIJt4BfHjB (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 9 Dec 2013 10:49:56 +0100
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH v2] mips/include/asm/mipsregs.h: include linux/types.h
-Date: Mon, 9 Dec 2013 09:49:45 +0000
-Message-ID: <1386582585-20867-1-git-send-email-qais.yousef@imgtec.com>
+        id S6867257Ab3LRWABhPH8w convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Dec 2013 23:00:01 +0100
+From: "Luck, Tony" <tony.luck@intel.com>
+Subject: RE: [PATCH v2 00/10] Kconfig: cleanup SERIO_I8042 dependencies
+Date: Wed, 18 Dec 2013 21:59:49 +0000
+Message-ID: <3908561D78D1C84285E8C5FCA982C28F31D8CDD5@ORSMSX106.amr.corp.intel.com>
+References: <1387295333-24684-1-git-send-email-msalter@redhat.com>
+In-Reply-To: <1387295333-24684-1-git-send-email-msalter@redhat.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Return-Path: <tony.luck@intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,37 +22,14 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <20131209094945.mbh9bXR9XzWp7hb71hthhsu-NPmngla_BoRhEr5-fHA@z>
+To: Mark Salter <msalter@redhat.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Richard Henderson <rth@twiddle.net>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, Russell King <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "Yu, Fenghua" <fenghua.yu@intel.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Paul Mackerras <paulus@samba.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Paul Mundt <lethal@linux-sh.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, "x86@kernel.org" <x86@kernel.org>
+Message-ID: <20131218215949.UBiWmTsQdiMTQTVwYBdq4jgW5z__Ay3zi_3MF5z-k94@z>
 
-The file uses u16 type but doesn't include its definition explicitly
+> This is v2 of the patch series. Changes from version 1:
+>
+>  o Added acks. arm, ia64, and sh are only ones without acks.
 
-I was getting this error when including this header in my driver:
+ia64 bits look OK
 
-  arch/mips/include/asm/mipsregs.h:644:33: error: unknown type name ‘u16’
-
-Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
-Reviewed-by: Steven J. Hill <Steven.Hill@imgtec.com>
----
-changes since v1:
-	- include linux/types.h instead of s/u16/unsigned short/
-	- amend commit message accordingly
-
- arch/mips/include/asm/mipsregs.h |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index e033141..86479bb 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -14,6 +14,7 @@
- #define _ASM_MIPSREGS_H
- 
- #include <linux/linkage.h>
-+#include <linux/types.h>
- #include <asm/hazards.h>
- #include <asm/war.h>
- 
--- 
-1.7.1
+Acked-by: Tony Luck <tony.luck@intel.com>

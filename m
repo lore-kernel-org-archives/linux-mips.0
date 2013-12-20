@@ -1,18 +1,14 @@
-Received: from mga11.intel.com ([192.55.52.93]:52067 "EHLO mga11.intel.com"
+Received: from multi.imgtec.com ([194.200.65.239]:59545 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6867257Ab3LRWABhPH8w convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Dec 2013 23:00:01 +0100
-From: "Luck, Tony" <tony.luck@intel.com>
-Subject: RE: [PATCH v2 00/10] Kconfig: cleanup SERIO_I8042 dependencies
-Date: Wed, 18 Dec 2013 21:59:49 +0000
-Message-ID: <3908561D78D1C84285E8C5FCA982C28F31D8CDD5@ORSMSX106.amr.corp.intel.com>
-References: <1387295333-24684-1-git-send-email-msalter@redhat.com>
-In-Reply-To: <1387295333-24684-1-git-send-email-msalter@redhat.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S6867251Ab3LTQbgoTrZj (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 20 Dec 2013 17:31:36 +0100
+From: Alex Smith <alex.smith@imgtec.com>
+Subject: [PATCH] mips: fix 64-bit compilation error without CONFIG_MIPS32_O32
+Date: Fri, 20 Dec 2013 16:31:07 +0000
+Message-ID: <1387557067-51026-1-git-send-email-alex.smith@imgtec.com>
 MIME-Version: 1.0
-Return-Path: <tony.luck@intel.com>
+Content-Type: text/plain
+Return-Path: <Alex.Smith@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,14 +18,36 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mark Salter <msalter@redhat.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Richard Henderson <rth@twiddle.net>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, Russell King <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "Yu, Fenghua" <fenghua.yu@intel.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Paul Mackerras <paulus@samba.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Paul Mundt <lethal@linux-sh.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, "x86@kernel.org" <x86@kernel.org>
-Message-ID: <20131218215949.UBiWmTsQdiMTQTVwYBdq4jgW5z__Ay3zi_3MF5z-k94@z>
+To: linux-mips@linux-mips.org
+Cc: Alex Smith <alex.smith@imgtec.com>
+Message-ID: <20131220163107.a3J5IYUMpgGsGuV7cTyTbKo12T0e5CLIduY6DEm0f4Q@z>
 
-> This is v2 of the patch series. Changes from version 1:
->
->  o Added acks. arm, ia64, and sh are only ones without acks.
+Attempting to compile a 64-bit kernel without CONFIG_MIPS32_O32 defined
+(using GCC 4.8.1) results in the following compilation error:
 
-ia64 bits look OK
+arch/mips/include/asm/syscall.h: In function 'mips_get_syscall_arg':
+arch/mips/include/asm/syscall.h:32:16: error: unused variable 'usp' [-Werror=unused-variable]
 
-Acked-by: Tony Luck <tony.luck@intel.com>
+Fix by adding __maybe_unsued to the definition of usp.
+
+Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/include/asm/syscall.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
+index 81c8913..c48f8d8 100644
+--- a/arch/mips/include/asm/syscall.h
++++ b/arch/mips/include/asm/syscall.h
+@@ -29,7 +29,7 @@ static inline long syscall_get_nr(struct task_struct *task,
+ static inline unsigned long mips_get_syscall_arg(unsigned long *arg,
+ 	struct task_struct *task, struct pt_regs *regs, unsigned int n)
+ {
+-	unsigned long usp = regs->regs[29];
++	unsigned long __maybe_unused usp = regs->regs[29];
+ 
+ 	switch (n) {
+ 	case 0: case 1: case 2: case 3:
+-- 
+1.8.5.2

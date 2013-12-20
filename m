@@ -1,15 +1,15 @@
-Received: from qmta07.emeryville.ca.mail.comcast.net ([76.96.30.64]:35766 "EHLO
-        qmta07.emeryville.ca.mail.comcast.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6867128Ab3LTRoLDJ5vm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 20 Dec 2013 18:44:11 +0100
-Date: Fri, 20 Dec 2013 11:43:59 -0600 (CST)
+Received: from qmta09.emeryville.ca.mail.comcast.net ([76.96.30.96]:44734 "EHLO
+        qmta09.emeryville.ca.mail.comcast.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6867128Ab3LTRtdTXJHC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 20 Dec 2013 18:49:33 +0100
+Date: Fri, 20 Dec 2013 11:49:23 -0600 (CST)
 From: Christoph Lameter <cl@linux.com>
 Subject: Re: [PATCH 29/40] mips: Replace __get_cpu_var uses
 In-Reply-To: <52B37C56.7090302@gmail.com>
-Message-ID: <alpine.DEB.2.10.1312201143010.10717@nuc>
+Message-ID: <alpine.DEB.2.10.1312201148560.13718@nuc>
 References: <20131219155015.443763038@linux.com> <20131219155033.834416420@linux.com> <52B330F3.4090603@gmail.com> <alpine.DEB.2.10.1312191506370.17603@nuc> <52B37C56.7090302@gmail.com>
 Content-Type: MULTIPART/Mixed; BOUNDARY=------------070507070702050801040409
-Content-ID: <alpine.DEB.2.10.1312201143011.10717@nuc>
+Content-ID: <alpine.DEB.2.10.1312201148561.13718@nuc>
 Return-Path: <cl@linux.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,23 +22,30 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: David Daney <ddaney.cavm@gmail.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips <linux-mips@linux-mips.org>, Tejun Heo <tj@kernel.org>, akpm@linuxfoundation.org, rostedt@goodmis.org, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <20131220174359.LCUJZddBODQo_oCwdkWTc5m1HpIwvSoul8n25ZbQm9g@z>
+Message-ID: <20131220174923.EPrpYTAbfBHnHHwLkLj6c9yAgTkk9ZMSjwLbTbtzDWQ@z>
 
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
 --------------070507070702050801040409
 Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; FORMAT=flowed
-Content-ID: <alpine.DEB.2.10.1312201143012.10717@nuc>
+Content-ID: <alpine.DEB.2.10.1312201148562.13718@nuc>
 
 On Thu, 19 Dec 2013, David Daney wrote:
 
-> See the attached patch.  Feel free to include it as part of your patch set.
+> > Use
+> >
+> > __local_inc(this_cpu_ptr(fpuemustats.M);
+> >
+>
+> No, I couldn't get various incantations of that to work either.
 
-Looks good. I will place this before the mips patch.
+Your patch removes the last use of local.h by mips arch code by the way.
+
+
 --------------070507070702050801040409
 Content-Type: TEXT/X-PATCH; NAME=0001-MIPS-Replace-__get_cpu_var-uses-in-FPU-emulator.patch
-Content-ID: <alpine.DEB.2.10.1312201143013.10717@nuc>
+Content-ID: <alpine.DEB.2.10.1312201148563.13718@nuc>
 Content-Description: 
 Content-Disposition: ATTACHMENT; FILENAME*0=0001-MIPS-Replace-__get_cpu_var-uses-in-FPU-emulator.patch
 

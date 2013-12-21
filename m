@@ -1,16 +1,14 @@
-Received: from qmta09.emeryville.ca.mail.comcast.net ([76.96.30.96]:44734 "EHLO
-        qmta09.emeryville.ca.mail.comcast.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6867128Ab3LTRtdTXJHC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 20 Dec 2013 18:49:33 +0100
-Date: Fri, 20 Dec 2013 11:49:23 -0600 (CST)
-From: Christoph Lameter <cl@linux.com>
-Subject: Re: [PATCH 29/40] mips: Replace __get_cpu_var uses
-In-Reply-To: <52B37C56.7090302@gmail.com>
-Message-ID: <alpine.DEB.2.10.1312201148560.13718@nuc>
-References: <20131219155015.443763038@linux.com> <20131219155033.834416420@linux.com> <52B330F3.4090603@gmail.com> <alpine.DEB.2.10.1312191506370.17603@nuc> <52B37C56.7090302@gmail.com>
-Content-Type: MULTIPART/Mixed; BOUNDARY=------------070507070702050801040409
-Content-ID: <alpine.DEB.2.10.1312201148561.13718@nuc>
-Return-Path: <cl@linux.com>
+Received: from mail-gw1-out.broadcom.com ([216.31.210.62]:23520 "EHLO
+        mail-gw1-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6815753Ab3LULKvAjRFX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 21 Dec 2013 12:10:51 +0100
+From: Jayachandran C <jchandra@broadcom.com>
+Subject: [PATCH 00/18] Broadcom XLP Updates for 3.14
+Date: Sat, 21 Dec 2013 16:52:12 +0530
+Message-ID: <1387624950-31297-1-git-send-email-jchandra@broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <jchandra@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,105 +18,81 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips <linux-mips@linux-mips.org>, Tejun Heo <tj@kernel.org>, akpm@linuxfoundation.org, rostedt@goodmis.org, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <20131220174923.EPrpYTAbfBHnHHwLkLj6c9yAgTkk9ZMSjwLbTbtzDWQ@z>
+To: linux-mips@linux-mips.org
+Cc: Jayachandran C <jchandra@broadcom.com>, ralf@linux-mips.org
+Message-ID: <20131221112212.FvCDZS_XEn-8XNt26icuDR45TaX2LrfIpLntFDuhyR8@z>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+The main change is to support the XLP9XX processor family:
+http://www.broadcom.com/products/Processors/Enterprise/XLP900-Series
 
---------------070507070702050801040409
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; FORMAT=flowed
-Content-ID: <alpine.DEB.2.10.1312201148562.13718@nuc>
+The other changes (patches 1-7) are updates to the existing XLP code,
+changes are to :
+* add MSI/MSI-X support for XLP PCIe interface,
+* add topology.h for XLP,
+* do some few minor fixes and cleanups.
 
-On Thu, 19 Dec 2013, David Daney wrote:
+JC.
 
-> > Use
-> >
-> > __local_inc(this_cpu_ptr(fpuemustats.M);
-> >
->
-> No, I couldn't get various incantations of that to work either.
+Ganesan Ramalingam (1):
+  MIPS: Netlogic: XLP9XX USB support
 
-Your patch removes the last use of local.h by mips arch code by the way.
+Jayachandran C (16):
+  MIPS: Netlogic: Add MSI support for XLP
+  MIPS: Netlogic: Add topology.h for XLP family
+  MIPS: Netlogic: Some cleanups for assembly code
+  MIPS: Netlogic: Add macro for node present
+  MIPS: Netlogic: Get coremask from FUSE register
+  MIPS: Netlogic: Core wakeup improvements
+  MIPS: Netlogic: Identify XLP 9XX chip
+  MIPS: Netlogic: update iomap.h for XLP9XX
+  MIPS: Netlogic: XLP9XX PIC updates
+  MIPS: Netlogic: SYS block updates of XLP9XX
+  MIPS: Netlogic: XLP9XX UART offset
+  MIPS: Netlogic: XLP9XX bridge and DRAM code
+  MIPS: Netlogic: Add cpu to node mapping for XLP9XX
+  MIPS: PCI: Netlogic XLP9XX support
+  MIPS: Netlogic: XLP9XX PIC OF support
+  MIPS: Netlogic: Add default DTB for XLP9XX SoC
 
+Yonghong Song (1):
+  MIPS: Netlogic: L1D cacheflush before thread enable on XLPII
 
---------------070507070702050801040409
-Content-Type: TEXT/X-PATCH; NAME=0001-MIPS-Replace-__get_cpu_var-uses-in-FPU-emulator.patch
-Content-ID: <alpine.DEB.2.10.1312201148563.13718@nuc>
-Content-Description: 
-Content-Disposition: ATTACHMENT; FILENAME*0=0001-MIPS-Replace-__get_cpu_var-uses-in-FPU-emulator.patch
+ arch/mips/Kconfig                                |    1 +
+ arch/mips/include/asm/cpu.h                      |    1 +
+ arch/mips/include/asm/mach-netlogic/irq.h        |    3 +-
+ arch/mips/include/asm/mach-netlogic/multi-node.h |   33 +-
+ arch/mips/include/asm/mach-netlogic/topology.h   |   20 +
+ arch/mips/include/asm/netlogic/common.h          |   24 +-
+ arch/mips/include/asm/netlogic/mips-extns.h      |    7 +-
+ arch/mips/include/asm/netlogic/xlp-hal/bridge.h  |   69 ++-
+ arch/mips/include/asm/netlogic/xlp-hal/iomap.h   |   48 ++-
+ arch/mips/include/asm/netlogic/xlp-hal/pcibus.h  |   41 +-
+ arch/mips/include/asm/netlogic/xlp-hal/pic.h     |   77 ++--
+ arch/mips/include/asm/netlogic/xlp-hal/sys.h     |   18 +-
+ arch/mips/include/asm/netlogic/xlp-hal/uart.h    |    3 +-
+ arch/mips/include/asm/netlogic/xlp-hal/xlp.h     |   38 +-
+ arch/mips/kernel/cpu-probe.c                     |    1 +
+ arch/mips/netlogic/Kconfig                       |    9 +
+ arch/mips/netlogic/common/earlycons.c            |    2 +
+ arch/mips/netlogic/common/irq.c                  |   72 +++-
+ arch/mips/netlogic/common/reset.S                |   62 ++-
+ arch/mips/netlogic/common/smp.c                  |    8 +-
+ arch/mips/netlogic/common/smpboot.S              |    3 +-
+ arch/mips/netlogic/dts/Makefile                  |    1 +
+ arch/mips/netlogic/dts/xlp_gvp.dts               |   76 ++++
+ arch/mips/netlogic/xlp/dt.c                      |    7 +-
+ arch/mips/netlogic/xlp/nlm_hal.c                 |   71 +++-
+ arch/mips/netlogic/xlp/setup.c                   |   25 +-
+ arch/mips/netlogic/xlp/usb-init-xlp2.c           |   88 +++-
+ arch/mips/netlogic/xlp/wakeup.c                  |   91 +++-
+ arch/mips/netlogic/xlr/wakeup.c                  |    2 +-
+ arch/mips/pci/Makefile                           |    1 +
+ arch/mips/pci/msi-xlp.c                          |  494 ++++++++++++++++++++++
+ arch/mips/pci/pci-xlp.c                          |  110 +++--
+ 32 files changed, 1279 insertions(+), 227 deletions(-)
+ create mode 100644 arch/mips/include/asm/mach-netlogic/topology.h
+ create mode 100644 arch/mips/netlogic/dts/xlp_gvp.dts
+ create mode 100644 arch/mips/pci/msi-xlp.c
 
-From cc9590cf4d75cf7fd36a58be132d35fbbe536a64 Mon Sep 17 00:00:00 2001
-From: David Daney <david.daney@cavium.com>
-Date: Thu, 19 Dec 2013 14:00:17 -0800
-Subject: [PATCH] MIPS: Replace __get_cpu_var uses in FPU emulator.
-
-The use of __this_cpu_inc() requires a fundamental integer type, so
-change the type of all the counters to unsigned long, which is the
-same width they were before, but not wrapped in local_t.
-
-Signed-off-by: David Daney <david.daney@cavium.com>
----
- arch/mips/include/asm/fpu_emulator.h | 14 +++++++-------
- arch/mips/math-emu/cp1emu.c          |  6 +++---
- 2 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/arch/mips/include/asm/fpu_emulator.h b/arch/mips/include/asm/fpu_emulator.h
-index 2abb587..619fa5f 100644
---- a/arch/mips/include/asm/fpu_emulator.h
-+++ b/arch/mips/include/asm/fpu_emulator.h
-@@ -30,12 +30,12 @@
- #ifdef CONFIG_DEBUG_FS
- 
- struct mips_fpu_emulator_stats {
--	local_t emulated;
--	local_t loads;
--	local_t stores;
--	local_t cp1ops;
--	local_t cp1xops;
--	local_t errors;
-+	unsigned long emulated;
-+	unsigned long loads;
-+	unsigned long stores;
-+	unsigned long cp1ops;
-+	unsigned long cp1xops;
-+	unsigned long errors;
- };
- 
- DECLARE_PER_CPU(struct mips_fpu_emulator_stats, fpuemustats);
-@@ -43,7 +43,7 @@ DECLARE_PER_CPU(struct mips_fpu_emulator_stats, fpuemustats);
- #define MIPS_FPU_EMU_INC_STATS(M)					\
- do {									\
- 	preempt_disable();						\
--	__local_inc(&__get_cpu_var(fpuemustats).M);			\
-+	__this_cpu_inc(fpuemustats.M);					\
- 	preempt_enable();						\
- } while (0)
- 
-diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-index efe0088..b853d05 100644
---- a/arch/mips/math-emu/cp1emu.c
-+++ b/arch/mips/math-emu/cp1emu.c
-@@ -2110,13 +2110,13 @@ int fpu_emulator_cop1Handler(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
- static int fpuemu_stat_get(void *data, u64 *val)
- {
- 	int cpu;
--	unsigned long sum = 0;
-+	u64 sum = 0;
- 	for_each_online_cpu(cpu) {
- 		struct mips_fpu_emulator_stats *ps;
--		local_t *pv;
-+		unsigned long *pv;
- 		ps = &per_cpu(fpuemustats, cpu);
- 		pv = (void *)ps + (unsigned long)data;
--		sum += local_read(pv);
-+		sum += *pv;
- 	}
- 	*val = sum;
- 	return 0;
 -- 
-1.7.11.7
-
-
---------------070507070702050801040409--
+1.7.9.5

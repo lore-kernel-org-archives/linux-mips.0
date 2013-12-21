@@ -1,11 +1,11 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63]:33332 "EHLO
-        mail-gw2-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6827367Ab3LULK5nLOTn (ORCPT
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:1142 "EHLO
+        mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6832668Ab3LULK5ukEMq (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Sat, 21 Dec 2013 12:10:57 +0100
 From: Jayachandran C <jchandra@broadcom.com>
-Subject: [PATCH 06/18] MIPS: Netlogic: Get coremask from FUSE register
-Date: Sat, 21 Dec 2013 16:52:18 +0530
-Message-ID: <1387624950-31297-7-git-send-email-jchandra@broadcom.com>
+Subject: [PATCH 04/18] MIPS: Netlogic: L1D cacheflush before thread enable on XLPII
+Date: Sat, 21 Dec 2013 16:52:16 +0530
+Message-ID: <1387624950-31297-5-git-send-email-jchandra@broadcom.com>
 In-Reply-To: <1387624950-31297-1-git-send-email-jchandra@broadcom.com>
 References: <1387624950-31297-1-git-send-email-jchandra@broadcom.com>
 MIME-Version: 1.0
@@ -21,69 +21,70 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Jayachandran C <jchandra@broadcom.com>, ralf@linux-mips.org
-Message-ID: <20131221112218.PblAP6hvhDuxYG3J4E-QiThlzWpDu1Wbp-KEVxoDXZQ@z>
+Cc: Yonghong Song <ysong@broadcom.com>, ralf@linux-mips.org, Jayachandran C <jchandra@broadcom.com>
+Message-ID: <20131221112216.LDHiiS_lsm0gV0eQLu3R0GG57EBc3a2Z0RQ8dfXSmNg@z>
 
-Use the FUSE register to get the list of active cores in the CPU
-instead of using the CPU reset register, this is the recommended
-method.
+From: Yonghong Song <ysong@broadcom.com>
 
-Also add code to mask the coremask with the default number of cores
-for each processor series.
+On XLPII CPUs, the L1D cache has to be flushed with regular cache
+operations before enabling threads in a core.
 
 Signed-off-by: Jayachandran C <jchandra@broadcom.com>
 ---
- arch/mips/netlogic/xlp/wakeup.c |   29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
+ arch/mips/netlogic/common/reset.S |   25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/netlogic/xlp/wakeup.c b/arch/mips/netlogic/xlp/wakeup.c
-index 682d563..e6f77c0 100644
---- a/arch/mips/netlogic/xlp/wakeup.c
-+++ b/arch/mips/netlogic/xlp/wakeup.c
-@@ -99,7 +99,7 @@ static void xlp_enable_secondary_cores(const cpumask_t *wakeup_mask)
- {
- 	struct nlm_soc_info *nodep;
- 	uint64_t syspcibase;
--	uint32_t syscoremask;
-+	uint32_t syscoremask, mask, fusemask;
- 	int core, n, cpu;
+diff --git a/arch/mips/netlogic/common/reset.S b/arch/mips/netlogic/common/reset.S
+index 06381e1..57eb7a1 100644
+--- a/arch/mips/netlogic/common/reset.S
++++ b/arch/mips/netlogic/common/reset.S
+@@ -36,6 +36,7 @@
  
- 	for (n = 0; n < NLM_NR_NODES; n++) {
-@@ -111,12 +111,31 @@ static void xlp_enable_secondary_cores(const cpumask_t *wakeup_mask)
- 		if (n != 0)
- 			nlm_node_init(n);
- 		nodep = nlm_get_node(n);
--		syscoremask = nlm_read_sys_reg(nodep->sysbase, SYS_CPU_RESET);
-+
-+		fusemask = nlm_read_sys_reg(nodep->sysbase,
-+					SYS_EFUSE_DEVICE_CFG_STATUS0);
-+		switch (read_c0_prid() & 0xff00) {
-+		case PRID_IMP_NETLOGIC_XLP3XX:
-+			mask = 0xf;
-+			break;
-+		case PRID_IMP_NETLOGIC_XLP2XX:
-+			mask = 0x3;
-+			break;
-+		case PRID_IMP_NETLOGIC_XLP8XX:
-+		default:
-+			mask = 0xff;
-+			break;
-+		}
-+
-+		/*
-+		 * Fused out cores are set in the fusemask, and the remaining
-+		 * cores are renumbered to range 0 .. nactive-1
-+		 */
-+		syscoremask = (1 << hweight32(~fusemask & mask)) - 1;
-+
- 		/* The boot cpu */
--		if (n == 0) {
--			syscoremask |= 1;
-+		if (n == 0)
- 			nodep->coremask = 1;
--		}
+ #include <asm/asm.h>
+ #include <asm/asm-offsets.h>
++#include <asm/cacheops.h>
+ #include <asm/regdef.h>
+ #include <asm/mipsregs.h>
+ #include <asm/stackframe.h>
+@@ -74,10 +75,18 @@
+ .endm
  
- 		for (core = 0; core < NLM_CORES_PER_NODE; core++) {
- 			/* we will be on node 0 core 0 */
+ /*
+- * Low level flush for L1D cache on XLP, the normal cache ops does
+- * not do the complete and correct cache flush.
++ * L1D cache has to be flushed before enabling threads in XLP.
++ * On XLP8xx/XLP3xx, we do a low level flush using processor control
++ * registers. On XLPII CPUs, usual cache instructions work.
+  */
+ .macro	xlp_flush_l1_dcache
++	mfc0	t0, CP0_EBASE, 0
++	andi	t0, t0, 0xff00
++	slt	t1, t0, 0x1200
++	beqz	t1, 15f
++	nop
++
++	/* XLP8xx low level cache flush */
+ 	li	t0, LSU_DEBUG_DATA0
+ 	li	t1, LSU_DEBUG_ADDR
+ 	li	t2, 0		/* index */
+@@ -103,6 +112,18 @@
+ 	addi	t2, 1
+ 	bne	t3, t2, 11b
+ 	nop
++	b	17f
++	nop
++
++	/* XLPII CPUs, Invalidate all 64k of L1 D-cache */
++15:
++	li	t0, 0x80000000
++	li	t1, 0x80010000
++16:	cache	Index_Writeback_Inv_D, 0(t0)
++	addiu	t0, t0, 32
++	bne	t0, t1, 16b
++	nop
++17:
+ .endm
+ 
+ /*
 -- 
 1.7.9.5

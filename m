@@ -1,16 +1,17 @@
-Received: from mail-gw1-out.broadcom.com ([216.31.210.62]:63752 "EHLO
-        mail-gw1-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6867264Ab3LULLLOzt03 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 21 Dec 2013 12:11:11 +0100
-From: Jayachandran C <jchandra@broadcom.com>
-Subject: [PATCH 18/18] MIPS: Netlogic: Add default DTB for XLP9XX SoC
-Date: Sat, 21 Dec 2013 16:52:30 +0530
-Message-ID: <1387624950-31297-19-git-send-email-jchandra@broadcom.com>
-In-Reply-To: <1387624950-31297-1-git-send-email-jchandra@broadcom.com>
-References: <1387624950-31297-1-git-send-email-jchandra@broadcom.com>
+Received: from mail-wg0-f43.google.com ([74.125.82.43]:56144 "EHLO
+        mail-wg0-f43.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6817090Ab3LVTdQEPJt6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Dec 2013 20:33:16 +0100
+Received: by mail-wg0-f43.google.com with SMTP id k14so4292466wgh.10
+        for <linux-mips@linux-mips.org>; Sun, 22 Dec 2013 11:33:10 -0800 (PST)
+Date: Sun, 22 Dec 2013 19:33:04 +0000
+From: Psychedelic Squid <psquid@psquid.net>
+Subject: [PATCH] Slightly outdated CONFIG_SMP documentation fix
+Message-ID: <20131222193302.GA25512@sylph>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <jchandra@broadcom.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Return-Path: <psquid@psquid.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,156 +21,168 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Jayachandran C <jchandra@broadcom.com>, ralf@linux-mips.org
-Message-ID: <20131221112230.RDVV4WcwAleg4zB6RZMQJj9BxLZZbNK93_0he0kLLg4@z>
+To: linux-kernel@vger.kernel.org
+Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Hirokazu Takata <takata@linux-m32r.org>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Paul Mundt <lethal@linux-sh.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-m32r@ml.linux-m32r.org, linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org
+Message-ID: <20131222193304.o74daiXy9jxikZ_vFF8G0TE3GjPHS8m9XzKhupuC7-Q@z>
 
-Add a default device tree fie for XLP9XX boards, and add code to use
-this device tree if no DTB is passed to the kernel.
+I've removed a reference to "most personal computers" being singleprocessor
+machines in multiple arches' config help, and also brought the arch/arm spacing
+for "singleprocessor" (vs. "single processor" used there originally) in line
+with other arches that had that text.
 
-Signed-off-by: Jayachandran C <jchandra@broadcom.com>
----
- arch/mips/netlogic/Kconfig         |    9 +++++
- arch/mips/netlogic/dts/Makefile    |    1 +
- arch/mips/netlogic/dts/xlp_gvp.dts |   76 ++++++++++++++++++++++++++++++++++++
- arch/mips/netlogic/xlp/dt.c        |    7 +++-
- 4 files changed, 92 insertions(+), 1 deletion(-)
- create mode 100644 arch/mips/netlogic/dts/xlp_gvp.dts
+The diff is included below, and cleanly applies and builds on my system. I have
+not tested on other systems yet since a documentation fix shouldn't fail to
+build inconsistently, but if that's no excuse, I'll be happy to test further
+when I can.
 
-diff --git a/arch/mips/netlogic/Kconfig b/arch/mips/netlogic/Kconfig
-index 852a4ee..4eb683a 100644
---- a/arch/mips/netlogic/Kconfig
-+++ b/arch/mips/netlogic/Kconfig
-@@ -28,6 +28,15 @@ config DT_XLP_FVP
- 	  pointer to the kernel.  The corresponding DTS file is at
- 	  arch/mips/netlogic/dts/xlp_fvp.dts
+
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/alpha/Kconfig linux/arch/alpha/Kconfig
+--- linux-vanilla/arch/alpha/Kconfig	2013-12-22 18:03:11.881499508 +0000
++++ linux/arch/alpha/Kconfig	2013-12-22 17:58:31.448505765 +0000
+@@ -539,8 +539,8 @@ config SMP
+ 	depends on ALPHA_SABLE || ALPHA_LYNX || ALPHA_RAWHIDE || ALPHA_DP264 || ALPHA_WILDFIRE || ALPHA_TITAN || ALPHA_GENERIC || ALPHA_SHARK || ALPHA_MARVEL
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
  
-+config DT_XLP_GVP
-+	bool "Built-in device tree for XLP GVP boards"
-+	default y
-+	help
-+	  Add an FDT blob for XLP GVP board into the kernel.
-+	  This DTB will be used if the firmware does not pass in a DTB
-+	  pointer to the kernel.  The corresponding DTS file is at
-+	  arch/mips/netlogic/dts/xlp_gvp.dts
-+
- config NLM_MULTINODE
- 	bool "Support for multi-chip boards"
- 	depends on NLM_XLP_BOARD
-diff --git a/arch/mips/netlogic/dts/Makefile b/arch/mips/netlogic/dts/Makefile
-index 0b9be5f..25c8e87 100644
---- a/arch/mips/netlogic/dts/Makefile
-+++ b/arch/mips/netlogic/dts/Makefile
-@@ -1,3 +1,4 @@
- obj-$(CONFIG_DT_XLP_EVP) := xlp_evp.dtb.o
- obj-$(CONFIG_DT_XLP_SVP) += xlp_svp.dtb.o
- obj-$(CONFIG_DT_XLP_FVP) += xlp_fvp.dtb.o
-+obj-$(CONFIG_DT_XLP_GVP) += xlp_gvp.dtb.o
-diff --git a/arch/mips/netlogic/dts/xlp_gvp.dts b/arch/mips/netlogic/dts/xlp_gvp.dts
-new file mode 100644
-index 0000000..047d27f
---- /dev/null
-+++ b/arch/mips/netlogic/dts/xlp_gvp.dts
-@@ -0,0 +1,76 @@
-+/*
-+ * XLP9XX Device Tree Source for GVP boards
-+ */
-+
-+/dts-v1/;
-+/ {
-+	model = "netlogic,XLP-GVP";
-+	compatible = "netlogic,xlp";
-+	#address-cells = <2>;
-+	#size-cells = <2>;
-+
-+	soc {
-+		#address-cells = <2>;
-+		#size-cells = <1>;
-+		compatible = "simple-bus";
-+		ranges = <0 0  0 0x18000000  0x04000000   // PCIe CFG
-+			  1 0  0 0x16000000  0x02000000>; // GBU chipselects
-+
-+		serial0: serial@30000 {
-+			device_type = "serial";
-+			compatible = "ns16550";
-+			reg = <0 0x112100 0xa00>;
-+			reg-shift = <2>;
-+			reg-io-width = <4>;
-+			clock-frequency = <125000000>;
-+			interrupt-parent = <&pic>;
-+			interrupts = <17>;
-+		};
-+		pic: pic@4000 {
-+			interrupt-controller;
-+			#address-cells = <0>;
-+			#interrupt-cells = <1>;
-+			reg = <0 0x110000 0x200>;
-+		};
-+
-+		nor_flash@1,0 {
-+			compatible = "cfi-flash";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			bank-width = <2>;
-+			reg = <1 0 0x1000000>;
-+
-+			partition@0 {
-+				label = "x-loader";
-+				reg = <0x0 0x100000>; /* 1M */
-+				read-only;
-+			};
-+
-+			partition@100000 {
-+				label = "u-boot";
-+				reg = <0x100000 0x100000>; /* 1M */
-+			};
-+
-+			partition@200000 {
-+				label = "kernel";
-+				reg = <0x200000 0x500000>; /* 5M */
-+			};
-+
-+			partition@700000 {
-+				label = "rootfs";
-+				reg = <0x700000 0x800000>; /* 8M */
-+			};
-+
-+			partition@f00000 {
-+				label = "env";
-+				reg = <0xf00000 0x100000>; /* 1M */
-+				read-only;
-+			};
-+		};
-+
-+	};
-+
-+	chosen {
-+		bootargs = "console=ttyS0,115200 rdinit=/sbin/init";
-+	};
-+};
-diff --git a/arch/mips/netlogic/xlp/dt.c b/arch/mips/netlogic/xlp/dt.c
-index 8316d54..5754097 100644
---- a/arch/mips/netlogic/xlp/dt.c
-+++ b/arch/mips/netlogic/xlp/dt.c
-@@ -42,13 +42,18 @@
- #include <asm/prom.h>
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/arc/Kconfig linux/arch/arc/Kconfig
+--- linux-vanilla/arch/arc/Kconfig	2013-12-22 18:03:11.933499507 +0000
++++ linux/arch/arc/Kconfig	2013-12-22 17:58:24.412505922 +0000
+@@ -128,8 +128,8 @@ config SMP
+ 	default n
+ 	help
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
  
- extern u32 __dtb_xlp_evp_begin[], __dtb_xlp_svp_begin[],
--	__dtb_xlp_fvp_begin[], __dtb_start[];
-+	__dtb_xlp_fvp_begin[], __dtb_xlp_gvp_begin[], __dtb_start[];
- static void *xlp_fdt_blob;
+ if SMP
  
- void __init *xlp_dt_init(void *fdtp)
- {
- 	if (!fdtp) {
- 		switch (current_cpu_data.processor_id & 0xff00) {
-+#ifdef CONFIG_DT_XLP_GVP
-+		case PRID_IMP_NETLOGIC_XLP9XX:
-+			fdtp = __dtb_xlp_gvp_begin;
-+			break;
-+#endif
- #ifdef CONFIG_DT_XLP_FVP
- 		case PRID_IMP_NETLOGIC_XLP2XX:
- 			fdtp = __dtb_xlp_fvp_begin;
--- 
-1.7.9.5
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/arm/Kconfig linux/arch/arm/Kconfig
+--- linux-vanilla/arch/arm/Kconfig	2013-12-22 18:03:11.956499506 +0000
++++ linux/arch/arm/Kconfig	2013-12-22 17:56:31.187508449 +0000
+@@ -1435,14 +1435,14 @@ config SMP
+ 	depends on MMU || ARM_MPU
+ 	help
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+-	  you say Y here, the kernel will run on many, but not all, single
+-	  processor machines. On a single processor machine, the kernel will
+-	  run faster if you say N here.
++	  you say Y here, the kernel will run on many, but not all,
++	  singleprocessor machines. On a singleprocessor machine, the kernel
++	  will run faster if you say N here.
+ 
+ 	  See also <file:Documentation/x86/i386/IO-APIC.txt>,
+ 	  <file:Documentation/nmi_watchdog.txt> and the SMP-HOWTO available at
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/m32r/Kconfig linux/arch/m32r/Kconfig
+--- linux-vanilla/arch/m32r/Kconfig	2013-12-22 18:03:13.100499481 +0000
++++ linux/arch/m32r/Kconfig	2013-12-22 17:58:27.485505854 +0000
+@@ -277,8 +277,8 @@ config SMP
+ 	bool "Symmetric multi-processing support"
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/mips/Kconfig linux/arch/mips/Kconfig
+--- linux-vanilla/arch/mips/Kconfig	2013-12-22 18:03:13.290499477 +0000
++++ linux/arch/mips/Kconfig	2013-12-22 17:58:28.576505829 +0000
+@@ -2128,8 +2128,8 @@ config SMP
+ 	depends on SYS_SUPPORTS_SMP
+ 	help
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/mn10300/Kconfig linux/arch/mn10300/Kconfig
+--- linux-vanilla/arch/mn10300/Kconfig	2013-12-22 18:03:13.598499470 +0000
++++ linux/arch/mn10300/Kconfig	2013-12-22 17:58:26.460505877 +0000
+@@ -184,8 +184,8 @@ config SMP
+ 	depends on MN10300_PROC_MN2WS0038 || MN10300_PROC_MN2WS0050
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/parisc/Kconfig linux/arch/parisc/Kconfig
+--- linux-vanilla/arch/parisc/Kconfig	2013-12-22 18:03:13.682499468 +0000
++++ linux/arch/parisc/Kconfig	2013-12-22 17:57:38.097506956 +0000
+@@ -229,8 +229,8 @@ config SMP
+ 	bool "Symmetric multi-processing support"
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/s390/Kconfig linux/arch/s390/Kconfig
+--- linux-vanilla/arch/s390/Kconfig	2013-12-22 18:03:14.077499459 +0000
++++ linux/arch/s390/Kconfig	2013-12-22 17:58:29.631505806 +0000
+@@ -332,8 +332,8 @@ config SMP
+ 	prompt "Symmetric multi-processing support"
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/sh/Kconfig linux/arch/sh/Kconfig
+--- linux-vanilla/arch/sh/Kconfig	2013-12-22 18:03:14.188499457 +0000
++++ linux/arch/sh/Kconfig	2013-12-22 17:58:25.470505899 +0000
+@@ -714,8 +714,8 @@ config SMP
+ 	depends on SYS_SUPPORTS_SMP
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/x86/Kconfig linux/arch/x86/Kconfig
+--- linux-vanilla/arch/x86/Kconfig	2013-12-22 18:03:14.584499448 +0000
++++ linux/arch/x86/Kconfig	2013-12-22 17:58:30.711505782 +0000
+@@ -278,8 +278,8 @@ config SMP
+ 	bool "Symmetric multi-processing support"
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+Signed-off-by: Robert Graffham <psquid@psquid.net>

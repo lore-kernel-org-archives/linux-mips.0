@@ -1,17 +1,14 @@
-Received: from mail-we0-f174.google.com ([74.125.82.174]:34724 "EHLO
-        mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6822668Ab3LaW7fK4y90 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 31 Dec 2013 23:59:35 +0100
-Received: by mail-we0-f174.google.com with SMTP id q58so11284005wes.19
-        for <linux-mips@linux-mips.org>; Tue, 31 Dec 2013 14:59:29 -0800 (PST)
-Date: Tue, 31 Dec 2013 22:59:22 +0000
-From: Robert Graffham <psquid@psquid.net>
-Subject: [PATCH] Slightly outdated CONFIG_SMP documentation fix
-Message-ID: <20131231225921.GA1624@sylph>
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:17084 "EHLO
+        mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6821116AbaABOvEqQG21 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Jan 2014 15:51:04 +0100
+From: Jayachandran C <jchandra@broadcom.com>
+Subject: [PATCH 07/18 UPDATED] MIPS: Netlogic: Core wakeup improvements
+Date: Thu, 2 Jan 2014 20:33:39 +0530
+Message-ID: <1388675019-8718-1-git-send-email-jchandra@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Return-Path: <psquid@psquid.net>
+Content-Type: text/plain
+Return-Path: <jchandra@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,168 +18,85 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Hirokazu Takata <takata@linux-m32r.org>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Paul Mundt <lethal@linux-sh.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-m32r@ml.linux-m32r.org, linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org
-Message-ID: <20131231225922.8246y49h3qzp4Qby-VPT81lNkQfbXjkGPrTQ0r4Nz1o@z>
+To: linux-mips@linux-mips.org, John Crispin <john@phrozen.org>
+Cc: Jayachandran C <jchandra@broadcom.com>
+Message-ID: <20140102150339.lZkBF2a2fAVmuZmDFCMKe6LSn2fKOrCGkZyooijtC4Y@z>
 
-I've removed a reference to "most personal computers" being singleprocessor
-machines in multiple arches' config help, and also brought the arch/arm spacing
-for "singleprocessor" (vs. "single processor" used there originally) in line
-with other arches that had that text.
+Move wakeup to after early console. This will allow us to display error
+messages when cores are not woken up.  Also reduce the wait time for core
+to come up.
 
-The diff is included below, and cleanly applies and builds on my system. I have
-not tested on other systems yet since a documentation fix shouldn't fail to
-build inconsistently, but if that's no excuse, I'll be happy to test further
-when I can.
+Signed-off-by: Jayachandran C <jchandra@broadcom.com>
+---
+Updated to take care of conflict with http://patchwork.linux-mips.org/patch/6141/
 
+ arch/mips/netlogic/xlp/setup.c  |   14 ++++++++------
+ arch/mips/netlogic/xlp/wakeup.c |    8 +++++---
+ 2 files changed, 13 insertions(+), 9 deletions(-)
 
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/alpha/Kconfig linux/arch/alpha/Kconfig
---- linux-vanilla/arch/alpha/Kconfig	2013-12-22 18:03:11.881499508 +0000
-+++ linux/arch/alpha/Kconfig	2013-12-22 17:58:31.448505765 +0000
-@@ -539,8 +539,8 @@ config SMP
- 	depends on ALPHA_SABLE || ALPHA_LYNX || ALPHA_RAWHIDE || ALPHA_DP264 || ALPHA_WILDFIRE || ALPHA_TITAN || ALPHA_GENERIC || ALPHA_SHARK || ALPHA_MARVEL
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
+diff --git a/arch/mips/netlogic/xlp/setup.c b/arch/mips/netlogic/xlp/setup.c
+index 54e75c7..eefdfff 100644
+--- a/arch/mips/netlogic/xlp/setup.c
++++ b/arch/mips/netlogic/xlp/setup.c
+@@ -92,6 +92,14 @@ static void __init xlp_init_mem_from_bars(void)
  
- 	  If you say N here, the kernel will run on single and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/arc/Kconfig linux/arch/arc/Kconfig
---- linux-vanilla/arch/arc/Kconfig	2013-12-22 18:03:11.933499507 +0000
-+++ linux/arch/arc/Kconfig	2013-12-22 17:58:24.412505922 +0000
-@@ -128,8 +128,8 @@ config SMP
- 	default n
- 	help
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
+ void __init plat_mem_setup(void)
+ {
++#ifdef CONFIG_SMP
++	nlm_wakeup_secondary_cpus();
++
++	/* update TLB size after waking up threads */
++	current_cpu_data.tlbsize = ((read_c0_config6() >> 16) & 0xffff) + 1;
++
++	register_smp_ops(&nlm_smp_ops);
++#endif
+ 	_machine_restart = (void (*)(char *))nlm_linux_exit;
+ 	_machine_halt	= nlm_linux_exit;
+ 	pm_power_off	= nlm_linux_exit;
+@@ -162,11 +170,5 @@ void __init prom_init(void)
  
- if SMP
+ #ifdef CONFIG_SMP
+ 	cpumask_setall(&nlm_cpumask);
+-	nlm_wakeup_secondary_cpus();
+-
+-	/* update TLB size after waking up threads */
+-	current_cpu_data.tlbsize = ((read_c0_config6() >> 16) & 0xffff) + 1;
+-
+-	register_smp_ops(&nlm_smp_ops);
+ #endif
+ }
+diff --git a/arch/mips/netlogic/xlp/wakeup.c b/arch/mips/netlogic/xlp/wakeup.c
+index e6f77c0..5bd7d18 100644
+--- a/arch/mips/netlogic/xlp/wakeup.c
++++ b/arch/mips/netlogic/xlp/wakeup.c
+@@ -84,7 +84,7 @@ static int wait_for_cpus(int cpu, int bootcpu)
+ 	volatile uint32_t *cpu_ready = nlm_get_boot_data(BOOT_CPU_READY);
+ 	int i, count, notready;
  
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/arm/Kconfig linux/arch/arm/Kconfig
---- linux-vanilla/arch/arm/Kconfig	2013-12-22 18:03:11.956499506 +0000
-+++ linux/arch/arm/Kconfig	2013-12-22 17:56:31.187508449 +0000
-@@ -1435,14 +1435,14 @@ config SMP
- 	depends on MMU || ARM_MPU
- 	help
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
+-	count = 0x20000000;
++	count = 0x800000;
+ 	do {
+ 		notready = nlm_threads_per_core;
+ 		for (i = 0; i < nlm_threads_per_core; i++)
+@@ -160,7 +160,8 @@ static void xlp_enable_secondary_cores(const cpumask_t *wakeup_mask)
+ 			nodep->coremask |= 1u << core;
  
- 	  If you say N here, the kernel will run on single and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
--	  you say Y here, the kernel will run on many, but not all, single
--	  processor machines. On a single processor machine, the kernel will
--	  run faster if you say N here.
-+	  you say Y here, the kernel will run on many, but not all,
-+	  singleprocessor machines. On a singleprocessor machine, the kernel
-+	  will run faster if you say N here.
+ 			/* spin until the hw threads sets their ready */
+-			wait_for_cpus(cpu, 0);
++			if (!wait_for_cpus(cpu, 0))
++				pr_err("Node %d : timeout core %d\n", n, core);
+ 		}
+ 	}
+ }
+@@ -172,7 +173,8 @@ void xlp_wakeup_secondary_cpus()
+ 	 * first wakeup core 0 threads
+ 	 */
+ 	xlp_boot_core0_siblings();
+-	wait_for_cpus(0, 0);
++	if (!wait_for_cpus(0, 0))
++		pr_err("Node 0 : timeout core 0\n");
  
- 	  See also <file:Documentation/x86/i386/IO-APIC.txt>,
- 	  <file:Documentation/nmi_watchdog.txt> and the SMP-HOWTO available at
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/m32r/Kconfig linux/arch/m32r/Kconfig
---- linux-vanilla/arch/m32r/Kconfig	2013-12-22 18:03:13.100499481 +0000
-+++ linux/arch/m32r/Kconfig	2013-12-22 17:58:27.485505854 +0000
-@@ -277,8 +277,8 @@ config SMP
- 	bool "Symmetric multi-processing support"
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
- 	  If you say N here, the kernel will run on single and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/mips/Kconfig linux/arch/mips/Kconfig
---- linux-vanilla/arch/mips/Kconfig	2013-12-22 18:03:13.290499477 +0000
-+++ linux/arch/mips/Kconfig	2013-12-22 17:58:28.576505829 +0000
-@@ -2128,8 +2128,8 @@ config SMP
- 	depends on SYS_SUPPORTS_SMP
- 	help
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
- 	  If you say N here, the kernel will run on single and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/mn10300/Kconfig linux/arch/mn10300/Kconfig
---- linux-vanilla/arch/mn10300/Kconfig	2013-12-22 18:03:13.598499470 +0000
-+++ linux/arch/mn10300/Kconfig	2013-12-22 17:58:26.460505877 +0000
-@@ -184,8 +184,8 @@ config SMP
- 	depends on MN10300_PROC_MN2WS0038 || MN10300_PROC_MN2WS0050
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
- 	  If you say N here, the kernel will run on single and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/parisc/Kconfig linux/arch/parisc/Kconfig
---- linux-vanilla/arch/parisc/Kconfig	2013-12-22 18:03:13.682499468 +0000
-+++ linux/arch/parisc/Kconfig	2013-12-22 17:57:38.097506956 +0000
-@@ -229,8 +229,8 @@ config SMP
- 	bool "Symmetric multi-processing support"
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
- 	  If you say N here, the kernel will run on single and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/s390/Kconfig linux/arch/s390/Kconfig
---- linux-vanilla/arch/s390/Kconfig	2013-12-22 18:03:14.077499459 +0000
-+++ linux/arch/s390/Kconfig	2013-12-22 17:58:29.631505806 +0000
-@@ -332,8 +332,8 @@ config SMP
- 	prompt "Symmetric multi-processing support"
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
- 	  If you say N here, the kernel will run on single and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/sh/Kconfig linux/arch/sh/Kconfig
---- linux-vanilla/arch/sh/Kconfig	2013-12-22 18:03:14.188499457 +0000
-+++ linux/arch/sh/Kconfig	2013-12-22 17:58:25.470505899 +0000
-@@ -714,8 +714,8 @@ config SMP
- 	depends on SYS_SUPPORTS_SMP
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
- 	  If you say N here, the kernel will run on single and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/x86/Kconfig linux/arch/x86/Kconfig
---- linux-vanilla/arch/x86/Kconfig	2013-12-22 18:03:14.584499448 +0000
-+++ linux/arch/x86/Kconfig	2013-12-22 17:58:30.711505782 +0000
-@@ -278,8 +278,8 @@ config SMP
- 	bool "Symmetric multi-processing support"
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
- 	  If you say N here, the kernel will run on single and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
-Signed-off-by: Robert Graffham <psquid@psquid.net>
+ 	/* now get other cores out of reset */
+ 	xlp_enable_secondary_cores(&nlm_cpumask);
+-- 
+1.7.9.5

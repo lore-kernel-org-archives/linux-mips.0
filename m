@@ -1,18 +1,14 @@
-Received: from bear.ext.ti.com ([192.94.94.41]:59179 "EHLO bear.ext.ti.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6825633AbaAJL4VcXSJn (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 10 Jan 2014 12:56:21 +0100
-Message-ID: <52CFDFD6.8090006@ti.com>
-Date: Fri, 10 Jan 2014 13:56:06 +0200
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Received: from mail-gw1-out.broadcom.com ([216.31.210.62]:5250 "EHLO
+        mail-gw1-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6870574AbaAJUf1spAyb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Jan 2014 21:35:27 +0100
+From: Florian Fainelli <florian@openwrt.org>
+Subject: [PATCH 0/3] MIPS: L1_CACHE_SHIFT updates
+Date: Fri, 10 Jan 2014 12:35:11 -0800
+Message-ID: <1389386114-31834-1-git-send-email-florian@openwrt.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] video/logo: Remove MIPS-specific include section
-References: <1383554550-20901-1-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1383554550-20901-1-git-send-email-geert@linux-m68k.org>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature";
-        boundary="8KjpcTeU1MJM80E72GwlgrCSqwr4a0pIO"
-Return-Path: <tomi.valkeinen@ti.com>
+Content-Type: text/plain
+Return-Path: <florian@openwrt.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,71 +18,26 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Ralf Baechle <ralf@linux-mips.org>, linux-fbdev@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20140110115606.VffF2TIi42g95tA5giAPbfy_gYc_WBA9w02q2glVpB0@z>
+To: linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org, blogic@openwrt.org, jogo@openwrt.org, mbizon@freebox.fr, cernekee@gmail.com, dgcbueu@gmail.com, Florian Fainelli <florian@openwrt.org>
+Message-ID: <20140110203511.hE99MDEfZQGUH2FEvngW_5hRfRf9pF5-J94jZh28CgY@z>
 
---8KjpcTeU1MJM80E72GwlgrCSqwr4a0pIO
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Ralf, John,
 
-On 2013-11-04 10:42, Geert Uytterhoeven wrote:
-> Since commit 41702d9a4fffa9e25b2ad9d4af09b3013fa155e1 ("logo.c: get rid=
- of
-> mips_machgroup") there's no longer a need to include <asm/bootinfo.h> o=
-n
-> MIPS.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->  drivers/video/logo/logo.c |    4 ----
->  1 file changed, 4 deletions(-)
->=20
-> diff --git a/drivers/video/logo/logo.c b/drivers/video/logo/logo.c
-> index 080c35b34bbb..b670cbda38e3 100644
-> --- a/drivers/video/logo/logo.c
-> +++ b/drivers/video/logo/logo.c
-> @@ -17,10 +17,6 @@
->  #include <asm/setup.h>
->  #endif
-> =20
-> -#ifdef CONFIG_MIPS
-> -#include <asm/bootinfo.h>
-> -#endif
-> -
->  static bool nologo;
->  module_param(nologo, bool, 0);
->  MODULE_PARM_DESC(nologo, "Disables startup logo");
->=20
+This patchset cleanups the MIPS_L1_CACHE_SHIFT values and also fixes it
+for Broadcom BCM63xx DSL SOCs.
 
-Queued for 3.14.
+Thanks!
 
- Tomi
+Florian Fainelli (3):
+  MIPS: introduce MIPS_L1_CACHE_SHIFT_<N>
+  MIPS: update MIPS_L1_CACHE_SHIFT based on MIPS_L1_CACHE_SHIFT_<N>
+  MIPS: BCM63XX: select correct MIPS_L1_CACHE_SHIFT value
 
+ arch/mips/Kconfig              | 27 +++++++++++++++++++++++----
+ arch/mips/pmcs-msp71xx/Kconfig |  1 +
+ arch/mips/ralink/Kconfig       |  1 +
+ 3 files changed, 25 insertions(+), 4 deletions(-)
 
-
---8KjpcTeU1MJM80E72GwlgrCSqwr4a0pIO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iQIcBAEBAgAGBQJSz9/WAAoJEPo9qoy8lh71c/0P/j0iSGTh1uodjhJ1MQG4oL0L
-pOeKJgfeyLqZRcPiKXzYuau//hqNbrDGlGkKws1yI2S5Q7JoFdJheAnGG8q/NApx
-WTi6eYly+CyyVEqLMXCSZE+rJ1basIIn/bh2aeLwSJ1xodErVT4IrsUOfSvyd9Im
-xP1RXr3hEH398bY2U8VmtKaV0dKbZgGkTiKgSozyQtS8xaArv603qpyB50s08wCz
-yLU4ZXtdMLlkTfm7f5VusbNRpqR9hvHhD13YJ5wdFshtfTkLWJteCW7TJayra1UG
-XLsrWNfQ20+VpeVcxOUdAOQPOgg7G1D+FIA1s+JD7q/1EsGB6Hnm4ZpwdCuPnYEi
-l9VYPROTjgIXfC+XTSXKaqEaGCk5KmTqTb+B32BJ3YZbYjbEkipIl3gCyak/frf7
-qz34hBCtqcMUa4C/rDpIMFXR/SDgyL7tLg3mJXu8PsZqhkRE3pfv4CxctLCv36+x
-/7hHAgbUkFl/YdeIm5viLHBe5gDLzRNSvXdsbiBlQQqzF9QrvVtjOKZQSWM7iYoc
-Dr9gdmFwggXO/ARIsKe0dIewPhNuVBdJdsXYlzBPnxD45jMKpGcJ21dScDLNHfA4
-O70LfWW51wya3PZ1ey5sVN+dRBV3HdEqHGx2UR6qripPrTku/jL5GVpErLPqSE2m
-jqERWGabD/x68GUOlN+C
-=zDEo
------END PGP SIGNATURE-----
-
---8KjpcTeU1MJM80E72GwlgrCSqwr4a0pIO--
+-- 
+1.8.3.2

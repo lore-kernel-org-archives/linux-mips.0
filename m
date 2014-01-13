@@ -1,16 +1,12 @@
-Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:35586 "EHLO
-        mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6870583AbaAJUfzfu0UI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Jan 2014 21:35:55 +0100
-From: Florian Fainelli <florian@openwrt.org>
-Subject: [PATCH 1/3] MIPS: introduce MIPS_L1_CACHE_SHIFT_<N>
-Date: Fri, 10 Jan 2014 12:35:12 -0800
-Message-ID: <1389386114-31834-2-git-send-email-florian@openwrt.org>
-In-Reply-To: <1389386114-31834-1-git-send-email-florian@openwrt.org>
-References: <1389386114-31834-1-git-send-email-florian@openwrt.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <florian@openwrt.org>
+Received: from mail-lb0-f170.google.com ([209.85.217.170]:40925 "EHLO
+        mail-lb0-f170.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6828766AbaAMVXBeyvYO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Jan 2014 22:23:01 +0100
+From: Antony Pavlov <antonynpavlov@gmail.com>
+Subject: [PATCH v3] MIPS: ZBOOT: gather string functions into string.c
+Date: Tue, 14 Jan 2014 01:30:56 +0400
+Message-ID: <1389648656-25709-1-git-send-email-antonynpavlov@gmail.com>
+Return-Path: <antonynpavlov@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,116 +16,113 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: ralf@linux-mips.org, blogic@openwrt.org, jogo@openwrt.org, mbizon@freebox.fr, cernekee@gmail.com, dgcbueu@gmail.com, Florian Fainelli <florian@openwrt.org>
-Message-ID: <20140110203512.VE6mZUH2C6yjkakIhNdDSkbfBRr1ITwnRV9eV3wNrwY@z>
+Cc: Antony Pavlov <antonynpavlov@gmail.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, John Crispin <blogic@openwrt.org>, Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <20140113213056.QIsIF0HxD67AKkHRNF8dSK28SsLykGxpLDqa6uB6XYg@z>
 
-In order to avoid keeping an ever growing list of chips which need to
-select a specific MIPS_L1_CACHE_SHIFT value introduce multiple internal
-and non-exposed Kconfig symbols for the various MIPS_L1_CACHE_SHIFT
-values out there and update the relevant Kconfig symbols to select them.
+In the worst case this adds less then 128 bytes of code
+but on the other hand this makes code organization more clear.
 
-Signed-off-by: Florian Fainelli <florian@openwrt.org>
+Signed-off-by: Antony Pavlov <antonynpavlov@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: John Crispin <blogic@openwrt.org>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
 ---
- arch/mips/Kconfig              | 18 ++++++++++++++++++
- arch/mips/pmcs-msp71xx/Kconfig |  1 +
- arch/mips/ralink/Kconfig       |  1 +
- 3 files changed, 20 insertions(+)
+ arch/mips/boot/compressed/Makefile     |  4 ++--
+ arch/mips/boot/compressed/decompress.c | 22 ----------------------
+ arch/mips/boot/compressed/string.c     | 28 ++++++++++++++++++++++++++++
+ 3 files changed, 30 insertions(+), 24 deletions(-)
+ create mode 100644 arch/mips/boot/compressed/string.c
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 17cc7ff..753c5a3 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -183,6 +183,7 @@ config MACH_DECSTATION
- 	select SYS_SUPPORTS_128HZ
- 	select SYS_SUPPORTS_256HZ
- 	select SYS_SUPPORTS_1024HZ
-+	select MIPS_L1_CACHE_SHIFT_4
- 	help
- 	  This enables support for DEC's MIPS based workstations.  For details
- 	  see the Linux/MIPS FAQ on <http://www.linux-mips.org/> and the
-@@ -468,6 +469,7 @@ config SGI_IP22
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_64BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
-+	select MIPS_L1_CACHE_SHIFT_7
- 	help
- 	  This are the SGI Indy, Challenge S and Indigo2, as well as certain
- 	  OEM variants like the Tandem CMN B006S. To compile a Linux kernel
-@@ -488,6 +490,7 @@ config SGI_IP27
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_SUPPORTS_NUMA
- 	select SYS_SUPPORTS_SMP
-+	select MIPS_L1_CACHE_SHIFT_7
- 	help
- 	  This are the SGI Origin 200, Origin 2000 and Onyx 2 Graphics
- 	  workstations.  To compile a Linux kernel that runs on these, say Y
-@@ -694,6 +697,7 @@ config MIKROTIK_RB532
- 	select SWAP_IO_SPACE
- 	select BOOT_RAW
- 	select ARCH_REQUIRE_GPIOLIB
-+	select MIPS_L1_CACHE_SHIFT_4
- 	help
- 	  Support the Mikrotik(tm) RouterBoard 532 series,
- 	  based on the IDT RC32434 SoC.
-@@ -1088,6 +1092,18 @@ config FW_SNIPROM
- config BOOT_ELF32
- 	bool
+diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+index ca0c343..61af6b6 100644
+--- a/arch/mips/boot/compressed/Makefile
++++ b/arch/mips/boot/compressed/Makefile
+@@ -27,10 +27,10 @@ KBUILD_AFLAGS := $(LINUXINCLUDE) $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
+ 	-DBOOT_HEAP_SIZE=$(BOOT_HEAP_SIZE) \
+ 	-DKERNEL_ENTRY=$(VMLINUX_ENTRY_ADDRESS)
  
-+config MIPS_L1_CACHE_SHIFT_4
-+	bool
+-targets := head.o decompress.o dbg.o uart-16550.o uart-alchemy.o
++targets := head.o decompress.o string.o dbg.o uart-16550.o uart-alchemy.o
+ 
+ # decompressor objects (linked with vmlinuz)
+-vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/dbg.o
++vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o $(obj)/dbg.o
+ 
+ ifdef CONFIG_DEBUG_ZBOOT
+ vmlinuzobjs-$(CONFIG_SYS_SUPPORTS_ZBOOT_UART16550) += $(obj)/uart-16550.o
+diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
+index a8c6fd6..c00c4dd 100644
+--- a/arch/mips/boot/compressed/decompress.c
++++ b/arch/mips/boot/compressed/decompress.c
+@@ -43,33 +43,11 @@ void error(char *x)
+ /* activate the code for pre-boot environment */
+ #define STATIC static
+ 
+-#if defined(CONFIG_KERNEL_GZIP) || defined(CONFIG_KERNEL_XZ) || \
+-	defined(CONFIG_KERNEL_LZ4)
+-void *memcpy(void *dest, const void *src, size_t n)
+-{
+-	int i;
+-	const char *s = src;
+-	char *d = dest;
+-
+-	for (i = 0; i < n; i++)
+-		d[i] = s[i];
+-	return dest;
+-}
+-#endif
+ #ifdef CONFIG_KERNEL_GZIP
+ #include "../../../../lib/decompress_inflate.c"
+ #endif
+ 
+ #ifdef CONFIG_KERNEL_BZIP2
+-void *memset(void *s, int c, size_t n)
+-{
+-	int i;
+-	char *ss = s;
+-
+-	for (i = 0; i < n; i++)
+-		ss[i] = c;
+-	return s;
+-}
+ #include "../../../../lib/decompress_bunzip2.c"
+ #endif
+ 
+diff --git a/arch/mips/boot/compressed/string.c b/arch/mips/boot/compressed/string.c
+new file mode 100644
+index 0000000..9de9885
+--- /dev/null
++++ b/arch/mips/boot/compressed/string.c
+@@ -0,0 +1,28 @@
++/*
++ * arch/mips/boot/compressed/string.c
++ *
++ * Very small subset of simple string routines
++ */
 +
-+config MIPS_L1_CACHE_SHIFT_5
-+	def_bool y
++#include <linux/types.h>
 +
-+config MIPS_L1_CACHE_SHIFT_6
-+	bool
++void *memcpy(void *dest, const void *src, size_t n)
++{
++	int i;
++	const char *s = src;
++	char *d = dest;
 +
-+config MIPS_L1_CACHE_SHIFT_7
-+	bool
++	for (i = 0; i < n; i++)
++		d[i] = s[i];
++	return dest;
++}
 +
- config MIPS_L1_CACHE_SHIFT
- 	int
- 	default "4" if MACH_DECSTATION || MIKROTIK_RB532 || PMC_MSP4200_EVAL || SOC_RT288X
-@@ -1372,6 +1388,7 @@ config CPU_CAVIUM_OCTEON
- 	select LIBFDT
- 	select USE_OF
- 	select USB_EHCI_BIG_ENDIAN_MMIO
-+	select MIPS_L1_CACHE_SHIFT_7
- 	help
- 	  The Cavium Octeon processor is a highly integrated chip containing
- 	  many ethernet hardware widgets for networking tasks. The processor
-@@ -1794,6 +1811,7 @@ config IP22_CPU_SCACHE
- config MIPS_CPU_SCACHE
- 	bool
- 	select BOARD_SCACHE
-+	select MIPS_L1_CACHE_SHIFT_6
- 
- config R5000_CPU_SCACHE
- 	bool
-diff --git a/arch/mips/pmcs-msp71xx/Kconfig b/arch/mips/pmcs-msp71xx/Kconfig
-index 3482b8c..6073ca4 100644
---- a/arch/mips/pmcs-msp71xx/Kconfig
-+++ b/arch/mips/pmcs-msp71xx/Kconfig
-@@ -6,6 +6,7 @@ config PMC_MSP4200_EVAL
- 	bool "PMC-Sierra MSP4200 Eval Board"
- 	select IRQ_MSP_SLP
- 	select HW_HAS_PCI
-+	select MIPS_L1_CACHE_SHIFT_4
- 
- config PMC_MSP4200_GW
- 	bool "PMC-Sierra MSP4200 VoIP Gateway"
-diff --git a/arch/mips/ralink/Kconfig b/arch/mips/ralink/Kconfig
-index 424f034..1bfd1c1 100644
---- a/arch/mips/ralink/Kconfig
-+++ b/arch/mips/ralink/Kconfig
-@@ -15,6 +15,7 @@ choice
- 
- 	config SOC_RT288X
- 		bool "RT288x"
-+		select MIPS_L1_CACHE_SHIFT_4
- 
- 	config SOC_RT305X
- 		bool "RT305x"
++void *memset(void *s, int c, size_t n)
++{
++	int i;
++	char *ss = s;
++
++	for (i = 0; i < n; i++)
++		ss[i] = c;
++	return s;
++}
 -- 
-1.8.3.2
+1.8.5.2

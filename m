@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:9581 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:9590 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6828766AbaAOKh2vmHMX (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 15 Jan 2014 11:37:28 +0100
+        id S6827313AbaAOKhuos2Nx (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 15 Jan 2014 11:37:50 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 13/15] MIPS: more helpful CONFIG_MIPS_CMP label, help text
-Date: Wed, 15 Jan 2014 10:31:58 +0000
-Message-ID: <1389781920-31151-14-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 14/15] MIPS: MIPS_CMP should depend upon !SMTC, not upon SMVP
+Date: Wed, 15 Jan 2014 10:31:59 +0000
+Message-ID: <1389781920-31151-15-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1389781920-31151-1-git-send-email-paul.burton@imgtec.com>
 References: <1389781920-31151-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,43 +22,39 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140115103158.7mulM4OQbmZ3D4T_rPjBCJhhLuwNsWz0korsIm5QE4s@z>
+Message-ID: <20140115103159.XIyzDjCIrzDw59jLETBDmUWyPCT4778Oi7cT_xku1zw@z>
 
-The prior help text introduced in commit f55afb0969cc "MIPS: Clean up
-MIPS MT and CMP configuration options." reads as though this option
-enables the kernel to make use of the CM hardware, which is not true.
-What it actually does is allow the kernel to interact with the YAMON
-bootloader which actually interacts with the CM hardware to bring up
-secondary cores. Re-introduce the word "framework" which that commit
-removed to avoid misleading people.
+Commit f55afb0969cc "MIPS: Clean up MIPS MT and CMP configuration
+options." introduced a dependency upon MIPS_MT_SMP (ie. SMVP) for the
+MIPS_CMP (ie. CMP framework support) Kconfig option. It did not specify
+why, and that dependency is bogus. It is perfectly valid to have a
+multi-core system with the YAMON bootloader but without MT support -
+an example of this would be any multi-core proAptiv bitstream running on
+a Malta. Forcing MT support to be enabled in a kernel for such a system
+is incorrect. I suspect that the dependency was actually meant to
+reflect the fact that YAMON will only bind 1 TC per VPE on an MT system,
+and only describe those 1:1 TC:VPE pairs as CPUs through the AMON
+interface. Thus an SMTC kernel makes little sense on a system using
+MIPS_CMP, and the Kconfig dependencies should reflect that rather than
+introducing the bogus SMVP dependency.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/Kconfig | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/mips/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 868226e..1cd7148 100644
+index 1cd7148..bdf4012 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -1980,14 +1980,16 @@ config MIPS_VPE_APSP_API_MT
- 	depends on MIPS_VPE_APSP_API && !MIPS_CMP
+@@ -1981,7 +1981,7 @@ config MIPS_VPE_APSP_API_MT
  
  config MIPS_CMP
--	bool "MIPS CMP support"
-+	bool "MIPS CMP framework support"
- 	depends on SYS_SUPPORTS_MIPS_CMP && MIPS_MT_SMP
+ 	bool "MIPS CMP framework support"
+-	depends on SYS_SUPPORTS_MIPS_CMP && MIPS_MT_SMP
++	depends on SYS_SUPPORTS_MIPS_CMP && !MIPS_MT_SMTC
  	select MIPS_GIC_IPI
  	select SYNC_R4K
  	select WEAK_ORDERING
- 	default n
- 	help
--	  Enable Coherency Manager processor (CMP) support.
-+	  Select this if you are using a bootloader which implements the "CMP
-+	  framework" protocol (ie. YAMON) and want your kernel to make use of
-+	  its ability to start secondary CPUs.
- 
- config MIPS_CPS
- 	bool "MIPS Coherent Processing System support"
 -- 
 1.8.4.2

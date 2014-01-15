@@ -1,13 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:9595 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:38351 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6827367AbaAOKiMAuAPN (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 15 Jan 2014 11:38:12 +0100
+        id S6827335AbaAON4s1hTFH (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 15 Jan 2014 14:56:48 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 15/15] MIPS: deprecate CONFIG_MIPS_CMP
-Date: Wed, 15 Jan 2014 10:32:00 +0000
-Message-ID: <1389781920-31151-16-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1389781920-31151-1-git-send-email-paul.burton@imgtec.com>
-References: <1389781920-31151-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 00/10] MIPS CPS cpuidle
+Date: Wed, 15 Jan 2014 13:55:27 +0000
+Message-ID: <1389794137-11361-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -22,44 +20,46 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140115103200.aWwnzFQ7SouTBjSeBAHNtNICMCNFBaDTYC5pEdF4-YI@z>
+Message-ID: <20140115135527.CJA5pYSD5kHOCkZRJclXN9vDuDIxD8JnLcj-rcFHFwQ@z>
 
-CONFIG_MIPS_CPS is a better option for systems where it is supported,
-which as far as I am aware should be all systems where CONFIG_MIPS_CMP
-could provide any value (ie. where there are multiple cores for YAMON to
-bring up). This option is therefore deprecated, and marked as such. It
-is left intact for the time being in order to provide a fallback should
-someone find a system where CONFIG_MIPS_CPS will not function (ie. where
-the reset vector cannot be moved), and should be removed entirely in the
-future assuming that does not happen.
+This series introduces a cpuidle driver for systems based around the
+MIPS Coherent Processing System, ie. those with a Coherence Manager and
+optionally a Cluster Power Controller. The resulting driver is very
+much foundational work to which deeper power states will later be added.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
----
- arch/mips/Kconfig | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Tested on Malta using interAptiv bitstreams with both 1 & 2 VPEs in each
+of 2 cores, and a multi-core proAptiv bitstream.
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index bdf4012..5bc27c0 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1980,7 +1980,7 @@ config MIPS_VPE_APSP_API_MT
- 	depends on MIPS_VPE_APSP_API && !MIPS_CMP
- 
- config MIPS_CMP
--	bool "MIPS CMP framework support"
-+	bool "MIPS CMP framework support (DEPRECATED)"
- 	depends on SYS_SUPPORTS_MIPS_CMP && !MIPS_MT_SMTC
- 	select MIPS_GIC_IPI
- 	select SYNC_R4K
-@@ -1991,6 +1991,9 @@ config MIPS_CMP
- 	  framework" protocol (ie. YAMON) and want your kernel to make use of
- 	  its ability to start secondary CPUs.
- 
-+	  Unless you have a specific need, you should use CONFIG_MIPS_CPS
-+	  instead of this.
-+
- config MIPS_CPS
- 	bool "MIPS Coherent Processing System support"
- 	depends on SYS_SUPPORTS_MIPS_CPS
+This series depends upon the CM changes of my "MIPS CPS SMP" series.
+
+Paul Burton (10):
+  MIPS: inst.h: define COP0 wait op
+  MIPS: inst.h: define missing microMIPS POOL32AXf ops
+  MIPS: uasm: add sync instruction
+  MIPS: uasm: add wait instruction
+  MIPS: uasm: add jr.hb instruction
+  MIPS: uasm: add mftc0 & mttc0 instructions
+  MIPS: uasm: add a label variant of beq
+  MIPS: support use of cpuidle
+  cpuidle: declare cpuidle_dev in cpuidle.h
+  cpuidle: cpuidle driver for MIPS CPS
+
+ arch/mips/Kconfig                  |   2 +
+ arch/mips/include/asm/idle.h       |  14 +
+ arch/mips/include/asm/uasm.h       |   7 +
+ arch/mips/include/uapi/asm/inst.h  |  15 +-
+ arch/mips/kernel/idle.c            |  20 +-
+ arch/mips/mm/uasm-micromips.c      |   3 +
+ arch/mips/mm/uasm-mips.c           |   5 +
+ arch/mips/mm/uasm.c                |  25 +-
+ drivers/cpuidle/Kconfig            |   5 +
+ drivers/cpuidle/Kconfig.mips       |  14 +
+ drivers/cpuidle/Makefile           |   3 +
+ drivers/cpuidle/cpuidle-mips-cps.c | 545 +++++++++++++++++++++++++++++++++++++
+ include/linux/cpuidle.h            |   1 +
+ 13 files changed, 650 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/cpuidle/Kconfig.mips
+ create mode 100644 drivers/cpuidle/cpuidle-mips-cps.c
+
 -- 
 1.8.4.2

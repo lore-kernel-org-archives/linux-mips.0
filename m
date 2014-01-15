@@ -1,11 +1,11 @@
 Received: from multi.imgtec.com ([194.200.65.239]:10809 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6827341AbaAOKcXS3B55 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        id S6827345AbaAOKcXfJKBm (ORCPT <rfc822;linux-mips@linux-mips.org>);
         Wed, 15 Jan 2014 11:32:23 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 02/15] MIPS: add CP0 CMGCRBase definitions & accessor
-Date: Wed, 15 Jan 2014 10:31:47 +0000
-Message-ID: <1389781920-31151-3-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 03/15] MIPS: add missing includes to gic.h
+Date: Wed, 15 Jan 2014 10:31:48 +0000
+Message-ID: <1389781920-31151-4-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1389781920-31151-1-git-send-email-paul.burton@imgtec.com>
 References: <1389781920-31151-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,42 +22,31 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140115103147.bVHOcfxxle9mcWipjY0H8rPxkdr52zCvSnhPLT8inzQ@z>
+Message-ID: <20140115103148.TEKpAiH9CeuYlAtPy0HqaYq1xq112TswL51bTB7VxAc@z>
 
-The CMGCRBase register is defined by the PRA specification as an optional
-register which indicates the physical base of the MIPS Coherence Manager
-Global Control Register block. This patch simply adds a definition for
-the base address field within the register, along with an accessor
-function for reading the register.
+The gic.h header uses bitmaps and NR_CPUS, and should therefore include
+linux/bitmap.h and linux/threads.h. This is in preparation for use of
+this header in a subsequent commit from a C file which doesn't already
+include those headers.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/include/asm/mipsregs.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/mips/include/asm/gic.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index 5302696..3401128 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -668,6 +668,10 @@
- /*  EntryHI bit definition */
- #define MIPS_ENTRYHI_EHINV	(_ULCAST_(1) << 10)
+diff --git a/arch/mips/include/asm/gic.h b/arch/mips/include/asm/gic.h
+index b2e3e93..0827166 100644
+--- a/arch/mips/include/asm/gic.h
++++ b/arch/mips/include/asm/gic.h
+@@ -11,6 +11,9 @@
+ #ifndef _ASM_GICREGS_H
+ #define _ASM_GICREGS_H
  
-+/* CMGCRBase bit definitions */
-+#define MIPS_CMGCRB_BASE	11
-+#define MIPS_CMGCRF_BASE	(~_ULCAST_((1 << MIPS_CMGCRB_BASE) - 1))
++#include <linux/bitmap.h>
++#include <linux/threads.h>
 +
- /*
-  * Bits in the MIPS32/64 coprocessor 1 (FPU) revision register.
-  */
-@@ -1022,6 +1026,8 @@ do {									\
+ #undef	GICISBYTELITTLEENDIAN
  
- #define read_c0_prid()		__read_32bit_c0_register($15, 0)
- 
-+#define read_c0_cmgcrbase()	__read_ulong_c0_register($15, 3)
-+
- #define read_c0_config()	__read_32bit_c0_register($16, 0)
- #define read_c0_config1()	__read_32bit_c0_register($16, 1)
- #define read_c0_config2()	__read_32bit_c0_register($16, 2)
+ /* Constants */
 -- 
 1.8.4.2

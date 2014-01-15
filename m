@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:10806 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:10809 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6827335AbaAOKcTHEQJ6 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 15 Jan 2014 11:32:19 +0100
+        id S6827341AbaAOKcXS3B55 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 15 Jan 2014 11:32:23 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 01/15] MIPS: define Config1 cache field shifts & sizes
-Date: Wed, 15 Jan 2014 10:31:46 +0000
-Message-ID: <1389781920-31151-2-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 02/15] MIPS: add CP0 CMGCRBase definitions & accessor
+Date: Wed, 15 Jan 2014 10:31:47 +0000
+Message-ID: <1389781920-31151-3-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1389781920-31151-1-git-send-email-paul.burton@imgtec.com>
 References: <1389781920-31151-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,43 +22,42 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140115103146.xerRt_dhAbNtIbI6Sn31pU8pQIv3A70MDDXadUHcicg@z>
+Message-ID: <20140115103147.bVHOcfxxle9mcWipjY0H8rPxkdr52zCvSnhPLT8inzQ@z>
 
-These fields will be used from assembly code in a subsequent commit, and
-defining the size & offset of each field makes that use easier.
+The CMGCRBase register is defined by the PRA specification as an optional
+register which indicates the physical base of the MIPS Coherence Manager
+Global Control Register block. This patch simply adds a definition for
+the base address field within the register, along with an accessor
+function for reading the register.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/include/asm/mipsregs.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/mips/include/asm/mipsregs.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index bbc3dd4..5302696 100644
+index 5302696..3401128 100644
 --- a/arch/mips/include/asm/mipsregs.h
 +++ b/arch/mips/include/asm/mipsregs.h
-@@ -568,11 +568,23 @@
- #define MIPS_CONF1_PC		(_ULCAST_(1) <<	 4)
- #define MIPS_CONF1_MD		(_ULCAST_(1) <<	 5)
- #define MIPS_CONF1_C2		(_ULCAST_(1) <<	 6)
-+#define MIPS_CONF1_DA_SHF	7
-+#define MIPS_CONF1_DA_SZ	3
- #define MIPS_CONF1_DA		(_ULCAST_(7) <<	 7)
-+#define MIPS_CONF1_DL_SHF	10
-+#define MIPS_CONF1_DL_SZ	3
- #define MIPS_CONF1_DL		(_ULCAST_(7) << 10)
-+#define MIPS_CONF1_DS_SHF	13
-+#define MIPS_CONF1_DS_SZ	3
- #define MIPS_CONF1_DS		(_ULCAST_(7) << 13)
-+#define MIPS_CONF1_IA_SHF	16
-+#define MIPS_CONF1_IA_SZ	3
- #define MIPS_CONF1_IA		(_ULCAST_(7) << 16)
-+#define MIPS_CONF1_IL_SHF	19
-+#define MIPS_CONF1_IL_SZ	3
- #define MIPS_CONF1_IL		(_ULCAST_(7) << 19)
-+#define MIPS_CONF1_IS_SHF	22
-+#define MIPS_CONF1_IS_SZ	3
- #define MIPS_CONF1_IS		(_ULCAST_(7) << 22)
- #define MIPS_CONF1_TLBS_SHIFT   (25)
- #define MIPS_CONF1_TLBS_SIZE    (6)
+@@ -668,6 +668,10 @@
+ /*  EntryHI bit definition */
+ #define MIPS_ENTRYHI_EHINV	(_ULCAST_(1) << 10)
+ 
++/* CMGCRBase bit definitions */
++#define MIPS_CMGCRB_BASE	11
++#define MIPS_CMGCRF_BASE	(~_ULCAST_((1 << MIPS_CMGCRB_BASE) - 1))
++
+ /*
+  * Bits in the MIPS32/64 coprocessor 1 (FPU) revision register.
+  */
+@@ -1022,6 +1026,8 @@ do {									\
+ 
+ #define read_c0_prid()		__read_32bit_c0_register($15, 0)
+ 
++#define read_c0_cmgcrbase()	__read_ulong_c0_register($15, 3)
++
+ #define read_c0_config()	__read_32bit_c0_register($16, 0)
+ #define read_c0_config1()	__read_32bit_c0_register($16, 1)
+ #define read_c0_config2()	__read_32bit_c0_register($16, 2)
 -- 
 1.8.4.2

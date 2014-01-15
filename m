@@ -1,11 +1,11 @@
-Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:38173 "EHLO
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:18586 "EHLO
         mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6825884AbaAOTFrZ23IU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Jan 2014 20:05:47 +0100
+        by eddie.linux-mips.org with ESMTP id S6825884AbaAOTGlMuGBu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Jan 2014 20:06:41 +0100
 From: Florian Fainelli <florian@openwrt.org>
-Subject: [PATCH mips-for-linux-next] MIPS: check for D$ line size and CONFIG_MIPS_L1_SHIFT
-Date: Wed, 15 Jan 2014 11:05:22 -0800
-Message-ID: <1389812722-30035-1-git-send-email-florian@openwrt.org>
+Subject: [PATCH mips-for-linux-next] MIPS: check for -mfix-cn63xxp1 compiler option
+Date: Wed, 15 Jan 2014 11:06:24 -0800
+Message-ID: <1389812784-30085-1-git-send-email-florian@openwrt.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <florian@openwrt.org>
@@ -19,32 +19,30 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: ralf@linux-mips.org, blogic@openwrt.org, Florian Fainelli <florian@openwrt.org>
-Message-ID: <20140115190522.Nc5lNzlNDOMVyRWOynKYTzhNbydakcZCOQ44qtE1Cic@z>
+Cc: ralf@linux-mips.org, blogic@openwrt.org, david.daney@cavium.com, Florian Fainelli <florian@openwrt.org>
+Message-ID: <20140115190624.fmot5y9qCkE65GuGCxfsOW_AAfEU4zYzPGZcuUizeRk@z>
 
-When a platform overrides the dcache_line_size detection in its
-cpu-features-override.h file, check that the value matches
-(1 << CONFIG_MIPS_L1_SHIFT) to ensure both settings are correct.
+Attempting to build for Cavium Octeon with an unpatched or old
+toolchain will fail due to the -mfix-cn63xxp1 option being unrecognized.
+Call cc-option on this option to make sure we can safely use it.
 
 Signed-off-by: Florian Fainelli <florian@openwrt.org>
 ---
- arch/mips/include/asm/cpu-features.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/mips/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index 6e70b03..9052fb9 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -279,6 +279,10 @@
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index 873a0ca..f372b84 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -155,7 +155,7 @@ cflags-$(CONFIG_CPU_CAVIUM_OCTEON) += $(call cc-option,-march=octeon) -Wa,--trap
+ ifeq (,$(findstring march=octeon, $(cflags-$(CONFIG_CPU_CAVIUM_OCTEON))))
+ cflags-$(CONFIG_CPU_CAVIUM_OCTEON) += -Wa,-march=octeon
+ endif
+-cflags-$(CONFIG_CAVIUM_CN63XXP1) += -Wa,-mfix-cn63xxp1
++cflags-$(CONFIG_CAVIUM_CN63XXP1) += -Wa,$(call cc-option,-mfix-cn63xxp1)
+ cflags-$(CONFIG_CPU_BMIPS)	+= -march=mips32 -Wa,-mips32 -Wa,--trap
  
- #ifndef cpu_dcache_line_size
- #define cpu_dcache_line_size()	cpu_data[0].dcache.linesz
-+#else
-+#if (cpu_dcache_line_size() != (1 << CONFIG_MIPS_L1_CACHE_SHIFT))
-+#error "cpu_dcache_line_size does not match CONFIG_MIPS_L1_CACHE_SHIFT"
-+#endif
- #endif
- #ifndef cpu_icache_line_size
- #define cpu_icache_line_size()	cpu_data[0].icache.linesz
+ cflags-$(CONFIG_CPU_R4000_WORKAROUNDS)	+= $(call cc-option,-mfix-r4000,)
 -- 
 1.8.3.2

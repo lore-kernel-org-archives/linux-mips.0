@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:44987 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:49249 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6827341AbaAPVhO6xSZU (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 16 Jan 2014 22:37:14 +0100
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH upstream-sfr] MIPS: APRP: Use the new __wait_event*() interface in RTLX
-Date: Thu, 16 Jan 2014 13:36:52 -0800
-Message-ID: <1389908212-19898-1-git-send-email-dengcheng.zhu@imgtec.com>
+        id S6816879AbaAQMCCMNfBc (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 17 Jan 2014 13:02:02 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH v2 0/2] MIPS: KVM: fixes for KVM on ProAptiv cores
+Date: Fri, 17 Jan 2014 12:01:29 +0000
+Message-ID: <1389960091-8098-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <DengCheng.Zhu@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,43 +18,38 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org, linux-mips@linux-mips.org
-Cc: Steven.Hill@imgtec.com, dengcheng.zhu@imgtec.com
-Message-ID: <20140116213652.sKPFoHa706xEYE_bgN_RfzG2w_322QUlo6BRep-xFlw@z>
+To: John Crispin <blogic@openwrt.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Cc: James Hogan <james.hogan@imgtec.com>, Gleb Natapov <gleb@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, Markos Chandras <markos.chandras@imgtec.com>, Sanjay Lal <sanjayl@kymasys.com>
+Message-ID: <20140117120129.rdgMMSerFaQqZhS6yr0haVsby5G5AEtxQWFx2fw3N1w@z>
 
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+ProAptiv support includes support for EHINV (TLB invalidation) and FTLB
+(large fixed page size TLBs), both of which cause problems when combined
+with KVM. These two patches fix those problems.
 
-The commit 35a2af94c7 (sched/wait: Make the __wait_event*() interface more
-friendly) changed __wait_event_interruptible() to use 2 parameters instead
-of 3. It also made corresponding changes to rtlx.c. However, these changes
-were partially reverted by 9d4147a783 (MIPS: APRP: Code formatting
-clean-ups.). This patch fixes it.
+These are based on John Crispin's mips-next-3.14 branch where ProAptiv
+support is applied. Please consider applying these for v3.14 too.
 
-Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
----
-Ralf, this needs to go upstream-sfr/mips-for-linux-next to fix the APRP
-build error: macro "__wait_event_interruptible" passed 3 arguments, but
-takes just 2
+v2:
+- Rewrite patch 2 commit message to be a bit clearer and more explicit
+  (on John Crispin's suggestion).
 
- arch/mips/kernel/rtlx.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: John Crispin <blogic@openwrt.org>
+Cc: linux-mips@linux-mips.org
+Cc: Gleb Natapov <gleb@redhat.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Cc: Sanjay Lal <sanjayl@kymasys.com>
 
-diff --git a/arch/mips/kernel/rtlx.c b/arch/mips/kernel/rtlx.c
-index 4658350..31b1b76 100644
---- a/arch/mips/kernel/rtlx.c
-+++ b/arch/mips/kernel/rtlx.c
-@@ -108,10 +108,9 @@ int rtlx_open(int index, int can_sleep)
- 		p = vpe_get_shared(aprp_cpu_index());
- 		if (p == NULL) {
- 			if (can_sleep) {
--				__wait_event_interruptible(
-+				ret = __wait_event_interruptible(
- 					channel_wqs[index].lx_queue,
--					(p = vpe_get_shared(aprp_cpu_index())),
--					ret);
-+					(p = vpe_get_shared(aprp_cpu_index())));
- 				if (ret)
- 					goto out_fail;
- 			} else {
+James Hogan (2):
+  MIPS: KVM: use common EHINV aware UNIQUE_ENTRYHI
+  MIPS: KVM: remove shadow_tlb code
+
+ arch/mips/include/asm/kvm_host.h |   7 --
+ arch/mips/kvm/kvm_mips.c         |   1 -
+ arch/mips/kvm/kvm_tlb.c          | 134 +--------------------------------------
+ 3 files changed, 1 insertion(+), 141 deletions(-)
+
 -- 
-1.8.5.3
+1.8.1.2

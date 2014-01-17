@@ -1,16 +1,17 @@
-Received: from multi.imgtec.com ([194.200.65.239]:49249 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:35616 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6823097AbaAQMCCcW7kw (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 17 Jan 2014 13:02:02 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH v2 2/2] MIPS: KVM: remove shadow_tlb code
-Date: Fri, 17 Jan 2014 12:01:31 +0000
-Message-ID: <1389960091-8098-3-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1389960091-8098-1-git-send-email-james.hogan@imgtec.com>
-References: <1389960091-8098-1-git-send-email-james.hogan@imgtec.com>
+        id S6817237AbaAQQe5ZRwdJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 17 Jan 2014 17:34:57 +0100
+Date: Fri, 17 Jan 2014 16:34:50 +0000
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH 0/3] MIPS: CMP: Add CPU hotplug support for CMP platforms.
+Message-ID: <20140117163450.GM970@pburton-linux.le.imgtec.org>
+References: <1389975535-62279-1-git-send-email-Steven.Hill@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <1389975535-62279-1-git-send-email-Steven.Hill@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,285 +21,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: John Crispin <blogic@openwrt.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Gleb Natapov <gleb@redhat.com>, kvm@vger.kernel.org, Sanjay Lal <sanjayl@kymasys.com>
-Message-ID: <20140117120131.4FSoqH1NirPPD8jHzCNTendrPVk7OHP-fQgBLdJX878@z>
+To: "Steven J. Hill" <Steven.Hill@imgtec.com>
+Cc: linux-mips@linux-mips.org, blogic@openwrt.org
+Message-ID: <20140117163450.WUDc1PZDfILuuzd-4MmLKHLQZr-KZzrrE9oBQ5EsiCw@z>
 
-The kvm_mips_init_shadow_tlb() function is called from
-kvm_arch_vcpu_init() and initialises entries 0 to
-current_cpu_data.tlbsize-1 of the virtual cpu's shadow_tlb[64] array.
+On Fri, Jan 17, 2014 at 10:18:52AM -0600, Steven J. Hill wrote:
+> From: "Steven J. Hill" <Steven.Hill@imgtec.com>
+> 
+> Add CPU hotplug support for cores with a CM.
+> 
+> Steven J. Hill (3):
+>   MIPS: CMP: Add support for CPU hotplugging.
+>   MIPS: CMP: Malta: Add support for CPU hotplugging.
+>   MIPS: CMP: Malta: Enable CPU hotplug.
+> 
+>  arch/mips/Kconfig                |    1 +
+>  arch/mips/include/asm/amon.h     |    1 +
+>  arch/mips/include/asm/gcmpregs.h |    2 +
+>  arch/mips/kernel/irq-gic.c       |    6 +-
+>  arch/mips/kernel/smp-cmp.c       |  167 +++++++++++++++++++++++++++-----------
+>  arch/mips/mti-malta/malta-amon.c |  107 ++++++++++++++++++++----
+>  arch/mips/mti-malta/malta-int.c  |    2 +-
+>  7 files changed, 216 insertions(+), 70 deletions(-)
+> 
+> -- 
+> 1.7.10.4
+> 
+> 
 
-However newer cores with FTLBs can have a tlbsize > 64, for example the
-ProAptiv I'm testing on has a total tlbsize of 576. This causes
-kvm_mips_init_shadow_tlb() to overflow the shadow_tlb[64] array and
-overwrite the comparecount_timer among other things, causing a lock up
-when starting a KVM guest.
+No. As I've said internally a few times this is *not* what hotplug is
+meant to be. This doesn't actually make use of the CM/CPC to power down
+a core (and can't via the CMP framework/AMON interface). It is
+ultimately pointless and in my opinion should be replaced by proper
+hotplug (that actually powers down cores) built atop the CONFIG_MIPS_CPS
+implementation (that already moves the BEV) which I submitted a few days
+ago.
 
-Aside from kvm_mips_init_shadow_tlb() which only initialises it, the
-shadow_tlb[64] array is only actually used by the following functions:
- - kvm_shadow_tlb_put() & kvm_shadow_tlb_load()
-     These are never called. The only call sites are #if 0'd out.
- - kvm_mips_dump_shadow_tlbs()
-     This is never called.
-
-It was originally added for trap & emulate, but turned out to be
-unnecessary so it was disabled.
-
-So instead of fixing the shadow_tlb initialisation code, lets just
-remove the shadow_tlb[64] array and the above functions entirely. The
-only functional change here is the removal of broken shadow_tlb
-initialisation. The rest just deletes dead code.
-
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: John Crispin <blogic@openwrt.org>
-Cc: linux-mips@linux-mips.org
-Cc: Gleb Natapov <gleb@redhat.com>
-Cc: kvm@vger.kernel.org
-Cc: Sanjay Lal <sanjayl@kymasys.com>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
----
-This is based on John Crispin's mips-next-3.14 branch where FTLB support
-is applied.
-
-v2:
-- Rewrite commit message to be a bit clearer and more explicit (on John
-  Crispin's suggestion).
----
- arch/mips/include/asm/kvm_host.h |   7 ---
- arch/mips/kvm/kvm_mips.c         |   1 -
- arch/mips/kvm/kvm_tlb.c          | 130 ---------------------------------------
- 3 files changed, 138 deletions(-)
-
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index 32966969f2f9..a995fce87791 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -391,9 +391,6 @@ struct kvm_vcpu_arch {
- 	uint32_t guest_kernel_asid[NR_CPUS];
- 	struct mm_struct guest_kernel_mm, guest_user_mm;
- 
--	struct kvm_mips_tlb shadow_tlb[NR_CPUS][KVM_MIPS_GUEST_TLB_SIZE];
--
--
- 	struct hrtimer comparecount_timer;
- 
- 	int last_sched_cpu;
-@@ -529,7 +526,6 @@ extern enum emulation_result kvm_mips_handle_tlbmod(unsigned long cause,
- 
- extern void kvm_mips_dump_host_tlbs(void);
- extern void kvm_mips_dump_guest_tlbs(struct kvm_vcpu *vcpu);
--extern void kvm_mips_dump_shadow_tlbs(struct kvm_vcpu *vcpu);
- extern void kvm_mips_flush_host_tlb(int skip_kseg0);
- extern int kvm_mips_host_tlb_inv(struct kvm_vcpu *vcpu, unsigned long entryhi);
- extern int kvm_mips_host_tlb_inv_index(struct kvm_vcpu *vcpu, int index);
-@@ -541,10 +537,7 @@ extern unsigned long kvm_mips_translate_guest_kseg0_to_hpa(struct kvm_vcpu *vcpu
- 						   unsigned long gva);
- extern void kvm_get_new_mmu_context(struct mm_struct *mm, unsigned long cpu,
- 				    struct kvm_vcpu *vcpu);
--extern void kvm_shadow_tlb_put(struct kvm_vcpu *vcpu);
--extern void kvm_shadow_tlb_load(struct kvm_vcpu *vcpu);
- extern void kvm_local_flush_tlb_all(void);
--extern void kvm_mips_init_shadow_tlb(struct kvm_vcpu *vcpu);
- extern void kvm_mips_alloc_new_mmu_context(struct kvm_vcpu *vcpu);
- extern void kvm_mips_vcpu_load(struct kvm_vcpu *vcpu, int cpu);
- extern void kvm_mips_vcpu_put(struct kvm_vcpu *vcpu);
-diff --git a/arch/mips/kvm/kvm_mips.c b/arch/mips/kvm/kvm_mips.c
-index 73b34827826c..da5186fbd77a 100644
---- a/arch/mips/kvm/kvm_mips.c
-+++ b/arch/mips/kvm/kvm_mips.c
-@@ -1001,7 +1001,6 @@ int kvm_arch_vcpu_init(struct kvm_vcpu *vcpu)
- 	hrtimer_init(&vcpu->arch.comparecount_timer, CLOCK_MONOTONIC,
- 		     HRTIMER_MODE_REL);
- 	vcpu->arch.comparecount_timer.function = kvm_mips_comparecount_wakeup;
--	kvm_mips_init_shadow_tlb(vcpu);
- 	return 0;
- }
- 
-diff --git a/arch/mips/kvm/kvm_tlb.c b/arch/mips/kvm/kvm_tlb.c
-index 52083ea7fddd..68e6563915cd 100644
---- a/arch/mips/kvm/kvm_tlb.c
-+++ b/arch/mips/kvm/kvm_tlb.c
-@@ -145,30 +145,6 @@ void kvm_mips_dump_guest_tlbs(struct kvm_vcpu *vcpu)
- 	}
- }
- 
--void kvm_mips_dump_shadow_tlbs(struct kvm_vcpu *vcpu)
--{
--	int i;
--	volatile struct kvm_mips_tlb tlb;
--
--	printk("Shadow TLBs:\n");
--	for (i = 0; i < KVM_MIPS_GUEST_TLB_SIZE; i++) {
--		tlb = vcpu->arch.shadow_tlb[smp_processor_id()][i];
--		printk("TLB%c%3d Hi 0x%08lx ",
--		       (tlb.tlb_lo0 | tlb.tlb_lo1) & MIPS3_PG_V ? ' ' : '*',
--		       i, tlb.tlb_hi);
--		printk("Lo0=0x%09" PRIx64 " %c%c attr %lx ",
--		       (uint64_t) mips3_tlbpfn_to_paddr(tlb.tlb_lo0),
--		       (tlb.tlb_lo0 & MIPS3_PG_D) ? 'D' : ' ',
--		       (tlb.tlb_lo0 & MIPS3_PG_G) ? 'G' : ' ',
--		       (tlb.tlb_lo0 >> 3) & 7);
--		printk("Lo1=0x%09" PRIx64 " %c%c attr %lx sz=%lx\n",
--		       (uint64_t) mips3_tlbpfn_to_paddr(tlb.tlb_lo1),
--		       (tlb.tlb_lo1 & MIPS3_PG_D) ? 'D' : ' ',
--		       (tlb.tlb_lo1 & MIPS3_PG_G) ? 'G' : ' ',
--		       (tlb.tlb_lo1 >> 3) & 7, tlb.tlb_mask);
--	}
--}
--
- static int kvm_mips_map_page(struct kvm *kvm, gfn_t gfn)
- {
- 	int srcu_idx, err = 0;
-@@ -655,70 +631,6 @@ kvm_get_new_mmu_context(struct mm_struct *mm, unsigned long cpu,
- 	cpu_context(cpu, mm) = asid_cache(cpu) = asid;
- }
- 
--void kvm_shadow_tlb_put(struct kvm_vcpu *vcpu)
--{
--	unsigned long flags;
--	unsigned long old_entryhi;
--	unsigned long old_pagemask;
--	int entry = 0;
--	int cpu = smp_processor_id();
--
--	local_irq_save(flags);
--
--	old_entryhi = read_c0_entryhi();
--	old_pagemask = read_c0_pagemask();
--
--	for (entry = 0; entry < current_cpu_data.tlbsize; entry++) {
--		write_c0_index(entry);
--		mtc0_tlbw_hazard();
--		tlb_read();
--		tlbw_use_hazard();
--
--		vcpu->arch.shadow_tlb[cpu][entry].tlb_hi = read_c0_entryhi();
--		vcpu->arch.shadow_tlb[cpu][entry].tlb_lo0 = read_c0_entrylo0();
--		vcpu->arch.shadow_tlb[cpu][entry].tlb_lo1 = read_c0_entrylo1();
--		vcpu->arch.shadow_tlb[cpu][entry].tlb_mask = read_c0_pagemask();
--	}
--
--	write_c0_entryhi(old_entryhi);
--	write_c0_pagemask(old_pagemask);
--	mtc0_tlbw_hazard();
--
--	local_irq_restore(flags);
--
--}
--
--void kvm_shadow_tlb_load(struct kvm_vcpu *vcpu)
--{
--	unsigned long flags;
--	unsigned long old_ctx;
--	int entry;
--	int cpu = smp_processor_id();
--
--	local_irq_save(flags);
--
--	old_ctx = read_c0_entryhi();
--
--	for (entry = 0; entry < current_cpu_data.tlbsize; entry++) {
--		write_c0_entryhi(vcpu->arch.shadow_tlb[cpu][entry].tlb_hi);
--		mtc0_tlbw_hazard();
--		write_c0_entrylo0(vcpu->arch.shadow_tlb[cpu][entry].tlb_lo0);
--		write_c0_entrylo1(vcpu->arch.shadow_tlb[cpu][entry].tlb_lo1);
--
--		write_c0_index(entry);
--		mtc0_tlbw_hazard();
--
--		tlb_write_indexed();
--		tlbw_use_hazard();
--	}
--
--	tlbw_use_hazard();
--	write_c0_entryhi(old_ctx);
--	mtc0_tlbw_hazard();
--	local_irq_restore(flags);
--}
--
--
- void kvm_local_flush_tlb_all(void)
- {
- 	unsigned long flags;
-@@ -747,30 +659,6 @@ void kvm_local_flush_tlb_all(void)
- 	local_irq_restore(flags);
- }
- 
--void kvm_mips_init_shadow_tlb(struct kvm_vcpu *vcpu)
--{
--	int cpu, entry;
--
--	for_each_possible_cpu(cpu) {
--		for (entry = 0; entry < current_cpu_data.tlbsize; entry++) {
--			vcpu->arch.shadow_tlb[cpu][entry].tlb_hi =
--			    UNIQUE_ENTRYHI(entry);
--			vcpu->arch.shadow_tlb[cpu][entry].tlb_lo0 = 0x0;
--			vcpu->arch.shadow_tlb[cpu][entry].tlb_lo1 = 0x0;
--			vcpu->arch.shadow_tlb[cpu][entry].tlb_mask =
--			    read_c0_pagemask();
--#ifdef DEBUG
--			kvm_debug
--			    ("shadow_tlb[%d][%d]: tlb_hi: %#lx, lo0: %#lx, lo1: %#lx\n",
--			     cpu, entry,
--			     vcpu->arch.shadow_tlb[cpu][entry].tlb_hi,
--			     vcpu->arch.shadow_tlb[cpu][entry].tlb_lo0,
--			     vcpu->arch.shadow_tlb[cpu][entry].tlb_lo1);
--#endif
--		}
--	}
--}
--
- /* Restore ASID once we are scheduled back after preemption */
- void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- {
-@@ -808,14 +696,6 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 			 vcpu->arch.last_sched_cpu, cpu, vcpu->vcpu_id);
- 	}
- 
--	/* Only reload shadow host TLB if new ASIDs haven't been allocated */
--#if 0
--	if ((atomic_read(&kvm_mips_instance) > 1) && !newasid) {
--		kvm_mips_flush_host_tlb(0);
--		kvm_shadow_tlb_load(vcpu);
--	}
--#endif
--
- 	if (!newasid) {
- 		/* If we preempted while the guest was executing, then reload the pre-empted ASID */
- 		if (current->flags & PF_VCPU) {
-@@ -861,12 +741,6 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
- 	vcpu->arch.preempt_entryhi = read_c0_entryhi();
- 	vcpu->arch.last_sched_cpu = cpu;
- 
--#if 0
--	if ((atomic_read(&kvm_mips_instance) > 1)) {
--		kvm_shadow_tlb_put(vcpu);
--	}
--#endif
--
- 	if (((cpu_context(cpu, current->mm) ^ asid_cache(cpu)) &
- 	     ASID_VERSION_MASK)) {
- 		kvm_debug("%s: Dropping MMU Context:  %#lx\n", __func__,
-@@ -928,10 +802,8 @@ uint32_t kvm_get_inst(uint32_t *opc, struct kvm_vcpu *vcpu)
- }
- 
- EXPORT_SYMBOL(kvm_local_flush_tlb_all);
--EXPORT_SYMBOL(kvm_shadow_tlb_put);
- EXPORT_SYMBOL(kvm_mips_handle_mapped_seg_tlb_fault);
- EXPORT_SYMBOL(kvm_mips_handle_commpage_tlb_fault);
--EXPORT_SYMBOL(kvm_mips_init_shadow_tlb);
- EXPORT_SYMBOL(kvm_mips_dump_host_tlbs);
- EXPORT_SYMBOL(kvm_mips_handle_kseg0_tlb_fault);
- EXPORT_SYMBOL(kvm_mips_host_tlb_lookup);
-@@ -939,8 +811,6 @@ EXPORT_SYMBOL(kvm_mips_flush_host_tlb);
- EXPORT_SYMBOL(kvm_mips_guest_tlb_lookup);
- EXPORT_SYMBOL(kvm_mips_host_tlb_inv);
- EXPORT_SYMBOL(kvm_mips_translate_guest_kseg0_to_hpa);
--EXPORT_SYMBOL(kvm_shadow_tlb_load);
--EXPORT_SYMBOL(kvm_mips_dump_shadow_tlbs);
- EXPORT_SYMBOL(kvm_mips_dump_guest_tlbs);
- EXPORT_SYMBOL(kvm_get_inst);
- EXPORT_SYMBOL(kvm_arch_vcpu_load);
--- 
-1.8.1.2
+Paul

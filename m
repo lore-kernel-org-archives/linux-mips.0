@@ -1,15 +1,14 @@
-Received: from mail.astound.net ([76.14.0.234]:50666 "EHLO wavecable.net"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6831299AbaAQV7iliCI- (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 17 Jan 2014 22:59:38 +0100
-From: "Adrian" <dawesdave714@outlook.com>
-Subject: 
-Date: Fri, 17 Jan 2014 14:02:38 -0800
-Message-ID: <web-808988319@wavecable.net>
+Received: from multi.imgtec.com ([194.200.65.239]:31201 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6870549AbaAULYIDwg5Y (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 21 Jan 2014 12:24:08 +0100
+From: Alex Smith <alex.smith@imgtec.com>
+Subject: [PATCH] MIPS: Fix possible unbuildable configuration with transparent hugepages enabled
+Date: Tue, 21 Jan 2014 11:22:35 +0000
+Message-ID: <1390303355-44542-1-git-send-email-alex.smith@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format="flowed"
-Content-Transfer-Encoding: 8bit
-Return-Path: <mirlac@wavecable.com>
+Content-Type: text/plain
+Return-Path: <Alex.Smith@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,7 +18,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Message-ID: <20140117220238.K9FIfCjvLlWHFPRmOH5swKA5MH5T712IG1G3xfUipyQ@z>
+To: linux-mips@linux-mips.org
+Cc: Alex Smith <alex.smith@imgtec.com>
+Message-ID: <20140121112235.-IEDRSZTYumEUKYa_zjZH5ITsp10sNGwg777ktibJMY@z>
 
-Send names, address, age, Cell to get 800,000£
-from the Bayford's family donation
+If CONFIG_TRANSPARENT_HUGEPAGE is enabled, but CONFIG_HUGETLB_PAGE is not,
+it is possible to end up with a configuration that fails to build with the
+following error:
+
+include/linux/huge_mm.h:125:2: error: #error "hugepages can't be allocated by the buddy allocator"
+
+This is due to CONFIG_FORCE_MAX_ZONEORDER defaulting to 11. It already has
+ranges that change the valid values when HUGETLB_PAGE is enabled, but this
+is not done for TRANSPARENT_HUGEPAGE. Fix by changing the HUGETLB_PAGE
+dependencies to MIPS_HUGE_TLB_SUPPORT, which includes both
+TRANSPARENT_HUGEPAGE and HUGETLB_PAGE.
+
+Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/Kconfig | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index f4c78c9..28a313d 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -1777,12 +1777,12 @@ endchoice
+ 
+ config FORCE_MAX_ZONEORDER
+ 	int "Maximum zone order"
+-	range 14 64 if HUGETLB_PAGE && PAGE_SIZE_64KB
+-	default "14" if HUGETLB_PAGE && PAGE_SIZE_64KB
+-	range 13 64 if HUGETLB_PAGE && PAGE_SIZE_32KB
+-	default "13" if HUGETLB_PAGE && PAGE_SIZE_32KB
+-	range 12 64 if HUGETLB_PAGE && PAGE_SIZE_16KB
+-	default "12" if HUGETLB_PAGE && PAGE_SIZE_16KB
++	range 14 64 if MIPS_HUGE_TLB_SUPPORT && PAGE_SIZE_64KB
++	default "14" if MIPS_HUGE_TLB_SUPPORT && PAGE_SIZE_64KB
++	range 13 64 if MIPS_HUGE_TLB_SUPPORT && PAGE_SIZE_32KB
++	default "13" if MIPS_HUGE_TLB_SUPPORT && PAGE_SIZE_32KB
++	range 12 64 if MIPS_HUGE_TLB_SUPPORT && PAGE_SIZE_16KB
++	default "12" if MIPS_HUGE_TLB_SUPPORT && PAGE_SIZE_16KB
+ 	range 11 64
+ 	default "11"
+ 	help
+-- 
+1.8.5.3

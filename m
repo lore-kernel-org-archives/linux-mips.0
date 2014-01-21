@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:63079 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:2580 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6824283AbaAUU3dzdq2i (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 21 Jan 2014 21:29:33 +0100
-Message-ID: <52DED891.60301@imgtec.com>
-Date: Tue, 21 Jan 2014 14:29:05 -0600
+        id S6823127AbaAUU65Yr0uj (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 21 Jan 2014 21:58:57 +0100
+Message-ID: <52DEDF84.1000006@imgtec.com>
+Date: Tue, 21 Jan 2014 14:58:44 -0600
 From: "Steven J. Hill" <Steven.Hill@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [RFC][PATCH] MIPS: VPE: Remove vpe_getuid and vpe_getgid
-References: <8738kh6usi.fsf@xmission.com>
-In-Reply-To: <8738kh6usi.fsf@xmission.com>
+Subject: Re: [PATCH] MIPS: lib: Optimize partial checksum ops using prefetching.
+References: <1390321122-25634-1-git-send-email-Steven.Hill@imgtec.com> <20140121204938.GW14169@linux-mips.org>
+In-Reply-To: <20140121204938.GW14169@linux-mips.org>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Steven.Hill@imgtec.com>
@@ -21,52 +21,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: linux-arch@vger.kernel.org, linux-mips@linux-mips.org, Deng-Cheng Zhu <Dengcheng.Zhu@imgtec.com>
-Message-ID: <20140121202905.gnmp0Gc3uE9jA5vE-1uflsuOM2lLCGbxod328at8hxc@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20140121205844.Cndx8plbkUY-RP7mfzh241wv8KzFp4UMb0OEV_jMy8A@z>
 
-On 01/21/2014 12:42 PM, Eric W. Biederman wrote:
+On 01/21/2014 02:49 PM, Ralf Baechle wrote:
+> On Tue, Jan 21, 2014 at 10:18:42AM -0600, Steven J. Hill wrote:
 >
-> The linux build-bot recently reported a build error in arch/mips/kernel/vpe.c
+>> From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+>>
+>> Use the PREF instruction to optimize partial checksum operations.
 >
->       tree:   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git for-linus
->       head:   261000a56b6382f597bcb12000f55c9ff26a1efb
->       commit: 261000a56b6382f597bcb12000f55c9ff26a1efb [4/4] userns:  userns: Remove UIDGID_STRICT_TYPE_CHECKS
->       config: make ARCH=mips maltaaprp_defconfig
+> Prefetch operations may cause obscure bus error exceptions on some systems
+> such as Malta, for example, when prefetching beyond the end of memory.
+> It may also mean memory regions that are just undergoing a DMA transfer
+> are being brought back into cache.
 >
->       All error/warnings:
+> This pretty much means that pref is only safe to use on cache-coherent
+> systems.
 >
->          arch/mips/kernel/vpe.c: In function 'vpe_open':
->       >> arch/mips/kernel/vpe.c:1086:9: error: incompatible types when assigning to type 'unsigned int' from type 'kuid_t'
->       >> arch/mips/kernel/vpe.c:1087:9: error: incompatible types when assigning to type 'unsigned int' from type 'kgid_t'
->
->       vim +1086 arch/mips/kernel/vpe.c
->
->       863abad4 Jesper Juhl   2010-10-30  1080			return -ENOMEM;
->       863abad4 Jesper Juhl   2010-10-30  1081  		}
->       e01402b1 Ralf Baechle  2005-07-14  1082  		v->plen = P_SIZE;
->       e01402b1 Ralf Baechle  2005-07-14  1083  		v->load_addr = NULL;
->       e01402b1 Ralf Baechle  2005-07-14  1084  		v->len = 0;
->       e01402b1 Ralf Baechle  2005-07-14  1085
->       d76b0d9b David Howells 2008-11-14 @1086		v->uid = filp->f_cred->fsuid;
->       d76b0d9b David Howells 2008-11-14 @1087  		v->gid = filp->f_cred->fsgid;
->       2600990e Ralf Baechle  2006-04-05  1088
->       2600990e Ralf Baechle  2006-04-05  1089		v->cwd[0] = 0;
->       2600990e Ralf Baechle  2006-04-05  1090 	 	ret = getcwd(v->cwd, VPE_PATH_MAX);
->
-> When examining the code to see what v->uid and v->gid were used for I
-> discovered that the only users in the kernel are vpe_getuid and
-> vpe_getgid, and that vpe_getuid and vpe_getgid are never called.
->
-> So instead of proposing a conversion to use kuid_t and kgid_t instead
-> of unsigned int/int as I normally would let's just kill this dead code
-> so no one has to worry about it further.
->
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: linux-mips@linux-mips.org
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
->
-This patch looks good to me, however, Deng-Cheng should also confirm if 
-this patch is okay. He is currently maintaining that code. Thanks.
+So, could we have:
+
+    #ifdef CONFIG_DMA_NONCOHERENT
+    #undef CONFIG_CPU_HAS_PREFETCH
+    #endif
+    #define PREFSIZE   (1 << MIPS_L1_CACHE_SHIFT)
+
+and then use the PREFSIZE value instead of the hardcoded value of 32?
 
 Steve

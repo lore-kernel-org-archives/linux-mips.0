@@ -1,14 +1,17 @@
-Received: from out01.mta.xmission.com ([166.70.13.231]:51726 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6870549AbaAUSnBHNnAe (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 21 Jan 2014 19:43:01 +0100
-From: ebiederm@xmission.com (Eric W. Biederman)
-Date: Tue, 21 Jan 2014 10:42:37 -0800
-Message-ID: <8738kh6usi.fsf@xmission.com>
+Received: from multi.imgtec.com ([194.200.65.239]:63079 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6824283AbaAUU3dzdq2i (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 21 Jan 2014 21:29:33 +0100
+Message-ID: <52DED891.60301@imgtec.com>
+Date: Tue, 21 Jan 2014 14:29:05 -0600
+From: "Steven J. Hill" <Steven.Hill@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: [RFC][PATCH] MIPS: VPE: Remove vpe_getuid and vpe_getgid
-Return-Path: <ebiederm@xmission.com>
+Subject: Re: [RFC][PATCH] MIPS: VPE: Remove vpe_getuid and vpe_getgid
+References: <8738kh6usi.fsf@xmission.com>
+In-Reply-To: <8738kh6usi.fsf@xmission.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Steven.Hill@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,119 +21,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-arch@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20140121184237.uRaomSmJhCPC-XXO8_0PXTyORoWMSbeIWnNF81GoYAM@z>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: linux-arch@vger.kernel.org, linux-mips@linux-mips.org, Deng-Cheng Zhu <Dengcheng.Zhu@imgtec.com>
+Message-ID: <20140121202905.gnmp0Gc3uE9jA5vE-1uflsuOM2lLCGbxod328at8hxc@z>
 
+On 01/21/2014 12:42 PM, Eric W. Biederman wrote:
+>
+> The linux build-bot recently reported a build error in arch/mips/kernel/vpe.c
+>
+>       tree:   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git for-linus
+>       head:   261000a56b6382f597bcb12000f55c9ff26a1efb
+>       commit: 261000a56b6382f597bcb12000f55c9ff26a1efb [4/4] userns:  userns: Remove UIDGID_STRICT_TYPE_CHECKS
+>       config: make ARCH=mips maltaaprp_defconfig
+>
+>       All error/warnings:
+>
+>          arch/mips/kernel/vpe.c: In function 'vpe_open':
+>       >> arch/mips/kernel/vpe.c:1086:9: error: incompatible types when assigning to type 'unsigned int' from type 'kuid_t'
+>       >> arch/mips/kernel/vpe.c:1087:9: error: incompatible types when assigning to type 'unsigned int' from type 'kgid_t'
+>
+>       vim +1086 arch/mips/kernel/vpe.c
+>
+>       863abad4 Jesper Juhl   2010-10-30  1080			return -ENOMEM;
+>       863abad4 Jesper Juhl   2010-10-30  1081  		}
+>       e01402b1 Ralf Baechle  2005-07-14  1082  		v->plen = P_SIZE;
+>       e01402b1 Ralf Baechle  2005-07-14  1083  		v->load_addr = NULL;
+>       e01402b1 Ralf Baechle  2005-07-14  1084  		v->len = 0;
+>       e01402b1 Ralf Baechle  2005-07-14  1085
+>       d76b0d9b David Howells 2008-11-14 @1086		v->uid = filp->f_cred->fsuid;
+>       d76b0d9b David Howells 2008-11-14 @1087  		v->gid = filp->f_cred->fsgid;
+>       2600990e Ralf Baechle  2006-04-05  1088
+>       2600990e Ralf Baechle  2006-04-05  1089		v->cwd[0] = 0;
+>       2600990e Ralf Baechle  2006-04-05  1090 	 	ret = getcwd(v->cwd, VPE_PATH_MAX);
+>
+> When examining the code to see what v->uid and v->gid were used for I
+> discovered that the only users in the kernel are vpe_getuid and
+> vpe_getgid, and that vpe_getuid and vpe_getgid are never called.
+>
+> So instead of proposing a conversion to use kuid_t and kgid_t instead
+> of unsigned int/int as I normally would let's just kill this dead code
+> so no one has to worry about it further.
+>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: linux-mips@linux-mips.org
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>
+This patch looks good to me, however, Deng-Cheng should also confirm if 
+this patch is okay. He is currently maintaining that code. Thanks.
 
-The linux build-bot recently reported a build error in arch/mips/kernel/vpe.c
-
-     tree:   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git for-linus
-     head:   261000a56b6382f597bcb12000f55c9ff26a1efb
-     commit: 261000a56b6382f597bcb12000f55c9ff26a1efb [4/4] userns:  userns: Remove UIDGID_STRICT_TYPE_CHECKS
-     config: make ARCH=mips maltaaprp_defconfig
-
-     All error/warnings:
-
-        arch/mips/kernel/vpe.c: In function 'vpe_open':
-     >> arch/mips/kernel/vpe.c:1086:9: error: incompatible types when assigning to type 'unsigned int' from type 'kuid_t'
-     >> arch/mips/kernel/vpe.c:1087:9: error: incompatible types when assigning to type 'unsigned int' from type 'kgid_t'
-
-     vim +1086 arch/mips/kernel/vpe.c
-
-     863abad4 Jesper Juhl   2010-10-30  1080			return -ENOMEM;
-     863abad4 Jesper Juhl   2010-10-30  1081  		}
-     e01402b1 Ralf Baechle  2005-07-14  1082  		v->plen = P_SIZE;
-     e01402b1 Ralf Baechle  2005-07-14  1083  		v->load_addr = NULL;
-     e01402b1 Ralf Baechle  2005-07-14  1084  		v->len = 0;
-     e01402b1 Ralf Baechle  2005-07-14  1085
-     d76b0d9b David Howells 2008-11-14 @1086		v->uid = filp->f_cred->fsuid;
-     d76b0d9b David Howells 2008-11-14 @1087  		v->gid = filp->f_cred->fsgid;
-     2600990e Ralf Baechle  2006-04-05  1088
-     2600990e Ralf Baechle  2006-04-05  1089		v->cwd[0] = 0;
-     2600990e Ralf Baechle  2006-04-05  1090 	 	ret = getcwd(v->cwd, VPE_PATH_MAX);
-
-When examining the code to see what v->uid and v->gid were used for I
-discovered that the only users in the kernel are vpe_getuid and
-vpe_getgid, and that vpe_getuid and vpe_getgid are never called.
-
-So instead of proposing a conversion to use kuid_t and kgid_t instead
-of unsigned int/int as I normally would let's just kill this dead code
-so no one has to worry about it further.
-
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- arch/mips/include/asm/vpe.h |    2 --
- arch/mips/kernel/vpe.c      |   28 ----------------------------
- 2 files changed, 0 insertions(+), 30 deletions(-)
-
-diff --git a/arch/mips/include/asm/vpe.h b/arch/mips/include/asm/vpe.h
-index c6e1b961537d..0880fe8809b1 100644
---- a/arch/mips/include/asm/vpe.h
-+++ b/arch/mips/include/asm/vpe.h
-@@ -30,8 +30,6 @@ struct vpe_notifications {
- extern int vpe_notify(int index, struct vpe_notifications *notify);
- 
- extern void *vpe_get_shared(int index);
--extern int vpe_getuid(int index);
--extern int vpe_getgid(int index);
- extern char *vpe_getcwd(int index);
- 
- #endif /* _ASM_VPE_H */
-diff --git a/arch/mips/kernel/vpe.c b/arch/mips/kernel/vpe.c
-index 59b2b3cd7885..2d5c142bad67 100644
---- a/arch/mips/kernel/vpe.c
-+++ b/arch/mips/kernel/vpe.c
-@@ -105,7 +105,6 @@ struct vpe {
- 	unsigned long len;
- 	char *pbuffer;
- 	unsigned long plen;
--	unsigned int uid, gid;
- 	char cwd[VPE_PATH_MAX];
- 
- 	unsigned long __start;
-@@ -1083,9 +1082,6 @@ static int vpe_open(struct inode *inode, struct file *filp)
- 	v->load_addr = NULL;
- 	v->len = 0;
- 
--	v->uid = filp->f_cred->fsuid;
--	v->gid = filp->f_cred->fsgid;
--
- 	v->cwd[0] = 0;
- 	ret = getcwd(v->cwd, VPE_PATH_MAX);
- 	if (ret < 0)
-@@ -1269,30 +1265,6 @@ void *vpe_get_shared(int index)
- 
- EXPORT_SYMBOL(vpe_get_shared);
- 
--int vpe_getuid(int index)
--{
--	struct vpe *v;
--
--	if ((v = get_vpe(index)) == NULL)
--		return -1;
--
--	return v->uid;
--}
--
--EXPORT_SYMBOL(vpe_getuid);
--
--int vpe_getgid(int index)
--{
--	struct vpe *v;
--
--	if ((v = get_vpe(index)) == NULL)
--		return -1;
--
--	return v->gid;
--}
--
--EXPORT_SYMBOL(vpe_getgid);
--
- int vpe_notify(int index, struct vpe_notifications *notify)
- {
- 	struct vpe *v;
--- 
-1.7.5.4
+Steve

@@ -1,16 +1,16 @@
-Received: from multi.imgtec.com ([194.200.65.239]:24642 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6825879AbaAVOlntmo7N (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 22 Jan 2014 15:41:43 +0100
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 4/8] MIPS: asm: thread_info: Add _TIF_SECCOMP flag
-Date: Wed, 22 Jan 2014 14:40:00 +0000
-Message-ID: <1390401604-11830-5-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1390401604-11830-1-git-send-email-markos.chandras@imgtec.com>
-References: <1390401604-11830-1-git-send-email-markos.chandras@imgtec.com>
+Received: from mail.windriver.com ([147.11.1.11]:42420 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6823124AbaAVPSJq0q-a (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 22 Jan 2014 16:18:09 +0100
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH] mips: make loongsoon serial driver explicitly modular
+Date: Wed, 22 Jan 2014 10:17:51 -0500
+Message-ID: <1390403871-16809-1-git-send-email-paul.gortmaker@windriver.com>
+In-Reply-To: <52df9ab1.ahF1zl0PTutzrviC%fengguang.wu@intel.com>
+References: <52df9ab1.ahF1zl0PTutzrviC%fengguang.wu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Return-Path: <Paul.Gortmaker@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,33 +20,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140122144000.SK02e60Jgv3C3EROyhAcvnpmT0wIdt_cOzAHsRtq7oI@z>
+To: fengguang.wu@intel.com
+Cc: linux-serial@vger.kernel.org, Paul Gortmaker <paul.gortmaker@windriver.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20140122151751.wr7hjWoZ-CUuI_4U87q2DmNApe9KwMBiAZEg0D-ytXI@z>
 
-Add _TIF_SECCOMP flag to _TIF_WORK_SYSCALL_ENTRY to indicate
-that the system call needs to be checked against a seccomp filter.
+The file looks as if it is non-modular, but it piggy-backs
+off CONFIG_SERIAL_8250 which is tristate.  If set to "=m"
+we will get this after the init/module header cleanup:
 
-Reviewed-by: Paul Burton <paul.burton@imgtec.com>
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+arch/mips/loongson/common/serial.c:76:1: error: data definition has no type or storage class [-Werror]
+arch/mips/loongson/common/serial.c:76:1: error: type defaults to 'int' in declaration of 'device_initcall' [-Werror=implicit-int]
+arch/mips/loongson/common/serial.c:76:1: error: parameter names (without types) in function declaration [-Werror]
+arch/mips/loongson/common/serial.c:58:19: error: 'serial_init' defined but not used [-Werror=unused-function]
+cc1: all warnings being treated as errors
+make[3]: *** [arch/mips/loongson/common/serial.o] Error 1
+
+Make it clearly modular, and add a module_exit function,
+so that we avoid the above breakage.
+
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 ---
- arch/mips/include/asm/thread_info.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
-index 24846f9..e80ae50 100644
---- a/arch/mips/include/asm/thread_info.h
-+++ b/arch/mips/include/asm/thread_info.h
-@@ -136,7 +136,8 @@ static inline struct thread_info *current_thread_info(void)
- #define _TIF_SYSCALL_TRACEPOINT	(1<<TIF_SYSCALL_TRACEPOINT)
+[patch added to init cleanup series:
+   http://git.kernel.org/cgit/linux/kernel/git/paulg/init.git/  ]
+
+ arch/mips/loongson/common/serial.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/loongson/common/serial.c b/arch/mips/loongson/common/serial.c
+index 5f2b78a..4d0922f 100644
+--- a/arch/mips/loongson/common/serial.c
++++ b/arch/mips/loongson/common/serial.c
+@@ -11,7 +11,7 @@
+  */
  
- #define _TIF_WORK_SYSCALL_ENTRY	(_TIF_NOHZ | _TIF_SYSCALL_TRACE |	\
--				 _TIF_SYSCALL_AUDIT | _TIF_SYSCALL_TRACEPOINT)
-+				 _TIF_SYSCALL_AUDIT | \
-+				 _TIF_SYSCALL_TRACEPOINT | _TIF_SECCOMP)
+ #include <linux/io.h>
+-#include <linux/init.h>
++#include <linux/module.h>
+ #include <linux/serial_8250.h>
  
- /* work to do in syscall_trace_leave() */
- #define _TIF_WORK_SYSCALL_EXIT	(_TIF_NOHZ | _TIF_SYSCALL_TRACE |	\
+ #include <asm/bootinfo.h>
+@@ -72,5 +72,10 @@ static int __init serial_init(void)
+ 
+ 	return platform_device_register(&uart8250_device);
+ }
++module_init(serial_init);
+ 
+-device_initcall(serial_init);
++static void __init serial_exit(void)
++{
++	platform_device_unregister(&uart8250_device);
++}
++module_exit(serial_exit);
 -- 
-1.8.5.3
+1.8.5.1

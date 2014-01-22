@@ -1,11 +1,13 @@
-Received: from multi.imgtec.com ([194.200.65.239]:24627 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:24642 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6825866AbaAVOkS1mtgZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 22 Jan 2014 15:40:18 +0100
+        id S6825759AbaAVOlb4oQyT (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 22 Jan 2014 15:41:31 +0100
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 0/8] Improved seccomp-bpf support for MIPS
-Date: Wed, 22 Jan 2014 14:39:56 +0000
-Message-ID: <1390401604-11830-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH 3/8] MIPS: asm: syscall: Define syscall_get_arch
+Date: Wed, 22 Jan 2014 14:39:59 +0000
+Message-ID: <1390401604-11830-4-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1390401604-11830-1-git-send-email-markos.chandras@imgtec.com>
+References: <1390401604-11830-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -20,42 +22,58 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140122143956.hrk5o4nkX4wip3yW9eSGb8X4eU5wD7XN9-rEK9SLgmY@z>
+Message-ID: <20140122143959.imaumrz0KtCaaf5CMwlLOVHNKwn5qz_08nF-y3P-Qk8@z>
 
-Hi,
+This effectively renames __syscall_get_arch to syscall_get_arch
+and implements a compatible interface for the seccomp API.
+The seccomp code (kernel/seccomp.c) expects a syscall_get_arch
+function to be defined for every architecture, so we drop
+the leading underscores from the existing function.
 
-This patch improves the existing seccomp-bpf support for MIPS.
-It fixes a bug when copying system call arguments for the filter
-checks and it also moves away from strict filtering to actually
-use the filter supplied by the userspace process.
+This also makes use of the 'task' argument to determine the type
+the process instead of assuming the process has the same
+characteristics as the kernel it's running on.
 
-This patchset has been tested with libseccomp
-(MIPS support not upstream yet) on mips, mipsel and mips64
-and with Chromium test suite (MIPS support not upstream yet)
-on mipsel.
+Reviewed-by: Paul Burton <paul.burton@imgtec.com>
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/include/asm/syscall.h | 6 ++++--
+ arch/mips/kernel/ptrace.c       | 2 +-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-This patchset is based on the upstream-sfr/mips-for-linux-next tree.
-
-Markos Chandras (8):
-  MIPS: asm: syscall: Fix copying system call arguments
-  MIPS: asm: syscall: Add the syscall_rollback function
-  MIPS: asm: syscall: Define syscall_get_arch
-  MIPS: asm: thread_info: Add _TIF_SECCOMP flag
-  MIPS: ptrace: Move away from secure_computing_strict
-  MIPS: kernel: scalls: Skip the syscall if denied by the seccomp filter
-  MIPS: seccomp: Handle indirect system calls (o32)
-  MIPS: Select HAVE_ARCH_SECCOMP_FILTER
-
- arch/mips/Kconfig                   |  1 +
- arch/mips/include/asm/ptrace.h      |  2 +-
- arch/mips/include/asm/syscall.h     | 35 ++++++++++++++++++++++++++++++-----
- arch/mips/include/asm/thread_info.h |  3 ++-
- arch/mips/kernel/ptrace.c           | 11 ++++++-----
- arch/mips/kernel/scall32-o32.S      | 15 +++++++++++++--
- arch/mips/kernel/scall64-64.S       |  5 ++++-
- arch/mips/kernel/scall64-n32.S      |  5 ++++-
- arch/mips/kernel/scall64-o32.S      | 17 +++++++++++++++--
- 9 files changed, 76 insertions(+), 18 deletions(-)
-
+diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
+index e3e2f76..e7e0210 100644
+--- a/arch/mips/include/asm/syscall.h
++++ b/arch/mips/include/asm/syscall.h
+@@ -106,11 +106,13 @@ extern const unsigned long sys_call_table[];
+ extern const unsigned long sys32_call_table[];
+ extern const unsigned long sysn32_call_table[];
+ 
+-static inline int __syscall_get_arch(void)
++static inline int syscall_get_arch(struct task_struct *task,
++				   struct pt_regs *regs)
+ {
+ 	int arch = EM_MIPS;
+ #ifdef CONFIG_64BIT
+-	arch |=  __AUDIT_ARCH_64BIT;
++	if (!test_tsk_thread_flag(task, TIF_32BIT_REGS))
++		arch |= __AUDIT_ARCH_64BIT;
+ #endif
+ #if defined(__LITTLE_ENDIAN)
+ 	arch |=  __AUDIT_ARCH_LE;
+diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
+index 7da9b76..fe5af54 100644
+--- a/arch/mips/kernel/ptrace.c
++++ b/arch/mips/kernel/ptrace.c
+@@ -677,7 +677,7 @@ asmlinkage void syscall_trace_enter(struct pt_regs *regs)
+ 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
+ 		trace_sys_enter(regs, regs->regs[2]);
+ 
+-	audit_syscall_entry(__syscall_get_arch(),
++	audit_syscall_entry(syscall_get_arch(current, regs),
+ 			    regs->regs[2],
+ 			    regs->regs[4], regs->regs[5],
+ 			    regs->regs[6], regs->regs[7]);
 -- 
 1.8.5.3

@@ -1,11 +1,11 @@
 Received: from multi.imgtec.com ([194.200.65.239]:21303 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6825879AbaAVQUYTwfK2 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        id S6827305AbaAVQUYe5nhs (ORCPT <rfc822;linux-mips@linux-mips.org>);
         Wed, 22 Jan 2014 17:20:24 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH v2 3/5] MIPS: Add MIPS P5600 probe support
-Date: Wed, 22 Jan 2014 16:19:39 +0000
-Message-ID: <1390407581-24238-4-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH v2 5/5] MIPS: OProfile: Add CPU_P5600 cases
+Date: Wed, 22 Jan 2014 16:19:41 +0000
+Message-ID: <1390407581-24238-6-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1390407581-24238-1-git-send-email-james.hogan@imgtec.com>
 References: <1390407581-24238-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -21,34 +21,49 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>
-Message-ID: <20140122161939.bchdNdBLL26EIJS7t-XL-patE28xGqnESe2uNcjYEvc@z>
+Cc: James Hogan <james.hogan@imgtec.com>, Robert Richter <rric@kernel.org>, oprofile-list@lists.sf.net
+Message-ID: <20140122161941.rFLgGpqXX0xyolyfeQQheDfDiCpOKF26vSUgjKahYro@z>
 
-Add a case in cpu_probe_mips for the MIPS P5600 processor ID, which sets
-the CPU type to the new CPU_P5600.
+Add a CPU_P5600 cpu type case in oprofile_arch_init() to use the MIPS
+model, and in mipsxx_init() to set the cpu_type string to "mips/P5600".
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
+Cc: Robert Richter <rric@kernel.org>
+Cc: oprofile-list@lists.sf.net
 ---
- arch/mips/kernel/cpu-probe.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/mips/oprofile/common.c          | 1 +
+ arch/mips/oprofile/op_model_mipsxx.c | 4 ++++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 530f832de02c..ef9b415086c8 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -825,6 +825,10 @@ static inline void cpu_probe_mips(struct cpuinfo_mips *c, unsigned int cpu)
- 		c->cputype = CPU_PROAPTIV;
- 		__cpu_name[cpu] = "MIPS proAptiv (multi)";
+diff --git a/arch/mips/oprofile/common.c b/arch/mips/oprofile/common.c
+index 2a86e38872a7..f177d86f267b 100644
+--- a/arch/mips/oprofile/common.c
++++ b/arch/mips/oprofile/common.c
+@@ -88,6 +88,7 @@ int __init oprofile_arch_init(struct oprofile_operations *ops)
+ 	case CPU_74K:
+ 	case CPU_INTERAPTIV:
+ 	case CPU_PROAPTIV:
++	case CPU_P5600:
+ 	case CPU_LOONGSON1:
+ 	case CPU_SB1:
+ 	case CPU_SB1A:
+diff --git a/arch/mips/oprofile/op_model_mipsxx.c b/arch/mips/oprofile/op_model_mipsxx.c
+index 4d94d75ec6f9..89d34f763297 100644
+--- a/arch/mips/oprofile/op_model_mipsxx.c
++++ b/arch/mips/oprofile/op_model_mipsxx.c
+@@ -384,6 +384,10 @@ static int __init mipsxx_init(void)
+ 		op_model_mipsxx_ops.cpu_type = "mips/proAptiv";
  		break;
-+	case PRID_IMP_P5600:
-+		c->cputype = CPU_P5600;
-+		__cpu_name[cpu] = "MIPS P5600";
-+		break;
- 	}
  
- 	decode_configs(c);
++	case CPU_P5600:
++		op_model_mipsxx_ops.cpu_type = "mips/P5600";
++		break;
++
+ 	case CPU_5KC:
+ 		op_model_mipsxx_ops.cpu_type = "mips/5K";
+ 		break;
 -- 
 1.8.1.2

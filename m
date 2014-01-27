@@ -1,11 +1,11 @@
-Received: from multi.imgtec.com ([194.200.65.239]:4441 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:4458 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6823097AbaA0P1PYMtWC (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        id S6817294AbaA0P1PlAdwZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
         Mon, 27 Jan 2014 16:27:15 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 07/15] mips: don't assume 64-bit FP registers for dump_{,task_}fpu
-Date: Mon, 27 Jan 2014 15:23:06 +0000
-Message-ID: <1390836194-26286-8-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 06/15] mips: clear upper bits of FP registers on emulator writes
+Date: Mon, 27 Jan 2014 15:23:05 +0000
+Message-ID: <1390836194-26286-7-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1390836194-26286-1-git-send-email-paul.burton@imgtec.com>
 References: <1390836194-26286-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,51 +22,65 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140127152306.4hIFxN46TZ6GHyhFDUpHLUwvuY7nWc4aNpKSuxaHz8M@z>
+Message-ID: <20140127152305.MdSo7t7nmPxlxuwHb31tSOVAqt-yBKwieMoEakW1wCo@z>
 
-This code assumed that saved FP registers are 64 bits wide, an
-assumption which will no longer be true once MSA is introduced. This
-patch modifies the code to copy the lower 64 bits of each register in
-turn, which is safe for any FP register width >= 64 bits.
+The upper bits of an FP register are architecturally defined as
+unpredictable following an instructions which only writes the lower
+bits. The prior behaviour of the kernel is to leave them unmodified.
+This patch modifies that to clear the upper bits to zero. This is what
+the MSA architecture reference manual specifies should happen for its
+wider registers and is still permissible for scalar FP instructions
+given the bits unpredictability there.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/kernel/process.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ arch/mips/math-emu/cp1emu.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-index 6ae540e..2f01f3d 100644
---- a/arch/mips/kernel/process.c
-+++ b/arch/mips/kernel/process.c
-@@ -157,7 +157,13 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
- /* Fill in the fpu structure for a core dump.. */
- int dump_fpu(struct pt_regs *regs, elf_fpregset_t *r)
- {
--	memcpy(r, &current->thread.fpu, sizeof(current->thread.fpu));
-+	int i;
-+
-+	for (i = 0; i < NUM_FPU_REGS; i++)
-+		memcpy(&r[i], &current->thread.fpu.fpr[i], sizeof(*r));
-+
-+	memcpy(&r[NUM_FPU_REGS], &current->thread.fpu.fcr31,
-+	       sizeof(current->thread.fpu.fcr31));
+diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
+index 9144842..c484f5f 100644
+--- a/arch/mips/math-emu/cp1emu.c
++++ b/arch/mips/math-emu/cp1emu.c
+@@ -884,20 +884,35 @@ static inline int cop1_64bit(struct pt_regs *xcp)
+ } while (0)
  
- 	return 1;
- }
-@@ -192,7 +198,13 @@ int dump_task_regs(struct task_struct *tsk, elf_gregset_t *regs)
+ #define SITOREG(si, x) do {						\
+-	if (cop1_64bit(xcp))						\
++	if (cop1_64bit(xcp)) {						\
++		unsigned i;						\
+ 		set_fpr32(&ctx->fpr[x], 0, si);				\
+-	else								\
++		for (i = 1; i < ARRAY_SIZE(ctx->fpr[x].val32); i++)	\
++			set_fpr32(&ctx->fpr[x], i, 0);			\
++	} else {							\
+ 		set_fpr32(&ctx->fpr[(x) & ~1], (x) & 1, si);		\
++	}								\
+ } while (0)
  
- int dump_task_fpu(struct task_struct *t, elf_fpregset_t *fpr)
- {
--	memcpy(fpr, &t->thread.fpu, sizeof(current->thread.fpu));
-+	int i;
+ #define SIFROMHREG(si, x)	((si) = get_fpr32(&ctx->fpr[x], 1))
+-#define SITOHREG(si, x)		set_fpr32(&ctx->fpr[x], 1, si)
 +
-+	for (i = 0; i < NUM_FPU_REGS; i++)
-+		memcpy(&fpr[i], &t->thread.fpu.fpr[i], sizeof(*fpr));
-+
-+	memcpy(&fpr[NUM_FPU_REGS], &t->thread.fpu.fcr31,
-+	       sizeof(t->thread.fpu.fcr31));
++#define SITOHREG(si, x) do {						\
++	unsigned i;							\
++	set_fpr32(&ctx->fpr[x], 1, si);					\
++	for (i = 2; i < ARRAY_SIZE(ctx->fpr[x].val32); i++)		\
++			set_fpr32(&ctx->fpr[x], i, 0);			\
++} while (0)
  
- 	return 1;
- }
+ #define DIFROMREG(di, x) \
+ 	((di) = get_fpr64(&ctx->fpr[(x) & ~(cop1_64bit(xcp) == 0)], 0))
+ 
+-#define DITOREG(di, x) \
+-	set_fpr64(&ctx->fpr[(x) & ~(cop1_64bit(xcp) == 0)], 0, di)
++#define DITOREG(di, x) do {						\
++	unsigned fpr, i;						\
++	fpr = (x) & ~(cop1_64bit(xcp) == 0);				\
++	set_fpr64(&ctx->fpr[fpr], 0, di);				\
++	for (i = 1; i < ARRAY_SIZE(ctx->fpr[x].val64); i++)		\
++		set_fpr64(&ctx->fpr[fpr], i, 0);			\
++} while (0)
+ 
+ #define SPFROMREG(sp, x) SIFROMREG((sp).bits, x)
+ #define SPTOREG(sp, x)	SITOREG((sp).bits, x)
 -- 
 1.8.5.3

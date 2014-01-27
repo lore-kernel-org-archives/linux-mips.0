@@ -1,15 +1,16 @@
-Received: from multi.imgtec.com ([194.200.65.239]:44846 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:51674 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6870570AbaA0U2DjzkxQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 27 Jan 2014 21:28:03 +0100
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 58/58] MIPS: Enable MIPS 3.5 features on Malta
-Date: Mon, 27 Jan 2014 20:19:45 +0000
-Message-ID: <1390853985-14246-59-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1390853985-14246-1-git-send-email-markos.chandras@imgtec.com>
-References: <1390853985-14246-1-git-send-email-markos.chandras@imgtec.com>
+        id S6825311AbaA0U5H1x4lv (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 27 Jan 2014 21:57:07 +0100
+Message-ID: <52E6C7D4.4060708@imgtec.com>
+Date: Mon, 27 Jan 2014 20:55:48 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH 20/58] MIPS: lib: memset: Whitespace fixes
+References: <1390853985-14246-1-git-send-email-markos.chandras@imgtec.com> <1390853985-14246-21-git-send-email-markos.chandras@imgtec.com> <52E6D30B.1010101@cogentembedded.com>
+In-Reply-To: <52E6D30B.1010101@cogentembedded.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,26 +21,28 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140127201945.-ZDSeUNABAKr2bmyNQ_QcyMkyx8mMuUUC_c9BBB4Ox0@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, linux-mips@linux-mips.org
+Message-ID: <20140127205548.B0pbXifMCHrRbpVgeagSaR6oO0Qny7tnrqXzG9ImmA8@z>
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+On 01/27/2014 09:43 PM, Sergei Shtylyov wrote:
+> ....
+> Hello.
+>
+> On 01/27/2014 11:19 PM, Markos Chandras wrote:
+>
+>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+>
+>     You're spoiling intentionally marked delay slots, not fixing
+> anything here. This is a convention.
+>
+> WBR, Sergei
+>
+>
+Hi Sergei,
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 4230c7a..607792b 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -318,6 +318,7 @@ config MIPS_MALTA
- 	select SWAP_IO_SPACE
- 	select SYS_HAS_CPU_MIPS32_R1
- 	select SYS_HAS_CPU_MIPS32_R2
-+	select SYS_HAS_CPU_MIPS32_R3_5
- 	select SYS_HAS_CPU_MIPS64_R1
- 	select SYS_HAS_CPU_MIPS64_R2
- 	select SYS_HAS_CPU_NEVADA
+Apologies. I was not aware of this convention. I will drop this patch 
+and fix the next one. I will also double check if I have made the same 
+mistake in any of the other patches.
+
 -- 
-1.8.5.3
+markos

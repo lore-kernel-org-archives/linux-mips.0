@@ -1,19 +1,18 @@
-Received: from multi.imgtec.com ([194.200.65.239]:40308 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:44806 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6825397AbaA0TjiMX3Uo (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 27 Jan 2014 20:39:38 +0100
-Date: Mon, 27 Jan 2014 19:39:08 +0000
+        id S6825733AbaA0UGiqcbDu (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 27 Jan 2014 21:06:38 +0100
+Date: Mon, 27 Jan 2014 20:06:07 +0000
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 14/15] mips: panic if vector register partitioning is
- implemented
-Message-ID: <20140127193908.GL970@pburton-linux.le.imgtec.org>
+Subject: Re: [PATCH 15/15] mips: save/restore MSA context around signals
+Message-ID: <20140127200607.GM970@pburton-linux.le.imgtec.org>
 References: <1390836194-26286-1-git-send-email-paul.burton@imgtec.com>
- <1390836194-26286-15-git-send-email-paul.burton@imgtec.com>
- <52E6A7B5.2040505@gmail.com>
+ <1390836194-26286-16-git-send-email-paul.burton@imgtec.com>
+ <52E6B887.2070605@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <52E6A7B5.2040505@gmail.com>
+In-Reply-To: <52E6B887.2070605@gmail.com>
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -26,72 +25,67 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: David Daney <ddaney.cavm@gmail.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20140127193908.5taduaDWXd1JuhdRiApJFvIww_hQEivgTNYCvO8xfSc@z>
+Message-ID: <20140127200607.rSVPECqyV3SQDy_cShlWNywdUPETN1f8eyLK4jbsu8Y@z>
 
-On Mon, Jan 27, 2014 at 10:38:45AM -0800, David Daney wrote:
+On Mon, Jan 27, 2014 at 11:50:31AM -0800, David Daney wrote:
 > ....
 > On 01/27/2014 07:23 AM, Paul Burton wrote:
-> >No current systems implementing MSA include support for vector register
-> >partitioning which makes it somewhat difficult to implement support for
-> >it in the kernel. Thus for the moment the kernel includes no such
-> >support. However if the kernel were to be run on a system which
-> >implemented register partitioning then it would not function correctly,
-> >mishandling MSA disabled exceptions. Calling panic when run on a system
-> >with vector register partitioning implemented ensures that we're not
-> >caught out by this later but instead reminded to implement support once
-> >such a system is available.
+> >This patch extends sigcontext in order to hold the most significant 64
+> >bits of each vector register in addition to the MSA control & status
+> >register. The least significant 64 bits are already saved as the scalar
+> >FP context. This makes things a little awkward since the least & most
+> >significant 64 bits of each vector register are not contiguous in
+> >memory. Thus the copy_u & insert instructions are used to transfer the
+> >values of the most significant 64 bits via GP registers.
 > >
-> >Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> >---
-> >  arch/mips/kernel/cpu-probe.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> >diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> >index 852e085..003ba3c 100644
-> >--- a/arch/mips/kernel/cpu-probe.c
-> >+++ b/arch/mips/kernel/cpu-probe.c
-> >@@ -1193,9 +1193,13 @@ void cpu_probe(void)
-> >  	else
-> >  		c->srsets = 1;
-> >
-> >-	if (cpu_has_msa)
-> >+	if (cpu_has_msa) {
-> >  		c->msa_id = cpu_get_msa_id();
-> >
-> >+		if (c->msa_id & MSA_IR_WRPF)
-> >+			panic("Vector register partitioning unimplemented!");
 > 
-> You should probably use a WARN_ON() instead.  There is no reason to crash
-> the kernel for this condition is there?
+> Interesting.
+> 
+> This very much touches the userspace ABI of the kernel, so it merits very
+> careful consideration.
 > 
 
-Well mapping vector registers reuses the MSA disabled exception, so if
-the kernel were to continue with my current code & userland were to
-execute an MSA instruction I believe it would appear to hang. There
-would be an initial MSA disabled exception which would lead the kernel
-to enable MSA & return to userland to re-execute the MSA instruction.
-Then another MSA disabled exception would occur because we'd need to
-map a vector register, but the kernel doesn't understand so would
-attempt to enable MSA & return again. Then another MSA disabled
-exception, etc etc. So if the kernel were to continue then it would
-probably want to disable MSA support entirely to avoid userland
-appearing to just hang. Additionally since vector registers & FP
-registers are aliased the same would apply to scalar FP (cop1)
-instructions too, so we'd also need to disable the FPU. To me that all
-seems like a lot of hassle to allow a crippled kernel to run on a system
-that doesn't exist yet, so personally I'd rather the kernel just panics
-as a safeguard. Then once some target system implements vector register
-partitioning support for it can be implemented in the kernel.
+Absolutely :)
+
+> 
+> >Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> >---
+> >  arch/mips/include/asm/sigcontext.h      |   2 +
+> >  arch/mips/include/uapi/asm/sigcontext.h |   8 ++
+> >  arch/mips/kernel/asm-offsets.c          |   3 +
+> >  arch/mips/kernel/r4k_fpu.S              | 213 ++++++++++++++++++++++++++++++++
+> >  arch/mips/kernel/signal.c               |  71 +++++++++--
+> >  arch/mips/kernel/signal32.c             |  71 +++++++++--
+> >  6 files changed, 352 insertions(+), 16 deletions(-)
+> >
+> [...]
+> >diff --git a/arch/mips/include/uapi/asm/sigcontext.h b/arch/mips/include/uapi/asm/sigcontext.h
+> >index 6c9906f..681c176 100644
+> >--- a/arch/mips/include/uapi/asm/sigcontext.h
+> >+++ b/arch/mips/include/uapi/asm/sigcontext.h
+> >@@ -12,6 +12,10 @@
+> >  #include <linux/types.h>
+> >  #include <asm/sgidefs.h>
+> >
+> >+/* Bits which may be set in sc_used_math */
+> >+#define USEDMATH_FP	(1 << 0)
+> >+#define USEDMATH_MSA	(1 << 1)
+> >+
+> 
+> How is this going to interact with existing userspace applications?
+> 
+> Is the current behavior to use / manipulate sc_used_math?
+> 
+> How will USEDMATH_MSA interact with existing code?
+> 
+
+My belief is that since previously sc_used_math was either 0 or 1, any
+code using this is likely to simply check for it being non-zero and
+continue to work just fine. The only issue would be if code explicitly
+checks for sc_used_math==1. Even then it's only an issue if your program
+also uses MSA, so there should certainly be no issue with old binaries.
+If you can think of or find any uses of sc_used_math which would cause a
+problem please do let me know.
 
 Thanks,
     Paul
-
-> >+	}
-> >+
-> >  	cpu_probe_vmbits(c);
-> >
-> >  #ifdef CONFIG_64BIT
-> >
-> 
-> 
-> To report this email as SPAM, please forward it to spam@websense.com

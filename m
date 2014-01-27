@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:58933 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:4427 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6816383AbaAYTG3aLtUu (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 25 Jan 2014 20:06:29 +0100
-From: Raghu Gandham <raghu.gandham@imgtec.com>
-Subject: [PATCH] Input: i8042-io - Exclude mips platforms when allocating/deallocating IO regions.
-Date: Sat, 25 Jan 2014 11:01:54 -0800
-Message-ID: <1390676514-30880-1-git-send-email-raghu.gandham@imgtec.com>
+        id S6817294AbaA0PX3PN8uE (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 27 Jan 2014 16:23:29 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 00/15] Initial MSA support
+Date: Mon, 27 Jan 2014 15:22:59 +0000
+Message-ID: <1390836194-26286-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Raghu.Gandham@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,47 +18,70 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: dmitry.torokhov@gmail.com, aaro.koskinen@iki.fi, linux-input@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Cc: Raghu Gandham <raghu.gandham@imgtec.com>
-Message-ID: <20140125190154.xjv5XzEMT-34ApsHDT_FE__B9mqCZ7xy-9-Zy0113uw@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20140127152259.DUrurZqKbpCvG6TJkOFsZ-mVDUdC9YalQC56AVxS0DA@z>
 
-The standard IO regions are already reserved by the platform code on most MIPS
-devices(malta, cobalt, sni). The Commit 197a1e96c8be5b6005145af3a4c0e45e2d651444
-("Input: i8042-io - fix up region handling on MIPS") introduced a bug on these
-MIPS platforms causing i8042 driver to fail when trying to reserve IO ports.
-Prior to the above mentioned commit request_region is skipped on MIPS but
-release_region is called.
+This series introduces initial support for the MIPS SIMD Architecture
+(MSA) ASE introduced with MIPSr5. This support allows for MSA being
+detected & enabled for tasks which use it, and for vector registers
+(which are aliased with FP registers) to be context switched. MSA
+implementations with vector register partitioning are not handled since
+none currently exist, and a mechanism for exposing the vector registers
+via ptrace remains to be added later.
 
-This patch reverts commit 197a1e96c8be5b6005145af3a4c0e45e2d651444 and also
-avoids calling release_region for MIPS.
+The series applies atop the current mips-for-linux-next branch. An
+earlier version of the first patch has been sent to the list before, but
+is now included in this series to make its intent clearer.
 
-Signed-off-by: Raghu Gandham <raghu.gandham@imgtec.com>
-Reviewed-by: Steven J. Hill <Steven.Hill@imgtec.com>
----
- drivers/input/serio/i8042-io.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Paul Burton (15):
+  mips: simplify FP context access
+  mips: update outdated comment
+  mips: move & rename fpu_emulator_{save,restore}_context
+  mips: don't require FPU on sigcontext setup/restore
+  mips: replace hardcoded 32 with NUM_FPU_REGS in ptrace
+  mips: clear upper bits of FP registers on emulator writes
+  mips: don't assume 64-bit FP registers for dump_{,task_}fpu
+  mips: don't assume 64-bit FP registers for FP regset
+  mips: don't assume 64-bit FP registers for context switch
+  mips: add MSA register definitions & access
+  mips: detect the MSA ASE
+  mips: basic MSA context switching support
+  mips: dumb MSA FP exception handler
+  mips: panic if vector register partitioning is implemented
+  mips: save/restore MSA context around signals
 
-diff --git a/drivers/input/serio/i8042-io.h b/drivers/input/serio/i8042-io.h
-index a5eed2a..a09bb72 100644
---- a/drivers/input/serio/i8042-io.h
-+++ b/drivers/input/serio/i8042-io.h
-@@ -76,7 +76,7 @@ static inline int i8042_platform_init(void)
- 	if (check_legacy_ioport(I8042_DATA_REG))
- 		return -ENODEV;
- #endif
--#if !defined(__sh__) && !defined(__alpha__)
-+#if !defined(__sh__) && !defined(__alpha__) && !defined(__mips__)
- 	if (!request_region(I8042_DATA_REG, 16, "i8042"))
- 		return -EBUSY;
- #endif
-@@ -87,7 +87,7 @@ static inline int i8042_platform_init(void)
- 
- static inline void i8042_platform_exit(void)
- {
--#if !defined(__sh__) && !defined(__alpha__)
-+#if !defined(__sh__) && !defined(__alpha__) && !defined(__mips__)
- 	release_region(I8042_DATA_REG, 16);
- #endif
- }
+ arch/mips/Kconfig                       |  20 ++
+ arch/mips/Makefile                      |   5 +
+ arch/mips/include/asm/asmmacro-32.h     | 128 ++++++-------
+ arch/mips/include/asm/asmmacro.h        | 319 +++++++++++++++++++++++++-------
+ arch/mips/include/asm/cpu-features.h    |   6 +
+ arch/mips/include/asm/cpu-info.h        |   1 +
+ arch/mips/include/asm/cpu.h             |   1 +
+ arch/mips/include/asm/fpu.h             |   2 +-
+ arch/mips/include/asm/mipsregs.h        |   1 +
+ arch/mips/include/asm/msa.h             | 199 ++++++++++++++++++++
+ arch/mips/include/asm/processor.h       |  45 ++++-
+ arch/mips/include/asm/sigcontext.h      |   2 +
+ arch/mips/include/asm/switch_to.h       |  22 ++-
+ arch/mips/include/asm/thread_info.h     |   4 +
+ arch/mips/include/uapi/asm/sigcontext.h |   8 +
+ arch/mips/kernel/asm-offsets.c          |  69 +++++++
+ arch/mips/kernel/cpu-probe.c            |  26 +++
+ arch/mips/kernel/genex.S                |   2 +
+ arch/mips/kernel/proc.c                 |   1 +
+ arch/mips/kernel/process.c              |  23 ++-
+ arch/mips/kernel/ptrace.c               |  85 ++++++---
+ arch/mips/kernel/ptrace32.c             |  25 +--
+ arch/mips/kernel/r4k_fpu.S              | 213 +++++++++++++++++++++
+ arch/mips/kernel/r4k_switch.S           |  58 ++++--
+ arch/mips/kernel/signal.c               | 136 +++++++++++---
+ arch/mips/kernel/signal32.c             | 134 ++++++++++++--
+ arch/mips/kernel/traps.c                | 113 ++++++++++-
+ arch/mips/math-emu/cp1emu.c             |  51 +++--
+ arch/mips/math-emu/kernel_linkage.c     |  76 +-------
+ 29 files changed, 1433 insertions(+), 342 deletions(-)
+ create mode 100644 arch/mips/include/asm/msa.h
+
 -- 
-1.8.5.2
+1.8.5.3

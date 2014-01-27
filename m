@@ -1,15 +1,19 @@
-Received: from multi.imgtec.com ([194.200.65.239]:3368 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:40308 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6817294AbaA0RPPP0SDO (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 27 Jan 2014 18:15:15 +0100
+        id S6825397AbaA0TjiMX3Uo (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 27 Jan 2014 20:39:38 +0100
+Date: Mon, 27 Jan 2014 19:39:08 +0000
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 06/15] mips: clear upper bits of FP registers on emulator writes
-Date: Mon, 27 Jan 2014 17:14:47 +0000
-Message-ID: <1390842887-9998-1-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <52E6A03C.6070303@cogentembedded.com>
-References: <52E6A03C.6070303@cogentembedded.com>
+Subject: Re: [PATCH 14/15] mips: panic if vector register partitioning is
+ implemented
+Message-ID: <20140127193908.GL970@pburton-linux.le.imgtec.org>
+References: <1390836194-26286-1-git-send-email-paul.burton@imgtec.com>
+ <1390836194-26286-15-git-send-email-paul.burton@imgtec.com>
+ <52E6A7B5.2040505@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <52E6A7B5.2040505@gmail.com>
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,70 +24,74 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: sergei.shtylyov@cogentembedded.com, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140127171447.5fDfuxlunUvCJWj5YOwqq5EyCjorHfRqkRrlJHrqE0A@z>
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20140127193908.5taduaDWXd1JuhdRiApJFvIww_hQEivgTNYCvO8xfSc@z>
 
-The upper bits of an FP register are architecturally defined as
-unpredictable following an instructions which only writes the lower
-bits. The prior behaviour of the kernel is to leave them unmodified.
-This patch modifies that to clear the upper bits to zero. This is what
-the MSA architecture reference manual specifies should happen for its
-wider registers and is still permissible for scalar FP instructions
-given the bits unpredictability there.
+On Mon, Jan 27, 2014 at 10:38:45AM -0800, David Daney wrote:
+> ....
+> On 01/27/2014 07:23 AM, Paul Burton wrote:
+> >No current systems implementing MSA include support for vector register
+> >partitioning which makes it somewhat difficult to implement support for
+> >it in the kernel. Thus for the moment the kernel includes no such
+> >support. However if the kernel were to be run on a system which
+> >implemented register partitioning then it would not function correctly,
+> >mishandling MSA disabled exceptions. Calling panic when run on a system
+> >with vector register partitioning implemented ensures that we're not
+> >caught out by this later but instead reminded to implement support once
+> >such a system is available.
+> >
+> >Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> >---
+> >  arch/mips/kernel/cpu-probe.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> >diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+> >index 852e085..003ba3c 100644
+> >--- a/arch/mips/kernel/cpu-probe.c
+> >+++ b/arch/mips/kernel/cpu-probe.c
+> >@@ -1193,9 +1193,13 @@ void cpu_probe(void)
+> >  	else
+> >  		c->srsets = 1;
+> >
+> >-	if (cpu_has_msa)
+> >+	if (cpu_has_msa) {
+> >  		c->msa_id = cpu_get_msa_id();
+> >
+> >+		if (c->msa_id & MSA_IR_WRPF)
+> >+			panic("Vector register partitioning unimplemented!");
+> 
+> You should probably use a WARN_ON() instead.  There is no reason to crash
+> the kernel for this condition is there?
+> 
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
----
-Changes in v2:
-  - Fix indentation issue in SITOHREG spotted by Sergei Shtylyov.
----
- arch/mips/math-emu/cp1emu.c | 25 ++++++++++++++++++++-----
- 1 file changed, 20 insertions(+), 5 deletions(-)
+Well mapping vector registers reuses the MSA disabled exception, so if
+the kernel were to continue with my current code & userland were to
+execute an MSA instruction I believe it would appear to hang. There
+would be an initial MSA disabled exception which would lead the kernel
+to enable MSA & return to userland to re-execute the MSA instruction.
+Then another MSA disabled exception would occur because we'd need to
+map a vector register, but the kernel doesn't understand so would
+attempt to enable MSA & return again. Then another MSA disabled
+exception, etc etc. So if the kernel were to continue then it would
+probably want to disable MSA support entirely to avoid userland
+appearing to just hang. Additionally since vector registers & FP
+registers are aliased the same would apply to scalar FP (cop1)
+instructions too, so we'd also need to disable the FPU. To me that all
+seems like a lot of hassle to allow a crippled kernel to run on a system
+that doesn't exist yet, so personally I'd rather the kernel just panics
+as a safeguard. Then once some target system implements vector register
+partitioning support for it can be implemented in the kernel.
 
-diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-index 9144842..873e9f0 100644
---- a/arch/mips/math-emu/cp1emu.c
-+++ b/arch/mips/math-emu/cp1emu.c
-@@ -884,20 +884,35 @@ static inline int cop1_64bit(struct pt_regs *xcp)
- } while (0)
- 
- #define SITOREG(si, x) do {						\
--	if (cop1_64bit(xcp))						\
-+	if (cop1_64bit(xcp)) {						\
-+		unsigned i;						\
- 		set_fpr32(&ctx->fpr[x], 0, si);				\
--	else								\
-+		for (i = 1; i < ARRAY_SIZE(ctx->fpr[x].val32); i++)	\
-+			set_fpr32(&ctx->fpr[x], i, 0);			\
-+	} else {							\
- 		set_fpr32(&ctx->fpr[(x) & ~1], (x) & 1, si);		\
-+	}								\
- } while (0)
- 
- #define SIFROMHREG(si, x)	((si) = get_fpr32(&ctx->fpr[x], 1))
--#define SITOHREG(si, x)		set_fpr32(&ctx->fpr[x], 1, si)
-+
-+#define SITOHREG(si, x) do {						\
-+	unsigned i;							\
-+	set_fpr32(&ctx->fpr[x], 1, si);					\
-+	for (i = 2; i < ARRAY_SIZE(ctx->fpr[x].val32); i++)		\
-+		set_fpr32(&ctx->fpr[x], i, 0);				\
-+} while (0)
- 
- #define DIFROMREG(di, x) \
- 	((di) = get_fpr64(&ctx->fpr[(x) & ~(cop1_64bit(xcp) == 0)], 0))
- 
--#define DITOREG(di, x) \
--	set_fpr64(&ctx->fpr[(x) & ~(cop1_64bit(xcp) == 0)], 0, di)
-+#define DITOREG(di, x) do {						\
-+	unsigned fpr, i;						\
-+	fpr = (x) & ~(cop1_64bit(xcp) == 0);				\
-+	set_fpr64(&ctx->fpr[fpr], 0, di);				\
-+	for (i = 1; i < ARRAY_SIZE(ctx->fpr[x].val64); i++)		\
-+		set_fpr64(&ctx->fpr[fpr], i, 0);			\
-+} while (0)
- 
- #define SPFROMREG(sp, x) SIFROMREG((sp).bits, x)
- #define SPTOREG(sp, x)	SITOREG((sp).bits, x)
--- 
-1.8.5.3
+Thanks,
+    Paul
+
+> >+	}
+> >+
+> >  	cpu_probe_vmbits(c);
+> >
+> >  #ifdef CONFIG_64BIT
+> >
+> 
+> 
+> To report this email as SPAM, please forward it to spam@websense.com

@@ -1,18 +1,14 @@
-Received: from mail1.windriver.com ([147.11.146.13]:64985 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6823127AbaA1QVeHigGI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Jan 2014 17:21:34 +0100
-Message-ID: <52E7D918.5020704@windriver.com>
-Date: Tue, 28 Jan 2014 11:21:44 -0500
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Received: from multi.imgtec.com ([194.200.65.239]:8066 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6827305AbaA2NKIsU4Wb (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 29 Jan 2014 14:10:08 +0100
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: mm: c-r4k: Detect instruction cache aliases
+Date: Wed, 29 Jan 2014 13:10:09 +0000
+Message-ID: <1391001009-19580-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC 00/73] tree-wide: clean up some no longer required
- #include <linux/init.h>
-References: <1390339396-3479-1-git-send-email-paul.gortmaker@windriver.com>      <20140122180023.dd90d34cba38d9f9ac516349@canb.auug.org.au>      <20140123003838.GA10182@windriver.com> <1390878783.3872.63.camel@pasglop>
-In-Reply-To: <1390878783.3872.63.camel@pasglop>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Paul.Gortmaker@windriver.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,61 +18,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, rusty@rustcorp.com.au, linux-ia64@vger.kernel.org, kvm@vger.kernel.org, linux-s390@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, gregkh@linuxfoundation.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-Message-ID: <20140128162144.BAd0KTw2cvlER2O5ZSlbj4ubsdkJd8jzCD9ViSYizvY@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20140129131009.7x6f4un4TsPW1H0D6Diiq1HAV7wfTh7JdZtRQFIAdPs@z>
 
-On 14-01-27 10:13 PM, Benjamin Herrenschmidt wrote:
-> On Wed, 2014-01-22 at 19:38 -0500, Paul Gortmaker wrote:
-> 
->> Thanks, it was a great help as it uncovered a few issues in fringe arch
->> that I didn't have toolchains for, and I've fixed all of those up.
->>
->> I've noticed that powerpc has been un-buildable for a while now; I have
->> used this hack patch locally so I could run the ppc defconfigs to check
->> that I didn't break anything.  Maybe useful for linux-next in the
->> interim?  It is a hack patch -- Not-Signed-off-by: Paul Gortmaker.  :)
-> 
-> Can you and/or Aneesh submit that as a proper patch (with S-O-B
-> etc...) ?
+The *Aptiv cores can use the CONF7/IAR bit to detect if the core
+has hardware support to remove instruction cache aliasing.
 
-I'd updated toolchains and didn't realize it was still broken.  Patch sent.
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+This patch is for the upstream-sfr/mips-for-linux-next tree
+---
+ arch/mips/include/asm/mipsregs.h | 3 +++
+ arch/mips/mm/c-r4k.c             | 5 ++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-http://patchwork.ozlabs.org/patch/314749/
-
-Paul.
---
-
-> 
-> Thanks !
-> 
-> Cheers,
-> Ben.
-> 
->> Paul.
->> --
->>
->> diff --git a/arch/powerpc/include/asm/pgtable-ppc64.h b/arch/powerpc/include/asm/pgtable-ppc64.h
->> index d27960c89a71..d0f070a2b395 100644
->> --- a/arch/powerpc/include/asm/pgtable-ppc64.h
->> +++ b/arch/powerpc/include/asm/pgtable-ppc64.h
->> @@ -560,9 +560,9 @@ extern void pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
->>  			    pmd_t *pmdp);
->>  
->>  #define pmd_move_must_withdraw pmd_move_must_withdraw
->> -typedef struct spinlock spinlock_t;
->> -static inline int pmd_move_must_withdraw(spinlock_t *new_pmd_ptl,
->> -					 spinlock_t *old_pmd_ptl)
->> +struct spinlock;
->> +static inline int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
->> +					 struct spinlock *old_pmd_ptl)
->>  {
->>  	/*
->>  	 * Archs like ppc64 use pgtable to store per pmd
->>
->> _______________________________________________
->> Linuxppc-dev mailing list
->> Linuxppc-dev@lists.ozlabs.org
->> https://lists.ozlabs.org/listinfo/linuxppc-dev
-> 
-> 
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index bbc3dd4..0c74617 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -653,6 +653,9 @@
+ 
+ #define MIPS_CONF7_RPS		(_ULCAST_(1) << 2)
+ 
++#define MIPS_CONF7_IAR		(_ULCAST_(1) << 10)
++#define MIPS_CONF7_AR		(_ULCAST_(1) << 16)
++
+ /*  EntryHI bit definition */
+ #define MIPS_ENTRYHI_EHINV	(_ULCAST_(1) << 10)
+ 
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index 13b549a..e790524 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -1110,7 +1110,10 @@ static void probe_pcache(void)
+ 	case CPU_PROAPTIV:
+ 		if (current_cpu_type() == CPU_74K)
+ 			alias_74k_erratum(c);
+-		if ((read_c0_config7() & (1 << 16))) {
++		if (!(read_c0_config7() & MIPS_CONF7_IAR))
++			if (c->icache.waysize > PAGE_SIZE)
++				c->icache.flags |= MIPS_CACHE_ALIASES;
++		if (read_c0_config7() & MIPS_CONF7_AR) {
+ 			/* effectively physically indexed dcache,
+ 			   thus no virtual aliases. */
+ 			c->dcache.flags |= MIPS_CACHE_PINDEX;
+-- 
+1.8.5.3

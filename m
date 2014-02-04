@@ -1,14 +1,18 @@
-Received: from multi.imgtec.com ([194.200.65.239]:32251 "EHLO multi.imgtec.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6816676AbaBDMajpVEJq (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 4 Feb 2014 13:30:39 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: Wire up sched_setattr/sched_getattr syscalls
-Date: Tue, 4 Feb 2014 12:29:01 +0000
-Message-ID: <1391516941-20260-1-git-send-email-james.hogan@imgtec.com>
+Received: from mail-bl2lp0212.outbound.protection.outlook.com ([207.46.163.212]:31213
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S6834791AbaBDTwBLmMXM (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 4 Feb 2014 20:52:01 +0100
+Message-ID: <52F144C3.1080705@caviumnetworks.com>
+Date: Tue, 4 Feb 2014 11:51:31 -0800
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Subject: Re: mips octeon memory model questions
+References: <20140204184150.GB5002@laptop.programming.kicks-ass.net>
+In-Reply-To: <20140204184150.GB5002@laptop.programming.kicks-ass.net>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,134 +22,108 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>
-Message-ID: <20140204122901.KNR6wI_USEHE6gMhEPGpEM0cZ6rTD4kV9fqNpIYoA6c@z>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Paul McKenney <paulmck@linux.vnet.ibm.com>, Will Deacon <will.deacon@arm.com>, Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <20140204195131.kmYxuskKy4P_slhUvDNZ16YkghqoNAFAmeHsx9Qk_bA@z>
 
-Wire up for MIPS the new sched_setattr and sched_getattr system calls
-added in commit d50dde5a10f3 (sched: Add new scheduler syscalls to
-support an extended scheduling parameters ABI) merged in v3.14-rc1.
+On 02/04/2014 10:41 AM, Peter Zijlstra wrote:
+> Hi all,
+>
+> I have a number of questions in regards to commit 6b07d38aaa520ce.
+>
+> Given that the octeon doesn't reorder reads; the following:
+>
+> "      sync
+>         ll ...
+>         .
+>         .
+>         .
+>         sc ...
+>         .
+>         .
+>         sync
+>
+>    The second SYNC was redundant, but harmless.  "
+>
+> Still doesn't make sense, because if we need the first sync to stop
+> writes from being re-ordered with the ll-sc, we also need the second
+> sync to avoid the same.
+>
+> Suppose:
+>     STORE a
+>     sync
+>     LL-SC b
+>     (not a sync)
+>     STORE c
+>
+> What avoids this becoming visible as:
+>
+>    a
+>    c
+>    b
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/include/uapi/asm/unistd.h | 18 ++++++++++++------
- arch/mips/kernel/scall32-o32.S      |  2 ++
- arch/mips/kernel/scall64-64.S       |  2 ++
- arch/mips/kernel/scall64-n32.S      |  2 ++
- arch/mips/kernel/scall64-o32.S      |  2 ++
- 5 files changed, 20 insertions(+), 6 deletions(-)
+On OCTEON, SC implies a SYNC operation for the target memory location. 
+So the "SC b" is ordered before any writes that come after the SC.
 
-diff --git a/arch/mips/include/uapi/asm/unistd.h b/arch/mips/include/uapi/asm/unistd.h
-index 1dee279f9665..d6e154a9e6a5 100644
---- a/arch/mips/include/uapi/asm/unistd.h
-+++ b/arch/mips/include/uapi/asm/unistd.h
-@@ -369,16 +369,18 @@
- #define __NR_process_vm_writev		(__NR_Linux + 346)
- #define __NR_kcmp			(__NR_Linux + 347)
- #define __NR_finit_module		(__NR_Linux + 348)
-+#define __NR_sched_setattr		(__NR_Linux + 349)
-+#define __NR_sched_getattr		(__NR_Linux + 350)
- 
- /*
-  * Offset of the last Linux o32 flavoured syscall
-  */
--#define __NR_Linux_syscalls		348
-+#define __NR_Linux_syscalls		350
- 
- #endif /* _MIPS_SIM == _MIPS_SIM_ABI32 */
- 
- #define __NR_O32_Linux			4000
--#define __NR_O32_Linux_syscalls		348
-+#define __NR_O32_Linux_syscalls		350
- 
- #if _MIPS_SIM == _MIPS_SIM_ABI64
- 
-@@ -695,16 +697,18 @@
- #define __NR_kcmp			(__NR_Linux + 306)
- #define __NR_finit_module		(__NR_Linux + 307)
- #define __NR_getdents64			(__NR_Linux + 308)
-+#define __NR_sched_setattr		(__NR_Linux + 309)
-+#define __NR_sched_getattr		(__NR_Linux + 310)
- 
- /*
-  * Offset of the last Linux 64-bit flavoured syscall
-  */
--#define __NR_Linux_syscalls		308
-+#define __NR_Linux_syscalls		310
- 
- #endif /* _MIPS_SIM == _MIPS_SIM_ABI64 */
- 
- #define __NR_64_Linux			5000
--#define __NR_64_Linux_syscalls		308
-+#define __NR_64_Linux_syscalls		310
- 
- #if _MIPS_SIM == _MIPS_SIM_NABI32
- 
-@@ -1025,15 +1029,17 @@
- #define __NR_process_vm_writev		(__NR_Linux + 310)
- #define __NR_kcmp			(__NR_Linux + 311)
- #define __NR_finit_module		(__NR_Linux + 312)
-+#define __NR_sched_setattr		(__NR_Linux + 313)
-+#define __NR_sched_getattr		(__NR_Linux + 314)
- 
- /*
-  * Offset of the last N32 flavoured syscall
-  */
--#define __NR_Linux_syscalls		312
-+#define __NR_Linux_syscalls		314
- 
- #endif /* _MIPS_SIM == _MIPS_SIM_NABI32 */
- 
- #define __NR_N32_Linux			6000
--#define __NR_N32_Linux_syscalls		312
-+#define __NR_N32_Linux_syscalls		314
- 
- #endif /* _UAPI_ASM_UNISTD_H */
-diff --git a/arch/mips/kernel/scall32-o32.S b/arch/mips/kernel/scall32-o32.S
-index e8e541b40d86..a5b14f48e1af 100644
---- a/arch/mips/kernel/scall32-o32.S
-+++ b/arch/mips/kernel/scall32-o32.S
-@@ -563,3 +563,5 @@ EXPORT(sys_call_table)
- 	PTR	sys_process_vm_writev
- 	PTR	sys_kcmp
- 	PTR	sys_finit_module
-+	PTR	sys_sched_setattr
-+	PTR	sys_sched_getattr		/* 4350 */
-diff --git a/arch/mips/kernel/scall64-64.S b/arch/mips/kernel/scall64-64.S
-index 57e3742fec59..b56e254beb15 100644
---- a/arch/mips/kernel/scall64-64.S
-+++ b/arch/mips/kernel/scall64-64.S
-@@ -425,4 +425,6 @@ EXPORT(sys_call_table)
- 	PTR	sys_kcmp
- 	PTR	sys_finit_module
- 	PTR	sys_getdents64
-+	PTR	sys_sched_setattr
-+	PTR	sys_sched_getattr		/* 5310 */
- 	.size	sys_call_table,.-sys_call_table
-diff --git a/arch/mips/kernel/scall64-n32.S b/arch/mips/kernel/scall64-n32.S
-index 2f48f5934399..f7e5b72cf481 100644
---- a/arch/mips/kernel/scall64-n32.S
-+++ b/arch/mips/kernel/scall64-n32.S
-@@ -418,4 +418,6 @@ EXPORT(sysn32_call_table)
- 	PTR	compat_sys_process_vm_writev	/* 6310 */
- 	PTR	sys_kcmp
- 	PTR	sys_finit_module
-+	PTR	sys_sched_setattr
-+	PTR	sys_sched_getattr
- 	.size	sysn32_call_table,.-sysn32_call_table
-diff --git a/arch/mips/kernel/scall64-o32.S b/arch/mips/kernel/scall64-o32.S
-index f1acdb429f4f..6788727d91af 100644
---- a/arch/mips/kernel/scall64-o32.S
-+++ b/arch/mips/kernel/scall64-o32.S
-@@ -541,4 +541,6 @@ EXPORT(sys32_call_table)
- 	PTR	compat_sys_process_vm_writev
- 	PTR	sys_kcmp
- 	PTR	sys_finit_module
-+	PTR	sys_sched_setattr
-+	PTR	sys_sched_getattr		/* 4350 */
- 	.size	sys32_call_table,.-sys32_call_table
--- 
-1.8.1.2
+
+>
+> ?
+>
+> Then there is:
+>
+> "       syncw;syncw
+>          ll
+>          .
+>          .
+>          .
+>          sc
+>          .
+>          .
+>
+>      Has identical semantics to the first sequence, but is much faster.
+>      The SYNCW orders the writes, and the SC will not complete successfully
+>      until the write is committed to the coherent memory system.  So at the
+>      end all preceeding writes have been committed.  Since Octeon does not
+>      do speculative reads, this functions as a full barrier."
+>
+> Read Documentation/memory-barrier.txt:TRANSITIVITY, the above doesn't
+> sound like syncw is actually multi-copy atomic, and therefore doesn't
+> provide transitivity, and therefore is not a valid sequence for
+> operations that are supposed to imply a full memory-barrier.
+>
+> Please as to explain.
+>
+
+It makes my head hurt.
+
+The sequence:
+
+    SYNCW
+    LL a
+    <other instructions that are not stores>
+    SC a
+
+
+Should function as a "<general barrier>".
+
+
+I can try to explain why I think this is so:
+
+Coherency is managed by the L2 Cache controller.
+
+Each CPU has an n-entry write buffer.  The SYNCW insures that all 
+preceding stores will commit before the store of the SC.  the 
+instruction after the SC will not execute until the SC's store is committed.
+
+The full SYNC instruction functions in a similar manner to the above 
+sequence.  The only difference is that it doesn't have the side effect 
+of modifying the target of the SC instruction.
+
+In both cases all the stores are committed, and following loads are 
+delayed until the commit is acknowledged.
+
+Note:  All this is based on my understanding of the OCTEON 
+micro-architecture.  I have not done any exhaustive testing Transitivity 
+principle with respect to SYNCW/LL/SC as described above.
+
+David Daney

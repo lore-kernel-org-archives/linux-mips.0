@@ -1,22 +1,17 @@
-Received: from mail1.windriver.com ([147.11.146.13]:38795 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6823977AbaBEO2Fh9ZQi (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 5 Feb 2014 15:28:05 +0100
-Date: Wed, 5 Feb 2014 09:28:25 -0500
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: [GIT PULL] tree-wide: clean up no longer required #include
- <linux/init.h>
-Message-ID: <20140205142824.GA23780@windriver.com>
-References: <1391547118-21967-1-git-send-email-paul.gortmaker@windriver.com>
- <CAP=VYLp+zus5591g-1YQBCJifbk+UY59yJ7rV06ZN3QhhdnK7w@mail.gmail.com>
- <20140205060633.GE30094@gmail.com>
- <20140205172723.3fa841793b3fa3f3f534937f@canb.auug.org.au>
- <20140205064150.GA31568@gmail.com>
+Received: from www.linutronix.de ([62.245.132.108]:35485 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6825068AbaBEUljzzYXd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 5 Feb 2014 21:41:39 +0100
+Date: Wed, 5 Feb 2014 21:40:53 +0100 (CET)
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: RE: [PATCH 2/2] clocksource: Make clocksource register functions
+ void
+In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6D46489C@AcuExch.aculab.com>
+Message-ID: <alpine.DEB.2.02.1402052139560.24986@ionos.tec.linutronix.de>
+References: <1390461166-36440-1-git-send-email-wangyijing@huawei.com> <52E0C889.6000106@prisktech.co.nz> <063D6719AE5E284EB5DD2968C1650D6D46489C@AcuExch.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20140205064150.GA31568@gmail.com>
-Return-Path: <Paul.Gortmaker@windriver.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <tglx@linutronix.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,54 +21,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Linus Torvalds <torvalds@linux-foundation.org>, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, x86@kernel.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, akpm@linux-foundation.org, gregkh@linuxfoundation.org, rusty@rustcorp.com.au, linux-arch@vger.kernel.org, kvm@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org, linux-s390@vger.kernel.org
-Message-ID: <20140205142825.ESRn1PVVHuc66w9lv2l1tRm27riwp5WrLQgMArVicn0@z>
+To: David Laight <David.Laight@ACULAB.COM>
+Cc: 'Tony Prisk' <linux@prisktech.co.nz>, Yijing Wang <wangyijing@huawei.com>, John Stultz <john.stultz@linaro.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Kevin Hilman <khilman@deeprootsystems.com>, "linux@lists.openrisc.net" <linux@lists.openrisc.net>, Sekhar Nori <nsekhar@ti.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, Daniel Walker <dwalker@fifo99.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Jonas Bonn <jonas@southpole.se>, Kukjin Kim <kgene.kim@samsung.com>, Russell King <linux@arm.linux.org.uk>, Richard Weinberger <richard@nod.at>, "x86@kernel.org" <x86@kernel.org>, Tony Lindgren <tony@atomide.com>, Ingo Molnar <mingo@redhat.com>, "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, David Brown <davidb@codeaurora.org>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Mike Frysinger <vapier@gentoo.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Nicolas Ferre <nicolas.ferre@atmel.com>, Jeff Dike <jdike@addtoit.com>, Barry Song <baohua@kernel.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Michal Simek <monstr@monstr.eu>, Jim Cromie <jim.cromie@gmail.com>, "microblaze-uclinux@itee.uq.edu.au" <microblaze-uclinux@itee.uq.edu.au>, Hanjun Guo <guohanjun@huawei.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Bryan Huntsman <bryanh@codeaurora.org>, "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Message-ID: <20140205204053.0oYaVbHKQWEor9zAz_NNZ9TKy-QlzrnTH7kmXmH51bw@z>
 
-[Re: [GIT PULL] tree-wide: clean up no longer required #include <linux/init.h>] On 05/02/2014 (Wed 07:41) Ingo Molnar wrote:
+Yijing,
 
-> 
-> * Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> 
-> > Hi Ingo,
+On Thu, 23 Jan 2014, David Laight wrote:
+
+> From: Linuxppc-dev Tony Prisk
+> > On 23/01/14 20:12, Yijing Wang wrote:
+> > > Currently, clocksource_register() and __clocksource_register_scale()
+> > > functions always return 0, it's pointless, make functions void.
+> > > And remove the dead code that check the clocksource_register_hz()
+> > > return value.
+> > ......
+> > > -static inline int clocksource_register_hz(struct clocksource *cs, u32 hz)
+> > > +static inline void clocksource_register_hz(struct clocksource *cs, u32 hz)
+> > >   {
+> > >   	return __clocksource_register_scale(cs, 1, hz);
+> > >   }
 > > 
-> > On Wed, 5 Feb 2014 07:06:33 +0100 Ingo Molnar <mingo@kernel.org> wrote:
-> > > 
-> > > So, if you meant Linus to pull it, you probably want to cite a real 
-> > > Git URI along the lines of:
-> > > 
-> > >    git://git.kernel.org/pub/scm/linux/kernel/git/paulg/init.git
-> > 
-> > Paul provided the proper git url further down in the mail along with the
-> > usual pull request message (I guess he should have put that bit at the
-> > top).
+> > This doesn't make sense - you are still returning a value on a function
+> > declared void, and the return is now from a function that doesn't return
+> > anything either ?!?!
+> > Doesn't this throw a compile-time warning??
 > 
-> Yeah, indeed, and it even comes with a signed tag, which is an extra 
-> nice touch:
+> It depends on the compiler.
+> Recent gcc allow it.
+> I don't know if it is actually valid C though.
 > 
->   git://git.kernel.org/pub/scm/linux/kernel/git/paulg/linux.git tags/init-cleanup
-> 
-> (I guess the https was mentioned first to lower expectations.)
+> There is no excuse for it on lines like the above though.
 
-Just to clarify, the init.git was the repo of raw commits+series file
-that was used for testing on linux next; now useless, except for showing
-the last several weeks of history (hence the visual http link).  The
-signed tag [separate repo] is the application of those commits against
-the 3.14-rc1 tag, which was the end goal from the beginning.
-
-Does history matter?  In the case of a cleanup like this, it does only
-in the immediate context of this pull request; to help distinguish this
-work from some short lived half baked idea that also had its testing
-invalidated by arbitrarily rebasing onto the latest shiny tag.
-
-I wouldn't have even mentioned the patch repo, except for the fact that
-I know how Linus loves arbitrary rebases [and malformed pull requests]  :)
+Can you please resend with that fixed against 3.14-rc1 ?
 
 Thanks,
-Paul.
---
 
-> 
-> Thanks,
-> 
-> 	Ingo
+	tglx

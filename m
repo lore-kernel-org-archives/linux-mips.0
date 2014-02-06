@@ -1,17 +1,17 @@
-Received: from www.linutronix.de ([62.245.132.108]:35485 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6825068AbaBEUljzzYXd (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 5 Feb 2014 21:41:39 +0100
-Date: Wed, 5 Feb 2014 21:40:53 +0100 (CET)
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: RE: [PATCH 2/2] clocksource: Make clocksource register functions
- void
-In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6D46489C@AcuExch.aculab.com>
-Message-ID: <alpine.DEB.2.02.1402052139560.24986@ionos.tec.linutronix.de>
-References: <1390461166-36440-1-git-send-email-wangyijing@huawei.com> <52E0C889.6000106@prisktech.co.nz> <063D6719AE5E284EB5DD2968C1650D6D46489C@AcuExch.aculab.com>
+Received: from multi.imgtec.com ([194.200.65.239]:54718 "EHLO multi.imgtec.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6824283AbaBFKg1c4jvv (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 6 Feb 2014 11:36:27 +0100
+Date: Thu, 6 Feb 2014 10:35:05 +0000
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH] MIPS: fpu.h: fix build when CONFIG_BUG is not set
+Message-ID: <20140206103505.GE54230@pburton-linux.le.imgtec.org>
+References: <1391630744-32648-1-git-send-email-aaro.koskinen@iki.fi>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <tglx@linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <1391630744-32648-1-git-send-email-aaro.koskinen@iki.fi>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,40 +21,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Laight <David.Laight@ACULAB.COM>
-Cc: 'Tony Prisk' <linux@prisktech.co.nz>, Yijing Wang <wangyijing@huawei.com>, John Stultz <john.stultz@linaro.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Kevin Hilman <khilman@deeprootsystems.com>, "linux@lists.openrisc.net" <linux@lists.openrisc.net>, Sekhar Nori <nsekhar@ti.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, Daniel Walker <dwalker@fifo99.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Jonas Bonn <jonas@southpole.se>, Kukjin Kim <kgene.kim@samsung.com>, Russell King <linux@arm.linux.org.uk>, Richard Weinberger <richard@nod.at>, "x86@kernel.org" <x86@kernel.org>, Tony Lindgren <tony@atomide.com>, Ingo Molnar <mingo@redhat.com>, "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, David Brown <davidb@codeaurora.org>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Mike Frysinger <vapier@gentoo.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Nicolas Ferre <nicolas.ferre@atmel.com>, Jeff Dike <jdike@addtoit.com>, Barry Song <baohua@kernel.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Michal Simek <monstr@monstr.eu>, Jim Cromie <jim.cromie@gmail.com>, "microblaze-uclinux@itee.uq.edu.au" <microblaze-uclinux@itee.uq.edu.au>, Hanjun Guo <guohanjun@huawei.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Bryan Huntsman <bryanh@codeaurora.org>, "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Message-ID: <20140205204053.0oYaVbHKQWEor9zAz_NNZ9TKy-QlzrnTH7kmXmH51bw@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <blogic@openwrt.org>, linux-mips@linux-mips.org
+Message-ID: <20140206103505.S5eZYxxKLlv7dhybdwcZncTdKmePz00lBri7eCvWsrk@z>
 
-Yijing,
-
-On Thu, 23 Jan 2014, David Laight wrote:
-
-> From: Linuxppc-dev Tony Prisk
-> > On 23/01/14 20:12, Yijing Wang wrote:
-> > > Currently, clocksource_register() and __clocksource_register_scale()
-> > > functions always return 0, it's pointless, make functions void.
-> > > And remove the dead code that check the clocksource_register_hz()
-> > > return value.
-> > ......
-> > > -static inline int clocksource_register_hz(struct clocksource *cs, u32 hz)
-> > > +static inline void clocksource_register_hz(struct clocksource *cs, u32 hz)
-> > >   {
-> > >   	return __clocksource_register_scale(cs, 1, hz);
-> > >   }
-> > 
-> > This doesn't make sense - you are still returning a value on a function
-> > declared void, and the return is now from a function that doesn't return
-> > anything either ?!?!
-> > Doesn't this throw a compile-time warning??
+On Wed, Feb 05, 2014 at 10:05:44PM +0200, Aaro Koskinen wrote:
+> __enable_fpu produces a build failure when CONFIG_BUG is not set:
 > 
-> It depends on the compiler.
-> Recent gcc allow it.
-> I don't know if it is actually valid C though.
+> In file included from arch/mips/kernel/cpu-probe.c:24:0:
+> arch/mips/include/asm/fpu.h: In function '__enable_fpu':
+> arch/mips/include/asm/fpu.h:77:1: error: control reaches end of non-void function [-Werror=return-type]
 > 
-> There is no excuse for it on lines like the above though.
+> This is regression introduced in 3.14-rc1. Fix that.
+> 
+> Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+> ---
+>  arch/mips/include/asm/fpu.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/mips/include/asm/fpu.h b/arch/mips/include/asm/fpu.h
+> index cfe092fc720d..6b9749540edf 100644
+> --- a/arch/mips/include/asm/fpu.h
+> +++ b/arch/mips/include/asm/fpu.h
+> @@ -74,6 +74,8 @@ static inline int __enable_fpu(enum fpu_mode mode)
+>  	default:
+>  		BUG();
+>  	}
+> +
+> +	return SIGFPE;
+>  }
+>  
+>  #define __disable_fpu()							\
+> -- 
+> 1.8.5.3
+> 
 
-Can you please resend with that fixed against 3.14-rc1 ?
+Looks good to me, thanks for catching that.
 
-Thanks,
-
-	tglx
+Paul

@@ -1,15 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:65181 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:41785 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6822283AbaBKKyuxtzbC (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 11 Feb 2014 11:54:50 +0100
-Message-ID: <52FA0172.4030906@imgtec.com>
-Date: Tue, 11 Feb 2014 10:54:42 +0000
+        id S6816503AbaBLKuelF8PS (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 12 Feb 2014 11:50:34 +0100
+Message-ID: <52FB51EF.2060707@imgtec.com>
+Date: Wed, 12 Feb 2014 10:50:23 +0000
 From: Alex Smith <alex.smith@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH V17 05/13] MIPS: Loongson: Add UEFI-like firmware interface
- (LEFI) support
-References: <1391834342-8177-1-git-send-email-chenhc@lemote.com> <1391834342-8177-6-git-send-email-chenhc@lemote.com>
-In-Reply-To: <1391834342-8177-6-git-send-email-chenhc@lemote.com>
+Subject: Re: [PATCH V17 00/13] MIPS: Add Loongson-3 based machines support
+References: <1391834342-8177-1-git-send-email-chenhc@lemote.com>
+In-Reply-To: <1391834342-8177-1-git-send-email-chenhc@lemote.com>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Alex.Smith@imgtec.com>
@@ -24,508 +23,209 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Huacai Chen <chenhc@lemote.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <john@phrozen.org>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Aurelien Jarno <aurelien@aurel32.net>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Hongliang Tao <taohl@lemote.com>, Hua Yan <yanh@lemote.com>
-Message-ID: <20140211105442.aWA9U5ltM6CXQwwlVdwwwWkSjsjbOEHyzxbj1nYDqe4@z>
+Message-ID: <20140212105023.F0vjcGooHtWyh3jsbi2STAcDsvVyHoKaS2vBOD4_ZWc@z>
 
 On 08/02/14 04:38, Huacai Chen wrote:
-> The new UEFI-like firmware interface (LEFI, i.e. Loongson Unified
-> Firmware Interface) has 3 advantages:
+> This patchset is prepared for the next 3.15 release for Linux/MIPS.
+> Loongson-3 is a multi-core MIPS family CPU, it is MIPS64R2 compatible
+> and has the same IMP field (0x6300) as Loongson-2. These patches make
+> Linux kernel support Loongson-3 CPU and Loongson-3 based computers
+> (including Laptop, Mini-ITX, All-In-One PC, etc.)
 >
-> 1, Firmware export a physical memory map which is similar to X86's
->     E820 map, so prom_init_memory() will be more elegant that #ifdef
->     clauses can be removed.
-> 2, Firmware export a pci irq routing table, we no longer need pci
->     irq routing fixup in kernel's code.
-> 3, Firmware has a built-in vga bios, and its address is exported,
->     the linux kernel no longer need an embedded blob.
+> V1 -> V2:
+> 1, Split the first patch to two patches, one is constant definition and
+>     the other is CPU probing, cache initializing, etc.
+> 2, Remove Kconfig options in the first 9 patches and put all of them in
+>     the 10th patch.
+> 3, Use "make savedefconfig" to generate the new default config file.
+> 4, Rework serial port support to use PORT and PORT_M macros.
+> 5, Fix some compile warnings.
 >
-> With the LEFI interface, Loongson-3A/2G and all their successors can use
-> a unified kernel. All Loongson-based machines support this new interface
-> except 2E/2F series.
+> V2 -> V3:
+> 1, Improve cache flushing code (use cpu_has_coherent_cache macro and
+>     remove #ifdef clauses).
+> 2, Improve platform-specific code to correctly set driver's dma_mask/
+>     coherent_dma_mask so no longer need workarounds for each driver (
+>     SATA, graphics card, sound card, etc.)
+> 3, Use PCI quirk to provide vgabios and loongson3_read_bios() go away.
+> 4, Improve CPU hotplug code and split the poweroff failure related code
+>     to another patch (this issue affect all MIPS CPU, not only Loongson).
+> 5, Some other small fixes.
+>
+> V3 -> V4:
+> 1, Include swiotlb.h in radeon_ttm.c if SWIOTLB configured.
+> 2, Remove "Reviewed-by" in patches which are added by mistake.
+> 3, Sync the code to upstream.
+>
+> V4 -> V5:
+> 1, Split the drm patch to three patches.
+> 2, Use platform-specific pincfgs to replace old alsa quirks.
+>
+> V5 -> V6:
+> 1, For better management, two non-Loongson-specific patches are sent
+>     independently.
+> 2, Introduce cpu_has_coherent_cache feature and split cache flushing
+>     changes to a separate patch.
+> 3, Remove PRID_IMP_LOONGSON3 and use PRID_IMP_LOONGSON2 since they are
+>     the same.
+> 4, Don't define RTC_ALWAYS_BCD for Loongson-3 since BCD format can be
+>     checked by RTC_CONTROL at runtime.
+> 5, Don't modify dma-default.c for Loongson since it is unnecessary.
+> 6, Don't define SAREA_MAX since it is useless.
+> 7, Increase the default boost of internal mic for Lemote A1004.
+> 8, Fix a #ifdef issue in dma-coherence.h.
+> 9, Some other small fixes.
+>
+> V6 -> V7:
+> 1, Fix boot failure when NR_CPUS is more than present cpus.
+> 2, Fix error messages after poweroff & reboot.
+> 3, Update the default config file.
+> 4, Sync the code to upstream.
+>
+> V7 -> V8:
+> 1, Add WEAK_ORDERING/WEAK_REORDERING_BEYOND_LLSC for Loongson-3.
+> 2, Fix a deadlock of cpu-hotplug.
+> 3, Include swiotlb.h in arch-specific code to avoid driver modification.
+> 4, Remove the patch "drm: Handle io prot correctly for MIPS" since it
+>     is already in upstream code.
+> 5, Remove the patch "ALSA: HDA: Make hda sound card usable for Loongson"
+>     since it is already in upstream code.
+> 6, Use LZMA compression and do some adjustment of config file to reduce
+>     kernel size.
+>
+> V8 -> V9:
+> 1, Fix spurious IPI interrupt.
+> 2, remove __dev* attributes since CONFIG_HOTPLUG is going away as an option.
+> 3, Use dev_info() to print messages in fixup-loongson3.c.
+> 4, Update the default config file.
+> 5, Sync the code to upstream.
+>
+> V9 -> V10:
+> 1, Rework "Introduce and use cpu_has_coherent_cache feature".
+> 2, Handle the case that System BIOS doesn't contain a VGA BIOS.
+> 3, Sync the code to upstream (mostly indentation adjustment).
+>
+> V10 -> V11:
+> 1, Remove normal labels and useless nops in inline assembler.
+> 2, Sync the code to upstream (Prepared for 3.12).
+>
+> V11 -> V12:
+> 1, Delete __cpuinit usage;
+> 2, Remove the third patch since it is contentious;
+> 3, Sync the code to upstream (Prepared for 3.13).
+>
+> V12 -> V13:
+> 1, Rework addrspace.h and spaces.h;
+> 2, Move the modification of Platform from patch 1 to patch 12;
+> 3, Sync the code to upstream (the mips-for-linux-next branch, for 3.13).
+>
+> V13 -> V14:
+> 1, Avoid spurious interrupt from serial port;
+> 2, Drop CONFIG_LOONGSON_BIGMEM and use CONFIG_SWIOTLB directly;
+> 3, Sync the code to upstream (the mips-for-linux-next branch, for 3.14).
+>
+> V14 -> V15:
+> 1, Fix duplicate ARCH_SPARSEMEM_ENABLE in Kconfig.
+>
+> V15 -> V16:
+> 1, Fix all coding style errors and most of warnings;
+> 2, Make dma address translation simple and elegant;
+> 3, Fix potential bugs in swiotlb code;
+> 4, Rename UEFI firmware interface to LEFI;
+> 5, Remove 32-bit kernel support temporarily;
+> 6, Some other small fixes (thanks to Aurelien Jarno).
+>
+> V16 -> V17:
+> 1, Kconfig adjustment;
+> 2, Make some functions static;
+> 3, Capitalize macros in smp code;
+> 4, Make dma-swiotlb.c more simple;
+> 5, Some other small fixes (thanks to Aurelien Jarno and Alex Smith).
+>
+> Huacai Chen(13):
+>   MIPS: Loongson: Rename PRID_IMP_LOONGSON1 and PRID_IMP_LOONGSON2.
+>   MIPS: Loongson: Add basic Loongson-3 definition.
+>   MIPS: Loongson: Add basic Loongson-3 CPU support.
+>   MIPS: Loongson 3: Add Lemote-3A machtypes definition.
+>   MIPS: Loongson: Add UEFI-like firmware interface (LEFI) support.
+>   MIPS: Loongson 3: Add HT-linked PCI support.
+>   MIPS: Loongson 3: Add IRQ init and dispatch support.
+>   MIPS: Loongson 3: Add serial port support.
+>   MIPS: Loongson: Add swiotlb to support big memory (>4GB).
+>   MIPS: Loongson: Add Loongson-3 Kconfig options.
+>   MIPS: Loongson 3: Add Loongson-3 SMP support.
+>   MIPS: Loongson 3: Add CPU hotplug support.
+>   MIPS: Loongson: Add a Loongson-3 default config file.
 >
 > Signed-off-by: Huacai Chen <chenhc@lemote.com>
 > Signed-off-by: Hongliang Tao <taohl@lemote.com>
 > Signed-off-by: Hua Yan <yanh@lemote.com>
-> ---
->   arch/mips/include/asm/mach-loongson/boot_param.h |  159 ++++++++++++++++++++++
->   arch/mips/include/asm/mach-loongson/loongson.h   |    4 +-
->   arch/mips/loongson/common/env.c                  |   62 +++++++--
->   arch/mips/loongson/common/init.c                 |    9 +-
->   arch/mips/loongson/common/mem.c                  |   42 ++++++
->   arch/mips/loongson/common/pci.c                  |    6 +-
->   arch/mips/loongson/common/reset.c                |   21 +++
->   7 files changed, 283 insertions(+), 20 deletions(-)
->   create mode 100644 arch/mips/include/asm/mach-loongson/boot_param.h
->
-> diff --git a/arch/mips/include/asm/mach-loongson/boot_param.h b/arch/mips/include/asm/mach-loongson/boot_param.h
-> new file mode 100644
-> index 0000000..a40dd56
-> --- /dev/null
-> +++ b/arch/mips/include/asm/mach-loongson/boot_param.h
-> @@ -0,0 +1,159 @@
-> +#ifndef __ASM_MACH_LOONGSON_BOOT_PARAM_H_
-> +#define __ASM_MACH_LOONGSON_BOOT_PARAM_H_
-> +
-> +#define SYSTEM_RAM_LOW		1
-> +#define SYSTEM_RAM_HIGH		2
-> +#define MEM_RESERVED		3
-> +#define PCI_IO			4
-> +#define PCI_MEM			5
-> +#define LOONGSON_CFG_REG	6
-> +#define VIDEO_ROM		7
-> +#define ADAPTER_ROM		8
-> +#define ACPI_TABLE		9
-> +#define MAX_MEMORY_TYPE		10
-> +
-> +#define LOONGSON3_BOOT_MEM_MAP_MAX 128
-> +struct efi_memory_map_loongson {
-> +	u16 vers;	/* version of efi_memory_map */
-> +	u32 nr_map;	/* number of memory_maps */
-> +	u32 mem_freq;	/* memory frequence */
-> +	struct mem_map {
-> +		u32 node_id;	/* node_id which memory attached to */
-> +		u32 mem_type;	/* system memory, pci memory, pci io, etc. */
-> +		u64 mem_start;	/* memory map start address */
-> +		u32 mem_size;	/* each memory_map size, not the total size */
-> +	} map[LOONGSON3_BOOT_MEM_MAP_MAX];
-> +} __packed;
-> +
-> +enum loongson_cpu_type {
-> +	Loongson_2E = 0,
-> +	Loongson_2F = 1,
-> +	Loongson_3A = 2,
-> +	Loongson_3B = 3,
-> +	Loongson_1A = 4,
-> +	Loongson_1B = 5
-> +};
-> +
-> +/*
-> + * Capability and feature descriptor structure for MIPS CPU
-> + */
-> +struct efi_cpuinfo_loongson {
-> +	u16 vers;     /* version of efi_cpuinfo_loongson */
-> +	u32 processor_id; /* PRID, e.g. 6305, 6306 */
-> +	u32 cputype;  /* Loongson_3A/3B, etc. */
-> +	u32 total_node;   /* num of total numa nodes */
-> +	u32 cpu_startup_core_id; /* Core id */
-> +	u32 cpu_clock_freq; /* cpu_clock */
-> +	u32 nr_cpus;
-> +} __packed;
-> +
-> +struct system_loongson {
-> +	u16 vers;     /* version of system_loongson */
-> +	u32 ccnuma_smp; /* 0: no numa; 1: has numa */
-> +	u32 sing_double_channel; /* 1:single; 2:double */
-> +} __packed;
-> +
-> +struct irq_source_routing_table {
-> +	u16 vers;
-> +	u16 size;
-> +	u16 rtr_bus;
-> +	u16 rtr_devfn;
-> +	u32 vendor;
-> +	u32 device;
-> +	u32 PIC_type;   /* conform use HT or PCI to route to CPU-PIC */
-> +	u64 ht_int_bit; /* 3A: 1<<24; 3B: 1<<16 */
-> +	u64 ht_enable;  /* irqs used in this PIC */
-> +	u32 node_id;    /* node id: 0x0-0; 0x1-1; 0x10-2; 0x11-3 */
-> +	u64 pci_mem_start_addr;
-> +	u64 pci_mem_end_addr;
-> +	u64 pci_io_start_addr;
-> +	u64 pci_io_end_addr;
-> +	u64 pci_config_addr;
-> +} __packed;
-> +
-> +struct interface_info {
-> +	u16 vers; /* version of the specificition */
-> +	u16 size;
-> +	u8  flag;
-> +	char description[64];
-> +} __packed;
-> +
-> +#define MAX_RESOURCE_NUMBER 128
-> +struct resource_loongson {
-> +	u64 start; /* resource start address */
-> +	u64 end;   /* resource end address */
-> +	char name[64];
-> +	u32 flags;
-> +};
-> +
-> +struct archdev_data {};  /* arch specific additions */
-> +
-> +struct board_devices {
-> +	char name[64];    /* hold the device name */
-> +	u32 num_resources; /* number of device_resource */
-> +	/* for each device's resource */
-> +	struct resource_loongson resource[MAX_RESOURCE_NUMBER];
-> +	/* arch specific additions */
-> +	struct archdev_data archdata;
-> +};
-> +
-> +struct loongson_special_attribute {
-> +	u16 vers;     /* version of this special */
-> +	char special_name[64]; /* special_atribute_name */
-> +	u32 loongson_special_type; /* type of special device */
-> +	/* for each device's resource */
-> +	struct resource_loongson resource[MAX_RESOURCE_NUMBER];
-> +};
-> +
-> +struct loongson_params {
-> +	u64 memory_offset;	/* efi_memory_map_loongson struct offset */
-> +	u64 cpu_offset;		/* efi_cpuinfo_loongson struct offset */
-> +	u64 system_offset;	/* system_loongson struct offset */
-> +	u64 irq_offset;		/* irq_source_routing_table struct offset */
-> +	u64 interface_offset;	/* interface_info struct offset */
-> +	u64 special_offset;	/* loongson_special_attribute struct offset */
-> +	u64 boarddev_table_offset;  /* board_devices offset */
-> +};
-> +
-> +struct smbios_tables {
-> +	u16 vers;     /* version of smbios */
-> +	u64 vga_bios; /* vga_bios address */
-> +	struct loongson_params lp;
-> +};
-> +
-> +struct efi_reset_system_t {
-> +	u64 ResetCold;
-> +	u64 ResetWarm;
-> +	u64 ResetType;
-> +	u64 Shutdown;
-> +};
-> +
-> +struct efi_loongson {
-> +	u64 mps;	/* MPS table */
-> +	u64 acpi;	/* ACPI table (IA64 ext 0.71) */
-> +	u64 acpi20;	/* ACPI table (ACPI 2.0) */
-> +	struct smbios_tables smbios;	/* SM BIOS table */
-> +	u64 sal_systab;	/* SAL system table */
-> +	u64 boot_info;	/* boot info table */
-> +};
-> +
-> +struct boot_params {
-> +	struct efi_loongson efi;
-> +	struct efi_reset_system_t reset_system;
-> +};
-> +
-> +struct loongson_system_configuration {
-> +	u32 nr_cpus;
-> +	enum loongson_cpu_type cputype;
-> +	u64 ht_control_base;
-> +	u64 pci_mem_start_addr;
-> +	u64 pci_mem_end_addr;
-> +	u64 pci_io_base;
-> +	u64 restart_addr;
-> +	u64 poweroff_addr;
-> +	u64 vgabios_addr;
-> +};
-> +
-> +extern struct efi_memory_map_loongson *loongson_memmap;
-> +extern struct loongson_system_configuration loongson_sysconf;
-> +#endif
-> diff --git a/arch/mips/include/asm/mach-loongson/loongson.h b/arch/mips/include/asm/mach-loongson/loongson.h
-> index b286534..5913ea0 100644
-> --- a/arch/mips/include/asm/mach-loongson/loongson.h
-> +++ b/arch/mips/include/asm/mach-loongson/loongson.h
-> @@ -24,8 +24,8 @@ extern void mach_prepare_reboot(void);
->   extern void mach_prepare_shutdown(void);
->
->   /* environment arguments from bootloader */
-> -extern unsigned long cpu_clock_freq;
-> -extern unsigned long memsize, highmemsize;
-> +extern u32 cpu_clock_freq;
-> +extern u32 memsize, highmemsize;
->
->   /* loongson-specific command line, env and memory initialization */
->   extern void __init prom_init_memory(void);
-> diff --git a/arch/mips/loongson/common/env.c b/arch/mips/loongson/common/env.c
-> index 0a18fcf..2fd8716 100644
-> --- a/arch/mips/loongson/common/env.c
-> +++ b/arch/mips/loongson/common/env.c
-> @@ -18,29 +18,30 @@
->    * option) any later version.
->    */
->   #include <linux/module.h>
-> -
->   #include <asm/bootinfo.h>
-> -
->   #include <loongson.h>
-> +#include <boot_param.h>
->
-> -unsigned long cpu_clock_freq;
-> +u32 cpu_clock_freq;
->   EXPORT_SYMBOL(cpu_clock_freq);
-> -unsigned long memsize, highmemsize;
-> +struct efi_memory_map_loongson *loongson_memmap;
-> +struct loongson_system_configuration loongson_sysconf;
->
->   #define parse_even_earlier(res, option, p)				\
->   do {									\
->   	unsigned int tmp __maybe_unused;				\
->   									\
->   	if (strncmp(option, (char *)p, strlen(option)) == 0)		\
-> -		tmp = strict_strtol((char *)p + strlen(option"="), 10, &res); \
-> +		tmp = kstrtou32((char *)p + strlen(option"="), 10, &res); \
->   } while (0)
->
->   void __init prom_init_env(void)
->   {
->   	/* pmon passes arguments in 32bit pointers */
-> -	int *_prom_envp;
-> -	unsigned long bus_clock;
->   	unsigned int processor_id;
-> +
-> +#ifndef CONFIG_LEFI_FIRMWARE_INTERFACE
-> +	int *_prom_envp;
->   	long l;
->
->   	/* firmware arguments are initialized in head.S */
-> @@ -48,7 +49,6 @@ void __init prom_init_env(void)
->
->   	l = (long)*_prom_envp;
->   	while (l != 0) {
-> -		parse_even_earlier(bus_clock, "busclock", l);
->   		parse_even_earlier(cpu_clock_freq, "cpuclock", l);
->   		parse_even_earlier(memsize, "memsize", l);
->   		parse_even_earlier(highmemsize, "highmemsize", l);
-> @@ -57,8 +57,43 @@ void __init prom_init_env(void)
->   	}
->   	if (memsize == 0)
->   		memsize = 256;
-> -	if (bus_clock == 0)
-> -		bus_clock = 66000000;
-> +	pr_info("memsize=%ld, highmemsize=%ld\n", memsize, highmemsize);
 
-The build breaks here for Loongson 2 due to {,high}memsize now being u32:
+Aside from the two Loongson 2 breakages, I think this is looking OK now, 
+so once you have fixed both of them you can add:
 
-arch/mips/loongson/common/env.c: In function 'prom_init_env':
-arch/mips/loongson/common/env.c:60:2: error: format '%ld' expects 
-argument of type 'long int', but argument 2 has type 'u32' [-Werror=format=]
-   pr_info("memsize=%ld, highmemsize=%ld\n", memsize, highmemsize);
-   ^
-arch/mips/loongson/common/env.c:60:2: error: format '%ld' expects 
-argument of type 'long int', but argument 3 has type 'u32' [-Werror=format=]
-cc1: all warnings being treated as errors
+Tested-by: Alex Smith <alex.smith@imgtec.com>
+Reviewed-by: Alex Smith <alex.smith@imgtec.com>
+
+for the series.
 
 Thanks,
 Alex
 
-> +#else
-> +	struct boot_params *boot_p;
-> +	struct loongson_params *loongson_p;
-> +	struct efi_cpuinfo_loongson *ecpu;
-> +	struct irq_source_routing_table *eirq_source;
-> +
-> +	/* firmware arguments are initialized in head.S */
-> +	boot_p = (struct boot_params *)fw_arg2;
-> +	loongson_p = &(boot_p->efi.smbios.lp);
-> +
-> +	ecpu = (struct efi_cpuinfo_loongson *)
-> +		((u64)loongson_p + loongson_p->cpu_offset);
-> +	eirq_source = (struct irq_source_routing_table *)
-> +		((u64)loongson_p + loongson_p->irq_offset);
-> +	loongson_memmap = (struct efi_memory_map_loongson *)
-> +		((u64)loongson_p + loongson_p->memory_offset);
-> +
-> +	cpu_clock_freq = ecpu->cpu_clock_freq;
-> +	loongson_sysconf.cputype = ecpu->cputype;
-> +	loongson_sysconf.nr_cpus = ecpu->nr_cpus;
-> +	if (ecpu->nr_cpus > NR_CPUS || ecpu->nr_cpus == 0)
-> +		loongson_sysconf.nr_cpus = NR_CPUS;
-> +
-> +	loongson_sysconf.pci_mem_start_addr = eirq_source->pci_mem_start_addr;
-> +	loongson_sysconf.pci_mem_end_addr = eirq_source->pci_mem_end_addr;
-> +	loongson_sysconf.pci_io_base = eirq_source->pci_io_start_addr;
-> +
-> +	loongson_sysconf.restart_addr = boot_p->reset_system.ResetWarm;
-> +	loongson_sysconf.poweroff_addr = boot_p->reset_system.Shutdown;
-> +
-> +	loongson_sysconf.ht_control_base = 0x90000EFDFB000000;
-> +	loongson_sysconf.vgabios_addr = boot_p->efi.smbios.vga_bios;
-> +	pr_debug("Shutdown Addr: %llx, Restart Addr: %llx, VBIOS Addr: %llx\n",
-> +		loongson_sysconf.poweroff_addr, loongson_sysconf.restart_addr,
-> +		loongson_sysconf.vgabios_addr);
-> +#endif
->   	if (cpu_clock_freq == 0) {
->   		processor_id = (&current_cpu_data)->processor_id;
->   		switch (processor_id & PRID_REV_MASK) {
-> @@ -68,12 +103,13 @@ void __init prom_init_env(void)
->   		case PRID_REV_LOONGSON2F:
->   			cpu_clock_freq = 797000000;
->   			break;
-> +		case PRID_REV_LOONGSON3A:
-> +			cpu_clock_freq = 900000000;
-> +			break;
->   		default:
->   			cpu_clock_freq = 100000000;
->   			break;
->   		}
->   	}
-> -
-> -	pr_info("busclock=%ld, cpuclock=%ld, memsize=%ld, highmemsize=%ld\n",
-> -		bus_clock, cpu_clock_freq, memsize, highmemsize);
-> +	pr_info("CpuClock = %u\n", cpu_clock_freq);
->   }
-> diff --git a/arch/mips/loongson/common/init.c b/arch/mips/loongson/common/init.c
-> index ae7af1f..81ba3b4 100644
-> --- a/arch/mips/loongson/common/init.c
-> +++ b/arch/mips/loongson/common/init.c
-> @@ -17,10 +17,6 @@ unsigned long __maybe_unused _loongson_addrwincfg_base;
->
->   void __init prom_init(void)
->   {
-> -	/* init base address of io space */
-> -	set_io_port_base((unsigned long)
-> -		ioremap(LOONGSON_PCIIO_BASE, LOONGSON_PCIIO_SIZE));
-> -
->   #ifdef CONFIG_CPU_SUPPORTS_ADDRWINCFG
->   	_loongson_addrwincfg_base = (unsigned long)
->   		ioremap(LOONGSON_ADDRWINCFG_BASE, LOONGSON_ADDRWINCFG_SIZE);
-> @@ -28,6 +24,11 @@ void __init prom_init(void)
->
->   	prom_init_cmdline();
->   	prom_init_env();
-> +
-> +	/* init base address of io space */
-> +	set_io_port_base((unsigned long)
-> +		ioremap(LOONGSON_PCIIO_BASE, LOONGSON_PCIIO_SIZE));
-> +
->   	prom_init_memory();
->
->   	/*init the uart base address */
-> diff --git a/arch/mips/loongson/common/mem.c b/arch/mips/loongson/common/mem.c
-> index 8626a42..b01d524 100644
-> --- a/arch/mips/loongson/common/mem.c
-> +++ b/arch/mips/loongson/common/mem.c
-> @@ -11,9 +11,14 @@
->   #include <asm/bootinfo.h>
->
->   #include <loongson.h>
-> +#include <boot_param.h>
->   #include <mem.h>
->   #include <pci.h>
->
-> +#ifndef CONFIG_LEFI_FIRMWARE_INTERFACE
-> +
-> +u32 memsize, highmemsize;
-> +
->   void __init prom_init_memory(void)
->   {
->   	add_memory_region(0x0, (memsize << 20), BOOT_MEM_RAM);
-> @@ -49,6 +54,43 @@ void __init prom_init_memory(void)
->   #endif /* !CONFIG_64BIT */
->   }
->
-> +#else /* CONFIG_LEFI_FIRMWARE_INTERFACE */
-> +
-> +void __init prom_init_memory(void)
-> +{
-> +	int i;
-> +	u32 node_id;
-> +	u32 mem_type;
-> +
-> +	/* parse memory information */
-> +	for (i = 0; i < loongson_memmap->nr_map; i++) {
-> +		node_id = loongson_memmap->map[i].node_id;
-> +		mem_type = loongson_memmap->map[i].mem_type;
-> +
-> +		if (node_id == 0) {
-> +			switch (mem_type) {
-> +			case SYSTEM_RAM_LOW:
-> +				add_memory_region(loongson_memmap->map[i].mem_start,
-> +					(u64)loongson_memmap->map[i].mem_size << 20,
-> +					BOOT_MEM_RAM);
-> +				break;
-> +			case SYSTEM_RAM_HIGH:
-> +				add_memory_region(loongson_memmap->map[i].mem_start,
-> +					(u64)loongson_memmap->map[i].mem_size << 20,
-> +					BOOT_MEM_RAM);
-> +				break;
-> +			case MEM_RESERVED:
-> +				add_memory_region(loongson_memmap->map[i].mem_start,
-> +					(u64)loongson_memmap->map[i].mem_size << 20,
-> +					BOOT_MEM_RESERVED);
-> +				break;
-> +			}
-> +		}
-> +	}
-> +}
-> +
-> +#endif /* CONFIG_LEFI_FIRMWARE_INTERFACE */
-> +
->   /* override of arch/mips/mm/cache.c: __uncached_access */
->   int __uncached_access(struct file *file, unsigned long addr)
->   {
-> diff --git a/arch/mips/loongson/common/pci.c b/arch/mips/loongson/common/pci.c
-> index fa77844..003ab4e 100644
-> --- a/arch/mips/loongson/common/pci.c
-> +++ b/arch/mips/loongson/common/pci.c
-> @@ -11,6 +11,7 @@
->
->   #include <pci.h>
->   #include <loongson.h>
-> +#include <boot_param.h>
->
->   static struct resource loongson_pci_mem_resource = {
->   	.name	= "pci memory space",
-> @@ -82,7 +83,10 @@ static int __init pcibios_init(void)
->   	setup_pcimap();
->
->   	loongson_pci_controller.io_map_base = mips_io_port_base;
-> -
-> +#ifdef CONFIG_LEFI_FIRMWARE_INTERFACE
-> +	loongson_pci_mem_resource.start = loongson_sysconf.pci_mem_start_addr;
-> +	loongson_pci_mem_resource.end = loongson_sysconf.pci_mem_end_addr;
-> +#endif
->   	register_pci_controller(&loongson_pci_controller);
->
->   	return 0;
-> diff --git a/arch/mips/loongson/common/reset.c b/arch/mips/loongson/common/reset.c
-> index 65bfbb5..a60715e 100644
-> --- a/arch/mips/loongson/common/reset.c
-> +++ b/arch/mips/loongson/common/reset.c
-> @@ -16,6 +16,7 @@
->   #include <asm/reboot.h>
->
->   #include <loongson.h>
-> +#include <boot_param.h>
->
->   static inline void loongson_reboot(void)
->   {
-> @@ -37,17 +38,37 @@ static inline void loongson_reboot(void)
->
->   static void loongson_restart(char *command)
->   {
-> +#ifndef CONFIG_LEFI_FIRMWARE_INTERFACE
->   	/* do preparation for reboot */
->   	mach_prepare_reboot();
->
->   	/* reboot via jumping to boot base address */
->   	loongson_reboot();
-> +#else
-> +	void (*fw_restart)(void) = (void *)loongson_sysconf.restart_addr;
-> +
-> +	fw_restart();
-> +	while (1) {
-> +		if (cpu_wait)
-> +			cpu_wait();
-> +	}
-> +#endif
->   }
->
->   static void loongson_poweroff(void)
->   {
-> +#ifndef CONFIG_LEFI_FIRMWARE_INTERFACE
->   	mach_prepare_shutdown();
->   	unreachable();
-> +#else
-> +	void (*fw_poweroff)(void) = (void *)loongson_sysconf.poweroff_addr;
-> +
-> +	fw_poweroff();
-> +	while (1) {
-> +		if (cpu_wait)
-> +			cpu_wait();
-> +	}
-> +#endif
->   }
->
->   static void loongson_halt(void)
->
+> ---
+>   arch/mips/Kconfig                                  |   29 ++-
+>   arch/mips/configs/loongson3_defconfig              |  344 ++++++++++++++++
+>   arch/mips/include/asm/addrspace.h                  |    2 +
+>   arch/mips/include/asm/bootinfo.h                   |   24 +-
+>   arch/mips/include/asm/cpu-type.h                   |    4 +
+>   arch/mips/include/asm/cpu.h                        |    9 +-
+>   arch/mips/include/asm/dma-mapping.h                |    5 +
+>   arch/mips/include/asm/mach-loongson/boot_param.h   |  159 +++++++
+>   .../mips/include/asm/mach-loongson/dma-coherence.h |   22 +-
+>   arch/mips/include/asm/mach-loongson/irq.h          |   44 ++
+>   arch/mips/include/asm/mach-loongson/loongson.h     |   28 +-
+>   arch/mips/include/asm/mach-loongson/machine.h      |    6 +
+>   arch/mips/include/asm/mach-loongson/pci.h          |    5 +
+>   arch/mips/include/asm/mach-loongson/spaces.h       |   13 +
+>   arch/mips/include/asm/module.h                     |    2 +
+>   arch/mips/include/asm/pgtable-bits.h               |    9 +
+>   arch/mips/include/asm/smp.h                        |    1 +
+>   arch/mips/kernel/cpu-probe.c                       |   16 +-
+>   arch/mips/loongson/Kconfig                         |   47 +++
+>   arch/mips/loongson/Makefile                        |    6 +
+>   arch/mips/loongson/Platform                        |    1 +
+>   arch/mips/loongson/common/Makefile                 |    5 +
+>   arch/mips/loongson/common/dma-swiotlb.c            |  137 ++++++
+>   arch/mips/loongson/common/env.c                    |   62 +++-
+>   arch/mips/loongson/common/init.c                   |   12 +-
+>   arch/mips/loongson/common/machtype.c               |    4 +
+>   arch/mips/loongson/common/mem.c                    |   42 ++
+>   arch/mips/loongson/common/pci.c                    |    6 +-
+>   arch/mips/loongson/common/reset.c                  |   21 +
+>   arch/mips/loongson/common/serial.c                 |   26 +-
+>   arch/mips/loongson/common/setup.c                  |    8 +-
+>   arch/mips/loongson/common/uart_base.c              |    9 +-
+>   arch/mips/loongson/loongson-3/Makefile             |    6 +
+>   arch/mips/loongson/loongson-3/irq.c                |  125 ++++++
+>   arch/mips/loongson/loongson-3/smp.c                |  434 ++++++++++++++++++++
+>   arch/mips/loongson/loongson-3/smp.h                |   29 ++
+>   arch/mips/mm/c-r4k.c                               |   59 +++
+>   arch/mips/mm/tlb-r4k.c                             |    5 +-
+>   arch/mips/mm/tlbex.c                               |    1 +
+>   arch/mips/pci/Makefile                             |    1 +
+>   arch/mips/pci/fixup-loongson3.c                    |   66 +++
+>   arch/mips/pci/ops-loongson3.c                      |  101 +++++
+>   42 files changed, 1873 insertions(+), 62 deletions(-)
+>   create mode 100644 arch/mips/configs/loongson3_defconfig
+>   create mode 100644 arch/mips/include/asm/mach-loongson/boot_param.h
+>   create mode 100644 arch/mips/include/asm/mach-loongson/irq.h
+>   create mode 100644 arch/mips/include/asm/mach-loongson/spaces.h
+>   create mode 100644 arch/mips/loongson/common/dma-swiotlb.c
+>   create mode 100644 arch/mips/loongson/loongson-3/Makefile
+>   create mode 100644 arch/mips/loongson/loongson-3/irq.c
+>   create mode 100644 arch/mips/loongson/loongson-3/smp.c
+>   create mode 100644 arch/mips/loongson/loongson-3/smp.h
+>   create mode 100644 arch/mips/pci/fixup-loongson3.c
+>   create mode 100644 arch/mips/pci/ops-loongson3.c
+> --
+> 1.7.7.3

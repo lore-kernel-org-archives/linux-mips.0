@@ -1,17 +1,16 @@
-Received: from multi.imgtec.com ([194.200.65.239]:41785 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:10839 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6816503AbaBLKuelF8PS (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 12 Feb 2014 11:50:34 +0100
-Message-ID: <52FB51EF.2060707@imgtec.com>
-Date: Wed, 12 Feb 2014 10:50:23 +0000
-From: Alex Smith <alex.smith@imgtec.com>
+        id S6817179AbaBML075moNn (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 13 Feb 2014 12:26:59 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH v3 01/15] mips: simplify FP context access
+Date: Thu, 13 Feb 2014 11:26:41 +0000
+Message-ID: <1392290801-17938-1-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1390836194-26286-2-git-send-email-paul.burton@imgtec.com>
+References: <1390836194-26286-2-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH V17 00/13] MIPS: Add Loongson-3 based machines support
-References: <1391834342-8177-1-git-send-email-chenhc@lemote.com>
-In-Reply-To: <1391834342-8177-1-git-send-email-chenhc@lemote.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Alex.Smith@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,211 +20,394 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Huacai Chen <chenhc@lemote.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <john@phrozen.org>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Aurelien Jarno <aurelien@aurel32.net>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Hongliang Tao <taohl@lemote.com>, Hua Yan <yanh@lemote.com>
-Message-ID: <20140212105023.F0vjcGooHtWyh3jsbi2STAcDsvVyHoKaS2vBOD4_ZWc@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20140213112641.Dqa1YpPKKOXhl_2D4KxVKRlLmPQgTKc-mSEXxHcssjc@z>
 
-On 08/02/14 04:38, Huacai Chen wrote:
-> This patchset is prepared for the next 3.15 release for Linux/MIPS.
-> Loongson-3 is a multi-core MIPS family CPU, it is MIPS64R2 compatible
-> and has the same IMP field (0x6300) as Loongson-2. These patches make
-> Linux kernel support Loongson-3 CPU and Loongson-3 based computers
-> (including Laptop, Mini-ITX, All-In-One PC, etc.)
->
-> V1 -> V2:
-> 1, Split the first patch to two patches, one is constant definition and
->     the other is CPU probing, cache initializing, etc.
-> 2, Remove Kconfig options in the first 9 patches and put all of them in
->     the 10th patch.
-> 3, Use "make savedefconfig" to generate the new default config file.
-> 4, Rework serial port support to use PORT and PORT_M macros.
-> 5, Fix some compile warnings.
->
-> V2 -> V3:
-> 1, Improve cache flushing code (use cpu_has_coherent_cache macro and
->     remove #ifdef clauses).
-> 2, Improve platform-specific code to correctly set driver's dma_mask/
->     coherent_dma_mask so no longer need workarounds for each driver (
->     SATA, graphics card, sound card, etc.)
-> 3, Use PCI quirk to provide vgabios and loongson3_read_bios() go away.
-> 4, Improve CPU hotplug code and split the poweroff failure related code
->     to another patch (this issue affect all MIPS CPU, not only Loongson).
-> 5, Some other small fixes.
->
-> V3 -> V4:
-> 1, Include swiotlb.h in radeon_ttm.c if SWIOTLB configured.
-> 2, Remove "Reviewed-by" in patches which are added by mistake.
-> 3, Sync the code to upstream.
->
-> V4 -> V5:
-> 1, Split the drm patch to three patches.
-> 2, Use platform-specific pincfgs to replace old alsa quirks.
->
-> V5 -> V6:
-> 1, For better management, two non-Loongson-specific patches are sent
->     independently.
-> 2, Introduce cpu_has_coherent_cache feature and split cache flushing
->     changes to a separate patch.
-> 3, Remove PRID_IMP_LOONGSON3 and use PRID_IMP_LOONGSON2 since they are
->     the same.
-> 4, Don't define RTC_ALWAYS_BCD for Loongson-3 since BCD format can be
->     checked by RTC_CONTROL at runtime.
-> 5, Don't modify dma-default.c for Loongson since it is unnecessary.
-> 6, Don't define SAREA_MAX since it is useless.
-> 7, Increase the default boost of internal mic for Lemote A1004.
-> 8, Fix a #ifdef issue in dma-coherence.h.
-> 9, Some other small fixes.
->
-> V6 -> V7:
-> 1, Fix boot failure when NR_CPUS is more than present cpus.
-> 2, Fix error messages after poweroff & reboot.
-> 3, Update the default config file.
-> 4, Sync the code to upstream.
->
-> V7 -> V8:
-> 1, Add WEAK_ORDERING/WEAK_REORDERING_BEYOND_LLSC for Loongson-3.
-> 2, Fix a deadlock of cpu-hotplug.
-> 3, Include swiotlb.h in arch-specific code to avoid driver modification.
-> 4, Remove the patch "drm: Handle io prot correctly for MIPS" since it
->     is already in upstream code.
-> 5, Remove the patch "ALSA: HDA: Make hda sound card usable for Loongson"
->     since it is already in upstream code.
-> 6, Use LZMA compression and do some adjustment of config file to reduce
->     kernel size.
->
-> V8 -> V9:
-> 1, Fix spurious IPI interrupt.
-> 2, remove __dev* attributes since CONFIG_HOTPLUG is going away as an option.
-> 3, Use dev_info() to print messages in fixup-loongson3.c.
-> 4, Update the default config file.
-> 5, Sync the code to upstream.
->
-> V9 -> V10:
-> 1, Rework "Introduce and use cpu_has_coherent_cache feature".
-> 2, Handle the case that System BIOS doesn't contain a VGA BIOS.
-> 3, Sync the code to upstream (mostly indentation adjustment).
->
-> V10 -> V11:
-> 1, Remove normal labels and useless nops in inline assembler.
-> 2, Sync the code to upstream (Prepared for 3.12).
->
-> V11 -> V12:
-> 1, Delete __cpuinit usage;
-> 2, Remove the third patch since it is contentious;
-> 3, Sync the code to upstream (Prepared for 3.13).
->
-> V12 -> V13:
-> 1, Rework addrspace.h and spaces.h;
-> 2, Move the modification of Platform from patch 1 to patch 12;
-> 3, Sync the code to upstream (the mips-for-linux-next branch, for 3.13).
->
-> V13 -> V14:
-> 1, Avoid spurious interrupt from serial port;
-> 2, Drop CONFIG_LOONGSON_BIGMEM and use CONFIG_SWIOTLB directly;
-> 3, Sync the code to upstream (the mips-for-linux-next branch, for 3.14).
->
-> V14 -> V15:
-> 1, Fix duplicate ARCH_SPARSEMEM_ENABLE in Kconfig.
->
-> V15 -> V16:
-> 1, Fix all coding style errors and most of warnings;
-> 2, Make dma address translation simple and elegant;
-> 3, Fix potential bugs in swiotlb code;
-> 4, Rename UEFI firmware interface to LEFI;
-> 5, Remove 32-bit kernel support temporarily;
-> 6, Some other small fixes (thanks to Aurelien Jarno).
->
-> V16 -> V17:
-> 1, Kconfig adjustment;
-> 2, Make some functions static;
-> 3, Capitalize macros in smp code;
-> 4, Make dma-swiotlb.c more simple;
-> 5, Some other small fixes (thanks to Aurelien Jarno and Alex Smith).
->
-> Huacai Chen(13):
->   MIPS: Loongson: Rename PRID_IMP_LOONGSON1 and PRID_IMP_LOONGSON2.
->   MIPS: Loongson: Add basic Loongson-3 definition.
->   MIPS: Loongson: Add basic Loongson-3 CPU support.
->   MIPS: Loongson 3: Add Lemote-3A machtypes definition.
->   MIPS: Loongson: Add UEFI-like firmware interface (LEFI) support.
->   MIPS: Loongson 3: Add HT-linked PCI support.
->   MIPS: Loongson 3: Add IRQ init and dispatch support.
->   MIPS: Loongson 3: Add serial port support.
->   MIPS: Loongson: Add swiotlb to support big memory (>4GB).
->   MIPS: Loongson: Add Loongson-3 Kconfig options.
->   MIPS: Loongson 3: Add Loongson-3 SMP support.
->   MIPS: Loongson 3: Add CPU hotplug support.
->   MIPS: Loongson: Add a Loongson-3 default config file.
->
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
-> Signed-off-by: Hongliang Tao <taohl@lemote.com>
-> Signed-off-by: Hua Yan <yanh@lemote.com>
+This patch replaces the fpureg_t typedef with a "union fpureg" enabling
+easier access to 32 & 64 bit values. This allows the access macros used
+in cp1emu.c to be simplified somewhat. It will also make it easier to
+expand the width of the FP registers as will be done in a future
+patch in order to support the 128 bit registers introduced with MSA.
 
-Aside from the two Loongson 2 breakages, I think this is looking OK now, 
-so once you have fixed both of them you can add:
+No behavioural change is intended by this patch.
 
-Tested-by: Alex Smith <alex.smith@imgtec.com>
-Reviewed-by: Alex Smith <alex.smith@imgtec.com>
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Reviewed-by: Qais Yousef <qais.yousef@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+---
+Changes in v3:
+  - Fix the l_fmt case for __mips64 builds in fpu_emu.
 
-for the series.
+Changes in v2:
+  - Remove extraneous braces in SIFROMREG, SITOREG macros.
+---
+ arch/mips/include/asm/fpu.h         |  2 +-
+ arch/mips/include/asm/processor.h   | 31 ++++++++++++++++++++++++++---
+ arch/mips/kernel/ptrace.c           | 39 ++++++++++++++++---------------------
+ arch/mips/kernel/ptrace32.c         | 25 ++++++++----------------
+ arch/mips/math-emu/cp1emu.c         | 37 ++++++++++++++++++++++-------------
+ arch/mips/math-emu/kernel_linkage.c | 21 +++++++++++---------
+ 6 files changed, 90 insertions(+), 65 deletions(-)
 
-Thanks,
-Alex
-
-> ---
->   arch/mips/Kconfig                                  |   29 ++-
->   arch/mips/configs/loongson3_defconfig              |  344 ++++++++++++++++
->   arch/mips/include/asm/addrspace.h                  |    2 +
->   arch/mips/include/asm/bootinfo.h                   |   24 +-
->   arch/mips/include/asm/cpu-type.h                   |    4 +
->   arch/mips/include/asm/cpu.h                        |    9 +-
->   arch/mips/include/asm/dma-mapping.h                |    5 +
->   arch/mips/include/asm/mach-loongson/boot_param.h   |  159 +++++++
->   .../mips/include/asm/mach-loongson/dma-coherence.h |   22 +-
->   arch/mips/include/asm/mach-loongson/irq.h          |   44 ++
->   arch/mips/include/asm/mach-loongson/loongson.h     |   28 +-
->   arch/mips/include/asm/mach-loongson/machine.h      |    6 +
->   arch/mips/include/asm/mach-loongson/pci.h          |    5 +
->   arch/mips/include/asm/mach-loongson/spaces.h       |   13 +
->   arch/mips/include/asm/module.h                     |    2 +
->   arch/mips/include/asm/pgtable-bits.h               |    9 +
->   arch/mips/include/asm/smp.h                        |    1 +
->   arch/mips/kernel/cpu-probe.c                       |   16 +-
->   arch/mips/loongson/Kconfig                         |   47 +++
->   arch/mips/loongson/Makefile                        |    6 +
->   arch/mips/loongson/Platform                        |    1 +
->   arch/mips/loongson/common/Makefile                 |    5 +
->   arch/mips/loongson/common/dma-swiotlb.c            |  137 ++++++
->   arch/mips/loongson/common/env.c                    |   62 +++-
->   arch/mips/loongson/common/init.c                   |   12 +-
->   arch/mips/loongson/common/machtype.c               |    4 +
->   arch/mips/loongson/common/mem.c                    |   42 ++
->   arch/mips/loongson/common/pci.c                    |    6 +-
->   arch/mips/loongson/common/reset.c                  |   21 +
->   arch/mips/loongson/common/serial.c                 |   26 +-
->   arch/mips/loongson/common/setup.c                  |    8 +-
->   arch/mips/loongson/common/uart_base.c              |    9 +-
->   arch/mips/loongson/loongson-3/Makefile             |    6 +
->   arch/mips/loongson/loongson-3/irq.c                |  125 ++++++
->   arch/mips/loongson/loongson-3/smp.c                |  434 ++++++++++++++++++++
->   arch/mips/loongson/loongson-3/smp.h                |   29 ++
->   arch/mips/mm/c-r4k.c                               |   59 +++
->   arch/mips/mm/tlb-r4k.c                             |    5 +-
->   arch/mips/mm/tlbex.c                               |    1 +
->   arch/mips/pci/Makefile                             |    1 +
->   arch/mips/pci/fixup-loongson3.c                    |   66 +++
->   arch/mips/pci/ops-loongson3.c                      |  101 +++++
->   42 files changed, 1873 insertions(+), 62 deletions(-)
->   create mode 100644 arch/mips/configs/loongson3_defconfig
->   create mode 100644 arch/mips/include/asm/mach-loongson/boot_param.h
->   create mode 100644 arch/mips/include/asm/mach-loongson/irq.h
->   create mode 100644 arch/mips/include/asm/mach-loongson/spaces.h
->   create mode 100644 arch/mips/loongson/common/dma-swiotlb.c
->   create mode 100644 arch/mips/loongson/loongson-3/Makefile
->   create mode 100644 arch/mips/loongson/loongson-3/irq.c
->   create mode 100644 arch/mips/loongson/loongson-3/smp.c
->   create mode 100644 arch/mips/loongson/loongson-3/smp.h
->   create mode 100644 arch/mips/pci/fixup-loongson3.c
->   create mode 100644 arch/mips/pci/ops-loongson3.c
-> --
-> 1.7.7.3
+diff --git a/arch/mips/include/asm/fpu.h b/arch/mips/include/asm/fpu.h
+index cfe092f..8d57b71 100644
+--- a/arch/mips/include/asm/fpu.h
++++ b/arch/mips/include/asm/fpu.h
+@@ -178,7 +178,7 @@ static inline void restore_fp(struct task_struct *tsk)
+ 		_restore_fp(tsk);
+ }
+ 
+-static inline fpureg_t *get_fpu_regs(struct task_struct *tsk)
++static inline union fpureg *get_fpu_regs(struct task_struct *tsk)
+ {
+ 	if (tsk == current) {
+ 		preempt_disable();
+diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
+index 3605b84..49a61be 100644
+--- a/arch/mips/include/asm/processor.h
++++ b/arch/mips/include/asm/processor.h
+@@ -96,8 +96,33 @@ extern unsigned int vced_count, vcei_count;
+ 
+ 
+ #define NUM_FPU_REGS	32
++#define FPU_REG_WIDTH	64
+ 
+-typedef __u64 fpureg_t;
++union fpureg {
++	__u32	val32[FPU_REG_WIDTH / 32];
++	__u64	val64[FPU_REG_WIDTH / 64];
++};
++
++#ifdef CONFIG_CPU_LITTLE_ENDIAN
++# define FPR_IDX(width, idx)	(idx)
++#else
++# define FPR_IDX(width, idx)	((FPU_REG_WIDTH / (width)) - 1 - (idx))
++#endif
++
++#define BUILD_FPR_ACCESS(width) \
++static inline u##width get_fpr##width(union fpureg *fpr, unsigned idx)	\
++{									\
++	return fpr->val##width[FPR_IDX(width, idx)];			\
++}									\
++									\
++static inline void set_fpr##width(union fpureg *fpr, unsigned idx,	\
++				  u##width val)				\
++{									\
++	fpr->val##width[FPR_IDX(width, idx)] = val;			\
++}
++
++BUILD_FPR_ACCESS(32)
++BUILD_FPR_ACCESS(64)
+ 
+ /*
+  * It would be nice to add some more fields for emulator statistics, but there
+@@ -107,7 +132,7 @@ typedef __u64 fpureg_t;
+  */
+ 
+ struct mips_fpu_struct {
+-	fpureg_t	fpr[NUM_FPU_REGS];
++	union fpureg	fpr[NUM_FPU_REGS];
+ 	unsigned int	fcr31;
+ };
+ 
+@@ -284,7 +309,7 @@ struct thread_struct {
+ 	 * Saved FPU/FPU emulator stuff				\
+ 	 */							\
+ 	.fpu			= {				\
+-		.fpr		= {0,},				\
++		.fpr		= {{{0,},},},			\
+ 		.fcr31		= 0,				\
+ 	},							\
+ 	/*							\
+diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
+index 7da9b76..624773e 100644
+--- a/arch/mips/kernel/ptrace.c
++++ b/arch/mips/kernel/ptrace.c
+@@ -120,9 +120,10 @@ int ptrace_getfpregs(struct task_struct *child, __u32 __user *data)
+ 		return -EIO;
+ 
+ 	if (tsk_used_math(child)) {
+-		fpureg_t *fregs = get_fpu_regs(child);
++		union fpureg *fregs = get_fpu_regs(child);
+ 		for (i = 0; i < 32; i++)
+-			__put_user(fregs[i], i + (__u64 __user *) data);
++			__put_user(get_fpr64(&fregs[i], 0),
++				   i + (__u64 __user *)data);
+ 	} else {
+ 		for (i = 0; i < 32; i++)
+ 			__put_user((__u64) -1, i + (__u64 __user *) data);
+@@ -158,7 +159,8 @@ int ptrace_getfpregs(struct task_struct *child, __u32 __user *data)
+ 
+ int ptrace_setfpregs(struct task_struct *child, __u32 __user *data)
+ {
+-	fpureg_t *fregs;
++	union fpureg *fregs;
++	u64 fpr_val;
+ 	int i;
+ 
+ 	if (!access_ok(VERIFY_READ, data, 33 * 8))
+@@ -166,8 +168,10 @@ int ptrace_setfpregs(struct task_struct *child, __u32 __user *data)
+ 
+ 	fregs = get_fpu_regs(child);
+ 
+-	for (i = 0; i < 32; i++)
+-		__get_user(fregs[i], i + (__u64 __user *) data);
++	for (i = 0; i < 32; i++) {
++		__get_user(fpr_val, i + (__u64 __user *)data);
++		set_fpr64(&fregs[i], 0, fpr_val);
++	}
+ 
+ 	__get_user(child->thread.fpu.fcr31, data + 64);
+ 
+@@ -408,7 +412,7 @@ long arch_ptrace(struct task_struct *child, long request,
+ 	/* Read the word at location addr in the USER area. */
+ 	case PTRACE_PEEKUSR: {
+ 		struct pt_regs *regs;
+-		fpureg_t *fregs;
++		union fpureg *fregs;
+ 		unsigned long tmp = 0;
+ 
+ 		regs = task_pt_regs(child);
+@@ -433,14 +437,12 @@ long arch_ptrace(struct task_struct *child, long request,
+ 				 * order bits of the values stored in the even
+ 				 * registers - unless we're using r2k_switch.S.
+ 				 */
+-				if (addr & 1)
+-					tmp = fregs[(addr & ~1) - 32] >> 32;
+-				else
+-					tmp = fregs[addr - 32];
++				tmp = get_fpr32(&fregs[(addr & ~1) - FPR_BASE],
++						addr & 1);
+ 				break;
+ 			}
+ #endif
+-			tmp = fregs[addr - FPR_BASE];
++			tmp = get_fpr32(&fregs[addr - FPR_BASE], 0);
+ 			break;
+ 		case PC:
+ 			tmp = regs->cp0_epc;
+@@ -548,7 +550,7 @@ long arch_ptrace(struct task_struct *child, long request,
+ 			regs->regs[addr] = data;
+ 			break;
+ 		case FPR_BASE ... FPR_BASE + 31: {
+-			fpureg_t *fregs = get_fpu_regs(child);
++			union fpureg *fregs = get_fpu_regs(child);
+ 
+ 			if (!tsk_used_math(child)) {
+ 				/* FP not yet used  */
+@@ -563,19 +565,12 @@ long arch_ptrace(struct task_struct *child, long request,
+ 				 * order bits of the values stored in the even
+ 				 * registers - unless we're using r2k_switch.S.
+ 				 */
+-				if (addr & 1) {
+-					fregs[(addr & ~1) - FPR_BASE] &=
+-						0xffffffff;
+-					fregs[(addr & ~1) - FPR_BASE] |=
+-						((u64)data) << 32;
+-				} else {
+-					fregs[addr - FPR_BASE] &= ~0xffffffffLL;
+-					fregs[addr - FPR_BASE] |= data;
+-				}
++				set_fpr32(&fregs[(addr & ~1) - FPR_BASE],
++					  addr & 1, data);
+ 				break;
+ 			}
+ #endif
+-			fregs[addr - FPR_BASE] = data;
++			set_fpr64(&fregs[addr - FPR_BASE], 0, data);
+ 			break;
+ 		}
+ 		case PC:
+diff --git a/arch/mips/kernel/ptrace32.c b/arch/mips/kernel/ptrace32.c
+index b8aa2dd..c394d8f 100644
+--- a/arch/mips/kernel/ptrace32.c
++++ b/arch/mips/kernel/ptrace32.c
+@@ -80,7 +80,7 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+ 	/* Read the word at location addr in the USER area. */
+ 	case PTRACE_PEEKUSR: {
+ 		struct pt_regs *regs;
+-		fpureg_t *fregs;
++		union fpureg *fregs;
+ 		unsigned int tmp;
+ 
+ 		regs = task_pt_regs(child);
+@@ -103,13 +103,11 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+ 				 * order bits of the values stored in the even
+ 				 * registers - unless we're using r2k_switch.S.
+ 				 */
+-				if (addr & 1)
+-					tmp = fregs[(addr & ~1) - 32] >> 32;
+-				else
+-					tmp = fregs[addr - 32];
++				tmp = get_fpr32(&fregs[(addr & ~1) - FPR_BASE],
++						addr & 1);
+ 				break;
+ 			}
+-			tmp = fregs[addr - FPR_BASE];
++			tmp = get_fpr32(&fregs[addr - FPR_BASE], 0);
+ 			break;
+ 		case PC:
+ 			tmp = regs->cp0_epc;
+@@ -233,7 +231,7 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+ 			regs->regs[addr] = data;
+ 			break;
+ 		case FPR_BASE ... FPR_BASE + 31: {
+-			fpureg_t *fregs = get_fpu_regs(child);
++			union fpureg *fregs = get_fpu_regs(child);
+ 
+ 			if (!tsk_used_math(child)) {
+ 				/* FP not yet used  */
+@@ -247,18 +245,11 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+ 				 * order bits of the values stored in the even
+ 				 * registers - unless we're using r2k_switch.S.
+ 				 */
+-				if (addr & 1) {
+-					fregs[(addr & ~1) - FPR_BASE] &=
+-						0xffffffff;
+-					fregs[(addr & ~1) - FPR_BASE] |=
+-						((u64)data) << 32;
+-				} else {
+-					fregs[addr - FPR_BASE] &= ~0xffffffffLL;
+-					fregs[addr - FPR_BASE] |= data;
+-				}
++				set_fpr32(&fregs[(addr & ~1) - FPR_BASE],
++					  addr & 1, data);
+ 				break;
+ 			}
+-			fregs[addr - FPR_BASE] = data;
++			set_fpr64(&fregs[addr - FPR_BASE], 0, data);
+ 			break;
+ 		}
+ 		case PC:
+diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
+index 506925b..196cf1a 100644
+--- a/arch/mips/math-emu/cp1emu.c
++++ b/arch/mips/math-emu/cp1emu.c
+@@ -876,20 +876,28 @@ static inline int cop1_64bit(struct pt_regs *xcp)
+ #endif
+ }
+ 
+-#define SIFROMREG(si, x) ((si) = cop1_64bit(xcp) || !(x & 1) ? \
+-			(int)ctx->fpr[x] : (int)(ctx->fpr[x & ~1] >> 32))
++#define SIFROMREG(si, x) do {						\
++	if (cop1_64bit(xcp))						\
++		(si) = get_fpr32(&ctx->fpr[x], 0);			\
++	else								\
++		(si) = get_fpr32(&ctx->fpr[(x) & ~1], (x) & 1);		\
++} while (0)
+ 
+-#define SITOREG(si, x)	(ctx->fpr[x & ~(cop1_64bit(xcp) == 0)] = \
+-			cop1_64bit(xcp) || !(x & 1) ? \
+-			ctx->fpr[x & ~1] >> 32 << 32 | (u32)(si) : \
+-			ctx->fpr[x & ~1] << 32 >> 32 | (u64)(si) << 32)
++#define SITOREG(si, x) do {						\
++	if (cop1_64bit(xcp))						\
++		set_fpr32(&ctx->fpr[x], 0, si);				\
++	else								\
++		set_fpr32(&ctx->fpr[(x) & ~1], (x) & 1, si);		\
++} while (0)
+ 
+-#define SIFROMHREG(si, x)	((si) = (int)(ctx->fpr[x] >> 32))
+-#define SITOHREG(si, x)		(ctx->fpr[x] = \
+-				ctx->fpr[x] << 32 >> 32 | (u64)(si) << 32)
++#define SIFROMHREG(si, x)	((si) = get_fpr32(&ctx->fpr[x], 1))
++#define SITOHREG(si, x)		set_fpr32(&ctx->fpr[x], 1, si)
+ 
+-#define DIFROMREG(di, x) ((di) = ctx->fpr[x & ~(cop1_64bit(xcp) == 0)])
+-#define DITOREG(di, x)	(ctx->fpr[x & ~(cop1_64bit(xcp) == 0)] = (di))
++#define DIFROMREG(di, x) \
++	((di) = get_fpr64(&ctx->fpr[(x) & ~(cop1_64bit(xcp) == 0)], 0))
++
++#define DITOREG(di, x) \
++	set_fpr64(&ctx->fpr[(x) & ~(cop1_64bit(xcp) == 0)], 0, di)
+ 
+ #define SPFROMREG(sp, x) SIFROMREG((sp).bits, x)
+ #define SPTOREG(sp, x)	SITOREG((sp).bits, x)
+@@ -1960,15 +1968,18 @@ static int fpu_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
+ 
+ #if defined(__mips64)
+ 	case l_fmt:{
++		u64 bits;
++		DIFROMREG(bits, MIPSInst_FS(ir));
++
+ 		switch (MIPSInst_FUNC(ir)) {
+ 		case fcvts_op:
+ 			/* convert long to single precision real */
+-			rv.s = ieee754sp_flong(ctx->fpr[MIPSInst_FS(ir)]);
++			rv.s = ieee754sp_flong(bits);
+ 			rfmt = s_fmt;
+ 			goto copcsr;
+ 		case fcvtd_op:
+ 			/* convert long to double precision real */
+-			rv.d = ieee754dp_flong(ctx->fpr[MIPSInst_FS(ir)]);
++			rv.d = ieee754dp_flong(bits);
+ 			rfmt = d_fmt;
+ 			goto copcsr;
+ 		default:
+diff --git a/arch/mips/math-emu/kernel_linkage.c b/arch/mips/math-emu/kernel_linkage.c
+index 3aeae07..9b46213 100644
+--- a/arch/mips/math-emu/kernel_linkage.c
++++ b/arch/mips/math-emu/kernel_linkage.c
+@@ -40,9 +40,8 @@ void fpu_emulator_init_fpu(void)
+ 	}
+ 
+ 	current->thread.fpu.fcr31 = 0;
+-	for (i = 0; i < 32; i++) {
+-		current->thread.fpu.fpr[i] = SIGNALLING_NAN;
+-	}
++	for (i = 0; i < 32; i++)
++		set_fpr64(&current->thread.fpu.fpr[i], 0, SIGNALLING_NAN);
+ }
+ 
+ 
+@@ -59,7 +58,8 @@ int fpu_emulator_save_context(struct sigcontext __user *sc)
+ 
+ 	for (i = 0; i < 32; i++) {
+ 		err |=
+-		    __put_user(current->thread.fpu.fpr[i], &sc->sc_fpregs[i]);
++		    __put_user(get_fpr64(&current->thread.fpu.fpr[i], 0),
++			       &sc->sc_fpregs[i]);
+ 	}
+ 	err |= __put_user(current->thread.fpu.fcr31, &sc->sc_fpc_csr);
+ 
+@@ -70,10 +70,11 @@ int fpu_emulator_restore_context(struct sigcontext __user *sc)
+ {
+ 	int i;
+ 	int err = 0;
++	u64 fpr_val;
+ 
+ 	for (i = 0; i < 32; i++) {
+-		err |=
+-		    __get_user(current->thread.fpu.fpr[i], &sc->sc_fpregs[i]);
++		err |= __get_user(fpr_val, &sc->sc_fpregs[i]);
++		set_fpr64(&current->thread.fpu.fpr[i], 0, fpr_val);
+ 	}
+ 	err |= __get_user(current->thread.fpu.fcr31, &sc->sc_fpc_csr);
+ 
+@@ -93,7 +94,8 @@ int fpu_emulator_save_context32(struct sigcontext32 __user *sc)
+ 
+ 	for (i = 0; i < 32; i += inc) {
+ 		err |=
+-		    __put_user(current->thread.fpu.fpr[i], &sc->sc_fpregs[i]);
++		    __put_user(get_fpr64(&current->thread.fpu.fpr[i], 0),
++			       &sc->sc_fpregs[i]);
+ 	}
+ 	err |= __put_user(current->thread.fpu.fcr31, &sc->sc_fpc_csr);
+ 
+@@ -105,10 +107,11 @@ int fpu_emulator_restore_context32(struct sigcontext32 __user *sc)
+ 	int i;
+ 	int err = 0;
+ 	int inc = test_thread_flag(TIF_32BIT_FPREGS) ? 2 : 1;
++	u64 fpr_val;
+ 
+ 	for (i = 0; i < 32; i += inc) {
+-		err |=
+-		    __get_user(current->thread.fpu.fpr[i], &sc->sc_fpregs[i]);
++		err |= __get_user(fpr_val, &sc->sc_fpregs[i]);
++		set_fpr64(&current->thread.fpu.fpr[i], 0, fpr_val);
+ 	}
+ 	err |= __get_user(current->thread.fpu.fcr31, &sc->sc_fpc_csr);
+ 
+-- 
+1.8.5.3

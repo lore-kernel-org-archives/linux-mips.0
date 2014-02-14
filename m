@@ -1,18 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:10989 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:53403 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6867080AbaBMRaoIINt- (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 13 Feb 2014 18:30:44 +0100
-Message-ID: <52FD0131.9040304@imgtec.com>
-Date: Thu, 13 Feb 2014 17:30:25 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        id S6869161AbaBNRznMnHgb (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 14 Feb 2014 18:55:43 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: mark O32+FP64 experimental for now
+Date: Fri, 14 Feb 2014 17:55:18 +0000
+Message-ID: <1392400518-24928-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] samples/seccomp/Makefile: Do not build tests if cross-compiling
- for MIPS
-References: <1392312460-24902-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1392312460-24902-1-git-send-email-markos.chandras@imgtec.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,68 +19,70 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20140213173025.DmquMKOsxqfmZnz_pANBhoncWhtOvlCpPr7VBaMkTMk@z>
+Cc: ralf@linux-mips.org, Paul Burton <paul.burton@imgtec.com>, Matthew Fortune <matthew.fortune@imgtec.com>
+Message-ID: <20140214175518.1btbNfZAm2W3wn4bfAEKSlMEVMwpouKigqc7rUdaB6U@z>
 
-On 02/13/2014 05:27 PM, Markos Chandras wrote:
-> The Makefile is designed to use the host toolchain so it may be
-> unsafe to build the tests if the kernel has been configured and built
-> for another architecture. This fixes a build problem when the kernel has
-> been configured and built for the MIPS architecture but the host is
-> not MIPS (cross-compiled). The MIPS syscalls are only defined
-> if one of the following is true:
->
-> 1) _MIPS_SIM == _MIPS_SIM_ABI64
-> 2) _MIPS_SIM == _MIPS_SIM_ABI32
-> 3) _MIPS_SIM == _MIPS_SIM_NABI32
->
-> Of course, none of these make sense on a non-MIPS toolchain and the
-> following build problem occurs when building on a non-MIPS host.
->
-> linux/usr/include/linux/kexec.h:50:
-> userspace cannot reference function or variable defined in the kernel
-> samples/seccomp/bpf-direct.c: In function ‘emulator’:
-> samples/seccomp/bpf-direct.c:76:17: error:
-> ‘__NR_write’ undeclared (first use in this function)
->
-> Cc: linux-next@vger.kernel.org
-> Cc: linux-kernel@linux-mips.org
-> Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
-> This problem is only reproducible on the linux-next tree at the moment
-> ---
->   samples/seccomp/Makefile | 8 +++++++-
->   1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/samples/seccomp/Makefile b/samples/seccomp/Makefile
-> index 7203e66..f6bda1c 100644
-> --- a/samples/seccomp/Makefile
-> +++ b/samples/seccomp/Makefile
-> @@ -17,9 +17,14 @@ HOSTCFLAGS_bpf-direct.o += -I$(objtree)/usr/include
->   HOSTCFLAGS_bpf-direct.o += -idirafter $(objtree)/include
->   bpf-direct-objs := bpf-direct.o
->
-> +# MIPS system calls are defined based on the -mabi that is passed
-> +# to the toolchain which may or may not be a valid option
-> +# for the host toolchain. So disable tests if target architecture
-> +# is mips but the host isn't.
-> +ifndef CONFIG_MIPS
->   # Try to match the kernel target.
-> -ifndef CONFIG_64BIT
->   ifndef CROSS_COMPILE
-> +ifndef CONFIG_64BIT
->
->   # s390 has -m31 flag to build 31 bit binaries
->   ifndef CONFIG_S390
-> @@ -40,3 +45,4 @@ endif
->
->   # Tell kbuild to always build the programs
->   always := $(hostprogs-y)
-> +endif
->
+Commit 597ce1723e0f "MIPS: Support for 64-bit FP with O32 binaries"
+introduced support for setting Status.FR=1 for O32 binaries with the
+EF_MIPS_FP64 ELF header flag set. Whilst this flag is currently
+supported by binutils it does introduce an ABI break within userland.
+Objects built with EF_MIPS_FP64 cannot be safely linked with those built
+without it since code in either object may assume behaviour specific to
+a value of FR.
 
-CC'ing the correct linux-kernel address. Sorry about that.
+More recently there has been discussion around avoiding further
+fragmentation of the O32 ABI whilst still allowing the use of FR=1 and
+features such as MSA which depend upon it. Details of the plan to allow
+this are still being worked on, and whilst the kernel will need the
+ability to handle FR=1 with O32 tasks it is unclear what else it may
+need to provide to a userland which seeks to avoid another ABI break. In
+order to prevent the proliferation of userland which may rely upon the
+current EF_MIPS_FP64 behaviour this patch marks the kernel support for
+it experimental & disables it by default. Under current proposals it is
+likely that this support can simply be enabled again later, but possibly
+after the introduction of further interfaces with userland and support
+for the MIPS R5 UFR feature.
 
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Cc: Matthew Fortune <matthew.fortune@imgtec.com>
+---
+Ralf: any chance this could get into v3.14 where the fp64 support is
+introduced? Apologies for this, discussion around the ABI plan has
+happened only very recently.
+---
+ arch/mips/Kconfig | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 6f78eb3..a37c21f 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2388,9 +2388,8 @@ config CC_STACKPROTECTOR
+ 	  This feature requires gcc version 4.2 or above.
+ 
+ config MIPS_O32_FP64_SUPPORT
+-	bool "Support for O32 binaries using 64-bit FP"
++	bool "Support for O32 binaries using 64-bit FP (EXPERIMENTAL)"
+ 	depends on 32BIT || MIPS32_O32
+-	default y
+ 	help
+ 	  When this is enabled, the kernel will support use of 64-bit floating
+ 	  point registers with binaries using the O32 ABI along with the
+@@ -2402,7 +2401,14 @@ config MIPS_O32_FP64_SUPPORT
+ 	  of your kernel & potentially improve FP emulation performance by
+ 	  saying N here.
+ 
+-	  If unsure, say Y.
++	  Although binutils currently supports use of this flag the details
++	  concerning its effect upon the O32 ABI in userland are still being
++	  worked on. In order to avoid userland becoming dependant upon current
++	  behaviour before the details have been finalised, this option should
++	  be considered experimental and only enabled by those working upon
++	  said details.
++
++	  If unsure, say N.
+ 
+ config USE_OF
+ 	bool
 -- 
-markos
+1.8.5.3

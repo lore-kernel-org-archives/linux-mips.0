@@ -1,14 +1,14 @@
-Received: from multi.imgtec.com ([194.200.65.239]:53403 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:13491 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6869161AbaBNRznMnHgb (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 14 Feb 2014 18:55:43 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] MIPS: mark O32+FP64 experimental for now
-Date: Fri, 14 Feb 2014 17:55:18 +0000
-Message-ID: <1392400518-24928-1-git-send-email-paul.burton@imgtec.com>
+        id S6869250AbaBQOtrfBdUG (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 17 Feb 2014 15:49:47 +0100
+From: Alex Smith <alex.smith@imgtec.com>
+Subject: [PATCH] MIPS: O32/32-bit: Fix bug which can cause incorrect system call restarts
+Date: Mon, 17 Feb 2014 14:49:17 +0000
+Message-ID: <1392648557-7174-1-git-send-email-alex.smith@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Return-Path: <Alex.Smith@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,71 +18,94 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: ralf@linux-mips.org, Paul Burton <paul.burton@imgtec.com>, Matthew Fortune <matthew.fortune@imgtec.com>
-Message-ID: <20140214175518.1btbNfZAm2W3wn4bfAEKSlMEVMwpouKigqc7rUdaB6U@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Alex Smith <alex.smith@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org[3.13]
+Message-ID: <20140217144917.--NqN1MkjdkR7eaCuQkHB56F2G3j-JYMlbQHeyeRHXw@z>
 
-Commit 597ce1723e0f "MIPS: Support for 64-bit FP with O32 binaries"
-introduced support for setting Status.FR=1 for O32 binaries with the
-EF_MIPS_FP64 ELF header flag set. Whilst this flag is currently
-supported by binutils it does introduce an ABI break within userland.
-Objects built with EF_MIPS_FP64 cannot be safely linked with those built
-without it since code in either object may assume behaviour specific to
-a value of FR.
+On 32-bit/O32, pt_regs has a padding area at the beginning into which the
+syscall arguments passed via the user stack are copied. 4 arguments
+totalling 16 bytes are copied to offset 16 bytes into this area, however
+the area is only 24 bytes long. This means the last 2 arguments overwrite
+pt_regs->regs[{0,1}].
 
-More recently there has been discussion around avoiding further
-fragmentation of the O32 ABI whilst still allowing the use of FR=1 and
-features such as MSA which depend upon it. Details of the plan to allow
-this are still being worked on, and whilst the kernel will need the
-ability to handle FR=1 with O32 tasks it is unclear what else it may
-need to provide to a userland which seeks to avoid another ABI break. In
-order to prevent the proliferation of userland which may rely upon the
-current EF_MIPS_FP64 behaviour this patch marks the kernel support for
-it experimental & disables it by default. Under current proposals it is
-likely that this support can simply be enabled again later, but possibly
-after the introduction of further interfaces with userland and support
-for the MIPS R5 UFR feature.
+If a syscall function returns an error, handle_sys stores the original
+syscall number in pt_regs->regs[0] for syscall restart. signal.c checks
+whether regs[0] is non-zero, if it is it will check whether the syscall
+return value is one of the ERESTART* codes to see if it must be
+restarted.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Matthew Fortune <matthew.fortune@imgtec.com>
+Should a syscall be made that results in a non-zero value being copied
+off the user stack into regs[0], and then returns a positive (non-error)
+value that matches one of the ERESTART* error codes, this can be mistaken
+for requiring a syscall restart.
+
+While the possibility for this to occur has always existed, it is made
+much more likely to occur by commit 46e12c07b3b9 ("MIPS: O32 / 32-bit:
+Always copy 4 stack arguments."), since now every syscall will copy 4
+arguments and overwrite regs[0], rather than just those with 7 or 8
+arguments.
+
+Since that commit, booting Debian under a 32-bit MIPS kernel almost
+always results in a hang early in boot, due to a wait4 syscall returning
+a PID that matches one of the ERESTART* codes, which then causes an
+incorrect restart of the syscall.
+
+The problem is fixed by increasing the size of the padding area so that
+arguments copied off the stack will not overwrite pt_regs->regs[{0,1}].
+Also removed a comment in handle_sys which is no longer relevant after
+the aforementioned commit.
+
+Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: stable@vger.kernel.org [3.13]
 ---
-Ralf: any chance this could get into v3.14 where the fp64 support is
-introduced? Apologies for this, discussion around the ABI plan has
-happened only very recently.
----
- arch/mips/Kconfig | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ arch/mips/include/asm/ptrace.h | 2 +-
+ arch/mips/kernel/scall32-o32.S | 2 --
+ arch/mips/kernel/smtc-asm.S    | 4 ++--
+ 3 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 6f78eb3..a37c21f 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2388,9 +2388,8 @@ config CC_STACKPROTECTOR
- 	  This feature requires gcc version 4.2 or above.
+diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
+index 7bba9da..6d019ca 100644
+--- a/arch/mips/include/asm/ptrace.h
++++ b/arch/mips/include/asm/ptrace.h
+@@ -23,7 +23,7 @@
+ struct pt_regs {
+ #ifdef CONFIG_32BIT
+ 	/* Pad bytes for argument save space on the stack. */
+-	unsigned long pad0[6];
++	unsigned long pad0[8];
+ #endif
  
- config MIPS_O32_FP64_SUPPORT
--	bool "Support for O32 binaries using 64-bit FP"
-+	bool "Support for O32 binaries using 64-bit FP (EXPERIMENTAL)"
- 	depends on 32BIT || MIPS32_O32
--	default y
- 	help
- 	  When this is enabled, the kernel will support use of 64-bit floating
- 	  point registers with binaries using the O32 ABI along with the
-@@ -2402,7 +2401,14 @@ config MIPS_O32_FP64_SUPPORT
- 	  of your kernel & potentially improve FP emulation performance by
- 	  saying N here.
+ 	/* Saved main processor registers. */
+diff --git a/arch/mips/kernel/scall32-o32.S b/arch/mips/kernel/scall32-o32.S
+index a5b14f4..4220c2d 100644
+--- a/arch/mips/kernel/scall32-o32.S
++++ b/arch/mips/kernel/scall32-o32.S
+@@ -66,8 +66,6 @@ NESTED(handle_sys, PT_SIZE, sp)
  
--	  If unsure, say Y.
-+	  Although binutils currently supports use of this flag the details
-+	  concerning its effect upon the O32 ABI in userland are still being
-+	  worked on. In order to avoid userland becoming dependant upon current
-+	  behaviour before the details have been finalised, this option should
-+	  be considered experimental and only enabled by those working upon
-+	  said details.
-+
-+	  If unsure, say N.
+ 	/*
+ 	 * Ok, copy the args from the luser stack to the kernel stack.
+-	 * t3 is the precomputed number of instruction bytes needed to
+-	 * load or store arguments 6-8.
+ 	 */
  
- config USE_OF
- 	bool
+ 	.set    push
+diff --git a/arch/mips/kernel/smtc-asm.S b/arch/mips/kernel/smtc-asm.S
+index 2866863..c4f0cd9 100644
+--- a/arch/mips/kernel/smtc-asm.S
++++ b/arch/mips/kernel/smtc-asm.S
+@@ -43,8 +43,8 @@ CAN WE PROVE THAT WE WON'T DO THIS IF INTS DISABLED??
+  * to invoke the scheduler and return as appropriate.
+  */
+ 
+-#define PT_PADSLOT4 (PT_R0-8)
+-#define PT_PADSLOT5 (PT_R0-4)
++#define PT_PADSLOT4 (PT_R0-16)
++#define PT_PADSLOT5 (PT_R0-12)
+ 
+ 	.text
+ 	.align 5
 -- 
-1.8.5.3
+1.8.5.4

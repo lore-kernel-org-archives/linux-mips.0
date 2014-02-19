@@ -1,14 +1,17 @@
-Received: from multi.imgtec.com ([194.200.65.239]:13491 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:43764 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6869250AbaBQOtrfBdUG (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 17 Feb 2014 15:49:47 +0100
-From: Alex Smith <alex.smith@imgtec.com>
-Subject: [PATCH] MIPS: O32/32-bit: Fix bug which can cause incorrect system call restarts
-Date: Mon, 17 Feb 2014 14:49:17 +0000
-Message-ID: <1392648557-7174-1-git-send-email-alex.smith@imgtec.com>
+        id S6837741AbaBSKPALe9iR (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 19 Feb 2014 11:15:00 +0100
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH v2] samples/seccomp/Makefile: Do not build tests if cross-compiling for MIPS
+Date: Wed, 19 Feb 2014 10:15:17 +0000
+Message-ID: <1392804917-29789-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <52FD0131.9040304@imgtec.com>
+References: <52FD0131.9040304@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Alex.Smith@imgtec.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,94 +21,73 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Alex Smith <alex.smith@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org[3.13]
-Message-ID: <20140217144917.--NqN1MkjdkR7eaCuQkHB56F2G3j-JYMlbQHeyeRHXw@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20140219101517.esmEzJ_8NVpoqzhSEqx7jWIfSfrtp8sKVNaMzZetsSs@z>
 
-On 32-bit/O32, pt_regs has a padding area at the beginning into which the
-syscall arguments passed via the user stack are copied. 4 arguments
-totalling 16 bytes are copied to offset 16 bytes into this area, however
-the area is only 24 bytes long. This means the last 2 arguments overwrite
-pt_regs->regs[{0,1}].
+The Makefile is designed to use the host toolchain so it may be
+unsafe to build the tests if the kernel has been configured and built
+for another architecture. This fixes a build problem when the kernel has
+been configured and built for the MIPS architecture but the host is
+not MIPS (cross-compiled). The MIPS syscalls are only defined
+if one of the following is true:
 
-If a syscall function returns an error, handle_sys stores the original
-syscall number in pt_regs->regs[0] for syscall restart. signal.c checks
-whether regs[0] is non-zero, if it is it will check whether the syscall
-return value is one of the ERESTART* codes to see if it must be
-restarted.
+1) _MIPS_SIM == _MIPS_SIM_ABI64
+2) _MIPS_SIM == _MIPS_SIM_ABI32
+3) _MIPS_SIM == _MIPS_SIM_NABI32
 
-Should a syscall be made that results in a non-zero value being copied
-off the user stack into regs[0], and then returns a positive (non-error)
-value that matches one of the ERESTART* error codes, this can be mistaken
-for requiring a syscall restart.
+Of course, none of these make sense on a non-MIPS toolchain and the
+following build problem occurs when building on a non-MIPS host.
 
-While the possibility for this to occur has always existed, it is made
-much more likely to occur by commit 46e12c07b3b9 ("MIPS: O32 / 32-bit:
-Always copy 4 stack arguments."), since now every syscall will copy 4
-arguments and overwrite regs[0], rather than just those with 7 or 8
-arguments.
+linux/usr/include/linux/kexec.h:50:
+userspace cannot reference function or variable defined in the kernel
+samples/seccomp/bpf-direct.c: In function ‘emulator’:
+samples/seccomp/bpf-direct.c:76:17: error:
+‘__NR_write’ undeclared (first use in this function)
 
-Since that commit, booting Debian under a 32-bit MIPS kernel almost
-always results in a hang early in boot, due to a wait4 syscall returning
-a PID that matches one of the ERESTART* codes, which then causes an
-incorrect restart of the syscall.
-
-The problem is fixed by increasing the size of the padding area so that
-arguments copied off the stack will not overwrite pt_regs->regs[{0,1}].
-Also removed a comment in handle_sys which is no longer relevant after
-the aforementioned commit.
-
-Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: stable@vger.kernel.org [3.13]
+Cc: linux-next@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/include/asm/ptrace.h | 2 +-
- arch/mips/kernel/scall32-o32.S | 2 --
- arch/mips/kernel/smtc-asm.S    | 4 ++--
- 3 files changed, 3 insertions(+), 5 deletions(-)
+This build problem is only reproducible on the linux-next tree at the moment
 
-diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
-index 7bba9da..6d019ca 100644
---- a/arch/mips/include/asm/ptrace.h
-+++ b/arch/mips/include/asm/ptrace.h
-@@ -23,7 +23,7 @@
- struct pt_regs {
- #ifdef CONFIG_32BIT
- 	/* Pad bytes for argument save space on the stack. */
--	unsigned long pad0[6];
-+	unsigned long pad0[8];
- #endif
+Changes since v1:
+- Rework code so native builds are allowed on MIPS
+---
+ samples/seccomp/Makefile | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/samples/seccomp/Makefile b/samples/seccomp/Makefile
+index 7203e66..855051b 100644
+--- a/samples/seccomp/Makefile
++++ b/samples/seccomp/Makefile
+@@ -18,8 +18,8 @@ HOSTCFLAGS_bpf-direct.o += -idirafter $(objtree)/include
+ bpf-direct-objs := bpf-direct.o
  
- 	/* Saved main processor registers. */
-diff --git a/arch/mips/kernel/scall32-o32.S b/arch/mips/kernel/scall32-o32.S
-index a5b14f4..4220c2d 100644
---- a/arch/mips/kernel/scall32-o32.S
-+++ b/arch/mips/kernel/scall32-o32.S
-@@ -66,8 +66,6 @@ NESTED(handle_sys, PT_SIZE, sp)
+ # Try to match the kernel target.
+-ifndef CONFIG_64BIT
+ ifndef CROSS_COMPILE
++ifndef CONFIG_64BIT
  
- 	/*
- 	 * Ok, copy the args from the luser stack to the kernel stack.
--	 * t3 is the precomputed number of instruction bytes needed to
--	 * load or store arguments 6-8.
- 	 */
- 
- 	.set    push
-diff --git a/arch/mips/kernel/smtc-asm.S b/arch/mips/kernel/smtc-asm.S
-index 2866863..c4f0cd9 100644
---- a/arch/mips/kernel/smtc-asm.S
-+++ b/arch/mips/kernel/smtc-asm.S
-@@ -43,8 +43,8 @@ CAN WE PROVE THAT WE WON'T DO THIS IF INTS DISABLED??
-  * to invoke the scheduler and return as appropriate.
-  */
- 
--#define PT_PADSLOT4 (PT_R0-8)
--#define PT_PADSLOT5 (PT_R0-4)
-+#define PT_PADSLOT4 (PT_R0-16)
-+#define PT_PADSLOT5 (PT_R0-12)
- 
- 	.text
- 	.align 5
+ # s390 has -m31 flag to build 31 bit binaries
+ ifndef CONFIG_S390
+@@ -36,7 +36,13 @@ HOSTLOADLIBES_bpf-direct += $(MFLAG)
+ HOSTLOADLIBES_bpf-fancy += $(MFLAG)
+ HOSTLOADLIBES_dropper += $(MFLAG)
+ endif
+-endif
+-
+-# Tell kbuild to always build the programs
+ always := $(hostprogs-y)
++else
++# MIPS system calls are defined based on the -mabi that is passed
++# to the toolchain which may or may not be a valid option
++# for the host toolchain. So disable tests if target architecture
++# is MIPS but the host isn't.
++ifndef CONFIG_MIPS
++always := $(hostprogs-y)
++endif
++endif
 -- 
-1.8.5.4
+1.9.0

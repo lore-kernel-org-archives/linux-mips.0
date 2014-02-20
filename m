@@ -1,19 +1,19 @@
-Received: from multi.imgtec.com ([194.200.65.239]:23191 "EHLO multi.imgtec.com"
+Received: from multi.imgtec.com ([194.200.65.239]:46469 "EHLO multi.imgtec.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6871367AbaBTJ6mabQEW (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 20 Feb 2014 10:58:42 +0100
-Date: Thu, 20 Feb 2014 09:57:32 +0000
+        id S6871399AbaBTNl0vNX0d (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 20 Feb 2014 14:41:26 +0100
+Date: Thu, 20 Feb 2014 13:41:20 +0000
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 08/10] MIPS: support use of cpuidle
-Message-ID: <20140220095732.GO25765@pburton-linux.le.imgtec.org>
+Subject: Re: [PATCH 09/10] cpuidle: declare cpuidle_dev in cpuidle.h
+Message-ID: <20140220134118.GT25765@pburton-linux.le.imgtec.org>
 References: <1389794137-11361-1-git-send-email-paul.burton@imgtec.com>
- <1389794137-11361-9-git-send-email-paul.burton@imgtec.com>
- <5305C24A.1070006@linaro.org>
+ <1389794137-11361-10-git-send-email-paul.burton@imgtec.com>
+ <53060496.6000303@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5305C24A.1070006@linaro.org>
+In-Reply-To: <53060496.6000303@linaro.org>
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -26,129 +26,50 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Daniel Lezcano <daniel.lezcano@linaro.org>
 Cc: linux-mips@linux-mips.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
-Message-ID: <20140220095732.Y3jLqdiFKF0veV5H1sgs_GRWo2A-ePJrGxjySu_HgIQ@z>
+Message-ID: <20140220134120.ts2dyw1YNX5YTP7rs15miAM6iAbvyBfmcetCEU-C4Ks@z>
 
-On Thu, Feb 20, 2014 at 09:52:26AM +0100, Daniel Lezcano wrote:
+On Thu, Feb 20, 2014 at 02:35:18PM +0100, Daniel Lezcano wrote:
 > On 01/15/2014 02:55 PM, Paul Burton wrote:
-> >This patch lays the groundwork for MIPS platforms to make use of the
-> >cpuidle framework. The arch_cpu_idle function simply calls cpuidle &
-> >falls back to the regular cpu_wait path if cpuidle should fail (eg. if
-> >it's not selected or no driver is registered). A generic cpuidle state
-> >for the wait instruction is introduced, intended to ease use of the wait
-> >instruction from cpuidle drivers and reduce code duplication.
-> 
-> Hi,
-> 
-> What is the status of this patchset ? Still need comments ?
-> 
-> Thanks
->   -- Daniel
-> 
-
-It's present in Ralf's current mips-for-linux-next branch, and in
-linux-next from next-20140210 up to todays next-20140220. So I presume
-barring any problems it should make it into 3.15.
-
-Thanks,
-    Paul
-
+> >Declaring this allows drivers which need to initialise each struct
+> >cpuidle_device at initialisation time to make use of the structures
+> >already defined in cpuidle.c, rather than having to wastefully define
+> >their own.
 > >
 > >Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 > >Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
 > >Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
 > >Cc: linux-pm@vger.kernel.org
 > >---
-> >  arch/mips/Kconfig            |  2 ++
-> >  arch/mips/include/asm/idle.h | 14 ++++++++++++++
-> >  arch/mips/kernel/idle.c      | 20 +++++++++++++++++++-
-> >  3 files changed, 35 insertions(+), 1 deletion(-)
+> >  include/linux/cpuidle.h | 1 +
+> >  1 file changed, 1 insertion(+)
 > >
-> >diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> >index 5bc27c0..95f2f11 100644
-> >--- a/arch/mips/Kconfig
-> >+++ b/arch/mips/Kconfig
-> >@@ -1838,6 +1838,8 @@ config CPU_R4K_CACHE_TLB
-> >  	bool
-> >  	default y if !(CPU_R3000 || CPU_R8000 || CPU_SB1 || CPU_TX39XX || CPU_CAVIUM_OCTEON)
+> >diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
+> >index 50fcbb0..bab4f33 100644
+> >--- a/include/linux/cpuidle.h
+> >+++ b/include/linux/cpuidle.h
+> >@@ -84,6 +84,7 @@ struct cpuidle_device {
+> >  };
 > >
-> >+source "drivers/cpuidle/Kconfig"
-> >+
-> >  choice
-> >  	prompt "MIPS MT options"
-> >
-> >diff --git a/arch/mips/include/asm/idle.h b/arch/mips/include/asm/idle.h
-> >index d192158..d9f932d 100644
-> >--- a/arch/mips/include/asm/idle.h
-> >+++ b/arch/mips/include/asm/idle.h
-> >@@ -1,6 +1,7 @@
-> >  #ifndef __ASM_IDLE_H
-> >  #define __ASM_IDLE_H
-> >
-> >+#include <linux/cpuidle.h>
-> >  #include <linux/linkage.h>
-> >
-> >  extern void (*cpu_wait)(void);
-> >@@ -20,4 +21,17 @@ static inline int address_is_in_r4k_wait_irqoff(unsigned long addr)
-> >  	       addr < (unsigned long)__pastwait;
-> >  }
-> >
-> >+extern int mips_cpuidle_wait_enter(struct cpuidle_device *dev,
-> >+				   struct cpuidle_driver *drv, int index);
-> >+
-> >+#define MIPS_CPUIDLE_WAIT_STATE {\
-> >+	.enter			= mips_cpuidle_wait_enter,\
-> >+	.exit_latency		= 1,\
-> >+	.target_residency	= 1,\
-> >+	.power_usage		= UINT_MAX,\
-> >+	.flags			= CPUIDLE_FLAG_TIME_VALID,\
-> >+	.name			= "wait",\
-> >+	.desc			= "MIPS wait",\
-> >+}
-> >+
-> >  #endif /* __ASM_IDLE_H  */
-> >diff --git a/arch/mips/kernel/idle.c b/arch/mips/kernel/idle.c
-> >index 3553243..64e91e4 100644
-> >--- a/arch/mips/kernel/idle.c
-> >+++ b/arch/mips/kernel/idle.c
-> >@@ -11,6 +11,7 @@
-> >   * as published by the Free Software Foundation; either version
-> >   * 2 of the License, or (at your option) any later version.
-> >   */
-> >+#include <linux/cpuidle.h>
-> >  #include <linux/export.h>
-> >  #include <linux/init.h>
-> >  #include <linux/irqflags.h>
-> >@@ -239,7 +240,7 @@ static void smtc_idle_hook(void)
-> >  #endif
-> >  }
-> >
-> >-void arch_cpu_idle(void)
-> >+static void mips_cpu_idle(void)
-> >  {
-> >  	smtc_idle_hook();
-> >  	if (cpu_wait)
-> >@@ -247,3 +248,20 @@ void arch_cpu_idle(void)
-> >  	else
-> >  		local_irq_enable();
-> >  }
-> >+
-> >+void arch_cpu_idle(void)
-> >+{
-> >+	if (cpuidle_idle_call())
-> >+		mips_cpu_idle();
-> >+}
-> >+
-> >+#ifdef CONFIG_CPU_IDLE
-> >+
-> >+int mips_cpuidle_wait_enter(struct cpuidle_device *dev,
-> >+			    struct cpuidle_driver *drv, int index)
-> >+{
-> >+	mips_cpu_idle();
-> >+	return index;
-> >+}
-> >+
-> >+#endif
-> >
+> >  DECLARE_PER_CPU(struct cpuidle_device *, cpuidle_devices);
+> >+DECLARE_PER_CPU(struct cpuidle_device, cpuidle_dev);
+> 
+> 
+> Nak. When a device is registered, it is assigned to the cpuidle_devices
+> pointer and the backend driver should use it.
+> 
+
+Yes, but then if the driver needs to initialise the coupled_cpus mask
+then it cannot do so until after the device has been registered. During
+registration the cpuidle_coupled_register_device will then see the empty
+coupled_cpus mask & do nothing. The only other ways around this would be
+for the driver to define its own per-cpu struct cpuidle_device (which as
+I state in the commit message seems wasteful when cpuidle already
+defined them), or for cpuidle_coupled_register_device to be called later
+after the driver had a chance to modify devices via the cpuidle_devices
+pointers.
+
+Paul
+
 > 
 > 
 > -- 

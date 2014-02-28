@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.89.28.115]:33322 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.114]:36290 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6829833AbaB1UAtwU0qE (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Feb 2014 21:00:49 +0100
+        with ESMTP id S6869162AbaB1UAuOAJJi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Feb 2014 21:00:50 +0100
 From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH 0/3] MIPS: APRP: Fix issues from the last patch set reformation
-Date: Fri, 28 Feb 2014 10:23:00 -0800
-Message-ID: <1393611783-7037-1-git-send-email-dengcheng.zhu@imgtec.com>
+Subject: [PATCH 3/3] MIPS: APRP: Choose the correct VPE loader by fixing the linking
+Date: Fri, 28 Feb 2014 10:23:03 -0800
+Message-ID: <1393611783-7037-4-git-send-email-dengcheng.zhu@imgtec.com>
+In-Reply-To: <1393611783-7037-1-git-send-email-dengcheng.zhu@imgtec.com>
+References: <1393611783-7037-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <DengCheng.Zhu@imgtec.com>
@@ -20,27 +22,32 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: john@phrozen.org, ralf@linux-mips.org, Steven.Hill@imgtec.com, Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Message-ID: <20140228182300.uvJ6I4yNX38ymD_UyhN-Thjk9-G7mAvzdNd-yS2uR2Y@z>
+Message-ID: <20140228182303.rkaV4Z-_kRB0qYvmuyDM-bTW17Ib3u36AlKfSONMRfw@z>
 
-Three issues were introduced since the last patch set reformation.
-1) The rtlx interrupt hook gets linked incorrectly;
-2) The rtlx interrupt hook is not unregistered at module exit;
-3) The vpe loader gets linked incorrectly.
+From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 
-Sorry for having not tested the functionality since the big reformation.
-With these 3 patches, now I have confirmed that both MT and CMP flavors
-are working correctly.
+Now we have CONFIG_MIPS_VPE_LOADER and CONFIG_MIPS_VPE_LOADER_[CMP|MT]. The
+latter two are used by the 2 exclusive flavors. The vpe_run in malta-amon.c
+is for CMP APRP. Without the fix, this vpe_run will be used in MT APRP.
 
-Deng-Cheng Zhu (3):
-  MIPS: APRP: Fix the linking of rtlx interrupt hook
-  MIPS: APRP: Unregister rtlx interrupt hook at module exit
-  MIPS: APRP: Choose the correct VPE loader by fixing the linking
-
- arch/mips/kernel/rtlx-cmp.c      | 3 +++
- arch/mips/kernel/rtlx-mt.c       | 3 +++
+Reviewed-by: Steven J. Hill <Steven.Hill@imgtec.com>
+Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+---
  arch/mips/mti-malta/malta-amon.c | 2 +-
- arch/mips/mti-malta/malta-int.c  | 4 ++--
- 4 files changed, 9 insertions(+), 3 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/mips/mti-malta/malta-amon.c b/arch/mips/mti-malta/malta-amon.c
+index 592ac04..84ac523 100644
+--- a/arch/mips/mti-malta/malta-amon.c
++++ b/arch/mips/mti-malta/malta-amon.c
+@@ -72,7 +72,7 @@ int amon_cpu_start(int cpu,
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_MIPS_VPE_LOADER
++#ifdef CONFIG_MIPS_VPE_LOADER_CMP
+ int vpe_run(struct vpe *v)
+ {
+ 	struct vpe_notifications *n;
 -- 
 1.8.5.3

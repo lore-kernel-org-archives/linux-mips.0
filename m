@@ -1,16 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.89.28.115]:33389 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.114]:59463 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6869196AbaB1UAvSpex1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Feb 2014 21:00:51 +0100
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH 2/3] MIPS: APRP: Unregister rtlx interrupt hook at module exit
-Date: Fri, 28 Feb 2014 10:23:02 -0800
-Message-ID: <1393611783-7037-3-git-send-email-dengcheng.zhu@imgtec.com>
-In-Reply-To: <1393611783-7037-1-git-send-email-dengcheng.zhu@imgtec.com>
-References: <1393611783-7037-1-git-send-email-dengcheng.zhu@imgtec.com>
+        with ESMTP id S6822287AbaCCOFkPjvFB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 3 Mar 2014 15:05:40 +0100
+Message-ID: <53148C5A.7020101@imgtec.com>
+Date: Mon, 3 Mar 2014 14:06:18 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <DengCheng.Zhu@imgtec.com>
+Subject: Re: [PATCH 3/5] MIPS: Set page size to 16KB for malta SMP defconfigs
+References: <1392904828-12969-1-git-send-email-markos.chandras@imgtec.com> <1392904828-12969-4-git-send-email-markos.chandras@imgtec.com> <20140221173829.GI19285@linux-mips.org>
+In-Reply-To: <20140221173829.GI19285@linux-mips.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,47 +21,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: john@phrozen.org, ralf@linux-mips.org, Steven.Hill@imgtec.com, Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Message-ID: <20140228182302.2iSNoQlJ8lPTRCgeHimP-vOFyRqS3ippzaZS5Km5m7E@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20140303140618.WlDpawrRUtmblDLyP5PgPU4-tC-qvOqcEq6A5HPzDQM@z>
 
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+On 02/21/2014 05:38 PM, Ralf Baechle wrote:
+> On Thu, Feb 20, 2014 at 02:00:26PM +0000, Markos Chandras wrote:
+>
+>> From: Paul Burton <paul.burton@imgtec.com>
+>>
+>> For Malta defconfigs which may run on an SMP configuration without
+>> hardware cache anti-aliasing, a 16KB page size is a safer default.
+>> Most notably at the moment it will avoid cache aliasing issues for
+>> multicore proAptiv systems.
+>
+> You're aware that this may cause binary compatibility issues with old
+> userland?  So far the defaults were chosen to maximise compatibility
+> over performance.
+>
+>    Ralf
+>
+Hi Ralf,
 
-If the aprp_hook is not assigned back to NULL, it will still be called
-after module exits. This is not wanted.
+Are you referring to programs hard coding the page size to 4k instead of 
+using the getpagesize()? Well yes this could be a problem. But is that a 
+real problem? We are changing the default value so whoever has such an 
+old userland can easily switch to the 4k page size. It may also be a 
+good opportunity to expose such application and get the fixed properly 
+:) But if that's not acceptable, we can drop the patch. Paul what do you 
+think?
 
-Reviewed-by: Steven J. Hill <Steven.Hill@imgtec.com>
-Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
----
- arch/mips/kernel/rtlx-cmp.c | 3 +++
- arch/mips/kernel/rtlx-mt.c  | 3 +++
- 2 files changed, 6 insertions(+)
-
-diff --git a/arch/mips/kernel/rtlx-cmp.c b/arch/mips/kernel/rtlx-cmp.c
-index 56dc696..758fb3c 100644
---- a/arch/mips/kernel/rtlx-cmp.c
-+++ b/arch/mips/kernel/rtlx-cmp.c
-@@ -112,5 +112,8 @@ void __exit rtlx_module_exit(void)
- 
- 	for (i = 0; i < RTLX_CHANNELS; i++)
- 		device_destroy(mt_class, MKDEV(major, i));
-+
- 	unregister_chrdev(major, RTLX_MODULE_NAME);
-+
-+	aprp_hook = NULL;
- }
-diff --git a/arch/mips/kernel/rtlx-mt.c b/arch/mips/kernel/rtlx-mt.c
-index 91d61ba..9c1aca0 100644
---- a/arch/mips/kernel/rtlx-mt.c
-+++ b/arch/mips/kernel/rtlx-mt.c
-@@ -144,5 +144,8 @@ void __exit rtlx_module_exit(void)
- 
- 	for (i = 0; i < RTLX_CHANNELS; i++)
- 		device_destroy(mt_class, MKDEV(major, i));
-+
- 	unregister_chrdev(major, RTLX_MODULE_NAME);
-+
-+	aprp_hook = NULL;
- }
 -- 
-1.8.5.3
+markos

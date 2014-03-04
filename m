@@ -1,20 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.89.28.114]:35768 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.115]:45738 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6817179AbaCCO32KBPVz (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 3 Mar 2014 15:29:28 +0100
-Date: Mon, 3 Mar 2014 14:29:21 +0000
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 3/5] MIPS: Set page size to 16KB for malta SMP defconfigs
-Message-ID: <20140303142921.GF13880@pburton-linux.le.imgtec.org>
-References: <1392904828-12969-1-git-send-email-markos.chandras@imgtec.com>
- <1392904828-12969-4-git-send-email-markos.chandras@imgtec.com>
- <20140221173829.GI19285@linux-mips.org>
- <53148C5A.7020101@imgtec.com>
+        with ESMTP id S6816877AbaCDNfFt69It (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 4 Mar 2014 14:35:05 +0100
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 7A000B3A9C4CD
+        for <linux-mips@linux-mips.org>; Tue,  4 Mar 2014 13:34:57 +0000 (GMT)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH 0/3] Add support for the M5150 processor
+Date: Tue, 4 Mar 2014 13:34:41 +0000
+Message-ID: <1393940084-29518-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <53148C5A.7020101@imgtec.com>
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,45 +21,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Markos Chandras <Markos.Chandras@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20140303142921.Xh37z67LL7sE_cgwv6knHVwVqsMUbcq0b9Ki_ch0yXk@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20140304133441.IGfBau_YsVweT9pqif6ZI8GQwIFxIu72VpO8jenkURI@z>
 
-On Mon, Mar 03, 2014 at 02:06:18PM +0000, Markos Chandras wrote:
-> On 02/21/2014 05:38 PM, Ralf Baechle wrote:
-> >On Thu, Feb 20, 2014 at 02:00:26PM +0000, Markos Chandras wrote:
-> >
-> >>From: Paul Burton <paul.burton@imgtec.com>
-> >>
-> >>For Malta defconfigs which may run on an SMP configuration without
-> >>hardware cache anti-aliasing, a 16KB page size is a safer default.
-> >>Most notably at the moment it will avoid cache aliasing issues for
-> >>multicore proAptiv systems.
-> >
-> >You're aware that this may cause binary compatibility issues with old
-> >userland?  So far the defaults were chosen to maximise compatibility
-> >over performance.
-> >
-> >   Ralf
-> >
-> Hi Ralf,
-> 
-> Are you referring to programs hard coding the page size to 4k instead of
-> using the getpagesize()? Well yes this could be a problem. But is that a
-> real problem? We are changing the default value so whoever has such an old
-> userland can easily switch to the 4k page size. It may also be a good
-> opportunity to expose such application and get the fixed properly :) But if
-> that's not acceptable, we can drop the patch. Paul what do you think?
-> 
-> -- 
-> markos
+Hi,
 
-I think the potential backwards compatibility issue is probably not a
-huge issue for Malta, but that it would make sense to dig deeper into
-why proAptiv SMP systems don't run correctly with 4KB pages. You don't
-actually have to look very far to find userland which depends upon 4KB
-pages (*cough* android *cough*). I consider this patch an acceptable
-workaround for the proAptiv problem on Malta, but I don't know enough
-at the moment to say whether there's a proper fix.
+This patchset adds support for the recently announced M5150 processor
+http://imgtec.com/mips/mips-series5-mclass-m51xx.asp?NewsID=804
 
-Paul
+This patchset is for the upstream-sfr/mips-for-linux-next tree
+
+Leonid Yegoshin (3):
+  MIPS: Add processor identifier for the M5150 processor
+  MIPS: Add support for the M5150 processor
+  MIPS: kernel: cpu-probe: Add support for probing M5150 cores
+
+ arch/mips/include/asm/cpu-type.h     | 1 +
+ arch/mips/include/asm/cpu.h          | 3 ++-
+ arch/mips/kernel/cpu-probe.c         | 4 ++++
+ arch/mips/kernel/idle.c              | 1 +
+ arch/mips/mm/c-r4k.c                 | 1 +
+ arch/mips/mm/tlbex.c                 | 1 +
+ arch/mips/oprofile/common.c          | 1 +
+ arch/mips/oprofile/op_model_mipsxx.c | 4 ++++
+ 8 files changed, 15 insertions(+), 1 deletion(-)
+
+-- 
+1.9.0

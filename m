@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.89.28.114]:44148 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.114]:38302 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6824789AbaCDNfMqdtsp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 4 Mar 2014 14:35:12 +0100
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 49F02F067CB0B
-        for <linux-mips@linux-mips.org>; Tue,  4 Mar 2014 13:35:04 +0000 (GMT)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 3/3] MIPS: kernel: cpu-probe: Add support for probing M5150 cores
-Date: Tue, 4 Mar 2014 13:34:44 +0000
-Message-ID: <1393940084-29518-4-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1393940084-29518-1-git-send-email-markos.chandras@imgtec.com>
-References: <1393940084-29518-1-git-send-email-markos.chandras@imgtec.com>
+        with ESMTP id S6822314AbaCFIh2VVNzq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Mar 2014 09:37:28 +0100
+Message-ID: <531833F0.8080300@imgtec.com>
+Date: Thu, 6 Mar 2014 08:38:08 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH 1/6][RFC] syscall: define syscall_get_arch() for each
+ audit-supported arch
+References: <cover.1393974970.git.rgb@redhat.com> <cb88576237b1bc4fc7981200c2c23ae05790db0d.1393974970.git.rgb@redhat.com>
+In-Reply-To: <cb88576237b1bc4fc7981200c2c23ae05790db0d.1393974970.git.rgb@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,32 +22,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140304133444.jbbCBLOaOyh5Y73Hcdb5s8HjBu-qg8Rt1pJOXlzQJyE@z>
+To: Richard Guy Briggs <rgb@redhat.com>, linux-audit@redhat.com, linux-kernel@vger.kernel.org
+Cc: eparis@redhat.com, sgrubb@redhat.com, oleg@redhat.com, linux-mips@linux-mips.org, user-mode-linux-devel@lists.sourceforge.net, linux-arch@vger.kernel.org
+Message-ID: <20140306083808.Jh96mijkyjE-wNZB15PjuP2Qqy8kVs3Fgw61FMgDJPc@z>
 
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Hi Richard,
 
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/kernel/cpu-probe.c | 4 ++++
- 1 file changed, 4 insertions(+)
+On 03/05/2014 09:27 PM, Richard Guy Briggs wrote:
+> Each arch that supports audit requires syscall_get_arch() to able to log and
+> identify architecture-dependent syscall numbers.  The information is used in at
+> least two different subsystems, so standardize it in the same call across all
+> arches.
+>
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+>
+> ---
+> diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
+> index 81c8913..41ecde4 100644
+> --- a/arch/mips/include/asm/syscall.h
+> +++ b/arch/mips/include/asm/syscall.h
+> @@ -103,7 +103,7 @@ extern const unsigned long sysn32_call_table[];
+>
+>   static inline int __syscall_get_arch(void)
+>   {
+> -	int arch = EM_MIPS;
+> +	int arch = AUDIT_ARCH_MIPS;
+>   #ifdef CONFIG_64BIT
+>   	arch |=  __AUDIT_ARCH_64BIT;
+>   #endif
+> @@ -113,4 +113,10 @@ static inline int __syscall_get_arch(void)
+>   	return arch;
+>   }
+>
+> +static inline int syscall_get_arch(struct task_struct *task,
+> +				   struct pt_regs *regs)
+> +{
+> +	return __syscall_get_arch();
+> +}
+> +
+>   #endif	/* __ASM_MIPS_SYSCALL_H */
 
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index e225b0d..f422954 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -853,6 +853,10 @@ static inline void cpu_probe_mips(struct cpuinfo_mips *c, unsigned int cpu)
- 		c->cputype = CPU_P5600;
- 		__cpu_name[cpu] = "MIPS P5600";
- 		break;
-+	case PRID_IMP_M5150:
-+		c->cputype = CPU_M5150;
-+		__cpu_name[cpu] = "MIPS M5150";
-+		break;
- 	}
- 
- 	decode_configs(c);
+This is already fixed for MIPS
+
+http://patchwork.linux-mips.org/patch/6398/
+
+The code is in linux-next targeting 3.15 as far as I can tell.
+
 -- 
-1.9.0
+markos

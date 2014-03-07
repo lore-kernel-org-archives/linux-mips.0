@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.89.28.114]:38863 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.114]:48683 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6853544AbaCFSE5xRVcq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Mar 2014 19:04:57 +0100
+        with ESMTP id S6823083AbaCGBFtllZKH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Mar 2014 02:05:49 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 5689116F94D1D
-        for <linux-mips@linux-mips.org>; Thu,  6 Mar 2014 18:04:49 +0000 (GMT)
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] MIPS: clear hazard barrier after changing MSAEn
-Date: Thu, 6 Mar 2014 18:04:27 +0000
-Message-ID: <1394129067-20457-1-git-send-email-paul.burton@imgtec.com>
+        by Websense Email Security Gateway with ESMTPS id 2E447860E8839
+        for <linux-mips@linux-mips.org>; Fri,  7 Mar 2014 01:05:40 +0000 (GMT)
+From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Subject: [PATCH] MIPS FPU emulator: Fix prefx detection and COP1X function field definition
+Date: Thu, 6 Mar 2014 17:05:27 -0800
+Message-ID: <1394154327-16677-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Return-Path: <DengCheng.Zhu@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,51 +22,56 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140306180427.9_WbPxb0okHvGpCxKKAX3VRaRAOdso6ctKKy4r99DQg@z>
+Cc: paul.burton@imgtec.com, Leonid.Yegoshin@imgtec.com, Steven.Hill@imgtec.com, Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Message-ID: <20140307010527.OIB6J7BP3x30bR7CXlLwN0gAGnEVtFoeam0-3AmmItY@z>
 
-Changing MSAEn on the MIPS P5600 core creates an execution hazard which
-must be cleared before any subsequent MSA instructions are executed.
-This is similar to the FPU with which MSA is linked. Since all cores
-with MSA support are >MIPSR2 the {en,dis}able_fpu_hazard macros will
-always expand to the ehb instruction required, so they are simply
-re-used.
+From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 
-Reported-by: James Hogan <james.hogan@imgtec.com>
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
-Tested-by: James Hogan <james.hogan@imgtec.com>
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+When running applications which contain the instruction "prefx" on FPU-less
+CPUs, a message "Illegal instruction" will be seen. This instruction is
+supposed to be ignored by the FPU emulator. However, its current detection
+and function field encoding are incorrect. This patch fix the issue.
+
+Reviewed-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Reviewed-by: Paul Burton <paul.burton@imgtec.com>
+Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 ---
-This patch would ideally be applied as a fixup to "mips: add MSA
-register definitions & access".
----
- arch/mips/include/asm/msa.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ arch/mips/include/uapi/asm/inst.h | 4 ++--
+ arch/mips/math-emu/cp1emu.c       | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/include/asm/msa.h b/arch/mips/include/asm/msa.h
-index d7fd8e1..a2aba6c 100644
---- a/arch/mips/include/asm/msa.h
-+++ b/arch/mips/include/asm/msa.h
-@@ -17,14 +17,18 @@ extern void _restore_msa(struct task_struct *);
+diff --git a/arch/mips/include/uapi/asm/inst.h b/arch/mips/include/uapi/asm/inst.h
+index b39ba25..0832fac 100644
+--- a/arch/mips/include/uapi/asm/inst.h
++++ b/arch/mips/include/uapi/asm/inst.h
+@@ -163,8 +163,8 @@ enum cop1_sdw_func {
+  */
+ enum cop1x_func {
+ 	lwxc1_op     =	0x00, ldxc1_op	   =  0x01,
+-	pfetch_op    =	0x07, swxc1_op	   =  0x08,
+-	sdxc1_op     =	0x09, madd_s_op	   =  0x20,
++	swxc1_op     =  0x08, sdxc1_op	   =  0x09,
++	pfetch_op    =	0x0f, madd_s_op	   =  0x20,
+ 	madd_d_op    =	0x21, madd_e_op	   =  0x22,
+ 	msub_s_op    =	0x28, msub_d_op	   =  0x29,
+ 	msub_e_op    =	0x2a, nmadd_s_op   =  0x30,
+diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
+index 506925b..0b4e2e3 100644
+--- a/arch/mips/math-emu/cp1emu.c
++++ b/arch/mips/math-emu/cp1emu.c
+@@ -1538,10 +1538,10 @@ static int fpux_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
+ 		break;
+ 	}
  
- static inline void enable_msa(void)
- {
--	if (cpu_has_msa)
-+	if (cpu_has_msa) {
- 		set_c0_config5(MIPS_CONF5_MSAEN);
-+		enable_fpu_hazard();
-+	}
- }
+-	case 0x7:		/* 7 */
+-		if (MIPSInst_FUNC(ir) != pfetch_op) {
++	case 0x3:
++		if (MIPSInst_FUNC(ir) != pfetch_op)
+ 			return SIGILL;
+-		}
++
+ 		/* ignore prefx operation */
+ 		break;
  
- static inline void disable_msa(void)
- {
--	if (cpu_has_msa)
-+	if (cpu_has_msa) {
- 		clear_c0_config5(MIPS_CONF5_MSAEN);
-+		disable_fpu_hazard();
-+	}
- }
- 
- static inline int is_msa_enabled(void)
 -- 
 1.8.5.3

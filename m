@@ -1,21 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.89.28.114]:44741 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.114]:33308 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6816288AbaCGJZjRAc74 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Mar 2014 10:25:39 +0100
+        with ESMTP id S6817913AbaCLLCwwH6ZE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 12 Mar 2014 12:02:52 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 6B5B64367FA65
-        for <linux-mips@linux-mips.org>; Fri,  7 Mar 2014 09:25:31 +0000 (GMT)
-Message-ID: <5319908C.4060008@imgtec.com>
-Date: Fri, 7 Mar 2014 09:25:32 +0000
-From: James Hogan <james.hogan@imgtec.com>
+        by Websense Email Security Gateway with ESMTPS id 855525A44206E
+        for <linux-mips@linux-mips.org>; Wed, 12 Mar 2014 11:02:45 +0000 (GMT)
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: smp-cps: fix NMI detection
+Date: Wed, 12 Mar 2014 11:02:33 +0000
+Message-ID: <1394622153-5275-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS FPU emulator: Fix prefx detection and COP1X function
- field definition
-References: <1394154327-16677-1-git-send-email-dengcheng.zhu@imgtec.com>
-In-Reply-To: <1394154327-16677-1-git-send-email-dengcheng.zhu@imgtec.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,24 +21,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Cc: linux-mips@linux-mips.org, paul.burton@imgtec.com, Leonid.Yegoshin@imgtec.com, Steven.Hill@imgtec.com
-Message-ID: <20140307092532.sFa1YrCyMFFRue6UhC4KQ8-7dUohUgo8DTfvDpAyai8@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20140312110233.bnb2BsOJoEorp-31u1lAheQLwqNOBOjljvH56NApRKU@z>
 
-On 07/03/14 01:05, Deng-Cheng Zhu wrote:
-> From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-> 
-> When running applications which contain the instruction "prefx" on FPU-less
-> CPUs, a message "Illegal instruction" will be seen. This instruction is
-> supposed to be ignored by the FPU emulator. However, its current detection
-> and function field encoding are incorrect. This patch fix the issue.
-> 
-> Reviewed-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-> Reviewed-by: Paul Burton <paul.burton@imgtec.com>
-> Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+The code checking whether the core is running the reset vector due to an
+NMI was mistakenly using the value of the t0 register rather than the k0
+register which contains cp0_status. This meant that if t0 happened to
+have bit 19 set when the core powered up it would mistake the reason as
+being an NMI, leading to a failure in onlining the CPU. That seems to
+happen rarely enough that I didn't catch this until I started
+implementing hotplug & ran a script repeatedly offlining & onlining a
+CPU.
 
-This appears to go back to the beginning of the git era (remove "uapi"
-for older versions). It should probably be marked for stable when applied.
+Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+---
+Ideally this would be applied as a fixup for "MIPS: Coherent Processing
+System SMP implementation".
+---
+ arch/mips/kernel/cps-vec.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers
-James
+diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
+index 95dafcb..40c2abe 100644
+--- a/arch/mips/kernel/cps-vec.S
++++ b/arch/mips/kernel/cps-vec.S
+@@ -30,7 +30,7 @@ LEAF(mips_cps_core_entry)
+ 
+ 	/* Check whether we're here due to an NMI */
+ 	mfc0	k0, CP0_STATUS
+-	and	k0, t0, ST0_NMI
++	and	k0, k0, ST0_NMI
+ 	beqz	k0, not_nmi
+ 	 nop
+ 
+-- 
+1.8.5.3

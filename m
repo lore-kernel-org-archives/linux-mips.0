@@ -1,14 +1,17 @@
-Received: from mail.windriver.com ([147.11.1.11]:64882 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6822478AbaCQGHLO4SRp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Mar 2014 07:07:11 +0100
-From: <Wei.Yang@windriver.com>
-Subject: [PATCH] mips/octeon_3xxx: Fix a warning on octeon_3xxx
-Date: Mon, 17 Mar 2014 14:06:54 +0800
-Message-ID: <1395036414-20581-1-git-send-email-Wei.Yang@windriver.com>
+Received: from mailapp01.imgtec.com ([195.89.28.115]:47591 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6817552AbaCQJ1FbtGnm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Mar 2014 10:27:05 +0100
+Message-ID: <5326BFE1.2060400@imgtec.com>
+Date: Mon, 17 Mar 2014 09:26:57 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Wei.Yang@windriver.com>
+Subject: Re: [PATCH] MIPS: Fix syscall tracing interface
+References: <1395042021-6186-1-git-send-email-larper@axis.com>
+In-Reply-To: <1395042021-6186-1-git-send-email-larper@axis.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,65 +21,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: david.daney@cavium.com, ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, wei.yang@windriver.com
-Message-ID: <20140317060654.aqf4HDR7Zq4th4-zAherin_dif7L8jwKoPbcCcbLMGU@z>
+To: Lars Persson <lars.persson@axis.com>, linux-mips@linux-mips.org
+Cc: Lars Persson <larper@axis.com>
+Message-ID: <20140317092657.PMBceUmyo0SPAYq4c05ezjSMnRh_LvYWr7kTxTzMI8M@z>
 
-From: Yang Wei <Wei.Yang@windriver.com>
+Hi Lars,
 
-Since the xlate of interrupts property of GPIO on octeon 3xxx
-does not success, so the following warning would be triggerred
-while invoking of_device_alloc to create platform device.
-So we need to remove it to avoid the warning.
+On 03/17/2014 07:40 AM, Lars Persson wrote:
+> The MIPS syscall tracing interface had multiple bugs
+> that made it completely unusable.
+>
+> Signed-off-by: Lars Persson <larper@axis.com>
 
-WARNING: CPU: 1 PID: 1 at drivers/of/platform.c:173 of_device_alloc+0x294/0x2a0()
-Modules linked in:
-CPU: 1 PID: 1 Comm: swapper/0 Not tainted 3.14.0-rc6- #11
-Stack : ffffffff81a20000 0000000000000001 0000000000000004 ffffffff81b50000
-	  0000000000000001 0000000000000000 0000000000000000 ffffffff8119e878
-	  ffffffff81a20000 ffffffff8119ee98 0000000000000000 0000000000000000
-	  ffffffff81b30000 ffffffff81b20000 ffffffff81932900 ffffffff81a11077
-	  ffffffff81b27a08 800000041f8704a8 0000000000000001 0000000000000001
-	  0000000000000000 800000041fbf7438 0000000000000001 ffffffff81800d90
-	  800000041f85fa68 ffffffff8114a60c 0000000000000000 ffffffff811a0838
-	  800000041f870000 800000041f85f980 0000000000000001 ffffffff81805080
-	  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-	  0000000000000000 ffffffff81122620 0000000000000000 0000000000000000
-	  ...
-Call Trace:
-[<ffffffff81122620>] show_stack+0xc0/0xe0
-[<ffffffff81805080>] dump_stack+0x8c/0xe0
-[<ffffffff8114a7ac>] warn_slowpath_common+0x94/0xc8
-[<ffffffff81693b1c>] of_device_alloc+0x294/0x2a0
-[<ffffffff81693b74>] of_platform_device_create_pdata+0x4c/0xf0
-[<ffffffff81693d58>] of_platform_bus_create+0x128/0x1a8
-[<ffffffff81693da0>] of_platform_bus_create+0x170/0x1a8
-[<ffffffff81693e8c>] of_platform_bus_probe+0xb4/0x110
-[<ffffffff81100598>] do_one_initcall+0xe8/0x130
-[<ffffffff81a92c5c>] kernel_init_freeable+0x1d4/0x2bc
-[<ffffffff817fe140>] kernel_init+0x20/0x118
-[<ffffffff8111d024>] ret_from_kernel_thread+0x14/0x1c
+The last part of your patch will conflict with
 
-Signed-off-by: Yang Wei <Wei.Yang@windriver.com>
----
- arch/mips/cavium-octeon/octeon_3xxx.dts |    5 -----
- 1 file changed, 5 deletions(-)
+http://patchwork.linux-mips.org/patch/6402/
 
-diff --git a/arch/mips/cavium-octeon/octeon_3xxx.dts b/arch/mips/cavium-octeon/octeon_3xxx.dts
-index fa33115..9fe94d5 100644
---- a/arch/mips/cavium-octeon/octeon_3xxx.dts
-+++ b/arch/mips/cavium-octeon/octeon_3xxx.dts
-@@ -43,11 +43,6 @@
- 			 */
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
--			/* The GPIO pin connect to 16 consecutive CUI bits */
--			interrupts = <0 16>, <0 17>, <0 18>, <0 19>,
--				     <0 20>, <0 21>, <0 22>, <0 23>,
--				     <0 24>, <0 25>, <0 26>, <0 27>,
--				     <0 28>, <0 29>, <0 30>, <0 31>;
- 		};
- 
- 		smi0: mdio@1180000001800 {
+which is already in the linux-next tree.
+
+The rest of the changes look reasonable to me.
+
+I believe it is best if you base your patches on 
+upstream-sfr/mips-for-linux-next[1] branch.
+
+[1] 
+http://git.linux-mips.org/?p=ralf/upstream-sfr.git;a=shortlog;h=refs/heads/mips-for-linux-next
+
 -- 
-1.7.9.5
+markos

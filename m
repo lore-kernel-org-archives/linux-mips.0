@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.89.28.115]:47591 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.115]:41449 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6817552AbaCQJ1FbtGnm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Mar 2014 10:27:05 +0100
-Message-ID: <5326BFE1.2060400@imgtec.com>
-Date: Mon, 17 Mar 2014 09:26:57 +0000
+        with ESMTP id S6867486AbaCQOlKc1asu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Mar 2014 15:41:10 +0100
+Message-ID: <5327097E.4090709@imgtec.com>
+Date: Mon, 17 Mar 2014 14:41:02 +0000
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Fix syscall tracing interface
-References: <1395042021-6186-1-git-send-email-larper@axis.com>
-In-Reply-To: <1395042021-6186-1-git-send-email-larper@axis.com>
+Subject: Re: [PATCH v2] MIPS: Fix syscall tracing interface
+References: <1395054853-3465-1-git-send-email-larper@axis.com>
+In-Reply-To: <1395054853-3465-1-git-send-email-larper@axis.com>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -23,29 +23,46 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Lars Persson <lars.persson@axis.com>, linux-mips@linux-mips.org
 Cc: Lars Persson <larper@axis.com>
-Message-ID: <20140317092657.PMBceUmyo0SPAYq4c05ezjSMnRh_LvYWr7kTxTzMI8M@z>
+Message-ID: <20140317144102.jeFZQoj6r4wax8QE5EubMVwdfDbFXp8-PInOhiVc9n0@z>
 
 Hi Lars,
 
-On 03/17/2014 07:40 AM, Lars Persson wrote:
-> The MIPS syscall tracing interface had multiple bugs
-> that made it completely unusable.
+On 03/17/2014 11:14 AM, Lars Persson wrote:
+> Fix pointer computation for stack-based arguments.
 >
 > Signed-off-by: Lars Persson <larper@axis.com>
+> ---
+>   arch/mips/include/asm/syscall.h |    4 ++--
+>   1 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
+> index c71e40a..6c488c8 100644
+> --- a/arch/mips/include/asm/syscall.h
+> +++ b/arch/mips/include/asm/syscall.h
+> @@ -51,14 +51,14 @@ static inline unsigned long mips_get_syscall_arg(unsigned long *arg,
+>
+>   #ifdef CONFIG_32BIT
+>   	case 4: case 5: case 6: case 7:
+> -		return get_user(*arg, (int *)usp + 4 * n);
+> +		return get_user(*arg, (int *)usp + n);
+>   #endif
+>
+>   #ifdef CONFIG_64BIT
+>   	case 4: case 5: case 6: case 7:
+>   #ifdef CONFIG_MIPS32_O32
+>   		if (test_thread_flag(TIF_32BIT_REGS))
+> -			return get_user(*arg, (int *)usp + 4 * n);
+> +			return get_user(*arg, (int *)usp + n);
+>   		else
+>   #endif
+>   			*arg = regs->regs[4 + n];
+>
 
-The last part of your patch will conflict with
+Thanks for the v2.
 
-http://patchwork.linux-mips.org/patch/6402/
+It looks good to me but I haven't tested it.
 
-which is already in the linux-next tree.
-
-The rest of the changes look reasonable to me.
-
-I believe it is best if you base your patches on 
-upstream-sfr/mips-for-linux-next[1] branch.
-
-[1] 
-http://git.linux-mips.org/?p=ralf/upstream-sfr.git;a=shortlog;h=refs/heads/mips-for-linux-next
+Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
 
 -- 
 markos

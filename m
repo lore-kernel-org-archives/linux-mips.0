@@ -1,18 +1,17 @@
-Received: from mail-bn1lp0140.outbound.protection.outlook.com ([207.46.163.140]:13647
-        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6819678AbaCSWMQkMM4N (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 19 Mar 2014 23:12:16 +0100
-Message-ID: <532A1637.5080803@caviumnetworks.com>
-Date: Wed, 19 Mar 2014 15:12:07 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from mail1.windriver.com ([147.11.146.13]:40901 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6821115AbaCTAyYtrqS0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Mar 2014 01:54:24 +0100
+Message-ID: <532A3C18.40904@windriver.com>
+Date: Thu, 20 Mar 2014 08:53:44 +0800
+From: "Yang,Wei" <Wei.Yang@windriver.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH] MIPS: octeon: Fix warning in of_device_alloc on cn3xxx
 References: <1395118084-24018-1-git-send-email-Wei.Yang@windriver.com> <532968AD.4010402@windriver.com> <20140319162008.GA4368@alberich> <5329E343.60309@caviumnetworks.com> <20140319220330.GC4368@alberich>
 In-Reply-To: <20140319220330.GC4368@alberich>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Return-Path: <Wei.Yang@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,12 +21,11 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, ralf@linux-mips.org
-Cc: "Yang,Wei" <Wei.Yang@windriver.com>, linux-mips@linux-mips.org
-Message-ID: <20140319221207.rX0WV9gFd8aOfXqgjg16QoYLiDSHWzEL5K_apxm8yjI@z>
+To: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, David Daney <ddaney@caviumnetworks.com>, ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, "Ashfield, Bruce" <Bruce.Ashfield@windriver.com>
+Message-ID: <20140320005344.KJH3sxelgEIhjsUCjyUAESoa8qFTZFrEgq_k5XxFV4M@z>
 
-On 03/19/2014 03:03 PM, Andreas Herrmann wrote:
->
+On 03/20/2014 06:03 AM, Andreas Herrmann wrote:
 > Starting with commit 3da5278727a895d49a601f67fd49dffa0b80f9a5 (of/irq:
 > Rework of_irq_count()) the following warning is triggered on octeon
 > cn3xxx:
@@ -77,23 +75,13 @@ On 03/19/2014 03:03 PM, Andreas Herrmann wrote:
 >
 > Reported-by: Yang Wei <wei.yang@windriver.com>
 > Cc: David Daney <david.daney@caviumnetworks.com>
-
-Thanks Andreas and Yang Wei.
-
-FWIW:
-
-Tested and...
-
-Acked-by: David Daney <david.daney@cavium.com>
-
-
-Ralf et al.  If you are sending more patches for 3.14, this would be a 
-good candidate.
-
-Thanks,
-David Daney
-
 > Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
+
+Okay, Thank you Andreas and David for this review.
+
+
+Thanks
+Wei
 > ---
 >   arch/mips/cavium-octeon/octeon-irq.c |   22 ++++++++++++----------
 >   1 file changed, 12 insertions(+), 10 deletions(-)
@@ -102,4 +90,53 @@ David Daney
 > index 25fbfae..c2bb4f8 100644
 > --- a/arch/mips/cavium-octeon/octeon-irq.c
 > +++ b/arch/mips/cavium-octeon/octeon-irq.c
-[...]
+> @@ -975,10 +975,6 @@ static int octeon_irq_ciu_xlat(struct irq_domain *d,
+>   	if (ciu > 1 || bit > 63)
+>   		return -EINVAL;
+>   
+> -	/* These are the GPIO lines */
+> -	if (ciu == 0 && bit >= 16 && bit < 32)
+> -		return -EINVAL;
+> -
+>   	*out_hwirq = (ciu << 6) | bit;
+>   	*out_type = 0;
+>   
+> @@ -1007,6 +1003,10 @@ static int octeon_irq_ciu_map(struct irq_domain *d,
+>   	if (!octeon_irq_virq_in_range(virq))
+>   		return -EINVAL;
+>   
+> +	/* Don't map irq if it is reserved for GPIO. */
+> +	if (line == 0 && bit >= 16 && bit <32)
+> +		return 0;
+> +
+>   	if (line > 1 || octeon_irq_ciu_to_irq[line][bit] != 0)
+>   		return -EINVAL;
+>   
+> @@ -1525,10 +1525,6 @@ static int octeon_irq_ciu2_xlat(struct irq_domain *d,
+>   	ciu = intspec[0];
+>   	bit = intspec[1];
+>   
+> -	/* Line 7  are the GPIO lines */
+> -	if (ciu > 6 || bit > 63)
+> -		return -EINVAL;
+> -
+>   	*out_hwirq = (ciu << 6) | bit;
+>   	*out_type = 0;
+>   
+> @@ -1570,8 +1566,14 @@ static int octeon_irq_ciu2_map(struct irq_domain *d,
+>   	if (!octeon_irq_virq_in_range(virq))
+>   		return -EINVAL;
+>   
+> -	/* Line 7  are the GPIO lines */
+> -	if (line > 6 || octeon_irq_ciu_to_irq[line][bit] != 0)
+> +	/*
+> +	 * Don't map irq if it is reserved for GPIO.
+> +	 * (Line 7 are the GPIO lines.)
+> +	 */
+> +	if (line == 7)
+> +		return 0;
+> +
+> +	if (line > 7 || octeon_irq_ciu_to_irq[line][bit] != 0)
+>   		return -EINVAL;
+>   
+>   	if (octeon_irq_ciu2_is_edge(line, bit))

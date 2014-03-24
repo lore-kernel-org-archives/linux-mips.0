@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.89.28.115]:44918 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.114]:49279 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6822429AbaCXKUGWC5f1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 24 Mar 2014 11:20:06 +0100
+        with ESMTP id S6823009AbaCXKULXe3I7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 24 Mar 2014 11:20:11 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id E0DB5746D34B7
-        for <linux-mips@linux-mips.org>; Mon, 24 Mar 2014 10:19:58 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id 07883458888E1
+        for <linux-mips@linux-mips.org>; Mon, 24 Mar 2014 10:20:04 +0000 (GMT)
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 01/12] MIPS: add cpu_vpe_id macro
-Date: Mon, 24 Mar 2014 10:19:24 +0000
-Message-ID: <1395656375-9300-2-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 02/12] MIPS: provide empty mips_mt_set_cpuoptions when CONFIG_MIPS_MT=n
+Date: Mon, 24 Mar 2014 10:19:25 +0000
+Message-ID: <1395656375-9300-3-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1395656375-9300-1-git-send-email-paul.burton@imgtec.com>
 References: <1395656375-9300-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -25,33 +25,34 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140324101924.hGW-NE6yT-K2DvxaD50m7lgsjP1x4qspyqTRxO7U32w@z>
+Message-ID: <20140324101925.T7NK-nU1PTmLf8ErLZekCcuqKS6O2fhuBpAW1U3Jqmw@z>
 
-The vpe_id field of struct cpuinfo_mips is only present when one of
-CONFIG_MIPS_MT_{SMP,SMTC} is enabled. That means that any code accessing
-which may compile without MT is currently forced to use an #ifdef.
-Instead this patch provides an accessor macro, #ifdef'd appropriately
-to prevent further #ifdef's elsewhere.
+Both the CONFIG_MIPS_CPS & CONFIG_MIPS_CMP SMP implementations call
+mips_mt_set_cpuoptions when preparing to start secondary CPUs. However
+both may be used without MT. Provide an empty inline function to prevent
+a link error in this case.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/include/asm/cpu-info.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/mips/include/asm/mips_mt.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/mips/include/asm/cpu-info.h b/arch/mips/include/asm/cpu-info.h
-index 359cea1..49953f7 100644
---- a/arch/mips/include/asm/cpu-info.h
-+++ b/arch/mips/include/asm/cpu-info.h
-@@ -96,4 +96,10 @@ extern void cpu_report(void);
- extern const char *__cpu_name[];
- #define cpu_name_string()	__cpu_name[smp_processor_id()]
+diff --git a/arch/mips/include/asm/mips_mt.h b/arch/mips/include/asm/mips_mt.h
+index ac79352..a3df0c3 100644
+--- a/arch/mips/include/asm/mips_mt.h
++++ b/arch/mips/include/asm/mips_mt.h
+@@ -18,7 +18,12 @@ extern cpumask_t mt_fpu_cpumask;
+ extern unsigned long mt_fpemul_threshold;
  
-+#if defined(CONFIG_MIPS_MT_SMP) || defined(CONFIG_MIPS_MT_SMTC)
-+# define cpu_vpe_id(cpuinfo)	((cpuinfo)->vpe_id)
-+#else
-+# define cpu_vpe_id(cpuinfo)	0
-+#endif
+ extern void mips_mt_regdump(unsigned long previous_mvpcontrol_value);
 +
- #endif /* __ASM_CPU_INFO_H */
++#ifdef CONFIG_MIPS_MT
+ extern void mips_mt_set_cpuoptions(void);
++#else
++static inline void mips_mt_set_cpuoptions(void) { }
++#endif
+ 
+ struct class;
+ extern struct class *mt_class;
 -- 
 1.8.5.3

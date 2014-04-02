@@ -1,14 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.89.28.114]:47801 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6816676AbaDBIxi1-eBS (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Apr 2014 10:53:38 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: lib: iomap: Use __mem_{read,write}{b,w,l} for MMIO
-Date: Wed, 2 Apr 2014 09:53:24 +0100
-Message-ID: <1396428804-31075-1-git-send-email-markos.chandras@imgtec.com>
+Received: from [217.156.133.130] ([217.156.133.130]:42912 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S6822276AbaDBKZXs2Wry (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Apr 2014 12:25:23 +0200
+Message-ID: <533BE58C.3010201@imgtec.com>
+Date: Wed, 2 Apr 2014 11:25:16 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH] MIPS: MT: proc: Add support for printing VPE and TC ids
+References: <1381846382-26437-1-git-send-email-markos.chandras@imgtec.com> <20131016151007.GP1615@linux-mips.org>
+In-Reply-To: <20131016151007.GP1615@linux-mips.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature";
+        boundary="ODU5mEL8qOehS9dJvAdKovWJ0JlscXvH7"
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,163 +22,225 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, Steve Glendinning <steve.glendinning@shawell.net>, Ben Boeckel <mathstuf@gmail.com>, Jeff Kirsher <jeffrey.t.kirsher@intel.com>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Jeffrey Deans <Jeffrey.Deans@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20140402085324.xthSbEz8Jk70XTElsyFerdeC8Ao3ZRlqb3c1CJcuaqg@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Markos Chandras <markos.chandras@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20140402102516.QQr-GotZuRprJr6t0TagZIEQgyRaieLiuSK50SH2Jd0@z>
 
-Using the __raw_{read,write}{b,w,l} functions to perform
-repeatable MMIO could result in problems if the host bus
-does not match the endianness of the PCI/ISA. This problem
-is visible on big-endian SEAD3 configurations after commit
-2925f6c0c7af32720dcbadc586463aeceb6baa22
-"net: smc911x: use io{read,write}*_rep accessors". This effectively
-moves away from using the __mem_* variants to __raw_* ones
-and causes a kernel bug as follows:
+--ODU5mEL8qOehS9dJvAdKovWJ0JlscXvH7
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Call Trace:
-CPU 0 Unable to handle kernel paging request at virtual address 00000000,
-epc == 00000000, ra == 8012b3b0
-Oops[#1]:
-Cpu 0
-$ 0   : 00000000 00000065 00000000 00000004
-$ 4   : 00000000 00000000 9a82dd60 00000000
-$ 8   : 00000000 00000000 a00ae278 00000007
-$12   : 0000000e 00000011 804c4228 ffff9411
-$16   : 00000100 00000000 80560000 807fc6d0
-$20   : 807fc8d0 807fcad0 807fbec0 00000100
-$24   : 00009150 80109be0
-$28   : 9a82c000 9a82dd28 00000001 8012b3b0
-Hi    : 00000000
-Lo    : 00000000
-epc   : 00000000   (null)
-    Not tainted
-ra    : 8012b3b0 call_timer_fn.isra.39+0x24/0x84
-Status: 10009503    KERNEL EXL IE
-Cause : 00800808
-BadVA : 00000000
-PrId  : 00019c20 (MIPS M14Kc)
-Modules linked in:
-Process swapper (pid: 1, threadinfo=9a82c000, task=9a82ba18, tls=00000000)
-Stack : 00000040 00000000 00000007 8056732c 80580000 00000001 9a82dd60 00200200
-        80560000 8012b598 8056732c 80580000 00000001 00000000 9a82dd60 9a82dd60
-        00000000 807fbd44 807fbd40 805664e0 0000000a 80800000 00000004 80125924
-        0000fda0 000007f0 80000000 00000001 80800000 007f0000 00200140 80166338
-        00000000 8100fda0 0000fda0 000007f0 80000000 00000001 80800000 007f0000
-        ...
-Call Trace:
-[<8012b598>] run_timer_softirq+0x188/0x1f4
-[<80125924>] __do_softirq+0xc4/0x18c
-[<80166338>] handle_percpu_irq+0x54/0x84
-[<80125aa4>] do_softirq+0x68/0x70
-[<80103b50>] do_IRQ+0x18/0x28
-[<80125d1c>] irq_exit+0x94/0xc0
-[<80125aa4>] do_softirq+0x68/0x70
-[<80102130>] ret_from_irq+0x0/0x4
-[<80102130>] ret_from_irq+0x0/0x4
-[<80125d1c>] irq_exit+0x94/0xc0
-[<803165b0>] __bzero+0xd4/0x164
-[<80346d0c>] mem32_serial_out+0x0/0x1c
-[<8010d4ac>] free_init_pages+0x98/0xfc
-[<80180a08>] free_hot_cold_page+0x2c/0x1c4
-[<80180bd8>] __free_pages+0x38/0x98
-[<8010d4a0>] free_init_pages+0x8c/0xfc
-[<8010d4ac>] free_init_pages+0x98/0xfc
-[<8049fb04>] kernel_init+0x28/0x15c
-[<80147484>] schedule_tail+0x1c/0x60
-[<8049fadc>] kernel_init+0x0/0x15c
-[<80102178>] ret_from_kernel_thread+0x14/0x1c
-[<8040a06f>] skb_pad+0xe7/0x13c
+On 16/10/13 16:10, Ralf Baechle wrote:
+> On Tue, Oct 15, 2013 at 03:13:02PM +0100, Markos Chandras wrote:
+>=20
+>> Add support for including VPE and TC ids in /proc/cpuinfo output as
+>> appropriate when MT/SMTC is enabled.
+>=20
+> The pile of #ifdefs cracked my glasses ...
+>=20
+> And there are more CPUs or configuration that want to provide special
+> per-CPU information in /proc/cpuinfo.  So I think there needs to be a
+> hook mechanism, such as a notifier.
+>=20
+> This is a first cut only; I need to think about what sort of looking
+> the notifier needs to have.  But I'd appreciate testing on MT hardware!=
 
-CC: Steve Glendinning <steve.glendinning@shawell.net>
-CC: Ben Boeckel <mathstuf@gmail.com>
-CC: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-CC: David S. Miller <davem@davemloft.net>
-CC: netdev@vger.kernel.org
-CC: Jeffrey Deans <Jeffrey.Deans@imgtec.com>
-CC: Ralf Baechle <ralf@linux-mips.org>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
-It seems there are some inconsistencies on how the readsl/writesl and the
-io{read,write}*_rep functions are implemented on MIPS. The former do
-byte-swapping whereas the later do not. However, the way I read the commit
-message from 2925f6c0c7af32720dcbadc586463aeceb6baa22, is  that the
-io{read,write}*_rep functions are drop-in replacements for the readsl/writesl
-ones which is not the case here. Or maybe there is something wrong with the
-driver? Or maybe the SEAD3 board needs 'SWAP_IO_SPACE if CPU_BIG_ENDIAN'?
+>=20
+> Thanks,
+>=20
+>   Ralf
+>=20
+> Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 
-Assuming the patch is correct, it needs to be backported to >=3.8
-kernels.
----
- arch/mips/lib/iomap.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Hi Ralf,
 
-diff --git a/arch/mips/lib/iomap.c b/arch/mips/lib/iomap.c
-index e3acb2d..9f4bc52 100644
---- a/arch/mips/lib/iomap.c
-+++ b/arch/mips/lib/iomap.c
-@@ -97,14 +97,14 @@ EXPORT_SYMBOL(iowrite32be);
- 
- /*
-  * These are the "repeat MMIO read/write" functions.
-- * Note the "__raw" accesses, since we don't want to
-- * convert to CPU byte order. We write in "IO byte
-- * order" (we also don't have IO barriers).
-+ * Note the "__mem" accesses, since we want to convert
-+ * to CPU byte order if the host bus happens to not match the
-+ * endianness of PCI/ISA (see mach-generic/mangle-port.h).
-  */
- static inline void mmio_insb(void __iomem *addr, u8 *dst, int count)
- {
- 	while (--count >= 0) {
--		u8 data = __raw_readb(addr);
-+		u8 data = __mem_readb(addr);
- 		*dst = data;
- 		dst++;
- 	}
-@@ -113,7 +113,7 @@ static inline void mmio_insb(void __iomem *addr, u8 *dst, int count)
- static inline void mmio_insw(void __iomem *addr, u16 *dst, int count)
- {
- 	while (--count >= 0) {
--		u16 data = __raw_readw(addr);
-+		u16 data = __mem_readw(addr);
- 		*dst = data;
- 		dst++;
- 	}
-@@ -122,7 +122,7 @@ static inline void mmio_insw(void __iomem *addr, u16 *dst, int count)
- static inline void mmio_insl(void __iomem *addr, u32 *dst, int count)
- {
- 	while (--count >= 0) {
--		u32 data = __raw_readl(addr);
-+		u32 data = __mem_readl(addr);
- 		*dst = data;
- 		dst++;
- 	}
-@@ -131,7 +131,7 @@ static inline void mmio_insl(void __iomem *addr, u32 *dst, int count)
- static inline void mmio_outsb(void __iomem *addr, const u8 *src, int count)
- {
- 	while (--count >= 0) {
--		__raw_writeb(*src, addr);
-+		__mem_writeb(*src, addr);
- 		src++;
- 	}
- }
-@@ -139,7 +139,7 @@ static inline void mmio_outsb(void __iomem *addr, const u8 *src, int count)
- static inline void mmio_outsw(void __iomem *addr, const u16 *src, int count)
- {
- 	while (--count >= 0) {
--		__raw_writew(*src, addr);
-+		__mem_writew(*src, addr);
- 		src++;
- 	}
- }
-@@ -147,7 +147,7 @@ static inline void mmio_outsw(void __iomem *addr, const u16 *src, int count)
- static inline void mmio_outsl(void __iomem *addr, const u32 *src, int count)
- {
- 	while (--count >= 0) {
--		__raw_writel(*src, addr);
-+		__mem_writel(*src, addr);
- 		src++;
- 	}
- }
--- 
-1.9.1
+Both of these patches seem to be applied, Markos' in v3.14-rc1, and your
+one in mips-for-linux-next:
+
+$ cat /proc/cpuinfo
+=2E..
+processor               : 3
+=2E..
+core                    : 1
+VPE                     : 1
+VCED exceptions         : not available
+VCEI exceptions         : not available
+VPE                     : 1
+
+Maybe a revert of Markos' patch could be squashed in to your patch?
+
+Cheers
+James
+
+>=20
+>  arch/mips/include/asm/cpu-info.h | 21 +++++++++++++++++++++
+>  arch/mips/kernel/proc.c          | 23 +++++++++++++++++++++++
+>  arch/mips/kernel/smp-mt.c        | 22 ++++++++++++++++++++++
+>  arch/mips/kernel/smtc-proc.c     | 23 +++++++++++++++++++++++
+>  4 files changed, 89 insertions(+)
+>=20
+> diff --git a/arch/mips/include/asm/cpu-info.h b/arch/mips/include/asm/c=
+pu-info.h
+> index 21c8e29..95c1c42 100644
+> --- a/arch/mips/include/asm/cpu-info.h
+> +++ b/arch/mips/include/asm/cpu-info.h
+> @@ -92,4 +92,25 @@ extern void cpu_report(void);
+>  extern const char *__cpu_name[];
+>  #define cpu_name_string()	__cpu_name[smp_processor_id()]
+> =20
+> +struct seq_file;
+> +struct notifier_block;
+> +
+> +extern int register_proc_cpuinfo_notifier(struct notifier_block *nb);
+> +extern int proc_cpuinfo_notifier_call_chain(unsigned long val, void *v=
+);
+> +
+> +#define proc_cpuinfo_notifier(fn, pri)					\
+> +({									\
+> +	static struct notifier_block fn##_nb =3D {			\
+> +		.notifier_call =3D fn,					\
+> +		.priority =3D pri						\
+> +	};								\
+> +									\
+> +	register_proc_cpuinfo_notifier(&fn##_nb);			\
+> +})
+> +
+> +struct proc_cpuinfo_notifier_args {
+> +	struct seq_file *m;
+> +	unsigned long n;
+> +};
+> +
+>  #endif /* __ASM_CPU_INFO_H */
+> diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+> index 8c58d8a..5ca804d 100644
+> --- a/arch/mips/kernel/proc.c
+> +++ b/arch/mips/kernel/proc.c
+> @@ -17,8 +17,24 @@
+> =20
+>  unsigned int vced_count, vcei_count;
+> =20
+> +/*
+> + *  * No lock; only written during early bootup by CPU 0.
+> + *   */
+> +static RAW_NOTIFIER_HEAD(proc_cpuinfo_chain);
+> +
+> +int __ref register_proc_cpuinfo_notifier(struct notifier_block *nb)
+> +{
+> +	return raw_notifier_chain_register(&proc_cpuinfo_chain, nb);
+> +}
+> +
+> +int proc_cpuinfo_notifier_call_chain(unsigned long val, void *v)
+> +{
+> +	return raw_notifier_call_chain(&proc_cpuinfo_chain, val, v);
+> +}
+> +
+>  static int show_cpuinfo(struct seq_file *m, void *v)
+>  {
+> +	struct proc_cpuinfo_notifier_args proc_cpuinfo_notifier_args;
+>  	unsigned long n =3D (unsigned long) v - 1;
+>  	unsigned int version =3D cpu_data[n].processor_id;
+>  	unsigned int fp_vers =3D cpu_data[n].fpu_id;
+> @@ -112,6 +128,13 @@ static int show_cpuinfo(struct seq_file *m, void *=
+v)
+>  		      cpu_has_vce ? "%u" : "not available");
+>  	seq_printf(m, fmt, 'D', vced_count);
+>  	seq_printf(m, fmt, 'I', vcei_count);
+> +
+> +	proc_cpuinfo_notifier_args.m =3D m;
+> +	proc_cpuinfo_notifier_args.n =3D n;
+> +
+> +	raw_notifier_call_chain(&proc_cpuinfo_chain, 0,
+> +				&proc_cpuinfo_notifier_args);
+> +
+>  	seq_printf(m, "\n");
+> =20
+>  	return 0;
+> diff --git a/arch/mips/kernel/smp-mt.c b/arch/mips/kernel/smp-mt.c
+> index 57a3f7a..9a43e78 100644
+> --- a/arch/mips/kernel/smp-mt.c
+> +++ b/arch/mips/kernel/smp-mt.c
+> @@ -285,3 +285,25 @@ struct plat_smp_ops vsmp_smp_ops =3D {
+>  	.smp_setup		=3D vsmp_smp_setup,
+>  	.prepare_cpus		=3D vsmp_prepare_cpus,
+>  };
+> +
+> +static int proc_cpuinfo_chain_call(struct notifier_block *nfb,
+> +	unsigned long action_unused, void *data)
+> +{
+> +	struct proc_cpuinfo_notifier_args *pcn =3D data;
+> +	struct seq_file *m =3D pcn->m;
+> +	unsigned long n =3D pcn->n;
+> +
+> +	if (!cpu_has_mipsmt)
+> +		return NOTIFY_OK;
+> +
+> +	seq_printf(m, "VPE\t\t\t: %d\n", cpu_data[n].vpe_id);
+> +
+> +	return NOTIFY_OK;
+> +}
+> +
+> +static int __init proc_cpuinfo_notifier_init(void)
+> +{
+> +	return proc_cpuinfo_notifier(proc_cpuinfo_chain_call, 0);
+> +}
+> +
+> +subsys_initcall(proc_cpuinfo_notifier_init);
+> diff --git a/arch/mips/kernel/smtc-proc.c b/arch/mips/kernel/smtc-proc.=
+c
+> index c10aa84..38635a9 100644
+> --- a/arch/mips/kernel/smtc-proc.c
+> +++ b/arch/mips/kernel/smtc-proc.c
+> @@ -77,3 +77,26 @@ void init_smtc_stats(void)
+> =20
+>  	proc_create("smtc", 0444, NULL, &smtc_proc_fops);
+>  }
+> +
+> +static int proc_cpuinfo_chain_call(struct notifier_block *nfb,
+> +	unsigned long action_unused, void *data)
+> +{
+> +	struct proc_cpuinfo_notifier_args *pcn =3D data;
+> +	struct seq_file *m =3D pcn->m;
+> +	unsigned long n =3D pcn->n;
+> +
+> +	if (!cpu_has_mipsmt)
+> +		return NOTIFY_OK;
+> +
+> +	seq_printf(m, "VPE\t\t\t: %d\n", cpu_data[n].vpe_id);
+> +	seq_printf(m, "TC\t\t\t: %d\n", cpu_data[n].tc_id);
+> +
+> +	return NOTIFY_OK;
+> +}
+> +
+> +static int __init proc_cpuinfo_notifier_init(void)
+> +{
+> +	return proc_cpuinfo_notifier(proc_cpuinfo_chain_call, 0);
+> +}
+> +
+> +subsys_initcall(proc_cpuinfo_notifier_init);
+>=20
+
+
+--ODU5mEL8qOehS9dJvAdKovWJ0JlscXvH7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.13 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTO+WMAAoJEGwLaZPeOHZ6ygQQAKgTL9mkITkfVp2mi6pZgqhR
+Hn9u2u87KqenSkJG1IGARPcyCmL5Nui8jeS/IQgYDn/9/5faD2j6uZz4ZFlcmqUo
+zb3lunMjPUvDCERpi/0AX9uKoaciIGBB9dP6o/ScZelRogJAqrBGo9GLmRFOL/PD
+jyALjIXRbMuHdhEDkrIqhOVgx/WW0PbmBBVo3R8r4brJqssmdAVFBjIRcpPwAavi
+c/tun5VJylNv3tKmIZ3Sm+4/TOHS2ji0AKiSWBYEEJsVavAe9WI5UOGsPWDyFUhi
+Y/f6qbfjEXW5e8Y9K5C53afZxhrgGw9Oo+LQw9YDWSdr+rn5TY2FWbwvJqoq1MSl
+LHI3/jW1NotqAVvbsj/UpMJTmBAP110oJbXVB+5ZnEdCMp43wH/Cqqf5rwseNygG
+r+r3ZtjpoDdjwOoV0ScCcaDkd61nh9iGfPIzbT9zaGmW7awaTlgTpdLkT1Bw3g1p
+LdG4nCjKdwxqJg76CNaK2e0AMAsxf3SZLw6/U7pLHrAqXZZ4Kajk3b7w9R5qJfAp
+pIA027TG7v6W8h1jdBX9ygKEpwugiiBMXxLLq/nt4O8ck9biS2RtjHLW5Rz1V8je
+8HqDORSQDwut2LdgmBHbBXYZ8XjtZY8xp3O7O4YGB2kmmJOi3mFHzLek5z/EYvrT
+MimrdjWZHdsu0DHT7ju5
+=Ewd3
+-----END PGP SIGNATURE-----
+
+--ODU5mEL8qOehS9dJvAdKovWJ0JlscXvH7--

@@ -1,18 +1,17 @@
-Received: from [217.156.133.130] ([217.156.133.130]:15962 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S6820484AbaDCLZA2t-gD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 3 Apr 2014 13:25:00 +0200
-Message-ID: <533D4505.4050406@imgtec.com>
-Date: Thu, 3 Apr 2014 12:24:53 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from [217.156.156.69] ([217.156.156.69]:2520 "EHLO
+        mailapp01.imgtec.com" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S6816635AbaDCVB7exitU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 3 Apr 2014 23:01:59 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 6D7EC59711447
+        for <linux-mips@linux-mips.org>; Thu,  3 Apr 2014 17:52:15 +0100 (IST)
+From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Subject: [PATCH] MIPS: math-emu: Add IEEE754 exception statistics to debugfs
+Date: Thu, 3 Apr 2014 09:52:12 -0700
+Message-ID: <1396543932-30051-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: MT: proc: Add support for printing VPE and TC ids
-References: <1381846382-26437-1-git-send-email-markos.chandras@imgtec.com> <20131016151007.GP1615@linux-mips.org> <533BE58C.3010201@imgtec.com> <20140403112019.GA4365@linux-mips.org>
-In-Reply-To: <20140403112019.GA4365@linux-mips.org>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature";
-        boundary="hMdCw455TwxN3QvUdd00d3qaw70uUaPbf"
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <DengCheng.Zhu@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,62 +21,116 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Markos Chandras <markos.chandras@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20140403112453.3KW4LNUkjdduRrLhQ_R1ZdC_A1EKsTAtodugTR5S5Us@z>
+To: linux-mips@linux-mips.org
+Cc: Steven.Hill@imgtec.com, james.hogan@imgtec.com, Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Message-ID: <20140403165212.4ISEw7c-O1zs6s8qsKhWt8FENFH8iPP3vaPgRA_EvCM@z>
 
---hMdCw455TwxN3QvUdd00d3qaw70uUaPbf
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 
-On 03/04/14 12:20, Ralf Baechle wrote:
-> On Wed, Apr 02, 2014 at 11:25:16AM +0100, James Hogan wrote:
->=20
->> Both of these patches seem to be applied, Markos' in v3.14-rc1, and yo=
-ur
->> one in mips-for-linux-next:
->>
->> $ cat /proc/cpuinfo
->> ...
->> processor               : 3
->> ...
->> core                    : 1
->> VPE                     : 1
->> VCED exceptions         : not available
->> VCEI exceptions         : not available
->> VPE                     : 1
->>
->> Maybe a revert of Markos' patch could be squashed in to your patch?
->=20
-> I've reverted this in my tree now.
+Sometimes it's useful to let the user, while doing performance research,
+know what in the IEEE754 exceptions has caused many times of FP emulation
+when running a specific application. This patch adds 5 more files to
+/sys/kernel/debug/mips/fpuemustats/, whose filenames begin with "ieee754".
+These stats are in addition to the existing cp1ops, cp1xops, errors, loads
+and stores, which may not be useful in understanding the reasons of ieee754
+exceptions.
 
-Thanks Ralf
+Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+---
+ arch/mips/include/asm/fpu_emulator.h |  5 +++++
+ arch/mips/math-emu/cp1emu.c          | 41 ++++++++++++++++++++++++++++--------
+ 2 files changed, 37 insertions(+), 9 deletions(-)
 
-Cheers
-James
-
-
---hMdCw455TwxN3QvUdd00d3qaw70uUaPbf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.13 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTPUUFAAoJEGwLaZPeOHZ62UgP/1X4ESavYtLl1mgzs8jCyZhW
-0fbE/f79RKVRa+X61yskmUhdQkoH2H27zFgE63DtWKr3eXVTHnt/vXgwjRTk9Tha
-MJloH7ZQb0UY66yHOIGc+5Uw5ID5Hv2Tlok10VbdVXI5F+MOq+puw1vOxbscTMUT
-idumuDFdM0vqujEPac0tk175xKj0yExaxi3TlpLMs4YPrGFDj0kfhjS2JJy/SxHR
-9RXhpUIi0GVUiu4LAD4otqM4sVHsZCNQiFZ/jkGPukdEB9P+zlWnhTD+I6B1/5qu
-vdLbSiwgiV5uwxyNTAZBOehp9Xb12LNB/PCXqN7K09+Dn/9jwI24KRo+u9uhOSQK
-zTCS+LjP8n4btmduUfUPqAABiJwzRUw9IqtJ/dXOTMyn5YHpt7dVWwPrEJlXPc11
-XBDYtiu5AEmFb2ydGEte/Evn8kP60JgU1FwWAWbtz5AhI9VDSNeu991tn8qGZDXW
-z0jY4VGcxALZeqs2fRCLtmN/d/jTkSFEq7GtcCP8WCeHjw89ZJ3TwEnV45hSpx1I
-JHTsQd9kjJ8RmFlxtkk28FVk7tJHhHAfJWZ7UIARqoVJnowtlyYoGDELkG1T3BAq
-HROA9L22apsEUeJXcz/CA64uz56kWZQFoy1BmPB5NImxUggbULKfM9rpK2D3aQOF
-Rm6Rg+UI6Bn8RYJpMtyO
-=kr55
------END PGP SIGNATURE-----
-
---hMdCw455TwxN3QvUdd00d3qaw70uUaPbf--
+diff --git a/arch/mips/include/asm/fpu_emulator.h b/arch/mips/include/asm/fpu_emulator.h
+index 2abb587..0ab4a3c 100644
+--- a/arch/mips/include/asm/fpu_emulator.h
++++ b/arch/mips/include/asm/fpu_emulator.h
+@@ -36,6 +36,11 @@ struct mips_fpu_emulator_stats {
+ 	local_t cp1ops;
+ 	local_t cp1xops;
+ 	local_t errors;
++	local_t ieee754_inexact;
++	local_t ieee754_underflow;
++	local_t ieee754_overflow;
++	local_t ieee754_zerodiv;
++	local_t ieee754_invalidop;
+ };
+ 
+ DECLARE_PER_CPU(struct mips_fpu_emulator_stats, fpuemustats);
+diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
+index 0b4e2e3..f630b74 100644
+--- a/arch/mips/math-emu/cp1emu.c
++++ b/arch/mips/math-emu/cp1emu.c
+@@ -1444,14 +1444,22 @@ static int fpux_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
+ 			SPTOREG(fd, MIPSInst_FD(ir));
+ 
+ 		      copcsr:
+-			if (ieee754_cxtest(IEEE754_INEXACT))
++			if (ieee754_cxtest(IEEE754_INEXACT)) {
++				MIPS_FPU_EMU_INC_STATS(ieee754_inexact);
+ 				rcsr |= FPU_CSR_INE_X | FPU_CSR_INE_S;
+-			if (ieee754_cxtest(IEEE754_UNDERFLOW))
++			}
++			if (ieee754_cxtest(IEEE754_UNDERFLOW)) {
++				MIPS_FPU_EMU_INC_STATS(ieee754_underflow);
+ 				rcsr |= FPU_CSR_UDF_X | FPU_CSR_UDF_S;
+-			if (ieee754_cxtest(IEEE754_OVERFLOW))
++			}
++			if (ieee754_cxtest(IEEE754_OVERFLOW)) {
++				MIPS_FPU_EMU_INC_STATS(ieee754_overflow);
+ 				rcsr |= FPU_CSR_OVF_X | FPU_CSR_OVF_S;
+-			if (ieee754_cxtest(IEEE754_INVALID_OPERATION))
++			}
++			if (ieee754_cxtest(IEEE754_INVALID_OPERATION)) {
++				MIPS_FPU_EMU_INC_STATS(ieee754_invalidop);
+ 				rcsr |= FPU_CSR_INV_X | FPU_CSR_INV_S;
++			}
+ 
+ 			ctx->fcr31 = (ctx->fcr31 & ~FPU_CSR_ALL_X) | rcsr;
+ 			if ((ctx->fcr31 >> 5) & ctx->fcr31 & FPU_CSR_ALL_E) {
+@@ -1660,16 +1668,26 @@ static int fpu_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
+ 				goto copcsr;
+ 			}
+ 		      copcsr:
+-			if (ieee754_cxtest(IEEE754_INEXACT))
++			if (ieee754_cxtest(IEEE754_INEXACT)) {
++				MIPS_FPU_EMU_INC_STATS(ieee754_inexact);
+ 				rcsr |= FPU_CSR_INE_X | FPU_CSR_INE_S;
+-			if (ieee754_cxtest(IEEE754_UNDERFLOW))
++			}
++			if (ieee754_cxtest(IEEE754_UNDERFLOW)) {
++				MIPS_FPU_EMU_INC_STATS(ieee754_underflow);
+ 				rcsr |= FPU_CSR_UDF_X | FPU_CSR_UDF_S;
+-			if (ieee754_cxtest(IEEE754_OVERFLOW))
++			}
++			if (ieee754_cxtest(IEEE754_OVERFLOW)) {
++				MIPS_FPU_EMU_INC_STATS(ieee754_overflow);
+ 				rcsr |= FPU_CSR_OVF_X | FPU_CSR_OVF_S;
+-			if (ieee754_cxtest(IEEE754_ZERO_DIVIDE))
++			}
++			if (ieee754_cxtest(IEEE754_ZERO_DIVIDE)) {
++				MIPS_FPU_EMU_INC_STATS(ieee754_zerodiv);
+ 				rcsr |= FPU_CSR_DIV_X | FPU_CSR_DIV_S;
+-			if (ieee754_cxtest(IEEE754_INVALID_OPERATION))
++			}
++			if (ieee754_cxtest(IEEE754_INVALID_OPERATION)) {
++				MIPS_FPU_EMU_INC_STATS(ieee754_invalidop);
+ 				rcsr |= FPU_CSR_INV_X | FPU_CSR_INV_S;
++			}
+ 			break;
+ 
+ 			/* unary conv ops */
+@@ -2179,6 +2197,11 @@ static int __init debugfs_fpuemu(void)
+ 	FPU_STAT_CREATE(cp1ops);
+ 	FPU_STAT_CREATE(cp1xops);
+ 	FPU_STAT_CREATE(errors);
++	FPU_STAT_CREATE(ieee754_inexact);
++	FPU_STAT_CREATE(ieee754_underflow);
++	FPU_STAT_CREATE(ieee754_overflow);
++	FPU_STAT_CREATE(ieee754_zerodiv);
++	FPU_STAT_CREATE(ieee754_invalidop);
+ 
+ 	return 0;
+ }
+-- 
+1.8.5.3

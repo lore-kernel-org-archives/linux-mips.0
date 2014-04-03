@@ -1,18 +1,18 @@
-Received: from mail-ob0-f180.google.com ([209.85.214.180]:65343 "EHLO
-        mail-ob0-f180.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6822081AbaDCEVtA5TDB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 3 Apr 2014 06:21:49 +0200
-Received: by mail-ob0-f180.google.com with SMTP id wn1so1341061obc.25
-        for <linux-mips@linux-mips.org>; Wed, 02 Apr 2014 21:21:42 -0700 (PDT)
+Received: from [217.156.133.130] ([217.156.133.130]:15962 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S6820484AbaDCLZA2t-gD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 3 Apr 2014 13:25:00 +0200
+Message-ID: <533D4505.4050406@imgtec.com>
+Date: Thu, 3 Apr 2014 12:24:53 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <1396465624-21661-1-git-send-email-aaro.koskinen@iki.fi>
-References: <1396465624-21661-1-git-send-email-aaro.koskinen@iki.fi>
-Date: Thu, 3 Apr 2014 09:51:41 +0530
-Message-ID: <CAKohpokxg=UsiXyq1kJAqgVyj6qYoiQfryfpXGebPtB4f253FQ@mail.gmail.com>
-Subject: Re: [PATCH] MIPS/loongson2_cpufreq: fix CPU clock rate setting
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Return-Path: <viresh.kumar@linaro.org>
+Subject: Re: [PATCH] MIPS: MT: proc: Add support for printing VPE and TC ids
+References: <1381846382-26437-1-git-send-email-markos.chandras@imgtec.com> <20131016151007.GP1615@linux-mips.org> <533BE58C.3010201@imgtec.com> <20140403112019.GA4365@linux-mips.org>
+In-Reply-To: <20140403112019.GA4365@linux-mips.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature";
+        boundary="hMdCw455TwxN3QvUdd00d3qaw70uUaPbf"
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,43 +22,62 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Ralf Baechle <ralf@linux-mips.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-mips@linux-mips.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "cpufreq@vger.kernel.org" <cpufreq@vger.kernel.org>, stable@vger.kernel.org
-Message-ID: <20140403042141.oxFmitQ_3IV1uqCjH51Nn25VvigidkdezzLRynkbokw@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Markos Chandras <markos.chandras@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20140403112453.3KW4LNUkjdduRrLhQ_R1ZdC_A1EKsTAtodugTR5S5Us@z>
 
-On 3 April 2014 00:37, Aaro Koskinen <aaro.koskinen@iki.fi> wrote:
-> Loongson2 has been using (incorrectly) kHz for cpu_clk rate. This has
-> been unnoticed, as loongson2_cpufreq was the only place where the rate
-> was set/get. After commit 652ed95d5fa6074b3c4ea245deb0691f1acb6656
-> (cpufreq: introduce cpufreq_generic_get() routine) things however broke,
-> and now loops_per_jiffy adjustments are incorrect (1000 times too long).
-> The patch fixes this by changing cpu_clk rate to Hz.
->
-> Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
-> Cc: stable@vger.kernel.org
-> ---
->  arch/mips/loongson/lemote-2f/clock.c | 7 +++++--
->  drivers/cpufreq/loongson2_cpufreq.c  | 4 ++--
->  2 files changed, 7 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/mips/loongson/lemote-2f/clock.c b/arch/mips/loongson/lemote-2f/clock.c
-> index aed32b8..699f388 100644
-> --- a/arch/mips/loongson/lemote-2f/clock.c
-> +++ b/arch/mips/loongson/lemote-2f/clock.c
-> @@ -91,6 +91,7 @@ EXPORT_SYMBOL(clk_put);
->
->  int clk_set_rate(struct clk *clk, unsigned long rate)
->  {
-> +       unsigned int rate_khz;
+--hMdCw455TwxN3QvUdd00d3qaw70uUaPbf
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Initialize rate_khz here only instead of doing it separately..
+On 03/04/14 12:20, Ralf Baechle wrote:
+> On Wed, Apr 02, 2014 at 11:25:16AM +0100, James Hogan wrote:
+>=20
+>> Both of these patches seem to be applied, Markos' in v3.14-rc1, and yo=
+ur
+>> one in mips-for-linux-next:
+>>
+>> $ cat /proc/cpuinfo
+>> ...
+>> processor               : 3
+>> ...
+>> core                    : 1
+>> VPE                     : 1
+>> VCED exceptions         : not available
+>> VCEI exceptions         : not available
+>> VPE                     : 1
+>>
+>> Maybe a revert of Markos' patch could be squashed in to your patch?
+>=20
+> I've reverted this in my tree now.
 
->         int ret = 0;
->         int regval;
->         int i;
-> @@ -106,15 +107,17 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
->         if (unlikely(clk->flags & CLK_RATE_PROPAGATES))
->                 propagate_rate(clk);
->
-> +       rate_khz = rate / 1000;
-> +
+Thanks Ralf
+
+Cheers
+James
+
+
+--hMdCw455TwxN3QvUdd00d3qaw70uUaPbf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.13 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTPUUFAAoJEGwLaZPeOHZ62UgP/1X4ESavYtLl1mgzs8jCyZhW
+0fbE/f79RKVRa+X61yskmUhdQkoH2H27zFgE63DtWKr3eXVTHnt/vXgwjRTk9Tha
+MJloH7ZQb0UY66yHOIGc+5Uw5ID5Hv2Tlok10VbdVXI5F+MOq+puw1vOxbscTMUT
+idumuDFdM0vqujEPac0tk175xKj0yExaxi3TlpLMs4YPrGFDj0kfhjS2JJy/SxHR
+9RXhpUIi0GVUiu4LAD4otqM4sVHsZCNQiFZ/jkGPukdEB9P+zlWnhTD+I6B1/5qu
+vdLbSiwgiV5uwxyNTAZBOehp9Xb12LNB/PCXqN7K09+Dn/9jwI24KRo+u9uhOSQK
+zTCS+LjP8n4btmduUfUPqAABiJwzRUw9IqtJ/dXOTMyn5YHpt7dVWwPrEJlXPc11
+XBDYtiu5AEmFb2ydGEte/Evn8kP60JgU1FwWAWbtz5AhI9VDSNeu991tn8qGZDXW
+z0jY4VGcxALZeqs2fRCLtmN/d/jTkSFEq7GtcCP8WCeHjw89ZJ3TwEnV45hSpx1I
+JHTsQd9kjJ8RmFlxtkk28FVk7tJHhHAfJWZ7UIARqoVJnowtlyYoGDELkG1T3BAq
+HROA9L22apsEUeJXcz/CA64uz56kWZQFoy1BmPB5NImxUggbULKfM9rpK2D3aQOF
+Rm6Rg+UI6Bn8RYJpMtyO
+=kr55
+-----END PGP SIGNATURE-----
+
+--hMdCw455TwxN3QvUdd00d3qaw70uUaPbf--

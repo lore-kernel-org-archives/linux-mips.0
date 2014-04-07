@@ -1,18 +1,17 @@
-Received: from [217.156.133.130] ([217.156.133.130]:28980 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S6816686AbaDGKyZ03t23 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Apr 2014 12:54:25 +0200
-Message-ID: <534283D3.7060704@imgtec.com>
-Date: Mon, 7 Apr 2014 11:54:11 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mail.windriver.com ([147.11.1.11]:60150 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6816886AbaDGN6ixcEQ9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Apr 2014 15:58:38 +0200
+Message-ID: <5342AEEF.4080503@windriver.com>
+Date: Mon, 7 Apr 2014 09:58:07 -0400
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 08/20] of/fdt: consolidate built-in dtb section variables
-References: <1396563423-30893-1-git-send-email-robherring2@gmail.com> <1396563423-30893-9-git-send-email-robherring2@gmail.com>
-In-Reply-To: <1396563423-30893-9-git-send-email-robherring2@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature";
-        boundary="Gfk1QLSHjtOWmUr7AwUXJUmxWIMf6JPRk"
-Return-Path: <James.Hogan@imgtec.com>
+Subject: Re: [PATCH] mips: export icache_flush_range
+References: <20140322154720.GA23863@www.outflux.net> <CAGXu5jL+o4dG+ruUDh-+5LY=iD0veWaimBUq3cJBtuCiNbYt1A@mail.gmail.com>
+In-Reply-To: <CAGXu5jL+o4dG+ruUDh-+5LY=iD0veWaimBUq3cJBtuCiNbYt1A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Paul.Gortmaker@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,59 +21,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Herring <robherring2@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh@kernel.org>, Vineet Gupta <vgupta@synopsys.com>, Ralf Baechle <ralf@linux-mips.org>, Jonas Bonn <jonas@southpole.se>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux@openrisc.net, linux-xtensa@linux-xtensa.org
-Message-ID: <20140407105411.5_ACl16_WA-RGTAgyvhVzPUVqRQKxTKqAaB-Dlrjvbg@z>
+To: Kees Cook <keescook@chromium.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Sanjay Lal <sanjayl@kymasys.com>, John Crispin <blogic@openwrt.org>, linux-mips@linux-mips.org, LKML <linux-kernel@vger.kernel.org>
+Message-ID: <20140407135807.0RVeVPTIjCcogOaW6UgEZi_MCrc8tNaX6OvfNyH6hK4@z>
 
---Gfk1QLSHjtOWmUr7AwUXJUmxWIMf6JPRk
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On 14-03-22 03:05 PM, Kees Cook wrote:
+> On Sat, Mar 22, 2014 at 9:47 AM, Kees Cook <keescook@chromium.org> wrote:
+>> The lkdtm module performs tests against executable memory ranges, so
+>> it needs to flush the icache for proper behaviors. Other architectures
+>> already export this, so do the same for MIPS.
+>>
+>> Signed-off-by: Kees Cook <keescook@chromium.org>
+>> ---
+>> This is currently untested! I'm building a MIPS cross-compiler now...
+>> If someone can validate this fixes the build when lkdtm is a module,
+>> that would be appreciated. :)
+> 
+> Okay, now tested. I reproduced the failure and this patch fixes it. :)
 
-On 03/04/14 23:16, Rob Herring wrote:
-> From: Rob Herring <robh@kernel.org>
->=20
-> Unify the various architectures __dtb_start and __dtb_end definitions
-> moving them into of_fdt.h.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> Cc: Vineet Gupta <vgupta@synopsys.com>
-> Cc: James Hogan <james.hogan@imgtec.com>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Jonas Bonn <jonas@southpole.se>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: linux-metag@vger.kernel.org
-> Cc: linux-mips@linux-mips.org
-> Cc: linux@lists.openrisc.net
-> Cc: linux-xtensa@linux-xtensa.org
+Just checking if this happened to fall through the cracks.
+The most recent (Apr4) linux-next build for mips still fails
+with this error.
 
-Acked-by: James Hogan <james.hogan@imgtec.com> [metag]
+http://kisskb.ellerman.id.au/kisskb/buildresult/10877159/
 
-Cheers
-James
+Paul.
+--
 
-
---Gfk1QLSHjtOWmUr7AwUXJUmxWIMf6JPRk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.13 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTQoPaAAoJEGwLaZPeOHZ6+toQAIb0ewv1g3ZgJoFKpR2ZwIHe
-kqRjmitkiyUKh/agMjq2xW5wE1L9Rnxm4wToqS3BBcOJV4Rg+90Hm8+dIgZbPRam
-hiNT1E8oyTuHfjEcJdGTHmCn2gvfyYKyuf68PQ6mTLVRTmizcWXI3uS6CVaq98Gg
-19ulvfjhxOA0aakdisvnhhW8h0ADqYtGv3wn2vE7CevE9JtK8T5qFNzaCgSPhPL4
-phe06ApG1utiZ3XQO1zSheO5amnjPCytNHG+l+hRfQgmtxad0cs6/Ba66Nak36WL
-8M5aja6uQkZ+5XroX2T3dkcBSpMwenCsX9fYAuui0Gjmlsv+8k/C4tGG4d0MTNG2
-Saj5yWxd4LcyfnWsRQIezEpJUCIViwCrfRDlppFSVaUCx1gHBrSG+4zPLuumdURB
-I5qDhk7Q1tZgJb3Z5GBCW1TZLPM6VAkWyVvOHHlnbnVPekFG1wp2DBYGYyIoapSc
-gG5vvACxIjBDrgK5WlSBQaD+l7m6d7TUhQAljHYJmmMReBmyefgltl2PNtIAtk8A
-rQ1diw3ZkryOg5kWowsL99/iH+KCAwp4eIlgfEMFfHULnTldAPhQNnSXer3Kn+yj
-Sp82NNjRiZCcdVcX9NkdEcjpaSpphMAL6papiS6F6baCCEdOcb4cBJzr1NIWDJUZ
-lIHd9h8T/MMB6Ls2DJyx
-=Qpb9
------END PGP SIGNATURE-----
-
---Gfk1QLSHjtOWmUr7AwUXJUmxWIMf6JPRk--
+> 
+> -Kees
+> 
+>> ---
+>>  arch/mips/mm/cache.c |    1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+>> index fde7e56d13fe..b3f1df13d9f6 100644
+>> --- a/arch/mips/mm/cache.c
+>> +++ b/arch/mips/mm/cache.c
+>> @@ -38,6 +38,7 @@ void (*__flush_kernel_vmap_range)(unsigned long vaddr, int size);
+>>  void (*__invalidate_kernel_vmap_range)(unsigned long vaddr, int size);
+>>
+>>  EXPORT_SYMBOL_GPL(__flush_kernel_vmap_range);
+>> +EXPORT_SYMBOL_GPL(flush_icache_range);
+>>
+>>  /* MIPS specific cache operations */
+>>  void (*flush_cache_sigtramp)(unsigned long addr);
+>> --
+>> 1.7.9.5
+>>
+>>
+>> --
+>> Kees Cook
+>> Chrome OS Security
+> 
+> 
+> 

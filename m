@@ -1,18 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.89.28.115]:52194 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.115]:53429 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6822344AbaDHK7XHt3Xv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Apr 2014 12:59:23 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id C4700723F02CC
-        for <linux-mips@linux-mips.org>; Tue,  8 Apr 2014 11:59:14 +0100 (IST)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 2/2] MIPS: Kconfig: Make MIPS_MT_SMP a regular Kconfig symbol
-Date: Tue, 8 Apr 2014 11:59:10 +0100
-Message-ID: <1396954750-24762-3-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1396954750-24762-1-git-send-email-markos.chandras@imgtec.com>
-References: <1396954750-24762-1-git-send-email-markos.chandras@imgtec.com>
+        with ESMTP id S6822092AbaDHLDqUf4Ft (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Apr 2014 13:03:46 +0200
+Message-ID: <5343D799.2040203@imgtec.com>
+Date: Tue, 8 Apr 2014 12:03:53 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH 1/2] MIPS: Remove SMTC Support
+References: <1396954750-24762-1-git-send-email-markos.chandras@imgtec.com> <1396954750-24762-2-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1396954750-24762-2-git-send-email-markos.chandras@imgtec.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,50 +22,26 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140408105910.XZPHTYDzEIKxkskaOXEeH8Z46xYy4kSV--W07aOdBsc@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20140408110353.lyJxbJTXqt-oNcOE1AdPVEE6k1y8xysD0M8jHQRrhfk@z>
 
-Following the removal of SMTC, MIPS_MT_SMP is the only available
-MT/SMP option so make it a regular Kconfig symbol.
+On 04/08/2014 11:59 AM, Markos Chandras wrote:
+> diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+> index 037a44d..e12843a 100644
+> --- a/arch/mips/kernel/proc.c
+> +++ b/arch/mips/kernel/proc.c
+> @@ -124,7 +124,6 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+>   	seq_printf(m, "kscratch registers\t: %d\n",
+>   		      hweight8(cpu_data[n].kscratch_mask));
+>   	seq_printf(m, "core\t\t\t: %d\n", cpu_data[n].core);
+> -
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/Kconfig | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+Hi Ralf,
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 918a80f..2d1f5e3 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1895,19 +1895,8 @@ config CPU_R4K_CACHE_TLB
- 	bool
- 	default y if !(CPU_R3000 || CPU_R8000 || CPU_SB1 || CPU_TX39XX || CPU_CAVIUM_OCTEON)
- 
--choice
--	prompt "MIPS MT options"
--
--config MIPS_MT_DISABLED
--	bool "Disable multithreading support"
--	help
--	  Use this option if your platform does not support the MT ASE
--	  which is hardware multithreading support. On systems without
--	  an MT-enabled processor, this will be the only option that is
--	  available in this menu.
--
- config MIPS_MT_SMP
--	bool "Use 1 TC on each available VPE for SMP"
-+	bool "MIPS MT SMP support (1 TC on each available VPE)"
- 	depends on SYS_SUPPORTS_MULTITHREADING
- 	select CPU_MIPSR2_IRQ_VI
- 	select CPU_MIPSR2_IRQ_EI
-@@ -1926,8 +1915,6 @@ config MIPS_MT_SMP
- 	  Intel Hyperthreading feature. For further information go to
- 	  <http://www.imgtec.com/mips/mips-multithreading.asp>.
- 
--endchoice
--
- config MIPS_MT
- 	bool
- 
+This change was not intentional. It's due to a bad merge conflict 
+resolution. Could you please fix this before you merge this patch?
+
+Thanks!
+
 -- 
-1.9.1
+markos

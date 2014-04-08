@@ -1,11 +1,11 @@
-Received: from elvis.franken.de ([193.175.24.41]:51334 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:51931 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6816906AbaDGWW6Hgabg (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 8 Apr 2014 00:22:58 +0200
+        id S6822100AbaDHG6LiE8si (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 8 Apr 2014 08:58:11 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH] remove USE_GENERIC_EARLY_PRINTK_8250 for SNI_RM
-Message-ID: <20140407222226.C58981BB731@solo.franken.de>
-Date: Tue,  8 Apr 2014 00:22:26 +0200 (CEST)
+Subject: [PATCH] Fix Micro-assembler field overflow for R4600 V2
+Message-ID: <20140408065801.C125C1BB731@solo.franken.de>
+Date: Tue,  8 Apr 2014 08:58:01 +0200 (CEST)
 Return-Path: <tsbogend@alpha.franken.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,26 +18,35 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: ralf@linux-mips.org
-Message-ID: <20140407222226.g1Zg5X_jaNYJhiJPJvDYpvvUQDbi2zMdnAjkXQcsylg@z>
+Message-ID: <20140408065801.RSr-RCEMPeIjJDwdDnkTq6MPKx2BbGpxj4CrNA_mU8g@z>
 
-SNI RM code has its own EARLY_PRINTK support no need for some generic 8250
-stuff.
+Fix uasm warning, which triggered because of workaround for R4600 V2 CPUs.
 
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
 
- arch/mips/Kconfig |    1 -
- 1 file changed, 1 deletion(-)
+ arch/mips/mm/page.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index b0e89cd..9f6ba47 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -674,7 +674,6 @@ config SNI_RM
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_SUPPORTS_HIGHMEM
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
--	select USE_GENERIC_EARLY_PRINTK_8250
- 	help
- 	  The SNI RM200/300/400 are MIPS-based machines manufactured by
- 	  Siemens Nixdorf Informationssysteme (SNI), parent company of Pyramid
+diff --git a/arch/mips/mm/page.c b/arch/mips/mm/page.c
+index 58033c4..b611102 100644
+--- a/arch/mips/mm/page.c
++++ b/arch/mips/mm/page.c
+@@ -273,7 +273,7 @@ void build_clear_page(void)
+ 		uasm_i_ori(&buf, A2, A0, off);
+ 
+ 	if (R4600_V2_HIT_CACHEOP_WAR && cpu_is_r4600_v2_x())
+-		uasm_i_lui(&buf, AT, 0xa000);
++		uasm_i_lui(&buf, AT, uasm_rel_hi(0xa0000000));
+ 
+ 	off = cache_line_size ? min(8, pref_bias_clear_store / cache_line_size)
+ 				* cache_line_size : 0;
+@@ -424,7 +424,7 @@ void build_copy_page(void)
+ 		uasm_i_ori(&buf, A2, A0, off);
+ 
+ 	if (R4600_V2_HIT_CACHEOP_WAR && cpu_is_r4600_v2_x())
+-		uasm_i_lui(&buf, AT, 0xa000);
++		uasm_i_lui(&buf, AT, uasm_rel_hi(0xa0000000));
+ 
+ 	off = cache_line_size ? min(8, pref_bias_copy_load / cache_line_size) *
+ 				cache_line_size : 0;

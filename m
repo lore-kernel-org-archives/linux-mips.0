@@ -1,17 +1,24 @@
-Received: from mailapp01.imgtec.com ([195.89.28.114]:33645 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6815804AbaDIJKMFwNk6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Apr 2014 11:10:12 +0200
-Message-ID: <53450E7E.1020700@imgtec.com>
-Date: Wed, 9 Apr 2014 10:10:22 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+Received: from arrakis.dune.hu ([78.24.191.176]:54176 "EHLO arrakis.dune.hu"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6822312AbaDIKPyPFM2Z (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 9 Apr 2014 12:15:54 +0200
+Received: from localhost (localhost [127.0.0.1])
+        by arrakis.dune.hu (Postfix) with ESMTP id D46232841EC
+        for <linux-mips@linux-mips.org>; Wed,  9 Apr 2014 12:15:07 +0200 (CEST)
+Received: from mail-qg0-f49.google.com (mail-qg0-f49.google.com [209.85.192.49])
+        by arrakis.dune.hu (Postfix) with ESMTPSA id 48FDB28069F
+        for <linux-mips@linux-mips.org>; Wed,  9 Apr 2014 12:15:07 +0200 (CEST)
+Received: by mail-qg0-f49.google.com with SMTP id e89so2034975qgf.22
+        for <linux-mips@linux-mips.org>; Wed, 09 Apr 2014 03:15:51 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: MIPS: Remove last traces of SMTC Support too?
-References: <1397033309.22767.8.camel@x220> <53450BBE.7050501@imgtec.com> <1397034201.22767.15.camel@x220>
-In-Reply-To: <1397034201.22767.15.camel@x220>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+In-Reply-To: <1396981642-407998-1-git-send-email-manuel.lauss@gmail.com>
+References: <1396981642-407998-1-git-send-email-manuel.lauss@gmail.com>
+From: Jonas Gorski <jogo@openwrt.org>
+Date: Wed, 9 Apr 2014 12:15:30 +0200
+Message-ID: <CAOiHx=kP6JctAztiUVqpRDvpe-SSpgt068KQu+maM6gi7+RUgQ@mail.gmail.com>
+Subject: Re: [PATCH v8 2/2] MIPS: optional floating point support
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <jogo@openwrt.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,30 +28,17 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20140409091022.Uom6FigU91FziOhpmUdJGyzCniD3tYb1b0a4Ez10-XQ@z>
+To: Manuel Lauss <manuel.lauss@gmail.com>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>
+Message-ID: <20140409101530.qWCdo_8xnpFuI15ubhuckuwfGVzlZU5AZCa599DWJh4@z>
 
-On 04/09/2014 10:03 AM, Paul Bolle wrote:
-> Hi Markos,
+On Tue, Apr 8, 2014 at 8:27 PM, Manuel Lauss <manuel.lauss@gmail.com> wrote:
+> This small patch makes the floating point support and the FPU-emulator
+> optional.  A Warning will be printed once when first use of floating
+> point is detected.
 >
-> On Wed, 2014-04-09 at 09:58 +0100, Markos Chandras wrote:
->> I talked to Ralf yesterday. It seems the patch was not applied correctly
->> and there are a few traces left. My original patch definitely removes
->> the traces listed in your patch.
+> Disabling fpu support shrinks vmlinux by about 54kBytes (32bit,
+> optimizing for size), and it is mainly useful for embedded devices
+> which have no need for float math (e.g. routers).
 >
-> Assuming Ralf and you sort this out, and a complete removal of SMTC
-> support will eventually hit linux-next, I won't be bothering you again.
->
-> Thanks,
->
->
-> Paul Bolle
->
-Hi Paul,
-
-As James pointed out, it seems there are a few traces of SMTC left even 
-with my original patch. I will make sure everything is gone in time though.
-
--- 
-markos
+> Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>

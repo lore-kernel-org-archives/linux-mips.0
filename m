@@ -1,19 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.89.28.115]:59833 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.115]:46516 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6817664AbaDIQC2afc3W (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Apr 2014 18:02:28 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 68581193E8BF7
-        for <linux-mips@linux-mips.org>; Wed,  9 Apr 2014 17:02:18 +0100 (IST)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH v2 14/14] MIPS: Enable the BPF_JIT symbol for MIPS
-Date: Wed, 9 Apr 2014 17:02:35 +0100
-Message-ID: <1397059355-27559-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1396957635-27071-15-git-send-email-markos.chandras@imgtec.com>
-References: <1396957635-27071-15-git-send-email-markos.chandras@imgtec.com>
+        with ESMTP id S6834662AbaDITnti3s0Y (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Apr 2014 21:43:49 +0200
+Message-ID: <5345A2EB.8020109@imgtec.com>
+Date: Wed, 9 Apr 2014 14:43:39 -0500
+From: "Steven J. Hill" <Steven.Hill@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH] MIPS: microMIPS: Work around an assembler bug.
+References: <1396892446-23883-1-git-send-email-Steven.Hill@imgtec.com>
+In-Reply-To: <1396892446-23883-1-git-send-email-Steven.Hill@imgtec.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Steven.Hill@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,28 +22,22 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140409160235.HZmbdCZEJaPSWVsY_wlsyoxjvF5-GHrxlU3K0zGkwm0@z>
+Cc: ralf@linux-mips.org
+Message-ID: <20140409194339.PZ6h_tluZywmzjvBkoAIt7frTwaN_QllSKKltQY1rP8@z>
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
-Changes since v1:
-- Drop the MIPS32/64R2 dependency
----
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 885cbf2..ca24cfc0 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -12,6 +12,7 @@ config MIPS
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_TRACEHOOK
-+	select HAVE_BPF_JIT if !CPU_MICROMIPS
- 	select ARCH_HAVE_CUSTOM_GPIO_H
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_FUNCTION_TRACE_MCOUNT_TEST
--- 
-1.9.1
+On 04/07/2014 12:40 PM, Steven J. Hill wrote:
+> From: "Steven J. Hill" <Steven.Hill@imgtec.com>
+> 
+> In newer toolchains, the 16-bit branch delay slot instruction
+> calculation is wrong. We get a message very similar to:
+> 
+>    {standard input}: Assembler messages:
+>    {standard input}:7035: Warning: wrong size instruction
+>    in a 16-bit branch delay slot
+> 
+> This corner case only occurs in 'arch/mips/kernel/traps.c' and
+> we add the '-fno-delayed-branch' option when compiling it.
+> 
+> Signed-off-by: Steven J. Hill <Steven.Hill@imgtec.com>
+>
+I rejected this in patchwork. Just making sure you do not use it.

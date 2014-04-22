@@ -1,18 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.89.28.114]:60166 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6837155AbaDQQY0UkQ4w (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Apr 2014 18:24:26 +0200
-Message-ID: <5350002F.4080104@imgtec.com>
-Date: Thu, 17 Apr 2014 17:24:15 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+Received: from [217.156.133.130] ([217.156.133.130]:16863 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S6815989AbaDVKHUT-vCY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Apr 2014 12:07:20 +0200
+Date: Tue, 22 Apr 2014 11:07:13 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH 2/2] MIPS: Malta: support powering down
+Message-ID: <20140422100713.GC42386@pburton-linux.le.imgtec.org>
+References: <1395415232-42288-1-git-send-email-paul.burton@imgtec.com>
+ <1395415232-42288-2-git-send-email-paul.burton@imgtec.com>
+ <alpine.LFD.2.11.1404191624180.11598@eddie.linux-mips.org>
 MIME-Version: 1.0
-Subject: Re: [libseccomp-discuss] [PATCH v3 0/2] Add support for MIPS BE/LE
- and O32 ABI
-References: <1397550996-14805-1-git-send-email-markos.chandras@imgtec.com> <1397738551.2725.18.camel@localhost> <534FCF75.7060708@imgtec.com> <4648181.no7KCQCtEi@sifl> <534FFBCF.5010800@imgtec.com> <1397750939.750.1.camel@localhost> <CALCETrVdHuJ-uh1K=4RtVBwctsgU3Y4=6VyNvO_QeGrL21PkXw@mail.gmail.com>
-In-Reply-To: <CALCETrVdHuJ-uh1K=4RtVBwctsgU3Y4=6VyNvO_QeGrL21PkXw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="E/DnYTRukya0zdZ1"
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.11.1404191624180.11598@eddie.linux-mips.org>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,138 +24,166 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Lutomirski <luto@amacapital.net>, Eric Paris <eparis@redhat.com>
-Cc: libseccomp-discuss@lists.sourceforge.net, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20140417162415.Bti7mgjmPjPI_p19RxOjlpPN6Hjp9SKkkHjqE3Z0Q_c@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20140422100713.w5N7K91gghIz98aC9DuSKqimzXI3XqY8Nz23Jh906Fk@z>
 
-On 04/17/2014 05:20 PM, Andy Lutomirski wrote:
-> [cc's added]
->
-> On Thu, Apr 17, 2014 at 9:08 AM, Eric Paris <eparis@redhat.com> wrote:
->> On Thu, 2014-04-17 at 17:05 +0100, Markos Chandras wrote:
->>> On 04/17/2014 04:38 PM, Paul Moore wrote:
->>>>> Similarly, for MIPS, restricting open() on all 3 ABIs means 3 filters.
->>>>> 1) AUDIT_ARCH_MIPS(EL) syscall=4005
->>>>> 2) AUDIT_ARCH_MIPS64(EL) syscall=5005 (n64)
->>>>> 3) AUDIT_ARCH_MIPS64(EL) syscall=6005 (n32)
->>>>>
->>>>> Is this bad?
->>>>
->>>> In my seccomp-heavy opinion it isn't good, but we can work around it.  MIPS64
->>>> looks like x86_64/x32, which means we can't identify the ABI by the AUDIT_ARCH
->>>> token alone, we need to factor in the syscall number as well; this complicates
->>>> the filter generation as well as the filter itself.
->>>>
->>>> Take a look at the x86_64 BPF generated from the 01-sim-allow test.  You'll
->>>> notice that the test creates a seccomp filter without any rules, simply a
->>>> default action, yet if you look at the raw BPF below you will notice that we
->>>> are checking both the the architecture token ($data[4]) and the syscall
->>>> ($data[0]).  Granted, this is a contrived example (look at the more complex
->>>> multi-arch examples to understand why this is important) but it is a simple
->>>> demonstration.
->>>>
->>>>    line  OP   JT   JF   K
->>>> =================================
->>>>    0000: 0x20 0x00 0x00 0x00000004   ld  $data[4]
->>>>    0001: 0x15 0x00 0x03 0xc000003e   jeq 3221225534 true:0002 false:0005
->>>>    0002: 0x20 0x00 0x00 0x00000000   ld  $data[0]
->>>>    0003: 0x35 0x01 0x00 0x40000000   jge 1073741824 true:0005 false:0004
->>>>    0004: 0x06 0x00 0x00 0x7fff0000   ret ALLOW
->>>>    0005: 0x06 0x00 0x00 0x00000000   ret KILL
->>>
->>> I see what you mean. That was very helpful
->>>
->>>> [.....]
->>>>> Even if seccomp could identify the ABI, you still need filters to restrict
->>>>> the actual system calls.
->>>>
->>>> Let me twist the phrasing above a bit ... The libseccomp library must be able
->>>> to identify the ABI and apply the correct ABI specific filter rules.
->>>>
->>>>> I am sorry if my replies make no sense, but it's probably because I
->>>>> don't understand why multiple filters (1 filter per ABI syscall) is not
->>>>> an option.
->>>>
->>>> It is more than an option, it is a requirement. :)
->>>
->>> I understand the problem now. So yeah, it's not a problem, it's more
->>> like a desired optimization to simplify the logic in filters as well as
->>> making them less complex. And it's not libseccomp specific.
->>>
->>> So, a quick patch to solve this in the kernel would be something like
->>> the following one (completely untested). Given this code hasn't been
->>> part of a released kernel, I believe there is time to add this to 3.15.
->>> Would something like this make things simpler?
->>>
->>> diff --git a/arch/mips/include/asm/syscall.h
->>> b/arch/mips/include/asm/syscall.h
->>> index c6e9cd2..bd7543c 100644
->>> --- a/arch/mips/include/asm/syscall.h
->>> +++ b/arch/mips/include/asm/syscall.h
->>> @@ -133,6 +133,8 @@ static inline int syscall_get_arch(void)
->>>    #ifdef CONFIG_64BIT
->>>            if (!test_thread_flag(TIF_32BIT_REGS))
->>>                    arch |= __AUDIT_ARCH_64BIT;
->>> +        if (test_thread_flag(TIF_32BIT_ADDR))
->>> +                arch |= __AUDIT_ARCH_MIPS64_N32;
->>>    #endif
->>>    #if defined(__LITTLE_ENDIAN)
->>>            arch |=  __AUDIT_ARCH_LE;
->>> diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
->>> index 11917f7..6bd9322 100644
->>> --- a/include/uapi/linux/audit.h
->>> +++ b/include/uapi/linux/audit.h
->>> @@ -334,6 +334,8 @@ enum {
->>>    /* distinguish syscall tables */
->>>    #define __AUDIT_ARCH_64BIT 0x80000000
->>>    #define __AUDIT_ARCH_LE    0x40000000
->>> +#define __AUDIT_ARCH_MIPS64_N32 0x20000000
->>> +
->>>    #define AUDIT_ARCH_ALPHA
->>> (EM_ALPHA|__AUDIT_ARCH_64BIT|__AUDIT_ARCH_LE)
->>>    #define AUDIT_ARCH_ARM          (EM_ARM|__AUDIT_ARCH_LE)
->>>    #define AUDIT_ARCH_ARMEB        (EM_ARM)
->>> @@ -346,7 +348,11 @@ enum {
->>>    #define AUDIT_ARCH_MIPS         (EM_MIPS)
->>>    #define AUDIT_ARCH_MIPSEL       (EM_MIPS|__AUDIT_ARCH_LE)
->>>    #define AUDIT_ARCH_MIPS64       (EM_MIPS|__AUDIT_ARCH_64BIT)
->>> +#define AUDIT_ARCH_MIPS64N32    (EM_MIPS|__AUDIT_ARCH_64BIT|\
->>> +                                 __AUDIT_ARCH_MIPS64_N32)
->>>    #define AUDIT_ARCH_MIPSEL64
->>> (EM_MIPS|__AUDIT_ARCH_64BIT|__AUDIT_ARCH_LE)
->>> +#define AUDIT_ARCH_MIPSEL64N32
->>> (EM_MIPS|__AUDIT_ARCH_64BIT|__AUDIT_ARCH_LE\
->>> +                                 __AUDIT_ARCH_MIPS64_N32)
->>>    #define AUDIT_ARCH_OPENRISC     (EM_OPENRISC)
->>>    #define AUDIT_ARCH_PARISC       (EM_PARISC)
->>>    #define AUDIT_ARCH_PARISC64     (EM_PARISC|__AUDIT_ARCH_64BIT)
->>
->> I love it from both an audit and libseccomp PoV...
->>
->
-> I know nothing about the MIPS entry code, but the concept is:
->
-> Acked-by: Andy Lutomirski <luto@amacapital.net>
->
-> That being said, here's a minor nit:
->
-> #define __AUDIT_ARCH_MIPS64_N32 0x20000000
->
-> in a cross-arch header doesn't seem like the best idea.  Might it be
-> better to do:
->
-> /* These bits disambiguate different calling conventions that share an
-> ELF machine type, bitness, and endianness */
-> #define __AUDIT_ARCH_CONVENTION_MASK 0x30000000
-> #define __AUDIT_ARCH_CONVENTION_MIPS64_N32 0x20000000
->
-> This will encourage reuse of the same bit the next time this happens.
->
-> --Andy
->
+--E/DnYTRukya0zdZ1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks. I will change the patch based on your proposal and send it to 
-the kernel mailing lists for review.
+On Sat, Apr 19, 2014 at 04:39:10PM +0100, Maciej W. Rozycki wrote:
+> On Fri, 21 Mar 2014, Paul Burton wrote:
+>=20
+> > This patch makes the mips_machine_halt function (used as _machine_halt &
+> > pm_power_off) actually power down the Malta via the PIIX4. It may then
+> > be powered back up by pressing the "ON/NMI" button (S4) on the board.
+> >=20
+> > Tested-by: James Hogan <james.hogan@imgtec.com>
+> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> > ---
+> [...]
+> > diff --git a/arch/mips/mti-malta/malta-reset.c b/arch/mips/mti-malta/ma=
+lta-reset.c
+> > index d627d4b..ef04c8b 100644
+> > --- a/arch/mips/mti-malta/malta-reset.c
+> > +++ b/arch/mips/mti-malta/malta-reset.c
+> > @@ -24,10 +27,72 @@ static void mips_machine_restart(char *command)
+> > =20
+> >  static void mips_machine_halt(void)
+> >  {
+>=20
+>  First of all, shouldn't all of this stuff be wired into=20
+> mips_machine_power_off rather than mips_machine_halt?  I would have=20
+> thought mips_machine_halt is supposed to get back to the console monitor=
+=20
+> prompt (YAMON in this case) without restarting or powering off the system=
+,=20
+> and if that's impossible, then loop indefinitely (that's the -H vs -P=20
+> action option to shutdown(8); see the details in the manual).
+>=20
 
--- 
-markos
+Perhaps. Currently there is no mips_machine_power_off - both
+_machine_halt & pm_power_off point at mips_machine_halt and its existing
+behaviour is to reset the system. That is, regardless of whether you
+intend to halt, power off or reset you always get a reset. Returning to
+the monitor/bootloader prompt (which may or may not be YAMON) is not
+generally possible since the memory it was using has probably been
+overwritten. It may make sense to separate halt & power off though, with
+halt simply executing an infinite loop as you suggest.
+
+> > -	unsigned int __iomem *softres_reg =3D
+> > -		ioremap(SOFTRES_REG, sizeof(unsigned int));
+> > +	struct pci_bus *bus;
+> > +	struct pci_dev *dev;
+> > +	int spec_devid, res;
+> > +	int io_region =3D PCI_BRIDGE_RESOURCES;
+> > +	resource_size_t io;
+> > +	u16 sts;
+> > =20
+> > -	__raw_writel(GORESET, softres_reg);
+> > +	/* Find the PIIX4 PM device */
+> > +	dev =3D pci_get_subsys(PCI_VENDOR_ID_INTEL,
+> > +			     PCI_DEVICE_ID_INTEL_82371AB_3, PCI_ANY_ID,
+> > +			     PCI_ANY_ID, NULL);
+> > +	if (!dev) {
+> > +		printk("Failed to find PIIX4 PM\n");
+> > +		goto fail;
+> > +	}
+> > +
+> > +	/* Request access to the PIIX4 PM IO registers */
+> > +	res =3D pci_request_region(dev, io_region, "PIIX4 PM IO registers");
+> > +	if (res) {
+> > +		printk("Failed to request PIIX4 PM IO registers (%d)\n", res);
+> > +		goto fail_dev_put;
+> > +	}
+>=20
+>  Shouldn't the handle on the device and the resource be requested early=
+=20
+> on, where mips_machine_halt (mips_machine_power_off) is installed as the=
+=20
+> halt (power-off) handler?  Especially requesting the resource here seems=
+=20
+> to make little sense to me -- we're about to kill the box, so why bother=
+=20
+> verifying whether it's going to interfere with a random driver?
+
+Well requesting the I/O region was more about sanity checking that it's
+present. This could be done earlier I guess, it would just mean keeping
+around the needed I/O & PCI bus pointers in globals and I don't see the
+issue with just acquiring them when they're needed.
+
+>=20
+> > +
+> > +	/* Find the offset to the PIIX4 PM IO registers */
+> > +	io =3D pci_resource_start(dev, io_region);
+> > +
+> > +	/* Ensure the power button status is clear */
+> > +	while (1) {
+> > +		sts =3D inw(io + PIIX4_FUNC3IO_PMSTS);
+> > +		if (!(sts & PIIX4_FUNC3IO_PMSTS_PWRBTN_STS))
+> > +			break;
+> > +		outw(sts, io + PIIX4_FUNC3IO_PMSTS);
+> > +	}
+> > +
+> > +	/* Enable entry to suspend */
+> > +	outw(PIIX4_FUNC3IO_PMCNTRL_SUS_EN, io + PIIX4_FUNC3IO_PMCNTRL);
+> > +
+> > +	/* If the special cycle occurs too soon this doesn't work... */
+> > +	mdelay(10);
+> > +
+> > +	/* Find a reference to the PCI bus */
+> > +	bus =3D pci_find_next_bus(NULL);
+> > +	if (!bus) {
+> > +		printk("Failed to find PCI bus\n");
+> > +		goto fail_release_region;
+> > +	}
+> > +
+> > +	/*
+> > +	 * The PIIX4 will enter the suspend state only after seeing a special
+> > +	 * cycle with the correct magic data on the PCI bus. Generate that
+> > +	 * cycle now.
+> > +	 */
+> > +	spec_devid =3D PCI_DEVID(0, PCI_DEVFN(0x1f, 0x7));
+> > +	pci_bus_write_config_dword(bus, spec_devid, 0, PIIX4_SUSPEND_MAGIC);
+>=20
+>  I know all the three of the GT-64120/64120A, Bonito and SOC-it system=20
+> controllers support software generation of PCI special cycles, but is the=
+=20
+> method the same across them all?
+>=20
+>   Maciej
+
+It's the same for the Galileo GT-64120 & the SOC-it/ROC-it/ROC-it2
+system controllers. I'm unsure about Bonito, however there is the
+fallback to the existing reset behaviour if it fails. Working on the
+GT-64120 & SOC-it+derivatives covers the cases in wide use, ie current
+physical Malta systems & QEMU (although QEMU doesn't seem to need the
+special cycle anyway).
+
+Paul
+
+--E/DnYTRukya0zdZ1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBCAAGBQJTVj9RAAoJEIIg2fppPBxly0sP/0nSUNDhID31CZmKlX3soE8p
+qcHVcSiwcfNsfdD/DlcDlFM6SHQw7cbpqToLC8j2KDF8EjEw3OVsj2FXKnb5r5HA
+yZit3jSHvxPS7xwD74PiO9meHph0f31zkOoy0SXxI3dcfrc7QzbG8GyhqpPHdhx8
+HHje+s4fQQrSexjGcxMbf1Oq9ksQ0P8wEcJrZYOOj0ESavlHzsofFbtmFgP1dPN0
+ecWpmG4xZYBDCEV1Hjqk5hj9uQcA9wgZCF/+jecQiPNCxUuA417UWMdtkPxqbiRT
+E0KRxjIBo5CANyxcle5l/nwOQGCNyJLpVj6ufa5ctiaDzYZpIg87kQt/SN3BXI8i
+sMSV+2/MEZuIXZUlcc4JVWgvlRZt2we9MHRUXO2Jh6XdjYrCfIndIjZqOdQh/G2C
+alm3iTuh/d8jOeZ4w0XylNTBkIZ5z89jmPll7ZKbpCl9hw19sNQ6vUpWESDOc15b
+/eh7dHYuDR+tw7NwWaVzVFlh6Odm1uWpd/2OZyxvvTsFyVK0PwgOt0YtueIZbHpJ
+M5DVHtgn9ymxmpuNRQKJYtEBYV5ZSxqSNY0HC0VIlUMtPkccP5MnB0gLpC50EN3z
+pfJ3h1tJLIFU9RUH1XTLm2azkyWsUtgNLhGh6eH0g++yWVbEf31w++sF4WJvjq0v
+pf2iw5wF+QsCPW/gQLgN
+=Uroe
+-----END PGP SIGNATURE-----
+
+--E/DnYTRukya0zdZ1--

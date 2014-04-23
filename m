@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.89.28.114]:50839 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.115]:48173 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6817074AbaDVOmHhfZ5o (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Apr 2014 16:42:07 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 3.15] MIPS: Add new AUDIT_ARCH token for the N32 ABI on MIPS64
-Date: Tue, 22 Apr 2014 15:40:36 +0100
-Message-ID: <1398177636-10442-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1397550996-14805-1-git-send-email-markos.chandras@imgtec.com>
-References: <1397550996-14805-1-git-send-email-markos.chandras@imgtec.com>
+        with ESMTP id S6819447AbaDWLSFoNxAw (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Apr 2014 13:18:05 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] MIPS: Wire up renameat2 syscall
+Date: Wed, 23 Apr 2014 12:17:37 +0100
+Message-ID: <1398251857-16290-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,79 +18,126 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, Andy Lutomirski <luto@amacapital.net>, Eric Paris <eparis@redhat.com>, Paul Moore <pmoore@redhat.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20140422144036.A4rT002z3d3wkE2kyVhogGfXsxTGytZGG6omVHAvz0o@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, James Hogan <james.hogan@imgtec.com>
+Message-ID: <20140423111737.FBieBvIimTPlhgR3zNnpA2kgbaII15NeazxLSha1UzA@z>
 
-A MIPS64 kernel may support ELF files for all 3 MIPS ABIs
-(O32, N32, N64). Furthermore, the AUDIT_ARCH_MIPS{,EL}64 token
-does not provide enough information about the ABI for the 64-bit
-process. As a result of which, userland needs to use complex
-seccomp filters to decide whether a syscall belongs to the o32 or n32
-or n64 ABI. Therefore, a new arch token for MIPS64/n32 is added so it
-can be used by seccomp to explicitely set syscall filters for this ABI.
+Wire up for MIPS the new renameat2 system call added in commit
+520c8b165052 (vfs: add renameat2 syscall) merged in v3.15-rc1.
 
-Link: http://sourceforge.net/p/libseccomp/mailman/message/32239040/
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Eric Paris <eparis@redhat.com>
-Cc: Paul Moore <pmoore@redhat.com>
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+Cc: linux-mips@linux-mips.org
 ---
-Ralf, can we please have this in 3.15 (Assuming it's ACK'd)?
+ arch/mips/include/uapi/asm/unistd.h | 15 +++++++++------
+ arch/mips/kernel/scall32-o32.S      |  1 +
+ arch/mips/kernel/scall64-64.S       |  1 +
+ arch/mips/kernel/scall64-n32.S      |  1 +
+ arch/mips/kernel/scall64-o32.S      |  1 +
+ 5 files changed, 13 insertions(+), 6 deletions(-)
 
-Thanks a lot!
----
- arch/mips/include/asm/syscall.h |  2 ++
- include/uapi/linux/audit.h      | 12 ++++++++++++
- 2 files changed, 14 insertions(+)
-
-diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
-index c6e9cd2..17960fe 100644
---- a/arch/mips/include/asm/syscall.h
-+++ b/arch/mips/include/asm/syscall.h
-@@ -133,6 +133,8 @@ static inline int syscall_get_arch(void)
- #ifdef CONFIG_64BIT
- 	if (!test_thread_flag(TIF_32BIT_REGS))
- 		arch |= __AUDIT_ARCH_64BIT;
-+	if (test_thread_flag(TIF_32BIT_ADDR))
-+		arch |= __AUDIT_ARCH_CONVENTION_MIPS64_N32;
- #endif
- #if defined(__LITTLE_ENDIAN)
- 	arch |=  __AUDIT_ARCH_LE;
-diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-index 11917f7..1b1efdd 100644
---- a/include/uapi/linux/audit.h
-+++ b/include/uapi/linux/audit.h
-@@ -331,9 +331,17 @@ enum {
- #define AUDIT_FAIL_PRINTK	1
- #define AUDIT_FAIL_PANIC	2
+diff --git a/arch/mips/include/uapi/asm/unistd.h b/arch/mips/include/uapi/asm/unistd.h
+index d6e154a9e6a5..5805414777e0 100644
+--- a/arch/mips/include/uapi/asm/unistd.h
++++ b/arch/mips/include/uapi/asm/unistd.h
+@@ -371,16 +371,17 @@
+ #define __NR_finit_module		(__NR_Linux + 348)
+ #define __NR_sched_setattr		(__NR_Linux + 349)
+ #define __NR_sched_getattr		(__NR_Linux + 350)
++#define __NR_renameat2			(__NR_Linux + 351)
  
-+/*
-+ * These bits disambiguate different calling conventions that share an
-+ * ELF machine type, bitness, and endianness
-+ */
-+#define __AUDIT_ARCH_CONVENTION_MASK 0x30000000
-+#define __AUDIT_ARCH_CONVENTION_MIPS64_N32 0x20000000
-+
- /* distinguish syscall tables */
- #define __AUDIT_ARCH_64BIT 0x80000000
- #define __AUDIT_ARCH_LE	   0x40000000
-+
- #define AUDIT_ARCH_ALPHA	(EM_ALPHA|__AUDIT_ARCH_64BIT|__AUDIT_ARCH_LE)
- #define AUDIT_ARCH_ARM		(EM_ARM|__AUDIT_ARCH_LE)
- #define AUDIT_ARCH_ARMEB	(EM_ARM)
-@@ -346,7 +354,11 @@ enum {
- #define AUDIT_ARCH_MIPS		(EM_MIPS)
- #define AUDIT_ARCH_MIPSEL	(EM_MIPS|__AUDIT_ARCH_LE)
- #define AUDIT_ARCH_MIPS64	(EM_MIPS|__AUDIT_ARCH_64BIT)
-+#define AUDIT_ARCH_MIPS64N32	(EM_MIPS|__AUDIT_ARCH_64BIT|\
-+				 __AUDIT_ARCH_CONVENTION_MIPS64_N32)
- #define AUDIT_ARCH_MIPSEL64	(EM_MIPS|__AUDIT_ARCH_64BIT|__AUDIT_ARCH_LE)
-+#define AUDIT_ARCH_MIPSEL64N32	(EM_MIPS|__AUDIT_ARCH_64BIT|__AUDIT_ARCH_LE\
-+				 __AUDIT_ARCH_CONVENTION_MIPS64_N32)
- #define AUDIT_ARCH_OPENRISC	(EM_OPENRISC)
- #define AUDIT_ARCH_PARISC	(EM_PARISC)
- #define AUDIT_ARCH_PARISC64	(EM_PARISC|__AUDIT_ARCH_64BIT)
+ /*
+  * Offset of the last Linux o32 flavoured syscall
+  */
+-#define __NR_Linux_syscalls		350
++#define __NR_Linux_syscalls		351
+ 
+ #endif /* _MIPS_SIM == _MIPS_SIM_ABI32 */
+ 
+ #define __NR_O32_Linux			4000
+-#define __NR_O32_Linux_syscalls		350
++#define __NR_O32_Linux_syscalls		351
+ 
+ #if _MIPS_SIM == _MIPS_SIM_ABI64
+ 
+@@ -699,16 +700,17 @@
+ #define __NR_getdents64			(__NR_Linux + 308)
+ #define __NR_sched_setattr		(__NR_Linux + 309)
+ #define __NR_sched_getattr		(__NR_Linux + 310)
++#define __NR_renameat2			(__NR_Linux + 311)
+ 
+ /*
+  * Offset of the last Linux 64-bit flavoured syscall
+  */
+-#define __NR_Linux_syscalls		310
++#define __NR_Linux_syscalls		311
+ 
+ #endif /* _MIPS_SIM == _MIPS_SIM_ABI64 */
+ 
+ #define __NR_64_Linux			5000
+-#define __NR_64_Linux_syscalls		310
++#define __NR_64_Linux_syscalls		311
+ 
+ #if _MIPS_SIM == _MIPS_SIM_NABI32
+ 
+@@ -1031,15 +1033,16 @@
+ #define __NR_finit_module		(__NR_Linux + 312)
+ #define __NR_sched_setattr		(__NR_Linux + 313)
+ #define __NR_sched_getattr		(__NR_Linux + 314)
++#define __NR_renameat2			(__NR_Linux + 315)
+ 
+ /*
+  * Offset of the last N32 flavoured syscall
+  */
+-#define __NR_Linux_syscalls		314
++#define __NR_Linux_syscalls		315
+ 
+ #endif /* _MIPS_SIM == _MIPS_SIM_NABI32 */
+ 
+ #define __NR_N32_Linux			6000
+-#define __NR_N32_Linux_syscalls		314
++#define __NR_N32_Linux_syscalls		315
+ 
+ #endif /* _UAPI_ASM_UNISTD_H */
+diff --git a/arch/mips/kernel/scall32-o32.S b/arch/mips/kernel/scall32-o32.S
+index fdc70b400442..3245474f19d5 100644
+--- a/arch/mips/kernel/scall32-o32.S
++++ b/arch/mips/kernel/scall32-o32.S
+@@ -577,3 +577,4 @@ EXPORT(sys_call_table)
+ 	PTR	sys_finit_module
+ 	PTR	sys_sched_setattr
+ 	PTR	sys_sched_getattr		/* 4350 */
++	PTR	sys_renameat2
+diff --git a/arch/mips/kernel/scall64-64.S b/arch/mips/kernel/scall64-64.S
+index dd99c3285aea..be2fedd4ae33 100644
+--- a/arch/mips/kernel/scall64-64.S
++++ b/arch/mips/kernel/scall64-64.S
+@@ -430,4 +430,5 @@ EXPORT(sys_call_table)
+ 	PTR	sys_getdents64
+ 	PTR	sys_sched_setattr
+ 	PTR	sys_sched_getattr		/* 5310 */
++	PTR	sys_renameat2
+ 	.size	sys_call_table,.-sys_call_table
+diff --git a/arch/mips/kernel/scall64-n32.S b/arch/mips/kernel/scall64-n32.S
+index f68d2f4f0090..c1dbcda4b816 100644
+--- a/arch/mips/kernel/scall64-n32.S
++++ b/arch/mips/kernel/scall64-n32.S
+@@ -423,4 +423,5 @@ EXPORT(sysn32_call_table)
+ 	PTR	sys_finit_module
+ 	PTR	sys_sched_setattr
+ 	PTR	sys_sched_getattr
++	PTR	sys_renameat2			/* 6315 */
+ 	.size	sysn32_call_table,.-sysn32_call_table
+diff --git a/arch/mips/kernel/scall64-o32.S b/arch/mips/kernel/scall64-o32.S
+index 70f6acecd928..f1343ccd7ed7 100644
+--- a/arch/mips/kernel/scall64-o32.S
++++ b/arch/mips/kernel/scall64-o32.S
+@@ -556,4 +556,5 @@ EXPORT(sys32_call_table)
+ 	PTR	sys_finit_module
+ 	PTR	sys_sched_setattr
+ 	PTR	sys_sched_getattr		/* 4350 */
++	PTR	sys_renameat2
+ 	.size	sys32_call_table,.-sys32_call_table
 -- 
-1.9.2
+1.8.1.2

@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.89.28.115]:28965 "EHLO
+Received: from mailapp01.imgtec.com ([195.89.28.115]:7139 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6822284AbaDYPUhbKuS- (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 25 Apr 2014 17:20:37 +0200
+        with ESMTP id S6827439AbaDYPUjBisTe (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 25 Apr 2014 17:20:39 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 01/21] MIPS: KVM: Allocate at least 16KB for exception handlers
-Date: Fri, 25 Apr 2014 16:19:44 +0100
-Message-ID: <1398439204-26171-2-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 03/21] MIPS: KVM: Use tlb_write_random
+Date: Fri, 25 Apr 2014 16:19:46 +0100
+Message-ID: <1398439204-26171-4-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1398439204-26171-1-git-send-email-james.hogan@imgtec.com>
 References: <1398439204-26171-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -21,24 +21,20 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: James Hogan <james.hogan@imgtec.com>, Gleb Natapov <gleb@kernel.org>, kvm@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Sanjay Lal <sanjayl@kymasys.com>, stable@vger.kernel.org
-Message-ID: <20140425151944.yRRo2To4-pUS7fXS6M97xGSrX3EAux4Ea6DIxgXa8ko@z>
+Cc: James Hogan <james.hogan@imgtec.com>, Gleb Natapov <gleb@kernel.org>, kvm@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Sanjay Lal <sanjayl@kymasys.com>
+Message-ID: <20140425151946.mrYJqZumqpgXiycRTOSsrUrAbTaJJ1_G_to6FQJp6hM@z>
 
-Each MIPS KVM guest has its own copy of the KVM exception vector. This
-contains the TLB refill exception handler at offset 0x000, the general
-exception handler at offset 0x180, and interrupt exception handlers at
-offset 0x200 in case Cause_IV=1. A common handler is copied to offset
-0x2000 and offset 0x3000 is used for temporarily storing k1 during entry
-from guest.
+When MIPS KVM needs to write a TLB entry for the guest it reads the
+CP0_Random register, uses it to generate the CP_Index, and writes the
+TLB entry using the TLBWI instruction (tlb_write_indexed()).
 
-However the amount of memory allocated for this purpose is calculated as
-0x200 rounded up to the next page boundary, which is insufficient if 4KB
-pages are in use. This can lead to the common handler at offset 0x2000
-being overwritten and infinitely recursive exceptions on the next exit
-from the guest.
+However there's an instruction for that, TLBWR (tlb_write_random()) so
+use that instead.
 
-Increase the minimum size from 0x200 to 0x4000 to cover the full use of
-the page.
+This happens to also fix an issue with Ingenic XBurst cores where the
+same TLB entry is replaced each time preventing forward progress on
+stores due to alternating between TLB load misses for the instruction
+fetch and TLB store misses.
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Paolo Bonzini <pbonzini@redhat.com>
@@ -47,23 +43,34 @@ Cc: kvm@vger.kernel.org
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 Cc: Sanjay Lal <sanjayl@kymasys.com>
-Cc: stable@vger.kernel.org
 ---
- arch/mips/kvm/kvm_mips.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kvm/kvm_tlb.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/kvm/kvm_mips.c b/arch/mips/kvm/kvm_mips.c
-index da5186fbd77a..5efce56f0df0 100644
---- a/arch/mips/kvm/kvm_mips.c
-+++ b/arch/mips/kvm/kvm_mips.c
-@@ -304,7 +304,7 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm, unsigned int id)
- 	if (cpu_has_veic || cpu_has_vint) {
- 		size = 0x200 + VECTORSPACING * 64;
- 	} else {
--		size = 0x200;
-+		size = 0x4000;
+diff --git a/arch/mips/kvm/kvm_tlb.c b/arch/mips/kvm/kvm_tlb.c
+index 50ab9c4d4a5d..9d371ee0a755 100644
+--- a/arch/mips/kvm/kvm_tlb.c
++++ b/arch/mips/kvm/kvm_tlb.c
+@@ -222,16 +222,14 @@ kvm_mips_host_tlb_write(struct kvm_vcpu *vcpu, unsigned long entryhi,
+ 		return -1;
  	}
  
- 	/* Save Linux EBASE */
+-	if (idx < 0) {
+-		idx = read_c0_random() % current_cpu_data.tlbsize;
+-		write_c0_index(idx);
+-		mtc0_tlbw_hazard();
+-	}
+ 	write_c0_entrylo0(entrylo0);
+ 	write_c0_entrylo1(entrylo1);
+ 	mtc0_tlbw_hazard();
+ 
+-	tlb_write_indexed();
++	if (idx < 0)
++		tlb_write_random();
++	else
++		tlb_write_indexed();
+ 	tlbw_use_hazard();
+ 
+ #ifdef DEBUG
 -- 
 1.8.1.2

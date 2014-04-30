@@ -1,18 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.89.28.114]:43258 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6843062AbaD3JYTVHRLp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 30 Apr 2014 11:24:19 +0200
-Message-ID: <5360C13A.5040902@imgtec.com>
-Date: Wed, 30 Apr 2014 10:24:10 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+Received: from mail-gw1-out.broadcom.com ([216.31.210.62]:22644 "EHLO
+        mail-gw1-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6843076AbaD3Jt4LYX8S (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 30 Apr 2014 11:49:56 +0200
+Date: Wed, 30 Apr 2014 15:26:10 +0530
+From: Jayachandran C. <jchandra@broadcom.com>
+Subject: Re: [PATCH 11/17] MIPS: Netlogic: Fix XLP9XX pic entry
+Message-ID: <20140430095609.GA20504@jayachandranc.netlogicmicro.com>
+References: <cover.1398780013.git.jchandra@broadcom.com>
+ <db9d6d674a9fadeb7bad499ade3d66cc715fb6dd.1398780013.git.jchandra@broadcom.com>
+ <535FE312.50400@cogentembedded.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3.15] MIPS: Add new AUDIT_ARCH token for the N32 ABI on
- MIPS64
-References: <1397550996-14805-1-git-send-email-markos.chandras@imgtec.com> <1398177636-10442-1-git-send-email-markos.chandras@imgtec.com> <2110472.rttbk0K4Ne@sifl>
-In-Reply-To: <2110472.rttbk0K4Ne@sifl>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <535FE312.50400@cogentembedded.com>
+Return-Path: <jchandra@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,53 +23,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Moore <pmoore@redhat.com>
-Cc: linux-mips@linux-mips.org, Andy Lutomirski <luto@amacapital.net>, Eric Paris <eparis@redhat.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20140430092410.tLDnhzxkNzBEu5duXihm3UFC67NKKIIxaw8-HLmOMb0@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org
+Message-ID: <20140430095610.FiOU3QCRieMI5SGIG5uVEoYemwRzTS6kwQiu59kYX8M@z>
 
-On 04/24/2014 08:19 PM, Paul Moore wrote:
-> On Tuesday, April 22, 2014 03:40:36 PM Markos Chandras wrote:
->> A MIPS64 kernel may support ELF files for all 3 MIPS ABIs
->> (O32, N32, N64). Furthermore, the AUDIT_ARCH_MIPS{,EL}64 token
->> does not provide enough information about the ABI for the 64-bit
->> process. As a result of which, userland needs to use complex
->> seccomp filters to decide whether a syscall belongs to the o32 or n32
->> or n64 ABI. Therefore, a new arch token for MIPS64/n32 is added so it
->> can be used by seccomp to explicitely set syscall filters for this ABI.
->>
->> Link: http://sourceforge.net/p/libseccomp/mailman/message/32239040/
->> Cc: Andy Lutomirski <luto@amacapital.net>
->> Cc: Eric Paris <eparis@redhat.com>
->> Cc: Paul Moore <pmoore@redhat.com>
->> Cc: Ralf Baechle <ralf@linux-mips.org>
->> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
->> ---
->> Ralf, can we please have this in 3.15 (Assuming it's ACK'd)?
->>
->> Thanks a lot!
->> ---
->>  arch/mips/include/asm/syscall.h |  2 ++
->>  include/uapi/linux/audit.h      | 12 ++++++++++++
->>  2 files changed, 14 insertions(+)
+On Tue, Apr 29, 2014 at 09:36:18PM +0400, Sergei Shtylyov wrote:
+> Hello.
 > 
-> I'm far from qualified to ACK any MIPS specific patches, but I do want to add 
-> my support for this patch.  As Markos states above, without this patch any 
-> seccomp BPF code will be more complex than necessary (see x32 for an idea) and 
-> projects that try to abstract away the arch/ABI specific nature of the BPF 
-> seccomp filters will be have to do a lot more work.  Please merge this patch, 
-> or something similar, along with the MIPS BPF seccomp filters in 3.15; waiting 
-> until 3.16 will be too late.
+> On 04/29/2014 06:37 PM, Jayachandran C wrote:
 > 
-> I also don't want to speak for the audit folks (Eric?), but I think you'll 
-> hear that this patch makes life much easier for them as well.
+> >Add the compatible property to the PIC entry. Also fix up the nodename
+> >to use the correct address.
 > 
-> Thanks,
-> -Paul
+> >Signed-off-by: Jayachandran C <jchandra@broadcom.com>
+> >---
+> >  arch/mips/netlogic/dts/xlp_gvp.dts |    5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> >diff --git a/arch/mips/netlogic/dts/xlp_gvp.dts b/arch/mips/netlogic/dts/xlp_gvp.dts
+> >index 047d27f..bb4ecd1 100644
+> >--- a/arch/mips/netlogic/dts/xlp_gvp.dts
+> >+++ b/arch/mips/netlogic/dts/xlp_gvp.dts
+> >@@ -26,11 +26,12 @@
+> >  			interrupt-parent = <&pic>;
+> >  			interrupts = <17>;
+> >  		};
+> >-		pic: pic@4000 {
+> >-			interrupt-controller;
+> >+		pic: pic@110000 {
+> 
+>    According to the ePAPR standard [1], the node name should be
+> "interrupt-controller@110000".
+> 
+> >+			compatible = "netlogic,xlp-pic";
+> >  			#address-cells = <0>;
+> >  			#interrupt-cells = <1>;
+> >  			reg = <0 0x110000 0x200>;
+> >+			interrupt-controller;
+> >  		};
 
-Ralf ping? Can we please have this in 3.15 so userspace application get
-the updated token instead of using the AUDIT_ARCH_MIPS{,EL}64 for both
-n32 and n64? It may be harder to change it once 3.15 is released (ABI
-break).
+The ePAPR document itself has a interrupt-controller definition which
+uses the node name "pic". And most of the linux kernel dts files use
+"pic" as well.
 
--- 
-markos
+Based on this, I think that even if the standard recommends using
+interrupt-contoller as the nodename, pic can be used as well.
+
+Thanks,
+JC.

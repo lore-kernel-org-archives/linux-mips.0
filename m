@@ -1,16 +1,16 @@
-Received: from [195.59.15.197] ([195.59.15.197]:37612 "EHLO
+Received: from [195.59.15.196] ([195.59.15.196]:28093 "EHLO
         mailapp01.imgtec.com" rhost-flags-FAIL-FAIL-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6817664AbaEBTsJsErw6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 2 May 2014 21:48:09 +0200
+        by eddie.linux-mips.org with ESMTP id S6817664AbaEBTs53N0ip (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 2 May 2014 21:48:57 +0200
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 90078957F9BBC
-        for <linux-mips@linux-mips.org>; Fri,  2 May 2014 20:47:59 +0100 (IST)
+        by Websense Email Security Gateway with ESMTPS id 269B98697B69
+        for <linux-mips@linux-mips.org>; Fri,  2 May 2014 20:48:47 +0100 (IST)
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 32/39] MIPS: smp-cps: prevent multi-core SMP with unsuitable CCA
-Date: Fri, 2 May 2014 20:47:57 +0100
-Message-ID: <1399060077-26767-1-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1397653533-4648-1-git-send-email-paul.burton@imgtec.com>
-References: <1397653533-4648-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH v2 34/39] MIPS: smp-cps: duplicate core0 CCA on secondary cores
+Date: Fri, 2 May 2014 20:48:45 +0100
+Message-ID: <1399060125-26841-1-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1397653555-4758-1-git-send-email-paul.burton@imgtec.com>
+References: <1397653555-4758-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -25,71 +25,74 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140502194757.7XfIa3Cz21u17fQaaljikLWHwonH59YlOL4JFgaLqMI@z>
+Message-ID: <20140502194845.-HFSUgwdmI4n_a7ELmRp2cYa6iVaqBPOlyAPHtAKP-o@z>
 
-If the user or bootloader sets the CCA to a value which is not suited
-for multi-core SMP (ie. anything non-coherent) then limit the system to
-using only a single core and warn the user.
+Rather than hardcoding CCA=0x5 for secondary cores, re-use the CCA from
+the boot CPU. This allows overrides of the CCA using the cca= kernel
+parameter to take effect on all CPUs for consistency.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 Changes in v2:
   - Rebase atop v2 of patch 28.
 ---
- arch/mips/kernel/smp-cps.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ arch/mips/kernel/cps-vec.S | 11 +++++++----
+ arch/mips/kernel/smp-cps.c |  8 +++++++-
+ 2 files changed, 14 insertions(+), 5 deletions(-)
 
+diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
+index 1c865ae..6f4f739 100644
+--- a/arch/mips/kernel/cps-vec.S
++++ b/arch/mips/kernel/cps-vec.S
+@@ -45,10 +45,12 @@
+ 
+ LEAF(mips_cps_core_entry)
+ 	/*
+-	 * These first 8 bytes will be patched by cps_smp_setup to load the
+-	 * base address of the CM GCRs into register v1.
++	 * These first 12 bytes will be patched by cps_smp_setup to load the
++	 * base address of the CM GCRs into register v1 and the CCA to use into
++	 * register s0.
+ 	 */
+ 	.quad	0
++	.word	0
+ 
+ 	/* Check whether we're here due to an NMI */
+ 	mfc0	k0, CP0_STATUS
+@@ -139,10 +141,11 @@ icache_done:
+ 	 add	a0, a0, t0
+ dcache_done:
+ 
+-	/* Set Kseg0 cacheable, coherent, write-back, write-allocate */
++	/* Set Kseg0 CCA to that in s0 */
+ 	mfc0	t0, CP0_CONFIG
+ 	ori	t0, 0x7
+-	xori	t0, 0x2
++	xori	t0, 0x7
++	or	t0, t0, s0
+ 	mtc0	t0, CP0_CONFIG
+ 	ehb
+ 
 diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index 2c195b1..7083a59 100644
+index 870897d..ec4f115 100644
 --- a/arch/mips/kernel/smp-cps.c
 +++ b/arch/mips/kernel/smp-cps.c
-@@ -88,11 +88,38 @@ static void __init cps_smp_setup(void)
+@@ -123,9 +123,15 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
+ 		}
+ 	}
  
- static void __init cps_prepare_cpus(unsigned int max_cpus)
- {
--	unsigned ncores, core_vpes, c;
-+	unsigned ncores, core_vpes, c, cca;
-+	bool cca_unsuitable;
- 	u32 *entry_code;
- 
- 	mips_mt_set_cpuoptions();
- 
-+	/* Detect whether the CCA is unsuited to multi-core SMP */
-+	cca = read_c0_config() & CONF_CM_CMASK;
-+	switch (cca) {
-+	case 0x4: /* CWBE */
-+	case 0x5: /* CWB */
-+		/* The CCA is coherent, multi-core is fine */
-+		cca_unsuitable = false;
-+		break;
-+
-+	default:
-+		/* CCA is not coherent, multi-core is not usable */
-+		cca_unsuitable = true;
-+	}
-+
-+	/* Warn the user if the CCA prevents multi-core */
-+	ncores = mips_cm_numcores();
-+	if (cca_unsuitable && ncores > 1) {
-+		pr_warn("Using only one core due to unsuitable CCA 0x%x\n",
-+			cca);
-+
-+		for_each_present_cpu(c) {
-+			if (cpu_data[c].core)
-+				set_cpu_present(c, false);
-+		}
-+	}
-+
- 	/* Patch the start of mips_cps_core_entry to provide the CM base */
+-	/* Patch the start of mips_cps_core_entry to provide the CM base */
++	/*
++	 * Patch the start of mips_cps_core_entry to provide:
++	 *
++	 * v0 = CM base address
++	 * s0 = kseg0 CCA
++	 */
  	entry_code = (u32 *)&mips_cps_core_entry;
  	UASM_i_LA(&entry_code, 3, (long)mips_cm_base);
-@@ -100,7 +127,6 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
++	uasm_i_addiu(&entry_code, 16, 0, cca);
+ 	dma_cache_wback_inv((unsigned long)&mips_cps_core_entry,
  			    (void *)entry_code - (void *)&mips_cps_core_entry);
  
- 	/* Allocate core boot configuration structs */
--	ncores = mips_cm_numcores();
- 	mips_cps_core_bootcfg = kcalloc(ncores, sizeof(*mips_cps_core_bootcfg),
- 					GFP_KERNEL);
- 	if (!mips_cps_core_bootcfg) {
 -- 
 1.8.5.3

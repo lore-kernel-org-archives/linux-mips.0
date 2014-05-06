@@ -1,12 +1,12 @@
-Received: from mail-bn1lp0145.outbound.protection.outlook.com ([207.46.163.145]:38003
-        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
+Received: from mail-bl2lp0211.outbound.protection.outlook.com ([207.46.163.211]:33090
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6837584AbaEFPwkbTzWZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 6 May 2014 17:52:40 +0200
+        id S6837586AbaEFPwnRih-j (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 6 May 2014 17:52:43 +0200
 From: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-Subject: [PATCH 06/11] kvm tools, mips: Enable build of mips support
-Date: Tue, 6 May 2014 17:51:26 +0200
-Message-ID: <1399391491-5021-7-git-send-email-andreas.herrmann@caviumnetworks.com>
+Subject: [PATCH 02/11] kvm tools: Fix print format warnings
+Date: Tue, 6 May 2014 17:51:22 +0200
+Message-ID: <1399391491-5021-3-git-send-email-andreas.herrmann@caviumnetworks.com>
 In-Reply-To: <1399391491-5021-1-git-send-email-andreas.herrmann@caviumnetworks.com>
 References: <1399391491-5021-1-git-send-email-andreas.herrmann@caviumnetworks.com>
 MIME-Version: 1.0
@@ -22,45 +22,155 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Pekka Enberg <penberg@kernel.org>
-Cc: David Daney <ddaney.cavm@gmail.com>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, kvm@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
-Message-ID: <20140506155126.Pcs3m_Y0YgEnbXAZ9UGtcrpQmrLHYFPU2s4l8-ViynU@z>
+Cc: David Daney <ddaney.cavm@gmail.com>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, kvm@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20140506155122.WsrpXqCohUFZMl5phTYC1FHpQCmNQ2UiEll5ug_6RVE@z>
 
-From: David Daney <david.daney@cavium.com>
+This should fix following warnings
 
-Signed-off-by: David Daney <david.daney@cavium.com>
+ builtin-stat.c:93:3: warning: format '%llu' expects argument of type 'long long unsigned int', but argument 2 has type '__u64' [-Wformat]
+ builtin-run.c:188:4: warning: format '%Lu' expects argument of type 'long long unsigned int', but argument 3 has type '__u64' [-Wformat]
+ builtin-run.c:554:3: warning: format '%llu' expects argument of type 'long long unsigned int', but argument 2 has type 'u64' [-Wformat]
+ builtin-run.c:554:3: warning: format '%llu' expects argument of type 'long long unsigned int', but argument 3 has type 'u64' [-Wformat]
+ builtin-run.c:645:3: warning: format '%Lu' expects argument of type 'long long unsigned int', but argument 4 has type 'u64' [-Wformat]
+ disk/core.c:330:4: warning: format '%llu' expects argument of type 'long long unsigned int', but argument 4 has type '__dev_t' [-Wformat]
+ disk/core.c:330:4: warning: format '%llu' expects argument of type 'long long unsigned int', but argument 5 has type '__dev_t' [-Wformat]
+ disk/core.c:330:4: warning: format '%llu' expects argument of type 'long long unsigned int', but argument 6 has type '__ino64_t' [-Wformat]
+ mmio.c:134:5: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 4 has type 'u64' [-Wformat]
+ util/util.c:101:7: warning: format '%lld' expects argument of type 'long long int', but argument 3 has type 'u64' [-Wformat]
+ util/util.c:113:7: warning: format '%lld' expects argument of type 'long long int', but argument 2 has type 'u64' [-Wformat]
+ hw/pci-shmem.c:339:3: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 2 has type 'u64' [-Wformat]
+ hw/pci-shmem.c:340:3: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 2 has type 'u64' [-Wformat]
+
+as observed when compiling on mips64.
+
 Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
 ---
- tools/kvm/Makefile |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ tools/kvm/builtin-run.c  |   12 ++++++++----
+ tools/kvm/builtin-stat.c |    2 +-
+ tools/kvm/disk/core.c    |    4 +++-
+ tools/kvm/hw/pci-shmem.c |    5 +++--
+ tools/kvm/mmio.c         |    5 +++--
+ tools/kvm/util/util.c    |    4 ++--
+ 6 files changed, 20 insertions(+), 12 deletions(-)
 
-diff --git a/tools/kvm/Makefile b/tools/kvm/Makefile
-index b872651..91286ad 100644
---- a/tools/kvm/Makefile
-+++ b/tools/kvm/Makefile
-@@ -105,7 +105,7 @@ OBJS	+= virtio/mmio.o
+diff --git a/tools/kvm/builtin-run.c b/tools/kvm/builtin-run.c
+index da95d71..1ee75ad 100644
+--- a/tools/kvm/builtin-run.c
++++ b/tools/kvm/builtin-run.c
+@@ -184,8 +184,8 @@ panic_kvm:
+ 		current_kvm_cpu->kvm_run->exit_reason,
+ 		kvm_exit_reasons[current_kvm_cpu->kvm_run->exit_reason]);
+ 	if (current_kvm_cpu->kvm_run->exit_reason == KVM_EXIT_UNKNOWN)
+-		fprintf(stderr, "KVM exit code: 0x%Lu\n",
+-			current_kvm_cpu->kvm_run->hw.hardware_exit_reason);
++		fprintf(stderr, "KVM exit code: 0x%llu\n",
++			(unsigned long long)current_kvm_cpu->kvm_run->hw.hardware_exit_reason);
  
- # Translate uname -m into ARCH string
- ARCH ?= $(shell uname -m | sed -e s/i.86/i386/ -e s/ppc.*/powerpc/ \
--	  -e s/armv7.*/arm/ -e s/aarch64.*/arm64/)
-+	  -e s/armv7.*/arm/ -e s/aarch64.*/arm64/ -e s/mips64/mips/)
+ 	kvm_cpu__set_debug_fd(STDOUT_FILENO);
+ 	kvm_cpu__show_registers(current_kvm_cpu);
+@@ -551,7 +551,9 @@ static struct kvm *kvm_cmd_run_init(int argc, const char **argv)
+ 		kvm->cfg.ram_size = get_ram_size(kvm->cfg.nrcpus);
  
- ifeq ($(ARCH),i386)
- 	ARCH         := x86
-@@ -184,6 +184,15 @@ ifeq ($(ARCH), arm64)
- 	ARCH_WANT_LIBFDT := y
- endif
+ 	if (kvm->cfg.ram_size > host_ram_size())
+-		pr_warning("Guest memory size %lluMB exceeds host physical RAM size %lluMB", kvm->cfg.ram_size, host_ram_size());
++		pr_warning("Guest memory size %lluMB exceeds host physical RAM size %lluMB",
++			(unsigned long long)kvm->cfg.ram_size,
++			(unsigned long long)host_ram_size());
  
-+ifeq ($(ARCH),mips)
-+	DEFINES		+= -DCONFIG_MIPS
-+	ARCH_INCLUDE	:= mips/include
-+	CFLAGS		+= -I../../arch/mips/include/asm/mach-cavium-octeon
-+	CFLAGS		+= -I../../arch/mips/include/asm/mach-generic
-+	OBJS		+= mips/kvm.o
-+	OBJS		+= mips/kvm-cpu.o
-+	OBJS		+= mips/irq.o
-+endif
- ###
+ 	kvm->cfg.ram_size <<= MB_SHIFT;
  
- ifeq (,$(ARCH_INCLUDE))
+@@ -639,7 +641,9 @@ static struct kvm *kvm_cmd_run_init(int argc, const char **argv)
+ 	kvm->cfg.real_cmdline = real_cmdline;
+ 
+ 	printf("  # %s run -k %s -m %Lu -c %d --name %s\n", KVM_BINARY_NAME,
+-		kvm->cfg.kernel_filename, kvm->cfg.ram_size / 1024 / 1024, kvm->cfg.nrcpus, kvm->cfg.guest_name);
++		kvm->cfg.kernel_filename,
++		(unsigned long long)kvm->cfg.ram_size / 1024 / 1024,
++		kvm->cfg.nrcpus, kvm->cfg.guest_name);
+ 
+ 	if (init_list__init(kvm) < 0)
+ 		die ("Initialisation failed");
+diff --git a/tools/kvm/builtin-stat.c b/tools/kvm/builtin-stat.c
+index ffd72e8..5d6407e 100644
+--- a/tools/kvm/builtin-stat.c
++++ b/tools/kvm/builtin-stat.c
+@@ -90,7 +90,7 @@ static int do_memstat(const char *name, int sock)
+ 			printf("The total amount of memory available (in bytes):");
+ 			break;
+ 		}
+-		printf("%llu\n", stats[i].val);
++		printf("%llu\n", (unsigned long long)stats[i].val);
+ 	}
+ 	printf("\n");
+ 
+diff --git a/tools/kvm/disk/core.c b/tools/kvm/disk/core.c
+index 4e9bda0..309e16c 100644
+--- a/tools/kvm/disk/core.c
++++ b/tools/kvm/disk/core.c
+@@ -327,7 +327,9 @@ ssize_t disk_image__get_serial(struct disk_image *disk, void *buffer, ssize_t *l
+ 		return r;
+ 
+ 	*len = snprintf(buffer, *len, "%llu%llu%llu",
+-			(u64)st.st_dev, (u64)st.st_rdev, (u64)st.st_ino);
++			(unsigned long long)st.st_dev,
++			(unsigned long long)st.st_rdev,
++			(unsigned long long)st.st_ino);
+ 	return *len;
+ }
+ 
+diff --git a/tools/kvm/hw/pci-shmem.c b/tools/kvm/hw/pci-shmem.c
+index 34de747..d769e432 100644
+--- a/tools/kvm/hw/pci-shmem.c
++++ b/tools/kvm/hw/pci-shmem.c
+@@ -336,8 +336,9 @@ int shmem_parser(const struct option *opt, const char *arg, int unset)
+ 		strcpy(handle, default_handle);
+ 	}
+ 	if (verbose) {
+-		pr_info("shmem: phys_addr = %llx", phys_addr);
+-		pr_info("shmem: size      = %llx", size);
++		pr_info("shmem: phys_addr = %llx",
++			(unsigned long long)phys_addr);
++		pr_info("shmem: size      = %llx", (unsigned long long)size);
+ 		pr_info("shmem: handle    = %s", handle);
+ 		pr_info("shmem: create    = %d", create);
+ 	}
+diff --git a/tools/kvm/mmio.c b/tools/kvm/mmio.c
+index 5d65d28..786c3eb 100644
+--- a/tools/kvm/mmio.c
++++ b/tools/kvm/mmio.c
+@@ -130,8 +130,9 @@ bool kvm__emulate_mmio(struct kvm *kvm, u64 phys_addr, u8 *data, u32 len, u8 is_
+ 		mmio->mmio_fn(phys_addr, data, len, is_write, mmio->ptr);
+ 	else {
+ 		if (kvm->cfg.mmio_debug)
+-			fprintf(stderr, "Warning: Ignoring MMIO %s at %016llx (length %u)\n",
+-				to_direction(is_write), phys_addr, len);
++			fprintf(stderr,	"Warning: Ignoring MMIO %s at %016llx (length %u)\n",
++				to_direction(is_write),
++				(unsigned long long)phys_addr, len);
+ 	}
+ 	br_read_unlock();
+ 
+diff --git a/tools/kvm/util/util.c b/tools/kvm/util/util.c
+index c11a15a..1877105 100644
+--- a/tools/kvm/util/util.c
++++ b/tools/kvm/util/util.c
+@@ -98,7 +98,7 @@ void *mmap_hugetlbfs(struct kvm *kvm, const char *htlbfs_path, u64 size)
+ 	blk_size = (unsigned long)sfs.f_bsize;
+ 	if (sfs.f_bsize == 0 || blk_size > size) {
+ 		die("Can't use hugetlbfs pagesize %ld for mem size %lld\n",
+-		    blk_size, size);
++			blk_size, (unsigned long long)size);
+ 	}
+ 
+ 	kvm->ram_pagesize = blk_size;
+@@ -110,7 +110,7 @@ void *mmap_hugetlbfs(struct kvm *kvm, const char *htlbfs_path, u64 size)
+ 	unlink(mpath);
+ 	if (ftruncate(fd, size) < 0)
+ 		die("Can't ftruncate for mem mapping size %lld\n",
+-		    size);
++			(unsigned long long)size);
+ 	addr = mmap(NULL, size, PROT_RW, MAP_PRIVATE, fd, 0);
+ 	close(fd);
+ 
 -- 
 1.7.9.5

@@ -1,19 +1,21 @@
-Received: from [195.59.15.196] ([195.59.15.196]:28093 "EHLO
-        mailapp01.imgtec.com" rhost-flags-FAIL-FAIL-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6817664AbaEBTs53N0ip (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 2 May 2014 21:48:57 +0200
+Received: from mailapp01.imgtec.com ([195.89.28.115]:19324 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-FAIL-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S6817913AbaEFHrtpdvsh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 6 May 2014 09:47:49 +0200
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 269B98697B69
-        for <linux-mips@linux-mips.org>; Fri,  2 May 2014 20:48:47 +0100 (IST)
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 34/39] MIPS: smp-cps: duplicate core0 CCA on secondary cores
-Date: Fri, 2 May 2014 20:48:45 +0100
-Message-ID: <1399060125-26841-1-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1397653555-4758-1-git-send-email-paul.burton@imgtec.com>
-References: <1397653555-4758-1-git-send-email-paul.burton@imgtec.com>
+        by Websense Email Security Gateway with ESMTPS id C14F149AE1DE
+        for <linux-mips@linux-mips.org>; Tue,  6 May 2014 08:47:40 +0100 (IST)
+Message-ID: <5368939D.9030801@imgtec.com>
+Date: Tue, 6 May 2014 08:47:41 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Subject: Re: [PATCH 3.15] MIPS: Add new AUDIT_ARCH token for the N32 ABI on
+ MIPS64
+References: <1397550996-14805-1-git-send-email-markos.chandras@imgtec.com> <1398177636-10442-1-git-send-email-markos.chandras@imgtec.com> <2110472.rttbk0K4Ne@sifl> <5360C13A.5040902@imgtec.com>
+In-Reply-To: <5360C13A.5040902@imgtec.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,75 +26,56 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140502194845.-HFSUgwdmI4n_a7ELmRp2cYa6iVaqBPOlyAPHtAKP-o@z>
+Message-ID: <20140506074741.jeO6WJTaMuh4sML_HuJ3oTq3xxHFn4wFp4ScrFzWy98@z>
 
-Rather than hardcoding CCA=0x5 for secondary cores, re-use the CCA from
-the boot CPU. This allows overrides of the CCA using the cca= kernel
-parameter to take effect on all CPUs for consistency.
+On 04/30/2014 10:24 AM, Markos Chandras wrote:
+> On 04/24/2014 08:19 PM, Paul Moore wrote:
+>> On Tuesday, April 22, 2014 03:40:36 PM Markos Chandras wrote:
+>>> A MIPS64 kernel may support ELF files for all 3 MIPS ABIs
+>>> (O32, N32, N64). Furthermore, the AUDIT_ARCH_MIPS{,EL}64 token
+>>> does not provide enough information about the ABI for the 64-bit
+>>> process. As a result of which, userland needs to use complex
+>>> seccomp filters to decide whether a syscall belongs to the o32 or n32
+>>> or n64 ABI. Therefore, a new arch token for MIPS64/n32 is added so it
+>>> can be used by seccomp to explicitely set syscall filters for this ABI.
+>>>
+>>> Link: http://sourceforge.net/p/libseccomp/mailman/message/32239040/
+>>> Cc: Andy Lutomirski <luto@amacapital.net>
+>>> Cc: Eric Paris <eparis@redhat.com>
+>>> Cc: Paul Moore <pmoore@redhat.com>
+>>> Cc: Ralf Baechle <ralf@linux-mips.org>
+>>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+>>> ---
+>>> Ralf, can we please have this in 3.15 (Assuming it's ACK'd)?
+>>>
+>>> Thanks a lot!
+>>> ---
+>>>  arch/mips/include/asm/syscall.h |  2 ++
+>>>  include/uapi/linux/audit.h      | 12 ++++++++++++
+>>>  2 files changed, 14 insertions(+)
+>>
+>> I'm far from qualified to ACK any MIPS specific patches, but I do want to add 
+>> my support for this patch.  As Markos states above, without this patch any 
+>> seccomp BPF code will be more complex than necessary (see x32 for an idea) and 
+>> projects that try to abstract away the arch/ABI specific nature of the BPF 
+>> seccomp filters will be have to do a lot more work.  Please merge this patch, 
+>> or something similar, along with the MIPS BPF seccomp filters in 3.15; waiting 
+>> until 3.16 will be too late.
+>>
+>> I also don't want to speak for the audit folks (Eric?), but I think you'll 
+>> hear that this patch makes life much easier for them as well.
+>>
+>> Thanks,
+>> -Paul
+> 
+> Ralf ping? Can we please have this in 3.15 so userspace application get
+> the updated token instead of using the AUDIT_ARCH_MIPS{,EL}64 for both
+> n32 and n64? It may be harder to change it once 3.15 is released (ABI
+> break).
+> 
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
----
-Changes in v2:
-  - Rebase atop v2 of patch 28.
----
- arch/mips/kernel/cps-vec.S | 11 +++++++----
- arch/mips/kernel/smp-cps.c |  8 +++++++-
- 2 files changed, 14 insertions(+), 5 deletions(-)
+Ralf ping again? With -r5 approaching, there might be limited time left
+to push this.
 
-diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
-index 1c865ae..6f4f739 100644
---- a/arch/mips/kernel/cps-vec.S
-+++ b/arch/mips/kernel/cps-vec.S
-@@ -45,10 +45,12 @@
- 
- LEAF(mips_cps_core_entry)
- 	/*
--	 * These first 8 bytes will be patched by cps_smp_setup to load the
--	 * base address of the CM GCRs into register v1.
-+	 * These first 12 bytes will be patched by cps_smp_setup to load the
-+	 * base address of the CM GCRs into register v1 and the CCA to use into
-+	 * register s0.
- 	 */
- 	.quad	0
-+	.word	0
- 
- 	/* Check whether we're here due to an NMI */
- 	mfc0	k0, CP0_STATUS
-@@ -139,10 +141,11 @@ icache_done:
- 	 add	a0, a0, t0
- dcache_done:
- 
--	/* Set Kseg0 cacheable, coherent, write-back, write-allocate */
-+	/* Set Kseg0 CCA to that in s0 */
- 	mfc0	t0, CP0_CONFIG
- 	ori	t0, 0x7
--	xori	t0, 0x2
-+	xori	t0, 0x7
-+	or	t0, t0, s0
- 	mtc0	t0, CP0_CONFIG
- 	ehb
- 
-diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index 870897d..ec4f115 100644
---- a/arch/mips/kernel/smp-cps.c
-+++ b/arch/mips/kernel/smp-cps.c
-@@ -123,9 +123,15 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
- 		}
- 	}
- 
--	/* Patch the start of mips_cps_core_entry to provide the CM base */
-+	/*
-+	 * Patch the start of mips_cps_core_entry to provide:
-+	 *
-+	 * v0 = CM base address
-+	 * s0 = kseg0 CCA
-+	 */
- 	entry_code = (u32 *)&mips_cps_core_entry;
- 	UASM_i_LA(&entry_code, 3, (long)mips_cm_base);
-+	uasm_i_addiu(&entry_code, 16, 0, cca);
- 	dma_cache_wback_inv((unsigned long)&mips_cps_core_entry,
- 			    (void *)entry_code - (void *)&mips_cps_core_entry);
- 
 -- 
-1.8.5.3
+markos

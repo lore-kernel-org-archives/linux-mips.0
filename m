@@ -1,19 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.89.28.115]:19292 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S6839029AbaEGLWYIwRYh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 7 May 2014 13:22:24 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 9F7075850566E
-        for <linux-mips@linux-mips.org>; Wed,  7 May 2014 12:22:14 +0100 (IST)
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 5/5] MIPS: Malta: support powering down
-Date: Wed, 7 May 2014 12:22:12 +0100
-Message-ID: <1399461732-17685-1-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1399461660-17623-1-git-send-email-paul.burton@imgtec.com>
-References: <1399461660-17623-1-git-send-email-paul.burton@imgtec.com>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63]:38856 "EHLO
+        mail-gw2-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6839027AbaEIK6Ld7oXQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 9 May 2014 12:58:11 +0200
+From: Jayachandran C <jchandra@broadcom.com>
+Subject: [PATCH v2 06/17] MIPS: Netlogic: Use cpumask_scnprintf for wakeup_mask
+Date: Fri, 9 May 2014 16:34:54 +0530
+Message-ID: <1399633494-19167-1-git-send-email-jchandra@broadcom.com>
+In-Reply-To: <26b70b3880094baa731bfe9b2927fd6d872b82fc.1398780013.git.jchandra@broadcom.com>
+References: <26b70b3880094baa731bfe9b2927fd6d872b82fc.1398780013.git.jchandra@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Return-Path: <jchandra@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,48 +20,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140507112212.4OZeDacIRIQ-xmqTsg4vTpJ0RES1AVlNugFnyG5z1xY@z>
+To: g, linux-mips@linux-mips.org
+Cc: Jayachandran C <jchandra@broadcom.com>, ralf@linux-mips.org
+Message-ID: <20140509110454.OT7mG2fy_pnfXuohxyuzf4G1Q2q18dAbQ9stTIrICPE@z>
 
-This patch powers down the Malta in response to a power off command (eg.
-poweroff or shutdown -P). It may then be powered back up by pressing the
-"ON/NMI" button (S4) on the board. In cases where the power off state
-cannot be entered (eg. because the required PCI support is disabled) the
-current reset behaviour will be used as a fallback.
+Use standard function to print cpumask. Also fixup a typo in the same
+file.
 
-Tested-by: James Hogan <james.hogan@imgtec.com>
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Signed-off-by: Jayachandran C <jchandra@broadcom.com>
 ---
-Changes in v2:
-  - Rebase atop previous patches in this series which abstract the
-    PIIX4 suspend functionality, making this patch trivial and avoiding
-    build issues when CONFIG_PCI is disabled.
----
- arch/mips/mti-malta/malta-reset.c | 4 ++++
- 1 file changed, 4 insertions(+)
+[v2: Fix subject line for patch]
 
-diff --git a/arch/mips/mti-malta/malta-reset.c b/arch/mips/mti-malta/malta-reset.c
-index 4471dea..773aca9 100644
---- a/arch/mips/mti-malta/malta-reset.c
-+++ b/arch/mips/mti-malta/malta-reset.c
-@@ -10,6 +10,7 @@
- #include <linux/pm.h>
+ arch/mips/netlogic/common/smp.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/arch/mips/netlogic/common/smp.c b/arch/mips/netlogic/common/smp.c
+index 6baae15..b93c5d4 100644
+--- a/arch/mips/netlogic/common/smp.c
++++ b/arch/mips/netlogic/common/smp.c
+@@ -198,7 +198,7 @@ void __init nlm_smp_setup(void)
+ 	cpumask_scnprintf(buf, ARRAY_SIZE(buf), cpu_possible_mask);
+ 	pr_info("Possible CPU mask: %s\n", buf);
  
- #include <asm/reboot.h>
-+#include <asm/mach-malta/malta-pm.h>
+-	/* check with the cores we have worken up */
++	/* check with the cores we have woken up */
+ 	for (ncore = 0, i = 0; i < NLM_NR_NODES; i++)
+ 		ncore += hweight32(nlm_get_node(i)->coremask);
  
- #define SOFTRES_REG	0x1f000500
- #define GORESET		0x42
-@@ -30,6 +31,9 @@ static void mips_machine_halt(void)
- 
- static void mips_machine_power_off(void)
+@@ -213,6 +213,7 @@ static int nlm_parse_cpumask(cpumask_t *wakeup_mask)
  {
-+	mips_pm_suspend(PIIX4_FUNC3IO_PMCNTRL_SUS_TYP_SOFF);
-+
-+	pr_info("Failed to power down, resetting\n");
- 	mips_machine_restart(NULL);
+ 	uint32_t core0_thr_mask, core_thr_mask;
+ 	int threadmode, i, j;
++	char buf[64];
+ 
+ 	core0_thr_mask = 0;
+ 	for (i = 0; i < NLM_THREADS_PER_CORE; i++)
+@@ -247,8 +248,8 @@ static int nlm_parse_cpumask(cpumask_t *wakeup_mask)
+ 	return threadmode;
+ 
+ unsupp:
+-	panic("Unsupported CPU mask %lx",
+-		(unsigned long)cpumask_bits(wakeup_mask)[0]);
++	cpumask_scnprintf(buf, ARRAY_SIZE(buf), wakeup_mask);
++	panic("Unsupported CPU mask %s", buf);
+ 	return 0;
  }
  
 -- 
-1.8.5.3
+1.7.9.5

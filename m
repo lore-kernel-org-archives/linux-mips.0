@@ -1,19 +1,17 @@
-Received: from [217.156.133.130] ([217.156.133.130]:17372 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S6816556AbaEOLlAWDVfA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 15 May 2014 13:41:00 +0200
-Date: Thu, 15 May 2014 12:40:53 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 2/2] MIPS: lib: csum_partial: use wsbh/movn on ls3
-Message-ID: <20140515114053.GW34353@pburton-linux.le.imgtec.org>
-References: <1400137743-8806-1-git-send-email-chenj@lemote.com>
- <1400137743-8806-2-git-send-email-chenj@lemote.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:15645 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6854768AbaEOSC2NvC2B (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 15 May 2014 20:02:28 +0200
+Message-ID: <53750129.6060902@imgtec.com>
+Date: Thu, 15 May 2014 11:02:17 -0700
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="E5HUUwS3R9LcK7+r"
-Content-Disposition: inline
-In-Reply-To: <1400137743-8806-2-git-send-email-chenj@lemote.com>
-Return-Path: <Paul.Burton@imgtec.com>
+Subject: Re: [PATCH 16/27] mips: Use common bits from generic tlb.h
+References: <1400093999-18703-1-git-send-email-richard@nod.at> <1400093999-18703-17-git-send-email-richard@nod.at>
+In-Reply-To: <1400093999-18703-17-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,84 +21,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: chenj <chenj@lemote.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20140515114053.bPp24VtzvVWgvjoFGjEdZDVCPys1y2GLsP-pGun5N-Q@z>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-arch@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, John Crispin <blogic@openwrt.org>, Markos Chandras <markos.chandras@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20140515180217._fIwWEBVHfRZDFpUWuBcyEC1q4Em-tGeLlFyGj-2tl8@z>
 
---E5HUUwS3R9LcK7+r
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, May 15, 2014 at 03:09:03PM +0800, chenj wrote:
-> wsbh & movn are available on loongson3 CPU.
+On 05/14/2014 11:59 AM, Richard Weinberger wrote:
+> It is no longer needed to define them on our own.
+>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: John Crispin <blogic@openwrt.org>
+> Cc: Markos Chandras <markos.chandras@imgtec.com>
+> Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: linux-mips@linux-mips.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 > ---
->  arch/mips/lib/csum_partial.S | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/mips/lib/csum_partial.S b/arch/mips/lib/csum_partial.S
-> index 6cea101..ed88647 100644
-> --- a/arch/mips/lib/csum_partial.S
-> +++ b/arch/mips/lib/csum_partial.S
-> @@ -277,9 +277,12 @@ LEAF(csum_partial)
->  #endif
-> =20
->  	/* odd buffer alignment? */
-> -#ifdef CONFIG_CPU_MIPSR2
-> +#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_LOONGSON3)
+>   arch/mips/include/asm/tlb.h | 7 -------
+>   1 file changed, 7 deletions(-)
+>
+> diff --git a/arch/mips/include/asm/tlb.h b/arch/mips/include/asm/tlb.h
+> index 4a23493..5ea43ca 100644
+> --- a/arch/mips/include/asm/tlb.h
+> +++ b/arch/mips/include/asm/tlb.h
+> @@ -10,13 +10,6 @@
+>   		if (!tlb->fullmm)				\
+>   			flush_cache_range(vma, vma->vm_start, vma->vm_end); \
+>   	}  while (0)
+> -#define tlb_end_vma(tlb, vma) do { } while (0)
+> -#define __tlb_remove_tlb_entry(tlb, ptep, address) do { } while (0)
+> -
+> -/*
+> - * .. because we flush the whole mm when it fills up.
+> - */
+> -#define tlb_flush(tlb) flush_tlb_mm((tlb)->mm)
+>   
+>   #define UNIQUE_ENTRYHI(idx)						\
+>   		((CKSEG0 + ((idx) << (PAGE_SHIFT + 1))) |		\
 
-Is there some reason CPU_LOONGSON3 can't select CPU_MIPSR2?
+I would like to know why these functions are eliminated (don't find any 
+clue).
+Is it just because there will be a generic one or the calls would be 
+eliminated?
+And if there are generic - can I tune it later?
 
-Thanks,
-    Paul
+Explanation of Q:  MIPS R6 architecture has now TLBINV instruction which 
+eliminates TLB elements only for specific ASID (read here - "mm_struct") 
+and I would like to use it for efficiency in tlb_flush()/flush_tlb_mm.
+(Not sure about tlb_end_vma()/ __tlb_remove_tlb_entry() yet)
 
-> +	.set	push
-> +	.set	arch=3Dmips32r2
->  	wsbh	v1, sum
->  	movn	sum, v1, t7
-> +	.set	pop
->  #else
->  	beqz	t7, 1f			/* odd buffer alignment? */
->  	 lui	v1, 0x00ff
-> @@ -726,9 +729,12 @@ LEAF(csum_partial)
->  	addu	sum, v1
->  #endif
-> =20
-> -#ifdef CONFIG_CPU_MIPSR2
-> +#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_LOONGSON3)
-> +	.set	push
-> +	.set	arch=3Dmips32r2
->  	wsbh	v1, sum
->  	movn	sum, v1, odd
-> +	.set	pop
->  #else
->  	beqz	odd, 1f			/* odd buffer alignment? */
->  	 lui	v1, 0x00ff
-> --=20
-> 1.9.0
->=20
->=20
-
---E5HUUwS3R9LcK7+r
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBCAAGBQJTdKfFAAoJEIIg2fppPBxlk5YP/2NrmfBUSNX+46Co+bivpvd6
-eYbdmeVVCnmPe3D5SSk9Enh8NcYxtKi9TffJUZdvMlcN44JSjXOkQP7Rwv4/hfsZ
-Ln8lYpgpKbC51oOPZpwF4OftsnIwGPFn7eUrq4Es5ZwtGIwfHhrGExeyqqy3yc2C
-1KMdtNwZFNT5I13+wzgdbULB6r5KiYocrtpt+gkbNOpHQhAaGRGtsFAc0ewJmE1j
-RJ0xPwSfL62xhrQTsjb5f3OwvzCZJHyIzm7UP2pdpE8wGqujBNAsNyM8/eo8r/kQ
-ZAZ7o+bkzMfo6GK4wngx0s5hsTKoXwzdAG0Zi7D/H/pWmY91qijDsrEDPEJFzb+y
-/q+io75AXPnsrlpPjJku0i9fhofdtZD2mLOj6emft1pR5cdV4aikuG++VpDEo2lx
-KaksIP2oTTIh+W71W/DYmPzUVHTWwcFUADY3wzmOfBW3eh4XPaIr9Uwx3FwHyCNT
-GXXr6boUZxz4eLlRe7eh4krnf7zztJ8TKJTf0yJ3x61UrKIlYmNPc31f0m5W76NU
-qw4igcJ0Hnc8OUGHUJfigREwVQQ/qhSb2xtt5beIVEepC5AhR4WJc8snDOQeXpTu
-AIb4nTYaCLcttcDq7WyucCNhZUIZZ/CIhOItEUFARyAAvFzSBJUDNwiGqAsHwSKQ
-zkBlq8K0IgphNwSnaMfE
-=d7dE
------END PGP SIGNATURE-----
-
---E5HUUwS3R9LcK7+r--
+- Leonid.

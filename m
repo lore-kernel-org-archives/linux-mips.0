@@ -1,22 +1,20 @@
-Received: from [217.156.133.130] ([217.156.133.130]:58724 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S6836419AbaEMVZDYCqfL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 13 May 2014 23:25:03 +0200
-Received: from imgpgp01.kl.imgtec.org (imgpgp01.kl.imgtec.org [127.0.0.1])
-        by imgpgp01.kl.imgtec.org (PGP Universal) with ESMTP id 7D60741F8E33
-        for <linux-mips@linux-mips.org>; Tue, 13 May 2014 22:24:57 +0100 (BST)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:26947 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6816841AbaEOIUrFrbg5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 15 May 2014 10:20:47 +0200
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 7B4C8CB805CCC
-        for <linux-mips@linux-mips.org>; Tue, 13 May 2014 22:24:53 +0100 (IST)
-Date: Tue, 13 May 2014 22:24:56 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: O32 FPXX ABI
-Message-ID: <20140513212456.GQ34353@pburton-linux.le.imgtec.org>
+        by Websense Email Security Gateway with ESMTPS id 09768BC36F7A1
+        for <linux-mips@linux-mips.org>; Thu, 15 May 2014 09:20:39 +0100 (IST)
+Message-ID: <537478D7.2000403@imgtec.com>
+Date: Thu, 15 May 2014 09:20:39 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ZqRzwd/9tauJXEMK"
-Content-Disposition: inline
-Return-Path: <Paul.Burton@imgtec.com>
+Subject: Re: [PATCH 1/2] MIPS: lib: csum_partial: more instruction paral
+References: <1400137743-8806-1-git-send-email-chenj@lemote.com>
+In-Reply-To: <1400137743-8806-1-git-send-email-chenj@lemote.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,65 +25,28 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: matthew.fortune@imgtec.com
-Message-ID: <20140513212456.1sVO9uIKp1k1VOoTlQNjvkYyiYak6Y9vsElci0Gjr8c@z>
+Message-ID: <20140515082039.3233wVwb3ppWR7UjzRvVHQTLYHYQL3ofutZTF2Sx1Ns@z>
 
---ZqRzwd/9tauJXEMK
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+On 05/15/2014 08:09 AM, chenj wrote:
+> This will bring at most 50% performance gain on loongson3a.
+> See
+> http://dev.lemote.com/files/upload/software/csum-opti/csum-opti-benchmark.html
+> 
+> The benchmark is done in userspace through
+> http://dev.lemote.com/files/upload/software/csum-opti/csum-test.tar.gz
+> ---
+>  arch/mips/lib/csum_partial.S | 38 +++++++++++++++++++-------------------
+>  1 file changed, 19 insertions(+), 19 deletions(-)
 
-Hi all,
+Hi chenj,
 
-I just wanted to bring to the attention of the list the O32 FPXX ABI
-proposal:
+My opinion is that the commit message is not ideal. If the http links
+ever go away, the commit message will be mostly useless for someone
+trying to understand the reason for this patch. I would suggest to
+explain the reason for the optimizations in the commit message and put
+the http links as a comment to this patch which will still be visible in
+the mailing list archives. Or you can keep them in the commit message
+but I think the reason for the patch should be explained as well.
 
-  https://dmz-portal.mips.com/wiki/MIPS_O32_ABI_-_FR0_and_FR1_Interlinking
-
-This is the proposal that I mentioned in commit 06e2e88292e9 "MIPS: mark
-O32+FP64 experimental for now". The goal is to reduce fragmentation of
-the O32 ABI whilst allowing use of 64b FP registers (Status.FR=1) and
-the MIPS SIMD Architecture (MSA) which requires them.
-
-It removes the need for the EF_MIPS_FP64 flag and instead produces code
-which can safely be linked with existing FP32 binaries until such time
-as a new FP64-using binary becomes involved (either by being the
-executable or a linked shared library). That is, it preserves
-compatibility with existing binaries whilst allowing a gradual migration
-towards an FPXX/FP64 world. The proposal has been discussed on the GCC
-development mailing list:
-
-  http://gcc.1065356.n5.nabble.com/RFC-Introducing-MIPS-O32-ABI-Extension-for-FR0-and-FR1-Interlinking-td1013453.html
-
-As it affects the kernel too, now would be a good time to raise any
-comments or suggestions. I have written patches to implement the
-requirements in the kernel (handling .MIPS.abiflags, currently emulated
-UFR support, HWCAP flags) and will post them to the list once discussion
-about O32 FPXX settles down, or sooner as an RFC if people are
-interested in that.
-
-Thanks,
-    Paul
-
---ZqRzwd/9tauJXEMK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBCAAGBQJTco2oAAoJEIIg2fppPBxlmfUP/2NB9ZK84oykYscG/A62UGli
-+sUO1WcxiybCNxHlvlKMEJMXIJH4UmkXEYKcnYUMnCQIUlPyt33NdljtV0sd0Y2X
-E26Y8w3XyndDEl5UcrcVBFUu0d324/LLgOmpYH7+JY5W/4TYhnDNgh9otlOlnYKG
-2bkCnf+urfLX2vJbLVhrsy7t2Vaa84AE/04fjbUeVnvxo8OVo9Nz9nXubdB3MmzF
-dkvjbqhrtLSBBotLBHBB+NKovss1kK5pPnWVUMTAzw/iKbYcF972e4GMDDtf1ZX4
-Ub/dtIeRXMCwbUEMNXLrASGRTyPUf++nBBdzwTCA5QUZU/Ii5M9/nHpk2ThKO04O
-KzH0YUCwa/tichKzunZ/6w8P+1DH1IMPuvuU+4+9T05Ant70+ZeQ6SQag7mqS/HM
-jJA+fyUTRuwy4KTbFOQJMubWt5zkSMQbEEg+p3pE00UgF8G64VAe05hSSx/v+aRP
-GHYV5IOJep+uaf6SaA7esS8LUmJgYqnx+OIxYjemU1w95ZgEHC/y+/e/OXnyylRc
-Pg6t1ylr7oWxSuFvuVE9l9vdDd0wEa5ddPWBvpstMsb9WfN6a93D1kZh1XTDTq2w
-Nh1Ghfk4LO3XehuU/DYeqo9Cx6cvSeizc5mAj/RkJR2d9BBWQKjuJOV/pZEzTXCz
-xAk+YbeUzcNBxyPiP4qL
-=dk5z
------END PGP SIGNATURE-----
-
---ZqRzwd/9tauJXEMK--
+-- 
+markos

@@ -1,12 +1,12 @@
-Received: from mail-bn1blp0181.outbound.protection.outlook.com ([207.46.163.181]:55090
+Received: from mail-bn1blp0185.outbound.protection.outlook.com ([207.46.163.185]:55528
         "EHLO na01-bn1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6824847AbaESQzNUpfz- (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 19 May 2014 18:55:13 +0200
+        id S6854796AbaESQzV1Rc93 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 19 May 2014 18:55:21 +0200
 From: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-Subject: [PATCH v2 07/12] kvm tools, mips: Enable build of mips support
-Date: Mon, 19 May 2014 18:53:26 +0200
-Message-ID: <1400518411-9759-8-git-send-email-andreas.herrmann@caviumnetworks.com>
+Subject: [PATCH v2 08/12] kvm tools: Provide per arch macro to specify type for KVM_CREATE_VM
+Date: Mon, 19 May 2014 18:53:27 +0200
+Message-ID: <1400518411-9759-9-git-send-email-andreas.herrmann@caviumnetworks.com>
 In-Reply-To: <1400518411-9759-1-git-send-email-andreas.herrmann@caviumnetworks.com>
 References: <1400518411-9759-1-git-send-email-andreas.herrmann@caviumnetworks.com>
 MIME-Version: 1.0
@@ -22,43 +22,88 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Pekka Enberg <penberg@kernel.org>
-Cc: David Daney <ddaney.cavm@gmail.com>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, kvm@vger.kernel.org, linux-mips@linux-mips.org, James Hogan <james.hogan@imgtec.com>, David Daney <david.daney@cavium.com>
-Message-ID: <20140519165326.4Oe4qKIKJW17V92SXtU2Yip5h1Kdr1ao7wTI6LeC4lI@z>
+Cc: David Daney <ddaney.cavm@gmail.com>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, kvm@vger.kernel.org, linux-mips@linux-mips.org, James Hogan <james.hogan@imgtec.com>
+Message-ID: <20140519165327.i4R-XWf9BYAwF4t-wcfO0y9VZ1qTk8wVI00ZyIUXBAk@z>
 
-From: David Daney <david.daney@cavium.com>
+This is is usually 0 for most archs. On mips we have two types.
+TE (type 0) and MIPS-VZ (type 1). Default to 1 on mips.
 
-Signed-off-by: David Daney <david.daney@cavium.com>
 Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
 ---
- tools/kvm/Makefile |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ tools/kvm/arm/include/arm-common/kvm-arch.h |    2 ++
+ tools/kvm/kvm.c                             |    2 +-
+ tools/kvm/mips/include/kvm/kvm-arch.h       |    5 +++++
+ tools/kvm/powerpc/include/kvm/kvm-arch.h    |    2 ++
+ tools/kvm/x86/include/kvm/kvm-arch.h        |    2 ++
+ 5 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/tools/kvm/Makefile b/tools/kvm/Makefile
-index b872651..880d580 100644
---- a/tools/kvm/Makefile
-+++ b/tools/kvm/Makefile
-@@ -105,7 +105,7 @@ OBJS	+= virtio/mmio.o
+diff --git a/tools/kvm/arm/include/arm-common/kvm-arch.h b/tools/kvm/arm/include/arm-common/kvm-arch.h
+index b6c4bf8..a552163 100644
+--- a/tools/kvm/arm/include/arm-common/kvm-arch.h
++++ b/tools/kvm/arm/include/arm-common/kvm-arch.h
+@@ -32,6 +32,8 @@
  
- # Translate uname -m into ARCH string
- ARCH ?= $(shell uname -m | sed -e s/i.86/i386/ -e s/ppc.*/powerpc/ \
--	  -e s/armv7.*/arm/ -e s/aarch64.*/arm64/)
-+	  -e s/armv7.*/arm/ -e s/aarch64.*/arm64/ -e s/mips64/mips/)
+ #define KVM_IRQ_OFFSET		GIC_SPI_IRQ_BASE
  
- ifeq ($(ARCH),i386)
- 	ARCH         := x86
-@@ -184,6 +184,13 @@ ifeq ($(ARCH), arm64)
- 	ARCH_WANT_LIBFDT := y
- endif
++#define KVM_VM_TYPE		0
++
+ #define VIRTIO_DEFAULT_TRANS(kvm)	\
+ 	((kvm)->cfg.arch.virtio_trans_pci ? VIRTIO_PCI : VIRTIO_MMIO)
  
-+ifeq ($(ARCH),mips)
-+	DEFINES		+= -DCONFIG_MIPS
-+	ARCH_INCLUDE	:= mips/include
-+	OBJS		+= mips/kvm.o
-+	OBJS		+= mips/kvm-cpu.o
-+	OBJS		+= mips/irq.o
-+endif
- ###
+diff --git a/tools/kvm/kvm.c b/tools/kvm/kvm.c
+index 6046434..e1b9f6c 100644
+--- a/tools/kvm/kvm.c
++++ b/tools/kvm/kvm.c
+@@ -284,7 +284,7 @@ int kvm__init(struct kvm *kvm)
+ 		goto err_sys_fd;
+ 	}
  
- ifeq (,$(ARCH_INCLUDE))
+-	kvm->vm_fd = ioctl(kvm->sys_fd, KVM_CREATE_VM, 0);
++	kvm->vm_fd = ioctl(kvm->sys_fd, KVM_CREATE_VM, KVM_VM_TYPE);
+ 	if (kvm->vm_fd < 0) {
+ 		pr_err("KVM_CREATE_VM ioctl");
+ 		ret = kvm->vm_fd;
+diff --git a/tools/kvm/mips/include/kvm/kvm-arch.h b/tools/kvm/mips/include/kvm/kvm-arch.h
+index 4a8407b..7eadbf4 100644
+--- a/tools/kvm/mips/include/kvm/kvm-arch.h
++++ b/tools/kvm/mips/include/kvm/kvm-arch.h
+@@ -17,6 +17,11 @@
+ 
+ #define KVM_IRQ_OFFSET		1
+ 
++/*
++ * MIPS-VZ (trap and emulate is 0)
++ */
++#define KVM_VM_TYPE		1
++
+ #define VIRTIO_DEFAULT_TRANS(kvm)	VIRTIO_PCI
+ 
+ #include <stdbool.h>
+diff --git a/tools/kvm/powerpc/include/kvm/kvm-arch.h b/tools/kvm/powerpc/include/kvm/kvm-arch.h
+index f8627a2..fdd518f 100644
+--- a/tools/kvm/powerpc/include/kvm/kvm-arch.h
++++ b/tools/kvm/powerpc/include/kvm/kvm-arch.h
+@@ -44,6 +44,8 @@
+ 
+ #define KVM_IRQ_OFFSET			16
+ 
++#define KVM_VM_TYPE			0
++
+ #define VIRTIO_DEFAULT_TRANS(kvm)	VIRTIO_PCI
+ 
+ struct spapr_phb;
+diff --git a/tools/kvm/x86/include/kvm/kvm-arch.h b/tools/kvm/x86/include/kvm/kvm-arch.h
+index a9f23b8..673bdf1 100644
+--- a/tools/kvm/x86/include/kvm/kvm-arch.h
++++ b/tools/kvm/x86/include/kvm/kvm-arch.h
+@@ -27,6 +27,8 @@
+ 
+ #define KVM_IRQ_OFFSET		5
+ 
++#define KVM_VM_TYPE		0
++
+ #define VIRTIO_DEFAULT_TRANS(kvm)	VIRTIO_PCI
+ 
+ struct kvm_arch {
 -- 
 1.7.9.5

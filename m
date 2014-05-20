@@ -1,17 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59926 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6817165AbaETMGFLNO6C (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 20 May 2014 14:06:05 +0200
-Message-ID: <537B4525.3080903@imgtec.com>
-Date: Tue, 20 May 2014 13:05:57 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+Received: from mail-bl2lp0205.outbound.protection.outlook.com ([207.46.163.205]:38185
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S6854988AbaETOsbj9A8a (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 20 May 2014 16:48:31 +0200
+From: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
+Subject: [PATCH 00/15] MIPS: Add mips_paravirt
+Date: Tue, 20 May 2014 16:47:01 +0200
+Message-ID: <1400597236-11352-1-git-send-email-andreas.herrmann@caviumnetworks.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH, v3] MIPS: lib: csum_partial: more instruction paral
-References: <1400587638-17791-1-git-send-email-chenj@lemote.com> <1400587772-6130-1-git-send-email-chenj@lemote.com>
-In-Reply-To: <1400587772-6130-1-git-send-email-chenj@lemote.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Andreas.Herrmann@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,47 +19,70 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: chenj <chenj@lemote.com>, james.hogan@imgtec.com
-Cc: linux-mips@linux-mips.org, chenhc@lemote.com
-Message-ID: <20140520120557.uaF-1eeraztb0gok1pNtrvpe8Vj9dgI3V2QfvjlcAKY@z>
+To: linux-mips@linux-mips.org
+Cc: David Daney <ddaney.cavm@gmail.com>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, kvm@vger.kernel.org
+Message-ID: <20140520144701.Uk2iJ5LodloKfv3piKU2KkynxRPApOZ_63FAD8SY_Xw@z>
 
-On 05/20/2014 01:09 PM, chenj wrote:
-> Computing sum introduces true data dependency. This patch removes some
-> true data depdendencies, hence instruction level parallelism is
-> improved.
-> 
-> This patch brings at most 50% csum performance gain on Loongson 3a
-> processor in our test.
-> 
-> One example about how this patch works is in CSUM_BIGCHUNK1:
-> // ** original **    vs    ** patch applied **
->     ADDC(sum, t0)           ADDC(t0, t1)
->     ADDC(sum, t1)           ADDC(t2, t3)
->     ADDC(sum, t2)           ADDC(sum, t0)
->     ADDC(sum, t3)           ADDC(sum, t2)
-> 
-> In the original implementation, each ADDC(sum, ...) references the sum
-> value updated by previous ADDC.
-> 
-> With patch applied, the first two ADDC operations are independent,
-> hence can be executed simultaneously if possible.
-> 
-> Another example is in the "copy and sum calculating" chunk:
-> // ** original **    vs    ** patch applied **
->     STORE(t0, UNIT(0)...    STORE(t0, UNIT(0)...
->     ADDC(sum, t0)           ADDC(t0, t1)
->     STORE(t1, UNIT(1)...    STORE(t1, UNIT(1)...
->     ADDC(sum, t1)           ADDC(sum, t0)
->     STORE(t2, UNIT(2)...    STORE(t2, UNIT(2)...
->     ADDC(sum, t2)           ADDC(t2, t3)
->     STORE(t3, UNIT(3)...    STORE(t3, UNIT(3)...
->     ADDC(sum, t3)           ADDC(sum, t2)
-> 
-> With patch applied, the second and third ADDC are independent.
+Hi,
 
-Hi chenj,
+Following patches add support for paravirtualized guest on mips
+(mips_paravirt). Some of the patches add basic support to run it on
+octeon3.
 
-You forgot to sign-off your patch
+The core of mips_paravirt is David's work.
+I rebased his code, rearranged it somewhat (e.g. split it into the
+current patches) and added some minor modifications.
 
--- 
-markos
+I've run it using lkvm on a host with KVM MIPS-VZ support (on
+octeon3). I've tested guest kernels built for CPU_MIPS64_R2 and
+CPU_MIPS32_R2.
+
+When the guest kernel is built for CPU_CAVIUM_OCTEON it requires an
+additional patch to avoid usage of octeon_send_ipi_single in
+octeon_flush_icache_all_cores. Latest patch for this is not yet
+included as it caused a regression and needs some rework.
+
+To built a mips_paravirt guest kernel it's easiest to start with
+mips_paravirt_defconfig, check/modify CPU selection (defconfig has
+CPU_MIPS64_R2), and kick off kernel built.
+
+Patches are against v3.15-rc5. Diffstat is
+
+ arch/mips/Kbuild.platforms                         |    1 +
+ arch/mips/Kconfig                                  |   30 +-
+ arch/mips/cavium-octeon/Kconfig                    |   30 +-
+ arch/mips/configs/mips_paravirt_defconfig          | 1521 ++++++++++++++++++++
+ arch/mips/include/asm/cpu-features.h               |    9 +-
+ arch/mips/include/asm/cpu-type.h                   |    1 +
+ .../asm/mach-cavium-octeon/cpu-feature-overrides.h |    1 -
+ .../asm/mach-paravirt/cpu-feature-overrides.h      |   36 +
+ arch/mips/include/asm/mach-paravirt/irq.h          |   19 +
+ .../include/asm/mach-paravirt/kernel-entry-init.h  |   49 +
+ arch/mips/include/asm/mach-paravirt/war.h          |   25 +
+ arch/mips/include/asm/mipsregs.h                   |   72 +
+ arch/mips/include/asm/r4kcache.h                   |    2 +
+ arch/mips/kernel/Makefile                          |    2 +-
+ arch/mips/kernel/branch.c                          |    6 +-
+ arch/mips/kernel/octeon_switch.S                   |   84 +-
+ arch/mips/kernel/r4k_switch.S                      |    3 +
+ arch/mips/math-emu/cp1emu.c                        |   12 +-
+ arch/mips/mm/c-r4k.c                               |   32 +
+ arch/mips/mm/tlbex.c                               |    8 +-
+ arch/mips/paravirt/Kconfig                         |    6 +
+ arch/mips/paravirt/Makefile                        |   14 +
+ arch/mips/paravirt/Platform                        |    9 +
+ arch/mips/paravirt/paravirt-irq.c                  |  388 +++++
+ arch/mips/paravirt/paravirt-smp.c                  |  149 ++
+ arch/mips/paravirt/serial.c                        |   38 +
+ arch/mips/paravirt/setup.c                         |   67 +
+ arch/mips/pci/Makefile                             |    2 +-
+ arch/mips/pci/pci-virtio-guest.c                   |  140 ++
+ 29 files changed, 2709 insertions(+), 47 deletions(-)
+
+
+Comments are welcome.
+
+
+Thanks,
+
+Andreas

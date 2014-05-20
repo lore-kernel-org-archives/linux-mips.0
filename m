@@ -1,12 +1,12 @@
 Received: from mail-bl2lp0208.outbound.protection.outlook.com ([207.46.163.208]:26693
         "EHLO na01-bl2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6855084AbaETOtCDf1Rl (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 20 May 2014 16:49:02 +0200
+        id S6855082AbaETOtB3004t (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 20 May 2014 16:49:01 +0200
 From: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-Subject: [PATCH 05/15] MIPS: Don't build fast TLB refill handler with 32-bit kernels.
-Date: Tue, 20 May 2014 16:47:06 +0200
-Message-ID: <1400597236-11352-6-git-send-email-andreas.herrmann@caviumnetworks.com>
+Subject: [PATCH 03/15] MIPS: OCTEON: Move CAVIUM_OCTEON_CVMSEG_SIZE to CPU_CAVIUM_OCTEON
+Date: Tue, 20 May 2014 16:47:04 +0200
+Message-ID: <1400597236-11352-4-git-send-email-andreas.herrmann@caviumnetworks.com>
 In-Reply-To: <1400597236-11352-1-git-send-email-andreas.herrmann@caviumnetworks.com>
 References: <1400597236-11352-1-git-send-email-andreas.herrmann@caviumnetworks.com>
 MIME-Version: 1.0
@@ -23,41 +23,74 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: David Daney <ddaney.cavm@gmail.com>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, kvm@vger.kernel.org, David Daney <david.daney@cavium.com>
-Message-ID: <20140520144706.KZXwCQotSvxhkz8nSOzu9RJ9H5eLM_FO-kdphYhu2VE@z>
+Message-ID: <20140520144704.54HhMmtts08oWF6Lf0BZXf8ow7qDTLCsVzA4fF0byWU@z>
 
 From: David Daney <david.daney@cavium.com>
 
-The fast handler only supports 64-bit kernels.
+CVMSEG is related to the CPU core not the SoC system.  So needs to be
+configurable there.
 
 Signed-off-by: David Daney <david.daney@cavium.com>
 Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
 ---
- arch/mips/mm/tlbex.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ arch/mips/cavium-octeon/Kconfig |   30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
-diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-index ee88367..781e183 100644
---- a/arch/mips/mm/tlbex.c
-+++ b/arch/mips/mm/tlbex.c
-@@ -1250,13 +1250,17 @@ static void build_r4000_tlb_refill_handler(void)
- 	unsigned int final_len;
- 	struct mips_huge_tlb_info htlb_info __maybe_unused;
- 	enum vmalloc64_mode vmalloc_mode __maybe_unused;
--
-+#ifdef CONFIG_64BIT
-+	bool is64bit = true;
-+#else
-+	bool is64bit = false;
-+#endif
- 	memset(tlb_handler, 0, sizeof(tlb_handler));
- 	memset(labels, 0, sizeof(labels));
- 	memset(relocs, 0, sizeof(relocs));
- 	memset(final_handler, 0, sizeof(final_handler));
+diff --git a/arch/mips/cavium-octeon/Kconfig b/arch/mips/cavium-octeon/Kconfig
+index 227705d..c5e9975 100644
+--- a/arch/mips/cavium-octeon/Kconfig
++++ b/arch/mips/cavium-octeon/Kconfig
+@@ -10,6 +10,17 @@ config CAVIUM_CN63XXP1
+ 	  non-CN63XXP1 hardware, so it is recommended to select "n"
+ 	  unless it is known the workarounds are needed.
  
--	if ((scratch_reg >= 0 || scratchpad_available()) && use_bbit_insns()) {
-+	if (is64bit && (scratch_reg >= 0 || scratchpad_available()) && use_bbit_insns()) {
- 		htlb_info = build_fast_tlb_refill_handler(&p, &l, &r, K0, K1,
- 							  scratch_reg);
- 		vmalloc_mode = refill_scratch;
++config CAVIUM_OCTEON_CVMSEG_SIZE
++	int "Number of L1 cache lines reserved for CVMSEG memory"
++	range 0 54
++	default 1
++	help
++	  CVMSEG LM is a segment that accesses portions of the dcache as a
++	  local memory; the larger CVMSEG is, the smaller the cache is.
++	  This selects the size of CVMSEG LM, which is in cache blocks. The
++	  legally range is from zero to 54 cache blocks (i.e. CVMSEG LM is
++	  between zero and 6192 bytes).
++
+ endif # CPU_CAVIUM_OCTEON
+ 
+ if CAVIUM_OCTEON_SOC
+@@ -23,16 +34,16 @@ config CAVIUM_OCTEON_2ND_KERNEL
+ 	  with this option to be run at the same time as one built without this
+ 	  option.
+ 
+-config CAVIUM_OCTEON_CVMSEG_SIZE
+-	int "Number of L1 cache lines reserved for CVMSEG memory"
+-	range 0 54
+-	default 1
++config CAVIUM_OCTEON_HW_FIX_UNALIGNED
++	bool "Enable hardware fixups of unaligned loads and stores"
++	default "y"
+ 	help
+-	  CVMSEG LM is a segment that accesses portions of the dcache as a
+-	  local memory; the larger CVMSEG is, the smaller the cache is.
+-	  This selects the size of CVMSEG LM, which is in cache blocks. The
+-	  legally range is from zero to 54 cache blocks (i.e. CVMSEG LM is
+-	  between zero and 6192 bytes).
++	  Configure the Octeon hardware to automatically fix unaligned loads
++	  and stores. Normally unaligned accesses are fixed using a kernel
++	  exception handler. This option enables the hardware automatic fixups,
++	  which requires only an extra 3 cycles. Disable this option if you
++	  are running code that relies on address exceptions on unaligned
++	  accesses.
+ 
+ config CAVIUM_OCTEON_LOCK_L2
+ 	bool "Lock often used kernel code in the L2"
+@@ -86,7 +97,6 @@ config SWIOTLB
+ 	select IOMMU_HELPER
+ 	select NEED_SG_DMA_LENGTH
+ 
+-
+ config OCTEON_ILM
+ 	tristate "Module to measure interrupt latency using Octeon CIU Timer"
+ 	help
 -- 
 1.7.9.5

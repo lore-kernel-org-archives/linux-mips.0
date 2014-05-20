@@ -1,17 +1,17 @@
-Received: from mail-bn1lp0139.outbound.protection.outlook.com ([207.46.163.139]:24231
-        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6854988AbaESQzuV24Nv (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 19 May 2014 18:55:50 +0200
-From: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-Subject: [PATCH v2 12/12] kvm tools: Return number of bytes written by term_putc
-Date: Mon, 19 May 2014 18:53:31 +0200
-Message-ID: <1400518411-9759-13-git-send-email-andreas.herrmann@caviumnetworks.com>
-In-Reply-To: <1400518411-9759-1-git-send-email-andreas.herrmann@caviumnetworks.com>
-References: <1400518411-9759-1-git-send-email-andreas.herrmann@caviumnetworks.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:12747 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6822185AbaETLY54i200 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 20 May 2014 13:24:57 +0200
+Message-ID: <537B3A8E.70801@imgtec.com>
+Date: Tue, 20 May 2014 12:20:46 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Andreas.Herrmann@caviumnetworks.com>
+Subject: Re: [PATCH v2 00/12] kvm tools: Misc patches (mips support)
+References: <1400518411-9759-1-git-send-email-andreas.herrmann@caviumnetworks.com>
+In-Reply-To: <1400518411-9759-1-git-send-email-andreas.herrmann@caviumnetworks.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,31 +21,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Pekka Enberg <penberg@kernel.org>
-Cc: David Daney <ddaney.cavm@gmail.com>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, kvm@vger.kernel.org, linux-mips@linux-mips.org, James Hogan <james.hogan@imgtec.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <20140519165331.LMTSim-t2UgqsZvmU7T1Emfqfhcz1SmgN4-JrsWLEu4@z>
+To: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, Pekka Enberg <penberg@kernel.org>
+Cc: David Daney <ddaney.cavm@gmail.com>, kvm@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20140520112046.1n6oL8-HlXP3WAlA9q87Nhjqsdd-ApczttPs2vMnd5k@z>
 
-No caller is currently using the return value but better return
-number of bytes written instead of 0 in case of an error.
+On 19/05/14 17:53, Andreas Herrmann wrote:
+> Hi,
+> 
+> These patches contain changes that I am currently using on top of
+> git://github.com/penberg/linux-kvm.git (as of v3.13-rc1-1427-gd9147fb)
+> to run lkvm on MIPS.
+> 
+> The core is David's work for mips support and loading elf binaries.
+> 
+> I rebased his stuff, rearranged patches somewhat and split out general
+> (non-mips-specific) modifications.
+> 
+> I used it to test a paravirtualized guest on a host running KVM with
+> MIPS-VZ (on octeon3).
+> 
+> Changelog:
+> v2:
+>  - Removed superfluous includes in tools/kvm/Makefile (mips)
+>  - Fixed debug output format for register dump (mips) (when using
+>    32-bit lkvm with 64-bit guest)
+>  - Added comment for guest type (KVM_VM_TYPE) (mips)
+>  - Added check for upper bound of len in hypercall_write_cons (mips)
+>  - Modified patch sequence to avoid temporary introduction of
+>    load_bzimage (mips)
+>  - Added patch to return number of bytes written by term_putc
+> v1:
+>  - http://marc.info/?i=1399391491-5021-1-git-send-email-andreas.herrmann@caviumnetworks.com
+> 
+> Please apply -- if there are no additional comments or objections.
 
-Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
----
- tools/kvm/term.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I don't know what Pekka's policy is for kvm tools, but to avoid
+confusion I'd like to make clear that this patchset depends on a KVM
+implementation (KVM_VM_TYPE==1 for VZ) which hasn't been accepted into
+the mainline kernel yet.
 
-diff --git a/tools/kvm/term.c b/tools/kvm/term.c
-index b153eed..1b8131a 100644
---- a/tools/kvm/term.c
-+++ b/tools/kvm/term.c
-@@ -57,7 +57,7 @@ int term_putc(char *addr, int cnt, int term)
- 	while (num_remaining) {
- 		ret = write(term_fds[term][TERM_FD_OUT], addr, num_remaining);
- 		if (ret < 0)
--			return 0;
-+			return cnt - num_remaining;
- 		num_remaining -= ret;
- 		addr += ret;
- 	}
--- 
-1.7.9.5
+Cheers
+James

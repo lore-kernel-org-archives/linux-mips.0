@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:17167 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:59926 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6822185AbaETL3JqxNf4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 20 May 2014 13:29:09 +0200
-Message-ID: <537B3B8A.5000600@imgtec.com>
-Date: Tue, 20 May 2014 12:24:58 +0100
-From: James Hogan <james.hogan@imgtec.com>
+        with ESMTP id S6817165AbaETMGFLNO6C (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 20 May 2014 14:06:05 +0200
+Message-ID: <537B4525.3080903@imgtec.com>
+Date: Tue, 20 May 2014 13:05:57 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 08/12] kvm tools: Provide per arch macro to specify
- type for KVM_CREATE_VM
-References: <1400518411-9759-1-git-send-email-andreas.herrmann@caviumnetworks.com> <1400518411-9759-9-git-send-email-andreas.herrmann@caviumnetworks.com>
-In-Reply-To: <1400518411-9759-9-git-send-email-andreas.herrmann@caviumnetworks.com>
+Subject: Re: [PATCH, v3] MIPS: lib: csum_partial: more instruction paral
+References: <1400587638-17791-1-git-send-email-chenj@lemote.com> <1400587772-6130-1-git-send-email-chenj@lemote.com>
+In-Reply-To: <1400587772-6130-1-git-send-email-chenj@lemote.com>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,98 +21,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, Pekka Enberg <penberg@kernel.org>
-Cc: David Daney <ddaney.cavm@gmail.com>, kvm@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20140520112458.enqvVB0MHbbGmWAPXfMaU6L-w3eEMbh9vo2lflIzuck@z>
+To: chenj <chenj@lemote.com>, james.hogan@imgtec.com
+Cc: linux-mips@linux-mips.org, chenhc@lemote.com
+Message-ID: <20140520120557.uaF-1eeraztb0gok1pNtrvpe8Vj9dgI3V2QfvjlcAKY@z>
 
-On 19/05/14 17:53, Andreas Herrmann wrote:
-> This is is usually 0 for most archs. On mips we have two types.
-> TE (type 0) and MIPS-VZ (type 1). Default to 1 on mips.
-
-Minor thing I didn't spot with v1 (sorry).
-I think this patch should probably be moved before patch 6 with the mips
-part squashed into patch 6, otherwise AFAICT the mips support in patch
-6/7 is broken out of the box until this patch fixes it.
-
-Cheers
-James
-
+On 05/20/2014 01:09 PM, chenj wrote:
+> Computing sum introduces true data dependency. This patch removes some
+> true data depdendencies, hence instruction level parallelism is
+> improved.
 > 
-> Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-> ---
->  tools/kvm/arm/include/arm-common/kvm-arch.h |    2 ++
->  tools/kvm/kvm.c                             |    2 +-
->  tools/kvm/mips/include/kvm/kvm-arch.h       |    5 +++++
->  tools/kvm/powerpc/include/kvm/kvm-arch.h    |    2 ++
->  tools/kvm/x86/include/kvm/kvm-arch.h        |    2 ++
->  5 files changed, 12 insertions(+), 1 deletion(-)
+> This patch brings at most 50% csum performance gain on Loongson 3a
+> processor in our test.
 > 
-> diff --git a/tools/kvm/arm/include/arm-common/kvm-arch.h b/tools/kvm/arm/include/arm-common/kvm-arch.h
-> index b6c4bf8..a552163 100644
-> --- a/tools/kvm/arm/include/arm-common/kvm-arch.h
-> +++ b/tools/kvm/arm/include/arm-common/kvm-arch.h
-> @@ -32,6 +32,8 @@
->  
->  #define KVM_IRQ_OFFSET		GIC_SPI_IRQ_BASE
->  
-> +#define KVM_VM_TYPE		0
-> +
->  #define VIRTIO_DEFAULT_TRANS(kvm)	\
->  	((kvm)->cfg.arch.virtio_trans_pci ? VIRTIO_PCI : VIRTIO_MMIO)
->  
-> diff --git a/tools/kvm/kvm.c b/tools/kvm/kvm.c
-> index 6046434..e1b9f6c 100644
-> --- a/tools/kvm/kvm.c
-> +++ b/tools/kvm/kvm.c
-> @@ -284,7 +284,7 @@ int kvm__init(struct kvm *kvm)
->  		goto err_sys_fd;
->  	}
->  
-> -	kvm->vm_fd = ioctl(kvm->sys_fd, KVM_CREATE_VM, 0);
-> +	kvm->vm_fd = ioctl(kvm->sys_fd, KVM_CREATE_VM, KVM_VM_TYPE);
->  	if (kvm->vm_fd < 0) {
->  		pr_err("KVM_CREATE_VM ioctl");
->  		ret = kvm->vm_fd;
-> diff --git a/tools/kvm/mips/include/kvm/kvm-arch.h b/tools/kvm/mips/include/kvm/kvm-arch.h
-> index 4a8407b..7eadbf4 100644
-> --- a/tools/kvm/mips/include/kvm/kvm-arch.h
-> +++ b/tools/kvm/mips/include/kvm/kvm-arch.h
-> @@ -17,6 +17,11 @@
->  
->  #define KVM_IRQ_OFFSET		1
->  
-> +/*
-> + * MIPS-VZ (trap and emulate is 0)
-> + */
-> +#define KVM_VM_TYPE		1
-> +
->  #define VIRTIO_DEFAULT_TRANS(kvm)	VIRTIO_PCI
->  
->  #include <stdbool.h>
-> diff --git a/tools/kvm/powerpc/include/kvm/kvm-arch.h b/tools/kvm/powerpc/include/kvm/kvm-arch.h
-> index f8627a2..fdd518f 100644
-> --- a/tools/kvm/powerpc/include/kvm/kvm-arch.h
-> +++ b/tools/kvm/powerpc/include/kvm/kvm-arch.h
-> @@ -44,6 +44,8 @@
->  
->  #define KVM_IRQ_OFFSET			16
->  
-> +#define KVM_VM_TYPE			0
-> +
->  #define VIRTIO_DEFAULT_TRANS(kvm)	VIRTIO_PCI
->  
->  struct spapr_phb;
-> diff --git a/tools/kvm/x86/include/kvm/kvm-arch.h b/tools/kvm/x86/include/kvm/kvm-arch.h
-> index a9f23b8..673bdf1 100644
-> --- a/tools/kvm/x86/include/kvm/kvm-arch.h
-> +++ b/tools/kvm/x86/include/kvm/kvm-arch.h
-> @@ -27,6 +27,8 @@
->  
->  #define KVM_IRQ_OFFSET		5
->  
-> +#define KVM_VM_TYPE		0
-> +
->  #define VIRTIO_DEFAULT_TRANS(kvm)	VIRTIO_PCI
->  
->  struct kvm_arch {
+> One example about how this patch works is in CSUM_BIGCHUNK1:
+> // ** original **    vs    ** patch applied **
+>     ADDC(sum, t0)           ADDC(t0, t1)
+>     ADDC(sum, t1)           ADDC(t2, t3)
+>     ADDC(sum, t2)           ADDC(sum, t0)
+>     ADDC(sum, t3)           ADDC(sum, t2)
 > 
+> In the original implementation, each ADDC(sum, ...) references the sum
+> value updated by previous ADDC.
+> 
+> With patch applied, the first two ADDC operations are independent,
+> hence can be executed simultaneously if possible.
+> 
+> Another example is in the "copy and sum calculating" chunk:
+> // ** original **    vs    ** patch applied **
+>     STORE(t0, UNIT(0)...    STORE(t0, UNIT(0)...
+>     ADDC(sum, t0)           ADDC(t0, t1)
+>     STORE(t1, UNIT(1)...    STORE(t1, UNIT(1)...
+>     ADDC(sum, t1)           ADDC(sum, t0)
+>     STORE(t2, UNIT(2)...    STORE(t2, UNIT(2)...
+>     ADDC(sum, t2)           ADDC(t2, t3)
+>     STORE(t3, UNIT(3)...    STORE(t3, UNIT(3)...
+>     ADDC(sum, t3)           ADDC(sum, t2)
+> 
+> With patch applied, the second and third ADDC are independent.
+
+Hi chenj,
+
+You forgot to sign-off your patch
+
+-- 
+markos

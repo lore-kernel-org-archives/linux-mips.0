@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:37507 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2448 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6817074AbaEUKHcps2HQ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 21 May 2014 12:07:32 +0200
-Message-ID: <537C7A12.7020606@imgtec.com>
-Date: Wed, 21 May 2014 11:04:02 +0100
+        with ESMTP id S6822271AbaEULONuvhDX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 21 May 2014 13:14:13 +0200
+Message-ID: <537C89B5.2030907@imgtec.com>
+Date: Wed, 21 May 2014 12:10:45 +0100
 From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 06/15] MIPS: Add minimal support for OCTEON3 to c-r4k.c
-References: <1400597236-11352-1-git-send-email-andreas.herrmann@caviumnetworks.com> <1400597236-11352-7-git-send-email-andreas.herrmann@caviumnetworks.com>
-In-Reply-To: <1400597236-11352-7-git-send-email-andreas.herrmann@caviumnetworks.com>
+Subject: Re: [PATCH 07/15] MIPS: Add mips_cpunum() function.
+References: <1400597236-11352-1-git-send-email-andreas.herrmann@caviumnetworks.com> <1400597236-11352-8-git-send-email-andreas.herrmann@caviumnetworks.com>
+In-Reply-To: <1400597236-11352-8-git-send-email-andreas.herrmann@caviumnetworks.com>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-Path: <James.Hogan@imgtec.com>
@@ -23,50 +23,45 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, linux-mips@linux-mips.org
 Cc: David Daney <ddaney.cavm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, David Daney <david.daney@cavium.com>
-Message-ID: <20140521100402.8e9IyfZNOrd3VFNQXe5abvnpE6aTAWQNmJ6gQzmvvg4@z>
+Message-ID: <20140521111045.LjeUTF0snySDfY2h6VGqNJLjbzHsJ_WEDRxmgRWjTp0@z>
 
 On 20/05/14 15:47, Andreas Herrmann wrote:
 > From: David Daney <david.daney@cavium.com>
 > 
-> These are needed to boot a generic mips64r2 kernel on OCTEONIII.
+> This returns the CPUNum from the low order Ebase bits.
 > 
 > Signed-off-by: David Daney <david.daney@cavium.com>
 > Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
 > ---
->  arch/mips/include/asm/r4kcache.h |    2 ++
->  arch/mips/mm/c-r4k.c             |   32 ++++++++++++++++++++++++++++++++
->  2 files changed, 34 insertions(+)
-
-> diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-> index 1c74a6a..789ede9 100644
-> --- a/arch/mips/mm/c-r4k.c
-> +++ b/arch/mips/mm/c-r4k.c
-
-> @@ -1094,6 +1110,21 @@ static void probe_pcache(void)
->  		c->dcache.waybit = 0;
->  		break;
+>  arch/mips/include/asm/mipsregs.h |    5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+> index 3e025b5..f110d48 100644
+> --- a/arch/mips/include/asm/mipsregs.h
+> +++ b/arch/mips/include/asm/mipsregs.h
+> @@ -1916,6 +1916,11 @@ __BUILD_SET_C0(brcm_cmt_ctrl)
+>  __BUILD_SET_C0(brcm_config)
+>  __BUILD_SET_C0(brcm_mode)
 >  
-> +	case CPU_CAVIUM_OCTEON3:
-> +		/* For now lie about the number of ways. */
+> +static inline unsigned int mips_cpunum(void)
+> +{
+> +	return read_c0_ebase() & 0x3ff; /* Low 10 bits of ebase. */
+> +}
 
-Is this to work around the finite length of way_string[]?
+If this is going to go in mips generic code I think it should be clearly
+defined, especially in the presence of MT, otherwise perhaps it makes
+sense for it to go in a paravirt specific header?
 
-Can we fix that to be more dynamic instead? (admittedly special casing
-"direct mapped" looks like a bit of a pain).
+I.e. does it return the core number of the running VPE (if so it should
+probably do something like below as in decode_configs() and go in
+smp.h), or does it simply always return that field in ebase register (in
+which case it should probably have ebase in the name and a comment to
+clarify that it doesn't necessarily map directly to core/vpe number).
+
+unsigned int core = read_c0_ebase() & 0x3ff;
+if (cpu_has_mipsmt)
+	core >>= fls(smp_num_siblings) - 1;
 
 Cheers
 James
-
-> +		c->icache.linesz = 128;
-> +		c->icache.sets = 16;
-> +		c->icache.ways = 8;
-> +		c->icache.flags |= MIPS_CACHE_VTAG;
-> +		icache_size = c->icache.sets * c->icache.ways * c->icache.linesz;
-> +
-> +		c->dcache.linesz = 128;
-> +		c->dcache.ways = 8;
-> +		c->dcache.sets = 8;
-> +		dcache_size = c->dcache.sets * c->dcache.ways * c->dcache.linesz;
-> +		c->options |= MIPS_CPU_PREFETCH;
-> +		break;
-> +

@@ -1,22 +1,17 @@
-Received: from mail-by2lp0242.outbound.protection.outlook.com ([207.46.163.242]:22742
-        "EHLO na01-by2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6842298AbaEUNTcPeLzV (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 21 May 2014 15:19:32 +0200
-Date: Wed, 21 May 2014 15:17:40 +0200
-From: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-Subject: Re: [PATCH 05/15] MIPS: Don't build fast TLB refill handler with
- 32-bit kernels.
-Message-ID: <20140521131740.GG11800@alberich>
-References: <1400597236-11352-1-git-send-email-andreas.herrmann@caviumnetworks.com>
- <1400597236-11352-6-git-send-email-andreas.herrmann@caviumnetworks.com>
- <537C741F.60104@imgtec.com>
- <20140521130420.GR10287@linux-mips.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:31252 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6837162AbaEUNmYIuaoX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 21 May 2014 15:42:24 +0200
+Message-ID: <537CAC74.4030800@imgtec.com>
+Date: Wed, 21 May 2014 14:39:00 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20140521130420.GR10287@linux-mips.org>
-Return-Path: <Andreas.Herrmann@caviumnetworks.com>
+Subject: Re: [PATCH 10/15] MIPS: Add code for new system 'paravirt'.
+References: <1400597236-11352-1-git-send-email-andreas.herrmann@caviumnetworks.com> <1400597236-11352-11-git-send-email-andreas.herrmann@caviumnetworks.com>
+In-Reply-To: <1400597236-11352-11-git-send-email-andreas.herrmann@caviumnetworks.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,60 +21,240 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, David Daney <ddaney.cavm@gmail.com>, kvm@vger.kernel.org, David Daney <david.daney@cavium.com>
-Message-ID: <20140521131740.K8NL_CpV2sfdzgY6stZy2vOrtkfnF024RsKp-gkzkEo@z>
+To: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, linux-mips@linux-mips.org
+Cc: David Daney <ddaney.cavm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, David Daney <david.daney@cavium.com>
+Message-ID: <20140521133900.2fEt_M2cBlheXY-7gkRFV8Ge23A1ebY_peKkMNVy1rU@z>
 
-On Wed, May 21, 2014 at 03:04:20PM +0200, Ralf Baechle wrote:
-> On Wed, May 21, 2014 at 10:38:39AM +0100, James Hogan wrote:
-> 
-> > On 20/05/14 15:47, Andreas Herrmann wrote:
-> > > From: David Daney <david.daney@cavium.com>
-> > > 
-> > > The fast handler only supports 64-bit kernels.
-> > > 
-> > > Signed-off-by: David Daney <david.daney@cavium.com>
-> > > Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-> > > ---
-> > >  arch/mips/mm/tlbex.c |    8 ++++++--
-> > >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-> > > index ee88367..781e183 100644
-> > > --- a/arch/mips/mm/tlbex.c
-> > > +++ b/arch/mips/mm/tlbex.c
-> > > @@ -1250,13 +1250,17 @@ static void build_r4000_tlb_refill_handler(void)
-> > >  	unsigned int final_len;
-> > >  	struct mips_huge_tlb_info htlb_info __maybe_unused;
-> > >  	enum vmalloc64_mode vmalloc_mode __maybe_unused;
-> > > -
-> > > +#ifdef CONFIG_64BIT
-> > > +	bool is64bit = true;
-> > > +#else
-> > > +	bool is64bit = false;
-> > > +#endif
-> > >  	memset(tlb_handler, 0, sizeof(tlb_handler));
-> > >  	memset(labels, 0, sizeof(labels));
-> > >  	memset(relocs, 0, sizeof(relocs));
-> > >  	memset(final_handler, 0, sizeof(final_handler));
-> > >  
-> > > -	if ((scratch_reg >= 0 || scratchpad_available()) && use_bbit_insns()) {
-> > > +	if (is64bit && (scratch_reg >= 0 || scratchpad_available()) && use_bbit_insns()) {
-> > >  		htlb_info = build_fast_tlb_refill_handler(&p, &l, &r, K0, K1,
-> > >  							  scratch_reg);
-> > >  		vmalloc_mode = refill_scratch;
-> > > 
-> > 
-> > This looks like a good place to use IS_ENABLED(CONFIG_64BIT) to reduce
-> > ifdefery.
-> 
-> Or even the classic "if (sizeof(unsigned long) == 8)" which is a little less
-> expressive but more portable.
+On 20/05/14 15:47, Andreas Herrmann wrote:
+> diff --git a/arch/mips/include/asm/mach-paravirt/kernel-entry-init.h b/arch/mips/include/asm/mach-paravirt/kernel-entry-init.h
+> new file mode 100644
+> index 0000000..c812efa
+> --- /dev/null
+> +++ b/arch/mips/include/asm/mach-paravirt/kernel-entry-init.h
+> @@ -0,0 +1,49 @@
 
-Ok, makes sense.
-(Will use one of the two suggestions.)
+> +/*
+> + * Do SMP slave processor setup necessary before we can safely execute
+> + * C code.
+> + */
+> +	.macro  smp_slave_setup
+> +	mfc0	t0, CP0_EBASE
+> +	andi	t0, t0, 0x3ff		# CPUNum
+> +	slti	t1, t0, NR_CPUS
+> +	bnez	t1, 1f
+> +2:
+> +	di
+> +	wait
+> +	b	2b			# Unknown CPU, loop forever.
+> +1:
+> +	PTR_LA	t1, paravirt_smp_sp
+> +	PTR_SLL	t0, PTR_SCALESHIFT
+> +	PTR_ADDU t1, t1, t0
+> +3:
+> +	PTR_L	sp, 0(t1)
+> +	beqz	sp, 3b			# Spin until told to proceed.
+> +
+> +	PTR_LA	t1, paravirt_smp_gp
+> +	PTR_ADDU t1, t1, t0
+
+Usually smp_wmb() at the writer needs to be paired with smp_rmb() at the
+reader (i.e. here) to guarantee that the two memory locations become
+visible to this CPU in the correct order, so I think you need a sync of
+some kind between here to be portable beyond Octeon.
+
+> +	PTR_L	gp, 0(t1)
+> +	.endm
 
 
-Thanks,
+> diff --git a/arch/mips/paravirt/paravirt-irq.c b/arch/mips/paravirt/paravirt-irq.c
+> new file mode 100644
+> index 0000000..e1603dd
+> --- /dev/null
+> +++ b/arch/mips/paravirt/paravirt-irq.c
+> @@ -0,0 +1,388 @@
+> +/*
+> + * This file is subject to the terms and conditions of the GNU General Public
+> + * License.  See the file "COPYING" in the main directory of this archive
+> + * for more details.
+> + *
+> + * Copyright (C) 2013 Cavium, Inc.
+> + */
+> +
+> +#include <linux/interrupt.h>
+> +#include <linux/cpumask.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mutex.h>
+> +
+> +#include <asm/io.h>
+> +
+> +#define MBOX_BITS_PER_CPU 2
+> +
+> +int cpunum_for_cpu(int cpu)
 
-Andreas
+static?
+
+> +{
+> +#ifdef CONFIG_SMP
+> +	return cpu_logical_map(cpu);
+> +#else
+> +	return mips_cpunum();
+> +#endif
+> +}
+
+> +static void irq_core_set_enable_local(void *arg)
+> +{
+> +	struct irq_data *data = arg;
+> +	struct core_chip_data *cd = irq_data_get_irq_chip_data(data);
+> +	unsigned int mask = 0x100 << cd->bit;
+> +
+> +	/*
+> +	 * Interrupts are already disabled, so these are atomic.
+
+Really? Even when called directly from irq_core_bus_sync_unlock with
+only a single core online?
+
+> +	 */
+> +	if (cd->desired_en)
+> +		set_c0_status(mask);
+> +	else
+> +		clear_c0_status(mask);
+> +
+> +}
+> +
+> +static void irq_core_disable(struct irq_data *data)
+> +{
+> +	struct core_chip_data *cd = irq_data_get_irq_chip_data(data);
+> +	cd->desired_en = false;
+> +}
+> +
+> +static void irq_core_enable(struct irq_data *data)
+> +{
+> +	struct core_chip_data *cd = irq_data_get_irq_chip_data(data);
+> +	cd->desired_en = true;
+> +}
+> +
+> +static void irq_core_bus_lock(struct irq_data *data)
+> +{
+> +	struct core_chip_data *cd = irq_data_get_irq_chip_data(data);
+> +
+> +	mutex_lock(&cd->core_irq_mutex);
+> +}
+> +
+> +static void irq_core_bus_sync_unlock(struct irq_data *data)
+> +{
+> +	struct core_chip_data *cd = irq_data_get_irq_chip_data(data);
+> +
+> +	if (cd->desired_en != cd->current_en) {
+> +		/*
+> +		 * Can be called in early init when on_each_cpu() will
+> +		 * unconditionally enable irqs, so handle the case
+> +		 * where only a single CPU is online specially, and
+> +		 * directly call.
+> +		 */
+> +		if (num_online_cpus() == 1)
+> +			irq_core_set_enable_local(data);
+> +		else
+> +			on_each_cpu(irq_core_set_enable_local, data, 1);
+> +
+> +		cd->current_en = cd->desired_en;
+> +	}
+> +
+> +	mutex_unlock(&cd->core_irq_mutex);
+> +}
+
+
+> +static int irq_pci_set_affinity(struct irq_data *data, const struct cpumask *dest, bool force)
+> +{
+> +	return 0;
+> +}
+
+Is there any point even providing this callback?
+
+> +
+> +static void irq_pci_cpu_offline(struct irq_data *data)
+> +{
+> +}
+
+Or this one?
+
+> +
+> +static struct irq_chip irq_chip_pci = {
+> +	.name = "PCI",
+> +	.irq_enable = irq_pci_enable,
+> +	.irq_disable = irq_pci_disable,
+> +	.irq_ack = irq_pci_ack,
+> +	.irq_mask = irq_pci_mask,
+> +	.irq_unmask = irq_pci_unmask,
+> +	.irq_set_affinity = irq_pci_set_affinity,
+> +	.irq_cpu_offline = irq_pci_cpu_offline,
+> +};
+
+
+> diff --git a/arch/mips/paravirt/paravirt-smp.c b/arch/mips/paravirt/paravirt-smp.c
+> new file mode 100644
+> index 0000000..52f86eb
+> --- /dev/null
+> +++ b/arch/mips/paravirt/paravirt-smp.c
+
+> +static void paravirt_smp_finish(void)
+> +{
+> +	/* to generate the first CPU timer interrupt */
+> +	write_c0_compare(read_c0_count() + mips_hpt_frequency / HZ);
+
+This strikes me as a bit hacky. Are you sure it's actually necessary? (I
+would have expected some generic hotplug notifier somewhere to ensure
+that percpu clocksources gets initialised sensibly when a new CPU is
+brought up)
+
+
+> +static void paravirt_boot_secondary(int cpu, struct task_struct *idle)
+> +{
+> +	paravirt_smp_gp[cpu] = (unsigned long)(task_thread_info(idle));
+
+spurious brackets around task_thread_info(idle)
+
+> +	wmb();
+
+Wouldn't smp_wmb() be more accurate?
+
+> +	paravirt_smp_sp[cpu] = __KSTK_TOS(idle);
+> +	mb();
+
+is this barrier necessary?
+
+> diff --git a/arch/mips/paravirt/serial.c b/arch/mips/paravirt/serial.c
+> new file mode 100644
+> index 0000000..e3f98b2
+> --- /dev/null
+> +++ b/arch/mips/paravirt/serial.c
+> @@ -0,0 +1,38 @@
+> +/*
+> + * This file is subject to the terms and conditions of the GNU General Public
+> + * License.  See the file "COPYING" in the main directory of this archive
+> + * for more details.
+> + *
+> + * Copyright (C) 2013 Cavium, Inc.
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/virtio_console.h>
+> +
+> +#include <asm/mipsregs.h>
+> +
+> +/*
+> + * Emit one character to the boot console.
+> + */
+> +int prom_putchar(char c)
+> +{
+> +	hypcall3(0 /* Console output */, 0 /*  port 0 */, (unsigned long)&c, 1 /* len == 1 */);
+
+I think the hypcall API needs to be clearly specified and Documented
+somewhere along with its HYPCALL codes and scope. I.e. is it specific to
+kvmtool, or attempting to be a standard API across MIPS hypervisors.
+
+It probably should have nice definitions in a header and wrappers
+somewhere to make the arguments explicit and so there's no need for the
+comments explaining what the magic values mean.
+
+Cheers
+James

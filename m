@@ -1,19 +1,20 @@
-Received: from mail-bl2lp0203.outbound.protection.outlook.com ([207.46.163.203]:7965
-        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+Received: from dns-bn1lp0143.outbound.protection.outlook.com ([207.46.163.143]:37302
+        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6821443AbaEWUaMW0sNh (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 23 May 2014 22:30:12 +0200
-Date: Fri, 23 May 2014 22:28:55 +0200
+        id S6830033AbaEWUcOh0X1V (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 23 May 2014 22:32:14 +0200
+Date: Fri, 23 May 2014 22:31:18 +0200
 From: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
 Subject: Re: [PATCH 10/15] MIPS: Add code for new system 'paravirt'.
-Message-ID: <20140523202855.GL11800@alberich>
+Message-ID: <20140523203118.GM11800@alberich>
 References: <1400597236-11352-1-git-send-email-andreas.herrmann@caviumnetworks.com>
  <1400597236-11352-11-git-send-email-andreas.herrmann@caviumnetworks.com>
  <537CAC74.4030800@imgtec.com>
+ <537CD4C6.5080905@caviumnetworks.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <537CAC74.4030800@imgtec.com>
+In-Reply-To: <537CD4C6.5080905@caviumnetworks.com>
 Return-Path: <Andreas.Herrmann@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,73 +25,90 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: linux-mips@linux-mips.org, David Daney <ddaney.cavm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, David Daney <david.daney@cavium.com>
-Message-ID: <20140523202855.Tz_rrDhqnOwKwb61m9HVW5rIXtlraDfK72-g8gT_dpE@z>
+To: David Daney <ddaney@caviumnetworks.com>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, David Daney <ddaney.cavm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, David Daney <david.daney@cavium.com>
+Message-ID: <20140523203118.VgyNJ_1DN5GNq1QgqqaTXLUQOuQhIc24IAagTqas7Sc@z>
 
-On Wed, May 21, 2014 at 02:39:00PM +0100, James Hogan wrote:
-> On 20/05/14 15:47, Andreas Herrmann wrote:
-> > diff --git a/arch/mips/include/asm/mach-paravirt/kernel-entry-init.h b/arch/mips/include/asm/mach-paravirt/kernel-entry-init.h
-> > new file mode 100644
-> > index 0000000..c812efa
-> > --- /dev/null
-> > +++ b/arch/mips/include/asm/mach-paravirt/kernel-entry-init.h
-> > @@ -0,0 +1,49 @@
+On Wed, May 21, 2014 at 09:31:02AM -0700, David Daney wrote:
+> On 05/21/2014 06:39 AM, James Hogan wrote:
+> [...]
+> >>diff --git a/arch/mips/paravirt/paravirt-irq.c b/arch/mips/paravirt/paravirt-irq.c
+> >>new file mode 100644
+> >>index 0000000..e1603dd
+> >>--- /dev/null
+> >>+++ b/arch/mips/paravirt/paravirt-irq.c
+> [...]
+> >
+> >>+static void irq_core_set_enable_local(void *arg)
+> >>+{
+> >>+	struct irq_data *data = arg;
+> >>+	struct core_chip_data *cd = irq_data_get_irq_chip_data(data);
+> >>+	unsigned int mask = 0x100 << cd->bit;
+> >>+
+> >>+	/*
+> >>+	 * Interrupts are already disabled, so these are atomic.
+> >
+> >Really? Even when called directly from irq_core_bus_sync_unlock with
+> >only a single core online?
+> >
 > 
-> > +/*
-> > + * Do SMP slave processor setup necessary before we can safely execute
-> > + * C code.
-> > + */
-> > +	.macro  smp_slave_setup
-> > +	mfc0	t0, CP0_EBASE
-> > +	andi	t0, t0, 0x3ff		# CPUNum
-> > +	slti	t1, t0, NR_CPUS
-> > +	bnez	t1, 1f
-> > +2:
-> > +	di
-> > +	wait
-> > +	b	2b			# Unknown CPU, loop forever.
-> > +1:
-> > +	PTR_LA	t1, paravirt_smp_sp
-> > +	PTR_SLL	t0, PTR_SCALESHIFT
-> > +	PTR_ADDU t1, t1, t0
-> > +3:
-> > +	PTR_L	sp, 0(t1)
-> > +	beqz	sp, 3b			# Spin until told to proceed.
-> > +
-> > +	PTR_LA	t1, paravirt_smp_gp
-> > +	PTR_ADDU t1, t1, t0
+> Yes, but...
 > 
-> Usually smp_wmb() at the writer needs to be paired with smp_rmb() at the
-> reader (i.e. here) to guarantee that the two memory locations become
-> visible to this CPU in the correct order, so I think you need a sync of
-> some kind between here to be portable beyond Octeon.
-
-Yes, I think, I should add a sync here ...
-
-> > +	PTR_L	gp, 0(t1)
-> > +	.endm
-
- -- 8< --
-
-> > +static void paravirt_boot_secondary(int cpu, struct task_struct *idle)
-> > +{
-> > +	paravirt_smp_gp[cpu] = (unsigned long)(task_thread_info(idle));
 > 
-> spurious brackets around task_thread_info(idle)
+> >>+	 */
+> >>+	if (cd->desired_en)
+> >>+		set_c0_status(mask);
+> >>+	else
+> >>+		clear_c0_status(mask);
+> >>+
+> >>+}
+> >>+
+> >>+static void irq_core_disable(struct irq_data *data)
+> >>+{
+> >>+	struct core_chip_data *cd = irq_data_get_irq_chip_data(data);
+> >>+	cd->desired_en = false;
+> >>+}
+> >>+
+> >>+static void irq_core_enable(struct irq_data *data)
+> >>+{
+> >>+	struct core_chip_data *cd = irq_data_get_irq_chip_data(data);
+> >>+	cd->desired_en = true;
+> >>+}
+> >>+
+> >>+static void irq_core_bus_lock(struct irq_data *data)
+> >>+{
+> >>+	struct core_chip_data *cd = irq_data_get_irq_chip_data(data);
+> >>+
+> >>+	mutex_lock(&cd->core_irq_mutex);
+> >>+}
+> >>+
+> >>+static void irq_core_bus_sync_unlock(struct irq_data *data)
+> >>+{
+> >>+	struct core_chip_data *cd = irq_data_get_irq_chip_data(data);
+> >>+
+> >>+	if (cd->desired_en != cd->current_en) {
+> >>+		/*
+> >>+		 * Can be called in early init when on_each_cpu() will
+> >>+		 * unconditionally enable irqs, so handle the case
+> >>+		 * where only a single CPU is online specially, and
+> >>+		 * directly call.
+> >>+		 */
+> >>+		if (num_online_cpus() == 1)
+> >>+			irq_core_set_enable_local(data);
+> >>+		else
+> >>+			on_each_cpu(irq_core_set_enable_local, data, 1);
+> >>+
 > 
-> > +	wmb();
 > 
-> Wouldn't smp_wmb() be more accurate?
-
-... use smp_wmb there ...
-
-> > +	paravirt_smp_sp[cpu] = __KSTK_TOS(idle);
-> > +	mb();
+> ...  This code is not correct.  It was initially done as a
+> workaround for the issues fixed in commit 202da4005.
 > 
-> is this barrier necessary?
+> Now that on_each_cpu() is less buggy, we can unconditionally use it
+> and the assertion above about "Interrupts are already disabled" will
+> be true.
 
-... and omit this one.
+
+I'll adapt this in the next version of the patch.
 
 
 Andreas

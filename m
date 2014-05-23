@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:39462 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62721 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6817664AbaEWMcJcdQTf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 23 May 2014 14:32:09 +0200
+        with ESMTP id S6855797AbaEWMcONce02 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 23 May 2014 14:32:14 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 1/2] MIPS: malta: memory.c: Initialize the 'memsize' variable
-Date: Fri, 23 May 2014 13:31:31 +0100
-Message-ID: <1400848292-19544-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH 2/2] MIPS: malta: Remove 'maybe_unused' attribute from ememsize{,_str}
+Date: Fri, 23 May 2014 13:31:32 +0100
+Message-ID: <1400848292-19544-2-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1400848292-19544-1-git-send-email-markos.chandras@imgtec.com>
+References: <1400848292-19544-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -20,30 +22,30 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20140523123131.x5kJQwt3bm1cGi81m7lp0fZtWHicqDMhbOix0bmJe2k@z>
+Message-ID: <20140523123132.8RSR2PXFD5FehahMNz1C7IXNlYA2temws4SbShSIs0E@z>
 
-If the 'memsize' environmental variable is not set by the bootloader
-the 'memsize' variable is not initialized, leading to potential memory
-problems. This patch fixes the problem by setting the initial
-value to '0' to force the kernel to set a good default memory size.
+First introduced in e6ca4e5bf11466b5e9423a1e4ea51a8216c4b9b6
+"MIPS: malta: malta-memory: Add support for the 'ememsize' variable"
+but it is not needed since both variables are visible to the compiler.
 
 Cc: <stable@vger.kernel.org> # v3.15+
-Reported-by: Matheus Almeida <Matheus.Almeida@imgtec.com>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/mti-malta/malta-memory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/mti-malta/malta-memory.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/mips/mti-malta/malta-memory.c b/arch/mips/mti-malta/malta-memory.c
-index 6d0f4ab..f2364e4 100644
+index f2364e4..6d97730 100644
 --- a/arch/mips/mti-malta/malta-memory.c
 +++ b/arch/mips/mti-malta/malta-memory.c
-@@ -27,7 +27,7 @@ unsigned long physical_memsize = 0L;
+@@ -26,8 +26,8 @@ unsigned long physical_memsize = 0L;
+ 
  fw_memblock_t * __init fw_getmdesc(int eva)
  {
- 	char *memsize_str, *ememsize_str __maybe_unused = NULL, *ptr;
--	unsigned long memsize, ememsize __maybe_unused = 0;
-+	unsigned long memsize = 0, ememsize __maybe_unused = 0;
+-	char *memsize_str, *ememsize_str __maybe_unused = NULL, *ptr;
+-	unsigned long memsize = 0, ememsize __maybe_unused = 0;
++	char *memsize_str, *ememsize_str = NULL, *ptr;
++	unsigned long memsize = 0, ememsize = 0;
  	static char cmdline[COMMAND_LINE_SIZE] __initdata;
  	int tmp;
  

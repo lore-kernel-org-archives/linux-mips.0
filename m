@@ -1,14 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:55479 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6855603AbaEWMtmB6mYw (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 23 May 2014 14:49:42 +0200
-From: Alex Smith <alex.smith@imgtec.com>
-Subject: [PATCH mips-for-linux-next] MIPS: math-emu: Regression fixes
-Date: Fri, 23 May 2014 13:49:24 +0100
-Message-ID: <1400849364-7077-1-git-send-email-alex.smith@imgtec.com>
+Received: from mail-bl2lp0203.outbound.protection.outlook.com ([207.46.163.203]:7965
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S6821443AbaEWUaMW0sNh (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 23 May 2014 22:30:12 +0200
+Date: Fri, 23 May 2014 22:28:55 +0200
+From: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
+Subject: Re: [PATCH 10/15] MIPS: Add code for new system 'paravirt'.
+Message-ID: <20140523202855.GL11800@alberich>
+References: <1400597236-11352-1-git-send-email-andreas.herrmann@caviumnetworks.com>
+ <1400597236-11352-11-git-send-email-andreas.herrmann@caviumnetworks.com>
+ <537CAC74.4030800@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Alex.Smith@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <537CAC74.4030800@imgtec.com>
+Return-Path: <Andreas.Herrmann@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,60 +24,73 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Alex Smith <alex.smith@imgtec.com>
-Message-ID: <20140523124924.t3kVyMUIlgMaUECK20NMGIGAPFCqcmX9h-e5xyTEH0E@z>
+To: James Hogan <james.hogan@imgtec.com>
+Cc: linux-mips@linux-mips.org, David Daney <ddaney.cavm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, David Daney <david.daney@cavium.com>
+Message-ID: <20140523202855.Tz_rrDhqnOwKwb61m9HVW5rIXtlraDfK72-g8gT_dpE@z>
 
-Fix some errors introduced by commit e2efc0ab3a ("MIPS: math-emu:
-Remove most ifdefery."), which result in incorrect behaviour of the
-FPU emulator.
+On Wed, May 21, 2014 at 02:39:00PM +0100, James Hogan wrote:
+> On 20/05/14 15:47, Andreas Herrmann wrote:
+> > diff --git a/arch/mips/include/asm/mach-paravirt/kernel-entry-init.h b/arch/mips/include/asm/mach-paravirt/kernel-entry-init.h
+> > new file mode 100644
+> > index 0000000..c812efa
+> > --- /dev/null
+> > +++ b/arch/mips/include/asm/mach-paravirt/kernel-entry-init.h
+> > @@ -0,0 +1,49 @@
+> 
+> > +/*
+> > + * Do SMP slave processor setup necessary before we can safely execute
+> > + * C code.
+> > + */
+> > +	.macro  smp_slave_setup
+> > +	mfc0	t0, CP0_EBASE
+> > +	andi	t0, t0, 0x3ff		# CPUNum
+> > +	slti	t1, t0, NR_CPUS
+> > +	bnez	t1, 1f
+> > +2:
+> > +	di
+> > +	wait
+> > +	b	2b			# Unknown CPU, loop forever.
+> > +1:
+> > +	PTR_LA	t1, paravirt_smp_sp
+> > +	PTR_SLL	t0, PTR_SCALESHIFT
+> > +	PTR_ADDU t1, t1, t0
+> > +3:
+> > +	PTR_L	sp, 0(t1)
+> > +	beqz	sp, 3b			# Spin until told to proceed.
+> > +
+> > +	PTR_LA	t1, paravirt_smp_gp
+> > +	PTR_ADDU t1, t1, t0
+> 
+> Usually smp_wmb() at the writer needs to be paired with smp_rmb() at the
+> reader (i.e. here) to guarantee that the two memory locations become
+> visible to this CPU in the correct order, so I think you need a sync of
+> some kind between here to be portable beyond Octeon.
 
-Signed-off-by: Alex Smith <alex.smith@imgtec.com>
----
-Ralf, the above commit in mips-for-linux-next causes a regression
-which this patch fixes (the regression I was seeing is fixed by the
-last change, but I also noticed a couple of incorrect ISA level
-checks which I fixed up as well). Could you squash this into that
-commit?
----
- arch/mips/math-emu/cp1emu.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Yes, I think, I should add a sync here ...
 
-diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-index 331334c..08e6a74 100644
---- a/arch/mips/math-emu/cp1emu.c
-+++ b/arch/mips/math-emu/cp1emu.c
-@@ -1512,7 +1512,7 @@ copcsr:
- 			goto copcsr;
- 
- 		case fcvtl_op:
--			if (!cpu_has_mips_3_4_5 && cpu_has_mips64)
-+			if (!cpu_has_mips_3_4_5 && !cpu_has_mips64)
- 				return SIGILL;
- 
- 			SPFROMREG(fs, MIPSInst_FS(ir));
-@@ -1524,7 +1524,7 @@ copcsr:
- 		case ftruncl_op:
- 		case fceill_op:
- 		case ffloorl_op:
--			if (!cpu_has_mips_3_4_5 && cpu_has_mips64)
-+			if (!cpu_has_mips_3_4_5 && !cpu_has_mips64)
- 				return SIGILL;
- 
- 			oldrm = ieee754_csr.rm;
-@@ -1808,11 +1808,10 @@ dcopuop:
- 			cbit = fpucondbit[MIPSInst_RT(ir) >> 2];
- 		else
- 			cbit = FPU_CSR_COND;
--		cond = ctx->fcr31 & cbit;
- 		if (rv.w)
--			ctx->fcr31 |= cond;
-+			ctx->fcr31 |= cbit;
- 		else
--			ctx->fcr31 &= ~cond;
-+			ctx->fcr31 &= ~cbit;
- 		break;
- 
- 	case d_fmt:
--- 
-1.9.3
+> > +	PTR_L	gp, 0(t1)
+> > +	.endm
+
+ -- 8< --
+
+> > +static void paravirt_boot_secondary(int cpu, struct task_struct *idle)
+> > +{
+> > +	paravirt_smp_gp[cpu] = (unsigned long)(task_thread_info(idle));
+> 
+> spurious brackets around task_thread_info(idle)
+> 
+> > +	wmb();
+> 
+> Wouldn't smp_wmb() be more accurate?
+
+... use smp_wmb there ...
+
+> > +	paravirt_smp_sp[cpu] = __KSTK_TOS(idle);
+> > +	mb();
+> 
+> is this barrier necessary?
+
+... and omit this one.
+
+
+Andreas

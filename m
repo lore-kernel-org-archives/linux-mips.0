@@ -1,11 +1,11 @@
-Received: from mail1.windriver.com ([147.11.146.13]:34233 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6822096AbaE0Eer73GlK (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 27 May 2014 06:34:47 +0200
-Date: Tue, 27 May 2014 12:34:33 +0800
+Received: from mail.windriver.com ([147.11.1.11]:51977 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6822096AbaE0EuwElMdF (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 27 May 2014 06:50:52 +0200
+Date: Tue, 27 May 2014 12:50:38 +0800
 From: Yong Zhang <yong.zhang@windriver.com>
 Subject: Re: [PATCH V2] MIPS: change type of asid_cache to unsigned long
-Message-ID: <20140527043433.GA16193@pek-yzhang-d1>
+Message-ID: <20140527045038.GB16193@pek-yzhang-d1>
 Reply-To: Yong Zhang <yong.zhang@windriver.com>
 References: <1400650563-1033-1-git-send-email-yong.zhang@windriver.com>
  <5384119E.7010606@huawei.com>
@@ -25,7 +25,16 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Li Zefan <lizefan@huawei.com>
 Cc: ralf@linux-mips.org, huawei.libin@huawei.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>
-Message-ID: <20140527043433.kRVZWBAHRNwYapSIinskKwNP0Ij03x3v9dHI5NtYRYA@z>
+Message-ID: <20140527045038.1Gm8o0-qanuXafTssyuG1tMp6FsEIFW7iyvX747xdaY@z>
+
+BTW, I realy don't care who credits the patch and Ralf said that
+he will applied the one which moves the place of udelay_val.
+
+Anyway, if your company pays you more money if you contribute to
+the community, just take it and talk about it with Ralf ;-)
+
+Thanks,
+Yong
 
 On Tue, May 27, 2014 at 12:16:30PM +0800, Li Zefan wrote:
 > I'm not quite happy about what happaned here. There's a story behind
@@ -44,35 +53,12 @@ On Tue, May 27, 2014 at 12:16:30PM +0800, Li Zefan wrote:
 > job.
 > 
 > Li Bin told the product team what was wrong and was about to send
-> a fix for upstream kernel.
-
-You have time to do that but you didn't.
-
-> They told you our analysis for further
-> confirmation,
-
-So you realy didn't make the patch, right? Because you are not
-sure the right fix.
-
-> and you were so reluctant to help but so quick to
+> a fix for upstream kernel. They told you our analysis for further
+> confirmation, and you were so reluctant to help but so quick to
 > send the fix.
-
-We have responsed to you.
-
 > 
 > Li Bin never reported this bug, but he fixed it. It's a shame that
 > you took the credit from us.
-
-I just saw a bug report and ananysis. And I agreed and confirmed it's
-a bug.
-
-Thanks,
-Yong
-
-
-
-
-
 > 
 > On 2014/5/21 13:36, Yong Zhang wrote:
 > > asid_cache must be unsigned long otherwise on 64bit system

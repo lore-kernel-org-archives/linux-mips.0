@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:28409 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6821742AbaE2OlgxC1QY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 29 May 2014 16:41:36 +0200
-Message-ID: <53874719.5070604@imgtec.com>
-Date: Thu, 29 May 2014 15:41:29 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from iolanthe.rowland.org ([192.131.102.54]:45010 "HELO
+        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S6816069AbaE2PDeQcDcC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 May 2014 17:03:34 +0200
+Date: Thu, 29 May 2014 11:03:31 -0400 (EDT)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH 3/3] usb host/MIPS: Remove hard-coded OCTEON platform
+ information.
+In-Reply-To: <1401358203-60225-4-git-send-email-alex.smith@imgtec.com>
+Message-ID: <Pine.LNX.4.44L0.1405291100320.1285-100000@iolanthe.rowland.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 00/23] MIPS: KVM: Fixes and guest timer rewrite
-References: <1401355005-20370-1-git-send-email-james.hogan@imgtec.com> <53870DAD.7050900@redhat.com>
-In-Reply-To: <53870DAD.7050900@redhat.com>
-Content-Type: multipart/mixed;
-        boundary="------------030600020508020608000707"
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <stern+53961a8c@rowland.harvard.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,41 +20,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, Gleb Natapov <gleb@kernel.org>, kvm@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Sanjay Lal <sanjayl@kymasys.com>
-Message-ID: <20140529144129.nFrRP8FVOAyeyIKA6LG66-qpjhj5z8Vt12GNuYWFmgc@z>
+To: Alex Smith <alex.smith@imgtec.com>
+Cc: linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, linux-usb@vger.kernel.org
+Message-ID: <20140529150331.60mMvu73yoT7iFoWmVMeULxnoGPu-WhwXVyH3ryIe1g@z>
 
---------------030600020508020608000707
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 7bit
+On Thu, 29 May 2014, Alex Smith wrote:
 
-On 29/05/14 11:36, Paolo Bonzini wrote:
-> Il 29/05/2014 11:16, James Hogan ha scritto:
->> Here are a range of MIPS KVM T&E fixes, preferably for v3.16 but I know
->> it's probably a bit late now. Changes are pretty minimal though since
->> v1 so please consider. They can also be found on my kvm_mips_queue
->> branch (and the kvm_mips_timer_v2 tag) here:
->> git://git.kernel.org/pub/scm/linux/kernel/git/jhogan/kvm-mips.git
+> From: David Daney <david.daney@cavium.com>
 > 
-> That's okay for me, but I'd like to get a look at the QEMU parts.
+> The device tree will *always* have correct ehci/ohci clock
+> configuration, so use it.  This allows us to remove a big chunk of
+> platform configuration code from octeon-platform.c.
 
-I'm still in the process of cleaning up my qemu patchset, but the
-attached 2 patches hopefully shows the gist of it this particular change.
+Instead of doing this, how about moving the octeon2_usb_clocks_start() 
+and _stop() routines into octeon-platform.c, and then using the 
+ehci-platform and ohci-platform drivers instead of special-purpose 
+ehci-octeon and ohci-octeon drivers?
 
-Thanks
-James
-
-> 
-> I would also like an Acked-by for patches 2 and 14, and I have a
-> question about patch 11.
-> 
-> Paolo
-
---------------030600020508020608000707
-Content-Type: text/x-patch; name="0001-timer-Add-cpu_get_clock_at.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="0001-timer-Add-cpu_get_clock_at.patch"
-
-
---------------030600020508020608000707--
+Alan Stern

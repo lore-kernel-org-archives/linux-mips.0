@@ -1,21 +1,17 @@
-Received: from mail-bl2lp0203.outbound.protection.outlook.com ([207.46.163.203]:9464
-        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-FAIL-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6854811AbaE1WM309muo (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 29 May 2014 00:12:29 +0200
-Date: Thu, 29 May 2014 00:10:40 +0200
-From: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-Subject: Re: [PATCH 11/15] MIPS: paravirt: Add pci controller for virtio
-Message-ID: <20140528221040.GB6335@alberich>
-References: <1400597236-11352-1-git-send-email-andreas.herrmann@caviumnetworks.com>
- <1400597236-11352-12-git-send-email-andreas.herrmann@caviumnetworks.com>
- <537C913C.1060903@imgtec.com>
- <20140522201707.GK11800@alberich>
+Received: from [119.145.14.66] ([119.145.14.66]:47715 "EHLO
+        szxga03-in.huawei.com" rhost-flags-FAIL-FAIL-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6819446AbaE2I5oo0Zl1 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 May 2014 10:57:44 +0200
+Message-ID: <5386F663.4010401@huawei.com>
+Date: Thu, 29 May 2014 16:57:07 +0800
+From: Li Zefan <lizefan@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20140522201707.GK11800@alberich>
-Return-Path: <Andreas.Herrmann@caviumnetworks.com>
+Subject: Re: [PATCH V2] MIPS: change type of asid_cache to unsigned long
+References: <1400650563-1033-1-git-send-email-yong.zhang@windriver.com> <5384119E.7010606@huawei.com> <20140528200929.GA30528@drone.musicnaut.iki.fi>
+In-Reply-To: <20140528200929.GA30528@drone.musicnaut.iki.fi>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <lizefan@huawei.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,49 +21,27 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: linux-mips@linux-mips.org, David Daney <ddaney.cavm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, David Daney <david.daney@cavium.com>
-Message-ID: <20140528221040.OFtBY5PHetDMQdP-2YhBahjeLKStQiLK-e5Qqfngojk@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Yong Zhang <yong.zhang@windriver.com>, ralf@linux-mips.org, huawei.libin@huawei.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>
+Message-ID: <20140529085707.5qLUJPMbdyg3G5NQ8vqfJkDgdvsE4I_ua5qF2pmIIKc@z>
 
-On Thu, May 22, 2014 at 10:17:07PM +0200, Andreas Herrmann wrote:
-> On Wed, May 21, 2014 at 12:42:52PM +0100, James Hogan wrote:
-> > On 20/05/14 15:47, Andreas Herrmann wrote:
-> > > From: David Daney <david.daney@cavium.com>
-> > > 
-> > > Signed-off-by: David Daney <david.daney@cavium.com>
-> > > Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-> > > ---
-> > >  arch/mips/Kconfig                |    1 +
-> > >  arch/mips/paravirt/Kconfig       |    6 ++
-> > >  arch/mips/pci/Makefile           |    2 +-
-> > >  arch/mips/pci/pci-virtio-guest.c |  140 ++++++++++++++++++++++++++++++++++++++
-> > >  4 files changed, 148 insertions(+), 1 deletion(-)
-> > >  create mode 100644 arch/mips/paravirt/Kconfig
-> > >  create mode 100644 arch/mips/pci/pci-virtio-guest.c
-> > 
-> > If I understand correctly this just drives a simple PCI controller for a
-> > PCI bus that a virtio device happens to be usually plugged in to, yeh?
+On 2014/5/29 4:09, Aaro Koskinen wrote:
+> Hi,
 > 
-> Yes.
+> On Tue, May 27, 2014 at 12:16:30PM +0800, Li Zefan wrote:
+>> On 2014/5/21 13:36, Yong Zhang wrote:
+>>> asid_cache must be unsigned long otherwise on 64bit system
+>>> it will become 0 if the value in get_new_mmu_context()
+>>> reaches 0xffffffff and in the end the assumption of
+>>> ASID_FIRST_VERSION is not true anymore thus leads to
+>>> more dangerous things.
+>>
+>> We should describe what problem this bug can lead to, which
+>> will help people who encounter the same problem and google it.
 > 
-> > It sounds like it would make sense to take advantage of Will Deacon's
-> > recent efforts to make a generic pci controller driver for this sort of
-> > thing which specifically mentions emulation by kvmtool? Is it
-> > effectively the same PCI controller that is being emulated?
+> Please describe it, then. Even if the patch is already committed,
+> googling would probably still find this e-mail thread.
 > 
-> I think, it's very similar. But it depends on OF.
->  
-> > http://lists.infradead.org/pipermail/linux-arm-kernel/2014-February/thread.html#233491
-> > http://lists.infradead.org/pipermail/linux-arm-kernel/2014-February/233491.html
-> > http://lists.infradead.org/pipermail/linux-arm-kernel/2014-February/233490.html
-> 
-> Currently we are at v6:
-> http://marc.info/?i=1399478839-3564-1-git-send-email-will.deacon@arm.com
-> 
-> Will take a closer look (trying to get it running for mips_paravirt).
 
-FYI, I've dismissed this (for v2) after taking a closer look and after
-I've seen https://lkml.org/lkml/2014/5/18/54.
-
-
-Andreas
+I don't think Ralf has committed it, so we'll send out a fix
+with detailed changelog.

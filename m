@@ -1,14 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:62583 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:65267 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6822107AbaE2T1BoRNOy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 29 May 2014 21:27:01 +0200
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [RESEND PATCH] MIPS: math-emu: Add IEEE754 exception statistics to debugfs
-Date: Thu, 29 May 2014 12:26:45 -0700
-Message-ID: <1401391605-3698-1-git-send-email-dengcheng.zhu@imgtec.com>
+        with ESMTP id S6822134AbaE2UoxzaaAx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 May 2014 22:44:53 +0200
+Message-ID: <53879C3E.3040102@imgtec.com>
+Date: Thu, 29 May 2014 21:44:46 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <DengCheng.Zhu@imgtec.com>
+Subject: Re: [PATCH v2 00/23] MIPS: KVM: Fixes and guest timer rewrite
+References: <1401355005-20370-1-git-send-email-james.hogan@imgtec.com> <53870DAD.7050900@redhat.com> <53874719.5070604@imgtec.com> <538750F8.7040202@redhat.com> <53875FEE.1020607@imgtec.com> <53876850.20600@redhat.com>
+In-Reply-To: <53876850.20600@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 7bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,116 +21,106 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, Steven.Hill@imgtec.com, james.hogan@imgtec.com, dengcheng.zhu@imgtec.com
-Message-ID: <20140529192645.nAa8lJYr4xWW6XwtF1Gqr7Brf5rlyT13D6ZoXZPeFG8@z>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, Gleb Natapov <gleb@kernel.org>, kvm@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Sanjay Lal <sanjayl@kymasys.com>
+Message-ID: <20140529204446.crlBcarZxOmnU6WOjt6vphp-6scj16rXGfauRblzJ5E@z>
 
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Hi Paolo,
 
-Sometimes it's useful to let the user, while doing performance research,
-know what in the IEEE754 exceptions has caused many times of FP emulation
-when running a specific application. This patch adds 5 more files to
-/sys/kernel/debug/mips/fpuemustats/, whose filenames begin with "ieee754".
-These stats are in addition to the existing cp1ops, cp1xops, errors, loads
-and stores, which may not be useful in understanding the reasons of ieee754
-exceptions.
+On 29/05/14 18:03, Paolo Bonzini wrote:
+>>> Also, perhaps this bit in kvm_mips_restore_count is unnecessary, and so
+>>> is env->count_save_time in general:
+>>>
+>>>> +        /* find time to resume the saved timer at */
+>>>> +        now = get_clock();
+>>>> +        count_resume = now - (cpu_get_clock_at(now) -
+>>>> env->count_save_time);
+>>>
+>>> Is the COUNT_RESUME write necessary if the VM is running?
+>>
+>> Running at that instant or running continuously since the save?
+>>
+>> At this instant the VM is always running. Either it's just been started
+>> and other state isn't dirty, or the registers have been put while the VM
+>> is running.
+> 
+> The possible transitions are:
+> 
+> running, not dirty -> stopped
+>     need to freeze and load the registers
+> 
+> stopped -> running, not dirty
+>     will reload the registers, need to modify COUNT_RESUME
+> 
+> running, dirty -> stopped
+>     no need to do anything
+> 
+> stopped -> running, dirty
+>     will not reload the registers until put, will need to modify
+>     COUNT_RESUME on the next transition to "running, not dirty"
+> 
+> running, not dirty -> running, dirty
+>     need to freeze and load the registers
+> 
+> running, dirty -> running, not dirty
+>     need to modify COUNT_RESUME if the machine had been stopped
+>     in the meanwhile
+> 
+> The questions then is, can we skip tracking count_save_time and
+> modifying COUNT_RESUME in kvm_mips_restore_count?  Then you can just
+> write get_clock() to COUNT_RESUME in kvm_mips_update_state, like this:
+> 
+>     if (!running) {
+>         if (!cs->kvm_vcpu_dirty) {
+>             save;
+>         }
+>     else {
+>         write get_clock() to COUNT_RESUME;
+>         if (!cs->kvm_vcpu_dirty) {
+>             restore;
+>         }
+>     }
+> 
+> and even drop patch 1.  COUNT_RESUME is not even ever read by QEMU nor
+> stored in CPUState, so.
+> 
+> The difference is that the guest "loses" the time between the "running,
+> not dirty -> running, dirty" and "running, dirty -> stopped"
+> transitions, while "gaining" the time between "stopped -> running,
+> dirty" and "running, dirty -> running, not dirty".  If this is right, I
+> think the difference does not matter in practice and the new/simpler
+> code even explains the definition of COUNT_RESUME better in my eyes.
 
-Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
----
- arch/mips/include/asm/fpu_emulator.h |  5 +++++
- arch/mips/math-emu/cp1emu.c          | 41 ++++++++++++++++++++++++++++--------
- 2 files changed, 37 insertions(+), 9 deletions(-)
+Yes, I agree with your analysis and had considered something like this,
+although it doesn't particularly appeal to my sense of perfectionism :).
+It would be race free though, and if you're stopping the VM at all you
+expect to lose some time anyway.
 
-diff --git a/arch/mips/include/asm/fpu_emulator.h b/arch/mips/include/asm/fpu_emulator.h
-index 2abb587..0ab4a3c 100644
---- a/arch/mips/include/asm/fpu_emulator.h
-+++ b/arch/mips/include/asm/fpu_emulator.h
-@@ -36,6 +36,11 @@ struct mips_fpu_emulator_stats {
- 	local_t cp1ops;
- 	local_t cp1xops;
- 	local_t errors;
-+	local_t ieee754_inexact;
-+	local_t ieee754_underflow;
-+	local_t ieee754_overflow;
-+	local_t ieee754_zerodiv;
-+	local_t ieee754_invalidop;
- };
- 
- DECLARE_PER_CPU(struct mips_fpu_emulator_stats, fpuemustats);
-diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-index 0b4e2e3..f630b74 100644
---- a/arch/mips/math-emu/cp1emu.c
-+++ b/arch/mips/math-emu/cp1emu.c
-@@ -1444,14 +1444,22 @@ static int fpux_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
- 			SPTOREG(fd, MIPSInst_FD(ir));
- 
- 		      copcsr:
--			if (ieee754_cxtest(IEEE754_INEXACT))
-+			if (ieee754_cxtest(IEEE754_INEXACT)) {
-+				MIPS_FPU_EMU_INC_STATS(ieee754_inexact);
- 				rcsr |= FPU_CSR_INE_X | FPU_CSR_INE_S;
--			if (ieee754_cxtest(IEEE754_UNDERFLOW))
-+			}
-+			if (ieee754_cxtest(IEEE754_UNDERFLOW)) {
-+				MIPS_FPU_EMU_INC_STATS(ieee754_underflow);
- 				rcsr |= FPU_CSR_UDF_X | FPU_CSR_UDF_S;
--			if (ieee754_cxtest(IEEE754_OVERFLOW))
-+			}
-+			if (ieee754_cxtest(IEEE754_OVERFLOW)) {
-+				MIPS_FPU_EMU_INC_STATS(ieee754_overflow);
- 				rcsr |= FPU_CSR_OVF_X | FPU_CSR_OVF_S;
--			if (ieee754_cxtest(IEEE754_INVALID_OPERATION))
-+			}
-+			if (ieee754_cxtest(IEEE754_INVALID_OPERATION)) {
-+				MIPS_FPU_EMU_INC_STATS(ieee754_invalidop);
- 				rcsr |= FPU_CSR_INV_X | FPU_CSR_INV_S;
-+			}
- 
- 			ctx->fcr31 = (ctx->fcr31 & ~FPU_CSR_ALL_X) | rcsr;
- 			if ((ctx->fcr31 >> 5) & ctx->fcr31 & FPU_CSR_ALL_E) {
-@@ -1660,16 +1668,26 @@ static int fpu_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
- 				goto copcsr;
- 			}
- 		      copcsr:
--			if (ieee754_cxtest(IEEE754_INEXACT))
-+			if (ieee754_cxtest(IEEE754_INEXACT)) {
-+				MIPS_FPU_EMU_INC_STATS(ieee754_inexact);
- 				rcsr |= FPU_CSR_INE_X | FPU_CSR_INE_S;
--			if (ieee754_cxtest(IEEE754_UNDERFLOW))
-+			}
-+			if (ieee754_cxtest(IEEE754_UNDERFLOW)) {
-+				MIPS_FPU_EMU_INC_STATS(ieee754_underflow);
- 				rcsr |= FPU_CSR_UDF_X | FPU_CSR_UDF_S;
--			if (ieee754_cxtest(IEEE754_OVERFLOW))
-+			}
-+			if (ieee754_cxtest(IEEE754_OVERFLOW)) {
-+				MIPS_FPU_EMU_INC_STATS(ieee754_overflow);
- 				rcsr |= FPU_CSR_OVF_X | FPU_CSR_OVF_S;
--			if (ieee754_cxtest(IEEE754_ZERO_DIVIDE))
-+			}
-+			if (ieee754_cxtest(IEEE754_ZERO_DIVIDE)) {
-+				MIPS_FPU_EMU_INC_STATS(ieee754_zerodiv);
- 				rcsr |= FPU_CSR_DIV_X | FPU_CSR_DIV_S;
--			if (ieee754_cxtest(IEEE754_INVALID_OPERATION))
-+			}
-+			if (ieee754_cxtest(IEEE754_INVALID_OPERATION)) {
-+				MIPS_FPU_EMU_INC_STATS(ieee754_invalidop);
- 				rcsr |= FPU_CSR_INV_X | FPU_CSR_INV_S;
-+			}
- 			break;
- 
- 			/* unary conv ops */
-@@ -2179,6 +2197,11 @@ static int __init debugfs_fpuemu(void)
- 	FPU_STAT_CREATE(cp1ops);
- 	FPU_STAT_CREATE(cp1xops);
- 	FPU_STAT_CREATE(errors);
-+	FPU_STAT_CREATE(ieee754_inexact);
-+	FPU_STAT_CREATE(ieee754_underflow);
-+	FPU_STAT_CREATE(ieee754_overflow);
-+	FPU_STAT_CREATE(ieee754_zerodiv);
-+	FPU_STAT_CREATE(ieee754_invalidop);
- 
- 	return 0;
- }
--- 
-1.8.5.3
+> 
+>>> Does the
+>>> master disable bit just latch the values, or does it really stop the
+>>> timer?  (My reading of the code is the former, since writing
+>>> COUNT_RESUME only modifies the bias: no write => no bias change => timer
+>>> runs).
+>>
+>> It appears latched in the sense that starting it again will jump Count
+>> forward to the time it would have been had it not been disabled (with no
+>> loss of Compare interrupt in that time).
+> 
+> Yes, this is the important part because it means that the guest clock
+> does not get progressively more skewed.  It also means that it is right
+> to never write COUNT_RESUME except if you go through stop/continue.
+
+Yes, if the VM hasn't been stopped the value written is unchanged from
+that originally read (see below), so it could skip it in that case.
+
+save:
+  count_save_time = cpu_clock_offset + COUNT_RESUME
+restore:
+  COUNT_RESUME = get_clock() - (cpu_clock_offset + get_clock() -
+count_save_time)
+		= count_save_time - cpu_clock_offset
+		= COUNT_RESUME
+
+Cheers
+James

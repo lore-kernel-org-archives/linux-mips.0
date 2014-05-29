@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:46301 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13255 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6824820AbaE2JRHtXCNG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 29 May 2014 11:17:07 +0200
+        with ESMTP id S6825074AbaE2JRILgd76 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 May 2014 11:17:08 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH v2 08/23] MIPS: KVM: Add CP0_UserLocal KVM register access
-Date: Thu, 29 May 2014 10:16:30 +0100
-Message-ID: <1401355005-20370-9-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH v2 09/23] MIPS: KVM: Add CP0_HWREna KVM register access
+Date: Thu, 29 May 2014 10:16:31 +0100
+Message-ID: <1401355005-20370-10-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1401355005-20370-1-git-send-email-james.hogan@imgtec.com>
 References: <1401355005-20370-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -22,11 +22,11 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paolo Bonzini <pbonzini@redhat.com>
 Cc: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, James Hogan <james.hogan@imgtec.com>, Gleb Natapov <gleb@kernel.org>, kvm@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Sanjay Lal <sanjayl@kymasys.com>
-Message-ID: <20140529091630.qBZX6sn12zive3bWmOFL7Dp11zIZ9YLpfOs82nugMW0@z>
+Message-ID: <20140529091631.EPHrvA2rXO-NKIT6zzRIUnNJ00KEP_UvyPILpd97WHE@z>
 
 Implement KVM_{GET,SET}_ONE_REG ioctl based access to the guest CP0
-UserLocal register. This is so that userland can save and restore its
-value.
+HWREna register. This is so that userland can save and restore its
+value so that RDHWR instructions don't have to be emulated by the guest.
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Paolo Bonzini <pbonzini@redhat.com>
@@ -40,53 +40,40 @@ Cc: Sanjay Lal <sanjayl@kymasys.com>
 v2:
  - New patch.
 ---
- arch/mips/include/asm/kvm_host.h | 1 +
- arch/mips/kvm/kvm_mips.c         | 7 +++++++
- 2 files changed, 8 insertions(+)
+ arch/mips/kvm/kvm_mips.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index 41e180ed36e3..6f9338450e24 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -442,6 +442,7 @@ struct kvm_vcpu_arch {
- #define kvm_read_c0_guest_context(cop0)		(cop0->reg[MIPS_CP0_TLB_CONTEXT][0])
- #define kvm_write_c0_guest_context(cop0, val)	(cop0->reg[MIPS_CP0_TLB_CONTEXT][0] = (val))
- #define kvm_read_c0_guest_userlocal(cop0)	(cop0->reg[MIPS_CP0_TLB_CONTEXT][2])
-+#define kvm_write_c0_guest_userlocal(cop0, val)	(cop0->reg[MIPS_CP0_TLB_CONTEXT][2] = (val))
- #define kvm_read_c0_guest_pagemask(cop0)	(cop0->reg[MIPS_CP0_TLB_PG_MASK][0])
- #define kvm_write_c0_guest_pagemask(cop0, val)	(cop0->reg[MIPS_CP0_TLB_PG_MASK][0] = (val))
- #define kvm_read_c0_guest_wired(cop0)		(cop0->reg[MIPS_CP0_TLB_WIRED][0])
 diff --git a/arch/mips/kvm/kvm_mips.c b/arch/mips/kvm/kvm_mips.c
-index 2f6344cca653..153c1e17afb1 100644
+index 153c1e17afb1..73f67fc92b7a 100644
 --- a/arch/mips/kvm/kvm_mips.c
 +++ b/arch/mips/kvm/kvm_mips.c
-@@ -531,6 +531,7 @@ static u64 kvm_mips_get_one_regs[] = {
- 
- 	KVM_REG_MIPS_CP0_INDEX,
- 	KVM_REG_MIPS_CP0_CONTEXT,
-+	KVM_REG_MIPS_CP0_USERLOCAL,
+@@ -534,6 +534,7 @@ static u64 kvm_mips_get_one_regs[] = {
+ 	KVM_REG_MIPS_CP0_USERLOCAL,
  	KVM_REG_MIPS_CP0_PAGEMASK,
  	KVM_REG_MIPS_CP0_WIRED,
++	KVM_REG_MIPS_CP0_HWRENA,
  	KVM_REG_MIPS_CP0_BADVADDR,
-@@ -575,6 +576,9 @@ static int kvm_mips_get_reg(struct kvm_vcpu *vcpu,
- 	case KVM_REG_MIPS_CP0_CONTEXT:
- 		v = (long)kvm_read_c0_guest_context(cop0);
+ 	KVM_REG_MIPS_CP0_COUNT,
+ 	KVM_REG_MIPS_CP0_ENTRYHI,
+@@ -585,6 +586,9 @@ static int kvm_mips_get_reg(struct kvm_vcpu *vcpu,
+ 	case KVM_REG_MIPS_CP0_WIRED:
+ 		v = (long)kvm_read_c0_guest_wired(cop0);
  		break;
-+	case KVM_REG_MIPS_CP0_USERLOCAL:
-+		v = (long)kvm_read_c0_guest_userlocal(cop0);
++	case KVM_REG_MIPS_CP0_HWRENA:
++		v = (long)kvm_read_c0_guest_hwrena(cop0);
 +		break;
- 	case KVM_REG_MIPS_CP0_PAGEMASK:
- 		v = (long)kvm_read_c0_guest_pagemask(cop0);
+ 	case KVM_REG_MIPS_CP0_BADVADDR:
+ 		v = (long)kvm_read_c0_guest_badvaddr(cop0);
  		break;
-@@ -683,6 +687,9 @@ static int kvm_mips_set_reg(struct kvm_vcpu *vcpu,
- 	case KVM_REG_MIPS_CP0_CONTEXT:
- 		kvm_write_c0_guest_context(cop0, v);
+@@ -696,6 +700,9 @@ static int kvm_mips_set_reg(struct kvm_vcpu *vcpu,
+ 	case KVM_REG_MIPS_CP0_WIRED:
+ 		kvm_write_c0_guest_wired(cop0, v);
  		break;
-+	case KVM_REG_MIPS_CP0_USERLOCAL:
-+		kvm_write_c0_guest_userlocal(cop0, v);
++	case KVM_REG_MIPS_CP0_HWRENA:
++		kvm_write_c0_guest_hwrena(cop0, v);
 +		break;
- 	case KVM_REG_MIPS_CP0_PAGEMASK:
- 		kvm_write_c0_guest_pagemask(cop0, v);
+ 	case KVM_REG_MIPS_CP0_BADVADDR:
+ 		kvm_write_c0_guest_badvaddr(cop0, v);
  		break;
 -- 
 1.9.3

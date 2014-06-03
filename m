@@ -1,17 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:52159 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6816071AbaFCJpplsdHW (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 3 Jun 2014 11:45:45 +0200
-Message-ID: <538D9942.6010000@imgtec.com>
-Date: Tue, 3 Jun 2014 10:45:38 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+Received: from mail-bn1lp0140.outbound.protection.outlook.com ([207.46.163.140]:26363
+        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S6854770AbaFCPEmHje1v (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 3 Jun 2014 17:04:42 +0200
+Date: Tue, 3 Jun 2014 17:03:37 +0200
+From: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
+Subject: Re: [PATCH v2 09/13] MIPS: Add functions for hypervisor call
+Message-ID: <20140603150337.GA28045@alberich>
+References: <1401313936-11867-1-git-send-email-andreas.herrmann@caviumnetworks.com>
+ <1401313936-11867-10-git-send-email-andreas.herrmann@caviumnetworks.com>
+ <20140603083031.GP17197@linux-mips.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Kconfig: microMIPS and SmartMIPS are mutually exclusive
-References: <1401785177-7904-1-git-send-email-markos.chandras@imgtec.com> <20140603093434.GQ17197@linux-mips.org>
-In-Reply-To: <20140603093434.GQ17197@linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20140603083031.GP17197@linux-mips.org>
+Return-Path: <Andreas.Herrmann@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,50 +25,48 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20140603094538.fGsBc6NjWa3Rhffve-92yT-C6cnuVT1Jsvw4RAzy92k@z>
+Cc: linux-mips@linux-mips.org, David Daney <ddaney.cavm@gmail.com>, James Hogan <james.hogan@imgtec.com>, kvm@vger.kernel.org, David Daney <david.daney@cavium.com>
+Message-ID: <20140603150337.fGWfMoDdImY_nf4KtDqKvEzCrDviJEhSeSQmHBxoBHI@z>
 
-On 06/03/2014 10:34 AM, Ralf Baechle wrote:
-> On Tue, Jun 03, 2014 at 09:46:17AM +0100, Markos Chandras wrote:
+On Tue, Jun 03, 2014 at 10:30:31AM +0200, Ralf Baechle wrote:
+> On Wed, May 28, 2014 at 11:52:12PM +0200, Andreas Herrmann wrote:
 > 
->> Warning: the 32-bit microMIPS architecture does not support the `smartmips'
->> extension
->> arch/mips/kernel/entry.S:90: Error: unrecognized opcode `mtlhx $24'
->> [...]
->> arch/mips/kernel/entry.S:109: Error: unrecognized opcode `mtlhx $24'
->>
->> Link: https://dmz-portal.mips.com/bugz/show_bug.cgi?id=1021
->> Reviewed-by: Steven J. Hill <Steven.Hill@imgtec.com>
->> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
->> ---
->>  arch/mips/Kconfig | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
->> index 2fe8e60..ffde3d6 100644
->> --- a/arch/mips/Kconfig
->> +++ b/arch/mips/Kconfig
->> @@ -2063,7 +2063,7 @@ config ARCH_PHYS_ADDR_T_64BIT
->>         def_bool 64BIT_PHYS_ADDR
->>  
->>  config CPU_HAS_SMARTMIPS
->> -	depends on SYS_SUPPORTS_SMARTMIPS
->> +	depends on SYS_SUPPORTS_SMARTMIPS && !CPU_MICROMIPS
->>  	bool "Support for the SmartMIPS ASE"
->>  	help
->>  	  SmartMIPS is a extension of the MIPS32 architecture aimed at
+> > +/*
+> > + * Hypercalls for KVM.
+> > + *
+> > + * Hypercall number is passed in v0.
+> > + * Return value will be placed in v0.
+> > + * Up to 3 arguments are passed in a0, a1, and a2.
+> > + */
+> > +static inline unsigned long kvm_hypercall0(unsigned long num)
+> > +{
+> > +	register unsigned long n asm("v0");
+> > +	register unsigned long r asm("v0");
 > 
-> From a user's perspective that's a bit quirky; a user has to first
-> disable CPU_MICROMIPS before he can enable CPU_HAS_SMARTMIPS.  So I
-> think this should become a choice statement.
-> 
->   Ralf
-> 
-James (now on CC) suggested the same thing and I told him that choice
-statements make sense for symbols that are somehow related. For example
-SMVP or SMTC or no-MT. In this case, these symbols totally different so
-in my opinion a choice symbol will be rather confusing. But I will not
-object. Whatever works best.
+> Btw, is it safe to put two variables in the same register?
 
--- 
-markos
+I think it's safe.
+
+If we would have a matching constraint letter (say "v" for register v0) the
+asm should translate to
+
+        __asm__ __volatile__(
+	       KVM_HYPERCALL
+                : "=v" (n) : "v" (r) : "memory"
+                );
+
+which isn't unusual on other archs. (Or maybe I am just biased from
+x86 ... or missed something else.)
+
+> The syscall wrappers that used to be in <asm/unistd.h> were occasionally
+> hitting problems which eventually forced me to stop forcing variables
+> into particular registers instead using a MOVE instruction to shove
+> each variable into the right place.
+> 
+> Of course they were being used from non-PIC and PIC code, kernel and userland
+> so GCC had a much better chance to do evil than in the hypercall wrapper
+> case - but it made me paranoid ...
+
+
+
+Andreas

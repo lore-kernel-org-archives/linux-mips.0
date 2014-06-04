@@ -1,18 +1,12 @@
-Received: from mail-bn1lp0145.outbound.protection.outlook.com ([207.46.163.145]:38424
-        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6816900AbaFCQkMZnH4a (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 3 Jun 2014 18:40:12 +0200
-Message-ID: <538DFA61.4080100@caviumnetworks.com>
-Date: Tue, 3 Jun 2014 09:40:01 -0700
-From: David Daney <ddaney@caviumnetworks.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH v2 09/13] MIPS: Add functions for hypervisor call
-References: <1401313936-11867-1-git-send-email-andreas.herrmann@caviumnetworks.com> <1401313936-11867-10-git-send-email-andreas.herrmann@caviumnetworks.com> <20140603083031.GP17197@linux-mips.org> <20140603150337.GA28045@alberich>
-In-Reply-To: <20140603150337.GA28045@alberich>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Received: from elvis.franken.de ([193.175.24.41]:58800 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6817546AbaFDKBXA0SL9 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 4 Jun 2014 12:01:23 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH] SGI-IP22/28: Improve GIO support
+Message-ID: <20140604100037.A7F3B1D01A@solo.franken.de>
+Date: Wed,  4 Jun 2014 12:00:37 +0200 (CEST)
+Return-Path: <tsbogend@alpha.franken.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,62 +16,156 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, Ralf Baechle <ralf@linux-mips.org>, "Pinski, Andrew" <Andrew.Pinski@caviumnetworks.com>
-Cc: linux-mips@linux-mips.org, David Daney <ddaney.cavm@gmail.com>, James Hogan <james.hogan@imgtec.com>, kvm@vger.kernel.org, David Daney <david.daney@cavium.com>
-Message-ID: <20140603164001.ZNr2pbILg6lCQY_MfTIkG0G-oX-8CeCEU1R7QyF7v1s@z>
+To: linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org
+Message-ID: <20140604100037.dn8NHa5cEN6HPFeC5zxl_fGO2LM8PHdL82li6K-qLGo@z>
 
-In cases like this, I always wonder WWPD (What Would Pinski Do)...
+- added interrupt support for GIO devices
+- improved detection of GIO cards on Indigo2
+- added more known GIO cards
 
-Let's get him to opine.
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
 
-Andrew, the patch in question is:
+ arch/mips/include/asm/gio_device.h |    4 ++--
+ arch/mips/include/asm/sgi/ip22.h   |    2 ++
+ arch/mips/sgi-ip22/ip22-gio.c      |   42 ++++++++++++++++++++++++------------
+ arch/mips/sgi-ip22/ip22-int.c      |    7 +++++-
+ 4 files changed, 38 insertions(+), 17 deletions(-)
 
-http://www.linux-mips.org/archives/linux-mips/2014-05/msg00309.html
-
-Thanks,
-David Daney
-
-On 06/03/2014 08:03 AM, Andreas Herrmann wrote:
-> On Tue, Jun 03, 2014 at 10:30:31AM +0200, Ralf Baechle wrote:
->> On Wed, May 28, 2014 at 11:52:12PM +0200, Andreas Herrmann wrote:
->>
->>> +/*
->>> + * Hypercalls for KVM.
->>> + *
->>> + * Hypercall number is passed in v0.
->>> + * Return value will be placed in v0.
->>> + * Up to 3 arguments are passed in a0, a1, and a2.
->>> + */
->>> +static inline unsigned long kvm_hypercall0(unsigned long num)
->>> +{
->>> +	register unsigned long n asm("v0");
->>> +	register unsigned long r asm("v0");
->>
->> Btw, is it safe to put two variables in the same register?
->
-> I think it's safe.
->
-> If we would have a matching constraint letter (say "v" for register v0) the
-> asm should translate to
->
->          __asm__ __volatile__(
-> 	       KVM_HYPERCALL
->                  : "=v" (n) : "v" (r) : "memory"
->                  );
->
-> which isn't unusual on other archs. (Or maybe I am just biased from
-> x86 ... or missed something else.)
->
->> The syscall wrappers that used to be in <asm/unistd.h> were occasionally
->> hitting problems which eventually forced me to stop forcing variables
->> into particular registers instead using a MOVE instruction to shove
->> each variable into the right place.
->>
->> Of course they were being used from non-PIC and PIC code, kernel and userland
->> so GCC had a much better chance to do evil than in the hypercall wrapper
->> case - but it made me paranoid ...
->
->
->
-> Andreas
->
+diff --git a/arch/mips/include/asm/gio_device.h b/arch/mips/include/asm/gio_device.h
+index 0878701..4be1a57 100644
+--- a/arch/mips/include/asm/gio_device.h
++++ b/arch/mips/include/asm/gio_device.h
+@@ -50,7 +50,7 @@ static inline void gio_device_free(struct gio_device *dev)
+ extern int gio_register_driver(struct gio_driver *);
+ extern void gio_unregister_driver(struct gio_driver *);
+ 
+-#define gio_get_drvdata(_dev)	     drv_get_drvdata(&(_dev)->dev)
+-#define gio_set_drvdata(_dev, data)  drv_set_drvdata(&(_dev)->dev, (data))
++#define gio_get_drvdata(_dev)	     dev_get_drvdata(&(_dev)->dev)
++#define gio_set_drvdata(_dev, data)  dev_set_drvdata(&(_dev)->dev, (data))
+ 
+ extern void gio_set_master(struct gio_device *);
+diff --git a/arch/mips/include/asm/sgi/ip22.h b/arch/mips/include/asm/sgi/ip22.h
+index 8db1a35..87ec9ea 100644
+--- a/arch/mips/include/asm/sgi/ip22.h
++++ b/arch/mips/include/asm/sgi/ip22.h
+@@ -69,6 +69,8 @@
+ #define SGI_EISA_IRQ	SGINT_LOCAL2 + 3	/* EISA interrupts */
+ #define SGI_KEYBD_IRQ	SGINT_LOCAL2 + 4	/* keyboard */
+ #define SGI_SERIAL_IRQ	SGINT_LOCAL2 + 5	/* onboard serial */
++#define SGI_GIOEXP0_IRQ	(SGINT_LOCAL2 + 6)	/* Indy GIO EXP0 */
++#define SGI_GIOEXP1_IRQ	(SGINT_LOCAL2 + 7)	/* Indy GIO EXP1 */
+ 
+ #define ip22_is_fullhouse()	(sgioc->sysid & SGIOC_SYSID_FULLHOUSE)
+ 
+diff --git a/arch/mips/sgi-ip22/ip22-gio.c b/arch/mips/sgi-ip22/ip22-gio.c
+index ab0e379..8e52446 100644
+--- a/arch/mips/sgi-ip22/ip22-gio.c
++++ b/arch/mips/sgi-ip22/ip22-gio.c
+@@ -19,6 +19,9 @@ static struct {
+ } gio_name_table[] = {
+ 	{ .name = "SGI Impact", .id = 0x10 },
+ 	{ .name = "Phobos G160", .id = 0x35 },
++	{ .name = "Phobos G130", .id = 0x36 },
++	{ .name = "Phobos G100", .id = 0x37 },
++	{ .name = "Set Engineering GFE", .id = 0x38 },
+ 	/* fake IDs */
+ 	{ .name = "SGI Newport", .id = 0x7e },
+ 	{ .name = "SGI GR2/GR3", .id = 0x7f },
+@@ -293,7 +296,16 @@ static int ip22_gio_id(unsigned long addr, u32 *res)
+ 		 * data matches
+ 		 */
+ 		ptr8 = (void *)CKSEG1ADDR(addr + 3);
+-		get_dbe(tmp8, ptr8);
++		if (get_dbe(tmp8, ptr8)) {
++			/*
++			 * 32bit access worked, but 8bit doesn't
++			 * so we don't see phantom reads on
++			 * a pipelined bus, but a real card which
++			 * doesn't support 8 bit reads
++			 */
++			*res = tmp32;
++			return 1;
++		}
+ 		ptr16 = (void *)CKSEG1ADDR(addr + 2);
+ 		get_dbe(tmp16, ptr16);
+ 		if (tmp8 == (tmp16 & 0xff) &&
+@@ -324,7 +336,7 @@ static int ip22_is_gr2(unsigned long addr)
+ }
+ 
+ 
+-static void ip22_check_gio(int slotno, unsigned long addr)
++static void ip22_check_gio(int slotno, unsigned long addr, int irq)
+ {
+ 	const char *name = "Unknown";
+ 	struct gio_device *gio_dev;
+@@ -338,9 +350,9 @@ static void ip22_check_gio(int slotno, unsigned long addr)
+ 	else {
+ 		if (!ip22_gio_id(addr, &tmp)) {
+ 			/*
+-			 * no GIO signature at start address of slot, but
+-			 * Newport doesn't have one, so let's check usea
+-			 * status register
++			 * no GIO signature at start address of slot
++			 * since Newport doesn't have one, we check if
++			 * user status register is readable
+ 			 */
+ 			if (ip22_gio_id(addr + NEWPORT_USTATUS_OFFS, &tmp))
+ 				tmp = 0x7e;
+@@ -369,6 +381,7 @@ static void ip22_check_gio(int slotno, unsigned long addr)
+ 		gio_dev->resource.start = addr;
+ 		gio_dev->resource.end = addr + 0x3fffff;
+ 		gio_dev->resource.flags = IORESOURCE_MEM;
++		gio_dev->irq = irq;
+ 		dev_set_name(&gio_dev->dev, "%d", slotno);
+ 		gio_device_register(gio_dev);
+ 	} else
+@@ -408,16 +421,17 @@ int __init ip22_gio_init(void)
+ 		request_resource(&iomem_resource, &gio_bus_resource);
+ 		printk(KERN_INFO "GIO: Probing bus...\n");
+ 
+-		if (ip22_is_fullhouse() ||
+-		    !get_dbe(pbdma, (unsigned int *)&hpc3c1->pbdma[1])) {
+-			/* Indigo2 and ChallengeS */
+-			ip22_check_gio(0, GIO_SLOT_GFX_BASE);
+-			ip22_check_gio(1, GIO_SLOT_EXP0_BASE);
++		if (ip22_is_fullhouse()) {
++			/* Indigo2 */
++			ip22_check_gio(0, GIO_SLOT_GFX_BASE, SGI_GIO_1_IRQ);
++			ip22_check_gio(1, GIO_SLOT_EXP0_BASE, SGI_GIO_1_IRQ);
+ 		} else {
+-			/* Indy */
+-			ip22_check_gio(0, GIO_SLOT_GFX_BASE);
+-			ip22_check_gio(1, GIO_SLOT_EXP0_BASE);
+-			ip22_check_gio(2, GIO_SLOT_EXP1_BASE);
++			/* Indy/Challenge S */
++			if (get_dbe(pbdma, (unsigned int *)&hpc3c1->pbdma[1]))
++				ip22_check_gio(0, GIO_SLOT_GFX_BASE,
++					       SGI_GIO_0_IRQ);
++			ip22_check_gio(1, GIO_SLOT_EXP0_BASE, SGI_GIOEXP0_IRQ);
++			ip22_check_gio(2, GIO_SLOT_EXP1_BASE, SGI_GIOEXP1_IRQ);
+ 		}
+ 	} else
+ 		device_unregister(&gio_bus);
+diff --git a/arch/mips/sgi-ip22/ip22-int.c b/arch/mips/sgi-ip22/ip22-int.c
+index 58b40ae..c66889f 100644
+--- a/arch/mips/sgi-ip22/ip22-int.c
++++ b/arch/mips/sgi-ip22/ip22-int.c
+@@ -119,9 +119,14 @@ static void indy_local0_irqdispatch(void)
+ 	} else
+ 		irq = lc0msk_to_irqnr[mask];
+ 
+-	/* if irq == 0, then the interrupt has already been cleared */
++	/*
++	 * workaround for INT2 bug; if irq == 0, INT2 has seen a fifo full
++	 * irq, but failed to latch it into status register
++	 */
+ 	if (irq)
+ 		do_IRQ(irq);
++	else
++		do_IRQ(SGINT_LOCAL0 + 0);
+ }
+ 
+ static void indy_local1_irqdispatch(void)

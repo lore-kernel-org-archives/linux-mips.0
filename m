@@ -1,18 +1,22 @@
-Received: from mail-bn1lp0145.outbound.protection.outlook.com ([207.46.163.145]:47075
-        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S6816071AbaFDRMtzG8rJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 4 Jun 2014 19:12:49 +0200
-Message-ID: <538F5387.8000200@caviumnetworks.com>
-Date: Wed, 4 Jun 2014 10:12:39 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from trinity.fluff.org ([89.16.178.74]:46077 "EHLO trinity.fluff.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6854774AbaFHXTERnXR1 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 9 Jun 2014 01:19:04 +0200
+Date: Mon, 9 Jun 2014 00:18:23 +0100
+From: Ben Dooks <ben@trinity.fluff.org>
+Subject: Re: [PATCH 2/2] gpio: gpiolib: set gpiochip_remove retval to void
+Message-ID: <20140608231823.GB10112@trinity.fluff.org>
+References: <20140530094025.3b78301e@canb.auug.org.au>
+ <1401449454-30895-1-git-send-email-berthe.ab@gmail.com>
+ <1401449454-30895-2-git-send-email-berthe.ab@gmail.com>
+ <CAMuHMdV6AtjD2aqO3buzj8Eo7A7xc_+ROYnxEi2sdjMaqFiAuA@mail.gmail.com>
+ <5388C0F1.90503@gmail.com>
+ <5388CB1B.3090802@metafoo.de>
 MIME-Version: 1.0
-Subject: Re: [1/3] MIPS: octeon: Add interface mode detection for Octeon II
-References: <1401358203-60225-2-git-send-email-alex.smith@imgtec.com> <20140604144739.GB24816@ak-desktop.emea.nsn-net.net> <538F420A.60007@imgtec.com>
-In-Reply-To: <538F420A.60007@imgtec.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5388CB1B.3090802@metafoo.de>
+Return-Path: <ben@trinity.fluff.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,50 +26,68 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alex Smith <alex.smith@imgtec.com>
-Cc: Aaro Koskinen <aaro.koskinen@nsn.com>, David Daney <david.daney@cavium.com>, linux-mips@linux-mips.org
-Message-ID: <20140604171239._nRfYvz2bjog4lDvmyXfMthVop2vclMeRqRiIhmhRFo@z>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: David Daney <ddaney.cavm@gmail.com>, abdoulaye berthe <berthe.ab@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, m@bues.ch, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Linux-sh list <linux-sh@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, patches@opensource.wolfsonmicro.com, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, linux-samsungsoc@vger.kernel.org, spear-devel@list.st.com, platform-driver-x86@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, driverdevel <devel@driverdev.osuosl.org>
+Message-ID: <20140608231823.D0OwZ_GWfxy7EJNUesHsY0fWSQA5BRRBGCmBqBZbMd8@z>
 
-On 06/04/2014 08:58 AM, Alex Smith wrote:
-> On 04/06/14 15:47, Aaro Koskinen wrote:
->> On Thu, May 29, 2014 at 11:10:01AM +0100, Alex Smith wrote:
->>> Add interface mode detection for Octeon II. This is necessary to detect
->>> the interface modes correctly on the UBNT E200 board. Code is taken
->>> from the UBNT GPL source release, with some alterations: SRIO, ILK and
->>> RXAUI interface modes are removed and instead return disabled as these
->>> modes are not currently supported.
->>>
->>> Tested-by: David Daney <david.daney@cavium.com>
->>> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
->>
->> I tried booting ebb6800 board with these patches.
+On Fri, May 30, 2014 at 08:16:59PM +0200, Lars-Peter Clausen wrote:
+> On 05/30/2014 07:33 PM, David Daney wrote:
+> >On 05/30/2014 04:39 AM, Geert Uytterhoeven wrote:
+> >>On Fri, May 30, 2014 at 1:30 PM, abdoulaye berthe <berthe.ab@gmail.com>
+> >>wrote:
+> >>>--- a/drivers/gpio/gpiolib.c
+> >>>+++ b/drivers/gpio/gpiolib.c
+> >>>@@ -1263,10 +1263,9 @@ static void gpiochip_irqchip_remove(struct
+> >>>gpio_chip *gpiochip);
+> >>>   *
+> >>>   * A gpio_chip with any GPIOs still requested may not be removed.
+> >>>   */
+> >>>-int gpiochip_remove(struct gpio_chip *chip)
+> >>>+void gpiochip_remove(struct gpio_chip *chip)
+> >>>  {
+> >>>         unsigned long   flags;
+> >>>-       int             status = 0;
+> >>>         unsigned        id;
+> >>>
+> >>>         acpi_gpiochip_remove(chip);
+> >>>@@ -1278,24 +1277,15 @@ int gpiochip_remove(struct gpio_chip *chip)
+> >>>         of_gpiochip_remove(chip);
+> >>>
+> >>>         for (id = 0; id < chip->ngpio; id++) {
+> >>>-               if (test_bit(FLAG_REQUESTED, &chip->desc[id].flags)) {
+> >>>-                       status = -EBUSY;
+> >>>-                       break;
+> >>>-               }
+> >>>-       }
+> >>>-       if (status == 0) {
+> >>>-               for (id = 0; id < chip->ngpio; id++)
+> >>>-                       chip->desc[id].chip = NULL;
+> >>>-
+> >>>-               list_del(&chip->list);
+> >>>+               if (test_bit(FLAG_REQUESTED, &chip->desc[id].flags))
+> >>>+                       panic("gpio: removing gpiochip with gpios still
+> >>>requested\n");
+> >>
+> >>panic?
+> >
+> >NACK to the patch for this reason.  The strongest thing you should do here
+> >is WARN.
+> >
+> >That said, I am not sure why we need this whole patch set in the first place.
+> 
+> Well, what currently happens when you remove a device that is a
+> provider of a gpio_chip which is still in use, is that the kernel
+> crashes. Probably with a rather cryptic error message. So this patch
+> doesn't really change the behavior, but makes it more explicit what
+> is actually wrong. And even if you replace the panic() by a WARN()
+> it will again just crash slightly later.
+> 
+> This is a design flaw in the GPIO subsystem that needs to be fixed.
 
-There seem to be problems (I think in the interrupt controller code) for 
-cn68xx based systems in the kernel.org kernel.  So I couldn't get it to 
-boot on my ebb6800 even to the point it tries to initialize the 
-networking hardware.
+Surely then the best way is to error out to the module unload and
+stop the driver being unloaded?
 
-Therefore ...
+-- 
+Ben Dooks, ben@fluff.org, http://www.fluff.org/ben/
 
->>
->> It hangs somewhere in __cvmx_helper_xaui_enable() with XAUI port. Looking
->> at the UBNT GPL package, xaui init is quite different with 68XX specific
->> code paths.  Maybe those bits should be added too, or then disable XAUI
->> support as well?
->
-> Probably the best thing to do for now would be to disable it. Does it
-> boot successfully for you if you switch CVMX_HELPER_INTERFACE_MODE_XAUI
-> to disabled?
-
-... I don't think it matters.  The patch Alex et al. came up with is an 
-improvement over what is already there.  The fact that there are still 
-some configurations that don't work can be addressed with follow-on patches.
-
-If I misunderstand the situation, please let me know, and we can work 
-towards something better.
-
-David Daney
-
-
->
-> Alex
+Large Hadron Colada: A large Pina Colada that makes the universe disappear.

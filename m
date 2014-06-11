@@ -1,29 +1,17 @@
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:28332 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6817088AbaFJG5sgY2nt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 10 Jun 2014 08:57:48 +0200
-Received: from eucpsbgm2.samsung.com (unknown [203.254.199.245])
- by mailout1.w1.samsung.com
- (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
- 17 2011)) with ESMTP id <0N6X007HDY00ID30@mailout1.w1.samsung.com> for
- linux-mips@linux-mips.org; Tue, 10 Jun 2014 07:57:37 +0100 (BST)
-Message-ID: <5396AC5C.2080108@samsung.com>
-Date: Tue, 10 Jun 2014 08:57:32 +0200
-From: Andrzej Hajda <a.hajda@samsung.com>
-MIME-version: 1.0
-Subject: Re: [PATCH 2/2] gpio: gpiolib: set gpiochip_remove retval to void
-References: <20140530094025.3b78301e@canb.auug.org.au>
- <1401449454-30895-1-git-send-email-berthe.ab@gmail.com>
- <1401449454-30895-2-git-send-email-berthe.ab@gmail.com>
- <CAMuHMdV6AtjD2aqO3buzj8Eo7A7xc_+ROYnxEi2sdjMaqFiAuA@mail.gmail.com>
- <5388C0F1.90503@gmail.com> <5388CB1B.3090802@metafoo.de>
- <20140608231823.GB10112@trinity.fluff.org> <53959A93.7080308@metafoo.de>
- <5395B379.2010706@samsung.com>
- <063D6719AE5E284EB5DD2968C1650D6D17259A1F@AcuExch.aculab.com>
-In-reply-to: <063D6719AE5E284EB5DD2968C1650D6D17259A1F@AcuExch.aculab.com>
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 7bit
-Return-Path: <a.hajda@samsung.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13756 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6817054AbaFKKBTQpafn (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Jun 2014 12:01:19 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id A196CD3D11F59
+        for <linux-mips@linux-mips.org>; Wed, 11 Jun 2014 11:01:10 +0100 (IST)
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 1/2] MIPS: smp-cps: Convert smp_mb__after_atomic_dec()
+Date: Wed, 11 Jun 2014 11:00:56 +0100
+Message-ID: <1402480857-5907-1-git-send-email-paul.burton@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -33,50 +21,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Laight <David.Laight@ACULAB.COM>, Lars-Peter Clausen <lars@metafoo.de>, Ben Dooks <ben@trinity.fluff.org>
-Cc: driverdevel <devel@driverdev.osuosl.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "spear-devel@list.st.com" <spear-devel@list.st.com>, David Daney <ddaney.cavm@gmail.com>, Linux-sh list <linux-sh@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Linus Walleij <linus.walleij@linaro.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "m@bues.ch" <m@bues.ch>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, linux-samsung-soc@vger.kernel.org
-Message-ID: <20140610065732.5iNSZ5HEkuoACFAZj4Hng3nSqtYKJZnBfOiOigFyqi0@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20140611100056.cDP5GmQwQZO9YjHdaHTAmlDPJdf6jegvqmm4sAugzV0@z>
 
-On 06/09/2014 03:43 PM, David Laight wrote:
-> From: Of Andrzej Hajda
-> ...
->>> You can't error out on module unload, although that's not really relevant
->>> here. gpiochip_remove() is typically called when the device that registered
->>> the GPIO chip is unbound. And despite some remove() callbacks having a
->>> return type of int you can not abort the removal of a device.
->>
->> It is a design flaw in many subsystems having providers and consumers,
->> not only GPIO. The same situation is with clock providers, regulators,
->> phys, drm_panels, ..., at least it was such last time I have tested it.
->>
->> The problem is that many frameworks assumes that lifetime of provider is
->> always bigger than lifetime of its consumers, and this is wrong
->> assumption - usually it is not possible to prevent unbinding driver from
->> device, so if the device is a provider there is no way to inform
->> consumers about his removal.
->>
->> Some solution for such problems is to use some kind of availability
->> callbacks for requesting resources (gpios, clocks, regulators,...)
->> instead of simple 'getters' (clk_get, gpiod_get). Callbacks should
->> guarantee that the resource is always valid between callback reporting
->> its availability and callback reporting its removal. Such approach seems
->> to be complicated at the first sight but it should allow to make the
->> code safe and as a bonus it will allow to avoid deferred probing.
->> Btw I have send already RFC for such framework [1].
-> 
-> Callbacks for delete are generally a locking nightmare.
-> A two-way handshake is also usually needed to avoid problems
-> with concurrent disconnect requests.
+Commit 91bbefe6b0fc "arch,mips: Convert smp_mb__*()" replaced the
+smp_mb__after_atomic_dec function with smp_mb__after_atomic, whilst
+commit 1d8f1f5a780a "MIPS: smp-cps: hotplug support" introduced a new
+use of it. Replace that use with smp_mb__after_atomic in order to avoid
+a build failure:
 
-The framework I have proposed is lock-less[1] and concurrent requests
-are serialized so both objections are invalid.
+  arch/mips/kernel/smp-cps.c: In function 'cps_cpu_disable':
+  arch/mips/kernel/smp-cps.c:304:2: error: 'smp_mb__after_atomic_dec' is
+    deprecated (declared at include/linux/atomic.h:35)
+    [-Werror=deprecated-declarations]
 
-[1]: in fact the framework uses spinlock, but only to protect internal
-list simple operations, and even this could be converted to fully
-lock-less implementation.
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/kernel/smp-cps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Andrzej
-
-> 
-> 	David
-> 
+diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+index df0598d..949f2c6 100644
+--- a/arch/mips/kernel/smp-cps.c
++++ b/arch/mips/kernel/smp-cps.c
+@@ -301,7 +301,7 @@ static int cps_cpu_disable(void)
+ 
+ 	core_cfg = &mips_cps_core_bootcfg[current_cpu_data.core];
+ 	atomic_sub(1 << cpu_vpe_id(&current_cpu_data), &core_cfg->vpe_mask);
+-	smp_mb__after_atomic_dec();
++	smp_mb__after_atomic();
+ 	set_cpu_online(cpu, false);
+ 	cpu_clear(cpu, cpu_callin_map);
+ 
+-- 
+2.0.0

@@ -1,19 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:11115 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6843084AbaFKKBYycMno (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Jun 2014 12:01:24 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 0B114C59B849
-        for <linux-mips@linux-mips.org>; Wed, 11 Jun 2014 11:01:17 +0100 (IST)
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 2/2] MIPS: pm-cps: convert smp_mb__*()
-Date: Wed, 11 Jun 2014 11:00:57 +0100
-Message-ID: <1402480857-5907-2-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1402480857-5907-1-git-send-email-paul.burton@imgtec.com>
-References: <1402480857-5907-1-git-send-email-paul.burton@imgtec.com>
+Received: from mail-ve0-f171.google.com ([209.85.128.171]:53340 "EHLO
+        mail-ve0-f171.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6843091AbaFKV5ZRmvcX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Jun 2014 23:57:25 +0200
+Received: by mail-ve0-f171.google.com with SMTP id jz11so856032veb.30
+        for <linux-mips@linux-mips.org>; Wed, 11 Jun 2014 14:57:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+In-Reply-To: <CAADnVQKt5FnShkZeQewbfnU1kHM-gLs3hCZMf5xcgFzyRDLX7A@mail.gmail.com>
+References: <cover.1402517933.git.luto@amacapital.net> <9e11cd988a0f120606e37b5e275019754e2774da.1402517933.git.luto@amacapital.net>
+ <CAADnVQKt5FnShkZeQewbfnU1kHM-gLs3hCZMf5xcgFzyRDLX7A@mail.gmail.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Wed, 11 Jun 2014 14:56:58 -0700
+Message-ID: <CALCETrXoqqKC=T5Wvj+CDYQFte1s_=npDvQ2UYW0j=AanEgR1g@mail.gmail.com>
+Subject: Re: [RFC 5/5] x86,seccomp: Add a seccomp fastpath
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <luto@amacapital.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,54 +23,104 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140611100057.55z9iAE7VMnCyHnqnG7dT5XHKYpWSweLdJC3R5FcmmA@z>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Will Drewry <wad@chromium.org>, Oleg Nesterov <oleg@redhat.com>, X86 ML <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>
+Message-ID: <20140611215658.qPXjD6WTQs5up7YKDjj8NGBOB6cZZnhyjE0yuGXB6TM@z>
 
-Commit 91bbefe6b0fc "arch,mips: Convert smp_mb__*()" replaced the
-smp_mb__* functions with a simpler API, whilst commit 3179d37ee1ed
-"MIPS: pm-cps: add PM state entry code for CPS systems" introduced
-new uses of smp_mb__before_atomic_inc & smp_mb__after_clear_bit.
-Replace those calls with the corresponding before & after atomic
-functions of the new, simpler API in order to avoid a build failure:
+On Wed, Jun 11, 2014 at 2:29 PM, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> On Wed, Jun 11, 2014 at 1:23 PM, Andy Lutomirski <luto@amacapital.net> wrote:
+>> On my VM, getpid takes about 70ns.  Before this patch, adding a
+>> single-instruction always-accept seccomp filter added about 134ns of
+>> overhead to getpid.  With this patch, the overhead is down to about
+>> 13ns.
+>
+> interesting.
+> Is this the gain from patch 4 into patch 5 or from patch 0 to patch 5?
+> 13ns is still with seccomp enabled, but without filters?
 
-  arch/mips/kernel/pm-cps.c: In function 'coupled_barrier':
-  arch/mips/kernel/pm-cps.c:104:2: error: 'smp_mb__before_atomic_inc' is
-    deprecated (declared at include/linux/atomic.h:11)
-    [-Werror=deprecated-declarations]
+13ns is with the simplest nonempty filter.  I hope that empty filters
+don't work.
 
-  arch/mips/kernel/pm-cps.c: In function 'cps_pm_enter_state':
-  arch/mips/kernel/pm-cps.c:161:2: error: 'smp_mb__after_clear_bit' is
-    deprecated (declared at include/linux/bitops.h:48)
-    [-Werror=deprecated-declarations]
+>
+>> I'm not really thrilled by this patch.  It has two main issues:
+>>
+>> 1. Calling into code in kernel/seccomp.c from assembly feels ugly.
+>>
+>> 2. The x86 64-bit syscall entry now has four separate code paths:
+>> fast, seccomp only, audit only, and slow.  This kind of sucks.
+>> Would it be worth trying to rewrite the whole thing in C with a
+>> two-phase slow path approach like I'm using here for seccomp?
+>>
+>> Signed-off-by: Andy Lutomirski <luto@amacapital.net>
+>> ---
+>>  arch/x86/kernel/entry_64.S | 45 +++++++++++++++++++++++++++++++++++++++++++++
+>>  include/linux/seccomp.h    |  4 ++--
+>>  2 files changed, 47 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/kernel/entry_64.S b/arch/x86/kernel/entry_64.S
+>> index f9e713a..feb32b2 100644
+>> --- a/arch/x86/kernel/entry_64.S
+>> +++ b/arch/x86/kernel/entry_64.S
+>> @@ -683,6 +683,45 @@ sysret_signal:
+>>         FIXUP_TOP_OF_STACK %r11, -ARGOFFSET
+>>         jmp int_check_syscall_exit_work
+>>
+>> +#ifdef CONFIG_SECCOMP
+>> +       /*
+>> +        * Fast path for seccomp without any other slow path triggers.
+>> +        */
+>> +seccomp_fastpath:
+>> +       /* Build seccomp_data */
+>> +       pushq %r9                               /* args[5] */
+>> +       pushq %r8                               /* args[4] */
+>> +       pushq %r10                              /* args[3] */
+>> +       pushq %rdx                              /* args[2] */
+>> +       pushq %rsi                              /* args[1] */
+>> +       pushq %rdi                              /* args[0] */
+>> +       pushq RIP-ARGOFFSET+6*8(%rsp)           /* rip */
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/kernel/pm-cps.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>> +       pushq %rax                              /* nr and junk */
+>> +       movl $AUDIT_ARCH_X86_64, 4(%rsp)        /* arch */
 
-diff --git a/arch/mips/kernel/pm-cps.c b/arch/mips/kernel/pm-cps.c
-index 5aa4c6f..c4c2069 100644
---- a/arch/mips/kernel/pm-cps.c
-+++ b/arch/mips/kernel/pm-cps.c
-@@ -101,7 +101,7 @@ static void coupled_barrier(atomic_t *a, unsigned online)
- 	if (!coupled_coherence)
- 		return;
- 
--	smp_mb__before_atomic_inc();
-+	smp_mb__before_atomic();
- 	atomic_inc(a);
- 
- 	while (atomic_read(a) < online)
-@@ -158,7 +158,7 @@ int cps_pm_enter_state(enum cps_pm_state state)
- 
- 	/* Indicate that this CPU might not be coherent */
- 	cpumask_clear_cpu(cpu, &cpu_coherent_mask);
--	smp_mb__after_clear_bit();
-+	smp_mb__after_atomic();
- 
- 	/* Create a non-coherent mapping of the core ready_count */
- 	core_ready_count = per_cpu(ready_count, core);
--- 
-2.0.0
+It wouldn't shock me if this pair of instructions were
+microarchitecturally bad.  Maybe I can save a few more cycles by using
+bitwise arithmetic or a pair of movls and explicit rsp manipulation
+here.  I haven't tried.
+
+>> +       movq %rsp, %rdi
+>> +       call seccomp_phase1
+>
+> the assembler code is pretty much repeating what C does in
+> populate_seccomp_data(). Assuming the whole gain came from
+> patch 5 why asm version is so much faster than C?
+>
+> it skips SAVE/RESTORE_REST... what else?
+> If the most of the gain is from all patches combined (mainly from
+> 2 phase approach) then why bother with asm?
+
+The whole gain should be patch 5, but there are three things going on here.
+
+The biggest win is skipping int_ret_from_sys_call.  IRET sucks.
+There's some extra win from skipping SAVE/RESTORE_REST, but I haven't
+benchmarked that.  I would guess it's on the order of 5ns.  In theory
+a one-pass implementation could skip int_ret_from_sys_call, but that
+will be awkward to implement correctly.
+
+The other benefit is generating seccomp_data in assembly.  It saves
+about 7ns.  This is likely due to avoiding all the indirection in
+syscall_xyz and to avoiding prodding at flags to figure out the arch
+token.
+
+Fiddling with branch prediction made no difference that I could measure.
+
+>
+> Somehow it feels that the gain is due to better branch prediction
+> in asm version. If you change few 'unlikely' in C to 'likely', it may
+> get to the same performance...
+>
+> btw patches #1-3 look good to me. especially #1 is nice.
+
+Thanks :)
+
+--Andy

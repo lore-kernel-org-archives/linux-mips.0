@@ -1,9 +1,9 @@
-Received: from mail-oa0-f51.google.com ([209.85.219.51]:50038 "EHLO
-        mail-oa0-f51.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6854771AbaFMWB1VLF7W (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 14 Jun 2014 00:01:27 +0200
-Received: by mail-oa0-f51.google.com with SMTP id j17so3572468oag.10
-        for <linux-mips@linux-mips.org>; Fri, 13 Jun 2014 15:01:21 -0700 (PDT)
+Received: from mail-we0-f175.google.com ([74.125.82.175]:57037 "EHLO
+        mail-we0-f175.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6854771AbaFMW0RHZSD2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 14 Jun 2014 00:26:17 +0200
+Received: by mail-we0-f175.google.com with SMTP id k48so2618918wev.6
+        for <linux-mips@linux-mips.org>; Fri, 13 Jun 2014 15:26:11 -0700 (PDT)
 MIME-Version: 1.0
 In-Reply-To: <CALCETrVbsGjgtHtQKftxcNJB_vY5=Dd3FckW-1C9=xgdOrR6_A@mail.gmail.com>
 References: <1402457121-8410-1-git-send-email-keescook@chromium.org>
@@ -12,12 +12,12 @@ References: <1402457121-8410-1-git-send-email-keescook@chromium.org>
         <CALCETrVCJvnj9yr5yhhZTn_Gq32mgSqOhMRi16Y=_LvqGOTZ5g@mail.gmail.com>
         <CAMEtUuykiN=FvBFZLp8ieN2ymt0=opfyFee0UC9aRpcW3SQ0pg@mail.gmail.com>
         <CALCETrVbsGjgtHtQKftxcNJB_vY5=Dd3FckW-1C9=xgdOrR6_A@mail.gmail.com>
-Date: Fri, 13 Jun 2014 15:01:21 -0700
-Message-ID: <CAGXu5jJiWiXj76aevQvHhmTdhjVDZrev9ybz+XUZDKhQfJErKg@mail.gmail.com>
+Date: Fri, 13 Jun 2014 15:26:11 -0700
+Message-ID: <CAMEtUuwKNx8TfRtRx=wdy3EwsL0ioQCMxhasXbrBvrBZW+tBgg@mail.gmail.com>
 Subject: Re: [PATCH v6 6/9] seccomp: add "seccomp" syscall
-From: Kees Cook <keescook@chromium.org>
+From: Alexei Starovoitov <ast@plumgrid.com>
 Content-Type: text/plain; charset=UTF-8
-Return-Path: <keescook@google.com>
+Return-Path: <ast@plumgrid.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -28,8 +28,8 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Andy Lutomirski <luto@amacapital.net>
-Cc: Alexei Starovoitov <ast@plumgrid.com>, LKML <linux-kernel@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, Oleg Nesterov <oleg@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, John Johansen <john.johansen@canonical.com>, Andrew Morton <akpm@linux-foundation.org>, X86 ML <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>
-Message-ID: <20140613220121.i4QXXhDZYV6iKZESpqsUESd-y0hbutegBUYLixGZVfg@z>
+Cc: Kees Cook <keescook@chromium.org>, LKML <linux-kernel@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, Oleg Nesterov <oleg@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, John Johansen <john.johansen@canonical.com>, Andrew Morton <akpm@linux-foundation.org>, X86 ML <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>
+Message-ID: <20140613222611.sph_4cGMxETkef3ovWHP9uxkwloXlTCY7dbyYYTlwsY@z>
 
 On Fri, Jun 13, 2014 at 2:42 PM, Andy Lutomirski <luto@amacapital.net> wrote:
 > On Fri, Jun 13, 2014 at 2:37 PM, Alexei Starovoitov <ast@plumgrid.com> wrote:
@@ -141,27 +141,54 @@ On Fri, Jun 13, 2014 at 2:42 PM, Andy Lutomirski <luto@amacapital.net> wrote:
 > The "tsync" operation would be seccomp_add_filter(NULL,
 > SECCOMP_ADD_FILTER_TSYNC) -- it's equivalent to adding an
 > always-accept filter and syncing threads.
-
-I think you convinced me that tsync should be part of adding a filter
-(since now there are no failure side-effects), so this specific
-example I would expect EFAULT from. But ...
-
 >
 > But, frankly, this kind of stuff should probably be "do operation X".
 > IIUC nl_attr is more like "do something, with these tags and values",
 > which results in oddities like whatever should happen of more than one
 > tag is set.
 
-I have no objection to eliminating seccomp-strict from the syscall,
-and just making this the "add seccomp filter" syscall. My only
-hesitation would be that if we need something besides adding a filter
-in the future, we'd be back to extending this awkwardly or adding
-another syscall. That's why I went with the "operation" argument. I'm
-not opposed to passing attrs and len, but seccomp_add_filter does feel
-cleaner.
-
--Kees
-
--- 
-Kees Cook
-Chrome OS Security
+TLV is a price of extensibility vs simplicity.
+Say we have a syscall_foo(struct XX __user *x); that takes
+struct XX {
+  int flag;
+  int var1;
+};
+now we want to add another variable to the structure that will be used
+only when certain flag is set. You cannot do it easily without
+breaking old user binaries, since new structure will be:
+struct XX2 {
+  int flag;
+  int var1;
+  int var2;
+};
+if we do copy_from_user(,, sizeof(struct XX2)) it will brake old programs.
+Potentially we can do it the ugly way:
+copy_from_user(,, sizeof(struct XX)), then check flag and do another
+copy_from_user(,, sizeof(struct XX2)) just to fetch extra argument.
+but then another day passes and yet another new flag means that both
+var1 and var2 are unused and it needs 'u64 var3' instead.
+Now kernel looks very ugly by doing multiple copy_from_user() of different
+structures.
+It would be much cleaner with nlattr:
+syscall_foo(struct nlattr *attrs, int len);
+kernel fetches 'len' bytes onces and then picks var[123] fields from nlattr
+array. In other words nlattr array is a way to represent flexible structure
+where fields can come and go in the future.
+This was a simple example. Consider the case where var1 and var2
+are arrays of things.
+imo the old:
+struct sock_fprog {
+        unsigned short          len;    /* Number of filter blocks */
+        struct sock_filter __user *filter;
+};
+is the example of inflexible user interface.
+It could have been single 'struct nlattr'
+nlattr->nla_len == length of filter program in bytes
+nlattr->nla_type == ARRAY_OF_SOCK_FILTER constant
+nla_data(nlattr) - variable length array of 'struct sock_filter' bpf
+instructions.
+Right now I'd like to extend it for the work I'm doing around eBPF, but
+I cannot, since it's rigid. If it was TLV, I could have easily added new flags,
+new types, new sections to bpf programs.
+For user space it would have been just as easy to populate such
+'struct nlattr' as to populate 'struct sock_fprog'.

@@ -1,23 +1,19 @@
-Received: from mail-we0-f175.google.com ([74.125.82.175]:57037 "EHLO
-        mail-we0-f175.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6854771AbaFMW0RHZSD2 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 14 Jun 2014 00:26:17 +0200
-Received: by mail-we0-f175.google.com with SMTP id k48so2618918wev.6
-        for <linux-mips@linux-mips.org>; Fri, 13 Jun 2014 15:26:11 -0700 (PDT)
+Received: from mail-qc0-f169.google.com ([209.85.216.169]:48161 "EHLO
+        mail-qc0-f169.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6859963AbaFPGJGOBp8N (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 16 Jun 2014 08:09:06 +0200
+Received: by mail-qc0-f169.google.com with SMTP id c9so7314788qcz.0
+        for <linux-mips@linux-mips.org>; Sun, 15 Jun 2014 23:09:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALCETrVbsGjgtHtQKftxcNJB_vY5=Dd3FckW-1C9=xgdOrR6_A@mail.gmail.com>
-References: <1402457121-8410-1-git-send-email-keescook@chromium.org>
-        <1402457121-8410-7-git-send-email-keescook@chromium.org>
-        <CAMEtUuwKRUYN_qdnCj42G3Z1UT3vMYPoJqXd2_PjV+_J3WA+8w@mail.gmail.com>
-        <CALCETrVCJvnj9yr5yhhZTn_Gq32mgSqOhMRi16Y=_LvqGOTZ5g@mail.gmail.com>
-        <CAMEtUuykiN=FvBFZLp8ieN2ymt0=opfyFee0UC9aRpcW3SQ0pg@mail.gmail.com>
-        <CALCETrVbsGjgtHtQKftxcNJB_vY5=Dd3FckW-1C9=xgdOrR6_A@mail.gmail.com>
-Date: Fri, 13 Jun 2014 15:26:11 -0700
-Message-ID: <CAMEtUuwKNx8TfRtRx=wdy3EwsL0ioQCMxhasXbrBvrBZW+tBgg@mail.gmail.com>
+Reply-To: mtk.manpages@gmail.com
+In-Reply-To: <1402457121-8410-7-git-send-email-keescook@chromium.org>
+References: <1402457121-8410-1-git-send-email-keescook@chromium.org> <1402457121-8410-7-git-send-email-keescook@chromium.org>
+From: "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date: Mon, 16 Jun 2014 08:08:39 +0200
+Message-ID: <CAKgNAkjWgFBUhMx=-2a5LN28OJb76A=B_ZXm5ADkBGOxL8vw0g@mail.gmail.com>
 Subject: Re: [PATCH v6 6/9] seccomp: add "seccomp" syscall
-From: Alexei Starovoitov <ast@plumgrid.com>
 Content-Type: text/plain; charset=UTF-8
-Return-Path: <ast@plumgrid.com>
+Return-Path: <mtk.manpages@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,168 +23,270 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Kees Cook <keescook@chromium.org>, LKML <linux-kernel@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, Oleg Nesterov <oleg@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, John Johansen <john.johansen@canonical.com>, Andrew Morton <akpm@linux-foundation.org>, X86 ML <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>
-Message-ID: <20140613222611.sph_4cGMxETkef3ovWHP9uxkwloXlTCY7dbyYYTlwsY@z>
+To: Kees Cook <keescook@chromium.org>
+Cc: lkml <linux-kernel@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Oleg Nesterov <oleg@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Alexei Starovoitov <ast@plumgrid.com>, John Johansen <john.johansen@canonical.com>, Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, linux-arch@vger.kernel.org, "linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>
+Message-ID: <20140616060839.q1RvyxKYR-X5f8Aj--ZTsuFQh9VM1tNYLYfY6YPFS0o@z>
 
-On Fri, Jun 13, 2014 at 2:42 PM, Andy Lutomirski <luto@amacapital.net> wrote:
-> On Fri, Jun 13, 2014 at 2:37 PM, Alexei Starovoitov <ast@plumgrid.com> wrote:
->> On Fri, Jun 13, 2014 at 2:25 PM, Andy Lutomirski <luto@amacapital.net> wrote:
->>> On Fri, Jun 13, 2014 at 2:22 PM, Alexei Starovoitov <ast@plumgrid.com> wrote:
->>>> On Tue, Jun 10, 2014 at 8:25 PM, Kees Cook <keescook@chromium.org> wrote:
->>>>> This adds the new "seccomp" syscall with both an "operation" and "flags"
->>>>> parameter for future expansion. The third argument is a pointer value,
->>>>> used with the SECCOMP_SET_MODE_FILTER operation. Currently, flags must
->>>>> be 0. This is functionally equivalent to prctl(PR_SET_SECCOMP, ...).
->>>>>
->>>>> Signed-off-by: Kees Cook <keescook@chromium.org>
->>>>> Cc: linux-api@vger.kernel.org
->>>>> ---
->>>>>  arch/x86/syscalls/syscall_32.tbl  |    1 +
->>>>>  arch/x86/syscalls/syscall_64.tbl  |    1 +
->>>>>  include/linux/syscalls.h          |    2 ++
->>>>>  include/uapi/asm-generic/unistd.h |    4 ++-
->>>>>  include/uapi/linux/seccomp.h      |    4 +++
->>>>>  kernel/seccomp.c                  |   63 ++++++++++++++++++++++++++++++++-----
->>>>>  kernel/sys_ni.c                   |    3 ++
->>>>>  7 files changed, 69 insertions(+), 9 deletions(-)
->>>>>
->>>>> diff --git a/arch/x86/syscalls/syscall_32.tbl b/arch/x86/syscalls/syscall_32.tbl
->>>>> index d6b867921612..7527eac24122 100644
->>>>> --- a/arch/x86/syscalls/syscall_32.tbl
->>>>> +++ b/arch/x86/syscalls/syscall_32.tbl
->>>>> @@ -360,3 +360,4 @@
->>>>>  351    i386    sched_setattr           sys_sched_setattr
->>>>>  352    i386    sched_getattr           sys_sched_getattr
->>>>>  353    i386    renameat2               sys_renameat2
->>>>> +354    i386    seccomp                 sys_seccomp
->>>>> diff --git a/arch/x86/syscalls/syscall_64.tbl b/arch/x86/syscalls/syscall_64.tbl
->>>>> index ec255a1646d2..16272a6c12b7 100644
->>>>> --- a/arch/x86/syscalls/syscall_64.tbl
->>>>> +++ b/arch/x86/syscalls/syscall_64.tbl
->>>>> @@ -323,6 +323,7 @@
->>>>>  314    common  sched_setattr           sys_sched_setattr
->>>>>  315    common  sched_getattr           sys_sched_getattr
->>>>>  316    common  renameat2               sys_renameat2
->>>>> +317    common  seccomp                 sys_seccomp
->>>>>
->>>>>  #
->>>>>  # x32-specific system call numbers start at 512 to avoid cache impact
->>>>> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
->>>>> index b0881a0ed322..1713977ee26f 100644
->>>>> --- a/include/linux/syscalls.h
->>>>> +++ b/include/linux/syscalls.h
->>>>> @@ -866,4 +866,6 @@ asmlinkage long sys_process_vm_writev(pid_t pid,
->>>>>  asmlinkage long sys_kcmp(pid_t pid1, pid_t pid2, int type,
->>>>>                          unsigned long idx1, unsigned long idx2);
->>>>>  asmlinkage long sys_finit_module(int fd, const char __user *uargs, int flags);
->>>>> +asmlinkage long sys_seccomp(unsigned int op, unsigned int flags,
->>>>> +                           const char __user *uargs);
->>>>
->>>> It looks odd to add 'flags' argument to syscall that is not even used.
->>>> It don't think it will be extensible this way.
->>>> 'uargs' is used only in 2nd command as well and it's not 'char __user *'
->>>> but rather 'struct sock_fprog __user *'
->>>> I think it makes more sense to define only first argument as 'int op' and the
->>>> rest as variable length array.
->>>> Something like:
->>>> long sys_seccomp(unsigned int op, struct nlattr *attrs, int len);
->>>> then different commands can interpret 'attrs' differently.
->>>> if op == mode_strict, then attrs == NULL, len == 0
->>>> if op == mode_filter, then attrs->nla_type == seccomp_bpf_filter
->>>> and nla_data(attrs) is 'struct sock_fprog'
->>>
->>> Eww.  If the operation doesn't imply the type, then I think we've
->>> totally screwed up.
->>>
->>>> If we decide to add new types of filters or new commands, the syscall prototype
->>>> won't need to change. New commands can be added preserving backward
->>>> compatibility.
->>>> The basic TLV concept has been around forever in netlink world. imo makes
->>>> sense to use it with new syscalls. Passing 'struct xxx' into syscalls
->>>> is the thing
->>>> of the past. TLV style is more extensible. Fields of structures can become
->>>> optional in the future, new fields added, etc.
->>>> 'struct nlattr' brings the same benefits to kernel api as protobuf did
->>>> to user land.
->>>
->>> I see no reason to bring nl_attr into this.
->>>
->>> Admittedly, I've never dealt with nl_attr, but everything
->>> netlink-related I've even been involved in has involved some sort of
->>> API atrocity.
->>
->> netlink has a lot of legacy and there is genetlink which is not pretty
->> either because of extra socket creation, binding, dealing with packet
->> loss issues, but the key concept of variable length encoding is sound.
->> Right now seccomp has two commands and they already don't fit
->> into single syscall neatly. Are you saying there should be two syscalls
->> here? What about another seccomp related command? Another syscall?
->> imo all seccomp related commands needs to be mux/demux-ed under
->> one syscall. What is the way to mux/demux potentially very different
->> commands under one syscall? I cannot think of anything better than
->> TLV style. 'struct nlattr' is what we have today and I think it works fine.
->> I'm not suggesting to bring the whole netlink into the picture, but rather
->> TLV style of encoding different arguments for different commands.
->
-> I'm unconvinced.  These are simple commands, and I think the interface
-> should be simple.  Syscalls are cheap.
->
-> As an example, the interface could be:
->
-> int seccomp_add_filter(const struct sock_fprog *filter, unsigned int flags);
->
-> The "tsync" operation would be seccomp_add_filter(NULL,
-> SECCOMP_ADD_FILTER_TSYNC) -- it's equivalent to adding an
-> always-accept filter and syncing threads.
->
-> But, frankly, this kind of stuff should probably be "do operation X".
-> IIUC nl_attr is more like "do something, with these tags and values",
-> which results in oddities like whatever should happen of more than one
-> tag is set.
+Hi Kees,
 
-TLV is a price of extensibility vs simplicity.
-Say we have a syscall_foo(struct XX __user *x); that takes
-struct XX {
-  int flag;
-  int var1;
-};
-now we want to add another variable to the structure that will be used
-only when certain flag is set. You cannot do it easily without
-breaking old user binaries, since new structure will be:
-struct XX2 {
-  int flag;
-  int var1;
-  int var2;
-};
-if we do copy_from_user(,, sizeof(struct XX2)) it will brake old programs.
-Potentially we can do it the ugly way:
-copy_from_user(,, sizeof(struct XX)), then check flag and do another
-copy_from_user(,, sizeof(struct XX2)) just to fetch extra argument.
-but then another day passes and yet another new flag means that both
-var1 and var2 are unused and it needs 'u64 var3' instead.
-Now kernel looks very ugly by doing multiple copy_from_user() of different
-structures.
-It would be much cleaner with nlattr:
-syscall_foo(struct nlattr *attrs, int len);
-kernel fetches 'len' bytes onces and then picks var[123] fields from nlattr
-array. In other words nlattr array is a way to represent flexible structure
-where fields can come and go in the future.
-This was a simple example. Consider the case where var1 and var2
-are arrays of things.
-imo the old:
-struct sock_fprog {
-        unsigned short          len;    /* Number of filter blocks */
-        struct sock_filter __user *filter;
-};
-is the example of inflexible user interface.
-It could have been single 'struct nlattr'
-nlattr->nla_len == length of filter program in bytes
-nlattr->nla_type == ARRAY_OF_SOCK_FILTER constant
-nla_data(nlattr) - variable length array of 'struct sock_filter' bpf
-instructions.
-Right now I'd like to extend it for the work I'm doing around eBPF, but
-I cannot, since it's rigid. If it was TLV, I could have easily added new flags,
-new types, new sections to bpf programs.
-For user space it would have been just as easy to populate such
-'struct nlattr' as to populate 'struct sock_fprog'.
+On Wed, Jun 11, 2014 at 5:25 AM, Kees Cook <keescook@chromium.org> wrote:
+> This adds the new "seccomp" syscall with both an "operation" and "flags"
+> parameter for future expansion. The third argument is a pointer value,
+> used with the SECCOMP_SET_MODE_FILTER operation. Currently, flags must
+> be 0. This is functionally equivalent to prctl(PR_SET_SECCOMP, ...).
+
+I assume there'll be another iteration of these patches. With that
+next iteration, could you write a man page (or at least free text
+structured like a man page) that comprehensively documents the
+user-space API?
+
+Thanks,
+
+Michael
+
+
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Cc: linux-api@vger.kernel.org
+> ---
+>  arch/x86/syscalls/syscall_32.tbl  |    1 +
+>  arch/x86/syscalls/syscall_64.tbl  |    1 +
+>  include/linux/syscalls.h          |    2 ++
+>  include/uapi/asm-generic/unistd.h |    4 ++-
+>  include/uapi/linux/seccomp.h      |    4 +++
+>  kernel/seccomp.c                  |   63 ++++++++++++++++++++++++++++++++-----
+>  kernel/sys_ni.c                   |    3 ++
+>  7 files changed, 69 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/x86/syscalls/syscall_32.tbl b/arch/x86/syscalls/syscall_32.tbl
+> index d6b867921612..7527eac24122 100644
+> --- a/arch/x86/syscalls/syscall_32.tbl
+> +++ b/arch/x86/syscalls/syscall_32.tbl
+> @@ -360,3 +360,4 @@
+>  351    i386    sched_setattr           sys_sched_setattr
+>  352    i386    sched_getattr           sys_sched_getattr
+>  353    i386    renameat2               sys_renameat2
+> +354    i386    seccomp                 sys_seccomp
+> diff --git a/arch/x86/syscalls/syscall_64.tbl b/arch/x86/syscalls/syscall_64.tbl
+> index ec255a1646d2..16272a6c12b7 100644
+> --- a/arch/x86/syscalls/syscall_64.tbl
+> +++ b/arch/x86/syscalls/syscall_64.tbl
+> @@ -323,6 +323,7 @@
+>  314    common  sched_setattr           sys_sched_setattr
+>  315    common  sched_getattr           sys_sched_getattr
+>  316    common  renameat2               sys_renameat2
+> +317    common  seccomp                 sys_seccomp
+>
+>  #
+>  # x32-specific system call numbers start at 512 to avoid cache impact
+> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+> index b0881a0ed322..1713977ee26f 100644
+> --- a/include/linux/syscalls.h
+> +++ b/include/linux/syscalls.h
+> @@ -866,4 +866,6 @@ asmlinkage long sys_process_vm_writev(pid_t pid,
+>  asmlinkage long sys_kcmp(pid_t pid1, pid_t pid2, int type,
+>                          unsigned long idx1, unsigned long idx2);
+>  asmlinkage long sys_finit_module(int fd, const char __user *uargs, int flags);
+> +asmlinkage long sys_seccomp(unsigned int op, unsigned int flags,
+> +                           const char __user *uargs);
+>  #endif
+> diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+> index 333640608087..65acbf0e2867 100644
+> --- a/include/uapi/asm-generic/unistd.h
+> +++ b/include/uapi/asm-generic/unistd.h
+> @@ -699,9 +699,11 @@ __SYSCALL(__NR_sched_setattr, sys_sched_setattr)
+>  __SYSCALL(__NR_sched_getattr, sys_sched_getattr)
+>  #define __NR_renameat2 276
+>  __SYSCALL(__NR_renameat2, sys_renameat2)
+> +#define __NR_seccomp 277
+> +__SYSCALL(__NR_seccomp, sys_seccomp)
+>
+>  #undef __NR_syscalls
+> -#define __NR_syscalls 277
+> +#define __NR_syscalls 278
+>
+>  /*
+>   * All syscalls below here should go away really,
+> diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
+> index ac2dc9f72973..b258878ba754 100644
+> --- a/include/uapi/linux/seccomp.h
+> +++ b/include/uapi/linux/seccomp.h
+> @@ -10,6 +10,10 @@
+>  #define SECCOMP_MODE_STRICT    1 /* uses hard-coded filter. */
+>  #define SECCOMP_MODE_FILTER    2 /* uses user-supplied filter. */
+>
+> +/* Valid operations for seccomp syscall. */
+> +#define SECCOMP_SET_MODE_STRICT        0
+> +#define SECCOMP_SET_MODE_FILTER        1
+> +
+>  /*
+>   * All BPF programs must return a 32-bit value.
+>   * The bottom 16-bits are for optional return data.
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 39d32c2904fc..c0cafa9e84af 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/sched.h>
+>  #include <linux/seccomp.h>
+>  #include <linux/slab.h>
+> +#include <linux/syscalls.h>
+>
+>  /* #define SECCOMP_DEBUG 1 */
+>
+> @@ -301,8 +302,8 @@ free_prog:
+>   *
+>   * Returns filter on success and ERR_PTR otherwise.
+>   */
+> -static
+> -struct seccomp_filter *seccomp_prepare_user_filter(char __user *user_filter)
+> +static struct seccomp_filter *
+> +seccomp_prepare_user_filter(const char __user *user_filter)
+>  {
+>         struct sock_fprog fprog;
+>         struct seccomp_filter *filter = ERR_PTR(-EFAULT);
+> @@ -325,19 +326,25 @@ out:
+>
+>  /**
+>   * seccomp_attach_filter: validate and attach filter
+> + * @flags:  flags to change filter behavior
+>   * @filter: seccomp filter to add to the current process
+>   *
+>   * Caller must be holding current->sighand->siglock lock.
+>   *
+>   * Returns 0 on success, -ve on error.
+>   */
+> -static long seccomp_attach_filter(struct seccomp_filter *filter)
+> +static long seccomp_attach_filter(unsigned int flags,
+> +                                 struct seccomp_filter *filter)
+>  {
+>         unsigned long total_insns;
+>         struct seccomp_filter *walker;
+>
+>         BUG_ON(!spin_is_locked(&current->sighand->siglock));
+>
+> +       /* Validate flags. */
+> +       if (flags != 0)
+> +               return -EINVAL;
+> +
+>         /* Validate resulting filter length. */
+>         total_insns = filter->len;
+>         for (walker = current->seccomp.filter; walker; walker = filter->prev)
+> @@ -541,6 +548,7 @@ out:
+>  #ifdef CONFIG_SECCOMP_FILTER
+>  /**
+>   * seccomp_set_mode_filter: internal function for setting seccomp filter
+> + * @flags:  flags to change filter behavior
+>   * @filter: struct sock_fprog containing filter
+>   *
+>   * This function may be called repeatedly to install additional filters.
+> @@ -551,7 +559,8 @@ out:
+>   *
+>   * Returns 0 on success or -EINVAL on failure.
+>   */
+> -static long seccomp_set_mode_filter(char __user *filter)
+> +static long seccomp_set_mode_filter(unsigned int flags,
+> +                                   const char __user *filter)
+>  {
+>         const unsigned long seccomp_mode = SECCOMP_MODE_FILTER;
+>         struct seccomp_filter *prepared = NULL;
+> @@ -569,7 +578,7 @@ static long seccomp_set_mode_filter(char __user *filter)
+>         if (!seccomp_check_mode(current, seccomp_mode))
+>                 goto out;
+>
+> -       ret = seccomp_attach_filter(prepared);
+> +       ret = seccomp_attach_filter(flags, prepared);
+>         if (ret)
+>                 goto out;
+>         /* Do not free the successfully attached filter. */
+> @@ -583,12 +592,35 @@ out_free:
+>         return ret;
+>  }
+>  #else
+> -static inline long seccomp_set_mode_filter(char __user *filter)
+> +static inline long seccomp_set_mode_filter(unsigned int flags,
+> +                                          const char __user *filter)
+>  {
+>         return -EINVAL;
+>  }
+>  #endif
+>
+> +/* Common entry point for both prctl and syscall. */
+> +static long do_seccomp(unsigned int op, unsigned int flags,
+> +                      const char __user *uargs)
+> +{
+> +       switch (op) {
+> +       case SECCOMP_SET_MODE_STRICT:
+> +               if (flags != 0 || uargs != NULL)
+> +                       return -EINVAL;
+> +               return seccomp_set_mode_strict();
+> +       case SECCOMP_SET_MODE_FILTER:
+> +               return seccomp_set_mode_filter(flags, uargs);
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +}
+> +
+> +SYSCALL_DEFINE3(seccomp, unsigned int, op, unsigned int, flags,
+> +                        const char __user *, uargs)
+> +{
+> +       return do_seccomp(op, flags, uargs);
+> +}
+> +
+>  /**
+>   * prctl_set_seccomp: configures current->seccomp.mode
+>   * @seccomp_mode: requested mode to use
+> @@ -598,12 +630,27 @@ static inline long seccomp_set_mode_filter(char __user *filter)
+>   */
+>  long prctl_set_seccomp(unsigned long seccomp_mode, char __user *filter)
+>  {
+> +       unsigned int op;
+> +       char __user *uargs;
+> +
+>         switch (seccomp_mode) {
+>         case SECCOMP_MODE_STRICT:
+> -               return seccomp_set_mode_strict();
+> +               op = SECCOMP_SET_MODE_STRICT;
+> +               /*
+> +                * Setting strict mode through prctl always ignored filter,
+> +                * so make sure it is always NULL here to pass the internal
+> +                * check in do_seccomp().
+> +                */
+> +               uargs = NULL;
+> +               break;
+>         case SECCOMP_MODE_FILTER:
+> -               return seccomp_set_mode_filter(filter);
+> +               op = SECCOMP_SET_MODE_FILTER;
+> +               uargs = filter;
+> +               break;
+>         default:
+>                 return -EINVAL;
+>         }
+> +
+> +       /* prctl interface doesn't have flags, so they are always zero. */
+> +       return do_seccomp(op, 0, uargs);
+>  }
+> diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
+> index 36441b51b5df..2904a2105914 100644
+> --- a/kernel/sys_ni.c
+> +++ b/kernel/sys_ni.c
+> @@ -213,3 +213,6 @@ cond_syscall(compat_sys_open_by_handle_at);
+>
+>  /* compare kernel pointers */
+>  cond_syscall(sys_kcmp);
+> +
+> +/* operate on Secure Computing state */
+> +cond_syscall(sys_seccomp);
+> --
+> 1.7.9.5
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-api" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/

@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24897 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860419AbaFQJkjFSORf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Jun 2014 11:40:39 +0200
-From: Alex Smith <alex.smith@imgtec.com>
-Subject: [PATCH] recordmcount/MIPS: Fix possible incorrect mcount_loc table entries in modules
-Date: Tue, 17 Jun 2014 10:39:53 +0100
-Message-ID: <1402997993-53577-1-git-send-email-alex.smith@imgtec.com>
+Received: from relay1.mentorg.com ([192.94.38.131]:33699 "EHLO
+        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6862060AbaFQPD1Rnoqw (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Jun 2014 17:03:27 +0200
+Date: Tue, 17 Jun 2014 15:03:15 +0000
+From: "Joseph S. Myers" <joseph@codesourcery.com>
+Subject: MIPS MSA sigcontext changes in 3.15
+Message-ID: <Pine.LNX.4.64.1406171447030.23412@digraph.polyomino.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Alex.Smith@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <joseph_myers@mentor.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,60 +18,25 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Alex Smith <alex.smith@imgtec.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Message-ID: <20140617093953.nZi7-BENTWt8Kom7Y4LoUa_MY3OJtEQ8atEWrAUvzZM@z>
+To: linux-mips@linux-mips.org, libc-alpha@sourceware.org, linux-api@vger.kernel.org
+Message-ID: <20140617150315.jxcLt-o4lIcKW_De3rfapheKtWHIm2iRZOUdukeINdw@z>
 
-On MIPS calls to _mcount in modules generate 2 instructions to load
-the _mcount address (and therefore 2 relocations). The mcount_loc
-table should only reference the first of these, so the second is
-filtered out by checking the relocation offset and ignoring ones that
-immediately follow the previous one seen.
+Reviewing changes in Linux 3.15 for anything for which glibc changes would 
+be appropriate, I don't see how the MSA sigcontext changes are supposed to 
+work with existing binaries.
 
-However if a module has an _mcount call at offset 0, the second
-relocation would not be filtered out due to old_r_offset == 0
-being taken to mean that the current relocation is the first one
-seen, and both would end up in the mcount_loc table.
+The sigcontext structure isn't used on its own - it's part of ucontext, 
+which is passed to signal handlers, and it's not at the end of ucontext, 
+but followed by the signal mask.  So existing binaries will expect the 
+signal mask at a particular offset in the ucontext.  As far as I can see, 
+extending sigcontext requires a new sigaction flag that could be used to 
+opt in, for a particular signal handler, to receiving the new-layout 
+ucontext (so new symbol versions of sigaction in glibc could then pass 
+that flag to the kernel, but existing binaries would continue to get 
+old-layout ucontext from the kernel), or else putting the new data at the 
+end of ucontext rather than in the main sigcontext structure (though I 
+don't know if that would have other issues).
 
-This results in ftrace_make_nop() patching both (adjacent)
-instructions to branches over the _mcount call sequence like so:
-
-  0xffffffffc08a8000:  04 00 00 10     b       0xffffffffc08a8014
-  0xffffffffc08a8004:  04 00 00 10     b       0xffffffffc08a8018
-  0xffffffffc08a8008:  2d 08 e0 03     move    at,ra
-  ...
-
-The second branch is in the delay slot of the first, which is
-defined to be unpredictable - on the platform on which this bug was
-encountered, it triggers a reserved instruction exception.
-
-Fix by initializing old_r_offset to ~0 and using that instead of 0
-to determine whether the current relocation is the first seen.
-
-Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
----
- scripts/recordmcount.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-index 9d1421e63ff8..49b582a225b0 100644
---- a/scripts/recordmcount.h
-+++ b/scripts/recordmcount.h
-@@ -163,11 +163,11 @@ static int mcount_adjust = 0;
- 
- static int MIPS_is_fake_mcount(Elf_Rel const *rp)
- {
--	static Elf_Addr old_r_offset;
-+	static Elf_Addr old_r_offset = ~(Elf_Addr)0;
- 	Elf_Addr current_r_offset = _w(rp->r_offset);
- 	int is_fake;
- 
--	is_fake = old_r_offset &&
-+	is_fake = (old_r_offset != ~(Elf_Addr)0) &&
- 		(current_r_offset - old_r_offset == MIPS_FAKEMCOUNT_OFFSET);
- 	old_r_offset = current_r_offset;
- 
 -- 
-2.0.0
+Joseph S. Myers
+joseph@codesourcery.com

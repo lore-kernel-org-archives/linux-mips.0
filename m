@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53895 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:24897 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6859971AbaFPQ3uUH1B1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 16 Jun 2014 18:29:50 +0200
-Message-ID: <539F1B76.8090601@imgtec.com>
-Date: Mon, 16 Jun 2014 17:29:42 +0100
-From: James Hogan <james.hogan@imgtec.com>
+        with ESMTP id S6860419AbaFQJkjFSORf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Jun 2014 11:40:39 +0200
+From: Alex Smith <alex.smith@imgtec.com>
+Subject: [PATCH] recordmcount/MIPS: Fix possible incorrect mcount_loc table entries in modules
+Date: Tue, 17 Jun 2014 10:39:53 +0100
+Message-ID: <1402997993-53577-1-git-send-email-alex.smith@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 00/23] MIPS: KVM: Fixes and guest timer rewrite
-References: <1401355005-20370-1-git-send-email-james.hogan@imgtec.com> <53870DAD.7050900@redhat.com> <53874719.5070604@imgtec.com> <538750F8.7040202@redhat.com> <53875FEE.1020607@imgtec.com> <53876850.20600@redhat.com> <53879C3E.3040102@imgtec.com> <538839DE.3000804@redhat.com>
-In-Reply-To: <538839DE.3000804@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 7bit
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Alex.Smith@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,60 +18,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, Gleb Natapov <gleb@kernel.org>, kvm@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Sanjay Lal <sanjayl@kymasys.com>
-Message-ID: <20140616162942.KzTvp1HWeyQGMmjMqwW3kM1QFGokItT2oluFRPxD4eE@z>
+To: linux-mips@linux-mips.org
+Cc: Alex Smith <alex.smith@imgtec.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Message-ID: <20140617093953.nZi7-BENTWt8Kom7Y4LoUa_MY3OJtEQ8atEWrAUvzZM@z>
 
-On 30/05/14 08:57, Paolo Bonzini wrote:
-> Il 29/05/2014 22:44, James Hogan ha scritto:
->> Yes, I agree with your analysis and had considered something like this,
->> although it doesn't particularly appeal to my sense of perfectionism :).
-> 
-> I can see that.  But I think the simplification of the code is worth it.
-> 
-> It is hard to explain why the invalid times-goes-backwards case can
-> happen if env->count_save_time is overwritten with data from another
-> machine.  I think the explanation is that (due to
-> timers_state.cpu_ticks_enabled) the value of "cpu_get_clock_at(now) -
-> env->count_save_time" does not depend on get_clock(), but the code
-> doesn't have any comment for that.
+On MIPS calls to _mcount in modules generate 2 instructions to load
+the _mcount address (and therefore 2 relocations). The mcount_loc
+table should only reference the first of these, so the second is
+filtered out by checking the relocation offset and ignoring ones that
+immediately follow the previous one seen.
 
-Exactly. I think of it in terms of count_save_time being in the time
-frame of the vm clock, which is also migrated.
+However if a module has an _mcount call at offset 0, the second
+relocation would not be filtered out due to old_r_offset == 0
+being taken to mean that the current relocation is the first one
+seen, and both would end up in the mcount_loc table.
 
-In fact since the VM clock is stopped during migration, the
-saved/restored count_save_time will likely be the same as the saved vm
-clock, so the delta calculated above at restore time is the time since
-the vm clock was resumed.
+This results in ftrace_make_nop() patching both (adjacent)
+instructions to branches over the _mcount call sequence like so:
 
-> Rather than adding comments, we might as well force it to be always zero
-> and just write get_clock() to COUNT_RESUME.
-> 
-> Finally, having to serialize env->count_save_time makes harder to
-> support migration from TCG to KVM and back.
+  0xffffffffc08a8000:  04 00 00 10     b       0xffffffffc08a8014
+  0xffffffffc08a8004:  04 00 00 10     b       0xffffffffc08a8018
+  0xffffffffc08a8008:  2d 08 e0 03     move    at,ra
+  ...
 
-Yes, I'm not keen on that bit of code.
+The second branch is in the delay slot of the first, which is
+defined to be unpredictable - on the platform on which this bug was
+encountered, it triggers a reserved instruction exception.
 
-> 
->> It would be race free though, and if you're stopping the VM at all you
->> expect to lose some time anyway.
-> 
-> Since you mentioned perfectionism, :) your code also loses some time;
-> COUNT_RESUME is written based on when the CPU state becomes clean, not
-> on when the CPU was restarted.
+Fix by initializing old_r_offset to ~0 and using that instead of 0
+to determine whether the current relocation is the first seen.
 
-The offset you suggest removing is what ensures time isn't lost there.
-The VM time when the cpu is restarted == the VM time when it is stopped,
-so by saving vm time to count_save_time at vm stop, the timer can be
-restarted at exactly the right interval into the past
-(COUNT_RESUME=now-interval) so that no time is lost.
+Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+---
+ scripts/recordmcount.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Now there is one case I believe where time will be gained which is hard
-to avoid without getting a notification before VM stop rather than
-after. When the VM is stopped and qemu's state is clean, the state is
-read very soon after (not immediately), so the saved state will be at
-slightly after the recorded vm time. I.e. the timer was allowed to
-continue slightly past when the vm clock was actually stopped.
-
-Cheers
-James
+diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+index 9d1421e63ff8..49b582a225b0 100644
+--- a/scripts/recordmcount.h
++++ b/scripts/recordmcount.h
+@@ -163,11 +163,11 @@ static int mcount_adjust = 0;
+ 
+ static int MIPS_is_fake_mcount(Elf_Rel const *rp)
+ {
+-	static Elf_Addr old_r_offset;
++	static Elf_Addr old_r_offset = ~(Elf_Addr)0;
+ 	Elf_Addr current_r_offset = _w(rp->r_offset);
+ 	int is_fake;
+ 
+-	is_fake = old_r_offset &&
++	is_fake = (old_r_offset != ~(Elf_Addr)0) &&
+ 		(current_r_offset - old_r_offset == MIPS_FAKEMCOUNT_OFFSET);
+ 	old_r_offset = current_r_offset;
+ 
+-- 
+2.0.0

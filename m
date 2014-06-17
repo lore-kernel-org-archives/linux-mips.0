@@ -1,16 +1,18 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:38088 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6862607AbaFQPoqLZxKn (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Jun 2014 17:44:46 +0200
-Date: Tue, 17 Jun 2014 15:44:36 +0000
-From: "Joseph S. Myers" <joseph@codesourcery.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57820 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6860031AbaFQSOXYh-QJ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Jun 2014 20:14:23 +0200
+Date: Tue, 17 Jun 2014 19:14:09 +0100
+From: Paul Burton <paul.burton@imgtec.com>
 Subject: Re: MIPS MSA sigcontext changes in 3.15
-In-Reply-To: <Pine.LNX.4.64.1406171447030.23412@digraph.polyomino.org.uk>
-Message-ID: <Pine.LNX.4.64.1406171539240.23412@digraph.polyomino.org.uk>
+Message-ID: <20140617181409.GD7020@pburton-laptop.home>
 References: <Pine.LNX.4.64.1406171447030.23412@digraph.polyomino.org.uk>
+ <Pine.LNX.4.64.1406171539240.23412@digraph.polyomino.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <joseph_myers@mentor.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.1406171539240.23412@digraph.polyomino.org.uk>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,25 +22,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, libc-alpha@sourceware.org, linux-api@vger.kernel.org
-Message-ID: <20140617154436.Sz1VtYgiDhTrG2E7WBqQ8ENdzA22bB4XzrV2rEiIw0I@z>
+To: "Joseph S. Myers" <joseph@codesourcery.com>
+Cc: linux-mips@linux-mips.org, libc-alpha@sourceware.org, linux-api@vger.kernel.org
+Message-ID: <20140617181409.Zx2dwWSkkq-AGHNFq_DWLPwmJIT5bYOZd985NA409EI@z>
 
-On Tue, 17 Jun 2014, Joseph S. Myers wrote:
+On Tue, Jun 17, 2014 at 03:44:36PM +0000, Joseph S. Myers wrote:
+> On Tue, 17 Jun 2014, Joseph S. Myers wrote:
+> 
+> > signal mask at a particular offset in the ucontext.  As far as I can see, 
+> > extending sigcontext requires a new sigaction flag that could be used to 
+> > opt in, for a particular signal handler, to receiving the new-layout 
+> > ucontext (so new symbol versions of sigaction in glibc could then pass 
+> > that flag to the kernel, but existing binaries would continue to get 
+> > old-layout ucontext from the kernel), or else putting the new data at the 
+> 
+> And a new flag would itself be problematic - signal handlers would need 
+> wrapping with userspace code to convert structure layout when new-version 
+> sigaction is used on an older kernel.  That suggests putting the new data 
+> at the end of ucontext is to be preferred (but in any case it would be 
+> best to revert the incompatible changes until something compatible with 
+> existing userspace can be produced).
+> 
+> -- 
+> Joseph S. Myers
+> joseph@codesourcery.com
+> 
 
-> signal mask at a particular offset in the ucontext.  As far as I can see, 
-> extending sigcontext requires a new sigaction flag that could be used to 
-> opt in, for a particular signal handler, to receiving the new-layout 
-> ucontext (so new symbol versions of sigaction in glibc could then pass 
-> that flag to the kernel, but existing binaries would continue to get 
-> old-layout ucontext from the kernel), or else putting the new data at the 
+True. Oops. I hadn't realised this...
 
-And a new flag would itself be problematic - signal handlers would need 
-wrapping with userspace code to convert structure layout when new-version 
-sigaction is used on an older kernel.  That suggests putting the new data 
-at the end of ucontext is to be preferred (but in any case it would be 
-best to revert the incompatible changes until something compatible with 
-existing userspace can be produced).
+I wonder if the sensible thing is to switch to sigcontext merely
+containing a pointer to another struct holding FP state, much like x86.
+Only in response to a flag as you describe of course. That way the
+kernel could avoid the games it currently plays with splitting the
+vector registers into 64b pieces, and it would probably be more open
+to wider vector registers if they appear in the future.
 
--- 
-Joseph S. Myers
-joseph@codesourcery.com
+Anyway, I agree with reverting the sigcontext change (eec43a224cf1
+"MIPS: Save/restore MSA context around signals") in the meantime. I'll
+submit a patch as soon as I can.
+
+Given:
+
+ - This issue.
+
+ - A couple of other MSA fixes I have pending cleanup.
+
+ - The fact that the only CPU the kernel supports which has MSA is the
+      P5600, and since that is 32b it can't actually make use of MSA
+   without the experimental CONFIG_MIPS_O32_FP64_SUPPORT option. Thus
+   MSA isn't actually being used yet beyond a few small groups who
+   accepted that big shouty experimental warning.
+
+...I wonder if it makes sense to disable MSA support by default for the
+moment also.
+
+Thanks,
+    Paul

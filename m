@@ -1,18 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:57820 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860031AbaFQSOXYh-QJ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Jun 2014 20:14:23 +0200
-Date: Tue, 17 Jun 2014 19:14:09 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: MIPS MSA sigcontext changes in 3.15
-Message-ID: <20140617181409.GD7020@pburton-laptop.home>
-References: <Pine.LNX.4.64.1406171447030.23412@digraph.polyomino.org.uk>
- <Pine.LNX.4.64.1406171539240.23412@digraph.polyomino.org.uk>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63]:56845 "EHLO
+        mail-gw2-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6859952AbaFRMfkwbMrW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Jun 2014 14:35:40 +0200
+From: <ganesanr@broadcom.com>
+Subject: [PATCH 0/3] XLR/XLS network driver update and fixes
+Date: Wed, 18 Jun 2014 18:43:55 +0530
+Message-ID: <cover.1403096668.git.ganesanr@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1406171539240.23412@digraph.polyomino.org.uk>
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain
+Return-Path: <ganesanr@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,59 +18,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Joseph S. Myers" <joseph@codesourcery.com>
-Cc: linux-mips@linux-mips.org, libc-alpha@sourceware.org, linux-api@vger.kernel.org
-Message-ID: <20140617181409.Zx2dwWSkkq-AGHNFq_DWLPwmJIT5bYOZd985NA409EI@z>
+To: kristina.martsenko@gmail.com, gregkh@linuxfoundation.org
+Cc: Ganesan Ramalingam <ganesanr@broadcom.com>, jchandra@broadcom.com, linux-mips@linux-mips.org, ralf@linux-mips.org, netdev@vger.kernel.org
+Message-ID: <20140618131355.7Bg9-E3eDOpgyOKsr7kjSyUNWTOqMR2xYJNd-t2tiOk@z>
 
-On Tue, Jun 17, 2014 at 03:44:36PM +0000, Joseph S. Myers wrote:
-> On Tue, 17 Jun 2014, Joseph S. Myers wrote:
-> 
-> > signal mask at a particular offset in the ucontext.  As far as I can see, 
-> > extending sigcontext requires a new sigaction flag that could be used to 
-> > opt in, for a particular signal handler, to receiving the new-layout 
-> > ucontext (so new symbol versions of sigaction in glibc could then pass 
-> > that flag to the kernel, but existing binaries would continue to get 
-> > old-layout ucontext from the kernel), or else putting the new data at the 
-> 
-> And a new flag would itself be problematic - signal handlers would need 
-> wrapping with userspace code to convert structure layout when new-version 
-> sigaction is used on an older kernel.  That suggests putting the new data 
-> at the end of ucontext is to be preferred (but in any case it would be 
-> best to revert the incompatible changes until something compatible with 
-> existing userspace can be produced).
-> 
-> -- 
-> Joseph S. Myers
-> joseph@codesourcery.com
-> 
+From: Ganesan Ramalingam <ganesanr@broadcom.com>
 
-True. Oops. I hadn't realised this...
+Patches has following changes:
 
-I wonder if the sensible thing is to switch to sigcontext merely
-containing a pointer to another struct holding FP state, much like x86.
-Only in response to a flag as you describe of course. That way the
-kernel could avoid the games it currently plays with splitting the
-vector registers into 64b pieces, and it would probably be more open
-to wider vector registers if they appear in the future.
+ * Fixed compilation failure caused by change in COP2 API
+ * SGMII PHY address calculation was wrong, fixed
+ * Updated the driver to have single parent device for a XLR/XLS
+   network block with multiple network devices under it
+ * Fixed comment format
 
-Anyway, I agree with reverting the sigcontext change (eec43a224cf1
-"MIPS: Save/restore MSA context around signals") in the meantime. I'll
-submit a patch as soon as I can.
+Ganesan Ramalingam (3):
+  Staging: Fix compilation error
+  Staging: PHY address calculation fix
+  Staging: Move all the netdev under single parent device per
+    controller
 
-Given:
+ drivers/staging/netlogic/TODO           |    1 -
+ drivers/staging/netlogic/platform_net.c |  213 ++++++++++++----------
+ drivers/staging/netlogic/platform_net.h |    7 +-
+ drivers/staging/netlogic/xlr_net.c      |  301 +++++++++++++++++--------------
+ drivers/staging/netlogic/xlr_net.h      |    8 +-
+ 5 files changed, 292 insertions(+), 238 deletions(-)
 
- - This issue.
-
- - A couple of other MSA fixes I have pending cleanup.
-
- - The fact that the only CPU the kernel supports which has MSA is the
-      P5600, and since that is 32b it can't actually make use of MSA
-   without the experimental CONFIG_MIPS_O32_FP64_SUPPORT option. Thus
-   MSA isn't actually being used yet beyond a few small groups who
-   accepted that big shouty experimental warning.
-
-...I wonder if it makes sense to disable MSA support by default for the
-moment also.
-
-Thanks,
-    Paul
+-- 
+1.7.9.5

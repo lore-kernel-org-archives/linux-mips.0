@@ -1,11 +1,13 @@
 Received: from mail-gw2-out.broadcom.com ([216.31.210.63]:56845 "EHLO
         mail-gw2-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6859952AbaFRMfkwbMrW (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Jun 2014 14:35:40 +0200
+        by eddie.linux-mips.org with ESMTP id S6859953AbaFRMflz4nIm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Jun 2014 14:35:41 +0200
 From: <ganesanr@broadcom.com>
-Subject: [PATCH 0/3] XLR/XLS network driver update and fixes
-Date: Wed, 18 Jun 2014 18:43:55 +0530
-Message-ID: <cover.1403096668.git.ganesanr@broadcom.com>
+Subject: [PATCH 2/3] Staging: PHY address calculation fix
+Date: Wed, 18 Jun 2014 18:43:57 +0530
+Message-ID: <20fcbf14feaa9b27cd043a1d6af21debacacf63a.1403096668.git.ganesanr@broadcom.com>
+In-Reply-To: <cover.1403096668.git.ganesanr@broadcom.com>
+References: <cover.1403096668.git.ganesanr@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <ganesanr@broadcom.com>
@@ -20,30 +22,29 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: kristina.martsenko@gmail.com, gregkh@linuxfoundation.org
 Cc: Ganesan Ramalingam <ganesanr@broadcom.com>, jchandra@broadcom.com, linux-mips@linux-mips.org, ralf@linux-mips.org, netdev@vger.kernel.org
-Message-ID: <20140618131355.7Bg9-E3eDOpgyOKsr7kjSyUNWTOqMR2xYJNd-t2tiOk@z>
+Message-ID: <20140618131357.WaC1SpMoG70H53beBKDvT6MBXedbKio9DBh5biCpEMo@z>
 
 From: Ganesan Ramalingam <ganesanr@broadcom.com>
 
-Patches has following changes:
+SGMII PHY address calculation should be based on phy_addr of priv data
 
- * Fixed compilation failure caused by change in COP2 API
- * SGMII PHY address calculation was wrong, fixed
- * Updated the driver to have single parent device for a XLR/XLS
-   network block with multiple network devices under it
- * Fixed comment format
+Signed-off-by: Ganesan Ramalingam <ganesanr@broadcom.com>
+---
+ drivers/staging/netlogic/xlr_net.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ganesan Ramalingam (3):
-  Staging: Fix compilation error
-  Staging: PHY address calculation fix
-  Staging: Move all the netdev under single parent device per
-    controller
-
- drivers/staging/netlogic/TODO           |    1 -
- drivers/staging/netlogic/platform_net.c |  213 ++++++++++++----------
- drivers/staging/netlogic/platform_net.h |    7 +-
- drivers/staging/netlogic/xlr_net.c      |  301 +++++++++++++++++--------------
- drivers/staging/netlogic/xlr_net.h      |    8 +-
- 5 files changed, 292 insertions(+), 238 deletions(-)
-
+diff --git a/drivers/staging/netlogic/xlr_net.c b/drivers/staging/netlogic/xlr_net.c
+index 69ae8b6..6d7a6a7 100644
+--- a/drivers/staging/netlogic/xlr_net.c
++++ b/drivers/staging/netlogic/xlr_net.c
+@@ -776,7 +776,7 @@ static void xlr_sgmii_init(struct xlr_net_priv *priv)
+ 	xlr_nae_wreg(priv->gpio_addr, 0x21, 0x7104);
+ 
+ 	/* enable autoneg - more magic */
+-	phy = priv->port_id % 4 + 27;
++	phy = priv->phy_addr % 4 + 27;
+ 	xlr_phy_write(priv->pcs_addr, phy, 0, 0x1000);
+ 	xlr_phy_write(priv->pcs_addr, phy, 0, 0x0200);
+ }
 -- 
 1.7.9.5

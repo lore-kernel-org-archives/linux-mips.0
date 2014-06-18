@@ -1,16 +1,14 @@
-Received: from mail-gw1-out.broadcom.com ([216.31.210.62]:12622 "EHLO
-        mail-gw1-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6859955AbaFRMfvEZGPa (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Jun 2014 14:35:51 +0200
-From: <ganesanr@broadcom.com>
-Subject: [PATCH 3/3] Staging: Move all the netdev under single parent device per controller
-Date: Wed, 18 Jun 2014 18:43:58 +0530
-Message-ID: <eed3de47f0c4955408a3f9913d22da4730a259c9.1403096668.git.ganesanr@broadcom.com>
-In-Reply-To: <cover.1403096668.git.ganesanr@broadcom.com>
-References: <cover.1403096668.git.ganesanr@broadcom.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:20141 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6821654AbaFROBrCW0RV (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Jun 2014 16:01:47 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] Revert "MIPS: Save/restore MSA context around signals"
+Date: Wed, 18 Jun 2014 15:00:46 +0100
+Message-ID: <1403100046-5693-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <ganesanr@broadcom.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,861 +18,705 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: kristina.martsenko@gmail.com, gregkh@linuxfoundation.org
-Cc: Ganesan Ramalingam <ganesanr@broadcom.com>, jchandra@broadcom.com, linux-mips@linux-mips.org, ralf@linux-mips.org, netdev@vger.kernel.org
-Message-ID: <20140618131358.fTDJz1c2QMSNshXRnK0CHhwaMuBXm1DIeaayHUpz_Ro@z>
+To: linux-mips@linux-mips.org
+Cc: "Joseph S. Myers" <joseph@codesourcery.com>, Paul Burton <paul.burton@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20140618140046.2isa3JM7fkmoiMyZGkzRn0vIKE5qzLxYcbdJfLVEFcQ@z>
 
-From: Ganesan Ramalingam <ganesanr@broadcom.com>
+This reverts commit eec43a224cf1 "MIPS: Save/restore MSA context around
+signals" and the MSA parts of ca750649e08c "MIPS: kernel: signal:
+Prevent save/restore FPU context in user memory" (the restore path of
+which appears incorrect anyway...).
 
-XLR and XLS has one and two network controller respectively, each controller
-has 4 gmac devices. So changing the per device initialization to per
-controller, all devices of a controller are linked to single parent device.
+The reverted patch took care not to break compatibility with userland
+users of struct sigcontext, but inadvertantly changed the offset of the
+uc_sigmask field of struct ucontext. Thus Linux v3.15 breaks the
+userland ABI. The MSA context will need to be saved via some other
+opt-in mechanism, but for now revert the change to reduce the fallout.
 
-Signed-off-by: Ganesan Ramalingam <ganesanr@broadcom.com>
+This will have minimal impact upon use of MSA since the only supported
+CPU which includes it (the P5600) is 32-bit and therefore requires that
+the experimental CONFIG_MIPS_O32_FP64_SUPPORT Kconfig option be selected
+before the kernel will set FR=1 for a task, a requirement for MSA use.
+Thus the users of MSA are limited to known small groups of people & this
+patch won't be breaking any previously working MSA-using userland
+outside of experimental settings.
+
+Cc: stable@vger.kernel.org
+Reported-by: Joseph S. Myers <joseph@codesourcery.com>
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- drivers/staging/netlogic/TODO           |    1 -
- drivers/staging/netlogic/platform_net.c |  213 ++++++++++++----------
- drivers/staging/netlogic/platform_net.h |    7 +-
- drivers/staging/netlogic/xlr_net.c      |  291 +++++++++++++++++--------------
- drivers/staging/netlogic/xlr_net.h      |    8 +-
- 5 files changed, 287 insertions(+), 233 deletions(-)
+Ralf: if this can get into mainline ASAP so it can hit the 3.15 stable
+branch too that would be great. Sorry for this!
+---
+ arch/mips/include/asm/sigcontext.h      |   2 -
+ arch/mips/include/uapi/asm/sigcontext.h |   8 --
+ arch/mips/kernel/asm-offsets.c          |   6 -
+ arch/mips/kernel/r4k_fpu.S              | 221 --------------------------------
+ arch/mips/kernel/signal.c               |  79 ++----------
+ arch/mips/kernel/signal32.c             |  74 ++---------
+ 6 files changed, 16 insertions(+), 374 deletions(-)
 
-diff --git a/drivers/staging/netlogic/TODO b/drivers/staging/netlogic/TODO
-index 08e6d52..8f172b0 100644
---- a/drivers/staging/netlogic/TODO
-+++ b/drivers/staging/netlogic/TODO
-@@ -1,6 +1,5 @@
- * Implementing 64bit stat counter in software
- * All memory allocation should be changed to DMA allocations
--* All the netdev should be linked to single pdev as parent
- * Changing comments in to linux standred format
+diff --git a/arch/mips/include/asm/sigcontext.h b/arch/mips/include/asm/sigcontext.h
+index f54bdbe..eeeb0f4 100644
+--- a/arch/mips/include/asm/sigcontext.h
++++ b/arch/mips/include/asm/sigcontext.h
+@@ -32,8 +32,6 @@ struct sigcontext32 {
+ 	__u32		sc_lo2;
+ 	__u32		sc_hi3;
+ 	__u32		sc_lo3;
+-	__u64		sc_msaregs[32];	/* Most significant 64 bits */
+-	__u32		sc_msa_csr;
+ };
+ #endif /* _MIPS_SIM == _MIPS_SIM_ABI64 || _MIPS_SIM == _MIPS_SIM_NABI32 */
+ #endif /* _ASM_SIGCONTEXT_H */
+diff --git a/arch/mips/include/uapi/asm/sigcontext.h b/arch/mips/include/uapi/asm/sigcontext.h
+index 681c176..6c9906f 100644
+--- a/arch/mips/include/uapi/asm/sigcontext.h
++++ b/arch/mips/include/uapi/asm/sigcontext.h
+@@ -12,10 +12,6 @@
+ #include <linux/types.h>
+ #include <asm/sgidefs.h>
  
- Please send patches
-diff --git a/drivers/staging/netlogic/platform_net.c b/drivers/staging/netlogic/platform_net.c
-index 61f20e1..080e09f 100644
---- a/drivers/staging/netlogic/platform_net.c
-+++ b/drivers/staging/netlogic/platform_net.c
-@@ -72,116 +72,125 @@ static u32 xlr_gmac_irqs[] = { PIC_GMAC_0_IRQ, PIC_GMAC_1_IRQ,
- 	PIC_GMAC_6_IRQ, PIC_GMAC_7_IRQ
+-/* Bits which may be set in sc_used_math */
+-#define USEDMATH_FP	(1 << 0)
+-#define USEDMATH_MSA	(1 << 1)
+-
+ #if _MIPS_SIM == _MIPS_SIM_ABI32
+ 
+ /*
+@@ -41,8 +37,6 @@ struct sigcontext {
+ 	unsigned long		sc_lo2;
+ 	unsigned long		sc_hi3;
+ 	unsigned long		sc_lo3;
+-	unsigned long long	sc_msaregs[32];	/* Most significant 64 bits */
+-	unsigned long		sc_msa_csr;
  };
  
--static struct xlr_net_data ndata[MAX_NUM_GMAC];
--static struct resource xlr_net_res[8][2];
--static struct platform_device xlr_net_dev[8];
--static u32 __iomem *gmac0_addr;
-+static struct resource xlr_net0_res[8];
-+static struct resource xlr_net1_res[8];
- static u32 __iomem *gmac4_addr;
- static u32 __iomem *gpio_addr;
+ #endif /* _MIPS_SIM == _MIPS_SIM_ABI32 */
+@@ -76,8 +70,6 @@ struct sigcontext {
+ 	__u32	sc_used_math;
+ 	__u32	sc_dsp;
+ 	__u32	sc_reserved;
+-	__u64	sc_msaregs[32];
+-	__u32	sc_msa_csr;
+ };
  
--static void config_mac(struct xlr_net_data *nd, int phy, u32 __iomem *serdes,
--		u32 __iomem *pcs, int rfr, int tx, int *bkt_size,
--		struct xlr_fmn_info *gmac_fmn_info, int phy_addr)
-+static void xlr_resource_init(struct resource *res, int offset, int irq)
- {
--	nd->cpu_mask = nlm_current_node()->coremask;
--	nd->phy_interface = phy;
--	nd->rfr_station = rfr;
--	nd->tx_stnid = tx;
--	nd->mii_addr = gmac0_addr;
--	nd->serdes_addr = serdes;
--	nd->pcs_addr = pcs;
--	nd->gpio_addr = gpio_addr;
--
--	nd->bucket_size = bkt_size;
--	nd->gmac_fmn_info = gmac_fmn_info;
--	nd->phy_addr = phy_addr;
-+	res->name = "gmac";
-+
-+	res->start = CPHYSADDR(nlm_mmio_base(offset));
-+	res->end = res->start + 0xfff;
-+	res->flags = IORESOURCE_MEM;
-+
-+	res++;
-+	res->name = "gmac";
-+	res->start = res->end = irq;
-+	res->flags = IORESOURCE_IRQ;
+ 
+diff --git a/arch/mips/kernel/asm-offsets.c b/arch/mips/kernel/asm-offsets.c
+index d278efa..5db1f01 100644
+--- a/arch/mips/kernel/asm-offsets.c
++++ b/arch/mips/kernel/asm-offsets.c
+@@ -296,8 +296,6 @@ void output_sc_defines(void)
+ 	OFFSET(SC_LO2, sigcontext, sc_lo2);
+ 	OFFSET(SC_HI3, sigcontext, sc_hi3);
+ 	OFFSET(SC_LO3, sigcontext, sc_lo3);
+-	OFFSET(SC_MSAREGS, sigcontext, sc_msaregs);
+-	OFFSET(SC_MSA_CSR, sigcontext, sc_msa_csr);
+ 	BLANK();
  }
- 
--static void net_device_init(int id, struct resource *res, int offset, int irq)
-+static struct platform_device *gmac_controller2_init(void *gmac0_addr)
- {
--	res[0].name = "gmac";
--	res[0].start = CPHYSADDR(nlm_mmio_base(offset));
--	res[0].end = res[0].start + 0xfff;
--	res[0].flags = IORESOURCE_MEM;
--
--	res[1].name = "gmac";
--	res[1].start = irq;
--	res[1].end = irq;
--	res[1].flags = IORESOURCE_IRQ;
--
--	xlr_net_dev[id].name = "xlr-net";
--	xlr_net_dev[id].id = id;
--	xlr_net_dev[id].num_resources = 2;
--	xlr_net_dev[id].resource = res;
--	xlr_net_dev[id].dev.platform_data = &ndata[id];
-+	int mac;
-+	static struct xlr_net_data ndata1 = {
-+		.phy_interface	= PHY_INTERFACE_MODE_SGMII,
-+		.rfr_station	= FMN_STNID_GMAC1_FR_0,
-+		.bucket_size	= xlr_board_fmn_config.bucket_size,
-+		.gmac_fmn_info	= &xlr_board_fmn_config.gmac[1],
-+	};
-+
-+	static struct platform_device xlr_net_dev1 = {
-+		.name		= "xlr-net",
-+		.id		= 1,
-+		.dev.platform_data = &ndata1,
-+	};
-+
-+	gmac4_addr = ioremap(CPHYSADDR(
-+		nlm_mmio_base(NETLOGIC_IO_GMAC_4_OFFSET)), 0xfff);
-+	ndata1.serdes_addr = gmac4_addr;
-+	ndata1.pcs_addr	= gmac4_addr;
-+	ndata1.mii_addr	= gmac0_addr;
-+	ndata1.gpio_addr = gpio_addr;
-+	ndata1.cpu_mask = nlm_current_node()->coremask;
-+
-+	xlr_net_dev1.resource = xlr_net1_res;
-+
-+	for (mac = 0; mac < 4; mac++) {
-+		ndata1.tx_stnid[mac] = FMN_STNID_GMAC1_TX0 + mac;
-+		ndata1.phy_addr[mac] = mac + 4 + 0x10;
-+
-+		xlr_resource_init(&xlr_net1_res[mac * 2],
-+				xlr_gmac_offsets[mac + 4],
-+				xlr_gmac_irqs[mac + 4]);
-+	}
-+	xlr_net_dev1.num_resources = 8;
-+
-+	return &xlr_net_dev1;
+ #endif
+@@ -312,8 +310,6 @@ void output_sc_defines(void)
+ 	OFFSET(SC_MDLO, sigcontext, sc_mdlo);
+ 	OFFSET(SC_PC, sigcontext, sc_pc);
+ 	OFFSET(SC_FPC_CSR, sigcontext, sc_fpc_csr);
+-	OFFSET(SC_MSAREGS, sigcontext, sc_msaregs);
+-	OFFSET(SC_MSA_CSR, sigcontext, sc_msa_csr);
+ 	BLANK();
  }
- 
- static void xls_gmac_init(void)
- {
- 	int mac;
-+	struct platform_device *xlr_net_dev1;
-+	void __iomem *gmac0_addr = ioremap(CPHYSADDR(
-+		nlm_mmio_base(NETLOGIC_IO_GMAC_0_OFFSET)), 0xfff);
- 
--	gmac4_addr = ioremap(CPHYSADDR(
--		nlm_mmio_base(NETLOGIC_IO_GMAC_4_OFFSET)), 0xfff);
--	/* Passing GPIO base for serdes init. Only needed on sgmii ports*/
-+	static struct xlr_net_data ndata0 = {
-+		.rfr_station	= FMN_STNID_GMACRFR_0,
-+		.bucket_size	= xlr_board_fmn_config.bucket_size,
-+		.gmac_fmn_info	= &xlr_board_fmn_config.gmac[0],
-+	};
-+
-+	static struct platform_device xlr_net_dev0 = {
-+		.name		= "xlr-net",
-+		.id		= 0,
-+	};
-+	xlr_net_dev0.dev.platform_data = &ndata0;
-+	ndata0.serdes_addr = gmac0_addr;
-+	ndata0.pcs_addr	= gmac0_addr;
-+	ndata0.mii_addr	= gmac0_addr;
-+
-+	/* Passing GPIO base for serdes init. Only needed on sgmii ports */
- 	gpio_addr = ioremap(CPHYSADDR(
- 		nlm_mmio_base(NETLOGIC_IO_GPIO_OFFSET)), 0xfff);
-+	ndata0.gpio_addr = gpio_addr;
-+	ndata0.cpu_mask = nlm_current_node()->coremask;
-+
-+	xlr_net_dev0.resource = xlr_net0_res;
- 
- 	switch (nlm_prom_info.board_major_version) {
- 	case 12:
- 		/* first block RGMII or XAUI, use RGMII */
--		config_mac(&ndata[0],
--			PHY_INTERFACE_MODE_RGMII,
--			gmac0_addr,	/* serdes */
--			gmac0_addr,	/* pcs */
--			FMN_STNID_GMACRFR_0,
--			FMN_STNID_GMAC0_TX0,
--			xlr_board_fmn_config.bucket_size,
--			&xlr_board_fmn_config.gmac[0],
--			0);
--
--		net_device_init(0, xlr_net_res[0], xlr_gmac_offsets[0],
-+		ndata0.phy_interface = PHY_INTERFACE_MODE_RGMII,
-+		ndata0.tx_stnid[0] = FMN_STNID_GMAC0_TX0;
-+		ndata0.phy_addr[0] = 0;
-+
-+		xlr_net_dev0.num_resources = 2;
-+
-+		xlr_resource_init(&xlr_net0_res[0], xlr_gmac_offsets[0],
- 				xlr_gmac_irqs[0]);
--		platform_device_register(&xlr_net_dev[0]);
-+		platform_device_register(&xlr_net_dev0);
- 
- 		/* second block is XAUI, not supported yet */
- 		break;
- 	default:
- 		/* default XLS config, all ports SGMII */
-+		ndata0.phy_interface = PHY_INTERFACE_MODE_SGMII;
- 		for (mac = 0; mac < 4; mac++) {
--			config_mac(&ndata[mac],
--				PHY_INTERFACE_MODE_SGMII,
--				gmac0_addr,	/* serdes */
--				gmac0_addr,	/* pcs */
--				FMN_STNID_GMACRFR_0,
--				FMN_STNID_GMAC0_TX0 + mac,
--				xlr_board_fmn_config.bucket_size,
--				&xlr_board_fmn_config.gmac[0],
--				/* PHY address according to chip/board */
--				mac + 0x10);
--
--			net_device_init(mac, xlr_net_res[mac],
--					xlr_gmac_offsets[mac],
--					xlr_gmac_irqs[mac]);
--			platform_device_register(&xlr_net_dev[mac]);
--		}
-+			ndata0.tx_stnid[mac] = FMN_STNID_GMAC0_TX0 + mac;
-+			ndata0.phy_addr[mac] = mac + 0x10;
- 
--		for (mac = 4; mac < MAX_NUM_XLS_GMAC; mac++) {
--			config_mac(&ndata[mac],
--				PHY_INTERFACE_MODE_SGMII,
--				gmac4_addr,	/* serdes */
--				gmac4_addr,	/* pcs */
--				FMN_STNID_GMAC1_FR_0,
--				FMN_STNID_GMAC1_TX0 + mac - 4,
--				xlr_board_fmn_config.bucket_size,
--				&xlr_board_fmn_config.gmac[1],
--				/* PHY address according to chip/board */
--				mac + 0x10);
--
--			net_device_init(mac, xlr_net_res[mac],
-+			xlr_resource_init(&xlr_net0_res[mac * 2],
- 					xlr_gmac_offsets[mac],
- 					xlr_gmac_irqs[mac]);
--			platform_device_register(&xlr_net_dev[mac]);
- 		}
-+		xlr_net_dev0.num_resources = 8;
-+		platform_device_register(&xlr_net_dev0);
-+
-+		xlr_net_dev1 = gmac_controller2_init(gmac0_addr);
-+		platform_device_register(xlr_net_dev1);
- 	}
+ #endif
+@@ -325,8 +321,6 @@ void output_sc32_defines(void)
+ 	OFFSET(SC32_FPREGS, sigcontext32, sc_fpregs);
+ 	OFFSET(SC32_FPC_CSR, sigcontext32, sc_fpc_csr);
+ 	OFFSET(SC32_FPC_EIR, sigcontext32, sc_fpc_eir);
+-	OFFSET(SC32_MSAREGS, sigcontext32, sc_msaregs);
+-	OFFSET(SC32_MSA_CSR, sigcontext32, sc_msa_csr);
+ 	BLANK();
  }
- 
-@@ -190,28 +199,41 @@ static void xlr_gmac_init(void)
- 	int mac;
- 
- 	/* assume all GMACs for now */
-+	static struct xlr_net_data ndata0 = {
-+		.phy_interface	= PHY_INTERFACE_MODE_RGMII,
-+		.serdes_addr	= NULL,
-+		.pcs_addr	= NULL,
-+		.rfr_station	= FMN_STNID_GMACRFR_0,
-+		.bucket_size	= xlr_board_fmn_config.bucket_size,
-+		.gmac_fmn_info	= &xlr_board_fmn_config.gmac[0],
-+		.gpio_addr	= NULL,
-+	};
-+
-+
-+	static struct platform_device xlr_net_dev0 = {
-+		.name		= "xlr-net",
-+		.id		= 0,
-+		.dev.platform_data = &ndata0,
-+	};
-+	ndata0.mii_addr = ioremap(CPHYSADDR(
-+		nlm_mmio_base(NETLOGIC_IO_GMAC_0_OFFSET)), 0xfff);
-+
-+	ndata0.cpu_mask = nlm_current_node()->coremask;
-+
- 	for (mac = 0; mac < MAX_NUM_XLR_GMAC; mac++) {
--		config_mac(&ndata[mac],
--			PHY_INTERFACE_MODE_RGMII,
--			0,
--			0,
--			FMN_STNID_GMACRFR_0,
--			FMN_STNID_GMAC0_TX0,
--			xlr_board_fmn_config.bucket_size,
--			&xlr_board_fmn_config.gmac[0],
--			mac);
--
--		net_device_init(mac, xlr_net_res[mac], xlr_gmac_offsets[mac],
-+		ndata0.tx_stnid[mac] = FMN_STNID_GMAC0_TX0 + mac;
-+		ndata0.phy_addr[mac] = mac;
-+		xlr_resource_init(&xlr_net0_res[mac * 2], xlr_gmac_offsets[mac],
- 				xlr_gmac_irqs[mac]);
--		platform_device_register(&xlr_net_dev[mac]);
- 	}
-+	xlr_net_dev0.num_resources = 8;
-+	xlr_net_dev0.resource = xlr_net0_res;
-+
-+	platform_device_register(&xlr_net_dev0);
- }
- 
- static int __init xlr_net_init(void)
- {
--	gmac0_addr = ioremap(CPHYSADDR(
--		nlm_mmio_base(NETLOGIC_IO_GMAC_0_OFFSET)), 0xfff);
--
- 	if (nlm_chip_is_xls())
- 		xls_gmac_init();
- 	else
-@@ -221,3 +243,4 @@ static int __init xlr_net_init(void)
- }
- 
- arch_initcall(xlr_net_init);
-+
-diff --git a/drivers/staging/netlogic/platform_net.h b/drivers/staging/netlogic/platform_net.h
-index 29deeea..e1b27f6 100644
---- a/drivers/staging/netlogic/platform_net.h
-+++ b/drivers/staging/netlogic/platform_net.h
-@@ -31,6 +31,9 @@
-  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
-  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ #endif
+diff --git a/arch/mips/kernel/r4k_fpu.S b/arch/mips/kernel/r4k_fpu.S
+index ffb5fea..8c96ed9 100644
+--- a/arch/mips/kernel/r4k_fpu.S
++++ b/arch/mips/kernel/r4k_fpu.S
+@@ -13,7 +13,6 @@
+  * Copyright (C) 1999, 2001 Silicon Graphics, Inc.
   */
-+
-+#define PORTS_PER_CONTROLLER		4
-+
- struct xlr_net_data {
- 	int cpu_mask;
- 	u32 __iomem *mii_addr;
-@@ -39,8 +42,8 @@ struct xlr_net_data {
- 	u32 __iomem *gpio_addr;
- 	int phy_interface;
- 	int rfr_station;
--	int tx_stnid;
-+	int tx_stnid[PORTS_PER_CONTROLLER];
- 	int *bucket_size;
--	int phy_addr;
-+	int phy_addr[PORTS_PER_CONTROLLER];
- 	struct xlr_fmn_info *gmac_fmn_info;
- };
-diff --git a/drivers/staging/netlogic/xlr_net.c b/drivers/staging/netlogic/xlr_net.c
-index 6d7a6a7..ee0a3e6 100644
---- a/drivers/staging/netlogic/xlr_net.c
-+++ b/drivers/staging/netlogic/xlr_net.c
-@@ -78,39 +78,7 @@ static inline void xlr_reg_update(u32 *base_addr,
- 	xlr_nae_wreg(base_addr, off, (tmp & ~mask) | (val & mask));
- }
+ #include <asm/asm.h>
+-#include <asm/asmmacro.h>
+ #include <asm/errno.h>
+ #include <asm/fpregdef.h>
+ #include <asm/mipsregs.h>
+@@ -247,226 +246,6 @@ LEAF(_restore_fp_context32)
+ 	END(_restore_fp_context32)
+ #endif
  
+-#ifdef CONFIG_CPU_HAS_MSA
+-
+-	.macro	save_sc_msareg	wr, off, sc, tmp
+-#ifdef CONFIG_64BIT
+-	copy_u_d \tmp, \wr, 1
+-	EX sd	\tmp, (\off+(\wr*8))(\sc)
+-#elif defined(CONFIG_CPU_LITTLE_ENDIAN)
+-	copy_u_w \tmp, \wr, 2
+-	EX sw	\tmp, (\off+(\wr*8)+0)(\sc)
+-	copy_u_w \tmp, \wr, 3
+-	EX sw	\tmp, (\off+(\wr*8)+4)(\sc)
+-#else /* CONFIG_CPU_BIG_ENDIAN */
+-	copy_u_w \tmp, \wr, 2
+-	EX sw	\tmp, (\off+(\wr*8)+4)(\sc)
+-	copy_u_w \tmp, \wr, 3
+-	EX sw	\tmp, (\off+(\wr*8)+0)(\sc)
+-#endif
+-	.endm
+-
 -/*
-- * Table of net_device pointers indexed by port, this will be used to
-- * lookup the net_device corresponding to a port by the message ring handler.
+- * int _save_msa_context(struct sigcontext *sc)
 - *
-- * Maximum ports in XLR/XLS is 8(8 GMAC on XLS, 4 GMAC + 2 XGMAC on XLR)
+- * Save the upper 64 bits of each vector register along with the MSA_CSR
+- * register into sc. Returns zero on success, else non-zero.
 - */
--static struct net_device *mac_to_ndev[8];
+-LEAF(_save_msa_context)
+-	save_sc_msareg	0, SC_MSAREGS, a0, t0
+-	save_sc_msareg	1, SC_MSAREGS, a0, t0
+-	save_sc_msareg	2, SC_MSAREGS, a0, t0
+-	save_sc_msareg	3, SC_MSAREGS, a0, t0
+-	save_sc_msareg	4, SC_MSAREGS, a0, t0
+-	save_sc_msareg	5, SC_MSAREGS, a0, t0
+-	save_sc_msareg	6, SC_MSAREGS, a0, t0
+-	save_sc_msareg	7, SC_MSAREGS, a0, t0
+-	save_sc_msareg	8, SC_MSAREGS, a0, t0
+-	save_sc_msareg	9, SC_MSAREGS, a0, t0
+-	save_sc_msareg	10, SC_MSAREGS, a0, t0
+-	save_sc_msareg	11, SC_MSAREGS, a0, t0
+-	save_sc_msareg	12, SC_MSAREGS, a0, t0
+-	save_sc_msareg	13, SC_MSAREGS, a0, t0
+-	save_sc_msareg	14, SC_MSAREGS, a0, t0
+-	save_sc_msareg	15, SC_MSAREGS, a0, t0
+-	save_sc_msareg	16, SC_MSAREGS, a0, t0
+-	save_sc_msareg	17, SC_MSAREGS, a0, t0
+-	save_sc_msareg	18, SC_MSAREGS, a0, t0
+-	save_sc_msareg	19, SC_MSAREGS, a0, t0
+-	save_sc_msareg	20, SC_MSAREGS, a0, t0
+-	save_sc_msareg	21, SC_MSAREGS, a0, t0
+-	save_sc_msareg	22, SC_MSAREGS, a0, t0
+-	save_sc_msareg	23, SC_MSAREGS, a0, t0
+-	save_sc_msareg	24, SC_MSAREGS, a0, t0
+-	save_sc_msareg	25, SC_MSAREGS, a0, t0
+-	save_sc_msareg	26, SC_MSAREGS, a0, t0
+-	save_sc_msareg	27, SC_MSAREGS, a0, t0
+-	save_sc_msareg	28, SC_MSAREGS, a0, t0
+-	save_sc_msareg	29, SC_MSAREGS, a0, t0
+-	save_sc_msareg	30, SC_MSAREGS, a0, t0
+-	save_sc_msareg	31, SC_MSAREGS, a0, t0
+-	cfcmsa	t0, MSA_CSR
+-	sw	t0, SC_MSA_CSR(a0)
+-	jr	ra
+-	 li	v0, 0
+-	END(_save_msa_context)
 -
--static inline struct sk_buff *mac_get_skb_back_ptr(void *addr)
+-#ifdef CONFIG_MIPS32_COMPAT
+-
+-/*
+- * int _save_msa_context32(struct sigcontext32 *sc)
+- *
+- * Save the upper 64 bits of each vector register along with the MSA_CSR
+- * register into sc. Returns zero on success, else non-zero.
+- */
+-LEAF(_save_msa_context32)
+-	save_sc_msareg	0, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	1, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	2, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	3, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	4, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	5, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	6, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	7, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	8, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	9, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	10, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	11, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	12, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	13, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	14, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	15, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	16, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	17, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	18, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	19, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	20, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	21, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	22, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	23, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	24, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	25, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	26, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	27, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	28, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	29, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	30, SC32_MSAREGS, a0, t0
+-	save_sc_msareg	31, SC32_MSAREGS, a0, t0
+-	cfcmsa	t0, MSA_CSR
+-	sw	t0, SC32_MSA_CSR(a0)
+-	jr	ra
+-	 li	v0, 0
+-	END(_save_msa_context32)
+-
+-#endif /* CONFIG_MIPS32_COMPAT */
+-
+-	.macro restore_sc_msareg	wr, off, sc, tmp
+-#ifdef CONFIG_64BIT
+-	EX ld	\tmp, (\off+(\wr*8))(\sc)
+-	insert_d \wr, 1, \tmp
+-#elif defined(CONFIG_CPU_LITTLE_ENDIAN)
+-	EX lw	\tmp, (\off+(\wr*8)+0)(\sc)
+-	insert_w \wr, 2, \tmp
+-	EX lw	\tmp, (\off+(\wr*8)+4)(\sc)
+-	insert_w \wr, 3, \tmp
+-#else /* CONFIG_CPU_BIG_ENDIAN */
+-	EX lw	\tmp, (\off+(\wr*8)+4)(\sc)
+-	insert_w \wr, 2, \tmp
+-	EX lw	\tmp, (\off+(\wr*8)+0)(\sc)
+-	insert_w \wr, 3, \tmp
+-#endif
+-	.endm
+-
+-/*
+- * int _restore_msa_context(struct sigcontext *sc)
+- */
+-LEAF(_restore_msa_context)
+-	lw	t0, SC_MSA_CSR(a0)
+-	ctcmsa	MSA_CSR, t0
+-	restore_sc_msareg	0, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	1, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	2, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	3, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	4, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	5, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	6, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	7, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	8, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	9, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	10, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	11, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	12, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	13, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	14, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	15, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	16, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	17, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	18, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	19, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	20, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	21, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	22, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	23, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	24, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	25, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	26, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	27, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	28, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	29, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	30, SC_MSAREGS, a0, t0
+-	restore_sc_msareg	31, SC_MSAREGS, a0, t0
+-	jr	ra
+-	 li	v0, 0
+-	END(_restore_msa_context)
+-
+-#ifdef CONFIG_MIPS32_COMPAT
+-
+-/*
+- * int _restore_msa_context32(struct sigcontext32 *sc)
+- */
+-LEAF(_restore_msa_context32)
+-	lw	t0, SC_MSA_CSR(a0)
+-	ctcmsa	MSA_CSR, t0
+-	restore_sc_msareg	0, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	1, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	2, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	3, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	4, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	5, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	6, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	7, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	8, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	9, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	10, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	11, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	12, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	13, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	14, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	15, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	16, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	17, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	18, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	19, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	20, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	21, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	22, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	23, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	24, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	25, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	26, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	27, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	28, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	29, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	30, SC32_MSAREGS, a0, t0
+-	restore_sc_msareg	31, SC32_MSAREGS, a0, t0
+-	jr	ra
+-	 li	v0, 0
+-	END(_restore_msa_context32)
+-
+-#endif /* CONFIG_MIPS32_COMPAT */
+-
+-#endif /* CONFIG_CPU_HAS_MSA */
+-
+ 	.set	reorder
+ 
+ 	.type	fault@function
+diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+index 33133d3..9e60d11 100644
+--- a/arch/mips/kernel/signal.c
++++ b/arch/mips/kernel/signal.c
+@@ -31,7 +31,6 @@
+ #include <linux/bitops.h>
+ #include <asm/cacheflush.h>
+ #include <asm/fpu.h>
+-#include <asm/msa.h>
+ #include <asm/sim.h>
+ #include <asm/ucontext.h>
+ #include <asm/cpu-features.h>
+@@ -48,9 +47,6 @@ static int (*restore_fp_context)(struct sigcontext __user *sc);
+ extern asmlinkage int _save_fp_context(struct sigcontext __user *sc);
+ extern asmlinkage int _restore_fp_context(struct sigcontext __user *sc);
+ 
+-extern asmlinkage int _save_msa_context(struct sigcontext __user *sc);
+-extern asmlinkage int _restore_msa_context(struct sigcontext __user *sc);
+-
+ struct sigframe {
+ 	u32 sf_ass[4];		/* argument save space for o32 */
+ 	u32 sf_pad[2];		/* Was: signal trampoline */
+@@ -100,60 +96,20 @@ static int copy_fp_from_sigcontext(struct sigcontext __user *sc)
+ }
+ 
+ /*
+- * These functions will save only the upper 64 bits of the vector registers,
+- * since the lower 64 bits have already been saved as the scalar FP context.
+- */
+-static int copy_msa_to_sigcontext(struct sigcontext __user *sc)
 -{
--	struct sk_buff **back_ptr;
+-	int i;
+-	int err = 0;
 -
--	/*
--	 * this function should be used only for newly allocated packets.
--	 * It assumes the first cacheline is for the back pointer related
--	 * book keeping info.
--	 */
--	back_ptr = (struct sk_buff **)(addr - MAC_SKB_BACK_PTR_SIZE);
--	return *back_ptr;
+-	for (i = 0; i < NUM_FPU_REGS; i++) {
+-		err |=
+-		    __put_user(get_fpr64(&current->thread.fpu.fpr[i], 1),
+-			       &sc->sc_msaregs[i]);
+-	}
+-	err |= __put_user(current->thread.fpu.msacsr, &sc->sc_msa_csr);
+-
+-	return err;
 -}
 -
--static inline void mac_put_skb_back_ptr(struct sk_buff *skb)
+-static int copy_msa_from_sigcontext(struct sigcontext __user *sc)
 -{
--	struct sk_buff **back_ptr = (struct sk_buff **)skb->data;
+-	int i;
+-	int err = 0;
+-	u64 val;
 -
--	/*
--	 * this function should be used only for newly allocated packets.
--	 * It assumes the first cacheline is for the back pointer related
--	 * book keeping info.
--	 */
--	skb_reserve(skb, MAC_SKB_BACK_PTR_SIZE);
--	*back_ptr = skb;
+-	for (i = 0; i < NUM_FPU_REGS; i++) {
+-		err |= __get_user(val, &sc->sc_msaregs[i]);
+-		set_fpr64(&current->thread.fpu.fpr[i], 1, val);
+-	}
+-	err |= __get_user(current->thread.fpu.msacsr, &sc->sc_msa_csr);
+-
+-	return err;
 -}
-+#define MAC_SKB_BACK_PTR_SIZE SMP_CACHE_BYTES
- 
- static int send_to_rfr_fifo(struct xlr_net_priv *priv, void *addr)
- {
-@@ -136,9 +104,11 @@ static int send_to_rfr_fifo(struct xlr_net_priv *priv, void *addr)
- 	return ret;
- }
- 
--static inline struct sk_buff *xlr_alloc_skb(void)
-+static inline unsigned char *xlr_alloc_skb(void)
- {
- 	struct sk_buff *skb;
-+	int buf_len = sizeof(struct sk_buff *);
-+	unsigned char *skb_data;
- 
- 	/* skb->data is cache aligned */
- 	skb = alloc_skb(XLR_RX_BUF_SIZE, GFP_ATOMIC);
-@@ -146,31 +116,41 @@ static inline struct sk_buff *xlr_alloc_skb(void)
- 		pr_err("SKB allocation failed\n");
- 		return NULL;
- 	}
--	mac_put_skb_back_ptr(skb);
--	return skb;
-+	skb_data = skb->data;
-+	skb_put(skb, MAC_SKB_BACK_PTR_SIZE);
-+	skb_pull(skb, MAC_SKB_BACK_PTR_SIZE);
-+	memcpy(skb_data, &skb, buf_len);
-+
-+	return skb->data;
- }
- 
- static void xlr_net_fmn_handler(int bkt, int src_stnid, int size,
- 		int code, struct nlm_fmn_msg *msg, void *arg)
- {
--	struct sk_buff *skb, *skb_new = NULL;
-+	struct sk_buff *skb;
-+	void *skb_data = NULL;
- 	struct net_device *ndev;
- 	struct xlr_net_priv *priv;
--	u64 length, port;
--	void *addr;
-+	u32 port, length;
-+	unsigned char *addr;
-+	struct xlr_adapter *adapter = (struct xlr_adapter *) arg;
- 
- 	length = (msg->msg0 >> 40) & 0x3fff;
- 	if (length == 0) {
- 		addr = bus_to_virt(msg->msg0 & 0xffffffffffULL);
--		dev_kfree_skb_any(addr);
--	} else if (length) {
--		addr = bus_to_virt(msg->msg0 & 0xffffffffe0ULL);
-+		addr = addr - MAC_SKB_BACK_PTR_SIZE;
-+		skb = (struct sk_buff *) *(unsigned long *)addr;
-+		dev_kfree_skb_any((struct sk_buff *)addr);
-+	} else {
-+		addr = (unsigned char *)
-+			bus_to_virt(msg->msg0 & 0xffffffffe0ULL);
- 		length = length - BYTE_OFFSET - MAC_CRC_LEN;
--		port = msg->msg0 & 0x0f;
--		if (src_stnid == FMN_STNID_GMAC1)
--			port = port + 4;
--		skb = mac_get_skb_back_ptr(addr);
--		skb->dev = mac_to_ndev[port];
-+		port = ((int)msg->msg0) & 0x0f;
-+		addr = addr - MAC_SKB_BACK_PTR_SIZE;
-+		skb = (struct sk_buff *) *(unsigned long *)addr;
-+		skb->dev = adapter->netdev[port];
-+		if (skb->dev == NULL)
-+			return;
- 		ndev = skb->dev;
- 		priv = netdev_priv(ndev);
- 
-@@ -181,14 +161,16 @@ static void xlr_net_fmn_handler(int bkt, int src_stnid, int size,
- 		skb->dev->last_rx = jiffies;
- 		netif_rx(skb);
- 		/* Fill rx ring */
--		skb_new = xlr_alloc_skb();
--		if (skb_new)
--			send_to_rfr_fifo(priv, skb_new->data);
-+		skb_data = xlr_alloc_skb();
-+		if (skb_data)
-+			send_to_rfr_fifo(priv, skb_data);
- 	}
- 	return;
- }
- 
--/* Ethtool operation */
-+/*
-+ * Ethtool operation
-+ */
- static int xlr_get_settings(struct net_device *ndev, struct ethtool_cmd *ecmd)
- {
- 	struct xlr_net_priv *priv = netdev_priv(ndev);
-@@ -198,7 +180,6 @@ static int xlr_get_settings(struct net_device *ndev, struct ethtool_cmd *ecmd)
- 		return -ENODEV;
- 	return phy_ethtool_gset(phydev, ecmd);
- }
 -
- static int xlr_set_settings(struct net_device *ndev, struct ethtool_cmd *ecmd)
- {
- 	struct xlr_net_priv *priv = netdev_priv(ndev);
-@@ -214,18 +195,23 @@ static struct ethtool_ops xlr_ethtool_ops = {
- 	.set_settings = xlr_set_settings,
- };
- 
--/* Net operations */
-+
-+/*
-+ * Net operations
-+ */
- static int xlr_net_fill_rx_ring(struct net_device *ndev)
- {
--	struct sk_buff *skb;
-+	void *skb_data;
- 	struct xlr_net_priv *priv = netdev_priv(ndev);
- 	int i;
- 
--	for (i = 0; i < MAX_FRIN_SPILL/2; i++) {
--		skb = xlr_alloc_skb();
--		if (!skb)
-+	for (i = 0; i < MAX_FRIN_SPILL/4; i++) {
-+		skb_data = xlr_alloc_skb();
-+		if (!skb_data) {
-+			pr_err("SKB allocation failed\n");
- 			return -ENOMEM;
--		send_to_rfr_fifo(priv, skb->data);
-+		}
-+		send_to_rfr_fifo(priv, skb_data);
- 	}
- 	pr_info("Rx ring setup done\n");
- 	return 0;
-@@ -237,6 +223,7 @@ static int xlr_net_open(struct net_device *ndev)
- 	struct xlr_net_priv *priv = netdev_priv(ndev);
- 	struct phy_device *phydev = priv->mii_bus->phy_map[priv->phy_addr];
- 
-+
- 	/* schedule a link state check */
- 	phy_start(phydev);
- 
-@@ -245,10 +232,11 @@ static int xlr_net_open(struct net_device *ndev)
- 		pr_err("Autoneg failed\n");
- 		return err;
- 	}
--
- 	/* Setup the speed from PHY to internal reg*/
- 	xlr_set_gmac_speed(priv);
-+
- 	netif_tx_start_all_queues(ndev);
-+
- 	return 0;
- }
- 
-@@ -300,7 +288,7 @@ static netdev_tx_t xlr_net_start_xmit(struct sk_buff *skb,
- 
- 	xlr_make_tx_desc(&msg, virt_to_phys(skb->data), skb);
- 	flags = nlm_cop2_enable_irqsave();
--	ret = nlm_fmn_send(2, 0, priv->nd->tx_stnid, &msg);
-+	ret = nlm_fmn_send(2, 0, priv->tx_stnid, &msg);
- 	nlm_cop2_disable_irqrestore(flags);
- 	if (ret)
- 		dev_kfree_skb_any(skb);
-@@ -433,7 +421,9 @@ static struct net_device_ops xlr_netdev_ops = {
- 	.ndo_get_stats64 = xlr_get_stats64,
- };
- 
--/* Gmac init */
-+/*
-+ * Gmac init
-+ */
- static void *xlr_config_spill(struct xlr_net_priv *priv, int reg_start_0,
- 		int reg_start_1, int reg_size, int size)
- {
-@@ -539,13 +529,13 @@ static void xlr_config_pde(struct xlr_net_priv *priv)
-  * Setup the Message ring credits, bucket size and other
-  * common configuration
+-/*
+  * Helper routines
   */
--static void xlr_config_common(struct xlr_net_priv *priv)
-+static int xlr_config_common(struct xlr_net_priv *priv)
- {
- 	struct xlr_fmn_info *gmac = priv->nd->gmac_fmn_info;
- 	int start_stn_id = gmac->start_stn_id;
- 	int end_stn_id = gmac->end_stn_id;
- 	int *bucket_size = priv->nd->bucket_size;
--	int i, j;
-+	int i, j, err;
- 
- 	/* Setting non-core MsgBktSize(0x321 - 0x325) */
- 	for (i = start_stn_id; i <= end_stn_id; i++) {
-@@ -572,9 +562,12 @@ static void xlr_config_common(struct xlr_net_priv *priv)
- 	xlr_nae_wreg(priv->base_addr, R_DMACR3, 0xffffffff);
- 	xlr_nae_wreg(priv->base_addr, R_FREEQCARVE, 0);
- 
--	xlr_net_fill_rx_ring(priv->ndev);
-+	err = xlr_net_fill_rx_ring(priv->ndev);
-+	if (err)
-+		return err;
- 	nlm_register_fmn_handler(start_stn_id, end_stn_id, xlr_net_fmn_handler,
--					NULL);
-+			priv->adapter);
-+	return 0;
- }
- 
- static void xlr_config_translate_table(struct xlr_net_priv *priv)
-@@ -775,6 +768,7 @@ static void xlr_sgmii_init(struct xlr_net_priv *priv)
- 	xlr_nae_wreg(priv->gpio_addr, 0x22, 0x7e6802);
- 	xlr_nae_wreg(priv->gpio_addr, 0x21, 0x7104);
- 
-+
- 	/* enable autoneg - more magic */
- 	phy = priv->phy_addr % 4 + 27;
- 	xlr_phy_write(priv->pcs_addr, phy, 0, 0x1000);
-@@ -790,7 +784,6 @@ void xlr_set_gmac_speed(struct xlr_net_priv *priv)
- 		xlr_sgmii_init(priv);
- 
- 	if (phydev->speed != priv->phy_speed) {
--		pr_info("change %d to %d\n", priv->phy_speed, phydev->speed);
- 		speed = phydev->speed;
- 		if (speed == SPEED_1000) {
- 			/* Set interface to Byte mode */
-@@ -832,12 +825,12 @@ static void xlr_gmac_link_adjust(struct net_device *ndev)
- 	intreg = xlr_nae_rdreg(priv->base_addr, R_INTREG);
- 	if (phydev->link) {
- 		if (phydev->speed != priv->phy_speed) {
--			pr_info("gmac%d : Link up\n", priv->port_id);
- 			xlr_set_gmac_speed(priv);
-+			pr_info("gmac%d : Link up\n", priv->port_id);
- 		}
- 	} else {
--		pr_info("gmac%d : Link down\n", priv->port_id);
- 		xlr_set_gmac_speed(priv);
-+		pr_info("gmac%d : Link down\n", priv->port_id);
- 	}
- }
- 
-@@ -877,7 +870,6 @@ static int xlr_setup_mdio(struct xlr_net_priv *priv,
+-static int protected_save_fp_context(struct sigcontext __user *sc,
+-				     unsigned used_math)
++static int protected_save_fp_context(struct sigcontext __user *sc)
  {
  	int err;
- 
--	priv->phy_addr = priv->nd->phy_addr;
- 	priv->mii_bus = mdiobus_alloc();
- 	if (!priv->mii_bus) {
- 		pr_err("mdiobus alloc failed\n");
-@@ -897,6 +889,7 @@ static int xlr_setup_mdio(struct xlr_net_priv *priv,
- 		mdiobus_free(priv->mii_bus);
- 		return -ENOMEM;
- 	}
-+
- 	priv->mii_bus->irq[priv->phy_addr] = priv->ndev->irq;
- 
- 	/* Scan only the enabled address */
-@@ -967,7 +960,9 @@ static void xlr_port_disable(struct xlr_net_priv *priv)
- 		1 << O_RX_CONTROL__RxEnable, 0);
- }
- 
--/* Initialization of gmac */
-+/*
-+ * Initialization of gmac
-+ */
- static int xlr_gmac_init(struct xlr_net_priv *priv,
- 		struct platform_device *pdev)
- {
-@@ -976,6 +971,7 @@ static int xlr_gmac_init(struct xlr_net_priv *priv,
- 	pr_info("Initializing the gmac%d\n", priv->port_id);
- 
- 	xlr_port_disable(priv);
-+
- 	xlr_nae_wreg(priv->base_addr, R_DESC_PACK_CTRL,
- 			(1 << O_DESC_PACK_CTRL__MaxEntry)
- 			| (BYTE_OFFSET << O_DESC_PACK_CTRL__ByteOffset)
-@@ -1004,8 +1000,8 @@ static int xlr_gmac_init(struct xlr_net_priv *priv,
- 	/* Clear all stats */
- 	xlr_reg_update(priv->base_addr, R_STATCTRL,
- 		0, 1 << O_STATCTRL__ClrCnt);
--	xlr_reg_update(priv->base_addr, R_STATCTRL,
--		1 << O_STATCTRL__ClrCnt, 1 << O_STATCTRL__ClrCnt);
-+	xlr_reg_update(priv->base_addr, R_STATCTRL, 1 << 2,
-+		1 << 2);
- 	return 0;
- }
- 
-@@ -1014,87 +1010,114 @@ static int xlr_net_probe(struct platform_device *pdev)
- 	struct xlr_net_priv *priv = NULL;
- 	struct net_device *ndev;
- 	struct resource *res;
--	int mac, err;
-+	struct xlr_adapter *adapter;
-+	int err, port;
- 
--	mac = pdev->id;
--	ndev = alloc_etherdev_mq(sizeof(struct xlr_net_priv), 32);
--	if (!ndev) {
--		pr_err("Allocation of Ethernet device failed\n");
--		return -ENOMEM;
--	}
-+	pr_info("XLR/XLS Ethernet Driver controller %d\n", pdev->id);
- 
--	priv = netdev_priv(ndev);
--	priv->pdev = pdev;
--	priv->ndev = ndev;
--	priv->port_id = mac;
--	priv->nd = (struct xlr_net_data *)pdev->dev.platform_data;
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (res == NULL) {
--		pr_err("No memory resource for MAC %d\n", mac);
--		err = -ENODEV;
--		goto err_gmac;
-+	/*
-+	 * Allocate our adapter data structure and attach it to the device.
-+	 */
-+	adapter = (struct xlr_adapter *)
-+		devm_kzalloc(&pdev->dev, sizeof(adapter), GFP_KERNEL);
-+	if (!adapter) {
-+		err = -ENOMEM;
-+		return err;
- 	}
- 
--	ndev->base_addr = (unsigned long) devm_ioremap_resource
--		(&pdev->dev, res);
--	if (IS_ERR_VALUE(ndev->base_addr)) {
--		err = ndev->base_addr;
--		goto err_gmac;
--	}
-+	/*
-+	 * XLR and XLS have 1 and 2 NAE controller respectively
-+	 * Each controller has 4 gmac ports, mapping each controller
-+	 * under one parent device, 4 gmac ports under one device.
-+	 */
-+	for (port = 0; port < pdev->num_resources/2; port++) {
-+		ndev = alloc_etherdev_mq(sizeof(struct xlr_net_priv), 32);
-+		if (!ndev) {
-+			pr_err("Allocation of Ethernet device failed\n");
-+			return -ENOMEM;
-+		}
- 
--	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
--	if (res == NULL) {
--		pr_err("No irq resource for MAC %d\n", mac);
--		err = -ENODEV;
--		goto err_gmac;
--	}
--	ndev->irq = res->start;
-+		priv = netdev_priv(ndev);
-+		priv->pdev = pdev;
-+		priv->ndev = ndev;
-+		priv->port_id = (pdev->id * 4) + port;
-+		priv->nd = (struct xlr_net_data *)pdev->dev.platform_data;
-+		res = platform_get_resource(pdev, IORESOURCE_MEM, port);
-+
-+		if (res == NULL) {
-+			pr_err("No memory resource for MAC %d\n",
-+					priv->port_id);
-+			err = -ENODEV;
-+			goto err_gmac;
-+		}
- 
--	priv->mii_addr = priv->nd->mii_addr;
--	priv->serdes_addr = priv->nd->serdes_addr;
--	priv->pcs_addr = priv->nd->pcs_addr;
--	priv->gpio_addr = priv->nd->gpio_addr;
--	priv->base_addr = (u32 *) ndev->base_addr;
-+		priv->base_addr = devm_ioremap_resource(&pdev->dev, res);
-+		if (IS_ERR(priv->base_addr)) {
-+			err = PTR_ERR(priv->base_addr);
-+			goto err_gmac;
-+		}
- 
--	mac_to_ndev[mac] = ndev;
--	ndev->netdev_ops = &xlr_netdev_ops;
--	ndev->watchdog_timeo = HZ;
-+		priv->adapter = adapter;
-+		adapter->netdev[port] = ndev;
- 
--	/* Setup Mac address and Rx mode */
--	eth_hw_addr_random(ndev);
--	xlr_hw_set_mac_addr(ndev);
--	xlr_set_rx_mode(ndev);
-+		res = platform_get_resource(pdev, IORESOURCE_IRQ, port);
-+		if (res == NULL) {
-+			pr_err("No irq resource for MAC %d\n", priv->port_id);
-+			err = -ENODEV;
-+			goto err_gmac;
-+		}
- 
--	priv->num_rx_desc += MAX_NUM_DESC_SPILL;
--	SET_ETHTOOL_OPS(ndev, &xlr_ethtool_ops);
--	SET_NETDEV_DEV(ndev, &pdev->dev);
-+		ndev->irq = res->start;
-+
-+		priv->phy_addr = priv->nd->phy_addr[port];
-+		priv->tx_stnid = priv->nd->tx_stnid[port];
-+		priv->mii_addr = priv->nd->mii_addr;
-+		priv->serdes_addr = priv->nd->serdes_addr;
-+		priv->pcs_addr = priv->nd->pcs_addr;
-+		priv->gpio_addr = priv->nd->gpio_addr;
-+
-+		ndev->netdev_ops = &xlr_netdev_ops;
-+		ndev->watchdog_timeo = HZ;
-+
-+		/* Setup Mac address and Rx mode */
-+		eth_hw_addr_random(ndev);
-+		xlr_hw_set_mac_addr(ndev);
-+		xlr_set_rx_mode(ndev);
-+
-+		priv->num_rx_desc += MAX_NUM_DESC_SPILL;
-+		SET_ETHTOOL_OPS(ndev, &xlr_ethtool_ops);
-+		SET_NETDEV_DEV(ndev, &pdev->dev);
- 
--	/* Common registers, do one time initialization */
--	if (mac == 0 || mac == 4) {
- 		xlr_config_fifo_spill_area(priv);
- 		/* Configure PDE to Round-Robin pkt distribution */
- 		xlr_config_pde(priv);
- 		xlr_config_parser(priv);
--	}
--	/* Call init with respect to port */
--	if (strcmp(res->name, "gmac") == 0) {
--		err = xlr_gmac_init(priv, pdev);
-+
-+		/* Call init with respect to port */
-+		if (strcmp(res->name, "gmac") == 0) {
-+			err = xlr_gmac_init(priv, pdev);
-+			if (err) {
-+				pr_err("gmac%d init failed\n", priv->port_id);
-+				goto err_gmac;
-+			}
-+		}
-+
-+		if (priv->port_id == 0 || priv->port_id == 4) {
-+			err = xlr_config_common(priv);
-+			if (err)
-+				goto err_netdev;
-+		}
-+
-+		err = register_netdev(ndev);
- 		if (err) {
--			pr_err("gmac%d init failed\n", mac);
--			goto err_gmac;
-+			pr_err("Registering netdev failed for gmac%d\n",
-+					priv->port_id);
-+			goto err_netdev;
+-	bool save_msa = cpu_has_msa && (used_math & USEDMATH_MSA);
+ #ifndef CONFIG_EVA
+ 	while (1) {
+ 		lock_fpu_owner();
+ 		if (is_fpu_owner()) {
+ 			err = save_fp_context(sc);
+-			if (save_msa && !err)
+-				err = _save_msa_context(sc);
+ 			unlock_fpu_owner();
+ 		} else {
+ 			unlock_fpu_owner();
+ 			err = copy_fp_to_sigcontext(sc);
+-			if (save_msa && !err)
+-				err = copy_msa_to_sigcontext(sc);
  		}
-+		platform_set_drvdata(pdev, priv);
+ 		if (likely(!err))
+ 			break;
+@@ -169,38 +125,24 @@ static int protected_save_fp_context(struct sigcontext __user *sc,
+ 	 * EVA does not have FPU EVA instructions so saving fpu context directly
+ 	 * does not work.
+ 	 */
+-	disable_msa();
+ 	lose_fpu(1);
+ 	err = save_fp_context(sc); /* this might fail */
+-	if (save_msa && !err)
+-		err = copy_msa_to_sigcontext(sc);
+ #endif
+ 	return err;
+ }
+ 
+-static int protected_restore_fp_context(struct sigcontext __user *sc,
+-					unsigned used_math)
++static int protected_restore_fp_context(struct sigcontext __user *sc)
+ {
+ 	int err, tmp __maybe_unused;
+-	bool restore_msa = cpu_has_msa && (used_math & USEDMATH_MSA);
+ #ifndef CONFIG_EVA
+ 	while (1) {
+ 		lock_fpu_owner();
+ 		if (is_fpu_owner()) {
+ 			err = restore_fp_context(sc);
+-			if (restore_msa && !err) {
+-				enable_msa();
+-				err = _restore_msa_context(sc);
+-			} else {
+-				/* signal handler may have used MSA */
+-				disable_msa();
+-			}
+ 			unlock_fpu_owner();
+ 		} else {
+ 			unlock_fpu_owner();
+ 			err = copy_fp_from_sigcontext(sc);
+-			if (!err && (used_math & USEDMATH_MSA))
+-				err = copy_msa_from_sigcontext(sc);
+ 		}
+ 		if (likely(!err))
+ 			break;
+@@ -216,11 +158,8 @@ static int protected_restore_fp_context(struct sigcontext __user *sc,
+ 	 * EVA does not have FPU EVA instructions so restoring fpu context
+ 	 * directly does not work.
+ 	 */
+-	enable_msa();
+ 	lose_fpu(0);
+ 	err = restore_fp_context(sc); /* this might fail */
+-	if (restore_msa && !err)
+-		err = copy_msa_from_sigcontext(sc);
+ #endif
+ 	return err;
+ }
+@@ -252,8 +191,7 @@ int setup_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
+ 		err |= __put_user(rddsp(DSP_MASK), &sc->sc_dsp);
  	}
  
--	if (mac == 0 || mac == 4)
--		xlr_config_common(priv);
--
--	err = register_netdev(ndev);
--	if (err)
--		goto err_netdev;
--	platform_set_drvdata(pdev, priv);
- 	return 0;
--
- err_netdev:
- 	mdiobus_free(priv->mii_bus);
- err_gmac:
-diff --git a/drivers/staging/netlogic/xlr_net.h b/drivers/staging/netlogic/xlr_net.h
-index cea7966..13e03f0 100644
---- a/drivers/staging/netlogic/xlr_net.h
-+++ b/drivers/staging/netlogic/xlr_net.h
-@@ -1069,14 +1069,20 @@ enum tsv_rsv_reg {
- 	CARRY_REG_2 = 0x4d,
- };
+-	used_math = used_math() ? USEDMATH_FP : 0;
+-	used_math |= thread_msa_context_live() ? USEDMATH_MSA : 0;
++	used_math = !!used_math();
+ 	err |= __put_user(used_math, &sc->sc_used_math);
  
-+struct xlr_adapter {
-+	struct net_device *netdev[4];
-+};
-+
- struct xlr_net_priv {
- 	u32 __iomem *base_addr;
- 	struct net_device *ndev;
-+	struct xlr_adapter *adapter;
- 	struct mii_bus *mii_bus;
- 	int num_rx_desc;
- 	int phy_addr;	/* PHY addr on MDIO bus */
- 	int pcs_id;	/* PCS id on MDIO bus */
- 	int port_id;	/* Port(gmac/xgmac) number, i.e 0-7 */
-+	int tx_stnid;
- 	u32 __iomem *mii_addr;
- 	u32 __iomem *serdes_addr;
- 	u32 __iomem *pcs_addr;
-@@ -1096,4 +1102,4 @@ struct xlr_net_priv {
- 	u64 *class_3_spill;
- };
+ 	if (used_math) {
+@@ -261,7 +199,7 @@ int setup_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
+ 		 * Save FPU state to signal context. Signal handler
+ 		 * will "inherit" current FPU state.
+ 		 */
+-		err |= protected_save_fp_context(sc, used_math);
++		err |= protected_save_fp_context(sc);
+ 	}
+ 	return err;
+ }
+@@ -286,14 +224,14 @@ int fpcsr_pending(unsigned int __user *fpcsr)
+ }
  
--void xlr_set_gmac_speed(struct xlr_net_priv *priv);
-+extern void xlr_set_gmac_speed(struct xlr_net_priv *priv);
+ static int
+-check_and_restore_fp_context(struct sigcontext __user *sc, unsigned used_math)
++check_and_restore_fp_context(struct sigcontext __user *sc)
+ {
+ 	int err, sig;
+ 
+ 	err = sig = fpcsr_pending(&sc->sc_fpc_csr);
+ 	if (err > 0)
+ 		err = 0;
+-	err |= protected_restore_fp_context(sc, used_math);
++	err |= protected_restore_fp_context(sc);
+ 	return err ?: sig;
+ }
+ 
+@@ -333,10 +271,9 @@ int restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
+ 	if (used_math) {
+ 		/* restore fpu context if we have used it before */
+ 		if (!err)
+-			err = check_and_restore_fp_context(sc, used_math);
++			err = check_and_restore_fp_context(sc);
+ 	} else {
+-		/* signal handler may have used FPU or MSA. Disable them. */
+-		disable_msa();
++		/* signal handler may have used FPU.  Give it up. */
+ 		lose_fpu(0);
+ 	}
+ 
+diff --git a/arch/mips/kernel/signal32.c b/arch/mips/kernel/signal32.c
+index 299f956..bae2e6e 100644
+--- a/arch/mips/kernel/signal32.c
++++ b/arch/mips/kernel/signal32.c
+@@ -30,7 +30,6 @@
+ #include <asm/sim.h>
+ #include <asm/ucontext.h>
+ #include <asm/fpu.h>
+-#include <asm/msa.h>
+ #include <asm/war.h>
+ #include <asm/vdso.h>
+ #include <asm/dsp.h>
+@@ -43,9 +42,6 @@ static int (*restore_fp_context32)(struct sigcontext32 __user *sc);
+ extern asmlinkage int _save_fp_context32(struct sigcontext32 __user *sc);
+ extern asmlinkage int _restore_fp_context32(struct sigcontext32 __user *sc);
+ 
+-extern asmlinkage int _save_msa_context32(struct sigcontext32 __user *sc);
+-extern asmlinkage int _restore_msa_context32(struct sigcontext32 __user *sc);
+-
+ /*
+  * Including <asm/unistd.h> would give use the 64-bit syscall numbers ...
+  */
+@@ -115,59 +111,19 @@ static int copy_fp_from_sigcontext32(struct sigcontext32 __user *sc)
+ }
+ 
+ /*
+- * These functions will save only the upper 64 bits of the vector registers,
+- * since the lower 64 bits have already been saved as the scalar FP context.
+- */
+-static int copy_msa_to_sigcontext32(struct sigcontext32 __user *sc)
+-{
+-	int i;
+-	int err = 0;
+-
+-	for (i = 0; i < NUM_FPU_REGS; i++) {
+-		err |=
+-		    __put_user(get_fpr64(&current->thread.fpu.fpr[i], 1),
+-			       &sc->sc_msaregs[i]);
+-	}
+-	err |= __put_user(current->thread.fpu.msacsr, &sc->sc_msa_csr);
+-
+-	return err;
+-}
+-
+-static int copy_msa_from_sigcontext32(struct sigcontext32 __user *sc)
+-{
+-	int i;
+-	int err = 0;
+-	u64 val;
+-
+-	for (i = 0; i < NUM_FPU_REGS; i++) {
+-		err |= __get_user(val, &sc->sc_msaregs[i]);
+-		set_fpr64(&current->thread.fpu.fpr[i], 1, val);
+-	}
+-	err |= __get_user(current->thread.fpu.msacsr, &sc->sc_msa_csr);
+-
+-	return err;
+-}
+-
+-/*
+  * sigcontext handlers
+  */
+-static int protected_save_fp_context32(struct sigcontext32 __user *sc,
+-				       unsigned used_math)
++static int protected_save_fp_context32(struct sigcontext32 __user *sc)
+ {
+ 	int err;
+-	bool save_msa = cpu_has_msa && (used_math & USEDMATH_MSA);
+ 	while (1) {
+ 		lock_fpu_owner();
+ 		if (is_fpu_owner()) {
+ 			err = save_fp_context32(sc);
+-			if (save_msa && !err)
+-				err = _save_msa_context32(sc);
+ 			unlock_fpu_owner();
+ 		} else {
+ 			unlock_fpu_owner();
+ 			err = copy_fp_to_sigcontext32(sc);
+-			if (save_msa && !err)
+-				err = copy_msa_to_sigcontext32(sc);
+ 		}
+ 		if (likely(!err))
+ 			break;
+@@ -181,28 +137,17 @@ static int protected_save_fp_context32(struct sigcontext32 __user *sc,
+ 	return err;
+ }
+ 
+-static int protected_restore_fp_context32(struct sigcontext32 __user *sc,
+-					  unsigned used_math)
++static int protected_restore_fp_context32(struct sigcontext32 __user *sc)
+ {
+ 	int err, tmp __maybe_unused;
+-	bool restore_msa = cpu_has_msa && (used_math & USEDMATH_MSA);
+ 	while (1) {
+ 		lock_fpu_owner();
+ 		if (is_fpu_owner()) {
+ 			err = restore_fp_context32(sc);
+-			if (restore_msa && !err) {
+-				enable_msa();
+-				err = _restore_msa_context32(sc);
+-			} else {
+-				/* signal handler may have used MSA */
+-				disable_msa();
+-			}
+ 			unlock_fpu_owner();
+ 		} else {
+ 			unlock_fpu_owner();
+ 			err = copy_fp_from_sigcontext32(sc);
+-			if (restore_msa && !err)
+-				err = copy_msa_from_sigcontext32(sc);
+ 		}
+ 		if (likely(!err))
+ 			break;
+@@ -241,8 +186,7 @@ static int setup_sigcontext32(struct pt_regs *regs,
+ 		err |= __put_user(mflo3(), &sc->sc_lo3);
+ 	}
+ 
+-	used_math = used_math() ? USEDMATH_FP : 0;
+-	used_math |= thread_msa_context_live() ? USEDMATH_MSA : 0;
++	used_math = !!used_math();
+ 	err |= __put_user(used_math, &sc->sc_used_math);
+ 
+ 	if (used_math) {
+@@ -250,21 +194,20 @@ static int setup_sigcontext32(struct pt_regs *regs,
+ 		 * Save FPU state to signal context.  Signal handler
+ 		 * will "inherit" current FPU state.
+ 		 */
+-		err |= protected_save_fp_context32(sc, used_math);
++		err |= protected_save_fp_context32(sc);
+ 	}
+ 	return err;
+ }
+ 
+ static int
+-check_and_restore_fp_context32(struct sigcontext32 __user *sc,
+-			       unsigned used_math)
++check_and_restore_fp_context32(struct sigcontext32 __user *sc)
+ {
+ 	int err, sig;
+ 
+ 	err = sig = fpcsr_pending(&sc->sc_fpc_csr);
+ 	if (err > 0)
+ 		err = 0;
+-	err |= protected_restore_fp_context32(sc, used_math);
++	err |= protected_restore_fp_context32(sc);
+ 	return err ?: sig;
+ }
+ 
+@@ -301,10 +244,9 @@ static int restore_sigcontext32(struct pt_regs *regs,
+ 	if (used_math) {
+ 		/* restore fpu context if we have used it before */
+ 		if (!err)
+-			err = check_and_restore_fp_context32(sc, used_math);
++			err = check_and_restore_fp_context32(sc);
+ 	} else {
+-		/* signal handler may have used FPU or MSA. Disable them. */
+-		disable_msa();
++		/* signal handler may have used FPU.  Give it up. */
+ 		lose_fpu(0);
+ 	}
+ 
 -- 
-1.7.9.5
+2.0.0

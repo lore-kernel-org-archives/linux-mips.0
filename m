@@ -1,17 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45365 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6817074AbaFTKurRwkTL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 20 Jun 2014 12:50:47 +0200
-Message-ID: <53A411FF.5070505@imgtec.com>
-Date: Fri, 20 Jun 2014 11:50:39 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mail-by2lp0237.outbound.protection.outlook.com ([207.46.163.237]:53525
+        "EHLO na01-by2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S6859947AbaFTLX55ImW9 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 20 Jun 2014 13:23:57 +0200
+From: Sorin Dumitru <sdumitru@ixiacom.com>
+Subject: [PATCH v2] mips: n32: use compat getsockopt syscall
+Date: Fri, 20 Jun 2014 14:23:35 +0300
+Message-ID: <1403263415-15765-1-git-send-email-sdumitru@ixiacom.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mips: n32: use compat getsockopt syscall
-References: <1403250786-9763-1-git-send-email-sdumitru@ixiacom.com> <53A404D2.3030303@imgtec.com> <53A40FB0.2020503@ixiacom.com>
-In-Reply-To: <53A40FB0.2020503@ixiacom.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <sdumitru@ixiacom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,26 +19,34 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sorin Dumitru <sdumitru@ixiacom.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Cc: ralf@linux-mips.org
-Message-ID: <20140620105039.j26bPqpJQsLG2WBlc4z_Dbisa2-OPhg3xMpA03Parfs@z>
+To: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org, sdumitru@ixiacom.com
+Message-ID: <20140620112335.TfyD5szO4FSTvX_bgPIgiLq47ANaCkgzW3dbEz-o62U@z>
 
-On 20/06/14 11:40, Sorin Dumitru wrote:
-> On 06/20/14 12:54, James Hogan wrote:
->> On 20/06/14 08:53, Sorin Dumitru wrote:
->>> Signed-off-by: Sorin Dumitru <sdumitru@ixiacom.com>
->>
->> A little more commit message wouldn't hurt. Did it break a particular
->> program?
-> 
-> Yes, it was found by an internal program trying to get IP_PKTOPTIONS on
-> a cavium octeon board.
-> 
-> Should I resubmit stating what was broken in the commit message?
+The IP_PKTOPTIONS sockopt puts control messages
+in option_values, these need to be handled
+differently in the compat case. This is already
+done through the MSG_CMSG_COMPAT flag, we just
+need to use compat_sys_getsockopt which sets that
+flag.
 
-Yeh, if you don't mind. I think it's useful to know exactly why a change
-was made and what it fixes when later digging through the git history
-(e.g. commit 515c7af85ed9 is a great example of that).
+Signed-off-by: Sorin Dumitru <sdumitru@ixiacom.com>
+---
+ arch/mips/kernel/scall64-n32.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks
-James
+diff --git a/arch/mips/kernel/scall64-n32.S b/arch/mips/kernel/scall64-n32.S
+index c1dbcda..e543861 100644
+--- a/arch/mips/kernel/scall64-n32.S
++++ b/arch/mips/kernel/scall64-n32.S
+@@ -162,7 +162,7 @@ EXPORT(sysn32_call_table)
+ 	PTR	sys_getpeername
+ 	PTR	sys_socketpair
+ 	PTR	compat_sys_setsockopt
+-	PTR	sys_getsockopt
++	PTR	compat_sys_getsockopt
+ 	PTR	__sys_clone			/* 6055 */
+ 	PTR	__sys_fork
+ 	PTR	compat_sys_execve
+-- 
+2.0.0

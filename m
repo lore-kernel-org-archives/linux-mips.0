@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:29640 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:28198 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6821443AbaFWItFUT6q- (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jun 2014 10:49:05 +0200
+        with ESMTP id S6859939AbaFWJjNRmbDA (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jun 2014 11:39:13 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: msc: Prevent out-of-bounds writes to MIPS SC ioremap'd region
-Date: Mon, 23 Jun 2014 09:48:51 +0100
-Message-ID: <1403513331-2247-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH 00/17] Misc MIPS/BPF fixes for 3.16
+Date: Mon, 23 Jun 2014 10:38:43 +0100
+Message-ID: <1403516340-22997-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -19,48 +19,46 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20140623084851.1CGWwG9TK_lN6IsDfMy7beKFQ2Y4XfW6JkMcuNZKSmw@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>, "David S. Miller" <davem@davemloft.net>, Daniel Borkmann <dborkman@redhat.com>, Alexei Starovoitov <ast@plumgrid.com>, netdev@vger.kernel.org
+Message-ID: <20140623093843.98CA51KA6iMzsvu_Dz53gd7fj19pfzoFzfwb63IqZj0@z>
 
-Previously, the lower limit for the MIPS SC initialization loop was
-set incorrectly allowing one extra loop leading to writes
-beyond the MSC ioremap'd space. More precisely, the value of the 'imp'
-in the last loop increased beyond the msc_irqmap_t boundaries and
-as a result of which, the 'n' variable was loaded with an incorrect
-value. This value was used later on to calculate the offset in the
-MSC01_IC_SUP which led to random crashes like the following one:
+Hi,
 
-CPU 0 Unable to handle kernel paging request at virtual address e75c0200,
-epc == 8058dba4, ra == 8058db90
-[...]
-Call Trace:
-[<8058dba4>] init_msc_irqs+0x104/0x154
-[<8058b5bc>] arch_init_irq+0xd8/0x154
-[<805897b0>] start_kernel+0x220/0x36c
+Here are some fixes for MIPS/BPF for 3.16. These fixes make
+the bpf testsuite *almost* happy with only 2 tests (LD_IND_LL,
+LD_IND_NET) failing at the moment. Since fixing the remaining tests
+is not so trivial, it would be nice to have these fixes in 3.16 for now.
 
-Kernel panic - not syncing: Attempted to kill the idle task!
+The patches are based on the upstream-sfr/mips-for-linux-next tree
+because they depend on https://patchwork.linux-mips.org/patch/7099/
 
-This patch fixes the problem
+Markos Chandras (17):
+  MIPS: uasm: Add s3s1s2 instruction builder
+  MIPS: uasm: Add slt uasm instruction
+  MIPS: mm: uasm: Fix lh micro-assembler instruction
+  MIPS: bpf: Use the LO register to get division's quotient
+  MIPS: bpf: Return error code if the offset is a negative number
+  MIPS: bpf: Use 'andi' instead of 'and' for the VLAN cases
+  MIPS: bpf: Add SEEN_SKB to flags when looking for the PKT_TYPE
+  MIPS: bpf: Fix branch conditional for BPF_J{GT/GE} cases
+  MIPS: bpf: Use correct mask for VLAN_TAG case
+  MIPS: bpf: Fix return values for VLAN_TAG_PRESENT case
+  MIPS: bpf: Use pr_debug instead of pr_warn for unhandled opcodes
+  MIPS: bpf: Fix is_range() semantics
+  MIPS: bpf: Drop update_on_xread and always initialize the X register
+  MIPS: bpf: Prevent kernel fall over for >=32bit shifts
+  MIPS: bpf: Fix PKT_TYPE case for big-endian cores
+  MIPS: bpf: Use 32 or 64-bit load instruction to load an address to
+    register
+  MIPS: bpf: Fix stack space allocation for BPF memwords on MIPS64
 
-Cc: stable@vger.kernel.org
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/kernel/irq-msc01.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/include/asm/uasm.h      |   4 ++
+ arch/mips/include/uapi/asm/inst.h |   1 +
+ arch/mips/mm/uasm-micromips.c     |   1 +
+ arch/mips/mm/uasm-mips.c          |   3 +-
+ arch/mips/mm/uasm.c               |  10 +++-
+ arch/mips/net/bpf_jit.c           | 115 ++++++++++++++++++++++++--------------
+ 6 files changed, 90 insertions(+), 44 deletions(-)
 
-diff --git a/arch/mips/kernel/irq-msc01.c b/arch/mips/kernel/irq-msc01.c
-index 4858642d543d..a734b2c2f9ea 100644
---- a/arch/mips/kernel/irq-msc01.c
-+++ b/arch/mips/kernel/irq-msc01.c
-@@ -126,7 +126,7 @@ void __init init_msc_irqs(unsigned long icubase, unsigned int irqbase, msc_irqma
- 
- 	board_bind_eic_interrupt = &msc_bind_eic_interrupt;
- 
--	for (; nirq >= 0; nirq--, imp++) {
-+	for (; nirq > 0; nirq--, imp++) {
- 		int n = imp->im_irq;
- 
- 		switch (imp->im_type) {
 -- 
 2.0.0

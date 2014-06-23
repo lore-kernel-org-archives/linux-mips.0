@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:9777 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:24416 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860019AbaFWJjmejEp5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jun 2014 11:39:42 +0200
+        with ESMTP id S6860010AbaFWJjpZMaCj (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jun 2014 11:39:45 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 15/17] MIPS: bpf: Fix PKT_TYPE case for big-endian cores
-Date: Mon, 23 Jun 2014 10:38:58 +0100
-Message-ID: <1403516340-22997-16-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH 13/17] MIPS: bpf: Drop update_on_xread and always initialize the X register
+Date: Mon, 23 Jun 2014 10:38:56 +0100
+Message-ID: <1403516340-22997-14-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1403516340-22997-1-git-send-email-markos.chandras@imgtec.com>
 References: <1403516340-22997-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -22,34 +22,14 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>, "David S. Miller" <davem@davemloft.net>, Daniel Borkmann <dborkman@redhat.com>, Alexei Starovoitov <ast@plumgrid.com>, netdev@vger.kernel.org
-Message-ID: <20140623093858.igSF2LZUFw6iPTNiGtTE4c7vhZYwEHROQNpKvvNn0-c@z>
+Message-ID: <20140623093856.gknJySvTKNDph9XUTY30ArY1IiK_qHJpF9uWwtGrVWI@z>
 
-The skb->pkt_type field is defined as follows:
-
-u8 pkt_type:3,
-   fclone:2,
-   ipvs_property:1,
-   peeked:1,
-   nf_trace:1
-
-resulting to the following layout in big-endian systems
-
-[pkt_type][fclone][ipvs_propery][peeked][nf_trace]
-^                                                ^
-|                                                |
-LSB                                             MSB
-
-As a result, the existing code did not work because it was trying to
-match pkt_type == 7 whereas in reality it is 7<<5 on big-endian
-systems.
-
-This has been fixed in the interpreter in
-0dcceabb0c1bf2d4c12a748df9933fad303072a7
-"net: filter: fix SKF_AD_PKTTYPE extension on big-endian"
-
-The fix is to look for 7<<5 on big-endian systems for the pkt_type
-field, and shift by 5 so the packet type will be at the lower 3 bits
-of the A register.
+Previously, update_on_xread() only set the reset flag if SEEN_X hasn't
+been set already. However, SEEN_X is used to indicate that X is used
+as destination or source register so there are some cases where X
+is only used as source register and we really need to make sure that it
+has been initialized in time. As a result of which, drop this function and
+always set X to zero if it's used in any of the opcodes.
 
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Daniel Borkmann <dborkman@redhat.com>
@@ -57,43 +37,125 @@ Cc: Alexei Starovoitov <ast@plumgrid.com>
 Cc: netdev@vger.kernel.org
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/net/bpf_jit.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ arch/mips/net/bpf_jit.c | 22 +---------------------
+ 1 file changed, 1 insertion(+), 21 deletions(-)
 
 diff --git a/arch/mips/net/bpf_jit.c b/arch/mips/net/bpf_jit.c
-index 09ebc886c7aa..4920e0fd05ee 100644
+index 00c4c83972bb..1bcd599d9971 100644
 --- a/arch/mips/net/bpf_jit.c
 +++ b/arch/mips/net/bpf_jit.c
-@@ -745,13 +745,17 @@ static u64 jit_get_skb_w(struct sk_buff *skb, unsigned offset)
- 	return (u64)err << 32 | ntohl(ret);
+@@ -119,8 +119,6 @@
+ /* Arguments used by JIT */
+ #define ARGS_USED_BY_JIT	2 /* only applicable to 64-bit */
+ 
+-#define FLAG_NEED_X_RESET	(1 << 0)
+-
+ #define SBIT(x)			(1 << (x)) /* Signed version of BIT() */
+ 
+ /**
+@@ -549,14 +547,6 @@ static inline u16 align_sp(unsigned int num)
+ 	return num;
  }
  
--#define PKT_TYPE_MAX 7
-+#ifdef __BIG_ENDIAN_BITFIELD
-+#define PKT_TYPE_MAX	(7 << 5)
-+#else
-+#define PKT_TYPE_MAX	7
-+#endif
- static int pkt_type_offset(void)
+-static inline void update_on_xread(struct jit_ctx *ctx)
+-{
+-	if (!(ctx->flags & SEEN_X))
+-		ctx->flags |= FLAG_NEED_X_RESET;
+-
+-	ctx->flags |= SEEN_X;
+-}
+-
+ static bool is_load_to_a(u16 inst)
  {
- 	struct sk_buff skb_probe = {
- 		.pkt_type = ~0,
- 	};
--	char *ct = (char *)&skb_probe;
-+	u8 *ct = (u8 *)&skb_probe;
- 	unsigned int off;
+ 	switch (inst) {
+@@ -701,7 +691,7 @@ static void build_prologue(struct jit_ctx *ctx)
+ 	if (ctx->flags & SEEN_SKB)
+ 		emit_reg_move(r_skb, MIPS_R_A0, ctx);
  
- 	for (off = 0; off < sizeof(struct sk_buff); off++) {
-@@ -1314,6 +1318,10 @@ jmp_cmp:
- 			emit_load_byte(r_tmp, r_skb, off, ctx);
- 			/* Keep only the last 3 bits */
- 			emit_andi(r_A, r_tmp, PKT_TYPE_MAX, ctx);
-+#ifdef __BIG_ENDIAN_BITFIELD
-+			/* Get the actual packet type to the lower 3 bits */
-+			emit_srl(r_A, r_A, 5, ctx);
-+#endif
+-	if (ctx->flags & FLAG_NEED_X_RESET)
++	if (ctx->flags & SEEN_X)
+ 		emit_jit_reg_move(r_X, r_zero, ctx);
+ 
+ 	/* Do not leak kernel data to userspace */
+@@ -876,7 +866,6 @@ load_common:
+ 			/* A <- P[X + k:1] */
+ 			load_order = 0;
+ load_ind:
+-			update_on_xread(ctx);
+ 			ctx->flags |= SEEN_OFF | SEEN_X;
+ 			emit_addiu(r_off, r_X, k, ctx);
+ 			goto load_common;
+@@ -972,7 +961,6 @@ load_ind:
  			break;
- 		case BPF_ANC | SKF_AD_QUEUE:
- 			ctx->flags |= SEEN_SKB | SEEN_A;
+ 		case BPF_ALU | BPF_MUL | BPF_X:
+ 			/* A *= X */
+-			update_on_xread(ctx);
+ 			ctx->flags |= SEEN_A | SEEN_X;
+ 			emit_mul(r_A, r_A, r_X, ctx);
+ 			break;
+@@ -1002,7 +990,6 @@ load_ind:
+ 			break;
+ 		case BPF_ALU | BPF_DIV | BPF_X:
+ 			/* A /= X */
+-			update_on_xread(ctx);
+ 			ctx->flags |= SEEN_X | SEEN_A;
+ 			/* Check if r_X is zero */
+ 			emit_bcond(MIPS_COND_EQ, r_X, r_zero,
+@@ -1012,7 +999,6 @@ load_ind:
+ 			break;
+ 		case BPF_ALU | BPF_MOD | BPF_X:
+ 			/* A %= X */
+-			update_on_xread(ctx);
+ 			ctx->flags |= SEEN_X | SEEN_A;
+ 			/* Check if r_X is zero */
+ 			emit_bcond(MIPS_COND_EQ, r_X, r_zero,
+@@ -1027,7 +1013,6 @@ load_ind:
+ 			break;
+ 		case BPF_ALU | BPF_OR | BPF_X:
+ 			/* A |= X */
+-			update_on_xread(ctx);
+ 			ctx->flags |= SEEN_A;
+ 			emit_ori(r_A, r_A, r_X, ctx);
+ 			break;
+@@ -1039,7 +1024,6 @@ load_ind:
+ 		case BPF_ANC | SKF_AD_ALU_XOR_X:
+ 		case BPF_ALU | BPF_XOR | BPF_X:
+ 			/* A ^= X */
+-			update_on_xread(ctx);
+ 			ctx->flags |= SEEN_A;
+ 			emit_xor(r_A, r_A, r_X, ctx);
+ 			break;
+@@ -1050,7 +1034,6 @@ load_ind:
+ 			break;
+ 		case BPF_ALU | BPF_AND | BPF_X:
+ 			/* A &= X */
+-			update_on_xread(ctx);
+ 			ctx->flags |= SEEN_A | SEEN_X;
+ 			emit_and(r_A, r_A, r_X, ctx);
+ 			break;
+@@ -1062,7 +1045,6 @@ load_ind:
+ 		case BPF_ALU | BPF_LSH | BPF_X:
+ 			/* A <<= X */
+ 			ctx->flags |= SEEN_A | SEEN_X;
+-			update_on_xread(ctx);
+ 			emit_sllv(r_A, r_A, r_X, ctx);
+ 			break;
+ 		case BPF_ALU | BPF_RSH | BPF_K:
+@@ -1072,7 +1054,6 @@ load_ind:
+ 			break;
+ 		case BPF_ALU | BPF_RSH | BPF_X:
+ 			ctx->flags |= SEEN_A | SEEN_X;
+-			update_on_xread(ctx);
+ 			emit_srlv(r_A, r_A, r_X, ctx);
+ 			break;
+ 		case BPF_ALU | BPF_NEG:
+@@ -1243,7 +1224,6 @@ jmp_cmp:
+ 		case BPF_MISC | BPF_TXA:
+ 			/* A = X */
+ 			ctx->flags |= SEEN_A | SEEN_X;
+-			update_on_xread(ctx);
+ 			emit_jit_reg_move(r_A, r_X, ctx);
+ 			break;
+ 		/* AUX */
 -- 
 2.0.0

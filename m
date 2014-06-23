@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:55261 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:29640 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6859948AbaFTRcjbFq6h (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 20 Jun 2014 19:32:39 +0200
-Message-ID: <53A4702D.3090503@imgtec.com>
-Date: Fri, 20 Jun 2014 10:32:29 -0700
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+        with ESMTP id S6821443AbaFWItFUT6q- (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jun 2014 10:49:05 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: msc: Prevent out-of-bounds writes to MIPS SC ioremap'd region
+Date: Mon, 23 Jun 2014 09:48:51 +0100
+Message-ID: <1403513331-2247-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] MIPS: APRP: Fix an issue when device_create() fails.
-References: <1403209823-6376-1-git-send-email-sebastien.bourdelin@savoirfairelinux.com>
-In-Reply-To: <1403209823-6376-1-git-send-email-sebastien.bourdelin@savoirfairelinux.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <DengCheng.Zhu@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,56 +18,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sebastien Bourdelin <sebastien.bourdelin@savoirfairelinux.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, "Steven J. Hill" <Steven.Hill@imgtec.com>, John Crispin <blogic@openwrt.org>, Qais Yousef <Qais.Yousef@imgtec.com>
-Cc: linux-kernel@vger.kernel.org, Jerome Oufella <jerome.oufella@savoirfairelinux.com>
-Message-ID: <20140620173229.k3JZwNCEwmUAaKhfumHEFjnYPTPIzaZSvL8yNtecg6g@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20140623084851.1CGWwG9TK_lN6IsDfMy7beKFQ2Y4XfW6JkMcuNZKSmw@z>
 
-On 06/19/2014 01:30 PM, Sebastien Bourdelin wrote:
-> If a call to device_create() fails for a channel during the initialize
-> loop, we need to clean the devices entries already created before
-> leaving.
->
-> Signed-off-by: Sebastien Bourdelin <sebastien.bourdelin@savoirfairelinux.com>
-> ---
->   arch/mips/kernel/rtlx-cmp.c | 3 +++
->   arch/mips/kernel/rtlx-mt.c  | 3 +++
->   2 files changed, 6 insertions(+)
->
-> diff --git a/arch/mips/kernel/rtlx-cmp.c b/arch/mips/kernel/rtlx-cmp.c
-> index 758fb3c..d26dcc4 100644
-> --- a/arch/mips/kernel/rtlx-cmp.c
-> +++ b/arch/mips/kernel/rtlx-cmp.c
-> @@ -77,6 +77,9 @@ int __init rtlx_module_init(void)
->   		dev = device_create(mt_class, NULL, MKDEV(major, i), NULL,
->   				    "%s%d", RTLX_MODULE_NAME, i);
->   		if (IS_ERR(dev)) {
-> +			while (i--)
+Previously, the lower limit for the MIPS SC initialization loop was
+set incorrectly allowing one extra loop leading to writes
+beyond the MSC ioremap'd space. More precisely, the value of the 'imp'
+in the last loop increased beyond the msc_irqmap_t boundaries and
+as a result of which, the 'n' variable was loaded with an incorrect
+value. This value was used later on to calculate the offset in the
+MSC01_IC_SUP which led to random crashes like the following one:
 
---i?
+CPU 0 Unable to handle kernel paging request at virtual address e75c0200,
+epc == 8058dba4, ra == 8058db90
+[...]
+Call Trace:
+[<8058dba4>] init_msc_irqs+0x104/0x154
+[<8058b5bc>] arch_init_irq+0xd8/0x154
+[<805897b0>] start_kernel+0x220/0x36c
 
-> +				device_destroy(mt_class, MKDEV(major, i));
-> +
->   			err = PTR_ERR(dev);
->   			goto out_chrdev;
->   		}
-> diff --git a/arch/mips/kernel/rtlx-mt.c b/arch/mips/kernel/rtlx-mt.c
-> index 5a66b97..cb95470 100644
-> --- a/arch/mips/kernel/rtlx-mt.c
-> +++ b/arch/mips/kernel/rtlx-mt.c
-> @@ -103,6 +103,9 @@ int __init rtlx_module_init(void)
->   		dev = device_create(mt_class, NULL, MKDEV(major, i), NULL,
->   				    "%s%d", RTLX_MODULE_NAME, i);
->   		if (IS_ERR(dev)) {
-> +			while (i--)
+Kernel panic - not syncing: Attempted to kill the idle task!
 
-Same here.
+This patch fixes the problem
 
-> +				device_destroy(mt_class, MKDEV(major, i));
-> +
->   			err = PTR_ERR(dev);
->   			goto out_chrdev;
->   		}
+Cc: stable@vger.kernel.org
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/kernel/irq-msc01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-
-Deng-Cheng
+diff --git a/arch/mips/kernel/irq-msc01.c b/arch/mips/kernel/irq-msc01.c
+index 4858642d543d..a734b2c2f9ea 100644
+--- a/arch/mips/kernel/irq-msc01.c
++++ b/arch/mips/kernel/irq-msc01.c
+@@ -126,7 +126,7 @@ void __init init_msc_irqs(unsigned long icubase, unsigned int irqbase, msc_irqma
+ 
+ 	board_bind_eic_interrupt = &msc_bind_eic_interrupt;
+ 
+-	for (; nirq >= 0; nirq--, imp++) {
++	for (; nirq > 0; nirq--, imp++) {
+ 		int n = imp->im_irq;
+ 
+ 		switch (imp->im_type) {
+-- 
+2.0.0

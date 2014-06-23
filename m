@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24416 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:29319 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860010AbaFWJjpZMaCj (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jun 2014 11:39:45 +0200
+        with ESMTP id S6860020AbaFWJjsY1AI8 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jun 2014 11:39:48 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 13/17] MIPS: bpf: Drop update_on_xread and always initialize the X register
-Date: Mon, 23 Jun 2014 10:38:56 +0100
-Message-ID: <1403516340-22997-14-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH 16/17] MIPS: bpf: Use 32 or 64-bit load instruction to load an address to register
+Date: Mon, 23 Jun 2014 10:38:59 +0100
+Message-ID: <1403516340-22997-17-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1403516340-22997-1-git-send-email-markos.chandras@imgtec.com>
 References: <1403516340-22997-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -22,14 +22,10 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>, "David S. Miller" <davem@davemloft.net>, Daniel Borkmann <dborkman@redhat.com>, Alexei Starovoitov <ast@plumgrid.com>, netdev@vger.kernel.org
-Message-ID: <20140623093856.gknJySvTKNDph9XUTY30ArY1IiK_qHJpF9uWwtGrVWI@z>
+Message-ID: <20140623093859.hgsbJgWR4IU93fpq9E5ZLMfyPJRY49RZHTZzh6oqRKc@z>
 
-Previously, update_on_xread() only set the reset flag if SEEN_X hasn't
-been set already. However, SEEN_X is used to indicate that X is used
-as destination or source register so there are some cases where X
-is only used as source register and we really need to make sure that it
-has been initialized in time. As a result of which, drop this function and
-always set X to zero if it's used in any of the opcodes.
+When loading a pointer to a register we need to use the appropriate
+32 or 64bit instruction to preserve the pointer's top 32bits.
 
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Daniel Borkmann <dborkman@redhat.com>
@@ -37,125 +33,40 @@ Cc: Alexei Starovoitov <ast@plumgrid.com>
 Cc: netdev@vger.kernel.org
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/net/bpf_jit.c | 22 +---------------------
- 1 file changed, 1 insertion(+), 21 deletions(-)
+ arch/mips/net/bpf_jit.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/arch/mips/net/bpf_jit.c b/arch/mips/net/bpf_jit.c
-index 00c4c83972bb..1bcd599d9971 100644
+index 4920e0fd05ee..d8dba7b523a5 100644
 --- a/arch/mips/net/bpf_jit.c
 +++ b/arch/mips/net/bpf_jit.c
-@@ -119,8 +119,6 @@
- /* Arguments used by JIT */
- #define ARGS_USED_BY_JIT	2 /* only applicable to 64-bit */
- 
--#define FLAG_NEED_X_RESET	(1 << 0)
--
- #define SBIT(x)			(1 << (x)) /* Signed version of BIT() */
- 
- /**
-@@ -549,14 +547,6 @@ static inline u16 align_sp(unsigned int num)
- 	return num;
+@@ -447,6 +447,17 @@ static inline void emit_wsbh(unsigned int dst, unsigned int src,
+ 	emit_instr(ctx, wsbh, dst, src);
  }
  
--static inline void update_on_xread(struct jit_ctx *ctx)
--{
--	if (!(ctx->flags & SEEN_X))
--		ctx->flags |= FLAG_NEED_X_RESET;
--
--	ctx->flags |= SEEN_X;
--}
--
- static bool is_load_to_a(u16 inst)
- {
- 	switch (inst) {
-@@ -701,7 +691,7 @@ static void build_prologue(struct jit_ctx *ctx)
- 	if (ctx->flags & SEEN_SKB)
- 		emit_reg_move(r_skb, MIPS_R_A0, ctx);
- 
--	if (ctx->flags & FLAG_NEED_X_RESET)
-+	if (ctx->flags & SEEN_X)
- 		emit_jit_reg_move(r_X, r_zero, ctx);
- 
- 	/* Do not leak kernel data to userspace */
-@@ -876,7 +866,6 @@ load_common:
- 			/* A <- P[X + k:1] */
- 			load_order = 0;
- load_ind:
--			update_on_xread(ctx);
- 			ctx->flags |= SEEN_OFF | SEEN_X;
- 			emit_addiu(r_off, r_X, k, ctx);
- 			goto load_common;
-@@ -972,7 +961,6 @@ load_ind:
- 			break;
- 		case BPF_ALU | BPF_MUL | BPF_X:
- 			/* A *= X */
--			update_on_xread(ctx);
- 			ctx->flags |= SEEN_A | SEEN_X;
- 			emit_mul(r_A, r_A, r_X, ctx);
- 			break;
-@@ -1002,7 +990,6 @@ load_ind:
- 			break;
- 		case BPF_ALU | BPF_DIV | BPF_X:
- 			/* A /= X */
--			update_on_xread(ctx);
- 			ctx->flags |= SEEN_X | SEEN_A;
- 			/* Check if r_X is zero */
- 			emit_bcond(MIPS_COND_EQ, r_X, r_zero,
-@@ -1012,7 +999,6 @@ load_ind:
- 			break;
- 		case BPF_ALU | BPF_MOD | BPF_X:
- 			/* A %= X */
--			update_on_xread(ctx);
- 			ctx->flags |= SEEN_X | SEEN_A;
- 			/* Check if r_X is zero */
- 			emit_bcond(MIPS_COND_EQ, r_X, r_zero,
-@@ -1027,7 +1013,6 @@ load_ind:
- 			break;
- 		case BPF_ALU | BPF_OR | BPF_X:
- 			/* A |= X */
--			update_on_xread(ctx);
- 			ctx->flags |= SEEN_A;
- 			emit_ori(r_A, r_A, r_X, ctx);
- 			break;
-@@ -1039,7 +1024,6 @@ load_ind:
- 		case BPF_ANC | SKF_AD_ALU_XOR_X:
- 		case BPF_ALU | BPF_XOR | BPF_X:
- 			/* A ^= X */
--			update_on_xread(ctx);
- 			ctx->flags |= SEEN_A;
- 			emit_xor(r_A, r_A, r_X, ctx);
- 			break;
-@@ -1050,7 +1034,6 @@ load_ind:
- 			break;
- 		case BPF_ALU | BPF_AND | BPF_X:
- 			/* A &= X */
--			update_on_xread(ctx);
- 			ctx->flags |= SEEN_A | SEEN_X;
- 			emit_and(r_A, r_A, r_X, ctx);
- 			break;
-@@ -1062,7 +1045,6 @@ load_ind:
- 		case BPF_ALU | BPF_LSH | BPF_X:
- 			/* A <<= X */
- 			ctx->flags |= SEEN_A | SEEN_X;
--			update_on_xread(ctx);
- 			emit_sllv(r_A, r_A, r_X, ctx);
- 			break;
- 		case BPF_ALU | BPF_RSH | BPF_K:
-@@ -1072,7 +1054,6 @@ load_ind:
- 			break;
- 		case BPF_ALU | BPF_RSH | BPF_X:
- 			ctx->flags |= SEEN_A | SEEN_X;
--			update_on_xread(ctx);
- 			emit_srlv(r_A, r_A, r_X, ctx);
- 			break;
- 		case BPF_ALU | BPF_NEG:
-@@ -1243,7 +1224,6 @@ jmp_cmp:
- 		case BPF_MISC | BPF_TXA:
- 			/* A = X */
- 			ctx->flags |= SEEN_A | SEEN_X;
--			update_on_xread(ctx);
- 			emit_jit_reg_move(r_A, r_X, ctx);
- 			break;
- 		/* AUX */
++/* load address to register */
++static inline void emit_load_addr(unsigned int dst, unsigned int src,
++				     int imm, struct jit_ctx *ctx)
++{
++	/* src contains the base addr of the 32/64-pointer */
++	if (config_enabled(CONFIG_64BIT))
++		emit_instr(ctx, ld, dst, imm, src);
++	else
++		emit_instr(ctx, lw, dst, imm, src);
++}
++
+ /* load a function pointer to register */
+ static inline void emit_load_func(unsigned int reg, ptr imm,
+ 				  struct jit_ctx *ctx)
+@@ -1271,7 +1282,8 @@ jmp_cmp:
+ 			/* A = skb->dev->ifindex */
+ 			ctx->flags |= SEEN_SKB | SEEN_A | SEEN_S0;
+ 			off = offsetof(struct sk_buff, dev);
+-			emit_load(r_s0, r_skb, off, ctx);
++			/* Load address of *dev member */
++			emit_load_addr(r_s0, r_skb, off, ctx);
+ 			/* error (0) in the delay slot */
+ 			emit_bcond(MIPS_COND_EQ, r_s0, r_zero,
+ 				   b_imm(prog->len, ctx), ctx);
 -- 
 2.0.0

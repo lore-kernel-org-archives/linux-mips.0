@@ -1,19 +1,14 @@
-Received: from mail-oa0-f53.google.com ([209.85.219.53]:62961 "EHLO
-        mail-oa0-f53.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6816071AbaFXQoFMAWzF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Jun 2014 18:44:05 +0200
-Received: by mail-oa0-f53.google.com with SMTP id l6so654929oag.12
-        for <linux-mips@linux-mips.org>; Tue, 24 Jun 2014 09:43:59 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57351 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6862372AbaFXRbgK8TcI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Jun 2014 19:31:36 +0200
+From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Subject: [PATCH v3 0/9] MIPS: KVM: Bugfixes and cleanups
+Date: Tue, 24 Jun 2014 10:31:01 -0700
+Message-ID: <1403631071-6012-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <53A95187.4010805@gmail.com>
-References: <20140623220150.GM5412@outflux.net>
-        <53A95187.4010805@gmail.com>
-Date: Tue, 24 Jun 2014 09:43:58 -0700
-Message-ID: <CAGXu5j+A1WCA13rRnREh_m0kwsYfBrZSwB25NXEdpQNpgjJfyw@mail.gmail.com>
-Subject: Re: [PATCH v7 1/1] man-pages: seccomp.2: document syscall
-From: Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <keescook@google.com>
+Content-Type: text/plain
+Return-Path: <DengCheng.Zhu@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,32 +18,77 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Alexei Starovoitov <ast@plumgrid.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Oleg Nesterov <oleg@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
-Message-ID: <20140624164358.uHykrg3Yu26if51Cc4vQyAqYpwvIbqaDXM9E4PD3aKo@z>
+To: pbonzini@redhat.com
+Cc: gleb@kernel.org, kvm@vger.kernel.org, sanjayl@kymasys.com, james.hogan@imgtec.com, ralf@linux-mips.org, linux-mips@linux-mips.org, dengcheng.zhu@imgtec.com
+Message-ID: <20140624173101.6HJ--W56XI5rnWFDaGqIUqpXsAYen_kqiSYL20PK14c@z>
 
-On Tue, Jun 24, 2014 at 3:23 AM, Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
-> On 06/24/2014 12:01 AM, Kees Cook wrote:
->> Combines documentation from prctl, and in-kernel seccomp_filter.txt,
->> along with new details specific to the new syscall.
->
-> Great work on the man page, Kees! (BTW, just looking at the complexity detailed
-> there further supports the decision to grant this functionality as a separate
-> syscall, rather than multiplexed into prctl(2).
+The patches are pretty straightforward.
 
-Great, thanks!
+Changes:
+v3 - v2:
+o In patch #2, change the use of kvm_[err|info|debug].
+o In patch #3, add err removal in kvm_arch_commit_memory_region().
+o In patch #3, revert the changes to kvm_arch_vm_ioctl().
+o In patch #7, drop the merge of kvm_arch_vcpu_free() and pointer nullification.
+o Add patch #9.
+v2 - v1:
+o In patch #1, don't change the opening comment mark for kernel-doc comments.
+o In patch #1, to make long lines more readable, use local variables / macros.
+o In patch #1, slight format adjustments are made.
+o Use -M flag to generate patches (detect renames).
+o Add patch #8.
 
-> Would there be some suitable, not too long program that we
-> could put in the man page as an example for using filters?
+Deng-Cheng Zhu (8):
+  MIPS: KVM: Reformat code and comments
+  MIPS: KVM: Use KVM internal logger
+  MIPS: KVM: Simplify functions by removing redundancy
+  MIPS: KVM: Remove unneeded volatile
+  MIPS: KVM: Rename files to remove the prefix "kvm_" and "kvm_mips_"
+  MIPS: KVM: Restore correct value for WIRED at TLB uninit
+  MIPS: KVM: Fix memory leak on VCPU
+  MIPS: KVM: Skip memory cleaning in kvm_mips_commpage_init()
 
-Sure thing. I can modify the "dropper" sample in samples/seccomp. I
-will resend the man-page with that added.
+James Hogan (1):
+  MIPS: KVM: Remove dead code of TLB index error in
+    kvm_mips_emul_tlbwr()
 
-Thanks!
-
--Kees
+ arch/mips/include/asm/kvm_host.h                  |  12 +-
+ arch/mips/include/asm/r4kcache.h                  |   3 +
+ arch/mips/kvm/Makefile                            |   8 +-
+ arch/mips/kvm/{kvm_cb.c => callback.c}            |   0
+ arch/mips/kvm/commpage.c                          |  33 ++
+ arch/mips/kvm/commpage.h                          |  24 +
+ arch/mips/kvm/{kvm_mips_dyntrans.c => dyntrans.c} |  40 +-
+ arch/mips/kvm/{kvm_mips_emul.c => emulate.c}      | 539 +++++++++++-----------
+ arch/mips/kvm/{kvm_mips_int.c => interrupt.c}     |  47 +-
+ arch/mips/kvm/{kvm_mips_int.h => interrupt.h}     |  22 +-
+ arch/mips/kvm/kvm_mips_comm.h                     |  23 -
+ arch/mips/kvm/kvm_mips_commpage.c                 |  37 --
+ arch/mips/kvm/kvm_mips_opcode.h                   |  24 -
+ arch/mips/kvm/{kvm_locore.S => locore.S}          |  55 ++-
+ arch/mips/kvm/{kvm_mips.c => mips.c}              | 227 +++++----
+ arch/mips/kvm/opcode.h                            |  22 +
+ arch/mips/kvm/{kvm_mips_stats.c => stats.c}       |  28 +-
+ arch/mips/kvm/{kvm_tlb.c => tlb.c}                | 258 +++++------
+ arch/mips/kvm/trace.h                             |  18 +-
+ arch/mips/kvm/{kvm_trap_emul.c => trap_emul.c}    | 109 +++--
+ 20 files changed, 750 insertions(+), 779 deletions(-)
+ rename arch/mips/kvm/{kvm_cb.c => callback.c} (100%)
+ create mode 100644 arch/mips/kvm/commpage.c
+ create mode 100644 arch/mips/kvm/commpage.h
+ rename arch/mips/kvm/{kvm_mips_dyntrans.c => dyntrans.c} (79%)
+ rename arch/mips/kvm/{kvm_mips_emul.c => emulate.c} (83%)
+ rename arch/mips/kvm/{kvm_mips_int.c => interrupt.c} (85%)
+ rename arch/mips/kvm/{kvm_mips_int.h => interrupt.h} (74%)
+ delete mode 100644 arch/mips/kvm/kvm_mips_comm.h
+ delete mode 100644 arch/mips/kvm/kvm_mips_commpage.c
+ delete mode 100644 arch/mips/kvm/kvm_mips_opcode.h
+ rename arch/mips/kvm/{kvm_locore.S => locore.S} (93%)
+ rename arch/mips/kvm/{kvm_mips.c => mips.c} (83%)
+ create mode 100644 arch/mips/kvm/opcode.h
+ rename arch/mips/kvm/{kvm_mips_stats.c => stats.c} (63%)
+ rename arch/mips/kvm/{kvm_tlb.c => tlb.c} (78%)
+ rename arch/mips/kvm/{kvm_trap_emul.c => trap_emul.c} (83%)
 
 -- 
-Kees Cook
-Chrome OS Security
+1.8.5.3

@@ -1,19 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:35558 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:44983 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6817540AbaFWUYsooZrB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jun 2014 22:24:48 +0200
-Date: Mon, 23 Jun 2014 21:24:37 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 16/17] MIPS: bpf: Use 32 or 64-bit load instruction to
- load an address to register
-Message-ID: <20140623202437.GD2200@pburton-laptop>
-References: <1403516340-22997-1-git-send-email-markos.chandras@imgtec.com>
- <1403516340-22997-17-git-send-email-markos.chandras@imgtec.com>
+        with ESMTP id S6860427AbaFXKNltaEyG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Jun 2014 12:13:41 +0200
+Message-ID: <53A94F4D.10605@imgtec.com>
+Date: Tue, 24 Jun 2014 11:13:33 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <1403516340-22997-17-git-send-email-markos.chandras@imgtec.com>
-Return-Path: <Paul.Burton@imgtec.com>
+Subject: Re: [PATCH v2] arch/mips rb532: replace mac_addr parsing
+References: <20140624084540.GA22930@google.com>
+In-Reply-To: <20140624084540.GA22930@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,72 +21,27 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Markos Chandras <markos.chandras@imgtec.com>
-Cc: linux-mips@linux-mips.org, "David S. Miller" <davem@davemloft.net>, Daniel Borkmann <dborkman@redhat.com>, Alexei Starovoitov <ast@plumgrid.com>, netdev@vger.kernel.org
-Message-ID: <20140623202437.4YyC0TlCvlTSYVVO-8JTuKe_IKTsaWQ48-V7IQZ7fp0@z>
+To: Daniel Walter <dwalter@google.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20140624101333.JaGxc426iwZfjGdgQFtlZ8Ovgooak5FCIQ___wgBNS4@z>
 
-On Mon, Jun 23, 2014 at 10:38:59AM +0100, Markos Chandras wrote:
-> When loading a pointer to a register we need to use the appropriate
-> 32 or 64bit instruction to preserve the pointer's top 32bits.
-> 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Daniel Borkmann <dborkman@redhat.com>
-> Cc: Alexei Starovoitov <ast@plumgrid.com>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
->  arch/mips/net/bpf_jit.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/mips/net/bpf_jit.c b/arch/mips/net/bpf_jit.c
-> index 4920e0fd05ee..d8dba7b523a5 100644
-> --- a/arch/mips/net/bpf_jit.c
-> +++ b/arch/mips/net/bpf_jit.c
-> @@ -447,6 +447,17 @@ static inline void emit_wsbh(unsigned int dst, unsigned int src,
->  	emit_instr(ctx, wsbh, dst, src);
->  }
->  
-> +/* load address to register */
-> +static inline void emit_load_addr(unsigned int dst, unsigned int src,
-> +				     int imm, struct jit_ctx *ctx)
+Hi Daniel,
 
-(I originally sent this in reply to your internal posting, but assume you
-missed it or it got eaten somewhere along the way.)
+On 24/06/14 09:45, Daniel Walter wrote:
+> @@ -333,7 +311,13 @@ static int __init plat_setup_devices(void)
+>  static int __init setup_kmac(char *s)
+>  {
+>  	printk(KERN_INFO "korina mac = %s\n", s);
+> -	parse_mac_addr(s);
+> +	sscanf(s, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+> +			&korina_dev0_data.mac[0],
+> +			&korina_dev0_data.mac[1],
+> +			&korina_dev0_data.mac[2],
+> +			&korina_dev0_data.mac[3],
+> +			&korina_dev0_data.mac[4],
+> +			&korina_dev0_data.mac[5]);
 
-The name emit_load_addr & comment "load address to register" makes this
-sound like an equivalent of the "la" pseudo instruction, but it appears
-to really emit a pointer sized load? How about emit_load_ptr or something
-instead, and similarly s/address/pointer/ in the comment?
+Does it make sense to go one better and use mac_pton() for this?
 
-> +{
-> +	/* src contains the base addr of the 32/64-pointer */
-> +	if (config_enabled(CONFIG_64BIT))
-> +		emit_instr(ctx, ld, dst, imm, src);
-> +	else
-> +		emit_instr(ctx, lw, dst, imm, src);
-
-Is there some way you could make use of the UASM_i_LW macro (note the
-capitalisation) instead of the if statement here?
-
-Thanks,
-    Paul
-
-> +}
-> +
->  /* load a function pointer to register */
->  static inline void emit_load_func(unsigned int reg, ptr imm,
->  				  struct jit_ctx *ctx)
-> @@ -1271,7 +1282,8 @@ jmp_cmp:
->  			/* A = skb->dev->ifindex */
->  			ctx->flags |= SEEN_SKB | SEEN_A | SEEN_S0;
->  			off = offsetof(struct sk_buff, dev);
-> -			emit_load(r_s0, r_skb, off, ctx);
-> +			/* Load address of *dev member */
-> +			emit_load_addr(r_s0, r_skb, off, ctx);
->  			/* error (0) in the delay slot */
->  			emit_bcond(MIPS_COND_EQ, r_s0, r_zero,
->  				   b_imm(prog->len, ctx), ctx);
-> -- 
-> 2.0.0
-> 
-> 
+Cheers
+James

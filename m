@@ -1,17 +1,20 @@
-Received: from mail-oa0-f47.google.com ([209.85.219.47]:60534 "EHLO
-        mail-oa0-f47.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6855803AbaFXTqHTxITy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Jun 2014 21:46:07 +0200
-Received: by mail-oa0-f47.google.com with SMTP id n16so924821oag.34
-        for <linux-mips@linux-mips.org>; Tue, 24 Jun 2014 12:46:01 -0700 (PDT)
+Received: from mail-oa0-f43.google.com ([209.85.219.43]:59372 "EHLO
+        mail-oa0-f43.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6855803AbaFXTuJLZ3L0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Jun 2014 21:50:09 +0200
+Received: by mail-oa0-f43.google.com with SMTP id o6so931374oag.30
+        for <linux-mips@linux-mips.org>; Tue, 24 Jun 2014 12:50:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20140624183024.GA1258@redhat.com>
+In-Reply-To: <CALCETrU9x05ADgz9JToiw_BuCPz1h0xmOh=1R3eojL9far1aEA@mail.gmail.com>
 References: <1403560693-21809-1-git-send-email-keescook@chromium.org>
-        <1403560693-21809-4-git-send-email-keescook@chromium.org>
-        <20140624183024.GA1258@redhat.com>
-Date: Tue, 24 Jun 2014 12:46:01 -0700
-Message-ID: <CAGXu5j+Khz+HH3QvfNWa3FdUspTEf-xLchBMLyCC_QN42xpLZA@mail.gmail.com>
-Subject: Re: [PATCH v7 3/9] seccomp: introduce writer locking
+        <1403560693-21809-5-git-send-email-keescook@chromium.org>
+        <20140624191815.GA3623@redhat.com>
+        <CALCETrVgpP=zOtiQafVgcic2T95TdEM5DTvHYXWTbcZ14xBqHQ@mail.gmail.com>
+        <20140624193055.GA4482@redhat.com>
+        <CALCETrU9x05ADgz9JToiw_BuCPz1h0xmOh=1R3eojL9far1aEA@mail.gmail.com>
+Date: Tue, 24 Jun 2014 12:50:02 -0700
+Message-ID: <CAGXu5jJjuNmf=FRzUPMChvL4D_xkg034pUbRAbaK38f37GYC0A@mail.gmail.com>
+Subject: Re: [PATCH v7 4/9] seccomp: move no_new_privs into seccomp
 From: Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset=UTF-8
 Return-Path: <keescook@google.com>
@@ -24,87 +27,54 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Alexei Starovoitov <ast@plumgrid.com>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
-Message-ID: <20140624194601.6MvNQFalwDwB_B8HeGZCdVdhOFAIVp9nf_aDl_G0-PA@z>
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Oleg Nesterov <oleg@redhat.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, X86 ML <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>
+Message-ID: <20140624195002.wW1bw5cuOM9spRXWng13NseYw7GKO0YIIQ8-7Gn6UYg@z>
 
-On Tue, Jun 24, 2014 at 11:30 AM, Oleg Nesterov <oleg@redhat.com> wrote:
-> I am puzzled by the usage of smp_load_acquire(),
-
-It was recommended by Andy Lutomirski in preference to ACCESS_ONCE().
-
-> On 06/23, Kees Cook wrote:
+On Tue, Jun 24, 2014 at 12:34 PM, Andy Lutomirski <luto@amacapital.net> wrote:
+> On Tue, Jun 24, 2014 at 12:30 PM, Oleg Nesterov <oleg@redhat.com> wrote:
+>> On 06/24, Andy Lutomirski wrote:
+>>>
+>>> On Tue, Jun 24, 2014 at 12:18 PM, Oleg Nesterov <oleg@redhat.com> wrote:
+>>> >>
+>>> >> -struct seccomp { };
+>>> >> +struct seccomp {
+>>> >> +     unsigned long flags;
+>>> >> +};
+>>> >
+>>> > A bit messy ;)
+>>> >
+>>> > I am wondering if we can simply do
+>>> >
+>>> >         static inline bool current_no_new_privs(void)
+>>> >         {
+>>> >                 if (current->no_new_privs)
+>>> >                         return true;
+>>> >
+>>> >         #ifdef CONFIG_SECCOMP
+>>> >                 if (test_thread_flag(TIF_SECCOMP))
+>>> >                         return true;
+>>> >         #endif
+>>>
+>>> Nope -- privileged users can enable seccomp w/o nnp.
 >>
->>  static u32 seccomp_run_filters(int syscall)
->>  {
->> -     struct seccomp_filter *f;
->> +     struct seccomp_filter *f = smp_load_acquire(&current->seccomp.filter);
->>       struct seccomp_data sd;
->>       u32 ret = SECCOMP_RET_ALLOW;
+>> Indeed, I am stupid.
 >>
->>       /* Ensure unexpected behavior doesn't result in failing open. */
->> -     if (WARN_ON(current->seccomp.filter == NULL))
->> +     if (WARN_ON(f == NULL))
->>               return SECCOMP_RET_KILL;
->>
->>       populate_seccomp_data(&sd);
->> @@ -186,9 +186,8 @@ static u32 seccomp_run_filters(int syscall)
->>        * All filters in the list are evaluated and the lowest BPF return
->>        * value always takes priority (ignoring the DATA).
->>        */
->> -     for (f = current->seccomp.filter; f; f = f->prev) {
->> +     for (; f; f = smp_load_acquire(&f->prev)) {
->>               u32 cur_ret = SK_RUN_FILTER(f->prog, (void *)&sd);
->> -
->>               if ((cur_ret & SECCOMP_RET_ACTION) < (ret & SECCOMP_RET_ACTION))
->>                       ret = cur_ret;
+>> Still it would be nice to cleanup this somehow. The new member is only
+>> used as a previous ->no_new_privs, just it is long to allow the concurent
+>> set/get. Logically it doesn't even belong to seccomp{}.
 >
-> OK, in this case the 1st one is probably fine, altgough it is not
-> clear to me why it is better than read_barrier_depends().
->
-> But why do we need a 2nd one inside the loop? And if we actually need
-> it (I don't think so) then why it is safe to use f->prog without
-> load_acquire ?
+> We could add an unsigned long atomic flags field to task_struct.
 
-You're right -- it should not be possible for for any of the ->prev
-pointers to change.
+I thought that had gotten shot down originally, but given the current
+state of the patch series, it would be effectively identical, since my
+earlier attempt at keeping sizes the same (with alternate accessors)
+was too messy. I will change this as well.
 
->>  void get_seccomp_filter(struct task_struct *tsk)
->>  {
->> -     struct seccomp_filter *orig = tsk->seccomp.filter;
->> +     struct seccomp_filter *orig = smp_load_acquire(&tsk->seccomp.filter);
->>       if (!orig)
->>               return;
->
-> This one looks unneeded.
->
-> First of all, afaics atomic_inc() should work correctly without any barriers,
-> otherwise it is buggy. But even this doesn't matter.
->
-> With this changes get_seccomp_filter() must be called under ->siglock, it can't
-> race with add-filter and thus tsk->seccomp.filter should be stable.
+> Grr.  Why isn't there an unsigned *int* atomic bitmask type?  Even u64
+> would be better.  unsigned long is useless.
 
-Excellent point, yes. I'll remove that.
-
->>       /* Reference count is bounded by the number of total processes. */
->> @@ -361,7 +364,7 @@ void put_seccomp_filter(struct task_struct *tsk)
->>       /* Clean up single-reference branches iteratively. */
->>       while (orig && atomic_dec_and_test(&orig->usage)) {
->>               struct seccomp_filter *freeme = orig;
->> -             orig = orig->prev;
->> +             orig = smp_load_acquire(&orig->prev);
->>               seccomp_filter_free(freeme);
->>       }
->
-> This one looks unneeded too. And note that this patch does not add
-> smp_load_acquire() to read tsk->seccomp.filter.
-
-Hrm, yes, that should get added.
-
-> atomic_dec_and_test() adds mb(), we do not need more barriers to access
-> ->prev ?
-
-Right, same situation as the run_filters loop. Thanks!
+Useless beyond 32 bits. ;)
 
 -Kees
 

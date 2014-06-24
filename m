@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:9918 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:41486 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6854975AbaFXRbui1aef (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Jun 2014 19:31:50 +0200
+        with ESMTP id S6855641AbaFXRbxOtJjd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Jun 2014 19:31:53 +0200
 From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH v3 8/9] MIPS: KVM: Skip memory cleaning in kvm_mips_commpage_init()
-Date: Tue, 24 Jun 2014 10:31:09 -0700
-Message-ID: <1403631071-6012-9-git-send-email-dengcheng.zhu@imgtec.com>
+Subject: [PATCH v3 9/9] MIPS: KVM: Remove dead code of TLB index error in kvm_mips_emul_tlbwr()
+Date: Tue, 24 Jun 2014 10:31:10 -0700
+Message-ID: <1403631071-6012-10-git-send-email-dengcheng.zhu@imgtec.com>
 In-Reply-To: <1403631071-6012-1-git-send-email-dengcheng.zhu@imgtec.com>
 References: <1403631071-6012-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
@@ -22,31 +22,34 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: pbonzini@redhat.com
 Cc: gleb@kernel.org, kvm@vger.kernel.org, sanjayl@kymasys.com, james.hogan@imgtec.com, ralf@linux-mips.org, linux-mips@linux-mips.org, dengcheng.zhu@imgtec.com
-Message-ID: <20140624173109.7j1Ch9LjEBC5U2Soy6RTbyw_fmgL6Rhriv5EegF6L3Q@z>
+Message-ID: <20140624173110.YtjF-4GDLxTzSp6ZOzzNGg0-kG_5i6CbD3CIHZHzkbw@z>
 
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+From: James Hogan <james.hogan@imgtec.com>
 
-The commpage is allocated using kzalloc(), so there's no need of cleaning
-the memory of the kvm_mips_commpage struct and its internal mips_coproc.
+It's impossible to fall into the error handling of the TLB index after
+being masked by (KVM_MIPS_GUEST_TLB_SIZE - 1). Remove the dead code.
 
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 ---
- arch/mips/kvm/commpage.c | 3 ---
- 1 file changed, 3 deletions(-)
+ arch/mips/kvm/emulate.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/arch/mips/kvm/commpage.c b/arch/mips/kvm/commpage.c
-index 61b9c04..2d6e976 100644
---- a/arch/mips/kvm/commpage.c
-+++ b/arch/mips/kvm/commpage.c
-@@ -28,9 +28,6 @@ void kvm_mips_commpage_init(struct kvm_vcpu *vcpu)
- {
- 	struct kvm_mips_commpage *page = vcpu->arch.kseg0_commpage;
+diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
+index 982f4af..5500fef 100644
+--- a/arch/mips/kvm/emulate.c
++++ b/arch/mips/kvm/emulate.c
+@@ -846,11 +846,6 @@ enum emulation_result kvm_mips_emul_tlbwr(struct kvm_vcpu *vcpu)
+ 	get_random_bytes(&index, sizeof(index));
+ 	index &= (KVM_MIPS_GUEST_TLB_SIZE - 1);
  
--	memset(page, 0, sizeof(struct kvm_mips_commpage));
+-	if (index < 0 || index >= KVM_MIPS_GUEST_TLB_SIZE) {
+-		kvm_err("%s: illegal index: %d\n", __func__, index);
+-		return EMULATE_FAIL;
+-	}
 -
- 	/* Specific init values for fields */
- 	vcpu->arch.cop0 = &page->cop0;
--	memset(vcpu->arch.cop0, 0, sizeof(struct mips_coproc));
- }
+ 	tlb = &vcpu->arch.guest_tlb[index];
+ 
+ 	/*
 -- 
 1.8.5.3

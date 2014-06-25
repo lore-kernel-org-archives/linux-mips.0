@@ -1,16 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:36230 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:51556 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6818481AbaFYIjufL30e (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 10:39:50 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH v2 16/17] MIPS: bpf: Use 32 or 64-bit load instruction to load an address to register
-Date: Wed, 25 Jun 2014 09:39:38 +0100
-Message-ID: <1403685578-25170-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <53AA85E8.5090403@imgtec.com>
-References: <53AA85E8.5090403@imgtec.com>
+        with ESMTP id S6859928AbaFYI76h3F7x (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 10:59:58 +0200
+Message-ID: <53AA8F87.6000701@imgtec.com>
+Date: Wed, 25 Jun 2014 09:59:51 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH v3 2/9] MIPS: KVM: Use KVM internal logger
+References: <1403631071-6012-1-git-send-email-dengcheng.zhu@imgtec.com> <1403631071-6012-3-git-send-email-dengcheng.zhu@imgtec.com>
+In-Reply-To: <1403631071-6012-3-git-send-email-dengcheng.zhu@imgtec.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,57 +21,34 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, "David S. Miller" <davem@davemloft.net>, Daniel Borkmann <dborkman@redhat.com>, Alexei Starovoitov <ast@plumgrid.com>, netdev@vger.kernel.org
-Message-ID: <20140625083938.U9HKWELa1uOtIYUtwiqavHHepR8rf_HrpcA811ol_RI@z>
+To: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>, pbonzini@redhat.com
+Cc: gleb@kernel.org, kvm@vger.kernel.org, sanjayl@kymasys.com, ralf@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20140625085951.WysE7lvYk-rFicq3Mk1Fp11MX5Bnc97aXuHmwLpIWW4@z>
 
-When loading a pointer to register we need to use the appropriate
-32 or 64bit instruction to preserve the pointers' top 32bits.
+Hi Deng-Cheng,
 
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Daniel Borkmann <dborkman@redhat.com>
-Cc: Alexei Starovoitov <ast@plumgrid.com>
-Cc: netdev@vger.kernel.org
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
-Changes since v1:
-- Change function name to make it clear that we are loading a
-pointer to a register, not an address
----
- arch/mips/net/bpf_jit.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+On 24/06/14 18:31, Deng-Cheng Zhu wrote:
+> @@ -2213,8 +2209,8 @@ enum emulation_result kvm_mips_check_privilege(unsigned long cause,
+>  			 * address error exception to the guest
+>  			 */
+>  			if (badvaddr >= (unsigned long) KVM_GUEST_KSEG0) {
+> -				printk("%s: LD MISS @ %#lx\n", __func__,
+> -				       badvaddr);
+> +				kvm_err("%s: LD MISS @ %#lx\n", __func__,
+> +					badvaddr);
 
-diff --git a/arch/mips/net/bpf_jit.c b/arch/mips/net/bpf_jit.c
-index 4505e2e6ab53..6e3963425b64 100644
---- a/arch/mips/net/bpf_jit.c
-+++ b/arch/mips/net/bpf_jit.c
-@@ -453,6 +453,17 @@ static inline void emit_wsbh(unsigned int dst, unsigned int src,
- 	emit_instr(ctx, wsbh, dst, src);
- }
- 
-+/* load pointer to register */
-+static inline void emit_load_ptr(unsigned int dst, unsigned int src,
-+				     int imm, struct jit_ctx *ctx)
-+{
-+	/* src contains the base addr of the 32/64-pointer */
-+	if (config_enabled(CONFIG_64BIT))
-+		emit_instr(ctx, ld, dst, imm, src);
-+	else
-+		emit_instr(ctx, lw, dst, imm, src);
-+}
-+
- /* load a function pointer to register */
- static inline void emit_load_func(unsigned int reg, ptr imm,
- 				  struct jit_ctx *ctx)
-@@ -1277,7 +1288,8 @@ jmp_cmp:
- 			/* A = skb->dev->ifindex */
- 			ctx->flags |= SEEN_SKB | SEEN_A | SEEN_S0;
- 			off = offsetof(struct sk_buff, dev);
--			emit_load(r_s0, r_skb, off, ctx);
-+			/* Load *dev pointer */
-+			emit_load_ptr(r_s0, r_skb, off, ctx);
- 			/* error (0) in the delay slot */
- 			emit_bcond(MIPS_COND_EQ, r_s0, r_zero,
- 				   b_imm(prog->len, ctx), ctx);
--- 
-2.0.0
+This should probably be kvm_debug since it isn't fatal to the whole VM
+(the exception gets passed on to the guest kernel to handle), otherwise
+guest userland could maliciously spam the host log by repeatedly trying
+to access beyond the T&E useg.
+
+Same goes for the other printks in this function
+
+It probably was only useful to sanity check that userland wasn't trying
+to access memory that would be accessible on a normal MIPS core but
+isn't with the T&E segment layout.
+
+Otherwise this patch looks okay to me.
+
+Cheers
+James

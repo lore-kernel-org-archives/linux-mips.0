@@ -1,17 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:41826 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6859932AbaFYJb1Q5KRL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 11:31:27 +0200
-Message-ID: <53AA96E7.4040609@imgtec.com>
-Date: Wed, 25 Jun 2014 10:31:19 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mail-oa0-f53.google.com ([209.85.219.53]:62915 "EHLO
+        mail-oa0-f53.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6816417AbaFYOoWSA2g0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 16:44:22 +0200
+Received: by mail-oa0-f53.google.com with SMTP id l6so2252134oag.12
+        for <linux-mips@linux-mips.org>; Wed, 25 Jun 2014 07:44:15 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 8/9] MIPS: KVM: Skip memory cleaning in kvm_mips_commpage_init()
-References: <1403631071-6012-1-git-send-email-dengcheng.zhu@imgtec.com> <1403631071-6012-9-git-send-email-dengcheng.zhu@imgtec.com>
-In-Reply-To: <1403631071-6012-9-git-send-email-dengcheng.zhu@imgtec.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <20140625134354.GA7892@redhat.com>
+References: <1403642893-23107-1-git-send-email-keescook@chromium.org>
+        <1403642893-23107-5-git-send-email-keescook@chromium.org>
+        <20140625134354.GA7892@redhat.com>
+Date: Wed, 25 Jun 2014 07:44:15 -0700
+Message-ID: <CAGXu5j+yutPBpEq3qiVwAMT6q0y36bwM2ksBvj-=6AqkWAgaGQ@mail.gmail.com>
+Subject: Re: [PATCH v8 4/9] sched: move no_new_privs into new atomic flags
+From: Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <keescook@google.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,19 +24,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>, pbonzini@redhat.com
-Cc: gleb@kernel.org, kvm@vger.kernel.org, sanjayl@kymasys.com, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20140625093119.ZxcFXosiEhaUsNZnx3Qjy1MD84VZdF639al8Vs10RHY@z>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Alexei Starovoitov <ast@plumgrid.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
+Message-ID: <20140625144415.GQZS9k0oSz2JpihNu-VUaJRxBhqEpcUn4ScBl3zjf1w@z>
 
-On 24/06/14 18:31, Deng-Cheng Zhu wrote:
-> From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-> 
-> The commpage is allocated using kzalloc(), so there's no need of cleaning
-> the memory of the kvm_mips_commpage struct and its internal mips_coproc.
-> 
-> Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+On Wed, Jun 25, 2014 at 6:43 AM, Oleg Nesterov <oleg@redhat.com> wrote:
+> On 06/24, Kees Cook wrote:
+>>
+>> --- a/include/linux/sched.h
+>> +++ b/include/linux/sched.h
+>> @@ -1307,8 +1307,7 @@ struct task_struct {
+>>                                * execve */
+>>       unsigned in_iowait:1;
+>>
+>> -     /* task may not gain privileges */
+>> -     unsigned no_new_privs:1;
+>> +     unsigned long atomic_flags; /* Flags needing atomic access. */
+>>
+>>       /* Revert to default priority/policy when forking */
+>>       unsigned sched_reset_on_fork:1;
+>
+> Agreed, personally I like it more than seccomp->flags.
+>
+> But probably it would be better to place the new member before/after
+> other bitfields to save the space?
 
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
+Sure, I'll move it down. (Though I thought the compiler was smarter about that.)
 
-Cheers
-James
+-Kees
+
+-- 
+Kees Cook
+Chrome OS Security

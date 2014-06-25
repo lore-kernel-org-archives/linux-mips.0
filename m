@@ -1,17 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:11447 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:29232 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6819433AbaFYISzu0rb6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 10:18:55 +0200
-Message-ID: <53AA85E8.5090403@imgtec.com>
-Date: Wed, 25 Jun 2014 09:18:48 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        with ESMTP id S6816503AbaFYIhiPH0Rh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 10:37:38 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH v2 14/17] MIPS: bpf: Prevent kernel fall over for >=32bit shifts
+Date: Wed, 25 Jun 2014 09:37:21 +0100
+Message-ID: <1403685441-4858-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <53A811FA.5060502@imgtec.com>
+References: <53A811FA.5060502@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 16/17] MIPS: bpf: Use 32 or 64-bit load instruction to
- load an address to register
-References: <1403516340-22997-1-git-send-email-markos.chandras@imgtec.com> <1403516340-22997-17-git-send-email-markos.chandras@imgtec.com> <20140623202437.GD2200@pburton-laptop>
-In-Reply-To: <20140623202437.GD2200@pburton-laptop>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,51 +20,69 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, "David S. Miller" <davem@davemloft.net>, Daniel Borkmann <dborkman@redhat.com>, Alexei Starovoitov <ast@plumgrid.com>, netdev@vger.kernel.org
-Message-ID: <20140625081848.rQ71x8kU7hrqg8rZ-owSqrlXQ2G7AijUcu7ygCyVfew@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, "David S. Miller" <davem@davemloft.net>, Daniel Borkmann <dborkman@redhat.com>, Alexei Starovoitov <ast@plumgrid.com>, netdev@vger.kernel.org
+Message-ID: <20140625083721.bXLYhwKkQgFwFZJfpNDdv0z6g5pFtGb6ZwSgQQgL27k@z>
 
-On 06/23/2014 09:24 PM, Paul Burton wrote:
-> On Mon, Jun 23, 2014 at 10:38:59AM +0100, Markos Chandras wrote:
->> diff --git a/arch/mips/net/bpf_jit.c b/arch/mips/net/bpf_jit.c
->> index 4920e0fd05ee..d8dba7b523a5 100644
->> --- a/arch/mips/net/bpf_jit.c
->> +++ b/arch/mips/net/bpf_jit.c
->> @@ -447,6 +447,17 @@ static inline void emit_wsbh(unsigned int dst, unsigned int src,
->>  	emit_instr(ctx, wsbh, dst, src);
->>  }
->>  
->> +/* load address to register */
->> +static inline void emit_load_addr(unsigned int dst, unsigned int src,
->> +				     int imm, struct jit_ctx *ctx)
-> 
-> (I originally sent this in reply to your internal posting, but assume you
-> missed it or it got eaten somewhere along the way.)
-> 
-> The name emit_load_addr & comment "load address to register" makes this
-> sound like an equivalent of the "la" pseudo instruction, but it appears
-> to really emit a pointer sized load? How about emit_load_ptr or something
-> instead, and similarly s/address/pointer/ in the comment?
-> 
-Hi Paul,
+Remove BUG_ON() if the shift immediate is >=32 to avoid kernel crashes
+due to malicious user input. If the shift immediate is >= 32,
+we simply load the destination register with 0 since only
+32-bit instructions are used by JIT so this will do the
+correct thing even on MIPS64.
 
-I suppose I could do that. I will send a v2
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Daniel Borkmann <dborkman@redhat.com>
+Cc: Alexei Starovoitov <ast@plumgrid.com>
+Cc: netdev@vger.kernel.org
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+Changes since v1:
+- For sa >=32, load destination register with zero instead of treating
+the immediate as 31
+---
+ arch/mips/net/bpf_jit.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
->> +{
->> +	/* src contains the base addr of the 32/64-pointer */
->> +	if (config_enabled(CONFIG_64BIT))
->> +		emit_instr(ctx, ld, dst, imm, src);
->> +	else
->> +		emit_instr(ctx, lw, dst, imm, src);
-> 
-> Is there some way you could make use of the UASM_i_LW macro (note the
-> capitalisation) instead of the if statement here?
-> 
-
-Not right now. I use config_enabled(CONFIG_64BIT) everywhere in that
-file to emit 32-bit or 64-bit instructions. So I will look into
-switching to the USAM_i_* macros when i submit the remaining fixes
-probably for 3.17.
-
+diff --git a/arch/mips/net/bpf_jit.c b/arch/mips/net/bpf_jit.c
+index 1bcd599d9971..9476e7f061a1 100644
+--- a/arch/mips/net/bpf_jit.c
++++ b/arch/mips/net/bpf_jit.c
+@@ -151,6 +151,8 @@ static inline int optimize_div(u32 *k)
+ 	return 0;
+ }
+ 
++static inline void emit_jit_reg_move(ptr dst, ptr src, struct jit_ctx *ctx);
++
+ /* Simply emit the instruction if the JIT memory space has been allocated */
+ #define emit_instr(ctx, func, ...)			\
+ do {							\
+@@ -309,8 +311,11 @@ static inline void emit_sll(unsigned int dst, unsigned int src,
+ 			    unsigned int sa, struct jit_ctx *ctx)
+ {
+ 	/* sa is 5-bits long */
+-	BUG_ON(sa >= BIT(5));
+-	emit_instr(ctx, sll, dst, src, sa);
++	if (sa >= BIT(5))
++		/* Shifting >= 32 results in zero */
++		emit_jit_reg_move(dst, r_zero, ctx);
++	else
++		emit_instr(ctx, sll, dst, src, sa);
+ }
+ 
+ static inline void emit_srlv(unsigned int dst, unsigned int src,
+@@ -323,8 +328,11 @@ static inline void emit_srl(unsigned int dst, unsigned int src,
+ 			    unsigned int sa, struct jit_ctx *ctx)
+ {
+ 	/* sa is 5-bits long */
+-	BUG_ON(sa >= BIT(5));
+-	emit_instr(ctx, srl, dst, src, sa);
++	if (sa >= BIT(5))
++		/* Shifting >= 32 results in zero */
++		emit_jit_reg_move(dst, r_zero, ctx);
++	else
++		emit_instr(ctx, srl, dst, src, sa);
+ }
+ 
+ static inline void emit_slt(unsigned int dst, unsigned int src1,
 -- 
-markos
+2.0.0

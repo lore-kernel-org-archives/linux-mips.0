@@ -1,17 +1,21 @@
-Received: from mx1.redhat.com ([209.132.183.28]:54903 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6859932AbaFYRw6aMBxj (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 25 Jun 2014 19:52:58 +0200
-Date: Wed, 25 Jun 2014 19:51:36 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v8 5/9] seccomp: split mode set routines
-Message-ID: <20140625175136.GA18185@redhat.com>
-References: <1403642893-23107-1-git-send-email-keescook@chromium.org> <1403642893-23107-6-git-send-email-keescook@chromium.org> <20140625135121.GB7892@redhat.com> <CAGXu5jJkFxh4K=40xuh6tu3kUf4oJM8Dry+4upBdRieW3FNLgw@mail.gmail.com> <CALCETrUBNmLnpa+LM91om2RSpR6SjupP-EdefzhU1Me4nv3Dfw@mail.gmail.com> <CAGXu5j+J11zJnuFR8bYKAXizAHhCx4R+uJE_QH6zC3q2udkpaQ@mail.gmail.com> <CALCETrVrs8sb19+UUqyFEpAFzTih5dkAwn-WpQjfgPcPJMpP5g@mail.gmail.com> <20140625173245.GA17695@redhat.com> <CALCETrUc65H+fn6dtMdYnB_xR39wcmgDdTbdR3fFRjyrndJhgA@mail.gmail.com>
+Received: from mail-qg0-f51.google.com ([209.85.192.51]:37306 "EHLO
+        mail-qg0-f51.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6859932AbaFYRzPkdb8L (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 19:55:15 +0200
+Received: by mail-qg0-f51.google.com with SMTP id z60so2014276qgd.10
+        for <linux-mips@linux-mips.org>; Wed, 25 Jun 2014 10:55:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrUc65H+fn6dtMdYnB_xR39wcmgDdTbdR3fFRjyrndJhgA@mail.gmail.com>
-Return-Path: <oleg@redhat.com>
+Reply-To: mtk.manpages@gmail.com
+In-Reply-To: <CAGXu5j+99NOtJq2-TWYm8mwNw1ki0y3rRH21wX66MVM8=jz1bQ@mail.gmail.com>
+References: <1403642893-23107-1-git-send-email-keescook@chromium.org>
+ <20140624205615.GW5412@outflux.net> <20140625140440.6870eac1@alan.etchedpixels.co.uk>
+ <CAGXu5j+99NOtJq2-TWYm8mwNw1ki0y3rRH21wX66MVM8=jz1bQ@mail.gmail.com>
+From: "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date: Wed, 25 Jun 2014 19:54:49 +0200
+Message-ID: <CAKgNAkgU+igKYKtzk3u83ZTcR-ov7kq_J9mbTeHuOt7Zkbpy6Q@mail.gmail.com>
+Subject: Re: [PATCH v8 1/1] man-pages: seccomp.2: document syscall
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <mtk.manpages@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,53 +25,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Kees Cook <keescook@chromium.org>, LKML <linux-kernel@vger.kernel.org>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Alexei Starovoitov <ast@plumgrid.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
-Message-ID: <20140625175136.c94QKkSXF9rsXKCWD1PMxGY2g0O1o6qcpy8fmd0pjDg@z>
+To: Kees Cook <keescook@chromium.org>
+Cc: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, Oleg Nesterov <oleg@redhat.com>, Andy Lutomirski <luto@amacapital.net>, Alexei Starovoitov <ast@plumgrid.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
+Message-ID: <20140625175449.uuMigh0qy6HusL2YDYyTrrw0tvTselDzH8MTzxq_dfo@z>
 
-On 06/25, Andy Lutomirski wrote:
+On Wed, Jun 25, 2014 at 5:10 PM, Kees Cook <keescook@chromium.org> wrote:
+> On Wed, Jun 25, 2014 at 6:04 AM, One Thousand Gnomes
+> <gnomes@lxorguk.ukuu.org.uk> wrote:
+>> On Tue, 24 Jun 2014 13:56:15 -0700
+>> Kees Cook <keescook@chromium.org> wrote:
+>>
+>>> Combines documentation from prctl, in-kernel seccomp_filter.txt and
+>>> dropper.c, along with details specific to the new syscall.
+>>
+>> What is the license on the example ? Probably you want to propogate the
+>> minimal form of the text in seccomp/dropper into the document example to
+>> avoid confusion ?
 >
-> On Wed, Jun 25, 2014 at 10:32 AM, Oleg Nesterov <oleg@redhat.com> wrote:
-> > On 06/25, Andy Lutomirski wrote:
-> >>
-> >> Write the filter, then smp_mb (or maybe a weaker barrier is okay),
-> >> then set the bit.
-> >
-> > Yes, exactly, this is what I meant. Plas rmb() in __secure_computing().
-> >
-> > But I still can't understand the rest of your discussion about the
-> > ordering we need ;)
->
-> Let me try again from scratch.
->
-> Currently there are three relevant variables: TIF_SECCOMP,
-> seccomp.mode, and seccomp.filter.  __secure_computing needs
-> seccomp.mode and seccomp.filter to be in sync, and it wants (but
-> doesn't really need) TIF_SECCOMP to be in sync as well.
->
-> My suggestion is to rearrange it a bit.  Move mode into seccomp.filter
-> (so that filter == NULL implies no seccomp) and don't check
-> TIF_SECCOMP in secure_computing.  Then turning on seccomp is entirely
-> atomic except for the fact that the seccomp hooks won't be called if
-> filter != NULL but !TIF_SECCOMP.  This removes all ordering
-> requirements.
+> What is the license of the other code examples in man-pages?
 
-Ah, got it, thanks. Perhaps I missed somehing, but to me this looks like
-unnecessary complication at first glance.
+Typically, just the same as the rest if the page text. Perhaps that
+should be rethought for future examples. I haven't thought about it at
+length, but, at first glance, I'm not against having separate licenses
+for the page text and the code sample.
 
-We alredy have TIF_SECCOMP, we need it anyway, and we should only care
-about the case when this bit is actually set, so that we can race with
-the 1st call of __secure_computing().
+Cheers,
 
-Otherwise we are fine: we can miss the new filter anyway, ->mode can't
-be changed it is already nonzero.
+Michael
 
-> Alternatively, __secure_computing could still BUG_ON(!seccomp.filter).
-> In that case, filter needs to be set before TIF_SECCOMP is set, but
-> that's straightforward.
-
-Yep. And this is how seccomp_assign_mode() already works? It is called
-after we change ->filter chain, it changes ->mode before set(TIF_SECCOMP)
-just it lacks a barrier.
-
-Oleg.
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/

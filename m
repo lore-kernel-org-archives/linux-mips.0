@@ -1,15 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:26613 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:11447 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6819433AbaFYIMSYtdJP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 10:12:18 +0200
-Message-ID: <53AA845A.1070505@imgtec.com>
-Date: Wed, 25 Jun 2014 09:12:10 +0100
+        with ESMTP id S6819433AbaFYISzu0rb6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 10:18:55 +0200
+Message-ID: <53AA85E8.5090403@imgtec.com>
+Date: Wed, 25 Jun 2014 09:18:48 +0100
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 00/17] Misc MIPS/BPF fixes for 3.16
-References: <1403516340-22997-1-git-send-email-markos.chandras@imgtec.com> <20140623.124919.2215480222213445820.davem@davemloft.net>
-In-Reply-To: <20140623.124919.2215480222213445820.davem@davemloft.net>
-Content-Type: text/plain; charset="ISO-8859-1"
+Subject: Re: [PATCH 16/17] MIPS: bpf: Use 32 or 64-bit load instruction to
+ load an address to register
+References: <1403516340-22997-1-git-send-email-markos.chandras@imgtec.com> <1403516340-22997-17-git-send-email-markos.chandras@imgtec.com> <20140623202437.GD2200@pburton-laptop>
+In-Reply-To: <20140623202437.GD2200@pburton-laptop>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
@@ -21,28 +22,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Miller <davem@davemloft.net>
-Cc: linux-mips@linux-mips.org, dborkman@redhat.com, ast@plumgrid.com, netdev@vger.kernel.org
-Message-ID: <20140625081210.b-PQOVeH3V17-TjAnqa3LtfIXJm-V9VxCK76-ql5pMA@z>
+To: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org, "David S. Miller" <davem@davemloft.net>, Daniel Borkmann <dborkman@redhat.com>, Alexei Starovoitov <ast@plumgrid.com>, netdev@vger.kernel.org
+Message-ID: <20140625081848.rQ71x8kU7hrqg8rZ-owSqrlXQ2G7AijUcu7ygCyVfew@z>
 
-On 06/23/2014 08:49 PM, David Miller wrote:
-> From: Markos Chandras <markos.chandras@imgtec.com>
-> Date: Mon, 23 Jun 2014 10:38:43 +0100
+On 06/23/2014 09:24 PM, Paul Burton wrote:
+> On Mon, Jun 23, 2014 at 10:38:59AM +0100, Markos Chandras wrote:
+>> diff --git a/arch/mips/net/bpf_jit.c b/arch/mips/net/bpf_jit.c
+>> index 4920e0fd05ee..d8dba7b523a5 100644
+>> --- a/arch/mips/net/bpf_jit.c
+>> +++ b/arch/mips/net/bpf_jit.c
+>> @@ -447,6 +447,17 @@ static inline void emit_wsbh(unsigned int dst, unsigned int src,
+>>  	emit_instr(ctx, wsbh, dst, src);
+>>  }
+>>  
+>> +/* load address to register */
+>> +static inline void emit_load_addr(unsigned int dst, unsigned int src,
+>> +				     int imm, struct jit_ctx *ctx)
 > 
->> Here are some fixes for MIPS/BPF for 3.16. These fixes make
->> the bpf testsuite *almost* happy with only 2 tests (LD_IND_LL,
->> LD_IND_NET) failing at the moment. Since fixing the remaining tests
->> is not so trivial, it would be nice to have these fixes in 3.16 for now.
->>
->> The patches are based on the upstream-sfr/mips-for-linux-next tree
->> because they depend on https://patchwork.linux-mips.org/patch/7099/
+> (I originally sent this in reply to your internal posting, but assume you
+> missed it or it got eaten somewhere along the way.)
 > 
-> You did not CC: netdev on patches 1, 2, and 3.  Please do not do this,
-> people on this list will want to review the series as a whole.
+> The name emit_load_addr & comment "load address to register" makes this
+> sound like an equivalent of the "la" pseudo instruction, but it appears
+> to really emit a pointer sized load? How about emit_load_ptr or something
+> instead, and similarly s/address/pointer/ in the comment?
 > 
-Apologies David. Patches 1,2,3 have nothing to do with bpf-jit and they
-only fix/add MIPS micro-assembler instructions so I didn't though
-netdev@ actually cared about that. I will be more careful in the future.
+Hi Paul,
+
+I suppose I could do that. I will send a v2
+
+>> +{
+>> +	/* src contains the base addr of the 32/64-pointer */
+>> +	if (config_enabled(CONFIG_64BIT))
+>> +		emit_instr(ctx, ld, dst, imm, src);
+>> +	else
+>> +		emit_instr(ctx, lw, dst, imm, src);
+> 
+> Is there some way you could make use of the UASM_i_LW macro (note the
+> capitalisation) instead of the if statement here?
+> 
+
+Not right now. I use config_enabled(CONFIG_64BIT) everywhere in that
+file to emit 32-bit or 64-bit instructions. So I will look into
+switching to the USAM_i_* macros when i submit the remaining fixes
+probably for 3.17.
 
 -- 
 markos

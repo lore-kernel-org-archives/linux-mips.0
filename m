@@ -1,11 +1,11 @@
-Received: from mail-oa0-f54.google.com ([209.85.219.54]:49613 "EHLO
-        mail-oa0-f54.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6860043AbaFYSZca1ExF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 20:25:32 +0200
-Received: by mail-oa0-f54.google.com with SMTP id eb12so2562419oac.13
-        for <linux-mips@linux-mips.org>; Wed, 25 Jun 2014 11:25:26 -0700 (PDT)
+Received: from mail-oa0-f44.google.com ([209.85.219.44]:40761 "EHLO
+        mail-oa0-f44.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6859933AbaFYSbzM0vS7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 20:31:55 +0200
+Received: by mail-oa0-f44.google.com with SMTP id i7so2591956oag.3
+        for <linux-mips@linux-mips.org>; Wed, 25 Jun 2014 11:31:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALCETrXr+g6tM+9gQJKKnGj_XoyXi+7ZQpAWjykhOAErpE8MBw@mail.gmail.com>
+In-Reply-To: <20140625182012.GA19437@redhat.com>
 References: <1403642893-23107-1-git-send-email-keescook@chromium.org>
         <1403642893-23107-10-git-send-email-keescook@chromium.org>
         <20140625142121.GD7892@redhat.com>
@@ -14,9 +14,9 @@ References: <1403642893-23107-1-git-send-email-keescook@chromium.org>
         <CAGXu5jLHDew1fifGY_mWgwcH7evm0T8rqSnBrw4XpoAXGK+t-Q@mail.gmail.com>
         <20140625172410.GA17133@redhat.com>
         <CAGXu5jKkLS3++_dtWHnjWudVvaSR9DRwjNG3q00SmSy6XoCMaw@mail.gmail.com>
-        <CALCETrXr+g6tM+9gQJKKnGj_XoyXi+7ZQpAWjykhOAErpE8MBw@mail.gmail.com>
-Date: Wed, 25 Jun 2014 11:25:26 -0700
-Message-ID: <CAGXu5j+Gw8V5qFueWJiA2rEntALFQ1KXOJaPg3OcJZKDCibyMg@mail.gmail.com>
+        <20140625182012.GA19437@redhat.com>
+Date: Wed, 25 Jun 2014 11:31:48 -0700
+Message-ID: <CAGXu5jLh-a2x0N+kHW7qbZSW0gOPs8v05EzBFkMYQwhft8o2aA@mail.gmail.com>
 Subject: Re: [PATCH v8 9/9] seccomp: implement SECCOMP_FILTER_FLAG_TSYNC
 From: Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset=UTF-8
@@ -30,77 +30,17 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Oleg Nesterov <oleg@redhat.com>, LKML <linux-kernel@vger.kernel.org>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Alexei Starovoitov <ast@plumgrid.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
-Message-ID: <20140625182526.BG-J7mvwA6Gqs8UUpq4eNYo8DpughC9_BhHhKzd9Yuc@z>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: linux-arch <linux-arch@vger.kernel.org>, linux-mips@linux-mips.org, Will Drewry <wad@chromium.org>, linux-security-module <linux-security-module@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Daniel Borkmann <dborkman@redhat.com>, Julien Tinnes <jln@chromium.org>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, David Drysdale <drysdale@google.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexei Starovoitov <ast@plumgrid.com>
+Message-ID: <20140625183148.46vIwI199H_kN3GajfRbVF3KQae42Kjv1q4piJNfvUY@z>
 
-On Wed, Jun 25, 2014 at 11:09 AM, Andy Lutomirski <luto@amacapital.net> wrote:
-> On Wed, Jun 25, 2014 at 10:57 AM, Kees Cook <keescook@chromium.org> wrote:
+On Wed, Jun 25, 2014 at 11:20 AM, Oleg Nesterov <oleg@redhat.com> wrote:
+> On 06/25, Kees Cook wrote:
+>>
 >> On Wed, Jun 25, 2014 at 10:24 AM, Oleg Nesterov <oleg@redhat.com> wrote:
->>> On 06/25, Kees Cook wrote:
->>>>
->>>> On Wed, Jun 25, 2014 at 9:52 AM, Oleg Nesterov <oleg@redhat.com> wrote:
->>>> >
->>>> > Yes, at least this should close the race with suid-exec. And there are no
->>>> > other users. Except apparmor, and I hope you will check it because I simply
->>>> > do not know what it does ;)
->>>> >
->>>> >> I wonder if changes to nnp need to "flushed" during syscall entry
->>>> >> instead of getting updated externally/asynchronously? That way it
->>>> >> won't be out of sync with the seccomp mode/filters.
->>>> >>
->>>> >> Perhaps secure computing needs to check some (maybe seccomp-only)
->>>> >> atomic flags and flip on the "real" nnp if found?
->>>> >
->>>> > Not sure I understand you, could you clarify?
->>>>
->>>> Instead of having TSYNC change the nnp bit, it can set a new flag, say:
->>>>
->>>>     task->seccomp.flags |= SECCOMP_NEEDS_NNP;
->>>>
->>>> This would be set along with seccomp.mode, seccomp.filter, and
->>>> TIF_SECCOMP. Then, during the next secure_computing() call that thread
->>>> makes, it would check the flag:
->>>>
->>>>     if (task->seccomp.flags & SECCOMP_NEEDS_NNP)
->>>>         task->nnp = 1;
->>>>
->>>> This means that nnp couldn't change in the middle of a running syscall.
->>>
->>> Aha, so you were worried about the same thing. Not sure we need this,
->>> but at least I understand you and...
->>>
->>>> Hmmm. Perhaps this doesn't solve anything, though? Perhaps my proposal
->>>> above would actually make things worse, since now we'd have a thread
->>>> with seccomp set up, and no nnp. If it was in the middle of exec,
->>>> we're still causing a problem.
->>>
->>> Yes ;)
->>>
->>>> I think we'd also need a way to either delay the seccomp changes, or
->>>> to notice this condition during exec. Bleh.
->>>
->>> Hmm. confused again,
->>
->> I mean to suggest that the tsync changes would be stored in each
->> thread, but somewhere other than the true seccomp struct, but with
->> TIF_SECCOMP set. When entering secure_computing(), current would check
->> for the "changes to sync", and apply them, then start the syscall. In
->> this way, we can never race a syscall (like exec).
->
-> I'm not sure that helps.  If you set a pending filter part-way through
-> exec, and exec copies that pending filter but doesn't notice NNP, then
-> there's an exploitable race.
->
->>
->>>> What actually happens with a multi-threaded process calls exec? I
->>>> assume all the other threads are destroyed?
->>>
->>> Yes. But this is the point-of-no-return, de_thread() is called after the execing
->>> thared has already passed (say) check_unsafe_exec().
->>>
->>> However, do_execve() takes cred_guard_mutex at the start in prepare_bprm_creds()
->>> and drops it in install_exec_creds(), so it should solve the problem?
+>> >
+>> > However, do_execve() takes cred_guard_mutex at the start in prepare_bprm_creds()
+>> > and drops it in install_exec_creds(), so it should solve the problem?
 >>
 >> I can't tell yet. I'm still trying to understand the order of
 >> operations here. It looks like de_thread() takes the sighand lock.
@@ -115,13 +55,22 @@ On Wed, Jun 25, 2014 at 11:09 AM, Andy Lutomirski <luto@amacapital.net> wrote:
 >>         flush_old_exec
 >>             de_thread (takes and releases sighand->lock)
 >>         install_exec_creds (releases cred_guard_mutex)
->>
+>
+> Yes, and note that when cred_guard_mutex is dropped all other threads
+> are already killed,
+>
 >> I don't see a way to use cred_guard_mutex during tsync (which holds
 >> sighand->lock) without dead-locking. What were you considering here?
 >
-> Grab cred_guard_mutex and then sighand->lock, perhaps?
+> Just take/drop current->signal->cred_guard_mutex along with ->siglock
+> in seccomp_set_mode_filter() ? Unconditionally on depending on
+> SECCOMP_FILTER_FLAG_TSYNC.
 
-Ah, yes, task->signal is like sighand: shared across all threads.
+Yeah, this looks good. *whew* Testing it now, so far so good.
+
+Thanks!
+
+-Kees
 
 -- 
 Kees Cook

@@ -1,15 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:6676 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62097 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860042AbaFZTNFESWKX (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Jun 2014 21:13:05 +0200
+        with ESMTP id S6860035AbaFZTzfSzZ0f (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Jun 2014 21:55:35 +0200
+Message-ID: <53AC7AAD.7010007@imgtec.com>
+Date: Thu, 26 Jun 2014 12:55:25 -0700
 From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH v4 7/7] MIPS: KVM: Remove dead code of TLB index error in kvm_mips_emul_tlbwr()
-Date: Thu, 26 Jun 2014 12:11:40 -0700
-Message-ID: <1403809900-17454-8-git-send-email-dengcheng.zhu@imgtec.com>
-In-Reply-To: <1403809900-17454-1-git-send-email-dengcheng.zhu@imgtec.com>
-References: <1403809900-17454-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH v4 5/7] MIPS: KVM: Rename files to remove the prefix "kvm_"
+ and "kvm_mips_"
+References: <1403809900-17454-1-git-send-email-dengcheng.zhu@imgtec.com> <1403809900-17454-6-git-send-email-dengcheng.zhu@imgtec.com> <53AC7466.6070401@gmail.com>
+In-Reply-To: <53AC7466.6070401@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-Path: <DengCheng.Zhu@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,36 +22,38 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: pbonzini@redhat.com
-Cc: gleb@kernel.org, kvm@vger.kernel.org, sanjayl@kymasys.com, james.hogan@imgtec.com, ralf@linux-mips.org, linux-mips@linux-mips.org, dengcheng.zhu@imgtec.com
-Message-ID: <20140626191140.kNCBGCdhkIxIOIzFua3MSdi0xczRqH8hLQf-Y8WTmDM@z>
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: pbonzini@redhat.com, gleb@kernel.org, kvm@vger.kernel.org, sanjayl@kymasys.com, james.hogan@imgtec.com, ralf@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20140626195525.Lbke_jcNtZ6r4C5bzKXpNinfXptBvUrChY4bR4wO8tM@z>
 
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+On 06/26/2014 12:28 PM, David Daney wrote:
+> On 06/26/2014 12:11 PM, Deng-Cheng Zhu wrote:
+>> From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+>>
+>> Since all the files are in arch/mips/kvm/, there's no need of the prefixes
+>> "kvm_" and "kvm_mips_".
+>>
+>
+> I don't like this change.
+>
+> It will leads me to confuse arch/mips/kvm/interrupt.h with 
+> include/linux/interrupt.h
 
-It's impossible to fall into the error handling of the TLB index after
-being masked by (KVM_MIPS_GUEST_TLB_SIZE - 1). Remove the dead code.
+We have <linux/interrupt.h> and "interrupt.h".
 
-Reported-by: James Hogan <james.hogan@imgtec.com>
-Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
----
- arch/mips/kvm/emulate.c | 5 -----
- 1 file changed, 5 deletions(-)
+>
+> x86 calls these things irq.c and irq.h, perhaps that would be a little 
+> better.
 
-diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
-index 1a60688..fb3e8df 100644
---- a/arch/mips/kvm/emulate.c
-+++ b/arch/mips/kvm/emulate.c
-@@ -846,11 +846,6 @@ enum emulation_result kvm_mips_emul_tlbwr(struct kvm_vcpu *vcpu)
- 	get_random_bytes(&index, sizeof(index));
- 	index &= (KVM_MIPS_GUEST_TLB_SIZE - 1);
- 
--	if (index < 0 || index >= KVM_MIPS_GUEST_TLB_SIZE) {
--		kvm_err("%s: illegal index: %d\n", __func__, index);
--		return EMULATE_FAIL;
--	}
--
- 	tlb = &vcpu->arch.guest_tlb[index];
- 
- 	/*
--- 
-1.8.5.3
+There's also include/linux/irq.h
+
+>
+> There is precedence in x86 for some of the names though.
+>
+> But really why churn up the code in the first place?  the kvm_mips prefix 
+> does tell us exactly what we are dealing with.
+
+That's why people created the arch/mips/kvm directory, isn't it?
+
+
+Deng-Cheng

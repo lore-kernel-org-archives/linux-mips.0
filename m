@@ -1,26 +1,14 @@
-Received: from mail-oa0-f44.google.com ([209.85.219.44]:40761 "EHLO
-        mail-oa0-f44.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6859933AbaFYSbzM0vS7 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jun 2014 20:31:55 +0200
-Received: by mail-oa0-f44.google.com with SMTP id i7so2591956oag.3
-        for <linux-mips@linux-mips.org>; Wed, 25 Jun 2014 11:31:49 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:26372 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6860036AbaFZTMCO2KTo (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Jun 2014 21:12:02 +0200
+From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Subject: [PATCH v4 0/7] MIPS: KVM: Bugfixes and cleanups
+Date: Thu, 26 Jun 2014 12:11:33 -0700
+Message-ID: <1403809900-17454-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20140625182012.GA19437@redhat.com>
-References: <1403642893-23107-1-git-send-email-keescook@chromium.org>
-        <1403642893-23107-10-git-send-email-keescook@chromium.org>
-        <20140625142121.GD7892@redhat.com>
-        <CAGXu5jJtLrjbobZC1FD4WV-Jm2p7cRGa1aSPK-d_isnfCZAHdA@mail.gmail.com>
-        <20140625165209.GA14720@redhat.com>
-        <CAGXu5jLHDew1fifGY_mWgwcH7evm0T8rqSnBrw4XpoAXGK+t-Q@mail.gmail.com>
-        <20140625172410.GA17133@redhat.com>
-        <CAGXu5jKkLS3++_dtWHnjWudVvaSR9DRwjNG3q00SmSy6XoCMaw@mail.gmail.com>
-        <20140625182012.GA19437@redhat.com>
-Date: Wed, 25 Jun 2014 11:31:48 -0700
-Message-ID: <CAGXu5jLh-a2x0N+kHW7qbZSW0gOPs8v05EzBFkMYQwhft8o2aA@mail.gmail.com>
-Subject: Re: [PATCH v8 9/9] seccomp: implement SECCOMP_FILTER_FLAG_TSYNC
-From: Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <keescook@google.com>
+Content-Type: text/plain
+Return-Path: <DengCheng.Zhu@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -30,48 +18,83 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: linux-arch <linux-arch@vger.kernel.org>, linux-mips@linux-mips.org, Will Drewry <wad@chromium.org>, linux-security-module <linux-security-module@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Daniel Borkmann <dborkman@redhat.com>, Julien Tinnes <jln@chromium.org>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, David Drysdale <drysdale@google.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexei Starovoitov <ast@plumgrid.com>
-Message-ID: <20140625183148.46vIwI199H_kN3GajfRbVF3KQae42Kjv1q4piJNfvUY@z>
+To: pbonzini@redhat.com
+Cc: gleb@kernel.org, kvm@vger.kernel.org, sanjayl@kymasys.com, james.hogan@imgtec.com, ralf@linux-mips.org, linux-mips@linux-mips.org, dengcheng.zhu@imgtec.com
+Message-ID: <20140626191133.Ba2EdNOaMd0EjIOZg2kkwuZW_Jkpl_aUfs8ncHXxa7Y@z>
 
-On Wed, Jun 25, 2014 at 11:20 AM, Oleg Nesterov <oleg@redhat.com> wrote:
-> On 06/25, Kees Cook wrote:
->>
->> On Wed, Jun 25, 2014 at 10:24 AM, Oleg Nesterov <oleg@redhat.com> wrote:
->> >
->> > However, do_execve() takes cred_guard_mutex at the start in prepare_bprm_creds()
->> > and drops it in install_exec_creds(), so it should solve the problem?
->>
->> I can't tell yet. I'm still trying to understand the order of
->> operations here. It looks like de_thread() takes the sighand lock.
->> do_execve_common does:
->>
->> prepare_bprm_creds (takes cred_guard_mutex)
->> check_unsafe_exec (checks nnp to set LSM_UNSAFE_NO_NEW_PRIVS)
->> prepare_binprm (handles suid escalation, checks nnp separately)
->>     security_bprm_set_creds (checks LSM_UNSAFE_NO_NEW_PRIVS)
->> exec_binprm
->>     load_elf_binary
->>         flush_old_exec
->>             de_thread (takes and releases sighand->lock)
->>         install_exec_creds (releases cred_guard_mutex)
->
-> Yes, and note that when cred_guard_mutex is dropped all other threads
-> are already killed,
->
->> I don't see a way to use cred_guard_mutex during tsync (which holds
->> sighand->lock) without dead-locking. What were you considering here?
->
-> Just take/drop current->signal->cred_guard_mutex along with ->siglock
-> in seccomp_set_mode_filter() ? Unconditionally on depending on
-> SECCOMP_FILTER_FLAG_TSYNC.
+The patches are pretty straightforward.
 
-Yeah, this looks good. *whew* Testing it now, so far so good.
+Changes:
+v4 - v3:
+o In patch #1, align elements in debugfs_entries[].
+o In patch #1, indentation and comment style changes.
+o In patch #2, use kvm_debug instead of kvm_err in kvm_mips_check_privilege().
+o Drop off the original patch #6 (MIPS: KVM: Restore correct value for WIRED at
+  TLB uninit).
+o Drop off the original patch #7 (MIPS: KVM: Fix memory leak on VCPU), because
+  it has been queued.
+o Change authorship of the original patch #9 (MIPS: KVM: Remove dead code of TLB
+  index error in kvm_mips_emul_tlbwr()), add Reported-by.
+v3 - v2:
+o In patch #2, change the use of kvm_[err|info|debug].
+o In patch #3, add err removal in kvm_arch_commit_memory_region().
+o In patch #3, revert the changes to kvm_arch_vm_ioctl().
+o In patch #7, drop the merge of kvm_arch_vcpu_free() and pointer nullification.
+o Add patch #9.
+v2 - v1:
+o In patch #1, don't change the opening comment mark for kernel-doc comments.
+o In patch #1, to make long lines more readable, use local variables / macros.
+o In patch #1, slight format adjustments are made.
+o Use -M flag to generate patches (detect renames).
+o Add patch #8.
 
-Thanks!
+Deng-Cheng Zhu (7):
+  MIPS: KVM: Reformat code and comments
+  MIPS: KVM: Use KVM internal logger
+  MIPS: KVM: Simplify functions by removing redundancy
+  MIPS: KVM: Remove unneeded volatile
+  MIPS: KVM: Rename files to remove the prefix "kvm_" and "kvm_mips_"
+  MIPS: KVM: Skip memory cleaning in kvm_mips_commpage_init()
+  MIPS: KVM: Remove dead code of TLB index error in
+    kvm_mips_emul_tlbwr()
 
--Kees
+ arch/mips/include/asm/kvm_host.h                  |  12 +-
+ arch/mips/include/asm/r4kcache.h                  |   3 +
+ arch/mips/kvm/Makefile                            |   8 +-
+ arch/mips/kvm/{kvm_cb.c => callback.c}            |   0
+ arch/mips/kvm/commpage.c                          |  33 ++
+ arch/mips/kvm/commpage.h                          |  24 +
+ arch/mips/kvm/{kvm_mips_dyntrans.c => dyntrans.c} |  40 +-
+ arch/mips/kvm/{kvm_mips_emul.c => emulate.c}      | 539 +++++++++++-----------
+ arch/mips/kvm/{kvm_mips_int.c => interrupt.c}     |  47 +-
+ arch/mips/kvm/{kvm_mips_int.h => interrupt.h}     |  22 +-
+ arch/mips/kvm/kvm_mips_comm.h                     |  23 -
+ arch/mips/kvm/kvm_mips_commpage.c                 |  37 --
+ arch/mips/kvm/kvm_mips_opcode.h                   |  24 -
+ arch/mips/kvm/{kvm_locore.S => locore.S}          |  55 ++-
+ arch/mips/kvm/{kvm_mips.c => mips.c}              | 224 +++++----
+ arch/mips/kvm/opcode.h                            |  22 +
+ arch/mips/kvm/{kvm_mips_stats.c => stats.c}       |  28 +-
+ arch/mips/kvm/{kvm_tlb.c => tlb.c}                | 258 +++++------
+ arch/mips/kvm/trace.h                             |  18 +-
+ arch/mips/kvm/{kvm_trap_emul.c => trap_emul.c}    | 112 +++--
+ 20 files changed, 750 insertions(+), 779 deletions(-)
+ rename arch/mips/kvm/{kvm_cb.c => callback.c} (100%)
+ create mode 100644 arch/mips/kvm/commpage.c
+ create mode 100644 arch/mips/kvm/commpage.h
+ rename arch/mips/kvm/{kvm_mips_dyntrans.c => dyntrans.c} (79%)
+ rename arch/mips/kvm/{kvm_mips_emul.c => emulate.c} (83%)
+ rename arch/mips/kvm/{kvm_mips_int.c => interrupt.c} (85%)
+ rename arch/mips/kvm/{kvm_mips_int.h => interrupt.h} (74%)
+ delete mode 100644 arch/mips/kvm/kvm_mips_comm.h
+ delete mode 100644 arch/mips/kvm/kvm_mips_commpage.c
+ delete mode 100644 arch/mips/kvm/kvm_mips_opcode.h
+ rename arch/mips/kvm/{kvm_locore.S => locore.S} (93%)
+ rename arch/mips/kvm/{kvm_mips.c => mips.c} (84%)
+ create mode 100644 arch/mips/kvm/opcode.h
+ rename arch/mips/kvm/{kvm_mips_stats.c => stats.c} (63%)
+ rename arch/mips/kvm/{kvm_tlb.c => tlb.c} (78%)
+ rename arch/mips/kvm/{kvm_trap_emul.c => trap_emul.c} (83%)
 
 -- 
-Kees Cook
-Chrome OS Security
+1.8.5.3

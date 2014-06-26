@@ -1,15 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:37529 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:55787 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6856089AbaF0C6fOkF9M (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Jun 2014 04:58:35 +0200
-Message-ID: <53ACB28F.8010405@imgtec.com>
-Date: Thu, 26 Jun 2014 16:53:51 -0700
+        with ESMTP id S6856571AbaF0C6jkrGk0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Jun 2014 04:58:39 +0200
+Message-ID: <53ACA261.7040007@imgtec.com>
+Date: Thu, 26 Jun 2014 15:44:49 -0700
 From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH v4 5/7] MIPS: KVM: Rename files to remove the prefix "kvm_"
  and "kvm_mips_"
-References: <1403809900-17454-1-git-send-email-dengcheng.zhu@imgtec.com> <1403809900-17454-6-git-send-email-dengcheng.zhu@imgtec.com> <53AC7466.6070401@gmail.com> <53AC7AAD.7010007@imgtec.com> <53AC96D7.8040208@gmail.com> <53ACA261.7040007@imgtec.com>
-In-Reply-To: <53ACA261.7040007@imgtec.com>
+References: <1403809900-17454-1-git-send-email-dengcheng.zhu@imgtec.com> <1403809900-17454-6-git-send-email-dengcheng.zhu@imgtec.com> <53AC7466.6070401@gmail.com> <53AC7AAD.7010007@imgtec.com> <53AC96D7.8040208@gmail.com>
+In-Reply-To: <53AC96D7.8040208@gmail.com>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <DengCheng.Zhu@imgtec.com>
@@ -24,7 +24,7 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: David Daney <ddaney.cavm@gmail.com>
 Cc: pbonzini@redhat.com, gleb@kernel.org, kvm@vger.kernel.org, sanjayl@kymasys.com, james.hogan@imgtec.com, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20140626235351.g9JteNjrYidQFBFdrtYMNg5qfqWKDSIgBYyu14rR88A@z>
+Message-ID: <20140626224449.CCIA28qI6_R7Aap4cYfSEGERna_w0uBDihwd0dXjRLE@z>
 
 On 06/26/2014 02:55 PM, David Daney wrote:
 > On 06/26/2014 12:55 PM, Deng-Cheng Zhu wrote:
@@ -90,15 +90,7 @@ If it's kernel/events/perf_events_core.c, I think it looks ugly.
 Other examples are kernel/sched/, mm/, and many more. When talking about 
 filemap.c, one may think it may be under fs/. But there's mm/filemap.c (not 
 mm/mm_filemap.c which seems, again, ugly). What I want to say is that: 
-Talking about a file should include its path info.
-
-In addition, I'm saying "ugly" is not only from the perspective of feeling, 
-but also from practicability. When reading source code using some tools, 
-the file list window is usually (at least for me) relatively small. If the 
-prefix is there, it's easy to see something like:
-
-arch/mips/kvm/kvm_mips_e...
-arch/mips/kvm/kvm_mips_s...
+Talking about a file should include its path.
 
 
 Deng-Cheng

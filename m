@@ -1,28 +1,17 @@
-Received: from mail-ob0-f170.google.com ([209.85.214.170]:50057 "EHLO
-        mail-ob0-f170.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6860046AbaF0U4yjCxHu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Jun 2014 22:56:54 +0200
-Received: by mail-ob0-f170.google.com with SMTP id uz6so6226464obc.15
-        for <linux-mips@linux-mips.org>; Fri, 27 Jun 2014 13:56:47 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:21360 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6860058AbaF0Xr34Kmoj (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 28 Jun 2014 01:47:29 +0200
+Message-ID: <53AE0288.6000905@imgtec.com>
+Date: Fri, 27 Jun 2014 16:47:20 -0700
+From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20140627195559.GA31661@redhat.com>
-References: <CAGXu5j+J11zJnuFR8bYKAXizAHhCx4R+uJE_QH6zC3q2udkpaQ@mail.gmail.com>
-        <CALCETrVrs8sb19+UUqyFEpAFzTih5dkAwn-WpQjfgPcPJMpP5g@mail.gmail.com>
-        <20140625173245.GA17695@redhat.com>
-        <CALCETrUc65H+fn6dtMdYnB_xR39wcmgDdTbdR3fFRjyrndJhgA@mail.gmail.com>
-        <20140625175136.GA18185@redhat.com>
-        <CAGXu5jL17k6=GXju6x+eLU20FMwBHhnuRiHoQD1Bzj_EmpiKjg@mail.gmail.com>
-        <CALCETrVNwhWSPNiBiZmgP1nD9zLJPTk6cH0yo=85rbxTPTYFRg@mail.gmail.com>
-        <CAGXu5jLavA8FJD8m-1y4wO0uzh3qvvMmajAg0Lrr1Cn_Om3a3w@mail.gmail.com>
-        <20140627192753.GA30752@redhat.com>
-        <CALCETrVbJqfG6oBaZEjj7H3pPa1oVJx6QXAYc5zZ6o-niV=WKQ@mail.gmail.com>
-        <20140627195559.GA31661@redhat.com>
-Date: Fri, 27 Jun 2014 13:56:46 -0700
-Message-ID: <CAGXu5j+M+MHkxNMSaQ+RqYrty=1Fgur6_duSnL8DAZ_SazeJ7w@mail.gmail.com>
-Subject: Re: [PATCH v8 5/9] seccomp: split mode set routines
-From: Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <keescook@google.com>
+Subject: Re: [PATCH v3 7/9] MIPS: KVM: Fix memory leak on VCPU
+References: <1403631071-6012-1-git-send-email-dengcheng.zhu@imgtec.com> <1403631071-6012-8-git-send-email-dengcheng.zhu@imgtec.com> <53AA9625.8020802@imgtec.com> <53AABDE9.3050907@redhat.com>
+In-Reply-To: <53AABDE9.3050907@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <DengCheng.Zhu@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -32,65 +21,48 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andy Lutomirski <luto@amacapital.net>, LKML <linux-kernel@vger.kernel.org>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Alexei Starovoitov <ast@plumgrid.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
-Message-ID: <20140627205646.KLqqhQJj2aYw1xqpC6xXpsvXi4wSh07mLZJ9qYIC1Zs@z>
+To: Paolo Bonzini <pbonzini@redhat.com>, James Hogan <james.hogan@imgtec.com>
+Cc: gleb@kernel.org, kvm@vger.kernel.org, sanjayl@kymasys.com, ralf@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20140627234720.Zqb7c0O821JsIrxDkjRQDkwmL05L_lLMlnU4kajg4ys@z>
 
-On Fri, Jun 27, 2014 at 12:55 PM, Oleg Nesterov <oleg@redhat.com> wrote:
-> On 06/27, Andy Lutomirski wrote:
+Hi Paolo,
+
+
+On 06/25/2014 05:17 AM, Paolo Bonzini wrote:
+> Il 25/06/2014 11:28, James Hogan ha scritto:
+>> On 24/06/14 18:31, Deng-Cheng Zhu wrote:
+>>> From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+>>>
+>>> kvm_arch_vcpu_free() is called in 2 code paths:
+>>>
+>>> 1) kvm_vm_ioctl()
+>>>        kvm_vm_ioctl_create_vcpu()
+>>>            kvm_arch_vcpu_destroy()
+>>>                kvm_arch_vcpu_free()
+>>> 2) kvm_put_kvm()
+>>>        kvm_destroy_vm()
+>>>            kvm_arch_destroy_vm()
+>>>                kvm_mips_free_vcpus()
+>>>                    kvm_arch_vcpu_free()
+>>>
+>>> Neither of the paths handles VCPU free. We need to do it in
+>>> kvm_arch_vcpu_free() corresponding to the memory allocation in
+>>> kvm_arch_vcpu_create().
+>>>
+>>> Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 >>
->> On Fri, Jun 27, 2014 at 12:27 PM, Oleg Nesterov <oleg@redhat.com> wrote:
->> > On 06/27, Kees Cook wrote:
->> >>
->> >> It looks like SMP ARM issues dsb for rmb, which seems a bit expensive.
->> >> http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0204g/CIHJFGFE.htm
->> >>
->> >> ...
->> >>
->> >> I really want to avoid adding anything to the secure_computing()
->> >> execution path. :(
->> >
->> > I must have missed something but I do not understand your concerns.
->> >
->> > __secure_computing() is not trivial, and we are going to execute the
->> > filters. Do you really think rmb() can add the noticeable difference?
->> >
->> > Not to mention that we can only get here if we take the slow syscall
->> > enter path due to TIF_SECCOMP...
->> >
+>> Reviewed-by: James Hogan <james.hogan@imgtec.com>
 >>
->> On my box, with my fancy multi-phase seccomp patches, the total
->> seccomp overhead for a very short filter is about 13ns.  Adding a full
->> barrier would add several ns, I think.
+>> Maybe worth adding "Cc: stable@vger.kernel.org" and moving this to the
+>> beginning of the patchset to avoid conflicts.
+>>
+>> Cheers
+>> James
+>>
 >
-> I am just curious, does this 13ns overhead include the penalty from the
-> slow syscall enter path triggered by TIF_SECCOMP ?
->
->> Admittedly, this is x86, not ARM, so comparisons here are completely
->> bogus.  And that read memory barrier doesn't even need an instruction
->> on x86.  But still, let's try to keep this fast.
->
-> Well, I am not going to insist...
->
-> But imo it would be better to make it correct in a most simple way, then
-> we can optimize this code and see if there is a noticeable difference.
->
-> Not only we can change the ordering, we can remove the BUG_ON's and just
-> accept the fact the __secure_computing() can race with sys_seccomp() from
-> another thread.
->
-> If nothing else, it would be much simpler to discuss this patch if it comes
-> as a separate change.
+> I've queued this for 3.16.  It applies cleanly apart for the filename change.
 
-Yeah, the way I want to go is to add the rmb() for now (it gets us
-"correctness"), and then later deal with any potential performance
-problems on ARM at a later time. (At present, I'm unable to perform
-any timings on ARM -- maybe next week.)
+Maybe you forgot to put this on the branch "queue"? I don't see it. Thanks.
 
-I will send the v9 series in a moment here...
 
--Kees
-
--- 
-Kees Cook
-Chrome OS Security
+Deng-Cheng

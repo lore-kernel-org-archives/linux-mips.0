@@ -1,17 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44308 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860046AbaF0OXBD6pDT (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Jun 2014 16:23:01 +0200
-Message-ID: <53AD7E3C.3040901@imgtec.com>
-Date: Fri, 27 Jun 2014 15:22:52 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mail-oa0-f48.google.com ([209.85.219.48]:38249 "EHLO
+        mail-oa0-f48.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6817913AbaF0R1MSSbIF (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Jun 2014 19:27:12 +0200
+Received: by mail-oa0-f48.google.com with SMTP id m1so5967602oag.35
+        for <linux-mips@linux-mips.org>; Fri, 27 Jun 2014 10:27:06 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 0/7] MIPS: KVM: Bugfixes and cleanups
-References: <1403809900-17454-1-git-send-email-dengcheng.zhu@imgtec.com>
-In-Reply-To: <1403809900-17454-1-git-send-email-dengcheng.zhu@imgtec.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <20140625180705.GB18185@redhat.com>
+References: <1403642893-23107-1-git-send-email-keescook@chromium.org>
+        <1403642893-23107-4-git-send-email-keescook@chromium.org>
+        <20140625180705.GB18185@redhat.com>
+Date: Fri, 27 Jun 2014 10:27:05 -0700
+Message-ID: <CAGXu5j+97V=8H-ft0Rmn8PPR7X=m_L5vLzgneUvbv920+8Yc2w@mail.gmail.com>
+Subject: Re: [PATCH v8 3/9] seccomp: introduce writer locking
+From: Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <keescook@google.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,91 +24,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>, pbonzini@redhat.com
-Cc: gleb@kernel.org, kvm@vger.kernel.org, sanjayl@kymasys.com, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20140627142252.firAn5D1Wkq2X81GbQuKLbIItqh4biNWQahlHZT4WVo@z>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Alexei Starovoitov <ast@plumgrid.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
+Message-ID: <20140627172705.fW9IacJPlSlwVNkIsfLvfx61EvSRWVXTrnsB38usjKg@z>
 
-On 26/06/14 20:11, Deng-Cheng Zhu wrote:
-> The patches are pretty straightforward.
-> 
-> Changes:
-> v4 - v3:
-> o In patch #1, align elements in debugfs_entries[].
-> o In patch #1, indentation and comment style changes.
-> o In patch #2, use kvm_debug instead of kvm_err in kvm_mips_check_privilege().
-> o Drop off the original patch #6 (MIPS: KVM: Restore correct value for WIRED at
->   TLB uninit).
-> o Drop off the original patch #7 (MIPS: KVM: Fix memory leak on VCPU), because
->   it has been queued.
-> o Change authorship of the original patch #9 (MIPS: KVM: Remove dead code of TLB
->   index error in kvm_mips_emul_tlbwr()), add Reported-by.
+On Wed, Jun 25, 2014 at 11:07 AM, Oleg Nesterov <oleg@redhat.com> wrote:
+> On 06/24, Kees Cook wrote:
+>>
+>> +static void copy_seccomp(struct task_struct *p)
+>> +{
+>> +#ifdef CONFIG_SECCOMP
+>> +     /*
+>> +      * Must be called with sighand->lock held, which is common to
+>> +      * all threads in the group. Regardless, nothing special is
+>> +      * needed for the child since it is not yet in the tasklist.
+>> +      */
+>> +     BUG_ON(!spin_is_locked(&current->sighand->siglock));
+>> +
+>> +     get_seccomp_filter(current);
+>> +     p->seccomp = current->seccomp;
+>> +
+>> +     if (p->seccomp.mode != SECCOMP_MODE_DISABLED)
+>> +             set_tsk_thread_flag(p, TIF_SECCOMP);
+>> +#endif
+>> +}
+>
+> Wait. But what about no_new_privs? We should copy it as well...
+>
+> Perhaps this helper should be updated a bit and moved into seccomp.c so
+> that seccomp_sync_threads() could use it too.
 
-Thanks. The remaining changes look good to me.
+Ah! Yes. I had been thinking it had been copied during the task_struct
+duplication, but that would have been before holding sighand->lock, so
+it needs explicit recopying. Thanks!
 
-Patches 1, 2, and 7:
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
+-Kees
 
-Cheers
-James
-
-> v3 - v2:
-> o In patch #2, change the use of kvm_[err|info|debug].
-> o In patch #3, add err removal in kvm_arch_commit_memory_region().
-> o In patch #3, revert the changes to kvm_arch_vm_ioctl().
-> o In patch #7, drop the merge of kvm_arch_vcpu_free() and pointer nullification.
-> o Add patch #9.
-> v2 - v1:
-> o In patch #1, don't change the opening comment mark for kernel-doc comments.
-> o In patch #1, to make long lines more readable, use local variables / macros.
-> o In patch #1, slight format adjustments are made.
-> o Use -M flag to generate patches (detect renames).
-> o Add patch #8.
-> 
-> Deng-Cheng Zhu (7):
->   MIPS: KVM: Reformat code and comments
->   MIPS: KVM: Use KVM internal logger
->   MIPS: KVM: Simplify functions by removing redundancy
->   MIPS: KVM: Remove unneeded volatile
->   MIPS: KVM: Rename files to remove the prefix "kvm_" and "kvm_mips_"
->   MIPS: KVM: Skip memory cleaning in kvm_mips_commpage_init()
->   MIPS: KVM: Remove dead code of TLB index error in
->     kvm_mips_emul_tlbwr()
-> 
->  arch/mips/include/asm/kvm_host.h                  |  12 +-
->  arch/mips/include/asm/r4kcache.h                  |   3 +
->  arch/mips/kvm/Makefile                            |   8 +-
->  arch/mips/kvm/{kvm_cb.c => callback.c}            |   0
->  arch/mips/kvm/commpage.c                          |  33 ++
->  arch/mips/kvm/commpage.h                          |  24 +
->  arch/mips/kvm/{kvm_mips_dyntrans.c => dyntrans.c} |  40 +-
->  arch/mips/kvm/{kvm_mips_emul.c => emulate.c}      | 539 +++++++++++-----------
->  arch/mips/kvm/{kvm_mips_int.c => interrupt.c}     |  47 +-
->  arch/mips/kvm/{kvm_mips_int.h => interrupt.h}     |  22 +-
->  arch/mips/kvm/kvm_mips_comm.h                     |  23 -
->  arch/mips/kvm/kvm_mips_commpage.c                 |  37 --
->  arch/mips/kvm/kvm_mips_opcode.h                   |  24 -
->  arch/mips/kvm/{kvm_locore.S => locore.S}          |  55 ++-
->  arch/mips/kvm/{kvm_mips.c => mips.c}              | 224 +++++----
->  arch/mips/kvm/opcode.h                            |  22 +
->  arch/mips/kvm/{kvm_mips_stats.c => stats.c}       |  28 +-
->  arch/mips/kvm/{kvm_tlb.c => tlb.c}                | 258 +++++------
->  arch/mips/kvm/trace.h                             |  18 +-
->  arch/mips/kvm/{kvm_trap_emul.c => trap_emul.c}    | 112 +++--
->  20 files changed, 750 insertions(+), 779 deletions(-)
->  rename arch/mips/kvm/{kvm_cb.c => callback.c} (100%)
->  create mode 100644 arch/mips/kvm/commpage.c
->  create mode 100644 arch/mips/kvm/commpage.h
->  rename arch/mips/kvm/{kvm_mips_dyntrans.c => dyntrans.c} (79%)
->  rename arch/mips/kvm/{kvm_mips_emul.c => emulate.c} (83%)
->  rename arch/mips/kvm/{kvm_mips_int.c => interrupt.c} (85%)
->  rename arch/mips/kvm/{kvm_mips_int.h => interrupt.h} (74%)
->  delete mode 100644 arch/mips/kvm/kvm_mips_comm.h
->  delete mode 100644 arch/mips/kvm/kvm_mips_commpage.c
->  delete mode 100644 arch/mips/kvm/kvm_mips_opcode.h
->  rename arch/mips/kvm/{kvm_locore.S => locore.S} (93%)
->  rename arch/mips/kvm/{kvm_mips.c => mips.c} (84%)
->  create mode 100644 arch/mips/kvm/opcode.h
->  rename arch/mips/kvm/{kvm_mips_stats.c => stats.c} (63%)
->  rename arch/mips/kvm/{kvm_tlb.c => tlb.c} (78%)
->  rename arch/mips/kvm/{kvm_trap_emul.c => trap_emul.c} (83%)
-> 
+-- 
+Kees Cook
+Chrome OS Security

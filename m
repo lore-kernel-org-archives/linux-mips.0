@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13854 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:11776 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6815921AbaGDIGuqrvx4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Jul 2014 10:06:50 +0200
-Date: Fri, 4 Jul 2014 09:06:41 +0100
+        with ESMTP id S6817535AbaGDJGKd1L5K (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Jul 2014 11:06:10 +0200
+Date: Fri, 4 Jul 2014 10:06:01 +0100
 From: Paul Burton <paul.burton@imgtec.com>
 Subject: Re: [PATCH v2 5/6] mips: use per-mm page to execute FP branch delay
  slots
-Message-ID: <20140704080641.GY804@pburton-laptop>
+Message-ID: <20140704090601.GZ804@pburton-laptop>
 References: <CAO_EM_k0Qp_VPEd2Q+WTJWsvE8cmyAuC780SwGfDxhTt_GzMeg@mail.gmail.com>
+ <20140704080641.GY804@pburton-laptop>
+ <20140704085246.GH13532@linux-mips.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <CAO_EM_k0Qp_VPEd2Q+WTJWsvE8cmyAuC780SwGfDxhTt_GzMeg@mail.gmail.com>
+In-Reply-To: <20140704085246.GH13532@linux-mips.org>
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,77 +24,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ed Swierk <eswierk@skyportsystems.com>
-Cc: linux-mips@linux-mips.org, ddaney.cavm@gmail.com, ralf@linux-mips.org
-Message-ID: <20140704080641.a_IlWP8k0DWnOffEgVlwXITDhdWE0_vyNnAR1wHPXeA@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Ed Swierk <eswierk@skyportsystems.com>, linux-mips@linux-mips.org, ddaney.cavm@gmail.com
+Message-ID: <20140704090601.rhCBxVTtCN7QFWHWvCF1zAaLaUUZ-yzZeIFeiDw3kwU@z>
 
-On Thu, Jul 03, 2014 at 03:31:48PM -0700, Ed Swierk wrote:
-> On Thu, Jul 3, 2014 at 1:12 PM, Paul Burton <paul.burton@imgtec.com> wrote:
-> > On Thu, Jul 03, 2014 at 10:56:10AM -0700, Ed Swierk wrote:
-> >> Now that Linux makes user stacks
-> >> non-executable by default, the current FP emulation approach is simply
-> >> broken.
-> >
-> > Really? I wasn't aware of any change to the default attributes of the
-> > stack. Do you know what changed? From a quick look at fs/binfmt_elf.c &
-> > arch/mips/include/asm/elf.h I can't see anything relevant having
-> > changed - the stack should be executable unless a non-executable
-> > PT_GNU_STACK header is present in the ELF. I don't suppose the issue
-> > is simply that such a PT_GNU_STACK header is present in your binaries?
+On Fri, Jul 04, 2014 at 10:52:46AM +0200, Ralf Baechle wrote:
+> On Fri, Jul 04, 2014 at 09:06:41AM +0100, Paul Burton wrote:
 > 
-> Actually that was a completely unsupported assertion on my part. I
-> have no reason to believe there was a change in behavior in the kernel
-> or the toolchain (gcc 4.9.0, x86_64 host, mips target; binutils
-> 2.24.51.20140425).
+> > Yes, I think it would. The reason I went with the per-mm approach though
+> > was to try to avoid so much overhead. I suppose we could possibly
+> > allocate the page on demand so that threads which don't use FP don't pay
+> > for it, and maybe use the shrinker interface to free the page if we run
+> > low on memory and aren't currently executing from it. Though it would
+> > mean that the FP branch delay "emulation" could fail if memory is tight,
+> > but I suppose that's no worse than now where it could blow the (user)
+> > stack.
+> > 
+> > I'll try to get a v3 out at some point soon.
 > 
-> What I do notice is that mips-linux-gnu-gcc generates no
-> .note.GNU-stack section, while x86_64-linux-gnu-gcc does. In turn, ld
-> produces no GNU_STACK program header on the mips executable, while for
-> x86_64 it produces GNU_STACK with RW (no E) flags.
-> 
-> The toolchain behavior is the same for gccgo as for gcc. But I get a
-> segv on the Octeon2 target only when running a gccgo-generated
-> executable. A C program compiled with gcc works fine performing the
-> same FP operations.
-> 
-> And when I add the following hack to mips/include/asm/elf.h in the
-> kernel, the segv goes away:
-> 
->    #define elf_read_implies_exec(ex, have_pt_gnu_stack) 1
-> 
-> So I assume gccgo or libgo is doing some extra magic that makes the
-> stack non-executable on mips at least.
+> The actual piece of code that needs to be installed is tiny.  So the page
+> could be shared between many threads.  In fact a single page would
+> suffice for most processes and only threads would require more slots
+> than provided by a single page so more pags could be allocated or the
+> process could sleep until a slot becomes available.
 
-Ah, interesting :)
+You just roughly described the v2 patch that we're replying to :)
 
-I haven't tried running any go executables before but that and rust are
-2 languages I've been curious about for a while.
+The problem is how to reliably free the frame after it has been used.
+I can see ways to do it, but none that are particularly "nice".
 
-> >> I'm wondering if instead of trying to free the page
-> >> for the FP branch delay emuframe immediately, it would be simpler to
-> >> leave it around until the thread is destroyed.
-> >
-> > It's not really an issue of freeing a page - my patch mapped one page
-> > per-mm (per-process) and that page was left intact for the life of that
-> > mm (process).
-> 
-> Ah, I see. What if we allocate a page per thread rather than per
-> process? Then the bookkeeping becomes a lot simpler, as there can be
-> only a single emuframe in the page at one time. And we can defer
-> freeing the page until the thread exits.
-> 
-> Assuming we could tolerate the overhead of an entire page for a puny
-> little emuframe, do you think the approach would work?
+> Assuming the smallest supported page size of 4k and slots of 128 bytes
+> (that is the largest S-cache line size in common use) that's 32 slots.
 
-Yes, I think it would. The reason I went with the per-mm approach though
-was to try to avoid so much overhead. I suppose we could possibly
-allocate the page on demand so that threads which don't use FP don't pay
-for it, and maybe use the shrinker interface to free the page if we run
-low on memory and aren't currently executing from it. Though it would
-mean that the FP branch delay "emulation" could fail if memory is tight,
-but I suppose that's no worse than now where it could blow the (user)
-stack.
+Why S-cache line sized slots? I suppose it could simplify updating the
+page slightly at the cost of space.
 
-I'll try to get a v3 out at some point soon.
+> I'm also wondering how insane emulation would be.  We already have the
+> capability to emulate a fair fraction of the instruction set.
+
+Yeah, and I'm reasonably sure we're going to need some more once MIPSr6
+is supported. I guess (perhaps only for the short term?) it could be
+done in stages - if systems include ASEs or cop2 that the emulation
+didn't implement then it could fall back to the current emuframe code.
+
+I'm in 2 minds about this - it sounds crazy but perhaps it's the most
+sane option available :)
 
 Paul

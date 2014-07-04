@@ -1,20 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:11776 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:43545 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6817535AbaGDJGKd1L5K (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Jul 2014 11:06:10 +0200
-Date: Fri, 4 Jul 2014 10:06:01 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH v2 5/6] mips: use per-mm page to execute FP branch delay
- slots
-Message-ID: <20140704090601.GZ804@pburton-laptop>
-References: <CAO_EM_k0Qp_VPEd2Q+WTJWsvE8cmyAuC780SwGfDxhTt_GzMeg@mail.gmail.com>
- <20140704080641.GY804@pburton-laptop>
- <20140704085246.GH13532@linux-mips.org>
+        with ESMTP id S6822197AbaGDKJJUrefi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Jul 2014 12:09:09 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 3BBD389A99EBD
+        for <linux-mips@linux-mips.org>; Fri,  4 Jul 2014 11:09:00 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH 0/2] Add perf support for P5600
+Date: Fri, 4 Jul 2014 11:08:55 +0100
+Message-ID: <1404468537-8808-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20140704085246.GH13532@linux-mips.org>
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,50 +21,23 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Ed Swierk <eswierk@skyportsystems.com>, linux-mips@linux-mips.org, ddaney.cavm@gmail.com
-Message-ID: <20140704090601.rhCBxVTtCN7QFWHWvCF1zAaLaUUZ-yzZeIFeiDw3kwU@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20140704100855.gum1kpCFGLP--CtSviPLsIQAFjuxUHVZpSAFnBMpVJQ@z>
 
-On Fri, Jul 04, 2014 at 10:52:46AM +0200, Ralf Baechle wrote:
-> On Fri, Jul 04, 2014 at 09:06:41AM +0100, Paul Burton wrote:
-> 
-> > Yes, I think it would. The reason I went with the per-mm approach though
-> > was to try to avoid so much overhead. I suppose we could possibly
-> > allocate the page on demand so that threads which don't use FP don't pay
-> > for it, and maybe use the shrinker interface to free the page if we run
-> > low on memory and aren't currently executing from it. Though it would
-> > mean that the FP branch delay "emulation" could fail if memory is tight,
-> > but I suppose that's no worse than now where it could blow the (user)
-> > stack.
-> > 
-> > I'll try to get a v3 out at some point soon.
-> 
-> The actual piece of code that needs to be installed is tiny.  So the page
-> could be shared between many threads.  In fact a single page would
-> suffice for most processes and only threads would require more slots
-> than provided by a single page so more pags could be allocated or the
-> process could sleep until a slot becomes available.
+Hi,
 
-You just roughly described the v2 patch that we're replying to :)
+This patchset adds support for P5600 which uses 512 events compared
+to traditional MIPS cores which use only 256.
 
-The problem is how to reliably free the frame after it has been used.
-I can see ways to do it, but none that are particularly "nice".
+This is based on v3.16-rc2
 
-> Assuming the smallest supported page size of 4k and slots of 128 bytes
-> (that is the largest S-cache line size in common use) that's 32 slots.
+James Hogan (2):
+  MIPS: perf: Allow for more perf events
+  MIPS: perf: Add hardware events for P5600
 
-Why S-cache line sized slots? I suppose it could simplify updating the
-page slightly at the cost of space.
+ arch/mips/kernel/perf_event_mipsxx.c | 42 +++++++++++++++++++++++++++++-------
+ 1 file changed, 34 insertions(+), 8 deletions(-)
 
-> I'm also wondering how insane emulation would be.  We already have the
-> capability to emulate a fair fraction of the instruction set.
-
-Yeah, and I'm reasonably sure we're going to need some more once MIPSr6
-is supported. I guess (perhaps only for the short term?) it could be
-done in stages - if systems include ASEs or cop2 that the emulation
-didn't implement then it could fall back to the current emuframe code.
-
-I'm in 2 minds about this - it sounds crazy but perhaps it's the most
-sane option available :)
-
-Paul
+-- 
+2.0.0

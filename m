@@ -1,22 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:3989 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6834666AbaGDLaQoQRmI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Jul 2014 13:30:16 +0200
-Date: Fri, 4 Jul 2014 12:30:07 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH v2 5/6] mips: use per-mm page to execute FP branch delay
- slots
-Message-ID: <20140704113007.GA804@pburton-laptop>
-References: <CAO_EM_k0Qp_VPEd2Q+WTJWsvE8cmyAuC780SwGfDxhTt_GzMeg@mail.gmail.com>
- <20140704080641.GY804@pburton-laptop>
- <20140704085246.GH13532@linux-mips.org>
- <20140704090601.GZ804@pburton-laptop>
- <20140704093809.GI13532@linux-mips.org>
+Received: from mail-gw1-out.broadcom.com ([216.31.210.62]:22922 "EHLO
+        mail-gw1-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6816022AbaGFHGOJzHOM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 6 Jul 2014 09:06:14 +0200
+Date: Sun, 6 Jul 2014 12:38:15 +0530
+From: Jayachandran C. <jchandra@broadcom.com>
+Subject: Re: [PATCH] mips: Add #ifdef in file bridge.h
+Message-ID: <20140706070814.GA8511@jayachandranc.netlogicmicro.com>
+References: <1404528619-3715-1-git-send-email-xerofoify@gmail.com>
+ <53B80EFC.6020504@infradead.org>
+ <CAPDOMVid83VWT4n93MjvxoWdcq2KPYren0o5ubGi+9HHY6a7EQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20140704093809.GI13532@linux-mips.org>
-Return-Path: <Paul.Burton@imgtec.com>
+In-Reply-To: <CAPDOMVid83VWT4n93MjvxoWdcq2KPYren0o5ubGi+9HHY6a7EQ@mail.gmail.com>
+Return-Path: <jchandra@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,51 +23,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Ed Swierk <eswierk@skyportsystems.com>, linux-mips@linux-mips.org, ddaney.cavm@gmail.com
-Message-ID: <20140704113007.ubB1il_OkR73dxQ_ZAHngubJiXACPjPBdimDFR2S7mU@z>
+To: Nick Krause <xerofoify@gmail.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>, ralf@linux-mips.org, blogic@openwrt.org, linux-mips@linux-mips.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <20140706070815.xuOoC8m6qFeL4PmU1eT1duDUSUKAfzWWgtlTeuAiUPc@z>
 
-On Fri, Jul 04, 2014 at 11:38:09AM +0200, Ralf Baechle wrote:
-> On Fri, Jul 04, 2014 at 10:06:01AM +0100, Paul Burton wrote:
-> 
-> > > The actual piece of code that needs to be installed is tiny.  So the page
-> > > could be shared between many threads.  In fact a single page would
-> > > suffice for most processes and only threads would require more slots
-> > > than provided by a single page so more pags could be allocated or the
-> > > process could sleep until a slot becomes available.
-> > 
-> > You just roughly described the v2 patch that we're replying to :)
-> 
-> Can't be that wrong then :-)
-> 
-> I seem to only have replies to that patch in my mail folder not the
-> patch itself.
+On Sun, Jul 06, 2014 at 01:58:43AM -0400, Nick Krause wrote:
+> No I didn't I finally learned how to cross compile the kernel it's not
+> hard just have to find the docs for it :).
+> Cheers Nick
 
-You can find it in patchwork if you're interested:
+There is already an ifdef in the right place in the file. There is not need
+to move it here as these macros are safe for assembly.
 
-  http://patchwork.linux-mips.org/patch/6125/
+The FIXME comment was a note to verfiy the Flash BAR address taken from the
+manual. Ideally, this has to be removed after checking it on hardware. Thanks
+for pointing this out.
 
-> > > I'm also wondering how insane emulation would be.  We already have the
-> > > capability to emulate a fair fraction of the instruction set.
-> > 
-> > Yeah, and I'm reasonably sure we're going to need some more once MIPSr6
-> > is supported. I guess (perhaps only for the short term?) it could be
-> > done in stages - if systems include ASEs or cop2 that the emulation
-> > didn't implement then it could fall back to the current emuframe code.
-> 
-> And it's dependence on executable stackframe ...
+But the patch is incorrect and can be dropped.
 
-...yup.
+> On Sat, Jul 5, 2014 at 10:43 AM, Randy Dunlap <rdunlap@infradead.org> wrote:
+> > On 07/04/2014 07:50 PM, Nicholas Krause wrote:
+> >> This patch addes a #ifdef __ASSEMBLY__ in order to check if this part
+> >> of the file is configured to fix this #ifdef block in bridge.h for mips.
+> >>
+> >> Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
+> >> ---
+> >>  arch/mips/include/asm/netlogic/xlp-hal/bridge.h | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/arch/mips/include/asm/netlogic/xlp-hal/bridge.h b/arch/mips/include/asm/netlogic/xlp-hal/bridge.h
+> >> index 3067f98..4f315c3 100644
+> >> --- a/arch/mips/include/asm/netlogic/xlp-hal/bridge.h
+> >> +++ b/arch/mips/include/asm/netlogic/xlp-hal/bridge.h
+> >> @@ -143,7 +143,7 @@
+> >>  #define BRIDGE_GIO_WEIGHT            0x2cb
+> >>  #define BRIDGE_FLASH_WEIGHT          0x2cc
+> >>
+> >> -/* FIXME verify */
+> >> +#ifdef __ASSEMBLY__
+> >>  #define BRIDGE_9XX_FLASH_BAR(i)              (0x11 + (i))
+> >>  #define BRIDGE_9XX_FLASH_BAR_LIMIT(i)        (0x15 + (i))
+> >>
+> >>
+> >
+> > Hi,
+> >
+> > Where is the corresponding #endif ?
+> > The #endif at line 185 goes with the #ifndef __ASSEMBLY__ at line 176.
+> >
+> > I think that this patch will cause a build error (or at least a warning).
+> > Did you test it?
+> >
 
-> > I'm in 2 minds about this - it sounds crazy but perhaps it's the most
-> > sane option available :)
-> 
-> Sanity is overrated anyway ;-)
-
-I had originally left this patch at the point I started considering
-implementing emulation for the whole ISA in the kernel, figuring I was
-going insane & should probably do something else for a while. Perhaps I
-shouldn't worry so much ;)
-
-Thanks,
-    Paul
+JC.

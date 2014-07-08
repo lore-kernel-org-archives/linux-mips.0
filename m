@@ -1,19 +1,17 @@
-Received: from mail-gw1-out.broadcom.com ([216.31.210.62]:22922 "EHLO
-        mail-gw1-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6816022AbaGFHGOJzHOM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 6 Jul 2014 09:06:14 +0200
-Date: Sun, 6 Jul 2014 12:38:15 +0530
-From: Jayachandran C. <jchandra@broadcom.com>
-Subject: Re: [PATCH] mips: Add #ifdef in file bridge.h
-Message-ID: <20140706070814.GA8511@jayachandranc.netlogicmicro.com>
-References: <1404528619-3715-1-git-send-email-xerofoify@gmail.com>
- <53B80EFC.6020504@infradead.org>
- <CAPDOMVid83VWT4n93MjvxoWdcq2KPYren0o5ubGi+9HHY6a7EQ@mail.gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:52293 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6861343AbaGHQECtgYLP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Jul 2014 18:04:02 +0200
+Message-ID: <53BC15DA.7050602@imgtec.com>
+Date: Tue, 8 Jul 2014 17:01:30 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAPDOMVid83VWT4n93MjvxoWdcq2KPYren0o5ubGi+9HHY6a7EQ@mail.gmail.com>
-Return-Path: <jchandra@broadcom.com>
+Subject: Re: [PATCH RFC] MIPS: add support for vmlinux appended DTB
+References: <1404832446-31028-1-git-send-email-jogo@openwrt.org>
+In-Reply-To: <1404832446-31028-1-git-send-email-jogo@openwrt.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,56 +21,152 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Nick Krause <xerofoify@gmail.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>, ralf@linux-mips.org, blogic@openwrt.org, linux-mips@linux-mips.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20140706070815.xuOoC8m6qFeL4PmU1eT1duDUSUKAfzWWgtlTeuAiUPc@z>
+To: Jonas Gorski <jogo@openwrt.org>, linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <blogic@openwrt.org>, Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20140708160130.1amFAB8Xm-lIhz2zBFwCVoC3qeuamcP136j5spgI8bw@z>
 
-On Sun, Jul 06, 2014 at 01:58:43AM -0400, Nick Krause wrote:
-> No I didn't I finally learned how to cross compile the kernel it's not
-> hard just have to find the docs for it :).
-> Cheers Nick
+Hi Jonas,
 
-There is already an ifdef in the right place in the file. There is not need
-to move it here as these macros are safe for assembly.
+On 08/07/14 16:14, Jonas Gorski wrote:
+> Add support for populating initial_device_params through a dtb
 
-The FIXME comment was a note to verfiy the Flash BAR address taken from the
-manual. Ideally, this has to be removed after checking it on hardware. Thanks
-for pointing this out.
+initial_boot_params here and above?
 
-But the patch is incorrect and can be dropped.
+> blob appended to vmlinux.
 
-> On Sat, Jul 5, 2014 at 10:43 AM, Randy Dunlap <rdunlap@infradead.org> wrote:
-> > On 07/04/2014 07:50 PM, Nicholas Krause wrote:
-> >> This patch addes a #ifdef __ASSEMBLY__ in order to check if this part
-> >> of the file is configured to fix this #ifdef block in bridge.h for mips.
-> >>
-> >> Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
-> >> ---
-> >>  arch/mips/include/asm/netlogic/xlp-hal/bridge.h | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/mips/include/asm/netlogic/xlp-hal/bridge.h b/arch/mips/include/asm/netlogic/xlp-hal/bridge.h
-> >> index 3067f98..4f315c3 100644
-> >> --- a/arch/mips/include/asm/netlogic/xlp-hal/bridge.h
-> >> +++ b/arch/mips/include/asm/netlogic/xlp-hal/bridge.h
-> >> @@ -143,7 +143,7 @@
-> >>  #define BRIDGE_GIO_WEIGHT            0x2cb
-> >>  #define BRIDGE_FLASH_WEIGHT          0x2cc
-> >>
-> >> -/* FIXME verify */
-> >> +#ifdef __ASSEMBLY__
-> >>  #define BRIDGE_9XX_FLASH_BAR(i)              (0x11 + (i))
-> >>  #define BRIDGE_9XX_FLASH_BAR_LIMIT(i)        (0x15 + (i))
-> >>
-> >>
-> >
-> > Hi,
-> >
-> > Where is the corresponding #endif ?
-> > The #endif at line 185 goes with the #ifndef __ASSEMBLY__ at line 176.
-> >
-> > I think that this patch will cause a build error (or at least a warning).
-> > Did you test it?
-> >
+should that be vmlinux.bin? Presumably it isn't appended to the ELF file?
 
-JC.
+> 
+> Signed-off-by: Jonas Gorski <jogo@openwrt.org>
+> ---
+> Mostly adapted from how ARM is doing it.
+> 
+> Sent as an RFC PATCH because I am not sure if this is the right way to
+> it, and whether storing the pointer in initial_device_params is a good
+> idea, or a new variable should be introduced.
+> 
+> The reasoning for initial_device_params is that there is no common
+> MIPS interface yet, so the next best thing was using that. This also
+> has the advantage of keeping the original fw_args intact.
+
+Does it matter that this will be ignored if the bootloader does provide
+a DT (initial_boot_params overwritten by early_init_dt_scan() call), and
+that if no DT is provided by the bootloader the of_scan_flat_dt() calls
+at the bottom of early_init_dt_scan will never happen?
+
+> 
+> This patch works for me on bcm63xx, where the bootloade expects
+
+s/bootloade/bootloader/
+
+> an lzma compressed kernel, so I wanted to not double compress using
+> the in-kernel compressed kernel support.
+> 
+> Completely untested on anything except MIPS32 / big endian.
+> 
+>  arch/mips/Kconfig              | 18 ++++++++++++++++++
+>  arch/mips/kernel/head.S        | 19 +++++++++++++++++++
+>  arch/mips/kernel/vmlinux.lds.S |  6 ++++++
+>  3 files changed, 43 insertions(+)
+> 
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 3f05b56..58527cd 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -2476,6 +2476,24 @@ config USE_OF
+>  	select OF_EARLY_FLATTREE
+>  	select IRQ_DOMAIN
+>  
+> +config MIPS_APPENDED_DTB
+> +	bool "Use appended device tree blob to vmlinux (EXPERIMENTAL)"
+> +	depends on OF
+> +	help
+> +	  With this option, the boot code will look for a device tree binary
+> +	  DTB) appended to vmlinux
+
+s/DTB)/(DTB)/
+
+vmlinux.bin again?
+
+> +	  (e.g. cat vmlinux <filename>.dtb > vmlinux_w_dtb).
+
+here too I think.
+
+> +
+> +	  This is meant as a backward compatibility convenience for those
+> +	  systems with a bootloader that can't be upgraded to accommodate
+> +	  the documented boot protocol using a device tree.
+> +
+> +	  Beware that there is very little in terms of protection against
+> +	  this option being confused by leftover garbage in memory that might
+> +	  look like a DTB header after a reboot if no actual DTB is appended
+> +	  to vmlinux.  Do not leave this option active in a production kernel
+
+maybe same here too.
+
+Can't fault the rest though.
+
+Cheers
+James
+
+> +	  if you don't intend to always append a DTB.
+> +
+>  endmenu
+>  
+>  config LOCKDEP_SUPPORT
+> diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
+> index 95afd66..72c1049 100644
+> --- a/arch/mips/kernel/head.S
+> +++ b/arch/mips/kernel/head.S
+> @@ -93,7 +93,22 @@ NESTED(kernel_entry, 16, sp)			# kernel entry point
+>  	PTR_LA	t0, 0f
+>  	jr	t0
+>  0:
+> +#ifdef CONFIG_MIPS_APPENDED_DTB
+> +	PTR_LA		t0, __appended_dtb
+> +	PTR_LI		t3, 0
+>  
+> +#ifdef CONFIG_CPU_BIG_ENDIAN
+> +	PTR_LI		t1, 0xd00dfeed
+> +#else
+> +	PTR_LI		t1, 0xedfe0dd0
+> +#endif
+> +	LONG_L		t2, (t0)
+> +	bne		t1, t2, not_found
+> +
+> +	PTR_LA		t3, __appended_dtb
+> +
+> +not_found:
+> +#endif
+>  	PTR_LA		t0, __bss_start		# clear .bss
+>  	LONG_S		zero, (t0)
+>  	PTR_LA		t1, __bss_stop - LONGSIZE
+> @@ -107,6 +122,10 @@ NESTED(kernel_entry, 16, sp)			# kernel entry point
+>  	LONG_S		a2, fw_arg2
+>  	LONG_S		a3, fw_arg3
+>  
+> +#ifdef CONFIG_MIPS_APPENDED_DTB
+> +	LONG_S		t3, initial_boot_params
+> +#endif
+> +
+>  	MTC0		zero, CP0_CONTEXT	# clear context register
+>  	PTR_LA		$28, init_thread_union
+>  	/* Set the SP after an empty pt_regs.  */
+> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+> index 3b46f7c..8009530 100644
+> --- a/arch/mips/kernel/vmlinux.lds.S
+> +++ b/arch/mips/kernel/vmlinux.lds.S
+> @@ -127,6 +127,12 @@ SECTIONS
+>  	}
+>  
+>  	PERCPU_SECTION(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+> +
+> +#ifdef CONFIG_MIPS_APPENDED_DTB
+> +	__appended_dtb = .;
+> +	/* leave space for appended DTB */
+> +	. = . + 0x100000;
+> +#endif
+>  	/*
+>  	 * Align to 64K in attempt to eliminate holes before the
+>  	 * .bss..swapper_pg_dir section at the start of .bss.  This
+> 

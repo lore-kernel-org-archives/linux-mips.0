@@ -1,19 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:55814 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:9461 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860063AbaGILvTYQcsI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Jul 2014 13:51:19 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 1B40A39AB24BD
-        for <linux-mips@linux-mips.org>; Wed,  9 Jul 2014 12:51:10 +0100 (IST)
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 5/5] MIPS: smp-cps: fix entry code cache flush for systems with coherent I/O
-Date: Wed, 9 Jul 2014 12:51:05 +0100
-Message-ID: <1404906665-10825-1-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1404906502-10702-1-git-send-email-paul.burton@imgtec.com>
-References: <1404906502-10702-1-git-send-email-paul.burton@imgtec.com>
+        with ESMTP id S6861448AbaGIPuWY0Ahq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Jul 2014 17:50:22 +0200
+Message-ID: <53BD6450.50103@imgtec.com>
+Date: Wed, 9 Jul 2014 16:48:32 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Subject: Re: [RFA][PATCH 07/27] MIPS: ftrace: Add call to ftrace_graph_is_dead()
+ in function graph code
+References: <20140626165221.736847419@goodmis.org>      <20140626165849.321719498@goodmis.org> <20140702103138.01880b1d@gandalf.local.home>
+In-Reply-To: <20140702103138.01880b1d@gandalf.local.home>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,54 +22,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140709115105.Q4Utj6w6bZ-toSgJCLwH9nEZ2hvyYNSvpZqnIEg5HWQ@z>
+To: Steven Rostedt <rostedt@goodmis.org>, linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Masami Hiramatsu <masami.hiramatsu.pt@hitachi.com>, "H. Peter Anvin" <hpa@zytor.com>, linux-arch@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Jiri Kosina <jkosina@suse.cz>, Josh Poimboeuf <notifications@github.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20140709154832.zsvbECev7yvR-Hw5stghbgTF-cypS-lofP9NIMTms2w@z>
 
-The dma_cache_wback_inv function performs exactly as is required here,
-unless the system has coherent I/O in which case it's a no-op. Call the
-underlying cache writeback functions directly, which is arguably clearer
-anyway given that the code doesn't actually have anything to do with
-DMA in a strict sense.
+Hi Steven,
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
----
- arch/mips/kernel/smp-cps.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+I've given this a quick test on a mips32 le target, on your
+rfc/remove-function-trace-stop branch (4161daee7df8). Booted fine,
+startup tests fine, function and function_graph trace appear to work
+from a quick cat of the trace file. Feel free to add my Tested-by:
 
-diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index f9b53b4..e6e16a1 100644
---- a/arch/mips/kernel/smp-cps.c
-+++ b/arch/mips/kernel/smp-cps.c
-@@ -14,13 +14,14 @@
- #include <linux/smp.h>
- #include <linux/types.h>
- 
--#include <asm/cacheflush.h>
-+#include <asm/bcache.h>
- #include <asm/gic.h>
- #include <asm/mips-cm.h>
- #include <asm/mips-cpc.h>
- #include <asm/mips_mt.h>
- #include <asm/mipsregs.h>
- #include <asm/pm-cps.h>
-+#include <asm/r4kcache.h>
- #include <asm/smp-cps.h>
- #include <asm/time.h>
- #include <asm/uasm.h>
-@@ -132,8 +133,11 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
- 	entry_code = (u32 *)&mips_cps_core_entry;
- 	UASM_i_LA(&entry_code, 3, (long)mips_cm_base);
- 	uasm_i_addiu(&entry_code, 16, 0, cca);
--	dma_cache_wback_inv((unsigned long)&mips_cps_core_entry,
--			    (void *)entry_code - (void *)&mips_cps_core_entry);
-+	blast_dcache_range((unsigned long)&mips_cps_core_entry,
-+			   (unsigned long)entry_code);
-+	bc_wback_inv((unsigned long)&mips_cps_core_entry,
-+		     (void *)entry_code - (void *)&mips_cps_core_entry);
-+	__sync();
- 
- 	/* Allocate core boot configuration structs */
- 	mips_cps_core_bootcfg = kcalloc(ncores, sizeof(*mips_cps_core_bootcfg),
--- 
-2.0.1
+Tested-by: James Hogan <james.hogan@imgtec.com> [MIPS]
+
+Cheers
+James
+
+On 02/07/14 15:31, Steven Rostedt wrote:
+> 
+> Adding linux-mips@linux-mips.org.
+> 
+> -- Steve
+> 
+> 
+> On Thu, 26 Jun 2014 12:52:28 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+>> From: "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>
+>>
+>> ftrace_stop() is going away as it disables parts of function tracing
+>> that affects users that should not be affected. But ftrace_graph_stop()
+>> is built on ftrace_stop(). Here's another example of killing all of
+>> function tracing because something went wrong with function graph
+>> tracing.
+>>
+>> Instead of disabling all users of function tracing on function graph
+>> error, disable only function graph tracing. To do this, the arch code
+>> must call ftrace_graph_is_dead() before it implements function graph.
+>>
+>> Cc: Ralf Baechle <ralf@linux-mips.org>
+>> Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+>> ---
+>>  arch/mips/kernel/ftrace.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/arch/mips/kernel/ftrace.c b/arch/mips/kernel/ftrace.c
+>> index 60e7e5e45af1..8b6538750fe1 100644
+>> --- a/arch/mips/kernel/ftrace.c
+>> +++ b/arch/mips/kernel/ftrace.c
+>> @@ -302,6 +302,9 @@ void prepare_ftrace_return(unsigned long *parent_ra_addr, unsigned long self_ra,
+>>  	    &return_to_handler;
+>>  	int faulted, insns;
+>>  
+>> +	if (unlikely(ftrace_graph_is_dead()))
+>> +		return;
+>> +
+>>  	if (unlikely(atomic_read(&current->tracing_graph_pause)))
+>>  		return;
+>>  
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-arch" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 

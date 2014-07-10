@@ -1,23 +1,17 @@
-Received: from mail-oa0-f47.google.com ([209.85.219.47]:48562 "EHLO
-        mail-oa0-f47.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6860077AbaGJQy4NmLbV (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 10 Jul 2014 18:54:56 +0200
-Received: by mail-oa0-f47.google.com with SMTP id g18so3095096oah.34
-        for <linux-mips@linux-mips.org>; Thu, 10 Jul 2014 09:54:50 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20140710152418.GB20861@redhat.com>
-References: <1403911380-27787-1-git-send-email-keescook@chromium.org>
-        <1403911380-27787-10-git-send-email-keescook@chromium.org>
-        <20140709184215.GA4866@redhat.com>
-        <20140709185549.GB4866@redhat.com>
-        <CAGXu5jL6q1d16uA1Yu+QO4eV7zWwcWEWgkZrwmsfymbMvEr6+Q@mail.gmail.com>
-        <20140710152418.GB20861@redhat.com>
-Date: Thu, 10 Jul 2014 09:54:49 -0700
-Message-ID: <CAGXu5jKNUn0OcXPyTmqbHwQ_GPMNTeajyrxpd2xAtzjTRFyhpg@mail.gmail.com>
+Received: from mx1.redhat.com ([209.132.183.28]:37729 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6860073AbaGJRi0jvTrz (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 10 Jul 2014 19:38:26 +0200
+Date: Thu, 10 Jul 2014 19:35:52 +0200
+From: Oleg Nesterov <oleg@redhat.com>
 Subject: Re: [PATCH v9 09/11] seccomp: introduce writer locking
-From: Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <keescook@google.com>
+Message-ID: <20140710173552.GA27410@redhat.com>
+References: <1403911380-27787-1-git-send-email-keescook@chromium.org> <1403911380-27787-10-git-send-email-keescook@chromium.org> <20140709184215.GA4866@redhat.com> <20140709185549.GB4866@redhat.com> <CAGXu5jL6q1d16uA1Yu+QO4eV7zWwcWEWgkZrwmsfymbMvEr6+Q@mail.gmail.com> <20140710152418.GB20861@redhat.com> <CAGXu5jKNUn0OcXPyTmqbHwQ_GPMNTeajyrxpd2xAtzjTRFyhpg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGXu5jKNUn0OcXPyTmqbHwQ_GPMNTeajyrxpd2xAtzjTRFyhpg@mail.gmail.com>
+Return-Path: <oleg@redhat.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,82 +21,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Oleg Nesterov <oleg@redhat.com>
+To: Kees Cook <keescook@chromium.org>
 Cc: linux-arch <linux-arch@vger.kernel.org>, linux-mips@linux-mips.org, Will Drewry <wad@chromium.org>, linux-security-module <linux-security-module@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Daniel Borkmann <dborkman@redhat.com>, Julien Tinnes <jln@chromium.org>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, David Drysdale <drysdale@google.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexei Starovoitov <ast@plumgrid.com>
-Message-ID: <20140710165449.EFaf-ZxCZFmA5sSkmnQd0eiLv8CpUH5xVygT7zHus-8@z>
+Message-ID: <20140710173552.WiCLApRs4JUz2AFU2IwzoTkvX5P_pZcAjTZjdlgzZ_4@z>
 
-On Thu, Jul 10, 2014 at 8:24 AM, Oleg Nesterov <oleg@redhat.com> wrote:
-> On 07/10, Kees Cook wrote:
->>
->> On Wed, Jul 9, 2014 at 11:55 AM, Oleg Nesterov <oleg@redhat.com> wrote:
->> > On 07/09, Oleg Nesterov wrote:
->> >>
->> >> On 06/27, Kees Cook wrote:
->> >> >
->> >> >  static u32 seccomp_run_filters(int syscall)
->> >> >  {
->> >> > -   struct seccomp_filter *f;
->> >> > +   struct seccomp_filter *f = ACCESS_ONCE(current->seccomp.filter);
->> >>
->> >> I am not sure...
->> >>
->> >> This is fine if this ->filter is the 1st (and only) one, in this case
->> >> we can rely on rmb() in the caller.
->> >>
->> >> But the new filter can be installed at any moment. Say, right after that
->> >> rmb() although this doesn't matter. Either we need smp_read_barrier_depends()
->> >> after that, or smp_load_acquire() like the previous version did?
->> >
->> > Wait... and it seems that seccomp_sync_threads() needs smp_store_release()
->> > when it sets thread->filter = current->filter by the same reason?
->> >
->> > OTOH. smp_store_release() in seccomp_attach_filter() can die, "current"
->> > doesn't need a barrier to serialize with itself.
->>
->> I have lost track of what you're suggesting to change. :)
+On 07/10, Kees Cook wrote:
 >
-> Perhaps I am just trying to confuse you and myself ;)
+> On Thu, Jul 10, 2014 at 8:24 AM, Oleg Nesterov <oleg@redhat.com> wrote:
+> >
+> > Just to simplify. Suppose TIF_SECCOMP was set a long ago. This thread
+> > has a single filter F1 and it enters seccomp_run_filters().
+> >
+> > Right before it does ACCESS_ONCE() to read the pointer, another thread
+> > does seccomp_sync_threads() and sets .filter = F2.
+> >
+> > If ACCESS_ONCE() returns F1 - everything is fine. But it can see the new
+> > pointer F2, and in this case we need a barrier to ensure that, say,
+> > LOAD(F2->prog) will see all the preceding changes in this memory.
 >
-> But,
->
->> Since rmb() happens before run_filters, isn't the ACCESS_ONCE
->> sufficient?
->
-> Yes. But see above. ACCESS_ONCE is sufficient if we read the first filter
-> installed by another thread, in this case rmb() pairs with mb_before_atomic()
-> before set_bit(TIF_SECCOMP).
->
-> IOW, if this threads sees TIF_SECCOMP, it should also see all modifications
-> which were done before set_bit, including the data in ->filter points to.
->
->> We only care that TIF_SECCOMP, mode, and some filter is
->> valid. In a tsync thread race, it's okay to use not use the deepest
->> filter node in the list,
->
-> Yes, it is fine if we miss yet another filter which was just installed by
-> another thread.
->
-> But, unless I missed something, the problem is that we can get this new
-> filter.
->
-> Just to simplify. Suppose TIF_SECCOMP was set a long ago. This thread
-> has a single filter F1 and it enters seccomp_run_filters().
->
-> Right before it does ACCESS_ONCE() to read the pointer, another thread
-> does seccomp_sync_threads() and sets .filter = F2.
->
-> If ACCESS_ONCE() returns F1 - everything is fine. But it can see the new
-> pointer F2, and in this case we need a barrier to ensure that, say,
-> LOAD(F2->prog) will see all the preceding changes in this memory.
+> And the rmb() isn't sufficient for that?
 
-And the rmb() isn't sufficient for that? Is another barrier needed
-before assigning the filter pointer to make sure the contents it
-points to are flushed?
+But it has no effect if the pointer was changed _after_ rmb() was already
+called.
 
-What's the least time-consuming operation I can use in run_filters?
+And, you need a barrier _after_ ACCESS_ONCE().
 
--Kees
+(Unless, again, we know that this is the first filter, but this is only
+ by accident).
 
--- 
-Kees Cook
-Chrome OS Security
+> Is another barrier needed
+> before assigning the filter pointer to make sure the contents it
+> points to are flushed?
+
+I think smp_store_release() should be moved from seccomp_attach_filter()
+to seccomp_sync_threads(). Although probably it _should_ work either way,
+but at least this looks confusing because a) "current" doesn't need a
+barrier to serialize wuth itself, and b) it is not clear why it is safe
+to change the pointer dereferenced by another thread without a barrier.
+
+> What's the least time-consuming operation I can use in run_filters?
+
+As I said smp_read_barrier_depends() (nop unless alpha) or
+smp_load_acquire() which you used in the previous version.
+
+And to remind, afaics smp_load_acquire() in put_filter() should die ;)
+
+Oleg.

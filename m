@@ -1,18 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:9461 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6861448AbaGIPuWY0Ahq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Jul 2014 17:50:22 +0200
-Message-ID: <53BD6450.50103@imgtec.com>
-Date: Wed, 9 Jul 2014 16:48:32 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mail-ob0-f182.google.com ([209.85.214.182]:35671 "EHLO
+        mail-ob0-f182.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6822330AbaGJJRg59uNZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 10 Jul 2014 11:17:36 +0200
+Received: by mail-ob0-f182.google.com with SMTP id wm4so3528803obc.27
+        for <linux-mips@linux-mips.org>; Thu, 10 Jul 2014 02:17:31 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [RFA][PATCH 07/27] MIPS: ftrace: Add call to ftrace_graph_is_dead()
- in function graph code
-References: <20140626165221.736847419@goodmis.org>      <20140626165849.321719498@goodmis.org> <20140702103138.01880b1d@gandalf.local.home>
-In-Reply-To: <20140702103138.01880b1d@gandalf.local.home>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <20140709180520.GA2560@redhat.com>
+References: <1403911380-27787-1-git-send-email-keescook@chromium.org>
+        <1403911380-27787-12-git-send-email-keescook@chromium.org>
+        <20140709180520.GA2560@redhat.com>
+Date: Thu, 10 Jul 2014 02:17:30 -0700
+Message-ID: <CAGXu5jLUqz-T1tRBCpPLkzWijyAF-Vjw_7PnQ1EvUh4urwyaUg@mail.gmail.com>
+Subject: Re: [PATCH v9 11/11] seccomp: implement SECCOMP_FILTER_FLAG_TSYNC
+From: Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <keescook@google.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,67 +24,73 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Steven Rostedt <rostedt@goodmis.org>, linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Masami Hiramatsu <masami.hiramatsu.pt@hitachi.com>, "H. Peter Anvin" <hpa@zytor.com>, linux-arch@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Jiri Kosina <jkosina@suse.cz>, Josh Poimboeuf <notifications@github.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20140709154832.zsvbECev7yvR-Hw5stghbgTF-cypS-lofP9NIMTms2w@z>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Alexei Starovoitov <ast@plumgrid.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
+Message-ID: <20140710091730.pb1elOdoZ7Mje6HyPQvJFs1cEqZja43BWM3HcHZeHuQ@z>
 
-Hi Steven,
-
-I've given this a quick test on a mips32 le target, on your
-rfc/remove-function-trace-stop branch (4161daee7df8). Booted fine,
-startup tests fine, function and function_graph trace appear to work
-from a quick cat of the trace file. Feel free to add my Tested-by:
-
-Tested-by: James Hogan <james.hogan@imgtec.com> [MIPS]
-
-Cheers
-James
-
-On 02/07/14 15:31, Steven Rostedt wrote:
-> 
-> Adding linux-mips@linux-mips.org.
-> 
-> -- Steve
-> 
-> 
-> On Thu, 26 Jun 2014 12:52:28 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
->> From: "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>
+On Wed, Jul 9, 2014 at 11:05 AM, Oleg Nesterov <oleg@redhat.com> wrote:
+> First of all, sorry for delay ;)
+>
+> So far I quickly glanced at this series and everything look fine, but
+> I am confused by the signal_group_exit() check,
+>
+> On 06/27, Kees Cook wrote:
 >>
->> ftrace_stop() is going away as it disables parts of function tracing
->> that affects users that should not be affected. But ftrace_graph_stop()
->> is built on ftrace_stop(). Here's another example of killing all of
->> function tracing because something went wrong with function graph
->> tracing.
->>
->> Instead of disabling all users of function tracing on function graph
->> error, disable only function graph tracing. To do this, the arch code
->> must call ftrace_graph_is_dead() before it implements function graph.
->>
->> Cc: Ralf Baechle <ralf@linux-mips.org>
->> Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
->> ---
->>  arch/mips/kernel/ftrace.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/arch/mips/kernel/ftrace.c b/arch/mips/kernel/ftrace.c
->> index 60e7e5e45af1..8b6538750fe1 100644
->> --- a/arch/mips/kernel/ftrace.c
->> +++ b/arch/mips/kernel/ftrace.c
->> @@ -302,6 +302,9 @@ void prepare_ftrace_return(unsigned long *parent_ra_addr, unsigned long self_ra,
->>  	    &return_to_handler;
->>  	int faulted, insns;
->>  
->> +	if (unlikely(ftrace_graph_is_dead()))
->> +		return;
->> +
->>  	if (unlikely(atomic_read(&current->tracing_graph_pause)))
->>  		return;
->>  
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-arch" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+>> To make sure that de_thread() is actually able
+>> to kill other threads during an exec, any sighand holders need to check
+>> if they've been scheduled to be killed, and to give up on their work.
+>
+> Probably this connects to that check below? I can't understand this...
+>
+>> +     /*
+>> +      * Make sure we cannot change seccomp or nnp state via TSYNC
+>> +      * while another thread is in the middle of calling exec.
+>> +      */
+>> +     if (flags & SECCOMP_FILTER_FLAG_TSYNC &&
+>> +         mutex_lock_killable(&current->signal->cred_guard_mutex))
+>> +             goto out_free;
+>
+> -EINVAL looks a bit confusing in this case, but this is cosemtic because
+> userspace won't see this error-code anyway.
+
+Happy to use whatever since, as you say, it's cosmetic. Perhaps -EAGAIN?
+
+>
+>>       spin_lock_irq(&current->sighand->siglock);
+>> +     if (unlikely(signal_group_exit(current->signal))) {
+>> +             /* If thread is dying, return to process the signal. */
+>
+> OK, this doesn't hurt, but why?
+>
+> You could check __fatal_signal_pending() with the same effect. And since
+> we hold this mutex, exec (de_thread) can be the source of that SIGKILL.
+> We take this mutex specially to avoid the race with exec.
+>
+> So why do we need to abort if we race with kill() or exit_grouo() ?
+
+In my initial code inspection that we could block waiting for the
+cred_guard mutex, with exec holding it, exec would schedule death in
+de_thread, and then once it released, the tsync thread would try to
+keep running.
+
+However, in looking at this again, now I'm concerned this produces a
+dead-lock in de_thread, since it waits for all threads to actually
+die, but tsync will be waiting with the killable mutex.
+
+So I think I got too defensive when I read the top of de_thread where
+it checks for pending signals itself.
+
+It seems like I can just safely remove the singal_group_exit checks?
+The other paths (non-tsync seccomp_set_mode_filter, and
+seccomp_set_mode_strict) would just run until it finished the syscall,
+and then died. I can't decide which feels cleaner: just letting stuff
+clean up naturally on death or to short-circuit after taking
+sighand->siglock.
+
+What do you think?
+
+-Kees
+
+-- 
+Kees Cook
+Chrome OS Security

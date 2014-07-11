@@ -1,18 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:56774 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860040AbaGKP4kqSr-e (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Jul 2014 17:56:40 +0200
-Date: Fri, 11 Jul 2014 16:56:31 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH] Not preempt in CP1 exception handling
-Message-ID: <20140711155631.GE8187@pburton-laptop>
-References: <1405047990-12519-1-git-send-email-chenhc@lemote.com>
- <1405048453-12633-1-git-send-email-chenj@lemote.com>
+Received: from mail-oa0-f46.google.com ([209.85.219.46]:52273 "EHLO
+        mail-oa0-f46.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6859957AbaGKRzn2p6je (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Jul 2014 19:55:43 +0200
+Received: by mail-oa0-f46.google.com with SMTP id m1so1595850oag.33
+        for <linux-mips@linux-mips.org>; Fri, 11 Jul 2014 10:55:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <1405048453-12633-1-git-send-email-chenj@lemote.com>
-Return-Path: <Paul.Burton@imgtec.com>
+In-Reply-To: <20140711164931.GA18473@redhat.com>
+References: <1405017631-27346-1-git-send-email-keescook@chromium.org>
+        <20140711164931.GA18473@redhat.com>
+Date: Fri, 11 Jul 2014 10:55:33 -0700
+Message-ID: <CAGXu5jK-x0=Rr7kX2a=b4Z8ueA77uwmhNZZAayG8cwmNOKa8Ug@mail.gmail.com>
+Subject: Re: [PATCH v10 0/11] seccomp: add thread sync ability
+From: Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <keescook@google.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,93 +23,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: chenj <chenj@lemote.com>
-Cc: linux-mips@linux-mips.org, chenhc@lemote.com, ralf@linux-mips.org, wangr@lemote.com
-Message-ID: <20140711155631.BR3esMwwDINziwzJoNtdMBMFDAfE2naxoks1XXJbrPs@z>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Alexei Starovoitov <ast@plumgrid.com>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
+Message-ID: <20140711175533.Zj7wc-W_E_CEVXHDztN3et-MbKuD0S69IUei4rvtSEQ@z>
 
-On Fri, Jul 11, 2014 at 11:14:13AM +0800, chenj wrote:
-> do_ade may be invoked with preempt enabled. do_cpu will be invoked with
-> preempt enabled. When it's preempted(in do_ade/do_cpu), TIF_USEDFPU will be
-> cleared, when it returns to do_ade/do_cpu, the fpu is actually disabled.
-> 
-> e.g.
-> In do_ade()
->   emulate_load_store_insn():
->     BUG_ON(!is_fpu_owner()); <-- This assertion may be breaked.
-> 
-> In do_cpu()
->   enable_restore_fp_context():
->     was_fpu_owner = is_fpu_owner();
+On Fri, Jul 11, 2014 at 9:49 AM, Oleg Nesterov <oleg@redhat.com> wrote:
+> On 07/10, Kees Cook wrote:
+>>
+>> This adds the ability for threads to request seccomp filter
+>> synchronization across their thread group (at filter attach time).
+>> For example, for Chrome to make sure graphic driver threads are fully
+>> confined after seccomp filters have been attached.
+>>
+>> To support this, locking on seccomp changes via thread-group-shared
+>> sighand lock is introduced, along with refactoring of no_new_privs. Races
+>> with thread creation are handled via delayed duplication of the seccomp
+>> task struct field and cred_guard_mutex.
+>>
+>> This includes a new syscall (instead of adding a new prctl option),
+>> as suggested by Andy Lutomirski and Michael Kerrisk.
+>
+> I do not not see any problems in this version,
 
-Preemption should indeed be disabled around the assignment & use of the
-was_fpu_owner variable, but note that you can only hit the problem if
-using MSA. One of the MSA fixes I just submitted also fixes this along
-with another instance of the problem:
+Awesome! Thank you for all the reviews. :) If Andy and Michael are
+happy with this too, I think this is in good shape. \o/
 
-  http://patchwork.linux-mips.org/patch/7307/
+-Kees
 
-I prefer my patch to this since it disables preemption for less time,
-in addition to fixing the !used_math() case.
+>
+> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+>
 
-In emulate_load_store_insn I believe the correct fix is simply to remove
-that BUG_ON. The code is about to give up FPU ownership anyway, so it's
-not like there is any requirement being violated if it was already lost.
 
-Thanks,
-    Paul
 
-> This patch simply disables interrupts in related handlers, and
-> disable preempt/enable interrupts in do_ade/do_cpu.
-> ---
->  arch/mips/kernel/genex.S | 4 ++--
->  arch/mips/kernel/traps.c | 4 ++++
->  2 files changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-> index ac35e12..a5c6931 100644
-> --- a/arch/mips/kernel/genex.S
-> +++ b/arch/mips/kernel/genex.S
-> @@ -370,7 +370,7 @@ NESTED(nmi_handler, PT_SIZE, sp)
->  	.macro	__build_clear_ade
->  	MFC0	t0, CP0_BADVADDR
->  	PTR_S	t0, PT_BVADDR(sp)
-> -	KMODE
-> +	CLI
->  	.endm
->  
->  	.macro	__BUILD_silent exception
-> @@ -422,7 +422,7 @@ NESTED(nmi_handler, PT_SIZE, sp)
->  	BUILD_HANDLER dbe be cli silent			/* #7  */
->  	BUILD_HANDLER bp bp sti silent			/* #9  */
->  	BUILD_HANDLER ri ri sti silent			/* #10 */
-> -	BUILD_HANDLER cpu cpu sti silent		/* #11 */
-> +	BUILD_HANDLER cpu cpu cli silent		/* #11 */
->  	BUILD_HANDLER ov ov sti silent			/* #12 */
->  	BUILD_HANDLER tr tr sti silent			/* #13 */
->  	BUILD_HANDLER msa_fpe msa_fpe sti silent	/* #14 */
-> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-> index 51706d6..0e0f7de 100644
-> --- a/arch/mips/kernel/traps.c
-> +++ b/arch/mips/kernel/traps.c
-> @@ -1166,6 +1166,9 @@ asmlinkage void do_cpu(struct pt_regs *regs)
->  	int status, err;
->  	unsigned long __maybe_unused flags;
->  
-> +	preempt_disable();
-> +	local_irq_enable();
-> +
->  	prev_state = exception_enter();
->  	cpid = (regs->cp0_cause >> CAUSEB_CE) & 3;
->  
-> @@ -1258,6 +1261,7 @@ asmlinkage void do_cpu(struct pt_regs *regs)
->  
->  out:
->  	exception_exit(prev_state);
-> +	preempt_enable();
->  }
->  
->  asmlinkage void do_msa_fpe(struct pt_regs *regs)
-> -- 
-> 1.9.0
-> 
-> 
+-- 
+Kees Cook
+Chrome OS Security

@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:6413 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13204 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6859946AbaGKPpBc63SY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Jul 2014 17:45:01 +0200
+        with ESMTP id S6860076AbaGKPpLljwT7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Jul 2014 17:45:11 +0200
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 118D1170AB9C7
-        for <linux-mips@linux-mips.org>; Fri, 11 Jul 2014 16:44:52 +0100 (IST)
+        by Websense Email Security Gateway with ESMTPS id 2442CE326D8DA
+        for <linux-mips@linux-mips.org>; Fri, 11 Jul 2014 16:45:02 +0100 (IST)
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 01/13] MIPS: allow msa.h to be included in assembly files
-Date: Fri, 11 Jul 2014 16:44:27 +0100
-Message-ID: <1405093479-5123-2-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 02/13] MIPS: save/restore MSACSR register on context switch
+Date: Fri, 11 Jul 2014 16:44:28 +0100
+Message-ID: <1405093479-5123-3-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1405093479-5123-1-git-send-email-paul.burton@imgtec.com>
 References: <1405093479-5123-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -25,62 +25,61 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140711154427.dPguh9USRVFjvjwAX8MKbFWlivh5ULN8lBrXaOaXUL4@z>
+Message-ID: <20140711154428.K_pIEyiXmISkpNSF2b7g070D_--Uo6SbtVSvTpIMh6o@z>
 
-Just #ifdef away the C functions when included from an assembly file,
-as will be done in a following commit.
+I added a field for the MSACSR register in struct mips_fpu_struct, but
+never actually made use of it... This is a clear bug. Save and restore
+the MSACSR register along with the vector registers.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/include/asm/msa.h | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ arch/mips/include/asm/asmmacro.h | 11 +++++++++++
+ arch/mips/kernel/asm-offsets.c   |  1 +
+ 2 files changed, 12 insertions(+)
 
-diff --git a/arch/mips/include/asm/msa.h b/arch/mips/include/asm/msa.h
-index 538f6d4..e80e85c 100644
---- a/arch/mips/include/asm/msa.h
-+++ b/arch/mips/include/asm/msa.h
-@@ -12,6 +12,8 @@
+diff --git a/arch/mips/include/asm/asmmacro.h b/arch/mips/include/asm/asmmacro.h
+index 935543f..4986bf5 100644
+--- a/arch/mips/include/asm/asmmacro.h
++++ b/arch/mips/include/asm/asmmacro.h
+@@ -10,6 +10,7 @@
  
- #include <asm/mipsregs.h>
+ #include <asm/hazards.h>
+ #include <asm/asm-offsets.h>
++#include <asm/msa.h>
  
-+#ifndef __ASSEMBLY__
-+
- extern void _save_msa(struct task_struct *);
- extern void _restore_msa(struct task_struct *);
+ #ifdef CONFIG_32BIT
+ #include <asm/asmmacro-32.h>
+@@ -378,9 +379,19 @@
+ 	st_d	29, THREAD_FPR29, \thread
+ 	st_d	30, THREAD_FPR30, \thread
+ 	st_d	31, THREAD_FPR31, \thread
++	.set	push
++	.set	noat
++	cfcmsa	$1, MSA_CSR
++	sw	$1, THREAD_MSA_CSR(\thread)
++	.set	pop
+ 	.endm
  
-@@ -133,15 +135,6 @@ static inline void write_msa_##name(unsigned int val)		\
+ 	.macro	msa_restore_all	thread
++	.set	push
++	.set	noat
++	lw	$1, THREAD_MSA_CSR(\thread)
++	ctcmsa	MSA_CSR, $1
++	.set	pop
+ 	ld_d	0, THREAD_FPR0, \thread
+ 	ld_d	1, THREAD_FPR1, \thread
+ 	ld_d	2, THREAD_FPR2, \thread
+diff --git a/arch/mips/kernel/asm-offsets.c b/arch/mips/kernel/asm-offsets.c
+index 4bb5107..b1d84bd 100644
+--- a/arch/mips/kernel/asm-offsets.c
++++ b/arch/mips/kernel/asm-offsets.c
+@@ -234,6 +234,7 @@ void output_thread_fpu_defines(void)
+ 	       thread.fpu.fpr[31].val64[FPR_IDX(64, 0)]);
  
- #endif /* !TOOLCHAIN_SUPPORTS_MSA */
+ 	OFFSET(THREAD_FCR31, task_struct, thread.fpu.fcr31);
++	OFFSET(THREAD_MSA_CSR, task_struct, thread.fpu.msacsr);
+ 	BLANK();
+ }
  
--#define MSA_IR		0
--#define MSA_CSR		1
--#define MSA_ACCESS	2
--#define MSA_SAVE	3
--#define MSA_MODIFY	4
--#define MSA_REQUEST	5
--#define MSA_MAP		6
--#define MSA_UNMAP	7
--
- __BUILD_MSA_CTL_REG(ir, 0)
- __BUILD_MSA_CTL_REG(csr, 1)
- __BUILD_MSA_CTL_REG(access, 2)
-@@ -151,6 +144,17 @@ __BUILD_MSA_CTL_REG(request, 5)
- __BUILD_MSA_CTL_REG(map, 6)
- __BUILD_MSA_CTL_REG(unmap, 7)
- 
-+#endif /* !__ASSEMBLY__ */
-+
-+#define MSA_IR		0
-+#define MSA_CSR		1
-+#define MSA_ACCESS	2
-+#define MSA_SAVE	3
-+#define MSA_MODIFY	4
-+#define MSA_REQUEST	5
-+#define MSA_MAP		6
-+#define MSA_UNMAP	7
-+
- /* MSA Implementation Register (MSAIR) */
- #define MSA_IR_REVB		0
- #define MSA_IR_REVF		(_ULCAST_(0xff) << MSA_IR_REVB)
 -- 
 2.0.1

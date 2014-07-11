@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:65148 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:17504 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860086AbaGKPqYKq8aP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Jul 2014 17:46:24 +0200
+        with ESMTP id S6860088AbaGKPq2UzjQ6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Jul 2014 17:46:28 +0200
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 3A68ACFDD26C3
-        for <linux-mips@linux-mips.org>; Fri, 11 Jul 2014 16:46:14 +0100 (IST)
+        by Websense Email Security Gateway with ESMTPS id 39247E5C231B1
+        for <linux-mips@linux-mips.org>; Fri, 11 Jul 2014 16:46:18 +0100 (IST)
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 08/13] MIPS: ensure MSA gets disabled during boot
-Date: Fri, 11 Jul 2014 16:44:34 +0100
-Message-ID: <1405093479-5123-9-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 09/13] MIPS: disable preemption whilst initialising MSA
+Date: Fri, 11 Jul 2014 16:44:35 +0100
+Message-ID: <1405093479-5123-10-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1405093479-5123-1-git-send-email-paul.burton@imgtec.com>
 References: <1405093479-5123-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -25,42 +25,93 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140711154434.frDPKeJY1Mpms2I7X7ke667EzFa1IGtOz5qxUzqHDZo@z>
+Message-ID: <20140711154435.wL2FWnSN0tVxaRozzkIbNhwbKQPSMDwONxMM8_iPOFY@z>
 
-The kernel relies upon MSA being disabled when a task begins running,
-so that it can initialise or restore context in response to the
-resulting MSA disabled exception. Previously the state of MSA following
-boot was left as it was before the kernel ran, where MSA could
-potentially have been enabled. Explicitly disable it during boot to
-prevent any problems.
-
-As a nice side effect the code reads a little better too.
+Preemption must be disabled throughout the process of enabling the FPU,
+enabling MSA & initialising the vector registers. Without doing so it
+is possible to lose the FPU or MSA whilst initialising them causing
+that initialisation to fail.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/kernel/cpu-probe.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/mips/include/asm/fpu.h |  4 ----
+ arch/mips/kernel/traps.c    | 12 ++++++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index e818547..1b345f0 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -130,14 +130,13 @@ static inline int __cpu_has_fpu(void)
- 
- static inline unsigned long cpu_get_msa_id(void)
+diff --git a/arch/mips/include/asm/fpu.h b/arch/mips/include/asm/fpu.h
+index 71d97eb..4d0aeda 100644
+--- a/arch/mips/include/asm/fpu.h
++++ b/arch/mips/include/asm/fpu.h
+@@ -164,8 +164,6 @@ static inline int init_fpu(void)
  {
--	unsigned long status, conf5, msa_id;
-+	unsigned long status, msa_id;
+ 	int ret = 0;
  
- 	status = read_c0_status();
- 	__enable_fpu(FPU_64BIT);
--	conf5 = read_c0_config5();
- 	enable_msa();
- 	msa_id = read_msa_ir();
--	write_c0_config5(conf5);
-+	disable_msa();
- 	write_c0_status(status);
- 	return msa_id;
+-	preempt_disable();
+-
+ 	if (cpu_has_fpu) {
+ 		ret = __own_fpu();
+ 		if (!ret)
+@@ -173,8 +171,6 @@ static inline int init_fpu(void)
+ 	} else
+ 		fpu_emulator_init_fpu();
+ 
+-	preempt_enable();
+-
+ 	return ret;
  }
+ 
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 58a067f..0528246 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -1092,6 +1092,7 @@ static int enable_restore_fp_context(int msa)
+ 
+ 	if (!used_math()) {
+ 		/* First time FP context user. */
++		preempt_disable();
+ 		err = init_fpu();
+ 		if (msa && !err) {
+ 			enable_msa();
+@@ -1099,6 +1100,7 @@ static int enable_restore_fp_context(int msa)
+ 			set_thread_flag(TIF_USEDMSA);
+ 			set_thread_flag(TIF_MSA_CTX_LIVE);
+ 		}
++		preempt_enable();
+ 		if (!err)
+ 			set_used_math();
+ 		return err;
+@@ -1138,10 +1140,11 @@ static int enable_restore_fp_context(int msa)
+ 	 * This task is using or has previously used MSA. Thus we require
+ 	 * that Status.FR == 1.
+ 	 */
++	preempt_disable();
+ 	was_fpu_owner = is_fpu_owner();
+-	err = own_fpu(0);
++	err = own_fpu_inatomic(0);
+ 	if (err)
+-		return err;
++		goto out;
+ 
+ 	enable_msa();
+ 	write_msa_csr(current->thread.fpu.msacsr);
+@@ -1156,7 +1159,7 @@ static int enable_restore_fp_context(int msa)
+ 	 */
+ 	if (!test_and_set_thread_flag(TIF_MSA_CTX_LIVE) && was_fpu_owner) {
+ 		_clear_msa_upper();
+-		return 0;
++		goto out;
+ 	}
+ 
+ 	/* We need to restore the vector context. */
+@@ -1165,7 +1168,8 @@ static int enable_restore_fp_context(int msa)
+ 	/* Restore the scalar FP control & status register */
+ 	if (!was_fpu_owner)
+ 		asm volatile("ctc1 %0, $31" : : "r"(current->thread.fpu.fcr31));
+-
++out:
++	preempt_enable();
+ 	return 0;
+ }
+ 
 -- 
 2.0.1

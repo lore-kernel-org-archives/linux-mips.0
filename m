@@ -1,17 +1,17 @@
-Received: from mx1.redhat.com ([209.132.183.28]:37729 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6860073AbaGJRi0jvTrz (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 10 Jul 2014 19:38:26 +0200
-Date: Thu, 10 Jul 2014 19:35:52 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v9 09/11] seccomp: introduce writer locking
-Message-ID: <20140710173552.GA27410@redhat.com>
-References: <1403911380-27787-1-git-send-email-keescook@chromium.org> <1403911380-27787-10-git-send-email-keescook@chromium.org> <20140709184215.GA4866@redhat.com> <20140709185549.GB4866@redhat.com> <CAGXu5jL6q1d16uA1Yu+QO4eV7zWwcWEWgkZrwmsfymbMvEr6+Q@mail.gmail.com> <20140710152418.GB20861@redhat.com> <CAGXu5jKNUn0OcXPyTmqbHwQ_GPMNTeajyrxpd2xAtzjTRFyhpg@mail.gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:17298 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6838840AbaGKPo6eCwFY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Jul 2014 17:44:58 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 77B8E98CE292
+        for <linux-mips@linux-mips.org>; Fri, 11 Jul 2014 16:44:46 +0100 (IST)
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 00/13] MSA fixes
+Date: Fri, 11 Jul 2014 16:44:26 +0100
+Message-ID: <1405093479-5123-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGXu5jKNUn0OcXPyTmqbHwQ_GPMNTeajyrxpd2xAtzjTRFyhpg@mail.gmail.com>
-Return-Path: <oleg@redhat.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,49 +21,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kees Cook <keescook@chromium.org>
-Cc: linux-arch <linux-arch@vger.kernel.org>, linux-mips@linux-mips.org, Will Drewry <wad@chromium.org>, linux-security-module <linux-security-module@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Daniel Borkmann <dborkman@redhat.com>, Julien Tinnes <jln@chromium.org>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, David Drysdale <drysdale@google.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexei Starovoitov <ast@plumgrid.com>
-Message-ID: <20140710173552.WiCLApRs4JUz2AFU2IwzoTkvX5P_pZcAjTZjdlgzZ_4@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20140711154426.i8Sr8u_mt-OU6tZTILOpvAGqXkF5y-mbG33bLV_Ezmc@z>
 
-On 07/10, Kees Cook wrote:
->
-> On Thu, Jul 10, 2014 at 8:24 AM, Oleg Nesterov <oleg@redhat.com> wrote:
-> >
-> > Just to simplify. Suppose TIF_SECCOMP was set a long ago. This thread
-> > has a single filter F1 and it enters seccomp_run_filters().
-> >
-> > Right before it does ACCESS_ONCE() to read the pointer, another thread
-> > does seccomp_sync_threads() and sets .filter = F2.
-> >
-> > If ACCESS_ONCE() returns F1 - everything is fine. But it can see the new
-> > pointer F2, and in this case we need a barrier to ensure that, say,
-> > LOAD(F2->prog) will see all the preceding changes in this memory.
->
-> And the rmb() isn't sufficient for that?
+This series fixes a bunch of issues with MSA support the have been
+discovered as it has been tested against the P5600 implementation of
+MSA, and in light of the recent revert of saving MSA context around
+signals it marks the support as experimental. This is not really a
+change given that the only hardware implementation is the 32bit P5600
+which requires the experimental CONFIG_MIPS_O32_FP64_SUPPORT Kconfig
+option be enabled before MSA can actually be used. A replacement for
+the signal handling has been written but needs further discussion, so
+will be submitted later.
 
-But it has no effect if the pointer was changed _after_ rmb() was already
-called.
+Paul Burton (13):
+  MIPS: allow msa.h to be included in assembly files
+  MIPS: save/restore MSACSR register on context switch
+  MIPS: preserve scalar FP CSR when switching vector context
+  MIPS: save/disable MSA in lose_fpu
+  MIPS: clear upper 64b of vector registers when MSA is first used
+  MIPS: fix MSA context for tasks which don't use FP first
+  MIPS: fix read_msa_* & write_msa_* functions on non-MSA toolchains
+  MIPS: ensure MSA gets disabled during boot
+  MIPS: disable preemption whilst initialising MSA
+  MIPS: 16 byte align MSA vector context
+  MIPS: consistently clear MSA flags when starting & copying threads
+  MIPS: don't build MSA support unless it can be used
+  MIPS: mark MSA experimental
 
-And, you need a barrier _after_ ACCESS_ONCE().
+ arch/mips/Kconfig                 |  4 ++--
+ arch/mips/include/asm/asmmacro.h  | 31 +++++++++++++++++++++++++++++++
+ arch/mips/include/asm/fpu.h       | 19 ++++++++++++-------
+ arch/mips/include/asm/msa.h       | 31 ++++++++++++++++++-------------
+ arch/mips/include/asm/processor.h | 10 ++++++++--
+ arch/mips/kernel/asm-offsets.c    |  1 +
+ arch/mips/kernel/cpu-probe.c      |  5 ++---
+ arch/mips/kernel/process.c        |  3 +++
+ arch/mips/kernel/r4k_switch.S     |  9 ++++++++-
+ arch/mips/kernel/traps.c          | 29 +++++++++++++++++++++++------
+ 10 files changed, 108 insertions(+), 34 deletions(-)
 
-(Unless, again, we know that this is the first filter, but this is only
- by accident).
-
-> Is another barrier needed
-> before assigning the filter pointer to make sure the contents it
-> points to are flushed?
-
-I think smp_store_release() should be moved from seccomp_attach_filter()
-to seccomp_sync_threads(). Although probably it _should_ work either way,
-but at least this looks confusing because a) "current" doesn't need a
-barrier to serialize wuth itself, and b) it is not clear why it is safe
-to change the pointer dereferenced by another thread without a barrier.
-
-> What's the least time-consuming operation I can use in run_filters?
-
-As I said smp_read_barrier_depends() (nop unless alpha) or
-smp_load_acquire() which you used in the previous version.
-
-And to remind, afaics smp_load_acquire() in put_filter() should die ;)
-
-Oleg.
+-- 
+2.0.1

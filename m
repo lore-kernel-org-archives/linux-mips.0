@@ -1,19 +1,15 @@
-Received: from mail-oa0-f46.google.com ([209.85.219.46]:52273 "EHLO
-        mail-oa0-f46.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6859957AbaGKRzn2p6je (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Jul 2014 19:55:43 +0200
-Received: by mail-oa0-f46.google.com with SMTP id m1so1595850oag.33
-        for <linux-mips@linux-mips.org>; Fri, 11 Jul 2014 10:55:33 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:10834 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6859957AbaGKWSWZG0fS (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 12 Jul 2014 00:18:22 +0200
+Subject: [PATCH] MIPS: bugfix: missed cache flush of TLB refill handler
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Fri, 11 Jul 2014 15:18:05 -0700
+Message-ID: <20140711221805.17764.743.stgit@linux-yegoshin>
 MIME-Version: 1.0
-In-Reply-To: <20140711164931.GA18473@redhat.com>
-References: <1405017631-27346-1-git-send-email-keescook@chromium.org>
-        <20140711164931.GA18473@redhat.com>
-Date: Fri, 11 Jul 2014 10:55:33 -0700
-Message-ID: <CAGXu5jK-x0=Rr7kX2a=b4Z8ueA77uwmhNZZAayG8cwmNOKa8Ug@mail.gmail.com>
-Subject: Re: [PATCH v10 0/11] seccomp: add thread sync ability
-From: Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <keescook@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,39 +19,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Alexei Starovoitov <ast@plumgrid.com>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
-Message-ID: <20140711175533.Zj7wc-W_E_CEVXHDztN3et-MbKuD0S69IUei4rvtSEQ@z>
+To: linux-mips@linux-mips.org
+Cc: paul.gortmaker@windriver.com, jchandra@broadcom.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, david.daney@cavium.com
+Message-ID: <20140711221805.4ykeMBnXXeMIbfyB0dLm6WnJz8fCdJ7lO2HA-9dYDG8@z>
 
-On Fri, Jul 11, 2014 at 9:49 AM, Oleg Nesterov <oleg@redhat.com> wrote:
-> On 07/10, Kees Cook wrote:
->>
->> This adds the ability for threads to request seccomp filter
->> synchronization across their thread group (at filter attach time).
->> For example, for Chrome to make sure graphic driver threads are fully
->> confined after seccomp filters have been attached.
->>
->> To support this, locking on seccomp changes via thread-group-shared
->> sighand lock is introduced, along with refactoring of no_new_privs. Races
->> with thread creation are handled via delayed duplication of the seccomp
->> task struct field and cred_guard_mutex.
->>
->> This includes a new syscall (instead of adding a new prctl option),
->> as suggested by Andy Lutomirski and Michael Kerrisk.
->
-> I do not not see any problems in this version,
+Commit
 
-Awesome! Thank you for all the reviews. :) If Andy and Michael are
-happy with this too, I think this is in good shape. \o/
+    Commit 1d40cfcd3442a53e98468cdb3e6d4d9a568d76cf
+    Author: Ralf Baechle <ralf@linux-mips.org>
+    Date:   Fri Jul 15 15:23:23 2005 +0000
 
--Kees
+    Avoid SMP cacheflushes.  This is a minor optimization of startup but
+    will also avoid smp_call_function from doing stupid things when called
+    from a CPU that is not yet marked online.
 
->
-> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
->
+missed an appropriate cache flush of TLB refill handler because that time it was
+at fixed location CAC_BASE. After years the refill handler in EBASE vector
+is not at that location and can be allocated in some another memory and needs
+I-cache sync as other TLB exception vectors.
 
+Besides that, the new function - local_flash_icache_range() was introduced
+to avoid SMP cacheflushes.
 
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+---
+ arch/mips/mm/tlbex.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
--- 
-Kees Cook
-Chrome OS Security
+diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
+index e80e10b..661bc3d 100644
+--- a/arch/mips/mm/tlbex.c
++++ b/arch/mips/mm/tlbex.c
+@@ -429,6 +429,7 @@ static void build_r3000_tlb_refill_handler(void)
+ 		 (unsigned int)(p - tlb_handler));
+ 
+ 	memcpy((void *)ebase, tlb_handler, 0x80);
++	local_flush_icache_range(ebase, ebase + 0x80);
+ 
+ 	dump_handler("r3000_tlb_refill", (u32 *)ebase, 32);
+ }
+@@ -1415,6 +1416,7 @@ static void build_r4000_tlb_refill_handler(void)
+ 		 final_len);
+ 
+ 	memcpy((void *)ebase, final_handler, 0x100);
++	local_flush_icache_range(ebase, ebase + 0x100);
+ 
+ 	dump_handler("r4000_tlb_refill", (u32 *)ebase, 64);
+ }

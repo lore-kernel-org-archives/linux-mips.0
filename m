@@ -1,15 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:10834 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:39774 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6859957AbaGKWSWZG0fS (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 12 Jul 2014 00:18:22 +0200
-Subject: [PATCH] MIPS: bugfix: missed cache flush of TLB refill handler
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Fri, 11 Jul 2014 15:18:05 -0700
-Message-ID: <20140711221805.17764.743.stgit@linux-yegoshin>
+        with ESMTP id S6856070AbaGNJOWouqHk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Jul 2014 11:14:22 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 6D94592EB8E5
+        for <linux-mips@linux-mips.org>; Mon, 14 Jul 2014 10:14:14 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH 0/5] Add support for HardWare Table Walker for 32-bit cores
+Date: Mon, 14 Jul 2014 10:14:01 +0100
+Message-ID: <1405329246-21643-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,49 +22,37 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: paul.gortmaker@windriver.com, jchandra@broadcom.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, david.daney@cavium.com
-Message-ID: <20140711221805.4ykeMBnXXeMIbfyB0dLm6WnJz8fCdJ7lO2HA-9dYDG8@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20140714091401.wJoJSR1wZM08TZ470HFiGWiIxTJjN2BUCeAeQWpP2GA@z>
 
-Commit
+Hi,
 
-    Commit 1d40cfcd3442a53e98468cdb3e6d4d9a568d76cf
-    Author: Ralf Baechle <ralf@linux-mips.org>
-    Date:   Fri Jul 15 15:23:23 2005 +0000
+This patch adds support for the HardWare Table Walker which acts as a
+hardware fast-path for the TLB Refill handler. The patch only allows 32-bit cores
+to use this feature since it has only been tested on such targets. A new kernel
+parameters is added, called 'nohwtw' to disable the feature and use the
+regular TLB refill handler.
 
-    Avoid SMP cacheflushes.  This is a minor optimization of startup but
-    will also avoid smp_call_function from doing stupid things when called
-    from a CPU that is not yet marked online.
+The patch is based on v3.16-rc5
 
-missed an appropriate cache flush of TLB refill handler because that time it was
-at fixed location CAC_BASE. After years the refill handler in EBASE vector
-is not at that location and can be allocated in some another memory and needs
-I-cache sync as other TLB exception vectors.
+Markos Chandras (5):
+  MIPS: cpu-info: Change the cpu options variable to unsigned long long
+  MIPS: cpu: Add new cpu option for HardWare Table Walker.
+  MIPS: asm: Add register definitions for Hardware Table Walker
+  MIPS: kernel: cpu-probe: Add support for the HardWare Table Walker
+  MIPS: mm: Use the HardWare Page Table Walker if the core supports it
 
-Besides that, the new function - local_flash_icache_range() was introduced
-to avoid SMP cacheflushes.
+ arch/mips/include/asm/cpu-features.h |  4 ++
+ arch/mips/include/asm/cpu-info.h     |  2 +-
+ arch/mips/include/asm/cpu.h          | 57 +++++++++++-----------
+ arch/mips/include/asm/mipsregs.h     | 44 +++++++++++++++++
+ arch/mips/include/asm/mmu_context.h  | 10 ++++
+ arch/mips/include/asm/pgtable.h      | 27 +++++++++++
+ arch/mips/kernel/cpu-probe.c         | 23 +++++++++
+ arch/mips/kernel/proc.c              |  1 +
+ arch/mips/mm/tlb-r4k.c               | 13 +++++-
+ arch/mips/mm/tlbex.c                 | 91 ++++++++++++++++++++++++++++++++++++
+ 10 files changed, 242 insertions(+), 30 deletions(-)
 
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
----
- arch/mips/mm/tlbex.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-index e80e10b..661bc3d 100644
---- a/arch/mips/mm/tlbex.c
-+++ b/arch/mips/mm/tlbex.c
-@@ -429,6 +429,7 @@ static void build_r3000_tlb_refill_handler(void)
- 		 (unsigned int)(p - tlb_handler));
- 
- 	memcpy((void *)ebase, tlb_handler, 0x80);
-+	local_flush_icache_range(ebase, ebase + 0x80);
- 
- 	dump_handler("r3000_tlb_refill", (u32 *)ebase, 32);
- }
-@@ -1415,6 +1416,7 @@ static void build_r4000_tlb_refill_handler(void)
- 		 final_len);
- 
- 	memcpy((void *)ebase, final_handler, 0x100);
-+	local_flush_icache_range(ebase, ebase + 0x100);
- 
- 	dump_handler("r4000_tlb_refill", (u32 *)ebase, 64);
- }
+-- 
+2.0.0

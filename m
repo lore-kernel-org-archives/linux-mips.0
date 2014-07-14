@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:2046 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:47169 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860096AbaGNJcrQdPNc (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Jul 2014 11:32:47 +0200
+        with ESMTP id S6860083AbaGNLiJZ3ZIS (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Jul 2014 13:38:09 +0200
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 4D31963987D65
-        for <linux-mips@linux-mips.org>; Mon, 14 Jul 2014 10:32:38 +0100 (IST)
+        by Websense Email Security Gateway with ESMTPS id 2E2537AA2E925
+        for <linux-mips@linux-mips.org>; Mon, 14 Jul 2014 12:37:59 +0100 (IST)
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 4/4] MIPS: Malta: initialise MAARs
-Date: Mon, 14 Jul 2014 10:32:16 +0100
-Message-ID: <1405330336-18167-5-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1405330336-18167-1-git-send-email-paul.burton@imgtec.com>
-References: <1405330336-18167-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH v2 4/4] MIPS: Malta: initialise MAARs
+Date: Mon, 14 Jul 2014 12:37:39 +0100
+Message-ID: <1405337859-24058-1-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <53C3BFF3.8050004@cogentembedded.com>
+References: <53C3BFF3.8050004@cogentembedded.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -25,18 +25,21 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140714093216.RdwkRQmm6F4Fvgtys5E19_IdZppvivmIOBlhsU2Iy5U@z>
+Message-ID: <20140714113739.Oj04MJGoH3trCcjvdCfBJG6cT8oy5AchWpqjZ8sONmI@z>
 
 Initialise the MAARs such that speculation is enabled for all physical
 addresses outside of the I/O region.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
+Changes in v2:
+  - s/preceeding/preceding/
+---
  arch/mips/mti-malta/malta-memory.c | 26 ++++++++++++++++++++++++++
  1 file changed, 26 insertions(+)
 
 diff --git a/arch/mips/mti-malta/malta-memory.c b/arch/mips/mti-malta/malta-memory.c
-index 6d97730..e96803d 100644
+index 6d97730..0c35dee0 100644
 --- a/arch/mips/mti-malta/malta-memory.c
 +++ b/arch/mips/mti-malta/malta-memory.c
 @@ -16,6 +16,7 @@
@@ -56,7 +59,7 @@ index 6d97730..e96803d 100644
 +{
 +	phys_addr_t mem_end = (physical_memsize & ~0xffffull) - 1;
 +	struct maar_config cfg[] = {
-+		/* DRAM preceeding I/O */
++		/* DRAM preceding I/O */
 +		{ 0x00000000, 0x0fffffff, MIPS_MAAR_S },
 +
 +		/* DRAM following I/O */

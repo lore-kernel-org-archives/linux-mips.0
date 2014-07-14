@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45565 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:28198 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860096AbaGNLnpMue0B (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Jul 2014 13:43:45 +0200
+        with ESMTP id S6860415AbaGNLqZsaQKd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Jul 2014 13:46:25 +0200
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id AB1F03DBECEA8
-        for <linux-mips@linux-mips.org>; Mon, 14 Jul 2014 12:43:36 +0100 (IST)
+        by Websense Email Security Gateway with ESMTPS id 4FFA2C2846DAC
+        for <linux-mips@linux-mips.org>; Mon, 14 Jul 2014 12:46:17 +0100 (IST)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH v2 2/5] MIPS: cpu: Add new cpu option for Hardware Table Walker.
-Date: Mon, 14 Jul 2014 12:43:28 +0100
-Message-ID: <1405338208-10776-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1405329246-21643-3-git-send-email-markos.chandras@imgtec.com>
-References: <1405329246-21643-3-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH v2 4/5] MIPS: kernel: cpu-probe: Add support for the HardWare Table Walker
+Date: Mon, 14 Jul 2014 12:46:13 +0100
+Message-ID: <1405338373-10883-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1405329246-21643-5-git-send-email-markos.chandras@imgtec.com>
+References: <1405329246-21643-5-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -25,60 +25,68 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140714114328.J7C-CmwGVefVDmLxdmIdoo8OYScs7KJVPE0jiqRee-A@z>
+Message-ID: <20140714114613.F2HnxXDbr9AddSCr57ewTjZvCPbkygwIZ8KKvdmlX3Y@z>
 
-Moreover, report hardware page table walker support as 'htw' in the ASE
-list of /proc/cpuinfo, if the core implements this feature.
+Detect if the core implements the HTW and set the option accordingly.
+Also, add a new kernel parameter called 'nohtw' allowing
+the user to disable the htw support and fallback to the software
+refill handler.
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
 Changes since v1:
-- Drop unnecessary new line
-- Improve commit message
 - Rename HWTW to HTW
 ---
- arch/mips/include/asm/cpu-features.h | 3 +++
- arch/mips/include/asm/cpu.h          | 1 +
- arch/mips/kernel/proc.c              | 1 +
- 3 files changed, 5 insertions(+)
+ arch/mips/kernel/cpu-probe.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index c7d8c997d93e..3b9768e92e9e 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -29,6 +29,9 @@
- #ifndef cpu_has_eva
- #define cpu_has_eva		(cpu_data[0].options & MIPS_CPU_EVA)
- #endif
-+#ifndef cpu_has_htw
-+#define cpu_has_htw		(cpu_data[0].options & MIPS_CPU_HTW)
-+#endif
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index d74f957c561e..eb1920ccd263 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -54,6 +54,20 @@ static int __init dsp_disable(char *s)
  
- /*
-  * For the moment we don't consider R6000 and R8000 so we can assume that
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index 3b8d993d9d8d..8219c0a5f77e 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -363,6 +363,7 @@ enum cpu_type_enum {
- #define MIPS_CPU_TLBINV		0x02000000ull /* CPU supports TLBINV/F */
- #define MIPS_CPU_SEGMENTS	0x04000000ull /* CPU supports Segmentation Control registers */
- #define MIPS_CPU_EVA		0x80000000ull /* CPU supports Enhanced Virtual Addressing */
-+#define MIPS_CPU_HTW		0x100000000ull /* CPU support Hardware Page Table Walker */
+ __setup("nodsp", dsp_disable);
  
- /*
-  * CPU ASE encodings
-diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
-index 037a44d962f3..1ed1b5ae8894 100644
---- a/arch/mips/kernel/proc.c
-+++ b/arch/mips/kernel/proc.c
-@@ -113,6 +113,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 	if (cpu_has_vz)		seq_printf(m, "%s", " vz");
- 	if (cpu_has_msa)	seq_printf(m, "%s", " msa");
- 	if (cpu_has_eva)	seq_printf(m, "%s", " eva");
-+	if (cpu_has_htw)	seq_printf(m, "%s", " htw");
- 	seq_printf(m, "\n");
++static int mips_htw_disabled;
++
++static int __init htw_disable(char *s)
++{
++	mips_htw_disabled = 1;
++	cpu_data[0].options &= ~MIPS_CPU_HTW;
++	write_c0_pwctl(read_c0_pwctl() &
++		       ~(1 << MIPS_PWCTL_PWEN_SHIFT));
++
++	return 1;
++}
++
++__setup("nohtw", htw_disable);
++
+ static inline void check_errata(void)
+ {
+ 	struct cpuinfo_mips *c = &current_cpu_data;
+@@ -321,6 +335,9 @@ static inline unsigned int decode_config3(struct cpuinfo_mips *c)
+ 		c->options |= MIPS_CPU_SEGMENTS;
+ 	if (config3 & MIPS_CONF3_MSA)
+ 		c->ases |= MIPS_ASE_MSA;
++	/* Only tested on 32-bit cores */
++	if ((config3 & MIPS_CONF3_PW) && config_enabled(CONFIG_32BIT))
++		c->options |= MIPS_CPU_HTW;
  
- 	if (cpu_has_mmips) {
+ 	return config3 & MIPS_CONF_M;
+ }
+@@ -1187,6 +1204,12 @@ void cpu_probe(void)
+ 	if (mips_dsp_disabled)
+ 		c->ases &= ~(MIPS_ASE_DSP | MIPS_ASE_DSP2P);
+ 
++	if (mips_htw_disabled) {
++		c->options &= ~MIPS_CPU_HTW;
++		write_c0_pwctl(read_c0_pwctl() &
++			       ~(1 << MIPS_PWCTL_PWEN_SHIFT));
++	}
++
+ 	if (c->options & MIPS_CPU_FPU) {
+ 		c->fpu_id = cpu_get_fpu_id();
+ 
 -- 
 2.0.0

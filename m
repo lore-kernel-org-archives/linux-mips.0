@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:57666 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:35068 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6816671AbaGPHpfuQ7oO (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 16 Jul 2014 09:45:35 +0200
-Message-ID: <53C62D98.6010307@imgtec.com>
-Date: Wed, 16 Jul 2014 08:45:28 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        with ESMTP id S6816671AbaGPHyAU3pPy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 16 Jul 2014 09:54:00 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 1082A8FCCFC6D
+        for <linux-mips@linux-mips.org>; Wed, 16 Jul 2014 08:53:52 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: kernel: cps-vec: Set ISA level to mips32r2 for the MIPS MT ASE
+Date: Wed, 16 Jul 2014 08:53:39 +0100
+Message-ID: <1405497219-19878-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/3] MIPS: Add new option for unique RI/XI exceptions
-References: <1405429797-18281-1-git-send-email-markos.chandras@imgtec.com> <1405429797-18281-2-git-send-email-markos.chandras@imgtec.com> <53C5523E.7060503@cogentembedded.com>
-In-Reply-To: <53C5523E.7060503@cogentembedded.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,46 +21,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, linux-mips@linux-mips.org
-Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Message-ID: <20140716074528.VUqEz1LD79xJaVuZ_YgS6nN7u4c18GlAlVSDAykigCk@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <Paul.Burton@imgtec.com>
+Message-ID: <20140716075339.IExcOdYiSm25xV1gAETNK2F41txAFJ5fSJAPSo-0lSE@z>
 
-Hi Sergei,
+Fixes the following build warnings:
+arch/mips/kernel/cps-vec.S: Assembler messages:
+arch/mips/kernel/cps-vec.S:228: Warning: the `mt' extension requires
+MIPS32 revision 2 or greater
+[...]
+arch/mips/kernel/cps-vec.S: Assembler messages:
+arch/mips/kernel/cps-vec.S:345: Warning: the `mt' extension requires
+MIPS32 revision 2 or greater
 
-On 07/15/2014 05:09 PM, Sergei Shtylyov wrote:
-> Hello.
-> 
-> On 07/15/2014 05:09 PM, Markos Chandras wrote:
-> 
->> From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-> 
->> MIPSr5 added support for unique exception codes for the Read-Inhibit
->> and Execute-Inhibit exceptions.
-> 
->> Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
->> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> [...]
-> 
->> diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
->> index 8219c0a5f77e..be13f2879c84 100644
->> --- a/arch/mips/include/asm/cpu.h
->> +++ b/arch/mips/include/asm/cpu.h
->> @@ -364,6 +364,7 @@ enum cpu_type_enum {
->>   #define MIPS_CPU_SEGMENTS    0x04000000ull /* CPU supports
->> Segmentation Control registers */
->>   #define MIPS_CPU_EVA        0x80000000ull /* CPU supports Enhanced
->> Virtual Addressing */
->>   #define MIPS_CPU_HTW        0x100000000ull /* CPU support Hardware
->> Page Table Walker */
->> +#define MIPS_CPU_RIXIEX        0x200000000ull /* CPU has unique
->> exception codes for {Read, Execute}-Inhibit exceptions */
-> 
->    I think this conflicts with the MAAR patchset.
-> 
-> WBR, Sergei
-> 
+Cc: Paul Burton <Paul.Burton@imgtec.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/kernel/cps-vec.S | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Well yes, but it's easy to resolve these conflicts.
-
+diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
+index 6f4f739dad96..ec06a82f8210 100644
+--- a/arch/mips/kernel/cps-vec.S
++++ b/arch/mips/kernel/cps-vec.S
+@@ -225,6 +225,7 @@ LEAF(mips_cps_core_init)
+ 	 nop
+ 
+ 	.set	push
++	.set	mips32r2
+ 	.set	mt
+ 
+ 	/* Only allow 1 TC per VPE to execute... */
+@@ -341,6 +342,7 @@ LEAF(mips_cps_boot_vpes)
+ 	 nop
+ 
+ 	.set	push
++	.set	mips32r2
+ 	.set	mt
+ 
+ 1:	/* Enter VPE configuration state */
 -- 
-markos
+2.0.0

@@ -1,17 +1,16 @@
-Received: from mail-la0-f43.google.com ([209.85.215.43]:52989 "EHLO
-        mail-la0-f43.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6861309AbaGPVQJvKZ0n (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 16 Jul 2014 23:16:09 +0200
-Received: by mail-la0-f43.google.com with SMTP id hr17so1089401lab.16
-        for <linux-mips@linux-mips.org>; Wed, 16 Jul 2014 14:16:04 -0700 (PDT)
+Received: from mail-la0-f50.google.com ([209.85.215.50]:36892 "EHLO
+        mail-la0-f50.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6861309AbaGPVRbh68OB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 16 Jul 2014 23:17:31 +0200
+Received: by mail-la0-f50.google.com with SMTP id gf5so975033lab.9
+        for <linux-mips@linux-mips.org>; Wed, 16 Jul 2014 14:17:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAGXu5jJornzMJjyPXVZB_eYi-FRet=bXcJWJDa1vnB_oU9ZA_Q@mail.gmail.com>
-References: <cover.1405452484.git.luto@amacapital.net> <bd4e2efb7cd97f2bf9d4f1e2065f16c9091d799a.1405452484.git.luto@amacapital.net>
- <CAGXu5jJornzMJjyPXVZB_eYi-FRet=bXcJWJDa1vnB_oU9ZA_Q@mail.gmail.com>
+In-Reply-To: <CAGXu5jJx8Wk-pZvhJY4xA=oywCZDLH3CLiLZ0wrBVqEqSaYT4A@mail.gmail.com>
+References: <cover.1405452484.git.luto@amacapital.net> <CAGXu5jJx8Wk-pZvhJY4xA=oywCZDLH3CLiLZ0wrBVqEqSaYT4A@mail.gmail.com>
 From: Andy Lutomirski <luto@amacapital.net>
-Date: Wed, 16 Jul 2014 14:15:44 -0700
-Message-ID: <CALCETrWuWxZANoKAR=FG55EOHtzvTHmc3euMdtf8yfibtK-QYw@mail.gmail.com>
-Subject: Re: [PATCH 5/7] x86: Split syscall_trace_enter into two phases
+Date: Wed, 16 Jul 2014 14:17:05 -0700
+Message-ID: <CALCETrVVJ-FRFFDs685zjHvqQCeaBYY49QZbj4rAe+Q7yEF10Q@mail.gmail.com>
+Subject: Re: [PATCH 0/7] Two-phase seccomp and x86 tracing changes
 Content-Type: text/plain; charset=UTF-8
 Return-Path: <luto@amacapital.net>
 Sender: linux-mips-bounce@linux-mips.org
@@ -25,24 +24,54 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Kees Cook <keescook@chromium.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, Will Drewry <wad@chromium.org>, James Morris <james.l.morris@oracle.com>, Oleg Nesterov <oleg@redhat.com>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>
-Message-ID: <20140716211544.Bc9pyYLYpbKPZRwtKuPTpKhwDZUi-FL61gcbU6Uju8I@z>
+Message-ID: <20140716211705.i_-HSkz9e2HrVk5t5ghf2YiAxgWuqf6KIVjZFl46_ac@z>
 
-On Wed, Jul 16, 2014 at 1:21 PM, Kees Cook <keescook@chromium.org> wrote:
+On Wed, Jul 16, 2014 at 1:41 PM, Kees Cook <keescook@chromium.org> wrote:
 > On Tue, Jul 15, 2014 at 12:32 PM, Andy Lutomirski <luto@amacapital.net> wrote:
+>> This is both a cleanup and a speedup.  It reduces overhead due to
+>> installing a trivial seccomp filter by 87%.  The speedup comes from
+>> avoiding the full syscall tracing mechanism for filters that don't
+>> return SECCOMP_RET_TRACE.
 >>
->> +
->> +               ret = seccomp_phase1(&sd);
->> +               if (ret == SECCOMP_PHASE1_SKIP) {
->> +                       regs->orig_ax = -ENOSYS;
+>> This series works by splitting the seccomp hooks into two phases.
+>> The first phase evaluates the filter; it can skip syscalls, allow
+>> them, kill the calling task, or pass a u32 to the second phase.  The
+>> second phase requires a full tracing context, and it sends ptrace
+>> events if necessary.
+>>
+>> Once this is done, I implemented a similar split for the x86 syscall
+>> entry work.  The C callback is invoked in two phases: the first has
+>> only a partial frame, and it can request phase 2 processing with a
+>> full frame.
+>>
+>> Finally, I switch the 64-bit system_call code to use the new split
+>> entry work.  This is a net deletion of assembly code: it replaces
+>> all of the audit entry muck.
+>>
+>> In the process, I fixed some bugs.
+>>
+>> If this is acceptable, someone can do the same tweak for the
+>> ia32entry and entry_32 code.
+>>
+>> This passes all seccomp tests that I know of, except for the ones
+>> that don't work on current kernels.
 >
-> Before, seccomp didn't touch orig_ax on a skip. I don't see any
-> problem with this, and it's probably more clear this way, but are you
-> sure there aren't unexpected side-effects from this?
+> After fighting a bit with merging this with the tsync series, I can
+> confirm this all behaves nicely on x86_64 and ARM.
+>
 
-It's necessary to cause the syscall to be skipped -- see syscall_trace_enter.
-
-That being said, setting it to -ENOSYS is nonsense and probably
-confused you at least as much as it confused me.  It should be
-regs->orig_ax = -1.
+I'll hold off on v3 until your stuff lands.
 
 --Andy
+
+> -Kees
+>
+> --
+> Kees Cook
+> Chrome OS Security
+
+
+
+-- 
+Andy Lutomirski
+AMA Capital Management, LLC

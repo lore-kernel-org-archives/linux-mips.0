@@ -1,18 +1,16 @@
-Received: from cam-admin0.cambridge.arm.com ([217.140.96.50]:40648 "EHLO
-        cam-admin0.cambridge.arm.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6816671AbaGPQA7DSNhP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 16 Jul 2014 18:00:59 +0200
-Date: Wed, 16 Jul 2014 16:59:05 +0100
-From: Will Deacon <will.deacon@arm.com>
-Subject: Re: [PATCH 1/4] asm-generic: Add dma-contiguous.h
-Message-ID: <20140716155905.GS29414@arm.com>
-References: <1405525892-60383-1-git-send-email-Zubair.Kakakhel@imgtec.com>
- <1405525892-60383-2-git-send-email-Zubair.Kakakhel@imgtec.com>
+Received: from tundra.namei.org ([65.99.196.166]:54142 "EHLO namei.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6861307AbaGPQo4FQQwK (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 16 Jul 2014 18:44:56 +0200
+Date: Thu, 17 Jul 2014 02:44:20 +1000 (EST)
+From: James Morris <jmorris@namei.org>
+Subject: Re: [PATCH v10 0/11] seccomp: add thread sync ability
+In-Reply-To: <CAGXu5jK-x0=Rr7kX2a=b4Z8ueA77uwmhNZZAayG8cwmNOKa8Ug@mail.gmail.com>
+Message-ID: <alpine.LRH.2.11.1407170243480.22946@namei.org>
+References: <1405017631-27346-1-git-send-email-keescook@chromium.org> <20140711164931.GA18473@redhat.com> <CAGXu5jK-x0=Rr7kX2a=b4Z8ueA77uwmhNZZAayG8cwmNOKa8Ug@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1405525892-60383-2-git-send-email-Zubair.Kakakhel@imgtec.com>
-Return-Path: <will.deacon@arm.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <jmorris@namei.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,38 +20,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Cc: "ralf@linux-mips.org" <ralf@linux-mips.org>, Catalin Marinas <Catalin.Marinas@arm.com>, "tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "hpa@zytor.com" <hpa@zytor.com>, "arnd@arndb.de" <arnd@arndb.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>, "mina86@mina86.com" <mina86@mina86.com>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-Message-ID: <20140716155905.I3G1rFh4FHjO0mNxdCyKrC06ab6SjOJfeYhIqy1Dnuw@z>
+To: Kees Cook <keescook@chromium.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Alexei Starovoitov <ast@plumgrid.com>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mips@linux-mips.org, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
+Message-ID: <20140716164420.WWlZhHyhmSNX45zb_egY4GXiGOX2HpxM_LsHVCahy9g@z>
 
-On Wed, Jul 16, 2014 at 04:51:29PM +0100, Zubair Lutfullah Kakakhel wrote:
-> This header is used by arm64 and x86 individually.
-> 
-> Adding to asm-generic to avoid further code repetition while adding cma
-> to mips.
-> 
-> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-> ---
->  include/asm-generic/dma-contiguous.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
->  create mode 100644 include/asm-generic/dma-contiguous.h
-> 
-> diff --git a/include/asm-generic/dma-contiguous.h b/include/asm-generic/dma-contiguous.h
-> new file mode 100644
-> index 0000000..292c571
-> --- /dev/null
-> +++ b/include/asm-generic/dma-contiguous.h
-> @@ -0,0 +1,9 @@
-> +#ifndef _ASM_GENERIC_DMA_CONTIGUOUS_H
-> +#define _ASM_GENERIC_DMA_CONTIGUOUS_H
-> +
-> +#include <linux/types.h>
-> +
-> +static inline void
-> +dma_contiguous_early_fixup(phys_addr_t base, unsigned long size) { }
-> +
-> +#endif
+On Fri, 11 Jul 2014, Kees Cook wrote:
 
-  Acked-by: Will Deacon <will.deacon@arm.com>
+> On Fri, Jul 11, 2014 at 9:49 AM, Oleg Nesterov <oleg@redhat.com> wrote:
+> > On 07/10, Kees Cook wrote:
+> >>
+> >> This adds the ability for threads to request seccomp filter
+> >> synchronization across their thread group (at filter attach time).
+> >> For example, for Chrome to make sure graphic driver threads are fully
+> >> confined after seccomp filters have been attached.
+> >>
+> >> To support this, locking on seccomp changes via thread-group-shared
+> >> sighand lock is introduced, along with refactoring of no_new_privs. Races
+> >> with thread creation are handled via delayed duplication of the seccomp
+> >> task struct field and cred_guard_mutex.
+> >>
+> >> This includes a new syscall (instead of adding a new prctl option),
+> >> as suggested by Andy Lutomirski and Michael Kerrisk.
+> >
+> > I do not not see any problems in this version,
+> 
+> Awesome! Thank you for all the reviews. :) If Andy and Michael are
+> happy with this too, I think this is in good shape. \o/
+> 
+> -Kees
 
-Will
+If you re-send this, please add Oleg's Reviewed-by to each patch.
+
+
+> 
+> >
+> > Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+> >
+> 
+> 
+> 
+> 
+
+-- 
+James Morris
+<jmorris@namei.org>

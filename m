@@ -1,12 +1,17 @@
-Received: from mail-pd0-f176.google.com ([209.85.192.176]:57162 "EHLO
-        mail-pd0-f176.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6861108AbaGPBLOyaJ8D (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 16 Jul 2014 03:11:14 +0200
-From: Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH V2] MIPS: Don't BUG_ON(!is_fpu_owner()) in do_ade()
-Date: Wed, 16 Jul 2014 09:19:16 +0800
-Message-ID: <1405473556-8353-1-git-send-email-chenhc@lemote.com>
-Return-Path: <chenhuacai@gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:22609 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6816671AbaGPHoa00kAi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 16 Jul 2014 09:44:30 +0200
+Message-ID: <53C62D56.7090401@imgtec.com>
+Date: Wed, 16 Jul 2014 08:44:22 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH 0/3] Use dedicated RI/XI exceptions for MIPSR5 cores
+References: <1405429797-18281-1-git-send-email-markos.chandras@imgtec.com> <53C5780B.1090602@gmail.com>
+In-Reply-To: <53C5780B.1090602@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,58 +21,28 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: John Crispin <john@phrozen.org>, "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Huacai Chen <chenhc@lemote.com>, Jie Chen <chenj@lemote.com>, Rui Wang <wangr@lemote.com>, stable@vger.kernel.org
-Message-ID: <20140716011916.Fr8TrhYg9EXsInQhF8XpEVWdULC1je9fXIn6VLFno7o@z>
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20140716074422.raYQudN2GFu7XG-DVII0d9XCB3Zk5mzhPwgiJGnr_94@z>
 
-In do_ade(), is_fpu_owner() isn't preempt-reliable. For example, when
-an unaligned ldc1 is executed, do_cpu() is called and then FPU will be
-enabled (and TIF_USEDFPU will be set for the current process). Then,
-do_ade() is called because the access is unaligned. If the current
-process is preempted at this time, TIF_USEDFPU will be cleard. When the
-process is scheduled again, BUG_ON(!is_fpu_owner()) is triggered.
+Hi David,
 
-This small program can trigger this BUG in a preemptible kernel:
---
-int main (int argc, char *argv[])
-{
-        double u64[2];
+On 07/15/2014 07:50 PM, David Daney wrote:
+> On 07/15/2014 06:09 AM, Markos Chandras wrote:
+>> Hi,
+>>
+>> This patchset adds support for unique RI/XI exceptions. This feature has
+>> been added in MIPSr5. Using this feature, we reduce the time it takes
+>> to deal with a TLB exception caused by the RI/XI bits since the TLB load
+>> handler is skipped and we use the tlb_do_page_failt_0 path directly.
+>>
+>> This patch depends on the Hardware Page Table Walker (HTW) patchset
+>> http://www.linux-mips.org/archives/linux-mips/2014-07/msg00195.html
+> 
+> They are unrelated features, why the dependency?
+Because of the conflicts in cpu.h and cpu-features.h. I am just trying
+to make Ralf' life easier when he tries to determine the order to apply
+this patches.
 
-        while (1) {
-                asm volatile (
-                        ".set push \n\t"
-                        ".set noreorder \n\t"
-                        "ldc1 $f3, 4(%0) \n\t"
-                        ".set pop \n\t"
-                        ::"r"(u64):
-                );
-        }
-
-        return 0;
-}
---
-
-V2: Remove the BUG_ON() unconditionally due to Paul's suggestion.
-
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
-Signed-off-by: Jie Chen <chenj@lemote.com>
-Signed-off-by: Rui Wang <wangr@lemote.com>
-Cc: <stable@vger.kernel.org>
----
- arch/mips/kernel/unaligned.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/mips/kernel/unaligned.c b/arch/mips/kernel/unaligned.c
-index 2b35172..e11906d 100644
---- a/arch/mips/kernel/unaligned.c
-+++ b/arch/mips/kernel/unaligned.c
-@@ -690,7 +690,6 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 	case sdc1_op:
- 		die_if_kernel("Unaligned FP access in kernel code", regs);
- 		BUG_ON(!used_math());
--		BUG_ON(!is_fpu_owner());
- 
- 		lose_fpu(1);	/* Save FPU state for the emulator. */
- 		res = fpu_emulator_cop1Handler(regs, &current->thread.fpu, 1,
 -- 
-1.9.0
+markos

@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:32032 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:32917 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6861302AbaGQLto1Bmtt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Jul 2014 13:49:44 +0200
-Message-ID: <53C7B846.6040803@imgtec.com>
-Date: Thu, 17 Jul 2014 12:49:26 +0100
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+        with ESMTP id S6861326AbaGQNwymXP2v (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Jul 2014 15:52:54 +0200
+Message-ID: <53C7D52E.5020205@imgtec.com>
+Date: Thu, 17 Jul 2014 14:52:46 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: MIPS: O32/32-bit: Fix bug which can cause incorrect system call
- restarts
-References: <1392648557-7174-1-git-send-email-alex.smith@imgtec.com>
-In-Reply-To: <1392648557-7174-1-git-send-email-alex.smith@imgtec.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 2/3] arch/mips/net/bpf_jit.c: fix failure check
+References: <1405603655-12571-1-git-send-email-andrey.krieger.utkin@gmail.com>
+In-Reply-To: <1405603655-12571-1-git-send-email-andrey.krieger.utkin@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Zubair.Kakakhel@imgtec.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,100 +21,71 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alex Smith <alex.smith@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, stable@vger.kernel.org, Alex Smith <alex@alex-smith.me.uk>
-Message-ID: <20140717114926.32oY-ft36qGbSsT8O1-4LfM1GTQvPnoxhdy2fd53evo@z>
+To: Andrey Utkin <andrey.krieger.utkin@gmail.com>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-mips@linux-mips.org
+Cc: dborkman@redhat.com, ralf@linux-mips.org
+Message-ID: <20140717135246.0buHkKoCvVPexEmZFpsQLNfEuchztZfGryEydZ-84jQ@z>
 
-
-
-On 17/02/14 14:49, Alex Smith wrote:
-> On 32-bit/O32, pt_regs has a padding area at the beginning into which the
-> syscall arguments passed via the user stack are copied. 4 arguments
-> totalling 16 bytes are copied to offset 16 bytes into this area, however
-> the area is only 24 bytes long. This means the last 2 arguments overwrite
-> pt_regs->regs[{0,1}].
+On 07/17/2014 02:27 PM, Andrey Utkin wrote:
+> static int pkt_type_offset(void) returned -1 in case of failure, and
+> actual (positive) offset value in case of success. In the only instance
+> of its usage, the result was saved to local "unsigned int off" variable,
+>    which is used in a lot of places in the same (large) function, so
+>    changing its type could cause many warnings.
+> There was no signed int variable which could be just used for this case.
+> There are two possibilities to resolve that: to declare temporary signed
+> int variable to get the return value from pkt_type_offset(), or to
+> separate return status from returned offset value. The latter approach
+> was chosen, however, I am not sure which would be practically optimal.
 > 
-> If a syscall function returns an error, handle_sys stores the original
-> syscall number in pt_regs->regs[0] for syscall restart. signal.c checks
-> whether regs[0] is non-zero, if it is it will check whether the syscall
-> return value is one of the ERESTART* codes to see if it must be
-> restarted.
-> 
-> Should a syscall be made that results in a non-zero value being copied
-> off the user stack into regs[0], and then returns a positive (non-error)
-> value that matches one of the ERESTART* error codes, this can be mistaken
-> for requiring a syscall restart.
-> 
-> While the possibility for this to occur has always existed, it is made
-> much more likely to occur by commit 46e12c07b3b9 ("MIPS: O32 / 32-bit:
-> Always copy 4 stack arguments."), since now every syscall will copy 4
-> arguments and overwrite regs[0], rather than just those with 7 or 8
-> arguments.
-> 
-> Since that commit, booting Debian under a 32-bit MIPS kernel almost
-> always results in a hang early in boot, due to a wait4 syscall returning
-> a PID that matches one of the ERESTART* codes, which then causes an
-> incorrect restart of the syscall.
-> 
-> The problem is fixed by increasing the size of the padding area so that
-> arguments copied off the stack will not overwrite pt_regs->regs[{0,1}].
-> Also removed a comment in handle_sys which is no longer relevant after
-> the aforementioned commit.
-> 
-> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-> Reviewed-by: Markos Chandras <markos.chandras@imgtec.com>
-
-Tested-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: linux-mips@linux-mips.org
-> Cc: stable@vger.kernel.org [3.13]
-> 
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=80371
+> Reported-by: David Binderman <dcb314@hotmail.com>
+> Signed-off-by: Andrey Utkin <andrey.krieger.utkin@gmail.com>
 > ---
-> arch/mips/include/asm/ptrace.h | 2 +-
->  arch/mips/kernel/scall32-o32.S | 2 --
->  arch/mips/kernel/smtc-asm.S    | 4 ++--
->  3 files changed, 3 insertions(+), 5 deletions(-)
+>  arch/mips/net/bpf_jit.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
-> index 7bba9da..6d019ca 100644
-> --- a/arch/mips/include/asm/ptrace.h
-> +++ b/arch/mips/include/asm/ptrace.h
-> @@ -23,7 +23,7 @@
->  struct pt_regs {
->  #ifdef CONFIG_32BIT
->  	/* Pad bytes for argument save space on the stack. */
-> -	unsigned long pad0[6];
-> +	unsigned long pad0[8];
+> diff --git a/arch/mips/net/bpf_jit.c b/arch/mips/net/bpf_jit.c
+> index b87390a..47f65d5 100644
+> --- a/arch/mips/net/bpf_jit.c
+> +++ b/arch/mips/net/bpf_jit.c
+> @@ -770,7 +770,7 @@ static u64 jit_get_skb_w(struct sk_buff *skb, unsigned offset)
+>  #else
+>  #define PKT_TYPE_MAX	7
 >  #endif
+> -static int pkt_type_offset(void)
+> +static int pkt_type_offset(unsigned int *off_arg)
+>  {
+>  	struct sk_buff skb_probe = {
+>  		.pkt_type = ~0,
+> @@ -779,8 +779,10 @@ static int pkt_type_offset(void)
+>  	unsigned int off;
 >  
->  	/* Saved main processor registers. */
-> diff --git a/arch/mips/kernel/scall32-o32.S b/arch/mips/kernel/scall32-o32.S
-> index a5b14f4..4220c2d 100644
-> --- a/arch/mips/kernel/scall32-o32.S
-> +++ b/arch/mips/kernel/scall32-o32.S
-> @@ -66,8 +66,6 @@ NESTED(handle_sys, PT_SIZE, sp)
+>  	for (off = 0; off < sizeof(struct sk_buff); off++) {
+> -		if (ct[off] == PKT_TYPE_MAX)
+> -			return off;
+> +		if (ct[off] == PKT_TYPE_MAX) {
+> +			*off_arg = off;
+> +			return 0;
+> +		}
+>  	}
+>  	pr_err_once("Please fix pkt_type_offset(), as pkt_type couldn't be found\n");
+>  	return -1;
+> @@ -1332,9 +1334,7 @@ jmp_cmp:
+>  		case BPF_ANC | SKF_AD_PKTTYPE:
+>  			ctx->flags |= SEEN_SKB;
 >  
->  	/*
->  	 * Ok, copy the args from the luser stack to the kernel stack.
-> -	 * t3 is the precomputed number of instruction bytes needed to
-> -	 * load or store arguments 6-8.
->  	 */
->  
->  	.set    push
-> diff --git a/arch/mips/kernel/smtc-asm.S b/arch/mips/kernel/smtc-asm.S
-> index 2866863..c4f0cd9 100644
-> --- a/arch/mips/kernel/smtc-asm.S
-> +++ b/arch/mips/kernel/smtc-asm.S
-> @@ -43,8 +43,8 @@ CAN WE PROVE THAT WE WON'T DO THIS IF INTS DISABLED??
->   * to invoke the scheduler and return as appropriate.
->   */
->  
-> -#define PT_PADSLOT4 (PT_R0-8)
-> -#define PT_PADSLOT5 (PT_R0-4)
-> +#define PT_PADSLOT4 (PT_R0-16)
-> +#define PT_PADSLOT5 (PT_R0-12)
->  
->  	.text
->  	.align 5
+> -			off = pkt_type_offset();
+> -
+> -			if (off < 0)
+> +			if (pkt_type_offset(&off))
+>  				return -1;
+>  			emit_load_byte(r_tmp, r_skb, off, ctx);
+>  			/* Keep only the last 3 bits */
 > 
+Hi,
+
+Thanks for the patch. I would personally prefer to use a new signed int
+variable, but I am fine either way.
+
+-- 
+markos

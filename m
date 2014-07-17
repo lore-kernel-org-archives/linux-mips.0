@@ -1,19 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:38856 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:24432 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6861303AbaGQIWBUfA6b (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Jul 2014 10:22:01 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 73559701B3D8D
-        for <linux-mips@linux-mips.org>; Thu, 17 Jul 2014 09:21:52 +0100 (IST)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 7/7] MIPS: GIC: Fix GICBIS macro
-Date: Thu, 17 Jul 2014 09:20:59 +0100
-Message-ID: <1405585259-24941-8-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1405585259-24941-1-git-send-email-markos.chandras@imgtec.com>
-References: <1405585259-24941-1-git-send-email-markos.chandras@imgtec.com>
+        with ESMTP id S6817540AbaGQImHoPKhA (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Jul 2014 10:42:07 +0200
+Message-ID: <53C78C4D.5090308@imgtec.com>
+Date: Thu, 17 Jul 2014 09:41:49 +0100
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH 0/4] mips: Add cma support to mips
+References: <1405525892-60383-1-git-send-email-Zubair.Kakakhel@imgtec.com> <CAOLZvyEs_+R+urf-rhvpfZ+ieqhgg6zXuOtLLPUqKSaeNTzpNg@mail.gmail.com> <CAOLZvyFjkuCzUkbb3SpJ25gKQoZ-Ken9Ri1YEckxdM6ETNyuSg@mail.gmail.com>
+In-Reply-To: <CAOLZvyFjkuCzUkbb3SpJ25gKQoZ-Ken9Ri1YEckxdM6ETNyuSg@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,74 +21,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Jeffrey Deans <jeffrey.deans@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140717082059.ZxYsE23fVoy4TC6bE7b8rSw29fPYPz7_p3MrPm9TWtA@z>
+To: Manuel Lauss <manuel.lauss@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Marek Szyprowski <m.szyprowski@samsung.com>, mina86@mina86.com, Linux-MIPS <linux-mips@linux-mips.org>
+Message-ID: <20140717084149.-DQmalLv_JTEMwTXViVQKkwTO50Sxt83rnwrL2HDV3A@z>
 
-From: Jeffrey Deans <jeffrey.deans@imgtec.com>
 
-The GICBIS macro could update the GIC registers incorrectly, depending
-on the data value passed in:
 
-* Bits were only OR'd into the register data, so register fields could
-  not be cleared.
+On 17/07/14 09:38, Manuel Lauss wrote:
+> On Wed, Jul 16, 2014 at 6:18 PM, Manuel Lauss <manuel.lauss@gmail.com> wrote:
+>> Hi,
+>>
+>> On Wed, Jul 16, 2014 at 5:51 PM, Zubair Lutfullah Kakakhel
+>> <Zubair.Kakakhel@imgtec.com> wrote:
+>>> Here we have 4 patches that add cma support to mips.
+>>>
+>>> Patch 1 adds dma-contiguous.h to asm-generic
+>>> Patch 2 and 3 make arm64 and x86 use dma-contiguous from asm-generic
+>>> Patch 4 adds cma to mips.
+>>
+>> I've given this a try on mips32, I haven't dug into this error yet, maybe
+>> you have an idea:
+> [ oops snipped ]
+> 
+> Nevermind.   Did a full recompile, the oops is gone.  Works fine now,
+> framebuffer driver and others are very happy.
+> 
+> Thanks!
+>         Manuel
+> 
 
-* Bits were OR'd into the register data without masking the data to the
-  correct field width, corrupting adjacent bits.
+Good to know. :)
 
-Signed-off-by: Jeffrey Deans <jeffrey.deans@imgtec.com>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/include/asm/gic.h | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+Thanks for testing it on your platform.
 
-diff --git a/arch/mips/include/asm/gic.h b/arch/mips/include/asm/gic.h
-index 8b30befd99d6..3f20b2111d56 100644
---- a/arch/mips/include/asm/gic.h
-+++ b/arch/mips/include/asm/gic.h
-@@ -43,18 +43,17 @@
- #ifdef GICISBYTELITTLEENDIAN
- #define GICREAD(reg, data)	((data) = (reg), (data) = le32_to_cpu(data))
- #define GICWRITE(reg, data)	((reg) = cpu_to_le32(data))
--#define GICBIS(reg, bits)			\
--	({unsigned int data;			\
--		GICREAD(reg, data);		\
--		data |= bits;			\
--		GICWRITE(reg, data);		\
--	})
--
- #else
- #define GICREAD(reg, data)	((data) = (reg))
- #define GICWRITE(reg, data)	((reg) = (data))
--#define GICBIS(reg, bits)	((reg) |= (bits))
- #endif
-+#define GICBIS(reg, mask, bits)			\
-+	do { u32 data;				\
-+		GICREAD((reg), data);		\
-+		data &= ~(mask);		\
-+		data |= ((bits) & (mask));	\
-+		GICWRITE((reg), data);		\
-+	} while (0)
- 
- 
- /* GIC Address Space */
-@@ -170,13 +169,15 @@
- #define GIC_SH_SET_POLARITY_OFS		0x0100
- #define GIC_SET_POLARITY(intr, pol) \
- 	GICBIS(GIC_REG_ADDR(SHARED, GIC_SH_SET_POLARITY_OFS + \
--		GIC_INTR_OFS(intr)), (pol) << GIC_INTR_BIT(intr))
-+		GIC_INTR_OFS(intr)), (1 << GIC_INTR_BIT(intr)), \
-+		(pol) << GIC_INTR_BIT(intr))
- 
- /* Triggering : Reset Value is always 0 */
- #define GIC_SH_SET_TRIGGER_OFS		0x0180
- #define GIC_SET_TRIGGER(intr, trig) \
- 	GICBIS(GIC_REG_ADDR(SHARED, GIC_SH_SET_TRIGGER_OFS + \
--		GIC_INTR_OFS(intr)), (trig) << GIC_INTR_BIT(intr))
-+		GIC_INTR_OFS(intr)), (1 << GIC_INTR_BIT(intr)), \
-+		(trig) << GIC_INTR_BIT(intr))
- 
- /* Mask manipulation */
- #define GIC_SH_SMASK_OFS		0x0380
--- 
-2.0.0
+ZubairLK

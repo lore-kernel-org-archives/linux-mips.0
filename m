@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:41266 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:47844 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6861302AbaGQJCwGqtxB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Jul 2014 11:02:52 +0200
-Message-ID: <53C7912A.4080404@imgtec.com>
-Date: Thu, 17 Jul 2014 10:02:34 +0100
+        with ESMTP id S6861108AbaGQJRyEsomN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Jul 2014 11:17:54 +0200
+Message-ID: <53C794B0.4060504@imgtec.com>
+Date: Thu, 17 Jul 2014 10:17:36 +0100
 From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/4] x86: use generic dma-contiguous.h
-References: <1405525892-60383-1-git-send-email-Zubair.Kakakhel@imgtec.com> <1405525892-60383-4-git-send-email-Zubair.Kakakhel@imgtec.com> <xa1ta989b7ha.fsf@mina86.com>
-In-Reply-To: <xa1ta989b7ha.fsf@mina86.com>
+Subject: Re: [PATCH 4/4] mips: dma: Add cma support
+References: <1405525892-60383-1-git-send-email-Zubair.Kakakhel@imgtec.com> <1405525892-60383-5-git-send-email-Zubair.Kakakhel@imgtec.com> <xa1t7g3db6mu.fsf@mina86.com>
+In-Reply-To: <xa1t7g3db6mu.fsf@mina86.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Zubair.Kakakhel@imgtec.com>
@@ -21,26 +21,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Michal Nazarewicz <mina86@mina86.com>, ralf@linux-mips.org, catalin.marinas@arm.com, will.deacon@arm.com, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, arnd@arndb.de, gregkh@linuxfoundation.org, m.szyprowski@samsung.com
-Cc: x86@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-arch@vger.kernel.org
-Message-ID: <20140717090234.H6qXFmoejocIWzGrM5GM8KqUbgOb5nJr-pr0P6tD8ro@z>
+To: Michal Nazarewicz <mina86@mina86.com>, Ralf Baechle <ralf@linux-mips.org>, gregkh@linuxfoundation.org, m.szyprowski@samsung.com
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20140717091736.EPt1yLjZOvD53AWQAvLafDIUZz3Jo5kmRil5GhyXFiU@z>
 
 
 
-On 16/07/14 17:20, Michal Nazarewicz wrote:
+On 16/07/14 17:39, Michal Nazarewicz wrote:
 > On Wed, Jul 16 2014, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com> wrote:
->> dma-contiguous.h is now in asm-generic. Use that to avoid code
->> repetition in x86.
+>> Adds cma support to the mips architecture.
+>>
+>> cma uses memblock. However, mips uses bootmem.
+> 
+> Does cma_early_percent_memory work correctly then?
+> 
+
+Yes it does. All memblock functions work. And this is before bootmem
+is informed.
+
+>> bootmem is informed about any regions reserved by memblock
+> 
+> Alternatively maybe it would make sense to create a new definition of
+> dma_contiguous_reserve_area that uses bootmem and choose it based on
+> some CONFIG_CMA_USE_BOOTMEM which would be selected by MIPS.
+> 
+
+Telling bootmem takes only 3 lines.
+
+Adding CONFIG_CMA_USE_BOOTMEM would add more functions and maintenance overhead.
+And it will basically do the same thing.
+Reserve memory. And tell the bootmem allocator.
+
+>> dma api is modified to use cma reserved memory regions when available
+>>
+>> Tested using cma_test. cma_test is a simple driver that assigns blocks
+>> of memory from cma reserved sections.
 >>
 >> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
 > 
 > Acked-by: Michal Nazarewicz <mina86@mina86.com>
-> 
-> But to be honest, I would fold the three into a single commit.
 
-Thank-you for the acks. I understand as its a trivial change.
-
-But architectures like it separate. They will obviously go
-together via one tree.
+Thank-you
 
 ZubairLK

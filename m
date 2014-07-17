@@ -1,17 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44515 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6861343AbaGQOMdpRf5Y (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Jul 2014 16:12:33 +0200
-Message-ID: <53C7D9CA.20405@imgtec.com>
-Date: Thu, 17 Jul 2014 15:12:26 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+Received: from mail-ig0-f172.google.com ([209.85.213.172]:64265 "EHLO
+        mail-ig0-f172.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6861330AbaGQPp7Jbjwk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Jul 2014 17:45:59 +0200
+Received: by mail-ig0-f172.google.com with SMTP id h15so6399378igd.5
+        for <linux-mips@linux-mips.org>; Thu, 17 Jul 2014 08:45:53 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/3] arch/mips/net/bpf_jit.c: fix failure check
-References: <1405603655-12571-1-git-send-email-andrey.krieger.utkin@gmail.com>  <53C7D52E.5020205@imgtec.com> <CANZNk81DOOxYYFSKZMCh=uABd3ONB8wToTFc3_L_9TfyQDS1yQ@mail.gmail.com>
-In-Reply-To: <CANZNk81DOOxYYFSKZMCh=uABd3ONB8wToTFc3_L_9TfyQDS1yQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+In-Reply-To: <CAHse=S_32tmusk4ceY4U6GbNpX4PkX12iPPDZFVZ7qgv-RAooA@mail.gmail.com>
+References: <1405547442-26641-1-git-send-email-keescook@chromium.org>
+        <1405547442-26641-12-git-send-email-keescook@chromium.org>
+        <CAHse=S_32tmusk4ceY4U6GbNpX4PkX12iPPDZFVZ7qgv-RAooA@mail.gmail.com>
+Date: Thu, 17 Jul 2014 08:45:52 -0700
+Message-ID: <CAGXu5j+dFZdnnK8f-HRrUs2vLeyhWyHh_AY-OynDcp-Ye+dy7Q@mail.gmail.com>
+Subject: Re: [PATCH v11 11/11] seccomp: implement SECCOMP_FILTER_FLAG_TSYNC
+From: Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <keescook@google.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,29 +24,48 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andrey Utkin <andrey.krieger.utkin@gmail.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, linux-mips@linux-mips.org, dborkman@redhat.com, ralf@linux-mips.org
-Message-ID: <20140717141226.u5PQh9MsoBWjptINt3JMBLDvVjedLWN0TfpgtSat7uU@z>
+To: David Drysdale <drysdale@google.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Oleg Nesterov <oleg@redhat.com>, James Morris <jmorris@namei.org>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Alexei Starovoitov <ast@plumgrid.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>
+Message-ID: <20140717154552.4slH8mfgAQGnTrNVrz273fd4d8I7bwu9fdyyYbkaTaU@z>
 
-On 07/17/2014 02:58 PM, Andrey Utkin wrote:
-> 2014-07-17 16:52 GMT+03:00 Markos Chandras <Markos.Chandras@imgtec.com>:
->> Thanks for the patch. I would personally prefer to use a new signed int
->> variable, but I am fine either way.
-> 
-> If that's not a problem for performance etc., then i'll resubmit with
-> new temporary signed variable, because i believe it would be simpler
-> to comprehend.
-> 
-Hi Andrey,
+On Thu, Jul 17, 2014 at 8:04 AM, David Drysdale <drysdale@google.com> wrote:
+> On Wed, Jul 16, 2014 at 10:50 PM, Kees Cook <keescook@chromium.org> wrote:
+>> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+>> index 9065d2c79c56..2125b83ccfd4 100644
+>> +/**
+>> + * seccomp_can_sync_threads: checks if all threads can be synchronized
+>> + *
+>> + * Expects sighand and cred_guard_mutex locks to be held.
+>> + *
+>> + * Returns 0 on success, -ve on error, or the pid of a thread which was
+>> + * either not in the correct seccomp mode or it did not have an ancestral
+>> + * seccomp filter.
+>> + */
+>> +static inline pid_t seccomp_can_sync_threads(void)
+>> +{
+>> +       struct task_struct *thread, *caller;
+>> +
+>> +       BUG_ON(!mutex_is_locked(&current->signal->cred_guard_mutex));
+>> +       BUG_ON(!spin_is_locked(&current->sighand->siglock));
+>> +
+>> +       if (current->seccomp.mode != SECCOMP_MODE_FILTER)
+>> +               return -EACCES;
+>
+> Quick question -- is it possible to apply the first filter and also synchronize
+> it across threads in the same operation?  If so, does this arm also need to
+> cope with seccomp.mode being SECCOMP_MODE_DISABLED?
+>
+> [seccomp_set_mode_filter() looks to call this via seccomp_attach_filter()
+> before it does seccomp_assign_mode()]
 
-Well, this function is executed during the filter compilation so it's
-only executed once (or maybe a few times) per filter (assuming the
-filter uses the SKF_AD_PKTTYPE opcode at all) so performance is not
-really critical at this point. The performance become a critical factor
-for the execution of the jitted filter. But yes, avoiding passing the
-argument and doing the pointer operation later on could save some
-instructions which is both good for compilation performance and also
-makes the function simpler as you said.
+I don't entirely understand what you're asking. The threads gain the
+filter and the mode before the current thread may gain the mode (if
+it's the first time this has been called). Due to all the locks,
+though, this isn't a problem. Is there a situation you see where there
+might be a problem?
+
+-Kees
 
 -- 
-markos
+Kees Cook
+Chrome OS Security

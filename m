@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:7858 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:58088 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6861346AbaGRJwDzmcMe (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 18 Jul 2014 11:52:03 +0200
+        with ESMTP id S6861349AbaGRJwFJaK3z (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 18 Jul 2014 11:52:05 +0200
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id F2C236B73E3BF
-        for <linux-mips@linux-mips.org>; Fri, 18 Jul 2014 10:51:53 +0100 (IST)
+        by Websense Email Security Gateway with ESMTPS id F32F8C3E2B095
+        for <linux-mips@linux-mips.org>; Fri, 18 Jul 2014 10:51:55 +0100 (IST)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 3/4] MIPS: cpu-probe: Set the write-combine CCA value on per core basis
-Date: Fri, 18 Jul 2014 10:51:32 +0100
-Message-ID: <1405677093-22591-4-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH 4/4] MIPS: pgtable.h: Implement the pgprot_writecombine function for MIPS
+Date: Fri, 18 Jul 2014 10:51:33 +0100
+Message-ID: <1405677093-22591-5-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1405677093-22591-1-git-send-email-markos.chandras@imgtec.com>
 References: <1405677093-22591-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -25,162 +25,39 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140718095132.krblbmxOGJaUw1HSx7sA_8W5sCXnaTUuDe8AsPry5zI@z>
+Message-ID: <20140718095133.3xOe8hvargNMV8iWbPYcr9oWssevj5i4lUOB6-9VLlE@z>
 
-Different cores use different CCA values to achieve write-combine
-memory writes. For cores that do not support write-combine we
-set the default value to CCA:2 (uncached, non-coherent) which is the
-default value as set by the kernel.
+Previously, the pgprot_writecombine function was simply defined
+as pgprot_uncached in include/asm-generic/pgtable.h. This is not
+optimal for cores that can actually do write-combine memory writes
+so define this function to take into account the core's cache coherency
+attribute to achieve such behavior.
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/include/asm/cpu-info.h |  5 +++++
- arch/mips/kernel/cpu-probe.c     | 21 +++++++++++++++++++++
- 2 files changed, 26 insertions(+)
+ arch/mips/include/asm/pgtable.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/mips/include/asm/cpu-info.h b/arch/mips/include/asm/cpu-info.h
-index 47d5967ce7ef..7747bc7eafaa 100644
---- a/arch/mips/include/asm/cpu-info.h
-+++ b/arch/mips/include/asm/cpu-info.h
-@@ -78,6 +78,11 @@ struct cpuinfo_mips {
- #define NUM_WATCH_REGS 4
- 	u16			watch_reg_masks[NUM_WATCH_REGS];
- 	unsigned int		kscratch_mask; /* Usable KScratch mask. */
-+	/*
-+	 * Cache Coherency attribute for write-combine memory writes.
-+	 * (shifted by _CACHE_SHIFT)
-+	 */
-+	unsigned int		writecombine;
- } __attribute__((aligned(SMP_CACHE_BYTES)));
+diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
+index 539ddd148bbb..08f82e99ea8f 100644
+--- a/arch/mips/include/asm/pgtable.h
++++ b/arch/mips/include/asm/pgtable.h
+@@ -338,6 +338,16 @@ static inline pgprot_t pgprot_noncached(pgprot_t _prot)
+ 	return __pgprot(prot);
+ }
  
- extern struct cpuinfo_mips cpu_data[];
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index d74f957c561e..f85c2c6670f5 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -27,6 +27,7 @@
- #include <asm/msa.h>
- #include <asm/watch.h>
- #include <asm/elf.h>
-+#include <asm/pgtable-bits.h>
- #include <asm/spram.h>
- #include <asm/uaccess.h>
- 
-@@ -737,6 +738,7 @@ static inline void cpu_probe_legacy(struct cpuinfo_mips *c, unsigned int cpu)
- 			break;
- 		case PRID_REV_LOONGSON3A:
- 			c->cputype = CPU_LOONGSON3;
-+			c->writecombine = _CACHE_UNCACHED_ACCELERATED;
- 			__cpu_name[cpu] = "ICT Loongson-3";
- 			set_elf_platform(cpu, "loongson3a");
- 			break;
-@@ -765,67 +767,83 @@ static inline void cpu_probe_legacy(struct cpuinfo_mips *c, unsigned int cpu)
- 
- static inline void cpu_probe_mips(struct cpuinfo_mips *c, unsigned int cpu)
- {
-+	c->writecombine = _CACHE_UNCACHED_ACCELERATED;
- 	switch (c->processor_id & PRID_IMP_MASK) {
- 	case PRID_IMP_4KC:
- 		c->cputype = CPU_4KC;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 4Kc";
- 		break;
- 	case PRID_IMP_4KEC:
- 	case PRID_IMP_4KECR2:
- 		c->cputype = CPU_4KEC;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 4KEc";
- 		break;
- 	case PRID_IMP_4KSC:
- 	case PRID_IMP_4KSD:
- 		c->cputype = CPU_4KSC;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 4KSc";
- 		break;
- 	case PRID_IMP_5KC:
- 		c->cputype = CPU_5KC;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 5Kc";
- 		break;
- 	case PRID_IMP_5KE:
- 		c->cputype = CPU_5KE;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 5KE";
- 		break;
- 	case PRID_IMP_20KC:
- 		c->cputype = CPU_20KC;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 20Kc";
- 		break;
- 	case PRID_IMP_24K:
- 		c->cputype = CPU_24K;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 24Kc";
- 		break;
- 	case PRID_IMP_24KE:
- 		c->cputype = CPU_24K;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 24KEc";
- 		break;
- 	case PRID_IMP_25KF:
- 		c->cputype = CPU_25KF;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 25Kc";
- 		break;
- 	case PRID_IMP_34K:
- 		c->cputype = CPU_34K;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 34Kc";
- 		break;
- 	case PRID_IMP_74K:
- 		c->cputype = CPU_74K;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 74Kc";
- 		break;
- 	case PRID_IMP_M14KC:
- 		c->cputype = CPU_M14KC;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS M14Kc";
- 		break;
- 	case PRID_IMP_M14KEC:
- 		c->cputype = CPU_M14KEC;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS M14KEc";
- 		break;
- 	case PRID_IMP_1004K:
- 		c->cputype = CPU_1004K;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 1004Kc";
- 		break;
- 	case PRID_IMP_1074K:
- 		c->cputype = CPU_1074K;
-+		c->writecombine = _CACHE_UNCACHED;
- 		__cpu_name[cpu] = "MIPS 1074Kc";
- 		break;
- 	case PRID_IMP_INTERAPTIV_UP:
-@@ -899,6 +917,7 @@ static inline void cpu_probe_sibyte(struct cpuinfo_mips *c, unsigned int cpu)
- {
- 	decode_configs(c);
- 
-+	c->writecombine = _CACHE_UNCACHED_ACCELERATED;
- 	switch (c->processor_id & PRID_IMP_MASK) {
- 	case PRID_IMP_SB1:
- 		c->cputype = CPU_SB1;
-@@ -1030,6 +1049,7 @@ static inline void cpu_probe_ingenic(struct cpuinfo_mips *c, unsigned int cpu)
- 	switch (c->processor_id & PRID_IMP_MASK) {
- 	case PRID_IMP_JZRISC:
- 		c->cputype = CPU_JZRISC;
-+		c->writecombine = _CACHE_UNCACHED_ACCELERATED;
- 		__cpu_name[cpu] = "Ingenic JZRISC";
- 		break;
- 	default:
-@@ -1136,6 +1156,7 @@ void cpu_probe(void)
- 	c->processor_id = PRID_IMP_UNKNOWN;
- 	c->fpu_id	= FPIR_IMP_NONE;
- 	c->cputype	= CPU_UNKNOWN;
-+	c->writecombine = _CACHE_UNCACHED;
- 
- 	c->processor_id = read_c0_prid();
- 	switch (c->processor_id & PRID_COMP_MASK) {
++static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
++{
++	unsigned long prot = pgprot_val(_prot);
++
++	/* cpu_data[0].writecombine is already shifted by _CACHE_SHIFT */
++	prot = (prot & ~_CACHE_MASK) | cpu_data[0].writecombine;
++
++	return __pgprot(prot);
++}
++
+ /*
+  * Conversion functions: convert a page and protection to a page entry,
+  * and a page entry and page directory to the page they refer to.
 -- 
 2.0.0

@@ -1,19 +1,16 @@
-Received: from mail-oi0-f51.google.com ([209.85.218.51]:47778 "EHLO
-        mail-oi0-f51.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6861354AbaGRS664oK4o (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 18 Jul 2014 20:58:58 +0200
-Received: by mail-oi0-f51.google.com with SMTP id g201so2055451oib.38
-        for <linux-mips@linux-mips.org>; Fri, 18 Jul 2014 11:58:52 -0700 (PDT)
+Received: from mail-oa0-f41.google.com ([209.85.219.41]:63972 "EHLO
+        mail-oa0-f41.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6861349AbaGRWQnsHihl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 19 Jul 2014 00:16:43 +0200
+Received: by mail-oa0-f41.google.com with SMTP id j17so4286492oag.14
+        for <linux-mips@linux-mips.org>; Fri, 18 Jul 2014 15:16:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALCETrWj-NJeeKe6+qTZd3QsvLNMV_K=2swoNXza7Ef2xHkXoQ@mail.gmail.com>
-References: <1405620518-18495-1-git-send-email-keescook@chromium.org>
-        <alpine.LRH.2.11.1407181325200.15709@namei.org>
-        <CALCETrUv3G+C3PTOD1FJGOG8AQCA30hNkUiusCnQDGq6Kt_Feg@mail.gmail.com>
-        <CAGXu5jL9wQ4ZJ1kDRx_Y_cyGQEjO_Ugmcc--Q71x32_x1q9ScA@mail.gmail.com>
-        <CALCETrWj-NJeeKe6+qTZd3QsvLNMV_K=2swoNXza7Ef2xHkXoQ@mail.gmail.com>
-Date: Fri, 18 Jul 2014 11:58:52 -0700
-Message-ID: <CAGXu5jK4vzx-8Wo==BONNGnbm1hdawv2wc2sJb2AFzMf52AgGg@mail.gmail.com>
-Subject: Re: [PATCH v12 11/11] seccomp: add thread sync ability
+In-Reply-To: <ce65e0e8be18ae8fab437899db44ca41c912b506.1405717901.git.luto@amacapital.net>
+References: <cover.1405717901.git.luto@amacapital.net>
+        <ce65e0e8be18ae8fab437899db44ca41c912b506.1405717901.git.luto@amacapital.net>
+Date: Fri, 18 Jul 2014 15:16:37 -0700
+Message-ID: <CAGXu5jLsnSujJdZmA=nzHw1_K3eYhSiUEnntJ3S2hCZ8DFVYpg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] seccomp: Allow arch code to provide seccomp_data
 From: Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset=UTF-8
 Return-Path: <keescook@google.com>
@@ -27,71 +24,26 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Andy Lutomirski <luto@amacapital.net>
-Cc: James Morris <jmorris@namei.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, James Morris <james.l.morris@oracle.com>, Oleg Nesterov <oleg@redhat.com>, David Drysdale <drysdale@google.com>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, Linux API <linux-api@vger.kernel.org>, X86 ML <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>
-Message-ID: <20140718185852.QWI-KCqXLFOYWgJdbjVdJmrRt3axnEi30EFpsybLdL0@z>
+Cc: LKML <linux-kernel@vger.kernel.org>, Will Drewry <wad@chromium.org>, Oleg Nesterov <oleg@redhat.com>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <20140718221637.oy3-UHSenXcP1n6NDR-GxU7rDmsuttl5ynTqZ1JVdKk@z>
 
-On Fri, Jul 18, 2014 at 11:51 AM, Andy Lutomirski <luto@amacapital.net> wrote:
-> On Fri, Jul 18, 2014 at 11:13 AM, Kees Cook <keescook@chromium.org> wrote:
->> On Fri, Jul 18, 2014 at 10:17 AM, Andy Lutomirski <luto@amacapital.net> wrote:
->>> On Thu, Jul 17, 2014 at 8:26 PM, James Morris <jmorris@namei.org> wrote:
->>>> On Thu, 17 Jul 2014, Kees Cook wrote:
->>>>
->>>>> Twelfth time's the charm! :)
->>>>
->>>> Btw, there doesn't seem to be an official seccomp maintainer.  Kees, would
->>>> you like to volunteer for this?  If so, send in a patch for MAINTAINERS,
->>>> and set up a git tree for me to pull from.
->>
->> Sure thing, I'll get this set up now. I wonder if I should include the
->> glob "arch/*/kernel/ptrace.c" in the MAINTAINERS entry. :P
+On Fri, Jul 18, 2014 at 2:18 PM, Andy Lutomirski <luto@amacapital.net> wrote:
+> populate_seccomp_data is expensive: it works by inspecting
+> task_pt_regs and various other bits to piece together all the
+> information, and it's does so in multiple partially redundant steps.
 >
-> You might want to convince some arch maintainers first, and that's
-> like herding cats.  Or Oleg, at least.  Also, do you really want to be
-> asked to deal with the never-ending stream of bugs that people find in
-> files matching that glob?
-
-Yeah, I've opted for "K: \bsecure_computing" Seemed like a decent middle-ground.
-
->>> *snicker* :)
->>>
->>> Kees, if you take on this awesome responsibility, should I send you a
->>> rebased version of the fastpath stuff?  If so, I think that the
->>> arch-neutral part should go in through your shiny new tree (once it's
->>> reviewed to your satisfaction), and I'll ask hpa to pick up the x86
->>> part.
->>
->> Yeah, that sounds perfect.
->>
->>> I'd volunteer to be a "R:eviewer", but I don't think that the R tag
->>> has made it into MAINTAINERS yet.
->>
->> I'd love to have you listed. :)
+> Arch-specific code in the syscall entry path can do much better.
 >
-> Feel free to pester me once "R" appears in case I forget.
+> Admittedly this adds a bit of additional room for error, but the
+> speedup should be worth it.
 
-I will indeed! :)
+I still think we should gain either a note in the
+HAVE_ARCH_SECCOMP_FILTER help text in arch/Kconfig, or possibly a new
+section in Documentation/prctl/seccomp.txt (or similar) on how do
+implement filter support for an architecture, that mentions the
+arch-supplied seccomp_data and how two-phase can be done.
 
 -Kees
-
->
-> You might be able to convince me to co-maintain some day.  Hmm.
->
-> --Andy
->
->>
->> -Kees
->>
->> --
->> Kees Cook
->> Chrome OS Security
->
->
->
-> --
-> Andy Lutomirski
-> AMA Capital Management, LLC
-
-
 
 -- 
 Kees Cook

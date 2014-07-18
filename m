@@ -1,20 +1,17 @@
-Received: from mail-lb0-f176.google.com ([209.85.217.176]:54550 "EHLO
-        mail-lb0-f176.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6860088AbaGQVkMnCs0k (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Jul 2014 23:40:12 +0200
-Received: by mail-lb0-f176.google.com with SMTP id u10so1977838lbd.35
-        for <linux-mips@linux-mips.org>; Thu, 17 Jul 2014 14:40:06 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:64763 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6859954AbaGRHya7PWOt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 18 Jul 2014 09:54:30 +0200
+Message-ID: <53C8D2AE.3020300@imgtec.com>
+Date: Fri, 18 Jul 2014 08:54:22 +0100
+From: Jeffrey Deans <jeffrey.deans@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <53C48986.5010109@oracle.com>
-References: <1405017631-27346-1-git-send-email-keescook@chromium.org>
- <20140711164931.GA18473@redhat.com> <CAGXu5jK-x0=Rr7kX2a=b4Z8ueA77uwmhNZZAayG8cwmNOKa8Ug@mail.gmail.com>
- <CAGXu5jJJsiTxxn5UijkBz7jpWgqg01BS=Zc0WbHXbs0vH_xPMQ@mail.gmail.com> <53C48986.5010109@oracle.com>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Thu, 17 Jul 2014 14:39:46 -0700
-Message-ID: <CALCETrUf-Tei+R32SR-KKLD50zWa89Vrfu4S4uZ+4jh4eEFOdg@mail.gmail.com>
-Subject: Re: [PATCH v10 0/11] seccomp: add thread sync ability
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <luto@amacapital.net>
+Subject: Re: [PATCH 7/7] MIPS: GIC: Fix GICBIS macro
+References: <1405585259-24941-1-git-send-email-markos.chandras@imgtec.com> <1405585259-24941-8-git-send-email-markos.chandras@imgtec.com> <53C7C5E2.1020307@cogentembedded.com>
+In-Reply-To: <53C7C5E2.1020307@cogentembedded.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Jeffrey.Deans@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,73 +21,85 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Morris <james.l.morris@oracle.com>
-Cc: Kees Cook <keescook@chromium.org>, Oleg Nesterov <oleg@redhat.com>, LKML <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Daniel Borkmann <dborkman@redhat.com>, Will Drewry <wad@chromium.org>, Julien Tinnes <jln@chromium.org>, David Drysdale <drysdale@google.com>, Linux API <linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>
-Message-ID: <20140717213946.birW0wMwWV-VluODrXgAk-rrOMyKBO2M6p7IJ0gtIHk@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Markos Chandras <markos.chandras@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20140718075422.QAZCRDUgUP4NrjcLFewdPJtILkklkKlfCdGdAAaT8vM@z>
 
-On Mon, Jul 14, 2014 at 6:53 PM, James Morris <james.l.morris@oracle.com> wrote:
-> On 07/15/2014 04:59 AM, Kees Cook wrote:
->>
->> Hi James,
->>
->> Is this series something you would carry in the security-next tree?
->> That has traditionally been where seccomp features have landed in the
->> past.
->>
->> -Kees
->>
->>
->> On Fri, Jul 11, 2014 at 10:55 AM, Kees Cook <keescook@chromium.org> wrote:
->>>
->>> On Fri, Jul 11, 2014 at 9:49 AM, Oleg Nesterov <oleg@redhat.com> wrote:
->>>>
->>>> On 07/10, Kees Cook wrote:
->>>>>
->>>>>
->>>>> This adds the ability for threads to request seccomp filter
->>>>> synchronization across their thread group (at filter attach time).
->>>>> For example, for Chrome to make sure graphic driver threads are fully
->>>>> confined after seccomp filters have been attached.
->>>>>
->>>>> To support this, locking on seccomp changes via thread-group-shared
->>>>> sighand lock is introduced, along with refactoring of no_new_privs.
->>>>> Races
->>>>> with thread creation are handled via delayed duplication of the seccomp
->>>>> task struct field and cred_guard_mutex.
->>>>>
->>>>> This includes a new syscall (instead of adding a new prctl option),
->>>>> as suggested by Andy Lutomirski and Michael Kerrisk.
->>>>
->>>>
->>>> I do not not see any problems in this version,
->>>
->>>
->>> Awesome! Thank you for all the reviews. :) If Andy and Michael are
->>> happy with this too, I think this is in good shape. \o/
->>>
->>> -Kees
->>>
->>>>
->>>> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
->>>>
->>>
->>>
->>>
->>> --
->>> Kees Cook
->>> Chrome OS Security
->>
->>
->>
->>
+Hi Sergei,
+
+On 17/07/14 13:47, Sergei Shtylyov wrote:
+> Hello.
 >
-> Yep, certainly.
+> On 07/17/2014 12:20 PM, Markos Chandras wrote:
+>
+>> From: Jeffrey Deans <jeffrey.deans@imgtec.com>
+>
+>> The GICBIS macro could update the GIC registers incorrectly, depending
+>> on the data value passed in:
+>
+>> * Bits were only OR'd into the register data, so register fields could
+>>    not be cleared.
+>
+>> * Bits were OR'd into the register data without masking the data to the
+>>    correct field width, corrupting adjacent bits.
+>
+>> Signed-off-by: Jeffrey Deans <jeffrey.deans@imgtec.com>
+>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+>> ---
+>>   arch/mips/include/asm/gic.h | 21 +++++++++++----------
+>>   1 file changed, 11 insertions(+), 10 deletions(-)
+>
+>> diff --git a/arch/mips/include/asm/gic.h b/arch/mips/include/asm/gic.h
+>> index 8b30befd99d6..3f20b2111d56 100644
+>> --- a/arch/mips/include/asm/gic.h
+>> +++ b/arch/mips/include/asm/gic.h
+>> @@ -43,18 +43,17 @@
+>>   #ifdef GICISBYTELITTLEENDIAN
+>>   #define GICREAD(reg, data)    ((data) = (reg), (data) =
+>> le32_to_cpu(data))
+>>   #define GICWRITE(reg, data)    ((reg) = cpu_to_le32(data))
+>> -#define GICBIS(reg, bits)            \
+>> -    ({unsigned int data;            \
+>> -        GICREAD(reg, data);        \
+>> -        data |= bits;            \
+>> -        GICWRITE(reg, data);        \
+>> -    })
+>> -
+>>   #else
+>>   #define GICREAD(reg, data)    ((data) = (reg))
+>>   #define GICWRITE(reg, data)    ((reg) = (data))
+>> -#define GICBIS(reg, bits)    ((reg) |= (bits))
+>>   #endif
+>> +#define GICBIS(reg, mask, bits)            \
+>> +    do { u32 data;                \
+>> +        GICREAD((reg), data);        \
+>
+>     Why () only around 'reg', not around 'data'?
+
+Brackets aren't necessary around "data" because it is declared at the 
+start of the "do" code block, so it can't expand to anything else within 
+that scope.
+
+>
+>> +        data &= ~(mask);        \
+>> +        data |= ((bits) & (mask));    \
+>
+>     Outer () not needed.
+
+Agreed.
+
+>
+>> +        GICWRITE((reg), data);        \
+>
+>     Again, why no () around 'data'?
+>
+>> +    } while (0)
+
+As above.
+
+>
+> WBR, Sergei
 >
 
-Any ETA?  I'm currently blocking on having stable commit hashes for these.
+Thanks for reviewing!
 
-If you're planning on pulling from Kees' tree instead of importing the
-patches, I can work with that, too.
-
-Thanks,
-Andy
+Jeffrey

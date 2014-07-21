@@ -1,19 +1,19 @@
-Received: from mail-la0-f54.google.com ([209.85.215.54]:41993 "EHLO
-        mail-la0-f54.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6861350AbaGRW0jZ0rKB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 19 Jul 2014 00:26:39 +0200
-Received: by mail-la0-f54.google.com with SMTP id el20so3241906lab.41
-        for <linux-mips@linux-mips.org>; Fri, 18 Jul 2014 15:26:33 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:14676 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6860080AbaGUHq04gwI8 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 21 Jul 2014 09:46:26 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 0EA18C5207CEA
+        for <linux-mips@linux-mips.org>; Mon, 21 Jul 2014 08:46:18 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH v2] MIPS: Kconfig: Add choice symbol to select microMIPS or SmartMIPS
+Date: Mon, 21 Jul 2014 08:46:14 +0100
+Message-ID: <1405928774-20630-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1401785177-7904-1-git-send-email-markos.chandras@imgtec.com>
+References: <1401785177-7904-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <CAGXu5jLsnSujJdZmA=nzHw1_K3eYhSiUEnntJ3S2hCZ8DFVYpg@mail.gmail.com>
-References: <cover.1405717901.git.luto@amacapital.net> <ce65e0e8be18ae8fab437899db44ca41c912b506.1405717901.git.luto@amacapital.net>
- <CAGXu5jLsnSujJdZmA=nzHw1_K3eYhSiUEnntJ3S2hCZ8DFVYpg@mail.gmail.com>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Fri, 18 Jul 2014 15:26:13 -0700
-Message-ID: <CALCETrX=hN1yKh=cfcOHffMprjP74PdeRfhTFOYCK7oPhURV_Q@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] seccomp: Allow arch code to provide seccomp_data
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <luto@amacapital.net>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,43 +23,77 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kees Cook <keescook@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Will Drewry <wad@chromium.org>, Oleg Nesterov <oleg@redhat.com>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <20140718222613.8YGQPVgh_Yzn_NPYBD01ef6sK0rdCGPaDet22c8uBaE@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20140721074614.vYBAiGdToDIgOkDSVLzDKblbvs35jKxIWN0naRmS_BA@z>
 
-On Fri, Jul 18, 2014 at 3:16 PM, Kees Cook <keescook@chromium.org> wrote:
-> On Fri, Jul 18, 2014 at 2:18 PM, Andy Lutomirski <luto@amacapital.net> wrote:
->> populate_seccomp_data is expensive: it works by inspecting
->> task_pt_regs and various other bits to piece together all the
->> information, and it's does so in multiple partially redundant steps.
->>
->> Arch-specific code in the syscall entry path can do much better.
->>
->> Admittedly this adds a bit of additional room for error, but the
->> speedup should be worth it.
->
-> I still think we should gain either a note in the
-> HAVE_ARCH_SECCOMP_FILTER help text in arch/Kconfig, or possibly a new
-> section in Documentation/prctl/seccomp.txt (or similar) on how do
-> implement filter support for an architecture, that mentions the
-> arch-supplied seccomp_data and how two-phase can be done.
+microMIPS and SmartMIPS can't be used together. This fixes the
+following build problem:
 
-I would have sworn I did that.  I distinctly remember typing that
-text.  I must have failed to commit it.
+Warning: the 32-bit microMIPS architecture does not support the `smartmips'
+extension
+arch/mips/kernel/entry.S:90: Error: unrecognized opcode `mtlhx $24'
+[...]
+arch/mips/kernel/entry.S:109: Error: unrecognized opcode `mtlhx $24'
 
-I'll send a followup patch.
+Link: https://dmz-portal.mips.com/bugz/show_bug.cgi?id=1021
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+Hi Ralf,
 
---Andy
+Here is v2 of that patch, making SmartMIPS and microMIPS a
+choice symbol as you requested in
+http://www.linux-mips.org/archives/linux-mips/2014-06/msg00011.html
 
->
-> -Kees
->
-> --
-> Kees Cook
-> Chrome OS Security
+However, I still feel this is wrong since these two ASEs are completely
+unrelated. The v1 of the patch is probably better in my opinion.
+If the user fails to find the 'smartmips' option due to having 'micromips'
+enabled, he/she can always search for the 'smartmips' symbol in the
+menuconfig and he/she will notice the dependency on !micromips.
+And if the user knows what he is doing he will probably never want to
+use 'smartmips' and 'micromips' together.
+---
 
+ arch/mips/Kconfig | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 4e238e6e661c..f30a43a52a09 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2090,9 +2090,17 @@ config 64BIT_PHYS_ADDR
+ config ARCH_PHYS_ADDR_T_64BIT
+        def_bool 64BIT_PHYS_ADDR
+ 
++choice
++	prompt "SmartMIPS or microMIPS ASE support"
++
++config CPU_NEEDS_NO_SMARTMIPS_OR_MICROMIPS
++	bool "None"
++	help
++	  Select this if you want neither microMIPS nor SmartMIPS support
++
+ config CPU_HAS_SMARTMIPS
+ 	depends on SYS_SUPPORTS_SMARTMIPS
+-	bool "Support for the SmartMIPS ASE"
++	bool "SmartMIPS"
+ 	help
+ 	  SmartMIPS is a extension of the MIPS32 architecture aimed at
+ 	  increased security at both hardware and software level for
+@@ -2104,11 +2112,13 @@ config CPU_HAS_SMARTMIPS
+ 
+ config CPU_MICROMIPS
+ 	depends on SYS_SUPPORTS_MICROMIPS
+-	bool "Build kernel using microMIPS ISA"
++	bool "microMIPS"
+ 	help
+ 	  When this option is enabled the kernel will be built using the
+ 	  microMIPS ISA
+ 
++endchoice
++
+ config CPU_HAS_MSA
+ 	bool "Support for the MIPS SIMD Architecture"
+ 	depends on CPU_SUPPORTS_MSA
 -- 
-Andy Lutomirski
-AMA Capital Management, LLC
+2.0.0

@@ -1,19 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:14676 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:5941 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860080AbaGUHq04gwI8 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 21 Jul 2014 09:46:26 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 0EA18C5207CEA
-        for <linux-mips@linux-mips.org>; Mon, 21 Jul 2014 08:46:18 +0100 (IST)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH v2] MIPS: Kconfig: Add choice symbol to select microMIPS or SmartMIPS
-Date: Mon, 21 Jul 2014 08:46:14 +0100
-Message-ID: <1405928774-20630-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1401785177-7904-1-git-send-email-markos.chandras@imgtec.com>
-References: <1401785177-7904-1-git-send-email-markos.chandras@imgtec.com>
+        with ESMTP id S6860024AbaGUITkfqtFu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 21 Jul 2014 10:19:40 +0200
+Date: Mon, 21 Jul 2014 09:19:31 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH] mips: Remove uneeded line in cmp_smp_finish
+Message-ID: <20140721081931.GC30558@pburton-laptop>
+References: <1405746604-7737-1-git-send-email-xerofoify@gmail.com>
+ <1405771556.18077.5.camel@x220>
+ <CAPDOMVgQ-F9Y4AoNfFW-vN0YP10kwYL-GCwkpnXj+zg_UMJ4jw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <CAPDOMVgQ-F9Y4AoNfFW-vN0YP10kwYL-GCwkpnXj+zg_UMJ4jw@mail.gmail.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,77 +23,54 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140721074614.vYBAiGdToDIgOkDSVLzDKblbvs35jKxIWN0naRmS_BA@z>
+To: Nick Krause <xerofoify@gmail.com>
+Cc: Paul Bolle <pebolle@tiscali.nl>, ralf@linux-mips.org, Leonid.Yegoshin@imgtec.com, markos.chandras@imgtec.com, Steven.Hill@imgtec.com, linux-mips@linux-mips.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <20140721081931.PgqfECn1PSe7wlbYVUwfPZoAeIsC0fnoeJI4cBsYJOw@z>
 
-microMIPS and SmartMIPS can't be used together. This fixes the
-following build problem:
+On Sat, Jul 19, 2014 at 05:33:16PM -0400, Nick Krause wrote:
+> On Sat, Jul 19, 2014 at 8:05 AM, Paul Bolle <pebolle@tiscali.nl> wrote:
+> > On Sat, 2014-07-19 at 01:10 -0400, Nicholas Krause wrote:
+> >> This patch removes a unneeded line from this file as stated by the
+> >> fix me in this file.
+> >>
+> >> Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
+> >> ---
+> >>  arch/mips/kernel/smp-cmp.c | 2 --
+> >>  1 file changed, 2 deletions(-)
+> >>
+> >> diff --git a/arch/mips/kernel/smp-cmp.c b/arch/mips/kernel/smp-cmp.c
+> >> index fc8a515..61bfa20 100644
+> >> --- a/arch/mips/kernel/smp-cmp.c
+> >> +++ b/arch/mips/kernel/smp-cmp.c
+> >> @@ -60,8 +60,6 @@ static void cmp_smp_finish(void)
+> >>  {
+> >>       pr_debug("SMPCMP: CPU%d: %s\n", smp_processor_id(), __func__);
+> >>
+> >> -     /* CDFIXME: remove this? */
+> >> -     write_c0_compare(read_c0_count() + (8 * mips_hpt_frequency / HZ));
+> >
+> > That comment ends in a question mark. I wonder why...
+> >
+> >>  #ifdef CONFIG_MIPS_MT_FPAFF
+> >>       /* If we have an FPU, enroll ourselves in the FPU-full mask */
+> >
+> >
+> > Paul Bolle
+> >
+> If we need it then can I remove the FIx me comment.
+> Cheers Nick
 
-Warning: the 32-bit microMIPS architecture does not support the `smartmips'
-extension
-arch/mips/kernel/entry.S:90: Error: unrecognized opcode `mtlhx $24'
-[...]
-arch/mips/kernel/entry.S:109: Error: unrecognized opcode `mtlhx $24'
+That depends: have you verified that we do need it?
 
-Link: https://dmz-portal.mips.com/bugz/show_bug.cgi?id=1021
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
-Hi Ralf,
+I wouldn't feel comfortable with removing either line without someone
+first explaining why it isn't necessary and testing the result on a
+number of different systems, with varying combinations of csrc-r4k &
+cevt-r4k.
 
-Here is v2 of that patch, making SmartMIPS and microMIPS a
-choice symbol as you requested in
-http://www.linux-mips.org/archives/linux-mips/2014-06/msg00011.html
+I absolutely agree that removing unnecessary code or outdated comments
+are both good things, but let's be sure they're unnecessary or outdated
+first. Your patch does not make me confident that you've checked either
+of those.
 
-However, I still feel this is wrong since these two ASEs are completely
-unrelated. The v1 of the patch is probably better in my opinion.
-If the user fails to find the 'smartmips' option due to having 'micromips'
-enabled, he/she can always search for the 'smartmips' symbol in the
-menuconfig and he/she will notice the dependency on !micromips.
-And if the user knows what he is doing he will probably never want to
-use 'smartmips' and 'micromips' together.
----
-
- arch/mips/Kconfig | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 4e238e6e661c..f30a43a52a09 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2090,9 +2090,17 @@ config 64BIT_PHYS_ADDR
- config ARCH_PHYS_ADDR_T_64BIT
-        def_bool 64BIT_PHYS_ADDR
- 
-+choice
-+	prompt "SmartMIPS or microMIPS ASE support"
-+
-+config CPU_NEEDS_NO_SMARTMIPS_OR_MICROMIPS
-+	bool "None"
-+	help
-+	  Select this if you want neither microMIPS nor SmartMIPS support
-+
- config CPU_HAS_SMARTMIPS
- 	depends on SYS_SUPPORTS_SMARTMIPS
--	bool "Support for the SmartMIPS ASE"
-+	bool "SmartMIPS"
- 	help
- 	  SmartMIPS is a extension of the MIPS32 architecture aimed at
- 	  increased security at both hardware and software level for
-@@ -2104,11 +2112,13 @@ config CPU_HAS_SMARTMIPS
- 
- config CPU_MICROMIPS
- 	depends on SYS_SUPPORTS_MICROMIPS
--	bool "Build kernel using microMIPS ISA"
-+	bool "microMIPS"
- 	help
- 	  When this option is enabled the kernel will be built using the
- 	  microMIPS ISA
- 
-+endchoice
-+
- config CPU_HAS_MSA
- 	bool "Support for the MIPS SIMD Architecture"
- 	depends on CPU_SUPPORTS_MSA
--- 
-2.0.0
+Thanks,
+    Paul

@@ -1,17 +1,24 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:64698 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6862961AbaGVPic2Q9Jv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Jul 2014 17:38:32 +0200
-Message-ID: <53CE8570.8020404@imgtec.com>
-Date: Tue, 22 Jul 2014 16:38:24 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+Received: from isis.lip6.fr ([132.227.60.2]:52101 "EHLO isis.lip6.fr"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S6850628AbaGVRLrNqWvu (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 22 Jul 2014 19:11:47 +0200
+Date: Tue, 22 Jul 2014 19:12:43 +0200
+From: Benoit Taine <benoit.taine@lip6.fr>
+Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
+Message-ID: <20140722171242.GA742@lip6.fr>
+References: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
+ <20140718162213.GC31114@tuxdriver.com>
+ <20140718164340.GA24960@kroah.com>
+ <1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
+ <20140718181759.GB2193@kroah.com>
+ <1405709421.30262.8.camel@dabdike.int.hansenpartnership.com>
+ <CAErSpo7svKg0HiL=g8wWAHWUN3vs0UgCvVhvd84DM6nVDmT=FQ@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: EdgeRouter Pro supported?  Strange FP problems
-References: <20140722130616.GJ30723@humdrum> <53CE736E.1060009@imgtec.com> <20140722143311.GK30723@humdrum>
-In-Reply-To: <20140722143311.GK30723@humdrum>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAErSpo7svKg0HiL=g8wWAHWUN3vs0UgCvVhvd84DM6nVDmT=FQ@mail.gmail.com>
+Return-Path: <benoit.taine@lip6.fr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,67 +28,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Kendrick <rob.kendrick@codethink.co.uk>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20140722153824.2GCJAt0zTcbYcsgi7FfgI706gEoieNO9s7ltWRm9Rl8@z>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, Greg KH <greg@kroah.com>, "John W. Linville" <linville@tuxdriver.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, linux-fbdev@vger.kernel.org, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, DRI mailing list <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, linux-mmc <linux-mmc@vger.kernel.org>, MPT-FusionLinux.pdl@avagotech.com, virtualization@lists.linux-foundation.org, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, linux-can@vger.kernel.org, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, platform-driver-x86@vger.kernel.org, netdev <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, users@rt2x00.serialmonkey.com, "e1000-devel@lists.sourceforge.net" <e1000-devel@lists.sourceforge.net>, linux-crypto@vger.kernel.org, devel@linuxdriverproject.org, Jingoo Han <jg1.han@samsung.com>
+Message-ID: <20140722171243.1Vh6c2EIF1pHTeX0PX81mAk_53LzHgkax7tNGywf06o@z>
 
-On 07/22/2014 03:33 PM, Rob Kendrick wrote:
+On 21/07/2014 17:16, Bjorn Helgaas wrote:
+> [+cc Jingoo]
 > 
->> What FPU problem are you seeing exactly? Could you show us a log for the
->> failure? Can you post a simple test case which will allow someone to
->> reproduce it?
+> On Fri, Jul 18, 2014 at 12:50 PM, James Bottomley
+> > Anyway, it's PCI code ... let the PCI maintainer decide.  However, if he
+> > does want this do it as one big bang patch via either the PCI or Trivial
+> > tree (latter because Jiří has experience doing this, but the former
+> > might be useful so the decider feels the pain ...)
 > 
-> A strange problem with awk (substr() doesn't work in either gawk or
-> mawk).  I've tried binaries of awk that I've built myself, and binaries
-> from Debian.  They all fail with my kernel, work fine with the 3.4
-> kernel (with a load of Cavium patches) that ship with the EdgeRouter
-> Pro.
+> I don't feel strongly either way, so I guess I'm OK with this, and in
+> the spirit of feeling the pain, I'm willing to handle it.  Jingoo
+> proposed similar patches, so it might be nice to give him some credit.
 > 
-> I can see it with this awk script:
-> 
-> {
->   line = $ 0
->   prefix = substr(line, 1, 3)
->   suffix = substr(line, 9)
->   print "prefix is '" prefix "'"
->   print "suffix is '" suffix "'"
-> }
-> 
-> execute with `echo "foo bar baz" | awk -f test.awk`.  With gawk, I get
-> both outputs being "foo bar baz" and with mawk "".  Correct answers
-> occur when using the shipped 3.4.
-> 
-> When you run gawk in linting mode, you get amusing errors like:
-> 	warning: substr: length 3 too big for string indexing,
-> 	truncating to 1.84467e+19
+> Benoit, how about if you wait until about half-way through the merge
+> window after v3.16 releases, generate an up-to-date single patch, and
+> post that?  Then we can try to get it in before v3.17-rc1 to minimize
+> merge hassles.
 
-there have been quite a few FPU changes in 3.16. I am able to reproduce
-the problem on EdgeRouter (non pro) but the result is not the same as
-yours. The output using the 'gawk' is:
-
-prefix is ''
-suffix is 'baz'
-
-a quick bisect between v3.15 and v3.16-rc1, which is the first tag with
-all the new FPU changes, leads to the following bad commit:
-
-08a07904e182895e1205f399465a3d622c0115b8
-MIPS: math-emu: Remove most ifdefery.
-
-Reverting the commit is not trivial unfortunately. Perhaps you could use
-a v3.15 kernel for now (assuming it boots on that board) or perhaps use
-an earlier revision before this bad commit (eg
-9e8bad1f9c0370b2635175b34d6151b90a53da5c, which boots and your test
-works for me)
-
-[root@buildroot ~]# uname -a
-Linux buildroot 3.15.0-rc5-00171-g9e8bad1f9c03 #1280 SMP PREEMPT Tue Jul
-22 16:36:19 BST 2014 mips64 GNU/Linux
-[root@buildroot ~]# echo "foo bar baz" | awk -f awk-test
-prefix is 'foo'
-suffix is 'baz'
-
-I have CC'd Ralf who is the author of the commit. Ralf any idea?
+Sure, I will do this.
 
 -- 
-markos
+Benoît Taine
+Master cycle intern
+Regal Team. LIP6

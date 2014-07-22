@@ -1,23 +1,17 @@
-Received: from mail-oa0-f54.google.com ([209.85.219.54]:60373 "EHLO
-        mail-oa0-f54.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6861530AbaGUXQ3f-0WF convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 22 Jul 2014 01:16:29 +0200
-Received: by mail-oa0-f54.google.com with SMTP id n16so8471529oag.13
-        for <linux-mips@linux-mips.org>; Mon, 21 Jul 2014 16:16:23 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8884 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6861457AbaGVBOvpBbRs (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Jul 2014 03:14:51 +0200
+Message-ID: <53CDBB01.7040007@imgtec.com>
+Date: Mon, 21 Jul 2014 18:14:41 -0700
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <1405709421.30262.8.camel@dabdike.int.hansenpartnership.com>
-References: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
- <20140718162213.GC31114@tuxdriver.com> <20140718164340.GA24960@kroah.com>
- <1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
- <20140718181759.GB2193@kroah.com> <1405709421.30262.8.camel@dabdike.int.hansenpartnership.com>
-From: Bjorn Helgaas <bhelgaas@google.com>
-Date: Mon, 21 Jul 2014 17:16:03 -0600
-Message-ID: <CAErSpo7svKg0HiL=g8wWAHWUN3vs0UgCvVhvd84DM6nVDmT=FQ@mail.gmail.com>
-Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-Path: <bhelgaas@google.com>
+Subject: Re: [PATCH v2] mm/highmem: make kmap cache coloring aware
+References: <1405616598-14798-1-git-send-email-jcmvbkbc@gmail.com> <alpine.DEB.2.02.1407211754350.7042@chino.kir.corp.google.com>
+In-Reply-To: <alpine.DEB.2.02.1407211754350.7042@chino.kir.corp.google.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,110 +21,106 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Greg KH <greg@kroah.com>, "John W. Linville" <linville@tuxdriver.com>, Benoit Taine <benoit.taine@lip6.fr>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, linux-fbdev@vger.kernel.org, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, DRI mailing list <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, linux-mmc <linux-mmc@vger.kernel.org>, MPT-FusionLinux.pdl@avagotech.com, virtualization@lists.linux-foundation.org, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, linux-can@vger.kernel.org, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, platform-driver-x86@vger.kernel.org, netdev <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, users@rt2x00.serialmonkey.com, "e1000-devel@lists.sourceforge.net" <e1000-devel@lists.sourceforge.net>, linux-crypto@vger.kernel.org, devel@linuxdriverproject.org, Jingoo Han <jg1.han@samsung.com>
-Message-ID: <20140721231603.KWQtmPmjgsD5d39z4trQvV-0qL70QvjwZQTFI3xy_ok@z>
+To: David Rientjes <rientjes@google.com>
+Cc: Max Filippov <jcmvbkbc@gmail.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-xtensa@linux-xtensa.org, linux-kernel@vger.kernel.org
+Message-ID: <20140722011441.RJGsI7OTXtmet4KVmknBE1nNer5luqsPBe_NkDHfSbQ@z>
 
-[+cc Jingoo]
-
-On Fri, Jul 18, 2014 at 12:50 PM, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> On Fri, 2014-07-18 at 11:17 -0700, Greg KH wrote:
->> On Fri, Jul 18, 2014 at 09:54:32AM -0700, James Bottomley wrote:
->> > On Fri, 2014-07-18 at 09:43 -0700, Greg KH wrote:
->> > > On Fri, Jul 18, 2014 at 12:22:13PM -0400, John W. Linville wrote:
->> > > > On Fri, Jul 18, 2014 at 05:26:47PM +0200, Benoit Taine wrote:
->> > > > > We should prefer `const struct pci_device_id` over
->> > > > > `DEFINE_PCI_DEVICE_TABLE` to meet kernel coding style guidelines.
->> > > > > This issue was reported by checkpatch.
->> > > >
->> > > > Honestly, I prefer the macro -- it stands-out more.  Maybe the style
->> > > > guidelines and/or checkpatch should change instead?
->> > >
->> > > The macro is horrid, no other bus has this type of thing just to save a
->> > > few characters in typing
->> >
->> > OK, so this is the macro:
->> >
->> > #define DEFINE_PCI_DEVICE_TABLE(_table) \
->> >     const struct pci_device_id _table[]
->> >
->> > Could you explain what's so horrible?
->> >
->> > The reason it's useful today is that people forget the const (and
->> > sometimes the [] making it a true table instead of a pointer).  If you
->> > use the DEFINE_PCI_DEVICE_TABLE macro, the compile breaks if you use it
->> > wrongly (good) and you automatically get the correct annotations.
->>
->> We have almost 1000 more uses of the non-macro version than the "macro"
->> version in the kernel today:
->> $ git grep -w DEFINE_PCI_DEVICE_TABLE | wc -l
->> 262
->> $ git grep "const struct pci_device_id" | wc -l
->> 1254
->>
->> My big complaint is that we need to be consistant, either pick one or
->> the other and stick to it.  As the macro is the least used, it's easiest
->> to fix up, and it also is more consistant with all other kernel
->> subsystems which do not have such a macro.
+On 07/21/2014 05:58 PM, David Rientjes wrote:
+> On Thu, 17 Jul 2014, Max Filippov wrote:
 >
-> I've a weak preference for consistency, but not at the expense of
-> hundreds of patches churning the kernel to remove an innocuous macro.
-> Churn costs time and effort.
->
->> As there is no need for the __init macro mess anymore, there's no real
->> need for the DEFINE_PCI_DEVICE_TABLE macro either.  I think checkpatch
->> will catch the use of non-const users for the id table already today, it
->> catches lots of other uses like this already.
+>> From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 >>
->> > > , so why should PCI be "special" in this regard
->> > > anymore?
->> >
->> > I think the PCI usage dwarfs most other bus types now, so you could turn
->> > the question around.  However, I don't think majority voting is a good
->> > guide to best practise; lets debate the merits for their own sake.
+>> Provide hooks that allow architectures with aliasing cache to align
+>> mapping address of high pages according to their color. Such architectures
+>> may enforce similar coloring of low- and high-memory page mappings and
+>> reuse existing cache management functions to support highmem.
 >>
->> Not really "dwarf", USB is close with over 700 such structures:
->> $ git grep "const struct usb_device_id" | wc -l
->> 725
->>
->> And i2c is almost just as big as PCI:
->> $ git grep "const struct i2c_device_id" | wc -l
->> 1223
->>
->> So again, this macro is not consistent with the majority of PCI drivers,
->> nor with any other type of "device id" declaration in the kernel, which
->> is why I feel it should be removed.
->>
->> And finally, the PCI documentation itself says to not use this macro, so
->> this isn't a "new" thing.  From Documentation/PCI/pci.txt:
->>
->>       The ID table is an array of struct pci_device_id entries ending with an
->>       all-zero entry.  Definitions with static const are generally preferred.
->>       Use of the deprecated macro DEFINE_PCI_DEVICE_TABLE should be avoided.
->>
->> That wording went into the file last December, when we last talked about
->> this and everyone in that discussion agreed to remove the macro for the
->> above reasons.
->>
->> Consistency matters.
->
-> In this case, I don't think it does that much ... a cut and paste either
-> way (from a macro or non-macro based driver) yields correct code.  Since
-> there's no bug here and no apparent way to misuse the macro, why bother?
->
-> Anyway, it's PCI code ... let the PCI maintainer decide.  However, if he
-> does want this do it as one big bang patch via either the PCI or Trivial
-> tree (latter because Jiří has experience doing this, but the former
-> might be useful so the decider feels the pain ...)
+> Typically a change like this would be proposed along with a change to an
+> architecture which would define this new ARCH_PKMAP_COLORING and have its
+> own overriding definitions.  Based on who you sent this patch to, it looks
+> like that would be mips and xtensa.  Now the only question is where are
+> those patches to add the alternate definitions for those platforms?
+Yes, there is one, at least for MIPS. This stuff can be a common ground 
+for both platforms (MIPS and XTENSA)
 
-I don't feel strongly either way, so I guess I'm OK with this, and in
-the spirit of feeling the pain, I'm willing to handle it.  Jingoo
-proposed similar patches, so it might be nice to give him some credit.
+>
+>> Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+>> [ Max: extract architecture-independent part of the original patch, clean
+>>    up checkpatch and build warnings. ]
+>> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+>> ---
+>> Changes v1->v2:
+>> - fix description
+>>
+>>   mm/highmem.c | 19 ++++++++++++++++---
+>>   1 file changed, 16 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/highmem.c b/mm/highmem.c
+>> index b32b70c..6898a8b 100644
+>> --- a/mm/highmem.c
+>> +++ b/mm/highmem.c
+>> @@ -44,6 +44,14 @@ DEFINE_PER_CPU(int, __kmap_atomic_idx);
+>>    */
+>>   #ifdef CONFIG_HIGHMEM
+>>   
+>> +#ifndef ARCH_PKMAP_COLORING
+>> +#define set_pkmap_color(pg, cl)		/* */
+> This is typically done with do {} while (0).
+>
+>> +#define get_last_pkmap_nr(p, cl)	(p)
+>> +#define get_next_pkmap_nr(p, cl)	(((p) + 1) & LAST_PKMAP_MASK)
+>> +#define is_no_more_pkmaps(p, cl)	(!(p))
+> That's not gramatically proper.
+>
+>> +#define get_next_pkmap_counter(c, cl)	((c) - 1)
+>> +#endif
+>> +
+>>   unsigned long totalhigh_pages __read_mostly;
+>>   EXPORT_SYMBOL(totalhigh_pages);
+>>   
+>> @@ -161,19 +169,24 @@ static inline unsigned long map_new_virtual(struct page *page)
+>>   {
+>>   	unsigned long vaddr;
+>>   	int count;
+>> +	int color __maybe_unused;
+>> +
+>> +	set_pkmap_color(page, color);
+>> +	last_pkmap_nr = get_last_pkmap_nr(last_pkmap_nr, color);
+>>   
+>>   start:
+>>   	count = LAST_PKMAP;
+>>   	/* Find an empty entry */
+>>   	for (;;) {
+>> -		last_pkmap_nr = (last_pkmap_nr + 1) & LAST_PKMAP_MASK;
+>> -		if (!last_pkmap_nr) {
+>> +		last_pkmap_nr = get_next_pkmap_nr(last_pkmap_nr, color);
+>> +		if (is_no_more_pkmaps(last_pkmap_nr, color)) {
+>>   			flush_all_zero_pkmaps();
+>>   			count = LAST_PKMAP;
+>>   		}
+>>   		if (!pkmap_count[last_pkmap_nr])
+>>   			break;	/* Found a usable entry */
+>> -		if (--count)
+>> +		count = get_next_pkmap_counter(count, color);
+> And that's not equivalent at all, --count decrements the auto variable and
+> then tests it for being non-zero.  Your get_next_pkmap_counter() never
+> decrements count.
+David, the statements
 
-Benoit, how about if you wait until about half-way through the merge
-window after v3.16 releases, generate an up-to-date single patch, and
-post that?  Then we can try to get it in before v3.17-rc1 to minimize
-merge hassles.
+             count = get_next_pkmap_counter(count, color);
+             if (count > 0)
 
-Bjorn
+are extended in STANDARD (non colored) case to
+
+             count = (count - 1);
+             if (count > 0)
+
+which are perfect equivalent of
+
+             if (--count)
+
+>
+>> +		if (count > 0)
+>>   			continue;
+>>   
+>>   		/*

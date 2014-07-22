@@ -1,24 +1,17 @@
-Received: from isis.lip6.fr ([132.227.60.2]:52101 "EHLO isis.lip6.fr"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6850628AbaGVRLrNqWvu (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 22 Jul 2014 19:11:47 +0200
-Date: Tue, 22 Jul 2014 19:12:43 +0200
-From: Benoit Taine <benoit.taine@lip6.fr>
-Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
-Message-ID: <20140722171242.GA742@lip6.fr>
-References: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
- <20140718162213.GC31114@tuxdriver.com>
- <20140718164340.GA24960@kroah.com>
- <1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
- <20140718181759.GB2193@kroah.com>
- <1405709421.30262.8.camel@dabdike.int.hansenpartnership.com>
- <CAErSpo7svKg0HiL=g8wWAHWUN3vs0UgCvVhvd84DM6nVDmT=FQ@mail.gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:24049 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6863548AbaGVTf0Ehf40 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Jul 2014 21:35:26 +0200
+Message-ID: <53CEBCF3.9010208@imgtec.com>
+Date: Tue, 22 Jul 2014 12:35:15 -0700
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAErSpo7svKg0HiL=g8wWAHWUN3vs0UgCvVhvd84DM6nVDmT=FQ@mail.gmail.com>
-Return-Path: <benoit.taine@lip6.fr>
+Subject: Re: [PATCH 6/8] mm/highmem: make kmap cache coloring aware
+References: <1406055673-10100-1-git-send-email-jcmvbkbc@gmail.com> <1406055673-10100-7-git-send-email-jcmvbkbc@gmail.com>
+In-Reply-To: <1406055673-10100-7-git-send-email-jcmvbkbc@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -28,31 +21,93 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, Greg KH <greg@kroah.com>, "John W. Linville" <linville@tuxdriver.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, linux-fbdev@vger.kernel.org, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, DRI mailing list <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, linux-mmc <linux-mmc@vger.kernel.org>, MPT-FusionLinux.pdl@avagotech.com, virtualization@lists.linux-foundation.org, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, linux-can@vger.kernel.org, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, platform-driver-x86@vger.kernel.org, netdev <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, users@rt2x00.serialmonkey.com, "e1000-devel@lists.sourceforge.net" <e1000-devel@lists.sourceforge.net>, linux-crypto@vger.kernel.org, devel@linuxdriverproject.org, Jingoo Han <jg1.han@samsung.com>
-Message-ID: <20140722171243.1Vh6c2EIF1pHTeX0PX81mAk_53LzHgkax7tNGywf06o@z>
+To: Max Filippov <jcmvbkbc@gmail.com>
+Cc: linux-xtensa@linux-xtensa.org, Chris Zankel <chris@zankel.net>, Marc Gauthier <marc@cadence.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, David Rientjes <rientjes@google.com>
+Message-ID: <20140722193515.AjgkTtoPpdS2nUUpw7iME9PxbswxEllt4vhmsvhNN38@z>
 
-On 21/07/2014 17:16, Bjorn Helgaas wrote:
-> [+cc Jingoo]
-> 
-> On Fri, Jul 18, 2014 at 12:50 PM, James Bottomley
-> > Anyway, it's PCI code ... let the PCI maintainer decide.  However, if he
-> > does want this do it as one big bang patch via either the PCI or Trivial
-> > tree (latter because Jiří has experience doing this, but the former
-> > might be useful so the decider feels the pain ...)
-> 
-> I don't feel strongly either way, so I guess I'm OK with this, and in
-> the spirit of feeling the pain, I'm willing to handle it.  Jingoo
-> proposed similar patches, so it might be nice to give him some credit.
-> 
-> Benoit, how about if you wait until about half-way through the merge
-> window after v3.16 releases, generate an up-to-date single patch, and
-> post that?  Then we can try to get it in before v3.17-rc1 to minimize
-> merge hassles.
+On 07/22/2014 12:01 PM, Max Filippov wrote:
+> From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+>
+> Provide hooks that allow architectures with aliasing cache to align
+> mapping address of high pages according to their color. Such architectures
+> may enforce similar coloring of low- and high-memory page mappings and
+> reuse existing cache management functions to support highmem.
+>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arch@vger.kernel.org
+> Cc: linux-mips@linux-mips.org
+> Cc: David Rientjes <rientjes@google.com>
+> Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+> [ Max: extract architecture-independent part of the original patch, clean
+>    up checkpatch and build warnings. ]
+> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+> ---
+> Changes since the initial version:
+> - define set_pkmap_color(pg, cl) as do { } while (0) instead of /* */;
+> - rename is_no_more_pkmaps to no_more_pkmaps;
+> - change 'if (count > 0)' to 'if (count)' to better match the original
+>    code behavior;
+>
+>   mm/highmem.c | 19 ++++++++++++++++---
+>   1 file changed, 16 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/highmem.c b/mm/highmem.c
+> index b32b70c..88fb62e 100644
+> --- a/mm/highmem.c
+> +++ b/mm/highmem.c
+> @@ -44,6 +44,14 @@ DEFINE_PER_CPU(int, __kmap_atomic_idx);
+>    */
+>   #ifdef CONFIG_HIGHMEM
+>   
+> +#ifndef ARCH_PKMAP_COLORING
+> +#define set_pkmap_color(pg, cl)		do { } while (0)
+> +#define get_last_pkmap_nr(p, cl)	(p)
+> +#define get_next_pkmap_nr(p, cl)	(((p) + 1) & LAST_PKMAP_MASK)
+> +#define no_more_pkmaps(p, cl)		(!(p))
+> +#define get_next_pkmap_counter(c, cl)	((c) - 1)
+> +#endif
+> +
+>   unsigned long totalhigh_pages __read_mostly;
+>   EXPORT_SYMBOL(totalhigh_pages);
+>   
+> @@ -161,19 +169,24 @@ static inline unsigned long map_new_virtual(struct page *page)
+>   {
+>   	unsigned long vaddr;
+>   	int count;
+> +	int color __maybe_unused;
+> +
+> +	set_pkmap_color(page, color);
+> +	last_pkmap_nr = get_last_pkmap_nr(last_pkmap_nr, color);
+>   
+>   start:
+>   	count = LAST_PKMAP;
+>   	/* Find an empty entry */
+>   	for (;;) {
+> -		last_pkmap_nr = (last_pkmap_nr + 1) & LAST_PKMAP_MASK;
+> -		if (!last_pkmap_nr) {
+> +		last_pkmap_nr = get_next_pkmap_nr(last_pkmap_nr, color);
+> +		if (no_more_pkmaps(last_pkmap_nr, color)) {
+>   			flush_all_zero_pkmaps();
+>   			count = LAST_PKMAP;
+>   		}
+>   		if (!pkmap_count[last_pkmap_nr])
+>   			break;	/* Found a usable entry */
+> -		if (--count)
+> +		count = get_next_pkmap_counter(count, color);
+> +		if (count)
+>   			continue;
+>   
+>   		/*
+I would like to return back to "if (count >0)".
 
-Sure, I will do this.
+The reason is in easy way to jump through the same coloured pages - next 
+element is calculated via decrementing by non "1" value of colours and 
+it can easy become negative on last page available:
 
--- 
-Benoît Taine
-Master cycle intern
-Regal Team. LIP6
+#define     get_next_pkmap_counter(c,cl)    (c - FIX_N_COLOURS)
+
+where FIX_N_COLOURS is a max number of page colours.
+
+Besides that it is a good practice in stopping cycle.
+
+- Leonid.

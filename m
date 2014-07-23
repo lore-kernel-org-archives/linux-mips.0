@@ -1,18 +1,17 @@
-Received: from mail-oa0-f50.google.com ([209.85.219.50]:53140 "EHLO
-        mail-oa0-f50.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6863553AbaGVThvZLyEF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Jul 2014 21:37:51 +0200
-Received: by mail-oa0-f50.google.com with SMTP id g18so199745oah.37
-        for <linux-mips@linux-mips.org>; Tue, 22 Jul 2014 12:37:45 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:19940 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6816417AbaGWGrH6k9FY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Jul 2014 08:47:07 +0200
+Date: Wed, 23 Jul 2014 07:46:57 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: smp-cmp.c: CDFIXMES
+Message-ID: <20140723064657.GK30558@pburton-laptop>
+References: <CAPDOMVjNyAwo53Coz8MFuUs70M7j1e3QWprus5vGpTfAw=hspg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1405992946.git.luto@amacapital.net>
-References: <cover.1405992946.git.luto@amacapital.net>
-Date: Tue, 22 Jul 2014 12:37:45 -0700
-Message-ID: <CAGXu5jJ93-vto9voMENc4jX5itcd_Rm5AZjeChF57fpMYnWocA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/8] Two-phase seccomp and x86 tracing changes
-From: Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <keescook@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <CAPDOMVjNyAwo53Coz8MFuUs70M7j1e3QWprus5vGpTfAw=hspg@mail.gmail.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,97 +21,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Lutomirski <luto@amacapital.net>, "H. Peter Anvin" <hpa@zytor.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Will Drewry <wad@chromium.org>, Oleg Nesterov <oleg@redhat.com>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>
-Message-ID: <20140722193745.xHpUW0V13FY63e80nZFim-ZgvFci2pStMhsjiIs65zw@z>
+To: Nick Krause <xerofoify@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <blogic@openwrt.org>, markos.chandras@imgtec.com, Steven.Hill@imgtec.com, Linux-MIPS <linux-mips@linux-mips.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <20140723064657.8uiHyPWFi7wwn9pVQyo1UlC3fM9wWLgW6Mgz3EOKOL0@z>
 
-On Mon, Jul 21, 2014 at 6:49 PM, Andy Lutomirski <luto@amacapital.net> wrote:
-> [applies on jmorris's security-next tree]
->
-> This is both a cleanup and a speedup.  It reduces overhead due to
-> installing a trivial seccomp filter by 87%.  The speedup comes from
-> avoiding the full syscall tracing mechanism for filters that don't
-> return SECCOMP_RET_TRACE.
->
-> This series works by splitting the seccomp hooks into two phases.
-> The first phase evaluates the filter; it can skip syscalls, allow
-> them, kill the calling task, or pass a u32 to the second phase.  The
-> second phase requires a full tracing context, and it sends ptrace
-> events if necessary.
->
-> Once this is done, I implemented a similar split for the x86 syscall
-> entry work.  The C callback is invoked in two phases: the first has
-> only a partial frame, and it can request phase 2 processing with a
-> full frame.
->
-> Finally, I switch the 64-bit system_call code to use the new split
-> entry work.  This is a net deletion of assembly code: it replaces
-> all of the audit entry muck.
->
-> In the process, I fixed some bugs.
->
-> If this is acceptable, someone can do the same tweak for the
-> ia32entry and entry_32 code.
->
-> This passes all seccomp tests that I know of.  Now that it's properly
-> rebased, even the previously expected failures are gone.
->
-> Kees, if you like this version, can you create a branch with patches
-> 1-4?  I think that the rest should go into tip/x86 once everyone's happy
-> with it.
->
-> Changes from v2:
->  - Fixed 32-bit x86 build (and the tests pass).
->  - Put the doc patch where it belongs.
+On Wed, Jul 23, 2014 at 12:40:59AM -0400, Nick Krause wrote:
+> Are the lines with  CDFIXME still needed? If not please tell me as I
+> will send in a patch removing these
+> two from this file in order to help you guys out :).
+> Cheers Nick
 
-Thanks! This looks good to me. I'll add it to my tree.
+Hi Nick,
 
-Peter, how do you feel about this series? Do the x86 changes look good to you?
+I imagine the only answer any of us can give you is "we don't know". If
+we did then we'd have removed the code or the comments already.
 
--Kees
+Please do note that the smp-cmp.c file lives behind a Kconfig option
+that is now marked as deprecated, and that there is other work going on
+in areas related to clocksource & clock events on the applicable
+systems. So whilst someone could spend the time figuring out whether
+those lines are useful, I expect that cleaning up these old FIXMEs is
+not a particularly high priority for anyone right now.
 
->
-> Changes from v1:
->  - Rebased on top of Kees' shiny new seccomp tree (no effect on the x86
->    part).
->  - Improved patch 6 vs patch 7 split (thanks Alexei!)
->  - Fixed bogus -ENOSYS in patch 5 (thanks Kees!)
->  - Improved changelog message in patch 6.
->
-> Changes from RFC version:
->  - The first three patches are more or less the same
->  - The rest is more or less a rewrite
->
-> Andy Lutomirski (8):
->   seccomp,x86,arm,mips,s390: Remove nr parameter from secure_computing
->   seccomp: Refactor the filter callback and the API
->   seccomp: Allow arch code to provide seccomp_data
->   seccomp: Document two-phase seccomp and arch-provided seccomp_data
->   x86,x32,audit: Fix x32's AUDIT_ARCH wrt audit
->   x86: Split syscall_trace_enter into two phases
->   x86_64,entry: Treat regs->ax the same in fastpath and slowpath
->     syscalls
->   x86_64,entry: Use split-phase syscall_trace_enter for 64-bit syscalls
->
->  arch/Kconfig                   |  11 ++
->  arch/arm/kernel/ptrace.c       |   7 +-
->  arch/mips/kernel/ptrace.c      |   2 +-
->  arch/s390/kernel/ptrace.c      |   2 +-
->  arch/x86/include/asm/calling.h |   6 +-
->  arch/x86/include/asm/ptrace.h  |   5 +
->  arch/x86/kernel/entry_64.S     |  51 ++++-----
->  arch/x86/kernel/ptrace.c       | 150 +++++++++++++++++++-----
->  arch/x86/kernel/vsyscall_64.c  |   2 +-
->  include/linux/seccomp.h        |  25 ++--
->  kernel/seccomp.c               | 252 ++++++++++++++++++++++++++++-------------
->  11 files changed, 360 insertions(+), 153 deletions(-)
->
-> --
-> 1.9.3
->
+If you'll leave them alone for a while I expect they'll disappear one
+way or another in a few cycles time, along with the rest of the file.
 
-
-
--- 
-Kees Cook
-Chrome OS Security
+Thanks,
+    Paul

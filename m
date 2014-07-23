@@ -1,16 +1,18 @@
-Received: from mail-wg0-f51.google.com ([74.125.82.51]:41042 "EHLO
-        mail-wg0-f51.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6831986AbaGWNnXa57HU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Jul 2014 15:43:23 +0200
-Received: by mail-wg0-f51.google.com with SMTP id b13so1181735wgh.22
-        for <linux-mips@linux-mips.org>; Wed, 23 Jul 2014 06:43:16 -0700 (PDT)
-From: Alex Smith <alex@alex-smith.me.uk>
-Subject: [PATCH v2 06/11] MIPS: O32/32-bit: Fix bug which can cause incorrect system call restarts
-Date: Wed, 23 Jul 2014 14:40:11 +0100
-Message-ID: <1406122816-2424-7-git-send-email-alex@alex-smith.me.uk>
-In-Reply-To: <1406122816-2424-1-git-send-email-alex@alex-smith.me.uk>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:42208 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6831986AbaGWOMsQWPyt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Jul 2014 16:12:48 +0200
+Date: Wed, 23 Jul 2014 15:12:03 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH 05/11] MIPS: ptrace: Always copy FCSR in FP regset
+Message-ID: <20140723141203.GM30558@pburton-laptop>
 References: <1406122816-2424-1-git-send-email-alex@alex-smith.me.uk>
-Return-Path: <alex@alex-smith.me.uk>
+ <1406122816-2424-6-git-send-email-alex@alex-smith.me.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <1406122816-2424-6-git-send-email-alex@alex-smith.me.uk>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,74 +22,144 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Alex Smith <alex.smith@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20140723134011.US5kKeZUGSR0lK-GYtc9sOz6cy5Ef65s_qQv_5Ty9SA@z>
+To: Alex Smith <alex@alex-smith.me.uk>
+Cc: linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20140723141203.JSDt18OSMK9zKbx0YJk5eNGVRtbgBuYvQraicsI-mqs@z>
 
-From: Alex Smith <alex.smith@imgtec.com>
+On Wed, Jul 23, 2014 at 02:40:10PM +0100, Alex Smith wrote:
+> Copy FCSR in the FP regset to match the original pre-regset core dumper.
+> The code paths for where sizeof(union fpureg) == sizeof(elf_fpreg_t)
+> already do so, but they actually copy 4 bytes more than they should do
+> as FCSR is only 32 bits. The not equal code paths do not copy it at all.
+> Therefore change the copy to be done explicitly (with the correct size)
+> for both paths.
 
-On 32-bit/O32, pt_regs has a padding area at the beginning into which the
-syscall arguments passed via the user stack are copied. 4 arguments
-totalling 16 bytes are copied to offset 16 bytes into this area, however
-the area is only 24 bytes long. This means the last 2 arguments overwrite
-pt_regs->regs[{0,1}].
+Ah, I hadn't realised that ELF_NFPREG == 33, sneaky! That together with
+the "XXX fcr31" comment led me to believe the FP regset didn't include
+FCSR which is why I hadn't fixed the oops there or taken it into account
+for the case where FPR size != sizeof(elf_fpreg_t) (ie. when MSA support
+is enabled).
 
-If a syscall function returns an error, handle_sys stores the original
-syscall number in pt_regs->regs[0] for syscall restart. signal.c checks
-whether regs[0] is non-zero, if it is it will check whether the syscall
-return value is one of the ERESTART* codes to see if it must be
-restarted.
+> Additionally, clear the cause bits from FCSR when setting the FP regset
+> to avoid the possibility of causing an FP exception (and an oops) in the
+> kernel.
+> 
+> Signed-off-by: Alex Smith <alex@alex-smith.me.uk>
+> Cc: Paul Burton <paul.burton@imgtec.com>
+> Cc: <stable@vger.kernel.org> # v3.13+
+> ---
+> This patch incorporates a fix for another instance of the bug fixed by
+> Paul Burton's patch "MIPS: prevent user from setting FCSR cause bits" -
+> the code path in fpr_set for sizeof(fpureg) == sizeof(elf_fpreg_t)
+> copied fcr31 without clearing cause bits. I've incorporated a fix for
+> it into this patch to so that it's easier to apply both patches without
+> conflicts.
+> ---
+>  arch/mips/kernel/ptrace.c | 61 +++++++++++++++++++++++++++++------------------
+>  1 file changed, 38 insertions(+), 23 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
+> index 8bd13ed..ffc2e37 100644
+> --- a/arch/mips/kernel/ptrace.c
+> +++ b/arch/mips/kernel/ptrace.c
+> @@ -409,23 +409,28 @@ static int fpr_get(struct task_struct *target,
+>  	int err;
+>  	u64 fpr_val;
+>  
+> -	/* XXX fcr31  */
+> -
+> -	if (sizeof(target->thread.fpu.fpr[i]) == sizeof(elf_fpreg_t))
+> -		return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+> -					   &target->thread.fpu,
+> -					   0, sizeof(elf_fpregset_t));
+> -
+> -	for (i = 0; i < NUM_FPU_REGS; i++) {
+> -		fpr_val = get_fpr64(&target->thread.fpu.fpr[i], 0);
+> +	if (sizeof(target->thread.fpu.fpr[i]) == sizeof(elf_fpreg_t)) {
+>  		err = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+> -					  &fpr_val, i * sizeof(elf_fpreg_t),
+> -					  (i + 1) * sizeof(elf_fpreg_t));
+> +					  &target->thread.fpu.fpr,
+> +					  0, NUM_FPU_REGS * sizeof(elf_fpreg_t));
+>  		if (err)
+>  			return err;
+> +	} else {
+> +		for (i = 0; i < NUM_FPU_REGS; i++) {
+> +			fpr_val = get_fpr64(&target->thread.fpu.fpr[i], 0);
+> +			err = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+> +						  &fpr_val,
+> +						  i * sizeof(elf_fpreg_t),
+> +						  (i + 1) * sizeof(elf_fpreg_t));
+> +			if (err)
+> +				return err;
+> +		}
+>  	}
+>  
+> -	return 0;
+> +	return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+> +			    &target->thread.fpu.fcr31,
+> +			    NUM_FPU_REGS * sizeof(elf_fpreg_t),
+> +			    (NUM_FPU_REGS * sizeof(elf_fpreg_t)) + sizeof(u32));
 
-Should a syscall be made that results in a non-zero value being copied
-off the user stack into regs[0], and then returns a positive (non-error)
-value that matches one of the ERESTART* error codes, this can be mistaken
-for requiring a syscall restart.
+The only problem I can think of is that the final register in the regset
+will still be treated as 64b (regset->size) as far as ptrace is
+concerned, so I'm not sure how best to handle this. I presume the pre
+regset core dump format placed the 32b FCSR value immediately after
+the 64b $f31, as you have here? In which case we should probably at
+least zero out the other 4 bytes of this final "register", assuming
+the extra 4 bytes compared to the pre-regset version isn't a problem?
 
-While the possibility for this to occur has always existed, it is made
-much more likely to occur by commit 46e12c07b3b9 ("MIPS: O32 / 32-bit:
-Always copy 4 stack arguments."), since now every syscall will copy 4
-arguments and overwrite regs[0], rather than just those with 7 or 8
-arguments.
+Thanks,
+    Paul
 
-Since that commit, booting Debian under a 32-bit MIPS kernel almost
-always results in a hang early in boot, due to a wait4 syscall returning
-a PID that matches one of the ERESTART* codes, which then causes an
-incorrect restart of the syscall.
-
-The problem is fixed by increasing the size of the padding area so that
-arguments copied off the stack will not overwrite pt_regs->regs[{0,1}].
-
-Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-Cc: <stable@vger.kernel.org> # v3.13+
----
-Changes in v2:
- - Rebase on current upstream.
- - Split comment change into a separate commit.
-
-I've rebased this patch on top of current mips-for-linux-next. However,
-for it to be applied to stable it needs an additional change to the
-PT_PADSLOT* definitions in arch/mips/kernel/smtc-asm.S to account for
-the changed pt_regs offsets. This file no longer exists since SMTC has
-been dropped.
-
-I'm not sure what the correct way to deal with this is - can an
-alternate version of the patch be submitted for stable?
----
- arch/mips/include/asm/ptrace.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
-index 7e6e682..c301fa9 100644
---- a/arch/mips/include/asm/ptrace.h
-+++ b/arch/mips/include/asm/ptrace.h
-@@ -23,7 +23,7 @@
- struct pt_regs {
- #ifdef CONFIG_32BIT
- 	/* Pad bytes for argument save space on the stack. */
--	unsigned long pad0[6];
-+	unsigned long pad0[8];
- #endif
- 
- 	/* Saved main processor registers. */
--- 
-1.9.1
+>  }
+>  
+>  static int fpr_set(struct task_struct *target,
+> @@ -436,23 +441,33 @@ static int fpr_set(struct task_struct *target,
+>  	unsigned i;
+>  	int err;
+>  	u64 fpr_val;
+> +	u32 fcr31;
+>  
+> -	/* XXX fcr31  */
+> -
+> -	if (sizeof(target->thread.fpu.fpr[i]) == sizeof(elf_fpreg_t))
+> -		return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+> -					  &target->thread.fpu,
+> -					  0, sizeof(elf_fpregset_t));
+> -
+> -	for (i = 0; i < NUM_FPU_REGS; i++) {
+> +	if (sizeof(target->thread.fpu.fpr[i]) == sizeof(elf_fpreg_t)) {
+>  		err = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+> -					 &fpr_val, i * sizeof(elf_fpreg_t),
+> -					 (i + 1) * sizeof(elf_fpreg_t));
+> +					 &target->thread.fpu.fpr,
+> +					 0, NUM_FPU_REGS * sizeof(elf_fpreg_t));
+>  		if (err)
+>  			return err;
+> -		set_fpr64(&target->thread.fpu.fpr[i], 0, fpr_val);
+> +	} else {
+> +		for (i = 0; i < NUM_FPU_REGS; i++) {
+> +			err = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+> +						 &fpr_val,
+> +						 i * sizeof(elf_fpreg_t),
+> +						 (i + 1) * sizeof(elf_fpreg_t));
+> +			if (err)
+> +				return err;
+> +			set_fpr64(&target->thread.fpu.fpr[i], 0, fpr_val);
+> +		}
+>  	}
+>  
+> +	err = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &fcr31,
+> +			    NUM_FPU_REGS * sizeof(elf_fpreg_t),
+> +			    (NUM_FPU_REGS * sizeof(elf_fpreg_t)) + sizeof(u32));
+> +	if (err)
+> +		return err;
+> +
+> +	target->thread.fpu.fcr31 = fcr31 & ~FPU_CSR_ALL_X;
+>  	return 0;
+>  }
+>  
+> -- 
+> 1.9.1
+> 

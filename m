@@ -1,19 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:58150 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6842568AbaGXLKWF0Pd0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 24 Jul 2014 13:10:22 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id D2538267655A3
-        for <linux-mips@linux-mips.org>; Thu, 24 Jul 2014 12:10:12 +0100 (IST)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 2/2] MIPS: scall64-o32: Fix indirect syscall detection
-Date: Thu, 24 Jul 2014 12:10:02 +0100
-Message-ID: <1406200202-10104-3-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1406200202-10104-1-git-send-email-markos.chandras@imgtec.com>
-References: <1406200202-10104-1-git-send-email-markos.chandras@imgtec.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Received: from mail-we0-f182.google.com ([74.125.82.182]:41627 "EHLO
+        mail-we0-f182.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6816615AbaGXMxGDCNTP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 24 Jul 2014 14:53:06 +0200
+Received: by mail-we0-f182.google.com with SMTP id k48so2711623wev.41
+        for <linux-mips@linux-mips.org>; Thu, 24 Jul 2014 05:53:00 -0700 (PDT)
+From: Alex Smith <alex@alex-smith.me.uk>
+Subject: [PATCH v2 05/11] MIPS: ptrace: Always copy FCSR in FP regset
+Date: Thu, 24 Jul 2014 13:50:38 +0100
+Message-ID: <1406206238-28512-1-git-send-email-alex@alex-smith.me.uk>
+In-Reply-To: <1406122816-2424-6-git-send-email-alex@alex-smith.me.uk>
+References: <1406122816-2424-6-git-send-email-alex@alex-smith.me.uk>
+Return-Path: <alex@alex-smith.me.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,54 +21,131 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140724111002.InyQin3OgE_eL4sbtlybVUYrMoMveyEg7PobCBwQOeI@z>
+Cc: Alex Smith <alex@alex-smith.me.uk>, Paul Burton <paul.burton@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20140724125038.QmAPR7Uz5LMvo9kDAXNvp3T5KGRNHuD0WbAWqHEL7I8@z>
 
-commit 4c21b8fd8f146a22e1eaf92833a32e51f560e82a
-"MIPS: seccomp: Handle indirect system calls (o32)"
+Copy FCSR in the FP regset to match the original pre-regset core dumper.
+The code paths for where sizeof(union fpureg) == sizeof(elf_fpreg_t)
+already do so, but they actually copy 4 bytes more than they should do
+as FCSR is only 32 bits. The not equal code paths do not copy it at all.
+Therefore change the copy to be done explicitly (with the correct size)
+for both paths.
 
-added indirect syscall detection for O32 processes running on MIPS64
-but it did not work as expected. The reason is the the scall64-o32
-implementation differs compared to scall32-o32. In the former, the v0
-(syscall number) register contains the absolute syscall number
-(4000 + X) whereas in the latter it contains the relative syscall
-number (X). Fix the code to avoid doing an extra addition, and load
-the v0 register directly to the first argument for syscall_trace_enter.
-Moreover, set the .reorder assembler option in order to have better
-control on this part of the assembly code.
+Additionally, clear the cause bits from FCSR when setting the FP regset
+to avoid the possibility of causing an FP exception (and an oops) in the
+kernel.
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+Signed-off-by: Alex Smith <alex@alex-smith.me.uk>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: <stable@vger.kernel.org> # v3.13+
 ---
- arch/mips/kernel/scall64-o32.S | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+Changes in v2:
+ - Zero fill the last 4 bytes in the FP regset.
+---
+ arch/mips/kernel/ptrace.c | 73 +++++++++++++++++++++++++++++++----------------
+ 1 file changed, 49 insertions(+), 24 deletions(-)
 
-diff --git a/arch/mips/kernel/scall64-o32.S b/arch/mips/kernel/scall64-o32.S
-index f1343ccd7ed7..7f5feb25ae04 100644
---- a/arch/mips/kernel/scall64-o32.S
-+++ b/arch/mips/kernel/scall64-o32.S
-@@ -113,15 +113,19 @@ trace_a_syscall:
- 	move	s0, t2			# Save syscall pointer
- 	move	a0, sp
- 	/*
--	 * syscall number is in v0 unless we called syscall(__NR_###)
-+	 * absolute syscall number is in v0 unless we called syscall(__NR_###)
- 	 * where the real syscall number is in a0
- 	 * note: NR_syscall is the first O32 syscall but the macro is
- 	 * only defined when compiling with -mabi=32 (CONFIG_32BIT)
- 	 * therefore __NR_O32_Linux is used (4000)
- 	 */
--	addiu	a1, v0,  __NR_O32_Linux
--	bnez	v0, 1f /* __NR_syscall at offset 0 */
--	lw	a1, PT_R4(sp)
-+	.set	push
-+	.set	reorder
-+	subu	t1, v0,  __NR_O32_Linux
-+	move	a1, v0
-+	bnez	t1, 1f /* __NR_syscall at offset 0 */
-+	lw	a1, PT_R4(sp) /* Arg1 for __NR_syscall case */
-+	.set	pop
+diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
+index 8bd13ed..e082079 100644
+--- a/arch/mips/kernel/ptrace.c
++++ b/arch/mips/kernel/ptrace.c
+@@ -409,23 +409,35 @@ static int fpr_get(struct task_struct *target,
+ 	int err;
+ 	u64 fpr_val;
  
- 1:	jal	syscall_trace_enter
+-	/* XXX fcr31  */
+-
+-	if (sizeof(target->thread.fpu.fpr[i]) == sizeof(elf_fpreg_t))
+-		return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+-					   &target->thread.fpu,
+-					   0, sizeof(elf_fpregset_t));
+-
+-	for (i = 0; i < NUM_FPU_REGS; i++) {
+-		fpr_val = get_fpr64(&target->thread.fpu.fpr[i], 0);
++	if (sizeof(target->thread.fpu.fpr[i]) == sizeof(elf_fpreg_t)) {
+ 		err = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+-					  &fpr_val, i * sizeof(elf_fpreg_t),
+-					  (i + 1) * sizeof(elf_fpreg_t));
++					  &target->thread.fpu.fpr,
++					  0, NUM_FPU_REGS * sizeof(elf_fpreg_t));
+ 		if (err)
+ 			return err;
++	} else {
++		for (i = 0; i < NUM_FPU_REGS; i++) {
++			fpr_val = get_fpr64(&target->thread.fpu.fpr[i], 0);
++			err = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
++						  &fpr_val,
++						  i * sizeof(elf_fpreg_t),
++						  (i + 1) * sizeof(elf_fpreg_t));
++			if (err)
++				return err;
++		}
+ 	}
  
+-	return 0;
++	err = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
++			   &target->thread.fpu.fcr31,
++			   NUM_FPU_REGS * sizeof(elf_fpreg_t),
++			   (NUM_FPU_REGS * sizeof(elf_fpreg_t)) + sizeof(u32));
++	if (err)
++		return err;
++
++	/* Zero fill the remaining 4 bytes. */
++	return user_regset_copyout_zero(&pos, &count, &kbuf, &ubuf,
++			    (NUM_FPU_REGS * sizeof(elf_fpreg_t)) + sizeof(u32),
++			    sizeof(elf_fpregset_t));
+ }
+ 
+ static int fpr_set(struct task_struct *target,
+@@ -436,24 +448,37 @@ static int fpr_set(struct task_struct *target,
+ 	unsigned i;
+ 	int err;
+ 	u64 fpr_val;
++	u32 fcr31;
+ 
+-	/* XXX fcr31  */
+-
+-	if (sizeof(target->thread.fpu.fpr[i]) == sizeof(elf_fpreg_t))
+-		return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+-					  &target->thread.fpu,
+-					  0, sizeof(elf_fpregset_t));
+-
+-	for (i = 0; i < NUM_FPU_REGS; i++) {
++	if (sizeof(target->thread.fpu.fpr[i]) == sizeof(elf_fpreg_t)) {
+ 		err = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+-					 &fpr_val, i * sizeof(elf_fpreg_t),
+-					 (i + 1) * sizeof(elf_fpreg_t));
++					 &target->thread.fpu.fpr,
++					 0, NUM_FPU_REGS * sizeof(elf_fpreg_t));
+ 		if (err)
+ 			return err;
+-		set_fpr64(&target->thread.fpu.fpr[i], 0, fpr_val);
++	} else {
++		for (i = 0; i < NUM_FPU_REGS; i++) {
++			err = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
++						 &fpr_val,
++						 i * sizeof(elf_fpreg_t),
++						 (i + 1) * sizeof(elf_fpreg_t));
++			if (err)
++				return err;
++			set_fpr64(&target->thread.fpu.fpr[i], 0, fpr_val);
++		}
+ 	}
+ 
+-	return 0;
++	err = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &fcr31,
++			    NUM_FPU_REGS * sizeof(elf_fpreg_t),
++			    (NUM_FPU_REGS * sizeof(elf_fpreg_t)) + sizeof(u32));
++	if (err)
++		return err;
++
++	target->thread.fpu.fcr31 = fcr31 & ~FPU_CSR_ALL_X;
++
++	return user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf,
++			    (NUM_FPU_REGS * sizeof(elf_fpreg_t)) + sizeof(u32),
++			    sizeof(elf_fpregset_t));
+ }
+ 
+ enum mips_regset {
 -- 
-2.0.2
+1.9.1

@@ -1,18 +1,17 @@
-Received: from mail-lb0-f171.google.com ([209.85.217.171]:52318 "EHLO
-        mail-lb0-f171.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6842513AbaGWTUowX-Yi (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Jul 2014 21:20:44 +0200
-Received: by mail-lb0-f171.google.com with SMTP id l4so1294789lbv.30
-        for <linux-mips@linux-mips.org>; Wed, 23 Jul 2014 12:20:39 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:64847 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6842383AbaGXLKPK8q8N (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 24 Jul 2014 13:10:15 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 59A0FAE900E49
+        for <linux-mips@linux-mips.org>; Thu, 24 Jul 2014 12:10:05 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH 0/2] MIPS64/O32 seccomp fixes
+Date: Thu, 24 Jul 2014 12:10:00 +0100
+Message-ID: <1406200202-10104-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <CAGXu5jJ93-vto9voMENc4jX5itcd_Rm5AZjeChF57fpMYnWocA@mail.gmail.com>
-References: <cover.1405992946.git.luto@amacapital.net> <CAGXu5jJ93-vto9voMENc4jX5itcd_Rm5AZjeChF57fpMYnWocA@mail.gmail.com>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Wed, 23 Jul 2014 12:20:18 -0700
-Message-ID: <CALCETrVwqDeRbFOw=k_OhQZ4V6Pn5v3t8ODw75UuE7HKPFz=Sw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/8] Two-phase seccomp and x86 tracing changes
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <luto@amacapital.net>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,59 +21,23 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kees Cook <keescook@chromium.org>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, LKML <linux-kernel@vger.kernel.org>, Will Drewry <wad@chromium.org>, Oleg Nesterov <oleg@redhat.com>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>
-Message-ID: <20140723192018.jB5ni7Tx3UhPHezD2wDomFK-RMoBm1G5Tk49krz4Y-A@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20140724111000.9B7ZNlS1IZaw-5qs4nFrDZscImi2f_mVuKbeOOkWltQ@z>
 
-On Tue, Jul 22, 2014 at 12:37 PM, Kees Cook <keescook@chromium.org> wrote:
-> On Mon, Jul 21, 2014 at 6:49 PM, Andy Lutomirski <luto@amacapital.net> wrote:
->> [applies on jmorris's security-next tree]
->>
->> This is both a cleanup and a speedup.  It reduces overhead due to
->> installing a trivial seccomp filter by 87%.  The speedup comes from
->> avoiding the full syscall tracing mechanism for filters that don't
->> return SECCOMP_RET_TRACE.
->>
->> This series works by splitting the seccomp hooks into two phases.
->> The first phase evaluates the filter; it can skip syscalls, allow
->> them, kill the calling task, or pass a u32 to the second phase.  The
->> second phase requires a full tracing context, and it sends ptrace
->> events if necessary.
->>
->> Once this is done, I implemented a similar split for the x86 syscall
->> entry work.  The C callback is invoked in two phases: the first has
->> only a partial frame, and it can request phase 2 processing with a
->> full frame.
->>
->> Finally, I switch the 64-bit system_call code to use the new split
->> entry work.  This is a net deletion of assembly code: it replaces
->> all of the audit entry muck.
->>
->> In the process, I fixed some bugs.
->>
->> If this is acceptable, someone can do the same tweak for the
->> ia32entry and entry_32 code.
->>
->> This passes all seccomp tests that I know of.  Now that it's properly
->> rebased, even the previously expected failures are gone.
->>
->> Kees, if you like this version, can you create a branch with patches
->> 1-4?  I think that the rest should go into tip/x86 once everyone's happy
->> with it.
->>
->> Changes from v2:
->>  - Fixed 32-bit x86 build (and the tests pass).
->>  - Put the doc patch where it belongs.
->
-> Thanks! This looks good to me. I'll add it to my tree.
->
-> Peter, how do you feel about this series? Do the x86 changes look good to you?
->
+Hi,
 
-It looks like patches 1-4 have landed here:
+A few seccomp fixes related to O32 processes on MIPS64 cores.
 
-https://git.kernel.org/cgit/linux/kernel/git/kees/linux.git/log/?h=seccomp/fastpath
+It's based on v3.16-rc6
 
-hpa, what's the route forward for the x86 part?
+Markos Chandras (2):
+  MIPS: syscall: Fix AUDIT value for O32 processes on MIPS64
+  MIPS: scall64-o32: Fix indirect syscall detection
 
---Andy
+ arch/mips/include/asm/syscall.h |  8 +++++---
+ arch/mips/kernel/scall64-o32.S  | 12 ++++++++----
+ 2 files changed, 13 insertions(+), 7 deletions(-)
+
+-- 
+2.0.2

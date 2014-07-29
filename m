@@ -1,17 +1,18 @@
-Received: from mx1.redhat.com ([209.132.183.28]:20160 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6816676AbaG2SqEGPIbc (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 29 Jul 2014 20:46:04 +0200
-Date: Tue, 29 Jul 2014 20:44:11 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v3 6/8] x86: Split syscall_trace_enter into two phases
-Message-ID: <20140729184411.GA6035@redhat.com>
-References: <cover.1405992946.git.luto@amacapital.net> <3f649f5658a163645e3ce15156176c325283762e.1405992946.git.luto@amacapital.net> <20140728173723.GA20993@redhat.com> <CALCETrWUFo_zXcAZja-vdL4_MgJDd=1ed5Vt54eyUuim930xAw@mail.gmail.com> <20140729165416.GA967@redhat.com> <CALCETrWBU-=zqLTCP7B1feZ9J-e4u-Boic+e1EEn1rL-ijeEKg@mail.gmail.com> <20140729173136.GA2808@redhat.com> <CALCETrVP-P+EJ6YJ=CZL_gyA1r8O9eogUNTik7_31_SA+Pj3pg@mail.gmail.com> <20140729181615.GA4950@redhat.com> <CALCETrVWOOs3HCnQNaqmnn480oQYn3scrWUfR4JJX9+zTxUDRw@mail.gmail.com>
+Received: from mail-lb0-f169.google.com ([209.85.217.169]:52704 "EHLO
+        mail-lb0-f169.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6860076AbaG2Uyf7QBVP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Jul 2014 22:54:35 +0200
+Received: by mail-lb0-f169.google.com with SMTP id s7so180306lbd.28
+        for <linux-mips@linux-mips.org>; Tue, 29 Jul 2014 13:54:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrVWOOs3HCnQNaqmnn480oQYn3scrWUfR4JJX9+zTxUDRw@mail.gmail.com>
-Return-Path: <oleg@redhat.com>
+In-Reply-To: <20140729192056.GA6308@redhat.com>
+References: <cover.1406604806.git.luto@amacapital.net> <20140729192056.GA6308@redhat.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Tue, 29 Jul 2014 13:54:10 -0700
+Message-ID: <CALCETrX6P7SJQdgc0gTM7FLdwyT_Ld1MWvkLYpTO_2xsvBC9sA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] x86: two-phase syscall tracing and seccomp fastpath
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <luto@amacapital.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,54 +22,112 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Will Drewry <wad@chromium.org>, X86 ML <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <20140729184411.fTYWJWCHdV5aydw9kxGf6iLii4hQrUuZkH4tBJtfFmA@z>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>, Frederic Weisbecker <fweisbec@gmail.com>, LSM List <linux-security-module@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexei Starovoitov <ast@plumgrid.com>, Will Drewry <wad@chromium.org>, Kees Cook <keescook@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <20140729205410.WfK9DlVKCiHg7SrZS4ITNa9tuDK79_CIkQRBngP0EF4@z>
 
-On 07/29, Andy Lutomirski wrote:
+On Jul 29, 2014 12:22 PM, "Oleg Nesterov" <oleg@redhat.com> wrote:
 >
-> On Tue, Jul 29, 2014 at 11:16 AM, Oleg Nesterov <oleg@redhat.com> wrote:
-> > On 07/29, Andy Lutomirski wrote:
-> >>
-> >> On Tue, Jul 29, 2014 at 10:31 AM, Oleg Nesterov <oleg@redhat.com> wrote:
-> >> >
-> >> > TIF_NOHZ is set if and only if context_tracking_is_enabled() is true.
-> >> > So I think that
-> >> >
-> >> >         work = current_thread_info()->flags & (_TIF_WORK_SYSCALL_ENTRY & ~TIF_NOHZ);
-> >> >
-> >> >         user_exit();
-> >> >
-> >> > looks a bit better. But I won't argue.
-> >>
-> >> I don't get it.
+> Andy, to avoid the confusion: I am not trying to review this changes.
+> As you probably know my understanding of asm code in entry.S is very
+> limited.
+>
+> Just a couple of questions to ensure I understand this correctly.
+>
+> On 07/28, Andy Lutomirski wrote:
 > >
-> > Don't worry, you are not alone.
-> >
-> >> context_tracking_is_enabled is global, and TIF_NOHZ
-> >> is per-task.  Isn't this stuff determined per-task or per-cpu or
-> >> something?
-> >>
-> >> IOW, if one CPU is running something that's very heavily
-> >> userspace-oriented and another CPU is doing something syscall- or
-> >> sleep-heavy, then shouldn't only the first CPU end up paying the price
-> >> of context tracking?
-> >
-> > Please see another email I sent to Frederic.
-> >
-> I'll add at least this argument in favor of my approach: if context
-> tracking works at all, then it had better not demand that syscall
-> entry call user_exit if TIF_NOHZ is *not* set.
+> > This is both a cleanup and a speedup.  It reduces overhead due to
+> > installing a trivial seccomp filter by 87%.  The speedup comes from
+> > avoiding the full syscall tracing mechanism for filters that don't
+> > return SECCOMP_RET_TRACE.
+>
+> And only after I look at 5/5 I _seem_ to actually understand where
+> this speedup comes from.
+>
+> So. Currently tracesys: path always lead to "iret" after syscall, with
+> this change we can avoid it if phase_1() returns zero, correct?
+>
+> And, this also removes the special TIF_SYSCALL_AUDIT-only case in entry.S,
+> cool.
+>
+> I am wondering if we can do something similar with do_notify_resume() ?
+>
+>
+> Stupid question. To simplify, lets forget that syscall_trace_enter()
+> already returns the value. Can't we simplify the asm code if we do
+> not export 2 functions, but make syscall_trace_enter() return
+> "bool slow_path_is_needed". So that "tracesys:" could do
+>
+>         // pseudo code
+>
+> tracesys:
+>         SAVE_REST
+>         FIXUP_TOP_OF_STACK
+>
+>         call syscall_trace_enter
+>
+>         if (!slow_path_is_needed) {
+>                 addq REST_SKIP, %rsp
+>                 jmp system_call_fastpath
+>         }
+>
+>         ...
+>
+> ?
+>
+> Once again, I am just curious, it is not that I actually suggest to consider
+> this option.
 
-I disagree. At least I disagree with that you should enforce this in
-syscall_trace_enter() paths, and in any case this has nothing to do with
-these changes.
+We could, but this would lose a decent amount of the speedup.  I could
+try it and benchmark it, but I'm guessing that the save and restore is
+kind of expensive.  This will make audit slower than it currently is,
+which may also annoy some people.  (Not me.)
 
-But again, I won't insist, so please forget.
+I'm also not convinced that it would be much simpler.  My code is currently:
 
-> So adding the
-> condition ought to be safe, barring dumb bugs in my code.
+tracesys:
+    leaq -REST_SKIP(%rsp), %rdi
+    movq $AUDIT_ARCH_X86_64, %rsi
+    call syscall_trace_enter_phase1
+    test %rax, %rax
+    jnz tracesys_phase2        /* if needed, run the slow path */
+    LOAD_ARGS 0            /* else restore clobbered regs */
+    jmp system_call_fastpath    /*      and return to the fast path */
 
-Yes, I think it is technically correct.
+tracesys_phase2:
+    SAVE_REST
+    FIXUP_TOP_OF_STACK %rdi
+    movq %rsp, %rdi
+    movq $AUDIT_ARCH_X86_64, %rsi
+    movq %rax,%rdx
+    call syscall_trace_enter_phase2
 
-Oleg.
+    LOAD_ARGS ARGOFFSET, 1
+    RESTORE_REST
+
+    ... slow path here ...
+
+It would end up looking more like (totally untested):
+
+tracesys:
+    SAVE_REST
+    FIXUP_TOP_OF_STACK %rdi
+    mov %rsp, %rdi
+    movq $AUDIT_ARCH_X86_64, %rsi
+    call syscall_trace_enter
+    LOAD_ARGS
+    RESTORE_REST
+    test [whatever condition]
+    j[cond] system_call_fastpath
+
+    ... slow path here ...
+
+So it's a bit simpler.  Oddly, the ia32entry code doesn't have this
+multiple syscall path distinction.
+
+SAVE_REST is 6 movq instructions and a subq.  FIXUP_TOP_OF_STACK is 7
+movqs (and 8 if I ever get my way).  RESTORE_TOP_OF_STACK is 4.
+RESTORE_REST is 6 movqs and an adsq.  So we're talking about avoiding
+21 movqs, and addq, and a subq.  That may be significant.  (And I
+suspect that the difference is much larger on platforms like arm64,
+but that's a separate issue.)

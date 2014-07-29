@@ -1,17 +1,21 @@
-Received: from mx1.redhat.com ([209.132.183.28]:23630 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6859956AbaG2RdeWzI1s (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 29 Jul 2014 19:33:34 +0200
-Date: Tue, 29 Jul 2014 19:31:36 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v3 6/8] x86: Split syscall_trace_enter into two phases
-Message-ID: <20140729173136.GA2808@redhat.com>
-References: <cover.1405992946.git.luto@amacapital.net> <3f649f5658a163645e3ce15156176c325283762e.1405992946.git.luto@amacapital.net> <20140728173723.GA20993@redhat.com> <CALCETrWUFo_zXcAZja-vdL4_MgJDd=1ed5Vt54eyUuim930xAw@mail.gmail.com> <20140729165416.GA967@redhat.com> <CALCETrWBU-=zqLTCP7B1feZ9J-e4u-Boic+e1EEn1rL-ijeEKg@mail.gmail.com>
+Received: from mail-lb0-f173.google.com ([209.85.217.173]:60750 "EHLO
+        mail-lb0-f173.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6860198AbaG2R4MBX4ox (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Jul 2014 19:56:12 +0200
+Received: by mail-lb0-f173.google.com with SMTP id p9so8966lbv.32
+        for <linux-mips@linux-mips.org>; Tue, 29 Jul 2014 10:56:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrWBU-=zqLTCP7B1feZ9J-e4u-Boic+e1EEn1rL-ijeEKg@mail.gmail.com>
-Return-Path: <oleg@redhat.com>
+In-Reply-To: <20140729173136.GA2808@redhat.com>
+References: <cover.1405992946.git.luto@amacapital.net> <3f649f5658a163645e3ce15156176c325283762e.1405992946.git.luto@amacapital.net>
+ <20140728173723.GA20993@redhat.com> <CALCETrWUFo_zXcAZja-vdL4_MgJDd=1ed5Vt54eyUuim930xAw@mail.gmail.com>
+ <20140729165416.GA967@redhat.com> <CALCETrWBU-=zqLTCP7B1feZ9J-e4u-Boic+e1EEn1rL-ijeEKg@mail.gmail.com>
+ <20140729173136.GA2808@redhat.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Tue, 29 Jul 2014 10:55:46 -0700
+Message-ID: <CALCETrVP-P+EJ6YJ=CZL_gyA1r8O9eogUNTik7_31_SA+Pj3pg@mail.gmail.com>
+Subject: Re: [PATCH v3 6/8] x86: Split syscall_trace_enter into two phases
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <luto@amacapital.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,50 +25,68 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Lutomirski <luto@amacapital.net>
+To: Oleg Nesterov <oleg@redhat.com>
 Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Will Drewry <wad@chromium.org>, X86 ML <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <20140729173136.y2hECKelI73nJs3srYq8f56wp_qEX_l5_pj-vIQYppo@z>
+Message-ID: <20140729175546.EJOxbd6RlBxEkzITG6wctPqV5BJCzsUb3KF0bFDJciY@z>
 
-On 07/29, Andy Lutomirski wrote:
+On Tue, Jul 29, 2014 at 10:31 AM, Oleg Nesterov <oleg@redhat.com> wrote:
+> On 07/29, Andy Lutomirski wrote:
+>>
+>> On Tue, Jul 29, 2014 at 9:54 AM, Oleg Nesterov <oleg@redhat.com> wrote:
+>> >
+>> > Yes, just to trigger the slow path, I guess.
+>> >
+>> >> I'll update the code to call user_exit iff TIF_NOHZ is
+>> >> set.
+>> >
+>> > Or perhaps it would be better to not add another user of this (strange) flag
+>> > and just call user_exit() unconditionally(). But, yes, you need to use
+>> > from "work = flags & (_TIF_WORK_SYSCALL_ENTRY & ~TIF_NOHZ)" then.\
+>>
+>> user_exit looks slow enough to me that a branch to try to avoid it may
+>> be worthwhile.  I bet that explicitly checking the flag is
+>> actually both faster and clearer.
 >
-> On Tue, Jul 29, 2014 at 9:54 AM, Oleg Nesterov <oleg@redhat.com> wrote:
-> >
-> > Yes, just to trigger the slow path, I guess.
-> >
-> >> I'll update the code to call user_exit iff TIF_NOHZ is
-> >> set.
-> >
-> > Or perhaps it would be better to not add another user of this (strange) flag
-> > and just call user_exit() unconditionally(). But, yes, you need to use
-> > from "work = flags & (_TIF_WORK_SYSCALL_ENTRY & ~TIF_NOHZ)" then.\
+> I don't think so (unless I am confused again), note that user_exit() uses
+> jump label. But this doesn't matter. I meant that we should avoid TIF_NOHZ
+> if possible because I think it should die somehow (currently I do not know
+> how ;). And because it is ugly to check the same condition twice:
 >
-> user_exit looks slow enough to me that a branch to try to avoid it may
-> be worthwhile.  I bet that explicitly checking the flag is
-> actually both faster and clearer.
+>         if (work & TIF_NOHZ) {
+>                 // user_exit()
+>                 if (context_tracking_is_enabled())
+>                         context_tracking_user_exit();
+>         }
+>
+> TIF_NOHZ is set if and only if context_tracking_is_enabled() is true.
+> So I think that
+>
+>         work = current_thread_info()->flags & (_TIF_WORK_SYSCALL_ENTRY & ~TIF_NOHZ);
+>
+>         user_exit();
+>
+> looks a bit better. But I won't argue.
 
-I don't think so (unless I am confused again), note that user_exit() uses
-jump label. But this doesn't matter. I meant that we should avoid TIF_NOHZ
-if possible because I think it should die somehow (currently I do not know
-how ;). And because it is ugly to check the same condition twice:
+I don't get it.  context_tracking_is_enabled is global, and TIF_NOHZ
+is per-task.  Isn't this stuff determined per-task or per-cpu or
+something?
 
-	if (work & TIF_NOHZ) {
-		// user_exit()
-		if (context_tracking_is_enabled())
-			context_tracking_user_exit();
-	}
+IOW, if one CPU is running something that's very heavily
+userspace-oriented and another CPU is doing something syscall- or
+sleep-heavy, then shouldn't only the first CPU end up paying the price
+of context tracking?
 
-TIF_NOHZ is set if and only if context_tracking_is_enabled() is true.
-So I think that
+>
+>> That's what I did for v4.
+>
+> I am going to read it today. Not that I think I can help or find something
+> wrong.
+>
+> Oleg.
+>
 
-	work = current_thread_info()->flags & (_TIF_WORK_SYSCALL_ENTRY & ~TIF_NOHZ);
 
-	user_exit();
 
-looks a bit better. But I won't argue.
-
-> That's what I did for v4.
-
-I am going to read it today. Not that I think I can help or find something
-wrong.
-
-Oleg.
+-- 
+Andy Lutomirski
+AMA Capital Management, LLC

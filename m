@@ -1,14 +1,19 @@
-Received: from mail.windriver.com ([147.11.1.11]:40069 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6860095AbaGaLnHEUvRG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 31 Jul 2014 13:43:07 +0200
-From: <Wei.Yang@windriver.com>
-Subject: [PATCH v1] MIPS:KDUMP: set a right value to kexec_indirection_page variable
-Date: Thu, 31 Jul 2014 19:42:29 +0800
-Message-ID: <1406806949-27039-1-git-send-email-Wei.Yang@windriver.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:16892 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6860183AbaGaNxuSYyCx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 31 Jul 2014 15:53:50 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 289C894683C40
+        for <linux-mips@linux-mips.org>; Thu, 31 Jul 2014 14:53:29 +0100 (IST)
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH v2 06/13] MIPS: fix MSA context for tasks which don't use FP first
+Date: Thu, 31 Jul 2014 14:53:16 +0100
+Message-ID: <1406814796-8109-1-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1405093479-5123-7-git-send-email-paul.burton@imgtec.com>
+References: <1405093479-5123-7-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Wei.Yang@windriver.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,48 +23,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: Wei.Yang@windriver.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20140731114229.PzLZMGw6H-1WF_p6NYPKtKAq2dLsnrZNY2yv5TfRFWk@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20140731135316.HpFEZHbR1R2uJQQDxjY5S9i9Jj3iWu2qMNgKQCqkCm4@z>
 
-From: Yang Wei <Wei.Yang@windriver.com>
+If a task does not execute scalar FP instructions prior to using MSA
+then the flags indicating that the task has live MSA context were not
+being set. The upper 64b of each vector register would then be lost
+upon the tasks first context switch after using MSA.
 
-Since there is not indirection page in crash type, so the vaule of the head
-field of kimage structure is not equal to the address of indirection page but
-IND_DONE. so we have to set kexec_indirection_page variable to the address of
-the head field of image structure.
-
-Signed-off-by: Yang Wei <Wei.Yang@windriver.com>
-
-          Hi Ralf,
-
-		  Please help me take a look at this patch, I have already verified it on Cavium 6100EVB board.
-
-		  Thanks
-		  Wei
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/kernel/machine_kexec.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Changes in v2:
+  - Rebase atop v2 of patch 5 as requested by Ralf.
+---
+ arch/mips/kernel/traps.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/kernel/machine_kexec.c b/arch/mips/kernel/machine_kexec.c
-index 992e184..531b70d 100644
---- a/arch/mips/kernel/machine_kexec.c
-+++ b/arch/mips/kernel/machine_kexec.c
-@@ -71,8 +71,13 @@ machine_kexec(struct kimage *image)
- 	kexec_start_address =
- 		(unsigned long) phys_to_virt(image->start);
- 
--	kexec_indirection_page =
--		(unsigned long) phys_to_virt(image->head & PAGE_MASK);
-+	if (image->type == KEXEC_TYPE_DEFAULT) {
-+		kexec_indirection_page =
-+			(unsigned long) phys_to_virt(image->head & PAGE_MASK);
-+	} else {
-+		kexec_indirection_page = (unsigned long)&image->head;
-+	}
-+	
- 
- 	memcpy((void*)reboot_code_buffer, relocate_new_kernel,
- 	       relocate_new_kernel_size);
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 4aca484..00f3143 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -1096,6 +1096,8 @@ static int enable_restore_fp_context(int msa)
+ 		if (msa && !err) {
+ 			enable_msa();
+ 			_init_msa_upper();
++			set_thread_flag(TIF_USEDMSA);
++			set_thread_flag(TIF_MSA_CTX_LIVE);
+ 		}
+ 		if (!err)
+ 			set_used_math();
 -- 
-1.7.9.5
+2.0.2

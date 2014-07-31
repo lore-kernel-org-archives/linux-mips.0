@@ -1,25 +1,28 @@
-Received: from mail-wg0-f48.google.com ([74.125.82.48]:43062 "EHLO
-        mail-wg0-f48.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6860188AbaGaRU2tiD5A (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 31 Jul 2014 19:20:28 +0200
-Received: by mail-wg0-f48.google.com with SMTP id x13so3054213wgg.19
-        for <linux-mips@linux-mips.org>; Thu, 31 Jul 2014 10:20:21 -0700 (PDT)
-Date: Thu, 31 Jul 2014 19:20:18 +0200
-From: Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH v4 0/5] x86: two-phase syscall tracing and seccomp
- fastpath
-Message-ID: <20140731172017.GF7842@localhost.localdomain>
-References: <cover.1406604806.git.luto@amacapital.net>
- <20140729192056.GA6308@redhat.com>
- <CALCETrX6P7SJQdgc0gTM7FLdwyT_Ld1MWvkLYpTO_2xsvBC9sA@mail.gmail.com>
- <CALCETrXHF5YzPQDvnJs=mFNm2Ff_FekGu_Y8-JyMaWh2hctR7A@mail.gmail.com>
- <20140730165940.GB27954@localhost.localdomain>
- <CALCETrUafpWfnbfZzgu3qSGqyxcG0+6A=A1RE8g++=GrQKD93Q@mail.gmail.com>
- <53DA7550.40905@zytor.com>
+Received: from mail-la0-f51.google.com ([209.85.215.51]:55985 "EHLO
+        mail-la0-f51.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6860192AbaGaSufqAwYP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 31 Jul 2014 20:50:35 +0200
+Received: by mail-la0-f51.google.com with SMTP id pn19so2377583lab.38
+        for <linux-mips@linux-mips.org>; Thu, 31 Jul 2014 11:50:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53DA7550.40905@zytor.com>
+In-Reply-To: <20140731184729.GA12296@localhost.localdomain>
+References: <20140728173723.GA20993@redhat.com>
+        <20140728185803.GA24663@redhat.com>
+        <20140728192209.GA26017@localhost.localdomain>
+        <20140729175414.GA3289@redhat.com>
+        <20140730163516.GC18158@localhost.localdomain>
+        <20140730174630.GA30862@redhat.com>
+        <20140731003034.GA32078@localhost.localdomain>
+        <20140731160353.GA14772@redhat.com>
+        <20140731171329.GD7842@localhost.localdomain>
+        <20140731181230.GA18695@redhat.com>
+        <20140731184729.GA12296@localhost.localdomain>
+Date: Thu, 31 Jul 2014 20:50:29 +0200
+Message-ID: <CAFTL4hyHh3Bw0eeJe9q50HVrt=B-zgmyu6C_hy+RoW21kQEJtg@mail.gmail.com>
+Subject: Re: TIF_NOHZ can escape nonhz mask? (Was: [PATCH v3 6/8] x86: Split
+ syscall_trace_enter into two phases)
+From: Frederic Weisbecker <fweisbec@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Return-Path: <fweisbec@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -30,19 +33,20 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Andy Lutomirski <luto@amacapital.net>, Oleg Nesterov <oleg@redhat.com>, linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>, LSM List <linux-security-module@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexei Starovoitov <ast@plumgrid.com>, Will Drewry <wad@chromium.org>, Kees Cook <keescook@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20140731172018.Ppfk_i_fuRnqla1yy7SaBhxXwk2dLlSOlhm7kMckKBM@z>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Andy Lutomirski <luto@amacapital.net>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, LKML <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Will Drewry <wad@chromium.org>, the arch/x86 maintainers <x86@kernel.org>, "<linux-arm-kernel@lists.infradead.org>" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <20140731185029.coTqENUz5WDpFypLxU9IY8QpFOYE4Tcq3EF_pfv7zhI@z>
 
-On Thu, Jul 31, 2014 at 09:56:48AM -0700, H. Peter Anvin wrote:
-> On 07/30/2014 10:25 AM, Andy Lutomirski wrote:
-> > 
-> > And yet x86_64 has this code implemented in assembly even in the
-> > slowpath.  Go figure.
-> > 
-> 
-> There is way too much assembly in entry_64.S probably because things
-> have been grafted on, ahem, "organically".  It is darn nigh impossible
-> to even remotely figure out what goes on in that file.
+2014-07-31 20:47 GMT+02:00 Frederic Weisbecker <fweisbec@gmail.com>:
+> On Thu, Jul 31, 2014 at 08:12:30PM +0200, Oleg Nesterov wrote:
+>> On 07/31, Frederic Weisbecker wrote:
+> No, because preempt_schedule_irq() does the ctx_state save and restore with
+> exception_enter/exception_exit.
 
-Always warn your family and give them an estimate return hour before opening that file.
+Similar thing happens with schedule_user().
+
+preempt_schedule_irq() handles kernel preemption and schedule_user()
+the user preemption. On both cases we save and restore the context
+tracking state.
+
+This might be the missing piece you were missing :)

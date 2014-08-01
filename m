@@ -1,18 +1,21 @@
-Received: from mx1.redhat.com ([209.132.183.28]:65113 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S6860195AbaGaTHZtMY0t (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 31 Jul 2014 21:07:25 +0200
-Date: Thu, 31 Jul 2014 21:05:18 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: TIF_NOHZ can escape nonhz mask? (Was: [PATCH v3 6/8] x86:
-        Split syscall_trace_enter into two phases)
-Message-ID: <20140731190518.GA21938@redhat.com>
-References: <20140728192209.GA26017@localhost.localdomain> <20140729175414.GA3289@redhat.com> <20140730163516.GC18158@localhost.localdomain> <20140730174630.GA30862@redhat.com> <20140731003034.GA32078@localhost.localdomain> <20140731160353.GA14772@redhat.com> <20140731171329.GD7842@localhost.localdomain> <20140731181230.GA18695@redhat.com> <20140731184729.GA12296@localhost.localdomain> <CAFTL4hyHh3Bw0eeJe9q50HVrt=B-zgmyu6C_hy+RoW21kQEJtg@mail.gmail.com>
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:61063 "EHLO
+        mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6816005AbaHAFnjndQ3V (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Aug 2014 07:43:39 +0200
+Date: Fri, 1 Aug 2014 11:17:40 +0530
+From: Jayachandran C. <jchandra@broadcom.com>
+Subject: Re: [next:master
+ 9246/10000]arch/mips/include/asm/mach-netlogic/topology.h:14:0:
+ warning:"topology_physical_package_id" redefined
+Message-ID: <20140801054739.GF12788@jayachandranc.netlogicmicro.com>
+References: <53dac64a.+6998x07jTwh9JtK%fengguang.wu@intel.com>
+ <tencent_4DD2F4897C8F21F621E1333A@qq.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <CAFTL4hyHh3Bw0eeJe9q50HVrt=B-zgmyu6C_hy+RoW21kQEJtg@mail.gmail.com>
-Return-Path: <oleg@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <tencent_4DD2F4897C8F21F621E1333A@qq.com>
+Return-Path: <jchandra@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,34 +25,28 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Frederic Weisbecker <fweisbec@gmail.com>
-Cc: Andy Lutomirski <luto@amacapital.net>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, LKML <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Will Drewry <wad@chromium.org>, the arch/x86 maintainers <x86@kernel.org>, "<linux-arm-kernel@lists.infradead.org>" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <20140731190518.Uu8VFdTz3qz9wWQyj8GQ4dG5nZhgvoEcYoIQWK7ImkU@z>
+To: =?utf-8?B?6ZmI5Y2O5omN?= <chenhc@lemote.com>
+Cc: kbuild test robot <fengguang.wu@intel.com>, Ralf Baechle <ralf@linux-mips.org>, kbuild-all <kbuild-all@01.org>, linux-mips@linux-mips.org
+Message-ID: <20140801054740.mxEnoDxyNs9e26SOwyi35CQBsjdDCxlGJrtmVX6dDLM@z>
 
-On 07/31, Frederic Weisbecker wrote:
->
-> 2014-07-31 20:47 GMT+02:00 Frederic Weisbecker <fweisbec@gmail.com>:
-> > On Thu, Jul 31, 2014 at 08:12:30PM +0200, Oleg Nesterov wrote:
-> >> On 07/31, Frederic Weisbecker wrote:
-> > No, because preempt_schedule_irq() does the ctx_state save and restore with
-> > exception_enter/exception_exit.
->
-> Similar thing happens with schedule_user().
->
-> preempt_schedule_irq() handles kernel preemption and schedule_user()
-> the user preemption. On both cases we save and restore the context
-> tracking state.
->
-> This might be the missing piece you were missing :)
+Hi Huacai,
 
-YYYYYEEEEESSSS, thanks!!
+On Fri, Aug 01, 2014 at 09:19:11AM +0800, 陈华才 wrote:
+> Hi, Jayachandran
+> 
+> I think I introduce a more *general* method of MIPS CPU's topology in commit bda4584cd94 (MIPS: Support CPU topology files in sysfs). So, could you please modify the Netlogic's code to adaptive the new framework? If you can't do that, I'll send a new version of my patch by adding some #ifndef.
 
-And in fact I was going to suggest to add this logic into preempt schedule
-paths to improve the situation if we can't make TIF_NOHZ per-cpu.
+You have added the definitions for topology in asm/smp.h
 
-But Frederic, perhaps I'll return here tomorrow with another question, it
-is too late for me now ;)
++#define topology_physical_package_id(cpu)      (cpu_data[cpu].package)
++#define topology_core_id(cpu)                  (cpu_data[cpu].core)
++#define topology_core_cpumask(cpu)             (&cpu_core_map[cpu])
++#define topology_thread_cpumask(cpu)           (&cpu_sibling_map[cpu])
 
-Thanks!
+These changes have to be in asm/topology.h and should only change the
+definitions if mach-<platform>/topology.h does not define them.
 
-Oleg.
+Can you please look at fixing this?
+
+Thanks,
+JC.

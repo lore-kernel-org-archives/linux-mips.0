@@ -1,21 +1,18 @@
-Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:61063 "EHLO
-        mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6816005AbaHAFnjndQ3V (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Aug 2014 07:43:39 +0200
-Date: Fri, 1 Aug 2014 11:17:40 +0530
-From: Jayachandran C. <jchandra@broadcom.com>
-Subject: Re: [next:master
- 9246/10000]arch/mips/include/asm/mach-netlogic/topology.h:14:0:
- warning:"topology_physical_package_id" redefined
-Message-ID: <20140801054739.GF12788@jayachandranc.netlogicmicro.com>
-References: <53dac64a.+6998x07jTwh9JtK%fengguang.wu@intel.com>
- <tencent_4DD2F4897C8F21F621E1333A@qq.com>
+Received: from mail.windriver.com ([147.11.1.11]:44134 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6842528AbaHDDqzPKOnq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 4 Aug 2014 05:46:55 +0200
+Message-ID: <53DF0204.6000904@windriver.com>
+Date: Mon, 4 Aug 2014 11:46:12 +0800
+From: "Yang,Wei" <Wei.Yang@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_4DD2F4897C8F21F621E1333A@qq.com>
-Return-Path: <jchandra@broadcom.com>
+Subject: Re: [PATCH v1] MIPS:KDUMP: set a right value to kexec_indirection_page
+ variable
+References: <1406806949-27039-1-git-send-email-Wei.Yang@windriver.com>
+In-Reply-To: <1406806949-27039-1-git-send-email-Wei.Yang@windriver.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Wei.Yang@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,28 +22,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: =?utf-8?B?6ZmI5Y2O5omN?= <chenhc@lemote.com>
-Cc: kbuild test robot <fengguang.wu@intel.com>, Ralf Baechle <ralf@linux-mips.org>, kbuild-all <kbuild-all@01.org>, linux-mips@linux-mips.org
-Message-ID: <20140801054740.mxEnoDxyNs9e26SOwyi35CQBsjdDCxlGJrtmVX6dDLM@z>
+To: Wei.Yang@windriver.com, ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20140804034612.zvCMv3CBaOYMSiK99tzHAjViaisaFCJAHOXXfIo9Pbk@z>
 
-Hi Huacai,
+ping.
 
-On Fri, Aug 01, 2014 at 09:19:11AM +0800, 陈华才 wrote:
-> Hi, Jayachandran
-> 
-> I think I introduce a more *general* method of MIPS CPU's topology in commit bda4584cd94 (MIPS: Support CPU topology files in sysfs). So, could you please modify the Netlogic's code to adaptive the new framework? If you can't do that, I'll send a new version of my patch by adding some #ifndef.
-
-You have added the definitions for topology in asm/smp.h
-
-+#define topology_physical_package_id(cpu)      (cpu_data[cpu].package)
-+#define topology_core_id(cpu)                  (cpu_data[cpu].core)
-+#define topology_core_cpumask(cpu)             (&cpu_core_map[cpu])
-+#define topology_thread_cpumask(cpu)           (&cpu_sibling_map[cpu])
-
-These changes have to be in asm/topology.h and should only change the
-definitions if mach-<platform>/topology.h does not define them.
-
-Can you please look at fixing this?
-
-Thanks,
-JC.
+BR,
+Wei
+On 07/31/2014 07:42 PM, Wei.Yang@windriver.com wrote:
+> From: Yang Wei <Wei.Yang@windriver.com>
+>
+> Since there is not indirection page in crash type, so the vaule of the head
+> field of kimage structure is not equal to the address of indirection page but
+> IND_DONE. so we have to set kexec_indirection_page variable to the address of
+> the head field of image structure.
+>
+> Signed-off-by: Yang Wei <Wei.Yang@windriver.com>
+>
+>            Hi Ralf,
+>
+> 		  Please help me take a look at this patch, I have already verified it on Cavium 6100EVB board.
+>
+> 		  Thanks
+> 		  Wei
+> ---
+>   arch/mips/kernel/machine_kexec.c |    9 +++++++--
+>   1 file changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/mips/kernel/machine_kexec.c b/arch/mips/kernel/machine_kexec.c
+> index 992e184..531b70d 100644
+> --- a/arch/mips/kernel/machine_kexec.c
+> +++ b/arch/mips/kernel/machine_kexec.c
+> @@ -71,8 +71,13 @@ machine_kexec(struct kimage *image)
+>   	kexec_start_address =
+>   		(unsigned long) phys_to_virt(image->start);
+>   
+> -	kexec_indirection_page =
+> -		(unsigned long) phys_to_virt(image->head & PAGE_MASK);
+> +	if (image->type == KEXEC_TYPE_DEFAULT) {
+> +		kexec_indirection_page =
+> +			(unsigned long) phys_to_virt(image->head & PAGE_MASK);
+> +	} else {
+> +		kexec_indirection_page = (unsigned long)&image->head;
+> +	}
+> +	
+>   
+>   	memcpy((void*)reboot_code_buffer, relocate_new_kernel,
+>   	       relocate_new_kernel_size);

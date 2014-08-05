@@ -1,17 +1,13 @@
-Received: from mail.windriver.com ([147.11.1.11]:44134 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6842528AbaHDDqzPKOnq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 4 Aug 2014 05:46:55 +0200
-Message-ID: <53DF0204.6000904@windriver.com>
-Date: Mon, 4 Aug 2014 11:46:12 +0800
-From: "Yang,Wei" <Wei.Yang@windriver.com>
+Received: from mail1.windriver.com ([147.11.146.13]:44174 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6816750AbaHEFi5aLwH0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Aug 2014 07:38:57 +0200
+From: <Wei.Yang@windriver.com>
+Subject: [PATCH v1] MIPS: perf: Mark pmu interupt IRQF_NO_THREAD
+Date: Tue, 5 Aug 2014 13:37:47 +0800
+Message-ID: <1407217067-1144-1-git-send-email-Wei.Yang@windriver.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1] MIPS:KDUMP: set a right value to kexec_indirection_page
- variable
-References: <1406806949-27039-1-git-send-email-Wei.Yang@windriver.com>
-In-Reply-To: <1406806949-27039-1-git-send-email-Wei.Yang@windriver.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Wei.Yang@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,51 +18,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Wei.Yang@windriver.com, ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20140804034612.zvCMv3CBaOYMSiK99tzHAjViaisaFCJAHOXXfIo9Pbk@z>
+To: ralf@linux-mips.org
+Cc: a.p.zijlstra@chello.nl, paulus@samba.org, mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, wei.yang@windriver.com
+Message-ID: <20140805053747.zi42li57cAZSUVPTVPtT2aYXYgAZL3bekBY25IFo8Ik@z>
 
-ping.
+From: Yang Wei <Wei.Yang@windriver.com>
 
-BR,
-Wei
-On 07/31/2014 07:42 PM, Wei.Yang@windriver.com wrote:
-> From: Yang Wei <Wei.Yang@windriver.com>
->
-> Since there is not indirection page in crash type, so the vaule of the head
-> field of kimage structure is not equal to the address of indirection page but
-> IND_DONE. so we have to set kexec_indirection_page variable to the address of
-> the head field of image structure.
->
-> Signed-off-by: Yang Wei <Wei.Yang@windriver.com>
->
->            Hi Ralf,
->
-> 		  Please help me take a look at this patch, I have already verified it on Cavium 6100EVB board.
->
-> 		  Thanks
-> 		  Wei
-> ---
->   arch/mips/kernel/machine_kexec.c |    9 +++++++--
->   1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/mips/kernel/machine_kexec.c b/arch/mips/kernel/machine_kexec.c
-> index 992e184..531b70d 100644
-> --- a/arch/mips/kernel/machine_kexec.c
-> +++ b/arch/mips/kernel/machine_kexec.c
-> @@ -71,8 +71,13 @@ machine_kexec(struct kimage *image)
->   	kexec_start_address =
->   		(unsigned long) phys_to_virt(image->start);
->   
-> -	kexec_indirection_page =
-> -		(unsigned long) phys_to_virt(image->head & PAGE_MASK);
-> +	if (image->type == KEXEC_TYPE_DEFAULT) {
-> +		kexec_indirection_page =
-> +			(unsigned long) phys_to_virt(image->head & PAGE_MASK);
-> +	} else {
-> +		kexec_indirection_page = (unsigned long)&image->head;
-> +	}
-> +	
->   
->   	memcpy((void*)reboot_code_buffer, relocate_new_kernel,
->   	       relocate_new_kernel_size);
+In RT kernel, I ran into the following calltrace, so PMU interrupts cannot
+be threaded
+
+in_atomic(): 1, irqs_disabled(): 1, pid: 0, name: swapper/0
+INFO: lockdep is turned off.
+Call Trace:
+[<ffffffff8088595c>] dump_stack+0x1c/0x50
+[<ffffffff801a958c>] __might_sleep+0x13c/0x148
+[<ffffffff80891c54>] rt_spin_lock+0x3c/0xb0
+[<ffffffff801ad29c>] __wake_up+0x3c/0x80
+[<ffffffff80243ba4>] perf_event_wakeup+0x8c/0xf8
+[<ffffffff80243c50>] perf_pending_event+0x40/0x78
+[<ffffffff8023d88c>] irq_work_run+0x74/0xc0
+[<ffffffff80152640>] mipsxx_pmu_handle_shared_irq+0x110/0x228
+[<ffffffff8015276c>] mipsxx_pmu_handle_irq+0x14/0x30
+[<ffffffff801ffda4>] handle_irq_event_percpu+0xbc/0x470
+[<ffffffff80204478>] handle_percpu_irq+0x98/0xc8
+[<ffffffff801ff284>] generic_handle_irq+0x4c/0x68
+[<ffffffff8089748c>] do_IRQ+0x2c/0x48
+[<ffffffff80105864>] plat_irq_dispatch+0x64/0xd0 
+
+
+Signed-off-by: Yang Wei <Wei.Yang@windriver.com>
+---
+ arch/mips/kernel/perf_event_mipsxx.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
+index 811084f..fd16763 100644
+--- a/arch/mips/kernel/perf_event_mipsxx.c
++++ b/arch/mips/kernel/perf_event_mipsxx.c
+@@ -550,7 +550,7 @@ static int mipspmu_get_irq(void)
+ 	if (mipspmu.irq >= 0) {
+ 		/* Request my own irq handler. */
+ 		err = request_irq(mipspmu.irq, mipsxx_pmu_handle_irq,
+-			IRQF_PERCPU | IRQF_NOBALANCING,
++			IRQF_PERCPU | IRQF_NOBALANCING | IRQF_NO_THREAD,
+ 			"mips_perf_pmu", NULL);
+ 		if (err) {
+ 			pr_warning("Unable to request IRQ%d for MIPS "
+-- 
+1.7.9.5

@@ -1,14 +1,17 @@
-Received: from mail1.windriver.com ([147.11.146.13]:44174 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6816750AbaHEFi5aLwH0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Aug 2014 07:38:57 +0200
-From: <Wei.Yang@windriver.com>
-Subject: [PATCH v1] MIPS: perf: Mark pmu interupt IRQF_NO_THREAD
-Date: Tue, 5 Aug 2014 13:37:47 +0800
-Message-ID: <1407217067-1144-1-git-send-email-Wei.Yang@windriver.com>
+Received: from mail-la0-f46.google.com ([209.85.215.46]:62925 "EHLO
+        mail-la0-f46.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6861547AbaHGVgQfTRfz (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Aug 2014 23:36:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Wei.Yang@windriver.com>
+In-Reply-To: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
+References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
+Date: Thu, 7 Aug 2014 23:36:10 +0200
+Message-ID: <CAMuHMdVZmJR=Cu1Wvpyx+KqgdKRRtnAO94k4imXChUwfC_GPTw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] defconfigs: add MTD_SPI_NOR (new subsystem
+ dependency for M25P80)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,51 +21,120 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: a.p.zijlstra@chello.nl, paulus@samba.org, mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, wei.yang@windriver.com
-Message-ID: <20140805053747.zi42li57cAZSUVPTVPtT2aYXYgAZL3bekBY25IFo8Ik@z>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Linux Kernel <linux-kernel@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>, Steven Miao <realmz6@gmail.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Thierry Reding <thierry.reding@gmail.com>, MTD Maling List <linux-mtd@lists.infradead.org>, Marek Vasut <marex@denx.de>, Russell King <linux@arm.linux.org.uk>, Linux-sh list <linux-sh@vger.kernel.org>, Shawn Guo <shawn.guo@freescale.com>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Roland Stigge <stigge@antcom.de>, Jason Cooper <jason@lakedaemon.net>, Arnd Bergmann <arnd@arndb.de>, Stephen Warren <swarren@wwwdotorg.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Simon Horman <horms@verge.net.au>, linux-tegra@vger.kernel.org, Andrew Victor <linux@maxim.org.za>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Ralf Baechle <ralf@linux-mips.org>, Huang Shijie <b32955@freescale.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Sascha Hauer <kernel@pengutronix.de>, Olof Johansson <olof@lixom.net>, Paul Mackerras <paulus@samba.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Message-ID: <20140807213610.QEaPme6vh7g-7ZgNzPXdPPL_UMV-nYy_7A-jfcqlC1I@z>
 
-From: Yang Wei <Wei.Yang@windriver.com>
+Hi Brian,
 
-In RT kernel, I ran into the following calltrace, so PMU interrupts cannot
-be threaded
+On Thu, May 1, 2014 at 8:26 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> v1 --> v2: split ARM defconfig changes into their sub-architectures. No change
+>            in the overall diff.
+>
+> Hi all,
+>
+> We are introducing a new SPI-NOR subsystem/framework for MTD, to support
+> various types of SPI-NOR flash controllers which require (or benefit from)
+> intimate knowledge of the flash interface, rather than just the relatively dumb
+> SPI interface. This framework borrows much of the m25p80 driver for its
+> abstraction and moves this code into a spi-nor module.
+>
+> This means CONFIG_M25P80 now has a dependency on CONFIG_MTD_SPI_NOR, which
+> should be added to the defconfigs. I expect that each (sub)architecture
+> maintainer can merge these patches to their own tree.
+>
+> Note that without the new CONFIG_MTD_SPI_NOR symbol in your defconfig, Kconfig
+> will automatically drop M25P80 for you.
+>
+> Please keep general comments to the cover letter, so all parties can see.
+>
+> This series is based on 3.15-rc1.
+>
+> The SPI-NOR development code (in -next, queued for 3.16) is here:
+>
+>   git://git.infradead.org/l2-mtd.git +spinor
+>
+> This defconfig series is available in the same repo at:
+>
+>   git://git.infradead.org/l2-mtd.git +defconfigs
+>
+> Thanks,
+> Brian
+>
+> Brian Norris (12):
+>   ARM: imx/mxs defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
+>   ARM: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
+>   ARM: keystone: add MTD_SPI_NOR (new dependency for M25P80)
+>   ARM: tegra: add MTD_SPI_NOR (new dependency for M25P80)
+>   ARM: lpc32xx: add MTD_SPI_NOR (new dependency for M25P80)
+>   ARM: at91: add MTD_SPI_NOR (new dependency for M25P80)
+>   ARM: shmobile: add MTD_SPI_NOR (new dependency for M25P80)
+>   ARM: marvell: add MTD_SPI_NOR (new dependency for M25P80)
+>   blackfin: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
+>   mips: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
+>   powerpc: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
+>   sh: defconfig: add MTD_SPI_NOR (new dependency for M25P80)
+>
+>  arch/arm/configs/bockw_defconfig               | 2 +-
+>  arch/arm/configs/dove_defconfig                | 2 +-
+>  arch/arm/configs/imx_v6_v7_defconfig           | 1 +
+>  arch/arm/configs/keystone_defconfig            | 1 +
+>  arch/arm/configs/kirkwood_defconfig            | 1 +
+>  arch/arm/configs/koelsch_defconfig             | 1 +
+>  arch/arm/configs/lager_defconfig               | 1 +
+>  arch/arm/configs/lpc32xx_defconfig             | 2 +-
+>  arch/arm/configs/multi_v5_defconfig            | 1 +
+>  arch/arm/configs/multi_v7_defconfig            | 1 +
+>  arch/arm/configs/mvebu_v5_defconfig            | 1 +
+>  arch/arm/configs/mvebu_v7_defconfig            | 1 +
+>  arch/arm/configs/mxs_defconfig                 | 1 +
+>  arch/arm/configs/sama5_defconfig               | 2 +-
+>  arch/arm/configs/shmobile_defconfig            | 1 +
+>  arch/arm/configs/tegra_defconfig               | 1 +
+>  arch/blackfin/configs/BF526-EZBRD_defconfig    | 2 +-
+>  arch/blackfin/configs/BF527-EZKIT-V2_defconfig | 2 +-
+>  arch/blackfin/configs/BF527-EZKIT_defconfig    | 2 +-
+>  arch/blackfin/configs/BF548-EZKIT_defconfig    | 2 +-
+>  arch/blackfin/configs/BF609-EZKIT_defconfig    | 2 +-
+>  arch/blackfin/configs/BlackStamp_defconfig     | 3 +--
+>  arch/blackfin/configs/H8606_defconfig          | 3 +--
+>  arch/mips/configs/ath79_defconfig              | 3 +--
+>  arch/mips/configs/db1xxx_defconfig             | 1 +
+>  arch/mips/configs/rt305x_defconfig             | 2 +-
+>  arch/powerpc/configs/corenet32_smp_defconfig   | 2 +-
+>  arch/powerpc/configs/corenet64_smp_defconfig   | 2 +-
+>  arch/powerpc/configs/mpc85xx_defconfig         | 2 +-
+>  arch/powerpc/configs/mpc85xx_smp_defconfig     | 2 +-
+>  arch/sh/configs/sh7757lcr_defconfig            | 2 +-
+>  31 files changed, 31 insertions(+), 21 deletions(-)
 
-in_atomic(): 1, irqs_disabled(): 1, pid: 0, name: swapper/0
-INFO: lockdep is turned off.
-Call Trace:
-[<ffffffff8088595c>] dump_stack+0x1c/0x50
-[<ffffffff801a958c>] __might_sleep+0x13c/0x148
-[<ffffffff80891c54>] rt_spin_lock+0x3c/0xb0
-[<ffffffff801ad29c>] __wake_up+0x3c/0x80
-[<ffffffff80243ba4>] perf_event_wakeup+0x8c/0xf8
-[<ffffffff80243c50>] perf_pending_event+0x40/0x78
-[<ffffffff8023d88c>] irq_work_run+0x74/0xc0
-[<ffffffff80152640>] mipsxx_pmu_handle_shared_irq+0x110/0x228
-[<ffffffff8015276c>] mipsxx_pmu_handle_irq+0x14/0x30
-[<ffffffff801ffda4>] handle_irq_event_percpu+0xbc/0x470
-[<ffffffff80204478>] handle_percpu_irq+0x98/0xc8
-[<ffffffff801ff284>] generic_handle_irq+0x4c/0x68
-[<ffffffff8089748c>] do_IRQ+0x2c/0x48
-[<ffffffff80105864>] plat_irq_dispatch+0x64/0xd0 
+FWIW, this change still hasn't propagated to the following defconfigs:
 
+arch/arm/configs/axm55xx_defconfig
+arch/arm/configs/bockw_defconfig
+arch/arm/configs/koelsch_defconfig
+arch/arm/configs/lager_defconfig
+arch/arm/configs/lpc32xx_defconfig
+arch/arm/configs/multi_v5_defconfig
+arch/arm/configs/multi_v7_defconfig
+arch/arm/configs/qcom_defconfig
+arch/arm/configs/sama5_defconfig
+arch/arm/configs/shmobile_defconfig
+arch/powerpc/configs/85xx/kmp204x_defconfig
+arch/powerpc/configs/corenet32_smp_defconfig
+arch/powerpc/configs/corenet64_smp_defconfig
+arch/powerpc/configs/mpc85xx_defconfig
+arch/powerpc/configs/mpc85xx_smp_defconfig
+arch/sh/configs/sh7757lcr_defconfig
 
-Signed-off-by: Yang Wei <Wei.Yang@windriver.com>
----
- arch/mips/kernel/perf_event_mipsxx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-index 811084f..fd16763 100644
---- a/arch/mips/kernel/perf_event_mipsxx.c
-+++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -550,7 +550,7 @@ static int mipspmu_get_irq(void)
- 	if (mipspmu.irq >= 0) {
- 		/* Request my own irq handler. */
- 		err = request_irq(mipspmu.irq, mipsxx_pmu_handle_irq,
--			IRQF_PERCPU | IRQF_NOBALANCING,
-+			IRQF_PERCPU | IRQF_NOBALANCING | IRQF_NO_THREAD,
- 			"mips_perf_pmu", NULL);
- 		if (err) {
- 			pr_warning("Unable to request IRQ%d for MIPS "
--- 
-1.7.9.5
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

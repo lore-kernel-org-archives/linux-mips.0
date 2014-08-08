@@ -1,17 +1,18 @@
-Received: from mail-la0-f46.google.com ([209.85.215.46]:62925 "EHLO
-        mail-la0-f46.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6861547AbaHGVgQfTRfz (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Aug 2014 23:36:16 +0200
+Received: from mail1.windriver.com ([147.11.146.13]:45513 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6854765AbaHHBkBE3XBQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 8 Aug 2014 03:40:01 +0200
+Message-ID: <53E42A42.3000707@windriver.com>
+Date: Fri, 8 Aug 2014 09:39:14 +0800
+From: "Yang,Wei" <Wei.Yang@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
-References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
-Date: Thu, 7 Aug 2014 23:36:10 +0200
-Message-ID: <CAMuHMdVZmJR=Cu1Wvpyx+KqgdKRRtnAO94k4imXChUwfC_GPTw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] defconfigs: add MTD_SPI_NOR (new subsystem
- dependency for M25P80)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <geert.uytterhoeven@gmail.com>
+Subject: Re: [PATCH v1] MIPS:KDUMP: set a right value to kexec_indirection_page
+ variable
+References: <1406806949-27039-1-git-send-email-Wei.Yang@windriver.com> <53DF0204.6000904@windriver.com>
+In-Reply-To: <53DF0204.6000904@windriver.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Wei.Yang@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,120 +22,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Linux Kernel <linux-kernel@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>, Steven Miao <realmz6@gmail.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Thierry Reding <thierry.reding@gmail.com>, MTD Maling List <linux-mtd@lists.infradead.org>, Marek Vasut <marex@denx.de>, Russell King <linux@arm.linux.org.uk>, Linux-sh list <linux-sh@vger.kernel.org>, Shawn Guo <shawn.guo@freescale.com>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Roland Stigge <stigge@antcom.de>, Jason Cooper <jason@lakedaemon.net>, Arnd Bergmann <arnd@arndb.de>, Stephen Warren <swarren@wwwdotorg.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Simon Horman <horms@verge.net.au>, linux-tegra@vger.kernel.org, Andrew Victor <linux@maxim.org.za>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Ralf Baechle <ralf@linux-mips.org>, Huang Shijie <b32955@freescale.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Sascha Hauer <kernel@pengutronix.de>, Olof Johansson <olof@lixom.net>, Paul Mackerras <paulus@samba.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Message-ID: <20140807213610.QEaPme6vh7g-7ZgNzPXdPPL_UMV-nYy_7A-jfcqlC1I@z>
+To: "Yang,Wei" <Wei.Yang@windriver.com>Wei.Yang@windriver.com, ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20140808013914.HnhVkTK5RzB8MyY6NBdNoXpj1DIyYp3fhf0tSPh9m8s@z>
 
-Hi Brian,
+Ralf,
 
-On Thu, May 1, 2014 at 8:26 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> v1 --> v2: split ARM defconfig changes into their sub-architectures. No change
->            in the overall diff.
->
-> Hi all,
->
-> We are introducing a new SPI-NOR subsystem/framework for MTD, to support
-> various types of SPI-NOR flash controllers which require (or benefit from)
-> intimate knowledge of the flash interface, rather than just the relatively dumb
-> SPI interface. This framework borrows much of the m25p80 driver for its
-> abstraction and moves this code into a spi-nor module.
->
-> This means CONFIG_M25P80 now has a dependency on CONFIG_MTD_SPI_NOR, which
-> should be added to the defconfigs. I expect that each (sub)architecture
-> maintainer can merge these patches to their own tree.
->
-> Note that without the new CONFIG_MTD_SPI_NOR symbol in your defconfig, Kconfig
-> will automatically drop M25P80 for you.
->
-> Please keep general comments to the cover letter, so all parties can see.
->
-> This series is based on 3.15-rc1.
->
-> The SPI-NOR development code (in -next, queued for 3.16) is here:
->
->   git://git.infradead.org/l2-mtd.git +spinor
->
-> This defconfig series is available in the same repo at:
->
->   git://git.infradead.org/l2-mtd.git +defconfigs
->
-> Thanks,
-> Brian
->
-> Brian Norris (12):
->   ARM: imx/mxs defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: keystone: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: tegra: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: lpc32xx: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: at91: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: shmobile: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: marvell: add MTD_SPI_NOR (new dependency for M25P80)
->   blackfin: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
->   mips: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
->   powerpc: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
->   sh: defconfig: add MTD_SPI_NOR (new dependency for M25P80)
->
->  arch/arm/configs/bockw_defconfig               | 2 +-
->  arch/arm/configs/dove_defconfig                | 2 +-
->  arch/arm/configs/imx_v6_v7_defconfig           | 1 +
->  arch/arm/configs/keystone_defconfig            | 1 +
->  arch/arm/configs/kirkwood_defconfig            | 1 +
->  arch/arm/configs/koelsch_defconfig             | 1 +
->  arch/arm/configs/lager_defconfig               | 1 +
->  arch/arm/configs/lpc32xx_defconfig             | 2 +-
->  arch/arm/configs/multi_v5_defconfig            | 1 +
->  arch/arm/configs/multi_v7_defconfig            | 1 +
->  arch/arm/configs/mvebu_v5_defconfig            | 1 +
->  arch/arm/configs/mvebu_v7_defconfig            | 1 +
->  arch/arm/configs/mxs_defconfig                 | 1 +
->  arch/arm/configs/sama5_defconfig               | 2 +-
->  arch/arm/configs/shmobile_defconfig            | 1 +
->  arch/arm/configs/tegra_defconfig               | 1 +
->  arch/blackfin/configs/BF526-EZBRD_defconfig    | 2 +-
->  arch/blackfin/configs/BF527-EZKIT-V2_defconfig | 2 +-
->  arch/blackfin/configs/BF527-EZKIT_defconfig    | 2 +-
->  arch/blackfin/configs/BF548-EZKIT_defconfig    | 2 +-
->  arch/blackfin/configs/BF609-EZKIT_defconfig    | 2 +-
->  arch/blackfin/configs/BlackStamp_defconfig     | 3 +--
->  arch/blackfin/configs/H8606_defconfig          | 3 +--
->  arch/mips/configs/ath79_defconfig              | 3 +--
->  arch/mips/configs/db1xxx_defconfig             | 1 +
->  arch/mips/configs/rt305x_defconfig             | 2 +-
->  arch/powerpc/configs/corenet32_smp_defconfig   | 2 +-
->  arch/powerpc/configs/corenet64_smp_defconfig   | 2 +-
->  arch/powerpc/configs/mpc85xx_defconfig         | 2 +-
->  arch/powerpc/configs/mpc85xx_smp_defconfig     | 2 +-
->  arch/sh/configs/sh7757lcr_defconfig            | 2 +-
->  31 files changed, 31 insertions(+), 21 deletions(-)
+What do you think of this patch?
 
-FWIW, this change still hasn't propagated to the following defconfigs:
-
-arch/arm/configs/axm55xx_defconfig
-arch/arm/configs/bockw_defconfig
-arch/arm/configs/koelsch_defconfig
-arch/arm/configs/lager_defconfig
-arch/arm/configs/lpc32xx_defconfig
-arch/arm/configs/multi_v5_defconfig
-arch/arm/configs/multi_v7_defconfig
-arch/arm/configs/qcom_defconfig
-arch/arm/configs/sama5_defconfig
-arch/arm/configs/shmobile_defconfig
-arch/powerpc/configs/85xx/kmp204x_defconfig
-arch/powerpc/configs/corenet32_smp_defconfig
-arch/powerpc/configs/corenet64_smp_defconfig
-arch/powerpc/configs/mpc85xx_defconfig
-arch/powerpc/configs/mpc85xx_smp_defconfig
-arch/sh/configs/sh7757lcr_defconfig
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks
+Wei
+On 08/04/2014 11:46 AM, Yang,Wei wrote:
+> ping.
+>
+> BR,
+> Wei
+> On 07/31/2014 07:42 PM, Wei.Yang@windriver.com wrote:
+>> From: Yang Wei <Wei.Yang@windriver.com>
+>>
+>> Since there is not indirection page in crash type, so the vaule of 
+>> the head
+>> field of kimage structure is not equal to the address of indirection 
+>> page but
+>> IND_DONE. so we have to set kexec_indirection_page variable to the 
+>> address of
+>> the head field of image structure.
+>>
+>> Signed-off-by: Yang Wei <Wei.Yang@windriver.com>
+>>
+>>            Hi Ralf,
+>>
+>>           Please help me take a look at this patch, I have already 
+>> verified it on Cavium 6100EVB board.
+>>
+>>           Thanks
+>>           Wei
+>> ---
+>>   arch/mips/kernel/machine_kexec.c |    9 +++++++--
+>>   1 file changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/mips/kernel/machine_kexec.c 
+>> b/arch/mips/kernel/machine_kexec.c
+>> index 992e184..531b70d 100644
+>> --- a/arch/mips/kernel/machine_kexec.c
+>> +++ b/arch/mips/kernel/machine_kexec.c
+>> @@ -71,8 +71,13 @@ machine_kexec(struct kimage *image)
+>>       kexec_start_address =
+>>           (unsigned long) phys_to_virt(image->start);
+>>   -    kexec_indirection_page =
+>> -        (unsigned long) phys_to_virt(image->head & PAGE_MASK);
+>> +    if (image->type == KEXEC_TYPE_DEFAULT) {
+>> +        kexec_indirection_page =
+>> +            (unsigned long) phys_to_virt(image->head & PAGE_MASK);
+>> +    } else {
+>> +        kexec_indirection_page = (unsigned long)&image->head;
+>> +    }
+>> +
+>>         memcpy((void*)reboot_code_buffer, relocate_new_kernel,
+>>              relocate_new_kernel_size);
+>
+>
+>

@@ -1,11 +1,11 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64]:23322 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6860200AbaHLHI6DiexJ (ORCPT
+Received: from szxga02-in.huawei.com ([119.145.14.65]:32617 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6860198AbaHLHI6TodaS (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Tue, 12 Aug 2014 09:08:58 +0200
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [RFC PATCH 15/20] s390/MSI: Use msi_chip instead of arch func to configure MSI/MSI-X
-Date: Tue, 12 Aug 2014 15:26:08 +0800
-Message-ID: <1407828373-24322-16-git-send-email-wangyijing@huawei.com>
+Subject: [RFC PATCH 13/20] MIPS/xlr/MSI: Use msi_chip instead of arch func to configure MSI/MSI-X
+Date: Tue, 12 Aug 2014 15:26:06 +0800
+Message-ID: <1407828373-24322-14-git-send-email-wangyijing@huawei.com>
 In-Reply-To: <1407828373-24322-1-git-send-email-wangyijing@huawei.com>
 References: <1407828373-24322-1-git-send-email-wangyijing@huawei.com>
 MIME-Version: 1.0
@@ -22,58 +22,69 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Bjorn Helgaas <bhelgaas@google.com>
 Cc: linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-pci@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, arnab.basu@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, "H. Peter Anvin" <hpa@zytor.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Yijing Wang <wangyijing@huawei.com>
-Message-ID: <20140812072608.hvTTQXID-Vp5MTl-DnSNWgPfGfK1Bka2DTh9WaQtTKY@z>
+Message-ID: <20140812072606.sqwV9mphG3EpvUP1qYttjqNFfvTlBf6QhSA1--nx9a4@z>
 
-Introduce a new struct msi_chip zpci_msi_chip instead of weak arch
+Introduce a new struct msi_chip xlr_msi_chip instead of weak arch
 functions to configure MSI/MSI-X.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 ---
- arch/s390/pci/pci.c |   16 ++++++++++++++--
- 1 files changed, 14 insertions(+), 2 deletions(-)
+ arch/mips/pci/pci-xlr.c |   19 +++++++++++++++----
+ 1 files changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-index 9ddc51e..ee7b05c 100644
---- a/arch/s390/pci/pci.c
-+++ b/arch/s390/pci/pci.c
-@@ -398,8 +398,9 @@ static void zpci_irq_handler(struct airq_struct *airq)
+diff --git a/arch/mips/pci/pci-xlr.c b/arch/mips/pci/pci-xlr.c
+index 0dde803..6eef164 100644
+--- a/arch/mips/pci/pci-xlr.c
++++ b/arch/mips/pci/pci-xlr.c
+@@ -214,11 +214,11 @@ static int get_irq_vector(const struct pci_dev *dev)
+ }
+ 
+ #ifdef CONFIG_PCI_MSI
+-void arch_teardown_msi_irq(unsigned int irq)
++void xlr_teardown_msi_irq(unsigned int irq)
+ {
+ }
+ 
+-int arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
++int xlr_setup_msi_irq(struct device *dev, struct msi_desc *desc)
+ {
+ 	struct msi_msg msg;
+ 	struct pci_dev *lnk;
+@@ -233,7 +233,7 @@ int arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
+ 	 * Enable MSI on the XLS PCIe controller bridge which was disabled
+ 	 * at enumeration, the bridge MSI capability is at 0x50
+ 	 */
+-	lnk = xls_get_pcie_link(dev);
++	lnk = xls_get_pcie_link(to_pci_dev(dev));
+ 	if (lnk == NULL)
+ 		return 1;
+ 
+@@ -243,7 +243,7 @@ int arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
+ 		pci_write_config_word(lnk, 0x50 + PCI_MSI_FLAGS, val);
  	}
- }
  
--int arch_setup_msi_irqs(struct pci_dev *pdev, int nvec, int type)
-+int zpci_setup_msi_irqs(struct device *dev, int nvec, int type)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct zpci_dev *zdev = get_zdev(pdev);
- 	unsigned int hwirq, msi_vecs;
- 	unsigned long aisb;
-@@ -474,8 +475,9 @@ out:
- 	return rc;
- }
+-	irq = get_irq_vector(dev);
++	irq = get_irq_vector(to_pci_dev(dev));
+ 	if (irq <= 0)
+ 		return 1;
  
--void arch_teardown_msi_irqs(struct pci_dev *pdev)
-+void zpci_teardown_msi_irqs(struct device *dev)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct zpci_dev *zdev = get_zdev(pdev);
- 	struct msi_desc *msi;
- 	int rc;
-@@ -501,6 +503,16 @@ void arch_teardown_msi_irqs(struct pci_dev *pdev)
- 	airq_iv_free_bit(zpci_aisb_iv, zdev->aisb);
+@@ -263,6 +263,17 @@ int arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
+ 	write_msi_msg(irq, &msg);
+ 	return 0;
  }
- 
-+struct msi_chip zpci_msi_chip = {
-+	.setup_irqs = zpci_setup_msi_irqs,
-+	.teardown_irqs = zpci_teardown_msi_irqs,
++
++struct msi_chip xlr_msi_chip = {
++	.setup_irq = xlr_setup_msi_irq,
++	.teardown_irq = xlr_teardown_msi_irq,
 +};
 +
 +struct msi_chip *arch_get_match_msi_chip(struct device *dev)
 +{
-+	return &zpci_msi_chip;
++	return &xlr_msi_chip;
 +}
 +
- static void zpci_map_resources(struct zpci_dev *zdev)
- {
- 	struct pci_dev *pdev = zdev->pdev;
+ #endif
+ 
+ /* Extra ACK needed for XLR on chip PCI controller */
 -- 
 1.7.1

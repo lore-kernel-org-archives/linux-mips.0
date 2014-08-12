@@ -1,18 +1,16 @@
-Received: from mail1.windriver.com ([147.11.146.13]:45513 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6854765AbaHHBkBE3XBQ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 8 Aug 2014 03:40:01 +0200
-Message-ID: <53E42A42.3000707@windriver.com>
-Date: Fri, 8 Aug 2014 09:39:14 +0800
-From: "Yang,Wei" <Wei.Yang@windriver.com>
+Received: from szxga03-in.huawei.com ([119.145.14.66]:31094 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6842533AbaHLHDTS8-0s (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Aug 2014 09:03:19 +0200
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [RFC PATCH 05/20] MSI: Refactor struct msi_chip to become more common
+Date: Tue, 12 Aug 2014 15:25:58 +0800
+Message-ID: <1407828373-24322-6-git-send-email-wangyijing@huawei.com>
+In-Reply-To: <1407828373-24322-1-git-send-email-wangyijing@huawei.com>
+References: <1407828373-24322-1-git-send-email-wangyijing@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1] MIPS:KDUMP: set a right value to kexec_indirection_page
- variable
-References: <1406806949-27039-1-git-send-email-Wei.Yang@windriver.com> <53DF0204.6000904@windriver.com>
-In-Reply-To: <53DF0204.6000904@windriver.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Wei.Yang@windriver.com>
+Content-Type: text/plain
+Return-Path: <wangyijing@huawei.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,64 +20,142 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Yang,Wei" <Wei.Yang@windriver.com>Wei.Yang@windriver.com, ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20140808013914.HnhVkTK5RzB8MyY6NBdNoXpj1DIyYp3fhf0tSPh9m8s@z>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-pci@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, arnab.basu@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, "H. Peter Anvin" <hpa@zytor.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Yijing Wang <wangyijing@huawei.com>, Thierry Reding <thierry.reding@avionic-design.de>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Message-ID: <20140812072558.5AyU-Ge9gS6k8BzabQb4julJxJJ3xaJGzbdrvmx8z_0@z>
 
-Ralf,
+Now there are a lot of __weak arch functions in MSI code.
+These functions make MSI driver complex, It's time to
+refactor it. Add .restore_irq(), .setup_irqs(), .teardown_irqs()
+to make msi_chip common across all platforms.
+Also replace the argument "struct pci_dev" with "struct device"
+to support future Non-PCI MSI device.
 
-What do you think of this patch?
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: Thierry Reding <thierry.reding@avionic-design.de>
+CC: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+---
+ drivers/irqchip/irq-armada-370-xp.c |    4 ++--
+ drivers/pci/host/pci-tegra.c        |    3 ++-
+ drivers/pci/host/pcie-designware.c  |    4 ++--
+ drivers/pci/host/pcie-rcar.c        |    3 ++-
+ drivers/pci/msi.c                   |    4 ++--
+ include/linux/msi.h                 |    7 +++++--
+ 6 files changed, 15 insertions(+), 10 deletions(-)
 
-Thanks
-Wei
-On 08/04/2014 11:46 AM, Yang,Wei wrote:
-> ping.
->
-> BR,
-> Wei
-> On 07/31/2014 07:42 PM, Wei.Yang@windriver.com wrote:
->> From: Yang Wei <Wei.Yang@windriver.com>
->>
->> Since there is not indirection page in crash type, so the vaule of 
->> the head
->> field of kimage structure is not equal to the address of indirection 
->> page but
->> IND_DONE. so we have to set kexec_indirection_page variable to the 
->> address of
->> the head field of image structure.
->>
->> Signed-off-by: Yang Wei <Wei.Yang@windriver.com>
->>
->>            Hi Ralf,
->>
->>           Please help me take a look at this patch, I have already 
->> verified it on Cavium 6100EVB board.
->>
->>           Thanks
->>           Wei
->> ---
->>   arch/mips/kernel/machine_kexec.c |    9 +++++++--
->>   1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/mips/kernel/machine_kexec.c 
->> b/arch/mips/kernel/machine_kexec.c
->> index 992e184..531b70d 100644
->> --- a/arch/mips/kernel/machine_kexec.c
->> +++ b/arch/mips/kernel/machine_kexec.c
->> @@ -71,8 +71,13 @@ machine_kexec(struct kimage *image)
->>       kexec_start_address =
->>           (unsigned long) phys_to_virt(image->start);
->>   -    kexec_indirection_page =
->> -        (unsigned long) phys_to_virt(image->head & PAGE_MASK);
->> +    if (image->type == KEXEC_TYPE_DEFAULT) {
->> +        kexec_indirection_page =
->> +            (unsigned long) phys_to_virt(image->head & PAGE_MASK);
->> +    } else {
->> +        kexec_indirection_page = (unsigned long)&image->head;
->> +    }
->> +
->>         memcpy((void*)reboot_code_buffer, relocate_new_kernel,
->>              relocate_new_kernel_size);
->
->
->
+diff --git a/drivers/irqchip/irq-armada-370-xp.c b/drivers/irqchip/irq-armada-370-xp.c
+index ee1f0ba..3761e52 100644
+--- a/drivers/irqchip/irq-armada-370-xp.c
++++ b/drivers/irqchip/irq-armada-370-xp.c
+@@ -129,7 +129,7 @@ static void armada_370_xp_free_msi(int hwirq)
+ 	mutex_unlock(&msi_used_lock);
+ }
+ 
+-static int armada_370_xp_setup_msi_irq(struct pci_dev *pdev, 
++static int armada_370_xp_setup_msi_irq(struct device *dev,
+ 		struct msi_desc *desc)
+ {
+ 	struct msi_msg msg;
+@@ -164,7 +164,7 @@ static void armada_370_xp_teardown_msi_irq(unsigned int irq)
+ 	armada_370_xp_free_msi(hwirq);
+ }
+ 
+-static int armada_370_xp_check_msi_device(struct pci_dev *dev, 
++static int armada_370_xp_check_msi_device(struct device *dev,
+ 		int nvec, int type)
+ {
+ 	/* We support MSI, but not MSI-X */
+diff --git a/drivers/pci/host/pci-tegra.c b/drivers/pci/host/pci-tegra.c
+index 3872bc0..a2fa0ec 100644
+--- a/drivers/pci/host/pci-tegra.c
++++ b/drivers/pci/host/pci-tegra.c
+@@ -1192,9 +1192,10 @@ static irqreturn_t tegra_pcie_msi_irq(int irq, void *data)
+ 	return processed > 0 ? IRQ_HANDLED : IRQ_NONE;
+ }
+ 
+-static int tegra_msi_setup_irq(struct pci_dev *pdev,
++static int tegra_msi_setup_irq(struct device *dev,
+ 			       struct msi_desc *desc)
+ {
++	struct pci_dev *pdev = to_pci_dev(dev);
+ 	struct msi_chip *chip = pdev->bus->msi;
+ 	struct tegra_msi *msi = to_tegra_msi(chip);
+ 	struct msi_msg msg;
+diff --git a/drivers/pci/host/pcie-designware.c b/drivers/pci/host/pcie-designware.c
+index 2204456..9c3816d 100644
+--- a/drivers/pci/host/pcie-designware.c
++++ b/drivers/pci/host/pcie-designware.c
+@@ -342,12 +342,12 @@ static void clear_irq(unsigned int irq)
+ 	msi->msi_attrib.multiple = 0;
+ }
+ 
+-static int dw_msi_setup_irq(struct pci_dev *pdev,
+-			struct msi_desc *desc)
++static int dw_msi_setup_irq(struct device *dev, struct msi_desc *desc)
+ {
+ 	int irq, pos, msgvec;
+ 	u16 msg_ctr;
+ 	struct msi_msg msg;
++	struct pci_dev *pdev = to_pci_dev(dev);
+ 	struct pcie_port *pp = sys_to_pcie(pdev->bus->sysdata);
+ 
+ 	if (!pp) {
+diff --git a/drivers/pci/host/pcie-rcar.c b/drivers/pci/host/pcie-rcar.c
+index 647bc9f..fa33432 100644
+--- a/drivers/pci/host/pcie-rcar.c
++++ b/drivers/pci/host/pcie-rcar.c
+@@ -615,9 +615,10 @@ static irqreturn_t rcar_pcie_msi_irq(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int rcar_msi_setup_irq(struct pci_dev *pdev,
++static int rcar_msi_setup_irq(struct device *dev,
+ 			      struct msi_desc *desc)
+ {
++	struct pci_dev *pdev = to_pci_dev(dev);
+ 	struct msi_chip *chip = pdev->bus->msi;
+ 	struct rcar_msi *msi = to_rcar_msi(chip);
+ 	struct rcar_pcie *pcie = container_of(chip, struct rcar_pcie, msi.chip);
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 242d775..7b7abe9 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -37,7 +37,7 @@ int __weak arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
+ 	if (!chip || !chip->setup_irq)
+ 		return -EINVAL;
+ 
+-	err = chip->setup_irq(dev, desc);
++	err = chip->setup_irq(&dev->dev, desc);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -61,7 +61,7 @@ int __weak arch_msi_check_device(struct pci_dev *dev, int nvec, int type)
+ 	if (!chip || !chip->check_device)
+ 		return 0;
+ 
+-	return chip->check_device(dev, nvec, type);
++	return chip->check_device(&dev->dev, nvec, type);
+ }
+ 
+ int __weak arch_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
+diff --git a/include/linux/msi.h b/include/linux/msi.h
+index a510d25..2068d25 100644
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -72,9 +72,12 @@ struct msi_chip {
+ 	struct device_node *of_node;
+ 	struct list_head list;
+ 
+-	int (*setup_irq)(struct pci_dev *dev, struct msi_desc *desc);
++	int (*check_device)(struct device *dev, int nvec, int type);
++	int (*setup_irq)(struct device *dev, struct msi_desc *desc);
++	int (*setup_irqs)(struct device *dev, int nvec, int type);
+ 	void (*teardown_irq)(unsigned int irq);
+-	int (*check_device)(struct pci_dev *dev, int nvec, int type);
++	void (*teardown_irqs)(struct device *dev);
++	void (*restore_irqs)(struct device *dev);
+ };
+ 
+ #endif /* LINUX_MSI_H */
+-- 
+1.7.1

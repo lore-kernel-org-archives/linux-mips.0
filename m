@@ -1,18 +1,18 @@
-Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:32585 "EHLO
-        mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6817420AbaHMANoBr09q (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 13 Aug 2014 02:13:44 +0200
-Date: Wed, 13 Aug 2014 05:48:50 +0530
-From: Jayachandran C. <jchandra@broadcom.com>
-Subject: Re: [PATCH 1/2] MIPS: Move CPU topology macros to topology.h
-Message-ID: <20140813001849.GA27602@jayachandranc.netlogicmicro.com>
-References: <1407467768-24097-1-git-send-email-chenhc@lemote.com>
- <20140808134738.GG29898@linux-mips.org>
+Received: from szxga01-in.huawei.com ([119.145.14.64]:47522 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S6898576AbaHMB2Tf2QLh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 13 Aug 2014 03:28:19 +0200
+Message-ID: <53EABC7E.6080103@huawei.com>
+Date: Wed, 13 Aug 2014 09:16:46 +0800
+From: Yijing Wang <wangyijing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20140808134738.GG29898@linux-mips.org>
-Return-Path: <jchandra@broadcom.com>
+Subject: Re: [RFC PATCH 07/20] x86/MSI: Use msi_chip instead of arch func
+ to configure MSI/MSI-X
+References: <1407828373-24322-1-git-send-email-wangyijing@huawei.com> <1407828373-24322-8-git-send-email-wangyijing@huawei.com> <20140812190947.GD13996@laptop.dumpdata.com>
+In-Reply-To: <20140812190947.GD13996@laptop.dumpdata.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <wangyijing@huawei.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,22 +22,119 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Huacai Chen <chenhc@lemote.com>, John Crispin <john@phrozen.org>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Aurelien Jarno <aurelien@aurel32.net>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>
-Message-ID: <20140813001850.jpNeEHGgB3gb2ga9IIScRwsIoy3dRDWh64rtF85SXg4@z>
+To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-pci@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, arnab.basu@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>
+Message-ID: <20140813011646.RGp36XZExNP1_JB26dWUti4KWGrBF1azW1LXn28iuSw@z>
 
-On Fri, Aug 08, 2014 at 03:47:38PM +0200, Ralf Baechle wrote:
-> Jayachandran,
+On 2014/8/13 3:09, Konrad Rzeszutek Wilk wrote:
+> On Tue, Aug 12, 2014 at 03:26:00PM +0800, Yijing Wang wrote:
+>> Introduce a new struct msi_chip apic_msi_chip instead of weak arch
+>> functions to configure MSI/MSI-X in x86.
 > 
-> could you convert the netlogic platforms to use this scheme, too?
-> We then could drop the #ifdefs introduced by this patch.
+> Why not 'x86_msi_ops' (see  arch/x86/kernel/x86_init.c)
 
-The same sequence is used by ip27 platform as well, so I think the
-ifndef may still be needed. This is the same ifndef pattern we use
-for all our mach-generic/*.h vs. mach-<platform>/*.h
+Hi Konrad, I think currently lots of weak arch functions make MSI code
+complex, we have following weak arch functions
 
-On second thought, I am not sure if the changes in Huacai's patch
-has to be in asm/topology.h, probably this has to be in
-mach-generic/topology.h
+arch_setup_msi_irqs
+arch_setup_msi_irq
+arch_msi_check_device
+arch_teardown_msi_irqs
+arch_teardown_msi_irq
+arch_restore_msi_irqs
+arch_msi_mask_irq
+arch_msix_mask_irq
 
-JC.
+And Thierry Reding and Thomas Petazzoni introduce a new MSI chip infrastructure which
+is used in arm platform now. Use msi_chip let us focus on implementing msi_chip ops functions(no need to implement all),
+but now, we should know much of MSI enable flow, then override the weak functions.
+I think use the unified MSI framework in all platforms is better.
+Also this series is preparation to support Non-PCI MSI device use common MSI framework in linux. Non-PCI MSI devices
+include hpet, dmar and the coming consolidator(introduced in ARM GICv3 spec, which is similar to MSI relay device).
+
+
+Thanks!
+Yijing.
+
+>>
+>> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+>> ---
+>>  arch/x86/include/asm/pci.h     |    1 +
+>>  arch/x86/kernel/apic/io_apic.c |   20 ++++++++++++++++----
+>>  2 files changed, 17 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/pci.h b/arch/x86/include/asm/pci.h
+>> index 0892ea0..878a06d 100644
+>> --- a/arch/x86/include/asm/pci.h
+>> +++ b/arch/x86/include/asm/pci.h
+>> @@ -101,6 +101,7 @@ void native_teardown_msi_irq(unsigned int irq);
+>>  void native_restore_msi_irqs(struct pci_dev *dev);
+>>  int setup_msi_irq(struct pci_dev *dev, struct msi_desc *msidesc,
+>>  		  unsigned int irq_base, unsigned int irq_offset);
+>> +extern struct msi_chip *x86_msi_chip;
+>>  #else
+>>  #define native_setup_msi_irqs		NULL
+>>  #define native_teardown_msi_irq		NULL
+>> diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
+>> index 2609dcd..eb8ab7c 100644
+>> --- a/arch/x86/kernel/apic/io_apic.c
+>> +++ b/arch/x86/kernel/apic/io_apic.c
+>> @@ -3077,24 +3077,25 @@ int setup_msi_irq(struct pci_dev *dev, struct msi_desc *msidesc,
+>>  	return 0;
+>>  }
+>>  
+>> -int native_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
+>> +int native_setup_msi_irqs(struct device *dev, int nvec, int type)
+>>  {
+>>  	struct msi_desc *msidesc;
+>>  	unsigned int irq;
+>>  	int node, ret;
+>> +	struct pci_dev *pdev = to_pci_dev(dev);
+>>  
+>>  	/* Multiple MSI vectors only supported with interrupt remapping */
+>>  	if (type == PCI_CAP_ID_MSI && nvec > 1)
+>>  		return 1;
+>>  
+>> -	node = dev_to_node(&dev->dev);
+>> +	node = dev_to_node(dev);
+>>  
+>> -	list_for_each_entry(msidesc, &dev->msi_list, list) {
+>> +	list_for_each_entry(msidesc, &pdev->msi_list, list) {
+>>  		irq = irq_alloc_hwirq(node);
+>>  		if (!irq)
+>>  			return -ENOSPC;
+>>  
+>> -		ret = setup_msi_irq(dev, msidesc, irq, 0);
+>> +		ret = setup_msi_irq(pdev, msidesc, irq, 0);
+>>  		if (ret < 0) {
+>>  			irq_free_hwirq(irq);
+>>  			return ret;
+>> @@ -3214,6 +3215,17 @@ int default_setup_hpet_msi(unsigned int irq, unsigned int id)
+>>  }
+>>  #endif
+>>  
+>> +struct msi_chip apic_msi_chip = {
+>> +	.setup_irqs = native_setup_msi_irqs,
+>> +	.teardown_irq = native_teardown_msi_irq,
+>> +};
+>> +
+>> +struct msi_chip *arch_get_match_msi_chip(struct device *dev)
+>> +{
+>> +	return x86_msi_chip;
+>> +}
+>> +
+>> +struct msi_chip *x86_msi_chip = &apic_msi_chip;
+>>  #endif /* CONFIG_PCI_MSI */
+>>  /*
+>>   * Hypertransport interrupt support
+>> -- 
+>> 1.7.1
+>>
+> 
+> .
+> 
+
+
+-- 
+Thanks!
+Yijing

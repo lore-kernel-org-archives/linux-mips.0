@@ -1,15 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45088 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:17473 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S6855205AbaHRN7lYlVhw (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Aug 2014 15:59:41 +0200
-Date: Mon, 18 Aug 2014 14:59:33 +0100
+        with ESMTP id S6855225AbaHROE3L8oNB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Aug 2014 16:04:29 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [request for stable inclusion] MIPS: math-emu: Fix instruction
- decoding
-Message-ID: <20140818135933.GA1214@mchandras-linux.le.imgtec.org>
+Subject: [PATCH] MIPS: Malta: memory: Improve system memory detection for '{e,}memsize' >= 2G
+Date: Mon, 18 Aug 2014 15:04:11 +0100
+Message-ID: <1408370651-1505-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
+Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,18 +18,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: stable@vger.kernel.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20140818135933.Xv6p-lQwJBtxxm_brUtcPbqLwsBqlRxAClov_ydKBDM@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20140818140411.tBDp3yagVwXQsPQWOIDbwEkkS_dIPx5LD8LWX8LJGwQ@z>
 
-Hi Greg,
+Using kstrtol to parse the "{e,}memsize" variables was wrong because this
+parses signed long numbers. In case of '{e,}memsize' >= 2G, the top bit
+is set, resulting to -ERANGE errors and possibly random system memory
+boundaries. We fix this by replacing "kstrtol" with "kstrtoul".
+We also improve the code to check the kstrtoul return value and
+print a warning if an error was returned.
 
-Could you please apply the following patch to the 3.16.X stable kernels?
+Cc: <stable@vger.kernel.org> # v3.15+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/mti-malta/malta-memory.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-c3b9b945e02e011c63522761e91133ea43eb6939
-"MIPS: math-emu: Fix instruction decoding"
-
-Thank you
-
+diff --git a/arch/mips/mti-malta/malta-memory.c b/arch/mips/mti-malta/malta-memory.c
+index 0c35dee0a215..8fddd2cdbff7 100644
+--- a/arch/mips/mti-malta/malta-memory.c
++++ b/arch/mips/mti-malta/malta-memory.c
+@@ -35,13 +35,19 @@ fw_memblock_t * __init fw_getmdesc(int eva)
+ 	/* otherwise look in the environment */
+ 
+ 	memsize_str = fw_getenv("memsize");
+-	if (memsize_str)
+-		tmp = kstrtol(memsize_str, 0, &memsize);
++	if (memsize_str) {
++		tmp = kstrtoul(memsize_str, 0, &memsize);
++		if (tmp)
++			pr_warn("Failed to read the 'memsize' env variable.\n");
++	}
+ 	if (eva) {
+ 	/* Look for ememsize for EVA */
+ 		ememsize_str = fw_getenv("ememsize");
+-		if (ememsize_str)
+-			tmp = kstrtol(ememsize_str, 0, &ememsize);
++		if (ememsize_str) {
++			tmp = kstrtoul(ememsize_str, 0, &ememsize);
++			if (tmp)
++				pr_warn("Failed to read the 'ememsize' env variable.\n");
++		}
+ 	}
+ 	if (!memsize && !ememsize) {
+ 		pr_warn("memsize not set in YAMON, set to default (32Mb)\n");
 -- 
-markos
+2.0.4

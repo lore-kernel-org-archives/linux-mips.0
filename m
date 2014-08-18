@@ -1,17 +1,20 @@
-Received: from mail-pa0-f43.google.com ([209.85.220.43]:41407 "EHLO
-        mail-pa0-f43.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S6855142AbaHOCCsVXJjD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Aug 2014 04:02:48 +0200
-Message-ID: <53ED6B40.8000409@gmail.com>
-Date: Fri, 15 Aug 2014 10:06:56 +0800
-From: Chen Gang <gang.chen.5i5j@gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:17643 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S6822257AbaHRIWYNH2Lb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Aug 2014 10:22:24 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id C4F57985A7337
+        for <linux-mips@linux-mips.org>; Mon, 18 Aug 2014 09:22:15 +0100 (IST)
+Date: Mon, 18 Aug 2014 09:22:16 +0100
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: Re: [PATCH 0/2] MIPS64/O32 seccomp fixes
+Message-ID: <20140818082216.GA32372@mchandras-linux.le.imgtec.org>
+References: <1406200202-10104-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3] arch: Kconfig: Let all architectures set endian explicitly
-References: <53ECE9DD.80004@gmail.com>  <CAMo8BfLuXZ8zyEoKdo8yb6nd+pZUnx0YEL9nqHx98kt76ezfYg@mail.gmail.com> <CAMo8Bf+=EgXc0hq14y9Kdykaw_7E52kRAENU1P0fAK4tTx=JpA@mail.gmail.com>
-In-Reply-To: <CAMo8Bf+=EgXc0hq14y9Kdykaw_7E52kRAENU1P0fAK4tTx=JpA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-Path: <gang.chen.5i5j@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <1406200202-10104-1-git-send-email-markos.chandras@imgtec.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,72 +24,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, "vgupta@synopsys.com" <vgupta@synopsys.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Jean Delvare <jdelvare@suse.de>, Russell King <linux@arm.linux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, hskinnemoen@gmail.com, egtvedt@samfundet.no, realmz6@gmail.com, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <a-jacquiot@ti.com>, starvik@axis.com, jesper.nilsson@axis.com, David Howells <dhowells@redhat.com>, rkuo@codeaurora.org, tony.luck@intel.com, fenghua.yu@intel.com, takata@linux-m32r.org, James Hogan <james.hogan@imgtec.com>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, yasutake.koichi@jp.panasonic.com, Jonas Bonn <jonas@southpole.se>, jejb@parisc-linux.org, deller@gmx.de, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, heiko.carstens@de.ibm.com, Liqin Chen <liqin.linux@gmail.com>, Lennox Wu <lennox.wu@gmail.com>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@tilera.com>, jdike@addtoit.com, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, linux390@de.ibm.com, x86@kernel.org, linux-alpha@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Linux/MIPS Mailing List <linux-mips@linux-mips.org>, linux-am33-list@redhat.com, linux@lists.openrisc.net, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, linux-kbuild <linux-kbuild@vger.kernel.org>
-Message-ID: <20140815020656.UWjyp5lUCOzblKLnpb-2_q5PdzDoQFoYLKHdgBclhqg@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20140818082216.DmfxEGzgGbRZllxkYWbPOisYR94OxOmxxzVWO4ULF0M@z>
 
-On 8/15/14 9:52, Max Filippov wrote:
-> On Fri, Aug 15, 2014 at 5:47 AM, Max Filippov <jcmvbkbc@gmail.com> wrote:
->> Hi Chen,
->>
->> On Thu, Aug 14, 2014 at 8:54 PM, Chen Gang <gang.chen.5i5j@gmail.com> wrote:
->>> Normal architectures:
->>>
->>>  - Big endian: avr32, frv, m68k, openrisc, parisc, s390, sparc
->>>
->>>  - Little endian: alpha, blackfin, cris, hexagon, ia64, metag, mn10300,
->>>                   score, unicore32, x86
->>>
->>>  - Choose in config time: arc, arm, arm64, c6x, m32r, mips, powerpc, sh
->>>
->>> Special architectures:
->>>
->>>  - Deside by compiler: microblaze, tile, xtensa.
->>>
->>>  - Deside by building host: um
->>>
->>>  - Next, need improve Kbuild to probe endian to deside whether need mark
->>>    __BUILDING_TIME_BIG_ENDIAN__ before real config.
-
-Please check this comments, thanks.
-
->>
->> [...]
->>
->>> diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
->>> index 3a617af..a3e8f7e 100644
->>> --- a/arch/xtensa/Kconfig
->>> +++ b/arch/xtensa/Kconfig
->>> @@ -22,6 +22,8 @@ config XTENSA
->>>         select HAVE_IRQ_TIME_ACCOUNTING
->>>         select HAVE_PERF_EVENTS
->>>         select COMMON_CLK
->>> +       select CPU_BIG_ENDIAN if __BUILDING_TIME_BIG_ENDIAN__
->>> +       select CPU_LITTLE_ENDIAN if !CPU_BIG_ENDIAN
->>>         help
->>>           Xtensa processors are 32-bit RISC machines designed by Tensilica
->>>           primarily for embedded systems.  These processors are both
->>
->> I've tested this part and it doesn't select neither CPU_BIG_ENDIAN,
->> nor CPU_LITTLE_ENDIAN. And looking into the Kconfig/Kbuild I cound't
+On Thu, Jul 24, 2014 at 12:10:00PM +0100, Markos Chandras wrote:
+> Hi,
 > 
-> Correction: it always selects CPU_LITTLE_ENDIAN, regardless of the
-> compiler endianness.
+> A few seccomp fixes related to O32 processes on MIPS64 cores.
+> 
+> It's based on v3.16-rc6
+> 
+> Markos Chandras (2):
+>   MIPS: syscall: Fix AUDIT value for O32 processes on MIPS64
+>   MIPS: scall64-o32: Fix indirect syscall detection
+> 
+>  arch/mips/include/asm/syscall.h |  8 +++++---
+>  arch/mips/kernel/scall64-o32.S  | 12 ++++++++----
+>  2 files changed, 13 insertions(+), 7 deletions(-)
+> 
+> -- 
+> 2.0.2
 > 
 
-Yeah, at present, it always select CPU_LITTLE_ENDIAN, next, Kbuild need
-be improved for it, just the comments said.
+Hi Ralf,
 
-If this patch can be pass checking, I shall improve the Kbuild for it,
-also will modify some individual drivers to use CPU_*_ENDIAN.
+ping?
 
-I guess, we need Cc to kbuild for getting more ideas, suggestions, or
-completions.
-
-
-
-THanks.
 -- 
-Chen Gang
-
-Open, share, and attitude like air, water, and life which God blessed
+markos

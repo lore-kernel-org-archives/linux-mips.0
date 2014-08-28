@@ -1,23 +1,17 @@
-Received: from mail-ig0-f170.google.com ([209.85.213.170]:64210 "EHLO
-        mail-ig0-f170.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27007092AbaH0SnrHdMHk convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 27 Aug 2014 20:43:47 +0200
-Received: by mail-ig0-f170.google.com with SMTP id h3so7738790igd.5
-        for <linux-mips@linux-mips.org>; Wed, 27 Aug 2014 11:43:40 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:15145 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007161AbaH1Hy5ck0uu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Aug 2014 09:54:57 +0200
+Message-ID: <53FEE049.8030906@imgtec.com>
+Date: Thu, 28 Aug 2014 08:54:49 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <53FE217B.7000401@gmail.com>
-References: <1408915485-8078-1-git-send-email-hauke@hauke-m.de>
-        <1408915485-8078-4-git-send-email-hauke@hauke-m.de>
-        <CACna6rwJBDpg9VS4h5hfP4wtGRVwAdRUq5mELeA0OFWWzH9jsA@mail.gmail.com>
-        <53FE217B.7000401@gmail.com>
-Date: Wed, 27 Aug 2014 20:43:40 +0200
-Message-ID: <CACna6ryXtFwJxBhEoJe+2mZWut24egtgXzzybxQ=rtPn9+X+2g@mail.gmail.com>
-Subject: Re: [RFC 2/7] bcm47xx-nvram: add new broadcom nvram driver with dt support
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-Path: <zajec5@gmail.com>
+Subject: Re: [request for stable inclusion] MIPS fixes for 3.16
+References: <53FDE583.9060908@imgtec.com> <20140827212310.GA27456@kroah.com>
+In-Reply-To: <20140827212310.GA27456@kroah.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,28 +21,38 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, devicetree@vger.kernel.org, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Message-ID: <20140827184340.8iY1O72Ap4Qbte7S-ubVolfYD97KifjUdflPO-Dhggc@z>
+To: Greg KH <greg@kroah.com>
+Cc: stable@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20140828075449.DsA6lAUNRnhz_eXvK0CwLh1SG0l4Z9gBqOXd3USnCD0@z>
 
-On 27 August 2014 20:20, Florian Fainelli <f.fainelli@gmail.com> wrote:
-> On 08/26/2014 10:54 PM, Rafał Miłecki wrote:
->> Could we avoid that? Type of flash can easily be checked in the code.
->> All we need to do is to read BCMA_IOST register of BCMA_CORE_NS_ROM
->> core.
->
-> So there is a boot status register you can read to tell what type of
-> flash you booted from, but does that also give you the resource ranges
-> for these type of flashes? Presumably they will be mapped into different
-> addresses (at least bcm63xx is like that), that information needs to be
-> listed somewhere.
+On 08/27/2014 10:23 PM, Greg KH wrote:
+> On Wed, Aug 27, 2014 at 03:04:51PM +0100, Markos Chandras wrote:
+>> Hi Greg,
+>>
+>> Could you please apply the following patches to the 3.16.X stable kernels?
+>>
+>> - MIPS: EVA: Add new EVA header
+>> (f85b71ceabb9d8d8a9e34b045b5c43ffde3623b3)
+>> - MIPS: Malta: EVA: Rename 'eva_entry' to 'platform_eva_init'
+>> (ca4d24f7954f3746742ba350c2276ff777f21173)
+>> - MIPS: CPS: Initialize EVA before bringing up VPEs from secondary cores
+>> (6521d9a436a62e83ce57d6be6e5484e1098c1380)
+> 
+> That really looks like a new feature, how is this a bugfix / regression
+> from previous kernel releases?
+> 
+> thanks,
+> 
+> greg k-h
+> 
+Hi Greg,
 
-Take a look at find_nvram in nvram_rw.c. It scans the whole region
-which is up to 0x02000000 (SI_FLASH2_SZ) size.
+The bugfix is the 3rd patch in that list. Without this patch, it is not
+possible to boot a CPS kernel when EVA is enabled. The kernel will die
+in a horrible way. The other two patches simply make the bugfix fit
+better in the existing code. So all three are needed.
 
-In case of NAND limit is slightly different (nfl_boot_size function):
-1) On ARM it's 0x800000 or 0x2600000
-2) On MIPS it's 0x200000
+Thank you
 
 -- 
-Rafał
+markos

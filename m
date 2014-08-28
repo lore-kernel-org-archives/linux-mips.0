@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:47280 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007170AbaH1InhpuOXF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Aug 2014 10:43:37 +0200
-Message-ID: <53FEEBA3.9010705@imgtec.com>
-Date: Thu, 28 Aug 2014 09:43:15 +0100
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63]:53251 "EHLO
+        mail-gw2-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27007231AbaH1QDSIkJBG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Aug 2014 18:03:18 +0200
+From: Jayachandran C <jchandra@broadcom.com>
+Subject: [PATCH] MIPS: Netlogic: Use MIPS topology.h
+Date: Thu, 28 Aug 2014 21:23:52 +0530
+Message-ID: <1409241232-4205-1-git-send-email-jchandra@broadcom.com>
+In-Reply-To: <Message-ID: <20140825132050.GH27724@linux-mips.org>
+References: <Message-ID: <20140825132050.GH27724@linux-mips.org>
 MIME-Version: 1.0
-Subject: Re: rhombus tech eoma68 ingenic jz4775 cpu card
-References: <CAPweEDznk3iecHkQcaGMd_EZfzZmbAbtXuO9dnePctDxFSWS7Q@mail.gmail.com>        <20140827114854.GC25985@pburton-laptop> <CAPweEDwn95=Oi04H_r1FCDox8Oxd=tP8WAT7ze1urGu2uLJhSA@mail.gmail.com>
-In-Reply-To: <CAPweEDwn95=Oi04H_r1FCDox8Oxd=tP8WAT7ze1urGu2uLJhSA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Zubair.Kakakhel@imgtec.com>
+Content-Type: text/plain
+Return-Path: <jchandra@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,60 +20,63 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "lkcl ." <luke.leighton@gmail.com>, Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20140828084315.eQLS0BIj0KC6d2uBaLqnW5gWrn6RElmmN_AHRcKJzu8@z>
+To: linux-mips@linux-mips.org
+Cc: Jayachandran C <jchandra@broadcom.com>, Ralf Baechle <ralf@linux-mips.org>, Guenter Roeck <linux@roeck-us.net>, Huacai Chen <chenhc@lemote.com>
+Message-ID: <20140828155352.D8cVxwav2CRemlIvSB7-hMpNegOo6cKlTFr4hbo6xIU@z>
 
+commit bbbf6d8768f5 ("MIPS: NL: Fix nlm_xlp_defconfig build error")
+removed topology related macros from mach-netlogic/topology.h, but
+did not setup the current_cpu_data.package.
 
+Fix this by setting the package field in netlogic/common/smp.c. Also
+mach-netlogic/topology.h can be removed now as it no longer needs to
+override mips topology definitions.
 
-On 27/08/14 13:05, lkcl . wrote:
-> On Wed, Aug 27, 2014 at 12:48 PM, Paul Burton <paul.burton@imgtec.com> wrote:
-> 
->> Hi Luke :)
-> 
->  hii paul, nice to meet you
-> 
->> That all sounds very interesting! I would definitely be interested in
->> getting involved & helping out, and I imagine others at Imagination
->> may be too!
-> 
+Signed-off-by: Jayachandran C <jchandra@broadcom.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Huacai Chen <chenhc@lemote.com>
+---
+[ Ralf: This is for 3.17, fixes an issue which went into -rc1, and was fixed
+  partially in -rc2]
 
-Indeed!
+ arch/mips/include/asm/mach-netlogic/topology.h | 15 ---------------
+ arch/mips/netlogic/common/smp.c                |  1 +
+ 2 files changed, 1 insertion(+), 15 deletions(-)
+ delete mode 100644 arch/mips/include/asm/mach-netlogic/topology.h
 
->> Did you have anything concrete in mind that would be helpful at this
->> stage, or are you more judging interest?
-> 
->  bit of both.  background: with 4 CPU cards coming out (ICubeCorp
-> IC1T, Allwinner A20, Allwinner A33 and Ingenic JZ4775) in the next few
-> months and an upcoming (first) crowdfunding campaign i simply won't
-> have time to get everything done myself, so i will kinda need some
-> help.
-
-That's an ambitious list of CPU cards..
-
-> 
-> so it's a "yes let people know the project exists, see who's out
-> there, who'd like some cool early hardware" and also a "these are the
-> things that need doing, who'd like to help" enquiry.
-
-Hello from me as well. :)
-
-> 
-> and on that list, getting *a* kernel and OS installed is right at the
-> top!  literally this will be a bare board, direct from the prototyping
-> company.  then begins the task of working out if the hardware's good
-> by learning at the same time how to get an OS onto the card *at all*
-> :)
-> 
-> so that's at the micro-level: at the larger level, to give some
-> perspective, the goal of the rhombus tech project is to create
-> desirable mass-volume affordable environmentally-conscious computing
-> appliances, and inviting software libre developers to be involved with
-> that process at every step of the way.
-> 
-> it's quite an ambitious long-term project and the EOMA68 standard is a
-> key part of that, being designed to last at least a decade.
-
-Ambitious indeed. Hope it kicks off.
-
-ZubairLK
+diff --git a/arch/mips/include/asm/mach-netlogic/topology.h b/arch/mips/include/asm/mach-netlogic/topology.h
+deleted file mode 100644
+index 0eb43c8..0000000
+--- a/arch/mips/include/asm/mach-netlogic/topology.h
++++ /dev/null
+@@ -1,15 +0,0 @@
+-/*
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
+- *
+- * Copyright (C) 2013 Broadcom Corporation
+- */
+-#ifndef _ASM_MACH_NETLOGIC_TOPOLOGY_H
+-#define _ASM_MACH_NETLOGIC_TOPOLOGY_H
+-
+-#include <asm/mach-netlogic/multi-node.h>
+-
+-#include <asm-generic/topology.h>
+-
+-#endif /* _ASM_MACH_NETLOGIC_TOPOLOGY_H */
+diff --git a/arch/mips/netlogic/common/smp.c b/arch/mips/netlogic/common/smp.c
+index 4fde7ac..f23fe22 100644
+--- a/arch/mips/netlogic/common/smp.c
++++ b/arch/mips/netlogic/common/smp.c
+@@ -120,6 +120,7 @@ static void nlm_init_secondary(void)
+ 
+ 	hwtid = hard_smp_processor_id();
+ 	current_cpu_data.core = hwtid / NLM_THREADS_PER_CORE;
++	current_cpu_data.package = nlm_cpuid_to_node(hwtid);
+ 	nlm_percpu_init(hwtid);
+ 	nlm_smp_irq_init(hwtid);
+ }
+-- 
+1.9.1

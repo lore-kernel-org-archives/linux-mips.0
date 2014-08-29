@@ -1,16 +1,17 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63]:53251 "EHLO
-        mail-gw2-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27007231AbaH1QDSIkJBG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Aug 2014 18:03:18 +0200
-From: Jayachandran C <jchandra@broadcom.com>
-Subject: [PATCH] MIPS: Netlogic: Use MIPS topology.h
-Date: Thu, 28 Aug 2014 21:23:52 +0530
-Message-ID: <1409241232-4205-1-git-send-email-jchandra@broadcom.com>
-In-Reply-To: <Message-ID: <20140825132050.GH27724@linux-mips.org>
-References: <Message-ID: <20140825132050.GH27724@linux-mips.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2082 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007354AbaH2Ihxj1zZr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 29 Aug 2014 10:37:53 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id C64B92C507136
+        for <linux-mips@linux-mips.org>; Fri, 29 Aug 2014 09:37:44 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: cpu: Add 'noftlb' kernel command line option to disable the FTLB
+Date: Fri, 29 Aug 2014 09:37:26 +0100
+Message-ID: <1409301446-23865-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <jchandra@broadcom.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,62 +22,119 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Jayachandran C <jchandra@broadcom.com>, Ralf Baechle <ralf@linux-mips.org>, Guenter Roeck <linux@roeck-us.net>, Huacai Chen <chenhc@lemote.com>
-Message-ID: <20140828155352.D8cVxwav2CRemlIvSB7-hMpNegOo6cKlTFr4hbo6xIU@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20140829083726.LQRnyuc1TsCdw_13frappUOKyxXvnnfvkUOlIfFM8hw@z>
 
-commit bbbf6d8768f5 ("MIPS: NL: Fix nlm_xlp_defconfig build error")
-removed topology related macros from mach-netlogic/topology.h, but
-did not setup the current_cpu_data.package.
+Add new 'noftlb' kernel command line option to disable the FTLB.
+Since the kernel command line is not available when probing and
+enabling the CPU features in cpu_probe(), we let the kernel configure
+the FTLB during the config4 decode operation and we disable the FTLB later
+on, once the command line has become available to us. This should have
+no negative effects since FTLB isn't used so early in the boot process.
+FTLB increases the effective TLB size leading to less TLB misses. However,
+sometimes it's useful to be able to disable it when debugging memory related
+core features or other hardware components.
 
-Fix this by setting the package field in netlogic/common/smp.c. Also
-mach-netlogic/topology.h can be removed now as it no longer needs to
-override mips topology definitions.
-
-Signed-off-by: Jayachandran C <jchandra@broadcom.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Huacai Chen <chenhc@lemote.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
-[ Ralf: This is for 3.17, fixes an issue which went into -rc1, and was fixed
-  partially in -rc2]
+ arch/mips/kernel/cpu-probe.c | 64 ++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 62 insertions(+), 2 deletions(-)
 
- arch/mips/include/asm/mach-netlogic/topology.h | 15 ---------------
- arch/mips/netlogic/common/smp.c                |  1 +
- 2 files changed, 1 insertion(+), 15 deletions(-)
- delete mode 100644 arch/mips/include/asm/mach-netlogic/topology.h
-
-diff --git a/arch/mips/include/asm/mach-netlogic/topology.h b/arch/mips/include/asm/mach-netlogic/topology.h
-deleted file mode 100644
-index 0eb43c8..0000000
---- a/arch/mips/include/asm/mach-netlogic/topology.h
-+++ /dev/null
-@@ -1,15 +0,0 @@
--/*
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file "COPYING" in the main directory of this archive
-- * for more details.
-- *
-- * Copyright (C) 2013 Broadcom Corporation
-- */
--#ifndef _ASM_MACH_NETLOGIC_TOPOLOGY_H
--#define _ASM_MACH_NETLOGIC_TOPOLOGY_H
--
--#include <asm/mach-netlogic/multi-node.h>
--
--#include <asm-generic/topology.h>
--
--#endif /* _ASM_MACH_NETLOGIC_TOPOLOGY_H */
-diff --git a/arch/mips/netlogic/common/smp.c b/arch/mips/netlogic/common/smp.c
-index 4fde7ac..f23fe22 100644
---- a/arch/mips/netlogic/common/smp.c
-+++ b/arch/mips/netlogic/common/smp.c
-@@ -120,6 +120,7 @@ static void nlm_init_secondary(void)
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 94c4a0c0a577..61572c9407c1 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -69,6 +69,63 @@ static int __init htw_disable(char *s)
  
- 	hwtid = hard_smp_processor_id();
- 	current_cpu_data.core = hwtid / NLM_THREADS_PER_CORE;
-+	current_cpu_data.package = nlm_cpuid_to_node(hwtid);
- 	nlm_percpu_init(hwtid);
- 	nlm_smp_irq_init(hwtid);
- }
+ __setup("nohtw", htw_disable);
+ 
++static int mips_ftlb_disabled;
++static int mips_has_ftlb_configured;
++
++static void set_ftlb_enable(struct cpuinfo_mips *c, int enable);
++
++static int __init ftlb_disable(char *s)
++{
++	unsigned int config4, mmuextdef;
++
++	/*
++	 * If the core hasn't done any FTLB configuration, there is nothing
++	 * for us to do here.
++	 */
++	if (!mips_has_ftlb_configured)
++		return 1;
++
++	/* Disable it in the boot cpu */
++	set_ftlb_enable(&cpu_data[0], 0);
++
++	back_to_back_c0_hazard();
++
++	config4 = read_c0_config4();
++
++	/* Check that FTLB has been disabled */
++	mmuextdef = config4 & MIPS_CONF4_MMUEXTDEF;
++	/* MMUSIZEEXT == VTLB ON, FTLB OFF */
++	if (mmuextdef == MIPS_CONF4_MMUEXTDEF_FTLBSIZEEXT) {
++		/* This should never happen */
++		pr_warn("FTLB could not be disabled!\n");
++		return 1;
++	}
++
++	mips_ftlb_disabled = 1;
++	mips_has_ftlb_configured = 0;
++
++	/*
++	 * noftlb is mainly used for debug purposes so print
++	 * an informative message instead of using pr_debug()
++	 */
++	pr_info("FTLB has been disabled\n");
++
++	/*
++	 * Some of these bits are duplicated in the decode_config4.
++	 * MIPS_CONF4_MMUEXTDEF_MMUSIZEEXT is the only possible case
++	 * once FTLB has been disabled so undo what decode_config4 did.
++	 */
++	cpu_data[0].tlbsize -= cpu_data[0].tlbsizeftlbways *
++			       cpu_data[0].tlbsizeftlbsets;
++	cpu_data[0].tlbsizeftlbsets = 0;
++	cpu_data[0].tlbsizeftlbways = 0;
++
++	return 1;
++}
++
++__setup("noftlb", ftlb_disable);
++
++
+ static inline void check_errata(void)
+ {
+ 	struct cpuinfo_mips *c = &current_cpu_data;
+@@ -368,6 +425,8 @@ static inline unsigned int decode_config4(struct cpuinfo_mips *c)
+ 			ftlb_page = MIPS_CONF4_VFTLBPAGESIZE;
+ 			/* fall through */
+ 		case MIPS_CONF4_MMUEXTDEF_FTLBSIZEEXT:
++			if (mips_ftlb_disabled)
++				break;
+ 			newcf4 = (config4 & ~ftlb_page) |
+ 				(page_size_ftlb(mmuextdef) <<
+ 				 MIPS_CONF4_FTLBPAGESIZE_SHIFT);
+@@ -387,6 +446,7 @@ static inline unsigned int decode_config4(struct cpuinfo_mips *c)
+ 			c->tlbsizeftlbways = ((config4 & MIPS_CONF4_FTLBWAYS) >>
+ 					      MIPS_CONF4_FTLBWAYS_SHIFT) + 2;
+ 			c->tlbsize += c->tlbsizeftlbways * c->tlbsizeftlbsets;
++			mips_has_ftlb_configured = 1;
+ 			break;
+ 		}
+ 	}
+@@ -422,8 +482,8 @@ static void decode_configs(struct cpuinfo_mips *c)
+ 
+ 	c->scache.flags = MIPS_CACHE_NOT_PRESENT;
+ 
+-	/* Enable FTLB if present */
+-	set_ftlb_enable(c, 1);
++	/* Enable FTLB if present and not disabled */
++	set_ftlb_enable(c, !mips_ftlb_disabled);
+ 
+ 	ok = decode_config0(c);			/* Read Config registers.  */
+ 	BUG_ON(!ok);				/* Arch spec violation!	 */
 -- 
-1.9.1
+2.0.4

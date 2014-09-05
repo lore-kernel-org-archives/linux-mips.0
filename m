@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24319 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:17151 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27025887AbaIEBAm2RYAA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 5 Sep 2014 03:00:42 +0200
-Subject: [PATCH 0/3] Series short description
+        with ESMTP id S27008171AbaIEBDshWgHl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 5 Sep 2014 03:03:48 +0200
+Subject: [PATCH 0/3] PTE formats changes
 From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Thu, 4 Sep 2014 18:00:27 -0700
-Message-ID: <20140905005807.15161.36194.stgit@linux-yegoshin>
+Date: Thu, 4 Sep 2014 18:03:39 -0700
+Message-ID: <20140905010124.15448.53707.stgit@linux-yegoshin>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -20,9 +20,21 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, hauke@hauke-m.de, yanh@lemote.com, zajec5@gmail.com, ralf@linux-mips.org, alex.smith@imgtec.com, taohl@lemote.com, chenhc@lemote.com
-Message-ID: <20140905010027.0WAMDkQmt7BS_hsRqIu8PRqvb-KAtzufRRHM03L_bxE@z>
+Message-ID: <20140905010339.ymYTDccbKXznH8158Hg0O65Luy2JzM485onEyGz4Fsw@z>
 
-The following series implements...
+The following series implements bugfix of PTE formats for swap and file entries
+and changes PTE bit position to fixed, which is more better for analysing of
+tracer and HW debugger logs.
+
+Hardcoded bits positions and offsets in PTE effectively causes a miss of
+relationship between PTE format for TLB and PTE formats for swap and file
+entries. This patch series introduces a symbolic relation between both and
+also fixes a current mismatch of formats. It can crash kernel or application
+in heavy paging environment.
+
+Fixed bit positions helps much in analysing of tracer and HW debugger logs and
+improves performance and code size a little due to absence of variable masks
+in kernel.
 
 ---
 

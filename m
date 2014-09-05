@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:4072 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27025896AbaIEBEORxPaG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 5 Sep 2014 03:04:14 +0200
-Subject: [PATCH 3/3] MIPS: bugfix of PTE formats for swap and file entries
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Thu, 4 Sep 2014 18:04:03 -0700
-Message-ID: <20140905010403.15448.63847.stgit@linux-yegoshin>
-In-Reply-To: <20140905010124.15448.53707.stgit@linux-yegoshin>
-References: <20140905010124.15448.53707.stgit@linux-yegoshin>
+Received: from szxga03-in.huawei.com ([119.145.14.66]:62926 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27007048AbaIEJqF6I5Ly (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 5 Sep 2014 11:46:05 +0200
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH v1 01/21] PCI/MSI: Clean up struct msi_chip argument
+Date: Fri, 5 Sep 2014 18:09:46 +0800
+Message-ID: <1409911806-10519-2-git-send-email-wangyijing@huawei.com>
+In-Reply-To: <1409911806-10519-1-git-send-email-wangyijing@huawei.com>
+References: <1409911806-10519-1-git-send-email-wangyijing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Type: text/plain
+Return-Path: <wangyijing@huawei.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,310 +20,182 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, hauke@hauke-m.de, yanh@lemote.com, zajec5@gmail.com, ralf@linux-mips.org, alex.smith@imgtec.com, taohl@lemote.com, chenhc@lemote.com
-Message-ID: <20140905010403.hJtP_SVpFlYUlz0CseE6RoW9mbxBndPzQoCISRodbrk@z>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>, Yijing Wang <wangyijing@huawei.com>, Thierry Reding <thierry.reding@gmail.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Message-ID: <20140905100946.BFDimwi4Nrb4TICTMyMBFBczzgDvrly7eHr-A4t0Nbw@z>
 
-Some patch before last era set up hardcoded bits and offsets values of
-PTE file and swap entries formats (traced up to last history era beginning)
-in pgtable-32.h/pgtable-64.h
+Msi_chip functions setup_irq/teardown_irq rarely use msi_chip
+argument. We can look up msi_chip pointer by the device pointer
+or irq number, so clean up msi_chip argument.
 
-Patches
-
-    commit 6ebba0e2f56ee77270a9ef8e92c1b4ec38e5f419
-    Author: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-    Date:   Sat May 27 20:43:04 2006 +0400
-    [MIPS] Fix swap entry for MIPS32 36-bit physical address
-
-and
-
-    commit 7cb710c9a617384cd0ed30638f3acc00125690fc
-    Author: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-    Date:   Sat May 27 22:39:39 2006 +0400
-    [MIPS] Fix non-linear memory mapping on MIPS
-
-fixes some issues but doesn't change a hardcoded bits/offsets encoding,
-so, the subsequent patches:
-
-    commit 6dd9344cfc41bcc60a01cdc828cb278be7a10e01
-    Author: David Daney <ddaney@caviumnetworks.com>
-    Date:   Wed Feb 10 15:12:47 2010 -0800
-    MIPS: Implement Read Inhibit/eXecute Inhibit
-
-    commit 970d032fec3f9687446595ee2569fb70b858a69f
-    Author: Ralf Baechle <ralf@linux-mips.org>
-    Date:   Thu Oct 18 13:54:15 2012 +0200
-    MIPS: Transparent Huge Pages support
-
-changed PTE bit format yet another time but missed the appropriate bit/offset
-changes in pgtable-32.h/pgtable-64.h for file/swap formats.
-Besides that, bit formats now are many and even may be run-time dependent
-(RI/XI availability or/and HUGE page support availability).
-
-This bugfix patch:
-
-I.  Introduces a symbolic named definitions for pgtable-32.h/pgtable-64.h
-    in proper place - pgtable.h to underline a hard relationship between
-    PTE bit positions in pgtable.h and file/swap entries format in
-    pgtable-32.h/pgtable-64.h files.
-
-II. Setup macros to fix multivariable formats (moving bits V/G depending on
-    kernel config and run-time options) and put this issue finally to rest
-
-Bug can pops-up in heavy paging environment in form of random application/kernel
-crashes. It is unusual in embedded and that may be a reason why it is not
-catched yet.
-
-This change is based in assumption that excluded bits in file PTE format
-(V/G/F/P) are located in two groups with P is rightmost (but 64BIT & MIPS32
-configuration is a some special case). Previous patch in series "MIPS: PTE bit
-positions slightly changed" does it.
-
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: Thierry Reding <thierry.reding@gmail.com>
+CC: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 ---
- arch/mips/include/asm/pgtable-32.h   |  107 +++++++++++++++-------------------
- arch/mips/include/asm/pgtable-64.h   |   25 +++++---
- arch/mips/include/asm/pgtable-bits.h |   47 +++++++++++++++
- 3 files changed, 110 insertions(+), 69 deletions(-)
+ drivers/irqchip/irq-armada-370-xp.c |   12 +++++-------
+ drivers/pci/host/pci-tegra.c        |    8 +++++---
+ drivers/pci/host/pcie-designware.c  |    4 ++--
+ drivers/pci/host/pcie-rcar.c        |    8 +++++---
+ drivers/pci/msi.c                   |    4 ++--
+ include/linux/msi.h                 |    5 ++---
+ 6 files changed, 21 insertions(+), 20 deletions(-)
 
-diff --git a/arch/mips/include/asm/pgtable-32.h b/arch/mips/include/asm/pgtable-32.h
-index cd7d606..adba9db 100644
---- a/arch/mips/include/asm/pgtable-32.h
-+++ b/arch/mips/include/asm/pgtable-32.h
-@@ -152,76 +152,61 @@ pfn_pte(unsigned long pfn, pgprot_t prot)
- 	((pte_t *)page_address(pmd_page(*(dir))) + __pte_offset(address))
- #define pte_unmap(pte) ((void)(pte))
+diff --git a/drivers/irqchip/irq-armada-370-xp.c b/drivers/irqchip/irq-armada-370-xp.c
+index 574aba0..658990c 100644
+--- a/drivers/irqchip/irq-armada-370-xp.c
++++ b/drivers/irqchip/irq-armada-370-xp.c
+@@ -129,9 +129,8 @@ static void armada_370_xp_free_msi(int hwirq)
+ 	mutex_unlock(&msi_used_lock);
+ }
  
--#if defined(CONFIG_CPU_R3000) || defined(CONFIG_CPU_TX39XX)
--
--/* Swap entries must have VALID bit cleared. */
--#define __swp_type(x)		(((x).val >> 10) & 0x1f)
--#define __swp_offset(x)		((x).val >> 15)
--#define __swp_entry(type,offset)	\
--	((swp_entry_t) { ((type) << 10) | ((offset) << 15) })
--
--/*
-- * Bits 0, 4, 8, and 9 are taken, split up 28 bits of offset into this range:
-- */
--#define PTE_FILE_MAX_BITS	28
--
--#define pte_to_pgoff(_pte)	((((_pte).pte >> 1 ) & 0x07) | \
--				 (((_pte).pte >> 2 ) & 0x38) | \
--				 (((_pte).pte >> 10) <<	 6 ))
--
--#define pgoff_to_pte(off)	((pte_t) { (((off) & 0x07) << 1 ) | \
--					   (((off) & 0x38) << 2 ) | \
--					   (((off) >>  6 ) << 10) | \
--					   _PAGE_FILE })
--
--#else
--
--/* Swap entries must have VALID and GLOBAL bits cleared. */
- #if defined(CONFIG_64BIT_PHYS_ADDR) && defined(CONFIG_CPU_MIPS32)
--#define __swp_type(x)		(((x).val >> 2) & 0x1f)
--#define __swp_offset(x)		 ((x).val >> 7)
--#define __swp_entry(type,offset)	\
--		((swp_entry_t)	{ ((type) << 2) | ((offset) << 7) })
--#else
--#define __swp_type(x)		(((x).val >> 8) & 0x1f)
--#define __swp_offset(x)		 ((x).val >> 13)
--#define __swp_entry(type,offset)	\
--		((swp_entry_t)	{ ((type) << 8) | ((offset) << 13) })
--#endif /* defined(CONFIG_64BIT_PHYS_ADDR) && defined(CONFIG_CPU_MIPS32) */
+-static int armada_370_xp_setup_msi_irq(struct msi_chip *chip,
+-				       struct pci_dev *pdev,
+-				       struct msi_desc *desc)
++static int armada_370_xp_setup_msi_irq(struct pci_dev *pdev,
++		struct msi_desc *desc)
+ {
+ 	struct msi_msg msg;
+ 	int virq, hwirq;
+@@ -156,8 +155,7 @@ static int armada_370_xp_setup_msi_irq(struct msi_chip *chip,
+ 	return 0;
+ }
  
--#if defined(CONFIG_64BIT_PHYS_ADDR) && defined(CONFIG_CPU_MIPS32)
- /*
-- * Bits 0 and 1 of pte_high are taken, use the rest for the page offset...
-- */
--#define PTE_FILE_MAX_BITS	30
--
--#define pte_to_pgoff(_pte)	((_pte).pte_high >> 2)
--#define pgoff_to_pte(off)	((pte_t) { _PAGE_FILE, (off) << 2 })
--
--#else
--/*
-- * Bits 0, 4, 6, and 7 are taken, split up 28 bits of offset into this range:
-+ * Two words PTE case:
-+ * Bits 0 and 1 (V+G) of pte_high are taken, use the rest for the swaps and
-+ * page offset...
-+ * Bits F and P are in pte_low.
-+ *
-+ * Note: swp_entry_t is one word today.
-  */
--#define PTE_FILE_MAX_BITS	28
-+#define __swp_type(x)			\
-+		(((x).val >> __SWP_PTE_SKIP_BITS_NUM) & __SWP_TYPE_MASK)
-+#define __swp_offset(x)		\
-+		((x).val >> (__SWP_PTE_SKIP_BITS_NUM + __SWP_TYPE_BITS_NUM))
-+#define __swp_entry(type, offset)	\
-+		((swp_entry_t)  { ((type) << __SWP_PTE_SKIP_BITS_NUM) | \
-+		((offset) << (__SWP_TYPE_BITS_NUM + __SWP_PTE_SKIP_BITS_NUM)) })
-+#define __pte_to_swp_entry(pte) ((swp_entry_t) { (pte).pte_high })
-+#define __swp_entry_to_pte(x)	((pte_t) { 0, (x).val })
+-static void armada_370_xp_teardown_msi_irq(struct msi_chip *chip,
+-					   unsigned int irq)
++static void armada_370_xp_teardown_msi_irq(unsigned int irq)
+ {
+ 	struct irq_data *d = irq_get_irq_data(irq);
+ 	unsigned long hwirq = d->hwirq;
+@@ -166,8 +164,8 @@ static void armada_370_xp_teardown_msi_irq(struct msi_chip *chip,
+ 	armada_370_xp_free_msi(hwirq);
+ }
  
--#define pte_to_pgoff(_pte)	((((_pte).pte >> 1) & 0x7) | \
--				 (((_pte).pte >> 2) & 0x8) | \
--				 (((_pte).pte >> 8) <<	4))
-+#define PTE_FILE_MAX_BITS	(32 - __SWP_PTE_SKIP_BITS_NUM)
+-static int armada_370_xp_check_msi_device(struct msi_chip *chip, struct pci_dev *dev,
+-					  int nvec, int type)
++static int armada_370_xp_check_msi_device(struct pci_dev *dev,
++		int nvec, int type)
+ {
+ 	/* We support MSI, but not MSI-X */
+ 	if (type == PCI_CAP_ID_MSI)
+diff --git a/drivers/pci/host/pci-tegra.c b/drivers/pci/host/pci-tegra.c
+index 0fb0fdb..edd4040 100644
+--- a/drivers/pci/host/pci-tegra.c
++++ b/drivers/pci/host/pci-tegra.c
+@@ -1157,9 +1157,10 @@ static irqreturn_t tegra_pcie_msi_irq(int irq, void *data)
+ 	return processed > 0 ? IRQ_HANDLED : IRQ_NONE;
+ }
  
--#define pgoff_to_pte(off)	((pte_t) { (((off) & 0x7) << 1) | \
--					   (((off) & 0x8) << 2) | \
--					   (((off) >>  4) << 8) | \
--					   _PAGE_FILE })
--#endif
-+#define pte_to_pgoff(_pte)	((_pte).pte_high >> __SWP_PTE_SKIP_BITS_NUM)
-+#define pgoff_to_pte(off)	\
-+		((pte_t) { _PAGE_FILE, (off) << __SWP_PTE_SKIP_BITS_NUM })
+-static int tegra_msi_setup_irq(struct msi_chip *chip, struct pci_dev *pdev,
++static int tegra_msi_setup_irq(struct pci_dev *pdev,
+ 			       struct msi_desc *desc)
+ {
++	struct msi_chip *chip = pdev->bus->msi;
+ 	struct tegra_msi *msi = to_tegra_msi(chip);
+ 	struct msi_msg msg;
+ 	unsigned int irq;
+@@ -1185,10 +1186,11 @@ static int tegra_msi_setup_irq(struct msi_chip *chip, struct pci_dev *pdev,
+ 	return 0;
+ }
  
--#endif
-+#else /* CONFIG_CPU_MIPS32 && !CONFIG_64BIT_PHYS_ADDR */
+-static void tegra_msi_teardown_irq(struct msi_chip *chip, unsigned int irq)
++static void tegra_msi_teardown_irq(unsigned int irq)
+ {
+-	struct tegra_msi *msi = to_tegra_msi(chip);
+ 	struct irq_data *d = irq_get_irq_data(irq);
++	struct msi_chip *chip = irq_get_chip_data(irq);
++	struct tegra_msi *msi = to_tegra_msi(chip);
  
--#if defined(CONFIG_64BIT_PHYS_ADDR) && defined(CONFIG_CPU_MIPS32)
--#define __pte_to_swp_entry(pte) ((swp_entry_t) { (pte).pte_high })
--#define __swp_entry_to_pte(x)	((pte_t) { 0, (x).val })
--#else
-+/* Swap  entries must have V,G,P and F bits cleared. */
-+#define __swp_type(x)		(((x).val >> _PAGE_DIRTY_SHIFT) & __SWP_TYPE_MASK)
-+#define __swp_offset(x)	\
-+		((x).val >> (_PAGE_DIRTY_SHIFT + __SWP_TYPE_BITS_NUM))
-+#define __swp_entry(type, offset)	\
-+		((swp_entry_t) { ((type) << _PAGE_DIRTY_SHIFT) | \
-+		((offset) << (_PAGE_DIRTY_SHIFT + __SWP_TYPE_BITS_NUM)) })
- #define __pte_to_swp_entry(pte) ((swp_entry_t) { pte_val(pte) })
- #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
--#endif
+ 	tegra_msi_free(msi, d->hwirq);
+ }
+diff --git a/drivers/pci/host/pcie-designware.c b/drivers/pci/host/pcie-designware.c
+index 52bd3a1..2204456 100644
+--- a/drivers/pci/host/pcie-designware.c
++++ b/drivers/pci/host/pcie-designware.c
+@@ -342,7 +342,7 @@ static void clear_irq(unsigned int irq)
+ 	msi->msi_attrib.multiple = 0;
+ }
  
-+/*
-+ * Bits V+G, and F+P are taken, split up 28 bits of offset into two bitfields:
-+ */
-+#define PTE_FILE_MAX_BITS	(32 - __FILE_PTE_TOTAL_BITS_NUM)
-+
-+#define pte_to_pgoff(_pte)	\
-+		((((_pte).pte >> __FILE_PTE_TOTAL_BITS_NUM) & \
-+		    ~(__FILE_PTE_LOW_MASK)) | \
-+		 (((_pte).pte >> __FILE_PTE_LOW_BITS_NUM) & \
-+		    (__FILE_PTE_LOW_MASK)))
-+
-+#define pgoff_to_pte(off)	\
-+		((pte_t) { (((off) & __FILE_PTE_LOW_MASK) << \
-+		      (__FILE_PTE_LOW_BITS_NUM)) | \
-+		   (((off) & ~(__FILE_PTE_LOW_MASK)) << \
-+		      (__FILE_PTE_TOTAL_BITS_NUM)) | \
-+		   _PAGE_FILE })
-+
-+#endif /* CONFIG_64BIT_PHYS_ADDR && CONFIG_MIPS32 */
- #endif /* _ASM_PGTABLE_32_H */
-diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
-index e1c49a9..3484910 100644
---- a/arch/mips/include/asm/pgtable-64.h
-+++ b/arch/mips/include/asm/pgtable-64.h
-@@ -283,21 +283,30 @@ extern void pmd_init(unsigned long page, unsigned long pagetable);
-  * low 32 bits zero.
-  */
- static inline pte_t mk_swap_pte(unsigned long type, unsigned long offset)
--{ pte_t pte; pte_val(pte) = (type << 32) | (offset << 40); return pte; }
-+{
-+	pte_t pte;
-+
-+	pte_val(pte) = (type << __SWP_PTE_SKIP_BITS_NUM) |
-+		(offset << (__SWP_PTE_SKIP_BITS_NUM + __SWP_TYPE_BITS_NUM));
-+	return pte;
-+}
+-static int dw_msi_setup_irq(struct msi_chip *chip, struct pci_dev *pdev,
++static int dw_msi_setup_irq(struct pci_dev *pdev,
+ 			struct msi_desc *desc)
+ {
+ 	int irq, pos, msgvec;
+@@ -384,7 +384,7 @@ static int dw_msi_setup_irq(struct msi_chip *chip, struct pci_dev *pdev,
+ 	return 0;
+ }
  
--#define __swp_type(x)		(((x).val >> 32) & 0xff)
--#define __swp_offset(x)		((x).val >> 40)
-+#define __swp_type(x)		\
-+		(((x).val >> __SWP_PTE_SKIP_BITS_NUM) & __SWP_TYPE_MASK)
-+#define __swp_offset(x)	\
-+		((x).val >> (__SWP_PTE_SKIP_BITS_NUM + __SWP_TYPE_BITS_NUM))
- #define __swp_entry(type, offset) ((swp_entry_t) { pte_val(mk_swap_pte((type), (offset))) })
- #define __pte_to_swp_entry(pte) ((swp_entry_t) { pte_val(pte) })
- #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
+-static void dw_msi_teardown_irq(struct msi_chip *chip, unsigned int irq)
++static void dw_msi_teardown_irq(unsigned int irq)
+ {
+ 	clear_irq(irq);
+ }
+diff --git a/drivers/pci/host/pcie-rcar.c b/drivers/pci/host/pcie-rcar.c
+index 4884ee5..647bc9f 100644
+--- a/drivers/pci/host/pcie-rcar.c
++++ b/drivers/pci/host/pcie-rcar.c
+@@ -615,9 +615,10 @@ static irqreturn_t rcar_pcie_msi_irq(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
  
- /*
-- * Bits 0, 4, 6, and 7 are taken. Let's leave bits 1, 2, 3, and 5 alone to
-- * make things easier, and only use the upper 56 bits for the page offset...
-+ * Take out all bits from V to bit 0. We should actually take out only VGFP but
-+ * today PTE is too complicated by HUGE page support etc
-  */
--#define PTE_FILE_MAX_BITS	56
-+#define PTE_FILE_MAX_BITS	(64 - _PAGE_DIRTY_SHIFT)
+-static int rcar_msi_setup_irq(struct msi_chip *chip, struct pci_dev *pdev,
++static int rcar_msi_setup_irq(struct pci_dev *pdev,
+ 			      struct msi_desc *desc)
+ {
++	struct msi_chip *chip = pdev->bus->msi;
+ 	struct rcar_msi *msi = to_rcar_msi(chip);
+ 	struct rcar_pcie *pcie = container_of(chip, struct rcar_pcie, msi.chip);
+ 	struct msi_msg msg;
+@@ -645,10 +646,11 @@ static int rcar_msi_setup_irq(struct msi_chip *chip, struct pci_dev *pdev,
+ 	return 0;
+ }
  
--#define pte_to_pgoff(_pte)	((_pte).pte >> 8)
--#define pgoff_to_pte(off)	((pte_t) { ((off) << 8) | _PAGE_FILE })
-+#define pte_to_pgoff(_pte)	((_pte).pte >> _PAGE_DIRTY_SHIFT)
-+#define pgoff_to_pte(off)	\
-+		((pte_t) { ((off) << _PAGE_DIRTY_SHIFT) | _PAGE_FILE })
+-static void rcar_msi_teardown_irq(struct msi_chip *chip, unsigned int irq)
++static void rcar_msi_teardown_irq(unsigned int irq)
+ {
+-	struct rcar_msi *msi = to_rcar_msi(chip);
+ 	struct irq_data *d = irq_get_irq_data(irq);
++	struct msi_chip *chip = irq_get_chip_data(irq);
++	struct rcar_msi *msi = to_rcar_msi(chip);
  
- #endif /* _ASM_PGTABLE_64_H */
-diff --git a/arch/mips/include/asm/pgtable-bits.h b/arch/mips/include/asm/pgtable-bits.h
-index d47be80..708f681 100644
---- a/arch/mips/include/asm/pgtable-bits.h
-+++ b/arch/mips/include/asm/pgtable-bits.h
-@@ -121,6 +121,7 @@
- #define _PAGE_PRESENT		(1 << _PAGE_PRESENT_SHIFT)
- #define _PAGE_MODIFIED_SHIFT	(_PAGE_PRESENT_SHIFT + 1)
- #define _PAGE_MODIFIED		(1 << _PAGE_MODIFIED_SHIFT)
-+#define _PAGE_FILE_SHIFT	(_PAGE_MODIFIED_SHIFT)
- #define _PAGE_FILE		(_PAGE_MODIFIED)
- #define _PAGE_READ_SHIFT	\
- 		(cpu_has_rixi ? _PAGE_MODIFIED_SHIFT : _PAGE_MODIFIED_SHIFT + 1)
-@@ -225,6 +226,7 @@
- #define _PAGE_MODIFIED_SHIFT	(_PAGE_PRESENT_SHIFT + 1)
- #define _PAGE_MODIFIED		(1 << _PAGE_MODIFIED_SHIFT)
- /* set:pagecache unset:swap */
-+#define _PAGE_FILE_SHIFT	(_PAGE_MODIFIED_SHIFT)
- #define _PAGE_FILE		(_PAGE_MODIFIED)
- /* implemented in software */
- #define _PAGE_WRITE_SHIFT	(_PAGE_MODIFIED_SHIFT + 1)
-@@ -292,6 +294,51 @@
- #define _PAGE_GLOBAL_SHIFT ilog2(_PAGE_GLOBAL)
- #endif
+ 	rcar_msi_free(msi, d->hwirq);
+ }
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 8fc9587..f6cb317 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -37,7 +37,7 @@ int __weak arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
+ 	if (!chip || !chip->setup_irq)
+ 		return -EINVAL;
  
-+/*
-+ * Swap and File entries format definitions in PTE
-+ * This constant definitions are here because it is linked with bit positions
-+ * The real macros are still in pgtable-32/64.h
-+ *
-+ * There are 3 kind of format - 64BIT, generic 32BIT and 32BIT & 64BIT PA
-+ */
-+#define __SWP_TYPE_BITS_NUM	5
-+#define __SWP_TYPE_MASK	((1 << __SWP_TYPE_BITS_NUM) - 1)
-+
-+#if defined(CONFIG_64BIT_PHYS_ADDR) && defined(CONFIG_CPU_MIPS32)
-+
-+/*
-+ * Two words PTE case:
-+ * Bits 0 and 1 (V+G) of pte_high are taken, use the rest for the swaps and
-+ * page offset...
-+ * Bits F and P are in pte_low.
-+ *
-+ * Note: swp_entry_t or file entry are one word today (pte_high)
-+ */
-+#define __SWP_PTE_SKIP_BITS_NUM	2
-+
-+#elif defined(CONFIG_64BIT)
-+/*
-+ * Swap entry is located in high 32 bits of PTE
-+ *
-+ * File entry starts right from D bit
-+ */
-+#define __SWP_PTE_SKIP_BITS_NUM	32
-+
-+#else /* CONFIG_CPU_MIPS32 && !CONFIG_64BIT_PHYS_ADDR */
-+/*
-+ * Swap entry is encoded starting right from D bit
-+ *
-+ * File entry is encoded in all bits besides V,G,F and P which are grouped in
-+ * two fields with variable gap, so - additonal location info is defined here
-+ */
-+/* rightmost taken out field - F and P */
-+#define __FILE_PTE_LOW_BITS_NUM	2
-+/* total number of taken out bits - V,G,F,P */
-+#define __FILE_PTE_TOTAL_BITS_NUM	4
-+/* mask for intermediate field which is used for encoding */
-+#define __FILE_PTE_LOW_MASK	((_PAGE_GLOBAL - 1) >> (_PAGE_FILE_SHIFT + 1))
-+
-+#endif /* defined(CONFIG_64BIT_PHYS_ADDR) && defined(CONFIG_CPU_MIPS32) */
+-	err = chip->setup_irq(chip, dev, desc);
++	err = chip->setup_irq(dev, desc);
+ 	if (err < 0)
+ 		return err;
  
- #ifndef __ASSEMBLY__
- /*
+@@ -53,7 +53,7 @@ void __weak arch_teardown_msi_irq(unsigned int irq)
+ 	if (!chip || !chip->teardown_irq)
+ 		return;
+ 
+-	chip->teardown_irq(chip, irq);
++	chip->teardown_irq(irq);
+ }
+ 
+ int __weak arch_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
+diff --git a/include/linux/msi.h b/include/linux/msi.h
+index c3c70a6..762fe61 100644
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -71,9 +71,8 @@ struct msi_chip {
+ 	struct device_node *of_node;
+ 	struct list_head list;
+ 
+-	int (*setup_irq)(struct msi_chip *chip, struct pci_dev *dev,
+-			 struct msi_desc *desc);
+-	void (*teardown_irq)(struct msi_chip *chip, unsigned int irq);
++	int (*setup_irq)(struct pci_dev *dev, struct msi_desc *desc);
++	void (*teardown_irq)(unsigned int irq);
+ };
+ 
+ #endif /* LINUX_MSI_H */
+-- 
+1.7.1

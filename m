@@ -1,11 +1,11 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64]:55067 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27007082AbaIEJqf7aZLL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 5 Sep 2014 11:46:35 +0200
+Received: from szxga02-in.huawei.com ([119.145.14.65]:56062 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27008179AbaIEJqgfv6aC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 5 Sep 2014 11:46:36 +0200
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v1 18/21] IA64/MSI: Use MSI chip framework to configure MSI/MSI-X irq
-Date: Fri, 5 Sep 2014 18:10:03 +0800
-Message-ID: <1409911806-10519-19-git-send-email-wangyijing@huawei.com>
+Subject: [PATCH v1 13/21] MIPS/Xlp/MSI: Use MSI chip framework to configure MSI/MSI-X irq
+Date: Fri, 5 Sep 2014 18:09:58 +0800
+Message-ID: <1409911806-10519-14-git-send-email-wangyijing@huawei.com>
 In-Reply-To: <1409911806-10519-1-git-send-email-wangyijing@huawei.com>
 References: <1409911806-10519-1-git-send-email-wangyijing@huawei.com>
 MIME-Version: 1.0
@@ -22,56 +22,54 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Bjorn Helgaas <bhelgaas@google.com>
 Cc: Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>, Yijing Wang <wangyijing@huawei.com>
-Message-ID: <20140905101003.nufMU4vbHjf3jObyuP-VpymqddEhKNqyfABTSsm42jY@z>
+Message-ID: <20140905100958.stoeTjVwDvCm90C-33k5X-5NwgbBuQ8ND0jpIVA5JgQ@z>
 
 Use MSI chip framework instead of arch MSI functions to configure
 MSI/MSI-X irq. So we can manage MSI/MSI-X irq in a unified framework.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 ---
- arch/ia64/kernel/msi_ia64.c |   18 ++++++++++++++----
- 1 files changed, 14 insertions(+), 4 deletions(-)
+ arch/mips/pci/msi-xlp.c |   14 ++++++++++++--
+ 1 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/ia64/kernel/msi_ia64.c b/arch/ia64/kernel/msi_ia64.c
-index 4efe748..55ac859 100644
---- a/arch/ia64/kernel/msi_ia64.c
-+++ b/arch/ia64/kernel/msi_ia64.c
-@@ -112,15 +112,15 @@ static struct irq_chip ia64_msi_chip = {
+diff --git a/arch/mips/pci/msi-xlp.c b/arch/mips/pci/msi-xlp.c
+index e469dc7..6b791ef 100644
+--- a/arch/mips/pci/msi-xlp.c
++++ b/arch/mips/pci/msi-xlp.c
+@@ -245,7 +245,7 @@ static struct irq_chip xlp_msix_chip = {
+ 	.irq_unmask	= unmask_msi_irq,
  };
  
- 
--int arch_setup_msi_irq(struct pci_dev *pdev, struct msi_desc *desc)
-+static int arch_ia64_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
- {
- 	if (platform_setup_msi_irq)
--		return platform_setup_msi_irq(pdev, desc);
-+		return platform_setup_msi_irq(dev, desc);
- 
--	return ia64_setup_msi_irq(pdev, desc);
-+	return ia64_setup_msi_irq(dev, desc);
- }
- 
 -void arch_teardown_msi_irq(unsigned int irq)
-+static void arch_ia64_teardown_msi_irq(unsigned int irq)
++void xlp_teardown_msi_irq(unsigned int irq)
  {
- 	if (platform_teardown_msi_irq)
- 		return platform_teardown_msi_irq(irq);
-@@ -128,6 +128,16 @@ void arch_teardown_msi_irq(unsigned int irq)
- 	return ia64_teardown_msi_irq(irq);
  }
  
-+static struct msi_chip chip = {
-+	.setup_irq = arch_ia64_setup_msi_irq,
-+	.teardown_irq = arch_ia64_teardown_msi_irq,
+@@ -450,7 +450,7 @@ static int xlp_setup_msix(uint64_t lnkbase, int node, int link,
+ 	return 0;
+ }
+ 
+-int arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
++static int xlp_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
+ {
+ 	struct pci_dev *lnkdev;
+ 	uint64_t lnkbase;
+@@ -472,6 +472,16 @@ int arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
+ 		return xlp_setup_msi(lnkbase, node, link, desc);
+ }
+ 
++static struct msi_chip xlp_chip = {
++	.setup_irq = xlp_setup_msi_irq,
++	.teardown_irq = xlp_teardown_msi_irq,
 +};
 +
 +struct msi_chip *arch_find_msi_chip(struct pci_dev *dev)
 +{
-+	return &chip;
++	return &xlp_chip;
 +}
 +
- #ifdef CONFIG_INTEL_IOMMU
- #ifdef CONFIG_SMP
- static int dmar_msi_set_affinity(struct irq_data *data,
+ void __init xlp_init_node_msi_irqs(int node, int link)
+ {
+ 	struct nlm_soc_info *nodep;
 -- 
 1.7.1

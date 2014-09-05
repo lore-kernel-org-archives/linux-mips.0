@@ -1,18 +1,18 @@
-Received: from smtp.citrix.com ([66.165.176.89]:34757 "EHLO SMTP.CITRIX.COM"
+Received: from terminus.zytor.com ([198.137.202.10]:47393 "EHLO mail.zytor.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27008195AbaIEO3cPnnb9 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 5 Sep 2014 16:29:32 +0200
-Message-ID: <5409C8C0.8020200@citrix.com>
-Date: Fri, 5 Sep 2014 15:29:20 +0100
-From: David Vrabel <david.vrabel@citrix.com>
+        id S27007724AbaIEUHwXLxl1 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 5 Sep 2014 22:07:52 +0200
+Message-ID: <540A1800.3000005@zytor.com>
+Date: Fri, 05 Sep 2014 13:07:28 -0700
+From: "H. Peter Anvin" <hpa@zytor.com>
 MIME-Version: 1.0
-Subject: Re: [Xen-devel] [PATCH v1 08/21] x86/xen/MSI: Use MSI chip framework
- to configure MSI/MSI-X irq
-References: <1409911806-10519-1-git-send-email-wangyijing@huawei.com> <1409911806-10519-9-git-send-email-wangyijing@huawei.com>
-In-Reply-To: <1409911806-10519-9-git-send-email-wangyijing@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <david.vrabel@citrix.com>
+Subject: Re: Post-merge-window ping (Re: [PATCH v4 0/5] x86: two-phase syscall
+ tracing and seccomp fastpath)
+References: <CALCETrUaZ8w92g96SmFEZDE0Jr+0Moeo+S24-TyW8crrK5reSg@mail.gmail.com>
+In-Reply-To: <CALCETrUaZ8w92g96SmFEZDE0Jr+0Moeo+S24-TyW8crrK5reSg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-Path: <hpa@zytor.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,31 +22,27 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-pci@vger.kernel.org, Bharat.Bhushan@freescale.com, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Joerg Roedel <joro@8bytes.org>, x86@kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, xen-devel@lists.xenproject.org, arnab.basu@freescale.com, Arnd Bergmann <arnd@arndb.de>, Chris Metcalf <cmetcalf@tilera.com>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org, Xinwei Hu <huxinwei@huawei.com>, Tony Luck <tony.luck@intel.com>, Ralf Baechle <ralf@linux-mips.org>, iommu@lists.linux-foundation.org, Wuyun <wuyun.wu@huawei.com>, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
-Message-ID: <20140905142920.Ct_zGbML7om9h9lJziRU5z-fd3hyPljEZyVbHcUhBfQ@z>
+To: Andy Lutomirski <luto@amacapital.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Will Drewry <wad@chromium.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, X86 ML <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, Frederic Weisbecker <fweisbec@gmail.com>
+Message-ID: <20140905200728.76D8BLYiZK4JzRotl9dk1G_NWlCYJXi1wmqZdRzTWLg@z>
 
-On 05/09/14 11:09, Yijing Wang wrote:
-> Use MSI chip framework instead of arch MSI functions to configure
-> MSI/MSI-X irq. So we can manage MSI/MSI-X irq in a unified framework.
-[...]
-> --- a/arch/x86/pci/xen.c
-> +++ b/arch/x86/pci/xen.c
-[...]
-> @@ -418,9 +430,9 @@ int __init pci_xen_init(void)
->  #endif
->  
->  #ifdef CONFIG_PCI_MSI
-> -	x86_msi.setup_msi_irqs = xen_setup_msi_irqs;
-> -	x86_msi.teardown_msi_irq = xen_teardown_msi_irq;
-> -	x86_msi.teardown_msi_irqs = xen_teardown_msi_irqs;
-> +	xen_msi_chip.setup_irqs = xen_setup_msi_irqs;
-> +	xen_msi_chip.teardown_irqs = xen_teardown_msi_irqs;
-> +	x86_msi_chip = &xen_msi_chip;
->  	msi_chip.irq_mask = xen_nop_msi_mask;
->  	msi_chip.irq_unmask = xen_nop_msi_mask;
+On 08/26/2014 06:32 PM, Andy Lutomirski wrote:
+> On Mon, Jul 28, 2014 at 8:38 PM, Andy Lutomirski <luto@amacapital.net> wrote:
+>> This applies to:
+>> git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git seccomp-fastpath
+>>
+>> Gitweb:
+>> https://git.kernel.org/cgit/linux/kernel/git/kees/linux.git/log/?h=seccomp/fastpath
+> 
+> Hi all-
+> 
+> AFAIK the only thing that's changed since I submitted it is that the
+> 3.17 merge window is closed.  Kees rebased the tree this applies to,
+> but I think the patches all still apply.  What, if anything, do I need
+> to do to help this along for 3.18?
+> 
 
-Why have these not been changed to set the x86_msi_chip.mask/unmask
-fields instead?
+Just put this stuff in a branch and running through my personal test
+battery now.
 
-David
+	-hpa

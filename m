@@ -1,15 +1,15 @@
-Received: from terminus.zytor.com ([198.137.202.10]:47393 "EHLO mail.zytor.com"
+Received: from terminus.zytor.com ([198.137.202.10]:47768 "EHLO mail.zytor.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27007724AbaIEUHwXLxl1 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 5 Sep 2014 22:07:52 +0200
-Message-ID: <540A1800.3000005@zytor.com>
-Date: Fri, 05 Sep 2014 13:07:28 -0700
+        id S27008131AbaIEUn7sdbKY (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 5 Sep 2014 22:43:59 +0200
+Message-ID: <540A2080.8050404@zytor.com>
+Date: Fri, 05 Sep 2014 13:43:44 -0700
 From: "H. Peter Anvin" <hpa@zytor.com>
 MIME-Version: 1.0
 Subject: Re: Post-merge-window ping (Re: [PATCH v4 0/5] x86: two-phase syscall
  tracing and seccomp fastpath)
-References: <CALCETrUaZ8w92g96SmFEZDE0Jr+0Moeo+S24-TyW8crrK5reSg@mail.gmail.com>
-In-Reply-To: <CALCETrUaZ8w92g96SmFEZDE0Jr+0Moeo+S24-TyW8crrK5reSg@mail.gmail.com>
+References: <CALCETrUaZ8w92g96SmFEZDE0Jr+0Moeo+S24-TyW8crrK5reSg@mail.gmail.com> <540A1800.3000005@zytor.com>
+In-Reply-To: <540A1800.3000005@zytor.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-Path: <hpa@zytor.com>
@@ -24,25 +24,40 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Andy Lutomirski <luto@amacapital.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Will Drewry <wad@chromium.org>
 Cc: Oleg Nesterov <oleg@redhat.com>, X86 ML <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, Frederic Weisbecker <fweisbec@gmail.com>
-Message-ID: <20140905200728.76D8BLYiZK4JzRotl9dk1G_NWlCYJXi1wmqZdRzTWLg@z>
+Message-ID: <20140905204344.5iNjgeDYKM-IcgnXyV-4fqK1hDx6dUVl96Eos3R5W64@z>
 
-On 08/26/2014 06:32 PM, Andy Lutomirski wrote:
-> On Mon, Jul 28, 2014 at 8:38 PM, Andy Lutomirski <luto@amacapital.net> wrote:
->> This applies to:
->> git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git seccomp-fastpath
+On 09/05/2014 01:07 PM, H. Peter Anvin wrote:
+> On 08/26/2014 06:32 PM, Andy Lutomirski wrote:
+>> On Mon, Jul 28, 2014 at 8:38 PM, Andy Lutomirski <luto@amacapital.net> wrote:
+>>> This applies to:
+>>> git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git seccomp-fastpath
+>>>
+>>> Gitweb:
+>>> https://git.kernel.org/cgit/linux/kernel/git/kees/linux.git/log/?h=seccomp/fastpath
 >>
->> Gitweb:
->> https://git.kernel.org/cgit/linux/kernel/git/kees/linux.git/log/?h=seccomp/fastpath
+>> Hi all-
+>>
+>> AFAIK the only thing that's changed since I submitted it is that the
+>> 3.17 merge window is closed.  Kees rebased the tree this applies to,
+>> but I think the patches all still apply.  What, if anything, do I need
+>> to do to help this along for 3.18?
+>>
 > 
-> Hi all-
-> 
-> AFAIK the only thing that's changed since I submitted it is that the
-> 3.17 merge window is closed.  Kees rebased the tree this applies to,
-> but I think the patches all still apply.  What, if anything, do I need
-> to do to help this along for 3.18?
+> Just put this stuff in a branch and running through my personal test
+> battery now.
 > 
 
-Just put this stuff in a branch and running through my personal test
-battery now.
+... and they fail build testing.  Specifically, both i386 and x86-64
+allnoconfig fail with:
+
+arch/x86/kernel/ptrace.c: In function ‘syscall_trace_enter_phase2’:
+  LD      fs/quota/built-in.o
+../arch/x86/kernel/ptrace.c:1579:2: error: implicit declaration of
+function ‘seccomp_phase2’ [-Werror=implicit-function-declaration]
+  if (phase1_result > 1 && seccomp_phase2(phase1_result)) {
+  ^
+cc1: some warnings being treated as errors
+  CC      arch/x86/kernel/step.o
+make[4]: *** [arch/x86/kernel/ptrace.o] Error 1
 
 	-hpa

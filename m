@@ -1,22 +1,15 @@
-Received: from mail-la0-f46.google.com ([209.85.215.46]:40437 "EHLO
-        mail-la0-f46.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27008229AbaIEVOqZB007 convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 5 Sep 2014 23:14:46 +0200
-Received: by mail-la0-f46.google.com with SMTP id pv20so14608824lab.19
-        for <linux-mips@linux-mips.org>; Fri, 05 Sep 2014 14:14:40 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:32751 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008161AbaIFCDX6GobP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 6 Sep 2014 04:03:23 +0200
+Subject: [PATCH] MIPS: bugfix of coherentio variable default setup
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Fri, 5 Sep 2014 19:03:12 -0700
+Message-ID: <20140906020312.5192.70037.stgit@linux-yegoshin>
 MIME-Version: 1.0
-In-Reply-To: <540A2080.8050404@zytor.com>
-References: <CALCETrUaZ8w92g96SmFEZDE0Jr+0Moeo+S24-TyW8crrK5reSg@mail.gmail.com>
- <540A1800.3000005@zytor.com> <540A2080.8050404@zytor.com>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Fri, 5 Sep 2014 14:14:20 -0700
-Message-ID: <CALCETrXFD=D=W6pjQfhzzWU-ZOZzkJ=ZMxF5=sKxFx7NAg7xng@mail.gmail.com>
-Subject: Re: Post-merge-window ping (Re: [PATCH v4 0/5] x86: two-phase syscall
- tracing and seccomp fastpath)
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-Path: <luto@amacapital.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,59 +19,111 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Will Drewry <wad@chromium.org>, Oleg Nesterov <oleg@redhat.com>, X86 ML <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, Frederic Weisbecker <fweisbec@gmail.com>
-Message-ID: <20140905211420.EHKHjciTZHlW7JGbtzBDGZXyyBj5GYMm7VmqKF0FW5s@z>
+To: linux-mips@linux-mips.org, nbd@openwrt.org, james.hogan@imgtec.com, jchandra@broadcom.com, paul.burton@imgtec.com, david.daney@cavium.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, markos.chandras@imgtec.com, macro@linux-mips.org, manuel.lauss@gmail.com, jerinjacobk@gmail.com, chenhc@lemote.com, blogic@openwrt.org
+Message-ID: <20140906020312.8wcZx-5oYpv5114E6z2_zBFzFEp4U90sIqcnw5DZkSs@z>
 
-On Fri, Sep 5, 2014 at 1:43 PM, H. Peter Anvin <hpa@zytor.com> wrote:
-> On 09/05/2014 01:07 PM, H. Peter Anvin wrote:
->> On 08/26/2014 06:32 PM, Andy Lutomirski wrote:
->>> On Mon, Jul 28, 2014 at 8:38 PM, Andy Lutomirski <luto@amacapital.net> wrote:
->>>> This applies to:
->>>> git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git seccomp-fastpath
->>>>
->>>> Gitweb:
->>>> https://git.kernel.org/cgit/linux/kernel/git/kees/linux.git/log/?h=seccomp/fastpath
->>>
->>> Hi all-
->>>
->>> AFAIK the only thing that's changed since I submitted it is that the
->>> 3.17 merge window is closed.  Kees rebased the tree this applies to,
->>> but I think the patches all still apply.  What, if anything, do I need
->>> to do to help this along for 3.18?
->>>
->>
->> Just put this stuff in a branch and running through my personal test
->> battery now.
->>
->
-> ... and they fail build testing.  Specifically, both i386 and x86-64
-> allnoconfig fail with:
+Patch commit b6d92b4a6bdb880b39789c677b952c53a437028d
 
-OK, that's embarrassing.  Also, this has been sitting on
-git.kernel.org forever and kbuild never spotted it either.  Hmm.
+    MIPS: Add option to disable software I/O coherency.
 
-Anyway, updates coming.
+    Some MIPS controllers have hardware I/O coherency. This patch
+    detects those and turns off software coherency. A new kernel
+    command line option also allows the user to manually turn
+    software coherency on or off.
 
---Andy
+in fact enforces L2 cache flushes even on systems with IOCU.
+The default value of coherentio is 0 and is not changed even with IOCU.
+It is a serious performance problem because it destroys all IOCU performance
+advantages.
 
->
-> arch/x86/kernel/ptrace.c: In function ‘syscall_trace_enter_phase2’:
->   LD      fs/quota/built-in.o
-> ../arch/x86/kernel/ptrace.c:1579:2: error: implicit declaration of
-> function ‘seccomp_phase2’ [-Werror=implicit-function-declaration]
->   if (phase1_result > 1 && seccomp_phase2(phase1_result)) {
->   ^
-> cc1: some warnings being treated as errors
->   CC      arch/x86/kernel/step.o
-> make[4]: *** [arch/x86/kernel/ptrace.o] Error 1
->
->         -hpa
->
->
+It is fixed by setting coherentio to tri-state with default value as (-1) and
+setup a final value during platform coherency setup.
+---
+ arch/mips/include/asm/mach-generic/dma-coherence.h |    7 ++++++-
+ arch/mips/mm/c-r4k.c                               |    2 +-
+ arch/mips/mm/dma-default.c                         |    2 +-
+ arch/mips/mti-malta/malta-setup.c                  |    8 ++++++--
+ arch/mips/pci/pci-alchemy.c                        |    2 +-
+ 5 files changed, 15 insertions(+), 6 deletions(-)
 
-
-
--- 
-Andy Lutomirski
-AMA Capital Management, LLC
+diff --git a/arch/mips/include/asm/mach-generic/dma-coherence.h b/arch/mips/include/asm/mach-generic/dma-coherence.h
+index 7629c35..b4563df 100644
+--- a/arch/mips/include/asm/mach-generic/dma-coherence.h
++++ b/arch/mips/include/asm/mach-generic/dma-coherence.h
+@@ -49,7 +49,12 @@ static inline int plat_dma_supported(struct device *dev, u64 mask)
+ 
+ static inline int plat_device_is_coherent(struct device *dev)
+ {
+-	return coherentio;
++#ifdef CONFIG_DMA_COHERENT
++	return 1;
++#else
++	return (coherentio > 0);
++#endif
++
+ }
+ 
+ #ifdef CONFIG_SWIOTLB
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index fbcd867..ad6ff7b 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -1660,7 +1660,7 @@ void r4k_cache_init(void)
+ 	local_flush_icache_range	= local_r4k_flush_icache_range;
+ 
+ #if defined(CONFIG_DMA_NONCOHERENT) || defined(CONFIG_DMA_MAYBE_COHERENT)
+-	if (coherentio) {
++	if (coherentio > 0) {
+ 		_dma_cache_wback_inv	= (void *)cache_noop;
+ 		_dma_cache_wback	= (void *)cache_noop;
+ 		_dma_cache_inv		= (void *)cache_noop;
+diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
+index 44b6dff..42c819a 100644
+--- a/arch/mips/mm/dma-default.c
++++ b/arch/mips/mm/dma-default.c
+@@ -24,7 +24,7 @@
+ #include <dma-coherence.h>
+ 
+ #ifdef CONFIG_DMA_MAYBE_COHERENT
+-int coherentio = 0;	/* User defined DMA coherency from command line. */
++int coherentio = -1;    /* User defined DMA coherency is not defined yet. */
+ EXPORT_SYMBOL_GPL(coherentio);
+ int hw_coherentio = 0;	/* Actual hardware supported DMA coherency setting. */
+ 
+diff --git a/arch/mips/mti-malta/malta-setup.c b/arch/mips/mti-malta/malta-setup.c
+index db7c9e5..48039fd 100644
+--- a/arch/mips/mti-malta/malta-setup.c
++++ b/arch/mips/mti-malta/malta-setup.c
+@@ -147,13 +147,17 @@ static void __init plat_setup_iocoherency(void)
+ 	if (plat_enable_iocoherency()) {
+ 		if (coherentio == 0)
+ 			pr_info("Hardware DMA cache coherency disabled\n");
+-		else
++		else {
++			coherentio = 1;
+ 			pr_info("Hardware DMA cache coherency enabled\n");
++		}
+ 	} else {
+ 		if (coherentio == 1)
+ 			pr_info("Hardware DMA cache coherency unsupported, but enabled from command line!\n");
+-		else
++		else {
++			coherentio = 0;
+ 			pr_info("Software DMA cache coherency enabled\n");
++		}
+ 	}
+ #else
+ 	if (!plat_enable_iocoherency())
+diff --git a/arch/mips/pci/pci-alchemy.c b/arch/mips/pci/pci-alchemy.c
+index c19600a..0d0b6c1 100644
+--- a/arch/mips/pci/pci-alchemy.c
++++ b/arch/mips/pci/pci-alchemy.c
+@@ -429,7 +429,7 @@ static int alchemy_pci_probe(struct platform_device *pdev)
+ 
+ 	/* Au1500 revisions older than AD have borked coherent PCI */
+ 	if ((alchemy_get_cputype() == ALCHEMY_CPU_AU1500) &&
+-	    (read_c0_prid() < 0x01030202) && !coherentio) {
++	    (read_c0_prid() < 0x01030202) && (coherentio <= 0)) {
+ 		val = __raw_readl(ctx->regs + PCI_REG_CONFIG);
+ 		val |= PCI_CONFIG_NC;
+ 		__raw_writel(val, ctx->regs + PCI_REG_CONFIG);

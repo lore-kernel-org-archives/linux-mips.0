@@ -1,13 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:2302 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38099 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008454AbaIHN7LUUp6K (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Sep 2014 15:59:11 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: mcount: Adjust stack pointer for static trace in MIPS32
-Date: Mon, 8 Sep 2014 14:58:56 +0100
-Message-ID: <1410184736-27208-1-git-send-email-markos.chandras@imgtec.com>
+        with ESMTP id S27008454AbaIHOMzOH0BA (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Sep 2014 16:12:55 +0200
+Message-ID: <540DB95F.6070609@imgtec.com>
+Date: Mon, 8 Sep 2014 15:12:47 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Release of Linux MTI-3.14-LTS kernel
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -19,46 +20,62 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20140908135856.W1jQLTDw4Lx5GPNAgbULOL8ju0CVBk2tygvac_S7SeU@z>
+Cc: linux-kernel@vger.kernel.org
+Message-ID: <20140908141247.bTqf7YfFchRR4ZA6apCXKE-HiUOKkiLgLgUQ6cOTDR8@z>
 
-Every mcount() call in the MIPS 32-bit kernel is done as follows:
+Imagination Technologies is pleased to announce the release of its 3.14
+LTS (Long-Term Support) MIPS kernel. The changelog below is based off
+the stable Linux 3.14.10 release done by Greg Kroah-Hartman in commit
+bbae7add628cfe96a1facd578dd1eddcd1030de7 back on June 30th. The code
+repository is hosted at the Linux/MIPS project GIT:
 
-[...]
-move at, ra
-jal _mcount
-addiu sp, sp, -8
-[...]
+http://git.linux-mips.org/?p=linux-mti.git;a=shortlog;h=refs/heads/linux-mti-3.14
 
-but upon returning from the mcount() function, the stack pointer
-is not adjusted properly. This is explained in details in 58b69401c797
-(MIPS: Function tracer: Fix broken function tracing).
+We look forward to any comments or feedback.
 
-Commit ad8c396936e3 ("MIPS: Unbreak function tracer for 64-bit kernel.)
-fixed the stack manipulation for 64-bit but it didn't fix it completely
-for MIPS32.
+        The Imagination MIPS Kernel Team
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/kernel/mcount.S | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
-index 5d25462de8a6..fbea89ad10ea 100644
---- a/arch/mips/kernel/mcount.S
-+++ b/arch/mips/kernel/mcount.S
-@@ -129,7 +129,11 @@ NESTED(_mcount, PT_SIZE, ra)
- 	 nop
- #endif
- 	b	ftrace_stub
-+#ifdef CONFIG_32BIT
-+	 addiu sp,sp,8
-+#else
- 	 nop
-+#endif
- 
- static_trace:
- 	MCOUNT_SAVE_REGS
+ChangeLog:
+
+Upstream:
+- Move to Linux 3.14.10
+
+Userland visible changes:
+- MIPS 32/64 seccomp support
+- Do not set any FCSR cause bits from userland
+
+Boot setup related changes:
+- SMP/CPS support
+- Deprecate SMP/CMP
+
+New drivers and features:
+- m5150 support
+- p5600 support
+- perf support for interAptiv/proAptiv/p5600
+- EVA support
+- Malta power management support
+- Malta powering down support
+- Hardware Table Walker support
+- MAAR support
+- Dedicated RI/XI exception handlers
+- Hotplug support
+- cpuidle support
+
+Developer visible changes:
+- SMTC removal
+- Enable DEVTMPFS on malta_defconfigs
+- Add more microassembler instructions
+- 16K by default on Malta SMP defconfigs
+- Set max cpus to 8 on Malta SMP defconfigs
+
+Fixes:
+- Detect instruction cache aliases
+- Fix 1074K CPU support
+- GIC fixes
+- KVM T&E fixes
+- sead3/BE networking fix
+- Misc other code fixes, build fixes and cleanups
+
 -- 
-2.1.0
+markos

@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:58980 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2302 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006940AbaIFC1sHrxkG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 6 Sep 2014 04:27:48 +0200
-Subject: [PATCH] MIPS: Remove a temporary hack for debugging cache flushes in
-        SMTC configuration
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Fri, 5 Sep 2014 19:27:38 -0700
-Message-ID: <20140906022738.6957.53838.stgit@linux-yegoshin>
+        with ESMTP id S27008454AbaIHN7LUUp6K (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Sep 2014 15:59:11 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: mcount: Adjust stack pointer for static trace in MIPS32
+Date: Mon, 8 Sep 2014 14:58:56 +0100
+Message-ID: <1410184736-27208-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,32 +18,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, aaro.koskinen@iki.fi, david.daney@cavium.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, markos.chandras@imgtec.com, dengcheng.zhu@imgtec.com, chenhc@lemote.com, akpm@linux-foundation.org
-Message-ID: <20140906022738.B4djU1p0yOdFlz9VzM5Z2TvO5T1jqy7MZf0n43lMRbU@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20140908135856.W1jQLTDw4Lx5GPNAgbULOL8ju0CVBk2tygvac_S7SeU@z>
 
-This patch removes a temporary hack for debugging SMTC configuration from
+Every mcount() call in the MIPS 32-bit kernel is done as follows:
 
-	commit 41c594ab65fc89573af296d192aa5235d09717ab
-	Author: Ralf Baechle <ralf@linux-mips.org>
-	Date:   Wed Apr 5 09:45:45 2006 +0100
+[...]
+move at, ra
+jal _mcount
+addiu sp, sp, -8
+[...]
 
-which is dropped now. Some performance degradation for multi-VPE systems
-is removed.
+but upon returning from the mcount() function, the stack pointer
+is not adjusted properly. This is explained in details in 58b69401c797
+(MIPS: Function tracer: Fix broken function tracing).
 
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Commit ad8c396936e3 ("MIPS: Unbreak function tracer for 64-bit kernel.)
+fixed the stack manipulation for 64-bit but it didn't fix it completely
+for MIPS32.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/include/asm/r4kcache.h |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ arch/mips/kernel/mcount.S | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/mips/include/asm/r4kcache.h b/arch/mips/include/asm/r4kcache.h
-index 4520adc..b2ae1b1 100644
---- a/arch/mips/include/asm/r4kcache.h
-+++ b/arch/mips/include/asm/r4kcache.h
-@@ -50,7 +50,6 @@ extern void (*r4k_blast_icache)(void);
- /*
-  * Optionally force single-threaded execution during I-cache flushes.
-  */
--#define PROTECT_CACHE_FLUSHES 1
+diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
+index 5d25462de8a6..fbea89ad10ea 100644
+--- a/arch/mips/kernel/mcount.S
++++ b/arch/mips/kernel/mcount.S
+@@ -129,7 +129,11 @@ NESTED(_mcount, PT_SIZE, ra)
+ 	 nop
+ #endif
+ 	b	ftrace_stub
++#ifdef CONFIG_32BIT
++	 addiu sp,sp,8
++#else
+ 	 nop
++#endif
  
- #ifdef PROTECT_CACHE_FLUSHES
- 
+ static_trace:
+ 	MCOUNT_SAVE_REGS
+-- 
+2.1.0

@@ -1,15 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:15876 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008367AbaIHTLIg10Ak (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Sep 2014 21:11:08 +0200
-Subject: [PATCH V2] MIPS: bugfix of coherentio variable default setup
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Mon, 8 Sep 2014 12:10:54 -0700
-Message-ID: <20140908191002.13852.47842.stgit@linux-yegoshin>
+Received: from mail-ob0-f178.google.com ([209.85.214.178]:46702 "EHLO
+        mail-ob0-f178.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27008367AbaIHT3wIyJct (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Sep 2014 21:29:52 +0200
+Received: by mail-ob0-f178.google.com with SMTP id uy5so11048175obc.37
+        for <linux-mips@linux-mips.org>; Mon, 08 Sep 2014 12:29:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+In-Reply-To: <cover.1409954077.git.luto@amacapital.net>
+References: <cover.1409954077.git.luto@amacapital.net>
+Date: Mon, 8 Sep 2014 12:29:45 -0700
+Message-ID: <CAGXu5jJpxzbpZfxXoBvDm6W-ogq3d5njRa2ir0text3evJT+QQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/5] x86: two-phase syscall tracing and seccomp fastpath
+From: Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <keescook@google.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,115 +22,95 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, nbd@openwrt.org, james.hogan@imgtec.com, jchandra@broadcom.com, paul.burton@imgtec.com, david.daney@cavium.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, markos.chandras@imgtec.com, macro@linux-mips.org, manuel.lauss@gmail.com, jerinjacobk@gmail.com, chenhc@lemote.com, blogic@openwrt.org
-Message-ID: <20140908191054.6gdc34uY9mGjuRbVxilulNzAfJcU1ThF_xtjK9UFIFs@z>
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: LKML <linux-kernel@vger.kernel.org>, Will Drewry <wad@chromium.org>, Oleg Nesterov <oleg@redhat.com>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, "H. Peter Anvin" <hpa@zytor.com>, Frederic Weisbecker <fweisbec@gmail.com>
+Message-ID: <20140908192945.wq_Y0NNz0IIQssuCaOMwOj0OsMNm1KSRz1_RlsPXDl0@z>
 
-Patch commit b6d92b4a6bdb880b39789c677b952c53a437028d
+On Fri, Sep 5, 2014 at 3:13 PM, Andy Lutomirski <luto@amacapital.net> wrote:
+> This applies to:
+> git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git seccomp-fastpath
+>
+> Gitweb:
+> https://git.kernel.org/cgit/linux/kernel/git/kees/linux.git/log/?h=seccomp/fastpath
+>
+> This is both a cleanup and a speedup.  It reduces overhead due to
+> installing a trivial seccomp filter by 87%.  The speedup comes from
+> avoiding the full syscall tracing mechanism for filters that don't
+> return SECCOMP_RET_TRACE.
+>
+> This series depends on splitting the seccomp hooks into two phases.
+> The first phase evaluates the filter; it can skip syscalls, allow
+> them, kill the calling task, or pass a u32 to the second phase.  The
+> second phase requires a full tracing context, and it sends ptrace
+> events if necessary.  The seccomp core part is in Kees' seccomp/fastpath
+> tree.
+>
+> These patches implement a similar split for the x86 syscall
+> entry work.  The C callback is invoked in two phases: the first has
+> only a partial frame, and it can request phase 2 processing with a
+> full frame.
+>
+> Finally, I switch the 64-bit system_call code to use the new split
+> entry work.  This is a net deletion of assembly code: it replaces
+> all of the audit entry muck.
+>
+> In the process, I fixed some bugs.
+>
+> If this is acceptable, someone can do the same tweak for the
+> ia32entry and entry_32 code.
+>
+> This passes all seccomp tests that I know of.
+>
+> Changes from v4:
+>  - Rebased (which seems to have been a no-op)
+>  - Fixed embarrassing bug that broke allnoconfig
+>    (patch 3 was missing an ifdef).
+>
+> Changes from v3:
+>  - Dropped the core seccomp changes from the email -- Kees has applied them.
+>  - Add patch 2 (the TIF_NOHZ change).
+>  - Fix TIF_NOHZ in the two-phase entry code (thanks, Oleg).
+>
+> Changes from v2:
+>  - Fixed 32-bit x86 build (and the tests pass).
+>  - Put the doc patch where it belongs.
+>
+> Changes from v1:
+>  - Rebased on top of Kees' shiny new seccomp tree (no effect on the x86
+>    part).
+>  - Improved patch 6 vs patch 7 split (thanks Alexei!)
+>  - Fixed bogus -ENOSYS in patch 5 (thanks Kees!)
+>  - Improved changelog message in patch 6.
+>
+> Changes from RFC version:
+>  - The first three patches are more or less the same
+>  - The rest is more or less a rewrite
+>
+> Andy Lutomirski (5):
+>   x86,x32,audit: Fix x32's AUDIT_ARCH wrt audit
+>   x86,entry: Only call user_exit if TIF_NOHZ
+>   x86: Split syscall_trace_enter into two phases
+>   x86_64,entry: Treat regs->ax the same in fastpath and slowpath
+>     syscalls
+>   x86_64,entry: Use split-phase syscall_trace_enter for 64-bit syscalls
+>
+>  arch/x86/include/asm/calling.h |   6 +-
+>  arch/x86/include/asm/ptrace.h  |   5 ++
+>  arch/x86/kernel/entry_64.S     |  51 +++++--------
+>  arch/x86/kernel/ptrace.c       | 165 +++++++++++++++++++++++++++++++++--------
+>  4 files changed, 164 insertions(+), 63 deletions(-)
 
-    MIPS: Add option to disable software I/O coherency.
+Consider the series:
 
-    Some MIPS controllers have hardware I/O coherency. This patch
-    detects those and turns off software coherency. A new kernel
-    command line option also allows the user to manually turn
-    software coherency on or off.
+Acked-by: Kees Cook <keescook@chromium.org>
 
-in fact enforces L2 cache flushes even on systems with IOCU.
-The default value of coherentio is 0 and is not changed even with IOCU.
-It is a serious performance problem because it destroys all IOCU performance
-advantages.
+As far as doing pulls, Peter, can you take the seccomp change from my
+tree as well? It makes sense to land all of this together.
 
-It is fixed by setting coherentio to tri-state with default value as (-1) and
-setup a final value during platform coherency setup.
+Thanks!
 
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
----
-V2: Missed signature added
----
- arch/mips/include/asm/mach-generic/dma-coherence.h |    7 ++++++-
- arch/mips/mm/c-r4k.c                               |    2 +-
- arch/mips/mm/dma-default.c                         |    2 +-
- arch/mips/mti-malta/malta-setup.c                  |    8 ++++++--
- arch/mips/pci/pci-alchemy.c                        |    2 +-
- 5 files changed, 15 insertions(+), 6 deletions(-)
+-Kees
 
-diff --git a/arch/mips/include/asm/mach-generic/dma-coherence.h b/arch/mips/include/asm/mach-generic/dma-coherence.h
-index 7629c35..b4563df 100644
---- a/arch/mips/include/asm/mach-generic/dma-coherence.h
-+++ b/arch/mips/include/asm/mach-generic/dma-coherence.h
-@@ -49,7 +49,12 @@ static inline int plat_dma_supported(struct device *dev, u64 mask)
- 
- static inline int plat_device_is_coherent(struct device *dev)
- {
--	return coherentio;
-+#ifdef CONFIG_DMA_COHERENT
-+	return 1;
-+#else
-+	return (coherentio > 0);
-+#endif
-+
- }
- 
- #ifdef CONFIG_SWIOTLB
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index fbcd867..ad6ff7b 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -1660,7 +1660,7 @@ void r4k_cache_init(void)
- 	local_flush_icache_range	= local_r4k_flush_icache_range;
- 
- #if defined(CONFIG_DMA_NONCOHERENT) || defined(CONFIG_DMA_MAYBE_COHERENT)
--	if (coherentio) {
-+	if (coherentio > 0) {
- 		_dma_cache_wback_inv	= (void *)cache_noop;
- 		_dma_cache_wback	= (void *)cache_noop;
- 		_dma_cache_inv		= (void *)cache_noop;
-diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
-index 44b6dff..42c819a 100644
---- a/arch/mips/mm/dma-default.c
-+++ b/arch/mips/mm/dma-default.c
-@@ -24,7 +24,7 @@
- #include <dma-coherence.h>
- 
- #ifdef CONFIG_DMA_MAYBE_COHERENT
--int coherentio = 0;	/* User defined DMA coherency from command line. */
-+int coherentio = -1;    /* User defined DMA coherency is not defined yet. */
- EXPORT_SYMBOL_GPL(coherentio);
- int hw_coherentio = 0;	/* Actual hardware supported DMA coherency setting. */
- 
-diff --git a/arch/mips/mti-malta/malta-setup.c b/arch/mips/mti-malta/malta-setup.c
-index db7c9e5..48039fd 100644
---- a/arch/mips/mti-malta/malta-setup.c
-+++ b/arch/mips/mti-malta/malta-setup.c
-@@ -147,13 +147,17 @@ static void __init plat_setup_iocoherency(void)
- 	if (plat_enable_iocoherency()) {
- 		if (coherentio == 0)
- 			pr_info("Hardware DMA cache coherency disabled\n");
--		else
-+		else {
-+			coherentio = 1;
- 			pr_info("Hardware DMA cache coherency enabled\n");
-+		}
- 	} else {
- 		if (coherentio == 1)
- 			pr_info("Hardware DMA cache coherency unsupported, but enabled from command line!\n");
--		else
-+		else {
-+			coherentio = 0;
- 			pr_info("Software DMA cache coherency enabled\n");
-+		}
- 	}
- #else
- 	if (!plat_enable_iocoherency())
-diff --git a/arch/mips/pci/pci-alchemy.c b/arch/mips/pci/pci-alchemy.c
-index c19600a..0d0b6c1 100644
---- a/arch/mips/pci/pci-alchemy.c
-+++ b/arch/mips/pci/pci-alchemy.c
-@@ -429,7 +429,7 @@ static int alchemy_pci_probe(struct platform_device *pdev)
- 
- 	/* Au1500 revisions older than AD have borked coherent PCI */
- 	if ((alchemy_get_cputype() == ALCHEMY_CPU_AU1500) &&
--	    (read_c0_prid() < 0x01030202) && !coherentio) {
-+	    (read_c0_prid() < 0x01030202) && (coherentio <= 0)) {
- 		val = __raw_readl(ctx->regs + PCI_REG_CONFIG);
- 		val |= PCI_CONFIG_NC;
- 		__raw_writel(val, ctx->regs + PCI_REG_CONFIG);
+-- 
+Kees Cook
+Chrome OS Security

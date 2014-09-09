@@ -1,17 +1,18 @@
-Received: from terminus.zytor.com ([198.137.202.10]:55916 "EHLO mail.zytor.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27008488AbaIHTuJ5bsQ0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 8 Sep 2014 21:50:09 +0200
-Message-ID: <540E0860.2030600@zytor.com>
-Date: Mon, 08 Sep 2014 12:49:52 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
+Received: from szxga02-in.huawei.com ([119.145.14.65]:23442 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27005160AbaIICIIigm9G (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 9 Sep 2014 04:08:08 +0200
+Message-ID: <540E6095.8030409@huawei.com>
+Date: Tue, 9 Sep 2014 10:06:13 +0800
+From: Yijing Wang <wangyijing@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 0/5] x86: two-phase syscall tracing and seccomp fastpath
-References: <cover.1409954077.git.luto@amacapital.net> <CAGXu5jJpxzbpZfxXoBvDm6W-ogq3d5njRa2ir0text3evJT+QQ@mail.gmail.com>
-In-Reply-To: <CAGXu5jJpxzbpZfxXoBvDm6W-ogq3d5njRa2ir0text3evJT+QQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [Xen-devel] [PATCH v1 08/21] x86/xen/MSI: Use MSI chip framework
+ to configure MSI/MSI-X irq
+References: <1409911806-10519-1-git-send-email-wangyijing@huawei.com> <1409911806-10519-9-git-send-email-wangyijing@huawei.com> <5409C8C0.8020200@citrix.com>
+In-Reply-To: <5409C8C0.8020200@citrix.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <hpa@zytor.com>
+Return-Path: <wangyijing@huawei.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,16 +22,72 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>
-Cc: LKML <linux-kernel@vger.kernel.org>, Will Drewry <wad@chromium.org>, Oleg Nesterov <oleg@redhat.com>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, Frederic Weisbecker <fweisbec@gmail.com>
-Message-ID: <20140908194952.Kr7lssm_rpfASzsFiLVxfFYpfBzP6cTQ-YG6AMfYFVQ@z>
+To: David Vrabel <david.vrabel@citrix.com>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-pci@vger.kernel.org, Bharat.Bhushan@freescale.com, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Joerg Roedel <joro@8bytes.org>, x86@kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, xen-devel@lists.xenproject.org, arnab.basu@freescale.com, Arnd Bergmann <arnd@arndb.de>, Chris Metcalf <cmetcalf@tilera.com>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org, Xinwei Hu <huxinwei@huawei.com>, Tony Luck <tony.luck@intel.com>, Ralf Baechle <ralf@linux-mips.org>, iommu@lists.linux-foundation.org, Wuyun <wuyun.wu@huawei.com>, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
+Message-ID: <20140909020613.mYLuouEtHXiydDMYNtmdApNpPKucCibZgx0_G1wGTtE@z>
 
-On 09/08/2014 12:29 PM, Kees Cook wrote:
+On 2014/9/5 22:29, David Vrabel wrote:
+> On 05/09/14 11:09, Yijing Wang wrote:
+>> Use MSI chip framework instead of arch MSI functions to configure
+>> MSI/MSI-X irq. So we can manage MSI/MSI-X irq in a unified framework.
+> [...]
+>> --- a/arch/x86/pci/xen.c
+>> +++ b/arch/x86/pci/xen.c
+> [...]
+>> @@ -418,9 +430,9 @@ int __init pci_xen_init(void)
+>>  #endif
+>>  
+>>  #ifdef CONFIG_PCI_MSI
+>> -	x86_msi.setup_msi_irqs = xen_setup_msi_irqs;
+>> -	x86_msi.teardown_msi_irq = xen_teardown_msi_irq;
+>> -	x86_msi.teardown_msi_irqs = xen_teardown_msi_irqs;
+>> +	xen_msi_chip.setup_irqs = xen_setup_msi_irqs;
+>> +	xen_msi_chip.teardown_irqs = xen_teardown_msi_irqs;
+>> +	x86_msi_chip = &xen_msi_chip;
+>>  	msi_chip.irq_mask = xen_nop_msi_mask;
+>>  	msi_chip.irq_unmask = xen_nop_msi_mask;
 > 
-> As far as doing pulls, Peter, can you take the seccomp change from my
-> tree as well? It makes sense to land all of this together.
+> Why have these not been changed to set the x86_msi_chip.mask/unmask
+> fields instead?
+
+Hi David, x86_msi_chip here is struct msi_chip data type, used to configure MSI/MSI-X
+irq. msi_chip above is struct irq_chip data type, represent the MSI irq controller. They are
+not the same object. Their name easily confusing people.
+
+Defined in arch/x86/kernel/apic/io_apic.c
+/*
+ * IRQ Chip for MSI PCI/PCI-X/PCI-Express Devices,
+ * which implement the MSI or MSI-X Capability Structure.
+ */
+static struct irq_chip msi_chip = {
+	.name			= "PCI-MSI",
+	.irq_unmask		= unmask_msi_irq,
+	.irq_mask		= mask_msi_irq,
+	.irq_ack		= ack_apic_edge,
+	.irq_set_affinity	= msi_set_affinity,
+	.irq_retrigger		= ioapic_retrigger_irq,
+};
+
+
+Defined in arch/x86/kernel/apic/io_apic.c, introduced in patch 7/21
+struct msi_chip apic_msi_chip = {
+	.setup_irqs = native_setup_msi_irqs,
+	.teardown_irq = native_teardown_msi_irq,
+};
+[...]
+struct msi_chip *x86_msi_chip = &apic_msi_chip;
+
+
+Thanks!
+Yijing.
+
+> 
+> David
+> 
+> .
 > 
 
-That is the plan.
 
-	-hpa
+-- 
+Thanks!
+Yijing

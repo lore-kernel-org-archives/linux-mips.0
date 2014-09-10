@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45399 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:63717 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008645AbaIJIpn6Qpib (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 10 Sep 2014 10:45:43 +0200
-Message-ID: <54100FB0.1000308@imgtec.com>
-Date: Wed, 10 Sep 2014 09:45:36 +0100
+        with ESMTP id S27008655AbaIJJOpEiPRr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 10 Sep 2014 11:14:45 +0200
+Message-ID: <5410167C.2070305@imgtec.com>
+Date: Wed, 10 Sep 2014 10:14:36 +0100
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH linux-next] MIPS: ioctls: Add missing TIOC{S,G}RS485 definitions
-References: <1410263575-26720-1-git-send-email-markos.chandras@imgtec.com> <20140909191736.GA7467@kroah.com> <54100AE5.6050401@imgtec.com> <CAPybu_128PsDN7wywntyTuCCfenBWTiS60P2g6_Hk68EMQc1CQ@mail.gmail.com>
-In-Reply-To: <CAPybu_128PsDN7wywntyTuCCfenBWTiS60P2g6_Hk68EMQc1CQ@mail.gmail.com>
+References: <1410263575-26720-1-git-send-email-markos.chandras@imgtec.com> <20140909191736.GA7467@kroah.com> <54100AE5.6050401@imgtec.com> <CAPybu_128PsDN7wywntyTuCCfenBWTiS60P2g6_Hk68EMQc1CQ@mail.gmail.com> <54100FB0.1000308@imgtec.com> <CAPybu_03BDC5+d5-Wmwz+x==5sbKHgU8Rr0JimK16yRnN65x8Q@mail.gmail.com>
+In-Reply-To: <CAPybu_03BDC5+d5-Wmwz+x==5sbKHgU8Rr0JimK16yRnN65x8Q@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -23,76 +23,43 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 Cc: Greg KH <greg@kroah.com>, linux-mips@linux-mips.org, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-serial@vger.kernel.org
-Message-ID: <20140910084536.mgf2mEBQSVJ5enNz_XUTFGcvB_uG-H8h5NhzoR7BC88@z>
+Message-ID: <20140910091436.ReWzF0auG-mt8XF25tMKVjD8HgbYpVcLqVKHZMiPuLY@z>
 
-On 09/10/2014 09:39 AM, Ricardo Ribalda Delgado wrote:
-> Hello Greg
+On 09/10/2014 10:05 AM, Ricardo Ribalda Delgado wrote:
+> Hello Markos
 > 
-> Sorry, Probably my bad :). I did resend a new patch using the _IO*
-> macros, that has been now merged to tty-next
+> Sorry for the mess. I have already send a new patch for mips using the
+> _IO* macros
 > 
-> Regards!
+> Just to put things a bit into context:
 > 
-> On Wed, Sep 10, 2014 at 10:25 AM, Markos Chandras
-> <Markos.Chandras@imgtec.com> wrote:
->> On 09/09/2014 08:17 PM, Greg KH wrote:
->>> On Tue, Sep 09, 2014 at 12:52:55PM +0100, Markos Chandras wrote:
->>>> Commit e676253b19b2d269cccf67fdb1592120a0cd0676
->>>> (serial/8250: Add support for RS485 IOCTLs) added cases for the
->>>> TIOC{S,G}RS485 commands but this broke the build for MIPS:
->>>>
->>>> drivers/tty/serial/8250/8250_core.c: In function 'serial8250_ioctl':
->>>> drivers/tty/serial/8250/8250_core.c:2874:7: error: 'TIOCSRS485' undeclared
->>>> (first use in this function)
->>>> drivers/tty/serial/8250/8250_core.c:2886:7: error: 'TIOCGRS485' undeclared
->>>> (first use in this function)
->>>>
->>>> This patch adds these missing definitions
->>>>
->>>> Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
->>>> Cc: <linux-next@vger.kernel.org>
->>>> Cc: <linux-kernel@vger.kernel.org>
->>>> Cc: <linux-serial@vger.kernel.org>
->>>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
->>>> ---
->>>>  arch/mips/include/uapi/asm/ioctls.h | 2 ++
->>>>  1 file changed, 2 insertions(+)
->>>>
->>>> diff --git a/arch/mips/include/uapi/asm/ioctls.h b/arch/mips/include/uapi/asm/ioctls.h
->>>> index b1e637757fe3..34050cb6b631 100644
->>>> --- a/arch/mips/include/uapi/asm/ioctls.h
->>>> +++ b/arch/mips/include/uapi/asm/ioctls.h
->>>> @@ -76,6 +76,8 @@
->>>>
->>>>  #define TIOCSBRK    0x5427  /* BSD compatibility */
->>>>  #define TIOCCBRK    0x5428  /* BSD compatibility */
->>>> +#define TIOCGRS485  0x542E
->>>> +#define TIOCSRS485  0x542F
->>>
->>> Any reason you aren't using the _IOR() type macros here?
->>>
->>> thanks,
->>>
->>> greg k-h
->>>
->> Hi Greg,
->>
->> Not really. I am being consistent with what
->> include/uapi/asm-generic/ioctls.h is using, and with the xtensa patch
->> that was posted yesterday
->>
->> https://lkml.org/lkml/2014/9/9/27
->>
->> --
->> markos
+> I did made the patch for serial and tested it only in x86. I wrongly
+> infer that the IOCTLS were defined for all the arches (sorry :S)
+> 
+> Then when the patch was applied on tty-next the build-bot throw some
+> errors for xtensa, that I fixed without using the IO_ macros
+> 
+> Then you came with your patch,
+> 
+> I realized that this could be wrong for mor arches, so I check the
+> rest and make patches for them.
+> 
+> Greg then pointed out that I should use _IO instead of numbers, so I
+> remade my patches using the _IO macros. I did not want to step into
+> your patch so I did not prepare a new one for mips
+> 
+> All the _IO patches (except mips) are now merged into tty-next.
+> 
+> Hopefully that one also get merged soon :)
 > 
 > 
+> Thanks for your help and sorry for any disturbance.
 > 
+> 
+
 Hi Ricardo,
 
-Since you are taking care of the same problem on the other
-architectures, could you also make a similar patch for MIPS so they can
-all get merged via the same tree? Because, right now, MIPS is still broken.
+No problem :) Thanks for taking care of that
 
 -- 
 markos

@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:16432 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:16085 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008711AbaIKIhhcZ6Kz (ORCPT
+        with ESMTP id S27008712AbaIKIhhw99Bq (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Thu, 11 Sep 2014 10:37:37 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 06/10] MIPS: ensure Config5.UFE is clear on boot
-Date: Thu, 11 Sep 2014 08:30:19 +0100
-Message-ID: <1410420623-11691-7-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 05/10] MIPS: detect presence of the FRE & UFR bits
+Date: Thu, 11 Sep 2014 08:30:18 +0100
+Message-ID: <1410420623-11691-6-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1410420623-11691-1-git-send-email-paul.burton@imgtec.com>
 References: <1410420623-11691-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,28 +22,56 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140911073019.n-wyX33tNmGE2ZbyaQR5ZUnd47sxLqOtjpcrBx1iFxI@z>
+Message-ID: <20140911073018.soVLWUZKP-bLstrPQtDwC4f7VS4DA5yjM7c5SGI4y98@z>
 
-As is done for UFR, ensure that userland cannot directly manipulate the
-mode by clearing the UFE bit during boot.
+Detect the presence of the Config5 FRE & UFE bits, as indicated by the
+FREP bit in FPIR. Record this as a CPU option bit, and provide a
+cpu_has_fre macro to ease checking of that option bit.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/kernel/cpu-probe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/include/asm/cpu-features.h | 4 ++++
+ arch/mips/include/asm/cpu.h          | 1 +
+ arch/mips/kernel/cpu-probe.c         | 2 ++
+ 3 files changed, 7 insertions(+)
 
+diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
+index e079598..b9420d8 100644
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -334,4 +334,8 @@
+ # define cpu_has_msa		0
+ #endif
+ 
++#ifndef cpu_has_fre
++# define cpu_has_fre		(cpu_data[0].options & MIPS_CPU_FRE)
++#endif
++
+ #endif /* __ASM_CPU_FEATURES_H */
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index dfdc77e..11025bf 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -368,6 +368,7 @@ enum cpu_type_enum {
+ #define MIPS_CPU_HTW		0x100000000ull /* CPU support Hardware Page Table Walker */
+ #define MIPS_CPU_RIXIEX		0x200000000ull /* CPU has unique exception codes for {Read, Execute}-Inhibit exceptions */
+ #define MIPS_CPU_MAAR		0x400000000ull /* MAAR(I) registers are present */
++#define MIPS_CPU_FRE		0x800000000ull /* FRE & UFE bits implemented */
+ 
+ /*
+  * CPU ASE encodings
 diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index db929a0..4e2a6e0 100644
+index e34b10b..db929a0 100644
 --- a/arch/mips/kernel/cpu-probe.c
 +++ b/arch/mips/kernel/cpu-probe.c
-@@ -400,7 +400,7 @@ static inline unsigned int decode_config5(struct cpuinfo_mips *c)
- 	unsigned int config5;
+@@ -1233,6 +1233,8 @@ void cpu_probe(void)
+ 				    MIPS_CPU_ISA_M64R1 | MIPS_CPU_ISA_M64R2)) {
+ 			if (c->fpu_id & MIPS_FPIR_3D)
+ 				c->ases |= MIPS_ASE_MIPS3D;
++			if (c->fpu_id & MIPS_FPIR_FREP)
++				c->options |= MIPS_CPU_FRE;
+ 		}
+ 	}
  
- 	config5 = read_c0_config5();
--	config5 &= ~MIPS_CONF5_UFR;
-+	config5 &= ~(MIPS_CONF5_UFR | MIPS_CONF5_UFE);
- 	write_c0_config5(config5);
- 
- 	if (config5 & MIPS_CONF5_EVA)
 -- 
 2.0.4

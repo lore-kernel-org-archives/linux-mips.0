@@ -1,13 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:33901 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54977 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006570AbaILIfALMOId (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 12 Sep 2014 10:35:00 +0200
+        with ESMTP id S27008773AbaILNcQsVb1k (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 12 Sep 2014 15:32:16 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH v2] MIPS: mcount: Adjust stack pointer for static trace in MIPS32
-Date: Fri, 12 Sep 2014 09:34:43 +0100
-Message-ID: <1410510883-7257-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1410184736-27208-1-git-send-email-markos.chandras@imgtec.com>
-References: <1410184736-27208-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH v3] MIPS: mcount: Adjust stack pointer for static trace in MIPS32
+Date: Fri, 12 Sep 2014 14:32:05 +0100
+Message-ID: <1410528725-29794-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1410510883-7257-1-git-send-email-markos.chandras@imgtec.com>
+References: <1410510883-7257-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -22,7 +22,7 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20140912083443.CenhJewGh8I_GhwGri1szeUtvdeMUJaJDtWXjotxjNU@z>
+Message-ID: <20140912133205.QnqvVlP4F_lldo_J53rU57YbDPoHN7PgexXIcAYx3OE@z>
 
 Every mcount() call in the MIPS 32-bit kernel is done as follows:
 
@@ -43,20 +43,29 @@ for MIPS32.
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
+Changes since v2:
+- Also fix the case where the function graph tracer is enabled
 Changes since v1:
 - Also fix the case where the tracer is actually enabled
-
-With this patch, all ftrace selftests pass when dynamic trace is
-disabled
 ---
- arch/mips/kernel/mcount.S | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/mips/kernel/mcount.S | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
-index 5d25462de8a6..a51693eca4cf 100644
+index 5d25462de8a6..2d28c117831d 100644
 --- a/arch/mips/kernel/mcount.S
 +++ b/arch/mips/kernel/mcount.S
-@@ -129,7 +129,11 @@ NESTED(_mcount, PT_SIZE, ra)
+@@ -106,6 +106,9 @@ ftrace_graph_call:
+ #endif
+ 
+ 	MCOUNT_RESTORE_REGS
++#ifdef CONFIG_32BIT
++        addiu sp, sp, 8
++#endif
+ 	.globl ftrace_stub
+ ftrace_stub:
+ 	RETURN_BACK
+@@ -129,7 +132,11 @@ NESTED(_mcount, PT_SIZE, ra)
  	 nop
  #endif
  	b	ftrace_stub
@@ -68,14 +77,13 @@ index 5d25462de8a6..a51693eca4cf 100644
  
  static_trace:
  	MCOUNT_SAVE_REGS
-@@ -139,6 +143,10 @@ static_trace:
+@@ -139,6 +146,9 @@ static_trace:
  	 move	a1, AT		/* arg2: parent's return address */
  
  	MCOUNT_RESTORE_REGS
 +#ifdef CONFIG_32BIT
 +	addiu sp, sp, 8
 +#endif
-+
  	.globl ftrace_stub
  ftrace_stub:
  	RETURN_BACK

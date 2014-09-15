@@ -1,16 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:54977 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008773AbaILNcQsVb1k (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 12 Sep 2014 15:32:16 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH v3] MIPS: mcount: Adjust stack pointer for static trace in MIPS32
-Date: Fri, 12 Sep 2014 14:32:05 +0100
-Message-ID: <1410528725-29794-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1410510883-7257-1-git-send-email-markos.chandras@imgtec.com>
-References: <1410510883-7257-1-git-send-email-markos.chandras@imgtec.com>
+Received: from mail-bn1bon0090.outbound.protection.outlook.com ([157.56.111.90]:36578
+        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27008964AbaIOQckrr5b7 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 15 Sep 2014 18:32:40 +0200
+Message-ID: <5417149D.2070301@caviumnetworks.com>
+Date: Mon, 15 Sep 2014 09:32:29 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH] netdev: octeon_mgmt: Fix ISO C90 forbids mixed declarations
+ and code warning.
+References: <1410798223-21420-1-git-send-email-ddaney.cavm@gmail.com>
+In-Reply-To: <1410798223-21420-1-git-send-email-ddaney.cavm@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,72 +23,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20140912133205.QnqvVlP4F_lldo_J53rU57YbDPoHN7PgexXIcAYx3OE@z>
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Heinrich Schuchardt <xypron.glpk@gmx.de>, Joe Perches <joe@perches.com>
+Message-ID: <20140915163229._7gNZ2giQt3sWGDcypHf2fCz_GHJqkvJGCkGcPA8iKc@z>
 
-Every mcount() call in the MIPS 32-bit kernel is done as follows:
+On 09/15/2014 09:23 AM, David Daney wrote:
+> From: David Daney <david.daney@cavium.com>
+>
+> We were getting:
+>
+>    drivers/net/ethernet/octeon/octeon_mgmt.c:295:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+>
+> The idea of the fix from Joe Perches.
+>
+> Signed-off-by: David Daney <david.daney@cavium.com>
+> Cc: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> Cc: Joe Perches <joe@perches.com>
 
-[...]
-move at, ra
-jal _mcount
-addiu sp, sp, -8
-[...]
+Actually Aaro Koskinen's similar patch was just committed to the net.git 
+tree (commit	208f7ca4d4a6886256763c9c073775c5fdaf47eb), so this whole 
+thing seems to have been an exercise in time wasting.
 
-but upon returning from the mcount() function, the stack pointer
-is not adjusted properly. This is explained in details in 58b69401c797
-(MIPS: Function tracer: Fix broken function tracing).
+I don't really care which patch goes in at this point.  So I defer to 
+davem et al.
 
-Commit ad8c396936e3 ("MIPS: Unbreak function tracer for 64-bit kernel.)
-fixed the stack manipulation for 64-bit but it didn't fix it completely
-for MIPS32.
+David Daney
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
-Changes since v2:
-- Also fix the case where the function graph tracer is enabled
-Changes since v1:
-- Also fix the case where the tracer is actually enabled
----
- arch/mips/kernel/mcount.S | 10 ++++++++++
- 1 file changed, 10 insertions(+)
 
-diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
-index 5d25462de8a6..2d28c117831d 100644
---- a/arch/mips/kernel/mcount.S
-+++ b/arch/mips/kernel/mcount.S
-@@ -106,6 +106,9 @@ ftrace_graph_call:
- #endif
- 
- 	MCOUNT_RESTORE_REGS
-+#ifdef CONFIG_32BIT
-+        addiu sp, sp, 8
-+#endif
- 	.globl ftrace_stub
- ftrace_stub:
- 	RETURN_BACK
-@@ -129,7 +132,11 @@ NESTED(_mcount, PT_SIZE, ra)
- 	 nop
- #endif
- 	b	ftrace_stub
-+#ifdef CONFIG_32BIT
-+	 addiu sp, sp, 8
-+#else
- 	 nop
-+#endif
- 
- static_trace:
- 	MCOUNT_SAVE_REGS
-@@ -139,6 +146,9 @@ static_trace:
- 	 move	a1, AT		/* arg2: parent's return address */
- 
- 	MCOUNT_RESTORE_REGS
-+#ifdef CONFIG_32BIT
-+	addiu sp, sp, 8
-+#endif
- 	.globl ftrace_stub
- ftrace_stub:
- 	RETURN_BACK
--- 
-2.1.0
+> ---
+>
+> This patch should supersede previous patches from Heinrich Schuchardt,
+> and may be preferable as it touches fewer lines of code.
+>
+>   drivers/net/ethernet/octeon/octeon_mgmt.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/octeon/octeon_mgmt.c b/drivers/net/ethernet/octeon/octeon_mgmt.c
+> index 979c698..5e10c1d 100644
+> --- a/drivers/net/ethernet/octeon/octeon_mgmt.c
+> +++ b/drivers/net/ethernet/octeon/octeon_mgmt.c
+> @@ -290,12 +290,12 @@ static void octeon_mgmt_clean_tx_buffers(struct octeon_mgmt *p)
+>   		/* Read the hardware TX timestamp if one was recorded */
+>   		if (unlikely(re.s.tstamp)) {
+>   			struct skb_shared_hwtstamps ts;
+> -			memset(&ts, 0, sizeof(ts));
+>   			/* Read the timestamp */
+>   			u64 ns = cvmx_read_csr(CVMX_MIXX_TSTAMP(p->port));
+>   			/* Remove the timestamp from the FIFO */
+>   			cvmx_write_csr(CVMX_MIXX_TSCTL(p->port), 0);
+>   			/* Tell the kernel about the timestamp */
+> +			memset(&ts, 0, sizeof(ts));
+>   			ts.hwtstamp = ns_to_ktime(ns);
+>   			skb_tstamp_tx(skb, &ts);
+>   		}
+>

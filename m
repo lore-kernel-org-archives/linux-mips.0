@@ -1,19 +1,17 @@
-Received: from mail-bn1bon0090.outbound.protection.outlook.com ([157.56.111.90]:36578
-        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27008964AbaIOQckrr5b7 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 15 Sep 2014 18:32:40 +0200
-Message-ID: <5417149D.2070301@caviumnetworks.com>
-Date: Mon, 15 Sep 2014 09:32:29 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from szxga01-in.huawei.com ([119.145.14.64]:15349 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27007098AbaIPBcci4kdH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Sep 2014 03:32:32 +0200
+Message-ID: <541792C0.9090303@huawei.com>
+Date: Tue, 16 Sep 2014 09:30:40 +0800
+From: Yijing Wang <wangyijing@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] netdev: octeon_mgmt: Fix ISO C90 forbids mixed declarations
- and code warning.
-References: <1410798223-21420-1-git-send-email-ddaney.cavm@gmail.com>
-In-Reply-To: <1410798223-21420-1-git-send-email-ddaney.cavm@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Subject: Re: [PATCH v1 03/21] MSI: Remove the redundant irq_set_chip_data()
+References: <1409911806-10519-1-git-send-email-wangyijing@huawei.com>    <1409911806-10519-4-git-send-email-wangyijing@huawei.com> <1410789648.3314.5.camel@pengutronix.de>
+In-Reply-To: <1410789648.3314.5.camel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Return-Path: <wangyijing@huawei.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,57 +21,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Heinrich Schuchardt <xypron.glpk@gmx.de>, Joe Perches <joe@perches.com>
-Message-ID: <20140915163229._7gNZ2giQt3sWGDcypHf2fCz_GHJqkvJGCkGcPA8iKc@z>
+To: Lucas Stach <l.stach@pengutronix.de>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20140916013040.YpfQUTIPQtNJTWEZVjXSd-HNDjZ5Z22iVzKSWbJA8ac@z>
 
-On 09/15/2014 09:23 AM, David Daney wrote:
-> From: David Daney <david.daney@cavium.com>
->
-> We were getting:
->
->    drivers/net/ethernet/octeon/octeon_mgmt.c:295:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
->
-> The idea of the fix from Joe Perches.
->
-> Signed-off-by: David Daney <david.daney@cavium.com>
-> Cc: Heinrich Schuchardt <xypron.glpk@gmx.de>
-> Cc: Joe Perches <joe@perches.com>
+On 2014/9/15 22:00, Lucas Stach wrote:
+> Am Freitag, den 05.09.2014, 18:09 +0800 schrieb Yijing Wang:
+>> Currently, pcie-designware, pcie-rcar, pci-tegra drivers
+>> use irq chip_data to save the msi_chip pointer. They
+>> already call irq_set_chip_data() in their own MSI irq map
+>> functions. So irq_set_chip_data() in arch_setup_msi_irq()
+>> is useless.
+>>
+>> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+>> ---
+>>  drivers/pci/msi.c |    2 --
+>>  1 files changed, 0 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+>> index f6cb317..d547f7f 100644
+>> --- a/drivers/pci/msi.c
+>> +++ b/drivers/pci/msi.c
+>> @@ -41,8 +41,6 @@ int __weak arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
+>>  	if (err < 0)
+>>  		return err;
+>>  
+>> -	irq_set_chip_data(desc->irq, chip);
+>> -
+>>  	return 0;
+>>  }
+>>  
+> 
+> arch_teardown_msi_irq() expects to find the msi_chip in the irq
+> chip_data field. As this means drivers don't have any reasonable other
+> possibility to stuff things into this field, I think it would make sense
+> to do the cleanup the other way around: keep the irq_set_chip_data
+> arch_setup_msi_irq() and rip it out of the individual drivers.
 
-Actually Aaro Koskinen's similar patch was just committed to the net.git 
-tree (commit	208f7ca4d4a6886256763c9c073775c5fdaf47eb), so this whole 
-thing seems to have been an exercise in time wasting.
+Hi Lucas, thanks for your review and comments!
+irq_set_chip_data() should not be placed in MSI core functions, because other arch like x86,
+use irq_data->chip_data to stores irq_cfg. So how to set the chip_data is arch dependent.
+And this series is mainly to use MSI chip framework in all platforms.
+Currently, only ARM platform MSI drivers use the chip_data to store msi_chip, and the drivers call
+irq_set_chip_data() in their driver already. So I thought we should clean up it in MSI core code.
 
-I don't really care which patch goes in at this point.  So I defer to 
-davem et al.
-
-David Daney
+Thanks!
+Yijing.
 
 
-> ---
->
-> This patch should supersede previous patches from Heinrich Schuchardt,
-> and may be preferable as it touches fewer lines of code.
->
->   drivers/net/ethernet/octeon/octeon_mgmt.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/octeon/octeon_mgmt.c b/drivers/net/ethernet/octeon/octeon_mgmt.c
-> index 979c698..5e10c1d 100644
-> --- a/drivers/net/ethernet/octeon/octeon_mgmt.c
-> +++ b/drivers/net/ethernet/octeon/octeon_mgmt.c
-> @@ -290,12 +290,12 @@ static void octeon_mgmt_clean_tx_buffers(struct octeon_mgmt *p)
->   		/* Read the hardware TX timestamp if one was recorded */
->   		if (unlikely(re.s.tstamp)) {
->   			struct skb_shared_hwtstamps ts;
-> -			memset(&ts, 0, sizeof(ts));
->   			/* Read the timestamp */
->   			u64 ns = cvmx_read_csr(CVMX_MIXX_TSTAMP(p->port));
->   			/* Remove the timestamp from the FIFO */
->   			cvmx_write_csr(CVMX_MIXX_TSCTL(p->port), 0);
->   			/* Tell the kernel about the timestamp */
-> +			memset(&ts, 0, sizeof(ts));
->   			ts.hwtstamp = ns_to_ktime(ns);
->   			skb_tstamp_tx(skb, &ts);
->   		}
->
+> 
+> Regards,
+> Lucas
+> 
+
+
+-- 
+Thanks!
+Yijing

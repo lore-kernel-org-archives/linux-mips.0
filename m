@@ -1,15 +1,14 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66]:34013 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27006505AbaIPFmR0ZBtA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Sep 2014 07:42:17 +0200
-Message-ID: <5417CD50.7010803@huawei.com>
-Date: Tue, 16 Sep 2014 13:40:32 +0800
+Received: from szxga01-in.huawei.com ([119.145.14.64]:18689 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27007194AbaIPKimfQCSc (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Sep 2014 12:38:42 +0200
+Message-ID: <541812EC.3000501@huawei.com>
+Date: Tue, 16 Sep 2014 18:37:32 +0800
 From: Yijing Wang <wangyijing@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 15/21] Powerpc/MSI: Use MSI chip framework to configure
- MSI/MSI-X irq
-References: <1409911806-10519-1-git-send-email-wangyijing@huawei.com>    <1409911806-10519-16-git-send-email-wangyijing@huawei.com> <1410845317.12488.2.camel@concordia>
-In-Reply-To: <1410845317.12488.2.camel@concordia>
+Subject: Re: [PATCH v1 03/21] MSI: Remove the redundant irq_set_chip_data()
+References: <1409911806-10519-1-git-send-email-wangyijing@huawei.com>            <1409911806-10519-4-git-send-email-wangyijing@huawei.com>       <1410789648.3314.5.camel@pengutronix.de> <541792C0.9090303@huawei.com> <1410863349.2746.5.camel@pengutronix.de>
+In-Reply-To: <1410863349.2746.5.camel@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-Path: <wangyijing@huawei.com>
@@ -22,29 +21,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-pci@vger.kernel.org, Bharat.Bhushan@freescale.com, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Joerg Roedel <joro@8bytes.org>, x86@kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, xen-devel@lists.xenproject.org, arnab.basu@freescale.com, Arnd Bergmann <arnd@arndb.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Chris Metcalf <cmetcalf@tilera.com>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org, Xinwei Hu <huxinwei@huawei.com>, Tony Luck <tony.luck@intel.com>, Ralf Baechle <ralf@linux-mips.org>, iommu@lists.linux-foundation.org, Wuyun <wuyun.wu@huawei.com>, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
-Message-ID: <20140916054032.ij4e_AqRxrsI61gkaWuGd9u3anfN77phTWW94LcNEQA@z>
+To: Lucas Stach <l.stach@pengutronix.de>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20140916103732.R-ONLosiwcUq6IaKabzO_XWXznAdCrx5Rp_k-w5dja0@z>
 
-On 2014/9/16 13:28, Michael Ellerman wrote:
-> On Fri, 2014-09-05 at 18:10 +0800, Yijing Wang wrote:
->> Use MSI chip framework instead of arch MSI functions to configure
->> MSI/MSI-X irq. So we can manage MSI/MSI-X irq in a unified framework.
+>>> arch_teardown_msi_irq() expects to find the msi_chip in the irq
+>>> chip_data field. As this means drivers don't have any reasonable other
+>>> possibility to stuff things into this field, I think it would make sense
+>>> to do the cleanup the other way around: keep the irq_set_chip_data
+>>> arch_setup_msi_irq() and rip it out of the individual drivers.
 >>
->> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+>> Hi Lucas, thanks for your review and comments!
+>> irq_set_chip_data() should not be placed in MSI core functions, because other arch like x86,
+>> use irq_data->chip_data to stores irq_cfg. So how to set the chip_data is arch dependent.
+>> And this series is mainly to use MSI chip framework in all platforms.
+>> Currently, only ARM platform MSI drivers use the chip_data to store msi_chip, and the drivers call
+>> irq_set_chip_data() in their driver already. So I thought we should clean up it in MSI core code.
+>>
+> Okay I see your point, so the cleanup done this way is okay.
 > 
-> This looks fine and seems to boot OK.
+> But then this still introduces a problem: arch_teardown_msi_irq()
+> expects to find the msi_chip in the chip_data field, which is okay for
+> all ARM PCI host drivers, but not for other arch MSI chips.
 > 
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+> You fix this by completely removing arch_teardown_msi_irq() at the end
+> of the series, but this still has the potential to introduce issues for
+> other arches than ARM within the series. So this patch should include a
+> change to replace the line
+> 
+> struct msi_chip *chip = irq_get_chip_data(irq);
+> 
+> with something that doesn't rely on the msi_chip being in the irq
+> chip_data field.
 
-Thanks very much!
+OK, I will update arch_teardown_msi_irq() in this patch, thanks!
+
+Thanks!
+Yijing.
 
 > 
-> cheers
-> 
-> 
-> 
-> .
+> Regards,
+> Lucas
 > 
 
 

@@ -1,14 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:16447 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:47337 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008937AbaIPM5SdNdCj (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Sep 2014 14:57:18 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id A965164E45B34
-        for <linux-mips@linux-mips.org>; Tue, 16 Sep 2014 13:57:08 +0100 (IST)
+        with ESMTP id S27008872AbaIPOz1oC50n (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Sep 2014 16:55:27 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: idle: Remove leftover __pastwait symbol and its references
-Date: Tue, 16 Sep 2014 13:57:08 +0100
-Message-ID: <1410872228-12116-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH v4] MIPS: mcount: Adjust stack pointer for static trace in MIPS32
+Date: Tue, 16 Sep 2014 15:55:12 +0100
+Message-ID: <1410879312-1649-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1410528725-29794-1-git-send-email-markos.chandras@imgtec.com>
+References: <1410528725-29794-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -22,66 +21,77 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20140916125708.epsDGgQDRRy0sJNF1E42tTIMhuc6WrUqnpCrnanSxY0@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20140916145512.UyBwtJyc2dusDO7lCqtezZHo6pLsVe-4rUkaG7SC--Y@z>
 
-The __pastwait symbol was only used by the address_is_in_r4k_wait_irqoff
-function but this is no longer used since the SMTC removal in commit
-b633648c5ad3 ('MIPS: MT: Remove SMTC support'). That symbol also led to
-build failures under certain random configuration due to the way the
-compiler compiled the r4k_wait_irqoff function. If that function was
-called multiple times, the __pastwait symbol was redefined breaking the
-build like this:
+Every mcount() call in the MIPS 32-bit kernel is done as follows:
 
-CHK     include/generated/compile.h
-CC      arch/mips/kernel/idle.o
-{standard input}: Assembler messages:
-{standard input}:527: Error: symbol `__pastwait' is already defined
+[...]
+move at, ra
+jal _mcount
+addiu sp, sp, -8
+[...]
 
-Link: http://www.linux-mips.org/archives/linux-mips/2009-06/msg00282.html
+but upon returning from the mcount() function, the stack pointer
+is not adjusted properly. This is explained in details in 58b69401c797
+(MIPS: Function tracer: Fix broken function tracing).
+
+Commit ad8c396936e3 ("MIPS: Unbreak function tracer for 64-bit kernel.)
+fixed the stack manipulation for 64-bit but it didn't fix it completely
+for MIPS32.
+
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/include/asm/idle.h | 7 -------
- arch/mips/kernel/idle.c      | 3 ---
- 2 files changed, 10 deletions(-)
+Hopefully this is the final version ;)
 
-diff --git a/arch/mips/include/asm/idle.h b/arch/mips/include/asm/idle.h
-index d9f932de80e9..1c967abd545c 100644
---- a/arch/mips/include/asm/idle.h
-+++ b/arch/mips/include/asm/idle.h
-@@ -8,19 +8,12 @@ extern void (*cpu_wait)(void);
- extern void r4k_wait(void);
- extern asmlinkage void __r4k_wait(void);
- extern void r4k_wait_irqoff(void);
--extern void __pastwait(void);
+Changes since v3:
+- Rework v3 to unbreak dynamic tracing on MIPS32
+Changes since v2:
+- Also fix the case where the function graph tracer is enabled
+Changes since v1:
+- Also fix the case where the tracer is actually enabled
+---
+ arch/mips/kernel/mcount.S | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
+index 5d25462de8a6..2f7c734771f4 100644
+--- a/arch/mips/kernel/mcount.S
++++ b/arch/mips/kernel/mcount.S
+@@ -129,7 +129,11 @@ NESTED(_mcount, PT_SIZE, ra)
+ 	 nop
+ #endif
+ 	b	ftrace_stub
++#ifdef CONFIG_32BIT
++	 addiu sp, sp, 8
++#else
+ 	 nop
++#endif
  
- static inline int using_rollback_handler(void)
- {
- 	return cpu_wait == r4k_wait;
- }
+ static_trace:
+ 	MCOUNT_SAVE_REGS
+@@ -139,6 +143,9 @@ static_trace:
+ 	 move	a1, AT		/* arg2: parent's return address */
  
--static inline int address_is_in_r4k_wait_irqoff(unsigned long addr)
--{
--	return addr >= (unsigned long)r4k_wait_irqoff &&
--	       addr < (unsigned long)__pastwait;
--}
--
- extern int mips_cpuidle_wait_enter(struct cpuidle_device *dev,
- 				   struct cpuidle_driver *drv, int index);
+ 	MCOUNT_RESTORE_REGS
++#ifdef CONFIG_32BIT
++	addiu sp, sp, 8
++#endif
+ 	.globl ftrace_stub
+ ftrace_stub:
+ 	RETURN_BACK
+@@ -183,6 +190,11 @@ NESTED(ftrace_graph_caller, PT_SIZE, ra)
+ 	jal	prepare_ftrace_return
+ 	 nop
+ 	MCOUNT_RESTORE_REGS
++#ifndef CONFIG_DYNAMIC_FTRACE
++#ifdef CONFIG_32BIT
++	addiu sp, sp, 8
++#endif
++#endif
+ 	RETURN_BACK
+ 	END(ftrace_graph_caller)
  
-diff --git a/arch/mips/kernel/idle.c b/arch/mips/kernel/idle.c
-index 09ce45980758..0b9082b6b683 100644
---- a/arch/mips/kernel/idle.c
-+++ b/arch/mips/kernel/idle.c
-@@ -68,9 +68,6 @@ void r4k_wait_irqoff(void)
- 		"	wait			\n"
- 		"	.set	pop		\n");
- 	local_irq_enable();
--	__asm__(
--	"	.globl __pastwait	\n"
--	"__pastwait:			\n");
- }
- 
- /*
 -- 
 2.1.0

@@ -1,17 +1,17 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64]:18689 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27007194AbaIPKimfQCSc (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Sep 2014 12:38:42 +0200
-Message-ID: <541812EC.3000501@huawei.com>
-Date: Tue, 16 Sep 2014 18:37:32 +0800
-From: Yijing Wang <wangyijing@huawei.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:16447 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008937AbaIPM5SdNdCj (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Sep 2014 14:57:18 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id A965164E45B34
+        for <linux-mips@linux-mips.org>; Tue, 16 Sep 2014 13:57:08 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: idle: Remove leftover __pastwait symbol and its references
+Date: Tue, 16 Sep 2014 13:57:08 +0100
+Message-ID: <1410872228-12116-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 03/21] MSI: Remove the redundant irq_set_chip_data()
-References: <1409911806-10519-1-git-send-email-wangyijing@huawei.com>            <1409911806-10519-4-git-send-email-wangyijing@huawei.com>       <1410789648.3314.5.camel@pengutronix.de> <541792C0.9090303@huawei.com> <1410863349.2746.5.camel@pengutronix.de>
-In-Reply-To: <1410863349.2746.5.camel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <wangyijing@huawei.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,50 +21,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Lucas Stach <l.stach@pengutronix.de>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20140916103732.R-ONLosiwcUq6IaKabzO_XWXznAdCrx5Rp_k-w5dja0@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20140916125708.epsDGgQDRRy0sJNF1E42tTIMhuc6WrUqnpCrnanSxY0@z>
 
->>> arch_teardown_msi_irq() expects to find the msi_chip in the irq
->>> chip_data field. As this means drivers don't have any reasonable other
->>> possibility to stuff things into this field, I think it would make sense
->>> to do the cleanup the other way around: keep the irq_set_chip_data
->>> arch_setup_msi_irq() and rip it out of the individual drivers.
->>
->> Hi Lucas, thanks for your review and comments!
->> irq_set_chip_data() should not be placed in MSI core functions, because other arch like x86,
->> use irq_data->chip_data to stores irq_cfg. So how to set the chip_data is arch dependent.
->> And this series is mainly to use MSI chip framework in all platforms.
->> Currently, only ARM platform MSI drivers use the chip_data to store msi_chip, and the drivers call
->> irq_set_chip_data() in their driver already. So I thought we should clean up it in MSI core code.
->>
-> Okay I see your point, so the cleanup done this way is okay.
-> 
-> But then this still introduces a problem: arch_teardown_msi_irq()
-> expects to find the msi_chip in the chip_data field, which is okay for
-> all ARM PCI host drivers, but not for other arch MSI chips.
-> 
-> You fix this by completely removing arch_teardown_msi_irq() at the end
-> of the series, but this still has the potential to introduce issues for
-> other arches than ARM within the series. So this patch should include a
-> change to replace the line
-> 
-> struct msi_chip *chip = irq_get_chip_data(irq);
-> 
-> with something that doesn't rely on the msi_chip being in the irq
-> chip_data field.
+The __pastwait symbol was only used by the address_is_in_r4k_wait_irqoff
+function but this is no longer used since the SMTC removal in commit
+b633648c5ad3 ('MIPS: MT: Remove SMTC support'). That symbol also led to
+build failures under certain random configuration due to the way the
+compiler compiled the r4k_wait_irqoff function. If that function was
+called multiple times, the __pastwait symbol was redefined breaking the
+build like this:
 
-OK, I will update arch_teardown_msi_irq() in this patch, thanks!
+CHK     include/generated/compile.h
+CC      arch/mips/kernel/idle.o
+{standard input}: Assembler messages:
+{standard input}:527: Error: symbol `__pastwait' is already defined
 
-Thanks!
-Yijing.
+Link: http://www.linux-mips.org/archives/linux-mips/2009-06/msg00282.html
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/include/asm/idle.h | 7 -------
+ arch/mips/kernel/idle.c      | 3 ---
+ 2 files changed, 10 deletions(-)
 
-> 
-> Regards,
-> Lucas
-> 
-
-
+diff --git a/arch/mips/include/asm/idle.h b/arch/mips/include/asm/idle.h
+index d9f932de80e9..1c967abd545c 100644
+--- a/arch/mips/include/asm/idle.h
++++ b/arch/mips/include/asm/idle.h
+@@ -8,19 +8,12 @@ extern void (*cpu_wait)(void);
+ extern void r4k_wait(void);
+ extern asmlinkage void __r4k_wait(void);
+ extern void r4k_wait_irqoff(void);
+-extern void __pastwait(void);
+ 
+ static inline int using_rollback_handler(void)
+ {
+ 	return cpu_wait == r4k_wait;
+ }
+ 
+-static inline int address_is_in_r4k_wait_irqoff(unsigned long addr)
+-{
+-	return addr >= (unsigned long)r4k_wait_irqoff &&
+-	       addr < (unsigned long)__pastwait;
+-}
+-
+ extern int mips_cpuidle_wait_enter(struct cpuidle_device *dev,
+ 				   struct cpuidle_driver *drv, int index);
+ 
+diff --git a/arch/mips/kernel/idle.c b/arch/mips/kernel/idle.c
+index 09ce45980758..0b9082b6b683 100644
+--- a/arch/mips/kernel/idle.c
++++ b/arch/mips/kernel/idle.c
+@@ -68,9 +68,6 @@ void r4k_wait_irqoff(void)
+ 		"	wait			\n"
+ 		"	.set	pop		\n");
+ 	local_irq_enable();
+-	__asm__(
+-	"	.globl __pastwait	\n"
+-	"__pastwait:			\n");
+ }
+ 
+ /*
 -- 
-Thanks!
-Yijing
+2.1.0

@@ -1,18 +1,17 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66]:14358 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27009064AbaIQBZXCFvBa (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 17 Sep 2014 03:25:23 +0200
-Message-ID: <5418E2BA.4030304@huawei.com>
-Date: Wed, 17 Sep 2014 09:24:10 +0800
-From: Yijing Wang <wangyijing@huawei.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:32047 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008413AbaIQI4dlfZMY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 17 Sep 2014 10:56:33 +0200
+Message-ID: <54194CB9.4010200@imgtec.com>
+Date: Wed, 17 Sep 2014 09:56:25 +0100
+From: Qais Yousef <qais.yousef@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 16/21] s390/MSI: Use MSI chip framework to configure
- MSI/MSI-X irq
-References: <1409911806-10519-1-git-send-email-wangyijing@huawei.com> <1409911806-10519-17-git-send-email-wangyijing@huawei.com> <alpine.LFD.2.11.1409161325280.1618@denkbrett>
-In-Reply-To: <alpine.LFD.2.11.1409161325280.1618@denkbrett>
-Content-Type: text/plain; charset="ISO-8859-1"
+Subject: Re: [PATCH 03/24] MIPS: Provide a generic plat_irq_dispatch
+References: <1410825087-5497-1-git-send-email-abrestic@chromium.org> <1410825087-5497-4-git-send-email-abrestic@chromium.org>
+In-Reply-To: <1410825087-5497-4-git-send-email-abrestic@chromium.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <wangyijing@huawei.com>
+Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,105 +21,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sebastian Ott <sebott@linux.vnet.ibm.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20140917012410.vrstRZhtAU772NzoCNnt2-frU9mKFXKg3-1dHGKwDOA@z>
+To: Andrew Bresticker <abrestic@chromium.org>, Ralf Baechle <ralf@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>
+Cc: Jeffrey Deans <jeffrey.deans@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Jonas Gorski <jogo@openwrt.org>, John Crispin <blogic@openwrt.org>, David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20140917085625.Ai0Fef369CA_K1Sm928p8kwVU8dNaJs-AsVQ3Lj1btM@z>
 
-On 2014/9/16 19:35, Sebastian Ott wrote:
-> Hello,
-> 
-> On Fri, 5 Sep 2014, Yijing Wang wrote:
->> Use MSI chip framework instead of arch MSI functions to configure
->> MSI/MSI-X irq. So we can manage MSI/MSI-X irq in a unified framework.
->>
->> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
->> ---
->>  arch/s390/pci/pci.c |   18 ++++++++++++++----
->>  1 files changed, 14 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
->> index 2fa7b14..da5316e 100644
->> --- a/arch/s390/pci/pci.c
->> +++ b/arch/s390/pci/pci.c
->> @@ -358,7 +358,7 @@ static void zpci_irq_handler(struct airq_struct *airq)
->>  	}
->>  }
->>
->> -int arch_setup_msi_irqs(struct pci_dev *pdev, int nvec, int type)
->> +int zpci_setup_msi_irqs(struct pci_dev *pdev, int nvec, int type)
->>  {
->>  	struct zpci_dev *zdev = get_zdev(pdev);
->>  	unsigned int hwirq, msi_vecs;
->> @@ -434,7 +434,7 @@ out:
->>  	return rc;
->>  }
->>
->> -void arch_teardown_msi_irqs(struct pci_dev *pdev)
->> +static void zpci_teardown_msi_irqs(struct pci_dev *pdev)
->>  {
->>  	struct zpci_dev *zdev = get_zdev(pdev);
->>  	struct msi_desc *msi;
->> @@ -448,9 +448,9 @@ void arch_teardown_msi_irqs(struct pci_dev *pdev)
->>  	/* Release MSI interrupts */
->>  	list_for_each_entry(msi, &pdev->msi_list, list) {
->>  		if (msi->msi_attrib.is_msix)
->> -			default_msix_mask_irq(msi, 1);
->> +			__msix_mask_irq(msi, 1);
->>  		else
->> -			default_msi_mask_irq(msi, 1, 1);
->> +			__msi_mask_irq(msi, 1, 1);
-> 
-> The default_msi_mask_irq to __msi_mask_irq renaming is hidden in your
-> patch "x86/xen/MSI: Eliminate arch_msix_mask_irq() and arch_msi_mask_irq()"
-> 
-> This means that between that patch and this one s390 will not compile.
-> Could you please move this hunk to the other patch or even make an extra
-> patch with the renaming. Other than that:
+Hi Andrew,
 
-Good catch. I will move this hunk into the patch "x86/xen/MSI: Eliminate arch_msix_mask_irq() and arch_msi_mask_irq()".
+On 09/16/2014 12:51 AM, Andrew Bresticker wrote:
+> For platforms which boot with device-tree or have correctly chained
+> all external interrupt controllers, a generic plat_irq_dispatch() can
+> be used.  Implement a plat_irq_dispatch() which simply handles all the
+> pending interrupts as reported by C0_Cause.
+>
+> Signed-off-by: Andrew Bresticker <abrestic@chromium.org>
+> ---
+>   arch/mips/kernel/irq_cpu.c | 15 +++++++++++++++
+>   1 file changed, 15 insertions(+)
+>
+> diff --git a/arch/mips/kernel/irq_cpu.c b/arch/mips/kernel/irq_cpu.c
+> index ca98a9f..f17bd08 100644
+> --- a/arch/mips/kernel/irq_cpu.c
+> +++ b/arch/mips/kernel/irq_cpu.c
+> @@ -94,6 +94,21 @@ static struct irq_chip mips_mt_cpu_irq_controller = {
+>   	.irq_eoi	= unmask_mips_irq,
+>   };
+>   
+> +asmlinkage void __weak plat_irq_dispatch(void)
+> +{
+> +	unsigned long pending = read_c0_cause() & read_c0_status() & ST0_IM;
+> +	int irq;
+> +
+> +	if (!pending) {
+> +		spurious_interrupt();
+> +		return;
+> +	}
+> +
+> +	pending >>= CAUSEB_IP;
+> +	for_each_set_bit(irq, &pending, 8)
+> +		do_IRQ(MIPS_CPU_IRQ_BASE + irq);
+> +}
+> +
 
-> 
-> Acked-by: Sebastian Ott <sebott@linux.vnet.ibm.com>
+If I read the for_each_set_bit() macro correctly it'll iterate through 
+the bits from least to most significant ones which is the reversed 
+priority expected. Some platforms set timer interrupt to bit 7 which is 
+should be the highest priority interrupt. Also when cpu_has_vint is set 
+the hardware prioritirise from most significant to least significant 
+bits so if plat_irq_dispatch() is used with set_vi_handler() it'll cause 
+interrupts to be serviced in the wrong order.
 
+Qais
 
-Thanks!
-Yijing.
-
-
-> 
-> Regards,
-> Sebastian
-> 
->>  		irq_set_msi_desc(msi->irq, NULL);
->>  		irq_free_desc(msi->irq);
->>  		msi->msg.address_lo = 0;
->> @@ -464,6 +464,16 @@ void arch_teardown_msi_irqs(struct pci_dev *pdev)
->>  	airq_iv_free_bit(zpci_aisb_iv, zdev->aisb);
->>  }
->>
->> +static struct msi_chip zpci_msi_chip = {
->> +	.setup_irqs = zpci_setup_msi_irqs,
->> +	.teardown_irqs = zpci_teardown_msi_irqs,
->> +};
->> +
->> +struct msi_chip *arch_find_msi_chip(struct pci_dev *dev)
->> +{
->> +	return &zpci_msi_chip;
->> +}
->> +
->>  static void zpci_map_resources(struct zpci_dev *zdev)
->>  {
->>  	struct pci_dev *pdev = zdev->pdev;
->> -- 
->> 1.7.1
->>
->>
-> 
-> 
-> .
-> 
-
-
--- 
-Thanks!
-Yijing
+>   static int mips_cpu_intc_map(struct irq_domain *d, unsigned int irq,
+>   			     irq_hw_number_t hw)
+>   {

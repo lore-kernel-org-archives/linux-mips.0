@@ -1,17 +1,24 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:58297 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:27232 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008039AbaIQKVDDIhev (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 17 Sep 2014 12:21:03 +0200
-Message-ID: <54196086.9030204@imgtec.com>
-Date: Wed, 17 Sep 2014 11:20:54 +0100
-From: Qais Yousef <qais.yousef@imgtec.com>
+        with ESMTP id S27007677AbaIRI6KRh9zW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Sep 2014 10:58:10 +0200
+Date: Thu, 18 Sep 2014 09:57:56 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH v2 5/6] mips: use per-mm page to execute FP branch delay
+ slots
+Message-ID: <20140918085756.GU17248@pburton-laptop>
+References: <CAO_EM_k0Qp_VPEd2Q+WTJWsvE8cmyAuC780SwGfDxhTt_GzMeg@mail.gmail.com>
+ <20140704080641.GY804@pburton-laptop>
+ <20140704085246.GH13532@linux-mips.org>
+ <20140704090601.GZ804@pburton-laptop>
+ <20140704093809.GI13532@linux-mips.org>
+ <20140704113007.GA804@pburton-laptop>
+ <alpine.LFD.2.11.1409132359450.11957@eddie.linux-mips.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 00/24] MIPS GIC cleanup, part 1
-References: <1410825087-5497-1-git-send-email-abrestic@chromium.org>
-In-Reply-To: <1410825087-5497-1-git-send-email-abrestic@chromium.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.11.1409132359450.11957@eddie.linux-mips.org>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,104 +28,34 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andrew Bresticker <abrestic@chromium.org>, Jason Cooper <jason@lakedaemon.net>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>, Jeffrey Deans <jeffrey.deans@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Jonas Gorski <jogo@openwrt.org>, John Crispin <blogic@openwrt.org>, David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20140917102054.nZrncQFMBoQH2IRRyvzszAKU7GJAwKCSxGXLhxz3zIo@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Ed Swierk <eswierk@skyportsystems.com>, linux-mips@linux-mips.org, ddaney.cavm@gmail.com
+Message-ID: <20140918085756.S0LtzdA3LLByT3bzVYxxmHeHYnax3SUmr_KrkSGtD9E@z>
 
-On 09/16/2014 12:51 AM, Andrew Bresticker wrote:
-> The current MIPS GIC driver and the platform code using it are rather
-> ugly and could use a good cleanup before adding device-tree support [0].
-> This major issues addressed in this series are converting the GIC (and
-> platforms using it) to use IRQ domains and properly mapping interrupts
-> through the GIC instead of using it transparently.  For part 2 I plan
-> on: updating the driver to use proper iomem accessors, cleaning up and
-> moving the GIC clocksource driver to drivers/clocksource/, adding DT
-> support, and possibly converting the GIC driver to use generic irqchip.
->
-> Patches 1-16 are cleanups for the existing GIC driver and prepare platforms
-> using it for the switch to IRQ domains and using the GIC in a non-transparent
-> way.
->
-> Patches 17-24 convert the GIC driver to use IRQ domains and updates the
-> platforms using it to properly map GIC interrupts instead of using the static
-> routing tables to make the GIC appear transparent.
->
-> I've tested this series on Malta and, with additional patches, on the
-> DT-enabled Danube platform.  Unfortunately I do not have SEAD-3 hardware,
-> so that has only been compile tested.  Compile tested on all other affected
-> architectures (ath79, ralink, lantiq).
+On Sun, Sep 14, 2014 at 12:06:03AM +0100, Maciej W. Rozycki wrote:
+> On Fri, 4 Jul 2014, Paul Burton wrote:
+> 
+> > > > I'm in 2 minds about this - it sounds crazy but perhaps it's the most
+> > > > sane option available :)
+> > > 
+> > > Sanity is overrated anyway ;-)
+> > 
+> > I had originally left this patch at the point I started considering
+> > implementing emulation for the whole ISA in the kernel, figuring I was
+> > going insane & should probably do something else for a while. Perhaps I
+> > shouldn't worry so much ;)
+> 
+>  One question: does this emulation handle PC-relative instructions placed 
+> in a branch delay slot correctly?  This only applies to microMIPS ADDIUPC 
+> at the moment I believe, but still that has to work correctly whether on 
+> FP hardware or emulated.
+> 
+>   Maciej
 
-I boot tested this on sead3 without problems.
+Hi Maciej,
 
-Cheers,
-Qais
+That's a good question, and no I don't believe the current dsemul code
+will handle that correctly. Perhaps that's another argument in favor of
+the full on emulator...
 
->
-> [0] https://lkml.org/lkml/2014/9/5/542
->
-> Andrew Bresticker (24):
->    MIPS: Always use IRQ domains for CPU IRQs
->    MIPS: Rename mips_cpu_intc_init() -> mips_cpu_irq_of_init()
->    MIPS: Provide a generic plat_irq_dispatch
->    MIPS: Set vint handler when mapping CPU interrupts
->    MIPS: i8259: Use IRQ domains
->    MIPS: Add hook to get C0 performance counter interrupt
->    MIPS: smp-cps: Enable all hardware interrupts on secondary CPUs
->    MIPS: Remove gic_{enable,disable}_interrupt()
->    MIPS: sead3: Remove sead3-serial.c
->    MIPS: sead3: Do not overlap CPU/GIC IRQ ranges
->    MIPS: Malta: Move MSC01 interrupt base
->    MIPS: Move MIPS_GIC_IRQ_BASE into platform irq.h
->    MIPS: Move GIC to drivers/irqchip/
->    irqchip: mips-gic: Implement generic irq_ack/irq_eoi callbacks
->    irqchip: mips-gic: Implement irq_set_type callback
->    irqchip: mips-gic: Fix gic_set_affinity() return value
->    irqchip: mips-gic: Use IRQ domains
->    irqchip: mips-gic: Stop using per-platform mapping tables
->    irqchip: mips-gic: Probe for number of external interrupts
->    irqchip: mips-gic: Use separate edge/level irq_chips
->    irqchip: mips-gic: Support local interrupts
->    irqchip: mips-gic: Remove unnecessary globals
->    MIPS: Malta: Use generic plat_irq_dispatch
->    MIPS: sead3: Use generic plat_irq_dispatch
->
->   Documentation/devicetree/bindings/mips/cpu_irq.txt |   4 +-
->   arch/mips/Kconfig                                  |  12 +-
->   arch/mips/ath79/irq.c                              |   1 -
->   arch/mips/ath79/setup.c                            |   5 +
->   arch/mips/include/asm/gic.h                        |  82 ++-
->   arch/mips/include/asm/irq_cpu.h                    |   4 +-
->   arch/mips/include/asm/mach-generic/irq.h           |   6 +
->   arch/mips/include/asm/mach-malta/irq.h             |   1 -
->   arch/mips/include/asm/mach-sead3/irq.h             |   1 -
->   arch/mips/include/asm/mips-boards/maltaint.h       |  24 +-
->   arch/mips/include/asm/mips-boards/sead3int.h       |  15 +-
->   arch/mips/include/asm/time.h                       |   1 +
->   arch/mips/kernel/Makefile                          |   1 -
->   arch/mips/kernel/cevt-gic.c                        |  14 +-
->   arch/mips/kernel/cevt-r4k.c                        |   4 +-
->   arch/mips/kernel/i8259.c                           |  24 +-
->   arch/mips/kernel/irq-gic.c                         | 402 --------------
->   arch/mips/kernel/irq_cpu.c                         |  45 +-
->   arch/mips/kernel/perf_event_mipsxx.c               |  23 +-
->   arch/mips/kernel/smp-cps.c                         |   4 +-
->   arch/mips/kernel/smp-mt.c                          |   4 +-
->   arch/mips/lantiq/irq.c                             |   8 +-
->   arch/mips/mti-malta/malta-int.c                    | 307 ++---------
->   arch/mips/mti-malta/malta-time.c                   |  39 +-
->   arch/mips/mti-sead3/sead3-ehci.c                   |   8 +-
->   arch/mips/mti-sead3/sead3-int.c                    | 121 +----
->   arch/mips/mti-sead3/sead3-net.c                    |  14 +-
->   arch/mips/mti-sead3/sead3-platform.c               |  18 +-
->   arch/mips/mti-sead3/sead3-serial.c                 |  45 --
->   arch/mips/mti-sead3/sead3-time.c                   |  35 +-
->   arch/mips/oprofile/op_model_mipsxx.c               |  18 +-
->   arch/mips/ralink/irq.c                             |  10 +-
->   drivers/irqchip/Kconfig                            |   4 +
->   drivers/irqchip/Makefile                           |   1 +
->   drivers/irqchip/irq-mips-gic.c                     | 597 +++++++++++++++++++++
->   35 files changed, 867 insertions(+), 1035 deletions(-)
->   delete mode 100644 arch/mips/kernel/irq-gic.c
->   delete mode 100644 arch/mips/mti-sead3/sead3-serial.c
->   create mode 100644 drivers/irqchip/irq-mips-gic.c
->
+Paul

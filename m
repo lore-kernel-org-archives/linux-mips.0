@@ -1,19 +1,17 @@
-Received: from mail-oi0-f49.google.com ([209.85.218.49]:43470 "EHLO
-        mail-oi0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27008608AbaIRM6ZduwkA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Sep 2014 14:58:25 +0200
-Received: by mail-oi0-f49.google.com with SMTP id x69so588834oia.22
-        for <linux-mips@linux-mips.org>; Thu, 18 Sep 2014 05:58:19 -0700 (PDT)
-Message-ID: <541AD6E9.2010609@mvista.com>
-Date: Thu, 18 Sep 2014 07:58:17 -0500
-From: Corey Minyard <cminyard@mvista.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:64173 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27009142AbaIRPKBU2rrZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Sep 2014 17:10:01 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 344CE7A207C49
+        for <linux-mips@linux-mips.org>; Thu, 18 Sep 2014 16:09:51 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: Kconfig: Add missing MIPS_CPS dependencies to PM and cpuidle
+Date: Thu, 18 Sep 2014 16:09:49 +0100
+Message-ID: <1411052989-15235-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mips: Save all registers when saving the frame
-References: <1410903925-10744-1-git-send-email-minyard@acm.org> <20140918095813.GA9804@linux-mips.org>
-In-Reply-To: <20140918095813.GA9804@linux-mips.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-Path: <cminyard@mvista.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,41 +21,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, minyard@acm.org
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20140918125817.uoApVmVc71I28rJeK-WGd352IxMD_2xpNQkfsmW4NvQ@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20140918150949.ukd6yaVm8NNmYQdVXE9UG-9fPesxHX3Tnbnda48DHuA@z>
 
-On 09/18/2014 04:58 AM, Ralf Baechle wrote:
-> On Tue, Sep 16, 2014 at 04:45:25PM -0500, minyard@acm.org wrote:
->
->> From: Corey Minyard <cminyard@mvista.com>
->>
->> The MIPS frame save code was just saving a few registers, enough to
->> do a backtrace if every function set up a frame.  However, this is
->> not working if you are using DWARF unwinding, because most of the
->> registers are wrong.  This was causing kdump backtraces to be short
->> or bogus.
->>
->> So save all the registers.
-> The stratey of partial and full stack frames was developed in '97 to bring
-> down the syscall overhead.  It certaily was very effective - it brought
-> down the syscall latency to the level of Alphas running at much higher
-> clock.
->
-> That certainly worked well back then for kernel 2.0 / 2.2.  But the syscall
-> code has become much more complex.  Since then support for 64 bit kernels,
-> two 32 bit ABIs running on a 64 bit kernels and numerous features that
-> changed the once simple syscall path have been implemented.  My gut feeling
-> is it might be worth to yank out the whole optimization to see how much
-> code complexity we get rid of in exchange for how much extra syscall
-> latency.
+The MIPS_CPS_PM and MIPS_CPS_CPUIDLE implementation should depend
+on the MIPS_CPS symbol to avoid the following build problem
 
-I"m not sure I understand.  From what I can tell, this code is only
-called by
-things that print stack traces, kdb, and kexec/kdump.  So it shouldn't be in
-any normal syscall path.
+arch/mips/kernel/pm-cps.c: In function 'cps_pm_enter_state':
+arch/mips/kernel/pm-cps.c:164:26: error: 'cpu_coherent_mask' undeclared
+(first use in this function)
+cpumask_clear_cpu(cpu, &cpu_coherent_mask);
+                            ^
+Cc: Paul Burton <paul.burton@imgtec.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/Kconfig            | 1 +
+ drivers/cpuidle/Kconfig.mips | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-This patch will currently only help kdump, but it will be necessary if
-anyone
-adds MIPS support for DWARF unwinding for stack traces.  And you'd have
-to fix some things in context switching, too, I think.
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 37c272cb633d..b59202a8411c 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2066,6 +2066,7 @@ config MIPS_CPS
+ 	  support is unavailable.
+ 
+ config MIPS_CPS_PM
++	depends on MIPS_CPS
+ 	select MIPS_CPC
+ 	bool
+ 
+diff --git a/drivers/cpuidle/Kconfig.mips b/drivers/cpuidle/Kconfig.mips
+index 0e70ee28a5ca..4102be01d06a 100644
+--- a/drivers/cpuidle/Kconfig.mips
++++ b/drivers/cpuidle/Kconfig.mips
+@@ -3,7 +3,7 @@
+ #
+ config MIPS_CPS_CPUIDLE
+ 	bool "CPU Idle driver for MIPS CPS platforms"
+-	depends on CPU_IDLE
++	depends on CPU_IDLE && MIPS_CPS
+ 	depends on SYS_SUPPORTS_MIPS_CPS
+ 	select ARCH_NEEDS_CPU_IDLE_COUPLED if MIPS_MT
+ 	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
+-- 
+2.1.0

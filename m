@@ -1,18 +1,17 @@
-Received: from cdptpa-outbound-snat.email.rr.com ([107.14.166.225]:41878 "EHLO
-        cdptpa-oedge-vip.email.rr.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27009370AbaIVS0tOYNoX (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Sep 2014 20:26:49 +0200
-Date: Mon, 22 Sep 2014 14:26:42 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 2/2] MIPS: mcount: Fix selfpc address for static trace
-Message-ID: <20140922142642.7f70fb0f@gandalf.local.home>
-In-Reply-To: <1411392779-9554-3-git-send-email-markos.chandras@imgtec.com>
-References: <1411392779-9554-1-git-send-email-markos.chandras@imgtec.com>
-        <1411392779-9554-3-git-send-email-markos.chandras@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62047 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27009597AbaIWKqWZ5UjQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Sep 2014 12:46:22 +0200
+Message-ID: <54214F76.6070808@imgtec.com>
+Date: Tue, 23 Sep 2014 11:46:14 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH 1/2] MIPS: ftrace.h: Fix the MCOUNT_INSN_SIZE definition
+References: <1411392779-9554-1-git-send-email-markos.chandras@imgtec.com>       <1411392779-9554-2-git-send-email-markos.chandras@imgtec.com>   <5420546D.6050102@gmail.com> <20140922142534.4087a0a9@gandalf.local.home>
+In-Reply-To: <20140922142534.4087a0a9@gandalf.local.home>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-Path: <rostedt@goodmis.org>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,52 +21,54 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Markos Chandras <markos.chandras@imgtec.com>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20140922182642.KzNvAQOqU_H0SaNtFePBlZLzqKfR0OYrQg83kdRPTBA@z>
+To: Steven Rostedt <rostedt@goodmis.org>, David Daney <ddaney.cavm@gmail.com>
+Cc: linux-mips@linux-mips.org, Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Message-ID: <20140923104614.7CK-M1NAZ4HOn4Yu5L8YalrfznD95vLCoMBm5J9wayo@z>
 
-On Mon, 22 Sep 2014 14:32:59 +0100
-Markos Chandras <markos.chandras@imgtec.com> wrote:
-
-> According to Documentation/trace/ftrace-design.txt, the selfpc
-> should be the return address minus the mcount overhead (8 bytes).
-> This brings static trace in line with the dynamic trace regarding
-> the selfpc argument to the tracing function.
+On 09/22/2014 07:25 PM, Steven Rostedt wrote:
+> On Mon, 22 Sep 2014 09:55:09 -0700
+> David Daney <ddaney.cavm@gmail.com> wrote:
 > 
-> This also removes the magic number '8' with the proper
-> MCOUNT_INSN_SIZE.
-
-I could also update the generic code to handle delay slots.
-
--- Steve
-
+>> On 09/22/2014 06:32 AM, Markos Chandras wrote:
+>>> The MCOUNT_INSN_SIZE is meant to be used to denote the overall
+>>> size of the mcount() call. Since a jal instruction is used to
+>>> call mcount() the delay slot should be taken into consideration
+>>> as well.
+>>> This also replaces the MCOUNT_INSN_SIZE usage with the real size
+>>> of a single MIPS instruction since, as described above, the
+>>> MCOUNT_INSN_SIZE is used to denote the total overhead of the
+>>> mcount() call.
+>>
+>> Are you seeing errors with the existing code?  If so please state what 
+>> they are.
+>>
+>> By changing this, we can no longer atomically replace the instruction. 
+>> So I think shouldn't be changing this stuff unless there is a real bug 
+>> we are fixing.
 > 
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
->  arch/mips/kernel/mcount.S | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Actually, it looks like the code still works the same, as it uses the
+> old size of 4 (FTRACE_MIPS_INSN_SIZE) to do the update.
+
+Indeed I haven't seen any functional change when it comes to replacing
+the instruction.
+
+> [...]
 > 
-> diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
-> index 2f7c734771f4..3af48b7c7a47 100644
-> --- a/arch/mips/kernel/mcount.S
-> +++ b/arch/mips/kernel/mcount.S
-> @@ -79,7 +79,7 @@ _mcount:
->  	PTR_S	MCOUNT_RA_ADDRESS_REG, PT_R12(sp)
->  #endif
->  
-> -	PTR_SUBU a0, ra, 8	/* arg1: self address */
-> +	PTR_SUBU a0, ra, MCOUNT_INSN_SIZE /* arg1: self address */
->  	PTR_LA   t1, _stext
->  	sltu     t2, a0, t1	/* t2 = (a0 < _stext) */
->  	PTR_LA   t1, _etext
-> @@ -138,7 +138,7 @@ NESTED(_mcount, PT_SIZE, ra)
->  static_trace:
->  	MCOUNT_SAVE_REGS
->  
-> -	move	a0, ra		/* arg1: self return address */
-> +	PTR_SUBU a0, ra, MCOUNT_INSN_SIZE	/* arg1: self address */
->  	jalr	t2		/* (1) call *ftrace_trace_function */
->  	 move	a1, AT		/* arg2: parent's return address */
->  
+> It may also fix the stack tracer, as it searches for the ip saved in
+> the return address to find where the true stack is (skipping the stack
+> part that calls the strack tracer itself). If the link register holds
+> the location after the delay slot, then this would require
+> MCOUNT_INSN_SIZE to include the delay slot as well.
+
+Yes, this is the only case I spotted as well. Perhaps I should put that
+in the changelog.
+
+Or I could add
+> another macro called MCOUNT_DELAY_SLOT_SIZE that can be defined by an
+> arch (and keep it zero for all other archs). That wouldn't be too much
+> of an issue to implement.
+
+If you want to fix that in the generic code then I am fine with it.
+
+-- 
+markos

@@ -1,19 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18882 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:56996 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008868AbaIXJuzBiQpM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Sep 2014 11:50:55 +0200
+        with ESMTP id S27009593AbaIXMI23cuBk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Sep 2014 14:08:28 +0200
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 0A64EB8DBB164
-        for <linux-mips@linux-mips.org>; Wed, 24 Sep 2014 10:50:46 +0100 (IST)
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 11/11] MIPS: MSA: Fix big-endian FPR_IDX implementation
-Date: Wed, 24 Sep 2014 10:45:42 +0100
-Message-ID: <1411551942-11153-12-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1411551942-11153-1-git-send-email-paul.burton@imgtec.com>
-References: <1411551942-11153-1-git-send-email-paul.burton@imgtec.com>
+        by Websense Email Security Gateway with ESMTPS id 9DABF3E5F269
+        for <linux-mips@linux-mips.org>; Wed, 24 Sep 2014 13:08:18 +0100 (IST)
+Message-ID: <5422B434.2020405@imgtec.com>
+Date: Wed, 24 Sep 2014 13:08:20 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Subject: Re: [PATCH 04/11] MIPS: wrap cfcmsa & ctcmsa accesses for toolchains
+ with MSA support
+References: <1411551942-11153-1-git-send-email-paul.burton@imgtec.com> <1411551942-11153-5-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1411551942-11153-5-git-send-email-paul.burton@imgtec.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,34 +25,15 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20140924094542.30cKlvgoADNDMHqeMlPRI1YKdPNpZfW67q1yzPiexCw@z>
+To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20140924120820.Gj56QHZ4UEtZPa0SmoEvgIWdbh0qVphUG4V9ppczNIE@z>
 
-From: James Hogan <james.hogan@imgtec.com>
+On 24/09/14 10:45, Paul Burton wrote:
+> and provide
+> implementations for the TOOLCHAIN_SUPPORTS_MSA case which ".set msa" as
+> appropriate.
 
-The maximum word size is 64-bits since MSA state is saved using st.d
-which stores two 64-bit words, therefore reimplement FPR_IDX using xor,
-and only within each 64-bit word.
+nit: which *uses* ".set msa"?
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
----
- arch/mips/include/asm/processor.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
-index 05f0843..1c6f086 100644
---- a/arch/mips/include/asm/processor.h
-+++ b/arch/mips/include/asm/processor.h
-@@ -111,7 +111,7 @@ union fpureg {
- #ifdef CONFIG_CPU_LITTLE_ENDIAN
- # define FPR_IDX(width, idx)	(idx)
- #else
--# define FPR_IDX(width, idx)	((FPU_REG_WIDTH / (width)) - 1 - (idx))
-+# define FPR_IDX(width, idx)	((idx) ^ ((64 / (width)) - 1))
- #endif
- 
- #define BUILD_FPR_ACCESS(width) \
--- 
-2.0.4
+Cheers
+James

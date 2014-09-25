@@ -1,16 +1,19 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65]:26377 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27009084AbaIYDBbqQvCm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 25 Sep 2014 05:01:31 +0200
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v2 12/22] MIPS/Octeon/MSI: Use MSI chip framework to configure MSI/MSI-X irq
-Date: Thu, 25 Sep 2014 11:14:22 +0800
-Message-ID: <1411614872-4009-13-git-send-email-wangyijing@huawei.com>
-In-Reply-To: <1411614872-4009-1-git-send-email-wangyijing@huawei.com>
-References: <1411614872-4009-1-git-send-email-wangyijing@huawei.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:6767 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008971AbaIYJVTcC3l0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 25 Sep 2014 11:21:19 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 637EE9F046380
+        for <linux-mips@linux-mips.org>; Thu, 25 Sep 2014 10:21:10 +0100 (IST)
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH v2 05/11] MIPS: clear MSACSR cause bits when handling MSA FP exception
+Date: Thu, 25 Sep 2014 10:20:59 +0100
+Message-ID: <1411636859-19068-1-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <5422A696.7080408@cogentembedded.com>
+References: <5422A696.7080408@cogentembedded.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <wangyijing@huawei.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,136 +23,54 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>, Lucas Stach <l.stach@pengutronix.de>, David Vrabel <david.vrabel@citrix.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Michael Ellerman <mpe@ellerman.id.au>, Thierry Reding <thierry.reding@gmail.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Yijing Wang <wangyijing@huawei.com>
-Message-ID: <20140925031422.jhiWPOmemSZNPek5QvRWMNiSOEYMIy9POy6R1qM2KKE@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20140925092059.CF42pDrs3nX7yIUAUt4p5iTVfsdaMhnrD8o1C_AJOPA@z>
 
-Use MSI chip framework instead of arch MSI functions to configure
-MSI/MSI-X irq. So we can manage MSI/MSI-X irq in a unified framework.
+Much like for traditional scalar FP exceptions, the cause bits in the
+MSACSR register need to be cleared following an MSA FP exception.
+Without doing so the exception will simply be raised again whenever
+the kernel restores MSACSR from a tasks saved context, leading to
+undesirable spurious exceptions. Clear the cause bits from the
+handle_msa_fpe function, mirroring the way handle_fpe clears the
+cause bits in FCSR.
 
-Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/pci/msi-octeon.c |   35 ++++++++++++++++++++++-------------
- 1 files changed, 22 insertions(+), 13 deletions(-)
+Changes in v2:
+  - Correct the and instruction (thanks Sergei!).
+---
+ arch/mips/kernel/genex.S | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/pci/msi-octeon.c b/arch/mips/pci/msi-octeon.c
-index 63bbe07..14f2d16 100644
---- a/arch/mips/pci/msi-octeon.c
-+++ b/arch/mips/pci/msi-octeon.c
-@@ -57,7 +57,7 @@ static int msi_irq_size;
-  *
-  * Returns 0 on success.
-  */
--int arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
-+static int octeon_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
- {
- 	struct msi_msg msg;
- 	u16 control;
-@@ -132,12 +132,12 @@ msi_irq_allocated:
- 	/* Make sure the search for available interrupts didn't fail */
- 	if (irq >= 64) {
- 		if (request_private_bits) {
--			pr_err("arch_setup_msi_irq: Unable to find %d free interrupts, trying just one",
-+			pr_err("octeon_setup_msi_irq: Unable to find %d free interrupts, trying just one",
- 			       1 << request_private_bits);
- 			request_private_bits = 0;
- 			goto try_only_one;
- 		} else
--			panic("arch_setup_msi_irq: Unable to find a free MSI interrupt");
-+			panic("octeon_setup_msi_irq: Unable to find a free MSI interrupt");
- 	}
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index ac35e12..5a6ddc6 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -367,6 +367,15 @@ NESTED(nmi_handler, PT_SIZE, sp)
+ 	STI
+ 	.endm
  
- 	/* MSI interrupts start at logical IRQ OCTEON_IRQ_MSI_BIT0 */
-@@ -168,7 +168,7 @@ msi_irq_allocated:
- 		msg.address_hi = (0 + CVMX_SLI_PCIE_MSI_RCV) >> 32;
- 		break;
- 	default:
--		panic("arch_setup_msi_irq: Invalid octeon_dma_bar_type");
-+		panic("octeon_setup_msi_irq: Invalid octeon_dma_bar_type");
- 	}
- 	msg.data = irq - OCTEON_IRQ_MSI_BIT0;
- 
-@@ -182,7 +182,7 @@ msi_irq_allocated:
- 	return 0;
- }
- 
--int arch_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
-+static int octeon_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
- {
- 	struct msi_desc *entry;
- 	int ret;
-@@ -201,7 +201,7 @@ int arch_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
- 		return 1;
- 
- 	list_for_each_entry(entry, &dev->msi_list, list) {
--		ret = arch_setup_msi_irq(dev, entry);
-+		ret = octeon_setup_msi_irq(dev, entry);
- 		if (ret < 0)
- 			return ret;
- 		if (ret > 0)
-@@ -210,14 +210,13 @@ int arch_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
- 
- 	return 0;
- }
--
- /**
-  * Called when a device no longer needs its MSI interrupts. All
-  * MSI interrupts for the device are freed.
-  *
-  * @irq:    The devices first irq number. There may be multple in sequence.
-  */
--void arch_teardown_msi_irq(unsigned int irq)
-+static void octeon_teardown_msi_irq(unsigned int irq)
- {
- 	int number_irqs;
- 	u64 bitmask;
-@@ -226,8 +225,8 @@ void arch_teardown_msi_irq(unsigned int irq)
- 
- 	if ((irq < OCTEON_IRQ_MSI_BIT0)
- 		|| (irq > msi_irq_size + OCTEON_IRQ_MSI_BIT0))
--		panic("arch_teardown_msi_irq: Attempted to teardown illegal "
--		      "MSI interrupt (%d)", irq);
-+		panic("octeon_teardown_msi_irq: Attempted to teardown illegal "
-+			"MSI interrupt (%d)", irq);
- 
- 	irq -= OCTEON_IRQ_MSI_BIT0;
- 	index = irq / 64;
-@@ -240,7 +239,7 @@ void arch_teardown_msi_irq(unsigned int irq)
- 	 */
- 	number_irqs = 0;
- 	while ((irq0 + number_irqs < 64) &&
--	       (msi_multiple_irq_bitmask[index]
-+		(msi_multiple_irq_bitmask[index]
- 		& (1ull << (irq0 + number_irqs))))
- 		number_irqs++;
- 	number_irqs++;
-@@ -249,8 +248,8 @@ void arch_teardown_msi_irq(unsigned int irq)
- 	/* Shift the mask to the correct bit location */
- 	bitmask <<= irq0;
- 	if ((msi_free_irq_bitmask[index] & bitmask) != bitmask)
--		panic("arch_teardown_msi_irq: Attempted to teardown MSI "
--		      "interrupt (%d) not in use", irq);
-+		panic("octeon_teardown_msi_irq: Attempted to teardown MSI "
-+			"interrupt (%d) not in use", irq);
- 
- 	/* Checks are done, update the in use bitmask */
- 	spin_lock(&msi_free_irq_bitmask_lock);
-@@ -259,6 +258,16 @@ void arch_teardown_msi_irq(unsigned int irq)
- 	spin_unlock(&msi_free_irq_bitmask_lock);
- }
- 
-+static struct msi_chip octeon_msi_chip = {
-+	.setup_irqs = octeon_setup_msi_irqs,
-+	.teardown_irq = octeon_teardown_msi_irq,
-+};
++	.macro	__build_clear_msa_fpe
++	_cfcmsa	a1, MSA_CSR
++	li	a2, ~(0x3f << 12)
++	and	a1, a1, a2
++	_ctcmsa	MSA_CSR, a1
++	TRACE_IRQS_ON
++	STI
++	.endm
 +
-+struct msi_chip *arch_find_msi_chip(struct pci_dev *dev)
-+{
-+	return &octeon_msi_chip;
-+}
-+
- static DEFINE_RAW_SPINLOCK(octeon_irq_msi_lock);
- 
- static u64 msi_rcv_reg[4];
+ 	.macro	__build_clear_ade
+ 	MFC0	t0, CP0_BADVADDR
+ 	PTR_S	t0, PT_BVADDR(sp)
+@@ -425,7 +434,7 @@ NESTED(nmi_handler, PT_SIZE, sp)
+ 	BUILD_HANDLER cpu cpu sti silent		/* #11 */
+ 	BUILD_HANDLER ov ov sti silent			/* #12 */
+ 	BUILD_HANDLER tr tr sti silent			/* #13 */
+-	BUILD_HANDLER msa_fpe msa_fpe sti silent	/* #14 */
++	BUILD_HANDLER msa_fpe msa_fpe msa_fpe silent	/* #14 */
+ 	BUILD_HANDLER fpe fpe fpe silent		/* #15 */
+ 	BUILD_HANDLER ftlb ftlb none silent		/* #16 */
+ 	BUILD_HANDLER msa msa sti silent		/* #21 */
 -- 
-1.7.1
+2.0.4

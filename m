@@ -1,17 +1,16 @@
-Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:34809 "EHLO
-        mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27009242AbaIYBdWMGfo9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 25 Sep 2014 03:33:22 +0200
-Date: Thu, 25 Sep 2014 06:55:15 +0530
-From: Jayachandran C. <jchandra@broadcom.com>
-Subject: Re: [PATCH 0/2] MIPS: Netlogic: modular build fixes
-Message-ID: <20140925012514.GA3703@jayachandranc.netlogicmicro.com>
-References: <1411581311-6458-1-git-send-email-f.fainelli@gmail.com>
+Received: from szxga03-in.huawei.com ([119.145.14.66]:63877 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27007194AbaIYCvWesXo6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 25 Sep 2014 04:51:22 +0200
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH v2 05/22] s390/MSI: Use __msi_mask_irq() instead of default_msi_mask_irq()
+Date: Thu, 25 Sep 2014 11:14:15 +0800
+Message-ID: <1411614872-4009-6-git-send-email-wangyijing@huawei.com>
+In-Reply-To: <1411614872-4009-1-git-send-email-wangyijing@huawei.com>
+References: <1411614872-4009-1-git-send-email-wangyijing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1411581311-6458-1-git-send-email-f.fainelli@gmail.com>
-Return-Path: <jchandra@broadcom.com>
+Content-Type: text/plain
+Return-Path: <wangyijing@huawei.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,38 +20,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mips@linux-mips.org, ganesanr@broadcom.com
-Message-ID: <20140925012515.Jm6LiFkMK6Co1qb1o6oUMC1dBY_gexuhkdIp9H5LekA@z>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>, Lucas Stach <l.stach@pengutronix.de>, David Vrabel <david.vrabel@citrix.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Michael Ellerman <mpe@ellerman.id.au>, Thierry Reding <thierry.reding@gmail.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Yijing Wang <wangyijing@huawei.com>
+Message-ID: <20140925031415.8yisO8FtjJlDXohxJwbCqOHL8qON2wU-9ALNvQ5rBdI@z>
 
-On Wed, Sep 24, 2014 at 10:55:09AM -0700, Florian Fainelli wrote:
-> Hello Ralf, Jayachandran, Ganesan
-> 
-> Here are two small fixes for modular USB and AHCI builds that I encountered
-> while playing with a FVP board.
-> 
-> These are based off upstream-sfr/mips-for-linux-next
+Now only s390/MSI use default_msi_mask_irq() and
+default_msix_mask_irq(), replace them with the common
+msi mask irq functions __msi_mask_irq() and __msix_mask_irq().
+Remove default_msi_mask_irq() and default_msix_mask_irq().
 
-We have a slightly different fix for this in our internal repository, I
-was planning to submit it soon:
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+---
+ arch/s390/pci/pci.c |    4 ++--
+ include/linux/msi.h |    2 --
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-
-index be358a8..5c876d3 100644
---- a/arch/mips/netlogic/xlp/Makefile
-+++ b/arch/mips/netlogic/xlp/Makefile
-@@ -1,6 +1,6 @@
- obj-y				+= setup.o nlm_hal.o cop2-ex.o dt.o
- obj-$(CONFIG_SMP)		+= wakeup.o
--obj-$(CONFIG_USB)		+= usb-init.o
--obj-$(CONFIG_USB)		+= usb-init-xlp2.o
--obj-$(CONFIG_SATA_AHCI)		+= ahci-init.o
--obj-$(CONFIG_SATA_AHCI)		+= ahci-init-xlp2.o
-+obj-$(subst m,y,$(CONFIG_USB))	+= usb-init.o
-+obj-$(subst m,y,$(CONFIG_USB))	+= usb-init-xlp2.o
-+obj-$(subst m,y,$(CONFIG_SATA_AHCI))	+= ahci-init.o
-+obj-$(subst m,y,$(CONFIG_SATA_AHCI))	+= ahci-init-xlp2.o
-
-This will add the init code when USB or SATA is enabled as module or
-is built-in, so I think this is be a better solution.
-
-JC.
+diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
+index 2fa7b14..552b990 100644
+--- a/arch/s390/pci/pci.c
++++ b/arch/s390/pci/pci.c
+@@ -448,9 +448,9 @@ void arch_teardown_msi_irqs(struct pci_dev *pdev)
+ 	/* Release MSI interrupts */
+ 	list_for_each_entry(msi, &pdev->msi_list, list) {
+ 		if (msi->msi_attrib.is_msix)
+-			default_msix_mask_irq(msi, 1);
++			__msix_mask_irq(msi, 1);
+ 		else
+-			default_msi_mask_irq(msi, 1, 1);
++			__msi_mask_irq(msi, 1, 1);
+ 		irq_set_msi_desc(msi->irq, NULL);
+ 		irq_free_desc(msi->irq);
+ 		msi->msg.address_lo = 0;
+diff --git a/include/linux/msi.h b/include/linux/msi.h
+index cc46a62..6fdc5c6 100644
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -61,8 +61,6 @@ void arch_restore_msi_irqs(struct pci_dev *dev);
+ 
+ void default_teardown_msi_irqs(struct pci_dev *dev);
+ void default_restore_msi_irqs(struct pci_dev *dev);
+-#define default_msi_mask_irq	__msi_mask_irq
+-#define default_msix_mask_irq	__msix_mask_irq
+ 
+ struct msi_chip {
+ 	struct module *owner;
+-- 
+1.7.1

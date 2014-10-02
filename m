@@ -1,18 +1,14 @@
-Received: from smtp02.citrix.com ([66.165.176.63]:56174 "EHLO
-        SMTP02.CITRIX.COM" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009620AbaJBJptJxLyO (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Oct 2014 11:45:49 +0200
-Message-ID: <542D1EC4.10100@citrix.com>
-Date: Thu, 2 Oct 2014 10:45:40 +0100
-From: David Vrabel <david.vrabel@citrix.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:49837 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010478AbaJBNtMYBQ2I (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Oct 2014 15:49:12 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] staging: xlr_net: Replace obsolete nlm_cop2_{enable,restore} macros
+Date: Thu, 2 Oct 2014 14:48:49 +0100
+Message-ID: <1412257729-12351-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [Xen-devel] [RFC PATCH 14/16] x86/xen: support poweroff through
- poweroff handler call chain
-References: <1412100056-15517-1-git-send-email-linux@roeck-us.net> <1412100056-15517-15-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1412100056-15517-15-git-send-email-linux@roeck-us.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <david.vrabel@citrix.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,40 +18,65 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org, Boris Ostrovsky <boris.ostrovsky@oracle.com>, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Message-ID: <20141002094540.HAvpPtwTwEkOmixVjop43Uk56gobQGyFTqB6Hzkk1QY@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "David S. Miller" <davem@davemloft.net>, devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org, Jayachandran C <jchandra@broadcom.com>, netdev@vger.kernel.org
+Message-ID: <20141002134849.a4TFC2FDEcOE9MHLiU2eCQmLTCLcXgfE2hNavn2LjCk@z>
 
-On 30/09/14 19:00, Guenter Roeck wrote:
-> The kernel core now supports a poweroff handler call chain
-> to remove power from the system. Call it if pm_power_off
-> is set to NULL.
-> 
-> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: H. Peter Anvin <hpa@zytor.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
->  arch/x86/xen/enlighten.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/x86/xen/enlighten.c b/arch/x86/xen/enlighten.c
-> index c0cb11f..645d00f 100644
-> --- a/arch/x86/xen/enlighten.c
-> +++ b/arch/x86/xen/enlighten.c
-> @@ -1322,6 +1322,8 @@ static void xen_machine_power_off(void)
->  {
->  	if (pm_power_off)
->  		pm_power_off();
-> +	else
-> +		do_kernel_poweroff();
+Commit 64f6ebe63914 ("MIPS: Netlogic: rename nlm_cop2_save/restore")
+replaced nlm_cop2_enable with nlm_cop2_enable_irqsave and
+nlm_cop2_restore with nlm_cop2_disable_irqrestore but it did not
+update the xlr_net driver to use the new macros resulting into build
+problems like this:
 
-Why isn't this if (pm_power_off) check in do_kernel_poweroff()?
+drivers/staging/netlogic/xlr_net.c: In function 'send_to_rfr_fifo':
+drivers/staging/netlogic/xlr_net.c:128:3: error: implicit declaration of
+function 'nlm_cop2_enable' [-Werror=implicit-function-declaration]
+mflags = nlm_cop2_enable();
+^
+drivers/staging/netlogic/xlr_net.c:130:3: error: implicit declaration of
+function 'nlm_cop2_restore' [-Werror=implicit-function-declaration]
+nlm_cop2_restore(mflags);
 
-That way when you finally remove pm_power_off you need only update one
-place.  A quick skim of the other archs suggest this would work for them
-too.
+Therefore rename these cases as well
 
-David
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: devel@driverdev.osuosl.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Jayachandran C <jchandra@broadcom.com>
+Cc: netdev@vger.kernel.org
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ drivers/staging/netlogic/xlr_net.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/staging/netlogic/xlr_net.c b/drivers/staging/netlogic/xlr_net.c
+index 9bf407d6241a..469f75f0f818 100644
+--- a/drivers/staging/netlogic/xlr_net.c
++++ b/drivers/staging/netlogic/xlr_net.c
+@@ -125,9 +125,9 @@ static int send_to_rfr_fifo(struct xlr_net_priv *priv, void *addr)
+ 	msg.msg3 = 0;
+ 	stnid = priv->nd->rfr_station;
+ 	do {
+-		mflags = nlm_cop2_enable();
++		mflags = nlm_cop2_enable_irqsave();
+ 		ret = nlm_fmn_send(1, 0, stnid, &msg);
+-		nlm_cop2_restore(mflags);
++		nlm_cop2_disable_irqrestore(mflags);
+ 		if (ret == 0)
+ 			return 0;
+ 	} while (++num_try < 10000);
+@@ -298,9 +298,9 @@ static netdev_tx_t xlr_net_start_xmit(struct sk_buff *skb,
+ 	u32 flags;
+ 
+ 	xlr_make_tx_desc(&msg, virt_to_phys(skb->data), skb);
+-	flags = nlm_cop2_enable();
++	flags = nlm_cop2_enable_irqsave();
+ 	ret = nlm_fmn_send(2, 0, priv->nd->tx_stnid, &msg);
+-	nlm_cop2_restore(flags);
++	nlm_cop2_disable_irqrestore(flags);
+ 	if (ret)
+ 		dev_kfree_skb_any(skb);
+ 	return NETDEV_TX_OK;
+-- 
+2.1.1

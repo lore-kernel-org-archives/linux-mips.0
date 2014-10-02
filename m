@@ -1,14 +1,18 @@
-Received: from [104.140.57.70] ([104.140.57.70]:33675 "EHLO
-        score-reportcrc.link" rhost-flags-FAIL-FAIL-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27010072AbaI2Qdlef44P (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 29 Sep 2014 18:33:41 +0200
-Date: Mon, 29 Sep 2014 09:31:14 -0700
-Content-Type: text/plain
-Subject: Re: Your Score Changes for 09/30/14 - View Report*
-Mime-Version: 1.0
-Message-ID: <insx:command-2585289file@score-reportcrc.link:6393173>
-From: "Credit Report Alert" <credit-report-alert@score-reportcrc.link>
-Return-Path: <credit-report-alert@score-reportcrc.link>
+Received: from smtp02.citrix.com ([66.165.176.63]:56174 "EHLO
+        SMTP02.CITRIX.COM" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27009620AbaJBJptJxLyO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Oct 2014 11:45:49 +0200
+Message-ID: <542D1EC4.10100@citrix.com>
+Date: Thu, 2 Oct 2014 10:45:40 +0100
+From: David Vrabel <david.vrabel@citrix.com>
+MIME-Version: 1.0
+Subject: Re: [Xen-devel] [RFC PATCH 14/16] x86/xen: support poweroff through
+ poweroff handler call chain
+References: <1412100056-15517-1-git-send-email-linux@roeck-us.net> <1412100056-15517-15-git-send-email-linux@roeck-us.net>
+In-Reply-To: <1412100056-15517-15-git-send-email-linux@roeck-us.net>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <david.vrabel@citrix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,143 +22,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Message-ID: <20140929163114.CHTURWUJQ1S0oVnenVaQPfeF-EVLrryaxbmZ5Qv3yIw@z>
-
-
-Score Report Message Below:
-
-Notice: #xxx-xxx-6393173
-Date: 09/30/14
-
-
-To: linux-mips@linux-mips.org
-
-Alert: Our records show that one of your 3 scores may have changed on 09/29/14.
-
-Please view your report at the link below to view which one of these scores may be affected and to view your updated score-report.
-
-View My-Score:
-http://view.score-reportcrc.link
-
-
-Bad Score: 620 and Below
-
-Report Time: 09:21 AM PST
-End of Notice
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-The message-above is a advertlsement:
-YOu may remove-at the link- below:
-http://remove.score-reportcrc.link
-P0 Box 412O
-Portland -OR 97208
-
-232fggass(6393173)
+To: Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org, Boris Ostrovsky <boris.ostrovsky@oracle.com>, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Message-ID: <20141002094540.HAvpPtwTwEkOmixVjop43Uk56gobQGyFTqB6Hzkk1QY@z>
+
+On 30/09/14 19:00, Guenter Roeck wrote:
+> The kernel core now supports a poweroff handler call chain
+> to remove power from the system. Call it if pm_power_off
+> is set to NULL.
+> 
+> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: H. Peter Anvin <hpa@zytor.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  arch/x86/xen/enlighten.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/x86/xen/enlighten.c b/arch/x86/xen/enlighten.c
+> index c0cb11f..645d00f 100644
+> --- a/arch/x86/xen/enlighten.c
+> +++ b/arch/x86/xen/enlighten.c
+> @@ -1322,6 +1322,8 @@ static void xen_machine_power_off(void)
+>  {
+>  	if (pm_power_off)
+>  		pm_power_off();
+> +	else
+> +		do_kernel_poweroff();
+
+Why isn't this if (pm_power_off) check in do_kernel_poweroff()?
+
+That way when you finally remove pm_power_off you need only update one
+place.  A quick skim of the other archs suggest this would work for them
+too.
+
+David

@@ -1,12 +1,15 @@
-Received: from mail-wg0-f52.google.com ([74.125.82.52]:45632 "EHLO
-        mail-wg0-f52.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27010488AbaJCPumo8MDD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 3 Oct 2014 17:50:42 +0200
-From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Subject: [PATCH] MIPS: Alchemy: Remove direct access to prepare_count field of struct clk
-Date: Fri,  3 Oct 2014 17:50:00 +0200
-Message-ID: <1412351404-28818-1-git-send-email-tomeu.vizoso@collabora.com>
-Return-Path: <tomeu.vizoso@gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:56281 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008971AbaJDDRYI1p0o (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 4 Oct 2014 05:17:24 +0200
+Subject: [PATCH 0/3] MIPS executable stack protection
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Fri, 3 Oct 2014 20:17:14 -0700
+Message-ID: <20141004030438.28569.85536.stgit@linux-yegoshin>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,42 +19,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Cc: Mike Turquette <mturquette@linaro.org>, Tomeu Vizoso <tomeu.vizoso@collabora.com>, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20141003155000.00C8rKvUA6HNSY3rjqb5WhY4q437jZPe-BJPNHS9ssw@z>
+To: linux-mips@linux-mips.org, Zubair.Kakakhel@imgtec.com, david.daney@cavium.com, peterz@infradead.org, paul.gortmaker@windriver.com, davidlohr@hp.com, macro@linux-mips.org, chenhc@lemote.com, zajec5@gmail.com, james.hogan@imgtec.com, keescook@chromium.org, alex@alex-smith.me.uk, tglx@linutronix.de, blogic@openwrt.org, jchandra@broadcom.com, paul.burton@imgtec.com, qais.yousef@imgtec.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, markos.chandras@imgtec.com, manuel.lauss@gmail.com, akpm@linux-foundation.org, lars.persson@axis.com
+Message-ID: <20141004031714.vYfR9fdVyx8l9DZZB_hODIyLhx69m_JbxibjI1mwvs4@z>
 
-Replacing it with a call to __clk_is_prepared(), which isn't entirely
-equivalent but in practice shouldn't matter.
+The following series implements an executable stack protection in MIPS.
 
-Signed-off-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+It sets up a per-thread 'VDSO' page and appropriate TLB support.
+Page is set write-protected from user and is maintained via kernel VA.
+MIPS FPU emulation is shifted to new page and stack is relieved for
+execute protection as is as all data pages in default setup during ELF
+binary initialization. The real protection is controlled by GLIBC and
+it can do stack protected now as it is done in other architectures and
+I learned today that GLIBC team is ready for this.
+
+Note: actual execute-protection depends from HW capability, of course.
+
+This patch is required for MIPS32/64 R2 emulation on MIPS R6 architecture.
+Without it 'ssh-keygen' crashes pretty fast on attempt to execute instruction
+in stack.
 ---
- arch/mips/alchemy/common/clock.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/alchemy/common/clock.c b/arch/mips/alchemy/common/clock.c
-index d7557cd..203e440 100644
---- a/arch/mips/alchemy/common/clock.c
-+++ b/arch/mips/alchemy/common/clock.c
-@@ -37,7 +37,6 @@
- #include <linux/io.h>
- #include <linux/clk-provider.h>
- #include <linux/clkdev.h>
--#include <linux/clk-private.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/types.h>
-@@ -397,10 +396,10 @@ static long alchemy_clk_fgcs_detr(struct clk_hw *hw, unsigned long rate,
- 			break;
- 
- 		/* if this parent is currently unused, remember it.
--		 * XXX: I know it's a layering violation, but it works
--		 * so well.. (if (!clk_has_active_children(pc)) )
-+		 * XXX: we would actually want clk_has_active_children()
-+		 * but this is a good-enough approximation for now.
- 		 */
--		if (pc->prepare_count == 0) {
-+		if (!__clk_is_prepared(pc)) {
- 			if (!free)
- 				free = pc;
- 		}
+Leonid Yegoshin (3):
+      MIPS: mips_flush_cache_range is added
+      MIPS: Setup an instruction emulation in VDSO protected page instead of user stack
+      MIPS: set stack/data protection as non-executable
+
+
+ arch/mips/include/asm/cacheflush.h  |    3 +
+ arch/mips/include/asm/mmu.h         |    2 +
+ arch/mips/include/asm/page.h        |    2 -
+ arch/mips/include/asm/processor.h   |    2 -
+ arch/mips/include/asm/switch_to.h   |   12 ++++
+ arch/mips/include/asm/thread_info.h |    3 +
+ arch/mips/include/asm/tlbmisc.h     |    1 
+ arch/mips/include/asm/vdso.h        |    2 +
+ arch/mips/kernel/process.c          |    7 ++
+ arch/mips/kernel/vdso.c             |   41 ++++++++++++-
+ arch/mips/math-emu/dsemul.c         |  114 ++++++++++++++++++++++++++---------
+ arch/mips/mm/c-octeon.c             |    8 ++
+ arch/mips/mm/c-r3k.c                |    8 ++
+ arch/mips/mm/c-r4k.c                |   43 +++++++++++++
+ arch/mips/mm/c-tx39.c               |    9 +++
+ arch/mips/mm/cache.c                |    4 +
+ arch/mips/mm/fault.c                |    5 ++
+ arch/mips/mm/tlb-r4k.c              |   39 ++++++++++++
+ 18 files changed, 273 insertions(+), 32 deletions(-)
+
 -- 
-1.9.3
+Signature

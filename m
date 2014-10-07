@@ -1,22 +1,18 @@
-Received: from mail-pa0-f48.google.com ([209.85.220.48]:45127 "EHLO
-        mail-pa0-f48.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27010722AbaJGP510SCKb (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Oct 2014 17:57:27 +0200
-Received: by mail-pa0-f48.google.com with SMTP id eu11so7353055pac.35
-        for <linux-mips@linux-mips.org>; Tue, 07 Oct 2014 08:57:21 -0700 (PDT)
-Date: Tue, 7 Oct 2014 08:57:13 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 07/44] qnap-poweroff: Drop reference to pm_power_off from
- devicetree bindings
-Message-ID: <20141007155713.GB28835@roeck-us.net>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
- <1412659726-29957-8-git-send-email-linux@roeck-us.net>
- <20141007110219.GE24725@leverpostej>
+Received: from mail-bl2on0098.outbound.protection.outlook.com ([65.55.169.98]:10368
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27010711AbaJGQJFNuMAJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 7 Oct 2014 18:09:05 +0200
+Message-ID: <54341013.2030509@caviumnetworks.com>
+Date: Tue, 7 Oct 2014 09:08:51 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20141007110219.GE24725@leverpostej>
-Return-Path: <groeck7@gmail.com>
+Subject: Re: [PATCH resend] MIPS: Allow FPU emulator to use non-stack area.
+References: <5433071B.4050606@caviumnetworks.com> <20141006213101.GA23797@brightrain.aerifal.cx> <54330D79.80102@caviumnetworks.com> <20141006215813.GB23797@brightrain.aerifal.cx> <543327E7.4020608@amacapital.net> <54332A64.5020605@caviumnetworks.com> <20141007000514.GD23797@brightrain.aerifal.cx> <543334CE.8060305@caviumnetworks.com> <20141007004915.GF23797@brightrain.aerifal.cx> <54337127.40806@gmail.com> <20141007111102.GH23797@brightrain.aerifal.cx>
+In-Reply-To: <20141007111102.GH23797@brightrain.aerifal.cx>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,46 +22,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "lguest@lists.ozlabs.org" <lguest@lists.ozlabs.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-m32r-ja@ml.linux-m32r.org" <linux-m32r-ja@ml.linux-m32r.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <Pawel.Moll@arm.com>
-Message-ID: <20141007155713.i_tZVD2EEh118PsCxw2YzFKdpwzqkEsTn4QW3h72a3E@z>
+To: Rich Felker <dalias@libc.org>
+Cc: David Daney <david.s.daney@gmail.com>, Andy Lutomirski <luto@amacapital.net>, David Daney <ddaney.cavm@gmail.com>, libc-alpha@sourceware.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
+Message-ID: <20141007160851.v-yV5YexLhJieEqWM5Ws4Id09lO0cqOZutJLYpJoSg0@z>
 
-On Tue, Oct 07, 2014 at 12:02:19PM +0100, Mark Rutland wrote:
-> On Tue, Oct 07, 2014 at 06:28:09AM +0100, Guenter Roeck wrote:
-> > Replace reference to pm_power_off (which is an implementation detail)
-> > and replace it with a more generic description of the driver's functionality.
-> > 
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Pawel Moll <pawel.moll@arm.com>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> > ---
-> >  Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt b/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
-> > index af25e77..1e2260a 100644
-> > --- a/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
-> > +++ b/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
-> > @@ -3,8 +3,8 @@
-> >  QNAP NAS devices have a microcontroller controlling the main power
-> >  supply. This microcontroller is connected to UART1 of the Kirkwood and
-> >  Orion5x SoCs. Sending the character 'A', at 19200 baud, tells the
-> > -microcontroller to turn the power off. This driver adds a handler to
-> > -pm_power_off which is called to turn the power off.
-> > +microcontroller to turn the power off. This driver installs a handler
-> > +to power off the system.
-> 
-> I'd remove the last sentence -- the driver is also independent of the
-> HW, and the description of how the power off works at the HW level is
-> sufficient.
-> 
-Done.
+On 10/07/2014 04:11 AM, Rich Felker wrote:
+> On Mon, Oct 06, 2014 at 09:50:47PM -0700, David Daney wrote:
+>>>> the out-of-line execution trick, but do it somewhere other than in
+>>>> stack memory.
+>>> How do you answer Andy Lutomirski's question about what happens when a
+>>> signal handler interrupts execution while the program counter is
+>>> pointing at this "out-of-line execution" trampoline? This seems like a
+>>> show-stopper for using anything other than the stack.
+>> It would be nice to support, but not doing so would not be a
+>> regression from current behavior.
+>
+> It's not just "nice" to support, it's mandatory. Otherwise you will
+> execute essentially *random instructions* in this case, providing a
+> very nice attack vector that can almost certainly be elevated to
+> arbitrary code execution via timing of signals during floating point
+> code.
+>
+> The current behavior in regards to this is correct: because you have a
+> *stack*, each trampoline is pushed onto the stack in its own context,
+> and popped when it's no longer needed. You can have arbitrarily many
+> such trampolines up to the stack size. Note that each nested signal
+> handler already requires sizeof(ucontext_t) in stack space, so these
+> trampolines are a negligible additional cost without major effects on
+> the number of signal handlers you can nest without overflowing the
+> stack.
 
-> With that:
-> 
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> 
-Thanks!
+Yes, the stack takes care of the allocations, but the current 
+implementation has many problems:
 
-Guenter
+1) Signals clobber the emulation area.
+2) Signals caused by the emulation, have incorrect saved machine state.
+
+We have a low bar to pass, any new solution doesn't have to be perfect, 
+it only has to be an improvement.
+
+Keep in mind that we are not starting from a clean slate, there are many 
+years of legacy code that has built up here.
+
+David Daney

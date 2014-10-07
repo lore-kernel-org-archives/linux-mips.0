@@ -1,18 +1,18 @@
-Received: from cam-admin0.cambridge.arm.com ([217.140.96.50]:53281 "EHLO
+Received: from cam-admin0.cambridge.arm.com ([217.140.96.50]:53343 "EHLO
         cam-admin0.cambridge.arm.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27010703AbaJGLCql3fdP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Oct 2014 13:02:46 +0200
-Date: Tue, 7 Oct 2014 12:02:19 +0100
+        by eddie.linux-mips.org with ESMTP id S27010703AbaJGLDzFJHk3 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Oct 2014 13:03:55 +0200
+Date: Tue, 7 Oct 2014 12:03:32 +0100
 From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH 07/44] qnap-poweroff: Drop reference to pm_power_off from
+Subject: Re: [PATCH 06/44] gpio-poweroff: Drop reference to pm_power_off from
  devicetree bindings
-Message-ID: <20141007110219.GE24725@leverpostej>
+Message-ID: <20141007110332.GF24725@leverpostej>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
- <1412659726-29957-8-git-send-email-linux@roeck-us.net>
+ <1412659726-29957-7-git-send-email-linux@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1412659726-29957-8-git-send-email-linux@roeck-us.net>
+In-Reply-To: <1412659726-29957-7-git-send-email-linux@roeck-us.net>
 Return-Path: <mark.rutland@arm.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -25,40 +25,54 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Guenter Roeck <linux@roeck-us.net>
 Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "lguest@lists.ozlabs.org" <lguest@lists.ozlabs.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-m32r-ja@ml.linux-m32r.org" <linux-m32r-ja@ml.linux-m32r.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <Pawel.Moll@arm.com>
-Message-ID: <20141007110219.LErw4BOhSQ6J5miz4Etbv8wc-gDSDVD3yKFdeI9s1gU@z>
+Message-ID: <20141007110332.o5FPatPazfh8b1RDyHCgkfwj_nFuo57ji7FkOxAbm2s@z>
 
-On Tue, Oct 07, 2014 at 06:28:09AM +0100, Guenter Roeck wrote:
-> Replace reference to pm_power_off (which is an implementation detail)
-> and replace it with a more generic description of the driver's functionality.
+On Tue, Oct 07, 2014 at 06:28:08AM +0100, Guenter Roeck wrote:
+> pm_power_off is an implementation detail. Replace it with a more generic
+> description of the driver's functionality.
 > 
 > Cc: Rob Herring <robh+dt@kernel.org>
 > Cc: Pawel Moll <pawel.moll@arm.com>
 > Cc: Mark Rutland <mark.rutland@arm.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
->  Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt b/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
-> index af25e77..1e2260a 100644
-> --- a/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
-> +++ b/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
-> @@ -3,8 +3,8 @@
->  QNAP NAS devices have a microcontroller controlling the main power
->  supply. This microcontroller is connected to UART1 of the Kirkwood and
->  Orion5x SoCs. Sending the character 'A', at 19200 baud, tells the
-> -microcontroller to turn the power off. This driver adds a handler to
-> -pm_power_off which is called to turn the power off.
-> +microcontroller to turn the power off. This driver installs a handler
-> +to power off the system.
-
-I'd remove the last sentence -- the driver is also independent of the
-HW, and the description of how the power off works at the HW level is
-sufficient.
-
-With that:
 
 Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-Thanks,
-Mark.
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  Documentation/devicetree/bindings/gpio/gpio-poweroff.txt | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt b/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt
+> index d4eab92..c95a1a6 100644
+> --- a/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt
+> +++ b/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt
+> @@ -2,12 +2,12 @@ Driver a GPIO line that can be used to turn the power off.
+>  
+>  The driver supports both level triggered and edge triggered power off.
+>  At driver load time, the driver will request the given gpio line and
+> -install a pm_power_off handler. If the optional properties 'input' is
+> -not found, the GPIO line will be driven in the inactive
+> +install a handler to power off the system. If the optional properties
+> +'input' is not found, the GPIO line will be driven in the inactive
+>  state. Otherwise its configured as an input.
+>  
+> -When the pm_power_off is called, the gpio is configured as an output,
+> -and drive active, so triggering a level triggered power off
+> +When the the poweroff handler is called, the gpio is configured as an
+> +output, and drive active, so triggering a level triggered power off
+>  condition. This will also cause an inactive->active edge condition, so
+>  triggering positive edge triggered power off. After a delay of 100ms,
+>  the GPIO is set to inactive, thus causing an active->inactive edge,
+> @@ -24,7 +24,7 @@ Required properties:
+>  
+>  Optional properties:
+>  - input : Initially configure the GPIO line as an input. Only reconfigure
+> -  it to an output when the pm_power_off function is called. If this optional
+> +  it to an output when the poweroff handler is called. If this optional
+>    property is not specified, the GPIO is initialized as an output in its
+>    inactive state.
+>  
+> -- 
+> 1.9.1
+> 
+> 

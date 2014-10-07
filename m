@@ -1,17 +1,27 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:47155 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8079 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010680AbaJGInqnZ51j (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Oct 2014 10:43:46 +0200
-Message-ID: <5433A7BB.1090207@imgtec.com>
-Date: Tue, 7 Oct 2014 09:43:39 +0100
-From: James Hogan <james.hogan@imgtec.com>
+        with ESMTP id S27010683AbaJGJNbBzWG6 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Oct 2014 11:13:31 +0200
+From: Matthew Fortune <Matthew.Fortune@imgtec.com>
+Subject: RE: [PATCH resend] MIPS: Allow FPU emulator to use non-stack area.
+Date: Tue, 7 Oct 2014 09:13:22 +0000
+Message-ID: <6D39441BF12EF246A7ABCE6654B0235320F1E173@LEMAIL01.le.imgtec.org>
+References: <1412627010-4311-1-git-send-email-ddaney.cavm@gmail.com>
+ <20141006205459.GZ23797@brightrain.aerifal.cx>
+ <5433071B.4050606@caviumnetworks.com>
+ <20141006213101.GA23797@brightrain.aerifal.cx>
+ <54330D79.80102@caviumnetworks.com>
+ <20141006215813.GB23797@brightrain.aerifal.cx>
+ <543327E7.4020608@amacapital.net> <54332A64.5020605@caviumnetworks.com>
+ <20141007000514.GD23797@brightrain.aerifal.cx>
+ <543334CE.8060305@caviumnetworks.com>
+ <20141007004915.GF23797@brightrain.aerifal.cx> <54337127.40806@gmail.com>
+In-Reply-To: <54337127.40806@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Allow FPU emulator to use non-stack area.
-References: <1412626317-4128-1-git-send-email-ddaney.cavm@gmail.com>
-In-Reply-To: <1412626317-4128-1-git-send-email-ddaney.cavm@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Matthew.Fortune@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,43 +31,18 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>, Zubair.Kakakhel@imgtec.com, peterz@infradead.org, paul.gortmaker@windriver.com, davidlohr@hp.com, macro@linux-mips.org, chenhc@lemote.com, zajec5@gmail.com, keescook@chromium.org, alex@alex-smith.me.uk, tglx@linutronix.de, blogic@openwrt.org, jchandra@broadcom.com, paul.burton@imgtec.com, qais.yousef@imgtec.com, ralf@linux-mips.org, markos.chandras@imgtec.com, manuel.lauss@gmail.com, akpm@linux-foundation.org, lars.persson@axis.com, torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, libc-alpha@sourceware.org, David Daney <david.daney@cavium.com>
-Message-ID: <20141007084339.7jU8vt-THhWNT8D9FiyA0kDvMoaVI3IQom9athQABXk@z>
+To: David Daney <david.s.daney@gmail.com>, Rich Felker <dalias@libc.org>, David Daney <ddaney@caviumnetworks.com>
+Cc: Andy Lutomirski <luto@amacapital.net>, David Daney <ddaney.cavm@gmail.com>, "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, David Daney <david.daney@cavium.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Message-ID: <20141007091322.sMrAD8XaqUzQWx5OZXb7ewWoco4zuxOAn2L_fUZR5Qg@z>
 
-Hi David,
+> >> the out-of-line execution trick, but do it somewhere other than in
+> >> stack memory.
+> > How do you answer Andy Lutomirski's question about what happens when a
+> > signal handler interrupts execution while the program counter is
+> > pointing at this "out-of-line execution" trampoline? This seems like a
+> > show-stopper for using anything other than the stack.
+> It would be nice to support, but not doing so would not be a regression
+> from current behavior.
 
-On 06/10/14 21:11, David Daney wrote:
-> Any userspace thread desiring a non-executable stack,
-> must allocate a 4-byte aligned area at least 8 bytes long
-
-<snip>
-
-> +SYSCALL_DEFINE1(set_fpuemul_xol_area, unsigned long, addr)
-> +{
-> +	struct thread_info *ti = task_thread_info(current);
-> +
-> +	ti->fpu_emul_xol = addr;
-> +	return 0;
-> +}
-> +
-
-<snip>
-
-> -	/* Ensure that the two instructions are in the same cache line */
-> -	fr = (struct emuframe __user *)
-> -		((regs->regs[29] - sizeof(struct emuframe)) & ~0x7);
-> +	if (ti->fpu_emul_xol != ~0ul)
-> +		fr = (struct emuframe *)ti->fpu_emul_xol;
-> +	else
-> +		/* Ensure that the two instructions are in the same cache line */
-> +		fr = (struct emuframe __user *)
-> +			((regs->regs[29] - sizeof(struct emuframe)) & ~0x7);
-
-I know your patch was more an RFC, but on a technical note, this
-comment/code seems to imply that the address should be 8 byte aligned
-(rather than 4 byte) so they both land in the same cache line. Also, I
-think the alignment should be validated in the syscall.
-
-Cheers
-James
+It seems appropriate to mention another issue which should be addressed as
+part of the overall FPU emulation work...

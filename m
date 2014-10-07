@@ -1,20 +1,18 @@
-Received: from cam-admin0.cambridge.arm.com ([217.140.96.50]:60028 "EHLO
-        cam-admin0.cambridge.arm.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27010625AbaJGQ7BKObjf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Oct 2014 18:59:01 +0200
-Date: Tue, 7 Oct 2014 17:58:35 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH 05/44] mfd: as3722: Drop reference to pm_power_off from
- devicetree bindings
-Message-ID: <20141007165835.GE27216@leverpostej>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
- <1412659726-29957-6-git-send-email-linux@roeck-us.net>
- <543412F7.8040909@landley.net>
+Received: from mail-bn1bon0078.outbound.protection.outlook.com ([157.56.111.78]:52640
+        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27010789AbaJGX7QlkaEQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 8 Oct 2014 01:59:16 +0200
+Message-ID: <54347E47.1080809@caviumnetworks.com>
+Date: Tue, 7 Oct 2014 16:59:03 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <543412F7.8040909@landley.net>
-Return-Path: <mark.rutland@arm.com>
+Subject: Re: [PATCH resend] MIPS: Allow FPU emulator to use non-stack area.
+References: <1412627010-4311-1-git-send-email-ddaney.cavm@gmail.com> <20141006205459.GZ23797@brightrain.aerifal.cx> <5433071B.4050606@caviumnetworks.com> <20141007232019.GA30470@linux-mips.org>
+In-Reply-To: <20141007232019.GA30470@linux-mips.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,36 +22,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Landley <rob@landley.net>
-Cc: Guenter Roeck <linux@roeck-us.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "lguest@lists.ozlabs.org" <lguest@lists.ozlabs.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-m32r-ja@ml.linux-m32r.org" <linux-m32r-ja@ml.linux-m32r.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <Pawel.Moll@arm.com>
-Message-ID: <20141007165835.fqVpLjJhj9kP0GRGdPvyuKB27djG7y0VopivSqKNrl4@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Rich Felker <dalias@libc.org>, David Daney <ddaney.cavm@gmail.com>, libc-alpha@sourceware.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
+Message-ID: <20141007235903.w9_B5MMuyDA9Yx78hLN5AyRh6NN1dIU9dgF5x6jalm0@z>
 
-On Tue, Oct 07, 2014 at 05:21:11PM +0100, Rob Landley wrote:
-> On 10/07/14 00:28, Guenter Roeck wrote:
-> > Devicetree bindings are supposed to be operating system independent
-> > and should thus not describe how a specific functionality is implemented
-> > in Linux.
-> 
-> So your argument is that linux/Documentation/devicetree/bindings should
-> not be specific to Linux. Merely hosted in the Linux kernel source
-> repository.
+On 10/07/2014 04:20 PM, Ralf Baechle wrote:
+> On Mon, Oct 06, 2014 at 02:18:19PM -0700, David Daney wrote:
+>
+>>> As an alternative, if the space of possible instruction with a delay
+>>> slot is sufficiently small, all such instructions could be mapped as
+>>> immutable code in a shared mapping, each at a fixed offset in the
+>>> mapping. I suspect this would be borderline-impractical (multiple
+>>> megabytes?), but it is the cleanest solution otherwise.
+>>>
+>>
+>> Yes, there are 2^32 possible instructions.  Each one is 4 bytes, plus you
+>> need a way to exit after the instruction has executed, which would require
+>> another instruction.  So you would need 32GB of memory to hold all those
+>> instructions, larger than the 32-bit virtual address space.
+>
+> Plus errata support for some older CPUs requires no other instructions
+> that might cause an exception to be present in the same cache line inflating
+> the size to 32 bytes per instruction.
+>
+> I've contemplated a full emulation - but that would require an emulator that
+> is capable of most of the instruction set.  With all the random ASEs around
+> that would be hard to implement while the FPU emulator trampoline as currently
+> used has the advantage of automatically supporting ASEs, known and unknown.
+> So it's a huge bonus for maintenance.
+>
 
-Precisely. If nothing else as a general guideline this keeps us honest,
-and prevents us from embedding arbitrary implementation details into
-bidnings that cause pain later when we want to change things at either
-end.
+Unfortunatly it breaks when our friends at Imgtec introduce their PC 
+relative instructions in mipsr6, so an emulator may be unavoidable.
 
-There are already otehr users of these bindings, so we can't really
-claim they're strictly Linux-specific anyhow.
-
-> Well that's certainly a point of view.
-
-As far as I am aware, it's the point of view shared by the device tree
-maintainers, and it's been that way for a while.
-
-I don't really follow your concern. For one thing were this followed
-more strictly this file wouldn't need patching at all to correct for
-this Linux-internal rework...
-
-Thanks,
-Mark.
+David Daney

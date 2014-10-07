@@ -1,17 +1,22 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18211 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010694AbaJGMW0gAnC3 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Oct 2014 14:22:26 +0200
-Message-ID: <5433DAFA.4010008@imgtec.com>
-Date: Tue, 7 Oct 2014 13:22:18 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mail-pa0-f48.google.com ([209.85.220.48]:45127 "EHLO
+        mail-pa0-f48.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27010722AbaJGP510SCKb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Oct 2014 17:57:27 +0200
+Received: by mail-pa0-f48.google.com with SMTP id eu11so7353055pac.35
+        for <linux-mips@linux-mips.org>; Tue, 07 Oct 2014 08:57:21 -0700 (PDT)
+Date: Tue, 7 Oct 2014 08:57:13 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 07/44] qnap-poweroff: Drop reference to pm_power_off from
+ devicetree bindings
+Message-ID: <20141007155713.GB28835@roeck-us.net>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+ <1412659726-29957-8-git-send-email-linux@roeck-us.net>
+ <20141007110219.GE24725@leverpostej>
 MIME-Version: 1.0
-Subject: Re: [PATCH resend] MIPS: Allow FPU emulator to use non-stack area.
-References: <1412627010-4311-1-git-send-email-ddaney.cavm@gmail.com> <54333B9C.2040302@paralogos.com> <54336CED.3040106@gmail.com> <5433D429.3020804@imgtec.com>
-In-Reply-To: <5433D429.3020804@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20141007110219.GE24725@leverpostej>
+Return-Path: <groeck7@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,46 +26,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <david.s.daney@gmail.com>, "Kevin D. Kissell" <kevink@paralogos.com>, David Daney <ddaney.cavm@gmail.com>, libc-alpha@sourceware.org, Leonid <Leonid.Yegoshin@imgtec.com>
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
-Message-ID: <20141007122218.fh8HEUCdv2Jxzvyl6ECOSY_IEoeGTkJcT6mWIQtrgpc@z>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "lguest@lists.ozlabs.org" <lguest@lists.ozlabs.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-m32r-ja@ml.linux-m32r.org" <linux-m32r-ja@ml.linux-m32r.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <Pawel.Moll@arm.com>
+Message-ID: <20141007155713.i_tZVD2EEh118PsCxw2YzFKdpwzqkEsTn4QW3h72a3E@z>
 
-On 07/10/14 12:53, James Hogan wrote:
-> On 07/10/14 05:32, David Daney wrote:
->> If the kernel automatically allocated the emulation locations, what
->> would happen if there were a signal that interrupted the emulation, and
->> the signal handler did a longjump to somewhere else?  How would we clean
->> up the now unused emulation memory allocations?
+On Tue, Oct 07, 2014 at 12:02:19PM +0100, Mark Rutland wrote:
+> On Tue, Oct 07, 2014 at 06:28:09AM +0100, Guenter Roeck wrote:
+> > Replace reference to pm_power_off (which is an implementation detail)
+> > and replace it with a more generic description of the driver's functionality.
+> > 
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Pawel Moll <pawel.moll@arm.com>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> > ---
+> >  Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt b/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
+> > index af25e77..1e2260a 100644
+> > --- a/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
+> > +++ b/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
+> > @@ -3,8 +3,8 @@
+> >  QNAP NAS devices have a microcontroller controlling the main power
+> >  supply. This microcontroller is connected to UART1 of the Kirkwood and
+> >  Orion5x SoCs. Sending the character 'A', at 19200 baud, tells the
+> > -microcontroller to turn the power off. This driver adds a handler to
+> > -pm_power_off which is called to turn the power off.
+> > +microcontroller to turn the power off. This driver installs a handler
+> > +to power off the system.
 > 
-> AFAICT, Leonid's implementation also has this problem, and that has a
-> separate stack of emuframes per thread managed completely by the kernel.
+> I'd remove the last sentence -- the driver is also independent of the
+> HW, and the description of how the power off works at the HW level is
+> sufficient.
 > 
-> Essentially the kernel doesn't manage the stack, userland does, and
-> userland can choose to skip over sigframes and emuframes with siglongjmp
-> without telling the kernel.
-> 
-> Userland can even switch between contexts (which includes stack) with
-> setcontext (coroutines etc) which breaks the assumption in Leonid's
-> patches that emuframes will be completed in reverse order to them being
-> started, again demonstrating that it is essentially userland that
-> manages the stack.
-> 
-> I think any attempt by the kernel to keep track of user stacks (e.g. by
-> storing a stack pointer along with the emuframe so that unused emuframes
-> can be discarded later when stack pointer goes high again) will be
-> foiled by setcontext.
-> 
-> Hmm, I can't see a way forward that doesn't involve invasive userland
-> handling & ABI changes other than giving up with non-executable stacks
-> or limiting permitted instructions in delay slots to those Linux knows
-> how to emulate directly.
+Done.
 
-Would it work for a signal encountered during branch delay slot
-emulation (maybe where the PC is pointing at that magic location the
-kernel uses for emulation) to be treated as a return from emulation, but
-leaving the user PC pointing to the original branch (with Cause.BD=1 I
-suppose) prior to handling the signal, so that no more than one emuframe
-is needed by each thread at a time?
+> With that:
+> 
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> 
+Thanks!
 
-Cheers
-James
+Guenter

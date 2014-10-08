@@ -1,18 +1,21 @@
-Received: from bes.se.axis.com ([195.60.68.10]:60049 "EHLO bes.se.axis.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27010808AbaJHH0CGUz3P (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 8 Oct 2014 09:26:02 +0200
-Date: Wed, 8 Oct 2014 09:25:45 +0200
-From: Jesper Nilsson <jesper.nilsson@axis.com>
-Subject: Re: [PATCH 08/44] kernel: Move pm_power_off to common code
-Message-ID: <20141008072545.GA30087@axis.com>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
- <1412659726-29957-9-git-send-email-linux@roeck-us.net>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:36487 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010829AbaJHKcAw8V0T (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 8 Oct 2014 12:32:00 +0200
+Date: Wed, 8 Oct 2014 11:31:49 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH resend] MIPS: Allow FPU emulator to use non-stack area.
+Message-ID: <20141008103149.GO4704@pburton-laptop>
+References: <1412627010-4311-1-git-send-email-ddaney.cavm@gmail.com>
+ <20141006205459.GZ23797@brightrain.aerifal.cx>
+ <5433071B.4050606@caviumnetworks.com>
+ <20141007232019.GA30470@linux-mips.org>
+ <54347E47.1080809@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <1412659726-29957-9-git-send-email-linux@roeck-us.net>
-Return-Path: <jesper.nilsson@axis.com>
+In-Reply-To: <54347E47.1080809@caviumnetworks.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,24 +25,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "lguest@lists.ozlabs.org" <lguest@lists.ozlabs.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, linux-cris-kernel <linux-cris-kernel@axis.com>, "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-m32r-ja@ml.linux-m32r.org" <linux-m32r-ja@ml.linux-m32r.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Steven Miao <realmz6@gmail.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <a-jacquiot@ti.com>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jespern@axis.com>, David Howells <dhowells@redhat.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Hirokazu Takata <takata@linux-m32r.org>, Geert Uytterhoeven <geert@linux-m68k.org>, James Hogan <james.hogan@imgtec.com>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, Jonas Bonn <jonas@southpole.se>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Chen Liqin <liqin.linux@gmail.com>, Lennox Wu <lennox.wu@gmail.com>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@tilera.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, David Vrabel <david.vrabel@citrix.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Message-ID: <20141008072545.Yw3vwcCnU6yVHlmGQum2w_f91c3egYKbKcteNSgBmcg@z>
+To: David Daney <ddaney@caviumnetworks.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Rich Felker <dalias@libc.org>, David Daney <ddaney.cavm@gmail.com>, libc-alpha@sourceware.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
+Message-ID: <20141008103149.s4K0E60N-kkprbrcgF9XeRyAF-RT3gGyurALALgh0x8@z>
 
-On Tue, Oct 07, 2014 at 07:28:10AM +0200, Guenter Roeck wrote:
-> pm_power_off is defined for all architectures. Move it to common code.
+On Tue, Oct 07, 2014 at 04:59:03PM -0700, David Daney wrote:
+> On 10/07/2014 04:20 PM, Ralf Baechle wrote:
+> >On Mon, Oct 06, 2014 at 02:18:19PM -0700, David Daney wrote:
+> >
+> >>>As an alternative, if the space of possible instruction with a delay
+> >>>slot is sufficiently small, all such instructions could be mapped as
+> >>>immutable code in a shared mapping, each at a fixed offset in the
+> >>>mapping. I suspect this would be borderline-impractical (multiple
+> >>>megabytes?), but it is the cleanest solution otherwise.
+> >>>
+> >>
+> >>Yes, there are 2^32 possible instructions.  Each one is 4 bytes, plus you
+> >>need a way to exit after the instruction has executed, which would require
+> >>another instruction.  So you would need 32GB of memory to hold all those
+> >>instructions, larger than the 32-bit virtual address space.
+> >
+> >Plus errata support for some older CPUs requires no other instructions
+> >that might cause an exception to be present in the same cache line inflating
+> >the size to 32 bytes per instruction.
+> >
+> >I've contemplated a full emulation - but that would require an emulator that
+> >is capable of most of the instruction set.  With all the random ASEs around
+> >that would be hard to implement while the FPU emulator trampoline as currently
+> >used has the advantage of automatically supporting ASEs, known and unknown.
+> >So it's a huge bonus for maintenance.
+> >
 > 
-> Have all architectures call do_kernel_poweroff instead of pm_power_off.
-> Some architectures point pm_power_off to machine_power_off. For those,
-> call do_kernel_poweroff from machine_power_off instead.
+> Unfortunatly it breaks when our friends at Imgtec introduce their PC
+> relative instructions in mipsr6, so an emulator may be unavoidable.
+> 
+> David Daney
 
-For the CRIS parts:
+Just to note, this was also discussed when I submitted my much older
+patch with a similar goal:
 
->  arch/cris/kernel/process.c         |  4 +---
+  http://patchwork.linux-mips.org/patch/6125/
 
-Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
+...and the conclusion there also began converging towards full ISA
+emulation (or at least, the subset of the ISA which userland can
+execute):
 
+  http://www.linux-mips.org/archives/linux-mips/2014-07/msg00034.html
 
-/^JN - Jesper Nilsson
--- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
+For the record my preference is for emulation. It is in some ways more
+work, but it's also much cleaner. Given that more instructions will need
+to be emulated to run pre-R6 binaries on R6 systems anyway, the emulator
+would only become increasingly useful.
+
+Paul

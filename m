@@ -1,16 +1,17 @@
-Received: from mail-qg0-f50.google.com ([209.85.192.50]:60958 "EHLO
-        mail-qg0-f50.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27010898AbaJIHV15vkU4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Oct 2014 09:21:27 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:35029 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010912AbaJIJefbxd5C (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Oct 2014 11:34:35 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 8D866208D327C
+        for <linux-mips@linux-mips.org>; Thu,  9 Oct 2014 10:34:26 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH 0/3] Malta/SEAD3 kernel image size patches for 3.18
+Date: Thu, 9 Oct 2014 10:34:18 +0100
+Message-ID: <1412847261-7930-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <5435E5B0.90900@codeaurora.org>
-References: <1412695334-2608-1-git-send-email-tomeu.vizoso@collabora.com> <5435E5B0.90900@codeaurora.org>
-From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Date: Thu, 9 Oct 2014 09:21:01 +0200
-Message-ID: <CAAObsKBZ8irmk0fdEQUvT60ffu0oytVdJTu5s3+BXMCPaosPDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/8] Per-user clock constraints
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <tomeu.vizoso@gmail.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,54 +21,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: Mike Turquette <mturquette@linaro.org>, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Alex Elder <elder@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Haojian Zhuang <haojian.zhuang@linaro.org>, Jaehoon Chung <jh80.chung@samsung.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-mips@linux-mips.org, linux-omap@vger.kernel.org, Manuel Lauss <manuel.lauss@gmail.com>, Matt Porter <mporter@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Tim Kryger <tim.kryger@linaro.org>, Zhangfei Gao <zhangfei.gao@linaro.org>
-Message-ID: <20141009072101.V3c_jS1-68slzuNbzGeM-aiZKtJyLEK0vCEi2Z3fTdw@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20141009093418.P1CW05JzoZb2Kbnp1BLSWj9ZtWuIckWydxS8KE64YG0@z>
 
-On 9 October 2014 03:32, Stephen Boyd <sboyd@codeaurora.org> wrote:
-> On 10/07/2014 08:21 AM, Tomeu Vizoso wrote:
->>
->> Hello,
->>
->> this second version of the series adds several cleanups that were
->> suggested by
->> Stephen Boyd and contains several improvements to the seventh patch (clk:
->> Make
->> clk API return per-user struct clk instances) that were suggested by him
->> during
->> the review of v1.
->>
->> The first six patches are just cleanups that should be desirable on their
->> own,
->> and that should make easier to review the actual per-user clock patch.
->>
->> The seventh patch actually moves the per-clock data that was stored in
->> struct
->> clk to a new struct clk_core and adds references to it from both struct
->> clk and
->> struct clk_hw. struct clk is now ready to contain information that is
->> specific
->> to a given clk consumer.
->>
->> The eighth patch adds API for setting floor and ceiling constraints and
->> stores
->> that information on the per-user struct clk, which is iterable from struct
->> clk_core.
->>
->>
->
-> As said in the patches, can you please indicate which baseline this is on?
+Hi,
 
-Sure, this was based on v3.17. Also available at:
+A few patches to reduce the size of the kernel image for Malta and SEAD3 by
+improving the dependencies on certain source files.
 
-http://cgit.collabora.com/git/user/tomeu/linux.git/log/?h=per-user-clk-constraints-v2
+A different approach for i2c and led patches has been posted before:
+http://patchwork.linux-mips.org/patch/5802/
 
-> Also can you rebase onto clk-next if you send again before that is merged
-> into 3.18-rc1? There are some changes in the debugfs part that will
-> conflict. I'll review the more complicated parts in detail soon.
+Even though none of the original requests have been addressed, I still feel
+these patches do not make things any worse.
 
-Ack.
+Hopefully not too late for 3.18
 
-Thanks,
+Markos Chandras (3):
+  MIPS: Malta: Do not build the malta-amon.c file if CMP is not enabled
+  MIPS: sead3: Build the I2C related devices if CONFIG_I2C is enabled
+  MIPS: sead3: Only build the led driver is LEDS_CLASS is enabled
 
-Tomeu
+ arch/mips/mti-malta/Makefile | 3 ++-
+ arch/mips/mti-sead3/Makefile | 7 +++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+-- 
+2.1.2

@@ -1,21 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:47356 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010840AbaJHN2zQy0DB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 8 Oct 2014 15:28:55 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id B3AE1710EDB20
-        for <linux-mips@linux-mips.org>; Wed,  8 Oct 2014 14:28:45 +0100 (IST)
-Message-ID: <54353C0F.6000704@imgtec.com>
-Date: Wed, 8 Oct 2014 14:28:47 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+Received: from mail-qg0-f50.google.com ([209.85.192.50]:60958 "EHLO
+        mail-qg0-f50.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27010898AbaJIHV15vkU4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Oct 2014 09:21:27 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] MIPS: Kconfig: Add choice symbol to select microMIPS
- or SmartMIPS
-References: <1401785177-7904-1-git-send-email-markos.chandras@imgtec.com> <1405928774-20630-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1405928774-20630-1-git-send-email-markos.chandras@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+In-Reply-To: <5435E5B0.90900@codeaurora.org>
+References: <1412695334-2608-1-git-send-email-tomeu.vizoso@collabora.com> <5435E5B0.90900@codeaurora.org>
+From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Date: Thu, 9 Oct 2014 09:21:01 +0200
+Message-ID: <CAAObsKBZ8irmk0fdEQUvT60ffu0oytVdJTu5s3+BXMCPaosPDQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/8] Per-user clock constraints
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <tomeu.vizoso@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,40 +20,54 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Message-ID: <20141008132847.J_UfMkQOsjjSnv1xPQYWa38vwO0GOxwbIDlao7qCk9Q@z>
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: Mike Turquette <mturquette@linaro.org>, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Alex Elder <elder@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Haojian Zhuang <haojian.zhuang@linaro.org>, Jaehoon Chung <jh80.chung@samsung.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-mips@linux-mips.org, linux-omap@vger.kernel.org, Manuel Lauss <manuel.lauss@gmail.com>, Matt Porter <mporter@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Tim Kryger <tim.kryger@linaro.org>, Zhangfei Gao <zhangfei.gao@linaro.org>
+Message-ID: <20141009072101.V3c_jS1-68slzuNbzGeM-aiZKtJyLEK0vCEi2Z3fTdw@z>
 
-On 07/21/2014 08:46 AM, Markos Chandras wrote:
-> microMIPS and SmartMIPS can't be used together. This fixes the
-> following build problem:
-> 
-> Warning: the 32-bit microMIPS architecture does not support the `smartmips'
-> extension
-> arch/mips/kernel/entry.S:90: Error: unrecognized opcode `mtlhx $24'
-> [...]
-> arch/mips/kernel/entry.S:109: Error: unrecognized opcode `mtlhx $24'
-> 
-> Link: https://dmz-portal.mips.com/bugz/show_bug.cgi?id=1021
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
-> Hi Ralf,
-> 
-> Here is v2 of that patch, making SmartMIPS and microMIPS a
-> choice symbol as you requested in
-> http://www.linux-mips.org/archives/linux-mips/2014-06/msg00011.html
-> 
-> However, I still feel this is wrong since these two ASEs are completely
-> unrelated. The v1 of the patch is probably better in my opinion.
-> If the user fails to find the 'smartmips' option due to having 'micromips'
-> enabled, he/she can always search for the 'smartmips' symbol in the
-> menuconfig and he/she will notice the dependency on !micromips.
-> And if the user knows what he is doing he will probably never want to
-> use 'smartmips' and 'micromips' together.
-> ---
-> 
-Hi,
+On 9 October 2014 03:32, Stephen Boyd <sboyd@codeaurora.org> wrote:
+> On 10/07/2014 08:21 AM, Tomeu Vizoso wrote:
+>>
+>> Hello,
+>>
+>> this second version of the series adds several cleanups that were
+>> suggested by
+>> Stephen Boyd and contains several improvements to the seventh patch (clk:
+>> Make
+>> clk API return per-user struct clk instances) that were suggested by him
+>> during
+>> the review of v1.
+>>
+>> The first six patches are just cleanups that should be desirable on their
+>> own,
+>> and that should make easier to review the actual per-user clock patch.
+>>
+>> The seventh patch actually moves the per-clock data that was stored in
+>> struct
+>> clk to a new struct clk_core and adds references to it from both struct
+>> clk and
+>> struct clk_hw. struct clk is now ready to contain information that is
+>> specific
+>> to a given clk consumer.
+>>
+>> The eighth patch adds API for setting floor and ceiling constraints and
+>> stores
+>> that information on the per-user struct clk, which is iterable from struct
+>> clk_core.
+>>
+>>
+>
+> As said in the patches, can you please indicate which baseline this is on?
 
-Any comments on that one?
+Sure, this was based on v3.17. Also available at:
 
--- 
-markos
+http://cgit.collabora.com/git/user/tomeu/linux.git/log/?h=per-user-clk-constraints-v2
+
+> Also can you rebase onto clk-next if you send again before that is merged
+> into 3.18-rc1? There are some changes in the debugfs part that will
+> conflict. I'll review the more complicated parts in detail soon.
+
+Ack.
+
+Thanks,
+
+Tomeu

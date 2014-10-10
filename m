@@ -1,19 +1,20 @@
-Received: from devils.ext.ti.com ([198.47.26.153]:49551 "EHLO
-        devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011076AbaJJN6eYeQbs (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Oct 2014 15:58:34 +0200
-Date: Fri, 10 Oct 2014 08:58:26 -0500
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH] USB: phy: add ralink SoC driver
-Message-ID: <20141010135826.GC31348@saruman>
-Reply-To: <balbi@ti.com>
-References: <1412936401-57511-1-git-send-email-blogic@openwrt.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:36269 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010941AbaJJOkALdF3C (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Oct 2014 16:40:00 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id AF9BD2EABBF8C
+        for <linux-mips@linux-mips.org>; Fri, 10 Oct 2014 15:39:49 +0100 (IST)
+Message-ID: <5437EFB7.2020106@imgtec.com>
+Date: Fri, 10 Oct 2014 15:39:51 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="dkEUBIird37B8yKS"
-Content-Disposition: inline
-In-Reply-To: <1412936401-57511-1-git-send-email-blogic@openwrt.org>
-Return-Path: <balbi@ti.com>
+Subject: Re: [RFC PATCH V2] MIPS: fix build with binutils 2.24.51+
+References: <1408465632-34262-1-git-send-email-manuel.lauss@gmail.com> <20140825125107.GA25892@linux-mips.org> <alpine.LFD.2.11.1408251502140.18483@eddie.linux-mips.org> <CAOLZvyG4F_PCb5hbws1_e8nCeJ+odvnC5u=yitSe9CwY3TWZdw@mail.gmail.com>
+In-Reply-To: <CAOLZvyG4F_PCb5hbws1_e8nCeJ+odvnC5u=yitSe9CwY3TWZdw@mail.gmail.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,46 +24,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: John Crispin <blogic@openwrt.org>
-Cc: Felipe Balbi <balbi@ti.com>, linux-usb@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20141010135826.m66NlWiYHcnRUlXKClu8sPnHwdJmd0dJIYG90YjQD5M@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20141010143951.PLePzWyKq5Fm9eS_4ny1-veM3TOoT_uIGgyunXaawVQ@z>
 
---dkEUBIird37B8yKS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 08/25/2014 08:29 PM, Manuel Lauss wrote:
+> On Mon, Aug 25, 2014 at 4:27 PM, Maciej W. Rozycki <macro@linux-mips.org> wrote:
+> 
+>> 1. Determine whether `-Wa,-msoft-float' and `.set hardfloat' are available
+>>    (a single check will do, they were added to GAS both at the same time)
+>>    and only enable them if supported by binutils being used to build the
+>>    kernel, e.g. (for the `.set' part):
+>>
+>> #ifdef GAS_HAS_SET_HARDFLOAT
+>> #define SET_HARDFLOAT .set      hardfloat
+>> #else
+>> #define SET_HARDFLOAT
+>> #endif
+>>
+>>    Otherwise we'd have to bump the binutils requirement up to 2.19; this
+> 
+> Do people really update their toolchain so rarely?
+> 
+> 
+>> 2. Use `.set hardfloat' only around the places that really require it,
+>>    i.e.:
+>>
+>>         .set    push
+>>         SET_HARDFLOAT
+>> # Do the FP stuff.
+>>         .set    pop
+>>
+>>    (so the arch/mips/kernel/r4k_fpu.S piece is good except for maybe using
+>>    a macro, depending on the outcome of #1 above, but the other ones are
+>>    not).
+> 
+> I'll update the patch.
+> 
+> Thank you!
+>         Manuel
+> 
+Hi Manual,
 
-On Fri, Oct 10, 2014 at 12:20:01PM +0200, John Crispin wrote:
-> RT3352, RT5350 and the MT762x SoCs all have a usb phy that we need to set=
-up.
->=20
-> Signed-off-by: John Crispin <blogic@openwrt.org>
+Just wanted to ping you about this patch. Do you intend to submit a new
+version including all the feedback from Ralf, Maciej and Matthew?
 
-new PHY drivers only on drivers/phy ;-)
-
---=20
-balbi
-
---dkEUBIird37B8yKS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUN+YCAAoJEIaOsuA1yqREZFQP/jaAQcIUTJCFUpxU4wJsxA/v
-nlFBS2N337S7oFrWeCtSsbZf9ImxZp3ebITw2Ec1nbGAVF67WSGGWkXBwuAp/Ul6
-WHhy66T3d4OKGwk0p7a2OMszZTXV7OS8UQnndK5OE5IVfqeLUoauuBpzyr6qfuVe
-mPAPOdESd+nRY6eDntVJFWLPr/vZ37sIRl3ycUmxVIJaplCJwg1omoRP7sPx6Dkl
-MpqRRxtqI/3qjmCRXlAFibHnU91B1GNTTnc+vCh6uYzXF9lzkksx0pb1j/5wKk/D
-XClDb8GcLIs5/hEaR+2nScWJZYA1WJ97SARXWyyI7h0Dpq9NCMStt/ZjCpoWrTu9
-1Du2+AGLUPPOv4UUOuq4B58B1CR3Oqk+qCI4M7XpHzmb1hzh6h702YlxSktUQU0h
-rr4b+egFmEKX7s+NXDGmlgs8iaWlPYHvHyIonIawO5C+P99Dw2yXbKWghe5gS004
-ilrnJGohtVKa8LpwvJtbBCLTIIzFa5fVaT6s1igDwR4fGuzh8kZkchxusYGJqyxa
-LnBjNGLbwFQwJj5TFteoOhloRGpDf/8YL6Cn+2+Ev5efo75bl54gnbp1wTpCUdcl
-weAl9aNgwqijhfbBfHqu6Nj1C9yFs9qiUoP1nrRVmnCobY0O8JBQ/lMYMuJNxrbi
-iLCc21gHrogBmmbAQSwr
-=Qfwz
------END PGP SIGNATURE-----
-
---dkEUBIird37B8yKS--
+-- 
+markos

@@ -1,18 +1,23 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45162 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:10217 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011026AbaJJAHUX9kjm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Oct 2014 02:07:20 +0200
-Message-ID: <5437232F.60800@imgtec.com>
-Date: Thu, 9 Oct 2014 17:07:11 -0700
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+        with ESMTP id S27011062AbaJJKDmTnFKv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Oct 2014 12:03:42 +0200
+Date: Fri, 10 Oct 2014 11:03:34 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH v2 2/3] MIPS: Setup an instruction emulation in VDSO
+ protected page instead of user stack
+Message-ID: <20141010100334.GD4818@jhogan-linux.le.imgtec.org>
+References: <20141009195030.31230.58695.stgit@linux-yegoshin>
+ <20141009200017.31230.69698.stgit@linux-yegoshin>
+ <20141009224304.GA4818@jhogan-linux.le.imgtec.org>
+ <543715D7.1020505@imgtec.com>
+ <20141009234044.GB4818@jhogan-linux.le.imgtec.org>
+ <5437232F.60800@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 2/3] MIPS: Setup an instruction emulation in VDSO protected
- page instead of user stack
-References: <20141009195030.31230.58695.stgit@linux-yegoshin> <20141009200017.31230.69698.stgit@linux-yegoshin> <20141009224304.GA4818@jhogan-linux.le.imgtec.org> <543715D7.1020505@imgtec.com> <20141009234044.GB4818@jhogan-linux.le.imgtec.org>
-In-Reply-To: <20141009234044.GB4818@jhogan-linux.le.imgtec.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <5437232F.60800@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,54 +27,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
+To: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 Cc: linux-mips@linux-mips.org, Zubair.Kakakhel@imgtec.com, geert+renesas@glider.be, david.daney@cavium.com, peterz@infradead.org, paul.gortmaker@windriver.com, davidlohr@hp.com, macro@linux-mips.org, chenhc@lemote.com, richard@nod.at, zajec5@gmail.com, keescook@chromium.org, alex@alex-smith.me.uk, tglx@linutronix.de, blogic@openwrt.org, jchandra@broadcom.com, paul.burton@imgtec.com, qais.yousef@imgtec.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, markos.chandras@imgtec.com, dengcheng.zhu@imgtec.com, manuel.lauss@gmail.com, akpm@linux-foundation.org, lars.persson@axis.com
-Message-ID: <20141010000711.4RZsdG7Qqe8sONrimtzypOqB_xMSHPm1FWfb6GqYfr0@z>
+Message-ID: <20141010100334.MLUzwX1MLKIXqW1IL09z60PhFBzV71V2dH4_Zz_1HII@z>
 
-On 10/09/2014 04:40 PM, James Hogan wrote:
->
->> It may be a case for mix of FPU and MIPS R6 emulations. I just keep both
->> emulators separate as much as possible but I assume that without prove
->> it may be stackable - some rollback is needed to join both and it may
->> (probably) cause a double emulation setup - dsemul may be called twice
->> for the same pair of instructions. I didn't see that yet, honestly and
->> you may be right.
-> If the only time they're used is for emulation of a branch delay slot
-> instruction which should never be another branch, and signals always
-> undo the emuframe before being handled (btw, should the BD bit in cause
-> get set if rewinding for signal handlers/gdb?), then it stands to reason
-> it should never nest.
+Hi Leonid,
 
-I don't want to give a chance. If it is proved excessive, then slashing 
-it - 15minutes, it doesn't harm.
+On Thu, Oct 09, 2014 at 05:07:11PM -0700, Leonid Yegoshin wrote:
+> On 10/09/2014 04:40 PM, James Hogan wrote:
+> > You could then avoid the whole stack and per-thread thing and just have
+> > a maximum of one emuframe dedicated to each thread or allocated on
+> > demand, and if there genuinely is a use case for nesting later on, worry
+> > about it then.
+> 
+> As I understand, you propose to allocate some space in mmap.
 
-OK, I will spend some time to look into that, it have sense to 
-reconsider after unwinding signals.
+No, sorry if I wasn't very clear. I just mean that you can get away with
+a single kernel managed page per mm, with an emuframe allocated
+per-thread which that thread always uses, since they never nest, which I
+think simplifies the whole thing significantly.
 
->
-> You could then avoid the whole stack and per-thread thing and just have
-> a maximum of one emuframe dedicated to each thread or allocated on
-> demand, and if there genuinely is a use case for nesting later on, worry
-> about it then.
+The allocation could be smarter than that of course in case you have
+thousands of threads and only a subset doing lots of FP branches, but a
+single thread should never need more than one at a time since the new
+signal behaviour effectively makes the delay slot emulation sort of
+atomic from the point of view of usermode, and the kernel knows for sure
+whether BD emulation is in progress from the PC.
 
-As I understand, you propose to allocate some space in mmap.
+(If there is some other way than signals that I haven't taken into
+account that the emulation could be pre-empted then please let me know!)
 
-This requires a stuff to handle allocation of user space beyond VMAs.
-It also may have some pain during thread creation, stopping and 
-subsequent cloning because that memory allocator should service that 
-events too and it may be not easy if emulation blocks are packed into 
-page. If it is not packed then it waste of user space and put additional 
-constraint to number of thread on single mmap.
+> > So long as the kernel handles a long sequence of sequential emulated
+> > branches gracefully (not necessarily correctly).
+> >
+> I don't understand a question. Each pair/single instruction is emulated 
+> separately but there is some pipeline of that, even in FPU emulator, it 
+> is just not this patch issue.
 
-Some cooperation with GLIBC may be needed to prevent re-use of user 
-address space, at a moment not sure the extent of it.
+I just mean an (illegal/undefined) sequence of FPU branch instructions
+in one anothers delay slots shouldn't be able to crash the kernel.
 
-I estimated that it can be much more troubling.
+Actually 2 of them would be enough to verify the kernel didn't get too
+confused. Maybe the second will be detected & ignored, or maybe it
+doesn't matter if the first emuframe gets overwritten by the second one
+from the kernels point of view.
 
->
-> So long as the kernel handles a long sequence of sequential emulated
-> branches gracefully (not necessarily correctly).
->
-I don't understand a question. Each pair/single instruction is emulated 
-separately but there is some pipeline of that, even in FPU emulator, it 
-is just not this patch issue.
+Cheers
+James

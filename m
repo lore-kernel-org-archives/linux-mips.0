@@ -1,11 +1,11 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64]:15905 "EHLO
+Received: from szxga01-in.huawei.com ([119.145.14.64]:15934 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27011480AbaJOC0lRSRuD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Oct 2014 04:26:41 +0200
+        by eddie.linux-mips.org with ESMTP id S27011481AbaJOC0mbtKDx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Oct 2014 04:26:42 +0200
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v3 25/27] Sparc/MSI: Use MSI chip framework to configure MSI/MSI-X irq
-Date: Wed, 15 Oct 2014 11:07:13 +0800
-Message-ID: <1413342435-7876-26-git-send-email-wangyijing@huawei.com>
+Subject: [PATCH v3 24/27] IA64/MSI: Use MSI chip framework to configure MSI/MSI-X irq
+Date: Wed, 15 Oct 2014 11:07:12 +0800
+Message-ID: <1413342435-7876-25-git-send-email-wangyijing@huawei.com>
 In-Reply-To: <1413342435-7876-1-git-send-email-wangyijing@huawei.com>
 References: <1413342435-7876-1-git-send-email-wangyijing@huawei.com>
 MIME-Version: 1.0
@@ -22,99 +22,94 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Bjorn Helgaas <bhelgaas@google.com>
 Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>, Lucas Stach <l.stach@pengutronix.de>, David Vrabel <david.vrabel@citrix.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Michael Ellerman <mpe@ellerman.id.au>, Thierry Reding <thierry.reding@gmail.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Liviu Dudau <liviu@dudau.co.uk>, Yijing Wang <wangyijing@huawei.com>
-Message-ID: <20141015030713.kmxWasKr-c5yjgGhe1FUIw2u-dEsta7gAZhSyMDFi6U@z>
+Message-ID: <20141015030712.f3JM4SsYcijnVpzFQmhEvg7beMzsXRJtdqiWM3eBL-M@z>
 
 Use MSI chip framework instead of arch MSI functions to configure
 MSI/MSI-X irq. So we can manage MSI/MSI-X irq in a unified framework.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 ---
- arch/sparc/kernel/pci.c      |   14 ++++++++++++--
- arch/sparc/kernel/pci_impl.h |   12 ++++++++++++
- 2 files changed, 24 insertions(+), 2 deletions(-)
+ arch/ia64/include/asm/pci.h |   10 ++++++++++
+ arch/ia64/kernel/msi_ia64.c |   14 ++++++++++----
+ arch/ia64/pci/pci.c         |    1 +
+ 3 files changed, 21 insertions(+), 4 deletions(-)
 
-diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
-index b36365f..a46a148 100644
---- a/arch/sparc/kernel/pci.c
-+++ b/arch/sparc/kernel/pci.c
-@@ -656,6 +656,9 @@ struct pci_bus *pci_scan_one_pbm(struct pci_pbm_info *pbm,
+diff --git a/arch/ia64/include/asm/pci.h b/arch/ia64/include/asm/pci.h
+index 52af5ed..907dcba 100644
+--- a/arch/ia64/include/asm/pci.h
++++ b/arch/ia64/include/asm/pci.h
+@@ -94,6 +94,7 @@ struct pci_controller {
+ 	int segment;
+ 	int node;		/* nearest node with memory or NUMA_NO_NODE for global allocation */
  
- 	printk("PCI: Scanning PBM %s\n", node->full_name);
++	struct msi_chip *msi_chip;
+ 	void *platform_data;
+ };
  
-+#ifdef CONFIG_PCI_MSI
-+	pbm->msi_chip = &sparc_msi_chip;
-+#endif
- 	pci_add_resource_offset(&resources, &pbm->io_space,
- 				pbm->io_space.start);
- 	pci_add_resource_offset(&resources, &pbm->mem_space,
-@@ -905,7 +908,8 @@ int pci_domain_nr(struct pci_bus *pbus)
- EXPORT_SYMBOL(pci_domain_nr);
+@@ -101,6 +102,15 @@ struct pci_controller {
+ #define PCI_CONTROLLER(busdev) ((struct pci_controller *) busdev->sysdata)
+ #define pci_domain_nr(busdev)    (PCI_CONTROLLER(busdev)->segment)
  
- #ifdef CONFIG_PCI_MSI
++extern struct msi_chip chip;
++
++static inline struct msi_chip *pci_msi_chip(struct pci_bus *bus)
++{
++	struct pci_controller *ctrl = bus->sysdata;
++
++	return ctrl->msi_chip;
++}
++
+ extern struct pci_ops pci_root_ops;
+ 
+ static inline int pci_proc_domain(struct pci_bus *bus)
+diff --git a/arch/ia64/kernel/msi_ia64.c b/arch/ia64/kernel/msi_ia64.c
+index 8c3730c..401fc98 100644
+--- a/arch/ia64/kernel/msi_ia64.c
++++ b/arch/ia64/kernel/msi_ia64.c
+@@ -112,15 +112,16 @@ static struct irq_chip ia64_msi_chip = {
+ };
+ 
+ 
 -int arch_setup_msi_irq(struct pci_dev *pdev, struct msi_desc *desc)
-+static int sparc_setup_msi_irq(struct msi_chip *chip,
-+		struct pci_dev *pdev, struct msi_desc *desc)
++static int arch_ia64_setup_msi_irq(struct msi_chip *chip,
++		struct pci_dev *dev, struct msi_desc *desc)
  {
- 	struct pci_pbm_info *pbm = pdev->dev.archdata.host_controller;
- 	unsigned int irq;
-@@ -916,7 +920,7 @@ int arch_setup_msi_irq(struct pci_dev *pdev, struct msi_desc *desc)
- 	return pbm->setup_msi_irq(&irq, pdev, desc);
+ 	if (platform_setup_msi_irq)
+-		return platform_setup_msi_irq(pdev, desc);
++		return platform_setup_msi_irq(dev, desc);
+ 
+-	return ia64_setup_msi_irq(pdev, desc);
++	return ia64_setup_msi_irq(dev, desc);
  }
  
 -void arch_teardown_msi_irq(unsigned int irq)
-+static void sparc_teardown_msi_irq(struct msi_chip *chip, unsigned int irq)
++static void arch_ia64_teardown_msi_irq(struct msi_chip *chip, unsigned int irq)
  {
- 	struct msi_desc *entry = irq_get_msi_desc(irq);
- 	struct pci_dev *pdev = entry->dev;
-@@ -925,6 +929,12 @@ void arch_teardown_msi_irq(unsigned int irq)
- 	if (pbm->teardown_msi_irq)
- 		pbm->teardown_msi_irq(irq, pdev);
+ 	if (platform_teardown_msi_irq)
+ 		return platform_teardown_msi_irq(irq);
+@@ -128,6 +129,11 @@ void arch_teardown_msi_irq(unsigned int irq)
+ 	return ia64_teardown_msi_irq(irq);
  }
-+
-+struct msi_chip sparc_msi_chip = {
-+	.setup_irq = sparc_setup_msi_irq,
-+	.teardown_irq = sparc_teardown_msi_irq,
+ 
++struct msi_chip chip = {
++	.setup_irq = arch_ia64_setup_msi_irq,
++	.teardown_irq = arch_ia64_teardown_msi_irq,
 +};
 +
- #endif /* !(CONFIG_PCI_MSI) */
+ #ifdef CONFIG_INTEL_IOMMU
+ #ifdef CONFIG_SMP
+ static int dmar_msi_set_affinity(struct irq_data *data,
+diff --git a/arch/ia64/pci/pci.c b/arch/ia64/pci/pci.c
+index 291a582..299b67d 100644
+--- a/arch/ia64/pci/pci.c
++++ b/arch/ia64/pci/pci.c
+@@ -437,6 +437,7 @@ struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
  
- static void ali_sound_dma_hack(struct pci_dev *pdev, int set_bit)
-diff --git a/arch/sparc/kernel/pci_impl.h b/arch/sparc/kernel/pci_impl.h
-index 75803c7..073bb4e 100644
---- a/arch/sparc/kernel/pci_impl.h
-+++ b/arch/sparc/kernel/pci_impl.h
-@@ -55,6 +55,8 @@ struct sparc64_msiq_cookie {
- 	struct pci_pbm_info *pbm;
- 	unsigned long msiqid;
- };
-+
-+extern struct msi_chip sparc_msi_chip;
- #endif
+ 	controller->companion = device;
+ 	controller->node = acpi_get_node(device->handle);
++	controller->msi_chip = &chip;
  
- struct pci_pbm_info {
-@@ -132,6 +134,7 @@ struct pci_pbm_info {
- 	void				*msi_queues;
- 	unsigned long			*msi_bitmap;
- 	unsigned int			*msi_irq_table;
-+	struct msi_chip *msi_chip;
- 	int (*setup_msi_irq)(unsigned int *irq_p, struct pci_dev *pdev,
- 			     struct msi_desc *entry);
- 	void (*teardown_msi_irq)(unsigned int irq, struct pci_dev *pdev);
-@@ -153,6 +156,15 @@ struct pci_pbm_info {
- 	int				numa_node;
- };
- 
-+#ifdef CONFIG_PCI_MSI
-+static inline struct msi_chip *pci_msi_chip(struct pci_bus *bus)
-+{
-+	struct pci_pbm_info *pbm = bus->sysdata;
-+
-+	return pbm->msi_chip;
-+}
-+#endif
-+
- extern struct pci_pbm_info *pci_pbm_root;
- 
- extern int pci_num_pbms;
+ 	info = kzalloc(sizeof(*info), GFP_KERNEL);
+ 	if (!info) {
 -- 
 1.7.1

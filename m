@@ -1,11 +1,11 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65]:16210 "EHLO
+Received: from szxga02-in.huawei.com ([119.145.14.65]:16209 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27010607AbaJOC0Do-E-r (ORCPT
+        by eddie.linux-mips.org with ESMTP id S27010629AbaJOC0Duhlt0 (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Wed, 15 Oct 2014 04:26:03 +0200
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v3 06/27] PCI: designware: Save msi chip in pci_sys_data
-Date: Wed, 15 Oct 2014 11:06:54 +0800
-Message-ID: <1413342435-7876-7-git-send-email-wangyijing@huawei.com>
+Subject: [PATCH v3 10/27] PCI/MSI: Remove useless bus->msi assignment
+Date: Wed, 15 Oct 2014 11:06:58 +0800
+Message-ID: <1413342435-7876-11-git-send-email-wangyijing@huawei.com>
 In-Reply-To: <1413342435-7876-1-git-send-email-wangyijing@huawei.com>
 References: <1413342435-7876-1-git-send-email-wangyijing@huawei.com>
 MIME-Version: 1.0
@@ -22,52 +22,30 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Bjorn Helgaas <bhelgaas@google.com>
 Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>, Lucas Stach <l.stach@pengutronix.de>, David Vrabel <david.vrabel@citrix.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Michael Ellerman <mpe@ellerman.id.au>, Thierry Reding <thierry.reding@gmail.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Liviu Dudau <liviu@dudau.co.uk>, Yijing Wang <wangyijing@huawei.com>
-Message-ID: <20141015030654.r39IoJvdwXCvDOE9gd1PczYqplspi5_HHvKiNA1jYFU@z>
+Message-ID: <20141015030658.fJGbLNC3mOKm-2J1riFteZmHV5BR7PGGfmiGhZx-7mc@z>
 
-Save msi chip in pci_sys_data instead of assign
-msi chip to every pci bus in .add_bus().
+Now msi chip is saved in pci_sys_data in arm,
+we could clean the bus->msi assignment in
+pci core.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: Thierry Reding <thierry.reding@gmail.com>
+CC: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 ---
- drivers/pci/host/pcie-designware.c |   15 ++++-----------
- 1 files changed, 4 insertions(+), 11 deletions(-)
+ drivers/pci/probe.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/pci/host/pcie-designware.c b/drivers/pci/host/pcie-designware.c
-index dfed00a..56fa8ab 100644
---- a/drivers/pci/host/pcie-designware.c
-+++ b/drivers/pci/host/pcie-designware.c
-@@ -498,6 +498,10 @@ int __init dw_pcie_host_init(struct pcie_port *pp)
- 	val |= PORT_LOGIC_SPEED_CHANGE;
- 	dw_pcie_wr_own_conf(pp, PCIE_LINK_WIDTH_SPEED_CONTROL, 4, val);
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index efa48dc..98bf4c3 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -682,7 +682,6 @@ static struct pci_bus *pci_alloc_child_bus(struct pci_bus *parent,
  
-+#ifdef CONFIG_PCI_MSI
-+	dw_pcie_msi_chip.dev = pp->dev;
-+	dw_pci.msi_chip = &dw_pcie_msi_chip;
-+#endif
- 	dw_pci.nr_controllers = 1;
- 	dw_pci.private_data = (void **)&pp;
+ 	child->parent = parent;
+ 	child->ops = parent->ops;
+-	child->msi = parent->msi;
+ 	child->sysdata = parent->sysdata;
+ 	child->bus_flags = parent->bus_flags;
  
-@@ -747,21 +751,10 @@ static int dw_pcie_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
- 	return irq;
- }
- 
--static void dw_pcie_add_bus(struct pci_bus *bus)
--{
--	if (IS_ENABLED(CONFIG_PCI_MSI)) {
--		struct pcie_port *pp = sys_to_pcie(bus->sysdata);
--
--		dw_pcie_msi_chip.dev = pp->dev;
--		bus->msi = &dw_pcie_msi_chip;
--	}
--}
--
- static struct hw_pci dw_pci = {
- 	.setup		= dw_pcie_setup,
- 	.scan		= dw_pcie_scan_bus,
- 	.map_irq	= dw_pcie_map_irq,
--	.add_bus	= dw_pcie_add_bus,
- };
- 
- void dw_pcie_setup_rc(struct pcie_port *pp)
 -- 
 1.7.1

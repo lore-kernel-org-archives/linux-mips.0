@@ -1,11 +1,11 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65]:16670 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27011471AbaJOC0ZUZwpm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Oct 2014 04:26:25 +0200
+Received: from szxga03-in.huawei.com ([119.145.14.66]:58080 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27011476AbaJOC0b5W2ct (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Oct 2014 04:26:31 +0200
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v3 23/27] arm/iop13xx/MSI: Use MSI chip framework to configure MSI/MSI-X irq
-Date: Wed, 15 Oct 2014 11:07:11 +0800
-Message-ID: <1413342435-7876-24-git-send-email-wangyijing@huawei.com>
+Subject: [PATCH v3 26/27] tile/MSI: Use MSI chip framework to configure MSI/MSI-X irq
+Date: Wed, 15 Oct 2014 11:07:14 +0800
+Message-ID: <1413342435-7876-27-git-send-email-wangyijing@huawei.com>
 In-Reply-To: <1413342435-7876-1-git-send-email-wangyijing@huawei.com>
 References: <1413342435-7876-1-git-send-email-wangyijing@huawei.com>
 MIME-Version: 1.0
@@ -22,92 +22,80 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Bjorn Helgaas <bhelgaas@google.com>
 Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>, Lucas Stach <l.stach@pengutronix.de>, David Vrabel <david.vrabel@citrix.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Michael Ellerman <mpe@ellerman.id.au>, Thierry Reding <thierry.reding@gmail.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Liviu Dudau <liviu@dudau.co.uk>, Yijing Wang <wangyijing@huawei.com>
-Message-ID: <20141015030711.Z5bKKx4dhyU3OkrNIWhqZw6aU5Nu0yHBJ3vCZQBZCoM@z>
+Message-ID: <20141015030714.QmEqc46D1aLGkbgA7zT6F3LX-k8yyIXBmofnkifiKGo@z>
 
 Use MSI chip framework instead of arch MSI functions to configure
 MSI/MSI-X irq. So we can manage MSI/MSI-X irq in a unified framework.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 ---
- arch/arm/mach-iop13xx/include/mach/pci.h |    4 ++++
- arch/arm/mach-iop13xx/iq81340mc.c        |    3 +++
- arch/arm/mach-iop13xx/iq81340sc.c        |    5 ++++-
- arch/arm/mach-iop13xx/msi.c              |   11 +++++++++--
- 4 files changed, 20 insertions(+), 3 deletions(-)
+ arch/tile/include/asm/pci.h |   10 ++++++++++
+ arch/tile/kernel/pci_gx.c   |   13 +++++++++++--
+ 2 files changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/mach-iop13xx/include/mach/pci.h b/arch/arm/mach-iop13xx/include/mach/pci.h
-index 59f42b5..c87ac3a 100644
---- a/arch/arm/mach-iop13xx/include/mach/pci.h
-+++ b/arch/arm/mach-iop13xx/include/mach/pci.h
-@@ -11,6 +11,10 @@ void iop13xx_atu_select(struct hw_pci *plat_pci);
- void iop13xx_pci_init(void);
- void iop13xx_map_pci_memory(void);
+diff --git a/arch/tile/include/asm/pci.h b/arch/tile/include/asm/pci.h
+index dfedd7a..d27d9ec 100644
+--- a/arch/tile/include/asm/pci.h
++++ b/arch/tile/include/asm/pci.h
+@@ -152,6 +152,7 @@ struct pci_controller {
+ 	int pio_io_index;	/* PIO region index for I/O space access */
+ #endif
  
-+#ifdef CONFIG_PCI_MSI
-+extern struct msi_chip iop13xx_msi_chip;
-+#endif
++	struct msi_chip *msi_chip;
+ 	/*
+ 	 * Mem-Map regions for all the memory controllers so that Linux can
+ 	 * map all of its physical memory space to the PCI bus.
+@@ -179,6 +180,15 @@ struct pci_controller {
+ 	int irq_intx_table[4];
+ };
+ 
++extern struct msi_chip tilegx_msi;
 +
- #define IOP_PCI_STATUS_ERROR (PCI_STATUS_PARITY |	     \
- 			       PCI_STATUS_SIG_TARGET_ABORT | \
- 			       PCI_STATUS_REC_TARGET_ABORT | \
-diff --git a/arch/arm/mach-iop13xx/iq81340mc.c b/arch/arm/mach-iop13xx/iq81340mc.c
-index 9cd07d3..1f499b6 100644
---- a/arch/arm/mach-iop13xx/iq81340mc.c
-+++ b/arch/arm/mach-iop13xx/iq81340mc.c
-@@ -59,6 +59,9 @@ static struct hw_pci iq81340mc_pci __initdata = {
- 	.map_irq	= iq81340mc_pcix_map_irq,
- 	.scan		= iop13xx_scan_bus,
- 	.preinit	= iop13xx_pci_init,
-+#ifdef CONFIG_PCI_MSI
-+	.msi_chip	= &iop13xx_msi_chip,
-+#endif
- };
- 
- static int __init iq81340mc_pci_init(void)
-diff --git a/arch/arm/mach-iop13xx/iq81340sc.c b/arch/arm/mach-iop13xx/iq81340sc.c
-index b3ec11c..8bdfdc5 100644
---- a/arch/arm/mach-iop13xx/iq81340sc.c
-+++ b/arch/arm/mach-iop13xx/iq81340sc.c
-@@ -60,7 +60,10 @@ static struct hw_pci iq81340sc_pci __initdata = {
- 	.setup		= iop13xx_pci_setup,
- 	.scan		= iop13xx_scan_bus,
- 	.map_irq	= iq81340sc_atux_map_irq,
--	.preinit	= iop13xx_pci_init
-+	.preinit	= iop13xx_pci_init,
-+#ifdef CONFIG_PCI_MSI
-+	.msi_chip	= &iop13xx_msi_chip,
-+#endif
- };
- 
- static int __init iq81340sc_pci_init(void)
-diff --git a/arch/arm/mach-iop13xx/msi.c b/arch/arm/mach-iop13xx/msi.c
-index e7730cf..3135a63 100644
---- a/arch/arm/mach-iop13xx/msi.c
-+++ b/arch/arm/mach-iop13xx/msi.c
-@@ -132,7 +132,8 @@ static struct irq_chip iop13xx_msi_chip = {
- 	.irq_unmask = unmask_msi_irq,
++static inline struct msi_chip *pci_msi_chip(struct pci_bus *bus)
++{
++	struct pci_controller *controller = bus->sysdata;
++
++	return controller->msi_chip;
++}
++
+ extern struct pci_controller pci_controllers[TILEGX_NUM_TRIO * TILEGX_TRIO_PCIES];
+ extern gxio_trio_context_t trio_contexts[TILEGX_NUM_TRIO];
+ extern int num_trio_shims;
+diff --git a/arch/tile/kernel/pci_gx.c b/arch/tile/kernel/pci_gx.c
+index e39f9c5..ba66517 100644
+--- a/arch/tile/kernel/pci_gx.c
++++ b/arch/tile/kernel/pci_gx.c
+@@ -887,6 +887,7 @@ int __init pcibios_init(void)
+ 					controller->mem_offset);
+ 		pci_add_resource(&resources, &controller->io_space);
+ 		controller->first_busno = next_busno;
++		controller->msi_chip = &tilegx_msi;
+ 		bus = pci_scan_root_bus(NULL, next_busno, controller->ops,
+ 					controller, &resources);
+ 		controller->root_bus = bus;
+@@ -1485,7 +1486,8 @@ static struct irq_chip tilegx_msi_chip = {
+ 	/* TBD: support set_affinity. */
  };
  
 -int arch_setup_msi_irq(struct pci_dev *pdev, struct msi_desc *desc)
-+static int iop13xx_setup_msi_irq(struct msi_chip *chip,
-+		struct pci_dev *dev, struct msi_desc *desc)
++static int tile_setup_msi_irq(struct msi_chip *chip,
++		struct pci_dev *pdev, struct msi_desc *desc)
  {
- 	int id, irq = irq_alloc_desc_from(IRQ_IOP13XX_MSI_0, -1);
- 	struct msi_msg msg;
-@@ -159,7 +160,13 @@ int arch_setup_msi_irq(struct pci_dev *pdev, struct msi_desc *desc)
- 	return 0;
+ 	struct pci_controller *controller;
+ 	gxio_trio_context_t *trio_context;
+@@ -1604,7 +1606,12 @@ is_64_failure:
+ 	return ret;
  }
  
 -void arch_teardown_msi_irq(unsigned int irq)
-+static void iop13xx_teardown_msi_irq(struct msi_chip *chip,
-+		unsigned int irq)
++static void tile_teardown_msi_irq(struct msi_chip *chip, unsigned int irq)
  {
- 	irq_free_desc(irq);
+ 	irq_free_hwirq(irq);
  }
 +
-+struct msi_chip iop13xx_chip = {
-+	.setup_irq = iop13xx_setup_msi_irq,
-+	.teardown_irq = iop13xx_teardown_msi_irq,
++struct msi_chip tilegx_msi = {
++	.setup_irq = tile_setup_msi_irq,
++	.teardown_irq = tile_teardown_msi_irq,
 +};
 -- 
 1.7.1

@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:34609 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011673AbaJQJtt1rMup (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 17 Oct 2014 11:49:49 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 0FC34DEFB1C2E
-        for <linux-mips@linux-mips.org>; Fri, 17 Oct 2014 10:49:40 +0100 (IST)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: sibyte: Include the swarm subdir to the sb1250 LittleSur builds
-Date: Fri, 17 Oct 2014 10:49:38 +0100
-Message-ID: <1413539378-4107-1-git-send-email-markos.chandras@imgtec.com>
+Received: from mail-gw1-out.broadcom.com ([216.31.210.62]:31486 "EHLO
+        mail-gw1-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27011799AbaJSR1bpC5Vo (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 19 Oct 2014 19:27:31 +0200
+From: Kevin Cernekee <cernekee@gmail.com>
+Subject: [PATCH 4/3] tty: serial: bcm63xx: Enable DT earlycon support
+Date: Sun, 19 Oct 2014 10:26:15 -0700
+Message-ID: <1413739575-10222-1-git-send-email-cernekee@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Return-Path: <cernekee@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,35 +18,63 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20141017094938.w-dyeDOVSKT1kbAhqWUTfow2GoZzYoJuBx2NE12L_7c@z>
+To: gregkh@linuxfoundation.org, jslaby@suse.cz
+Cc: f.fainelli@gmail.com, mbizon@freebox.fr, jogo@openwrt.org, linux-mips@linux-mips.org, linux-serial@vger.kernel.org, Kevin Cernekee <cernekee@gmail.com>
+Message-ID: <20141019172615.uAsneGO9L_lTL0E4IGuoGgEPrm6UkWTBgV9Asvq2WFM@z>
 
-Fixes the following randconfig build problem:
+This enables early console output if there is a chosen/stdout-path
+property referencing a UART node with the "brcm,bcm6345-uart" compatible
+string.  The bootloader sets up the pinmux and baud/parity/etc.
+Tested on bcm3384 (MIPS, DT).
 
-arch/mips/built-in.o: In function `show_cpuinfo':
-proc.c:(.text+0xde84): undefined reference to `get_system_type'
-arch/mips/built-in.o: In function `sb1250_setup':
-(.init.text+0x428): undefined reference to `get_system_type'
-arch/mips/built-in.o: In function `setup_arch':
-(.init.text+0x178c): undefined reference to `plat_mem_setup'
-Makefile:930: recipe for target 'vmlinux' failed
-
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 ---
-Only compile tested.
----
- arch/mips/sibyte/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/tty/serial/Kconfig        |  1 +
+ drivers/tty/serial/bcm63xx_uart.c | 20 ++++++++++++++++++++
+ 2 files changed, 21 insertions(+)
 
-diff --git a/arch/mips/sibyte/Makefile b/arch/mips/sibyte/Makefile
-index c8ed2c807e69..455c40d6d625 100644
---- a/arch/mips/sibyte/Makefile
-+++ b/arch/mips/sibyte/Makefile
-@@ -25,3 +25,4 @@ obj-$(CONFIG_SIBYTE_RHONE)	+= swarm/
- obj-$(CONFIG_SIBYTE_SENTOSA)	+= swarm/
- obj-$(CONFIG_SIBYTE_SWARM)	+= swarm/
- obj-$(CONFIG_SIBYTE_BIGSUR)	+= swarm/
-+obj-$(CONFIG_SIBYTE_LITTLESUR)	+= swarm/
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index 815b652..fdd851e 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -1297,6 +1297,7 @@ config SERIAL_BCM63XX_CONSOLE
+ 	bool "Console on BCM63xx serial port"
+ 	depends on SERIAL_BCM63XX=y
+ 	select SERIAL_CORE_CONSOLE
++	select SERIAL_EARLYCON
+ 	help
+ 	  If you have enabled the serial port on the BCM63xx CPU
+ 	  you can make it the console by answering Y to this option.
+diff --git a/drivers/tty/serial/bcm63xx_uart.c b/drivers/tty/serial/bcm63xx_uart.c
+index 2315190..48bd509 100644
+--- a/drivers/tty/serial/bcm63xx_uart.c
++++ b/drivers/tty/serial/bcm63xx_uart.c
+@@ -782,6 +782,26 @@ static int __init bcm63xx_console_init(void)
+ 
+ console_initcall(bcm63xx_console_init);
+ 
++static void bcm_early_write(struct console *con, const char *s, unsigned n)
++{
++	struct earlycon_device *dev = con->data;
++
++	uart_console_write(&dev->port, s, n, bcm_console_putchar);
++	wait_for_xmitr(&dev->port);
++}
++
++static int __init bcm_early_console_setup(struct earlycon_device *device,
++					  const char *opt)
++{
++	if (!device->port.membase)
++		return -ENODEV;
++
++	device->con->write = bcm_early_write;
++	return 0;
++}
++
++OF_EARLYCON_DECLARE(bcm63xx_uart, "brcm,bcm6345-uart", bcm_early_console_setup);
++
+ #define BCM63XX_CONSOLE	(&bcm63xx_console)
+ #else
+ #define BCM63XX_CONSOLE	NULL
 -- 
-2.1.2
+2.1.1

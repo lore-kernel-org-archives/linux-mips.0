@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:15913 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:27680 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011880AbaJTIjmOHlTm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 20 Oct 2014 10:39:42 +0200
+        with ESMTP id S27011879AbaJTImg3l5EG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 20 Oct 2014 10:42:36 +0200
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: ftrace: Fix a microMIPS build problem
-Date: Mon, 20 Oct 2014 09:39:31 +0100
-Message-ID: <1413794371-5272-1-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH] Documentation: ptp: Fix build failure on MIPS cross builds
+Date: Mon, 20 Oct 2014 09:42:18 +0100
+Message-ID: <1413794538-28465-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -19,49 +19,53 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20141020083931.-U-ZUc32V5PGdGY7q6Rw7fv5ffVwyD529TOjZn6GTxA@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>, Richard Cochran <richardcochran@gmail.com>, Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20141020084218.EBWQ5RcJZddo1lYw4N02PVFQknQy5rRzRv4eo4YKlcU@z>
 
-Code before the .fixup section needs to have the .insn directive.
-This has no side effects on MIPS32/64 but it affects the way microMIPS
-loads the address for the return label.
+The MIPS system calls are defined based on the -mabi gcc option.
+However, the testptp is built on the host using the unistd header
+from the kernel sources which were built for the MIPS architecture
+thus guarded with the __MIPS_SIM_{ABI64, ABI32, NABI32} definitions
+leading to the following build problem:
 
-Fixes the following build problem:
-mips-linux-gnu-ld: arch/mips/built-in.o: .fixup+0x4a0: Unsupported jump between
-ISA modes; consider recompiling with interlinking enabled.
-mips-linux-gnu-ld: final link failed: Bad value
-Makefile:819: recipe for target 'vmlinux' failed
+Documentation/ptp/testptp.c: In function 'clock_adjtime':
+Documentation/ptp/testptp.c:55: error: '__NR_clock_adjtime'
+undeclared (first use in this function)
+Documentation/ptp/testptp.c:55: error: (Each undeclared identifier is reported
+only once Documentation/ptp/testptp.c:55: error: for each function it appears in.)
 
-The fix is similar to 1658f914ff91c3bf ("MIPS: microMIPS:
-Disable LL/SC and fix linker bug.")
+This fix is similar to e9107f88c985bcda ("samples/seccomp/Makefile: do not build
+tests if cross-compiling for MIPS")
 
-Cc: stable@vger.kernel.org
+Cc: Richard Cochran <richardcochran@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: netdev@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/include/asm/ftrace.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/ptp/Makefile | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/mips/include/asm/ftrace.h b/arch/mips/include/asm/ftrace.h
-index 992aaba603b5..b463f2aa5a61 100644
---- a/arch/mips/include/asm/ftrace.h
-+++ b/arch/mips/include/asm/ftrace.h
-@@ -24,7 +24,7 @@ do {							\
- 	asm volatile (					\
- 		"1: " load " %[tmp_dst], 0(%[tmp_src])\n"	\
- 		"   li %[tmp_err], 0\n"			\
--		"2:\n"					\
-+		"2: .insn\n"				\
- 							\
- 		".section .fixup, \"ax\"\n"		\
- 		"3: li %[tmp_err], 1\n"			\
-@@ -46,7 +46,7 @@ do {						\
- 	asm volatile (				\
- 		"1: " store " %[tmp_src], 0(%[tmp_dst])\n"\
- 		"   li %[tmp_err], 0\n"		\
--		"2:\n"				\
-+		"2: .insn\n"			\
- 						\
- 		".section .fixup, \"ax\"\n"	\
- 		"3: li %[tmp_err], 1\n"		\
+diff --git a/Documentation/ptp/Makefile b/Documentation/ptp/Makefile
+index 293d6c09a11f..397c1cd2eda7 100644
+--- a/Documentation/ptp/Makefile
++++ b/Documentation/ptp/Makefile
+@@ -1,5 +1,15 @@
+ # List of programs to build
++ifndef CROSS_COMPILE
+ hostprogs-y := testptp
++else
++# MIPS system calls are defined based on the -mabi that is passed
++# to the toolchain which may or may not be a valid option
++# for the host toolchain. So disable testptp if target architecture
++# is MIPS but the host isn't.
++ifndef CONFIG_MIPS
++hostprogs-y := testptp
++endif
++endif
+ 
+ # Tell kbuild to always build the programs
+ always := $(hostprogs-y)
 -- 
 2.1.2

@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:9395 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:41578 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012026AbaJUMLailMWc (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 21 Oct 2014 14:11:30 +0200
-Message-ID: <54464D6A.5000501@imgtec.com>
-Date: Tue, 21 Oct 2014 13:11:22 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        with ESMTP id S27012026AbaJUMXX2vYtK (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 21 Oct 2014 14:23:23 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 9936AAB09631E
+        for <linux-mips@linux-mips.org>; Tue, 21 Oct 2014 13:23:14 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: lasat: Add missing CONFIG_PROC_FS dependency to PICVUE_PROC
+Date: Tue, 21 Oct 2014 13:23:11 +0100
+Message-ID: <1413894191-27148-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] Documentation: ptp: Fix build failure on MIPS cross builds
-References: <1413794538-28465-1-git-send-email-markos.chandras@imgtec.com> <20141021110724.GA16479@netboy>
-In-Reply-To: <20141021110724.GA16479@netboy>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,43 +21,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Richard Cochran <richardcochran@gmail.com>
-Cc: linux-mips@linux-mips.org, Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20141021121122.NMrqEqgjiUjWmL-ej9DBMrq6B-aZlAtTA_lyMGBEZRM@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20141021122311._jUf1RbWF0097Xvl8KH1VfJQWj0s9F9SajW5kJqp0U4@z>
 
-On 10/21/2014 12:07 PM, Richard Cochran wrote:
-> On Mon, Oct 20, 2014 at 09:42:18AM +0100, Markos Chandras wrote:
->> diff --git a/Documentation/ptp/Makefile b/Documentation/ptp/Makefile
->> index 293d6c09a11f..397c1cd2eda7 100644
->> --- a/Documentation/ptp/Makefile
->> +++ b/Documentation/ptp/Makefile
->> @@ -1,5 +1,15 @@
->>  # List of programs to build
->> +ifndef CROSS_COMPILE
->>  hostprogs-y := testptp
->> +else
->> +# MIPS system calls are defined based on the -mabi that is passed
->> +# to the toolchain which may or may not be a valid option
->> +# for the host toolchain. So disable testptp if target architecture
->> +# is MIPS but the host isn't.
->> +ifndef CONFIG_MIPS
->> +hostprogs-y := testptp
->> +endif
->> +endif
-> 
-> It seems like a shame to simply give up and not compile this at all.
-> Is there no way to correctly cross compile this for MIPS?
-> 
-> Thanks,
-> Richard
-> 
+The picvue_proc.c file creates the /proc interface for the PICVUE LCD
+display driver. As a result of which, it needs to depend on the PROC_FS
+symbol to avoid build problems like the following one when
+CONFIG_PROC_FS is not enabled.
 
-As far as I can see you don't cross-compile the file. You use the host
-toolchain. There is no clean way to build it for host if you have your
-kernel configured for MIPS. Perhaps maybe you could define
-__MIPS_SIM_{ABI64, ABI32, NABI32} in the gcc command line (-D...) but
-this is a bit ugly. Or maybe use the host headers instead of the ones in
-the kernel source.
+arch/mips/lasat/picvue_proc.c:26:14: error: 'pvc_linename'
+defined but not used [-Werror=unused-variable]
+ static char *pvc_linename[PVC_NLINES] = {"line1", "line2"};
+              ^
 
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/lasat/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/lasat/Kconfig b/arch/mips/lasat/Kconfig
+index 1d2ee8a9be13..8776d0a34274 100644
+--- a/arch/mips/lasat/Kconfig
++++ b/arch/mips/lasat/Kconfig
+@@ -4,7 +4,7 @@ config PICVUE
+ 
+ config PICVUE_PROC
+ 	tristate "PICVUE LCD display driver /proc interface"
+-	depends on PICVUE
++	depends on PICVUE && PROC_FS
+ 
+ config DS1603
+ 	bool "DS1603 RTC driver"
 -- 
-markos
+2.1.2

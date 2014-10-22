@@ -1,20 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:33757 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8049 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012169AbaJVVxViFOSZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 22 Oct 2014 23:53:21 +0200
-Date: Wed, 22 Oct 2014 22:53:13 +0100
+        with ESMTP id S27012176AbaJVWWYNSm8E (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Oct 2014 00:22:24 +0200
+Date: Wed, 22 Oct 2014 23:22:16 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: Single MIPS kernel
-Message-ID: <20141022215313.GC12296@jhogan-linux.le.imgtec.org>
-References: <20141022083437.GB18581@linux-mips.org>
- <5447EFB5.4090009@gmail.com>
- <20141022190515.GC12502@linux-mips.org>
- <alpine.LFD.2.11.1410222010280.21390@eddie.linux-mips.org>
- <20141022204209.GE12502@linux-mips.org>
+Subject: Re: [PATCH] mips: add arch_trigger_all_cpu_backtrace() function
+Message-ID: <20141022222216.GD12296@jhogan-linux.le.imgtec.org>
+References: <1669712409.167661413959996217.JavaMail.weblogic@epmlwas02b>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20141022204209.GE12502@linux-mips.org>
+In-Reply-To: <1669712409.167661413959996217.JavaMail.weblogic@epmlwas02b>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -25,39 +21,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: "Maciej W. Rozycki" <macro@linux-mips.org>, David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, Ben Hutchings <ben@decadent.org.uk>
-Message-ID: <20141022215313.NeGJvgKG4C1faBPYxXiLmX_zk19JYSHf2M2vWIVjGg0@z>
+To: Eunbong Song <eunb.song@samsung.com>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20141022222216.oRd-7wGyQP6Aq9rsNhD2IAHJHeo9OJCTR3F1WlpsZGM@z>
 
-Hi,
+On Wed, Oct 22, 2014 at 06:39:56AM +0000, Eunbong Song wrote:
+> This patch adds arch_trigger_all_cpu_backtrace() for mips architecture.
 
-On Wed, Oct 22, 2014 at 10:42:09PM +0200, Ralf Baechle wrote:
-> On Wed, Oct 22, 2014 at 08:19:07PM +0100, Maciej W. Rozycki wrote:
-> >  Wouldn't it make sense to make a unified kernel virtually mapped?  That 
-> > would avoid the issue with RAM being present at different locations across 
-> > systems and also if big pages were used, that I believe are available 
-> > almost universally across the MIPS family, any performance hit would be 
-> > minimal.  There would be hardly any increase in the binary image size too.  
-> > Run-time mappings such as `kmalloc' or `ioremap' could continue using 
-> > unmapped segments.
+Don't forget your Signed-off-by
 
-> Otoh the mapped kernel certainly would have the lowest size overhead.
-> I have faint memories of restrictions for TLB instructions or was it
-> TLB exception handlers into mapped space, would have to do some rtfming
-> on that topic.
+> +static void arch_dump_stack(void *info)
+> +{
+> +	struct pt_regs *regs;  
+> +	
+> +	regs = get_irq_regs();
+> +
+> +	if(regs)
+> +		show_regs(regs);
+> +
+> +	dump_stack();
+> +}
+> +
+> +void arch_trigger_all_cpu_backtrace(bool include_self)
+> +{
+> +	smp_call_function(arch_dump_stack, NULL, 1);
 
-Yeh, KVM puts all tlb handling in arch/mips/kvm/tlb.c, which is built
-statically rather than being included in the kvm kernel module, exactly
-for this reason, so that it resides in unmapped memory space.
-
-You'd have to guarantee not to get a TLB exception while the TLB
-registers contain important values, since they'll get clobbered by the
-taking of the exception itself (e.g. EntryHi gets set to failing
-address, EntryLo* undefined), or the TLB entry pointed to by CP0_Index
-may be replaced.
-
-There's always CP0_Wired - its use in the kernel is a bit of a mess atm
-IIRC.
+should this call arch_dump_stack directly too if include_self?
 
 Cheers
 James

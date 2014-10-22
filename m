@@ -1,17 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:60306 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:33757 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012094AbaJVLDZLUDKt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 22 Oct 2014 13:03:25 +0200
-Message-ID: <54478EF4.7050909@imgtec.com>
-Date: Wed, 22 Oct 2014 12:03:16 +0100
-From: Qais Yousef <qais.yousef@imgtec.com>
+        with ESMTP id S27012169AbaJVVxViFOSZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 22 Oct 2014 23:53:21 +0200
+Date: Wed, 22 Oct 2014 22:53:13 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: Single MIPS kernel
+Message-ID: <20141022215313.GC12296@jhogan-linux.le.imgtec.org>
+References: <20141022083437.GB18581@linux-mips.org>
+ <5447EFB5.4090009@gmail.com>
+ <20141022190515.GC12502@linux-mips.org>
+ <alpine.LFD.2.11.1410222010280.21390@eddie.linux-mips.org>
+ <20141022204209.GE12502@linux-mips.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 00/19] MIPS GIC cleanup, part 2
-References: <1413831846-32100-1-git-send-email-abrestic@chromium.org>
-In-Reply-To: <1413831846-32100-1-git-send-email-abrestic@chromium.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20141022204209.GE12502@linux-mips.org>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,86 +25,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andrew Bresticker <abrestic@chromium.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Paul Burton <paul.burton@imgtec.com>, John Crispin <blogic@openwrt.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20141022110316.x8o3IswtfjQVKlPv_yWm29vRzir0MMhGYFfUus9hlnA@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: "Maciej W. Rozycki" <macro@linux-mips.org>, David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, Ben Hutchings <ben@decadent.org.uk>
+Message-ID: <20141022215313.NeGJvgKG4C1faBPYxXiLmX_zk19JYSHf2M2vWIVjGg0@z>
 
-On 10/20/2014 08:03 PM, Andrew Bresticker wrote:
-> Second round of cleanups for the MIPS GIC drivers:
->   - Patches 1 through 5 get rid of the ugly REG() macros and instead use
->     proper iomem accessors.
->   - Patches 6 and 7 move the GIC header to linux/irqchip/ and clean it up.
->   - Patches 8 through 10 are misc. GIC irqchip cleanups.
->   - Patches 11 and 12 combine the GIC clocksource and clockevent drivers and
->     move them to drivers/clocksource/.
->   - Patches 13 through 19 are various cleanups for the GIC clocksource driver.
->
-> Boot tested on Malta and (with additional out-of-tree patches) a platform
-> based on the IMG Pistachio SoC.  Build tested for SEAD-3.
+Hi,
 
-I used your github tree to boot test this on sead3 and it worked fine.
+On Wed, Oct 22, 2014 at 10:42:09PM +0200, Ralf Baechle wrote:
+> On Wed, Oct 22, 2014 at 08:19:07PM +0100, Maciej W. Rozycki wrote:
+> >  Wouldn't it make sense to make a unified kernel virtually mapped?  That 
+> > would avoid the issue with RAM being present at different locations across 
+> > systems and also if big pages were used, that I believe are available 
+> > almost universally across the MIPS family, any performance hit would be 
+> > minimal.  There would be hardly any increase in the binary image size too.  
+> > Run-time mappings such as `kmalloc' or `ioremap' could continue using 
+> > unmapped segments.
 
-Except for the one comment I had, feel free to add my 
-tested-and-reviewed by.
+> Otoh the mapped kernel certainly would have the lowest size overhead.
+> I have faint memories of restrictions for TLB instructions or was it
+> TLB exception handlers into mapped space, would have to do some rtfming
+> on that topic.
 
-Nice work :)
+Yeh, KVM puts all tlb handling in arch/mips/kvm/tlb.c, which is built
+statically rather than being included in the kvm kernel module, exactly
+for this reason, so that it resides in unmapped memory space.
 
-Qais
+You'd have to guarantee not to get a TLB exception while the TLB
+registers contain important values, since they'll get clobbered by the
+taking of the exception itself (e.g. EntryHi gets set to failing
+address, EntryLo* undefined), or the TLB entry pointed to by CP0_Index
+may be replaced.
 
-> Based on 3.18-rc1 + part 1 of my GIC cleanup series [0].  A tree with both
-> series is available at:
->    https://github.com/abrestic/linux/commits/mips-gic-cleanup-pt2-v1
->
-> [0] https://lkml.org/lkml/2014/9/18/487
->
-> Andrew Bresticker (19):
->    MIPS: Malta: Use gic_read_count() to read GIC timer
->    irqchip: mips-gic: Export function to read counter width
->    MIPS: sead3: Stop using GIC REG macros
->    MIPS: Malta: Stop using GIC REG macros
->    irqchip: mips-gic: Use proper iomem accessors
->    MIPS: Move gic.h to include/linux/irqchip/mips-gic.h
->    irqchip: mips-gic: Clean up header file
->    irqchip: mips-gic: Clean up #includes
->    irqchip: mips-gic: Remove gic_{pending,itrmask}_regs
->    irqchip: mips-gic: Use GIC_SH_WEDGE_{SET,CLR} macros
->    MIPS: Move GIC clocksource driver to drivers/clocksource/
->    clocksource: mips-gic: Combine with GIC clockevent driver
->    clocksource: mips-gic: Staticize local symbols
->    clocksource: mips-gic: Move gic_frequency to clocksource driver
->    clocksource: mips-gic: Remove gic_event_handler
->    clocksource: mips-gic: Use percpu_dev_id
->    clocksource: mips-gic: Use CPU notifiers to setup the timer
->    clocksource: mips-gic: Use clockevents_config_and_register
->    clocksource: mips-gic: Bump up rating of GIC timer
->
->   arch/mips/Kconfig                                  |  21 +-
->   arch/mips/include/asm/mips-boards/maltaint.h       |   2 +-
->   arch/mips/include/asm/mips-boards/sead3int.h       |   2 +-
->   arch/mips/include/asm/time.h                       |   5 +-
->   arch/mips/kernel/Makefile                          |   2 -
->   arch/mips/kernel/cevt-gic.c                        | 103 ---------
->   arch/mips/kernel/cevt-r4k.c                        |   2 +-
->   arch/mips/kernel/csrc-gic.c                        |  40 ----
->   arch/mips/kernel/smp-cmp.c                         |   2 +-
->   arch/mips/kernel/smp-cps.c                         |   2 +-
->   arch/mips/kernel/smp-gic.c                         |   2 +-
->   arch/mips/kernel/smp-mt.c                          |   2 +-
->   arch/mips/mti-malta/malta-int.c                    |  15 +-
->   arch/mips/mti-malta/malta-time.c                   |  20 +-
->   arch/mips/mti-sead3/sead3-ehci.c                   |   2 +-
->   arch/mips/mti-sead3/sead3-int.c                    |   9 +-
->   arch/mips/mti-sead3/sead3-net.c                    |   2 +-
->   arch/mips/mti-sead3/sead3-platform.c               |   2 +-
->   arch/mips/mti-sead3/sead3-time.c                   |   2 +-
->   drivers/clocksource/Kconfig                        |   4 +
->   drivers/clocksource/Makefile                       |   1 +
->   drivers/clocksource/mips-gic-timer.c               | 139 ++++++++++++
->   drivers/irqchip/irq-mips-gic.c                     | 243 +++++++++++++--------
->   .../asm/gic.h => include/linux/irqchip/mips-gic.h  | 203 +++--------------
->   24 files changed, 363 insertions(+), 464 deletions(-)
->   delete mode 100644 arch/mips/kernel/cevt-gic.c
->   delete mode 100644 arch/mips/kernel/csrc-gic.c
->   create mode 100644 drivers/clocksource/mips-gic-timer.c
->   rename arch/mips/include/asm/gic.h => include/linux/irqchip/mips-gic.h (61%)
->
+There's always CP0_Wired - its use in the kernel is a bit of a mess atm
+IIRC.
+
+Cheers
+James

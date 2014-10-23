@@ -1,18 +1,20 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64]:19417 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27012186AbaJWBSVEf30A (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Oct 2014 03:18:21 +0200
-Message-ID: <5448571F.6030105@huawei.com>
-Date: Thu, 23 Oct 2014 09:17:19 +0800
-From: Yijing Wang <wangyijing@huawei.com>
+Received: from mail-qa0-f46.google.com ([209.85.216.46]:56358 "EHLO
+        mail-qa0-f46.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27011355AbaJWD0Ios0YQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Oct 2014 05:26:08 +0200
+Received: by mail-qa0-f46.google.com with SMTP id s7so139218qap.5
+        for <linux-mips@linux-mips.org>; Wed, 22 Oct 2014 20:26:02 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 24/27] IA64/MSI: Use MSI chip framework to configure
- MSI/MSI-X irq
-References: <1413342435-7876-1-git-send-email-wangyijing@huawei.com> <1413342435-7876-25-git-send-email-wangyijing@huawei.com> <20141022235345.GE4795@google.com>
-In-Reply-To: <20141022235345.GE4795@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <wangyijing@huawei.com>
+In-Reply-To: <CAL_Jsq+AuqTOU7UFdYi28YGjL1QorY=3zOSccN43Vb1a=q6SHw@mail.gmail.com>
+References: <1413930186-23168-1-git-send-email-cernekee@gmail.com>
+ <1413930186-23168-10-git-send-email-cernekee@gmail.com> <CAL_Jsq+AuqTOU7UFdYi28YGjL1QorY=3zOSccN43Vb1a=q6SHw@mail.gmail.com>
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Wed, 22 Oct 2014 20:25:42 -0700
+Message-ID: <CAJiQ=7BrfnyOQYptBCTR8GP8hLq4+q1NQ2H988wHK=8PnkqLkg@mail.gmail.com>
+Subject: Re: [PATCH V3 09/10] tty: serial: of-serial: Allow OF earlycon to
+ default to "on"
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <cernekee@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,141 +24,28 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>, Lucas Stach <l.stach@pengutronix.de>, David Vrabel <david.vrabel@citrix.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Michael Ellerman <mpe@ellerman.id.au>, Thierry Reding <thierry.reding@gmail.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Liviu Dudau <liviu@dudau.co.uk>
-Message-ID: <20141023011719.C1hUg4cZDRvz3bPJYEpwArqGe9pxomR38HoFQ10jGBE@z>
+To: Rob Herring <robh@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.cz>, Grant Likely <grant.likely@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Florian Fainelli <f.fainelli@gmail.com>, Maxime Bizon <mbizon@freebox.fr>, Jonas Gorski <jogo@openwrt.org>, Linux-MIPS <linux-mips@linux-mips.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Message-ID: <20141023032542.rscaTdf7atmBxLAqfd2tCyJdrksYkfwBR5i6gkgBRWk@z>
 
-On 2014/10/23 7:53, Bjorn Helgaas wrote:
-> On Wed, Oct 15, 2014 at 11:07:12AM +0800, Yijing Wang wrote:
->> Use MSI chip framework instead of arch MSI functions to configure
->> MSI/MSI-X irq. So we can manage MSI/MSI-X irq in a unified framework.
-> 
-> This needs slightly more detail.  You're using the MSI chip framework
-> "instead of arch MSI functions".  Well, there are still arch-specific
-> functions, i.e., arch_ia64_setup_msi_irq() and
-> arch_ia64_teardown_msi_irq().
-> 
-> We used to have arch_setup_msi_irq() which had a weak default
-> implementation, and a strong arch-specific implementation here, and you're
-> replacing that model with the new "msi-ops" model.  I don't know how you
-> want to write that, but it's not that you're getting rid of the
-> arch-specific code; you're keeping arch-specific code but structuring it
-> differently.
-
-Hm, I will rename the msi-ops functions.
-
-> 
->> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
->> ---
->>  arch/ia64/include/asm/pci.h |   10 ++++++++++
->>  arch/ia64/kernel/msi_ia64.c |   14 ++++++++++----
->>  arch/ia64/pci/pci.c         |    1 +
->>  3 files changed, 21 insertions(+), 4 deletions(-)
+On Wed, Oct 22, 2014 at 2:27 AM, Rob Herring <robh@kernel.org> wrote:
+> On Wed, Oct 22, 2014 at 6:23 AM, Kevin Cernekee <cernekee@gmail.com> wrote:
+>> On many development systems it is very common to see failures during the
+>> early stages of the boot process, e.g. SMP boot or PCIe initialization.
+>> This is one likely reason why some existing earlyprintk implementations,
+>> such as arch/mips/kernel/early_printk.c, are enabled unconditionally
+>> at compile time.
 >>
->> diff --git a/arch/ia64/include/asm/pci.h b/arch/ia64/include/asm/pci.h
->> index 52af5ed..907dcba 100644
->> --- a/arch/ia64/include/asm/pci.h
->> +++ b/arch/ia64/include/asm/pci.h
->> @@ -94,6 +94,7 @@ struct pci_controller {
->>  	int segment;
->>  	int node;		/* nearest node with memory or NUMA_NO_NODE for global allocation */
->>  
->> +	struct msi_chip *msi_chip;
->>  	void *platform_data;
->>  };
->>  
->> @@ -101,6 +102,15 @@ struct pci_controller {
->>  #define PCI_CONTROLLER(busdev) ((struct pci_controller *) busdev->sysdata)
->>  #define pci_domain_nr(busdev)    (PCI_CONTROLLER(busdev)->segment)
->>  
->> +extern struct msi_chip chip;
-> 
-> Please make this name more descriptive.  "chip" is way too generic for a
-> global name.
+>> Now that earlycon's operating parameters can be passed into the kernel
+>> via DT, it is helpful to be able to configure the kernel to turn it on
+>> automatically.  Introduce a new CONFIG_SERIAL_EARLYCON_FORCE option for
+>> this purpose.
+>
+> You can already force this using the CMDLINE_EXTEND option. I'm not
+> sure we need more options.
 
-OK, what about rename it to ia64_msi_chip, and rename the original static irq_chip ia64_msi_chip to
-static irq_chip msi_chip like in x86.
+Hi Rob,
 
-> 
->> +static inline struct msi_chip *pci_msi_chip(struct pci_bus *bus)
->> +{
->> +	struct pci_controller *ctrl = bus->sysdata;
->> +
->> +	return ctrl->msi_chip;
->> +}
->> +
->>  extern struct pci_ops pci_root_ops;
->>  
->>  static inline int pci_proc_domain(struct pci_bus *bus)
->> diff --git a/arch/ia64/kernel/msi_ia64.c b/arch/ia64/kernel/msi_ia64.c
->> index 8c3730c..401fc98 100644
->> --- a/arch/ia64/kernel/msi_ia64.c
->> +++ b/arch/ia64/kernel/msi_ia64.c
->> @@ -112,15 +112,16 @@ static struct irq_chip ia64_msi_chip = {
->>  };
->>  
->>  
->> -int arch_setup_msi_irq(struct pci_dev *pdev, struct msi_desc *desc)
->> +static int arch_ia64_setup_msi_irq(struct msi_chip *chip,
->> +		struct pci_dev *dev, struct msi_desc *desc)
->>  {
->>  	if (platform_setup_msi_irq)
->> -		return platform_setup_msi_irq(pdev, desc);
->> +		return platform_setup_msi_irq(dev, desc);
->>  
->> -	return ia64_setup_msi_irq(pdev, desc);
->> +	return ia64_setup_msi_irq(dev, desc);
-> 
-> Please don't make gratuitous changes ("pdev" -> "dev") at the same time,
-> especially since the rest of the file still uses "pdev".
-
-OK.
-
-> 
->>  }
->>  
->> -void arch_teardown_msi_irq(unsigned int irq)
->> +static void arch_ia64_teardown_msi_irq(struct msi_chip *chip, unsigned int irq)
->>  {
->>  	if (platform_teardown_msi_irq)
->>  		return platform_teardown_msi_irq(irq);
->> @@ -128,6 +129,11 @@ void arch_teardown_msi_irq(unsigned int irq)
->>  	return ia64_teardown_msi_irq(irq);
->>  }
->>  
->> +struct msi_chip chip = {
->> +	.setup_irq = arch_ia64_setup_msi_irq,
->> +	.teardown_irq = arch_ia64_teardown_msi_irq,
->> +};
->> +
->>  #ifdef CONFIG_INTEL_IOMMU
->>  #ifdef CONFIG_SMP
->>  static int dmar_msi_set_affinity(struct irq_data *data,
->> diff --git a/arch/ia64/pci/pci.c b/arch/ia64/pci/pci.c
->> index 291a582..299b67d 100644
->> --- a/arch/ia64/pci/pci.c
->> +++ b/arch/ia64/pci/pci.c
->> @@ -437,6 +437,7 @@ struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
->>  
->>  	controller->companion = device;
->>  	controller->node = acpi_get_node(device->handle);
->> +	controller->msi_chip = &chip;
->>  
->>  	info = kzalloc(sizeof(*info), GFP_KERNEL);
->>  	if (!info) {
->> -- 
->> 1.7.1
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->> Please read the FAQ at  http://www.tux.org/lkml/
-> 
-> .
-> 
-
-
--- 
-Thanks!
-Yijing
+Now that earlycon can get all of its parameters from DT, do you think
+it might make sense to drop the command line option entirely from
+fdt.c and enable it all of the time if stdout-path is set correctly?

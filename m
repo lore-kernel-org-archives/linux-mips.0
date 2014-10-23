@@ -1,18 +1,20 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64]:38250 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27011351AbaJWHq1nwMPF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Oct 2014 09:46:27 +0200
-Message-ID: <5448B21C.1020906@huawei.com>
-Date: Thu, 23 Oct 2014 15:45:32 +0800
-From: Yijing Wang <wangyijing@huawei.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:44242 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012205AbaJWMW5PIbN6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Oct 2014 14:22:57 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id C71B6EF26ADF3
+        for <linux-mips@linux-mips.org>; Thu, 23 Oct 2014 13:22:47 +0100 (IST)
+Message-ID: <5448F319.50503@imgtec.com>
+Date: Thu, 23 Oct 2014 13:22:49 +0100
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 00/27] Use MSI chip framework to configure MSI/MSI-X
- in all platforms
-References: <1413342435-7876-1-git-send-email-wangyijing@huawei.com> <20141023054326.GF4795@google.com>
-In-Reply-To: <20141023054326.GF4795@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+Subject: Re: [RFC PATCH v3] MIPS: fix build with binutils 2.24.51+
+References: <1413022164-317664-1-git-send-email-manuel.lauss@gmail.com> <5448ED4E.7040507@imgtec.com>
+In-Reply-To: <5448ED4E.7040507@imgtec.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-Path: <wangyijing@huawei.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,209 +24,81 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, linux-arch@vger.kernel.org, arnab.basu@freescale.com, Bharat.Bhushan@freescale.com, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>, Lucas Stach <l.stach@pengutronix.de>, David Vrabel <david.vrabel@citrix.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Michael Ellerman <mpe@ellerman.id.au>, Thierry Reding <thierry.reding@gmail.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Liviu Dudau <liviu@dudau.co.uk>
-Message-ID: <20141023074532.DmkpNZDKs3pDE3D9uze395sN6NYCLVFG7tVWXFIlKtc@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20141023122249.M1ZXUdjkz1G5MedOOwngZ55ra6rm0T339D6vgqlO15Q@z>
 
->> v1->v2:
->> Add a patch to make s390 MSI code build happy between patch "x86/xen/MSI: E.."
->> and "s390/MSI: Use MSI..". Fix several typo problems found by Lucas.
+On 10/23/2014 12:58 PM, Markos Chandras wrote:
+> On 10/11/2014 11:09 AM, Manuel Lauss wrote:
+>> Starting with version 2.24.51.20140728 MIPS binutils complain loudly
+>> about mixing soft-float and hard-float object files, leading to this
+>> build failure since GCC is invoked with "-msoft-float" on MIPS:
 >>
->> RFC->v1: 
->> Updated "[patch 4/21] x86/xen/MSI: Eliminate...", export msi_chip instead
->> of #ifdef to fix MSI bug in xen running in x86. 
->> Rename arch_get_match_msi_chip() to arch_find_msi_chip().
->> Drop use struct device as the msi_chip argument, we will do that
->> later in another patchset.
+>> {standard input}: Warning: .gnu_attribute 4,3 requires `softfloat'
+>>   LD      arch/mips/alchemy/common/built-in.o
+>> mipsel-softfloat-linux-gnu-ld: Warning: arch/mips/alchemy/common/built-in.o
+>>  uses -msoft-float (set by arch/mips/alchemy/common/prom.o),
+>>  arch/mips/alchemy/common/sleeper.o uses -mhard-float
 >>
->> Yijing Wang (27):
-> 
-> This is a lot of stuff, and it's not all related, so putting it all
-> together in one series makes it hard for me to deal with it.
-> 
->>   MSI: Remove the redundant irq_set_chip_data()
-
-OK, will post it out separately.
-
-> 
-> This doesn't seem related to eliminating weak functions.
-> 
->>   x86/xen/MSI: Eliminate arch_msix_mask_irq() and arch_msi_mask_irq()
->>   s390/MSI: Use __msi_mask_irq() instead of default_msi_mask_irq()
-
-Will update your comments and post these together.
-
-> 
-> These two seem to go together.
-> 
->>   arm/MSI: Save MSI chip in pci_sys_data
->>   PCI: tegra: Save msi chip in pci_sys_data
->>   PCI: designware: Save msi chip in pci_sys_data
->>   PCI: rcar: Save msi chip in pci_sys_data
->>   PCI: mvebu: Save msi chip in pci_sys_data
->>   arm/PCI: Clean unused pcibios_add_bus() and pcibios_remove_bus()
->>   PCI/MSI: Remove useless bus->msi assignment
-> 
-> These seem to go together (it'd be nice if they were all capitalized the
-> same).
-
-OK, will update the titles and post together.
-
-> 
-> I don't like the "msi_chip" name because the "chip" part doesn't convey
-> much information, other than telling us that apparently some sort of
-> semiconductor integrated circuit is involved.  I sort of assumed that
-> much :)
-
-I think so, msi_chip easily make me confuse with x86 irq_chip msi_chip.
-
-> 
-> Something like "msi_controller" would be more descriptive since we're
-> talking about an interrupt controller that accepts writes from a device and
-> turns them into CPU interrupts, e.g., a LAPIC.
-
-Hm, it's a better one, arm also use "msi-controller" to represent the msi related
-object in DTS file.
-
-
-> 
->>   PCI/MSI: Refactor struct msi_chip to make it become more common
->>   x86/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   x86/xen/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   Irq_remapping/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   x86/MSI: Remove unused MSI weak arch functions
->>   Mips/MSI: Save msi chip in pci sysdata
->>   MIPS/Octeon/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   MIPS/Xlp: Remove the dead function destroy_irq() to fix build error
->>   MIPS/Xlp/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   MIPS/Xlr/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   Powerpc/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   s390/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   arm/iop13xx/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   IA64/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   Sparc/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   tile/MSI: Use MSI chip framework to configure MSI/MSI-X irq
->>   PCI/MSI: Clean up unused MSI arch functions
+>> To fix this, we detect if GAS is new enough to support "-msoft-float" command
+>> option, and if it does, we can let GCC pass it to GAS;  but then we also need
+>> to sprinkle the files which make use of floating point registers with the
+>> necessary ".set hardfloat" directives.
 >>
->>  arch/arm/include/asm/mach/pci.h                 |   10 +-
->>  arch/arm/include/asm/pci.h                      |    9 ++
->>  arch/arm/kernel/bios32.c                        |   19 +---
->>  arch/arm/mach-iop13xx/include/mach/pci.h        |    4 +
->>  arch/arm/mach-iop13xx/iq81340mc.c               |    3 +
->>  arch/arm/mach-iop13xx/iq81340sc.c               |    5 +-
->>  arch/arm/mach-iop13xx/msi.c                     |   11 ++-
->>  arch/ia64/include/asm/pci.h                     |   10 ++
->>  arch/ia64/kernel/msi_ia64.c                     |   14 ++-
->>  arch/ia64/pci/pci.c                             |    1 +
->>  arch/mips/include/asm/netlogic/xlp-hal/pcibus.h |    1 +
->>  arch/mips/include/asm/octeon/pci-octeon.h       |    4 +
->>  arch/mips/include/asm/pci.h                     |   14 +++
->>  arch/mips/pci/msi-octeon.c                      |   31 +++---
->>  arch/mips/pci/msi-xlp.c                         |   15 ++-
->>  arch/mips/pci/pci-octeon.c                      |    3 +
->>  arch/mips/pci/pci-xlp.c                         |    3 +
->>  arch/mips/pci/pci-xlr.c                         |   17 +++-
->>  arch/powerpc/include/asm/pci-bridge.h           |   15 +++
->>  arch/powerpc/kernel/msi.c                       |   12 ++-
->>  arch/powerpc/kernel/pci-common.c                |    3 +
->>  arch/s390/include/asm/pci.h                     |    9 ++
->>  arch/s390/pci/pci.c                             |   16 ++-
->>  arch/sparc/kernel/pci.c                         |   14 ++-
->>  arch/sparc/kernel/pci_impl.h                    |   12 ++
->>  arch/tile/include/asm/pci.h                     |   10 ++
->>  arch/tile/kernel/pci_gx.c                       |   13 ++-
->>  arch/x86/include/asm/pci.h                      |   18 +++-
->>  arch/x86/include/asm/x86_init.h                 |    7 --
->>  arch/x86/kernel/apic/io_apic.c                  |   12 ++-
->>  arch/x86/kernel/x86_init.c                      |   34 ------
->>  arch/x86/pci/acpi.c                             |    1 +
->>  arch/x86/pci/common.c                           |    3 +
->>  arch/x86/pci/xen.c                              |   72 +++++++------
->>  drivers/iommu/irq_remapping.c                   |   13 ++-
->>  drivers/pci/host/pci-mvebu.c                    |   10 +--
->>  drivers/pci/host/pci-tegra.c                    |   13 +--
->>  drivers/pci/host/pcie-designware.c              |   15 +--
->>  drivers/pci/host/pcie-rcar.c                    |   13 +--
->>  drivers/pci/msi.c                               |  133 ++++++++++-------------
->>  drivers/pci/probe.c                             |    1 -
->>  include/linux/msi.h                             |   24 ++---
->>  include/linux/pci.h                             |    1 +
->>  43 files changed, 379 insertions(+), 269 deletions(-)
+>> Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
+>> ---
+>> I've only tested a mips32r1 build, but at least binutils-2.23 and a
+>> snapshot from today (with the MIPS fp changes) compile a bootable
+>> kernel.
+>>
+>> Tests on 64bit and with MSA and other extensions also appreciated!
+>>
+>> v3: incorporate Maciej's suggestions:
+>> 	- detect if gas can handle -msoft-float and ".set hardfloat"
+>> 	- apply .set hardfloat only where really necessary
+>>
+>> v2: cover more files
+>>
+>> This was introduced in binutils commit  351cdf24d223290b15fa991e5052ec9e9bd1e284
+>> ("[MIPS] Implement O32 FPXX, FP64 and FP64A ABI extensions").
+>>
+>>  arch/mips/Makefile                  |  9 +++++++++
+>>  arch/mips/include/asm/asmmacro-32.h |  5 +++++
+>>  arch/mips/include/asm/asmmacro.h    | 18 ++++++++++++++++++
+>>  arch/mips/include/asm/fpregdef.h    | 14 ++++++++++++++
+>>  arch/mips/include/asm/mipsregs.h    | 19 +++++++++++++++++++
+>>  arch/mips/kernel/genex.S            |  1 +
+>>  arch/mips/kernel/r2300_switch.S     |  5 +++++
+>>  arch/mips/kernel/r4k_fpu.S          |  7 +++++++
+>>  arch/mips/kernel/r4k_switch.S       |  9 +++++++++
+>>  arch/mips/kernel/r6000_fpu.S        |  5 +++++
+>>  10 files changed, 92 insertions(+)
+>>
+> Hi,
 > 
-> Huh.  I was hoping this was going to simplify things, and maybe it does
-> somehow, but it's unfortunate that it adds 110 lines of code overall.  Does
-> that seem right to you?  Why does it add code?
-
-I filter out these patches which add code.
-
-[PATCH v3 04/27] arm/MSI: Save MSI chip in pci_sys_data
- 5 files changed, 33 insertions(+), 0 deletions(-)
-Insertions code mainly to introduce arch specific pci_msi_chip() to extract msi_chip from pci_sys_data, and temporary #ifdef
-
-[PATCH v3 11/27] PCI/MSI: Refactor struct msi_chip to make it become more common
- 2 files changed, 19 insertions(+), 0 deletions(-)
-Insertions here is to add msi ops like restore, teardown to msi_chip.
-
-[PATCH v3 12/27] x86/MSI: Use MSI chip framework to configure MSI/MSI-X irq
- 4 files changed, 36 insertions(+), 0 deletions(-)
-Arch specific pci_msi_chip() and declaration of msi_chip in x86, also some temporary code to compile ok.
-
-[PATCH v3 13/27] x86/xen/MSI: Use MSI chip framework to configure MSI/MSI-X irq
- 1 files changed, 39 insertions(+), 19 deletions(-)
-To avoid call default_teardown_msi_irq(), copy the default_teardown_msi_irq() code in this file.
-
-[PATCH v3 16/27] Mips/MSI: Save msi chip in pci sysdata
- 1 files changed, 14 insertions(+), 0 deletions(-)
-Arch specific pci_msi_chip() and some #ifdef code
-
-[PATCH v3 17/27] MIPS/Octeon/MSI: Use MSI chip framework to configure MSI/MSI-X irq
- 3 files changed, 25 insertions(+), 13 deletions(-)
-
-Archs Use msi chip framework to configure MSI/MSI-x
- 3 files changed, 13 insertions(+), 2 deletions(-)
- 1 files changed, 15 insertions(+), 2 deletions(-)
- 3 files changed, 28 insertions(+), 2 deletions(-)
- 2 files changed, 19 insertions(+), 2 deletions(-)
- 4 files changed, 20 insertions(+), 3 deletions(-)
- 3 files changed, 21 insertions(+), 4 deletions(-)
- 2 files changed, 24 insertions(+), 2 deletions(-)
- 2 files changed, 21 insertions(+), 2 deletions(-)
-
-So the most adding code is to introduce arch specific pci_msi_chip(), this one will be removed after we make
-pci_host_bridge generic and save msi_chip in it. There are also lots of #ifdef in arm code for msi_chip.
-
+> I applied this patch but it still does not build for me on a
+> malta_defconfig:
 > 
-> Who do you want to apply this?  I can take it if that makes the most sense,
-
-I hope you can apply this.
-
-> but I'd like acks from the architecture folks for their pieces, and
-> especially one from Thomas for the overall direction and the x86 parts.
-
-OK.
-
+> arch/mips/kernel/r4k_fpu.S: Assembler messages:
+> arch/mips/kernel/r4k_fpu.S:52: Error: float register should be even, was 1
+> arch/mips/kernel/r4k_fpu.S:53: Error: float register should be even, was 3
+> arch/mips/kernel/r4k_fpu.S:54: Error: float register should be even, was 5
+> arch/mips/kernel/r4k_fpu.S:55: Error: float register should be even, was 7
+> ...
 > 
-> If you want me to take this, can you refresh it to be based on v3.18-rc1?
-> I tried to apply it on v3.18-rc1, but [15/27] didn't apply because of
-> conflicts in arch/x86/kernel/apic/io_apic.c.
+> The error is different this time so we probably need a follow-up patch
+>
 
-OK.
+I also get a problem with an older version of binutils (the one from the
+latest Sourcery CodeBench toolchain[1])
 
-> 
-> I'll look at these more tomorrow, I'm getting bleary-eyed tonight.
+{standard input}: Assembler messages:
+{standard input}:406: Error: opcode not supported on this processor:
+mips1 (mips1) `cfc1 $9,$31'
+scripts/Makefile.build:257: recipe for target
+'arch/mips/kernel/branch.o' failed
+make[2]: *** [arch/mips/kernel/branch.o] Error 1
 
-Thanks for your review and comments very much!
-
-Thanks!
-Yijing.
-
-> 
-> Bjorn
-> 
-> .
-> 
-
+[1] https://sourcery.mentor.com/GNUToolchain/release2791
 
 -- 
-Thanks!
-Yijing
+markos

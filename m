@@ -1,20 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44242 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:30593 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012205AbaJWMW5PIbN6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Oct 2014 14:22:57 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id C71B6EF26ADF3
-        for <linux-mips@linux-mips.org>; Thu, 23 Oct 2014 13:22:47 +0100 (IST)
-Message-ID: <5448F319.50503@imgtec.com>
-Date: Thu, 23 Oct 2014 13:22:49 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        with ESMTP id S27010490AbaJXJrLk-erz (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Oct 2014 11:47:11 +0200
+Message-ID: <544A2017.7020804@imgtec.com>
+Date: Fri, 24 Oct 2014 10:47:03 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v3] MIPS: fix build with binutils 2.24.51+
-References: <1413022164-317664-1-git-send-email-manuel.lauss@gmail.com> <5448ED4E.7040507@imgtec.com>
-In-Reply-To: <5448ED4E.7040507@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"
+Subject: Re: [PATCH v2 08/47] kernel: Move pm_power_off to common code
+References: <1413864783-3271-1-git-send-email-linux@roeck-us.net> <1413864783-3271-9-git-send-email-linux@roeck-us.net>
+In-Reply-To: <1413864783-3271-9-git-send-email-linux@roeck-us.net>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,81 +21,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Message-ID: <20141023122249.M1ZXUdjkz1G5MedOOwngZ55ra6rm0T339D6vgqlO15Q@z>
+To: Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
+Cc: linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux390@de.ibm.com, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux@openrisc.net, linux-m68k@vger.kernel.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, x86@kernel.org, xen-devel@lists.xenproject.org
+Message-ID: <20141024094703.E9pKSnnxs25UrzdEux1lB4giiAqJjAnmj3NBTbaI4xk@z>
 
-On 10/23/2014 12:58 PM, Markos Chandras wrote:
-> On 10/11/2014 11:09 AM, Manuel Lauss wrote:
->> Starting with version 2.24.51.20140728 MIPS binutils complain loudly
->> about mixing soft-float and hard-float object files, leading to this
->> build failure since GCC is invoked with "-msoft-float" on MIPS:
->>
->> {standard input}: Warning: .gnu_attribute 4,3 requires `softfloat'
->>   LD      arch/mips/alchemy/common/built-in.o
->> mipsel-softfloat-linux-gnu-ld: Warning: arch/mips/alchemy/common/built-in.o
->>  uses -msoft-float (set by arch/mips/alchemy/common/prom.o),
->>  arch/mips/alchemy/common/sleeper.o uses -mhard-float
->>
->> To fix this, we detect if GAS is new enough to support "-msoft-float" command
->> option, and if it does, we can let GCC pass it to GAS;  but then we also need
->> to sprinkle the files which make use of floating point registers with the
->> necessary ".set hardfloat" directives.
->>
->> Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
->> ---
->> I've only tested a mips32r1 build, but at least binutils-2.23 and a
->> snapshot from today (with the MIPS fp changes) compile a bootable
->> kernel.
->>
->> Tests on 64bit and with MSA and other extensions also appreciated!
->>
->> v3: incorporate Maciej's suggestions:
->> 	- detect if gas can handle -msoft-float and ".set hardfloat"
->> 	- apply .set hardfloat only where really necessary
->>
->> v2: cover more files
->>
->> This was introduced in binutils commit  351cdf24d223290b15fa991e5052ec9e9bd1e284
->> ("[MIPS] Implement O32 FPXX, FP64 and FP64A ABI extensions").
->>
->>  arch/mips/Makefile                  |  9 +++++++++
->>  arch/mips/include/asm/asmmacro-32.h |  5 +++++
->>  arch/mips/include/asm/asmmacro.h    | 18 ++++++++++++++++++
->>  arch/mips/include/asm/fpregdef.h    | 14 ++++++++++++++
->>  arch/mips/include/asm/mipsregs.h    | 19 +++++++++++++++++++
->>  arch/mips/kernel/genex.S            |  1 +
->>  arch/mips/kernel/r2300_switch.S     |  5 +++++
->>  arch/mips/kernel/r4k_fpu.S          |  7 +++++++
->>  arch/mips/kernel/r4k_switch.S       |  9 +++++++++
->>  arch/mips/kernel/r6000_fpu.S        |  5 +++++
->>  10 files changed, 92 insertions(+)
->>
-> Hi,
+Hi Guenter,
+
+On 21/10/14 05:12, Guenter Roeck wrote:
+> pm_power_off is defined for all architectures. Move it to common code.
 > 
-> I applied this patch but it still does not build for me on a
-> malta_defconfig:
+> Have all architectures call do_kernel_power_off instead of pm_power_off.
+> Some architectures point pm_power_off to machine_power_off. For those,
+> call do_kernel_power_off from machine_power_off instead.
 > 
-> arch/mips/kernel/r4k_fpu.S: Assembler messages:
-> arch/mips/kernel/r4k_fpu.S:52: Error: float register should be even, was 1
-> arch/mips/kernel/r4k_fpu.S:53: Error: float register should be even, was 3
-> arch/mips/kernel/r4k_fpu.S:54: Error: float register should be even, was 5
-> arch/mips/kernel/r4k_fpu.S:55: Error: float register should be even, was 7
-> ...
-> 
-> The error is different this time so we probably need a follow-up patch
->
+> Acked-by: David Vrabel <david.vrabel@citrix.com>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: Hirokazu Takata <takata@linux-m32r.org>
+> Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
+> Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+> Acked-by: Rafael J. Wysocki <rjw@rjwysocki.net>
+> Acked-by: Richard Weinberger <richard@nod.at>
+> Acked-by: Xuetao Guan <gxt@mprc.pku.edu.cn>
 
-I also get a problem with an older version of binutils (the one from the
-latest Sourcery CodeBench toolchain[1])
+For metag:
+Acked-by: James Hogan <james.hogan@imgtec.com>
 
-{standard input}: Assembler messages:
-{standard input}:406: Error: opcode not supported on this processor:
-mips1 (mips1) `cfc1 $9,$31'
-scripts/Makefile.build:257: recipe for target
-'arch/mips/kernel/branch.o' failed
-make[2]: *** [arch/mips/kernel/branch.o] Error 1
+Thanks
+James
 
-[1] https://sourcery.mentor.com/GNUToolchain/release2791
-
--- 
-markos
+> diff --git a/arch/metag/kernel/process.c b/arch/metag/kernel/process.c
+> index 483dff9..8d95773 100644
+> --- a/arch/metag/kernel/process.c
+> +++ b/arch/metag/kernel/process.c
+> @@ -67,9 +67,6 @@ void arch_cpu_idle_dead(void)
+>  }
+>  #endif
+>  
+> -void (*pm_power_off)(void);
+> -EXPORT_SYMBOL(pm_power_off);
+> -
+>  void (*soc_restart)(char *cmd);
+>  void (*soc_halt)(void);
+>  
+> @@ -90,8 +87,7 @@ void machine_halt(void)
+>  
+>  void machine_power_off(void)
+>  {
+> -	if (pm_power_off)
+> -		pm_power_off();
+> +	do_kernel_power_off();
+>  	smp_send_stop();
+>  	hard_processor_halt(HALT_OK);
+>  }

@@ -1,11 +1,11 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65]:4673 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27011360AbaJ0MmLDrZQR (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Oct 2014 13:42:11 +0100
+Received: from szxga03-in.huawei.com ([119.145.14.66]:40663 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27011426AbaJ0MmWWcLmI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Oct 2014 13:42:22 +0100
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH 10/16] Powerpc/MSI: Use MSI controller framework to configure MSI/MSI-X irq
-Date: Mon, 27 Oct 2014 21:22:16 +0800
-Message-ID: <1414416142-31239-11-git-send-email-wangyijing@huawei.com>
+Subject: [PATCH 14/16] Sparc/MSI: Use MSI controller framework to configure MSI/MSI-X irq
+Date: Mon, 27 Oct 2014 21:22:20 +0800
+Message-ID: <1414416142-31239-15-git-send-email-wangyijing@huawei.com>
 In-Reply-To: <1414416142-31239-1-git-send-email-wangyijing@huawei.com>
 References: <1414416142-31239-1-git-send-email-wangyijing@huawei.com>
 MIME-Version: 1.0
@@ -22,94 +22,90 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Bjorn Helgaas <bhelgaas@google.com>
 Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, Xinwei Hu <huxinwei@huawei.com>, Wuyun <wuyun.wu@huawei.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Ralf Baechle <ralf@linux-mips.org>, Lucas Stach <l.stach@pengutronix.de>, David Vrabel <david.vrabel@citrix.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Michael Ellerman <mpe@ellerman.id.au>, Thierry Reding <thierry.reding@gmail.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Yijing Wang <wangyijing@huawei.com>
-Message-ID: <20141027132216.-G4MlOtNRXJfALMpGU8aBA3cpC-qchnkP2aXtBM1Ftc@z>
+Message-ID: <20141027132220.PCVEqh9N36irjga0P-_NQeDqkMQreodlALFZtwMdgvo@z>
 
 Use MSI controller framework instead of arch MSI functions to configure
 MSI/MSI-X irq. So we can manage MSI/MSI-X irq in a unified framework.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+Acked-by: David S. Miller <davem@davemloft.net>
 ---
- arch/powerpc/include/asm/pci-bridge.h |    8 ++++++++
- arch/powerpc/kernel/msi.c             |   19 +++++++++++++++++--
- arch/powerpc/kernel/pci-common.c      |    3 +++
- 3 files changed, 28 insertions(+), 2 deletions(-)
+ arch/sparc/kernel/pci.c      |   20 ++++++++++++++++++--
+ arch/sparc/kernel/pci_impl.h |    3 +++
+ 2 files changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/pci-bridge.h b/arch/powerpc/include/asm/pci-bridge.h
-index 4ca90a3..f7d09d0 100644
---- a/arch/powerpc/include/asm/pci-bridge.h
-+++ b/arch/powerpc/include/asm/pci-bridge.h
-@@ -32,6 +32,10 @@ struct pci_controller {
- 	int self_busno;
- 	struct resource busn;
+diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
+index b36365f..c691a10 100644
+--- a/arch/sparc/kernel/pci.c
++++ b/arch/sparc/kernel/pci.c
+@@ -656,6 +656,9 @@ struct pci_bus *pci_scan_one_pbm(struct pci_pbm_info *pbm,
+ 
+ 	printk("PCI: Scanning PBM %s\n", node->full_name);
  
 +#ifdef CONFIG_PCI_MSI
-+	struct msi_controller *msi_ctrl;
++	pbm->msi_ctrl = &sparc_msi_ctrl;
 +#endif
-+
- 	void __iomem *io_base_virt;
- #ifdef CONFIG_PPC64
- 	void *io_base_alloc;
-@@ -94,6 +98,10 @@ struct pci_controller {
- 	void *private_data;
- };
+ 	pci_add_resource_offset(&resources, &pbm->io_space,
+ 				pbm->io_space.start);
+ 	pci_add_resource_offset(&resources, &pbm->mem_space,
+@@ -905,7 +908,15 @@ int pci_domain_nr(struct pci_bus *pbus)
+ EXPORT_SYMBOL(pci_domain_nr);
  
-+#ifdef CONFIG_PCI_MSI
-+extern struct msi_controller ppc_msi_ctrl;
-+#endif
-+
- /* These are used for config access before all the PCI probing
-    has been done. */
- extern int early_read_config_byte(struct pci_controller *hose, int bus,
-diff --git a/arch/powerpc/kernel/msi.c b/arch/powerpc/kernel/msi.c
-index 71bd161..64a16f3 100644
---- a/arch/powerpc/kernel/msi.c
-+++ b/arch/powerpc/kernel/msi.c
-@@ -13,7 +13,15 @@
- 
- #include <asm/machdep.h>
- 
--int arch_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
+ #ifdef CONFIG_PCI_MSI
+-int arch_setup_msi_irq(struct pci_dev *pdev, struct msi_desc *desc)
 +struct msi_controller *pcibios_msi_controller(struct pci_bus *bus)
 +{
-+	struct pci_controller *hose = bus->sysdata;
++	struct pci_pbm_info *pbm = bus->sysdata;
 +
-+	return hose->msi_ctrl;
++	return pbm->msi_ctrl;
 +}
 +
-+static int ppc_setup_msi_irqs(struct msi_controller *ctrl,
-+		struct pci_dev *dev, int nvec, int type)
++static int sparc_setup_msi_irq(struct msi_controller *ctrl,
++		struct pci_dev *pdev, struct msi_desc *desc)
  {
- 	if (!ppc_md.setup_msi_irqs || !ppc_md.teardown_msi_irqs) {
- 		pr_debug("msi: Platform doesn't provide MSI callbacks.\n");
-@@ -27,7 +35,13 @@ int arch_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
- 	return ppc_md.setup_msi_irqs(dev, nvec, type);
+ 	struct pci_pbm_info *pbm = pdev->dev.archdata.host_controller;
+ 	unsigned int irq;
+@@ -916,7 +927,7 @@ int arch_setup_msi_irq(struct pci_dev *pdev, struct msi_desc *desc)
+ 	return pbm->setup_msi_irq(&irq, pdev, desc);
  }
  
--void arch_teardown_msi_irqs(struct pci_dev *dev)
-+static void ppc_teardown_msi_irqs(struct msi_controller *ctrl,
-+		struct pci_dev *dev)
+-void arch_teardown_msi_irq(unsigned int irq)
++static void sparc_teardown_msi_irq(struct msi_controller *ctrl, unsigned int irq)
  {
- 	ppc_md.teardown_msi_irqs(dev);
+ 	struct msi_desc *entry = irq_get_msi_desc(irq);
+ 	struct pci_dev *pdev = entry->dev;
+@@ -925,6 +936,11 @@ void arch_teardown_msi_irq(unsigned int irq)
+ 	if (pbm->teardown_msi_irq)
+ 		pbm->teardown_msi_irq(irq, pdev);
  }
 +
-+struct msi_controller ppc_msi_ctrl = {
-+	.setup_irqs = ppc_setup_msi_irqs,
-+	.teardown_irqs = ppc_teardown_msi_irqs,
++struct msi_controller sparc_msi_ctrl = {
++	.setup_irq = sparc_setup_msi_irq,
++	.teardown_irq = sparc_teardown_msi_irq,
 +};
-diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
-index e5dad9a..c3f28c5 100644
---- a/arch/powerpc/kernel/pci-common.c
-+++ b/arch/powerpc/kernel/pci-common.c
-@@ -1597,6 +1597,9 @@ void pcibios_scan_phb(struct pci_controller *hose)
- 	/* Wire up PHB bus resources */
- 	pcibios_setup_phb_resources(hose, &resources);
+ #endif /* !(CONFIG_PCI_MSI) */
  
-+#ifdef CONFIG_PCI_MSI
-+	hose->msi_ctrl = &ppc_msi_ctrl;
-+#endif
- 	hose->busn.start = hose->first_busno;
- 	hose->busn.end	 = hose->last_busno;
- 	hose->busn.flags = IORESOURCE_BUS;
+ static void ali_sound_dma_hack(struct pci_dev *pdev, int set_bit)
+diff --git a/arch/sparc/kernel/pci_impl.h b/arch/sparc/kernel/pci_impl.h
+index 75803c7..e02642d 100644
+--- a/arch/sparc/kernel/pci_impl.h
++++ b/arch/sparc/kernel/pci_impl.h
+@@ -55,6 +55,8 @@ struct sparc64_msiq_cookie {
+ 	struct pci_pbm_info *pbm;
+ 	unsigned long msiqid;
+ };
++
++extern struct msi_controller sparc_msi_ctrl;
+ #endif
+ 
+ struct pci_pbm_info {
+@@ -132,6 +134,7 @@ struct pci_pbm_info {
+ 	void				*msi_queues;
+ 	unsigned long			*msi_bitmap;
+ 	unsigned int			*msi_irq_table;
++	struct msi_controller *msi_ctrl;
+ 	int (*setup_msi_irq)(unsigned int *irq_p, struct pci_dev *pdev,
+ 			     struct msi_desc *entry);
+ 	void (*teardown_msi_irq)(unsigned int irq, struct pci_dev *pdev);
 -- 
 1.7.1

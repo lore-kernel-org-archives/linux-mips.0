@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:41607 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57986 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011574AbaJ1L0FSNf91 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Oct 2014 12:26:05 +0100
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 7B52B856A2A19
-        for <linux-mips@linux-mips.org>; Tue, 28 Oct 2014 11:25:56 +0000 (GMT)
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] MIPS: fix EVA & non-SMP non-FPU FP context signal handling
-Date: Tue, 28 Oct 2014 11:25:51 +0000
-Message-ID: <1414495551-15955-1-git-send-email-paul.burton@imgtec.com>
+        with ESMTP id S27011577AbaJ1Lal3oRkf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Oct 2014 12:30:41 +0100
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Subject: [PATCH] mips: cma: Do not reserve memory if not required
+Date: Tue, 28 Oct 2014 11:28:34 +0000
+Message-ID: <1414495714-40815-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,53 +18,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, stable@vger.kernel.org#v3.15+
-Message-ID: <20141028112551.JaG1B_zY5pZXQNMJxnWvKhPQ8OVqxGCjy72u_rEyqOo@z>
+To: ralf@linux-mips.org, Zubair.Kakakhel@imgtec.com
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20141028112834.ybJG9jF6lSlAFXKVtM-FcUIHh0ocdmSi39iq0nvaU2w@z>
 
-The save_fp_context & restore_fp_context pointers were being assigned
-to the wrong variables if either:
+Even if CMA is disabled, the for_each_memblock macro expands
+to run reserve_bootmem once. Hence, reserve_bootmem attempts to
+reserve location 0 of size 0.
 
-  - The kernel is configured for UP & runs on a system without an FPU,
-    since b2ead5282885 "MIPS: Move & rename
-    fpu_emulator_{save,restore}_context".
+Add a check to avoid that.
 
-  - The kernel is configured for EVA, since ca750649e08c "MIPS: kernel:
-    signal: Prevent save/restore FPU context in user memory".
+Issue was highlighted during testing with EVA enabled.
+resrve_bootmem used to exit gracefully when passed arguments to
+reserve 0 size location at 0 without EVA.
 
-This would lead to FP context being clobbered incorrectly when setting
-up a sigcontext, then the garbage values being saved uselessly when
-returning from the signal.
+But with EVA enabled, macros would point to different addresses
+and the code would trigger a BUG.
 
-Fix by swapping the pointer assignments appropriately.
-
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: stable@vger.kernel.org # v3.15+
+Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Tested-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/kernel/signal.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/kernel/setup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
-index e1112be..8b1a84e 100644
---- a/arch/mips/kernel/signal.c
-+++ b/arch/mips/kernel/signal.c
-@@ -649,13 +649,13 @@ static int signal_setup(void)
- 		save_fp_context = _save_fp_context;
- 		restore_fp_context = _restore_fp_context;
- 	} else {
--		save_fp_context = copy_fp_from_sigcontext;
--		restore_fp_context = copy_fp_to_sigcontext;
-+		save_fp_context = copy_fp_to_sigcontext;
-+		restore_fp_context = copy_fp_from_sigcontext;
- 	}
- #endif /* CONFIG_SMP */
- #else
--	save_fp_context = copy_fp_from_sigcontext;;
--	restore_fp_context = copy_fp_to_sigcontext;
-+	save_fp_context = copy_fp_to_sigcontext;
-+	restore_fp_context = copy_fp_from_sigcontext;
- #endif
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 938f157..eacfd7d 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -683,7 +683,8 @@ static void __init arch_mem_init(char **cmdline_p)
+ 	dma_contiguous_reserve(PFN_PHYS(max_low_pfn));
+ 	/* Tell bootmem about cma reserved memblock section */
+ 	for_each_memblock(reserved, reg)
+-		reserve_bootmem(reg->base, reg->size, BOOTMEM_DEFAULT);
++		if (reg->size != 0)
++			reserve_bootmem(reg->base, reg->size, BOOTMEM_DEFAULT);
+ }
  
- 	return 0;
+ static void __init resource_init(void)
 -- 
-2.0.4
+1.9.1

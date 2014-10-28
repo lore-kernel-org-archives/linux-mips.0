@@ -1,16 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:26651 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:41607 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011574AbaJ1KplS8wHJ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Oct 2014 11:45:41 +0100
-Message-ID: <544F73CD.1010409@imgtec.com>
-Date: Tue, 28 Oct 2014 10:45:33 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        with ESMTP id S27011574AbaJ1L0FSNf91 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Oct 2014 12:26:05 +0100
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 7B52B856A2A19
+        for <linux-mips@linux-mips.org>; Tue, 28 Oct 2014 11:25:56 +0000 (GMT)
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: fix EVA & non-SMP non-FPU FP context signal handling
+Date: Tue, 28 Oct 2014 11:25:51 +0000
+Message-ID: <1414495551-15955-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Subject: Boot problems on Malta with EVA (bisected to 12220dea07f1 "mm/slab:
- support slab merge")
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,88 +21,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: iamjoonsoo.kim@lge.com
-Cc: cl@linux.com, penberg@kernel.org, rientjes@google.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20141028104533.sROwvlr8vAfHdpY82nA98M8-CGMKIeXGnH80CpOKHfM@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, stable@vger.kernel.org#v3.15+
+Message-ID: <20141028112551.JaG1B_zY5pZXQNMJxnWvKhPQ8OVqxGCjy72u_rEyqOo@z>
 
-Hi,
+The save_fp_context & restore_fp_context pointers were being assigned
+to the wrong variables if either:
 
-It seems I am unable to boot my Malta with EVA. The problem appeared in
-the 3.18 merge window. I bisected the problem (between v3.17 and
-v3.18-rc1) and I found the following commit responsible for the broken boot.
+  - The kernel is configured for UP & runs on a system without an FPU,
+    since b2ead5282885 "MIPS: Move & rename
+    fpu_emulator_{save,restore}_context".
 
-commit 12220dea07f1ac6ac717707104773d771c3f3077
-Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Date:   Thu Oct 9 15:26:24 2014 -0700
+  - The kernel is configured for EVA, since ca750649e08c "MIPS: kernel:
+    signal: Prevent save/restore FPU context in user memory".
 
-    mm/slab: support slab merge
+This would lead to FP context being clobbered incorrectly when setting
+up a sigcontext, then the garbage values being saved uselessly when
+returning from the signal.
 
+Fix by swapping the pointer assignments appropriately.
 
-Reverting my tree back to the parent of that commit
-423c929cbbecc60e9c407f9048e58f5422f7995d ("
-mm/slab_common: commonize slab merge logic")
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Cc: stable@vger.kernel.org # v3.15+
+---
+ arch/mips/kernel/signal.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-restores the boot for me.
-
-I don't quite understand the commit yet so let me know if you need more
-information to debug this problem
-
-Here is the kernel log of the failed boot.
-
-Calibrating delay loop... 19.86 BogoMIPS (lpj=99328)
-pid_max: default: 32768 minimum: 301
-Mount-cache hash table entries: 4096 (order: 0, 16384 bytes)
-Mountpoint-cache hash table entries: 4096 (order: 0, 16384 bytes)
-Kernel bug detected[#1]:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 3.17.0-05639-g12220dea07f1 #1631
-task: 1f04f5d8 ti: 1f050000 task.ti: 1f050000
-$ 0   : 00000000 806c0000 00000080 00000000
-$ 4   : 1f048080 00000001 00000001 00000000
-$ 8   : 1f04f5d8 00000001 fffffffc 00000000
-$12   : 00000000 ffffffff fffef7b7 00000000
-$16   : 1f048080 1f00ec00 1f048180 806ba998
-$20   : 1f00ec00 80660000 1f03b780 806ad380
-$24   : 00000000 80154d70
-$28   : 1f050000 1f053d48 806ba8ec 80141184
-Hi    : 00000000
-Lo    : 0b532b80
-epc   : 80141190 alloc_unbound_pwq+0x234/0x304
-    Not tainted
-ra    : 80141184 alloc_unbound_pwq+0x228/0x304
-Status: 1000dc03        KERNEL EXL IE
-Cause : 00800034
-PrId  : 0001a82d (MIPS P5600)
-Modules linked in:
-Process swapper/0 (pid: 1, threadinfo=1f050000, task=1f04f5d8, tls=00000000)
-Stack : 1f03b880 00000002 1f03b800 80140d90 1f048180 1f03b880 00000002
-1f03b800
-          1f03bb80 801417a4 1f0481e0 0000000e 1f048180 00000200 1f048180
-1f048190
-          00000002 1f048188 80660000 80660000 8065af94 80141dc0 0110d710
-00000100
-          8065af94 806ad380 8065b200 8013ea70 1f048280 1f053e0c 8065af98
-1f0481e0
-          00000000 00000004 80660000 80660000 80660000 80660000 80660000
-80660000
-          ...
-Call Trace:
-[<80141190>] alloc_unbound_pwq+0x234/0x304
-[<801417a4>] apply_workqueue_attrs+0x11c/0x294
-[<80141dc0>] __alloc_workqueue_key+0x23c/0x470
-[<80683de4>] init_workqueues+0x320/0x400
-[<8010058c>] do_one_initcall+0xe8/0x23c
-[<8067cbec>] kernel_init_freeable+0x9c/0x224
-[<80565fd8>] kernel_init+0x10/0x100
-[<80104e38>] ret_from_kernel_thread+0x14/0x1c
-
-
-Code: 10400032  00408021  320200ff <00020336> 00002821  02002021
-0c0defb0  24060100  26020074
----[ end trace cb88537fdc8fa200 ]---
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-
----[ end Kernel panic - not syncing: Attempted to kill init!
-exitcode=0x0000000b
-
+diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+index e1112be..8b1a84e 100644
+--- a/arch/mips/kernel/signal.c
++++ b/arch/mips/kernel/signal.c
+@@ -649,13 +649,13 @@ static int signal_setup(void)
+ 		save_fp_context = _save_fp_context;
+ 		restore_fp_context = _restore_fp_context;
+ 	} else {
+-		save_fp_context = copy_fp_from_sigcontext;
+-		restore_fp_context = copy_fp_to_sigcontext;
++		save_fp_context = copy_fp_to_sigcontext;
++		restore_fp_context = copy_fp_from_sigcontext;
+ 	}
+ #endif /* CONFIG_SMP */
+ #else
+-	save_fp_context = copy_fp_from_sigcontext;;
+-	restore_fp_context = copy_fp_to_sigcontext;
++	save_fp_context = copy_fp_to_sigcontext;
++	restore_fp_context = copy_fp_from_sigcontext;
+ #endif
+ 
+ 	return 0;
 -- 
-markos
+2.0.4

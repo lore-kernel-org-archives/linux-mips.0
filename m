@@ -1,14 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:57986 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:46648 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011577AbaJ1Lal3oRkf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Oct 2014 12:30:41 +0100
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH] mips: cma: Do not reserve memory if not required
-Date: Tue, 28 Oct 2014 11:28:34 +0000
-Message-ID: <1414495714-40815-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+        with ESMTP id S27011594AbaJ1NTZyOYDd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Oct 2014 14:19:25 +0100
+Message-ID: <544F97D4.4030408@imgtec.com>
+Date: Tue, 28 Oct 2014 13:19:16 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Zubair.Kakakhel@imgtec.com>
+Subject: Re: Boot problems on Malta with EVA (bisected to 12220dea07f1 "mm/slab:
+ support slab merge")
+References: <544F73CD.1010409@imgtec.com> <CAAmzW4NdBNhsPtx1yw+drN+J=a23SS3yLkgQdvQx-Giokwxu-Q@mail.gmail.com>
+In-Reply-To: <CAAmzW4NdBNhsPtx1yw+drN+J=a23SS3yLkgQdvQx-Giokwxu-Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,42 +22,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org, Zubair.Kakakhel@imgtec.com
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20141028112834.ybJG9jF6lSlAFXKVtM-FcUIHh0ocdmSi39iq0nvaU2w@z>
+To: Joonsoo Kim <js1304@gmail.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>, Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, linux-mips@linux-mips.org
+Message-ID: <20141028131916.mCnY9A0mCTgJMq8udgJJ0Kp4JmomgU8J0wAgdzmu8Xk@z>
 
-Even if CMA is disabled, the for_each_memblock macro expands
-to run reserve_bootmem once. Hence, reserve_bootmem attempts to
-reserve location 0 of size 0.
+On 10/28/2014 01:01 PM, Joonsoo Kim wrote:
+> 2014-10-28 19:45 GMT+09:00 Markos Chandras <Markos.Chandras@imgtec.com>:
+>> Hi,
+>>
+>> It seems I am unable to boot my Malta with EVA. The problem appeared in
+>> the 3.18 merge window. I bisected the problem (between v3.17 and
+>> v3.18-rc1) and I found the following commit responsible for the broken boot.
+> 
+> Hello,
+> 
+> Did you start to bisect from v3.18-rc1?
+> I'd like to be sure that this is another bug which is fixed by following commit.
+> 
+> commit 85c9f4b04a08f6bc770b77530c22d04103468b8f
+> Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> Date:   Mon Oct 13 15:51:01 2014 -0700
+> 
+>     mm/slab: fix unaligned access on sparc64
+> 
+> This fix is merged into v3.18-rc1 sometime later that
+> 'support slab merge' is merged.
+> 
+> Thanks.
+> 
+Hi,
 
-Add a check to avoid that.
+I bisected from v3.17 until 3.18-rc1. But 3.18-rc2 and the latest
+mainline (f7e87a44ef60ad379e39b45437604141453bf0ec) still have the same
+problem
 
-Issue was highlighted during testing with EVA enabled.
-resrve_bootmem used to exit gracefully when passed arguments to
-reserve 0 size location at 0 without EVA.
+btw i did more tests and this is not EVA specific. A maltaup_defconfig
+fails in the same way. I suspect all malta*_defconfigs will fail in a
+similar way which makes it probably easier for you to reproduce it on a
+QEMU.
 
-But with EVA enabled, macros would point to different addresses
-and the code would trigger a BUG.
-
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Tested-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/kernel/setup.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 938f157..eacfd7d 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -683,7 +683,8 @@ static void __init arch_mem_init(char **cmdline_p)
- 	dma_contiguous_reserve(PFN_PHYS(max_low_pfn));
- 	/* Tell bootmem about cma reserved memblock section */
- 	for_each_memblock(reserved, reg)
--		reserve_bootmem(reg->base, reg->size, BOOTMEM_DEFAULT);
-+		if (reg->size != 0)
-+			reserve_bootmem(reg->base, reg->size, BOOTMEM_DEFAULT);
- }
- 
- static void __init resource_init(void)
 -- 
-1.9.1
+markos

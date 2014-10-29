@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:52977 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:40669 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011105AbaJ1PpZ7SGtI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Oct 2014 16:45:25 +0100
-Message-ID: <544FBA0D.4010707@imgtec.com>
-Date: Tue, 28 Oct 2014 15:45:17 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        with ESMTP id S27011540AbaJ2JWCFe93B (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 29 Oct 2014 10:22:02 +0100
+Message-ID: <5450B1B1.5070301@imgtec.com>
+Date: Wed, 29 Oct 2014 09:21:53 +0000
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: Boot problems on Malta with EVA (bisected to 12220dea07f1 "mm/slab:
- support slab merge")
-References: <544F73CD.1010409@imgtec.com>       <CAAmzW4NdBNhsPtx1yw+drN+J=a23SS3yLkgQdvQx-Giokwxu-Q@mail.gmail.com>    <544F97D4.4030408@imgtec.com>   <544F991E.3070500@imgtec.com>   <CAAmzW4O6EFq-aaAi5gNFng1dhyXJdUmEMTR8meJfir=47iwmZw@mail.gmail.com>    <CAAmzW4M0Ca3iQni-RRVuh152bjA=oezTrK+OE6qjaNqmG0q9nA@mail.gmail.com>    <544FA8E2.3050404@imgtec.com> <CAAmzW4OGLgneoccpP1=H4XA0_eL0vtwPvWh49J9TnV1=FL-3jw@mail.gmail.com>
-In-Reply-To: <CAAmzW4OGLgneoccpP1=H4XA0_eL0vtwPvWh49J9TnV1=FL-3jw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [PATCH V3 2/4] of: Add binding document for MIPS GIC
+References: <1414541562-10076-1-git-send-email-abrestic@chromium.org> <1414541562-10076-3-git-send-email-abrestic@chromium.org>
+In-Reply-To: <1414541562-10076-3-git-send-email-abrestic@chromium.org>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,134 +21,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Joonsoo Kim <js1304@gmail.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>, Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, linux-mips@linux-mips.org
-Message-ID: <20141028154517.JblqwOg0SCh5IOdTL_T0K3XXyv3Kf0hNvmSlOEmnX50@z>
+To: Andrew Bresticker <abrestic@chromium.org>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: John Crispin <blogic@openwrt.org>, David Daney <ddaney.cavm@gmail.com>, Qais Yousef <qais.yousef@imgtec.com>, linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20141029092153.X5Ss5hsPhds-qcVv2rT0Fi2SAndKjf7aLWxB5yEuf0E@z>
 
-On 10/28/2014 03:00 PM, Joonsoo Kim wrote:
-> 2014-10-28 23:32 GMT+09:00 Markos Chandras <Markos.Chandras@imgtec.com>:
->> On 10/28/2014 02:21 PM, Joonsoo Kim wrote:
->>> 2014-10-28 22:48 GMT+09:00 Joonsoo Kim <js1304@gmail.com>:
->>>> 2014-10-28 22:24 GMT+09:00 Markos Chandras <Markos.Chandras@imgtec.com>:
->>>>> On 10/28/2014 01:19 PM, Markos Chandras wrote:
->>>>>> On 10/28/2014 01:01 PM, Joonsoo Kim wrote:
->>>>>>> 2014-10-28 19:45 GMT+09:00 Markos Chandras <Markos.Chandras@imgtec.com>:
->>>>>>>> Hi,
->>>>>>>>
->>>>>>>> It seems I am unable to boot my Malta with EVA. The problem appeared in
->>>>>>>> the 3.18 merge window. I bisected the problem (between v3.17 and
->>>>>>>> v3.18-rc1) and I found the following commit responsible for the broken boot.
->>>>>>>
->>>>>>> Hello,
->>>>>>>
->>>>>>> Did you start to bisect from v3.18-rc1?
->>>>>>> I'd like to be sure that this is another bug which is fixed by following commit.
->>>>>>>
->>>>>>> commit 85c9f4b04a08f6bc770b77530c22d04103468b8f
->>>>>>> Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
->>>>>>> Date:   Mon Oct 13 15:51:01 2014 -0700
->>>>>>>
->>>>>>>     mm/slab: fix unaligned access on sparc64
->>>>>>>
->>>>>>> This fix is merged into v3.18-rc1 sometime later that
->>>>>>> 'support slab merge' is merged.
->>>>>>>
->>>>>>> Thanks.
->>>>>>>
->>>>>> Hi,
->>>>>>
->>>>>> I bisected from v3.17 until 3.18-rc1. But 3.18-rc2 and the latest
->>>>>> mainline (f7e87a44ef60ad379e39b45437604141453bf0ec) still have the same
->>>>>> problem
->>>>>>
->>>>>> btw i did more tests and this is not EVA specific. A maltaup_defconfig
->>>>>> fails in the same way. I suspect all malta*_defconfigs will fail in a
->>>>>> similar way which makes it probably easier for you to reproduce it on a
->>>>>> QEMU.
->>>>>>
->>>>>
->>>>> sorry maltaup_defconfig does not fail. maltasmvp_defconfig does. So it
->>>>> might be a similar problem like the one fixed in
->>>>> 85c9f4b04a08f6bc770b77530c22d04103468b8f
->>>>
->>>> Oops. Sorry. Above commit ('mm/slab: fix unaligned access on sparc64')
->>>> is irrelevant to this problem.
->>>>
->>>> Anyway, your problem would be related to merging with incompatible slab cache.
->>>> Best way to debug is printing source/target slab cache's object size and
->>>> alignment and find the problem. I will try to reproduce it using QEMU.
->>>
->>> I found that cross compile for MIPS isn't easy job. :)
->>
->> You could grab the following toolchain
->>
->> https://sourcery.mentor.com/GNUToolchain/release2791
->>
->> (get the IA32 linux tar)
->>
->> unpack it somewhere (eg /tmp) and then
->>
->> make ARCH=mips maltasmvp_defconfig
->> make ARCH=mips CROSS_COMPILE=/tmp/mips-2014.05/bin/mips-linux-gnu- -j8
->> or something :)
-> 
-> Wow!! Really Thanks!
-> I will try it.
-> 
->>> Could you help me to debug the problem with below patch?
->>
->> (there are a few build warnings with your patch
->> mm/slab.c:2065:4: warning: format '%lu' expects argument of type 'long
->> unsigned int', but argument 5 has type 'size_t' [-Wformat=]
->> mm/slab.c:2065:4: warning: format '%lu' expects argument of type 'long
->> unsigned int', but argument 7 has type 'unsigned int' [-Wformat=]
->> mm/slab.c:2065:4: warning: format '%lu' expects argument of type 'long
->> unsigned int', but argument 8 has type 'int' [-Wformat=]
->> mm/slab.c:2065:4: warning: format '%lu' expects argument of type 'long
->> unsigned int', but argument 9 has type 'int' [-Wformat=]
->> )
->>
->> but here is the output from a QEMU boot right before the crash
->>
->> CPU frequency 200.00 MHz
->> Calibrating delay loop... 1087.89 BogoMIPS (lpj=5439488)
->> pid_max: default: 32768 minimum: 301
->> __kmem_cache_alias: (cred_jar 92 0) to (kmalloc-128 128 128 128)
->> __kmem_cache_alias: (files_cache 256 0) to (kmalloc-256 256 128 256)
->> __kmem_cache_alias: (fs_cache 36 0) to (pid 64 64 44)
->> __kmem_cache_alias: (names_cache 4096 0) to (kmalloc-4096 4096 128 4096)
->> __kmem_cache_alias: (mnt_cache 160 0) to (filp 192 64 160)
->> Mount-cache hash table entries: 4096 (order: 0, 16384 bytes)
->> Mountpoint-cache hash table entries: 4096 (order: 0, 16384 bytes)
->> __kmem_cache_alias: (pool_workqueue 256 256) to (kmalloc-256 256 128 256)
-> 
-> alignment is mismatch between pool_workqueue and kmalloc-256,
-> but, slab caches are merged, because they have same object size.
-> Perhaps, slab cache for pool_workqueue returns 128 byte aligned memory
-> and workqueue can't work well with it.
-> 
-> Quick fix may be something like below, but, I will try it on QEMU MIPS.
-> 
-> Thanks.
-> 
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 3a6e0cf..d57b1a2 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -269,6 +269,9 @@ struct kmem_cache *find_mergeable(size_t size, size_t align,
->                 if (s->size - size >= sizeof(void *))
->                         continue;
-> 
-> +               if (align > s->align)
-> +                       continue;
-> +
->                 return s;
->         }
->         return NULL;
-> 
-Hi,
+Hi Andrew,
 
-Yeah this makes the kernel boot again.
+On 29/10/14 00:12, Andrew Bresticker wrote:
+>  - changed compatible string to include CPU version
 
--- 
-markos
+> +Required properties:
+> +- compatible : Should be "mti,<cpu>-gic".  Supported variants:
+> +  - "mti,interaptiv-gic"
+
+> +Required properties for timer sub-node:
+> +- compatible : Should be "mti,<cpu>-gic-timer".  Supported variants:
+> +  - "mti,interaptiv-gic-timer"
+
+Erm, I'm a bit confused...
+Why do you include the core name in the compatible string?
+
+You seem to be suggesting that:
+
+1) The GIC/timer drivers need to know what core they're running on.
+
+Is that really true?
+
+2) It isn't possible to probe the core type.
+
+But the kernel already knows this, so what's wrong with using
+current_cpu_type() like everything else that needs to know?
+
+3) Every new core should require a new compatible string to be added
+before the GIC will work. You don't even have a generic compatible
+string that DT can specify after the core specific one as a fallback.
+
+Please lets not do this unless it's actually necessary (which AFAICT it
+really isn't).
+
+Thanks
+James

@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59141 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012328AbaJ3SiYOXsLW (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Oct 2014 19:38:24 +0100
-Message-ID: <54528595.8070009@imgtec.com>
-Date: Thu, 30 Oct 2014 11:38:13 -0700
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:13490 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27012367AbaJaLe1N0bI4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 31 Oct 2014 12:34:27 +0100
+Date: Fri, 31 Oct 2014 13:33:58 +0200
+From: Peter De Schrijver <pdeschrijver@nvidia.com>
+Subject: Re: [PATCH v5 0/7] Per-user clock constraints
+Message-ID: <20141031113358.GY32045@tbergstrom-lnx.Nvidia.com>
+References: <1414666135-14313-1-git-send-email-tomeu.vizoso@collabora.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: DMA: fix coherent alloc in non-coherent systems
-References: <20141030014753.13189.48344.stgit@linux-yegoshin> <54520DE4.9090008@imgtec.com>
-In-Reply-To: <54520DE4.9090008@imgtec.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1414666135-14313-1-git-send-email-tomeu.vizoso@collabora.com>
+Return-Path: <pdeschrijver@nvidia.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,20 +21,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: linux-mips@linux-mips.org, nbd@openwrt.org, yanh@lemote.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, alex.smith@imgtec.com, taohl@lemote.com, chenhc@lemote.com, blogic@openwrt.org
-Message-ID: <20141030183813.X77_uFtzmxdjXPHblAnJEE2ZIndmKoJk7M6xjVu2IR0@z>
+To: Tomeu Vizoso <tomeu.vizoso@collabora.com>, Mike Turquette <mturquette@linaro.org>
+Cc: Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Stephen Boyd <sboyd@codeaurora.org>, Alex Elder <elder@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Haojian Zhuang <haojian.zhuang@linaro.org>, Jaehoon Chung <jh80.chung@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-omap@vger.kernel.org, Manuel Lauss <manuel.lauss@gmail.com>, Matt Porter <mporter@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Zhangfei Gao <zhangfei.gao@linaro.org>
+Message-ID: <20141031113358.0T95ntmsKyv-vZD2kxy-gS8C9f4rGt3afUfSMlXWzyA@z>
 
-On 10/30/2014 03:07 AM, James Hogan wrote:
-> Hi Leonid,
->
-> On 30/10/14 01:48, Leonid Yegoshin wrote:
->> A default dma_alloc_coherent() fails to alloc a coherent memory on non-coherent
->> systems in case of device->coherent_dma_mask covering the whole memory space.
->>
->> In case of non-coherent systems the coherent memory on MIPS is restricted by
->> size of un-cachable segment and should be located in ZONE_DMA.
-> Has this pretty much always been broken?
->
->
-Yes, but it can be seen on MIPS32 EVA-based CPUs.
+On Thu, Oct 30, 2014 at 11:48:26AM +0100, Tomeu Vizoso wrote:
+> Hello,
+> 
+> this fifth version of the series has just one change, suggested by Stephen:
+> 
+> * Initialize clk.ceiling_constraint to ULONG_MAX and warn about new floor
+> constraints being higher than the existing ceiling.
+> 
+> The first five patches are just cleanups that should be desirable on their own,
+> and that should make easier to review the actual per-user clock patch.
+> 
+> The sixth patch actually moves the per-clock data that was stored in struct
+> clk to a new struct clk_core and adds references to it from both struct clk and
+> struct clk_hw. struct clk is now ready to contain information that is specific
+> to a given clk consumer.
+> 
+> The seventh patch adds API for setting floor and ceiling constraints and stores
+> that information on the per-user struct clk, which is iterable from struct
+> clk_core.
+> 
+> They are based on top of 3.18-rc1.
+> 
+> http://cgit.collabora.com/git/user/tomeu/linux.git/log/?h=per-user-clk-constraints-v5
+> 
+
+Acked-By: Peter De Schrijver <pdeschrijver@nvidia.com>
+
+Mike,
+
+Do you think this will be merged for 3.19?
+
+Thanks,
+
+Peter.

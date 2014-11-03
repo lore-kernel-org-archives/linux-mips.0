@@ -1,17 +1,17 @@
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:13490 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27012367AbaJaLe1N0bI4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 31 Oct 2014 12:34:27 +0100
-Date: Fri, 31 Oct 2014 13:33:58 +0200
-From: Peter De Schrijver <pdeschrijver@nvidia.com>
-Subject: Re: [PATCH v5 0/7] Per-user clock constraints
-Message-ID: <20141031113358.GY32045@tbergstrom-lnx.Nvidia.com>
-References: <1414666135-14313-1-git-send-email-tomeu.vizoso@collabora.com>
+Received: from mga09.intel.com ([134.134.136.24]:12758 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27010884AbaKCUyHIuBWq (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 3 Nov 2014 21:54:07 +0100
+Message-ID: <5457EB67.70904@intel.com>
+Date: Mon, 03 Nov 2014 12:53:59 -0800
+From: Dave Hansen <dave.hansen@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1414666135-14313-1-git-send-email-tomeu.vizoso@collabora.com>
-Return-Path: <pdeschrijver@nvidia.com>
+Subject: Re: [PATCH v9 11/12] x86, mpx: cleanup unused bound tables
+References: <1413088915-13428-1-git-send-email-qiaowei.ren@intel.com> <1413088915-13428-12-git-send-email-qiaowei.ren@intel.com> <alpine.DEB.2.11.1410241451280.5308@nanos> <544DB873.1010207@intel.com> <alpine.DEB.2.11.1410272138540.5308@nanos>
+In-Reply-To: <alpine.DEB.2.11.1410272138540.5308@nanos>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-Path: <dave.hansen@intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,41 +21,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Tomeu Vizoso <tomeu.vizoso@collabora.com>, Mike Turquette <mturquette@linaro.org>
-Cc: Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Stephen Boyd <sboyd@codeaurora.org>, Alex Elder <elder@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Haojian Zhuang <haojian.zhuang@linaro.org>, Jaehoon Chung <jh80.chung@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-omap@vger.kernel.org, Manuel Lauss <manuel.lauss@gmail.com>, Matt Porter <mporter@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Zhangfei Gao <zhangfei.gao@linaro.org>
-Message-ID: <20141031113358.0T95ntmsKyv-vZD2kxy-gS8C9f4rGt3afUfSMlXWzyA@z>
+To: Thomas Gleixner <tglx@linutronix.de>, Ren Qiaowei <qiaowei.ren@intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.orgLinux-MM <linux-mm@kvack.org>
+Message-ID: <20141103205359.WXCrtxVIwQ21BM-bqVQ2j-GSd4erWKTMuvAV8lmMjtc@z>
 
-On Thu, Oct 30, 2014 at 11:48:26AM +0100, Tomeu Vizoso wrote:
-> Hello,
+On 10/27/2014 01:49 PM, Thomas Gleixner wrote:
+> Errm. Before user space can use the bounds table for the new mapping
+> it needs to add the entries, right? So:
 > 
-> this fifth version of the series has just one change, suggested by Stephen:
+> CPU 0					CPU 1
 > 
-> * Initialize clk.ceiling_constraint to ULONG_MAX and warn about new floor
-> constraints being higher than the existing ceiling.
+> down_write(mm->bd_sem);
+> mpx_pre_unmap();
+>    clear bounds directory entries	
+> unmap();
+> 					map()
+> 					write_bounds_entry()
+> 					trap()
+> 					  down_read(mm->bd_sem);
+> mpx_post_unmap(); 
+> up_write(mm->bd_sem);
+> 					  allocate_bounds_table();
 > 
-> The first five patches are just cleanups that should be desirable on their own,
-> and that should make easier to review the actual per-user clock patch.
-> 
-> The sixth patch actually moves the per-clock data that was stored in struct
-> clk to a new struct clk_core and adds references to it from both struct clk and
-> struct clk_hw. struct clk is now ready to contain information that is specific
-> to a given clk consumer.
-> 
-> The seventh patch adds API for setting floor and ceiling constraints and stores
-> that information on the per-user struct clk, which is iterable from struct
-> clk_core.
-> 
-> They are based on top of 3.18-rc1.
-> 
-> http://cgit.collabora.com/git/user/tomeu/linux.git/log/?h=per-user-clk-constraints-v5
-> 
+> That's the whole point of bd_sem.
 
-Acked-By: Peter De Schrijver <pdeschrijver@nvidia.com>
+This does, indeed, seem to work for the normal munmap() cases.  However,
+take a look at shmdt().  We don't know the size of the segment being
+unmapped until after we acquire mmap_sem for write, so we wouldn't be
+able to do do a mpx_pre_unmap() for those.
 
-Mike,
+mremap() is similar.  We don't know if the area got expanded (and we
+don't need to modify bounds tables) or moved (and we need to free the
+old location's tables) until well after we've taken mmap_sem for write.
 
-Do you think this will be merged for 3.19?
+I propose we keep mm->bd_sem.  But, I think we need to keep a list
+during each of the unmapping operations of VMAs that got unmapped, and
+then keep them on a list without freeing then.  At up_write() time, we
+look at the list, if it is empty, we just do an up_write() and we are done.
 
-Thanks,
+If *not* empty, downgrade_write(mm->mmap_sem), and do the work you
+spelled out in mpx_pre_unmap() above: clear the bounds directory entries
+and gather the VMAs while still holding mm->bd_sem for write.
 
-Peter.
+Here's the other wrinkle: This would invert the ->bd_sem vs. ->mmap_sem
+ordering (bd_sem nests outside mmap_sem with the above scheme).  We
+_could_ always acquire bd_sem for write whenever mmap_sem is acquired,
+although that seems a bit heavyweight.  I can't think of anything better
+at the moment, though.

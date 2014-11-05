@@ -1,17 +1,14 @@
-Received: from www.linutronix.de ([62.245.132.108]:37208 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010884AbaKCV36dGH8N (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 3 Nov 2014 22:29:58 +0100
-Date: Mon, 3 Nov 2014 22:29:46 +0100 (CET)
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v9 11/12] x86, mpx: cleanup unused bound tables
-In-Reply-To: <5457EB67.70904@intel.com>
-Message-ID: <alpine.DEB.2.11.1411032205320.5308@nanos>
-References: <1413088915-13428-1-git-send-email-qiaowei.ren@intel.com> <1413088915-13428-12-git-send-email-qiaowei.ren@intel.com> <alpine.DEB.2.11.1410241451280.5308@nanos> <544DB873.1010207@intel.com> <alpine.DEB.2.11.1410272138540.5308@nanos>
- <5457EB67.70904@intel.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:39852 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012529AbaKEIZwetFv0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 5 Nov 2014 09:25:52 +0100
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: asm: r4kcache: Add EVA case for protected_writeback_dcache_line
+Date: Wed, 5 Nov 2014 08:25:37 +0000
+Message-ID: <1415175937-23903-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <tglx@linutronix.de>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,76 +18,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Ren Qiaowei <qiaowei.ren@intel.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, x86@kernel.org, Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.orgLinux-MM <linux-mm@kvack.org>
-Message-ID: <20141103212946.Z-3Z36Tv7yiEStVnv10QvKGmcWEi-YGSIfUu111KiAU@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20141105082537.oB1LCNT3JyOWParMh3hDzPq6tl5aU09qRVbYTFH4rIU@z>
 
-On Mon, 3 Nov 2014, Dave Hansen wrote:
-> On 10/27/2014 01:49 PM, Thomas Gleixner wrote:
-> > Errm. Before user space can use the bounds table for the new mapping
-> > it needs to add the entries, right? So:
-> > 
-> > CPU 0					CPU 1
-> > 
-> > down_write(mm->bd_sem);
-> > mpx_pre_unmap();
-> >    clear bounds directory entries	
-> > unmap();
-> > 					map()
-> > 					write_bounds_entry()
-> > 					trap()
-> > 					  down_read(mm->bd_sem);
-> > mpx_post_unmap(); 
-> > up_write(mm->bd_sem);
-> > 					  allocate_bounds_table();
-> > 
-> > That's the whole point of bd_sem.
-> 
-> This does, indeed, seem to work for the normal munmap() cases.  However,
-> take a look at shmdt().  We don't know the size of the segment being
-> unmapped until after we acquire mmap_sem for write, so we wouldn't be
-> able to do do a mpx_pre_unmap() for those.
+Commit de8974e3f76c0 ("MIPS: asm: r4kcache: Add EVA cache flushing
+functions") added cache function for EVA using the cachee instruction.
+However, it didn't add a case for the protected_writeback_dcache_line.
+mips_dsemul() calls r4k_flush_cache_sigtramp() which in turn uses
+the protected_writeback_dcache_line() to flush the trampoline code
+back to memory. This used the wrong "cache" instruction leading to
+random userland crashes on non-FPU cores.
 
-That's not really true. You can evaluate that information with
-mmap_sem held for read as well. Nothing can change the mappings until
-you drop it. So you could do:
+Cc: <stable@vger.kernel.org> # v3.15+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/include/asm/r4kcache.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-   down_write(mm->bd_sem);
-   down_read(mm->mmap_sem;
-   evaluate_size_of_shm_to_unmap();
-   clear_bounds_directory_entries();
-   up_read(mm->mmap_sem);
-   do_the_real_shm_unmap();
-   up_write(mm->bd_sem);
-
-That should still be covered by the above scheme.
+diff --git a/arch/mips/include/asm/r4kcache.h b/arch/mips/include/asm/r4kcache.h
+index 4520adc8699b..cd6e0afc6833 100644
+--- a/arch/mips/include/asm/r4kcache.h
++++ b/arch/mips/include/asm/r4kcache.h
+@@ -257,7 +257,11 @@ static inline void protected_flush_icache_line(unsigned long addr)
+  */
+ static inline void protected_writeback_dcache_line(unsigned long addr)
+ {
++#ifdef CONFIG_EVA
++	protected_cachee_op(Hit_Writeback_Inv_D, addr);
++#else
+ 	protected_cache_op(Hit_Writeback_Inv_D, addr);
++#endif
+ }
  
-> mremap() is similar.  We don't know if the area got expanded (and we
-> don't need to modify bounds tables) or moved (and we need to free the
-> old location's tables) until well after we've taken mmap_sem for write.
-
-See above.
- 
-> I propose we keep mm->bd_sem.  But, I think we need to keep a list
-> during each of the unmapping operations of VMAs that got unmapped, and
-> then keep them on a list without freeing then.  At up_write() time, we
-> look at the list, if it is empty, we just do an up_write() and we are done.
-> 
-> If *not* empty, downgrade_write(mm->mmap_sem), and do the work you
-> spelled out in mpx_pre_unmap() above: clear the bounds directory entries
-> and gather the VMAs while still holding mm->bd_sem for write.
-> 
-> Here's the other wrinkle: This would invert the ->bd_sem vs. ->mmap_sem
-> ordering (bd_sem nests outside mmap_sem with the above scheme).  We
-> _could_ always acquire bd_sem for write whenever mmap_sem is acquired,
-> although that seems a bit heavyweight.  I can't think of anything better
-> at the moment, though.
-
-That works as well. If it makes stuff simpler I'm all for it. But then
-we should really replace down_write(mmap_sem) with a helper function
-and add something to checkpatch.pl and to the coccinelle scripts to
-catch new instances of open coded 'down_write(mmap_sem)'.
-
-Thanks,
-
-	tglx
+ static inline void protected_writeback_scache_line(unsigned long addr)
+-- 
+2.1.3

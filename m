@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:28744 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:61840 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013242AbaKJQUSZwqvF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 10 Nov 2014 17:20:18 +0100
+        with ESMTP id S27013243AbaKJQUTWPtyG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 10 Nov 2014 17:20:19 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id F3E9D2DF84B84
-        for <linux-mips@linux-mips.org>; Mon, 10 Nov 2014 16:20:09 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id 08D11EF09D25E
+        for <linux-mips@linux-mips.org>; Mon, 10 Nov 2014 16:20:11 +0000 (GMT)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 1/3] MIPS: kernel: traps: Replace printk with pr_info for MC exceptions
-Date: Mon, 10 Nov 2014 16:20:02 +0000
-Message-ID: <1415636404-11979-2-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH 2/3] MIPS: kernel: traps: Dump the HTW registers on a MC exception
+Date: Mon, 10 Nov 2014 16:20:03 +0000
+Message-ID: <1415636404-11979-3-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1415636404-11979-1-git-send-email-markos.chandras@imgtec.com>
 References: <1415636404-11979-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -25,37 +25,30 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20141110162002.653-wR4a6BciC-vBab2Yzhv_Ty4hsxwGyPN-UDy1Sb8@z>
+Message-ID: <20141110162003.7XK1_UlmoZuATV4BGnG8duG8b2YTQNi4VnE2foEvf5k@z>
 
-printk should not be used without a KERN_ facility level
+The HTW registers can be useful to debug a MC exception.
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/kernel/traps.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/mips/kernel/traps.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 22b19c275044..51fa5c3aa4fe 100644
+index 51fa5c3aa4fe..32feb481a67a 100644
 --- a/arch/mips/kernel/traps.c
 +++ b/arch/mips/kernel/traps.c
-@@ -1380,12 +1380,12 @@ asmlinkage void do_mcheck(struct pt_regs *regs)
- 	show_regs(regs);
- 
- 	if (multi_match) {
--		printk("Index	: %0x\n", read_c0_index());
--		printk("Pagemask: %0x\n", read_c0_pagemask());
--		printk("EntryHi : %0*lx\n", field, read_c0_entryhi());
--		printk("EntryLo0: %0*lx\n", field, read_c0_entrylo0());
--		printk("EntryLo1: %0*lx\n", field, read_c0_entrylo1());
--		printk("\n");
-+		pr_info("Index	: %0x\n", read_c0_index());
-+		pr_info("Pagemask: %0x\n", read_c0_pagemask());
-+		pr_info("EntryHi : %0*lx\n", field, read_c0_entryhi());
-+		pr_info("EntryLo0: %0*lx\n", field, read_c0_entrylo0());
-+		pr_info("EntryLo1: %0*lx\n", field, read_c0_entrylo1());
-+		pr_info("\n");
+@@ -1385,6 +1385,11 @@ asmlinkage void do_mcheck(struct pt_regs *regs)
+ 		pr_info("EntryHi : %0*lx\n", field, read_c0_entryhi());
+ 		pr_info("EntryLo0: %0*lx\n", field, read_c0_entrylo0());
+ 		pr_info("EntryLo1: %0*lx\n", field, read_c0_entrylo1());
++		if (cpu_has_htw) {
++			pr_info("PWField : %0*lx\n", field, read_c0_pwfield());
++			pr_info("PWSize  : %0*lx\n", field, read_c0_pwsize());
++			pr_info("PWCtl   : %0x\n", read_c0_pwctl());
++		}
+ 		pr_info("\n");
  		dump_tlb_all();
  	}
- 
 -- 
 2.1.3

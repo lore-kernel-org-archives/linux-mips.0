@@ -1,19 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44562 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013244AbaKJQUUm7YL0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 10 Nov 2014 17:20:20 +0100
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 7145A3D24632F
-        for <linux-mips@linux-mips.org>; Mon, 10 Nov 2014 16:20:12 +0000 (GMT)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 3/3] MIPS: kernel: traps: Dump the PageGrain and Wired registers on MC
-Date: Mon, 10 Nov 2014 16:20:04 +0000
-Message-ID: <1415636404-11979-4-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1415636404-11979-1-git-send-email-markos.chandras@imgtec.com>
-References: <1415636404-11979-1-git-send-email-markos.chandras@imgtec.com>
+Received: from mail-pd0-f176.google.com ([209.85.192.176]:50485 "EHLO
+        mail-pd0-f176.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27011908AbaKJWALwkvHS (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 10 Nov 2014 23:00:11 +0100
+Received: by mail-pd0-f176.google.com with SMTP id ft15so8662308pdb.21
+        for <linux-mips@linux-mips.org>; Mon, 10 Nov 2014 14:00:05 -0800 (PST)
+From: Kevin Hilman <khilman@kernel.org>
+Subject: Re: [PATCH V4 04/14] genirq: Generic chip: Add big endian I/O accessors
+References: <1415342669-30640-1-git-send-email-cernekee@gmail.com>
+        <1415342669-30640-5-git-send-email-cernekee@gmail.com>
+Date: Mon, 10 Nov 2014 14:00:02 -0800
+In-Reply-To: <1415342669-30640-5-git-send-email-cernekee@gmail.com> (Kevin
+        Cernekee's message of "Thu, 6 Nov 2014 22:44:19 -0800")
+Message-ID: <7hy4riogwt.fsf@deeprootsystems.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Return-Path: <khilman@deeprootsystems.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,30 +24,26 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20141110162004.14JJoM_HRB5mENnRbl4d5LeZrwy0V2ruH9V_dHn_2G8@z>
+To: Kevin Cernekee <cernekee@gmail.com>
+Cc: tglx@linutronix.de, jason@lakedaemon.net, linux-sh@vger.kernel.org, arnd@arndb.de, f.fainelli@gmail.com, ralf@linux-mips.org, sergei.shtylyov@cogentembedded.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, mbizon@freebox.fr, jogo@openwrt.org, linux-mips@linux-mips.org, nicolas.ferre@atmel.com, alexandre.belloni@free-electrons.com, Olof Johansson <olof@lixom.net>Arnd Bergmann <arnd@arndb.de>
+Message-ID: <20141110220002.vINaVSXPRoOLxbAa5x3tpEJXOsc_ATn0iyT4OBFAkUo@z>
 
-They can be useful to determine how the MMU is configured on a MC
-exception.
+Kevin Cernekee <cernekee@gmail.com> writes:
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/kernel/traps.c | 2 ++
- 1 file changed, 2 insertions(+)
+> Use io{read,write}32be if the caller specified IRQ_GC_BE_IO when creating
+> the irqchip.
+>
+> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 32feb481a67a..a8f7cee53aae 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -1385,6 +1385,8 @@ asmlinkage void do_mcheck(struct pt_regs *regs)
- 		pr_info("EntryHi : %0*lx\n", field, read_c0_entryhi());
- 		pr_info("EntryLo0: %0*lx\n", field, read_c0_entrylo0());
- 		pr_info("EntryLo1: %0*lx\n", field, read_c0_entrylo1());
-+		pr_info("Wired   : %0x\n", read_c0_wired());
-+		pr_info("Pagegrain: %0x\n", read_c0_pagegrain());
- 		if (cpu_has_htw) {
- 			pr_info("PWField : %0*lx\n", field, read_c0_pwfield());
- 			pr_info("PWSize  : %0*lx\n", field, read_c0_pwsize());
--- 
-2.1.3
+I bisected a couple ARM boot failures in next-20141110 on atmel sama5 platforms down to
+this patch, though I'm not quite yet sure how it's causing the failure.
+I'm not getting any console output, so haven't been able to dig deeper
+yet.  Maybe the atmel maintainers (Cc'd) can help dig.
+
+I've confirmed that reverting $SUBJECT patch (commit
+b79055952badbd73710685643bab44104f2509ea2) on top of next-20141110 gets
+things booting again.
+
+Also, it only happens with sama5_defconfig, not with multi_v7_defconfig.
+
+Kevin

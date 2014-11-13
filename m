@@ -1,16 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:22054 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013600AbaKMLI5dOACN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Nov 2014 12:08:57 +0100
-From: James Cowgill <James.Cowgill@imgtec.com>
-Subject: [PATCH 2/2] mips: fix __node_distances undefined error on ip27
-Date: Thu, 13 Nov 2014 11:08:07 +0000
-Message-ID: <1415876887-13957-2-git-send-email-James.Cowgill@imgtec.com>
-In-Reply-To: <1415876887-13957-1-git-send-email-James.Cowgill@imgtec.com>
-References: <1415876887-13957-1-git-send-email-James.Cowgill@imgtec.com>
+Received: from relay1.mentorg.com ([192.94.38.131]:42467 "EHLO
+        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27009415AbaKMVvGfNy1n (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Nov 2014 22:51:06 +0100
+Date: Thu, 13 Nov 2014 21:50:54 +0000
+From: "Maciej W. Rozycki" <macro@codesourcery.com>
+Subject: Re: [PATCH] MIPS: copy_to_user_page: Avoid ptrace(2) I-cache
+ incoherency
+In-Reply-To: <20140321100727.GJ4365@linux-mips.org>
+Message-ID: <alpine.DEB.1.10.1411132049590.2881@tp.orcam.me.uk>
+References: <alpine.DEB.1.10.1311071758410.21686@tp.orcam.me.uk> <20140321100727.GJ4365@linux-mips.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Cowgill@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej_Rozycki@mentor.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,40 +21,119 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Ralf Baechle <ralf@linux-mips.org>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, Huacai Chen <chenhc@lemote.com>, James Hogan <james.hogan@imgtec.com>, James Cowgill <James.Cowgill@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20141113110807.DtDzZwLCJql7_Pv-YBfy_URGbG-Ilvywk_n6ijohVlw@z>
+To: Ralf Baechle <ralf@linux-mips.org>, David Daney <ddaney.cavm@gmail.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20141113215054.bg4xQ7ZIUASaYMtV5zEWN4i-mgvJwlLxldmCerLBX3Q@z>
 
-export the __node_distances symbol in the ip27 memory code to fix the
-build error:
+On Fri, 21 Mar 2014, Ralf Baechle wrote:
 
-  Building modules, stage 2.
-  MODPOST 311 modules
-ERROR: "__node_distances" [drivers/block/nvme.ko] undefined!
-scripts/Makefile.modpost:90: recipe for target '__modpost' failed
+> >  Please apply.  I've seen these SIGTRAPs in some NetLogic GDB testing and 
+> > the removal of this cpu_has_ic_fills_f_dc condition from copy_to_user_page 
+> > is really necessary; also the Au1200 document is very explicit about the 
+> > requirement of I-cache invalidation in software (see Section 2.3.7.3 
+> > "Instruction Cache Coherency").
+> 
+> You found a bug and yes, the fix you sent improves things a bit.  But
+> there is also the cache on a cache coherent system where a page might
+> be marked for a delayed cache flush with SetPageDcacheDirty(), then
+> flushed by flush_cache_page() before eventually the delayed cacheflush
+> flushes it once more for a good meassure.
+> 
+> What do you think about below patch to also deal with the duplicate flushing?
+> 
+>   Ralf
+> 
+>  arch/mips/mm/init.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
+> index 6b59617..80072ef 100644
+> --- a/arch/mips/mm/init.c
+> +++ b/arch/mips/mm/init.c
+> @@ -227,13 +227,13 @@ void copy_to_user_page(struct vm_area_struct *vma,
+>  		void *vto = kmap_coherent(page, vaddr) + (vaddr & ~PAGE_MASK);
+>  		memcpy(vto, src, len);
+>  		kunmap_coherent();
+> +		if (vma->vm_flags & VM_EXEC)
+> +			flush_cache_page(vma, vaddr, page_to_pfn(page));
+>  	} else {
+>  		memcpy(dst, src, len);
+>  		if (cpu_has_dc_aliases)
+>  			SetPageDcacheDirty(page);
+>  	}
+> -	if ((vma->vm_flags & VM_EXEC) && !cpu_has_ic_fills_f_dc)
+> -		flush_cache_page(vma, vaddr, page_to_pfn(page));
+>  }
+>  
+>  void copy_from_user_page(struct vm_area_struct *vma,
 
-when building the kernel with:
- CONFIG_SGI_IP27=y
- CONFIG_BLK_DEV_NVME=m
+ This clearly won't work, because `cpu_has_dc_aliases' is unset for 
+NetLogic processors and therefore the second leg of the conditional you 
+propose to patch is taken, whereas your change applies to the first leg.
 
-Signed-off-by: James Cowgill <James.Cowgill@imgtec.com>
-Cc: <stable@vger.kernel.org> # v3.15+
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
----
- arch/mips/sgi-ip27/ip27-memory.c | 1 +
- 1 file changed, 1 insertion(+)
+ So if you want to tackle the case of SetPageDcacheDirty, then here it 
+has to be something along the lines of:
 
-diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
-index a95c00f..a304bcc 100644
---- a/arch/mips/sgi-ip27/ip27-memory.c
-+++ b/arch/mips/sgi-ip27/ip27-memory.c
-@@ -107,6 +107,7 @@ static void router_recurse(klrou_t *router_a, klrou_t *router_b, int depth)
- }
- 
- unsigned char __node_distances[MAX_COMPACT_NODES][MAX_COMPACT_NODES];
-+EXPORT_SYMBOL(__node_distances);
- 
- static int __init compute_node_distance(nasid_t nasid_a, nasid_t nasid_b)
- {
--- 
-2.1.3
+{
+	int delayed_cache_flush = 0
+
+        if (cpu_has_dc_aliases &&
+	    page_mapped(page) && !Page_dcache_dirty(page)) {
+		void *vto = kmap_coherent(page, vaddr) + (vaddr & ~PAGE_MASK);
+		memcpy(vto, src, len);
+		kunmap_coherent();
+	} else {
+		memcpy(dst, src, len);
+		if (cpu_has_dc_aliases) {
+			delayed_cache_flush = 1;
+			SetPageDcacheDirty(page);
+		}
+	}
+	if (!delayed_cache_flush && (vma->vm_flags & VM_EXEC))
+		flush_cache_page(vma, vaddr, page_to_pfn(page));
+}
+
+and then all the places where the delayed flush is made (a couple, 
+according to Page_dcache_dirty() references) updated accordingly to 
+synchronise the I-cache too.
+
+ Although it seems to me we may have no easy way to access VM flags 
+there, so perhaps another page flag to mark the required I-cache flush 
+too?  Like:
+
+	if ((vma->vm_flags & VM_EXEC)) {
+		if (delayed_cache_flush)
+			SetPageIcacheStale(page);
+		else
+			flush_cache_page(vma, vaddr, page_to_pfn(page));
+	}
+
+?  WDYT?
+
+On Fri, 21 Mar 2014, David Daney wrote:
+
+> The problem only happens when modifying target executable code through the
+> ptrace() system call.
+> 
+> For all cases where a program is modifying its own executable memory, 
+> we require that it make the special mips cacheflush system call.
+> 
+> I don't object to modifying this file, but I wonder if the call to the 
+> flushing function should be pushed up into the ptrace() code.
+
+ Hmm, good point, although it looks to me a lot of __access_remote_vm() 
+code would have to be carried over or maybe factored out somehow from 
+mm/memory.c to arch/mips/kernel/ptrace.c.  So although it sounds to me 
+like a reasonable idea overall, it also appears to me it would best be 
+done as a separate project rather than a part of a fix for this specific 
+bug.
+
+ Especially as overall what we do here is an extreme overkill.  Call to 
+ptrace(PTRACE_POKETEXT, ...) are typically made to patch up single 
+instructions so at most two cache lines need to be sychronised whereas 
+we use a sledgehammer and kill a whole page worth of cache data -- 
+always painful and even more painful if you go up to 16kB let alone 64kB 
+with the page size.  Then from the MIPS32r2 ISA onwards we have the 
+SYNCI instruction that could be used instead that would save even more.
+
+  Maciej

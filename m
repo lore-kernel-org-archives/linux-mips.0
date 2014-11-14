@@ -1,17 +1,16 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:42467 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009415AbaKMVvGfNy1n (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Nov 2014 22:51:06 +0100
-Date: Thu, 13 Nov 2014 21:50:54 +0000
-From: "Maciej W. Rozycki" <macro@codesourcery.com>
-Subject: Re: [PATCH] MIPS: copy_to_user_page: Avoid ptrace(2) I-cache
- incoherency
-In-Reply-To: <20140321100727.GJ4365@linux-mips.org>
-Message-ID: <alpine.DEB.1.10.1411132049590.2881@tp.orcam.me.uk>
-References: <alpine.DEB.1.10.1311071758410.21686@tp.orcam.me.uk> <20140321100727.GJ4365@linux-mips.org>
+Received: from mail-qa0-f51.google.com ([209.85.216.51]:46506 "EHLO
+        mail-qa0-f51.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27012688AbaKNG2ik0ZuG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 14 Nov 2014 07:28:38 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej_Rozycki@mentor.com>
+In-Reply-To: <20141031113358.GY32045@tbergstrom-lnx.Nvidia.com>
+References: <1414666135-14313-1-git-send-email-tomeu.vizoso@collabora.com> <20141031113358.GY32045@tbergstrom-lnx.Nvidia.com>
+From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Date: Fri, 14 Nov 2014 07:28:12 +0100
+Message-ID: <CAAObsKARz=Y3J74Fm+MVOuH-ftK6yGSxWnNtd3LpHZjebKCGsg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/7] Per-user clock constraints
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <tomeu.vizoso@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,119 +20,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, David Daney <ddaney.cavm@gmail.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20141113215054.bg4xQ7ZIUASaYMtV5zEWN4i-mgvJwlLxldmCerLBX3Q@z>
+To: Peter De Schrijver <pdeschrijver@nvidia.com>
+Cc: Mike Turquette <mturquette@linaro.org>, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Stephen Boyd <sboyd@codeaurora.org>, Alex Elder <elder@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Haojian Zhuang <haojian.zhuang@linaro.org>, Jaehoon Chung <jh80.chung@samsung.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-doc@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-mips@linux-mips.org, linux-omap@vger.kernel.org, Manuel Lauss <manuel.lauss@gmail.com>, Matt Porter <mporter@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Zhangfei Gao <zhangfei.gao@linaro.org>
+Message-ID: <20141114062812.P-qVLQGbO6Ppayw7Rp7NlQKknTJ8rsMn2ZV24qS2vMc@z>
 
-On Fri, 21 Mar 2014, Ralf Baechle wrote:
+On 31 October 2014 12:33, Peter De Schrijver <pdeschrijver@nvidia.com> wrote:
+> On Thu, Oct 30, 2014 at 11:48:26AM +0100, Tomeu Vizoso wrote:
+>> Hello,
+>>
+>> this fifth version of the series has just one change, suggested by Stephen:
 
-> >  Please apply.  I've seen these SIGTRAPs in some NetLogic GDB testing and 
-> > the removal of this cpu_has_ic_fills_f_dc condition from copy_to_user_page 
-> > is really necessary; also the Au1200 document is very explicit about the 
-> > requirement of I-cache invalidation in software (see Section 2.3.7.3 
-> > "Instruction Cache Coherency").
-> 
-> You found a bug and yes, the fix you sent improves things a bit.  But
-> there is also the cache on a cache coherent system where a page might
-> be marked for a delayed cache flush with SetPageDcacheDirty(), then
-> flushed by flush_cache_page() before eventually the delayed cacheflush
-> flushes it once more for a good meassure.
-> 
-> What do you think about below patch to also deal with the duplicate flushing?
-> 
->   Ralf
-> 
->  arch/mips/mm/init.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-> index 6b59617..80072ef 100644
-> --- a/arch/mips/mm/init.c
-> +++ b/arch/mips/mm/init.c
-> @@ -227,13 +227,13 @@ void copy_to_user_page(struct vm_area_struct *vma,
->  		void *vto = kmap_coherent(page, vaddr) + (vaddr & ~PAGE_MASK);
->  		memcpy(vto, src, len);
->  		kunmap_coherent();
-> +		if (vma->vm_flags & VM_EXEC)
-> +			flush_cache_page(vma, vaddr, page_to_pfn(page));
->  	} else {
->  		memcpy(dst, src, len);
->  		if (cpu_has_dc_aliases)
->  			SetPageDcacheDirty(page);
->  	}
-> -	if ((vma->vm_flags & VM_EXEC) && !cpu_has_ic_fills_f_dc)
-> -		flush_cache_page(vma, vaddr, page_to_pfn(page));
->  }
->  
->  void copy_from_user_page(struct vm_area_struct *vma,
+Hi Mike, how is this looking for 3.19?
 
- This clearly won't work, because `cpu_has_dc_aliases' is unset for 
-NetLogic processors and therefore the second leg of the conditional you 
-propose to patch is taken, whereas your change applies to the first leg.
+Regards,
 
- So if you want to tackle the case of SetPageDcacheDirty, then here it 
-has to be something along the lines of:
+Tomeu
 
-{
-	int delayed_cache_flush = 0
-
-        if (cpu_has_dc_aliases &&
-	    page_mapped(page) && !Page_dcache_dirty(page)) {
-		void *vto = kmap_coherent(page, vaddr) + (vaddr & ~PAGE_MASK);
-		memcpy(vto, src, len);
-		kunmap_coherent();
-	} else {
-		memcpy(dst, src, len);
-		if (cpu_has_dc_aliases) {
-			delayed_cache_flush = 1;
-			SetPageDcacheDirty(page);
-		}
-	}
-	if (!delayed_cache_flush && (vma->vm_flags & VM_EXEC))
-		flush_cache_page(vma, vaddr, page_to_pfn(page));
-}
-
-and then all the places where the delayed flush is made (a couple, 
-according to Page_dcache_dirty() references) updated accordingly to 
-synchronise the I-cache too.
-
- Although it seems to me we may have no easy way to access VM flags 
-there, so perhaps another page flag to mark the required I-cache flush 
-too?  Like:
-
-	if ((vma->vm_flags & VM_EXEC)) {
-		if (delayed_cache_flush)
-			SetPageIcacheStale(page);
-		else
-			flush_cache_page(vma, vaddr, page_to_pfn(page));
-	}
-
-?  WDYT?
-
-On Fri, 21 Mar 2014, David Daney wrote:
-
-> The problem only happens when modifying target executable code through the
-> ptrace() system call.
-> 
-> For all cases where a program is modifying its own executable memory, 
-> we require that it make the special mips cacheflush system call.
-> 
-> I don't object to modifying this file, but I wonder if the call to the 
-> flushing function should be pushed up into the ptrace() code.
-
- Hmm, good point, although it looks to me a lot of __access_remote_vm() 
-code would have to be carried over or maybe factored out somehow from 
-mm/memory.c to arch/mips/kernel/ptrace.c.  So although it sounds to me 
-like a reasonable idea overall, it also appears to me it would best be 
-done as a separate project rather than a part of a fix for this specific 
-bug.
-
- Especially as overall what we do here is an extreme overkill.  Call to 
-ptrace(PTRACE_POKETEXT, ...) are typically made to patch up single 
-instructions so at most two cache lines need to be sychronised whereas 
-we use a sledgehammer and kill a whole page worth of cache data -- 
-always painful and even more painful if you go up to 16kB let alone 64kB 
-with the page size.  Then from the MIPS32r2 ISA onwards we have the 
-SYNCI instruction that could be used instead that would save even more.
-
-  Maciej
+>> * Initialize clk.ceiling_constraint to ULONG_MAX and warn about new floor
+>> constraints being higher than the existing ceiling.
+>>
+>> The first five patches are just cleanups that should be desirable on their own,
+>> and that should make easier to review the actual per-user clock patch.
+>>
+>> The sixth patch actually moves the per-clock data that was stored in struct
+>> clk to a new struct clk_core and adds references to it from both struct clk and
+>> struct clk_hw. struct clk is now ready to contain information that is specific
+>> to a given clk consumer.
+>>
+>> The seventh patch adds API for setting floor and ceiling constraints and stores
+>> that information on the per-user struct clk, which is iterable from struct
+>> clk_core.
+>>
+>> They are based on top of 3.18-rc1.
+>>
+>> http://cgit.collabora.com/git/user/tomeu/linux.git/log/?h=per-user-clk-constraints-v5
+>>
+>
+> Acked-By: Peter De Schrijver <pdeschrijver@nvidia.com>
+>
+> Mike,
+>
+> Do you think this will be merged for 3.19?
+>
+> Thanks,
+>
+> Peter.
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/

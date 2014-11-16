@@ -1,13 +1,12 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:54543 "EHLO
+Received: from relay1.mentorg.com ([192.94.38.131]:60612 "EHLO
         relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013682AbaKOWKFYFA1L (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 15 Nov 2014 23:10:05 +0100
-Date: Sat, 15 Nov 2014 22:09:54 +0000
+        with ESMTP id S27013700AbaKPBCnSl90G (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 16 Nov 2014 02:02:43 +0100
+Date: Sun, 16 Nov 2014 01:02:29 +0000
 From: "Maciej W. Rozycki" <macro@codesourcery.com>
-Subject: [PATCH 7/7] MIPS: atomic.h: Reformat to fit in 79 columns
-In-Reply-To: <alpine.DEB.1.10.1411140122420.2881@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.1.10.1411152148070.2881@tp.orcam.me.uk>
-References: <alpine.DEB.1.10.1411140122420.2881@tp.orcam.me.uk>
+Subject: [PATCH] MIPS: c-r4k.c: Fix the 74K D-cache alias erratum
+ workaround
+Message-ID: <alpine.DEB.1.10.1411160041230.2881@tp.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej_Rozycki@mentor.com>
@@ -22,402 +21,117 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20141115220954.f_T46k9cIgCv-6730GEx49xmbbRP626-jTK1ca6x0ro@z>
+Message-ID: <20141116010229.kVFIEIqKneDVb0ZVR1T4XcIAVJRDawHCbmkyFEmUbqQ@z>
+
+Fix the 74K D-cache alias erratum workaround so that it actually works.  
+Our current code sets MIPS_CACHE_VTAG for the D-cache, but that flag 
+only has any effect for the I-cache.  Additionally MIPS_CACHE_PINDEX is 
+set for the D-cache if CP0.Config7.AR is also set for an affected 
+processor, leading to confusing information in the bootstrap log (the 
+flag isn't used beyond that).
+
+So delete the setting of MIPS_CACHE_VTAG and rely on MIPS_CACHE_ALIASES, 
+set in a common place, removing I-cache coherency issues seen in GDB 
+testing with software breakpoints, gdbserver and ptrace(2), on affected 
+systems.
+
+While at it add a little piece of explanation of what CP0.Config6.SYND 
+is so that people do not have to chase documentation.
 
 Signed-off-by: Maciej W. Rozycki <macro@codesourcery.com>
 ---
 Hi,
 
- No comment.  Please apply.
+ It looks like I-cache aliasing handling setup needs some TLC too, first 
+of all what's the purpose of checking CP0.Config7.IAR and setting the 
+MIPS_CACHE_ALIASES flag for the I-cache where the flag is nowhere used 
+afterwards?  Anyway that's something for another occasion.  For now, 
+please apply this change.
 
   Maciej
 
-linux-mips-atomic-format.diff
-Index: linux-3.18-rc4-malta/arch/mips/include/asm/atomic.h
+linux-mips-vtag-dcache-fix.diff
+Index: linux-3.18-rc4-malta/arch/mips/mm/c-r4k.c
 ===================================================================
---- linux-3.18-rc4-malta.orig/arch/mips/include/asm/atomic.h	2014-11-15 05:56:06.000000000 +0000
-+++ linux-3.18-rc4-malta/arch/mips/include/asm/atomic.h	2014-11-15 06:06:58.551778827 +0000
-@@ -41,97 +41,97 @@
-  */
- #define atomic_set(v, i)		((v)->counter = (i))
- 
--#define ATOMIC_OP(op, c_op, asm_op)						\
--static __inline__ void atomic_##op(int i, atomic_t * v)				\
--{										\
--	if (kernel_uses_llsc && R10000_LLSC_WAR) {				\
--		int temp;							\
--										\
--		__asm__ __volatile__(						\
--		"	.set	arch=r4000				\n"	\
--		"1:	ll	%0, %1		# atomic_" #op "	\n"	\
--		"	" #asm_op " %0, %2				\n"	\
--		"	sc	%0, %1					\n"	\
--		"	beqzl	%0, 1b					\n"	\
--		"	.set	mips0					\n"	\
--		: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)		\
--		: "Ir" (i));							\
--	} else if (kernel_uses_llsc) {						\
--		int temp;							\
--										\
--		do {								\
--			__asm__ __volatile__(					\
--			"	.set	arch=r4000			\n"	\
--			"	ll	%0, %1		# atomic_" #op "\n"	\
--			"	" #asm_op " %0, %2			\n"	\
--			"	sc	%0, %1				\n"	\
--			"	.set	mips0				\n"	\
--			: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)	\
--			: "Ir" (i));						\
--		} while (unlikely(!temp));					\
--	} else {								\
--		unsigned long flags;						\
--										\
--		raw_local_irq_save(flags);					\
--		v->counter c_op i;						\
--		raw_local_irq_restore(flags);					\
--	}									\
--}										\
-+#define ATOMIC_OP(op, c_op, asm_op)					      \
-+static __inline__ void atomic_##op(int i, atomic_t * v)			      \
-+{									      \
-+	if (kernel_uses_llsc && R10000_LLSC_WAR) {			      \
-+		int temp;						      \
-+									      \
-+		__asm__ __volatile__(					      \
-+		"	.set	arch=r4000				\n"   \
-+		"1:	ll	%0, %1		# atomic_" #op "	\n"   \
-+		"	" #asm_op " %0, %2				\n"   \
-+		"	sc	%0, %1					\n"   \
-+		"	beqzl	%0, 1b					\n"   \
-+		"	.set	mips0					\n"   \
-+		: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)	      \
-+		: "Ir" (i));						      \
-+	} else if (kernel_uses_llsc) {					      \
-+		int temp;						      \
-+									      \
-+		do {							      \
-+			__asm__ __volatile__(				      \
-+			"	.set	arch=r4000			\n"   \
-+			"	ll	%0, %1		# atomic_" #op "\n"   \
-+			"	" #asm_op " %0, %2			\n"   \
-+			"	sc	%0, %1				\n"   \
-+			"	.set	mips0				\n"   \
-+			: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)      \
-+			: "Ir" (i));					      \
-+		} while (unlikely(!temp));				      \
-+	} else {							      \
-+		unsigned long flags;					      \
-+									      \
-+		raw_local_irq_save(flags);				      \
-+		v->counter c_op i;					      \
-+		raw_local_irq_restore(flags);				      \
-+	}								      \
-+}
- 
--#define ATOMIC_OP_RETURN(op, c_op, asm_op)					\
--static __inline__ int atomic_##op##_return(int i, atomic_t * v)			\
--{										\
--	int result;								\
--										\
--	smp_mb__before_llsc();							\
--										\
--	if (kernel_uses_llsc && R10000_LLSC_WAR) {				\
--		int temp;							\
--										\
--		__asm__ __volatile__(						\
--		"	.set	arch=r4000				\n"	\
--		"1:	ll	%1, %2		# atomic_" #op "_return	\n"	\
--		"	" #asm_op " %0, %1, %3				\n"	\
--		"	sc	%0, %2					\n"	\
--		"	beqzl	%0, 1b					\n"	\
--		"	" #asm_op " %0, %1, %3				\n"	\
--		"	.set	mips0					\n"	\
--		: "=&r" (result), "=&r" (temp),					\
--		  "+" GCC_OFF12_ASM() (v->counter)				\
--		: "Ir" (i));							\
--	} else if (kernel_uses_llsc) {						\
--		int temp;							\
--										\
--		do {								\
--			__asm__ __volatile__(					\
--			"	.set	arch=r4000			\n"	\
--			"	ll	%1, %2	# atomic_" #op "_return	\n"	\
--			"	" #asm_op " %0, %1, %3			\n"	\
--			"	sc	%0, %2				\n"	\
--			"	.set	mips0				\n"	\
--			: "=&r" (result), "=&r" (temp),				\
--			  "+" GCC_OFF12_ASM() (v->counter)			\
--			: "Ir" (i));						\
--		} while (unlikely(!result));					\
--										\
--		result = temp; result c_op i;					\
--	} else {								\
--		unsigned long flags;						\
--										\
--		raw_local_irq_save(flags);					\
--		result = v->counter;						\
--		result c_op i;							\
--		v->counter = result;						\
--		raw_local_irq_restore(flags);					\
--	}									\
--										\
--	smp_llsc_mb();								\
--										\
--	return result;								\
-+#define ATOMIC_OP_RETURN(op, c_op, asm_op)				      \
-+static __inline__ int atomic_##op##_return(int i, atomic_t * v)		      \
-+{									      \
-+	int result;							      \
-+									      \
-+	smp_mb__before_llsc();						      \
-+									      \
-+	if (kernel_uses_llsc && R10000_LLSC_WAR) {			      \
-+		int temp;						      \
-+									      \
-+		__asm__ __volatile__(					      \
-+		"	.set	arch=r4000				\n"   \
-+		"1:	ll	%1, %2		# atomic_" #op "_return	\n"   \
-+		"	" #asm_op " %0, %1, %3				\n"   \
-+		"	sc	%0, %2					\n"   \
-+		"	beqzl	%0, 1b					\n"   \
-+		"	" #asm_op " %0, %1, %3				\n"   \
-+		"	.set	mips0					\n"   \
-+		: "=&r" (result), "=&r" (temp),				      \
-+		  "+" GCC_OFF12_ASM() (v->counter)			      \
-+		: "Ir" (i));						      \
-+	} else if (kernel_uses_llsc) {					      \
-+		int temp;						      \
-+									      \
-+		do {							      \
-+			__asm__ __volatile__(				      \
-+			"	.set	arch=r4000			\n"   \
-+			"	ll	%1, %2	# atomic_" #op "_return	\n"   \
-+			"	" #asm_op " %0, %1, %3			\n"   \
-+			"	sc	%0, %2				\n"   \
-+			"	.set	mips0				\n"   \
-+			: "=&r" (result), "=&r" (temp),			      \
-+			  "+" GCC_OFF12_ASM() (v->counter)		      \
-+			: "Ir" (i));					      \
-+		} while (unlikely(!result));				      \
-+									      \
-+		result = temp; result c_op i;				      \
-+	} else {							      \
-+		unsigned long flags;					      \
-+									      \
-+		raw_local_irq_save(flags);				      \
-+		result = v->counter;					      \
-+		result c_op i;						      \
-+		v->counter = result;					      \
-+		raw_local_irq_restore(flags);				      \
-+	}								      \
-+									      \
-+	smp_llsc_mb();							      \
-+									      \
-+	return result;							      \
+--- linux-3.18-rc4-malta.orig/arch/mips/mm/c-r4k.c	2014-11-16 00:08:15.511902298 +0000
++++ linux-3.18-rc4-malta/arch/mips/mm/c-r4k.c	2014-11-16 00:20:45.131908612 +0000
+@@ -888,33 +888,39 @@ static inline void rm7k_erratum31(void)
+ 	}
  }
  
--#define ATOMIC_OPS(op, c_op, asm_op)						\
--	ATOMIC_OP(op, c_op, asm_op)						\
-+#define ATOMIC_OPS(op, c_op, asm_op)					      \
-+	ATOMIC_OP(op, c_op, asm_op)					      \
- 	ATOMIC_OP_RETURN(op, c_op, asm_op)
+-static inline void alias_74k_erratum(struct cpuinfo_mips *c)
++static inline int alias_74k_erratum(struct cpuinfo_mips *c)
+ {
+ 	unsigned int imp = c->processor_id & PRID_IMP_MASK;
+ 	unsigned int rev = c->processor_id & PRID_REV_MASK;
++	int present = 0;
  
- ATOMIC_OPS(add, +=, addu)
-@@ -320,98 +320,98 @@ static __inline__ int __atomic_add_unles
-  */
- #define atomic64_set(v, i)	((v)->counter = (i))
- 
--#define ATOMIC64_OP(op, c_op, asm_op)						\
--static __inline__ void atomic64_##op(long i, atomic64_t * v)			\
--{										\
--	if (kernel_uses_llsc && R10000_LLSC_WAR) {				\
--		long temp;							\
--										\
--		__asm__ __volatile__(						\
--		"	.set	arch=r4000				\n"	\
--		"1:	lld	%0, %1		# atomic64_" #op "	\n"	\
--		"	" #asm_op " %0, %2				\n"	\
--		"	scd	%0, %1					\n"	\
--		"	beqzl	%0, 1b					\n"	\
--		"	.set	mips0					\n"	\
--		: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)		\
--		: "Ir" (i));							\
--	} else if (kernel_uses_llsc) {						\
--		long temp;							\
--										\
--		do {								\
--			__asm__ __volatile__(					\
--			"	.set	arch=r4000			\n"	\
--			"	lld	%0, %1		# atomic64_" #op "\n"	\
--			"	" #asm_op " %0, %2			\n"	\
--			"	scd	%0, %1				\n"	\
--			"	.set	mips0				\n"	\
--			: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)	\
--			: "Ir" (i));						\
--		} while (unlikely(!temp));					\
--	} else {								\
--		unsigned long flags;						\
--										\
--		raw_local_irq_save(flags);					\
--		v->counter c_op i;						\
--		raw_local_irq_restore(flags);					\
--	}									\
--}										\
-+#define ATOMIC64_OP(op, c_op, asm_op)					      \
-+static __inline__ void atomic64_##op(long i, atomic64_t * v)		      \
-+{									      \
-+	if (kernel_uses_llsc && R10000_LLSC_WAR) {			      \
-+		long temp;						      \
-+									      \
-+		__asm__ __volatile__(					      \
-+		"	.set	arch=r4000				\n"   \
-+		"1:	lld	%0, %1		# atomic64_" #op "	\n"   \
-+		"	" #asm_op " %0, %2				\n"   \
-+		"	scd	%0, %1					\n"   \
-+		"	beqzl	%0, 1b					\n"   \
-+		"	.set	mips0					\n"   \
-+		: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)	      \
-+		: "Ir" (i));						      \
-+	} else if (kernel_uses_llsc) {					      \
-+		long temp;						      \
-+									      \
-+		do {							      \
-+			__asm__ __volatile__(				      \
-+			"	.set	arch=r4000			\n"   \
-+			"	lld	%0, %1		# atomic64_" #op "\n" \
-+			"	" #asm_op " %0, %2			\n"   \
-+			"	scd	%0, %1				\n"   \
-+			"	.set	mips0				\n"   \
-+			: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)      \
-+			: "Ir" (i));					      \
-+		} while (unlikely(!temp));				      \
-+	} else {							      \
-+		unsigned long flags;					      \
-+									      \
-+		raw_local_irq_save(flags);				      \
-+		v->counter c_op i;					      \
-+		raw_local_irq_restore(flags);				      \
-+	}								      \
-+}
- 
--#define ATOMIC64_OP_RETURN(op, c_op, asm_op)					\
--static __inline__ long atomic64_##op##_return(long i, atomic64_t * v)		\
--{										\
--	long result;								\
--										\
--	smp_mb__before_llsc();							\
--										\
--	if (kernel_uses_llsc && R10000_LLSC_WAR) {				\
--		long temp;							\
--										\
--		__asm__ __volatile__(						\
--		"	.set	arch=r4000				\n"	\
--		"1:	lld	%1, %2		# atomic64_" #op "_return\n"	\
--		"	" #asm_op " %0, %1, %3				\n"	\
--		"	scd	%0, %2					\n"	\
--		"	beqzl	%0, 1b					\n"	\
--		"	" #asm_op " %0, %1, %3				\n"	\
--		"	.set	mips0					\n"	\
--		: "=&r" (result), "=&r" (temp),					\
--		  "+" GCC_OFF12_ASM() (v->counter)				\
--		: "Ir" (i));							\
--	} else if (kernel_uses_llsc) {						\
--		long temp;							\
--										\
--		do {								\
--			__asm__ __volatile__(					\
--			"	.set	arch=r4000			\n"	\
--			"	lld	%1, %2	# atomic64_" #op "_return\n"	\
--			"	" #asm_op " %0, %1, %3			\n"	\
--			"	scd	%0, %2				\n"	\
--			"	.set	mips0				\n"	\
--			: "=&r" (result), "=&r" (temp),				\
--			  "=" GCC_OFF12_ASM() (v->counter)			\
--			: "Ir" (i), GCC_OFF12_ASM() (v->counter)		\
--			: "memory");						\
--		} while (unlikely(!result));					\
--										\
--		result = temp; result c_op i;					\
--	} else {								\
--		unsigned long flags;						\
--										\
--		raw_local_irq_save(flags);					\
--		result = v->counter;						\
--		result c_op i;							\
--		v->counter = result;						\
--		raw_local_irq_restore(flags);					\
--	}									\
--										\
--	smp_llsc_mb();								\
--										\
--	return result;								\
-+#define ATOMIC64_OP_RETURN(op, c_op, asm_op)				      \
-+static __inline__ long atomic64_##op##_return(long i, atomic64_t * v)	      \
-+{									      \
-+	long result;							      \
-+									      \
-+	smp_mb__before_llsc();						      \
-+									      \
-+	if (kernel_uses_llsc && R10000_LLSC_WAR) {			      \
-+		long temp;						      \
-+									      \
-+		__asm__ __volatile__(					      \
-+		"	.set	arch=r4000				\n"   \
-+		"1:	lld	%1, %2		# atomic64_" #op "_return\n"  \
-+		"	" #asm_op " %0, %1, %3				\n"   \
-+		"	scd	%0, %2					\n"   \
-+		"	beqzl	%0, 1b					\n"   \
-+		"	" #asm_op " %0, %1, %3				\n"   \
-+		"	.set	mips0					\n"   \
-+		: "=&r" (result), "=&r" (temp),				      \
-+		  "+" GCC_OFF12_ASM() (v->counter)			      \
-+		: "Ir" (i));						      \
-+	} else if (kernel_uses_llsc) {					      \
-+		long temp;						      \
-+									      \
-+		do {							      \
-+			__asm__ __volatile__(				      \
-+			"	.set	arch=r4000			\n"   \
-+			"	lld	%1, %2	# atomic64_" #op "_return\n"  \
-+			"	" #asm_op " %0, %1, %3			\n"   \
-+			"	scd	%0, %2				\n"   \
-+			"	.set	mips0				\n"   \
-+			: "=&r" (result), "=&r" (temp),			      \
-+			  "=" GCC_OFF12_ASM() (v->counter)		      \
-+			: "Ir" (i), GCC_OFF12_ASM() (v->counter)	      \
-+			: "memory");					      \
-+		} while (unlikely(!result));				      \
-+									      \
-+		result = temp; result c_op i;				      \
-+	} else {							      \
-+		unsigned long flags;					      \
-+									      \
-+		raw_local_irq_save(flags);				      \
-+		result = v->counter;					      \
-+		result c_op i;						      \
-+		v->counter = result;					      \
-+		raw_local_irq_restore(flags);				      \
-+	}								      \
-+									      \
-+	smp_llsc_mb();							      \
-+									      \
-+	return result;							      \
+ 	/*
+ 	 * Early versions of the 74K do not update the cache tags on a
+ 	 * vtag miss/ptag hit which can occur in the case of KSEG0/KUSEG
+-	 * aliases. In this case it is better to treat the cache as always
+-	 * having aliases.
++	 * aliases.  In this case it is better to treat the cache as always
++	 * having aliases.  Also disable the synonym tag update feature
++	 * where available.  In this case no opportunistic tag update will
++	 * happen where a load causes a virtual address miss but a physical
++	 * address hit during a D-cache look-up.
+ 	 */
+ 	switch (imp) {
+ 	case PRID_IMP_74K:
+ 		if (rev <= PRID_REV_ENCODE_332(2, 4, 0))
+-			c->dcache.flags |= MIPS_CACHE_VTAG;
++			present = 1;
+ 		if (rev == PRID_REV_ENCODE_332(2, 4, 0))
+ 			write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
+ 		break;
+ 	case PRID_IMP_1074K:
+ 		if (rev <= PRID_REV_ENCODE_332(1, 1, 0)) {
+-			c->dcache.flags |= MIPS_CACHE_VTAG;
++			present = 1;
+ 			write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
+ 		}
+ 		break;
+ 	default:
+ 		BUG();
+ 	}
++
++	return present;
  }
  
--#define ATOMIC64_OPS(op, c_op, asm_op)						\
--	ATOMIC64_OP(op, c_op, asm_op)						\
-+#define ATOMIC64_OPS(op, c_op, asm_op)					      \
-+	ATOMIC64_OP(op, c_op, asm_op)					      \
- 	ATOMIC64_OP_RETURN(op, c_op, asm_op)
+ static char *way_string[] = { NULL, "direct mapped", "2-way",
+@@ -926,6 +932,7 @@ static void probe_pcache(void)
+ 	struct cpuinfo_mips *c = &current_cpu_data;
+ 	unsigned int config = read_c0_config();
+ 	unsigned int prid = read_c0_prid();
++	int has_74k_erratum = 0;
+ 	unsigned long config1;
+ 	unsigned int lsize;
  
- ATOMIC64_OPS(add, +=, daddu)
-@@ -422,7 +422,8 @@ ATOMIC64_OPS(sub, -=, dsubu)
- #undef ATOMIC64_OP
+@@ -1232,7 +1239,7 @@ static void probe_pcache(void)
  
- /*
-- * atomic64_sub_if_positive - conditionally subtract integer from atomic variable
-+ * atomic64_sub_if_positive - conditionally subtract integer from atomic
-+ *                            variable
-  * @i: integer value to subtract
-  * @v: pointer of type atomic64_t
-  *
+ 	case CPU_74K:
+ 	case CPU_1074K:
+-		alias_74k_erratum(c);
++		has_74k_erratum = alias_74k_erratum(c);
+ 		/* Fall through. */
+ 	case CPU_M14KC:
+ 	case CPU_M14KEC:
+@@ -1246,7 +1253,7 @@ static void probe_pcache(void)
+ 		if (!(read_c0_config7() & MIPS_CONF7_IAR) &&
+ 		    (c->icache.waysize > PAGE_SIZE))
+ 			c->icache.flags |= MIPS_CACHE_ALIASES;
+-		if (read_c0_config7() & MIPS_CONF7_AR) {
++		if (!has_74k_erratum && (read_c0_config7() & MIPS_CONF7_AR)) {
+ 			/*
+ 			 * Effectively physically indexed dcache,
+ 			 * thus no virtual aliases.
+@@ -1255,7 +1262,7 @@ static void probe_pcache(void)
+ 			break;
+ 		}
+ 	default:
+-		if (c->dcache.waysize > PAGE_SIZE)
++		if (has_74k_erratum || c->dcache.waysize > PAGE_SIZE)
+ 			c->dcache.flags |= MIPS_CACHE_ALIASES;
+ 	}
+ 

@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:25537 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013814AbaKQJhyieRV4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Nov 2014 10:37:54 +0100
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id D9E5F9B6B47D2
-        for <linux-mips@linux-mips.org>; Mon, 17 Nov 2014 09:37:46 +0000 (GMT)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: lib: mips-atomic.c: Remove obsolete ifdefery
-Date: Mon, 17 Nov 2014 09:37:43 +0000
-Message-ID: <1416217063-12114-1-git-send-email-markos.chandras@imgtec.com>
+Received: from smtp.citrix.com ([66.165.176.89]:48774 "EHLO SMTP.CITRIX.COM"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27013837AbaKQOMV6zVqE (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 17 Nov 2014 15:12:21 +0100
+Date: Mon, 17 Nov 2014 14:11:51 +0000
+From: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
+Subject: [RFC] add a struct page* parameter to dma_map_ops.unmap_page
+Message-ID: <alpine.DEB.2.02.1411111644490.26318@kaball.uk.xensource.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Stefano.Stabellini@citrix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,92 +18,78 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20141117093743.lMHX5nYb1SrabzuSmgW_R6TY8B5bygssoo1tlEmSVX4@z>
+To: gregkh@linuxfoundation.org
+Cc: David Vrabel <david.vrabel@citrix.com>, Ian Campbell <Ian.Campbell@citrix.com>, konrad.wilk@oracle.com, linux-kernel@vger.kernel.org, xen-devel@lists.xensource.com, torvalds@linux-foundation.org, vinod.koul@intel.com, dmaengine@vger.kernel.org, Stefano Stabellini <Stefano.Stabellini@eu.citrix.com>, bhelgaas@google.com, jejb@parisc-linux.org, deller@gmx.de, linux-parisc@vger.kernel.org, iommu@lists.linux-foundation.org, airlied@linux.ie, dri-devel@lists.freedesktop.org, alexander.deucher@amd.com, christian.koenig@amd.com, linux@arm.linux.org.uk, linux-mips@linux-mips.org, ralf@linux-mips.org, linux-arm-kernel@lists.infradead.org, dwmw2@infradead.org
+Message-ID: <20141117141151.cRDQviZIF5k-tigsqEddEUWmYvemofnyvxpNkay4PHc@z>
 
-Having #ifdefs just to guard comments is not really helpful
-so drop them. Moreover, the code wasn't really reached anyway
-since there is a #ifndef CONFIG_CPU_MIPSR2 on the top of the file.
+Hi all,
+I am writing this email to ask for your advice.
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/lib/mips-atomic.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+On architectures where dma addresses are different from physical
+addresses, it can be difficult to retrieve the physical address of a
+page from its dma address.
 
-diff --git a/arch/mips/lib/mips-atomic.c b/arch/mips/lib/mips-atomic.c
-index 57bcdaf1f1c8..be777d9a3f85 100644
---- a/arch/mips/lib/mips-atomic.c
-+++ b/arch/mips/lib/mips-atomic.c
-@@ -42,15 +42,11 @@ notrace void arch_local_irq_disable(void)
- 	__asm__ __volatile__(
- 	"	.set	push						\n"
- 	"	.set	noat						\n"
--#if   defined(CONFIG_CPU_MIPSR2)
--	/* see irqflags.h for inline function */
--#else
- 	"	mfc0	$1,$12						\n"
- 	"	ori	$1,0x1f						\n"
- 	"	xori	$1,0x1f						\n"
- 	"	.set	noreorder					\n"
- 	"	mtc0	$1,$12						\n"
--#endif
- 	"	" __stringify(__irq_disable_hazard) "			\n"
- 	"	.set	pop						\n"
- 	: /* no outputs */
-@@ -72,15 +68,11 @@ notrace unsigned long arch_local_irq_save(void)
- 	"	.set	push						\n"
- 	"	.set	reorder						\n"
- 	"	.set	noat						\n"
--#if   defined(CONFIG_CPU_MIPSR2)
--	/* see irqflags.h for inline function */
--#else
- 	"	mfc0	%[flags], $12					\n"
- 	"	ori	$1, %[flags], 0x1f				\n"
- 	"	xori	$1, 0x1f					\n"
- 	"	.set	noreorder					\n"
- 	"	mtc0	$1, $12						\n"
--#endif
- 	"	" __stringify(__irq_disable_hazard) "			\n"
- 	"	.set	pop						\n"
- 	: [flags] "=r" (flags)
-@@ -103,18 +95,12 @@ notrace void arch_local_irq_restore(unsigned long flags)
- 	"	.set	push						\n"
- 	"	.set	noreorder					\n"
- 	"	.set	noat						\n"
--#if   defined(CONFIG_CPU_MIPSR2) && defined(CONFIG_IRQ_CPU)
--	/* see irqflags.h for inline function */
--#elif defined(CONFIG_CPU_MIPSR2)
--	/* see irqflags.h for inline function */
--#else
- 	"	mfc0	$1, $12						\n"
- 	"	andi	%[flags], 1					\n"
- 	"	ori	$1, 0x1f					\n"
- 	"	xori	$1, 0x1f					\n"
- 	"	or	%[flags], $1					\n"
- 	"	mtc0	%[flags], $12					\n"
--#endif
- 	"	" __stringify(__irq_disable_hazard) "			\n"
- 	"	.set	pop						\n"
- 	: [flags] "=r" (__tmp1)
-@@ -136,18 +122,12 @@ notrace void __arch_local_irq_restore(unsigned long flags)
- 	"	.set	push						\n"
- 	"	.set	noreorder					\n"
- 	"	.set	noat						\n"
--#if   defined(CONFIG_CPU_MIPSR2) && defined(CONFIG_IRQ_CPU)
--	/* see irqflags.h for inline function */
--#elif defined(CONFIG_CPU_MIPSR2)
--	/* see irqflags.h for inline function */
--#else
- 	"	mfc0	$1, $12						\n"
- 	"	andi	%[flags], 1					\n"
- 	"	ori	$1, 0x1f					\n"
- 	"	xori	$1, 0x1f					\n"
- 	"	or	%[flags], $1					\n"
- 	"	mtc0	%[flags], $12					\n"
--#endif
- 	"	" __stringify(__irq_disable_hazard) "			\n"
- 	"	.set	pop						\n"
- 	: [flags] "=r" (__tmp1)
--- 
-2.1.3
+Specifically this is the case for Xen on arm and arm64 but I think that
+other architectures might have the same issue.
+
+Knowing the physical address is necessary to be able to issue any
+required cache maintenance operations when unmap_page,
+sync_single_for_cpu and sync_single_for_device are called.
+
+Adding a struct page* parameter to unmap_page, sync_single_for_cpu and
+sync_single_for_device would make Linux dma handling on Xen on arm and
+arm64 much easier and quicker.
+
+I think that other drivers have similar problems, such as the Intel
+IOMMU driver having to call find_iova and walking down an rbtree to get
+the physical address in its implementation of unmap_page.
+
+Callers have the struct page* in their hands already from the previous
+map_page call so it shouldn't be an issue for them.  A problem does
+exist however: there are about 280 callers of dma_unmap_page and
+pci_unmap_page. We have even more callers of the dma_sync_single_for_*
+functions.
+
+
+
+Is such a change even conceivable? How would one go about it?
+
+I think that Xen would not be the only one to gain from it, but I would
+like to have a confirmation from others: given the magnitude of the
+changes involved I would actually prefer to avoid them unless multiple
+drivers/archs/subsystems could really benefit from them.
+
+Cheers,
+
+Stefano
+
+
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index d5d3881..158a765 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -31,8 +31,9 @@ struct dma_map_ops {
+ 			       unsigned long offset, size_t size,
+ 			       enum dma_data_direction dir,
+ 			       struct dma_attrs *attrs);
+-	void (*unmap_page)(struct device *dev, dma_addr_t dma_handle,
+-			   size_t size, enum dma_data_direction dir,
++	void (*unmap_page)(struct device *dev, struct page *page,
++			   dma_addr_t dma_handle, size_t size,
++			   enum dma_data_direction dir,
+ 			   struct dma_attrs *attrs);
+ 	int (*map_sg)(struct device *dev, struct scatterlist *sg,
+ 		      int nents, enum dma_data_direction dir,
+@@ -41,10 +42,10 @@ struct dma_map_ops {
+ 			 struct scatterlist *sg, int nents,
+ 			 enum dma_data_direction dir,
+ 			 struct dma_attrs *attrs);
+-	void (*sync_single_for_cpu)(struct device *dev,
++	void (*sync_single_for_cpu)(struct device *dev, struct page *page,
+ 				    dma_addr_t dma_handle, size_t size,
+ 				    enum dma_data_direction dir);
+-	void (*sync_single_for_device)(struct device *dev,
++	void (*sync_single_for_device)(struct device *dev, struct page *page,
+ 				       dma_addr_t dma_handle, size_t size,
+ 				       enum dma_data_direction dir);
+ 	void (*sync_sg_for_cpu)(struct device *dev,

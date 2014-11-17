@@ -1,17 +1,17 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:64522 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013838AbaKQQKoTOzSC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Nov 2014 17:10:44 +0100
-Date: Mon, 17 Nov 2014 16:10:32 +0000
-From: "Maciej W. Rozycki" <macro@codesourcery.com>
-Subject: [PATCH 2/2] MIPS: jump_label.c: Handle the microMIPS J instruction
- encoding
-In-Reply-To: <alpine.DEB.1.10.1411170524070.2881@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.1.10.1411170530220.2881@tp.orcam.me.uk>
-References: <alpine.DEB.1.10.1411170524070.2881@tp.orcam.me.uk>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:46480 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27013838AbaKQQiPJ0zul (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Nov 2014 17:38:15 +0100
+Message-ID: <546A2465.4030103@imgtec.com>
+Date: Mon, 17 Nov 2014 10:37:57 -0600
+From: "Steven J. Hill" <Steven.Hill@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej_Rozycki@mentor.com>
+Subject: Re: [PATCH 0/7] MIPS: Assorted microMIPS fixes
+References: <alpine.DEB.1.10.1411140122420.2881@tp.orcam.me.uk>
+In-Reply-To: <alpine.DEB.1.10.1411140122420.2881@tp.orcam.me.uk>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Steven.Hill@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,118 +21,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
+To: "Maciej W. Rozycki" <macro@codesourcery.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20141117161032.7prN7ap4f6VC8hC3npgjL0dWnKjWYRH2Lle7kLpy2hg@z>
+Message-ID: <20141117163757.MV8-9NuD0ycJjPLGnmIGHRwCKu7LUWqrqftGV9R9sVc@z>
 
-Implement the microMIPS encoding of the J instruction for the purpose of 
-the static keys feature, fixing a crash early on in bootstrap as the 
-kernel is unhappy seeing the ISA bit set in jump table entries.  Make 
-sure the ISA bit correctly reflects the instruction encoding chosen for 
-the kernel, 0 for the standard MIPS and 1 for the microMIPS encoding.
+On 11/15/2014 04:06 PM, Maciej W. Rozycki wrote:
+> Hi,
+> 
+>  In an attempt to build a kernel that supports microMIPS userland and 
+> runs on QEMU I came across the problem that, due to apparently arbitrary 
+> decisions made sometime in the past, there is no such combination 
+> possible.
+> 
+>  I went ahead and fixed our configuration to support that, but in the 
+> course of doing that I came across numerous problems that I decided to 
+> address at the same time.  This mini patch series the result.  Most of 
+> the changes are actually independent of one another, although there is a 
+> syntactical overlap between 5/7 and 7/7, so these have to be applied in 
+> order.
+> 
+>  Of course I had to draw a line somewhere so as not to get distracted 
+> too much from the actual purpose I have the need to run such a 
+> configuration, so I left some further bugs I spotted for the next 
+> occasion.
+> 
+>  Ralf, please backport these fixes to stable branches as applicable; I 
+> can supply you with a 3.17 equivalent of 5/7 as this piece has changed 
+> significantly recently and I actually had to forward-port the original 
+> change that I made to address the issue.
+> 
+>   Maciej
+> 
+Maciej,
 
-Also make sure the instruction to patch is a 32-bit NOP in the microMIPS 
-mode as by default the 16-bit short encoding is assumed
+This whole patchset looks really good. I went through all of them and
+just made a few comments during review.
 
-Signed-off-by: Maciej W. Rozycki <macro@codesourcery.com>
----
-Hi,
+Steve
 
- Rather obvious, mostly a bit different bit shuffling.  I think all code 
-that reads or writes microMIPS instructions should be audited and the 
-operations abstracted so that every place does not have to repeat the 
-same steps manually, but that is something for another occasion.  
 
- Meanwhile, please apply.
-
-  Maciej
-
-linux-umips-jump-label.diff
-Index: linux-3.17-stable-malta-el/arch/mips/include/asm/jump_label.h
-===================================================================
---- linux-3.17-stable-malta-el.orig/arch/mips/include/asm/jump_label.h	2014-11-17 02:12:17.000000000 +0000
-+++ linux-3.17-stable-malta-el/arch/mips/include/asm/jump_label.h	2014-11-17 07:06:18.491909609 +0000
-@@ -20,9 +20,15 @@
- #define WORD_INSN ".word"
- #endif
- 
-+#ifdef CONFIG_CPU_MICROMIPS
-+#define NOP_INSN "nop32"
-+#else
-+#define NOP_INSN "nop"
-+#endif
-+
- static __always_inline bool arch_static_branch(struct static_key *key)
- {
--	asm_volatile_goto("1:\tnop\n\t"
-+	asm_volatile_goto("1:\t" NOP_INSN "\n\t"
- 		"nop\n\t"
- 		".pushsection __jump_table,  \"aw\"\n\t"
- 		WORD_INSN " 1b, %l[l_yes], %0\n\t"
-Index: linux-3.17-stable-malta-el/arch/mips/kernel/jump_label.c
-===================================================================
---- linux-3.17-stable-malta-el.orig/arch/mips/kernel/jump_label.c	2014-11-17 07:06:18.000000000 +0000
-+++ linux-3.17-stable-malta-el/arch/mips/kernel/jump_label.c	2014-11-17 08:28:23.781948719 +0000
-@@ -18,31 +18,53 @@
- 
- #ifdef HAVE_JUMP_LABEL
- 
--#define J_RANGE_MASK ((1ul << 28) - 1)
-+/*
-+ * Define parameters for the standard MIPS and the microMIPS jump
-+ * instruction encoding respectively:
-+ *
-+ * - the ISA bit of the target, either 0 or 1 respectively,
-+ *
-+ * - the amount the jump target address is shifted right to fit in the
-+ *   immediate field of the machine instruction, either 2 or 1,
-+ *
-+ * - the mask determining the size of the jump region relative to the
-+ *   delay-slot instruction, either 256MB or 128MB,
-+ *
-+ * - the jump target alignment, either 4 or 2 bytes.
-+ */
-+#define J_ISA_BIT	IS_ENABLED(CONFIG_CPU_MICROMIPS)
-+#define J_RANGE_SHIFT	(2 - J_ISA_BIT)
-+#define J_RANGE_MASK	((1ul << (26 + J_RANGE_SHIFT)) - 1)
-+#define J_ALIGN_MASK	((1ul << J_RANGE_SHIFT) - 1)
- 
- void arch_jump_label_transform(struct jump_entry *e,
- 			       enum jump_label_type type)
- {
-+	union mips_instruction *insn_p;
- 	union mips_instruction insn;
--	union mips_instruction *insn_p =
--		(union mips_instruction *)(unsigned long)e->code;
- 
--	/* Jump only works within a 256MB aligned region of its delay slot. */
-+	insn_p = (union mips_instruction *)msk_isa16_mode(e->code);
-+
-+	/* Jump only works within an aligned region its delay slot is in. */
- 	BUG_ON((e->target & ~J_RANGE_MASK) != ((e->code + 4) & ~J_RANGE_MASK));
- 
--	/* Target must have 4 byte alignment. */
--	BUG_ON((e->target & 3) != 0);
-+	/* Target must have the right alignment and ISA must be preserved. */
-+	BUG_ON((e->target & J_ALIGN_MASK) != J_ISA_BIT);
- 
- 	if (type == JUMP_LABEL_ENABLE) {
--		insn.j_format.opcode = j_op;
--		insn.j_format.target = (e->target & J_RANGE_MASK) >> 2;
-+		insn.j_format.opcode = J_ISA_BIT ? mm_j32_op : j_op;
-+		insn.j_format.target = e->target >> J_RANGE_SHIFT;
- 	} else {
- 		insn.word = 0; /* nop */
- 	}
- 
- 	get_online_cpus();
- 	mutex_lock(&text_mutex);
--	*insn_p = insn;
-+	if (IS_ENABLED(CONFIG_CPU_MICROMIPS)) {
-+		insn_p->halfword[0] = insn.word >> 16;
-+		insn_p->halfword[1] = insn.word;
-+	} else
-+		*insn_p = insn;
- 
- 	flush_icache_range((unsigned long)insn_p,
- 			   (unsigned long)insn_p + sizeof(*insn_p));
+Reviewed-by: Steven J. Hill <Steven.Hill@imgtec.com>

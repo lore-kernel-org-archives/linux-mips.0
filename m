@@ -1,15 +1,14 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:60612 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013700AbaKPBCnSl90G (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 16 Nov 2014 02:02:43 +0100
-Date: Sun, 16 Nov 2014 01:02:29 +0000
-From: "Maciej W. Rozycki" <macro@codesourcery.com>
-Subject: [PATCH] MIPS: c-r4k.c: Fix the 74K D-cache alias erratum
- workaround
-Message-ID: <alpine.DEB.1.10.1411160041230.2881@tp.orcam.me.uk>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:58857 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012958AbaKQJahiBqJi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Nov 2014 10:30:37 +0100
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: asm: uaccess: Add v1 register to clobber list on EVA
+Date: Mon, 17 Nov 2014 09:30:23 +0000
+Message-ID: <1416216623-24300-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej_Rozycki@mentor.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,119 +18,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20141116010229.kVFIEIqKneDVb0ZVR1T4XcIAVJRDawHCbmkyFEmUbqQ@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20141117093023._551Z-Nz0Z-EUBAXsT54gvIQs293Q6r3sLcC7ROsk_c@z>
 
-Fix the 74K D-cache alias erratum workaround so that it actually works.  
-Our current code sets MIPS_CACHE_VTAG for the D-cache, but that flag 
-only has any effect for the I-cache.  Additionally MIPS_CACHE_PINDEX is 
-set for the D-cache if CP0.Config7.AR is also set for an affected 
-processor, leading to confusing information in the bootstrap log (the 
-flag isn't used beyond that).
+When EVA is turned on and prefetching is being used in memcpy.S,
+the v1 register is being used as a helper register to the PREFE
+instruction. However, v1 ($3) was not in the clobber list, which
+means that the compiler did not preserve it across function calls,
+and that could corrupt the value of the register leading to all
+sorts of userland crashes. We fix this problem by using the
+DADDI_SCRATCH macro to define the clobbered register when
+CONFIG_EVA && CONFIG_CPU_HAS_PREFETCH are enabled.
 
-So delete the setting of MIPS_CACHE_VTAG and rely on MIPS_CACHE_ALIASES, 
-set in a common place, removing I-cache coherency issues seen in GDB 
-testing with software breakpoints, gdbserver and ptrace(2), on affected 
-systems.
-
-While at it add a little piece of explanation of what CP0.Config6.SYND 
-is so that people do not have to chase documentation.
-
-Signed-off-by: Maciej W. Rozycki <macro@codesourcery.com>
+Cc: <stable@vger.kernel.org> # v3.15+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
-Hi,
+ arch/mips/include/asm/uaccess.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
- It looks like I-cache aliasing handling setup needs some TLC too, first 
-of all what's the purpose of checking CP0.Config7.IAR and setting the 
-MIPS_CACHE_ALIASES flag for the I-cache where the flag is nowhere used 
-afterwards?  Anyway that's something for another occasion.  For now, 
-please apply this change.
-
-  Maciej
-
-linux-mips-vtag-dcache-fix.diff
-Index: linux-3.18-rc4-malta/arch/mips/mm/c-r4k.c
-===================================================================
---- linux-3.18-rc4-malta.orig/arch/mips/mm/c-r4k.c	2014-11-16 00:08:15.511902298 +0000
-+++ linux-3.18-rc4-malta/arch/mips/mm/c-r4k.c	2014-11-16 00:20:45.131908612 +0000
-@@ -888,33 +888,39 @@ static inline void rm7k_erratum31(void)
- 	}
- }
+diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+index 6e057aa55b8e..9cbd2949ce19 100644
+--- a/arch/mips/include/asm/uaccess.h
++++ b/arch/mips/include/asm/uaccess.h
+@@ -773,10 +773,11 @@ extern void __put_user_unaligned_unknown(void);
+ 	"jal\t" #destination "\n\t"
+ #endif
  
--static inline void alias_74k_erratum(struct cpuinfo_mips *c)
-+static inline int alias_74k_erratum(struct cpuinfo_mips *c)
- {
- 	unsigned int imp = c->processor_id & PRID_IMP_MASK;
- 	unsigned int rev = c->processor_id & PRID_REV_MASK;
-+	int present = 0;
+-#ifndef CONFIG_CPU_DADDI_WORKAROUNDS
+-#define DADDI_SCRATCH "$0"
+-#else
++#if defined(CONFIG_CPU_DADDI_WORKAROUNDS) || (defined(CONFIG_EVA) &&	\
++					      defined(CONFIG_CPU_HAS_PREFETCH))
+ #define DADDI_SCRATCH "$3"
++#else
++#define DADDI_SCRATCH "$0"
+ #endif
  
- 	/*
- 	 * Early versions of the 74K do not update the cache tags on a
- 	 * vtag miss/ptag hit which can occur in the case of KSEG0/KUSEG
--	 * aliases. In this case it is better to treat the cache as always
--	 * having aliases.
-+	 * aliases.  In this case it is better to treat the cache as always
-+	 * having aliases.  Also disable the synonym tag update feature
-+	 * where available.  In this case no opportunistic tag update will
-+	 * happen where a load causes a virtual address miss but a physical
-+	 * address hit during a D-cache look-up.
- 	 */
- 	switch (imp) {
- 	case PRID_IMP_74K:
- 		if (rev <= PRID_REV_ENCODE_332(2, 4, 0))
--			c->dcache.flags |= MIPS_CACHE_VTAG;
-+			present = 1;
- 		if (rev == PRID_REV_ENCODE_332(2, 4, 0))
- 			write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
- 		break;
- 	case PRID_IMP_1074K:
- 		if (rev <= PRID_REV_ENCODE_332(1, 1, 0)) {
--			c->dcache.flags |= MIPS_CACHE_VTAG;
-+			present = 1;
- 			write_c0_config6(read_c0_config6() | MIPS_CONF6_SYND);
- 		}
- 		break;
- 	default:
- 		BUG();
- 	}
-+
-+	return present;
- }
- 
- static char *way_string[] = { NULL, "direct mapped", "2-way",
-@@ -926,6 +932,7 @@ static void probe_pcache(void)
- 	struct cpuinfo_mips *c = &current_cpu_data;
- 	unsigned int config = read_c0_config();
- 	unsigned int prid = read_c0_prid();
-+	int has_74k_erratum = 0;
- 	unsigned long config1;
- 	unsigned int lsize;
- 
-@@ -1232,7 +1239,7 @@ static void probe_pcache(void)
- 
- 	case CPU_74K:
- 	case CPU_1074K:
--		alias_74k_erratum(c);
-+		has_74k_erratum = alias_74k_erratum(c);
- 		/* Fall through. */
- 	case CPU_M14KC:
- 	case CPU_M14KEC:
-@@ -1246,7 +1253,7 @@ static void probe_pcache(void)
- 		if (!(read_c0_config7() & MIPS_CONF7_IAR) &&
- 		    (c->icache.waysize > PAGE_SIZE))
- 			c->icache.flags |= MIPS_CACHE_ALIASES;
--		if (read_c0_config7() & MIPS_CONF7_AR) {
-+		if (!has_74k_erratum && (read_c0_config7() & MIPS_CONF7_AR)) {
- 			/*
- 			 * Effectively physically indexed dcache,
- 			 * thus no virtual aliases.
-@@ -1255,7 +1262,7 @@ static void probe_pcache(void)
- 			break;
- 		}
- 	default:
--		if (c->dcache.waysize > PAGE_SIZE)
-+		if (has_74k_erratum || c->dcache.waysize > PAGE_SIZE)
- 			c->dcache.flags |= MIPS_CACHE_ALIASES;
- 	}
- 
+ extern size_t __copy_user(void *__to, const void *__from, size_t __n);
+-- 
+2.1.3

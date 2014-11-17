@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18559 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:26351 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013851AbaKQQiY3Gofu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Nov 2014 17:38:24 +0100
-Message-ID: <546A2474.3080907@imgtec.com>
-Date: Mon, 17 Nov 2014 10:38:12 -0600
+        with ESMTP id S27013852AbaKQQijSHoJA (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Nov 2014 17:38:39 +0100
+Message-ID: <546A2482.2040902@imgtec.com>
+Date: Mon, 17 Nov 2014 10:38:26 -0600
 From: "Steven J. Hill" <Steven.Hill@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/7] MIPS: Kconfig: Enable microMIPS support for Malta
-References: <alpine.DEB.1.10.1411140122420.2881@tp.orcam.me.uk> <alpine.DEB.1.10.1411152040190.2881@tp.orcam.me.uk>
-In-Reply-To: <alpine.DEB.1.10.1411152040190.2881@tp.orcam.me.uk>
+Subject: Re: [PATCH 5/7] MIPS: Fix microMIPS LL/SC immediate offsets
+References: <alpine.DEB.1.10.1411140122420.2881@tp.orcam.me.uk> <alpine.DEB.1.10.1411152113210.2881@tp.orcam.me.uk>
+In-Reply-To: <alpine.DEB.1.10.1411152113210.2881@tp.orcam.me.uk>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Steven.Hill@imgtec.com>
@@ -23,18 +23,46 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: "Maciej W. Rozycki" <macro@codesourcery.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20141117163812.4M1nX46LqRax72HZSX6PqFl2w91A9Rghi7OVkjpiXaM@z>
+Message-ID: <20141117163826.EG4Di1XSetk1ngN-o19jXkwEbkRKq-UbMyYFBVLjCJ0@z>
 
-On 11/15/2014 04:07 PM, Maciej W. Rozycki wrote:
-> Add missing microMIPS support to Malta.  Currently the kernel only 
-> enables support for the instruction set for the SEAD-3 board despite the 
-> fact processor features have nothing to do with the board a processor is 
-> installed in.
+On 11/15/2014 04:08 PM, Maciej W. Rozycki wrote:
+> In the microMIPS encoding some memory access instructions have their 
+> immediate offset reduced to 12 bits only.  That does not match the GCC 
+> `R' constraint we use in some places to satisfy the requirement, 
+> resulting in build failures like this:
 > 
-For years there have been no microMIPS cores designed for the Malta
-platform. Only now since you are trying to use microMIPS on QEMU is this
-an issue. It was also the quick and dirty way to make sure microMIPS
-kernels could not be used without changing the platform. Still, this is
-certainly correct and I like it. Thanks.
+> {standard input}: Assembler messages:
+> {standard input}:720: Error: macro used $at after ".set noat"
+> {standard input}:720: Warning: macro instruction expanded into multiple instructions
+> 
+> Fix the problem by defining a macro, `GCC_OFF12_ASM', that expands to 
+> the right constraint depending on whether microMIPS or standard MIPS 
+> code is produced.  Also apply the fix to where `m' is used as in the 
+> worst case this change does nothing, e.g. where the pointer was already 
+> in a register such as a function argument and no further offset was 
+> requested, and in the best case it avoids an extraneous sequence of up 
+> to two instructions to load the high 20 bits of the address in the LL/SC 
+> loop.  This reduces the risk of lock contention that is the higher the 
+> more instructions there are in the critical section between LL and SC.
+> 
+> Strictly speaking we could just bulk-replace `R' with `ZC' as the latter 
+> constraint adjusts automatically depending on the ISA selected.  
+> However it was only introduced with GCC 4.9 and we keep supporing older 
+> compilers for the standard MIPS configuration, hence the slightly more 
+> complicated approach I chose.
+> 
+> The choice of a zero-argument function-like rather than an object-like 
+> macro was made so that it does not look like a function call taking the 
+> C expression used for the constraint as an argument.  This is so as not 
+> to confuse the reader or formatting checkers like `checkpatch.pl' and 
+> follows previous practice.
+> 
+> Signed-off-by: Maciej W. Rozycki <macro@codesourcery.com>
+> ---
+> 
+I am extremely pleased with this patch. We had discussed this problem
+and various potential solutions a year or two ago, but I was never able
+to find time to look at it again. Thanks for figuring this out.
 
-Steve
+
+Signed-off-by: Steven J. Hill <Steven.Hill@imgtec.com>

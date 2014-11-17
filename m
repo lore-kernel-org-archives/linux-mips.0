@@ -1,16 +1,15 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:38628 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013849AbaKQQ6QU2mn8 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Nov 2014 17:58:16 +0100
-Date: Mon, 17 Nov 2014 16:57:59 +0000
-From: "Maciej W. Rozycki" <macro@codesourcery.com>
-Subject: Re: [PATCH 6/7] MIPS: Apply `.insn' to fixup labels throughout
-In-Reply-To: <546A248F.4040604@imgtec.com>
-Message-ID: <alpine.DEB.1.10.1411171650410.2881@tp.orcam.me.uk>
-References: <alpine.DEB.1.10.1411140122420.2881@tp.orcam.me.uk> <alpine.DEB.1.10.1411152139430.2881@tp.orcam.me.uk> <546A248F.4040604@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:16737 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27013859AbaKQUNMsnz9J (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Nov 2014 21:13:12 +0100
+Message-ID: <546A56C9.4060608@imgtec.com>
+Date: Mon, 17 Nov 2014 12:12:57 -0800
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej_Rozycki@mentor.com>
+Subject: Re:  MIPS: c-r4k.c: Fix the 74K D-cache alias erratum workaround
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,35 +19,36 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Steven J. Hill" <Steven.Hill@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20141117165759.QOjnQhjlSYGnWnWyevUsl4QVrVyT-ec5EBZrIeR-VL8@z>
+To: "Maciej W. Rozycki" <macro@codesourcery.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20141117201257.bf0xLm_9z_aV3zi7sy1cEW5EfNTlsUqwK97kNUqzBsk@z>
 
-On Mon, 17 Nov 2014, Steven J. Hill wrote:
+ > Fix the 74K D-cache alias erratum workaround so that it actually works.
+ > Our current code sets MIPS_CACHE_VTAG for the D-cache, but that flag
+ > only has any effect for the I-cache.  Additionally MIPS_CACHE_PINDEX is
+ > set for the D-cache if CP0.Config7.AR is also set for an affected
+ > processor, leading to confusing information in the bootstrap log (the
+ > flag isn't used beyond that).
 
-> > I see someone has just fixed this issue in one place, so I had to 
-> > regenerate the change I originally made against 3.17, but I really
-> > fail to see why not to fix it throughout at once.
-> > 
-> In our earlier branches I believe all of the '.insn' pseudo-ops were in
-> place. I remember removing a number of them during release testing since
-> they appeared to not make any difference. It appears that use of
-> different toolchains has shown that to be in error.
+ > So delete the setting of MIPS_CACHE_VTAG and rely on MIPS_CACHE_ALIASES,
+ > set in a common place, removing I-cache coherency issues seen in GDB
+ > testing with software breakpoints, gdbserver and ptrace(2), on affected
+ > systems.
 
- Well, people keep adding code so these fixups may well have not been 
-there previously.  And not all source code is compiled in all 
-configurations so if you rely on build-time checking then you may well 
-miss a bit here or there.  The best way at the moment is to scan through 
-all code or watch as people push changes and react.
+ > While at it add a little piece of explanation of what CP0.Config6.SYND
+ > is so that people do not have to chase documentation.
 
- It would be better if we had a way to handle it automatically, or maybe 
-even better yet if GAS did not lose the ISA bit on a label when there is 
-a temporary section switch between the label and the following 
-instruction.  As much as I'd like doing this changing GAS to be able to 
-carry the ISA bit across a section switch is non-trivial though, it 
-would be a major effort to implement it, so at least for the time being 
-we have to live with what we have now.
+This shift to MIPS_CACHE_ALIASES is not needed, a use of MIPS_CACHE_VTAG 
+in dcache is actually a way how to prevent some very specific situations 
+in 74K(E77)/1074K(E17) cache handling. It is not a case of cache 
+aliasing and name VTAG is used because it is related with virtual 
+address conversion tagging. I reused MIPS_CACHE_VTAG just to save some 
+spare bits in cpu_info.options and because D-cache never had virtual 
+tagging like I-cache.
 
- Thanks for your review.
+The setting d-cache aliases then CPU hasn't it is a significant 
+performance loss and should be avoided.
 
-  Maciej
+Please don't use this patch.
+
+- Leonid.

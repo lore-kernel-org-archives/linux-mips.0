@@ -1,17 +1,14 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66]:16728 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27014062AbaKTB5yn2RVR (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Nov 2014 02:57:54 +0100
-Message-ID: <546D4891.80503@huawei.com>
-Date: Thu, 20 Nov 2014 09:49:05 +0800
-From: Yijing Wang <wangyijing@huawei.com>
+Received: from bes.se.axis.com ([195.60.68.10]:51487 "EHLO bes.se.axis.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27014076AbaKTM3YggQj2 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 20 Nov 2014 13:29:24 +0100
+From: Niklas Svensson <niklas.svensson@axis.com>
+Subject: [PATCH] MIPS: mips-cm: CM regions are disabled at boot
+Date: Thu, 20 Nov 2014 13:29:00 +0100
+Message-ID: <1416486540-28681-1-git-send-email-niklass@axis.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 5/5] PCI: Rip out pci_bus_add_devices() from pci_scan_root_bus()
-References: <1416382369-13587-1-git-send-email-wangyijing@huawei.com> <1416382369-13587-6-git-send-email-wangyijing@huawei.com> <1645037.uypArjN50l@wuerfel>
-In-Reply-To: <1645037.uypArjN50l@wuerfel>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-Path: <wangyijing@huawei.com>
+Content-Type: text/plain
+Return-Path: <niklas.svensson@axis.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,73 +18,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Liviu Dudau <liviu@dudau.co.uk>, Tony Luck <tony.luck@intel.com>, Russell King <linux@arm.linux.org.uk>, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, linux-pci@vger.kernel.org, linux-xtensa@linux-xtensa.org, x86@kernel.org, sparclinux@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <20141120014905.4Q0E3hUNeSTs-bZ3kH8krVoPGlgXdopmLVr-DZeK-D8@z>
+To: ralf@linux-mips.org, paul.burton@imgtec.com
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Niklas Svensson <niklass@axis.com>
+Message-ID: <20141120122900.dGYsngPc0nzW9oUQT5YXnFnIAaCtBVhhUINVxkvAWwA@z>
 
->> diff --git a/arch/alpha/kernel/pci.c b/arch/alpha/kernel/pci.c
->> index 076c35c..97f9730 100644
->> --- a/arch/alpha/kernel/pci.c
->> +++ b/arch/alpha/kernel/pci.c
->> @@ -334,6 +334,8 @@ common_init_pci(void)
->>  
->>  		bus = pci_scan_root_bus(NULL, next_busno, alpha_mv.pci_ops,
->>  					hose, &resources);
->> +		if (bus)
->> +			pci_bus_add_devices(bus);
->>  		hose->bus = bus;
->>  		hose->need_domain_info = need_domain_info;
->>  		next_busno = bus->busn_res.end + 1;
-> 
-> How about making pci_bus_add_devices() handle a NULL argument to save
-> the if() here and elsewhere?
+Each CM_REGION_TARGET is set to disabled at boot,
+so there is no need to disable the matching
+CM_GCR_REG explicitly.
 
-This make sense, will update it, thanks!
+Signed-off-by: Niklas Svensson <niklass@axis.com>
+---
+ arch/mips/kernel/mips-cm.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
->> diff --git a/arch/mips/pci/pci.c b/arch/mips/pci/pci.c
->> index 1bf60b1..f083688 100644
->> --- a/arch/mips/pci/pci.c
->> +++ b/arch/mips/pci/pci.c
->> @@ -113,6 +113,7 @@ static void pcibios_scanbus(struct pci_controller *hose)
->>  		if (!pci_has_flag(PCI_PROBE_ONLY)) {
->>  			pci_bus_size_bridges(bus);
->>  			pci_bus_assign_resources(bus);
->> +			pci_bus_add_devices(bus);
->>  		}
->>  	}
->>  }
-> 
-> This one looks wrong, I think you still want to call pci_bus_add_devices()
-> even with PCI_PROBE_ONLY set.
-
-Yes, this is my mistake, :(
-
-> 
->> diff --git a/arch/tile/kernel/pci.c b/arch/tile/kernel/pci.c
->> index 1f80a88..007466e 100644
->> --- a/arch/tile/kernel/pci.c
->> +++ b/arch/tile/kernel/pci.c
->> @@ -308,6 +308,8 @@ int __init pcibios_init(void)
->>  			pci_add_resource(&resources, &iomem_resource);
->>  			bus = pci_scan_root_bus(NULL, 0, controller->ops,
->>  						controller, &resources);
->> +			if (bus)
->> +				pci_bus_add_devices(bus);
->>  			controller->root_bus = bus;
->>  			controller->last_busno = bus->busn_res.end;
->>  		}
-> 
-> Should the pci_bus_add_devices come after setting the bus numbers here?
-
-I think it's doesn't matter, but move it backward is ok to me.
-
-> 
-> 	Arnd
-> 
-> .
-> 
-
-
+diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+index f76f7a0..a4bbfd9 100644
+--- a/arch/mips/kernel/mips-cm.c
++++ b/arch/mips/kernel/mips-cm.c
+@@ -104,16 +104,6 @@ int mips_cm_probe(void)
+ 	base_reg |= CM_GCR_BASE_CMDEFTGT_MEM;
+ 	write_gcr_base(base_reg);
+ 
+-	/* disable CM regions */
+-	write_gcr_reg0_base(CM_GCR_REGn_BASE_BASEADDR_MSK);
+-	write_gcr_reg0_mask(CM_GCR_REGn_MASK_ADDRMASK_MSK);
+-	write_gcr_reg1_base(CM_GCR_REGn_BASE_BASEADDR_MSK);
+-	write_gcr_reg1_mask(CM_GCR_REGn_MASK_ADDRMASK_MSK);
+-	write_gcr_reg2_base(CM_GCR_REGn_BASE_BASEADDR_MSK);
+-	write_gcr_reg2_mask(CM_GCR_REGn_MASK_ADDRMASK_MSK);
+-	write_gcr_reg3_base(CM_GCR_REGn_BASE_BASEADDR_MSK);
+-	write_gcr_reg3_mask(CM_GCR_REGn_MASK_ADDRMASK_MSK);
+-
+ 	/* probe for an L2-only sync region */
+ 	mips_cm_probe_l2sync();
+ 
 -- 
-Thanks!
-Yijing
+2.1.3

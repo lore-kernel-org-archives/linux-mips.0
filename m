@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:40526 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006590AbaKUJdv1SaG3 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 21 Nov 2014 10:33:51 +0100
-Message-ID: <546F06F8.4070500@imgtec.com>
-Date: Fri, 21 Nov 2014 09:33:44 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+Received: from smtp.citrix.com ([66.165.176.89]:38852 "EHLO SMTP.CITRIX.COM"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27006520AbaKULtFh3sck (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 21 Nov 2014 12:49:05 +0100
+Date: Fri, 21 Nov 2014 11:48:33 +0000
+From: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
+Subject: Re: [RFC] add a struct page* parameter to dma_map_ops.unmap_page
+In-Reply-To: <alpine.DEB.2.02.1411111644490.26318@kaball.uk.xensource.com>
+Message-ID: <alpine.DEB.2.02.1411211147450.12596@kaball.uk.xensource.com>
+References: <alpine.DEB.2.02.1411111644490.26318@kaball.uk.xensource.com>
 MIME-Version: 1.0
-Subject: Re: ftrace function graph with static ftrace does not work on MIPS
-References: <546478A1.5040306@imgtec.com> <20141120110942.0bbc70a1@gandalf.local.home>
-In-Reply-To: <20141120110942.0bbc70a1@gandalf.local.home>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Stefano.Stabellini@citrix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,80 +20,86 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, mingo@redhat.com
-Message-ID: <20141121093344.nLUrCS17UMgSjUljIW3OMYOqkGX-oMUfOK9YVy9RzXE@z>
+To: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
+Cc: gregkh@linuxfoundation.org, David Vrabel <david.vrabel@citrix.com>, Ian Campbell <Ian.Campbell@citrix.com>, konrad.wilk@oracle.com, linux-kernel@vger.kernel.org, xen-devel@lists.xensource.com, torvalds@linux-foundation.org, vinod.koul@intel.com, dmaengine@vger.kernel.org, bhelgaas@google.com, jejb@parisc-linux.org, deller@gmx.de, linux-parisc@vger.kernel.org, iommu@lists.linux-foundation.org, airlied@linux.ie, dri-devel@lists.freedesktop.org, alexander.deucher@amd.com, christian.koenig@amd.com, linux@arm.linux.org.uk, linux-mips@linux-mips.org, ralf@linux-mips.org, linux-arm-kernel@lists.infradead.org, dwmw2@infradead.org
+Message-ID: <20141121114833.sCuZcSFMaDWD5BzuumO4-4kfZl_xFjagl6VL_VItU2s@z>
 
-On 11/20/2014 04:09 PM, Steven Rostedt wrote:
-> On Thu, 13 Nov 2014 09:23:45 +0000
-> Markos Chandras <Markos.Chandras@imgtec.com> wrote:
+On Mon, 17 Nov 2014, Stefano Stabellini wrote:
+> Hi all,
+> I am writing this email to ask for your advice.
 > 
->> Hi,
->>
->> I am trying to understand why ftrace function graph doesn't work when
->> using static ftrace on MIPS. So, what happens when I do 'echo
->> function_graph > current_tracer' is that the ftrace_graph_caller from
->> mcount.S is executed once. The function that called it is
->> 'core_kernel_data()' from __register_ftrace_function in
->> kernel/trace/ftrace.c
->>
->> However, this is the only function that is reported in the trace file
->>
->> # cat trace
->> # tracer: function_graph
->> #
->> # CPU  DURATION                  FUNCTION CALLS
->> # |     |   |                     |   |   |   |
->>  0)               |  core_kernel_data() {
->>  0)   0.000 us    |  } /* core_kernel_data */
->>
->> The reason that the ftrace_graph_caller is never executed after that is
->> that the following as far as I understand:
->>
->> NESTED(_mcount, PT_SIZE, ra)
->>         PTR_LA  t1, ftrace_stub
->>         PTR_L   t2, ftrace_trace_function /* Prepare t2 for (1) */
->>         bne     t1, t2, static_trace
->>          nop
->>
->> #ifdef  CONFIG_FUNCTION_GRAPH_TRACER
->>         PTR_L   t3, ftrace_graph_return
->>         bne     t1, t3, ftrace_graph_caller
->>          nop
->>         PTR_LA  t1, ftrace_graph_entry_stub
->>         PTR_L   t3, ftrace_graph_entry
->>         bne     t1, t3, ftrace_graph_caller
->>          nop
->> #endif
->>
->> The previous 3 conditionals exists in arch/mips/kernel/mcount.S.
->> Originally, ftrace_trace_function == ftrace_stub, so the first
->> conditional is not taken and we end up executed the ftrace_graph_caller.
->> All good.
->> However, later on, ftrace_trace_function is set to 'ftrace_ops_no_ops',
->> so the first 'bne' is taken and the ftrace_graph_caller is never
->> executed after that. It is not clear to me if this behaviour is expected
->> so I used QEMU to get a backtrace when ftrace_trace_function is set to
->> ftrace_ops_no_ops.
+> On architectures where dma addresses are different from physical
+> addresses, it can be difficult to retrieve the physical address of a
+> page from its dma address.
 > 
-> Looks like the static tracing code in wrong. The function graph code
-> should be tested every time.
+> Specifically this is the case for Xen on arm and arm64 but I think that
+> other architectures might have the same issue.
 > 
-> -- Steve
+> Knowing the physical address is necessary to be able to issue any
+> required cache maintenance operations when unmap_page,
+> sync_single_for_cpu and sync_single_for_device are called.
 > 
+> Adding a struct page* parameter to unmap_page, sync_single_for_cpu and
+> sync_single_for_device would make Linux dma handling on Xen on arm and
+> arm64 much easier and quicker.
+> 
+> I think that other drivers have similar problems, such as the Intel
+> IOMMU driver having to call find_iova and walking down an rbtree to get
+> the physical address in its implementation of unmap_page.
+> 
+> Callers have the struct page* in their hands already from the previous
+> map_page call so it shouldn't be an issue for them.  A problem does
+> exist however: there are about 280 callers of dma_unmap_page and
+> pci_unmap_page. We have even more callers of the dma_sync_single_for_*
+> functions.
+> 
+> 
+> 
+> Is such a change even conceivable? How would one go about it?
+> 
+> I think that Xen would not be the only one to gain from it, but I would
+> like to have a confirmation from others: given the magnitude of the
+> changes involved I would actually prefer to avoid them unless multiple
+> drivers/archs/subsystems could really benefit from them.
 
-Hi Steven,
+Given the lack of interest from the community, I am going to drop this
+idea.
 
-I had a look on
 
-https://www.kernel.org/doc/Documentation/trace/ftrace-design.txt
 
-and section "HAVE_FUNCTION_GRAPH_TRACER"
 
-According to the sample code, first we check "ftrace_trace_function !=
-ftrace_stub" and if that's true, then we never check the ftrace_graph_*
-functions which is exactly what MIPS does. So the graph functions are
-not always checked. x86 seems to do something similar in mcount_64.S
-
--- 
-markos
+> Cheers,
+> 
+> Stefano
+> 
+> 
+> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+> index d5d3881..158a765 100644
+> --- a/include/linux/dma-mapping.h
+> +++ b/include/linux/dma-mapping.h
+> @@ -31,8 +31,9 @@ struct dma_map_ops {
+>  			       unsigned long offset, size_t size,
+>  			       enum dma_data_direction dir,
+>  			       struct dma_attrs *attrs);
+> -	void (*unmap_page)(struct device *dev, dma_addr_t dma_handle,
+> -			   size_t size, enum dma_data_direction dir,
+> +	void (*unmap_page)(struct device *dev, struct page *page,
+> +			   dma_addr_t dma_handle, size_t size,
+> +			   enum dma_data_direction dir,
+>  			   struct dma_attrs *attrs);
+>  	int (*map_sg)(struct device *dev, struct scatterlist *sg,
+>  		      int nents, enum dma_data_direction dir,
+> @@ -41,10 +42,10 @@ struct dma_map_ops {
+>  			 struct scatterlist *sg, int nents,
+>  			 enum dma_data_direction dir,
+>  			 struct dma_attrs *attrs);
+> -	void (*sync_single_for_cpu)(struct device *dev,
+> +	void (*sync_single_for_cpu)(struct device *dev, struct page *page,
+>  				    dma_addr_t dma_handle, size_t size,
+>  				    enum dma_data_direction dir);
+> -	void (*sync_single_for_device)(struct device *dev,
+> +	void (*sync_single_for_device)(struct device *dev, struct page *page,
+>  				       dma_addr_t dma_handle, size_t size,
+>  				       enum dma_data_direction dir);
+>  	void (*sync_sg_for_cpu)(struct device *dev,
+> 

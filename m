@@ -1,16 +1,19 @@
-Received: from smtp.citrix.com ([66.165.176.89]:38852 "EHLO SMTP.CITRIX.COM"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27006520AbaKULtFh3sck (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 21 Nov 2014 12:49:05 +0100
-Date: Fri, 21 Nov 2014 11:48:33 +0000
-From: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
-Subject: Re: [RFC] add a struct page* parameter to dma_map_ops.unmap_page
-In-Reply-To: <alpine.DEB.2.02.1411111644490.26318@kaball.uk.xensource.com>
-Message-ID: <alpine.DEB.2.02.1411211147450.12596@kaball.uk.xensource.com>
-References: <alpine.DEB.2.02.1411111644490.26318@kaball.uk.xensource.com>
+Received: from cdptpa-outbound-snat.email.rr.com ([107.14.166.232]:28125 "EHLO
+        cdptpa-oedge-vip.email.rr.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27014220AbaKUVb3Ka1kk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 21 Nov 2014 22:31:29 +0100
+Date: Fri, 21 Nov 2014 16:31:16 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: ftrace function graph with static ftrace does not work on MIPS
+Message-ID: <20141121163116.523cb394@gandalf.local.home>
+In-Reply-To: <546F06F8.4070500@imgtec.com>
+References: <546478A1.5040306@imgtec.com>
+        <20141120110942.0bbc70a1@gandalf.local.home>
+        <546F06F8.4070500@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Stefano.Stabellini@citrix.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <rostedt@goodmis.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,86 +23,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
-Cc: gregkh@linuxfoundation.org, David Vrabel <david.vrabel@citrix.com>, Ian Campbell <Ian.Campbell@citrix.com>, konrad.wilk@oracle.com, linux-kernel@vger.kernel.org, xen-devel@lists.xensource.com, torvalds@linux-foundation.org, vinod.koul@intel.com, dmaengine@vger.kernel.org, bhelgaas@google.com, jejb@parisc-linux.org, deller@gmx.de, linux-parisc@vger.kernel.org, iommu@lists.linux-foundation.org, airlied@linux.ie, dri-devel@lists.freedesktop.org, alexander.deucher@amd.com, christian.koenig@amd.com, linux@arm.linux.org.uk, linux-mips@linux-mips.org, ralf@linux-mips.org, linux-arm-kernel@lists.infradead.org, dwmw2@infradead.org
-Message-ID: <20141121114833.sCuZcSFMaDWD5BzuumO4-4kfZl_xFjagl6VL_VItU2s@z>
+To: Markos Chandras <Markos.Chandras@imgtec.com>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, mingo@redhat.com
+Message-ID: <20141121213116.WAL6IRp_tAk3pB9F8M9b_KqvkrLhF_4RH6yuybRODpY@z>
 
-On Mon, 17 Nov 2014, Stefano Stabellini wrote:
-> Hi all,
-> I am writing this email to ask for your advice.
+On Fri, 21 Nov 2014 09:33:44 +0000
+Markos Chandras <Markos.Chandras@imgtec.com> wrote:
+ 
+> Hi Steven,
 > 
-> On architectures where dma addresses are different from physical
-> addresses, it can be difficult to retrieve the physical address of a
-> page from its dma address.
+> I had a look on
 > 
-> Specifically this is the case for Xen on arm and arm64 but I think that
-> other architectures might have the same issue.
+> https://www.kernel.org/doc/Documentation/trace/ftrace-design.txt
 > 
-> Knowing the physical address is necessary to be able to issue any
-> required cache maintenance operations when unmap_page,
-> sync_single_for_cpu and sync_single_for_device are called.
+> and section "HAVE_FUNCTION_GRAPH_TRACER"
 > 
-> Adding a struct page* parameter to unmap_page, sync_single_for_cpu and
-> sync_single_for_device would make Linux dma handling on Xen on arm and
-> arm64 much easier and quicker.
+> According to the sample code, first we check "ftrace_trace_function !=
+> ftrace_stub" and if that's true, then we never check the ftrace_graph_*
+> functions which is exactly what MIPS does. So the graph functions are
+> not always checked. x86 seems to do something similar in mcount_64.S
 > 
-> I think that other drivers have similar problems, such as the Intel
-> IOMMU driver having to call find_iova and walking down an rbtree to get
-> the physical address in its implementation of unmap_page.
-> 
-> Callers have the struct page* in their hands already from the previous
-> map_page call so it shouldn't be an issue for them.  A problem does
-> exist however: there are about 280 callers of dma_unmap_page and
-> pci_unmap_page. We have even more callers of the dma_sync_single_for_*
-> functions.
-> 
-> 
-> 
-> Is such a change even conceivable? How would one go about it?
-> 
-> I think that Xen would not be the only one to gain from it, but I would
-> like to have a confirmation from others: given the magnitude of the
-> changes involved I would actually prefer to avoid them unless multiple
-> drivers/archs/subsystems could really benefit from them.
 
-Given the lack of interest from the community, I am going to drop this
-idea.
+Thanks, I need to update that file.
 
+I don't test static tracing much as I feel it's overhead makes it
+almost not worth keeping. I've been even thinking of nuking it, but I
+keep it in because it's good for archs adding function tracing to get a
+basic test working, as dynamic function tracing is a bit more difficult
+to implement.
 
+But yeah, don't go too much by that document. It is out of date, and
+when I get time, I'll have to update it. I'll probably do that when I
+bring powerpc up to speed with x86 (except for the fentry part).
 
+I want dynamic trampolines for powerpc and such, and when I do that, it
+will make all the changes fresh in my mind to go back and tackle the
+design documentation.
 
-> Cheers,
-> 
-> Stefano
-> 
-> 
-> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> index d5d3881..158a765 100644
-> --- a/include/linux/dma-mapping.h
-> +++ b/include/linux/dma-mapping.h
-> @@ -31,8 +31,9 @@ struct dma_map_ops {
->  			       unsigned long offset, size_t size,
->  			       enum dma_data_direction dir,
->  			       struct dma_attrs *attrs);
-> -	void (*unmap_page)(struct device *dev, dma_addr_t dma_handle,
-> -			   size_t size, enum dma_data_direction dir,
-> +	void (*unmap_page)(struct device *dev, struct page *page,
-> +			   dma_addr_t dma_handle, size_t size,
-> +			   enum dma_data_direction dir,
->  			   struct dma_attrs *attrs);
->  	int (*map_sg)(struct device *dev, struct scatterlist *sg,
->  		      int nents, enum dma_data_direction dir,
-> @@ -41,10 +42,10 @@ struct dma_map_ops {
->  			 struct scatterlist *sg, int nents,
->  			 enum dma_data_direction dir,
->  			 struct dma_attrs *attrs);
-> -	void (*sync_single_for_cpu)(struct device *dev,
-> +	void (*sync_single_for_cpu)(struct device *dev, struct page *page,
->  				    dma_addr_t dma_handle, size_t size,
->  				    enum dma_data_direction dir);
-> -	void (*sync_single_for_device)(struct device *dev,
-> +	void (*sync_single_for_device)(struct device *dev, struct page *page,
->  				       dma_addr_t dma_handle, size_t size,
->  				       enum dma_data_direction dir);
->  	void (*sync_sg_for_cpu)(struct device *dev,
-> 
+-- Steve

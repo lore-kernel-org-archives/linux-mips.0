@@ -1,18 +1,16 @@
-Received: from mail-ie0-f181.google.com ([209.85.223.181]:57207 "EHLO
-        mail-ie0-f181.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27006931AbaKZFeGjKkPp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 26 Nov 2014 06:34:06 +0100
-Received: by mail-ie0-f181.google.com with SMTP id tp5so1961411ieb.26
-        for <linux-mips@linux-mips.org>; Tue, 25 Nov 2014 21:34:00 -0800 (PST)
+Received: from iolanthe.rowland.org ([192.131.102.54]:34165 "HELO
+        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S27006967AbaKZPOuclR6e (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 26 Nov 2014 16:14:50 +0100
+Date: Wed, 26 Nov 2014 10:14:48 -0500 (EST)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH 9/9] usb: {ohci,ehci}-platform: Use new OF big-endian
+ helper function
+In-Reply-To: <1416962994-27095-10-git-send-email-cernekee@gmail.com>
+Message-ID: <Pine.LNX.4.44L0.1411261013340.1322-100000@iolanthe.rowland.org>
 MIME-Version: 1.0
-In-Reply-To: <1416962994-27095-1-git-send-email-cernekee@gmail.com>
-References: <1416962994-27095-1-git-send-email-cernekee@gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Date: Tue, 25 Nov 2014 21:33:20 -0800
-Message-ID: <CAGVrzcZrOY+y1H_86X1Rj9GvpRhSaYLMw59vZyt84MAkUmEHHg@mail.gmail.com>
-Subject: Re: [PATCH 0/9] Extend various drivers to run on bi-endian BMIPS hosts
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <f.fainelli@gmail.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <stern+54715d4c@rowland.harvard.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,76 +21,34 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Kevin Cernekee <cernekee@gmail.com>
-Cc: sre@kernel.org, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Arnd Bergmann <arnd@arndb.de>, Tony Prisk <linux@prisktech.co.nz>, Alan Stern <stern@rowland.harvard.edu>, Greg KH <gregkh@linuxfoundation.org>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, Brian Norris <computersforpeace@gmail.com>, Marc Carino <marc.ceeeee@gmail.com>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-usb <linux-usb@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>
-Message-ID: <20141126053320.GRRm7JN7_bJSib3eNH3a1-ykadqiKy7KfwFKaCFGpRQ@z>
+Cc: sre@kernel.org, dbaryshkov@gmail.com, dwmw2@infradead.org, arnd@arndb.de, linux@prisktech.co.nz, gregkh@linuxfoundation.org, f.fainelli@gmail.com, grant.likely@linaro.org, robh+dt@kernel.org, computersforpeace@gmail.com, marc.ceeeee@gmail.com, linux-pm@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20141126151448.TVUJBmtLoe7U7JlSmsuH1GQxS2jQBaqyKy9DSxDQJLA@z>
 
-2014-11-25 16:49 GMT-08:00 Kevin Cernekee <cernekee@gmail.com>:
-> This patch series incorporates the following changes:
->
->  - Extend brcmstb reset driver to work on MIPS (currently ARM-only).
->
->  - Extend brcmstb GISB bus driver to work on MIPS (currently ARM-only).
->
->  - Extend brcmstb GISB bus driver to work on BE systems (currently LE-only).
->
->  - Extend both drivers to support the older register layouts used on many
->    of the BMIPS platforms.
->
->  - Extend {ohci,ehci}-platform drivers to accept the new "native-endian"
->    DT property, to accommodate BCM7xxx platforms that can be switched
->    between LE/BE with a board jumper.
->
->
-> Dependencies:
->
-> power/reset: brcmstb: Register with kernel restart handler (Guenter Roeck)
-> of: Add helper function to check MMIO register endianness (Kevin Cernekee)
->
-> These are both tentatively accepted, but might not be present in the same
-> tree yet.  As such, we might want to "review now, merge later."
+On Tue, 25 Nov 2014, Kevin Cernekee wrote:
 
-For the entire series:
+> This handles the existing "big-endian" case, and in addition, it also does
+> the right thing when "native-endian" is specified.
+> 
+> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/usb/usb-ehci.txt | 2 ++
+>  Documentation/devicetree/bindings/usb/usb-ohci.txt | 2 ++
+>  drivers/usb/host/ehci-platform.c                   | 2 +-
+>  drivers/usb/host/ohci-platform.c                   | 2 +-
+>  4 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/usb-ehci.txt b/Documentation/devicetree/bindings/usb/usb-ehci.txt
+> index 43c1a4e..9505c31 100644
+> --- a/Documentation/devicetree/bindings/usb/usb-ehci.txt
+> +++ b/Documentation/devicetree/bindings/usb/usb-ehci.txt
+> @@ -12,6 +12,8 @@ Optional properties:
+>   - big-endian-regs : boolean, set this for hcds with big-endian registers
+>   - big-endian-desc : boolean, set this for hcds with big-endian descriptors
+>   - big-endian : boolean, for hcds with big-endian-regs + big-endian-desc
+> + - native-endian : boolean, enables big-endian-regs + big-endian-desc
+> +   iff the kernel was compiled for big endian
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Is this really a property of the hardware?  It appears to depend on the 
+kernel configuration.  As such, is it appropriate for DT?
 
-I will probably take the brcmstb_gisb.c changes separately and submit
-them to arm-soc as a "drivers" pull request since this driver has
-typically been routed that way.
-
-Thanks!
-
->
->
-> Kevin Cernekee (9):
->   power/reset: brcmstb: Make the driver buildable on MIPS
->   power/reset: brcmstb: Use the DT "compatible" string to indicate bit
->     positions
->   power/reset: brcmstb: Add support for old 65nm chips
->   bus: brcmstb_gisb: Make the driver buildable on MIPS
->   bus: brcmstb_gisb: Introduce wrapper functions for MMIO accesses
->   bus: brcmstb_gisb: Look up register offsets in a table
->   bus: brcmstb_gisb: Add register offset tables for older chips
->   bus: brcmstb_gisb: Honor the "big-endian" and "native-endian" DT
->     properties
->   usb: {ohci,ehci}-platform: Use new OF big-endian helper function
->
->  .../devicetree/bindings/arm/brcm-brcmstb.txt       |   4 +-
->  .../devicetree/bindings/bus/brcm,gisb-arb.txt      |   6 +-
->  Documentation/devicetree/bindings/usb/usb-ehci.txt |   2 +
->  Documentation/devicetree/bindings/usb/usb-ohci.txt |   2 +
->  drivers/bus/Kconfig                                |   2 +-
->  drivers/bus/brcmstb_gisb.c                         | 127 ++++++++++++++++++---
->  drivers/power/reset/Kconfig                        |   9 +-
->  drivers/power/reset/brcmstb-reboot.c               |  41 +++++--
->  drivers/usb/host/ehci-platform.c                   |   2 +-
->  drivers/usb/host/ohci-platform.c                   |   2 +-
->  10 files changed, 161 insertions(+), 36 deletions(-)
->
-> --
-> 2.1.0
->
-
-
-
--- 
-Florian
+Alan Stern

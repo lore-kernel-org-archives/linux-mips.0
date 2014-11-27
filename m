@@ -1,16 +1,14 @@
-Received: from iolanthe.rowland.org ([192.131.102.54]:34338 "HELO
-        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with SMTP id S27007210AbaKZQY12rQYV (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 26 Nov 2014 17:24:27 +0100
-Date: Wed, 26 Nov 2014 11:24:25 -0500 (EST)
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH 9/9] usb: {ohci,ehci}-platform: Use new OF big-endian
- helper function
-In-Reply-To: <CAJiQ=7CuLA2vDpnkDysBU100R0uuUidB_ua3sZdV74vNPjV76w@mail.gmail.com>
-Message-ID: <Pine.LNX.4.44L0.1411261120300.1322-100000@iolanthe.rowland.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2279 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007356AbaK0LNboyNie (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 27 Nov 2014 12:13:31 +0100
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: mm: tlbex: Fix potential HTW race on TLBL/M/S handlers
+Date: Thu, 27 Nov 2014 11:13:08 +0000
+Message-ID: <1417086788-15654-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <stern+54715d4c@rowland.harvard.edu>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,44 +18,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kevin Cernekee <cernekee@gmail.com>
-Cc: sre@kernel.org, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux@prisktech.co.nz, Greg KH <gregkh@linuxfoundation.org>, Florian Fainelli <f.fainelli@gmail.com>, Grant Likely <grant.likely@linaro.org>, robh+dt@kernel.org, Brian Norris <computersforpeace@gmail.com>, Marc C <marc.ceeeee@gmail.com>, linux-pm@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux USB Mailing List <linux-usb@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>
-Message-ID: <20141126162425.bv4CLH9jBRZkT5nwPi5V7-bdZaBqnpsNVX80_Kkgmhk@z>
+To: linux-mips@linux-mips.org
+Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, stable@vger.kernel.org, Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20141127111308.d2tQs0T8bhTyQiIxib5UglxbfVdOEtPGd7yIdfORocA@z>
 
-On Wed, 26 Nov 2014, Kevin Cernekee wrote:
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 
-> On Wed, Nov 26, 2014 at 7:14 AM, Alan Stern <stern@rowland.harvard.edu> wrote:
-> >> diff --git a/Documentation/devicetree/bindings/usb/usb-ehci.txt b/Documentation/devicetree/bindings/usb/usb-ehci.txt
-> >> index 43c1a4e..9505c31 100644
-> >> --- a/Documentation/devicetree/bindings/usb/usb-ehci.txt
-> >> +++ b/Documentation/devicetree/bindings/usb/usb-ehci.txt
-> >> @@ -12,6 +12,8 @@ Optional properties:
-> >>   - big-endian-regs : boolean, set this for hcds with big-endian registers
-> >>   - big-endian-desc : boolean, set this for hcds with big-endian descriptors
-> >>   - big-endian : boolean, for hcds with big-endian-regs + big-endian-desc
-> >> + - native-endian : boolean, enables big-endian-regs + big-endian-desc
-> >> +   iff the kernel was compiled for big endian
-> >
-> > Is this really a property of the hardware?  It appears to depend on the
-> > kernel configuration.  As such, is it appropriate for DT?
-> 
-> Yes, the peripheral registers automatically adjust their endianness to
-> match the CPU.  So if the CPU is running an LE kernel, the peripheral
-> needs to be accessed in LE mode; if the CPU is running a BE kernel,
-> the peripheral needs to be accessed in BE mode.
+There is a potential race when probing the TLB in TLBL/M/S exception
+handlers for a matching entry. Between the time we hit a TLBL/S/M
+exception and the time we get to execute the TLBP instruction, the
+HTW may have killed the TLB entry we are interested in hence the TLB
+probe may fail. However, in the existing handlers, we never checked the
+status of the TLBP (ie check the result in the C0/Index register). We
+fix this by adding such a check when the core implements the HTW. If
+we couldn't find a matching entry, we return back and try again.
 
-Okay, then:
+Cc: <stable@vger.kernel.org> # v3.17+
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/mm/tlbex.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-
-But you might want to update the description slightly to say:
-
- - native-endian : boolean, enables big-endian-regs + big-endian-desc
-   iff the CPU is running in big-endian mode
-
-It's a very minor distinction, since you can't run a kernel that was 
-compiled for little endian if the CPU is running in big-endian mode, 
-but this makes it clear that you're talking about the hardware rather 
-than the software.
-
-Alan Stern
+diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
+index 7994368f96c4..3978a3d81366 100644
+--- a/arch/mips/mm/tlbex.c
++++ b/arch/mips/mm/tlbex.c
+@@ -1872,8 +1872,16 @@ build_r4000_tlbchange_handler_head(u32 **p, struct uasm_label **l,
+ 	uasm_l_smp_pgtable_change(l, *p);
+ #endif
+ 	iPTE_LW(p, wr.r1, wr.r2); /* get even pte */
+-	if (!m4kc_tlbp_war())
++	if (!m4kc_tlbp_war()) {
+ 		build_tlb_probe_entry(p);
++		if (cpu_has_htw) {
++			/* race condition happens, leaving */
++			uasm_i_ehb(p);
++			uasm_i_mfc0(p, wr.r3, C0_INDEX);
++			uasm_il_bltz(p, r, wr.r3, label_leave);
++			uasm_i_nop(p);
++		}
++	}
+ 	return wr;
+ }
+ 
+-- 
+2.1.3

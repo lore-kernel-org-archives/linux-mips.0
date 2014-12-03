@@ -1,20 +1,15 @@
-Received: from mail-ig0-f181.google.com ([209.85.213.181]:45228 "EHLO
-        mail-ig0-f181.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27007628AbaLAWCEfzeMH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 1 Dec 2014 23:02:04 +0100
-Received: by mail-ig0-f181.google.com with SMTP id l13so10411901iga.2
-        for <linux-mips@linux-mips.org>; Mon, 01 Dec 2014 14:01:58 -0800 (PST)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:6082 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007971AbaLCB6Igs054 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Dec 2014 02:58:08 +0100
+Subject: [PATCH v3 0/3] Series short description
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Tue, 2 Dec 2014 17:57:59 -0800
+Message-ID: <20141203015537.13886.50830.stgit@linux-yegoshin>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdXHAZFujShNnAHY8BRv85ncrtcRvRgPS0Br0T9gSxZ+1A@mail.gmail.com>
-References: <547CD304.20407@gmail.com>
-        <CAMo8BfKg=eb7wA2O+cKO+oLDDERh2CKBS7dyAvfqvCESEHWYEg@mail.gmail.com>
-        <CAMuHMdXHAZFujShNnAHY8BRv85ncrtcRvRgPS0Br0T9gSxZ+1A@mail.gmail.com>
-Date: Mon, 1 Dec 2014 17:01:58 -0500
-Message-ID: <CAE2sS1hDXqLvF9yY5-3d4pmDPiQy8aQ1fYov3_+BKM8uQ3ZSwA@mail.gmail.com>
-Subject: Re: [PATCH] arch: uapi: asm: mman.h: Support MADV_FREE for madvise()
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <carlos@systemhalted.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,23 +19,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Max Filippov <jcmvbkbc@gmail.com>, Chen Gang <gang.chen.5i5j@gmail.com>, Minchan Kim <minchan@kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "rth@twiddle.net" <rth@twiddle.net>, "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>, "mattst88@gmail.com" <mattst88@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, "jejb@parisc-linux.org" <jejb@parisc-linux.org>, "deller@gmx.de" <deller@gmx.de>, "chris@zankel.net" <chris@zankel.net>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Message-ID: <20141201220158.XxEJeGQ7CV1pEj91wrOLf8zjlxMVDw1C50SSm7c7CAI@z>
+To: linux-mips@linux-mips.org, Zubair.Kakakhel@imgtec.com, geert+renesas@glider.be, david.daney@cavium.com, peterz@infradead.org, paul.gortmaker@windriver.com, davidlohr@hp.com, macro@linux-mips.org, chenhc@lemote.com, cl@linux.com, mingo@kernel.org, richard@nod.at, zajec5@gmail.com, james.hogan@imgtec.com, keescook@chromium.org, tj@kernel.org, alex@alex-smith.me.uk, pbonzini@redhat.com, blogic@openwrt.org, paul.burton@imgtec.com, qais.yousef@imgtec.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, markos.chandras@imgtec.com, dengcheng.zhu@imgtec.com, manuel.lauss@gmail.com, lars.persson@axis.com
+Message-ID: <20141203015759.f7tK96J2Djdznp4iyHss10ZuTbXBcOGrFIQICzOAn5Q@z>
 
-On Mon, Dec 1, 2014 at 4:35 PM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Mon, Dec 1, 2014 at 9:52 PM, Max Filippov <jcmvbkbc@gmail.com> wrote:
->> On Mon, Dec 1, 2014 at 11:43 PM, Chen Gang <gang.chen.5i5j@gmail.com> wrote:
->>> At present, kernel supports madvise(MADV_FREE), so can benefit to all
->>> related architectures (can grep MADV_WILLNEED or MADV_REMOVE in "arch/"
->>> to know about all related architectures).
->>
->> A similar patch has been posted a while ago:
->>
->> http://www.spinics.net/lists/linux-mm/msg81538.html
->
-> Would it be possible to use the same number everywhere?
+The following series implements an executable stack protection in MIPS.
 
-Yes please. It's ridiculous that we still need patches like this.
+It sets up a per-thread 'VDSO' page and appropriate TLB support.
+Page is set write-protected from user and is maintained via kernel VA.
+MIPS FPU emulation is shifted to new page and stack is relieved for
+execute protection as is as all data pages in default setup during ELF
+binary initialization. The real protection is controlled by GLIBC and
+it can do stack protected now as it is done in other architectures and
+I learned today that GLIBC team is ready for this.
 
-I proposed unifying all this two years ago, but didn't follow up.
+Note: actual execute-protection depends from HW capability, of course.
+
+This patch is required for MIPS32/64 R2 emulation on MIPS R6 architecture.
+Without it 'ssh-keygen' crashes pretty fast on attempt to execute instruction
+in stack.
+
+v2 changes:
+    - Added an optimization during mmap switch - doesn't switch if the same
+      thread is rescheduled and other threads don't intervene (Peter Zijlstra)
+    - Fixed uMIPS support (Paul Burton)
+    - Added unwinding of VDSO emulation stack at signal handler invocation,
+      hiding an emulation page (Andy Lutomirski note in other patch comments)
+
+V3 change: heavy preemption friendly.
+
+---
+
+Leonid Yegoshin (3):
+      MIPS: mips_flush_cache_range is added
+      MIPS: Setup an instruction emulation in VDSO protected page instead of user stack
+      MIPS: set stack/data protection as non-executable
+
+
+ arch/mips/include/asm/cacheflush.h   |    3 +
+ arch/mips/include/asm/fpu_emulator.h |    2 
+ arch/mips/include/asm/mmu.h          |    3 +
+ arch/mips/include/asm/page.h         |    2 
+ arch/mips/include/asm/processor.h    |    2 
+ arch/mips/include/asm/switch_to.h    |   14 +++
+ arch/mips/include/asm/thread_info.h  |    3 +
+ arch/mips/include/asm/tlbmisc.h      |    1 
+ arch/mips/include/asm/vdso.h         |    3 +
+ arch/mips/kernel/process.c           |    7 ++
+ arch/mips/kernel/signal.c            |    4 +
+ arch/mips/kernel/vdso.c              |   43 +++++++++-
+ arch/mips/math-emu/cp1emu.c          |    8 +-
+ arch/mips/math-emu/dsemul.c          |  153 ++++++++++++++++++++++++++++------
+ arch/mips/mm/c-octeon.c              |    8 ++
+ arch/mips/mm/c-r3k.c                 |    8 ++
+ arch/mips/mm/c-r4k.c                 |   43 ++++++++++
+ arch/mips/mm/c-tx39.c                |    9 ++
+ arch/mips/mm/cache.c                 |    4 +
+ arch/mips/mm/fault.c                 |    5 +
+ arch/mips/mm/tlb-r4k.c               |   42 +++++++++
+ 21 files changed, 335 insertions(+), 32 deletions(-)
+
+--
+Signature

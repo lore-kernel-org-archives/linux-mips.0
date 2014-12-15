@@ -1,15 +1,16 @@
-Received: from mail-by2on0068.outbound.protection.outlook.com ([207.46.100.68]:55894
-        "EHLO na01-by2-obe.outbound.protection.outlook.com"
+Received: from mail-bl2on0091.outbound.protection.outlook.com ([65.55.169.91]:16896
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27008875AbaLOV3nYK3Na (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 15 Dec 2014 22:29:43 +0100
-Message-ID: <548F52B8.7030606@caviumnetworks.com>
-Date: Mon, 15 Dec 2014 13:29:28 -0800
+        id S27008884AbaLOVbmvNDF1 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 15 Dec 2014 22:31:42 +0100
+Message-ID: <548F5330.6090508@caviumnetworks.com>
+Date: Mon, 15 Dec 2014 13:31:28 -0800
 From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 14/14] MIPS: OCTEON: Handle OCTEON III in csrc-octeon.
-References: <1418666603-15159-1-git-send-email-aleksey.makarov@auriga.com> <1418666603-15159-15-git-send-email-aleksey.makarov@auriga.com> <20141215212422.GD10323@fuloong-minipc.musicnaut.iki.fi>
-In-Reply-To: <20141215212422.GD10323@fuloong-minipc.musicnaut.iki.fi>
+Subject: Re: [PATCH 13/14] MIPS: OCTEON: Add register definitions for OCTEON
+ III reset unit.
+References: <1418666603-15159-1-git-send-email-aleksey.makarov@auriga.com> <1418666603-15159-14-git-send-email-aleksey.makarov@auriga.com> <20141215210942.GC10323@fuloong-minipc.musicnaut.iki.fi>
+In-Reply-To: <20141215210942.GC10323@fuloong-minipc.musicnaut.iki.fi>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <David.Daney@caviumnetworks.com>
@@ -24,37 +25,22 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Aaro Koskinen <aaro.koskinen@iki.fi>
 Cc: Aleksey Makarov <feumilieu@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Aleksey Makarov <aleksey.makarov@auriga.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20141215212928.4D7cfF0La5oLvGwYPDS5P-8BZ0-fWuv4et6lODAdds4@z>
+Message-ID: <20141215213128.c8ihc7qZevOusUdT_t78oxqYTL6qglNAmWPuxj-SoWM@z>
 
-On 12/15/2014 01:24 PM, Aaro Koskinen wrote:
+On 12/15/2014 01:09 PM, Aaro Koskinen wrote:
 > Hi,
 >
-> On Mon, Dec 15, 2014 at 09:03:20PM +0300, Aleksey Makarov wrote:
->>   	if (current_cpu_type() == CPU_CAVIUM_OCTEON2) {
->>   		union cvmx_mio_rst_boot rst_boot;
->> +
->>   		rst_boot.u64 = cvmx_read_csr(CVMX_MIO_RST_BOOT);
->>   		rdiv = rst_boot.s.c_mul;	/* CPU clock */
->>   		sdiv = rst_boot.s.pnr_mul;	/* I/O clock */
->>   		f = (0x8000000000000000ull / sdiv) * 2;
->> +	} else if (current_cpu_type() == CPU_CAVIUM_OCTEON3) {
->> +		union cvmx_rst_boot rst_boot;
->> +
->> +		rst_boot.u64 = cvmx_read_csr(CVMX_RST_BOOT);
->> +		rdiv = rst_boot.s.c_mul;	/* CPU clock */
->> +		sdiv = rst_boot.s.pnr_mul;	/* I/O clock */
->> +		f = (0x8000000000000000ull / sdiv) * 2;
->>   	}
+> On Mon, Dec 15, 2014 at 09:03:19PM +0300, Aleksey Makarov wrote:
+>> From: David Daney <david.daney@cavium.com>
+>>
+>> Needed by follow-on patches.
 >
-> The f = ... part could be moved outside the if blocks to avoid copy paste.
+> Looks like only one of the unions was needed (cvmx_rst_boot)...?
 >
 
-No, If you look at the rest of the file, you will find that there are 
-checks in the form:
+This follows the form of the other register definition files.
 
-   if (f != 0) ...
-
-There is a reason that we leave f with its default value of zero in some 
-of the cases.
+If Ralf requests it, we would consider deleting some of the currently 
+unused definitions.
 
 David Daney

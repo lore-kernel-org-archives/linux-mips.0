@@ -1,14 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44380 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007955AbaLLMp5W156m (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 12 Dec 2014 13:45:57 +0100
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH] mips: pci: Add ifdef around pci_proc_domain
-Date: Fri, 12 Dec 2014 12:45:39 +0000
-Message-ID: <1418388339-19750-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+Received: from mail-by2on0068.outbound.protection.outlook.com ([207.46.100.68]:55894
+        "EHLO na01-by2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27008875AbaLOV3nYK3Na (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 15 Dec 2014 22:29:43 +0100
+Message-ID: <548F52B8.7030606@caviumnetworks.com>
+Date: Mon, 15 Dec 2014 13:29:28 -0800
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Zubair.Kakakhel@imgtec.com>
+Subject: Re: [PATCH 14/14] MIPS: OCTEON: Handle OCTEON III in csrc-octeon.
+References: <1418666603-15159-1-git-send-email-aleksey.makarov@auriga.com> <1418666603-15159-15-git-send-email-aleksey.makarov@auriga.com> <20141215212422.GD10323@fuloong-minipc.musicnaut.iki.fi>
+In-Reply-To: <20141215212422.GD10323@fuloong-minipc.musicnaut.iki.fi>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,40 +22,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: Markos.Chandras@imgtec.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20141212124539.hXVsKEh3uJEt-XG1o_EjK9-1j7R9SnzDjyDm0ZsmYpc@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Aleksey Makarov <feumilieu@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Aleksey Makarov <aleksey.makarov@auriga.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20141215212928.4D7cfF0La5oLvGwYPDS5P-8BZ0-fWuv4et6lODAdds4@z>
 
-Without these, there are multiple definitions of pci_proc_domain()
-and pci_domain_nr() if linux/pci.h and asm/pci.h are included.
+On 12/15/2014 01:24 PM, Aaro Koskinen wrote:
+> Hi,
+>
+> On Mon, Dec 15, 2014 at 09:03:20PM +0300, Aleksey Makarov wrote:
+>>   	if (current_cpu_type() == CPU_CAVIUM_OCTEON2) {
+>>   		union cvmx_mio_rst_boot rst_boot;
+>> +
+>>   		rst_boot.u64 = cvmx_read_csr(CVMX_MIO_RST_BOOT);
+>>   		rdiv = rst_boot.s.c_mul;	/* CPU clock */
+>>   		sdiv = rst_boot.s.pnr_mul;	/* I/O clock */
+>>   		f = (0x8000000000000000ull / sdiv) * 2;
+>> +	} else if (current_cpu_type() == CPU_CAVIUM_OCTEON3) {
+>> +		union cvmx_rst_boot rst_boot;
+>> +
+>> +		rst_boot.u64 = cvmx_read_csr(CVMX_RST_BOOT);
+>> +		rdiv = rst_boot.s.c_mul;	/* CPU clock */
+>> +		sdiv = rst_boot.s.pnr_mul;	/* I/O clock */
+>> +		f = (0x8000000000000000ull / sdiv) * 2;
+>>   	}
+>
+> The f = ... part could be moved outside the if blocks to avoid copy paste.
+>
 
-Add #ifdefs around them
+No, If you look at the rest of the file, you will find that there are 
+checks in the form:
 
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Reviewed-by: Markos Chandras <Markos.Chandras@imgtec.com>
----
- arch/mips/include/asm/pci.h | 2 ++
- 1 file changed, 2 insertions(+)
+   if (f != 0) ...
 
-diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
-index 6952962..193b4c6 100644
---- a/arch/mips/include/asm/pci.h
-+++ b/arch/mips/include/asm/pci.h
-@@ -121,6 +121,7 @@ static inline void pci_dma_burst_advice(struct pci_dev *pdev,
- }
- #endif
- 
-+#ifdef CONFIG_PCI_DOMAINS
- #define pci_domain_nr(bus) ((struct pci_controller *)(bus)->sysdata)->index
- 
- static inline int pci_proc_domain(struct pci_bus *bus)
-@@ -128,6 +129,7 @@ static inline int pci_proc_domain(struct pci_bus *bus)
- 	struct pci_controller *hose = bus->sysdata;
- 	return hose->need_domain_info;
- }
-+#endif /* CONFIG_PCI_DOMAINS */
- 
- #endif /* __KERNEL__ */
- 
--- 
-1.9.1
+There is a reason that we leave f with its default value of zero in some 
+of the cases.
+
+David Daney

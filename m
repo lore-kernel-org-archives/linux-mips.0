@@ -1,14 +1,14 @@
 Received: from mailapp01.imgtec.com ([195.59.15.196]:54142 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009207AbaLRPNXmt7vM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:13:23 +0100
+        with ESMTP id S27009208AbaLRPNYOSaGN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:13:24 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 896A01A7AC6FE
-        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:13:15 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id 17DE52F9F6A5D
+        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:13:21 +0000 (GMT)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC 55/67] MIPS: kernel: branch: Emulate the branch compact (BC) on MIPS R6
-Date: Thu, 18 Dec 2014 15:10:04 +0000
-Message-ID: <1418915416-3196-56-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH RFC 59/67] MIPS: kernel: branch: Emulate the BEQZC and JIC instructions
+Date: Thu, 18 Dec 2014 15:10:08 +0000
+Message-ID: <1418915416-3196-60-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 References: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -25,30 +25,34 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20141218151004.9d-TOGVgdMzPM9JPAIZkjeBm49T6BljHJNKATcmpEig@z>
+Message-ID: <20141218151008.SnoA699UPIuQnNg1TqA5j42he3ozWtLmBxw7kph7yVk@z>
 
-MIPS R6 uses the <R6 LWC2 opcode for the new BC instruction.
+MIPS R6 uses the <R6 ldc2 opcode for the new BEQZC and JIC instructions
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/kernel/branch.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/mips/kernel/branch.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/arch/mips/kernel/branch.c b/arch/mips/kernel/branch.c
-index ca102557fa3c..d9e3a0d72a64 100644
+index 426f876403d0..4473c23cacf2 100644
 --- a/arch/mips/kernel/branch.c
 +++ b/arch/mips/kernel/branch.c
-@@ -784,6 +784,11 @@ int __compute_return_epc_for_insn(struct pt_regs *regs,
+@@ -802,6 +802,15 @@ int __compute_return_epc_for_insn(struct pt_regs *regs,
+ 		epc = epc + 4 + (insn.i_format.simmediate << 2);
  		regs->cp0_epc = epc;
  		break;
- #endif
-+#ifdef CONFIG_CPU_MIPSR6
-+	case lwc2_or_bc_op:
-+		regs->cp0_epc += 8;
++	case ldc2_or_bzcjic_op:
++		/* Compact branch: BEQZC || JIC */
++		if (insn.i_format.rs) /* BEQZC */
++			epc = epc + 8;
++		else /* JIC */
++			epc = regs->regs[insn.i_format.rt] +
++				insn.i_format.simmediate;
++		regs->cp0_epc = epc;
 +		break;
-+#endif
+ #endif
  	}
  
- 	return ret;
 -- 
 2.2.0

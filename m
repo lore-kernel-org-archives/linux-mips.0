@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:48858 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:14529 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009217AbaLRPNlGsgFN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:13:41 +0100
+        with ESMTP id S27009220AbaLRPNnRL0Vv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:13:43 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id E17C43F068DF6
-        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:13:32 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id 912B23D9BDB8D
+        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:13:34 +0000 (GMT)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC 65/67] MIPS: Malta: malta-int: Set correct asm ISA level
-Date: Thu, 18 Dec 2014 15:10:14 +0000
-Message-ID: <1418915416-3196-66-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH RFC 66/67] MIPS: Malta: Add support for building MIPS R6 kernel
+Date: Thu, 18 Dec 2014 15:10:15 +0000
+Message-ID: <1418915416-3196-67-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 References: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -25,28 +25,30 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20141218151014.PngpgVskfuC4tINSz2nst-3idQSeOujA31FxPX0E3TY@z>
+Message-ID: <20141218151015.EuMeV0g7KW6vOBg4wLN2XTqIO-WDcy9ZEboRLTXUwds@z>
 
-MIPS R6 changed the opcode for the clz instruction so we need
-to properly instruct the assembler when using inline asm.
+The Malta platform supports MIPS R6 (via QEMU or real bitstreams)
+so add support for it.
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/mti-malta/malta-int.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/mti-malta/malta-int.c b/arch/mips/mti-malta/malta-int.c
-index e4f43baa8f67..eada9eb0d44e 100644
---- a/arch/mips/mti-malta/malta-int.c
-+++ b/arch/mips/mti-malta/malta-int.c
-@@ -207,7 +207,7 @@ static inline int clz(unsigned long x)
- {
- 	__asm__(
- 	"	.set	push					\n"
--	"	.set	mips32					\n"
-+	"	.set	"MIPS_ISA_LEVEL"			\n"
- 	"	clz	%0, %1					\n"
- 	"	.set	pop					\n"
- 	: "=r" (x)
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 3fe856572d2e..0e1106c775a5 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -332,8 +332,10 @@ config MIPS_MALTA
+ 	select SYS_HAS_CPU_MIPS32_R1
+ 	select SYS_HAS_CPU_MIPS32_R2
+ 	select SYS_HAS_CPU_MIPS32_R3_5
++	select SYS_HAS_CPU_MIPS32_R6
+ 	select SYS_HAS_CPU_MIPS64_R1
+ 	select SYS_HAS_CPU_MIPS64_R2
++	select SYS_HAS_CPU_MIPS64_R6
+ 	select SYS_HAS_CPU_NEVADA
+ 	select SYS_HAS_CPU_RM7000
+ 	select SYS_SUPPORTS_32BIT_KERNEL
 -- 
 2.2.0

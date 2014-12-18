@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:51614 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:9051 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009179AbaLRPNAw8IWH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:13:00 +0100
+        with ESMTP id S27009189AbaLRPNE425U8 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:13:04 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id A15FB5DB0D35C
-        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:12:52 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id 368D48D3D0A7B
+        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:12:54 +0000 (GMT)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC 42/67] MIPS: kernel: branch: Prepare the JR instruction for emulation on MIPS R6
-Date: Thu, 18 Dec 2014 15:09:51 +0000
-Message-ID: <1418915416-3196-43-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH RFC 43/67] MIPS: kernel: branch: Prevent BLTZL emulation for MIPS R6
+Date: Thu, 18 Dec 2014 15:09:52 +0000
+Message-ID: <1418915416-3196-44-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 References: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -25,41 +25,31 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20141218150951.VL1j_4Wi8fmgT3_fvbJ11sUshGEbhwr2GSxx0pvud6o@z>
+Message-ID: <20141218150952.lGwy4_LzYugxOCWCWH1Jqe5-60xFLK7d1cHltsb38E0@z>
 
-The MIPS R6 JR instruction is an alias to the JALR one, so it may
-needs emulation for non-R6 userlands.
+MIPS R6 removed the BLTZL instruction so do not try to emulate it
+if the R2-to-R6 emulator is not present.
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/kernel/branch.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/mips/kernel/branch.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/arch/mips/kernel/branch.c b/arch/mips/kernel/branch.c
-index b7dd0926e87f..3df013ef7622 100644
+index 3df013ef7622..964ee68dcfe6 100644
 --- a/arch/mips/kernel/branch.c
 +++ b/arch/mips/kernel/branch.c
-@@ -19,6 +19,9 @@
- #include <asm/ptrace.h>
- #include <asm/uaccess.h>
- 
-+static int mipsr2_emulation = 0;
-+#define NO_R6EMU	(cpu_has_mips_r6 && !mipsr2_emulation)
-+
- /*
-  * Calculate and return exception PC in case of branch delay slot
-  * for microMIPS and MIPS16e. It does not clear the ISA mode bit.
-@@ -417,6 +420,11 @@ int __compute_return_epc_for_insn(struct pt_regs *regs,
- 			regs->regs[insn.r_format.rd] = epc + 8;
- 			/* Fall through */
- 		case jr_op:
-+			if (NO_R6EMU && insn.r_format.func == jr_op) {
+@@ -439,6 +439,11 @@ int __compute_return_epc_for_insn(struct pt_regs *regs,
+ 		switch (insn.i_format.rt) {
+ 		case bltz_op:
+ 		case bltzl_op:
++			if (NO_R6EMU && insn.i_format.rt == bltzl_op) {
 +				ret = -SIGILL;
-+				/* For R6, JR already emulated in jalr_op */
++				/* not emulating the branch likely for R6 */
 +				break;
 +			}
- 			regs->cp0_epc = regs->regs[insn.r_format.rs];
- 			break;
- 		}
+ 			if ((long)regs->regs[insn.i_format.rs] < 0) {
+ 				epc = epc + 4 + (insn.i_format.simmediate << 2);
+ 				if (insn.i_format.rt == bltzl_op)
 -- 
 2.2.0

@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45020 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57332 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009160AbaLRPLvN6zf9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:11:51 +0100
+        with ESMTP id S27009161AbaLRPLxvpMLu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:11:53 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 6DF4A60D15EB1
-        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:11:41 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id 5DD39CD8A649B
+        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:11:43 +0000 (GMT)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC 17/67] MIPS: asm: r4kcache: Add MIPS R6 cache unroll functions
-Date: Thu, 18 Dec 2014 15:09:26 +0000
-Message-ID: <1418915416-3196-18-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH RFC 18/67] MIPS: asm: spram: Add MIPS R6 related definitions
+Date: Thu, 18 Dec 2014 15:09:27 +0000
+Message-ID: <1418915416-3196-19-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 References: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -25,198 +25,45 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20141218150926.2GhkHNp1BkhCc_m1GQee5ozwpCbhd78n3wLq0VjUVAw@z>
+Message-ID: <20141218150927.5gMykxnvkauW2O5-o08cRNqRyQd6dPqKE563MwzEAts@z>
 
-MIPS R6 changed the 'cache' instruction opcode and reduced the
-offset field to 8 bits. This means we now have to adjust the
-base register every 256 bytes and as a result of which we can
-no longer use the previous cache functions.
+MIPS R6, just like MIPS R2, can use the spram_config() function
+in spram.c
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/include/asm/r4kcache.h | 149 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 147 insertions(+), 2 deletions(-)
+ arch/mips/include/asm/spram.h | 4 ++--
+ arch/mips/kernel/Makefile     | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/include/asm/r4kcache.h b/arch/mips/include/asm/r4kcache.h
-index cd6e0afc6833..6a32e16a45d8 100644
---- a/arch/mips/include/asm/r4kcache.h
-+++ b/arch/mips/include/asm/r4kcache.h
-@@ -39,7 +39,7 @@ extern void (*r4k_blast_icache)(void);
- 	__asm__ __volatile__(						\
- 	"	.set	push					\n"	\
- 	"	.set	noreorder				\n"	\
--	"	.set	arch=r4000				\n"	\
-+	"	.set "MIPS_ISA_ARCH_LEVEL"			\n"	\
- 	"	cache	%0, %1					\n"	\
- 	"	.set	pop					\n"	\
- 	:								\
-@@ -206,7 +206,7 @@ static inline void flush_scache_line(unsigned long addr)
- 	__asm__ __volatile__(					\
- 	"	.set	push			\n"		\
- 	"	.set	noreorder		\n"		\
--	"	.set	arch=r4000		\n"		\
-+	"	.set "MIPS_ISA_ARCH_LEVEL"	\n"		\
- 	"1:	cache	%0, (%1)		\n"		\
- 	"2:	.set	pop			\n"		\
- 	"	.section __ex_table,\"a\"	\n"		\
-@@ -277,6 +277,7 @@ static inline void invalidate_tcache_page(unsigned long addr)
- 	cache_op(Page_Invalidate_T, addr);
- }
+diff --git a/arch/mips/include/asm/spram.h b/arch/mips/include/asm/spram.h
+index 0b89006e4907..e02a1961c542 100644
+--- a/arch/mips/include/asm/spram.h
++++ b/arch/mips/include/asm/spram.h
+@@ -1,10 +1,10 @@
+ #ifndef _MIPS_SPRAM_H
+ #define _MIPS_SPRAM_H
  
-+#ifndef CONFIG_CPU_MIPSR6
- #define cache16_unroll32(base,op)					\
- 	__asm__ __volatile__(						\
- 	"	.set push					\n"	\
-@@ -381,6 +382,150 @@ static inline void invalidate_tcache_page(unsigned long addr)
- 		: "r" (base),						\
- 		  "i" (op));
+-#ifdef CONFIG_CPU_MIPSR2
++#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_MIPSR6)
+ extern __init void spram_config(void);
+ #else
+ static inline void spram_config(void) { };
+-#endif /* CONFIG_CPU_MIPSR2 */
++#endif /* CONFIG_CPU_MIPSR2 || CONFIG_CPU_MIPSR6 */
  
-+#else
-+/*
-+ * MIPS R6 changed the cache opcode and moved to a 8-bit offset field.
-+ * This means we now need to increment the base register before we flush
-+ * more cache lines
-+ */
-+#define cache16_unroll32(base,op)				\
-+	__asm__ __volatile__(					\
-+	"	.set push\n"					\
-+	"	.set noreorder\n"				\
-+	"	.set mips64r6\n"				\
-+	"	.set noat\n"					\
-+	"	cache %1, 0x000(%0); cache %1, 0x010(%0)\n"	\
-+	"	cache %1, 0x020(%0); cache %1, 0x030(%0)\n"	\
-+	"	cache %1, 0x040(%0); cache %1, 0x050(%0)\n"	\
-+	"	cache %1, 0x060(%0); cache %1, 0x070(%0)\n"	\
-+	"	cache %1, 0x080(%0); cache %1, 0x090(%0)\n"	\
-+	"	cache %1, 0x0a0(%0); cache %1, 0x0b0(%0)\n"	\
-+	"	cache %1, 0x0c0(%0); cache %1, 0x0d0(%0)\n"	\
-+	"	cache %1, 0x0e0(%0); cache %1, 0x0f0(%0)\n"	\
-+	"	addiu $1, $0, 0x100			\n"	\
-+	"	cache %1, 0x000($1); cache %1, 0x010($1)\n"	\
-+	"	cache %1, 0x020($1); cache %1, 0x030($1)\n"	\
-+	"	cache %1, 0x040($1); cache %1, 0x050($1)\n"	\
-+	"	cache %1, 0x060($1); cache %1, 0x070($1)\n"	\
-+	"	cache %1, 0x080($1); cache %1, 0x090($1)\n"	\
-+	"	cache %1, 0x0a0($1); cache %1, 0x0b0($1)\n"	\
-+	"	cache %1, 0x0c0($1); cache %1, 0x0d0($1)\n"	\
-+	"	cache %1, 0x0e0($1); cache %1, 0x0f0($1)\n"	\
-+	"	.set pop\n"					\
-+		:						\
-+		: "r" (base),					\
-+		  "i" (op));
-+
-+#define cache32_unroll32(base,op)				\
-+	__asm__ __volatile__(					\
-+	"	.set push\n"					\
-+	"	.set noreorder\n"				\
-+	"	.set mips64r6\n"				\
-+	"	.set noat\n"					\
-+	"	cache %1, 0x000(%0); cache %1, 0x020(%0)\n"	\
-+	"	cache %1, 0x040(%0); cache %1, 0x060(%0)\n"	\
-+	"	cache %1, 0x080(%0); cache %1, 0x0a0(%0)\n"	\
-+	"	cache %1, 0x0c0(%0); cache %1, 0x0e0(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000($1); cache %1, 0x020($1)\n"	\
-+	"	cache %1, 0x040($1); cache %1, 0x060($1)\n"	\
-+	"	cache %1, 0x080($1); cache %1, 0x0a0($1)\n"	\
-+	"	cache %1, 0x0c0($1); cache %1, 0x0e0($1)\n"	\
-+	"	addiu $1, $1, 0x100\n"				\
-+	"	cache %1, 0x000($1); cache %1, 0x020($1)\n"	\
-+	"	cache %1, 0x040($1); cache %1, 0x060($1)\n"	\
-+	"	cache %1, 0x080($1); cache %1, 0x0a0($1)\n"	\
-+	"	cache %1, 0x0c0($1); cache %1, 0x0e0($1)\n"	\
-+	"	addiu $1, $1, 0x100\n"				\
-+	"	cache %1, 0x000($1); cache %1, 0x020($1)\n"	\
-+	"	cache %1, 0x040($1); cache %1, 0x060($1)\n"	\
-+	"	cache %1, 0x080($1); cache %1, 0x0a0($1)\n"	\
-+	"	cache %1, 0x0c0($1); cache %1, 0x0e0($1)\n"	\
-+	"	.set pop\n"					\
-+		:						\
-+		: "r" (base),					\
-+		  "i" (op));
-+
-+#define cache64_unroll32(base,op)				\
-+	__asm__ __volatile__(					\
-+	"	.set push\n"					\
-+	"	.set noreorder\n"				\
-+	"	.set mips64r6\n"				\
-+	"	.set noat\n"					\
-+	"	cache %1, 0x000(%0); cache %1, 0x040(%0)\n"	\
-+	"	cache %1, 0x080(%0); cache %1, 0x0c0(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000($1); cache %1, 0x040($1)\n"	\
-+	"	cache %1, 0x080($1); cache %1, 0x0c0($1)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000($1); cache %1, 0x040($1)\n"	\
-+	"	cache %1, 0x080($1); cache %1, 0x0c0($1)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000($1); cache %1, 0x040($1)\n"	\
-+	"	cache %1, 0x080($1); cache %1, 0x0c0($1)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000($1); cache %1, 0x040($1)\n"	\
-+	"	cache %1, 0x080($1); cache %1, 0x0c0($1)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000($1); cache %1, 0x040($1)\n"	\
-+	"	cache %1, 0x080($1); cache %1, 0x0c0($1)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000($1); cache %1, 0x040($1)\n"	\
-+	"	cache %1, 0x080($1); cache %1, 0x0c0($1)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000($1); cache %1, 0x040($1)\n"	\
-+	"	cache %1, 0x080($1); cache %1, 0x0c0($1)\n"	\
-+	"	.set pop\n"					\
-+		:						\
-+		: "r" (base),					\
-+		  "i" (op));
-+
-+#define cache128_unroll32(base,op)				\
-+	__asm__ __volatile__(					\
-+	"	.set push\n"					\
-+	"	.set noreorder\n"				\
-+	"	.set mips64r6\n"				\
-+	"	.set noat\n"					\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	cache %1, 0x000(%0); cache %1, 0x080(%0)\n"	\
-+	"	addiu $1, %0, 0x100\n"				\
-+	"	.set pop\n"					\
-+		:						\
-+		: "r" (base),					\
-+		  "i" (op));
-+#endif /* CONFIG_CPU_MIPSR6 */
-+
- /*
-  * Perform the cache operation specified by op using a user mode virtual
-  * address while in kernel mode.
+ #endif /* _MIPS_SPRAM_H */
+diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
+index 008a2fed0584..f6ee8cc1f7c2 100644
+--- a/arch/mips/kernel/Makefile
++++ b/arch/mips/kernel/Makefile
+@@ -54,6 +54,7 @@ obj-$(CONFIG_MIPS_CMP)		+= smp-cmp.o
+ obj-$(CONFIG_MIPS_CPS)		+= smp-cps.o cps-vec.o
+ obj-$(CONFIG_MIPS_GIC_IPI)	+= smp-gic.o
+ obj-$(CONFIG_CPU_MIPSR2)	+= spram.o
++obj-$(CONFIG_CPU_MIPSR6)	+= spram.o
+ 
+ obj-$(CONFIG_MIPS_VPE_LOADER)	+= vpe.o
+ obj-$(CONFIG_MIPS_VPE_LOADER_CMP) += vpe-cmp.o
 -- 
 2.2.0

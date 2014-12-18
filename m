@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:48640 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:43384 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009177AbaLRPMPGBf08 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:12:15 +0100
+        with ESMTP id S27009178AbaLRPMQlmj6S (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:12:16 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 5119244B0C62F
-        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:12:06 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id 6E52FF13035B1
+        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:12:08 +0000 (GMT)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC 28/67] MIPS: kernel: entry.S: Add MIPS R6 related definitions
-Date: Thu, 18 Dec 2014 15:09:37 +0000
-Message-ID: <1418915416-3196-29-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH RFC 29/67] MIPS: kernel: proc: Add MIPS R6 support to /proc/cpuinfo
+Date: Thu, 18 Dec 2014 15:09:38 +0000
+Message-ID: <1418915416-3196-30-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 References: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -25,39 +25,46 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20141218150937.2PshhFOkVSgIBpCpjDdCrI-_IHg9CkWWbCA9soxPbns@z>
+Message-ID: <20141218150938.IkuCyjVx_1t_r49E7LT1CcUizFH6yEMisOGfyoPdbvY@z>
 
-The instruction hazard barrier in the form of:
-
-jr.hb	ra
-nop
-
-is valid on MIPS R6 as well.
+Print 'mips64r6' and/or 'mips32r6' if the kernel is running on
+a MIPS R6 core.
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/kernel/entry.S | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/mips/kernel/proc.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/entry.S b/arch/mips/kernel/entry.S
-index 4353d323f017..d5ab21c3fd12 100644
---- a/arch/mips/kernel/entry.S
-+++ b/arch/mips/kernel/entry.S
-@@ -158,7 +158,8 @@ syscall_exit_work:
- 	jal	syscall_trace_leave
- 	b	resume_userspace
+diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+index 097fc8d14e42..b2194770878d 100644
+--- a/arch/mips/kernel/proc.c
++++ b/arch/mips/kernel/proc.c
+@@ -82,7 +82,10 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+ 		seq_printf(m, "]\n");
+ 	}
  
--#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_MIPS_MT)
-+#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_MIPSR6) || \
-+    defined(CONFIG_MIPS_MT)
+-	seq_printf(m, "isa\t\t\t: mips1");
++	if (!cpu_has_mips_r6)
++		seq_printf(m, "isa\t\t\t: mips1");
++	else
++		seq_printf(m, "isa\t\t\t:");
+ 	if (cpu_has_mips_2)
+ 		seq_printf(m, "%s", " mips2");
+ 	if (cpu_has_mips_3)
+@@ -95,10 +98,14 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+ 		seq_printf(m, "%s", " mips32r1");
+ 	if (cpu_has_mips32r2)
+ 		seq_printf(m, "%s", " mips32r2");
++	if (cpu_has_mips32r6)
++		seq_printf(m, "%s", " mips32r6");
+ 	if (cpu_has_mips64r1)
+ 		seq_printf(m, "%s", " mips64r1");
+ 	if (cpu_has_mips64r2)
+ 		seq_printf(m, "%s", " mips64r2");
++	if (cpu_has_mips64r6)
++		seq_printf(m, "%s", " mips64r6");
+ 	seq_printf(m, "\n");
  
- /*
-  * MIPS32R2 Instruction Hazard Barrier - must be called
-@@ -171,4 +172,4 @@ LEAF(mips_ihb)
- 	nop
- 	END(mips_ihb)
- 
--#endif /* CONFIG_CPU_MIPSR2 or CONFIG_MIPS_MT */
-+#endif /* CONFIG_CPU_MIPSR2 or CONFIG_CPU_MIPSR6 or CONFIG_MIPS_MT */
+ 	seq_printf(m, "ASEs implemented\t:");
 -- 
 2.2.0

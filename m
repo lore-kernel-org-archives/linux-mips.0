@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:37552 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:44975 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009162AbaLRPLycJ6zH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:11:54 +0100
+        with ESMTP id S27009163AbaLRPLzyFkGa (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Dec 2014 16:11:55 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 9E2D385BEDD83
-        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:11:45 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id D01A7F3BD0BA6
+        for <linux-mips@linux-mips.org>; Thu, 18 Dec 2014 15:11:46 +0000 (GMT)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC 19/67] MIPS: asm: atomic: Update asm and ISA constrains for MIPS R6 support
-Date: Thu, 18 Dec 2014 15:09:28 +0000
-Message-ID: <1418915416-3196-20-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH RFC 20/67] MIPS: asm: cmpxchg: Update asm and ISA constrains for MIPS R6 support
+Date: Thu, 18 Dec 2014 15:09:29 +0000
+Message-ID: <1418915416-3196-21-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 References: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -25,7 +25,7 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>, Matthew Fortune <Matthew.Fortune@imgtec.com>
-Message-ID: <20141218150928.HB9kUDdCh3vpdEVMdtSZK8JDqhUE8M5PKu0o5lQi7eg@z>
+Message-ID: <20141218150929.ex3CzQqzx2IGpWoQ6xvoL7aEWpsrlN9CXrm3WVWla8E@z>
 
 MIPS R6 changed the opcodes for LL/SC instructions and reduced the
 offset field to 9-bits. This has some undesired effects with the "m"
@@ -37,133 +37,75 @@ to set the appropriate ISA for the asm blocks
 Cc: Matthew Fortune <Matthew.Fortune@imgtec.com>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/include/asm/atomic.h | 50 +++++++++++++++++++++---------------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+ arch/mips/include/asm/cmpxchg.h | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
-index 6dd6bfc607e9..8669e0ec97e3 100644
---- a/arch/mips/include/asm/atomic.h
-+++ b/arch/mips/include/asm/atomic.h
-@@ -60,13 +60,13 @@ static __inline__ void atomic_##op(int i, atomic_t * v)				\
- 										\
- 		do {								\
- 			__asm__ __volatile__(					\
--			"	.set	arch=r4000			\n"	\
--			"	ll	%0, %1		# atomic_" #op "\n"	\
-+			"	.set	"MIPS_ISA_ARCH_LEVEL"		\n"	\
-+			"	ll	%0, 0(%3)	# atomic_" #op "\n"	\
- 			"	" #asm_op " %0, %2			\n"	\
--			"	sc	%0, %1				\n"	\
-+			"	sc	%0, 0(%3)			\n"	\
- 			"	.set	mips0				\n"	\
- 			: "=&r" (temp), "+m" (v->counter)			\
--			: "Ir" (i));						\
-+			: "Ir" (i), "r" (&v->counter));				\
- 		} while (unlikely(!temp));					\
- 	} else {								\
- 		unsigned long flags;						\
-@@ -102,13 +102,13 @@ static __inline__ int atomic_##op##_return(int i, atomic_t * v)			\
- 										\
- 		do {								\
- 			__asm__ __volatile__(					\
--			"	.set	arch=r4000			\n"	\
--			"	ll	%1, %2	# atomic_" #op "_return	\n"	\
-+			"	.set	"MIPS_ISA_ARCH_LEVEL"		\n"	\
-+			"	ll	%1, 0(%4) # atomic_" #op "_return\n"	\
- 			"	" #asm_op " %0, %1, %3			\n"	\
--			"	sc	%0, %2				\n"	\
-+			"	sc	%0, 0(%4)			\n"	\
- 			"	.set	mips0				\n"	\
- 			: "=&r" (result), "=&r" (temp), "+m" (v->counter)	\
--			: "Ir" (i));						\
-+			: "Ir" (i), "r" (&v->counter));				\
- 		} while (unlikely(!result));					\
- 										\
- 		result = temp; result c_op i;					\
-@@ -174,11 +174,11 @@ static __inline__ int atomic_sub_if_positive(int i, atomic_t * v)
- 		int temp;
+diff --git a/arch/mips/include/asm/cmpxchg.h b/arch/mips/include/asm/cmpxchg.h
+index eefcaa363a87..86a76f125bc8 100644
+--- a/arch/mips/include/asm/cmpxchg.h
++++ b/arch/mips/include/asm/cmpxchg.h
+@@ -38,15 +38,15 @@ static inline unsigned long __xchg_u32(volatile int * m, unsigned int val)
  
- 		__asm__ __volatile__(
--		"	.set	arch=r4000				\n"
--		"1:	ll	%1, %2		# atomic_sub_if_positive\n"
-+		"	.set	"MIPS_ISA_ARCH_LEVEL"			\n"
-+		"1:	ll	%1, 0(%4)	# atomic_sub_if_positive\n"
- 		"	subu	%0, %1, %3				\n"
- 		"	bltz	%0, 1f					\n"
--		"	sc	%0, %2					\n"
-+		"	sc	%0, 0(%4)				\n"
- 		"	.set	noreorder				\n"
- 		"	beqz	%0, 1b					\n"
- 		"	 subu	%0, %1, %3				\n"
-@@ -186,7 +186,7 @@ static __inline__ int atomic_sub_if_positive(int i, atomic_t * v)
- 		"1:							\n"
- 		"	.set	mips0					\n"
- 		: "=&r" (result), "=&r" (temp), "+m" (v->counter)
--		: "Ir" (i));
-+		: "Ir" (i), "r" (&v->counter));
+ 		do {
+ 			__asm__ __volatile__(
+-			"	.set	arch=r4000			\n"
+-			"	ll	%0, %3		# xchg_u32	\n"
++			"	.set	"MIPS_ISA_ARCH_LEVEL"		\n"
++			"	ll	%0, 0(%3)	# xchg_u32	\n"
+ 			"	.set	mips0				\n"
+ 			"	move	%2, %z4				\n"
+-			"	.set	arch=r4000			\n"
+-			"	sc	%2, %1				\n"
++			"	.set	"MIPS_ISA_ARCH_LEVEL"		\n"
++			"	sc	%2, 0(%3)			\n"
+ 			"	.set	mips0				\n"
+ 			: "=&r" (retval), "=m" (*m), "=&r" (dummy)
+-			: "R" (*m), "Jr" (val)
++			: "r" (m), "Jr" (val)
+ 			: "memory");
+ 		} while (unlikely(!dummy));
  	} else {
- 		unsigned long flags;
+@@ -88,13 +88,13 @@ static inline __u64 __xchg_u64(volatile __u64 * m, __u64 val)
  
-@@ -335,13 +335,13 @@ static __inline__ void atomic64_##op(long i, atomic64_t * v)			\
- 										\
- 		do {								\
- 			__asm__ __volatile__(					\
--			"	.set	arch=r4000			\n"	\
--			"	lld	%0, %1		# atomic64_" #op "\n"	\
-+			"	.set	"MIPS_ISA_ARCH_LEVEL"		\n"	\
-+			"	lld	%0, 0(%3)     # atomic64_" #op "\n"	\
- 			"	" #asm_op " %0, %2			\n"	\
--			"	scd	%0, %1				\n"	\
-+			"	scd	%0, 0(%3)			\n"	\
- 			"	.set	mips0				\n"	\
- 			: "=&r" (temp), "+m" (v->counter)			\
--			: "Ir" (i));						\
-+			: "Ir" (i), "r" (&v->counter));				\
- 		} while (unlikely(!temp));					\
- 	} else {								\
- 		unsigned long flags;						\
-@@ -377,13 +377,13 @@ static __inline__ long atomic64_##op##_return(long i, atomic64_t * v)		\
- 										\
- 		do {								\
- 			__asm__ __volatile__(					\
--			"	.set	arch=r4000			\n"	\
--			"	lld	%1, %2	# atomic64_" #op "_return\n"	\
-+			"	.set	"MIPS_ISA_ARCH_LEVEL"		\n"	\
-+			"	lld	%1, 0(%4)# atomic64_" #op "_return\n"	\
- 			"	" #asm_op " %0, %1, %3			\n"	\
--			"	scd	%0, %2				\n"	\
-+			"	scd	%0, 0(%4)			\n"	\
- 			"	.set	mips0				\n"	\
--			: "=&r" (result), "=&r" (temp), "=m" (v->counter)	\
--			: "Ir" (i), "m" (v->counter)				\
-+			: "=&r" (result), "=&r" (temp), "+m" (v->counter)	\
-+			: "Ir" (i), "r" (&v->counter)				\
- 			: "memory");						\
- 		} while (unlikely(!result));					\
- 										\
-@@ -450,11 +450,11 @@ static __inline__ long atomic64_sub_if_positive(long i, atomic64_t * v)
- 		long temp;
- 
- 		__asm__ __volatile__(
--		"	.set	arch=r4000				\n"
--		"1:	lld	%1, %2		# atomic64_sub_if_positive\n"
-+		"	.set	"MIPS_ISA_ARCH_LEVEL"			\n"
-+		"1:	lld	%1, 0(%4)	# atomic64_sub_if_positive\n"
- 		"	dsubu	%0, %1, %3				\n"
- 		"	bltz	%0, 1f					\n"
--		"	scd	%0, %2					\n"
-+		"	scd	%0, 0(%4)				\n"
- 		"	.set	noreorder				\n"
- 		"	beqz	%0, 1b					\n"
- 		"	 dsubu	%0, %1, %3				\n"
-@@ -462,7 +462,7 @@ static __inline__ long atomic64_sub_if_positive(long i, atomic64_t * v)
- 		"1:							\n"
- 		"	.set	mips0					\n"
- 		: "=&r" (result), "=&r" (temp), "+m" (v->counter)
--		: "Ir" (i));
-+		: "Ir" (i), "r"(&v->counter));
+ 		do {
+ 			__asm__ __volatile__(
+-			"	.set	arch=r4000			\n"
+-			"	lld	%0, %3		# xchg_u64	\n"
++			"	.set	"MIPS_ISA_ARCH_LEVEL"		\n"
++			"	lld	%0, 0(%3)	# xchg_u64	\n"
+ 			"	move	%2, %z4				\n"
+-			"	scd	%2, %1				\n"
++			"	scd	%2, 0(%3)			\n"
+ 			"	.set	mips0				\n"
+ 			: "=&r" (retval), "=m" (*m), "=&r" (dummy)
+-			: "R" (*m), "Jr" (val)
++			: "r" (m), "Jr" (val)
+ 			: "memory");
+ 		} while (unlikely(!dummy));
  	} else {
- 		unsigned long flags;
- 
+@@ -162,18 +162,18 @@ static inline unsigned long __xchg(unsigned long x, volatile void * ptr, int siz
+ 		__asm__ __volatile__(					\
+ 		"	.set	push				\n"	\
+ 		"	.set	noat				\n"	\
+-		"	.set	arch=r4000			\n"	\
+-		"1:	" ld "	%0, %2		# __cmpxchg_asm \n"	\
++		"	.set	"MIPS_ISA_ARCH_LEVEL"		\n"	\
++		"1:	" ld "	%0, 0(%2)	# __cmpxchg_asm \n"	\
+ 		"	bne	%0, %z3, 2f			\n"	\
+ 		"	.set	mips0				\n"	\
+ 		"	move	$1, %z4				\n"	\
+-		"	.set	arch=r4000			\n"	\
+-		"	" st "	$1, %1				\n"	\
++		"	.set	"MIPS_ISA_ARCH_LEVEL"		\n"	\
++		"	" st "	$1, 0(%2)			\n"	\
+ 		"	beqz	$1, 1b				\n"	\
+ 		"	.set	pop				\n"	\
+ 		"2:						\n"	\
+ 		: "=&r" (__ret), "=R" (*m)				\
+-		: "R" (*m), "Jr" (old), "Jr" (new)			\
++		: "r" (m), "Jr" (old), "Jr" (new)			\
+ 		: "memory");						\
+ 	} else {							\
+ 		unsigned long __flags;					\
 -- 
 2.2.0

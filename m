@@ -1,15 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:1928 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:43467 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009128AbaLSJBwoxana (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Dec 2014 10:01:52 +0100
-Message-ID: <5493E97A.1070608@imgtec.com>
-Date: Fri, 19 Dec 2014 09:01:46 +0000
+        with ESMTP id S27008667AbaLSKCEpp2Wx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Dec 2014 11:02:04 +0100
+Message-ID: <5493F794.9040200@imgtec.com>
+Date: Fri, 19 Dec 2014 10:01:56 +0000
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC 12/67] MIPS: asm: asmmacro: Replace add instructions
- with "addui"
-References: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com> <1418915416-3196-13-git-send-email-markos.chandras@imgtec.com> <54932370.605@gmail.com>
-In-Reply-To: <54932370.605@gmail.com>
+Subject: Re: [PATCH RFC 19/67] MIPS: asm: atomic: Update asm and ISA constrains
+ for MIPS R6 support
+References: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com> <1418915416-3196-20-git-send-email-markos.chandras@imgtec.com> <549321F3.1090704@gmail.com>
+In-Reply-To: <549321F3.1090704@gmail.com>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -22,30 +22,65 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20141219090146.ZMOXuZZx2JAfL9S2X94NyqYz3WsdjUiEIMy5lMCLELc@z>
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: linux-mips@linux-mips.org, Matthew Fortune <Matthew.Fortune@imgtec.com>
+Message-ID: <20141219100156.i-1FxOg51Mp6IwIb5whpwmeMnaIDqtu6RPeHKtPOmzs@z>
 
-On 12/18/2014 06:56 PM, David Daney wrote:
+On 12/18/2014 06:50 PM, David Daney wrote:
 > On 12/18/2014 07:09 AM, Markos Chandras wrote:
->> The use of "add" instruction for immediate operations is wrong and
->> relies to gas being smart enough to notice that and replace it with
->> either addi or addui. However, MIPS R6 removed the addi instruction
->> so, fix this problem properly by using the correct instruction
->> directly.
+>> MIPS R6 changed the opcodes for LL/SC instructions and reduced the
+>> offset field to 9-bits. This has some undesired effects with the "m"
+>> constrain since it implies a 16-bit immediate. As a result of which,
+>> add a register ("r") constrain as well to make sure the entire address
+>> is loaded to a register before the LL/SC operations. Also use macro
+>> to set the appropriate ISA for the asm blocks
 >>
 > 
-> This is another case of the use of "add" being a real bug.  We should
-> never have faulting instructions like this in the kernel.
+> Has support for MIPS R6 been added to GCC?
 > 
-> Can you send all patches in this set that fix this bug as a separate
-> patch?  Since they are obviously correct, and really should be used by
-> all non-R6 processors, we can get them in sooner that the entire R6 thing.
+> If so, that should include a proper constraint to be used with the new
+> offset restrictions.  We should probably use that, instead of forcing to
+> a "r" constraint.
 > 
-> Thanks,
-> David Daney
+> 
+>> Cc: Matthew Fortune <Matthew.Fortune@imgtec.com>
+>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+>> ---
+>>   arch/mips/include/asm/atomic.h | 50
+>> +++++++++++++++++++++---------------------
+>>   1 file changed, 25 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/arch/mips/include/asm/atomic.h
+>> b/arch/mips/include/asm/atomic.h
+>> index 6dd6bfc607e9..8669e0ec97e3 100644
+>> --- a/arch/mips/include/asm/atomic.h
+>> +++ b/arch/mips/include/asm/atomic.h
+>> @@ -60,13 +60,13 @@ static __inline__ void atomic_##op(int i, atomic_t
+>> * v)                \
+>>                                           \
+>>           do {                                \
+>>               __asm__ __volatile__(                    \
+>> -            "    .set    arch=r4000            \n"    \
+>> -            "    ll    %0, %1        # atomic_" #op "\n"    \
+>> +            "    .set    "MIPS_ISA_ARCH_LEVEL"        \n"    \
+>> +            "    ll    %0, 0(%3)    # atomic_" #op "\n"    \
+>>               "    " #asm_op " %0, %2            \n"    \
+>> -            "    sc    %0, %1                \n"    \
+>> +            "    sc    %0, 0(%3)            \n"    \
+>>               "    .set    mips0                \n"    \
+>>               : "=&r" (temp), "+m" (v->counter)            \
+>> -            : "Ir" (i));                        \
+>> +            : "Ir" (i), "r" (&v->counter));                \
+> 
+> You lost the "m" constraint, but are still modifying memory.  There is
+> no "memory" clobber here, so we are no longer correctly describing what
+> is happening.
+> 
+> 
 
-sure i will move these patches away from R6 and post them separately.
+Sorry I don't understand what you mean by  "you lost the "m"
+constraint". +m (v->counter) is still there to denote that v->counter
+memory is being modified no?
 
 -- 
 markos

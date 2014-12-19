@@ -1,15 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:15278 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:1928 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007783AbaLSIyj6BuL2 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Dec 2014 09:54:39 +0100
-Message-ID: <5493E7C8.4020302@imgtec.com>
-Date: Fri, 19 Dec 2014 08:54:32 +0000
+        with ESMTP id S27009128AbaLSJBwoxana (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Dec 2014 10:01:52 +0100
+Message-ID: <5493E97A.1070608@imgtec.com>
+Date: Fri, 19 Dec 2014 09:01:46 +0000
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC 47/67] MIPS: kernel: branch: Prevent BEQL emulation
- for MIPS R6
-References: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com> <1418915416-3196-48-git-send-email-markos.chandras@imgtec.com> <54936992.2070302@gentoo.org>
-In-Reply-To: <54936992.2070302@gentoo.org>
+Subject: Re: [PATCH RFC 12/67] MIPS: asm: asmmacro: Replace add instructions
+ with "addui"
+References: <1418915416-3196-1-git-send-email-markos.chandras@imgtec.com> <1418915416-3196-13-git-send-email-markos.chandras@imgtec.com> <54932370.605@gmail.com>
+In-Reply-To: <54932370.605@gmail.com>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -22,24 +22,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Joshua Kinard <kumba@gentoo.org>, linux-mips@linux-mips.org
-Message-ID: <20141219085432.tiHHKNQKsdsvoRjFTzGWUHJSl-t_Yxjvn8qNOivbXcw@z>
+To: David Daney <ddaney.cavm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20141219090146.ZMOXuZZx2JAfL9S2X94NyqYz3WsdjUiEIMy5lMCLELc@z>
 
-On 12/18/2014 11:56 PM, Joshua Kinard wrote:
-> On 12/18/2014 10:09, Markos Chandras wrote:
->> MIPS R6 removed the BEQL instruction so do not try to emulate it
->> if the R2-to-R6 emulator is not present.
+On 12/18/2014 06:56 PM, David Daney wrote:
+> On 12/18/2014 07:09 AM, Markos Chandras wrote:
+>> The use of "add" instruction for immediate operations is wrong and
+>> relies to gas being smart enough to notice that and replace it with
+>> either addi or addui. However, MIPS R6 removed the addi instruction
+>> so, fix this problem properly by using the correct instruction
+>> directly.
+>>
 > 
-> How does this affect code for the old ISAs, MIPS-II to MIPS-IV?  I.e., the SGIs
-> and the R10K CPUs that have to worry about the R10000_LLSC_WAR workaround and
-> use branch-likely insns?
+> This is another case of the use of "add" being a real bug.  We should
+> never have faulting instructions like this in the kernel.
 > 
-> --J
+> Can you send all patches in this set that fix this bug as a separate
+> patch?  Since they are obviously correct, and really should be used by
+> all non-R6 processors, we can get them in sooner that the entire R6 thing.
 > 
+> Thanks,
+> David Daney
 
-it does not affect them (or should not affect them). In case of *any*
-non-R6 core, the NO_R6EMU macro is false, so all the conditionals here
-are evaluated to false and the branch emulation will do the right thing.
+sure i will move these patches away from R6 and post them separately.
 
 -- 
 markos

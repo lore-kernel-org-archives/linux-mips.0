@@ -1,14 +1,17 @@
-Received: from mail-ie0-f172.google.com ([209.85.223.172]:58122 "EHLO
-        mail-ie0-f172.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27009241AbaLTAdRfJaGr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 20 Dec 2014 01:33:17 +0100
-From: David Daney <ddaney.cavm@gmail.com>
-Subject: [PATCH 2/2] Revert "MIPS: kernel: cpu-probe: Detect unique RI/XI exceptions"
-Date: Fri, 19 Dec 2014 16:33:05 -0800
-Message-ID: <1419035585-21671-3-git-send-email-ddaney.cavm@gmail.com>
-In-Reply-To: <1419035585-21671-1-git-send-email-ddaney.cavm@gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:19575 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27009080AbaLTAnpgYr-h (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 20 Dec 2014 01:43:45 +0100
+Message-ID: <5494C639.8050808@imgtec.com>
+Date: Fri, 19 Dec 2014 16:43:37 -0800
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH 0/2] Revert broken C0_Pagegrain[PG_IEC] support.
 References: <1419035585-21671-1-git-send-email-ddaney.cavm@gmail.com>
-Return-Path: <ddaney.cavm@gmail.com>
+In-Reply-To: <1419035585-21671-1-git-send-email-ddaney.cavm@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,56 +21,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org
-Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, David Daney <david.daney@cavium.com>, stable@vger.kernel.org
-Message-ID: <20141220003305.r3tosQQl7YgDjsZx2d97guWgFiNr3hgIdq9iYk5qVZc@z>
+To: David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: David Daney <david.daney@cavium.com>
+Message-ID: <20141220004337.ka5QNQ48lt9Um1aOzTk3ljYIxI4f7mnn0XefTx0DoWU@z>
 
-From: David Daney <david.daney@cavium.com>
-
-This reverts commit 6575b1d4173eaeff6742a2c6dcbd835bb052952b.
-
-It sets PG_IEC in cpu-probe.  But this value is clobbered in
-tlb_init() so the system is never configured to take the RIXI specific
-exceptions.  Caos ensues.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: David Daney <david.daney@cavium.com>
----
- arch/mips/include/asm/mipsregs.h | 1 -
- arch/mips/kernel/cpu-probe.c     | 9 ---------
- 2 files changed, 10 deletions(-)
-
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index 5e4aef3..dfdca76 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -265,7 +265,6 @@
- #define PG_XIE		(_ULCAST_(1) <<	 30)
- #define PG_ELPA		(_ULCAST_(1) <<	 29)
- #define PG_ESP		(_ULCAST_(1) <<	 28)
--#define PG_IEC		(_ULCAST_(1) <<  27)
- 
- /*
-  * R4x00 interrupt enable / cause bits
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 5342674..63ace78 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -531,15 +531,6 @@ static void decode_configs(struct cpuinfo_mips *c)
- 
- 	mips_probe_watch_registers(c);
- 
--	if (cpu_has_rixi) {
--		/* Enable the RIXI exceptions */
--		write_c0_pagegrain(read_c0_pagegrain() | PG_IEC);
--		back_to_back_c0_hazard();
--		/* Verify the IEC bit is set */
--		if (read_c0_pagegrain() & PG_IEC)
--			c->options |= MIPS_CPU_RIXIEX;
--	}
--
- #ifndef CONFIG_MIPS_CPS
- 	if (cpu_has_mips_r2) {
- 		c->core = get_ebase_cpunum();
--- 
-1.7.11.7
+On 12/19/2014 04:33 PM, David Daney wrote:
+> From: David Daney <david.daney@cavium.com>
+>
+> The two patches reverted here break eXecute-Inhibit (XI) memory
+> protection support.  Before the patches we get SIGSEGV when attempting
+> to execute in non-executable memory, after the patches we loop forever
+> in handle_tlbl.
+>
+> It is probably possible to make C0_Pagegrain[PG_IEC] work, but I think
+> the most prudent thing is to revert these patches, and then only reapply
+> something that works after it has been well tested.
+>
+> David Daney (2):
+>    Revert "MIPS: Use dedicated exception handler if CPU supports RI/XI
+>      exceptions"
+>    Revert "MIPS: kernel: cpu-probe: Detect unique RI/XI exceptions"
+>
+>   arch/mips/include/asm/mipsregs.h | 1 -
+>   arch/mips/kernel/cpu-probe.c     | 9 ---------
+>   arch/mips/kernel/traps.c         | 7 -------
+>   arch/mips/mm/tlbex.c             | 4 ++--
+>   4 files changed, 2 insertions(+), 19 deletions(-)
+>
+Well, it may be have sense just to fix tlb_init() instead.

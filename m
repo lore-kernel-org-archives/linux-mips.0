@@ -1,16 +1,20 @@
-Received: from nivc-ms1.auriga.com ([80.240.102.146]:36357 "EHLO
-        nivc-ms1.auriga.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009630AbaLWMaRXY07t (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Dec 2014 13:30:17 +0100
-From: Aleksey Makarov <aleksey.makarov@auriga.com>
-Subject: [PATCH 3/3] MIPS: OCTEON: Use device tree to probe for flash chips.
-Date: Tue, 23 Dec 2014 15:27:01 +0300
-Message-ID: <1419337623-16101-4-git-send-email-aleksey.makarov@auriga.com>
-In-Reply-To: <1419337623-16101-1-git-send-email-aleksey.makarov@auriga.com>
-References: <1419337623-16101-1-git-send-email-aleksey.makarov@auriga.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:5974 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27009483AbaLWXcGdKGgB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Dec 2014 00:32:06 +0100
+Date: Tue, 23 Dec 2014 23:31:54 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH 07/10] MIPS: support for hybrid FPRs
+Message-ID: <20141223233154.GA4171@jhogan-linux.le.imgtec.org>
+References: <1410420623-11691-1-git-send-email-paul.burton@imgtec.com>
+ <1410420623-11691-8-git-send-email-paul.burton@imgtec.com>
+ <20141223232111.GA593@fuloong-minipc.musicnaut.iki.fi>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <aleksey.makarov@auriga.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
+Content-Disposition: inline
+In-Reply-To: <20141223232111.GA593@fuloong-minipc.musicnaut.iki.fi>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,91 +24,69 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Aleksey Makarov <aleksey.makarov@auriga.com>, Ralf Baechle <ralf@linux-mips.org>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Message-ID: <20141223122701.ZvTt_um9cI-ONY_FPk4IQoOcqq9flJ7651Hz9tGqUZE@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20141223233154.5_f_35z4K-JX42lFhS5tcSJXUC88CjEWOCd_wTcI3GY@z>
 
-From: David Daney <david.daney@cavium.com>
+--J/dobhs11T7y2rNN
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Don't assume they are there, the device tree will tell us.
+On Wed, Dec 24, 2014 at 01:21:11AM +0200, Aaro Koskinen wrote:
+> Hi,
+>=20
+> On Thu, Sep 11, 2014 at 08:30:20AM +0100, Paul Burton wrote:
+> > Hybrid FPRs is a scheme where scalar FP registers are 64b wide, but
+> > accesses to odd indexed single registers use bits 63:32 of the
+> > preceeding even indexed 64b register. In this mode all FP code
+> > except that built for the plain FP64 ABI can execute correctly. Most
+> > notably a combination of FP64A & FP32 code can execute correctly,
+> > allowing for existing FP32 binaries to be linked with new FP64A binaries
+> > that can make use of 64 bit FP & MSA.
+>=20
+> This commit (4227a2d4efc9c84f35826dc4d1e6dc183f6c1c05, bisected)
+> in 3.19-rc1 breaks my Loongson-2F system. I get endless amount
+> of "Reserved instruction in kernel code" exceptions when booting.
+> See some examples below. Nothing crashes, and there is some forward
+> progress, but obviously it's completely unusable.
+>=20
+> Any ideas?
+>=20
+> [    2.872000] Reserved instruction in kernel code[#1]:
+=2E..
+> Code: 30420001  2c420001  0040202d <40038005> 2405feff  00651824  4083800=
+5  3c032000  3c052400=20
 
-Signed-off-by: David Daney <david.daney@cavium.com>
-Signed-off-by: Aleksey Makarov <aleksey.makarov@auriga.com>
----
- arch/mips/cavium-octeon/flash_setup.c | 42 ++++++++++++++++++++++++++++++-----
- 1 file changed, 37 insertions(+), 5 deletions(-)
+0x40038005 =3D mfc0 v1,$16,5 =3D mfc0 v1,Config5
 
-diff --git a/arch/mips/cavium-octeon/flash_setup.c b/arch/mips/cavium-octeon/flash_setup.c
-index 39e26df..8eb81e2 100644
---- a/arch/mips/cavium-octeon/flash_setup.c
-+++ b/arch/mips/cavium-octeon/flash_setup.c
-@@ -8,10 +8,11 @@
-  * Copyright (C) 2007, 2008 Cavium Networks
-  */
- #include <linux/kernel.h>
--#include <linux/export.h>
-+#include <linux/module.h>
- #include <linux/semaphore.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/map.h>
-+#include <linux/of_platform.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/octeon/octeon.h>
-@@ -66,14 +67,22 @@ static void octeon_flash_map_copy_to(struct map_info *map, unsigned long to,
-  *
-  * Returns Zero on success
-  */
--static int __init flash_init(void)
-+static int octeon_flash_probe(struct platform_device *pdev)
- {
-+	union cvmx_mio_boot_reg_cfgx region_cfg;
-+	u32 cs;
-+	int r;
-+	struct device_node *np = pdev->dev.of_node;
-+
-+	r = of_property_read_u32(np, "reg", &cs);
-+	if (r)
-+		return r;
-+
- 	/*
- 	 * Read the bootbus region 0 setup to determine the base
- 	 * address of the flash.
- 	 */
--	union cvmx_mio_boot_reg_cfgx region_cfg;
--	region_cfg.u64 = cvmx_read_csr(CVMX_MIO_BOOT_REG_CFGX(0));
-+	region_cfg.u64 = cvmx_read_csr(CVMX_MIO_BOOT_REG_CFGX(cs));
- 	if (region_cfg.s.en) {
- 		/*
- 		 * The bootloader always takes the flash and sets its
-@@ -109,4 +118,27 @@ static int __init flash_init(void)
- 	return 0;
- }
- 
--late_initcall(flash_init);
-+static struct of_device_id of_flash_match[] = {
-+	{
-+		.compatible	= "cfi-flash",
-+	},
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, of_flash_match);
-+
-+static struct platform_driver of_flash_driver = {
-+	.driver = {
-+		.name = "octeon-of-flash",
-+		.owner = THIS_MODULE,
-+		.of_match_table = of_flash_match,
-+	},
-+	.probe		= octeon_flash_probe,
-+};
-+
-+static int octeon_flash_init(void)
-+{
-+	return platform_driver_register(&of_flash_driver);
-+}
-+late_initcall(octeon_flash_init);
-+
-+MODULE_LICENSE("GPL");
--- 
-2.1.3
+Does this help (in linux-next)?:
+http://git.linux-mips.org/cgit/ralf/upstream-sfr.git/commit/?id=3D5bba8dec7=
+35f18fe7a2fcd8327f28ef095337ff2
+
+Cheers
+James
+
+--J/dobhs11T7y2rNN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJUmftqAAoJEGwLaZPeOHZ6ZEAQAIU3oztbgEbp3Zt57RaJWrAe
+aKMNiPToXqsP9qE5F5W/g+Y/Dj6LrIM2PF1ffITG1LI70qitR6izPCM9vrqG36Dg
+QXyWRdK+lglGCwVzD2LH/C08cp2r/dL3OC0iXwoABJA64WtzJ05xs1L8CFED4uhT
+gc0ztumDMpkIYdUo95NM/8+d5Uf2ewfUn1/Nw6iqARZjlDHEGhLrOZitB8cOO3tY
+w3UWcvgPovJ//tbygIs5apOz/X8F7lnU9Io6fqgUw4WirkMTDVRJbn2LbVXWD22u
+c3TDhHB+enF3zYk8mrGQ6XXUKgAaDVd0UnBo2maiM8N0W50BZcAOJ/qHPxH2Zs1k
+3GY7eOoHvaJDDel0ci+h5G2LWFtWvJK3nRvlg80VHCcxspWFaUfAhDr7uJaajq0X
+j58q01hMQ+ejS5pxYD1jqCmS8H/dezVOkneewYmBJOX4hkKbZLvTb0MmNzWeC2sU
+j7lpUecpR8PJXjZPCMUJXKdVH44ReZrMiqAxZdwRSdPDP+jR0BVVHSY7qooGJLU/
+STqBKqDdpHrTtAcjRYKE23PFOj8j5PHgXES4i1NaZZkcOqrdGJeGmOP2Zod5Cm7W
+Yo3uU5EpJPc64GzjTYZHSWGC/OnRj5BUWjK0iaAOt4iFHyg7xc3TpDAWZX8Qy+e4
+aKuJyGSy57cWpMfFOPxm
+=6uMX
+-----END PGP SIGNATURE-----
+
+--J/dobhs11T7y2rNN--

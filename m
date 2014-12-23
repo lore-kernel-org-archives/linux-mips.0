@@ -1,12 +1,14 @@
-Received: from mail-pd0-f181.google.com ([209.85.192.181]:44256 "EHLO
-        mail-pd0-f181.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27008814AbaLVCcwA01tl (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Dec 2014 03:32:52 +0100
-From: Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH 1/2] MIPS: Hibernate: flush TLB entries earlier
-Date: Mon, 22 Dec 2014 10:30:38 +0800
-Message-ID: <1419215439-27900-1-git-send-email-chenhc@lemote.com>
-Return-Path: <chenhuacai@gmail.com>
+Received: from nivc-ms1.auriga.com ([80.240.102.146]:36335 "EHLO
+        nivc-ms1.auriga.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008504AbaLWM3emj5Mv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Dec 2014 13:29:34 +0100
+From: Aleksey Makarov <aleksey.makarov@auriga.com>
+Subject: [PATCH 0/3] MIPS: OCTEON: flash: syncronize bootbus access
+Date: Tue, 23 Dec 2014 15:26:58 +0300
+Message-ID: <1419337623-16101-1-git-send-email-aleksey.makarov@auriga.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <aleksey.makarov@auriga.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,40 +18,24 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: John Crispin <john@phrozen.org>, "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Huacai Chen <chenhc@lemote.com>, stable@vger.kernel.org
-Message-ID: <20141222023038.9DfRcr1dUXnoQBvsIuEu4dAWRsYj07a9_Vbjh9SlDxA@z>
+To: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Aleksey Makarov <aleksey.makarov@auriga.com>
+Message-ID: <20141223122658.wtgNexqUcYkpzNET1gleEOB-HZ0e2VhkGCDOc2wXzIQ@z>
 
-We found that TLB mismatch not only happens after kernel resume, but
-also happens during snapshot restore. So move it to the beginning of
-swsusp_arch_suspend().
+- Use semaphore to protect access to bootbus.  
+- Use device tree to probe for flash chips.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
----
- arch/mips/power/hibernate.S |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+David Daney (3):
+  MIPS: OCTEON: Add semaphore to serialize bootbus accesses.
+  MIPS: OCTEON: Protect accesses to bootbus flash with
+    octeon_bootbus_sem.
+  MIPS: OCTEON: Use device tree to probe for flash chips.
 
-diff --git a/arch/mips/power/hibernate.S b/arch/mips/power/hibernate.S
-index 32a7c82..e7567c8 100644
---- a/arch/mips/power/hibernate.S
-+++ b/arch/mips/power/hibernate.S
-@@ -30,6 +30,8 @@ LEAF(swsusp_arch_suspend)
- END(swsusp_arch_suspend)
- 
- LEAF(swsusp_arch_resume)
-+	/* Avoid TLB mismatch during and after kernel resume */
-+	jal local_flush_tlb_all
- 	PTR_L t0, restore_pblist
- 0:
- 	PTR_L t1, PBE_ADDRESS(t0)   /* source */
-@@ -43,7 +45,6 @@ LEAF(swsusp_arch_resume)
- 	bne t1, t3, 1b
- 	PTR_L t0, PBE_NEXT(t0)
- 	bnez t0, 0b
--	jal local_flush_tlb_all /* Avoid TLB mismatch after kernel resume */
- 	PTR_LA t0, saved_regs
- 	PTR_L ra, PT_R31(t0)
- 	PTR_L sp, PT_R29(t0)
+ arch/mips/Kconfig                     |  1 +
+ arch/mips/cavium-octeon/flash_setup.c | 84 ++++++++++++++++++++++++++++++++---
+ arch/mips/cavium-octeon/setup.c       |  3 ++
+ arch/mips/include/asm/octeon/octeon.h |  2 +
+ 4 files changed, 84 insertions(+), 6 deletions(-)
+
 -- 
-1.7.7.3
+2.1.3

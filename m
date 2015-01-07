@@ -1,11 +1,11 @@
-Received: from mail-gw1-out.broadcom.com ([216.31.210.62]:2763 "EHLO
-        mail-gw1-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27010447AbbAGLVcZhhm4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Jan 2015 12:21:32 +0100
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63]:25502 "EHLO
+        mail-gw2-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27010454AbbAGLVecywxU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Jan 2015 12:21:34 +0100
 From: Jayachandran C <jchandra@broadcom.com>
-Subject: [PATCH 10/17] MIPS: Netlogic: nlm_core_id for xlp9xx
-Date: Wed, 7 Jan 2015 16:58:31 +0530
-Message-ID: <1420630118-17198-11-git-send-email-jchandra@broadcom.com>
+Subject: [PATCH 11/17] MIPS: Netlogic: Added HugeTLB as default
+Date: Wed, 7 Jan 2015 16:58:32 +0530
+Message-ID: <1420630118-17198-12-git-send-email-jchandra@broadcom.com>
 In-Reply-To: <1420630118-17198-1-git-send-email-jchandra@broadcom.com>
 References: <1420630118-17198-1-git-send-email-jchandra@broadcom.com>
 MIME-Version: 1.0
@@ -21,35 +21,30 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Jayachandran C <jchandra@broadcom.com>, ralf@linux-mips.org
-Message-ID: <20150107112831.9nXB_NCt8VxrVOUqXRXvXrx0Few2wDDM6ZR9Dmsw3No@z>
+Cc: Prem Mallappa <pmallapp@broadcom.com>, ralf@linux-mips.org, Jayachandran C <jchandra@broadcom.com>
+Message-ID: <20150107112832._kf25OTUg3b36y4Gz5A2f3aawd951x_WazJyLg2hoO4@z>
 
-XLP9XX has 5 bits that specify the core in the EBASE register. XLP5XX
-case added as well for completeness.
+From: Prem Mallappa <pmallapp@broadcom.com>
 
+Enable CPU_SUPPORTS_HUGEPAGES for XLP processors.
+
+Signed-off-by: Prem Mallappa <pmallapp@broadcom.com>
 Signed-off-by: Jayachandran C <jchandra@broadcom.com>
 ---
- arch/mips/include/asm/netlogic/mips-extns.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/include/asm/netlogic/mips-extns.h b/arch/mips/include/asm/netlogic/mips-extns.h
-index 06f1f75..788baf3 100644
---- a/arch/mips/include/asm/netlogic/mips-extns.h
-+++ b/arch/mips/include/asm/netlogic/mips-extns.h
-@@ -157,7 +157,13 @@ static inline int nlm_nodeid(void)
- 
- static inline unsigned int nlm_core_id(void)
- {
--	return (read_c0_ebase() & 0x1c) >> 2;
-+	uint32_t prid = read_c0_prid() & PRID_IMP_MASK;
-+
-+	if ((prid == PRID_IMP_NETLOGIC_XLP9XX) ||
-+			(prid == PRID_IMP_NETLOGIC_XLP5XX))
-+		return (read_c0_ebase() & 0x7c) >> 2;
-+	else
-+		return (read_c0_ebase() & 0x1c) >> 2;
- }
- 
- static inline unsigned int nlm_thread_id(void)
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 3289969..74a76da 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -1532,6 +1532,7 @@ config CPU_XLP
+ 	select WEAK_REORDERING_BEYOND_LLSC
+ 	select CPU_HAS_PREFETCH
+ 	select CPU_MIPSR2
++	select CPU_SUPPORTS_HUGEPAGES
+ 	help
+ 	  Netlogic Microsystems XLP processors.
+ endchoice
 -- 
 1.9.1

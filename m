@@ -1,16 +1,14 @@
-Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:55305 "EHLO
-        mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27008950AbbAIKgKErWmV (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 9 Jan 2015 11:36:10 +0100
-From: Jayachandran C <jchandra@broadcom.com>
-Subject: [PATCH 13/17] MIPS: Netlogic: Handle XLP hardware errata
-Date: Fri, 9 Jan 2015 16:13:20 +0530
-Message-ID: <1420800200-19116-1-git-send-email-jchandra@broadcom.com>
-In-Reply-To: <20150109095119.GB18823@jayachandranc.netlogicmicro.com>
-References: <20150109095119.GB18823@jayachandranc.netlogicmicro.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45983 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008950AbbAIMGpDMuMS (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 9 Jan 2015 13:06:45 +0100
+From: Daniel Sanders <daniel.sanders@imgtec.com>
+Subject: [PATCH] MIPS: Changed current_thread_info() to an equivalent supported by both clang and GCC
+Date: Fri, 9 Jan 2015 12:06:17 +0000
+Message-ID: <1420805177-9087-1-git-send-email-daniel.sanders@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <jchandra@broadcom.com>
+Return-Path: <Daniel.Sanders@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,62 +18,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Jayachandran C <jchandra@broadcom.com>, ralf@linux-mips.org
-Message-ID: <20150109104320.zDqpykwC7xwW5zBFcSzjpkr5LPmWqBKbXQ6ONpHSzIY@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: Daniel Sanders <daniel.sanders@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, James Hogan <james.hogan@imgtec.com>, Behan Webster <behanw@converseincode.com>
+Message-ID: <20150109120617.v7t8uMFs6PBxs81OD4QrKbmXFiO2IzfRkDP3k0I2EqY@z>
 
-Core configuration register IFU_BRUB_RESERVE has to be setup to handle
-a silicon errata which can result in a CPU hang.
+Without this, a 'break' instruction is executed very early in the boot and
+the boot hangs.
 
-Signed-off-by: Jayachandran C <jchandra@broadcom.com>
+The problem is that clang doesn't honour named registers on local variables
+and silently treats them as normal uninitialized variables. However, it
+does honour them on global variables.
+
+Signed-off-by: Daniel Sanders <daniel.sanders@imgtec.com>
 ---
- arch/mips/include/asm/netlogic/xlp-hal/cpucontrol.h |  2 ++
- arch/mips/netlogic/common/reset.S                   | 20 ++++++++++++++++++++
- 2 files changed, 22 insertions(+)
+ arch/mips/include/asm/thread_info.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/include/asm/netlogic/xlp-hal/cpucontrol.h b/arch/mips/include/asm/netlogic/xlp-hal/cpucontrol.h
-index 6d2e58a..a06b592 100644
---- a/arch/mips/include/asm/netlogic/xlp-hal/cpucontrol.h
-+++ b/arch/mips/include/asm/netlogic/xlp-hal/cpucontrol.h
-@@ -46,6 +46,8 @@
- #define CPU_BLOCKID_FPU		9
- #define CPU_BLOCKID_MAP		10
+For reference, a similar patch for ARM's stack pointer has already been merged:
+  0abc08b ARM: 8170/1: Add global named register current_stack_pointer for ARM
+
+This is part of a patch series to get Linux for Mips working when compiled with
+clang. I've chosen to submit this patch individually since it's my first kernel
+patch and I'd like to be sure I'm following your processes correctly before I
+submit all of them.
+
+Please CC me on replies since I'm not subscribed to the mailing list.
+
+diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
+index 99eea59..2a2f3c4 100644
+--- a/arch/mips/include/asm/thread_info.h
++++ b/arch/mips/include/asm/thread_info.h
+@@ -58,11 +58,11 @@ struct thread_info {
+ #define init_stack		(init_thread_union.stack)
  
-+#define IFU_BRUB_RESERVE	0x007
+ /* How to get the thread information struct from C.  */
++register struct thread_info *current_gp_register asm("$28");
 +
- #define ICU_DEFEATURE		0x100
+ static inline struct thread_info *current_thread_info(void)
+ {
+-	register struct thread_info *__current_thread_info __asm__("$28");
+-
+-	return __current_thread_info;
++	return current_gp_register;
+ }
  
- #define LSU_DEFEATURE		0x304
-diff --git a/arch/mips/netlogic/common/reset.S b/arch/mips/netlogic/common/reset.S
-index 701c4bc..e3e5189 100644
---- a/arch/mips/netlogic/common/reset.S
-+++ b/arch/mips/netlogic/common/reset.S
-@@ -235,6 +235,26 @@ EXPORT(nlm_boot_siblings)
- 	mfc0	v0, CP0_EBASE, 1
- 	andi	v0, 0x3ff		/* v0 <- node/core */
- 
-+	/*
-+	 * Errata: to avoid potential live lock, setup IFU_BRUB_RESERVE
-+	 * when running 4 threads per core
-+	 */
-+	andi	v1, v0, 0x3             /* v1 <- thread id */
-+	bnez	v1, 2f
-+	nop
-+
-+	/* thread 0 of each core. */
-+	li	t0, CKSEG1ADDR(RESET_DATA_PHYS)
-+	lw	t1, BOOT_THREAD_MODE(t0)        /* t1 <- thread mode */
-+	subu	t1, 0x3				/* 4-thread per core mode? */
-+	bnez	t1, 2f
-+	nop
-+
-+	li	t0, IFU_BRUB_RESERVE
-+	li	t1, 0x55
-+	mtcr	t1, t0
-+	_ehb
-+2:
- 	beqz	v0, 4f		/* boot cpu (cpuid == 0)? */
- 	nop
- 
+ #endif /* !__ASSEMBLY__ */
 -- 
-1.9.1
+2.1.3

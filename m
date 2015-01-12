@@ -1,14 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13118 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010903AbbAJMxOI0vdU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 10 Jan 2015 13:53:14 +0100
-From: Daniel Sanders <daniel.sanders@imgtec.com>
-Subject: [PATCH v2] MIPS: Changed current_thread_info() to an equivalent supported by both clang and GCC
-Date: Sat, 10 Jan 2015 12:52:40 +0000
-Message-ID: <1420894360-13479-1-git-send-email-daniel.sanders@imgtec.com>
+Received: from jaguar.aricent.com ([180.151.2.24]:41086 "EHLO
+        jaguar.aricent.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27006211AbbALHID3lp2B convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 12 Jan 2015 08:08:03 +0100
+From: Abhishek Paliwal <abhishek.paliwal@aricent.com>
+Subject: [PATCH 1/9] MIPS OCTEON Add OCTEON3 to get cpu type
+Date: Mon, 12 Jan 2015 12:36:17 +0530
+Message-ID: <1421046385-2535-2-git-send-email-abhishek.paliwal@aricent.com>
+In-Reply-To: <1421046385-2535-1-git-send-email-abhishek.paliwal@aricent.com>
+References: <1421046385-2535-1-git-send-email-abhishek.paliwal@aricent.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Daniel.Sanders@imgtec.com>
+Content-Transfer-Encoding: 8BIT
+Return-Path: <abhishek.paliwal@aricent.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,59 +21,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: Daniel Sanders <daniel.sanders@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, James Hogan <james.hogan@imgtec.com>, Behan Webster <behanw@converseincode.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Daney <ddaney.cavm@gmail.com>
-Message-ID: <20150110125240.-R_LXb6dtjmKEr2hUV_F2fA6iUERA7D-ZyIpIzgFmec@z>
+To: kexin.hao@windriver.com, bo.liu@windriver.com
+Cc: Chandrakala.Chavva@caviumnetworks.com, rakesh.garg@aricent.com, Abhishek Paliwal <abhishek.paliwal@aricent.com>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, linux-mips@linux-mips.org, David Daney <ddaney.cavm@gmail.com>, James Hogan <james.hogan@imgtec.com>, kvm@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20150112070617.o-7qYXoOjDlfbgTPk8XURfRE-DvApqvtNANl2FtV2z4@z>
 
-Without this, a 'break' instruction is executed very early in the boot and
-the boot hangs.
+commit cd3f5389489146297eb2c11e4f9d1c4e8aaeb59f upstream
 
-The problem is that clang doesn't honour named registers on local variables
-and silently treats them as normal uninitialized variables. However, it
-does honour them on global variables.
-
-Signed-off-by: Daniel Sanders <daniel.sanders@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Cc: James Hogan <james.hogan@imgtec.com>
+Otherwise __builtin_unreachable might be called.
+Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
 Cc: linux-mips@linux-mips.org
-Cc: Behan Webster <behanw@converseincode.com>
-Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 Cc: David Daney <ddaney.cavm@gmail.com>
+Cc: James Hogan <james.hogan@imgtec.com>
+Cc: kvm@vger.kernel.org
+Patchwork: https://patchwork.linux-mips.org/patch/7014/
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+Signed-off-by: Abhishek Paliwal <abhishek.paliwal@aricent.com>
 ---
-This version of the patch preserves the name of the original named register
-local following David Daney's request.
+ arch/mips/include/asm/cpu-type.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-For reference, a similar patch for ARM's stack pointer has already been merged:
-  0abc08b ARM: 8170/1: Add global named register current_stack_pointer for ARM
+diff --git a/arch/mips/include/asm/cpu-type.h b/arch/mips/include/asm/cpu-type.h
+index 02f591b..19557ca 100644
+--- a/arch/mips/include/asm/cpu-type.h
++++ b/arch/mips/include/asm/cpu-type.h
+@@ -160,6 +160,7 @@ static inline int __pure __get_cpu_type(const int cpu_type)
+        case CPU_CAVIUM_OCTEON:
+        case CPU_CAVIUM_OCTEON_PLUS:
+        case CPU_CAVIUM_OCTEON2:
++       case CPU_CAVIUM_OCTEON3:
+ #endif
 
-This is part of a patch series to get Linux for Mips working when compiled with
-clang. I've chosen to submit this patch individually since it's my first kernel
-patch and I'd like to be sure I'm following your processes correctly before I
-submit all of them.
+ #if defined(CONFIG_SYS_HAS_CPU_BMIPS32_3300) || \
+--
+1.8.1.4
 
-Please CC me on replies since I'm not subscribed to the mailing list.
 
- arch/mips/include/asm/thread_info.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
-index 99eea59..0f239cf 100644
---- a/arch/mips/include/asm/thread_info.h
-+++ b/arch/mips/include/asm/thread_info.h
-@@ -58,10 +58,10 @@ struct thread_info {
- #define init_stack		(init_thread_union.stack)
- 
- /* How to get the thread information struct from C.  */
-+register struct thread_info *__current_thread_info __asm__("$28");
-+
- static inline struct thread_info *current_thread_info(void)
- {
--	register struct thread_info *__current_thread_info __asm__("$28");
--
- 	return __current_thread_info;
- }
- 
--- 
-2.1.4
+"DISCLAIMER: This message is proprietary to Aricent and is intended solely for the use of the individual to whom it is addressed. It may contain privileged or confidential information and should not be circulated or used for any purpose other than for what it is intended. If you have received this message in error, please notify the originator immediately. If you are not the intended recipient, you are notified that you are strictly prohibited from using, copying, altering, or disclosing the contents of this message. Aricent accepts no responsibility for loss or damage arising from the use of the information transmitted by this email including damage from virus."

@@ -1,18 +1,21 @@
-Received: from mail-bn1on0072.outbound.protection.outlook.com ([157.56.110.72]:3716
+Received: from mail-bn1bon0055.outbound.protection.outlook.com ([157.56.111.55]:44431
         "EHLO na01-bn1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27011278AbbALRaxdS8El (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 12 Jan 2015 18:30:53 +0100
-Message-ID: <54B404C1.7020409@caviumnetworks.com>
-Date: Mon, 12 Jan 2015 09:30:41 -0800
-From: David Daney <ddaney@caviumnetworks.com>
+        id S27010647AbbAMKTz31hr6 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 13 Jan 2015 11:19:55 +0100
+Date: Tue, 13 Jan 2015 11:19:28 +0100
+From: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
+Subject: =?utf-8?B?W8OeQVRD?= =?utf-8?Q?H?= v2] kvmtool, mips: Support more
+ than 256 MB guest memory
+Message-ID: <20150113101928.GA30360@alberich>
+References: <20150106131512.GG4194@alberich>
+ <54ACFEAD.2040901@intel.com>
+ <20150107140610.GI4194@alberich>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/9] MIPS OCTEON Enable use of FPU
-References: <1421046385-2535-1-git-send-email-abhishek.paliwal@aricent.com> <1421046385-2535-3-git-send-email-abhishek.paliwal@aricent.com>
-In-Reply-To: <1421046385-2535-3-git-send-email-abhishek.paliwal@aricent.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20150107140610.GI4194@alberich>
+Return-Path: <Andreas.Herrmann@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,51 +25,106 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Abhishek Paliwal <abhishek.paliwal@aricent.com>
-Cc: kexin.hao@windriver.com, bo.liu@windriver.com, Chandrakala.Chavva@caviumnetworks.com, rakesh.garg@aricent.com, David Daney <david.daney@cavium.com>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, linux-mips@linux-mips.org, James Hogan <james.hogan@imgtec.com>, kvm@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150112173041.-yFs203a2IdHH-LqRr5fkwVBNXdbp5QT4IHMX4e1pDY@z>
+To: Pekka Enberg <penberg@kernel.org>
+Cc: David Daney <ddaney.cavm@gmail.com>, kvm@vger.kernel.org, linux-mips@linux-mips.org, "Chen, Tiejun" <tiejun.chen@intel.com>
+Message-ID: <20150113101928.92kCKnZ1d0EOfzdzfZWJzwV4NKARYizOsLeuOzp0ee0@z>
 
-On 01/11/2015 11:06 PM, Abhishek Paliwal wrote:
-> commit  a36d8225bceba4b7be47ade34d175945f85cffbc upstream
+Two guest memory regions need to be defined and two "mem=" parameters
+need to be passed to guest kernel to support more than 256 MB.
 
-Why are you spamming us with this?  We don't need to know what you are 
-cherry-picking.
+Cc: Chen, Tiejun <tiejun.chen@intel.com>
+Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
+---
+ tools/kvm/mips/include/kvm/kvm-arch.h |   10 +++++++++
+ tools/kvm/mips/kvm.c                  |   36 +++++++++++++++++++++++++++------
+ 2 files changed, 40 insertions(+), 6 deletions(-)
+
+This version uses correct macros during calculation of memory
+parameters.
 
 
->
-> Some versions of the assembler will not assemble CFC1 for OCTEON, so override the ISA for these.
->
-> Add r4k_fpu.o to handle low level FPU initialization.
->
-> Modify octeon_switch.S to save the FPU registers. And include r4k_switch.S to pick up more FPU support.
->
-> Get rid of "#define cpu_has_fpu 0"
->
-> Signed-off-by: David Daney <david.daney@cavium.com>
-> Signed-off-by: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-> Cc: linux-mips@linux-mips.org
-> Cc: James Hogan <james.hogan@imgtec.com>
-> Cc: kvm@vger.kernel.org
-> Patchwork: https://patchwork.linux-mips.org/patch/7006/
-> Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
-> Signed-off-by: Abhishek Paliwal <abhishek.paliwal@aricent.com>
-> ---
->   .../asm/mach-cavium-octeon/cpu-feature-overrides.h |  1 -
->   arch/mips/kernel/Makefile                          |  2 +-
->   arch/mips/kernel/branch.c                          |  6 +-
->   arch/mips/kernel/octeon_switch.S                   | 85 ++++++++++++++++------
->   arch/mips/kernel/r4k_switch.S                      |  3 +
->   arch/mips/math-emu/cp1emu.c                        | 12 ++-
->   6 files changed, 80 insertions(+), 29 deletions(-)
->
-[...]
->
-> "DISCLAIMER: This message is proprietary to Aricent and is intended solely for the use of the individual to whom it is addressed. It may contain privileged or confidential information and should not be circulated or used for any purpose other than for what it is intended. If you have received this message in error, please notify the originator immediately. If you are not the intended recipient, you are notified that you are strictly prohibited from using, copying, altering, or disclosing the contents of this message. Aricent accepts no responsibility for loss or damage arising from the use of the information transmitted by this email including damage from virus."
+Andreas
 
-I wrote the patch, what gives you the right to say that it is "... 
-proprietary to Aricent ..."?   Nothing.  We really must insist that you 
-quit making this type of misrepresentation.
 
-David Daney
-
->
+diff --git a/tools/kvm/mips/include/kvm/kvm-arch.h b/tools/kvm/mips/include/kvm/kvm-arch.h
+index 7eadbf4..97bbf34 100644
+--- a/tools/kvm/mips/include/kvm/kvm-arch.h
++++ b/tools/kvm/mips/include/kvm/kvm-arch.h
+@@ -1,10 +1,20 @@
+ #ifndef KVM__KVM_ARCH_H
+ #define KVM__KVM_ARCH_H
+ 
++
++/*
++ * Guest memory map is:
++ *   0x00000000-0x0fffffff : System RAM
++ *   0x10000000-0x1fffffff : I/O (defined by KVM_MMIO_START and KVM_MMIO_SIZE)
++ *   0x20000000-    ...    : System RAM
++ * See also kvm__init_ram().
++ */
++
+ #define KVM_MMIO_START		0x10000000
+ #define KVM_PCI_CFG_AREA	KVM_MMIO_START
+ #define KVM_PCI_MMIO_AREA	(KVM_MMIO_START + 0x1000000)
+ #define KVM_VIRTIO_MMIO_AREA	(KVM_MMIO_START + 0x2000000)
++#define KVM_MMIO_SIZE		0x10000000
+ 
+ /*
+  * Just for reference. This and the above corresponds to what's used
+diff --git a/tools/kvm/mips/kvm.c b/tools/kvm/mips/kvm.c
+index fc0428b..1925f38 100644
+--- a/tools/kvm/mips/kvm.c
++++ b/tools/kvm/mips/kvm.c
+@@ -22,11 +22,28 @@ void kvm__init_ram(struct kvm *kvm)
+ 	u64	phys_start, phys_size;
+ 	void	*host_mem;
+ 
+-	phys_start = 0;
+-	phys_size  = kvm->ram_size;
+-	host_mem   = kvm->ram_start;
++	if (kvm->ram_size <= KVM_MMIO_START) {
++		/* one region for all memory */
++		phys_start = 0;
++		phys_size  = kvm->ram_size;
++		host_mem   = kvm->ram_start;
+ 
+-	kvm__register_mem(kvm, phys_start, phys_size, host_mem);
++		kvm__register_mem(kvm, phys_start, phys_size, host_mem);
++	} else {
++		/* one region for memory that fits below MMIO range */
++		phys_start = 0;
++		phys_size  = KVM_MMIO_START;
++		host_mem   = kvm->ram_start;
++
++		kvm__register_mem(kvm, phys_start, phys_size, host_mem);
++
++		/* one region for rest of memory */
++		phys_start = KVM_MMIO_START + KVM_MMIO_SIZE;
++		phys_size  = kvm->ram_size - KVM_MMIO_START;
++		host_mem   = kvm->ram_start + KVM_MMIO_START;
++
++		kvm__register_mem(kvm, phys_start, phys_size, host_mem);
++	}
+ }
+ 
+ void kvm__arch_delete_ram(struct kvm *kvm)
+@@ -108,8 +125,15 @@ static void kvm__mips_install_cmdline(struct kvm *kvm)
+ 	u64 argv_offset = argv_start;
+ 	u64 argc = 0;
+ 
+-	sprintf(p + cmdline_offset, "mem=0x%llx@0 ",
+-		 (unsigned long long)kvm->ram_size);
++
++	if ((u64) kvm->ram_size <= KVM_MMIO_START)
++		sprintf(p + cmdline_offset, "mem=0x%llx@0 ",
++			(unsigned long long)kvm->ram_size);
++	else
++		sprintf(p + cmdline_offset, "mem=0x%llx@0 mem=0x%llx@0x%llx ",
++			(unsigned long long)KVM_MMIO_START,
++			(unsigned long long)kvm->ram_size - KVM_MMIO_START,
++			(unsigned long long)(KVM_MMIO_START + KVM_MMIO_SIZE));
+ 
+ 	strcat(p + cmdline_offset, kvm->cfg.real_cmdline); /* maximum size is 2K */
+ 
+-- 
+1.7.9.5

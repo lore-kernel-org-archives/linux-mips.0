@@ -1,18 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:15271 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:50053 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010933AbbAPKxhwf0xo (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jan 2015 11:53:37 +0100
+        with ESMTP id S27010951AbbAPKxiAdra1 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jan 2015 11:53:38 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 37DD772F0526F
-        for <linux-mips@linux-mips.org>; Fri, 16 Jan 2015 10:53:30 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id F0328664CC4EB
+        for <linux-mips@linux-mips.org>; Fri, 16 Jan 2015 10:53:34 +0000 (GMT)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC v2 50/70] MIPS: kernel: branch: Prevent BNEL emulation for MIPS R6
-Date: Fri, 16 Jan 2015 10:49:29 +0000
-Message-ID: <1421405389-15512-51-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH RFC v2 54/70] =?UTF-8?q?MIPS:=20Emulate=20the=20new=20MIPS?= =?UTF-8?q?=20R6=20B{L,G}=CE=95{Z,}{AL,}C=20instructions?=
+Date: Fri, 16 Jan 2015 10:49:33 +0000
+Message-ID: <1421405389-15512-55-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com>
 References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -25,45 +26,106 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20150116104929.O4B0SI2Nl0dGeOMsz2R7YusvMclkVRx1VtUUobQDUXo@z>
+Message-ID: <20150116104933.B9lnZXHeTp29j6DNGPGOobNWHCsrLdrqZuHUNHcPsLA@z>
 
-MIPS R6 removed the BNEL instruction so do not try to emulate it
-if the R2-to-R6 emulator is not present.
+MIPS R6 added the following four instructions which share the
+BLEZ and BLEZL opcodes:
+
+BLEZALC: Compact branch-and-link if GPR rt is <= to zero
+BGEZALC: Compact branch-and-link if GPR rt is >= to zero
+BLEZC  : Compact branch if GPR rt is <= to zero
+BGEZC  : Compact branch if GPR rt is >= to zero
+BGEC   : Compact branch if GPR rs is less than or equal to GPR rt
+BGEUC  : Similar to BGEC but unsigned.
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/kernel/branch.c   | 4 ++++
- arch/mips/math-emu/cp1emu.c | 3 +++
- 2 files changed, 7 insertions(+)
+ arch/mips/kernel/branch.c   | 31 +++++++++++++++++++++++++++++++
+ arch/mips/math-emu/cp1emu.c | 23 +++++++++++++++++++++++
+ 2 files changed, 54 insertions(+)
 
 diff --git a/arch/mips/kernel/branch.c b/arch/mips/kernel/branch.c
-index a21bbda1ea9e..b71eff60543d 100644
+index 41dcf5a45ec2..174d2f74f28c 100644
 --- a/arch/mips/kernel/branch.c
 +++ b/arch/mips/kernel/branch.c
-@@ -585,6 +585,10 @@ int __compute_return_epc_for_insn(struct pt_regs *regs,
- 
- 	case bne_op:
- 	case bnel_op:
-+		if (NO_R6EMU && (insn.i_format.opcode == bnel_op)) {
-+			ret = -SIGILL;
+@@ -399,6 +399,16 @@ int __MIPS16e_compute_return_epc(struct pt_regs *regs)
+  * @returns:	-EFAULT on error and forces SIGBUS, and on success
+  *		returns 0 or BRANCH_LIKELY_TAKEN as appropriate after
+  *		evaluating the branch.
++ *
++ * MIPS R6 Compact branches and forbidden slots:
++ *	Compact branches do not throw exceptions because they do
++ *	not have delay slots. The forbidden slot instruction ($PC+4)
++ *	is only executed if the branch was not taken. Otherwise the
++ *	forbidden slot is skipped entirely. This means that the
++ *	only possible reason to be here because of a MIPS R6 compact
++ *	branch instruction is that the forbidden slot has thrown one.
++ *	In that case the branch was not taken, so the EPC can be safely
++ *	set to EPC + 8.
+  */
+ int __compute_return_epc_for_insn(struct pt_regs *regs,
+ 				   union mips_instruction insn)
+@@ -606,6 +616,27 @@ int __compute_return_epc_for_insn(struct pt_regs *regs,
+ 			ret = -SIGILL;
+ 			break;
+ 		}
++		/*
++		 * Compact branches for R6 for the
++		 * blez and blezl opcodes.
++		 * BLEZ  | rs = 0 | rt != 0  == BLEZALC
++		 * BLEZ  | rs = rt != 0      == BGEZALC
++		 * BLEZ  | rs != 0 | rt != 0 == BGEUC
++		 * BLEZL | rs = 0 | rt != 0  == BLEZC
++		 * BLEZL | rs = rt != 0      == BGEZC
++		 * BLEZL | rs != 0 | rt != 0 == BGEC
++		 *
++		 * For real BLEZ{,L}, rt is always 0.
++		 */
++
++		if (cpu_has_mips_r6 && insn.i_format.rt) {
++			if ((insn.i_format.opcode == blez_op) &&
++			    ((!insn.i_format.rs && insn.i_format.rt) ||
++			     (insn.i_format.rs == insn.i_format.rt)))
++				regs->regs[31] = epc + 4;
++			regs->cp0_epc += 8;
 +			break;
 +		}
- 		if (regs->regs[insn.i_format.rs] !=
- 		    regs->regs[insn.i_format.rt]) {
+ 		/* rt field assumed to be zero */
+ 		if ((long)regs->regs[insn.i_format.rs] <= 0) {
  			epc = epc + 4 + (insn.i_format.simmediate << 2);
 diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-index c8ab23e96310..05982b631d7c 100644
+index 433e9ebdc35a..0697bab067c0 100644
 --- a/arch/mips/math-emu/cp1emu.c
 +++ b/arch/mips/math-emu/cp1emu.c
-@@ -537,6 +537,9 @@ static int isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
- 		return 1;
- 	case bne_op:
- 	case bnel_op:
-+		if (NO_R6EMU && (insn.i_format.opcode == bnel_op))
-+			break;
+@@ -555,6 +555,29 @@ static int isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
+ 		if (NO_R6EMU && (insn.i_format.opcode == blezl_op))
+ 			break;
+ 
++		/*
++		 * Compact branches for R6 for the
++		 * blez and blezl opcodes.
++		 * BLEZ  | rs = 0 | rt != 0  == BLEZALC
++		 * BLEZ  | rs = rt != 0      == BGEZALC
++		 * BLEZ  | rs != 0 | rt != 0 == BGEUC
++		 * BLEZL | rs = 0 | rt != 0  == BLEZC
++		 * BLEZL | rs = rt != 0      == BGEZC
++		 * BLEZL | rs != 0 | rt != 0 == BGEC
++		 *
++		 * For real BLEZ{,L}, rt is always 0.
++		 */
++		if (cpu_has_mips_r6 && insn.i_format.rt) {
++			if ((insn.i_format.opcode == blez_op) &&
++			    ((!insn.i_format.rs && insn.i_format.rt) ||
++			     (insn.i_format.rs == insn.i_format.rt)))
++				regs->regs[31] = regs->cp0_epc +
++					dec_insn.pc_inc;
++			*contpc = regs->cp0_epc + dec_insn.pc_inc +
++				dec_insn.next_pc_inc;
 +
- 		if (regs->regs[insn.i_format.rs] !=
- 		    regs->regs[insn.i_format.rt])
++			return 1;
++		}
+ 		if ((long)regs->regs[insn.i_format.rs] <= 0)
  			*contpc = regs->cp0_epc +
+ 				dec_insn.pc_inc +
 -- 
 2.2.1

@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24107 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:27989 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010547AbbAPKwJG4w4H (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jan 2015 11:52:09 +0100
+        with ESMTP id S27010571AbbAPKwMPdq3O (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jan 2015 11:52:12 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 314763C72A869
-        for <linux-mips@linux-mips.org>; Fri, 16 Jan 2015 10:52:01 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id 85EB88D567517
+        for <linux-mips@linux-mips.org>; Fri, 16 Jan 2015 10:52:04 +0000 (GMT)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC v2 14/70] MIPS: asm: cpu: Add MIPSR6 ISA definitions
-Date: Fri, 16 Jan 2015 10:48:53 +0000
-Message-ID: <1421405389-15512-15-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH RFC v2 15/70] MIPS: asm: hazards: Add MIPSR6 definitions
+Date: Fri, 16 Jan 2015 10:48:54 +0000
+Message-ID: <1421405389-15512-16-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com>
 References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -24,85 +24,63 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20150116104853.d32TJomeGPY2aIHiRNpBHvb-IYuu5onaqw03dgAYAGE@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20150116104854.uyOtYJ1XrSlFPYG2RVpyhDRZxsydUjp4gZShywh3Les@z>
 
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Add the MIPSR6 related definitions to MIPS hazards
 
-Add MIPS R6 to the ISA definitions
-
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/include/asm/cpu-features.h | 16 ++++++++++++----
- arch/mips/include/asm/cpu.h          |  7 +++++--
- 2 files changed, 17 insertions(+), 6 deletions(-)
+ arch/mips/include/asm/hazards.h | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index 2897cfafcaf0..aa2819526c42 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -189,12 +189,18 @@
- #ifndef cpu_has_mips32r2
- # define cpu_has_mips32r2	(cpu_data[0].isa_level & MIPS_CPU_ISA_M32R2)
- #endif
-+#ifndef cpu_has_mips32r6
-+# define cpu_has_mips32r6	(cpu_data[0].isa_level & MIPS_CPU_ISA_M32R6)
-+#endif
- #ifndef cpu_has_mips64r1
- # define cpu_has_mips64r1	(cpu_data[0].isa_level & MIPS_CPU_ISA_M64R1)
- #endif
- #ifndef cpu_has_mips64r2
- # define cpu_has_mips64r2	(cpu_data[0].isa_level & MIPS_CPU_ISA_M64R2)
- #endif
-+#ifndef cpu_has_mips64r6
-+# define cpu_has_mips64r6	(cpu_data[0].isa_level & MIPS_CPU_ISA_M64R6)
-+#endif
+diff --git a/arch/mips/include/asm/hazards.h b/arch/mips/include/asm/hazards.h
+index e3ee92d4dbe7..0b1b7faf8e15 100644
+--- a/arch/mips/include/asm/hazards.h
++++ b/arch/mips/include/asm/hazards.h
+@@ -11,6 +11,7 @@
+ #define _ASM_HAZARDS_H
+ 
+ #include <linux/stringify.h>
++#include <asm/asm.h>
+ 
+ #define ___ssnop							\
+ 	sll	$0, $0, 1
+@@ -21,7 +22,7 @@
+ /*
+  * TLB hazards
+  */
+-#if defined(CONFIG_CPU_MIPSR2) && !defined(CONFIG_CPU_CAVIUM_OCTEON)
++#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_MIPSR6) && !defined(CONFIG_CPU_CAVIUM_OCTEON)
  
  /*
-  * Shortcuts ...
-@@ -210,15 +216,17 @@
+  * MIPSR2 defines ehb for hazard avoidance
+@@ -58,7 +59,7 @@ do {									\
+ 	unsigned long tmp;						\
+ 									\
+ 	__asm__ __volatile__(						\
+-	"	.set	mips64r2				\n"	\
++	"	.set "MIPS_ISA_LEVEL"				\n"	\
+ 	"	dla	%0, 1f					\n"	\
+ 	"	jr.hb	%0					\n"	\
+ 	"	.set	mips0					\n"	\
+@@ -132,7 +133,7 @@ do {									\
  
- #define cpu_has_mips_4_5_r2	(cpu_has_mips_4_5 | cpu_has_mips_r2)
+ #define instruction_hazard()						\
+ do {									\
+-	if (cpu_has_mips_r2)						\
++	if (cpu_has_mips_r2 || cpu_has_mips_r6)						\
+ 		__instruction_hazard();					\
+ } while (0)
  
--#define cpu_has_mips32	(cpu_has_mips32r1 | cpu_has_mips32r2)
--#define cpu_has_mips64	(cpu_has_mips64r1 | cpu_has_mips64r2)
-+#define cpu_has_mips32	(cpu_has_mips32r1 | cpu_has_mips32r2 | cpu_has_mips32r6)
-+#define cpu_has_mips64	(cpu_has_mips64r1 | cpu_has_mips64r2 | cpu_has_mips64r6)
- #define cpu_has_mips_r1 (cpu_has_mips32r1 | cpu_has_mips64r1)
- #define cpu_has_mips_r2 (cpu_has_mips32r2 | cpu_has_mips64r2)
-+#define cpu_has_mips_r6	(cpu_has_mips32r6 | cpu_has_mips64r6)
- #define cpu_has_mips_r	(cpu_has_mips32r1 | cpu_has_mips32r2 | \
--			 cpu_has_mips64r1 | cpu_has_mips64r2)
-+			 cpu_has_mips32r6 | cpu_has_mips64r1 | \
-+			 cpu_has_mips64r2 | cpu_has_mips64r6)
+@@ -240,7 +241,7 @@ do {									\
  
- #ifndef cpu_has_mips_r2_exec_hazard
--#define cpu_has_mips_r2_exec_hazard cpu_has_mips_r2
-+#define cpu_has_mips_r2_exec_hazard (cpu_has_mips_r2 | cpu_has_mips_r6)
- #endif
+ #define __disable_fpu_hazard
  
- /*
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index 0b74bbf976e4..f604523aec3d 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -332,11 +332,14 @@ enum cpu_type_enum {
- #define MIPS_CPU_ISA_M32R2	0x00000020
- #define MIPS_CPU_ISA_M64R1	0x00000040
- #define MIPS_CPU_ISA_M64R2	0x00000080
-+#define MIPS_CPU_ISA_M32R6	0x00000100
-+#define MIPS_CPU_ISA_M64R6	0x00000200
+-#elif defined(CONFIG_CPU_MIPSR2)
++#elif defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_MIPSR6)
  
- #define MIPS_CPU_ISA_32BIT (MIPS_CPU_ISA_II | MIPS_CPU_ISA_M32R1 | \
--	MIPS_CPU_ISA_M32R2)
-+	MIPS_CPU_ISA_M32R2 | MIPS_CPU_ISA_M32R6)
- #define MIPS_CPU_ISA_64BIT (MIPS_CPU_ISA_III | MIPS_CPU_ISA_IV | \
--	MIPS_CPU_ISA_V | MIPS_CPU_ISA_M64R1 | MIPS_CPU_ISA_M64R2)
-+	MIPS_CPU_ISA_V | MIPS_CPU_ISA_M64R1 | MIPS_CPU_ISA_M64R2 | \
-+	MIPS_CPU_ISA_M64R6)
- 
- /*
-  * CPU Option encodings
+ #define __enable_fpu_hazard						\
+ 	___ehb
 -- 
 2.2.1

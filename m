@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:9132 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:17611 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010896AbbAPKxar22HZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jan 2015 11:53:30 +0100
+        with ESMTP id S27010905AbbAPKxbuLxmJ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jan 2015 11:53:31 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 00FF668878D37
-        for <linux-mips@linux-mips.org>; Fri, 16 Jan 2015 10:53:23 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id 1F174F6945A6A
+        for <linux-mips@linux-mips.org>; Fri, 16 Jan 2015 10:53:24 +0000 (GMT)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC v2 44/70] MIPS: kernel: Prepare the JR instruction for emulation on MIPS R6
-Date: Fri, 16 Jan 2015 10:49:23 +0000
-Message-ID: <1421405389-15512-45-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH RFC v2 45/70] MIPS: kernel: branch: Prevent BLTZL emulation for MIPS R6
+Date: Fri, 16 Jan 2015 10:49:24 +0000
+Message-ID: <1421405389-15512-46-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com>
 References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -25,61 +25,45 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20150116104923.j7gNhHTzZH8q5wg5nzuCpqomVFKpDKxhwB9KI68b3f0@z>
+Message-ID: <20150116104924.arrRVMGL98pWbglPGz1yVlbHb-soT5bcwxgKMx6WIzw@z>
 
-The MIPS R6 JR instruction is an alias to the JALR one, so it may
-need emulation for non-R6 userlands.
+MIPS R6 removed the BLTZL instruction so do not try to emulate it
+if the R2-to-R6 emulator is not present.
 
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/include/asm/branch.h | 3 +++
- arch/mips/kernel/branch.c      | 5 +++++
- arch/mips/math-emu/cp1emu.c    | 3 +++
- 3 files changed, 11 insertions(+)
+ arch/mips/kernel/branch.c   | 5 +++++
+ arch/mips/math-emu/cp1emu.c | 2 ++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/arch/mips/include/asm/branch.h b/arch/mips/include/asm/branch.h
-index de781cf54bc7..2894ea58454d 100644
---- a/arch/mips/include/asm/branch.h
-+++ b/arch/mips/include/asm/branch.h
-@@ -13,6 +13,9 @@
- #include <asm/ptrace.h>
- #include <asm/inst.h>
- 
-+static int mipsr2_emulation = 0;
-+#define NO_R6EMU	(cpu_has_mips_r6 && !mipsr2_emulation)
-+
- extern int __isa_exception_epc(struct pt_regs *regs);
- extern int __compute_return_epc(struct pt_regs *regs);
- extern int __compute_return_epc_for_insn(struct pt_regs *regs,
 diff --git a/arch/mips/kernel/branch.c b/arch/mips/kernel/branch.c
-index 4d7d99d601cc..9b622ca391d8 100644
+index 9b622ca391d8..502bf2aeb834 100644
 --- a/arch/mips/kernel/branch.c
 +++ b/arch/mips/kernel/branch.c
-@@ -417,6 +417,11 @@ int __compute_return_epc_for_insn(struct pt_regs *regs,
- 			regs->regs[insn.r_format.rd] = epc + 8;
- 			/* Fall through */
- 		case jr_op:
-+			if (NO_R6EMU && (insn.r_format.func == jr_op)) {
+@@ -436,6 +436,11 @@ int __compute_return_epc_for_insn(struct pt_regs *regs,
+ 		switch (insn.i_format.rt) {
+ 		case bltz_op:
+ 		case bltzl_op:
++			if (NO_R6EMU && (insn.i_format.rt == bltzl_op)) {
 +				ret = -SIGILL;
-+				/* For R6, JR already emulated in jalr_op */
++				/* not emulating the branch likely for R6 */
 +				break;
 +			}
- 			regs->cp0_epc = regs->regs[insn.r_format.rs];
- 			break;
- 		}
+ 			if ((long)regs->regs[insn.i_format.rs] < 0) {
+ 				epc = epc + 4 + (insn.i_format.simmediate << 2);
+ 				if (insn.i_format.rt == bltzl_op)
 diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-index 9dfcd7fc1bc3..9707af43913f 100644
+index 9707af43913f..e70513d552f6 100644
 --- a/arch/mips/math-emu/cp1emu.c
 +++ b/arch/mips/math-emu/cp1emu.c
-@@ -448,6 +448,9 @@ static int isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
- 				dec_insn.next_pc_inc;
+@@ -465,6 +465,8 @@ static int isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
  			/* Fall through */
- 		case jr_op:
-+			/* For R6, JR already emulated in jalr_op */
-+			if (NO_R6EMU && (insn.r_format.opcode == jr_op))
+ 		case bltz_op:
+ 		case bltzl_op:
++			if (NO_R6EMU && (insn.i_format.rt == bltzl_op))
 +				break;
- 			*contpc = regs->regs[insn.r_format.rs];
- 			return 1;
- 		}
+ 			if ((long)regs->regs[insn.i_format.rs] < 0)
+ 				*contpc = regs->cp0_epc +
+ 					dec_insn.pc_inc +
 -- 
 2.2.1

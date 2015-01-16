@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:50689 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:1299 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010677AbbAPKxCixYRO (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jan 2015 11:53:02 +0100
+        with ESMTP id S27010678AbbAPKxJmZr3Y (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jan 2015 11:53:09 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id D2B097CE0EDA3
-        for <linux-mips@linux-mips.org>; Fri, 16 Jan 2015 10:52:54 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id D82A3EA828CA4
+        for <linux-mips@linux-mips.org>; Fri, 16 Jan 2015 10:52:59 +0000 (GMT)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC v2 33/70] MIPS: kernel: r4k_fpu: Add support for MIPS R6
-Date: Fri, 16 Jan 2015 10:49:12 +0000
-Message-ID: <1421405389-15512-34-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH RFC v2 34/70] MIPS: kernel: genex: Set correct ISA level
+Date: Fri, 16 Jan 2015 10:49:13 +0000
+Message-ID: <1421405389-15512-35-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com>
 References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -24,79 +24,29 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20150116104912.fnZ1DBmGPRXprjIjfmWeEzb3JtUXyk8DWWxxm5trOdY@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20150116104913.eeqnXZ86xW3298SAUqUrerKlv2gVaNpTtxH4h7Zts-0@z>
 
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+The jr instruction opcode has changed in R6 so make sure
+the correct ISA level is set prior using that instruction.
 
-Add the MIPS R6 related preprocessor definitions for FPU signal
-related functions. MIPS R6 only has FR=1 so avoid checking that
-bit on the C0/Status register.
-
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/kernel/r4k_fpu.S | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ arch/mips/kernel/genex.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/r4k_fpu.S b/arch/mips/kernel/r4k_fpu.S
-index 6c160c67984c..676c5030a953 100644
---- a/arch/mips/kernel/r4k_fpu.S
-+++ b/arch/mips/kernel/r4k_fpu.S
-@@ -34,7 +34,7 @@
- 	.endm
- 
- 	.set	noreorder
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index a5e26dd90592..2ebaabe3af15 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -125,7 +125,7 @@ LEAF(__r4k_wait)
+ 	nop
+ 	nop
+ #endif
 -	.set	arch=r4000
 +	.set	MIPS_ISA_ARCH_LEVEL_RAW
- 
- LEAF(_save_fp_context)
- 	.set	push
-@@ -42,7 +42,8 @@ LEAF(_save_fp_context)
- 	cfc1	t1, fcr31
- 	.set	pop
- 
--#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2)
-+#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2) || \
-+		defined(CONFIG_CPU_MIPS32_R6)
- 	.set	push
- 	SET_HARDFLOAT
- #ifdef CONFIG_CPU_MIPS32_R2
-@@ -105,10 +106,12 @@ LEAF(_save_fp_context32)
- 	SET_HARDFLOAT
- 	cfc1	t1, fcr31
- 
-+#ifndef CONFIG_CPU_MIPS64_R6
- 	mfc0	t0, CP0_STATUS
- 	sll	t0, t0, 5
- 	bgez	t0, 1f			# skip storing odd if FR=0
- 	 nop
-+#endif
- 
- 	/* Store the 16 odd double precision registers */
- 	EX      sdc1 $f1, SC32_FPREGS+8(a0)
-@@ -163,7 +166,8 @@ LEAF(_save_fp_context32)
- LEAF(_restore_fp_context)
- 	EX	lw t1, SC_FPC_CSR(a0)
- 
--#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2)
-+#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2)  || \
-+		defined(CONFIG_CPU_MIPS32_R6)
- 	.set	push
- 	SET_HARDFLOAT
- #ifdef CONFIG_CPU_MIPS32_R2
-@@ -223,10 +227,12 @@ LEAF(_restore_fp_context32)
- 	SET_HARDFLOAT
- 	EX	lw t1, SC32_FPC_CSR(a0)
- 
-+#ifndef CONFIG_CPU_MIPS64_R6
- 	mfc0	t0, CP0_STATUS
- 	sll	t0, t0, 5
- 	bgez	t0, 1f			# skip loading odd if FR=0
- 	 nop
-+#endif
- 
- 	EX      ldc1 $f1, SC32_FPREGS+8(a0)
- 	EX      ldc1 $f3, SC32_FPREGS+24(a0)
+ 	wait
+ 	/* end of rollback region (the region size must be power of two) */
+ 1:
 -- 
 2.2.1

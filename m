@@ -1,14 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61454 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:60734 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010526AbbAPKwDX8QAT (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jan 2015 11:52:03 +0100
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 130BD40FEF080
-        for <linux-mips@linux-mips.org>; Fri, 16 Jan 2015 10:51:54 +0000 (GMT)
+        with ESMTP id S27010531AbbAPKwFS3KFP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jan 2015 11:52:05 +0100
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC v2 11/70] MIPS: asm: asmmacro: Add MIPS R6 support to the simple EI/DI variants
-Date: Fri, 16 Jan 2015 10:48:50 +0000
-Message-ID: <1421405389-15512-12-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH RFC v2 12/70] MIPS: asm: asmmacro: Replace add instructions with "addui"
+Date: Fri, 16 Jan 2015 10:48:51 +0000
+Message-ID: <1421405389-15512-13-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com>
 References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -24,32 +21,44 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20150116104850.oLbbmdm7EbO7G5r43mggiji2Y-CpvYz4KPbrLCV8_a8@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
+Message-ID: <20150116104851.-BREGB51jfkULyygs18FYPo0TganCTCOs3_TBoR76cw@z>
 
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+The use of "add" instruction for immediate operations can result to
+build failures for MIPS R6. This is because, the 'add' is a macro in
+binutils and depending on the size of the immediate it can expand to
+an 'addi' instruction which has been removed from MIPS R6.
+Thus, we will be using the 'addu' macro instead, which also
+accepts immediate operands.
 
-EI/DI instructions are available in MIPS R6 so add the needed
-definitions.
-
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Link: http://www.linux-mips.org/archives/linux-mips/2015-01/msg00121.html
+Cc: Maciej W. Rozycki <macro@linux-mips.org>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/include/asm/asmmacro.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/include/asm/asmmacro.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/mips/include/asm/asmmacro.h b/arch/mips/include/asm/asmmacro.h
-index 90f69c334a75..fe08084f5adb 100644
+index fe08084f5adb..42b90c9fd756 100644
 --- a/arch/mips/include/asm/asmmacro.h
 +++ b/arch/mips/include/asm/asmmacro.h
-@@ -19,7 +19,7 @@
- #include <asm/asmmacro-64.h>
- #endif
- 
--#ifdef CONFIG_CPU_MIPSR2
-+#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_MIPSR6)
- 	.macro	local_irq_enable
- 	ei
- 	irq_enable_hazard
+@@ -304,7 +304,7 @@
+ 	.set	push
+ 	.set	noat
+ 	SET_HARDFLOAT
+-	add	$1, \base, \off
++	addu	$1, \base, \off
+ 	.word	LDD_MSA_INSN | (\wd << 6)
+ 	.set	pop
+ 	.endm
+@@ -313,7 +313,7 @@
+ 	.set	push
+ 	.set	noat
+ 	SET_HARDFLOAT
+-	add	$1, \base, \off
++	addu	$1, \base, \off
+ 	.word	STD_MSA_INSN | (\wd << 6)
+ 	.set	pop
+ 	.endm
 -- 
 2.2.1

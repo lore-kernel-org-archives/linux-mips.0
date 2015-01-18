@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:16605 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:55713 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011772AbbARWkuGy7sN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 18 Jan 2015 23:40:50 +0100
+        with ESMTP id S27011773AbbARWlBakKLi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 18 Jan 2015 23:41:01 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 22/36] MIPS: jz4740: support >32 interrupts
-Date: Sun, 18 Jan 2015 14:40:32 -0800
-Message-ID: <1421620832-24843-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 23/36] MIPS: jz4740: define IRQ numbers based on number of intc IRQs
+Date: Sun, 18 Jan 2015 14:40:46 -0800
+Message-ID: <1421620846-24917-1-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1421620067-23933-1-git-send-email-paul.burton@imgtec.com>
 References: <1421620067-23933-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,129 +22,49 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>, Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <20150118224032.1tTmZqiUjc6p-PdCy6XHCb0MscluXT3fUIToOSbFChU@z>
+Message-ID: <20150118224046.0bYGjWcpqWGqAe3_bobi1SF2_T1zOhCpUsx7_DvSZBs@z>
 
-On later jz47xx series SoCs the interrupt controller supports more than
-32 interrupts, which it does by duplicating the registers at intervals
-of 0x20 bytes within its address space. Add support for an arbitrary
-number of interrupts using multiple generic chips, and provide the
-number of chips to register from the SoC-specific probe function.
+For interrupts numbered after those of the interrupt controller, define
+their numbers based upon the number of interrupts provided by the SoC
+interrupt controller. This is in preparation for supporting later jz47xx
+series SoCs which provide more interrupts.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Cc: Lars-Peter Clausen <lars@metafoo.de>
 ---
- arch/mips/jz4740/irq.c | 58 ++++++++++++++++++++++++++++++++------------------
- 1 file changed, 37 insertions(+), 21 deletions(-)
+ arch/mips/include/asm/mach-jz4740/irq.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/jz4740/irq.c b/arch/mips/jz4740/irq.c
-index a620b23..3e53a32 100644
---- a/arch/mips/jz4740/irq.c
-+++ b/arch/mips/jz4740/irq.c
-@@ -33,21 +33,27 @@
- #include "../../drivers/irqchip/irqchip.h"
+diff --git a/arch/mips/include/asm/mach-jz4740/irq.h b/arch/mips/include/asm/mach-jz4740/irq.h
+index df50736..b218f76 100644
+--- a/arch/mips/include/asm/mach-jz4740/irq.h
++++ b/arch/mips/include/asm/mach-jz4740/irq.h
+@@ -19,6 +19,10 @@
+ #define MIPS_CPU_IRQ_BASE 0
+ #define JZ4740_IRQ_BASE 8
  
- static void __iomem *jz_intc_base;
-+static unsigned jz_num_chips;
- 
- #define JZ_REG_INTC_STATUS	0x00
- #define JZ_REG_INTC_MASK	0x04
- #define JZ_REG_INTC_SET_MASK	0x08
- #define JZ_REG_INTC_CLEAR_MASK	0x0c
- #define JZ_REG_INTC_PENDING	0x10
-+#define CHIP_SIZE		0x20
- 
- static irqreturn_t jz4740_cascade(int irq, void *data)
- {
- 	uint32_t irq_reg;
-+	unsigned i;
- 
--	irq_reg = readl(jz_intc_base + JZ_REG_INTC_PENDING);
-+	for (i = 0; i < jz_num_chips; i++) {
-+		irq_reg = readl(jz_intc_base + (i * CHIP_SIZE) + JZ_REG_INTC_PENDING);
-+		if (!irq_reg)
-+			continue;
- 
--	if (irq_reg)
--		generic_handle_irq(__fls(irq_reg) + JZ4740_IRQ_BASE);
-+		generic_handle_irq(__fls(irq_reg) + (i * 32) + JZ4740_IRQ_BASE);
-+	}
- 
- 	return IRQ_HANDLED;
- }
-@@ -77,39 +83,43 @@ static struct irqaction jz4740_cascade_action = {
- 	.name = "JZ4740 cascade interrupt",
- };
- 
--static int __init jz4740_intc_of_init(struct device_node *node,
--	struct device_node *parent)
-+static int __init jz47xx_intc_of_init(struct device_node *node, unsigned num_chips)
- {
- 	struct irq_chip_generic *gc;
- 	struct irq_chip_type *ct;
- 	struct irq_domain *domain;
- 	int parent_irq;
-+	unsigned i;
- 
- 	parent_irq = irq_of_parse_and_map(node, 0);
- 	if (!parent_irq)
- 		return -EINVAL;
- 
--	jz_intc_base = ioremap(JZ4740_INTC_BASE_ADDR, 0x14);
-+	jz_num_chips = num_chips;
-+	jz_intc_base = ioremap(JZ4740_INTC_BASE_ADDR,
-+			       ((num_chips - 1) * CHIP_SIZE) + 0x14);
- 
--	/* Mask all irqs */
--	writel(0xffffffff, jz_intc_base + JZ_REG_INTC_SET_MASK);
-+	for (i = 0; i < num_chips; i++) {
-+		/* Mask all irqs */
-+		writel(0xffffffff, jz_intc_base + (i * CHIP_SIZE) + JZ_REG_INTC_SET_MASK);
- 
--	gc = irq_alloc_generic_chip("INTC", 1, JZ4740_IRQ_BASE, jz_intc_base,
--		handle_level_irq);
-+		gc = irq_alloc_generic_chip("INTC", 1, JZ4740_IRQ_BASE + (i * 32),
-+					    jz_intc_base + (i * CHIP_SIZE), handle_level_irq);
- 
--	gc->wake_enabled = IRQ_MSK(32);
-+		gc->wake_enabled = IRQ_MSK(32);
- 
--	ct = gc->chip_types;
--	ct->regs.enable = JZ_REG_INTC_CLEAR_MASK;
--	ct->regs.disable = JZ_REG_INTC_SET_MASK;
--	ct->chip.irq_unmask = irq_gc_unmask_enable_reg;
--	ct->chip.irq_mask = irq_gc_mask_disable_reg;
--	ct->chip.irq_mask_ack = irq_gc_mask_disable_reg;
--	ct->chip.irq_set_wake = irq_gc_set_wake;
--	ct->chip.irq_suspend = jz4740_irq_suspend;
--	ct->chip.irq_resume = jz4740_irq_resume;
-+		ct = gc->chip_types;
-+		ct->regs.enable = JZ_REG_INTC_CLEAR_MASK;
-+		ct->regs.disable = JZ_REG_INTC_SET_MASK;
-+		ct->chip.irq_unmask = irq_gc_unmask_enable_reg;
-+		ct->chip.irq_mask = irq_gc_mask_disable_reg;
-+		ct->chip.irq_mask_ack = irq_gc_mask_disable_reg;
-+		ct->chip.irq_set_wake = irq_gc_set_wake;
-+		ct->chip.irq_suspend = jz4740_irq_suspend;
-+		ct->chip.irq_resume = jz4740_irq_resume;
- 
--	irq_setup_generic_chip(gc, IRQ_MSK(32), 0, 0, IRQ_NOPROBE | IRQ_LEVEL);
-+		irq_setup_generic_chip(gc, IRQ_MSK(32), 0, 0, IRQ_NOPROBE | IRQ_LEVEL);
-+	}
- 
- 	domain = irq_domain_add_legacy(node, num_chips * 32, JZ4740_IRQ_BASE, 0,
- 				       &irq_domain_simple_ops, NULL);
-@@ -119,6 +129,12 @@ static int __init jz4740_intc_of_init(struct device_node *node,
- 	setup_irq(parent_irq, &jz4740_cascade_action);
- 	return 0;
- }
++#ifdef CONFIG_MACH_JZ4740
++# define NR_INTC_IRQS	32
++#endif
 +
-+static int __init jz4740_intc_of_init(struct device_node *node,
-+	struct device_node *parent)
-+{
-+	return jz47xx_intc_of_init(node, 1);
-+}
- IRQCHIP_DECLARE(jz4740_intc, "ingenic,jz4740-intc", jz4740_intc_of_init);
+ /* 1st-level interrupts */
+ #define JZ4740_IRQ(x)		(JZ4740_IRQ_BASE + (x))
+ #define JZ4740_IRQ_I2C		JZ4740_IRQ(1)
+@@ -45,12 +49,12 @@
+ #define JZ4740_IRQ_LCD		JZ4740_IRQ(30)
  
- #ifdef CONFIG_DEBUG_FS
+ /* 2nd-level interrupts */
+-#define JZ4740_IRQ_DMA(x)	(JZ4740_IRQ(32) + (x))
++#define JZ4740_IRQ_DMA(x)	(JZ4740_IRQ(NR_INTC_IRQS) + (x))
+ 
+ #define JZ4740_IRQ_INTC_GPIO(x) (JZ4740_IRQ_GPIO0 - (x))
+-#define JZ4740_IRQ_GPIO(x)	(JZ4740_IRQ(48) + (x))
++#define JZ4740_IRQ_GPIO(x)	(JZ4740_IRQ(NR_INTC_IRQS + 16) + (x))
+ 
+-#define JZ4740_IRQ_ADC_BASE	JZ4740_IRQ(176)
++#define JZ4740_IRQ_ADC_BASE	JZ4740_IRQ(NR_INTC_IRQS + 144)
+ 
+ #define NR_IRQS (JZ4740_IRQ_ADC_BASE + 6)
+ 
 -- 
 2.2.1

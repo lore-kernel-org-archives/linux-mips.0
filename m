@@ -1,13 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:54170 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010943AbbASKbZF8HKh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Jan 2015 11:31:25 +0100
+Received: from mailapp01.imgtec.com ([195.59.15.196]:23224 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27010943AbbASLZupsWfs (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Jan 2015 12:25:50 +0100
+Message-ID: <54BCE9B1.7060600@imgtec.com>
+Date: Mon, 19 Jan 2015 11:25:37 +0000
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: fork: Fix MSA/FPU/DSP context duplication race
-Date: Mon, 19 Jan 2015 10:30:54 +0000
-Message-ID: <1421663454-8047-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH] MIPS: cevt-r4k: Use Cause.TI for timer pending
+References: <1420729599-22034-1-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1420729599-22034-1-git-send-email-james.hogan@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature";
+        boundary="hckIqkbNjrh3KKfRTnVO1kGQlvganTRTx"
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,164 +22,167 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: Matthew Fortune <matthew.fortune@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20150119103054.3BV3MhbMudwRA2kNX5pZAkMlZfnPByo6y1RAlF-bIx0@z>
+To: Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, linux-mips@linux-mips.org
+Cc: Qais Yousef <qais.yousef@imgtec.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <20150119112537.9PwdFXEnmz2pyNcp4kn78B2SODdYZ_0l2KrQYUlKMDE@z>
 
-There is a race in the MIPS fork code which allows the child to get a
-stale copy of parent MSA/FPU/DSP state that is active in hardware
-registers when the fork() is called. This is because copy_thread() saves
-the live register state into the child context only if the hardware is
-currently in use, apparently on the assumption that the hardware state
-cannot have been saved and disabled since the initial duplication of the
-task_struct. However preemption is certainly possible during this
-window.
+--hckIqkbNjrh3KKfRTnVO1kGQlvganTRTx
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-An example sequence of events is as follows:
+On 08/01/15 15:06, James Hogan wrote:
+> The cevt-r4k driver used to call into the GIC driver to find whether th=
+e
+> timer was pending, but only with External Interrupt Controller (EIC)
+> mode, where the Cause.IP bits can't be used as they encode the interrup=
+t
+> priority level (Cause.RIPL) instead.
+>=20
+> However commit e9de688dac65 ("irqchip: mips-gic: Support local
+> interrupts") changed the condition from cpu_has_veic to gic_present.
+> This fails on cores such as P5600 which have a GIC but the local
+> interrupts aren't routable by the GIC, causing c0_compare_int_usable()
+> to consider the interrupt unusable so r4k_clockevent_init() fails.
+>=20
+> The previous behaviour wasn't really correct either though since P5600
+> apparently supports EIC mode too, so lets use the Cause.TI bit instead
+> which should be present since release 2 of the MIPS32/MIPS64
+> architecture. In fact multiple interrupts can be routed to that same CP=
+U
+> interrupt line (e.g. performance counter and fast debug channel
+> interrupts), so lets use Cause.TI in preference to Cause.IP on all core=
+s
+> since release 2.
+>=20
+> Fixes: e9de688dac65 ("irqchip: mips-gic: Support local interrupts")
+> Signed-off-by: James Hogan <james.hogan@imgtec.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Andrew Bresticker <abrestic@chromium.org>
+> Cc: Qais Yousef <qais.yousef@imgtec.com>
+> Cc: Jason Cooper <jason@lakedaemon.net>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: linux-mips@linux-mips.org
+> ---
+>  arch/mips/kernel/cevt-r4k.c      | 20 +++++++++++++++-----
+>  drivers/irqchip/irq-mips-gic.c   |  8 --------
+>  include/linux/irqchip/mips-gic.h |  1 -
+>  3 files changed, 15 insertions(+), 14 deletions(-)
+>=20
+> diff --git a/arch/mips/kernel/cevt-r4k.c b/arch/mips/kernel/cevt-r4k.c
+> index 6acaad0480af..6747a2cbf662 100644
+> --- a/arch/mips/kernel/cevt-r4k.c
+> +++ b/arch/mips/kernel/cevt-r4k.c
+> @@ -11,7 +11,6 @@
+>  #include <linux/percpu.h>
+>  #include <linux/smp.h>
+>  #include <linux/irq.h>
+> -#include <linux/irqchip/mips-gic.h>
+> =20
+>  #include <asm/time.h>
+>  #include <asm/cevt-r4k.h>
+> @@ -85,10 +84,21 @@ void mips_event_handler(struct clock_event_device *=
+dev)
+>   */
+>  static int c0_compare_int_pending(void)
+>  {
+> -#ifdef CONFIG_MIPS_GIC
+> -	if (gic_present)
+> -		return gic_get_timer_pending();
+> -#endif
+> +	/*
+> +	 * With External Interrupt Controller (EIC) mode (which may be presen=
+t
+> +	 * since release 2 of MIPS32/MIPS64) the interrupt pending bits
+> +	 * (Cause.IP) are used for the interrupt priority level (Cause.RIPL) =
+so
+> +	 * we can't use it to determine whether the timer interrupt is pendin=
+g.
+> +	 *
+> +	 * Instead lets use the timer pending bit (Cause.TI) which is present=
 
-1) The parent userland process puts important data into saved floating
-   point registers ($f20-$f31), which are then dirty compared to the
-   process' stored context.
+> +	 * since release 2, and lets use it even without EIC mode since it
+> +	 * unambigously specifies whether the timer interrupt is pending
+> +	 * regardless of what other internal or external interrupts are wired=
+ to
+> +	 * the same CPU IRQ line.
+> +	 */
+> +	if (cpu_has_mips_r2)
+> +		return read_c0_cause() & CAUSEF_TI;
 
-2) The parent process calls fork() which does a clone system call.
+Hmm, just realised that the code below already handles this case
+equivalently thanks to per_cpu_trap_init doing the slightly sneaky:
+if (cpu_has_mips_r2)
+	cp0_compare_irq_shift =3D CAUSEB_TI - CAUSEB_IP;
 
-3) In the kernel, do_fork() -> copy_process() -> dup_task_struct() ->
-   arch_dup_task_struct() (which uses the weakly defined default
-   implementation). This duplicates the parent process' task context,
-   which includes a stale version of its FP context from when it was
-   last saved, probably some time before (1).
+I'll drop the cpu_has_mips_r2 conditional here, add a comment, and repost=
+=2E
 
-4) At some point before copy_process() calls copy_thread(), such as when
-   duplicating the memory map, the process is desceduled. Perhaps it is
-   preempted asynchronously, or perhaps it sleeps while blocked on a
-   mutex. The dirty FP state in the FP registers is saved to the parent
-   process' context and the FPU is disabled.
+Cheers
+James
 
-5) When the process is rescheduled again it continues copying state
-   until it gets to copy_thread(), which checks whether the FPU is in
-   use, so that it can copy that dirty state to the child process' task
-   context. Because of the deschedule however the FPU is not in use, so
-   the child process' context is left with stale FP context from the
-   last time the parent saved it (some time before (1)).
+> +
+>  	return (read_c0_cause() >> cp0_compare_irq_shift) & (1ul << CAUSEB_IP=
+);
+>  }
+> =20
+> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-=
+gic.c
+> index 2b0468e3df6a..e58600b1de28 100644
+> --- a/drivers/irqchip/irq-mips-gic.c
+> +++ b/drivers/irqchip/irq-mips-gic.c
+> @@ -191,14 +191,6 @@ static bool gic_local_irq_is_routable(int intr)
+>  	}
+>  }
+> =20
+> -unsigned int gic_get_timer_pending(void)
+> -{
+> -	unsigned int vpe_pending;
+> -
+> -	vpe_pending =3D gic_read(GIC_REG(VPE_LOCAL, GIC_VPE_PEND));
+> -	return vpe_pending & GIC_VPE_PEND_TIMER_MSK;
+> -}
+> -
+>  static void gic_bind_eic_interrupt(int irq, int set)
+>  {
+>  	/* Convert irq vector # to hw int # */
+> diff --git a/include/linux/irqchip/mips-gic.h b/include/linux/irqchip/m=
+ips-gic.h
+> index 420f77b34d02..e6a6aac451db 100644
+> --- a/include/linux/irqchip/mips-gic.h
+> +++ b/include/linux/irqchip/mips-gic.h
+> @@ -243,7 +243,6 @@ extern void gic_write_cpu_compare(cycle_t cnt, int =
+cpu);
+>  extern void gic_send_ipi(unsigned int intr);
+>  extern unsigned int plat_ipi_call_int_xlate(unsigned int);
+>  extern unsigned int plat_ipi_resched_int_xlate(unsigned int);
+> -extern unsigned int gic_get_timer_pending(void);
+>  extern int gic_get_c0_compare_int(void);
+>  extern int gic_get_c0_perfcount_int(void);
+>  #endif /* __LINUX_IRQCHIP_MIPS_GIC_H */
+>=20
 
-6) When the new child process is scheduled it reads the important data
-   from the saved floating point register, and ends up doing a NULL
-   pointer dereference as a result of the stale data.
 
-This use of saved floating point registers across function calls can be
-triggered fairly easily by explicitly using inline asm with a current
-(MIPS R2) compiler, but is far more likely to happen unintentionally
-with a MIPS R6 compiler where the FP registers are more likely to get
-used as scratch registers for storing non-fp data.
+--hckIqkbNjrh3KKfRTnVO1kGQlvganTRTx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-It is easily fixed, in the same way that other architectures do it, by
-overriding the implementation of arch_dup_task_struct() to sync the
-dirty hardware state to the parent process' task context *prior* to
-duplicating it, rather than copying straight to the child process' task
-context in copy_thread(). Note, the FPU hardware is not disabled so the
-parent process may continue executing with the live register context,
-but now the child process is guaranteed to have an identical copy of it
-at that point.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Reported-by: Matthew Fortune <matthew.fortune@imgtec.com>
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Tested-by: Markos Chandras <markos.chandras@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org
----
-Here's my hacky test program:
+iQIcBAEBAgAGBQJUvOm3AAoJEGwLaZPeOHZ6AQYP/RsYm9KVcXJqYB/Fis6HZPlw
+gB/2+dHnHmWG4bQ7AZHyXPAsM7OUXWlSgmHK11A/teQvUhLsVSIvkXavTGogYxaN
+v03n/ocBsF8XStYk0xq5B3WMahzXQMXTWJbipXgZhGtvwjYGqAHuyyePHa0EzlED
+rftJNic1S+lJOJHxS8clg/syfLZTuoS98Yi8MlWmH/7kAv94FIOfsUeQsWrHTOXm
+UgmkWBJ0tVgadIahTDtazTnZzFVpZr+yORDWajv1t7EexxlKIAo2kbOIebImIjoM
+NmZcTfCqPg1jd9Yp4vCBgg5h850VWahCOsd6jVl70M2ys8xG9r1uXuE7zYmpLDmr
+yiJ3nlNqdNCsI6w1x1Q85j/8mS3s2Y9w374gxDXmN1ZnBmCOuSzcQ7zj293uIKjE
++dJw8vDlOY/alLJ4wdaZmGCiEws1u+Nk1QHh0GlVCG44KKGZXzmGs/1dR+IEqx8B
+15XixruGIlXMQ1jtrcJxF9kYYYoBKAn2whAxTesBtlSRLUjhOqOSgKRbsnsWzq2E
+075a7iKqwVCApdiavqY/dyQqDh4+fMfUC6vFiQGIKMJief8Vt5okSLtCh4dPrNnw
+HD+Jh1j7Bfkr1U0o8MErL7qDARQPOp0eKzZLVIfOAiL57wk7rz9ORm61VxumKJpZ
+81bKsGVzM8Q3el40CMd2
+=8n5r
+-----END PGP SIGNATURE-----
 
-int fork_fpu(float in_f)
-{
-	pid_t pid;
-	int ret = EXIT_SUCCESS;
-	register float f30 asm("$f30") = in_f;
-
-	asm volatile("" : : "f" (f30)); /* kinda rather dodgy */
-	pid = fork();
-	if (pid < 0)
-		return -1;
-	asm volatile("" : "=f" (f30)); /* kinda rather dodgy */
-
-	if (f30 != in_f) {
-		fprintf(stderr, "%d FAIL f30=%g, in_f=%g\n", pid, f30, in_f);
-		ret = EXIT_FAILURE;
-	}
-
-	if (pid == 0) /* child */
-		exit(ret);
-	else /* parent */
-		wait(&ret);
-
-	return ret;
-}
-
-int main(int argc, char **argv)
-{
-	float f;
-	for (f = 0; f < 10.0f; f += 0.1f)
-		if (fork_fpu(f))
-			return EXIT_FAILURE;
-	return EXIT_SUCCESS;
-}
----
- arch/mips/kernel/process.c | 36 ++++++++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 12 deletions(-)
-
-diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-index eb76434828e8..85bff5d513e5 100644
---- a/arch/mips/kernel/process.c
-+++ b/arch/mips/kernel/process.c
-@@ -82,6 +82,30 @@ void flush_thread(void)
- {
- }
- 
-+int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
-+{
-+	/*
-+	 * Save any process state which is live in hardware registers to the
-+	 * parent context prior to duplication. This prevents the new child
-+	 * state becoming stale if the parent is preempted before copy_thread()
-+	 * gets a chance to save the parent's live hardware registers to the
-+	 * child context.
-+	 */
-+	preempt_disable();
-+
-+	if (is_msa_enabled())
-+		save_msa(current);
-+	else if (is_fpu_owner())
-+		_save_fp(current);
-+
-+	save_dsp(current);
-+
-+	preempt_enable();
-+
-+	*dst = *src;
-+	return 0;
-+}
-+
- int copy_thread(unsigned long clone_flags, unsigned long usp,
- 	unsigned long arg, struct task_struct *p)
- {
-@@ -92,18 +116,6 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
- 
- 	childksp = (unsigned long)task_stack_page(p) + THREAD_SIZE - 32;
- 
--	preempt_disable();
--
--	if (is_msa_enabled())
--		save_msa(p);
--	else if (is_fpu_owner())
--		save_fp(p);
--
--	if (cpu_has_dsp)
--		save_dsp(p);
--
--	preempt_enable();
--
- 	/* set up new TSS. */
- 	childregs = (struct pt_regs *) childksp - 1;
- 	/*  Put the stack after the struct pt_regs.  */
--- 
-2.0.5
+--hckIqkbNjrh3KKfRTnVO1kGQlvganTRTx--

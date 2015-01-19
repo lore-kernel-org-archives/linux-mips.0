@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:52701 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13805 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010943AbbASLwB0mcuT (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Jan 2015 12:52:01 +0100
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH] MIPS: irq-mips-gic.c: handle pending interrupts once in __gic_irq_dispatch()
-Date: Mon, 19 Jan 2015 11:51:29 +0000
-Message-ID: <1421668289-828-1-git-send-email-qais.yousef@imgtec.com>
+        with ESMTP id S27010943AbbASMB7Bec41 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Jan 2015 13:01:59 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH v2] MIPS: cevt-r4k: Drop GIC special case
+Date: Mon, 19 Jan 2015 12:00:55 +0000
+Message-ID: <1421668855-15010-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Qais.Yousef@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,112 +18,109 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Qais Yousef <qais.yousef@imgtec.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org, Andrew Bresticker <abrestic@chromium.org>
-Message-ID: <20150119115129.EvD2sdYJPtOG0VkqQ0ohjQEUsJVqq9c5CNz4r2JrbaA@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Andrew Bresticker <abrestic@chromium.org>
+Cc: James Hogan <james.hogan@imgtec.com>, "Steven J. Hill" <steven.hill@imgtec.com>, Qais Yousef <qais.yousef@imgtec.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <20150119120055.TMVkdi_H4BgllW1tTqBJyZ2v2ODsdfGl04ytUecH3ZI@z>
 
-When an interrupt occurs __gic_irq_dispatch() continuously reads local and shared pending registers
-until all is serviced before returning. The problem with that is that it could introduce
-a long delay before returning if a piece of hardware keeps triggering while in one of these loops.
+The cevt-r4k driver used to call into the GIC driver to find whether the
+timer was pending, but only with External Interrupt Controller (EIC)
+mode, where the Cause.IP bits can't be used as they encode the interrupt
+priority level (Cause.RIPL) instead.
 
-To ensure fairness and priority doesn't get skewed a lot, read local and shared pending registers once
-to service each pending IRQ once.
-If another interupt triggers while servicing the current ones, then we shall re-enter the handler after
-we return.
+However commit e9de688dac65 ("irqchip: mips-gic: Support local
+interrupts") changed the condition from cpu_has_veic to gic_present.
+This fails on cores such as P5600 which have a GIC but the local
+interrupts aren't routable by the GIC, causing c0_compare_int_usable()
+to consider the interrupt unusable so r4k_clockevent_init() fails.
 
-Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+The previous behaviour, added in commit 98b67c37db33 ("MIPS: Add EIC
+support for GIC."), wasn't really correct either as far as I can tell,
+since P5600 apparently supports EIC mode too, and in any case the use of
+Cause.TI with r2 should have been sufficient anyway since commit
+010c108d7af7 ("MIPS: PowerTV: Fix support for timer interrupts with > 64
+external IRQs").
+
+Therefore drop the call into the gic driver altogether, and add a
+comment in c0_compare_int_pending() to clarify that Cause.TI does get
+checked since MIPS r2.
+
+Fixes: e9de688dac65 ("irqchip: mips-gic: Support local interrupts")
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Reviewed-by: Andrew Bresticker <abrestic@chromium.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Steven J. Hill <steven.hill@imgtec.com>
+Cc: Qais Yousef <qais.yousef@imgtec.com>
 Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: linux-kernel@vger.kernel.org
-Cc: Andrew Bresticker <abrestic@chromium.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org
 ---
- drivers/irqchip/irq-mips-gic.c | 44 +++++++++++++++++++++++++-----------------
- 1 file changed, 26 insertions(+), 18 deletions(-)
+Changes in v2:
+- Drop the redundant cpu_has_mips_r2 conditional altogether and add
+  comment about Cause.TI being checked. The general case already handles
+  correctly since per_cpu_trap_init() initialises cp0_compare_irq_shift
+  to CAUSEB_TI - CAUSEB_IP when cpu_has_mips_r2.
+- Took the liberty of adding Andrew's Reviewed-by from v1 patch, since
+  behaviour should be unchanged since v1.
+---
+ arch/mips/kernel/cevt-r4k.c      | 6 +-----
+ drivers/irqchip/irq-mips-gic.c   | 8 --------
+ include/linux/irqchip/mips-gic.h | 1 -
+ 3 files changed, 1 insertion(+), 14 deletions(-)
 
+diff --git a/arch/mips/kernel/cevt-r4k.c b/arch/mips/kernel/cevt-r4k.c
+index 6acaad0480af..28bfdf2c59a5 100644
+--- a/arch/mips/kernel/cevt-r4k.c
++++ b/arch/mips/kernel/cevt-r4k.c
+@@ -11,7 +11,6 @@
+ #include <linux/percpu.h>
+ #include <linux/smp.h>
+ #include <linux/irq.h>
+-#include <linux/irqchip/mips-gic.h>
+ 
+ #include <asm/time.h>
+ #include <asm/cevt-r4k.h>
+@@ -85,10 +84,7 @@ void mips_event_handler(struct clock_event_device *dev)
+  */
+ static int c0_compare_int_pending(void)
+ {
+-#ifdef CONFIG_MIPS_GIC
+-	if (gic_present)
+-		return gic_get_timer_pending();
+-#endif
++	/* When cpu_has_mips_r2, this checks Cause.TI instead of Cause.IP7 */
+ 	return (read_c0_cause() >> cp0_compare_irq_shift) & (1ul << CAUSEB_IP);
+ }
+ 
 diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 2b0468e3df6a..f3f9873dfb68 100644
+index 2b0468e3df6a..e58600b1de28 100644
 --- a/drivers/irqchip/irq-mips-gic.c
 +++ b/drivers/irqchip/irq-mips-gic.c
-@@ -234,9 +234,9 @@ int gic_get_c0_perfcount_int(void)
- 				  GIC_LOCAL_TO_HWIRQ(GIC_LOCAL_INT_PERFCTR));
+@@ -191,14 +191,6 @@ static bool gic_local_irq_is_routable(int intr)
+ 	}
  }
  
--static unsigned int gic_get_int(void)
-+static void gic_handle_shared_int(void)
- {
--	unsigned int i;
-+	unsigned int i, intr, virq;
- 	unsigned long *pcpu_mask;
- 	unsigned long pending_reg, intrmask_reg;
- 	DECLARE_BITMAP(pending, GIC_MAX_INTRS);
-@@ -258,7 +258,16 @@ static unsigned int gic_get_int(void)
- 	bitmap_and(pending, pending, intrmask, gic_shared_intrs);
- 	bitmap_and(pending, pending, pcpu_mask, gic_shared_intrs);
- 
--	return find_first_bit(pending, gic_shared_intrs);
-+	intr = find_first_bit(pending, gic_shared_intrs);
-+	while (intr != gic_shared_intrs) {
-+		virq = irq_linear_revmap(gic_irq_domain,
-+					 GIC_SHARED_TO_HWIRQ(intr));
-+		do_IRQ(virq);
-+
-+		/* go to next pending bit */
-+		bitmap_clear(pending, intr, 1);
-+		intr = find_first_bit(pending, gic_shared_intrs);
-+	}
- }
- 
- static void gic_mask_irq(struct irq_data *d)
-@@ -385,16 +394,26 @@ static struct irq_chip gic_edge_irq_controller = {
- #endif
- };
- 
--static unsigned int gic_get_local_int(void)
-+static void gic_handle_local_int(void)
- {
- 	unsigned long pending, masked;
-+	unsigned int intr, virq;
- 
- 	pending = gic_read(GIC_REG(VPE_LOCAL, GIC_VPE_PEND));
- 	masked = gic_read(GIC_REG(VPE_LOCAL, GIC_VPE_MASK));
- 
- 	bitmap_and(&pending, &pending, &masked, GIC_NUM_LOCAL_INTRS);
- 
--	return find_first_bit(&pending, GIC_NUM_LOCAL_INTRS);
-+	intr = find_first_bit(&pending, GIC_NUM_LOCAL_INTRS);
-+	while (intr != GIC_NUM_LOCAL_INTRS) {
-+		virq = irq_linear_revmap(gic_irq_domain,
-+					 GIC_LOCAL_TO_HWIRQ(intr));
-+		do_IRQ(virq);
-+
-+		/* go to next pending bit */
-+		bitmap_clear(&pending, intr, 1);
-+		intr = find_first_bit(&pending, GIC_NUM_LOCAL_INTRS);
-+	}
- }
- 
- static void gic_mask_local_irq(struct irq_data *d)
-@@ -453,19 +472,8 @@ static struct irq_chip gic_all_vpes_local_irq_controller = {
- 
- static void __gic_irq_dispatch(void)
- {
--	unsigned int intr, virq;
+-unsigned int gic_get_timer_pending(void)
+-{
+-	unsigned int vpe_pending;
 -
--	while ((intr = gic_get_local_int()) != GIC_NUM_LOCAL_INTRS) {
--		virq = irq_linear_revmap(gic_irq_domain,
--					 GIC_LOCAL_TO_HWIRQ(intr));
--		do_IRQ(virq);
--	}
+-	vpe_pending = gic_read(GIC_REG(VPE_LOCAL, GIC_VPE_PEND));
+-	return vpe_pending & GIC_VPE_PEND_TIMER_MSK;
+-}
 -
--	while ((intr = gic_get_int()) != gic_shared_intrs) {
--		virq = irq_linear_revmap(gic_irq_domain,
--					 GIC_SHARED_TO_HWIRQ(intr));
--		do_IRQ(virq);
--	}
-+	gic_handle_local_int();
-+	gic_handle_shared_int();
- }
- 
- static void gic_irq_dispatch(unsigned int irq, struct irq_desc *desc)
+ static void gic_bind_eic_interrupt(int irq, int set)
+ {
+ 	/* Convert irq vector # to hw int # */
+diff --git a/include/linux/irqchip/mips-gic.h b/include/linux/irqchip/mips-gic.h
+index 420f77b34d02..e6a6aac451db 100644
+--- a/include/linux/irqchip/mips-gic.h
++++ b/include/linux/irqchip/mips-gic.h
+@@ -243,7 +243,6 @@ extern void gic_write_cpu_compare(cycle_t cnt, int cpu);
+ extern void gic_send_ipi(unsigned int intr);
+ extern unsigned int plat_ipi_call_int_xlate(unsigned int);
+ extern unsigned int plat_ipi_resched_int_xlate(unsigned int);
+-extern unsigned int gic_get_timer_pending(void);
+ extern int gic_get_c0_compare_int(void);
+ extern int gic_get_c0_perfcount_int(void);
+ #endif /* __LINUX_IRQCHIP_MIPS_GIC_H */
 -- 
-2.1.0
+2.0.5

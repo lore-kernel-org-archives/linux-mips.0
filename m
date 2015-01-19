@@ -1,14 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13805 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:43318 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010943AbbASMB7Bec41 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Jan 2015 13:01:59 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH v2] MIPS: cevt-r4k: Drop GIC special case
-Date: Mon, 19 Jan 2015 12:00:55 +0000
-Message-ID: <1421668855-15010-1-git-send-email-james.hogan@imgtec.com>
+        with ESMTP id S27011795AbbASMeBHq8pn (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Jan 2015 13:34:01 +0100
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 6DF97F3B9572
+        for <linux-mips@linux-mips.org>; Mon, 19 Jan 2015 12:33:52 +0000 (GMT)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH RFC v3 40/70] MIPS: mm: page: Add MIPS R6 support
+Date: Mon, 19 Jan 2015 12:33:50 +0000
+Message-ID: <1421670830-24463-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <54BA4E7F.5020208@cogentembedded.com>
+References: <54BA4E7F.5020208@cogentembedded.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,109 +23,89 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Andrew Bresticker <abrestic@chromium.org>
-Cc: James Hogan <james.hogan@imgtec.com>, "Steven J. Hill" <steven.hill@imgtec.com>, Qais Yousef <qais.yousef@imgtec.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <20150119120055.TMVkdi_H4BgllW1tTqBJyZ2v2ODsdfGl04ytUecH3ZI@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20150119123350.uphOyd5_BYSLrh8a8qB7DK4LOimTNlcj685L0d4Ds4M@z>
 
-The cevt-r4k driver used to call into the GIC driver to find whether the
-timer was pending, but only with External Interrupt Controller (EIC)
-mode, where the Cause.IP bits can't be used as they encode the interrupt
-priority level (Cause.RIPL) instead.
+The MIPS R6 pref instruction only has 9 bits for the immediate
+field so skip the micro-assembler PREF instruction if the offset
+does not fit in 9 bits. Moreover, bit 30 (Pref_PrepareForStore) is
+no longer valid in MIPS R6, so we change the default for all MIPS R6
+processors to bit 5 (Pref_StoreStreamed).
 
-However commit e9de688dac65 ("irqchip: mips-gic: Support local
-interrupts") changed the condition from cpu_has_veic to gic_present.
-This fails on cores such as P5600 which have a GIC but the local
-interrupts aren't routable by the GIC, causing c0_compare_int_usable()
-to consider the interrupt unusable so r4k_clockevent_init() fails.
-
-The previous behaviour, added in commit 98b67c37db33 ("MIPS: Add EIC
-support for GIC."), wasn't really correct either as far as I can tell,
-since P5600 apparently supports EIC mode too, and in any case the use of
-Cause.TI with r2 should have been sufficient anyway since commit
-010c108d7af7 ("MIPS: PowerTV: Fix support for timer interrupts with > 64
-external IRQs").
-
-Therefore drop the call into the gic driver altogether, and add a
-comment in c0_compare_int_pending() to clarify that Cause.TI does get
-checked since MIPS r2.
-
-Fixes: e9de688dac65 ("irqchip: mips-gic: Support local interrupts")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Reviewed-by: Andrew Bresticker <abrestic@chromium.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Steven J. Hill <steven.hill@imgtec.com>
-Cc: Qais Yousef <qais.yousef@imgtec.com>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@linux-mips.org
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
-Changes in v2:
-- Drop the redundant cpu_has_mips_r2 conditional altogether and add
-  comment about Cause.TI being checked. The general case already handles
-  correctly since per_cpu_trap_init() initialises cp0_compare_irq_shift
-  to CAUSEB_TI - CAUSEB_IP when cpu_has_mips_r2.
-- Took the liberty of adding Andrew's Reviewed-by from v1 patch, since
-  behaviour should be unchanged since v1.
----
- arch/mips/kernel/cevt-r4k.c      | 6 +-----
- drivers/irqchip/irq-mips-gic.c   | 8 --------
- include/linux/irqchip/mips-gic.h | 1 -
- 3 files changed, 1 insertion(+), 14 deletions(-)
+ arch/mips/mm/page.c | 30 ++++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/kernel/cevt-r4k.c b/arch/mips/kernel/cevt-r4k.c
-index 6acaad0480af..28bfdf2c59a5 100644
---- a/arch/mips/kernel/cevt-r4k.c
-+++ b/arch/mips/kernel/cevt-r4k.c
-@@ -11,7 +11,6 @@
- #include <linux/percpu.h>
- #include <linux/smp.h>
- #include <linux/irq.h>
--#include <linux/irqchip/mips-gic.h>
+diff --git a/arch/mips/mm/page.c b/arch/mips/mm/page.c
+index b611102e23b5..152b5d300f0c 100644
+--- a/arch/mips/mm/page.c
++++ b/arch/mips/mm/page.c
+@@ -72,6 +72,20 @@ static struct uasm_reloc relocs[5];
+ #define cpu_is_r4600_v1_x()	((read_c0_prid() & 0xfffffff0) == 0x00002010)
+ #define cpu_is_r4600_v2_x()	((read_c0_prid() & 0xfffffff0) == 0x00002020)
  
- #include <asm/time.h>
- #include <asm/cevt-r4k.h>
-@@ -85,10 +84,7 @@ void mips_event_handler(struct clock_event_device *dev)
-  */
- static int c0_compare_int_pending(void)
- {
--#ifdef CONFIG_MIPS_GIC
--	if (gic_present)
--		return gic_get_timer_pending();
--#endif
-+	/* When cpu_has_mips_r2, this checks Cause.TI instead of Cause.IP7 */
- 	return (read_c0_cause() >> cp0_compare_irq_shift) & (1ul << CAUSEB_IP);
++/*
++ * R6 has a limited offset of the pref instruction.
++ * Skip it if the offset is more than 9 bits.
++ */
++#define _uasm_i_pref(a, b, c, d)		\
++do {						\
++	if (cpu_has_mips_r6) {			\
++		if (d <= 0x1ff && d >= -0x200)	\
++			uasm_i_pref(a, b, c, d);\
++	} else {				\
++		uasm_i_pref(a, b, c, d);	\
++	}					\
++} while(0)
++
+ static int pref_bias_clear_store;
+ static int pref_bias_copy_load;
+ static int pref_bias_copy_store;
+@@ -178,7 +192,15 @@ static void set_prefetch_parameters(void)
+ 			pref_bias_copy_load = 256;
+ 			pref_bias_copy_store = 128;
+ 			pref_src_mode = Pref_LoadStreamed;
+-			pref_dst_mode = Pref_PrepareForStore;
++			if (cpu_has_mips_r6)
++				/*
++				 * Bit 30 (Pref_PrepareForStore) has been
++				 * removed from MIPS R6. Use bit 5
++				 * (Pref_StoreStreamed).
++				 */
++				pref_dst_mode = Pref_StoreStreamed;
++			else
++				pref_dst_mode = Pref_PrepareForStore;
+ 			break;
+ 		}
+ 	} else {
+@@ -214,7 +236,7 @@ static inline void build_clear_pref(u32 **buf, int off)
+ 		return;
+ 
+ 	if (pref_bias_clear_store) {
+-		uasm_i_pref(buf, pref_dst_mode, pref_bias_clear_store + off,
++		_uasm_i_pref(buf, pref_dst_mode, pref_bias_clear_store + off,
+ 			    A0);
+ 	} else if (cache_line_size == (half_clear_loop_size << 1)) {
+ 		if (cpu_has_cache_cdex_s) {
+@@ -357,7 +379,7 @@ static inline void build_copy_load_pref(u32 **buf, int off)
+ 		return;
+ 
+ 	if (pref_bias_copy_load)
+-		uasm_i_pref(buf, pref_src_mode, pref_bias_copy_load + off, A1);
++		_uasm_i_pref(buf, pref_src_mode, pref_bias_copy_load + off, A1);
  }
  
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 2b0468e3df6a..e58600b1de28 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -191,14 +191,6 @@ static bool gic_local_irq_is_routable(int intr)
- 	}
- }
+ static inline void build_copy_store_pref(u32 **buf, int off)
+@@ -366,7 +388,7 @@ static inline void build_copy_store_pref(u32 **buf, int off)
+ 		return;
  
--unsigned int gic_get_timer_pending(void)
--{
--	unsigned int vpe_pending;
--
--	vpe_pending = gic_read(GIC_REG(VPE_LOCAL, GIC_VPE_PEND));
--	return vpe_pending & GIC_VPE_PEND_TIMER_MSK;
--}
--
- static void gic_bind_eic_interrupt(int irq, int set)
- {
- 	/* Convert irq vector # to hw int # */
-diff --git a/include/linux/irqchip/mips-gic.h b/include/linux/irqchip/mips-gic.h
-index 420f77b34d02..e6a6aac451db 100644
---- a/include/linux/irqchip/mips-gic.h
-+++ b/include/linux/irqchip/mips-gic.h
-@@ -243,7 +243,6 @@ extern void gic_write_cpu_compare(cycle_t cnt, int cpu);
- extern void gic_send_ipi(unsigned int intr);
- extern unsigned int plat_ipi_call_int_xlate(unsigned int);
- extern unsigned int plat_ipi_resched_int_xlate(unsigned int);
--extern unsigned int gic_get_timer_pending(void);
- extern int gic_get_c0_compare_int(void);
- extern int gic_get_c0_perfcount_int(void);
- #endif /* __LINUX_IRQCHIP_MIPS_GIC_H */
+ 	if (pref_bias_copy_store) {
+-		uasm_i_pref(buf, pref_dst_mode, pref_bias_copy_store + off,
++		_uasm_i_pref(buf, pref_dst_mode, pref_bias_copy_store + off,
+ 			    A0);
+ 	} else if (cache_line_size == (half_copy_loop_size << 1)) {
+ 		if (cpu_has_cache_cdex_s) {
 -- 
-2.0.5
+2.2.1

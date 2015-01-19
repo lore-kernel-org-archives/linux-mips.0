@@ -1,18 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:11569 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011481AbbASQj4cm6Gg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Jan 2015 17:39:56 +0100
-Message-ID: <54BD3355.9010104@imgtec.com>
-Date: Mon, 19 Jan 2015 16:39:49 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH RFC v2 12/70] MIPS: asm: asmmacro: Replace add instructions
- with "addui"
-References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com> <1421405389-15512-13-git-send-email-markos.chandras@imgtec.com> <alpine.LFD.2.11.1501190651440.28301@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.11.1501190651440.28301@eddie.linux-mips.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Received: from mail-we0-f171.google.com ([74.125.82.171]:50936 "EHLO
+        mail-we0-f171.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27011712AbbASTAJM0-n1 convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 19 Jan 2015 20:00:09 +0100
+Received: by mail-we0-f171.google.com with SMTP id u56so33094065wes.2
+        for <linux-mips@linux-mips.org>; Mon, 19 Jan 2015 11:00:04 -0800 (PST)
+Subject: Re: [PATCH] i2c: drop ancient protection against sysfs refcounting issues
+Mime-Version: 1.0 (Mac OS X Mail 8.1 \(1993\))
+Content-Type: text/plain; charset=utf-8
+From: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+In-Reply-To: <1421693756-12917-1-git-send-email-wsa@the-dreams.de>
+Date: Mon, 19 Jan 2015 20:59:59 +0200
+Content-Transfer-Encoding: 8BIT
+Message-ID: <FDF8BE77-015A-41AD-A5FA-8FFB40AFDAE2@konsulko.com>
+References: <1421693756-12917-1-git-send-email-wsa@the-dreams.de>
+Return-Path: <pantelis.antoniou@konsulko.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,57 +24,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20150119163949.G_HaXuZRgnXZPrB1RYhls-syqsii1_8TxDzAR52LJF4@z>
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-mips@linux-mips.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean Delvare <jdelvare@suse.de>, Julia Lawall <julia.lawall@lip6.fr>
+Message-ID: <20150119185959.V4WDDNS63gTNxMFVyFX0FoHg4A_cH7Fut3nQeGQxMvM@z>
 
-On 01/19/2015 03:59 PM, Maciej W. Rozycki wrote:
-> On Fri, 16 Jan 2015, Markos Chandras wrote:
-> 
->> The use of "add" instruction for immediate operations can result to
->> build failures for MIPS R6. This is because, the 'add' is a macro in
->> binutils and depending on the size of the immediate it can expand to
->> an 'addi' instruction which has been removed from MIPS R6.
->> Thus, we will be using the 'addu' macro instead, which also
->> accepts immediate operands.
->>
->> Link: http://www.linux-mips.org/archives/linux-mips/2015-01/msg00121.html
->> Cc: Maciej W. Rozycki <macro@linux-mips.org>
->> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
->> ---
-> 
->  This needs a title fix: s/addui/addu/; I'd suggest making the use of 
-> quotation marks consistent too on this occasion, e.g.:
-> 
-> MIPS: asm: asmmacro: Replace "add" instructions with "addu"
-> 
-> You might take the opportunity to decide on single or double quotes 
-> throughout the description too; right now it looks a bit messy to me.
-> 
->  Other than that -- this is self-contained and an actual bug fix, 
-> irrelevant to R6.  I think it can and really should go in right away 
-> regardless of the outcome of the discussion on the other changes in this 
-> series.  Also to any stable branches where applicable; the change is so 
-> obvious that it cannot do any harm.
-> 
->  So please resend this change with the title fix (and any description 
-> updates), and I'll give you my review acceptance tag to speed up 
-> processing.
-> 
->  NB it looks to me like a followup change is needed to ensure the correct 
-> operation of these macros in 64-bit kernels, where a doubleword addition 
-> must be used instead for address calculation.  One way would be by using 
-> the PTR_ADDU preprocessor macro, but there are other possibilities as 
-> well.  This is not a requirement for this change to be accepted as far as 
-> I am concerned though.
-> 
->  Thanks,
-> 
->   Maciej
-> 
-sorry i might be missing something but why do you think this is an
-important bug fix that should go into 3.19? the way i read the code it
-seems that it can't go wrong at the moment.
+Hi Wolfram,
 
--- 
-markos
+> On Jan 19, 2015, at 20:55 , Wolfram Sang <wsa@the-dreams.de> wrote:
+> 
+> Back in the days, sysfs seemed to have refcounting issues and subsystems
+> needed a completion to be safe. This is not the case anymore, so I2C can
+> get rid of this code. There is noone else besides I2C doing something
+> like this currently (checked with the attached coccinelle script which
+> checks if a release function exists and if it contains a completion).
+> 
+> I have been digging through the history of linux.git and
+> linux-history.git and found that e.g. w1 used to have such a mechanism
+> and also simply removed it later.
+> 
+> Some more info from Greg Kroah-Hartman:
+> "Having that call "wait" for the other release call to happen is really
+> old, as Jean points out, from 2003.  We have "fixed" sysfs since then to
+> detach the files from the devices easier, we used to have some nasy
+> reference count issues in that area."
+> 
+> And some testing from Jean Delvare which matches my results:
+> "However I just tested unloading an i2c bus driver while its adapter's
+> new_device attribute was opened and rmmod returned immediately. So it
+> doesn't look like accessing sysfs attributes actually takes a reference
+> to the underlying i2c_adapter."
+> 
+> Let's get rid of this code before really nobody knows/understands
+> anymore what this was for and if it has a subtle use.
+> 
+
+Hehe, rather obliquely tested by me too :)
+
+Please save the reference counter hackers sanity and merge this :)
+
+> Reported-by: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+> Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jean Delvare <jdelvare@suse.de>
+> Cc: Julia Lawall <julia.lawall@lip6.fr>
+> —
+> 
+Regards
+
+— Pantelis

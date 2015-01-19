@@ -1,14 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44549 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:11569 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011834AbbASPiwLjH3W (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Jan 2015 16:38:52 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] irqchip: mips-gic: Avoid rerouting timer IRQs for smp-cmp
-Date: Mon, 19 Jan 2015 15:38:24 +0000
-Message-ID: <1421681904-20881-1-git-send-email-james.hogan@imgtec.com>
+        with ESMTP id S27011481AbbASQj4cm6Gg (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Jan 2015 17:39:56 +0100
+Message-ID: <54BD3355.9010104@imgtec.com>
+Date: Mon, 19 Jan 2015 16:39:49 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Subject: Re: [PATCH RFC v2 12/70] MIPS: asm: asmmacro: Replace add instructions
+ with "addui"
+References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com> <1421405389-15512-13-git-send-email-markos.chandras@imgtec.com> <alpine.LFD.2.11.1501190651440.28301@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.11.1501190651440.28301@eddie.linux-mips.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,96 +22,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Andrew Bresticker <abrestic@chromium.org>, Qais Yousef <qais.yousef@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <20150119153824.qycCQJE5IKnRFhzs911iWIPwcWH8k6ErM35UMZji_Ls@z>
-
-Commit e9de688dac65 ("irqchip: mips-gic: Support local interrupts")
-changed the GIC irqchip driver so that all local interrupts were routed
-to the same CPU pin used for external interrupts. Unfortunately this
-causes a regression when smp-cmp is used. The CPUs are started by the
-bootloader and put in a timer based waiting poll loop, but when their
-timer interrupts are rerouted to a different IRQ pin which is not
-unmasked they never wake up.
-
-Since smp-cmp support is deprecated and everybody who was using it
-should be switching to smp-cps which brings up the secondary CPUs
-without bootloader assistance, I've gone for the simple fix which can be
-easily removed once smp-cmp is removed, rather than a fully generic fix.
-
-In __gic_init() the local GIC_VPE_TIMER_MAP register is read to find the
-boot-time routing of the local timer interrupt, and a chained handler is
-added to that CPU pin as well as the normal one.
-
-Fixes: e9de688dac65 ("irqchip: mips-gic: Support local interrupts")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Andrew Bresticker <abrestic@chromium.org>
-Cc: Qais Yousef <qais.yousef@imgtec.com>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
 Cc: linux-mips@linux-mips.org
----
- drivers/irqchip/irq-mips-gic.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Message-ID: <20150119163949.G_HaXuZRgnXZPrB1RYhls-syqsii1_8TxDzAR52LJF4@z>
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 2b0468e3df6a..56b96c63dc4b 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -37,6 +37,7 @@ static struct irq_domain *gic_irq_domain;
- static int gic_shared_intrs;
- static int gic_vpes;
- static unsigned int gic_cpu_pin;
-+static unsigned int timer_cpu_pin;
- static struct irq_chip gic_level_irq_controller, gic_edge_irq_controller;
- 
- static void __gic_irq_dispatch(void);
-@@ -616,6 +617,8 @@ static int gic_local_irq_domain_map(struct irq_domain *d, unsigned int virq,
- 			gic_write(GIC_REG(VPE_OTHER, GIC_VPE_COMPARE_MAP), val);
- 			break;
- 		case GIC_LOCAL_INT_TIMER:
-+			/* CONFIG_MIPS_CMP workaround (see __gic_init) */
-+			val = GIC_MAP_TO_PIN_MSK | timer_cpu_pin;
- 			gic_write(GIC_REG(VPE_OTHER, GIC_VPE_TIMER_MAP), val);
- 			break;
- 		case GIC_LOCAL_INT_PERFCTR:
-@@ -713,12 +716,36 @@ static void __init __gic_init(unsigned long gic_base_addr,
- 	if (cpu_has_veic) {
- 		/* Always use vector 1 in EIC mode */
- 		gic_cpu_pin = 0;
-+		timer_cpu_pin = gic_cpu_pin;
- 		set_vi_handler(gic_cpu_pin + GIC_PIN_TO_VEC_OFFSET,
- 			       __gic_irq_dispatch);
- 	} else {
- 		gic_cpu_pin = cpu_vec - GIC_CPU_PIN_OFFSET;
- 		irq_set_chained_handler(MIPS_CPU_IRQ_BASE + cpu_vec,
- 					gic_irq_dispatch);
-+		/*
-+		 * With the CMP implementation of SMP (deprecated), other CPUs
-+		 * are started by the bootloader and put into a timer based
-+		 * waiting poll loop. We must not re-route those CPU's local
-+		 * timer interrupts as the wait instruction will never finish,
-+		 * so just handle whatever CPU interrupt it is routed to by
-+		 * default.
-+		 *
-+		 * This workaround should be removed when CMP support is
-+		 * dropped.
-+		 */
-+		if (IS_ENABLED(CONFIG_MIPS_CMP) &&
-+		    gic_local_irq_is_routable(GIC_LOCAL_INT_TIMER)) {
-+			timer_cpu_pin = gic_read(GIC_REG(VPE_LOCAL,
-+							 GIC_VPE_TIMER_MAP)) &
-+					GIC_MAP_MSK;
-+			irq_set_chained_handler(MIPS_CPU_IRQ_BASE +
-+						GIC_CPU_PIN_OFFSET +
-+						timer_cpu_pin,
-+						gic_irq_dispatch);
-+		} else {
-+			timer_cpu_pin = gic_cpu_pin;
-+		}
- 	}
- 
- 	gic_irq_domain = irq_domain_add_simple(node, GIC_NUM_LOCAL_INTRS +
+On 01/19/2015 03:59 PM, Maciej W. Rozycki wrote:
+> On Fri, 16 Jan 2015, Markos Chandras wrote:
+> 
+>> The use of "add" instruction for immediate operations can result to
+>> build failures for MIPS R6. This is because, the 'add' is a macro in
+>> binutils and depending on the size of the immediate it can expand to
+>> an 'addi' instruction which has been removed from MIPS R6.
+>> Thus, we will be using the 'addu' macro instead, which also
+>> accepts immediate operands.
+>>
+>> Link: http://www.linux-mips.org/archives/linux-mips/2015-01/msg00121.html
+>> Cc: Maciej W. Rozycki <macro@linux-mips.org>
+>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+>> ---
+> 
+>  This needs a title fix: s/addui/addu/; I'd suggest making the use of 
+> quotation marks consistent too on this occasion, e.g.:
+> 
+> MIPS: asm: asmmacro: Replace "add" instructions with "addu"
+> 
+> You might take the opportunity to decide on single or double quotes 
+> throughout the description too; right now it looks a bit messy to me.
+> 
+>  Other than that -- this is self-contained and an actual bug fix, 
+> irrelevant to R6.  I think it can and really should go in right away 
+> regardless of the outcome of the discussion on the other changes in this 
+> series.  Also to any stable branches where applicable; the change is so 
+> obvious that it cannot do any harm.
+> 
+>  So please resend this change with the title fix (and any description 
+> updates), and I'll give you my review acceptance tag to speed up 
+> processing.
+> 
+>  NB it looks to me like a followup change is needed to ensure the correct 
+> operation of these macros in 64-bit kernels, where a doubleword addition 
+> must be used instead for address calculation.  One way would be by using 
+> the PTR_ADDU preprocessor macro, but there are other possibilities as 
+> well.  This is not a requirement for this change to be accepted as far as 
+> I am concerned though.
+> 
+>  Thanks,
+> 
+>   Maciej
+> 
+sorry i might be missing something but why do you think this is an
+important bug fix that should go into 3.19? the way i read the code it
+seems that it can't go wrong at the moment.
+
 -- 
-2.0.5
+markos

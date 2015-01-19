@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:43318 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62571 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011795AbbASMeBHq8pn (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Jan 2015 13:34:01 +0100
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 6DF97F3B9572
-        for <linux-mips@linux-mips.org>; Mon, 19 Jan 2015 12:33:52 +0000 (GMT)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH RFC v3 40/70] MIPS: mm: page: Add MIPS R6 support
-Date: Mon, 19 Jan 2015 12:33:50 +0000
-Message-ID: <1421670830-24463-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <54BA4E7F.5020208@cogentembedded.com>
-References: <54BA4E7F.5020208@cogentembedded.com>
+        with ESMTP id S27011794AbbASMfuCenyE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Jan 2015 13:35:50 +0100
+Message-ID: <54BCFA1F.8060101@imgtec.com>
+Date: Mon, 19 Jan 2015 12:35:43 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH RFC v2 05/70] MIPS: mm: uasm: Add signed 9-bit immediate
+ related macros
+References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com> <1421405389-15512-6-git-send-email-markos.chandras@imgtec.com> <54B8F609.90509@cogentembedded.com>
+In-Reply-To: <54B8F609.90509@cogentembedded.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,89 +22,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20150119123350.uphOyd5_BYSLrh8a8qB7DK4LOimTNlcj685L0d4Ds4M@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, linux-mips@linux-mips.org
+Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Message-ID: <20150119123543.-QtnSifH5NINO5j-aEA8fvGL5f-bbqOT6xqBz-d58EY@z>
 
-The MIPS R6 pref instruction only has 9 bits for the immediate
-field so skip the micro-assembler PREF instruction if the offset
-does not fit in 9 bits. Moreover, bit 30 (Pref_PrepareForStore) is
-no longer valid in MIPS R6, so we change the default for all MIPS R6
-processors to bit 5 (Pref_StoreStreamed).
+On 01/16/2015 11:29 AM, Sergei Shtylyov wrote:
+> Hello.
+> 
+> On 1/16/2015 1:48 PM, Markos Chandras wrote:
+> 
+>> From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+> 
+>> MIPS R6 redefines several instructions and reduces the immediate
+>> field to 9-bits so add related macros for the microassembler.
+> 
+>> Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+>> ---
+>>   arch/mips/mm/uasm.c | 13 ++++++++++++-
+>>   1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+>> diff --git a/arch/mips/mm/uasm.c b/arch/mips/mm/uasm.c
+>> index 4adf30284813..6596b6898637 100644
+>> --- a/arch/mips/mm/uasm.c
+>> +++ b/arch/mips/mm/uasm.c
+> [...]
+>> @@ -41,6 +42,8 @@ enum fields {
+>>   #define FUNC_SH        0
+>>   #define SET_MASK    0x7
+>>   #define SET_SH        0
+>> +#define SIMM9_SH    7
+>> +#define SIMM9_MASK    0x1ff
+>>
+>>   enum opcode {
+>>       insn_invalid,
+>> @@ -116,6 +119,14 @@ static inline u32 build_scimm(u32 arg)
+>>       return (arg & SCIMM_MASK) << SCIMM_SH;
+>>   }
+>>
+>> +static inline u32 build_scimm9(s32 arg)
+>> +{
+>> +    WARN((arg > 0x1ff || arg < -0x200),
+> 
+>    Not 0xFF and -0x100? The values above don't fit into 9 bits...
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/mm/page.c | 30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
+Hi,
 
-diff --git a/arch/mips/mm/page.c b/arch/mips/mm/page.c
-index b611102e23b5..152b5d300f0c 100644
---- a/arch/mips/mm/page.c
-+++ b/arch/mips/mm/page.c
-@@ -72,6 +72,20 @@ static struct uasm_reloc relocs[5];
- #define cpu_is_r4600_v1_x()	((read_c0_prid() & 0xfffffff0) == 0x00002010)
- #define cpu_is_r4600_v2_x()	((read_c0_prid() & 0xfffffff0) == 0x00002020)
- 
-+/*
-+ * R6 has a limited offset of the pref instruction.
-+ * Skip it if the offset is more than 9 bits.
-+ */
-+#define _uasm_i_pref(a, b, c, d)		\
-+do {						\
-+	if (cpu_has_mips_r6) {			\
-+		if (d <= 0x1ff && d >= -0x200)	\
-+			uasm_i_pref(a, b, c, d);\
-+	} else {				\
-+		uasm_i_pref(a, b, c, d);	\
-+	}					\
-+} while(0)
-+
- static int pref_bias_clear_store;
- static int pref_bias_copy_load;
- static int pref_bias_copy_store;
-@@ -178,7 +192,15 @@ static void set_prefetch_parameters(void)
- 			pref_bias_copy_load = 256;
- 			pref_bias_copy_store = 128;
- 			pref_src_mode = Pref_LoadStreamed;
--			pref_dst_mode = Pref_PrepareForStore;
-+			if (cpu_has_mips_r6)
-+				/*
-+				 * Bit 30 (Pref_PrepareForStore) has been
-+				 * removed from MIPS R6. Use bit 5
-+				 * (Pref_StoreStreamed).
-+				 */
-+				pref_dst_mode = Pref_StoreStreamed;
-+			else
-+				pref_dst_mode = Pref_PrepareForStore;
- 			break;
- 		}
- 	} else {
-@@ -214,7 +236,7 @@ static inline void build_clear_pref(u32 **buf, int off)
- 		return;
- 
- 	if (pref_bias_clear_store) {
--		uasm_i_pref(buf, pref_dst_mode, pref_bias_clear_store + off,
-+		_uasm_i_pref(buf, pref_dst_mode, pref_bias_clear_store + off,
- 			    A0);
- 	} else if (cache_line_size == (half_clear_loop_size << 1)) {
- 		if (cpu_has_cache_cdex_s) {
-@@ -357,7 +379,7 @@ static inline void build_copy_load_pref(u32 **buf, int off)
- 		return;
- 
- 	if (pref_bias_copy_load)
--		uasm_i_pref(buf, pref_src_mode, pref_bias_copy_load + off, A1);
-+		_uasm_i_pref(buf, pref_src_mode, pref_bias_copy_load + off, A1);
- }
- 
- static inline void build_copy_store_pref(u32 **buf, int off)
-@@ -366,7 +388,7 @@ static inline void build_copy_store_pref(u32 **buf, int off)
- 		return;
- 
- 	if (pref_bias_copy_store) {
--		uasm_i_pref(buf, pref_dst_mode, pref_bias_copy_store + off,
-+		_uasm_i_pref(buf, pref_dst_mode, pref_bias_copy_store + off,
- 			    A0);
- 	} else if (cache_line_size == (half_copy_loop_size << 1)) {
- 		if (cpu_has_cache_cdex_s) {
+I think 0x1ff and -0x200 fit into 9-bits. Why do you think they don't?
+
 -- 
-2.2.1
+markos

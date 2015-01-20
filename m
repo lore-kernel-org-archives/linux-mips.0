@@ -1,23 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:48957 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011153AbbATKI4wsDoh convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Jan 2015 11:08:56 +0100
-From: Matthew Fortune <Matthew.Fortune@imgtec.com>
-Subject: RE: [PATCH RFC v2 19/70] MIPS: Use the new "ZC" constraint for MIPS
- R6
-Date: Tue, 20 Jan 2015 10:08:48 +0000
-Message-ID: <6D39441BF12EF246A7ABCE6654B0235320FAC32D@LEMAIL01.le.imgtec.org>
-References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com>
- <1421405389-15512-20-git-send-email-markos.chandras@imgtec.com>
- <alpine.LFD.2.11.1501200015580.28301@eddie.linux-mips.org>
- <6D39441BF12EF246A7ABCE6654B0235320FAC20A@LEMAIL01.le.imgtec.org>
- <54BE217D.3060508@imgtec.com>
-In-Reply-To: <54BE217D.3060508@imgtec.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Received: from foss-mx-na.foss.arm.com ([217.140.108.86]:49787 "EHLO
+        foss-mx-na.foss.arm.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27011153AbbATKyEhe1PZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Jan 2015 11:54:04 +0100
+Date: Tue, 20 Jan 2015 10:53:35 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] mmc: OCTEON: Add host driver for OCTEON MMC controller
+Message-ID: <20150120105335.GA15924@leverpostej>
+References: <1421675198-30213-1-git-send-email-aleksey.makarov@auriga.com>
+ <20150119142805.GE21553@leverpostej>
+ <54BD549F.1060309@gmail.com>
 MIME-Version: 1.0
-Return-Path: <Matthew.Fortune@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54BD549F.1060309@gmail.com>
+Content-Language: en-US
+Return-Path: <mark.rutland@arm.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,73 +24,80 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Markos Chandras <Markos.Chandras@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Message-ID: <20150120100848.9clghzzdgV7L7FjiqQPFZX201ITS0nzfURVDFyj6yMU@z>
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: Aleksey Makarov <aleksey.makarov@auriga.com>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Daney <david.daney@cavium.com>, Leonid Rosenboim <lrosenboim@caviumnetworks.com>, Aaron Williams <aaron.williams@cavium.com>, Chandrakala Chavva <cchavva@caviumnetworks.com>, Peter Swain <pswain@cavium.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <Pawel.Moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Chris Ball <chris@printf.net>, Ulf Hansson <ulf.hansson@linaro.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Message-ID: <20150120105335.zEVxz2Iy9kC8MkXG34roaEufoaph2gh0sPLjEjgL_hA@z>
 
-Markos Chandras <Markos.Chandras@imgtec.com> writes:
-> On 01/20/2015 09:11 AM, Matthew Fortune wrote:
-> > Maciej W. Rozycki <macro@linux-mips.org> writes:
-> >> On Fri, 16 Jan 2015, Markos Chandras wrote:
-> >>
-> >>> GCC versions supporting MIPS R6 use the ZC constraint to enforce a
-> >>> 9-bit offset for MIPS R6. We will use that for all MIPS R6 LL/SC
-> >>> instructions.
-> >>>
-> >>> Cc: Matthew Fortune <Matthew.Fortune@imgtec.com>
-> >>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> >>> ---
-> >>>  arch/mips/include/asm/compiler.h | 10 +++++++++-
-> >>>  1 file changed, 9 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/arch/mips/include/asm/compiler.h
-> >> b/arch/mips/include/asm/compiler.h
-> >>> index c73815e0123a..8f8ed0245a09 100644
-> >>> --- a/arch/mips/include/asm/compiler.h
-> >>> +++ b/arch/mips/include/asm/compiler.h
-> >>> @@ -16,12 +16,20 @@
-> >>>  #define GCC_REG_ACCUM "accum"
-> >>>  #endif
-> >>>
-> >>> +#ifdef CONFIG_CPU_MIPSR6
-> >>> +/*
-> >>> + * GCC uses ZC for MIPS R6 to indicate a 9-bit offset although
-> >>> + * the macro name is a bit misleading
-> >>> + */
-> >>> +#define GCC_OFF12_ASM() "ZC"
-> >>> +#else
-> >>>  #ifndef CONFIG_CPU_MICROMIPS
-> >>>  #define GCC_OFF12_ASM() "R"
-> >>>  #elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9)
-> >>>  #define GCC_OFF12_ASM() "ZC"
-> >>>  #else
-> >>>  #error "microMIPS compilation unsupported with GCC older than 4.9"
-> >>> -#endif
-> >>> +#endif /* CONFIG_CPU_MICROMIPS */
-> >>> +#endif /* CONFIG_CPU_MIPSR6 */
-> >>>
-> >>>  #endif /* _ASM_COMPILER_H */
-> >>
-> >>  I'd prefer to have a GCC version trap here just like with the
-> microMIPS
-> >> constraint.  What is the first upstream version to support R6?  5.0?
+On Mon, Jan 19, 2015 at 07:01:51PM +0000, David Daney wrote:
+> On 01/19/2015 06:28 AM, Mark Rutland wrote:
+> > Hi,
 > >
-> > Correct.
-> 
-> We have tools out there based on 4.9. If we make gcc < 5.0 to fail with
-> R6, then nobody will be able to build it until 5.0 is released.
-> Perhaps it makes sense to add some checks in arch/mips/Makefile, see if
-> our gcc supports -mips32r6 or something and then decide what to do.
+> > On Mon, Jan 19, 2015 at 01:46:36PM +0000, Aleksey Makarov wrote:
+> >> The OCTEON MMC controller is currently found on cn61XX and cnf71XX
+> >> devices.  Device parameters are configured from device tree data.
+> >>
+> >> Currenly supported are eMMC, MMC and SD devices.
+> >
+> > Does that mean there are other devices that this could support in
+> > future, or that this supports everything it possibly can already?
+>
+> It is software, so obviously there are some changes that could be made
+> to support other devices.  However, the bus host hardware is designed
+> such that it can run only certain fixed sequences of the MMC and SD
+> protocols.  Therefore it is probable that support for some types of
+> devices would be impossible...
 
-Indeed, I think it is worthwhile supporting the use of tools which have R6
-backported to them owing to long lead times for new versions of GCC to be
-released.
+Above you state "Currenly supported are eMMC, MMC and SD devices", which
+implies there are some devices not supported, but your reply makes it
+sound like the block isn't designed to support anything else.
 
-I think you could actually just switch the check around and remove the
-check for micromips entirely, putting the GCC 4.9 check first:
+Perhaps I'm just overly sensitive to phrasing.
 
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9)
-#define GCC_OFF12_ASM() "ZC"
-#else
-#define GCC_OFF12_ASM() "R"
-#endif
+> >> diff --git a/Documentation/devicetree/bindings/mmc/octeon-mmc.txt b/Documentation/devicetree/bindings/mmc/octeon-mmc.txt
+> >> new file mode 100644
+> >> index 0000000..ce373cf
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/mmc/octeon-mmc.txt
+> >> @@ -0,0 +1,51 @@
+> >> +* OCTEON SD/MMC Host Controller
+> >> +
+> >> +This controller is present on some members of the Cavium OCTEON SoC
+> >> +family, provide an interface for eMMC, MMC and SD devices.  There is a
+> >> +single controller that may have several "slots" connected.  These
+> >> +slots appear as children of the main controller node.
+> >> +
+> >> +Required properties:
+> >> +- compatible : Should be "cavium,octeon-6130-mmc" or "cavium,octeon-7890-mmc"
+> >> +- reg : Two entries:
+> >> +       1) The base address of the MMC controller register bank.
+> >> +       2) The base address of the MMC DMA engine register bank.
+> >> +- interrupts : Two entries:
+> >> +       1) The MMC controller interrupt line.
+> >> +       2) The MMC DMA engine interrupt line.
+> >
+> > Is the DMA engine part of the MMC controller block, or is it a
+> > separate/generic component that happens to be used in combination with
+> > the MMC controller?
+>
+> The DMA engine is an integral part of the MMC bus controller block.
+
+Ok.
+
+> >> +- #address-cells : Must be <1>
+> >> +- #size-cells : Must be <0>
+> >> +
+> >> +Required properties of child nodes:
+> >> +- compatible : Should be "cavium,octeon-6130-mmc-slot".
+> >> +- reg : The slot number.
+> >> +- cavium,bus-max-width : The number of data lines present in the slot.
+> >> +- spi-max-frequency : The maximum operating frequency of the slot.
+> >> +
+> >> +Optional properties of child nodes:
+> >> +- cd-gpios : Specify GPIOs for card detection
+> >> +- wp-gpios : Specify GPIOs for write protection
+> >> +- power-gpios : Specify GPIOs for power control
+> >
+> > No clocks in the DT?
+>
+> No.  The reference clock rates can be probed at runtime, so they are not
+> specified in the DT.

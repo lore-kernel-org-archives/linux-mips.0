@@ -1,18 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:55682 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27011344AbbAUJo6LJxd3 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Jan 2015 10:44:58 +0100
-Message-ID: <54BF7512.2090409@imgtec.com>
-Date: Wed, 21 Jan 2015 09:44:50 +0000
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:31030 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27011377AbbAUKn2yf-9p (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Jan 2015 11:43:28 +0100
+Message-ID: <54BF82C9.4040909@imgtec.com>
+Date: Wed, 21 Jan 2015 10:43:21 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 35/36] MIPS: initial MIPS Creator CI20 board support
-References: <1421620067-23933-1-git-send-email-paul.burton@imgtec.com> <1421620987-25796-1-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1421620987-25796-1-git-send-email-paul.burton@imgtec.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature";
-        boundary="NKIC9ADX7OWD81bxG34VwmTfNSiVBS9Ej"
-Return-Path: <James.Hogan@imgtec.com>
+Subject: Re: [PATCH RFC v2 45/70] MIPS: kernel: branch: Prevent BLTZL emulation
+ for MIPS R6
+References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com> <1421405389-15512-46-git-send-email-markos.chandras@imgtec.com> <alpine.LFD.2.11.1501210044050.28301@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.11.1501210044050.28301@eddie.linux-mips.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,72 +22,81 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <20150121094450.qwf5mXQvJWsCXFbZdsftuEDehWTKGKUR38QboqOMcaw@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20150121104321.KOdh_Ut0b67asMxSEjX7VDPocvvT0rSNi51KsghCIDc@z>
 
---NKIC9ADX7OWD81bxG34VwmTfNSiVBS9Ej
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+On 01/21/2015 01:59 AM, Maciej W. Rozycki wrote:
+> On Fri, 16 Jan 2015, Markos Chandras wrote:
+> 
+>> MIPS R6 removed the BLTZL instruction so do not try to emulate it
+>> if the R2-to-R6 emulator is not present.
+>>
+>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+>> ---
+> 
+>  I appreciate your effort in splitting 45-52/70 into separate patches, but 
+> frankly I think removing individual branch instructions one by one seems 
+> an overkill to me, and actually makes a review more difficult.  They 
+> comprise a single functional entity and can really be treated as one 
+> feature and splitting it into pieces makes it easy to miss the big 
+> picture.
+> 
 
-Hi Paul,
+Ok will do
 
-On 18/01/15 22:43, Paul Burton wrote:
-> diff --git a/arch/mips/boot/dts/ci20.dts b/arch/mips/boot/dts/ci20.dts
-> new file mode 100644
-> index 0000000..69f7a9a
-> --- /dev/null
-> +++ b/arch/mips/boot/dts/ci20.dts
-> @@ -0,0 +1,21 @@
-> +/dts-v1/;
-> +
-> +#include "jz4780.dtsi"
-> +
-> +/ {
-> +	compatible =3D "imgtec,ci20", "ingenic,jz4780";
+>> diff --git a/arch/mips/kernel/branch.c b/arch/mips/kernel/branch.c
+>> index 9b622ca391d8..502bf2aeb834 100644
+>> --- a/arch/mips/kernel/branch.c
+>> +++ b/arch/mips/kernel/branch.c
+>> @@ -436,6 +436,11 @@ int __compute_return_epc_for_insn(struct pt_regs *regs,
+>>  		switch (insn.i_format.rt) {
+>>  		case bltz_op:
+>>  		case bltzl_op:
+>> +			if (NO_R6EMU && (insn.i_format.rt == bltzl_op)) {
+>> +				ret = -SIGILL;
+>> +				/* not emulating the branch likely for R6 */
+>> +				break;
+>> +			}
+>>  			if ((long)regs->regs[insn.i_format.rs] < 0) {
+>>  				epc = epc + 4 + (insn.i_format.simmediate << 2);
+>>  				if (insn.i_format.rt == bltzl_op)
+> 
+>  For example here it is obvious that there is no need to repeat the 
+> condition and:
+> 
+> 		switch (insn.i_format.rt) {
+> 		case bltzl_op:
+> 			if (NO_R6EMU) {
+> 				ret = -SIGILL;
+> 				/* not emulating the branch likely for R6 */
+> 				break;
+> 			}
+> 			/* Fall through */
+> 		case bltz_op:
+> 
+> will do.
+> 
+yes but i was trying to avoid touching more things than necessary. I
+don't think the current code is unreadable, but I will change it as
+suggested.
 
-The vendor prefix for Imagination Technologies is just img.
+>  However the way how the return value is set and the error return path 
+> handled here is inconsistent with how BPOSGE32 does these things here.  
+> From how `__compute_return_epc' and `evaluate_branch_instruction' handle 
+> error returns it looks to me it's BPOSGE32 that is right.  So you do need 
+> to return -EFAULT instead and send a signal, probably SIGILL.
+> 
+>  So it looks to me you want to use `goto' instead, to a similar exit path 
+> (a poor man's plain C exception handler) like BPOSGE32 uses, with a 
+> similar message produced to the kernel log and SIGILL thrown, maybe 
+> calling them `sigill_dsp' and `sigill_r6' respectively.  Why BPOSGE32 uses 
+> SIGBUS instead escapes me, perhaps someone just copied and pasted the 
+> `unaligned' case from `__compute_return_epc' without thinking much.  I 
+> think it should be fixed too, or otherwise an explanatory comment added.
+>
 
-> diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_=
-defconfig
-> new file mode 100644
-> index 0000000..927bd43
-> --- /dev/null
-> +++ b/arch/mips/configs/ci20_defconfig
-> @@ -0,0 +1,128 @@
+Ok I will do that.
 
-
-> +CONFIG_INITRAMFS_SOURCE=3D"arch/mips/boot/ramdisk.cpio.xz"
-
-don't think you should have this one.
-
-also, I think SERIAL_8250_JZ47XX=3Dy needs adding.
-
-Cheers
-James
-
-
---NKIC9ADX7OWD81bxG34VwmTfNSiVBS9Ej
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJUv3USAAoJEGwLaZPeOHZ6jIgP/iYqjSdBVyI1oCCOvMVAX5XC
-nEFDVZ6LlfE/un1ElnzlkKQ/6PPgDCMWPoYCgfSqN9hCec2WNWYF2N39Kl4o/z5c
-P2swD8DWocufgseKurliLLYz8G7k3VwGkI3NF2sLkw2+LB1HI/4BA5ksq/KpDwxI
-RyP/SOJZZAhIStqaEMLLCNeA5kj8z/ay2yPUnoYnzYSxUS4j5Vz3ZedcGoV9hTbs
-ydjSQk4cFDXwk+AM1StdAQvlWb70FTvJgTel+DIvv9BJA2D2MpVyJEpbOViRV8WK
-FJWkbKGgfHIe2XQLhlMjqCWifGJD2IEdHWysB/JkzsBUKPmpvsFHSbOghiOkHxG+
-/UYY2xYybgYjrn9aKTS1lXEpOwRWGe1djvZkz8p0I4glO0J0o6cMD6FBEeKTadhF
-MN30ilb1GqdT8djUbmHuqFxo1kQ5RDdD3d3OWqP2+0ScCebwXBG2f+d5CuWULSAK
-BM80gVwzZM/CEWhivOGi7VvEKSj8KvH8obQrQ7VSSbaEruvQxpxz6Fbl5Q4Jn1ZM
-EdcTExxvYzU8I06DbSXgV7YOe5+Iee2IvXN+5gNfzgCn2sR5YX31nI9pl66d62yo
-ZkSBwpDnxdHz1YHVKjjPZI51HXD4B7Akd8gw+TkR1tmPrX2I1IofR0tg5uT5oUaW
-Af5varh5VtMMysSFq3vt
-=1tdS
------END PGP SIGNATURE-----
-
---NKIC9ADX7OWD81bxG34VwmTfNSiVBS9Ej--
+-- 
+markos

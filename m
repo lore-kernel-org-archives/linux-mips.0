@@ -1,19 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:10738 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27011396AbbAULkleo4e7 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Jan 2015 12:40:41 +0100
-Message-ID: <54BF9032.7000605@imgtec.com>
-Date: Wed, 21 Jan 2015 11:40:34 +0000
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:28128 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27011451AbbAUMQ2NRyZN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Jan 2015 13:16:28 +0100
+Message-ID: <54BF9895.5000200@imgtec.com>
+Date: Wed, 21 Jan 2015 12:16:21 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC v2 28/70] MIPS: kernel: cpu-probe.c: Add support for
- MIPS R6
-References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com> <1421405389-15512-29-git-send-email-markos.chandras@imgtec.com> <alpine.LFD.2.11.1501202227140.28301@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.11.1501202227140.28301@eddie.linux-mips.org>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature";
-        boundary="Kw3vxawpNdan7QuPLNjvJfWFQlrDwQ90J"
-Return-Path: <James.Hogan@imgtec.com>
+Subject: Re: [PATCH RFC v2 18/70] MIPS: asm: spram: Add MIPS R6 related definitions
+References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com> <1421405389-15512-19-git-send-email-markos.chandras@imgtec.com> <alpine.LFD.2.11.1501200009520.28301@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.11.1501200009520.28301@eddie.linux-mips.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,66 +21,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>, Markos Chandras <markos.chandras@imgtec.com>
-Cc: linux-mips@linux-mips.org, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, "David Daney (Cavium)" <david.daney@cavium.com>
-Message-ID: <20150121114034._7ukVLiu2qO7yAfvd5yZgdtwxdc2cyPUy9ZTD9ZE9w8@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20150121121621.s5tGMrSp55_sKGX3Nzn07yFBD7oGLqxoUFJ_1voofXg@z>
 
---Kw3vxawpNdan7QuPLNjvJfWFQlrDwQ90J
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+On 01/20/2015 12:13 AM, Maciej W. Rozycki wrote:
+> On Fri, 16 Jan 2015, Markos Chandras wrote:
+> 
+>> MIPS R6, just like MIPS R2, can use the spram_config() function
+>> in spram.c
+>>
+>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+>> ---
+>>  arch/mips/include/asm/spram.h | 4 ++--
+>>  arch/mips/kernel/Makefile     | 1 +
+>>  2 files changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/mips/include/asm/spram.h b/arch/mips/include/asm/spram.h
+>> index 0b89006e4907..e02a1961c542 100644
+>> --- a/arch/mips/include/asm/spram.h
+>> +++ b/arch/mips/include/asm/spram.h
+>> @@ -1,10 +1,10 @@
+>>  #ifndef _MIPS_SPRAM_H
+>>  #define _MIPS_SPRAM_H
+>>  
+>> -#ifdef CONFIG_CPU_MIPSR2
+>> +#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_MIPSR6)
+>>  extern __init void spram_config(void);
+>>  #else
+>>  static inline void spram_config(void) { };
+>> -#endif /* CONFIG_CPU_MIPSR2 */
+>> +#endif /* CONFIG_CPU_MIPSR2 || CONFIG_CPU_MIPSR6 */
+>>  
+>>  #endif /* _MIPS_SPRAM_H */
+>> diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
+>> index 92987d1bbe5f..0862ae781339 100644
+>> --- a/arch/mips/kernel/Makefile
+>> +++ b/arch/mips/kernel/Makefile
+>> @@ -53,6 +53,7 @@ obj-$(CONFIG_MIPS_CMP)		+= smp-cmp.o
+>>  obj-$(CONFIG_MIPS_CPS)		+= smp-cps.o cps-vec.o
+>>  obj-$(CONFIG_MIPS_GIC_IPI)	+= smp-gic.o
+>>  obj-$(CONFIG_CPU_MIPSR2)	+= spram.o
+>> +obj-$(CONFIG_CPU_MIPSR6)	+= spram.o
+>>  
+>>  obj-$(CONFIG_MIPS_VPE_LOADER)	+= vpe.o
+>>  obj-$(CONFIG_MIPS_VPE_LOADER_CMP) += vpe-cmp.o
+> 
+>  It looks to me like this should be a separate CONFIG_MIPS_SPRAM option 
+> selected by CPU_MIPSR2 and CPU_MIPSR6.  This will avoid the need to list 
+> `spram.o' twice which may be asking for troubles.  Also this will keep 
+> simple the `#ifdef' condition above.
+> 
+>   Maciej
+> 
+ok i will do that instead. thanks
 
-Hi Maciej,
-
-On 20/01/15 23:32, Maciej W. Rozycki wrote:
->  As a side note I can see that as from a96102be, ISA flags are inclusiv=
-e,=20
-> so the macros in <asm/cpu-features.h> can and I think should be rearran=
-ged=20
-> and simplified.  E.g. (indentation adjusted, we can afford it now):
->=20
-> #define cpu_has_mips_2_3_4_5	cpu_has_mips_2
-> #define cpu_has_mips_3_4_5	cpu_has_mips_3
->=20
-> #define cpu_has_mips_2_3_4_5_r	cpu_has_mips_2
->=20
-> #define cpu_has_mips32		cpu_has_mips32r1
-> #define cpu_has_mips64		cpu_has_mips64r1
->=20
-> #define cpu_has_mips_r		cpu_has_mips32r1
-
-this isn't always the case. Although set_isa will do the right thing,
-some platforms override these in exclusive ways, e.g.:
-
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/arch=
-/mips/include/asm/mach-cavium-octeon/cpu-feature-overrides.h#n49
-
-David on Cc in case he'd like to justify that. IMO it seems wrong.
-
-Cheers
-James
-
-
---Kw3vxawpNdan7QuPLNjvJfWFQlrDwQ90J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJUv5AyAAoJEGwLaZPeOHZ6TtwQAKQHzCKmaFZ5+c6U4CzeVW9w
-jJKPmZPkXDpH0WtZtL1Dylhn0I6RQb6x4F341aRAob8X9P4scnKrvuk2vS9Dsba4
-tfSoFi7L/KscLNFpxLS7XPy23iWDIWKTlugoLuZGkE15MZaowKPoZz4+21RvvNlM
-l5vM08MleOWlrLous+kNywhe1E0ZUbyu9p0epW5aBxk07rehVtEuauHCU6dY3eu/
-7jjIcY4yMG3F3wl5lhjjFEojpmi1RO2kmEl1jB5udTITDQY/CHuYuHPkbgeBksUW
-TJIOzncYKDBo9wKCfvDvPaqvfc+tlW7ATGGi6RaNeRqXh9sIatI8Lp5anhh8LsS2
-NQxKRwTRPqFH2Lxw+REuZXojHqceGQrTGT8lbw2noR42RU7bjiPPFu25LNzl1MZz
-rzkGAzJMkB3snn1y56g/XUw1QxMLTPzmAqoCWYPM76DrQ7KBb75vjqEOyYPdRapr
-f9MV+jELJ4oXwW/iW6aRQ8HTWeTiQNIh403G4C7sUe2Lel2gVd4fIkuDSkf1bEb9
-+MHurPxfamM58d6RyQz1LIQJJOy9LzG++cZuk76GT6PACC3ZIgHYyOjmNhEdhgi7
-Umm3bnlnENgY22B6IFSlTX0JCm4WceqRlZLMccV9UuZ4uI6wmPZZ/dWRFRS/Qlpj
-lg1GtvoyCE3evZULIoFo
-=rlIN
------END PGP SIGNATURE-----
-
---Kw3vxawpNdan7QuPLNjvJfWFQlrDwQ90J--
+-- 
+markos

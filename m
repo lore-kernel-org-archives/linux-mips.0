@@ -1,16 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:28128 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:33788 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011451AbbAUMQ2NRyZN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Jan 2015 13:16:28 +0100
-Message-ID: <54BF9895.5000200@imgtec.com>
-Date: Wed, 21 Jan 2015 12:16:21 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        with ESMTP id S27011524AbbAUP0qAY7v5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Jan 2015 16:26:46 +0100
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: asm: asmmacro: Replace "add" instructions with "addu"
+Date: Wed, 21 Jan 2015 15:26:23 +0000
+Message-ID: <1421853983-28858-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC v2 18/70] MIPS: asm: spram: Add MIPS R6 related definitions
-References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com> <1421405389-15512-19-git-send-email-markos.chandras@imgtec.com> <alpine.LFD.2.11.1501200009520.28301@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.11.1501200009520.28301@eddie.linux-mips.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,60 +18,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20150121121621.s5tGMrSp55_sKGX3Nzn07yFBD7oGLqxoUFJ_1voofXg@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, stable@vger.kernel.org
+Message-ID: <20150121152623.Tu7brzdOPy8Y6e0BkNBRs51tLUFhpZh1SQOuwTZDtD0@z>
 
-On 01/20/2015 12:13 AM, Maciej W. Rozycki wrote:
-> On Fri, 16 Jan 2015, Markos Chandras wrote:
-> 
->> MIPS R6, just like MIPS R2, can use the spram_config() function
->> in spram.c
->>
->> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
->> ---
->>  arch/mips/include/asm/spram.h | 4 ++--
->>  arch/mips/kernel/Makefile     | 1 +
->>  2 files changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/mips/include/asm/spram.h b/arch/mips/include/asm/spram.h
->> index 0b89006e4907..e02a1961c542 100644
->> --- a/arch/mips/include/asm/spram.h
->> +++ b/arch/mips/include/asm/spram.h
->> @@ -1,10 +1,10 @@
->>  #ifndef _MIPS_SPRAM_H
->>  #define _MIPS_SPRAM_H
->>  
->> -#ifdef CONFIG_CPU_MIPSR2
->> +#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_MIPSR6)
->>  extern __init void spram_config(void);
->>  #else
->>  static inline void spram_config(void) { };
->> -#endif /* CONFIG_CPU_MIPSR2 */
->> +#endif /* CONFIG_CPU_MIPSR2 || CONFIG_CPU_MIPSR6 */
->>  
->>  #endif /* _MIPS_SPRAM_H */
->> diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
->> index 92987d1bbe5f..0862ae781339 100644
->> --- a/arch/mips/kernel/Makefile
->> +++ b/arch/mips/kernel/Makefile
->> @@ -53,6 +53,7 @@ obj-$(CONFIG_MIPS_CMP)		+= smp-cmp.o
->>  obj-$(CONFIG_MIPS_CPS)		+= smp-cps.o cps-vec.o
->>  obj-$(CONFIG_MIPS_GIC_IPI)	+= smp-gic.o
->>  obj-$(CONFIG_CPU_MIPSR2)	+= spram.o
->> +obj-$(CONFIG_CPU_MIPSR6)	+= spram.o
->>  
->>  obj-$(CONFIG_MIPS_VPE_LOADER)	+= vpe.o
->>  obj-$(CONFIG_MIPS_VPE_LOADER_CMP) += vpe-cmp.o
-> 
->  It looks to me like this should be a separate CONFIG_MIPS_SPRAM option 
-> selected by CPU_MIPSR2 and CPU_MIPSR6.  This will avoid the need to list 
-> `spram.o' twice which may be asking for troubles.  Also this will keep 
-> simple the `#ifdef' condition above.
-> 
->   Maciej
-> 
-ok i will do that instead. thanks
+The "add" instruction is actually a macro in binutils and depending on
+the size of the immediate it can expand to an "addi" instruction.
+However, the "addi" instruction traps on overflows which is not
+something we want on address calculation.
 
+Link: http://www.linux-mips.org/archives/linux-mips/2015-01/msg00121.html
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Maciej W. Rozycki <macro@linux-mips.org>
+Cc: <stable@vger.kernel.org> # v3.15+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+Moving this out of the R6 patchset as requested by Maciej
+---
+ arch/mips/include/asm/asmmacro.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/include/asm/asmmacro.h b/arch/mips/include/asm/asmmacro.h
+index fe08084f5adb..42b90c9fd756 100644
+--- a/arch/mips/include/asm/asmmacro.h
++++ b/arch/mips/include/asm/asmmacro.h
+@@ -304,7 +304,7 @@
+ 	.set	push
+ 	.set	noat
+ 	SET_HARDFLOAT
+-	add	$1, \base, \off
++	addu	$1, \base, \off
+ 	.word	LDD_MSA_INSN | (\wd << 6)
+ 	.set	pop
+ 	.endm
+@@ -313,7 +313,7 @@
+ 	.set	push
+ 	.set	noat
+ 	SET_HARDFLOAT
+-	add	$1, \base, \off
++	addu	$1, \base, \off
+ 	.word	STD_MSA_INSN | (\wd << 6)
+ 	.set	pop
+ 	.endm
 -- 
-markos
+2.2.1

@@ -1,15 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:40225 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57025 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010416AbbAVIyL1bgfl (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Jan 2015 09:54:11 +0100
-Message-ID: <54C0BAAC.8020702@imgtec.com>
-Date: Thu, 22 Jan 2015 08:54:04 +0000
+        with ESMTP id S27010483AbbAVOn1noPqW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Jan 2015 15:43:27 +0100
+Message-ID: <54C10C88.7060106@imgtec.com>
+Date: Thu, 22 Jan 2015 14:43:20 +0000
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: kernel: cps-vec: Replace "addi" with "addiu"
-References: <1421854030-28929-1-git-send-email-markos.chandras@imgtec.com> <54BFE91F.7050906@gmail.com> <20150121180200.GC15278@NP-P-BURTON>
-In-Reply-To: <20150121180200.GC15278@NP-P-BURTON>
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [PATCH RFC v2 30/70] MIPS: kernel: proc: Add MIPS R6 support
+ to /proc/cpuinfo
+References: <1421405389-15512-1-git-send-email-markos.chandras@imgtec.com> <1421405389-15512-31-git-send-email-markos.chandras@imgtec.com> <alpine.LFD.2.11.1501202336540.28301@eddie.linux-mips.org> <54BF709B.1080609@imgtec.com> <alpine.LFD.2.11.1501210936410.28301@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.11.1501210936410.28301@eddie.linux-mips.org>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
@@ -21,35 +22,80 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>, David Daney <ddaney.cavm@gmail.com>
-Cc: linux-mips@linux-mips.org, "Maciej W. Rozycki" <macro@linux-mips.org>, stable@vger.kernel.org
-Message-ID: <20150122085404.M_u1Llz6ai1TRtcI5B-uCrOAZShJ2pDTG43lNsUxz5c@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20150122144320.bp_0rVkEFuO1hawn-qiK6QzC1jUyQIYjpG7MOuazKbs@z>
 
-On 01/21/2015 06:02 PM, Paul Burton wrote:
-> On Wed, Jan 21, 2015 at 09:59:59AM -0800, David Daney wrote:
->> On 01/21/2015 07:27 AM, Markos Chandras wrote:
->>> The "addi" instruction will trap on overflows which is not something
->>> we need in this code, so we replace that with "addiu".
+On 01/22/2015 02:08 PM, Maciej W. Rozycki wrote:
+> On Wed, 21 Jan 2015, Markos Chandras wrote:
+> 
+>>>> diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+>>>> index 097fc8d14e42..a8fdf9685cad 100644
+>>>> --- a/arch/mips/kernel/proc.c
+>>>> +++ b/arch/mips/kernel/proc.c
+>>>> @@ -82,7 +82,9 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+>>>>  		seq_printf(m, "]\n");
+>>>>  	}
+>>>>  
+>>>> -	seq_printf(m, "isa\t\t\t: mips1");
+>>>> +	seq_printf(m, "isa\t\t\t:"); 
+>>>> +	if (!cpu_has_mips_r6)
+>>>> +		seq_printf(m, " mips1");
 >>>
->>> Link: http://www.linux-mips.org/archives/linux-mips/2015-01/msg00430.html
->>> Cc: Maciej W. Rozycki <macro@linux-mips.org>
->>> Cc: <stable@vger.kernel.org> # v3.15+
->>> Cc: Paul Burton <paul.burton@imgtec.com>
->>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
->>
->> Acked-by: David Daney <david.daney@cavium.com>
->>
->> Same comment about the stable thing.  Is it needed for anything other than
->> follow-on MIPS r6 Patches?
+>>>  I think define `cpu_has_mips_r1' instead and use it here.  It may turn 
+>>> out needed elsewhere too.  We probably don't need a new `MIPS_CPU_ISA_I' 
+>>> bit at this stage so this could be:
 > 
-> In both this & the MSA asmmacro.h cases, the additions should never
-> cause overflow. So I agree, backporting to stable seems like overkill.
+>  Typo here, I meant `cpu_has_mips_1' actually, sorry about that.
 > 
-> Paul
+>> the change is simple enough and I see no reason to define the
+>> cpu_has_mips_r1 at the moment. If we ever need to explicitly handle r1,
+>> we can reconsider that.
 > 
+>  It's a matter of code clarity, good code is self-explanatory.  Here the 
+> intent is to print `mips1' if it is supported.  By avoiding the extra 
+> definition you're detaching the intent from what code says.  Someone 
+> reading this code (who may not necessarily know the architecture documents 
+> by heart) has to scratch their head thinking: "why isn't `mips1' printed 
+> for R6, what the former has to do with the latter, and why is this case 
+> different to `mips2' and other ones that follow?"
+> 
+>  Whereas the intent is clear with this:
+> 
+> #define cpu_has_mips_1 (!cpu_has_mips_r6) // Aha, `mips1' is there if no R6!
+> 
+> 	if (cpu_has_mips_1)
+> 		seq_printf(m, " mips1");  // Well, this is obvious...
 
-Maciej suggested to backport it to stable branches. I personally don't mind.
+however, someone may wonder then why not have
 
+if (cpu_has_mips_1)
+print mips1
+if (cpu_has_mips_2)
+print mips2
+if (cpu_has_mips_3)
+print mips3
+
+and only care about mips1.
+
+> 
+> Do you see what I mean?  Do you agree now?
+
+the
+
+if (!cpu_has_mips_r6)
+    seq_printf(m, " mips1");
+
+means exactly the same thing with
+
+#define cpu_has_mips_1 (!cpu_has_mips_r6) // Aha, `mips1' is there if no R6!
+
+especially since this is the only place that is being used.
+
+I don't see how the differ.
+
+In any case, i don't want such details to block the patchset, so I will
+change it.
 
 -- 
 markos

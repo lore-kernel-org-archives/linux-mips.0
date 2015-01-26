@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:4826 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54724 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010725AbbAZJlUFuheK (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Jan 2015 10:41:20 +0100
+        with ESMTP id S27011118AbbAZJlVufS5Z (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Jan 2015 10:41:21 +0100
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 1/3] MIPS: asm: pgtable: Add c0 hazards on HTW start/stop sequences
-Date: Mon, 26 Jan 2015 09:40:34 +0000
-Message-ID: <1422265236-29290-2-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH 2/3] MIPS: HTW: Prevent accidental HTW start due to nested htw_{start,stop}
+Date: Mon, 26 Jan 2015 09:40:35 +0000
+Message-ID: <1422265236-29290-3-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1422265236-29290-1-git-send-email-markos.chandras@imgtec.com>
 References: <1422265236-29290-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -22,54 +22,159 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20150126094034.I6Gezjk4pvG8ik67ICX0Yra6BKCHa_umCdUe-ia96ao@z>
+Message-ID: <20150126094035.BXr8P6JXh7oL6jXAu4dJ5eqk7jqVKgpUvgeuOD0ExzA@z>
 
-When we use htw_{start,stop}() outside of htw_reset(), we need
-to ensure that c0 changes have been propagated properly before
-we attempt to continue with subsequence memory operations.
+activate_mm() and switch_mm() call get_new_mmu_context() which in turn
+can enable the HTW before the entryhi is changed with the new ASID.
+Since the latter will enable the HTW in local_flush_tlb_all(),
+then there is a small timing window where the HTW is running with the
+new ASID but with an old pgd since the TLBMISS_HANDLER_SETUP_PGD
+hasn't assigned a new one yet. In order to prevent that, we introduce a
+simple htw counter to avoid starting HTW accidentally due to nested
+htw_{start,stop}() sequences. Moreover, since various IPI calls can
+enforce TLB flushing operations on a different core, such an operation
+may interrupt another htw_{stop,start} in progress leading inconsistent
+updates of the htw_seq variable. In order to avoid that, we disable the
+interrupts whenever we update that variable.
 
 Cc: <stable@vger.kernel.org> # 3.17+
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/include/asm/pgtable.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/mips/include/asm/cpu-info.h    |  5 +++++
+ arch/mips/include/asm/mmu_context.h |  7 ++++++-
+ arch/mips/include/asm/pgtable.h     | 17 ++++++++++++++---
+ arch/mips/kernel/cpu-probe.c        |  4 +++-
+ 4 files changed, 28 insertions(+), 5 deletions(-)
 
+diff --git a/arch/mips/include/asm/cpu-info.h b/arch/mips/include/asm/cpu-info.h
+index a6c9ccb33c5c..c3f4f2d2e108 100644
+--- a/arch/mips/include/asm/cpu-info.h
++++ b/arch/mips/include/asm/cpu-info.h
+@@ -84,6 +84,11 @@ struct cpuinfo_mips {
+ 	 * (shifted by _CACHE_SHIFT)
+ 	 */
+ 	unsigned int		writecombine;
++	/*
++	 * Simple counter to prevent enabling HTW in nested
++	 * htw_start/htw_stop calls
++	 */
++	unsigned int		htw_seq;
+ } __attribute__((aligned(SMP_CACHE_BYTES)));
+ 
+ extern struct cpuinfo_mips cpu_data[];
+diff --git a/arch/mips/include/asm/mmu_context.h b/arch/mips/include/asm/mmu_context.h
+index 2f82568a3ee4..bc01579a907a 100644
+--- a/arch/mips/include/asm/mmu_context.h
++++ b/arch/mips/include/asm/mmu_context.h
+@@ -25,7 +25,6 @@ do {									\
+ 	if (cpu_has_htw) {						\
+ 		write_c0_pwbase(pgd);					\
+ 		back_to_back_c0_hazard();				\
+-		htw_reset();						\
+ 	}								\
+ } while (0)
+ 
+@@ -142,6 +141,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ 	unsigned long flags;
+ 	local_irq_save(flags);
+ 
++	htw_stop();
+ 	/* Check if our ASID is of an older version and thus invalid */
+ 	if ((cpu_context(cpu, next) ^ asid_cache(cpu)) & ASID_VERSION_MASK)
+ 		get_new_mmu_context(next, cpu);
+@@ -154,6 +154,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ 	 */
+ 	cpumask_clear_cpu(cpu, mm_cpumask(prev));
+ 	cpumask_set_cpu(cpu, mm_cpumask(next));
++	htw_start();
+ 
+ 	local_irq_restore(flags);
+ }
+@@ -180,6 +181,7 @@ activate_mm(struct mm_struct *prev, struct mm_struct *next)
+ 
+ 	local_irq_save(flags);
+ 
++	htw_stop();
+ 	/* Unconditionally get a new ASID.  */
+ 	get_new_mmu_context(next, cpu);
+ 
+@@ -189,6 +191,7 @@ activate_mm(struct mm_struct *prev, struct mm_struct *next)
+ 	/* mark mmu ownership change */
+ 	cpumask_clear_cpu(cpu, mm_cpumask(prev));
+ 	cpumask_set_cpu(cpu, mm_cpumask(next));
++	htw_start();
+ 
+ 	local_irq_restore(flags);
+ }
+@@ -203,6 +206,7 @@ drop_mmu_context(struct mm_struct *mm, unsigned cpu)
+ 	unsigned long flags;
+ 
+ 	local_irq_save(flags);
++	htw_stop();
+ 
+ 	if (cpumask_test_cpu(cpu, mm_cpumask(mm)))  {
+ 		get_new_mmu_context(mm, cpu);
+@@ -211,6 +215,7 @@ drop_mmu_context(struct mm_struct *mm, unsigned cpu)
+ 		/* will get a new context next time */
+ 		cpu_context(cpu, mm) = 0;
+ 	}
++	htw_start();
+ 	local_irq_restore(flags);
+ }
+ 
 diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index d6d1928539b1..7f7c558de9fc 100644
+index 7f7c558de9fc..d2c7e9e7447e 100644
 --- a/arch/mips/include/asm/pgtable.h
 +++ b/arch/mips/include/asm/pgtable.h
-@@ -99,16 +99,20 @@ extern void paging_init(void);
+@@ -99,19 +99,30 @@ extern void paging_init(void);
  
  #define htw_stop()							\
  do {									\
--	if (cpu_has_htw)						\
-+	if (cpu_has_htw) {						\
++	unsigned long flags;						\
++									\
+ 	if (cpu_has_htw) {						\
++		local_irq_save(flags);					\
++		raw_current_cpu_data.htw_seq++;				\
  		write_c0_pwctl(read_c0_pwctl() &			\
  			       ~(1 << MIPS_PWCTL_PWEN_SHIFT));		\
-+		back_to_back_c0_hazard();				\
-+	}								\
+ 		back_to_back_c0_hazard();				\
++		local_irq_restore(flags);				\
+ 	}								\
  } while(0)
  
  #define htw_start()							\
  do {									\
--	if (cpu_has_htw)						\
-+	if (cpu_has_htw) {						\
- 		write_c0_pwctl(read_c0_pwctl() |			\
- 			       (1 << MIPS_PWCTL_PWEN_SHIFT));		\
-+		back_to_back_c0_hazard();				\
-+	}								\
- } while(0)
- 
- 
-@@ -116,9 +120,7 @@ do {									\
- do {									\
++	unsigned long flags;						\
++									\
  	if (cpu_has_htw) {						\
- 		htw_stop();						\
+-		write_c0_pwctl(read_c0_pwctl() |			\
+-			       (1 << MIPS_PWCTL_PWEN_SHIFT));		\
 -		back_to_back_c0_hazard();				\
- 		htw_start();						\
--		back_to_back_c0_hazard();				\
++		local_irq_save(flags);					\
++		if (!--raw_current_cpu_data.htw_seq) {			\
++			write_c0_pwctl(read_c0_pwctl() |		\
++				       (1 << MIPS_PWCTL_PWEN_SHIFT));	\
++			back_to_back_c0_hazard();			\
++		}							\
++		local_irq_restore(flags);				\
  	}								\
  } while(0)
  
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index dc49cf30c2db..5d6e59f20750 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -367,8 +367,10 @@ static inline unsigned int decode_config3(struct cpuinfo_mips *c)
+ 	if (config3 & MIPS_CONF3_MSA)
+ 		c->ases |= MIPS_ASE_MSA;
+ 	/* Only tested on 32-bit cores */
+-	if ((config3 & MIPS_CONF3_PW) && config_enabled(CONFIG_32BIT))
++	if ((config3 & MIPS_CONF3_PW) && config_enabled(CONFIG_32BIT)) {
++		c->htw_seq = 0;
+ 		c->options |= MIPS_CPU_HTW;
++	}
+ 
+ 	return config3 & MIPS_CONF_M;
+ }
 -- 
 2.2.2

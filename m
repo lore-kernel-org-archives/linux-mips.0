@@ -1,13 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:21556 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:1778 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011158AbbAZNErBHQF0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Jan 2015 14:04:47 +0100
+        with ESMTP id S27011318AbbAZNjMyK5qI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Jan 2015 14:39:12 +0100
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH v2 2/3] MIPS: HTW: Prevent accidental HTW start due to nested htw_{start,stop}
-Date: Mon, 26 Jan 2015 13:04:33 +0000
-Message-ID: <1422277473-27925-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1422265236-29290-3-git-send-email-markos.chandras@imgtec.com>
-References: <1422265236-29290-3-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: asm: Rename GCC_OFF12_ASM to GCC_OFF_SMALL_ASM
+Date: Mon, 26 Jan 2015 13:39:00 +0000
+Message-ID: <1422279540-29024-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1421405389-15512-20-git-send-email-markos.chandras@imgtec.com>
+References: <1421405389-15512-20-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -21,167 +21,683 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20150126130433.Jqygq-DHC1NeMVzcFF2KKOKgjUFb6PJPS88sZ04bE0E@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
+Message-ID: <20150126133900.On5cPMrhwszOCLG-Flqe9LhrfOOZW7fWkpyXuzXQHak@z>
 
-activate_mm() and switch_mm() call get_new_mmu_context() which in turn
-can enable the HTW before the entryhi is changed with the new ASID.
-Since the latter will enable the HTW in local_flush_tlb_all(),
-then there is a small timing window where the HTW is running with the
-new ASID but with an old pgd since the TLBMISS_HANDLER_SETUP_PGD
-hasn't assigned a new one yet. In order to prevent that, we introduce a
-simple htw counter to avoid starting HTW accidentally due to nested
-htw_{start,stop}() sequences. Moreover, since various IPI calls can
-enforce TLB flushing operations on a different core, such an operation
-may interrupt another htw_{stop,start} in progress leading inconsistent
-updates of the htw_seq variable. In order to avoid that, we disable the
-interrupts whenever we update that variable.
+The GCC_OFF12_ASM macro is used for 12-bit immediate constrains
+but we will also use it for 9-bit constrains on MIPS R6 so we
+rename it to something more appropriate.
 
-Cc: <stable@vger.kernel.org> # 3.17+
+Cc: Maciej W. Rozycki <macro@linux-mips.org>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
-Changes since v1:
-- Avoid stopping the HTW if it is already stopped.
+This patch will be part of MIPS R6 and it will be placed before
+the following one
+[PATCH RFC v2 19/70] MIPS: Use the new "ZC" constraint for MIPS R6
+http://www.linux-mips.org/archives/linux-mips/2015-01/msg00211.html
 ---
- arch/mips/include/asm/cpu-info.h    |  5 +++++
- arch/mips/include/asm/mmu_context.h |  7 ++++++-
- arch/mips/include/asm/pgtable.h     | 24 ++++++++++++++++++------
- arch/mips/kernel/cpu-probe.c        |  4 +++-
- 4 files changed, 32 insertions(+), 8 deletions(-)
+ arch/mips/include/asm/atomic.h                     | 30 +++++++-------
+ arch/mips/include/asm/bitops.h                     | 34 +++++++--------
+ arch/mips/include/asm/cmpxchg.h                    | 24 +++++------
+ arch/mips/include/asm/compiler.h                   |  4 +-
+ arch/mips/include/asm/edac.h                       |  4 +-
+ arch/mips/include/asm/futex.h                      | 16 ++++----
+ .../include/asm/mach-pmcs-msp71xx/msp_regops.h     | 24 +++++------
+ arch/mips/include/asm/octeon/cvmx-cmd-queue.h      |  2 +-
+ arch/mips/include/asm/spinlock.h                   | 48 +++++++++++-----------
+ 9 files changed, 93 insertions(+), 93 deletions(-)
 
-diff --git a/arch/mips/include/asm/cpu-info.h b/arch/mips/include/asm/cpu-info.h
-index a6c9ccb33c5c..c3f4f2d2e108 100644
---- a/arch/mips/include/asm/cpu-info.h
-+++ b/arch/mips/include/asm/cpu-info.h
-@@ -84,6 +84,11 @@ struct cpuinfo_mips {
- 	 * (shifted by _CACHE_SHIFT)
- 	 */
- 	unsigned int		writecombine;
-+	/*
-+	 * Simple counter to prevent enabling HTW in nested
-+	 * htw_start/htw_stop calls
-+	 */
-+	unsigned int		htw_seq;
- } __attribute__((aligned(SMP_CACHE_BYTES)));
+diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
+index 857da84cfc92..3a44c2f17e53 100644
+--- a/arch/mips/include/asm/atomic.h
++++ b/arch/mips/include/asm/atomic.h
+@@ -54,7 +54,7 @@ static __inline__ void atomic_##op(int i, atomic_t * v)			      \
+ 		"	sc	%0, %1					\n"   \
+ 		"	beqzl	%0, 1b					\n"   \
+ 		"	.set	mips0					\n"   \
+-		: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)	      \
++		: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (v->counter)	      \
+ 		: "Ir" (i));						      \
+ 	} else if (kernel_uses_llsc) {					      \
+ 		int temp;						      \
+@@ -66,7 +66,7 @@ static __inline__ void atomic_##op(int i, atomic_t * v)			      \
+ 			"	" #asm_op " %0, %2			\n"   \
+ 			"	sc	%0, %1				\n"   \
+ 			"	.set	mips0				\n"   \
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)      \
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (v->counter)      \
+ 			: "Ir" (i));					      \
+ 		} while (unlikely(!temp));				      \
+ 	} else {							      \
+@@ -97,7 +97,7 @@ static __inline__ int atomic_##op##_return(int i, atomic_t * v)		      \
+ 		"	" #asm_op " %0, %1, %3				\n"   \
+ 		"	.set	mips0					\n"   \
+ 		: "=&r" (result), "=&r" (temp),				      \
+-		  "+" GCC_OFF12_ASM() (v->counter)			      \
++		  "+" GCC_OFF_SMALL_ASM() (v->counter)			      \
+ 		: "Ir" (i));						      \
+ 	} else if (kernel_uses_llsc) {					      \
+ 		int temp;						      \
+@@ -110,7 +110,7 @@ static __inline__ int atomic_##op##_return(int i, atomic_t * v)		      \
+ 			"	sc	%0, %2				\n"   \
+ 			"	.set	mips0				\n"   \
+ 			: "=&r" (result), "=&r" (temp),			      \
+-			  "+" GCC_OFF12_ASM() (v->counter)		      \
++			  "+" GCC_OFF_SMALL_ASM() (v->counter)		      \
+ 			: "Ir" (i));					      \
+ 		} while (unlikely(!result));				      \
+ 									      \
+@@ -171,8 +171,8 @@ static __inline__ int atomic_sub_if_positive(int i, atomic_t * v)
+ 		"1:							\n"
+ 		"	.set	mips0					\n"
+ 		: "=&r" (result), "=&r" (temp),
+-		  "+" GCC_OFF12_ASM() (v->counter)
+-		: "Ir" (i), GCC_OFF12_ASM() (v->counter)
++		  "+" GCC_OFF_SMALL_ASM() (v->counter)
++		: "Ir" (i), GCC_OFF_SMALL_ASM() (v->counter)
+ 		: "memory");
+ 	} else if (kernel_uses_llsc) {
+ 		int temp;
+@@ -190,7 +190,7 @@ static __inline__ int atomic_sub_if_positive(int i, atomic_t * v)
+ 		"1:							\n"
+ 		"	.set	mips0					\n"
+ 		: "=&r" (result), "=&r" (temp),
+-		  "+" GCC_OFF12_ASM() (v->counter)
++		  "+" GCC_OFF_SMALL_ASM() (v->counter)
+ 		: "Ir" (i));
+ 	} else {
+ 		unsigned long flags;
+@@ -333,7 +333,7 @@ static __inline__ void atomic64_##op(long i, atomic64_t * v)		      \
+ 		"	scd	%0, %1					\n"   \
+ 		"	beqzl	%0, 1b					\n"   \
+ 		"	.set	mips0					\n"   \
+-		: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)	      \
++		: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (v->counter)	      \
+ 		: "Ir" (i));						      \
+ 	} else if (kernel_uses_llsc) {					      \
+ 		long temp;						      \
+@@ -345,7 +345,7 @@ static __inline__ void atomic64_##op(long i, atomic64_t * v)		      \
+ 			"	" #asm_op " %0, %2			\n"   \
+ 			"	scd	%0, %1				\n"   \
+ 			"	.set	mips0				\n"   \
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (v->counter)      \
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (v->counter)      \
+ 			: "Ir" (i));					      \
+ 		} while (unlikely(!temp));				      \
+ 	} else {							      \
+@@ -376,7 +376,7 @@ static __inline__ long atomic64_##op##_return(long i, atomic64_t * v)	      \
+ 		"	" #asm_op " %0, %1, %3				\n"   \
+ 		"	.set	mips0					\n"   \
+ 		: "=&r" (result), "=&r" (temp),				      \
+-		  "+" GCC_OFF12_ASM() (v->counter)			      \
++		  "+" GCC_OFF_SMALL_ASM() (v->counter)			      \
+ 		: "Ir" (i));						      \
+ 	} else if (kernel_uses_llsc) {					      \
+ 		long temp;						      \
+@@ -389,8 +389,8 @@ static __inline__ long atomic64_##op##_return(long i, atomic64_t * v)	      \
+ 			"	scd	%0, %2				\n"   \
+ 			"	.set	mips0				\n"   \
+ 			: "=&r" (result), "=&r" (temp),			      \
+-			  "=" GCC_OFF12_ASM() (v->counter)		      \
+-			: "Ir" (i), GCC_OFF12_ASM() (v->counter)	      \
++			  "=" GCC_OFF_SMALL_ASM() (v->counter)		      \
++			: "Ir" (i), GCC_OFF_SMALL_ASM() (v->counter)	      \
+ 			: "memory");					      \
+ 		} while (unlikely(!result));				      \
+ 									      \
+@@ -452,8 +452,8 @@ static __inline__ long atomic64_sub_if_positive(long i, atomic64_t * v)
+ 		"1:							\n"
+ 		"	.set	mips0					\n"
+ 		: "=&r" (result), "=&r" (temp),
+-		  "=" GCC_OFF12_ASM() (v->counter)
+-		: "Ir" (i), GCC_OFF12_ASM() (v->counter)
++		  "=" GCC_OFF_SMALL_ASM() (v->counter)
++		: "Ir" (i), GCC_OFF_SMALL_ASM() (v->counter)
+ 		: "memory");
+ 	} else if (kernel_uses_llsc) {
+ 		long temp;
+@@ -471,7 +471,7 @@ static __inline__ long atomic64_sub_if_positive(long i, atomic64_t * v)
+ 		"1:							\n"
+ 		"	.set	mips0					\n"
+ 		: "=&r" (result), "=&r" (temp),
+-		  "+" GCC_OFF12_ASM() (v->counter)
++		  "+" GCC_OFF_SMALL_ASM() (v->counter)
+ 		: "Ir" (i));
+ 	} else {
+ 		unsigned long flags;
+diff --git a/arch/mips/include/asm/bitops.h b/arch/mips/include/asm/bitops.h
+index 6663bcca9d0c..6cc1f539c79a 100644
+--- a/arch/mips/include/asm/bitops.h
++++ b/arch/mips/include/asm/bitops.h
+@@ -79,8 +79,8 @@ static inline void set_bit(unsigned long nr, volatile unsigned long *addr)
+ 		"	" __SC	"%0, %1					\n"
+ 		"	beqzl	%0, 1b					\n"
+ 		"	.set	mips0					\n"
+-		: "=&r" (temp), "=" GCC_OFF12_ASM() (*m)
+-		: "ir" (1UL << bit), GCC_OFF12_ASM() (*m));
++		: "=&r" (temp), "=" GCC_OFF_SMALL_ASM() (*m)
++		: "ir" (1UL << bit), GCC_OFF_SMALL_ASM() (*m));
+ #ifdef CONFIG_CPU_MIPSR2
+ 	} else if (kernel_uses_llsc && __builtin_constant_p(bit)) {
+ 		do {
+@@ -88,7 +88,7 @@ static inline void set_bit(unsigned long nr, volatile unsigned long *addr)
+ 			"	" __LL "%0, %1		# set_bit	\n"
+ 			"	" __INS "%0, %3, %2, 1			\n"
+ 			"	" __SC "%0, %1				\n"
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (*m)
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m)
+ 			: "ir" (bit), "r" (~0));
+ 		} while (unlikely(!temp));
+ #endif /* CONFIG_CPU_MIPSR2 */
+@@ -100,7 +100,7 @@ static inline void set_bit(unsigned long nr, volatile unsigned long *addr)
+ 			"	or	%0, %2				\n"
+ 			"	" __SC	"%0, %1				\n"
+ 			"	.set	mips0				\n"
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (*m)
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m)
+ 			: "ir" (1UL << bit));
+ 		} while (unlikely(!temp));
+ 	} else
+@@ -131,7 +131,7 @@ static inline void clear_bit(unsigned long nr, volatile unsigned long *addr)
+ 		"	" __SC "%0, %1					\n"
+ 		"	beqzl	%0, 1b					\n"
+ 		"	.set	mips0					\n"
+-		: "=&r" (temp), "+" GCC_OFF12_ASM() (*m)
++		: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m)
+ 		: "ir" (~(1UL << bit)));
+ #ifdef CONFIG_CPU_MIPSR2
+ 	} else if (kernel_uses_llsc && __builtin_constant_p(bit)) {
+@@ -140,7 +140,7 @@ static inline void clear_bit(unsigned long nr, volatile unsigned long *addr)
+ 			"	" __LL "%0, %1		# clear_bit	\n"
+ 			"	" __INS "%0, $0, %2, 1			\n"
+ 			"	" __SC "%0, %1				\n"
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (*m)
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m)
+ 			: "ir" (bit));
+ 		} while (unlikely(!temp));
+ #endif /* CONFIG_CPU_MIPSR2 */
+@@ -152,7 +152,7 @@ static inline void clear_bit(unsigned long nr, volatile unsigned long *addr)
+ 			"	and	%0, %2				\n"
+ 			"	" __SC "%0, %1				\n"
+ 			"	.set	mips0				\n"
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (*m)
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m)
+ 			: "ir" (~(1UL << bit)));
+ 		} while (unlikely(!temp));
+ 	} else
+@@ -197,7 +197,7 @@ static inline void change_bit(unsigned long nr, volatile unsigned long *addr)
+ 		"	" __SC	"%0, %1				\n"
+ 		"	beqzl	%0, 1b				\n"
+ 		"	.set	mips0				\n"
+-		: "=&r" (temp), "+" GCC_OFF12_ASM() (*m)
++		: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m)
+ 		: "ir" (1UL << bit));
+ 	} else if (kernel_uses_llsc) {
+ 		unsigned long *m = ((unsigned long *) addr) + (nr >> SZLONG_LOG);
+@@ -210,7 +210,7 @@ static inline void change_bit(unsigned long nr, volatile unsigned long *addr)
+ 			"	xor	%0, %2				\n"
+ 			"	" __SC	"%0, %1				\n"
+ 			"	.set	mips0				\n"
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (*m)
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m)
+ 			: "ir" (1UL << bit));
+ 		} while (unlikely(!temp));
+ 	} else
+@@ -245,7 +245,7 @@ static inline int test_and_set_bit(unsigned long nr,
+ 		"	beqzl	%2, 1b					\n"
+ 		"	and	%2, %0, %3				\n"
+ 		"	.set	mips0					\n"
+-		: "=&r" (temp), "+" GCC_OFF12_ASM() (*m), "=&r" (res)
++		: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m), "=&r" (res)
+ 		: "r" (1UL << bit)
+ 		: "memory");
+ 	} else if (kernel_uses_llsc) {
+@@ -259,7 +259,7 @@ static inline int test_and_set_bit(unsigned long nr,
+ 			"	or	%2, %0, %3			\n"
+ 			"	" __SC	"%2, %1				\n"
+ 			"	.set	mips0				\n"
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (*m), "=&r" (res)
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m), "=&r" (res)
+ 			: "r" (1UL << bit)
+ 			: "memory");
+ 		} while (unlikely(!res));
+@@ -313,7 +313,7 @@ static inline int test_and_set_bit_lock(unsigned long nr,
+ 			"	or	%2, %0, %3			\n"
+ 			"	" __SC	"%2, %1				\n"
+ 			"	.set	mips0				\n"
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (*m), "=&r" (res)
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m), "=&r" (res)
+ 			: "r" (1UL << bit)
+ 			: "memory");
+ 		} while (unlikely(!res));
+@@ -355,7 +355,7 @@ static inline int test_and_clear_bit(unsigned long nr,
+ 		"	beqzl	%2, 1b					\n"
+ 		"	and	%2, %0, %3				\n"
+ 		"	.set	mips0					\n"
+-		: "=&r" (temp), "+" GCC_OFF12_ASM() (*m), "=&r" (res)
++		: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m), "=&r" (res)
+ 		: "r" (1UL << bit)
+ 		: "memory");
+ #ifdef CONFIG_CPU_MIPSR2
+@@ -369,7 +369,7 @@ static inline int test_and_clear_bit(unsigned long nr,
+ 			"	" __EXT "%2, %0, %3, 1			\n"
+ 			"	" __INS "%0, $0, %3, 1			\n"
+ 			"	" __SC	"%0, %1				\n"
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (*m), "=&r" (res)
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m), "=&r" (res)
+ 			: "ir" (bit)
+ 			: "memory");
+ 		} while (unlikely(!temp));
+@@ -386,7 +386,7 @@ static inline int test_and_clear_bit(unsigned long nr,
+ 			"	xor	%2, %3				\n"
+ 			"	" __SC	"%2, %1				\n"
+ 			"	.set	mips0				\n"
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (*m), "=&r" (res)
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m), "=&r" (res)
+ 			: "r" (1UL << bit)
+ 			: "memory");
+ 		} while (unlikely(!res));
+@@ -428,7 +428,7 @@ static inline int test_and_change_bit(unsigned long nr,
+ 		"	beqzl	%2, 1b					\n"
+ 		"	and	%2, %0, %3				\n"
+ 		"	.set	mips0					\n"
+-		: "=&r" (temp), "+" GCC_OFF12_ASM() (*m), "=&r" (res)
++		: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m), "=&r" (res)
+ 		: "r" (1UL << bit)
+ 		: "memory");
+ 	} else if (kernel_uses_llsc) {
+@@ -442,7 +442,7 @@ static inline int test_and_change_bit(unsigned long nr,
+ 			"	xor	%2, %0, %3			\n"
+ 			"	" __SC	"\t%2, %1			\n"
+ 			"	.set	mips0				\n"
+-			: "=&r" (temp), "+" GCC_OFF12_ASM() (*m), "=&r" (res)
++			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (*m), "=&r" (res)
+ 			: "r" (1UL << bit)
+ 			: "memory");
+ 		} while (unlikely(!res));
+diff --git a/arch/mips/include/asm/cmpxchg.h b/arch/mips/include/asm/cmpxchg.h
+index 28b1edf19501..68baa0cf521a 100644
+--- a/arch/mips/include/asm/cmpxchg.h
++++ b/arch/mips/include/asm/cmpxchg.h
+@@ -31,8 +31,8 @@ static inline unsigned long __xchg_u32(volatile int * m, unsigned int val)
+ 		"	sc	%2, %1					\n"
+ 		"	beqzl	%2, 1b					\n"
+ 		"	.set	mips0					\n"
+-		: "=&r" (retval), "=" GCC_OFF12_ASM() (*m), "=&r" (dummy)
+-		: GCC_OFF12_ASM() (*m), "Jr" (val)
++		: "=&r" (retval), "=" GCC_OFF_SMALL_ASM() (*m), "=&r" (dummy)
++		: GCC_OFF_SMALL_ASM() (*m), "Jr" (val)
+ 		: "memory");
+ 	} else if (kernel_uses_llsc) {
+ 		unsigned long dummy;
+@@ -46,9 +46,9 @@ static inline unsigned long __xchg_u32(volatile int * m, unsigned int val)
+ 			"	.set	arch=r4000			\n"
+ 			"	sc	%2, %1				\n"
+ 			"	.set	mips0				\n"
+-			: "=&r" (retval), "=" GCC_OFF12_ASM() (*m),
++			: "=&r" (retval), "=" GCC_OFF_SMALL_ASM() (*m),
+ 			  "=&r" (dummy)
+-			: GCC_OFF12_ASM() (*m), "Jr" (val)
++			: GCC_OFF_SMALL_ASM() (*m), "Jr" (val)
+ 			: "memory");
+ 		} while (unlikely(!dummy));
+ 	} else {
+@@ -82,8 +82,8 @@ static inline __u64 __xchg_u64(volatile __u64 * m, __u64 val)
+ 		"	scd	%2, %1					\n"
+ 		"	beqzl	%2, 1b					\n"
+ 		"	.set	mips0					\n"
+-		: "=&r" (retval), "=" GCC_OFF12_ASM() (*m), "=&r" (dummy)
+-		: GCC_OFF12_ASM() (*m), "Jr" (val)
++		: "=&r" (retval), "=" GCC_OFF_SMALL_ASM() (*m), "=&r" (dummy)
++		: GCC_OFF_SMALL_ASM() (*m), "Jr" (val)
+ 		: "memory");
+ 	} else if (kernel_uses_llsc) {
+ 		unsigned long dummy;
+@@ -95,9 +95,9 @@ static inline __u64 __xchg_u64(volatile __u64 * m, __u64 val)
+ 			"	move	%2, %z4				\n"
+ 			"	scd	%2, %1				\n"
+ 			"	.set	mips0				\n"
+-			: "=&r" (retval), "=" GCC_OFF12_ASM() (*m),
++			: "=&r" (retval), "=" GCC_OFF_SMALL_ASM() (*m),
+ 			  "=&r" (dummy)
+-			: GCC_OFF12_ASM() (*m), "Jr" (val)
++			: GCC_OFF_SMALL_ASM() (*m), "Jr" (val)
+ 			: "memory");
+ 		} while (unlikely(!dummy));
+ 	} else {
+@@ -158,8 +158,8 @@ static inline unsigned long __xchg(unsigned long x, volatile void * ptr, int siz
+ 		"	beqzl	$1, 1b				\n"	\
+ 		"2:						\n"	\
+ 		"	.set	pop				\n"	\
+-		: "=&r" (__ret), "=" GCC_OFF12_ASM() (*m)		\
+-		: GCC_OFF12_ASM() (*m), "Jr" (old), "Jr" (new)		\
++		: "=&r" (__ret), "=" GCC_OFF_SMALL_ASM() (*m)		\
++		: GCC_OFF_SMALL_ASM() (*m), "Jr" (old), "Jr" (new)		\
+ 		: "memory");						\
+ 	} else if (kernel_uses_llsc) {					\
+ 		__asm__ __volatile__(					\
+@@ -175,8 +175,8 @@ static inline unsigned long __xchg(unsigned long x, volatile void * ptr, int siz
+ 		"	beqz	$1, 1b				\n"	\
+ 		"	.set	pop				\n"	\
+ 		"2:						\n"	\
+-		: "=&r" (__ret), "=" GCC_OFF12_ASM() (*m)		\
+-		: GCC_OFF12_ASM() (*m), "Jr" (old), "Jr" (new)		\
++		: "=&r" (__ret), "=" GCC_OFF_SMALL_ASM() (*m)		\
++		: GCC_OFF_SMALL_ASM() (*m), "Jr" (old), "Jr" (new)		\
+ 		: "memory");						\
+ 	} else {							\
+ 		unsigned long __flags;					\
+diff --git a/arch/mips/include/asm/compiler.h b/arch/mips/include/asm/compiler.h
+index c73815e0123a..90a317a08bd7 100644
+--- a/arch/mips/include/asm/compiler.h
++++ b/arch/mips/include/asm/compiler.h
+@@ -17,9 +17,9 @@
+ #endif
  
- extern struct cpuinfo_mips cpu_data[];
-diff --git a/arch/mips/include/asm/mmu_context.h b/arch/mips/include/asm/mmu_context.h
-index 2f82568a3ee4..bc01579a907a 100644
---- a/arch/mips/include/asm/mmu_context.h
-+++ b/arch/mips/include/asm/mmu_context.h
-@@ -25,7 +25,6 @@ do {									\
- 	if (cpu_has_htw) {						\
- 		write_c0_pwbase(pgd);					\
- 		back_to_back_c0_hazard();				\
--		htw_reset();						\
- 	}								\
- } while (0)
+ #ifndef CONFIG_CPU_MICROMIPS
+-#define GCC_OFF12_ASM() "R"
++#define GCC_OFF_SMALL_ASM() "R"
+ #elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9)
+-#define GCC_OFF12_ASM() "ZC"
++#define GCC_OFF_SMALL_ASM() "ZC"
+ #else
+ #error "microMIPS compilation unsupported with GCC older than 4.9"
+ #endif
+diff --git a/arch/mips/include/asm/edac.h b/arch/mips/include/asm/edac.h
+index ae6fedcb0060..94105d3f58f4 100644
+--- a/arch/mips/include/asm/edac.h
++++ b/arch/mips/include/asm/edac.h
+@@ -26,8 +26,8 @@ static inline void atomic_scrub(void *va, u32 size)
+ 		"	sc	%0, %1					\n"
+ 		"	beqz	%0, 1b					\n"
+ 		"	.set	mips0					\n"
+-		: "=&r" (temp), "=" GCC_OFF12_ASM() (*virt_addr)
+-		: GCC_OFF12_ASM() (*virt_addr));
++		: "=&r" (temp), "=" GCC_OFF_SMALL_ASM() (*virt_addr)
++		: GCC_OFF_SMALL_ASM() (*virt_addr));
  
-@@ -142,6 +141,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	unsigned long flags;
- 	local_irq_save(flags);
- 
-+	htw_stop();
- 	/* Check if our ASID is of an older version and thus invalid */
- 	if ((cpu_context(cpu, next) ^ asid_cache(cpu)) & ASID_VERSION_MASK)
- 		get_new_mmu_context(next, cpu);
-@@ -154,6 +154,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	 */
- 	cpumask_clear_cpu(cpu, mm_cpumask(prev));
- 	cpumask_set_cpu(cpu, mm_cpumask(next));
-+	htw_start();
- 
- 	local_irq_restore(flags);
- }
-@@ -180,6 +181,7 @@ activate_mm(struct mm_struct *prev, struct mm_struct *next)
- 
- 	local_irq_save(flags);
- 
-+	htw_stop();
- 	/* Unconditionally get a new ASID.  */
- 	get_new_mmu_context(next, cpu);
- 
-@@ -189,6 +191,7 @@ activate_mm(struct mm_struct *prev, struct mm_struct *next)
- 	/* mark mmu ownership change */
- 	cpumask_clear_cpu(cpu, mm_cpumask(prev));
- 	cpumask_set_cpu(cpu, mm_cpumask(next));
-+	htw_start();
- 
- 	local_irq_restore(flags);
- }
-@@ -203,6 +206,7 @@ drop_mmu_context(struct mm_struct *mm, unsigned cpu)
- 	unsigned long flags;
- 
- 	local_irq_save(flags);
-+	htw_stop();
- 
- 	if (cpumask_test_cpu(cpu, mm_cpumask(mm)))  {
- 		get_new_mmu_context(mm, cpu);
-@@ -211,6 +215,7 @@ drop_mmu_context(struct mm_struct *mm, unsigned cpu)
- 		/* will get a new context next time */
- 		cpu_context(cpu, mm) = 0;
+ 		virt_addr++;
  	}
-+	htw_start();
- 	local_irq_restore(flags);
+diff --git a/arch/mips/include/asm/futex.h b/arch/mips/include/asm/futex.h
+index ef9987a61d88..f666c0608c11 100644
+--- a/arch/mips/include/asm/futex.h
++++ b/arch/mips/include/asm/futex.h
+@@ -45,8 +45,8 @@
+ 		"	"__UA_ADDR "\t2b, 4b			\n"	\
+ 		"	.previous				\n"	\
+ 		: "=r" (ret), "=&r" (oldval),				\
+-		  "=" GCC_OFF12_ASM() (*uaddr)				\
+-		: "0" (0), GCC_OFF12_ASM() (*uaddr), "Jr" (oparg),	\
++		  "=" GCC_OFF_SMALL_ASM() (*uaddr)				\
++		: "0" (0), GCC_OFF_SMALL_ASM() (*uaddr), "Jr" (oparg),	\
+ 		  "i" (-EFAULT)						\
+ 		: "memory");						\
+ 	} else if (cpu_has_llsc) {					\
+@@ -74,8 +74,8 @@
+ 		"	"__UA_ADDR "\t2b, 4b			\n"	\
+ 		"	.previous				\n"	\
+ 		: "=r" (ret), "=&r" (oldval),				\
+-		  "=" GCC_OFF12_ASM() (*uaddr)				\
+-		: "0" (0), GCC_OFF12_ASM() (*uaddr), "Jr" (oparg),	\
++		  "=" GCC_OFF_SMALL_ASM() (*uaddr)				\
++		: "0" (0), GCC_OFF_SMALL_ASM() (*uaddr), "Jr" (oparg),	\
+ 		  "i" (-EFAULT)						\
+ 		: "memory");						\
+ 	} else								\
+@@ -174,8 +174,8 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 		"	"__UA_ADDR "\t1b, 4b				\n"
+ 		"	"__UA_ADDR "\t2b, 4b				\n"
+ 		"	.previous					\n"
+-		: "+r" (ret), "=&r" (val), "=" GCC_OFF12_ASM() (*uaddr)
+-		: GCC_OFF12_ASM() (*uaddr), "Jr" (oldval), "Jr" (newval),
++		: "+r" (ret), "=&r" (val), "=" GCC_OFF_SMALL_ASM() (*uaddr)
++		: GCC_OFF_SMALL_ASM() (*uaddr), "Jr" (oldval), "Jr" (newval),
+ 		  "i" (-EFAULT)
+ 		: "memory");
+ 	} else if (cpu_has_llsc) {
+@@ -203,8 +203,8 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 		"	"__UA_ADDR "\t1b, 4b				\n"
+ 		"	"__UA_ADDR "\t2b, 4b				\n"
+ 		"	.previous					\n"
+-		: "+r" (ret), "=&r" (val), "=" GCC_OFF12_ASM() (*uaddr)
+-		: GCC_OFF12_ASM() (*uaddr), "Jr" (oldval), "Jr" (newval),
++		: "+r" (ret), "=&r" (val), "=" GCC_OFF_SMALL_ASM() (*uaddr)
++		: GCC_OFF_SMALL_ASM() (*uaddr), "Jr" (oldval), "Jr" (newval),
+ 		  "i" (-EFAULT)
+ 		: "memory");
+ 	} else
+diff --git a/arch/mips/include/asm/mach-pmcs-msp71xx/msp_regops.h b/arch/mips/include/asm/mach-pmcs-msp71xx/msp_regops.h
+index 2e54b4bff5cf..90dbe43c8d27 100644
+--- a/arch/mips/include/asm/mach-pmcs-msp71xx/msp_regops.h
++++ b/arch/mips/include/asm/mach-pmcs-msp71xx/msp_regops.h
+@@ -85,8 +85,8 @@ static inline void set_value_reg32(volatile u32 *const addr,
+ 	"	"__beqz"%0, 1b				\n"
+ 	"	nop					\n"
+ 	"	.set	pop				\n"
+-	: "=&r" (temp), "=" GCC_OFF12_ASM() (*addr)
+-	: "ir" (~mask), "ir" (value), GCC_OFF12_ASM() (*addr));
++	: "=&r" (temp), "=" GCC_OFF_SMALL_ASM() (*addr)
++	: "ir" (~mask), "ir" (value), GCC_OFF_SMALL_ASM() (*addr));
  }
  
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 7f7c558de9fc..eacb022067a6 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -99,19 +99,31 @@ extern void paging_init(void);
- 
- #define htw_stop()							\
- do {									\
-+	unsigned long flags;						\
-+									\
- 	if (cpu_has_htw) {						\
--		write_c0_pwctl(read_c0_pwctl() &			\
--			       ~(1 << MIPS_PWCTL_PWEN_SHIFT));		\
--		back_to_back_c0_hazard();				\
-+		local_irq_save(flags);					\
-+		if(!raw_current_cpu_data.htw_seq++) {			\
-+			write_c0_pwctl(read_c0_pwctl() &		\
-+				       ~(1 << MIPS_PWCTL_PWEN_SHIFT));	\
-+			back_to_back_c0_hazard();			\
-+		}							\
-+		local_irq_restore(flags);				\
- 	}								\
- } while(0)
- 
- #define htw_start()							\
- do {									\
-+	unsigned long flags;						\
-+									\
- 	if (cpu_has_htw) {						\
--		write_c0_pwctl(read_c0_pwctl() |			\
--			       (1 << MIPS_PWCTL_PWEN_SHIFT));		\
--		back_to_back_c0_hazard();				\
-+		local_irq_save(flags);					\
-+		if (!--raw_current_cpu_data.htw_seq) {			\
-+			write_c0_pwctl(read_c0_pwctl() |		\
-+				       (1 << MIPS_PWCTL_PWEN_SHIFT));	\
-+			back_to_back_c0_hazard();			\
-+		}							\
-+		local_irq_restore(flags);				\
- 	}								\
- } while(0)
- 
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index dc49cf30c2db..5d6e59f20750 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -367,8 +367,10 @@ static inline unsigned int decode_config3(struct cpuinfo_mips *c)
- 	if (config3 & MIPS_CONF3_MSA)
- 		c->ases |= MIPS_ASE_MSA;
- 	/* Only tested on 32-bit cores */
--	if ((config3 & MIPS_CONF3_PW) && config_enabled(CONFIG_32BIT))
-+	if ((config3 & MIPS_CONF3_PW) && config_enabled(CONFIG_32BIT)) {
-+		c->htw_seq = 0;
- 		c->options |= MIPS_CPU_HTW;
-+	}
- 
- 	return config3 & MIPS_CONF_M;
+ /*
+@@ -106,8 +106,8 @@ static inline void set_reg32(volatile u32 *const addr,
+ 	"	"__beqz"%0, 1b				\n"
+ 	"	nop					\n"
+ 	"	.set	pop				\n"
+-	: "=&r" (temp), "=" GCC_OFF12_ASM() (*addr)
+-	: "ir" (mask), GCC_OFF12_ASM() (*addr));
++	: "=&r" (temp), "=" GCC_OFF_SMALL_ASM() (*addr)
++	: "ir" (mask), GCC_OFF_SMALL_ASM() (*addr));
  }
+ 
+ /*
+@@ -127,8 +127,8 @@ static inline void clear_reg32(volatile u32 *const addr,
+ 	"	"__beqz"%0, 1b				\n"
+ 	"	nop					\n"
+ 	"	.set	pop				\n"
+-	: "=&r" (temp), "=" GCC_OFF12_ASM() (*addr)
+-	: "ir" (~mask), GCC_OFF12_ASM() (*addr));
++	: "=&r" (temp), "=" GCC_OFF_SMALL_ASM() (*addr)
++	: "ir" (~mask), GCC_OFF_SMALL_ASM() (*addr));
+ }
+ 
+ /*
+@@ -148,8 +148,8 @@ static inline void toggle_reg32(volatile u32 *const addr,
+ 	"	"__beqz"%0, 1b				\n"
+ 	"	nop					\n"
+ 	"	.set	pop				\n"
+-	: "=&r" (temp), "=" GCC_OFF12_ASM() (*addr)
+-	: "ir" (mask), GCC_OFF12_ASM() (*addr));
++	: "=&r" (temp), "=" GCC_OFF_SMALL_ASM() (*addr)
++	: "ir" (mask), GCC_OFF_SMALL_ASM() (*addr));
+ }
+ 
+ /*
+@@ -220,8 +220,8 @@ static inline u32 blocking_read_reg32(volatile u32 *const addr)
+ 	"	.set	arch=r4000			\n"	\
+ 	"1:	ll	%0, %1	#custom_read_reg32	\n"	\
+ 	"	.set	pop				\n"	\
+-	: "=r" (tmp), "=" GCC_OFF12_ASM() (*address)		\
+-	: GCC_OFF12_ASM() (*address))
++	: "=r" (tmp), "=" GCC_OFF_SMALL_ASM() (*address)		\
++	: GCC_OFF_SMALL_ASM() (*address))
+ 
+ #define custom_write_reg32(address, tmp)			\
+ 	__asm__ __volatile__(					\
+@@ -231,7 +231,7 @@ static inline u32 blocking_read_reg32(volatile u32 *const addr)
+ 	"	"__beqz"%0, 1b				\n"	\
+ 	"	nop					\n"	\
+ 	"	.set	pop				\n"	\
+-	: "=&r" (tmp), "=" GCC_OFF12_ASM() (*address)		\
+-	: "0" (tmp), GCC_OFF12_ASM() (*address))
++	: "=&r" (tmp), "=" GCC_OFF_SMALL_ASM() (*address)		\
++	: "0" (tmp), GCC_OFF_SMALL_ASM() (*address))
+ 
+ #endif	/* __ASM_REGOPS_H__ */
+diff --git a/arch/mips/include/asm/octeon/cvmx-cmd-queue.h b/arch/mips/include/asm/octeon/cvmx-cmd-queue.h
+index 75739c83f07e..8d05d9069823 100644
+--- a/arch/mips/include/asm/octeon/cvmx-cmd-queue.h
++++ b/arch/mips/include/asm/octeon/cvmx-cmd-queue.h
+@@ -275,7 +275,7 @@ static inline void __cvmx_cmd_queue_lock(cvmx_cmd_queue_id_t queue_id,
+ 		" lbu	%[ticket], %[now_serving]\n"
+ 		"4:\n"
+ 		".set pop\n" :
+-		[ticket_ptr] "=" GCC_OFF12_ASM()(__cvmx_cmd_queue_state_ptr->ticket[__cvmx_cmd_queue_get_index(queue_id)]),
++		[ticket_ptr] "=" GCC_OFF_SMALL_ASM()(__cvmx_cmd_queue_state_ptr->ticket[__cvmx_cmd_queue_get_index(queue_id)]),
+ 		[now_serving] "=m"(qptr->now_serving), [ticket] "=r"(tmp),
+ 		[my_ticket] "=r"(my_ticket)
+ 	    );
+diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/spinlock.h
+index c6d06d383ef9..b5238404c059 100644
+--- a/arch/mips/include/asm/spinlock.h
++++ b/arch/mips/include/asm/spinlock.h
+@@ -89,7 +89,7 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
+ 		"	 subu	%[ticket], %[ticket], 1			\n"
+ 		"	.previous					\n"
+ 		"	.set pop					\n"
+-		: [ticket_ptr] "+" GCC_OFF12_ASM() (lock->lock),
++		: [ticket_ptr] "+" GCC_OFF_SMALL_ASM() (lock->lock),
+ 		  [serving_now_ptr] "+m" (lock->h.serving_now),
+ 		  [ticket] "=&r" (tmp),
+ 		  [my_ticket] "=&r" (my_ticket)
+@@ -122,7 +122,7 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
+ 		"	 subu	%[ticket], %[ticket], 1			\n"
+ 		"	.previous					\n"
+ 		"	.set pop					\n"
+-		: [ticket_ptr] "+" GCC_OFF12_ASM() (lock->lock),
++		: [ticket_ptr] "+" GCC_OFF_SMALL_ASM() (lock->lock),
+ 		  [serving_now_ptr] "+m" (lock->h.serving_now),
+ 		  [ticket] "=&r" (tmp),
+ 		  [my_ticket] "=&r" (my_ticket)
+@@ -164,7 +164,7 @@ static inline unsigned int arch_spin_trylock(arch_spinlock_t *lock)
+ 		"	 li	%[ticket], 0				\n"
+ 		"	.previous					\n"
+ 		"	.set pop					\n"
+-		: [ticket_ptr] "+" GCC_OFF12_ASM() (lock->lock),
++		: [ticket_ptr] "+" GCC_OFF_SMALL_ASM() (lock->lock),
+ 		  [ticket] "=&r" (tmp),
+ 		  [my_ticket] "=&r" (tmp2),
+ 		  [now_serving] "=&r" (tmp3)
+@@ -188,7 +188,7 @@ static inline unsigned int arch_spin_trylock(arch_spinlock_t *lock)
+ 		"	 li	%[ticket], 0				\n"
+ 		"	.previous					\n"
+ 		"	.set pop					\n"
+-		: [ticket_ptr] "+" GCC_OFF12_ASM() (lock->lock),
++		: [ticket_ptr] "+" GCC_OFF_SMALL_ASM() (lock->lock),
+ 		  [ticket] "=&r" (tmp),
+ 		  [my_ticket] "=&r" (tmp2),
+ 		  [now_serving] "=&r" (tmp3)
+@@ -235,8 +235,8 @@ static inline void arch_read_lock(arch_rwlock_t *rw)
+ 		"	beqzl	%1, 1b					\n"
+ 		"	 nop						\n"
+ 		"	.set	reorder					\n"
+-		: "=" GCC_OFF12_ASM() (rw->lock), "=&r" (tmp)
+-		: GCC_OFF12_ASM() (rw->lock)
++		: "=" GCC_OFF_SMALL_ASM() (rw->lock), "=&r" (tmp)
++		: GCC_OFF_SMALL_ASM() (rw->lock)
+ 		: "memory");
+ 	} else {
+ 		do {
+@@ -245,8 +245,8 @@ static inline void arch_read_lock(arch_rwlock_t *rw)
+ 			"	bltz	%1, 1b				\n"
+ 			"	 addu	%1, 1				\n"
+ 			"2:	sc	%1, %0				\n"
+-			: "=" GCC_OFF12_ASM() (rw->lock), "=&r" (tmp)
+-			: GCC_OFF12_ASM() (rw->lock)
++			: "=" GCC_OFF_SMALL_ASM() (rw->lock), "=&r" (tmp)
++			: GCC_OFF_SMALL_ASM() (rw->lock)
+ 			: "memory");
+ 		} while (unlikely(!tmp));
+ 	}
+@@ -269,8 +269,8 @@ static inline void arch_read_unlock(arch_rwlock_t *rw)
+ 		"	sub	%1, 1					\n"
+ 		"	sc	%1, %0					\n"
+ 		"	beqzl	%1, 1b					\n"
+-		: "=" GCC_OFF12_ASM() (rw->lock), "=&r" (tmp)
+-		: GCC_OFF12_ASM() (rw->lock)
++		: "=" GCC_OFF_SMALL_ASM() (rw->lock), "=&r" (tmp)
++		: GCC_OFF_SMALL_ASM() (rw->lock)
+ 		: "memory");
+ 	} else {
+ 		do {
+@@ -278,8 +278,8 @@ static inline void arch_read_unlock(arch_rwlock_t *rw)
+ 			"1:	ll	%1, %2	# arch_read_unlock	\n"
+ 			"	sub	%1, 1				\n"
+ 			"	sc	%1, %0				\n"
+-			: "=" GCC_OFF12_ASM() (rw->lock), "=&r" (tmp)
+-			: GCC_OFF12_ASM() (rw->lock)
++			: "=" GCC_OFF_SMALL_ASM() (rw->lock), "=&r" (tmp)
++			: GCC_OFF_SMALL_ASM() (rw->lock)
+ 			: "memory");
+ 		} while (unlikely(!tmp));
+ 	}
+@@ -299,8 +299,8 @@ static inline void arch_write_lock(arch_rwlock_t *rw)
+ 		"	beqzl	%1, 1b					\n"
+ 		"	 nop						\n"
+ 		"	.set	reorder					\n"
+-		: "=" GCC_OFF12_ASM() (rw->lock), "=&r" (tmp)
+-		: GCC_OFF12_ASM() (rw->lock)
++		: "=" GCC_OFF_SMALL_ASM() (rw->lock), "=&r" (tmp)
++		: GCC_OFF_SMALL_ASM() (rw->lock)
+ 		: "memory");
+ 	} else {
+ 		do {
+@@ -309,8 +309,8 @@ static inline void arch_write_lock(arch_rwlock_t *rw)
+ 			"	bnez	%1, 1b				\n"
+ 			"	 lui	%1, 0x8000			\n"
+ 			"2:	sc	%1, %0				\n"
+-			: "=" GCC_OFF12_ASM() (rw->lock), "=&r" (tmp)
+-			: GCC_OFF12_ASM() (rw->lock)
++			: "=" GCC_OFF_SMALL_ASM() (rw->lock), "=&r" (tmp)
++			: GCC_OFF_SMALL_ASM() (rw->lock)
+ 			: "memory");
+ 		} while (unlikely(!tmp));
+ 	}
+@@ -349,8 +349,8 @@ static inline int arch_read_trylock(arch_rwlock_t *rw)
+ 		__WEAK_LLSC_MB
+ 		"	li	%2, 1					\n"
+ 		"2:							\n"
+-		: "=" GCC_OFF12_ASM() (rw->lock), "=&r" (tmp), "=&r" (ret)
+-		: GCC_OFF12_ASM() (rw->lock)
++		: "=" GCC_OFF_SMALL_ASM() (rw->lock), "=&r" (tmp), "=&r" (ret)
++		: GCC_OFF_SMALL_ASM() (rw->lock)
+ 		: "memory");
+ 	} else {
+ 		__asm__ __volatile__(
+@@ -366,8 +366,8 @@ static inline int arch_read_trylock(arch_rwlock_t *rw)
+ 		__WEAK_LLSC_MB
+ 		"	li	%2, 1					\n"
+ 		"2:							\n"
+-		: "=" GCC_OFF12_ASM() (rw->lock), "=&r" (tmp), "=&r" (ret)
+-		: GCC_OFF12_ASM() (rw->lock)
++		: "=" GCC_OFF_SMALL_ASM() (rw->lock), "=&r" (tmp), "=&r" (ret)
++		: GCC_OFF_SMALL_ASM() (rw->lock)
+ 		: "memory");
+ 	}
+ 
+@@ -393,8 +393,8 @@ static inline int arch_write_trylock(arch_rwlock_t *rw)
+ 		"	li	%2, 1					\n"
+ 		"	.set	reorder					\n"
+ 		"2:							\n"
+-		: "=" GCC_OFF12_ASM() (rw->lock), "=&r" (tmp), "=&r" (ret)
+-		: GCC_OFF12_ASM() (rw->lock)
++		: "=" GCC_OFF_SMALL_ASM() (rw->lock), "=&r" (tmp), "=&r" (ret)
++		: GCC_OFF_SMALL_ASM() (rw->lock)
+ 		: "memory");
+ 	} else {
+ 		do {
+@@ -406,9 +406,9 @@ static inline int arch_write_trylock(arch_rwlock_t *rw)
+ 			"	sc	%1, %0				\n"
+ 			"	li	%2, 1				\n"
+ 			"2:						\n"
+-			: "=" GCC_OFF12_ASM() (rw->lock), "=&r" (tmp),
++			: "=" GCC_OFF_SMALL_ASM() (rw->lock), "=&r" (tmp),
+ 			  "=&r" (ret)
+-			: GCC_OFF12_ASM() (rw->lock)
++			: GCC_OFF_SMALL_ASM() (rw->lock)
+ 			: "memory");
+ 		} while (unlikely(!tmp));
+ 
 -- 
 2.2.2

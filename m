@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:41932 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:15625 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011942AbbA0VqYKCHB1 (ORCPT
+        with ESMTP id S27011951AbbA0VqY3db3z (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Tue, 27 Jan 2015 22:46:24 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 7/9] MIPS: perf: Allow sharing IRQ with timer
-Date: Tue, 27 Jan 2015 21:45:53 +0000
-Message-ID: <1422395155-16511-8-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 8/9] MIPS: OProfile: Allow sharing IRQ with timer
+Date: Tue, 27 Jan 2015 21:45:54 +0000
+Message-ID: <1422395155-16511-9-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1422395155-16511-1-git-send-email-james.hogan@imgtec.com>
 References: <1422395155-16511-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -21,8 +21,8 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Ingo Molnar <mingo@redhat.com>, Paul Mackerras <paulus@samba.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>
-Message-ID: <20150127214553.r7t8gh5hnGOND8sTEpFrfiknu5sG3KGbRJoxt_ea73U@z>
+Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Robert Richter <rric@kernel.org>, oprofile-list@lists.sf.net
+Message-ID: <20150127214554.56hUBtvyS7dXqPYfeh6e4zN9hM057Jpjr0bABfIgVqE@z>
 
 When requesting the performance counter overflow interrupt, pass flags
 which are compatible with the cevt-r4k driver, in particular
@@ -36,46 +36,30 @@ routed to a CPU interrupt, possibly sharing with the timer, the
 performance counters, or both, and it isn't scalable to have all the
 handlers able to call other handlers that may be on the same IRQ line.
 
-Shared handlers must also have a unique device pointer so they can be
-individually removed, so &mipspmu is now passed in for that instead of
-NULL.
-
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>
+Cc: Robert Richter <rric@kernel.org>
 Cc: linux-mips@linux-mips.org
+Cc: oprofile-list@lists.sf.net
 ---
- arch/mips/kernel/perf_event_mipsxx.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/mips/oprofile/op_model_mipsxx.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-index 76bc3bb18c45..9d90efea8bb0 100644
---- a/arch/mips/kernel/perf_event_mipsxx.c
-+++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -558,8 +558,10 @@ static int mipspmu_get_irq(void)
- 	if (mipspmu.irq >= 0) {
- 		/* Request my own irq handler. */
- 		err = request_irq(mipspmu.irq, mipsxx_pmu_handle_irq,
--			IRQF_PERCPU | IRQF_NOBALANCING | IRQF_NO_THREAD,
--			"mips_perf_pmu", NULL);
-+				  IRQF_PERCPU | IRQF_NOBALANCING |
-+				  IRQF_NO_THREAD | IRQF_NO_SUSPEND |
-+				  IRQF_SHARED,
-+				  "mips_perf_pmu", &mipspmu);
- 		if (err) {
- 			pr_warn("Unable to request IRQ%d for MIPS performance counters!\n",
- 				mipspmu.irq);
-@@ -582,7 +584,7 @@ static int mipspmu_get_irq(void)
- static void mipspmu_free_irq(void)
- {
- 	if (mipspmu.irq >= 0)
--		free_irq(mipspmu.irq, NULL);
-+		free_irq(mipspmu.irq, &mipspmu);
- 	else if (cp0_perfcount_irq < 0)
- 		perf_irq = save_perf_irq;
+diff --git a/arch/mips/oprofile/op_model_mipsxx.c b/arch/mips/oprofile/op_model_mipsxx.c
+index 24729f023d93..d6b9e69e7c69 100644
+--- a/arch/mips/oprofile/op_model_mipsxx.c
++++ b/arch/mips/oprofile/op_model_mipsxx.c
+@@ -442,7 +442,10 @@ static int __init mipsxx_init(void)
+ 
+ 	if (perfcount_irq >= 0)
+ 		return request_irq(perfcount_irq, mipsxx_perfcount_int,
+-			0, "Perfcounter", save_perf_irq);
++				   IRQF_PERCPU | IRQF_NOBALANCING |
++				   IRQF_NO_THREAD | IRQF_NO_SUSPEND |
++				   IRQF_SHARED,
++				   "Perfcounter", save_perf_irq);
+ 
+ 	return 0;
  }
 -- 
 2.0.5

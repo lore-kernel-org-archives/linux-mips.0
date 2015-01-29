@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:43115 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012191AbbA2LOnG054C (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Jan 2015 12:14:43 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 9/9] ttyFDC: Implement KGDB IO operations.
-Date: Thu, 29 Jan 2015 11:14:14 +0000
-Message-ID: <1422530054-7976-10-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1422530054-7976-1-git-send-email-james.hogan@imgtec.com>
-References: <1422530054-7976-1-git-send-email-james.hogan@imgtec.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Received: from mailout3.w1.samsung.com ([210.118.77.13]:19046 "EHLO
+        mailout3.w1.samsung.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27012220AbbA2PMvlZ06K (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Jan 2015 16:12:51 +0100
+From: Andrey Ryabinin <a.ryabinin@samsung.com>
+Subject: [PATCH v10 14/17] mm: vmalloc: pass additional vm_flags to
+ __vmalloc_node_range()
+Date: Thu, 29 Jan 2015 18:11:58 +0300
+Message-ID: <1422544321-24232-15-git-send-email-a.ryabinin@samsung.com>
+In-reply-to: <1422544321-24232-1-git-send-email-a.ryabinin@samsung.com>
+References: <1404905415-9046-1-git-send-email-a.ryabinin@samsung.com>
+ <1422544321-24232-1-git-send-email-a.ryabinin@samsung.com>
+Return-Path: <a.ryabinin@samsung.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,278 +20,196 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.cz>, Jason Wessel <jason.wessel@windriver.com>, kgdb-bugreport@lists.sourceforge.net
-Message-ID: <20150129111414.LBd5P9MA0aAxh2r0Obsk3TiM_SS60HV5mkveP-_JF9k@z>
+To: linux-kernel@vger.kernel.org
+Cc: Andrey Ryabinin <a.ryabinin@samsung.com>, Dmitry Vyukov <dvyukov@google.com>, Konstantin Serebryany <kcc@google.com>, Dmitry Chernenkov <dmitryc@google.com>, Andrey Konovalov <adech.fo@gmail.com>, Yuri Gribov <tetra2005@gmail.com>, Konstantin Khlebnikov <koct9i@gmail.com>, Sasha Levin <sasha.levin@oracle.com>, Christoph Lameter <cl@linux.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, Dave Hansen <dave.hansen@intel.com>, Andi Kleen <andi@firstfloor.org>, x86@kernel.org, linux-mm@kvack.org, Russell King <linux@arm.linux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, "supporter:S390" <linux390@de.ibm.com>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>, "open list:MIPS" <linux-mips@linux-mips.org>, "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>, "open list:S390" <linux-s390@vger.kernel.org>, "open list:SPARC + UltraSPAR..." <sparclinux@vger.kernel.org>
+Message-ID: <20150129151158.62RFVf6M9AFpCWCRWNznFaFUFKuVDsJhfC1Uv4J58fQ@z>
 
-Implement KGDB IO operations for MIPS Fast Debug Channel (FDC). This can
-be enabled via Kconfig, which also allows the channel number to be
-chosen.
+For instrumenting global variables KASan will shadow memory backing
+memory for modules. So on module loading we will need to allocate
+shadow memory and map it at exact virtual address.
+__vmalloc_node_range() seems like the best fit for that purpose,
+except it puts a guard hole after allocated area.
 
-The magic sysrq hack is implemented in the TTY driver, detecting just ^C
-for the KGDB channel, and ^O followed by a letter for the FDC console
-channel.
+Now we have VM_NO_GUARD flag disabling guard page, so we need to
+pass into __vmalloc_node_range(). Add new parameter 'vm_flags'
+to __vmalloc_node_range() function.
 
-The KGDB operations are reasonably efficient thanks to the flush
-callback, with a 4 byte buffer being used in both directions to allow up
-to 4 bytes to be encoded per FDC word. Reading of data for KGDB will
-discard any data received on other channels, which clearly isn't ideal,
-but given that there is a single FIFO shared between channels we can't
-do much better.
-
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jslaby@suse.cz>
-Cc: Jason Wessel <jason.wessel@windriver.com>
-Cc: linux-mips@linux-mips.org
-Cc: kgdb-bugreport@lists.sourceforge.net
+Signed-off-by: Andrey Ryabinin <a.ryabinin@samsung.com>
 ---
- drivers/tty/Kconfig          |  16 ++++
- drivers/tty/mips_ejtag_fdc.c | 169 +++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 179 insertions(+), 6 deletions(-)
+ arch/arm/kernel/module.c       |  2 +-
+ arch/arm64/kernel/module.c     |  4 ++--
+ arch/mips/kernel/module.c      |  2 +-
+ arch/parisc/kernel/module.c    |  2 +-
+ arch/s390/kernel/module.c      |  2 +-
+ arch/sparc/kernel/module.c     |  2 +-
+ arch/unicore32/kernel/module.c |  2 +-
+ arch/x86/kernel/module.c       |  2 +-
+ include/linux/vmalloc.h        |  4 +++-
+ mm/vmalloc.c                   | 10 ++++++----
+ 10 files changed, 18 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
-index e0c18e5b7057..c01f45095877 100644
---- a/drivers/tty/Kconfig
-+++ b/drivers/tty/Kconfig
-@@ -450,4 +450,20 @@ config MIPS_EJTAG_FDC_EARLYCON
- 
- 	  If unsure, say N.
- 
-+config MIPS_EJTAG_FDC_KGDB
-+	bool "Use KGDB over an FDC channel"
-+	depends on MIPS_EJTAG_FDC_TTY && KGDB
-+	default y
-+	help
-+          This enables the use of KGDB over an FDC channel, allowing KGDB to be
-+          used remotely or when a serial port isn't available.
-+
-+config MIPS_EJTAG_FDC_KGDB_CHAN
-+	int "KGDB FDC channel"
-+	depends on MIPS_EJTAG_FDC_KGDB
-+	range 2 15
-+	default 3
-+	help
-+	  FDC channel number to use for KGDB.
-+
- endif # TTY
-diff --git a/drivers/tty/mips_ejtag_fdc.c b/drivers/tty/mips_ejtag_fdc.c
-index 8d9bf6f90110..04d9e23d1ee1 100644
---- a/drivers/tty/mips_ejtag_fdc.c
-+++ b/drivers/tty/mips_ejtag_fdc.c
-@@ -17,9 +17,11 @@
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
-+#include <linux/kgdb.h>
- #include <linux/kthread.h>
- #include <linux/sched.h>
- #include <linux/serial.h>
-+#include <linux/serial_core.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/string.h>
-@@ -136,6 +138,8 @@ struct mips_ejtag_fdc_tty_port {
-  * @removing:		Indicates the device is being removed and @poll_timer
-  *			should not be restarted.
-  * @poll_timer:		Timer for polling for interrupt events when @irq < 0.
-+ * @sysrq_pressed:	Whether the magic sysrq key combination has been
-+ *			detected. See mips_ejtag_fdc_handle().
-  */
- struct mips_ejtag_fdc_tty {
- 	struct device			*dev;
-@@ -159,6 +163,10 @@ struct mips_ejtag_fdc_tty {
- 	int				 irq;
- 	bool				 removing;
- 	struct timer_list		 poll_timer;
-+
-+#ifdef CONFIG_MAGIC_SYSRQ
-+	bool				 sysrq_pressed;
-+#endif
- };
- 
- /* Hardware access */
-@@ -568,21 +576,47 @@ static void mips_ejtag_fdc_handle(struct mips_ejtag_fdc_tty *priv)
- 		raw_spin_lock(&dport->rx_lock);
- 		data = mips_ejtag_fdc_read(priv, REG_FDRX);
- 
--		/* Check the port isn't being shut down */
--		if (!dport->rx_buf)
--			goto unlock;
--
- 		len = mips_ejtag_fdc_decode(data, buf);
- 		dev_dbg(priv->dev, "%s%u: in  %08x: \"%*pE\"\n",
- 			priv->driver_name, channel, data, len, buf);
- 
- 		flipped = 0;
--		for (i = 0; i < len; ++i)
-+		for (i = 0; i < len; ++i) {
-+#ifdef CONFIG_MAGIC_SYSRQ
-+#ifdef CONFIG_MIPS_EJTAG_FDC_KGDB
-+			/* Support just Ctrl+C with KGDB channel */
-+			if (channel == CONFIG_MIPS_EJTAG_FDC_KGDB_CHAN) {
-+				if (buf[i] == '\x03') { /* ^C */
-+					handle_sysrq('g');
-+					continue;
-+				}
-+			}
-+#endif
-+			/* Support Ctrl+O for console channel */
-+			if (channel == mips_ejtag_fdc_con.cons.index) {
-+				if (buf[i] == '\x0f') {	/* ^O */
-+					priv->sysrq_pressed =
-+						!priv->sysrq_pressed;
-+					if (priv->sysrq_pressed)
-+						continue;
-+				} else if (priv->sysrq_pressed) {
-+					handle_sysrq(buf[i]);
-+					priv->sysrq_pressed = false;
-+					continue;
-+				}
-+			}
-+#endif /* CONFIG_MAGIC_SYSRQ */
-+
-+			/* Check the port isn't being shut down */
-+			if (!dport->rx_buf)
-+				continue;
-+
- 			flipped += tty_insert_flip_char(&dport->port, buf[i],
- 							TTY_NORMAL);
-+		}
- 		if (flipped)
- 			tty_flip_buffer_push(&dport->port);
--unlock:
-+
- 		raw_spin_unlock(&dport->rx_lock);
- 	}
- 
-@@ -1144,3 +1178,126 @@ int __init setup_early_fdc_console(void)
- 	return mips_ejtag_fdc_console_init(&mips_ejtag_fdc_earlycon);
+diff --git a/arch/arm/kernel/module.c b/arch/arm/kernel/module.c
+index bea7db9..2e11961 100644
+--- a/arch/arm/kernel/module.c
++++ b/arch/arm/kernel/module.c
+@@ -41,7 +41,7 @@
+ void *module_alloc(unsigned long size)
+ {
+ 	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+-				GFP_KERNEL, PAGE_KERNEL_EXEC, NUMA_NO_NODE,
++				GFP_KERNEL, PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
+ 				__builtin_return_address(0));
  }
  #endif
+diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+index 9b6f71d..67bf410 100644
+--- a/arch/arm64/kernel/module.c
++++ b/arch/arm64/kernel/module.c
+@@ -35,8 +35,8 @@
+ void *module_alloc(unsigned long size)
+ {
+ 	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+-				    GFP_KERNEL, PAGE_KERNEL_EXEC, NUMA_NO_NODE,
+-				    __builtin_return_address(0));
++				    GFP_KERNEL, PAGE_KERNEL_EXEC, 0,
++				    NUMA_NO_NODE, __builtin_return_address(0));
+ }
+ 
+ enum aarch64_reloc_op {
+diff --git a/arch/mips/kernel/module.c b/arch/mips/kernel/module.c
+index 2a52568..1833f51 100644
+--- a/arch/mips/kernel/module.c
++++ b/arch/mips/kernel/module.c
+@@ -47,7 +47,7 @@ static DEFINE_SPINLOCK(dbe_lock);
+ void *module_alloc(unsigned long size)
+ {
+ 	return __vmalloc_node_range(size, 1, MODULE_START, MODULE_END,
+-				GFP_KERNEL, PAGE_KERNEL, NUMA_NO_NODE,
++				GFP_KERNEL, PAGE_KERNEL, 0, NUMA_NO_NODE,
+ 				__builtin_return_address(0));
+ }
+ #endif
+diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
+index 5822e8e..3c63a82 100644
+--- a/arch/parisc/kernel/module.c
++++ b/arch/parisc/kernel/module.c
+@@ -219,7 +219,7 @@ void *module_alloc(unsigned long size)
+ 	 * init_data correctly */
+ 	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
+ 				    GFP_KERNEL | __GFP_HIGHMEM,
+-				    PAGE_KERNEL_RWX, NUMA_NO_NODE,
++				    PAGE_KERNEL_RWX, 0, NUMA_NO_NODE,
+ 				    __builtin_return_address(0));
+ }
+ 
+diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
+index 409d152..36154a2 100644
+--- a/arch/s390/kernel/module.c
++++ b/arch/s390/kernel/module.c
+@@ -50,7 +50,7 @@ void *module_alloc(unsigned long size)
+ 	if (PAGE_ALIGN(size) > MODULES_LEN)
+ 		return NULL;
+ 	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+-				    GFP_KERNEL, PAGE_KERNEL, NUMA_NO_NODE,
++				    GFP_KERNEL, PAGE_KERNEL, 0, NUMA_NO_NODE,
+ 				    __builtin_return_address(0));
+ }
+ #endif
+diff --git a/arch/sparc/kernel/module.c b/arch/sparc/kernel/module.c
+index 97655e0..192a617 100644
+--- a/arch/sparc/kernel/module.c
++++ b/arch/sparc/kernel/module.c
+@@ -29,7 +29,7 @@ static void *module_map(unsigned long size)
+ 	if (PAGE_ALIGN(size) > MODULES_LEN)
+ 		return NULL;
+ 	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+-				GFP_KERNEL, PAGE_KERNEL, NUMA_NO_NODE,
++				GFP_KERNEL, PAGE_KERNEL, 0, NUMA_NO_NODE,
+ 				__builtin_return_address(0));
+ }
+ #else
+diff --git a/arch/unicore32/kernel/module.c b/arch/unicore32/kernel/module.c
+index dc41f6d..e191b34 100644
+--- a/arch/unicore32/kernel/module.c
++++ b/arch/unicore32/kernel/module.c
+@@ -25,7 +25,7 @@
+ void *module_alloc(unsigned long size)
+ {
+ 	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+-				GFP_KERNEL, PAGE_KERNEL_EXEC, NUMA_NO_NODE,
++				GFP_KERNEL, PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
+ 				__builtin_return_address(0));
+ }
+ 
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index e69f988..e830e61 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -88,7 +88,7 @@ void *module_alloc(unsigned long size)
+ 	return __vmalloc_node_range(size, 1,
+ 				    MODULES_VADDR + get_module_load_offset(),
+ 				    MODULES_END, GFP_KERNEL | __GFP_HIGHMEM,
+-				    PAGE_KERNEL_EXEC, NUMA_NO_NODE,
++				    PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
+ 				    __builtin_return_address(0));
+ }
+ 
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 1526fe7..7d7acb3 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -76,7 +76,9 @@ extern void *vmalloc_32_user(unsigned long size);
+ extern void *__vmalloc(unsigned long size, gfp_t gfp_mask, pgprot_t prot);
+ extern void *__vmalloc_node_range(unsigned long size, unsigned long align,
+ 			unsigned long start, unsigned long end, gfp_t gfp_mask,
+-			pgprot_t prot, int node, const void *caller);
++			pgprot_t prot, unsigned long vm_flags, int node,
++			const void *caller);
 +
-+#ifdef CONFIG_MIPS_EJTAG_FDC_KGDB
-+
-+/* read buffer to allow decompaction */
-+static unsigned int kgdbfdc_rbuflen;
-+static unsigned int kgdbfdc_rpos;
-+static char kgdbfdc_rbuf[4];
-+
-+/* write buffer to allow compaction */
-+static unsigned int kgdbfdc_wbuflen;
-+static char kgdbfdc_wbuf[4];
-+
-+static void __iomem *kgdbfdc_setup(void)
-+{
-+	void __iomem *regs;
-+	unsigned int cpu;
-+
-+	/* Find address, piggy backing off console percpu regs */
-+	cpu = smp_processor_id();
-+	regs = mips_ejtag_fdc_con.regs[cpu];
-+	/* First console output on this CPU? */
-+	if (!regs) {
-+		regs = mips_cdmm_early_probe(0xfd);
-+		mips_ejtag_fdc_con.regs[cpu] = regs;
-+	}
-+	/* Already tried and failed to find FDC on this CPU? */
-+	if (IS_ERR(regs))
-+		return regs;
-+
-+	return regs;
-+}
-+
-+/* read a character from the read buffer, filling from FDC RX FIFO */
-+static int kgdbfdc_read_char(void)
-+{
-+	unsigned int stat, channel, data;
-+	void __iomem *regs;
-+
-+	/* No more data, try and read another FDC word from RX FIFO */
-+	if (kgdbfdc_rpos >= kgdbfdc_rbuflen) {
-+		kgdbfdc_rpos = 0;
-+		kgdbfdc_rbuflen = 0;
-+
-+		regs = kgdbfdc_setup();
-+		if (IS_ERR(regs))
-+			return NO_POLL_CHAR;
-+
-+		/* Read next word from KGDB channel */
-+		do {
-+			stat = ioread32(regs + REG_FDSTAT);
-+
-+			/* No data waiting? */
-+			if (stat & REG_FDSTAT_RXE)
-+				return NO_POLL_CHAR;
-+
-+			/* Read next word */
-+			channel = (stat & REG_FDSTAT_RXCHAN) >>
-+					REG_FDSTAT_RXCHAN_SHIFT;
-+			data = ioread32(regs + REG_FDRX);
-+		} while (channel != CONFIG_MIPS_EJTAG_FDC_KGDB_CHAN);
-+
-+		/* Decode into rbuf */
-+		kgdbfdc_rbuflen = mips_ejtag_fdc_decode(data, kgdbfdc_rbuf);
-+	}
-+	pr_devel("kgdbfdc r %c\n", kgdbfdc_rbuf[kgdbfdc_rpos]);
-+	return kgdbfdc_rbuf[kgdbfdc_rpos++];
-+}
-+
-+/* push an FDC word from write buffer to TX FIFO */
-+static void kgdbfdc_push_one(void)
-+{
-+	const char *bufs[1] = { kgdbfdc_wbuf };
-+	struct fdc_word word;
-+	void __iomem *regs;
-+	unsigned int i;
-+
-+	/* Construct a word from any data in buffer */
-+	word = mips_ejtag_fdc_encode(bufs, &kgdbfdc_wbuflen, 1);
-+	/* Relocate any remaining data to beginnning of buffer */
-+	kgdbfdc_wbuflen -= word.bytes;
-+	for (i = 0; i < kgdbfdc_wbuflen; ++i)
-+		kgdbfdc_wbuf[i] = kgdbfdc_wbuf[i + word.bytes];
-+
-+	regs = kgdbfdc_setup();
-+	if (IS_ERR(regs))
-+		return;
-+
-+	/* Busy wait until there's space in fifo */
-+	while (ioread32(regs + REG_FDSTAT) & REG_FDSTAT_TXF)
-+		;
-+	iowrite32(word.word, regs + REG_FDTX(CONFIG_MIPS_EJTAG_FDC_KGDB_CHAN));
-+}
-+
-+/* flush the whole write buffer to the TX FIFO */
-+static void kgdbfdc_flush(void)
-+{
-+	while (kgdbfdc_wbuflen)
-+		kgdbfdc_push_one();
-+}
-+
-+/* write a character into the write buffer, writing out if full */
-+static void kgdbfdc_write_char(u8 chr)
-+{
-+	pr_devel("kgdbfdc w %c\n", chr);
-+	kgdbfdc_wbuf[kgdbfdc_wbuflen++] = chr;
-+	if (kgdbfdc_wbuflen >= sizeof(kgdbfdc_wbuf))
-+		kgdbfdc_push_one();
-+}
-+
-+static struct kgdb_io kgdbfdc_io_ops = {
-+	.name		= "kgdbfdc",
-+	.read_char	= kgdbfdc_read_char,
-+	.write_char	= kgdbfdc_write_char,
-+	.flush		= kgdbfdc_flush,
-+};
-+
-+static int __init kgdbfdc_init(void)
-+{
-+	kgdb_register_io_module(&kgdbfdc_io_ops);
-+	return 0;
-+}
-+early_initcall(kgdbfdc_init);
-+#endif
+ extern void vfree(const void *addr);
+ 
+ extern void *vmap(struct page **pages, unsigned int count,
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 2e74e99..35b25e1 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -1619,6 +1619,7 @@ fail:
+  *	@end:		vm area range end
+  *	@gfp_mask:	flags for the page level allocator
+  *	@prot:		protection mask for the allocated pages
++ *	@vm_flags:	additional vm area flags (e.g. %VM_NO_GUARD)
+  *	@node:		node to use for allocation or NUMA_NO_NODE
+  *	@caller:	caller's return address
+  *
+@@ -1628,7 +1629,8 @@ fail:
+  */
+ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+ 			unsigned long start, unsigned long end, gfp_t gfp_mask,
+-			pgprot_t prot, int node, const void *caller)
++			pgprot_t prot, unsigned long vm_flags, int node,
++			const void *caller)
+ {
+ 	struct vm_struct *area;
+ 	void *addr;
+@@ -1638,8 +1640,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+ 	if (!size || (size >> PAGE_SHIFT) > totalram_pages)
+ 		goto fail;
+ 
+-	area = __get_vm_area_node(size, align, VM_ALLOC | VM_UNINITIALIZED,
+-				  start, end, node, gfp_mask, caller);
++	area = __get_vm_area_node(size, align, VM_ALLOC | VM_UNINITIALIZED |
++				vm_flags, start, end, node, gfp_mask, caller);
+ 	if (!area)
+ 		goto fail;
+ 
+@@ -1688,7 +1690,7 @@ static void *__vmalloc_node(unsigned long size, unsigned long align,
+ 			    int node, const void *caller)
+ {
+ 	return __vmalloc_node_range(size, align, VMALLOC_START, VMALLOC_END,
+-				gfp_mask, prot, node, caller);
++				gfp_mask, prot, 0, node, caller);
+ }
+ 
+ void *__vmalloc(unsigned long size, gfp_t gfp_mask, pgprot_t prot)
 -- 
-2.0.5
+2.2.2

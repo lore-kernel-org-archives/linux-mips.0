@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:26940 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:23604 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011962AbbA0VqZdo2RY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 27 Jan 2015 22:46:25 +0100
+        with ESMTP id S27009841AbbA2LOf0Pj2z (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Jan 2015 12:14:35 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 9/9] MIPS: Allow shared IRQ for timer & perf counter
-Date: Tue, 27 Jan 2015 21:45:55 +0000
-Message-ID: <1422395155-16511-10-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1422395155-16511-1-git-send-email-james.hogan@imgtec.com>
-References: <1422395155-16511-1-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 0/9] Add MIPS EJTAG Fast Debug Channel TTY driver
+Date: Thu, 29 Jan 2015 11:14:05 +0000
+Message-ID: <1422530054-7976-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <James.Hogan@imgtec.com>
@@ -21,55 +19,61 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20150127214555.v6jkTZFD-32uuBXm6DULqMqnm7fUR2uGXevdhhwYap8@z>
+Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Andrew Bresticker <abrestic@chromium.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.cz>, Jason Wessel <jason.wessel@windriver.com>, kgdb-bugreport@lists.sourceforge.net
+Message-ID: <20150129111405.kh86lEInBRvdju_b3iGbbmLv_zjChGd2TjltAz4US_A@z>
 
-Before release 2 of the architecture there weren't separate interrupt
-pending bits for the local CPU interrupts (timer & perf counter
-overflow), so when they were connected to the same interrupt line the
-timer handler had to call the performance counter handler before knowing
-whether a timer interrupt was actually pending.
+This patchset adds a TTY, console, and KGDB driver for the MIPS Fast
+Debug Channel (FDC) hardware, for communicating with a debugger via an
+EJTAG probe. 16 TTY ports are created per FDC device, corresponding to
+the 16 FDC channels. Each VPE usually has its own FDC instance.
 
-Now another CPU local interrupt, for the Fast Debug Channel (FDC), can
-also be routed to an arbitrary interrupt line. It isn't scalable to keep
-adding cross-calls between handlers for these cases of shared interrupt
-lines, especially since the FDC could in theory share its interrupt line
-with the performance counter, timer, or both.
+This patchset depends on my recent CDMM bus patchset (the FDC is in the
+per-CPU CDMM region), and my recent MIPS timer & perf counter IRQ
+sharing patchset (the FDC IRQ is a local CPU IRQ which may similarly
+share CPU IRQ lines with the other local IRQs).
 
-Fortunately since release 2 of the architecture separate interrupt
-pending bits do exist in the Cause register. This allows local
-interrupts which share an interrupt line to have separate handlers using
-IRQF_SHARED. Unfortunately they can't easily have their own irqchip as
-there is no generic way to individually mask them.
+Patches 1 to 6 add the necessary architecture bits for the FDC
+interrupt, and a workaround in the MIPS idle code to avoid the wait
+instruction on certain cores if FDC driver is enabled.
 
-Enable this sharing to happen by removing the special case for when the
-perf count shares an IRQ with the timer. cp0_perfcount_irq and
-cp0_compare_irq can then be set to the same value with shared interrupt
-handlers registered for both of them.
+Finally patches 7-9 add the main TTY/console driver, wire up some early
+console code, and implement KGDB operations & magic sysrq.
 
-Pre-R2 code should be unaffected. cp0_perfcount_irq will always be -1
-and the timer handler will contnue to call into the perf counter
-handler.
-
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Andrew Bresticker <abrestic@chromium.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jslaby@suse.cz>
+Cc: Jason Wessel <jason.wessel@windriver.com>
 Cc: linux-mips@linux-mips.org
----
- arch/mips/kernel/traps.c | 2 --
- 1 file changed, 2 deletions(-)
+Cc: kgdb-bugreport@lists.sourceforge.net
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index ad3d2031c327..9c109fd8ba99 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2006,8 +2006,6 @@ void per_cpu_trap_init(bool is_boot_cpu)
- 		cp0_compare_irq_shift = CAUSEB_TI - CAUSEB_IP;
- 		cp0_compare_irq = (read_c0_intctl() >> INTCTLB_IPTI) & 7;
- 		cp0_perfcount_irq = (read_c0_intctl() >> INTCTLB_IPPCI) & 7;
--		if (cp0_perfcount_irq == cp0_compare_irq)
--			cp0_perfcount_irq = -1;
- 	} else {
- 		cp0_compare_irq = CP0_LEGACY_COMPARE_IRQ;
- 		cp0_compare_irq_shift = CP0_LEGACY_PERFCNT_IRQ;
+James Hogan (9):
+  MIPS: Add architectural FDC IRQ fields
+  MIPS: Read CPU IRQ line that FDC to routed to
+  irqchip: mips-gic: Don't treat FDC IRQ as percpu devid
+  irqchip: mips-gic: Add function for retrieving FDC IRQ
+  MIPS: Malta: Implement get_c0_fdc_int()
+  MIPS: idle: Workaround wait + FDC problems
+  tty: Add MIPS EJTAG Fast Debug Channel TTY driver
+  MIPS, ttyFDC: Add early FDC console support
+  ttyFDC: Implement KGDB IO operations.
+
+ arch/mips/include/asm/cdmm.h     |   11 +
+ arch/mips/include/asm/irq.h      |    3 +
+ arch/mips/include/asm/mipsregs.h |    4 +
+ arch/mips/kernel/idle.c          |   13 +-
+ arch/mips/kernel/setup.c         |    2 +
+ arch/mips/kernel/traps.c         |   11 +
+ arch/mips/mti-malta/malta-time.c |   16 +
+ drivers/irqchip/irq-mips-gic.c   |   38 +-
+ drivers/tty/Kconfig              |   47 ++
+ drivers/tty/Makefile             |    1 +
+ drivers/tty/mips_ejtag_fdc.c     | 1303 ++++++++++++++++++++++++++++++++++++++
+ include/linux/irqchip/mips-gic.h |    1 +
+ 12 files changed, 1443 insertions(+), 7 deletions(-)
+ create mode 100644 drivers/tty/mips_ejtag_fdc.c
+
 -- 
 2.0.5

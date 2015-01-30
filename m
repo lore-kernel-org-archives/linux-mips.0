@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53545 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:7020 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012305AbbA3MKfKTY-x (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Jan 2015 13:10:35 +0100
+        with ESMTP id S27012269AbbA3MKzLpaEl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Jan 2015 13:10:55 +0100
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 566023197B15D
-        for <linux-mips@linux-mips.org>; Fri, 30 Jan 2015 12:10:27 +0000 (GMT)
+        by Websense Email Security Gateway with ESMTPS id 6CDA0E5F20154
+        for <linux-mips@linux-mips.org>; Fri, 30 Jan 2015 12:10:47 +0000 (GMT)
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 02/10] MIPS: assume at as source/dest of MSA copy/insert instructions
-Date: Fri, 30 Jan 2015 12:09:31 +0000
-Message-ID: <1422619779-9940-3-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH v2 03/10] MIPS: remove MSA macro recursion
+Date: Fri, 30 Jan 2015 12:09:32 +0000
+Message-ID: <1422619779-9940-4-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1422619779-9940-1-git-send-email-paul.burton@imgtec.com>
 References: <1422619779-9940-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -25,126 +25,81 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20150130120931.9Nk3zmOLUkuvwaNjiot17LPLd2ODUeZNWqSGom5JAjI@z>
+Message-ID: <20150130120932.FF2HhuPKgS3Bi3jd46u0WZwh85ALeCmYjpSdBngSgkc@z>
 
-Assuming at ($1) as the source or destination register of copy or
-insert instructions:
+Recursive macros made the code more concise & worked great for the
+case where the toolchain doesn't support MSA. However, with toolchains
+which do support MSA they lead to build failures such as:
 
-  - Simplifies the macros providing those instructions for toolchains
-    without MSA support.
+  arch/mips/kernel/r4k_switch.S: Assembler messages:
+  arch/mips/kernel/r4k_switch.S:148: Error: invalid operands `insert.w $w(0+1)[2],$1'
+  arch/mips/kernel/r4k_switch.S:148: Error: invalid operands `insert.w $w(0+1)[3],$1'
+  arch/mips/kernel/r4k_switch.S:148: Error: invalid operands `insert.w $w((0+1)+1)[2],$1'
+  arch/mips/kernel/r4k_switch.S:148: Error: invalid operands `insert.w $w((0+1)+1)[3],$1'
+  ...
 
-  - Avoids an unnecessary move instruction when at is used as the source
-    or destination register anyway.
-
-  - Is sufficient for the uses to be introduced in the kernel by a
-    subsequent patch.
-
-Note that due to a patch ordering snafu on my part this also fixes the
-currently broken build with MSA support enabled. The build has been
-broken since commit c9017757c532 "MIPS: init upper 64b of vector
-registers when MSA is first used", which this patch should have
-preceeded.
+Drop the recursion from msa_init_all_upper invoking the msa_init_upper
+macro explicitly for each vector register.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 Changes in v2:
   - Rebase atop v3.19-rc6.
 ---
- arch/mips/include/asm/asmmacro.h | 28 ++++++++++++----------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
+ arch/mips/include/asm/asmmacro.h | 34 +++++++++++++++++++++++++++++++---
+ 1 file changed, 31 insertions(+), 3 deletions(-)
 
 diff --git a/arch/mips/include/asm/asmmacro.h b/arch/mips/include/asm/asmmacro.h
-index a4a5ec8..34f9757 100644
+index 34f9757..d2231d6 100644
 --- a/arch/mips/include/asm/asmmacro.h
 +++ b/arch/mips/include/asm/asmmacro.h
-@@ -225,35 +225,35 @@
- 	.set	pop
+@@ -442,9 +442,6 @@
+ 	insert_w \wd, 2
+ 	insert_w \wd, 3
+ #endif
+-	.if	31-\wd
+-	msa_init_upper	(\wd+1)
+-	.endif
  	.endm
  
--	.macro	copy_u_w	rd, ws, n
-+	.macro	copy_u_w	ws, n
- 	.set	push
- 	.set	mips32r2
- 	.set	msa
--	copy_u.w \rd, $w\ws[\n]
-+	copy_u.w $1, $w\ws[\n]
- 	.set	pop
- 	.endm
- 
--	.macro	copy_u_d	rd, ws, n
-+	.macro	copy_u_d	ws, n
- 	.set	push
- 	.set	mips64r2
- 	.set	msa
--	copy_u.d \rd, $w\ws[\n]
-+	copy_u.d $1, $w\ws[\n]
- 	.set	pop
- 	.endm
- 
--	.macro	insert_w	wd, n, rs
-+	.macro	insert_w	wd, n
- 	.set	push
- 	.set	mips32r2
- 	.set	msa
--	insert.w $w\wd[\n], \rs
-+	insert.w $w\wd[\n], $1
- 	.set	pop
- 	.endm
- 
--	.macro	insert_d	wd, n, rs
-+	.macro	insert_d	wd, n
- 	.set	push
- 	.set	mips64r2
- 	.set	msa
--	insert.d $w\wd[\n], \rs
-+	insert.d $w\wd[\n], $1
- 	.set	pop
- 	.endm
- #else
-@@ -318,40 +318,36 @@
- 	.set	pop
- 	.endm
- 
--	.macro	copy_u_w	rd, ws, n
-+	.macro	copy_u_w	ws, n
- 	.set	push
- 	.set	noat
+ 	.macro	msa_init_all_upper
+@@ -453,6 +450,37 @@
  	SET_HARDFLOAT
- 	.insn
- 	.word	COPY_UW_MSA_INSN | (\n << 16) | (\ws << 11)
--	move	\rd, $1
+ 	not	$1, zero
+ 	msa_init_upper	0
++	msa_init_upper	1
++	msa_init_upper	2
++	msa_init_upper	3
++	msa_init_upper	4
++	msa_init_upper	5
++	msa_init_upper	6
++	msa_init_upper	7
++	msa_init_upper	8
++	msa_init_upper	9
++	msa_init_upper	10
++	msa_init_upper	11
++	msa_init_upper	12
++	msa_init_upper	13
++	msa_init_upper	14
++	msa_init_upper	15
++	msa_init_upper	16
++	msa_init_upper	17
++	msa_init_upper	18
++	msa_init_upper	19
++	msa_init_upper	20
++	msa_init_upper	21
++	msa_init_upper	22
++	msa_init_upper	23
++	msa_init_upper	24
++	msa_init_upper	25
++	msa_init_upper	26
++	msa_init_upper	27
++	msa_init_upper	28
++	msa_init_upper	29
++	msa_init_upper	30
++	msa_init_upper	31
  	.set	pop
  	.endm
  
--	.macro	copy_u_d	rd, ws, n
-+	.macro	copy_u_d	ws, n
- 	.set	push
- 	.set	noat
- 	SET_HARDFLOAT
- 	.insn
- 	.word	COPY_UD_MSA_INSN | (\n << 16) | (\ws << 11)
--	move	\rd, $1
- 	.set	pop
- 	.endm
- 
--	.macro	insert_w	wd, n, rs
-+	.macro	insert_w	wd, n
- 	.set	push
- 	.set	noat
- 	SET_HARDFLOAT
--	move	$1, \rs
- 	.word	INSERT_W_MSA_INSN | (\n << 16) | (\wd << 6)
- 	.set	pop
- 	.endm
- 
--	.macro	insert_d	wd, n, rs
-+	.macro	insert_d	wd, n
- 	.set	push
- 	.set	noat
- 	SET_HARDFLOAT
--	move	$1, \rs
- 	.word	INSERT_D_MSA_INSN | (\n << 16) | (\wd << 6)
- 	.set	pop
- 	.endm
 -- 
 2.2.2

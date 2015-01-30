@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61391 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:4843 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011201AbbA3Q1IIKVsg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Jan 2015 17:27:08 +0100
-Message-ID: <54CBB0D4.1040506@imgtec.com>
-Date: Fri, 30 Jan 2015 16:27:00 +0000
+        with ESMTP id S27012309AbbA3QwbgNh0G (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Jan 2015 17:52:31 +0100
+Message-ID: <54CBB6C5.6020806@imgtec.com>
+Date: Fri, 30 Jan 2015 16:52:21 +0000
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] MIPS: Makefile: Set correct ISA level for MIPS ASEs
-References: <1422629056-27715-1-git-send-email-markos.chandras@imgtec.com> <alpine.LFD.2.11.1501301606470.28301@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.11.1501301606470.28301@eddie.linux-mips.org>
+Subject: Re: [PATCH 2/2] MIPS: Makefile: Set default ISA level
+References: <1422629056-27715-1-git-send-email-markos.chandras@imgtec.com> <1422629056-27715-2-git-send-email-markos.chandras@imgtec.com> <alpine.LFD.2.11.1501301621090.28301@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.11.1501301621090.28301@eddie.linux-mips.org>
 Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,65 +22,67 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20150130162700.5wvUDd_L6gVF8mmoiOrlDtpw0a0-DAcUwsPdc-Rdx8c@z>
+Cc: linux-mips@linux-mips.org, Matthew Fortune <Matthew.Fortune@imgtec.com>
+Message-ID: <20150130165221.fhI6kQsBo8nnLY5JAEVFhxo6Pb3hSEPJAjE3q9zF8bw@z>
 
-On 01/30/2015 04:20 PM, Maciej W. Rozycki wrote:
+On 01/30/2015 04:37 PM, Maciej W. Rozycki wrote:
 > On Fri, 30 Jan 2015, Markos Chandras wrote:
 > 
->> @@ -131,14 +131,14 @@ cflags-$(CONFIG_CPU_LITTLE_ENDIAN)	+= $(shell $(CC) -dumpmachine |grep -q 'mips.
->>  # Warning: the 64-bit MIPS architecture does not support the `smartmips' extension
->>  # Pass -Wa,--no-warn to disable all assembler warnings until the kernel code has
->>  # been fixed properly.
->> -cflags-$(CONFIG_CPU_HAS_SMARTMIPS)	+= $(call cc-option,-msmartmips) -Wa,--no-warn
->> -cflags-$(CONFIG_CPU_MICROMIPS) += $(call cc-option,-mmicromips)
->> +cflags-$(CONFIG_CPU_HAS_SMARTMIPS)	+= $(call cc-option,-march=mips32r2 -msmartmips) -Wa,--no-warn
->> +cflags-$(CONFIG_CPU_MICROMIPS) += $(call cc-option,-march=mips32r2 -mmicromips)
+>> When we configure the toolchain, we can set the default
+>> ISA level to be used when none is set in the command line.
+>> This, however, has some undesired consequences when the parameters
+>> used in the command line are incompatible with the built-in ISA
+>> level of the toolchain. In order to minimize such problems, we set
+>> a good default ISA level if the Makefile hasn't set one for the
+>> selected processor.
 > 
->  The SmartMIPS ASE has been there since r1, e.g. the 4KSd core so you want 
-> to allow `-march=mips32', but also `-march=mips32r2' if running on earlier 
-> processors is not needed.
-> 
->  I think to ensure the right ISA option has been selected it will be the 
-> best to make it happen in Kconfig, by making CPU_HAS_SMARTMIPS and 
-> CPU_MICROMIPS depend on the right CPU selection option.  Have you 
-> considered such an approach (and disregarded it for some reason)?
+>  Agreed, but does it happen for any actual configuration?  If so, then the 
+> configuration is broken and your proposal papers over it, an explicit 
+> `-march=' option is supposed to be there for all the possible CPU_foo 
+> settings.  At first look it seems to be the case in arch/mips/Makefile, 
+> but maybe I'm missing something.  Besides, a default of `-march=mips32' or 
+> whatever may not really be adequate for the CPU selected.
 
-I considered it but i thought passing something sane to $(call
-cc-option) might be preferred. What I am trying to do here is to ensure
-the $(call cc-option) will not fail in case your toolchain really
-supports micromips or smartmips but when combined with a bad default it
-simply fails
+We do have some tools around which default on -march=mips32r6. Then a
+loongson3_defconfig build gives this
+
+kernel/bounds.c:1:0: error: ‘-march=mips32r6’ is not compatible with the
+selected ABI
+
+and that's because in the command line you have no -march=XXXX because
+there is none set for CPU_LOONGSON3
+
+this is the case I've spotted so far, but if you say that *every* CPU_
+symbol needs to set good cflags then this needs to be addressed in a
+different way I suppose.
 
 > 
+>> diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+>> index 0608ec524d3d..a244fb311a37 100644
+>> --- a/arch/mips/Makefile
+>> +++ b/arch/mips/Makefile
+>> @@ -226,6 +226,15 @@ cflags-y			+= -I$(srctree)/arch/mips/include/asm/mach-generic
+>>  drivers-$(CONFIG_PCI)		+= arch/mips/pci/
 >>  
->>  cflags-$(CONFIG_SB1XXX_CORELIS)	+= $(call cc-option,-mno-sched-prolog) \
->>  				   -fno-omit-frame-pointer
->>  
->>  ifeq ($(CONFIG_CPU_HAS_MSA),y)
->> -toolchain-msa	:= $(call cc-option-yn,-mhard-float -mfp64 -Wa$(comma)-mmsa)
->> +toolchain-msa	:= $(call cc-option-yn,-march=mips32r2 -mhard-float -mfp64 -Wa$(comma)-mmsa)
->>  cflags-$(toolchain-msa)		+= -DTOOLCHAIN_SUPPORTS_MSA
->>  endif
+>>  #
+>> +# Don't trust the toolchain defaults. Use a sensible -march
+>> +# option but only if we don't have one already.
+>> +#
+>> +ifeq (,$(findstring march=, $(cflags-y)))
+>> +cflags-$(CONFIG_32BIT)			+= -march=mips32
+>> +cflags-$(CONFIG_64BIT)			+= -march=mips64
+>> +endif
 > 
->  Similarly here, is CPU_HAS_MSA incompatible with `-march=mips64r2'?
-I am not sure but like I explained above, it does not have to be 100%
-accurate. Just something to keep your toolchain happy and really enable
-MSA support even if you happen and old ISA level as the default one for
-your toolchain.
+>  So I'd rather see some form of diagnostics instead, e.g.:
+> 
+> ifeq (,$(filter -march=% -mips%, $(cflags-y)))
+> $(error Configuration bug, no `-march=' option set for the CPU selected!)
+> endif
+> 
 
-for example, if your toolchain has -march=mips2 as default then
+That looks good to me. I have no strong preference. If that's preferred
+I will create a new patch
 
--mhard-float -mfp64 will fail
-
-but
-
--march=mips32r2 -mhard-float -mfp64
-
-will pass. Your toolchain does support MSA, but because you combined the
-check with incompatible flags, then the end result is not what you want.
-
-I am open to suggestions if you want to solve this in a better way.
 
 -- 
 markos

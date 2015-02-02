@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:63950 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18966 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012401AbbBBLpsIy94p (ORCPT
+        with ESMTP id S27012402AbbBBLpsNkIsi (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Mon, 2 Feb 2015 12:45:48 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH v2 0/3] Add MIPS CDMM bus support
-Date: Mon, 2 Feb 2015 11:45:07 +0000
-Message-ID: <1422877510-29247-1-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH v2 3/3] MIPS: Malta: Implement mips_cdmm_phys_base()
+Date: Mon, 2 Feb 2015 11:45:10 +0000
+Message-ID: <1422877510-29247-4-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1422877510-29247-1-git-send-email-james.hogan@imgtec.com>
+References: <1422877510-29247-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <James.Hogan@imgtec.com>
@@ -19,56 +21,44 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Message-ID: <20150202114507.NIcg547PH2BXtCBD3UTxaCYNMByUUPp0rnTSI_j71ic@z>
+Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>
+Message-ID: <20150202114510.lcmfxABN_pQrWJf7XvQ-w1pv1gROu8IWny4KpgQSXWs@z>
 
-This patchset adds basic support for the MIPS Common Device Memory Map
-Memory (CDMM) region in the form of a bus in the standard Linux device
-model.
+Implement mips_cdmm_phys_base() for Malta, returning the physical base
+address 0x1fc10000 which is "typically unused".
 
-Since the CDMM region is a feature of the MIPS architecture (since
-around MIPSr2) the first patch adds the necessary definitions and
-probing to arch/mips.
+This allows the Common Device Memory Map (CDMM) region to be mapped, and
+devices in that region (such as the Fast Debug Channel (FDC) hardware
+for communication over EJTAG) to be discovered.
 
-The second patch adds the actual bus driver (see that patch for lots
-more info). 
-
-The final patch just enables CDMM to work on Malta.
-
-Futher patches will follow soon to add TTY/Console/KGDB support for the
-EJTAG Fast Debug Channel (FDC) device which is found in the CDMM region.
-
-Changes in v2:
-- Fix typo in definition of MIPS_CPU_CDMM, s/0ll/ull (Maciej).
-- Fix some checkpatch errors.
-- Correct CDMM name in various places. It is "Common Device Memory Map",
-  rather than "Common Device Mapped Memory" (which for some reason had
-  got stuck in my head).
-
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: linux-mips@linux-mips.org
+---
+ arch/mips/mti-malta/malta-memory.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-James Hogan (3):
-  MIPS: Add arch CDMM definitions and probing
-  MIPS: Add CDMM bus support
-  MIPS: Malta: Implement mips_cdmm_phys_base()
-
- arch/mips/include/asm/cdmm.h         |  87 +++++
- arch/mips/include/asm/cpu-features.h |   4 +
- arch/mips/include/asm/cpu.h          |   1 +
- arch/mips/include/asm/mipsregs.h     |  11 +
- arch/mips/kernel/cpu-probe.c         |   2 +
- arch/mips/mti-malta/malta-memory.c   |   7 +
- drivers/bus/Kconfig                  |  13 +
- drivers/bus/Makefile                 |   1 +
- drivers/bus/mips_cdmm.c              | 711 +++++++++++++++++++++++++++++++++++
- include/linux/mod_devicetable.h      |   8 +
- scripts/mod/devicetable-offsets.c    |   3 +
- scripts/mod/file2alias.c             |  16 +
- 12 files changed, 864 insertions(+)
- create mode 100644 arch/mips/include/asm/cdmm.h
- create mode 100644 drivers/bus/mips_cdmm.c
-
+diff --git a/arch/mips/mti-malta/malta-memory.c b/arch/mips/mti-malta/malta-memory.c
+index 8fddd2cdbff7..32c27cb8e463 100644
+--- a/arch/mips/mti-malta/malta-memory.c
++++ b/arch/mips/mti-malta/malta-memory.c
+@@ -16,6 +16,7 @@
+ #include <linux/string.h>
+ 
+ #include <asm/bootinfo.h>
++#include <asm/cdmm.h>
+ #include <asm/maar.h>
+ #include <asm/sections.h>
+ #include <asm/fw/fw.h>
+@@ -196,3 +197,9 @@ unsigned platform_maar_init(unsigned num_pairs)
+ 
+ 	return maar_config(cfg, num_cfg, num_pairs);
+ }
++
++phys_addr_t mips_cdmm_phys_base(void)
++{
++	/* This address is "typically unused" */
++	return 0x1fc10000;
++}
 -- 
 2.0.5

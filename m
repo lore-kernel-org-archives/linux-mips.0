@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:39215 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:27734 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012470AbbBDPWdykEYm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 4 Feb 2015 16:22:33 +0100
+        with ESMTP id S27012471AbbBDPWejMAaV (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 4 Feb 2015 16:22:34 +0100
 From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH_V2 03/34] MIPS: irq_cpu: declare irqchip table entry
-Date: Wed, 4 Feb 2015 15:21:32 +0000
-Message-ID: <1423063323-19419-4-git-send-email-Zubair.Kakakhel@imgtec.com>
+Subject: [PATCH_V2 04/34] MIPS: jz4740: probe CPU interrupt controller via DT
+Date: Wed, 4 Feb 2015 15:21:33 +0000
+Message-ID: <1423063323-19419-5-git-send-email-Zubair.Kakakhel@imgtec.com>
 In-Reply-To: <1423063323-19419-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 References: <1423063323-19419-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
@@ -22,38 +22,65 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: devicetree@vger.kernel.org, linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org, Zubair.Kakakhel@imgtec.com, gregkh@linuxfoundation.org, mturquette@linaro.org, sboyd@codeaurora.org, ralf@linux-mips.org, jslaby@suse.cz, tglx@linutronix.de, jason@lakedaemon.net, lars@metafoo.de, paul.burton@imgtec.com
-Message-ID: <20150204152132.hkeXQArBiq4M7xkMNeFxOWs5Fl2ZGoqTMO6QWe6wDns@z>
+Message-ID: <20150204152133.MT-OaDh0lKlo_3xKESb1g0EbCucBWOWLCXw2dwFlTRg@z>
 
 From: Paul Burton <paul.burton@imgtec.com>
 
-Allow the MIPS CPU interrupt controller to be probed from DT using the
-generic __irqchip_of_table for platforms which use irqchip_init. This
-will avoid such platforms needing to duplicate the compatible string &
-init function pointer.
+Use the generic irqchip_init function to probe irqchip drivers using DT,
+and add the appropriate node to the jz4740 devicetree in place of the
+call to mips_cpu_irq_init.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Cc: Lars-Peter Clausen <lars@metafoo.de>
 ---
- arch/mips/kernel/irq_cpu.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/boot/dts/jz4740.dtsi | 7 +++++++
+ arch/mips/jz4740/irq.c         | 4 ++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/kernel/irq_cpu.c b/arch/mips/kernel/irq_cpu.c
-index 590c2c9..981d6a3 100644
---- a/arch/mips/kernel/irq_cpu.c
-+++ b/arch/mips/kernel/irq_cpu.c
-@@ -38,6 +38,8 @@
- #include <asm/mipsmtregs.h>
- #include <asm/setup.h>
- 
-+#include "../../drivers/irqchip/irqchip.h"
+diff --git a/arch/mips/boot/dts/jz4740.dtsi b/arch/mips/boot/dts/jz4740.dtsi
+index c538691f..2d64765c 100644
+--- a/arch/mips/boot/dts/jz4740.dtsi
++++ b/arch/mips/boot/dts/jz4740.dtsi
+@@ -2,4 +2,11 @@
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
+ 	compatible = "ingenic,jz4740";
 +
- static inline void unmask_mips_irq(struct irq_data *d)
- {
- 	set_c0_status(0x100 << (d->irq - MIPS_CPU_IRQ_BASE));
-@@ -163,3 +165,4 @@ int __init mips_cpu_irq_of_init(struct device_node *of_node,
- 	__mips_cpu_irq_init(of_node);
- 	return 0;
- }
-+IRQCHIP_DECLARE(cpu_intc, "mti,cpu-interrupt-controller", mips_cpu_irq_of_init);
++	cpuintc: cpuintc@0 {
++		#address-cells = <0>;
++		#interrupt-cells = <1>;
++		interrupt-controller;
++		compatible = "mti,cpu-interrupt-controller";
++	};
+ };
+diff --git a/arch/mips/jz4740/irq.c b/arch/mips/jz4740/irq.c
+index 2531da1..9c94f7b 100644
+--- a/arch/mips/jz4740/irq.c
++++ b/arch/mips/jz4740/irq.c
+@@ -18,6 +18,7 @@
+ #include <linux/types.h>
+ #include <linux/interrupt.h>
+ #include <linux/ioport.h>
++#include <linux/irqchip.h>
+ #include <linux/timex.h>
+ #include <linux/slab.h>
+ #include <linux/delay.h>
+@@ -27,7 +28,6 @@
+ 
+ #include <asm/io.h>
+ #include <asm/mipsregs.h>
+-#include <asm/irq_cpu.h>
+ 
+ #include <asm/mach-jz4740/base.h>
+ 
+@@ -81,7 +81,7 @@ void __init arch_init_irq(void)
+ 	struct irq_chip_generic *gc;
+ 	struct irq_chip_type *ct;
+ 
+-	mips_cpu_irq_init();
++	irqchip_init();
+ 
+ 	jz_intc_base = ioremap(JZ4740_INTC_BASE_ADDR, 0x14);
+ 
 -- 
 1.9.1

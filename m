@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:15423 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:61718 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012544AbbBDQrsF8ug5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 4 Feb 2015 17:47:48 +0100
-Date: Wed, 4 Feb 2015 16:47:39 +0000
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH_V2 00/34] jz4780 & CI20 support
-Message-ID: <20150204164739.GJ1024@NP-P-BURTON>
-References: <1423063323-19419-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+        with ESMTP id S27012549AbbBDRGw4XpFB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 4 Feb 2015 18:06:52 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] KVM: MIPS: Don't leak FPU/DSP to guest
+Date: Wed, 4 Feb 2015 17:06:37 +0000
+Message-ID: <1423069597-8376-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <1423063323-19419-1-git-send-email-Zubair.Kakakhel@imgtec.com>
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,184 +18,95 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Cc: linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org, mturquette@linaro.org, sboyd@codeaurora.org, ralf@linux-mips.org, jslaby@suse.cz, tglx@linutronix.de, jason@lakedaemon.net, lars@metafoo.de
-Message-ID: <20150204164739.7b4w4VLYC_FzXxU5UAsscfpu5HYkNya93XaMKfTiXBM@z>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Sanjay Lal <sanjayl@kymasys.com>, Gleb Natapov <gleb@kernel.org>, kvm@vger.kernel.org, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20150204170637.Z5_0WUEr-Z_pKRgqVGhQRdhLcgw4zOJxGZuZta8aTnI@z>
 
-On Wed, Feb 04, 2015 at 03:21:29PM +0000, Zubair Lutfullah Kakakhel wrote:
-> Hi,
-> 
-> This series introduces initial support for the Ingenic jz4780 SoC & the
-> MIPS Creator CI20 board which is based upon it.
-> 
-> The jz4780 shares aspects with jz4740. But jz4740 is platform only.
-> 
-> So, the jz4740 & qi_lb60 (Ben NanoNote) are converted to use DT
-> for some things in order to ease the process of sharing code.
-> 
-> Series is based on 3.19-rc7.
-> 
-> ACKS from various subsystems are welcome so that the series can
-> go via mips if that is OK with everyone.
-> 
-> Alternative suggestions welcome.
-> 
-> Changes in V2
-> - Removed FSF addresses. 
-> - Removed 2 patches for binding docs that
->   were consolidated in the same binding for jz4740.
-> - Bug fix in error handling in cgu
-> - Rebase on 3.19-rc7
-> - Updated defconfig with jz47xx serial and removed initramfs
-> - Renames in binding from intc to interrupt-controller
-> - Fix in jz47xx serial for build error on x86 in one config option
-> - Removed interupt-parent bindings from required bindings
-> - Fixed imgtec prefix to img
-> - Added jz47xx config for qi_lb60_defconfig
-> 
-> Regards,
-> ZubairLK
+The FPU and DSP are enabled via the CP0 Status CU1 and MX bits by
+kvm_mips_set_c0_status() on a guest exit, presumably in case there is
+active state that needs saving if pre-emption occurs. However neither of
+these bits are cleared again when returning to the guest.
 
-Hi Zubair,
+This effectively gives the guest access to the FPU/DSP hardware after
+the first guest exit even though it is not aware of its presence,
+allowing FP instructions in guest user code to intermittently actually
+execute instead of trapping into the guest OS for emulation. It will
+then read & manipulate the hardware FP registers which technically
+belong to the user process (e.g. QEMU), or are stale from another user
+process. It can also crash the guest OS by causing an FP exception, for
+which a guest exception handler won't have been registered.
 
-So first of all, thanks. I've been rather busy & haven't had time to
-revise this patchset myself yet so I appreciate your effort.
+First lets save and disable the FPU (and MSA) state with lose_fpu(1)
+before entering the guest. This simplifies the problem, especially for
+when guest FPU/MSA support is added in the future, and prevents FR=1 FPU
+state being live when the FR bit gets cleared for the guest, which
+according to the architecture causes the contents of the FPU and vector
+registers to become UNPREDICTABLE.
 
-Having said that, I do find it at best rather rude to take someone elses
-patches, modify them & submit them without first:
+We can then safely remove the enabling of the FPU in
+kvm_mips_set_c0_status(), since there should never be any active FPU or
+MSA state to save at pre-emption, which should plug the FPU leak.
 
-  - Asking the author if that's ok.
+DSP state is always live rather than being lazily restored, so for that
+it is simpler to just clear the MX bit again when re-entering the guest.
 
-  - Allowing the author to look over the changes you've made to their
-    patches.
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Sanjay Lal <sanjayl@kymasys.com>
+Cc: Gleb Natapov <gleb@kernel.org>
+Cc: kvm@vger.kernel.org
+Cc: linux-mips@linux-mips.org
+Cc: <stable@vger.kernel.org> # v3.10+: 044f0f03eca0: MIPS: KVM: Deliver guest interrupts
+Cc: <stable@vger.kernel.org> # v3.10+
+---
+ arch/mips/kvm/locore.S | 2 +-
+ arch/mips/kvm/mips.c   | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-  - Making it clear in the commit message for each patch which
-    modifications you have made.
-
-As is I now have to go and retroactively check each patch against mine
-to find out what's different, since you didn't indicate that in each
-patch, and then hope I agree with the changes that you made but which
-the patches indicate I authored.
-
-So please, if you should see fit to modify any of my patches in the
-future, do the above things first.
-
-Thanks,
-    Paul
-
-> Paul Burton (34):
->   dt: Add Ingenic Semiconductor vendor prefix
->   MIPS: jz4740: require & include DT
->   MIPS: irq_cpu: declare irqchip table entry
->   MIPS: jz4740: probe CPU interrupt controller via DT
->   MIPS: jz4740: use generic plat_irq_dispatch
->   MIPS: jz4740: move arch_init_irq out of arch/mips/jz4740/irq.c
->   dt: interrupt-controller: Add ingenic,jz4740-intc binding doc
->   MIPS: jz4740: allow interrupt controller probe via DT
->   MIPS: jz4740: probe interrupt controller via DT
->   MIPS: jz4740: remove non-DT interrupt controller init
->   MIPS: jz4740: register an irq_domain for the interrupt controller
->   MIPS: jz4740: call jz4740_clock_init earlier
->   MIPS: jz4740: replace use of jz4740_clock_bdata
->   clk: jz47xx-cgu: add driver for Ingenic jz47xx series CGU clocks
->   dt: clk: Add ingenic,jz4740-cgu binding documentation
->   MIPS: clk: migrate jz4740 to common clock framework
->   MIPS: clk: move jz4740_clock_set_wait_mode to jz4740-cgu
->   MIPS: clk: move jz4740 UDC auto suspend functions to jz4740-cgu
->   MIPS: clk: move jz4740 clock suspend, resume functions to jz4740-cgu
->   MIPS: jz4740: remove clock.h
->   MIPS: jz4740: only detect RAM size if not specified in DT
->   MIPS: jz4740: support >32 interrupts
->   MIPS: jz4740: define IRQ numbers based on number of intc IRQs
->   dt: serial: Add ingenic,jz4740-uart binding
->   serial: 8250_jz47xx: support for Ingenic jz47xx UARTs
->   MIPS: allow mach-provided serial.h
->   MIPS: jz4740: use jz47xx-uart & DT for UART output
->   dt: clk: Add ingenic,jz4780-cgu binding documentation
->   clk: add Ingenic jz4780 CGU driver
->   MIPS: jz4740: add jz4780 interrupt controller support
->   MIPS: add jz4780 Ingenic vendor ID
->   MIPS: initial Ingenic jz4780 support
->   MIPS: initial MIPS Creator CI20 board support
->   MIPS: allow jz4780 to be selected in Kconfig
-> 
->  .../bindings/clock/ingenic,jz4740-cgu.txt          |  52 ++
->  .../bindings/clock/ingenic,jz4780-cgu.txt          |  52 ++
->  .../interrupt-controller/ingenic,jz4740-intc.txt   |  26 +
->  .../bindings/serial/ingenic,jz4740-uart.txt        |  22 +
->  .../devicetree/bindings/vendor-prefixes.txt        |   1 +
->  arch/mips/Kconfig                                  |  22 +-
->  arch/mips/boot/dts/Makefile                        |   2 +
->  arch/mips/boot/dts/ci20.dts                        |  21 +
->  arch/mips/boot/dts/jz4740.dtsi                     |  68 ++
->  arch/mips/boot/dts/jz4780.dtsi                     | 101 +++
->  arch/mips/boot/dts/qi_lb60.dts                     |  15 +
->  arch/mips/configs/ci20_defconfig                   | 127 +++
->  arch/mips/configs/qi_lb60_defconfig                |   1 +
->  arch/mips/include/asm/Kbuild                       |   1 -
->  arch/mips/include/asm/cpu.h                        |   1 +
->  arch/mips/include/asm/mach-generic/serial.h        |  21 +
->  arch/mips/include/asm/mach-jz4740/clock.h          |   3 +
->  arch/mips/include/asm/mach-jz4740/irq.h            |  15 +-
->  arch/mips/include/asm/mach-jz4740/platform.h       |   2 -
->  arch/mips/include/asm/mach-jz4740/serial.h         |  27 +
->  arch/mips/include/asm/serial.h                     |  21 +
->  arch/mips/jz4740/Kconfig                           |  10 +
->  arch/mips/jz4740/Makefile                          |   6 +-
->  arch/mips/jz4740/Platform                          |   4 +
->  arch/mips/jz4740/board-qi_lb60.c                   |   7 -
->  arch/mips/jz4740/clock-debugfs.c                   | 108 ---
->  arch/mips/jz4740/clock.c                           | 924 ---------------------
->  arch/mips/jz4740/clock.h                           |  76 --
->  arch/mips/jz4740/irq.c                             | 103 ++-
->  arch/mips/jz4740/platform.c                        |  37 +-
->  arch/mips/jz4740/pm.c                              |   2 -
->  arch/mips/jz4740/prom.c                            |  13 -
->  arch/mips/jz4740/reset.c                           |  13 +-
->  arch/mips/jz4740/serial.c                          |  33 -
->  arch/mips/jz4740/serial.h                          |  23 -
->  arch/mips/jz4740/setup.c                           |  33 +-
->  arch/mips/jz4740/time.c                            |  19 +-
->  arch/mips/kernel/cpu-probe.c                       |   1 +
->  arch/mips/kernel/irq_cpu.c                         |   3 +
->  drivers/clk/Makefile                               |   2 +
->  drivers/clk/jz47xx/Makefile                        |   3 +
->  drivers/clk/jz47xx/jz4740-cgu.c                    | 295 +++++++
->  drivers/clk/jz47xx/jz4780-cgu.c                    | 742 +++++++++++++++++
->  drivers/clk/jz47xx/jz47xx-cgu.c                    | 723 ++++++++++++++++
->  drivers/clk/jz47xx/jz47xx-cgu.h                    | 205 +++++
->  drivers/tty/serial/8250/8250_jz47xx.c              | 225 +++++
->  drivers/tty/serial/8250/Kconfig                    |   9 +
->  drivers/tty/serial/8250/Makefile                   |   1 +
->  include/dt-bindings/clock/jz4740-cgu.h             |  37 +
->  include/dt-bindings/clock/jz4780-cgu.h             |  88 ++
->  50 files changed, 3070 insertions(+), 1276 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/clock/ingenic,jz4740-cgu.txt
->  create mode 100644 Documentation/devicetree/bindings/clock/ingenic,jz4780-cgu.txt
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/ingenic,jz4740-intc.txt
->  create mode 100644 Documentation/devicetree/bindings/serial/ingenic,jz4740-uart.txt
->  create mode 100644 arch/mips/boot/dts/ci20.dts
->  create mode 100644 arch/mips/boot/dts/jz4740.dtsi
->  create mode 100644 arch/mips/boot/dts/jz4780.dtsi
->  create mode 100644 arch/mips/boot/dts/qi_lb60.dts
->  create mode 100644 arch/mips/configs/ci20_defconfig
->  create mode 100644 arch/mips/include/asm/mach-generic/serial.h
->  create mode 100644 arch/mips/include/asm/mach-jz4740/serial.h
->  create mode 100644 arch/mips/include/asm/serial.h
->  delete mode 100644 arch/mips/jz4740/clock-debugfs.c
->  delete mode 100644 arch/mips/jz4740/clock.c
->  delete mode 100644 arch/mips/jz4740/clock.h
->  delete mode 100644 arch/mips/jz4740/serial.c
->  delete mode 100644 arch/mips/jz4740/serial.h
->  create mode 100644 drivers/clk/jz47xx/Makefile
->  create mode 100644 drivers/clk/jz47xx/jz4740-cgu.c
->  create mode 100644 drivers/clk/jz47xx/jz4780-cgu.c
->  create mode 100644 drivers/clk/jz47xx/jz47xx-cgu.c
->  create mode 100644 drivers/clk/jz47xx/jz47xx-cgu.h
->  create mode 100644 drivers/tty/serial/8250/8250_jz47xx.c
->  create mode 100644 include/dt-bindings/clock/jz4740-cgu.h
->  create mode 100644 include/dt-bindings/clock/jz4780-cgu.h
-> 
-> -- 
-> 1.9.1
-> 
+diff --git a/arch/mips/kvm/locore.S b/arch/mips/kvm/locore.S
+index d7279c03c517..4a68b176d6e4 100644
+--- a/arch/mips/kvm/locore.S
++++ b/arch/mips/kvm/locore.S
+@@ -434,7 +434,7 @@ __kvm_mips_return_to_guest:
+ 	/* Setup status register for running guest in UM */
+ 	.set	at
+ 	or	v1, v1, (ST0_EXL | KSU_USER | ST0_IE)
+-	and	v1, v1, ~ST0_CU0
++	and	v1, v1, ~(ST0_CU0 | ST0_MX)
+ 	.set	noat
+ 	mtc0	v1, CP0_STATUS
+ 	ehb
+diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+index dd133ccecec4..270bbd41769e 100644
+--- a/arch/mips/kvm/mips.c
++++ b/arch/mips/kvm/mips.c
+@@ -15,6 +15,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/fs.h>
+ #include <linux/bootmem.h>
++#include <asm/fpu.h>
+ #include <asm/page.h>
+ #include <asm/cacheflush.h>
+ #include <asm/mmu_context.h>
+@@ -379,6 +380,8 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
+ 		vcpu->mmio_needed = 0;
+ 	}
+ 
++	lose_fpu(1);
++
+ 	local_irq_disable();
+ 	/* Check if we have any exceptions/interrupts pending */
+ 	kvm_mips_deliver_interrupts(vcpu,
+@@ -987,9 +990,6 @@ static void kvm_mips_set_c0_status(void)
+ {
+ 	uint32_t status = read_c0_status();
+ 
+-	if (cpu_has_fpu)
+-		status |= (ST0_CU1);
+-
+ 	if (cpu_has_dsp)
+ 		status |= (ST0_MX);
+ 
+-- 
+2.0.5

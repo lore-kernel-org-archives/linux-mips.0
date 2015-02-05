@@ -1,14 +1,23 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61718 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012549AbbBDRGw4XpFB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 4 Feb 2015 18:06:52 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] KVM: MIPS: Don't leak FPU/DSP to guest
-Date: Wed, 4 Feb 2015 17:06:37 +0000
-Message-ID: <1423069597-8376-1-git-send-email-james.hogan@imgtec.com>
+Received: from unicorn.mansr.com ([81.2.72.234]:57380 "EHLO unicorn.mansr.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27012224AbbBEM4ID5Jf9 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Feb 2015 13:56:08 +0100
+From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
+Subject: Re: [PATCH 5/5] MIPS: LLVMLinux: Silence unicode warnings when preprocessing assembly.
+References: <1422970639-7922-1-git-send-email-daniel.sanders@imgtec.com>
+        <1422970639-7922-6-git-send-email-daniel.sanders@imgtec.com>
+        <alpine.LFD.2.11.1502041022150.22715@eddie.linux-mips.org>
+        <A614194ED15B4844BC4C9FB7F21FCD9201347BAE@hhmail02.hh.imgtec.org>
+        <alpine.LFD.2.11.1502051107150.22715@eddie.linux-mips.org>
+Date: Thu, 05 Feb 2015 12:56:02 +0000
+In-Reply-To: <alpine.LFD.2.11.1502051107150.22715@eddie.linux-mips.org>
+        (Maciej W. Rozycki's message of "Thu, 5 Feb 2015 12:35:42 +0000
+        (GMT)")
+Message-ID: <yw1xh9v0a55p.fsf@unicorn.mansr.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8BIT
+Return-Path: <mru@mansr.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,95 +27,94 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Sanjay Lal <sanjayl@kymasys.com>, Gleb Natapov <gleb@kernel.org>, kvm@vger.kernel.org, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20150204170637.Z5_0WUEr-Z_pKRgqVGhQRdhLcgw4zOJxGZuZta8aTnI@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: Toma Tabacu <Toma.Tabacu@imgtec.com>, Daniel Sanders <Daniel.Sanders@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <Paul.Burton@imgtec.com>, Paul Bolle <pebolle@tiscali.nl>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Manuel Lauss <manuel.lauss@gmail.com>, Jim Quinlan <jim2101024@gmail.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <20150205125602.s3igqZfmiQsNB2QUIYecYn3KQLjed-Tbf6XlonofKOM@z>
 
-The FPU and DSP are enabled via the CP0 Status CU1 and MX bits by
-kvm_mips_set_c0_status() on a guest exit, presumably in case there is
-active state that needs saving if pre-emption occurs. However neither of
-these bits are cleared again when returning to the guest.
+"Maciej W. Rozycki" <macro@linux-mips.org> writes:
 
-This effectively gives the guest access to the FPU/DSP hardware after
-the first guest exit even though it is not aware of its presence,
-allowing FP instructions in guest user code to intermittently actually
-execute instead of trapping into the guest OS for emulation. It will
-then read & manipulate the hardware FP registers which technically
-belong to the user process (e.g. QEMU), or are stale from another user
-process. It can also crash the guest OS by causing an FP exception, for
-which a guest exception handler won't have been registered.
+> On Thu, 5 Feb 2015, Toma Tabacu wrote:
+>
+>> > 2. It considers these character pairs to be unicode escapes in the first 
+>> >    place given that they do not follow the syntax required for such 
+>> >    escapes, that is `\unnnn', where `n' are hex digits.
+>> > 
+>> 
+>> It doesn't actually treat them as unicode escapes, but it still warns
+>> the user, in case they were meant to be unicode escapes. Here's the
+>> warning message:
+>> 
+>> arch/mips/include/asm/asmmacro.h:197:51: warning: \u used with no following hex digits; treating as '\' followed by identifier [-Wunicode]
+>>          .word  0x41000000 | (\rt << 16) | (\rd << 11) | (\u << 5) | (\sel)
+>>                                                           ^
+>> I'll add it to the summary in v2.
+>
+>  Thanks, that makes things clearer.  It always makes sense to include the 
+> exact error message produced where applicable or otherwise people do not 
+> necessarily know what the matter is.
+>
+>> > Of course it may be reasonable for us to work this bug around as we've 
+>> > been doing for years with GCC, but has the issue been reported back to 
+>> > clang maintainers?  What was their response?
+>> > 
+>> 
+>> It hasn't been reported, but I don't think they would agree with removing
+>> unicode escape sequences from the assembler-with-cpp mode because it is
+>> currently being used for other languages as well, not just assembly.
+>
+>  First, preprocessing rules surely have to be language specific.  The C 
+> language standard does not specify what the preprocessor is meant to do 
+> (if anything) for other languages.  GCC or clang -- that's no different.  
+>
+>  The assembly language has a different syntax and `\u' has a different 
+> meaning in the context of assembly macro expansion than it would have in a 
+> name of a symbol, where such a Unicode escape sequence might indeed be 
+> interpreted as such and character encoded propagated to the symbol 
+> produced.  But that's up to the assembler -- GAS for example does not 
+> AFAIK support Unicode escape sequences in symbol names right now, but I 
+> suppose such a feature could be added if desired.
+>
+>  Which prompts another question of course: how does the clang C compiler 
+> represent Unicode characters in identifiers in its assembly output?
+>
+>  I have looked into the C language standard and it appears to me like the 
+> translation phase to interpret universal character names at has not been 
+> defined.  This is probably why the standard does specify the result of 
+> pasting preprocessor tokens together as undefined if a universal character 
+> name is produced this way.
 
-First lets save and disable the FPU (and MSA) state with lose_fpu(1)
-before entering the guest. This simplifies the problem, especially for
-when guest FPU/MSA support is added in the future, and prevents FR=1 FPU
-state being live when the FR bit gets cleared for the guest, which
-according to the architecture causes the contents of the FPU and vector
-registers to become UNPREDICTABLE.
+That is my interpretation as well.
 
-We can then safely remove the enabling of the FPU in
-kvm_mips_set_c0_status(), since there should never be any active FPU or
-MSA state to save at pre-emption, which should plug the FPU leak.
+>  Consequently I think an important question in this context is: does 
+> clang's preprocessor actually convert these sequences anyhow before 
+> passing them down to the compiler?  How for example does C output from a 
+> trivial example that contains such Unicode escape sequences look like 
+> then?
+>
+>> One such language is Haskell (ghc, to be more specific), for which
+>> the clang developers had to actually stop the preprocessor from
+>> enforcing the C universal character name restrictions in
+>> assembler-with-cpp mode, which suggests that ghc wants the
+>> preprocessor to check for unicode escape sequences.
+>> 
+>> At the moment, we can either disable -Wunicode for asmmacro.h or
+>> refrain from using '\u' as an identifier.
+>
+>  To be clear: it's `u' here that is the identifier, the leading `\' is 
+> merely how assembly syntax has been specified for references to macro 
+> arguments.  And TBH I find banning any macro arguments starting with `u' 
+> rather silly.
 
-DSP state is always live rather than being lazily restored, so for that
-it is simpler to just clear the MX bit again when re-entering the guest.
+Agreed.
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Sanjay Lal <sanjayl@kymasys.com>
-Cc: Gleb Natapov <gleb@kernel.org>
-Cc: kvm@vger.kernel.org
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # v3.10+: 044f0f03eca0: MIPS: KVM: Deliver guest interrupts
-Cc: <stable@vger.kernel.org> # v3.10+
----
- arch/mips/kvm/locore.S | 2 +-
- arch/mips/kvm/mips.c   | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> I'm leaning towards considering having -Wunicode disabled for all
+> assembly sources, or maybe even for the whole Linux compilation, the
+> right solution.  It's not like we have a need for Unicode identifiers.
 
-diff --git a/arch/mips/kvm/locore.S b/arch/mips/kvm/locore.S
-index d7279c03c517..4a68b176d6e4 100644
---- a/arch/mips/kvm/locore.S
-+++ b/arch/mips/kvm/locore.S
-@@ -434,7 +434,7 @@ __kvm_mips_return_to_guest:
- 	/* Setup status register for running guest in UM */
- 	.set	at
- 	or	v1, v1, (ST0_EXL | KSU_USER | ST0_IE)
--	and	v1, v1, ~ST0_CU0
-+	and	v1, v1, ~(ST0_CU0 | ST0_MX)
- 	.set	noat
- 	mtc0	v1, CP0_STATUS
- 	ehb
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index dd133ccecec4..270bbd41769e 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -15,6 +15,7 @@
- #include <linux/vmalloc.h>
- #include <linux/fs.h>
- #include <linux/bootmem.h>
-+#include <asm/fpu.h>
- #include <asm/page.h>
- #include <asm/cacheflush.h>
- #include <asm/mmu_context.h>
-@@ -379,6 +380,8 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
- 		vcpu->mmio_needed = 0;
- 	}
- 
-+	lose_fpu(1);
-+
- 	local_irq_disable();
- 	/* Check if we have any exceptions/interrupts pending */
- 	kvm_mips_deliver_interrupts(vcpu,
-@@ -987,9 +990,6 @@ static void kvm_mips_set_c0_status(void)
- {
- 	uint32_t status = read_c0_status();
- 
--	if (cpu_has_fpu)
--		status |= (ST0_CU1);
--
- 	if (cpu_has_dsp)
- 		status |= (ST0_MX);
- 
+It might be an idea to disable -Wunicode and have checkpatch warn about
+Unicode escapes instead if people are worried about this.  Personally, I
+doubt there's much cause for concern here.
+
 -- 
-2.0.5
+Måns Rullgård
+mans@mansr.com

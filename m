@@ -1,17 +1,16 @@
-Received: from pegasus3.altlinux.org ([194.107.17.103]:37129 "EHLO
-        pegasus3.altlinux.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27012820AbbBGDE7I5QD9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 7 Feb 2015 04:04:59 +0100
-Date: Sat, 7 Feb 2015 06:04:47 +0300
-From: "Dmitry V. Levin" <ldv@altlinux.org>
-Subject: Re: a method to distinguish between syscall-enter/exit-stop
-Message-ID: <20150207030447.GA4930@altlinux.org>
-References: <20150205233945.GA31540@altlinux.org> <CAGXu5jLTH+mUF0JxeR2qA_r=ocWjPHPSK2OPgE0Fu_JKoQyQ9w@mail.gmail.com> <CALCETrXsCUje+_V=Ud+TB4A2jH2M7yqyoCFMLEyxOD6pd7Di5w@mail.gmail.com> <20150206023249.GB31540@altlinux.org> <CALCETrWTnqKDoatK+5FN=yYDOeENoW5=r5YMToYKhZ8Zfv5wWA@mail.gmail.com> <CAGXu5j+nopAMFukwMu=Cy0GOapziOLTb-ryJhA-aywk_uerg9A@mail.gmail.com> <CALCETrVaF+3ETn5nfcbvyWKUYb71jNXK-zo9V6uOK0cEW4TCNQ@mail.gmail.com> <CAGXu5jJXspS_34KBJ5VxvyKuj4bA+zg267dNiEkqR1LuvjoA1Q@mail.gmail.com> <20150206231720.GB3829@altlinux.org> <CAGXu5jKHkJcnpbiuYY8BVX0-wOEUDFMx7r8_HJJe2ZDT8p3uvQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGXu5jKHkJcnpbiuYY8BVX0-wOEUDFMx7r8_HJJe2ZDT8p3uvQ@mail.gmail.com>
-Return-Path: <ldv@altlinux.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:14293 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012992AbbBILeSS2e1S (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 9 Feb 2015 12:34:18 +0100
+From: Daniel Sanders <daniel.sanders@imgtec.com>
+Subject: [PATCH v2 3/5] MIPS: LLVMLinux: Fix an 'inline asm input/output type mismatch' error.
+Date: Mon, 9 Feb 2015 11:33:52 +0000
+Message-ID: <1423481632-27903-1-git-send-email-daniel.sanders@imgtec.com>
+In-Reply-To: <1422970639-7922-4-git-send-email-daniel.sanders@imgtec.com>
+References: <1422970639-7922-4-git-send-email-daniel.sanders@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Daniel.Sanders@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,56 +20,62 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kees Cook <keescook@chromium.org>
-Cc: Andy Lutomirski <luto@amacapital.net>, LKML <linux-kernel@vger.kernel.org>, Will Drewry <wad@chromium.org>, Oleg Nesterov <oleg@redhat.com>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-arch <linux-arch@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, "H. Peter Anvin" <hpa@zytor.com>, Frederic Weisbecker <fweisbec@gmail.com>, Michael Kerrisk-manpages <mtk.manpages@gmail.com>
-Message-ID: <20150207030447.BJiSv12nyG9UWcTzDOSCDiTmg-xjPWIzJiEBqYkX75A@z>
+Cc: Daniel Sanders <daniel.sanders@imgtec.com>, Toma Tabacu <toma.tabacu@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Markos Chandras <markos.chandras@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20150209113352.qDfKc6YEADkDA1sVxmw8kv9XHWeiUYCXaa7_-XSVYlY@z>
 
-On Fri, Feb 06, 2015 at 05:07:41PM -0800, Kees Cook wrote:
-> On Fri, Feb 6, 2015 at 3:17 PM, Dmitry V. Levin <ldv@altlinux.org> wrote:
-> > On Fri, Feb 06, 2015 at 12:07:03PM -0800, Kees Cook wrote:
-> >> On Fri, Feb 6, 2015 at 11:32 AM, Andy Lutomirski <luto@amacapital.net> wrote:
-> >> > On Fri, Feb 6, 2015 at 11:23 AM, Kees Cook <keescook@chromium.org> wrote:
-> > [...]
-> >> >> And an unrelated thought:
-> >> >>
-> >> >> 3) Can't we find some way to fix the inability of a ptracer to
-> >> >> distinguish between syscall-enter-stop and syscall-exit-stop?
-> >> >
-> >> > Couldn't we add PTRACE_O_TRACESYSENTRY and PTRACE_O_TRACESYSEXIT along
-> >> > the lines of PTRACE_O_TRACESYSGOOD?
-> >>
-> >> That might be a nice idea. I haven't written a test to see, but what
-> >> does PTRACE_GETEVENTMSG return on syscall-enter/exit-stop?
-> >
-> > The value returned by PTRACE_GETEVENTMSG is the value set along with the
-> > latest PTRACE_EVENT_*.
-> > In case of syscall-enter/exit-stop (which is not a PTRACE_EVENT_*),
-> > there is no particular value set for PTRACE_GETEVENTMSG.
-> 
-> Could we define one to help distinguish?
+Replace incorrect matching constraint that caused the error with an alternative
+that still has the required constraints on the inline assembly.
 
-I suppose we could define one, but performing extra PTRACE_GETEVENTMSG
-for every syscall-stop may be too expensive.
+This is the error message reported by clang:
+arch/mips/include/asm/checksum.h:285:27: error: unsupported inline asm: input with type '__be32' (aka 'unsigned int') matching output with type 'unsigned short'
+          "0" (htonl(len)), "1" (htonl(proto)), "r" (sum));
+                                 ^~~~~~~~~~~~
 
-For example, strace makes about 4.5 syscalls per syscall-stop.
-The minimum is 4 syscalls: wait4, PTRACE_GETREGSET, write, and PTRACE_SYSCALL;
-processing some syscall-stops may require additional process_vm_readv calls.
+The changed code can be compiled successfully by both gcc and clang.
 
-That is, forcing strace to make extra PTRACE_GETEVENTMSG per syscall-stop
-would result to about 20% more syscalls per syscall-stop, that is a
-noticeable cost.
+Signed-off-by: Daniel Sanders <daniel.sanders@imgtec.com>
+Signed-off-by: Toma Tabacu <toma.tabacu@imgtec.com>
+Suggested-by: Maciej W. Rozycki <macro@linux-mips.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Cc: Maciej W. Rozycki <macro@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org
 
-A better alternative is to define an event that wouldn't require this
-extra PTRACE_GETEVENTMSG per syscall-stop.  For example, it could be a
-PTRACE_EVENT_SYSCALL_ENTRY and/or PTRACE_EVENT_SYSCALL_EXIT.  In practice,
-adding just one of these two events would be enough to distinguish two
-kinds of syscall-stops.  Adding two events would look less surprising,
-though.
+---
 
-If the decision would be to add both events, I'd recommend adding just one
-new option to cover both events - there is a room only for 32 different
-PTRACE_O_* options.
+Rewrote the patch following Maciej's suggestion where he observed that
+the assembly was somewhat strange and suggested correcting the
+constraints and using a local of matching type.
 
+ arch/mips/include/asm/checksum.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
+diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
+index 3418c51..48bfcaf 100644
+--- a/arch/mips/include/asm/checksum.h
++++ b/arch/mips/include/asm/checksum.h
+@@ -228,6 +228,8 @@ static __inline__ __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
+ 					  __u32 len, unsigned short proto,
+ 					  __wsum sum)
+ {
++        __wsum tmp;
++
+ 	__asm__(
+ 	"	.set	push		# csum_ipv6_magic\n"
+ 	"	.set	noreorder	\n"
+@@ -280,9 +282,9 @@ static __inline__ __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
+ 
+ 	"	addu	%0, $1		# Add final carry\n"
+ 	"	.set	pop"
+-	: "=r" (sum), "=r" (proto)
++	: "=&r" (sum), "=&r" (tmp)
+ 	: "r" (saddr), "r" (daddr),
+-	  "0" (htonl(len)), "1" (htonl(proto)), "r" (sum));
++	  "0" (htonl(len)), "r" (htonl(proto)), "r" (sum));
+ 
+ 	return csum_fold(sum);
+ }
 -- 
-ldv
+2.1.4

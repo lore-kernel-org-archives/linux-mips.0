@@ -1,19 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:50020 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27012464AbbBJIRfkFZak (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 10 Feb 2015 09:17:35 +0100
-Date: Tue, 10 Feb 2015 08:17:28 +0000
+Received: from mailapp01.imgtec.com ([195.59.15.196]:59519 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012464AbbBJKDYAALMN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 10 Feb 2015 11:03:24 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] KVM: MIPS: Don't leak FPU/DSP to guest
-Message-ID: <20150210081728.GK30459@jhogan-linux.le.imgtec.org>
-References: <1423069597-8376-1-git-send-email-james.hogan@imgtec.com>
- <20150209225816.GH30459@jhogan-linux.le.imgtec.org>
- <54D9BAC3.9080300@redhat.com>
+Subject: [PATCH 0/2] MIPS: Export functions used by lose_fpu(1) for KVM
+Date: Tue, 10 Feb 2015 10:02:58 +0000
+Message-ID: <1423562580-23254-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="2feizKym29CxAecD"
-Content-Disposition: inline
-In-Reply-To: <54D9BAC3.9080300@redhat.com>
+Content-Type: text/plain
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,74 +18,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Sanjay Lal <sanjayl@kymasys.com>, Gleb Natapov <gleb@kernel.org>, kvm@vger.kernel.org, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20150210081728.i0P2Pt89WPqZ6xIqBMYLc57X26fBE4eF4C25uvTw8Uo@z>
+To: Paolo Bonzini <pbonzini@redhat.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Gleb Natapov <gleb@kernel.org>, kvm@vger.kernel.org, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20150210100258.vd_D3b5KThtfo3f-A8D_PixidiGDYMNJ0j50BRzKxvM@z>
 
---2feizKym29CxAecD
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+These two patches export the _save_fp and _save_msa asm function used by
+the lose_fpu(1) macro to GPL modules so that KVM can make use of it when
+it is built as a module.
 
-On Tue, Feb 10, 2015 at 09:01:07AM +0100, Paolo Bonzini wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
->=20
->=20
->=20
-> On 09/02/2015 23:58, James Hogan wrote:
-> >> First lets save and disable the FPU (and MSA) state with
-> >> lose_fpu(1)
-> >=20
-> > Please don't apply this patch yet. lose_fpu() uses function
-> > symbols which aren't exported for modules to use yet, so that'll
-> > need fixing first or KVM won't build as a module.
->=20
-> Well, too late. :)
->=20
-> James/Ralf, should I revert, or can that be fixed during the RC period?
+This fixes the following build errors when CONFIG_KVM=m [and
+CONFIG_CPU_HAS_MSA=y] due to commit f798217dfd03 ("KVM: MIPS: Don't leak
+FPU/DSP to guest"):
 
-Okay no problem. I have patches ready so I'll submit today.
+ERROR: "_save_fp" [arch/mips/kvm/kvm.ko] undefined!
+ERROR: "_save_msa" [arch/mips/kvm/kvm.ko] undefined!
 
-Sorry about that!
+The two parts are separated because the commit they fix is marked for
+stable, and _save_msa only exists since v3.15, so only the first patch
+needs to be applied to stable branches v3.10..v3.14, but both will be
+needed on stable branches v3.15..v3.19.
 
-Cheers
-James
+Ralf: Since the broken commit exists in the KVM tree, it probably makes
+sense to be applied there, so an Ack would be appreciated.
 
->=20
-> Paolo
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v2
->=20
-> iQEcBAEBAgAGBQJU2brAAAoJEL/70l94x66DdXIIAImur1pdSKYWw1+FzZH+H8Xo
-> 86j9EfptORk554o0a62LG9dOTY+5sJfAV9CoB7Q+8IfdLDKxpk1sLjMkiS0E0EWU
-> 2ilQfjYEXLTgCW38p03ype4m6g4uSfT16dnizrwnUviFk/EvVgCWHy88tA3+Vfn/
-> WgoxcXkd+hguyNaLR2oAVqyNhAETLTo4kQQqKwGbXFXf0GLno44pj7bJprCR/jlO
-> 4+sUzuV5dno/GI6z8dyMmASo0QEy+IoXJ+aSw+IoRED9nlBMAS4+7uD4XfocGpca
-> En5KmXVnyJoazgV3Y6w2ymS606S0JNGRcOzqr8ZbOHtjJmAsZxjuVxP6PVzZqQg=3D
-> =3Dozzu
-> -----END PGP SIGNATURE-----
+Fixes: f798217dfd03 (KVM: MIPS: Don't leak FPU/DSP to guest)
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Gleb Natapov <gleb@kernel.org>
+Cc: kvm@vger.kernel.org
+Cc: linux-mips@linux-mips.org
+Cc: <stable@vger.kernel.org>
 
---2feizKym29CxAecD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+James Hogan (2):
+  MIPS: Export FP functions used by lose_fpu(1) for KVM
+  MIPS: Export MSA functions used by lose_fpu(1) for KVM
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+ arch/mips/kernel/mips_ksyms.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-iQIcBAEBAgAGBQJU2b6YAAoJEGwLaZPeOHZ6684QAIiFVdBydVIwaQ/8ua+YB58d
-HJj/yOK+0bplLAkegomqLvk/JAxqWcx+GuMD9AQ6KW41p15MEGqsvaDnH5UnjwTO
-h5JUzsFd1OfdeZpbyCyhzz0aBQglHe2+1pRu4vlYDUZls2PjDddfLq60FDFaerL/
-dVedoMmT5bJq+g3AeAkmJREG7v6FFJZsjSNup3y9OedbZpuKB4MHbCVpwFzm6mhL
-sZejax5+rKz5Zt+yJxotTepCoAgWGhOfRgruUhoi9ZTTu6m16Vh2TkJ1nxTjOYrC
-hRDVziCrjP9s4gezc3pGBDxUryngC5gEdZKbBHe0HmKTb3aotVz5qHJ1e7Oc7/KH
-Qo8UPO1gkneWW+qMcw6vMWBNfr8qlRSC0HLApWtbBkQpF4YbZs/dkIPMDLgHFDhH
-gY8tIvTblpudllLXriCmLcVhJ43x19ugFBDoC3GCZ4E3T5MZu4ZzLWIRAkLmOuQQ
-gBdXkvSZIdaIhtT+VPECZ8Mzpxyy6YrtzXGqx+ZMwVt2XSMggZkcMD7/6NbgrqXt
-H/zK7ladaeFgvzzJl29G9aoMksE024Ci/rsz6YvJvgBVNEjgmeE+lL76QEeS1tAM
-e4KoRXAQu3H6kS0B9DS16xKcxSJCB5WYg0mcR8jqRqxKHNKv9KsQfFlmySJOB4nA
-YpjDBAEBSDZcWDIuI31c
-=cnTv
------END PGP SIGNATURE-----
-
---2feizKym29CxAecD--
+-- 
+2.0.5

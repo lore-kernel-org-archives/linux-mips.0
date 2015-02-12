@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:28141 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8695 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013304AbbBLNpPFa9gg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 12 Feb 2015 14:45:15 +0100
-Message-ID: <54DCAE64.5050901@imgtec.com>
-Date: Thu, 12 Feb 2015 13:45:08 +0000
+        with ESMTP id S27013309AbbBLO0lKqwmZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 12 Feb 2015 15:26:41 +0100
+Message-ID: <54DCB819.3000406@imgtec.com>
+Date: Thu, 12 Feb 2015 14:26:33 +0000
 From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Fix syscall_trace_enter compilation error
-References: <20150206004026-tung7970@googlemail.com>
-In-Reply-To: <20150206004026-tung7970@googlemail.com>
+Subject: Re: [PATCH] MIPS: Fix syscall_get_nr for the syscall exit tracing.
+References: <1422979697-1509-1-git-send-email-larper@axis.com>
+In-Reply-To: <1422979697-1509-1-git-send-email-larper@axis.com>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -21,41 +21,72 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Tony Wu <tung7970@gmail.com>, ralf@linux-mips.org
-Cc: Lars Persson <larper@axis.com>, linux-mips@linux-mips.org
-Message-ID: <20150212134508.irtKOQirgZ4YArRGEY7PUTGYtRzYfCZ1zGFsdFCwqJk@z>
+To: Lars Persson <lars.persson@axis.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: Lars Persson <larper@axis.com>
+Message-ID: <20150212142633.y1reV4i3YSL_c9fqlXsWmGsF2z5Xd7GtCESXOw7EZvg@z>
 
-On 02/05/2015 04:43 PM, Tony Wu wrote:
-> Commit cf6ce084 (MIPS: Fix syscall_get_nr for the syscall exit
-> tracing.) broke 3.13 and 3.14 stable tree due to the missing syscall
-> argument. So, get the syscall from regs[2] before it's trashed.
+On 02/03/2015 04:08 PM, Lars Persson wrote:
+> Register 2 is alredy overwritten by the return value when
+> syscall_trace_leave() is called.
 > 
-> This patch should go to the 3.13 and 3.14 stable tree.
+> Signed-off-by: Lars Persson <larper@axis.com>
+> ---
+>  arch/mips/include/asm/syscall.h     |    8 +-------
+>  arch/mips/include/asm/thread_info.h |    1 +
+>  arch/mips/kernel/ptrace.c           |    2 ++
+>  3 files changed, 4 insertions(+), 7 deletions(-)
 > 
-> Signed-off-by: Tony Wu <tung7970@gmail.com>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Lars Persson <larper@axis.com>
-> Cc: linux-mips@linux-mips.org
-> 
+> diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
+> index bb79637..6499d93 100644
+> --- a/arch/mips/include/asm/syscall.h
+> +++ b/arch/mips/include/asm/syscall.h
+> @@ -29,13 +29,7 @@
+>  static inline long syscall_get_nr(struct task_struct *task,
+>  				  struct pt_regs *regs)
+>  {
+> -	/* O32 ABI syscall() - Either 64-bit with O32 or 32-bit */
+> -	if ((config_enabled(CONFIG_32BIT) ||
+> -	    test_tsk_thread_flag(task, TIF_32BIT_REGS)) &&
+> -	    (regs->regs[2] == __NR_syscall))
+> -		return regs->regs[4];
+> -	else
+> -		return regs->regs[2];
+> +	return current_thread_info()->syscall;
+>  }
+>  
+>  static inline unsigned long mips_get_syscall_arg(unsigned long *arg,
+> diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
+> index 99eea59..e4440f9 100644
+> --- a/arch/mips/include/asm/thread_info.h
+> +++ b/arch/mips/include/asm/thread_info.h
+> @@ -36,6 +36,7 @@ struct thread_info {
+>  						 */
+>  	struct restart_block	restart_block;
+>  	struct pt_regs		*regs;
+> +	long			syscall;	/* syscall number */
+>  };
+>  
+>  /*
 > diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
-> index 64e18f9..01f1413 100644
+> index 9d1487d..5104528 100644
 > --- a/arch/mips/kernel/ptrace.c
 > +++ b/arch/mips/kernel/ptrace.c
-> @@ -799,7 +799,7 @@ asmlinkage void syscall_trace_enter(struct pt_regs *regs)
+> @@ -770,6 +770,8 @@ asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall)
 >  	long ret = 0;
 >  	user_exit();
 >  
-> -	current_thread_info()->syscall = syscall;
-> +	current_thread_info()->syscall = regs->regs[2];
+> +	current_thread_info()->syscall = syscall;
+> +
+>  	if (secure_computing() == -1)
+>  		return -1;
 >  
->  	/* do the secure computing check first */
->  	secure_computing_strict(regs->regs[2]);
 > 
 
 Hi,
 
-Commit cf6ce084 (MIPS: Fix syscall_get_nr for the syscall exit..) is not
-in the stable branches. How did it brake the 3.13 and 3.14 build?
+This is now in mainline but parts of it can apply to stable as well?
+Would you be willing to send a backported version for the stable trees?
+Thanks a lot
 
 -- 
 markos

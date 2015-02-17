@@ -1,17 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61492 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012833AbbBPPNZmdZSh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 16 Feb 2015 16:13:25 +0100
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 89AD784D3BFD0
-        for <linux-mips@linux-mips.org>; Mon, 16 Feb 2015 15:13:17 +0000 (GMT)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: boot: Provide more uImage options
-Date: Mon, 16 Feb 2015 15:13:11 +0000
-Message-ID: <1424099591-27197-1-git-send-email-markos.chandras@imgtec.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Received: from mail.emea.novell.com ([130.57.118.101]:42691 "EHLO
+        mail.emea.novell.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27013424AbbBQKIx4ku4W convert rfc822-to-8bit (ORCPT
+        <rfc822;groupwise-linux-mips@linux-mips.org:9:1>);
+        Tue, 17 Feb 2015 11:08:53 +0100
+Message-ID: <54E321400200007800060865@mail.emea.novell.com>
+Date: Tue, 17 Feb 2015 10:08:48 +0000
+From: "Jan Beulich" <JBeulich@suse.com>
+Subject: Re: [Xen-devel] [PATCH v4] modify the IO_TLB_SEGSIZE and
+ IO_TLB_DEFAULT_SIZE configurable as flexible requirement about
+ SW-IOMMU.
+References: <1424155903-4262-1-git-send-email-xiaoming.wang@intel.com>
+In-Reply-To: <1424155903-4262-1-git-send-email-xiaoming.wang@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
+Return-Path: <JBeulich@suse.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,122 +25,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20150216151311.vtRSjB-bUJfFEjNb23IeFXEf0za-xr0WxYrfZzopFSE@z>
+To: Wang Xiaoming <xiaoming.wang@intel.com>
+Cc: chris@chris-wilson.co.uk, david.vrabel@citrix.com, lauraa@codeaurora.org, heiko.carstens@de.ibm.com, linux@horizon.com, Chuansheng Liu <chuansheng.liu@intel.com>, Zhang Dongxing <dongxing.zhang@intel.com>, takahiro.akashi@linaro.org, akpm@linux-foundation.org, linux-mips@linux-mips.org, ralf@linux-mips.org, xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, d.kasatkin@samsung.com, pebolle@tiscali.nl, linux-kernel@vger.kernel.org
+Message-ID: <20150217100848.WgiJmFNDn8_S7UiOcXxOciQel_RvHOVrqaPv0A2A1CU@z>
 
-Allow more compression algorithms as well as uncompressed uImage.bin
-to be generated. An uncompressed image might be useful to rule out
-problems in the decompression code in the bootloader or even speed
-up the boot process at the expense of a bigger uImage file.
+>>> On 17.02.15 at 07:51, <xiaoming.wang@intel.com> wrote:
+> --- a/Documentation/kernel-parameters.txt
+> +++ b/Documentation/kernel-parameters.txt
+> @@ -3438,10 +3438,12 @@ bytes respectively. Such letter suffixes can also be 
+> entirely omitted.
+>  			it if 0 is given (See Documentation/cgroups/memory.txt)
+>  
+>  	swiotlb=	[ARM,IA-64,PPC,MIPS,X86]
+> -			Format: { <int> | force }
+> +			Format: { <int> | force | <int> | <int>}
+>  			<int> -- Number of I/O TLB slabs
+>  			force -- force using of bounce buffers even if they
+>  			         wouldn't be automatically used by the kernel
+> +			<int> -- Maximum allowable number of contiguous slabs to map
+> +			<int> -- The size of SW-MMU mapped.
 
-Cc: James Hogan <james.hogan@imgtec.com>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/Makefile      |  8 ++++++++
- arch/mips/boot/Makefile | 49 +++++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 55 insertions(+), 2 deletions(-)
+This makes no sense - the new numbers added aren't position
+independent (nor were the previous <int> and "force").
 
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 0fcf7e0f4295..7109c40ee860 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -289,7 +289,11 @@ boot-y			+= vmlinux.ecoff
- boot-y			+= vmlinux.srec
- ifeq ($(shell expr $(load-y) \< 0xffffffff80000000 2> /dev/null), 0)
- boot-y			+= uImage
-+boot-y			+= uImage.bin
-+boot-y			+= uImage.bz2
- boot-y			+= uImage.gz
-+boot-y			+= uImage.lzma
-+boot-y			+= uImage.lzo
- endif
- 
- # compressed boot image targets (arch/mips/boot/compressed/)
-@@ -388,7 +392,11 @@ define archhelp
- 	echo '  vmlinuz.bin          - Raw binary zboot image'
- 	echo '  vmlinuz.srec         - SREC zboot image'
- 	echo '  uImage               - U-Boot image'
-+	echo '  uImage.bin           - U-Boot image (uncompressed)'
-+	echo '  uImage.bz2           - U-Boot image (bz2)'
- 	echo '  uImage.gz            - U-Boot image (gzip)'
-+	echo '  uImage.lzma          - U-Boot image (lzma)'
-+	echo '  uImage.lzo           - U-Boot image (lzo)'
- 	echo '  dtbs                 - Device-tree blobs for enabled boards'
- 	echo
- 	echo '  These will be default as appropriate for a configured platform.'
-diff --git a/arch/mips/boot/Makefile b/arch/mips/boot/Makefile
-index 1466c0026093..acb1988f354e 100644
---- a/arch/mips/boot/Makefile
-+++ b/arch/mips/boot/Makefile
-@@ -23,6 +23,12 @@ strip-flags   := $(addprefix --remove-section=,$(drop-sections))
- 
- hostprogs-y := elf2ecoff
- 
-+suffix-y			:= bin
-+suffix-$(CONFIG_KERNEL_BZIP2)	:= bz2
-+suffix-$(CONFIG_KERNEL_GZIP)	:= gz
-+suffix-$(CONFIG_KERNEL_LZMA)	:= lzma
-+suffix-$(CONFIG_KERNEL_LZO)	:= lzo
-+
- targets := vmlinux.ecoff
- quiet_cmd_ecoff = ECOFF	  $@
-       cmd_ecoff = $(obj)/elf2ecoff $(VMLINUX) $@ $(e2eflag)
-@@ -44,14 +50,53 @@ $(obj)/vmlinux.srec: $(VMLINUX) FORCE
- UIMAGE_LOADADDR  = $(VMLINUX_LOAD_ADDRESS)
- UIMAGE_ENTRYADDR = $(VMLINUX_ENTRY_ADDRESS)
- 
-+#
-+# Compressed vmlinux images
-+#
-+
-+extra-y += vmlinux.bin.bz2
-+extra-y += vmlinux.bin.gz
-+extra-y += vmlinux.bin.lzma
-+extra-y += vmlinux.bin.lzo
-+
-+$(obj)/vmlinux.bin.bz2: $(obj)/vmlinux.bin FORCE
-+	$(call if_changed,bzip2)
-+
- $(obj)/vmlinux.bin.gz: $(obj)/vmlinux.bin FORCE
- 	$(call if_changed,gzip)
- 
-+$(obj)/vmlinux.bin.lzma: $(obj)/vmlinux.bin FORCE
-+	$(call if_changed,lzma)
-+
-+$(obj)/vmlinux.bin.lzo: $(obj)/vmlinux.bin FORCE
-+	$(call if_changed,lzo)
-+
-+#
-+# Compressed u-boot images
-+#
-+
-+targets += uImage
-+targets += uImage.bin
-+targets += uImage.bz2
- targets += uImage.gz
-+targets += uImage.lzma
-+targets += uImage.lzo
-+
-+$(obj)/uImage.bin: $(obj)/vmlinux.bin FORCE
-+	$(call if_changed,uimage,none)
-+
-+$(obj)/uImage.bz2: $(obj)/vmlinux.bin.bz2 FORCE
-+	$(call if_changed,uimage,bzip2)
-+
- $(obj)/uImage.gz: $(obj)/vmlinux.bin.gz FORCE
- 	$(call if_changed,uimage,gzip)
- 
--targets += uImage
--$(obj)/uImage: $(obj)/uImage.gz FORCE
-+$(obj)/uImage.lzma: $(obj)/vmlinux.bin.lzma FORCE
-+	$(call if_changed,uimage,lzma)
-+
-+$(obj)/uImage.lzo: $(obj)/vmlinux.bin.lzo FORCE
-+	$(call if_changed,uimage,lzo)
-+
-+$(obj)/uImage: $(obj)/uImage.$(suffix-y)
- 	@ln -sf $(notdir $<) $@
- 	@echo '  Image $@ is ready'
--- 
-2.3.0
+Also you are (supposedly) removing all uses of
+IO_TLB_DEFAULT_SIZE, yet you don't seem to remove the
+definition itself.
+
+Finally - are arbitrary numbers really okay for the newly added
+command line options? I.e. shouldn't you add some checking of
+their validity?
+
+Jan

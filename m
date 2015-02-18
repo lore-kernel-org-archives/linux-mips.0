@@ -1,21 +1,12 @@
-Received: from mail.emea.novell.com ([130.57.118.101]:42691 "EHLO
-        mail.emea.novell.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013424AbbBQKIx4ku4W convert rfc822-to-8bit (ORCPT
-        <rfc822;groupwise-linux-mips@linux-mips.org:9:1>);
-        Tue, 17 Feb 2015 11:08:53 +0100
-Message-ID: <54E321400200007800060865@mail.emea.novell.com>
-Date: Tue, 17 Feb 2015 10:08:48 +0000
-From: "Jan Beulich" <JBeulich@suse.com>
-Subject: Re: [Xen-devel] [PATCH v4] modify the IO_TLB_SEGSIZE and
- IO_TLB_DEFAULT_SIZE configurable as flexible requirement about
- SW-IOMMU.
-References: <1424155903-4262-1-git-send-email-xiaoming.wang@intel.com>
-In-Reply-To: <1424155903-4262-1-git-send-email-xiaoming.wang@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
-Return-Path: <JBeulich@suse.com>
+Received: from mail-wi0-f182.google.com ([209.85.212.182]:52230 "EHLO
+        mail-wi0-f182.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27012930AbbBRKCJREaiT (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Feb 2015 11:02:09 +0100
+From: Manuel Lauss <manuel.lauss@gmail.com>
+Subject: [PATCH RESEND] MIPS: Alchemy: fix cpu clock calculation
+Date: Wed, 18 Feb 2015 11:01:56 +0100
+Message-ID: <1424253716-588144-1-git-send-email-manuel.lauss@gmail.com>
+Return-Path: <manuel.lauss@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,35 +16,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Wang Xiaoming <xiaoming.wang@intel.com>
-Cc: chris@chris-wilson.co.uk, david.vrabel@citrix.com, lauraa@codeaurora.org, heiko.carstens@de.ibm.com, linux@horizon.com, Chuansheng Liu <chuansheng.liu@intel.com>, Zhang Dongxing <dongxing.zhang@intel.com>, takahiro.akashi@linaro.org, akpm@linux-foundation.org, linux-mips@linux-mips.org, ralf@linux-mips.org, xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, d.kasatkin@samsung.com, pebolle@tiscali.nl, linux-kernel@vger.kernel.org
-Message-ID: <20150217100848.WgiJmFNDn8_S7UiOcXxOciQel_RvHOVrqaPv0A2A1CU@z>
+To: Linux-MIPS <linux-mips@linux-mips.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <blogic@openwrt.org>, Bruno Randolf <br1@einfach.org>, Manuel Lauss <manuel.lauss@gmail.com>, stable@vger.kernel.org[v3.17+]
+Message-ID: <20150218100156.Nqyjehs1sfNWYmdeiuWpKw85Y_bvesArgkTsvakOrlE@z>
 
->>> On 17.02.15 at 07:51, <xiaoming.wang@intel.com> wrote:
-> --- a/Documentation/kernel-parameters.txt
-> +++ b/Documentation/kernel-parameters.txt
-> @@ -3438,10 +3438,12 @@ bytes respectively. Such letter suffixes can also be 
-> entirely omitted.
->  			it if 0 is given (See Documentation/cgroups/memory.txt)
->  
->  	swiotlb=	[ARM,IA-64,PPC,MIPS,X86]
-> -			Format: { <int> | force }
-> +			Format: { <int> | force | <int> | <int>}
->  			<int> -- Number of I/O TLB slabs
->  			force -- force using of bounce buffers even if they
->  			         wouldn't be automatically used by the kernel
-> +			<int> -- Maximum allowable number of contiguous slabs to map
-> +			<int> -- The size of SW-MMU mapped.
+The current code uses bits 0-6 of the sys_cpupll register to calculate
+core clock speed.  However this is only valid on Au1300, on all earlier
+models the hardware only uses bits 0-5 to generate core clock.
 
-This makes no sense - the new numbers added aren't position
-independent (nor were the previous <int> and "force").
+This fixes clock calculation on the MTX1 (Au1500), where bit 6 of cpupll
+is set as well, which ultimately lead the code to calculate a bogus cpu
+core clock and also uart base clock down the line.
 
-Also you are (supposedly) removing all uses of
-IO_TLB_DEFAULT_SIZE, yet you don't seem to remove the
-definition itself.
+Reported-by: John Crispin <blogic@openwrt.org>
+Tested-by: Bruno Randolf <br1@einfach.org>
+Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
+Cc: stable@vger.kernel.org	[v3.17+]
+---
+John originally noticed that the reported UART baud base differed between 3.14
+and 3.18 on the MTX1,  Bruno tested and confirmed that the fix is correct.
 
-Finally - are arbitrary numbers really okay for the newly added
-command line options? I.e. shouldn't you add some checking of
-their validity?
+Resend with linux mips ml address.
 
-Jan
+ arch/mips/alchemy/common/clock.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/mips/alchemy/common/clock.c b/arch/mips/alchemy/common/clock.c
+index d8737a8..546914c 100644
+--- a/arch/mips/alchemy/common/clock.c
++++ b/arch/mips/alchemy/common/clock.c
+@@ -127,6 +127,8 @@ static unsigned long alchemy_clk_cpu_recalc(struct clk_hw *hw,
+ 		t = 396000000;
+ 	else {
+ 		t = alchemy_rdsys(AU1000_SYS_CPUPLL) & 0x7f;
++		if (alchemy_get_cputype() < ALCHEMY_CPU_AU1300)
++			t &= 0x3f;
+ 		t *= parent_rate;
+ 	}
+ 
+-- 
+2.3.0

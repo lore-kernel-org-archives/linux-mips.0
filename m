@@ -1,12 +1,16 @@
-Received: from mail-wi0-f182.google.com ([209.85.212.182]:52230 "EHLO
-        mail-wi0-f182.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27012930AbbBRKCJREaiT (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Feb 2015 11:02:09 +0100
-From: Manuel Lauss <manuel.lauss@gmail.com>
-Subject: [PATCH RESEND] MIPS: Alchemy: fix cpu clock calculation
-Date: Wed, 18 Feb 2015 11:01:56 +0100
-Message-ID: <1424253716-588144-1-git-send-email-manuel.lauss@gmail.com>
-Return-Path: <manuel.lauss@gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:48594 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012995AbbBRNabAySWF (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Feb 2015 14:30:31 +0100
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH v2 2/2] MIPS: Makefile: Pass -march option on Loongson3A cores
+Date: Wed, 18 Feb 2015 13:30:18 +0000
+Message-ID: <1424266218-11320-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1422891662-13838-2-git-send-email-markos.chandras@imgtec.com>
+References: <1422891662-13838-2-git-send-email-markos.chandras@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,43 +20,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Linux-MIPS <linux-mips@linux-mips.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <blogic@openwrt.org>, Bruno Randolf <br1@einfach.org>, Manuel Lauss <manuel.lauss@gmail.com>, stable@vger.kernel.org[v3.17+]
-Message-ID: <20150218100156.Nqyjehs1sfNWYmdeiuWpKw85Y_bvesArgkTsvakOrlE@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, Huacai Chen <chenhc@lemote.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, Matthew Fortune <Matthew.Fortune@imgtec.com>
+Message-ID: <20150218133018.LAJ83R2ufCyL66KlljpScAq6xJ81Mw7B6vNuTbkvgho@z>
 
-The current code uses bits 0-6 of the sys_cpupll register to calculate
-core clock speed.  However this is only valid on Au1300, on all earlier
-models the hardware only uses bits 0-5 to generate core clock.
+The loongson 3A cores do not select a suitable -march option so the
+build system uses the default one from the toolchain. This may or may
+not be suitable for a loongson 3A build. In order to avoid that, we
+explicitly set a suitable -march option for that core.
 
-This fixes clock calculation on the MTX1 (Au1500), where bit 6 of cpupll
-is set as well, which ultimately lead the code to calculate a bogus cpu
-core clock and also uart base clock down the line.
-
-Reported-by: John Crispin <blogic@openwrt.org>
-Tested-by: Bruno Randolf <br1@einfach.org>
-Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
-Cc: stable@vger.kernel.org	[v3.17+]
+Cc: Huacai Chen <chenhc@lemote.com>
+Cc: Maciej W. Rozycki <macro@linux-mips.org>
+Cc: Matthew Fortune <Matthew.Fortune@imgtec.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
-John originally noticed that the reported UART baud base differed between 3.14
-and 3.18 on the MTX1,  Bruno tested and confirmed that the fix is correct.
+Changes since v1:
+- Drop second part of the original patch http://patchwork.linux-mips.org/patch/9181/
+since the $(CONFIG_*) symbols were not evaluated when doing 'make foo_defconfig'
+leading to bogus build failures.
+---
+ arch/mips/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-Resend with linux mips ml address.
-
- arch/mips/alchemy/common/clock.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/mips/alchemy/common/clock.c b/arch/mips/alchemy/common/clock.c
-index d8737a8..546914c 100644
---- a/arch/mips/alchemy/common/clock.c
-+++ b/arch/mips/alchemy/common/clock.c
-@@ -127,6 +127,8 @@ static unsigned long alchemy_clk_cpu_recalc(struct clk_hw *hw,
- 		t = 396000000;
- 	else {
- 		t = alchemy_rdsys(AU1000_SYS_CPUPLL) & 0x7f;
-+		if (alchemy_get_cputype() < ALCHEMY_CPU_AU1300)
-+			t &= 0x3f;
- 		t *= parent_rate;
- 	}
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index aaee9a0b89bf..aaa0426b3867 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -166,6 +166,7 @@ cflags-$(CONFIG_CPU_CAVIUM_OCTEON) += -Wa,-march=octeon
+ endif
+ cflags-$(CONFIG_CAVIUM_CN63XXP1) += -Wa,-mfix-cn63xxp1
+ cflags-$(CONFIG_CPU_BMIPS)	+= -march=mips32 -Wa,-mips32 -Wa,--trap
++cflags-$(CONFIG_CPU_LOONGSON3)	+= $(call cc-option,-march=loongson3a,-march=mips64r2) -Wa,--trap
  
+ cflags-$(CONFIG_CPU_R4000_WORKAROUNDS)	+= $(call cc-option,-mfix-r4000,)
+ cflags-$(CONFIG_CPU_R4400_WORKAROUNDS)	+= $(call cc-option,-mfix-r4400,)
 -- 
 2.3.0

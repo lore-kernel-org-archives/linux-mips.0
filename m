@@ -1,20 +1,14 @@
-Received: from sauhun.de ([89.238.76.85]:57132 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27007119AbbBXOQt5kDMg (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 24 Feb 2015 15:16:49 +0100
-Date: Tue, 24 Feb 2015 15:16:44 +0100
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [RFC 02/11] i2c: add quirk checks to core
-Message-ID: <20150224141644.GA18301@katana>
-References: <1420824103-24169-1-git-send-email-wsa@the-dreams.de>
- <1420824103-24169-3-git-send-email-wsa@the-dreams.de>
- <CABuKBe++yut6ZfhPrsWXGA4fZRvum6WOuRxHucM0gBJCGuou5A@mail.gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:12838 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007119AbbBXPDRYb9Ws (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Feb 2015 16:03:17 +0100
+From: Daniel Sanders <daniel.sanders@imgtec.com>
+Subject: [PATCH v3] MIPS: Changed current_thread_info() to an equivalent supported by both clang and GCC
+Date: Tue, 24 Feb 2015 15:02:57 +0000
+Message-ID: <1424790177-10089-1-git-send-email-daniel.sanders@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
-Content-Disposition: inline
-In-Reply-To: <CABuKBe++yut6ZfhPrsWXGA4fZRvum6WOuRxHucM0gBJCGuou5A@mail.gmail.com>
-Return-Path: <wsa@the-dreams.de>
+Content-Type: text/plain
+Return-Path: <Daniel.Sanders@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,53 +18,66 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: linux-i2c@vger.kernel.org, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ludovic Desroches <ludovic.desroches@atmel.com>, Yingjoe Chen <yingjoe.chen@mediatek.com>, linuxppc-dev@lists.ozlabs.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Message-ID: <20150224141644.8h1wJXYwSG0ucLVQoBOynNzYnvrKrTAegth2I5PL1ug@z>
+Cc: Daniel Sanders <daniel.sanders@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, Behan Webster <behanw@converseincode.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Daney <ddaney.cavm@gmail.com>
+Message-ID: <20150224150257.APH1ClxExxFjnNRpfEOPYxbKpNoB9wCWh6AaB6OWE8g@z>
 
+Without this, a 'break' instruction is executed very early in the boot and
+the boot hangs.
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The problem is that clang doesn't honour named registers on local variables
+and silently treats them as normal uninitialized variables. However, it
+does honour them on global variables.
 
+Signed-off-by: Daniel Sanders <daniel.sanders@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Cc: James Hogan <james.hogan@imgtec.com>
+Cc: linux-mips@linux-mips.org
+Cc: Behan Webster <behanw@converseincode.com>
+Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: David Daney <ddaney.cavm@gmail.com>
+---
+v2 of this patch has been updated following David Daney's request to preserve
+the name of the original named register local.
 
-> > +               if (msgs[i].flags & I2C_M_RD) {
-> > +                       if (i2c_quirk_exceeded(len, max_read))
-> > +                               return i2c_quirk_error(adap, &msgs[i], =
-"msg too long");
-> > +               } else {
-> > +                       if (i2c_quirk_exceeded(len, max_write))
-> > +                               return i2c_quirk_error(adap, &msgs[i], =
-"msg too long");
-> > +               }
->=20
-> What about being more verbose in the error message, specifying if it
-> was a read or a write message that failed?
+v3 of this patch just rebases to master and adds some background discussion from
+the previous threads.
 
-Yes, done now. Thanks!
+For reference, a similar patch for ARM's stack pointer has already been merged:
+  0abc08b ARM: 8170/1: Add global named register current_stack_pointer for ARM
 
+LLVM is unlikely to support uninitialized reads of named register locals in the
+foreseeable future. There are some significant implementation difficulties and
+there were objections based on the future direction of LLVM. The thread is at
+http://lists.cs.uiuc.edu/pipermail/llvmdev/2014-March/071555.html. I've linked
+to the bit where the issues started to be discussed rather than the start of
+the thread.
 
---FCuugMFkClbJLl1L
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Difficulty and objections aside, it's also a very large amount of work to
+support a single (as far as I know) user of named register locals, especially
+when the kernel has already accepted patches to switch named register locals to
+named register globals in the arm and arm64/aarch64 arches.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+ arch/mips/include/asm/thread_info.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-iQIcBAEBAgAGBQJU7IfLAAoJEBQN5MwUoCm2eM4P+wQZaq6QCo0vjXPKuf28kwn7
-pE8alO7Mref/hDPDtJr/f7wFWnZkhQm0frwFxkMjkk7AXU/423Hr+WaynTn2muPU
-JsQCTXbHJ7FRk9I/k0ZlRyxDhOYM5pAX4y/M+L5rA9HvNFWDcchOaiq4ep3BpyDB
-xRRdXwMJHDylJJnbq/HEuXbNBXOex4qvCrAhXemdR9XYLCVenhMnBjztvkB48XDQ
-PXCBuf43NtjY3C0P7fbFnnGUP+t+Zhdzup9JYJKaroJKd8XgrViSCv9qog6xgUO2
-n5QzR5RwQCy4dQ8fhNteNJ5xJpTEQfV0qrTpGqqOBOtyZLtj+hjeEk8tBI4c+DJ2
-24Z4rVc3q0QfyL8o2T4IbIg7kRxlk+8M2RzEVy2tRpNmUlKtW8hLVrRADTJGyLR/
-XntU9Afl+qBnRwaP8IodZDE2xD5wTCwyo8L/4+/+q3Bo6mYxKkpOl43yDbDwJX6S
-c5c9K+ueyWxILGkmJ+dgHMNySI5G0uDq8BG5dLpbx5iDUZfZBZ/TZtrpnrl5PiR5
-kYkWJQ2L/P9CIer+v2Ia0e2XrYu8sVP/Cm38MsDRCiFHYj2qXREPMH6wY5Rf/wpH
-0hvntc8pvr1YkMMD4aOaeQAdsSXe63P/4Q4pjaWbqupdW5cWgzelSUJoLVc3Lhil
-2bx8Bd80/Y1UvyJBIbgi
-=ERJg
------END PGP SIGNATURE-----
-
---FCuugMFkClbJLl1L--
+diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
+index 55ed660..2f0dba3 100644
+--- a/arch/mips/include/asm/thread_info.h
++++ b/arch/mips/include/asm/thread_info.h
+@@ -55,10 +55,10 @@ struct thread_info {
+ #define init_stack		(init_thread_union.stack)
+ 
+ /* How to get the thread information struct from C.  */
++register struct thread_info *__current_thread_info __asm__("$28");
++
+ static inline struct thread_info *current_thread_info(void)
+ {
+-	register struct thread_info *__current_thread_info __asm__("$28");
+-
+ 	return __current_thread_info;
+ }
+ 
+-- 
+2.1.4

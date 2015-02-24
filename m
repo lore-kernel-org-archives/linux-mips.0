@@ -1,17 +1,21 @@
-Received: (from localhost user: 'macro', uid#1010) by eddie.linux-mips.org
-        with ESMTP id S27006887AbbBXCd4iSPFm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Feb 2015 03:33:56 +0100
-Date: Tue, 24 Feb 2015 02:33:56 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@linux-mips.org>
-Subject: Re: [PATCH V2 1/3] MIPS: Fix cache flushing for swap pages with
- non-DMA I/O.
-In-Reply-To: <54EBD023.8090706@imgtec.com>
-Message-ID: <alpine.LFD.2.11.1502240224500.17311@eddie.linux-mips.org>
-References: <1424362664-30303-1-git-send-email-Steven.Hill@imgtec.com> <1424362664-30303-2-git-send-email-Steven.Hill@imgtec.com> <CAJiQ=7DMBznB5Ths0sAZORf2hgSQRuBoPF-7HGHhcHn0EajnWg@mail.gmail.com> <54EBCC38.7000702@imgtec.com>
- <54EBD023.8090706@imgtec.com>
+Received: from mail-wg0-f52.google.com ([74.125.82.52]:34974 "EHLO
+        mail-wg0-f52.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27006864AbbBXHjO0V0YT (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Feb 2015 08:39:14 +0100
+Received: by wggz12 with SMTP id z12so3448747wgg.2
+        for <linux-mips@linux-mips.org>; Mon, 23 Feb 2015 23:39:09 -0800 (PST)
+Date: Tue, 24 Feb 2015 08:39:06 +0100
+From: Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] Fix offset2lib issue for x86*, ARM*, PowerPC and MIPS
+Message-ID: <20150224073906.GA16422@gmail.com>
+References: <54EB735F.5030207@upv.es>
+ <CAGXu5j+SBRcj+BGyxEwUzgKsB2fdzNiPY37Q=JTsf=-QbGwoGA@mail.gmail.com>
+ <20150223205436.15133mg1kpyojyik@webmail.upv.es>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <macro@linux-mips.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150223205436.15133mg1kpyojyik@webmail.upv.es>
+Return-Path: <mingo.kernel.org@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,20 +25,65 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Zenon Fortuna <zenon.fortuna@imgtec.com>
-Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, IMG - MIPS Linux Kernel developers <IMG-MIPSLinuxKerneldevelopers@imgtec.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>
-Message-ID: <20150224023356.S8LcvS3Ro4Sda9yoKfijho0fYnRI-KxaZr9OwzfzCU8@z>
+To: Hector Marco Gisbert <hecmargi@upv.es>
+Cc: Kees Cook <keescook@chromium.org>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, ismael Ripoll <iripoll@upv.es>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linuxppc-dev@lists.ozlabs.org
+Message-ID: <20150224073906.__JxfHYUH2IOxkjJJxZS98LbB2HikTO9acNse89jTEA@z>
 
-On Mon, 23 Feb 2015, Zenon Fortuna wrote:
 
-> Does the current system-call "cacheflush(2)" works with the newer kernels?
-> As the "man cacheflush" tells, it was supposed to work only on MIPS based
-> systems.
+* Hector Marco Gisbert <hecmargi@upv.es> wrote:
 
- It absolutely has to work, on the MIPS target GCC emits code invoking it 
-to synchronise trampolines built at the run time on the stack (used for 
-calling nested functions, a C language extension borrowed from Pascal, 
-etc.), before passing execution there.  Verification of this syscall is 
-probably implicitly covered by the GCC test suite already.
+> +unsigned long randomize_et_dyn(unsigned long base)
+> +{
+> +	unsigned long ret;
+> +	if ((current->personality & ADDR_NO_RANDOMIZE) ||
+> +		!(current->flags & PF_RANDOMIZE))
+> +		return base;
+> +	ret = base + mmap_rnd();
+> +	return (ret > base) ? ret : base;
+> +}
 
-  Maciej
+> +unsigned long randomize_et_dyn(unsigned long base)
+> +{
+> +	unsigned long ret;
+> +	if ((current->personality & ADDR_NO_RANDOMIZE) ||
+> +		!(current->flags & PF_RANDOMIZE))
+> +		return base;
+> +	ret = base + mmap_rnd();
+> +	return (ret > base) ? ret : base;
+> +}
+
+> +unsigned long randomize_et_dyn(unsigned long base)
+> +{
+> +	unsigned long ret;
+> +	if ((current->personality & ADDR_NO_RANDOMIZE) ||
+> +		!(current->flags & PF_RANDOMIZE))
+> +		return base;
+> +	ret = base + brk_rnd();
+> +	return (ret > base) ? ret : base;
+> +}
+
+> +unsigned long randomize_et_dyn(unsigned long base)
+> +{
+> +	unsigned long ret;
+> +	if ((current->personality & ADDR_NO_RANDOMIZE) ||
+> +		!(current->flags & PF_RANDOMIZE))
+> +		return base;
+> +	ret = base + mmap_rnd();
+> +	return (ret > base) ? ret : base;
+> +}
+
+> +unsigned long randomize_et_dyn(unsigned long base)
+> +{
+> +	unsigned long ret;
+> +	if ((current->personality & ADDR_NO_RANDOMIZE) ||
+> +		!(current->flags & PF_RANDOMIZE))
+> +		return base;
+> +	ret = base + mmap_rnd();
+> +	return (ret > base) ? ret : base;
+> +}
+
+That pointless repetition should be avoided.
+
+Thanks,
+
+	Ingo

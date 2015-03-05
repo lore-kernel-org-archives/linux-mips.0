@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:52309 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012250AbbCEA7zQPHRM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2015 01:59:55 +0100
-From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH 15/15] MIPS: Add support for fine granularity task level IRQ time accounting
-Date: Wed, 4 Mar 2015 16:58:57 -0800
-Message-ID: <1425517137-26463-16-git-send-email-dengcheng.zhu@imgtec.com>
-In-Reply-To: <1425517137-26463-1-git-send-email-dengcheng.zhu@imgtec.com>
-References: <1425517137-26463-1-git-send-email-dengcheng.zhu@imgtec.com>
+Received: from nivc-ms1.auriga.com ([80.240.102.146]:61291 "EHLO
+        nivc-ms1.auriga.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008192AbbCEOeHNtZf3 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2015 15:34:07 +0100
+From: Aleksey Makarov <aleksey.makarov@auriga.com>
+Subject: [PATCH v2 0/3] MIPS: OCTEON: flash: syncronize bootbus access
+Date: Thu, 5 Mar 2015 17:31:28 +0300
+Message-ID: <1425565893-30614-1-git-send-email-aleksey.makarov@auriga.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <DengCheng.Zhu@imgtec.com>
+Return-Path: <aleksey.makarov@auriga.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,30 +18,34 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org
-Cc: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Message-ID: <20150305005857.vTSIVs42OJCl5ZcKEDhyd8ZM9uINCj0bzn3nu0hc9fI@z>
+To: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Aleksey Makarov <aleksey.makarov@auriga.com>
+Message-ID: <20150305143128.03on5XZ-se0nCuOjUAW5OjyHz8NlXEQ7mAuK0QNKbns@z>
 
-With sched_clock being ready, it makes sense to add the option of IRQ time
-accounting -- When we have a fast enough sched_clock, IRQ time accounting
-will be enabled (see sched_clock_register).
+Changes in v2:
 
-Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
----
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+- Rebase to v4.0-rc2
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 09405dc..4748b8f 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -57,6 +57,7 @@ config MIPS
- 	select ARCH_BINFMT_ELF_STATE
- 	select SYSCTL_EXCEPTION_TRACE
- 	select HAVE_VIRT_CPU_ACCOUNTING_GEN
-+	select HAVE_IRQ_TIME_ACCOUNTING
- 
- menu "Machine selection"
- 
+Summary:
+
+- Use semaphore to protect access to bootbus.  
+- Use device tree to probe for flash chips.
+
+Version 1:
+
+https://lkml.kernel.org/g/<1419337623-16101-1-git-send-email-aleksey.makarov@auriga.com>
+
+David Daney (3):
+  MIPS: OCTEON: Add semaphore to serialize bootbus accesses.
+  MIPS: OCTEON: Protect accesses to bootbus flash with
+    octeon_bootbus_sem.
+  MIPS: OCTEON: Use device tree to probe for flash chips.
+
+ arch/mips/Kconfig                     |  1 +
+ arch/mips/cavium-octeon/flash_setup.c | 84 ++++++++++++++++++++++++++++++++---
+ arch/mips/cavium-octeon/setup.c       |  3 ++
+ arch/mips/include/asm/octeon/octeon.h |  2 +
+ 4 files changed, 84 insertions(+), 6 deletions(-)
+
 -- 
-1.8.5.3
+2.3.0

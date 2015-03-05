@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:34409 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:52309 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012230AbbCEA7wiaMF0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2015 01:59:52 +0100
+        with ESMTP id S27012250AbbCEA7zQPHRM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2015 01:59:55 +0100
 From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH 14/15] MIPS: csrc-sb1250: Implement read_sched_clock
-Date: Wed, 4 Mar 2015 16:58:56 -0800
-Message-ID: <1425517137-26463-15-git-send-email-dengcheng.zhu@imgtec.com>
+Subject: [PATCH 15/15] MIPS: Add support for fine granularity task level IRQ time accounting
+Date: Wed, 4 Mar 2015 16:58:57 -0800
+Message-ID: <1425517137-26463-16-git-send-email-dengcheng.zhu@imgtec.com>
 In-Reply-To: <1425517137-26463-1-git-send-email-dengcheng.zhu@imgtec.com>
 References: <1425517137-26463-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
@@ -22,46 +22,28 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Message-ID: <20150305005856.nmfaDkDGDCk4GNPa_bPBBtMmkO1idN70NZzpeJtbU3I@z>
+Message-ID: <20150305005857.vTSIVs42OJCl5ZcKEDhyd8ZM9uINCj0bzn3nu0hc9fI@z>
 
-Use sb1250 hpt for sched_clock source. This implementation will give high
-resolution cputime accounting.
+With sched_clock being ready, it makes sense to add the option of IRQ time
+accounting -- When we have a fast enough sched_clock, IRQ time accounting
+will be enabled (see sched_clock_register).
 
 Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 ---
- arch/mips/kernel/csrc-sb1250.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/kernel/csrc-sb1250.c b/arch/mips/kernel/csrc-sb1250.c
-index df84836..6546fff 100644
---- a/arch/mips/kernel/csrc-sb1250.c
-+++ b/arch/mips/kernel/csrc-sb1250.c
-@@ -12,6 +12,7 @@
-  * GNU General Public License for more details.
-  */
- #include <linux/clocksource.h>
-+#include <linux/sched_clock.h>
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 09405dc..4748b8f 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -57,6 +57,7 @@ config MIPS
+ 	select ARCH_BINFMT_ELF_STATE
+ 	select SYSCTL_EXCEPTION_TRACE
+ 	select HAVE_VIRT_CPU_ACCOUNTING_GEN
++	select HAVE_IRQ_TIME_ACCOUNTING
  
- #include <asm/addrspace.h>
- #include <asm/io.h>
-@@ -46,6 +47,11 @@ struct clocksource bcm1250_clocksource = {
- 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
- };
+ menu "Machine selection"
  
-+static u64 notrace sb1250_read_sched_clock(void)
-+{
-+	return sb1250_hpt_read(NULL);
-+}
-+
- void __init sb1250_clocksource_init(void)
- {
- 	struct clocksource *cs = &bcm1250_clocksource;
-@@ -62,4 +68,6 @@ void __init sb1250_clocksource_init(void)
- 						 R_SCD_TIMER_CFG)));
- 
- 	clocksource_register_hz(cs, V_SCD_TIMER_FREQ);
-+
-+	sched_clock_register(sb1250_read_sched_clock, 23, V_SCD_TIMER_FREQ);
- }
 -- 
 1.8.5.3

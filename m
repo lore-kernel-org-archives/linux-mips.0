@@ -1,11 +1,11 @@
 Received: from nivc-ms1.auriga.com ([80.240.102.146]:61303 "EHLO
         nivc-ms1.auriga.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008192AbbCEOe1UuDZ8 (ORCPT
+        with ESMTP id S27011567AbbCEOe1d0sOC (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2015 15:34:27 +0100
 From: Aleksey Makarov <aleksey.makarov@auriga.com>
-Subject: [PATCH v2 1/3] MIPS: OCTEON: Add semaphore to serialize bootbus accesses.
-Date: Thu, 5 Mar 2015 17:31:29 +0300
-Message-ID: <1425565893-30614-2-git-send-email-aleksey.makarov@auriga.com>
+Subject: [PATCH v2 2/3] MIPS: OCTEON: Protect accesses to bootbus flash with octeon_bootbus_sem.
+Date: Thu, 5 Mar 2015 17:31:30 +0300
+Message-ID: <1425565893-30614-3-git-send-email-aleksey.makarov@auriga.com>
 In-Reply-To: <1425565893-30614-1-git-send-email-aleksey.makarov@auriga.com>
 References: <1425565893-30614-1-git-send-email-aleksey.makarov@auriga.com>
 MIME-Version: 1.0
@@ -21,54 +21,98 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Aleksey Makarov <aleksey.makarov@auriga.com>, Chandrakala Chavva <cchavva@caviumnetworks.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150305143129.9JkJN-JaUZ7wj8oKdL3alZQhKv7LR6mf0XmlaNoDF60@z>
+Cc: linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Aleksey Makarov <aleksey.makarov@auriga.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20150305143130.YcE-gVmTU8Tyk4WmddnSMEogxd-e6YxztAm0zL3dgT0@z>
 
 From: David Daney <david.daney@cavium.com>
 
-Some hardware blocks attached to the OCTEON bootbus run asynchronously
-to accesses from the CPUs.  These include MMC/SD host, CF(when using
-DMA), and NAND controller.  A bus error, or corrupt data may occur if
-a CPU is trying to access a bootbus connected device at the same time
-the bus is running asynchronous operations.
-
-To work around these problems we add this semaphore that must be
-acquired before initiating bootbus activity.  Subsequent patches will
-add users for this.
+Without this, we get bus errors.
 
 Signed-off-by: David Daney <david.daney@cavium.com>
-[aleksey.makarov@auriga.com: combine the patches]
 Signed-off-by: Aleksey Makarov <aleksey.makarov@auriga.com>
-Signed-off-by: Chandrakala Chavva <cchavva@caviumnetworks.com>
 ---
- arch/mips/cavium-octeon/setup.c       | 3 +++
- arch/mips/include/asm/octeon/octeon.h | 2 ++
- 2 files changed, 5 insertions(+)
+ arch/mips/Kconfig                     |  1 +
+ arch/mips/cavium-octeon/flash_setup.c | 42 ++++++++++++++++++++++++++++++++++-
+ 2 files changed, 42 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
-index a42110e..01130e9 100644
---- a/arch/mips/cavium-octeon/setup.c
-+++ b/arch/mips/cavium-octeon/setup.c
-@@ -51,6 +51,9 @@ extern void pci_console_init(const char *arg);
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index c7a1690..f7804e9 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -793,6 +793,7 @@ config CAVIUM_OCTEON_SOC
+ 	select SYS_SUPPORTS_SMP
+ 	select NR_CPUS_DEFAULT_16
+ 	select BUILTIN_DTB
++	select MTD_COMPLEX_MAPPINGS
+ 	help
+ 	  This option supports all of the Octeon reference boards from Cavium
+ 	  Networks. It builds a kernel that dynamically determines the Octeon
+diff --git a/arch/mips/cavium-octeon/flash_setup.c b/arch/mips/cavium-octeon/flash_setup.c
+index 237e5b1..39e26df 100644
+--- a/arch/mips/cavium-octeon/flash_setup.c
++++ b/arch/mips/cavium-octeon/flash_setup.c
+@@ -9,6 +9,7 @@
+  */
+ #include <linux/kernel.h>
+ #include <linux/export.h>
++#include <linux/semaphore.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/partitions.h>
+@@ -25,6 +26,41 @@ static const char *part_probe_types[] = {
+ 	NULL
+ };
  
- static unsigned long long MAX_MEMORY = 512ull << 20;
- 
-+DEFINE_SEMAPHORE(octeon_bootbus_sem);
-+EXPORT_SYMBOL(octeon_bootbus_sem);
++static map_word octeon_flash_map_read(struct map_info *map, unsigned long ofs)
++{
++	map_word r;
 +
- struct octeon_boot_descriptor *octeon_boot_desc_ptr;
- 
- struct cvmx_bootinfo *octeon_bootinfo;
-diff --git a/arch/mips/include/asm/octeon/octeon.h b/arch/mips/include/asm/octeon/octeon.h
-index 0415965..de9f74e 100644
---- a/arch/mips/include/asm/octeon/octeon.h
-+++ b/arch/mips/include/asm/octeon/octeon.h
-@@ -335,4 +335,6 @@ void octeon_irq_set_ip4_handler(octeon_irq_ip4_handler_t);
- 
- extern void octeon_fixup_irqs(void);
- 
-+extern struct semaphore octeon_bootbus_sem;
++	down(&octeon_bootbus_sem);
++	r = inline_map_read(map, ofs);
++	up(&octeon_bootbus_sem);
 +
- #endif /* __ASM_OCTEON_OCTEON_H */
++	return r;
++}
++
++static void octeon_flash_map_write(struct map_info *map, const map_word datum,
++				   unsigned long ofs)
++{
++	down(&octeon_bootbus_sem);
++	inline_map_write(map, datum, ofs);
++	up(&octeon_bootbus_sem);
++}
++
++static void octeon_flash_map_copy_from(struct map_info *map, void *to,
++				       unsigned long from, ssize_t len)
++{
++	down(&octeon_bootbus_sem);
++	inline_map_copy_from(map, to, from, len);
++	up(&octeon_bootbus_sem);
++}
++
++static void octeon_flash_map_copy_to(struct map_info *map, unsigned long to,
++				     const void *from, ssize_t len)
++{
++	down(&octeon_bootbus_sem);
++	inline_map_copy_to(map, to, from, len);
++	up(&octeon_bootbus_sem);
++}
++
+ /**
+  * Module/ driver initialization.
+  *
+@@ -56,7 +92,11 @@ static int __init flash_init(void)
+ 		flash_map.virt = ioremap(flash_map.phys, flash_map.size);
+ 		pr_notice("Bootbus flash: Setting flash for %luMB flash at "
+ 			  "0x%08llx\n", flash_map.size >> 20, flash_map.phys);
+-		simple_map_init(&flash_map);
++		WARN_ON(!map_bankwidth_supported(flash_map.bankwidth));
++		flash_map.read = octeon_flash_map_read;
++		flash_map.write = octeon_flash_map_write;
++		flash_map.copy_from = octeon_flash_map_copy_from;
++		flash_map.copy_to = octeon_flash_map_copy_to;
+ 		mymtd = do_map_probe("cfi_probe", &flash_map);
+ 		if (mymtd) {
+ 			mymtd->owner = THIS_MODULE;
 -- 
 2.3.0

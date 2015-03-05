@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:2543 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54333 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008132AbbCEA7Vg9SfG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2015 01:59:21 +0100
+        with ESMTP id S27008149AbbCEA7YFqNMz (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2015 01:59:24 +0100
 From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH 02/15] MIPS: Fall back to generic implementation of cmpxchg64 on 32-bit platforms
-Date: Wed, 4 Mar 2015 16:58:44 -0800
-Message-ID: <1425517137-26463-3-git-send-email-dengcheng.zhu@imgtec.com>
+Subject: [PATCH 03/15] MIPS: Add support for full dynticks CPU time accounting
+Date: Wed, 4 Mar 2015 16:58:45 -0800
+Message-ID: <1425517137-26463-4-git-send-email-dengcheng.zhu@imgtec.com>
 In-Reply-To: <1425517137-26463-1-git-send-email-dengcheng.zhu@imgtec.com>
 References: <1425517137-26463-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
@@ -22,54 +22,27 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Message-ID: <20150305005844.JdrjIFqAqand6OaR1C8mW-D-ud9XLwwxY52k7WElrYM@z>
+Message-ID: <20150305005845.Fn8Ar-tZLCEC3Je3jbs5-J0QkQHFf-9Dpyd8b2hrSOM@z>
 
-This is in preparation of adding HAVE_VIRT_CPU_ACCOUNTING_GEN support in
-the next patch.
-
-Without having cmpxchg64 to use the generic implementation, kernel linking
-will complain:
-
-kernel/built-in.o: In function `cputime_adjust':
-cputime.c:(.text+0x33748): undefined reference to `__cmpxchg_called_with_bad_pointer'
-cputime.c:(.text+0x33810): undefined reference to `__cmpxchg_called_with_bad_pointer'
+With the correct cmpxchg64 on 32-bit platforms, we can now add the config
+HAVE_VIRT_CPU_ACCOUNTING_GEN into arch/mips/Kconfig.
 
 Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 ---
- arch/mips/include/asm/cmpxchg.h | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/include/asm/cmpxchg.h b/arch/mips/include/asm/cmpxchg.h
-index d0a2a68..412f945 100644
---- a/arch/mips/include/asm/cmpxchg.h
-+++ b/arch/mips/include/asm/cmpxchg.h
-@@ -229,21 +229,22 @@ extern void __cmpxchg_called_with_bad_pointer(void);
- #define cmpxchg(ptr, old, new)		__cmpxchg(ptr, old, new, smp_mb__before_llsc(), smp_llsc_mb())
- #define cmpxchg_local(ptr, old, new)	__cmpxchg(ptr, old, new, , )
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 17f23ed..068592a 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -55,6 +55,7 @@ config MIPS
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_BINFMT_ELF_STATE
+ 	select SYSCTL_EXCEPTION_TRACE
++	select HAVE_VIRT_CPU_ACCOUNTING_GEN
  
--#define cmpxchg64(ptr, o, n)						\
-+#ifdef CONFIG_64BIT
-+#define cmpxchg64_local(ptr, o, n)					\
-   ({									\
- 	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
--	cmpxchg((ptr), (o), (n));					\
-+	cmpxchg_local((ptr), (o), (n));					\
-   })
+ menu "Machine selection"
  
--#ifdef CONFIG_64BIT
--#define cmpxchg64_local(ptr, o, n)					\
-+#define cmpxchg64(ptr, o, n)						\
-   ({									\
- 	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
--	cmpxchg_local((ptr), (o), (n));					\
-+	cmpxchg((ptr), (o), (n));					\
-   })
- #else
- #include <asm-generic/cmpxchg-local.h>
- #define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
-+#define cmpxchg64(ptr, o, n) cmpxchg64_local((ptr), (o), (n))
- #endif
- 
- #endif /* __ASM_CMPXCHG_H */
 -- 
 1.8.5.3

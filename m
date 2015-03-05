@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:2302 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:40363 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012109AbbCEA7hfCCyZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2015 01:59:37 +0100
+        with ESMTP id S27012149AbbCEA7j4AlRd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Mar 2015 01:59:39 +0100
 From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH 08/15] MIPS: csrc-ioasic: Remove FSF mail address from GPL notice
-Date: Wed, 4 Mar 2015 16:58:50 -0800
-Message-ID: <1425517137-26463-9-git-send-email-dengcheng.zhu@imgtec.com>
+Subject: [PATCH 09/15] MIPS: csrc-ioasic: Implement read_sched_clock
+Date: Wed, 4 Mar 2015 16:58:51 -0800
+Message-ID: <1425517137-26463-10-git-send-email-dengcheng.zhu@imgtec.com>
 In-Reply-To: <1425517137-26463-1-git-send-email-dengcheng.zhu@imgtec.com>
 References: <1425517137-26463-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
@@ -22,35 +22,48 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Message-ID: <20150305005850.exHCXvNluYUmMCgXT6yiBxN7eLlaCNBnkeKoQ1UmpNs@z>
+Message-ID: <20150305005851.Mhb3C7IEBuBCW5xQMjN55m3IwRxGdkm3nZEvSVO0K4U@z>
 
-This is to make checkpatch.pl happy for the next patch. It would otherwise
-say --
-
-ERROR: Do not include the paragraph about writing to the Free Software
-Foundation's mailing address from the sample GPL notice. The FSF has
-changed addresses in the past, and may do so again. Linux already includes
-a copy of the GPL.
+Use DEC I/O ASIC's free-running counter for sched_clock source. This
+implementation will give high resolution cputime accounting.
 
 Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 ---
- arch/mips/kernel/csrc-ioasic.c | 4 ----
- 1 file changed, 4 deletions(-)
+ arch/mips/kernel/csrc-ioasic.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/arch/mips/kernel/csrc-ioasic.c b/arch/mips/kernel/csrc-ioasic.c
-index 6cbbf6e..54e394d 100644
+index 54e394d..722f558 100644
 --- a/arch/mips/kernel/csrc-ioasic.c
 +++ b/arch/mips/kernel/csrc-ioasic.c
-@@ -12,10 +12,6 @@
-  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@@ -14,6 +14,7 @@
   *  GNU General Public License for more details.
-- *
-- *  You should have received a copy of the GNU General Public License
-- *  along with this program; if not, write to the Free Software
-- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
   */
  #include <linux/clocksource.h>
++#include <linux/sched_clock.h>
  #include <linux/init.h>
+ 
+ #include <asm/ds1287.h>
+@@ -33,6 +34,11 @@ static struct clocksource clocksource_dec = {
+ 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
+ };
+ 
++static u64 notrace dec_ioasic_read_sched_clock(void)
++{
++	return ioasic_read(IO_REG_FCTR);
++}
++
+ int __init dec_ioasic_clocksource_init(void)
+ {
+ 	unsigned int freq;
+@@ -61,5 +67,8 @@ int __init dec_ioasic_clocksource_init(void)
+ 
+ 	clocksource_dec.rating = 200 + freq / 10000000;
+ 	clocksource_register_hz(&clocksource_dec, freq);
++
++	sched_clock_register(dec_ioasic_read_sched_clock, 32, freq);
++
+ 	return 0;
+ }
 -- 
 1.8.5.3

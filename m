@@ -1,16 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:30168 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:61095 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007951AbbCFXX2sQ65Q (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 7 Mar 2015 00:23:28 +0100
-Message-ID: <54FA36E8.7010501@imgtec.com>
-Date: Fri, 6 Mar 2015 15:23:20 -0800
+        with ESMTP id S27007380AbbCGSbnRcoH6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 7 Mar 2015 19:31:43 +0100
 From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Subject: [PATCH v2 00/17] MIPS: Add cputime/clock/hrtick features
+Date: Sat, 7 Mar 2015 10:30:18 -0800
+Message-ID: <1425753035-17087-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 04/15] MIPS: Add sched_clock support
-References: <1425517137-26463-1-git-send-email-dengcheng.zhu@imgtec.com> <1425517137-26463-5-git-send-email-dengcheng.zhu@imgtec.com> <alpine.LFD.2.11.1503061146430.15786@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.11.1503061146430.15786@eddie.linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <DengCheng.Zhu@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,77 +18,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>, Russell King <linux@arm.linux.org.uk>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Message-ID: <20150306232320.7kCOXfyJ3llGUovBd9ubNn5aQt7fvZy2MFoopMzCG4Y@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: macro@linux-mips.org, Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
+Message-ID: <20150307183018.ig93VolLh2YV7YSgDda39MPeEG2rT7A6zOaFfvvHTCI@z>
 
-On 03/06/2015 03:58 AM, Maciej W. Rozycki wrote:
-> On Wed, 4 Mar 2015, Deng-Cheng Zhu wrote:
->
->> This will provide sched_clock interface to implement individual
->> read_sched_clock(). Not for CAVIUM_OCTEON_SOC as it defines its own
->> sched_clock() directly (not using the sched_clock_register interface).
->>
->> Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
->> ---
->>   arch/mips/Kconfig | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
->> index 068592a..09405dc 100644
->> --- a/arch/mips/Kconfig
->> +++ b/arch/mips/Kconfig
->> @@ -43,6 +43,7 @@ config MIPS
->>   	select GENERIC_SMP_IDLE_THREAD
->>   	select BUILDTIME_EXTABLE_SORT
->>   	select GENERIC_CLOCKEVENTS
->> +	select GENERIC_SCHED_CLOCK if !CAVIUM_OCTEON_SOC
->>   	select GENERIC_CMOS_UPDATE
->>   	select HAVE_MOD_ARCH_SPECIFIC
->>   	select VIRT_TO_BUS
->   Why does this change add this question:
->
-> ARM Versatile (Express) reference platforms clock source (CLKSRC_VERSATILE) [N/y/?] (NEW) ?
+Some generic features are applicable to MIPS but currently missing. Some
+need low-level support. This patch set is mainly for providing high
+resolution cpu/task time accounting. Testing was done on Malta. Welcome
+Tested-by's for other platforms.
 
-Good catch.
+Changes:
+v2 - v1:
+o Added plat dependency for clocksource versatile.
+o Use common func for both read_sched_clock and sb1250_hpt_read in csrc-sb1250.
 
->
-> This option enables clock source based on free running
-> counter available in the "System Registers" block of
-> ARM Versatile, RealView and Versatile Express reference
-> platforms.
->
-> Symbol: CLKSRC_VERSATILE [=n]
-> Type  : boolean
-> Prompt: ARM Versatile (Express) reference platforms clock source
->    Location:
->      -> Device Drivers
->        -> Clock Source drivers
->    Defined at drivers/clocksource/Kconfig:216
->    Depends on: GENERIC_SCHED_CLOCK [=y] && !ARCH_USES_GETTIMEOFFSET [=n]
->    Selects: CLKSRC_OF [=n]
->
-> to a MIPS configuration?  I find it silly, this appears a platform
-> device to me (use reverse dependencies?).
+Deng-Cheng Zhu (17):
+  MIPS: Add SCHED_HRTICK support
+  MIPS: Fall back to generic implementation of cmpxchg64 on 32-bit
+    platforms
+  MIPS: Add support for full dynticks CPU time accounting
+  clocksource: versatile: Add PLAT_VERSATILE dependency
+  MIPS: Add sched_clock support
+  MIPS: csrc-r4k: Implement read_sched_clock
+  MIPS: csrc-bcm1480: Remove FSF mail address from GPL notice
+  MIPS: csrc-bcm1480: Implement read_sched_clock
+  MIPS: csrc-ioasic: Remove FSF mail address from GPL notice
+  MIPS: csrc-ioasic: Implement read_sched_clock
+  MIPS: sgi-ip27: Implement read_sched_clock
+  MIPS: cevt-txx9: Implement read_sched_clock
+  MIPS: jz4740: Implement read_sched_clock
+  MIPS: csrc-sb1250: Extract hpt cycle acquisition from sb1250_hpt_read
+  MIPS: csrc-sb1250: Remove FSF mail address from GPL notice
+  MIPS: csrc-sb1250: Implement read_sched_clock
+  MIPS: Add support for fine granularity task level IRQ time accounting
 
-GENERIC_SCHED_CLOCK is generic, by default it uses jiffy_sched_clock_read() 
-for read_sched_clock(). Instead of using reverse dependencies, I suggest 
-the following:
+ arch/mips/Kconfig               |  6 ++++++
+ arch/mips/include/asm/cmpxchg.h | 11 ++++++-----
+ arch/mips/jz4740/time.c         |  8 ++++++++
+ arch/mips/kernel/cevt-txx9.c    |  9 +++++++++
+ arch/mips/kernel/csrc-bcm1480.c | 12 ++++++++----
+ arch/mips/kernel/csrc-ioasic.c  | 13 +++++++++----
+ arch/mips/kernel/csrc-r4k.c     |  8 ++++++++
+ arch/mips/kernel/csrc-sb1250.c  | 23 +++++++++++++++++------
+ arch/mips/sgi-ip27/ip27-timer.c |  8 ++++++++
+ drivers/clocksource/Kconfig     |  2 +-
+ 10 files changed, 80 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 1c2506f..22e0ee1 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -225,7 +225,7 @@ config CLKSRC_QCOM
-
-  config CLKSRC_VERSATILE
-         bool "ARM Versatile (Express) reference platforms clock source"
--       depends on GENERIC_SCHED_CLOCK && !ARCH_USES_GETTIMEOFFSET
-+       depends on PLAT_VERSATILE && GENERIC_SCHED_CLOCK && 
-!ARCH_USES_GETTIMEOFFSET
-         select CLKSRC_OF
-         default y if MFD_VEXPRESS_SYSREG
-         help
-
-
-Deng-Cheng
+-- 
+2.3.2

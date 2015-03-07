@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:20489 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:42856 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008252AbbCGScLY28Kc (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 7 Mar 2015 19:32:11 +0100
+        with ESMTP id S27012507AbbCGScPvYysn (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 7 Mar 2015 19:32:15 +0100
 From: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Subject: [PATCH v2 10/17] MIPS: csrc-ioasic: Implement read_sched_clock
-Date: Sat, 7 Mar 2015 10:30:28 -0800
-Message-ID: <1425753035-17087-11-git-send-email-dengcheng.zhu@imgtec.com>
+Subject: [PATCH v2 11/17] MIPS: sgi-ip27: Implement read_sched_clock
+Date: Sat, 7 Mar 2015 10:30:29 -0800
+Message-ID: <1425753035-17087-12-git-send-email-dengcheng.zhu@imgtec.com>
 In-Reply-To: <1425753035-17087-1-git-send-email-dengcheng.zhu@imgtec.com>
 References: <1425753035-17087-1-git-send-email-dengcheng.zhu@imgtec.com>
 MIME-Version: 1.0
@@ -22,49 +22,46 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: macro@linux-mips.org, Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Message-ID: <20150307183028.yVUzJUbUx0EG0uiwfQzlYGEhvYkKVBCUk5BRfW4AvkI@z>
+Message-ID: <20150307183029.bXnCTw5Ze2B_hkkGnnHU6UEqplNAiCGwMEnKTeFVDuA@z>
 
-Use DEC I/O ASIC's free-running counter for sched_clock source. This
-implementation will give high resolution cputime accounting.
+Use ip27 hub real time counter for sched_clock source. This implementation
+will give high resolution cputime accounting.
 
-Acked-by: Maciej W. Rozycki <macro@linux-mips.org>
 Signed-off-by: Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
 ---
- arch/mips/kernel/csrc-ioasic.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/mips/sgi-ip27/ip27-timer.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/mips/kernel/csrc-ioasic.c b/arch/mips/kernel/csrc-ioasic.c
-index 54e394d..722f558 100644
---- a/arch/mips/kernel/csrc-ioasic.c
-+++ b/arch/mips/kernel/csrc-ioasic.c
-@@ -14,6 +14,7 @@
-  *  GNU General Public License for more details.
-  */
- #include <linux/clocksource.h>
-+#include <linux/sched_clock.h>
+diff --git a/arch/mips/sgi-ip27/ip27-timer.c b/arch/mips/sgi-ip27/ip27-timer.c
+index 1d97eab..a6d10f6 100644
+--- a/arch/mips/sgi-ip27/ip27-timer.c
++++ b/arch/mips/sgi-ip27/ip27-timer.c
+@@ -7,6 +7,7 @@
  #include <linux/init.h>
- 
- #include <asm/ds1287.h>
-@@ -33,6 +34,11 @@ static struct clocksource clocksource_dec = {
- 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
+ #include <linux/kernel.h>
+ #include <linux/sched.h>
++#include <linux/sched_clock.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel_stat.h>
+ #include <linux/param.h>
+@@ -159,11 +160,18 @@ struct clocksource hub_rt_clocksource = {
+ 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
  };
  
-+static u64 notrace dec_ioasic_read_sched_clock(void)
++static u64 notrace hub_rt_read_sched_clock(void)
 +{
-+	return ioasic_read(IO_REG_FCTR);
++	return REMOTE_HUB_L(cputonasid(0), PI_RT_COUNT);
 +}
 +
- int __init dec_ioasic_clocksource_init(void)
+ static void __init hub_rt_clocksource_init(void)
  {
- 	unsigned int freq;
-@@ -61,5 +67,8 @@ int __init dec_ioasic_clocksource_init(void)
+ 	struct clocksource *cs = &hub_rt_clocksource;
  
- 	clocksource_dec.rating = 200 + freq / 10000000;
- 	clocksource_register_hz(&clocksource_dec, freq);
+ 	clocksource_register_hz(cs, CYCLES_PER_SEC);
 +
-+	sched_clock_register(dec_ioasic_read_sched_clock, 32, freq);
-+
- 	return 0;
++	sched_clock_register(hub_rt_read_sched_clock, 52, CYCLES_PER_SEC);
  }
+ 
+ void __init plat_time_init(void)
 -- 
 2.3.2

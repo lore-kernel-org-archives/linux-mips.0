@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:56877 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38389 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006157AbbCIInitiWWx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 9 Mar 2015 09:43:38 +0100
-Message-ID: <54FD5D34.7060201@imgtec.com>
-Date: Mon, 9 Mar 2015 08:43:32 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        with ESMTP id S27007660AbbCIOzCXjqxh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 9 Mar 2015 15:55:02 +0100
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 3ADDB4113DFA8
+        for <linux-mips@linux-mips.org>; Mon,  9 Mar 2015 14:54:54 +0000 (GMT)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH v2 0/4] EVA fixes
+Date: Mon, 9 Mar 2015 14:54:48 +0000
+Message-ID: <1425912892-23133-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/4] MIPS: asm: r4kcache: Use correct base register for
- MIPS R6 cache flushes
-References: <1425408530-21613-1-git-send-email-markos.chandras@imgtec.com> <1425408530-21613-2-git-send-email-markos.chandras@imgtec.com> <alpine.LFD.2.11.1503050245540.18344@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.11.1503050245540.18344@eddie.linux-mips.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,27 +21,25 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20150309084332.LDEpTvskEOd5Oyl4QwtIx9ZdJJ-sUU-KIim56Kghp3w@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20150309145448.2qmtITzNhVffIt05ns1eu3MH7izogNSEUKWk7sB0A88@z>
 
-On 03/05/2015 01:46 PM, Maciej W. Rozycki wrote:
-> On Tue, 3 Mar 2015, Markos Chandras wrote:
-> 
->> Commit 934c79231c1b("MIPS: asm: r4kcache: Add MIPS R6 cache unroll
->> functions") added support for MIPS R6 cache flushes but it used the
->> wrong base address register to perform the flushes so the same lines
->> were flushed over and over. Moreover, replace the "addiu" instructions
->> with LONG_ADDIU so the correct base address is calculated for 64-bit
->> cores.
-> 
->  Since this operates on addresses shouldn't PTR_ADDIU be used instead?
-> 
->   Maciej
-> 
+Hi,
 
-I don't know. I thought PTR_ADDIU should be used for pointers but the
-arguments in these macros are "unsigned long".
+These four patches fix unaligned accesses when EVA is enabled. The fixes
+CC stable as well, because they need to be applied all the way back to
+the 3.15 kernels where EVA was originally introduced.
+
+Markos Chandras (4):
+  MIPS: asm: asm-eva: Introduce kernel load/store variants
+  MIPS: unaligned: Prevent EVA instructions on kernel unaligned accesses
+  MIPS: unaligned: Surround load/store macros in do {} while statements
+  MIPS: unaligned: Fix regular load/store instruction emulation for EVA
+
+ arch/mips/include/asm/asm-eva.h | 137 ++++++++++------
+ arch/mips/kernel/unaligned.c    | 340 +++++++++++++++++++++++++++-------------
+ 2 files changed, 324 insertions(+), 153 deletions(-)
 
 -- 
-markos
+2.3.1

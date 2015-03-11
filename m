@@ -1,17 +1,18 @@
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:6189 "EHLO
-        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27006515AbbCKFXybH0RG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Mar 2015 06:23:54 +0100
-Message-ID: <54FFD15E.3040202@nvidia.com>
-Date: Wed, 11 Mar 2015 14:23:42 +0900
-From: Alexandre Courbot <acourbot@nvidia.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38671 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27006725AbbCKI3B4uf0E (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Mar 2015 09:29:01 +0100
+Message-ID: <54FFFCC7.5090707@imgtec.com>
+Date: Wed, 11 Mar 2015 08:28:55 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: bcm63xx gpio issue on 3.19
-References: <54FDDE00.7030100@freebox.fr>
-In-Reply-To: <54FDDE00.7030100@freebox.fr>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Subject: Re: [PATCH] Revert "MIPS: mm: tlbex: Use cpu_has_mips_r2_exec_hazard
+ for the EHB instruction"
+References: <1424731974-27926-1-git-send-email-ddaney.cavm@gmail.com>
+In-Reply-To: <1424731974-27926-1-git-send-email-ddaney.cavm@gmail.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-Path: <acourbot@nvidia.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,55 +22,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Nicolas Schichan <nschichan@freebox.fr>, linux-mips@linux-mips.org
-Cc: Maxime Bizon <mbizon@freebox.fr>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linus Walleij <linus.walleij@linaro.org>
-Message-ID: <20150311052342.3tDMGfksg4iek2NJ1CFRe2OWC1Wdn30xQ_RDCnWnpnQ@z>
+To: David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: linux-kernel@vger.kernel.org, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, David Daney <david.daney@cavium.com>
+Message-ID: <20150311082855.WTRinBUgoffc_7XrlKicxBOmtayX8YI43dN0DHMQoqQ@z>
 
-Hi Nicolas,
+On 02/23/2015 10:52 PM, David Daney wrote:
+> From: David Daney <david.daney@cavium.com>
+> 
+> This reverts commit 77f3ee59ee7cfe19e0ee48d9a990c7967fbfcbed.
+> 
+> There are two problems:
+> 
+> 1) It breaks OCTEON, which will now crash in early boot with:
+> 
+>   Kernel panic - not syncing: No TLB refill handler yet (CPU type: 80)
+> 
+> 2) The logic is broken.
+> 
+> The meaning of cpu_has_mips_r2_exec_hazard is that the EHB instruction
+> is required.  The offending patch attempts (and fails) to change the
+> meaning to be that EHB is part of the ISA.
+> 
+> Signed-off-by: David Daney <david.daney@cavium.com>
+> ---
+Hi,
 
-(adding the linux-gpio mailing-list and Linus W.)
+First of all sorry about the octeon breakage.
 
-On 03/10/2015 02:53 AM, Nicolas Schichan wrote:
->
-> Hello Alexandre,
->
-> Using the latest 3.19 kernel, the bcm63xx GPIO code under
-> arch/mips/bcm63xx/gpio.c is unable to register the gpio chip via
-> gpiochip_add(), as it returns -ENOMEM. The kcalloc call for the gpio_desc
-> array fails, as during prom code, it is too early for the kmalloc to work.
->
-> It looks like the issue is caused by your patch: "gpio: remove gpio_descs
-> global array"
+However, whilst this patch will fix Octeon it will break R6
 
-Indeed. This happens because we removed the global GPIO array and 
-replaced it with a more flexible per-chip array of GPIOs. We were hoping 
-that issues like this one would have been caught in -next, but sadly the 
-problem with bcm63xx went unnoticed until now. :(
+Can we please consider another patch that will simply use
+cpu_has_mips_r2_r6 instead of cpu_has_mips_r2 so both will work in 4.0?
 
->
-> Could you please advise on how to fix/workaround that ? (ideally while keeping
-> the possibility to invoke the gpiolib code from the setup/prom code).
-
-The only allocation performed by gpiochip_add() is the array of 
-gpio_descs. Having this array pre-allocated in your early code (maybe by 
-using a static array variable) and passing it to a gpiochip_add_early() 
-function would do the trick.
-
-However, it is not that simple since gpio_desc is a private structure 
-which details (including its size) are not visible outside of drivers/gpio.
-
-Another solution I could see would be to have a kernel config option 
-that would make gpiolib "pre-allocate" a number of gpio descriptors as a 
-static array for such cases - similar to the global GPIO array, but not 
-as big.
-
-Finally, we can also restore the global GPIO array as a config option 
-for the few architectures that need it.
-
-Of course, I would prefer a solution based on dynamic allocation - is 
-there a kind a primitive memory allocator that we can use at this early 
-stage of boot? I.e. would alloc_pages() maybe work?
-
-How do other subsystems that rely on dynamic allocation for registering 
-their resources handle this? I guess regulator must fall in the same 
-use-case, doesn't it?
+-- 
+markos

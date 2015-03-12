@@ -1,12 +1,17 @@
-Received: from smtpbg62.qq.com ([103.7.29.139]:22135 "EHLO smtpbg64.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27006539AbbCLDw6rTb0o (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 12 Mar 2015 04:52:58 +0100
-From: Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH] MIPS: Loongson-3: Add IRQF_NO_SUSPEND to Cascade irqaction
-Date: Thu, 12 Mar 2015 11:51:06 +0800
-Message-ID: <1426132266-30379-1-git-send-email-chenhc@lemote.com>
-Return-Path: <chenhc@lemote.com>
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:18031 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27006539AbbCLEEJzLPKa (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 12 Mar 2015 05:04:09 +0100
+Message-ID: <5501101B.1010708@nvidia.com>
+Date: Thu, 12 Mar 2015 13:03:39 +0900
+From: Alexandre Courbot <acourbot@nvidia.com>
+MIME-Version: 1.0
+Subject: Re: bcm63xx gpio issue on 3.19
+References: <54FDDE00.7030100@freebox.fr> <54FFD15E.3040202@nvidia.com> <5500803A.7080409@freebox.fr>
+In-Reply-To: <5500803A.7080409@freebox.fr>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <acourbot@nvidia.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,32 +21,54 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Huacai Chen <chenhc@lemote.com>, stable@vger.kernel.org
-Message-ID: <20150312035106.mGRchnoomZ4VcEOorlRQbpeKsHLQobZ4MgiKvJp6FO8@z>
+To: Nicolas Schichan <nschichan@freebox.fr>, linux-mips@linux-mips.org
+Cc: Maxime Bizon <mbizon@freebox.fr>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linus Walleij <linus.walleij@linaro.org>
+Message-ID: <20150312040339.f2JO6qCx1BFMiVt7Wr9SIU0gjfQ_a2FyfugFwEAzF7I@z>
 
-HPET irq is routed to i8259 and then to MIPS CPU irq (cascade). After
-commit a3e6c1eff5 (MIPS: IRQ: Fix disable_irq on CPU IRQs), if without
-IRQF_NO_SUSPEND in cascade_irqaction, HPET interrupts will lost during
-suspend. The result is machine cannot be waken up.
+On 03/12/2015 02:49 AM, Nicolas Schichan wrote:
+> On 03/11/2015 06:23 AM, Alexandre Courbot wrote:
+>>> Could you please advise on how to fix/workaround that ? (ideally while keeping
+>>> the possibility to invoke the gpiolib code from the setup/prom code).
+>>
+>> The only allocation performed by gpiochip_add() is the array of gpio_descs.
+>> Having this array pre-allocated in your early code (maybe by using a static
+>> array variable) and passing it to a gpiochip_add_early() function would do the
+>> trick.
+>>
+>> However, it is not that simple since gpio_desc is a private structure which
+>> details (including its size) are not visible outside of drivers/gpio.
+>>
+>> Another solution I could see would be to have a kernel config option that
+>> would make gpiolib "pre-allocate" a number of gpio descriptors as a static
+>> array for such cases - similar to the global GPIO array, but not as big.
+>>
+>> Finally, we can also restore the global GPIO array as a config option for the
+>> few architectures that need it.
+>>
+>> Of course, I would prefer a solution based on dynamic allocation - is there a
+>> kind a primitive memory allocator that we can use at this early stage of boot?
+>> I.e. would alloc_pages() maybe work?
+>>
+>> How do other subsystems that rely on dynamic allocation for registering their
+>> resources handle this? I guess regulator must fall in the same use-case,
+>> doesn't it?
+>
+> Hi Alexandre,
+>
+> Moving the bcm63xx_gpio_init() call from board_prom_init() to
+> bcm63xx_register_devices() (an arch_initcall) is enough to get called when
+> kmalloc is working. If code poking GPIOs is invoked earlier by a board code,
+> it will have to move in the board_register_devices() function though there
+> doesn't seem to any problems with the mainline bcm63xx board code in that regard.
+>
+> I can produce a patch for that if it is an accepted solution. It has the
+> advantage of not requiring changes to the gpiolib code.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
----
- arch/mips/loongson/loongson-3/irq.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+If that works for you and doesn't break bcm63xx, then yes that would be 
+great. GPIO chips are indeed devices, so moving their registration to 
+bcm63xx_register_devices() seems to make sense.
 
-diff --git a/arch/mips/loongson/loongson-3/irq.c b/arch/mips/loongson/loongson-3/irq.c
-index 21221ed..0f75b6b 100644
---- a/arch/mips/loongson/loongson-3/irq.c
-+++ b/arch/mips/loongson/loongson-3/irq.c
-@@ -44,6 +44,7 @@ void mach_irq_dispatch(unsigned int pending)
- 
- static struct irqaction cascade_irqaction = {
- 	.handler = no_action,
-+	.flags = IRQF_NO_SUSPEND,
- 	.name = "cascade",
- };
- 
--- 
-1.7.7.3
+The GPIO subsystem might require more dynamic allocations in the near 
+future (including maybe when requesting GPIOs), but hopefully all 
+consumers will be safe with that. We'll find a solution for early GPIO 
+support if they aren't.

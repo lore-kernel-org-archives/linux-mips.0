@@ -1,14 +1,16 @@
-Received: from SMTPBG7.QQ.COM ([183.60.61.200]:54100 "EHLO smtpbg7.qq.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27008621AbbCMCdlf-Lyp (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 13 Mar 2015 03:33:41 +0100
-From: Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH V8 4/8] MIPS: Move Loongson GPIO driver to drivers/gpio
-Date: Fri, 13 Mar 2015 10:26:34 +0800
-Message-ID: <1426213595-28454-2-git-send-email-chenhc@lemote.com>
-In-Reply-To: <1426213595-28454-1-git-send-email-chenhc@lemote.com>
-References: <1426213595-28454-1-git-send-email-chenhc@lemote.com>
-Return-Path: <chenhc@lemote.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:60320 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007115AbbCMJSXw8yQX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 13 Mar 2015 10:18:23 +0100
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: mm: tlbex: Replace cpu_has_mips_r2_exec_hazard with cpu_has_mips_r2_r6
+Date: Fri, 13 Mar 2015 09:18:08 +0000
+Message-ID: <1426238288-15560-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1424731974-27926-1-git-send-email-ddaney.cavm@gmail.com>
+References: <1424731974-27926-1-git-send-email-ddaney.cavm@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,83 +20,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, linux-gpio@vger.kernel.org, Huacai Chen <chenhc@lemote.com>
-Message-ID: <20150313022634.o3CrheM9x-e4dcBMiFoYZQGi1hJP1TlQ_Uw44HmgFZo@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, David Daney <david.daney@cavium.com>
+Message-ID: <20150313091808.76aO9yB22S0X9rtujjIU5t9HxyJK4IZCOW3_z-0Z4vM@z>
 
-Move Loongson-2's GPIO driver to drivers/gpio and add Kconfig options.
+Commit 77f3ee59ee7cf ("MIPS: mm: tlbex: Use cpu_has_mips_r2_exec_hazard
+for the EHB instruction") replaced cpu_has_mips_r2 with
+cpu_has_mips_r2_exec_hazard to indicate whether the ISA has the EHB
+instruction. However, the meaning of the cpu_has_mips_r2_exec_hazard
+is different. It was meant to be used as an indication on whether the
+running processor needs to run the EHB instruction instead of checking
+whether the EHB is available on the ISA. This broke processors that do
+not define cpu_has_mips_r2_exec_hazard. We fix this by replacing the
+said macro with cpu_has_mips_r2_r6 which covers R2 and R6 processors.
 
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Fixes: 77f3ee59ee7cf ("MIPS: mm: tlbex: Use cpu_has_mips_r2_exec_hazard for the EHB instruction")
+Cc: David Daney <david.daney@cavium.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/configs/lemote2f_defconfig               |    1 +
- arch/mips/loongson/common/Makefile                 |    1 -
- drivers/gpio/Kconfig                               |    6 ++++++
- drivers/gpio/Makefile                              |    1 +
- .../common/gpio.c => drivers/gpio/gpio-loongson.c  |    0
- 5 files changed, 8 insertions(+), 1 deletions(-)
- rename arch/mips/loongson/common/gpio.c => drivers/gpio/gpio-loongson.c (100%)
+ arch/mips/mm/tlbex.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/configs/lemote2f_defconfig b/arch/mips/configs/lemote2f_defconfig
-index e51aad9..0cbc986 100644
---- a/arch/mips/configs/lemote2f_defconfig
-+++ b/arch/mips/configs/lemote2f_defconfig
-@@ -171,6 +171,7 @@ CONFIG_SERIAL_8250_FOURPORT=y
- CONFIG_LEGACY_PTY_COUNT=16
- CONFIG_HW_RANDOM=y
- CONFIG_RTC=y
-+CONFIG_GPIO_LOONGSON=y
- CONFIG_THERMAL=y
- CONFIG_MEDIA_SUPPORT=m
- CONFIG_VIDEO_DEV=m
-diff --git a/arch/mips/loongson/common/Makefile b/arch/mips/loongson/common/Makefile
-index d87e033..e70c33f 100644
---- a/arch/mips/loongson/common/Makefile
-+++ b/arch/mips/loongson/common/Makefile
-@@ -4,7 +4,6 @@
+diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
+index d75ff73a2012..e38d21b62d0f 100644
+--- a/arch/mips/mm/tlbex.c
++++ b/arch/mips/mm/tlbex.c
+@@ -501,7 +501,7 @@ static void build_tlb_write_entry(u32 **p, struct uasm_label **l,
+ 	case tlb_indexed: tlbw = uasm_i_tlbwi; break;
+ 	}
  
- obj-y += setup.o init.o cmdline.o env.o time.o reset.o irq.o \
-     bonito-irq.o mem.o machtype.o platform.o
--obj-$(CONFIG_GPIOLIB) += gpio.o
- obj-$(CONFIG_PCI) += pci.o
+-	if (cpu_has_mips_r2_exec_hazard) {
++	if (cpu_has_mips_r2_r6) {
+ 		/*
+ 		 * The architecture spec says an ehb is required here,
+ 		 * but a number of cores do not have the hazard and
+@@ -1953,7 +1953,7 @@ static void build_r4000_tlb_load_handler(void)
  
- #
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index c1e2ca3..6454160 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -499,6 +499,12 @@ config GPIO_GRGPIO
- 	  Select this to support Aeroflex Gaisler GRGPIO cores from the GRLIB
- 	  VHDL IP core library.
+ 		switch (current_cpu_type()) {
+ 		default:
+-			if (cpu_has_mips_r2_exec_hazard) {
++			if (cpu_has_mips_r2_r6) {
+ 				uasm_i_ehb(&p);
  
-+config GPIO_LOONGSON
-+	tristate "Loongson-2 GPIO support"
-+	depends on CPU_LOONGSON2
-+	help
-+	  driver for GPIO functionality on Loongson-2F processors.
-+
- config GPIO_TB10X
- 	bool
- 	select GENERIC_IRQ_CHIP
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index bdda6a9..1b5be76 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -41,6 +41,7 @@ obj-$(CONFIG_GPIO_JANZ_TTL)	+= gpio-janz-ttl.o
- obj-$(CONFIG_GPIO_KEMPLD)	+= gpio-kempld.o
- obj-$(CONFIG_ARCH_KS8695)	+= gpio-ks8695.o
- obj-$(CONFIG_GPIO_INTEL_MID)	+= gpio-intel-mid.o
-+obj-$(CONFIG_GPIO_LOONGSON)	+= gpio-loongson.o
- obj-$(CONFIG_GPIO_LP3943)	+= gpio-lp3943.o
- obj-$(CONFIG_ARCH_LPC32XX)	+= gpio-lpc32xx.o
- obj-$(CONFIG_GPIO_LYNXPOINT)	+= gpio-lynxpoint.o
-diff --git a/arch/mips/loongson/common/gpio.c b/drivers/gpio/gpio-loongson.c
-similarity index 100%
-rename from arch/mips/loongson/common/gpio.c
-rename to drivers/gpio/gpio-loongson.c
+ 		case CPU_CAVIUM_OCTEON:
+@@ -2020,7 +2020,7 @@ static void build_r4000_tlb_load_handler(void)
+ 
+ 		switch (current_cpu_type()) {
+ 		default:
+-			if (cpu_has_mips_r2_exec_hazard) {
++			if (cpu_has_mips_r2_r6) {
+ 				uasm_i_ehb(&p);
+ 
+ 		case CPU_CAVIUM_OCTEON:
 -- 
-1.7.7.3
-
-
-
-By
-	
+2.3.1

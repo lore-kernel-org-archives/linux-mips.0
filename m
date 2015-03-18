@@ -1,20 +1,15 @@
-Received: from smtp.citrix.com ([66.165.176.89]:33756 "EHLO SMTP.CITRIX.COM"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27013979AbbCQOH72SkAh (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 17 Mar 2015 15:07:59 +0100
-Message-ID: <1426601130.18247.238.camel@citrix.com>
-Subject: Re: [Xen-devel] [PATCH v6 07/30] PCI: Pass PCI domain number
- combined with root bus number
-From: Ian Campbell <ian.campbell@citrix.com>
-Date: Tue, 17 Mar 2015 14:05:30 +0000
-In-Reply-To: <5507B88D.1020300@caviumnetworks.com>
-References: <1425868467-9667-1-git-send-email-wangyijing@huawei.com>
-         <1425868467-9667-8-git-send-email-wangyijing@huawei.com>
-         <5507B88D.1020300@caviumnetworks.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mailapp01.imgtec.com ([195.59.15.196]:27858 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008552AbbCRBQnU9bWG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Mar 2015 02:16:43 +0100
+Subject: [PATCH] MIPS: MSA: misaligned support
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Tue, 17 Mar 2015 18:16:30 -0700
+Message-ID: <20150318011630.2702.28882.stgit@ubuntu-yegoshin>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Ian.Campbell@citrix.com>
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,36 +19,395 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Manish Jaggi <mjaggi@caviumnetworks.com>
-Cc: Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-pci@vger.kernel.org, Chris Metcalf <cmetcalf@ezchip.com>, Paul Mackerras <paulus@samba.org>, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-s390@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-arm-kernel@lists.infradead.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, xen-devel@lists.xenproject.org, Matt Turner <mattst88@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>, Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <marc.zyngier@arm.com>, Rusty Russell <rusty@rustcorp.com.au>, linux-m68k@lists.linux-m68k.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Thomas Gleixner <tglx@linutronix.de>, Yinghai Lu <yinghai@kernel.org>, Gerald Schaefer <gerald.schaefer@de.ibm.com>, Richard Henderson <rth@twiddle.net>, Liviu Dudau <liviu@dudau.co.uk>, Michal Simek <monstr@monstr.eu>, Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, "David S. Miller" <davem@davemloft.net>, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Jiang Liu <jiang.liu@linux.intel.com>
-Message-ID: <20150317140530.VXnNdohX7rFCzIHoGS2NYHfU5cALy13iSLhf2-aWuGw@z>
+To: linux-mips@linux-mips.org, wangr@lemote.com, peterz@infradead.org, qais.yousef@imgtec.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, davidlohr@hp.com, chenhc@lemote.com, manuel.lauss@gmail.com, mingo@kernel.org
+Message-ID: <20150318011630.ouJAUSqbTFwFQvc_EYKLGIoLOPf9fLo13uBf2fEmd5o@z>
 
-On Tue, 2015-03-17 at 10:45 +0530, Manish Jaggi wrote:
-> On Monday 09 March 2015 08:04 AM, Yijing Wang wrote:
-> > Now we could pass PCI domain combined with bus number
-> > in u32 argu. Because in arm/arm64, PCI domain number
-> > is assigned by pci_bus_assign_domain_nr(). So we leave
-> > pci_scan_root_bus() and pci_create_root_bus() in arm/arm64
-> > unchanged. A new function pci_host_assign_domain_nr()
-> > will be introduced for arm/arm64 to assign domain number
-> > in later patch.
-> Hi,
-> I think these changes might not be required. We have made very few 
-> changes in the xen-pcifront to support PCI passthrough in arm64.
-> As per xen architecture for a domU only a single pci virtual bus is 
-> created and all passthrough devices are attached to it.
+MIPS R5, MIPS R6 and MSA HW specs allow a broad range of address exception
+on unalaigned MSA load/store operations - from none unaligned up to
+full support in HW. In practice, it is expected that HW can occasionally
+triggers AdE for non-aligned data access (misalignment). It is usually
+expected on page boundaries because HW handling of two TLBs in single
+data access operation may be complicated and expensive.
 
-I guess you are only talking about the changes to xen-pcifront.c?
-Otherwise you are ignoring the dom0 case which is exposed to the real
-set of PCI root complexes and anyway I'm not sure how "not needed for
-Xen domU" translates into not required, since it is clearly required for
-other systems.
+So, this patch handles MSA LD.df and ST.df Address Error exceptions.
 
-Strictly speaking the Xen pciif protocol does support multiple buses,
-it's just that the tools, and perhaps kernels, have not yet felt any
-need to actually make use of that.
+It handles separately two cases - MSA owned by thread and MSA registers
+saved in current->thread.fpu. If thread still ownes MSA unit then it
+loads and stores directly with MSA unit and only one MSA register. Saving
+and restoring the full MSA context (512bytes) on each misalign exception
+is expensive! Preemption is disabled, of course.
 
-There doesn't seem to be any harm in updating pcifront to follow this
-generic API change.
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+---
+ arch/mips/include/asm/processor.h |    2 +
+ arch/mips/include/uapi/asm/inst.h |   21 +++++
+ arch/mips/kernel/r4k_fpu.S        |  107 ++++++++++++++++++++++++++++
+ arch/mips/kernel/unaligned.c      |  143 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 273 insertions(+)
 
-Ian.
+diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
+index f1df4cb4a286..af2675060244 100644
+--- a/arch/mips/include/asm/processor.h
++++ b/arch/mips/include/asm/processor.h
+@@ -104,6 +104,8 @@ extern unsigned int vced_count, vcei_count;
+ #endif
+ 
+ union fpureg {
++	__u8    val8[FPU_REG_WIDTH / 8];
++	__u16   val16[FPU_REG_WIDTH / 16];
+ 	__u32	val32[FPU_REG_WIDTH / 32];
+ 	__u64	val64[FPU_REG_WIDTH / 64];
+ };
+diff --git a/arch/mips/include/uapi/asm/inst.h b/arch/mips/include/uapi/asm/inst.h
+index 89c22433b1c6..7ab6987cb7d5 100644
+--- a/arch/mips/include/uapi/asm/inst.h
++++ b/arch/mips/include/uapi/asm/inst.h
+@@ -58,6 +58,7 @@ enum spec_op {
+ 	dsll_op, spec7_unused_op, dsrl_op, dsra_op,
+ 	dsll32_op, spec8_unused_op, dsrl32_op, dsra32_op
+ };
++#define msa_op  mdmx_op
+ 
+ /*
+  * func field of spec2 opcode.
+@@ -217,6 +218,14 @@ enum bshfl_func {
+ };
+ 
+ /*
++ * func field for MSA MI10 format
++ */
++enum msa_mi10_func {
++	msa_ld_op = 8,
++	msa_st_op = 9,
++};
++
++/*
+  * (microMIPS) Major opcodes.
+  */
+ enum mm_major_op {
+@@ -616,6 +625,17 @@ struct spec3_format {   /* SPEC3 */
+ 	;)))))
+ };
+ 
++struct msa_mi10_format {        /* MSA */
++	__BITFIELD_FIELD(unsigned int opcode : 6,
++	__BITFIELD_FIELD(signed int s10 : 10,
++	__BITFIELD_FIELD(unsigned int rs : 5,
++	__BITFIELD_FIELD(unsigned int wd : 5,
++	__BITFIELD_FIELD(unsigned int func : 4,
++	__BITFIELD_FIELD(unsigned int df : 2,
++	;))))))
++};
++
++
+ /*
+  * microMIPS instruction formats (32-bit length)
+  *
+@@ -884,6 +904,7 @@ union mips_instruction {
+ 	struct p_format p_format;
+ 	struct f_format f_format;
+ 	struct ma_format ma_format;
++	struct msa_mi10_format msa_mi10_format;
+ 	struct b_format b_format;
+ 	struct ps_format ps_format;
+ 	struct v_format v_format;
+diff --git a/arch/mips/kernel/r4k_fpu.S b/arch/mips/kernel/r4k_fpu.S
+index 6c160c67984c..5f48f45f81e7 100644
+--- a/arch/mips/kernel/r4k_fpu.S
++++ b/arch/mips/kernel/r4k_fpu.S
+@@ -13,6 +13,7 @@
+  * Copyright (C) 1999, 2001 Silicon Graphics, Inc.
+  */
+ #include <asm/asm.h>
++#include <asm/asmmacro.h>
+ #include <asm/errno.h>
+ #include <asm/fpregdef.h>
+ #include <asm/mipsregs.h>
+@@ -268,6 +269,112 @@ LEAF(_restore_fp_context32)
+ 	END(_restore_fp_context32)
+ #endif
+ 
++#ifdef CONFIG_CPU_HAS_MSA
++
++	.macro  msa_ld_d    wd, base
++	ld_d    \wd, 0, \base
++	jalr    $0, $31
++	  nop
++	.align  4
++	.endm
++
++	.macro  msa_st_d    wd, base
++	st_d    \wd, 0, \base
++	jalr    $0, $31
++	  nop
++	.align  4
++	.endm
++
++LEAF(msa_to_wd)
++	.set    push
++	.set    noreorder
++	sll         t0, a0, 4
++	PTR_LA      t1, Lmsa_to
++	PTR_ADDU    t0, t0, t1
++	jalr        $0, t0
++	  nop
++Lmsa_to:
++	msa_ld_d    0, a1
++	msa_ld_d    1, a1
++	msa_ld_d    2, a1
++	msa_ld_d    3, a1
++	msa_ld_d    4, a1
++	msa_ld_d    5, a1
++	msa_ld_d    6, a1
++	msa_ld_d    7, a1
++	msa_ld_d    8, a1
++	msa_ld_d    9, a1
++	msa_ld_d    10, a1
++	msa_ld_d    11, a1
++	msa_ld_d    12, a1
++	msa_ld_d    13, a1
++	msa_ld_d    14, a1
++	msa_ld_d    15, a1
++	msa_ld_d    16, a1
++	msa_ld_d    17, a1
++	msa_ld_d    18, a1
++	msa_ld_d    19, a1
++	msa_ld_d    20, a1
++	msa_ld_d    21, a1
++	msa_ld_d    22, a1
++	msa_ld_d    23, a1
++	msa_ld_d    24, a1
++	msa_ld_d    25, a1
++	msa_ld_d    26, a1
++	msa_ld_d    27, a1
++	msa_ld_d    28, a1
++	msa_ld_d    29, a1
++	msa_ld_d    30, a1
++	msa_ld_d    31, a1
++	.set    pop
++	END(msa_to_wd)
++
++LEAF(msa_from_wd)
++	.set    push
++	.set    noreorder
++	sll         t0, a0, 4
++	PTR_LA      t1, Lmsa_from
++	PTR_ADDU    t0, t0, t1
++	jalr        $0, t0
++	  nop
++Lmsa_from:
++	msa_st_d    0, a1
++	msa_st_d    1, a1
++	msa_st_d    2, a1
++	msa_st_d    3, a1
++	msa_st_d    4, a1
++	msa_st_d    5, a1
++	msa_st_d    6, a1
++	msa_st_d    7, a1
++	msa_st_d    8, a1
++	msa_st_d    9, a1
++	msa_st_d    10, a1
++	msa_st_d    11, a1
++	msa_st_d    12, a1
++	msa_st_d    13, a1
++	msa_st_d    14, a1
++	msa_st_d    15, a1
++	msa_st_d    16, a1
++	msa_st_d    17, a1
++	msa_st_d    18, a1
++	msa_st_d    19, a1
++	msa_st_d    20, a1
++	msa_st_d    21, a1
++	msa_st_d    22, a1
++	msa_st_d    23, a1
++	msa_st_d    24, a1
++	msa_st_d    25, a1
++	msa_st_d    26, a1
++	msa_st_d    27, a1
++	msa_st_d    28, a1
++	msa_st_d    29, a1
++	msa_st_d    30, a1
++	msa_st_d    31, a1
++	.set    pop
++	END(msa_from_wd)
++
++#endif /* CONFIG_CPU_HAS_MSA */
++
+ 	.set	reorder
+ 
+ 	.type	fault@function
+diff --git a/arch/mips/kernel/unaligned.c b/arch/mips/kernel/unaligned.c
+index e11906dff885..558f41fa93c5 100644
+--- a/arch/mips/kernel/unaligned.c
++++ b/arch/mips/kernel/unaligned.c
+@@ -108,6 +108,11 @@ static u32 unaligned_action;
+ #endif
+ extern void show_registers(struct pt_regs *regs);
+ 
++#ifdef CONFIG_CPU_HAS_MSA
++void msa_to_wd(unsigned int wd, union fpureg *from);
++void msa_from_wd(unsigned int wd, union fpureg *to);
++#endif
++
+ #ifdef __BIG_ENDIAN
+ #define     LoadHW(addr, value, res)  \
+ 		__asm__ __volatile__ (".set\tnoat\n"        \
+@@ -422,6 +427,64 @@ extern void show_registers(struct pt_regs *regs);
+ 		: "r" (value), "r" (addr), "i" (-EFAULT));
+ #endif
+ 
++#ifdef CONFIG_CPU_HAS_MSA
++#ifdef __BIG_ENDIAN
++/*
++ * MSA data format conversion.
++ * Only for BIG ENDIAN - LITTLE ENDIAN has register format which matches memory
++ * layout contiguosly.
++ *
++ * Conversion is done between two Double words and other formats (W/H/B)
++ * because kernel uses LD.D and ST.D to load/store MSA registers and keeps
++ * MSA registers in this format in current->thread.fpu.fpr
++ */
++static void msa_convert(union fpureg *to, union fpureg *from, int fmt)
++{
++	switch (fmt) {
++	case 0: /* byte */
++		to->val8[0] = from->val8[7];
++		to->val8[1] = from->val8[6];
++		to->val8[2] = from->val8[5];
++		to->val8[3] = from->val8[4];
++		to->val8[4] = from->val8[3];
++		to->val8[5] = from->val8[2];
++		to->val8[6] = from->val8[1];
++		to->val8[7] = from->val8[0];
++		to->val8[8] = from->val8[15];
++		to->val8[9] = from->val8[14];
++		to->val8[10] = from->val8[13];
++		to->val8[11] = from->val8[12];
++		to->val8[12] = from->val8[11];
++		to->val8[13] = from->val8[10];
++		to->val8[14] = from->val8[9];
++		to->val8[15] = from->val8[8];
++		break;
++
++	case 1: /* halfword */
++		to->val16[0] = from->val16[3];
++		to->val16[1] = from->val16[2];
++		to->val16[2] = from->val16[1];
++		to->val16[3] = from->val16[0];
++		to->val16[4] = from->val16[7];
++		to->val16[5] = from->val16[6];
++		to->val16[6] = from->val16[5];
++		to->val16[7] = from->val16[4];
++		break;
++
++	case 2: /* word */
++		to->val32[0] = from->val32[1];
++		to->val32[1] = from->val32[0];
++		to->val32[2] = from->val32[3];
++		to->val32[3] = from->val32[2];
++		break;
++
++	case 3: /* doubleword, no conversion */
++		break;
++	}
++}
++#endif
++#endif
++
+ static void emulate_load_store_insn(struct pt_regs *regs,
+ 	void __user *addr, unsigned int __user *pc)
+ {
+@@ -434,6 +497,10 @@ static void emulate_load_store_insn(struct pt_regs *regs,
+ #ifdef	CONFIG_EVA
+ 	mm_segment_t seg;
+ #endif
++#ifdef CONFIG_CPU_HAS_MSA
++	union fpureg msadatabase[2], *msadata;
++	unsigned int func, df, rs, wd;
++#endif
+ 	origpc = (unsigned long)pc;
+ 	orig31 = regs->regs[31];
+ 
+@@ -703,6 +770,82 @@ static void emulate_load_store_insn(struct pt_regs *regs,
+ 			break;
+ 		return;
+ 
++#ifdef CONFIG_CPU_HAS_MSA
++	case msa_op:
++		if (cpu_has_mdmx)
++			goto sigill;
++
++		func = insn.msa_mi10_format.func;
++		switch (func) {
++		default:
++			goto sigbus;
++
++		case msa_ld_op:
++		case msa_st_op:
++			;
++		}
++
++		if (!thread_msa_context_live())
++			goto sigbus;
++
++		df = insn.msa_mi10_format.df;
++		rs = insn.msa_mi10_format.rs;
++		wd = insn.msa_mi10_format.wd;
++		addr = (unsigned long *)(regs->regs[rs] + (insn.msa_mi10_format.s10 * (1 << df)));
++		/* align a working space in stack... */
++		msadata = (union fpureg *)(((unsigned long)msadatabase + 15) & ~(unsigned long)0xf);
++		if (func == msa_ld_op) {
++			if (!access_ok(VERIFY_READ, addr, 16))
++				goto sigbus;
++			compute_return_epc(regs);
++			res = __copy_from_user_inatomic(msadata, addr, 16);
++			if (res)
++				goto fault;
++			preempt_disable();
++			if (test_thread_flag(TIF_USEDMSA)) {
++#ifdef __BIG_ENDIAN
++				msa_convert(&current->thread.fpu.fpr[wd], msadata, df);
++				msa_to_wd(wd, &current->thread.fpu.fpr[wd]);
++#else
++				msa_to_wd(wd, msadata);
++#endif
++				preempt_enable();
++			} else {
++				preempt_enable();
++#ifdef __BIG_ENDIAN
++				msa_convert(&current->thread.fpu.fpr[wd], msadata, df);
++#else
++				current->thread.fpu.fpr[wd] = *msadata;
++#endif
++			}
++		} else {
++			if (!access_ok(VERIFY_WRITE, addr, 16))
++				goto sigbus;
++			compute_return_epc(regs);
++			if (test_thread_flag(TIF_USEDMSA)) {
++#ifdef __BIG_ENDIAN
++				msa_from_wd(wd, &current->thread.fpu.fpr[wd]);
++				msa_convert(msadata, &current->thread.fpu.fpr[wd], df);
++#else
++				msa_from_wd(wd, msadata);
++#endif
++				preempt_enable();
++			} else {
++				preempt_enable();
++#ifdef __BIG_ENDIAN
++				msa_convert(msadata, &current->thread.fpu.fpr[wd], df);
++#else
++				*msadata = current->thread.fpu.fpr[wd];
++#endif
++			}
++			res = __copy_to_user_inatomic(addr, msadata, 16);
++			if (res)
++				goto fault;
++		}
++
++		break;
++#endif /* CONFIG_CPU_HAS_MSA */
++
+ 	/*
+ 	 * COP2 is available to implementor for application specific use.
+ 	 * It's up to applications to register a notifier chain and do

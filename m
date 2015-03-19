@@ -1,18 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:57865 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:46822 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006587AbbCSIhLAErRj (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Mar 2015 09:37:11 +0100
-Date: Thu, 19 Mar 2015 08:37:05 +0000
+        with ESMTP id S27007921AbbCSK23XkNhy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Mar 2015 11:28:29 +0100
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: Re: [PATCH] net: ethernet: pcnet32: Setup the SRAM and NOUFLO on
- Am79C97{3,5}
-Message-ID: <20150319083704.GA31322@mchandras-linux.le.imgtec.org>
-References: <1426709407-16033-1-git-send-email-markos.chandras@imgtec.com>
- <1426730854.1840.23.camel@Lunix2.home>
+Subject: [PATCH v2] net: ethernet: pcnet32: Setup the SRAM and NOUFLO on Am79C97{3,5}
+Date: Thu, 19 Mar 2015 10:28:14 +0000
+Message-ID: <1426760894-2677-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <20150319083704.GA31322@mchandras-linux.le.imgtec.org>
+References: <20150319083704.GA31322@mchandras-linux.le.imgtec.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <1426730854.1840.23.camel@Lunix2.home>
+Content-Type: text/plain
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,37 +20,99 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Don Fry <pcnet32@frontier.com>
-Cc: linux-mips@linux-mips.org, netdev@vger.kernel.org, stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20150319083705.KNpgkb4uEWNZQJUApA_Ro2AXZysXrdJY8TgVoXLVHno@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, netdev@vger.kernel.org, stable@vger.kernel.org, linux-kernel@vger.kernel.org, Don Fry <pcnet32@frontier.com>
+Message-ID: <20150319102814.CYsxX5oHtOGqRFKVzQgenqA1QIa752RFBHjVHoosZEU@z>
 
-Hi Don,
+On a MIPS Malta board, tons of fifo underflow errors have been observed
+when using u-boot as bootloader instead of YAMON. The reason for that
+is that YAMON used to set the pcnet device to SRAM mode but u-boot does
+not. As a result, the default Tx threshold (64 bytes) is now too small to
+keep the fifo relatively used and it can result to Tx fifo underflow errors.
+As a result of which, it's best to setup the SRAM on supported controllers
+so we can always use the NOUFLO bit.
 
-On Wed, Mar 18, 2015 at 07:07:34PM -0700, Don Fry wrote:
-> One little change to the comment is needed.  See below
-> 
-> Don
-> 
-> On Wed, 2015-03-18 at 20:10 +0000, Markos Chandras wrote:
-> > +	if (sram) {
-> > +		/*
-> > +		 * The SRAM is being configured in two steps. First we
-> > +		 * set the SRAM size in the BCR25:SRAM_SIZE bits. According
-> > +		 * to the datasheet, each bit corresponds to a 512-byte
-> > +		 * page so we can have at most 24 pages. The SRAM_SIZE
-> > +		 * corresponds holds the value of the upper 8 bits of
-> > +		 * the 16-bit SRAM size. The low 8-bits start at 0x00
-> > +		 * and end at 0xff. So the address range is from 0x0000
-> > +		 * up to 0x17ff. Therefore, the SRAM_SIZE is set to 0x17.
-> > +		 * The next step is to set the BCR24:SRAM_BND midway through
-> > +		 * so the Tx and Rx buffers can share the SRAM equally.
-> > +		 */
-> 
-> The comment specifies BCR24 but the code is changing BCR26 which matches
-> the documentation.  Please correct the comment to avoid confusion.
-> 
+Cc: <netdev@vger.kernel.org>
+Cc: <stable@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
+Cc: Don Fry <pcnet32@frontier.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+Changes since v1:
+- Fix comment
+---
+ drivers/net/ethernet/amd/pcnet32.c | 31 +++++++++++++++++++++++++++++--
+ 1 file changed, 29 insertions(+), 2 deletions(-)
 
-Ah good catch. I will fix it and send a v2.
-
+diff --git a/drivers/net/ethernet/amd/pcnet32.c b/drivers/net/ethernet/amd/pcnet32.c
+index 11d6e6561df1..15a8190a6f75 100644
+--- a/drivers/net/ethernet/amd/pcnet32.c
++++ b/drivers/net/ethernet/amd/pcnet32.c
+@@ -1543,7 +1543,7 @@ pcnet32_probe1(unsigned long ioaddr, int shared, struct pci_dev *pdev)
+ {
+ 	struct pcnet32_private *lp;
+ 	int i, media;
+-	int fdx, mii, fset, dxsuflo;
++	int fdx, mii, fset, dxsuflo, sram;
+ 	int chip_version;
+ 	char *chipname;
+ 	struct net_device *dev;
+@@ -1580,7 +1580,7 @@ pcnet32_probe1(unsigned long ioaddr, int shared, struct pci_dev *pdev)
+ 	}
+ 
+ 	/* initialize variables */
+-	fdx = mii = fset = dxsuflo = 0;
++	fdx = mii = fset = dxsuflo = sram = 0;
+ 	chip_version = (chip_version >> 12) & 0xffff;
+ 
+ 	switch (chip_version) {
+@@ -1613,6 +1613,7 @@ pcnet32_probe1(unsigned long ioaddr, int shared, struct pci_dev *pdev)
+ 		chipname = "PCnet/FAST III 79C973";	/* PCI */
+ 		fdx = 1;
+ 		mii = 1;
++		sram = 1;
+ 		break;
+ 	case 0x2626:
+ 		chipname = "PCnet/Home 79C978";	/* PCI */
+@@ -1636,6 +1637,7 @@ pcnet32_probe1(unsigned long ioaddr, int shared, struct pci_dev *pdev)
+ 		chipname = "PCnet/FAST III 79C975";	/* PCI */
+ 		fdx = 1;
+ 		mii = 1;
++		sram = 1;
+ 		break;
+ 	case 0x2628:
+ 		chipname = "PCnet/PRO 79C976";
+@@ -1664,6 +1666,31 @@ pcnet32_probe1(unsigned long ioaddr, int shared, struct pci_dev *pdev)
+ 		dxsuflo = 1;
+ 	}
+ 
++	/*
++	 * The Am79C973/Am79C975 controllers come with 12K of SRAM
++	 * which we can use for the Tx/Rx buffers but most importantly,
++	 * the use of SRAM allow us to use the BCR18:NOUFLO bit to avoid
++	 * Tx fifo underflows.
++	 */
++	if (sram) {
++		/*
++		 * The SRAM is being configured in two steps. First we
++		 * set the SRAM size in the BCR25:SRAM_SIZE bits. According
++		 * to the datasheet, each bit corresponds to a 512-byte
++		 * page so we can have at most 24 pages. The SRAM_SIZE
++		 * holds the value of the upper 8 bits of the 16-bit SRAM size.
++		 * The low 8-bits start at 0x00 and end at 0xff. So the
++		 * address range is from 0x0000 up to 0x17ff. Therefore,
++		 * the SRAM_SIZE is set to 0x17. The next step is to set
++		 * the BCR26:SRAM_BND midway through so the Tx and Rx
++		 * buffers can share the SRAM equally.
++		 */
++		a->write_bcr(ioaddr, 25, 0x17);
++		a->write_bcr(ioaddr, 26, 0xc);
++		/* And finally enable the NOUFLO bit */
++		a->write_bcr(ioaddr, 18, a->read_bcr(ioaddr, 18) | (1 << 11));
++	}
++
+ 	dev = alloc_etherdev(sizeof(*lp));
+ 	if (!dev) {
+ 		ret = -ENOMEM;
 -- 
-markos
+2.3.3

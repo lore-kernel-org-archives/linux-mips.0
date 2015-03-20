@@ -1,18 +1,17 @@
-Received: from mail-bl2on0095.outbound.protection.outlook.com ([65.55.169.95]:3649
-        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27008453AbbCSXKgdGbf0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 20 Mar 2015 00:10:36 +0100
-Message-ID: <550B575D.8090908@caviumnetworks.com>
-Date: Thu, 19 Mar 2015 16:10:21 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from exch-out.nus.edu.sg ([137.132.14.25]:52476 "EHLO
+        imsva07.stf.nus.edu.sg" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27007391AbbCTDnByAUFd convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 20 Mar 2015 04:43:01 +0100
+From: Paing Moe Oo <a0076711@nus.edu.sg>
+Date: Fri, 20 Mar 2015 11:43:00 +0800
+Subject: 
+Message-ID: <8DDEF726DAD21045A5F31274007F0565BF6BF6B8@MBX12.stf.nus.edu.sg>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Subject: Re: [PATCH 3.13.y-ckt 71/80] MIPS: Fix C0_Pagegrain[IEC] support.
-References: <1426804568-2907-1-git-send-email-kamal@canonical.com> <1426804568-2907-72-git-send-email-kamal@canonical.com>
-In-Reply-To: <1426804568-2907-72-git-send-email-kamal@canonical.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Return-Path: <a0076711@nus.edu.sg>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,63 +21,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kamal Mostafa <kamal@canonical.com>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, kernel-team@lists.ubuntu.com, David Daney <david.daney@cavium.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150319231021.BYCy-nrTEm2GMt1xHV3T3T4GsmRw1dwWwx1avwbTwIo@z>
+Message-ID: <20150320034300.yVGlqrQcAmfwG590T5qwxJRQ05n4yOFivcYKGQ5VFBA@z>
 
-On 03/19/2015 03:35 PM, Kamal Mostafa wrote:
-> 3.13.11-ckt17 -stable review patch.  If anyone has any objections, please let me know.
->
+To Whom it May concern. 
 
-Read the patch commentary.  It should only be applied to 3.17 and later.
+We are dynamic lenders, rendering financial assistance to those who require it. 
 
-So:  NACK.
+Do you need financial assistance? 
 
-> ------------------
->
-> From: David Daney <david.daney@cavium.com>
->
-> commit 9ead8632bbf454cfc709b6205dc9cd8582fb0d64 upstream.
->
-> The following commits:
->
->    5890f70f15c52d (MIPS: Use dedicated exception handler if CPU supports RI/XI exceptions)
->    6575b1d4173eae (MIPS: kernel: cpu-probe: Detect unique RI/XI exceptions)
->
-> break the kernel for *all* existing MIPS CPUs that implement the
-> CP0_PageGrain[IEC] bit.  They cause the TLB exception handlers to be
-> generated without the legacy execute-inhibit handling, but never set
-> the CP0_PageGrain[IEC] bit to activate the use of dedicated exception
-> vectors for execute-inhibit exceptions.  The result is that upon
-> detection of an execute-inhibit violation, we loop forever in the TLB
-> exception handlers instead of sending SIGSEGV to the task.
->
-> If we are generating TLB exception handlers expecting separate
-> vectors, we must also enable the CP0_PageGrain[IEC] feature.
->
-> The bug was introduced in kernel version 3.17.
->
-> Signed-off-by: David Daney <david.daney@cavium.com>
-> Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-> Cc: linux-mips@linux-mips.org
-> Patchwork: http://patchwork.linux-mips.org/patch/8880/
-> Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
-> Signed-off-by: Kamal Mostafa <kamal@canonical.com>
-> ---
->   arch/mips/mm/tlb-r4k.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
-> index da3b0b9..d04fe4e 100644
-> --- a/arch/mips/mm/tlb-r4k.c
-> +++ b/arch/mips/mm/tlb-r4k.c
-> @@ -429,6 +429,8 @@ void tlb_init(void)
->   #ifdef CONFIG_64BIT
->   		pg |= PG_ELPA;
->   #endif
-> +		if (cpu_has_rixiex)
-> +			pg |= PG_IEC;
->   		write_c0_pagegrain(pg);
->   	}
->
->
+We provide many different styled loans to both Corporate bodies and individuals in need of a loan, or loans, at a minimal 
+
+Interest rate . 
+
+Our services include: 
+
+Xmas loans - to cover the expenses we all incur during the Festive Season. 
+Refinancing of existing loan(s) 
+Home improvement loans 
+Investment loans 
+Automobile loans 
+Debt consolidation loans 
+Real Estate loans 
+Line of credit loans 
+Business loans 
+Personal loans 
+
+kehl Services is offering assistance at a fast and easy rate to persons who are  capable of repaying.
+
+If you are interested in having us provide our services to you, or if you wish to find out more about what we offer, 
+
+please contact us via the method below. 
+
+I look forward to hopefully being of service to you in the near future. 
+
+Kind regards, 
+
+
+Email: jonasbauer048@gmail.com 
+
+Telephone:+ 1-757-389-8957

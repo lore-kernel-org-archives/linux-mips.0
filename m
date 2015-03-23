@@ -1,16 +1,14 @@
-Received: from nivc-ms1.auriga.com ([80.240.102.146]:54543 "EHLO
-        nivc-ms1.auriga.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27014329AbbCTQP7QMCMy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 20 Mar 2015 17:15:59 +0100
-From: Aleksey Makarov <aleksey.makarov@auriga.com>
-Subject: [PATCH 3/3] MIPS: OCTEON: Enable little endian kernel.
-Date: Fri, 20 Mar 2015 19:11:58 +0300
-Message-ID: <1426867920-7907-4-git-send-email-aleksey.makarov@auriga.com>
-In-Reply-To: <1426867920-7907-1-git-send-email-aleksey.makarov@auriga.com>
-References: <1426867920-7907-1-git-send-email-aleksey.makarov@auriga.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:35239 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27009567AbbCWMcQVyaf- (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Mar 2015 13:32:16 +0100
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH 0/3] GIC counter fixes
+Date: Mon, 23 Mar 2015 12:32:00 +0000
+Message-ID: <1427113923-9840-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <aleksey.makarov@auriga.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,33 +19,26 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Aleksey Makarov <aleksey.makarov@auriga.com>, Leonid Rosenboim <lrosenboim@caviumnetworks.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150320161158.Pip_quYMbCZ9z9vSraW-996KDUIwP1ylgefdftT89bk@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Andrew Bresticker <abrestic@chromium.org>, Qais Yousef <qais.yousef@imgtec.com>, linux-kernel@vger.kernel.org
+Message-ID: <20150323123200.nJLiEQIogt-eJ9L4m5RzI0E-roSCZi5YgYwUTLN61NA@z>
 
-From: David Daney <david.daney@cavium.com>
+Hi,
 
-Now it is supported, so let people select it.
+Here are a few patches to ensure the GIC counter is running before we attempt
+to use it since the default value on a MIPS core can be '1' which means
+the GIC counter will be stopped after a CPU reset. These patches are based
+on 4.0-rc1.
 
-Signed-off-by: David Daney <david.daney@cavium.com>
-Signed-off-by: Leonid Rosenboim <lrosenboim@caviumnetworks.com>
-Signed-off-by: Aleksey Makarov <aleksey.makarov@auriga.com>
----
- arch/mips/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Markos Chandras (3):
+  irqchip: irq-mips-gic: Add new functions to start/stop the GIC counter
+  clocksource: mips-gic-timer: Ensure GIC counter is running
+  MIPS: Malta: malta-time: Ensure GIC counter is running
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 3086b87..a6ca5e1 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -779,7 +779,8 @@ config CAVIUM_OCTEON_SOC
- 	select SYS_SUPPORTS_64BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select EDAC_SUPPORT
--	select SYS_SUPPORTS_HOTPLUG_CPU
-+	select SYS_SUPPORTS_LITTLE_ENDIAN
-+	select SYS_SUPPORTS_HOTPLUG_CPU if CONFIG_CPU_BIG_ENDIAN
- 	select SYS_HAS_EARLY_PRINTK
- 	select SYS_HAS_CPU_CAVIUM_OCTEON
- 	select SWAP_IO_SPACE
+ arch/mips/mti-malta/malta-time.c     |  4 +++-
+ drivers/clocksource/mips-gic-timer.c |  3 +++
+ drivers/irqchip/irq-mips-gic.c       | 21 +++++++++++++++++++++
+ include/linux/irqchip/mips-gic.h     |  2 ++
+ 4 files changed, 29 insertions(+), 1 deletion(-)
+
 -- 
 2.3.3

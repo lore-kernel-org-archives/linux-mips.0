@@ -1,16 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:4950 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27014513AbbCWMc3Me2Iy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Mar 2015 13:32:29 +0100
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 3/3] MIPS: Malta: malta-time: Ensure GIC counter is running
-Date: Mon, 23 Mar 2015 12:32:03 +0000
-Message-ID: <1427113923-9840-4-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1427113923-9840-1-git-send-email-markos.chandras@imgtec.com>
-References: <1427113923-9840-1-git-send-email-markos.chandras@imgtec.com>
+Received: from nivc-ms1.auriga.com ([80.240.102.146]:10861 "EHLO
+        nivc-ms1.auriga.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008858AbbCWOH1T3RGD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Mar 2015 15:07:27 +0100
+Message-ID: <55101D39.3080201@auriga.com>
+Date: Mon, 23 Mar 2015 17:03:37 +0300
+From: Aleksey Makarov <aleksey.makarov@auriga.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH 2/3] MIPS: OCTEON: Add mach-cavium-octeon/mangle-port.h
+References: <1426867920-7907-1-git-send-email-aleksey.makarov@auriga.com> <1426867920-7907-3-git-send-email-aleksey.makarov@auriga.com>
+In-Reply-To: <1426867920-7907-3-git-send-email-aleksey.makarov@auriga.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <aleksey.makarov@auriga.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,32 +22,42 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, linux-kernel@vger.kernel.org
-Message-ID: <20150323123203.fMQ-TrHCMJwf_9Xz_8DJKBNGZd3Jp2aC7Oe5gVtlHWs@z>
+Cc: Paul Martin <paul.martin@codethink.co.uk>
+Message-ID: <20150323140337.vuYVHdVwAn3vo7ky3QMUWfmbw9xS6kQoshdpdYcMc3g@z>
 
-Start the GIC counter before we try to determine its frequency.
+> On Fri, Mar 20, 2015 at 07:11:57PM +0300, Aleksey Makarov wrote:
+>> From: David Daney <david.daney@cavium.com>
+>> 
+>> Needed for little-endian ioport access.
+>> This fixes NOR flash in little-endian mode
+>> 
+>> Signed-off-by: David Daney <david.daney@cavium.com>
+>> Signed-off-by: Aleksey Makarov <aleksey.makarov@auriga.com>
+>> ---
+>>  .../include/asm/mach-cavium-octeon/mangle-port.h   | 74 
+>> ++++++++++++++++++++++
+> 
+> This seems to be a new header file that's not used anywhere else.
 
-Cc: <linux-kernel@vger.kernel.org>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/mti-malta/malta-time.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+arch/mips/include/asm/io.h:#include <mangle-port.h>
 
-diff --git a/arch/mips/mti-malta/malta-time.c b/arch/mips/mti-malta/malta-time.c
-index ce02dbdedc62..128a74bd7cea 100644
---- a/arch/mips/mti-malta/malta-time.c
-+++ b/arch/mips/mti-malta/malta-time.c
-@@ -87,8 +87,10 @@ static void __init estimate_frequencies(void)
- 
- 	/* Initialize counters. */
- 	start = read_c0_count();
--	if (gic_present)
-+	if (gic_present) {
-+		gic_start_count();
- 		gicstart = gic_read_count();
-+	}
- 
- 	/* Read counter exactly on falling edge of update flag. */
- 	while (CMOS_READ(RTC_REG_A) & RTC_UIP);
--- 
-2.3.3
+Also note the compiler flags:
+
+-I./arch/mips/include/asm/mach-cavium-octeon -I./arch/mips/include/asm/mach-generic 
+
+> I get the feeling that there should be at least another three patches
+> in this series which have been omitted.
+> 
+> Certainly, the Octeon peripherals won't work with just the three part
+> patch set presented here.
+
+With these patches the cn7000 board boots in little-endian mode with 
+all peripherials supported on this board working fine.  The peripherials
+on other boards should probably be fixed separately.
+
+> PS. Don't forget the missing htons() in drivers/staging/octeon/ethernet-tx.c
+
+Thanks.  A patch would be appreciated.
+
+Thanks
+Aleksey Makarov

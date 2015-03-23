@@ -1,17 +1,19 @@
-Received: from nivc-ms1.auriga.com ([80.240.102.146]:10871 "EHLO
-        nivc-ms1.auriga.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008858AbbCWOH4nQ040 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Mar 2015 15:07:56 +0100
-Message-ID: <55101D58.1050309@auriga.com>
-Date: Mon, 23 Mar 2015 17:04:08 +0300
-From: Aleksey Makarov <aleksey.makarov@auriga.com>
+Received: from mail-ig0-f181.google.com ([209.85.213.181]:36482 "EHLO
+        mail-ig0-f181.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27009429AbbCWWQxvUUf8 convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 23 Mar 2015 23:16:53 +0100
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/3] MIPS: OCTEON: Add mach-cavium-octeon/mangle-port.h
-References: <1426867920-7907-1-git-send-email-aleksey.makarov@auriga.com> <1426867920-7907-3-git-send-email-aleksey.makarov@auriga.com>
-In-Reply-To: <1426867920-7907-3-git-send-email-aleksey.makarov@auriga.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <aleksey.makarov@auriga.com>
+In-Reply-To: <20150323212524.GU14954@sirena.org.uk>
+References: <E1YZyoN-00019n-50@debutante>
+        <20150323212524.GU14954@sirena.org.uk>
+Date: Mon, 23 Mar 2015 23:16:49 +0100
+Message-ID: <CACna6rzRO=vtiv_RfC9nDz+nCZdGGvCh4-zx5cm-W2GSRC1U6w@mail.gmail.com>
+Subject: Re: next-20150323 build: 1 failures 23 warnings (next-20150323)
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-Path: <zajec5@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,43 +23,24 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Martin <paul.martin@codethink.co.uk>
-Message-ID: <20150323140408.iBK4QF3lhg_JZVC-TTgLYlriOK7k1QkpWj-wohOm9-E@z>
+To: Mark Brown <broonie@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Ralf Baechle <ralf@linux-mips.org>, kernel-build-reports@lists.linaro.org, linaro-kernel@lists.linaro.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Network Development <netdev@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Message-ID: <20150323221649.7rs9m5Rht4FZJMtjVO1s8bwzYdDS-OXfg0tcIqha9TM@z>
 
-> On Fri, Mar 20, 2015 at 07:11:57PM +0300, Aleksey Makarov wrote:
->> From: David Daney <david.daney@cavium.com>
->> 
->> Needed for little-endian ioport access.
->> This fixes NOR flash in little-endian mode
->> 
->> Signed-off-by: David Daney <david.daney@cavium.com>
->> Signed-off-by: Aleksey Makarov <aleksey.makarov@auriga.com>
->> ---
->>  .../include/asm/mach-cavium-octeon/mangle-port.h   | 74 
->> ++++++++++++++++++++++
-> 
-> This seems to be a new header file that's not used anywhere else.
+On 23 March 2015 at 22:25, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Mar 23, 2015 at 09:38:19AM +0000, Build bot for Mark Brown wrote:
+>
+> In current -next the bgmac driver does not compile in an ARM
+> allmodconfig:
+>
+>>       arm-allmodconfig
+>> ../drivers/net/ethernet/broadcom/bgmac.c:20:27: fatal error: bcm47xx_nvram.h: No such file or directory
+>
+> because this include file is only present on MIPS.  This looks at first
+> glance to have happened in the merge commit edb15d83a875a1f4 from the
+> MIPS tree though I think that needs a bit more investigation.
 
-arch/mips/include/asm/io.h:#include <mangle-port.h>
+Sorry & thanks. Will fix that tomorrow.
 
-Also note the compiler flags:
-
--I./arch/mips/include/asm/mach-cavium-octeon -I./arch/mips/include/asm/mach-generic 
-
-> I get the feeling that there should be at least another three patches
-> in this series which have been omitted.
-> 
-> Certainly, the Octeon peripherals won't work with just the three part
-> patch set presented here.
-
-With these patches the cn7000 board boots in little-endian mode with 
-all peripherials supported on this board working fine.  The peripherials
-on other boards should probably be fixed separately.
-
-> PS. Don't forget the missing htons() in drivers/staging/octeon/ethernet-tx.c
-
-Thanks.  A patch would be appreciated.
-
-Thanks
-Aleksey Makarov
+-- 
+Rafał

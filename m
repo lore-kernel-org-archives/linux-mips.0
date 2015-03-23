@@ -1,9 +1,9 @@
-Received: from nivc-ms1.auriga.com ([80.240.102.146]:10861 "EHLO
+Received: from nivc-ms1.auriga.com ([80.240.102.146]:10871 "EHLO
         nivc-ms1.auriga.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008858AbbCWOH1T3RGD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Mar 2015 15:07:27 +0100
-Message-ID: <55101D39.3080201@auriga.com>
-Date: Mon, 23 Mar 2015 17:03:37 +0300
+        with ESMTP id S27008858AbbCWOH4nQ040 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Mar 2015 15:07:56 +0100
+Message-ID: <55101D58.1050309@auriga.com>
+Date: Mon, 23 Mar 2015 17:04:08 +0300
 From: Aleksey Makarov <aleksey.makarov@auriga.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH 2/3] MIPS: OCTEON: Add mach-cavium-octeon/mangle-port.h
@@ -23,7 +23,7 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Martin <paul.martin@codethink.co.uk>
-Message-ID: <20150323140337.vuYVHdVwAn3vo7ky3QMUWfmbw9xS6kQoshdpdYcMc3g@z>
+Message-ID: <20150323140408.iBK4QF3lhg_JZVC-TTgLYlriOK7k1QkpWj-wohOm9-E@z>
 
 > On Fri, Mar 20, 2015 at 07:11:57PM +0300, Aleksey Makarov wrote:
 >> From: David Daney <david.daney@cavium.com>

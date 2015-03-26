@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:5178 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57094 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27007571AbbCZJYWJISSO (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Mar 2015 10:24:22 +0100
-Message-ID: <5513D037.40003@imgtec.com>
-Date: Thu, 26 Mar 2015 09:24:07 +0000
+        by eddie.linux-mips.org with ESMTP id S27006155AbbCZOxL6n4lg (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Mar 2015 15:53:11 +0100
+Message-ID: <55141D4B.5000605@imgtec.com>
+Date: Thu, 26 Mar 2015 14:52:59 +0000
 From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 2/3] MIPS: Add CDMM bus support
-References: <20150325123756.GA2200@kroah.com> <1427297990-14023-1-git-send-email-james.hogan@imgtec.com> <20150325220339.GC10513@kroah.com>
-In-Reply-To: <20150325220339.GC10513@kroah.com>
+Subject: Re: [PATCH 20/20] MIPS: KVM: Wire up MSA capability
+References: <1426085096-12932-1-git-send-email-james.hogan@imgtec.com> <1426085096-12932-21-git-send-email-james.hogan@imgtec.com> <5514108F.9060905@redhat.com>
+In-Reply-To: <5514108F.9060905@redhat.com>
 Content-Type: multipart/signed; micalg=pgp-sha1;
         protocol="application/pgp-signature";
-        boundary="FFRhi57dN3j7HTnhB6EWF4iOhkMjW5upk"
+        boundary="Srp1x3I1E3q62d0go2K5rOdckBSKtIUx6"
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,95 +22,155 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20150326092407.c3ieUppJkpTTTq4iU1k0vh5U4j3iRcnJKGRVNTDNNpE@z>
+To: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>, Gleb Natapov <gleb@kernel.org>, Jonathan Corbet <corbet@lwn.net>, linux-api@vger.kernel.org, linux-doc@vger.kernel.org
+Message-ID: <20150326145259.ypJRKCMgIGg7ooe-FQc-dIytyXNIZiUjKqtTY7zHitI@z>
 
---FFRhi57dN3j7HTnhB6EWF4iOhkMjW5upk
+--Srp1x3I1E3q62d0go2K5rOdckBSKtIUx6
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: quoted-printable
 
-On 25/03/15 22:03, Greg Kroah-Hartman wrote:
-> On Wed, Mar 25, 2015 at 03:39:50PM +0000, James Hogan wrote:
->> Add MIPS Common Device Memory Map (CDMM) support in the form of a bus =
-in
->> the standard Linux device model. Each device attached via CDMM is
->> discoverable via an 8-bit type identifier and may contain a number of
->> blocks of memory mapped registers in the CDMM region. IRQs are expecte=
-d
->> to be handled separately.
->>
->> Due to the per-cpu (per-VPE for MT cores) nature of the CDMM devices,
->> all the driver callbacks take place from workqueues which are run on t=
-he
->> right CPU for the device in question, so that the driver doesn't need =
-to
->> be as concerned about which CPU it is running on. Callbacks also exist=
-
->> for when CPUs are taken offline, so that any per-CPU resources used by=
-
->> the driver can be disabled so they don't get forcefully migrated. CDMM=
-
->> devices are created as children of the CPU device they are attached to=
-=2E
->>
->> Any existing CDMM configuration by the bootloader will be inherited,
->> however platforms wishing to enable CDMM should implement the weak
->> mips_cdmm_phys_base() function (see asm/cdmm.h) so that the bus driver=
-
->> knows where it should put the CDMM region in the physical address spac=
+On 26/03/15 13:58, Paolo Bonzini wrote:
+>=20
+>=20
+> On 11/03/2015 15:44, James Hogan wrote:
+>> Now that the code is in place for KVM to support MIPS SIMD Architecutr=
 e
->> if the bootloader hasn't already enabled it.
+>> (MSA) in MIPS guests, wire up the new KVM_CAP_MIPS_MSA capability.
 >>
->> A mips_cdmm_early_probe() function is also provided to allow early boo=
-t
->> or particularly low level code to set up the CDMM region and probe for=
- a
->> specific device type, for example early console or KGDB IO drivers for=
+>> For backwards compatibility, the capability must be explicitly enabled=
 
->> the EJTAG Fast Debug Channel (FDC) CDMM device.
+>> in order to detect or make use of MSA from the guest.
+>>
+>> The capability is not supported if the hardware supports MSA vector
+>> partitioning, since the extra support cannot be tested yet and it
+>> extends the state that the userland program would have to save.
 >>
 >> Signed-off-by: James Hogan <james.hogan@imgtec.com>
+>> Cc: Paolo Bonzini <pbonzini@redhat.com>
 >> Cc: Ralf Baechle <ralf@linux-mips.org>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> Cc: Gleb Natapov <gleb@kernel.org>
+>> Cc: Jonathan Corbet <corbet@lwn.net>
 >> Cc: linux-mips@linux-mips.org
+>> Cc: kvm@vger.kernel.org
+>> Cc: linux-api@vger.kernel.org
+>> Cc: linux-doc@vger.kernel.org
+>> Signed-off-by: James Hogan <james.hogan@imgtec.com>
 >> ---
->> Changes in v3:
->> - Convert to use dev_groups rather than dev_attrs (GregKH).
->> - Rename mips_cdmm_attr_func() macro to CDMM_ATTR for consistency with=
-
->>   other similar macro names I've seen around the kernel.
->> - Add modalias attribute.
+>>  Documentation/virtual/kvm/api.txt | 12 ++++++++++++
+>>  arch/mips/kvm/mips.c              | 24 ++++++++++++++++++++++++
+>>  include/uapi/linux/kvm.h          |  1 +
+>>  3 files changed, 37 insertions(+)
 >>
->> Changes in v2:
->> - Fix some checkpatch errors.
->> - Correct CDMM name in various places. It is "Common Device Memory Map=
-",
->>   rather than "Common Device Mapped Memory" (which for some reason had=
-
->>   got stuck in my head).
->> ---
->>  arch/mips/include/asm/cdmm.h      |  87 +++++
->>  drivers/bus/Kconfig               |  13 +
->>  drivers/bus/Makefile              |   1 +
->>  drivers/bus/mips_cdmm.c           | 716 +++++++++++++++++++++++++++++=
-+++++++++
->>  include/linux/mod_devicetable.h   |   8 +
->>  scripts/mod/devicetable-offsets.c |   3 +
->>  scripts/mod/file2alias.c          |  16 +
->>  7 files changed, 844 insertions(+)
->>  create mode 100644 arch/mips/include/asm/cdmm.h
->>  create mode 100644 drivers/bus/mips_cdmm.c
+>> diff --git a/Documentation/virtual/kvm/api.txt b/Documentation/virtual=
+/kvm/api.txt
+>> index 47ddf0475211..97dd9ee69ca8 100644
+>> --- a/Documentation/virtual/kvm/api.txt
+>> +++ b/Documentation/virtual/kvm/api.txt
+>> @@ -3224,6 +3224,18 @@ done the KVM_REG_MIPS_FPR_* and KVM_REG_MIPS_FC=
+R_* registers can be accessed
+>>  Config5.FRE bits are accessible via the KVM API and also from the gue=
+st,
+>>  depending on them being supported by the FPU.
+>> =20
+>> +6.10 KVM_CAP_MIPS_MSA
+>> +
+>> +Architectures: mips
+>> +Target: vcpu
+>> +Parameters: args[0] is reserved for future use (should be 0).
+>> +
+>> +This capability allows the use of the MIPS SIMD Architecture (MSA) by=
+ the guest.
+>> +It allows the Config3.MSAP bit to be set to enable the use of MSA by =
+the guest.
+>> +Once this is done the KVM_REG_MIPS_VEC_* and KVM_REG_MIPS_MSA_* regis=
+ters can be
+>> +accessed, and the Config5.MSAEn bit is accessible via the KVM API and=
+ also from
+>> +the guest.
+>> +
+>>  7. Capabilities that can be enabled on VMs
+>>  ------------------------------------------
+>> =20
+>> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+>> index 9319c4360285..3b3530f493eb 100644
+>> --- a/arch/mips/kvm/mips.c
+>> +++ b/arch/mips/kvm/mips.c
+>> @@ -880,6 +880,15 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_v=
+cpu *vcpu,
+>>  			return -EINVAL;
+>>  		vcpu->arch.fpu_enabled =3D true;
+>>  		break;
+>> +	case KVM_CAP_MIPS_MSA:
+>> +		/*
+>> +		 * MSA vector partitioning not supported,
+>> +		 * see kvm_vm_ioctl_check_extension().
+>> +		 */
+>> +		if (!cpu_has_msa || boot_cpu_data.msa_id & MSA_IR_WRPF)
+>> +			return -EINVAL;
 >=20
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Perhaps you can call kvm_vm_ioctl_check_extension directly, outside the=
 
-Thanks Greg!
+> switch (it's okay if it's called for a capability other than FPU and MS=
+A)?
 
-Cheers
+Yes, good idea. That works nicely.
+
+>=20
+> Apart from this nit,
+>=20
+> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+>=20
+> Paolo
+
+Thanks!
 James
 
+>=20
+>> +		vcpu->arch.msa_enabled =3D true;
+>> +		break;
+>>  	default:
+>>  		r =3D -EINVAL;
+>>  		break;
+>> @@ -1071,6 +1080,21 @@ int kvm_vm_ioctl_check_extension(struct kvm *kv=
+m, long ext)
+>>  	case KVM_CAP_MIPS_FPU:
+>>  		r =3D !!cpu_has_fpu;
+>>  		break;
+>> +	case KVM_CAP_MIPS_MSA:
+>> +		/*
+>> +		 * We don't support MSA vector partitioning yet:
+>> +		 * 1) It would require explicit support which can't be tested
+>> +		 *    yet due to lack of support in current hardware.
+>> +		 * 2) It extends the state that would need to be saved/restored
+>> +		 *    by e.g. QEMU for migration.
+>> +		 *
+>> +		 * When vector partitioning hardware becomes available, support
+>> +		 * could be added by requiring a flag when enabling
+>> +		 * KVM_CAP_MIPS_MSA capability to indicate that userland knows
+>> +		 * to save/restore the appropriate extra state.
+>> +		 */
+>> +		r =3D cpu_has_msa && !(boot_cpu_data.msa_id & MSA_IR_WRPF);
+>> +		break;
+>>  	default:
+>>  		r =3D 0;
+>>  		break;
+>> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+>> index 98f6e5c653ff..5f859888e3ad 100644
+>> --- a/include/uapi/linux/kvm.h
+>> +++ b/include/uapi/linux/kvm.h
+>> @@ -761,6 +761,7 @@ struct kvm_ppc_smmu_info {
+>>  #define KVM_CAP_CHECK_EXTENSION_VM 105
+>>  #define KVM_CAP_S390_USER_SIGP 106
+>>  #define KVM_CAP_MIPS_FPU 107
+>> +#define KVM_CAP_MIPS_MSA 108
+>> =20
+>>  #ifdef KVM_CAP_IRQ_ROUTING
+>> =20
+>>
 
---FFRhi57dN3j7HTnhB6EWF4iOhkMjW5upk
+
+--Srp1x3I1E3q62d0go2K5rOdckBSKtIUx6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -118,19 +178,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJVE9A+AAoJEGwLaZPeOHZ61owP/jiNaOEHXobzN7jChahM0XOs
-OkfFaBB5EbrYpZmhR/w2VF4ieQFKRxDDI/7A/AI5i40C0Sy3tyekDVvLh+zIJPo8
-EmA+5gQY7Jnzu/ZaR0QaagtEwJEHnZtGsSjT7dxaijtqhn/9rQbhA+hQrgQabhCz
-2iPQDrCflv4rJAItUAxXQ+kiPtdePNOvYxxzImoPjR/NhazxAKZ0OrY2Ct2iX4Bu
-nTqErjq4y9spBJ5jxbWQy2z49THjC1xjFO2L3n15jBGOxnCREMrFlGHKulxx9C08
-g5IedJ6bh2vUg2kF+aEB3S5D4GmYW/aiow47/ut4IaZ6OGlm09N770fvrwf1rwa+
-qaS9XzT9kXswlKVagsNsm4sNiDDfnm90L0xUNMlNrhD8XtpTysq8EzQde6oFSoNw
-cq4Rp9Z6ItDN5VyndgAmsT5Z+TvDGFSv/GjPe2k59l8Al+BvvZdxWFsqcG17Mqi0
-e0VRMtI6ampr7SvlBXMGaI1C6XNsfLyihLD/HkJVGFtAVCUJTTFa8GyClA41I3Of
-b+LBpfA4McRK/ZrmSdAzwi71ldIoCjF1JPO4kQ3JPLrkSrmRcw2BqLclBxzyn9/S
-olox834sSvDY5rsYUt+Yv4E9H9k1h1s2V4ZGCd2FelFpm1ttI0iTYKm1lHQS2+dS
-pOAt28LJBPR+E4dPRw7u
-=G8Ce
+iQIcBAEBAgAGBQJVFB1SAAoJEGwLaZPeOHZ60lAP/2SmmiJ6NKZRVeWORXozzIxn
+7JRSR5g/XzXUm1b8hhhXn3y4reikqrmfgVgM21rXk244IZ1kDaTS8A1WyHaGrcOD
+T+SpDts/IPS7DxcCzRI8tHoPoCp2b2m4HsqPIzneb9U/uwCRpH5LmCnAfDZz7RYw
+8dotZO5kkL/3xzX3XYAJnnkGr23+uvauvgDqiyeg3VYBby3jY/hdii+jHU5iki4i
+LyfR1s9AQx+aOrWxzJFGaQpYXJREuATFGR+4Rvxa5wT3bi4eA9/d+soHpA8u/hKP
+kRNARzZjRyG1ZlE/6tMvEHG6UeYke4BkUXKIcZnNZrcrAjOi7wLjlRSlIgkmTLve
+y9A1E/EEUYzLfkAJOZ1NSWxG3OKJhr0OKIloAdgxC/JucOY1x9NsY0NgQc4Xld2W
+vWAHKz+K7/T1jnxionGR1HKneKyPGrJzVhFUwR/RlOAi+uar88fYAhKMtqNhBrao
+YSLTmtoKM7/HPq4gDaUdEfve26gUU7L69+d1G/gQEwS4yPhdFT2PEP7lP3kKB9Cq
+21p8SwJaxBX2V9TbvEhawudZ36agI4yFKsQ8DHr5Ej64oS5LoUC+QKjbli4v/Ju7
+nbPz0wjzYukaEH5PYDSyLoveVCpHOVtwjVtDdY8ycdd3Z4xRgVQZ6bR5/FJMooFG
+7Um9/dIj2uH8BMJa2iJx
+=re6j
 -----END PGP SIGNATURE-----
 
---FFRhi57dN3j7HTnhB6EWF4iOhkMjW5upk--
+--Srp1x3I1E3q62d0go2K5rOdckBSKtIUx6--

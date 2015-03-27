@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:22063 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:15277 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008633AbbC0KvtbMQ7r (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Mar 2015 11:51:49 +0100
-Message-ID: <5515363F.1050209@imgtec.com>
-Date: Fri, 27 Mar 2015 10:51:43 +0000
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        with ESMTP id S27014685AbbC0RATEZidx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Mar 2015 18:00:19 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH v3 01/10] MIPS: push .set mips64r* into the functions needing it
+Date: Fri, 27 Mar 2015 17:00:03 +0000
+Message-ID: <1427475603-1529-1-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1422619779-9940-2-git-send-email-paul.burton@imgtec.com>
+References: <1422619779-9940-2-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/6] ASoC: jz4740: Remove Makefile entry for removed file
-References: <1398199596-23649-1-git-send-email-lars@metafoo.de>
-In-Reply-To: <1398199596-23649-1-git-send-email-lars@metafoo.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,49 +20,106 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable <stable@vger.kernel.org>
-Message-ID: <20150327105143.Ra-84UgCS4aLOXZuEZznEEgafNrxEcJ-328l8V5jTec@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Paul Burton <paul.burton@imgtec.com>, James Hogan <james.hogan@imgtec.com>
+Message-ID: <20150327170003.hojnneInnDDKC_TgxY-0o0QfCvBn9MnT-rIGHcjMBzs@z>
 
-On 04/22/2014 09:46 PM, Lars-Peter Clausen wrote:
-> Commit 0406a40a0 ("ASoC: jz4740: Use the generic dmaengine PCM driver")
-> jz4740-pcm.c file, but neglected to remove the Makefile entries.
-> 
-> Fixes: 0406a40a0 ("ASoC: jz4740: Use the generic dmaengine PCM driver")
-> Reported-by: kbuild test robot <fengguang.wu@intel.com>
-> Reported-by: Ralf Baechle <ralf@linux-mips.org>
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
->  sound/soc/jz4740/Makefile | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/sound/soc/jz4740/Makefile b/sound/soc/jz4740/Makefile
-> index be873c1..d32c540 100644
-> --- a/sound/soc/jz4740/Makefile
-> +++ b/sound/soc/jz4740/Makefile
-> @@ -1,10 +1,8 @@
->  #
->  # Jz4740 Platform Support
->  #
-> -snd-soc-jz4740-objs := jz4740-pcm.o
->  snd-soc-jz4740-i2s-objs := jz4740-i2s.o
->  
-> -obj-$(CONFIG_SND_JZ4740_SOC) += snd-soc-jz4740.o
->  obj-$(CONFIG_SND_JZ4740_SOC_I2S) += snd-soc-jz4740-i2s.o
->  
->  # Jz4740 Machine Support
-> 
-Hi,
+From: Paul Burton <paul.burton@imgtec.com>
 
-This patch (eebdec044e82) is present in 3.15-rc1 but the build failure
-that was introduced by 0406a40a0 ("ASoC: jz4740: Use the generic
-dmaengine PCM driver") is present in 3.14-rc1 so 3.14 is still broken.
+The {save,restore}_fp_context{,32} functions require that the assembler
+allows the use of sdc instructions on any FP register, and this is
+acomplished by setting the arch to mips64r2 or mips64r6
+(using MIPS_ISA_ARCH_LEVEL_RAW).
 
-Greg, would it be possible to cherry pick eebdec044e82 ("ASoC: jz4740:
-Remove Makefile entry for removed file") to 3.14 stable branch? It seems
-to apply without conflicts.
+However this has the effect of enabling the assembler to use mips64
+instructions in the expansion of pseudo-instructions. This was done in
+the (now-reverted) commit eec43a224cf1 "MIPS: Save/restore MSA context
+around signals" which led to my mistakenly believing that there was an
+assembler bug, when in reality the assembler was just emitting mips64
+instructions. Avoid the issue for future commits which will add code to
+r4k_fpu.S by pushing the .set MIPS_ISA_ARCH_LEVEL_RAW directives into
+the functions that require it, and remove the spurious assertion
+declaring the assembler bug.
 
-Thank you
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+[james.hogan@imgtec.com: Rebase on v4.0-rc1 and reword commit message to
+ reflect use of MIPS_ISA_ARCH_LEVEL_RAW]
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+---
+Changes in v3:
+  - Rebase atop v4.0-rc1, switching arch=r4000 to
+    MIPS_ISA_ARCH_LEVEL_RAW (either mips64r2 or mips64r6).
 
+Changes in v2:
+  - Rebase atop v3.19-rc6.
+---
+ arch/mips/include/asm/asmmacro.h | 12 ++++--------
+ arch/mips/kernel/r4k_fpu.S       |  2 +-
+ 2 files changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/arch/mips/include/asm/asmmacro.h b/arch/mips/include/asm/asmmacro.h
+index 0cae4595e985..782dde7fed57 100644
+--- a/arch/mips/include/asm/asmmacro.h
++++ b/arch/mips/include/asm/asmmacro.h
+@@ -326,8 +326,7 @@
+ 	SET_HARDFLOAT
+ 	.insn
+ 	.word	COPY_UW_MSA_INSN | (\n << 16) | (\ws << 11)
+-	/* move triggers an assembler bug... */
+-	or	\rd, $1, zero
++	move	\rd, $1
+ 	.set	pop
+ 	.endm
+ 
+@@ -337,8 +336,7 @@
+ 	SET_HARDFLOAT
+ 	.insn
+ 	.word	COPY_UD_MSA_INSN | (\n << 16) | (\ws << 11)
+-	/* move triggers an assembler bug... */
+-	or	\rd, $1, zero
++	move	\rd, $1
+ 	.set	pop
+ 	.endm
+ 
+@@ -346,8 +344,7 @@
+ 	.set	push
+ 	.set	noat
+ 	SET_HARDFLOAT
+-	/* move triggers an assembler bug... */
+-	or	$1, \rs, zero
++	move	$1, \rs
+ 	.word	INSERT_W_MSA_INSN | (\n << 16) | (\wd << 6)
+ 	.set	pop
+ 	.endm
+@@ -356,8 +353,7 @@
+ 	.set	push
+ 	.set	noat
+ 	SET_HARDFLOAT
+-	/* move triggers an assembler bug... */
+-	or	$1, \rs, zero
++	move	$1, \rs
+ 	.word	INSERT_D_MSA_INSN | (\n << 16) | (\wd << 6)
+ 	.set	pop
+ 	.endm
+diff --git a/arch/mips/kernel/r4k_fpu.S b/arch/mips/kernel/r4k_fpu.S
+index 676c5030a953..1d88af26ba82 100644
+--- a/arch/mips/kernel/r4k_fpu.S
++++ b/arch/mips/kernel/r4k_fpu.S
+@@ -34,7 +34,6 @@
+ 	.endm
+ 
+ 	.set	noreorder
+-	.set	MIPS_ISA_ARCH_LEVEL_RAW
+ 
+ LEAF(_save_fp_context)
+ 	.set	push
+@@ -103,6 +102,7 @@ LEAF(_save_fp_context)
+ 	/* Save 32-bit process floating point context */
+ LEAF(_save_fp_context32)
+ 	.set push
++	.set MIPS_ISA_ARCH_LEVEL_RAW
+ 	SET_HARDFLOAT
+ 	cfc1	t1, fcr31
+ 
 -- 
-markos
+2.0.5

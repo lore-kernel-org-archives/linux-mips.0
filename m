@@ -1,14 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:17565 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:22063 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007236AbbC0Id5nFd8a (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Mar 2015 09:33:57 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH v2] MIPS: dma-default: Fix 32-bit fall back to GFP_DMA
-Date: Fri, 27 Mar 2015 08:33:43 +0000
-Message-ID: <1427445223-8017-1-git-send-email-james.hogan@imgtec.com>
+        with ESMTP id S27008633AbbC0KvtbMQ7r (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Mar 2015 11:51:49 +0100
+Message-ID: <5515363F.1050209@imgtec.com>
+Date: Fri, 27 Mar 2015 10:51:43 +0000
+From: Markos Chandras <Markos.Chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Subject: Re: [PATCH 1/6] ASoC: jz4740: Remove Makefile entry for removed file
+References: <1398199596-23649-1-git-send-email-lars@metafoo.de>
+In-Reply-To: <1398199596-23649-1-git-send-email-lars@metafoo.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,51 +21,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20150327083343.ZuG6spPGe3WdSg7WiGSA2BVX993_bTy_xhErz4isjdc@z>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable <stable@vger.kernel.org>
+Message-ID: <20150327105143.Ra-84UgCS4aLOXZuEZznEEgafNrxEcJ-328l8V5jTec@z>
 
-If there is a DMA zone (usually 24bit = 16MB I believe), but no DMA32
-zone, as is the case for some 32-bit kernels, then massage_gfp_flags()
-will cause DMA memory allocated for devices with a 32..63-bit
-coherent_dma_mask to fall back to using __GFP_DMA, even though there may
-only be 32-bits of physical address available anyway.
+On 04/22/2014 09:46 PM, Lars-Peter Clausen wrote:
+> Commit 0406a40a0 ("ASoC: jz4740: Use the generic dmaengine PCM driver")
+> jz4740-pcm.c file, but neglected to remove the Makefile entries.
+> 
+> Fixes: 0406a40a0 ("ASoC: jz4740: Use the generic dmaengine PCM driver")
+> Reported-by: kbuild test robot <fengguang.wu@intel.com>
+> Reported-by: Ralf Baechle <ralf@linux-mips.org>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+>  sound/soc/jz4740/Makefile | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/sound/soc/jz4740/Makefile b/sound/soc/jz4740/Makefile
+> index be873c1..d32c540 100644
+> --- a/sound/soc/jz4740/Makefile
+> +++ b/sound/soc/jz4740/Makefile
+> @@ -1,10 +1,8 @@
+>  #
+>  # Jz4740 Platform Support
+>  #
+> -snd-soc-jz4740-objs := jz4740-pcm.o
+>  snd-soc-jz4740-i2s-objs := jz4740-i2s.o
+>  
+> -obj-$(CONFIG_SND_JZ4740_SOC) += snd-soc-jz4740.o
+>  obj-$(CONFIG_SND_JZ4740_SOC_I2S) += snd-soc-jz4740-i2s.o
+>  
+>  # Jz4740 Machine Support
+> 
+Hi,
 
-Correct that case to compare against a mask the size of phys_addr_t
-instead of always using a 64-bit mask.
+This patch (eebdec044e82) is present in 3.15-rc1 but the build failure
+that was introduced by 0406a40a0 ("ASoC: jz4740: Use the generic
+dmaengine PCM driver") is present in 3.14-rc1 so 3.14 is still broken.
 
-Fixes: a2e715a86c6d ("MIPS: DMA: Fix computation of DMA flags from device's coherent_dma_mask.")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # 2.6.36+
----
-Changes in v2:
-- Add whitespace around * operator (Sergei).
+Greg, would it be possible to cherry pick eebdec044e82 ("ASoC: jz4740:
+Remove Makefile entry for removed file") to 3.14 stable branch? It seems
+to apply without conflicts.
 
-This works around problems encountered on Malta with ethernet and IDE
-drivers being unable to allocate any coherent memory when the entire
-16MB DMA zone is taken up with static kernel data (a separate problem),
-even though their coherent_dma_masks are 32-bit. This can happen when
-PROVE_RCU and PROVE_LOCKING are set, especially since commit
-1413c0389333 ("lockdep: Increase static allocations") was applied in
-v3.16.
----
- arch/mips/mm/dma-default.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you
 
-diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
-index af5f046e627e..d5096a59ff94 100644
---- a/arch/mips/mm/dma-default.c
-+++ b/arch/mips/mm/dma-default.c
-@@ -100,7 +100,7 @@ static gfp_t massage_gfp_flags(const struct device *dev, gfp_t gfp)
- 	else
- #endif
- #if defined(CONFIG_ZONE_DMA) && !defined(CONFIG_ZONE_DMA32)
--	     if (dev->coherent_dma_mask < DMA_BIT_MASK(64))
-+	     if (dev->coherent_dma_mask < DMA_BIT_MASK(sizeof(phys_addr_t) * 8))
- 		dma_flag = __GFP_DMA;
- 	else
- #endif
 -- 
-2.0.5
+markos

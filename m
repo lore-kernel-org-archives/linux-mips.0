@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:15231 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:17565 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007636AbbCZQ4zArR61 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Mar 2015 17:56:55 +0100
+        with ESMTP id S27007236AbbC0Id5nFd8a (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Mar 2015 09:33:57 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: dma-default: Fix 32-bit fall back to GFP_DMA
-Date: Thu, 26 Mar 2015 16:56:33 +0000
-Message-ID: <1427388993-17697-1-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH v2] MIPS: dma-default: Fix 32-bit fall back to GFP_DMA
+Date: Fri, 27 Mar 2015 08:33:43 +0000
+Message-ID: <1427445223-8017-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <James.Hogan@imgtec.com>
@@ -20,7 +20,7 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20150326165633.Ri4FGsfll-OUHVeeugmEs1vgl3A9hqtZi461sWdHtMU@z>
+Message-ID: <20150327083343.ZuG6spPGe3WdSg7WiGSA2BVX993_bTy_xhErz4isjdc@z>
 
 If there is a DMA zone (usually 24bit = 16MB I believe), but no DMA32
 zone, as is the case for some 32-bit kernels, then massage_gfp_flags()
@@ -37,6 +37,9 @@ Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 Cc: <stable@vger.kernel.org> # 2.6.36+
 ---
+Changes in v2:
+- Add whitespace around * operator (Sergei).
+
 This works around problems encountered on Malta with ethernet and IDE
 drivers being unable to allocate any coherent memory when the entire
 16MB DMA zone is taken up with static kernel data (a separate problem),
@@ -49,7 +52,7 @@ v3.16.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
-index af5f046e627e..501557026768 100644
+index af5f046e627e..d5096a59ff94 100644
 --- a/arch/mips/mm/dma-default.c
 +++ b/arch/mips/mm/dma-default.c
 @@ -100,7 +100,7 @@ static gfp_t massage_gfp_flags(const struct device *dev, gfp_t gfp)
@@ -57,7 +60,7 @@ index af5f046e627e..501557026768 100644
  #endif
  #if defined(CONFIG_ZONE_DMA) && !defined(CONFIG_ZONE_DMA32)
 -	     if (dev->coherent_dma_mask < DMA_BIT_MASK(64))
-+	     if (dev->coherent_dma_mask < DMA_BIT_MASK(sizeof(phys_addr_t)*8))
++	     if (dev->coherent_dma_mask < DMA_BIT_MASK(sizeof(phys_addr_t) * 8))
  		dma_flag = __GFP_DMA;
  	else
  #endif

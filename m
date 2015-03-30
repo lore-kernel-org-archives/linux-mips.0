@@ -1,14 +1,18 @@
-Received: from smtpbgau1.qq.com ([54.206.16.166]:58237 "EHLO smtpbgau1.qq.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27007935AbbC2CzL0Bw3o (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 29 Mar 2015 04:55:11 +0200
-From: Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH V9 1/7] MIPS: Hibernate: flush TLB entries earlier
-Date: Sun, 29 Mar 2015 10:54:05 +0800
-Message-ID: <1427597650-2368-2-git-send-email-chenhc@lemote.com>
-In-Reply-To: <1427597650-2368-1-git-send-email-chenhc@lemote.com>
-References: <1427597650-2368-1-git-send-email-chenhc@lemote.com>
-Return-Path: <chenhc@lemote.com>
+Received: from mail-bl2on0090.outbound.protection.outlook.com ([65.55.169.90]:39840
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27010081AbbC3S7ZmrVII (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 30 Mar 2015 20:59:25 +0200
+Message-ID: <55199CFC.5070307@caviumnetworks.com>
+Date: Mon, 30 Mar 2015 11:59:08 -0700
+From: David Daney <ddaney@caviumnetworks.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH 1/3] watchdog: octeon: convert to WATCHDOG_CORE API
+References: <1427565940-22951-1-git-send-email-aaro.koskinen@iki.fi> <551992F0.5050809@gmail.com> <20150330185150.GD571@fuloong-minipc.musicnaut.iki.fi>
+In-Reply-To: <20150330185150.GD571@fuloong-minipc.musicnaut.iki.fi>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,40 +22,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Huacai Chen <chenhc@lemote.com>, stable@vger.kernel.org
-Message-ID: <20150329025405.aiPIGWb5tK9Q1FM4ZAafwqAhOMl6BQuUQE-Wc_-17TM@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: David Daney <ddaney.cavm@gmail.com>, Wim Van Sebroeck <wim@iguana.be>, David Daney <david.daney@cavium.com>, linux-watchdog@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20150330185908.bIsE0XOfacvjOWZ7TrO1hJeLi5FDKv5-cGXJrY_82UI@z>
 
-We found that TLB mismatch not only happens after kernel resume, but
-also happens during snapshot restore. So move it to the beginning of
-swsusp_arch_suspend().
+On 03/30/2015 11:51 AM, Aaro Koskinen wrote:
+[...]
+>
+>> Thanks for doing this, I had been meaning to make the conversion myself.
+>
+> One further improvement idea would be to get the register dump logged
+> also with printk() or panic() so that it could be captured with netconsole
+> or mtdoops (at least in some cases). Not sure what it would require.
+> Calling printk() or panic() from the NMI handler didn't quite produce
+> an expected result...
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
----
- arch/mips/power/hibernate.S |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+In the handler we are running with a private stack, and at 
+CP0_Status[ERL].  The result is that no access to the current task 
+structure is possible, and interrupts are disabled.  So there is very 
+little you can do.
 
-diff --git a/arch/mips/power/hibernate.S b/arch/mips/power/hibernate.S
-index 32a7c82..e7567c8 100644
---- a/arch/mips/power/hibernate.S
-+++ b/arch/mips/power/hibernate.S
-@@ -30,6 +30,8 @@ LEAF(swsusp_arch_suspend)
- END(swsusp_arch_suspend)
- 
- LEAF(swsusp_arch_resume)
-+	/* Avoid TLB mismatch during and after kernel resume */
-+	jal local_flush_tlb_all
- 	PTR_L t0, restore_pblist
- 0:
- 	PTR_L t1, PBE_ADDRESS(t0)   /* source */
-@@ -43,7 +45,6 @@ LEAF(swsusp_arch_resume)
- 	bne t1, t3, 1b
- 	PTR_L t0, PBE_NEXT(t0)
- 	bnez t0, 0b
--	jal local_flush_tlb_all /* Avoid TLB mismatch after kernel resume */
- 	PTR_LA t0, saved_regs
- 	PTR_L ra, PT_R31(t0)
- 	PTR_L sp, PT_R29(t0)
--- 
-1.7.7.3
+Polling characters out of the UART works fine though.
+
+
+>
+> A.
+>

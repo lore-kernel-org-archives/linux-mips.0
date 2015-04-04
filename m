@@ -1,14 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:35359 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009724AbbDBNnDz7TPA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Apr 2015 15:43:03 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: Makefile: Fix MIPS ASE detection code
-Date: Thu, 2 Apr 2015 14:42:52 +0100
-Message-ID: <1427982172-10541-1-git-send-email-markos.chandras@imgtec.com>
+Received: from mail-ig0-f169.google.com ([209.85.213.169]:35333 "EHLO
+        mail-ig0-f169.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27006152AbbDDDe5mTt-5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 4 Apr 2015 05:34:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+In-Reply-To: <20150403205201.GF10892@google.com>
+References: <1427857069-6789-1-git-send-email-yinghai@kernel.org>
+        <1427857069-6789-2-git-send-email-yinghai@kernel.org>
+        <20150403193234.GD10892@google.com>
+        <20150403205201.GF10892@google.com>
+Date: Fri, 3 Apr 2015 20:34:52 -0700
+Message-ID: <CAE9FiQVqAEvoLDRZMcNFki0gLMQiyQd2VYivjAh1teRGeuNwBw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] PCI: Introduce pci_bus_addr_t
+From: Yinghai Lu <yinghai@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <yhlu.kernel@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,53 +23,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
-Message-ID: <20150402134252.B438ari6k1wMg7O3ormd84nSHHVPquFLsTWoDuNtHCs@z>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: David Miller <davem@davemloft.net>, David Ahern <david.ahern@oracle.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>, Russell King <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Ralf Baechle <ralf@linux-mips.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, the arch/x86 maintainers <x86@kernel.org>
+Message-ID: <20150404033452._niCDy4oRUZmTaqAyXQoWjV_lEUyWEfPDwW-Th8XDdo@z>
 
-Commit 32098ec7bcba ("MIPS: Makefile: Move the ASEs checks after
-setting the core's CFLAGS") re-arranged the MIPS ASE detection code
-and also added the current cflags to the detection logic. However,
-this introduced a few bugs. First of all, the mips-cflags should not
-be quoted since that ends up being passed as a string to subsequent
-commands leading to broken detection from the cc-option-* tools.
-Moreover, in order to avoid duplicating the cflags-y because of how
-cc-option works, we rework the logic so we pass only those cflags which
-are needed by the selected ASE. Finally, fix some typos resulting in MSA
-not being detected correctly.
+On Fri, Apr 3, 2015 at 1:52 PM, Bjorn Helgaas <bhelgaas@google.com> wrote:
+> [+cc Sam (commented on previous versions), Russell, linux-arm-kernel, Ralf,
+> linux-mips, Ben, linuxppc-dev, x86]
+>
+> On Fri, Apr 03, 2015 at 02:32:34PM -0500, Bjorn Helgaas wrote:
+>> On Tue, Mar 31, 2015 at 07:57:47PM -0700, Yinghai Lu wrote:
+>> > David Ahern found commit d63e2e1f3df9 ("sparc/PCI: Clip bridge windows
+>> > to fit in upstream windows") broke booting on sparc/T5-8.
+>> >
+>> > In the boot log, there is
+>> >   pci 0000:06:00.0: reg 0x184: can't handle BAR above 4GB (bus address
+>> >   0x110204000)
+>> > but that only could happen when dma_addr_t is 32-bit.
+>> >
+>> > According to David Miller, all DMA occurs behind an IOMMU and these
+>> > IOMMUs only support 32-bit addressing, therefore dma_addr_t is
+>> > 32-bit on sparc64.
+>> >
+>> > Let's introduce pci_bus_addr_t instead of using dma_addr_t,
+>> > and pci_bus_addr_t will be 64-bit on 64-bit platform or X86_PAE.
+>> >
+>> > Fixes: commit d63e2e1f3df9 ("sparc/PCI: Clip bridge windows to fit in upstream windows")
+>> > Fixes: commit 23b13bc76f35 ("PCI: Fail safely if we can't handle BARs larger than 4GB")
+>> > Link: http://lkml.kernel.org/r/CAE9FiQU1gJY1LYrxs+ma5LCTEEe4xmtjRG0aXJ9K_Tsu+m9Wuw@mail.gmail.com
+>> > Reported-by: David Ahern <david.ahern@oracle.com>
+>> > Tested-by: David Ahern <david.ahern@oracle.com>
+>> > Signed-off-by: Yinghai Lu <yinghai@kernel.org>
+>> > Cc: <stable@vger.kernel.org> #3.19
+>> > ---
+>> >  drivers/pci/Kconfig |  4 ++++
+>> >  drivers/pci/bus.c   | 10 +++++-----
+>> >  drivers/pci/probe.c | 12 ++++++------
+>> >  include/linux/pci.h | 12 +++++++++---
+>> >  4 files changed, 24 insertions(+), 14 deletions(-)
+>> >
+>> > diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+>> > index 7a8f1c5..6a5a269 100644
+>> > --- a/drivers/pci/Kconfig
+>> > +++ b/drivers/pci/Kconfig
+>> > @@ -1,6 +1,10 @@
+>> >  #
+>> >  # PCI configuration
+>> >  #
+>> > +config PCI_BUS_ADDR_T_64BIT
+>> > +   def_bool y if (64BIT || X86_PAE)
+>> > +   depends on PCI
+>>
+>> We're going to use pci_bus_addr_t in some places where we previously used
+>> dma_addr_t, which means pci_bus_addr_t should be at least as large as
+>> dma_addr_t.  Can you enforce that directly, e.g., with something like this?
+>>
+>>     def_bool y if (ARCH_DMA_ADDR_T_64BIT || 64BIT || X86_PAE)
 
-Fixes: Commit 32098ec7bcba ("MIPS: Makefile: Move the ASEs checks after setting the core's CFLAGS")
-Cc: Maciej W. Rozycki <macro@linux-mips.org>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/Makefile | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+then should use
 
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index e644ac2d6501..198fd8d120a0 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -197,11 +197,17 @@ endif
- # Warning: the 64-bit MIPS architecture does not support the `smartmips' extension
- # Pass -Wa,--no-warn to disable all assembler warnings until the kernel code has
- # been fixed properly.
--mips-cflags				:= "$(cflags-y)"
--cflags-$(CONFIG_CPU_HAS_SMARTMIPS)	+= $(call cc-option,$(mips-cflags),-msmartmips) -Wa,--no-warn
--cflags-$(CONFIG_CPU_MICROMIPS)		+= $(call cc-option,$(mips-cflags),-mmicromips)
-+mips-cflags				:= $(cflags-y)
-+ifeq ($(CONFIG_CPU_HAS_SMARTMIPS),y)
-+smartmips-ase				:= $(call cc-option-yn,$(mips-cflags) -msmartmips)
-+cflags-$(smartmips-ase)			+= -msmartmips -Wa,--no-warn
-+endif
-+ifeq ($(CONFIG_CPU_MICROMIPS),y)
-+micromips-ase				:= $(call cc-option-yn,$(mips-cflags) -mmicromips)
-+cflags-$(micromips-ase)			+= -mmicromips
-+endif
- ifeq ($(CONFIG_CPU_HAS_MSA),y)
--toolchain-msa				:= $(call cc-option-yn,-$(mips-cflags),mhard-float -mfp64 -Wa$(comma)-mmsa)
-+toolchain-msa				:= $(call cc-option-yn,$(mips-cflags) -mhard-float -mfp64 -Wa$(comma)-mmsa)
- cflags-$(toolchain-msa)			+= -DTOOLCHAIN_SUPPORTS_MSA
- endif
- 
--- 
-2.3.5
+def_bool y if (ARCH_DMA_ADDR_T_64BIT || 64BIT)
+
+Thanks
+
+Yinghai

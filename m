@@ -1,16 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:38467 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:41762 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27025679AbbDQJoaYfBUx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 17 Apr 2015 11:44:30 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 2/2] MIPS: Pistachio: Support CDMM & Fast Debug Channel
-Date: Fri, 17 Apr 2015 10:44:16 +0100
-Message-ID: <1429263856-30471-3-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1429263856-30471-1-git-send-email-james.hogan@imgtec.com>
-References: <1429263856-30471-1-git-send-email-james.hogan@imgtec.com>
+        with ESMTP id S27011046AbbDTJymuEsVi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 20 Apr 2015 11:54:42 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id ADD14115CA779
+        for <linux-mips@linux-mips.org>; Mon, 20 Apr 2015 10:54:36 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: asm: spinlock: Adjust arch_spin_lock back-off time
+Date: Mon, 20 Apr 2015 10:54:34 +0100
+Message-ID: <1429523674-4335-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,73 +21,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>
-Cc: James Hartley <james.hartley@imgtec.com>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20150417094416.0u9I56doooYvdidA7fkfBiniWg-6a6SmofowWpww7Ls@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20150420095434._RrQeH0FYYNyhhO9P9AlF2u5ysMo2U6LFHWYgOk0GLQ@z>
 
-Implement the mips_cdmm_phys_base() platform callback to provide a
-default Common Device Memory Map (CDMM) physical base address for the
-Pistachio SoC. This allows the CDMM in each VPE to be configured and
-probed for devices, such as the Fast Debug Channel (FDC).
+Make it similar to the trylock and R10000_LLSC_WAR cases.
 
-The physical address chosen is just below the default CPC address, which
-appears to also be unallocated.
-
-The FDC IRQ is also usable on Pistachio, and is routed through the GIC,
-so implement the get_c0_fdc_int() platform callback using
-gic_get_c0_fdc_int(), so the FDC driver doesn't have to fall back to
-polling.
-
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Andrew Bresticker <abrestic@chromium.org>
-Cc: James Hartley <james.hartley@imgtec.com>
-Cc: linux-mips@linux-mips.org
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/pistachio/init.c | 8 +++++++-
- arch/mips/pistachio/time.c | 5 +++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+I can't find a reference on why this was different compared to the other
+cases so I presume it was just an overlook in commit
+2a31b03335e570dce5fdd082e0d71d48b2cb4290
+---
+ arch/mips/include/asm/spinlock.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/pistachio/init.c b/arch/mips/pistachio/init.c
-index d2dc836523a3..8bd8ebb20a72 100644
---- a/arch/mips/pistachio/init.c
-+++ b/arch/mips/pistachio/init.c
-@@ -63,13 +63,19 @@ void __init plat_mem_setup(void)
- 	plat_setup_iocoherency();
- }
- 
--#define DEFAULT_CPC_BASE_ADDR 0x1bde0000
-+#define DEFAULT_CPC_BASE_ADDR	0x1bde0000
-+#define DEFAULT_CDMM_BASE_ADDR	0x1bdd0000
- 
- phys_addr_t mips_cpc_default_phys_base(void)
- {
- 	return DEFAULT_CPC_BASE_ADDR;
- }
- 
-+phys_addr_t mips_cdmm_phys_base(void)
-+{
-+	return DEFAULT_CDMM_BASE_ADDR;
-+}
-+
- static void __init mips_nmi_setup(void)
- {
- 	void *base;
-diff --git a/arch/mips/pistachio/time.c b/arch/mips/pistachio/time.c
-index 67889fcea8aa..7c73fcb92a10 100644
---- a/arch/mips/pistachio/time.c
-+++ b/arch/mips/pistachio/time.c
-@@ -27,6 +27,11 @@ int get_c0_perfcount_int(void)
- 	return gic_get_c0_perfcount_int();
- }
- 
-+int get_c0_fdc_int(void)
-+{
-+	return gic_get_c0_fdc_int();
-+}
-+
- void __init plat_time_init(void)
- {
- 	struct device_node *np;
+diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/spinlock.h
+index 1fca2e0793dc..cc771a21899d 100644
+--- a/arch/mips/include/asm/spinlock.h
++++ b/arch/mips/include/asm/spinlock.h
+@@ -109,7 +109,7 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
+ 		"	 subu	%[ticket], %[my_ticket], %[ticket]	\n"
+ 		"2:							\n"
+ 		"	.subsection 2					\n"
+-		"4:	andi	%[ticket], %[ticket], 0x1fff		\n"
++		"4:	andi	%[ticket], %[ticket], 0xffff		\n"
+ 		"	sll	%[ticket], 5				\n"
+ 		"							\n"
+ 		"6:	bnez	%[ticket], 6b				\n"
 -- 
-2.0.5
+2.3.5

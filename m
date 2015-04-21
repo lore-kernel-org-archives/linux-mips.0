@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:1147 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:31697 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27025948AbbDUOw0Jd7oG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 21 Apr 2015 16:52:26 +0200
+        with ESMTP id S27025950AbbDUOwoMI25o (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 21 Apr 2015 16:52:44 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v3 17/37] MIPS: JZ4740: define IRQ numbers based on number of intc IRQs
-Date: Tue, 21 Apr 2015 15:46:44 +0100
-Message-ID: <1429627624-30525-18-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH v3 18/37] MIPS: JZ4740: read intc base address from DT
+Date: Tue, 21 Apr 2015 15:46:45 +0100
+Message-ID: <1429627624-30525-19-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1429627624-30525-1-git-send-email-paul.burton@imgtec.com>
 References: <1429627624-30525-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,12 +22,11 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>, Lars-Peter Clausen <lars@metafoo.de>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>
-Message-ID: <20150421144644.rupgNQsvqOH-CZ0wFp3uupKAtOrSEjxtFxkoxufiuFk@z>
+Message-ID: <20150421144645.orGT4pcwDcQq7a5BDWxQroSl7ZPQ6bUc1m1QU313HLU@z>
 
-For interrupts numbered after those of the interrupt controller, define
-their numbers based upon the number of interrupts provided by the SoC
-interrupt controller. This is in preparation for supporting newer
-Ingenic SoCs which provide more interrupts.
+Read the base address of the SoC interrupt controller from the device
+tree rather than relying upon the JZ4740_INTC_BASE_ADDR macro, in order
+to remove the dependency on the asm/mach-jz4740/base.h header.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Cc: Lars-Peter Clausen <lars@metafoo.de>
@@ -35,44 +34,43 @@ Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Jason Cooper <jason@lakedaemon.net>
 ---
 Changes in v3:
-  - Rebase.
-
-Changes in v2:
-  - None.
+  - New patch.
 ---
- arch/mips/include/asm/mach-jz4740/irq.h | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/mips/jz4740/irq.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/include/asm/mach-jz4740/irq.h b/arch/mips/include/asm/mach-jz4740/irq.h
-index df50736..b218f76 100644
---- a/arch/mips/include/asm/mach-jz4740/irq.h
-+++ b/arch/mips/include/asm/mach-jz4740/irq.h
-@@ -19,6 +19,10 @@
- #define MIPS_CPU_IRQ_BASE 0
- #define JZ4740_IRQ_BASE 8
+diff --git a/arch/mips/jz4740/irq.c b/arch/mips/jz4740/irq.c
+index a154d9b..58fe64f 100644
+--- a/arch/mips/jz4740/irq.c
++++ b/arch/mips/jz4740/irq.c
+@@ -18,14 +18,13 @@
+ #include <linux/types.h>
+ #include <linux/interrupt.h>
+ #include <linux/ioport.h>
++#include <linux/of_address.h>
+ #include <linux/of_irq.h>
+ #include <linux/timex.h>
+ #include <linux/slab.h>
+ #include <linux/delay.h>
  
-+#ifdef CONFIG_MACH_JZ4740
-+# define NR_INTC_IRQS	32
-+#endif
-+
- /* 1st-level interrupts */
- #define JZ4740_IRQ(x)		(JZ4740_IRQ_BASE + (x))
- #define JZ4740_IRQ_I2C		JZ4740_IRQ(1)
-@@ -45,12 +49,12 @@
- #define JZ4740_IRQ_LCD		JZ4740_IRQ(30)
+ #include <asm/io.h>
+-
+-#include <asm/mach-jz4740/base.h>
+ #include <asm/mach-jz4740/irq.h>
  
- /* 2nd-level interrupts */
--#define JZ4740_IRQ_DMA(x)	(JZ4740_IRQ(32) + (x))
-+#define JZ4740_IRQ_DMA(x)	(JZ4740_IRQ(NR_INTC_IRQS) + (x))
+ #include "irq.h"
+@@ -110,7 +109,11 @@ static int __init ingenic_intc_of_init(struct device_node *node,
+ 	}
  
- #define JZ4740_IRQ_INTC_GPIO(x) (JZ4740_IRQ_GPIO0 - (x))
--#define JZ4740_IRQ_GPIO(x)	(JZ4740_IRQ(48) + (x))
-+#define JZ4740_IRQ_GPIO(x)	(JZ4740_IRQ(NR_INTC_IRQS + 16) + (x))
+ 	intc->num_chips = num_chips;
+-	intc->base = ioremap(JZ4740_INTC_BASE_ADDR, 0x14);
++	intc->base = of_iomap(node, 0);
++	if (!intc->base) {
++		err = -ENODEV;
++		goto out;
++	}
  
--#define JZ4740_IRQ_ADC_BASE	JZ4740_IRQ(176)
-+#define JZ4740_IRQ_ADC_BASE	JZ4740_IRQ(NR_INTC_IRQS + 144)
- 
- #define NR_IRQS (JZ4740_IRQ_ADC_BASE + 6)
- 
+ 	for (i = 0; i < num_chips; i++) {
+ 		/* Mask all irqs */
 -- 
 2.3.5

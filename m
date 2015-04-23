@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:57084 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:58761 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010711AbbDWH7If8FqW (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Apr 2015 09:59:08 +0200
-Message-ID: <5538A647.10009@imgtec.com>
-Date: Thu, 23 Apr 2015 08:59:03 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+        with ESMTP id S27010762AbbDWM2sT9WsA (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Apr 2015 14:28:48 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: bcm47xx: Move the BCM47XX board types under a choice symbol
+Date: Thu, 23 Apr 2015 13:28:13 +0100
+Message-ID: <1429792093-8160-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [RFC] MIPS: Prevent "BUG: using smp_processor_id() in preemptible..."
- errors
-References: <20150422172359.GA20553@paulmartin.codethink.co.uk>
-In-Reply-To: <20150422172359.GA20553@paulmartin.codethink.co.uk>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,46 +20,44 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: "Maciej W. Rozycki" <macro@linux-mips.org>
-Message-ID: <20150423075903.BZvlKO0JvHWt--6DXGZExxDpaNZ43CDDr0hgenQOHm8@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>, =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Message-ID: <20150423122813.u3fwWHASRR9PvJf_IW8vg5SPj5OtSwTPZqiQJmKTvb0@z>
 
-Hi,
+Since the build system expects one of the two types to be selected,
+it's better if we move these symbols under a new choice symbol.
+Moreover, this fixes the following build problem when no board is
+selected:
 
-On 04/22/2015 06:24 PM, Paul Martin wrote:
-> Commit 9b26616c8d9dae53fbac7f7cb2c6dd1308102976 "MIPS: Respect the ISA
-> level in FCSR handling" added references to current_cpu_data, which is
-> a macro expanding to cpu_data[smp_processor_id()].  Change these to
-> raw_current_cpu_data.
-> 
-> These changes may or may not be a good idea.
-> 
-> There may also be a need for a similar change in
-> arch/mips/kernel/ptrace.c which I haven't made.
-> 
+In file included from arch/mips/bcm47xx/irq.c:32:0:
+./arch/mips/include/asm/mach-bcm47xx/bcm47xx.h:34:1: error: expected identifier
+before '}' token };
+                 ^
+Cc: "Rafał Miłecki" <zajec5@gmail.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/bcm47xx/Kconfig | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-(^^^ missed your SOB line here? But since this RFC that might have been
-intentional)
-
-> ---
->  arch/mips/include/asm/elf.h | 4 ++--
->  arch/mips/math-emu/cp1emu.c | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/elf.h b/arch/mips/include/asm/elf.h
-> index a594d8e..63f3bbc 100644
-> --- a/arch/mips/include/asm/elf.h
-> +++ b/arch/mips/include/asm/elf.h
-> @@ -304,7 +304,7 @@ do {									\
->  									\
->  	current->thread.abi = &mips_abi;				\
->  									\
-> -	current->thread.fpu.fcr31 = current_cpu_data.fpu_csr31;		\
-> +	current->thread.fpu.fcr31 = raw_current_cpu_data.fpu_csr31;	\
-
-The change looks sensible. I am wondering if
-boot_cpu_data(==cpu_data[0]) is a better option though.
-
-I leave that to Maciej.
-
+diff --git a/arch/mips/bcm47xx/Kconfig b/arch/mips/bcm47xx/Kconfig
+index fc21d3659fa0..39e24407709e 100644
+--- a/arch/mips/bcm47xx/Kconfig
++++ b/arch/mips/bcm47xx/Kconfig
+@@ -1,5 +1,9 @@
+ if BCM47XX
+ 
++choice
++	prompt "Board type"
++	default BCM47XX_SSB
++
+ config BCM47XX_SSB
+ 	bool "SSB Support for Broadcom BCM47XX"
+ 	select SYS_HAS_CPU_BMIPS32_3300
+@@ -34,4 +38,6 @@ config BCM47XX_BCMA
+ 
+ 	 This will generate an image with support for BCMA and MIPS32 R2 instruction set.
+ 
++endchoice
++
+ endif
 -- 
-markos
+2.3.5

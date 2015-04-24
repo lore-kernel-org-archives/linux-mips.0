@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:29303 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13194 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026031AbbDXNVsH64Zr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Apr 2015 15:21:48 +0200
+        with ESMTP id S27026032AbbDXNWJofVGC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Apr 2015 15:22:09 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v4 11/37] MIPS: JZ4740: probe interrupt controller via DT
-Date: Fri, 24 Apr 2015 14:17:11 +0100
-Message-ID: <1429881457-16016-12-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH v4 12/37] MIPS: JZ4740: parse SoC interrupt controller parent IRQ from DT
+Date: Fri, 24 Apr 2015 14:17:12 +0100
+Message-ID: <1429881457-16016-13-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1429881457-16016-1-git-send-email-paul.burton@imgtec.com>
 References: <1429881457-16016-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,128 +21,53 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Jason Cooper <jason@lakedaemon.net>, Kumar Gala <galak@codeaurora.org>, Lars-Peter Clausen <lars@metafoo.de>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, devicetree@vger.kernel.org
-Message-ID: <20150424131711.ZjzTEM6A8yiMCeVl2Fi_ZRWgODvfLhW9coLdF4j-EUw@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Lars-Peter Clausen <lars@metafoo.de>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20150424131712.KxDc3d6RXegBVAJGIHw7vFeBueAyaKjUfk_GVEMNN_4@z>
 
-Declare the JZ4740 interrupt controller for probe via DT using the
-standard irqchip_init function, and make use of that function to probe
-the controller by adding the appropriate node to the JZ4740 dtsi.
+Rather than hardcoding the IRQ number used to cascade interrupts from
+the SoC interrupt controller to the CPU interrupt controller, read that
+IRQ number from the DT describing the system.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Ian Campbell <ijc+devicetree@hellion.org.uk>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Kumar Gala <galak@codeaurora.org>
 Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Pawel Moll <pawel.moll@arm.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Rob Herring <robh+dt@kernel.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: devicetree@vger.kernel.org
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 ---
 Changes in v4:
-  - s/intc/interrupt-controller/ in jz4740.dtsi.
+  - None.
 
 Changes in v3:
-  - New patch, merging patches 8 through 10 of v2 & dropping the addition
-    of temporary code removed a couple of patches later.
+  - New patch.
 ---
- arch/mips/boot/dts/ingenic/jz4740.dtsi  | 11 +++++++++++
- arch/mips/include/asm/mach-jz4740/irq.h |  2 --
- arch/mips/jz4740/irq.c                  |  8 +++++++-
- arch/mips/jz4740/setup.c                |  2 --
- 4 files changed, 18 insertions(+), 5 deletions(-)
+ arch/mips/jz4740/irq.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/dts/ingenic/jz4740.dtsi b/arch/mips/boot/dts/ingenic/jz4740.dtsi
-index 2d64765c..3142e6c 100644
---- a/arch/mips/boot/dts/ingenic/jz4740.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4740.dtsi
-@@ -9,4 +9,15 @@
- 		interrupt-controller;
- 		compatible = "mti,cpu-interrupt-controller";
- 	};
-+
-+	intc: interrupt-controller@10001000 {
-+		compatible = "ingenic,jz4740-intc";
-+		reg = <0x10001000 0x14>;
-+
-+		interrupt-controller;
-+		#interrupt-cells = <1>;
-+
-+		interrupt-parent = <&cpuintc>;
-+		interrupts = <2>;
-+	};
- };
-diff --git a/arch/mips/include/asm/mach-jz4740/irq.h b/arch/mips/include/asm/mach-jz4740/irq.h
-index 5ce4302..df50736 100644
---- a/arch/mips/include/asm/mach-jz4740/irq.h
-+++ b/arch/mips/include/asm/mach-jz4740/irq.h
-@@ -54,6 +54,4 @@
- 
- #define NR_IRQS (JZ4740_IRQ_ADC_BASE + 6)
- 
--extern void __init jz4740_intc_init(void);
--
- #endif
 diff --git a/arch/mips/jz4740/irq.c b/arch/mips/jz4740/irq.c
-index bac1f52..43e000a 100644
+index 43e000a..ed51915 100644
 --- a/arch/mips/jz4740/irq.c
 +++ b/arch/mips/jz4740/irq.c
-@@ -18,6 +18,7 @@
- #include <linux/types.h>
- #include <linux/interrupt.h>
- #include <linux/ioport.h>
-+#include <linux/of_irq.h>
- #include <linux/timex.h>
- #include <linux/slab.h>
- #include <linux/delay.h>
-@@ -32,6 +33,8 @@
- 
- #include "irq.h"
- 
-+#include "../../drivers/irqchip/irqchip.h"
-+
- static void __iomem *jz_intc_base;
- 
- #define JZ_REG_INTC_STATUS	0x00
-@@ -77,7 +80,8 @@ static struct irqaction jz4740_cascade_action = {
- 	.name = "JZ4740 cascade interrupt",
- };
- 
--void __init jz4740_intc_init(void)
-+static int __init jz4740_intc_of_init(struct device_node *node,
-+	struct device_node *parent)
+@@ -85,6 +85,11 @@ static int __init jz4740_intc_of_init(struct device_node *node,
  {
  	struct irq_chip_generic *gc;
  	struct irq_chip_type *ct;
-@@ -105,7 +109,9 @@ void __init jz4740_intc_init(void)
++	int parent_irq;
++
++	parent_irq = irq_of_parse_and_map(node, 0);
++	if (!parent_irq)
++		return -EINVAL;
+ 
+ 	jz_intc_base = ioremap(JZ4740_INTC_BASE_ADDR, 0x14);
+ 
+@@ -108,7 +113,7 @@ static int __init jz4740_intc_of_init(struct device_node *node,
+ 
  	irq_setup_generic_chip(gc, IRQ_MSK(32), 0, 0, IRQ_NOPROBE | IRQ_LEVEL);
  
- 	setup_irq(2, &jz4740_cascade_action);
-+	return 0;
+-	setup_irq(2, &jz4740_cascade_action);
++	setup_irq(parent_irq, &jz4740_cascade_action);
+ 	return 0;
  }
-+IRQCHIP_DECLARE(jz4740_intc, "ingenic,jz4740-intc", jz4740_intc_of_init);
- 
- #ifdef CONFIG_DEBUG_FS
- 
-diff --git a/arch/mips/jz4740/setup.c b/arch/mips/jz4740/setup.c
-index 4808730..8c08d7d 100644
---- a/arch/mips/jz4740/setup.c
-+++ b/arch/mips/jz4740/setup.c
-@@ -25,7 +25,6 @@
- #include <asm/prom.h>
- 
- #include <asm/mach-jz4740/base.h>
--#include <asm/mach-jz4740/irq.h>
- 
- #include "reset.h"
- 
-@@ -84,5 +83,4 @@ const char *get_system_type(void)
- void __init arch_init_irq(void)
- {
- 	irqchip_init();
--	jz4740_intc_init();
- }
+ IRQCHIP_DECLARE(jz4740_intc, "ingenic,jz4740-intc", jz4740_intc_of_init);
 -- 
 2.3.5

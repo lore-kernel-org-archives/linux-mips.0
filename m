@@ -1,25 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:62807 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27010821AbbDXHtCyLgB0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Apr 2015 09:49:02 +0200
-Received: from imgpgp01.kl.imgtec.org (imgpgp01.kl.imgtec.org [127.0.0.1])
-        by imgpgp01.kl.imgtec.org (PGP Universal) with ESMTP id E2C7641F8E14
-        for <linux-mips@linux-mips.org>; Fri, 24 Apr 2015 08:48:58 +0100 (BST)
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 5473C279BFF21
-        for <linux-mips@linux-mips.org>; Fri, 24 Apr 2015 08:48:57 +0100 (IST)
-Date: Fri, 24 Apr 2015 08:48:58 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] MIPS: asm: asmmacro: Ensure 64-bit FP registers are used
- with MSA
-Message-ID: <20150424074857.GH10157@jhogan-linux.le.imgtec.org>
-References: <1429178759-20562-1-git-send-email-markos.chandras@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:48545 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27026019AbbDXNS0jgDUH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Apr 2015 15:18:26 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH v4 00/37] JZ4780 & CI20 support
+Date: Fri, 24 Apr 2015 14:17:00 +0100
+Message-ID: <1429881457-16016-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="TA4f0niHM6tHt3xR"
-Content-Disposition: inline
-In-Reply-To: <1429178759-20562-1-git-send-email-markos.chandras@imgtec.com>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -29,141 +18,140 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Markos Chandras <markos.chandras@imgtec.com>
-Cc: linux-mips@linux-mips.org, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20150424074858.0ygJ2IQFBgrBCWwx4mDr2fO6BrKRPzYfzWLDR6R-iEw@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, devicetree@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Jason Cooper <jason@lakedaemon.net>, Jiri Slaby <jslaby@suse.cz>, Kumar Gala <galak@codeaurora.org>, Lars-Peter Clausen <lars@metafoo.de>, linux-clk@vger.kernel.org, linux-serial@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Mike Turquette <mturquette@linaro.org>, Paul Cercueil <paul@crapouillou.net>, Pawel Moll <pawel.moll@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <20150424131700.byORj1gVMa8YFrOY-YkdAee6gc4mFDGN9hW7Chq27kI@z>
 
---TA4f0niHM6tHt3xR
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series introduces initial support for the Ingenic JZ4780 SoC and
+the Imagination Technologies MIPS Creator CI20 board which is built
+around it. In the process the existing JZ4740 & qi_lb60 code gains
+initial support for using DeviceTree such that much of the existing
+platform code under arch/mips/jz4740 can be shared.
 
-On Thu, Apr 16, 2015 at 11:05:59AM +0100, Markos Chandras wrote:
-> This silences warnings like the following one when building with the
-> latest binutils:
+The series applies atop next-20150421. Review appreciated, and
+hopefully this can make it in for v4.2.
 
-It may be helpful to refer to the versions of binutils which are
-affected in the commit message.
+Thanks,
+    Paul
 
->=20
-> arch/mips/kernel/genex.S: Assembler messages:
-> arch/mips/kernel/genex.S:438: Warning: the `msa' extension requires 64-bi=
-t FPRs
->=20
-> Cc: James Hogan <james.hogan@imgtec.com>
+Paul Burton (37):
+  devicetree/bindings: add Ingenic Semiconductor vendor prefix
+  devicetree/bindings: add Qi Hardware vendor prefix
+  MIPS: JZ4740: introduce CONFIG_MACH_INGENIC
+  MIPS: ingenic: add newer vendor IDs
+  MIPS: JZ4740: require & include DT
+  MIPS: irq_cpu: declare irqchip table entry
+  MIPS: JZ4740: probe CPU interrupt controller via DT
+  MIPS: JZ4740: use generic plat_irq_dispatch
+  MIPS: JZ4740: move arch_init_irq out of arch/mips/jz4740/irq.c
+  devicetree: document Ingenic SoC interrupt controller binding
+  MIPS: JZ4740: probe interrupt controller via DT
+  MIPS: JZ4740: parse SoC interrupt controller parent IRQ from DT
+  MIPS: JZ4740: register an irq_domain for the interrupt controller
+  MIPS: JZ4740: drop intc debugfs code
+  MIPS: JZ4740: remove jz_intc_base global
+  MIPS: JZ4740: support >32 interrupts
+  MIPS: JZ4740: define IRQ numbers based on number of intc IRQs
+  MIPS: JZ4740: read intc base address from DT
+  MIPS: JZ4740: avoid JZ4740-specific naming
+  MIPS: JZ4740: support newer SoC interrupt controllers
+  irqchip: move Ingenic SoC intc driver to drivers/irqchip
+  MIPS: JZ4740: call jz4740_clock_init earlier
+  MIPS: JZ4740: replace use of jz4740_clock_bdata
+  devicetree: add Ingenic CGU binding documentation
+  clk: ingenic: add driver for Ingenic SoC CGU clocks
+  MIPS,clk: migrate JZ4740 to common clock framework
+  MIPS,clk: move jz4740_clock_set_wait_mode to jz4740-cgu
+  MIPS,clk: move jz4740 UDC auto suspend functions to jz4740-cgu
+  MIPS,clk: move jz4740 clock suspend,resume functions to jz4740-cgu
+  clk: ingenic: add JZ4780 CGU support
+  MIPS: JZ4740: remove clock.h
+  MIPS: JZ4740: only detect RAM size if not specified in DT
+  devicetree: document Ingenic SoC UART binding
+  serial: 8250_ingenic: support for Ingenic SoC UARTs
+  MIPS: JZ4740: use Ingenic SoC UART driver
+  MIPS: ingenic: initial JZ4780 support
+  MIPS: ingenic: initial MIPS Creator CI20 support
 
-Other than that,
+ .../devicetree/bindings/clock/ingenic,cgu.txt      |  53 ++
+ .../bindings/interrupt-controller/ingenic,intc.txt |  25 +
+ .../devicetree/bindings/serial/ingenic,uart.txt    |  22 +
+ .../devicetree/bindings/vendor-prefixes.txt        |   2 +
+ arch/mips/Kconfig                                  |  11 +-
+ arch/mips/boot/dts/Makefile                        |   1 +
+ arch/mips/boot/dts/ingenic/Makefile                |  10 +
+ arch/mips/boot/dts/ingenic/ci20.dts                |  21 +
+ arch/mips/boot/dts/ingenic/jz4740.dtsi             |  68 ++
+ arch/mips/boot/dts/ingenic/jz4780.dtsi             | 101 +++
+ arch/mips/boot/dts/ingenic/qi_lb60.dts             |  15 +
+ arch/mips/configs/ci20_defconfig                   | 169 ++++
+ arch/mips/configs/qi_lb60_defconfig                |   3 +-
+ arch/mips/include/asm/cpu-type.h                   |   2 +-
+ arch/mips/include/asm/cpu.h                        |   6 +-
+ arch/mips/include/asm/mach-jz4740/clock.h          |   3 +
+ .../asm/mach-jz4740/cpu-feature-overrides.h        |   3 -
+ arch/mips/include/asm/mach-jz4740/irq.h            |  14 +-
+ arch/mips/include/asm/mach-jz4740/platform.h       |   2 -
+ arch/mips/jz4740/Kconfig                           |  17 +-
+ arch/mips/jz4740/Makefile                          |   8 +-
+ arch/mips/jz4740/Platform                          |   8 +-
+ arch/mips/jz4740/board-qi_lb60.c                   |   7 -
+ arch/mips/jz4740/clock-debugfs.c                   | 108 ---
+ arch/mips/jz4740/clock.c                           | 924 ---------------------
+ arch/mips/jz4740/clock.h                           |  76 --
+ arch/mips/jz4740/gpio.c                            |   7 +-
+ arch/mips/jz4740/irq.c                             | 162 ----
+ arch/mips/jz4740/platform.c                        |  38 +-
+ arch/mips/jz4740/pm.c                              |   2 -
+ arch/mips/jz4740/prom.c                            |  13 -
+ arch/mips/jz4740/reset.c                           |  13 +-
+ arch/mips/jz4740/serial.c                          |  33 -
+ arch/mips/jz4740/serial.h                          |  23 -
+ arch/mips/jz4740/setup.c                           |  36 +-
+ arch/mips/jz4740/time.c                            |  19 +-
+ arch/mips/kernel/cpu-probe.c                       |   4 +-
+ arch/mips/kernel/irq_cpu.c                         |   3 +
+ drivers/clk/Makefile                               |   1 +
+ drivers/clk/ingenic/Makefile                       |   3 +
+ drivers/clk/ingenic/cgu.c                          | 712 ++++++++++++++++
+ drivers/clk/ingenic/cgu.h                          | 223 +++++
+ drivers/clk/ingenic/jz4740-cgu.c                   | 303 +++++++
+ drivers/clk/ingenic/jz4780-cgu.c                   | 736 ++++++++++++++++
+ drivers/irqchip/Kconfig                            |   5 +
+ drivers/irqchip/Makefile                           |   1 +
+ drivers/irqchip/irq-ingenic.c                      | 171 ++++
+ drivers/tty/serial/8250/8250_ingenic.c             | 261 ++++++
+ drivers/tty/serial/8250/Kconfig                    |   9 +
+ drivers/tty/serial/8250/Makefile                   |   3 +
+ include/dt-bindings/clock/jz4740-cgu.h             |  37 +
+ include/dt-bindings/clock/jz4780-cgu.h             |  88 ++
+ .../irq.h => include/linux/irqchip/ingenic.h       |   8 +-
+ 53 files changed, 3169 insertions(+), 1424 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/ingenic,cgu.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.txt
+ create mode 100644 Documentation/devicetree/bindings/serial/ingenic,uart.txt
+ create mode 100644 arch/mips/boot/dts/ingenic/Makefile
+ create mode 100644 arch/mips/boot/dts/ingenic/ci20.dts
+ create mode 100644 arch/mips/boot/dts/ingenic/jz4740.dtsi
+ create mode 100644 arch/mips/boot/dts/ingenic/jz4780.dtsi
+ create mode 100644 arch/mips/boot/dts/ingenic/qi_lb60.dts
+ create mode 100644 arch/mips/configs/ci20_defconfig
+ delete mode 100644 arch/mips/jz4740/clock-debugfs.c
+ delete mode 100644 arch/mips/jz4740/clock.c
+ delete mode 100644 arch/mips/jz4740/clock.h
+ delete mode 100644 arch/mips/jz4740/irq.c
+ delete mode 100644 arch/mips/jz4740/serial.c
+ delete mode 100644 arch/mips/jz4740/serial.h
+ create mode 100644 drivers/clk/ingenic/Makefile
+ create mode 100644 drivers/clk/ingenic/cgu.c
+ create mode 100644 drivers/clk/ingenic/cgu.h
+ create mode 100644 drivers/clk/ingenic/jz4740-cgu.c
+ create mode 100644 drivers/clk/ingenic/jz4780-cgu.c
+ create mode 100644 drivers/irqchip/irq-ingenic.c
+ create mode 100644 drivers/tty/serial/8250/8250_ingenic.c
+ create mode 100644 include/dt-bindings/clock/jz4740-cgu.h
+ create mode 100644 include/dt-bindings/clock/jz4780-cgu.h
+ rename arch/mips/jz4740/irq.h => include/linux/irqchip/ingenic.h (74%)
 
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
-
-Cheers
-James
-
-> Cc: Paul Burton <paul.burton@imgtec.com>
-> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
-> ---
->  arch/mips/include/asm/asmmacro.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->=20
-> diff --git a/arch/mips/include/asm/asmmacro.h b/arch/mips/include/asm/asm=
-macro.h
-> index 6156ac8c4cfb..76317a70200d 100644
-> --- a/arch/mips/include/asm/asmmacro.h
-> +++ b/arch/mips/include/asm/asmmacro.h
-> @@ -211,9 +211,13 @@
->  	.endm
-> =20
->  #ifdef TOOLCHAIN_SUPPORTS_MSA
-> +/* preprocessor replaces the fp in ".set fp=3D64" with $30 otherwise */
-> +#undef fp
-> +
->  	.macro	_cfcmsa	rd, cs
->  	.set	push
->  	.set	mips32r2
-> +	.set	fp=3D64
->  	.set	msa
->  	cfcmsa	\rd, $\cs
->  	.set	pop
-> @@ -222,6 +226,7 @@
->  	.macro	_ctcmsa	cd, rs
->  	.set	push
->  	.set	mips32r2
-> +	.set	fp=3D64
->  	.set	msa
->  	ctcmsa	$\cd, \rs
->  	.set	pop
-> @@ -230,6 +235,7 @@
->  	.macro	ld_d	wd, off, base
->  	.set	push
->  	.set	mips32r2
-> +	.set	fp=3D64
->  	.set	msa
->  	ld.d	$w\wd, \off(\base)
->  	.set	pop
-> @@ -238,6 +244,7 @@
->  	.macro	st_d	wd, off, base
->  	.set	push
->  	.set	mips32r2
-> +	.set	fp=3D64
->  	.set	msa
->  	st.d	$w\wd, \off(\base)
->  	.set	pop
-> @@ -246,6 +253,7 @@
->  	.macro	copy_u_w	ws, n
->  	.set	push
->  	.set	mips32r2
-> +	.set	fp=3D64
->  	.set	msa
->  	copy_u.w $1, $w\ws[\n]
->  	.set	pop
-> @@ -254,6 +262,7 @@
->  	.macro	copy_u_d	ws, n
->  	.set	push
->  	.set	mips64r2
-> +	.set	fp=3D64
->  	.set	msa
->  	copy_u.d $1, $w\ws[\n]
->  	.set	pop
-> @@ -262,6 +271,7 @@
->  	.macro	insert_w	wd, n
->  	.set	push
->  	.set	mips32r2
-> +	.set	fp=3D64
->  	.set	msa
->  	insert.w $w\wd[\n], $1
->  	.set	pop
-> @@ -270,6 +280,7 @@
->  	.macro	insert_d	wd, n
->  	.set	push
->  	.set	mips64r2
-> +	.set	fp=3D64
->  	.set	msa
->  	insert.d $w\wd[\n], $1
->  	.set	pop
-> --=20
-> 2.3.4
->=20
-
---TA4f0niHM6tHt3xR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJVOfVpAAoJEGwLaZPeOHZ6Ln8QAK1lPoEBL02zCfdIRAZfz7Pl
-xu9F8VbBD0YzmlsGhpU/UclbJh9NzXfzMgenV4ZB/ZklYXn1nRGgLluj9xBVE0EA
-+eusu6tzoi64n+BbjV1pUS7bF6FBatZCxfPTVvyYjufoIJaUdgeBh1iOc4wdYMEY
-X0/G9pWNAptH/V0+tvUApZs/piLPjlF5AgUcA1d1iBbLovskNqmDTf8ghwRdehLK
-B+QV7PCWyqTPJI343uajz4k2lXlOXynyWHYKyymE/6fO4vmh0rRw87qD8nVTmqak
-pHTFk75l44dDeIGp8lSc+ry3lDmSo+SvrGZtR92FLZISXhuH2EkfOSa9NazqugH8
-bKh10N992FOcfftfIOrjEnvteBJDWLk8eM1WFZfi7h5U1+vX03HpQ8b/NPfhuXi/
-hjtqevjmdpV4+CuVkd/eWRDygHgS0U5DwLNK9STCSuwviBgBvtuofBv3NXT35VX3
-Qw+FGvMnQn/mQIDKvp0Yz6dJDebsTwGd3n+nouvFRWczEZf2aof4sAzjQuH8GxI4
-YtaE7qLuUyOMjd/kIx3AvJJ7XMStkmH0ZL7wcGpnHKrgviITlB0aTjZqyBrB2wPp
-B37gbReGh424Hk0gf3ZelJivoO2KHBF7Aq0OulMy3IgJ65p3y9DXyEa7a/LvVtHl
-nHHWfa0yy/r2/8OHQ04v
-=p/Jf
------END PGP SIGNATURE-----
-
---TA4f0niHM6tHt3xR--
+-- 
+2.3.5

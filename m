@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:43143 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:12568 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026052AbbDXN21rKD5g (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Apr 2015 15:28:27 +0200
+        with ESMTP id S27026053AbbDXN2p29RnW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Apr 2015 15:28:45 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v4 32/37] MIPS: JZ4740: only detect RAM size if not specified in DT
-Date: Fri, 24 Apr 2015 14:17:32 +0100
-Message-ID: <1429881457-16016-33-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH v4 33/37] devicetree: document Ingenic SoC UART binding
+Date: Fri, 24 Apr 2015 14:17:33 +0100
+Message-ID: <1429881457-16016-34-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1429881457-16016-1-git-send-email-paul.burton@imgtec.com>
 References: <1429881457-16016-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,86 +21,62 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Lars-Peter Clausen <lars@metafoo.de>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150424131732.FAJIgkOkhQ0Cc6bPmOidnWqOMCbaghREnO8AqPeDdFs@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Lars-Peter Clausen <lars@metafoo.de>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Message-ID: <20150424131733.DaElVZDiH6fr0abu0Eh3Nng7Rv9gr3q7HsVthiamxHs@z>
 
-Allow a devicetree to specify the memory present in the system rather
-than probing it from the memory controller. This both saves the probing
-for systems where the amount of memory is fixed, and will simplify the
-bringup of later Ingenic SoCs where the memory controller register
-layout differs.
+Add binding documentation for the UARTs found in Ingenic SoCs.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Cc: Ian Campbell <ijc+devicetree@hellion.org.uk>
+Cc: Kumar Gala <galak@codeaurora.org>
 Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Pawel Moll <pawel.moll@arm.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
 ---
 Changes in v4:
   - None.
 
 Changes in v3:
-  - Rebase.
+  - Merge binding documentation for Ingenic SoCs whose bindings differ
+    only by their compatible strings.
 
 Changes in v2:
   - None.
 ---
- arch/mips/Kconfig         | 1 +
- arch/mips/jz4740/Makefile | 2 ++
- arch/mips/jz4740/setup.c  | 8 +++++++-
- 3 files changed, 10 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/serial/ingenic,uart.txt    | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/serial/ingenic,uart.txt
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index e3c859c..f07a213 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -301,6 +301,7 @@ config MACH_INGENIC
- 	select GENERIC_IRQ_CHIP
- 	select BUILTIN_DTB
- 	select USE_OF
-+	select LIBFDT
- 
- config LANTIQ
- 	bool "Lantiq based platforms"
-diff --git a/arch/mips/jz4740/Makefile b/arch/mips/jz4740/Makefile
-index 7636432..70a9578 100644
---- a/arch/mips/jz4740/Makefile
-+++ b/arch/mips/jz4740/Makefile
-@@ -7,6 +7,8 @@
- obj-y += prom.o time.o reset.o setup.o \
- 	gpio.o platform.o timer.o serial.o
- 
-+CFLAGS_setup.o = -I$(src)/../../../scripts/dtc/libfdt
+diff --git a/Documentation/devicetree/bindings/serial/ingenic,uart.txt b/Documentation/devicetree/bindings/serial/ingenic,uart.txt
+new file mode 100644
+index 0000000..c2d3b3a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/serial/ingenic,uart.txt
+@@ -0,0 +1,22 @@
++* Ingenic SoC UART
 +
- # board specific support
- 
- obj-$(CONFIG_JZ4740_QI_LB60)	+= board-qi_lb60.o
-diff --git a/arch/mips/jz4740/setup.c b/arch/mips/jz4740/setup.c
-index 8c08d7d..1bed3cb 100644
---- a/arch/mips/jz4740/setup.c
-+++ b/arch/mips/jz4740/setup.c
-@@ -18,6 +18,7 @@
- #include <linux/io.h>
- #include <linux/irqchip.h>
- #include <linux/kernel.h>
-+#include <linux/libfdt.h>
- #include <linux/of_fdt.h>
- #include <linux/of_platform.h>
- 
-@@ -55,9 +56,14 @@ static void __init jz4740_detect_mem(void)
- 
- void __init plat_mem_setup(void)
- {
-+	int offset;
++Required properties:
++- compatible : "ingenic,jz4740-uart" or "ingenic,jz4780-uart"
++- reg : offset and length of the register set for the device.
++- interrupts : should contain uart interrupt.
++- clocks : phandles to the module & baud clocks.
++- clock-names: tuple listing input clock names.
++	Required elements: "baud", "module"
 +
- 	jz4740_reset_init();
--	jz4740_detect_mem();
- 	__dt_setup_arch(__dtb_start);
++Example:
 +
-+	offset = fdt_path_offset(__dtb_start, "/memory");
-+	if (offset < 0)
-+		jz4740_detect_mem();
- }
- 
- void __init device_tree_init(void)
++uart0: serial@10030000 {
++	compatible = "ingenic,jz4740-uart";
++	reg = <0x10030000 0x100>;
++
++	interrupt-parent = <&intc>;
++	interrupts = <9>;
++
++	clocks = <&ext>, <&cgu JZ4740_CLK_UART0>;
++	clock-names = "baud", "module";
++};
 -- 
 2.3.5

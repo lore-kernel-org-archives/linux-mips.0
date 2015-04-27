@@ -1,15 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:50172 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026172AbbD0OHtAVtNF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Apr 2015 16:07:49 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:63072 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27011846AbbD0WgBZaxiQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Apr 2015 00:36:01 +0200
+Date: Mon, 27 Apr 2015 23:35:55 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 4/4] MIPS: Malta: Select 32bit DMA zone for 64-bit kernels
-Date: Mon, 27 Apr 2015 15:07:19 +0100
-Message-ID: <1430143639-22580-5-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1430143639-22580-1-git-send-email-james.hogan@imgtec.com>
-References: <1430143639-22580-1-git-send-email-james.hogan@imgtec.com>
+Subject: Re: [PATCH v4 15/37] MIPS: JZ4740: remove jz_intc_base global
+Message-ID: <20150427223555.GA22974@jhogan-linux.le.imgtec.org>
+References: <1429881457-16016-1-git-send-email-paul.burton@imgtec.com>
+ <1429881457-16016-16-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
+Content-Disposition: inline
+In-Reply-To: <1429881457-16016-16-git-send-email-paul.burton@imgtec.com>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,33 +23,148 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>
-Message-ID: <20150427140719.lofwfkc2OajXeMr0cqJTR-JqQaBDpXVni4hGJzHfHc0@z>
+To: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org, Lars-Peter Clausen <lars@metafoo.de>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20150427223555.1Ell_KQulIDPsABzdOQtmFOWVmBnngDXqgKCGto9gVQ@z>
 
-Enable the 32-bit DMA zone for 64-bit Malta kernels so that devices with
-32-bit coherent DMA masks aren't constrained to the low 16MB DMA zone,
-which can easily be exhausted when there is lots of static kernel data
-due to lock and RCU debugging.
+--MGYHOYXEY6WxJCY8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Hi Paul,
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index f5016656494f..3feebda50ea2 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -434,6 +434,7 @@ config MIPS_MALTA
- 	select SYS_SUPPORTS_MULTITHREADING
- 	select SYS_SUPPORTS_SMARTMIPS
- 	select SYS_SUPPORTS_ZBOOT
-+	select ZONE_DMA32 if 64BIT
- 	help
- 	  This enables support for the MIPS Technologies Malta evaluation
- 	  board.
--- 
-2.0.5
+On Fri, Apr 24, 2015 at 02:17:15PM +0100, Paul Burton wrote:
+> Avoid the need for the global variable jz_intc_base by introducing a
+> struct ingenic_intc_data and passing it around as the IRQ handler data.
+>=20
+> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Jason Cooper <jason@lakedaemon.net>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: linux-mips@linux-mips.org
+> ---
+> Changes in v4:
+>   - None.
+
+I don't think you've addressed my comment on v3 of this patch:
+http://patchwork.linux-mips.org/patch/9805/
+
+Cheers
+James
+
+>=20
+> Changes in v3:
+>   - New patch.
+> ---
+>  arch/mips/jz4740/irq.c | 35 ++++++++++++++++++++++++++---------
+>  1 file changed, 26 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/arch/mips/jz4740/irq.c b/arch/mips/jz4740/irq.c
+> index 615eaa8..498ff28 100644
+> --- a/arch/mips/jz4740/irq.c
+> +++ b/arch/mips/jz4740/irq.c
+> @@ -32,7 +32,9 @@
+> =20
+>  #include "../../drivers/irqchip/irqchip.h"
+> =20
+> -static void __iomem *jz_intc_base;
+> +struct ingenic_intc_data {
+> +	void __iomem *base;
+> +};
+> =20
+>  #define JZ_REG_INTC_STATUS	0x00
+>  #define JZ_REG_INTC_MASK	0x04
+> @@ -42,9 +44,10 @@ static void __iomem *jz_intc_base;
+> =20
+>  static irqreturn_t jz4740_cascade(int irq, void *data)
+>  {
+> +	struct ingenic_intc_data *intc =3D irq_get_handler_data(irq);
+>  	uint32_t irq_reg;
+> =20
+> -	irq_reg =3D readl(jz_intc_base + JZ_REG_INTC_PENDING);
+> +	irq_reg =3D readl(intc->base + JZ_REG_INTC_PENDING);
+> =20
+>  	if (irq_reg)
+>  		generic_handle_irq(__fls(irq_reg) + JZ4740_IRQ_BASE);
+> @@ -80,21 +83,30 @@ static struct irqaction jz4740_cascade_action =3D {
+>  static int __init jz4740_intc_of_init(struct device_node *node,
+>  	struct device_node *parent)
+>  {
+> +	struct ingenic_intc_data *intc;
+>  	struct irq_chip_generic *gc;
+>  	struct irq_chip_type *ct;
+>  	struct irq_domain *domain;
+> -	int parent_irq;
+> +	int parent_irq, err =3D 0;
+> +
+> +	intc =3D kzalloc(sizeof(*intc), GFP_KERNEL);
+> +	if (!intc) {
+> +		err =3D -ENOMEM;
+> +		goto out;
+> +	}
+> =20
+>  	parent_irq =3D irq_of_parse_and_map(node, 0);
+> -	if (!parent_irq)
+> -		return -EINVAL;
+> +	if (!parent_irq) {
+> +		err =3D -EINVAL;
+> +		goto out;
+> +	}
+> =20
+> -	jz_intc_base =3D ioremap(JZ4740_INTC_BASE_ADDR, 0x14);
+> +	intc->base =3D ioremap(JZ4740_INTC_BASE_ADDR, 0x14);
+> =20
+>  	/* Mask all irqs */
+> -	writel(0xffffffff, jz_intc_base + JZ_REG_INTC_SET_MASK);
+> +	writel(0xffffffff, intc->base + JZ_REG_INTC_SET_MASK);
+> =20
+> -	gc =3D irq_alloc_generic_chip("INTC", 1, JZ4740_IRQ_BASE, jz_intc_base,
+> +	gc =3D irq_alloc_generic_chip("INTC", 1, JZ4740_IRQ_BASE, intc->base,
+>  		handle_level_irq);
+> =20
+>  	gc->wake_enabled =3D IRQ_MSK(32);
+> @@ -116,7 +128,12 @@ static int __init jz4740_intc_of_init(struct device_=
+node *node,
+>  	if (!domain)
+>  		pr_warn("unable to register IRQ domain\n");
+> =20
+> +	err =3D irq_set_handler_data(parent_irq, intc);
+> +	if (err)
+> +		goto out;
+> +
+>  	setup_irq(parent_irq, &jz4740_cascade_action);
+> -	return 0;
+> +out:
+> +	return err;
+>  }
+>  IRQCHIP_DECLARE(jz4740_intc, "ingenic,jz4740-intc", jz4740_intc_of_init);
+> --=20
+> 2.3.5
+>=20
+>=20
+
+--MGYHOYXEY6WxJCY8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJVPrnLAAoJEGwLaZPeOHZ6MlcQAJANpECqN9Cbe5+GBDrRUwKv
+ZZz51mfqA98hFagJMXWgRqieBT8jaxUjkgV1gquF1omtiDkJ97EqTBnxGGUBs97t
+1Yr/977Aid9py58JEUKHGzQYTarDr8axNgIPtW+uaCDdEr+2V6TMrkihxPALwiuk
+aU99P+N7Ba/lc0NbEZntd7o2fvYJxN0aWXIE21WRL6TC0ualOX/5PoDDi6eY8c4d
++2v04wTVJe6dWucxxDmD58YQT3qblhCRtieVxE6Pah9EbbMqnCB5XSE+NvLoFs/F
+hfQoQ1it+KhYKaN8+JbthDX7wFw4hLrY4XttQx3HFiJFvUy61FSUd1Z1Vwavr6d9
+FbJUAAQsP0a3RJjoXnm0cJsJB07C1wVDZUrVoccxCMGV84w1fwO2GriMI12WqV4b
+4Z1U4dLpjgeTApRthLYTS5J6nvSNPDeCDW5Jo92aDm5UcdtdBQr51DaJKnyeX0FA
+F33auSW6Gmy3KtCGE5ksVxbQ+tqb6xAqZ0POb41TX0zu/Lfi7n/vt5v9C/7/GoZC
+f3Y5eKGfv9HaOOuJLRPbA4BRNt1dbrmjFvbk4TsknfzlQk8r8NJKs3nAo0LJtjlO
+SlFQnFEEikXl/PYOyOuJUfeHfsX/hcBIfrBhogUBrHKT4877OFkCUQWbyLfq7foj
+s7Lu26NLyC8uzxM+9IMX
+=8qsw
+-----END PGP SIGNATURE-----
+
+--MGYHOYXEY6WxJCY8--

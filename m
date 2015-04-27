@@ -1,11 +1,11 @@
-Received: from mail.windriver.com ([147.11.1.11]:57092 "EHLO
+Received: from mail.windriver.com ([147.11.1.11]:57094 "EHLO
         mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026180AbbD0WsjAO4Vd (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Apr 2015 00:48:39 +0200
+        with ESMTP id S27026181AbbD0Wskf7tCh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Apr 2015 00:48:40 +0200
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH 08/11] mips/c-r4k: remove legacy __cpuinit section that crept in
-Date: Mon, 27 Apr 2015 18:47:57 -0400
-Message-ID: <1430174880-27958-9-git-send-email-paul.gortmaker@windriver.com>
+Subject: [PATCH 10/11] mips/mm/tlbex: remove new instance of __cpuinit that crept back in
+Date: Mon, 27 Apr 2015 18:47:59 -0400
+Message-ID: <1430174880-27958-11-git-send-email-paul.gortmaker@windriver.com>
 In-Reply-To: <1430174880-27958-1-git-send-email-paul.gortmaker@windriver.com>
 References: <1430174880-27958-1-git-send-email-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
@@ -21,34 +21,34 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20150427224757.tKoD_nCNtcAhCa_ohYMEpLRpBf4zypBxbayU1gper6M@z>
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20150427224759.vj1dzUT6777Q-NbPVqXh3840LkP7m1HFbHyfleuNTLs@z>
 
 We removed __cpuinit support (leaving no-op stubs) quite some time ago.
-However a new instance was added in commit 4caa906ee949b7002cc1558bbe3744
-("MIPS: mm: c-r4k: Build EVA {d,i}cache flushing functions")
+However a new instance was added in commit c5b367835cfc7a8ef53b9670a409ff
+("MIPS: Add support for XPA.")
 
 Since we want to clobber the stubs soon, get this removed now.
 
-Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Cc: Steven J. Hill <Steven.Hill@imgtec.com>
 Cc: linux-mips@linux-mips.org
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 ---
- arch/mips/mm/c-r4k.c | 2 +-
+ arch/mips/mm/tlbex.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index 0dbb65a51ce5..c93070f7c253 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -295,7 +295,7 @@ static void r4k_blast_icache_page_setup(void)
+diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
+index 97c87027c17f..d7db82c3fbce 100644
+--- a/arch/mips/mm/tlbex.c
++++ b/arch/mips/mm/tlbex.c
+@@ -35,7 +35,7 @@
+ #include <asm/uasm.h>
+ #include <asm/setup.h>
  
- static void (*r4k_blast_icache_user_page)(unsigned long addr);
+-static int __cpuinitdata mips_xpa_disabled;
++static int mips_xpa_disabled;
  
--static void __cpuinit r4k_blast_icache_user_page_setup(void)
-+static void r4k_blast_icache_user_page_setup(void)
+ static int __init xpa_disable(char *s)
  {
- 	unsigned long ic_lsize = cpu_icache_line_size();
- 
 -- 
 2.2.1

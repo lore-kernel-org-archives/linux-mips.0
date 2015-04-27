@@ -1,16 +1,15 @@
-Received: from mail1.windriver.com ([147.11.146.13]:39569 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026179AbbD0WseIO0GH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Apr 2015 00:48:34 +0200
+Received: from mail.windriver.com ([147.11.1.11]:57092 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27026180AbbD0WsjAO4Vd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Apr 2015 00:48:39 +0200
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH 07/11] mips/bcm77xx: remove legacy __cpuinit sections that crept in
-Date: Mon, 27 Apr 2015 18:47:56 -0400
-Message-ID: <1430174880-27958-8-git-send-email-paul.gortmaker@windriver.com>
+Subject: [PATCH 08/11] mips/c-r4k: remove legacy __cpuinit section that crept in
+Date: Mon, 27 Apr 2015 18:47:57 -0400
+Message-ID: <1430174880-27958-9-git-send-email-paul.gortmaker@windriver.com>
 In-Reply-To: <1430174880-27958-1-git-send-email-paul.gortmaker@windriver.com>
 References: <1430174880-27958-1-git-send-email-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Return-Path: <Paul.Gortmaker@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,62 +21,34 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>, linux-mips@linux-mips.org
-Message-ID: <20150427224756.96in6fbAr8czxWF5WdXGWDEk9J6CmCOV9rZmhk6vNPs@z>
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20150427224757.tKoD_nCNtcAhCa_ohYMEpLRpBf4zypBxbayU1gper6M@z>
 
 We removed __cpuinit support (leaving no-op stubs) quite some time ago.
-However a few more crept in as of commit 6ee1d93455384cef8a0426effe85da2
-("MIPS: BCM47XX: Detect more then 128 MiB of RAM (HIGHMEM)")
+However a new instance was added in commit 4caa906ee949b7002cc1558bbe3744
+("MIPS: mm: c-r4k: Build EVA {d,i}cache flushing functions")
 
 Since we want to clobber the stubs soon, get this removed now.
 
-Cc: Rafał Miłecki <zajec5@gmail.com>
+Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 Cc: linux-mips@linux-mips.org
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 ---
- arch/mips/bcm47xx/prom.c           | 2 +-
- arch/mips/include/asm/pgtable-32.h | 2 +-
- arch/mips/mm/tlb-r4k.c             | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/mm/c-r4k.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/bcm47xx/prom.c b/arch/mips/bcm47xx/prom.c
-index ab698bad6d62..135a5407f015 100644
---- a/arch/mips/bcm47xx/prom.c
-+++ b/arch/mips/bcm47xx/prom.c
-@@ -126,7 +126,7 @@ void __init prom_free_prom_memory(void)
- /* Stripped version of tlb_init, with the call to build_tlb_refill_handler
-  * dropped. Calling it at this stage causes a hang.
-  */
--void __cpuinit early_tlb_init(void)
-+void early_tlb_init(void)
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index 0dbb65a51ce5..c93070f7c253 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -295,7 +295,7 @@ static void r4k_blast_icache_page_setup(void)
+ 
+ static void (*r4k_blast_icache_user_page)(unsigned long addr);
+ 
+-static void __cpuinit r4k_blast_icache_user_page_setup(void)
++static void r4k_blast_icache_user_page_setup(void)
  {
- 	write_c0_pagemask(PM_DEFAULT_MASK);
- 	write_c0_wired(0);
-diff --git a/arch/mips/include/asm/pgtable-32.h b/arch/mips/include/asm/pgtable-32.h
-index 7d56686c0e62..832e2167d00f 100644
---- a/arch/mips/include/asm/pgtable-32.h
-+++ b/arch/mips/include/asm/pgtable-32.h
-@@ -18,7 +18,7 @@
+ 	unsigned long ic_lsize = cpu_icache_line_size();
  
- #include <asm-generic/pgtable-nopmd.h>
- 
--extern int temp_tlb_entry __cpuinitdata;
-+extern int temp_tlb_entry;
- 
- /*
-  * - add_temporary_entry() add a temporary TLB entry. We use TLB entries
-diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
-index a27a088e6f9f..440cbf3d6ab9 100644
---- a/arch/mips/mm/tlb-r4k.c
-+++ b/arch/mips/mm/tlb-r4k.c
-@@ -423,7 +423,7 @@ int __init has_transparent_hugepage(void)
-  * lifetime of the system
-  */
- 
--int temp_tlb_entry __cpuinitdata;
-+int temp_tlb_entry;
- 
- __init int add_temporary_entry(unsigned long entrylo0, unsigned long entrylo1,
- 			       unsigned long entryhi, unsigned long pagemask)
 -- 
 2.2.1

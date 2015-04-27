@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53053 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:4999 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026170AbbD0OHl0gunk (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Apr 2015 16:07:41 +0200
+        with ESMTP id S27026171AbbD0OHo0ggf2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Apr 2015 16:07:44 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 2/4] MIPS: tlbex: Fix broken offsets on r2 without XPA
-Date: Mon, 27 Apr 2015 15:07:17 +0100
-Message-ID: <1430143639-22580-3-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 3/4] MIPS: tlbex: Avoid unnecessary _PAGE_PRESENT shifts
+Date: Mon, 27 Apr 2015 15:07:18 +0100
+Message-ID: <1430143639-22580-4-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1430143639-22580-1-git-send-email-james.hogan@imgtec.com>
 References: <1430143639-22580-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -22,19 +22,15 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
 Cc: James Hogan <james.hogan@imgtec.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>
-Message-ID: <20150427140717.9LrLltxjpw-nx2A2rQtYZlI0EJoy4NAsbtuz7xvr_1o@z>
+Message-ID: <20150427140718.WQG0gbrRxsAL_kI-BCcD6NkReUqV1iDaW1eYNiEFmnA@z>
 
-Commit c5b367835cfc ("MIPS: Add support for XPA.") changed
-build_pte_present() and build_pte_writable() to assume a constant offset
-of _PAGE_READ and _PAGE_WRITE relative to _PAGE_PRESENT, however this is
-no longer true for some MIPS32R2 builds since commit be0c37c985ed
-("MIPS: Rearrange PTE bits into fixed positions.") which moved the
-_PAGE_READ PTE bit away from the _PAGE_PRESENT bit, with the _PAGE_WRITE
-bit falling into its place.
+Commit c5b367835cfc ("MIPS: Add support for XPA.") added generation of a
+shift by _PAGE_PRESENT_SHIFT in build_pte_present() and
+build_pte_writable(), however except for the XPA case this is always
+zero making it unnecessary.
 
-Make use of the _PAGE_READ and _PAGE_WRITE definitions to calculate the
-correct mask to apply instead of hard coding 3 (for _PAGE_PRESENT |
-_PAGE_READ) or 5 (for _PAGE_PRESENT | _PAGE_WRITE).
+Make the shift conditional upon _PAGE_PRESENT_SHIFT being non-zero to
+save an instruction in those cases.
 
 Fixes: c5b367835cfc ("MIPS: Add support for XPA.")
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
@@ -42,49 +38,62 @@ Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: Steven J. Hill <Steven.Hill@imgtec.com>
 Cc: linux-mips@linux-mips.org
 ---
-I hit a hang during boot on v4.1-rc1 KVM guest kernels, where its
-continuously trying to service a TLB miss for a page which is apparently
-_PAGE_READ but not _PAGE_WRITE, but since the TLBL handler
-(build_pte_present()) ends up incorrectly testing _PAGE_WRITE, it just
-keeps calling into C code instead of making the PTE valid and updating
-the TLB entry.
-
-The build_pte_present() part of this patch fixes it, but its still not
-entirely clear to me why I cannot reproduce the problem in other MIPS R2
-environments without RIXI.
----
- arch/mips/mm/tlbex.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ arch/mips/mm/tlbex.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
 diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-index 97c87027c17f..d998fea7fc93 100644
+index d998fea7fc93..eabd6363934e 100644
 --- a/arch/mips/mm/tlbex.c
 +++ b/arch/mips/mm/tlbex.c
-@@ -1623,8 +1623,10 @@ build_pte_present(u32 **p, struct uasm_reloc **r,
+@@ -1608,22 +1608,29 @@ build_pte_present(u32 **p, struct uasm_reloc **r,
+ 		  int pte, int ptr, int scratch, enum label_id lid)
+ {
+ 	int t = scratch >= 0 ? scratch : pte;
++	int cur = pte;
+ 
+ 	if (cpu_has_rixi) {
+ 		if (use_bbit_insns()) {
+ 			uasm_il_bbit0(p, r, pte, ilog2(_PAGE_PRESENT), lid);
+ 			uasm_i_nop(p);
+ 		} else {
+-			uasm_i_srl(p, t, pte, _PAGE_PRESENT_SHIFT);
+-			uasm_i_andi(p, t, t, 1);
++			if (_PAGE_PRESENT_SHIFT) {
++				uasm_i_srl(p, t, cur, _PAGE_PRESENT_SHIFT);
++				cur = t;
++			}
++			uasm_i_andi(p, t, cur, 1);
+ 			uasm_il_beqz(p, r, t, lid);
+ 			if (pte == t)
+ 				/* You lose the SMP race :-(*/
+ 				iPTE_LW(p, pte, ptr);
  		}
  	} else {
- 		uasm_i_srl(p, t, pte, _PAGE_PRESENT_SHIFT);
--		uasm_i_andi(p, t, t, 3);
--		uasm_i_xori(p, t, t, 3);
-+		uasm_i_andi(p, t, t,
-+			(_PAGE_PRESENT | _PAGE_READ) >> _PAGE_PRESENT_SHIFT);
-+		uasm_i_xori(p, t, t,
-+			(_PAGE_PRESENT | _PAGE_READ) >> _PAGE_PRESENT_SHIFT);
- 		uasm_il_bnez(p, r, t, lid);
- 		if (pte == t)
- 			/* You lose the SMP race :-(*/
-@@ -1654,8 +1656,10 @@ build_pte_writable(u32 **p, struct uasm_reloc **r,
+-		uasm_i_srl(p, t, pte, _PAGE_PRESENT_SHIFT);
+-		uasm_i_andi(p, t, t,
++		if (_PAGE_PRESENT_SHIFT) {
++			uasm_i_srl(p, t, cur, _PAGE_PRESENT_SHIFT);
++			cur = t;
++		}
++		uasm_i_andi(p, t, cur,
+ 			(_PAGE_PRESENT | _PAGE_READ) >> _PAGE_PRESENT_SHIFT);
+ 		uasm_i_xori(p, t, t,
+ 			(_PAGE_PRESENT | _PAGE_READ) >> _PAGE_PRESENT_SHIFT);
+@@ -1654,9 +1661,13 @@ build_pte_writable(u32 **p, struct uasm_reloc **r,
+ 		   enum label_id lid)
+ {
  	int t = scratch >= 0 ? scratch : pte;
++	int cur = pte;
  
- 	uasm_i_srl(p, t, pte, _PAGE_PRESENT_SHIFT);
--	uasm_i_andi(p, t, t, 5);
--	uasm_i_xori(p, t, t, 5);
-+	uasm_i_andi(p, t, t,
-+		    (_PAGE_PRESENT | _PAGE_WRITE) >> _PAGE_PRESENT_SHIFT);
-+	uasm_i_xori(p, t, t,
-+		    (_PAGE_PRESENT | _PAGE_WRITE) >> _PAGE_PRESENT_SHIFT);
- 	uasm_il_bnez(p, r, t, lid);
- 	if (pte == t)
- 		/* You lose the SMP race :-(*/
+-	uasm_i_srl(p, t, pte, _PAGE_PRESENT_SHIFT);
+-	uasm_i_andi(p, t, t,
++	if (_PAGE_PRESENT_SHIFT) {
++		uasm_i_srl(p, t, cur, _PAGE_PRESENT_SHIFT);
++		cur = t;
++	}
++	uasm_i_andi(p, t, cur,
+ 		    (_PAGE_PRESENT | _PAGE_WRITE) >> _PAGE_PRESENT_SHIFT);
+ 	uasm_i_xori(p, t, t,
+ 		    (_PAGE_PRESENT | _PAGE_WRITE) >> _PAGE_PRESENT_SHIFT);
 -- 
 2.0.5

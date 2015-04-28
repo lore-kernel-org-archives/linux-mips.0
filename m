@@ -1,15 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:64134 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:42749 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007495AbbD1TxnDrSX9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Apr 2015 21:53:43 +0200
-Subject: [PATCH] MIPS64: R6: R2 emulation bugfix
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Tue, 28 Apr 2015 12:53:35 -0700
-Message-ID: <20150428195335.11229.4516.stgit@ubuntu-yegoshin>
+        with ESMTP id S27026226AbbD1VhfrLVOU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Apr 2015 23:37:35 +0200
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Subject: [PATCH] MIPS: Fix up obsolete cpu_set usage
+Date: Tue, 28 Apr 2015 18:34:23 -0300
+Message-ID: <1430256863-811-1-git-send-email-ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Ezequiel.Garcia@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,208 +18,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, macro@linux-mips.org, markos.chandras@imgtec.com, ralf@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20150428195335.mcuKRaF9hyjrRN52MM6CgblNaxoXtRjzSUxllgXyKxU@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: niklass@axis.com, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Message-ID: <20150428213423.TF3fLHV3Fn-yZeRIle27nKm89N7oMZqrRZBH9EcYynE@z>
 
-Error recovery pointers for fixups was improperly set as ".word"
-which is unsuitable for MIPS64.
+cpu_set was removed (along with a bunch of cpumask helpers) by
+commit 2f0f267ea072 ("cpumask: remove deprecated functions.").
 
-Replaced by __stringify(PTR)
+Fix this by replacing cpu_set with cpumask_set_cpu. Without this
+fix the following error is triggered when CONFIG_MIPS_MT_FPAFF=y.
 
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+  arch/mips/kernel/smp-cps.c: In function 'cps_smp_setup':
+  arch/mips/kernel/smp-cps.c:95:3: error: implicit declaration of function 'cpu_set' [-Werror=implicit-function-declaration]
+
+Fixes: 90db024f140d ("MIPS: smp-cps: cpu_set FPU mask if FPU present")
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 ---
- arch/mips/kernel/mips-r2-to-r6-emul.c |  104 +++++++++++++++++----------------
- 1 file changed, 52 insertions(+), 52 deletions(-)
+This is a fix for v4.1.
 
-diff --git a/arch/mips/kernel/mips-r2-to-r6-emul.c b/arch/mips/kernel/mips-r2-to-r6-emul.c
-index f2977f00911b..c6f079f8f3dc 100644
---- a/arch/mips/kernel/mips-r2-to-r6-emul.c
-+++ b/arch/mips/kernel/mips-r2-to-r6-emul.c
-@@ -1250,10 +1250,10 @@ fpu_emul:
- 			"	j	10b\n"
- 			"	.previous\n"
- 			"	.section	__ex_table,\"a\"\n"
--			"	.word	1b,8b\n"
--			"	.word	2b,8b\n"
--			"	.word	3b,8b\n"
--			"	.word	4b,8b\n"
-+			__stringify(PTR) " 1b,8b\n"
-+			__stringify(PTR) " 2b,8b\n"
-+			__stringify(PTR) " 3b,8b\n"
-+			__stringify(PTR) " 4b,8b\n"
- 			"	.previous\n"
- 			"	.set	pop\n"
- 			: "+&r"(rt), "=&r"(rs),
-@@ -1325,10 +1325,10 @@ fpu_emul:
- 			"	j	10b\n"
- 			"       .previous\n"
- 			"	.section	__ex_table,\"a\"\n"
--			"	.word	1b,8b\n"
--			"	.word	2b,8b\n"
--			"	.word	3b,8b\n"
--			"	.word	4b,8b\n"
-+			__stringify(PTR) " 1b,8b\n"
-+			__stringify(PTR) " 2b,8b\n"
-+			__stringify(PTR) " 3b,8b\n"
-+			__stringify(PTR) " 4b,8b\n"
- 			"	.previous\n"
- 			"	.set	pop\n"
- 			: "+&r"(rt), "=&r"(rs),
-@@ -1396,10 +1396,10 @@ fpu_emul:
- 			"	j	9b\n"
- 			"	.previous\n"
- 			"	.section        __ex_table,\"a\"\n"
--			"	.word	1b,8b\n"
--			"	.word	2b,8b\n"
--			"	.word	3b,8b\n"
--			"	.word	4b,8b\n"
-+			__stringify(PTR) " 1b,8b\n"
-+			__stringify(PTR) " 2b,8b\n"
-+			__stringify(PTR) " 3b,8b\n"
-+			__stringify(PTR) " 4b,8b\n"
- 			"	.previous\n"
- 			"	.set	pop\n"
- 			: "+&r"(rt), "=&r"(rs),
-@@ -1466,10 +1466,10 @@ fpu_emul:
- 			"	j	9b\n"
- 			"	.previous\n"
- 			"	.section        __ex_table,\"a\"\n"
--			"	.word	1b,8b\n"
--			"	.word	2b,8b\n"
--			"	.word	3b,8b\n"
--			"	.word	4b,8b\n"
-+			__stringify(PTR) " 1b,8b\n"
-+			__stringify(PTR) " 2b,8b\n"
-+			__stringify(PTR) " 3b,8b\n"
-+			__stringify(PTR) " 4b,8b\n"
- 			"	.previous\n"
- 			"	.set	pop\n"
- 			: "+&r"(rt), "=&r"(rs),
-@@ -1581,14 +1581,14 @@ fpu_emul:
- 			"	j	9b\n"
- 			"	.previous\n"
- 			"	.section        __ex_table,\"a\"\n"
--			"	.word	1b,8b\n"
--			"	.word	2b,8b\n"
--			"	.word	3b,8b\n"
--			"	.word	4b,8b\n"
--			"	.word	5b,8b\n"
--			"	.word	6b,8b\n"
--			"	.word	7b,8b\n"
--			"	.word	0b,8b\n"
-+			__stringify(PTR) " 1b,8b\n"
-+			__stringify(PTR) " 2b,8b\n"
-+			__stringify(PTR) " 3b,8b\n"
-+			__stringify(PTR) " 4b,8b\n"
-+			__stringify(PTR) " 5b,8b\n"
-+			__stringify(PTR) " 6b,8b\n"
-+			__stringify(PTR) " 7b,8b\n"
-+			__stringify(PTR) " 0b,8b\n"
- 			"	.previous\n"
- 			"	.set	pop\n"
- 			: "+&r"(rt), "=&r"(rs),
-@@ -1700,14 +1700,14 @@ fpu_emul:
- 			"	j      9b\n"
- 			"	.previous\n"
- 			"	.section        __ex_table,\"a\"\n"
--			"	.word  1b,8b\n"
--			"	.word  2b,8b\n"
--			"	.word  3b,8b\n"
--			"	.word  4b,8b\n"
--			"	.word  5b,8b\n"
--			"	.word  6b,8b\n"
--			"	.word  7b,8b\n"
--			"	.word  0b,8b\n"
-+			__stringify(PTR) " 1b,8b\n"
-+			__stringify(PTR) " 2b,8b\n"
-+			__stringify(PTR) " 3b,8b\n"
-+			__stringify(PTR) " 4b,8b\n"
-+			__stringify(PTR) " 5b,8b\n"
-+			__stringify(PTR) " 6b,8b\n"
-+			__stringify(PTR) " 7b,8b\n"
-+			__stringify(PTR) " 0b,8b\n"
- 			"	.previous\n"
- 			"	.set    pop\n"
- 			: "+&r"(rt), "=&r"(rs),
-@@ -1819,14 +1819,14 @@ fpu_emul:
- 			"	j	9b\n"
- 			"	.previous\n"
- 			"	.section        __ex_table,\"a\"\n"
--			"	.word	1b,8b\n"
--			"	.word	2b,8b\n"
--			"	.word	3b,8b\n"
--			"	.word	4b,8b\n"
--			"	.word	5b,8b\n"
--			"	.word	6b,8b\n"
--			"	.word	7b,8b\n"
--			"	.word	0b,8b\n"
-+			__stringify(PTR) " 1b,8b\n"
-+			__stringify(PTR) " 2b,8b\n"
-+			__stringify(PTR) " 3b,8b\n"
-+			__stringify(PTR) " 4b,8b\n"
-+			__stringify(PTR) " 5b,8b\n"
-+			__stringify(PTR) " 6b,8b\n"
-+			__stringify(PTR) " 7b,8b\n"
-+			__stringify(PTR) " 0b,8b\n"
- 			"	.previous\n"
- 			"	.set	pop\n"
- 			: "+&r"(rt), "=&r"(rs),
-@@ -1937,14 +1937,14 @@ fpu_emul:
- 			"       j	9b\n"
- 			"       .previous\n"
- 			"       .section        __ex_table,\"a\"\n"
--			"       .word	1b,8b\n"
--			"       .word	2b,8b\n"
--			"       .word	3b,8b\n"
--			"       .word	4b,8b\n"
--			"       .word	5b,8b\n"
--			"       .word	6b,8b\n"
--			"       .word	7b,8b\n"
--			"       .word	0b,8b\n"
-+			__stringify(PTR) " 1b,8b\n"
-+			__stringify(PTR) " 2b,8b\n"
-+			__stringify(PTR) " 3b,8b\n"
-+			__stringify(PTR) " 4b,8b\n"
-+			__stringify(PTR) " 5b,8b\n"
-+			__stringify(PTR) " 6b,8b\n"
-+			__stringify(PTR) " 7b,8b\n"
-+			__stringify(PTR) " 0b,8b\n"
- 			"       .previous\n"
- 			"       .set	pop\n"
- 			: "+&r"(rt), "=&r"(rs),
-@@ -1999,7 +1999,7 @@ fpu_emul:
- 			"j	2b\n"
- 			".previous\n"
- 			".section        __ex_table,\"a\"\n"
--			".word  1b, 3b\n"
-+			__stringify(PTR) " 1b,3b\n"
- 			".previous\n"
- 			: "=&r"(res), "+&r"(err)
- 			: "r"(vaddr), "i"(SIGSEGV)
-@@ -2057,7 +2057,7 @@ fpu_emul:
- 			"j	2b\n"
- 			".previous\n"
- 			".section        __ex_table,\"a\"\n"
--			".word	1b, 3b\n"
-+			__stringify(PTR) " 1b,3b\n"
- 			".previous\n"
- 			: "+&r"(res), "+&r"(err)
- 			: "r"(vaddr), "i"(SIGSEGV));
-@@ -2118,7 +2118,7 @@ fpu_emul:
- 			"j	2b\n"
- 			".previous\n"
- 			".section        __ex_table,\"a\"\n"
--			".word  1b, 3b\n"
-+			__stringify(PTR) " 1b,3b\n"
- 			".previous\n"
- 			: "=&r"(res), "+&r"(err)
- 			: "r"(vaddr), "i"(SIGSEGV)
-@@ -2181,7 +2181,7 @@ fpu_emul:
- 			"j	2b\n"
- 			".previous\n"
- 			".section        __ex_table,\"a\"\n"
--			".word	1b, 3b\n"
-+			__stringify(PTR) " 1b,3b\n"
- 			".previous\n"
- 			: "+&r"(res), "+&r"(err)
- 			: "r"(vaddr), "i"(SIGSEGV));
+ arch/mips/kernel/smp-cps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+index 7e011f9..4251d39 100644
+--- a/arch/mips/kernel/smp-cps.c
++++ b/arch/mips/kernel/smp-cps.c
+@@ -92,7 +92,7 @@ static void __init cps_smp_setup(void)
+ #ifdef CONFIG_MIPS_MT_FPAFF
+ 	/* If we have an FPU, enroll ourselves in the FPU-full mask */
+ 	if (cpu_has_fpu)
+-		cpu_set(0, mt_fpu_cpumask);
++		cpumask_set_cpu(0, &mt_fpu_cpumask);
+ #endif /* CONFIG_MIPS_MT_FPAFF */
+ }
+ 
+-- 
+2.3.3

@@ -1,13 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:62818 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8472 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011885AbbD1WLvzqHpp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 29 Apr 2015 00:11:51 +0200
+        with ESMTP id S27011923AbbD1WoELADnD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 29 Apr 2015 00:44:04 +0200
+Message-ID: <55400C75.9070609@imgtec.com>
+Date: Tue, 28 Apr 2015 19:40:53 -0300
 From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Subject: [PATCH] MIPS: pistachio: Support 8250-based early printk
-Date: Tue, 28 Apr 2015 19:08:35 -0300
-Message-ID: <1430258915-28943-1-git-send-email-ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH V3 2/2] pinctrl: Add Pistachio SoC pin control driver
+References: <1428435862-14354-1-git-send-email-abrestic@chromium.org> <1428435862-14354-3-git-send-email-abrestic@chromium.org>
+In-Reply-To: <1428435862-14354-3-git-send-email-abrestic@chromium.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 Return-Path: <Ezequiel.Garcia@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,30 +21,86 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <james.hartley@imgtec.com>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Message-ID: <20150428220835.SWsB2FrvlxOPLFzImefmAgi8IkZyq9B913wqa87A4t8@z>
+To: Andrew Bresticker <abrestic@chromium.org>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, James Hartley <james.hartley@imgtec.com>, James Hogan <james.hogan@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, Govindraj Raja <govindraj.raja@imgtec.com>, Kevin Cernekee <cernekee@chromium.org>, Paul Bolle <pebolle@tiscali.nl>
+Message-ID: <20150428224053.UyYbk_spaW2k5Sel1KUhna-HmJ1Jm9uR7kEX59ehFlo@z>
 
-Pistachio SoCs are capable of early printk with generic 8250 support,
-so let's select the options to enable it.
+Just a silly comment.
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
----
- arch/mips/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+On 04/07/2015 04:44 PM, Andrew Bresticker wrote:
+[..]
+> +
+> +static const struct pinmux_ops pistachio_pinmux_ops = {
+> +	.get_functions_count = pistachio_pinmux_get_functions_count,
+> +	.get_function_name = pistachio_pinmux_get_function_name,
+> +	.get_function_groups = pistachio_pinmux_get_function_groups,
+> +	.set_mux = pistachio_pinmux_enable,
+> +};
+> +
+> +static int pistachio_pinconf_get(struct pinctrl_dev *pctldev, unsigned pin,
+> +				 unsigned long *config)
+> +{
+> +	struct pistachio_pinctrl *pctl = pinctrl_dev_get_drvdata(pctldev);
+> +	enum pin_config_param param = pinconf_to_config_param(*config);
+> +	u32 val, arg;
+> +
+> +	switch (param) {
+> +	case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
+> +		val = pctl_readl(pctl, PADS_SCHMITT_EN_REG(pin));
+> +		arg = !!(val & PADS_SCHMITT_EN_BIT(pin));
+> +		break;
+> +	case PIN_CONFIG_BIAS_HIGH_IMPEDANCE:
+> +		val = pctl_readl(pctl, PADS_PU_PD_REG(pin)) >>
+> +			PADS_PU_PD_SHIFT(pin);
+> +		arg = (val & PADS_PU_PD_MASK) == PADS_PU_PD_HIGHZ;
+> +		break;
+> +	case PIN_CONFIG_BIAS_PULL_UP:
+> +		val = pctl_readl(pctl, PADS_PU_PD_REG(pin)) >>
+> +			PADS_PU_PD_SHIFT(pin);
+> +		arg = (val & PADS_PU_PD_MASK) == PADS_PU_PD_UP;
+> +		break;
+> +	case PIN_CONFIG_BIAS_PULL_DOWN:
+> +		val = pctl_readl(pctl, PADS_PU_PD_REG(pin)) >>
+> +			PADS_PU_PD_SHIFT(pin);
+> +		arg = (val & PADS_PU_PD_MASK) == PADS_PU_PD_DOWN;
+> +		break;
+> +	case PIN_CONFIG_BIAS_BUS_HOLD:
+> +		val = pctl_readl(pctl, PADS_PU_PD_REG(pin)) >>
+> +			PADS_PU_PD_SHIFT(pin);
+> +		arg = (val & PADS_PU_PD_MASK) == PADS_PU_PD_BUS;
+> +		break;
+> +	case PIN_CONFIG_SLEW_RATE:
+> +		val = pctl_readl(pctl, PADS_SLEW_RATE_REG(pin));
+> +		arg = !!(val & PADS_SLEW_RATE_BIT(pin));
+> +		break;
+> +	case PIN_CONFIG_DRIVE_STRENGTH:
+> +		val = pctl_readl(pctl, PADS_DRIVE_STRENGTH_REG(pin)) >>
+> +			PADS_DRIVE_STRENGTH_SHIFT(pin);
+> +		switch (val & PADS_DRIVE_STRENGTH_MASK) {
+> +		case PADS_DRIVE_STRENGTH_2MA:
+> +			arg = 2;
+> +			break;
+> +		case PADS_DRIVE_STRENGTH_4MA:
+> +			arg = 4;
+> +			break;
+> +		case PADS_DRIVE_STRENGTH_8MA:
+> +			arg = 8;
+> +			break;
+> +		case PADS_DRIVE_STRENGTH_12MA:
+> +		default:
+> +			arg = 12;
+> +			break;
+> +		}
+> +		break;
+> +	default:
+> +		dev_err(pctl->dev, "Property %u not supported\n", param);
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index f501665..29d558d 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -386,6 +386,8 @@ config MACH_PISTACHIO
- 	select SYS_SUPPORTS_MIPS_CPS
- 	select SYS_SUPPORTS_MULTITHREADING
- 	select SYS_SUPPORTS_ZBOOT
-+	select SYS_HAS_EARLY_PRINTK
-+	select USE_GENERIC_EARLY_PRINTK_8250
- 	select USE_OF
- 	help
- 	  This enables support for the IMG Pistachio SoC platform.
+Probably just a nitpick, but maybe this should be dev_dbg. Otherwise,
+we'll get a ton of these errors when cat'ing pinconf-pins in debugfs.
+
+> +		return -EINVAL;
+
+And this should be -ENOTSUPP. I guess it doesn't matter much.
+
 -- 
-2.3.3
+Ezequiel

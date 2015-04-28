@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:42749 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62818 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026226AbbD1VhfrLVOU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Apr 2015 23:37:35 +0200
+        with ESMTP id S27011885AbbD1WLvzqHpp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 29 Apr 2015 00:11:51 +0200
 From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Subject: [PATCH] MIPS: Fix up obsolete cpu_set usage
-Date: Tue, 28 Apr 2015 18:34:23 -0300
-Message-ID: <1430256863-811-1-git-send-email-ezequiel.garcia@imgtec.com>
+Subject: [PATCH] MIPS: pistachio: Support 8250-based early printk
+Date: Tue, 28 Apr 2015 19:08:35 -0300
+Message-ID: <1430258915-28943-1-git-send-email-ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Ezequiel.Garcia@imgtec.com>
@@ -18,39 +18,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: niklass@axis.com, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Message-ID: <20150428213423.TF3fLHV3Fn-yZeRIle27nKm89N7oMZqrRZBH9EcYynE@z>
+To: linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <james.hartley@imgtec.com>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Message-ID: <20150428220835.SWsB2FrvlxOPLFzImefmAgi8IkZyq9B913wqa87A4t8@z>
 
-cpu_set was removed (along with a bunch of cpumask helpers) by
-commit 2f0f267ea072 ("cpumask: remove deprecated functions.").
+Pistachio SoCs are capable of early printk with generic 8250 support,
+so let's select the options to enable it.
 
-Fix this by replacing cpu_set with cpumask_set_cpu. Without this
-fix the following error is triggered when CONFIG_MIPS_MT_FPAFF=y.
-
-  arch/mips/kernel/smp-cps.c: In function 'cps_smp_setup':
-  arch/mips/kernel/smp-cps.c:95:3: error: implicit declaration of function 'cpu_set' [-Werror=implicit-function-declaration]
-
-Fixes: 90db024f140d ("MIPS: smp-cps: cpu_set FPU mask if FPU present")
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 ---
-This is a fix for v4.1.
+ arch/mips/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
- arch/mips/kernel/smp-cps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index 7e011f9..4251d39 100644
---- a/arch/mips/kernel/smp-cps.c
-+++ b/arch/mips/kernel/smp-cps.c
-@@ -92,7 +92,7 @@ static void __init cps_smp_setup(void)
- #ifdef CONFIG_MIPS_MT_FPAFF
- 	/* If we have an FPU, enroll ourselves in the FPU-full mask */
- 	if (cpu_has_fpu)
--		cpu_set(0, mt_fpu_cpumask);
-+		cpumask_set_cpu(0, &mt_fpu_cpumask);
- #endif /* CONFIG_MIPS_MT_FPAFF */
- }
- 
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index f501665..29d558d 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -386,6 +386,8 @@ config MACH_PISTACHIO
+ 	select SYS_SUPPORTS_MIPS_CPS
+ 	select SYS_SUPPORTS_MULTITHREADING
+ 	select SYS_SUPPORTS_ZBOOT
++	select SYS_HAS_EARLY_PRINTK
++	select USE_GENERIC_EARLY_PRINTK_8250
+ 	select USE_OF
+ 	help
+ 	  This enables support for the IMG Pistachio SoC platform.
 -- 
 2.3.3

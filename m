@@ -1,16 +1,16 @@
-Received: from ozlabs.org ([103.22.144.67]:53688 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27011729AbbD1Gpi1DQN4 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 28 Apr 2015 08:45:38 +0200
-From: Rusty Russell <rusty@rustcorp.com.au>
-Subject: Re: Build regressions/improvements in v4.1-rc1
-In-Reply-To: <CAMuHMdWoUPZ92GX9fe8eq87buLQOT9GMb6Ru3_bQJpkZTFph0g@mail.gmail.com>
-References: <1430128286-8952-1-git-send-email-geert@linux-m68k.org> <CAMuHMdWoUPZ92GX9fe8eq87buLQOT9GMb6Ru3_bQJpkZTFph0g@mail.gmail.com>
-Date: Tue, 28 Apr 2015 14:09:37 +0930
-Message-ID: <871tj4uara.fsf@rustcorp.com.au>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:51971 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27011991AbbD1J5qSnuNY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Apr 2015 11:57:46 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 1/2] MIPS: Fix CDMM to use native endian MMIO reads
+Date: Tue, 28 Apr 2015 10:57:29 +0100
+Message-ID: <1430215050-4995-2-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1430215050-4995-1-git-send-email-james.hogan@imgtec.com>
+References: <1430215050-4995-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <rusty@ozlabs.org>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,77 +20,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, sparclinux <sparclinux@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Mark Brown <broonie@kernel.org>, DRI Development <dri-devel@lists.freedesktop.org>, Matthew Wilcox <willy@linux.intel.com>
-Message-ID: <20150428043937.GJTUHyPijrnhOHyJXg6OSiga0h-hqMRe2Nn2Do75n2I@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20150428095729.4OSmWglGEMOhv-dsY1_Nc7TN02tfVKbWfzSQwSJ0BBs@z>
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
-> On Mon, Apr 27, 2015 at 11:51 AM, Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
->> Below is the list of build error/warning regressions/improvements in
->> v4.1-rc1[1] compared to v4.0[2].
->>
->> Summarized:
->>   - build errors: +34/-11
->>   - build warnings: +135/-163
->>
->> As I haven't mastered kup yet, there's no verbose summary at
->> http://www.kernel.org/pub/linux/kernel/people/geert/linux-log/v4.1-rc1.summary.gz
->>
->> Happy fixing! ;-)
->>
->> Thanks to the linux-next team for providing the build service.
->>
->> [1] http://kisskb.ellerman.id.au/kisskb/head/8779/ (254 out of 257 configs)
->> [2] http://kisskb.ellerman.id.au/kisskb/head/8710/ (254 out of 257 configs)
->>
->>
->> *** ERRORS ***
->>
->> 34 regressions:
->
-> The quiet days are over...
->
->>   + /home/kisskb/slave/src/arch/mips/cavium-octeon/smp.c: error: passing argument 2 of 'cpumask_clear_cpu' discards 'volatile' qualifier from pointer target type [-Werror]:  => 242:2
->>   + /home/kisskb/slave/src/arch/mips/kernel/process.c: error: passing argument 2 of 'cpumask_test_cpu' discards 'volatile' qualifier from pointer target type [-Werror]:  => 52:2
->>   + /home/kisskb/slave/src/arch/mips/kernel/smp.c: error: passing argument 2 of 'cpumask_set_cpu' discards 'volatile' qualifier from pointer target type [-Werror]:  => 149:2, 211:2
->>   + /home/kisskb/slave/src/arch/mips/kernel/smp.c: error: passing argument 2 of 'cpumask_test_cpu' discards 'volatile' qualifier from pointer target type [-Werror]:  => 221:2
->
-> mips/bigsur_defconfig
-> mips/malta_defconfig
-> mips/cavium_octeon_defconfig
-> mips/ip27_defconfig
+The MIPS Common Device Memory Map (CDMM) is internal to the core and has
+native endianness. There is therefore no need to byte swap the accesses
+on big endian targets, so convert the CDMM bus driver to use
+__raw_readl() rather than readl().
 
-Already fixed in other thread...
+Fixes: 8286ae03308c ("MIPS: Add CDMM bus support")
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+---
+ drivers/bus/mips_cdmm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> and related warnings due to lack of -Werror on
-> ia64-defconfig
-
-That fix is fairly obvious, I'll post separately.
-
-> tilegx_defconfig
-
-Can't see that one with a simple grep: can you post warning?
-
-> m32r/m32700ut.smp_defconfig
-
-Will post fix for this too.
-
-> cpumask also gives fishy warnings:
->
->     lib/cpumask.c:167:25: warning: the address of 'cpu_all_bits' will
-> always evaluate as 'true' [-Waddress]
->
-> on sparc (e.g. sparc64/sparc64-allmodconfig) and powerpc (e.g.
-> powerpc/ppc64_defconfig), which seem to have been reported 6 months
-> ago...
-
-Hmm, this is cpumask_of_node?  That's... Oh my, that requires
-a separate post.
-
-> Can we throw some bitcoins at the cpumasks? ;-)
-
-I think I should be throwing bitcoins at you, instead!
-
-Thanks,
-Rusty.
+diff --git a/drivers/bus/mips_cdmm.c b/drivers/bus/mips_cdmm.c
+index 5bd792c68f9b..ab3bde16ecb4 100644
+--- a/drivers/bus/mips_cdmm.c
++++ b/drivers/bus/mips_cdmm.c
+@@ -453,7 +453,7 @@ void __iomem *mips_cdmm_early_probe(unsigned int dev_type)
+ 
+ 	/* Look for a specific device type */
+ 	for (; drb < bus->drbs; drb += size + 1) {
+-		acsr = readl(cdmm + drb * CDMM_DRB_SIZE);
++		acsr = __raw_readl(cdmm + drb * CDMM_DRB_SIZE);
+ 		type = (acsr & CDMM_ACSR_DEVTYPE) >> CDMM_ACSR_DEVTYPE_SHIFT;
+ 		if (type == dev_type)
+ 			return cdmm + drb * CDMM_DRB_SIZE;
+@@ -500,7 +500,7 @@ static void mips_cdmm_bus_discover(struct mips_cdmm_bus *bus)
+ 	bus->discovered = true;
+ 	pr_info("cdmm%u discovery (%u blocks)\n", cpu, bus->drbs);
+ 	for (; drb < bus->drbs; drb += size + 1) {
+-		acsr = readl(cdmm + drb * CDMM_DRB_SIZE);
++		acsr = __raw_readl(cdmm + drb * CDMM_DRB_SIZE);
+ 		type = (acsr & CDMM_ACSR_DEVTYPE) >> CDMM_ACSR_DEVTYPE_SHIFT;
+ 		size = (acsr & CDMM_ACSR_DEVSIZE) >> CDMM_ACSR_DEVSIZE_SHIFT;
+ 		rev  = (acsr & CDMM_ACSR_DEVREV)  >> CDMM_ACSR_DEVREV_SHIFT;
+-- 
+2.0.5

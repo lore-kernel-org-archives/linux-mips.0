@@ -1,18 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13333 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012494AbbEESQiK4mSx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 5 May 2015 20:16:38 +0200
-Message-ID: <5549083F.8080505@imgtec.com>
-Date: Tue, 5 May 2015 15:13:19 -0300
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Reply-To: <1428444258-25852-1-git-send-email-abrestic@chromium.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:11458 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27012495AbbEEVnLZIIea (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 5 May 2015 23:43:11 +0200
+Date: Tue, 5 May 2015 22:42:06 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [BUG ?] MIPS: KVM: condition with no effect
+Message-ID: <20150505214205.GD17687@jhogan-linux.le.imgtec.org>
+References: <20150505123438.GA21514@opentech.at>
 MIME-Version: 1.0
-Subject: Re: [PATCH V2 0/3] Pistachio USB2.0 PHY
-References: <1428444258-25852-1-git-send-email-abrestic@chromium.org> <CAL1qeaE0+aMLBgk8SKgJ3fXm==M2-Z_yEPYNVZ0yxSee-p7YOw@mail.gmail.com>
-In-Reply-To: <CAL1qeaE0+aMLBgk8SKgJ3fXm==M2-Z_yEPYNVZ0yxSee-p7YOw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Ezequiel.Garcia@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="mSxgbZZZvrAyzONB"
+Content-Disposition: inline
+In-Reply-To: <20150505123438.GA21514@opentech.at>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,52 +22,77 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Kishon Vijay Abraham I <kishon@ti.com>, Ralf Baechle <ralf@linux-mips.org>
-Cc: devicetree@vger.kernel.org, James Hartley <james.hartley@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Andrew Bresticker <abrestic@chromium.org>
-Message-ID: <20150505181319.pQoiZwjN4eKOJtW0SyHTeP3TrgWubBOJwNtvLwZeMJQ@z>
+To: Nicholas Mc Guire <der.herr@hofr.at>
+Cc: Gleb Natapov <gleb@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20150505214206.9x-LFSf1x-lpxDaDYznvGzfR73IWAxcGgs5bEhZxmS4@z>
 
-Hi Kishon,
+--mSxgbZZZvrAyzONB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> This series adds support for the USB2.0 PHY present on the IMG Pistachio SoC.
-> 
-> Based on mips-for-linux-next and tested on the IMG Pistachio BuB.  If possible,
-> I'd like this to go through the MIPS tree with Kishon's ACK.
-> 
+Hi,
 
-Tested-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+On Tue, May 05, 2015 at 02:34:38PM +0200, Nicholas Mc Guire wrote:
+>=20
+> Hi !
+>=20
+>  Not sure if this is a bug or maybe a placeholder for
+>  something... so patch - but maybe someone that knows this code can
+>  give it a look.
+>=20
+> arch/mips/kvm/emulate.c:emulation_result kvm_mips_complete_mmio_load()   =
+=20
+> <snip>
+> 2414         case 2:
+> 2415                 if (vcpu->mmio_needed =3D=3D 2)
+> 2416                         *gpr =3D *(int16_t *) run->mmio.data;       =
+        =20
+> 2417                 else
+> 2418                         *gpr =3D *(int16_t *) run->mmio.data;
+> 2419=20
+> 2420                 break;
+> <snip>
+>=20
+>  either the if/else is not needed or one of the branches is wrong
+>  or it is a place-holder for somethign that did not get
+>  done - in which case a few lines explaining this would be=20
+>  nice (e.g. like in arch/sh/kernel/traps_64.c line 59)
+>=20
+>  line numbers refer to 4.1-rc2=20
 
-Can we have your Ack for this series so Ralf can pick it?
+mmio_needed encodes whether the MMIO load is a signed (2) or unsigned
+(1) load. E.g. the len =3D=3D 1 case just below casts the pointer to u8 vs
+int8_t to control sign extension. So it appears the else branch (line
+2418 in your quote) should be uint16_t (or u16) to prevent the MMIO
+value loaded by a lhu (load halfword unsigned) being sign extended to
+the full width of the registers. Nice catch!
+
+Feel free to send a patch to fix. Otherwise I'm happy to do it.
 
 Thanks!
-Ezequiel
+James
 
-> Cc: James Hartley <james.hartley@imgtec.com>
-> Cc: Damien Horsley <Damien.Horsley@imgtec.com>
-> 
-> Changes from v1:
->  - Added patch to enable PHY driver in pistachio_defconfig
->  - Fixed a couple of spelling errors
-> 
-> Andrew Bresticker (3):
->   phy: Add binding document for Pistachio USB2.0 PHY
->   phy: Add driver for Pistachio USB2.0 PHY
->   MIPS: pistachio: Enable USB PHY driver in defconfig
-> 
->  .../devicetree/bindings/phy/pistachio-usb-phy.txt  |  29 +++
->  arch/mips/configs/pistachio_defconfig              |   1 +
->  drivers/phy/Kconfig                                |   7 +
->  drivers/phy/Makefile                               |   1 +
->  drivers/phy/phy-pistachio-usb.c                    | 206 +++++++++++++++++++++
->  include/dt-bindings/phy/phy-pistachio-usb.h        |  16 ++
->  6 files changed, 260 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/pistachio-usb-phy.txt
->  create mode 100644 drivers/phy/phy-pistachio-usb.c
->  create mode 100644 include/dt-bindings/phy/phy-pistachio-usb.h
-> 
-> --
-> 2.2.0.rc0.207.ga3a616c
-> 
+--mSxgbZZZvrAyzONB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
--- 
-Ezequiel
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJVSTktAAoJEGwLaZPeOHZ6vfgP/0KOtZqSyQ/6HuBMJJrhPQs/
+RBLEOgi881Vk4jFnvg+0e8yk/MrkNbmOo/j+DSKkO58Q+WY4vo+cI95d1Owvk92I
++aFivxw5HghxUQ8+G4jFKsA7qcyVo0DYXdlnp3hXDm+Yn17WPGCsEaeO3NF5EPaS
+0hyiqVULNDRrGE6iUPWoaELNvhLBMZ3rlb9SyIKmQSlkDH6+tYqSy+XhTJxv569b
+YdYXei5LHofKJYNoktBhdPWpvoCi1MsarndyZhX+iufa8SbFZHgzK9mds/xrmiWM
+GRJVepfuJ7vkgkt+bKtFGk7L8nHBn84Uu5qV6NbjHE46FR/AkNwOfhXT7YnP4q3E
+v5o+TFY37UWxbEnxzemLT49ZwI84+3EUv0kjaPGTtCX1N48DgsXCICjW9/nfNbtI
+4FOdRa5ydaGwe/vsidiVX3BSq42XrI+0KKY7hRAHxkl5eSrhvduofMzLLA8ptmRj
+TZ5p0RXmJBDJ/D0Uh7AqdOKYWw98q3/m99V+gOxUjdT0FOpOUOoMQ2y8ZlL5vI5Q
+l6OOfVsl+noV/M6NoFJNbJU1A+MowMZZGWrBxkILOUckdgP7qV5egobHcu9dBMWs
+jfj9tdVuRuulhTAcxp4sSLBGRAlD5ZiVcWm8ONAOugYNjBHTAeTz/cEu22YZS3FF
+YS7ZHgEt1ec6d2McueAI
+=hNQN
+-----END PGP SIGNATURE-----
+
+--mSxgbZZZvrAyzONB--

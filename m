@@ -1,19 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:62105 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27012476AbbEEWBVgkQ3J (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 6 May 2015 00:01:21 +0200
-Date: Tue, 5 May 2015 23:01:17 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH V2 1/3] phy: Add binding document for Pistachio USB2.0 PHY
-Message-ID: <20150505220116.GE17687@jhogan-linux.le.imgtec.org>
-References: <1428444258-25852-1-git-send-email-abrestic@chromium.org>
- <1428444258-25852-2-git-send-email-abrestic@chromium.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:53712 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012549AbbEFKw6uglu4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 6 May 2015 12:52:58 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: fix FP mode selection in lieu of .MIPS.abiflags data
+Date: Wed, 6 May 2015 11:52:32 +0100
+Message-ID: <1430909552-1680-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="VdOwlNaOFKGAtAAV"
-Content-Disposition: inline
-In-Reply-To: <1428444258-25852-2-git-send-email-abrestic@chromium.org>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,132 +18,105 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andrew Bresticker <abrestic@chromium.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Kishon Vijay Abraham I <kishon@ti.com>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, James Hartley <james.hartley@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>
-Message-ID: <20150505220117.4db17HhEIJ1cBUhINk6N_RxeLeZ9D_xFvv1JJRVplvg@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Matthew Fortune <matthew.fortune@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, stable@vger.kernel.org
+Message-ID: <20150506105232.P8a3QQFVJX2trolcK_cLM3ky3-ctC90LzrzoGhrch0s@z>
 
---VdOwlNaOFKGAtAAV
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit 46490b572544 ("MIPS: kernel: elf: Improve the overall ABI and FPU
+mode checks") reworked the ELF FP ABI mode selection logic, but when
+CONFIG_MIPS_O32_FP64_SUPPORT is enabled it breaks the use of binaries
+which have no PT_MIPS_ABIFLAGS program header & associated
+.MIPS.abiflags section.
 
-Hi Andrew,
+A default mode is selected based upon whether the ELF contains MIPS32 or
+MIPS64 code, but that selection is made in arch_elf_pt_proc.
+arch_elf_pt_proc only executes when a PT_MIPS_ABIFLAGS program header is
+found. If one is not found then arch_elf_pt_proc is never called, and no
+default overall_fp_mode value is selected. When arch_check_elf is
+called, both abi0 & abi1 are MIPS_ABI_FP_UNKNOWN which leads to both
+prog_req & interp_req being set to none_req. none_req matches none of
+the conditions for mode selection at the end of arch_check_elf, so
+overall_fp_mode is left untouched. Finally once mips_set_personality_fp
+is called the BUG() in the default case is then hit & the kernel likely
+panics.
 
-On Tue, Apr 07, 2015 at 03:04:16PM -0700, Andrew Bresticker wrote:
-> Add a binding document for the USB2.0 PHY found on the IMG Pistachio SoC.
->=20
-> Signed-off-by: Andrew Bresticker <abrestic@chromium.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Pawel Moll <pawel.moll@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Ian Campbell <ijc+devicetree@hellion.org.uk>
-> Cc: Kumar Gala <galak@codeaurora.org>
-> ---
-> No changes from v1.
-> ---
->  .../devicetree/bindings/phy/pistachio-usb-phy.txt  | 29 ++++++++++++++++=
-++++++
->  include/dt-bindings/phy/phy-pistachio-usb.h        | 16 ++++++++++++
->  2 files changed, 45 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/pistachio-usb-p=
-hy.txt
->  create mode 100644 include/dt-bindings/phy/phy-pistachio-usb.h
->=20
-> diff --git a/Documentation/devicetree/bindings/phy/pistachio-usb-phy.txt =
-b/Documentation/devicetree/bindings/phy/pistachio-usb-phy.txt
-> new file mode 100644
-> index 0000000..afbc7e2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/pistachio-usb-phy.txt
-> @@ -0,0 +1,29 @@
-> +IMG Pistachio USB PHY
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +Required properties:
-> +--------------------
-> + - compatible: Must be "img,pistachio-usb-phy".
-> + - #phy-cells: Must be 0.  See ./phy-bindings.txt for details.
-> + - clocks: Must contain an entry for each entry in clock-names.
-> +   See ../clock/clock-bindings.txt for details.
-> + - clock-names: Must include "usb_phy".
-> + - img,cr-top: Must constain a phandle to the CR_TOP syscon node.
-> + - img,refclk: Indicates the reference clock source for the USB PHY.
-> +   See <dt-bindings/phy/phy-pistachio-usb.h> for a list of valid values.
+Fix this by moving the selection of a default overall mode to the start
+of arch_check_elf, which runs once per ELF executed regardless of
+whether it has a PT_MIPS_ABIFLAGS program header.
 
-Possibly dumb question: why isn't the reference clock source specified
-in the normal ways like the "usb_phy" clock is?
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Cc: Matthew Fortune <matthew.fortune@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: <stable@vger.kernel.org> # v4.0+
+---
+ arch/mips/kernel/elf.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-Does the value required here depend on what usb_phy clock gets muxed
-=66rom or something?
-
-Cheers
-James
-
-> +
-> +Optional properties:
-> +--------------------
-> + - phy-supply: USB VBUS supply.  Must supply 5.0V.
-> +
-> +Example:
-> +--------
-> +usb_phy: usb-phy {
-> +	compatible =3D "img,pistachio-usb-phy";
-> +	clocks =3D <&clk_core CLK_USB_PHY>;
-> +	clock-names =3D "usb_phy";
-> +	phy-supply =3D <&usb_vbus>;
-> +	img,refclk =3D <REFCLK_CLK_CORE>;
-> +	img,cr-top =3D <&cr_top>;
-> +	#phy-cells =3D <0>;
-> +};
-> diff --git a/include/dt-bindings/phy/phy-pistachio-usb.h b/include/dt-bin=
-dings/phy/phy-pistachio-usb.h
-> new file mode 100644
-> index 0000000..d1877aa
-> --- /dev/null
-> +++ b/include/dt-bindings/phy/phy-pistachio-usb.h
-> @@ -0,0 +1,16 @@
-> +/*
-> + * Copyright (C) 2015 Google, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or modify =
-it
-> + * under the terms and conditions of the GNU General Public License,
-> + * version 2, as published by the Free Software Foundation.
-> + */
-> +
-> +#ifndef _DT_BINDINGS_PHY_PISTACHIO
-> +#define _DT_BINDINGS_PHY_PISTACHIO
-> +
-> +#define REFCLK_XO_CRYSTAL	0x0
-> +#define REFCLK_X0_EXT_CLK	0x1
-> +#define REFCLK_CLK_CORE		0x2
-> +
-> +#endif /* _DT_BINDINGS_PHY_PISTACHIO */
-> --=20
-> 2.2.0.rc0.207.ga3a616c
->=20
->=20
-
---VdOwlNaOFKGAtAAV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJVST2sAAoJEGwLaZPeOHZ6h3EQAIWL5SPjeM4XQVqS8syp5m45
-9pAnlu3nfqJorWzkH5JMfe8bSRRoQ+HKCzGVZ3YoqUKT9ZeTM3cvBCu0OaK/dfWZ
-+HFLDwukaibdOyIfvfk7527uOUwtwTnbX3bett6ECeXS0Ar3AxI54ibln936n9sW
-3XbSBY1YId+EE06uvuVFgib+mGRJQU9o8FqjhIGL/507CHsXfEzcaiT9rY/fs5FA
-3pAaoTNL7SODk9fnW+gXFt2gSC40yZ89qoIjwSjkjkYeojtX4+ZiloxlrJddK2sk
-2VtYLuXxK+4lnS4EB1X2DXyEe1utpy5JEo5vGsBXV5SYFbmDemxMIpKD7Llx/E9p
-P7hybOPpAr5yDx4xzQqMbS5wYf8IzlsJVLMYj9wyqSPPHzz+78YpF9Zi0kKrYsL5
-lRE3ejHYjBA8x3zQcihXf4Z0vD0mTT+l+VL7IOPVnQl78KSVUNNNU7DVrd7J+ewF
-Gnx4p1ZCvKKYGYNXH2wMubMs8p+pM+7DU+WEowCYWTRi1iaSVoonZ90XWV1oHiNJ
-VQ+v/Y5jdHgsfNZ/sGRWHhxl/dW3kwyYAKlEfu1juCnFrBw1/t1Ap2HrpgDaOJwJ
-otT/kWJHyE+f4iDtnD6Q52QdgC4+8Fov4kNpputOijQIuowV27jopYuUa0xU29+i
-5nj2MeKORszfDYANiOKb
-=lJGl
------END PGP SIGNATURE-----
-
---VdOwlNaOFKGAtAAV--
+diff --git a/arch/mips/kernel/elf.c b/arch/mips/kernel/elf.c
+index d2c09f6..f20cedc 100644
+--- a/arch/mips/kernel/elf.c
++++ b/arch/mips/kernel/elf.c
+@@ -76,14 +76,6 @@ int arch_elf_pt_proc(void *_ehdr, void *_phdr, struct file *elf,
+ 
+ 	/* Lets see if this is an O32 ELF */
+ 	if (ehdr32->e_ident[EI_CLASS] == ELFCLASS32) {
+-		/* FR = 1 for N32 */
+-		if (ehdr32->e_flags & EF_MIPS_ABI2)
+-			state->overall_fp_mode = FP_FR1;
+-		else
+-			/* Set a good default FPU mode for O32 */
+-			state->overall_fp_mode = cpu_has_mips_r6 ?
+-				FP_FRE : FP_FR0;
+-
+ 		if (ehdr32->e_flags & EF_MIPS_FP64) {
+ 			/*
+ 			 * Set MIPS_ABI_FP_OLD_64 for EF_MIPS_FP64. We will override it
+@@ -104,9 +96,6 @@ int arch_elf_pt_proc(void *_ehdr, void *_phdr, struct file *elf,
+ 				  (char *)&abiflags,
+ 				  sizeof(abiflags));
+ 	} else {
+-		/* FR=1 is really the only option for 64-bit */
+-		state->overall_fp_mode = FP_FR1;
+-
+ 		if (phdr64->p_type != PT_MIPS_ABIFLAGS)
+ 			return 0;
+ 		if (phdr64->p_filesz < sizeof(abiflags))
+@@ -147,6 +136,7 @@ int arch_check_elf(void *_ehdr, bool has_interpreter,
+ 	struct elf32_hdr *ehdr = _ehdr;
+ 	struct mode_req prog_req, interp_req;
+ 	int fp_abi, interp_fp_abi, abi0, abi1, max_abi;
++	bool is_mips64;
+ 
+ 	if (!config_enabled(CONFIG_MIPS_O32_FP64_SUPPORT))
+ 		return 0;
+@@ -162,10 +152,22 @@ int arch_check_elf(void *_ehdr, bool has_interpreter,
+ 		abi0 = abi1 = fp_abi;
+ 	}
+ 
+-	/* ABI limits. O32 = FP_64A, N32/N64 = FP_SOFT */
+-	max_abi = ((ehdr->e_ident[EI_CLASS] == ELFCLASS32) &&
+-		   (!(ehdr->e_flags & EF_MIPS_ABI2))) ?
+-		MIPS_ABI_FP_64A : MIPS_ABI_FP_SOFT;
++	is_mips64 = (ehdr->e_ident[EI_CLASS] == ELFCLASS64) ||
++		    (ehdr->e_flags & EF_MIPS_ABI2);
++
++	if (is_mips64) {
++		/* MIPS64 code always uses FR=1, thus the default is easy */
++		state->overall_fp_mode = FP_FR1;
++
++		/* Disallow access to the various FPXX & FP64 ABIs */
++		max_abi = MIPS_ABI_FP_SOFT;
++	} else {
++		/* Default to a mode capable of running code expecting FR=0 */
++		state->overall_fp_mode = cpu_has_mips_r6 ? FP_FRE : FP_FR0;
++
++		/* Allow all ABIs we know about */
++		max_abi = MIPS_ABI_FP_64A;
++	}
+ 
+ 	if ((abi0 > max_abi && abi0 != MIPS_ABI_FP_UNKNOWN) ||
+ 	    (abi1 > max_abi && abi1 != MIPS_ABI_FP_UNKNOWN))
+-- 
+2.3.6

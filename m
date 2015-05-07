@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53712 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:41588 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012549AbbEFKw6uglu4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 6 May 2015 12:52:58 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] MIPS: fix FP mode selection in lieu of .MIPS.abiflags data
-Date: Wed, 6 May 2015 11:52:32 +0100
-Message-ID: <1430909552-1680-1-git-send-email-paul.burton@imgtec.com>
+        with ESMTP id S27012797AbbEGWCnXlNtF (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 8 May 2015 00:02:43 +0200
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Subject: [PATCH] pwm: img: Change min and max timebase steps value
+Date: Thu, 7 May 2015 18:59:21 -0300
+Message-ID: <1431035961-2008-1-git-send-email-ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Return-Path: <Ezequiel.Garcia@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,105 +18,172 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Matthew Fortune <matthew.fortune@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, stable@vger.kernel.org
-Message-ID: <20150506105232.P8a3QQFVJX2trolcK_cLM3ky3-ctC90LzrzoGhrch0s@z>
+To: linux-pwm@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>
+Cc: Naidu Tellapati <naidu.tellapati@imgtec.com>, James Hartley <james.hartley@imgtec.com>, linux-mips@linux-mips.org, sai.masarapu@imgtec.com, arul.ramasamy@imgtec.com, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Message-ID: <20150507215921.pPiak0rZ5YZ37XgiiQhCzpGO_vg1kQ2-u7xQ3xdFrwE@z>
 
-Commit 46490b572544 ("MIPS: kernel: elf: Improve the overall ABI and FPU
-mode checks") reworked the ELF FP ABI mode selection logic, but when
-CONFIG_MIPS_O32_FP64_SUPPORT is enabled it breaks the use of binaries
-which have no PT_MIPS_ABIFLAGS program header & associated
-.MIPS.abiflags section.
+From: Naidu Tellapati <naidu.tellapati@imgtec.com>
 
-A default mode is selected based upon whether the ELF contains MIPS32 or
-MIPS64 code, but that selection is made in arch_elf_pt_proc.
-arch_elf_pt_proc only executes when a PT_MIPS_ABIFLAGS program header is
-found. If one is not found then arch_elf_pt_proc is never called, and no
-default overall_fp_mode value is selected. When arch_check_elf is
-called, both abi0 & abi1 are MIPS_ABI_FP_UNKNOWN which leads to both
-prog_req & interp_req being set to none_req. none_req matches none of
-the conditions for mode selection at the end of arch_check_elf, so
-overall_fp_mode is left untouched. Finally once mips_set_personality_fp
-is called the BUG() in the default case is then hit & the kernel likely
-panics.
+The PWM hardware on Pistachio platform has a maximum timebase steps
+value to 255. To fix it, let's introduce a compatible-specific
+data structure to contain the SoC-specific details and use it to
+specify a maximum timebase.
 
-Fix this by moving the selection of a default overall mode to the start
-of arch_check_elf, which runs once per ELF executed regardless of
-whether it has a PT_MIPS_ABIFLAGS program header.
+Also, the design team, suggested to use a minimum timebase steps
+value of 16.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Cc: Matthew Fortune <matthew.fortune@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # v4.0+
+Fixes: 277bb6a29e00 ("pwm: Imagination Technologies PWM DAC driver")
+Signed-off-by: Naidu Tellapati <naidu.tellapati@imgtec.com>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 ---
- arch/mips/kernel/elf.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+This patch is needed for the pwm-img to work properly, so it should be
+pushed as a v4.1-rc fix.
 
-diff --git a/arch/mips/kernel/elf.c b/arch/mips/kernel/elf.c
-index d2c09f6..f20cedc 100644
---- a/arch/mips/kernel/elf.c
-+++ b/arch/mips/kernel/elf.c
-@@ -76,14 +76,6 @@ int arch_elf_pt_proc(void *_ehdr, void *_phdr, struct file *elf,
+ drivers/pwm/pwm-img.c | 64 +++++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 52 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+index 476171a..25b6555 100644
+--- a/drivers/pwm/pwm-img.c
++++ b/drivers/pwm/pwm-img.c
+@@ -16,6 +16,7 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
++#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/pwm.h>
+ #include <linux/regmap.h>
+@@ -38,15 +39,22 @@
+ #define PERIP_PWM_PDM_CONTROL_CH_MASK		0x1
+ #define PERIP_PWM_PDM_CONTROL_CH_SHIFT(ch)	((ch) * 4)
  
- 	/* Lets see if this is an O32 ELF */
- 	if (ehdr32->e_ident[EI_CLASS] == ELFCLASS32) {
--		/* FR = 1 for N32 */
--		if (ehdr32->e_flags & EF_MIPS_ABI2)
--			state->overall_fp_mode = FP_FR1;
--		else
--			/* Set a good default FPU mode for O32 */
--			state->overall_fp_mode = cpu_has_mips_r6 ?
--				FP_FRE : FP_FR0;
--
- 		if (ehdr32->e_flags & EF_MIPS_FP64) {
- 			/*
- 			 * Set MIPS_ABI_FP_OLD_64 for EF_MIPS_FP64. We will override it
-@@ -104,9 +96,6 @@ int arch_elf_pt_proc(void *_ehdr, void *_phdr, struct file *elf,
- 				  (char *)&abiflags,
- 				  sizeof(abiflags));
- 	} else {
--		/* FR=1 is really the only option for 64-bit */
--		state->overall_fp_mode = FP_FR1;
--
- 		if (phdr64->p_type != PT_MIPS_ABIFLAGS)
- 			return 0;
- 		if (phdr64->p_filesz < sizeof(abiflags))
-@@ -147,6 +136,7 @@ int arch_check_elf(void *_ehdr, bool has_interpreter,
- 	struct elf32_hdr *ehdr = _ehdr;
- 	struct mode_req prog_req, interp_req;
- 	int fp_abi, interp_fp_abi, abi0, abi1, max_abi;
-+	bool is_mips64;
+-#define MAX_TMBASE_STEPS			65536
++#define MIN_TMBASE_STEPS			16
++
++struct img_pwm_soc_data {
++	u32 max_timebase;
++};
  
- 	if (!config_enabled(CONFIG_MIPS_O32_FP64_SUPPORT))
- 		return 0;
-@@ -162,10 +152,22 @@ int arch_check_elf(void *_ehdr, bool has_interpreter,
- 		abi0 = abi1 = fp_abi;
- 	}
+ struct img_pwm_chip {
++	u32		max_period_ns;
++	u32		min_period_ns;
+ 	struct device	*dev;
+ 	struct pwm_chip	chip;
+ 	struct clk	*pwm_clk;
+ 	struct clk	*sys_clk;
+ 	void __iomem	*base;
+ 	struct regmap	*periph_regs;
++	const struct img_pwm_soc_data   *data;
+ };
  
--	/* ABI limits. O32 = FP_64A, N32/N64 = FP_SOFT */
--	max_abi = ((ehdr->e_ident[EI_CLASS] == ELFCLASS32) &&
--		   (!(ehdr->e_flags & EF_MIPS_ABI2))) ?
--		MIPS_ABI_FP_64A : MIPS_ABI_FP_SOFT;
-+	is_mips64 = (ehdr->e_ident[EI_CLASS] == ELFCLASS64) ||
-+		    (ehdr->e_flags & EF_MIPS_ABI2);
-+
-+	if (is_mips64) {
-+		/* MIPS64 code always uses FR=1, thus the default is easy */
-+		state->overall_fp_mode = FP_FR1;
-+
-+		/* Disallow access to the various FPXX & FP64 ABIs */
-+		max_abi = MIPS_ABI_FP_SOFT;
-+	} else {
-+		/* Default to a mode capable of running code expecting FR=0 */
-+		state->overall_fp_mode = cpu_has_mips_r6 ? FP_FRE : FP_FR0;
-+
-+		/* Allow all ABIs we know about */
-+		max_abi = MIPS_ABI_FP_64A;
+ static inline struct img_pwm_chip *to_img_pwm_chip(struct pwm_chip *chip)
+@@ -72,24 +80,30 @@ static int img_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	u32 val, div, duty, timebase;
+ 	unsigned long mul, output_clk_hz, input_clk_hz;
+ 	struct img_pwm_chip *pwm_chip = to_img_pwm_chip(chip);
++	unsigned int max_timebase = pwm_chip->data->max_timebase;
+ 
+ 	input_clk_hz = clk_get_rate(pwm_chip->pwm_clk);
+ 	output_clk_hz = DIV_ROUND_UP(NSEC_PER_SEC, period_ns);
++	if (period_ns < pwm_chip->min_period_ns ||
++	    period_ns > pwm_chip->max_period_ns) {
++		dev_err(chip->dev, "configured period not in range\n");
++		return -ERANGE;
 +	}
  
- 	if ((abi0 > max_abi && abi0 != MIPS_ABI_FP_UNKNOWN) ||
- 	    (abi1 > max_abi && abi1 != MIPS_ABI_FP_UNKNOWN))
+ 	mul = DIV_ROUND_UP(input_clk_hz, output_clk_hz);
+-	if (mul <= MAX_TMBASE_STEPS) {
++	if (mul <= max_timebase) {
+ 		div = PWM_CTRL_CFG_NO_SUB_DIV;
+ 		timebase = DIV_ROUND_UP(mul, 1);
+-	} else if (mul <= MAX_TMBASE_STEPS * 8) {
++	} else if (mul <= max_timebase * 8) {
+ 		div = PWM_CTRL_CFG_SUB_DIV0;
+ 		timebase = DIV_ROUND_UP(mul, 8);
+-	} else if (mul <= MAX_TMBASE_STEPS * 64) {
++	} else if (mul <= max_timebase * 64) {
+ 		div = PWM_CTRL_CFG_SUB_DIV1;
+ 		timebase = DIV_ROUND_UP(mul, 64);
+-	} else if (mul <= MAX_TMBASE_STEPS * 512) {
++	} else if (mul <= max_timebase * 512) {
+ 		div = PWM_CTRL_CFG_SUB_DIV0_DIV1;
+ 		timebase = DIV_ROUND_UP(mul, 512);
+-	} else if (mul > MAX_TMBASE_STEPS * 512) {
++	} else if (mul > max_timebase * 512) {
+ 		dev_err(chip->dev,
+ 			"failed to configure timebase steps/divider value\n");
+ 		return -EINVAL;
+@@ -143,11 +157,27 @@ static const struct pwm_ops img_pwm_ops = {
+ 	.owner = THIS_MODULE,
+ };
+ 
++static const struct img_pwm_soc_data pistachio_pwm = {
++	.max_timebase = 255,
++};
++
++static const struct of_device_id img_pwm_of_match[] = {
++	{
++		.compatible = "img,pistachio-pwm",
++		.data = &pistachio_pwm,
++	},
++	{ }
++};
++MODULE_DEVICE_TABLE(of, img_pwm_of_match);
++
+ static int img_pwm_probe(struct platform_device *pdev)
+ {
+ 	int ret;
++	u64 val;
++	u32 input_rate;
+ 	struct resource *res;
+ 	struct img_pwm_chip *pwm;
++	const struct of_device_id *of_dev_id;
+ 
+ 	pwm = devm_kzalloc(&pdev->dev, sizeof(*pwm), GFP_KERNEL);
+ 	if (!pwm)
+@@ -160,6 +190,11 @@ static int img_pwm_probe(struct platform_device *pdev)
+ 	if (IS_ERR(pwm->base))
+ 		return PTR_ERR(pwm->base);
+ 
++	of_dev_id = of_match_device(img_pwm_of_match, &pdev->dev);
++	if (!of_dev_id)
++		return -ENODEV;
++	pwm->data = of_dev_id->data;
++
+ 	pwm->periph_regs = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
+ 							   "img,cr-periph");
+ 	if (IS_ERR(pwm->periph_regs))
+@@ -189,6 +224,17 @@ static int img_pwm_probe(struct platform_device *pdev)
+ 		goto disable_sysclk;
+ 	}
+ 
++	input_rate = clk_get_rate(pwm->pwm_clk);
++
++	/* The maximum input clock divider is 512 */
++	val = (u64)NSEC_PER_SEC * 512 * pwm->data->max_timebase;
++	do_div(val, input_rate);
++	pwm->max_period_ns = val;
++
++	val = (u64)NSEC_PER_SEC * MIN_TMBASE_STEPS;
++	do_div(val, input_rate);
++	pwm->min_period_ns = val;
++
+ 	pwm->chip.dev = &pdev->dev;
+ 	pwm->chip.ops = &img_pwm_ops;
+ 	pwm->chip.base = -1;
+@@ -228,12 +274,6 @@ static int img_pwm_remove(struct platform_device *pdev)
+ 	return pwmchip_remove(&pwm_chip->chip);
+ }
+ 
+-static const struct of_device_id img_pwm_of_match[] = {
+-	{ .compatible = "img,pistachio-pwm", },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, img_pwm_of_match);
+-
+ static struct platform_driver img_pwm_driver = {
+ 	.driver = {
+ 		.name = "img-pwm",
 -- 
-2.3.6
+2.3.3

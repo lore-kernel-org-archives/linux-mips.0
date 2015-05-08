@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:63408 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54478 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27012817AbbEHORdS0nuJ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 8 May 2015 16:17:33 +0200
-Message-ID: <554CC530.20906@imgtec.com>
-Date: Fri, 8 May 2015 15:16:16 +0100
+        by eddie.linux-mips.org with ESMTP id S27026558AbbEHOmITyLXa (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 8 May 2015 16:42:08 +0200
+Message-ID: <554CCB3B.90504@imgtec.com>
+Date: Fri, 8 May 2015 15:42:03 +0100
 From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: KVM: do not sign extend on unsigned MMIO load
-References: <1431002870-30098-1-git-send-email-hofrat@osadl.org>
-In-Reply-To: <1431002870-30098-1-git-send-email-hofrat@osadl.org>
+Subject: Re: [PATCH RFC] MIPS: KVM: role back pc in case of EMULATE_FAIL
+References: <1431003091-30161-1-git-send-email-hofrat@osadl.org>
+In-Reply-To: <1431003091-30161-1-git-send-email-hofrat@osadl.org>
 Content-Type: multipart/signed; micalg=pgp-sha1;
         protocol="application/pgp-signature";
-        boundary="4TxPvu4HkAHppA9S3Lc6EsaAl9OuAmtwq"
+        boundary="BCRvvqCFuCgXmOSFfednB6ho95vLARhat"
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,63 +24,81 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Nicholas Mc Guire <hofrat@osadl.org>, Gleb Natapov <gleb@kernel.org>
 Cc: Paolo Bonzini <pbonzini@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20150508141616.GZFxWo2w4tAT-_koScYHUMaRN7Gf7kvtkuab2-r8GHU@z>
+Message-ID: <20150508144203.Dq_KsClm8IbCRqlId02ozciG9SQ3gDXRceeX0V3q8G4@z>
 
---4TxPvu4HkAHppA9S3Lc6EsaAl9OuAmtwq
+--BCRvvqCFuCgXmOSFfednB6ho95vLARhat
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: quoted-printable
 
-On 07/05/15 13:47, Nicholas Mc Guire wrote:
-> Fix possible unintended sign extension in unsigned MMIO loads by castin=
-g
-> to uint16_t in the case of mmio_needed !=3D 2.
+On 07/05/15 13:51, Nicholas Mc Guire wrote:
+> Currently if kvm_mips_complete_mmio_load() fails with EMULATE_FAIL it w=
+ill
+> not role back the pc nor will the caller handle this failure.
 >=20
 > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-
-Looks good to me. I wrote an MMIO test to reproduce the issue, and this
-fixes it.
-
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
-Tested-by: James Hogan <james.hogan@imgtec.com>
-
-It looks suitable for stable too (3.10+).
-
-Cheers
-James
-
 > ---
+>  arch/mips/kvm/emulate.c |    4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 >=20
-> Thanks to James Hogan <james.hogan@imgtec.com> for the explaination of =
-
-> mmio_needed (there is not really any helpful comment in the code on thi=
-s)
-> in this case (mmio_needed!=3D2) it should be unsigned.
+> kvm_mips_complete_mmio_load is called only in arch/mips/kvm/mips.c with=
+out
+> checking the return value to signal EMULATE_FAIL:
+>  383         if (vcpu->mmio_needed) {
+>  384                 if (!vcpu->mmio_is_write)
+>  385                         kvm_mips_complete_mmio_load(vcpu, run);
+>  386                 vcpu->mmio_needed =3D 0;
+>  387         }
+>=20
+> so maybe kvm_mips_complete_mmio_load should role back in case of failur=
+e=20
+> at arch/mips/kvm/emuilate.c:kvm_mips_complete_mmio_load()
+> 2406         if (er =3D=3D EMULATE_FAIL) {
+> 2408                 return er;
+>=20
+> something like the below patch - only based no looking at how EMULATE_F=
+AIL
+> is handled at other locations - not sure if this is appropriate here.
 >=20
 > Patch was only compile tested msp71xx_defconfig + CONFIG_KVM=3Dm
 >=20
 > Patch is against 4.1-rc2 (localversion-next is -next-20150506)
 >=20
->  arch/mips/kvm/emulate.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
 > diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
-> index 6230f37..2f0fc60 100644
+> index 2f0fc60..b58596b 100644
 > --- a/arch/mips/kvm/emulate.c
 > +++ b/arch/mips/kvm/emulate.c
-> @@ -2415,7 +2415,7 @@ enum emulation_result kvm_mips_complete_mmio_load=
-(struct kvm_vcpu *vcpu,
->  		if (vcpu->mmio_needed =3D=3D 2)
->  			*gpr =3D *(int16_t *) run->mmio.data;
->  		else
-> -			*gpr =3D *(int16_t *) run->mmio.data;
-> +			*gpr =3D *(uint16_t *)run->mmio.data;
+> @@ -2403,8 +2403,10 @@ enum emulation_result kvm_mips_complete_mmio_loa=
+d(struct kvm_vcpu *vcpu,
+>  	 */
+>  	curr_pc =3D vcpu->arch.pc;
+>  	er =3D update_pc(vcpu, vcpu->arch.pending_load_cause);
+> -	if (er =3D=3D EMULATE_FAIL)
+> +	if (er =3D=3D EMULATE_FAIL) {
+> +		vcpu->arch.pc =3D curr_pc;
+
+If update_pc returns EMULATE_FAIL then vcpu->arch.pc won't have been
+modified, so putting it back to the old value is redundant.
+
+Actually, curr_pc can be dropped from this function since nothing else
+can go wrong that would cause the PC to need rolling back. Effectively
+kvm_mips_emulate_load() has omitted to update the PC since it'll only
+return to userland to handle the MMIO and get the load data, so by the
+time it gets back to kvm_mips_complete_mmio_load(), it already has
+everything it needs to guarantee success.
+
+Cheers
+James
+
+
+>  		return er;
+> +	}
 > =20
->  		break;
->  	case 1:
+>  	switch (run->mmio.len) {
+>  	case 4:
 >=20
 
 
---4TxPvu4HkAHppA9S3Lc6EsaAl9OuAmtwq
+--BCRvvqCFuCgXmOSFfednB6ho95vLARhat
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -88,19 +106,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJVTMU4AAoJEGwLaZPeOHZ67k0QAJPO9DMmHX3BH3vhjAcm2Qkm
-RFKiVTkXqyypH14iYaCy6fpuQdIqzm4cqLnT9qZK/eSGovblhSpvIUcaxAPfAEqw
-bsBV9ksQoONQIPrhlEXwiBW8TJa4V3ljBH9/Zx+lZuOgS79XREbrwtAH3/MhmVfF
-BNamNA0S3Onjh+B4uExFMROaONb+vVbQID+FBS+T/USfwrNP+QcP6RCUNtDsjhGr
-jj+LUn50miN1zWThm6V8fmUhgVaf6Ehcs7bUM04q5wgPV1r1xU12fsPkbZH5SbeI
-N+D4KkX/YS0Q/DiNy2KCMKd7DpGil9Uu9RL34WmtV4a3cfmJZJ3GWdsrQinh2PL5
-R/xdGrQ/wQJZxhZ9Q2Da7FniqXoHfVFtnk/58fFVP+kD4R2BKfNp2i81dHb3zUQF
-FBxiBqLe/w+2gg1hrpYq0SfXGBXhc78y4qHxgbG+6f8kAJUGA6wmSULNofM1L1pO
-3z8ckKDTJUnsD2Wb8RzliU2czeM94wnQE3N4MxSBndKkZ3h0YNKXO5SDKt9CxMhO
-66nyZmXDi3VPmOhbE2cAimMsutpemgmIzYBTplfr2S3kNPe7UsbcbHXhjEZNCH4v
-QOdRCeD8QgAe6ZOmDukRcWGftq1s4WmwkXFXd/BXSH50FwsjPy3C1bCBiZ8CvwLu
-KDNcwhetO1VV3ufMs8s1
-=aOsa
+iQIcBAEBAgAGBQJVTMs8AAoJEGwLaZPeOHZ6ep0P/AqfJK6QeSCtU7Iobp129yRH
+jImrjDqaKq8rlbpqDiKKHAoPXZmAYEZbtr1pD6xfIynmUBeOokyxgZcoMnPc8Bnc
+LhuSbP3R17SR5I/mQ1vXZtydsB3Oizr2z3c/a5/nf8R+/+vsRau6PqQ/UqM06uMz
+vO8mahw5IJ0kGhbThX6g9m1ck8xy7GAahar41OaCiI3LVxL0M1h0YHEX4ty6fybD
+b3FCfVwfOJwgmVov4JODAYZ9mZFi3oOPhhD9f+sX1CEvk5WsSM3Brq/u4XxyRdOi
+pPlglAP7Am+RxQIiOZOjmTYWZdAioWZuWYSw+9aYv1ksqxf3A4Rr+O4I0FiLgtCb
+vIUyvvD67eS/0jiR8BxsRUjEXJQmG4IV0UjUq8UuGMVj3iSr2wVnDcNaWNE5lpac
+CgJuXgCsWEme3W3Db0qPbUtDS/y+rxobtaXwhFlaV3+ID5ArXGOG+y3QpADstL0v
+NJ2/QWB6oknWw+gJg/pjQddYMpqoxC5mhCWijQ9SlE8NVHLdOdoFrTBi71CZab2x
+rAGv/FuPlM0YLL+YiJ6xfp+Hx6QflbRnNUhLCzUkxCm/ApJnJcGEMCSKUx5EuAPL
+gX7NpqS0g12ftKFMouq2Gi/C23h7zxmQ2uP3wtrHnPWeVHudmVoMSIPwK6QrCClM
+ShY5Isciv/AWHA+m8q+4
+=qTer
 -----END PGP SIGNATURE-----
 
---4TxPvu4HkAHppA9S3Lc6EsaAl9OuAmtwq--
+--BCRvvqCFuCgXmOSFfednB6ho95vLARhat--

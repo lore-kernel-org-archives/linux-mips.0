@@ -1,14 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:41588 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012797AbbEGWCnXlNtF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 8 May 2015 00:02:43 +0200
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Subject: [PATCH] pwm: img: Change min and max timebase steps value
-Date: Thu, 7 May 2015 18:59:21 -0300
-Message-ID: <1431035961-2008-1-git-send-email-ezequiel.garcia@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:63408 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27012817AbbEHORdS0nuJ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 8 May 2015 16:17:33 +0200
+Message-ID: <554CC530.20906@imgtec.com>
+Date: Fri, 8 May 2015 15:16:16 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Ezequiel.Garcia@imgtec.com>
+Subject: Re: [PATCH] MIPS: KVM: do not sign extend on unsigned MMIO load
+References: <1431002870-30098-1-git-send-email-hofrat@osadl.org>
+In-Reply-To: <1431002870-30098-1-git-send-email-hofrat@osadl.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature";
+        boundary="4TxPvu4HkAHppA9S3Lc6EsaAl9OuAmtwq"
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,172 +22,85 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-pwm@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>
-Cc: Naidu Tellapati <naidu.tellapati@imgtec.com>, James Hartley <james.hartley@imgtec.com>, linux-mips@linux-mips.org, sai.masarapu@imgtec.com, arul.ramasamy@imgtec.com, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Message-ID: <20150507215921.pPiak0rZ5YZ37XgiiQhCzpGO_vg1kQ2-u7xQ3xdFrwE@z>
+To: Nicholas Mc Guire <hofrat@osadl.org>, Gleb Natapov <gleb@kernel.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20150508141616.GZFxWo2w4tAT-_koScYHUMaRN7Gf7kvtkuab2-r8GHU@z>
 
-From: Naidu Tellapati <naidu.tellapati@imgtec.com>
+--4TxPvu4HkAHppA9S3Lc6EsaAl9OuAmtwq
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-The PWM hardware on Pistachio platform has a maximum timebase steps
-value to 255. To fix it, let's introduce a compatible-specific
-data structure to contain the SoC-specific details and use it to
-specify a maximum timebase.
+On 07/05/15 13:47, Nicholas Mc Guire wrote:
+> Fix possible unintended sign extension in unsigned MMIO loads by castin=
+g
+> to uint16_t in the case of mmio_needed !=3D 2.
+>=20
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 
-Also, the design team, suggested to use a minimum timebase steps
-value of 16.
+Looks good to me. I wrote an MMIO test to reproduce the issue, and this
+fixes it.
 
-Fixes: 277bb6a29e00 ("pwm: Imagination Technologies PWM DAC driver")
-Signed-off-by: Naidu Tellapati <naidu.tellapati@imgtec.com>
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
----
-This patch is needed for the pwm-img to work properly, so it should be
-pushed as a v4.1-rc fix.
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
+Tested-by: James Hogan <james.hogan@imgtec.com>
 
- drivers/pwm/pwm-img.c | 64 +++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 52 insertions(+), 12 deletions(-)
+It looks suitable for stable too (3.10+).
 
-diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
-index 476171a..25b6555 100644
---- a/drivers/pwm/pwm-img.c
-+++ b/drivers/pwm/pwm-img.c
-@@ -16,6 +16,7 @@
- #include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pwm.h>
- #include <linux/regmap.h>
-@@ -38,15 +39,22 @@
- #define PERIP_PWM_PDM_CONTROL_CH_MASK		0x1
- #define PERIP_PWM_PDM_CONTROL_CH_SHIFT(ch)	((ch) * 4)
- 
--#define MAX_TMBASE_STEPS			65536
-+#define MIN_TMBASE_STEPS			16
-+
-+struct img_pwm_soc_data {
-+	u32 max_timebase;
-+};
- 
- struct img_pwm_chip {
-+	u32		max_period_ns;
-+	u32		min_period_ns;
- 	struct device	*dev;
- 	struct pwm_chip	chip;
- 	struct clk	*pwm_clk;
- 	struct clk	*sys_clk;
- 	void __iomem	*base;
- 	struct regmap	*periph_regs;
-+	const struct img_pwm_soc_data   *data;
- };
- 
- static inline struct img_pwm_chip *to_img_pwm_chip(struct pwm_chip *chip)
-@@ -72,24 +80,30 @@ static int img_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
- 	u32 val, div, duty, timebase;
- 	unsigned long mul, output_clk_hz, input_clk_hz;
- 	struct img_pwm_chip *pwm_chip = to_img_pwm_chip(chip);
-+	unsigned int max_timebase = pwm_chip->data->max_timebase;
- 
- 	input_clk_hz = clk_get_rate(pwm_chip->pwm_clk);
- 	output_clk_hz = DIV_ROUND_UP(NSEC_PER_SEC, period_ns);
-+	if (period_ns < pwm_chip->min_period_ns ||
-+	    period_ns > pwm_chip->max_period_ns) {
-+		dev_err(chip->dev, "configured period not in range\n");
-+		return -ERANGE;
-+	}
- 
- 	mul = DIV_ROUND_UP(input_clk_hz, output_clk_hz);
--	if (mul <= MAX_TMBASE_STEPS) {
-+	if (mul <= max_timebase) {
- 		div = PWM_CTRL_CFG_NO_SUB_DIV;
- 		timebase = DIV_ROUND_UP(mul, 1);
--	} else if (mul <= MAX_TMBASE_STEPS * 8) {
-+	} else if (mul <= max_timebase * 8) {
- 		div = PWM_CTRL_CFG_SUB_DIV0;
- 		timebase = DIV_ROUND_UP(mul, 8);
--	} else if (mul <= MAX_TMBASE_STEPS * 64) {
-+	} else if (mul <= max_timebase * 64) {
- 		div = PWM_CTRL_CFG_SUB_DIV1;
- 		timebase = DIV_ROUND_UP(mul, 64);
--	} else if (mul <= MAX_TMBASE_STEPS * 512) {
-+	} else if (mul <= max_timebase * 512) {
- 		div = PWM_CTRL_CFG_SUB_DIV0_DIV1;
- 		timebase = DIV_ROUND_UP(mul, 512);
--	} else if (mul > MAX_TMBASE_STEPS * 512) {
-+	} else if (mul > max_timebase * 512) {
- 		dev_err(chip->dev,
- 			"failed to configure timebase steps/divider value\n");
- 		return -EINVAL;
-@@ -143,11 +157,27 @@ static const struct pwm_ops img_pwm_ops = {
- 	.owner = THIS_MODULE,
- };
- 
-+static const struct img_pwm_soc_data pistachio_pwm = {
-+	.max_timebase = 255,
-+};
-+
-+static const struct of_device_id img_pwm_of_match[] = {
-+	{
-+		.compatible = "img,pistachio-pwm",
-+		.data = &pistachio_pwm,
-+	},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, img_pwm_of_match);
-+
- static int img_pwm_probe(struct platform_device *pdev)
- {
- 	int ret;
-+	u64 val;
-+	u32 input_rate;
- 	struct resource *res;
- 	struct img_pwm_chip *pwm;
-+	const struct of_device_id *of_dev_id;
- 
- 	pwm = devm_kzalloc(&pdev->dev, sizeof(*pwm), GFP_KERNEL);
- 	if (!pwm)
-@@ -160,6 +190,11 @@ static int img_pwm_probe(struct platform_device *pdev)
- 	if (IS_ERR(pwm->base))
- 		return PTR_ERR(pwm->base);
- 
-+	of_dev_id = of_match_device(img_pwm_of_match, &pdev->dev);
-+	if (!of_dev_id)
-+		return -ENODEV;
-+	pwm->data = of_dev_id->data;
-+
- 	pwm->periph_regs = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
- 							   "img,cr-periph");
- 	if (IS_ERR(pwm->periph_regs))
-@@ -189,6 +224,17 @@ static int img_pwm_probe(struct platform_device *pdev)
- 		goto disable_sysclk;
- 	}
- 
-+	input_rate = clk_get_rate(pwm->pwm_clk);
-+
-+	/* The maximum input clock divider is 512 */
-+	val = (u64)NSEC_PER_SEC * 512 * pwm->data->max_timebase;
-+	do_div(val, input_rate);
-+	pwm->max_period_ns = val;
-+
-+	val = (u64)NSEC_PER_SEC * MIN_TMBASE_STEPS;
-+	do_div(val, input_rate);
-+	pwm->min_period_ns = val;
-+
- 	pwm->chip.dev = &pdev->dev;
- 	pwm->chip.ops = &img_pwm_ops;
- 	pwm->chip.base = -1;
-@@ -228,12 +274,6 @@ static int img_pwm_remove(struct platform_device *pdev)
- 	return pwmchip_remove(&pwm_chip->chip);
- }
- 
--static const struct of_device_id img_pwm_of_match[] = {
--	{ .compatible = "img,pistachio-pwm", },
--	{ }
--};
--MODULE_DEVICE_TABLE(of, img_pwm_of_match);
--
- static struct platform_driver img_pwm_driver = {
- 	.driver = {
- 		.name = "img-pwm",
--- 
-2.3.3
+Cheers
+James
+
+> ---
+>=20
+> Thanks to James Hogan <james.hogan@imgtec.com> for the explaination of =
+
+> mmio_needed (there is not really any helpful comment in the code on thi=
+s)
+> in this case (mmio_needed!=3D2) it should be unsigned.
+>=20
+> Patch was only compile tested msp71xx_defconfig + CONFIG_KVM=3Dm
+>=20
+> Patch is against 4.1-rc2 (localversion-next is -next-20150506)
+>=20
+>  arch/mips/kvm/emulate.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
+> index 6230f37..2f0fc60 100644
+> --- a/arch/mips/kvm/emulate.c
+> +++ b/arch/mips/kvm/emulate.c
+> @@ -2415,7 +2415,7 @@ enum emulation_result kvm_mips_complete_mmio_load=
+(struct kvm_vcpu *vcpu,
+>  		if (vcpu->mmio_needed =3D=3D 2)
+>  			*gpr =3D *(int16_t *) run->mmio.data;
+>  		else
+> -			*gpr =3D *(int16_t *) run->mmio.data;
+> +			*gpr =3D *(uint16_t *)run->mmio.data;
+> =20
+>  		break;
+>  	case 1:
+>=20
+
+
+--4TxPvu4HkAHppA9S3Lc6EsaAl9OuAmtwq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJVTMU4AAoJEGwLaZPeOHZ67k0QAJPO9DMmHX3BH3vhjAcm2Qkm
+RFKiVTkXqyypH14iYaCy6fpuQdIqzm4cqLnT9qZK/eSGovblhSpvIUcaxAPfAEqw
+bsBV9ksQoONQIPrhlEXwiBW8TJa4V3ljBH9/Zx+lZuOgS79XREbrwtAH3/MhmVfF
+BNamNA0S3Onjh+B4uExFMROaONb+vVbQID+FBS+T/USfwrNP+QcP6RCUNtDsjhGr
+jj+LUn50miN1zWThm6V8fmUhgVaf6Ehcs7bUM04q5wgPV1r1xU12fsPkbZH5SbeI
+N+D4KkX/YS0Q/DiNy2KCMKd7DpGil9Uu9RL34WmtV4a3cfmJZJ3GWdsrQinh2PL5
+R/xdGrQ/wQJZxhZ9Q2Da7FniqXoHfVFtnk/58fFVP+kD4R2BKfNp2i81dHb3zUQF
+FBxiBqLe/w+2gg1hrpYq0SfXGBXhc78y4qHxgbG+6f8kAJUGA6wmSULNofM1L1pO
+3z8ckKDTJUnsD2Wb8RzliU2czeM94wnQE3N4MxSBndKkZ3h0YNKXO5SDKt9CxMhO
+66nyZmXDi3VPmOhbE2cAimMsutpemgmIzYBTplfr2S3kNPe7UsbcbHXhjEZNCH4v
+QOdRCeD8QgAe6ZOmDukRcWGftq1s4WmwkXFXd/BXSH50FwsjPy3C1bCBiZ8CvwLu
+KDNcwhetO1VV3ufMs8s1
+=aOsa
+-----END PGP SIGNATURE-----
+
+--4TxPvu4HkAHppA9S3Lc6EsaAl9OuAmtwq--

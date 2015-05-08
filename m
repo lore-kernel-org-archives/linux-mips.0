@@ -1,19 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59735 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27026566AbbEHOv3e-t2w (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 8 May 2015 16:51:29 +0200
-Message-ID: <554CCD6D.9010004@imgtec.com>
-Date: Fri, 8 May 2015 15:51:25 +0100
-From: James Hogan <james.hogan@imgtec.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH] mips:Remove unneeded duplicate declaration of cpu_callin_map
- in smp.h
-References: <1431094355-28145-1-git-send-email-xerofoify@gmail.com>
-In-Reply-To: <1431094355-28145-1-git-send-email-xerofoify@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature";
-        boundary="9iVb4aFBWr9IQMm9c8pC720DtJVvCU8NI"
-Return-Path: <James.Hogan@imgtec.com>
+Received: from mail-pd0-f177.google.com ([209.85.192.177]:34235 "EHLO
+        mail-pd0-f177.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27026572AbbEHP4ViFyAE convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 8 May 2015 17:56:21 +0200
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2098\))
+Subject: Re: [PATCH 1/2] MIPS: BMIPS: dts: remove unsupported entry for bcm7362
+From: Jaedon Shin <jaedon.shin@gmail.com>
+In-Reply-To: <CAJiQ=7CQshXhGJ7ftWQSu_UxgKVaRprZPEPXWNP6ci_1bLrJrw@mail.gmail.com>
+Date: Sat, 9 May 2015 00:55:07 +0900
+Content-Transfer-Encoding: 8BIT
+Message-ID: <BABEE235-D7C4-4897-B3ED-778A5FB7F538@gmail.com>
+References: <1431089958-2626-1-git-send-email-jaedon.shin@gmail.com> <1431089958-2626-2-git-send-email-jaedon.shin@gmail.com> <CAJiQ=7CQshXhGJ7ftWQSu_UxgKVaRprZPEPXWNP6ci_1bLrJrw@mail.gmail.com>
+Return-Path: <jaedon.shin@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,80 +22,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Nicholas Krause <xerofoify@gmail.com>, ralf@linux-mips.org
-Cc: chenhc@lemote.com, andreas.herrmann@caviumnetworks.com, rusty@rustcorp.com.au, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20150508145125.3n5-ESe76qwYhl_GukP9LTlnJwrZ9ZJ9jSXuSqDfOqA@z>
-
---9iVb4aFBWr9IQMm9c8pC720DtJVvCU8NI
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-On 08/05/15 15:12, Nicholas Krause wrote:
-> This removes the unneeded duplicate declaration of cpu_callin_map
-> in smp.h due to use already declaring it in the file,smp.c that
-
-No, it isn't declared in arch/mips/kernel/smp.c, its *defined* there (no
-"extern"). It's referenced by:
-arch/mips/cavium-octeon/smp.c
-arch/mips/kernel/process.c
-arch/mips/kernel/smp-bmips.c
-arch/mips/kernel/smp-cps.c
-arch/mips/loongson/loongson-3/smp.c
-as well as arch/mips/kernel/smp.c, which is why the declaration is
-needed in a header.
-
-If you're attempting to fix the build errors in this area, please see:
-http://patchwork.linux-mips.org/patch/9970/
-
-Cheers
-James
-
-> already uses it internally for functions required this variable
-> for their various internal work.
->=20
-> Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
-> ---
->  arch/mips/include/asm/smp.h | 2 --
->  1 file changed, 2 deletions(-)
->=20
-> diff --git a/arch/mips/include/asm/smp.h b/arch/mips/include/asm/smp.h
-> index bb02fac..7752011 100644
-> --- a/arch/mips/include/asm/smp.h
-> +++ b/arch/mips/include/asm/smp.h
-> @@ -45,8 +45,6 @@ extern int __cpu_logical_map[NR_CPUS];
->  #define SMP_DUMP		0x8
->  #define SMP_ASK_C0COUNT		0x10
-> =20
-> -extern volatile cpumask_t cpu_callin_map;
-> -
->  /* Mask of CPUs which are currently definitely operating coherently */=
-
->  extern cpumask_t cpu_coherent_mask;
-> =20
->=20
+To: Kevin Cernekee <cernekee@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Message-ID: <20150508155507.dFvpgh98AfkWta9oYYQ3fLSyl2UlV2JLcugWFnvFPKM@z>
 
 
---9iVb4aFBWr9IQMm9c8pC720DtJVvCU8NI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+> On May 8, 2015, at 11:40 PM, Kevin Cernekee <cernekee@gmail.com> wrote:
+> 
+> On Fri, May 8, 2015 at 5:59 AM, Jaedon Shin <jaedon.shin@gmail.com> wrote:
+>> Remove unsupported memory entry for the bcm7362 platform. The BMIPS4380
+>> processor only supports ZONE_NORMAL is not available for HIGHMEM.
+>> 
+>> Signed-off-by: Jaedon Shin <jaedon.shin@gmail.com>
+>> ---
+>> arch/mips/boot/dts/brcm/bcm97362svmb.dts | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/arch/mips/boot/dts/brcm/bcm97362svmb.dts b/arch/mips/boot/dts/brcm/bcm97362svmb.dts
+>> index b7b88e5dc9e7..ab8b01fa7dcf 100644
+>> --- a/arch/mips/boot/dts/brcm/bcm97362svmb.dts
+>> +++ b/arch/mips/boot/dts/brcm/bcm97362svmb.dts
+>> @@ -8,7 +8,7 @@
+>> 
+>>        memory@0 {
+>>                device_type = "memory";
+>> -               reg = <0x00000000 0x10000000>, <0x20000000 0x30000000>;
+>> +               reg = <0x00000000 0x10000000>;
+> 
+> Hmm, this is more of a kernel limitation than a hardware limitation,
+> though.  The board physically has 1GB of memory, right?  It is best if
+> the DT entry reflects the actual hardware configuration.
+> 
+> The Broadcom kernels enable the CPU's special "XKS01" feature to put
+> 1GB of memory in ZONE_NORMAL:
+> 
+> https://github.com/Broadcom/stblinux-3.3/tree/master/linux
+> 
+> Maybe this would be worth adding to mainline.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Yes, It is right to have 1GB of memory.
 
-iQIcBAEBAgAGBQJVTM1tAAoJEGwLaZPeOHZ69fAP/00c7JAQpUQgzzskxtwFyo/2
-wYGB4ABIZzCEz7wfHEzvnNoHCrgOE26o5tNXh+C07SwnFZguSfBqdEeSS/5Q3a1L
-pbQa5gaV3NAYyOy2CppzX+15IWN/AIWt8i0uEHOHMt5D69rimCE7mTscsBB1vZY7
-cIOv9GpWeYEZomJ3ajhSgI6txSih+f0mu3vs356ZSpSNYFjgrkOl4Dd7mESwMQji
-FH6D9zni0Pd7o+j5yj4FSgkLGGorLV48F6VgFns6i6zhk/r/ZuUTNfdO81m6uOvz
-cxnCg78pNRY1XxQRn15APpHKC59rp9uKUio3V3AToww/Fbmml6i9WrDpHsOR4FUF
-RYMQU5Y43fBdBpZ368nJ+kA54f23zaa/caobFPRrHpHKY+GSV0/ePlA56iOMEoGf
-StAAoEn1+w5zbz99nJiU4eCkIWO9mvmwHEaeZJxaOpLJiR7S0bvTbwdVzqm965uL
-PNwNL0XhljyAnwEEWdegcnL0SvjpPtxKl9NWZmYCoLrEs3zmTtwJT3Cr530P3gSK
-mh9sQ+k/K3tLahjS9D5/anmAb5N2G7xt8SehDFoTRl5Yo+rpTGEQf1Ln7uHZx/Ll
-4EI6bmI6MDh97rh78ZoOxFeIrsIDZmLlcJgl9LBA9GNyDIHYMa5woG/pfi3ZlclS
-JQKZtkv48rb3cb+HzJBV
-=crdc
------END PGP SIGNATURE-----
+In order to add XKS01 ioremap, keg, tlb, dma, etc. change is required.
+However, there is no assurance they'll take those changes to the mainline.
 
---9iVb4aFBWr9IQMm9c8pC720DtJVvCU8NI--
+Anyway, I also hope it added.

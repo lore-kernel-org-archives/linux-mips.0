@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:22283 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:9931 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026383AbbEMKwP6Go0K (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 13 May 2015 12:52:15 +0200
+        with ESMTP id S27013285AbbEMMSKQS9-f (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 13 May 2015 14:18:10 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 7/9] MIPS: dump_tlb: Take RI/XI bits into account
-Date: Wed, 13 May 2015 11:50:53 +0100
-Message-ID: <1431514255-3030-8-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1431514255-3030-1-git-send-email-james.hogan@imgtec.com>
-References: <1431514255-3030-1-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 0/2] MIPS: malta-time: Take seconds into account
+Date: Wed, 13 May 2015 13:17:51 +0100
+Message-ID: <1431519473-24049-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <James.Hogan@imgtec.com>
@@ -21,105 +19,23 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, David Daney <ddaney@caviumnetworks.com>
-Message-ID: <20150513105053.KaG-UovYIxaZrZxhZpcQ483F6Umt3Bw7LNEN8owT2Xs@z>
+Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>
+Message-ID: <20150513121751.ocUeNOP7U_Oo2DxglbPd_C0IrHV1vNSIrIX17zs964I@z>
 
-The RI/XI bits when present are above the PFN field in the EntryLo
-registers, at bits 63,62 when read with dmfc0, and bits 31,30 when read
-with mfc0. This makes them appear as part of the physical address, since
-the other bits are masked with PAGE_MASK, for example:
+This patchset improves the robustness of the Malta timer frequencies
+calculation, particularly under virtualisation on slow targets, where
+the RTC UIP flag may not get noticed the first time.
 
-Index: 253 pgmask=16kb va=77b18000 asid=75
-        [pa=1000744000 c=5 d=1 v=1 g=0] [pa=100134c000 c=5 d=1 v=1 g=0]
+James Hogan (2):
+  MIPS: malta-time: Don't switch RTC to BCD mode
+  MIPS: malta-time: Take seconds into account
 
-The physical addresses have bit 36 set, which corresponds to bit 30 of
-EntryLo1, the XI bit.
+ arch/mips/mti-malta/malta-time.c | 25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
-Explicitly mask off the RI and XI bits from the printed physical
-address, and print the RI and XI bits separately if they exist, giving
-output more like this:
-
-Index: 226 pgmask=16kb va=77be0000 asid=79
-        [ri=0 xi=1 pa=01288000 c=5 d=1 v=1 g=0] [ri=0 xi=0 pa=010e4000 c=5 d=0 v=1 g=0]
-
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: David Daney <ddaney@caviumnetworks.com>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Steven J. Hill <Steven.Hill@imgtec.com>
 Cc: linux-mips@linux-mips.org
----
- arch/mips/include/asm/mipsregs.h | 11 +++++++++++
- arch/mips/lib/dump_tlb.c         | 27 ++++++++++++++++++++-------
- 2 files changed, 31 insertions(+), 7 deletions(-)
-
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index 764e2756b54d..22b10e044532 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -589,6 +589,17 @@
- /*  EntryHI bit definition */
- #define MIPS_ENTRYHI_EHINV	(_ULCAST_(1) << 10)
- 
-+/* EntryLo bit definitions */
-+#ifdef CONFIG_64BIT
-+/* as read by dmfc0 */
-+#define MIPS_ENTRYLO_RI		(_ULCAST_(1) << 63)
-+#define MIPS_ENTRYLO_XI		(_ULCAST_(1) << 62)
-+#else
-+/* as read by mfc0 */
-+#define MIPS_ENTRYLO_RI		(_ULCAST_(1) << 31)
-+#define MIPS_ENTRYLO_XI		(_ULCAST_(1) << 30)
-+#endif
-+
- /* CMGCRBase bit definitions */
- #define MIPS_CMGCRB_BASE	11
- #define MIPS_CMGCRF_BASE	(~_ULCAST_((1 << MIPS_CMGCRB_BASE) - 1))
-diff --git a/arch/mips/lib/dump_tlb.c b/arch/mips/lib/dump_tlb.c
-index f58962c11c75..b918646d6c8d 100644
---- a/arch/mips/lib/dump_tlb.c
-+++ b/arch/mips/lib/dump_tlb.c
-@@ -44,7 +44,7 @@ static inline const char *msk2str(unsigned int mask)
- static void dump_tlb(int first, int last)
- {
- 	unsigned long s_entryhi, entryhi, asid;
--	unsigned long long entrylo0, entrylo1;
-+	unsigned long long entrylo0, entrylo1, pa;
- 	unsigned int s_index, s_pagemask, pagemask, c0, c1, i;
- #ifdef CONFIG_32BIT
- 	int width = 8;
-@@ -91,15 +91,28 @@ static void dump_tlb(int first, int last)
- 		printk("va=%0*lx asid=%02lx\n",
- 		       width, (entryhi & ~0x1fffUL),
- 		       entryhi & 0xff);
--		printk("\t[pa=%0*llx c=%d d=%d v=%d g=%d] ",
--		       width,
--		       (entrylo0 << 6) & PAGE_MASK, c0,
-+		/* RI/XI are in awkward places, so mask them off separately */
-+		pa = entrylo0 & ~(MIPS_ENTRYLO_RI | MIPS_ENTRYLO_XI);
-+		pa = (pa << 6) & PAGE_MASK;
-+		printk("\t[");
-+		if (cpu_has_rixi)
-+			printk("ri=%d xi=%d ",
-+			       (entrylo0 & MIPS_ENTRYLO_RI) ? 1 : 0,
-+			       (entrylo0 & MIPS_ENTRYLO_XI) ? 1 : 0);
-+		printk("pa=%0*llx c=%d d=%d v=%d g=%d] [",
-+		       width, pa, c0,
- 		       (entrylo0 & 4) ? 1 : 0,
- 		       (entrylo0 & 2) ? 1 : 0,
- 		       (entrylo0 & 1) ? 1 : 0);
--		printk("[pa=%0*llx c=%d d=%d v=%d g=%d]\n",
--		       width,
--		       (entrylo1 << 6) & PAGE_MASK, c1,
-+		/* RI/XI are in awkward places, so mask them off separately */
-+		pa = entrylo1 & ~(MIPS_ENTRYLO_RI | MIPS_ENTRYLO_XI);
-+		pa = (pa << 6) & PAGE_MASK;
-+		if (cpu_has_rixi)
-+			printk("ri=%d xi=%d ",
-+			       (entrylo1 & MIPS_ENTRYLO_RI) ? 1 : 0,
-+			       (entrylo1 & MIPS_ENTRYLO_XI) ? 1 : 0);
-+		printk("pa=%0*llx c=%d d=%d v=%d g=%d]\n",
-+		       width, pa, c1,
- 		       (entrylo1 & 4) ? 1 : 0,
- 		       (entrylo1 & 2) ? 1 : 0,
- 		       (entrylo1 & 1) ? 1 : 0);
 -- 
 2.3.6

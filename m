@@ -1,17 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:28888 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010963AbbELRbglf4w1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 12 May 2015 19:31:36 +0200
-Message-ID: <55523837.5040207@imgtec.com>
-Date: Tue, 12 May 2015 14:28:23 -0300
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Received: from mail-ie0-f181.google.com ([209.85.223.181]:33518 "EHLO
+        mail-ie0-f181.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27006508AbbEMCwU6fHEy convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 13 May 2015 04:52:20 +0200
+Received: by iebgx4 with SMTP id gx4so20099607ieb.0
+        for <linux-mips@linux-mips.org>; Tue, 12 May 2015 19:52:17 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] MIPS: Fix a preemption issue with thread's FPU defaults
-References: <alpine.LFD.2.11.1505121432540.1538@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.11.1505121432540.1538@eddie.linux-mips.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Ezequiel.Garcia@imgtec.com>
+Content-Transfer-Encoding: 8BIT
+From: Michael Turquette <mturquette@linaro.org>
+In-Reply-To: <1429881457-16016-27-git-send-email-paul.burton@imgtec.com>
+References: <1429881457-16016-1-git-send-email-paul.burton@imgtec.com>
+ <1429881457-16016-27-git-send-email-paul.burton@imgtec.com>
+Message-ID: <20150513025204.20636.10155@quantum>
+Subject: Re: [PATCH v4 26/37] MIPS,clk: migrate JZ4740 to common clock framework
+Date: Tue, 12 May 2015 19:52:04 -0700
+Return-Path: <mturquette@linaro.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,106 +25,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Martin <paul.martin@codethink.co.uk>
-Cc: Markos Chandras <Markos.Chandras@imgtec.com>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20150512172823.X-vexcmxJPDPhmS7IcYUoeC1Bh9pLP1TDMovFSEhN_A@z>
+To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Cc: Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Lars-Peter Clausen <lars@metafoo.de>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, devicetree@vger.kernel.org, linux-clk@vger.kernel.org
+Message-ID: <20150513025204.AuL1JikXJGEEtXiUAT2QMtJBZk2lZnyfqxPr1UN8lBo@z>
 
+Hi Paul,
 
-
-On 05/12/2015 11:20 AM, Maciej W. Rozycki wrote:
-> Fix "BUG: using smp_processor_id() in preemptible" reported in accesses 
-> to thread's FPU defaults: the value to initialise FSCR to at program 
-> startup, the FCSR r/w mask and the contents of FIR in full FPU 
-> emulation, removing a regression introduced with 9b26616c [MIPS: Respect 
-> the ISA level in FCSR handling] and f6843626 [MIPS: math-emu: Set FIR 
-> feature flags for full emulation].
-> 
-> Use `boot_cpu_data' to obtain the data from, following the approach that 
-> `cpu_has_*' macros take and avoiding the call to `smp_processor_id' made 
-> in the reference to `current_cpu_data'.  The contents of FSCR have to be 
-> consistent across processors in an SMP system, the settings there must 
-> not change as a thread is migrated across processors.  And the contents 
-> of FIR are guaranteed to be consistent in FPU emulation, by definition.
-> 
-> Signed-off-by: Maciej W. Rozycki <macro@linux-mips.org>
-> ---
-> Changes from v1:
-> 
-> - also fix PTRACE_SETFPREGS (thanks, Paul!).
-> 
-> Paul, Ezequiel --
-> 
->  Can you verify this change addresses the problems you saw?
+Quoting Paul Burton (2015-04-24 06:17:26)
+> +static void __init jz4740_cgu_init(struct device_node *np)
+> +{
+> +       int retval;
+> +
+> +       cgu = ingenic_cgu_new(jz4740_cgu_clocks,
+> +                             ARRAY_SIZE(jz4740_cgu_clocks), np);
+> +       if (!cgu) {
+> +               pr_err("%s: failed to initialise CGU\n", __func__);
+> +               return;
+> +       }
+> +
+> +       retval = ingenic_cgu_register_clocks(cgu);
+> +       if (retval)
+> +               pr_err("%s: failed to register CGU Clocks\n", __func__);
+> +}
+> +CLK_OF_DECLARE(jz4740_cgu, "ingenic,jz4740-cgu", jz4740_cgu_init);
+> -- 
+> 2.3.5
 > 
 
-Tested-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Patch looks good to me, but I have one question. Is it possible for you
+to have a proper platform_device for the cgu instead of relying on
+CLK_OF_DECLARE?
 
-> [Ralf, this is another 4.1 material, please push it to Linus ASAP, once 
-> this has been confirmed to DTRT.]
-> 
->  Thanks,
-> 
->   Maciej
-> 
-> linux-mips-emu-fcsr-isa-fix.diff
-> Index: linux-org-test/arch/mips/include/asm/elf.h
-> ===================================================================
-> --- linux-org-test.orig/arch/mips/include/asm/elf.h	2015-05-06 23:20:51.946503000 +0100
-> +++ linux-org-test/arch/mips/include/asm/elf.h	2015-05-12 14:37:14.169350000 +0100
-> @@ -304,7 +304,7 @@ do {									\
->  									\
->  	current->thread.abi = &mips_abi;				\
->  									\
-> -	current->thread.fpu.fcr31 = current_cpu_data.fpu_csr31;		\
-> +	current->thread.fpu.fcr31 = boot_cpu_data.fpu_csr31;		\
->  } while (0)
->  
->  #endif /* CONFIG_32BIT */
-> @@ -366,7 +366,7 @@ do {									\
->  	else								\
->  		current->thread.abi = &mips_abi;			\
->  									\
-> -	current->thread.fpu.fcr31 = current_cpu_data.fpu_csr31;		\
-> +	current->thread.fpu.fcr31 = boot_cpu_data.fpu_csr31;		\
->  									\
->  	p = personality(current->personality);				\
->  	if (p != PER_LINUX32 && p != PER_LINUX)				\
-> Index: linux-org-test/arch/mips/kernel/ptrace.c
-> ===================================================================
-> --- linux-org-test.orig/arch/mips/kernel/ptrace.c	2015-04-28 14:52:04.000000000 +0100
-> +++ linux-org-test/arch/mips/kernel/ptrace.c	2015-05-12 15:12:03.511002000 +0100
-> @@ -176,7 +176,7 @@ int ptrace_setfpregs(struct task_struct 
->  
->  	__get_user(value, data + 64);
->  	fcr31 = child->thread.fpu.fcr31;
-> -	mask = current_cpu_data.fpu_msk31;
-> +	mask = boot_cpu_data.fpu_msk31;
->  	child->thread.fpu.fcr31 = (value & ~mask) | (fcr31 & mask);
->  
->  	/* FIR may not be written.  */
-> Index: linux-org-test/arch/mips/math-emu/cp1emu.c
-> ===================================================================
-> --- linux-org-test.orig/arch/mips/math-emu/cp1emu.c	2015-04-28 14:52:04.000000000 +0100
-> +++ linux-org-test/arch/mips/math-emu/cp1emu.c	2015-05-12 14:41:06.308256000 +0100
-> @@ -889,7 +889,7 @@ static inline void cop1_cfc(struct pt_re
->  		break;
->  
->  	case FPCREG_RID:
-> -		value = current_cpu_data.fpu_id;
-> +		value = boot_cpu_data.fpu_id;
->  		break;
->  
->  	default:
-> @@ -921,7 +921,7 @@ static inline void cop1_ctc(struct pt_re
->  			 (void *)xcp->cp0_epc, MIPSInst_RT(ir), value);
->  
->  		/* Preserve read-only bits.  */
-> -		mask = current_cpu_data.fpu_msk31;
-> +		mask = boot_cpu_data.fpu_msk31;
->  		fcr31 = (value & ~mask) | (fcr31 & mask);
->  		break;
->  
-> 
+For an example of a clock driver that does this, check out the bottom of
+drivers/clk/qcom/gcc-msm8660.c.
 
--- 
-Ezequiel
+Regards,
+Mike

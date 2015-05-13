@@ -1,20 +1,20 @@
-Received: from mail-ie0-f181.google.com ([209.85.223.181]:33518 "EHLO
-        mail-ie0-f181.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27006508AbbEMCwU6fHEy convert rfc822-to-8bit
+Received: from mail-ig0-f181.google.com ([209.85.213.181]:33775 "EHLO
+        mail-ig0-f181.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27008759AbbEMC4RkKBlX convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 13 May 2015 04:52:20 +0200
-Received: by iebgx4 with SMTP id gx4so20099607ieb.0
-        for <linux-mips@linux-mips.org>; Tue, 12 May 2015 19:52:17 -0700 (PDT)
+        Wed, 13 May 2015 04:56:17 +0200
+Received: by igbpi8 with SMTP id pi8so106925219igb.0
+        for <linux-mips@linux-mips.org>; Tue, 12 May 2015 19:56:14 -0700 (PDT)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 From: Michael Turquette <mturquette@linaro.org>
-In-Reply-To: <1429881457-16016-27-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1429881457-16016-28-git-send-email-paul.burton@imgtec.com>
 References: <1429881457-16016-1-git-send-email-paul.burton@imgtec.com>
- <1429881457-16016-27-git-send-email-paul.burton@imgtec.com>
-Message-ID: <20150513025204.20636.10155@quantum>
-Subject: Re: [PATCH v4 26/37] MIPS,clk: migrate JZ4740 to common clock framework
-Date: Tue, 12 May 2015 19:52:04 -0700
+ <1429881457-16016-28-git-send-email-paul.burton@imgtec.com>
+Message-ID: <20150513025600.20636.34201@quantum>
+Subject: Re: [PATCH v4 27/37] MIPS, clk: move jz4740_clock_set_wait_mode to jz4740-cgu
+Date: Tue, 12 May 2015 19:56:00 -0700
 Return-Path: <mturquette@linaro.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -26,38 +26,33 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
-Cc: Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Lars-Peter Clausen <lars@metafoo.de>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, devicetree@vger.kernel.org, linux-clk@vger.kernel.org
-Message-ID: <20150513025204.AuL1JikXJGEEtXiUAT2QMtJBZk2lZnyfqxPr1UN8lBo@z>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Ralf Baechle <ralf@linux-mips.org>, Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org
+Message-ID: <20150513025600.DfLtvq0rtNLsmdg1P8ZnNPEgJKI-_9AEeBT7jqdwLS0@z>
 
 Hi Paul,
 
-Quoting Paul Burton (2015-04-24 06:17:26)
-> +static void __init jz4740_cgu_init(struct device_node *np)
+Quoting Paul Burton (2015-04-24 06:17:27)
+> +void jz4740_clock_set_wait_mode(enum jz4740_wait_mode mode)
 > +{
-> +       int retval;
+> +       uint32_t lcr = readl(cgu->base + CGU_REG_LCR);
 > +
-> +       cgu = ingenic_cgu_new(jz4740_cgu_clocks,
-> +                             ARRAY_SIZE(jz4740_cgu_clocks), np);
-> +       if (!cgu) {
-> +               pr_err("%s: failed to initialise CGU\n", __func__);
-> +               return;
+> +       switch (mode) {
+> +       case JZ4740_WAIT_MODE_IDLE:
+> +               lcr &= ~LCR_SLEEP;
+> +               break;
+> +
+> +       case JZ4740_WAIT_MODE_SLEEP:
+> +               lcr |= LCR_SLEEP;
+> +               break;
 > +       }
 > +
-> +       retval = ingenic_cgu_register_clocks(cgu);
-> +       if (retval)
-> +               pr_err("%s: failed to register CGU Clocks\n", __func__);
+> +       writel(lcr, cgu->base + CGU_REG_LCR);
 > +}
-> +CLK_OF_DECLARE(jz4740_cgu, "ingenic,jz4740-cgu", jz4740_cgu_init);
-> -- 
-> 2.3.5
-> 
 
-Patch looks good to me, but I have one question. Is it possible for you
-to have a proper platform_device for the cgu instead of relying on
-CLK_OF_DECLARE?
+What do these modes do? How are they used?
 
-For an example of a clock driver that does this, check out the bottom of
-drivers/clk/qcom/gcc-msm8660.c.
+Do you think the above function is a good candidate for .prepare and
+.unprepare callback?
 
 Regards,
 Mike

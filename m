@@ -1,22 +1,16 @@
-Received: from mail-ie0-f171.google.com ([209.85.223.171]:35149 "EHLO
-        mail-ie0-f171.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27010627AbbEMDHH5tG20 convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 13 May 2015 05:07:07 +0200
-Received: by iebpz10 with SMTP id pz10so20461910ieb.2
-        for <linux-mips@linux-mips.org>; Tue, 12 May 2015 20:07:04 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+Received: from mailapp01.imgtec.com ([195.59.15.196]:60354 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27011162AbbEMKvJ3vudy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 13 May 2015 12:51:09 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH RFC 1/9] MIPS: Add SysRq operation to dump TLBs on all CPUs
+Date: Wed, 13 May 2015 11:50:47 +0100
+Message-ID: <1431514255-3030-2-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1431514255-3030-1-git-send-email-james.hogan@imgtec.com>
+References: <1431514255-3030-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-From: Michael Turquette <mturquette@linaro.org>
-In-Reply-To: <1429881457-16016-29-git-send-email-paul.burton@imgtec.com>
-References: <1429881457-16016-1-git-send-email-paul.burton@imgtec.com>
- <1429881457-16016-29-git-send-email-paul.burton@imgtec.com>
-Message-ID: <20150513030652.20636.98939@quantum>
-Subject: Re: [PATCH v4 28/37] MIPS,
- clk: move jz4740 UDC auto suspend functions to jz4740-cgu
-Date: Tue, 12 May 2015 20:06:52 -0700
-Return-Path: <mturquette@linaro.org>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,27 +20,132 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Ralf Baechle <ralf@linux-mips.org>, Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org
-Message-ID: <20150513030652.zkxtzyEsuB5FTlJlHCXgat5OwsnrHAVtutCqVbpqzm0@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Cc: James Hogan <james.hogan@imgtec.com>
+Message-ID: <20150513105047.G6PRRv7S_MlhEzDYwYt-Mc2UwPj86765C54cXDirc8M@z>
 
-Hi Paul,
+Add a MIPS specific SysRq operation to dump the TLB entries on all CPUs,
+using the 'x' trigger key.
 
-Quoting Paul Burton (2015-04-24 06:17:28)
-> -void jz4740_clock_udc_disable_auto_suspend(void)
-> -{
-> -       jz_clk_reg_clear_bits(JZ_REG_CLOCK_GATE, JZ_CLOCK_GATE_UDC);
-> -}
-> -EXPORT_SYMBOL_GPL(jz4740_clock_udc_disable_auto_suspend);
-> -
-> -void jz4740_clock_udc_enable_auto_suspend(void)
-> -{
-> -       jz_clk_reg_set_bits(JZ_REG_CLOCK_GATE, JZ_CLOCK_GATE_UDC);
-> -}
-> -EXPORT_SYMBOL_GPL(jz4740_clock_udc_enable_auto_suspend);
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+---
+This was mainly for debug purposes, however I've included it for
+completeness as an RFC patch, in case others find it helpful.
+---
+ arch/mips/kernel/Makefile |  1 +
+ arch/mips/kernel/sysrq.c  | 77 +++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/tty/sysrq.c       |  1 +
+ 3 files changed, 79 insertions(+)
+ create mode 100644 arch/mips/kernel/sysrq.c
 
-I couldn't find a caller for these functions. Where and how are they
-used?
-
-Thanks,
-Mike
+diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
+index d3d2ff2d76dc..a2debcbedb6d 100644
+--- a/arch/mips/kernel/Makefile
++++ b/arch/mips/kernel/Makefile
+@@ -77,6 +77,7 @@ obj-$(CONFIG_MIPS32_O32)	+= binfmt_elfo32.o scall64-o32.o
+ 
+ obj-$(CONFIG_KGDB)		+= kgdb.o
+ obj-$(CONFIG_PROC_FS)		+= proc.o
++obj-$(CONFIG_MAGIC_SYSRQ)	+= sysrq.o
+ 
+ obj-$(CONFIG_64BIT)		+= cpu-bugs64.o
+ 
+diff --git a/arch/mips/kernel/sysrq.c b/arch/mips/kernel/sysrq.c
+new file mode 100644
+index 000000000000..5b539f5fc9d9
+--- /dev/null
++++ b/arch/mips/kernel/sysrq.c
+@@ -0,0 +1,77 @@
++/*
++ * MIPS specific sysrq operations.
++ *
++ * Copyright (C) 2015 Imagination Technologies Ltd.
++ */
++#include <linux/init.h>
++#include <linux/smp.h>
++#include <linux/spinlock.h>
++#include <linux/sysrq.h>
++#include <linux/workqueue.h>
++
++#include <asm/cpu-features.h>
++#include <asm/mipsregs.h>
++#include <asm/tlbdebug.h>
++
++/*
++ * Dump TLB entries on all CPUs.
++ */
++
++static DEFINE_SPINLOCK(show_lock);
++
++static void sysrq_tlbdump_single(void *dummy)
++{
++	const int field = 2 * sizeof(unsigned long);
++	unsigned long flags;
++
++	spin_lock_irqsave(&show_lock, flags);
++
++	pr_info("CPU%d:\n", smp_processor_id());
++	pr_info("Index	: %0x\n", read_c0_index());
++	pr_info("Pagemask: %0x\n", read_c0_pagemask());
++	pr_info("EntryHi : %0*lx\n", field, read_c0_entryhi());
++	pr_info("EntryLo0: %0*lx\n", field, read_c0_entrylo0());
++	pr_info("EntryLo1: %0*lx\n", field, read_c0_entrylo1());
++	pr_info("Wired   : %0x\n", read_c0_wired());
++	pr_info("Pagegrain: %0x\n", read_c0_pagegrain());
++	if (cpu_has_htw) {
++		pr_info("PWField : %0*lx\n", field, read_c0_pwfield());
++		pr_info("PWSize  : %0*lx\n", field, read_c0_pwsize());
++		pr_info("PWCtl   : %0x\n", read_c0_pwctl());
++	}
++	pr_info("\n");
++	dump_tlb_all();
++	pr_info("\n");
++
++	spin_unlock_irqrestore(&show_lock, flags);
++}
++
++#ifdef CONFIG_SMP
++static void sysrq_tlbdump_othercpus(struct work_struct *dummy)
++{
++	smp_call_function(sysrq_tlbdump_single, NULL, 0);
++}
++
++static DECLARE_WORK(sysrq_tlbdump, sysrq_tlbdump_othercpus);
++#endif
++
++static void sysrq_handle_tlbdump(int key)
++{
++	sysrq_tlbdump_single(NULL);
++#ifdef CONFIG_SMP
++	schedule_work(&sysrq_tlbdump);
++#endif
++}
++
++static struct sysrq_key_op sysrq_tlbdump_op = {
++	.handler        = sysrq_handle_tlbdump,
++	.help_msg       = "show-tlbs(x)",
++	.action_msg     = "Show TLB entries",
++	.enable_mask	= SYSRQ_ENABLE_DUMP,
++};
++
++static int __init mips_sysrq_init(void)
++{
++	return register_sysrq_key('x', &sysrq_tlbdump_op);
++}
++arch_initcall(mips_sysrq_init);
+diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+index 843f2cdc280b..8ba52e56bb8b 100644
+--- a/drivers/tty/sysrq.c
++++ b/drivers/tty/sysrq.c
+@@ -463,6 +463,7 @@ static struct sysrq_key_op *sysrq_key_table[36] = {
+ 	/* v: May be registered for frame buffer console restore */
+ 	NULL,				/* v */
+ 	&sysrq_showstate_blocked_op,	/* w */
++	/* x: May be registered on mips for TLB dump */
+ 	/* x: May be registered on ppc/powerpc for xmon */
+ 	/* x: May be registered on sparc64 for global PMU dump */
+ 	NULL,				/* x */
+-- 
+2.3.6

@@ -1,16 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:20280 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18120 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012138AbbEMW6sJxOv- (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 14 May 2015 00:58:48 +0200
-Message-ID: <5553D722.1030205@imgtec.com>
-Date: Wed, 13 May 2015 15:58:42 -0700
+        with ESMTP id S27026740AbbENBtbGOHtQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 14 May 2015 03:49:31 +0200
+Subject: [PATCH] MIPS: Flush cache after DMA_FROM_DEVICE for agressively
+ speculative CPUs
 From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Wed, 13 May 2015 18:49:24 -0700
+Message-ID: <20150514014924.36593.68642.stgit@ubuntu-yegoshin>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS64: 48 bit physaddr support in memory maps
-References: <20150513185519.27601.4253.stgit@ubuntu-yegoshin> <5553C68C.6000000@gmail.com>
-In-Reply-To: <5553C68C.6000000@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,24 +20,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, ralf@linux-mips.org
-Message-ID: <20150513225842.nNFeIcKWTZjldIFvbWFxN6Qjrb0hpBeMe4jGT6694v0@z>
+To: mina86@mina86.com, linux-mips@linux-mips.org, Zubair.Kakakhel@imgtec.com, ralf@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20150514014924.vWz0y8hDPdij2_NIFXk0eBv-gkzQxSQNHFj4BoUL2SY@z>
 
-On 05/13/2015 02:47 PM, David Daney wrote:
-> On 05/13/2015 11:55 AM, Leonid Yegoshin wrote:
->> Originally, it was set to 40bits only but I6400 has 48bits of physaddr.
->>
->
-> Why not go to the architectural limit of 59 bits?
->
+Some MIPS CPUs have an aggressive speculative load and may erroneuosly load
+some cache line in the middle of DMA transaction. CPU discards result but cache
+doesn't. If DMA happens from device then additional cache invalidation is needed
+on that CPU's after DMA.
 
-Because any physaddr should fit PTE and EntryLo register and we also 
-need 5 or 7 SW bits in PTE.
+Found in test.
 
-Even with fixed PTE bits layout from
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+---
+ arch/mips/mm/dma-default.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-     http://patchwork.linux-mips.org/patch/7613/
-
-we need 5 or 7 additional bits, so the real limit is 54. And 54 is 
-actually specified as a limit in EntryLo starting from MIPS R2.
+diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
+index 609d1241b0c4..ccf49ecfbf8c 100644
+--- a/arch/mips/mm/dma-default.c
++++ b/arch/mips/mm/dma-default.c
+@@ -67,11 +67,13 @@ static inline struct page *dma_addr_to_page(struct device *dev,
+  * systems and only the R10000 and R12000 are used in such systems, the
+  * SGI IP28 Indigo² rsp. SGI IP32 aka O2.
+  */
+-static inline int cpu_needs_post_dma_flush(struct device *dev)
++static inline int cpu_needs_post_dma_flush(struct device *dev,
++					   enum dma_data_direction direction)
+ {
+ 	return !plat_device_is_coherent(dev) &&
+ 	       (boot_cpu_type() == CPU_R10000 ||
+ 		boot_cpu_type() == CPU_R12000 ||
++		(cpu_has_maar && (direction != DMA_TO_DEVICE)) ||
+ 		boot_cpu_type() == CPU_BMIPS5000);
+ }
+ 
+@@ -255,7 +257,7 @@ static inline void __dma_sync(struct page *page,
+ static void mips_dma_unmap_page(struct device *dev, dma_addr_t dma_addr,
+ 	size_t size, enum dma_data_direction direction, struct dma_attrs *attrs)
+ {
+-	if (cpu_needs_post_dma_flush(dev))
++	if (cpu_needs_post_dma_flush(dev, direction))
+ 		__dma_sync(dma_addr_to_page(dev, dma_addr),
+ 			   dma_addr & ~PAGE_MASK, size, direction);
+ 	plat_post_dma_flush(dev);
+@@ -309,7 +311,7 @@ static void mips_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
+ static void mips_dma_sync_single_for_cpu(struct device *dev,
+ 	dma_addr_t dma_handle, size_t size, enum dma_data_direction direction)
+ {
+-	if (cpu_needs_post_dma_flush(dev))
++	if (cpu_needs_post_dma_flush(dev, direction))
+ 		__dma_sync(dma_addr_to_page(dev, dma_handle),
+ 			   dma_handle & ~PAGE_MASK, size, direction);
+ 	plat_post_dma_flush(dev);
+@@ -328,7 +330,7 @@ static void mips_dma_sync_sg_for_cpu(struct device *dev,
+ {
+ 	int i;
+ 
+-	if (cpu_needs_post_dma_flush(dev))
++	if (cpu_needs_post_dma_flush(dev, direction))
+ 		for (i = 0; i < nelems; i++, sg++)
+ 			__dma_sync(sg_page(sg), sg->offset, sg->length,
+ 				   direction);

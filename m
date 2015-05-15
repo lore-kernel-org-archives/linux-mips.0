@@ -1,18 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:49356 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27011458AbbENKAiFH4pD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 14 May 2015 12:00:38 +0200
-Message-ID: <55547238.1040005@imgtec.com>
-Date: Thu, 14 May 2015 11:00:24 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:6005 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27013392AbbEOBXVW0WmE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 15 May 2015 03:23:21 +0200
+Subject: [PATCH] MIPS64: Support of at least 48 bits of SEGBITS
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Thu, 14 May 2015 18:23:14 -0700
+Message-ID: <20150515012314.6819.30051.stgit@ubuntu-yegoshin>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] MIPS: malta-time: Don't switch RTC to BCD mode
-References: <1431519473-24049-1-git-send-email-james.hogan@imgtec.com> <1431519473-24049-2-git-send-email-james.hogan@imgtec.com> <alpine.LFD.2.11.1505131829580.1538@eddie.linux-mips.org> <20150513221956.GE7723@jhogan-linux.le.imgtec.org> <20150514084130.GE22815@NP-P-BURTON>
-In-Reply-To: <20150514084130.GE22815@NP-P-BURTON>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature";
-        boundary="cgWxPQq8Vudc0gGsAefU6AIKncMeOeh3f"
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,130 +19,109 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20150514100024.WI5y0Mjcy5L6_myDg9LmRa5Gf7WGwY5Y93l23XQ2T7A@z>
+To: aleksey.makarov@auriga.com, james.hogan@imgtec.com, paul.burton@imgtec.com, david.daney@cavium.com, peterz@infradead.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, ralf@linux-mips.org, davidlohr@hp.com, kirill@shutemov.name, akpm@linux-foundation.org, mingo@kernel.org
+Message-ID: <20150515012314.MzqT-yjdqMD9oxQhcykZ0MzPpbC00tlNSsfCkjd3HLY@z>
 
---cgWxPQq8Vudc0gGsAefU6AIKncMeOeh3f
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+SEGBITS default is 40 bits or less, depending from CPU type.
+This patch introduces 48bits of application virtual address (SEGBITS) support.
+It is defined only for 16K and 64K pages and is optional (configurable).
 
-On 14/05/15 09:44, Paul Burton wrote:
-> On Wed, May 13, 2015 at 11:19:56PM +0100, James Hogan wrote:
->> Hi Maciej,
->>
->> On Wed, May 13, 2015 at 07:03:51PM +0100, Maciej W. Rozycki wrote:
->>> On Wed, 13 May 2015, James Hogan wrote:
->>>
->>>> On Malta, the RTC is forced into binary coded decimal (BCD) mode dur=
-ing
->>>> init, even if the bootloader put it into binary mode (as YAMON does)=
-=2E
->>>> This can result in the RTC seconds being an invalid BCD (e.g.
->>>> 0x1a..0x1f) for up to 6 seconds.
->>>
->>>  Sigh.  No sooner I had fixed the breakage (with 636221b8 and a fat=20
->>> comment) it got put back (with a87ea88d).  Even though it's easily=20
->>> spotted as it breaks the system time (all the fields, including the d=
-ate=20
->>> too, not only the seconds!) across a reboot due to YAMON eagerly=20
->>> switching the mode back.  And that'd be the first item I'd check when=
-=20
->>> validating a change touching the RTC.
->>
->> Indeed, a quick bit of experimentation confirms a discrepancy before
->> this patch is applied before YAMON's "date" command and the RTC clock =
-as
->> read by Linux (with year, day of month, hour & minute all going 22 -> =
-16
->> (22 =3D=3D 0x16), and presumably different rates of time depending on =
-which
->> mode its in. After this patch it appears to work again as it should.
->>
->>>  Is there an actual need to reinitialise the RTC at all?  The RTC=20
->>> registers are readable, so the current configuration can be obtained,=
-=20
->>> the RTC driver copes with any valid arrangement, so can any other cod=
-e=20
->>> using the clock as a reference.
->>>
->>>  YAMON OTOH is not as flexible, its clock management commands expect =
-the=20
->>> format the monitor itself set the chip to, so I think the kernel has =
-to=20
->>> respect that (just as it doesn't randomly flip bits in the RTC on x86=
-=20
->>> PCs for example).
->>>
->>>  So unless proven otherwise I'll ask for `init_rtc' to be dropped=20
->>> altogether
->>
->> I suspect it comes down to what U-Boot does with RTC (possibly very
->> little), but I'll leave that to you and Paul to discuss.
->=20
-> The reason for init_rtc was touched upon in the commit message for
-> a87ea88d8f6c (MIPS: Malta: initialise the RTC at boot) but could perhap=
-s
-> have been clearer. Straight out of reset the RTC may not be running at
-> all, but the code in estimate_frequencies (note: not the RTC driver)
-> relies upon the RTC having been started. This was an issue when using
-> earlier builds of U-boot which didn't touch the RTC at all, and is stil=
-l
-> an issue if you do something like load the kernel via a JTAG probe
-> rather than using U-boot or YAMON. If the kernel doesn't ensure the RTC=
+Penalty - a small number of additional pages for generic (small) applications.
+But for 64K pages it adds 3rd level of PTE structure, which has a little
+impact during software TLB refill.
 
-> is started then it'll just hang in estimate_frequencies waiting for the=
+This patch is needed because MIPS I6XXX and P6XXX cores have 48 bit of
+virtual address in each segment (SEGBITS).
 
-> UIP bit to change even though it never will. YAMON isn't the only way t=
-o
-> boot on Malta, and dependencies such as this between the kernel & the
-> bootloader should really be minimised.
->=20
->>> and any changes required made to `estimate_frequencies'=20
->>> instead.  Which I believe you already did with 2/2.
->>
->> As long as the mode doesn't get changed, my change to
->> estimate_frequencies() should be happy enough. Before patch 2/2 it onl=
-y
->> reads UIP flag to try to time a single second, so it shouldn't have
->> cared about such details as the RTC mode.
->=20
-> ...and since it seems the U-boot & YAMON RTC drivers use it in differen=
-t
-> modes, I'd consider this patch reasonable. Feel free to have my:
->=20
->   Reviewed-by: Paul Burton <paul.burton@imgtec.com>
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+---
+ arch/mips/Kconfig                  |   10 ++++++++++
+ arch/mips/include/asm/pgtable-64.h |   18 +++++++++++-------
+ arch/mips/include/asm/processor.h  |    2 +-
+ 3 files changed, 22 insertions(+), 8 deletions(-)
 
-Thanks Paul,
-
-Assuming Maciej is satisfied I'll rewrite the commit message, add a
-stable tag, and resend.
-
-Cheers
-James
-
-
---cgWxPQq8Vudc0gGsAefU6AIKncMeOeh3f
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJVVHI/AAoJEGwLaZPeOHZ6GKEP/27cpDK9DKz7lm7PkYZhBwkQ
-uDX/2lYnkfVecVUYrtS4LVuGaZVVjDSQvzbCr+iefT9rEQOeBQJBcUJ1hM6WP0LE
-yjr1aEl8E3P65nkQRVyDpV4wuISRWNAVJr250X8p4vJLaLjE96rjcW4YDhTGq6Gc
-3M2ud4mFyU7c6htZ51tZGedz1xDbkO91oLEjHbDODc60f8nhQmm845rAY0SzaZzt
-EUbjiX2Qeg5JwbWzZWmHPZ6Al1QHEpJCsDSaNePaLYhHuWPIcIYqhKBSbiXgbGQ7
-ca4R9kwDZ8DDmrK+DFamD5hIpBk0Ircp1QJ+0hsvvr71IAFnepB9Uo5BXNbfHmKs
-aD2dPFksXh50RuWp30w52MzH+KpIn30MRAOWtgi/W7pSTIpNJuowDF6KJTHw4txM
-mtHA2+/r9tyb52kZCxvx8EehwKpcrsnA+oUDzqz+RNLsQ7o6an0pHMQAV58/iylH
-bI5SXjtuG6dZgBL498wNLeW4YU/mRXVNZtKjNHHhpG5nC6inkGTh/luIzFT7EKKd
-5Tc2RdA3V+HKffXYXrL1TCWJlx2gy3KHxkmTCDWACwqKVUXhl2mp91xSh7BLyww6
-V0TkQ42ljHCOQ3gs88K18CkLAe1vL5Qh2ItOhDoH208Dp5ggDFT6UAHE3wmZuUrv
-M/jLy9L1htnoDx12UB1v
-=Ednz
------END PGP SIGNATURE-----
-
---cgWxPQq8Vudc0gGsAefU6AIKncMeOeh3f--
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 76efb02ae99f..0a151a59a9ac 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2032,6 +2032,16 @@ config PAGE_SIZE_64KB
+ 
+ endchoice
+ 
++config 48VMBITS
++	bool "48 bits virtual memory"
++	depends on PAGE_SIZE_16KB || PAGE_SIZE_64KB
++	help
++	  Define a maximum at least 48 bits of application virtual memory.
++	  Default is 40 bits or less, depending from CPU.
++	  In generic (small) application it is a small set of pages increase
++	  in page tables.
++	  If unsure, say N.
++
+ config FORCE_MAX_ZONEORDER
+ 	int "Maximum zone order"
+ 	range 14 64 if MIPS_HUGE_TLB_SUPPORT && PAGE_SIZE_64KB
+diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
+index cf661a2fb141..c6b5473440e6 100644
+--- a/arch/mips/include/asm/pgtable-64.h
++++ b/arch/mips/include/asm/pgtable-64.h
+@@ -17,7 +17,7 @@
+ #include <asm/cachectl.h>
+ #include <asm/fixmap.h>
+ 
+-#ifdef CONFIG_PAGE_SIZE_64KB
++#if defined(CONFIG_PAGE_SIZE_64KB) && !defined(CONFIG_48VMBITS)
+ #include <asm-generic/pgtable-nopmd.h>
+ #else
+ #include <asm-generic/pgtable-nopud.h>
+@@ -90,7 +90,11 @@
+ #define PTE_ORDER		0
+ #endif
+ #ifdef CONFIG_PAGE_SIZE_16KB
+-#define PGD_ORDER		0
++#ifdef CONFIG_48VMBITS
++#define PGD_ORDER               1
++#else
++#define PGD_ORDER               0
++#endif
+ #define PUD_ORDER		aieeee_attempt_to_allocate_pud
+ #define PMD_ORDER		0
+ #define PTE_ORDER		0
+@@ -104,7 +108,11 @@
+ #ifdef CONFIG_PAGE_SIZE_64KB
+ #define PGD_ORDER		0
+ #define PUD_ORDER		aieeee_attempt_to_allocate_pud
++#ifdef CONFIG_48VMBITS
++#define PMD_ORDER		0
++#else
+ #define PMD_ORDER		aieeee_attempt_to_allocate_pmd
++#endif
+ #define PTE_ORDER		0
+ #endif
+ 
+@@ -114,11 +122,7 @@
+ #endif
+ #define PTRS_PER_PTE	((PAGE_SIZE << PTE_ORDER) / sizeof(pte_t))
+ 
+-#if PGDIR_SIZE >= TASK_SIZE64
+-#define USER_PTRS_PER_PGD	(1)
+-#else
+-#define USER_PTRS_PER_PGD	(TASK_SIZE64 / PGDIR_SIZE)
+-#endif
++#define USER_PTRS_PER_PGD       ((TASK_SIZE64 / PGDIR_SIZE)?(TASK_SIZE64 / PGDIR_SIZE):1)
+ #define FIRST_USER_ADDRESS	0UL
+ 
+ /*
+diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
+index 9b3b48e21c22..3ccb63eaa6c8 100644
+--- a/arch/mips/include/asm/processor.h
++++ b/arch/mips/include/asm/processor.h
+@@ -69,7 +69,7 @@ extern unsigned int vced_count, vcei_count;
+  * 8192EB ...
+  */
+ #define TASK_SIZE32	0x7fff8000UL
+-#define TASK_SIZE64	0x10000000000UL
++#define TASK_SIZE64     (0x1UL << cpu_data[0].vmbits)
+ #define TASK_SIZE (test_thread_flag(TIF_32BIT_ADDR) ? TASK_SIZE32 : TASK_SIZE64)
+ #define STACK_TOP_MAX	TASK_SIZE64
+ 

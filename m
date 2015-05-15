@@ -1,15 +1,24 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61708 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:44556 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013410AbbEOBeu5M-Eg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 15 May 2015 03:34:50 +0200
-Subject: [PATCH v2] MIPS64: Support of at least 48 bits of SEGBITS
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Thu, 14 May 2015 18:34:43 -0700
-Message-ID: <20150515013351.7450.12130.stgit@ubuntu-yegoshin>
+        with ESMTP id S27012525AbbEOSOT3Ue7F (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 15 May 2015 20:14:19 +0200
+Date: Fri, 15 May 2015 19:14:13 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH 1/2] MIPS: malta-time: Don't switch RTC to BCD mode
+Message-ID: <20150515181413.GA30774@NP-P-BURTON>
+References: <1431519473-24049-1-git-send-email-james.hogan@imgtec.com>
+ <1431519473-24049-2-git-send-email-james.hogan@imgtec.com>
+ <alpine.LFD.2.11.1505131829580.1538@eddie.linux-mips.org>
+ <20150513221956.GE7723@jhogan-linux.le.imgtec.org>
+ <20150514084130.GE22815@NP-P-BURTON>
+ <55547238.1040005@imgtec.com>
+ <alpine.LFD.2.11.1505141122380.19904@eddie.linux-mips.org>
+ <20150515180351.GE2322@linux-mips.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Disposition: inline
+In-Reply-To: <20150515180351.GE2322@linux-mips.org>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,116 +28,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: aleksey.makarov@auriga.com, james.hogan@imgtec.com, paul.burton@imgtec.com, david.daney@cavium.com, peterz@infradead.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, ralf@linux-mips.org, davidlohr@hp.com, kirill@shutemov.name, akpm@linux-foundation.org, mingo@kernel.org
-Message-ID: <20150515013443.DUgFf8lDZGcHPZNyGXt4SpR6BSyzJFusxgAVCi5PHYs@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: "Maciej W. Rozycki" <macro@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20150515181413.ZIXf1X8OEsd8C-lLkmZr7U1sb_CdrLgaTvthnLJLs3U@z>
 
-SEGBITS default is 40 bits or less, depending from CPU type.
-This patch introduces 48bits of application virtual address (SEGBITS) support.
-It is defined only for 16K and 64K pages and is optional (configurable).
+On Fri, May 15, 2015 at 08:03:51PM +0200, Ralf Baechle wrote:
+> >  I'd prefer RTC state not to be touched at all if its state is sane.  
+> > That is read Register B, check for the only valid divider setting 
+> > (32kHz), and if so then exit right away, and otherwise initialise the 
+> > chip from scratch.  Consistency with YAMON might be a good idea in that 
+> > initialisation, but I have no strong feeling towards that.  If you think 
+> > there's value in having the chip set to the BCD mode, then feel free to 
+> > keep that option.
+> > 
+> >  Note that any inhibition of the RTC previously initialised by 
+> > temporarily setting the SET bit in Register B during bootstrap will 
+> > disturb timekeeping that the system may carry over reset using 
+> > adjtimex(8).
+> 
+> So you're instead suggesting to revoke a87ea88d8f6c ?
+> 
+> If YAMON and U-Boot are differing in RTC handling then I suggest to
+> treat that as a U-Boot bug. YAMON was there first.
 
-Penalty - a small number of additional pages for generic (small) applications.
-But for 64K pages it adds 3rd level of PTE structure, which has a little
-impact during software TLB refill.
+That would be fair enough, and is why I added RTC handling to Malta
+U-boot at all. I could see logic in suggesting U-boot be changed to use
+the binary mode instead of BCD. But...
 
-This patch is needed because MIPS I6XXX and P6XXX cores have 48 bit of
-virtual address in each segment (SEGBITS).
+> However these Malta kernels are also frequently booted without firmware
+> in Qemu. No idea how Qemu initializes the RTC.
 
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
----
-V2: Added correction for defintion of TASK_SIZE64
----
- arch/mips/Kconfig                  |   11 +++++++++++
- arch/mips/include/asm/pgtable-64.h |   18 +++++++++++-------
- arch/mips/include/asm/processor.h  |    6 +++++-
- 3 files changed, 27 insertions(+), 8 deletions(-)
+...kernels can also be booted on real Malta boards with minimal prodding
+over JTAG, and the RTC is one more thing that you need to prod if the
+kernel doesn't ensure it's running. That's what motivated a87ea88d8f6c
+and the other patches from the same series at all.
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 76efb02ae99f..3acff2f065e9 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2032,6 +2032,17 @@ config PAGE_SIZE_64KB
- 
- endchoice
- 
-+config 48VMBITS
-+	bool "48 bits virtual memory"
-+	depends on PAGE_SIZE_16KB || PAGE_SIZE_64KB
-+	depends on 64BIT
-+	help
-+	  Define a maximum at least 48 bits of application virtual memory.
-+	  Default is 40 bits or less, depending from CPU.
-+	  In generic (small) application it is a small set of pages increase
-+	  in page tables.
-+	  If unsure, say N.
-+
- config FORCE_MAX_ZONEORDER
- 	int "Maximum zone order"
- 	range 14 64 if MIPS_HUGE_TLB_SUPPORT && PAGE_SIZE_64KB
-diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
-index cf661a2fb141..c6b5473440e6 100644
---- a/arch/mips/include/asm/pgtable-64.h
-+++ b/arch/mips/include/asm/pgtable-64.h
-@@ -17,7 +17,7 @@
- #include <asm/cachectl.h>
- #include <asm/fixmap.h>
- 
--#ifdef CONFIG_PAGE_SIZE_64KB
-+#if defined(CONFIG_PAGE_SIZE_64KB) && !defined(CONFIG_48VMBITS)
- #include <asm-generic/pgtable-nopmd.h>
- #else
- #include <asm-generic/pgtable-nopud.h>
-@@ -90,7 +90,11 @@
- #define PTE_ORDER		0
- #endif
- #ifdef CONFIG_PAGE_SIZE_16KB
--#define PGD_ORDER		0
-+#ifdef CONFIG_48VMBITS
-+#define PGD_ORDER               1
-+#else
-+#define PGD_ORDER               0
-+#endif
- #define PUD_ORDER		aieeee_attempt_to_allocate_pud
- #define PMD_ORDER		0
- #define PTE_ORDER		0
-@@ -104,7 +108,11 @@
- #ifdef CONFIG_PAGE_SIZE_64KB
- #define PGD_ORDER		0
- #define PUD_ORDER		aieeee_attempt_to_allocate_pud
-+#ifdef CONFIG_48VMBITS
-+#define PMD_ORDER		0
-+#else
- #define PMD_ORDER		aieeee_attempt_to_allocate_pmd
-+#endif
- #define PTE_ORDER		0
- #endif
- 
-@@ -114,11 +122,7 @@
- #endif
- #define PTRS_PER_PTE	((PAGE_SIZE << PTE_ORDER) / sizeof(pte_t))
- 
--#if PGDIR_SIZE >= TASK_SIZE64
--#define USER_PTRS_PER_PGD	(1)
--#else
--#define USER_PTRS_PER_PGD	(TASK_SIZE64 / PGDIR_SIZE)
--#endif
-+#define USER_PTRS_PER_PGD       ((TASK_SIZE64 / PGDIR_SIZE)?(TASK_SIZE64 / PGDIR_SIZE):1)
- #define FIRST_USER_ADDRESS	0UL
- 
- /*
-diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
-index 9b3b48e21c22..bd2030f32ea4 100644
---- a/arch/mips/include/asm/processor.h
-+++ b/arch/mips/include/asm/processor.h
-@@ -69,7 +69,11 @@ extern unsigned int vced_count, vcei_count;
-  * 8192EB ...
-  */
- #define TASK_SIZE32	0x7fff8000UL
--#define TASK_SIZE64	0x10000000000UL
-+#ifdef CONFIG_48VMBITS
-+#define TASK_SIZE64     (0x1UL << ((cpu_data[0].vmbits>48)?48:cpu_data[0].vmbits))
-+#else
-+#define TASK_SIZE64     (0x10000000000UL)
-+#endif
- #define TASK_SIZE (test_thread_flag(TIF_32BIT_ADDR) ? TASK_SIZE32 : TASK_SIZE64)
- #define STACK_TOP_MAX	TASK_SIZE64
- 
+Thanks,
+    Paul

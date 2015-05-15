@@ -1,24 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44556 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:12841 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012525AbbEOSOT3Ue7F (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 15 May 2015 20:14:19 +0200
-Date: Fri, 15 May 2015 19:14:13 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 1/2] MIPS: malta-time: Don't switch RTC to BCD mode
-Message-ID: <20150515181413.GA30774@NP-P-BURTON>
-References: <1431519473-24049-1-git-send-email-james.hogan@imgtec.com>
- <1431519473-24049-2-git-send-email-james.hogan@imgtec.com>
- <alpine.LFD.2.11.1505131829580.1538@eddie.linux-mips.org>
- <20150513221956.GE7723@jhogan-linux.le.imgtec.org>
- <20150514084130.GE22815@NP-P-BURTON>
- <55547238.1040005@imgtec.com>
- <alpine.LFD.2.11.1505141122380.19904@eddie.linux-mips.org>
- <20150515180351.GE2322@linux-mips.org>
+        with ESMTP id S27012621AbbEOVC7aYZ3P (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 15 May 2015 23:02:59 +0200
+Message-ID: <55565EC0.9030102@imgtec.com>
+Date: Fri, 15 May 2015 14:01:52 -0700
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20150515180351.GE2322@linux-mips.org>
-Return-Path: <Paul.Burton@imgtec.com>
+Subject: Re: [PATCH v2] MIPS64: Support of at least 48 bits of SEGBITS
+References: <20150515013351.7450.12130.stgit@ubuntu-yegoshin> <55565BDF.6050503@gmail.com>
+In-Reply-To: <55565BDF.6050503@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -28,40 +21,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: "Maciej W. Rozycki" <macro@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20150515181413.ZIXf1X8OEsd8C-lLkmZr7U1sb_CdrLgaTvthnLJLs3U@z>
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: aleksey.makarov@auriga.com, james.hogan@imgtec.com, paul.burton@imgtec.com, david.daney@cavium.com, peterz@infradead.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, ralf@linux-mips.org, davidlohr@hp.com, kirill@shutemov.name, akpm@linux-foundation.org, mingo@kernel.org
+Message-ID: <20150515210152.emUtHcT-z94W9bg7Bc9NfNsKfnuM1eLNRuR42PvU6xg@z>
 
-On Fri, May 15, 2015 at 08:03:51PM +0200, Ralf Baechle wrote:
-> >  I'd prefer RTC state not to be touched at all if its state is sane.  
-> > That is read Register B, check for the only valid divider setting 
-> > (32kHz), and if so then exit right away, and otherwise initialise the 
-> > chip from scratch.  Consistency with YAMON might be a good idea in that 
-> > initialisation, but I have no strong feeling towards that.  If you think 
-> > there's value in having the chip set to the BCD mode, then feel free to 
-> > keep that option.
-> > 
-> >  Note that any inhibition of the RTC previously initialised by 
-> > temporarily setting the SET bit in Register B during bootstrap will 
-> > disturb timekeeping that the system may carry over reset using 
-> > adjtimex(8).
-> 
-> So you're instead suggesting to revoke a87ea88d8f6c ?
-> 
-> If YAMON and U-Boot are differing in RTC handling then I suggest to
-> treat that as a U-Boot bug. YAMON was there first.
+On 05/15/2015 01:49 PM, David Daney wrote:
+> On 05/14/2015 06:34 PM, Leonid Yegoshin wrote:
+>> SEGBITS default is 40 bits or less, depending from CPU type.
+>> This patch introduces 48bits of application virtual address (SEGBITS) 
+>> support.
+>> It is defined only for 16K and 64K pages and is optional (configurable).
+>>
+>> Penalty - a small number of additional pages for generic (small) 
+>> applications.
+>> But for 64K pages it adds 3rd level of PTE structure, which has a little
+>> impact during software TLB refill.
+>>
+>> This patch is needed because MIPS I6XXX and P6XXX cores have 48 bit of
+>> virtual address in each segment (SEGBITS).
+>>
+>
+> Those processors don't require the patch.  You wrote the patch to give 
+> a larger VA space at the request of kernel users.  So perhaps say:
+>
+>   The patch (optionally) increases the VA space available to userspace 
+> processes from N-bits to 48-bits
+>
 
-That would be fair enough, and is why I added RTC handling to Malta
-U-boot at all. I could see logic in suggesting U-boot be changed to use
-the binary mode instead of BCD. But...
+... if CPU model supports that
 
-> However these Malta kernels are also frequently booted without firmware
-> in Qemu. No idea how Qemu initializes the RTC.
+>
+>>
+>> +config 48VMBITS
+>
+> Should probabaly be called VABITS instead of VMBITS to match the terms 
+> used in the architecture reference manuals, as well as other ports 
+> (ARM64).
+>
+> Perhaps MIPS_VA_BITS_48
 
-...kernels can also be booted on real Malta boards with minimal prodding
-over JTAG, and the RTC is one more thing that you need to prod if the
-kernel doesn't ensure it's running. That's what motivated a87ea88d8f6c
-and the other patches from the same series at all.
+I don't mind here. It can be even called 48SEGBITS or so, to match arch 
+manual more. MIPS Arch manual never says about VA bits but speaks about 
+PABITS and SEGBITS.
 
-Thanks,
-    Paul
+- Leonid.

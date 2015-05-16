@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61411 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:9339 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012643AbbEOWmBa4XVi (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 16 May 2015 00:42:01 +0200
-Message-ID: <555675BA.9000700@imgtec.com>
-Date: Fri, 15 May 2015 15:39:54 -0700
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+        with ESMTP id S27012281AbbEPRJkZ7w9R (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 16 May 2015 19:09:40 +0200
+Message-ID: <555778D3.4030607@imgtec.com>
+Date: Sat, 16 May 2015 14:05:23 -0300
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] MIPS64: Support of at least 48 bits of SEGBITS
-References: <20150515013351.7450.12130.stgit@ubuntu-yegoshin> <20150515215320.GI2322@linux-mips.org>
-In-Reply-To: <20150515215320.GI2322@linux-mips.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Subject: Re: [PATCH v2] pwm: img: Impose upper and lower timebase steps value
+References: <1431035961-2008-1-git-send-email-ezequiel.garcia@imgtec.com> <1431121651-6787-1-git-send-email-ezequiel.garcia@imgtec.com>
+In-Reply-To: <1431121651-6787-1-git-send-email-ezequiel.garcia@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Return-Path: <Ezequiel.Garcia@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,30 +21,202 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: aleksey.makarov@auriga.com, james.hogan@imgtec.com, paul.burton@imgtec.com, david.daney@cavium.com, peterz@infradead.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, davidlohr@hp.com, kirill@shutemov.name, akpm@linux-foundation.org, mingo@kernel.org
-Message-ID: <20150515223954.RuiAdbVtuu9yZFg7RvnbGdAxiiz1Pl3RICKFKpQpX04@z>
+To: linux-pwm@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>
+Cc: Naidu Tellapati <naidu.tellapati@imgtec.com>, James Hartley <james.hartley@imgtec.com>, linux-mips@linux-mips.org, sai.masarapu@imgtec.com, arul.ramasamy@imgtec.com
+Message-ID: <20150516170523.UA4ahZaJBGjWCrrEDk3oPDyyrD5izQU_ILYXFmF60Bw@z>
 
-On 05/15/2015 02:53 PM, Ralf Baechle wrote:
-> On Thu, May 14, 2015 at 06:34:43PM -0700, Leonid Yegoshin wrote:
->
-> The order 1 allocation for the PGD are concerning me a little.  On a
-> system under even moderate memory pressure that might become a bit of
-> a reliability or performance issue.
->
-> With 4kB pages we already need order 1 or even 2 allocations for the
-> allocation of the stack and some folks have reported that to be an issue
-> so we may have to start using the PUD for very large VA spaces.
->
->    Ralf
+Thierry,
 
-I don't think it is an issue here - people, who wants to exercise 256 
-TERABAIT of memory PER PROCESS may even doesn't note that they have PGD 
-= 2 pages. It is definitely not for systems with 4GB physmemory.
+On 05/08/2015 06:47 PM, Ezequiel Garcia wrote:
+> From: Naidu Tellapati <naidu.tellapati@imgtec.com>
+> 
+> The PWM hardware on Pistachio platform has a maximum timebase steps
+> value to 255. To fix it, let's introduce a compatible-specific
+> data structure to contain the SoC-specific details and use it to
+> specify a maximum timebase.
+> 
+> Also, let's limit the minimum timebase to 16 steps, to allow a sane
+> range of duty cycle steps.
+> 
+> Fixes: 277bb6a29e00 ("pwm: Imagination Technologies PWM DAC driver")
+> Signed-off-by: Naidu Tellapati <naidu.tellapati@imgtec.com>
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+> ---
+> This patch is needed for the pwm-img to work properly, so it should be
+> pushed as a v4.1-rc fix.
+> 
 
-I also recommend for low memory to look into CONFIG_COMPACTION, it may 
-be a great help for them here, look into mm/vmscan.c, 
-in_reclaim_compaction().
+Any chance you push this patch as a fix for v4.1?
 
-Besides that, I defined this feature for 16KB and 64KB pages only, not 
-for 4KB.
+Thanks!
+
+> Changes from v1:
+> 
+>  * After some investigation, we found the hardware has no lower limit
+>    for the timebase. However, it still makes sense to have limit it,
+>    to allow a sane duty cycle resolution. Updated the commit log and added
+>    some comments to the driver explaining this.
+> 
+>  * Minor style fixes.
+> 
+>  drivers/pwm/pwm-img.c | 76 +++++++++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 64 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+> index 476171a..8a029f9 100644
+> --- a/drivers/pwm/pwm-img.c
+> +++ b/drivers/pwm/pwm-img.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pwm.h>
+>  #include <linux/regmap.h>
+> @@ -38,7 +39,22 @@
+>  #define PERIP_PWM_PDM_CONTROL_CH_MASK		0x1
+>  #define PERIP_PWM_PDM_CONTROL_CH_SHIFT(ch)	((ch) * 4)
+>  
+> -#define MAX_TMBASE_STEPS			65536
+> +/*
+> + * PWM period is specified with a timebase register,
+> + * in number of step periods. The PWM duty cycle is also
+> + * specified in step periods, in the [0, $timebase] range.
+> + * In other words, the timebase imposes the duty cycle
+> + * resolution. Therefore, let's constraint the timebase to
+> + * a minimum value to allow a sane range of duty cycle values.
+> + * Imposing a minimum timebase, will impose a maximum PWM frequency.
+> + *
+> + * The value chosen is completely arbitrary.
+> + */
+> +#define MIN_TMBASE_STEPS			16
+> +
+> +struct img_pwm_soc_data {
+> +	u32 max_timebase;
+> +};
+>  
+>  struct img_pwm_chip {
+>  	struct device	*dev;
+> @@ -47,6 +63,9 @@ struct img_pwm_chip {
+>  	struct clk	*sys_clk;
+>  	void __iomem	*base;
+>  	struct regmap	*periph_regs;
+> +	int		max_period_ns;
+> +	int		min_period_ns;
+> +	const struct img_pwm_soc_data   *data;
+>  };
+>  
+>  static inline struct img_pwm_chip *to_img_pwm_chip(struct pwm_chip *chip)
+> @@ -72,24 +91,31 @@ static int img_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+>  	u32 val, div, duty, timebase;
+>  	unsigned long mul, output_clk_hz, input_clk_hz;
+>  	struct img_pwm_chip *pwm_chip = to_img_pwm_chip(chip);
+> +	unsigned int max_timebase = pwm_chip->data->max_timebase;
+> +
+> +	if (period_ns < pwm_chip->min_period_ns ||
+> +	    period_ns > pwm_chip->max_period_ns) {
+> +		dev_err(chip->dev, "configured period not in range\n");
+> +		return -ERANGE;
+> +	}
+>  
+>  	input_clk_hz = clk_get_rate(pwm_chip->pwm_clk);
+>  	output_clk_hz = DIV_ROUND_UP(NSEC_PER_SEC, period_ns);
+>  
+>  	mul = DIV_ROUND_UP(input_clk_hz, output_clk_hz);
+> -	if (mul <= MAX_TMBASE_STEPS) {
+> +	if (mul <= max_timebase) {
+>  		div = PWM_CTRL_CFG_NO_SUB_DIV;
+>  		timebase = DIV_ROUND_UP(mul, 1);
+> -	} else if (mul <= MAX_TMBASE_STEPS * 8) {
+> +	} else if (mul <= max_timebase * 8) {
+>  		div = PWM_CTRL_CFG_SUB_DIV0;
+>  		timebase = DIV_ROUND_UP(mul, 8);
+> -	} else if (mul <= MAX_TMBASE_STEPS * 64) {
+> +	} else if (mul <= max_timebase * 64) {
+>  		div = PWM_CTRL_CFG_SUB_DIV1;
+>  		timebase = DIV_ROUND_UP(mul, 64);
+> -	} else if (mul <= MAX_TMBASE_STEPS * 512) {
+> +	} else if (mul <= max_timebase * 512) {
+>  		div = PWM_CTRL_CFG_SUB_DIV0_DIV1;
+>  		timebase = DIV_ROUND_UP(mul, 512);
+> -	} else if (mul > MAX_TMBASE_STEPS * 512) {
+> +	} else if (mul > max_timebase * 512) {
+>  		dev_err(chip->dev,
+>  			"failed to configure timebase steps/divider value\n");
+>  		return -EINVAL;
+> @@ -143,11 +169,27 @@ static const struct pwm_ops img_pwm_ops = {
+>  	.owner = THIS_MODULE,
+>  };
+>  
+> +static const struct img_pwm_soc_data pistachio_pwm = {
+> +	.max_timebase = 255,
+> +};
+> +
+> +static const struct of_device_id img_pwm_of_match[] = {
+> +	{
+> +		.compatible = "img,pistachio-pwm",
+> +		.data = &pistachio_pwm,
+> +	},
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, img_pwm_of_match);
+> +
+>  static int img_pwm_probe(struct platform_device *pdev)
+>  {
+>  	int ret;
+> +	u64 val;
+> +	unsigned long clk_rate;
+>  	struct resource *res;
+>  	struct img_pwm_chip *pwm;
+> +	const struct of_device_id *of_dev_id;
+>  
+>  	pwm = devm_kzalloc(&pdev->dev, sizeof(*pwm), GFP_KERNEL);
+>  	if (!pwm)
+> @@ -160,6 +202,11 @@ static int img_pwm_probe(struct platform_device *pdev)
+>  	if (IS_ERR(pwm->base))
+>  		return PTR_ERR(pwm->base);
+>  
+> +	of_dev_id = of_match_device(img_pwm_of_match, &pdev->dev);
+> +	if (!of_dev_id)
+> +		return -ENODEV;
+> +	pwm->data = of_dev_id->data;
+> +
+>  	pwm->periph_regs = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
+>  							   "img,cr-periph");
+>  	if (IS_ERR(pwm->periph_regs))
+> @@ -189,6 +236,17 @@ static int img_pwm_probe(struct platform_device *pdev)
+>  		goto disable_sysclk;
+>  	}
+>  
+> +	clk_rate = clk_get_rate(pwm->pwm_clk);
+> +
+> +	/* The maximum input clock divider is 512 */
+> +	val = (u64)NSEC_PER_SEC * 512 * pwm->data->max_timebase;
+> +	do_div(val, clk_rate);
+> +	pwm->max_period_ns = val;
+> +
+> +	val = (u64)NSEC_PER_SEC * MIN_TMBASE_STEPS;
+> +	do_div(val, clk_rate);
+> +	pwm->min_period_ns = val;
+> +
+>  	pwm->chip.dev = &pdev->dev;
+>  	pwm->chip.ops = &img_pwm_ops;
+>  	pwm->chip.base = -1;
+> @@ -228,12 +286,6 @@ static int img_pwm_remove(struct platform_device *pdev)
+>  	return pwmchip_remove(&pwm_chip->chip);
+>  }
+>  
+> -static const struct of_device_id img_pwm_of_match[] = {
+> -	{ .compatible = "img,pistachio-pwm", },
+> -	{ }
+> -};
+> -MODULE_DEVICE_TABLE(of, img_pwm_of_match);
+> -
+>  static struct platform_driver img_pwm_driver = {
+>  	.driver = {
+>  		.name = "img-pwm",
+> 
+
+-- 
+Ezequiel

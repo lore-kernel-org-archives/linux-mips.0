@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:36327 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:51671 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013542AbbESIvNLZAjP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 19 May 2015 10:51:13 +0200
+        with ESMTP id S27013547AbbESIvON89r4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 19 May 2015 10:51:14 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH v2 06/10] MIPS: dump_tlb: Make use of EntryLo bit definitions
-Date: Tue, 19 May 2015 09:50:34 +0100
-Message-ID: <1432025438-26431-7-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH v2 08/10] MIPS: dump_tlb: Take EHINV bit into account
+Date: Tue, 19 May 2015 09:50:36 +0100
+Message-ID: <1432025438-26431-9-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1432025438-26431-1-git-send-email-james.hogan@imgtec.com>
 References: <1432025438-26431-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -21,79 +21,38 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
-Message-ID: <20150519085034.pyk_zinkBdGotbZLHu7-Whd4Z1fbFojGc6QelitVluE@z>
+Cc: James Hogan <james.hogan@imgtec.com>
+Message-ID: <20150519085036.RMQdnwGxw47IcRT-ektWqHGar-NqZKoThPaaLNGj__4@z>
 
-Make use of recently added EntryLo bit definitions in mipsregs.h when
-dumping TLB contents.
+The EHINV bit in EntryHi allows a TLB entry to be properly marked
+invalid so that EntryHi doesn't have to be set to a unique value to
+avoid machine check exceptions due to multiple matching entries.
+
+Unfortunately dump_tlb() doesn't take this into account so it will print
+all the uninteresting invalid TLB entries if the current ASID happens to
+be 00. Therefore add a condition to skip entries which are marked
+invalid with the EHINV bit.
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Maciej W. Rozycki <macro@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 ---
-Changes in v2:
-- New patch (Maciej).
----
- arch/mips/lib/dump_tlb.c     | 16 ++++++++--------
- arch/mips/lib/r3k_dump_tlb.c |  8 ++++----
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ arch/mips/lib/dump_tlb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/arch/mips/lib/dump_tlb.c b/arch/mips/lib/dump_tlb.c
-index 17d05caa776d..f02cc554d720 100644
+index 995c393e3342..3bcdd53c832f 100644
 --- a/arch/mips/lib/dump_tlb.c
 +++ b/arch/mips/lib/dump_tlb.c
-@@ -81,8 +81,8 @@ static void dump_tlb(int first, int last)
- 		 */
- 		printk("Index: %2d pgmask=%s ", i, msk2str(pagemask));
+@@ -67,6 +67,9 @@ static void dump_tlb(int first, int last)
+ 		entrylo0 = read_c0_entrylo0();
+ 		entrylo1 = read_c0_entrylo1();
  
--		c0 = (entrylo0 >> 3) & 7;
--		c1 = (entrylo1 >> 3) & 7;
-+		c0 = (entrylo0 & MIPS_ENTRYLO_C) >> MIPS_ENTRYLO_C_SHIFT;
-+		c1 = (entrylo1 & MIPS_ENTRYLO_C) >> MIPS_ENTRYLO_C_SHIFT;
- 
- 		printk("va=%0*lx asid=%02lx\n",
- 		       width, (entryhi & ~0x1fffUL),
-@@ -90,15 +90,15 @@ static void dump_tlb(int first, int last)
- 		printk("\t[pa=%0*llx c=%d d=%d v=%d g=%d] ",
- 		       width,
- 		       (entrylo0 << 6) & PAGE_MASK, c0,
--		       (entrylo0 & 4) ? 1 : 0,
--		       (entrylo0 & 2) ? 1 : 0,
--		       (entrylo0 & 1) ? 1 : 0);
-+		       (entrylo0 & MIPS_ENTRYLO_D) ? 1 : 0,
-+		       (entrylo0 & MIPS_ENTRYLO_V) ? 1 : 0,
-+		       (entrylo0 & MIPS_ENTRYLO_G) ? 1 : 0);
- 		printk("[pa=%0*llx c=%d d=%d v=%d g=%d]\n",
- 		       width,
- 		       (entrylo1 << 6) & PAGE_MASK, c1,
--		       (entrylo1 & 4) ? 1 : 0,
--		       (entrylo1 & 2) ? 1 : 0,
--		       (entrylo1 & 1) ? 1 : 0);
-+		       (entrylo1 & MIPS_ENTRYLO_D) ? 1 : 0,
-+		       (entrylo1 & MIPS_ENTRYLO_V) ? 1 : 0,
-+		       (entrylo1 & MIPS_ENTRYLO_G) ? 1 : 0);
- 	}
- 	printk("\n");
- 
-diff --git a/arch/mips/lib/r3k_dump_tlb.c b/arch/mips/lib/r3k_dump_tlb.c
-index 975a13855116..e210f04b2bc3 100644
---- a/arch/mips/lib/r3k_dump_tlb.c
-+++ b/arch/mips/lib/r3k_dump_tlb.c
-@@ -47,10 +47,10 @@ static void dump_tlb(int first, int last)
- 			       entryhi & PAGE_MASK,
- 			       entryhi & ASID_MASK,
- 			       entrylo0 & PAGE_MASK,
--			       (entrylo0 & (1 << 11)) ? 1 : 0,
--			       (entrylo0 & (1 << 10)) ? 1 : 0,
--			       (entrylo0 & (1 << 9)) ? 1 : 0,
--			       (entrylo0 & (1 << 8)) ? 1 : 0);
-+			       (entrylo0 & R3K_ENTRYLO_N) ? 1 : 0,
-+			       (entrylo0 & R3K_ENTRYLO_D) ? 1 : 0,
-+			       (entrylo0 & R3K_ENTRYLO_V) ? 1 : 0,
-+			       (entrylo0 & R3K_ENTRYLO_G) ? 1 : 0);
- 		}
- 	}
- 	printk("\n");
++		/* EHINV bit marks entire entry as invalid */
++		if (cpu_has_tlbinv && entryhi & MIPS_ENTRYHI_EHINV)
++			continue;
+ 		/*
+ 		 * Prior to tlbinv, unused entries have a virtual address of
+ 		 * CKSEG0.
 -- 
 2.3.6

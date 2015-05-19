@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24531 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:36327 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013498AbbESIvLuEyP1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 19 May 2015 10:51:11 +0200
+        with ESMTP id S27013542AbbESIvNLZAjP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 19 May 2015 10:51:13 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH v2 04/10] MIPS: dump_tlb: Use tlbr hazard macros
-Date: Tue, 19 May 2015 09:50:32 +0100
-Message-ID: <1432025438-26431-5-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH v2 06/10] MIPS: dump_tlb: Make use of EntryLo bit definitions
+Date: Tue, 19 May 2015 09:50:34 +0100
+Message-ID: <1432025438-26431-7-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1432025438-26431-1-git-send-email-james.hogan@imgtec.com>
 References: <1432025438-26431-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -21,60 +21,79 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>
-Message-ID: <20150519085032.hSXpcGsvjjebHxHUiKC8eklRE_N5W9eK_F-ripVCKT4@z>
+Cc: James Hogan <james.hogan@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
+Message-ID: <20150519085034.pyk_zinkBdGotbZLHu7-Whd4Z1fbFojGc6QelitVluE@z>
 
-Use the new tlb read hazard macros from <asm/hazards.h> rather than the
-local BARRIER() macro which uses 7 ops regardless of the kernel
-configuration.
-
-We use mtc0_tlbr_hazard for the hazard between mtc0 to the index
-register and the tlbr, and tlb_read_hazard for the hazard between the
-tlbr and the mfc0 of the TLB registers written by tlbr.
+Make use of recently added EntryLo bit definitions in mipsregs.h when
+dumping TLB contents.
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Maciej W. Rozycki <macro@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 ---
- arch/mips/lib/dump_tlb.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+Changes in v2:
+- New patch (Maciej).
+---
+ arch/mips/lib/dump_tlb.c     | 16 ++++++++--------
+ arch/mips/lib/r3k_dump_tlb.c |  8 ++++----
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/arch/mips/lib/dump_tlb.c b/arch/mips/lib/dump_tlb.c
-index 32b9f21bfd85..a62dfacb60f7 100644
+index 17d05caa776d..f02cc554d720 100644
 --- a/arch/mips/lib/dump_tlb.c
 +++ b/arch/mips/lib/dump_tlb.c
-@@ -7,6 +7,7 @@
- #include <linux/kernel.h>
- #include <linux/mm.h>
+@@ -81,8 +81,8 @@ static void dump_tlb(int first, int last)
+ 		 */
+ 		printk("Index: %2d pgmask=%s ", i, msk2str(pagemask));
  
-+#include <asm/hazards.h>
- #include <asm/mipsregs.h>
- #include <asm/page.h>
- #include <asm/pgtable.h>
-@@ -40,12 +41,6 @@ static inline const char *msk2str(unsigned int mask)
- 	return "";
- }
+-		c0 = (entrylo0 >> 3) & 7;
+-		c1 = (entrylo1 >> 3) & 7;
++		c0 = (entrylo0 & MIPS_ENTRYLO_C) >> MIPS_ENTRYLO_C_SHIFT;
++		c1 = (entrylo1 & MIPS_ENTRYLO_C) >> MIPS_ENTRYLO_C_SHIFT;
  
--#define BARRIER()					\
--	__asm__ __volatile__(				\
--		".set\tnoreorder\n\t"			\
--		"nop;nop;nop;nop;nop;nop;nop\n\t"	\
--		".set\treorder");
--
- static void dump_tlb(int first, int last)
- {
- 	unsigned long s_entryhi, entryhi, asid;
-@@ -59,9 +54,9 @@ static void dump_tlb(int first, int last)
+ 		printk("va=%0*lx asid=%02lx\n",
+ 		       width, (entryhi & ~0x1fffUL),
+@@ -90,15 +90,15 @@ static void dump_tlb(int first, int last)
+ 		printk("\t[pa=%0*llx c=%d d=%d v=%d g=%d] ",
+ 		       width,
+ 		       (entrylo0 << 6) & PAGE_MASK, c0,
+-		       (entrylo0 & 4) ? 1 : 0,
+-		       (entrylo0 & 2) ? 1 : 0,
+-		       (entrylo0 & 1) ? 1 : 0);
++		       (entrylo0 & MIPS_ENTRYLO_D) ? 1 : 0,
++		       (entrylo0 & MIPS_ENTRYLO_V) ? 1 : 0,
++		       (entrylo0 & MIPS_ENTRYLO_G) ? 1 : 0);
+ 		printk("[pa=%0*llx c=%d d=%d v=%d g=%d]\n",
+ 		       width,
+ 		       (entrylo1 << 6) & PAGE_MASK, c1,
+-		       (entrylo1 & 4) ? 1 : 0,
+-		       (entrylo1 & 2) ? 1 : 0,
+-		       (entrylo1 & 1) ? 1 : 0);
++		       (entrylo1 & MIPS_ENTRYLO_D) ? 1 : 0,
++		       (entrylo1 & MIPS_ENTRYLO_V) ? 1 : 0,
++		       (entrylo1 & MIPS_ENTRYLO_G) ? 1 : 0);
+ 	}
+ 	printk("\n");
  
- 	for (i = first; i <= last; i++) {
- 		write_c0_index(i);
--		BARRIER();
-+		mtc0_tlbr_hazard();
- 		tlb_read();
--		BARRIER();
-+		tlb_read_hazard();
- 		pagemask = read_c0_pagemask();
- 		entryhi	 = read_c0_entryhi();
- 		entrylo0 = read_c0_entrylo0();
+diff --git a/arch/mips/lib/r3k_dump_tlb.c b/arch/mips/lib/r3k_dump_tlb.c
+index 975a13855116..e210f04b2bc3 100644
+--- a/arch/mips/lib/r3k_dump_tlb.c
++++ b/arch/mips/lib/r3k_dump_tlb.c
+@@ -47,10 +47,10 @@ static void dump_tlb(int first, int last)
+ 			       entryhi & PAGE_MASK,
+ 			       entryhi & ASID_MASK,
+ 			       entrylo0 & PAGE_MASK,
+-			       (entrylo0 & (1 << 11)) ? 1 : 0,
+-			       (entrylo0 & (1 << 10)) ? 1 : 0,
+-			       (entrylo0 & (1 << 9)) ? 1 : 0,
+-			       (entrylo0 & (1 << 8)) ? 1 : 0);
++			       (entrylo0 & R3K_ENTRYLO_N) ? 1 : 0,
++			       (entrylo0 & R3K_ENTRYLO_D) ? 1 : 0,
++			       (entrylo0 & R3K_ENTRYLO_V) ? 1 : 0,
++			       (entrylo0 & R3K_ENTRYLO_G) ? 1 : 0);
+ 		}
+ 	}
+ 	printk("\n");
 -- 
 2.3.6

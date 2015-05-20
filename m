@@ -1,18 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:33633 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013082AbbESVPIOjACz (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 19 May 2015 23:15:08 +0200
-Subject: [PATCH 2/2] MIPS: MSA: bugfix of keeping MSA live context through
- clone or fork
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Tue, 19 May 2015 14:13:59 -0700
-Message-ID: <20150519211359.35859.24907.stgit@ubuntu-yegoshin>
-In-Reply-To: <20150519211222.35859.52798.stgit@ubuntu-yegoshin>
-References: <20150519211222.35859.52798.stgit@ubuntu-yegoshin>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63]:25795 "EHLO
+        mail-gw2-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27010187AbbETLvDJUW82 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 20 May 2015 13:51:03 +0200
+From: Arend van Spriel <arend@broadcom.com>
+Subject: [PATCH RESEND] mips: bcm47xx: allow retrieval of complete nvram contents
+Date: Wed, 20 May 2015 13:50:55 +0200
+Message-ID: <1432122655-3224-1-git-send-email-arend@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Type: text/plain
+Return-Path: <arend@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,33 +18,140 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, rusty@rustcorp.com.au, alexinbeijing@gmail.com, paul.burton@imgtec.com, david.daney@cavium.com, alex@alex-smith.me.uk, linux-kernel@vger.kernel.org, ralf@linux-mips.org, james.hogan@imgtec.com, markos.chandras@imgtec.com, macro@linux-mips.org, eunb.song@samsung.com, manuel.lauss@gmail.com, andreas.herrmann@caviumnetworks.com
-Message-ID: <20150519211359.7nV9ekwsqBL3zl7VB0-y8bJC7q7GnqA94JRqdF4CkpY@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, linux-wireless@vger.kernel.org, Hante Meuleman <meuleman@broadcom.com>, Arend van Spriel <arend@broadcom.com>
+Message-ID: <20150520115055.q5ZPhHbGw0EPzvzhTttOmoyNfqKnyim_JqNf15cBcpc@z>
 
-It seems the patch 39148e94e3e1f0477ce8ed3fda00123722681f3a
+From: Hante Meuleman <meuleman@broadcom.com>
 
-    "MIPS: fork: Fix MSA/FPU/DSP context duplication race"
+Host platforms such as routers supported by OpenWRT can
+support NVRAM reading directly from internal NVRAM store.
+The brcmfmac for one requires the complete nvram contents
+to select what needs to be sent to wireless device.
 
-assumes that DSP/FPU and MSA context should be inherited in child at clone/fork
-(look into patch description). It was done on Matthew Fortune request from
-toolchain team, I guess.
-
-Well, in this case it should prevent clearing TIF_MSA_CTX_LIVE in copy_thread().
-
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Reviewed-by: Arend Van Spriel <arend@broadcom.com>
+Reviewed-by: Franky (Zhenhui) Lin <frankyl@broadcom.com>
+Reviewed-by: Pieter-Paul Giesberts <pieterpg@broadcom.com>
+Reviewed-by: Daniel (Deognyoun) Kim <dekim@broadcom.com>
+Signed-off-by: Hante Meuleman <meuleman@broadcom.com>
+Signed-off-by: Arend van Spriel <arend@broadcom.com>
 ---
- arch/mips/kernel/process.c |    1 -
- 1 file changed, 1 deletion(-)
+Made a typo so it did not go the the linux-mips mailing list. Sorry for
+the noise.
 
-diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-index f2975d4d1e44..a16e62d40210 100644
---- a/arch/mips/kernel/process.c
-+++ b/arch/mips/kernel/process.c
-@@ -163,7 +163,6 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
+Regards,
+Arend
+---
+ arch/mips/bcm47xx/nvram.c     | 40 +++++++++++++++++++++++++++++++++-------
+ include/linux/bcm47xx_nvram.h | 15 +++++++++++++++
+ 2 files changed, 48 insertions(+), 7 deletions(-)
+
+diff --git a/arch/mips/bcm47xx/nvram.c b/arch/mips/bcm47xx/nvram.c
+index ba632ff..3bb7f41 100644
+--- a/arch/mips/bcm47xx/nvram.c
++++ b/arch/mips/bcm47xx/nvram.c
+@@ -138,6 +138,7 @@ static int nvram_init(void)
+ #ifdef CONFIG_MTD
+ 	struct mtd_info *mtd;
+ 	struct nvram_header header;
++	struct nvram_header *pheader;
+ 	size_t bytes_read;
+ 	int err;
  
- 	clear_tsk_thread_flag(p, TIF_USEDFPU);
- 	clear_tsk_thread_flag(p, TIF_USEDMSA);
--	clear_tsk_thread_flag(p, TIF_MSA_CTX_LIVE);
+@@ -146,20 +147,21 @@ static int nvram_init(void)
+ 		return -ENODEV;
  
- #ifdef CONFIG_MIPS_MT_FPAFF
- 	clear_tsk_thread_flag(p, TIF_FPUBOUND);
+ 	err = mtd_read(mtd, 0, sizeof(header), &bytes_read, (uint8_t *)&header);
+-	if (!err && header.magic == NVRAM_MAGIC) {
+-		u8 *dst = (uint8_t *)nvram_buf;
+-		size_t len = header.len;
+-
+-		if (header.len > NVRAM_SPACE) {
++	if (!err && header.magic == NVRAM_MAGIC &&
++	    header.len > sizeof(header)) {
++		if (header.len > NVRAM_SPACE - 2) {
+ 			pr_err("nvram on flash (%i bytes) is bigger than the reserved space in memory, will just copy the first %i bytes\n",
+ 				header.len, NVRAM_SPACE);
+-			len = NVRAM_SPACE;
++			header.len = NVRAM_SPACE - 2;
+ 		}
+ 
+-		err = mtd_read(mtd, 0, len, &bytes_read, dst);
++		err = mtd_read(mtd, 0, header.len, &bytes_read,
++			       (u8 *)nvram_buf);
+ 		if (err)
+ 			return err;
+ 
++		pheader = (struct nvram_header *)nvram_buf;
++		pheader->len = header.len;
+ 		return 0;
+ 	}
+ #endif
+@@ -221,3 +223,27 @@ int bcm47xx_nvram_gpio_pin(const char *name)
+ 	return -ENOENT;
+ }
+ EXPORT_SYMBOL(bcm47xx_nvram_gpio_pin);
++
++char *bcm47xx_nvram_get_contents(size_t *nvram_size)
++{
++	int err;
++	char *nvram;
++	struct nvram_header *header;
++
++	if (!nvram_buf[0]) {
++		err = nvram_init();
++		if (err)
++			return NULL;
++	}
++
++	header = (struct nvram_header *)nvram_buf;
++	*nvram_size = header->len - sizeof(struct nvram_header);
++	nvram = vmalloc(*nvram_size);
++	if (!nvram)
++		return NULL;
++	memcpy(nvram, &nvram_buf[sizeof(struct nvram_header)], *nvram_size);
++
++	return nvram;
++}
++EXPORT_SYMBOL(bcm47xx_nvram_get_contents);
++
+diff --git a/include/linux/bcm47xx_nvram.h b/include/linux/bcm47xx_nvram.h
+index b12b07e..c73927c 100644
+--- a/include/linux/bcm47xx_nvram.h
++++ b/include/linux/bcm47xx_nvram.h
+@@ -10,11 +10,17 @@
+ 
+ #include <linux/types.h>
+ #include <linux/kernel.h>
++#include <linux/vmalloc.h>
+ 
+ #ifdef CONFIG_BCM47XX
+ int bcm47xx_nvram_init_from_mem(u32 base, u32 lim);
+ int bcm47xx_nvram_getenv(const char *name, char *val, size_t val_len);
+ int bcm47xx_nvram_gpio_pin(const char *name);
++char *bcm47xx_nvram_get_contents(size_t *val_len);
++static inline void bcm47xx_nvram_release_contents(char *nvram)
++{
++	vfree(nvram);
++};
+ #else
+ static inline int bcm47xx_nvram_init_from_mem(u32 base, u32 lim)
+ {
+@@ -29,6 +35,15 @@ static inline int bcm47xx_nvram_gpio_pin(const char *name)
+ {
+ 	return -ENOTSUPP;
+ };
++
++static inline char *bcm47xx_nvram_get_contents(size_t *val_len)
++{
++	return NULL;
++};
++
++static inline void bcm47xx_nvram_release_contents(char *nvram)
++{
++};
+ #endif
+ 
+ #endif /* __BCM47XX_NVRAM_H */
+-- 
+1.9.1

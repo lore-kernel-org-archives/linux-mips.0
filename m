@@ -1,15 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:8993 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:34964 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013589AbbEUVuJl6yZe (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 21 May 2015 23:50:09 +0200
+        with ESMTP id S27013589AbbEUWFsh2Uhx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 May 2015 00:05:48 +0200
+Message-ID: <555E55F4.2060500@imgtec.com>
+Date: Thu, 21 May 2015 19:02:28 -0300
 From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Subject: [PATCH 7/7] mips: pistachio: Allow to enable the external timer based clocksource
-Date: Thu, 21 May 2015 18:43:38 -0300
-Message-ID: <1432244618-15548-1-git-send-email-ezequiel.garcia@imgtec.com>
-In-Reply-To: <1432244260-14908-1-git-send-email-ezequiel.garcia@imgtec.com>
-References: <1432244260-14908-1-git-send-email-ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH 6/7] clocksource: Add Pistachio clocksource-only driver
+References: <1432244260-14908-1-git-send-email-ezequiel.garcia@imgtec.com> <1432244506-15388-1-git-send-email-ezequiel.garcia@imgtec.com> <alpine.DEB.2.11.1505212352330.5457@nanos>
+In-Reply-To: <alpine.DEB.2.11.1505212352330.5457@nanos>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 Return-Path: <Ezequiel.Garcia@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,51 +21,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Daniel Lezcano <daniel.lezcano@linaro.org>, devicetree@vger.kernel.org
-Cc: Andrew Bresticker <abrestic@chromium.org>, James Hartley <james.hartley@imgtec.com>, James Hogan <james.hogan@imgtec.com>, Thomas Gleixner <tglx@linutronix.de>, Damien.Horsley@imgtec.com, Govindraj.Raja@imgtec.com, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Message-ID: <20150521214338.Y-jtyAKJFGlpqLG_HP6qIJv_MywcDjQJ4ceG2NoBe4w@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Daniel Lezcano <daniel.lezcano@linaro.org>, devicetree@vger.kernel.org, Andrew Bresticker <abrestic@chromium.org>, James Hartley <james.hartley@imgtec.com>, James Hogan <james.hogan@imgtec.com>, Damien.Horsley@imgtec.com, Govindraj.Raja@imgtec.com
+Message-ID: <20150521220228.5jpU-0rQctKq_Nh_CiNpfghBQJPuReX04dg9yC89nn8@z>
 
-This commit introduces a new config, so the user can choose to enable
-the General Purpose Timer based clocksource. This option is required
-to have CPUFreq support.
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
----
- arch/mips/Kconfig           |  1 +
- arch/mips/pistachio/Kconfig | 13 +++++++++++++
- 2 files changed, 14 insertions(+)
- create mode 100644 arch/mips/pistachio/Kconfig
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index f501665..91f6ca0 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -934,6 +934,7 @@ source "arch/mips/jazz/Kconfig"
- source "arch/mips/jz4740/Kconfig"
- source "arch/mips/lantiq/Kconfig"
- source "arch/mips/lasat/Kconfig"
-+source "arch/mips/pistachio/Kconfig"
- source "arch/mips/pmcs-msp71xx/Kconfig"
- source "arch/mips/ralink/Kconfig"
- source "arch/mips/sgi-ip27/Kconfig"
-diff --git a/arch/mips/pistachio/Kconfig b/arch/mips/pistachio/Kconfig
-new file mode 100644
-index 0000000..97731ea
---- /dev/null
-+++ b/arch/mips/pistachio/Kconfig
-@@ -0,0 +1,13 @@
-+config PISTACHIO_GPTIMER_CLKSRC
-+	bool "Enable General Purpose Timer based clocksource"
-+	depends on MACH_PISTACHIO
-+	select CLKSRC_PISTACHIO
-+	select MIPS_EXTERNAL_TIMER
-+	help
-+	  This option enables a clocksource driver based on a Pistachio
-+	  SoC General Purpose external timer.
-+
-+	  If you want to enable the CPUFreq, you need to enable
-+	  this option.
-+
-+	  If you don't want to enable CPUFreq, you can leave this disabled.
+On 05/21/2015 07:00 PM, Thomas Gleixner wrote:
+> On Thu, 21 May 2015, Ezequiel Garcia wrote:
+>> +static cycle_t clocksource_read_cycles(struct clocksource *cs)
+>> +{
+>> +	u32 counter, overflw;
+>> +	unsigned long flags;
+>> +
+>> +	raw_spin_lock_irqsave(&lock, flags);
+> 
+> Hmm. Is that lock really necessary to read that counter? The
+> clocksource is global. And if its actually used for timekeeping, the
+> lock can get heavy contended.
+> 
+
+Yup, it is really (and sadly) necessary. The kernel hangs up completely
+without it when the counter is accesed by more than one CPU.
+
+Apparently, those two timer registers overflow and counter must be read
+atomically.
+
+>> +	overflw = gpt_readl(TIMER_CURRENT_OVERFLOW_VALUE, 0);
+>> +	counter = gpt_readl(TIMER_CURRENT_VALUE, 0);
+>> +	raw_spin_unlock_irqrestore(&lock, flags);
+>> +
+>> +	return ~(cycle_t)counter;
+>> +}
+> 
+> Thanks,
+> 
+> 	tglx
+> 
+
 -- 
-2.3.3
+Ezequiel

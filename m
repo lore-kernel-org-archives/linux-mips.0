@@ -1,14 +1,20 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63]:65449 "EHLO
-        mail-gw2-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27006621AbbEUN1dnJwoi (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 21 May 2015 15:27:33 +0200
-From: Arend van Spriel <arend@broadcom.com>
-Subject: [PATCH V2] mips: bcm47xx: allow retrieval of complete nvram contents
-Date: Thu, 21 May 2015 15:27:23 +0200
-Message-ID: <1432214843-16057-1-git-send-email-arend@broadcom.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2322 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27006567AbbEUQL0b1g6A convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 21 May 2015 18:11:26 +0200
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Subject: Re: [PATCH 1/2] MIPS: MSA: bugfix - disable MSA during thread
+ switch correctly
+Date: Thu, 21 May 2015 16:11:18 +0000
+Message-ID: <ij9rdgha3gijavggoyg53p0a.1432224673487@email.android.com>
+References: <20150519211222.35859.52798.stgit@ubuntu-yegoshin>
+ <20150519211351.35859.80332.stgit@ubuntu-yegoshin>,<20150521090741.GG13811@NP-P-BURTON>
+In-Reply-To: <20150521090741.GG13811@NP-P-BURTON>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <arend@broadcom.com>
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,170 +24,77 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Hante Meuleman <meuleman@broadcom.com>, Arend van Spriel <arend@broadcom.com>
-Message-ID: <20150521132723.Xewmr8lxUgL9rG4LCDh6OD688NYtrRIEehbWGZLRXgk@z>
+To: Paul Burton <Paul.Burton@imgtec.com>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "rusty@rustcorp.com.au" <rusty@rustcorp.com.au>, "alexinbeijing@gmail.com" <alexinbeijing@gmail.com>, "david.daney@cavium.com" <david.daney@cavium.com>, "alex@alex-smith.me.uk" <alex@alex-smith.me.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, James Hogan <James.Hogan@imgtec.com>, Markos Chandras <Markos.Chandras@imgtec.com>, "macro@linux-mips.org" <macro@linux-mips.org>, "eunb.song@samsung.com" <eunb.song@samsung.com>, "manuel.lauss@gmail.com" <manuel.lauss@gmail.com>, "andreas.herrmann@caviumnetworks.com" <andreas.herrmann@caviumnetworks.com>
+Message-ID: <20150521161118.BrBLwI748qTkY78YORlBtDx8ZsjVuCsWyvnpVNG9jL8@z>
 
-From: Hante Meuleman <meuleman@broadcom.com>
+Yes, I have a program but it is binary only.
 
-Host platforms such as routers supported by OpenWrt can
-support NVRAM reading directly from internal NVRAM store.
-The brcmfmac for one requires the complete nvram contents
-to select what needs to be sent to wireless device.
+If you want to understand why disable_DMA() after resume() doesn't work,
+search for restoring RA register in resume() after changing SP.
 
-Reviewed-by: Arend Van Spriel <arend@broadcom.com>
-Reviewed-by: Franky (Zhenhui) Lin <frankyl@broadcom.com>
-Reviewed-by: Pieter-Paul Giesberts <pieterpg@broadcom.com>
-Reviewed-by: Daniel (Deognyoun) Kim <dekim@broadcom.com>
-Signed-off-by: Hante Meuleman <meuleman@broadcom.com>
-Signed-off-by: Arend van Spriel <arend@broadcom.com>
----
-Change log:
------------
-V2:	- correct header length for nvram_find_and_copy().
-	- get rid of 'NVRAM_SPACE - 2' magic.
----
- arch/mips/bcm47xx/nvram.c     | 61 ++++++++++++++++++++++++++++++++-----------
- include/linux/bcm47xx_nvram.h | 15 +++++++++++
- 2 files changed, 61 insertions(+), 15 deletions(-)
+- Leonid.
 
-diff --git a/arch/mips/bcm47xx/nvram.c b/arch/mips/bcm47xx/nvram.c
-index 95d028c..f4f62d3 100644
---- a/arch/mips/bcm47xx/nvram.c
-+++ b/arch/mips/bcm47xx/nvram.c
-@@ -94,17 +94,22 @@ static int nvram_find_and_copy(void __iomem *iobase, u32 lim)
- 	return -ENXIO;
- 
- found:
--	if (header->len > size)
--		pr_err("The nvram size accoridng to the header seems to be bigger than the partition on flash\n");
--	if (header->len > NVRAM_SPACE)
--		pr_err("nvram on flash (%i bytes) is bigger than the reserved space in memory, will just copy the first %i bytes\n",
--		       header->len, NVRAM_SPACE - 1);
--
- 	src = (u32 *)header;
- 	dst = (u32 *)nvram_buf;
- 	for (i = 0; i < sizeof(struct nvram_header); i += 4)
- 		*dst++ = __raw_readl(src++);
--	for (; i < header->len && i < NVRAM_SPACE && i < size; i += 4)
-+	header = (struct nvram_header *)nvram_buf;
-+	if (header->len > size) {
-+		pr_err("The nvram size according to the header seems to be bigger than the partition on flash\n");
-+		header->len = size;
-+	}
-+	if (header->len >= NVRAM_SPACE) {
-+		pr_err("nvram on flash (%i bytes) is bigger than the reserved space in memory, will just copy the first %i bytes\n",
-+		       header->len, NVRAM_SPACE - 1);
-+		header->len = NVRAM_SPACE - 1;
-+	}
-+	/* proceed reading data after header */
-+	for (; i < header->len; i += 4)
- 		*dst++ = readl(src++);
- 	nvram_buf[NVRAM_SPACE - 1] = '\0';
- 
-@@ -139,6 +144,7 @@ static int nvram_init(void)
- #ifdef CONFIG_MTD
- 	struct mtd_info *mtd;
- 	struct nvram_header header;
-+	struct nvram_header *pheader;
- 	size_t bytes_read;
- 	int err;
- 
-@@ -147,20 +153,21 @@ static int nvram_init(void)
- 		return -ENODEV;
- 
- 	err = mtd_read(mtd, 0, sizeof(header), &bytes_read, (uint8_t *)&header);
--	if (!err && header.magic == NVRAM_MAGIC) {
--		u8 *dst = (uint8_t *)nvram_buf;
--		size_t len = header.len;
--
--		if (len >= NVRAM_SPACE) {
--			len = NVRAM_SPACE - 1;
-+	if (!err && header.magic == NVRAM_MAGIC &&
-+	    header.len > sizeof(header)) {
-+		if (header.len >= NVRAM_SPACE) {
- 			pr_err("nvram on flash (%i bytes) is bigger than the reserved space in memory, will just copy the first %i bytes\n",
--				header.len, len);
-+				header.len, NVRAM_SPACE);
-+			header.len = NVRAM_SPACE - 1;
- 		}
- 
--		err = mtd_read(mtd, 0, len, &bytes_read, dst);
-+		err = mtd_read(mtd, 0, header.len, &bytes_read,
-+			       (u8 *)nvram_buf);
- 		if (err)
- 			return err;
- 
-+		pheader = (struct nvram_header *)nvram_buf;
-+		pheader->len = header.len;
- 		return 0;
- 	}
- #endif
-@@ -219,3 +226,27 @@ int bcm47xx_nvram_gpio_pin(const char *name)
- 	return -ENOENT;
- }
- EXPORT_SYMBOL(bcm47xx_nvram_gpio_pin);
-+
-+char *bcm47xx_nvram_get_contents(size_t *nvram_size)
-+{
-+	int err;
-+	char *nvram;
-+	struct nvram_header *header;
-+
-+	if (!nvram_buf[0]) {
-+		err = nvram_init();
-+		if (err)
-+			return NULL;
-+	}
-+
-+	header = (struct nvram_header *)nvram_buf;
-+	*nvram_size = header->len - sizeof(struct nvram_header);
-+	nvram = vmalloc(*nvram_size);
-+	if (!nvram)
-+		return NULL;
-+	memcpy(nvram, &nvram_buf[sizeof(struct nvram_header)], *nvram_size);
-+
-+	return nvram;
-+}
-+EXPORT_SYMBOL(bcm47xx_nvram_get_contents);
-+
-diff --git a/include/linux/bcm47xx_nvram.h b/include/linux/bcm47xx_nvram.h
-index b12b07e..c73927c 100644
---- a/include/linux/bcm47xx_nvram.h
-+++ b/include/linux/bcm47xx_nvram.h
-@@ -10,11 +10,17 @@
- 
- #include <linux/types.h>
- #include <linux/kernel.h>
-+#include <linux/vmalloc.h>
- 
- #ifdef CONFIG_BCM47XX
- int bcm47xx_nvram_init_from_mem(u32 base, u32 lim);
- int bcm47xx_nvram_getenv(const char *name, char *val, size_t val_len);
- int bcm47xx_nvram_gpio_pin(const char *name);
-+char *bcm47xx_nvram_get_contents(size_t *val_len);
-+static inline void bcm47xx_nvram_release_contents(char *nvram)
-+{
-+	vfree(nvram);
-+};
- #else
- static inline int bcm47xx_nvram_init_from_mem(u32 base, u32 lim)
- {
-@@ -29,6 +35,15 @@ static inline int bcm47xx_nvram_gpio_pin(const char *name)
- {
- 	return -ENOTSUPP;
- };
-+
-+static inline char *bcm47xx_nvram_get_contents(size_t *val_len)
-+{
-+	return NULL;
-+};
-+
-+static inline void bcm47xx_nvram_release_contents(char *nvram)
-+{
-+};
- #endif
- 
- #endif /* __BCM47XX_NVRAM_H */
--- 
-1.9.1
+
+Paul Burton <Paul.Burton@imgtec.com> wrote:
+
+
+On Tue, May 19, 2015 at 02:13:51PM -0700, Leonid Yegoshin wrote:
+> During thread cloning the new (child) thread should have MSA disabled even
+> at first thread entry. So, the code to disable MSA is moved from macro
+> 'switch_to' to assembler function 'resume' before it switches kernel stack
+> to 'next' (new) thread. Call of 'disable_msa' after 'resume' in 'switch_to'
+> macro never called a first time entry into thread.
+
+Hi Leonid,
+
+I'm not sure I understand what you're trying to say here. Do you have an
+example of a program that demonstrates the behaviour you believe to be
+broken?
+
+Thanks,
+    Paul
+
+> Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+> ---
+>  arch/mips/include/asm/switch_to.h |    1 -
+>  arch/mips/kernel/r4k_switch.S     |    6 ++++++
+>  2 files changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/mips/include/asm/switch_to.h b/arch/mips/include/asm/switch_to.h
+> index e92d6c4b5ed1..0d0f7f8f8b3a 100644
+> --- a/arch/mips/include/asm/switch_to.h
+> +++ b/arch/mips/include/asm/switch_to.h
+> @@ -104,7 +104,6 @@ do {                                                                      \
+>       if (test_and_clear_tsk_thread_flag(prev, TIF_USEDMSA))          \
+>               __fpsave = FP_SAVE_VECTOR;                              \
+>       (last) = resume(prev, next, task_thread_info(next), __fpsave);  \
+> -     disable_msa();                                                  \
+>  } while (0)
+>
+>  #define finish_arch_switch(prev)                                     \
+> diff --git a/arch/mips/kernel/r4k_switch.S b/arch/mips/kernel/r4k_switch.S
+> index 04cbbde3521b..7dbb64656bfe 100644
+> --- a/arch/mips/kernel/r4k_switch.S
+> +++ b/arch/mips/kernel/r4k_switch.S
+> @@ -25,6 +25,7 @@
+>  /* preprocessor replaces the fp in ".set fp=64" with $30 otherwise */
+>  #undef fp
+>
+> +#define t4  $12
+>  /*
+>   * Offset to the current process status flags, the first 32 bytes of the
+>   * stack are not used.
+> @@ -73,6 +74,11 @@
+>       cfc1    t1, fcr31
+>       msa_save_all    a0
+>       .set pop        /* SET_HARDFLOAT */
+> +     li      t4, MIPS_CONF5_MSAEN
+> +     mfc0    t3, CP0_CONFIG, 5
+> +     or      t3, t3, t4
+> +     xor     t3, t3, t4
+> +     mtc0    t3, CP0_CONFIG, 5
+>
+>       sw      t1, THREAD_FCR31(a0)
+>       b       2f
+>

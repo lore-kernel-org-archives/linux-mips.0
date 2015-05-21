@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:28997 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:12078 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012557AbbEVADuAVTEC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 May 2015 02:03:50 +0200
+        with ESMTP id S27006702AbbEVAEEKvlD2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 May 2015 02:04:04 +0200
 From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Subject: [PATCH 7/9] clk: pistachio: Add a rate table for the MIPS PLL
-Date: Thu, 21 May 2015 20:57:41 -0300
-Message-ID: <1432252663-31318-8-git-send-email-ezequiel.garcia@imgtec.com>
+Subject: [PATCH 8/9] clk: pistachio: Add sanity checks on PLL configuration
+Date: Thu, 21 May 2015 20:57:42 -0300
+Message-ID: <1432252663-31318-9-git-send-email-ezequiel.garcia@imgtec.com>
 In-Reply-To: <1432252663-31318-1-git-send-email-ezequiel.garcia@imgtec.com>
 References: <1432252663-31318-1-git-send-email-ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
@@ -22,64 +22,156 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Mike Turquette <mturquette@linaro.org>, sboyd@codeaurora.org
 Cc: Andrew Bresticker <abrestic@chromium.org>, James Hartley <james.hartley@imgtec.com>, Govindraj.Raja@imgtec.com, Damien.Horsley@imgtec.com, cernekee@chromium.org, James Hogan <james.hogan@imgtec.com>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Message-ID: <20150521235741.M8HI4DWoiyv3S9w-4tr6V08rZhZekp2AKASKQaSxg3Q@z>
+Message-ID: <20150521235742.1Gb1IQ9mQh4xZtRSPt8bm-woN07vaTSZYV_JeNMPTPM@z>
 
-This commit adds a rate parameter table, which makes it possible for
-the MIPS PLL to support rate change.
+From: Kevin Cernekee <cernekee@chromium.org>
 
-Signed-off-by: Govindraj Raja <Govindraj.Raja@imgtec.com>
+When setting the PLL rates, check that:
+
+ - VCO is within range
+ - PFD is within range
+ - PLL is disabled when postdiv is changed
+ - postdiv2 <= postdiv1
+
+Signed-off-by: Kevin Cernekee <cernekee@chromium.org>
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 ---
- drivers/clk/pistachio/clk-pistachio.c | 12 +++++++++++-
- drivers/clk/pistachio/clk.h           | 12 ++++++++++++
- 2 files changed, 23 insertions(+), 1 deletion(-)
+ drivers/clk/pistachio/clk-pll.c | 83 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 79 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/pistachio/clk-pistachio.c b/drivers/clk/pistachio/clk-pistachio.c
-index 22a7ebd..0ac7429 100644
---- a/drivers/clk/pistachio/clk-pistachio.c
-+++ b/drivers/clk/pistachio/clk-pistachio.c
-@@ -145,8 +145,18 @@ static struct pistachio_mux pistachio_muxes[] __initdata = {
- 	MUX(CLK_BT_PLL_MUX, "bt_pll_mux", mux_xtal_bt, 0x200, 17),
- };
+diff --git a/drivers/clk/pistachio/clk-pll.c b/drivers/clk/pistachio/clk-pll.c
+index cf000bb..59728bb 100644
+--- a/drivers/clk/pistachio/clk-pll.c
++++ b/drivers/clk/pistachio/clk-pll.c
+@@ -6,9 +6,12 @@
+  * version 2, as published by the Free Software Foundation.
+  */
  
-+static struct pistachio_pll_rate_table mips_pll_rates[] = {
-+	MIPS_PLL_RATES(52000000, 416000000, 1, 16, 2, 1),
-+	MIPS_PLL_RATES(52000000, 442000000, 1, 17, 2, 1),
-+	MIPS_PLL_RATES(52000000, 468000000, 1, 18, 2, 1),
-+	MIPS_PLL_RATES(52000000, 494000000, 1, 19, 2, 1),
-+	MIPS_PLL_RATES(52000000, 520000000, 1, 20, 2, 1),
-+	MIPS_PLL_RATES(52000000, 546000000, 1, 21, 2, 1),
-+};
++#define pr_fmt(fmt) "%s: " fmt, __func__
 +
- static struct pistachio_pll pistachio_plls[] __initdata = {
--	PLL_FIXED(CLK_MIPS_PLL, "mips_pll", "xtal", PLL_GF40LP_LAINT, 0x0),
-+	PLL(CLK_MIPS_PLL, "mips_pll", "xtal", PLL_GF40LP_LAINT, 0x0,
-+	    mips_pll_rates),
- 	PLL_FIXED(CLK_AUDIO_PLL, "audio_pll", "audio_refclk_mux",
- 		  PLL_GF40LP_FRAC, 0xc),
- 	PLL_FIXED(CLK_RPU_V_PLL, "rpu_v_pll", "xtal", PLL_GF40LP_LAINT, 0x20),
-diff --git a/drivers/clk/pistachio/clk.h b/drivers/clk/pistachio/clk.h
-index 3bb6bbe..b5d22d6 100644
---- a/drivers/clk/pistachio/clk.h
-+++ b/drivers/clk/pistachio/clk.h
-@@ -121,6 +121,18 @@ struct pistachio_pll_rate_table {
- 	unsigned int frac;
- };
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
++#include <linux/printk.h>
+ #include <linux/slab.h>
  
-+#define MIPS_PLL_RATES(_fref, _fout, _refdiv, _fbdiv,	\
-+		       _postdiv1, _postdiv2)		\
-+{                                                       \
-+	.fref           = _fref,                        \
-+	.fout           = _fout,                        \
-+	.refdiv         = _refdiv,                      \
-+	.fbdiv          = _fbdiv,                       \
-+	.postdiv1       = _postdiv1,                    \
-+	.postdiv2       = _postdiv2,                    \
-+	.frac           = 0,                            \
-+}
+ #include "clk.h"
+@@ -50,6 +53,18 @@
+ #define PLL_CTRL4			0x10
+ #define PLL_FRAC_CTRL4_BYPASS		BIT(28)
+ 
++#define MIN_PFD				9600000UL
++#define MIN_VCO_LA			400000000UL
++#define MAX_VCO_LA			1600000000UL
++#define MIN_VCO_FRAC_INT		600000000UL
++#define MAX_VCO_FRAC_INT		1600000000UL
++#define MIN_VCO_FRAC_FRAC		600000000UL
++#define MAX_VCO_FRAC_FRAC		2400000000UL
++#define MIN_OUTPUT_LA			8000000UL
++#define MAX_OUTPUT_LA			1600000000UL
++#define MIN_OUTPUT_FRAC			12000000UL
++#define MAX_OUTPUT_FRAC			1600000000UL
 +
- enum pistachio_pll_type {
- 	PLL_GF40LP_LAINT,
- 	PLL_GF40LP_FRAC,
+ struct pistachio_clk_pll {
+ 	struct clk_hw hw;
+ 	void __iomem *base;
+@@ -179,12 +194,29 @@ static int pll_gf40lp_frac_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	struct pistachio_clk_pll *pll = to_pistachio_pll(hw);
+ 	struct pistachio_pll_rate_table *params;
+ 	int enabled = pll_gf40lp_frac_is_enabled(hw);
+-	u32 val, frac;
++	u32 val, frac, vco, old_postdiv1, old_postdiv2;
++	const char *name = __clk_get_name(hw->clk);
++
++	if (rate < MIN_OUTPUT_FRAC || rate > MAX_OUTPUT_FRAC)
++		return -EINVAL;
+ 
+ 	params = pll_get_params(pll, parent_rate, rate);
+-	if (!params)
++	if (!params || !params->refdiv)
+ 		return -EINVAL;
+ 
++	vco = params->fref * params->fbdiv / params->refdiv;
++	if (vco < MIN_VCO_FRAC_FRAC || vco > MAX_VCO_FRAC_FRAC)
++		pr_warn("%s: VCO %u is out of range %lu..%lu\n", name, vco,
++			MIN_VCO_FRAC_FRAC, MAX_VCO_FRAC_FRAC);
++
++	val = params->fref / params->refdiv;
++	if (val < MIN_PFD)
++		pr_warn("%s: PFD %u is too low (min %lu)\n",
++			name, val, MIN_PFD);
++	if (val > vco / 16)
++		pr_warn("%s: PFD %u is too high (max %u)\n",
++			name, val, vco / 16);
++
+ 	/* Calculate the frac parameter */
+ 	frac = rate * params->refdiv * params->postdiv1 * params->postdiv2;
+ 	frac -= (params->fbdiv * parent_rate);
+@@ -198,6 +230,19 @@ static int pll_gf40lp_frac_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	pll_writel(pll, val, PLL_CTRL1);
+ 
+ 	val = pll_readl(pll, PLL_CTRL2);
++
++	old_postdiv1 = (val >> PLL_FRAC_CTRL2_POSTDIV1_SHIFT) &
++		       PLL_FRAC_CTRL2_POSTDIV1_MASK;
++	old_postdiv2 = (val >> PLL_FRAC_CTRL2_POSTDIV2_SHIFT) &
++		       PLL_FRAC_CTRL2_POSTDIV2_MASK;
++	if (enabled &&
++	    (params->postdiv1 != old_postdiv1 ||
++	     params->postdiv2 != old_postdiv2))
++		pr_warn("%s: changing postdiv while PLL is enabled\n", name);
++
++	if (params->postdiv2 > params->postdiv1)
++		pr_warn("%s: postdiv2 should not exceed postdiv1\n", name);
++
+ 	val &= ~((PLL_FRAC_CTRL2_FRAC_MASK << PLL_FRAC_CTRL2_FRAC_SHIFT) |
+ 		 (PLL_FRAC_CTRL2_POSTDIV1_MASK <<
+ 		  PLL_FRAC_CTRL2_POSTDIV1_SHIFT) |
+@@ -296,13 +341,43 @@ static int pll_gf40lp_laint_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	struct pistachio_clk_pll *pll = to_pistachio_pll(hw);
+ 	struct pistachio_pll_rate_table *params;
+ 	int enabled = pll_gf40lp_laint_is_enabled(hw);
+-	u32 val;
++	u32 val, vco, old_postdiv1, old_postdiv2;
++	const char *name = __clk_get_name(hw->clk);
++
++	if (rate < MIN_OUTPUT_LA || rate > MAX_OUTPUT_LA)
++		return -EINVAL;
+ 
+ 	params = pll_get_params(pll, parent_rate, rate);
+-	if (!params)
++	if (!params || !params->refdiv)
+ 		return -EINVAL;
+ 
++	vco = params->fref * params->fbdiv / params->refdiv;
++	if (vco < MIN_VCO_LA || vco > MAX_VCO_LA)
++		pr_warn("%s: VCO %u is out of range %lu..%lu\n", name, vco,
++			MIN_VCO_LA, MAX_VCO_LA);
++
++	val = params->fref / params->refdiv;
++	if (val < MIN_PFD)
++		pr_warn("%s: PFD %u is too low (min %lu)\n",
++			name, val, MIN_PFD);
++	if (val > vco / 16)
++		pr_warn("%s: PFD %u is too high (max %u)\n",
++			name, val, vco / 16);
++
+ 	val = pll_readl(pll, PLL_CTRL1);
++
++	old_postdiv1 = (val >> PLL_INT_CTRL1_POSTDIV1_SHIFT) &
++		       PLL_INT_CTRL1_POSTDIV1_MASK;
++	old_postdiv2 = (val >> PLL_INT_CTRL1_POSTDIV2_SHIFT) &
++		       PLL_INT_CTRL1_POSTDIV2_MASK;
++	if (enabled &&
++	    (params->postdiv1 != old_postdiv1 ||
++	     params->postdiv2 != old_postdiv2))
++		pr_warn("%s: changing postdiv while PLL is enabled\n", name);
++
++	if (params->postdiv2 > params->postdiv1)
++		pr_warn("%s: postdiv2 should not exceed postdiv1\n", name);
++
+ 	val &= ~((PLL_CTRL1_REFDIV_MASK << PLL_CTRL1_REFDIV_SHIFT) |
+ 		 (PLL_CTRL1_FBDIV_MASK << PLL_CTRL1_FBDIV_SHIFT) |
+ 		 (PLL_INT_CTRL1_POSTDIV1_MASK << PLL_INT_CTRL1_POSTDIV1_SHIFT) |
 -- 
 2.3.3

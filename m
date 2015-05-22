@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59274 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:43234 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006608AbbEVKmfVtbX7 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 May 2015 12:42:35 +0200
+        with ESMTP id S27006683AbbEVPvvBzkUE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 May 2015 17:51:51 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2] MIPS: tidy up FPU context switching
-Date: Fri, 22 May 2015 11:42:12 +0100
-Message-ID: <1432291332-16966-1-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1432225242-12470-1-git-send-email-paul.burton@imgtec.com>
-References: <1432225242-12470-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 00/15] MIPS Malta DT Conversion
+Date: Fri, 22 May 2015 16:50:59 +0100
+Message-ID: <1432309875-9712-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -21,197 +19,80 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Leonid Yegoshin <leonid.yegoshin@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-kernel@vger.kernel.org, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, James Hogan <james.hogan@imgtec.com>, David Daney <david.daney@cavium.com>, Markos Chandras <markos.chandras@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
-Message-ID: <20150522104212.4AWhXVfL9fL-bDfYFZ9LFPhlcvt6No3qKQ4zJPK7A8E@z>
+Cc: devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Paul Burton <paul.burton@imgtec.com>, Jiri Slaby <jslaby@suse.cz>, Paolo Bonzini <pbonzini@redhat.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Hannes Reinecke <hare@suse.de>, Andrew Bresticker <abrestic@chromium.org>, Thomas Gleixner <tglx@linutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ralf Baechle <ralf@linux-mips.org>, Qais Yousef <qais.yousef@imgtec.com>, linux-serial@vger.kernel.org, Markos Chandras <markos.chandras@imgtec.com>, Christoph Hellwig <hch@lst.de>, Michal Marek <mmarek@suse.cz>, Jason Cooper <jason@lakedaemon.net>, "David S. Miller" <davem@davemloft.net>, Bart Van Assche <bvanassche@acm.org>, Jeffrey Deans <jeffrey.deans@imgtec.com>, David Daney <david.daney@cavium.com>
+Message-ID: <20150522155059.FBjOyHljxU_zia8bda7PAc7sHufRlsxapoEWU274wKM@z>
 
-Rather than saving the scalar FP or vector context in the assembly
-resume function, reuse the existing C code we have in fpu.h to do
-exactly that. This reduces duplication, results in a much easier to read
-resume function & should allow the compiler to optimise out more MSA
-code due to is_msa_enabled()/cpu_has_msa being known-zero at compile
-time for kernels without MSA support.
+This series begins converting the MIPS Malta board to use device tree,
+which is done with a few goals in mind:
 
-As a side effect this correctly disables MSA on the first entry to a
-task, in which case resume will "return" to ret_from_kernel_thread or
-ret_from_fork in order to call schedule_tail. This would lead to the
-disable_msa call in switch_to not being executed, as reported by Leonid.
+  - To modernise the Malta board support, providing a cleaner example to
+    people referencing it when bringing up new boards and reducing the
+    amount of code they need to write.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Reported-by: Leonid Yegoshin <leonid.yegoshin@imgtec.com>
----
-How about this (lightly tested for the moment) alternative to 10082?
+  - To make the code at the board level more generic with the eventual
+    aim of sharing it between multiple boards & allowing for
+    multi-platform kernel binaries. Although this series doesn't result
+    in the kernel reaching those goals, it is a step in that direction.
 
-Changes in v2:
-- Introduce lose_fpu_inatomic to skip the preempt_{en,dis}able calls
-  and operate on the provided struct task_struct, which should be prev
-  rather than current.
+  - To result in a more maintainable kernel through a combination of the
+    above.
 
- arch/mips/include/asm/fpu.h       | 21 ++++++++++++--------
- arch/mips/include/asm/switch_to.h | 21 ++++----------------
- arch/mips/kernel/r4k_switch.S     | 41 +--------------------------------------
- 3 files changed, 18 insertions(+), 65 deletions(-)
 
-diff --git a/arch/mips/include/asm/fpu.h b/arch/mips/include/asm/fpu.h
-index 084780b..87e8c78 100644
---- a/arch/mips/include/asm/fpu.h
-+++ b/arch/mips/include/asm/fpu.h
-@@ -164,25 +164,30 @@ static inline int own_fpu(int restore)
- 	return ret;
- }
- 
--static inline void lose_fpu(int save)
-+static inline void lose_fpu_inatomic(int save, struct task_struct *tsk)
- {
--	preempt_disable();
- 	if (is_msa_enabled()) {
- 		if (save) {
--			save_msa(current);
--			current->thread.fpu.fcr31 =
-+			save_msa(tsk);
-+			tsk->thread.fpu.fcr31 =
- 					read_32bit_cp1_register(CP1_STATUS);
- 		}
- 		disable_msa();
--		clear_thread_flag(TIF_USEDMSA);
-+		clear_tsk_thread_flag(tsk, TIF_USEDMSA);
- 		__disable_fpu();
- 	} else if (is_fpu_owner()) {
- 		if (save)
--			_save_fp(current);
-+			_save_fp(tsk);
- 		__disable_fpu();
- 	}
--	KSTK_STATUS(current) &= ~ST0_CU1;
--	clear_thread_flag(TIF_USEDFPU);
-+	KSTK_STATUS(tsk) &= ~ST0_CU1;
-+	clear_tsk_thread_flag(tsk, TIF_USEDFPU);
-+}
-+
-+static inline void lose_fpu(int save)
-+{
-+	preempt_disable();
-+	lose_fpu_inatomic(save, current);
- 	preempt_enable();
- }
- 
-diff --git a/arch/mips/include/asm/switch_to.h b/arch/mips/include/asm/switch_to.h
-index e92d6c4b..c429d1a 100644
---- a/arch/mips/include/asm/switch_to.h
-+++ b/arch/mips/include/asm/switch_to.h
-@@ -16,29 +16,21 @@
- #include <asm/watch.h>
- #include <asm/dsp.h>
- #include <asm/cop2.h>
--#include <asm/msa.h>
-+#include <asm/fpu.h>
- 
- struct task_struct;
- 
--enum {
--	FP_SAVE_NONE	= 0,
--	FP_SAVE_VECTOR	= -1,
--	FP_SAVE_SCALAR	= 1,
--};
--
- /**
-  * resume - resume execution of a task
-  * @prev:	The task previously executed.
-  * @next:	The task to begin executing.
-  * @next_ti:	task_thread_info(next).
-- * @fp_save:	Which, if any, FP context to save for prev.
-  *
-  * This function is used whilst scheduling to save the context of prev & load
-  * the context of next. Returns prev.
-  */
- extern asmlinkage struct task_struct *resume(struct task_struct *prev,
--		struct task_struct *next, struct thread_info *next_ti,
--		s32 fp_save);
-+		struct task_struct *next, struct thread_info *next_ti);
- 
- extern unsigned int ll_bit;
- extern struct task_struct *ll_task;
-@@ -86,8 +78,8 @@ do {	if (cpu_has_rw_llb) {						\
- #define switch_to(prev, next, last)					\
- do {									\
- 	u32 __c0_stat;							\
--	s32 __fpsave = FP_SAVE_NONE;					\
- 	__mips_mt_fpaff_switch_to(prev);				\
-+	lose_fpu_inatomic(1, prev);					\
- 	if (cpu_has_dsp)						\
- 		__save_dsp(prev);					\
- 	if (cop2_present && (KSTK_STATUS(prev) & ST0_CU2)) {		\
-@@ -99,12 +91,7 @@ do {									\
- 		write_c0_status(__c0_stat & ~ST0_CU2);			\
- 	}								\
- 	__clear_software_ll_bit();					\
--	if (test_and_clear_tsk_thread_flag(prev, TIF_USEDFPU))		\
--		__fpsave = FP_SAVE_SCALAR;				\
--	if (test_and_clear_tsk_thread_flag(prev, TIF_USEDMSA))		\
--		__fpsave = FP_SAVE_VECTOR;				\
--	(last) = resume(prev, next, task_thread_info(next), __fpsave);	\
--	disable_msa();							\
-+	(last) = resume(prev, next, task_thread_info(next));		\
- } while (0)
- 
- #define finish_arch_switch(prev)					\
-diff --git a/arch/mips/kernel/r4k_switch.S b/arch/mips/kernel/r4k_switch.S
-index 04cbbde3..92cd051 100644
---- a/arch/mips/kernel/r4k_switch.S
-+++ b/arch/mips/kernel/r4k_switch.S
-@@ -34,7 +34,7 @@
- #ifndef USE_ALTERNATE_RESUME_IMPL
- /*
-  * task_struct *resume(task_struct *prev, task_struct *next,
-- *		       struct thread_info *next_ti, s32 fp_save)
-+ *		       struct thread_info *next_ti)
-  */
- 	.align	5
- 	LEAF(resume)
-@@ -43,45 +43,6 @@
- 	cpu_save_nonscratch a0
- 	LONG_S	ra, THREAD_REG31(a0)
- 
--	/*
--	 * Check whether we need to save any FP context. FP context is saved
--	 * iff the process has used the context with the scalar FPU or the MSA
--	 * ASE in the current time slice, as indicated by _TIF_USEDFPU and
--	 * _TIF_USEDMSA respectively. switch_to will have set fp_save
--	 * accordingly to an FP_SAVE_ enum value.
--	 */
--	beqz	a3, 2f
--
--	/*
--	 * We do. Clear the saved CU1 bit for prev, such that next time it is
--	 * scheduled it will start in userland with the FPU disabled. If the
--	 * task uses the FPU then it will be enabled again via the do_cpu trap.
--	 * This allows us to lazily restore the FP context.
--	 */
--	PTR_L	t3, TASK_THREAD_INFO(a0)
--	LONG_L	t0, ST_OFF(t3)
--	li	t1, ~ST0_CU1
--	and	t0, t0, t1
--	LONG_S	t0, ST_OFF(t3)
--
--	/* Check whether we're saving scalar or vector context. */
--	bgtz	a3, 1f
--
--	/* Save 128b MSA vector context + scalar FP control & status. */
--	.set push
--	SET_HARDFLOAT
--	cfc1	t1, fcr31
--	msa_save_all	a0
--	.set pop	/* SET_HARDFLOAT */
--
--	sw	t1, THREAD_FCR31(a0)
--	b	2f
--
--1:	/* Save 32b/64b scalar FP context. */
--	fpu_save_double a0 t0 t1		# c0_status passed in t0
--						# clobbers t1
--2:
--
- #if defined(CONFIG_CC_STACKPROTECTOR) && !defined(CONFIG_SMP)
- 	PTR_LA	t8, __stack_chk_guard
- 	LONG_L	t9, TASK_STACK_CANARY(a1)
+Paul Burton (15):
+  MIPS: define GCR_GIC_STATUS register fields
+  MIPS: include errno.h for ENODEV in mips-cm.h
+  MIPS: malta: basic DT plumbing
+  MIPS: i8259: DT support
+  irqchip: mips-gic: register IRQ domain with MIPS_GIC_IRQ_BASE
+  MIPS: malta: probe interrupt controllers via DT
+  MIPS: remove [SR]ocIt(2) IRQ handling code
+  of_serial: support for UARTs on I/O ports
+  MIPS: malta: probe UARTs using DT
+  MIPS: malta: probe RTC via DT
+  MIPS: malta: probe pflash via DT
+  MIPS: malta: remove fw_memblock_t abstraction
+  MIPS: malta: remove nonsense memory limit
+  MIPS: malta: setup RAM regions via DT
+  MIPS: malta: setup post-I/O hole RAM on non-EVA
+
+ arch/mips/Kconfig                               |   3 +
+ arch/mips/boot/dts/mti/Makefile                 |   1 +
+ arch/mips/boot/dts/mti/malta.dts                | 150 +++++++++++++++
+ arch/mips/configs/malta_defconfig               |   3 +-
+ arch/mips/configs/malta_kvm_defconfig           |   3 +-
+ arch/mips/configs/malta_kvm_guest_defconfig     |   3 +-
+ arch/mips/configs/malta_qemu_32r6_defconfig     |   1 +
+ arch/mips/configs/maltaaprp_defconfig           |   1 +
+ arch/mips/configs/maltasmvp_defconfig           |   1 +
+ arch/mips/configs/maltasmvp_eva_defconfig       |   1 +
+ arch/mips/configs/maltaup_defconfig             |   1 +
+ arch/mips/configs/maltaup_xpa_defconfig         |   3 +-
+ arch/mips/include/asm/fw/fw.h                   |  16 --
+ arch/mips/include/asm/i8259.h                   |   1 +
+ arch/mips/include/asm/mach-malta/malta-dtshim.h |  29 +++
+ arch/mips/include/asm/mips-cm.h                 |   5 +
+ arch/mips/include/asm/msc01_ic.h                | 147 ---------------
+ arch/mips/kernel/Makefile                       |   1 -
+ arch/mips/kernel/i8259.c                        |  43 ++++-
+ arch/mips/kernel/irq-msc01.c                    | 159 ----------------
+ arch/mips/mti-malta/Makefile                    |   6 +-
+ arch/mips/mti-malta/malta-dt.c                  |  34 ++++
+ arch/mips/mti-malta/malta-dtshim.c              | 238 ++++++++++++++++++++++++
+ arch/mips/mti-malta/malta-int.c                 | 130 +------------
+ arch/mips/mti-malta/malta-memory.c              | 131 +------------
+ arch/mips/mti-malta/malta-platform.c            | 147 ---------------
+ arch/mips/mti-malta/malta-setup.c               |   7 +
+ arch/mips/mti-malta/malta-time.c                |   1 -
+ drivers/irqchip/irq-mips-gic.c                  |   2 +-
+ drivers/tty/serial/of_serial.c                  |   7 +-
+ 30 files changed, 542 insertions(+), 733 deletions(-)
+ create mode 100644 arch/mips/boot/dts/mti/malta.dts
+ create mode 100644 arch/mips/include/asm/mach-malta/malta-dtshim.h
+ delete mode 100644 arch/mips/include/asm/msc01_ic.h
+ delete mode 100644 arch/mips/kernel/irq-msc01.c
+ create mode 100644 arch/mips/mti-malta/malta-dt.c
+ create mode 100644 arch/mips/mti-malta/malta-dtshim.c
+ delete mode 100644 arch/mips/mti-malta/malta-platform.c
+
 -- 
 2.4.1

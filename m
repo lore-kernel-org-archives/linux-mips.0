@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:63085 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:59274 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026764AbbEVAEbejcRK (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 May 2015 02:04:31 +0200
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Subject: [PATCH 4/9] clk: pistachio: Extend DIV_F to pass clk_flags as well
-Date: Thu, 21 May 2015 20:57:38 -0300
-Message-ID: <1432252663-31318-5-git-send-email-ezequiel.garcia@imgtec.com>
-In-Reply-To: <1432252663-31318-1-git-send-email-ezequiel.garcia@imgtec.com>
-References: <1432252663-31318-1-git-send-email-ezequiel.garcia@imgtec.com>
+        with ESMTP id S27006608AbbEVKmfVtbX7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 May 2015 12:42:35 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH v2] MIPS: tidy up FPU context switching
+Date: Fri, 22 May 2015 11:42:12 +0100
+Message-ID: <1432291332-16966-1-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1432225242-12470-1-git-send-email-paul.burton@imgtec.com>
+References: <1432225242-12470-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Ezequiel.Garcia@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,126 +20,198 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Mike Turquette <mturquette@linaro.org>, sboyd@codeaurora.org
-Cc: Andrew Bresticker <abrestic@chromium.org>, James Hartley <james.hartley@imgtec.com>, Govindraj.Raja@imgtec.com, Damien.Horsley@imgtec.com, cernekee@chromium.org, James Hogan <james.hogan@imgtec.com>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Message-ID: <20150521235738.UnO4LgZ6-hntfOKKHMsKJng1ZmSmasSvLIt0rSR07fk@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Leonid Yegoshin <leonid.yegoshin@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-kernel@vger.kernel.org, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, James Hogan <james.hogan@imgtec.com>, David Daney <david.daney@cavium.com>, Markos Chandras <markos.chandras@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
+Message-ID: <20150522104212.4AWhXVfL9fL-bDfYFZ9LFPhlcvt6No3qKQ4zJPK7A8E@z>
 
-As preparation work to support MIPS PLL rate change propagation, this
-commit extends the DIV_F macro to pass clk_flags in addition to div_flags.
+Rather than saving the scalar FP or vector context in the assembly
+resume function, reuse the existing C code we have in fpu.h to do
+exactly that. This reduces duplication, results in a much easier to read
+resume function & should allow the compiler to optimise out more MSA
+code due to is_msa_enabled()/cpu_has_msa being known-zero at compile
+time for kernels without MSA support.
 
-Signed-off-by: Govindraj Raja <Govindraj.Raja@imgtec.com>
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+As a side effect this correctly disables MSA on the first entry to a
+task, in which case resume will "return" to ret_from_kernel_thread or
+ret_from_fork in order to call schedule_tail. This would lead to the
+disable_msa call in switch_to not being executed, as reported by Leonid.
+
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Reported-by: Leonid Yegoshin <leonid.yegoshin@imgtec.com>
 ---
- drivers/clk/pistachio/clk-pistachio.c | 24 ++++++++++++------------
- drivers/clk/pistachio/clk.c           |  3 ++-
- drivers/clk/pistachio/clk.h           |  7 +++++--
- 3 files changed, 19 insertions(+), 15 deletions(-)
+How about this (lightly tested for the moment) alternative to 10082?
 
-diff --git a/drivers/clk/pistachio/clk-pistachio.c b/drivers/clk/pistachio/clk-pistachio.c
-index 8c0fe88..47e2fb1 100644
---- a/drivers/clk/pistachio/clk-pistachio.c
-+++ b/drivers/clk/pistachio/clk-pistachio.c
-@@ -61,13 +61,13 @@ static struct pistachio_div pistachio_divs[] __initdata = {
- 	    0x204, 2),
- 	DIV(CLK_MIPS_DIV, "mips_div", "mips_internal_div", 0x208, 8),
- 	DIV_F(CLK_AUDIO_DIV, "audio_div", "audio_mux",
--		0x20c, 8, CLK_DIVIDER_ROUND_CLOSEST),
-+		0x20c, 8, 0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV_F(CLK_I2S_DIV, "i2s_div", "audio_pll_mux",
--		0x210, 8, CLK_DIVIDER_ROUND_CLOSEST),
-+		0x210, 8, 0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV_F(CLK_SPDIF_DIV, "spdif_div", "audio_pll_mux",
--		0x214, 8, CLK_DIVIDER_ROUND_CLOSEST),
-+		0x214, 8, 0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV_F(CLK_AUDIO_DAC_DIV, "audio_dac_div", "audio_pll_mux",
--		0x218, 8, CLK_DIVIDER_ROUND_CLOSEST),
-+		0x218, 8, 0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV(CLK_RPU_V_DIV, "rpu_v_div", "rpu_v_pll_mux", 0x21c, 2),
- 	DIV(CLK_RPU_L_DIV, "rpu_l_div", "rpu_l_mux", 0x220, 2),
- 	DIV(CLK_RPU_SLEEP_DIV, "rpu_sleep_div", "xtal", 0x224, 10),
-@@ -75,13 +75,13 @@ static struct pistachio_div pistachio_divs[] __initdata = {
- 	DIV(CLK_USB_PHY_DIV, "usb_phy_div", "sys_internal_div", 0x22c, 6),
- 	DIV(CLK_ENET_DIV, "enet_div", "enet_mux", 0x230, 6),
- 	DIV_F(CLK_UART0_INTERNAL_DIV, "uart0_internal_div", "sys_pll_mux",
--	      0x234, 3, CLK_DIVIDER_ROUND_CLOSEST),
-+	      0x234, 3, 0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV_F(CLK_UART0_DIV, "uart0_div", "uart0_internal_div", 0x238, 10,
--	      CLK_DIVIDER_ROUND_CLOSEST),
-+	      0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV_F(CLK_UART1_INTERNAL_DIV, "uart1_internal_div", "sys_pll_mux",
--	      0x23c, 3, CLK_DIVIDER_ROUND_CLOSEST),
-+	      0x23c, 3, 0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV_F(CLK_UART1_DIV, "uart1_div", "uart1_internal_div", 0x240, 10,
--	      CLK_DIVIDER_ROUND_CLOSEST),
-+	      0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV(CLK_SYS_INTERNAL_DIV, "sys_internal_div", "sys_pll_mux", 0x244, 3),
- 	DIV(CLK_SPI0_INTERNAL_DIV, "spi0_internal_div", "sys_pll_mux",
- 	    0x248, 3),
-@@ -226,13 +226,13 @@ static struct pistachio_div pistachio_periph_divs[] __initdata = {
- 	DIV(PERIPH_CLK_COUNTER_SLOW_DIV, "counter_slow_div",
- 	    "counter_slow_pre_div", 0x118, 7),
- 	DIV_F(PERIPH_CLK_IR_PRE_DIV, "ir_pre_div", "periph_sys", 0x11c, 7,
--	      CLK_DIVIDER_ROUND_CLOSEST),
-+	      0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV_F(PERIPH_CLK_IR_DIV, "ir_div", "ir_pre_div", 0x120, 7,
--	      CLK_DIVIDER_ROUND_CLOSEST),
-+	      0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV_F(PERIPH_CLK_WD_PRE_DIV, "wd_pre_div", "periph_sys", 0x124, 7,
--	      CLK_DIVIDER_ROUND_CLOSEST),
-+	      0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV_F(PERIPH_CLK_WD_DIV, "wd_div", "wd_pre_div", 0x128, 7,
--	      CLK_DIVIDER_ROUND_CLOSEST),
-+	      0, CLK_DIVIDER_ROUND_CLOSEST),
- 	DIV(PERIPH_CLK_PDM_PRE_DIV, "pdm_pre_div", "periph_sys", 0x12c, 7),
- 	DIV(PERIPH_CLK_PDM_DIV, "pdm_div", "pdm_pre_div", 0x130, 7),
- 	DIV(PERIPH_CLK_PWM_PRE_DIV, "pwm_pre_div", "periph_sys", 0x134, 7),
-diff --git a/drivers/clk/pistachio/clk.c b/drivers/clk/pistachio/clk.c
-index 85faa83..380879b 100644
---- a/drivers/clk/pistachio/clk.c
-+++ b/drivers/clk/pistachio/clk.c
-@@ -99,7 +99,8 @@ void pistachio_clk_register_div(struct pistachio_clk_provider *p,
+Changes in v2:
+- Introduce lose_fpu_inatomic to skip the preempt_{en,dis}able calls
+  and operate on the provided struct task_struct, which should be prev
+  rather than current.
+
+ arch/mips/include/asm/fpu.h       | 21 ++++++++++++--------
+ arch/mips/include/asm/switch_to.h | 21 ++++----------------
+ arch/mips/kernel/r4k_switch.S     | 41 +--------------------------------------
+ 3 files changed, 18 insertions(+), 65 deletions(-)
+
+diff --git a/arch/mips/include/asm/fpu.h b/arch/mips/include/asm/fpu.h
+index 084780b..87e8c78 100644
+--- a/arch/mips/include/asm/fpu.h
++++ b/arch/mips/include/asm/fpu.h
+@@ -164,25 +164,30 @@ static inline int own_fpu(int restore)
+ 	return ret;
+ }
  
- 	for (i = 0; i < num; i++) {
- 		clk = clk_register_divider(NULL, div[i].name, div[i].parent,
--					   0, p->base + div[i].reg, 0,
-+					   div[i].clk_flags,
-+					   p->base + div[i].reg, 0,
- 					   div[i].width, div[i].div_flags,
- 					   NULL);
- 		p->clk_data.clks[div[i].id] = clk;
-diff --git a/drivers/clk/pistachio/clk.h b/drivers/clk/pistachio/clk.h
-index ea48d15..1589227 100644
---- a/drivers/clk/pistachio/clk.h
-+++ b/drivers/clk/pistachio/clk.h
-@@ -54,6 +54,7 @@ struct pistachio_div {
- 	unsigned int id;
- 	unsigned long reg;
- 	unsigned int width;
-+	unsigned int clk_flags;
- 	unsigned int div_flags;
- 	const char *name;
- 	const char *parent;
-@@ -64,17 +65,19 @@ struct pistachio_div {
- 		.id		= _id,				\
- 		.reg		= _reg,				\
- 		.width		= _width,			\
-+		.clk_flags	= 0,				\
- 		.div_flags	= 0,				\
- 		.name		= _name,			\
- 		.parent		= _pname,			\
+-static inline void lose_fpu(int save)
++static inline void lose_fpu_inatomic(int save, struct task_struct *tsk)
+ {
+-	preempt_disable();
+ 	if (is_msa_enabled()) {
+ 		if (save) {
+-			save_msa(current);
+-			current->thread.fpu.fcr31 =
++			save_msa(tsk);
++			tsk->thread.fpu.fcr31 =
+ 					read_32bit_cp1_register(CP1_STATUS);
+ 		}
+ 		disable_msa();
+-		clear_thread_flag(TIF_USEDMSA);
++		clear_tsk_thread_flag(tsk, TIF_USEDMSA);
+ 		__disable_fpu();
+ 	} else if (is_fpu_owner()) {
+ 		if (save)
+-			_save_fp(current);
++			_save_fp(tsk);
+ 		__disable_fpu();
  	}
+-	KSTK_STATUS(current) &= ~ST0_CU1;
+-	clear_thread_flag(TIF_USEDFPU);
++	KSTK_STATUS(tsk) &= ~ST0_CU1;
++	clear_tsk_thread_flag(tsk, TIF_USEDFPU);
++}
++
++static inline void lose_fpu(int save)
++{
++	preempt_disable();
++	lose_fpu_inatomic(save, current);
+ 	preempt_enable();
+ }
  
--#define DIV_F(_id, _name, _pname, _reg, _width, _div_flags)	\
-+#define DIV_F(_id, _name, _pname, _reg, _width, _clkf, _divf)	\
- 	{							\
- 		.id		= _id,				\
- 		.reg		= _reg,				\
- 		.width		= _width,			\
--		.div_flags	= _div_flags,			\
-+		.clk_flags	= _clkf,			\
-+		.div_flags	= _divf,			\
- 		.name		= _name,			\
- 		.parent		= _pname,			\
- 	}
+diff --git a/arch/mips/include/asm/switch_to.h b/arch/mips/include/asm/switch_to.h
+index e92d6c4b..c429d1a 100644
+--- a/arch/mips/include/asm/switch_to.h
++++ b/arch/mips/include/asm/switch_to.h
+@@ -16,29 +16,21 @@
+ #include <asm/watch.h>
+ #include <asm/dsp.h>
+ #include <asm/cop2.h>
+-#include <asm/msa.h>
++#include <asm/fpu.h>
+ 
+ struct task_struct;
+ 
+-enum {
+-	FP_SAVE_NONE	= 0,
+-	FP_SAVE_VECTOR	= -1,
+-	FP_SAVE_SCALAR	= 1,
+-};
+-
+ /**
+  * resume - resume execution of a task
+  * @prev:	The task previously executed.
+  * @next:	The task to begin executing.
+  * @next_ti:	task_thread_info(next).
+- * @fp_save:	Which, if any, FP context to save for prev.
+  *
+  * This function is used whilst scheduling to save the context of prev & load
+  * the context of next. Returns prev.
+  */
+ extern asmlinkage struct task_struct *resume(struct task_struct *prev,
+-		struct task_struct *next, struct thread_info *next_ti,
+-		s32 fp_save);
++		struct task_struct *next, struct thread_info *next_ti);
+ 
+ extern unsigned int ll_bit;
+ extern struct task_struct *ll_task;
+@@ -86,8 +78,8 @@ do {	if (cpu_has_rw_llb) {						\
+ #define switch_to(prev, next, last)					\
+ do {									\
+ 	u32 __c0_stat;							\
+-	s32 __fpsave = FP_SAVE_NONE;					\
+ 	__mips_mt_fpaff_switch_to(prev);				\
++	lose_fpu_inatomic(1, prev);					\
+ 	if (cpu_has_dsp)						\
+ 		__save_dsp(prev);					\
+ 	if (cop2_present && (KSTK_STATUS(prev) & ST0_CU2)) {		\
+@@ -99,12 +91,7 @@ do {									\
+ 		write_c0_status(__c0_stat & ~ST0_CU2);			\
+ 	}								\
+ 	__clear_software_ll_bit();					\
+-	if (test_and_clear_tsk_thread_flag(prev, TIF_USEDFPU))		\
+-		__fpsave = FP_SAVE_SCALAR;				\
+-	if (test_and_clear_tsk_thread_flag(prev, TIF_USEDMSA))		\
+-		__fpsave = FP_SAVE_VECTOR;				\
+-	(last) = resume(prev, next, task_thread_info(next), __fpsave);	\
+-	disable_msa();							\
++	(last) = resume(prev, next, task_thread_info(next));		\
+ } while (0)
+ 
+ #define finish_arch_switch(prev)					\
+diff --git a/arch/mips/kernel/r4k_switch.S b/arch/mips/kernel/r4k_switch.S
+index 04cbbde3..92cd051 100644
+--- a/arch/mips/kernel/r4k_switch.S
++++ b/arch/mips/kernel/r4k_switch.S
+@@ -34,7 +34,7 @@
+ #ifndef USE_ALTERNATE_RESUME_IMPL
+ /*
+  * task_struct *resume(task_struct *prev, task_struct *next,
+- *		       struct thread_info *next_ti, s32 fp_save)
++ *		       struct thread_info *next_ti)
+  */
+ 	.align	5
+ 	LEAF(resume)
+@@ -43,45 +43,6 @@
+ 	cpu_save_nonscratch a0
+ 	LONG_S	ra, THREAD_REG31(a0)
+ 
+-	/*
+-	 * Check whether we need to save any FP context. FP context is saved
+-	 * iff the process has used the context with the scalar FPU or the MSA
+-	 * ASE in the current time slice, as indicated by _TIF_USEDFPU and
+-	 * _TIF_USEDMSA respectively. switch_to will have set fp_save
+-	 * accordingly to an FP_SAVE_ enum value.
+-	 */
+-	beqz	a3, 2f
+-
+-	/*
+-	 * We do. Clear the saved CU1 bit for prev, such that next time it is
+-	 * scheduled it will start in userland with the FPU disabled. If the
+-	 * task uses the FPU then it will be enabled again via the do_cpu trap.
+-	 * This allows us to lazily restore the FP context.
+-	 */
+-	PTR_L	t3, TASK_THREAD_INFO(a0)
+-	LONG_L	t0, ST_OFF(t3)
+-	li	t1, ~ST0_CU1
+-	and	t0, t0, t1
+-	LONG_S	t0, ST_OFF(t3)
+-
+-	/* Check whether we're saving scalar or vector context. */
+-	bgtz	a3, 1f
+-
+-	/* Save 128b MSA vector context + scalar FP control & status. */
+-	.set push
+-	SET_HARDFLOAT
+-	cfc1	t1, fcr31
+-	msa_save_all	a0
+-	.set pop	/* SET_HARDFLOAT */
+-
+-	sw	t1, THREAD_FCR31(a0)
+-	b	2f
+-
+-1:	/* Save 32b/64b scalar FP context. */
+-	fpu_save_double a0 t0 t1		# c0_status passed in t0
+-						# clobbers t1
+-2:
+-
+ #if defined(CONFIG_CC_STACKPROTECTOR) && !defined(CONFIG_SMP)
+ 	PTR_LA	t8, __stack_chk_guard
+ 	LONG_L	t9, TASK_STACK_CANARY(a1)
 -- 
-2.3.3
+2.4.1

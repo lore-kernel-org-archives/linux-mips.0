@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44372 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:42847 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007004AbbEXPUzaze9f (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 24 May 2015 17:20:55 +0200
+        with ESMTP id S27006775AbbEXPVHxJVSD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 24 May 2015 17:21:07 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v5 16/37] MIPS: JZ4740: support >32 interrupts
-Date: Sun, 24 May 2015 16:11:26 +0100
-Message-ID: <1432480307-23789-17-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH v5 02/37] devicetree/bindings: add Qi Hardware vendor prefix
+Date: Sun, 24 May 2015 16:11:12 +0100
+Message-ID: <1432480307-23789-3-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1432480307-23789-1-git-send-email-paul.burton@imgtec.com>
 References: <1432480307-23789-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,157 +21,44 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Lars-Peter Clausen <lars@metafoo.de>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>
-Message-ID: <20150524151126.NPUF-xMqR5PRzl5xiItXFlUU9wV4COFHrys-CwsqLfU@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Lars-Peter Clausen <lars@metafoo.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Hayato Suzuki <hytszk@gmail.com>, Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Ebalard <arno@natisbad.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Antony Pavlov <antonynpavlov@gmail.com>
+Message-ID: <20150524151112.9upMnjZ6bWKH88-T7WgEv3J4ITLnffenjxlDHe5ibS8@z>
 
-On newer Ingenic SoCs the interrupt controller supports more than 32
-interrupts, which it does by duplicating the registers at intervals
-of 0x20 bytes within its address space. Add support for an arbitrary
-number of interrupts using multiple generic chips, and provide the
-number of chips to register from the interrupt controller probe
-function.
+Define a vendor prefix for Qi Hardware, creators of the Ben Nanonote
+(qi_lb60) among other open devices.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Acked-by: Rob Herring <robh@kernel.org>
 Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
+Cc: Ian Campbell <ijc+devicetree@hellion.org.uk>
+Cc: Kumar Gala <galak@codeaurora.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Pawel Moll <pawel.moll@arm.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
 ---
 
 Changes in v5: None
 Changes in v4: None
 Changes in v3:
-- Name probe functions a little more generically, ie. "1chip" rather
-  than "jz4740". This is more for consistency with the later "2chip"
-  variant that is used across a number of SoCs.
+- New patch
 
 Changes in v2: None
 
- arch/mips/jz4740/irq.c | 71 ++++++++++++++++++++++++++++++++------------------
- 1 file changed, 46 insertions(+), 25 deletions(-)
+ Documentation/devicetree/bindings/vendor-prefixes.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/jz4740/irq.c b/arch/mips/jz4740/irq.c
-index 854cd14..7ad6688 100644
---- a/arch/mips/jz4740/irq.c
-+++ b/arch/mips/jz4740/irq.c
-@@ -34,6 +34,7 @@
- 
- struct ingenic_intc_data {
- 	void __iomem *base;
-+	unsigned num_chips;
- };
- 
- #define JZ_REG_INTC_STATUS	0x00
-@@ -41,16 +42,22 @@ struct ingenic_intc_data {
- #define JZ_REG_INTC_SET_MASK	0x08
- #define JZ_REG_INTC_CLEAR_MASK	0x0c
- #define JZ_REG_INTC_PENDING	0x10
-+#define CHIP_SIZE		0x20
- 
- static irqreturn_t jz4740_cascade(int irq, void *data)
- {
- 	struct ingenic_intc_data *intc = irq_get_handler_data(irq);
- 	uint32_t irq_reg;
-+	unsigned i;
- 
--	irq_reg = readl(intc->base + JZ_REG_INTC_PENDING);
-+	for (i = 0; i < intc->num_chips; i++) {
-+		irq_reg = readl(intc->base + (i * CHIP_SIZE) +
-+				JZ_REG_INTC_PENDING);
-+		if (!irq_reg)
-+			continue;
- 
--	if (irq_reg)
--		generic_handle_irq(__fls(irq_reg) + JZ4740_IRQ_BASE);
-+		generic_handle_irq(__fls(irq_reg) + (i * 32) + JZ4740_IRQ_BASE);
-+	}
- 
- 	return IRQ_HANDLED;
- }
-@@ -80,14 +87,15 @@ static struct irqaction jz4740_cascade_action = {
- 	.name = "JZ4740 cascade interrupt",
- };
- 
--static int __init jz4740_intc_of_init(struct device_node *node,
--	struct device_node *parent)
-+static int __init ingenic_intc_of_init(struct device_node *node,
-+				       unsigned num_chips)
- {
- 	struct ingenic_intc_data *intc;
- 	struct irq_chip_generic *gc;
- 	struct irq_chip_type *ct;
- 	struct irq_domain *domain;
- 	int parent_irq, err = 0;
-+	unsigned i;
- 
- 	intc = kzalloc(sizeof(*intc), GFP_KERNEL);
- 	if (!intc) {
-@@ -105,27 +113,34 @@ static int __init jz4740_intc_of_init(struct device_node *node,
- 	if (err)
- 		goto out_unmap_irq;
- 
-+	intc->num_chips = num_chips;
- 	intc->base = ioremap(JZ4740_INTC_BASE_ADDR, 0x14);
- 
--	/* Mask all irqs */
--	writel(0xffffffff, intc->base + JZ_REG_INTC_SET_MASK);
--
--	gc = irq_alloc_generic_chip("INTC", 1, JZ4740_IRQ_BASE, intc->base,
--		handle_level_irq);
--
--	gc->wake_enabled = IRQ_MSK(32);
--
--	ct = gc->chip_types;
--	ct->regs.enable = JZ_REG_INTC_CLEAR_MASK;
--	ct->regs.disable = JZ_REG_INTC_SET_MASK;
--	ct->chip.irq_unmask = irq_gc_unmask_enable_reg;
--	ct->chip.irq_mask = irq_gc_mask_disable_reg;
--	ct->chip.irq_mask_ack = irq_gc_mask_disable_reg;
--	ct->chip.irq_set_wake = irq_gc_set_wake;
--	ct->chip.irq_suspend = jz4740_irq_suspend;
--	ct->chip.irq_resume = jz4740_irq_resume;
--
--	irq_setup_generic_chip(gc, IRQ_MSK(32), 0, 0, IRQ_NOPROBE | IRQ_LEVEL);
-+	for (i = 0; i < num_chips; i++) {
-+		/* Mask all irqs */
-+		writel(0xffffffff, intc->base + (i * CHIP_SIZE) +
-+		       JZ_REG_INTC_SET_MASK);
-+
-+		gc = irq_alloc_generic_chip("INTC", 1,
-+					    JZ4740_IRQ_BASE + (i * 32),
-+					    intc->base + (i * CHIP_SIZE),
-+					    handle_level_irq);
-+
-+		gc->wake_enabled = IRQ_MSK(32);
-+
-+		ct = gc->chip_types;
-+		ct->regs.enable = JZ_REG_INTC_CLEAR_MASK;
-+		ct->regs.disable = JZ_REG_INTC_SET_MASK;
-+		ct->chip.irq_unmask = irq_gc_unmask_enable_reg;
-+		ct->chip.irq_mask = irq_gc_mask_disable_reg;
-+		ct->chip.irq_mask_ack = irq_gc_mask_disable_reg;
-+		ct->chip.irq_set_wake = irq_gc_set_wake;
-+		ct->chip.irq_suspend = jz4740_irq_suspend;
-+		ct->chip.irq_resume = jz4740_irq_resume;
-+
-+		irq_setup_generic_chip(gc, IRQ_MSK(32), 0, 0,
-+				       IRQ_NOPROBE | IRQ_LEVEL);
-+	}
- 
- 	domain = irq_domain_add_legacy(node, num_chips * 32, JZ4740_IRQ_BASE, 0,
- 				       &irq_domain_simple_ops, NULL);
-@@ -142,4 +157,10 @@ out_free:
- out_err:
- 	return err;
- }
--IRQCHIP_DECLARE(jz4740_intc, "ingenic,jz4740-intc", jz4740_intc_of_init);
-+
-+static int __init intc_1chip_of_init(struct device_node *node,
-+				     struct device_node *parent)
-+{
-+	return ingenic_intc_of_init(node, 1);
-+}
-+IRQCHIP_DECLARE(jz4740_intc, "ingenic,jz4740-intc", intc_1chip_of_init);
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Documentation/devicetree/bindings/vendor-prefixes.txt
+index b335a99..c4ba705 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.txt
++++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
+@@ -155,6 +155,7 @@ powervr	PowerVR (deprecated, use img)
+ qca	Qualcomm Atheros, Inc.
+ qcom	Qualcomm Technologies, Inc
+ qemu	QEMU, a generic and open source machine emulator and virtualizer
++qi	Qi Hardware
+ qnap	QNAP Systems, Inc.
+ radxa	Radxa
+ raidsonic	RaidSonic Technology GmbH
 -- 
 2.4.1

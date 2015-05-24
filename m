@@ -1,18 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:35805 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006688AbbEWACxdvEF7 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 23 May 2015 02:02:53 +0200
-Message-ID: <555FC32A.4020308@imgtec.com>
-Date: Fri, 22 May 2015 17:00:42 -0700
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:53111 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27006775AbbEXPBU6NLnp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 24 May 2015 17:01:20 +0200
+Date: Sun, 24 May 2015 16:01:04 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH v4 26/37] MIPS,clk: migrate JZ4740 to common clock
+ framework
+Message-ID: <20150524150104.GP13811@NP-P-BURTON>
+References: <1429881457-16016-1-git-send-email-paul.burton@imgtec.com>
+ <1429881457-16016-27-git-send-email-paul.burton@imgtec.com>
+ <20150513025204.20636.10155@quantum>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] MIPS: MSA: bugfix - disable MSA during thread switch
- correctly
-References: <20150519211222.35859.52798.stgit@ubuntu-yegoshin> <20150519211351.35859.80332.stgit@ubuntu-yegoshin> <20150522093812.GH6941@linux-mips.org> <555F776E.3070904@imgtec.com> <20150522232019.GA10556@linux-mips.org>
-In-Reply-To: <20150522232019.GA10556@linux-mips.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Dzs2zDY0zgkG72+7"
+Content-Disposition: inline
+In-Reply-To: <20150513025204.20636.10155@quantum>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,47 +25,80 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, rusty@rustcorp.com.au, alexinbeijing@gmail.com, paul.burton@imgtec.com, david.daney@cavium.com, alex@alex-smith.me.uk, linux-kernel@vger.kernel.org, james.hogan@imgtec.com, markos.chandras@imgtec.com, macro@linux-mips.org, eunb.song@samsung.com, manuel.lauss@gmail.com, andreas.herrmann@caviumnetworks.com
-Message-ID: <20150523000042.gFN5f85Ke0Rffz2GPOqWvUGqHgIN7wa0x5c0XdfwhwE@z>
+To: Michael Turquette <mturquette@linaro.org>
+Cc: linux-mips@linux-mips.org, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Lars-Peter Clausen <lars@metafoo.de>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, devicetree@vger.kernel.org, linux-clk@vger.kernel.org
+Message-ID: <20150524150104.M_t3vC8etEA1B-KGKN2DWZ-9SLFqa_vo7SOTuQrn4ZE@z>
 
-On 05/22/2015 04:20 PM, Ralf Baechle wrote:
-> On Fri, May 22, 2015 at 11:37:34AM -0700, Leonid Yegoshin wrote:
->
->> On 05/22/2015 02:38 AM, Ralf Baechle wrote:
->>> Just move the call to finish_arch_switch().
->> It might be a problem later, then a correct MSA partiton starts working. It
->> should be tight to saving MSA registers in that case.
->>
->>> Your rewrite also dropped the if (cpu_has_msa) condition from
->>> disable_msa() probably causing havoc on lots of CPUs which will likely not
->>> decode the set bits of the MFC0/MTC0 instructions thus end up accessing
->>> Config0. Ralf
->> Right before this chunk of code there is a saving MSA registers. Does it
->> causing a havoc or else?
->>
->> May I ask you to look into switch_to macro to figure out how "if
->> (cpu_has_msa)" check works in this case?
-> Ah sorry I now see that your added code is not executed for all CPUs but
-> only those having MSA.  So then it's safe.
->
-> Still I don't stylistically like defining the register t4 in the middle
-> of the code.
->
-> Below my suggested patch.  It's advantage is that for non-MSA platforms
-> the call to disable_msa() will be removed entirely.
->
-> Something like Paul's http://patchwork.linux-mips.org/patch/10111/ (assuming
-> it's correct and tested) seems like a full cleanup but it's way too
-> complex for 4.1 or the stable kernels.
->
->    Ralf
->
->
-All 3 patches seems working (I tested), but if you don't like mine then 
-I prefer Paul's patch more - it concentrates stuff more closely and 
-removes some assembly stuff.
+--Dzs2zDY0zgkG72+7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Besides that, it introduces lose_fpu_inatomic() which is needed for me :)
+On Tue, May 12, 2015 at 07:52:04PM -0700, Michael Turquette wrote:
+> Hi Paul,
+>=20
+> Quoting Paul Burton (2015-04-24 06:17:26)
+> > +static void __init jz4740_cgu_init(struct device_node *np)
+> > +{
+> > +       int retval;
+> > +
+> > +       cgu =3D ingenic_cgu_new(jz4740_cgu_clocks,
+> > +                             ARRAY_SIZE(jz4740_cgu_clocks), np);
+> > +       if (!cgu) {
+> > +               pr_err("%s: failed to initialise CGU\n", __func__);
+> > +               return;
+> > +       }
+> > +
+> > +       retval =3D ingenic_cgu_register_clocks(cgu);
+> > +       if (retval)
+> > +               pr_err("%s: failed to register CGU Clocks\n", __func__);
+> > +}
+> > +CLK_OF_DECLARE(jz4740_cgu, "ingenic,jz4740-cgu", jz4740_cgu_init);
+> > --=20
+> > 2.3.5
+> >=20
+>=20
+> Patch looks good to me, but I have one question. Is it possible for you
+> to have a proper platform_device for the cgu instead of relying on
+> CLK_OF_DECLARE?
+>=20
+> For an example of a clock driver that does this, check out the bottom of
+> drivers/clk/qcom/gcc-msm8660.c.
+>=20
+> Regards,
+> Mike
 
-- Leonid.
+Hi Mike,
+
+Thanks for your review. I gave that a try but unfortunately it didn't
+work out because the code in plat_time_init (arch/mips/jz4740/time.c)
+needs to obtain the rate of the ext clock at a point before any
+initcalls have been run, and therefore before the platform device has
+been registered.
+
+Thanks,
+    Paul
+
+--Dzs2zDY0zgkG72+7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJVYeerAAoJENzvn0paErs5t10P/0s4aPrB2JGQryExBDaqHNRI
+pPpuIBfNBL8/V9Uk4FCMMi77dymvZuAxnBigych187DazTCxLvyejzXwooWz8zxo
+/IbObdbdpeNw5s8yoUPUlC3d1Yhhw2un9zhk9n1mdj+b3ZPfjvyIuwWIzorewpC5
+oHGffD15WBjQZvE6H16pc9YHinO+YkwRJJAd+qdSuzxVvZ9FPJW5JvNJ6JrwSEL7
+HCEbTYyN3j2BuOHGnO0l1ZcDzgCFC3mbh8z+De11h9XFc/9gst/W3Qn+9HnYy6a5
+jk3+baDPUa0TjAi7IftqG1nLLAQ+17JbhfWiTXjmEMkT5Pd3z68h6FHZJaH/WsK+
+0TPFPp5grq4zawHc4DgVjUr3RLnzFtxiI7CrEEpf3IfC5CzfWSB4nuAAxxy/N05n
+/O1+xBxYaspEDDn9xdFLdTJN1aHLfnW9whdzIwworoU1bzdVEo3Tiwh4us3fozCx
+dtaOoTrGtWbN5sf2/YGKbsqKbf2CDoHMPEriAS2NHBErWUZPsLN9J48RhoUqvnZ+
+X1xsAFD3OdaaCNnKlAEHcy/Bzu4D9917nCxy7l42LkasG6/HP7yLNdafkQ1kjJoN
+U5EDTZNuuZ3El31XWUu7m+fQ+/qStAIZ5eAOY6bzPK7zmu3R3On8Dzp1Mde54xL2
+dun5LozGE89ug1KsWobr
+=Kgev
+-----END PGP SIGNATURE-----
+
+--Dzs2zDY0zgkG72+7--

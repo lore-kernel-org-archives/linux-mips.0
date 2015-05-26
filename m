@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59380 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:10681 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007054AbbEZWIzGoscp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 27 May 2015 00:08:55 +0200
+        with ESMTP id S27007054AbbEZWJkf61Ux (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 27 May 2015 00:09:40 +0200
 From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Subject: [PATCH 1/3] clk: pistachio: Add a pll_lock() helper for clarity
-Date: Tue, 26 May 2015 19:01:07 -0300
-Message-ID: <1432677669-29581-2-git-send-email-ezequiel.garcia@imgtec.com>
-In-Reply-To: <1432677669-29581-1-git-send-email-ezequiel.garcia@imgtec.com>
-References: <1432677669-29581-1-git-send-email-ezequiel.garcia@imgtec.com>
+Subject: [PATCH 0/3] clk: pistachio: Assorted fixes
+Date: Tue, 26 May 2015 19:01:06 -0300
+Message-ID: <1432677669-29581-1-git-send-email-ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Ezequiel.Garcia@imgtec.com>
@@ -22,53 +20,36 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Mike Turquette <mturquette@linaro.org>, sboyd@codeaurora.org
 Cc: Andrew Bresticker <abrestic@chromium.org>, James Hartley <james.hartley@imgtec.com>, James Hogan <james.hogan@imgtec.com>, cernekee@chromium.org, Govindraj.Raja@imgtec.com, Damien.Horsley@imgtec.com, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Message-ID: <20150526220107.TohM_9CJvwemlx1bnwCgELYgvs6jEgIk6rSG5xoP1NY@z>
+Message-ID: <20150526220106.brXESli7B-apAWOoqdqThLzq1UfBg22wh61B5bfpdvY@z>
 
-This commit adds a pll_lock() helper making the code more readable.
-Cosmetic change only, no functionality changes.
+This patchset contains a few fixes for the Pistachio
+clock driver.
 
-Signed-off-by: Andrew Bresticker <abrestic@chromium.org>
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
----
- drivers/clk/pistachio/clk-pll.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+This is based on the series "clk: pistachio: Assorted changes"
+(http://permalink.gmane.org/gmane.linux.kernel/1960107). I've dropped
+the patches related to the fractional and integer PLLs rate change
+and left only the fixes, as the rest might need some polishing.
 
-diff --git a/drivers/clk/pistachio/clk-pll.c b/drivers/clk/pistachio/clk-pll.c
-index de53756..9ce1be7 100644
---- a/drivers/clk/pistachio/clk-pll.c
-+++ b/drivers/clk/pistachio/clk-pll.c
-@@ -67,6 +67,12 @@ static inline void pll_writel(struct pistachio_clk_pll *pll, u32 val, u32 reg)
- 	writel(val, pll->base + reg);
- }
- 
-+static inline void pll_lock(struct pistachio_clk_pll *pll)
-+{
-+	while (!(pll_readl(pll, PLL_STATUS) & PLL_STATUS_LOCK))
-+		cpu_relax();
-+}
-+
- static inline u32 do_div_round_closest(u64 dividend, u32 divisor)
- {
- 	dividend += divisor / 2;
-@@ -178,8 +184,7 @@ static int pll_gf40lp_frac_set_rate(struct clk_hw *hw, unsigned long rate,
- 		(params->postdiv2 << PLL_FRAC_CTRL2_POSTDIV2_SHIFT);
- 	pll_writel(pll, val, PLL_CTRL2);
- 
--	while (!(pll_readl(pll, PLL_STATUS) & PLL_STATUS_LOCK))
--		cpu_relax();
-+	pll_lock(pll);
- 
- 	if (!was_enabled)
- 		pll_gf40lp_frac_disable(hw);
-@@ -288,8 +293,7 @@ static int pll_gf40lp_laint_set_rate(struct clk_hw *hw, unsigned long rate,
- 		(params->postdiv2 << PLL_INT_CTRL1_POSTDIV2_SHIFT);
- 	pll_writel(pll, val, PLL_CTRL1);
- 
--	while (!(pll_readl(pll, PLL_STATUS) & PLL_STATUS_LOCK))
--		cpu_relax();
-+	pll_lock(pll);
- 
- 	if (!was_enabled)
- 		pll_gf40lp_laint_disable(hw);
+Here's a brief summary of the patches:
+
+Patches 1 and 2 clean up the PLL lock handling.
+
+Patch 3 adds some very useful sanity checks on integer and fractions PLL
+set_rate(), to make sure the parameters are modified only when it's legal
+to do so.
+
+None of these are really urgent fixes so this is all v4.2 material.
+Hope we are still in time!
+
+Ezequiel Garcia (2):
+  clk: pistachio: Add a pll_lock() helper for clarity
+  clk: pistachio: Lock the PLL when enabled upon rate change
+
+Kevin Cernekee (1):
+  clk: pistachio: Add sanity checks on PLL configuration
+
+ drivers/clk/pistachio/clk-pll.c | 115 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 93 insertions(+), 22 deletions(-)
+
 -- 
 2.3.3

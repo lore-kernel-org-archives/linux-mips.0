@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:15283 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:39019 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007242AbbEZSoikGivT (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 26 May 2015 20:44:38 +0200
+        with ESMTP id S27007284AbbEZSoxcGV8t (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 26 May 2015 20:44:53 +0200
 From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Subject: [PATCH v2 0/7] Clocksource changes for Pistachio CPUFreq
-Date: Tue, 26 May 2015 15:39:01 -0300
-Message-ID: <1432665548-16024-1-git-send-email-ezequiel.garcia@imgtec.com>
+Subject: [PATCH v2 1/7] clocksource: mips-gic: Enable the clock before using it
+Date: Tue, 26 May 2015 15:39:02 -0300
+Message-ID: <1432665548-16024-2-git-send-email-ezequiel.garcia@imgtec.com>
+In-Reply-To: <1432665548-16024-1-git-send-email-ezequiel.garcia@imgtec.com>
+References: <1432665548-16024-1-git-send-email-ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Ezequiel.Garcia@imgtec.com>
@@ -20,67 +22,38 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Daniel Lezcano <daniel.lezcano@linaro.org>, devicetree@vger.kernel.org
 Cc: Thomas Gleixner <tglx@linutronix.de>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <james.hartley@imgtec.com>, Govindraj.Raja@imgtec.com, Damien.Horsley@imgtec.com, James Hogan <james.hogan@imgtec.com>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Message-ID: <20150526183901.FdOJlVjXR2kHsOfTKzPzYbzMTpOnq3Zch9cMXPwhlAc@z>
+Message-ID: <20150526183902.ggT58xJPgAko86Fe97X9OcB6tszgm-5qbUFW1KhO8gU@z>
 
-The purpose of this patchset is to support CPUFreq on Pistachio SoC.
-However, given Pistachio uses the MIPS GIC clocksource and clockevent
-drivers (clocked from the CPU), adding CPUFreq support needs some work.
+For the clock to be used (e.g. get its rate through clk_get_rate)
+it should be prepared and enabled first.
 
-This patchset changes the MIPS GIC clockevent driver to update
-the frequency of the per-cpu clockevents using a clock notifier.
+Also, while the clock is enabled the driver must hold a reference to it,
+so let's remove the call to clk_put.
 
-Then, we add a clocksource driver for IMG Pistachio SoC, based on the
-general purpose timers. The SoC only provides four timers, so we can't
-use them to implement the four clockevents and the clocksource.
+Reviewed-by: Andrew Bresticker <abrestic@chromium.org>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+---
+ drivers/clocksource/mips-gic-timer.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-However, we can use one of these timers to provide a clocksource and
-a sched clock. Given the general purpose timers are clocked from the
-peripheral system clock tree, they are not affected by CPU rate changes.
-
-Patches 1 to 3 are just style cleaning and preparation work. Patch 4
-adds the clockevent frequency update.
-
-Patches 5 and 6 add the new clocksource driver.
-
-Patch 7 introduces an option to enable the timer based clocksource
-on Pistachio.
-
-For CPUFreq to really work, clk driver changes are needed to support
-MIPS PLL clock rate change. Patches for this will be posted soon.
-
-This series apply on v4.1-rc5. As always, comments and feedback are welcome!
-
-Changes since v1
-----------------
-
-Addressed review comments by Andrew:
-   * Fix typo
-   * Fix style issues
-   * Use readl/writel accessors instead of raw variants
-   * Drop spurious comment and of_device_id table
-   * Add a pistachio_ prefix to clocksource functions
-
-Ezequiel Garcia (7):
-  clocksource: mips-gic: Enable the clock before using it
-  clocksource: mips-gic: Add missing error returns checks
-  clocksource: mips-gic: Split clocksource and clockevent initialization
-  clocksource: mips-gic: Update clockevent frequency on clock rate
-    changes
-  clocksource: Add Pistachio SoC general purpose timer binding document
-  clocksource: Add Pistachio clocksource-only driver
-  mips: pistachio: Allow to enable the external timer based clocksource
-
- .../bindings/timer/img,pistachio-gptimer.txt       |  28 +++
- arch/mips/Kconfig                                  |   1 +
- arch/mips/pistachio/Kconfig                        |  13 ++
- drivers/clocksource/Kconfig                        |   4 +
- drivers/clocksource/Makefile                       |   1 +
- drivers/clocksource/mips-gic-timer.c               |  65 ++++++-
- drivers/clocksource/time-pistachio.c               | 194 +++++++++++++++++++++
- 7 files changed, 297 insertions(+), 9 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/timer/img,pistachio-gptimer.txt
- create mode 100644 arch/mips/pistachio/Kconfig
- create mode 100644 drivers/clocksource/time-pistachio.c
-
+diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
+index b81ed1a..913585d 100644
+--- a/drivers/clocksource/mips-gic-timer.c
++++ b/drivers/clocksource/mips-gic-timer.c
+@@ -158,8 +158,13 @@ static void __init gic_clocksource_of_init(struct device_node *node)
+ 
+ 	clk = of_clk_get(node, 0);
+ 	if (!IS_ERR(clk)) {
++		if (clk_prepare_enable(clk) < 0) {
++			pr_err("GIC failed to enable clock\n");
++			clk_put(clk);
++			return;
++		}
++
+ 		gic_frequency = clk_get_rate(clk);
+-		clk_put(clk);
+ 	} else if (of_property_read_u32(node, "clock-frequency",
+ 					&gic_frequency)) {
+ 		pr_err("GIC frequency not specified.\n");
 -- 
 2.3.3

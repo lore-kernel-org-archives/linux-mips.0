@@ -1,20 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:21179 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27006997AbbEZH04vJoJt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 26 May 2015 09:26:56 +0200
-Date: Tue, 26 May 2015 08:25:48 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH v5 36/37] MIPS: ingenic: initial JZ4780 support
-Message-ID: <20150526072548.GS13811@NP-P-BURTON>
-References: <1432480307-23789-1-git-send-email-paul.burton@imgtec.com>
- <1432480307-23789-37-git-send-email-paul.burton@imgtec.com>
- <5563019A.2050702@hauke-m.de>
+Received: from iolanthe.rowland.org ([192.131.102.54]:49719 "HELO
+        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with SMTP id S27007089AbbEZPqOCV9TE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 26 May 2015 17:46:14 +0200
+Date: Tue, 26 May 2015 11:46:14 -0400 (EDT)
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH v2] MIPS: Octeon: Set OHCI and EHCI MMIO byte order to
+ match CPU
+In-Reply-To: <1432582049.12412.134.camel@decadent.org.uk>
+Message-ID: <Pine.LNX.4.44L0.1505261136070.1519-100000@iolanthe.rowland.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ISKrrfpKsPiF35CV"
-Content-Disposition: inline
-In-Reply-To: <5563019A.2050702@hauke-m.de>
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-Path: <stern+557d4684@rowland.harvard.edu>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,84 +20,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: linux-mips@linux-mips.org, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Lars-Peter Clausen <lars@metafoo.de>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Joshua Kinard <kumba@gentoo.org>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>, linux-kernel@vger.kernel.org, Markos Chandras <markos.chandras@imgtec.com>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-Message-ID: <20150526072548.LyKbDsnS_fvbyUYmh2JHynokqGJOYGqLMOW6NeFcw-4@z>
+To: Ben Hutchings <ben@decadent.org.uk>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Chandrakala Chavva <cchavva@caviumnetworks.com>, Paul Martin <paul.martin@codethink.co.uk>
+Message-ID: <20150526154614.N1tHcvZqCaIGWv9P3SkjUe9qbaxnuwysw_1ojs5kn8Y@z>
 
---ISKrrfpKsPiF35CV
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 25 May 2015, Ben Hutchings wrote:
 
-On Mon, May 25, 2015 at 01:03:54PM +0200, Hauke Mehrtens wrote:
-> > diff --git a/arch/mips/jz4740/setup.c b/arch/mips/jz4740/setup.c
-> > index 1bed3cb..510fc0d 100644
-> > --- a/arch/mips/jz4740/setup.c
-> > +++ b/arch/mips/jz4740/setup.c
-> > @@ -83,6 +83,9 @@ arch_initcall(populate_machine);
-> > =20
-> >  const char *get_system_type(void)
-> >  {
-> > +	if (config_enabled(CONFIG_MACH_JZ4780))
-> > +		return "JZ4780";
-> > +
-> >  	return "JZ4740";
-> >  }
->=20
-> Shouldn't this be provided by device tree, now it depends on your kernel
-> config.
+> The Octeon OHCI is now supported by the ohci-platform driver, and
+> USB_OCTEON_OHCI is marked as deprecated.  However, it is currently
+> still necessary to enable it in order to select
+> USB_OHCI_BIG_ENDIAN_MMIO.  Make CPU_CAVIUM_OCTEON select that as well,
+> so that USB_OCTEON_OHCI is really obsolete.
 
-At some point, when the kernel is generic enough that one binary works
-across multiple SoCs, yes definitely. Even better might be to detect it
-at runtime. The kernel can currently only be built for a single SoC
-though, so the code as-is works just fine & gets things working on the
-CI20 without making an already lengthy patchset longer than it needs to
-be.
+Good catch.
 
-> > diff --git a/arch/mips/jz4740/time.c b/arch/mips/jz4740/time.c
-> > index 9172553..7ab47fe 100644
-> > --- a/arch/mips/jz4740/time.c
-> > +++ b/arch/mips/jz4740/time.c
-> > @@ -102,7 +102,12 @@ static struct clock_event_device jz4740_clockevent=
- =3D {
-> >  	.set_next_event =3D jz4740_clockevent_set_next,
-> >  	.set_mode =3D jz4740_clockevent_set_mode,
-> >  	.rating =3D 200,
-> > +#ifdef CONFIG_MACH_JZ4740
-> >  	.irq =3D JZ4740_IRQ_TCU0,
-> > +#endif
-> > +#ifdef CONFIG_MACH_JZ4780
-> > +	.irq =3D JZ4780_IRQ_TCU2,
-> > +#endif
-> >  };
->=20
-> same here.
+> The old ohci-octeon and ehci-octeon drivers also only enabled big-endian
+> MMIO in case the CPU was big-endian.
 
-Same response :)
+This is true in the current kernel as well.  [eo]hci-platform.c enables
+big-endian MMIO only if the appropriate flag is set in the platform
+data or OF properties.
 
-Thanks,
-    Paul
+>  Make the selections of
+> USB_EHCI_BIG_ENDIAN_MMIO and USB_OHCI_BIG_ENDIAN_MMIO conditional, to
+> match this.
 
---ISKrrfpKsPiF35CV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I'm not sure you want to do this.  [eo]hci-platform.c will fail with an 
+error if the platform/OF data has the big-endian flag set but 
+CONFIG_USB_[EO]HCI_BIG_ENDIAN_MMIO isn't defined.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+> Fixes: 2193dda5eec6 ("USB: host: Remove ehci-octeon and ohci-octeon drivers")
+> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+> ---
+> v2: Make selections conditional
+> 
+> This is also untested; I'm just comparing the old and new code.
 
-iQIcBAEBCAAGBQJVZB/3AAoJENzvn0paErs5TjQP/3jxzdlliT7qvgmEycMweXzh
-h706mxyUxYhg2PzAzH7XMqFXGUShi/vy6RZkp0Sj1b8A4nnvpISQWXpC+V8mooAJ
-xyxVuZFvVRdDMLcKD/Rw9a4k2kgsOdwkIaLSmqLUN+HAMbjCl5kzpvTGBrQh8Rwi
-dwMl/hB/9rHf4dX4YbMXwgy2e3iBHoeNzfkCC5To5NC5yiDnO0dZRskMOlKS4LE2
-lwgxMJcO7aMGs6Q/nRE8TocVYi+4GLRl9dnPSu4hag8PZokd91yF+ZmAuuXwa97u
-stW5SHIcdABgPPbdsyXSUlbw4mguohY1ZQYXvKXrE11Acpl3FpWn74LUvx+I1qtg
-2NNbIsj4Iklm0KltwouNdZuFMBM1AZweJ7vNmOaOWP3KV0fNA7WtxdBVGYCOtLvv
-qsCJ3Y6t8i8s9JKJ1/7C4HKlDnSercgYG81nMprnPr16dcUtAyHchj/uPB0BBPgW
-RInzipmWTMO8K7+0VrvU3gModh290VkuMgFtl9iIVT+wMhdqb+Y/BKThZTYC69OB
-GxyIwVqB2xN2qVT1n6ZKRbSBL8JvQRhWxIANabpHR21IH9buzuRobjOrqq8pugtT
-Z5nRoKDGG3iZoZbPLVA5JGZSmj1n+vQ4v3woI+084FVIVCa92eHRbLYDeFilCT5h
-A6l+tI8FbTYEsnO+t7Sn
-=Huf8
------END PGP SIGNATURE-----
+Is there anyone who can test this with both big-endian and 
+little-endian hardware?
 
---ISKrrfpKsPiF35CV--
+Alan Stern

@@ -1,16 +1,16 @@
-Received: from iolanthe.rowland.org ([192.131.102.54]:39581 "HELO
-        iolanthe.rowland.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with SMTP id S27007621AbbE1RbbD0IUu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 28 May 2015 19:31:31 +0200
-Date: Thu, 28 May 2015 13:31:31 -0400 (EDT)
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH v2] MIPS: Octeon: Set OHCI and EHCI MMIO byte order to
- match CPU
-In-Reply-To: <1432757813.6319.31.camel@decadent.org.uk>
-Message-ID: <Pine.LNX.4.44L0.1505281330380.1448-100000@iolanthe.rowland.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:30233 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007644AbbE1Uhawvavz (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 28 May 2015 22:37:30 +0200
+Subject: [PATCH] MIPS: bugfix of local_r4k_flush_icache_range - added L2
+ flush
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Thu, 28 May 2015 13:37:24 -0700
+Message-ID: <20150528203724.28800.63700.stgit@ubuntu-yegoshin>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <stern+557d4684@rowland.harvard.edu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,23 +20,38 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Chandrakala Chavva <cchavva@caviumnetworks.com>, Paul Martin <paul.martin@codethink.co.uk>
-Message-ID: <20150528173131.tVqE8kj60p99wdnZHKWPtVTnD-9JfSTakb_mHKFNrsc@z>
+To: linux-mips@linux-mips.org, david.daney@cavium.com, cernekee@gmail.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, macro@codesourcery.com, markos.chandras@imgtec.com, kumba@gentoo.org
+Message-ID: <20150528203724.42DyarBACDZ7bUe1MPy1gKZeINm7JvAYOcE1SqMYM6o@z>
 
-On Wed, 27 May 2015, Ben Hutchings wrote:
+This function is used to flush code used in NMI and EJTAG debug exceptions.
+However, during that exceptions the Status.ERL bit is set, which means
+that code runs as UNCACHABLE. So, flush code down to memory is needed.
 
-> > Is there anyone who can test this with both big-endian and 
-> > little-endian hardware?
-> 
-> Failing that, the previous version of this patch ("MIPS: Octeon: Select
-> USB_OHCI_BIG_ENDIAN_MMIO") should be a safe fix.
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+---
+ arch/mips/mm/c-r4k.c |   10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-Yes, it should be.  If you want to submit it again as v3, I'll Ack it.
-
-> The conditional selection in this patch is a possible optimisation on
-> top of that, and not a necessary fix as I thought.
-
-Right.
-
-Alan Stern
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index 0dbb65a51ce5..9f0299bb9a2a 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -666,17 +666,9 @@ static inline void local_r4k_flush_icache_range(unsigned long start, unsigned lo
+ 			break;
+ 		}
+ 	}
+-#ifdef CONFIG_EVA
+-	/*
+-	 * Due to all possible segment mappings, there might cache aliases
+-	 * caused by the bootloader being in non-EVA mode, and the CPU switching
+-	 * to EVA during early kernel init. It's best to flush the scache
+-	 * to avoid having secondary cores fetching stale data and lead to
+-	 * kernel crashes.
+-	 */
++
+ 	bc_wback_inv(start, (end - start));
+ 	__sync();
+-#endif
+ }
+ 
+ static inline void local_r4k_flush_icache_range_ipi(void *args)

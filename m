@@ -1,19 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:60824 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27012003AbbFBLmvN0gn4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jun 2015 13:42:51 +0200
-Message-ID: <556D96B0.3050409@imgtec.com>
-Date: Tue, 2 Jun 2015 12:42:40 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:3556 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007967AbbFBNeDKV4G4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jun 2015 15:34:03 +0200
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Subject: [PATCH v2] clk: pistachio: Add sanity checks on PLL configuration
+Date: Mon, 1 Jun 2015 18:42:28 -0300
+Message-ID: <1433194948-22789-1-git-send-email-ezequiel.garcia@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/3] MIPS: bugfix - replace smp_mb with release barrier
- function in unlocks
-References: <20150602000818.6668.76632.stgit@ubuntu-yegoshin> <20150602000952.6668.82483.stgit@ubuntu-yegoshin>
-In-Reply-To: <20150602000952.6668.82483.stgit@ubuntu-yegoshin>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature";
-        boundary="BUOk0tpjh3b3SKxRuMKslWrcXeCrNGoBj"
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Ezequiel.Garcia@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,94 +18,162 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linux-mips@linux-mips.org, benh@kernel.crashing.org, will.deacon@arm.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, markos.chandras@imgtec.com, macro@linux-mips.org, Steven.Hill@imgtec.com, alexander.h.duyck@redhat.com, davem@davemloft.net
-Message-ID: <20150602114240.E9XkhpWtSw0iLXfCSAuFbJTebgYf_Q3tiW8rlYkmWVM@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: Mike Turquette <mturquette@linaro.org>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <james.hartley@imgtec.com>, Kevin Cernekee <cernekee@chromium.org>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Message-ID: <20150601214228.2LovMKCZOjiLUiM-pYkc_Ixtjj9EWdF4TT5JvOOQ-l0@z>
 
---BUOk0tpjh3b3SKxRuMKslWrcXeCrNGoBj
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+From: Kevin Cernekee <cernekee@chromium.org>
 
-On 02/06/15 01:09, Leonid Yegoshin wrote:
-> Repleace smp_mb() in arch_write_unlock() and __clear_bit_unlock() to
+When setting the PLL rates, check that:
 
-Replace.
+ - VCO is within range
+ - PFD is within range
+ - PLL is disabled when postdiv is changed
+ - postdiv2 <= postdiv1
 
-> smp_mb__before_llsc() call which does "release" barrier functionality.
->=20
-> It seems like it was missed in commit f252ffd50c97dae87b45f1dbad24f7135=
-8ccfbd6
-> during introduction of "acquire" and "release" semantics.
->=20
-> Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-> ---
->  arch/mips/include/asm/bitops.h   |    2 +-
->  arch/mips/include/asm/spinlock.h |    2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/mips/include/asm/bitops.h b/arch/mips/include/asm/bit=
-ops.h
-> index 0cf29bd5dc5c..ce9666cf1499 100644
-> --- a/arch/mips/include/asm/bitops.h
-> +++ b/arch/mips/include/asm/bitops.h
-> @@ -469,7 +469,7 @@ static inline int test_and_change_bit(unsigned long=
- nr,
->   */
->  static inline void __clear_bit_unlock(unsigned long nr, volatile unsig=
-ned long *addr)
->  {
-> -	smp_mb();
-> +	smp_mb__before_llsc();
->  	__clear_bit(nr, addr);
->  }
-> =20
-> diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/s=
-pinlock.h
-> index 1fca2e0793dc..7c7f3b2bd3de 100644
-> --- a/arch/mips/include/asm/spinlock.h
-> +++ b/arch/mips/include/asm/spinlock.h
-> @@ -317,7 +317,7 @@ static inline void arch_write_lock(arch_rwlock_t *r=
-w)
-> =20
->  static inline void arch_write_unlock(arch_rwlock_t *rw)
->  {
-> -	smp_mb();
-> +	smp_mb__before_llsc();
+Reviewed-by: Andrew Bresticker <abrestic@chromium.org>
+Signed-off-by: Kevin Cernekee <cernekee@chromium.org>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+---
+Changes from v1:
+ * Rebased on Ralf's mips-linux-next-test branch.
 
-arch_write_unlock appears to just use sw, not sc, and __clear_bit
-appears to be implemented in plain C, so is smp_mb__before_llsc() really
-appropriate? Would smp_release() be more accurate/correct in both cases?
+ drivers/clk/pistachio/clk-pll.c | 83 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 79 insertions(+), 4 deletions(-)
 
-Cheers
-James
-
-> =20
->  	__asm__ __volatile__(
->  	"				# arch_write_unlock	\n"
->=20
->=20
-
-
---BUOk0tpjh3b3SKxRuMKslWrcXeCrNGoBj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJVbZawAAoJEGwLaZPeOHZ69DUP/1vPsYAvYTqrU+eyuE9/6vaL
-o5kqgWNGsdVKgfHaV9jRNU4n/FAWgapLBs+Xod7YgrKxhPFBepTtWTJxXvG7H7NT
-xsf0xqew71nTczPBln6kA4CppUi4ia88BvHfiXFEtfu2s3Fc5FCnaEO7RQznoqVn
-i3XtwYxYeS8JVhT7vqMMJJijlNUa0Hy0clpA/TM3UB9kWuN71SebuUeE1ZOWRha4
-i1lp4HE8MWbUj3pkWrxdx/HUHrUWKgwDPH97JTjtXsq+lT6FLYMAZ0iZvWn74jPy
-7fwrs5mY0yYcsjnGFaRG1yK8gGvzC3yZG7AKPj7Nx2Nlr84QYg/XpDbgc4gxdN+8
-kYYtXQcLgnA6zX/lAJeuTcuymgUUNRl4DRJDiRvFU0W5ufp9MyUjHiIPyiO1R+QN
-3T0uOj4KSGKkINIEp5hXI/qGrM+uHYE9FyP8qvRuNCi/I+C0kV5MkvVDBOyU43Mh
-XKKmLIK2uK/k21LEXcUMJPiGiY7/Zd8WQguujNZo9YiD0K+NGMMzxYuZpZPmx6FK
-kW38MmV9FgVg44yXQKqW+0z+JrgFNFy1BN/P3Kq2x5x7IH3eIxBNwOgBidMm8wDb
-psK34fYmvqU5cnVZRgxdwdFn/ZEc76feuHp747qPCH/+/GC6W6qVWAMlH//HWtfG
-fWhMUCEOsvb0SWBCi7pO
-=Crqs
------END PGP SIGNATURE-----
-
---BUOk0tpjh3b3SKxRuMKslWrcXeCrNGoBj--
+diff --git a/drivers/clk/pistachio/clk-pll.c b/drivers/clk/pistachio/clk-pll.c
+index f12d520..e17dada 100644
+--- a/drivers/clk/pistachio/clk-pll.c
++++ b/drivers/clk/pistachio/clk-pll.c
+@@ -6,9 +6,12 @@
+  * version 2, as published by the Free Software Foundation.
+  */
+ 
++#define pr_fmt(fmt) "%s: " fmt, __func__
++
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
++#include <linux/printk.h>
+ #include <linux/slab.h>
+ 
+ #include "clk.h"
+@@ -50,6 +53,18 @@
+ #define PLL_CTRL4			0x10
+ #define PLL_FRAC_CTRL4_BYPASS		BIT(28)
+ 
++#define MIN_PFD				9600000UL
++#define MIN_VCO_LA			400000000UL
++#define MAX_VCO_LA			1600000000UL
++#define MIN_VCO_FRAC_INT		600000000UL
++#define MAX_VCO_FRAC_INT		1600000000UL
++#define MIN_VCO_FRAC_FRAC		600000000UL
++#define MAX_VCO_FRAC_FRAC		2400000000UL
++#define MIN_OUTPUT_LA			8000000UL
++#define MAX_OUTPUT_LA			1600000000UL
++#define MIN_OUTPUT_FRAC			12000000UL
++#define MAX_OUTPUT_FRAC			1600000000UL
++
+ struct pistachio_clk_pll {
+ 	struct clk_hw hw;
+ 	void __iomem *base;
+@@ -158,12 +173,29 @@ static int pll_gf40lp_frac_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	struct pistachio_clk_pll *pll = to_pistachio_pll(hw);
+ 	struct pistachio_pll_rate_table *params;
+ 	int enabled = pll_gf40lp_frac_is_enabled(hw);
+-	u32 val;
++	u32 val, vco, old_postdiv1, old_postdiv2;
++	const char *name = __clk_get_name(hw->clk);
++
++	if (rate < MIN_OUTPUT_FRAC || rate > MAX_OUTPUT_FRAC)
++		return -EINVAL;
+ 
+ 	params = pll_get_params(pll, parent_rate, rate);
+-	if (!params)
++	if (!params || !params->refdiv)
+ 		return -EINVAL;
+ 
++	vco = params->fref * params->fbdiv / params->refdiv;
++	if (vco < MIN_VCO_FRAC_FRAC || vco > MAX_VCO_FRAC_FRAC)
++		pr_warn("%s: VCO %u is out of range %lu..%lu\n", name, vco,
++			MIN_VCO_FRAC_FRAC, MAX_VCO_FRAC_FRAC);
++
++	val = params->fref / params->refdiv;
++	if (val < MIN_PFD)
++		pr_warn("%s: PFD %u is too low (min %lu)\n",
++			name, val, MIN_PFD);
++	if (val > vco / 16)
++		pr_warn("%s: PFD %u is too high (max %u)\n",
++			name, val, vco / 16);
++
+ 	val = pll_readl(pll, PLL_CTRL1);
+ 	val &= ~((PLL_CTRL1_REFDIV_MASK << PLL_CTRL1_REFDIV_SHIFT) |
+ 		 (PLL_CTRL1_FBDIV_MASK << PLL_CTRL1_FBDIV_SHIFT));
+@@ -172,6 +204,19 @@ static int pll_gf40lp_frac_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	pll_writel(pll, val, PLL_CTRL1);
+ 
+ 	val = pll_readl(pll, PLL_CTRL2);
++
++	old_postdiv1 = (val >> PLL_FRAC_CTRL2_POSTDIV1_SHIFT) &
++		       PLL_FRAC_CTRL2_POSTDIV1_MASK;
++	old_postdiv2 = (val >> PLL_FRAC_CTRL2_POSTDIV2_SHIFT) &
++		       PLL_FRAC_CTRL2_POSTDIV2_MASK;
++	if (enabled &&
++	    (params->postdiv1 != old_postdiv1 ||
++	     params->postdiv2 != old_postdiv2))
++		pr_warn("%s: changing postdiv while PLL is enabled\n", name);
++
++	if (params->postdiv2 > params->postdiv1)
++		pr_warn("%s: postdiv2 should not exceed postdiv1\n", name);
++
+ 	val &= ~((PLL_FRAC_CTRL2_FRAC_MASK << PLL_FRAC_CTRL2_FRAC_SHIFT) |
+ 		 (PLL_FRAC_CTRL2_POSTDIV1_MASK <<
+ 		  PLL_FRAC_CTRL2_POSTDIV1_SHIFT) |
+@@ -270,13 +315,43 @@ static int pll_gf40lp_laint_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	struct pistachio_clk_pll *pll = to_pistachio_pll(hw);
+ 	struct pistachio_pll_rate_table *params;
+ 	int enabled = pll_gf40lp_laint_is_enabled(hw);
+-	u32 val;
++	u32 val, vco, old_postdiv1, old_postdiv2;
++	const char *name = __clk_get_name(hw->clk);
++
++	if (rate < MIN_OUTPUT_LA || rate > MAX_OUTPUT_LA)
++		return -EINVAL;
+ 
+ 	params = pll_get_params(pll, parent_rate, rate);
+-	if (!params)
++	if (!params || !params->refdiv)
+ 		return -EINVAL;
+ 
++	vco = params->fref * params->fbdiv / params->refdiv;
++	if (vco < MIN_VCO_LA || vco > MAX_VCO_LA)
++		pr_warn("%s: VCO %u is out of range %lu..%lu\n", name, vco,
++			MIN_VCO_LA, MAX_VCO_LA);
++
++	val = params->fref / params->refdiv;
++	if (val < MIN_PFD)
++		pr_warn("%s: PFD %u is too low (min %lu)\n",
++			name, val, MIN_PFD);
++	if (val > vco / 16)
++		pr_warn("%s: PFD %u is too high (max %u)\n",
++			name, val, vco / 16);
++
+ 	val = pll_readl(pll, PLL_CTRL1);
++
++	old_postdiv1 = (val >> PLL_INT_CTRL1_POSTDIV1_SHIFT) &
++		       PLL_INT_CTRL1_POSTDIV1_MASK;
++	old_postdiv2 = (val >> PLL_INT_CTRL1_POSTDIV2_SHIFT) &
++		       PLL_INT_CTRL1_POSTDIV2_MASK;
++	if (enabled &&
++	    (params->postdiv1 != old_postdiv1 ||
++	     params->postdiv2 != old_postdiv2))
++		pr_warn("%s: changing postdiv while PLL is enabled\n", name);
++
++	if (params->postdiv2 > params->postdiv1)
++		pr_warn("%s: postdiv2 should not exceed postdiv1\n", name);
++
+ 	val &= ~((PLL_CTRL1_REFDIV_MASK << PLL_CTRL1_REFDIV_SHIFT) |
+ 		 (PLL_CTRL1_FBDIV_MASK << PLL_CTRL1_FBDIV_SHIFT) |
+ 		 (PLL_INT_CTRL1_POSTDIV1_MASK << PLL_INT_CTRL1_POSTDIV1_SHIFT) |
+-- 
+2.3.3

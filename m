@@ -1,17 +1,18 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63]:31007 "EHLO
-        mail-gw2-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27007717AbbE2VlCeykVy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 29 May 2015 23:41:02 +0200
-Message-ID: <5568DCE2.1060206@broadcom.com>
-Date: Fri, 29 May 2015 23:40:50 +0200
-From: Arend van Spriel <arend@broadcom.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:32024 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27006788AbbFBH57Jrqo4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jun 2015 09:57:59 +0200
+Subject: [PATCH 1/3] MIPS: R6: Use lightweight SYNC instruction in smp_*
+ memory barriers
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Mon, 1 Jun 2015 17:09:34 -0700
+Message-ID: <20150602000934.6668.43645.stgit@ubuntu-yegoshin>
+In-Reply-To: <20150602000818.6668.76632.stgit@ubuntu-yegoshin>
+References: <20150602000818.6668.76632.stgit@ubuntu-yegoshin>
 MIME-Version: 1.0
-Subject: Re: [PATCH V2] mips: bcm47xx: allow retrieval of complete nvram contents
-References: <1432214843-16057-1-git-send-email-arend@broadcom.com> <55687EDA.9070909@hauke-m.de> <55689A67.9070904@broadcom.com> <5568AF66.3070403@broadcom.com> <5568B391.6050402@hauke-m.de> <5568B969.6020502@broadcom.com> <5568BCD9.8090002@hauke-m.de>
-In-Reply-To: <5568BCD9.8090002@hauke-m.de>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-Path: <arend@broadcom.com>
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,122 +22,115 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20150529214050.T6DUoxjouMyKI8mNRwObc_GPXl2DRL0EtcDARLZnCFY@z>
+To: linux-mips@linux-mips.org, benh@kernel.crashing.org, will.deacon@arm.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, markos.chandras@imgtec.com, macro@linux-mips.org, Steven.Hill@imgtec.com, alexander.h.duyck@redhat.com, davem@davemloft.net
+Message-ID: <20150602000934.dWKWVDoPPRgzl9RVR6lJ2Eci5n5Pf_2RcCE4Um7U4mg@z>
 
-On 05/29/15 21:24, Hauke Mehrtens wrote:
->
->
-> On 05/29/2015 09:09 PM, Arend van Spriel wrote:
->> On 05/29/15 20:44, Hauke Mehrtens wrote:
->>>
->>>
->>> On 05/29/2015 08:26 PM, Arend van Spriel wrote:
->>>> On 05/29/15 18:57, Arend van Spriel wrote:
->>>>> On 05/29/15 16:59, Hauke Mehrtens wrote:
->>>>>>
->>>>>>
->>>>>> On 05/21/2015 03:27 PM, Arend van Spriel wrote:
->>>>>>> From: Hante Meuleman<meuleman@broadcom.com>
->>>>>>>
->>>>>>> Host platforms such as routers supported by OpenWrt can
->>>>>>> support NVRAM reading directly from internal NVRAM store.
->>>>>>> The brcmfmac for one requires the complete nvram contents
->>>>>>> to select what needs to be sent to wireless device.
->>>>>>>
->>>>>>> Reviewed-by: Arend Van Spriel<arend@broadcom.com>
->>>>>>> Reviewed-by: Franky (Zhenhui) Lin<frankyl@broadcom.com>
->>>>>>> Reviewed-by: Pieter-Paul Giesberts<pieterpg@broadcom.com>
->>>>>>> Reviewed-by: Daniel (Deognyoun) Kim<dekim@broadcom.com>
->>>>>>> Signed-off-by: Hante Meuleman<meuleman@broadcom.com>
->>>>>>> Signed-off-by: Arend van Spriel<arend@broadcom.com>
->>>>>>> ---
->>>>>>> Change log:
->>>>>>> -----------
->>>>>>> V2: - correct header length for nvram_find_and_copy().
->>>>>>> - get rid of 'NVRAM_SPACE - 2' magic.
->>>>>>> ---
->>>>>>> arch/mips/bcm47xx/nvram.c | 61
->>>>>>> ++++++++++++++++++++++++++++++++-----------
->>>>>>> include/linux/bcm47xx_nvram.h | 15 +++++++++++
->>>>>>> 2 files changed, 61 insertions(+), 15 deletions(-)
->>>>>>>
->>>>>>> diff --git a/arch/mips/bcm47xx/nvram.c b/arch/mips/bcm47xx/nvram.c
->>>>>>> index 95d028c..f4f62d3 100644
->>>>>>> --- a/arch/mips/bcm47xx/nvram.c
->>>>>>> +++ b/arch/mips/bcm47xx/nvram.c
->>>>>>> @@ -94,17 +94,22 @@ static int nvram_find_and_copy(void __iomem
->>>>>>> *iobase, u32 lim)
->>>>>>> return -ENXIO;
->>>>>>>
->>>>>>> found:
->>>>>>> - if (header->len>   size)
->>>>>>> - pr_err("The nvram size accoridng to the header seems to be bigger
->>>>>>> than the partition on flash\n");
->>>>>>> - if (header->len>   NVRAM_SPACE)
->>>>>>> - pr_err("nvram on flash (%i bytes) is bigger than the reserved space
->>>>>>> in memory, will just copy the first %i bytes\n",
->>>>>>> - header->len, NVRAM_SPACE - 1);
->>>>>>> -
->>>>>>> src = (u32 *)header;
->>>>>>> dst = (u32 *)nvram_buf;
->>>>>>> for (i = 0; i<   sizeof(struct nvram_header); i += 4)
->>>>>>> *dst++ = __raw_readl(src++);
->>>>>>> - for (; i<   header->len&&   i<   NVRAM_SPACE&&   i<   size; i += 4)
->>>>>>> + header = (struct nvram_header *)nvram_buf;
->>>>>>> + if (header->len>   size) {
->>>>>>> + pr_err("The nvram size according to the header seems to be bigger
->>>>>>> than the partition on flash\n");
->>>>>>
->>>>>> Thanks for fixing a typo. ;-)
->>>>>>
->>>>>>> + header->len = size;
->>>>>>
->>>>>> I haven't seen this error case, I just added it to be save.
->>>>>
->>>>> It does seem an unlikely error case. At least it would probably been
->>>>> noticed during production writing the content to flash.
->>>>>
->>>>>>> + }
->>>>>>> + if (header->len>= NVRAM_SPACE) {
->>>>>>> + pr_err("nvram on flash (%i bytes) is bigger than the reserved space
->>>>>>> in memory, will just copy the first %i bytes\n",
->>>>>>> + header->len, NVRAM_SPACE - 1);
->>>>>>> + header->len = NVRAM_SPACE - 1;
->>>>>>> + }
->>>>>>
->>>>>> After fixing the length the header is better, but it also contains a
->>>>>> CRC, which is still wrong, but we ignore it and I do not think we have
->>>>>> to check.
->>>>>>
->>>>>> I still think that the best approach would be to remove the nvram
->>>>>> header
->>>>>> and add a extra variable storing the actual size of the nvram buf. I
->>>>>> also think this would make some of this code easier.
->>>>>
->>>>> Let's do that then.
->>>>
->>>> Hi Hauke,
->>>>
->>>> Forgot to ask. What is the reason for using the fixed nvram space. Could
->>>> we allocate it using vzalloc()?
->>>
->>> On mips this is needed very early in the boot process at least for the
->>> older SoCs using ssb. In this state we can not allocate memory.
->>
->> I suspected that, but wanted to be sure.
->>
->
-> We tried to use some kind of allocation mechanism, because the nvram
-> partitions of different devices have different sizes. The older devices
-> mostly have small partitions and the newer ons bigger. With the arm SoCs
-> we do not need the nvram so early and can use some normal allocation
-> mechanism.
+This instructions were specifically designed to work for smp_*() sort of
+memory barriers in MIPS R2/R3/R5 and R6.
 
-Yes, but that means that static buffer sits there doing nothing or could 
-that be put under Kconfig and only be used for the devices needing early 
-access.
+Unfortunately, it's description is very cryptic and is done in HW engineering
+style which prevents use of it by SW. This instructions are not mandatory but
+there is a mandatory requirement - if not implemented, then a regular MIPS
+SYNC 0 must be used instead.
 
-Regards,
-Arend
+The reason for this change is - SYNC 0 is a heavvy-weighted in many CPUs, it may
+disrupt other cores pipelines etc.
+
+Due to concern about verification of old MIPS R2 compatible cores of other
+vendors it is enforced only for MIPS R6 and other MIPS32/64 R2/R5 processors
+have it configurable.
+
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+---
+ arch/mips/Kconfig               |   22 ++++++++++++++++++++++
+ arch/mips/include/asm/barrier.h |    6 ++++++
+ 2 files changed, 28 insertions(+)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index be384d6a58bb..c7d0cacece3d 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -1347,6 +1347,7 @@ config CPU_MIPS32_R2
+ 	select CPU_SUPPORTS_32BIT_KERNEL
+ 	select CPU_SUPPORTS_HIGHMEM
+ 	select CPU_SUPPORTS_MSA
++	select CPU_SUPPORTS_MIPS_LIGHTWEIGHT_SYNC
+ 	select HAVE_KVM
+ 	help
+ 	  Choose this option to build a kernel for release 2 or later of the
+@@ -1365,6 +1366,8 @@ config CPU_MIPS32_R6
+ 	select GENERIC_CSUM
+ 	select HAVE_KVM
+ 	select MIPS_O32_FP64_SUPPORT
++	select CPU_SUPPORTS_MIPS_LIGHTWEIGHT_SYNC
++	select WEAK_REORDERING_BEYOND_LLSC
+ 	help
+ 	  Choose this option to build a kernel for release 6 or later of the
+ 	  MIPS32 architecture.  New MIPS processors, starting with the Warrior
+@@ -1399,6 +1402,7 @@ config CPU_MIPS64_R2
+ 	select CPU_SUPPORTS_HIGHMEM
+ 	select CPU_SUPPORTS_HUGEPAGES
+ 	select CPU_SUPPORTS_MSA
++	select CPU_SUPPORTS_MIPS_LIGHTWEIGHT_SYNC
+ 	help
+ 	  Choose this option to build a kernel for release 2 or later of the
+ 	  MIPS64 architecture.  Many modern embedded systems with a 64-bit
+@@ -1415,6 +1419,8 @@ config CPU_MIPS64_R6
+ 	select CPU_SUPPORTS_HIGHMEM
+ 	select CPU_SUPPORTS_MSA
+ 	select GENERIC_CSUM
++	select CPU_SUPPORTS_MIPS_LIGHTWEIGHT_SYNC
++	select WEAK_REORDERING_BEYOND_LLSC
+ 	help
+ 	  Choose this option to build a kernel for release 6 or later of the
+ 	  MIPS64 architecture.  New MIPS processors, starting with the Warrior
+@@ -1876,6 +1882,20 @@ config WEAK_ORDERING
+ #
+ config WEAK_REORDERING_BEYOND_LLSC
+ 	bool
++
++config MIPS_LIGHTWEIGHT_SYNC
++	bool "CPU lightweight SYNC instruction for weak reordering"
++	depends on CPU_SUPPORTS_MIPS_LIGHTWEIGHT_SYNC && WEAK_ORDERING
++	default y if CPU_MIPSR6
++	help
++	  This option enforces a use of "lightweight sync" instructions
++	  for SMP (multi-CPU) memory barriers. This instructions are much
++	  more faster than a traditional "SYNC 0".
++
++	  If that instructions are not implemented in processor then it is
++	  converted to generic "SYNC 0".
++
++	  If you unsure, say N here, it may slightly decrease your performance
+ endmenu
+ 
+ #
+@@ -1928,6 +1948,8 @@ config CPU_SUPPORTS_HUGEPAGES
+ 	bool
+ config CPU_SUPPORTS_UNCACHED_ACCELERATED
+ 	bool
++config CPU_SUPPORTS_MIPS_LIGHTWEIGHT_SYNC
++	bool
+ config MIPS_PGD_C0_CONTEXT
+ 	bool
+ 	default y if 64BIT && CPU_MIPSR2 && !CPU_XLP
+diff --git a/arch/mips/include/asm/barrier.h b/arch/mips/include/asm/barrier.h
+index 2b8bbbcb9be0..d2a63abfc7c6 100644
+--- a/arch/mips/include/asm/barrier.h
++++ b/arch/mips/include/asm/barrier.h
+@@ -96,9 +96,15 @@
+ #  define smp_rmb()	barrier()
+ #  define smp_wmb()	__syncw()
+ # else
++#  ifdef CONFIG_MIPS_LIGHTWEIGHT_SYNC
++#  define smp_mb()      __asm__ __volatile__("sync 0x10" : : :"memory")
++#  define smp_rmb()     __asm__ __volatile__("sync 0x13" : : :"memory")
++#  define smp_wmb()     __asm__ __volatile__("sync 0x4" : : :"memory")
++#  else
+ #  define smp_mb()	__asm__ __volatile__("sync" : : :"memory")
+ #  define smp_rmb()	__asm__ __volatile__("sync" : : :"memory")
+ #  define smp_wmb()	__asm__ __volatile__("sync" : : :"memory")
++#  endif
+ # endif
+ #else
+ #define smp_mb()	barrier()

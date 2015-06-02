@@ -1,18 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:16586 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:60824 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27006985AbbFBLjRxbp64 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jun 2015 13:39:17 +0200
-Message-ID: <556D95DA.5090305@imgtec.com>
-Date: Tue, 2 Jun 2015 12:39:06 +0100
+        by eddie.linux-mips.org with ESMTP id S27012003AbbFBLmvN0gn4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jun 2015 13:42:51 +0200
+Message-ID: <556D96B0.3050409@imgtec.com>
+Date: Tue, 2 Jun 2015 12:42:40 +0100
 From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/3] MIPS: enforce LL-SC loop enclosing with SYNC (ACQUIRE
- and RELEASE)
-References: <20150602000818.6668.76632.stgit@ubuntu-yegoshin> <20150602000943.6668.28434.stgit@ubuntu-yegoshin>
-In-Reply-To: <20150602000943.6668.28434.stgit@ubuntu-yegoshin>
+Subject: Re: [PATCH 3/3] MIPS: bugfix - replace smp_mb with release barrier
+ function in unlocks
+References: <20150602000818.6668.76632.stgit@ubuntu-yegoshin> <20150602000952.6668.82483.stgit@ubuntu-yegoshin>
+In-Reply-To: <20150602000952.6668.82483.stgit@ubuntu-yegoshin>
 Content-Type: multipart/signed; micalg=pgp-sha1;
         protocol="application/pgp-signature";
-        boundary="nTANb0nRFCC0PbO4ocQNBCNNiUDeSRbU2"
+        boundary="BUOk0tpjh3b3SKxRuMKslWrcXeCrNGoBj"
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,264 +24,73 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linux-mips@linux-mips.org, benh@kernel.crashing.org, will.deacon@arm.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, markos.chandras@imgtec.com, macro@linux-mips.org, Steven.Hill@imgtec.com, alexander.h.duyck@redhat.com, davem@davemloft.net
-Message-ID: <20150602113906.O-LRACFleVG94smcadbFg_JAIvAhUr55Xi-cmQv4UCU@z>
+Message-ID: <20150602114240.E9XkhpWtSw0iLXfCSAuFbJTebgYf_Q3tiW8rlYkmWVM@z>
 
---nTANb0nRFCC0PbO4ocQNBCNNiUDeSRbU2
+--BUOk0tpjh3b3SKxRuMKslWrcXeCrNGoBj
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi Leonid,
-
 On 02/06/15 01:09, Leonid Yegoshin wrote:
-> Many MIPS32 R2 and all MIPS R6 CPUs are out of order execution, so it
-> needs memory barriers in SMP environment. However, past cores may have
-> a pipeline short enough to ignore that requirements and problem may
-> never occurs until recently.
+> Repleace smp_mb() in arch_write_unlock() and __clear_bit_unlock() to
+
+Replace.
+
+> smp_mb__before_llsc() call which does "release" barrier functionality.
 >=20
-> This patch gives an option to enclose LL-SC loops by SYNC barriers in s=
-pinlocks,
-> atomics, futexes, cmpxchg and bitops.
-
-Please reflow text.
-
->=20
-> So, this option is defined for MIPS32 R2 only, because that recent
-
-s/that/those/
-
-> CPUs may occasionally have problems in accordance with HW team.
-
-"have problems in accordance with HW team" is a bit confusing. What do
-you mean?
-
-> And most of MIPS64 R2 vendor processors already have some kind of memor=
-y
-> barrier and the only one generic 5KEs has a pretty short pipeline.
->=20
-> Using memory barriers in MIPS R6 is mandatory, all that
-
-s/that/those/
-
-> processors have a speculative memory read which can inflict a trouble
-
-s/a //
-
-> without a correct use of barriers in LL-SC loop cycles.
-> The same is actually for MIPS32 R5 I5600 processor.
-
-Actually *true*?
-P5600 you mean?
-
-Same in Kconfig help text.
-
-
+> It seems like it was missed in commit f252ffd50c97dae87b45f1dbad24f7135=
+8ccfbd6
+> during introduction of "acquire" and "release" semantics.
 >=20
 > Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 > ---
->  arch/mips/Kconfig               |   25 +++++++++++++++++++++++++
->  arch/mips/include/asm/barrier.h |   26 ++++++++++++++++++++++----
->  2 files changed, 47 insertions(+), 4 deletions(-)
+>  arch/mips/include/asm/bitops.h   |    2 +-
+>  arch/mips/include/asm/spinlock.h |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 >=20
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index c7d0cacece3d..676eb64f5545 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -1896,6 +1896,30 @@ config MIPS_LIGHTWEIGHT_SYNC
->  	  converted to generic "SYNC 0".
+> diff --git a/arch/mips/include/asm/bitops.h b/arch/mips/include/asm/bit=
+ops.h
+> index 0cf29bd5dc5c..ce9666cf1499 100644
+> --- a/arch/mips/include/asm/bitops.h
+> +++ b/arch/mips/include/asm/bitops.h
+> @@ -469,7 +469,7 @@ static inline int test_and_change_bit(unsigned long=
+ nr,
+>   */
+>  static inline void __clear_bit_unlock(unsigned long nr, volatile unsig=
+ned long *addr)
+>  {
+> -	smp_mb();
+> +	smp_mb__before_llsc();
+>  	__clear_bit(nr, addr);
+>  }
 > =20
->  	  If you unsure, say N here, it may slightly decrease your performanc=
-e
-> +
-> +config MIPS_ENFORCE_WEAK_REORDERING_BEYOND_LLSC
-> +	bool "Enforce memory barriers at LLSC loops - atomics, spinlocks etc"=
-
-> +	depends on CPU_MIPS32_R2
-> +	default y if CPU_MIPSR6
-> +	select WEAK_REORDERING_BEYOND_LLSC
-> +	help
-> +	  Many MIPS32 R2 and all MIPS R6 CPUs are out of order execution, so =
-it
-> +	  needs memory barriers in SMP environment. However, past cores may h=
-ave
-> +	  a pipeline short enough to ignore that requirements and problem may=
-
-> +	  never occurs until recently.
-> +
-> +	  So, this option is defined for MIPS32 R2 only, because that recent
-> +	  CPUs may occasionally have problems in accordance with HW team.
-> +	  And MIPS64 R2 vendor processors already have some kind of memory
-> +	  barrier and the only one generic 5KEs has a pretty short pipeline.
-> +
-> +	  Using memory barriers in MIPS R6 is mandatory, all that
-> +	  processors have a speculative memory read which can inflict a troub=
-le
-> +	  without a correct use of barriers in LL-SC loop cycles.
-> +	  The same is actually for MIPS32 R5 I5600 processor.
-> +
-> +	  If you unsure, say Y here, it may slightly decrease your performanc=
-e
-
-If you *are* unsure (same in patch 1). Same comment as patch 1 too about
-ambiguity of "it".
-
-> +	  but increase a reliability.
-
-well only if the hardware has weak ordering, and only because it would
-be technically wrong in that case to say N here.
-
-It feels wrong to be giving the user this option. Can't we just select
-WEAK_REORDERING_BEYOND_LLSC automatically based on the hardware that
-needs to be supported by the kernel configuration (e.g. CPU_MIPSR6 or
-CPU_MIPS32_R2)? Those who care about mips r2 performance on hardware
-which doesn't strictly need it can always speak up / add an exception.
-
-Out of interest, are futex operations safe with weak llsc ordering, on
-the premise that they're mainly used by userland so ordering with normal
-kernel accesses just doesn't matter in practice?
-
->  endmenu
+> diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/s=
+pinlock.h
+> index 1fca2e0793dc..7c7f3b2bd3de 100644
+> --- a/arch/mips/include/asm/spinlock.h
+> +++ b/arch/mips/include/asm/spinlock.h
+> @@ -317,7 +317,7 @@ static inline void arch_write_lock(arch_rwlock_t *r=
+w)
 > =20
->  #
-> @@ -1924,6 +1948,7 @@ config CPU_MIPSR2
->  config CPU_MIPSR6
->  	bool
->  	default y if CPU_MIPS32_R6 || CPU_MIPS64_R6
-> +	select MIPS_ENFORCE_WEAK_REORDERING_BEYOND_LLSC
->  	select MIPS_SPRAM
-> =20
->  config EVA
-> diff --git a/arch/mips/include/asm/barrier.h b/arch/mips/include/asm/ba=
-rrier.h
-> index d2a63abfc7c6..f3cc7a91ac0d 100644
-> --- a/arch/mips/include/asm/barrier.h
-> +++ b/arch/mips/include/asm/barrier.h
-> @@ -95,33 +95,51 @@
->  #  define smp_mb()	__sync()
->  #  define smp_rmb()	barrier()
->  #  define smp_wmb()	__syncw()
-> +#  define smp_acquire() __sync()
-> +#  define smp_release() __sync()
->  # else
->  #  ifdef CONFIG_MIPS_LIGHTWEIGHT_SYNC
->  #  define smp_mb()      __asm__ __volatile__("sync 0x10" : : :"memory"=
-)
->  #  define smp_rmb()     __asm__ __volatile__("sync 0x13" : : :"memory"=
-)
->  #  define smp_wmb()     __asm__ __volatile__("sync 0x4" : : :"memory")=
+>  static inline void arch_write_unlock(arch_rwlock_t *rw)
+>  {
+> -	smp_mb();
+> +	smp_mb__before_llsc();
 
-> +#  define smp_acquire() __asm__ __volatile__("sync 0x11" : : :"memory"=
-)
-> +#  define smp_release() __asm__ __volatile__("sync 0x12" : : :"memory"=
-)
-
-same question about use of sync_acquire/sync_release instructions which
-binutils understands since 2.21.
-
->  #  else
->  #  define smp_mb()	__asm__ __volatile__("sync" : : :"memory")
->  #  define smp_rmb()	__asm__ __volatile__("sync" : : :"memory")
->  #  define smp_wmb()	__asm__ __volatile__("sync" : : :"memory")
-> +#  define smp_acquire() __asm__ __volatile__("sync" : : :"memory")
-> +#  define smp_release() __asm__ __volatile__("sync" : : :"memory")
->  #  endif
->  # endif
->  #else
->  #define smp_mb()	barrier()
->  #define smp_rmb()	barrier()
->  #define smp_wmb()	barrier()
-> +#define smp_acquire()   barrier()
-> +#define smp_release()   barrier()
->  #endif
-> =20
->  #if defined(CONFIG_WEAK_REORDERING_BEYOND_LLSC) && defined(CONFIG_SMP)=
-
-> +#ifdef CONFIG_MIPS_LIGHTWEIGHT_SYNC
-> +#define __WEAK_LLSC_MB          "       sync    0x10    \n"
-> +#define __WEAK_ACQUIRE          "       sync    0x11    \n"
-> +#define __WEAK_RELEASE          "       sync    0x12    \n"
-
-tabs
-
-__WEAK_ACQUIRE and __WEAK_RELEASE are specific to llsc, maybe call them
-__WEAK_LLSC_ACQUIRE and __WEAK_LLSC_RELEASE instead to avoid confusion.
-
-
-> +#else
->  #define __WEAK_LLSC_MB		"	sync	\n"
-> +#define __WEAK_ACQUIRE          __WEAK_LLSC_MB
-> +#define __WEAK_RELEASE          __WEAK_LLSC_MB
-
-tabs
-
-> +#endif
->  #else
->  #define __WEAK_LLSC_MB		"		\n"
-> +#define __WEAK_ACQUIRE          __WEAK_LLSC_MB
-> +#define __WEAK_RELEASE          __WEAK_LLSC_MB
-
-tabs
-
->  #endif
-> =20
->  #define set_mb(var, value) \
->  	do { var =3D value; smp_mb(); } while (0)
-> =20
-> -#define smp_llsc_mb()	__asm__ __volatile__(__WEAK_LLSC_MB : : :"memory=
-")
-> +#define smp_llsc_mb()           __asm__ __volatile__(__WEAK_ACQUIRE : =
-: :"memory")
-
-tabs
-
-> =20
->  #ifdef CONFIG_CPU_CAVIUM_OCTEON
->  #define smp_mb__before_llsc() smp_wmb()
-> @@ -131,14 +149,14 @@
->  					    "syncw\n\t"			\
->  					    ".set pop" : : : "memory")
->  #else
-> -#define smp_mb__before_llsc() smp_llsc_mb()
-> +#define smp_mb__before_llsc()   __asm__ __volatile__(__WEAK_RELEASE : =
-: :"memory")
->  #define nudge_writes() mb()
->  #endif
-> =20
->  #define smp_store_release(p, v)						\
->  do {									\
->  	compiletime_assert_atomic_type(*p);				\
-> -	smp_mb();							\
-> +	smp_release();                                                       =
-\
->  	ACCESS_ONCE(*p) =3D (v);						\
->  } while (0)
-> =20
-> @@ -146,7 +164,7 @@ do {									\
->  ({									\
->  	typeof(*p) ___p1 =3D ACCESS_ONCE(*p);				\
->  	compiletime_assert_atomic_type(*p);				\
-> -	smp_mb();							\
-> +	smp_acquire();                                                       =
-\
->  	___p1;								\
->  })
-> =20
->=20
->=20
-
-This patch does 3 logically separable things:
-1) add smp_release/smp_acquire based on MIPS_LIGHTWEIGHT_SYNC and weaken
-smp_store_release()/smp_load_acquire() to use them.
-2) weaken llsc barriers when MIPS_LIGHTWEIGHT_SYNC.
-3) the MIPS_ENFORCE_WEAK_REORDERING_BEYOND_LLSC Kconfig stuff (or
-whatever method to select WEAK_REORDERING_BEYOND_LLSC more often).
-
-Any reason not to split them, and give a clear description of each?
+arch_write_unlock appears to just use sw, not sc, and __clear_bit
+appears to be implemented in plain C, so is smp_mb__before_llsc() really
+appropriate? Would smp_release() be more accurate/correct in both cases?
 
 Cheers
 James
 
+> =20
+>  	__asm__ __volatile__(
+>  	"				# arch_write_unlock	\n"
+>=20
+>=20
 
---nTANb0nRFCC0PbO4ocQNBCNNiUDeSRbU2
+
+--BUOk0tpjh3b3SKxRuMKslWrcXeCrNGoBj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -289,19 +98,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJVbZXaAAoJEGwLaZPeOHZ6QYAQALr2zLfdn3wPdY/8eJCiAcUL
-kX3jUHO0hl6fzxXztrn5Mvo0ptmHWyNc30zAtAu4QMOR4gVHrVj3m4p8iiTFTYiy
-jVbXw6bnIH1MIzEKfw1FMjTrGL1awOxRZkmOAbG3aPOrEkN91IFU7u43fn7Tde45
-/JUFXrcO0EClY2Kmv6myh7+SPACehTc1KHt1ToVzSpIBN1alzLuuOrEEhz5J0S8s
-I6mYOReZpi3p+PJib1jO1Uwf+JHzRft1o8cX58UjcUHxQnL1qd/4BsDdRjMhXquy
-TQ8uns/5mT+Ptiaix42yAnnE120Czc83XDESDlgdpkbV1LcT/MkjVWtzMXIyCoOF
-TBu08agktx9N+aOv+vaPZwj8NLVW8fyxcrMB3r7JO4HTwxD7R5fKmYmejd/kUCLs
-JYoE8lslqnwQHne40gwgbUkCLyrcyRYKQUqdCM/6JOdwpAeRjahuqU9cWOoI9Mmt
-lFbu7bkFTq6C94Vko6xyadB+J4OGQjEDTmo6WcbrIkc5nznF2A2d3n9yMSd+79O5
-/Ea4kzLIJN3fF06T6YuGDYsZpkTDLVGZPVfW1GtC9VsLGkbjNKYTbZKD3aZeVnSe
-qtWkT1OkUSfO3jr7MmdlPgZ/z/U7tAbR2B7RiCGzUEtKWytBXMPoyeBvTYekpOEM
-7uovnMRDHGTeVAhaajJC
-=kYhh
+iQIcBAEBAgAGBQJVbZawAAoJEGwLaZPeOHZ69DUP/1vPsYAvYTqrU+eyuE9/6vaL
+o5kqgWNGsdVKgfHaV9jRNU4n/FAWgapLBs+Xod7YgrKxhPFBepTtWTJxXvG7H7NT
+xsf0xqew71nTczPBln6kA4CppUi4ia88BvHfiXFEtfu2s3Fc5FCnaEO7RQznoqVn
+i3XtwYxYeS8JVhT7vqMMJJijlNUa0Hy0clpA/TM3UB9kWuN71SebuUeE1ZOWRha4
+i1lp4HE8MWbUj3pkWrxdx/HUHrUWKgwDPH97JTjtXsq+lT6FLYMAZ0iZvWn74jPy
+7fwrs5mY0yYcsjnGFaRG1yK8gGvzC3yZG7AKPj7Nx2Nlr84QYg/XpDbgc4gxdN+8
+kYYtXQcLgnA6zX/lAJeuTcuymgUUNRl4DRJDiRvFU0W5ufp9MyUjHiIPyiO1R+QN
+3T0uOj4KSGKkINIEp5hXI/qGrM+uHYE9FyP8qvRuNCi/I+C0kV5MkvVDBOyU43Mh
+XKKmLIK2uK/k21LEXcUMJPiGiY7/Zd8WQguujNZo9YiD0K+NGMMzxYuZpZPmx6FK
+kW38MmV9FgVg44yXQKqW+0z+JrgFNFy1BN/P3Kq2x5x7IH3eIxBNwOgBidMm8wDb
+psK34fYmvqU5cnVZRgxdwdFn/ZEc76feuHp747qPCH/+/GC6W6qVWAMlH//HWtfG
+fWhMUCEOsvb0SWBCi7pO
+=Crqs
 -----END PGP SIGNATURE-----
 
---nTANb0nRFCC0PbO4ocQNBCNNiUDeSRbU2--
+--BUOk0tpjh3b3SKxRuMKslWrcXeCrNGoBj--

@@ -1,17 +1,16 @@
-Received: from resqmta-ch2-04v.sys.comcast.net ([69.252.207.36]:35858 "EHLO
-        resqmta-ch2-04v.sys.comcast.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27026874AbbFBS5KN2P04 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jun 2015 20:57:10 +0200
-Message-ID: <556DFC72.9010705@gentoo.org>
-Date: Tue, 02 Jun 2015 14:56:50 -0400
-From: Joshua Kinard <kumba@gentoo.org>
+Received: from mail.windriver.com ([147.11.1.11]:35531 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007106AbbFBUQiy8zGc (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jun 2015 22:16:38 +0200
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH 3/4] mips: make loongsoon serial driver explicitly modular
+Date: Tue, 2 Jun 2015 16:16:07 -0400
+Message-ID: <1433276168-21550-4-git-send-email-paul.gortmaker@windriver.com>
+In-Reply-To: <1433276168-21550-1-git-send-email-paul.gortmaker@windriver.com>
+References: <1433276168-21550-1-git-send-email-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Subject: Re: IP27: R14000: Unexpected General Exception in cpu_set_fpu_fcsr_mask()
-References: <556943D9.7020502@gentoo.org> <alpine.LFD.2.11.1506010025410.22908@eddie.linux-mips.org> <556BCA01.1070208@gentoo.org> <alpine.LFD.2.11.1506011218590.22908@eddie.linux-mips.org> <556D378C.8060503@gentoo.org> <alpine.LFD.2.11.1506021208120.22908@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.11.1506021208120.22908@eddie.linux-mips.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-Path: <kumba@gentoo.org>
+Content-Type: text/plain
+Return-Path: <Paul.Gortmaker@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,38 +20,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: Linux MIPS List <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150602185650.YUdjoRp0gk2LX1Ro1maS8aedSnbwcm5zx_D7dabbCeY@z>
+To: linux-kernel@vger.kernel.org
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20150602201607.2CfJFXxiXZGtRkQPNRL-j9slyvYBAGdmwjYRNcRzXUw@z>
 
-On 06/02/2015 07:32, Maciej W. Rozycki wrote:
-> On Tue, 2 Jun 2015, Joshua Kinard wrote:
-> 
->> I commented on it being odd because out of four CPUs, #2 was coming up with a
->> sign-extended value, twice (I tested two reboot cycles, same both times).  I'm
->> not fully knowledgable of IP27 hardware, and am probably one of the few on the
->> planet in possession of R14K node boards, so this might be a quirk of these
->> specific nodes.  Would need others to test to verify, I guess.
-> 
->  That's how the CFC1 instruction works, it sign-extends the 32-bit value 
-> written to the destination register on 64-bit processors.  So if the chip 
-> has come out of reset with FCSR.FCC[7] set, then the bit will be repeated 
-> across bits 63:32 when the bit pattern from FCSR has been transferred to a 
-> general-purpose register.
-> 
->> As for a typo, nope:
->>
->> 	__enable_fpu(FPU_AS_IS);
->>
->> 	fcsr = read_32bit_cp1_register(CP1_STATUS);
->> ->	pr_info("CPU%d: FCSR is: %08lx\n", smp_processor_id(), fcsr);
->> 	fcsr &= ~mask;
-> 
->  OK, thanks for confirming.  So it looks like the cause of the exception 
-> vanished at the same time.  There's no harm in reinitialising FCSR here 
-> though, any vendor-specific bits possibly set will be cleared on process 
-> creation anyway.
+The file looks as if it is non-modular, but it piggy-backs
+off CONFIG_SERIAL_8250 which is tristate.  If set to "=m"
+we will get this after the init/module header cleanup:
 
-I had a thought and moved the printk to be near the top of cpu_probe(), since
-it was possible the value of fcsr was getting clobbered by earlier code.  sure
-enough, I got saner-looking values:
+arch/mips/loongson/common/serial.c:76:1: error: data definition has no type or storage class [-Werror]
+arch/mips/loongson/common/serial.c:76:1: error: type defaults to 'int' in declaration of 'device_initcall' [-Werror=implicit-int]
+arch/mips/loongson/common/serial.c:76:1: error: parameter names (without types) in function declaration [-Werror]
+arch/mips/loongson/common/serial.c:58:19: error: 'serial_init' defined but not used [-Werror=unused-function]
+cc1: all warnings being treated as errors
+make[3]: *** [arch/mips/loongson/common/serial.o] Error 1
+
+Make it clearly modular, and add a module_exit function,
+so that we avoid the above breakage.
+
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+---
+ arch/mips/loongson/common/serial.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/loongson/common/serial.c b/arch/mips/loongson/common/serial.c
+index c23fa1373729..ffefc1cb2612 100644
+--- a/arch/mips/loongson/common/serial.c
++++ b/arch/mips/loongson/common/serial.c
+@@ -11,7 +11,7 @@
+  */
+ 
+ #include <linux/io.h>
+-#include <linux/init.h>
++#include <linux/module.h>
+ #include <linux/serial_8250.h>
+ 
+ #include <asm/bootinfo.h>
+@@ -108,5 +108,10 @@ static int __init serial_init(void)
+ 
+ 	return platform_device_register(&uart8250_device);
+ }
++module_init(serial_init);
+ 
+-device_initcall(serial_init);
++static void __init serial_exit(void)
++{
++	platform_device_unregister(&uart8250_device);
++}
++module_exit(serial_exit);
+-- 
+2.2.1

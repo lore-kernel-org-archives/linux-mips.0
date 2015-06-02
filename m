@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:19179 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026874AbbFBSnuOKBG4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jun 2015 20:43:50 +0200
-Message-ID: <556DF959.1010704@imgtec.com>
-Date: Tue, 2 Jun 2015 11:43:37 -0700
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Received: from resqmta-ch2-04v.sys.comcast.net ([69.252.207.36]:35858 "EHLO
+        resqmta-ch2-04v.sys.comcast.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27026874AbbFBS5KN2P04 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jun 2015 20:57:10 +0200
+Message-ID: <556DFC72.9010705@gentoo.org>
+Date: Tue, 02 Jun 2015 14:56:50 -0400
+From: Joshua Kinard <kumba@gentoo.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/3] MIPS: enforce LL-SC loop enclosing with SYNC (ACQUIRE
- and RELEASE)
-References: <20150602000818.6668.76632.stgit@ubuntu-yegoshin> <20150602000943.6668.28434.stgit@ubuntu-yegoshin> <556D95DA.5090305@imgtec.com>
-In-Reply-To: <556D95DA.5090305@imgtec.com>
-Content-Type: multipart/alternative;
-        boundary="------------090801090503060704020107"
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Subject: Re: IP27: R14000: Unexpected General Exception in cpu_set_fpu_fcsr_mask()
+References: <556943D9.7020502@gentoo.org> <alpine.LFD.2.11.1506010025410.22908@eddie.linux-mips.org> <556BCA01.1070208@gentoo.org> <alpine.LFD.2.11.1506011218590.22908@eddie.linux-mips.org> <556D378C.8060503@gentoo.org> <alpine.LFD.2.11.1506021208120.22908@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.11.1506021208120.22908@eddie.linux-mips.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-Path: <kumba@gentoo.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,263 +21,38 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, benh@kernel.crashing.org, will.deacon@arm.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, markos.chandras@imgtec.com, macro@linux-mips.org, Steven.Hill@imgtec.com, alexander.h.duyck@redhat.com, davem@davemloft.net
-Message-ID: <20150602184337.YyRzgrx5PWO9lg7z0KhqK6dcw1-ixKUfkhNGOm4pCLc@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: Linux MIPS List <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20150602185650.YUdjoRp0gk2LX1Ro1maS8aedSnbwcm5zx_D7dabbCeY@z>
 
---------------090801090503060704020107
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+On 06/02/2015 07:32, Maciej W. Rozycki wrote:
+> On Tue, 2 Jun 2015, Joshua Kinard wrote:
+> 
+>> I commented on it being odd because out of four CPUs, #2 was coming up with a
+>> sign-extended value, twice (I tested two reboot cycles, same both times).  I'm
+>> not fully knowledgable of IP27 hardware, and am probably one of the few on the
+>> planet in possession of R14K node boards, so this might be a quirk of these
+>> specific nodes.  Would need others to test to verify, I guess.
+> 
+>  That's how the CFC1 instruction works, it sign-extends the 32-bit value 
+> written to the destination register on 64-bit processors.  So if the chip 
+> has come out of reset with FCSR.FCC[7] set, then the bit will be repeated 
+> across bits 63:32 when the bit pattern from FCSR has been transferred to a 
+> general-purpose register.
+> 
+>> As for a typo, nope:
+>>
+>> 	__enable_fpu(FPU_AS_IS);
+>>
+>> 	fcsr = read_32bit_cp1_register(CP1_STATUS);
+>> ->	pr_info("CPU%d: FCSR is: %08lx\n", smp_processor_id(), fcsr);
+>> 	fcsr &= ~mask;
+> 
+>  OK, thanks for confirming.  So it looks like the cause of the exception 
+> vanished at the same time.  There's no harm in reinitialising FCSR here 
+> though, any vendor-specific bits possibly set will be cleared on process 
+> creation anyway.
 
-On 06/02/2015 04:39 AM, James Hogan wrote:
-> Hi Leonid,
->
-> On 02/06/15 01:09, Leonid Yegoshin wrote:
->
->> CPUs may occasionally have problems in accordance with HW team.
-> "have problems in accordance with HW team" is a bit confusing. What do
-> you mean?
-
-I wrote about memory barriers and problems may happens without it.
-Some details from internal e-mail exchange:
-
--------------------------------------------
-
-yes, it is possible for the stores to be observed out of order
-The SC B can complete if it has ownership and the SW A is still
-waiting for ownership.  This scenario was also possible on older
-cores.
-
-(snip)
-
------Original Message-----
-From: Leonid Yegoshin
-Subject: more SYNC issues
-
-...
-
-I want to know - do XXXX orders stores without SYNC?
-
-Let's consider a scenario:
-
-SW    $0, A (cache miss)
-...
-LL    $1, B (cache hit)
-..
-SC    $1, B (cache hit again)
-B        (is not taken!)
-..
-SYNC  0x10
-
-Is it possible for other core to get new value of B before new value of A between SC-B and SYNC?
--------------------------------------------------------------
-
-Another mail, another processor:
-
-==========================================
-
-Hi Leonid
-
-I looked into the LSU RTL and I do not see speculation being blocked for 
-younger loads following LL.
-
-I also ran a testcase to confirm my observation:
-
-LL  (cacheable)Miss
-
-LW (cacheable)Miss, different cacheline
-
-Miss request for LW goes out before the Miss request for LL, also the 
-GPR updated for LW happens before the LL GPR update.
-==========================================
-
-
-> Actually *true*? P5600 you mean? Same in Kconfig help text. 
-
-Yes, thank you, it is P5600 and I5600 doesn't exist.
-
-
-> It feels wrong to be giving the user this option. Can't we just select
-> WEAK_REORDERING_BEYOND_LLSC automatically based on the hardware that
-> needs to be supported by the kernel configuration (e.g. CPU_MIPSR6 or
-> CPU_MIPS32_R2)?
-
-No, we can't - a lot of old processors are in-order and all of that is 
-still MIPS R2.
-
->   Those who care about mips r2 performance on hardware
-> which doesn't strictly need it can always speak up / add an exception.
->
-> Out of interest, are futex operations safe with weak llsc ordering, on
-> the premise that they're mainly used by userland so ordering with normal
-> kernel accesses just doesn't matter in practice?
-
-I think futex is used to communicate between user threads and problem is 
-theoretically still here.
-
-> This patch does 3 logically separable things:
-> 1) add smp_release/smp_acquire based on MIPS_LIGHTWEIGHT_SYNC and weaken
-> smp_store_release()/smp_load_acquire() to use them.
-> 2) weaken llsc barriers when MIPS_LIGHTWEIGHT_SYNC.
-> 3) the MIPS_ENFORCE_WEAK_REORDERING_BEYOND_LLSC Kconfig stuff (or
-> whatever method to select WEAK_REORDERING_BEYOND_LLSC more often).
->
-> Any reason not to split them, and give a clear description of each?
->
->
-
-I don't see a reason to split it.
-
-- Leonid.
-
---------------090801090503060704020107
-Content-Type: text/html; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-
-<html>
-  <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    <div class="moz-cite-prefix">On 06/02/2015 04:39 AM, James Hogan
-      wrote:<br>
-    </div>
-    <blockquote cite="mid:556D95DA.5090305@imgtec.com" type="cite">
-      <pre wrap="">Hi Leonid,
-
-On 02/06/15 01:09, Leonid Yegoshin wrote:
-
-</pre>
-      <blockquote type="cite">
-        <pre wrap="">CPUs may occasionally have problems in accordance with HW team.
-</pre>
-      </blockquote>
-      <pre wrap="">
-"have problems in accordance with HW team" is a bit confusing. What do
-you mean?</pre>
-    </blockquote>
-    <br>
-    I wrote about memory barriers and problems may happens without it.<br>
-    Some details from internal e-mail exchange:<br>
-    <br>
-    -------------------------------------------<br>
-    <pre wrap="">yes, it is possible for the stores to be observed out of order
-The SC B can complete if it has ownership and the SW A is still
-waiting for ownership.  This scenario was also possible on older
-cores.
-
-(snip)
-
------Original Message-----
-From: Leonid Yegoshin 
-Subject: more SYNC issues
-
-...
-
-I want to know - do XXXX orders stores without SYNC?
-
-Let's consider a scenario:
-
-SW    $0, A (cache miss)
-...
-LL    $1, B (cache hit)
-..
-SC    $1, B (cache hit again)
-B        (is not taken!)
-..
-SYNC  0x10
-
-Is it possible for other core to get new value of B before new value of A between SC-B and SYNC? 
--------------------------------------------------------------
-
-</pre>
-    Another mail, another processor:<br>
-    <br>
-    ==========================================<br>
-    <p class="MsoNormal">Hi Leonid<o:p></o:p></p>
-    <p class="MsoNormal" style="line-height:13.0pt;background:white"><span
-style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:#333333"><o:p> </o:p></span><span
-style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:#333333">I
-        looked into the LSU RTL and I do not see speculation being
-        blocked for younger loads following LL.<o:p></o:p></span>
-    </p>
-    <p class="MsoNormal" style="line-height:13.0pt;background:white"><span
-style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:#333333"><o:p> </o:p></span><span
-style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:#333333">I
-        also ran a testcase to confirm my observation:<o:p></o:p></span><span
-style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:#333333"><br>
-      </span></p>
-    <p class="MsoNormal" style="line-height:13.0pt;background:white"><span
-style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:#333333">LL
-         (cacheable)</span><span
-        style="font-size:10.0pt;font-family:Wingdings;color:#333333"> </span><span
-style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:#333333">
-        Miss <o:p></o:p></span><span
-style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:#333333"></span></p>
-    <p class="MsoNormal" style="line-height:13.0pt;background:white"><span
-style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:#333333">LW
-        (cacheable)</span><span
-        style="font-size:10.0pt;font-family:Wingdings;color:#333333"> </span><span
-style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:#333333">
-        Miss, different cacheline </span><br>
-    </p>
-    <span style="font-size:10.0pt;font-family:Wingdings;color:#333333"></span><span
-style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:#333333">Miss
-      request for LW goes out before the Miss request for LL, also the
-      GPR updated for LW happens before the LL GPR update.</span><br>
-    ==========================================<br>
-    <br>
-    <br>
-    <blockquote cite="mid:556D95DA.5090305@imgtec.com" type="cite">
-      Actually *true*?
-      P5600 you mean?
-      Same in Kconfig help text.
-    </blockquote>
-    <br>
-    Yes, thank you, it is P5600 and I5600 doesn't exist.<br>
-    <br>
-    <br>
-    <blockquote cite="mid:556D95DA.5090305@imgtec.com" type="cite">
-      <pre wrap="">
-It feels wrong to be giving the user this option. Can't we just select
-WEAK_REORDERING_BEYOND_LLSC automatically based on the hardware that
-needs to be supported by the kernel configuration (e.g. CPU_MIPSR6 or
-CPU_MIPS32_R2)?</pre>
-    </blockquote>
-    <br>
-    No, we can't - a lot of old processors are in-order and all of that
-    is still MIPS R2.<br>
-    <br>
-    <blockquote cite="mid:556D95DA.5090305@imgtec.com" type="cite">
-      <pre wrap=""> Those who care about mips r2 performance on hardware
-which doesn't strictly need it can always speak up / add an exception.
-
-Out of interest, are futex operations safe with weak llsc ordering, on
-the premise that they're mainly used by userland so ordering with normal
-kernel accesses just doesn't matter in practice?</pre>
-    </blockquote>
-    <br>
-    I think futex is used to communicate between user threads and
-    problem is theoretically still here.<br>
-    <br>
-    <blockquote cite="mid:556D95DA.5090305@imgtec.com" type="cite">
-      <pre wrap="">
-This patch does 3 logically separable things:
-1) add smp_release/smp_acquire based on MIPS_LIGHTWEIGHT_SYNC and weaken
-smp_store_release()/smp_load_acquire() to use them.
-2) weaken llsc barriers when MIPS_LIGHTWEIGHT_SYNC.
-3) the MIPS_ENFORCE_WEAK_REORDERING_BEYOND_LLSC Kconfig stuff (or
-whatever method to select WEAK_REORDERING_BEYOND_LLSC more often).
-
-Any reason not to split them, and give a clear description of each?
-
-
-</pre>
-    </blockquote>
-    <br>
-    I don't see a reason to split it.<br>
-    <br>
-    - Leonid.<br>
-  </body>
-</html>
-
---------------090801090503060704020107--
+I had a thought and moved the printk to be near the top of cpu_probe(), since
+it was possible the value of fcsr was getting clobbered by earlier code.  sure
+enough, I got saner-looking values:

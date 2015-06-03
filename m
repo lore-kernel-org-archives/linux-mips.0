@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59916 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006820AbbFCB4wrrd8s (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Jun 2015 03:56:52 +0200
-Message-ID: <556E5EDC.9030209@imgtec.com>
-Date: Tue, 2 Jun 2015 18:56:44 -0700
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Received: from comal.ext.ti.com ([198.47.26.152]:60425 "EHLO comal.ext.ti.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27006911AbbFCGIHq0rlY (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 3 Jun 2015 08:08:07 +0200
+Message-ID: <556E99B4.6090307@ti.com>
+Date: Wed, 3 Jun 2015 11:37:48 +0530
+From: Kishon Vijay Abraham I <kishon@ti.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/3] MIPS: R6: Use lightweight SYNC instruction in smp_*
- memory barriers
-References: <20150602000818.6668.76632.stgit@ubuntu-yegoshin> <20150602000934.6668.43645.stgit@ubuntu-yegoshin> <556D8A03.9080201@imgtec.com> <alpine.LFD.2.11.1506021709420.6751@eddie.linux-mips.org> <556E42BB.4060705@gmail.com>
-In-Reply-To: <556E42BB.4060705@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Subject: Re: [PATCH V2 0/3] Pistachio USB2.0 PHY
+References: <1428444258-25852-1-git-send-email-abrestic@chromium.org> <CAL1qeaE0+aMLBgk8SKgJ3fXm==M2-Z_yEPYNVZ0yxSee-p7YOw@mail.gmail.com> <5549083F.8080505@imgtec.com> <5550C06D.2010409@ti.com>
+In-Reply-To: <5550C06D.2010409@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Return-Path: <kishon@ti.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,31 +21,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney.cavm@gmail.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, benh@kernel.crashing.org, will.deacon@arm.com, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, markos.chandras@imgtec.com, Steven.Hill@imgtec.com, alexander.h.duyck@redhat.com, "David S. Miller" <davem@davemloft.net>
-Message-ID: <20150603015644.c88a6tFq9qbhRfUUIU7nS2H4i38gA4rfn1VxTCCoqTg@z>
+To: 1428444258-25852-1-git-send-email-abrestic@chromium.org, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: devicetree@vger.kernel.org, James Hartley <james.hartley@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-ID: <20150603060748.6qJGXwko5-wi3wLUh4RdB0O6Pk40caMYx7AGRzbOShk@z>
 
-On 06/02/2015 04:56 PM, David Daney wrote:
-> On 06/02/2015 09:15 AM, Maciej W. Rozycki wrote:
->> On Tue, 2 Jun 2015, James Hogan wrote:
+
+
+On Monday 11 May 2015 08:15 PM, Kishon Vijay Abraham I wrote:
+>
+>
+> On Tuesday 05 May 2015 11:43 PM, Ezequiel Garcia wrote:
+>> Hi Kishon,
 >>
 >>>
->>> binutils appears to support the sync_mb, sync_rmb, sync_wmb aliases
->>> since version 2.21. Can we safely use them?
+>>> This series adds support for the USB2.0 PHY present on the IMG Pistachio SoC.
+>>>
+>>> Based on mips-for-linux-next and tested on the IMG Pistachio BuB.  If possible,
+>>> I'd like this to go through the MIPS tree with Kishon's ACK.
+>>>
 >>
->>   I suggest that we don't -- we still officially support binutils 
->> 2.12 and
->> have other places where we even use `.word' to insert instructions 
->> current
->> versions of binutils properly handle.  It may be worth noting in a 
->> comment
->> though that these encodings correspond to these operations that you 
->> named.
+>> Tested-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 >>
+>> Can we have your Ack for this series so Ralf can pick it?
 >
-> Surely the other MIPSr6 instructions are not supported in binutils 
-> 2.12 either.  So if it is for r6, why not require modern tools, and 
-> put something user readable in here?
+> sure..
 >
->
-No, it can be used for MIPS R2 also.
+> Acked-by: Kishon Vijay Abraham I <kishon@ti.com>
+
+I'm not sure if this has been merged yet. But this will cause conflicts with 
+other PHY patches in Makefile and Kconfig when linus merges to his tree. I'd 
+prefer the phy patches go in PHY tree itself.
+
+Thanks
+Kishon
+>>
+>> Thanks!
+>> Ezequiel
+>>
+>>> Cc: James Hartley <james.hartley@imgtec.com>
+>>> Cc: Damien Horsley <Damien.Horsley@imgtec.com>
+>>>
+>>> Changes from v1:
+>>>    - Added patch to enable PHY driver in pistachio_defconfig
+>>>    - Fixed a couple of spelling errors
+>>>
+>>> Andrew Bresticker (3):
+>>>     phy: Add binding document for Pistachio USB2.0 PHY
+>>>     phy: Add driver for Pistachio USB2.0 PHY
+>>>     MIPS: pistachio: Enable USB PHY driver in defconfig
+>>>
+>>>    .../devicetree/bindings/phy/pistachio-usb-phy.txt  |  29 +++
+>>>    arch/mips/configs/pistachio_defconfig              |   1 +
+>>>    drivers/phy/Kconfig                                |   7 +
+>>>    drivers/phy/Makefile                               |   1 +
+>>>    drivers/phy/phy-pistachio-usb.c                    | 206 +++++++++++++++++++++
+>>>    include/dt-bindings/phy/phy-pistachio-usb.h        |  16 ++
+>>>    6 files changed, 260 insertions(+)
+>>>    create mode 100644 Documentation/devicetree/bindings/phy/pistachio-usb-phy.txt
+>>>    create mode 100644 drivers/phy/phy-pistachio-usb.c
+>>>    create mode 100644 include/dt-bindings/phy/phy-pistachio-usb.h
+>>>
+>>> --
+>>> 2.2.0.rc0.207.ga3a616c
+>>>
+>>

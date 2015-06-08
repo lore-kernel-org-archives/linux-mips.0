@@ -1,17 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:10172 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007354AbbFEI05fsFeO (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 5 Jun 2015 10:26:57 +0200
-Message-ID: <55715D4B.9020703@imgtec.com>
-Date: Fri, 5 Jun 2015 09:26:51 +0100
-From: Markos Chandras <Markos.Chandras@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:44604 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27006602AbbFHIeEtFTwq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Jun 2015 10:34:04 +0200
+Message-ID: <5575536E.8080608@imgtec.com>
+Date: Mon, 8 Jun 2015 09:33:50 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 0/6] MIPS/BPF fixes for 4.3
-References: <1433415376-20952-1-git-send-email-markos.chandras@imgtec.com> <557081A6.5010407@plumgrid.com>
-In-Reply-To: <557081A6.5010407@plumgrid.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH] MIPS: KVM: do not sign extend on unsigned MMIO load
+References: <1431002870-30098-1-git-send-email-hofrat@osadl.org> <554CC530.20906@imgtec.com>
+In-Reply-To: <554CC530.20906@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature";
+        boundary="rib3XQ4j4fb09VQqnP6aG7Rdr8hV955CP"
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,39 +22,100 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alexei Starovoitov <ast@plumgrid.com>, linux-mips@linux-mips.org
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Daniel Borkmann <dborkman@redhat.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, linux-kernel@vger.kernel.org
-Message-ID: <20150605082651.j1nlPID4-yv0EuFz9nZYBarqvWIjGogxSwQrziZqiJ8@z>
+To: stable <stable@vger.kernel.org>
+Cc: Nicholas Mc Guire <hofrat@osadl.org>, Gleb Natapov <gleb@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20150608083350.3wtDEbr0l9xRZt-7XPmua_Uoz97IlHqCZ9VMmFZQLB4@z>
 
-On 06/04/2015 05:49 PM, Alexei Starovoitov wrote:
-> On 6/4/15 3:56 AM, Markos Chandras wrote:
->> Here are some fixes for MIPS/BPF. The first 5 patches do some cleanup
->> and lay the groundwork for the final one which introduces assembly
->> helpers
->> for MIPS and MIPS64. The goal is to speed up certain operations that do
->> not need to go through the common C functions. This also makes the
->> test_bpf
->> testsuite happy with all 60 tests passing. This is based in 4.1-rc6.
-> 
-> looks like these patches actually fix two real bugs, right?
-> If so, I think you probably want them in 'net' tree ?
+--rib3XQ4j4fb09VQqnP6aG7Rdr8hV955CP
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-I was thinking to have them in the MIPS tree to be honest. The original
-MIPS/BPF went via the MIPS tree as well. It also makes it easier for me
-to work with Ralf on minor fixes, merge conflicts etc.
+Hi stable folk,
 
-> 
-> Different arch maintainers take different stance towards bpf jit
-> changes. x86, arm and s390 are ok with them going through Dave's trees,
-> since often there are dependencies on bpf core parts.
-> So please state clearly what tree you want these patches to go in.
-> 
-> btw, in the net-next tree bpf testsuite has 246 tests and the last
-> ten are very stressful for JITs.
+On 08/05/15 15:16, James Hogan wrote:
+> On 07/05/15 13:47, Nicholas Mc Guire wrote:
+>> Fix possible unintended sign extension in unsigned MMIO loads by casti=
+ng
+>> to uint16_t in the case of mmio_needed !=3D 2.
+>>
+>> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+>=20
+> Looks good to me. I wrote an MMIO test to reproduce the issue, and this=
 
-Interesting. Thanks. I will rebase my tree shortly after 4.2-rc1 then
-and run the testsuite again. I will post a v2 if I spot more problems
-with it.
+> fixes it.
+>=20
+> Reviewed-by: James Hogan <james.hogan@imgtec.com>
+> Tested-by: James Hogan <james.hogan@imgtec.com>
+>=20
+> It looks suitable for stable too (3.10+).
 
--- 
-markos
+This has reached mainline, commit ed9244e6c534612d2b5ae47feab2f55a0d4b4ce=
+d
+
+Please could it be added to stable (3.10+).
+
+Thanks
+James
+
+
+>=20
+> Cheers
+> James
+>=20
+>> ---
+>>
+>> Thanks to James Hogan <james.hogan@imgtec.com> for the explaination of=
+=20
+>> mmio_needed (there is not really any helpful comment in the code on th=
+is)
+>> in this case (mmio_needed!=3D2) it should be unsigned.
+>>
+>> Patch was only compile tested msp71xx_defconfig + CONFIG_KVM=3Dm
+>>
+>> Patch is against 4.1-rc2 (localversion-next is -next-20150506)
+>>
+>>  arch/mips/kvm/emulate.c |    2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
+>> index 6230f37..2f0fc60 100644
+>> --- a/arch/mips/kvm/emulate.c
+>> +++ b/arch/mips/kvm/emulate.c
+>> @@ -2415,7 +2415,7 @@ enum emulation_result kvm_mips_complete_mmio_loa=
+d(struct kvm_vcpu *vcpu,
+>>  		if (vcpu->mmio_needed =3D=3D 2)
+>>  			*gpr =3D *(int16_t *) run->mmio.data;
+>>  		else
+>> -			*gpr =3D *(int16_t *) run->mmio.data;
+>> +			*gpr =3D *(uint16_t *)run->mmio.data;
+>> =20
+>>  		break;
+>>  	case 1:
+>>
+>=20
+
+
+--rib3XQ4j4fb09VQqnP6aG7Rdr8hV955CP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJVdVN2AAoJEGwLaZPeOHZ6aGoQAKjI/LWr2uRUZfgwpbQtV7j9
+Wag0W8DuS425L2ScRFkSfsProPASDt688NEJaMiZhZBMDr/u62g/XTUtxllbO2Gi
+K29kLf85fRWZSy6f2fYPuon0pIuYDEgzEkUS5oJ8HEHI2FHphgJ3lBbl75ZGvigR
+0TXS/IP8HmX+tRyjcQQHB4DGFcQ7bTRXRY74JwrOZc6nH+40drTskNtObSGn1goo
+Cb9trlAUvMQH3zhV5TbFzGiWDZBuhxo7WSCPZHPpQ77qUqOP35DjmQESAXOlDQ9U
+jHOovF2p+2D046JHiGwqC8FlaQAvN76/SKJdzYOiHpozTBQXkc8ilvXwTGu7czbU
+odUGFL6+mC2UjO/1nEV+qAkakBtm7ZqdqPaqZnwPsojFrt7XAOLVWPGd0BmYZCsB
+z4KPogC8jp/HNc5LqpTt25cYSOguKwvLKJ4TQYY+y187DmobrXnWVj6b6oQnUAeI
+2RYw9C5WRsfsaea9Ov1m0adKsopYrGe2Z7ts2xIDIrte0hVBMIvl4XyxJriNsKPd
+HsmxRpSpDZUnDFjMDV4sh4PJ1+LWjiISbCBxho1LXwOel0k/I6fWYYqaU83SyVlp
+26Uy6/KgaSfbWFM2/rBTBc9QiZALV+/tLRMsZuiVCHkSb0RRh8RsTH6M+gXuKdj+
++gKCfXJSF/BBV2RcOwvQ
+=KsSU
+-----END PGP SIGNATURE-----
+
+--rib3XQ4j4fb09VQqnP6aG7Rdr8hV955CP--

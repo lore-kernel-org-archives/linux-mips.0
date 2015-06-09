@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44604 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27006602AbbFHIeEtFTwq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Jun 2015 10:34:04 +0200
-Message-ID: <5575536E.8080608@imgtec.com>
-Date: Mon, 8 Jun 2015 09:33:50 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:44315 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008247AbbFISpZqyyfH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 9 Jun 2015 20:45:25 +0200
+Message-ID: <5577342A.40206@imgtec.com>
+Date: Tue, 9 Jun 2015 13:44:58 -0500
+From: "Steven J. Hill" <Steven.Hill@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: KVM: do not sign extend on unsigned MMIO load
-References: <1431002870-30098-1-git-send-email-hofrat@osadl.org> <554CC530.20906@imgtec.com>
-In-Reply-To: <554CC530.20906@imgtec.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature";
-        boundary="rib3XQ4j4fb09VQqnP6aG7Rdr8hV955CP"
-Return-Path: <James.Hogan@imgtec.com>
+Subject: Re: Upgrade of linux-mips.org
+References: <20150601130558.GB27051@linux-mips.org>
+In-Reply-To: <20150601130558.GB27051@linux-mips.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Steven.Hill@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,100 +21,15 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: stable <stable@vger.kernel.org>
-Cc: Nicholas Mc Guire <hofrat@osadl.org>, Gleb Natapov <gleb@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20150608083350.3wtDEbr0l9xRZt-7XPmua_Uoz97IlHqCZ9VMmFZQLB4@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20150609184458.F7oiEpAzwGvPkQWnyYwTyeUpwtRhAuXb5j-D298duXg@z>
 
---rib3XQ4j4fb09VQqnP6aG7Rdr8hV955CP
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+On 06/01/2015 08:05 AM, Ralf Baechle wrote:
+> Over the weekend I've upgraded linux-mips.org's Linux distribution.  I think
+> everything should be running fine again but just in case you notice any
+> issues, please report to me or the mailing list.
+> 
+I cannot connect over port 22 with SSH with interactive shell or with
+git. Is anyone else having connection problems? Thanks.
 
-Hi stable folk,
-
-On 08/05/15 15:16, James Hogan wrote:
-> On 07/05/15 13:47, Nicholas Mc Guire wrote:
->> Fix possible unintended sign extension in unsigned MMIO loads by casti=
-ng
->> to uint16_t in the case of mmio_needed !=3D 2.
->>
->> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
->=20
-> Looks good to me. I wrote an MMIO test to reproduce the issue, and this=
-
-> fixes it.
->=20
-> Reviewed-by: James Hogan <james.hogan@imgtec.com>
-> Tested-by: James Hogan <james.hogan@imgtec.com>
->=20
-> It looks suitable for stable too (3.10+).
-
-This has reached mainline, commit ed9244e6c534612d2b5ae47feab2f55a0d4b4ce=
-d
-
-Please could it be added to stable (3.10+).
-
-Thanks
-James
-
-
->=20
-> Cheers
-> James
->=20
->> ---
->>
->> Thanks to James Hogan <james.hogan@imgtec.com> for the explaination of=
-=20
->> mmio_needed (there is not really any helpful comment in the code on th=
-is)
->> in this case (mmio_needed!=3D2) it should be unsigned.
->>
->> Patch was only compile tested msp71xx_defconfig + CONFIG_KVM=3Dm
->>
->> Patch is against 4.1-rc2 (localversion-next is -next-20150506)
->>
->>  arch/mips/kvm/emulate.c |    2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
->> index 6230f37..2f0fc60 100644
->> --- a/arch/mips/kvm/emulate.c
->> +++ b/arch/mips/kvm/emulate.c
->> @@ -2415,7 +2415,7 @@ enum emulation_result kvm_mips_complete_mmio_loa=
-d(struct kvm_vcpu *vcpu,
->>  		if (vcpu->mmio_needed =3D=3D 2)
->>  			*gpr =3D *(int16_t *) run->mmio.data;
->>  		else
->> -			*gpr =3D *(int16_t *) run->mmio.data;
->> +			*gpr =3D *(uint16_t *)run->mmio.data;
->> =20
->>  		break;
->>  	case 1:
->>
->=20
-
-
---rib3XQ4j4fb09VQqnP6aG7Rdr8hV955CP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJVdVN2AAoJEGwLaZPeOHZ6aGoQAKjI/LWr2uRUZfgwpbQtV7j9
-Wag0W8DuS425L2ScRFkSfsProPASDt688NEJaMiZhZBMDr/u62g/XTUtxllbO2Gi
-K29kLf85fRWZSy6f2fYPuon0pIuYDEgzEkUS5oJ8HEHI2FHphgJ3lBbl75ZGvigR
-0TXS/IP8HmX+tRyjcQQHB4DGFcQ7bTRXRY74JwrOZc6nH+40drTskNtObSGn1goo
-Cb9trlAUvMQH3zhV5TbFzGiWDZBuhxo7WSCPZHPpQ77qUqOP35DjmQESAXOlDQ9U
-jHOovF2p+2D046JHiGwqC8FlaQAvN76/SKJdzYOiHpozTBQXkc8ilvXwTGu7czbU
-odUGFL6+mC2UjO/1nEV+qAkakBtm7ZqdqPaqZnwPsojFrt7XAOLVWPGd0BmYZCsB
-z4KPogC8jp/HNc5LqpTt25cYSOguKwvLKJ4TQYY+y187DmobrXnWVj6b6oQnUAeI
-2RYw9C5WRsfsaea9Ov1m0adKsopYrGe2Z7ts2xIDIrte0hVBMIvl4XyxJriNsKPd
-HsmxRpSpDZUnDFjMDV4sh4PJ1+LWjiISbCBxho1LXwOel0k/I6fWYYqaU83SyVlp
-26Uy6/KgaSfbWFM2/rBTBc9QiZALV+/tLRMsZuiVCHkSb0RRh8RsTH6M+gXuKdj+
-+gKCfXJSF/BBV2RcOwvQ
-=KsSU
------END PGP SIGNATURE-----
-
---rib3XQ4j4fb09VQqnP6aG7Rdr8hV955CP--
+Steve

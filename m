@@ -1,19 +1,18 @@
-Received: from mail1.windriver.com ([147.11.146.13]:48172 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008460AbbFIXP5fpz6H (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 10 Jun 2015 01:15:57 +0200
-Date: Tue, 9 Jun 2015 19:15:28 -0400
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: [PATCH 3/4] mips: make loongsoon serial driver explicitly modular
-Message-ID: <20150609231528.GQ7125@windriver.com>
-References: <1433276168-21550-1-git-send-email-paul.gortmaker@windriver.com>
- <1433276168-21550-4-git-send-email-paul.gortmaker@windriver.com>
- <20150609073533.GB2753@linux-mips.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:61002 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008019AbbFJUAUQznD2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 10 Jun 2015 22:00:20 +0200
+Message-ID: <55789749.3070700@imgtec.com>
+Date: Wed, 10 Jun 2015 13:00:09 -0700
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20150609073533.GB2753@linux-mips.org>
-Return-Path: <Paul.Gortmaker@windriver.com>
+Subject: Re: [PATCH] MIPS: bugfix of local_r4k_flush_icache_range - added
+ L2 flush
+References: <20150528203724.28800.63700.stgit@ubuntu-yegoshin> <20150610102805.GF2753@linux-mips.org>
+In-Reply-To: <20150610102805.GF2753@linux-mips.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,77 +23,90 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Huacai Chen <chenhc@lemote.com>, Aaro Koskinen <aaro.koskinen@iki.fi>
-Message-ID: <20150609231528.ph2P8ybMSP2qMlJPd-SatqvKBCkWmXAXkT6ltYCN97Y@z>
+Cc: linux-mips@linux-mips.org, david.daney@cavium.com, cernekee@gmail.com, linux-kernel@vger.kernel.org, macro@codesourcery.com, markos.chandras@imgtec.com, kumba@gentoo.org
+Message-ID: <20150610200009.98-UjRvon9GAN5gxAogs_E1cbTjenWbmxHFWf3n96FU@z>
 
-[Re: [PATCH 3/4] mips: make loongsoon serial driver explicitly modular] On 09/06/2015 (Tue 09:35) Ralf Baechle wrote:
+On 06/10/2015 03:28 AM, Ralf Baechle wrote:
+> On Thu, May 28, 2015 at 01:37:24PM -0700, Leonid Yegoshin wrote:
+>
+>> ...
+> I was wondering why there was a cache flush at all so I dove into git
+> history and found:
+>
+> commit 4676f9359fa5190ee6f42bbf2c27d28beb14d26a
+> Author: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+> Date:   Tue Jan 21 09:48:48 2014 +0000
+>
+>      MIPS: mm: c-r4k: Flush scache to avoid cache aliases
+>      
+>      There is a chance for the secondary cache to have memory
+>      aliases. This can happen if the bootloader is in a non-EVA mode
+>      (or even in EVA mode but with different mapping from the kernel)
+>      and the kernel switching to EVA afterwards. It's best to flush
+>      the icache to avoid having the secondary CPUs fetching stale
+>      data from it.
+>      
+>      Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+>      Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+>
+> flush_icache_range() really only is meant to deal with I-cache coherency
+> issues as they appear during normal kernel operation, that is code is
+> modified and will be executed from RAM.  I doesn't know about aliases
+> and it's not meant to know.
 
-> On Tue, Jun 02, 2015 at 04:16:07PM -0400, Paul Gortmaker wrote:
-> 
-> Ccing a few people with interest in Loongson stuff.
-> 
-> > The file looks as if it is non-modular, but it piggy-backs
-> > off CONFIG_SERIAL_8250 which is tristate.  If set to "=m"
-> > we will get this after the init/module header cleanup:
-> > 
-> > arch/mips/loongson/common/serial.c:76:1: error: data definition has no type or storage class [-Werror]
-> > arch/mips/loongson/common/serial.c:76:1: error: type defaults to 'int' in declaration of 'device_initcall' [-Werror=implicit-int]
-> > arch/mips/loongson/common/serial.c:76:1: error: parameter names (without types) in function declaration [-Werror]
-> > arch/mips/loongson/common/serial.c:58:19: error: 'serial_init' defined but not used [-Werror=unused-function]
-> > cc1: all warnings being treated as errors
-> > make[3]: *** [arch/mips/loongson/common/serial.o] Error 1
-> > 
-> > Make it clearly modular, and add a module_exit function,
-> > so that we avoid the above breakage.
-> 
-> Following up on our IRC discussion - your commit would result in
-> platform device registrations from module code which opens another can
-> of worms.  This and the whole philosophy of platforms devices to show
-> what devices do exist in a system, not which drivers are configured.
-> So just always build serial.c into the kernel.
-> 
-> A related issue is uart_base.o which I think is required to register
-> properly initialized platform devices.  It depends on
-> CONFIG_LOONGSON_UART_BASE but probably should also be put into the
-> kernel whenever we register the UART platform devices and that's
-> always.
-> 
->   Ralf
-> 
-> Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+1) OK, here is an explanation of memory aliasing (don't mix with cache 
+aliasing).
 
-I've dropped my change in favour of this one, and crafted up a commit
-log from this e-mail exchange as follows:
+Memory blocks bigger than 512MB should be put somewhere above 512MB 
+physical address due to IO hole but we still need some memory at 
+physical address 0x0000000. Board designers often prefer using masking 
+of some address bits to MIRROR 256-512MB into 0x00000000 from a primary 
+memory space location (for Malta - physical address 0x80000000). It 
+decreases latency by some bus clocks (which are not CPU clocks but slowly).
 
-https://git.kernel.org/cgit/linux/kernel/git/paulg/linux.git/commit/?h=init-v4.1-rc6&id=5eee56adcce9b0baf2da55c0bff88eb0f1c0eb61
+So, in Malta the word at physical address 0x00000000-256MB is the same 
+as word at physical address 0x80000000-0x90000000 (other boards may have 
+another location). But cache subsystem knows NOTHING about it and caches 
+that memory twice. This is a memory aliasing and it may cause a lot of 
+trouble if system uses both aliasing address ranges. But it is pretty 
+often that system initially uses low block 0x00000000->512MB during core 
+startup and later switches to primary address space. So, some full L1D 
+and L2 cache flush is needed after cache is initialized. However, after 
+creation of exception handler code it is still needed additionally a 
+flush of that code too, in L1D/I and including L2 in EVA, to avoid 
+memory aliasing problem.
 
-Assuming nobody else has an issue with it, then we should be done here
-(i.e. it doesn't even need to be in mips-next; it just needs to be here
-in this series so we don't get bisect fails introduced.)
+2) This patch actually notices that EJTAG and NMI exception handlers 
+work with Status.ERL bit and pull exception handler code from uncachable 
+memory, so a flushing exception handlers down to memory (including L2) 
+is needed for that because of different reason. Actually, it is a result 
+of debugging NMI with U-Boot. It is just by chance that it uses the same 
+code and solution as EVA flushing.
 
-Thanks,
-Paul.
---
+>
+> As I understand you only need this on startup.  Making this function work
+> for your special use results in a performance penalty for every other user
+> of this function.
 
-> 
-> diff --git a/arch/mips/loongson/common/Makefile b/arch/mips/loongson/common/Makefile
-> index e70c33f..f2e8153 100644
-> --- a/arch/mips/loongson/common/Makefile
-> +++ b/arch/mips/loongson/common/Makefile
-> @@ -3,15 +3,13 @@
->  #
->  
->  obj-y += setup.o init.o cmdline.o env.o time.o reset.o irq.o \
-> -    bonito-irq.o mem.o machtype.o platform.o
-> +    bonito-irq.o mem.o machtype.o platform.o serial.o
->  obj-$(CONFIG_PCI) += pci.o
->  
->  #
->  # Serial port support
->  #
->  obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
-> -loongson-serial-$(CONFIG_SERIAL_8250) := serial.o
-> -obj-y += $(loongson-serial-m) $(loongson-serial-y)
->  obj-$(CONFIG_LOONGSON_UART_BASE) += uart_base.o
->  obj-$(CONFIG_LOONGSON_MC146818) += rtc.o
->  
+Function local_r4k_flush_icache_range() can be used only at startup, 
+before SMP is inialized. Original code has comment above this function:
+
+/* This function is used only for local CPU only while boot etc */
+
+I don't know why it disappeared.
+
+>
+> How about reverting this commit and calling __flush_cache_all() to
+> make sure your kernel code gets flushed out to the other end of the
+> universe - or memory, what ever comes first?
+
+That function may call SMP IPI in some vendor CPUs and is not suitable.
+
+But I agree that name local_r4k_flush_icache_range() is a not good now 
+and it may be changed to something more appropriate. I am just not good 
+in name changing game.
+
+- Leonid.
+
+>
+>    Ralf

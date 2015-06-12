@@ -1,14 +1,14 @@
-Received: from smtp1-g21.free.fr ([212.27.42.1]:61342 "EHLO smtp1-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27008019AbbFJVB2c0wJU (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 10 Jun 2015 23:01:28 +0200
-From: Alban Bedel <albeu@free.fr>
-Subject: [PATCH linux-next] MIPS: pci-ar71xx: Fix left over reference to ath79_ddr_base
-Date: Wed, 10 Jun 2015 23:01:12 +0200
-Message-ID: <1433970072-11790-1-git-send-email-albeu@free.fr>
-In-Reply-To: <5571B520.9040808@roeck-us.net>
-References: <5571B520.9040808@roeck-us.net>
-Return-Path: <albeu@free.fr>
+Received: from bastet.se.axis.com ([195.60.68.11]:34163 "EHLO
+        bastet.se.axis.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007004AbbFLICTY0HIW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 12 Jun 2015 10:02:19 +0200
+From: Rabin Vincent <rabin.vincent@axis.com>
+Subject: [PATCH] irqchip: mips-gic: don't nest calls to do_IRQ()
+Date: Fri, 12 Jun 2015 10:01:56 +0200
+Message-ID: <1434096116-16750-1-git-send-email-rabin.vincent@axis.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <rabin.vincent@axis.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,31 +18,88 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Alban Bedel <albeu@free.fr>
-Message-ID: <20150610210112.bZDMGYtTvvfMqfrQLmLWiwJwPW94JsnIOfleIhhKerw@z>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, tglx@linutronix.de, jason@lakedaemon.net, abrestic@chromium.org, Rabin Vincent <rabinv@axis.com>
+Message-ID: <20150612080156.OAYF0ikIOCsvGZJ_bQoSk8Yidsh0x7Jh-NvnwQavU8g@z>
 
-The patch 'MIPS: ath79: Improve the DDR controller interface'
-broke the PCI support as it failed to properly removed the use of the
-variable 'ath79_ddr_base'. Remove that last reference to fix the build.
+The GIC chained handlers use do_IRQ() to call the subhandlers.  This
+means that irq_enter() calls get nested, which leads to preempt count
+looking like we're in nested interrupts, which in turn leads to all
+system time being accounted as IRQ time in account_system_time().
 
-Signed-off-by: Alban Bedel <albeu@free.fr>
+Fix it by using generic_handle_irq().  Since these same functions are
+used in some systems (if cpu_has_veic) from a low-level vectored
+interrupt handler which does not go throught do_IRQ(), we need to do it
+conditionally.
+
+Signed-off-by: Rabin Vincent <rabin.vincent@axis.com>
 ---
- arch/mips/pci/pci-ar71xx.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/irqchip/irq-mips-gic.c |   21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/arch/mips/pci/pci-ar71xx.c b/arch/mips/pci/pci-ar71xx.c
-index 72764d8..1391c52 100644
---- a/arch/mips/pci/pci-ar71xx.c
-+++ b/arch/mips/pci/pci-ar71xx.c
-@@ -318,8 +318,6 @@ static void ar71xx_pci_irq_init(struct ar71xx_pci_controller *apc)
+diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+index 57f09cb..269c235 100644
+--- a/drivers/irqchip/irq-mips-gic.c
++++ b/drivers/irqchip/irq-mips-gic.c
+@@ -271,7 +271,7 @@ int gic_get_c0_fdc_int(void)
+ 				  GIC_LOCAL_TO_HWIRQ(GIC_LOCAL_INT_FDC));
+ }
  
- static void ar71xx_pci_reset(void)
+-static void gic_handle_shared_int(void)
++static void gic_handle_shared_int(bool chained)
  {
--	void __iomem *ddr_base = ath79_ddr_base;
--
- 	ath79_device_reset_set(AR71XX_RESET_PCI_BUS | AR71XX_RESET_PCI_CORE);
- 	mdelay(100);
+ 	unsigned int i, intr, virq;
+ 	unsigned long *pcpu_mask;
+@@ -299,7 +299,10 @@ static void gic_handle_shared_int(void)
+ 	while (intr != gic_shared_intrs) {
+ 		virq = irq_linear_revmap(gic_irq_domain,
+ 					 GIC_SHARED_TO_HWIRQ(intr));
+-		do_IRQ(virq);
++		if (chained)
++			generic_handle_irq(virq);
++		else
++			do_IRQ(virq);
  
+ 		/* go to next pending bit */
+ 		bitmap_clear(pending, intr, 1);
+@@ -431,7 +434,7 @@ static struct irq_chip gic_edge_irq_controller = {
+ #endif
+ };
+ 
+-static void gic_handle_local_int(void)
++static void gic_handle_local_int(bool chained)
+ {
+ 	unsigned long pending, masked;
+ 	unsigned int intr, virq;
+@@ -445,7 +448,10 @@ static void gic_handle_local_int(void)
+ 	while (intr != GIC_NUM_LOCAL_INTRS) {
+ 		virq = irq_linear_revmap(gic_irq_domain,
+ 					 GIC_LOCAL_TO_HWIRQ(intr));
+-		do_IRQ(virq);
++		if (chained)
++			generic_handle_irq(virq);
++		else
++			do_IRQ(virq);
+ 
+ 		/* go to next pending bit */
+ 		bitmap_clear(&pending, intr, 1);
+@@ -509,13 +515,14 @@ static struct irq_chip gic_all_vpes_local_irq_controller = {
+ 
+ static void __gic_irq_dispatch(void)
+ {
+-	gic_handle_local_int();
+-	gic_handle_shared_int();
++	gic_handle_local_int(false);
++	gic_handle_shared_int(false);
+ }
+ 
+ static void gic_irq_dispatch(unsigned int irq, struct irq_desc *desc)
+ {
+-	__gic_irq_dispatch();
++	gic_handle_local_int(true);
++	gic_handle_shared_int(true);
+ }
+ 
+ #ifdef CONFIG_MIPS_GIC_IPI
 -- 
-2.0.0
+1.7.10.4

@@ -1,14 +1,14 @@
-Received: from bastet.se.axis.com ([195.60.68.11]:34163 "EHLO
-        bastet.se.axis.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007004AbbFLICTY0HIW (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 12 Jun 2015 10:02:19 +0200
-From: Rabin Vincent <rabin.vincent@axis.com>
-Subject: [PATCH] irqchip: mips-gic: don't nest calls to do_IRQ()
-Date: Fri, 12 Jun 2015 10:01:56 +0200
-Message-ID: <1434096116-16750-1-git-send-email-rabin.vincent@axis.com>
+Received: from mail.windriver.com ([147.11.1.11]:34599 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007505AbbFOWL7IPsjK (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Jun 2015 00:11:59 +0200
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH] mips: add module.h to cobalt/mtd.c to avoid compile fail
+Date: Mon, 15 Jun 2015 18:11:21 -0400
+Message-ID: <1434406281-32168-1-git-send-email-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <rabin.vincent@axis.com>
+Return-Path: <Paul.Gortmaker@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,88 +18,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, tglx@linutronix.de, jason@lakedaemon.net, abrestic@chromium.org, Rabin Vincent <rabinv@axis.com>
-Message-ID: <20150612080156.OAYF0ikIOCsvGZJ_bQoSk8Yidsh0x7Jh-NvnwQavU8g@z>
+To: linux-kernel@vger.kernel.org
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20150615221121.ZR6CViuLMAWEzFMJGzliMzoZA3vIqpvzKIKK_4cXtcM@z>
 
-The GIC chained handlers use do_IRQ() to call the subhandlers.  This
-means that irq_enter() calls get nested, which leads to preempt count
-looking like we're in nested interrupts, which in turn leads to all
-system time being accounted as IRQ time in account_system_time().
+This file is built off of a tristate Kconfig option and also contains
+modular function calls so it should explicitly include module.h to
+avoid compile breakage during header shuffles done in the future.
 
-Fix it by using generic_handle_irq().  Since these same functions are
-used in some systems (if cpu_has_veic) from a low-level vectored
-interrupt handler which does not go throught do_IRQ(), we need to do it
-conditionally.
-
-Signed-off-by: Rabin Vincent <rabin.vincent@axis.com>
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 ---
- drivers/irqchip/irq-mips-gic.c |   21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 57f09cb..269c235 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -271,7 +271,7 @@ int gic_get_c0_fdc_int(void)
- 				  GIC_LOCAL_TO_HWIRQ(GIC_LOCAL_INT_FDC));
- }
- 
--static void gic_handle_shared_int(void)
-+static void gic_handle_shared_int(bool chained)
- {
- 	unsigned int i, intr, virq;
- 	unsigned long *pcpu_mask;
-@@ -299,7 +299,10 @@ static void gic_handle_shared_int(void)
- 	while (intr != gic_shared_intrs) {
- 		virq = irq_linear_revmap(gic_irq_domain,
- 					 GIC_SHARED_TO_HWIRQ(intr));
--		do_IRQ(virq);
-+		if (chained)
-+			generic_handle_irq(virq);
-+		else
-+			do_IRQ(virq);
- 
- 		/* go to next pending bit */
- 		bitmap_clear(pending, intr, 1);
-@@ -431,7 +434,7 @@ static struct irq_chip gic_edge_irq_controller = {
- #endif
- };
- 
--static void gic_handle_local_int(void)
-+static void gic_handle_local_int(bool chained)
- {
- 	unsigned long pending, masked;
- 	unsigned int intr, virq;
-@@ -445,7 +448,10 @@ static void gic_handle_local_int(void)
- 	while (intr != GIC_NUM_LOCAL_INTRS) {
- 		virq = irq_linear_revmap(gic_irq_domain,
- 					 GIC_LOCAL_TO_HWIRQ(intr));
--		do_IRQ(virq);
-+		if (chained)
-+			generic_handle_irq(virq);
-+		else
-+			do_IRQ(virq);
- 
- 		/* go to next pending bit */
- 		bitmap_clear(&pending, intr, 1);
-@@ -509,13 +515,14 @@ static struct irq_chip gic_all_vpes_local_irq_controller = {
- 
- static void __gic_irq_dispatch(void)
- {
--	gic_handle_local_int();
--	gic_handle_shared_int();
-+	gic_handle_local_int(false);
-+	gic_handle_shared_int(false);
- }
- 
- static void gic_irq_dispatch(unsigned int irq, struct irq_desc *desc)
- {
--	__gic_irq_dispatch();
-+	gic_handle_local_int(true);
-+	gic_handle_shared_int(true);
- }
- 
- #ifdef CONFIG_MIPS_GIC_IPI
+[
+ To be appended to the branch with content originally sent here:
+ "Fix implicit includes of <module.h> that will break."
+ https://lkml.kernel.org/r/1430444867-22342-1-git-send-email-paul.gortmaker@windriver.com
+]
+
+ arch/mips/cobalt/mtd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/cobalt/mtd.c b/arch/mips/cobalt/mtd.c
+index 8db7b5d81560..1c38e757f238 100644
+--- a/arch/mips/cobalt/mtd.c
++++ b/arch/mips/cobalt/mtd.c
+@@ -17,7 +17,7 @@
+  *  along with this program; if not, write to the Free Software
+  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  */
+-#include <linux/init.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/physmap.h>
 -- 
-1.7.10.4
+2.2.1

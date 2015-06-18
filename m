@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:2035 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18907 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006547AbbFRPiUSobBQ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Jun 2015 17:38:20 +0200
-Subject: Re: [PATCH] MIPS: CPS: Guard mips_mt_set_cpuoptions call
-References: <20150618232909-tung7970@googlemail.com>
-From: Markos Chandras <Markos.Chandras@imgtec.com>
-Message-ID: <5582E5E5.6080005@imgtec.com>
-Date: Thu, 18 Jun 2015 16:38:13 +0100
+        with ESMTP id S27009005AbbFRQwZBuL08 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Jun 2015 18:52:25 +0200
+Message-ID: <5582F742.30905@imgtec.com>
+Date: Thu, 18 Jun 2015 17:52:18 +0100
+From: Qais Yousef <qais.yousef@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20150618232909-tung7970@googlemail.com>
-Content-Type: text/plain; charset="windows-1252"
+Subject: Re: [PATCH] MIPS: Add platform specific secondary core init
+References: <20150618220254-tung7970@googlemail.com>
+In-Reply-To: <20150618220254-tung7970@googlemail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,42 +21,130 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Tony Wu <tung7970@gmail.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20150618153813.qKzr7oWpD76CEZYKn_jdfwNy-0-1k8IDQo0AtImnUjE@z>
+To: Tony Wu <tung7970@gmail.com>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20150618165218.4-my96o3U80nBOvud7NDabLnl7oizo0MOi1U5-zoRm8@z>
 
-On 06/18/2015 04:30 PM, Tony Wu wrote:
-> Guard mips_mt_set_cpuoptions with MT specific options to
-> avoid undefined reference error on multicore platform
-> without multithreading support.
-> 
+On 06/18/2015 03:05 PM, Tony Wu wrote:
+> Define plat_smp_init_secondary() API, and move platform specific
+> secondary core initialization to each platform.
+
+I really can't see that this code being platform specific. Why would a 
+platform care about the c0_status register when a secondary boot is 
+initialised?
+
+That comment about Malta in smp-mt.c is misleading.
+
+Qais
+
+>
 > Signed-off-by: Tony Wu <tung7970@gmail.com>
+> Cc: James Hogan <james.hogan@imgtec.com>
 > Cc: Paul Burton <paul.burton@imgtec.com>
 > Cc: linux-mips@linux-mips.org
 > ---
->  arch/mips/kernel/smp-cps.c |    3 ++-
->  1 files changed, 2 insertions(+), 1 deletions(-)
-> 
+>   arch/mips/include/asm/smp-ops.h  |    1 +
+>   arch/mips/kernel/smp-cmp.c       |    8 ++------
+>   arch/mips/kernel/smp-cps.c       |    4 ++--
+>   arch/mips/kernel/smp-mt.c        |   12 ++----------
+>   arch/mips/mti-malta/malta-init.c |   13 +++++++++++++
+>   5 files changed, 20 insertions(+), 18 deletions(-)
+>
+> diff --git a/arch/mips/include/asm/smp-ops.h b/arch/mips/include/asm/smp-ops.h
+> index 6ba1fb8..53ce7e1 100644
+> --- a/arch/mips/include/asm/smp-ops.h
+> +++ b/arch/mips/include/asm/smp-ops.h
+> @@ -36,6 +36,7 @@ struct plat_smp_ops {
+>   };
+>   
+>   extern void register_smp_ops(struct plat_smp_ops *ops);
+> +extern void plat_smp_init_secondary(void)
+>   
+>   static inline void plat_smp_setup(void)
+>   {
+> diff --git a/arch/mips/kernel/smp-cmp.c b/arch/mips/kernel/smp-cmp.c
+> index d5e0f94..e8c0258 100644
+> --- a/arch/mips/kernel/smp-cmp.c
+> +++ b/arch/mips/kernel/smp-cmp.c
+> @@ -43,17 +43,13 @@ static void cmp_init_secondary(void)
+>   {
+>   	struct cpuinfo_mips *c __maybe_unused = &current_cpu_data;
+>   
+> -	/* Assume GIC is present */
+> -	change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 | STATUSF_IP4 |
+> -				 STATUSF_IP5 | STATUSF_IP6 | STATUSF_IP7);
+> -
+> -	/* Enable per-cpu interrupts: platform specific */
+> -
+>   #ifdef CONFIG_MIPS_MT_SMP
+>   	if (cpu_has_mipsmt)
+>   		c->vpe_id = (read_c0_tcbind() >> TCBIND_CURVPE_SHIFT) &
+>   			TCBIND_CURVPE;
+>   #endif
+> +	/* Call platform specific init secondary */
+> +	plat_smp_init_secondary();
+>   }
+>   
+>   static void cmp_smp_finish(void)
 > diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-> index 5570bc8..85633d6 100644
+> index 4251d39..5570bc8 100644
 > --- a/arch/mips/kernel/smp-cps.c
 > +++ b/arch/mips/kernel/smp-cps.c
-> @@ -102,7 +102,8 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
->  	bool cca_unsuitable;
->  	u32 *entry_code;
->  
-> -	mips_mt_set_cpuoptions();
-> +	if (config_enabled(CONFIG_MIPS_MT_SMP) && cpu_has_mipsmt)
-> +		mips_mt_set_cpuoptions();
->  
->  	/* Detect whether the CCA is unsuited to multi-core SMP */
->  	cca = read_c0_config() & CONF_CM_CMASK;
-> 
-
-How come you hit a build problem here? according to
-arch/mips/include/asm/mips_mt.h the mips_mt_set_cpuoptions() is a NOP
-when CONFIG_MIPS_MT is not selected so it should work for non-MT
-multicore CPUs. Am I missing something?
-
--- 
-markos
+> @@ -279,8 +279,8 @@ static void cps_init_secondary(void)
+>   	if (cpu_has_mipsmt)
+>   		dmt();
+>   
+> -	change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 | STATUSF_IP4 |
+> -				 STATUSF_IP5 | STATUSF_IP6 | STATUSF_IP7);
+> +	/* Call platform specific init secondary */
+> +	plat_smp_init_secondary();
+>   }
+>   
+>   static void cps_smp_finish(void)
+> diff --git a/arch/mips/kernel/smp-mt.c b/arch/mips/kernel/smp-mt.c
+> index 86311a1..3d1e32a 100644
+> --- a/arch/mips/kernel/smp-mt.c
+> +++ b/arch/mips/kernel/smp-mt.c
+> @@ -158,16 +158,8 @@ static void vsmp_send_ipi_mask(const struct cpumask *mask, unsigned int action)
+>   
+>   static void vsmp_init_secondary(void)
+>   {
+> -#ifdef CONFIG_MIPS_GIC
+> -	/* This is Malta specific: IPI,performance and timer interrupts */
+> -	if (gic_present)
+> -		change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 |
+> -					 STATUSF_IP4 | STATUSF_IP5 |
+> -					 STATUSF_IP6 | STATUSF_IP7);
+> -	else
+> -#endif
+> -		change_c0_status(ST0_IM, STATUSF_IP0 | STATUSF_IP1 |
+> -					 STATUSF_IP6 | STATUSF_IP7);
+> +	/* Call platform specific init secondary */
+> +	plat_smp_init_secondary();
+>   }
+>   
+>   static void vsmp_smp_finish(void)
+> diff --git a/arch/mips/mti-malta/malta-init.c b/arch/mips/mti-malta/malta-init.c
+> index cec3e18..3385ad9 100644
+> --- a/arch/mips/mti-malta/malta-init.c
+> +++ b/arch/mips/mti-malta/malta-init.c
+> @@ -116,6 +116,19 @@ phys_addr_t mips_cpc_default_phys_base(void)
+>   	return CPC_BASE_ADDR;
+>   }
+>   
+> +void plat_smp_init_secondary(void)
+> +{
+> +#ifdef CONFIG_MIPS_GIC
+> +	if (gic_present)
+> +		change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 |
+> +					 STATUSF_IP4 | STATUSF_IP5 |
+> +					 STATUSF_IP6 | STATUSF_IP7);
+> +	else
+> +#endif
+> +		change_c0_status(ST0_IM, STATUSF_IP0 | STATUSF_IP1 |
+> +					 STATUSF_IP6 | STATUSF_IP7);
+> +}
+> +
+>   void __init prom_init(void)
+>   {
+>   	mips_display_message("LINUX");

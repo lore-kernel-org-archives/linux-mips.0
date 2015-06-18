@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18907 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009005AbbFRQwZBuL08 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Jun 2015 18:52:25 +0200
-Message-ID: <5582F742.30905@imgtec.com>
-Date: Thu, 18 Jun 2015 17:52:18 +0100
-From: Qais Yousef <qais.yousef@imgtec.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Add platform specific secondary core init
-References: <20150618220254-tung7970@googlemail.com>
-In-Reply-To: <20150618220254-tung7970@googlemail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Received: from mail-pa0-f48.google.com ([209.85.220.48]:35114 "EHLO
+        mail-pa0-f48.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27008955AbbFRXG7tgoQD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Jun 2015 01:06:59 +0200
+Received: by pacyx8 with SMTP id yx8so70897337pac.2
+        for <linux-mips@linux-mips.org>; Thu, 18 Jun 2015 16:06:53 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] irqchip: bcm7120-l2: use of_io_request_and_map() to claim iomem
+Date: Thu, 18 Jun 2015 16:05:25 -0700
+Message-ID: <1434668725-24058-1-git-send-email-computersforpeace@gmail.com>
+Return-Path: <computersforpeace@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,130 +18,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Tony Wu <tung7970@gmail.com>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20150618165218.4-my96o3U80nBOvud7NDabLnl7oizo0MOi1U5-zoRm8@z>
+To: Kevin Cernekee <cernekee@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>
+Cc: bcm-kernel-feedback-list@broadcom.com, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20150618230525.i-QGhwpGzL-ao7H2Xb39lfqigJa6PSdTsjij-OxrfGg@z>
 
-On 06/18/2015 03:05 PM, Tony Wu wrote:
-> Define plat_smp_init_secondary() API, and move platform specific
-> secondary core initialization to each platform.
+This way, the IO resources will show up in /proc/iomem, and we can make
+sure no other drivers are trying to claim these register regions.
 
-I really can't see that this code being platform specific. Why would a 
-platform care about the c0_status register when a secondary boot is 
-initialised?
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/irqchip/irq-bcm7120-l2.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-That comment about Malta in smp-mt.c is misleading.
-
-Qais
-
->
-> Signed-off-by: Tony Wu <tung7970@gmail.com>
-> Cc: James Hogan <james.hogan@imgtec.com>
-> Cc: Paul Burton <paul.burton@imgtec.com>
-> Cc: linux-mips@linux-mips.org
-> ---
->   arch/mips/include/asm/smp-ops.h  |    1 +
->   arch/mips/kernel/smp-cmp.c       |    8 ++------
->   arch/mips/kernel/smp-cps.c       |    4 ++--
->   arch/mips/kernel/smp-mt.c        |   12 ++----------
->   arch/mips/mti-malta/malta-init.c |   13 +++++++++++++
->   5 files changed, 20 insertions(+), 18 deletions(-)
->
-> diff --git a/arch/mips/include/asm/smp-ops.h b/arch/mips/include/asm/smp-ops.h
-> index 6ba1fb8..53ce7e1 100644
-> --- a/arch/mips/include/asm/smp-ops.h
-> +++ b/arch/mips/include/asm/smp-ops.h
-> @@ -36,6 +36,7 @@ struct plat_smp_ops {
->   };
->   
->   extern void register_smp_ops(struct plat_smp_ops *ops);
-> +extern void plat_smp_init_secondary(void)
->   
->   static inline void plat_smp_setup(void)
->   {
-> diff --git a/arch/mips/kernel/smp-cmp.c b/arch/mips/kernel/smp-cmp.c
-> index d5e0f94..e8c0258 100644
-> --- a/arch/mips/kernel/smp-cmp.c
-> +++ b/arch/mips/kernel/smp-cmp.c
-> @@ -43,17 +43,13 @@ static void cmp_init_secondary(void)
->   {
->   	struct cpuinfo_mips *c __maybe_unused = &current_cpu_data;
->   
-> -	/* Assume GIC is present */
-> -	change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 | STATUSF_IP4 |
-> -				 STATUSF_IP5 | STATUSF_IP6 | STATUSF_IP7);
-> -
-> -	/* Enable per-cpu interrupts: platform specific */
-> -
->   #ifdef CONFIG_MIPS_MT_SMP
->   	if (cpu_has_mipsmt)
->   		c->vpe_id = (read_c0_tcbind() >> TCBIND_CURVPE_SHIFT) &
->   			TCBIND_CURVPE;
->   #endif
-> +	/* Call platform specific init secondary */
-> +	plat_smp_init_secondary();
->   }
->   
->   static void cmp_smp_finish(void)
-> diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-> index 4251d39..5570bc8 100644
-> --- a/arch/mips/kernel/smp-cps.c
-> +++ b/arch/mips/kernel/smp-cps.c
-> @@ -279,8 +279,8 @@ static void cps_init_secondary(void)
->   	if (cpu_has_mipsmt)
->   		dmt();
->   
-> -	change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 | STATUSF_IP4 |
-> -				 STATUSF_IP5 | STATUSF_IP6 | STATUSF_IP7);
-> +	/* Call platform specific init secondary */
-> +	plat_smp_init_secondary();
->   }
->   
->   static void cps_smp_finish(void)
-> diff --git a/arch/mips/kernel/smp-mt.c b/arch/mips/kernel/smp-mt.c
-> index 86311a1..3d1e32a 100644
-> --- a/arch/mips/kernel/smp-mt.c
-> +++ b/arch/mips/kernel/smp-mt.c
-> @@ -158,16 +158,8 @@ static void vsmp_send_ipi_mask(const struct cpumask *mask, unsigned int action)
->   
->   static void vsmp_init_secondary(void)
->   {
-> -#ifdef CONFIG_MIPS_GIC
-> -	/* This is Malta specific: IPI,performance and timer interrupts */
-> -	if (gic_present)
-> -		change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 |
-> -					 STATUSF_IP4 | STATUSF_IP5 |
-> -					 STATUSF_IP6 | STATUSF_IP7);
-> -	else
-> -#endif
-> -		change_c0_status(ST0_IM, STATUSF_IP0 | STATUSF_IP1 |
-> -					 STATUSF_IP6 | STATUSF_IP7);
-> +	/* Call platform specific init secondary */
-> +	plat_smp_init_secondary();
->   }
->   
->   static void vsmp_smp_finish(void)
-> diff --git a/arch/mips/mti-malta/malta-init.c b/arch/mips/mti-malta/malta-init.c
-> index cec3e18..3385ad9 100644
-> --- a/arch/mips/mti-malta/malta-init.c
-> +++ b/arch/mips/mti-malta/malta-init.c
-> @@ -116,6 +116,19 @@ phys_addr_t mips_cpc_default_phys_base(void)
->   	return CPC_BASE_ADDR;
->   }
->   
-> +void plat_smp_init_secondary(void)
-> +{
-> +#ifdef CONFIG_MIPS_GIC
-> +	if (gic_present)
-> +		change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 |
-> +					 STATUSF_IP4 | STATUSF_IP5 |
-> +					 STATUSF_IP6 | STATUSF_IP7);
-> +	else
-> +#endif
-> +		change_c0_status(ST0_IM, STATUSF_IP0 | STATUSF_IP1 |
-> +					 STATUSF_IP6 | STATUSF_IP7);
-> +}
-> +
->   void __init prom_init(void)
->   {
->   	mips_display_message("LINUX");
+diff --git a/drivers/irqchip/irq-bcm7120-l2.c b/drivers/irqchip/irq-bcm7120-l2.c
+index 3ba5cc780fcb..299d4de2deb5 100644
+--- a/drivers/irqchip/irq-bcm7120-l2.c
++++ b/drivers/irqchip/irq-bcm7120-l2.c
+@@ -142,10 +142,10 @@ static int __init bcm7120_l2_intc_iomap_7120(struct device_node *dn,
+ {
+ 	int ret;
+ 
+-	data->map_base[0] = of_iomap(dn, 0);
+-	if (!data->map_base[0]) {
++	data->map_base[0] = of_io_request_and_map(dn, 0, dn->full_name);
++	if (IS_ERR(data->map_base[0])) {
+ 		pr_err("unable to map registers\n");
+-		return -ENOMEM;
++		return PTR_ERR(data->map_base[0]);
+ 	}
+ 
+ 	data->pair_base[0] = data->map_base[0];
+@@ -178,16 +178,17 @@ static int __init bcm7120_l2_intc_iomap_3380(struct device_node *dn,
+ 
+ 	for (gc_idx = 0; gc_idx < MAX_WORDS; gc_idx++) {
+ 		unsigned int map_idx = gc_idx * 2;
+-		void __iomem *en = of_iomap(dn, map_idx + 0);
+-		void __iomem *stat = of_iomap(dn, map_idx + 1);
+-		void __iomem *base = min(en, stat);
++		void __iomem *en, *stat, *base;
++
++		en = of_io_request_and_map(dn, map_idx + 0, "irq-en");
++		stat = of_io_request_and_map(dn, map_idx + 1, "irq-stat");
++		if (IS_ERR(en) || IS_ERR(stat))
++			break;
+ 
++		base = min(en, stat);
+ 		data->map_base[map_idx + 0] = en;
+ 		data->map_base[map_idx + 1] = stat;
+ 
+-		if (!base)
+-			break;
+-
+ 		data->pair_base[gc_idx] = base;
+ 		data->en_offset[gc_idx] = en - base;
+ 		data->stat_offset[gc_idx] = stat - base;
+-- 
+1.9.1

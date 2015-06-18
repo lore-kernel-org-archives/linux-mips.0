@@ -1,14 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18001 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2035 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008816AbbFQQNAvqF9X (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 17 Jun 2015 18:13:00 +0200
-From: James Cowgill <James.Cowgill@imgtec.com>
-Subject: [PATCH] MIPS: replace add and sub instructions in relocate_kernel.S with addiu
-Date: Wed, 17 Jun 2015 17:12:50 +0100
-Message-ID: <1434557570-30452-1-git-send-email-James.Cowgill@imgtec.com>
+        with ESMTP id S27006547AbbFRPiUSobBQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Jun 2015 17:38:20 +0200
+Subject: Re: [PATCH] MIPS: CPS: Guard mips_mt_set_cpuoptions call
+References: <20150618232909-tung7970@googlemail.com>
+From: Markos Chandras <Markos.Chandras@imgtec.com>
+Message-ID: <5582E5E5.6080005@imgtec.com>
+Date: Thu, 18 Jun 2015 16:38:13 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Cowgill@imgtec.com>
+In-Reply-To: <20150618232909-tung7970@googlemail.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,54 +21,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: James Cowgill <James.Cowgill@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, stable@vger.kernel.org
-Message-ID: <20150617161250.hmuSp-0kfmGFkb9zSCr4h5j78N1AoA4S4Q_xGftXVPg@z>
+To: Tony Wu <tung7970@gmail.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20150618153813.qKzr7oWpD76CEZYKn_jdfwNy-0-1k8IDQo0AtImnUjE@z>
 
-Fixes the assembler errors generated when compiling a MIPS R6 kernel with
-CONFIG_KEXEC on, by replacing the offending add and sub instructions with
-addiu instructions.
+On 06/18/2015 04:30 PM, Tony Wu wrote:
+> Guard mips_mt_set_cpuoptions with MT specific options to
+> avoid undefined reference error on multicore platform
+> without multithreading support.
+> 
+> Signed-off-by: Tony Wu <tung7970@gmail.com>
+> Cc: Paul Burton <paul.burton@imgtec.com>
+> Cc: linux-mips@linux-mips.org
+> ---
+>  arch/mips/kernel/smp-cps.c |    3 ++-
+>  1 files changed, 2 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+> index 5570bc8..85633d6 100644
+> --- a/arch/mips/kernel/smp-cps.c
+> +++ b/arch/mips/kernel/smp-cps.c
+> @@ -102,7 +102,8 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
+>  	bool cca_unsuitable;
+>  	u32 *entry_code;
+>  
+> -	mips_mt_set_cpuoptions();
+> +	if (config_enabled(CONFIG_MIPS_MT_SMP) && cpu_has_mipsmt)
+> +		mips_mt_set_cpuoptions();
+>  
+>  	/* Detect whether the CCA is unsuited to multi-core SMP */
+>  	cca = read_c0_config() & CONF_CM_CMASK;
+> 
 
-Build errors:
-arch/mips/kernel/relocate_kernel.S: Assembler messages:
-arch/mips/kernel/relocate_kernel.S:27: Error: invalid operands `dadd $16,$16,8'
-arch/mips/kernel/relocate_kernel.S:64: Error: invalid operands `dadd $20,$20,8'
-arch/mips/kernel/relocate_kernel.S:65: Error: invalid operands `dadd $18,$18,8'
-arch/mips/kernel/relocate_kernel.S:66: Error: invalid operands `dsub $22,$22,1'
-scripts/Makefile.build:294: recipe for target 'arch/mips/kernel/relocate_kernel.o' failed
+How come you hit a build problem here? according to
+arch/mips/include/asm/mips_mt.h the mips_mt_set_cpuoptions() is a NOP
+when CONFIG_MIPS_MT is not selected so it should work for non-MT
+multicore CPUs. Am I missing something?
 
-Signed-off-by: James Cowgill <James.Cowgill@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: <stable@vger.kernel.org> # 4.0+
----
- arch/mips/kernel/relocate_kernel.S | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/mips/kernel/relocate_kernel.S b/arch/mips/kernel/relocate_kernel.S
-index 74bab9d..c6bbf21 100644
---- a/arch/mips/kernel/relocate_kernel.S
-+++ b/arch/mips/kernel/relocate_kernel.S
-@@ -24,7 +24,7 @@ LEAF(relocate_new_kernel)
- 
- process_entry:
- 	PTR_L		s2, (s0)
--	PTR_ADD		s0, s0, SZREG
-+	PTR_ADDIU	s0, s0, SZREG
- 
- 	/*
- 	 * In case of a kdump/crash kernel, the indirection page is not
-@@ -61,9 +61,9 @@ copy_word:
- 	/* copy page word by word */
- 	REG_L		s5, (s2)
- 	REG_S		s5, (s4)
--	PTR_ADD		s4, s4, SZREG
--	PTR_ADD		s2, s2, SZREG
--	LONG_SUB	s6, s6, 1
-+	PTR_ADDIU	s4, s4, SZREG
-+	PTR_ADDIU	s2, s2, SZREG
-+	LONG_ADDIU	s6, s6, -1
- 	beq		s6, zero, process_entry
- 	b		copy_word
- 	b		process_entry
 -- 
-2.1.4
+markos

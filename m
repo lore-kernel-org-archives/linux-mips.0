@@ -1,21 +1,16 @@
-Received: from cantor2.suse.de ([195.135.220.15]:41684 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27007865AbbFSO5KfdLqv (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 19 Jun 2015 16:57:10 +0200
-Date: Fri, 19 Jun 2015 16:57:08 +0200
-From: Michal Hocko <mhocko@suse.cz>
-Subject: Re: [RESEND PATCH V2 1/3] Add mmap flag to request pages are locked
- after page fault
-Message-ID: <20150619145708.GG4913@dhcp22.suse.cz>
-References: <1433942810-7852-1-git-send-email-emunson@akamai.com>
- <1433942810-7852-2-git-send-email-emunson@akamai.com>
- <20150618152907.GG5858@dhcp22.suse.cz>
- <20150618203048.GB2329@akamai.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20150618203048.GB2329@akamai.com>
-Return-Path: <mhocko@suse.cz>
+Received: from mail-pd0-f175.google.com ([209.85.192.175]:33923 "EHLO
+        mail-pd0-f175.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27008582AbbFSX1F3TRlM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 20 Jun 2015 01:27:05 +0200
+Received: by pdbki1 with SMTP id ki1so99839227pdb.1
+        for <linux-mips@linux-mips.org>; Fri, 19 Jun 2015 16:26:59 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 1/2] genirq: add chip_{suspend,resume} PM support to irq_chip
+Date: Fri, 19 Jun 2015 16:26:42 -0700
+Message-ID: <1434756403-379-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <20150619224123.GL4917@ld-irv-0074>
+References: <20150619224123.GL4917@ld-irv-0074>
+Return-Path: <computersforpeace@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,38 +20,97 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Eric B Munson <emunson@akamai.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-api@vger.kernel.org
-Message-ID: <20150619145708.LKggNCpjsbDnCfqKtMXjqyCXqzMu5YmGLmq-cEnvaBI@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Brian Norris <computersforpeace@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Kevin Cernekee <cernekee@gmail.com>, Jason Cooper <jason@lakedaemon.net>
+Message-ID: <20150619232642.N_sKA8f2Fs5gIoVBR9tvwwVrtF8qdArh8n0fvzT8MrU@z>
 
-On Thu 18-06-15 16:30:48, Eric B Munson wrote:
-> On Thu, 18 Jun 2015, Michal Hocko wrote:
-[...]
-> > Wouldn't it be much more reasonable and straightforward to have
-> > MAP_FAULTPOPULATE as a counterpart for MAP_POPULATE which would
-> > explicitly disallow any form of pre-faulting? It would be usable for
-> > other usecases than with MAP_LOCKED combination.
-> 
-> I don't see a clear case for it being more reasonable, it is one
-> possible way to solve the problem.
+Some (admittedly odd) irqchips perform functions that are not directly
+related to any of their child IRQ lines, and therefore need to perform
+some tasks during suspend/resume regardless of whether there are
+any "installed" interrupts for the irqchip. However, the current
+generic-chip framework does not call the chip's irq_{suspend,resume}
+when there are no interrupts installed (this makes sense, because there
+are no irq_data objects for such a call to be made).
 
-MAP_FAULTPOPULATE would be usable for other cases as well. E.g. fault
-around is all or nothing feature. Either all mappings (which support
-this) fault around or none. There is no way to tell the kernel that
-this particular mapping shouldn't fault around. I haven't seen such a
-request yet but we have seen requests to have a way to opt out from
-a global policy in the past (e.g. per-process opt out from THP). So
-I can imagine somebody will come with a request to opt out from any
-speculative operations on the mapped area in the future.
+More specifically, irq-bcm7120-l2 configures both a forwarding mask
+(which affects other top-level GIC IRQs) and a second-level interrupt
+mask (for managing its own child interrupts). The former must be
+saved/restored on suspend/resume, even when there's nothing to do for
+the latter.
 
-> But I think it leaves us in an even
-> more akward state WRT VMA flags.  As you noted in your fix for the
-> mmap() man page, one can get into a state where a VMA is VM_LOCKED, but
-> not present.  Having VM_LOCKONFAULT states that this was intentional, if
-> we go to using MAP_FAULTPOPULATE instead of MAP_LOCKONFAULT, we no
-> longer set VM_LOCKONFAULT (unless we want to start mapping it to the
-> presence of two MAP_ flags).  This can make detecting the MAP_LOCKED +
-> populate failure state harder.
+This patch adds a second set of suspend/resume hooks to irq_chip, this
+time to represent *chip* suspend/resume, rather than IRQ suspend/resume.
+These callbacks will always be called for an irqchip and are based on
+the per-chip irq_chip_generic struct, rather than the per-IRQ irq_data
+struct.
 
-I am not sure I understand your point here. Could you be more specific
-how would you check for that and what for?
+The original problem report is described in extra detail here:
+http://lkml.kernel.org/g/20150619224123.GL4917@ld-irv-0074
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ include/linux/irq.h       | 10 ++++++++++
+ kernel/irq/generic-chip.c |  6 ++++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index de3213d271ff..2a672d2434a5 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -293,6 +293,8 @@ static inline irq_hw_number_t irqd_to_hwirq(struct irq_data *d)
+ 	return d->hwirq;
+ }
+ 
++struct irq_chip_generic;
++
+ /**
+  * struct irq_chip - hardware interrupt chip descriptor
+  *
+@@ -317,6 +319,12 @@ static inline irq_hw_number_t irqd_to_hwirq(struct irq_data *d)
+  * @irq_suspend:	function called from core code on suspend once per chip
+  * @irq_resume:		function called from core code on resume once per chip
+  * @irq_pm_shutdown:	function called from core code on shutdown once per chip
++ * @chip_suspend:	function called from core code on suspend once per
++ *			chip; for handling chip details even when no interrupts
++ *			are in use
++ * @chip_resume:	function called from core code on resume once per chip;
++ *			for handling chip details even when no interrupts are
++ *			in use
+  * @irq_calc_mask:	Optional function to set irq_data.mask for special cases
+  * @irq_print_chip:	optional to print special chip info in show_interrupts
+  * @irq_request_resources:	optional to request resources before calling
+@@ -357,6 +365,8 @@ struct irq_chip {
+ 	void		(*irq_suspend)(struct irq_data *data);
+ 	void		(*irq_resume)(struct irq_data *data);
+ 	void		(*irq_pm_shutdown)(struct irq_data *data);
++	void		(*chip_suspend)(struct irq_chip_generic *gc);
++	void		(*chip_resume)(struct irq_chip_generic *gc);
+ 
+ 	void		(*irq_calc_mask)(struct irq_data *data);
+ 
+diff --git a/kernel/irq/generic-chip.c b/kernel/irq/generic-chip.c
+index 15b370daf234..fe25e72d5d13 100644
+--- a/kernel/irq/generic-chip.c
++++ b/kernel/irq/generic-chip.c
+@@ -553,6 +553,9 @@ static int irq_gc_suspend(void)
+ 			if (data)
+ 				ct->chip.irq_suspend(data);
+ 		}
++
++		if (ct->chip.chip_suspend)
++			ct->chip.chip_suspend(gc);
+ 	}
+ 	return 0;
+ }
+@@ -564,6 +567,9 @@ static void irq_gc_resume(void)
+ 	list_for_each_entry(gc, &gc_list, list) {
+ 		struct irq_chip_type *ct = gc->chip_types;
+ 
++		if (ct->chip.chip_resume)
++			ct->chip.chip_resume(gc);
++
+ 		if (ct->chip.irq_resume) {
+ 			struct irq_data *data = irq_gc_get_irq_data(gc);
+ 
+-- 
+1.9.1

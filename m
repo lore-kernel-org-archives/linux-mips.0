@@ -1,14 +1,21 @@
-Received: from mail-pa0-f48.google.com ([209.85.220.48]:35114 "EHLO
-        mail-pa0-f48.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27008955AbbFRXG7tgoQD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Jun 2015 01:06:59 +0200
-Received: by pacyx8 with SMTP id yx8so70897337pac.2
-        for <linux-mips@linux-mips.org>; Thu, 18 Jun 2015 16:06:53 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] irqchip: bcm7120-l2: use of_io_request_and_map() to claim iomem
-Date: Thu, 18 Jun 2015 16:05:25 -0700
-Message-ID: <1434668725-24058-1-git-send-email-computersforpeace@gmail.com>
-Return-Path: <computersforpeace@gmail.com>
+Received: from cantor2.suse.de ([195.135.220.15]:41684 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27007865AbbFSO5KfdLqv (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 19 Jun 2015 16:57:10 +0200
+Date: Fri, 19 Jun 2015 16:57:08 +0200
+From: Michal Hocko <mhocko@suse.cz>
+Subject: Re: [RESEND PATCH V2 1/3] Add mmap flag to request pages are locked
+ after page fault
+Message-ID: <20150619145708.GG4913@dhcp22.suse.cz>
+References: <1433942810-7852-1-git-send-email-emunson@akamai.com>
+ <1433942810-7852-2-git-send-email-emunson@akamai.com>
+ <20150618152907.GG5858@dhcp22.suse.cz>
+ <20150618203048.GB2329@akamai.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150618203048.GB2329@akamai.com>
+Return-Path: <mhocko@suse.cz>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,59 +25,38 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kevin Cernekee <cernekee@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>
-Cc: bcm-kernel-feedback-list@broadcom.com, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20150618230525.i-QGhwpGzL-ao7H2Xb39lfqigJa6PSdTsjij-OxrfGg@z>
+To: Eric B Munson <emunson@akamai.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-api@vger.kernel.org
+Message-ID: <20150619145708.LKggNCpjsbDnCfqKtMXjqyCXqzMu5YmGLmq-cEnvaBI@z>
 
-This way, the IO resources will show up in /proc/iomem, and we can make
-sure no other drivers are trying to claim these register regions.
+On Thu 18-06-15 16:30:48, Eric B Munson wrote:
+> On Thu, 18 Jun 2015, Michal Hocko wrote:
+[...]
+> > Wouldn't it be much more reasonable and straightforward to have
+> > MAP_FAULTPOPULATE as a counterpart for MAP_POPULATE which would
+> > explicitly disallow any form of pre-faulting? It would be usable for
+> > other usecases than with MAP_LOCKED combination.
+> 
+> I don't see a clear case for it being more reasonable, it is one
+> possible way to solve the problem.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/irqchip/irq-bcm7120-l2.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+MAP_FAULTPOPULATE would be usable for other cases as well. E.g. fault
+around is all or nothing feature. Either all mappings (which support
+this) fault around or none. There is no way to tell the kernel that
+this particular mapping shouldn't fault around. I haven't seen such a
+request yet but we have seen requests to have a way to opt out from
+a global policy in the past (e.g. per-process opt out from THP). So
+I can imagine somebody will come with a request to opt out from any
+speculative operations on the mapped area in the future.
 
-diff --git a/drivers/irqchip/irq-bcm7120-l2.c b/drivers/irqchip/irq-bcm7120-l2.c
-index 3ba5cc780fcb..299d4de2deb5 100644
---- a/drivers/irqchip/irq-bcm7120-l2.c
-+++ b/drivers/irqchip/irq-bcm7120-l2.c
-@@ -142,10 +142,10 @@ static int __init bcm7120_l2_intc_iomap_7120(struct device_node *dn,
- {
- 	int ret;
- 
--	data->map_base[0] = of_iomap(dn, 0);
--	if (!data->map_base[0]) {
-+	data->map_base[0] = of_io_request_and_map(dn, 0, dn->full_name);
-+	if (IS_ERR(data->map_base[0])) {
- 		pr_err("unable to map registers\n");
--		return -ENOMEM;
-+		return PTR_ERR(data->map_base[0]);
- 	}
- 
- 	data->pair_base[0] = data->map_base[0];
-@@ -178,16 +178,17 @@ static int __init bcm7120_l2_intc_iomap_3380(struct device_node *dn,
- 
- 	for (gc_idx = 0; gc_idx < MAX_WORDS; gc_idx++) {
- 		unsigned int map_idx = gc_idx * 2;
--		void __iomem *en = of_iomap(dn, map_idx + 0);
--		void __iomem *stat = of_iomap(dn, map_idx + 1);
--		void __iomem *base = min(en, stat);
-+		void __iomem *en, *stat, *base;
-+
-+		en = of_io_request_and_map(dn, map_idx + 0, "irq-en");
-+		stat = of_io_request_and_map(dn, map_idx + 1, "irq-stat");
-+		if (IS_ERR(en) || IS_ERR(stat))
-+			break;
- 
-+		base = min(en, stat);
- 		data->map_base[map_idx + 0] = en;
- 		data->map_base[map_idx + 1] = stat;
- 
--		if (!base)
--			break;
--
- 		data->pair_base[gc_idx] = base;
- 		data->en_offset[gc_idx] = en - base;
- 		data->stat_offset[gc_idx] = stat - base;
--- 
-1.9.1
+> But I think it leaves us in an even
+> more akward state WRT VMA flags.  As you noted in your fix for the
+> mmap() man page, one can get into a state where a VMA is VM_LOCKED, but
+> not present.  Having VM_LOCKONFAULT states that this was intentional, if
+> we go to using MAP_FAULTPOPULATE instead of MAP_LOCKONFAULT, we no
+> longer set VM_LOCKONFAULT (unless we want to start mapping it to the
+> presence of two MAP_ flags).  This can make detecting the MAP_LOCKED +
+> populate failure state harder.
+
+I am not sure I understand your point here. Could you be more specific
+how would you check for that and what for?

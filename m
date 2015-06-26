@@ -1,16 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24972 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008573AbbFXIwXAqGJx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Jun 2015 10:52:23 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 2/2] MIPS: Fix erroneous JR emulation for MIPS R6
-Date: Wed, 24 Jun 2015 09:52:01 +0100
-Message-ID: <1435135921-7090-3-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1435135921-7090-1-git-send-email-markos.chandras@imgtec.com>
-References: <1435135921-7090-1-git-send-email-markos.chandras@imgtec.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Received: from mail-pd0-f180.google.com ([209.85.192.180]:33445 "EHLO
+        mail-pd0-f180.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27009051AbbFZNyrhLCAa convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 26 Jun 2015 15:54:47 +0200
+Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2102\))
+Subject: Re: [PATCH 1/4] MIPS: BMIPS: bcm7346: add nodes for NAND
+From: Jaedon Shin <jaedon.shin@gmail.com>
+In-Reply-To: <558CC050.6040101@gmail.com>
+Date: Fri, 26 Jun 2015 22:54:35 +0900
+Content-Transfer-Encoding: 8BIT
+Message-ID: <D85A0C84-46BA-4F77-9A90-DE21EBED1887@gmail.com>
+References: <cover.1435124524.git.jaedon.shin@gmail.com> <1544bf6110b43fbaa8dbb3b06a18e08ae87b386d.1435124524.git.jaedon.shin@gmail.com> <558B05B7.8010401@gmail.com> <EFAFA0BE-CC2F-4342-9C89-DED8EC6CF377@gmail.com> <558CC050.6040101@gmail.com>
+Return-Path: <jaedon.shin@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,37 +22,78 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20150624085201.sCE07dmBc1THG-9-MMvJQKdBX5hyvAB4Hu8mctQvjBI@z>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Kevin Cernekee <cernekee@gmail.com>, linux-mips@linux-mips.org, devicetree@vger.kernel.org, computersforpeace@gmail.com
+Message-ID: <20150626135435.FA71VeggDn7dM0sxFayHApS9YfduFqN6R36HrMJEnjg@z>
 
-Commit 5f9f41c474befb4ebbc40b27f65bb7d649241581 ("MIPS: kernel: Prepare
-the JR instruction for emulation on MIPS R6") added support for
-emulating the JR instruction on MIPS R6 cores but that introduced a bug
-which could be triggered when hitting a JALR opcode because the code used
-the wrong field in the 'r_format' struct to determine the instruction
-opcode. This lead to crashes because an emulated JALR instruction was
-treated as a JR one when the R6 emulator was turned off.
 
-Fixes: 5f9f41c474be ("MIPS: kernel: Prepare the JR instruction for emulation on MIPS R6")
-Cc: <stable@vger.kernel.org> # 4.0+
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/math-emu/cp1emu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Jun 26, 2015, at 12:00 PM, Florian Fainelli <f.fainelli@gmail.com> wrote:
+> 
+> Le 06/25/15 01:52, Jaedon Shin a écrit :
+>> 
+>>> On Jun 25, 2015, at 4:32 AM, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>> 
+>>> +Brian,
+>>> 
+>>> On 23/06/15 23:08, Jaedon Shin wrote:
+>>>> Add NAND device nodes to BMIPS based BCM7346 platform.
+>>>> 
+>>>> Signed-off-by: Jaedon Shin <jaedon.shin@gmail.com>
+>>>> ---
+>>> 
+>>> [snip]
+>>> 
+>>>> +
+>>>> +&nand0 {
+>>>> +	status = "okay";
+>>>> +
+>>>> +	nandcs@1 {
+>>>> +		compatible = "brcm,nandcs";
+>>>> +		reg = <1>;
+>>>> +		nand-ecc-step-size = <512>;
+>>>> +		nand-ecc-strength = <8>;
+>>>> +		nand-on-flash-bbt;
+>>>> +
+>>>> +		#size-cells = <2>;
+>>>> +		#address-cells = <2>;
+>>>> +
+>>>> +		flash1.rootfs0@0 {
+>>>> +			reg = <0x0 0x0 0x0 0x80000000>;
+>>>> +		};
+>>>> +
+>>>> +		flash1.rootfs1@80000000 {
+>>>> +			reg = <0x0 0x80000000 0x0 0x80000000>;
+>>>> +		};
+>>>> +	};
+>>>> +};
+>>> 
+>>> Should we create something like brcmnand-cs1-512-8 to reduce the amount
+>>> of duplication between DTS files?
+>>> -- 
+>>> Florian
+>> 
+>> I Think that is not duplication.
+>> 
+>> I have no reference boards, but this node is maybe explaining for hardware
+>> description of the BCM97346DBSMB reference board. The nodes are changed by
+>> EBI CS and ECC capabilities of NAND flash. I used brcmnand-cs2-512-4 and
+>> brcmnand-cs1-512-4 for others.
+> 
 
-diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-index 00c241ae04ce..712f17a2ecf2 100644
---- a/arch/mips/math-emu/cp1emu.c
-+++ b/arch/mips/math-emu/cp1emu.c
-@@ -451,7 +451,7 @@ static int isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
- 			/* Fall through */
- 		case jr_op:
- 			/* For R6, JR already emulated in jalr_op */
--			if (NO_R6EMU && insn.r_format.opcode == jr_op)
-+			if (NO_R6EMU && insn.r_format.func == jr_op)
- 				break;
- 			*contpc = regs->regs[insn.r_format.rs];
- 			return 1;
--- 
-2.4.4
+The *others* means BCM7346 based set-top box of manufacturer. they are not
+bcm973XX{dbsmb,svmb} boards.
+
+> Then I am confused, your 4 patches add identical NAND flash chip
+> properties for 7346, 7358, 7360 and 7362: CS#1, 512 bytes of ECC step
+> size and 8 bits of ECC strength, am I missing something?
+> -- 
+> Florian
+
+The mips based reference boards have postfix of DBSMB, SVMB, SFF and others.
+they have different properties of DDR, #CS, SPI-NOR, NOR, NAND. if we write
+the DT of bcm97346sff.dts, therefore it has different fields.
+
+Then I expected that mips 40nm based SVMB type reference boards have the same
+properties. but, I don't have confidence. AISE I have no reference boards
+unfortunately. if you can contact with people who have reference board, would
+tell me information of #CS and NAND. 

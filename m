@@ -1,17 +1,18 @@
-Received: from mail-pd0-f172.google.com ([209.85.192.172]:34879 "EHLO
-        mail-pd0-f172.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27009162AbbFZQeQgo530 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 26 Jun 2015 18:34:16 +0200
-Message-ID: <558D7EA5.9030202@gmail.com>
-Date: Fri, 26 Jun 2015 09:32:37 -0700
-From: Florian Fainelli <f.fainelli@gmail.com>
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64]:24246 "EHLO
+        mail-gw3-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27009422AbbFZUx34gjfG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 26 Jun 2015 22:53:29 +0200
+Message-ID: <558DBB61.6090904@broadcom.com>
+Date: Fri, 26 Jun 2015 13:51:45 -0700
+From: Florian Fainelli <fainelli@broadcom.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/4] MIPS: BMIPS: bcm7346: add nodes for NAND
-References: <cover.1435124524.git.jaedon.shin@gmail.com> <1544bf6110b43fbaa8dbb3b06a18e08ae87b386d.1435124524.git.jaedon.shin@gmail.com> <558B05B7.8010401@gmail.com> <EFAFA0BE-CC2F-4342-9C89-DED8EC6CF377@gmail.com> <558CC050.6040101@gmail.com> <D85A0C84-46BA-4F77-9A90-DE21EBED1887@gmail.com>
-In-Reply-To: <D85A0C84-46BA-4F77-9A90-DE21EBED1887@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-Path: <f.fainelli@gmail.com>
+Subject: Re: [PATCH] irqchip: bcm7120-l2: use of_io_request_and_map() to claim
+ iomem
+References: <1434668725-24058-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1434668725-24058-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <fainelli@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,93 +22,66 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jaedon Shin <jaedon.shin@gmail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Kevin Cernekee <cernekee@gmail.com>, linux-mips@linux-mips.org, devicetree@vger.kernel.org, computersforpeace@gmail.com
+To: Brian Norris <computersforpeace@gmail.com>, Kevin Cernekee <cernekee@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>
+Cc: bcm-kernel-feedback-list@broadcom.com, Gregory Fong <gregory.0xf0@gmail.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20150626205145.bLUxBnA55ds3Q5WgFnHDlfZvaM3IPMkFuQlxR20JPks@z>
 
-On 26/06/15 06:54, Jaedon Shin wrote:
+On 18/06/15 16:05, Brian Norris wrote:
+> This way, the IO resources will show up in /proc/iomem, and we can make
+> sure no other drivers are trying to claim these register regions.
 > 
->> On Jun 26, 2015, at 12:00 PM, Florian Fainelli <f.fainelli@gmail.com> wrote:
->>
->> Le 06/25/15 01:52, Jaedon Shin a écrit :
->>>
->>>> On Jun 25, 2015, at 4:32 AM, Florian Fainelli <f.fainelli@gmail.com> wrote:
->>>>
->>>> +Brian,
->>>>
->>>> On 23/06/15 23:08, Jaedon Shin wrote:
->>>>> Add NAND device nodes to BMIPS based BCM7346 platform.
->>>>>
->>>>> Signed-off-by: Jaedon Shin <jaedon.shin@gmail.com>
->>>>> ---
->>>>
->>>> [snip]
->>>>
->>>>> +
->>>>> +&nand0 {
->>>>> +	status = "okay";
->>>>> +
->>>>> +	nandcs@1 {
->>>>> +		compatible = "brcm,nandcs";
->>>>> +		reg = <1>;
->>>>> +		nand-ecc-step-size = <512>;
->>>>> +		nand-ecc-strength = <8>;
->>>>> +		nand-on-flash-bbt;
->>>>> +
->>>>> +		#size-cells = <2>;
->>>>> +		#address-cells = <2>;
->>>>> +
->>>>> +		flash1.rootfs0@0 {
->>>>> +			reg = <0x0 0x0 0x0 0x80000000>;
->>>>> +		};
->>>>> +
->>>>> +		flash1.rootfs1@80000000 {
->>>>> +			reg = <0x0 0x80000000 0x0 0x80000000>;
->>>>> +		};
->>>>> +	};
->>>>> +};
->>>>
->>>> Should we create something like brcmnand-cs1-512-8 to reduce the amount
->>>> of duplication between DTS files?
->>>> -- 
->>>> Florian
->>>
->>> I Think that is not duplication.
->>>
->>> I have no reference boards, but this node is maybe explaining for hardware
->>> description of the BCM97346DBSMB reference board. The nodes are changed by
->>> EBI CS and ECC capabilities of NAND flash. I used brcmnand-cs2-512-4 and
->>> brcmnand-cs1-512-4 for others.
->>
-> 
-> The *others* means BCM7346 based set-top box of manufacturer. they are not
-> bcm973XX{dbsmb,svmb} boards.
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Understood.
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 
+> ---
+>  drivers/irqchip/irq-bcm7120-l2.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
 > 
->> Then I am confused, your 4 patches add identical NAND flash chip
->> properties for 7346, 7358, 7360 and 7362: CS#1, 512 bytes of ECC step
->> size and 8 bits of ECC strength, am I missing something?
->> -- 
->> Florian
+> diff --git a/drivers/irqchip/irq-bcm7120-l2.c b/drivers/irqchip/irq-bcm7120-l2.c
+> index 3ba5cc780fcb..299d4de2deb5 100644
+> --- a/drivers/irqchip/irq-bcm7120-l2.c
+> +++ b/drivers/irqchip/irq-bcm7120-l2.c
+> @@ -142,10 +142,10 @@ static int __init bcm7120_l2_intc_iomap_7120(struct device_node *dn,
+>  {
+>  	int ret;
+>  
+> -	data->map_base[0] = of_iomap(dn, 0);
+> -	if (!data->map_base[0]) {
+> +	data->map_base[0] = of_io_request_and_map(dn, 0, dn->full_name);
+> +	if (IS_ERR(data->map_base[0])) {
+>  		pr_err("unable to map registers\n");
+> -		return -ENOMEM;
+> +		return PTR_ERR(data->map_base[0]);
+>  	}
+>  
+>  	data->pair_base[0] = data->map_base[0];
+> @@ -178,16 +178,17 @@ static int __init bcm7120_l2_intc_iomap_3380(struct device_node *dn,
+>  
+>  	for (gc_idx = 0; gc_idx < MAX_WORDS; gc_idx++) {
+>  		unsigned int map_idx = gc_idx * 2;
+> -		void __iomem *en = of_iomap(dn, map_idx + 0);
+> -		void __iomem *stat = of_iomap(dn, map_idx + 1);
+> -		void __iomem *base = min(en, stat);
+> +		void __iomem *en, *stat, *base;
+> +
+> +		en = of_io_request_and_map(dn, map_idx + 0, "irq-en");
+> +		stat = of_io_request_and_map(dn, map_idx + 1, "irq-stat");
+> +		if (IS_ERR(en) || IS_ERR(stat))
+> +			break;
+>  
+> +		base = min(en, stat);
+>  		data->map_base[map_idx + 0] = en;
+>  		data->map_base[map_idx + 1] = stat;
+>  
+> -		if (!base)
+> -			break;
+> -
+>  		data->pair_base[gc_idx] = base;
+>  		data->en_offset[gc_idx] = en - base;
+>  		data->stat_offset[gc_idx] = stat - base;
 > 
-> The mips based reference boards have postfix of DBSMB, SVMB, SFF and others.
-> they have different properties of DDR, #CS, SPI-NOR, NOR, NAND. if we write
-> the DT of bcm97346sff.dts, therefore it has different fields.
-> 
-> Then I expected that mips 40nm based SVMB type reference boards have the same
-> properties. but, I don't have confidence. AISE I have no reference boards
-> unfortunately. if you can contact with people who have reference board, would
-> tell me information of #CS and NAND.
 
-I agree with you that outside of reference boards, these flash settings
-will vary, however, Broadcom reference boards tend to follow the same
-design from one chip/board to another, so instead of replicating 4 times
-the same DT snippet in Device Tree, we could come up with differerent
-sets of include files which abstract commonly found NAND flash types and
-properties. Code might talk better, so I will try to submit something
-that illustrates what I have in mind.
 
-Thanks!
 -- 
 Florian

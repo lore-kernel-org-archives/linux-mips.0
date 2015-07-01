@@ -1,17 +1,17 @@
-Received: from mail-la0-f45.google.com ([209.85.215.45]:35857 "EHLO
-        mail-la0-f45.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27009529AbbFZXQVYZtpL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 27 Jun 2015 01:16:21 +0200
-Date: Sat, 27 Jun 2015 02:16:30 +0300
-From: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Message-ID: <441261391.20150627021630@gmail.com>
-Subject: Re: [tip:irq/urgent] MIPS/ath25: Fix race in installing chained IRQ handler
-In-Reply-To: <tip-08ece35e7dcc24591e27089029f1fea14e76d1fa@git.kernel.org>
-References: <tip-08ece35e7dcc24591e27089029f1fea14e76d1fa@git.kernel.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:6886 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008860AbbGAINo0c0D4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 1 Jul 2015 10:13:44 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id BAA50EE502229
+        for <linux-mips@linux-mips.org>; Wed,  1 Jul 2015 09:13:36 +0100 (IST)
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH 0/7] Initial SMP/CPS 64-bit support
+Date: Wed, 1 Jul 2015 09:13:27 +0100
+Message-ID: <1435738414-30944-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-Path: <ryazanov.s.a@gmail.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,20 +21,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: rmk+kernel@arm.linux.org.uk, ralf@linux-mips.org, linux-kernel@vger.kernel.org, mingo@kernel.org, Julia.Lawall@lip6.fr, hpa@zytor.com, linux-tip-commits@vger.kernel.org, Linux MIPS <linux-mips@linux-mips.org>
-Message-ID: <20150626231630.OpIWfpw39Q3hBKEnhFt1SDtAoKw_DeMBRPI2FxwuM4c@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20150701081327.nhzOrWCZ58se2j7Mb4c3HA0KAM-vzMvhjCBOTW9DW4M@z>
 
-Hello Thomas,
+Hi,
 
-Friday, June 26, 2015, 10:48:13 PM, you wrote:
-> MIPS/ath25: Fix race in installing chained IRQ handler
+This patchset fixes build problems on 64-bit kernels when SMP/CPS is
+enabled. This is preparatory work for MIPS R6 SMP/CPS support but it allows the
+CPS code to be build tested on 64-bit configurations.
 
-> Fix a race where a pending interrupt could be received and the handler
-> called before the handler's data has been setup, by converting to
-> irq_set_chained_handler_and_data().
+Markos Chandras (7):
+  MIPS: kernel: smp-cps: Fix 64-bit compatibility errors due to pointer
+    casting
+  MIPS: kernel: cps-vec: Replace 'la' macro with PTR_LA
+  MIPS: kernel: cps-vec: Replace mips32r2 ISA level with mips64r2
+  MIPS: kernel: cps-vec: Use ta0-ta3 pseudo-registers for 64-bit
+  MIPS: kernel: cps-vec: Replace KSEG0 with CKSEG0
+  MIPS: kernel: cps-vec: Use macros for various arithmetics and memory
+    operations
+  Revert "MIPS: Kconfig: Disable SMP/CPS for 64-bit"
 
-Reviewed-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+ arch/mips/Kconfig          |  2 +-
+ arch/mips/kernel/cps-vec.S | 96 +++++++++++++++++++++++-----------------------
+ arch/mips/kernel/smp-cps.c |  6 +--
+ 3 files changed, 52 insertions(+), 52 deletions(-)
 
 -- 
-Sergey
+2.4.5

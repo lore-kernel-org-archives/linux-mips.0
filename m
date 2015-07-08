@@ -1,21 +1,16 @@
-Received: from mail-oi0-f41.google.com ([209.85.218.41]:34816 "EHLO
-        mail-oi0-f41.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27009478AbbGHHCbqe8NL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 8 Jul 2015 09:02:31 +0200
-Received: by oihr66 with SMTP id r66so103313430oih.2
-        for <linux-mips@linux-mips.org>; Wed, 08 Jul 2015 00:02:26 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:16113 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010430AbbGHO0MFd2mn (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 8 Jul 2015 16:26:12 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH stable <3.17] MIPS: KVM: Do not sign extend on unsigned MMIO load
+Date: Wed, 8 Jul 2015 15:25:07 +0100
+Message-ID: <1436365507-22596-1-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <20150619191409.GA12700@kroah.com>
+References: <20150619191409.GA12700@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20150708064607.GB7079@osiris>
-References: <1436288623-13007-1-git-send-email-emunson@akamai.com>
-        <1436288623-13007-3-git-send-email-emunson@akamai.com>
-        <20150708064607.GB7079@osiris>
-Date: Wed, 8 Jul 2015 09:02:25 +0200
-Message-ID: <CAMuHMdUS72nYDo=chtcZMv-ZNVU0RhxvVLvMYvSFLtRk_wXrgw@mail.gmail.com>
-Subject: Re: [PATCH V3 2/5] mm: mlock: Add new mlock, munlock, and munlockall
- system calls
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <geert.uytterhoeven@gmail.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,46 +20,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Eric B Munson <emunson@akamai.com>, Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@suse.cz>, Vlastimil Babka <vbabka@suse.cz>, alpha <linux-alpha@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Cris <linux-cris-kernel@axis.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "moderated list:PANASONIC MN10300..." <linux-am33-list@redhat.com>, Parisc List <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Message-ID: <20150708070225.uXaT10qCHUrYlPmXuAY-2XvEQBdCZEKsK0GToaBWgKM@z>
+To: Greg KH <greg@kroah.com>
+Cc: Nicholas Mc Guire <hofrat@osadl.org>, Gleb Natapov <gleb@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, stable@vger.kernel.org, James Hogan <james.hogan@imgtec.com>
+Message-ID: <20150708142507.UlMgjiqjYczP9CE5tUw0p2JQRQsQ-B-Cb8I5dAjZhak@z>
 
-On Wed, Jul 8, 2015 at 8:46 AM, Heiko Carstens
-<heiko.carstens@de.ibm.com> wrote:
->> diff --git a/arch/s390/kernel/syscalls.S b/arch/s390/kernel/syscalls.S
->> index 1acad02..f6d81d6 100644
->> --- a/arch/s390/kernel/syscalls.S
->> +++ b/arch/s390/kernel/syscalls.S
->> @@ -363,3 +363,6 @@ SYSCALL(sys_bpf,compat_sys_bpf)
->>  SYSCALL(sys_s390_pci_mmio_write,compat_sys_s390_pci_mmio_write)
->>  SYSCALL(sys_s390_pci_mmio_read,compat_sys_s390_pci_mmio_read)
->>  SYSCALL(sys_execveat,compat_sys_execveat)
->> +SYSCALL(sys_mlock2,compat_sys_mlock2)                        /* 355 */
->> +SYSCALL(sys_munlock2,compat_sys_munlock2)
->> +SYSCALL(sys_munlockall2,compat_sys_munlockall2)
->
-> FWIW, you would also need to add matching lines to the two files
->
-> arch/s390/include/uapi/asm/unistd.h
-> arch/s390/kernel/compat_wrapper.c
->
-> so that the system call would be wired up on s390.
+From: Nicholas Mc Guire <hofrat@osadl.org>
 
-Similar comment for m68k:
+commit ed9244e6c534612d2b5ae47feab2f55a0d4b4ced upstream.
 
-arch/m68k/include/asm/unistd.h
-arch/m68k/include/uapi/asm/unistd.h
+Fix possible unintended sign extension in unsigned MMIO loads by casting
+to uint16_t in the case of mmio_needed != 2.
 
-I think you best look at the last commits that added system calls, for all
-architectures, to make sure you don't do partial updates.
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
+Tested-by: James Hogan <james.hogan@imgtec.com>
+Cc: Gleb Natapov <gleb@kernel.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org
+Patchwork: https://patchwork.linux-mips.org/patch/9985/
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+Cc: <stable@vger.kernel.org> # v3.10+
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+---
+This is a trivial backport (i.e. git cherry-pick, git format-patch) for
+stable branches before v3.17, due to the commit d7d5b05faf16 ("MIPS:
+KVM: Rename files to remove the prefix "kvm_" and "kvm_mips_"") which
+renamed a bunch of files including this one.
+---
+ arch/mips/kvm/kvm_mips_emul.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/mips/kvm/kvm_mips_emul.c b/arch/mips/kvm/kvm_mips_emul.c
+index e75ef8219caf..c76f297b7149 100644
+--- a/arch/mips/kvm/kvm_mips_emul.c
++++ b/arch/mips/kvm/kvm_mips_emul.c
+@@ -1626,7 +1626,7 @@ kvm_mips_complete_mmio_load(struct kvm_vcpu *vcpu, struct kvm_run *run)
+ 		if (vcpu->mmio_needed == 2)
+ 			*gpr = *(int16_t *) run->mmio.data;
+ 		else
+-			*gpr = *(int16_t *) run->mmio.data;
++			*gpr = *(uint16_t *)run->mmio.data;
+ 
+ 		break;
+ 	case 1:
+-- 
+2.3.6

@@ -1,14 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:26438 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010137AbbGAKax4nCQA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 1 Jul 2015 12:30:53 +0200
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH] MIPS: mm: c-r4k: Fix cache flushing for MT cores
-Date: Wed, 1 Jul 2015 11:30:39 +0100
-Message-ID: <1435746639-7019-1-git-send-email-markos.chandras@imgtec.com>
+Received: from mail-oi0-f41.google.com ([209.85.218.41]:34816 "EHLO
+        mail-oi0-f41.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27009478AbbGHHCbqe8NL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 8 Jul 2015 09:02:31 +0200
+Received: by oihr66 with SMTP id r66so103313430oih.2
+        for <linux-mips@linux-mips.org>; Wed, 08 Jul 2015 00:02:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+In-Reply-To: <20150708064607.GB7079@osiris>
+References: <1436288623-13007-1-git-send-email-emunson@akamai.com>
+        <1436288623-13007-3-git-send-email-emunson@akamai.com>
+        <20150708064607.GB7079@osiris>
+Date: Wed, 8 Jul 2015 09:02:25 +0200
+Message-ID: <CAMuHMdUS72nYDo=chtcZMv-ZNVU0RhxvVLvMYvSFLtRk_wXrgw@mail.gmail.com>
+Subject: Re: [PATCH V3 2/5] mm: mlock: Add new mlock, munlock, and munlockall
+ system calls
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,151 +25,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20150701103039.1Guy-ncYewNqx0b9Zl2xc0-Fnr3xi5shcOSUWCQXJIs@z>
+To: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Eric B Munson <emunson@akamai.com>, Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@suse.cz>, Vlastimil Babka <vbabka@suse.cz>, alpha <linux-alpha@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Cris <linux-cris-kernel@axis.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "moderated list:PANASONIC MN10300..." <linux-am33-list@redhat.com>, Parisc List <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+Message-ID: <20150708070225.uXaT10qCHUrYlPmXuAY-2XvEQBdCZEKsK0GToaBWgKM@z>
 
-MT_SMP is not the only SMP option for MT cores. The MT_SMP option
-allows more than one VPE per core to appear as a secondary CPU in the
-system. Because of how CM works, it propagates the address-based
-cache ops to the secondary cores but not the index-based ones.
-Because of that, the code does not use IPIs to flush the L1 caches on
-secondary cores because the CM would have done that already. However,
-the CM functionality is independent of the type of SMP kernel so even in
-non-MT kernels, IPIs are not necessary. As a result of which, we change
-the conditional to depend on the CM presence. Moreover, since VPEs on
-the same core share the same L1 caches, there is no need to send an
-IPI on all of them so we calculate a suitable cpumask with only one
-VPE per core.
+On Wed, Jul 8, 2015 at 8:46 AM, Heiko Carstens
+<heiko.carstens@de.ibm.com> wrote:
+>> diff --git a/arch/s390/kernel/syscalls.S b/arch/s390/kernel/syscalls.S
+>> index 1acad02..f6d81d6 100644
+>> --- a/arch/s390/kernel/syscalls.S
+>> +++ b/arch/s390/kernel/syscalls.S
+>> @@ -363,3 +363,6 @@ SYSCALL(sys_bpf,compat_sys_bpf)
+>>  SYSCALL(sys_s390_pci_mmio_write,compat_sys_s390_pci_mmio_write)
+>>  SYSCALL(sys_s390_pci_mmio_read,compat_sys_s390_pci_mmio_read)
+>>  SYSCALL(sys_execveat,compat_sys_execveat)
+>> +SYSCALL(sys_mlock2,compat_sys_mlock2)                        /* 355 */
+>> +SYSCALL(sys_munlock2,compat_sys_munlock2)
+>> +SYSCALL(sys_munlockall2,compat_sys_munlockall2)
+>
+> FWIW, you would also need to add matching lines to the two files
+>
+> arch/s390/include/uapi/asm/unistd.h
+> arch/s390/kernel/compat_wrapper.c
+>
+> so that the system call would be wired up on s390.
 
-Cc: <stable@vger.kernel.org> # 3.15+
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/include/asm/smp.h |  1 +
- arch/mips/kernel/smp.c      | 44 +++++++++++++++++++++++++++++++++++++++++++-
- arch/mips/mm/c-r4k.c        | 13 ++++++++++---
- 3 files changed, 54 insertions(+), 4 deletions(-)
+Similar comment for m68k:
 
-diff --git a/arch/mips/include/asm/smp.h b/arch/mips/include/asm/smp.h
-index 2b25d1ba1ea0..16f1ea9ab191 100644
---- a/arch/mips/include/asm/smp.h
-+++ b/arch/mips/include/asm/smp.h
-@@ -23,6 +23,7 @@
- extern int smp_num_siblings;
- extern cpumask_t cpu_sibling_map[];
- extern cpumask_t cpu_core_map[];
-+extern cpumask_t cpu_foreign_map;
- 
- #define raw_smp_processor_id() (current_thread_info()->cpu)
- 
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index faa46ebd9dda..6c255aa6086a 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -63,6 +63,13 @@ EXPORT_SYMBOL(cpu_sibling_map);
- cpumask_t cpu_core_map[NR_CPUS] __read_mostly;
- EXPORT_SYMBOL(cpu_core_map);
- 
-+/*
-+ * A logcal cpu mask containing only one VPE per core to
-+ * reduce the number of IPIs on large MT systems.
-+ */
-+cpumask_t cpu_foreign_map __read_mostly;
-+EXPORT_SYMBOL(cpu_foreign_map);
-+
- /* representing cpus for which sibling maps can be computed */
- static cpumask_t cpu_sibling_setup_map;
- 
-@@ -103,6 +110,29 @@ static inline void set_cpu_core_map(int cpu)
- 	}
- }
- 
-+/*
-+ * Calculate a new cpu_foreign_map mask whenever a
-+ * new cpu appears or disappears.
-+ */
-+static inline void calculate_cpu_foreign_map(void)
-+{
-+	int i, k, core_present;
-+	cpumask_t temp_foreign_map;
-+
-+	/* Re-calculate the mask */
-+	for_each_online_cpu(i) {
-+		core_present = 0;
-+		for_each_cpu(k, &temp_foreign_map)
-+			if (cpu_data[i].package == cpu_data[k].package &&
-+			    cpu_data[i].core == cpu_data[k].core)
-+				core_present = 1;
-+		if (!core_present)
-+			cpumask_set_cpu(i, &temp_foreign_map);
-+	}
-+
-+	cpumask_copy(&cpu_foreign_map, &temp_foreign_map);
-+}
-+
- struct plat_smp_ops *mp_ops;
- EXPORT_SYMBOL(mp_ops);
- 
-@@ -146,6 +176,8 @@ asmlinkage void start_secondary(void)
- 	set_cpu_sibling_map(cpu);
- 	set_cpu_core_map(cpu);
- 
-+	calculate_cpu_foreign_map();
-+
- 	cpumask_set_cpu(cpu, &cpu_callin_map);
- 
- 	synchronise_count_slave(cpu);
-@@ -173,9 +205,18 @@ void __irq_entry smp_call_function_interrupt(void)
- static void stop_this_cpu(void *dummy)
- {
- 	/*
--	 * Remove this CPU:
-+	 * Remove this CPU. Be a bit slow here and
-+	 * set the bits for every online CPU so we don't miss
-+	 * any IPI whilst taking this VPE down.
- 	 */
-+
-+	cpumask_copy(&cpu_foreign_map, cpu_online_mask);
-+
-+	/* Make it visible to every other CPU */
-+	smp_mb();
-+
- 	set_cpu_online(smp_processor_id(), false);
-+	calculate_cpu_foreign_map();
- 	local_irq_disable();
- 	while (1);
- }
-@@ -197,6 +238,7 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
- 	mp_ops->prepare_cpus(max_cpus);
- 	set_cpu_sibling_map(0);
- 	set_cpu_core_map(0);
-+	calculate_cpu_foreign_map();
- #ifndef CONFIG_HOTPLUG_CPU
- 	init_cpu_present(cpu_possible_mask);
- #endif
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index 2e03ab173591..8c8280ea509f 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -51,9 +51,16 @@ static inline void r4k_on_each_cpu(void (*func) (void *info), void *info)
- {
- 	preempt_disable();
- 
--#ifndef CONFIG_MIPS_MT_SMP
--	smp_call_function(func, info, 1);
--#endif
-+	/*
-+	 * The Coherent Manager propagates address-based cache ops to other
-+	 * cores but not index-based ops. However, r4k_on_each_cpu is used
-+	 * in both cases so there is no easy way to tell what kind of op is
-+	 * executed to the other cores. The best we can probably do is
-+	 * to restrict that call when a CM is not present because both
-+	 * CM-based SMP protocols (CMP & CPS) restrict index-based cache ops.
-+	 */
-+	if (!mips_cm_present())
-+		smp_call_function_many(&cpu_foreign_map, func, info, 1);
- 	func(info);
- 	preempt_enable();
- }
--- 
-2.4.4
+arch/m68k/include/asm/unistd.h
+arch/m68k/include/uapi/asm/unistd.h
+
+I think you best look at the last commits that added system calls, for all
+architectures, to make sure you don't do partial updates.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

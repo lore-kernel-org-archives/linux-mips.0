@@ -1,18 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:12566 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:12891 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009981AbbGIJl7srwhh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Jul 2015 11:41:59 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id D30B5E1017A9F
-        for <linux-mips@linux-mips.org>; Thu,  9 Jul 2015 10:41:51 +0100 (IST)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 19/19] MIPS: Set up FTLB probability for I6400
-Date: Thu, 9 Jul 2015 10:40:53 +0100
-Message-ID: <1436434853-30001-20-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1436434853-30001-1-git-send-email-markos.chandras@imgtec.com>
+        with ESMTP id S27009945AbbGIKPBdqdJh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Jul 2015 12:15:01 +0200
+Subject: Re: [PATCH 02/19] MIPS: Add cases for CPU_I6400
 References: <1436434853-30001-1-git-send-email-markos.chandras@imgtec.com>
+ <1436434853-30001-3-git-send-email-markos.chandras@imgtec.com>
+ <20150709100340.GB31002@linux-mips.org>
+From: Markos Chandras <Markos.Chandras@imgtec.com>
+Message-ID: <559E499E.1040504@imgtec.com>
+Date: Thu, 9 Jul 2015 11:14:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20150709100340.GB31002@linux-mips.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,73 +23,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20150709094053.ESXZswlUuqp7jaFZemTfoHMAFFlVY9dK_LqOzBtG6Yk@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20150709101454.QIl1YtbdDdbZWAArull_b72o24yiMTIJgkSIlcUvX-M@z>
 
-Set up the I6400 FTLB probability similar to P5600 and proAptiv.
+On 07/09/2015 11:03 AM, Ralf Baechle wrote:
+> On Thu, Jul 09, 2015 at 10:40:36AM +0100, Markos Chandras wrote:
+> 
+>> index d41e8e284825..abee2bfd10dc 100644
+>> --- a/arch/mips/include/asm/cpu-type.h
+>> +++ b/arch/mips/include/asm/cpu-type.h
+>> @@ -77,6 +77,10 @@ static inline int __pure __get_cpu_type(const int cpu_type)
+>>  	 */
+>>  #endif
+>>  
+>> +#ifdef CONFIG_SYS_HAS_CPU_MIPS64_R6
+>> +	case CPU_I6400:
+>> +#endif
+>> +
+> 
+> To ensure best possible optimization you may want to introduce a new
+> CPU type CPU_I6400 in Kconfig then change above code segment to
+> 
+> #ifdef CONFIG_SYS_HAS_CPU_I6400
+> 	case CPU_I6400:
+> #endif
+> 
 
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
- arch/mips/include/asm/mipsregs.h |  2 ++
- arch/mips/kernel/cpu-probe.c     | 18 +++++++++++++-----
- 2 files changed, 15 insertions(+), 5 deletions(-)
+Why? That function uses MIPS32_XX and MIPS64_XX in other places as well.
 
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index c5b0956a8530..723ee3c7849d 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -579,6 +579,8 @@
- 
- #define MIPS_CONF7_IAR		(_ULCAST_(1) << 10)
- #define MIPS_CONF7_AR		(_ULCAST_(1) << 16)
-+/* FTLB probability bits for R6 */
-+#define MIPS_CONF7_FTLBP_SHIFT	(18)
- 
- /* MAAR bit definitions */
- #define MIPS_MAAR_ADDR		((BIT_ULL(BITS_PER_LONG - 12) - 1) << 12)
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 62dae429fe70..4e39b340f3b7 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -369,25 +369,33 @@ static unsigned int calculate_ftlb_probability(struct cpuinfo_mips *c)
- 
- static int set_ftlb_enable(struct cpuinfo_mips *c, int enable)
- {
--	unsigned int config6;
-+	unsigned int config;
- 
- 	/* It's implementation dependent how the FTLB can be enabled */
- 	switch (c->cputype) {
- 	case CPU_PROAPTIV:
- 	case CPU_P5600:
- 		/* proAptiv & related cores use Config6 to enable the FTLB */
--		config6 = read_c0_config6();
-+		config = read_c0_config6();
- 		/* Clear the old probability value */
--		config6 &= ~(3 << MIPS_CONF6_FTLBP_SHIFT);
-+		config &= ~(3 << MIPS_CONF6_FTLBP_SHIFT);
- 		if (enable)
- 			/* Enable FTLB */
--			write_c0_config6(config6 |
-+			write_c0_config6(config |
- 					 (calculate_ftlb_probability(c)
- 					  << MIPS_CONF6_FTLBP_SHIFT)
- 					 | MIPS_CONF6_FTLBEN);
- 		else
- 			/* Disable FTLB */
--			write_c0_config6(config6 &  ~MIPS_CONF6_FTLBEN);
-+			write_c0_config6(config &  ~MIPS_CONF6_FTLBEN);
-+		break;
-+	case CPU_I6400:
-+		/* I6400 & related cores use Config7 to configure FTLB */
-+		config = read_c0_config7();
-+		/* Clear the old probability value */
-+		config &= ~(3 << MIPS_CONF7_FTLBP_SHIFT);
-+		write_c0_config7(config | (calculate_ftlb_probability(c)
-+					   << MIPS_CONF7_FTLBP_SHIFT));
- 		break;
- 	default:
- 		return 1;
+I don't think it's a good idea to have a Kconfig symbol for I6400. It's
+just a MIPSR6 processor so we do the same thing we did for other
+processors like P5600, interAptiv etc.
+
+> __get_cpu_type is ideally meant to get folded to a constant on any
+> particular platform which then will allow the compiler to discard lots
+> of other code.
+> 
+> Of course Malta being as hetergenous as it is that's not goint help
+> with Malta but it will make a noticable difference for SOCs which usually
+> come only with a single supported CPU type.
+> 
+>   Ralf
+> 
+Then it's best if we use platform Kconfig symbols in that function
+instead of introducing a new symbol per processor.
+
 -- 
-2.4.5
+markos

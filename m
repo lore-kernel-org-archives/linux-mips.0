@@ -1,11 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18087 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:3243 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009971AbbGIJlyYIWch (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Jul 2015 11:41:54 +0200
+        with ESMTP id S27009996AbbGIJlzkC4Dh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Jul 2015 11:41:55 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 5067F1ED30ED9
+        for <linux-mips@linux-mips.org>; Thu,  9 Jul 2015 10:41:48 +0100 (IST)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 15/19] drivers: irqchip: irq-mips-gic: Add support for CM3 64-bit timer irqs
-Date: Thu, 9 Jul 2015 10:40:49 +0100
-Message-ID: <1436434853-30001-16-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH 16/19] MIPS: kernel: cpu-probe: Remove cp0 hazard barrier when enabling the FTLB
+Date: Thu, 9 Jul 2015 10:40:50 +0100
+Message-ID: <1436434853-30001-17-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1436434853-30001-1-git-send-email-markos.chandras@imgtec.com>
 References: <1436434853-30001-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -21,107 +24,29 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Markos Chandras <markos.chandras@imgtec.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Andrew Bresticker <abrestic@chromium.org>
-Message-ID: <20150709094049.HF9FVw_6UbDBUfvHEcY5E2arFqjklRHROH_PggkWQUA@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20150709094050.JDnXUYIx_FmEdK8Hb3hqOdcka8stjKJQ3UcZYsYaNMQ@z>
 
-CM3 uses a 64-bit counter and compare registers so add support for
-them in the GIC counter interrupt.
+We are so early in the boot process where we really don't want to
+stall and wait for CP0 FTLB related changes become visible so just drop
+the cp0 hazard barrier.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Andrew Bresticker <abrestic@chromium.org>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- drivers/irqchip/irq-mips-gic.c   | 33 ++++++++++++++++++++++++---------
- include/linux/irqchip/mips-gic.h |  4 ++++
- 2 files changed, 28 insertions(+), 9 deletions(-)
+ arch/mips/kernel/cpu-probe.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 29c494691b71..def7a9be36a0 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -140,6 +140,9 @@ cycle_t gic_read_count(void)
- {
- 	unsigned int hi, hi2, lo;
- 
-+	if (mips_cm_is64)
-+		return (cycle_t)gic_read(GIC_REG(SHARED, GIC_SH_COUNTER));
-+
- 	do {
- 		hi = gic_read32(GIC_REG(SHARED, GIC_SH_COUNTER_63_32));
- 		lo = gic_read32(GIC_REG(SHARED, GIC_SH_COUNTER_31_00));
-@@ -162,10 +165,14 @@ unsigned int gic_get_count_width(void)
- 
- void gic_write_compare(cycle_t cnt)
- {
--	gic_write32(GIC_REG(VPE_LOCAL, GIC_VPE_COMPARE_HI),
--				(int)(cnt >> 32));
--	gic_write32(GIC_REG(VPE_LOCAL, GIC_VPE_COMPARE_LO),
--				(int)(cnt & 0xffffffff));
-+	if (mips_cm_is64) {
-+		gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_COMPARE), cnt);
-+	} else {
-+		gic_write32(GIC_REG(VPE_LOCAL, GIC_VPE_COMPARE_HI),
-+					(int)(cnt >> 32));
-+		gic_write32(GIC_REG(VPE_LOCAL, GIC_VPE_COMPARE_LO),
-+					(int)(cnt & 0xffffffff));
-+	}
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 02b75127dad3..dc057f37305b 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -385,7 +385,6 @@ static void set_ftlb_enable(struct cpuinfo_mips *c, int enable)
+ 		else
+ 			/* Disable FTLB */
+ 			write_c0_config6(config6 &  ~MIPS_CONF6_FTLBEN);
+-		back_to_back_c0_hazard();
+ 		break;
+ 	}
  }
- 
- void gic_write_cpu_compare(cycle_t cnt, int cpu)
-@@ -174,11 +181,16 @@ void gic_write_cpu_compare(cycle_t cnt, int cpu)
- 
- 	local_irq_save(flags);
- 
--	gic_write32(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR), cpu);
--	gic_write32(GIC_REG(VPE_OTHER, GIC_VPE_COMPARE_HI),
--				(int)(cnt >> 32));
--	gic_write32(GIC_REG(VPE_OTHER, GIC_VPE_COMPARE_LO),
--				(int)(cnt & 0xffffffff));
-+	gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR), cpu);
-+
-+	if (mips_cm_is64) {
-+		gic_write(GIC_REG(VPE_OTHER, GIC_VPE_COMPARE), cnt);
-+	} else {
-+		gic_write32(GIC_REG(VPE_OTHER, GIC_VPE_COMPARE_HI),
-+					(int)(cnt >> 32));
-+		gic_write32(GIC_REG(VPE_OTHER, GIC_VPE_COMPARE_LO),
-+					(int)(cnt & 0xffffffff));
-+	}
- 
- 	local_irq_restore(flags);
- }
-@@ -187,6 +199,9 @@ cycle_t gic_read_compare(void)
- {
- 	unsigned int hi, lo;
- 
-+	if (mips_cm_is64)
-+		return (cycle_t)gic_read(GIC_REG(VPE_LOCAL, GIC_VPE_COMPARE));
-+
- 	hi = gic_read32(GIC_REG(VPE_LOCAL, GIC_VPE_COMPARE_HI));
- 	lo = gic_read32(GIC_REG(VPE_LOCAL, GIC_VPE_COMPARE_LO));
- 
-diff --git a/include/linux/irqchip/mips-gic.h b/include/linux/irqchip/mips-gic.h
-index 10e4a9073019..4e6861605050 100644
---- a/include/linux/irqchip/mips-gic.h
-+++ b/include/linux/irqchip/mips-gic.h
-@@ -41,6 +41,8 @@
- 
- /* Shared Global Counter */
- #define GIC_SH_COUNTER_31_00_OFS	0x0010
-+/* 64-bit counter register for CM3 */
-+#define GIC_SH_COUNTER_OFS		GIC_SH_COUNTER_31_00_OFS
- #define GIC_SH_COUNTER_63_32_OFS	0x0014
- #define GIC_SH_REVISIONID_OFS		0x0020
- 
-@@ -104,6 +106,8 @@
- #define GIC_VPE_WD_COUNT0_OFS		0x0094
- #define GIC_VPE_WD_INITIAL0_OFS		0x0098
- #define GIC_VPE_COMPARE_LO_OFS		0x00a0
-+/* 64-bit Compare register on CM3 */
-+#define GIC_VPE_COMPARE_OFS		GIC_VPE_COMPARE_LO_OFS
- #define GIC_VPE_COMPARE_HI_OFS		0x00a4
- 
- #define GIC_VPE_EIC_SHADOW_SET_BASE_OFS	0x0100
 -- 
 2.4.5

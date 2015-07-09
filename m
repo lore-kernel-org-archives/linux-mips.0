@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:12798 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:26373 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009932AbbGIJljf3JOh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Jul 2015 11:41:39 +0200
+        with ESMTP id S27009933AbbGIJlmNOQth (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Jul 2015 11:41:42 +0200
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id D73A64C728DFF
-        for <linux-mips@linux-mips.org>; Thu,  9 Jul 2015 10:41:31 +0100 (IST)
+        by Websense Email Security Gateway with ESMTPS id 3DCC73358AB4D
+        for <linux-mips@linux-mips.org>; Thu,  9 Jul 2015 10:41:33 +0100 (IST)
 From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH 07/19] MIPS: mm: c-r4k: extend way_string array
-Date: Thu, 9 Jul 2015 10:40:41 +0100
-Message-ID: <1436434853-30001-8-git-send-email-markos.chandras@imgtec.com>
+Subject: [PATCH 08/19] MIPS: support CM3 L2 cache
+Date: Thu, 9 Jul 2015 10:40:42 +0100
+Message-ID: <1436434853-30001-9-git-send-email-markos.chandras@imgtec.com>
 In-Reply-To: <1436434853-30001-1-git-send-email-markos.chandras@imgtec.com>
 References: <1436434853-30001-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
@@ -25,33 +25,76 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20150709094041.FsVkv-asFFDNCeQDsfyJl-IBw8Pt-XMdfqZyxC2FTSU@z>
+Message-ID: <20150709094042.nrxYrw_Tm96Wtvv3XJqEa9SaesRFigaiZ0WTWT6aYZY@z>
 
 From: Paul Burton <paul.burton@imgtec.com>
 
-The L2 cache in the I6400 core has 16 ways, so extend the way_string
-array to take such caches into account.
+Detect the L2 cache configuration from GCR_L2_CONFIG when a CM3 is
+present in the system, rather than from Config2 which does not expose
+the L2 configuration on I6400.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
- arch/mips/mm/c-r4k.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/mips/mm/sc-mips.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index c3e777fc5e8b..a9867c3222b1 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -937,7 +937,9 @@ static void b5k_instruction_hazard(void)
+diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
+index 4ceafd13870c..5fa452e8cff9 100644
+--- a/arch/mips/mm/sc-mips.c
++++ b/arch/mips/mm/sc-mips.c
+@@ -14,6 +14,7 @@
+ #include <asm/pgtable.h>
+ #include <asm/mmu_context.h>
+ #include <asm/r4kcache.h>
++#include <asm/mips-cm.h>
+ 
+ /*
+  * MIPS32/MIPS64 L2 cache handling
+@@ -94,6 +95,34 @@ static inline int mips_sc_is_activated(struct cpuinfo_mips *c)
+ 	return 1;
  }
  
- static char *way_string[] = { NULL, "direct mapped", "2-way",
--	"3-way", "4-way", "5-way", "6-way", "7-way", "8-way"
-+	"3-way", "4-way", "5-way", "6-way", "7-way", "8-way",
-+	"9-way", "10-way", "11-way", "12-way",
-+	"13-way", "14-way", "15-way", "16-way",
- };
++static int __init mips_sc_probe_cm3(void)
++{
++	struct cpuinfo_mips *c = &current_cpu_data;
++	unsigned long cfg = read_gcr_l2_config();
++	unsigned long sets, line_sz, assoc;
++
++	if (cfg & CM_GCR_L2_CONFIG_BYPASS_MSK)
++		return 0;
++
++	sets = cfg & CM_GCR_L2_CONFIG_SET_SIZE_MSK;
++	sets >>= CM_GCR_L2_CONFIG_SET_SIZE_SHF;
++	c->scache.sets = 64 << sets;
++
++	line_sz = cfg & CM_GCR_L2_CONFIG_LINE_SIZE_MSK;
++	line_sz >>= CM_GCR_L2_CONFIG_LINE_SIZE_SHF;
++	c->scache.linesz = 2 << line_sz;
++
++	assoc = cfg & CM_GCR_L2_CONFIG_ASSOC_MSK;
++	assoc >>= CM_GCR_L2_CONFIG_ASSOC_SHF;
++	c->scache.ways = assoc + 1;
++	c->scache.waysize = c->scache.sets * c->scache.linesz;
++	c->scache.waybit = __ffs(c->scache.waysize);
++
++	c->scache.flags &= ~MIPS_CACHE_NOT_PRESENT;
++
++	return 1;
++}
++
+ static inline int __init mips_sc_probe(void)
+ {
+ 	struct cpuinfo_mips *c = &current_cpu_data;
+@@ -103,6 +132,9 @@ static inline int __init mips_sc_probe(void)
+ 	/* Mark as not present until probe completed */
+ 	c->scache.flags |= MIPS_CACHE_NOT_PRESENT;
  
- static void probe_pcache(void)
++	if (mips_cm_revision() >= CM_REV_CM3)
++		return mips_sc_probe_cm3();
++
+ 	/* Ignore anything but MIPSxx processors */
+ 	if (!(c->isa_level & (MIPS_CPU_ISA_M32R1 | MIPS_CPU_ISA_M32R2 |
+ 			      MIPS_CPU_ISA_M32R6 | MIPS_CPU_ISA_M64R1 |
 -- 
 2.4.5

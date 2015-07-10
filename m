@@ -1,19 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:19723 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:9511 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009073AbbGJJNDSSxIv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Jul 2015 11:13:03 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 84DFE26A3D542
-        for <linux-mips@linux-mips.org>; Fri, 10 Jul 2015 10:12:55 +0100 (IST)
-From: Markos Chandras <markos.chandras@imgtec.com>
-Subject: [PATCH v2 05/19] MIPS: asm: mips-cm: Implement mips_cm_revision
-Date: Fri, 10 Jul 2015 10:12:52 +0100
-Message-ID: <1436519572-29407-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1436434853-30001-6-git-send-email-markos.chandras@imgtec.com>
-References: <1436434853-30001-6-git-send-email-markos.chandras@imgtec.com>
+        with ESMTP id S27009964AbbGJPBHsOVLp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Jul 2015 17:01:07 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 00/16] MSA vector context signal handling & HWCAPs
+Date: Fri, 10 Jul 2015 16:00:09 +0100
+Message-ID: <1436540426-10021-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Markos.Chandras@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,63 +19,55 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20150710091252.mxHo7DkZKAwAld2m8PSwJCd9ExGwlqSUENv5Q2UFVCw@z>
+Cc: Matthew Fortune <matthew.fortune@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, James Hogan <james.hogan@imgtec.com>, Daniel Borkmann <dborkman@redhat.com>, Huacai Chen <chenhc@lemote.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, Alex Smith <alex@alex-smith.me.uk>, Michal Nazarewicz <mina86@mina86.com>, "Maciej W. Rozycki" <macro@codesourcery.com>, Markos Chandras <markos.chandras@imgtec.com>, Frederic Weisbecker <fweisbec@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, Andy Lutomirski <luto@amacapital.net>, Manuel Lauss <manuel.lauss@gmail.com>, Kees Cook <keescook@chromium.org>, Michael Ellerman <mpe@ellerman.id.au>, linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, David Daney <david.daney@cavium.com>
+Message-ID: <20150710150009.4ZL5TcxWN2eKFI-E85vXERY7zO2MUwSKB7fOEKFcNJg@z>
 
-From: Paul Burton <paul.burton@imgtec.com>
+This series provides the final bits of support for MSA as far as
+userland that isn't a debugger goes. In order to preserve backwards
+compatibility it saves the extended vector context after the end of the
+sigframe or ucontext, at a fixed offset. A bit set in sigcontext's
+sc_used_math field indicates to userland (and to the kernel on
+sigreturn) that the extended context is present.
 
-Provide a function to trivially return the version of the CM present in
-the system, or 0 if no CM is present. The mips_cm_revision() will be
-used later on to determine the CM register width, so it must not use
-the regular CM accessors to read the revision register since that will
-lead to build failures due to recursive inlines.
+With these final bits in, the presence of MSA support is indicated via a
+HWCAP bit that userland may check for.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
----
-Changes since v1
-- Fix comments to be kerneldoc friendly
-- Drop static variable and add missing parens
----
- arch/mips/include/asm/mips-cm.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Paul Burton (16):
+  MIPS: remove outdated comments in sigcontext.h
+  MIPS: simplify EVA FP context handling code
+  MIPS: add offsets to sigcontext FP fields to struct mips_abi
+  MIPS: use struct mips_abi offsets to save FP context
+  MIPS: move FP usage checks into protected_{save,restore}_fp_context
+  MIPS: skip odd double FP registers when copying FP32 sigcontext
+  MIPS: use common FP sigcontext code for O32 compat
+  MIPS: remove unused {get,put}_sigset functions
+  MIPS: indicate FP mode in sigcontext sc_used_math
+  MIPS: add definitions for extended context
+  MIPS: save MSA extended context around signals
+  MIPS: AT_HWCAP aux vector infrastructure
+  MIPS: advertise MIPSr6 via HWCAP when appropriate
+  MIPS: advertise MSA support via HWCAP when present
+  MIPS: require O32 FP64 support for MIPS64 with O32 compat
+  MIPS: drop EXPERIMENTAL tag from O32+FP64 & MSA
 
-diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
-index edc7ee95269e..c70ba21e62f0 100644
---- a/arch/mips/include/asm/mips-cm.h
-+++ b/arch/mips/include/asm/mips-cm.h
-@@ -189,6 +189,13 @@ BUILD_CM_Cx_R_(tcid_8_priority,	0x80)
- #define CM_GCR_REV_MINOR_SHF			0
- #define CM_GCR_REV_MINOR_MSK			(_ULCAST_(0xff) << 0)
- 
-+#define CM_ENCODE_REV(major, minor) \
-+		(((major) << CM_GCR_REV_MAJOR_SHF) | \
-+		 ((minor) << CM_GCR_REV_MINOR_SHF))
-+
-+#define CM_REV_CM2				CM_ENCODE_REV(6, 0)
-+#define CM_REV_CM3				CM_ENCODE_REV(8, 0)
-+
- /* GCR_ERROR_CAUSE register fields */
- #define CM_GCR_ERROR_CAUSE_ERRTYPE_SHF		27
- #define CM_GCR_ERROR_CAUSE_ERRTYPE_MSK		(_ULCAST_(0x1f) << 27)
-@@ -324,4 +331,18 @@ static inline int mips_cm_l2sync(void)
- 	return 0;
- }
- 
-+/**
-+ * mips_cm_revision() - return CM revision
-+ *
-+ * Return: The revision of the CM, from GCR_REV, or 0 if no CM is present. The
-+ * return value should be checked against the CM_REV_* macros.
-+ */
-+static inline int mips_cm_revision(void)
-+{
-+	if (!mips_cm_present())
-+		return 0;
-+
-+	return read_gcr_rev();
-+}
-+
- #endif /* __MIPS_ASM_MIPS_CM_H__ */
+ arch/mips/Kconfig                       |   5 +-
+ arch/mips/include/asm/Kbuild            |   1 -
+ arch/mips/include/asm/abi.h             |   4 +
+ arch/mips/include/asm/elf.h             |   4 +-
+ arch/mips/include/asm/signal.h          |   3 +
+ arch/mips/include/uapi/asm/hwcap.h      |   8 +
+ arch/mips/include/uapi/asm/sigcontext.h |  19 +-
+ arch/mips/include/uapi/asm/ucontext.h   |  65 +++++
+ arch/mips/kernel/asm-offsets.c          |  11 -
+ arch/mips/kernel/cpu-probe.c            |   7 +
+ arch/mips/kernel/r4k_fpu.S              | 372 +++++++++++++-------------
+ arch/mips/kernel/signal-common.h        |   9 +
+ arch/mips/kernel/signal.c               | 446 ++++++++++++++++++++++++--------
+ arch/mips/kernel/signal32.c             | 207 +--------------
+ arch/mips/kernel/signal_n32.c           |   6 +-
+ 15 files changed, 666 insertions(+), 501 deletions(-)
+ create mode 100644 arch/mips/include/uapi/asm/hwcap.h
+ create mode 100644 arch/mips/include/uapi/asm/ucontext.h
+
 -- 
-2.4.5
+2.4.4

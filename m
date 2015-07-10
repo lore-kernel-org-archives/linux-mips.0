@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:42697 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:47053 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010210AbbGJPEeYNAcp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Jul 2015 17:04:34 +0200
+        with ESMTP id S27010219AbbGJPEvwZXBp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Jul 2015 17:04:51 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 13/16] MIPS: advertise MIPSr6 via HWCAP when appropriate
-Date: Fri, 10 Jul 2015 16:00:22 +0100
-Message-ID: <1436540426-10021-14-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 14/16] MIPS: advertise MSA support via HWCAP when present
+Date: Fri, 10 Jul 2015 16:00:23 +0100
+Message-ID: <1436540426-10021-15-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1436540426-10021-1-git-send-email-paul.burton@imgtec.com>
 References: <1436540426-10021-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,30 +22,28 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Matthew Fortune <matthew.fortune@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-kernel@vger.kernel.org, Huacai Chen <chenhc@lemote.com>, Markos Chandras <markos.chandras@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150710150022.yIMGFdf4PncMXC0KtagOry2LCD7CeMAPGnILnAfi0qY@z>
+Message-ID: <20150710150023.PBbopn4zJNT3JJPX-sCTZT3f0u7L-bMHJFHdAI7hKDc@z>
 
-When running on a CPU implementing the release 6 of the MIPS32 or MIPS64
-ISA, advertise that to userland via the appropriate HWCAP bit.
+If MSA is supported by both the hardware & the kernel then advertise
+that support to userland via the AT_HWCAP aux vector.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
- arch/mips/kernel/cpu-probe.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/kernel/cpu-probe.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index e184921..168a5d3 100644
+index 168a5d3..15e9efc 100644
 --- a/arch/mips/kernel/cpu-probe.c
 +++ b/arch/mips/kernel/cpu-probe.c
-@@ -1489,6 +1489,9 @@ void cpu_probe(void)
- 	else
- 		c->srsets = 1;
- 
-+	if (cpu_has_mips_r6)
-+		elf_hwcap |= HWCAP_MIPS_R6;
-+
- 	if (cpu_has_msa) {
+@@ -1496,6 +1496,7 @@ void cpu_probe(void)
  		c->msa_id = cpu_get_msa_id();
  		WARN(c->msa_id & MSA_IR_WRPF,
+ 		     "Vector register partitioning unimplemented!");
++		elf_hwcap |= HWCAP_MIPS_MSA;
+ 	}
+ 
+ 	cpu_probe_vmbits(c);
 -- 
 2.4.4

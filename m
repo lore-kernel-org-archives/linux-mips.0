@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:8420 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:3339 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010019AbbGJPBjXyHmp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Jul 2015 17:01:39 +0200
+        with ESMTP id S27010023AbbGJPBx7Xnap (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Jul 2015 17:01:53 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 02/16] MIPS: simplify EVA FP context handling code
-Date: Fri, 10 Jul 2015 16:00:11 +0100
-Message-ID: <1436540426-10021-3-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 03/16] MIPS: add offsets to sigcontext FP fields to struct mips_abi
+Date: Fri, 10 Jul 2015 16:00:12 +0100
+Message-ID: <1436540426-10021-4-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1436540426-10021-1-git-send-email-paul.burton@imgtec.com>
 References: <1436540426-10021-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,120 +21,85 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Matthew Fortune <matthew.fortune@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, "Maciej W. Rozycki" <macro@codesourcery.com>, Andy Lutomirski <luto@amacapital.net>, Ralf Baechle <ralf@linux-mips.org>, Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <20150710150011.O66F58KA900lZhke0U9AEuwTuo4GHbvNUy4Y_bNuNnA@z>
+Cc: Matthew Fortune <matthew.fortune@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Michael Ellerman <mpe@ellerman.id.au>, linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, James Hogan <james.hogan@imgtec.com>, Andy Lutomirski <luto@amacapital.net>, Ralf Baechle <ralf@linux-mips.org>, "Maciej W. Rozycki" <macro@codesourcery.com>, Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <20150710150012.gdMRMiUpJZn7z65MgeI1ODpKEEt5cJyQXekAempTnUg@z>
 
-The protected_{save,restore}_fp_context functions had effectively
-different implementations for EVA. Simplify & unify the code somewhat
-such that EVA configurations simply guarantee the FPU-not-owned path
-through the standard code path.
+Add fields to struct mips_abi, which holds information regarding the
+kernel-userland ABI regarding signals, to specify the offsets to the FP
+related fields within the appropriate variant of struct sigcontext.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Markos Chandras <markos.chandras@imgtec.com>
 ---
 
- arch/mips/kernel/signal.c | 44 +++++++++++++++++++-------------------------
- 1 file changed, 19 insertions(+), 25 deletions(-)
+ arch/mips/include/asm/abi.h   | 4 ++++
+ arch/mips/kernel/signal.c     | 6 +++++-
+ arch/mips/kernel/signal32.c   | 6 +++++-
+ arch/mips/kernel/signal_n32.c | 6 +++++-
+ 4 files changed, 19 insertions(+), 3 deletions(-)
 
+diff --git a/arch/mips/include/asm/abi.h b/arch/mips/include/asm/abi.h
+index 7186bb5..37f8407 100644
+--- a/arch/mips/include/asm/abi.h
++++ b/arch/mips/include/asm/abi.h
+@@ -20,6 +20,10 @@ struct mips_abi {
+ 				     struct pt_regs *regs, sigset_t *set);
+ 	const unsigned long	rt_signal_return_offset;
+ 	const unsigned long	restart;
++
++	unsigned	off_sc_fpregs;
++	unsigned	off_sc_fpc_csr;
++	unsigned	off_sc_used_math;
+ };
+ 
+ #endif /* _ASM_ABI_H */
 diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
-index 6a28c79..796c7d8 100644
+index 796c7d8..ddf8318 100644
 --- a/arch/mips/kernel/signal.c
 +++ b/arch/mips/kernel/signal.c
-@@ -101,7 +101,14 @@ static int copy_fp_from_sigcontext(struct sigcontext __user *sc)
- static int protected_save_fp_context(struct sigcontext __user *sc)
- {
- 	int err;
--#ifndef CONFIG_EVA
+@@ -521,7 +521,11 @@ struct mips_abi mips_abi = {
+ 	.setup_rt_frame = setup_rt_frame,
+ 	.rt_signal_return_offset =
+ 		offsetof(struct mips_vdso, rt_signal_trampoline),
+-	.restart	= __NR_restart_syscall
++	.restart	= __NR_restart_syscall,
 +
-+	/*
-+	 * EVA does not have userland equivalents of ldc1 or sdc1, so
-+	 * save to the kernel FP context & copy that to userland below.
-+	 */
-+	if (config_enabled(CONFIG_EVA))
-+		lose_fpu(1);
-+
- 	while (1) {
- 		lock_fpu_owner();
- 		if (is_fpu_owner()) {
-@@ -120,21 +127,22 @@ static int protected_save_fp_context(struct sigcontext __user *sc)
- 		if (err)
- 			break;	/* really bad sigcontext */
- 	}
--#else
--	/*
--	 * EVA does not have FPU EVA instructions so saving fpu context directly
--	 * does not work.
--	 */
--	lose_fpu(1);
--	err = save_fp_context(sc); /* this might fail */
--#endif
-+
- 	return err;
- }
++	.off_sc_fpregs = offsetof(struct sigcontext, sc_fpregs),
++	.off_sc_fpc_csr = offsetof(struct sigcontext, sc_fpc_csr),
++	.off_sc_used_math = offsetof(struct sigcontext, sc_used_math),
+ };
  
- static int protected_restore_fp_context(struct sigcontext __user *sc)
- {
- 	int err, tmp __maybe_unused;
--#ifndef CONFIG_EVA
+ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+diff --git a/arch/mips/kernel/signal32.c b/arch/mips/kernel/signal32.c
+index 19a7705..6b65658 100644
+--- a/arch/mips/kernel/signal32.c
++++ b/arch/mips/kernel/signal32.c
+@@ -587,7 +587,11 @@ struct mips_abi mips_abi_32 = {
+ 	.setup_rt_frame = setup_rt_frame_32,
+ 	.rt_signal_return_offset =
+ 		offsetof(struct mips_vdso, o32_rt_signal_trampoline),
+-	.restart	= __NR_O32_restart_syscall
++	.restart	= __NR_O32_restart_syscall,
 +
-+	/*
-+	 * EVA does not have userland equivalents of ldc1 or sdc1, so we
-+	 * disable the FPU here such that the code below simply copies to
-+	 * the kernel FP context.
-+	 */
-+	if (config_enabled(CONFIG_EVA))
-+		lose_fpu(0);
++	.off_sc_fpregs = offsetof(struct sigcontext32, sc_fpregs),
++	.off_sc_fpc_csr = offsetof(struct sigcontext32, sc_fpc_csr),
++	.off_sc_used_math = offsetof(struct sigcontext32, sc_used_math),
+ };
+ 
+ static int signal32_init(void)
+diff --git a/arch/mips/kernel/signal_n32.c b/arch/mips/kernel/signal_n32.c
+index f1d4751..0d017fd 100644
+--- a/arch/mips/kernel/signal_n32.c
++++ b/arch/mips/kernel/signal_n32.c
+@@ -153,5 +153,9 @@ struct mips_abi mips_abi_n32 = {
+ 	.setup_rt_frame = setup_rt_frame_n32,
+ 	.rt_signal_return_offset =
+ 		offsetof(struct mips_vdso, n32_rt_signal_trampoline),
+-	.restart	= __NR_N32_restart_syscall
++	.restart	= __NR_N32_restart_syscall,
 +
- 	while (1) {
- 		lock_fpu_owner();
- 		if (is_fpu_owner()) {
-@@ -153,14 +161,7 @@ static int protected_restore_fp_context(struct sigcontext __user *sc)
- 		if (err)
- 			break;	/* really bad sigcontext */
- 	}
--#else
--	/*
--	 * EVA does not have FPU EVA instructions so restoring fpu context
--	 * directly does not work.
--	 */
--	lose_fpu(0);
--	err = restore_fp_context(sc); /* this might fail */
--#endif
-+
- 	return err;
- }
- 
-@@ -629,7 +630,6 @@ asmlinkage void do_notify_resume(struct pt_regs *regs, void *unused,
- }
- 
- #ifdef CONFIG_SMP
--#ifndef CONFIG_EVA
- static int smp_save_fp_context(struct sigcontext __user *sc)
- {
- 	return raw_cpu_has_fpu
-@@ -643,12 +643,10 @@ static int smp_restore_fp_context(struct sigcontext __user *sc)
- 	       ? _restore_fp_context(sc)
- 	       : copy_fp_from_sigcontext(sc);
- }
--#endif /* CONFIG_EVA */
- #endif
- 
- static int signal_setup(void)
- {
--#ifndef CONFIG_EVA
- #ifdef CONFIG_SMP
- 	/* For now just do the cpu_has_fpu check when the functions are invoked */
- 	save_fp_context = smp_save_fp_context;
-@@ -662,10 +660,6 @@ static int signal_setup(void)
- 		restore_fp_context = copy_fp_from_sigcontext;
- 	}
- #endif /* CONFIG_SMP */
--#else
--	save_fp_context = copy_fp_to_sigcontext;
--	restore_fp_context = copy_fp_from_sigcontext;
--#endif
- 
- 	return 0;
- }
++	.off_sc_fpregs = offsetof(struct sigcontext, sc_fpregs),
++	.off_sc_fpc_csr = offsetof(struct sigcontext, sc_fpc_csr),
++	.off_sc_used_math = offsetof(struct sigcontext, sc_used_math),
+ };
 -- 
 2.4.4

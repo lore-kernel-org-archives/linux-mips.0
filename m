@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:40985 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45050 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010459AbbGMQPNOiVy8 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Jul 2015 18:15:13 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 2/2] MIPS: drop CONFIG_RUNTIME_DEBUG & debug.h
-Date: Mon, 13 Jul 2015 17:14:22 +0100
-Message-ID: <1436804062-30041-2-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1436804062-30041-1-git-send-email-paul.burton@imgtec.com>
-References: <1436804062-30041-1-git-send-email-paul.burton@imgtec.com>
+        with ESMTP id S27009239AbbGNIOW4aXh4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Jul 2015 10:14:22 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH v2 10/19] MIPS: asm: mips-cm: Extend CM accessors for 64-bit CPUs
+Date: Tue, 14 Jul 2015 09:14:12 +0100
+Message-ID: <1436861652-2063-1-git-send-email-markos.chandras@imgtec.com>
+In-Reply-To: <1436434853-30001-11-git-send-email-markos.chandras@imgtec.com>
+References: <1436434853-30001-11-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,93 +21,125 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org
-Message-ID: <20150713161422.efdKdXrJoEKje2MkAMRlZRohcWM80X2SdXdaLDm5VhM@z>
+Cc: Markos Chandras <markos.chandras@imgtec.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Andrew Bresticker <abrestic@chromium.org>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20150714081412.cDd4T394T_Tgz0Fe2_osfwZQiuUvj1GnW420NYg-29k@z>
 
-The debug.h header provided some MIPS-specific debug macros, which are
-no longer used at all. Remove them.
+Previously, the CM accessors were only accessing CM registers as u32
+types instead of using the native CM register with. However, newer CMs
+may actually be 64-bit on MIPS64 cores. Fortunately, current 64-bit CMs
+(CM3) hold all the useful configuration bits in the lower half of the
+64-bit registers (at least most of them) so they can still be accessed
+using the current 32-bit accessors.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Andrew Bresticker <abrestic@chromium.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
 ---
+Changes since v1
+- Use 32-bit CM I/O on 32-bit kernels
+---
+ arch/mips/include/asm/mips-cm.h | 48 +++++++++++++++++++++++++++++++++++++----
+ arch/mips/kernel/mips-cm.c      |  4 ++++
+ 2 files changed, 48 insertions(+), 4 deletions(-)
 
- arch/mips/Kconfig.debug       |  9 --------
- arch/mips/include/asm/debug.h | 48 -------------------------------------------
- 2 files changed, 57 deletions(-)
- delete mode 100644 arch/mips/include/asm/debug.h
-
-diff --git a/arch/mips/Kconfig.debug b/arch/mips/Kconfig.debug
-index 3a2b775..e250524 100644
---- a/arch/mips/Kconfig.debug
-+++ b/arch/mips/Kconfig.debug
-@@ -87,15 +87,6 @@ config SB1XXX_CORELIS
- 	  Select compile flags that produce code that can be processed by the
- 	  Corelis mksym utility and UDB Emulator.
+diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
+index ca3f2c963fbd..46cc0c69b77c 100644
+--- a/arch/mips/include/asm/mips-cm.h
++++ b/arch/mips/include/asm/mips-cm.h
+@@ -33,6 +33,20 @@ extern void __iomem *mips_cm_l2sync_base;
+  */
+ extern phys_addr_t __mips_cm_phys_base(void);
  
--config RUNTIME_DEBUG
--	bool "Enable run-time debugging"
--	depends on DEBUG_KERNEL
--	help
--	  If you say Y here, some debugging macros will do run-time checking.
--	  If you say N here, those macros will mostly turn to no-ops.  See
--	  arch/mips/include/asm/debug.h for debugging macros.
--	  If unsure, say N.
--
- config DEBUG_ZBOOT
- 	bool "Enable compressed kernel support debugging"
- 	depends on DEBUG_KERNEL && SYS_SUPPORTS_ZBOOT
-diff --git a/arch/mips/include/asm/debug.h b/arch/mips/include/asm/debug.h
-deleted file mode 100644
-index 1fd5a2b..0000000
---- a/arch/mips/include/asm/debug.h
-+++ /dev/null
-@@ -1,48 +0,0 @@
--/*
-- * Debug macros for run-time debugging.
-- * Turned on/off with CONFIG_RUNTIME_DEBUG option.
-- *
-- * Copyright (C) 2001 MontaVista Software Inc.
-- * Author: Jun Sun, jsun@mvista.com or jsun@junsun.net
-- *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
-- *
-- */
--
--#ifndef _ASM_DEBUG_H
--#define _ASM_DEBUG_H
--
--
--/*
-- * run-time macros for catching spurious errors.  Eable CONFIG_RUNTIME_DEBUG in
-- * kernel hacking config menu to use them.
-- *
-- * Use them as run-time debugging aid.  NEVER USE THEM AS ERROR HANDLING CODE!!!
-- */
--
--#ifdef CONFIG_RUNTIME_DEBUG
--
--#include <linux/kernel.h>
--
--#define db_assert(x)  if (!(x)) { \
--	panic("assertion failed at %s:%d: %s", __FILE__, __LINE__, #x); }
--#define db_warn(x)  if (!(x)) { \
--	printk(KERN_WARNING "warning at %s:%d: %s", __FILE__, __LINE__, #x); }
--#define db_verify(x, y) db_assert(x y)
--#define db_verify_warn(x, y) db_warn(x y)
--#define db_run(x)  do { x; } while (0)
--
--#else
--
--#define db_assert(x)
--#define db_warn(x)
--#define db_verify(x, y) x
--#define db_verify_warn(x, y) x
--#define db_run(x)
--
--#endif
--
--#endif /* _ASM_DEBUG_H */
++/*
++ * mips_cm_is64 - determine CM register width
++ *
++ * The CM register width is processor and CM specific. A 64-bit processor
++ * usually has a 64-bit CM and a 32-bit one has a 32-bit CM but a 64-bit
++ * processor could come with a 32-bit CM. Moreover, accesses on 64-bit CMs
++ * can be done either using regular 64-bit load/store instructions, or 32-bit
++ * load/store instruction on 32-bit register pairs. We opt for using 64-bit
++ * accesses on 64-bit CMs and kernels and 32-bit in any other case.
++ *
++ * It's set to 0 for 32-bit accesses and 1 for 64-bit accesses.
++ */
++extern int mips_cm_is64;
++
+ /**
+  * mips_cm_probe - probe for a Coherence Manager
+  *
+@@ -90,20 +104,46 @@ static inline bool mips_cm_has_l2sync(void)
+ 
+ /* Macros to ease the creation of register access functions */
+ #define BUILD_CM_R_(name, off)					\
+-static inline u32 __iomem *addr_gcr_##name(void)		\
++static inline unsigned long __iomem *addr_gcr_##name(void)	\
+ {								\
+-	return (u32 __iomem *)(mips_cm_base + (off));		\
++	return (unsigned long __iomem *)(mips_cm_base + (off));	\
+ }								\
+ 								\
+-static inline u32 read_gcr_##name(void)				\
++static inline u32 read32_gcr_##name(void)			\
+ {								\
+ 	return __raw_readl(addr_gcr_##name());			\
++}								\
++								\
++static inline u64 read64_gcr_##name(void)			\
++{								\
++	return __raw_readq(addr_gcr_##name());			\
++}								\
++								\
++static inline unsigned long read_gcr_##name(void)		\
++{								\
++	if (mips_cm_is64)					\
++		return read64_gcr_##name();			\
++	else							\
++		return read32_gcr_##name();			\
+ }
+ 
+ #define BUILD_CM__W(name, off)					\
+-static inline void write_gcr_##name(u32 value)			\
++static inline void write32_gcr_##name(u32 value)		\
+ {								\
+ 	__raw_writel(value, addr_gcr_##name());			\
++}								\
++								\
++static inline void write64_gcr_##name(u64 value)		\
++{								\
++	__raw_writeq(value, addr_gcr_##name());			\
++}								\
++								\
++static inline void write_gcr_##name(unsigned long value)	\
++{								\
++	if (mips_cm_is64)					\
++		write64_gcr_##name(value);			\
++	else							\
++		write32_gcr_##name(value);			\
+ }
+ 
+ #define BUILD_CM_RW(name, off)					\
+diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+index 42602f30949f..3d2cb6f47898 100644
+--- a/arch/mips/kernel/mips-cm.c
++++ b/arch/mips/kernel/mips-cm.c
+@@ -15,6 +15,7 @@
+ 
+ void __iomem *mips_cm_base;
+ void __iomem *mips_cm_l2sync_base;
++int mips_cm_is64;
+ 
+ phys_addr_t __mips_cm_phys_base(void)
+ {
+@@ -124,5 +125,8 @@ int mips_cm_probe(void)
+ 	/* probe for an L2-only sync region */
+ 	mips_cm_probe_l2sync();
+ 
++	/* determine register width for this CM */
++	mips_cm_is64 = config_enabled(CONFIG_64BIT) && (mips_cm_revision() >= CM_REV_CM3);
++
+ 	return 0;
+ }
 -- 
 2.4.5

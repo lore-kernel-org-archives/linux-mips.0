@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:12114 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:30410 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008889AbbGNIczioOux (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Jul 2015 10:32:55 +0200
-Date: Tue, 14 Jul 2015 09:32:48 +0100
+        with ESMTP id S27009261AbbGNIfq1L-lx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Jul 2015 10:35:46 +0200
+Date: Tue, 14 Jul 2015 09:35:39 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 1/2] MIPS: PCI: ops-emma2rh: drop nonsensical db_assert
-Message-ID: <20150714083248.GE2519@NP-P-BURTON>
-References: <1436804062-30041-1-git-send-email-paul.burton@imgtec.com>
- <20150714083029.GA25179@linux-mips.org>
+Subject: Re: [PATCH v2 10/19] MIPS: asm: mips-cm: Extend CM accessors for
+ 64-bit CPUs
+Message-ID: <20150714083539.GF2519@NP-P-BURTON>
+References: <1436434853-30001-11-git-send-email-markos.chandras@imgtec.com>
+ <1436861652-2063-1-git-send-email-markos.chandras@imgtec.com>
+ <20150714083019.GD2519@NP-P-BURTON>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20150714083029.GA25179@linux-mips.org>
+In-Reply-To: <20150714083019.GD2519@NP-P-BURTON>
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,37 +24,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20150714083248.0ZfOuYKNJBc0W3TAgXqvom_3EUhZQ5fBxIzvu-3RbYo@z>
+To: Markos Chandras <markos.chandras@imgtec.com>
+Cc: linux-mips@linux-mips.org, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Andrew Bresticker <abrestic@chromium.org>
+Message-ID: <20150714083539.k_UA2uVBeBj9gA_bM-62yU-WKRSoRG2y8AkeOfLCnto@z>
 
-On Tue, Jul 14, 2015 at 10:30:30AM +0200, Ralf Baechle wrote:
-> On Mon, Jul 13, 2015 at 05:14:21PM +0100, Paul Burton wrote:
+On Tue, Jul 14, 2015 at 09:30:19AM +0100, Paul Burton wrote:
+> On Tue, Jul 14, 2015 at 09:14:12AM +0100, Markos Chandras wrote:
+> > Previously, the CM accessors were only accessing CM registers as u32
+> > types instead of using the native CM register with. However, newer CMs
+> > may actually be 64-bit on MIPS64 cores. Fortunately, current 64-bit CMs
+> > (CM3) hold all the useful configuration bits in the lower half of the
+> > 64-bit registers (at least most of them) so they can still be accessed
+> > using the current 32-bit accessors.
+> > 
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Jason Cooper <jason@lakedaemon.net>
+> > Cc: Andrew Bresticker <abrestic@chromium.org>
+> > Cc: Paul Burton <paul.burton@imgtec.com>
+> > Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+> > ---
+> > Changes since v1
+> > - Use 32-bit CM I/O on 32-bit kernels
 > 
-> > The db_assert call checks whether the bus_num pointer is non-NULL, but
-> > does so after said pointer has been dereferenced by the assignment on
-> > the previous line. Thus the check is pointless & likely to have been
-> > optimised out by the compiler anyway. The check_args function is static
-> > & only ever called from the local file with bus_num being a pointer to
-> > an on-stack variable, so the check seems somewhat overzealous anyway.
-> > Simply remove it.
-> 
-> Thanks, applied.
-> 
-> Your patch btw. leaves the db_verify() macro as the sole caller of
-> db_assert() and db_verify() itself is unused and in fact, nothing
-> includes <asm/debug.h> anymore.  Removing <asm/debug.h> leaves
-> CONFIG_RUNTIME_DEBUG unused, so I'm removing that one, too.
-> 
->   Ralf
+> A concern I have, but haven't yet drank enough coffee to think through
+> fully, is whether this will work on big endian systems. These are 64b
+> addresses and you're writing 32b to their addresses which I suspect may
+> go horribly wrong.
 
-Hi Ralf,
+Should be:
 
-That's precisely what led me to write this patch, and precisely what the
-following patch I submitted (MIPS: drop CONFIG_RUNTIME_DEBUG & debug.h)
-does:
+"These are 64b registers and you're writing 32b to their addresses"
 
-    http://patchwork.linux-mips.org/patch/10693/
+Apparently I haven't drunk enouugh coffee to formulate sentences yet
+either ;)
 
 Thanks,
     Paul

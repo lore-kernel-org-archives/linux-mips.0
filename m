@@ -1,20 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:41942 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:32806 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009276AbbGOIDYqMrhv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Jul 2015 10:03:24 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id B897B73A63C69
-        for <linux-mips@linux-mips.org>; Wed, 15 Jul 2015 09:03:17 +0100 (IST)
-Subject: Re: compile failure linux 3.10 with gcc 4.9.3 for mips
-References: <CAAA5faEN3MmWACoT2g2+9aOj1C=vj7UcNxd3Lez_K4_sCS8jBQ@mail.gmail.com>
-From: Markos Chandras <Markos.Chandras@imgtec.com>
-Message-ID: <55A613C6.3040505@imgtec.com>
-Date: Wed, 15 Jul 2015 09:03:18 +0100
+        with ESMTP id S27009858AbbGOPRzf6WSK (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Jul 2015 17:17:55 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 0/6] MIPS: dump_tlb cleanups
+Date: Wed, 15 Jul 2015 16:17:41 +0100
+Message-ID: <1436973467-3877-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAA5faEN3MmWACoT2g2+9aOj1C=vj7UcNxd3Lez_K4_sCS8jBQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,22 +18,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Message-ID: <20150715080318.vt-Fh4XkM_ESBlhOg_nMKFzmjPcum9mlBQMnCrJRWho@z>
+To: Ralf Baechle <ralf@linux-mips.org>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-mips@linux-mips.org
+Cc: James Hogan <james.hogan@imgtec.com>, Joshua Kinard <kumba@gentoo.org>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Message-ID: <20150715151741.CTdxC2GPCjTEy0kZRXA-wjnlLKL86SkZF8u6MRg-NI0@z>
 
-On 07/14/2015 07:04 PM, Reinoud Koornstra wrote:
-> Hi Everyone,
-> 
-> Did anybody enounter the following compiler problem with linux 3.10.81?
-> gcc version is 4.9.3 for mips and binutils 2.25
-> 
-> arch/mips/kernel/r4k_fpu.S: Assembler messages:
-> arch/mips/kernel/r4k_fpu.S:59: Error: opcode not supported on this
-> processor: mips3 (mips3) `sdc1 $f0,272+0($4)'
+This patchset addresses the remaining feedback from Joshua and Maciej on
+a couple of my dump_tlb patches which were merged in v4.2-rc1.
 
-I think this is a known bug and it needs a backport of
+Commit d1e9a4f54735 ("MIPS: Add SysRq operation to dump TLBs on all
+CPUs"):
+http://patchwork.linux-mips.org/patch/10072/
+- Add to Documentation/sysrq.txt.
+- Refactor to separate the TLB register dumping based on TLB type, and
+  also remove duplication.
+- Be more careful about dumping PageGrain, it might not exists.
+- Also dump FrameMask.
 
-https://patchwork.linux-mips.org/patch/8355/
+Commit 8ab6abcb6aa4 ("MIPS: mipsregs.h: Add EntryLo bit definitions")
+http://patchwork.linux-mips.org/patch/10073/
+- Rearrange definitions (Maciej: please check).
+
+James Hogan (6):
+  Documentation/sysrq.txt: Mention MIPS TLB dump (x)
+  MIPS: Refactor dumping of TLB registers for r3k/r4k
+  MIPS: Probe for small (1KiB) page support
+  MIPS: dump_tlb: Only dump PageGrain if interesting
+  MIPS: dump_tlb: Dump FrameMask register if exists
+  MIPS: Rearrange ENTRYLO field definitions
+
+ Documentation/sysrq.txt              |  1 +
+ arch/mips/include/asm/cpu-features.h |  4 +++
+ arch/mips/include/asm/cpu.h          |  1 +
+ arch/mips/include/asm/mipsregs.h     | 52 +++++++++++++++++++-----------------
+ arch/mips/include/asm/tlbdebug.h     |  1 +
+ arch/mips/kernel/cpu-probe.c         |  2 ++
+ arch/mips/kernel/sysrq.c             | 14 +---------
+ arch/mips/kernel/traps.c             | 16 ++---------
+ arch/mips/lib/dump_tlb.c             | 45 ++++++++++++++++++++++++-------
+ arch/mips/lib/r3k_dump_tlb.c         | 11 ++++++++
+ arch/mips/mm/tlb-r3k.c               |  2 +-
+ 11 files changed, 87 insertions(+), 62 deletions(-)
+
+Cc: Joshua Kinard <kumba@gentoo.org>
+Cc: Maciej W. Rozycki <macro@linux-mips.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-mips@linux-mips.org
+Cc: linux-doc@vger.kernel.org
 
 -- 
-markos
+2.3.6

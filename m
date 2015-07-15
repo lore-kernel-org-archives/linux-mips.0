@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:4175 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:48050 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011207AbbGOPR57VdfK (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Jul 2015 17:17:57 +0200
+        with ESMTP id S27011206AbbGOPR62GjzK (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Jul 2015 17:17:58 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 4/6] MIPS: dump_tlb: Only dump PageGrain if interesting
-Date: Wed, 15 Jul 2015 16:17:45 +0100
-Message-ID: <1436973467-3877-5-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 5/6] MIPS: dump_tlb: Dump FrameMask register if exists
+Date: Wed, 15 Jul 2015 16:17:46 +0100
+Message-ID: <1436973467-3877-6-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1436973467-3877-1-git-send-email-james.hogan@imgtec.com>
 References: <1436973467-3877-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -22,37 +22,42 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-mips@linux-mips.org
 Cc: James Hogan <james.hogan@imgtec.com>, Joshua Kinard <kumba@gentoo.org>
-Message-ID: <20150715151745.2mZ-9fqWrvCnO6zUiq1Q7N0jQQmv3JegNOaR2uFsVqw@z>
+Message-ID: <20150715151746.qzP-1teMZhKBao8w501wfjmiafvbRnJNf-ds8E7Shfc@z>
 
-The PageGrain register may not exist if certain architectural features
-aren't present, therefore only print out its value when dumping the TLB
-registers if it is expected to contain fields relevant to the TLB.
+The FrameMask register is relevant to the TLB so it should be dumped by
+dump_tlb_regs(), however it is only present in certain cores (r10000,
+r12000, r14000, r16000). Add dumping of it, conditional upon
+current_cpu_type().
 
-Fixes: d1e9a4f54735 ("MIPS: Add SysRq operation to dump TLBs on all CPUs")
-Reported-by: Joshua Kinard <kumba@gentoo.org>
-Reported-by: Maciej W. Rozycki <macro@linux-mips.org>
+Suggested-by: Joshua Kinard <kumba@gentoo.org>
+Suggested-by: Maciej W. Rozycki <macro@linux-mips.org>
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: Joshua Kinard <kumba@gentoo.org>
 Cc: Maciej W. Rozycki <macro@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 ---
- arch/mips/lib/dump_tlb.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/mips/lib/dump_tlb.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/arch/mips/lib/dump_tlb.c b/arch/mips/lib/dump_tlb.c
-index 519ededbf9a4..2ab83be14ffa 100644
+index 2ab83be14ffa..64f90f626681 100644
 --- a/arch/mips/lib/dump_tlb.c
 +++ b/arch/mips/lib/dump_tlb.c
-@@ -23,7 +23,8 @@ void dump_tlb_regs(void)
+@@ -23,6 +23,14 @@ void dump_tlb_regs(void)
  	pr_info("EntryLo0 : %0*lx\n", field, read_c0_entrylo0());
  	pr_info("EntryLo1 : %0*lx\n", field, read_c0_entrylo1());
  	pr_info("Wired    : %0x\n", read_c0_wired());
--	pr_info("PageGrain: %0x\n", read_c0_pagegrain());
-+	if (cpu_has_small_pages || cpu_has_rixi || cpu_has_xpa)
-+		pr_info("PageGrain: %0x\n", read_c0_pagegrain());
++	switch (current_cpu_type()) {
++	case CPU_R10000:
++	case CPU_R12000:
++	case CPU_R14000:
++	case CPU_R16000:
++		pr_info("FrameMask: %0x\n", read_c0_framemask());
++		break;
++	}
+ 	if (cpu_has_small_pages || cpu_has_rixi || cpu_has_xpa)
+ 		pr_info("PageGrain: %0x\n", read_c0_pagegrain());
  	if (cpu_has_htw) {
- 		pr_info("PWField  : %0*lx\n", field, read_c0_pwfield());
- 		pr_info("PWSize   : %0*lx\n", field, read_c0_pwsize());
 -- 
 2.3.6

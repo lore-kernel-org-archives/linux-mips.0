@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53341 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:41942 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009498AbbGNNHnQSjDh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Jul 2015 15:07:43 +0200
-Subject: Re: [PATCH 6/7] MIPS: kernel: cps-vec: Use macros for various
- arithmetics and memory operations
-References: <1435738414-30944-1-git-send-email-markos.chandras@imgtec.com>
- <1435738414-30944-7-git-send-email-markos.chandras@imgtec.com>
- <20150714124011.GH2519@NP-P-BURTON>
+        with ESMTP id S27009276AbbGOIDYqMrhv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Jul 2015 10:03:24 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id B897B73A63C69
+        for <linux-mips@linux-mips.org>; Wed, 15 Jul 2015 09:03:17 +0100 (IST)
+Subject: Re: compile failure linux 3.10 with gcc 4.9.3 for mips
+References: <CAAA5faEN3MmWACoT2g2+9aOj1C=vj7UcNxd3Lez_K4_sCS8jBQ@mail.gmail.com>
 From: Markos Chandras <Markos.Chandras@imgtec.com>
-Message-ID: <55A50998.4030308@imgtec.com>
-Date: Tue, 14 Jul 2015 14:07:36 +0100
+Message-ID: <55A613C6.3040505@imgtec.com>
+Date: Wed, 15 Jul 2015 09:03:18 +0100
 MIME-Version: 1.0
-In-Reply-To: <20150714124011.GH2519@NP-P-BURTON>
+In-Reply-To: <CAAA5faEN3MmWACoT2g2+9aOj1C=vj7UcNxd3Lez_K4_sCS8jBQ@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Markos.Chandras@imgtec.com>
@@ -24,30 +24,22 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20150714130736.UjDJ-PbBcGJ0gdo4rZGC-BFiXZWZuULyzQoktKntRLM@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20150715080318.vt-Fh4XkM_ESBlhOg_nMKFzmjPcum9mlBQMnCrJRWho@z>
 
-On 07/14/2015 01:40 PM, Paul Burton wrote:
->> @@ -152,7 +152,7 @@ dcache_done:
->>  
->>  	/* Enter the coherent domain */
->>  	li	t0, 0xff
->> -	sw	t0, GCR_CL_COHERENCE_OFS(v1)
->> +	PTR_S	t0, GCR_CL_COHERENCE_OFS(v1)
+On 07/14/2015 07:04 PM, Reinoud Koornstra wrote:
+> Hi Everyone,
 > 
-> Hi Markos,
+> Did anybody enounter the following compiler problem with linux 3.10.81?
+> gcc version is 4.9.3 for mips and binutils 2.25
 > 
-> I don't believe this is correct where accessing GCRs. Since you've
-> pushed elsewhere to perform 32 bit accesses when running a 32 bit kernel
-> on a MIPS64 core with CM3, can we just keep doing 32 bit accesses here?
-> 
+> arch/mips/kernel/r4k_fpu.S: Assembler messages:
+> arch/mips/kernel/r4k_fpu.S:59: Error: opcode not supported on this
+> processor: mips3 (mips3) `sdc1 $f0,272+0($4)'
 
-Hi Paul,
+I think this is a known bug and it needs a backport of
 
-Yes. This patch is already upstream though. I will wait for the
-'mips_cm_is64' to make it upstream as well and then I will submit a fix
-for this one. It should not break anything at the moment. Thanks
+https://patchwork.linux-mips.org/patch/8355/
 
 -- 
 markos

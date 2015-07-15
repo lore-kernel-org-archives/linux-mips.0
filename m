@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:2484 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:4175 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011193AbbGOPR5p-CDK (ORCPT
+        with ESMTP id S27011207AbbGOPR57VdfK (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Wed, 15 Jul 2015 17:17:57 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 3/6] MIPS: Probe for small (1KiB) page support
-Date: Wed, 15 Jul 2015 16:17:44 +0100
-Message-ID: <1436973467-3877-4-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 4/6] MIPS: dump_tlb: Only dump PageGrain if interesting
+Date: Wed, 15 Jul 2015 16:17:45 +0100
+Message-ID: <1436973467-3877-5-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1436973467-3877-1-git-send-email-james.hogan@imgtec.com>
 References: <1436973467-3877-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -21,59 +21,38 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>
-Message-ID: <20150715151744.ixC0kvWJJH4iwnvaWzmcTr13qSbHyB_3UDb8Iz3kOJY@z>
+Cc: James Hogan <james.hogan@imgtec.com>, Joshua Kinard <kumba@gentoo.org>
+Message-ID: <20150715151745.2mZ-9fqWrvCnO6zUiq1Q7N0jQQmv3JegNOaR2uFsVqw@z>
 
-Probe Config3 for small page support. This will be useful to give clues
-as to whether the PageGrain register exists.
+The PageGrain register may not exist if certain architectural features
+aren't present, therefore only print out its value when dumping the TLB
+registers if it is expected to contain fields relevant to the TLB.
 
+Fixes: d1e9a4f54735 ("MIPS: Add SysRq operation to dump TLBs on all CPUs")
+Reported-by: Joshua Kinard <kumba@gentoo.org>
+Reported-by: Maciej W. Rozycki <macro@linux-mips.org>
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Joshua Kinard <kumba@gentoo.org>
 Cc: Maciej W. Rozycki <macro@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 ---
- arch/mips/include/asm/cpu-features.h | 4 ++++
- arch/mips/include/asm/cpu.h          | 1 +
- arch/mips/kernel/cpu-probe.c         | 2 ++
- 3 files changed, 7 insertions(+)
+ arch/mips/lib/dump_tlb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index f25de771f7ed..9801ac982655 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -411,4 +411,8 @@
- # define cpu_has_cdmm		(cpu_data[0].options & MIPS_CPU_CDMM)
- #endif
- 
-+#ifndef cpu_has_small_pages
-+# define cpu_has_small_pages	(cpu_data[0].options & MIPS_CPU_SP)
-+#endif
-+
- #endif /* __ASM_CPU_FEATURES_H */
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index e46e40602af3..00424b630f27 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -382,6 +382,7 @@ enum cpu_type_enum {
- #define MIPS_CPU_XPA		0x2000000000ull /* CPU supports Extended Physical Addressing */
- #define MIPS_CPU_CDMM		0x4000000000ull	/* CPU has Common Device Memory Map */
- #define MIPS_CPU_BP_GHIST	0x8000000000ull /* R12K+ Branch Prediction Global History */
-+#define MIPS_CPU_SP		0x10000000000ull /* Small (1KB) page support */
- 
- /*
-  * CPU ASE encodings
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index dbe0792fc9c1..4f716dd77734 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -524,6 +524,8 @@ static inline unsigned int decode_config3(struct cpuinfo_mips *c)
- 	}
- 	if (config3 & MIPS_CONF3_CDMM)
- 		c->options |= MIPS_CPU_CDMM;
-+	if (config3 & MIPS_CONF3_SP)
-+		c->options |= MIPS_CPU_SP;
- 
- 	return config3 & MIPS_CONF_M;
- }
+diff --git a/arch/mips/lib/dump_tlb.c b/arch/mips/lib/dump_tlb.c
+index 519ededbf9a4..2ab83be14ffa 100644
+--- a/arch/mips/lib/dump_tlb.c
++++ b/arch/mips/lib/dump_tlb.c
+@@ -23,7 +23,8 @@ void dump_tlb_regs(void)
+ 	pr_info("EntryLo0 : %0*lx\n", field, read_c0_entrylo0());
+ 	pr_info("EntryLo1 : %0*lx\n", field, read_c0_entrylo1());
+ 	pr_info("Wired    : %0x\n", read_c0_wired());
+-	pr_info("PageGrain: %0x\n", read_c0_pagegrain());
++	if (cpu_has_small_pages || cpu_has_rixi || cpu_has_xpa)
++		pr_info("PageGrain: %0x\n", read_c0_pagegrain());
+ 	if (cpu_has_htw) {
+ 		pr_info("PWField  : %0*lx\n", field, read_c0_pwfield());
+ 		pr_info("PWSize   : %0*lx\n", field, read_c0_pwsize());
 -- 
 2.3.6

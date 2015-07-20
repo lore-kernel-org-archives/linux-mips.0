@@ -1,14 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:52986 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010088AbbGQOzETv1Hw (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 17 Jul 2015 16:55:04 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH v2] MIPS: malta-time: Don't reinitialise RTC
-Date: Fri, 17 Jul 2015 15:54:41 +0100
-Message-ID: <1437144881-26431-1-git-send-email-james.hogan@imgtec.com>
+Received: from szxga02-in.huawei.com ([119.145.14.65]:57034 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27011345AbbGTMIgmGzFy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 20 Jul 2015 14:08:36 +0200
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH part3 v12 07/10] PCI: Create pci host bridge prior to root bus
+Date: Mon, 20 Jul 2015 20:01:15 +0800
+Message-ID: <1437393678-4077-8-git-send-email-wangyijing@huawei.com>
+In-Reply-To: <1437393678-4077-1-git-send-email-wangyijing@huawei.com>
+References: <1437393678-4077-1-git-send-email-wangyijing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <wangyijing@huawei.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,68 +20,145 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, James Hogan <james.hogan@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, stable@vger.kernel.org
-Message-ID: <20150717145441.IMgZFDUIGCViItJIROrXNchXql-y9JPwvXLlDeTfYis@z>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, linux-xtensa@linux-xtensa.org, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>
+Message-ID: <20150720120115.apTr575CS-wOZjx-cdqM6c_YFoFt_X042EKO-j7yM7o@z>
 
-On Malta, since commit a87ea88d8f6c ("MIPS: Malta: initialise the RTC at
-boot"), the RTC is reinitialised and forced into binary coded decimal
-(BCD) mode during init, even if the bootloader has already initialised
-it, and may even have already put it into binary mode (as YAMON does).
-This corrupts the current time, can result in the RTC seconds being an
-invalid BCD (e.g. 0x1a..0x1f) for up to 6 seconds, as well as confusing
-YAMON for a while after reset, enough for it to report timeouts when
-attempting to load from TFTP (it actually uses the RTC in that code).
+Pci_host_bridge hold the domain number, we need
+to assign domain number prior to root bus creation,
+because root bus need to know the domain number
+to check whether it's alreay exist. Also it's
+preparation for separating pci_host_bridge creation
+from pci_create_root_bus().
 
-Therefore only initialise the RTC to the extent that is necessary so
-that Linux avoids interfering with the bootloader setup, while also
-allowing it to estimate the CPU frequency without hanging, without a
-bootloader necessarily having done anything with the RTC (for example
-when the kernel is loaded via EJTAG).
-
-The divider control is configured for a 32KHZ reference clock if
-necessary, and the SET bit of the RTC_CONTROL register is cleared if
-necessary without changing any other bits (this bit will be set when
-coming out of reset if the battery has been disconnected).
-
-Fixes: a87ea88d8f6c ("MIPS: Malta: initialise the RTC at boot")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Reviewed-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Maciej W. Rozycki <macro@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # 3.14+
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 ---
- arch/mips/mti-malta/malta-time.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ drivers/pci/probe.c |   58 +++++++++++++++++++++++++++-----------------------
+ 1 files changed, 31 insertions(+), 27 deletions(-)
 
-diff --git a/arch/mips/mti-malta/malta-time.c b/arch/mips/mti-malta/malta-time.c
-index 5625b190edc0..c1dc730471e0 100644
---- a/arch/mips/mti-malta/malta-time.c
-+++ b/arch/mips/mti-malta/malta-time.c
-@@ -171,14 +171,17 @@ unsigned int get_c0_compare_int(void)
- 
- static void __init init_rtc(void)
- {
--	/* stop the clock whilst setting it up */
--	CMOS_WRITE(RTC_SET | RTC_24H, RTC_CONTROL);
-+	unsigned char freq, ctrl;
- 
--	/* 32KHz time base */
--	CMOS_WRITE(RTC_REF_CLCK_32KHZ, RTC_FREQ_SELECT);
-+	/* Set 32KHz time base if not already set */
-+	freq = CMOS_READ(RTC_FREQ_SELECT);
-+	if ((freq & RTC_DIV_CTL) != RTC_REF_CLCK_32KHZ)
-+		CMOS_WRITE(RTC_REF_CLCK_32KHZ, RTC_FREQ_SELECT);
- 
--	/* start the clock */
--	CMOS_WRITE(RTC_24H, RTC_CONTROL);
-+	/* Ensure SET bit is clear so RTC can run */
-+	ctrl = CMOS_READ(RTC_CONTROL);
-+	if (ctrl & RTC_SET)
-+		CMOS_WRITE(ctrl & ~RTC_SET, RTC_CONTROL);
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 0ae8bf2..cb525aa 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -515,7 +515,7 @@ static void pci_release_host_bridge_dev(struct device *dev)
+ 	kfree(bridge);
  }
  
- void __init plat_time_init(void)
+-static struct pci_host_bridge *pci_alloc_host_bridge(struct pci_bus *b)
++static struct pci_host_bridge *pci_alloc_host_bridge(void)
+ {
+ 	struct pci_host_bridge *bridge;
+ 
+@@ -524,7 +524,6 @@ static struct pci_host_bridge *pci_alloc_host_bridge(struct pci_bus *b)
+ 		return NULL;
+ 
+ 	INIT_LIST_HEAD(&bridge->windows);
+-	bridge->bus = b;
+ 	return bridge;
+ }
+ 
+@@ -1938,48 +1937,53 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int domain,
+ {
+ 	int error;
+ 	struct pci_host_bridge *bridge;
+-	struct pci_bus *b, *b2;
++	struct pci_bus *b;
+ 	struct resource_entry *window, *n;
+ 	struct resource *res;
+ 	resource_size_t offset;
+ 	char bus_addr[64];
+ 	char *fmt;
+ 
+-	b = pci_alloc_bus(NULL);
+-	if (!b)
++	bridge = pci_alloc_host_bridge();
++	if (!bridge)
+ 		return NULL;
+ 
+-	b->sysdata = sysdata;
+-	b->ops = ops;
+-	b->number = b->busn_res.start = bus;
+-	pci_bus_assign_domain_nr(b, parent);
+-	b2 = pci_find_bus(pci_domain_nr(b), bus);
+-	if (b2) {
++	bridge->dev.parent = parent;
++	pci_host_assign_domain_nr(bridge, domain);
++
++	b = pci_find_bus(bridge->domain, bus);
++	if (b) {
+ 		/* If we already got to this bus through a different bridge, ignore it */
+-		dev_dbg(&b2->dev, "bus already known\n");
+-		goto err_out;
++		dev_dbg(&b->dev, "bus already known\n");
++		kfree(bridge);
++		return NULL;
+ 	}
+ 
+-	bridge = pci_alloc_host_bridge(b);
+-	if (!bridge)
+-		goto err_out;
+-
+-	bridge->domain = domain;
+-	bridge->dev.parent = parent;
+ 	bridge->dev.release = pci_release_host_bridge_dev;
+ 	dev_set_drvdata(&bridge->dev, sysdata);
+-	dev_set_name(&bridge->dev, "pci%04x:%02x", pci_domain_nr(b), bus);
++	dev_set_name(&bridge->dev, "pci%04x:%02x", bridge->domain, bus);
+ 	error = pcibios_root_bridge_prepare(bridge);
+ 	if (error) {
+ 		kfree(bridge);
+-		goto err_out;
++		return NULL;
+ 	}
+ 
+ 	error = device_register(&bridge->dev);
+ 	if (error) {
+ 		put_device(&bridge->dev);
+-		goto err_out;
++		return NULL;
+ 	}
++
++	b = pci_alloc_bus(NULL);
++	if (!b)
++		goto unregister_host;
++
++	bridge->bus = b;
++	b->sysdata = sysdata;
++	b->ops = ops;
++	b->number = b->busn_res.start = bus;
++	pci_bus_assign_domain_nr(b, parent);
++
+ 	b->bridge = get_device(&bridge->dev);
+ 	device_enable_async_suspend(b->bridge);
+ 	pci_set_bus_of_node(b);
+@@ -1992,11 +1996,11 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int domain,
+ 	dev_set_name(&b->dev, "%04x:%02x", pci_domain_nr(b), bus);
+ 	error = pcibios_root_bus_prepare(bridge);
+ 	if (error)
+-		goto class_dev_reg_err;
++		goto free_bus;
+ 
+ 	error = device_register(&b->dev);
+ 	if (error)
+-		goto class_dev_reg_err;
++		goto free_bus;
+ 
+ 	pcibios_add_bus(b);
+ 
+@@ -2036,11 +2040,11 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int domain,
+ 
+ 	return b;
+ 
+-class_dev_reg_err:
++free_bus:
++	kfree(b);
+ 	put_device(&bridge->dev);
++unregister_host:
+ 	device_unregister(&bridge->dev);
+-err_out:
+-	kfree(b);
+ 	return NULL;
+ }
+ EXPORT_SYMBOL_GPL(pci_create_root_bus);
 -- 
-2.3.6
+1.7.1

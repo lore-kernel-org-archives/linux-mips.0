@@ -1,17 +1,18 @@
-Received: from mail-gw1-out.broadcom.com ([216.31.210.62]:17438 "EHLO
-        mail-gw1-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27011489AbbGUV2wq0941 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 21 Jul 2015 23:28:52 +0200
-Message-ID: <55AEB91C.1020202@broadcom.com>
-Date: Tue, 21 Jul 2015 14:26:52 -0700
-From: Florian Fainelli <fainelli@broadcom.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:40635 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27010093AbbGWKGEPCAkl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Jul 2015 12:06:04 +0200
+Message-ID: <55B0BC94.2050106@imgtec.com>
+Date: Thu, 23 Jul 2015 11:06:12 +0100
+From: James Hogan <james.hogan@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] genirq: add chip_{suspend,resume} PM support to irq_chip
-References: <20150619224123.GL4917@ld-irv-0074> <1434756403-379-1-git-send-email-computersforpeace@gmail.com> <alpine.DEB.2.11.1506201605290.4107@nanos> <55AE8E5D.8020700@gmail.com> <alpine.DEB.2.11.1507212316530.18576@nanos>
-In-Reply-To: <alpine.DEB.2.11.1507212316530.18576@nanos>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <fainelli@broadcom.com>
+Subject: Re: [PATCH 2/2] MIPS: Partially disable RIXI support.
+References: <cover.1437644062.git.ralf@linux-mips.org> <6066e46d74d2314ecc19e6562afe33e369fe9557.1437644062.git.ralf@linux-mips.org>
+In-Reply-To: <6066e46d74d2314ecc19e6562afe33e369fe9557.1437644062.git.ralf@linux-mips.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature";
+        boundary="mpPfmcRa8EOulXIuteBGN5egUG3okpCmu"
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,90 +22,111 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>, Florian Fainelli <f.fainelli@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Kevin Cernekee <cernekee@gmail.com>, Jason Cooper <jason@lakedaemon.net>
-Message-ID: <20150721212652._ZjEBBiT0z3pNF2BNHqEQ_OZggoa5o6VNuh0lACfizI@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, David Daney <ddaney@caviumnetworks.com>, Markos Chandras <Markos.Chandras@imgtec.com>
+Message-ID: <20150723100612.46vWSRYLDKC4mOxbU6-mMQf1dsm4Mb38GXmjqwRqB8U@z>
 
-On 21/07/15 14:23, Thomas Gleixner wrote:
-> On Tue, 21 Jul 2015, Florian Fainelli wrote:
->> On 20/06/15 07:11, Thomas Gleixner wrote:
->>> On Fri, 19 Jun 2015, Brian Norris wrote:
->>>> This patch adds a second set of suspend/resume hooks to irq_chip, this
->>>> time to represent *chip* suspend/resume, rather than IRQ suspend/resume.
->>>> These callbacks will always be called for an irqchip and are based on
->>>> the per-chip irq_chip_generic struct, rather than the per-IRQ irq_data
->>>> struct.
->>>
->>> There is no per-chip irq_chip_generic struct. It's only there if the
->>> irq chip has been instantiated as a generic chip.
->>>  
->>>>  /**
->>>>   * struct irq_chip - hardware interrupt chip descriptor
->>>>   *
->>>> @@ -317,6 +319,12 @@ static inline irq_hw_number_t irqd_to_hwirq(struct irq_data *d)
->>>>   * @irq_suspend:	function called from core code on suspend once per chip
->>>>   * @irq_resume:		function called from core code on resume once per chip
->>>>   * @irq_pm_shutdown:	function called from core code on shutdown once per chip
->>>> + * @chip_suspend:	function called from core code on suspend once per
->>>> + *			chip; for handling chip details even when no interrupts
->>>> + *			are in use
->>>> + * @chip_resume:	function called from core code on resume once per chip;
->>>> + *			for handling chip details even when no interrupts are
->>>> + *			in use
->>>>   * @irq_calc_mask:	Optional function to set irq_data.mask for special cases
->>>>   * @irq_print_chip:	optional to print special chip info in show_interrupts
->>>>   * @irq_request_resources:	optional to request resources before calling
->>>> @@ -357,6 +365,8 @@ struct irq_chip {
->>>>  	void		(*irq_suspend)(struct irq_data *data);
->>>>  	void		(*irq_resume)(struct irq_data *data);
->>>>  	void		(*irq_pm_shutdown)(struct irq_data *data);
->>>> +	void		(*chip_suspend)(struct irq_chip_generic *gc);
->>>> +	void		(*chip_resume)(struct irq_chip_generic *gc);
->>>
->>> I really don't want to set a precedent for random (*foo)(*bar)
->>> callbacks.
->>>  
->>>> +
->>>> +		if (ct->chip.chip_suspend)
->>>> +			ct->chip.chip_suspend(gc);
->>>
->>> So wouldn't it be the more intuitive solution to make this a callback
->>> in the struct gc itself?
->>
->> Brian can correct me, but his approach is more generic, if there is
->> another irqchip driver needing a similar infrastructure, this would be
->> already there, and directly usable.
-> 
-> No it's not directly usable. It's only usable with irq_chip_generic
-> incarnations.
-> 
->> Maybe all we need to is to change the chip_suspend/resume arguments
->> to pass a reference to irq_chip instead?
-> 
-> I just read back on the problem report which was mentioned in the
-> changelog:
-> 
-> "It's not a problem with patch 7, exactly, it's a problem with the
->  irqchip driver which handles the UART interrupt mask (irq-bcm7120-l2.c).
->  The problem is that with a trimmed down device tree (such as the one
->  found at arch/arm/boot/dts/bcm7445-bcm97445svmb.dtb), none of the child
->  interrupts of the 'irq0_intc' node are described -- we don't have device
->  tree nodes for them yet -- but we still require saving and restoring the
->  forwarding mask (see 'brcm,int-fwd-mask') in order for the UART
->  interrupts to continue operating."
-> 
-> So you are trying to work around a flaw in the device tree by adding
-> random callbacks to the core kernel?
+--mpPfmcRa8EOulXIuteBGN5egUG3okpCmu
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-Not quite, you could have your interrupt controller node declared in
-Device Tree, but have no "interrupts" property referencing it because:
+On 23/07/15 10:10, Ralf Baechle wrote:
+> Execution of break instruction, trap instructions, emulation of unalign=
+ed
+> loads or floating point instructions - anything that tries to read the
+> instruction's opcode from userspace - needs read access to a page.
+>=20
+> RIXI (Read Inhibit / Execute Inhibit) support however allows the creati=
+on of
+> pags that are executable but not readable.  On such a mapping the attem=
+pted
+> load of the opcode by the kernel is going to cause an endless loop of
+> page faults.
+>=20
+> The quick workaround for this is to disable the combinations that the k=
+ernel
+> currently isn't able to handle which are executable mappings.
+>=20
+> Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 
-- the hardware is just not there, but you inherit a common Device Tree
-skleten (*.dtsi)
-- you could have Device Tree overlays which may or may not be loaded as
-a result of finding expansion boards etc...
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
 
-It just appeared that Brian was specifically testing with something that
-exposed the problem.
--- 
-Florian
+Cheers
+James
+
+> ---
+>  arch/mips/mm/cache.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+> index 77d96db..aab218c 100644
+> --- a/arch/mips/mm/cache.c
+> +++ b/arch/mips/mm/cache.c
+> @@ -160,18 +160,18 @@ static inline void setup_protection_map(void)
+>  		protection_map[1]  =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_NO_EXEC);
+>  		protection_map[2]  =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+>  		protection_map[3]  =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_NO_EXEC);
+> -		protection_map[4]  =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_NO_READ);
+> +		protection_map[4]  =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT);
+>  		protection_map[5]  =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT);
+> -		protection_map[6]  =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_NO_READ);
+> +		protection_map[6]  =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT);
+>  		protection_map[7]  =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT);
+> =20
+>  		protection_map[8]  =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+>  		protection_map[9]  =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_NO_EXEC);
+>  		protection_map[10] =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_NO_EXEC | _PAGE_WRITE | _PAGE_NO_READ);
+>  		protection_map[11] =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_NO_EXEC | _PAGE_WRITE);
+> -		protection_map[12] =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_NO_READ);
+> +		protection_map[12] =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT);
+>  		protection_map[13] =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT);
+> -		protection_map[14] =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_WRITE  | _PAGE_NO_READ);
+> +		protection_map[14] =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_WRITE);
+>  		protection_map[15] =3D __pgprot(_page_cachable_default | _PAGE_PRESE=
+NT | _PAGE_WRITE);
+> =20
+>  	} else {
+>=20
+
+
+--mpPfmcRa8EOulXIuteBGN5egUG3okpCmu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJVsLyUAAoJEGwLaZPeOHZ64XUP/24w6qs01Li5S/rbsW7BZngo
+xLtSeOK9sVV3mtQFROoNyX2YeVj94cpVaBSFDqYvM0tbrq0C5BGolpdhsu2BFeSm
+j2AIuGCCCsv5fKrgTsfloufAPdtuTYFrlpLudddr9HrjRIko/CDhXf9NQbSgaOMQ
+N3WXgPT2f0WbUMzEevrtcVoOJHA7MmsBXL8JITsIaAO3eb+9fTf9GubSqlZrvvJI
+QO+dqYfSLdGP/r1fWf80aF5hxCKHql8Juswrhg6IoE9HYHxgATQXZinI9TWRZMln
+Zb2LMPCXKDqunQXbVIXa9PHBflLoy3yb5UQ4uIDrTNQC8os26got+66y+f7UYjau
+ZnvMdZQYgDgiLJePoA8QJnczFXXfIcA/G2oRwz8m9t9OqvvFuQ06oUSiGeqUxFvG
+SNnm3gQwV/MF+orEuWjitCgVzPS5/JZyn/hgYf03WFk6PZMdKOy/fR7vBz3dBXSa
+acTrM0pRy7daM/UoEHUPmjdSNvkcPzHt003u/OOUp+pQZUGhaoqkgAznjYK6bEUy
+iOrpWmuf8PsMynWp8xOuDnlbmxPo40t118zXRfFw/JV8eDw7+kmI29/CrwplwFl/
+lcUWNLDAvOwyvpV+XJ+DlaH72W8kgAXC9zmyYvcw9UBwCMmxurz/CxEpfc73LDdQ
+0ByFw0o5ZSmv3clCGq19
+=ZYW/
+-----END PGP SIGNATURE-----
+
+--mpPfmcRa8EOulXIuteBGN5egUG3okpCmu--

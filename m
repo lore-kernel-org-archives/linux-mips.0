@@ -1,14 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45077 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:24612 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009989AbbGXPQ11UsgG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Jul 2015 17:16:27 +0200
+        with ESMTP id S27010479AbbGXPQdHPNLG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Jul 2015 17:16:33 +0200
 Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id 8A47F7A2A9CD5
-        for <linux-mips@linux-mips.org>; Fri, 24 Jul 2015 16:16:18 +0100 (IST)
+        by Websense Email Security Gateway with ESMTPS id 1ECC74643246D
+        for <linux-mips@linux-mips.org>; Fri, 24 Jul 2015 16:16:24 +0100 (IST)
 From: Alex Smith <alex.smith@imgtec.com>
-Subject: [PATCH 1/3] MIPS: Fix definition of pgprot_writecombine()
-Date: Fri, 24 Jul 2015 16:16:10 +0100
-Message-ID: <1437750972-3659-1-git-send-email-alex.smith@imgtec.com>
+Subject: [PATCH 2/3] MIPS: Add implementation of dma_map_ops.mmap() that handles write combining
+Date: Fri, 24 Jul 2015 16:16:11 +0100
+Message-ID: <1437750972-3659-2-git-send-email-alex.smith@imgtec.com>
+In-Reply-To: <1437750972-3659-1-git-send-email-alex.smith@imgtec.com>
+References: <1437750972-3659-1-git-send-email-alex.smith@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Alex.Smith@imgtec.com>
@@ -23,33 +25,67 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Alex Smith <alex.smith@imgtec.com>
-Message-ID: <20150724151610.BFZ7mQ39GG__v88bbtwLvaWBzc0Cd2M9ltrZbtB8Yk8@z>
+Message-ID: <20150724151611.8GnvBazJ81f2OyZcrxmCK9VgrkZ6yA3O7iXChKtdqrI@z>
 
-If pgprot_writecombine is not #defined, asm-generic/pgtable.h will try
-to provide a default implementation by #defining it to pgprot_noncached.
-However our implementation is an inline function rather than a #define,
-so it was never actually used because of the #define in generic code.
+The generic implementation of dma_map_ops.mmap(), dma_common_mmap(),
+does not handle the DMA_ATTR_WRITE_COMBINE attribute and therefore
+dma_mmap_writecombine() will not actually set the appropriate pgprot_t
+flags for write combining.
 
-Add "#define pgprot_writecombine pgprot_writecombine" to prevent generic
-code from re-defining it.
+Add an implementation of dma_map_ops.mmap() that will enable write
+combining when requested.
 
 Signed-off-by: Alex Smith <alex.smith@imgtec.com>
 ---
- arch/mips/include/asm/pgtable.h | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/mips/mm/dma-default.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 9d8106758142..4668e798a857 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -362,6 +362,8 @@ static inline pgprot_t pgprot_noncached(pgprot_t _prot)
- 	return __pgprot(prot);
+diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
+index eeaf0245c3b1..949794007ab7 100644
+--- a/arch/mips/mm/dma-default.c
++++ b/arch/mips/mm/dma-default.c
+@@ -194,6 +194,34 @@ static void mips_dma_free_coherent(struct device *dev, size_t size, void *vaddr,
+ 		__free_pages(page, get_order(size));
  }
  
-+#define pgprot_writecombine pgprot_writecombine
++static int mips_dma_mmap(struct device *dev, struct vm_area_struct *vma,
++	void *cpu_addr, dma_addr_t dma_addr, size_t size,
++	struct dma_attrs *attrs)
++{
++	unsigned long user_count = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
++	unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
++	unsigned long pfn = page_to_pfn(virt_to_page(cpu_addr));
++	unsigned long off = vma->vm_pgoff;
++	int ret = -ENXIO;
 +
- static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
++	if (dma_get_attr(DMA_ATTR_WRITE_COMBINE, attrs))
++		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
++	else
++		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
++
++	if (dma_mmap_from_coherent(dev, vma, cpu_addr, size, &ret))
++		return ret;
++
++	if (off < count && user_count <= (count - off)) {
++		ret = remap_pfn_range(vma, vma->vm_start,
++				      pfn + off,
++				      user_count << PAGE_SHIFT,
++				      vma->vm_page_prot);
++	}
++
++	return ret;
++}
++
+ static inline void __dma_sync_virtual(void *addr, size_t size,
+ 	enum dma_data_direction direction)
  {
- 	unsigned long prot = pgprot_val(_prot);
+@@ -380,6 +408,7 @@ EXPORT_SYMBOL(dma_cache_sync);
+ static struct dma_map_ops mips_default_dma_map_ops = {
+ 	.alloc = mips_dma_alloc_coherent,
+ 	.free = mips_dma_free_coherent,
++	.mmap = mips_dma_mmap,
+ 	.map_page = mips_dma_map_page,
+ 	.unmap_page = mips_dma_unmap_page,
+ 	.map_sg = mips_dma_map_sg,
 -- 
 2.4.6

@@ -1,19 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:21033 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27009512AbbGWKPHB6tol (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Jul 2015 12:15:07 +0200
-Message-ID: <55B0BEB3.7010502@imgtec.com>
-Date: Thu, 23 Jul 2015 11:15:15 +0100
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:50950 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27009989AbbGXPOfBCafG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Jul 2015 17:14:35 +0200
+Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
+        by Websense Email Security Gateway with ESMTPS id 023614E227A4F
+        for <linux-mips@linux-mips.org>; Fri, 24 Jul 2015 16:14:25 +0100 (IST)
+From: Alex Smith <alex.smith@imgtec.com>
+Subject: [PATCH] MIPS: SMP: Don't increment irq_count multiple times for call function IPIs
+Date: Fri, 24 Jul 2015 16:14:22 +0100
+Message-ID: <1437750862-3443-1-git-send-email-alex.smith@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] MIPS: Handle page faults of executable but unreadable
- pages correctly.
-References: <cover.1437644062.git.ralf@linux-mips.org> <b02d2b2d33026271c663207dc68bfa0531b16251.1437644062.git.ralf@linux-mips.org>
-In-Reply-To: <b02d2b2d33026271c663207dc68bfa0531b16251.1437644062.git.ralf@linux-mips.org>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature";
-        boundary="VJFCq1wT3tjxMxxtlpwJ6IpJCJJ3x4TIJ"
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Alex.Smith@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,69 +21,259 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, David Daney <ddaney@caviumnetworks.com>, Markos Chandras <Markos.Chandras@imgtec.com>
-Message-ID: <20150723101515.lDI1ycy6LL7TPNYTEAhfxktbQ1S1P33Kk3Fg1ML81VE@z>
+To: linux-mips@linux-mips.org
+Cc: Alex Smith <alex.smith@imgtec.com>
+Message-ID: <20150724151422.NHL-OJhoAqaZkCr-XQBSRvRTFl8AWzmb22SNR4bvgrM@z>
 
---VJFCq1wT3tjxMxxtlpwJ6IpJCJJ3x4TIJ
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+The majority of SMP platforms handle their IPIs through do_IRQ()
+which calls irq_{enter/exit}(). When a call function IPI is received,
+smp_call_function_interrupt() is called which also calls
+irq_{enter,exit}(), meaning irq_count is raised twice.
 
-On 23/07/15 10:10, Ralf Baechle wrote:
-> Without this we end taking execeptions in an endless loop hanging the
-> thread.
+When tick broadcasting is used (which is implemented via a call
+function IPI), this incorrectly causes all CPU idle time on the core
+receiving broadcast ticks to be accounted as time spent servicing
+IRQs, as account_process_tick() will account as such if irq_count is
+greater than 1. This results in 100% CPU usage being reported on a
+core which receives its ticks via broadcast.
 
-A little more explanation would be nice. Under what situations does this
-occur? Does this mean any VM_EXEC and !VM_READ page can't actually be
-faulted in without it being treated as an RI violation, or does it only
-affect when read from kernel emulation code?
+This patch removes the SMP smp_call_function_interrupt() wrapper which
+calls irq_{enter,exit}(). Platforms which handle their IPIs through
+do_IRQ() now call generic_smp_call_function_interrupt() directly to
+avoid incrementing irq_count a second time. Platforms which don't
+(loongson, sgi-ip27, sibyte) call generic_smp_call_function_interrupt()
+wrapped in irq_{enter,exit}().
 
-Cheers
-James
+Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+---
+ arch/mips/cavium-octeon/smp.c         |  2 +-
+ arch/mips/include/asm/smp.h           |  2 --
+ arch/mips/kernel/smp-bmips.c          |  4 ++--
+ arch/mips/kernel/smp.c                | 10 ----------
+ arch/mips/lantiq/irq.c                |  2 +-
+ arch/mips/loongson64/loongson-3/smp.c |  7 +++++--
+ arch/mips/mti-malta/malta-int.c       |  2 +-
+ arch/mips/netlogic/common/smp.c       |  2 +-
+ arch/mips/paravirt/paravirt-smp.c     |  2 +-
+ arch/mips/pmcs-msp71xx/msp_smp.c      |  2 +-
+ arch/mips/sgi-ip27/ip27-irq.c         |  8 ++++++--
+ arch/mips/sibyte/bcm1480/smp.c        |  9 +++++----
+ arch/mips/sibyte/sb1250/smp.c         |  7 +++++--
+ 13 files changed, 29 insertions(+), 30 deletions(-)
 
->=20
-> Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
-> ---
->  arch/mips/mm/fault.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/mips/mm/fault.c b/arch/mips/mm/fault.c
-> index 36c0f26..852a41c 100644
-> --- a/arch/mips/mm/fault.c
-> +++ b/arch/mips/mm/fault.c
-> @@ -133,7 +133,8 @@ good_area:
->  #endif
->  				goto bad_area;
->  			}
-> -			if (!(vma->vm_flags & VM_READ)) {
-> +			if (!(vma->vm_flags & VM_READ) &&
-> +			    exception_epc(regs) !=3D address) {
->  #if 0
->  				pr_notice("Cpu%d[%s:%d:%0*lx:%ld:%0*lx] RI violation\n",
->  					  raw_smp_processor_id(),
->=20
-
-
---VJFCq1wT3tjxMxxtlpwJ6IpJCJJ3x4TIJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJVsL6zAAoJEGwLaZPeOHZ6CPYQAI8sm6y851iBka20iNkjxPMo
-wqPJaANo9LQtDhLUoefsVwOJD5mhkPuFeKHp9Qk7z8GGdo+zr6UkWWesuzVDYaMk
-23BgeBw9gkDHraD9sb8tSkCbgFcubW2KJ58asViZw74ZP9v7gBEZIueWu3XoteGn
-6SIuC9mZRL3yOxh9QUYTK15XishTPa1CZ5/3hQXB3yBIOybL+9deZYQo6DRhLziJ
-g9RdPY+SWAHWDuS1fdnkjcRIczsy9G/KJ6xHrIQfl5PKYIu4nOXTW2vN4jNRN/nx
-iynu8BGY42/N9woJFhYsfW1Vu8oHA0JJtLyBc0qFtQt62liFaz8Jd32QsjeQz90x
-Ddof9kBdxal+1A/XoPifbqeESJROt+hOgJ+wnR2P33ZvV5ZfDkyjoVg9vx8HTQsy
-hXnSQQZUedvEdvBmuXJJoAO3/UsPxUYFwWRv596OzDixIu3BwIQi7c2Cm+ordeTY
-KpcUUJSZQA1BfQVHEmRLgfNSnyO1jRLziyBkcKm4B6+OPlP5+7ZfPePayD4fpjFj
-5n0jjuGivAuzsvRCZsqMZ2+zg1bYHUlbyv80Rp2SPtqneg+eEfa70dUKkXTjxMdC
-4Xs1p3CkUfjfAs+dOeLQeQpUk0UuUdVEbSdAYdENMbuvMZMapWVzugDPaVZ5gpo8
-sipzepj5vAn0Ucv6PDOQ
-=P69W
------END PGP SIGNATURE-----
-
---VJFCq1wT3tjxMxxtlpwJ6IpJCJJ3x4TIJ--
+diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
+index 56f5d080ef9d..b7fa9ae28c36 100644
+--- a/arch/mips/cavium-octeon/smp.c
++++ b/arch/mips/cavium-octeon/smp.c
+@@ -42,7 +42,7 @@ static irqreturn_t mailbox_interrupt(int irq, void *dev_id)
+ 	cvmx_write_csr(CVMX_CIU_MBOX_CLRX(coreid), action);
+ 
+ 	if (action & SMP_CALL_FUNCTION)
+-		smp_call_function_interrupt();
++		generic_smp_call_function_interrupt();
+ 	if (action & SMP_RESCHEDULE_YOURSELF)
+ 		scheduler_ipi();
+ 
+diff --git a/arch/mips/include/asm/smp.h b/arch/mips/include/asm/smp.h
+index 16f1ea9ab191..03722d4326a1 100644
+--- a/arch/mips/include/asm/smp.h
++++ b/arch/mips/include/asm/smp.h
+@@ -83,8 +83,6 @@ static inline void __cpu_die(unsigned int cpu)
+ extern void play_dead(void);
+ #endif
+ 
+-extern asmlinkage void smp_call_function_interrupt(void);
+-
+ static inline void arch_send_call_function_single_ipi(int cpu)
+ {
+ 	extern struct plat_smp_ops *mp_ops;	/* private */
+diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bmips.c
+index 336708ae5c5b..78cf8c2f1de0 100644
+--- a/arch/mips/kernel/smp-bmips.c
++++ b/arch/mips/kernel/smp-bmips.c
+@@ -284,7 +284,7 @@ static irqreturn_t bmips5000_ipi_interrupt(int irq, void *dev_id)
+ 	if (action == 0)
+ 		scheduler_ipi();
+ 	else
+-		smp_call_function_interrupt();
++		generic_smp_call_function_interrupt();
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -336,7 +336,7 @@ static irqreturn_t bmips43xx_ipi_interrupt(int irq, void *dev_id)
+ 	if (action & SMP_RESCHEDULE_YOURSELF)
+ 		scheduler_ipi();
+ 	if (action & SMP_CALL_FUNCTION)
+-		smp_call_function_interrupt();
++		generic_smp_call_function_interrupt();
+ 
+ 	return IRQ_HANDLED;
+ }
+diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+index d0744cc77ea7..a31896c33716 100644
+--- a/arch/mips/kernel/smp.c
++++ b/arch/mips/kernel/smp.c
+@@ -192,16 +192,6 @@ asmlinkage void start_secondary(void)
+ 	cpu_startup_entry(CPUHP_ONLINE);
+ }
+ 
+-/*
+- * Call into both interrupt handlers, as we share the IPI for them
+- */
+-void __irq_entry smp_call_function_interrupt(void)
+-{
+-	irq_enter();
+-	generic_smp_call_function_interrupt();
+-	irq_exit();
+-}
+-
+ static void stop_this_cpu(void *dummy)
+ {
+ 	/*
+diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
+index 6ab10573490d..be18648cb8c8 100644
+--- a/arch/mips/lantiq/irq.c
++++ b/arch/mips/lantiq/irq.c
+@@ -293,7 +293,7 @@ static irqreturn_t ipi_resched_interrupt(int irq, void *dev_id)
+ 
+ static irqreturn_t ipi_call_interrupt(int irq, void *dev_id)
+ {
+-	smp_call_function_interrupt();
++	generic_smp_call_function_interrupt();
+ 	return IRQ_HANDLED;
+ }
+ 
+diff --git a/arch/mips/loongson64/loongson-3/smp.c b/arch/mips/loongson64/loongson-3/smp.c
+index 509877c6e9d9..1a4738a8f2d3 100644
+--- a/arch/mips/loongson64/loongson-3/smp.c
++++ b/arch/mips/loongson64/loongson-3/smp.c
+@@ -266,8 +266,11 @@ void loongson3_ipi_interrupt(struct pt_regs *regs)
+ 	if (action & SMP_RESCHEDULE_YOURSELF)
+ 		scheduler_ipi();
+ 
+-	if (action & SMP_CALL_FUNCTION)
+-		smp_call_function_interrupt();
++	if (action & SMP_CALL_FUNCTION) {
++		irq_enter();
++		generic_smp_call_function_interrupt();
++		irq_exit();
++	}
+ 
+ 	if (action & SMP_ASK_C0COUNT) {
+ 		BUG_ON(cpu != 0);
+diff --git a/arch/mips/mti-malta/malta-int.c b/arch/mips/mti-malta/malta-int.c
+index d1392f8f5811..fa8f591f3713 100644
+--- a/arch/mips/mti-malta/malta-int.c
++++ b/arch/mips/mti-malta/malta-int.c
+@@ -222,7 +222,7 @@ static irqreturn_t ipi_resched_interrupt(int irq, void *dev_id)
+ 
+ static irqreturn_t ipi_call_interrupt(int irq, void *dev_id)
+ {
+-	smp_call_function_interrupt();
++	generic_smp_call_function_interrupt();
+ 
+ 	return IRQ_HANDLED;
+ }
+diff --git a/arch/mips/netlogic/common/smp.c b/arch/mips/netlogic/common/smp.c
+index dc3e327fbbac..f5fff228b347 100644
+--- a/arch/mips/netlogic/common/smp.c
++++ b/arch/mips/netlogic/common/smp.c
+@@ -86,7 +86,7 @@ void nlm_smp_function_ipi_handler(unsigned int irq, struct irq_desc *desc)
+ {
+ 	clear_c0_eimr(irq);
+ 	ack_c0_eirr(irq);
+-	smp_call_function_interrupt();
++	generic_smp_call_function_interrupt();
+ 	set_c0_eimr(irq);
+ }
+ 
+diff --git a/arch/mips/paravirt/paravirt-smp.c b/arch/mips/paravirt/paravirt-smp.c
+index 42181c7105df..f8d3e081b2eb 100644
+--- a/arch/mips/paravirt/paravirt-smp.c
++++ b/arch/mips/paravirt/paravirt-smp.c
+@@ -114,7 +114,7 @@ static irqreturn_t paravirt_reched_interrupt(int irq, void *dev_id)
+ 
+ static irqreturn_t paravirt_function_interrupt(int irq, void *dev_id)
+ {
+-	smp_call_function_interrupt();
++	generic_smp_call_function_interrupt();
+ 	return IRQ_HANDLED;
+ }
+ 
+diff --git a/arch/mips/pmcs-msp71xx/msp_smp.c b/arch/mips/pmcs-msp71xx/msp_smp.c
+index 10170580a2de..ffa0f7101a97 100644
+--- a/arch/mips/pmcs-msp71xx/msp_smp.c
++++ b/arch/mips/pmcs-msp71xx/msp_smp.c
+@@ -44,7 +44,7 @@ static irqreturn_t ipi_resched_interrupt(int irq, void *dev_id)
+ 
+ static irqreturn_t ipi_call_interrupt(int irq, void *dev_id)
+ {
+-	smp_call_function_interrupt();
++	generic_smp_call_function_interrupt();
+ 
+ 	return IRQ_HANDLED;
+ }
+diff --git a/arch/mips/sgi-ip27/ip27-irq.c b/arch/mips/sgi-ip27/ip27-irq.c
+index 3fbaef97a1b8..16ec4e12daa3 100644
+--- a/arch/mips/sgi-ip27/ip27-irq.c
++++ b/arch/mips/sgi-ip27/ip27-irq.c
+@@ -107,10 +107,14 @@ static void ip27_do_irq_mask0(void)
+ 		scheduler_ipi();
+ 	} else if (pend0 & (1UL << CPU_CALL_A_IRQ)) {
+ 		LOCAL_HUB_CLR_INTR(CPU_CALL_A_IRQ);
+-		smp_call_function_interrupt();
++		irq_enter();
++		generic_smp_call_function_interrupt();
++		irq_exit();
+ 	} else if (pend0 & (1UL << CPU_CALL_B_IRQ)) {
+ 		LOCAL_HUB_CLR_INTR(CPU_CALL_B_IRQ);
+-		smp_call_function_interrupt();
++		irq_enter();
++		generic_smp_call_function_interrupt();
++		irq_exit();
+ 	} else
+ #endif
+ 	{
+diff --git a/arch/mips/sibyte/bcm1480/smp.c b/arch/mips/sibyte/bcm1480/smp.c
+index af7d44edd9a8..4c71aea25663 100644
+--- a/arch/mips/sibyte/bcm1480/smp.c
++++ b/arch/mips/sibyte/bcm1480/smp.c
+@@ -29,8 +29,6 @@
+ #include <asm/sibyte/bcm1480_regs.h>
+ #include <asm/sibyte/bcm1480_int.h>
+ 
+-extern void smp_call_function_interrupt(void);
+-
+ /*
+  * These are routines for dealing with the bcm1480 smp capabilities
+  * independent of board/firmware
+@@ -184,6 +182,9 @@ void bcm1480_mailbox_interrupt(void)
+ 	if (action & SMP_RESCHEDULE_YOURSELF)
+ 		scheduler_ipi();
+ 
+-	if (action & SMP_CALL_FUNCTION)
+-		smp_call_function_interrupt();
++	if (action & SMP_CALL_FUNCTION) {
++		irq_enter();
++		generic_smp_call_function_interrupt();
++		irq_exit();
++	}
+ }
+diff --git a/arch/mips/sibyte/sb1250/smp.c b/arch/mips/sibyte/sb1250/smp.c
+index c0c4b3f88a08..1cf66f5ff23d 100644
+--- a/arch/mips/sibyte/sb1250/smp.c
++++ b/arch/mips/sibyte/sb1250/smp.c
+@@ -172,6 +172,9 @@ void sb1250_mailbox_interrupt(void)
+ 	if (action & SMP_RESCHEDULE_YOURSELF)
+ 		scheduler_ipi();
+ 
+-	if (action & SMP_CALL_FUNCTION)
+-		smp_call_function_interrupt();
++	if (action & SMP_CALL_FUNCTION) {
++		irq_enter();
++		generic_smp_call_function_interrupt();
++		irq_exit();
++	}
+ }
+-- 
+2.4.6

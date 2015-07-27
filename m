@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:63241 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:25968 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011247AbbG0MvCdrp20 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Jul 2015 14:51:02 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: show_stack: Fix stack trace with EVA
-Date: Mon, 27 Jul 2015 13:50:22 +0100
-Message-ID: <1438001422-20910-2-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1438001422-20910-1-git-send-email-james.hogan@imgtec.com>
-References: <1438001422-20910-1-git-send-email-james.hogan@imgtec.com>
+        with ESMTP id S27011280AbbG0OB1MmvMd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Jul 2015 16:01:27 +0200
+From: Govindraj Raja <govindraj.raja@imgtec.com>
+Subject: [PATCH v4 0/7] Clocksource changes for Pistachio CPUFreq.
+Date: Mon, 27 Jul 2015 15:00:11 +0100
+Message-ID: <1438005618-27003-1-git-send-email-govindraj.raja@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Govindraj.Raja@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,69 +18,80 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Leonid Yegoshin <leonid.yegoshin@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20150727125022.wdUFpVOdrnjtg9ZXKmbEAxXcW3imw49qtIDo76-9aVQ@z>
+To: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Daniel Lezcano <daniel.lezcano@linaro.org>, devicetree@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Govindraj Raja <Govindraj.Raja@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Message-ID: <20150727140011.Z28x0nJ5ZrPvAy2aRIjeD5T3S8mKvaZR27ph61RekkU@z>
 
-The show_stack() function deals exclusively with kernel contexts, but if
-it gets called in user context with EVA enabled, show_stacktrace() will
-attempt to access the stack using EVA accesses, which will either read
-other user mapped data, or more likely cause an exception which will be
-handled by __get_user().
+From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
 
-This is easily reproduced using SysRq t to show all task states, which
-results in the following stack dump output:
+The purpose of this patchset is to support CPUFreq on Pistachio SoC.
+However, given Pistachio uses the MIPS GIC clocksource and clockevent drivers
+(clocked from the CPU), adding CPUFreq support needs some work.
 
- Stack : (Bad stack address)
+This patchset changes the MIPS GIC clockevent driver to update the frequency of
+the per-cpu clockevents using a clock notifier.
 
-Fix by setting the current user access mode to kernel around the call to
-show_stacktrace(). This causes __get_user() to use normal loads to read
-the kernel stack.
+Then, we add a clocksource driver for IMG Pistachio SoC, based on the 
+general purpose timers. The SoC only provides four timers, so we can't
+use them to implement the four clockevents and the clocksource.
 
-Now we get the correct output, like this:
+However, we can use one of these timers to provide a clocksource and a
+sched clock. Given the general purpose timers are clocked from the peripheral
+system clock tree, they are not affected by CPU rate changes.
 
- Stack : 00000000 80168960 00000000 004a0000 00000000 00000000 8060016c 1f3abd0c
-           1f172cd8 8056f09c 7ff1e450 8014fc3c 00000001 806dd0b0 0000001d 00000002
-           1f17c6a0 1f17c804 1f17c6a0 8066f6e0 00000000 0000000a 00000000 00000000
-           00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-           00000000 00000000 00000000 00000000 00000000 0110e800 1f3abd6c 1f17c6a0
-           ...
+Patches 1 to 3 are just style cleaning and preparation work.
+Patch 4 adds the clockevent frequency update.
+Patches 5 and 6 add the new clocksource driver.
+Patch 7 introduces an option to enable the timer based clocksource on Pistachio.
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # 3.15+
----
- arch/mips/kernel/traps.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+For CPUFreq to really work, clk driver changes are needed to support MIPS PLL
+clock rate change. Patches for this will be posted soon.
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 02484d17fb6f..8ea28e6ab37d 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -192,6 +192,7 @@ static void show_stacktrace(struct task_struct *task,
- void show_stack(struct task_struct *task, unsigned long *sp)
- {
- 	struct pt_regs regs;
-+	mm_segment_t old_fs = get_fs();
- 	if (sp) {
- 		regs.regs[29] = (unsigned long)sp;
- 		regs.regs[31] = 0;
-@@ -210,7 +211,13 @@ void show_stack(struct task_struct *task, unsigned long *sp)
- 			prepare_frametrace(&regs);
- 		}
- 	}
-+	/*
-+	 * show_stack() deals exclusively with kernel mode, so be sure to access
-+	 * the stack in the kernel (not user) address space.
-+	 */
-+	set_fs(KERNEL_DS);
- 	show_stacktrace(task, &regs);
-+	set_fs(old_fs);
- }
- 
- static void show_code(unsigned int __user *pc)
+This series apply on v4.2-rc3. As always, comments and feedback are welcome!
+
+Tested on Pistachio-Bring-up-Board.
+Patch series based on 4.2-rc3.
+
+Changes from v3:
+---------------
+No Changes from v2 re-posting the series again.
+
+Changes from v2:
+---------------
+   * Fix spacing for consistency as pointed out by Sergei.
+
+Changes since v1
+----------------
+
+Addressed review comments by Andrew:
+   * Fix typo
+   * Fix style issues
+   * Use readl/writel accessors instead of raw variants
+   * Drop spurious comment and of_device_id table
+   * Add a pistachio_ prefix to clocksource functions
+
+
+Ezequiel Garcia (7):
+  clocksource: mips-gic: Enable the clock before using it
+  clocksource: mips-gic: Add missing error returns checks
+  clocksource: mips-gic: Split clocksource and clockevent initialization
+  clocksource: mips-gic: Update clockevent frequency on clock rate
+    changes
+  clocksource: Add Pistachio SoC general purpose timer binding document
+  clocksource: Add Pistachio clocksource-only driver
+  mips: pistachio: Allow to enable the external timer based clocksource
+
+ .../bindings/timer/img,pistachio-gptimer.txt       |  28 +++
+ arch/mips/Kconfig                                  |   1 +
+ arch/mips/pistachio/Kconfig                        |  13 ++
+ drivers/clocksource/Kconfig                        |   4 +
+ drivers/clocksource/Makefile                       |   1 +
+ drivers/clocksource/mips-gic-timer.c               |  65 ++++++-
+ drivers/clocksource/time-pistachio.c               | 194 +++++++++++++++++++++
+ 7 files changed, 297 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/timer/img,pistachio-gptimer.txt
+ create mode 100644 arch/mips/pistachio/Kconfig
+ create mode 100644 drivers/clocksource/time-pistachio.c
+
 -- 
-2.3.6
+1.9.1

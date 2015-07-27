@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:47262 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:4376 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011094AbbG0T6yTjAXX (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Jul 2015 21:58:54 +0200
+        with ESMTP id S27011222AbbG0T7LuEUOX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Jul 2015 21:59:11 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 00/16] MSA vector context signal handling & HWCAPs
-Date: Mon, 27 Jul 2015 12:58:11 -0700
-Message-ID: <1438027107-24420-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH v2 01/16] MIPS: remove outdated comments in sigcontext.h
+Date: Mon, 27 Jul 2015 12:58:12 -0700
+Message-ID: <1438027107-24420-2-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1438027107-24420-1-git-send-email-paul.burton@imgtec.com>
+References: <1438027107-24420-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -19,55 +21,45 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Guenter Roeck <linux@roeck-us.net>, Matthew Fortune <matthew.fortune@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Peter Zijlstra <peterz@infradead.org>, Kees Cook <keescook@chromium.org>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Michael Ellerman <mpe@ellerman.id.au>, Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org, Alex Smith <alex@alex-smith.me.uk>, Huacai Chen <chenhc@lemote.com>, Richard Weinberger <richard@nod.at>, James Hogan <james.hogan@imgtec.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@amacapital.net>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Daniel Borkmann <dborkman@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>, "Maciej W. Rozycki" <macro@codesourcery.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
-Message-ID: <20150727195811.KJ5qmE3lVnzdYuGsRciXj06pCasjTVmlC0a0MhXQrno@z>
+Cc: Guenter Roeck <linux@roeck-us.net>, Matthew Fortune <matthew.fortune@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org
+Message-ID: <20150727195812.ihqCo6HmHqf0pmzVnEtMV6YMnLBYO4l_Td4j3iA4i7M@z>
 
-This series provides the final bits of support for MSA as far as
-userland that isn't a debugger goes. In order to preserve backwards
-compatibility it saves the extended vector context after the end of the
-sigframe or ucontext, at a fixed offset. A bit set in sigcontext's
-sc_used_math field indicates to userland (and to the kernel on
-sigreturn) that the extended context is present.
+The offsets to various fields within struct sigcontext are declared
+using asm-offsets.c these days, so drop the outdated comment that talks
+about keeping in sync with a no longer present file.
 
-With these final bits in, the presence of MSA support is indicated via a
-HWCAP bit that userland may check for.
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+---
 
-Paul Burton (16):
-  MIPS: remove outdated comments in sigcontext.h
-  MIPS: simplify EVA FP context handling code
-  MIPS: add offsets to sigcontext FP fields to struct mips_abi
-  MIPS: use struct mips_abi offsets to save FP context
-  MIPS: move FP usage checks into protected_{save,restore}_fp_context
-  MIPS: skip odd double FP registers when copying FP32 sigcontext
-  MIPS: use common FP sigcontext code for O32 compat
-  MIPS: remove unused {get,put}_sigset functions
-  MIPS: indicate FP mode in sigcontext sc_used_math
-  MIPS: add definitions for extended context
-  MIPS: save MSA extended context around signals
-  MIPS: AT_HWCAP aux vector infrastructure
-  MIPS: advertise MIPSr6 via HWCAP when appropriate
-  MIPS: advertise MSA support via HWCAP when present
-  MIPS: require O32 FP64 support for MIPS64 with O32 compat
-  MIPS: drop EXPERIMENTAL tag from O32+FP64 & MSA
+Changes in v2: None
 
- arch/mips/Kconfig                       |   5 +-
- arch/mips/include/asm/Kbuild            |   1 -
- arch/mips/include/asm/abi.h             |   4 +
- arch/mips/include/asm/elf.h             |   4 +-
- arch/mips/include/asm/signal.h          |   3 +
- arch/mips/include/uapi/asm/hwcap.h      |   8 +
- arch/mips/include/uapi/asm/sigcontext.h |  19 +-
- arch/mips/include/uapi/asm/ucontext.h   |  65 +++++
- arch/mips/kernel/asm-offsets.c          |  11 -
- arch/mips/kernel/cpu-probe.c            |   7 +
- arch/mips/kernel/r4k_fpu.S              | 372 ++++++++++++++-------------
- arch/mips/kernel/signal-common.h        |   9 +
- arch/mips/kernel/signal.c               | 429 +++++++++++++++++++++++++-------
- arch/mips/kernel/signal32.c             | 207 +--------------
- arch/mips/kernel/signal_n32.c           |   6 +-
- 15 files changed, 660 insertions(+), 490 deletions(-)
- create mode 100644 arch/mips/include/uapi/asm/hwcap.h
- create mode 100644 arch/mips/include/uapi/asm/ucontext.h
+ arch/mips/include/uapi/asm/sigcontext.h | 7 -------
+ 1 file changed, 7 deletions(-)
 
+diff --git a/arch/mips/include/uapi/asm/sigcontext.h b/arch/mips/include/uapi/asm/sigcontext.h
+index 6c9906f..ae78902 100644
+--- a/arch/mips/include/uapi/asm/sigcontext.h
++++ b/arch/mips/include/uapi/asm/sigcontext.h
+@@ -14,10 +14,6 @@
+ 
+ #if _MIPS_SIM == _MIPS_SIM_ABI32
+ 
+-/*
+- * Keep this struct definition in sync with the sigcontext fragment
+- * in arch/mips/tools/offset.c
+- */
+ struct sigcontext {
+ 	unsigned int		sc_regmask;	/* Unused */
+ 	unsigned int		sc_status;	/* Unused */
+@@ -45,9 +41,6 @@ struct sigcontext {
+ 
+ #include <linux/posix_types.h>
+ /*
+- * Keep this struct definition in sync with the sigcontext fragment
+- * in arch/mips/tools/offset.c
+- *
+  * Warning: this structure illdefined with sc_badvaddr being just an unsigned
+  * int so it was changed to unsigned long in 2.6.0-test1.  This may break
+  * binary compatibility - no prisoners.
 -- 
 2.4.6

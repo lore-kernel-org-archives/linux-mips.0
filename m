@@ -1,16 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:58110 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:19620 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011332AbbG0OC3vD3sd (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Jul 2015 16:02:29 +0200
-From: Govindraj Raja <govindraj.raja@imgtec.com>
-Subject: [PATCH v4 7/7] mips: pistachio: Allow to enable the external timer based clocksource
-Date: Mon, 27 Jul 2015 15:02:35 +0100
-Message-ID: <1438005755-27051-3-git-send-email-govindraj.raja@imgtec.com>
-In-Reply-To: <1438005755-27051-1-git-send-email-govindraj.raja@imgtec.com>
-References: <1438005755-27051-1-git-send-email-govindraj.raja@imgtec.com>
+        with ESMTP id S27010780AbbG0RVxkqfZp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Jul 2015 19:21:53 +0200
+Date: Mon, 27 Jul 2015 10:21:42 -0700
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: Crash in -next due to 'MIPS: Move FP usage checks into
+ protected_{save, restore}_fp_context'
+Message-ID: <20150727172142.GE7289@NP-P-BURTON>
+References: <20150715160918.GA27653@roeck-us.net>
+ <20150727150652.GA1756@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Govindraj.Raja@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20150727150652.GA1756@roeck-us.net>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,53 +23,74 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Daniel Lezcano <daniel.lezcano@linaro.org>, devicetree@vger.kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Govindraj Raja <Govindraj.Raja@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Message-ID: <20150727140235.4a0SD_M3RO2I9Ek2haF3aGunFmDT4G5oHmvu9KJsjBM@z>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-next@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20150727172142.WbhKD7ciccbbwo9zsNrfd5QGQjIarEWC_WxB7qZ05i8@z>
 
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+On Mon, Jul 27, 2015 at 08:06:52AM -0700, Guenter Roeck wrote:
+> On Wed, Jul 15, 2015 at 09:09:18AM -0700, Guenter Roeck wrote:
+> > Hi,
+> > 
+> > my qemu test for mipsel crashes with next-20150715 as follows.
+> > 
+> ping ... problem is still seen as of next-20150727.
 
-This commit introduces a new config, so the user can choose to enable
-the General Purpose Timer based clocksource. This option is required
-to have CPUFreq support.
+Hi Guenter,
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
----
- arch/mips/Kconfig           |  1 +
- arch/mips/pistachio/Kconfig | 13 +++++++++++++
- 2 files changed, 14 insertions(+)
- create mode 100644 arch/mips/pistachio/Kconfig
+Apologies for the delay. Could you share your affected kernel
+configuration & which userland you're running?
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index cee5f93..c0cc9e4 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -948,6 +948,7 @@ source "arch/mips/jazz/Kconfig"
- source "arch/mips/jz4740/Kconfig"
- source "arch/mips/lantiq/Kconfig"
- source "arch/mips/lasat/Kconfig"
-+source "arch/mips/pistachio/Kconfig"
- source "arch/mips/pmcs-msp71xx/Kconfig"
- source "arch/mips/ralink/Kconfig"
- source "arch/mips/sgi-ip27/Kconfig"
-diff --git a/arch/mips/pistachio/Kconfig b/arch/mips/pistachio/Kconfig
-new file mode 100644
-index 0000000..97731ea
---- /dev/null
-+++ b/arch/mips/pistachio/Kconfig
-@@ -0,0 +1,13 @@
-+config PISTACHIO_GPTIMER_CLKSRC
-+	bool "Enable General Purpose Timer based clocksource"
-+	depends on MACH_PISTACHIO
-+	select CLKSRC_PISTACHIO
-+	select MIPS_EXTERNAL_TIMER
-+	help
-+	  This option enables a clocksource driver based on a Pistachio
-+	  SoC General Purpose external timer.
-+
-+	  If you want to enable the CPUFreq, you need to enable
-+	  this option.
-+
-+	  If you don't want to enable CPUFreq, you can leave this disabled.
--- 
-1.9.1
+I've just tested with a malta_defconfig kernel & a buildroot based
+initramfs without problems, and things are also fine on my physical
+MIPSr6 setups. If you have any directions with which I can reproduce
+this problem that would be great.
+
+Thanks,
+    Paul
+
+> 
+> > ...
+> > Btrfs loaded
+> > console [netcon0] enabled
+> > netconsole: network logging started
+> > Freeing unused kernel memory: 284K (808f9000 - 80940000)
+> > Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000008
+> > 
+> > Bisect points to commit 'MIPS: Move FP usage checks into protected_{save,
+> > restore}_fp_context'. Bisect log is as follows.
+> > 
+> > The problem is not seen with bit endian qemu test.
+> > 
+> > Please let me know if there is anything I can do to help debugging
+> > this problem.
+> > 
+> > Thanks,
+> > Guenter
+> > ---
+> > 
+> > # bad: [f4d61b2d73c1e4964ad68df238af5005485469af] Add linux-next specific files for 20150715
+> > # good: [bc0195aad0daa2ad5b0d76cce22b167bc3435590] Linux 4.2-rc2
+> > git bisect start 'HEAD' 'v4.2-rc2'
+> > # bad: [897f492ee766d354b949f3838cbfda8978cfd3cd] Merge remote-tracking branch 'crypto/master'
+> > git bisect bad 897f492ee766d354b949f3838cbfda8978cfd3cd
+> > # bad: [687fe9993e4fbe728113086eb9525360465694e6] Merge remote-tracking branch 'mips/mips-for-linux-next'
+> > git bisect bad 687fe9993e4fbe728113086eb9525360465694e6
+> > # good: [a06e5ae4e8d6d5846809e94d0d45afcc5a9eaf35] Merge remote-tracking branch 'omap/for-next'
+> > git bisect good a06e5ae4e8d6d5846809e94d0d45afcc5a9eaf35
+> > # good: [badbfaedef0876d3cffb3264512aaec8cc162c61] Merge remote-tracking branch 'tegra/for-next'
+> > git bisect good badbfaedef0876d3cffb3264512aaec8cc162c61
+> > # bad: [88841d986cebe1207a47cd7422f5069b2616b194] MIPS: Advertise MSA support via HWCAP when present
+> > git bisect bad 88841d986cebe1207a47cd7422f5069b2616b194
+> > # good: [7c1f7b83170bc14a3e461a9b5595fcecf857da70] MIPS: octeon: Replace the homebrewn flow handler
+> > git bisect good 7c1f7b83170bc14a3e461a9b5595fcecf857da70
+> > # good: [186a699fdf6f0866ca980bcf5e79f54922fe52c2] MIPS: Introduce accessors for MSA vector registers
+> > git bisect good 186a699fdf6f0866ca980bcf5e79f54922fe52c2
+> > # bad: [1793cdaa84ed5c4025a36793f350b07b49555b57] MIPS: Skip odd double FP registers when copying FP32 sigcontext
+> > git bisect bad 1793cdaa84ed5c4025a36793f350b07b49555b57
+> > # good: [8a6bb0ab74eaca5f2a4e60f94df2ea5b08cdfd63] MIPS: Simplify EVA FP context handling code
+> > git bisect good 8a6bb0ab74eaca5f2a4e60f94df2ea5b08cdfd63
+> > # good: [6f47ebd751531249fe0e2b4d3afdfcbf9f66dbd8] MIPS: Use struct mips_abi offsets to save FP context
+> > git bisect good 6f47ebd751531249fe0e2b4d3afdfcbf9f66dbd8
+> > # bad: [fa3156ca734cb65f23df0f844433e75ea1da37f3] MIPS: Move FP usage checks into protected_{save, restore}_fp_context
+> > git bisect bad fa3156ca734cb65f23df0f844433e75ea1da37f3
+> > # first bad commit: [fa3156ca734cb65f23df0f844433e75ea1da37f3] MIPS: Move FP usage checks into protected_{save, restore}_fp_context

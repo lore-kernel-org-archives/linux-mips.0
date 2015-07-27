@@ -1,20 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61017 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:47262 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011286AbbG0SEvUu9oz (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Jul 2015 20:04:51 +0200
-Date: Mon, 27 Jul 2015 11:04:42 -0700
+        with ESMTP id S27011094AbbG0T6yTjAXX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Jul 2015 21:58:54 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: Crash in -next due to 'MIPS: Move FP usage checks into
- protected_{save, restore}_fp_context'
-Message-ID: <20150727180442.GG7289@NP-P-BURTON>
-References: <20150715160918.GA27653@roeck-us.net>
- <20150727150652.GA1756@roeck-us.net>
- <20150727172142.GE7289@NP-P-BURTON>
- <20150727174622.GA10708@roeck-us.net>
+Subject: [PATCH v2 00/16] MSA vector context signal handling & HWCAPs
+Date: Mon, 27 Jul 2015 12:58:11 -0700
+Message-ID: <1438027107-24420-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20150727174622.GA10708@roeck-us.net>
+Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -25,42 +18,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-next@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20150727180442.IOLwRsqlMzwKnMna13_go1zIViPCducBiPFXhBvvqfI@z>
+To: linux-mips@linux-mips.org
+Cc: Guenter Roeck <linux@roeck-us.net>, Matthew Fortune <matthew.fortune@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Peter Zijlstra <peterz@infradead.org>, Kees Cook <keescook@chromium.org>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Michael Ellerman <mpe@ellerman.id.au>, Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org, Alex Smith <alex@alex-smith.me.uk>, Huacai Chen <chenhc@lemote.com>, Richard Weinberger <richard@nod.at>, James Hogan <james.hogan@imgtec.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@amacapital.net>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Daniel Borkmann <dborkman@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>, "Maciej W. Rozycki" <macro@codesourcery.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
+Message-ID: <20150727195811.KJ5qmE3lVnzdYuGsRciXj06pCasjTVmlC0a0MhXQrno@z>
 
-On Mon, Jul 27, 2015 at 10:46:22AM -0700, Guenter Roeck wrote:
-> On Mon, Jul 27, 2015 at 10:21:42AM -0700, Paul Burton wrote:
-> > On Mon, Jul 27, 2015 at 08:06:52AM -0700, Guenter Roeck wrote:
-> > > On Wed, Jul 15, 2015 at 09:09:18AM -0700, Guenter Roeck wrote:
-> > > > Hi,
-> > > > 
-> > > > my qemu test for mipsel crashes with next-20150715 as follows.
-> > > > 
-> > > ping ... problem is still seen as of next-20150727.
-> > 
-> > Hi Guenter,
-> > 
-> > Apologies for the delay. Could you share your affected kernel
-> > configuration & which userland you're running?
-> > 
-> > I've just tested with a malta_defconfig kernel & a buildroot based
-> > initramfs without problems, and things are also fine on my physical
-> > MIPSr6 setups. If you have any directions with which I can reproduce
-> > this problem that would be great.
-> > 
-> This is with qemu in little endian mode. Big endian works fine.
+This series provides the final bits of support for MSA as far as
+userland that isn't a debugger goes. In order to preserve backwards
+compatibility it saves the extended vector context after the end of the
+sigframe or ucontext, at a fixed offset. A bit set in sigcontext's
+sc_used_math field indicates to userland (and to the kernel on
+sigreturn) that the extended context is present.
 
-Yup, I was using little endian in both cases. malta_defconfig is little
-endian - sadly use of the el suffix is pretty inconsistent...
+With these final bits in, the presence of MSA support is indicated via a
+HWCAP bit that userland may check for.
 
-> The configuration, the script to build and run the kernel, 
-> and the root file system used are are available at
-> https://github.com/groeck/linux-build-test, in directory
-> rootfs/mipsel/. The log for the latest build failure is in
-> http://server.roeck-us.net:8010/builders/qemu-mipsel-next/builds/194/steps/qemubuildcommand/logs/stdio.
+Paul Burton (16):
+  MIPS: remove outdated comments in sigcontext.h
+  MIPS: simplify EVA FP context handling code
+  MIPS: add offsets to sigcontext FP fields to struct mips_abi
+  MIPS: use struct mips_abi offsets to save FP context
+  MIPS: move FP usage checks into protected_{save,restore}_fp_context
+  MIPS: skip odd double FP registers when copying FP32 sigcontext
+  MIPS: use common FP sigcontext code for O32 compat
+  MIPS: remove unused {get,put}_sigset functions
+  MIPS: indicate FP mode in sigcontext sc_used_math
+  MIPS: add definitions for extended context
+  MIPS: save MSA extended context around signals
+  MIPS: AT_HWCAP aux vector infrastructure
+  MIPS: advertise MIPSr6 via HWCAP when appropriate
+  MIPS: advertise MSA support via HWCAP when present
+  MIPS: require O32 FP64 support for MIPS64 with O32 compat
+  MIPS: drop EXPERIMENTAL tag from O32+FP64 & MSA
 
-Thanks for the pointers, I'm able to reproduce it using your config and
-initramfs, and I'll dig into what's going on here.
+ arch/mips/Kconfig                       |   5 +-
+ arch/mips/include/asm/Kbuild            |   1 -
+ arch/mips/include/asm/abi.h             |   4 +
+ arch/mips/include/asm/elf.h             |   4 +-
+ arch/mips/include/asm/signal.h          |   3 +
+ arch/mips/include/uapi/asm/hwcap.h      |   8 +
+ arch/mips/include/uapi/asm/sigcontext.h |  19 +-
+ arch/mips/include/uapi/asm/ucontext.h   |  65 +++++
+ arch/mips/kernel/asm-offsets.c          |  11 -
+ arch/mips/kernel/cpu-probe.c            |   7 +
+ arch/mips/kernel/r4k_fpu.S              | 372 ++++++++++++++-------------
+ arch/mips/kernel/signal-common.h        |   9 +
+ arch/mips/kernel/signal.c               | 429 +++++++++++++++++++++++++-------
+ arch/mips/kernel/signal32.c             | 207 +--------------
+ arch/mips/kernel/signal_n32.c           |   6 +-
+ 15 files changed, 660 insertions(+), 490 deletions(-)
+ create mode 100644 arch/mips/include/uapi/asm/hwcap.h
+ create mode 100644 arch/mips/include/uapi/asm/ucontext.h
 
-Paul
+-- 
+2.4.6

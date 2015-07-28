@@ -1,16 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:27821 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011440AbbG0UD3lPr0X (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Jul 2015 22:03:29 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 16/16] MIPS: drop EXPERIMENTAL tag from O32+FP64 & MSA
-Date: Mon, 27 Jul 2015 12:58:27 -0700
-Message-ID: <1438027107-24420-17-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1438027107-24420-1-git-send-email-paul.burton@imgtec.com>
-References: <1438027107-24420-1-git-send-email-paul.burton@imgtec.com>
+Received: from localhost.localdomain ([127.0.0.1]:34345 "EHLO linux-mips.org"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27010509AbbG1JvcSYAcL (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 28 Jul 2015 11:51:32 +0200
+Date: Tue, 28 Jul 2015 11:51:28 +0200
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH v4 0/7] Clocksource changes for Pistachio CPUFreq.
+Message-ID: <20150728095128.GA23771@linux-mips.org>
+References: <1438005618-27003-1-git-send-email-govindraj.raja@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1438005618-27003-1-git-send-email-govindraj.raja@imgtec.com>
+Return-Path: <ralf@linux-mips.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,44 +21,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Guenter Roeck <linux@roeck-us.net>, Matthew Fortune <matthew.fortune@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org
-Message-ID: <20150727195827.86IE9ncW-QJW1_VqbEFo1VcIZkQtIXIFLorfWS-y-oM@z>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Govindraj Raja <govindraj.raja@imgtec.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, devicetree@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Message-ID: <20150728095128.kJpZ-F56cXjWkFQvNE9VEYqNZeMQg56S0EEncAOxh2g@z>
 
-CONFIG_MIPS_O32_FP64_SUPPORT and CONFIG_CPU_HAS_MSA are in pretty good
-shape these days, and in much wider use than they once were. Stop
-referring to them as EXPERIMENTAL.
+Daniel,
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+On Mon, Jul 27, 2015 at 03:00:11PM +0100, Govindraj Raja wrote:
 
----
+> From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+> 
+> The purpose of this patchset is to support CPUFreq on Pistachio SoC.
+> However, given Pistachio uses the MIPS GIC clocksource and clockevent drivers
+> (clocked from the CPU), adding CPUFreq support needs some work.
+> 
+> This patchset changes the MIPS GIC clockevent driver to update the frequency of
+> the per-cpu clockevents using a clock notifier.
+> 
+> Then, we add a clocksource driver for IMG Pistachio SoC, based on the 
+> general purpose timers. The SoC only provides four timers, so we can't
+> use them to implement the four clockevents and the clocksource.
+> 
+> However, we can use one of these timers to provide a clocksource and a
+> sched clock. Given the general purpose timers are clocked from the peripheral
+> system clock tree, they are not affected by CPU rate changes.
+> 
+> Patches 1 to 3 are just style cleaning and preparation work.
+> Patch 4 adds the clockevent frequency update.
+> Patches 5 and 6 add the new clocksource driver.
+> Patch 7 introduces an option to enable the timer based clocksource on Pistachio.
 
-Changes in v2: None
+if you're happy with this series feel free to add my ack to patch 7/7
+which is the only one that touches arch/mips.
 
- arch/mips/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Alternatively I can carry this in the MIPS tree which would have tbe
+benefit of better testing.
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index a3b1ffe..1c657e0 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2301,7 +2301,7 @@ config CPU_MICROMIPS
- endchoice
- 
- config CPU_HAS_MSA
--	bool "Support for the MIPS SIMD Architecture (EXPERIMENTAL)"
-+	bool "Support for the MIPS SIMD Architecture"
- 	depends on CPU_SUPPORTS_MSA
- 	depends on 64BIT || MIPS_O32_FP64_SUPPORT
- 	help
-@@ -2641,7 +2641,7 @@ config SECCOMP
- 	  If unsure, say Y. Only embedded should say N here.
- 
- config MIPS_O32_FP64_SUPPORT
--	bool "Support for O32 binaries using 64-bit FP (EXPERIMENTAL)"
-+	bool "Support for O32 binaries using 64-bit FP"
- 	depends on 32BIT || MIPS32_O32
- 	help
- 	  When this is enabled, the kernel will support use of 64-bit floating
--- 
-2.4.6
+  Ralf

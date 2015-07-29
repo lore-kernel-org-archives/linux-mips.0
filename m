@@ -1,17 +1,16 @@
-Received: from localhost.localdomain ([127.0.0.1]:34345 "EHLO linux-mips.org"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27010509AbbG1JvcSYAcL (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 28 Jul 2015 11:51:32 +0200
-Date: Tue, 28 Jul 2015 11:51:28 +0200
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH v4 0/7] Clocksource changes for Pistachio CPUFreq.
-Message-ID: <20150728095128.GA23771@linux-mips.org>
-References: <1438005618-27003-1-git-send-email-govindraj.raja@imgtec.com>
+Received: from mail1.windriver.com ([147.11.146.13]:58829 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27011696AbbG2QTWh5D7q (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 29 Jul 2015 18:19:22 +0200
+Date: Wed, 29 Jul 2015 12:19:12 -0400
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: samples/kdbus/kdbus-workers.c and cross compiling MIPS
+Message-ID: <20150729161912.GF18685@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <1438005618-27003-1-git-send-email-govindraj.raja@imgtec.com>
-Return-Path: <ralf@linux-mips.org>
+Content-Transfer-Encoding: 8bit
+Return-Path: <Paul.Gortmaker@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,40 +20,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Govindraj Raja <govindraj.raja@imgtec.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, devicetree@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Message-ID: <20150728095128.kJpZ-F56cXjWkFQvNE9VEYqNZeMQg56S0EEncAOxh2g@z>
+To: dh.herrmann@googlemail.com
+Cc: gregkh@linuxfoundation.org, daniel@zonque.org, tixxdz@opendz.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
+Message-ID: <20150729161912.hyNsN8rLQOnVW1n_MXDBSW1sa1F4U73y65TEBiExPxI@z>
 
-Daniel,
+Hi David,
 
-On Mon, Jul 27, 2015 at 03:00:11PM +0100, Govindraj Raja wrote:
+Does it make sense to build this sample when cross compiling?
 
-> From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-> 
-> The purpose of this patchset is to support CPUFreq on Pistachio SoC.
-> However, given Pistachio uses the MIPS GIC clocksource and clockevent drivers
-> (clocked from the CPU), adding CPUFreq support needs some work.
-> 
-> This patchset changes the MIPS GIC clockevent driver to update the frequency of
-> the per-cpu clockevents using a clock notifier.
-> 
-> Then, we add a clocksource driver for IMG Pistachio SoC, based on the 
-> general purpose timers. The SoC only provides four timers, so we can't
-> use them to implement the four clockevents and the clocksource.
-> 
-> However, we can use one of these timers to provide a clocksource and a
-> sched clock. Given the general purpose timers are clocked from the peripheral
-> system clock tree, they are not affected by CPU rate changes.
-> 
-> Patches 1 to 3 are just style cleaning and preparation work.
-> Patch 4 adds the clockevent frequency update.
-> Patches 5 and 6 add the new clocksource driver.
-> Patch 7 introduces an option to enable the timer based clocksource on Pistachio.
+The reason I ask is that it has been breaking the linux-next build of
+allmodconfig for a while now, with:
 
-if you're happy with this series feel free to add my ack to patch 7/7
-which is the only one that touches arch/mips.
+  HOSTCC  samples/kdbus/kdbus-workers
+samples/kdbus/kdbus-workers.c: In function ‘prime_new’:
+samples/kdbus/kdbus-workers.c:934:18: error: ‘__NR_memfd_create’ undeclared (first use in this function)
+  p->fd = syscall(__NR_memfd_create, "prime-area", MFD_CLOEXEC);
+                  ^
+samples/kdbus/kdbus-workers.c:934:18: note: each undeclared identifier is reported only once for each function it appears in
+scripts/Makefile.host:91: recipe for target 'samples/kdbus/kdbus-workers' failed
+make[2]: *** [samples/kdbus/kdbus-workers] Error 1
 
-Alternatively I can carry this in the MIPS tree which would have tbe
-benefit of better testing.
+http://kisskb.ellerman.id.au/kisskb/buildresult/12473453/
 
-  Ralf
+We recently made some changes to skip other sample/test programs when
+cross compiling in mainline 65f6f092a6987 and f59514b6a8c5ca6dd and
+6a407a81a9abcf.  Maybe it makes sense to do the same here?
+
+Paul.

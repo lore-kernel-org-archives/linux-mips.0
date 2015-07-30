@@ -1,14 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:21586 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011376AbbG3PRERkyyM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Jul 2015 17:17:04 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] MIPS: select CONFIG_ARCH_USE_CMPXCHG_LOCKREF for MIPS64
-Date: Thu, 30 Jul 2015 08:16:10 -0700
-Message-ID: <1438269370-2757-1-git-send-email-paul.burton@imgtec.com>
+Received: from mail.windriver.com ([147.11.1.11]:60495 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27011420AbbG3PcW4vl3e (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Jul 2015 17:32:22 +0200
+Message-ID: <55BA4375.7010400@windriver.com>
+Date: Thu, 30 Jul 2015 11:32:05 -0400
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Subject: Re: samples/kdbus/kdbus-workers.c and cross compiling MIPS
+References: <20150729161912.GF18685@windriver.com>      <CANq1E4TgWK-8JkUtOYfTOL9Dx=jWeVpA-h881TXSA3BNjp+MPw@mail.gmail.com>    <55BA2B91.5070107@windriver.com> <CANq1E4S7awCfPaNduoG8ENHmnGhR7-VT-9LvGwREZs-h8zNmzQ@mail.gmail.com>
+In-Reply-To: <CANq1E4S7awCfPaNduoG8ENHmnGhR7-VT-9LvGwREZs-h8zNmzQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <Paul.Gortmaker@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,69 +21,123 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-kernel@vger.kernel.org, "Maciej W. Rozycki" <macro@codesourcery.com>, Markos Chandras <markos.chandras@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150730151610.-G_sRZE-_FI6YAEFJdGkuyLIKDmCHHnvRKwCv_4aZiA@z>
+To: David Herrmann <dh.herrmann@gmail.com>
+Cc: David Herrmann <dh.herrmann@googlemail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Daniel Mack <daniel@zonque.org>, Djalal Harouni <tixxdz@opendz.org>, linux-mips@linux-mips.org, linux-kernel <linux-kernel@vger.kernel.org>, "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>
+Message-ID: <20150730153205.KfJ731g3HHIioljnsio2hLqEEjbSWRd-0BtyyE10jZA@z>
 
-On MIPS64 we have spinlocks that are 32b in size and an efficient
-cmpxchg64 implementation, so we qualify to make use of cmpxchg backed
-lockrefs. Select the ARCH_USE_CMPXCHG_LOCKREF Kconfig symbol and provide
-a trivial implementation of arch_spin_value_unlocked to satisfy the
-lockref code.
+On 2015-07-30 10:23 AM, David Herrmann wrote:
+> Hi
+> 
+> On Thu, Jul 30, 2015 at 3:50 PM, Paul Gortmaker
+> <paul.gortmaker@windriver.com> wrote:
+>> On 2015-07-29 12:31 PM, David Herrmann wrote:
+>>> Hi
+>>>
+>>> On Wed, Jul 29, 2015 at 6:19 PM, Paul Gortmaker
+>>> <paul.gortmaker@windriver.com> wrote:
+>>>> Hi David,
+>>>>
+>>>> Does it make sense to build this sample when cross compiling?
+>>>>
+>>>> The reason I ask is that it has been breaking the linux-next build of
+>>>> allmodconfig for a while now, with:
+>>>>
+>>>>   HOSTCC  samples/kdbus/kdbus-workers
+>>>> samples/kdbus/kdbus-workers.c: In function ‘prime_new’:
+>>>> samples/kdbus/kdbus-workers.c:934:18: error: ‘__NR_memfd_create’ undeclared (first use in this function)
+>>>>   p->fd = syscall(__NR_memfd_create, "prime-area", MFD_CLOEXEC);
+>>>>                   ^
+>>>> samples/kdbus/kdbus-workers.c:934:18: note: each undeclared identifier is reported only once for each function it appears in
+>>>> scripts/Makefile.host:91: recipe for target 'samples/kdbus/kdbus-workers' failed
+>>>> make[2]: *** [samples/kdbus/kdbus-workers] Error 1
+>>>
+>>> mips does have this syscall, so I assume the problem is out-of-date
+>>> kernel headers. You can fix this by running:
+>>>
+>>>     $ make headers_install
+>>
+>> No, let me try and clarify. Please note the emphasis on cross compiling
+>> and automated build coverage, i.e. there is no place for manual steps.
+> 
+> User-space samples in ./samples/ are compiled with HOSTCC, which is
+> the compiler for the _local_ machine. Regardless of cross-compiling
+> the same local compiler is used. So I cannot understand why this is
+> even remotely related to cross compiling. Please elaborate.
 
-Using Linus' simple testcase from
-http://article.gmane.org/gmane.linux.file-systems/77466 on a dual core
-system with an in-development MIPS64 CPU running on FPGA I see around an
-8% gain:
+Well, it only shows up when we cross compile for mips.  It does not
+seem to be showing up for any other arch (and we cover ~10 of them).
+Nor does it show up for x86 builds.  Also note that the main linux-next
+build machine is actually a PowerPC host.
 
-Pre-patch:
-    Total loops: 252698
-    Total loops: 251482
-    Total loops: 250806
-    Total loops: 252885
-    Total loops: 251666
+> Please note that this is HOSTCC running, so it does *NOT* require the
+> toolchain for your cross-compiled architecture.
+> 
+> Also, please tell me why your system has "linux/memfd.h" available,
+> but __NR_memfd_create is undefined?
 
-Post-patch:
-    Total loops: 273728
-    Total loops: 269932
-    Total loops: 269341
-    Total loops: 275004
-    Total loops: 270208
+My local system is a bog standard ubuntu 14.10 and it sees it.  I dont
+know what distro the linux-next IBM powerpc builder is based on but it
+also sees it....
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
----
+Here is what V=1 output looks like:
 
- arch/mips/Kconfig                | 1 +
- arch/mips/include/asm/spinlock.h | 5 +++++
- 2 files changed, 6 insertions(+)
+(cat /dev/null; ) > samples/kdbus/modules.order
+  gcc -Wp,-MD,samples/kdbus/.kdbus-workers.d -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu89    -I./usr/include -o samples/kdbus/kdbus-workers samples/kdbus/kdbus-workers.c  -lrt
+samples/kdbus/kdbus-workers.c: In function ‘prime_new’:
+samples/kdbus/kdbus-workers.c:934:18: error: ‘__NR_memfd_create’ undeclared (first use in this function)
+  p->fd = syscall(__NR_memfd_create, "prime-area", MFD_CLOEXEC);
+                  ^
+samples/kdbus/kdbus-workers.c:934:18: note: each undeclared identifier is reported only once for each function it appears in
+scripts/Makefile.host:91: recipe for target 'samples/kdbus/kdbus-workers' failed
+make[2]: *** [samples/kdbus/kdbus-workers] Error 1
+scripts/Makefile.build:403: recipe for target 'samples/kdbus' failed
+make[1]: *** [samples/kdbus] Error 2
+Makefile:1569: recipe for target 'samples/' failed
+make: *** [samples/] Error 2
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index f501665..ec6b430 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -3,6 +3,7 @@ config MIPS
- 	default y
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
-+	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
- 	select HAVE_CONTEXT_TRACKING
- 	select HAVE_GENERIC_DMA_COHERENT
- 	select HAVE_IDE
-diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/spinlock.h
-index 1fca2e0..418a5acb 100644
---- a/arch/mips/include/asm/spinlock.h
-+++ b/arch/mips/include/asm/spinlock.h
-@@ -42,6 +42,11 @@ static inline int arch_spin_is_locked(arch_spinlock_t *lock)
- 	return ((counters >> 16) ^ counters) & 0xffff;
- }
- 
-+static inline int arch_spin_value_unlocked(arch_spinlock_t lock)
-+{
-+	return lock.h.serving_now == lock.h.ticket;
-+}
-+
- #define arch_spin_lock_flags(lock, flags) arch_spin_lock(lock)
- #define arch_spin_unlock_wait(x) \
- 	while (arch_spin_is_locked(x)) { cpu_relax(); }
--- 
-2.5.0
+and here is what is in ./usr/include:
+
+paul@yow-lpgnfs-02:~/git/linux-head$ grep -R __NR_memfd_create ./usr/include/
+./usr/include/asm-generic/unistd.h:#define __NR_memfd_create 279
+./usr/include/asm-generic/unistd.h:__SYSCALL(__NR_memfd_create, sys_memfd_create)
+./usr/include/asm/unistd.h:#define __NR_memfd_create            (__NR_Linux + 354)
+./usr/include/asm/unistd.h:#define __NR_memfd_create            (__NR_Linux + 314)
+./usr/include/asm/unistd.h:#define __NR_memfd_create            (__NR_Linux + 318)
+paul@yow-lpgnfs-02:~/git/linux-head$ 
+
+..so it is in there, but presumably something wrt mips ifdeffery
+means it is thrown out by cpp.
+
+> 
+> Anyway, patch is attached. Can you verify it works?
+
+Yes, after I fixed up the mangling from it being sent as
+quoted-printable, it fixes the issue; or at least avoids it.
+
+Tested-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+
+Thanks,
+Paul.
+--
+
+> David
+> 
+> diff --git a/samples/kdbus/Makefile b/samples/kdbus/Makefile
+> index 137f842..dbd9de8 100644
+> --- a/samples/kdbus/Makefile
+> +++ b/samples/kdbus/Makefile
+> @@ -1,9 +1,13 @@
+>  # kbuild trick to avoid linker error. Can be omitted if a module is built.
+>  obj- := dummy.o
+> 
+> +ifndef CROSS_COMPILE
+> +
+>  hostprogs-$(CONFIG_SAMPLE_KDBUS) += kdbus-workers
+> 
+>  always := $(hostprogs-y)
+> 
+>  HOSTCFLAGS_kdbus-workers.o += -I$(objtree)/usr/include
+>  HOSTLOADLIBES_kdbus-workers := -lrt
+> +
+> +endif
+> 

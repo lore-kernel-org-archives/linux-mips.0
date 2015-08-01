@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59995 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010762AbbGaPaOMfgiZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 31 Jul 2015 17:30:14 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: Flush RPS on kernel entry with EVA
-Date: Fri, 31 Jul 2015 16:29:38 +0100
-Message-ID: <1438356578-1749-1-git-send-email-james.hogan@imgtec.com>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63]:38797 "EHLO
+        mail-gw2-out.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27010828AbbHAMDlBeoAt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 1 Aug 2015 14:03:41 +0200
+From: Jayachandran C <jchandra@broadcom.com>
+Subject: [PATCH 0/4] Netlogic updates for 4.3
+Date: Sat, 1 Aug 2015 17:44:19 +0530
+Message-ID: <1438431263-12427-1-git-send-email-jchandra@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <jchandra@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,63 +18,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Leonid Yegoshin <leonid.yegoshin@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20150731152938.ZXK26TGQOVa7J90qgaubetJbETa9RFnQzqrvSwFV0ZQ@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: Jayachandran C <jchandra@broadcom.com>
+Message-ID: <20150801121419.1UklyQaXeFC-y-4FhiLKS0Ntz9H4_DOctza_bV7h5UM@z>
 
-When EVA is enabled, flush the Return Prediction Stack (RPS) present on
-some MIPS cores on entry to the kernel from user mode.
+Some updates and fixes for the netlogic platform. The first patch
+is to update interrupt controller code to use chip_data. Other minor
+patches are to update dts files to use the GPIO controller (which
+now upstream) and to add NAND interrupt mapping.
 
-This is important specifically for interAptiv with EVA enabled,
-otherwise kernel mode RPS mispredicts may trigger speculative fetches of
-user return addresses, which may be sensitive in the kernel address
-space due to EVA's overlapping user/kernel address spaces.
+JC.
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # 3.15.x-
----
- arch/mips/include/asm/stackframe.h | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Kamlakant Patel (3):
+  MIPS: Netlogic: Use chip_data for irq_chip methods
+  MIPS: Netlogic: add device tree entry for XLP GPIO
+  MIPS: Netlogic: enable ARCH_REQUIRE_GPIOLIB for XLP platform
 
-diff --git a/arch/mips/include/asm/stackframe.h b/arch/mips/include/asm/stackframe.h
-index 28d6d9364bd1..a71da576883c 100644
---- a/arch/mips/include/asm/stackframe.h
-+++ b/arch/mips/include/asm/stackframe.h
-@@ -152,6 +152,31 @@
- 		.set	noreorder
- 		bltz	k0, 8f
- 		 move	k1, sp
-+#ifdef CONFIG_EVA
-+		/*
-+		 * Flush interAptiv's Return Prediction Stack (RPS) by writing
-+		 * EntryHi. Toggling Config7.RPS is slower and less portable.
-+		 *
-+		 * The RPS isn't automatically flushed when exceptions are
-+		 * taken, which can result in kernel mode speculative accesses
-+		 * to user addresses if the RPS mispredicts. That's harmless
-+		 * when user and kernel share the same address space, but with
-+		 * EVA the same user segments may be unmapped to kernel mode,
-+		 * even containing sensitive MMIO regions or invalid memory.
-+		 *
-+		 * This can happen when the kernel sets the return address to
-+		 * ret_from_* and jr's to the exception handler, which looks
-+		 * more like a tail call than a function call. If nested calls
-+		 * don't evict the last user address in the RPS, it will
-+		 * mispredict the return and fetch from a user controlled
-+		 * address into the icache.
-+		 *
-+		 * More recent EVA-capable cores with MAAR to restrict
-+		 * speculative accesses aren't affected.
-+		 */
-+		MFC0	k0, CP0_ENTRYHI
-+		MTC0	k0, CP0_ENTRYHI
-+#endif
- 		.set	reorder
- 		/* Called from user mode, new stack. */
- 		get_saved_sp
+Subhendu Sekhar Behera (1):
+  MIPS: Netlogic: NAND IRQ mapping
+
+ arch/mips/Kconfig                       |  1 +
+ arch/mips/boot/dts/netlogic/xlp_evp.dts | 12 ++++++++++++
+ arch/mips/boot/dts/netlogic/xlp_fvp.dts | 12 ++++++++++++
+ arch/mips/boot/dts/netlogic/xlp_gvp.dts | 11 +++++++++++
+ arch/mips/boot/dts/netlogic/xlp_rvp.dts | 11 +++++++++++
+ arch/mips/boot/dts/netlogic/xlp_svp.dts | 12 ++++++++++++
+ arch/mips/netlogic/common/irq.c         | 12 ++++++------
+ arch/mips/netlogic/xlp/nlm_hal.c        |  2 ++
+ arch/mips/pci/msi-xlp.c                 | 20 ++++++++++----------
+ 9 files changed, 77 insertions(+), 16 deletions(-)
+
 -- 
-2.3.6
+1.9.1

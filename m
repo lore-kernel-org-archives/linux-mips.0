@@ -1,12 +1,17 @@
-Received: from mail-io0-f171.google.com ([209.85.223.171]:34695 "EHLO
-        mail-io0-f171.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27012260AbbHDAtH73ubU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 4 Aug 2015 02:49:07 +0200
-From: David Daney <ddaney.cavm@gmail.com>
-Subject: [PATCH] MIPS: Make set_pte() SMP safe.
-Date: Mon,  3 Aug 2015 17:48:43 -0700
-Message-ID: <1438649323-1082-1-git-send-email-ddaney.cavm@gmail.com>
-Return-Path: <ddaney.cavm@gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:60821 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012433AbbHDTPcQR4P1 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 4 Aug 2015 21:15:32 +0200
+Message-ID: <55C10F4B.2050003@imgtec.com>
+Date: Tue, 4 Aug 2015 12:15:23 -0700
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+MIME-Version: 1.0
+Subject: Re: MIPS: Make set_pte() SMP safe.
+References: <1438649323-1082-1-git-send-email-ddaney.cavm@gmail.com>
+In-Reply-To: <1438649323-1082-1-git-send-email-ddaney.cavm@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,77 +21,16 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org
+To: David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: David Daney <david.daney@cavium.com>, stable@vger.kernel.org
-Message-ID: <20150804004843.nziGhv1gZtqef3zT1TtIv1Uw9xJhlLJaGjHw3PCccW8@z>
+Message-ID: <20150804191523.OVGqEkoiGYS3llY2Kqiq3TYDMo7zr42ong1poFFJrng@z>
 
-From: David Daney <david.daney@cavium.com>
+David,
 
-On MIPS the GLOBAL bit of the PTE must have the same value in any
-aligned pair of PTEs.  These pairs of PTEs are referred to as
-"buddies".  In a SMP system is is possible for two CPUs to be calling
-set_pte() on adjacent PTEs at the same time.  There is a race between
-setting the PTE and a different CPU setting the GLOBAL bit in its
-buddy PTE.
+Did you observe this in real?
+The function __get_vm_area_node() allocates a guard page if flag 
+VM_NO_GUARD is not used and I don't see any use of it in source.
 
-This race can be observed when multiple CPUs are executing
-vmap()/vfree() at the same time.
+In past vmap allocated a guard page even unconditionally.
 
-Make setting the buddy PTE's GLOBAL bit an atomic operation to close
-the race condition.
-
-The case of CONFIG_64BIT_PHYS_ADDR && CONFIG_CPU_MIPS32 is *not*
-handled.
-
-Signed-off-by: David Daney <david.daney@cavium.com>
-Cc: <stable@vger.kernel.org>
----
- arch/mips/include/asm/pgtable.h | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
-
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 9d81067..ae85694 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -182,8 +182,39 @@ static inline void set_pte(pte_t *ptep, pte_t pteval)
- 		 * Make sure the buddy is global too (if it's !none,
- 		 * it better already be global)
- 		 */
-+#ifdef CONFIG_SMP
-+		/*
-+		 * For SMP, multiple CPUs can race, so we need to do
-+		 * this atomically.
-+		 */
-+#ifdef CONFIG_64BIT
-+#define LL_INSN "lld"
-+#define SC_INSN "scd"
-+#else /* CONFIG_32BIT */
-+#define LL_INSN "ll"
-+#define SC_INSN "sc"
-+#endif
-+		unsigned long page_global = _PAGE_GLOBAL;
-+		unsigned long tmp;
-+
-+		__asm__ __volatile__ (
-+			"	.set	push\n"
-+			"	.set	noreorder\n"
-+			"1:	" LL_INSN "	%[tmp], %[buddy]\n"
-+			"	bnez	%[tmp], 2f\n"
-+			"	 or	%[tmp], %[tmp], %[global]\n"
-+			"	" SC_INSN "	%[tmp], %[buddy]\n"
-+			"	beqz	%[tmp], 1b\n"
-+			"	 nop\n"
-+			"2:\n"
-+			"	.set pop"
-+			: [buddy] "+m" (buddy->pte),
-+			  [tmp] "=&r" (tmp)
-+			: [global] "r" (page_global));
-+#else /* !CONFIG_SMP */
- 		if (pte_none(*buddy))
- 			pte_val(*buddy) = pte_val(*buddy) | _PAGE_GLOBAL;
-+#endif /* CONFIG_SMP */
- 	}
- #endif
- }
--- 
-1.7.11.7
+- Leonid.

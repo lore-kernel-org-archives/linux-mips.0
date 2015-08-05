@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:21143 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:63381 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012325AbbHEPmN7Jxm0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 5 Aug 2015 17:42:13 +0200
+        with ESMTP id S27012327AbbHEPmROzdL0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 5 Aug 2015 17:42:17 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 1/3] MIPS: uaccess: Fix strlen_user with EVA
-Date: Wed, 5 Aug 2015 16:41:37 +0100
-Message-ID: <1438789299-1608-2-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 2/3] MIPS: uaccess: Take EVA into account in __copy_from_user()
+Date: Wed, 5 Aug 2015 16:41:38 +0100
+Message-ID: <1438789299-1608-3-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1438789299-1608-1-git-send-email-james.hogan@imgtec.com>
 References: <1438789299-1608-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -21,48 +21,75 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Leonid Yegoshin <leonid.yegoshin@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20150805154137.g8FEim0Y2OZOD-H47loA2cD85WEwKBgBSbdenVRwRlc@z>
+Cc: James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Leonid Yegoshin <leonid.yegoshin@imgtec.com>
+Message-ID: <20150805154138.awfvATiRiuUw9CD1dzjtMhXYiTdVpqawvdAVA3GmbIs@z>
 
-The strlen_user() function calls __strlen_kernel_asm in both branches of
-the eva_kernel_access() conditional. For EVA it should be calling
-__strlen_user_eva for user accesses, otherwise it will load from the
-kernel address space instead of the user address space, and the access
-checking will likely be ineffective at preventing it due to EVA's
-overlapping user and kernel address spaces.
+When EVA is in use, __copy_from_user() was unconditionally using the EVA
+instructions to read the user address space, however this can also be
+used for kernel access. If the address isn't a valid user address it
+will cause an address error or TLB exception, and if it is then user
+memory may be read instead of kernel memory.
 
-This was found after extending the test_user_copy module to cover user
-string access functions, which gave the following error with EVA:
+For example in the following stack trace from Linux v3.10 (changes since
+then will prevent this particular one still happening) kernel_sendmsg()
+set the user address limit to KERNEL_DS, and tcp_sendmsg() goes on to
+use __copy_from_user() with a kernel address in KSeg0.
 
-test_user_copy: illegal strlen_user passed
+[<8002d434>] __copy_fromuser_common+0x10c/0x254
+[<805710e0>] tcp_sendmsg+0x5f4/0xf00
+[<804e8e3c>] sock_sendmsg+0x78/0xa0
+[<804e8f28>] kernel_sendmsg+0x24/0x38
+[<804ee0f8>] sock_no_sendpage+0x70/0x7c
+[<8017c820>] pipe_to_sendpage+0x80/0x98
+[<8017c6b0>] splice_from_pipe_feed+0xa8/0x198
+[<8017cc54>] __splice_from_pipe+0x4c/0x8c
+[<8017e844>] splice_from_pipe+0x58/0x78
+[<8017e884>] generic_splice_sendpage+0x20/0x2c
+[<8017d690>] do_splice_from+0xb4/0x110
+[<8017d710>] direct_splice_actor+0x24/0x30
+[<8017d394>] splice_direct_to_actor+0xd8/0x208
+[<8017d51c>] do_splice_direct+0x58/0x7c
+[<8014eaf4>] do_sendfile+0x1dc/0x39c
+[<8014f82c>] SyS_sendfile+0x90/0xf8
 
-Fortunately the use of strlen_user() has been all but eradicated from
-the mainline kernel, so only out of tree modules could be affected.
+Add the eva_kernel_access() check in __copy_from_user() like the one in
+copy_from_user().
 
-Fixes: e3a9b07a9caf ("MIPS: asm: uaccess: Add EVA support for str*_user operations")
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: Markos Chandras <markos.chandras@imgtec.com>
 Cc: Paul Burton <paul.burton@imgtec.com>
 Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>
 Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # 3.15.x-
 ---
- arch/mips/include/asm/uaccess.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've not Cc'd stable on this patch as eva_kernel_access() was only added
+in 4.2. I'll submit a backport once it is merged.
+---
+ arch/mips/include/asm/uaccess.h | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
-index 5305d694ffe5..3f959c01bfdb 100644
+index 3f959c01bfdb..5014e187df23 100644
 --- a/arch/mips/include/asm/uaccess.h
 +++ b/arch/mips/include/asm/uaccess.h
-@@ -1384,7 +1384,7 @@ static inline long strlen_user(const char __user *s)
- 		might_fault();
- 		__asm__ __volatile__(
- 			"move\t$4, %1\n\t"
--			__MODULE_JAL(__strlen_kernel_asm)
-+			__MODULE_JAL(__strlen_user_asm)
- 			"move\t%0, $2"
- 			: "=r" (res)
- 			: "r" (s)
+@@ -1122,9 +1122,15 @@ extern size_t __copy_in_user_eva(void *__to, const void *__from, size_t __n);
+ 	__cu_to = (to);							\
+ 	__cu_from = (from);						\
+ 	__cu_len = (n);							\
+-	might_fault();							\
+-	__cu_len = __invoke_copy_from_user(__cu_to, __cu_from,		\
+-					   __cu_len);			\
++	if (eva_kernel_access()) {					\
++		__cu_len = __invoke_copy_from_kernel(__cu_to,		\
++						     __cu_from,		\
++						     __cu_len);		\
++	} else {							\
++		might_fault();						\
++		__cu_len = __invoke_copy_from_user(__cu_to, __cu_from,	\
++						   __cu_len);		\
++	}								\
+ 	__cu_len;							\
+ })
+ 
 -- 
 2.3.6

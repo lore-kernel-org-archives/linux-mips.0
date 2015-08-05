@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:55944 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:31545 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012622AbbHEXtVUTdn1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Aug 2015 01:49:21 +0200
-Subject: [PATCH v4 0/3] MIPS executable stack protection
+        with ESMTP id S27011594AbbHEXtaaYN21 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Aug 2015 01:49:30 +0200
+Subject: [PATCH v4 1/3] MIPS: mips_flush_cache_range is added
 From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Wed, 5 Aug 2015 16:49:11 -0700
-Message-ID: <20150805234348.20722.71740.stgit@ubuntu-yegoshin>
+Date: Wed, 5 Aug 2015 16:49:20 -0700
+Message-ID: <20150805234919.20722.81893.stgit@ubuntu-yegoshin>
+In-Reply-To: <20150805234348.20722.71740.stgit@ubuntu-yegoshin>
+References: <20150805234348.20722.71740.stgit@ubuntu-yegoshin>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -20,67 +22,202 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: daniel.sanders@imgtec.com, linux-mips@linux-mips.org, cernekee@gmail.com, Zubair.Kakakhel@imgtec.com, geert+renesas@glider.be, david.daney@cavium.com, peterz@infradead.org, heiko.carstens@de.ibm.com, paul.gortmaker@windriver.com, behanw@converseincode.com, macro@linux-mips.org, cl@linux.com, pkarat@mvista.com, linux@roeck-us.net, tkhai@yandex.ru, james.hogan@imgtec.com, alexinbeijing@gmail.com, rusty@rustcorp.com.au, Steven.Hill@imgtec.com, lars.persson@axis.com, aleksey.makarov@auriga.com, paul.burton@imgtec.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, luto@amacapital.net, dahi@linux.vnet.ibm.com, markos.chandras@imgtec.com, eunb.song@samsung.com, kumba@gentoo.org
-Message-ID: <20150805234911.cusVJbu1bhTerjRFuaGf7eqE5glX7_y98yI1U0KhjM8@z>
+Message-ID: <20150805234920.felPw8_npmDMUV8ZOXn0C26EWPDCkux3S59KzJ4Efi0@z>
 
-The following series implements an executable stack protection in MIPS.
+New function mips_flush_cache_range() is added.
+It flushes D-cache on kernel VA and I-cache on user VA.
+It is significant in case of cache aliasing systems.
+It can be used to flush a short sequence of newly written code
+to user space and especially usefull in ptrace() and dsemul().
+Today a full page is flushed by flush_cache_page in ptrace().
 
-It sets up a per-thread 'VDSO' page and appropriate TLB support.
-Page is set write-protected from user and is maintained via kernel VA.
-MIPS FPU emulation is shifted to new page and stack is relieved for
-execute protection as is as all data pages in default setup during ELF
-binary initialization. The real protection is controlled by GLIBC and
-it can do stack protected now as it is done in other architectures and
-I learned today that GLIBC team is ready for this.
-
-Note: actual execute-protection depends from HW capability, of course.
-
-This patch is required for MIPS32/64 R2 emulation on MIPS R6 architecture.
-Without it 'ssh-keygen' crashes pretty fast on attempt to execute instruction
-in stack.
-
-v2 changes:
-    - Added an optimization during mmap switch - doesn't switch if the same
-      thread is rescheduled and other threads don't intervene (Peter Zijlstra)
-    - Fixed uMIPS support (Paul Burton)
-    - Added unwinding of VDSO emulation stack at signal handler invocation,
-      hiding an emulation page (Andy Lutomirski note in other patch comments)
-
-V3 change: heavy preemption friendly.
-
-V4 changes:
-    - Fixed bug in supplementary TLB flush (change KVA to user address space)
-    - Rebased to 4.X kernel
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 ---
+ arch/mips/include/asm/cacheflush.h |    3 +++
+ arch/mips/mm/c-octeon.c            |    8 +++++++
+ arch/mips/mm/c-r3k.c               |    8 +++++++
+ arch/mips/mm/c-r4k.c               |   43 ++++++++++++++++++++++++++++++++++++
+ arch/mips/mm/c-tx39.c              |    9 ++++++++
+ arch/mips/mm/cache.c               |    4 +++
+ 6 files changed, 75 insertions(+)
 
-Leonid Yegoshin (3):
-      MIPS: mips_flush_cache_range is added
-      MIPS: Setup an instruction emulation in VDSO protected page instead of user stack
-      MIPS: set stack/data protection as non-executable
-
-
- arch/mips/include/asm/cacheflush.h    |    3 +
- arch/mips/include/asm/fpu_emulator.h  |    2 
- arch/mips/include/asm/mmu.h           |    3 +
- arch/mips/include/asm/page.h          |    2 
- arch/mips/include/asm/processor.h     |    2 
- arch/mips/include/asm/switch_to.h     |   14 +++
- arch/mips/include/asm/thread_info.h   |    3 +
- arch/mips/include/asm/tlbmisc.h       |    1 
- arch/mips/include/asm/vdso.h          |    3 +
- arch/mips/kernel/mips-r2-to-r6-emul.c |   10 +-
- arch/mips/kernel/process.c            |    7 ++
- arch/mips/kernel/signal.c             |    4 +
- arch/mips/kernel/vdso.c               |   44 +++++++++
- arch/mips/math-emu/cp1emu.c           |    8 +-
- arch/mips/math-emu/dsemul.c           |  154 +++++++++++++++++++++++++++------
- arch/mips/mm/c-octeon.c               |    8 ++
- arch/mips/mm/c-r3k.c                  |    8 ++
- arch/mips/mm/c-r4k.c                  |   43 +++++++++
- arch/mips/mm/c-tx39.c                 |    9 ++
- arch/mips/mm/cache.c                  |    4 +
- arch/mips/mm/fault.c                  |    5 +
- arch/mips/mm/tlb-r4k.c                |   42 +++++++++
- 22 files changed, 343 insertions(+), 36 deletions(-)
-
---
-Signature
+diff --git a/arch/mips/include/asm/cacheflush.h b/arch/mips/include/asm/cacheflush.h
+index 723229f4cf27..d47bbf129a45 100644
+--- a/arch/mips/include/asm/cacheflush.h
++++ b/arch/mips/include/asm/cacheflush.h
+@@ -115,6 +115,9 @@ extern void (*flush_cache_sigtramp)(unsigned long addr);
+ extern void (*flush_icache_all)(void);
+ extern void (*local_flush_data_cache_page)(void * addr);
+ extern void (*flush_data_cache_page)(unsigned long addr);
++extern void (*mips_flush_data_cache_range)(struct vm_area_struct *vma,
++	unsigned long vaddr, struct page *page, unsigned long addr,
++	unsigned long size);
+ 
+ /* Run kernel code uncached, useful for cache probing functions. */
+ unsigned long run_uncached(void *func);
+diff --git a/arch/mips/mm/c-octeon.c b/arch/mips/mm/c-octeon.c
+index 05b1d7cf9514..38349d177570 100644
+--- a/arch/mips/mm/c-octeon.c
++++ b/arch/mips/mm/c-octeon.c
+@@ -178,6 +178,13 @@ static void octeon_flush_kernel_vmap_range(unsigned long vaddr, int size)
+ 	BUG();
+ }
+ 
++static void octeon_flush_data_cache_range(struct vm_area_struct *vma,
++       unsigned long vaddr, struct page *page, unsigned long addr,
++       unsigned long size)
++{
++	octeon_flush_cache_page(vma, addr, page_to_pfn(page));
++}
++
+ /**
+  * Probe Octeon's caches
+  *
+@@ -292,6 +299,7 @@ void octeon_cache_init(void)
+ 	flush_cache_sigtramp		= octeon_flush_cache_sigtramp;
+ 	flush_icache_all		= octeon_flush_icache_all;
+ 	flush_data_cache_page		= octeon_flush_data_cache_page;
++	mips_flush_data_cache_range     = octeon_flush_data_cache_range;
+ 	flush_icache_range		= octeon_flush_icache_range;
+ 	local_flush_icache_range	= local_octeon_flush_icache_range;
+ 
+diff --git a/arch/mips/mm/c-r3k.c b/arch/mips/mm/c-r3k.c
+index 135ec313c1f6..93b481046619 100644
+--- a/arch/mips/mm/c-r3k.c
++++ b/arch/mips/mm/c-r3k.c
+@@ -273,6 +273,13 @@ static void r3k_flush_data_cache_page(unsigned long addr)
+ {
+ }
+ 
++static void r3k_mips_flush_data_cache_range(struct vm_area_struct *vma,
++	unsigned long vaddr, struct page *page, unsigned long addr,
++	unsigned long size)
++{
++	r3k_flush_cache_page(vma, addr, page_to_pfn(page));
++}
++
+ static void r3k_flush_cache_sigtramp(unsigned long addr)
+ {
+ 	unsigned long flags;
+@@ -322,6 +329,7 @@ void r3k_cache_init(void)
+ 	__flush_cache_all = r3k___flush_cache_all;
+ 	flush_cache_mm = r3k_flush_cache_mm;
+ 	flush_cache_range = r3k_flush_cache_range;
++	mips_flush_data_cache_range = r3k_mips_flush_data_cache_range;
+ 	flush_cache_page = r3k_flush_cache_page;
+ 	flush_icache_range = r3k_flush_icache_range;
+ 	local_flush_icache_range = r3k_flush_icache_range;
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index 5d3a25e1cfae..164770a5c84c 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -645,6 +645,48 @@ static void r4k_flush_data_cache_page(unsigned long addr)
+ 		r4k_on_each_cpu(local_r4k_flush_data_cache_page, (void *) addr);
+ }
+ 
++struct mips_flush_data_cache_range_args {
++	struct vm_area_struct *vma;
++	unsigned long vaddr;
++	unsigned long start;
++	unsigned long len;
++};
++
++static inline void local_r4k_mips_flush_data_cache_range(void *args)
++{
++	struct mips_flush_data_cache_range_args *f_args = args;
++	unsigned long vaddr = f_args->vaddr;
++	unsigned long start = f_args->start;
++	unsigned long len = f_args->len;
++	struct vm_area_struct * vma = f_args->vma;
++
++	blast_dcache_range(start, start + len);
++
++	if ((vma->vm_flags & VM_EXEC) && !cpu_has_ic_fills_f_dc) {
++			wmb();
++
++		/* vma is given for exec check only, mmap is current,
++		   so - no non-current vma page flush, just user or kernel */
++		protected_blast_icache_range(vaddr, vaddr + len);
++	}
++}
++
++/* flush dirty kernel data and a corresponding user instructions (if needed).
++   used in copy_to_user_page() */
++static void r4k_mips_flush_data_cache_range(struct vm_area_struct *vma,
++	unsigned long vaddr, struct page *page, unsigned long start,
++	unsigned long len)
++{
++	struct mips_flush_data_cache_range_args args;
++
++	args.vma = vma;
++	args.vaddr = vaddr;
++	args.start = start;
++	args.len = len;
++
++	r4k_on_each_cpu(local_r4k_mips_flush_data_cache_range, (void *)&args);
++}
++
+ struct flush_icache_range_args {
+ 	unsigned long start;
+ 	unsigned long end;
+@@ -1692,6 +1734,7 @@ void r4k_cache_init(void)
+ 	flush_icache_all	= r4k_flush_icache_all;
+ 	local_flush_data_cache_page	= local_r4k_flush_data_cache_page;
+ 	flush_data_cache_page	= r4k_flush_data_cache_page;
++	mips_flush_data_cache_range = r4k_mips_flush_data_cache_range;
+ 	flush_icache_range	= r4k_flush_icache_range;
+ 	local_flush_icache_range	= local_r4k_flush_icache_range;
+ 
+diff --git a/arch/mips/mm/c-tx39.c b/arch/mips/mm/c-tx39.c
+index 596e18458e04..3b9369eb01de 100644
+--- a/arch/mips/mm/c-tx39.c
++++ b/arch/mips/mm/c-tx39.c
+@@ -228,6 +228,13 @@ static void tx39_flush_data_cache_page(unsigned long addr)
+ 	tx39_blast_dcache_page(addr);
+ }
+ 
++static void local_flush_data_cache_range(struct vm_area_struct *vma,
++       unsigned long vaddr, struct page *page, unsigned long addr,
++       unsigned long size)
++{
++	flush_cache_page(vma, addr, page_to_pfn(page));
++}
++
+ static void tx39_flush_icache_range(unsigned long start, unsigned long end)
+ {
+ 	if (end - start > dcache_size)
+@@ -369,6 +376,7 @@ void tx39_cache_init(void)
+ 
+ 		flush_cache_sigtramp	= (void *) tx39h_flush_icache_all;
+ 		local_flush_data_cache_page	= (void *) tx39h_flush_icache_all;
++		mips_flush_data_cache_range     = (void *) local_flush_data_cache_range;
+ 		flush_data_cache_page	= (void *) tx39h_flush_icache_all;
+ 
+ 		_dma_cache_wback_inv	= tx39h_dma_cache_wback_inv;
+@@ -398,6 +406,7 @@ void tx39_cache_init(void)
+ 
+ 		flush_cache_sigtramp = tx39_flush_cache_sigtramp;
+ 		local_flush_data_cache_page = local_tx39_flush_data_cache_page;
++		mips_flush_data_cache_range     = (void *) local_flush_data_cache_range;
+ 		flush_data_cache_page = tx39_flush_data_cache_page;
+ 
+ 		_dma_cache_wback_inv = tx39_dma_cache_wback_inv;
+diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+index aab218c36e0d..e25500e62e0e 100644
+--- a/arch/mips/mm/cache.c
++++ b/arch/mips/mm/cache.c
+@@ -44,10 +44,14 @@ void (*__invalidate_kernel_vmap_range)(unsigned long vaddr, int size);
+ void (*flush_cache_sigtramp)(unsigned long addr);
+ void (*local_flush_data_cache_page)(void * addr);
+ void (*flush_data_cache_page)(unsigned long addr);
++void (*mips_flush_data_cache_range)(struct vm_area_struct *vma,
++      unsigned long vaddr, struct page *page, unsigned long addr,
++      unsigned long size);
+ void (*flush_icache_all)(void);
+ 
+ EXPORT_SYMBOL_GPL(local_flush_data_cache_page);
+ EXPORT_SYMBOL(flush_data_cache_page);
++EXPORT_SYMBOL(mips_flush_data_cache_range);
+ EXPORT_SYMBOL(flush_icache_all);
+ 
+ #if defined(CONFIG_DMA_NONCOHERENT) || defined(CONFIG_DMA_MAYBE_COHERENT)

@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13146 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:37536 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012206AbbHFNrB2KJmI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Aug 2015 15:47:01 +0200
+        with ESMTP id S27012169AbbHFNsSid6II (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Aug 2015 15:48:18 +0200
 From: Govindraj Raja <govindraj.raja@imgtec.com>
-Subject: [PATCH 5/6] pistachio: pll: Fix vco calculation in .set_rate (fractional)
-Date: Thu, 6 Aug 2015 14:46:51 +0100
-Message-ID: <1438868811-7769-1-git-send-email-govindraj.raja@imgtec.com>
+Subject: [PATCH 6/6] clk: pistachio: correct critical clock list
+Date: Thu, 6 Aug 2015 14:48:10 +0100
+Message-ID: <1438868890-7810-1-git-send-email-govindraj.raja@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Govindraj.Raja@imgtec.com>
@@ -19,40 +19,72 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, linux-clk@vger.kernel.org, Mike Turquette <mturquette@linaro.org>, Stephen Boyd <sboyd@codeaurora.org>, Michael Turquette <mturquette@baylibre.com>
-Cc: Zdenko Pulitika <zdenko.pulitika@imgtec.com>, Kevin Cernekee <cernekee@chromium.org>, Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Govindraj Raja <Govindraj.Raja@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Govindraj Raja <govindraj.raja@imgtec.com>
-Message-ID: <20150806134651.XSVCrfJIuBFpuF_EgRDPexyhpE7jTshk-WC5M5YKPjs@z>
+Cc: Zdenko Pulitika <zdenko.pulitika@imgtec.com>, Kevin Cernekee <cernekee@chromium.org>, Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Govindraj Raja <Govindraj.Raja@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Message-ID: <20150806134810.QefLpETGSLp0uh2sLZsVFgr4pcqmz3nrjJB9K_d07C0@z>
 
-From: Zdenko Pulitika <zdenko.pulitika@imgtec.com>
+From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-Vco was calculated based on the current operating mode which
-makes no sense because .set_rate is setting operating mode. Instead,
-vco should be calculated using pll settings that are about to be set.
+Current critical clock list for pistachio enables
+only mips and sys clocks by default but there also
+other clocks that are not claimed by anyone and
+needs to be enabled by default.
 
-Signed-off-by: Zdenko Pulitika <zdenko.pulitika@imgtec.com>
-Signed-off-by: Govindraj Raja <govindraj.raja@imgtec.com>
+This patch updates the critical clocks that needs
+to enabled by default.
+
+Add a separate struct to distinguish the critical clocks
+one is core clock(mips) and others are from periph_clk_*
+
+Reviewed-by: Andrew Bresticker <abrestic@chromium.org>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
 ---
- drivers/clk/pistachio/clk-pll.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/clk/pistachio/clk-pistachio.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/clk/pistachio/clk-pll.c b/drivers/clk/pistachio/clk-pll.c
-index eb91748..5554fa4 100644
---- a/drivers/clk/pistachio/clk-pll.c
-+++ b/drivers/clk/pistachio/clk-pll.c
-@@ -207,13 +207,9 @@ static int pll_gf40lp_frac_set_rate(struct clk_hw *hw, unsigned long rate,
- 	if (!params || !params->refdiv)
- 		return -EINVAL;
+diff --git a/drivers/clk/pistachio/clk-pistachio.c b/drivers/clk/pistachio/clk-pistachio.c
+index 8c0fe88..c4ceb5e 100644
+--- a/drivers/clk/pistachio/clk-pistachio.c
++++ b/drivers/clk/pistachio/clk-pistachio.c
+@@ -159,9 +159,15 @@ PNAME(mux_debug) = { "mips_pll_mux", "rpu_v_pll_mux",
+ 		     "wifi_pll_mux", "bt_pll_mux" };
+ static u32 mux_debug_idx[] = { 0x0, 0x1, 0x2, 0x4, 0x8, 0x10 };
  
--	/* get operating mode and calculate vco accordingly */
-+	/* calculate vco */
- 	vco = params->fref;
--	if (pll_frac_get_mode(hw) == PLL_MODE_INT)
--		vco *= params->fbdiv << 24;
--	else
--		vco *= (params->fbdiv << 24) + params->frac;
--
-+	vco *= (params->fbdiv << 24) + params->frac;
- 	vco = div64_u64(vco, params->refdiv << 24);
+-static unsigned int pistachio_critical_clks[] __initdata = {
+-	CLK_MIPS,
+-	CLK_PERIPH_SYS,
++static unsigned int pistachio_critical_clks_core[] __initdata = {
++	CLK_MIPS
++};
++
++static unsigned int pistachio_critical_clks_sys[] __initdata = {
++	PERIPH_CLK_SYS,
++	PERIPH_CLK_SYS_BUS,
++	PERIPH_CLK_DDR,
++	PERIPH_CLK_ROM,
+ };
  
- 	if (vco < MIN_VCO_FRAC_FRAC || vco > MAX_VCO_FRAC_FRAC)
+ static void __init pistachio_clk_init(struct device_node *np)
+@@ -193,8 +199,8 @@ static void __init pistachio_clk_init(struct device_node *np)
+ 
+ 	pistachio_clk_register_provider(p);
+ 
+-	pistachio_clk_force_enable(p, pistachio_critical_clks,
+-				   ARRAY_SIZE(pistachio_critical_clks));
++	pistachio_clk_force_enable(p, pistachio_critical_clks_core,
++				   ARRAY_SIZE(pistachio_critical_clks_core));
+ }
+ CLK_OF_DECLARE(pistachio_clk, "img,pistachio-clk", pistachio_clk_init);
+ 
+@@ -261,6 +267,9 @@ static void __init pistachio_clk_periph_init(struct device_node *np)
+ 				    ARRAY_SIZE(pistachio_periph_gates));
+ 
+ 	pistachio_clk_register_provider(p);
++
++	pistachio_clk_force_enable(p, pistachio_critical_clks_sys,
++				   ARRAY_SIZE(pistachio_critical_clks_sys));
+ }
+ CLK_OF_DECLARE(pistachio_clk_periph, "img,pistachio-clk-periph",
+ 	       pistachio_clk_periph_init);
 -- 
 1.9.1

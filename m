@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:3921 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:64618 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011858AbbHFLWzqgFHf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Aug 2015 13:22:55 +0200
+        with ESMTP id S27012169AbbHFNo0YlFXI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Aug 2015 15:44:26 +0200
 From: Govindraj Raja <govindraj.raja@imgtec.com>
-Subject: [PATCH v5 7/7] mips: pistachio: Allow to enable the external timer based clocksource
-Date: Thu, 6 Aug 2015 12:22:43 +0100
-Message-ID: <1438860163-31761-1-git-send-email-govindraj.raja@imgtec.com>
+Subject: [PATCH 0/6] clk: pistachio: Fixes for pll calculations.
+Date: Thu, 6 Aug 2015 14:43:28 +0100
+Message-ID: <1438868614-7672-1-git-send-email-govindraj.raja@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Govindraj.Raja@imgtec.com>
@@ -18,55 +18,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Daniel Lezcano <daniel.lezcano@linaro.org>, devicetree@vger.kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Govindraj Raja <Govindraj.Raja@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Message-ID: <20150806112243.1y7kV5Uu6CIhGvqtaXo5s_6KI13w91rYQNBO0o8KTyM@z>
+To: linux-mips@linux-mips.org, linux-clk@vger.kernel.org, Mike Turquette <mturquette@linaro.org>, Stephen Boyd <sboyd@codeaurora.org>, Michael Turquette <mturquette@baylibre.com>
+Cc: Zdenko Pulitika <zdenko.pulitika@imgtec.com>, Kevin Cernekee <cernekee@chromium.org>, Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Govindraj Raja <Govindraj.Raja@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Govindraj Raja <govindraj.raja@imgtec.com>
+Message-ID: <20150806134328.-72b9H-Y9HlBoIm_bDgTSS07IWCaNo9xXv7iKNvRjFI@z>
 
-From: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Patch 1/6 to 5/6 are pll calculation fixes for clock settings.
 
-This commit introduces a new config, so the user can choose to enable
-the General Purpose Timer based clocksource. This option is required
-to have CPUFreq support.
+Patch 6/6: Is a reword and repost based on earlier thread:
+http://patchwork.linux-mips.org/patch/10108/
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
----
-No changes from v4 just reposting 7/7.
+Series Based on 4.2-rc5
+Tested with Pistachio Bring-up-Board.
 
- arch/mips/Kconfig           |  1 +
- arch/mips/pistachio/Kconfig | 13 +++++++++++++
- 2 files changed, 14 insertions(+)
- create mode 100644 arch/mips/pistachio/Kconfig
+Damien.Horsley (1):
+  clk: pistachio: correct critical clock list
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index ef248cf..7004c83 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -948,6 +948,7 @@ source "arch/mips/jazz/Kconfig"
- source "arch/mips/jz4740/Kconfig"
- source "arch/mips/lantiq/Kconfig"
- source "arch/mips/lasat/Kconfig"
-+source "arch/mips/pistachio/Kconfig"
- source "arch/mips/pmcs-msp71xx/Kconfig"
- source "arch/mips/ralink/Kconfig"
- source "arch/mips/sgi-ip27/Kconfig"
-diff --git a/arch/mips/pistachio/Kconfig b/arch/mips/pistachio/Kconfig
-new file mode 100644
-index 0000000..97731ea
---- /dev/null
-+++ b/arch/mips/pistachio/Kconfig
-@@ -0,0 +1,13 @@
-+config PISTACHIO_GPTIMER_CLKSRC
-+	bool "Enable General Purpose Timer based clocksource"
-+	depends on MACH_PISTACHIO
-+	select CLKSRC_PISTACHIO
-+	select MIPS_EXTERNAL_TIMER
-+	help
-+	  This option enables a clocksource driver based on a Pistachio
-+	  SoC General Purpose external timer.
-+
-+	  If you want to enable the CPUFreq, you need to enable
-+	  this option.
-+
-+	  If you don't want to enable CPUFreq, you can leave this disabled.
+Zdenko Pulitika (5):
+  clk: pistachio: Fix 32bit integer overflows
+  clk: pistachio: Fix override of clk-pll settings from boot loader
+  clk: pistachio: Fix pll rate calculation in integer mode
+  clk: pistachio: Set operating mode in .set_rate
+  pistachio: pll: Fix vco calculation in .set_rate (fractional)
+
+ drivers/clk/pistachio/clk-pistachio.c | 19 ++++++---
+ drivers/clk/pistachio/clk-pll.c       | 75 ++++++++++++++++++++++++++---------
+ drivers/clk/pistachio/clk.h           | 18 +++++----
+ 3 files changed, 82 insertions(+), 30 deletions(-)
+
 -- 
 1.9.1

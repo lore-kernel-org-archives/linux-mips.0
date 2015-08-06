@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:1504 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13164 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012248AbbHFNodsih5I (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Aug 2015 15:44:33 +0200
+        with ESMTP id S27012259AbbHFNogOch3I (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Aug 2015 15:44:36 +0200
 From: Govindraj Raja <govindraj.raja@imgtec.com>
-Subject: [PATCH 1/6] clk: pistachio: Fix 32bit integer overflows
-Date: Thu, 6 Aug 2015 14:43:29 +0100
-Message-ID: <1438868614-7672-2-git-send-email-govindraj.raja@imgtec.com>
+Subject: [PATCH 2/6] clk: pistachio: Fix override of clk-pll settings from boot loader
+Date: Thu, 6 Aug 2015 14:43:30 +0100
+Message-ID: <1438868614-7672-3-git-send-email-govindraj.raja@imgtec.com>
 In-Reply-To: <1438868614-7672-1-git-send-email-govindraj.raja@imgtec.com>
 References: <1438868614-7672-1-git-send-email-govindraj.raja@imgtec.com>
 MIME-Version: 1.0
@@ -22,139 +22,51 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, linux-clk@vger.kernel.org, Mike Turquette <mturquette@linaro.org>, Stephen Boyd <sboyd@codeaurora.org>, Michael Turquette <mturquette@baylibre.com>
 Cc: Zdenko Pulitika <zdenko.pulitika@imgtec.com>, Kevin Cernekee <cernekee@chromium.org>, Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Govindraj Raja <Govindraj.Raja@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Govindraj Raja <govindraj.raja@imgtec.com>
-Message-ID: <20150806134329.oaOx6MUCDqDY9YYJ-mB0_xsABiwwsTl5qFJs4NugjyQ@z>
+Message-ID: <20150806134330.DSb5tV4-M0tZetK38lLGj5XcRBTMQ-zXDc1hC2xFPcc@z>
 
 From: Zdenko Pulitika <zdenko.pulitika@imgtec.com>
 
-This commit fixes 32bit integer overflows throughout the pll driver
-(i.e. wherever the result of integer multiplication may exceed the
-range of u32).
+Pll enable callbacks are overriding PLL mode (int/frac) and
+Noise reduction (on/off) settings set by the boot loader which
+results in the incorrect clock rate.
 
-One of the functions affected by this problem is .recalc_rate. It
-returns incorrect rate for some pll settings (not for all though)
-which in turn results in the incorrect rate setup of pll's child
-clocks.
+PLL mode and noise reduction are defined by the DSMPD and DACPD bits
+of the pll control register. Pll .enable() callbacks enable pll
+by deasserting all power-down bits of the pll control register,
+including DSMPD and DACPD bits, which is not necessary since
+these bits don't actually enable/disable pll.
+
+This commit fixes the problem by removing DSMPD and DACPD bits
+from the "pll enable" mask.
 
 Signed-off-by: Zdenko Pulitika <zdenko.pulitika@imgtec.com>
 Signed-off-by: Govindraj Raja <govindraj.raja@imgtec.com>
 ---
- drivers/clk/pistachio/clk-pll.c | 26 ++++++++++++--------------
- drivers/clk/pistachio/clk.h     | 18 +++++++++++-------
- 2 files changed, 23 insertions(+), 21 deletions(-)
+ drivers/clk/pistachio/clk-pll.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/clk/pistachio/clk-pll.c b/drivers/clk/pistachio/clk-pll.c
-index e17dada..68066ef 100644
+index 68066ef..9a38a2b 100644
 --- a/drivers/clk/pistachio/clk-pll.c
 +++ b/drivers/clk/pistachio/clk-pll.c
-@@ -88,12 +88,10 @@ static inline void pll_lock(struct pistachio_clk_pll *pll)
- 		cpu_relax();
- }
+@@ -134,8 +134,7 @@ static int pll_gf40lp_frac_enable(struct clk_hw *hw)
+ 	u32 val;
  
--static inline u32 do_div_round_closest(u64 dividend, u32 divisor)
-+static inline u64 do_div_round_closest(u64 dividend, u64 divisor)
- {
- 	dividend += divisor / 2;
--	do_div(dividend, divisor);
--
--	return dividend;
-+	return div64_u64(dividend, divisor);
- }
+ 	val = pll_readl(pll, PLL_CTRL3);
+-	val &= ~(PLL_FRAC_CTRL3_PD | PLL_FRAC_CTRL3_DACPD |
+-		 PLL_FRAC_CTRL3_DSMPD | PLL_FRAC_CTRL3_FOUTPOSTDIVPD |
++	val &= ~(PLL_FRAC_CTRL3_PD | PLL_FRAC_CTRL3_FOUTPOSTDIVPD |
+ 		 PLL_FRAC_CTRL3_FOUT4PHASEPD | PLL_FRAC_CTRL3_FOUTVCOPD);
+ 	pll_writel(pll, val, PLL_CTRL3);
  
- static inline struct pistachio_clk_pll *to_pistachio_pll(struct clk_hw *hw)
-@@ -173,7 +171,7 @@ static int pll_gf40lp_frac_set_rate(struct clk_hw *hw, unsigned long rate,
- 	struct pistachio_clk_pll *pll = to_pistachio_pll(hw);
- 	struct pistachio_pll_rate_table *params;
- 	int enabled = pll_gf40lp_frac_is_enabled(hw);
--	u32 val, vco, old_postdiv1, old_postdiv2;
-+	u64 val, vco, old_postdiv1, old_postdiv2;
- 	const char *name = __clk_get_name(hw->clk);
- 
- 	if (rate < MIN_OUTPUT_FRAC || rate > MAX_OUTPUT_FRAC)
-@@ -183,17 +181,17 @@ static int pll_gf40lp_frac_set_rate(struct clk_hw *hw, unsigned long rate,
- 	if (!params || !params->refdiv)
- 		return -EINVAL;
- 
--	vco = params->fref * params->fbdiv / params->refdiv;
-+	vco = div64_u64(params->fref * params->fbdiv, params->refdiv);
- 	if (vco < MIN_VCO_FRAC_FRAC || vco > MAX_VCO_FRAC_FRAC)
--		pr_warn("%s: VCO %u is out of range %lu..%lu\n", name, vco,
-+		pr_warn("%s: VCO %llu is out of range %lu..%lu\n", name, vco,
- 			MIN_VCO_FRAC_FRAC, MAX_VCO_FRAC_FRAC);
- 
--	val = params->fref / params->refdiv;
-+	val = div64_u64(params->fref, params->refdiv);
- 	if (val < MIN_PFD)
--		pr_warn("%s: PFD %u is too low (min %lu)\n",
-+		pr_warn("%s: PFD %llu is too low (min %lu)\n",
- 			name, val, MIN_PFD);
- 	if (val > vco / 16)
--		pr_warn("%s: PFD %u is too high (max %u)\n",
-+		pr_warn("%s: PFD %llu is too high (max %llu)\n",
- 			name, val, vco / 16);
+@@ -277,7 +276,7 @@ static int pll_gf40lp_laint_enable(struct clk_hw *hw)
+ 	u32 val;
  
  	val = pll_readl(pll, PLL_CTRL1);
-@@ -237,8 +235,7 @@ static unsigned long pll_gf40lp_frac_recalc_rate(struct clk_hw *hw,
- 						 unsigned long parent_rate)
- {
- 	struct pistachio_clk_pll *pll = to_pistachio_pll(hw);
--	u32 val, prediv, fbdiv, frac, postdiv1, postdiv2;
--	u64 rate = parent_rate;
-+	u64 val, prediv, fbdiv, frac, postdiv1, postdiv2, rate;
+-	val &= ~(PLL_INT_CTRL1_PD | PLL_INT_CTRL1_DSMPD |
++	val &= ~(PLL_INT_CTRL1_PD |
+ 		 PLL_INT_CTRL1_FOUTPOSTDIVPD | PLL_INT_CTRL1_FOUTVCOPD);
+ 	pll_writel(pll, val, PLL_CTRL1);
  
- 	val = pll_readl(pll, PLL_CTRL1);
- 	prediv = (val >> PLL_CTRL1_REFDIV_SHIFT) & PLL_CTRL1_REFDIV_MASK;
-@@ -251,6 +248,7 @@ static unsigned long pll_gf40lp_frac_recalc_rate(struct clk_hw *hw,
- 		PLL_FRAC_CTRL2_POSTDIV2_MASK;
- 	frac = (val >> PLL_FRAC_CTRL2_FRAC_SHIFT) & PLL_FRAC_CTRL2_FRAC_MASK;
- 
-+	rate = parent_rate;
- 	rate *= (fbdiv << 24) + frac;
- 	rate = do_div_round_closest(rate, (prediv * postdiv1 * postdiv2) << 24);
- 
-@@ -325,12 +323,12 @@ static int pll_gf40lp_laint_set_rate(struct clk_hw *hw, unsigned long rate,
- 	if (!params || !params->refdiv)
- 		return -EINVAL;
- 
--	vco = params->fref * params->fbdiv / params->refdiv;
-+	vco = div_u64(params->fref * params->fbdiv, params->refdiv);
- 	if (vco < MIN_VCO_LA || vco > MAX_VCO_LA)
- 		pr_warn("%s: VCO %u is out of range %lu..%lu\n", name, vco,
- 			MIN_VCO_LA, MAX_VCO_LA);
- 
--	val = params->fref / params->refdiv;
-+	val = div_u64(params->fref, params->refdiv);
- 	if (val < MIN_PFD)
- 		pr_warn("%s: PFD %u is too low (min %lu)\n",
- 			name, val, MIN_PFD);
-diff --git a/drivers/clk/pistachio/clk.h b/drivers/clk/pistachio/clk.h
-index 52fabbc..6ea6f4b 100644
---- a/drivers/clk/pistachio/clk.h
-+++ b/drivers/clk/pistachio/clk.h
-@@ -94,14 +94,18 @@ struct pistachio_fixed_factor {
- 		.parent		= _pname,			\
- 	}
- 
-+/*
-+ * in order to avoid u32 multiplication overflow, declare all
-+ * members of this structure as u64
-+ */
- struct pistachio_pll_rate_table {
--	unsigned long fref;
--	unsigned long fout;
--	unsigned int refdiv;
--	unsigned int fbdiv;
--	unsigned int postdiv1;
--	unsigned int postdiv2;
--	unsigned int frac;
-+	unsigned long long fref;
-+	unsigned long long fout;
-+	unsigned long long refdiv;
-+	unsigned long long fbdiv;
-+	unsigned long long postdiv1;
-+	unsigned long long postdiv2;
-+	unsigned long long frac;
- };
- 
- enum pistachio_pll_type {
 -- 
 1.9.1

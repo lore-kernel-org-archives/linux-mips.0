@@ -1,18 +1,22 @@
-Received: from mail-by2on0064.outbound.protection.outlook.com ([207.46.100.64]:31584
-        "EHLO na01-by2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27012601AbbHFAiCwDpux (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 6 Aug 2015 02:38:02 +0200
-Message-ID: <55C2AC5B.50408@caviumnetworks.com>
-Date: Wed, 5 Aug 2015 17:37:47 -0700
-From: David Daney <ddaney@caviumnetworks.com>
-MIME-Version: 1.0
+Received: from mailapp01.imgtec.com ([195.59.15.196]:42014 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012601AbbHFAkl0P85x (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Aug 2015 02:40:41 +0200
+Date: Wed, 5 Aug 2015 17:40:32 -0700
+From: Paul Burton <paul.burton@imgtec.com>
 Subject: Re: [PATCH v4 3/3] MIPS: set stack/data protection as non-executable
-References: <20150805234348.20722.71740.stgit@ubuntu-yegoshin> <20150805234936.20722.60927.stgit@ubuntu-yegoshin> <20150805235543.GG2057@NP-P-BURTON> <55C2A50A.50805@imgtec.com> <55C2A6FE.1020003@caviumnetworks.com> <55C2A91B.1090704@imgtec.com>
+Message-ID: <20150806004032.GA24016@NP-P-BURTON>
+References: <20150805234348.20722.71740.stgit@ubuntu-yegoshin>
+ <20150805234936.20722.60927.stgit@ubuntu-yegoshin>
+ <20150805235543.GG2057@NP-P-BURTON>
+ <55C2A50A.50805@imgtec.com>
+ <55C2A6FE.1020003@caviumnetworks.com>
+ <55C2A91B.1090704@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 In-Reply-To: <55C2A91B.1090704@imgtec.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,49 +27,32 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Cc: Paul Burton <paul.burton@imgtec.com>, daniel.sanders@imgtec.com, linux-mips@linux-mips.org, cernekee@gmail.com, Zubair.Kakakhel@imgtec.com, geert+renesas@glider.be, david.daney@cavium.com, peterz@infradead.org, heiko.carstens@de.ibm.com, paul.gortmaker@windriver.com, behanw@converseincode.com, macro@linux-mips.org, cl@linux.com, pkarat@mvista.com, linux@roeck-us.net, tkhai@yandex.ru, james.hogan@imgtec.com, alexinbeijing@gmail.com, rusty@rustcorp.com.au, Steven.Hill@imgtec.com, lars.persson@axis.com, aleksey.makarov@auriga.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, luto@amacapital.net, dahi@linux.vnet.ibm.com, markos.chandras@imgtec.com, eunb.song@samsung.com, kumba@gentoo.org
-Message-ID: <20150806003747.EHxp2R7XO1_qGj1bhOhY-v_5hsCN4EYA0VTXIQFQ7SY@z>
+Cc: David Daney <ddaney@caviumnetworks.com>, daniel.sanders@imgtec.com, linux-mips@linux-mips.org, cernekee@gmail.com, Zubair.Kakakhel@imgtec.com, geert+renesas@glider.be, david.daney@cavium.com, peterz@infradead.org, heiko.carstens@de.ibm.com, paul.gortmaker@windriver.com, behanw@converseincode.com, macro@linux-mips.org, cl@linux.com, pkarat@mvista.com, linux@roeck-us.net, tkhai@yandex.ru, james.hogan@imgtec.com, alexinbeijing@gmail.com, rusty@rustcorp.com.au, Steven.Hill@imgtec.com, lars.persson@axis.com, aleksey.makarov@auriga.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, luto@amacapital.net, dahi@linux.vnet.ibm.com, markos.chandras@imgtec.com, eunb.song@samsung.com, kumba@gentoo.org
+Message-ID: <20150806004032.n-18CwXqh6y_7JxeA7xbtqfJeruRhur87h2D9VVFP6s@z>
 
-On 08/05/2015 05:23 PM, Leonid Yegoshin wrote:
-> On 08/05/2015 05:14 PM, David Daney wrote:
->> On 08/05/2015 05:06 PM, Leonid Yegoshin wrote:
->>> On 08/05/2015 04:55 PM, Paul Burton wrote:
->>>>
->>>>
->>>> As was pointed out last time you posted this, it breaks backwards
->>>> compatibility with userland & thus cannot be applied.
->>>
->>> Never observed since first version.
->>>
->>> In other side, the problem with apps like ssh_keygen is observed in
->>> absence of executable stack protection.
->>
->> You cannot change the default.
->>
->> If your ssh_keygen is broken, get a working version.
->
+On Wed, Aug 05, 2015 at 05:23:55PM -0700, Leonid Yegoshin wrote:
 > It is actually any application which requests non-executable stack
-> protection and needs some emulation BEFORE GLIBC cancels that
-> non-executable stack protection due to libraries.
->
+> protection and needs some emulation BEFORE GLIBC cancels that non-executable
+> stack protection due to libraries.
+> 
 > If you build all libraries with PT_GNU_STACK 'non-executable' and use
-> application with the same protection then you can't emulate even a
-> single instruction - it crashes immediately. So, it is not a bad
-> application, it is a bad choice for emulation space in past.
->
+> application with the same protection then you can't emulate even a single
+> instruction - it crashes immediately. So, it is not a bad application, it is
+> a bad choice for emulation space in past.
 
-This just means that your userspace is broken.
+...snip...
 
-If GLibC cannot do the right thing then it should be fixed.
+> Create a buildroot FS with PT_GNU_STACK 'non-executable' libraries. Then run
+> ssh_keygen on CPU without FPU and look.
+> 
+> You also may try to run MIPS R2 Debian on MIPS R6 CPU, and see a spectacular
+> failure of ssh_keygen (it tries to emulate MIPS R2 instruction before first
+> library is loaded and that fails due to non-executable stack protection.
 
-The very first thing that is executed is ld.so, you need to make your 
-ld.so do the right thing before transferring control to your program's 
-entry point.
+All of that sounds like perfectly valid reasons to move the FP branch
+delay emulation away from using the stack, which we absolutely do need
+to do. They do not however justify changing the default flags & breaking
+backwards compatibility.
 
-You cannot change the default setting for executable stack just because 
-you have created a broken userspace.
-
-The ability of legacy userspace to continue functioning cannot be 
-sacrificed.
-
-David Daney
+Thanks,
+    Paul

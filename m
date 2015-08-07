@@ -1,20 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24183 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012841AbbHFUbbwjdIh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Aug 2015 22:31:31 +0200
-Date: Thu, 6 Aug 2015 13:31:23 -0700
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [3.19.y-ckt stable] Patch "MIPS: kernel: cps-vec: Replace
- mips32r2 ISA level with mips64r2" has been added to staging queue
-Message-ID: <20150806203123.GG26603@NP-P-BURTON>
-References: <1438811234-29408-1-git-send-email-kamal@canonical.com>
- <20150805224934.GE2057@NP-P-BURTON>
- <1438876276.12629.5.camel@fourier>
+Received: from smtprelay2.synopsys.com ([198.182.60.111]:58886 "EHLO
+        smtprelay.synopsys.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27010604AbbHGFt3a82qG convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 7 Aug 2015 07:49:29 +0200
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: Re: [RFC PATCH v4 4/9] arc: axs10x_defconfig: remove
+ CONFIG_MMC_DW_IDMAC
+Date: Fri, 7 Aug 2015 05:48:32 +0000
+Message-ID: <C2D7FE5348E1B147BCA15975FBA23075665B17BF@IN01WEMBXB.internal.synopsys.com>
+References: <1438843469-23807-1-git-send-email-shawn.lin@rock-chips.com>
+ <1438843526-23976-1-git-send-email-shawn.lin@rock-chips.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <1438876276.12629.5.camel@fourier>
-Return-Path: <Paul.Burton@imgtec.com>
+Return-Path: <Vineet.Gupta1@synopsys.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,43 +24,18 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kamal Mostafa <kamal@canonical.com>
-Cc: Markos Chandras <markos.chandras@imgtec.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, kernel-team@lists.ubuntu.com
-Message-ID: <20150806203123.3FB232A9pkEZGZlmnYs-0ORx2xCgTpEL-RO20ruM0co@z>
+To: Shawn Lin <shawn.lin@rock-chips.com>, "jh80.chung@samsung.com" <jh80.chung@samsung.com>, "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
+Cc: "heiko@sntech.de" <heiko@sntech.de>, "dianders@chromium.org" <dianders@chromium.org>, Wei Xu <xuwei5@hisilicon.com>, Joachim Eastwood <manabian@gmail.com>, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Russell King <linux@arm.linux.org.uk>, Jun Nie <jun.nie@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Govindraj Raja <govindraj.raja@imgtec.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Message-ID: <20150807054832.8cOyKRwRvmGDoVLMLouccT1XdhT0P5FFMAOPnYDLbfU@z>
 
-On Thu, Aug 06, 2015 at 08:51:16AM -0700, Kamal Mostafa wrote:
-> On Wed, 2015-08-05 at 15:49 -0700, Paul Burton wrote:
-> > On Wed, Aug 05, 2015 at 02:47:14PM -0700, Kamal Mostafa wrote:
-> > > This is a note to let you know that I have just added a patch titled
-> > >     MIPS: kernel: cps-vec: Replace mips32r2 ISA level with mips64r2
-> > > to the linux-3.19.y-queue 
-> 
-> > Hi Kamal,
-> > 
-> > This patch breaks the boot of SMP kernels on Imagination's current
-> > MIPS32 systems. This & the other MIPS64 related patches that were
-> > submitted as part of the same series do not improve things for any CPUs
-> > that Linux supports even as of the v4.2 cycle, so I do not believe they
-> > should have been marked for backport.
-> > 
-> > So please either drop this patch (& preferrably the other MIPS64 CPS SMP
-> > ones too)
-> 
-> Hi Paul-
-> 
-> Thanks for the heads-up!  Please confirm that these are the specific
-> commits to be dropped / not-applied to stable:
-> 
-> b677bc0 MIPS: cps-vec: Use macros for various arithmetics and memory operations
-> 717f142 MIPS: kernel: cps-vec: Replace KSEG0 with CKSEG0
-> 0586ac7 MIPS: kernel: cps-vec: Use ta0-ta3 pseudo-registers for 64-bit
-> 977e043 MIPS: kernel: cps-vec: Replace mips32r2 ISA level with mips64r2
-> 81a02e3 MIPS: kernel: cps-vec: Replace 'la' macro with PTR_LA
-> fd5ed30 MIPS: kernel: smp-cps: Fix 64-bit compatibility errors due to pointer casting
+On Thursday 06 August 2015 12:19 PM, Shawn Lin wrote:
+> DesignWare MMC Controller's transfer mode should be decided
+> at runtime instead of compile-time. So we remove this config
+> option and read dw_mmc's register to select DMA master.
+>
+> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
 
-Hi Kamal,
+Acked-by: Vineet Gupta <vgupta@synopsys.com>
 
-Yes those are the ones.
-
-Thanks,
-    Paul
+Thx,
+-Vineet

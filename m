@@ -1,20 +1,18 @@
-Received: from smtprelay2.synopsys.com ([198.182.60.111]:58886 "EHLO
-        smtprelay.synopsys.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27010604AbbHGFt3a82qG convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 7 Aug 2015 07:49:29 +0200
-From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Subject: Re: [RFC PATCH v4 4/9] arc: axs10x_defconfig: remove
- CONFIG_MMC_DW_IDMAC
-Date: Fri, 7 Aug 2015 05:48:32 +0000
-Message-ID: <C2D7FE5348E1B147BCA15975FBA23075665B17BF@IN01WEMBXB.internal.synopsys.com>
-References: <1438843469-23807-1-git-send-email-shawn.lin@rock-chips.com>
- <1438843526-23976-1-git-send-email-shawn.lin@rock-chips.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-Return-Path: <Vineet.Gupta1@synopsys.com>
+Received: from smtpproxy19.qq.com ([184.105.206.84]:41421 "EHLO
+        smtpproxy19.qq.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010604AbbHGGNDSP6tG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Aug 2015 08:13:03 +0200
+From: "=?utf-8?B?6ZmI5Y2O5omN?=" <chenhc@lemote.com>
+Subject: Re:[PATCH] mips: Fix console output for Fulong2e system
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Fri, 7 Aug 2015 14:12:41 +0800
+Message-ID: <tencent_37A9E5F5514586140D3774A8@qq.com>
+References: <1438927036-1435-1-git-send-email-linux@roeck-us.net>
+In-Reply-To: <1438927036-1435-1-git-send-email-linux@roeck-us.net>
+Return-Path: <chenhc@lemote.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,18 +22,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Shawn Lin <shawn.lin@rock-chips.com>, "jh80.chung@samsung.com" <jh80.chung@samsung.com>, "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-Cc: "heiko@sntech.de" <heiko@sntech.de>, "dianders@chromium.org" <dianders@chromium.org>, Wei Xu <xuwei5@hisilicon.com>, Joachim Eastwood <manabian@gmail.com>, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Russell King <linux@arm.linux.org.uk>, Jun Nie <jun.nie@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Govindraj Raja <govindraj.raja@imgtec.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Message-ID: <20150807054832.8cOyKRwRvmGDoVLMLouccT1XdhT0P5FFMAOPnYDLbfU@z>
+To: =?utf-8?B?R3VlbnRlciBSb2Vjaw==?= <linux@roeck-us.net>, =?utf-8?B?UmFsZiBCYWVjaGxl?= <ralf@linux-mips.org>
+Cc: =?utf-8?B?bGludXgtbWlwcw==?= <linux-mips@linux-mips.org>, =?utf-8?B?bGludXgta2VybmVs?= <linux-kernel@vger.kernel.org>
+Message-ID: <20150807061241.940OXye9IJx3dfbQTs0jPmaNoF0StXQJLRqi_edcuK4@z>
 
-On Thursday 06 August 2015 12:19 PM, Shawn Lin wrote:
-> DesignWare MMC Controller's transfer mode should be decided
-> at runtime instead of compile-time. So we remove this config
-> option and read dw_mmc's register to select DMA master.
->
-> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
-
-Acked-by: Vineet Gupta <vgupta@synopsys.com>
-
-Thx,
--Vineet
+QWNrZWQtYnk6IEh1YWNhaSBDaGVuIDxjaGVuaGNAbGVtb3RlLmNvbT4NCiANCi0tLS0tLS0t
+LS0tLS0tLS0tLSBPcmlnaW5hbCAtLS0tLS0tLS0tLS0tLS0tLS0NCkZyb206ICAiR3VlbnRl
+ciBSb2VjayI8bGludXhAcm9lY2stdXMubmV0PjsNCkRhdGU6ICBGcmksIEF1ZyA3LCAyMDE1
+IDAxOjU3IFBNDQpUbzogICJSYWxmIEJhZWNobGUiPHJhbGZAbGludXgtbWlwcy5vcmc+OyAN
+CkNjOiAgIkh1YWNhaSBDaGVuIjxjaGVuaGNAbGVtb3RlLmNvbT47ICJsaW51eC1taXBzIjxs
+aW51eC1taXBzQGxpbnV4LW1pcHMub3JnPjsgImxpbnV4LWtlcm5lbCI8bGludXgta2VybmVs
+QHZnZXIua2VybmVsLm9yZz47ICJHdWVudGVyIFJvZWNrIjxsaW51eEByb2Vjay11cy5uZXQ+
+OyANClN1YmplY3Q6ICBbUEFUQ0hdIG1pcHM6IEZpeCBjb25zb2xlIG91dHB1dCBmb3IgRnVs
+b25nMmUgc3lzdGVtDQoNCiANCkNvbW1pdCAzYWRlYjI1NjZiOWIgKCJNSVBTOiBMb29uZ3Nv
+bjogSW1wcm92ZSBMRUZJIGZpcm13YXJlIGludGVyZmFjZSIpDQptYWRlIHRoZSBudW1iZXIg
+b2YgVUFSVHMgZHluYW1pYyBpZiBMRUZJX0ZJUk1XQVJFX0lOVEVSRkFDRSBpcyBjb25maWd1
+cmVkLg0KVW5mb3J0dW5hdGVseSwgaXQgZGlkIG5vdCBpbml0aWFsaXplIHRoZSBudW1iZXIg
+b2YgVUFSVHMgaWYNCkxFRklfRklSTVdBUkVfSU5URVJGQUNFIGlzIG5vdCBjb25maWd1cmVk
+LiBBcyBhIHJlc3VsdCwgdGhlIEZ1bG9uZzJlDQpzeXN0ZW0gaGFzIG5vIGNvbnNvbGUuDQoN
+CkZpeGVzOiAzYWRlYjI1NjZiOWIgKCJNSVBTOiBMb29uZ3NvbjogSW1wcm92ZSBMRUZJIGZp
+cm13YXJlIGludGVyZmFjZSIpDQpDYzogSHVhY2FpIENoZW4gPGNoZW5oY0BsZW1vdGUuY29t
+Pg0KU2lnbmVkLW9mZi1ieTogR3VlbnRlciBSb2VjayA8bGludXhAcm9lY2stdXMubmV0Pg0K
+LS0tDQpOZXZlciBtaW5kIG15IGVhcmxpZXIgZS1tYWlsLCBJIGZpZ3VyZWQgaXQgb3V0Lg0K
+U2hvdWxkIGJlIGEgY2FuZGlkYXRlIGZvciBzdGFibGUgKHYzLjE5KywgaWUgdjQuMSBpbiBw
+cmFjdGljZSkuDQoNCiBhcmNoL21pcHMvbG9vbmdzb242NC9jb21tb24vZW52LmMgfCAzICsr
+Kw0KIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL2Fy
+Y2gvbWlwcy9sb29uZ3NvbjY0L2NvbW1vbi9lbnYuYyBiL2FyY2gvbWlwcy9sb29uZ3NvbjY0
+L2NvbW1vbi9lbnYuYw0KaW5kZXggZjZjNDRkZDMzMmUyLi5kNmQwN2FkNTYxODAgMTAwNjQ0
+DQotLS0gYS9hcmNoL21pcHMvbG9vbmdzb242NC9jb21tb24vZW52LmMNCisrKyBiL2FyY2gv
+bWlwcy9sb29uZ3NvbjY0L2NvbW1vbi9lbnYuYw0KQEAgLTY0LDYgKzY0LDkgQEAgdm9pZCBf
+X2luaXQgcHJvbV9pbml0X2Vudih2b2lkKQ0KIAl9DQogCWlmIChtZW1zaXplID09IDApDQog
+CQltZW1zaXplID0gMjU2Ow0KKw0KKwlsb29uZ3Nvbl9zeXNjb25mLm5yX3VhcnRzID0gMTsN
+CisNCiAJcHJfaW5mbygibWVtc2l6ZT0ldSwgaGlnaG1lbXNpemU9JXVcbiIsIG1lbXNpemUs
+IGhpZ2htZW1zaXplKTsNCiAjZWxzZQ0KIAlzdHJ1Y3QgYm9vdF9wYXJhbXMgKmJvb3RfcDsN
+Ci0tIA0KMi4xLjQ=

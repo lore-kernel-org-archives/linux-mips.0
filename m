@@ -1,16 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:5881 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012535AbbHGQVA2oM3x (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Aug 2015 18:21:00 +0200
-From: Govindraj Raja <govindraj.raja@imgtec.com>
-Subject: [PATCH v2 4/4] clk: pistachio: correct critical clock list
-Date: Fri, 7 Aug 2015 17:20:13 +0100
-Message-ID: <1438964413-18876-5-git-send-email-govindraj.raja@imgtec.com>
-In-Reply-To: <1438964413-18876-1-git-send-email-govindraj.raja@imgtec.com>
-References: <1438964413-18876-1-git-send-email-govindraj.raja@imgtec.com>
+Received: from mail-bl2on0061.outbound.protection.outlook.com ([65.55.169.61]:42155
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27012306AbbHGQl1qTbqv (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 7 Aug 2015 18:41:27 +0200
+Message-ID: <55C4DF89.9060502@caviumnetworks.com>
+Date: Fri, 7 Aug 2015 09:40:41 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Govindraj.Raja@imgtec.com>
+Subject: Re: [PATCH 2/2] net, thunder, bgx: Add support for ACPI binding.
+References: <1438907590-29649-1-git-send-email-ddaney.cavm@gmail.com> <1438907590-29649-3-git-send-email-ddaney.cavm@gmail.com> <55C467A0.4020601@linaro.org> <20150807104320.GQ1820@rric.localhost> <55C48DF9.70406@linaro.org> <20150807115622.GS4914@rric.localhost> <55C4A7AC.1080902@linaro.org>
+In-Reply-To: <55C4A7AC.1080902@linaro.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,74 +22,62 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, linux-clk@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Michael Turquette <mturquette@baylibre.com>
-Cc: Zdenko Pulitika <zdenko.pulitika@imgtec.com>, Kevin Cernekee <cernekee@chromium.org>, Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Govindraj Raja <Govindraj.Raja@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>, Govindraj Raja <govindraj.raja@imgtec.com>
-Message-ID: <20150807162013.KxF8mzs-g-7zhCDmCw7q7leGrE4Yf3gqvETG_vocWOY@z>
+To: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+Cc: Robert Richter <robert.richter@caviumnetworks.com>, David Daney <ddaney.cavm@gmail.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-mips@linux-mips.org, Sunil Goutham <sgoutham@cavium.com>, linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org, David Daney <david.daney@cavium.com>
+Message-ID: <20150807164041.KHWUUQut3o3ReE7LuOGujU2Iwa1Hsxuui4TWGqnknyk@z>
 
-From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
+On 08/07/2015 05:42 AM, Tomasz Nowicki wrote:
+> On 07.08.2015 13:56, Robert Richter wrote:
+>> On 07.08.15 12:52:41, Tomasz Nowicki wrote:
+[...]
 
-Current critical clock list for pistachio enables
-only mips and sys clocks by default but there also
-other clocks that are not claimed by anyone and
-needs to be enabled by default.
+>>>>
+>>>> I would not pollute bgx_probe() with acpi and dt specifics, and instead
+>>>> keep bgx_init_phy(). The typical design pattern for this is:
+>>>>
+>>>> static int bgx_init_phy(struct bgx *bgx)
+>>>> {
+>>>> #ifdef CONFIG_ACPI
+>>>>          if (!acpi_disabled)
+>>>>                  return bgx_init_acpi_phy(bgx);
+>>>> #endif
+>>>>          return bgx_init_of_phy(bgx);
+>>>> }
+>>>>
+>>>> This adds acpi runtime detection (acpi=no), does not call dt code in
+>>>> case of acpi, and saves the #else for bgx_init_acpi_phy().
+>>>>
+>>>
+>>> I am fine with keeping it in bgx_init_phy(), however we can drop there
+>>> #ifdefs since both of bgx_init_{acpi,of}_phy calls have empty stub
+>>> for !ACPI
+>>> and !OF case. Like that:
+>>>
+>>> static int bgx_init_phy(struct bgx *bgx)
+>>> {
+>>>
+>>>          if (!acpi_disabled)
+>>>                  return bgx_init_acpi_phy(bgx);
+>>>     else
+>>>              return bgx_init_of_phy(bgx);
+>>> }
+>>
+>> As said, keeping it in #ifdefs makes the empty stub function for !acpi
+>> obsolete, which makes the code smaller and better readable. This style
+>> is common practice in the kernel. Apart from that, the 'else' should
+>> be dropped as it is useless.
+>>
+>
+> I would't say the code is better readable (bgx_init_of_phy has still two
+> stubs) but this is just cosmetic, my point was to use run time detection
+> using acpi_disabled.
+>
 
-This patch updates the critical clocks that needs
-to enabled by default.
+Thanks Tomasz and Robert for the input.  Because of this, it seems that 
+another version of the patch will be necessary.  In the interests of 
+code clarity and asthetics, we will go with the code without the 
+#ifdefs, and rely on the compiler to optimize away any dead code.
 
-Add a separate struct to distinguish the critical clocks
-one is core clock(mips) and others are from periph_clk_*
+David Daney
 
-Reviewed-by: Andrew Bresticker <abrestic@chromium.org>
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
-Signed-off-by: Govindraj Raja <govindraj.raja@imgtec.com>
----
- drivers/clk/pistachio/clk-pistachio.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/clk/pistachio/clk-pistachio.c b/drivers/clk/pistachio/clk-pistachio.c
-index 8c0fe88..c4ceb5e 100644
---- a/drivers/clk/pistachio/clk-pistachio.c
-+++ b/drivers/clk/pistachio/clk-pistachio.c
-@@ -159,9 +159,15 @@ PNAME(mux_debug) = { "mips_pll_mux", "rpu_v_pll_mux",
- 		     "wifi_pll_mux", "bt_pll_mux" };
- static u32 mux_debug_idx[] = { 0x0, 0x1, 0x2, 0x4, 0x8, 0x10 };
- 
--static unsigned int pistachio_critical_clks[] __initdata = {
--	CLK_MIPS,
--	CLK_PERIPH_SYS,
-+static unsigned int pistachio_critical_clks_core[] __initdata = {
-+	CLK_MIPS
-+};
-+
-+static unsigned int pistachio_critical_clks_sys[] __initdata = {
-+	PERIPH_CLK_SYS,
-+	PERIPH_CLK_SYS_BUS,
-+	PERIPH_CLK_DDR,
-+	PERIPH_CLK_ROM,
- };
- 
- static void __init pistachio_clk_init(struct device_node *np)
-@@ -193,8 +199,8 @@ static void __init pistachio_clk_init(struct device_node *np)
- 
- 	pistachio_clk_register_provider(p);
- 
--	pistachio_clk_force_enable(p, pistachio_critical_clks,
--				   ARRAY_SIZE(pistachio_critical_clks));
-+	pistachio_clk_force_enable(p, pistachio_critical_clks_core,
-+				   ARRAY_SIZE(pistachio_critical_clks_core));
- }
- CLK_OF_DECLARE(pistachio_clk, "img,pistachio-clk", pistachio_clk_init);
- 
-@@ -261,6 +267,9 @@ static void __init pistachio_clk_periph_init(struct device_node *np)
- 				    ARRAY_SIZE(pistachio_periph_gates));
- 
- 	pistachio_clk_register_provider(p);
-+
-+	pistachio_clk_force_enable(p, pistachio_critical_clks_sys,
-+				   ARRAY_SIZE(pistachio_critical_clks_sys));
- }
- CLK_OF_DECLARE(pistachio_clk_periph, "img,pistachio-clk-periph",
- 	       pistachio_clk_periph_init);
--- 
-1.9.1
+> Tomasz

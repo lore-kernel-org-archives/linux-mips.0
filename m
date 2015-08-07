@@ -1,18 +1,20 @@
-Received: from smtpproxy19.qq.com ([184.105.206.84]:41421 "EHLO
-        smtpproxy19.qq.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010604AbbHGGNDSP6tG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Aug 2015 08:13:03 +0200
-From: "=?utf-8?B?6ZmI5Y2O5omN?=" <chenhc@lemote.com>
-Subject: Re:[PATCH] mips: Fix console output for Fulong2e system
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Fri, 7 Aug 2015 14:12:41 +0800
-Message-ID: <tencent_37A9E5F5514586140D3774A8@qq.com>
-References: <1438927036-1435-1-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1438927036-1435-1-git-send-email-linux@roeck-us.net>
-Return-Path: <chenhc@lemote.com>
+Received: from mail-bn1bon0056.outbound.protection.outlook.com ([157.56.111.56]:50547
+        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27011711AbbHGKnoW4abA (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 7 Aug 2015 12:43:44 +0200
+Date: Fri, 7 Aug 2015 12:43:20 +0200
+From: Robert Richter <robert.richter@caviumnetworks.com>
+Subject: Re: [PATCH 2/2] net, thunder, bgx: Add support for ACPI binding.
+Message-ID: <20150807104320.GQ1820@rric.localhost>
+References: <1438907590-29649-1-git-send-email-ddaney.cavm@gmail.com>
+ <1438907590-29649-3-git-send-email-ddaney.cavm@gmail.com>
+ <55C467A0.4020601@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <55C467A0.4020601@linaro.org>
+Return-Path: <Robert.Richter@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,37 +24,72 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: =?utf-8?B?R3VlbnRlciBSb2Vjaw==?= <linux@roeck-us.net>, =?utf-8?B?UmFsZiBCYWVjaGxl?= <ralf@linux-mips.org>
-Cc: =?utf-8?B?bGludXgtbWlwcw==?= <linux-mips@linux-mips.org>, =?utf-8?B?bGludXgta2VybmVs?= <linux-kernel@vger.kernel.org>
-Message-ID: <20150807061241.940OXye9IJx3dfbQTs0jPmaNoF0StXQJLRqi_edcuK4@z>
+To: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+Cc: David Daney <ddaney.cavm@gmail.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-mips@linux-mips.org, Sunil Goutham <sgoutham@cavium.com>, linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org, David Daney <david.daney@cavium.com>
+Message-ID: <20150807104320.LUzrYHTvkMCnQ5vC8GxlqcYSZCWu_bfb9UJWtV6T9JY@z>
 
-QWNrZWQtYnk6IEh1YWNhaSBDaGVuIDxjaGVuaGNAbGVtb3RlLmNvbT4NCiANCi0tLS0tLS0t
-LS0tLS0tLS0tLSBPcmlnaW5hbCAtLS0tLS0tLS0tLS0tLS0tLS0NCkZyb206ICAiR3VlbnRl
-ciBSb2VjayI8bGludXhAcm9lY2stdXMubmV0PjsNCkRhdGU6ICBGcmksIEF1ZyA3LCAyMDE1
-IDAxOjU3IFBNDQpUbzogICJSYWxmIEJhZWNobGUiPHJhbGZAbGludXgtbWlwcy5vcmc+OyAN
-CkNjOiAgIkh1YWNhaSBDaGVuIjxjaGVuaGNAbGVtb3RlLmNvbT47ICJsaW51eC1taXBzIjxs
-aW51eC1taXBzQGxpbnV4LW1pcHMub3JnPjsgImxpbnV4LWtlcm5lbCI8bGludXgta2VybmVs
-QHZnZXIua2VybmVsLm9yZz47ICJHdWVudGVyIFJvZWNrIjxsaW51eEByb2Vjay11cy5uZXQ+
-OyANClN1YmplY3Q6ICBbUEFUQ0hdIG1pcHM6IEZpeCBjb25zb2xlIG91dHB1dCBmb3IgRnVs
-b25nMmUgc3lzdGVtDQoNCiANCkNvbW1pdCAzYWRlYjI1NjZiOWIgKCJNSVBTOiBMb29uZ3Nv
-bjogSW1wcm92ZSBMRUZJIGZpcm13YXJlIGludGVyZmFjZSIpDQptYWRlIHRoZSBudW1iZXIg
-b2YgVUFSVHMgZHluYW1pYyBpZiBMRUZJX0ZJUk1XQVJFX0lOVEVSRkFDRSBpcyBjb25maWd1
-cmVkLg0KVW5mb3J0dW5hdGVseSwgaXQgZGlkIG5vdCBpbml0aWFsaXplIHRoZSBudW1iZXIg
-b2YgVUFSVHMgaWYNCkxFRklfRklSTVdBUkVfSU5URVJGQUNFIGlzIG5vdCBjb25maWd1cmVk
-LiBBcyBhIHJlc3VsdCwgdGhlIEZ1bG9uZzJlDQpzeXN0ZW0gaGFzIG5vIGNvbnNvbGUuDQoN
-CkZpeGVzOiAzYWRlYjI1NjZiOWIgKCJNSVBTOiBMb29uZ3NvbjogSW1wcm92ZSBMRUZJIGZp
-cm13YXJlIGludGVyZmFjZSIpDQpDYzogSHVhY2FpIENoZW4gPGNoZW5oY0BsZW1vdGUuY29t
-Pg0KU2lnbmVkLW9mZi1ieTogR3VlbnRlciBSb2VjayA8bGludXhAcm9lY2stdXMubmV0Pg0K
-LS0tDQpOZXZlciBtaW5kIG15IGVhcmxpZXIgZS1tYWlsLCBJIGZpZ3VyZWQgaXQgb3V0Lg0K
-U2hvdWxkIGJlIGEgY2FuZGlkYXRlIGZvciBzdGFibGUgKHYzLjE5KywgaWUgdjQuMSBpbiBw
-cmFjdGljZSkuDQoNCiBhcmNoL21pcHMvbG9vbmdzb242NC9jb21tb24vZW52LmMgfCAzICsr
-Kw0KIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL2Fy
-Y2gvbWlwcy9sb29uZ3NvbjY0L2NvbW1vbi9lbnYuYyBiL2FyY2gvbWlwcy9sb29uZ3NvbjY0
-L2NvbW1vbi9lbnYuYw0KaW5kZXggZjZjNDRkZDMzMmUyLi5kNmQwN2FkNTYxODAgMTAwNjQ0
-DQotLS0gYS9hcmNoL21pcHMvbG9vbmdzb242NC9jb21tb24vZW52LmMNCisrKyBiL2FyY2gv
-bWlwcy9sb29uZ3NvbjY0L2NvbW1vbi9lbnYuYw0KQEAgLTY0LDYgKzY0LDkgQEAgdm9pZCBf
-X2luaXQgcHJvbV9pbml0X2Vudih2b2lkKQ0KIAl9DQogCWlmIChtZW1zaXplID09IDApDQog
-CQltZW1zaXplID0gMjU2Ow0KKw0KKwlsb29uZ3Nvbl9zeXNjb25mLm5yX3VhcnRzID0gMTsN
-CisNCiAJcHJfaW5mbygibWVtc2l6ZT0ldSwgaGlnaG1lbXNpemU9JXVcbiIsIG1lbXNpemUs
-IGhpZ2htZW1zaXplKTsNCiAjZWxzZQ0KIAlzdHJ1Y3QgYm9vdF9wYXJhbXMgKmJvb3RfcDsN
-Ci0tIA0KMi4xLjQ=
+On 07.08.15 10:09:04, Tomasz Nowicki wrote:
+> On 07.08.2015 02:33, David Daney wrote:
+
+...
+
+> >+#else
+> >+
+> >+static int bgx_init_acpi_phy(struct bgx *bgx)
+> >+{
+> >+	return -ENODEV;
+> >+}
+> >+
+> >+#endif /* CONFIG_ACPI */
+> >+
+> >  #if IS_ENABLED(CONFIG_OF_MDIO)
+> >
+> >  static int bgx_init_of_phy(struct bgx *bgx)
+> >@@ -882,7 +1010,12 @@ static int bgx_init_of_phy(struct bgx *bgx)
+> >
+> >  static int bgx_init_phy(struct bgx *bgx)
+> >  {
+> >-	return bgx_init_of_phy(bgx);
+> >+	int err = bgx_init_of_phy(bgx);
+> >+
+> >+	if (err != -ENODEV)
+> >+		return err;
+> >+
+> >+	return bgx_init_acpi_phy(bgx);
+> >  }
+> >
+> 
+> If kernel can work with DT and ACPI (both compiled in), it should take only
+> one path instead of probing DT and ACPI sequentially. How about:
+> 
+> @@ -902,10 +925,9 @@ static int bgx_probe(struct pci_dev *pdev, const struct
+> pci_device_id *ent)
+>  	bgx_vnic[bgx->bgx_id] = bgx;
+>  	bgx_get_qlm_mode(bgx);
+> 
+> -	snprintf(bgx_sel, 5, "bgx%d", bgx->bgx_id);
+> -	np = of_find_node_by_name(NULL, bgx_sel);
+> -	if (np)
+> -		bgx_init_of(bgx, np);
+> +	err = acpi_disabled ? bgx_init_of_phy(bgx) : bgx_init_acpi_phy(bgx);
+> +	if (err)
+> +		goto err_enable;
+> 
+>  	bgx_init_hw(bgx);
+
+I would not pollute bgx_probe() with acpi and dt specifics, and instead
+keep bgx_init_phy(). The typical design pattern for this is:
+
+static int bgx_init_phy(struct bgx *bgx)
+{
+#ifdef CONFIG_ACPI
+        if (!acpi_disabled)
+                return bgx_init_acpi_phy(bgx);
+#endif
+        return bgx_init_of_phy(bgx);
+}
+
+This adds acpi runtime detection (acpi=no), does not call dt code in
+case of acpi, and saves the #else for bgx_init_acpi_phy().
+
+-Robert

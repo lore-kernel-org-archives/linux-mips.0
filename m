@@ -1,11 +1,11 @@
-Received: from foss.arm.com ([217.140.101.70]:54227 "EHLO foss.arm.com"
+Received: from foss.arm.com ([217.140.101.70]:54246 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27013301AbbHGRwIAARby (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 7 Aug 2015 19:52:08 +0200
-Date: Fri, 7 Aug 2015 18:51:27 +0100
+        id S27013301AbbHGRygmcJsy (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 7 Aug 2015 19:54:36 +0200
+Date: Fri, 7 Aug 2015 18:53:53 +0100
 From: Mark Rutland <mark.rutland@arm.com>
 Subject: Re: [PATCH 2/2] net, thunder, bgx: Add support for ACPI binding.
-Message-ID: <20150807175127.GB12013@leverpostej>
+Message-ID: <20150807175353.GA31122@leverpostej>
 References: <1438907590-29649-1-git-send-email-ddaney.cavm@gmail.com>
  <1438907590-29649-3-git-send-email-ddaney.cavm@gmail.com>
  <20150807140106.GE7646@leverpostej>
@@ -25,11 +25,13 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: David Daney <ddaney@caviumnetworks.com>
-Cc: David Daney <ddaney.cavm@gmail.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "rob.herring@linaro.org" <rob.herring@linaro.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, David Daney <david.daney@cavium.com>, Tomasz Nowicki <tomasz.nowicki@linaro.org>, Robert Richter <rrichter@cavium.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Sunil Goutham <sgoutham@cavium.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org" <deviectree@vger.kernel.org>
-Message-ID: <20150807175127.hLJHNGieJcPo6fcC1SBcCbKImrzNqKoF_fYq6L6MLi0@z>
+Cc: David Daney <ddaney.cavm@gmail.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "rob.herring@linaro.org" <rob.herring@linaro.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, David Daney <david.daney@cavium.com>, Tomasz Nowicki <tomasz.nowicki@linaro.org>, Robert Richter <rrichter@cavium.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Sunil Goutham <sgoutham@cavium.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Message-ID: <20150807175353.7suuRNygMt-635he0G-mY5mPCT1iNXJovVdom_MSK1I@z>
 
 [Correcting the devicetree list address, which I typo'd in my original
 reply]
+
+[resending to _really_ correct the address, apologies for the spam]
 
 > >> +static const char * const addr_propnames[] = {
 > >> +	"mac-address",

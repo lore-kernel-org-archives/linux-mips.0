@@ -1,21 +1,14 @@
-Received: from mail-wi0-f182.google.com ([209.85.212.182]:35095 "EHLO
-        mail-wi0-f182.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27012768AbbHHAcsKcEXk (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 8 Aug 2015 02:32:48 +0200
-Received: by wibxm9 with SMTP id xm9so79016865wib.0
-        for <linux-mips@linux-mips.org>; Fri, 07 Aug 2015 17:32:42 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:26285 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27011971AbbHJKLCbb4N2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 10 Aug 2015 12:11:02 +0200
+From: Govindraj Raja <govindraj.raja@imgtec.com>
+Subject: [PATCH v3 4/4] clk: pistachio: correct critical clock list
+Date: Mon, 10 Aug 2015 11:10:08 +0100
+Message-ID: <1439201408-9009-1-git-send-email-govindraj.raja@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <55C4F597.50103@caviumnetworks.com>
-References: <1438907590-29649-1-git-send-email-ddaney.cavm@gmail.com>
-        <1438907590-29649-3-git-send-email-ddaney.cavm@gmail.com>
-        <20150807145414.GA5468@xora-haswell.xora.org.uk>
-        <55C4F597.50103@caviumnetworks.com>
-Date: Sat, 8 Aug 2015 02:32:42 +0200
-Message-ID: <CAJZ5v0hG8xUX9k7QD+vTR90_V+Rrvv3LqxLF966YCRk192zrzQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] net, thunder, bgx: Add support for ACPI binding.
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <rjwysocki@gmail.com>
+Content-Type: text/plain
+Return-Path: <Govindraj.Raja@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,89 +18,88 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: Graeme Gregory <gg@slimlogic.co.uk>, David Daney <ddaney.cavm@gmail.com>, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-mips@linux-mips.org, Robert Richter <rrichter@cavium.com>, Tomasz Nowicki <tomasz.nowicki@linaro.org>, Sunil Goutham <sgoutham@cavium.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, David Daney <david.daney@cavium.com>
-Message-ID: <20150808003242.1NFt7yBCnK_RqH1KlkBFe8Mh2em45xKJikedDknsFw0@z>
+To: linux-mips@linux-mips.org, linux-clk@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Michael Turquette <mturquette@baylibre.com>
+Cc: Zdenko Pulitika <zdenko.pulitika@imgtec.com>, Kevin Cernekee <cernekee@chromium.org>, Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Govindraj Raja <Govindraj.Raja@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>, Govindraj Raja <govindraj.raja@imgtec.com>
+Message-ID: <20150810101008.euQRyvPsPOFegnr1cUwJBSdIV5PerjaMj191uSW-Dwk@z>
 
-Hi David,
+From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-On Fri, Aug 7, 2015 at 8:14 PM, David Daney <ddaney@caviumnetworks.com> wrote:
-> On 08/07/2015 07:54 AM, Graeme Gregory wrote:
->>
->> On Thu, Aug 06, 2015 at 05:33:10PM -0700, David Daney wrote:
->>>
->>> From: David Daney <david.daney@cavium.com>
->>>
->>> Find out which PHYs belong to which BGX instance in the ACPI way.
->>>
->>> Set the MAC address of the device as provided by ACPI tables. This is
->>> similar to the implementation for devicetree in
->>> of_get_mac_address(). The table is searched for the device property
->>> entries "mac-address", "local-mac-address" and "address" in that
->>> order. The address is provided in a u64 variable and must contain a
->>> valid 6 bytes-len mac addr.
->>>
->>> Based on code from: Narinder Dhillon <ndhillon@cavium.com>
->>>                      Tomasz Nowicki <tomasz.nowicki@linaro.org>
->>>                      Robert Richter <rrichter@cavium.com>
->>>
->>> Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
->>> Signed-off-by: Robert Richter <rrichter@cavium.com>
->>> Signed-off-by: David Daney <david.daney@cavium.com>
->>> ---
->>>   drivers/net/ethernet/cavium/thunder/thunder_bgx.c | 137
->>> +++++++++++++++++++++-
->>>   1 file changed, 135 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/net/ethernet/cavium/thunder/thunder_bgx.c
->>> b/drivers/net/ethernet/cavium/thunder/thunder_bgx.c
->>> index 615b2af..2056583 100644
->>> --- a/drivers/net/ethernet/cavium/thunder/thunder_bgx.c
->>> +++ b/drivers/net/ethernet/cavium/thunder/thunder_bgx.c
->
-> [...]
->>>
->>> +
->>> +static int acpi_get_mac_address(struct acpi_device *adev, u8 *dst)
->>> +{
->>> +       const union acpi_object *prop;
->>> +       u64 mac_val;
->>> +       u8 mac[ETH_ALEN];
->>> +       int i, j;
->>> +       int ret;
->>> +
->>> +       for (i = 0; i < ARRAY_SIZE(addr_propnames); i++) {
->>> +               ret = acpi_dev_get_property(adev, addr_propnames[i],
->>> +                                           ACPI_TYPE_INTEGER, &prop);
->>
->>
->> Shouldn't this be trying to use device_property_read_* API and making
->> the DT/ACPI path the same where possible?
->>
->
-> Ideally, something like you suggest would be possible.  However, there are a
-> couple of problems trying to do it in the kernel as it exists today:
->
-> 1) There is no 'struct device *' here, so device_property_read_* is not
-> applicable.
->
-> 2) There is no standard ACPI binding for MAC addresses, so it is impossible
-> to create a hypothetical fw_get_mac_address(), which would be analogous to
-> of_get_mac_address().
->
-> Other e-mail threads have suggested that the path to an elegant solution is
-> to inter-mix a bunch of calls to acpi_dev_get_property*() and
-> fwnode_property_read*() as to use these more generic fwnode_property_read*()
-> functions whereever possible.  I rejected this approach as it seems cleaner
-> to me to consistently use a single set of APIs.
+Current critical clock list for pistachio enables
+only mips and sys clocks by default but there are
+also other clocks that are not claimed by anyone and
+needs to be enabled by default.
 
-Actually, that wasn't my intention.
+This patch updates the critical clocks that needs
+to be enabled by default.
 
-I wanted to say that once you'd got an ACPI device pointer (struct
-acpi_device), you could easly convert it to a struct fwnode_handle
-pointer and operate that going forward when accessing properties.
-That at least would help with the properties that do not differ
-between DT and ACPI.
+Add a separate struct to distinguish the critical clocks
+as listed below which needs to enabled by default:
+1.) core clocks:
+	a.) mips clock
+2.) peripheral system clocks:
+	a.) sys clock
+	b.) sys_bus clock
+	c.) DDR clock
+	d.) ROM clock
 
-Thanks,
-Rafael
+Reviewed-by: Andrew Bresticker <abrestic@chromium.org>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
+Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
+Signed-off-by: Govindraj Raja <govindraj.raja@imgtec.com>
+---
+
+Changes from v2:
+----------------
+Fixes comments from Sergei as dicussed in below thread:
+http://patchwork.linux-mips.org/patch/10903/
+
+
+ drivers/clk/pistachio/clk-pistachio.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/clk/pistachio/clk-pistachio.c b/drivers/clk/pistachio/clk-pistachio.c
+index 8c0fe88..c4ceb5e 100644
+--- a/drivers/clk/pistachio/clk-pistachio.c
++++ b/drivers/clk/pistachio/clk-pistachio.c
+@@ -159,9 +159,15 @@ PNAME(mux_debug) = { "mips_pll_mux", "rpu_v_pll_mux",
+ 		     "wifi_pll_mux", "bt_pll_mux" };
+ static u32 mux_debug_idx[] = { 0x0, 0x1, 0x2, 0x4, 0x8, 0x10 };
+ 
+-static unsigned int pistachio_critical_clks[] __initdata = {
+-	CLK_MIPS,
+-	CLK_PERIPH_SYS,
++static unsigned int pistachio_critical_clks_core[] __initdata = {
++	CLK_MIPS
++};
++
++static unsigned int pistachio_critical_clks_sys[] __initdata = {
++	PERIPH_CLK_SYS,
++	PERIPH_CLK_SYS_BUS,
++	PERIPH_CLK_DDR,
++	PERIPH_CLK_ROM,
+ };
+ 
+ static void __init pistachio_clk_init(struct device_node *np)
+@@ -193,8 +199,8 @@ static void __init pistachio_clk_init(struct device_node *np)
+ 
+ 	pistachio_clk_register_provider(p);
+ 
+-	pistachio_clk_force_enable(p, pistachio_critical_clks,
+-				   ARRAY_SIZE(pistachio_critical_clks));
++	pistachio_clk_force_enable(p, pistachio_critical_clks_core,
++				   ARRAY_SIZE(pistachio_critical_clks_core));
+ }
+ CLK_OF_DECLARE(pistachio_clk, "img,pistachio-clk", pistachio_clk_init);
+ 
+@@ -261,6 +267,9 @@ static void __init pistachio_clk_periph_init(struct device_node *np)
+ 				    ARRAY_SIZE(pistachio_periph_gates));
+ 
+ 	pistachio_clk_register_provider(p);
++
++	pistachio_clk_force_enable(p, pistachio_critical_clks_sys,
++				   ARRAY_SIZE(pistachio_critical_clks_sys));
+ }
+ CLK_OF_DECLARE(pistachio_clk_periph, "img,pistachio-clk-periph",
+ 	       pistachio_clk_periph_init);
+-- 
+1.9.1

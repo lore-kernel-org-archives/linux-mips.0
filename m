@@ -1,21 +1,14 @@
-Received: from mail-bn1bon0097.outbound.protection.outlook.com ([157.56.111.97]:9602
-        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27012073AbbHLPgWxf0Gh (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 12 Aug 2015 17:36:22 +0200
-Subject: Re: [PATCH v2 0/2] net: thunder: Add ACPI support.
-References: <1439254717-2875-1-git-send-email-ddaney.cavm@gmail.com>
- <20150811.114908.1384923604512568161.davem@davemloft.net>
- <55CA5567.9010002@caviumnetworks.com>
- <20150812152337.GB5393@e104818-lin.cambridge.arm.com>
-From: David Daney <ddaney@caviumnetworks.com>
-Message-ID: <55CB67E4.8030001@caviumnetworks.com>
-Date: Wed, 12 Aug 2015 08:36:04 -0700
+Received: from mailapp01.imgtec.com ([195.59.15.196]:46064 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010918AbbHMHsKRrw64 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Aug 2015 09:48:10 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: kernel: Fix seccomp syscall argument for MIPS64
+Date: Thu, 13 Aug 2015 08:47:59 +0100
+Message-ID: <1439452079-3120-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20150812152337.GB5393@e104818-lin.cambridge.arm.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,60 +18,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: David Miller <davem@davemloft.net>, mark.rutland@arm.com, linux-mips@linux-mips.org, rafael@kernel.org, netdev@vger.kernel.org, david.daney@cavium.com, linux-kernel@vger.kernel.org, tomasz.nowicki@linaro.org, rrichter@cavium.com, linux-acpi@vger.kernel.org, ddaney.cavm@gmail.com, sgoutham@cavium.com, linux-arm-kernel@lists.infradead.org
-Message-ID: <20150812153604.GRoVqnwuuSPSSkHGRLOginohEvQM961VEh6LBzlRfvo@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20150813074759.f8Gvqld81gdWswWH5ygycM6d-VlMeSY0GkfTXR-LVJ4@z>
 
-On 08/12/2015 08:23 AM, Catalin Marinas wrote:
-> On Tue, Aug 11, 2015 at 01:04:55PM -0700, David Daney wrote:
->> On 08/11/2015 11:49 AM, David Miller wrote:
->>> From: David Daney <ddaney.cavm@gmail.com>
->>> Date: Mon, 10 Aug 2015 17:58:35 -0700
->>>
->>>> Change from v1:  Drop PHY binding part, use fwnode_property* APIs.
->>>>
->>>> The first patch (1/2) rearranges the existing code a little with no
->>>> functional change to get ready for the second.  The second (2/2) does
->>>> the actual work of adding support to extract the needed information
->>> >from the ACPI tables.
->>>
->>> Series applied.
->>
->> Thank you very much.
->>
->>> In the future it might be better structured to try and get the OF
->>> node, and if that fails then try and use the ACPI method to obtain
->>> these values.
->>
->> Our current approach, as you can see in the patch, is the opposite.  If ACPI
->> is being used, prefer that over the OF device tree.
->>
->> You seem to be recommending precedence for OF.  It should be consistent
->> across all drivers/sub-systems, so do you really think that OF before ACPI
->> is the way to go?
->
-> On arm64 (unless you use a vendor kernel), DT takes precedence over ACPI
-> if both arm provided to the kernel (and it's a fair assumption given
-> that ACPI on ARM is still in the early days). You could also force ACPI
-> with acpi=force on the kernel cmd line and the arch code will not
-> unflatten the DT even if it is provided, therefore is_of_node(fwnode)
-> returning false.
->
-> I haven't looked at your driver in detail but something like AMD's
-> xgbe_probe() uses a single function for both DT and ACPI with
-> device_property_read_*() functions getting the information from the
-> correct place in either case. The ACPI vs DT precedence is handled by
-> the arch boot code, we never mix the two and confuse the drivers.
->
+Commit 4c21b8fd8f14 ("MIPS: seccomp: Handle indirect system calls (o32)")
+fixed indirect system calls on O32 but it also introduced a bug for MIPS64
+where it erroneously modified the v0 (syscall) register with the assumption
+that the sycall offset hasn't been taken into consideration. This breaks
+seccomp on MIPS64 n64 and n32 ABIs. We fix this by replacing the addition
+with a move instruction.
 
-My long term plan is to create something like 
-firmware_get_mac_address(), that would encapsulate  of_get_mac_address() 
-and the ACPI equivalent.
+Fixes: 4c21b8fd8f14 ("MIPS: seccomp: Handle indirect system calls (o32)")
+Cc: <stable@vger.kernel.org> # 3.15+
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/kernel/scall64-64.S  | 2 +-
+ arch/mips/kernel/scall64-n32.S | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Same for firmware_phy_find_device().
-
-These would function as you suggest, but lacking this infrastructure, we 
-implemented this patch set instead.
-
-Thanks,
-David Daney
+diff --git a/arch/mips/kernel/scall64-64.S b/arch/mips/kernel/scall64-64.S
+index ad4d44635c76..a6f6b762c47a 100644
+--- a/arch/mips/kernel/scall64-64.S
++++ b/arch/mips/kernel/scall64-64.S
+@@ -80,7 +80,7 @@ syscall_trace_entry:
+ 	SAVE_STATIC
+ 	move	s0, t2
+ 	move	a0, sp
+-	daddiu	a1, v0, __NR_64_Linux
++	move	a1, v0
+ 	jal	syscall_trace_enter
+ 
+ 	bltz	v0, 2f			# seccomp failed? Skip syscall
+diff --git a/arch/mips/kernel/scall64-n32.S b/arch/mips/kernel/scall64-n32.S
+index 446cc654da56..4b2010654c46 100644
+--- a/arch/mips/kernel/scall64-n32.S
++++ b/arch/mips/kernel/scall64-n32.S
+@@ -72,7 +72,7 @@ n32_syscall_trace_entry:
+ 	SAVE_STATIC
+ 	move	s0, t2
+ 	move	a0, sp
+-	daddiu	a1, v0, __NR_N32_Linux
++	move	a1, v0
+ 	jal	syscall_trace_enter
+ 
+ 	bltz	v0, 2f			# seccomp failed? Skip syscall
+-- 
+2.5.0

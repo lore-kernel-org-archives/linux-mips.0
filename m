@@ -1,17 +1,18 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65]:60015 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27010918AbbHMKaCe3RZg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Aug 2015 12:30:02 +0200
-Message-ID: <55CC6EE2.4070308@hisilicon.com>
-Date: Thu, 13 Aug 2015 11:18:10 +0100
-From: Wei Xu <xuwei5@hisilicon.com>
+Received: from mail-bl2on0062.outbound.protection.outlook.com ([65.55.169.62]:48969
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27012480AbbHMTRSw6ckD (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 13 Aug 2015 21:17:18 +0200
+Message-ID: <55CCED1B.6030701@caviumnetworks.com>
+Date: Thu, 13 Aug 2015 12:16:43 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v4 6/9] arm: hisi_defconfig: remove CONFIG_MMC_DW_IDMAC
-References: <1438843469-23807-1-git-send-email-shawn.lin@rock-chips.com> <1438843553-24058-1-git-send-email-shawn.lin@rock-chips.com>
-In-Reply-To: <1438843553-24058-1-git-send-email-shawn.lin@rock-chips.com>
-Content-Type: text/plain; charset="windows-1252"
+Subject: Re: [PATCH 00/14] MIPS/staging: OCTEON: enable ethernet/xaui on CN68XX
+References: <1439472106-7750-1-git-send-email-aaro.koskinen@nokia.com>
+In-Reply-To: <1439472106-7750-1-git-send-email-aaro.koskinen@nokia.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <xuwei5@hisilicon.com>
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,45 +22,66 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Shawn Lin <shawn.lin@rock-chips.com>, jh80.chung@samsung.com, ulf.hansson@linaro.org
-Cc: heiko@sntech.de, dianders@chromium.org, Vineet.Gupta1@synopsys.com, Joachim Eastwood <manabian@gmail.com>, Alexey Brodkin <abrodkin@synopsys.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Russell King <linux@arm.linux.org.uk>, Jun Nie <jun.nie@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Govindraj Raja <govindraj.raja@imgtec.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-mips@linux-mips.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org, Yanhaifeng <yanhaifeng@hisilicon.com>, Linuxarm <linuxarm@huawei.com>
-Message-ID: <20150813101810.Z-Bvg4L1LXPKWVrcKJNbAksD8FR1Xe2J4_IYUPq4X8k@z>
+To: Aaro Koskinen <aaro.koskinen@nokia.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Janne Huttunen <janne.huttunen@nokia.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
+Message-ID: <20150813191643.CIyMCBJNpSqsJxa4hAtKQj0ocCs2AIknzibftELfWeE@z>
+
+On 08/13/2015 06:21 AM, Aaro Koskinen wrote:
+> Hi,
+>
+> Currently mainline Linux is unusable on OCTEON II CN68XX SOCs due to
+> issues in Ethernet driver initialization. Some boards are hanging during
+> init, and all the needed register differences compared to the older SOCs
+> are not taken into account to make interrupts and packet delivery to work.
+>
+> This patch set provides a minimal support to get octeon-ethernet going
+> on CN68XX. Tested on top of 4.2-rc6 with Cavium EBB6800 and Kontron
+> S1901 boards by sending traffic over XAUI interface with busybox.
+
+You don't say how it was tested.
+
+Does OCTEON and OCTEON II networking continue to function?
+
+There is no SSO provisioning, so there will be limited buffering on 
+packet ingress.  For low packet rates, it should be fine though.
+
+David Daney
 
 
-
-On 8/6/2015 7:45 AM, Shawn Lin wrote:
-> DesignWare MMC Controller's transfer mode should be decided
-> at runtime instead of compile-time. So we remove this config
-> option and read dw_mmc's register to select DMA master.
-> 
-> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
-
-Acked-by: Wei Xu <xuwei5@hisilicon.com>
-
-> ---
-> 
-> Changes in v4: None
-> Changes in v3: None
-> Changes in v2: None
-> 
->  arch/arm/configs/hisi_defconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/arm/configs/hisi_defconfig b/arch/arm/configs/hisi_defconfig
-> index 5997dbc..b2e340b 100644
-> --- a/arch/arm/configs/hisi_defconfig
-> +++ b/arch/arm/configs/hisi_defconfig
-> @@ -69,7 +69,6 @@ CONFIG_NOP_USB_XCEIV=y
->  CONFIG_MMC=y
->  CONFIG_RTC_CLASS=y
->  CONFIG_MMC_DW=y
-> -CONFIG_MMC_DW_IDMAC=y
->  CONFIG_MMC_DW_PLTFM=y
->  CONFIG_RTC_DRV_PL031=y
->  CONFIG_DMADEVICES=y
-> 
-
-Thanks!
-
-Best Regards,
-Wei
+>
+> A.
+>
+> Aaro Koskinen (2):
+>    MIPS/staging: OCTEON: properly enable/disable SSO WQE interrupts
+>    MIPS/staging: OCTEON: set SSO group mask properly on CN68XX
+>
+> Janne Huttunen (12):
+>    MIPS: OCTEON: fix CN6880 hang on XAUI init
+>    MIPS: OCTEON: support additional interfaces on CN68XX
+>    MIPS: OCTEON: support all PIP input ports on CN68XX
+>    MIPS: OCTEON: configure XAUI pkinds
+>    MIPS: OCTEON: configure minimum PKO packet sizes on CN68XX
+>    MIPS: OCTEON: add definitions for setting up SSO
+>    MIPS/staging: OCTEON: increase output command buffers
+>    MIPS/staging: OCTEON: support CN68XX style WQE
+>    MIPS: OCTEON: initialize CN68XX PKO
+>    MIPS: OCTEON: set up 1:1 mapping between CN68XX PKO queues and ports
+>    MIPS: OCTEON: support interfaces 4 and 5
+>    MIPS/staging: OCTEON: use common helpers for determining interface and
+>      port
+>
+>   .../cavium-octeon/executive/cvmx-helper-util.c     |  20 +-
+>   .../cavium-octeon/executive/cvmx-helper-xaui.c     |  14 +-
+>   arch/mips/cavium-octeon/executive/cvmx-helper.c    |  17 ++
+>   arch/mips/cavium-octeon/executive/cvmx-pko.c       | 149 +++++++++-
+>   arch/mips/include/asm/octeon/cvmx-pip.h            |   2 +-
+>   arch/mips/include/asm/octeon/cvmx-pko.h            |   3 +
+>   arch/mips/include/asm/octeon/cvmx-pow-defs.h       |  29 ++
+>   arch/mips/include/asm/octeon/cvmx-pow.h            |   9 +-
+>   arch/mips/include/asm/octeon/cvmx-wqe.h            | 308 +++++++++++++++++----
+>   drivers/staging/octeon/ethernet-rx.c               | 133 ++++++---
+>   drivers/staging/octeon/ethernet-tx.c               |  19 +-
+>   drivers/staging/octeon/ethernet-util.h             |  22 +-
+>   drivers/staging/octeon/ethernet.c                  |   7 +-
+>   13 files changed, 595 insertions(+), 137 deletions(-)
+>

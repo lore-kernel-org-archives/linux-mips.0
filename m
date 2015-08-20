@@ -1,16 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:17345 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:35476 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012377AbbHTNrZAAlFj (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Aug 2015 15:47:25 +0200
-From: Govindraj Raja <govindraj.raja@imgtec.com>
-Subject: [PATCH v5 4/4] clk: pistachio: correct critical clock list
-Date: Thu, 20 Aug 2015 14:45:55 +0100
-Message-ID: <1440078355-8828-5-git-send-email-govindraj.raja@imgtec.com>
-In-Reply-To: <1440078355-8828-1-git-send-email-govindraj.raja@imgtec.com>
-References: <1440078355-8828-1-git-send-email-govindraj.raja@imgtec.com>
+        with ESMTP id S27012396AbbHTOqgc3pN4 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Aug 2015 16:46:36 +0200
+From: Nikola Veljkovic <Nikola.Veljkovic@imgtec.com>
+Subject: RE: [PATCH] MIPS: personality syscall discrepancy on mips64-o32/n32
+Date: Thu, 20 Aug 2015 14:46:26 +0000
+Message-ID: <19CDB9880DBFC241860D925D8FAA94A00342F48A@BADAG02.ba.imgtec.org>
+References: <19CDB9880DBFC241860D925D8FAA94A00342EAB8@BADAG02.ba.imgtec.org>,<20150818125605.GA25978@mchandras-linux.le.imgtec.org>
+In-Reply-To: <20150818125605.GA25978@mchandras-linux.le.imgtec.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Govindraj.Raja@imgtec.com>
+Return-Path: <Nikola.Veljkovic@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,81 +22,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, linux-clk@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Michael Turquette <mturquette@baylibre.com>
-Cc: Zdenko Pulitika <zdenko.pulitika@imgtec.com>, Kevin Cernekee <cernekee@chromium.org>, Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Govindraj Raja <Govindraj.Raja@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>, Govindraj Raja <govindraj.raja@imgtec.com>
-Message-ID: <20150820134555.Vn6VSyR7hG9bgdbj2c4VG1SbHk8ut7eWzK-9nYrPqIk@z>
+To: Markos Chandras <Markos.Chandras@imgtec.com>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, Chris Dearman <Chris.Dearman@imgtec.com>, Raghu Gandham <Raghu.Gandham@imgtec.com>, Miodrag Dinic <Miodrag.Dinic@imgtec.com>, Petar Jovanovic <Petar.Jovanovic@imgtec.com>, Lazar Trsic <Lazar.Trsic@imgtec.com>
+Message-ID: <20150820144626.V92K1UVkjiDOr7_HaiGqA1rIQN1ao_Y2hA1e69gwfxM@z>
 
-From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
+Hi,
 
-Current critical clock list for pistachio enables
-only mips and sys clocks by default but there are
-also other clocks that are not claimed by anyone and
-needs to be enabled by default.
+ > I am not sure what the implication will be to userland with that change...
+I could not find any code that explicitly checks for PER_LINUX[32]. Of course,
+I might be missing something. Any suspects?
 
-This patch updates the critical clocks that need
-to be enabled by default.
+ > I presume you also need to fix the n32 case and then completely remove the 
+ > sys_32_personality syscall from linux32.c. 
+New patch below removes the syscall.
 
-Add a separate struct to distinguish the critical clocks
-as listed:
-1.) core clocks:
-	a.) mips clock
-2.) peripheral system clocks:
-	a.) sys clock
-	b.) sys_bus clock
-	c.) DDR clock
-	d.) ROM clock
+ > Moreover, I think you also need to fix the arch/mips/include/asm/elf.h
+ > code to set LINUX32 for O32 and n32 (for both 32b and 64b kernels.)
+Other archs (arm, intel) do not do that, so I think we should follow, and set 
+PER_LINUX, but let userspace change this if it wants to. On the kernel side this
+only affects uname. From the discussion [1] it seems like the right way to go.
 
-Reviewed-by: Andrew Bresticker <abrestic@chromium.org>
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@imgtec.com>
-Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
-Signed-off-by: Govindraj Raja <govindraj.raja@imgtec.com>
----
- drivers/clk/pistachio/clk-pistachio.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+[1] http://lists.infradead.org/pipermail/linux-arm-kernel/2012-August/114506.html
 
-diff --git a/drivers/clk/pistachio/clk-pistachio.c b/drivers/clk/pistachio/clk-pistachio.c
-index 8c0fe88..c4ceb5e 100644
---- a/drivers/clk/pistachio/clk-pistachio.c
-+++ b/drivers/clk/pistachio/clk-pistachio.c
-@@ -159,9 +159,15 @@ PNAME(mux_debug) = { "mips_pll_mux", "rpu_v_pll_mux",
- 		     "wifi_pll_mux", "bt_pll_mux" };
- static u32 mux_debug_idx[] = { 0x0, 0x1, 0x2, 0x4, 0x8, 0x10 };
- 
--static unsigned int pistachio_critical_clks[] __initdata = {
--	CLK_MIPS,
--	CLK_PERIPH_SYS,
-+static unsigned int pistachio_critical_clks_core[] __initdata = {
-+	CLK_MIPS
-+};
-+
-+static unsigned int pistachio_critical_clks_sys[] __initdata = {
-+	PERIPH_CLK_SYS,
-+	PERIPH_CLK_SYS_BUS,
-+	PERIPH_CLK_DDR,
-+	PERIPH_CLK_ROM,
- };
- 
- static void __init pistachio_clk_init(struct device_node *np)
-@@ -193,8 +199,8 @@ static void __init pistachio_clk_init(struct device_node *np)
- 
- 	pistachio_clk_register_provider(p);
- 
--	pistachio_clk_force_enable(p, pistachio_critical_clks,
--				   ARRAY_SIZE(pistachio_critical_clks));
-+	pistachio_clk_force_enable(p, pistachio_critical_clks_core,
-+				   ARRAY_SIZE(pistachio_critical_clks_core));
- }
- CLK_OF_DECLARE(pistachio_clk, "img,pistachio-clk", pistachio_clk_init);
- 
-@@ -261,6 +267,9 @@ static void __init pistachio_clk_periph_init(struct device_node *np)
- 				    ARRAY_SIZE(pistachio_periph_gates));
- 
- 	pistachio_clk_register_provider(p);
-+
-+	pistachio_clk_force_enable(p, pistachio_critical_clks_sys,
-+				   ARRAY_SIZE(pistachio_critical_clks_sys));
- }
- CLK_OF_DECLARE(pistachio_clk_periph, "img,pistachio-clk-periph",
- 	       pistachio_clk_periph_init);
--- 
-1.9.1
+ > If you are going to submit a new patch, can you please create a proper git patch
+ > (using git format-patch) and include your Signed-off-by line as well? Thank you
+If not obvious, my first post here, thanks for the tips.
+------------------

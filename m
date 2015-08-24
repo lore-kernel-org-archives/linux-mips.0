@@ -1,15 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:37572 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8305 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010140AbbHXMjfDJ63r (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 24 Aug 2015 14:39:35 +0200
+        with ESMTP id S27011154AbbHXNCmFiUOr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 24 Aug 2015 15:02:42 +0200
+Message-ID: <55DB15EB.3090109@imgtec.com>
+Date: Mon, 24 Aug 2015 14:02:35 +0100
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
-Date: Mon, 24 Aug 2015 13:39:10 +0100
-Message-ID: <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com>
-In-Reply-To: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
-References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com> <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com> <alpine.DEB.2.11.1508241447100.3873@nanos>
+In-Reply-To: <alpine.DEB.2.11.1508241447100.3873@nanos>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,34 +21,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: alsa-devel@alsa-project.org
-Cc: Qais Yousef <qais.yousef@imgtec.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20150824123910.upKUO1BIj_p-fjedA4ywkjFBTRdb6cKBV517_3HbG08@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20150824130235.UxDbsMPoyMp5WKvkLXOeW1fPi2G74zHA9ohZnW-s0Ms@z>
 
-Some drivers might require to send ipi to other cores. So export it.
-This will be used later by AXD driver.
+On 08/24/2015 01:49 PM, Thomas Gleixner wrote:
+> On Mon, 24 Aug 2015, Qais Yousef wrote:
+>
+>> Some drivers might require to send ipi to other cores. So export it.
+> Which IPIs do you need to send from a driver which are not exposed by
+> the SMP functions already?
 
-Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Marc Zyngier <marc.zyngier@arm.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org
----
- drivers/irqchip/irq-mips-gic.c | 1 +
- 1 file changed, 1 insertion(+)
+It's not an SMP IPI. We use GIC to exchange interrupts between AXD and 
+the host system since AXD is another MIPS core in the cluster.
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index ff4be0515a0d..fc6fd506cd7e 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -227,6 +227,7 @@ void gic_send_ipi(unsigned int intr)
- {
- 	gic_write(GIC_REG(SHARED, GIC_SH_WEDGE), GIC_SH_WEDGE_SET(intr));
- }
-+EXPORT_SYMBOL(gic_send_ipi);
- 
- int gic_get_c0_compare_int(void)
- {
--- 
-2.1.0
+>> This will be used later by AXD driver.
+> That smells fishy and it wants a proper explanation WHY and not just a
+> sloppy statement that it will be used later. I can figure that out
+> myself as exporting a function without using it does not make any sense.
+
+Sorry for the terse explanation. As pointed above AXD uses GIC to send 
+and receive interrupts to the host core. Without this change I can't 
+compile the driver as a driver module because the symbol is not exported.
+
+Does this make things clearer?
+
+Thanks,
+Qais
+
+>
+> Thanks,
+>
+> 	tglx

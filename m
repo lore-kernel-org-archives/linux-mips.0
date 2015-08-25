@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:51700 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38347 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007257AbbHXPLKwuFr9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 24 Aug 2015 17:11:10 +0200
-Message-ID: <55DB3408.7080502@imgtec.com>
-Date: Mon, 24 Aug 2015 16:11:04 +0100
-From: Qais Yousef <qais.yousef@imgtec.com>
+        with ESMTP id S27011194AbbHYHii6en5x (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 25 Aug 2015 09:38:38 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH] MIPS: asm: pgtable.h: Remove local LL/SC preprocessor variants
+Date: Tue, 25 Aug 2015 08:38:26 +0100
+Message-ID: <1440488306-25374-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
-References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com> <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com> <alpine.DEB.2.11.1508241447100.3873@nanos> <55DB15EB.3090109@imgtec.com> <alpine.DEB.2.11.1508241653200.3873@nanos>
-In-Reply-To: <alpine.DEB.2.11.1508241653200.3873@nanos>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,39 +18,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20150824151104.su1tthmnYDZ_aKYZWRuP-sbp2Qydzxst6unFQO3cJgU@z>
+To: linux-mips@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, David Daney <david.daney@cavium.com>
+Message-ID: <20150825073826.q8sxzwRRuAVjdFLJuHgE-J74nVzB2ng1ynRyj_Q3Gdw@z>
 
-On 08/24/2015 03:55 PM, Thomas Gleixner wrote:
-> On Mon, 24 Aug 2015, Qais Yousef wrote:
->> On 08/24/2015 01:49 PM, Thomas Gleixner wrote:
->>> On Mon, 24 Aug 2015, Qais Yousef wrote:
->>>
->>>> Some drivers might require to send ipi to other cores. So export it.
->>> Which IPIs do you need to send from a driver which are not exposed by
->>> the SMP functions already?
->> It's not an SMP IPI. We use GIC to exchange interrupts between AXD and the
->> host system since AXD is another MIPS core in the cluster.
-> So that should have been in the changelog to begin with.
->   
+We already have 32/64-bit variants for the LL/SC instructions in
+asm/bitops.h so make use of them and remove the local variants
+from pgtable.h
 
-OK sorry for the confusion. I'll amend the changelog and be more careful 
-in the future.
+Cc: David Daney <david.daney@cavium.com>
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+---
+ arch/mips/include/asm/pgtable.h | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-Thanks,
-Qais
-
->>>> This will be used later by AXD driver.
->>> That smells fishy and it wants a proper explanation WHY and not just a
->>> sloppy statement that it will be used later. I can figure that out
->>> myself as exporting a function without using it does not make any sense.
->> Sorry for the terse explanation. As pointed above AXD uses GIC to send and
->> receive interrupts to the host core. Without this change I can't compile the
->> driver as a driver module because the symbol is not exported.
-> Really? Exporting it solves that problem then. That's interesting news
-> for me.
->
-> Thanks,
->
-> 	tglx
+diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
+index ae8569475264..e02777e8563e 100644
+--- a/arch/mips/include/asm/pgtable.h
++++ b/arch/mips/include/asm/pgtable.h
+@@ -10,6 +10,7 @@
+ 
+ #include <linux/mm_types.h>
+ #include <linux/mmzone.h>
++#include <asm/bitops.h>
+ #ifdef CONFIG_32BIT
+ #include <asm/pgtable-32.h>
+ #endif
+@@ -187,23 +188,16 @@ static inline void set_pte(pte_t *ptep, pte_t pteval)
+ 		 * For SMP, multiple CPUs can race, so we need to do
+ 		 * this atomically.
+ 		 */
+-#ifdef CONFIG_64BIT
+-#define LL_INSN "lld"
+-#define SC_INSN "scd"
+-#else /* CONFIG_32BIT */
+-#define LL_INSN "ll"
+-#define SC_INSN "sc"
+-#endif
+ 		unsigned long page_global = _PAGE_GLOBAL;
+ 		unsigned long tmp;
+ 
+ 		__asm__ __volatile__ (
+ 			"	.set	push\n"
+ 			"	.set	noreorder\n"
+-			"1:	" LL_INSN "	%[tmp], %[buddy]\n"
++			"1:	" __LL "%[tmp], %[buddy]\n"
+ 			"	bnez	%[tmp], 2f\n"
+ 			"	 or	%[tmp], %[tmp], %[global]\n"
+-			"	" SC_INSN "	%[tmp], %[buddy]\n"
++			"	" __SC "%[tmp], %[buddy]\n"
+ 			"	beqz	%[tmp], 1b\n"
+ 			"	 nop\n"
+ 			"2:\n"
+-- 
+2.5.0

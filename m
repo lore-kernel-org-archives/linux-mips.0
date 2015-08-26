@@ -1,16 +1,14 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:55467 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007390AbbHZJadbNbR1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 26 Aug 2015 11:30:33 +0200
-Date: Wed, 26 Aug 2015 09:30:23 +0000
-From: Joseph Myers <joseph@codesourcery.com>
-Subject: Re: [PATCH] mips: siginfo.h: add SIGSYS details [BZ #18863]
-In-Reply-To: <1440563342-5411-1-git-send-email-vapier@gentoo.org>
-Message-ID: <alpine.DEB.2.10.1508260918240.26898@digraph.polyomino.org.uk>
-References: <1440563342-5411-1-git-send-email-vapier@gentoo.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13368 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007608AbbHZQMJhY2Gd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 26 Aug 2015 18:12:09 +0200
+From: Govindraj Raja <Govindraj.Raja@imgtec.com>
+Subject: [PATCH v6 0/4] clk: pistachio: Fixes for pll calculations.
+Date: Wed, 26 Aug 2015 17:11:36 +0100
+Message-ID: <1440605500-13274-1-git-send-email-Govindraj.Raja@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <joseph_myers@mentor.com>
+Content-Type: text/plain
+Return-Path: <Govindraj.Raja@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,27 +18,82 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: libc-alpha@sourceware.org, linux-mips@linux-mips.org
-Message-ID: <20150826093023.l9jcyBjJTpFoZFrkliOwgavVq77j56MxNqAG9gtC7U4@z>
+To: linux-mips@linux-mips.org, linux-clk@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Michael Turquette <mturquette@baylibre.com>
+Cc: Zdenko Pulitika <zdenko.pulitika@imgtec.com>, Kevin Cernekee <cernekee@chromium.org>, Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, James Hartley <James.Hartley@imgtec.com>, Govindraj Raja <Govindraj.Raja@imgtec.com>, Damien Horsley <Damien.Horsley@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Govindraj Raja <govindraj.raja@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20150826161136.W3plIQRs3EWhDpUEURF6M62oqRVyHzRZAZVcNFrQTWU@z>
 
-On Wed, 26 Aug 2015, Mike Frysinger wrote:
+From: Govindraj Raja <govindraj.raja@imgtec.com>
 
-> Linux 3.13 added SIGSYS details to siginfo_t; update glibc's copy to
-> keep in sync with it.
-> 
-> 2015-08-25  Mike Frysinger  <vapier@gentoo.org>
-> 
-> 	[BZ #18863]
-> 	* sysdeps/unix/sysv/linux/mips/bits/siginfo.h (siginfo_t): Add _sigsys.
-> 	(si_call_addr): Define.
-> 	(si_syscall): Define.
-> 	(si_arch): Define.
+Patch 1/4 to 3/4 are pll calculation fixes for clock settings.
 
-OK.  CC to linux-mips because I see that the MIPS implementation of 
-copy_siginfo_to_user32 doesn't handle __SI_SYS, unlike arm64 at least, so 
-I suspect this won't in fact work for n32 or for o32 with a 64-bit kernel.
+Patch 4/4: Is a reword and repost based on earlier thread:
+http://patchwork.linux-mips.org/patch/10108/
+
+Series Based on 4.2-rc7
+Tested with Pistachio Bring-up-Board.
+
+Changes from v5:
+----------------
+Cc: <stable@vger.kernel.org> # 4.1
+
+This patch series is needed for 4.1-stable as well.
+So adding necessary commit-id for Fixes.
+Boot is broken on 4.1 stable without this patch series.
+
+Changes from v4:
+----------------
+Fixes comments from Andrew and added Andrew's
+reviewed by.
+
+http://patchwork.linux-mips.org/patch/11014/
+http://patchwork.linux-mips.org/patch/11016/
+
+
+Changes from v3:
+---------------
+Fixes comments to bring back the poll rate table with
+unsigned long int as discussed in below thread.
+
+http://patchwork.linux-mips.org/patch/10900/
+
+Changes from v2:
+---------------
+Fixes comments from Sergei as dicussed in below thread:
+http://patchwork.linux-mips.org/patch/10903/
+
+Changes from v1:
+---------------
+Fix comments from Andrew.
+Topics:
+
+* http://patchwork.linux-mips.org/patch/10888/
+  (Remove long conversion for pll_rate_table variables)
+	
+* http://patchwork.linux-mips.org/patch/10889/
+  (reword pll to PLL)
+
+* http://patchwork.linux-mips.org/patch/10891/
+  (squash 4/6 to 3/6)
+
+* http://patchwork.linux-mips.org/patch/10892/
+  (squash 5/6 to 3/6) 
+
+* http://patchwork.linux-mips.org/patch/10893/
+  (Add missing signed-off)
+
+
+Damien.Horsley (1):
+  clk: pistachio: correct critical clock list
+
+Zdenko Pulitika (3):
+  clk: pistachio: Fix 32bit integer overflows
+  clk: pistachio: Fix override of clk-pll settings from boot loader
+  clk: pistachio: Fix PLL rate calculation in integer mode
+
+ drivers/clk/pistachio/clk-pistachio.c | 19 ++++++---
+ drivers/clk/pistachio/clk-pll.c       | 77 +++++++++++++++++++++++++++--------
+ drivers/clk/pistachio/clk.h           | 14 +++----
+ 3 files changed, 80 insertions(+), 30 deletions(-)
 
 -- 
-Joseph S. Myers
-joseph@codesourcery.com
+1.9.1

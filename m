@@ -1,16 +1,20 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:64253 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010600AbbH0Jl12xV8r (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 27 Aug 2015 11:41:27 +0200
-Date: Thu, 27 Aug 2015 09:41:16 +0000
-From: Joseph Myers <joseph@codesourcery.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:41561 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010797AbbH0J4I2iFYr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 27 Aug 2015 11:56:08 +0200
 Subject: Re: [PATCH] mips: siginfo.h: add SIGSYS details [BZ #18863]
-In-Reply-To: <55DEC3B9.1070105@imgtec.com>
-Message-ID: <alpine.DEB.2.10.1508270940090.29564@digraph.polyomino.org.uk>
-References: <1440563342-5411-1-git-send-email-vapier@gentoo.org> <alpine.DEB.2.10.1508260918240.26898@digraph.polyomino.org.uk> <20150826171017.GD3116@vapier> <55DEC3B9.1070105@imgtec.com>
+References: <1440563342-5411-1-git-send-email-vapier@gentoo.org>
+ <alpine.DEB.2.10.1508260918240.26898@digraph.polyomino.org.uk>
+ <20150826171017.GD3116@vapier> <55DEC3B9.1070105@imgtec.com>
+ <alpine.DEB.2.10.1508270940090.29564@digraph.polyomino.org.uk>
+From: Markos Chandras <Markos.Chandras@imgtec.com>
+Message-ID: <55DEDEB1.70604@imgtec.com>
+Date: Thu, 27 Aug 2015 10:56:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <joseph_myers@mentor.com>
+In-Reply-To: <alpine.DEB.2.10.1508270940090.29564@digraph.polyomino.org.uk>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,34 +24,38 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Markos Chandras <Markos.Chandras@imgtec.com>
+To: Joseph Myers <joseph@codesourcery.com>
 Cc: Mike Frysinger <vapier@gentoo.org>, libc-alpha@sourceware.org, linux-mips@linux-mips.org
-Message-ID: <20150827094116.Dgv4lW8S75oYXcIKplWRG_xQSO4xw6JRNHJ6GW2YxFc@z>
+Message-ID: <20150827095601.ihlvlK3RK5Zd-BNod7SVOU5JVWvlnhUACO1EMhGMifA@z>
 
-On Thu, 27 Aug 2015, Markos Chandras wrote:
+On 08/27/2015 10:41 AM, Joseph Myers wrote:
+> On Thu, 27 Aug 2015, Markos Chandras wrote:
+> 
+>>>> OK.  CC to linux-mips because I see that the MIPS implementation of 
+>>>> copy_siginfo_to_user32 doesn't handle __SI_SYS, unlike arm64 at least, so 
+>>>> I suspect this won't in fact work for n32 or for o32 with a 64-bit kernel.
+>>>
+>>> i'm getting reports of seccomp misbehavior on mips already which is what
+>>> started me down this glibc path.  i suspect the original port was tested
+>>> against o32 kernels only.
+>>> -mike
+>>>
+>>
+>> I have recently tested mips64 n64/n32 with the testsuite from libseccomp
+>> and that led me to this fix
+>>
+>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=9f161439e4104b641a7bfb9b89581d801159fec8
+>>
+>> if you are aware of other problems (and perhaps a test to trigger them)
+>> that could be kernel related let me know
+> 
+> My observation about copy_siginfo_to_user32 missing a case was purely 
+> based on the kernel source code.  I've no reason to think it has anything 
+> to do with seccomp problems.
+> 
 
-> >> OK.  CC to linux-mips because I see that the MIPS implementation of 
-> >> copy_siginfo_to_user32 doesn't handle __SI_SYS, unlike arm64 at least, so 
-> >> I suspect this won't in fact work for n32 or for o32 with a 64-bit kernel.
-> > 
-> > i'm getting reports of seccomp misbehavior on mips already which is what
-> > started me down this glibc path.  i suspect the original port was tested
-> > against o32 kernels only.
-> > -mike
-> > 
-> 
-> I have recently tested mips64 n64/n32 with the testsuite from libseccomp
-> and that led me to this fix
-> 
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=9f161439e4104b641a7bfb9b89581d801159fec8
-> 
-> if you are aware of other problems (and perhaps a test to trigger them)
-> that could be kernel related let me know
-
-My observation about copy_siginfo_to_user32 missing a case was purely 
-based on the kernel source code.  I've no reason to think it has anything 
-to do with seccomp problems.
+Yeah, my email was directed to Mike who said he is getting reports that
+seccomp on MIPS has issues and that led him to his glibc patch.
 
 -- 
-Joseph S. Myers
-joseph@codesourcery.com
+markos

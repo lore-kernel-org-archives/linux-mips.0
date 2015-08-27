@@ -1,18 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:9206 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011855AbbH0JHPoCr85 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 27 Aug 2015 11:07:15 +0200
-Subject: Re: [PATCH 00/10] Add support for img AXD audio hardware decoder
-References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
- <20150826180436.GC28760@sirena.org.uk>
-From: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <55DED33C.50007@imgtec.com>
-Date: Thu, 27 Aug 2015 10:07:08 +0100
+Received: from relay1.mentorg.com ([192.94.38.131]:64253 "EHLO
+        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010600AbbH0Jl12xV8r (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 27 Aug 2015 11:41:27 +0200
+Date: Thu, 27 Aug 2015 09:41:16 +0000
+From: Joseph Myers <joseph@codesourcery.com>
+Subject: Re: [PATCH] mips: siginfo.h: add SIGSYS details [BZ #18863]
+In-Reply-To: <55DEC3B9.1070105@imgtec.com>
+Message-ID: <alpine.DEB.2.10.1508270940090.29564@digraph.polyomino.org.uk>
+References: <1440563342-5411-1-git-send-email-vapier@gentoo.org> <alpine.DEB.2.10.1508260918240.26898@digraph.polyomino.org.uk> <20150826171017.GD3116@vapier> <55DEC3B9.1070105@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20150826180436.GC28760@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <joseph_myers@mentor.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,29 +20,34 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Message-ID: <20150827090708.BT_I7KD1QqUbQNDnfdvEfAY1VgMN4ph5MGdBfm5cZp0@z>
+To: Markos Chandras <Markos.Chandras@imgtec.com>
+Cc: Mike Frysinger <vapier@gentoo.org>, libc-alpha@sourceware.org, linux-mips@linux-mips.org
+Message-ID: <20150827094116.Dgv4lW8S75oYXcIKplWRG_xQSO4xw6JRNHJ6GW2YxFc@z>
 
-On 08/26/2015 07:04 PM, Mark Brown wrote:
-> On Mon, Aug 24, 2015 at 01:39:09PM +0100, Qais Yousef wrote:
->
->> Qais Yousef (10):
->>    irqchip: irq-mips-gic: export gic_send_ipi
->>    dt: add img,axd.txt device tree binding document
->>    ALSA: add AXD Audio Processing IP alsa driver
->>    ALSA: axd: add fw binary header manipulation files
->>    ALSA: axd: add buffers manipulation files
->>    ALSA: axd: add basic files for sending/receiving axd cmds
->>    ALSA: axd: add cmd interface helper functions
->>    ALSA: axd: add low level AXD platform setup files
->>    ALSA: axd: add alsa compress offload operations
->>    ALSA: axd: add Makefile
-> Please try to use subject lines matching the style for the subsystem, I
-> very nearly deleted this unread because it looks like an ALSA patch
-> series, not an ASoC one.
+On Thu, 27 Aug 2015, Markos Chandras wrote:
 
-OK sorry about that. I'll fix this in the next series.
+> >> OK.  CC to linux-mips because I see that the MIPS implementation of 
+> >> copy_siginfo_to_user32 doesn't handle __SI_SYS, unlike arm64 at least, so 
+> >> I suspect this won't in fact work for n32 or for o32 with a 64-bit kernel.
+> > 
+> > i'm getting reports of seccomp misbehavior on mips already which is what
+> > started me down this glibc path.  i suspect the original port was tested
+> > against o32 kernels only.
+> > -mike
+> > 
+> 
+> I have recently tested mips64 n64/n32 with the testsuite from libseccomp
+> and that led me to this fix
+> 
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=9f161439e4104b641a7bfb9b89581d801159fec8
+> 
+> if you are aware of other problems (and perhaps a test to trigger them)
+> that could be kernel related let me know
 
-Thanks,
-Qais
+My observation about copy_siginfo_to_user32 missing a case was purely 
+based on the kernel source code.  I've no reason to think it has anything 
+to do with seccomp problems.
+
+-- 
+Joseph S. Myers
+joseph@codesourcery.com

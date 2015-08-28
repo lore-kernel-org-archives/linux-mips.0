@@ -1,20 +1,12 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:41561 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010797AbbH0J4I2iFYr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 27 Aug 2015 11:56:08 +0200
-Subject: Re: [PATCH] mips: siginfo.h: add SIGSYS details [BZ #18863]
-References: <1440563342-5411-1-git-send-email-vapier@gentoo.org>
- <alpine.DEB.2.10.1508260918240.26898@digraph.polyomino.org.uk>
- <20150826171017.GD3116@vapier> <55DEC3B9.1070105@imgtec.com>
- <alpine.DEB.2.10.1508270940090.29564@digraph.polyomino.org.uk>
-From: Markos Chandras <Markos.Chandras@imgtec.com>
-Message-ID: <55DEDEB1.70604@imgtec.com>
-Date: Thu, 27 Aug 2015 10:56:01 +0100
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.10.1508270940090.29564@digraph.polyomino.org.uk>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Received: from mail-pa0-f49.google.com ([209.85.220.49]:33800 "EHLO
+        mail-pa0-f49.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27013231AbbH1BaSqOxKj (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Aug 2015 03:30:18 +0200
+From: Gregory Fong <gregory.0xf0@gmail.com>
+Subject: [PATCH] MIPS: BCM63XX: Use pr_* instead of printk
+Date: Thu, 27 Aug 2015 18:30:02 -0700
+Message-ID: <1440725410-2082-1-git-send-email-gregory.0xf0@gmail.com>
+Return-Path: <gregory.0xf0@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,38 +16,174 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Joseph Myers <joseph@codesourcery.com>
-Cc: Mike Frysinger <vapier@gentoo.org>, libc-alpha@sourceware.org, linux-mips@linux-mips.org
-Message-ID: <20150827095601.ihlvlK3RK5Zd-BNod7SVOU5JVWvlnhUACO1EMhGMifA@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Gregory Fong <gregory.0xf0@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Jonas Gorski <jogo@openwrt.org>, Rusty Russell <rusty@rustcorp.com.au>, Nicolas Schichan <nschichan@freebox.fr>, "open list:MIPS" <linux-mips@linux-mips.org>, open list <linux-kernel@vger.kernel.org>
+Message-ID: <20150828013002.gikJLXadtJxS0UCDgo5LvFiDoG6WF-ebWzF7gw8V5cU@z>
 
-On 08/27/2015 10:41 AM, Joseph Myers wrote:
-> On Thu, 27 Aug 2015, Markos Chandras wrote:
-> 
->>>> OK.  CC to linux-mips because I see that the MIPS implementation of 
->>>> copy_siginfo_to_user32 doesn't handle __SI_SYS, unlike arm64 at least, so 
->>>> I suspect this won't in fact work for n32 or for o32 with a 64-bit kernel.
->>>
->>> i'm getting reports of seccomp misbehavior on mips already which is what
->>> started me down this glibc path.  i suspect the original port was tested
->>> against o32 kernels only.
->>> -mike
->>>
->>
->> I have recently tested mips64 n64/n32 with the testsuite from libseccomp
->> and that led me to this fix
->>
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=9f161439e4104b641a7bfb9b89581d801159fec8
->>
->> if you are aware of other problems (and perhaps a test to trigger them)
->> that could be kernel related let me know
-> 
-> My observation about copy_siginfo_to_user32 missing a case was purely 
-> based on the kernel source code.  I've no reason to think it has anything 
-> to do with seccomp problems.
-> 
+Signed-off-by: Gregory Fong <gregory.0xf0@gmail.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Jonas Gorski <jogo@openwrt.org>
+---
+ arch/mips/bcm63xx/boards/board_bcm963xx.c | 11 ++++++-----
+ arch/mips/bcm63xx/cpu.c                   |  6 +++---
+ arch/mips/bcm63xx/dev-pcmcia.c            |  2 +-
+ arch/mips/bcm63xx/irq.c                   |  2 +-
+ arch/mips/bcm63xx/setup.c                 |  8 ++++----
+ arch/mips/bcm63xx/timer.c                 |  2 +-
+ 6 files changed, 16 insertions(+), 15 deletions(-)
 
-Yeah, my email was directed to Mike who said he is getting reports that
-seccomp on MIPS has issues and that led him to his glibc patch.
-
+diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+index 33727e7..7e001d3 100644
+--- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
++++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+@@ -7,6 +7,8 @@
+  * Copyright (C) 2008 Florian Fainelli <florian@openwrt.org>
+  */
+ 
++#define pr_fmt(fmt) "board_bcm963xx: " fmt
++
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+@@ -31,7 +33,6 @@
+ 
+ #include <uapi/linux/bcm933xx_hcs.h>
+ 
+-#define PFX	"board_bcm963xx: "
+ 
+ #define HCS_OFFSET_128K			0x20000
+ 
+@@ -740,7 +741,7 @@ int bcm63xx_get_fallback_sprom(struct ssb_bus *bus, struct ssb_sprom *out)
+ 		memcpy(out, &bcm63xx_sprom, sizeof(struct ssb_sprom));
+ 		return 0;
+ 	} else {
+-		printk(KERN_ERR PFX "unable to fill SPROM for given bustype.\n");
++		pr_err("unable to fill SPROM for given bustype.\n");
+ 		return -EINVAL;
+ 	}
+ }
+@@ -784,7 +785,7 @@ void __init board_prom_init(void)
+ 			 cfe[5], cfe[6], cfe[7], cfe[8], cfe[9]);
+ 	else
+ 		strcpy(cfe_version, "unknown");
+-	printk(KERN_INFO PFX "CFE version: %s\n", cfe_version);
++	pr_info("CFE version: %s\n", cfe_version);
+ 
+ 	bcm63xx_nvram_init(boot_addr + BCM963XX_NVRAM_OFFSET);
+ 
+@@ -808,7 +809,7 @@ void __init board_prom_init(void)
+ 		char name[17];
+ 		memcpy(name, board_name, 16);
+ 		name[16] = 0;
+-		printk(KERN_ERR PFX "unknown bcm963xx board: %s\n",
++		pr_err("unknown bcm963xx board: %s\n",
+ 		       name);
+ 		return;
+ 	}
+@@ -854,7 +855,7 @@ void __init board_setup(void)
+ {
+ 	if (!board.name[0])
+ 		panic("unable to detect bcm963xx board");
+-	printk(KERN_INFO PFX "board name: %s\n", board.name);
++	pr_info("board name: %s\n", board.name);
+ 
+ 	/* make sure we're running on expected cpu */
+ 	if (bcm63xx_get_cpu_id() != board.expected_cpu_id)
+diff --git a/arch/mips/bcm63xx/cpu.c b/arch/mips/bcm63xx/cpu.c
+index 307ec8b..57dfe7c 100644
+--- a/arch/mips/bcm63xx/cpu.c
++++ b/arch/mips/bcm63xx/cpu.c
+@@ -376,10 +376,10 @@ void __init bcm63xx_cpu_init(void)
+ 	bcm63xx_cpu_freq = detect_cpu_clock();
+ 	bcm63xx_memory_size = detect_memory_size();
+ 
+-	printk(KERN_INFO "Detected Broadcom 0x%04x CPU revision %02x\n",
++	pr_info("Detected Broadcom 0x%04x CPU revision %02x\n",
+ 	       bcm63xx_cpu_id, bcm63xx_cpu_rev);
+-	printk(KERN_INFO "CPU frequency is %u MHz\n",
++	pr_info("CPU frequency is %u MHz\n",
+ 	       bcm63xx_cpu_freq / 1000000);
+-	printk(KERN_INFO "%uMB of RAM installed\n",
++	pr_info("%uMB of RAM installed\n",
+ 	       bcm63xx_memory_size >> 20);
+ }
+diff --git a/arch/mips/bcm63xx/dev-pcmcia.c b/arch/mips/bcm63xx/dev-pcmcia.c
+index a551bab..9496cd2 100644
+--- a/arch/mips/bcm63xx/dev-pcmcia.c
++++ b/arch/mips/bcm63xx/dev-pcmcia.c
+@@ -139,6 +139,6 @@ int __init bcm63xx_pcmcia_register(void)
+ 	return platform_device_register(&bcm63xx_pcmcia_device);
+ 
+ out_err:
+-	printk(KERN_ERR "unable to set pcmcia chip select\n");
++	pr_err("unable to set pcmcia chip select\n");
+ 	return ret;
+ }
+diff --git a/arch/mips/bcm63xx/irq.c b/arch/mips/bcm63xx/irq.c
+index e3e808a..99d3d14 100644
+--- a/arch/mips/bcm63xx/irq.c
++++ b/arch/mips/bcm63xx/irq.c
+@@ -311,7 +311,7 @@ static int bcm63xx_external_irq_set_type(struct irq_data *d,
+ 		break;
+ 
+ 	default:
+-		printk(KERN_ERR "bogus flow type combination given !\n");
++		pr_err("bogus flow type combination given !\n");
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/arch/mips/bcm63xx/setup.c b/arch/mips/bcm63xx/setup.c
+index 240fb4f..2be9caa 100644
+--- a/arch/mips/bcm63xx/setup.c
++++ b/arch/mips/bcm63xx/setup.c
+@@ -24,7 +24,7 @@
+ 
+ void bcm63xx_machine_halt(void)
+ {
+-	printk(KERN_INFO "System halted\n");
++	pr_info("System halted\n");
+ 	while (1)
+ 		;
+ }
+@@ -34,7 +34,7 @@ static void bcm6348_a1_reboot(void)
+ 	u32 reg;
+ 
+ 	/* soft reset all blocks */
+-	printk(KERN_INFO "soft-resetting all blocks ...\n");
++	pr_info("soft-resetting all blocks ...\n");
+ 	reg = bcm_perf_readl(PERF_SOFTRESET_REG);
+ 	reg &= ~SOFTRESET_6348_ALL;
+ 	bcm_perf_writel(reg, PERF_SOFTRESET_REG);
+@@ -46,7 +46,7 @@ static void bcm6348_a1_reboot(void)
+ 	mdelay(10);
+ 
+ 	/* Jump to the power on address. */
+-	printk(KERN_INFO "jumping to reset vector.\n");
++	pr_info("jumping to reset vector.\n");
+ 	/* set high vectors (base at 0xbfc00000 */
+ 	set_c0_status(ST0_BEV | ST0_ERL);
+ 	/* run uncached in kseg0 */
+@@ -110,7 +110,7 @@ void bcm63xx_machine_reboot(void)
+ 	if (BCMCPU_IS_6348() && (bcm63xx_get_cpu_rev() == 0xa1))
+ 		bcm6348_a1_reboot();
+ 
+-	printk(KERN_INFO "triggering watchdog soft-reset...\n");
++	pr_info("triggering watchdog soft-reset...\n");
+ 	if (BCMCPU_IS_6328()) {
+ 		bcm_wdt_writel(1, WDT_SOFTRESET_REG);
+ 	} else {
+diff --git a/arch/mips/bcm63xx/timer.c b/arch/mips/bcm63xx/timer.c
+index 5f11359..bedc497 100644
+--- a/arch/mips/bcm63xx/timer.c
++++ b/arch/mips/bcm63xx/timer.c
+@@ -195,7 +195,7 @@ int bcm63xx_timer_init(void)
+ 	irq = bcm63xx_get_irq_number(IRQ_TIMER);
+ 	ret = request_irq(irq, timer_interrupt, 0, "bcm63xx_timer", NULL);
+ 	if (ret) {
+-		printk(KERN_ERR "bcm63xx_timer: failed to register irq\n");
++		pr_err("bcm63xx_timer: failed to register irq\n");
+ 		return ret;
+ 	}
+ 
 -- 
-markos
+1.9.1

@@ -1,20 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:30745 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:21218 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008088AbbILPOmMMK4l (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 12 Sep 2015 17:14:42 +0200
-Date: Sat, 12 Sep 2015 08:14:33 -0700
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 6/6] MIPS: CPS: drop .set mips64r2 directives
-Message-ID: <20150912151433.GB3831@NP-P-BURTON>
-References: <1438814560-19821-1-git-send-email-paul.burton@imgtec.com>
- <1438814560-19821-7-git-send-email-paul.burton@imgtec.com>
- <20150910180323.GA22682@NP-P-BURTON>
- <55F3C273.3030704@phrozen.org>
+        with ESMTP id S27013661AbbIQQug1nFdP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Sep 2015 18:50:36 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 1/2] MIPS: cpu-features: Add cpu_has_ftlb
+Date: Thu, 17 Sep 2015 17:49:20 +0100
+Message-ID: <1442508561-12260-2-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1442508561-12260-1-git-send-email-james.hogan@imgtec.com>
+References: <1442508561-12260-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <55F3C273.3030704@phrozen.org>
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,83 +20,93 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: John Crispin <john@phrozen.org>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org, Markos Chandras <markos.chandras@imgtec.com>, stable@vger.kernel.org, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20150912151433.qyvloQP7OcyPwvI42PFLS4S2uqhlDqTteU521DZTo8I@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Cc: James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20150917164920.YBX5LW1tRg3iiyvHqaEuVpgdaqk8HGBveNKh21-qImk@z>
 
-Thanks John,
+Add cpu_has_ftlb, which specifies that an FTLB is present in addition to
+the VTLB, probed based on whether Config.MT == 4 (rather than 1 for
+standard JTLB).
 
-That's fine & understood, it's the month before that when these sat
-quietly - through the release of a kernel which they fix a regression in
-no less, and despite my having asked Ralf on IRC about them a couple of
-weeks before v4.2 was released.
+This is necessary since MIPS release 6 removes Config4.MMUExtDef, so the
+presence of the FTLB fields in Config4 must be determined from Config.MT
+instead.
 
-If they just fell off the radar or through the cracks, fine, it happens.
-I just want to be sure that regression gets fixed as soon as possible.
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Cc: linux-mips@linux-mips.org
+---
+ arch/mips/include/asm/cpu-features.h | 3 +++
+ arch/mips/include/asm/cpu.h          | 1 +
+ arch/mips/include/asm/mipsregs.h     | 2 ++
+ arch/mips/kernel/cpu-probe.c         | 8 +++++---
+ 4 files changed, 11 insertions(+), 3 deletions(-)
 
-Thanks,
-    Paul
-
-On Sat, Sep 12, 2015 at 08:13:07AM +0200, John Crispin wrote:
-> Hi Paul,
-> 
-> --> http://www.linux-mips.org/archives/linux-mips/2015-09/msg00057.html
-> 
-> 	John
-> 
-> On 10/09/2015 20:03, Paul Burton wrote:
-> > Ralf: is there a reason you've only applied patch 1 of this series?
-> > 
-> > v4.2 is broken because these didn't get in (despite being submitted well
-> > before the release), and master is still broken because they still
-> > haven't gotten in. If there's a reason you didn't merge them please let
-> > me know, otherwise please can we get them in ASAP.
-> > 
-> > Thanks,
-> >     Paul
-> > 
-> > On Wed, Aug 05, 2015 at 03:42:40PM -0700, Paul Burton wrote:
-> >> Commit 977e043d5ea1 ("MIPS: kernel: cps-vec: Replace mips32r2 ISA level
-> >> with mips64r2") leads to .set mips64r2 directives being present in 32
-> >> bit (ie. CONFIG_32BIT=y) kernels. This is incorrect & leads to MIPS64
-> >> instructions being emitted by the assembler when expanding
-> >> pseudo-instructions. For example the "move" instruction can legitimately
-> >> be expanded to a "daddu". This causes problems when the kernel is run on
-> >> a MIPS32 CPU, as CONFIG_32BIT kernels of course often are...
-> >>
-> >> Fix this by dropping the .set <ISA> directives entirely now that Kconfig
-> >> should be ensuring that kernels including this code are built with a
-> >> suitable -march= compiler flag.
-> >>
-> >> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> >> Cc: Markos Chandras <markos.chandras@imgtec.com>
-> >> Cc: <stable@vger.kernel.org> # 3.16+
-> >> ---
-> >>
-> >>  arch/mips/kernel/cps-vec.S | 2 --
-> >>  1 file changed, 2 deletions(-)
-> >>
-> >> diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
-> >> index 209ded1..763d8b7 100644
-> >> --- a/arch/mips/kernel/cps-vec.S
-> >> +++ b/arch/mips/kernel/cps-vec.S
-> >> @@ -229,7 +229,6 @@ LEAF(mips_cps_core_init)
-> >>  	has_mt	t0, 3f
-> >>  
-> >>  	.set	push
-> >> -	.set	mips64r2
-> >>  	.set	mt
-> >>  
-> >>  	/* Only allow 1 TC per VPE to execute... */
-> >> @@ -348,7 +347,6 @@ LEAF(mips_cps_boot_vpes)
-> >>  	 nop
-> >>  
-> >>  	.set	push
-> >> -	.set	mips64r2
-> >>  	.set	mt
-> >>  
-> >>  1:	/* Enter VPE configuration state */
-> >> -- 
-> >> 2.5.0
-> >>
-> > 
+diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
+index 9801ac982655..fe67f12ac239 100644
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -20,6 +20,9 @@
+ #ifndef cpu_has_tlb
+ #define cpu_has_tlb		(cpu_data[0].options & MIPS_CPU_TLB)
+ #endif
++#ifndef cpu_has_ftlb
++#define cpu_has_ftlb		(cpu_data[0].options & MIPS_CPU_FTLB)
++#endif
+ #ifndef cpu_has_tlbinv
+ #define cpu_has_tlbinv		(cpu_data[0].options & MIPS_CPU_TLBINV)
+ #endif
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index cd89e9855775..82ad15f11049 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -385,6 +385,7 @@ enum cpu_type_enum {
+ #define MIPS_CPU_CDMM		0x4000000000ull	/* CPU has Common Device Memory Map */
+ #define MIPS_CPU_BP_GHIST	0x8000000000ull /* R12K+ Branch Prediction Global History */
+ #define MIPS_CPU_SP		0x10000000000ull /* Small (1KB) page support */
++#define MIPS_CPU_FTLB		0x20000000000ull /* CPU has Fixed-page-size TLB */
+ 
+ /*
+  * CPU ASE encodings
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index d3cd8eac81e3..c64781cf649f 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -487,6 +487,8 @@
+ 
+ /* Bits specific to the MIPS32/64 PRA.	*/
+ #define MIPS_CONF_MT		(_ULCAST_(7) <<	 7)
++#define MIPS_CONF_MT_TLB	(_ULCAST_(1) <<  7)
++#define MIPS_CONF_MT_FTLB	(_ULCAST_(4) <<  7)
+ #define MIPS_CONF_AR		(_ULCAST_(7) << 10)
+ #define MIPS_CONF_AT		(_ULCAST_(3) << 13)
+ #define MIPS_CONF_M		(_ULCAST_(1) << 31)
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 571a8e6ea5bd..397551cf2e7b 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -410,16 +410,18 @@ static int set_ftlb_enable(struct cpuinfo_mips *c, int enable)
+ static inline unsigned int decode_config0(struct cpuinfo_mips *c)
+ {
+ 	unsigned int config0;
+-	int isa;
++	int isa, mt;
+ 
+ 	config0 = read_c0_config();
+ 
+ 	/*
+ 	 * Look for Standard TLB or Dual VTLB and FTLB
+ 	 */
+-	if ((((config0 & MIPS_CONF_MT) >> 7) == 1) ||
+-	    (((config0 & MIPS_CONF_MT) >> 7) == 4))
++	mt = config0 & MIPS_CONF_MT;
++	if (mt == MIPS_CONF_MT_TLB)
+ 		c->options |= MIPS_CPU_TLB;
++	else if (mt == MIPS_CONF_MT_FTLB)
++		c->options |= MIPS_CPU_TLB | MIPS_CPU_FTLB;
+ 
+ 	isa = (config0 & MIPS_CONF_AT) >> 13;
+ 	switch (isa) {
+-- 
+2.4.6

@@ -1,17 +1,14 @@
-Received: from mail.windriver.com ([147.11.1.11]:61291 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006916AbbIUCXZR0U4i (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 21 Sep 2015 04:23:25 +0200
-Message-ID: <55FF6A21.7030601@windriver.com>
-Date: Mon, 21 Sep 2015 10:23:29 +0800
-From: yjin <yanjiang.jin@windriver.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54712 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008158AbbIURIOlXhvX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 21 Sep 2015 19:08:14 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 1/2] MIPS: Fix octeon FP context switch handling
+Date: Mon, 21 Sep 2015 10:07:41 -0700
+Message-ID: <1442855262-25416-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mips: vmcore: forced convert 'hdr' in elf_check_arch()
-References: <1442562171-21307-1-git-send-email-yanjiang.jin@windriver.com> <1442562171-21307-2-git-send-email-yanjiang.jin@windriver.com> <55FF6876.7080908@windriver.com>
-In-Reply-To: <55FF6876.7080908@windriver.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-Path: <Yanjiang.Jin@windriver.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,70 +18,111 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: akpm@linux-foundation.org, mhuang@redhat.com, kexec@lists.infradead.org, chaowang@redhat.com, linux-kernel@vger.kernel.org, jinyanjiang@gmail.com, linux-mips@linux-mips.org
-Message-ID: <20150921022329.MTynLUtm5AkiAzhqLvizjDjUW7qAn5TwWPQzg6Sdj-I@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Aaro Koskinen <aaro.koskinen@nokia.com>, Aleksey Makarov <aleksey.makarov@auriga.com>, linux-kernel@vger.kernel.org, Chandrakala Chavva <cchavva@caviumnetworks.com>, David Daney <david.daney@cavium.com>, Leonid Rosenboim <lrosenboim@caviumnetworks.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20150921170741.rjfwEhqiiE2SOvDfKQiAUUZNkcp_kg4EoNZNIygJcUg@z>
 
-It seems the last mail has been blocked, resend it.
+Commit 1a3d59579b9f ("MIPS: Tidy up FPU context switching") removed FP
+context saving from the asm-written resume function in favour of reusing
+existing code to perform the same task. However it only removed the FP
+context saving code from the r4k_switch.S implementation of resume.
+Octeon uses its own implementation in octeon_switch.S, so remove FP
+context saving there too in order to prevent attempting to save context
+twice. That formerly led to an exception from the second save as follows
+because the FPU had already been disabled by the first save:
 
-On 2015年09月21日 10:16, yjin wrote:
-> The new version patch only modifies mips/elf.h, so add Ralf Baechle 
-> and cc linux-mips@linux-mips.org.
-> This is a V2 patch, attach the V1 patch for reference.
->
-> Thanks!
-> Yanjiang
->
-> On 2015年09月18日 15:42, yanjiang.jin@windriver.com wrote:
->> From: Yanjiang Jin <yanjiang.jin@windriver.com>
->>
->> elf_check_arch() will be called both in parse_crash_elf64_headers()
->> and parse_crash_elf32_headers(). But in these two functions, the type of
->> the parameter ehdr is different: Elf32_Ehdr and Elf64_Ehdr.
->>
->> Function parse_crash_elf_headers() reads e_ident[EI_CLASS] then 
->> decides to
->> call parse_crash_elf64_headers() or parse_crash_elf32_headers().
->> This happens in run time, not compile time. So compiler will report
->> the below warning:
->>
->> In file included from include/linux/elf.h:4:0,
->>                   from fs/proc/vmcore.c:13:
->> fs/proc/vmcore.c: In function 'parse_crash_elf32_headers':
->> arch/mips/include/asm/elf.h:258:23: warning: initializatio
->> n from incompatible pointer type
->>    struct elfhdr *__h = (hdr);     \
->>                         ^
->> fs/proc/vmcore.c:1071:4: note: in expansion of macro 'elf_
->> check_arch'
->>     !elf_check_arch(&ehdr) ||
->>      ^
->>
->> Signed-off-by: Yanjiang Jin <yanjiang.jin@windriver.com>
->> ---
->>   arch/mips/include/asm/elf.h | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/mips/include/asm/elf.h b/arch/mips/include/asm/elf.h
->> index f19e890..ece490d 100644
->> --- a/arch/mips/include/asm/elf.h
->> +++ b/arch/mips/include/asm/elf.h
->> @@ -224,7 +224,7 @@ struct mips_elf_abiflags_v0 {
->>   #define elf_check_arch(hdr)                        \
->>   ({                                    \
->>       int __res = 1;                            \
->> -    struct elfhdr *__h = (hdr);                    \
->> +    struct elfhdr *__h = (struct elfhdr *)(hdr);            \
->>                                       \
->>       if (__h->e_machine != EM_MIPS)                    \
->>           __res = 0;                        \
->> @@ -255,7 +255,7 @@ struct mips_elf_abiflags_v0 {
->>   #define elf_check_arch(hdr)                        \
->>   ({                                    \
->>       int __res = 1;                            \
->> -    struct elfhdr *__h = (hdr);                    \
->> +    struct elfhdr *__h = (struct elfhdr *)(hdr);            \
->>                                       \
->>       if (__h->e_machine != EM_MIPS)                    \
->>           __res = 0;                        \
->
+    do_cpu invoked from kernel context![#1]:
+    CPU: 0 PID: 2 Comm: kthreadd Not tainted 4.3.0-rc2-dirty #2
+    task: 800000041f84a008 ti: 800000041f864000 task.ti: 800000041f864000
+    $ 0   : 0000000000000000 0000000010008ce1 0000000000100000 ffffffffbfffffff
+    $ 4   : 800000041f84a008 800000041f84ac08 800000041f84c000 0000000000000004
+    $ 8   : 0000000000000001 0000000000000000 0000000000000000 0000000000000001
+    $12   : 0000000010008ce3 0000000000119c60 0000000000000036 800000041f864000
+    $16   : 800000041f84ac08 800000000792ce80 800000041f84a008 ffffffff81758b00
+    $20   : 0000000000000000 ffffffff8175ae50 0000000000000000 ffffffff8176c740
+    $24   : 0000000000000006 ffffffff81170300
+    $28   : 800000041f864000 800000041f867d90 0000000000000000 ffffffff815f3fa0
+    Hi    : 0000000000fa8257
+    Lo    : ffffffffe15cfc00
+    epc   : ffffffff8112821c resume+0x9c/0x200
+    ra    : ffffffff815f3fa0 __schedule+0x3f0/0x7d8
+    Status: 10008ce2        KX SX UX KERNEL EXL
+    Cause : 1080002c (ExcCode 0b)
+    PrId  : 000d0601 (Cavium Octeon+)
+    Modules linked in:
+    Process kthreadd (pid: 2, threadinfo=800000041f864000, task=800000041f84a008, tls=0000000000000000)
+    Stack : ffffffff81604218 ffffffff815f7e08 800000041f84a008 ffffffff811681b0
+              800000041f84a008 ffffffff817e9878 0000000000000000 ffffffff81770000
+              ffffffff81768340 ffffffff81161398 0000000000000001 0000000000000000
+              0000000000000000 ffffffff815f4424 0000000000000000 ffffffff81161d68
+              ffffffff81161be8 0000000000000000 0000000000000000 0000000000000000
+              0000000000000000 0000000000000000 0000000000000000 ffffffff8111e16c
+              0000000000000000 0000000000000000 0000000000000000 0000000000000000
+              0000000000000000 0000000000000000 0000000000000000 0000000000000000
+              0000000000000000 0000000000000000 0000000000000000 0000000000000000
+              0000000000000000 0000000000000000 0000000000000000 0000000000000000
+              ...
+    Call Trace:
+    [<ffffffff8112821c>] resume+0x9c/0x200
+    [<ffffffff815f3fa0>] __schedule+0x3f0/0x7d8
+    [<ffffffff815f4424>] schedule+0x34/0x98
+    [<ffffffff81161d68>] kthreadd+0x180/0x198
+    [<ffffffff8111e16c>] ret_from_kernel_thread+0x14/0x1c
+
+Tested using cavium_octeon_defconfig on an EdgeRouter Lite.
+
+Fixes: 1a3d59579b9f ("MIPS: Tidy up FPU context switching")
+Reported-by: Aaro Koskinen <aaro.koskinen@nokia.com>
+Cc: Aaro Koskinen <aaro.koskinen@nokia.com>
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+---
+
+ arch/mips/kernel/octeon_switch.S | 26 +-------------------------
+ 1 file changed, 1 insertion(+), 25 deletions(-)
+
+diff --git a/arch/mips/kernel/octeon_switch.S b/arch/mips/kernel/octeon_switch.S
+index 423ae83..3375745 100644
+--- a/arch/mips/kernel/octeon_switch.S
++++ b/arch/mips/kernel/octeon_switch.S
+@@ -18,7 +18,7 @@
+ 	.set pop
+ /*
+  * task_struct *resume(task_struct *prev, task_struct *next,
+- *		       struct thread_info *next_ti, int usedfpu)
++ *		       struct thread_info *next_ti)
+  */
+ 	.align	7
+ 	LEAF(resume)
+@@ -28,30 +28,6 @@
+ 	cpu_save_nonscratch a0
+ 	LONG_S	ra, THREAD_REG31(a0)
+ 
+-	/*
+-	 * check if we need to save FPU registers
+-	 */
+-	.set push
+-	.set noreorder
+-	beqz	a3, 1f
+-	 PTR_L	t3, TASK_THREAD_INFO(a0)
+-	.set pop
+-
+-	/*
+-	 * clear saved user stack CU1 bit
+-	 */
+-	LONG_L	t0, ST_OFF(t3)
+-	li	t1, ~ST0_CU1
+-	and	t0, t0, t1
+-	LONG_S	t0, ST_OFF(t3)
+-
+-	.set push
+-	.set arch=mips64r2
+-	fpu_save_double a0 t0 t1		# c0_status passed in t0
+-						# clobbers t1
+-	.set pop
+-1:
+-
+ #if CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE > 0
+ 	/* Check if we need to store CVMSEG state */
+ 	dmfc0	t0, $11,7	/* CvmMemCtl */
+-- 
+2.5.3

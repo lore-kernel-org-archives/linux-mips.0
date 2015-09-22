@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:19877 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:10707 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009093AbbIVSM73zjoU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Sep 2015 20:12:59 +0200
+        with ESMTP id S27008780AbbIVSNPyiqDU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Sep 2015 20:13:15 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 01/10] MIPS: CPS: set Status.BEV bit during early boot
-Date: Tue, 22 Sep 2015 11:12:09 -0700
-Message-ID: <1442945538-26141-2-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 02/10] MIPS: CPS: set Status.KX on entry for MIPS64 kernels
+Date: Tue, 22 Sep 2015 11:12:10 -0700
+Message-ID: <1442945538-26141-3-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1442945538-26141-1-git-send-email-paul.burton@imgtec.com>
 References: <1442945538-26141-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,29 +22,41 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org
-Message-ID: <20150922181209.2KSn8JRxedSSBF893jIxDRWTWaQ0JXHRkkW7peJuKKw@z>
+Message-ID: <20150922181210.A0V9Adpqh2d0tO2XOcP5YTVNIzZuodV_D6bVJBobjx0@z>
 
-Set the Status.BEV bit throughout the early startup of a secondary core
-such that if an exception occurs the core branches to one of the
-exception vector entries from cps-vec.S, rather than branching to
-whatever is set in EBase.
+If the kernel may make use of 64 bit addresses outside of the
+compatibility address space then we need to set KX such that those
+accesses can succeed. Do so for MIPS64 kernels.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
- arch/mips/kernel/cps-vec.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/cps-vec.S | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
-index 9f71c06..9710db5 100644
+index 9710db5..99bf6aa 100644
 --- a/arch/mips/kernel/cps-vec.S
 +++ b/arch/mips/kernel/cps-vec.S
-@@ -70,7 +70,7 @@ not_nmi:
+@@ -25,6 +25,12 @@
+ 
+ .set noreorder
+ 
++#ifdef CONFIG_64BIT
++# define STATUS_BITDEPS		ST0_KX
++#else
++# define STATUS_BITDEPS		0
++#endif
++
+ 	/*
+ 	 * Set dest to non-zero if the core supports the MT ASE, else zero. If
+ 	 * MT is not supported then branch to nomt.
+@@ -70,7 +76,7 @@ not_nmi:
  	mtc0	t0, CP0_CAUSE
  
  	/* Setup Status */
--	li	t0, ST0_CU1 | ST0_CU0
-+	li	t0, ST0_CU1 | ST0_CU0 | ST0_BEV
+-	li	t0, ST0_CU1 | ST0_CU0 | ST0_BEV
++	li	t0, ST0_CU1 | ST0_CU0 | ST0_BEV | STATUS_BITDEPS
  	mtc0	t0, CP0_STATUS
  
  	/*

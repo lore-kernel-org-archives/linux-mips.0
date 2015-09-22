@@ -1,17 +1,23 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:2038 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008158AbbIURMWF9mRX (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 21 Sep 2015 19:12:22 +0200
-Date: Mon, 21 Sep 2015 10:12:13 -0700
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [BISECTED] Linux 4.3-rc1 boot regression on OCTEON
-Message-ID: <20150921171213.GA25587@NP-P-BURTON>
-References: <20150915143850.GO1199@ak-desktop.emea.nsn-net.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20150915143850.GO1199@ak-desktop.emea.nsn-net.net>
-Return-Path: <Paul.Burton@imgtec.com>
+Received: from mailout4.w1.samsung.com ([210.118.77.14]:14135 "EHLO
+        mailout4.w1.samsung.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27007582AbbIVJN7Wa2H2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Sep 2015 11:13:59 +0200
+Received: from eucpsbgm1.samsung.com (unknown [203.254.199.244])
+ by mailout4.w1.samsung.com
+ (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May  5 2014))
+ with ESMTP id <0NV200D60MZ4DV70@mailout4.w1.samsung.com> for
+ linux-mips@linux-mips.org; Tue, 22 Sep 2015 10:13:52 +0100 (BST)
+Subject: Re: [PATCH 00/38] Fixes related to incorrect usage of unsigned types
+References: <1442842450-29769-1-git-send-email-a.hajda@samsung.com>
+ <17571.1442842945@warthog.procyon.org.uk>
+From: Andrzej Hajda <a.hajda@samsung.com>
+Message-ID: <56011BB9.5030004@samsung.com>
+Date: Tue, 22 Sep 2015 11:13:29 +0200
+MIME-version: 1.0
+In-reply-to: <17571.1442842945@warthog.procyon.org.uk>
+Content-type: text/plain; charset=windows-1252
+Content-transfer-encoding: 7bit
+Return-Path: <a.hajda@samsung.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,32 +27,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aaro Koskinen <aaro.koskinen@nokia.com>, Ralf Baechle <ralf@linux-mips.org>
-Cc: David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org
-Message-ID: <20150921171213.GrPKrPU6Kgmi5Ku232xbt7e5SjUHHLhJZ1xamvlH7-8@z>
+To: David Howells <dhowells@redhat.com>
+Cc: Andrzej Hajda <a.hajda@samsung.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, linux-kernel@vger.kernel.org, brcm80211-dev-list@broadcom.com, devel@driverdev.osuosl.org, dev@openvswitch.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, linux-api@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-cachefs@redhat.com, linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-input@vger.kernel.orglinux-kernel@vger.kernel.org, linux-leds@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-omap@vger.kernel.org, linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org, linux-sh@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, lustre-devel@lists.lustre.org, netdev@vger.kernel.org, rtc-linux@googlegroups.com
+Message-ID: <20150922091329.hudXrFDByvQtWsxFfH-vyvklUYxR_BFsXQM4jTCS1j8@z>
 
-On Tue, Sep 15, 2015 at 05:38:50PM +0300, Aaro Koskinen wrote:
-> Hi,
+On 09/21/2015 03:42 PM, David Howells wrote:
+> Andrzej Hajda <a.hajda-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org> wrote:
 > 
-> OCTEON+/OCTEON II fails to boot with 4.3-rc1. Bisected to:
+>> Semantic patch finds comparisons of types:
+>>     unsigned < 0
+>>     unsigned >= 0
+>> The former is always false, the latter is always true.
+>> Such comparisons are useless, so theoretically they could be
+>> safely removed, but their presence quite often indicates bugs.
 > 
-> 1a3d59579b9f436da038f377309cf2270c76318e is the first bad commit
-> commit 1a3d59579b9f436da038f377309cf2270c76318e
-> Author: Paul Burton <paul.burton@imgtec.com>
-> Date:   Mon Aug 3 08:49:30 2015 -0700
+> Or someone has left them in because they don't matter and there's the
+> possibility that the type being tested might be or become signed under some
+> circumstances.  If the comparison is useless, I'd expect the compiler to just
+> discard it - for such cases your patch is pointless.
 > 
->     MIPS: Tidy up FPU context switching
+> If I have, for example:
+> 
+> 	unsigned x;
+> 
+> 	if (x == 0 || x > 27)
+> 		give_a_range_error();
+> 
+> I will write this as:
+> 
+> 	unsigned x;
+> 
+> 	if (x <= 0 || x > 27)
+> 		give_a_range_error();
+> 
+> because it that gives a way to handle x being changed to signed at some point
+> in the future for no cost.  In which case, your changing the <= to an ==
+> "because the < part of the case is useless" is arguably wrong.
 
-Hi Aaro,
+This is why I have not checked for such cases - I have skipped checks of type
+	unsigned <= 0
+exactly for the reasons above.
 
-Sorry about that! This patch I've just submitted should fix it up:
+However I have left two other checks as they seems to me more suspicious - they
+are always true or false. But as Dmitry and Andrew pointed out Linus have quite
+strong opinion against removing range checks in such cases as he finds it
+clearer. I think it applies to patches 29-36. I am not sure about patches 26-28,37.
 
-    http://marc.info/?l=linux-mips&m=144285532009315&w=2
+Regards
+Andrzej
 
-Let me know if not.
-
-Ralf: can we get those 2 FP fixes (11166 & 11167 in patchwork) into v4.3
-      please?
-
-Thanks,
-    Paul
+> 
+> David
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
+> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 

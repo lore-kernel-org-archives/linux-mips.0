@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:26804 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:25653 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009112AbbIVSPbXyVbU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Sep 2015 20:15:31 +0200
+        with ESMTP id S27009093AbbIVSYwD8APQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Sep 2015 20:24:52 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 10/10] MIPS: CM,CPC: ensure core-other GCRs reflect the correct core
-Date: Tue, 22 Sep 2015 11:12:18 -0700
-Message-ID: <1442945538-26141-11-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1442945538-26141-1-git-send-email-paul.burton@imgtec.com>
-References: <1442945538-26141-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: always use r4k_wait_irqoff for MIPSr6
+Date: Tue, 22 Sep 2015 11:24:20 -0700
+Message-ID: <1442946260-26691-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -21,54 +19,53 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org, Markos Chandras <markos.chandras@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150922181218.s0wpq5QYr9fZLa6mFb3LA0BknJIALJjO278tcczzU1s@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20150922182420.JKd67FT2IGc4LQwa58ey4ZoV20-L_FVhltbm8wU-eSE@z>
 
-Ensure the update to which core the core-other GCR regions reflect has
-taken place before any core-other GCRs are accessed by placing a memory
-barrier (sync instruction) between the write to the core-other registers
-and any such GCR accesses.
+Prior to release 6 of the MIPS architecture it has been implementation
+dependent whether masked interrupts cause a wait instruction to return,
+so the kernel has effectively had to maintain a whitelist of cores upon
+which it is safe to use the r4k_wait_irqoff cpu_wait implementation.
+With MIPSr6 this is no longer implementation dependent and
+r4k_wait_irqoff can always be used.
+
+Remove the existing I6400 case which will no longer ever be hit, and was
+incorrect anyway since I6400 & r6 in general doesn't have the WII bit.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
- arch/mips/kernel/mips-cm.c  | 6 ++++++
- arch/mips/kernel/mips-cpc.c | 6 ++++++
- 2 files changed, 12 insertions(+)
+ arch/mips/kernel/idle.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
-index fef2647..485e441 100644
---- a/arch/mips/kernel/mips-cm.c
-+++ b/arch/mips/kernel/mips-cm.c
-@@ -278,6 +278,12 @@ void mips_cm_lock_other(unsigned int core, unsigned int vp)
+diff --git a/arch/mips/kernel/idle.c b/arch/mips/kernel/idle.c
+index ab1478d..3e2b0b6 100644
+--- a/arch/mips/kernel/idle.c
++++ b/arch/mips/kernel/idle.c
+@@ -134,6 +134,16 @@ void __init check_wait(void)
+ 		return;
  	}
  
- 	write_gcr_cl_other(val);
-+
 +	/*
-+	 * Ensure the core-other region reflects the appropriate core &
-+	 * VP before any accesses to it occur.
++	 * MIPSr6 specifies that masked interrupts should unblock an executing
++	 * wait instruction, and thus that it is safe for us to use
++	 * r4k_wait_irqoff. Yippee!
 +	 */
-+	mb();
- }
- 
- void mips_cm_unlock_other(void)
-diff --git a/arch/mips/kernel/mips-cpc.c b/arch/mips/kernel/mips-cpc.c
-index 8af4d62..566b8d2 100644
---- a/arch/mips/kernel/mips-cpc.c
-+++ b/arch/mips/kernel/mips-cpc.c
-@@ -76,6 +76,12 @@ void mips_cpc_lock_other(unsigned int core)
- 	spin_lock_irqsave(&per_cpu(cpc_core_lock, curr_core),
- 			  per_cpu(cpc_core_lock_flags, curr_core));
- 	write_cpc_cl_other(core << CPC_Cx_OTHER_CORENUM_SHF);
++	if (cpu_has_mips_r6) {
++		cpu_wait = r4k_wait_irqoff;
++		return;
++	}
 +
-+	/*
-+	 * Ensure the core-other region reflects the appropriate core &
-+	 * VP before any accesses to it occur.
-+	 */
-+	mb();
- }
- 
- void mips_cpc_unlock_other(void)
+ 	switch (current_cpu_type()) {
+ 	case CPU_R3081:
+ 	case CPU_R3081E:
+@@ -196,7 +206,6 @@ void __init check_wait(void)
+ 	case CPU_INTERAPTIV:
+ 	case CPU_M5150:
+ 	case CPU_QEMU_GENERIC:
+-	case CPU_I6400:
+ 		cpu_wait = r4k_wait;
+ 		if (read_c0_config7() & MIPS_CONF7_WII)
+ 			cpu_wait = r4k_wait_irqoff;
 -- 
 2.5.3

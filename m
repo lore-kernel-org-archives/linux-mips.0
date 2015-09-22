@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:19333 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:21039 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008747AbbIVRMXad1ir (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Sep 2015 19:12:23 +0200
+        with ESMTP id S27008788AbbIVRMloOv8r (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Sep 2015 19:12:41 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 3/4] MIPS: Declare mips_debugfs_dir in a header
-Date: Tue, 22 Sep 2015 10:10:55 -0700
-Message-ID: <1442941856-31838-4-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 4/4] MIPS: Allow L2 prefetch to be configured via debugfs
+Date: Tue, 22 Sep 2015 10:10:56 -0700
+Message-ID: <1442941856-31838-5-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1442941856-31838-1-git-send-email-paul.burton@imgtec.com>
 References: <1442941856-31838-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,35 +21,59 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Alexander Sverdlin <alexander.sverdlin@nokia.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>, Jaedon Shin <jaedon.shin@gmail.com>, James Hogan <james.hogan@imgtec.com>, David Daney <david.daney@cavium.com>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, James Cowgill <James.Cowgill@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150922171055.lbMGPyku4n7jZ34pj2EsFv1pM175nJKWgrR7ZOazSR0@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "Maciej W. Rozycki" <macro@codesourcery.com>, linux-kernel@vger.kernel.org
+Message-ID: <20150922171056.IEo5Eso75rsO6Y2yJOA6iGqSuOjfSdz2nboe7bDDTys@z>
 
-We have many extern declarations of mips_debugfs_dir through arch/mips/
-in various C files. Unify them by declaring mips_debugfs_dir in a
-header, including it in each affected C file & removing the duplicate
-declarations.
+When debugging or examining the performance of a system it can be useful
+to examine the effect of L2 prefetching. Provide an optional debugfs
+entry to allow a user to enable or disable L2 prefetching.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
- arch/mips/include/asm/debug.h         | 22 ++++++++++++++++++++++
- arch/mips/kernel/mips-r2-to-r6-emul.c |  2 +-
- arch/mips/kernel/segment.c            |  2 +-
- arch/mips/kernel/setup.c              |  1 +
- arch/mips/kernel/spinlock_test.c      |  4 +---
- arch/mips/kernel/unaligned.c          |  2 +-
- arch/mips/math-emu/me-debugfs.c       |  2 +-
- 7 files changed, 28 insertions(+), 7 deletions(-)
- create mode 100644 arch/mips/include/asm/debug.h
+ arch/mips/Kconfig.debug   | 10 ++++++
+ arch/mips/mm/Makefile     |  1 +
+ arch/mips/mm/sc-debugfs.c | 81 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 92 insertions(+)
+ create mode 100644 arch/mips/mm/sc-debugfs.c
 
-diff --git a/arch/mips/include/asm/debug.h b/arch/mips/include/asm/debug.h
+diff --git a/arch/mips/Kconfig.debug b/arch/mips/Kconfig.debug
+index e250524..d1962cb 100644
+--- a/arch/mips/Kconfig.debug
++++ b/arch/mips/Kconfig.debug
+@@ -113,4 +113,14 @@ config SPINLOCK_TEST
+ 	help
+ 	  Add several files to the debugfs to test spinlock speed.
+ 
++config SCACHE_DEBUGFS
++	bool "L2 cache debugfs entries"
++	depends on DEBUG_FS
++	help
++	  Enable this to allow parts of the L2 cache configuration, such as
++	  whether or not prefetching is enabled, to be exposed to userland
++	  via debugfs.
++
++	  If unsure, say N.
++
+ endmenu
+diff --git a/arch/mips/mm/Makefile b/arch/mips/mm/Makefile
+index 67ede4e..b4c64bd 100644
+--- a/arch/mips/mm/Makefile
++++ b/arch/mips/mm/Makefile
+@@ -28,3 +28,4 @@ obj-$(CONFIG_IP22_CPU_SCACHE)	+= sc-ip22.o
+ obj-$(CONFIG_R5000_CPU_SCACHE)	+= sc-r5k.o
+ obj-$(CONFIG_RM7000_CPU_SCACHE) += sc-rm7k.o
+ obj-$(CONFIG_MIPS_CPU_SCACHE)	+= sc-mips.o
++obj-$(CONFIG_SCACHE_DEBUGFS)	+= sc-debugfs.o
+diff --git a/arch/mips/mm/sc-debugfs.c b/arch/mips/mm/sc-debugfs.c
 new file mode 100644
-index 0000000..254f00d
+index 0000000..5eefe32
 --- /dev/null
-+++ b/arch/mips/include/asm/debug.h
-@@ -0,0 +1,22 @@
++++ b/arch/mips/mm/sc-debugfs.c
+@@ -0,0 +1,81 @@
 +/*
 + * Copyright (C) 2015 Imagination Technologies
++ * Author: Paul Burton <paul.burton@imgtec.com>
 + *
 + * This program is free software; you can redistribute it and/or modify it
 + * under the terms of the GNU General Public License as published by the
@@ -57,132 +81,76 @@ index 0000000..254f00d
 + * option) any later version.
 + */
 +
-+#ifndef __MIPS_ASM_DEBUG_H__
-+#define __MIPS_ASM_DEBUG_H__
++#include <asm/bcache.h>
++#include <asm/debug.h>
++#include <asm/uaccess.h>
++#include <linux/debugfs.h>
++#include <linux/init.h>
 +
-+#include <linux/dcache.h>
++static ssize_t sc_prefetch_read(struct file *file, char __user *user_buf,
++				size_t count, loff_t *ppos)
++{
++	bool enabled = bc_prefetch_is_enabled();
++	char buf[3];
 +
-+/*
-+ * mips_debugfs_dir corresponds to the "mips" directory at the top level
-+ * of the DebugFS hierarchy. MIPS-specific DebugFS entires should be
-+ * placed beneath this directory.
-+ */
-+extern struct dentry *mips_debugfs_dir;
++	buf[0] = enabled ? 'Y' : 'N';
++	buf[1] = '\n';
++	buf[2] = 0;
 +
-+#endif /* __MIPS_ASM_DEBUG_H__ */
-diff --git a/arch/mips/kernel/mips-r2-to-r6-emul.c b/arch/mips/kernel/mips-r2-to-r6-emul.c
-index f2977f0..1f5aac7 100644
---- a/arch/mips/kernel/mips-r2-to-r6-emul.c
-+++ b/arch/mips/kernel/mips-r2-to-r6-emul.c
-@@ -22,6 +22,7 @@
- #include <asm/asm.h>
- #include <asm/branch.h>
- #include <asm/break.h>
-+#include <asm/debug.h>
- #include <asm/fpu.h>
- #include <asm/fpu_emulator.h>
- #include <asm/inst.h>
-@@ -2363,7 +2364,6 @@ static const struct file_operations mipsr2_clear_fops = {
- 
- static int __init mipsr2_init_debugfs(void)
- {
--	extern struct dentry	*mips_debugfs_dir;
- 	struct dentry		*mipsr2_emul;
- 
- 	if (!mips_debugfs_dir)
-diff --git a/arch/mips/kernel/segment.c b/arch/mips/kernel/segment.c
-index 076ead2..87bc74a 100644
---- a/arch/mips/kernel/segment.c
-+++ b/arch/mips/kernel/segment.c
-@@ -10,6 +10,7 @@
- #include <linux/debugfs.h>
- #include <linux/seq_file.h>
- #include <asm/cpu.h>
-+#include <asm/debug.h>
- #include <asm/mipsregs.h>
- 
- static void build_segment_config(char *str, unsigned int cfg)
-@@ -91,7 +92,6 @@ static const struct file_operations segments_fops = {
- 
- static int __init segments_info(void)
- {
--	extern struct dentry *mips_debugfs_dir;
- 	struct dentry *segments;
- 
- 	if (cpu_has_segments) {
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 35b8316..31c994e 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -33,6 +33,7 @@
- #include <asm/cache.h>
- #include <asm/cdmm.h>
- #include <asm/cpu.h>
-+#include <asm/debug.h>
- #include <asm/sections.h>
- #include <asm/setup.h>
- #include <asm/smp-ops.h>
-diff --git a/arch/mips/kernel/spinlock_test.c b/arch/mips/kernel/spinlock_test.c
-index 39f7ab7..f7d8695 100644
---- a/arch/mips/kernel/spinlock_test.c
-+++ b/arch/mips/kernel/spinlock_test.c
-@@ -5,7 +5,7 @@
- #include <linux/debugfs.h>
- #include <linux/export.h>
- #include <linux/spinlock.h>
--
-+#include <asm/debug.h>
- 
- static int ss_get(void *data, u64 *val)
- {
-@@ -115,8 +115,6 @@ static int multi_get(void *data, u64 *val)
- 
- DEFINE_SIMPLE_ATTRIBUTE(fops_multi, multi_get, NULL, "%llu\n");
- 
--
--extern struct dentry *mips_debugfs_dir;
- static int __init spinlock_test(void)
- {
- 	struct dentry *d;
-diff --git a/arch/mips/kernel/unaligned.c b/arch/mips/kernel/unaligned.c
-index 990354d..490cea5 100644
---- a/arch/mips/kernel/unaligned.c
-+++ b/arch/mips/kernel/unaligned.c
-@@ -85,6 +85,7 @@
- #include <asm/branch.h>
- #include <asm/byteorder.h>
- #include <asm/cop2.h>
-+#include <asm/debug.h>
- #include <asm/fpu.h>
- #include <asm/fpu_emulator.h>
- #include <asm/inst.h>
-@@ -2295,7 +2296,6 @@ sigbus:
- }
- 
- #ifdef CONFIG_DEBUG_FS
--extern struct dentry *mips_debugfs_dir;
- static int __init debugfs_unaligned(void)
- {
- 	struct dentry *d;
-diff --git a/arch/mips/math-emu/me-debugfs.c b/arch/mips/math-emu/me-debugfs.c
-index 506a67a..be650ed 100644
---- a/arch/mips/math-emu/me-debugfs.c
-+++ b/arch/mips/math-emu/me-debugfs.c
-@@ -4,6 +4,7 @@
- #include <linux/init.h>
- #include <linux/percpu.h>
- #include <linux/types.h>
-+#include <asm/debug.h>
- #include <asm/fpu_emulator.h>
- #include <asm/local.h>
- 
-@@ -27,7 +28,6 @@ static int fpuemu_stat_get(void *data, u64 *val)
- }
- DEFINE_SIMPLE_ATTRIBUTE(fops_fpuemu_stat, fpuemu_stat_get, NULL, "%llu\n");
- 
--extern struct dentry *mips_debugfs_dir;
- static int __init debugfs_fpuemu(void)
- {
- 	struct dentry *d, *dir;
++	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
++}
++
++static ssize_t sc_prefetch_write(struct file *file,
++				 const char __user *user_buf,
++				 size_t count, loff_t *ppos)
++{
++	char buf[32];
++	ssize_t buf_size;
++	bool enabled;
++	int err;
++
++	buf_size = min(count, sizeof(buf) - 1);
++	if (copy_from_user(buf, user_buf, buf_size))
++		return -EFAULT;
++
++	buf[buf_size] = '\0';
++	err = strtobool(buf, &enabled);
++	if (err)
++		return err;
++
++	if (enabled)
++		bc_prefetch_enable();
++	else
++		bc_prefetch_disable();
++
++	return count;
++}
++
++static const struct file_operations sc_prefetch_fops = {
++	.open = simple_open,
++	.llseek = default_llseek,
++	.read = sc_prefetch_read,
++	.write = sc_prefetch_write,
++};
++
++static int __init sc_debugfs_init(void)
++{
++	struct dentry *dir, *file;
++
++	if (!mips_debugfs_dir)
++		return -ENODEV;
++
++	dir = debugfs_create_dir("l2cache", mips_debugfs_dir);
++	if (IS_ERR(dir))
++		return PTR_ERR(dir);
++
++	file = debugfs_create_file("prefetch", S_IRUGO | S_IWUSR, dir,
++				   NULL, &sc_prefetch_fops);
++	if (IS_ERR(file))
++		return PTR_ERR(file);
++
++	return 0;
++}
++late_initcall(sc_debugfs_init);
 -- 
 2.5.3

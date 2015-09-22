@@ -1,23 +1,14 @@
-Received: from mailout4.w1.samsung.com ([210.118.77.14]:14135 "EHLO
-        mailout4.w1.samsung.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27007582AbbIVJN7Wa2H2 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Sep 2015 11:13:59 +0200
-Received: from eucpsbgm1.samsung.com (unknown [203.254.199.244])
- by mailout4.w1.samsung.com
- (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May  5 2014))
- with ESMTP id <0NV200D60MZ4DV70@mailout4.w1.samsung.com> for
- linux-mips@linux-mips.org; Tue, 22 Sep 2015 10:13:52 +0100 (BST)
-Subject: Re: [PATCH 00/38] Fixes related to incorrect usage of unsigned types
-References: <1442842450-29769-1-git-send-email-a.hajda@samsung.com>
- <17571.1442842945@warthog.procyon.org.uk>
-From: Andrzej Hajda <a.hajda@samsung.com>
-Message-ID: <56011BB9.5030004@samsung.com>
-Date: Tue, 22 Sep 2015 11:13:29 +0200
-MIME-version: 1.0
-In-reply-to: <17571.1442842945@warthog.procyon.org.uk>
-Content-type: text/plain; charset=windows-1252
-Content-transfer-encoding: 7bit
-Return-Path: <a.hajda@samsung.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:30768 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008556AbbIVRIFQc0fr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Sep 2015 19:08:05 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: allow compact branch policy to be changed
+Date: Tue, 22 Sep 2015 10:07:41 -0700
+Message-ID: <1442941661-31539-1-git-send-email-paul.burton@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,59 +18,81 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Howells <dhowells@redhat.com>
-Cc: Andrzej Hajda <a.hajda@samsung.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, linux-kernel@vger.kernel.org, brcm80211-dev-list@broadcom.com, devel@driverdev.osuosl.org, dev@openvswitch.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, linux-api@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-cachefs@redhat.com, linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-input@vger.kernel.orglinux-kernel@vger.kernel.org, linux-leds@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-omap@vger.kernel.org, linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org, linux-sh@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, lustre-devel@lists.lustre.org, netdev@vger.kernel.org, rtc-linux@googlegroups.com
-Message-ID: <20150922091329.hudXrFDByvQtWsxFfH-vyvklUYxR_BFsXQM4jTCS1j8@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org
+Message-ID: <20150922170741.gUyljrpKHdGT1VdxzSJ6UJxAWK_V4guyxfw5F5y67gA@z>
 
-On 09/21/2015 03:42 PM, David Howells wrote:
-> Andrzej Hajda <a.hajda-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org> wrote:
-> 
->> Semantic patch finds comparisons of types:
->>     unsigned < 0
->>     unsigned >= 0
->> The former is always false, the latter is always true.
->> Such comparisons are useless, so theoretically they could be
->> safely removed, but their presence quite often indicates bugs.
-> 
-> Or someone has left them in because they don't matter and there's the
-> possibility that the type being tested might be or become signed under some
-> circumstances.  If the comparison is useless, I'd expect the compiler to just
-> discard it - for such cases your patch is pointless.
-> 
-> If I have, for example:
-> 
-> 	unsigned x;
-> 
-> 	if (x == 0 || x > 27)
-> 		give_a_range_error();
-> 
-> I will write this as:
-> 
-> 	unsigned x;
-> 
-> 	if (x <= 0 || x > 27)
-> 		give_a_range_error();
-> 
-> because it that gives a way to handle x being changed to signed at some point
-> in the future for no cost.  In which case, your changing the <= to an ==
-> "because the < part of the case is useless" is arguably wrong.
+When debugging it can be helpful to change the policy for compiler use
+of MIPSr6 compact branches, in order to rule out or home in on their
+involvement in bugs. Allow the GCC -mcompact-branches= flag to be set
+via Kconfig under the "Kernel hacking" menu.
 
-This is why I have not checked for such cases - I have skipped checks of type
-	unsigned <= 0
-exactly for the reasons above.
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+---
 
-However I have left two other checks as they seems to me more suspicious - they
-are always true or false. But as Dmitry and Andrew pointed out Linus have quite
-strong opinion against removing range checks in such cases as he finds it
-clearer. I think it applies to patches 29-36. I am not sure about patches 26-28,37.
+ arch/mips/Kconfig.debug | 36 ++++++++++++++++++++++++++++++++++++
+ arch/mips/Makefile      |  4 ++++
+ 2 files changed, 40 insertions(+)
 
-Regards
-Andrzej
-
-> 
-> David
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+diff --git a/arch/mips/Kconfig.debug b/arch/mips/Kconfig.debug
+index e250524..13d7965 100644
+--- a/arch/mips/Kconfig.debug
++++ b/arch/mips/Kconfig.debug
+@@ -113,4 +113,40 @@ config SPINLOCK_TEST
+ 	help
+ 	  Add several files to the debugfs to test spinlock speed.
+ 
++if CPU_MIPSR6
++
++choice
++	prompt "Compact branch policy"
++	default MIPS_COMPACT_BRANCHES_OPTIMAL
++
++config MIPS_COMPACT_BRANCHES_NEVER
++	bool "Never (force delay slot branches)"
++	help
++	  Pass the -mcompact-branches=never flag to the compiler in order to
++	  force it to always emit branches with delay slots, and make no use
++	  of the compact branch instructions introduced by MIPSr6. This is
++	  useful if you suspect there may be an issue with compact branches in
++	  either the compiler or the CPU.
++
++config MIPS_COMPACT_BRANCHES_OPTIMAL
++	bool "Optimal (use where beneficial)"
++	help
++	  Pass the -mcompact-branches=optimal flag to the compiler in order for
++	  it to make use of compact branch instructions where it deems them
++	  beneficial, and use branches with delay slots elsewhere. This is the
++	  default compiler behaviour, and should be used unless you have a
++	  reason to choose otherwise.
++
++config MIPS_COMPACT_BRANCHES_ALWAYS
++	bool "Always (force compact branches)"
++	help
++	  Pass the -mcompact-branches=always flag to the compiler in order to
++	  force it to always emit compact branches, making no use of branch
++	  instructions with delay slots. This can result in more compact code
++	  which may be beneficial in some scenarios.
++
++endchoice
++
++endif # CPU_MIPSR6
++
+ endmenu
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index 252e347..3f70ba5 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -204,6 +204,10 @@ toolchain-msa				:= $(call cc-option-yn,$(mips-cflags) -mhard-float -mfp64 -Wa$(
+ cflags-$(toolchain-msa)			+= -DTOOLCHAIN_SUPPORTS_MSA
+ endif
+ 
++cflags-$(CONFIG_MIPS_COMPACT_BRANCHES_NEVER)	+= -mcompact-branches=never
++cflags-$(CONFIG_MIPS_COMPACT_BRANCHES_OPTIMAL)	+= -mcompact-branches=optimal
++cflags-$(CONFIG_MIPS_COMPACT_BRANCHES_ALWAYS)	+= -mcompact-branches=always
++
+ #
+ # Firmware support
+ #
+-- 
+2.5.3

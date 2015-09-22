@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:32341 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57660 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008792AbbIVSo6M13uP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Sep 2015 20:44:58 +0200
+        with ESMTP id S27009131AbbIVSpQM506P (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Sep 2015 20:45:16 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 5/6] MIPS: tlbex: avoid placing software PTE bits in Entry* PFN fields
-Date: Tue, 22 Sep 2015 11:42:52 -0700
-Message-ID: <1442947373-13345-6-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 6/6] MIPS: allow RIXI for 32-bit kernels on MIPS64
+Date: Tue, 22 Sep 2015 11:42:53 -0700
+Message-ID: <1442947373-13345-7-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1442947373-13345-1-git-send-email-paul.burton@imgtec.com>
 References: <1442947373-13345-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,105 +21,46 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150922184252.8Xe_3xDpTXHHFj38fAhFpffZNNebeFo6fufhQuEKikU@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Joshua Kinard <kumba@gentoo.org>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20150922184253.MM6GR6Y7V1ZX-3imSLtjhnSJ8iPVj-yinjpPvksRUZY@z>
 
-Commit 748e787eb6de ("MIPS: Optimize TLB refill for RI/XI
-configurations.") stopped explicitly clearing the bits used by software
-in PTEs by making use of a rotate instruction that rotates them into the
-fill bits of the Entry{Lo,Hi} register. This can only work if there are
-actually enough fill bits in the register to cover the software
-maintained bits, otherwise we end up writing those bits into the upper
-bits of the PFN or PFNX field of the Entry{Lo,Hi} register.
+Commit a68d09a156b2 ("MIPS: Don't use RI/XI with 32-bit kernels on
+64-bit CPUs") prevented use of RIXI on MIPS64 systems, stating that the
+"TLB handlers cannot handle this case". What they actually couldn't
+handle was cases where there were less fill bits in the Entry{Lo,Hi}
+registers than bits used by software in PTEs. The handlers can now deal
+with this case, so enable RIXI for MIPS32 kernels on MIPS64 systems.
 
-Fix this by detecting the number of fill bits present in the
-Entry{Lo,Hi} registers & explicitly clearing the software bits where
-necessary.
+Note that beyond the obvious benefits provided by having RIXI on such
+systems, this is required for systems implementing MIPSr6 where RIXI
+cannot be disabled.
+
+This reverts commit a68d09a156b2 ("MIPS: Don't use RI/XI with 32-bit
+kernels on 64-bit CPUs").
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+
 ---
 
- arch/mips/mm/tlbex.c | 47 +++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 45 insertions(+), 2 deletions(-)
+ arch/mips/include/asm/cpu-features.h | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-index bc829fc..6b7cc20 100644
---- a/arch/mips/mm/tlbex.c
-+++ b/arch/mips/mm/tlbex.c
-@@ -311,6 +311,7 @@ static struct uasm_label labels[128];
- static struct uasm_reloc relocs[128];
- 
- static int check_for_high_segbits;
-+static bool fill_includes_sw_bits;
- 
- static unsigned int kscratch_used_mask;
- 
-@@ -630,8 +631,14 @@ static void build_tlb_write_entry(u32 **p, struct uasm_label **l,
- static __maybe_unused void build_convert_pte_to_entrylo(u32 **p,
- 							unsigned int reg)
- {
--	if (cpu_has_rixi) {
--		UASM_i_ROTR(p, reg, reg, ilog2(_PAGE_GLOBAL));
-+	if (cpu_has_rixi && _PAGE_NO_EXEC) {
-+		if (fill_includes_sw_bits) {
-+			UASM_i_ROTR(p, reg, reg, ilog2(_PAGE_GLOBAL));
-+		} else {
-+			UASM_i_SRL(p, reg, reg, ilog2(_PAGE_NO_EXEC));
-+			UASM_i_ROTR(p, reg, reg,
-+				    ilog2(_PAGE_GLOBAL) - ilog2(_PAGE_NO_EXEC));
-+		}
- 	} else {
- #ifdef CONFIG_PHYS_ADDR_T_64BIT
- 		uasm_i_dsrl_safe(p, reg, reg, ilog2(_PAGE_GLOBAL));
-@@ -2338,6 +2345,41 @@ static void config_xpa_params(void)
+diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
+index 9801ac9..7cb7c10 100644
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -128,11 +128,7 @@
  #endif
- }
  
-+static void check_pabits(void)
-+{
-+	unsigned long entry;
-+	unsigned pabits, fillbits;
-+
-+	if (!cpu_has_rixi || !_PAGE_NO_EXEC) {
-+		/*
-+		 * We'll only be making use of the fact that we can rotate bits
-+		 * into the fill if the CPU supports RIXI, so don't bother
-+		 * probing this for CPUs which don't.
-+		 */
-+		return;
-+	}
-+
-+	write_c0_entrylo0(~0ul);
-+	back_to_back_c0_hazard();
-+	entry = read_c0_entrylo0();
-+
-+	/* clear all non-PFN bits */
-+	entry &= ~((1 << MIPS_ENTRYLO_PFN_SHIFT) - 1);
-+	entry &= ~(MIPS_ENTRYLO_RI | MIPS_ENTRYLO_XI);
-+
-+	/* find a lower bound on PABITS, and upper bound on fill bits */
-+	pabits = fls_long(entry) + 6;
-+	fillbits = max_t(int, (int)BITS_PER_LONG - pabits, 0);
-+
-+	/* minus the RI & XI bits */
-+	fillbits -= min_t(unsigned, fillbits, 2);
-+
-+	if (fillbits >= ilog2(_PAGE_NO_EXEC))
-+		fill_includes_sw_bits = true;
-+
-+	pr_debug("Entry* registers contain %u fill bits\n", fillbits);
-+}
-+
- void build_tlb_refill_handler(void)
- {
- 	/*
-@@ -2348,6 +2390,7 @@ void build_tlb_refill_handler(void)
- 	static int run_once = 0;
+ #ifndef cpu_has_rixi
+-# ifdef CONFIG_64BIT
+-# define cpu_has_rixi		(cpu_data[0].options & MIPS_CPU_RIXI)
+-# else /* CONFIG_32BIT */
+-# define cpu_has_rixi		((cpu_data[0].options & MIPS_CPU_RIXI) && !cpu_has_64bits)
+-# endif
++#define cpu_has_rixi		(cpu_data[0].options & MIPS_CPU_RIXI)
+ #endif
  
- 	output_pgtable_bits_defines();
-+	check_pabits();
- 
- #ifdef CONFIG_64BIT
- 	check_for_high_segbits = current_cpu_data.vmbits > (PGDIR_SHIFT + PGD_ORDER + PAGE_SHIFT - 3);
+ #ifndef cpu_has_mmips
 -- 
 2.5.3

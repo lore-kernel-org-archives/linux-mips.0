@@ -1,19 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:7192 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45150 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007433AbbIXIMx2ct6F (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 24 Sep 2015 10:12:53 +0200
-Subject: Re: [PATCH 2/6] irqdomain: add a new send_ipi() to irq_domain_ops
-References: <1443019758-20620-1-git-send-email-qais.yousef@imgtec.com>
- <1443019758-20620-3-git-send-email-qais.yousef@imgtec.com>
- <5602D6F3.7030709@linux.intel.com>
-From: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <5603B07D.3020001@imgtec.com>
-Date: Thu, 24 Sep 2015 09:12:45 +0100
+        with ESMTP id S27007433AbbIXIXztHHiE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 24 Sep 2015 10:23:55 +0200
+Subject: Re: [PATCH 2/2] MIPS: initialise MAARs on secondary CPUs
+References: <1442948929-15862-1-git-send-email-paul.burton@imgtec.com>
+ <1442948929-15862-3-git-send-email-paul.burton@imgtec.com>
+From: Markos Chandras <Markos.Chandras@imgtec.com>
+Message-ID: <5603B315.4050008@imgtec.com>
+Date: Thu, 24 Sep 2015 09:23:49 +0100
 MIME-Version: 1.0
-In-Reply-To: <5602D6F3.7030709@linux.intel.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <1442948929-15862-3-git-send-email-paul.burton@imgtec.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,44 +22,76 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jiang Liu <jiang.liu@linux.intel.com>, linux-kernel@vger.kernel.org, tglx@linutronix.de
-Cc: marc.zyngier@arm.com, jason@lakedaemon.net, linux-mips@linux-mips.org
-Message-ID: <20150924081245.nm4oO8NaLVhXOYh-GZURym95MrzbMASmGhCBpk1Ge0k@z>
+To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Cc: Rusty Russell <rusty@rustcorp.com.au>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Andrew Bresticker <abrestic@chromium.org>, Bjorn Helgaas <bhelgaas@google.com>, David Hildenbrand <dahi@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>, James Hogan <james.hogan@imgtec.com>, Ingo Molnar <mingo@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>
+Message-ID: <20150924082349.V8HS2PQi-m5sonrfddh0JPY0h1RwB72Xm-TNP3zIboI@z>
 
-On 09/23/2015 05:44 PM, Jiang Liu wrote:
-> On 2015/9/23 22:49, Qais Yousef wrote:
->> For generic ipi core to use. It takes hwirq as its sole argument.
->> Hopefully this is generic enough? Should we pass something more abstract?
->>
->> Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
->> ---
->>   include/linux/irqdomain.h | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
->> index 9b3dc6c2a3cc..cef9e6158be0 100644
->> --- a/include/linux/irqdomain.h
->> +++ b/include/linux/irqdomain.h
->> @@ -92,6 +92,7 @@ struct irq_domain_ops {
->>   	void (*activate)(struct irq_domain *d, struct irq_data *irq_data);
->>   	void (*deactivate)(struct irq_domain *d, struct irq_data *irq_data);
->>   #endif
->> +	void (*send_ipi)(irq_hw_number_t hwirq);
-> Hi Qais,
-> 	Instead of extending the irq_domain_ops, how about extending
-> irq_chip instead? If we treat IPI as a sort of irq controller, and
-> irq_chip is used to encapsulate all irq controller related operations,
-> and irq_domain_ops is mainly used to allocated resources instead of
-> operating corresponding hardware.
-> Thanks!
-> Gerry
->
+On 09/22/2015 08:08 PM, Paul Burton wrote:
+> MAARs should be initialised on each CPU (or rather, core) in the system
+> in order to achieve consistent behaviour & performance. Previously they
+> have only been initialised on the boot CPU which leads to performance
+> problems if tasks are later scheduled on a secondary CPU, particularly
+> if those tasks make use of unaligned vector accesses where some CPUs
+> don't handle any cases in hardware for non-speculative memory regions.
+> Fix this by recording the MAAR configuration from the boot CPU and
+> applying it to secondary CPUs as part of their bringup.
+> 
+> Reported-by: Doug Gilmore <doug.gilmore@imgtec.com>
+> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> ---
+> 
+>  arch/mips/include/asm/maar.h |  9 +++++++++
+>  arch/mips/kernel/smp.c       |  2 ++
+>  arch/mips/mm/init.c          | 28 +++++++++++++++++++++++++---
+>  3 files changed, 36 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/maar.h b/arch/mips/include/asm/maar.h
+> index b02891f..21d9607 100644
+> --- a/arch/mips/include/asm/maar.h
+> +++ b/arch/mips/include/asm/maar.h
+> @@ -66,6 +66,15 @@ static inline void write_maar_pair(unsigned idx, phys_addr_t lower,
+>  }
+>  
+>  /**
+> + * maar_init() - initialise MAARs
+> + *
+> + * Performs initialisation of MAARs for the current CPU, making use of the
+> + * platforms implementation of platform_maar_init where necessary and
+> + * duplicating the setup it provides on secondary CPUs.
+> + */
+> +extern void maar_init(void);
+> +
+> +/**
+>   * struct maar_config - MAAR configuration data
+>   * @lower:	The lowest address that the MAAR pair will affect. Must be
+>   *		aligned to a 2^16 byte boundary.
+> diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+> index a31896c..bd4385a 100644
+> --- a/arch/mips/kernel/smp.c
+> +++ b/arch/mips/kernel/smp.c
+> @@ -42,6 +42,7 @@
+>  #include <asm/mmu_context.h>
+>  #include <asm/time.h>
+>  #include <asm/setup.h>
+> +#include <asm/maar.h>
+>  
+>  cpumask_t cpu_callin_map;		/* Bitmask of started secondaries */
+>  
+> @@ -157,6 +158,7 @@ asmlinkage void start_secondary(void)
+>  	mips_clockevent_init();
+>  	mp_ops->init_secondary();
+>  	cpu_report();
+> +	maar_init();
+>  
+
+Hi,
+
+This breaks the ip27_defconfig in both upstream-sfr and linux-next
+
+arch/mips/built-in.o: In function `start_secondary':
+(.text+0x123e4): undefined reference to `maar_init'
+Makefile:944: recipe for target 'vmlinux' failed
 
 
-
-Yes true. I was too focused on the reservation part so when it came to 
-sending the IPI it just felt natural to add it to irqdomain as it was 
-simple to implement like this!
-
-Thanks,
-Qais
+-- 
+markos

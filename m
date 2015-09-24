@@ -1,16 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59562 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:52091 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007433AbbIXI1ESpRvt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 24 Sep 2015 10:27:04 +0200
-Subject: Re: [PATCH 4/6] irq: add a new generic IPI handling code to irq core
+        with ESMTP id S27007433AbbIXIjq0gwXt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 24 Sep 2015 10:39:46 +0200
+Subject: Re: [PATCH 0/6] Implement generic IPI support mechanism
 References: <1443019758-20620-1-git-send-email-qais.yousef@imgtec.com>
- <1443019758-20620-5-git-send-email-qais.yousef@imgtec.com>
- <5602D863.4040503@linux.intel.com>
+ <5602D958.6000003@linux.intel.com>
 From: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <5603B3D1.3000405@imgtec.com>
-Date: Thu, 24 Sep 2015 09:26:57 +0100
+Message-ID: <5603B6CA.7050601@imgtec.com>
+Date: Thu, 24 Sep 2015 09:39:38 +0100
 MIME-Version: 1.0
-In-Reply-To: <5602D863.4040503@linux.intel.com>
+In-Reply-To: <5602D958.6000003@linux.intel.com>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Qais.Yousef@imgtec.com>
@@ -25,50 +24,52 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Jiang Liu <jiang.liu@linux.intel.com>, linux-kernel@vger.kernel.org, tglx@linutronix.de
 Cc: marc.zyngier@arm.com, jason@lakedaemon.net, linux-mips@linux-mips.org
-Message-ID: <20150924082657.pVG_i_FP8QVPy6pR0k3tQkwzsdwwpOTN5tTpa5foHIw@z>
+Message-ID: <20150924083938.ljduvwyFT5B1ttgbBB7ifDMx2J6tzpv2T1BrEwXUqT0@z>
 
-On 09/23/2015 05:50 PM, Jiang Liu wrote:
+On 09/23/2015 05:54 PM, Jiang Liu wrote:
 > On 2015/9/23 22:49, Qais Yousef wrote:
->>   
->> +/**
->> + * irq_reserve_ipi() - setup an IPI to destination cpumask
->> + * @domain: IPI domain
->> + * @dest: cpumask of cpus to receive the IPI
->> + * @devid: devid that requested the reservation
->> + *
->> + * Allocate a virq that can be used to send IPI to any CPU in dest mask.
->> + *
->> + * On success it'll return linux irq number and 0 on failure
->> + */
->> +unsigned int irq_reserve_ipi(struct irq_domain *domain,
->> +			     const struct cpumask *dest, void *devid)
+>> This RFC series attempts to implement a generic IPI layer for reserving and sending IPI.
+>>
+>> It is based on the discussion in this link
+>>
+>> 	https://lkml.org/lkml/2015/8/26/713
+>>
+>> This series deals with points #1 and #2 only. Since I'm not the irq expert, I'm hoping this
+>> series will give me early feedback and drive the discussion further about any potential
+>> tricky points.
+>>
+>> I tried to keep changes clean and small, but since this is just an RFC I might have missed
+>> few things.
+>>
+>> Thomas I hope I didn't stray far from what you had in mind :-)
+>>
+>> My only testing so far is having SMP linux booting.
 > Hi Qais,
-> 	I have caught the idea why we need "dest" here. Per my
-> understanding, IPI could be sent to any active CPUs and the target
-> CPUs are specified when calling send_ipi(). What's the benefit or
-> usage to use "dest" to define a possible target scope here? And
-> how cpu hotplug?
+> 	Thanks for doing this, but the change is a little bigger than
+> my expectation. Could we achieve this by:
+> 1) extend irq_chip to support send_ipi operation
+> 2) reuse existing irqdomain allocation interfaces to allocate IPI IRQ
+> 3) arch code to create an IPI domain for IPI allocations
+> 4) IRQ core provides some helpers to help arch code to implement IPI
+>     irqdomain
+> 	I think that may make the change smaller and more clear.
 > Thanks!
 > Gerry
 >
+>
 
 
-The CPUs we want to send the IPI to are not Linux CPUs only. My use case 
-is about sending IPI to audio coprocessor.
-So "dest" doesn't have to be part of Linux online CPUs, hence we need to 
-specify it so that the underlying controller will know how to map to 
-that CPU. I should have put more info in the cover letter, not just the 
-link to the discussion, apologies for that.
+Can you be more specific about 2 please? I tried to reuse the hierarchy 
+irqdomain alloc function. One major difference when allocating IPI than 
+a normal irq is that it's dynamic. The caller doesn't know what hwirq 
+number it needs. It actually shouldn't.
 
-I'm not sure about cpu hotplug. We could call irq_destroy_ipi() when a 
-cpu is hot unplugged, but the current behaviour is to statically reserve 
-the IPI and keep them reserved. I think it makes sense to keep it this 
-way for SMP IPIs or things will get complicated.
+The idea is for the user to just say 'I want an IPI to a CPUAFFINITY' 
+from DT and get a virq in return to send an IPI to the target CPU(s). 
+Also I think we need to accommodate the possibility of having more than 
+1 IPI controller.
 
-For a coprocessor, if we the 'module is unloaded', I'd expect the 
-irq_destroy_ipi() to be called returning the reserved IPI to the pool.
-
-Makes sense?
+Can you provide more pointers please?
 
 Thanks,
 Qais

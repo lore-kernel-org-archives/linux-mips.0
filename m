@@ -1,18 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:62935 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:7192 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008780AbbIWVmpEhSFI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Sep 2015 23:42:45 +0200
-Date: Wed, 23 Sep 2015 14:42:36 -0700
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: linux-next: Tree for Sep 23
-Message-ID: <20150923214236.GA28778@NP-P-BURTON>
-References: <20150923142343.35797c0f@canb.auug.org.au>
- <20150923074207.GA27002@sudip-pc>
+        with ESMTP id S27007433AbbIXIMx2ct6F (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 24 Sep 2015 10:12:53 +0200
+Subject: Re: [PATCH 2/6] irqdomain: add a new send_ipi() to irq_domain_ops
+References: <1443019758-20620-1-git-send-email-qais.yousef@imgtec.com>
+ <1443019758-20620-3-git-send-email-qais.yousef@imgtec.com>
+ <5602D6F3.7030709@linux.intel.com>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Message-ID: <5603B07D.3020001@imgtec.com>
+Date: Thu, 24 Sep 2015 09:12:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20150923074207.GA27002@sudip-pc>
-Return-Path: <Paul.Burton@imgtec.com>
+In-Reply-To: <5602D6F3.7030709@linux.intel.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,29 +23,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20150923214236.EBxcDycHdukl-gyVk4s9S6hHSr83K-aaN2TJln-tAKs@z>
+To: Jiang Liu <jiang.liu@linux.intel.com>, linux-kernel@vger.kernel.org, tglx@linutronix.de
+Cc: marc.zyngier@arm.com, jason@lakedaemon.net, linux-mips@linux-mips.org
+Message-ID: <20150924081245.nm4oO8NaLVhXOYh-GZURym95MrzbMASmGhCBpk1Ge0k@z>
 
-On Wed, Sep 23, 2015 at 01:12:08PM +0530, Sudip Mukherjee wrote:
-> On Wed, Sep 23, 2015 at 02:23:43PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Changes since 20150922:
-> mips allmodconfig failed with the error:
-> No rule to make target 'arch/mips/mm/sc-debugfs.o', needed by 'arch/mips/mm/built-in.o'
-> 
-> caused by:
-> 13ea0032658d ("MIPS: Allow L2 prefetch to be configured via debugfs")
-> 
-> regards
-> sudip
+On 09/23/2015 05:44 PM, Jiang Liu wrote:
+> On 2015/9/23 22:49, Qais Yousef wrote:
+>> For generic ipi core to use. It takes hwirq as its sole argument.
+>> Hopefully this is generic enough? Should we pass something more abstract?
+>>
+>> Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
+>> ---
+>>   include/linux/irqdomain.h | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
+>> index 9b3dc6c2a3cc..cef9e6158be0 100644
+>> --- a/include/linux/irqdomain.h
+>> +++ b/include/linux/irqdomain.h
+>> @@ -92,6 +92,7 @@ struct irq_domain_ops {
+>>   	void (*activate)(struct irq_domain *d, struct irq_data *irq_data);
+>>   	void (*deactivate)(struct irq_domain *d, struct irq_data *irq_data);
+>>   #endif
+>> +	void (*send_ipi)(irq_hw_number_t hwirq);
+> Hi Qais,
+> 	Instead of extending the irq_domain_ops, how about extending
+> irq_chip instead? If we treat IPI as a sort of irq controller, and
+> irq_chip is used to encapsulate all irq controller related operations,
+> and irq_domain_ops is mainly used to allocated resources instead of
+> operating corresponding hardware.
+> Thanks!
+> Gerry
+>
 
-Hi Ralf,
 
-That patch as I submitted it definitely adds arch/mips/mm/sc-debugfs.c
-but somehow that file has been lost from the commit in your
-mips-for-linux-next tree. Could you re-apply it?
+
+Yes true. I was too focused on the reservation part so when it came to 
+sending the IPI it just felt natural to add it to irqdomain as it was 
+simple to implement like this!
 
 Thanks,
-    Paul
+Qais

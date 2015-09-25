@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:27904 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:52702 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008505AbbIYQAVfcn3i (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 25 Sep 2015 18:00:21 +0200
+        with ESMTP id S27009004AbbIYQAleI8Oi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 25 Sep 2015 18:00:41 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 1/3] MIPS: mm: compile maar_init unconditionally
-Date: Fri, 25 Sep 2015 08:59:36 -0700
-Message-ID: <1443196778-5528-2-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH v2 2/3] MIPS: print MAAR configuration during boot
+Date: Fri, 25 Sep 2015 08:59:37 -0700
+Message-ID: <1443196778-5528-3-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1443196778-5528-1-git-send-email-paul.burton@imgtec.com>
 References: <1443196778-5528-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,169 +21,67 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, David Hildenbrand <dahi@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20150925155936.RqjP9dYElxCrNMJIbiEXWzgKMlaW0jiBaayd2WjEDPg@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, David Hildenbrand <dahi@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Message-ID: <20150925155937.pMxqW7l2xTht8ZyBRNEyBJs3AH3WGSSobuy4bdngD4E@z>
 
-maar_init was previously only compiled when CONFIG_NEED_MULTIPLE_NODES
-was not set, which has been fine since it is only called from the
-standard implementation of mem_init which has the same condition. In
-preparation for calling it from the SMP startup code on secondary CPUs,
-move maar_init outside of the #ifndef such that it is always compiled.
+Verifying that the MAAR configuration is as expected is useful when
+debugging the performance of a system. Print out the memory regions
+configured via MAAR along with their attributes.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Markos Chandras <markos.chandras@imgtec.com>
-
 ---
 
-Changes in v2:
-- New patch, to fix ip27_defconfig builds.
+Changes in v2: None
 
- arch/mips/mm/init.c | 126 ++++++++++++++++++++++++++--------------------------
- 1 file changed, 63 insertions(+), 63 deletions(-)
+ arch/mips/mm/init.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 66d0f49..074ac54 100644
+index 074ac54..023c164 100644
 --- a/arch/mips/mm/init.c
 +++ b/arch/mips/mm/init.c
-@@ -252,6 +252,69 @@ void __init fixrange_init(unsigned long start, unsigned long end,
- #endif
- }
+@@ -291,6 +291,7 @@ unsigned __weak platform_maar_init(unsigned num_pairs)
+ static void maar_init(void)
+ {
+ 	unsigned num_maars, used, i;
++	phys_addr_t lower, upper, attr;
  
-+unsigned __weak platform_maar_init(unsigned num_pairs)
-+{
-+	struct maar_config cfg[BOOT_MEM_MAP_MAX];
-+	unsigned i, num_configured, num_cfg = 0;
-+	phys_addr_t skip;
+ 	if (!cpu_has_maar)
+ 		return;
+@@ -313,6 +314,34 @@ static void maar_init(void)
+ 		write_c0_maar(0);
+ 		back_to_back_c0_hazard();
+ 	}
 +
-+	for (i = 0; i < boot_mem_map.nr_map; i++) {
-+		switch (boot_mem_map.map[i].type) {
-+		case BOOT_MEM_RAM:
-+		case BOOT_MEM_INIT_RAM:
-+			break;
-+		default:
++	pr_info("MAAR configuration:\n");
++	for (i = 0; i < num_maars; i += 2) {
++		write_c0_maari(i);
++		back_to_back_c0_hazard();
++		upper = read_c0_maar();
++
++		write_c0_maari(i + 1);
++		back_to_back_c0_hazard();
++		lower = read_c0_maar();
++
++		attr = lower & upper;
++		lower = (lower & MIPS_MAAR_ADDR) << 4;
++		upper = ((upper & MIPS_MAAR_ADDR) << 4) | 0xffff;
++
++		pr_info("  [%d]: ", i / 2);
++		if (!(attr & MIPS_MAAR_V)) {
++			pr_cont("disabled\n");
 +			continue;
 +		}
 +
-+		skip = 0x10000 - (boot_mem_map.map[i].addr & 0xffff);
++		pr_cont("%pa-%pa", &lower, &upper);
 +
-+		cfg[num_cfg].lower = boot_mem_map.map[i].addr;
-+		cfg[num_cfg].lower += skip;
++		if (attr & MIPS_MAAR_S)
++			pr_cont(" speculate");
 +
-+		cfg[num_cfg].upper = cfg[num_cfg].lower;
-+		cfg[num_cfg].upper += boot_mem_map.map[i].size - 1;
-+		cfg[num_cfg].upper -= skip;
-+
-+		cfg[num_cfg].attrs = MIPS_MAAR_S;
-+		num_cfg++;
++		pr_cont("\n");
 +	}
-+
-+	num_configured = maar_config(cfg, num_cfg, num_pairs);
-+	if (num_configured < num_cfg)
-+		pr_warn("Not enough MAAR pairs (%u) for all bootmem regions (%u)\n",
-+			num_pairs, num_cfg);
-+
-+	return num_configured;
-+}
-+
-+static void maar_init(void)
-+{
-+	unsigned num_maars, used, i;
-+
-+	if (!cpu_has_maar)
-+		return;
-+
-+	/* Detect the number of MAARs */
-+	write_c0_maari(~0);
-+	back_to_back_c0_hazard();
-+	num_maars = read_c0_maari() + 1;
-+
-+	/* MAARs should be in pairs */
-+	WARN_ON(num_maars % 2);
-+
-+	/* Configure the required MAARs */
-+	used = platform_maar_init(num_maars / 2);
-+
-+	/* Disable any further MAARs */
-+	for (i = (used * 2); i < num_maars; i++) {
-+		write_c0_maari(i);
-+		back_to_back_c0_hazard();
-+		write_c0_maar(0);
-+		back_to_back_c0_hazard();
-+	}
-+}
-+
- #ifndef CONFIG_NEED_MULTIPLE_NODES
- int page_is_ram(unsigned long pagenr)
- {
-@@ -334,69 +397,6 @@ static inline void mem_init_free_highmem(void)
- #endif
  }
  
--unsigned __weak platform_maar_init(unsigned num_pairs)
--{
--	struct maar_config cfg[BOOT_MEM_MAP_MAX];
--	unsigned i, num_configured, num_cfg = 0;
--	phys_addr_t skip;
--
--	for (i = 0; i < boot_mem_map.nr_map; i++) {
--		switch (boot_mem_map.map[i].type) {
--		case BOOT_MEM_RAM:
--		case BOOT_MEM_INIT_RAM:
--			break;
--		default:
--			continue;
--		}
--
--		skip = 0x10000 - (boot_mem_map.map[i].addr & 0xffff);
--
--		cfg[num_cfg].lower = boot_mem_map.map[i].addr;
--		cfg[num_cfg].lower += skip;
--
--		cfg[num_cfg].upper = cfg[num_cfg].lower;
--		cfg[num_cfg].upper += boot_mem_map.map[i].size - 1;
--		cfg[num_cfg].upper -= skip;
--
--		cfg[num_cfg].attrs = MIPS_MAAR_S;
--		num_cfg++;
--	}
--
--	num_configured = maar_config(cfg, num_cfg, num_pairs);
--	if (num_configured < num_cfg)
--		pr_warn("Not enough MAAR pairs (%u) for all bootmem regions (%u)\n",
--			num_pairs, num_cfg);
--
--	return num_configured;
--}
--
--static void maar_init(void)
--{
--	unsigned num_maars, used, i;
--
--	if (!cpu_has_maar)
--		return;
--
--	/* Detect the number of MAARs */
--	write_c0_maari(~0);
--	back_to_back_c0_hazard();
--	num_maars = read_c0_maari() + 1;
--
--	/* MAARs should be in pairs */
--	WARN_ON(num_maars % 2);
--
--	/* Configure the required MAARs */
--	used = platform_maar_init(num_maars / 2);
--
--	/* Disable any further MAARs */
--	for (i = (used * 2); i < num_maars; i++) {
--		write_c0_maari(i);
--		back_to_back_c0_hazard();
--		write_c0_maar(0);
--		back_to_back_c0_hazard();
--	}
--}
--
- void __init mem_init(void)
- {
- #ifdef CONFIG_HIGHMEM
+ #ifndef CONFIG_NEED_MULTIPLE_NODES
 -- 
 2.5.3

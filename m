@@ -1,23 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13969 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:21266 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008523AbbIYPSdBmhp0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 25 Sep 2015 17:18:33 +0200
-Received: from KLMAIL01.kl.imgtec.org (unknown [192.168.5.35])
-        by Websense Email Security Gateway with ESMTPS id A148E391111ED
-        for <linux-mips@linux-mips.org>; Fri, 25 Sep 2015 16:18:23 +0100 (IST)
-Date: Fri, 25 Sep 2015 08:18:21 -0700
+        with ESMTP id S27008441AbbIYQABa0sti (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 25 Sep 2015 18:00:01 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH] FIXUP: MIPS: fix n64 syscall address calculation
-Message-ID: <20150925151821.GA5412@NP-P-BURTON>
-References: <1442995677-20591-1-git-send-email-markos.chandras@imgtec.com>
- <1443152025-1975-1-git-send-email-paul.burton@imgtec.com>
- <20150925071505.GA5740@mchandras-linux.le.imgtec.org>
- <20150925122448.GA3712@NP-P-BURTON>
- <20150925123943.GA15565@mchandras-linux.le.imgtec.org>
+Subject: [PATCH v2 0/3] MAAR SMP fix
+Date: Fri, 25 Sep 2015 08:59:35 -0700
+Message-ID: <1443196778-5528-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20150925123943.GA15565@mchandras-linux.le.imgtec.org>
+Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -28,59 +18,24 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Markos Chandras <markos.chandras@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20150925151821.Jl12xDH3cF6UQz2uCkKYofQuvYT82mZqEJVaUW6ZiBQ@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Rusty Russell <rusty@rustcorp.com.au>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Bjorn Helgaas <bhelgaas@google.com>, David Hildenbrand <dahi@linux.vnet.ibm.com>, Andrew Bresticker <abrestic@chromium.org>, linux-kernel@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>, Hemmo Nieminen <hemmo.nieminen@iki.fi>, James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Ingo Molnar <mingo@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Message-ID: <20150925155935.M3LimGwpxFfO9s1KqtZrSqV60uyQ6OXXPMIO238WJkc@z>
 
-On Fri, Sep 25, 2015 at 01:39:43PM +0100, Markos Chandras wrote:
-> On Fri, Sep 25, 2015 at 05:24:48AM -0700, Paul Burton wrote:
-> > On Fri, Sep 25, 2015 at 08:15:06AM +0100, Markos Chandras wrote:
-> > > On Thu, Sep 24, 2015 at 08:33:45PM -0700, Paul Burton wrote:
-> > > > The patch "MIPS: kernel: scall: Always run the seccomp syscall filters"
-> > > > incorrectly calculates the address of the syscall function and instead
-> > > > attempts a load from the offset of the syscall being invoked into the
-> > > > table. This completely trashes all n64 userland syscalls. Fix the
-> > > > address calculation.
-> > > > 
-> > > > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> > > > Cc: Markos Chandras <markos.chandras@imgtec.com>
-> > > > ---
-> > > > Markos: could you please test all 3 ABIs you modified? The n64 one at
-> > > >         least has clearly not been tested.
-> > > > ---
-> > > 
-> > > Calm down. it was an honest mistake. The version I sent was slighly different to
-> > > what I had in my tree and that's why the tests were passing for me. I will send it
-> > > again.
-> > > 
-> > > -- 
-> > > markos
-> > 
-> > I'm quite calm, simply stating facts & asking you to fix your patch.
-> > Please don't presume to know my state of mind in lieu of a very strong
-> > indicator!
-> > 
-> > Thanks for submitting v2, though from your description I presume it's
-> > just v1 plus this fixup, correct?
-> > 
-> > Paul
-> 
-> There is a changelog in v2 as well.
-> 
-> -- 
-> markos
+This series improves support for Memory Accessibility Attribute
+Registers (MAARs) by printing their configuration during boot and by
+applying the configuration to secondary CPUs, which have their own
+independent MAAR state.
 
-Yes, and it simply reads "Fix offset calculation for n64", which I
-interpret as a slightly less accurately described version of this fixup.
-Diffing your 2 patches shows that this one line is all that changed,
-to a form equivalent to this patch, which answers my question:
+Paul Burton (3):
+  MIPS: mm: compile maar_init unconditionally
+  MIPS: print MAAR configuration during boot
+  MIPS: initialise MAARs on secondary CPUs
 
- +      dsll    t0, t2, 3               # offset into table
- +      dla     t2, sys_call_table
--+      daddu   t2, t0
-++      daddu   t0, t2, t0
- +      ld      t2, (t0)                # syscall routine
- +      beqz    t2, illegal_syscall
+ arch/mips/include/asm/maar.h |   9 +++
+ arch/mips/kernel/smp.c       |   2 +
+ arch/mips/mm/init.c          | 177 ++++++++++++++++++++++++++++---------------
+ 3 files changed, 125 insertions(+), 63 deletions(-)
 
-Thanks,
-    Paul
+-- 
+2.5.3

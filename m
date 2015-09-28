@@ -1,18 +1,14 @@
-Received: from mail-bl2on0073.outbound.protection.outlook.com ([65.55.169.73]:37696
-        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27008536AbbI0UjRSxYKS (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 27 Sep 2015 22:39:17 +0200
-Message-ID: <560853E6.7050902@caviumnetworks.com>
-Date: Sun, 27 Sep 2015 13:39:02 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:7327 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007052AbbI1KEAQ9uCf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 28 Sep 2015 12:04:00 +0200
+From: Markos Chandras <markos.chandras@imgtec.com>
+Subject: [PATCH 0/3] MIPS VDSO support
+Date: Mon, 28 Sep 2015 11:03:46 +0100
+Message-ID: <1443434629-14325-1-git-send-email-markos.chandras@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 0/2] perf tools: Add MIPS userspace DWARF callchains.
-References: <cover.1428450297.git.ralf@linux-mips.org> <20150927160419.GA8529@debian>
-In-Reply-To: <20150927160419.GA8529@debian>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,41 +18,70 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rabin Vincent <rabin@rab.in>
-Cc: Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>, linux-mips@linux-mips.org, Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org, Peter Zijlstra <a.p.zijlstra@chello.nl>, Paul Mackerras <paulus@samba.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@ghostprotocols.net>
-Message-ID: <20150927203902.LVIDGRQswXDdNWaExJR-TzbEBoAYYpTiL46COQXgpj0@z>
+To: linux-mips@linux-mips.org
+Cc: alex@alex-smith.me.uk, Markos Chandras <markos.chandras@imgtec.com>, linux-kernel@vger.kernel.org
+Message-ID: <20150928100346.LB7rwyesUCo9OPyhSq0Gt8LN2Lr8zulSMtPfPnGrmRE@z>
 
-On 09/27/2015 09:05 AM, Rabin Vincent wrote:
-> On Wed, Apr 08, 2015 at 01:58:45AM +0200, Ralf Baechle wrote:
->> This is a refresh of a David Daney's patch set to implement MIPS support
->> for perf.  It has been posted before but not received any comments or
->> (N)Acks.
->>
->> This series depends on
->>
->>    http://patchwork.linux-mips.org/patch/5246/
->>
->> which currently is pending for 4.1 in the MIPS tree so I'd like to upstream
->> these two patches through the MIPS tree as well.
->
-> Looks like this "MIPS: Add user stack and registers to perf" patch
-> didn't get merged in 4.1?  Could it please be queued now?
->
->>
->> David's original patches are archived at:
->>
->>    http://www.linux-mips.org/cgi-bin/mesg.cgi?a=linux-mips&i=1368817238-11548-1-git-send-email-ddaney.cavm%40gmail.com
->>    http://patchwork.linux-mips.org/patch/5249/
->>    http://patchwork.linux-mips.org/patch/5250/
->
-> I've taken these tools/perf patches and made them work with the latest
-> mainline (this addresses the comments Jiri had) and can send them out if
-> you'd like, but they need the arch/mips patch to build.
->
+Hi,
 
-FWIW: I don't have time to work on these at the moment, but I still 
-support merging them.  If anybody wants to take the time to get them 
-into a mergable state, I would fully support, and bless, that effort.
+This series adds a proper VDSO to the kernel on MIPS. The first commit
+adds the basic VDSO, replacing the current signal return trampoline
+page. The following commits add user implementations of gettimeofday() and
+clock_gettime() which can make use of either the CP0 count or the GIC
+user-mode visible section.
 
-Thanks,
-David Daney
+A tree with these changes can be found at [1]. It's based on v4.3-rc3
+
+Use of the time functions relies on glibc modifications. A patch for
+this can be found in my repository at [2] and I will soon post it to the glibc
+mailing list.
+
+[1]: http://git.linux-mips.org/cgit/mchandras/linux.git/log/?h=4.3-vdso
+[2]: https://github.com/hwoarang/glibc/tree/2.22-vdso
+
+Alex Smith (3):
+  MIPS: Initial implementation of a VDSO
+  irqchip: irq-mips-gic: Provide function to map GIC user section
+  MIPS: VDSO: Add implementations of gettimeofday() and clock_gettime()
+
+ arch/mips/Kbuild                     |   1 +
+ arch/mips/Kconfig                    |   5 +
+ arch/mips/include/asm/abi.h          |   5 +-
+ arch/mips/include/asm/clocksource.h  |  29 ++++
+ arch/mips/include/asm/elf.h          |   7 +
+ arch/mips/include/asm/processor.h    |   8 +-
+ arch/mips/include/asm/vdso.h         | 139 +++++++++++++++--
+ arch/mips/include/uapi/asm/Kbuild    |   2 +-
+ arch/mips/include/uapi/asm/auxvec.h  |  17 ++
+ arch/mips/kernel/csrc-r4k.c          |  44 ++++++
+ arch/mips/kernel/signal.c            |  12 +-
+ arch/mips/kernel/signal32.c          |   7 +-
+ arch/mips/kernel/signal_n32.c        |   5 +-
+ arch/mips/kernel/vdso.c              | 198 ++++++++++++++---------
+ arch/mips/vdso/.gitignore            |   4 +
+ arch/mips/vdso/Makefile              | 142 +++++++++++++++++
+ arch/mips/vdso/elf.S                 |  68 ++++++++
+ arch/mips/vdso/genvdso.c             | 294 +++++++++++++++++++++++++++++++++++
+ arch/mips/vdso/genvdso.h             | 188 ++++++++++++++++++++++
+ arch/mips/vdso/gettimeofday.c        | 232 +++++++++++++++++++++++++++
+ arch/mips/vdso/sigreturn.S           |  49 ++++++
+ arch/mips/vdso/vdso.h                |  84 ++++++++++
+ arch/mips/vdso/vdso.lds.S            | 103 ++++++++++++
+ drivers/clocksource/mips-gic-timer.c |   7 +-
+ drivers/irqchip/irq-mips-gic.c       |  27 +++-
+ include/linux/irqchip/mips-gic.h     |  24 ++-
+ 26 files changed, 1572 insertions(+), 129 deletions(-)
+ create mode 100644 arch/mips/include/asm/clocksource.h
+ create mode 100644 arch/mips/include/uapi/asm/auxvec.h
+ create mode 100644 arch/mips/vdso/.gitignore
+ create mode 100644 arch/mips/vdso/Makefile
+ create mode 100644 arch/mips/vdso/elf.S
+ create mode 100644 arch/mips/vdso/genvdso.c
+ create mode 100644 arch/mips/vdso/genvdso.h
+ create mode 100644 arch/mips/vdso/gettimeofday.c
+ create mode 100644 arch/mips/vdso/sigreturn.S
+ create mode 100644 arch/mips/vdso/vdso.h
+ create mode 100644 arch/mips/vdso/vdso.lds.S
+
+-- 
+2.5.3

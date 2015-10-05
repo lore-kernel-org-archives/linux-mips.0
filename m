@@ -1,19 +1,20 @@
-Received: from mail-bl2on0066.outbound.protection.outlook.com ([65.55.169.66]:6208
-        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27009143AbbJBQxaSpwCR (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 2 Oct 2015 18:53:30 +0200
-Message-ID: <560EB67E.4070401@caviumnetworks.com>
-Date: Fri, 2 Oct 2015 09:53:18 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57826 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007927AbbJEIWQD-kDy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 5 Oct 2015 10:22:16 +0200
+Subject: Re: [PATCH 2/3] irqchip: irq-mips-gic: Provide function to map GIC
+ user section
+References: <1443434629-14325-1-git-send-email-markos.chandras@imgtec.com>
+ <1443435117-17144-1-git-send-email-markos.chandras@imgtec.com>
+ <56091CA1.1030808@arm.com>
+From: Markos Chandras <Markos.Chandras@imgtec.com>
+Message-ID: <56123331.3010200@imgtec.com>
+Date: Mon, 5 Oct 2015 09:22:09 +0100
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Octeon: Fix kernel panic on startup from memory
- corruption
-References: <1443588042-21496-1-git-send-email-matt.bennett@alliedtelesis.co.nz>
-In-Reply-To: <1443588042-21496-1-git-send-email-matt.bennett@alliedtelesis.co.nz>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+In-Reply-To: <56091CA1.1030808@arm.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Return-Path: <Markos.Chandras@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,88 +24,92 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Matt Bennett <matt.bennett@alliedtelesis.co.nz>, ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, aleksey.makarov@auriga.com, david.daney@cavium.com
-Message-ID: <20151002165318.PZjLwzQeX88KW0-QfOrnana9y92eQ7vjkDxRg263QVg@z>
+To: Marc Zyngier <marc.zyngier@arm.com>, linux-mips@linux-mips.org
+Cc: alex@alex-smith.me.uk, Alex Smith <alex.smith@imgtec.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org
+Message-ID: <20151005082209.nxqWCTk0oOLPKa-D_c8sudrTpeaPLmy0iwujlJRythE@z>
 
-On 09/29/2015 09:40 PM, Matt Bennett wrote:
-> During development it was found that a number of builds would panic
-> during the kernel init process, more specifically in 'delayed_fput()'.
-> The panic showed the kernel trying to access a memory address of
-> '0xb7fdc00' while traversing the 'delayed_fput_list' structure.
-> Comparing this memory address to the value of the pointer used on
-> builds that did not panic confirmed that the pointer on crashing
-> builds must have been corrupted at some stage earlier in the init
-> process.
->
-> By traversing the list earlier and earlier in the code it was found
-> that 'plat_mem_setup()' was responsible for corrupting the list.
-> Specifically the line:
->
->      memory = cvmx_bootmem_phy_alloc(mem_alloc_size,
-> 			__pa_symbol(&__init_end), -1,
-> 			0x100000,
-> 			CVMX_BOOTMEM_FLAG_NO_LOCKING);
->
-> Which would eventually call:
->
->      cvmx_bootmem_phy_set_size(new_ent_addr,
-> 		cvmx_bootmem_phy_get_size
-> 		(ent_addr) -
-> 		(desired_min_addr -
-> 			ent_addr));
->
-> Where 'new_ent_addr'=0x4800000 (the address of 'delayed_fput_list')
-> and the second argument (size)=0xb7fdc00 (the address causing the
-> kernel panic). The job of this part of 'plat_mem_setup()' is to
-> allocate chunks of memory for the kernel to use. At the start of
-> each chunk of memory the size of the chunk is written, hence the
-> value 0xb7fdc00 is written onto memory at 0x4800000, therefore the
-> kernel panics when it goes back to access 'delayed_fput_list' later
-> on in the initialisation process.
->
-> On builds that were not crashing it was found that the compiler had
-> placed 'delayed_fput_list' at 0x4800008, meaning it wasn't corrupted
-> (but something else in memory was overwritten).
->
-> As can be seen in the first function call above the code begins to
-> allocate chunks of memory beginning from the symbol '__init_end'.
-> The MIPS linker script (vmlinux.lds.S) however defines the .bss
-> section to begin after '__init_end'. Therefore memory within the
-> .bss section is allocated to the kernel to use (System.map shows
-> 'delayed_fput_list' and other kernel structures to be in .bss).
->
-> To stop the kernel panic (and the .bss section being corrupted)
-> memory should begin being allocated from the symbol '_end'.
->
-> Signed-off-by: Matt Bennett <matt.bennett@alliedtelesis.co.nz>
+Hi,
+
+On 09/28/2015 11:55 AM, Marc Zyngier wrote:
+> On 28/09/15 11:11, Markos Chandras wrote:
+>> From: Alex Smith <alex.smith@imgtec.com>
+>>
+>> The GIC provides a "user-mode visible" section containing a mirror of
+>> the counter registers which can be mapped into user memory. This will
+>> be used by the VDSO time function implementations, so provide a
+>> function to map it in.
+>>
+>> When the GIC is not enabled in Kconfig a dummy inline version of this
+>> function is provided, along with "#define gic_present 0", so that we
+>> don't have to litter the VDSO code with ifdefs.
+>>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Jason Cooper <jason@lakedaemon.net>
+>> Cc: Marc Zyngier <marc.zyngier@arm.com>
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+>> Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+>> ---
+>>  drivers/irqchip/irq-mips-gic.c   | 27 +++++++++++++++++++++------
+>>  include/linux/irqchip/mips-gic.h | 24 ++++++++++++++++++++++--
+>>  2 files changed, 43 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+>> index af2f16bb8a94..c995b199ca32 100644
+>> --- a/drivers/irqchip/irq-mips-gic.c
+>> +++ b/drivers/irqchip/irq-mips-gic.c
+>> @@ -13,6 +13,7 @@
+>>  #include <linux/irq.h>
+>>  #include <linux/irqchip.h>
+>>  #include <linux/irqchip/mips-gic.h>
+>> +#include <linux/mm.h>
+>>  #include <linux/of_address.h>
+>>  #include <linux/sched.h>
+>>  #include <linux/smp.h>
+>> @@ -29,6 +30,7 @@ struct gic_pcpu_mask {
+>>  	DECLARE_BITMAP(pcpu_mask, GIC_MAX_INTRS);
+>>  };
+>>  
+>> +static unsigned long gic_base_addr;
+>>  static void __iomem *gic_base;
+>>  static struct gic_pcpu_mask pcpu_masks[NR_CPUS];
+>>  static DEFINE_SPINLOCK(gic_lock);
+>> @@ -301,6 +303,19 @@ int gic_get_c0_fdc_int(void)
+>>  				  GIC_LOCAL_TO_HWIRQ(GIC_LOCAL_INT_FDC));
+>>  }
+>>  
+>> +int gic_map_user_section(struct vm_area_struct *vma, unsigned long base,
+>> +			 unsigned long size)
+>> +{
+>> +	unsigned long pfn;
+>> +
+>> +	BUG_ON(!gic_present);
+> 
+> Why do you have a BUG() here, while you're just returning -1 in the case
+> where CONFIG_MIPS_GIC is not refined? This feels overly harsh to me.
+
+I suppose i could change that to return -1 if git_present is not true.
+
+> 
+>> +	BUG_ON(size > USM_VISIBLE_SECTION_SIZE);
+> 
+> Same here.
+
+But I think this is different. The size of mapping has to be less than
+USM_VISIBLE_SECTION_SIZE because that's the maximum data size exposed by
+the GIC chip for userspace use. So if that's not true, then BUG_ON seems
+like a sensible thing to do.
+
+> 
+> - Does this code have to be in the irqchip driver? It really feels out
+> of place, and I'd rather see a function that returns the mappable range
+> to the VDSO code, where the mapping would occur.
+> 
+> Thanks,
+> 
+
+That does seem like a good idea. I will have a look
 
 
-This is obviously correct.  I wonder how it was able to work for so long 
-without failing for someone.
-
-Acked-by: David Daney <david.daney@cavium.com>
-
-It is probably suitable for stable as well.
-
-David Daney
-
-
-> ---
->   arch/mips/cavium-octeon/setup.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
-> index 89a6284..bd63425 100644
-> --- a/arch/mips/cavium-octeon/setup.c
-> +++ b/arch/mips/cavium-octeon/setup.c
-> @@ -933,7 +933,7 @@ void __init plat_mem_setup(void)
->   	while ((boot_mem_map.nr_map < BOOT_MEM_MAP_MAX)
->   		&& (total < MAX_MEMORY)) {
->   		memory = cvmx_bootmem_phy_alloc(mem_alloc_size,
-> -						__pa_symbol(&__init_end), -1,
-> +						__pa_symbol(&_end), -1,
->   						0x100000,
->   						CVMX_BOOTMEM_FLAG_NO_LOCKING);
->   		if (memory >= 0) {
->
+-- 
+markos

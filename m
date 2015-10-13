@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:10526 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45303 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009114AbbJMOaMpdZL6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Oct 2015 16:30:12 +0200
-Subject: Re: [RFC v2 PATCH 06/14] irq: add struct ipi_mapping and its helper
- functions
+        with ESMTP id S27009454AbbJMOi4Rn7c6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Oct 2015 16:38:56 +0200
+Subject: Re: [RFC v2 PATCH 07/14] irq: add a new generic IPI reservation code
+ to irq core
 References: <1444731382-19313-1-git-send-email-qais.yousef@imgtec.com>
- <1444731382-19313-7-git-send-email-qais.yousef@imgtec.com>
- <alpine.DEB.2.11.1510131527360.25029@nanos>
+ <1444731382-19313-8-git-send-email-qais.yousef@imgtec.com>
+ <alpine.DEB.2.11.1510131531290.25029@nanos>
 From: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <561D156D.1090403@imgtec.com>
-Date: Tue, 13 Oct 2015 15:30:05 +0100
+Message-ID: <561D1779.7060307@imgtec.com>
+Date: Tue, 13 Oct 2015 15:38:49 +0100
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.11.1510131527360.25029@nanos>
+In-Reply-To: <alpine.DEB.2.11.1510131531290.25029@nanos>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Qais.Yousef@imgtec.com>
@@ -26,31 +26,66 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Thomas Gleixner <tglx@linutronix.de>
 Cc: linux-kernel@vger.kernel.org, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20151013143005.Z3r3RLZRBhornj1yycLu8gYa3W3WnCTW4dSz_GYe8s0@z>
+Message-ID: <20151013143849.wHWzrZGQgPIF_6Ezql6wQQ9FtUZ5PHSIGczZm-mMAMw@z>
 
-On 10/13/2015 02:31 PM, Thomas Gleixner wrote:
+On 10/13/2015 02:37 PM, Thomas Gleixner wrote:
 > On Tue, 13 Oct 2015, Qais Yousef wrote:
 >
-> +
-> +int irq_unmap_ipi(struct ipi_mapping *map,
-> +		  unsigned int cpu, irq_hw_number_t *hwirq)
-> +{
-> +	if (cpu >= map->nr_cpus)
-> +		return -EINVAL;
-> +
-> +	if (map->cpumap[cpu] == INVALID_HWIRQ)
-> +		return -EINVAL;
-> +
-> +	if (hwirq)
-> +		*hwirq = map->cpumap[cpu];
-> Why do we store hwirq in unmap?
+>> +	if (domain == NULL)
+>> +		domain = irq_default_domain; /* need a separate ipi_default_domain? */
+> No tail comments please.
+>
+> We should neither use irq_default_domain nor have an
+> ipi_default_domain.
 
-So that the irqchip driver can return the hwirq to its available IPI pool.
+OK though I understood that you were OK with using the irq_default_domain.
+
+This means that arch code must parse the DT for an IPI domain. I think 
+I've seen arch code using the root FDT to search for a specific node. 
+I'll try to do something similar to search for an IPI domain.
+
+>> +
+>> +	virq = irq_domain_alloc_descs(-1, nr_irqs, 0, NUMA_NO_NODE);
+>> +	if (virq <= 0) {
+>> +		pr_warn("Can't reserve IPI, failed to alloc descs\n");
+>> +		return 0;
+>> +	}
+>> +
+>> +	/* we are reusing hierarchy alloc function, should we create another one? */
+>> +	virq = __irq_domain_alloc_irqs(domain, virq, nr_irqs, NUMA_NO_NODE,
+>> +					(void *) dest, true);
+>> +	if (virq <= 0) {
+>> +		pr_warn("Can't reserve IPI, failed to alloc irqs\n");
+>> +		goto free_descs;
+>> +	}
+>> +
+>> +	data = irq_get_irq_data(virq);
+>> +	bitmap_copy(data->ipi_mask.cpumask, dest->cpumask, dest->nbits);
+>> +	data->ipi_mask.nbits = dest->nbits;
+> This does only initialize the first virq data. What about the others?
+
+Right I missed that. I'll fix it.
+
 
 >
-> All these new functions lack kerneldoc comments.
+>> +	return virq;
+>> +
+>> +free_descs:
+>> +	irq_free_descs(virq, nr_irqs);
+>> +	return 0;
+>> +}
+>> +
+>> +/**
+>> + * irq_destroy_ipi() - unreserve an IPI that was previously allocated
+>> + * @irq: linux irq number to be destroyed
+>> + *
+>> + * Return an IPI allocated with irq_reserve_ipi() to the system.
+> That wants to explain that it actually destroys a number of virqs not
+> just the primary one.
+>
+>
 
-Apologies about the missing docs here and in other places.
+OK I'll expand on that.
 
 Thanks,
 Qais

@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:21928 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:60133 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009430AbbJMKQubyyes (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Oct 2015 12:16:50 +0200
+        with ESMTP id S27009461AbbJMKQv5ivSs (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Oct 2015 12:16:51 +0200
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [RFC v2 PATCH 02/14] irq: add GENERIC_IRQ_IPI Kconfig symbol
-Date: Tue, 13 Oct 2015 11:16:10 +0100
-Message-ID: <1444731382-19313-3-git-send-email-qais.yousef@imgtec.com>
+Subject: [RFC v2 PATCH 03/14] irq: add new struct ipi_mask
+Date: Tue, 13 Oct 2015 11:16:11 +0100
+Message-ID: <1444731382-19313-4-git-send-email-qais.yousef@imgtec.com>
 In-Reply-To: <1444731382-19313-1-git-send-email-qais.yousef@imgtec.com>
 References: <1444731382-19313-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
@@ -22,31 +22,42 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org
 Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org, Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <20151013101610.C8y4EvjVdZqESUeVpUYS4U7ESlMhp3SeEhxs9wGWBXM@z>
+Message-ID: <20151013101611.QZM-GtuHyWbHmYdbQ6998z-9dElnboHSEB8aLka0iLE@z>
 
-irqchip should select this config to denote it supports generic IPI.
-
-This will aid generic arch code to know when it can use generic IPI layer.
+cpumask is limited to NR_CPUS. introduce ipi_mask which allows us to address
+cpu range that is higher than NR_CPUS which is required for drivers to send
+IPIs for coprocessor that are outside Linux CPU range.
 
 Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
 ---
- kernel/irq/Kconfig | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/linux/irq.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
-index 9a76e3beda54..cb5044c54288 100644
---- a/kernel/irq/Kconfig
-+++ b/kernel/irq/Kconfig
-@@ -60,6 +60,10 @@ config IRQ_DOMAIN_HIERARCHY
- 	bool
- 	select IRQ_DOMAIN
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index 11bf09288ddb..4b537e4d393b 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -125,6 +125,21 @@ enum {
+ struct msi_desc;
+ struct irq_domain;
  
-+# Generic IRQ IPI support
-+config GENERIC_IRQ_IPI
-+	bool
++ /**
++ * struct ipi_mask - IPI mask information
++ * @cpumask: bitmap of cpumasks
++ * @nbits: number of bits in cpumask
++ * @global: whether the mask is SMP IPI ie: subset of cpu_possible_mask or not
++ *
++ * ipi_mask is similar to cpumask, but it provides nbits that's configurable
++ * rather than fixed to NR_CPUS.
++ */
++struct ipi_mask {
++	unsigned long	*cpumask;
++	unsigned int	nbits;
++	bool		global;
++};
 +
- # Generic MSI interrupt support
- config GENERIC_MSI_IRQ
- 	bool
+ /**
+  * struct irq_common_data - per irq data shared by all irqchips
+  * @state_use_accessors: status information for irq chip functions.
 -- 
 2.1.0

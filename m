@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:60133 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:46539 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009461AbbJMKQv5ivSs (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Oct 2015 12:16:51 +0200
+        with ESMTP id S27009467AbbJMKQxp2iis (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Oct 2015 12:16:53 +0200
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [RFC v2 PATCH 03/14] irq: add new struct ipi_mask
-Date: Tue, 13 Oct 2015 11:16:11 +0100
-Message-ID: <1444731382-19313-4-git-send-email-qais.yousef@imgtec.com>
+Subject: [RFC v2 PATCH 04/14] irq: add a new irq_send_ipi() to irq_chip
+Date: Tue, 13 Oct 2015 11:16:12 +0100
+Message-ID: <1444731382-19313-5-git-send-email-qais.yousef@imgtec.com>
 In-Reply-To: <1444731382-19313-1-git-send-email-qais.yousef@imgtec.com>
 References: <1444731382-19313-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
@@ -22,42 +22,36 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org
 Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org, Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <20151013101611.QZM-GtuHyWbHmYdbQ6998z-9dElnboHSEB8aLka0iLE@z>
+Message-ID: <20151013101612.mVAovNezMAcxJrt5T2AkScMNr7D-mgbQ9Tt2WCNbHto@z>
 
-cpumask is limited to NR_CPUS. introduce ipi_mask which allows us to address
-cpu range that is higher than NR_CPUS which is required for drivers to send
-IPIs for coprocessor that are outside Linux CPU range.
+Introduce the new function to allow generic IPI send mechanism to be
+used from drivers code.
 
 Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
 ---
- include/linux/irq.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ include/linux/irq.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/include/linux/irq.h b/include/linux/irq.h
-index 11bf09288ddb..4b537e4d393b 100644
+index 4b537e4d393b..504133671985 100644
 --- a/include/linux/irq.h
 +++ b/include/linux/irq.h
-@@ -125,6 +125,21 @@ enum {
- struct msi_desc;
- struct irq_domain;
+@@ -369,6 +369,7 @@ static inline irq_hw_number_t irqd_to_hwirq(struct irq_data *d)
+  * @irq_get_irqchip_state:	return the internal state of an interrupt
+  * @irq_set_irqchip_state:	set the internal state of a interrupt
+  * @irq_set_vcpu_affinity:	optional to target a vCPU in a virtual machine
++ * @irq_send_ipi:	send an IPI to destination cpus
+  * @flags:		chip specific flags
+  */
+ struct irq_chip {
+@@ -413,6 +414,8 @@ struct irq_chip {
  
-+ /**
-+ * struct ipi_mask - IPI mask information
-+ * @cpumask: bitmap of cpumasks
-+ * @nbits: number of bits in cpumask
-+ * @global: whether the mask is SMP IPI ie: subset of cpu_possible_mask or not
-+ *
-+ * ipi_mask is similar to cpumask, but it provides nbits that's configurable
-+ * rather than fixed to NR_CPUS.
-+ */
-+struct ipi_mask {
-+	unsigned long	*cpumask;
-+	unsigned int	nbits;
-+	bool		global;
-+};
+ 	int		(*irq_set_vcpu_affinity)(struct irq_data *data, void *vcpu_info);
+ 
++	void		(*irq_send_ipi)(struct irq_data *data, const struct ipi_mask *dest);
 +
- /**
-  * struct irq_common_data - per irq data shared by all irqchips
-  * @state_use_accessors: status information for irq chip functions.
+ 	unsigned long	flags;
+ };
+ 
 -- 
 2.1.0

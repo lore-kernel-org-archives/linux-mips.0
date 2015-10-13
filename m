@@ -1,16 +1,15 @@
-Received: from mga01.intel.com ([192.55.52.88]:5832 "EHLO mga01.intel.com"
+Received: from mga11.intel.com ([192.55.52.93]:3654 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27010908AbbJMK6MNTWRe (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 13 Oct 2015 12:58:12 +0200
-Date: Tue, 13 Oct 2015 18:56:33 +0800
+        id S27010908AbbJMLN62Qxge (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 13 Oct 2015 13:13:58 +0200
+Date: Tue, 13 Oct 2015 19:12:23 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: Re: [RFC v2 PATCH 07/14] irq: add a new generic IPI reservation code
- to irq core
-Message-ID: <201510131846.WLNB7o7L%fengguang.wu@intel.com>
+Subject: Re: [RFC v2 PATCH 08/14] irq: implement irq_send_ipi
+Message-ID: <201510131944.nzZjzvIG%fengguang.wu@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="UlVJffcvxoiEqYs2"
+Content-Type: multipart/mixed; boundary="dDRMvlgZJXvWKvBx"
 Content-Disposition: inline
-In-Reply-To: <1444731382-19313-8-git-send-email-qais.yousef@imgtec.com>
+In-Reply-To: <1444731382-19313-9-git-send-email-qais.yousef@imgtec.com>
 Return-Path: <fengguang.wu@intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,10 +22,10 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Qais Yousef <qais.yousef@imgtec.com>
 Cc: kbuild-all@01.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20151013105633.utgLA04umhAIz_hOIiCmy6O57B4hSzjRNkfeybwPKR0@z>
+Message-ID: <20151013111223.WZa_7ZLMfD28ZhSF0PivTDC96c3Nf-M3LxNLveqvpsM@z>
 
 
---UlVJffcvxoiEqYs2
+--dDRMvlgZJXvWKvBx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -42,44 +41,34 @@ reproduce:
 
 All errors (new ones prefixed by >>):
 
-   kernel/irq/irqdomain.c: In function 'irq_reserve_ipi':
->> kernel/irq/irqdomain.c:799:18: error: 'struct irq_data' has no member named 'ipi_mask'
-     bitmap_copy(data->ipi_mask.cpumask, dest->cpumask, dest->nbits);
-                     ^
-   kernel/irq/irqdomain.c:800:6: error: 'struct irq_data' has no member named 'ipi_mask'
-     data->ipi_mask.nbits = dest->nbits;
-         ^
-   kernel/irq/irqdomain.c: In function 'irq_destroy_ipi':
-   kernel/irq/irqdomain.c:833:21: error: 'struct irq_data' has no member named 'ipi_mask'
-      bitmap_weight(data->ipi_mask.cpumask, data->ipi_mask.nbits));
-                        ^
-   kernel/irq/irqdomain.c:833:45: error: 'struct irq_data' has no member named 'ipi_mask'
-      bitmap_weight(data->ipi_mask.cpumask, data->ipi_mask.nbits));
-                                                ^
+   kernel/irq/manage.c: In function '__irq_desc_send_ipi':
+>> kernel/irq/manage.c:2001:41: error: 'struct irq_data' has no member named 'ipi_mask'
+      if (!bitmap_subset(dest->cpumask, data->ipi_mask.cpumask,
+                                            ^
 
-vim +799 kernel/irq/irqdomain.c
+vim +2001 kernel/irq/manage.c
 
-   793		if (virq <= 0) {
-   794			pr_warn("Can't reserve IPI, failed to alloc irqs\n");
-   795			goto free_descs;
-   796		}
-   797	
-   798		data = irq_get_irq_data(virq);
- > 799		bitmap_copy(data->ipi_mask.cpumask, dest->cpumask, dest->nbits);
-   800		data->ipi_mask.nbits = dest->nbits;
-   801	
-   802		return virq;
+  1995		/*
+  1996		 * Do not validate the mask for IPIs marked global. These are
+  1997		 * regular IPIs so we can avoid the operation as their target
+  1998		 * mask is the cpu_possible_mask.
+  1999		 */
+  2000		if (!dest->global) {
+> 2001			if (!bitmap_subset(dest->cpumask, data->ipi_mask.cpumask,
+  2002					   dest->nbits))
+  2003				return -EINVAL;
+  2004		}
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---UlVJffcvxoiEqYs2
+--dDRMvlgZJXvWKvBx
 Content-Type: application/octet-stream
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICDXiHFYAAy5jb25maWcAjDzbcuM2su/5CtbkPCRVZ262MzupU36ASFBERBIMAeriF5Yi
+H4sICCHmHFYAAy5jb25maWcAjDzbcuM2su/5CtbkPCRVZ262MzupU36ASFBERBIMAeriF5Yi
 0zOq2JJXl+zM359ugBRvDc1u1e6O0Q0QaPS9G/r5p589dj7tX9an7Wb9/Pzd+1LtqsP6VD16
 T9vn6v+8QHqp1B4PhH4HyPF2d/72/tvnT+WnO+/u3e27D28Pm9+8WXXYVc+ev989bb+cYf52
 v/vp5598mYZiCqgToe+/N38uzeze3+0fIlU6L3wtZFoG3JcBz1ugLHRW6DKUecL0/Zvq+enT
@@ -192,4 +181,4 @@ xxNSkZeHmtVKhpLQzle7luSqVsjkOUUsqbW8Lc+KfPhvqAmtSmXmSoYEPzZ3q7HD0pVyIhCK
 i+r9nwU9wutxQ5oadRSn8YBxzVkgXMLHfPqilQfEamEoYy6C55AOO+GezjnwzblX4Q3btmTm
 8sZgtlLrAeeXmbNWlPoAHaWmA1FC2JpC5GPxBXrjPgXCUwAA
 
---UlVJffcvxoiEqYs2--
+--dDRMvlgZJXvWKvBx--

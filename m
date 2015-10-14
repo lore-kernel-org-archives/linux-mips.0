@@ -1,18 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:10699 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:42928 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009454AbbJMOtCBtZ96 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Oct 2015 16:49:02 +0200
-Subject: Re: [RFC v2 PATCH 00/14] Implement generic IPI support mechanism
-References: <1444731382-19313-1-git-send-email-qais.yousef@imgtec.com>
- <alpine.DEB.2.11.1510131550020.25029@nanos>
-From: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <561D19D7.4060004@imgtec.com>
-Date: Tue, 13 Oct 2015 15:48:55 +0100
+        with ESMTP id S27007575AbbJNMwlM2opC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 14 Oct 2015 14:52:41 +0200
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Subject: [PATCH 0/5] MIPS: Add Xilfpga platform
+Date: Wed, 14 Oct 2015 13:51:52 +0100
+Message-ID: <1444827117-10939-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.11.1510131550020.25029@nanos>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,46 +18,63 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20151013144855.RmxPispAE17lAEIwAkw96yetPVB0llW5TtWbsxLXBgI@z>
+To: ralf@linux-mips.org, robh+dt@kernel.org, linus.walleij@linaro.org
+Cc: linux-mips@linux-mips.org, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Zubair.Kakakhel@imgtec.com
+Message-ID: <20151014125152.rz9Gq9eDvUazC4o-D3h1NulC9IYFQ8lT3M0g724H8sA@z>
 
-On 10/13/2015 02:53 PM, Thomas Gleixner wrote:
-> On Tue, 13 Oct 2015, Qais Yousef wrote:
->
->> This series is based on Linus tree. I couldn't compile test it
->> because MIPS compilation was broken due to other reasons. I expect
->> some brokeness because of the introduction of struct irq_common_data
->> which is not present on the 4.1 tree I was testing my code on before
->> porting it to Linus tip. I will fix these issues and introduce
->> proper accessors for accessing struct ipi_mask given that the
->> concept is approved.
-> Please base it on 4.1-rc5 + irq/core.
->   
->>    irq: add new IRQ_DOMAIN_FLAGS_IPI
-> The proper prefix for the core parts is 'genirq:'. Please start the
-> sentence after the prefix with an uppercase letter
->
->>    irq: add GENERIC_IRQ_IPI Kconfig symbol
->>    irq: add new struct ipi_mask
->>    irq: add a new irq_send_ipi() to irq_chip
->>    irq: add struct ipi_mask to irq_data
->>    irq: add struct ipi_mapping and its helper functions
->>    irq: add a new generic IPI reservation code to irq core
->>    irq: implement irq_send_ipi
->>    MIPS: add support for generic SMP IPI support
->>    MIPS: make smp CMP, CPS and MT use the new generic IPI functions
->>    MIPS: delete smp-gic.c
->>    irqchip: mips-gic: add a IPI hierarchy domain
-> Please make that
->
-> irqchip/mips-gic: Add ....
->
->
+Hi,
 
+This series is based on v4.3-rc5.
 
-Will do. Thanks a lot for the review and all the pointers. I need to 
-revive the DT binding discussion now, in the proper list this time.
+Adds support for the Imagination University Program MIPSfpga platform.
 
-Thanks,
-Qais
+See the first dt-bindings patch for details about the platform.
+
+These patches allow the kernel to boot with UART and gpio support.
+
+Acks from DT (patch 1/5) and GPIO (patch 2/5) welcome.
+
+Regards,
+ZubairLK
+
+Zubair Lutfullah Kakakhel (5):
+  dt-bindings: MIPS: Document xilfpga bindings and boot style
+  gpio/xilinx: enable for MIPS
+  MIPS: dt: xilfpga: Add xilfpga device tree files.
+  MIPS: xilfpga: Add mipsfpga platform code
+  MIPS: Add xilfpga defconfig
+
+ .../devicetree/bindings/mips/img/xilfpga.txt       | 76 ++++++++++++++++++++++
+ arch/mips/Kbuild.platforms                         |  1 +
+ arch/mips/Kconfig                                  | 25 +++++++
+ arch/mips/boot/dts/Makefile                        |  1 +
+ arch/mips/boot/dts/xilfpga/Makefile                |  9 +++
+ arch/mips/boot/dts/xilfpga/microAptiv.dtsi         | 21 ++++++
+ arch/mips/boot/dts/xilfpga/nexys4ddr.dts           | 47 +++++++++++++
+ arch/mips/configs/xilfpga_defconfig                | 59 +++++++++++++++++
+ arch/mips/include/asm/mach-xilfpga/gpio.h          | 19 ++++++
+ arch/mips/include/asm/mach-xilfpga/irq.h           | 18 +++++
+ arch/mips/xilfpga/Kconfig                          |  9 +++
+ arch/mips/xilfpga/Makefile                         |  7 ++
+ arch/mips/xilfpga/Platform                         |  3 +
+ arch/mips/xilfpga/init.c                           | 57 ++++++++++++++++
+ arch/mips/xilfpga/intc.c                           | 26 ++++++++
+ arch/mips/xilfpga/time.c                           | 41 ++++++++++++
+ drivers/gpio/Kconfig                               |  2 +-
+ 17 files changed, 420 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mips/img/xilfpga.txt
+ create mode 100644 arch/mips/boot/dts/xilfpga/Makefile
+ create mode 100644 arch/mips/boot/dts/xilfpga/microAptiv.dtsi
+ create mode 100644 arch/mips/boot/dts/xilfpga/nexys4ddr.dts
+ create mode 100644 arch/mips/configs/xilfpga_defconfig
+ create mode 100644 arch/mips/include/asm/mach-xilfpga/gpio.h
+ create mode 100644 arch/mips/include/asm/mach-xilfpga/irq.h
+ create mode 100644 arch/mips/xilfpga/Kconfig
+ create mode 100644 arch/mips/xilfpga/Makefile
+ create mode 100644 arch/mips/xilfpga/Platform
+ create mode 100644 arch/mips/xilfpga/init.c
+ create mode 100644 arch/mips/xilfpga/intc.c
+ create mode 100644 arch/mips/xilfpga/time.c
+
+-- 
+1.9.1

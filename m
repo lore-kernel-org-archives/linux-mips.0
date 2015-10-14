@@ -1,18 +1,22 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:20879 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009978AbbJNPtyvjRow (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 14 Oct 2015 17:49:54 +0200
-Subject: Re: [RFC v2 PATCH 00/14] Implement generic IPI support mechanism
-References: <1444731382-19313-1-git-send-email-qais.yousef@imgtec.com>
- <20151014150431.GF3052@linux-uzut.site>
-From: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <561E799B.2030306@imgtec.com>
-Date: Wed, 14 Oct 2015 16:49:47 +0100
+Received: from mail-bn1bon0069.outbound.protection.outlook.com ([157.56.111.69]:34194
+        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27010170AbbJNQzB3VWjQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 14 Oct 2015 18:55:01 +0200
+Date: Wed, 14 Oct 2015 09:54:50 -0700
+From: =?utf-8?B?U8O2cmVu?= Brinkmann <soren.brinkmann@xilinx.com>
+Subject: Re: [PATCH 2/5] gpio/xilinx: enable for MIPS
+Message-ID: <20151014165450.GS15287@xsjsorenbubuntu>
+References: <1444827117-10939-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+ <1444827117-10939-3-git-send-email-Zubair.Kakakhel@imgtec.com>
+ <20151014151813.GL15287@xsjsorenbubuntu>
+ <561E7B65.3090704@metafoo.de>
 MIME-Version: 1.0
-In-Reply-To: <20151014150431.GF3052@linux-uzut.site>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <561E7B65.3090704@metafoo.de>
+Return-Path: <soren.brinkmann@xilinx.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,58 +26,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Davidlohr Bueso <dave@stgolabs.net>
-Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20151014154947.WUzU6-6CpT_wK-EQmKy4BnVHwgLFSjvtirUylZALHX4@z>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, ralf@linux-mips.org, robh+dt@kernel.org, linus.walleij@linaro.org, linux-mips@linux-mips.org, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20151014165450.d59NC6SDstW2KWck0C_FEzV7P2lhA946f5iqDixKrE0@z>
 
-On 10/14/2015 04:04 PM, Davidlohr Bueso wrote:
-> On Tue, 13 Oct 2015, Qais Yousef wrote:
->
->> Qais Yousef (14):
->>  irq: add new IRQ_DOMAIN_FLAGS_IPI
->>  irq: add GENERIC_IRQ_IPI Kconfig symbol
->>  irq: add new struct ipi_mask
->>  irq: add a new irq_send_ipi() to irq_chip
->>  irq: add struct ipi_mask to irq_data
->>  irq: add struct ipi_mapping and its helper functions
->>  irq: add a new generic IPI reservation code to irq core
->>  irq: implement irq_send_ipi
->>  MIPS: add support for generic SMP IPI support
->>  MIPS: make smp CMP, CPS and MT use the new generic IPI functions
->>  MIPS: delete smp-gic.c
->>  irqchip: mips-gic: add a IPI hierarchy domain
->>  irqchip: mips-gic: implement the new irq_send_ipi
->>  irqchip: mips-gic: remove IPI init code
->>
->> arch/mips/Kconfig                |   6 --
->> arch/mips/include/asm/smp-ops.h  |   5 +-
->> arch/mips/kernel/Makefile        |   1 -
->> arch/mips/kernel/smp-cmp.c       |   4 +-
->> arch/mips/kernel/smp-cps.c       |   4 +-
->> arch/mips/kernel/smp-gic.c       |  64 -----------
->> arch/mips/kernel/smp-mt.c        |   2 +-
->> arch/mips/kernel/smp.c           | 117 ++++++++++++++++++++
->> drivers/irqchip/Kconfig          |   2 +
->> drivers/irqchip/irq-mips-gic.c   | 225 
->> ++++++++++++++++++++++++---------------
->> include/linux/irq.h              |  43 ++++++++
->> include/linux/irqchip/mips-gic.h |   3 -
->> include/linux/irqdomain.h        |  19 ++++
->> kernel/irq/Kconfig               |   4 +
->> kernel/irq/irqdomain.c           |  84 +++++++++++++++
->> kernel/irq/manage.c              | 103 ++++++++++++++++++
->> 16 files changed, 517 insertions(+), 169 deletions(-)
->> delete mode 100644 arch/mips/kernel/smp-gic.c
->
-> It strikes me that Documentation/ should at least get _some_ love. 
-> Perhaps IRQ-ipi.txt? I dunno...
+On Wed, 2015-10-14 at 05:57PM +0200, Lars-Peter Clausen wrote:
+> On 10/14/2015 05:18 PM, Sören Brinkmann wrote:
+> > On Wed, 2015-10-14 at 01:51PM +0100, Zubair Lutfullah Kakakhel wrote:
+> >> MIPSfpga uses the axi gpio controller. Enable the driver for MIPS.
+> >>
+> >> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+> >> ---
+> >>  drivers/gpio/Kconfig | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> >> index 8949b3f..58e9afd 100644
+> >> --- a/drivers/gpio/Kconfig
+> >> +++ b/drivers/gpio/Kconfig
+> >> @@ -508,7 +508,7 @@ config GPIO_XGENE_SB
+> >>  
+> >>  config GPIO_XILINX
+> >>  	tristate "Xilinx GPIO support"
+> >> -	depends on OF_GPIO && (PPC || MICROBLAZE || ARCH_ZYNQ || X86)
+> >> +	depends on OF_GPIO && (PPC || MICROBLAZE || ARCH_ZYNQ || X86 || MIPS)
+> > 
+> > Hmm, in general, this driver is hopefully generic enough that it doesn't
+> > have any real architecture dependencies. And I suspect, we want to
+> > enable this driver for ARM64 for ZynqMP soon too. Should we probably
+> > drop these arch dependencies completely? It seems to become quite a long list.
+> 
+> I've been thinking about this a while ago. This is certainly not the only
+> driver affected by this problem. But the thing is people always complain if
+> new symbols become visable in Kconfig that don't apply to their platform.
+> 
+> Maybe we should introduce a HAS_REPROGRAMABLE_LOGIC (or similar) feature
+> Kconfig symbol and let platforms which have a FPGA select it and let drivers
+> for FPGA peripherals depend on it.
 
-Since this was an RFC I didn't update documentation without first making 
-sure the changes are OK. In the next series I'll add the documentation 
-changes.
+Sounds like a good idea to me. But, does that work for all use-cases.
+E.g. if you plug some PCIe card with an FPGA into an x86(_64) machine.
+That would allow you to use those drivers, but I'm not sure how that
+could pull in the new config symbol.
 
-Thanks for pointing it out though. I could have missed it in the next 
-series to be honest as I'm getting more focused on the small details :)
-
-Thanks,
-Qais
+	Sören

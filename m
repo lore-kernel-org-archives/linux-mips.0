@@ -1,20 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:54947 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:33933 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009715AbbJOJhdGVmLg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Oct 2015 11:37:33 +0200
-Subject: Re: [PATCH v2 2/3] irqchip: irq-mips-gic: Provide function to map GIC
- user section
-References: <1443435117-17144-1-git-send-email-markos.chandras@imgtec.com>
- <1444642843-16375-1-git-send-email-markos.chandras@imgtec.com>
- <561B82BA.30809@arm.com> <alpine.DEB.2.11.1510121155490.6097@nanos>
-From: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <561F73D6.8040300@imgtec.com>
-Date: Thu, 15 Oct 2015 10:37:26 +0100
+        with ESMTP id S27008615AbbJOSu3aPBly (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Oct 2015 20:50:29 +0200
+Subject: [PATCH] MIPS64: signal: n64 kernel bugfix of MIPS32 o32 ABI
+ sigaction syscall
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Thu, 15 Oct 2015 11:50:20 -0700
+Message-ID: <20151015185020.37483.82586.stgit@ubuntu-yegoshin>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.11.1510121155490.6097@nanos>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,63 +20,58 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <marc.zyngier@arm.com>
-Cc: Markos Chandras <markos.chandras@imgtec.com>, linux-mips@linux-mips.org, Alex Smith <alex.smith@imgtec.com>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org
-Message-ID: <20151015093726.VMfgdqDscS4cb2P88M_j-dM5CFd263icRFVqn4OE3vA@z>
+To: linux-mips@linux-mips.org, paul.burton@imgtec.com, richard@nod.at, linux-kernel@vger.kernel.org, ralf@linux-mips.org, luto@amacapital.net, alex.smith@imgtec.com, markos.chandras@imgtec.com
+Message-ID: <20151015185020.VBITDBfF3tcADUfqfOD97BxdWc9Phpjd3-0BPwy5EJU@z>
 
-On 10/12/2015 11:16 AM, Thomas Gleixner wrote:
-> On Mon, 12 Oct 2015, Marc Zyngier wrote:
->> On 12/10/15 10:40, Markos Chandras wrote:
->>> From: Alex Smith <alex.smith@imgtec.com>
->>>
->>> The GIC provides a "user-mode visible" section containing a mirror of
->>> the counter registers which can be mapped into user memory. This will
->>> be used by the VDSO time function implementations, so provide a
->>> function to map it in.
-> <SNIP>
->   
->> This looks much better than the previous version (though I cannot find
->> the two other patches on LKML just yet).
-> Yes, it looks better. But I really have to ask the question why we are
-> trying to pack the world and somemore into an irq chip driver. We
-> already have the completely misplaced gic_read_count() there.
+MIPS32 o32 ABI sigaction() processing on MIPS64 n64 kernel was incorrectly
+set to processing aka rt_sigaction() variant only.
 
-This code has a bad history. It was scattered all over the place in arch 
-code. Andrew Bresticker did a good job cleaning it up and moved it to 
-this irqchip driver.
+Fixed.
 
-     https://lkml.org/lkml/2014/9/18/487
-     https://lkml.org/lkml/2014/10/20/481
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+---
+ arch/mips/include/asm/signal.h |   15 ++++++++++++---
+ arch/mips/kernel/signal.c      |    2 +-
+ 2 files changed, 13 insertions(+), 4 deletions(-)
 
->
-> While I understand that all of this is in the GIC block at least
-> according to the documentation, technically it's different hardware
-> blocks. And logically its different as well.
-
-Yes but they're exposed through the same register interface.
-
->
-> So why not describe the various blocks (interrupt controller, timer,
-> shadow timer) as separate entities in the device tree and let each
-> subsystem look them up on their own. This cross subsystem hackery is
-> just horrible and does not buy anything except merge dependencies and
-> other avoidable hassle.
-
-There's a mips-gic-timer driver in drivers/clocksource. But in device 
-tree it's a subnode of the irqchip driver.
-
-http://lxr.free-electrons.com/source/drivers/clocksource/mips-gic-timer.c
-http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
-
->
-> Thoughts?
->
-
-It could be refactored but the DT binding already specifies the GIC 
-timer as a subnode of GIC. Exposing this usermode register is the only 
-thing left in the register set that GIC driver wasn't dealing with.
-
-Little gain in changing all of this now I think?
-
-Thanks,
-Qais
+diff --git a/arch/mips/include/asm/signal.h b/arch/mips/include/asm/signal.h
+index 003e273eff4c..06fe599782df 100644
+--- a/arch/mips/include/asm/signal.h
++++ b/arch/mips/include/asm/signal.h
+@@ -11,11 +11,20 @@
+ 
+ #include <uapi/asm/signal.h>
+ 
++#ifdef CONFIG_MIPS32_COMPAT
++extern struct mips_abi mips_abi_32;
+ 
+-#ifdef CONFIG_TRAD_SIGNALS
+-#define sig_uses_siginfo(ka)	((ka)->sa.sa_flags & SA_SIGINFO)
++#define sig_uses_siginfo(ka, abi)                               \
++	(config_enabled(CONFIG_64BIT) ?                         \
++		(config_enabled(CONFIG_MIPS32_COMPAT) ?         \
++			(abi != &mips_abi_32) : 1) :            \
++		(config_enabled(CONFIG_TRAD_SIGNALS) ?          \
++			((ka)->sa.sa_flags & SA_SIGINFO) : 1) )
+ #else
+-#define sig_uses_siginfo(ka)	(1)
++#define sig_uses_siginfo(ka, abi)                               \
++	(config_enabled(CONFIG_64BIT) ? 1 :                     \
++		(config_enabled(CONFIG_TRAD_SIGNALS) ?          \
++			((ka)->sa.sa_flags & SA_SIGINFO) : 1) )
+ #endif
+ 
+ #include <asm/sigcontext.h>
+diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+index bf792e2839a6..5f18d0b879e0 100644
+--- a/arch/mips/kernel/signal.c
++++ b/arch/mips/kernel/signal.c
+@@ -798,7 +798,7 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+ 		regs->regs[0] = 0;		/* Don't deal with this again.	*/
+ 	}
+ 
+-	if (sig_uses_siginfo(&ksig->ka))
++	if (sig_uses_siginfo(&ksig->ka, abi))
+ 		ret = abi->setup_rt_frame(vdso + abi->vdso->off_rt_sigreturn,
+ 					  ksig, regs, oldset);
+ 	else

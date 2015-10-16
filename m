@@ -1,18 +1,22 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:28676 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008898AbbJPIL2zKpgw (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Oct 2015 10:11:28 +0200
-Subject: Re: [PATCH] MIPS64: signal: n64 kernel bugfix of MIPS32 o32 ABI
- sigaction syscall
-References: <20151015185020.37483.82586.stgit@ubuntu-yegoshin>
-From: Markos Chandras <Markos.Chandras@imgtec.com>
-Message-ID: <5620B129.4020008@imgtec.com>
-Date: Fri, 16 Oct 2015 09:11:21 +0100
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38126 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27009913AbbJPKbTuh0mM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Oct 2015 12:31:19 +0200
+Date: Fri, 16 Oct 2015 11:31:12 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH v7,3/3] MIPS: dts: jz4780/ci20: Add NEMC, BCH and NAND
+ device tree nodes
+Message-ID: <20151016103112.GB29285@jhogan-linux.le.imgtec.org>
+References: <1444148837-10770-1-git-send-email-harvey.hunt@imgtec.com>
+ <1444148837-10770-4-git-send-email-harvey.hunt@imgtec.com>
+ <20151015084727.GG14475@jhogan-linux.le.imgtec.org>
+ <CAOFt0_D5mO-7_cnpvm_MwvsZNv1yCFynbeA3dSw=H5hVyQbgTA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20151015185020.37483.82586.stgit@ubuntu-yegoshin>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Markos.Chandras@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
+Content-Disposition: inline
+In-Reply-To: <CAOFt0_D5mO-7_cnpvm_MwvsZNv1yCFynbeA3dSw=H5hVyQbgTA@mail.gmail.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,67 +26,75 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linux-mips@linux-mips.org, paul.burton@imgtec.com, richard@nod.at, linux-kernel@vger.kernel.org, ralf@linux-mips.org, luto@amacapital.net, alex.smith@imgtec.com
-Message-ID: <20151016081121.FOsTAEDFF5wlDuIJkaPQqfzFC-Pg0JfAFVha8Fuk4ko@z>
+To: Alex Smith <alex@alex-smith.me.uk>
+Cc: Harvey Hunt <harvey.hunt@imgtec.com>, linux-mtd@lists.infradead.org, Alex Smith <alex.smith@imgtec.com>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Paul Burton <paul.burton@imgtec.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips <linux-mips@linux-mips.org>
+Message-ID: <20151016103112.NgOZ-vAT4rvfEn-IJldKoHgbqY7Ac30JHD2e_okJoW8@z>
 
-On 10/15/2015 07:50 PM, Leonid Yegoshin wrote:
-> MIPS32 o32 ABI sigaction() processing on MIPS64 n64 kernel was incorrectly
-> set to processing aka rt_sigaction() variant only.
-> 
-> Fixed.
-> 
-> Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-> ---
->  arch/mips/include/asm/signal.h |   15 ++++++++++++---
->  arch/mips/kernel/signal.c      |    2 +-
->  2 files changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/signal.h b/arch/mips/include/asm/signal.h
-> index 003e273eff4c..06fe599782df 100644
-> --- a/arch/mips/include/asm/signal.h
-> +++ b/arch/mips/include/asm/signal.h
-> @@ -11,11 +11,20 @@
->  
->  #include <uapi/asm/signal.h>
->  
-> +#ifdef CONFIG_MIPS32_COMPAT
-> +extern struct mips_abi mips_abi_32;
->  
-> -#ifdef CONFIG_TRAD_SIGNALS
-> -#define sig_uses_siginfo(ka)	((ka)->sa.sa_flags & SA_SIGINFO)
-> +#define sig_uses_siginfo(ka, abi)                               \
-> +	(config_enabled(CONFIG_64BIT) ?                         \
-> +		(config_enabled(CONFIG_MIPS32_COMPAT) ?         \
-> +			(abi != &mips_abi_32) : 1) :            \
-> +		(config_enabled(CONFIG_TRAD_SIGNALS) ?          \
-> +			((ka)->sa.sa_flags & SA_SIGINFO) : 1) )
->  #else
-> -#define sig_uses_siginfo(ka)	(1)
-> +#define sig_uses_siginfo(ka, abi)                               \
-> +	(config_enabled(CONFIG_64BIT) ? 1 :                     \
-> +		(config_enabled(CONFIG_TRAD_SIGNALS) ?          \
-> +			((ka)->sa.sa_flags & SA_SIGINFO) : 1) )
->  #endif
->  
->  #include <asm/sigcontext.h>
-> diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
-> index bf792e2839a6..5f18d0b879e0 100644
-> --- a/arch/mips/kernel/signal.c
-> +++ b/arch/mips/kernel/signal.c
-> @@ -798,7 +798,7 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
->  		regs->regs[0] = 0;		/* Don't deal with this again.	*/
->  	}
->  
-> -	if (sig_uses_siginfo(&ksig->ka))
-> +	if (sig_uses_siginfo(&ksig->ka, abi))
->  		ret = abi->setup_rt_frame(vdso + abi->vdso->off_rt_sigreturn,
->  					  ksig, regs, oldset);
->  	else
-> 
+--98e8jtXdkpgskNou
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Is this similar to
+Hi Alex,
 
-https://www.linux-mips.org/archives/linux-mips/2015-08/msg00449.html ?
+On Fri, Oct 16, 2015 at 11:11:29AM +0100, Alex Smith wrote:
+> Hi James,
+>=20
+> On 15 October 2015 at 09:47, James Hogan <james.hogan@imgtec.com> wrote:
+> >> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/=
+ingenic/ci20.dts
+> >> index 9fcb9e7..453f1d3 100644
+> >> --- a/arch/mips/boot/dts/ingenic/ci20.dts
+> >> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+> >> @@ -42,3 +42,57 @@
+> >>  &uart4 {
+> >>       status =3D "okay";
+> >>  };
+> >> +
+> >> +&nemc {
+> >> +     status =3D "okay";
+> >> +
+> >> +     nand: nand@1 {
+> >> +             compatible =3D "ingenic,jz4780-nand";
+> >
+> > Isn't the NAND a micron part? This doesn't seem right. Is the device
+> > driver and binding already accepted upstream with that compatible
+> > string?
+>=20
+> This is the compatible string for the JZ4780 NAND driver, this patch
+> is part of the series adding that. Detection of the NAND part is
+> handled by the MTD subsystem.
 
--- 
-markos
+Right (didn't spot that it was part of a series).
+
+The node appears to describe the NAND interface itself, i.e. a part of
+the SoC, so should be in the SoC dtsi file, with overrides in the board
+file if necessary for it to work with a particular NAND part
+(potentially utilising status=3D"disabled"). Would you agree?
+
+Cheers
+James
+
+--98e8jtXdkpgskNou
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJWINHwAAoJEGwLaZPeOHZ6sx4QAIaMMqM4IJbFIcTiKRT8vdMr
+r89sxi5SsS6VdUDZI2IlAnQYnB6rrDjZ53Wag3PbA3G9PZFA16wOQDSVCyLiyPHL
+ss/4bl2D3cIabC9I9f5vjMQcSl0/AVD/VPDXSG3yP7XNv8Jh1cMkvIXIyI7mguIc
+kaJs0mlSTStWIOGuRf98vxqv1sVuxM7vnEu59SOfM90xYYsHSoAiKuAjUpVBZHcj
+0zWifGpbwBmUIjeA2znbbJifvrKUzybxywQaRlKmYC4cpxIEsrQWVj01OLB2nZv9
+wbXBQq3xzl79LHex/180IBzqzrpVZmt5ewHZLNv1zFH82WPMFJCON6JwgI7qL5g2
+6EnXX93WVC+kLfBv8gKFqumNnZgtQCjGgM5wMzmsofhFOOdk3ymusaubVFLd0KdR
+vcgsdiq59zthDTLEZjYHQa0zE1CANNvmz89WeMUjI/58qPbE0RwXoh7VJgaZlouP
+KICMH0MKTSvaSiuKobaS/ngz5W21z5LgLmDfna73Ia+wMgFcxd0svTfhv6fA+WWg
+bobnxtujCkFXTrlQHBiRnLLNrRx1hSjuH2azLlyW9MAHRLbbfZ+x6nTUOPghZtbR
+KTOOjHKvT0yD036ZQomRS98ubfAZWbj4YoQ/tYCuBik+nvZeAh92BRA/Oa75A7bu
+eEmfb7HtPycmATK4/6Ip
+=6LZP
+-----END PGP SIGNATURE-----
+
+--98e8jtXdkpgskNou--

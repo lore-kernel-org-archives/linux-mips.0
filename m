@@ -1,19 +1,16 @@
-Received: from mail-oi0-f65.google.com ([209.85.218.65]:36296 "EHLO
-        mail-oi0-f65.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27010244AbbJSKjPzPn89 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Oct 2015 12:39:15 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8940 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010574AbbJSSkECzXlu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Oct 2015 20:40:04 +0200
+Subject: [PATCH v3] MIPS64: signal: n64 kernel bugfix of MIPS32 o32 ABI
+ sigaction syscall
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Mon, 19 Oct 2015 11:39:55 -0700
+Message-ID: <20151019183955.6212.78229.stgit@ubuntu-yegoshin>
 MIME-Version: 1.0
-In-Reply-To: <4345582.jiHe94XBb3@wuerfel>
-References: <5082760.FgB9zHNfte@wuerfel>
-        <5152101.mD2bWzUJ2V@wuerfel>
-        <CAMuHMdWbzEFqVctMXTWtdBn2B+guFdphQX5nXUnHPo1szQbtPg@mail.gmail.com>
-        <4345582.jiHe94XBb3@wuerfel>
-Date: Mon, 19 Oct 2015 12:39:09 +0200
-Message-ID: <CAMuHMdUcAhocNosTB+YnQ0LiPui58ph13mrDYcE15vDjRAmscQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/virtio: use %llu format string form atomic64_t
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <geert.uytterhoeven@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,55 +20,61 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Ralf Baechle <ralf@linux-mips.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, DRI Development <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, Gerd Hoffmann <kraxel@redhat.com>, Dave Airlie <airlied@redhat.com>
-Message-ID: <20151019103909.Jk55ANa17Yq-42L7WLJSrduv3q9iHd26JSDZ4Ar140Q@z>
+To: linux-mips@linux-mips.org, paul.burton@imgtec.com, richard@nod.at, linux-kernel@vger.kernel.org, ralf@linux-mips.org, luto@amacapital.net, alex.smith@imgtec.com, macro@codesourcery.com, mpe@ellerman.id.au
+Message-ID: <20151019183955.9iku4lmOySVbs2wqu1uo5IuMndOplfDD4Veb1zXpF1E@z>
 
-On Mon, Oct 19, 2015 at 12:11 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Monday 19 October 2015 09:34:15 Geert Uytterhoeven wrote:
->> On Wed, Oct 7, 2015 at 1:23 PM, Arnd Bergmann <arnd@arndb.de> wrote:
->> > static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
->> >
->> > which truncates the result to 32 bit.
->>
->> Woops.
->>
->> See also my unanswered question in "atomic64 on 32-bit vs 64-bit (was:
->> Re: Add virtio gpu driver.)", which is still valid:
->> https://lkml.org/lkml/2015/6/28/18
->>
->
-> Regarding your question of
->
->> Instead of sprinkling casts, is there any good reason why atomic64_read()
->> and atomic64_t aren't "long long" everywhere, cfr. u64?
->
->
-> I assume the answer is that some (all?) 64-bit architectures intentionally
-> return 'long' here, in order for atomic_long_read() to return 'long' on
-> all architectures, given the definitions from
-> include/asm-generic/atomic-long.h
->
-> We would have to either change those, or we have to pick between
-> atomic_long_* or atomic64_* to have a consistent return type.
+MIPS32 o32 ABI sigaction() processing on MIPS64 n64 kernel was incorrectly
+set to processing aka rt_sigaction() variant only.
 
-I guess the main reason is this comment in include/asm-generic/atomic-long.h,
-which I hadn't noticed before:
-
- * Casts for parameters are avoided for existing atomic functions in order to
- * avoid issues with cast-as-lval under gcc 4.x and other limitations that the
- * macros of a platform may have.
-
-Still, it's a pity, as printing atomic_64 is one more place where casts are
-needed in callers.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+Fixed.
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+V3: Signature added.
+v2: Taken in account CONFIG vars interdependencies and conditional expression
+    simplified. As a result, the reverse problem fixed (introduced by v1).
+    Tested on all 3 ABIs.
+--
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+---
+ arch/mips/include/asm/signal.h |   12 +++++++++---
+ arch/mips/kernel/signal.c      |    2 +-
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/arch/mips/include/asm/signal.h b/arch/mips/include/asm/signal.h
+index 003e273eff4c..2292373ff11a 100644
+--- a/arch/mips/include/asm/signal.h
++++ b/arch/mips/include/asm/signal.h
+@@ -11,11 +11,17 @@
+ 
+ #include <uapi/asm/signal.h>
+ 
++#ifdef CONFIG_MIPS32_COMPAT
++extern struct mips_abi mips_abi_32;
+ 
+-#ifdef CONFIG_TRAD_SIGNALS
+-#define sig_uses_siginfo(ka)	((ka)->sa.sa_flags & SA_SIGINFO)
++#define sig_uses_siginfo(ka, abi)                               \
++	((abi != &mips_abi_32) ? 1 :                            \
++		((ka)->sa.sa_flags & SA_SIGINFO))
+ #else
+-#define sig_uses_siginfo(ka)	(1)
++#define sig_uses_siginfo(ka, abi)                               \
++	(config_enabled(CONFIG_64BIT) ? 1 :                     \
++		(config_enabled(CONFIG_TRAD_SIGNALS) ?          \
++			((ka)->sa.sa_flags & SA_SIGINFO) : 1) )
+ #endif
+ 
+ #include <asm/sigcontext.h>
+diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+index bf792e2839a6..5f18d0b879e0 100644
+--- a/arch/mips/kernel/signal.c
++++ b/arch/mips/kernel/signal.c
+@@ -798,7 +798,7 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+ 		regs->regs[0] = 0;		/* Don't deal with this again.	*/
+ 	}
+ 
+-	if (sig_uses_siginfo(&ksig->ka))
++	if (sig_uses_siginfo(&ksig->ka, abi))
+ 		ret = abi->setup_rt_frame(vdso + abi->vdso->off_rt_sigreturn,
+ 					  ksig, regs, oldset);
+ 	else

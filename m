@@ -1,16 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:7523 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007919AbbJQA0CSX9ID (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 17 Oct 2015 02:26:02 +0200
-Subject: [PATCH v2] MIPS64: signal: n64 kernel bugfix of MIPS32 o32 ABI
- sigaction syscall
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Fri, 16 Oct 2015 17:25:53 -0700
-Message-ID: <20151017002553.7002.69013.stgit@ubuntu-yegoshin>
+Received: from mail-oi0-f45.google.com ([209.85.218.45]:34154 "EHLO
+        mail-oi0-f45.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27009147AbbJSHeVzcO0d (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Oct 2015 09:34:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+In-Reply-To: <5152101.mD2bWzUJ2V@wuerfel>
+References: <5082760.FgB9zHNfte@wuerfel>
+        <20151007104502.GH21513@n2100.arm.linux.org.uk>
+        <6260324.3MlUEc3veg@wuerfel>
+        <5152101.mD2bWzUJ2V@wuerfel>
+Date: Mon, 19 Oct 2015 09:34:15 +0200
+Message-ID: <CAMuHMdWbzEFqVctMXTWtdBn2B+guFdphQX5nXUnHPo1szQbtPg@mail.gmail.com>
+Subject: Re: [PATCH] drm/virtio: use %llu format string form atomic64_t
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,58 +23,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, paul.burton@imgtec.com, richard@nod.at, linux-kernel@vger.kernel.org, ralf@linux-mips.org, luto@amacapital.net, alex.smith@imgtec.com, markos.chandras@imgtec.com
-Message-ID: <20151017002553.I_t3SwqMwtpnJaQit-gKfHgd91LaLpaz_ifP5hcR6X8@z>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, DRI Development <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, Gerd Hoffmann <kraxel@redhat.com>, Dave Airlie <airlied@redhat.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20151019073415.03BKiKmPv-Y88UluQUyiI_wftTlk9T3HFQ7QQJXfoWE@z>
 
-MIPS32 o32 ABI sigaction() processing on MIPS64 n64 kernel was incorrectly
-set to processing aka rt_sigaction() variant only.
+On Wed, Oct 7, 2015 at 1:23 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Wednesday 07 October 2015 13:04:06 Arnd Bergmann wrote:
+>> On Wednesday 07 October 2015 11:45:02 Russell King - ARM Linux wrote:
+>> > On Wed, Oct 07, 2015 at 12:41:21PM +0200, Arnd Bergmann wrote:
+>> > > The virtgpu driver prints the last_seq variable using the %ld or
+>> > > %lu format string, which does not work correctly on all architectures
+>> > > and causes this compiler warning on ARM:
+>> > >
+>> > > drivers/gpu/drm/virtio/virtgpu_fence.c: In function 'virtio_timeline_value_str':
+>> > > drivers/gpu/drm/virtio/virtgpu_fence.c:64:22: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'long long int' [-Wformat=]
+>> > >   snprintf(str, size, "%lu", atomic64_read(&fence->drv->last_seq));
+>> > >                       ^
+>> > > drivers/gpu/drm/virtio/virtgpu_debugfs.c: In function 'virtio_gpu_debugfs_irq_info':
+>> > > drivers/gpu/drm/virtio/virtgpu_debugfs.c:37:16: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'long long int' [-Wformat=]
+>> > >   seq_printf(m, "fence %ld %lld\n",
+>> > >                 ^
+>> > >
+>> > > In order to avoid the warnings, this changes the format strings to %llu
+>> > > and adds a cast to u64, which makes it work the same way everywhere.
+>> >
+>> > You have to wonder why atomic64_* functions do not use u64 types.
+>> > If they're not reliant on manipulating 64-bit quantities, then what's
+>> > the point of calling them atomic _64_.
+>>
+>> I haven't checked all architectures, but I assume what happens is that
+>> 64-bit ones just #define atomic64_t atomic_long_t, so they don't have
+>> to provide three sets of functions.
+>
+> scratch that, I just looked at all the architectures and found that it's
+> just completely arbitrary, even within one architecture you get a mix
+> of 'long' and 'long long', plus this gem from MIPS:
+>
+> static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
+>
+> which truncates the result to 32 bit.
 
-Fixed.
+Woops.
+
+See also my unanswered question in "atomic64 on 32-bit vs 64-bit (was:
+Re: Add virtio gpu driver.)", which is still valid:
+https://lkml.org/lkml/2015/6/28/18
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 --
-v2: Taken in account CONFIG vars interdependencies and conditional expression
-    simplified. As a result, the reverse problem fixed (introduced by v1).
-    Tested on all 3 ABIs.
---
----
- arch/mips/include/asm/signal.h |   12 +++++++++---
- arch/mips/kernel/signal.c      |    2 +-
- 2 files changed, 10 insertions(+), 4 deletions(-)
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-diff --git a/arch/mips/include/asm/signal.h b/arch/mips/include/asm/signal.h
-index 003e273eff4c..2292373ff11a 100644
---- a/arch/mips/include/asm/signal.h
-+++ b/arch/mips/include/asm/signal.h
-@@ -11,11 +11,17 @@
- 
- #include <uapi/asm/signal.h>
- 
-+#ifdef CONFIG_MIPS32_COMPAT
-+extern struct mips_abi mips_abi_32;
- 
--#ifdef CONFIG_TRAD_SIGNALS
--#define sig_uses_siginfo(ka)	((ka)->sa.sa_flags & SA_SIGINFO)
-+#define sig_uses_siginfo(ka, abi)                               \
-+	((abi != &mips_abi_32) ? 1 :                            \
-+		((ka)->sa.sa_flags & SA_SIGINFO))
- #else
--#define sig_uses_siginfo(ka)	(1)
-+#define sig_uses_siginfo(ka, abi)                               \
-+	(config_enabled(CONFIG_64BIT) ? 1 :                     \
-+		(config_enabled(CONFIG_TRAD_SIGNALS) ?          \
-+			((ka)->sa.sa_flags & SA_SIGINFO) : 1) )
- #endif
- 
- #include <asm/sigcontext.h>
-diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
-index bf792e2839a6..5f18d0b879e0 100644
---- a/arch/mips/kernel/signal.c
-+++ b/arch/mips/kernel/signal.c
-@@ -798,7 +798,7 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- 		regs->regs[0] = 0;		/* Don't deal with this again.	*/
- 	}
- 
--	if (sig_uses_siginfo(&ksig->ka))
-+	if (sig_uses_siginfo(&ksig->ka, abi))
- 		ret = abi->setup_rt_frame(vdso + abi->vdso->off_rt_sigreturn,
- 					  ksig, regs, oldset);
- 	else
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

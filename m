@@ -1,15 +1,15 @@
-Received: from mail-oi0-f45.google.com ([209.85.218.45]:34154 "EHLO
-        mail-oi0-f45.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27009147AbbJSHeVzcO0d (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Oct 2015 09:34:21 +0200
+Received: from mail-oi0-f65.google.com ([209.85.218.65]:36296 "EHLO
+        mail-oi0-f65.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27010244AbbJSKjPzPn89 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Oct 2015 12:39:15 +0200
 MIME-Version: 1.0
-In-Reply-To: <5152101.mD2bWzUJ2V@wuerfel>
+In-Reply-To: <4345582.jiHe94XBb3@wuerfel>
 References: <5082760.FgB9zHNfte@wuerfel>
-        <20151007104502.GH21513@n2100.arm.linux.org.uk>
-        <6260324.3MlUEc3veg@wuerfel>
         <5152101.mD2bWzUJ2V@wuerfel>
-Date: Mon, 19 Oct 2015 09:34:15 +0200
-Message-ID: <CAMuHMdWbzEFqVctMXTWtdBn2B+guFdphQX5nXUnHPo1szQbtPg@mail.gmail.com>
+        <CAMuHMdWbzEFqVctMXTWtdBn2B+guFdphQX5nXUnHPo1szQbtPg@mail.gmail.com>
+        <4345582.jiHe94XBb3@wuerfel>
+Date: Mon, 19 Oct 2015 12:39:09 +0200
+Message-ID: <CAMuHMdUcAhocNosTB+YnQ0LiPui58ph13mrDYcE15vDjRAmscQ@mail.gmail.com>
 Subject: Re: [PATCH] drm/virtio: use %llu format string form atomic64_t
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8
@@ -24,50 +24,46 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, DRI Development <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, Gerd Hoffmann <kraxel@redhat.com>, Dave Airlie <airlied@redhat.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20151019073415.03BKiKmPv-Y88UluQUyiI_wftTlk9T3HFQ7QQJXfoWE@z>
+Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Ralf Baechle <ralf@linux-mips.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, DRI Development <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, Gerd Hoffmann <kraxel@redhat.com>, Dave Airlie <airlied@redhat.com>
+Message-ID: <20151019103909.Jk55ANa17Yq-42L7WLJSrduv3q9iHd26JSDZ4Ar140Q@z>
 
-On Wed, Oct 7, 2015 at 1:23 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Wednesday 07 October 2015 13:04:06 Arnd Bergmann wrote:
->> On Wednesday 07 October 2015 11:45:02 Russell King - ARM Linux wrote:
->> > On Wed, Oct 07, 2015 at 12:41:21PM +0200, Arnd Bergmann wrote:
->> > > The virtgpu driver prints the last_seq variable using the %ld or
->> > > %lu format string, which does not work correctly on all architectures
->> > > and causes this compiler warning on ARM:
->> > >
->> > > drivers/gpu/drm/virtio/virtgpu_fence.c: In function 'virtio_timeline_value_str':
->> > > drivers/gpu/drm/virtio/virtgpu_fence.c:64:22: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'long long int' [-Wformat=]
->> > >   snprintf(str, size, "%lu", atomic64_read(&fence->drv->last_seq));
->> > >                       ^
->> > > drivers/gpu/drm/virtio/virtgpu_debugfs.c: In function 'virtio_gpu_debugfs_irq_info':
->> > > drivers/gpu/drm/virtio/virtgpu_debugfs.c:37:16: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'long long int' [-Wformat=]
->> > >   seq_printf(m, "fence %ld %lld\n",
->> > >                 ^
->> > >
->> > > In order to avoid the warnings, this changes the format strings to %llu
->> > > and adds a cast to u64, which makes it work the same way everywhere.
+On Mon, Oct 19, 2015 at 12:11 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Monday 19 October 2015 09:34:15 Geert Uytterhoeven wrote:
+>> On Wed, Oct 7, 2015 at 1:23 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+>> > static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 >> >
->> > You have to wonder why atomic64_* functions do not use u64 types.
->> > If they're not reliant on manipulating 64-bit quantities, then what's
->> > the point of calling them atomic _64_.
+>> > which truncates the result to 32 bit.
 >>
->> I haven't checked all architectures, but I assume what happens is that
->> 64-bit ones just #define atomic64_t atomic_long_t, so they don't have
->> to provide three sets of functions.
+>> Woops.
+>>
+>> See also my unanswered question in "atomic64 on 32-bit vs 64-bit (was:
+>> Re: Add virtio gpu driver.)", which is still valid:
+>> https://lkml.org/lkml/2015/6/28/18
+>>
 >
-> scratch that, I just looked at all the architectures and found that it's
-> just completely arbitrary, even within one architecture you get a mix
-> of 'long' and 'long long', plus this gem from MIPS:
+> Regarding your question of
 >
-> static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
+>> Instead of sprinkling casts, is there any good reason why atomic64_read()
+>> and atomic64_t aren't "long long" everywhere, cfr. u64?
 >
-> which truncates the result to 32 bit.
+>
+> I assume the answer is that some (all?) 64-bit architectures intentionally
+> return 'long' here, in order for atomic_long_read() to return 'long' on
+> all architectures, given the definitions from
+> include/asm-generic/atomic-long.h
+>
+> We would have to either change those, or we have to pick between
+> atomic_long_* or atomic64_* to have a consistent return type.
 
-Woops.
+I guess the main reason is this comment in include/asm-generic/atomic-long.h,
+which I hadn't noticed before:
 
-See also my unanswered question in "atomic64 on 32-bit vs 64-bit (was:
-Re: Add virtio gpu driver.)", which is still valid:
-https://lkml.org/lkml/2015/6/28/18
+ * Casts for parameters are avoided for existing atomic functions in order to
+ * avoid issues with cast-as-lval under gcc 4.x and other limitations that the
+ * macros of a platform may have.
+
+Still, it's a pity, as printing atomic_64 is one more place where casts are
+needed in callers.
 
 Gr{oetje,eeting}s,
 

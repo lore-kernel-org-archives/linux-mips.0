@@ -1,18 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53082 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010703AbbJWBljVoUiB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 23 Oct 2015 03:41:39 +0200
-Message-ID: <5629904A.2070400@imgtec.com>
-Date: Thu, 22 Oct 2015 18:41:30 -0700
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Received: from comal.ext.ti.com ([198.47.26.152]:33745 "EHLO comal.ext.ti.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27011206AbbJWOrRc3XfZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 23 Oct 2015 16:47:17 +0200
+Subject: Re: [PATCH 04/10] phy: phy_brcmstb_sata: make the driver buildable on
+ BMIPS_GENERIC
+References: <1445564663-66824-1-git-send-email-jaedon.shin@gmail.com>
+ <1445564663-66824-5-git-send-email-jaedon.shin@gmail.com>
+From: Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <562A486B.5020500@ti.com>
+Date: Fri, 23 Oct 2015 20:17:07 +0530
 MIME-Version: 1.0
-Subject: Re: [v3, 3/3] MIPS: VDSO: Add implementations of gettimeofday() and
- clock_gettime()
-References: <1445417864-31453-1-git-send-email-markos.chandras@imgtec.com>
-In-Reply-To: <1445417864-31453-1-git-send-email-markos.chandras@imgtec.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <1445564663-66824-5-git-send-email-jaedon.shin@gmail.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Return-Path: <kishon@ti.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,28 +23,45 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Markos Chandras <markos.chandras@imgtec.com>, linux-mips@linux-mips.org
-Cc: Alex Smith <alex.smith@imgtec.com>, linux-kernel@vger.kernel.org
-Message-ID: <20151023014130.HRjgYi7x2GJbf6FbCi36tcMrlULcdDcfnOEndUGR8Jg@z>
+To: Jaedon Shin <jaedon.shin@gmail.com>, Tejun Heo <tj@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh+dt@kernel.org>
+Cc: linux-ide@vger.kernel.org, linux-mips@linux-mips.org, devicetree@vger.kernel.org
+Message-ID: <20151023144707.LlQcH-ujx861JiCLZJe97rYNhldL5M3a2UtwHjOH8oM@z>
 
-You can not use R4K CP0_count in SMP (multicore) without core-specific 
-adjustment.
-After first power-saving with core clock off or core down the values in 
-CP0_count
-in different cores are absolutely different.
++Brian Norris
 
-Until you include in system a patch like 
-http://patchwork.linux-mips.org/patch/10871/
+Hi,
 
-     "MIPS: Setup an instruction emulation in VDSO protected page 
-instead of user stack"
+On Friday 23 October 2015 07:14 AM, Jaedon Shin wrote:
+> The BCM7xxx ARM and MIPS platforms share a similar hardware block for AHCI
+> SATA3 PHY.
+> 
+> Signed-off-by: Jaedon Shin <jaedon.shin@gmail.com>
+> ---
+>  drivers/phy/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
+> index 47da573d0bab..c83e48661fd7 100644
+> --- a/drivers/phy/Kconfig
+> +++ b/drivers/phy/Kconfig
+> @@ -364,11 +364,11 @@ config PHY_TUSB1210
+>  
+>  config PHY_BRCMSTB_SATA
+>  	tristate "Broadcom STB SATA PHY driver"
+> -	depends on ARCH_BRCMSTB
+> +	depends on ARCH_BRCMSTB || BMIPS_GENERIC
 
-which creates a per-thread memory and put into that memory an adjustment 
-value
-(which can be changed during re-schedule to another core), the use of 
-R4K counter is incorrect
-in SMP environment.
+Nice to see the same driver is been used across multiple platforms.
+Cc'ed Brian who is the author of brcmstb-sata.c
 
-Note: It is also possible to setup and maintain a per-core page with 
-that value too as
-an alternative variant for adjustment.
+Thanks
+Kishon
+>  	depends on OF
+>  	select GENERIC_PHY
+>  	help
+> -	  Enable this to support the SATA3 PHY on 28nm Broadcom STB SoCs.
+> +	  Enable this to support the SATA3 PHY on 28nm or 40nm Broadcom STB SoCs.
+>  	  Likely useful only with CONFIG_SATA_BRCMSTB enabled.
+>  
+>  endmenu
+> 

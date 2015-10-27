@@ -1,15 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:25075 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2395 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011425AbbJ0VPdQjApJ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 27 Oct 2015 22:15:33 +0100
-Message-ID: <562FE96C.3070002@imgtec.com>
-Date: Tue, 27 Oct 2015 14:15:24 -0700
+        with ESMTP id S27011412AbbJ0VtXF6cEW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 27 Oct 2015 22:49:23 +0100
+Message-ID: <562FF15A.1050507@imgtec.com>
+Date: Tue, 27 Oct 2015 14:49:14 -0700
 From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
 Subject: Re: [v3, 3/3] MIPS: VDSO: Add implementations of gettimeofday() and
  clock_gettime()
-References: <1445417864-31453-1-git-send-email-markos.chandras@imgtec.com> <5629904A.2070400@imgtec.com> <20151027144748.GA23785@linux-mips.org> <562FE29C.8040106@imgtec.com> <562FE678.2030307@gmail.com>
-In-Reply-To: <562FE678.2030307@gmail.com>
+References: <1445417864-31453-1-git-send-email-markos.chandras@imgtec.com> <5629904A.2070400@imgtec.com> <20151027144748.GA23785@linux-mips.org> <562FE29C.8040106@imgtec.com> <562FE678.2030307@gmail.com> <562FE96C.3070002@imgtec.com> <562FF05A.508@gmail.com>
+In-Reply-To: <562FF05A.508@gmail.com>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Leonid.Yegoshin@imgtec.com>
@@ -24,35 +24,19 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: David Daney <ddaney.cavm@gmail.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>, Markos Chandras <markos.chandras@imgtec.com>, linux-mips@linux-mips.org, Alex Smith <alex.smith@imgtec.com>, linux-kernel@vger.kernel.org
-Message-ID: <20151027211524.00dfJSQl3axa5XWOU4wdYPIYP3DrUoK_FNpgkhTSUeY@z>
+Message-ID: <20151027214914.-i23YyngAj8zr2Lt2L95-2xX1jqcd--_dGoYLWkmAoY@z>
 
-On 10/27/2015 02:02 PM, David Daney wrote:
-> On 10/27/2015 01:46 PM, Leonid Yegoshin wrote:
-> [...]
->>
->> And finally. clock scaling - what we would do if there are two CPUs with
->> different clock ratios in system? It seems like common kernel timing
->> subsystem can handle that.
->>
+
+> For example, On OCTEON single-chip systems we synchronize the the 
+> counters and they don't drift.  So, we can use CPO.Count. However, on 
+> two-chip NUMA configurations there may be clock drift between the two 
+> chips, so CPO.Count cannot be used as a clocksource.  We have a single 
+> kernel image that runs on both types of systems, so we have to be able 
+> to enable/disable the gettimeofday() acceleration.
 >
-> The code that executes in userspace must have access to a consistent 
-> clock source.  If you are running on a SMP system that doesn't have 
-> synchronized CP0.Count registers, then your gettimeofday() cannot use 
-> CP0.Count (RDHWR $2).
+Much more interesting the situation then there are a different clock 
+frequency in different CPUs.
 
-Right, I agree.
-
->
-> As far as I know, CP0.Count is the only available counter visible to 
-> userspace, so you would have to disable the accelerated versions of 
-> gettimeofday() where you cannot assert that the counters are always 
-> synchronized.
-
-Any system with GIC may have access to the same GIC global counter in a 
-special separate page available for mapping by user in RO mode and it 
-seems Alex did that.
-
-Besides that this GIC global counter is used as a major system 
-clocksource in systems with GIC.
+It seems for me that per-thread memory idea may be required soon.
 
 - Leonid

@@ -1,20 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:49513 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:44100 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007284AbbJ2WPMjomrn convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Oct 2015 23:15:12 +0100
-From: Matthew Fortune <Matthew.Fortune@imgtec.com>
-Subject: RE: old OCTEON bootloaders and .MIPS.abiflags
-Date: Thu, 29 Oct 2015 22:15:01 +0000
-Message-ID: <6D39441BF12EF246A7ABCE6654B0235361C6CD52@LEMAIL01.le.imgtec.org>
-References: <20151028195436.GB1838@blackmetal.musicnaut.iki.fi>
- <6D39441BF12EF246A7ABCE6654B0235361C6AA6F@LEMAIL01.le.imgtec.org>
- <20151029213544.GL26009@linux-mips.org>
-In-Reply-To: <20151029213544.GL26009@linux-mips.org>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        with ESMTP id S27011280AbbKCLNcAJVB1 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 3 Nov 2015 12:13:32 +0100
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: [PATCH 00/14] Implement generic IPI support mechanism
+Date: Tue, 3 Nov 2015 11:12:47 +0000
+Message-ID: <1446549181-31788-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
-Return-Path: <Matthew.Fortune@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,40 +18,70 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, David Daney <ddaney.cavm@gmail.com>
-Message-ID: <20151029221501.rjKb6uHVnYTKdW7_hMADfs45YbxD4PThuViNGp4O7KA@z>
+To: linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org, Qais Yousef <qais.yousef@imgtec.com>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Message-ID: <20151103111247.AATewL9h4ufmIZXa9K9gn1hfGccXOt5kGFVkSvHqyb4@z>
 
-Ralf Baechle <ralf@linux-mips.org> writes:
-> On Wed, Oct 28, 2015 at 09:02:43PM +0000, Matthew Fortune wrote:
-> 
-> > Aaro Koskinen <aaro.koskinen@iki.fi> writes:
-> > > Current binutils adds .MIPS.abiflags section to the kernel vmlinux.
-> > >
-> > > This seems break the boot on some old (buggy) OCTEON bootloaders:
-> > >
-> > > 	ELF file is 64 bit
-> > > 	Attempting to allocate memory for ELF segment: addr: 0xffffffff816e67f0 (adjusted to:
-> > > 0x00000000016e67f0), size 0x18
-> > > 	Allocated memory for ELF segment: addr: 0xffffffff816e67f0, size 0x18
-> > > 	Attempting to allocate memory for ELF segment: addr: 0xffffffff81100000 (adjusted to:
-> > > 0x0000000001100000), size 0x1b86360
-> > > 	Error allocating memory for elf image!
-> > > 	## ERROR loading File!
-> > >
-> > > The workaround is to remove the .MIPS.abiflags with "strip" - I guess that
-> > > is safe for the kernel... Not sure if there is nothing much else to be
-> > > done, and already a similar hack needs to be done for the .notes section.
-> > >
-> > > I just wanted to post this in case some else faces the same issue.
-> >
-> > It seems reasonably sensible to /DISCARD/ the .MIPS.abiflags section in the kernel link
-> > scripts as I don't think the kernel needs that information for any purpose. I assume
-> > .reginfo is discarded as well at some point.
-> 
-> Historically discarding .reginfo didn't work because it is generated
-> by ld after it has generated all the output sections according to the
-> linker script.  So no matter what, one always ended up with a .reginfo.
-> This has been fixed at some point but I'm concerned the same behaviour
-> might have existed for .MIPS.abiflags as well and versions that do the
-> same thing with .MIPS.abiflags might still be around.
+This series adds support for a generic IPI mechanism that can be used by both
+arch and drivers to send IPIs to other CPUs.
+
+The first 9 patches add the new functionality in the generic code.
+
+Patches 10-13 make MIPS GIC irqchip driver support the new API and move MIPS
+arch code to use the new generic IPI mechanism if the irqchip driver supports it.
+
+Patch 14 adds IRQ-ipi.txt to Documentation explaining the new API and how to
+make use of it.
+
+This series is built on last RFC discussion[1]. I should have taken all
+comments into account and hopefully haven't missed any.
+
+This series is based on 4.3 irq/core.
+
+Thanks,
+Qais
+
+[1] https://lkml.org/lkml/2015/10/13/227
+
+Qais Yousef (14):
+  genirq: Add new IRQ_DOMAIN_FLAGS_IPI
+  genirq: Add DOMAIN_BUS_IPI
+  genirq: Add GENERIC_IRQ_IPI Kconfig symbol
+  genirq: Add new struct ipi_mask and helper functions
+  genirq: Add struct ipi_mask to irq_data
+  genirq: Add struct ipi_mapping and its helper functions
+  genirq: Add a new generic IPI reservation code to irq core
+  genirq: Add a new irq_send_ipi() to irq_chip
+  genirq: Implement irq_send_ipi() to be used by drivers
+  irqchip/mips-gic: Add a IPI hierarchy domain
+  MIPS: Add generic SMP IPI support
+  MIPS: Make smp CMP, CPS and MT use the new generic IPI functions
+  MIPS: Delete smp-gic.c
+  Docs: IRQ: Add new IRQ-ipi.txt
+
+ Documentation/IRQ-ipi.txt        |  81 +++++++++++++
+ arch/mips/Kconfig                |   6 -
+ arch/mips/include/asm/smp-ops.h  |   5 +-
+ arch/mips/kernel/Makefile        |   1 -
+ arch/mips/kernel/smp-cmp.c       |   4 +-
+ arch/mips/kernel/smp-cps.c       |   4 +-
+ arch/mips/kernel/smp-gic.c       |  64 ----------
+ arch/mips/kernel/smp-mt.c        |   2 +-
+ arch/mips/kernel/smp.c           | 136 ++++++++++++++++++++++
+ drivers/irqchip/Kconfig          |   2 +
+ drivers/irqchip/irq-mips-gic.c   | 244 +++++++++++++++++++++++++--------------
+ include/linux/irq.h              | 101 ++++++++++++++++
+ include/linux/irqchip/mips-gic.h |   3 -
+ include/linux/irqdomain.h        |  20 ++++
+ kernel/irq/Kconfig               |   4 +
+ kernel/irq/irqdomain.c           |  98 ++++++++++++++++
+ kernel/irq/manage.c              | 151 ++++++++++++++++++++++++
+ 17 files changed, 757 insertions(+), 169 deletions(-)
+ create mode 100644 Documentation/IRQ-ipi.txt
+ delete mode 100644 arch/mips/kernel/smp-gic.c
+
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+
+-- 
+2.1.0

@@ -1,17 +1,14 @@
-Received: from mx1.redhat.com ([209.132.183.28]:32854 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27013108AbbKIOQBPQVbo (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 9 Nov 2015 15:16:01 +0100
-Date: Mon, 9 Nov 2015 16:12:04 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v2 00/20] Fix handling of compat_siginfo_t
-Message-ID: <20151109151204.GA10760@redhat.com>
-References: <1446684640-4112-1-git-send-email-amanieu@gmail.com> <CALCETrWKK_REdX7TJO8X7jC=8k=YdgJH_txXpC4Pdzn-tukg5A@mail.gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:29425 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012613AbbKJRGvrYJX1 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 10 Nov 2015 18:06:51 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] MIPS: KVM: Fix CP0_EBASE redefined build warning
+Date: Tue, 10 Nov 2015 17:06:37 +0000
+Message-ID: <1447175197-6478-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrWKK_REdX7TJO8X7jC=8k=YdgJH_txXpC4Pdzn-tukg5A@mail.gmail.com>
-Return-Path: <oleg@redhat.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,48 +18,85 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Amanieu d'Antras <amanieu@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, sparclinux@vger.kernel.org, Linux FS Devel <linux-fsdevel@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, Kenton Varda <kenton@sandstorm.io>
-Message-ID: <20151109151204.l2C0NxnTlLVoNso5cXOgQObv8CRTDAm1MDoIlTvtmDU@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, Gleb Natapov <gleb@kernel.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org
+Message-ID: <20151110170637.JJwM-9MDV52jKE-uQItW2ug0Pg6iDVbdU4biebVSyaU@z>
 
-On 11/07, Andy Lutomirski wrote:
->
-> On Wed, Nov 4, 2015 at 4:50 PM, Amanieu d'Antras <amanieu@gmail.com> wrote:
-> > One issue that isn't resolved in this series is sending signals between a 32-bit
-> > process and 64-bit process. Sending a si_int will work correctly, but a si_ptr
-> > value will likely get corrupted due to the different layouts of the 32-bit and
-> > 64-bit siginfo_t structures.
->
-> This is so screwed up it's not even funny.
+The patch "MIPS: CPS: Early debug using an ns16550-compatible UART" in
+linux-next causes a build warning in locore.S by adding an identical
+definition of CP0_EBASE in asm/mipsregs.h.
 
-Agreed,
+arch/mips/kvm/locore.S:41:0: warning: "CP0_EBASE" redefined
+ #define CP0_EBASE           $15,1
+ ^
+In file included from ./arch/mips/include/asm/msa.h:13:0,
+                 from ./arch/mips/include/asm/asmmacro.h:13,
+                 from arch/mips/kvm/locore.S:13:
+./arch/mips/include/asm/mipsregs.h:62:0: note: this is the location of the previous definition
+ #define CP0_EBASE $15, 1
+ ^
 
-> A 64-bit big-endian compat calls rt_sigqueueinfo.  It passes in (among
-> other things) a sigval_t.  The kernel can choose to interpret it
+Remove the definition in locore.S and move a few of the other similar
+definitions in asm/mipsregs.h too. CP0_INTCTL, CP0_SRSCTL, & CP0_SRSMAP
+are unused so they're just dropped instead. CP0_DDATA_LO is left where
+it is as I have patches to eliminate its use in locore.S and it
+otherwise is unlikely to need to be used from assembly code.
 
-I always thought that the kernel should not interpret it at all. And indeed,
-copy_siginfo_to_user() does
+Fixes: "MIPS: CPS: Early debug using an ns16550-compatible UART"
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Gleb Natapov <gleb@kernel.org>
+Cc: linux-mips@linux-mips.org
+Cc: kvm@vger.kernel.org
+---
+Ralf: Please can you take this patch, as the thing it fixes is in the
+mips-for-linux-next branch.
+---
+ arch/mips/include/asm/mipsregs.h | 3 +++
+ arch/mips/kvm/locore.S           | 8 --------
+ 2 files changed, 3 insertions(+), 8 deletions(-)
 
-	if (from->si_code < 0)
-		return __copy_to_user(to, from, sizeof(siginfo_t))
-
-probably copy_siginfo_to_user32() should do something similar, at least
-it should not truncate ->si_code it it is less than zero.
-
-Not sure what signalfd_copyinfo() should do.
-
-But perhaps I was wrong, I failed to find man sigqueueinfo, and man
-sigqueue() documents that it passes sigval_t.
-
-
-> BTW, x86 has its own set of screwups here.  Somehow cr2 and error_code
-> ended up as part of ucontext instead of siginfo, which makes
-> absolutely no sense to me and bloats task_struct.
-
-Yes, and probably ->ip should have been the part of siginfo too. Say,
-if you get SIGBUS you can't trust sc->ip if another signal was dequeued
-before SIGBUS, in this case sc->ip will point to the handler of that
-another signal. That is why we have SYNCHRONOUS_MASK and it helps, but
-still this doesn't look nice.
-
-Oleg.
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index e7c1e28438e0..e43aca183c99 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -50,6 +50,7 @@
+ #define CP0_PAGEMASK $5
+ #define CP0_WIRED $6
+ #define CP0_INFO $7
++#define CP0_HWRENA $7, 0
+ #define CP0_BADVADDR $8
+ #define CP0_BADINSTR $8, 1
+ #define CP0_COUNT $9
+@@ -62,6 +63,8 @@
+ #define CP0_EBASE $15, 1
+ #define CP0_CMGCRBASE $15, 3
+ #define CP0_CONFIG $16
++#define CP0_CONFIG3 $16, 3
++#define CP0_CONFIG5 $16, 5
+ #define CP0_LLADDR $17
+ #define CP0_WATCHLO $18
+ #define CP0_WATCHHI $19
+diff --git a/arch/mips/kvm/locore.S b/arch/mips/kvm/locore.S
+index c567240386a0..7bab3a4e8f7d 100644
+--- a/arch/mips/kvm/locore.S
++++ b/arch/mips/kvm/locore.S
+@@ -36,14 +36,6 @@
+ #define PT_HOST_USERLOCAL   PT_EPC
+ 
+ #define CP0_DDATA_LO        $28,3
+-#define CP0_CONFIG3         $16,3
+-#define CP0_CONFIG5         $16,5
+-#define CP0_EBASE           $15,1
+-
+-#define CP0_INTCTL          $12,1
+-#define CP0_SRSCTL          $12,2
+-#define CP0_SRSMAP          $12,3
+-#define CP0_HWRENA          $7,0
+ 
+ /* Resume Flags */
+ #define RESUME_FLAG_HOST        (1<<1)  /* Resume host? */
+-- 
+2.4.10

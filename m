@@ -1,19 +1,12 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:3863 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27011543AbbKKO5TiVlie (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Nov 2015 15:57:19 +0100
-Date: Wed, 11 Nov 2015 14:57:12 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH 0/3] MIPS: KVM: Misc fixes
-Message-ID: <20151111145712.GX26383@jhogan-linux.le.imgtec.org>
-References: <1447251680-5254-1-git-send-email-james.hogan@imgtec.com>
- <56435402.2050503@redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="QQ0dNM4HnH4+xgqD"
-Content-Disposition: inline
-In-Reply-To: <56435402.2050503@redhat.com>
-Return-Path: <James.Hogan@imgtec.com>
+Received: from mail-pa0-f46.google.com ([209.85.220.46]:33638 "EHLO
+        mail-pa0-f46.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27006528AbbKKXgct3Wp2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 12 Nov 2015 00:36:32 +0100
+From: Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] mtd: jz4740_nand: fix build on jz4740 after removing gpio.h
+Date: Wed, 11 Nov 2015 15:36:16 -0800
+Message-ID: <1447284976-96693-1-git-send-email-computersforpeace@gmail.com>
+Return-Path: <computersforpeace@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,69 +16,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Gleb Natapov <gleb@kernel.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org, stable@vger.kernel.org
-Message-ID: <20151111145712.C7REYWZrvyx0e5tmnLIqSJe0bgM_6BSaaKjZFA3dQps@z>
+To: linux-mtd@lists.infradead.org
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20151111233616.U06teRSRudf5hiFFXncwIiKnlxRKvy1yOYrMZW7LxVI@z>
 
---QQ0dNM4HnH4+xgqD
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fallout from commit 832f5dacfa0b ("MIPS: Remove all the uses of custom gpio.h")
 
-Hi Paolo,
+We see errors like this:
 
-On Wed, Nov 11, 2015 at 03:43:14PM +0100, Paolo Bonzini wrote:
-> On 11/11/2015 15:21, James Hogan wrote:
-> > A few misc MIPS KVM fixes for issues that have been around since the
-> > code was merged in v3.10.
-> >=20
-> > James Hogan (3):
-> >   MIPS: KVM: Fix ASID restoration logic
-> >   MIPS: KVM: Fix CACHE immediate offset sign extension
-> >   MIPS: KVM: Uninit VCPU in vcpu_create error path
-> >=20
-> >  arch/mips/kvm/emulate.c |  2 +-
-> >  arch/mips/kvm/locore.S  | 16 ++++++++++------
-> >  arch/mips/kvm/mips.c    |  5 ++++-
-> >  3 files changed, 15 insertions(+), 8 deletions(-)
-> >=20
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: Gleb Natapov <gleb@kernel.org>
-> > Cc: linux-mips@linux-mips.org
-> > Cc: kvm@vger.kernel.org
-> > Cc: <stable@vger.kernel.org>
-> >=20
->=20
-> Thanks, these will have to wait after the end of the merge window.
+drivers/mtd/nand/jz4740_nand.c: In function 'jz_nand_detect_bank':
+drivers/mtd/nand/jz4740_nand.c:340:9: error: 'JZ_GPIO_MEM_CS0' undeclared (first use in this function)
+drivers/mtd/nand/jz4740_nand.c:340:9: note: each undeclared identifier is reported only once for each function it appears in
+drivers/mtd/nand/jz4740_nand.c:359:2: error: implicit declaration of function 'jz_gpio_set_function' [-Werror=implicit-function-declaration]
+drivers/mtd/nand/jz4740_nand.c:359:29: error: 'JZ_GPIO_FUNC_MEM_CS0' undeclared (first use in this function)
+drivers/mtd/nand/jz4740_nand.c:399:29: error: 'JZ_GPIO_FUNC_NONE' undeclared (first use in this function)
+drivers/mtd/nand/jz4740_nand.c: In function 'jz_nand_probe':
+drivers/mtd/nand/jz4740_nand.c:528:13: error: 'JZ_GPIO_MEM_CS0' undeclared (first use in this function)
+drivers/mtd/nand/jz4740_nand.c: In function 'jz_nand_remove':
+drivers/mtd/nand/jz4740_nand.c:555:14: error: 'JZ_GPIO_MEM_CS0' undeclared (first use in this function)
 
-Okay, no problem. As long as they can make v4.4.
+Patched similarly to:
 
-For the record do you prefer not to receive patches during merge window?
+https://patchwork.linux-mips.org/patch/11089/
 
-Thanks
-James
+Fixes: 832f5dacfa0b ("MIPS: Remove all the uses of custom gpio.h")
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/jz4740_nand.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---QQ0dNM4HnH4+xgqD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJWQ1dIAAoJEGwLaZPeOHZ6tLgP/3aAqb39mlneKvc5UbJXPJwQ
-dHwBosuIr5kpa6o0fuL2qa5SVjWAtZYNkvZTNThSm6B4bAwWv/usv2AhDEPjZKs5
-qEu8I6bLYyyEdDDAv+8Rbd9VDmYsJQT/xHQpNvpPPRGlinowOEakRwApkM6SZJKa
-pnbTB8q+jhY2g8y1w0/thRCnHeVLFFc4VXLEmpjmFX4Pec0cGYQYdqZkqTQdeFHY
-FBjqaTds2tDT7DTUhqCIVU3YN7cQ5AqxeV4mhRen+8XuZShXpNXHKCAkpjzPM0DY
-ok/o/NTAc0oXn4zXzQz2gLYp2i1x1nCF8dzHs+PcQxUCxsjvjMRpLuyR6jOnGXpk
-0PaCL2EzNyPgb+bB05Etv1NcTXnSv5fN2p1ZyrwUQvKmqhm8neLi50lVi6asBnIL
-ROjjVN6g9Xl9PDJjy+toogsQdFPiDgbRYUjT+s02MDSfAgqnzF4/blaAMA+IiKn9
-cjbE2Ku9LyQUMNYRM967m+LdJRbTxVYf/DE0MkhSPGvzBaz3yKHsbXICfXr4ZwPm
-m62rW3fJ34VI4uY0R9FtKxXiRHPaxEcdB8vKLyHpxHlip/CFKPojpMIBtDdH9v8D
-cMBdshjCQgYr25Ec2/3fGUgji23fIFgRjGjJJfdgEvcjnSzyFoWQSFhVPiyLmxxn
-zJRGFXv9lPJX59Xez/bP
-=ZWkN
------END PGP SIGNATURE-----
-
---QQ0dNM4HnH4+xgqD--
+diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
+index dc4e8446f1ff..5a99a93ed025 100644
+--- a/drivers/mtd/nand/jz4740_nand.c
++++ b/drivers/mtd/nand/jz4740_nand.c
+@@ -25,6 +25,7 @@
+ 
+ #include <linux/gpio.h>
+ 
++#include <asm/mach-jz4740/gpio.h>
+ #include <asm/mach-jz4740/jz4740_nand.h>
+ 
+ #define JZ_REG_NAND_CTRL	0x50
+-- 
+2.6.0.rc2.230.g3dd15c0

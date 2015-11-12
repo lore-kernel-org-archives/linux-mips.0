@@ -1,12 +1,19 @@
-Received: from mail-pa0-f46.google.com ([209.85.220.46]:33638 "EHLO
-        mail-pa0-f46.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27006528AbbKKXgct3Wp2 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 12 Nov 2015 00:36:32 +0100
-From: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: jz4740_nand: fix build on jz4740 after removing gpio.h
-Date: Wed, 11 Nov 2015 15:36:16 -0800
-Message-ID: <1447284976-96693-1-git-send-email-computersforpeace@gmail.com>
-Return-Path: <computersforpeace@gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:31915 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012303AbbKLPMpUC8Et (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 12 Nov 2015 16:12:45 +0100
+Subject: Re: [PATCH 10/14] irqchip/mips-gic: Add a IPI hierarchy domain
+References: <1446549181-31788-1-git-send-email-qais.yousef@imgtec.com>
+ <1446549181-31788-11-git-send-email-qais.yousef@imgtec.com>
+ <alpine.DEB.2.11.1511071323471.4032@nanos>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Message-ID: <5644AC66.2070508@imgtec.com>
+Date: Thu, 12 Nov 2015 15:12:38 +0000
+MIME-Version: 1.0
+In-Reply-To: <alpine.DEB.2.11.1511071323471.4032@nanos>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,46 +23,66 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mtd@lists.infradead.org
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20151111233616.U06teRSRudf5hiFFXncwIiKnlxRKvy1yOYrMZW7LxVI@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20151112151238.OcIfpo7VrB8Q3omqUGkoND1J0v8KixOLWhHhh0nXFWs@z>
 
-Fallout from commit 832f5dacfa0b ("MIPS: Remove all the uses of custom gpio.h")
+Hi Thomas,
 
-We see errors like this:
+On 11/07/2015 02:51 PM, Thomas Gleixner wrote:
+> On Tue, 3 Nov 2015, Qais Yousef wrote:
+>
+>> Add a new ipi domain on top of the normal domain.
+>>
+>> MIPS GIC now supports dynamic allocation of an IPI.
+> I don't think you make use of the power of hierarchical irq
+> domains. You just whacked the current code into submission.
+>
 
-drivers/mtd/nand/jz4740_nand.c: In function 'jz_nand_detect_bank':
-drivers/mtd/nand/jz4740_nand.c:340:9: error: 'JZ_GPIO_MEM_CS0' undeclared (first use in this function)
-drivers/mtd/nand/jz4740_nand.c:340:9: note: each undeclared identifier is reported only once for each function it appears in
-drivers/mtd/nand/jz4740_nand.c:359:2: error: implicit declaration of function 'jz_gpio_set_function' [-Werror=implicit-function-declaration]
-drivers/mtd/nand/jz4740_nand.c:359:29: error: 'JZ_GPIO_FUNC_MEM_CS0' undeclared (first use in this function)
-drivers/mtd/nand/jz4740_nand.c:399:29: error: 'JZ_GPIO_FUNC_NONE' undeclared (first use in this function)
-drivers/mtd/nand/jz4740_nand.c: In function 'jz_nand_probe':
-drivers/mtd/nand/jz4740_nand.c:528:13: error: 'JZ_GPIO_MEM_CS0' undeclared (first use in this function)
-drivers/mtd/nand/jz4740_nand.c: In function 'jz_nand_remove':
-drivers/mtd/nand/jz4740_nand.c:555:14: error: 'JZ_GPIO_MEM_CS0' undeclared (first use in this function)
+This time I'm having problems digesting your suggestion. I can't see how 
+it would make things simpler to be honest.
 
-Patched similarly to:
+Issues I'm seeing:
 
-https://patchwork.linux-mips.org/patch/11089/
+     - Device domain would be identical to GIC domain and it would defer 
+everything to the parent domain except for the extra level of 
+indirection. No?
 
-Fixes: 832f5dacfa0b ("MIPS: Remove all the uses of custom gpio.h")
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/jz4740_nand.c | 1 +
- 1 file changed, 1 insertion(+)
+     - The race condition I mentioned in my earlier email where we must 
+be told what hwirqs are available because we can't guarantee there's no 
+real device connected to it which could interfere with the operation. We 
+have always to work on a pre reserved set defined by the system. 
+Currently GIC hard codes this set, but I'll be making it a DT property 
+in the future.
 
-diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
-index dc4e8446f1ff..5a99a93ed025 100644
---- a/drivers/mtd/nand/jz4740_nand.c
-+++ b/drivers/mtd/nand/jz4740_nand.c
-@@ -25,6 +25,7 @@
- 
- #include <linux/gpio.h>
- 
-+#include <asm/mach-jz4740/gpio.h>
- #include <asm/mach-jz4740/jz4740_nand.h>
- 
- #define JZ_REG_NAND_CTRL	0x50
--- 
-2.6.0.rc2.230.g3dd15c0
+     - If we remove the mapping, how can a coprocessor drivers find out 
+the reverse mapping to pass the hwirq to the firmware so that it can 
+send and listen on the correct hwirqs? I have to say my current patches 
+missed dealing with this problem. Now I have something to test my rproc 
+driver on I came to realise I haven't added the function to do the 
+reverse mapping.
+
+In summary. I can't see how adding the device domain would help in 
+making things simpler and without having generic explicit cpu mapping I 
+don't know how I can implement a generic reverse mapping function to get 
+the hwirq to pass to the coprocessor firmware.
+
+If I misunderstood your suggestion, mind rephrasing it please?
+
+I can see though if I use irq_*_alloc_parent() I can probably get rid 
+off the below since I'd be able to use gic_irq_domain all the time to do 
+the revmap.
+
++		if (test_bit(intr, ipi_intrs)) {
++			virq = irq_linear_revmap(gic_ipi_domain,
++					GIC_SHARED_TO_HWIRQ(intr));
++		} else {
++			virq = irq_linear_revmap(gic_irq_domain,
++					GIC_SHARED_TO_HWIRQ(intr));
++		}
++
+
+
+
+Thanks,
+Qais

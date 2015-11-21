@@ -1,17 +1,14 @@
-Received: from relay1.mentorg.com ([192.94.38.131]:34795 "EHLO
-        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006799AbbKTSZw4zfhA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 20 Nov 2015 19:25:52 +0100
-Date: Fri, 20 Nov 2015 18:25:42 +0000
-From: Joseph Myers <joseph@codesourcery.com>
-Subject: Re: [RFC] MIPS ABI Extension for IEEE Std 754 Non-Compliant
- Interlinking
-In-Reply-To: <alpine.DEB.2.00.1511201535580.6915@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.10.1511201815230.9012@digraph.polyomino.org.uk>
-References: <alpine.DEB.2.00.1511140411050.7097@tp.orcam.me.uk> <alpine.DEB.2.10.1511171503510.14808@digraph.polyomino.org.uk> <alpine.DEB.2.00.1511201535580.6915@tp.orcam.me.uk>
+Received: from exsmtp01.microchip.com ([198.175.253.37]:11622 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27011621AbbKUAOHo9tOx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 21 Nov 2015 01:14:07 +0100
+From: Joshua Henderson <joshua.henderson@microchip.com>
+Subject: [PATCH 00/14] Initial Microchip PIC32MZDA Support
+Date: Fri, 20 Nov 2015 17:17:12 -0700
+Message-ID: <1448065205-15762-1-git-send-email-joshua.henderson@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <joseph_myers@mentor.com>
+Content-Type: text/plain
+Return-Path: <Joshua.Henderson@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,46 +18,146 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@imgtec.com>
-Cc: linux-mips@linux-mips.org, libc-alpha@sourceware.org, binutils@sourceware.org, gcc@gcc.gnu.org, Matthew Fortune <Matthew.Fortune@imgtec.com>, Daniel Sanders <Daniel.Sanders@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Message-ID: <20151120182542.sl7-otDqMOC77I1k1lkOA8NA52syeWwdL75wyO_6fyQ@z>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, Joshua Henderson <joshua.henderson@microchip.com>, Alim Akhtar <alim.akhtar@samsung.com>, Andrei Pistirica <andrei.pistirica@microchip.com>, Andrew Bresticker <abrestic@chromium.org>, Andy Green <andy.green@linaro.org>, Ben Hutchings <ben@decadent.org.uk>, Chaotian Jing <chaotian.jing@mediatek.com>, Corneliu Doban <cdoban@broadcom.com>, Cristian Birsan <cristian.birsan@microchip.com>, devicetree@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Jean Delvare <jdelvare@suse.de>, Kevin Hao <haokexin@gmail.com>, linux-api@vger.kernel.org, linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org, linux-mmc@vger.kernel.org, linux-serial@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>, "ludovic.desroches@atmel.com" <ludovic.desroches@atmel.com>, Luis de Bethencourt <luisbg@osg.samsung.com>, Paul Burton <paul.burton@imgtec.com>, Purna Chandra Mandal <purna.mandal@microchip.com>, Ralf Baechle <ralf@linux-mips.org>, Scott Branden <sbranden@broadcom.com>, Shawn Lin <shawn.lin@rock-chips.com>, Stephen Boyd <sboyd@codeaurora.org>, Ulf Hansson <ulf.hansson@linaro.org>, Vincent Yang <vincent.yang.fujitsu@gmail.com>, Weijun Yang <Weijun.Yang@csr.com>, yangbo lu <yangbo.lu@freescale.com>
+Message-ID: <20151121001712.2sClXVW_Xiflk1Ybovo-3oNmDHlDs1i5yvLbvpejLlc@z>
 
-On Fri, 20 Nov 2015, Maciej W. Rozycki wrote:
+This patch series adds support for the Microchip PIC32MZDA MIPS
+platform. All drivers required to boot from MMC uSD card are
+included. Clock and external interrupt controller drivers are
+included. USART, console, and SDHCI peripheral drivers along with
+the dependent pinctrl driver are included. This has been tested on
+an applicable PIC32MZDA Starter Kit. A tree with these changes is
+available at [0].
 
->  The target audience for the `-mieee=strict' option is in my idea a 
-> non-technical user, say a physicist, who does not necessarily know or is 
-> fluent with the guts of computer hardware and who has the need to build 
-> and reliably run their software which uses IEEE Std 754 arithmetic.  
-> Rather than giving such a user necessarily lengthy explanations as to the 
-> complexity of the situation I'd prefer to give them this single option to 
-> guarantee (modulo bugs, as noted above) that a piece of software built 
-> with this option will either produce correct (as in "standard-compliant") 
-> results or refuse to run.
+[0] https://github.com/joshua-henderson/linux/tree/pic32-upstream-v1
 
-This does not make any sense.  The correspondence between IEEE 754 
-operations and source code in C or other languages is extremely 
-complicated.  If the user thinks of C as some form of portable assembler 
-for IEEE 754 operations, that is not something effectively supportable.
+Andrei Pistirica (6):
+  DEVICETREE: Add bindings for PIC32 pin control and GPIO
+  pinctrl: Add PIC32 pin control driver
+  DEVICETREE: Add bindings for PIC32 usart driver
+  serial: pic32_uart: Add PIC32 uart driver
+  mmc: sdhci-pic32: Add PIC32 SDHC host controller driver
+  DEVICETREE: Add bindings for PIC32 SDHC host controller
 
-Can we assume that if the user depends on rounding modes, they will use 
-the FENV_ACCESS pragma (not implemented, of course) or -frounding-math?  
-Can we assume that their dependence on the absence of contraction of 
-expressions is in accordance with ISO C rules (again, FP_CONTRACT isn't 
-implemented but -ffp-contract=off is)?  Can we assume that they don't 
-depend on signaling NaNs?  Can we assume they don't depend on trap 
-handlers that count the number of times a given exception occurs, since 
-that is explicitly unsupported by ISO C?
+Cristian Birsan (2):
+  DEVICETREE: Add bindings for PIC32 interrupt controller
+  irqchip: irq-pic32-evic: Add support for PIC32 interrupt controller
 
-An option like that has to be defined in terms of existing C bindings for 
-IEEE 754, not in terms of supporting users who don't know what they are 
-doing and are unfamiliar with how C source code constructs are mapped to 
-IEEE 754 operations and what features the C standard allows non-default 
-pragmas or options to be required for.
+Joshua Henderson (4):
+  DEVICETREE: Add bindings for PIC32/MZDA platforms
+  MIPS: Add support for PIC32MZDA platform
+  MIPS: dts: Add initial DTS for the PIC32MZDA Starter Kit
+  MIPS: pic32mzda: Add initial PIC32MZDA Starter Kit defconfig
 
->  Does this answer address your concerns?
+Purna Chandra Mandal (2):
+  DEVICETREE: Add PIC32 clock binding documentation
+  clk: clk-pic32: Add PIC32 clock driver
 
-No, the option concept as described seems too irremediably vague.
+ .../devicetree/bindings/clock/microchip,pic32.txt  |  263 +++
+ .../bindings/gpio/microchip,pic32-gpio.txt         |   33 +
+ .../microchip,pic32mz-evic.txt                     |   65 +
+ .../bindings/mips/pic32/microchip,pic32mzda.txt    |   33 +
+ .../devicetree/bindings/mmc/sdhci-pic32.txt        |   24 +
+ .../bindings/pinctrl/microchip,pic32-pinctrl.txt   |  100 +
+ .../bindings/serial/microchip,pic32-usart.txt      |   29 +
+ arch/mips/Kbuild.platforms                         |    1 +
+ arch/mips/Kconfig                                  |    9 +
+ arch/mips/boot/dts/Makefile                        |    1 +
+ arch/mips/boot/dts/pic32/Makefile                  |   12 +
+ arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi        |  251 +++
+ arch/mips/boot/dts/pic32/pic32mzda.dtsi            |  280 +++
+ arch/mips/boot/dts/pic32/pic32mzda_sk.dts          |  150 ++
+ arch/mips/configs/pic32mzda_defconfig              |   88 +
+ .../include/asm/mach-pic32/cpu-feature-overrides.h |   32 +
+ arch/mips/include/asm/mach-pic32/gpio.h            |   26 +
+ arch/mips/include/asm/mach-pic32/irq.h             |   22 +
+ arch/mips/include/asm/mach-pic32/pic32.h           |   44 +
+ arch/mips/include/asm/mach-pic32/spaces.h          |   24 +
+ arch/mips/pic32/Kconfig                            |   50 +
+ arch/mips/pic32/Makefile                           |    6 +
+ arch/mips/pic32/Platform                           |    7 +
+ arch/mips/pic32/common/Makefile                    |    5 +
+ arch/mips/pic32/common/irq.c                       |   20 +
+ arch/mips/pic32/common/reset.c                     |   62 +
+ arch/mips/pic32/pic32mzda/Makefile                 |    9 +
+ arch/mips/pic32/pic32mzda/config.c                 |  148 ++
+ arch/mips/pic32/pic32mzda/early_clk.c              |  106 +
+ arch/mips/pic32/pic32mzda/early_console.c          |  171 ++
+ arch/mips/pic32/pic32mzda/early_pin.c              |  275 +++
+ arch/mips/pic32/pic32mzda/early_pin.h              |  241 +++
+ arch/mips/pic32/pic32mzda/init.c                   |  156 ++
+ arch/mips/pic32/pic32mzda/pic32mzda.h              |   30 +
+ arch/mips/pic32/pic32mzda/time.c                   |   47 +
+ drivers/clk/Kconfig                                |    3 +
+ drivers/clk/Makefile                               |    1 +
+ drivers/clk/clk-pic32.c                            | 1947 ++++++++++++++++++
+ drivers/irqchip/Makefile                           |    1 +
+ drivers/irqchip/irq-pic32-evic.c                   |  309 +++
+ drivers/mmc/host/Kconfig                           |   11 +
+ drivers/mmc/host/Makefile                          |    1 +
+ drivers/mmc/host/sdhci-pic32.c                     |  354 ++++
+ drivers/pinctrl/Kconfig                            |   17 +
+ drivers/pinctrl/Makefile                           |    2 +
+ drivers/pinctrl/pinctrl-pic32.c                    | 2127 ++++++++++++++++++++
+ drivers/pinctrl/pinctrl-pic32.h                    |  158 ++
+ drivers/pinctrl/pinctrl-pic32mzda.c                |  294 +++
+ drivers/pinctrl/pinctrl-pic32mzda.h                |   40 +
+ drivers/tty/serial/Kconfig                         |   21 +
+ drivers/tty/serial/Makefile                        |    1 +
+ drivers/tty/serial/pic32_uart.c                    |  930 +++++++++
+ drivers/tty/serial/pic32_uart.h                    |  199 ++
+ .../interrupt-controller/microchip,pic32mz-evic.h  |  238 +++
+ include/dt-bindings/pinctrl/pic32mzda.h            |  404 ++++
+ include/linux/irqchip/pic32-evic.h                 |   19 +
+ include/linux/platform_data/sdhci-pic32.h          |   22 +
+ include/uapi/linux/serial_core.h                   |    3 +
+ 58 files changed, 9922 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/microchip,pic32.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/microchip,pic32-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/microchip,pic32mz-evic.txt
+ create mode 100644 Documentation/devicetree/bindings/mips/pic32/microchip,pic32mzda.txt
+ create mode 100644 Documentation/devicetree/bindings/mmc/sdhci-pic32.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/microchip,pic32-pinctrl.txt
+ create mode 100644 Documentation/devicetree/bindings/serial/microchip,pic32-usart.txt
+ create mode 100644 arch/mips/boot/dts/pic32/Makefile
+ create mode 100644 arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi
+ create mode 100644 arch/mips/boot/dts/pic32/pic32mzda.dtsi
+ create mode 100644 arch/mips/boot/dts/pic32/pic32mzda_sk.dts
+ create mode 100644 arch/mips/configs/pic32mzda_defconfig
+ create mode 100644 arch/mips/include/asm/mach-pic32/cpu-feature-overrides.h
+ create mode 100644 arch/mips/include/asm/mach-pic32/gpio.h
+ create mode 100644 arch/mips/include/asm/mach-pic32/irq.h
+ create mode 100644 arch/mips/include/asm/mach-pic32/pic32.h
+ create mode 100644 arch/mips/include/asm/mach-pic32/spaces.h
+ create mode 100644 arch/mips/pic32/Kconfig
+ create mode 100644 arch/mips/pic32/Makefile
+ create mode 100644 arch/mips/pic32/Platform
+ create mode 100644 arch/mips/pic32/common/Makefile
+ create mode 100644 arch/mips/pic32/common/irq.c
+ create mode 100644 arch/mips/pic32/common/reset.c
+ create mode 100644 arch/mips/pic32/pic32mzda/Makefile
+ create mode 100644 arch/mips/pic32/pic32mzda/config.c
+ create mode 100644 arch/mips/pic32/pic32mzda/early_clk.c
+ create mode 100644 arch/mips/pic32/pic32mzda/early_console.c
+ create mode 100644 arch/mips/pic32/pic32mzda/early_pin.c
+ create mode 100644 arch/mips/pic32/pic32mzda/early_pin.h
+ create mode 100644 arch/mips/pic32/pic32mzda/init.c
+ create mode 100644 arch/mips/pic32/pic32mzda/pic32mzda.h
+ create mode 100644 arch/mips/pic32/pic32mzda/time.c
+ create mode 100644 drivers/clk/clk-pic32.c
+ create mode 100644 drivers/irqchip/irq-pic32-evic.c
+ create mode 100644 drivers/mmc/host/sdhci-pic32.c
+ create mode 100644 drivers/pinctrl/pinctrl-pic32.c
+ create mode 100644 drivers/pinctrl/pinctrl-pic32.h
+ create mode 100644 drivers/pinctrl/pinctrl-pic32mzda.c
+ create mode 100644 drivers/pinctrl/pinctrl-pic32mzda.h
+ create mode 100644 drivers/tty/serial/pic32_uart.c
+ create mode 100644 drivers/tty/serial/pic32_uart.h
+ create mode 100644 include/dt-bindings/interrupt-controller/microchip,pic32mz-evic.h
+ create mode 100644 include/dt-bindings/pinctrl/pic32mzda.h
+ create mode 100644 include/linux/irqchip/pic32-evic.h
+ create mode 100644 include/linux/platform_data/sdhci-pic32.h
 
--- 
-Joseph S. Myers
-joseph@codesourcery.com
+--
+1.7.9.5

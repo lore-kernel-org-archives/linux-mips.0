@@ -1,16 +1,19 @@
-Received: from exsmtp03.microchip.com ([198.175.253.49]:24167 "EHLO
-        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27013080AbbKUARki8bBx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 21 Nov 2015 01:17:40 +0100
-From: Joshua Henderson <joshua.henderson@microchip.com>
-Subject: [PATCH 14/14] MIPS: pic32mzda: Add initial PIC32MZDA Starter Kit defconfig
-Date: Fri, 20 Nov 2015 17:17:26 -0700
-Message-ID: <1448065205-15762-15-git-send-email-joshua.henderson@microchip.com>
-In-Reply-To: <1448065205-15762-1-git-send-email-joshua.henderson@microchip.com>
+Received: from foss.arm.com ([217.140.101.70]:33853 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27013019AbbKVLpohtzcw (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 22 Nov 2015 12:45:44 +0100
+Date: Sun, 22 Nov 2015 11:45:30 +0000
+From: Marc Zyngier <marc.zyngier@arm.com>
+Subject: Re: [PATCH 02/14] irqchip: irq-pic32-evic: Add support for PIC32
+ interrupt controller
+Message-ID: <20151122114530.10bca210@arm.com>
+In-Reply-To: <1448065205-15762-3-git-send-email-joshua.henderson@microchip.com>
 References: <1448065205-15762-1-git-send-email-joshua.henderson@microchip.com>
+        <1448065205-15762-3-git-send-email-joshua.henderson@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Joshua.Henderson@microchip.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <marc.zyngier@arm.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,112 +23,38 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, Joshua Henderson <joshua.henderson@microchip.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20151121001726.Ekec9fGEEjtZ7NeH-_vWNl95MHgBU8GwBf6WS8OOFrY@z>
+To: Joshua Henderson <joshua.henderson@microchip.com>
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Cristian Birsan <cristian.birsan@microchip.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>
+Message-ID: <20151122114530.HO0JFNt-26uzRkdNjjy2w3s5uIISxJh-LJcoG9wCcSg@z>
 
-This adds an initial default config that enables all available PIC32
-drivers and is enough for booting a PIC32MZDA Starter Kit.
+On Fri, 20 Nov 2015 17:17:14 -0700
+Joshua Henderson <joshua.henderson@microchip.com> wrote:
 
-Signed-off-by: Joshua Henderson <joshua.henderson@microchip.com>
----
- arch/mips/configs/pic32mzda_defconfig |   88 +++++++++++++++++++++++++++++++++
- 1 file changed, 88 insertions(+)
- create mode 100644 arch/mips/configs/pic32mzda_defconfig
+Joshua, Cristian,
 
-diff --git a/arch/mips/configs/pic32mzda_defconfig b/arch/mips/configs/pic32mzda_defconfig
-new file mode 100644
-index 0000000..17014ca
---- /dev/null
-+++ b/arch/mips/configs/pic32mzda_defconfig
-@@ -0,0 +1,88 @@
-+CONFIG_MACH_PIC32=y
-+CONFIG_DTB_PIC32_MZDA_SK=y
-+CONFIG_HZ_100=y
-+CONFIG_PREEMPT_VOLUNTARY=y
-+# CONFIG_SECCOMP is not set
-+CONFIG_SYSVIPC=y
-+CONFIG_NO_HZ=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_IKCONFIG=y
-+CONFIG_IKCONFIG_PROC=y
-+CONFIG_LOG_BUF_SHIFT=14
-+CONFIG_RELAY=y
-+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-+CONFIG_EMBEDDED=y
-+# CONFIG_COMPAT_BRK is not set
-+CONFIG_SLAB=y
-+CONFIG_JUMP_LABEL=y
-+CONFIG_MODULES=y
-+CONFIG_MODULE_UNLOAD=y
-+CONFIG_MODVERSIONS=y
-+CONFIG_MODULE_SRCVERSION_ALL=y
-+CONFIG_BLK_DEV_BSGLIB=y
-+CONFIG_PARTITION_ADVANCED=y
-+CONFIG_SGI_PARTITION=y
-+CONFIG_BINFMT_MISC=m
-+# CONFIG_SUSPEND is not set
-+CONFIG_DEVTMPFS=y
-+CONFIG_DEVTMPFS_MOUNT=y
-+# CONFIG_FIRMWARE_IN_KERNEL is not set
-+# CONFIG_ALLOW_DEV_COREDUMP is not set
-+CONFIG_BLK_DEV_LOOP=m
-+CONFIG_SCSI=y
-+CONFIG_BLK_DEV_SD=y
-+CONFIG_SCSI_CONSTANTS=y
-+CONFIG_SCSI_SCAN_ASYNC=y
-+# CONFIG_SCSI_LOWLEVEL is not set
-+CONFIG_INPUT_LEDS=m
-+CONFIG_INPUT_POLLDEV=y
-+CONFIG_INPUT_MOUSEDEV=m
-+CONFIG_INPUT_EVDEV=y
-+CONFIG_INPUT_EVBUG=m
-+# CONFIG_KEYBOARD_ATKBD is not set
-+CONFIG_KEYBOARD_GPIO=m
-+CONFIG_KEYBOARD_GPIO_POLLED=m
-+# CONFIG_MOUSE_PS2 is not set
-+# CONFIG_SERIO is not set
-+CONFIG_SERIAL_PIC32=y
-+CONFIG_SERIAL_PIC32_CONSOLE=y
-+CONFIG_HW_RANDOM=y
-+CONFIG_RAW_DRIVER=m
-+CONFIG_GPIO_SYSFS=y
-+# CONFIG_HWMON is not set
-+CONFIG_HIDRAW=y
-+# CONFIG_USB_SUPPORT is not set
-+CONFIG_MMC=y
-+CONFIG_MMC_SDHCI=y
-+CONFIG_MMC_SDHCI_MICROCHIP_PIC32=y
-+CONFIG_NEW_LEDS=y
-+CONFIG_LEDS_CLASS=y
-+CONFIG_LEDS_GPIO=y
-+CONFIG_LEDS_TRIGGERS=y
-+CONFIG_LEDS_TRIGGER_TIMER=m
-+CONFIG_LEDS_TRIGGER_ONESHOT=m
-+CONFIG_LEDS_TRIGGER_HEARTBEAT=y
-+CONFIG_LEDS_TRIGGER_GPIO=m
-+CONFIG_LEDS_TRIGGER_DEFAULT_ON=y
-+# CONFIG_MIPS_PLATFORM_DEVICES is not set
-+# CONFIG_IOMMU_SUPPORT is not set
-+CONFIG_EXT4_FS=y
-+CONFIG_EXT4_FS_POSIX_ACL=y
-+CONFIG_EXT4_FS_SECURITY=y
-+CONFIG_AUTOFS4_FS=m
-+CONFIG_FUSE_FS=m
-+CONFIG_FSCACHE=m
-+CONFIG_ISO9660_FS=m
-+CONFIG_JOLIET=y
-+CONFIG_ZISOFS=y
-+CONFIG_UDF_FS=m
-+CONFIG_MSDOS_FS=m
-+CONFIG_VFAT_FS=m
-+CONFIG_PROC_KCORE=y
-+CONFIG_TMPFS=y
-+CONFIG_TMPFS_POSIX_ACL=y
-+CONFIG_SQUASHFS=m
-+CONFIG_SQUASHFS_XATTR=y
-+CONFIG_SQUASHFS_LZ4=y
-+CONFIG_SQUASHFS_LZO=y
-+CONFIG_SQUASHFS_XZ=y
+> From: Cristian Birsan <cristian.birsan@microchip.com>
+> 
+> This adds support for the EVIC present on a PIC32MZDA.
+> 
+> The following features are supported:
+>  - DT properties for EVIC and for devices that use interrupt lines
+>  - persistent and non-persistent interrupt handling
+>  - Priority, sub-priority and polariy settings for each interrupt line
+>  - irqdomain support
+> 
+
+I haven't reviewed the code yet, but the fact that you allow (and
+actually request) the interrupt priorities to be encoded in the DT
+raises some concerns:
+
+- Aren't priorities entirely under software control (and hence don't
+  belong in DT)?
+- More crucially, how do you deal with nested interrupts when you have
+  interrupts running at different priorities? Most parts of Linux
+  cannot cope with that without additional support.
+
+Thanks,
+
+	M.
 -- 
-1.7.9.5
+Jazz is not dead. It just smells funny.

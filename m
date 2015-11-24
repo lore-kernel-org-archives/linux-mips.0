@@ -1,21 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:33789 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013023AbbKWQzfNNi1T (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Nov 2015 17:55:35 +0100
-Subject: Re: [PATCH 10/14] irqchip/mips-gic: Add a IPI hierarchy domaind
-References: <1446549181-31788-1-git-send-email-qais.yousef@imgtec.com>
- <1446549181-31788-11-git-send-email-qais.yousef@imgtec.com>
- <alpine.DEB.2.11.1511071323471.4032@nanos> <56407F3C.4060404@imgtec.com>
- <alpine.DEB.2.11.1511161610070.3761@nanos> <564EFA74.90606@imgtec.com>
- <alpine.DEB.2.11.1511202113010.3931@nanos>
-From: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <565344FF.1090508@imgtec.com>
-Date: Mon, 23 Nov 2015 16:55:27 +0000
+Received: from mail-bl2on0099.outbound.protection.outlook.com ([65.55.169.99]:47552
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27007608AbbKXSNjBHOdB (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 24 Nov 2015 19:13:39 +0100
+Message-ID: <5654A8C6.3070306@caviumnetworks.com>
+Date: Tue, 24 Nov 2015 10:13:26 -0800
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.11.1511202113010.3931@nanos>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Subject: Re: [PATCH v4] mmc: OCTEON: Add host driver for OCTEON MMC controller
+References: <1426518362-24349-1-git-send-email-aleksey.makarov@auriga.com> <20150518210514.GG609@fuloong-minipc.musicnaut.iki.fi> <555A5C5C.9090903@auriga.com> <20151120173233.GH18138@blackmetal.musicnaut.iki.fi>
+In-Reply-To: <20151120173233.GH18138@blackmetal.musicnaut.iki.fi>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,37 +22,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20151123165527.pWCh3EVKC8cj7Mu0wJUQE21dvDLimeb6uB31cdX-T4M@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Aleksey Makarov <aleksey.makarov@auriga.com>, linux-mmc@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Chandrakala Chavva <cchavva@caviumnetworks.com>, Leonid Rosenboim <lrosenboim@caviumnetworks.com>, Peter Swain <pswain@cavium.com>, Aaron Williams <aaron.williams@cavium.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Chris Ball <chris@printf.net>, Ulf Hansson <ulf.hansson@linaro.org>, devicetree@vger.kernel.org
+Message-ID: <20151124181326.2fx4SkJfeaJ3KbzBQbrXRf1EZ8T8RMf0kFMgbdtajgc@z>
 
-On 11/20/2015 08:39 PM, Thomas Gleixner wrote:
->> Same applies when doing the reverse mapping.
+On 11/20/2015 09:32 AM, Aaro Koskinen wrote:
+> Hi,
+>
+> On Mon, May 18, 2015 at 02:40:44PM -0700, Aleksey Makarov wrote:
+>> On 05/18/2015 02:05 PM, Aaro Koskinen wrote:
+>>> On Mon, Mar 16, 2015 at 06:06:00PM +0300, Aleksey Makarov wrote:
+>>>> The OCTEON MMC controller is currently found on cn61XX and cnf71XX
+>>>> devices.  Device parameters are configured from device tree data.
+>>>>
+>>>> eMMC, MMC and SD devices are supported.
+>>>>
+>>>> Tested-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+>>>> Signed-off-by: Chandrakala Chavva <cchavva@caviumnetworks.com>
+>>>> Signed-off-by: David Daney <david.daney@cavium.com>
+>>>> Signed-off-by: Aleksey Makarov <aleksey.makarov@auriga.com>
+>>>> Signed-off-by: Leonid Rosenboim <lrosenboim@caviumnetworks.com>
+>>>> Signed-off-by: Peter Swain <pswain@cavium.com>
+>>>> Signed-off-by: Aaron Williams <aaron.williams@cavium.com>
+>>>> ---
+>>>
+>>> Any updates on this patch? Are you still working on it for
+>>> the mainline kernel inclusion?
 >>
->> In other words, the ipi_mask won't always necessarily be linear to facilitate
->> the 1:1 mapping that this approach assumes.
->>
->> It is a solvable problem, but I think we're losing the elegance that promoted
->> going into this direction and I think sticking to using struct ipi_mapping
->> (with some enhancements to how it's exposed an integrated by/into generic
->> code) is a better approach.
-> The only reason to use the ipi_mapping thing is if we need non
-> consecutive masks, i.e. cpu 5 and 9.
+>> We are working on it.  It will also be used in ARM ThunderX arch.  So we
+>> will send a new version soon.
+>
+> Any updates?
+>
+> Also distros are waiting for this patch, MMC is the main medium on
+> some boards:
+>
+> 	https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=800594
 
-That's the case I had in mind.
+I am aware of the need, but haven't been able to find the time to work 
+on the MMC patch.
+
+David Daney
+
 
 >
-> I really don't want to have it mandatory as it does not make any sense
-> for systems where the IPI is a single per_cpu interrupt. For the
-> linear consecutive space it is just adding memory and cache footprint
-> for no benefit. Think about machines with 4k and more cpus ....
-
-OK. Although so far I think the ovehead is higher without the 
-ipi_mapping because of all the extra checkings we have to do when 
-sending an IPI. I'll leave this to code review when I have something 
-ready though.
-
-I'm debugging more problems and hopefully I'll send something this week.
-
-Thanks,
-Qais
+> A.
+>

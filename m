@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45785 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:7514 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012703AbbKYMHw2MjPf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Nov 2015 13:07:52 +0100
+        with ESMTP id S27012710AbbKYMH4M8DPf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Nov 2015 13:07:56 +0100
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH v2 02/19] genirq: Add DOMAIN_BUS_IPI
-Date: Wed, 25 Nov 2015 12:06:40 +0000
-Message-ID: <1448453217-3874-3-git-send-email-qais.yousef@imgtec.com>
+Subject: [PATCH v2 03/19] genirq: Add GENERIC_IRQ_IPI Kconfig symbol
+Date: Wed, 25 Nov 2015 12:06:41 +0000
+Message-ID: <1448453217-3874-4-git-send-email-qais.yousef@imgtec.com>
 In-Reply-To: <1448453217-3874-1-git-send-email-qais.yousef@imgtec.com>
 References: <1448453217-3874-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
@@ -22,28 +22,31 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org
 Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org, Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <20151125120640.y0dvKF2CaZvpWCoR86Gz9CrvelzgXy5xhl-iAeCzIf0@z>
+Message-ID: <20151125120641.z-XlilawtjtoAhK2-KruKbXMurAB0dUwlHMpB4BVsdE@z>
 
-We need a way to search and match IPI domains.
+irqchip should select this config to denote it supports generic IPI.
 
-Using the new enum we can use irq_find_matching_host() to do that.
+This will aid generic arch code to know when it can use generic IPI layer.
 
 Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
 ---
- include/linux/irqdomain.h | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/irq/Kconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index c1a59f37674d..f717796a4d5e 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -73,6 +73,7 @@ enum irq_domain_bus_token {
- 	DOMAIN_BUS_PCI_MSI,
- 	DOMAIN_BUS_PLATFORM_MSI,
- 	DOMAIN_BUS_NEXUS,
-+	DOMAIN_BUS_IPI,
- };
+diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
+index 3b48dab80164..3bbfd6a9c475 100644
+--- a/kernel/irq/Kconfig
++++ b/kernel/irq/Kconfig
+@@ -64,6 +64,10 @@ config IRQ_DOMAIN_HIERARCHY
+ 	bool
+ 	select IRQ_DOMAIN
  
- /**
++# Generic IRQ IPI support
++config GENERIC_IRQ_IPI
++	bool
++
+ # Generic MSI interrupt support
+ config GENERIC_MSI_IRQ
+ 	bool
 -- 
 2.1.0

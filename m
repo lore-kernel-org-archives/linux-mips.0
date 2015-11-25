@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:8917 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:40368 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012760AbbKYMIGicfgf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Nov 2015 13:08:06 +0100
+        with ESMTP id S27010797AbbKYMIIPY3Af (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Nov 2015 13:08:08 +0100
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH v2 09/19] genirq: Add a new function to get IPI reverse mapping
-Date: Wed, 25 Nov 2015 12:06:47 +0000
-Message-ID: <1448453217-3874-10-git-send-email-qais.yousef@imgtec.com>
+Subject: [PATCH v2 10/19] genirq: Add a new irq_send_ipi() to irq_chip
+Date: Wed, 25 Nov 2015 12:06:48 +0000
+Message-ID: <1448453217-3874-11-git-send-email-qais.yousef@imgtec.com>
 In-Reply-To: <1448453217-3874-1-git-send-email-qais.yousef@imgtec.com>
 References: <1448453217-3874-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
@@ -22,73 +22,42 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org
 Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org, Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <20151125120647.ypZE49uY1xtNCtUDn08et2imUlrBg6j98sbqbh_qZ3Q@z>
+Message-ID: <20151125120648.PBIX5xXVSC7ll36cYBbKcYA-edFEX2_ntQnjh3yt77c@z>
 
-When dealing with coprocessors we need to find out the actual hwirqs values to
-pass on to the firmware so that it knows what it needs to use to received and
-send IPIs from and to us.
+Introduce the new functions to allow generic IPI send mechanism to be
+used from arch and drivers code.
 
 Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
 ---
- include/linux/irq.h |  2 ++
- kernel/irq/ipi.c    | 37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+)
+ include/linux/irq.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/include/linux/irq.h b/include/linux/irq.h
-index 2fb5d255313e..9a5d1e11a08f 100644
+index 9a5d1e11a08f..ee01e89c2140 100644
 --- a/include/linux/irq.h
 +++ b/include/linux/irq.h
-@@ -1070,4 +1070,6 @@ int irq_unmap_ipi(struct ipi_mapping *map, unsigned int cpu);
- irq_hw_number_t irq_ipi_mapping_get_hwirq(struct ipi_mapping *map,
- 					  unsigned int cpu);
+@@ -381,6 +381,10 @@ static inline irq_hw_number_t irqd_to_hwirq(struct irq_data *d)
+  * @irq_get_irqchip_state:	return the internal state of an interrupt
+  * @irq_set_irqchip_state:	set the internal state of a interrupt
+  * @irq_set_vcpu_affinity:	optional to target a vCPU in a virtual machine
++ * @ipi_send_single:	send a single IPI to destination cpus
++ * @ipi_send_mask:	send an IPI to destination cpus in cpumask
++ * @ipi_send_coproc_single:	send a single IPI to destination coprocessor
++ * @ipi_send_coproc_mask:	send an IPI to destination corocessors in ipi_mask
+  * @flags:		chip specific flags
+  */
+ struct irq_chip {
+@@ -425,6 +429,11 @@ struct irq_chip {
  
-+irq_hw_number_t ipi_get_hwirq(unsigned int irq, unsigned int cpu);
-+
- #endif /* _LINUX_IRQ_H */
-diff --git a/kernel/irq/ipi.c b/kernel/irq/ipi.c
-index f2dc8c73965c..d6faa0e768b8 100644
---- a/kernel/irq/ipi.c
-+++ b/kernel/irq/ipi.c
-@@ -247,3 +247,40 @@ void irq_destroy_ipi(unsigned int irq)
+ 	int		(*irq_set_vcpu_affinity)(struct irq_data *data, void *vcpu_info);
  
- 	irq_domain_free_irqs(irq, nr_irqs);
- }
++	void		(*ipi_send_single)(struct irq_data *data, unsigned int cpu);
++	void		(*ipi_send_mask)(struct irq_data *data, const struct cpumask *dest);
++	void		(*ipi_send_coproc_single)(struct irq_data *data, unsigned int cpu);
++	void		(*ipi_send_coproc_mask)(struct irq_data *data, const struct ipi_mask *dest);
 +
-+/**
-+ * ipi_get_hwirq - get the hwirq associated with an IPI to a cpu
-+ * @irq: linux irq number
-+ * @cpu: the cpu to find the revmap for
-+ *
-+ * When dealing with coprocessors IPI, we need to inform it of the hwirq it
-+ * needs to use to receive and send IPIs. This function provides the revmap
-+ * to get this info to pass on to coprocessor firmware.
-+ *
-+ * Returns hwirq value on success and INVALID_HWIRQ on failure.
-+ */
-+irq_hw_number_t ipi_get_hwirq(unsigned int irq, unsigned int cpu)
-+{
-+	struct irq_data *data = irq_get_irq_data(irq);
-+	struct ipi_mask *ipimask = data ? irq_data_get_ipi_mask(data) : NULL;
-+	irq_hw_number_t hwirq;
-+
-+	if (!data || !ipimask)
-+		return INVALID_HWIRQ;
-+
-+	if (cpu > ipimask->nbits)
-+		return INVALID_HWIRQ;
-+
-+	if (!test_bit(cpu, ipimask->cpu_bitmap))
-+		return INVALID_HWIRQ;
-+
-+	if (irq_domain_is_ipi_per_cpu(data->domain)) {
-+		data = irq_get_irq_data(irq + cpu - ipimask->offset);
-+		hwirq = data ? irqd_to_hwirq(data) : INVALID_HWIRQ;
-+	} else {
-+		hwirq = irqd_to_hwirq(data) + cpu - ipimask->offset;
-+	}
-+
-+	return hwirq;
-+}
-+EXPORT_SYMBOL_GPL(ipi_get_hwirq);
+ 	unsigned long	flags;
+ };
+ 
 -- 
 2.1.0

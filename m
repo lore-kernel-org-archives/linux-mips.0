@@ -1,17 +1,17 @@
-Received: from exsmtp03.microchip.com ([198.175.253.49]:35932 "EHLO
+Received: from exsmtp01.microchip.com ([198.175.253.37]:52358 "EHLO
         email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27012318AbbKYSWXJY6CC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Nov 2015 19:22:23 +0100
-Subject: Re: [PATCH 01/14] DEVICETREE: Add bindings for PIC32 interrupt
- controller
+        by eddie.linux-mips.org with ESMTP id S27011072AbbKYSWwnqLCC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Nov 2015 19:22:52 +0100
+Subject: Re: [PATCH 02/14] irqchip: irq-pic32-evic: Add support for PIC32
+ interrupt controller
 References: <1448065205-15762-1-git-send-email-joshua.henderson@microchip.com>
- <1448065205-15762-2-git-send-email-joshua.henderson@microchip.com>
- <7036408.cJ9oZKCcQe@wuerfel>
+ <1448065205-15762-3-git-send-email-joshua.henderson@microchip.com>
+ <20151122114530.10bca210@arm.com>
 From: Joshua Henderson <joshua.henderson@microchip.com>
-Message-ID: <5655FC54.8080906@microchip.com>
-Date: Wed, 25 Nov 2015 11:22:12 -0700
+Message-ID: <5655FC74.9090204@microchip.com>
+Date: Wed, 25 Nov 2015 11:22:44 -0700
 MIME-Version: 1.0
-In-Reply-To: <7036408.cJ9oZKCcQe@wuerfel>
+In-Reply-To: <20151122114530.10bca210@arm.com>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Joshua.Henderson@microchip.com>
@@ -24,103 +24,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Cristian Birsan <cristian.birsan@microchip.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Message-ID: <20151125182212.SbkzGVNcyQnXmw5JoHT_mkgUEqAvemXLFqdkff-Y8sE@z>
+To: Marc Zyngier <marc.zyngier@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Cristian Birsan <cristian.birsan@microchip.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>
+Message-ID: <20151125182244.OrENIsds0ALMmz-tv4IYMW3fJMNghVgBBr6uyQXd7_0@z>
 
-On 11/21/2015 1:47 PM, Arnd Bergmann wrote:
-> On Friday 20 November 2015 17:17:13 Joshua Henderson wrote:
+On 11/22/2015 4:45 AM, Marc Zyngier wrote:
+> On Fri, 20 Nov 2015 17:17:14 -0700
+> Joshua Henderson <joshua.henderson@microchip.com> wrote:
 > 
->> +Example
->> +-------
->> +
->> +evic: interrupt-controller@1f810000 {
->> +        compatible = "microchip,evic-v2";
->> +        interrupt-controller;
->> +        #interrupt-cells = <3>;
->> +        reg = <0x1f810000 0x1000>;
->> +        device_type="evic-v2";
->> +};
+> Joshua, Cristian,
 > 
-> This is not a correct use of device_type. Just drop that property.
+>> From: Cristian Birsan <cristian.birsan@microchip.com>
+>>
+>> This adds support for the EVIC present on a PIC32MZDA.
+>>
+>> The following features are supported:
+>>  - DT properties for EVIC and for devices that use interrupt lines
+>>  - persistent and non-persistent interrupt handling
+>>  - Priority, sub-priority and polariy settings for each interrupt line
+>>  - irqdomain support
+>>
+> 
+> I haven't reviewed the code yet, but the fact that you allow (and
+> actually request) the interrupt priorities to be encoded in the DT
+> raises some concerns:
+> 
+> - Aren't priorities entirely under software control (and hence don't
+>   belong in DT)?
 
-Ack.
+These are hardware priorities configured by software.  They arbitrate pending hardware interrupts to the CPU.  We can agree that DT is probably not the best place for this configuration.  They will be removed from the binding.
 
-> 
->> diff --git a/include/dt-bindings/interrupt-controller/microchip,pic32mz-evic.h b/include/dt-bindings/interrupt-controller/microchip,pic32mz-evic.h
->> new file mode 100644
->> index 0000000..2c466b8
->> --- /dev/null
->> +++ b/include/dt-bindings/interrupt-controller/microchip,pic32mz-evic.h
->> @@ -0,0 +1,238 @@
->> +/*
->> + * This header provides constants for the MICROCHIP PIC32 EVIC.
->> + */
->> +
->> +#ifndef _DT_BINDINGS_INTERRUPT_CONTROLLER_MICROCHIP_EVIC_H
->> +#define _DT_BINDINGS_INTERRUPT_CONTROLLER_MICROCHIP_EVIC_H
->> +
->> +#include <dt-bindings/interrupt-controller/irq.h>
->> +
->> +/* Hardware interrupt number */
->> +#define CORE_TIMER_INTERRUPT 0
->> +#define CORE_SOFTWARE_INTERRUPT_0 1
->> +#define CORE_SOFTWARE_INTERRUPT_1 2
->> +#define EXTERNAL_INTERRUPT_0 3
->> +#define TIMER1 4
-> 
-> A header file like this is just going to make everyone's life
-> miserable. Try to remove as much as possible here: normally
-> you can just use the numbers from the data sheet that match
-> the actual hardware registers, and put them into the dts file.
+> - More crucially, how do you deal with nested interrupts when you have
+>   interrupts running at different priorities? Most parts of Linux
+>   cannot cope with that without additional support.
 > 
 
-Agreed.  Removing these defines along with removing the priorities from the bindings as suggested makes sense.  With doing that, this header file becomes pointless and it will be dropped.
+We do not support nested interrupts.
 
->> +/* Interrupt priority bits */
->> +#define PRI_0	0	/* Note:This priority disables the interrupt! */
->> +#define PRI_1	1
->> +#define PRI_2	2
->> +#define PRI_3	3
->> +#define PRI_4	4
->> +#define PRI_5	5
->> +#define PRI_6	6
->> +#define PRI_7	7
+> Thanks,
 > 
->> +/* Interrupt subpriority bits */
->> +#define SUB_PRI_0	0
->> +#define SUB_PRI_1	1
->> +#define SUB_PRI_2	2
->> +#define SUB_PRI_3	3
+> 	M.
 > 
-> These are obviously silly and should be removed/
-> 
-
-Ack.
-
->> +#define PRI_MASK	0x7	/* 3 bit priority mask */
->> +#define SUBPRI_MASK	0x3	/* 2 bit subpriority mask */
->> +#define INT_MASK	0x1F	/* 5 bit pri and subpri mask */
->> +#define NR_EXT_IRQS	5	/* 5 external interrupts sources */
->> +
->> +#define MICROCHIP_EVIC_MIN_PRIORITY 0
->> +#define MICROCHIP_EVIC_MAX_PRIORITY INT_MASK
->> +
->> +#define INT_PRI(pri, subpri)	\
->> +	(((pri & PRI_MASK) << 2) | (subpri & SUBPRI_MASK))
->> +
->> +#define DEFINE_INT(irq, pri) { irq, pri }
->> +
->> +#define DEFAULT_INT_PRI INT_PRI(2, 0)
-> 
-> Is it required to have a specific priority configured for each line?
-> If these are software selectable, it's probably better to not put
-> them into DT in the first place.
-> 
-> If you absolutely need them, I would suggest using two separate cells
-> for pri and subpri so you can avoid the macro.
-> 
-
-These priorities are hardware priorities that arbitrate pending interrupts to the CPU.  These are indeed software configurable and we can agree that DT is probably not the best place to put this configuration in light of this.  We'll default to something sane instead.  They will be removed from the binding.
-
-Josh

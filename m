@@ -1,18 +1,14 @@
-Received: from mxout51.expurgate.net ([91.198.224.51]:52085 "EHLO
-        mxout51.expurgate.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27011855AbbKYKTrJ0ovd convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 25 Nov 2015 11:19:47 +0100
-From: Martin Schiller <mschiller@tdt.de>
-Subject: [PATCH v2 4/4] pinctrl/lantiq: fix up pinmux
-Date: Wed, 25 Nov 2015 11:18:59 +0100
-Message-ID: <1448446739-5541-4-git-send-email-mschiller@tdt.de>
-In-Reply-To: <1448446739-5541-1-git-send-email-mschiller@tdt.de>
-References: <1448446739-5541-1-git-send-email-mschiller@tdt.de>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2032 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010797AbbKYMHdSTX5f (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Nov 2015 13:07:33 +0100
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: [PATCH v2 00/19] Implement generic IPI support mechanism
+Date: Wed, 25 Nov 2015 12:06:38 +0000
+Message-ID: <1448453217-3874-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Return-Path: <mschiller@tdt.de>
+Content-Type: text/plain
+Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,91 +18,81 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-mips@linux-mips.org
-Cc: linus.walleij@linaro.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, ralf@linux-mips.org, blogic@openwrt.org, hauke@hauke-m.de, jogo@openwrt.org, daniel.schwierzeck@gmail.com, Martin Schiller <mschiller@tdt.de>
-Message-ID: <20151125101859.ZwFGGnpGHDLfeIia3T3kj9C6XYENH4QVB3Mq5K2wKFE@z>
+To: linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org, Qais Yousef <qais.yousef@imgtec.com>
+Message-ID: <20151125120638.5HOLVwFwATu8n7PA28W3vyd9NdhZA7togzZVc5aJgtY@z>
 
-From: John Crispin <blogic@openwrt.org>
+This series adds support for a generic IPI mechanism that can be used by both
+arch and drivers to send IPIs to other CPUs.
 
-This patch is included in the openwrt patchset for several years now and needs
-to go upstream as well. It includes the following changes:
-1. Fix up inline function call to xway_mux_apply
-2. Fix GPIO Setup of GPIO Port3
-3. Implement gpio_chip.to_irq
+v2 introduces a big change over v1 and should have addressed all review comments.
 
-Signed-off-by: John Crispin <blogic@openwrt.org>
-Signed-off-by: Martin Schiller <mschiller@tdt.de>
----
- drivers/pinctrl/pinctrl-xway.c | 28 ++++++++++++++++++++++++++--
- 1 file changed, 26 insertions(+), 2 deletions(-)
+List of changes:
+	- We now have 2 IPI flags to distinguish per cpu IPIs from single ones.
+	- IPI functions are in ipi.c
+	- Added offset to ipi_mask to cater for masks starting at non-zero.
+	- New API for sending IPIs.
+	- Added device hierarchy to mips-gic.
+	- Added a new patch to reserve mips-gic IPIs from DT.
+	- Dropped the Docs help for now till API stabilises.
 
-diff --git a/drivers/pinctrl/pinctrl-xway.c b/drivers/pinctrl/pinctrl-xway.c
-index a064962..f0b1b48 100644
---- a/drivers/pinctrl/pinctrl-xway.c
-+++ b/drivers/pinctrl/pinctrl-xway.c
-@@ -1496,10 +1496,9 @@ static struct pinctrl_desc xway_pctrl_desc = {
- 	.confops	= &xway_pinconf_ops,
- };
- 
--static inline int xway_mux_apply(struct pinctrl_dev *pctrldev,
-+static int mux_apply(struct ltq_pinmux_info *info,
- 				int pin, int mux)
- {
--	struct ltq_pinmux_info *info = pinctrl_dev_get_drvdata(pctrldev);
- 	int port = PORT(pin);
- 	u32 alt1_reg = GPIO_ALT1(pin);
- 
-@@ -1519,6 +1518,14 @@ static inline int xway_mux_apply(struct pinctrl_dev *pctrldev,
- 	return 0;
- }
- 
-+static inline int xway_mux_apply(struct pinctrl_dev *pctrldev,
-+				int pin, int mux)
-+{
-+	struct ltq_pinmux_info *info = pinctrl_dev_get_drvdata(pctrldev);
-+
-+	return mux_apply(info, pin, mux);
-+}
-+
- static const struct ltq_cfg_param xway_cfg_params[] = {
- 	{"lantiq,pull",		LTQ_PINCONF_PARAM_PULL},
- 	{"lantiq,open-drain",	LTQ_PINCONF_PARAM_OPEN_DRAIN},
-@@ -1563,12 +1570,28 @@ static int xway_gpio_dir_out(struct gpio_chip *chip, unsigned int pin, int val)
- {
- 	struct ltq_pinmux_info *info = dev_get_drvdata(chip->dev);
- 
-+	if (PORT(pin) == PORT3)
-+		gpio_setbit(info->membase[0], GPIO3_OD, PORT_PIN(pin));
-+	else
-+		gpio_setbit(info->membase[0], GPIO_OD(pin), PORT_PIN(pin));
- 	gpio_setbit(info->membase[0], GPIO_DIR(pin), PORT_PIN(pin));
- 	xway_gpio_set(chip, pin, val);
- 
- 	return 0;
- }
- 
-+static int xway_gpio_to_irq(struct gpio_chip *chip, unsigned offset)
-+{
-+	struct ltq_pinmux_info *info = dev_get_drvdata(chip->dev);
-+	int i;
-+
-+	for (i = 0; i < info->num_exin; i++)
-+		if (info->exin[i] == offset)
-+			return ltq_eiu_get_irq(i);
-+
-+	return -1;
-+}
-+
- static struct gpio_chip xway_chip = {
- 	.label = "gpio-xway",
- 	.direction_input = xway_gpio_dir_in,
-@@ -1577,6 +1600,7 @@ static struct gpio_chip xway_chip = {
- 	.set = xway_gpio_set,
- 	.request = gpiochip_generic_request,
- 	.free = gpiochip_generic_free,
-+	.to_irq = xway_gpio_to_irq,
- 	.base = -1,
- };
- 
+It's hard to detail every change done but these are the headlines.
+It would be good to look at all patches again. Hopefully I broke them down in
+an away that is easy to review.
+
+I hope this is close enough to how it should be done and I didn't stray off.
+
+I tested this on Malta platform which effectively doesn't have DT support.
+Unfortunately I don't have access to a platform with DT support that can run on
+latest kernel. The recent changes in irq/core makes backporting the patches non
+trivial.
+
+Thanks in advance.
+
+Qais
+
+Qais Yousef (19):
+  genirq: Add new IRQ_DOMAIN_FLAGS_IPI
+  genirq: Add DOMAIN_BUS_IPI
+  genirq: Add GENERIC_IRQ_IPI Kconfig symbol
+  genirq: Add new struct ipi_mask and helper functions
+  genirq: Add struct ipi_mask to irq_data
+  genirq: Add struct ipi_mapping and its helper functions
+  genirq: Make irq_domain_alloc_descs() non static
+  genirq: Add a new generic IPI reservation code to irq core
+  genirq: Add a new function to get IPI reverse mapping
+  genirq: Add a new irq_send_ipi() to irq_chip
+  genirq: Implement ipi_send_{mask, single}()
+  irqchip/mips-gic: Add a IPI hierarchy domain
+  irqchip/mips-gic: Add device hierarchy domain
+  irqchip/mips-gic: Use gic_vpes instead of NR_CPUS
+  irqchip/mips-gic: Clear percpu_masks correctly when mapping
+  MIPS: Add generic SMP IPI support
+  MIPS: Make smp CMP, CPS and MT use the new generic IPI functions
+  MIPS: Delete smp-gic.c
+  irqchip/mips-gic: Add new DT property to reserve IPIs
+
+ .../bindings/interrupt-controller/mips-gic.txt     |   7 +
+ arch/mips/Kconfig                                  |   6 -
+ arch/mips/include/asm/smp-ops.h                    |   5 +-
+ arch/mips/kernel/Makefile                          |   1 -
+ arch/mips/kernel/smp-cmp.c                         |   4 +-
+ arch/mips/kernel/smp-cps.c                         |   4 +-
+ arch/mips/kernel/smp-gic.c                         |  64 ---
+ arch/mips/kernel/smp-mt.c                          |   2 +-
+ arch/mips/kernel/smp.c                             | 139 ++++++
+ drivers/irqchip/Kconfig                            |   2 +
+ drivers/irqchip/irq-mips-gic.c                     | 354 +++++++++++----
+ include/linux/irq.h                                | 152 +++++++
+ include/linux/irqchip/mips-gic.h                   |   3 -
+ include/linux/irqdomain.h                          |  46 ++
+ kernel/irq/Kconfig                                 |   4 +
+ kernel/irq/Makefile                                |   1 +
+ kernel/irq/ipi.c                                   | 478 +++++++++++++++++++++
+ kernel/irq/irqdomain.c                             |   6 +-
+ 18 files changed, 1102 insertions(+), 176 deletions(-)
+ delete mode 100644 arch/mips/kernel/smp-gic.c
+ create mode 100644 kernel/irq/ipi.c
+
 -- 
-2.1.4
+2.1.0

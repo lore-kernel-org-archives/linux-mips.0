@@ -1,19 +1,16 @@
-Received: from exsmtp01.microchip.com ([198.175.253.37]:37690 "EHLO
-        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27006153AbbKZFhFqld6w (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Nov 2015 06:37:05 +0100
-Subject: Re: [PATCH 03/14] DEVICETREE: Add PIC32 clock binding documentation
-References: <1448065205-15762-1-git-send-email-joshua.henderson@microchip.com>
- <1448065205-15762-4-git-send-email-joshua.henderson@microchip.com>
- <20151122213110.GA16187@rob-hp-laptop>
-From: Joshua Henderson <joshua.henderson@microchip.com>
-Message-ID: <56569A77.8010800@microchip.com>
-Date: Wed, 25 Nov 2015 22:36:55 -0700
+Received: from mxout51.expurgate.net ([194.37.255.51]:33755 "EHLO
+        mxout51.expurgate.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27012416AbbKZKBUfEL9I convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 26 Nov 2015 11:01:20 +0100
+From: Martin Schiller <mschiller@tdt.de>
+Subject: [PATCH v3 1/5] pinctrl/lantiq: updating devicetree binding description
+Date: Thu, 26 Nov 2015 11:00:06 +0100
+Message-ID: <1448532010-30930-1-git-send-email-mschiller@tdt.de>
 MIME-Version: 1.0
-In-Reply-To: <20151122213110.GA16187@rob-hp-laptop>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Joshua.Henderson@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Return-Path: <mschiller@tdt.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,74 +20,177 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Herring <robh@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Purna Chandra Mandal <purna.mandal@microchip.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Message-ID: <20151126053655.bExQfIuWo_XesY41X7VkOkX85AVEHaQTc4TCEzhF8zk@z>
+To: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-mips@linux-mips.org
+Cc: linus.walleij@linaro.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, ralf@linux-mips.org, blogic@openwrt.org, hauke@hauke-m.de, jogo@openwrt.org, daniel.schwierzeck@gmail.com, Martin Schiller <mschiller@tdt.de>
+Message-ID: <20151126100006.7eNIiQTCmmhEdj4_85funef8KthXPRdoNPcB6I_YJTM@z>
 
-Hi Rob,
+This patch adds the new dedicated "lantiq,<chip>-pinctrl" compatible strings
+to the devicetree bindings Documentation, where <chip> is one of "ase",
+"danube", "xrx100", "xrx200" or "xrx300" and marks the "lantiq,pinctrl-xway",
+"lantiq,pinctrl-ase" and "lantiq,pinctrl-xr9" compatible strings as DEPRECATED.
 
-On 11/22/2015 2:31 PM, Rob Herring wrote:
-> On Fri, Nov 20, 2015 at 05:17:15PM -0700, Joshua Henderson wrote:
->> From: Purna Chandra Mandal <purna.mandal@microchip.com>
->>
->> Document the devicetree bindings for the clock driver found on Microchip
->> PIC32 class devices.
->>
->> Signed-off-by: Purna Chandra Mandal <purna.mandal@microchip.com>
->> Signed-off-by: Joshua Henderson <joshua.henderson@microchip.com>
->> ---
->>  .../devicetree/bindings/clock/microchip,pic32.txt  |  263 ++++++++++++++++++++
->>  1 file changed, 263 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/clock/microchip,pic32.txt
->>
->> diff --git a/Documentation/devicetree/bindings/clock/microchip,pic32.txt b/Documentation/devicetree/bindings/clock/microchip,pic32.txt
->> new file mode 100644
->> index 0000000..4cef72d
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/clock/microchip,pic32.txt
->> @@ -0,0 +1,263 @@
->> +Binding for a Clock hardware block found on
->> +certain Microchip PIC32 MCU devices.
->> +
->> +Microchip SoC clocks-node consists of few oscillators, PLL, multiplexer
->> +and few divider nodes.
-> 
-> [...]
-> 
->> +Required properties:
->> +- compatible : should have "microchip,pic32-clk".
->> +- reg : A Base address and length of the register set.
->> +- interrupts : source of interrupt.
->> +
->> +Optional properties (for subnodes):
->> +- #clock-cells: From common clock binding, should be 0.
->> +
->> +- microchip,clock-indices: in multiplexer node clock sources always aren't linear
->> +    and contiguous. This property helps define clock-sources with respect to
->> +    the mux clock node.
->> +
->> +- microchip,ignore-unused : ignore gate request even if the gated clock is unused.
-> 
-> There is some discussion about this upstream with "critical-clocks" 
-> binding. Can you use and wait for that?
-> 
+Signed-off-by: Martin Schiller <mschiller@tdt.de>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+Changes in v3:
+None
 
-The way this is going, we might not have to wait. :)  Is there a patch available yet to try it out?  
+Changes in v2:
+- subject of the patch
+- changed "lantiq,pinctrl-<chip>" to "lantiq,<chip>-pinctrl"
 
->> +- microchip,status-bit-mask: bitmask for status check. This will be used to confirm
->> +    particular operation by clock sub-node is completed. It is dependent sub-node.
->> +- microchip,bit-mask: enable mask, similar to microchip,status-bit-mask.
-> 
-> We've generally decided not to describe clocks at this level of detail 
-> in DT. It's fine though for simple clock trees. This one seems to be 
-> borderline IMO.
-> 
+ .../bindings/pinctrl/lantiq,pinctrl-xway.txt       | 110 +++++++++++++++++++--
+ 1 file changed, 102 insertions(+), 8 deletions(-)
 
-The binding example is the entire clock tree.  These masks are right from the datasheet.  For reference, do you have an example of a better alternative?
-
->> +- microchip,slew-step: enable frequency slewing(stepping) during rate change;
->> +    applicable only to sys-clock subnode.
-> 
-
-Thanks,
-Josh
+diff --git a/Documentation/devicetree/bindings/pinctrl/lantiq,pinctrl-xway.txt b/Documentation/devicetree/bindings/pinctrl/lantiq,pinctrl-xway.txt
+index e89b467..8e5216b 100644
+--- a/Documentation/devicetree/bindings/pinctrl/lantiq,pinctrl-xway.txt
++++ b/Documentation/devicetree/bindings/pinctrl/lantiq,pinctrl-xway.txt
+@@ -1,7 +1,16 @@
+ Lantiq XWAY pinmux controller
+ 
+ Required properties:
+-- compatible: "lantiq,pinctrl-xway" or "lantiq,pinctrl-xr9"
++- compatible: "lantiq,pinctrl-xway", (DEPRECATED: Use "lantiq,pinctrl-danube")
++	      "lantiq,pinctrl-xr9", (DEPRECATED: Use "lantiq,xrx100-pinctrl" or
++					"lantiq,xrx200-pinctrl")
++	      "lantiq,pinctrl-ase", (DEPRECATED: Use "lantiq,ase-pinctrl")
++	      "lantiq,<chip>-pinctrl", where <chip> is:
++		"ase" (XWAY AMAZON Family)
++		"danube" (XWAY DANUBE Family)
++		"xrx100" (XWAY xRX100 Family)
++		"xrx200" (XWAY xRX200 Family)
++		"xrx300" (XWAY xRX300 Family)
+ - reg: Should contain the physical address and length of the gpio/pinmux
+   register range
+ 
+@@ -36,19 +45,87 @@ Required subnode-properties:
+ 
+ Valid values for group and function names:
+ 
++XWAY: (DEPRECATED: Use DANUBE)
+   mux groups:
+     exin0, exin1, exin2, jtag, ebu a23, ebu a24, ebu a25, ebu clk, ebu cs1,
+     ebu wait, nand ale, nand cs1, nand cle, spi, spi_cs1, spi_cs2, spi_cs3,
+-    spi_cs4, spi_cs5, spi_cs6, asc0, asc0 cts rts, stp, nmi , gpt1, gpt2,
++    spi_cs4, spi_cs5, spi_cs6, asc0, asc0 cts rts, stp, nmi, gpt1, gpt2,
+     gpt3, clkout0, clkout1, clkout2, clkout3, gnt1, gnt2, gnt3, req1, req2,
+     req3
+ 
+-  additional mux groups (XR9 only):
+-    mdio, nand rdy, nand rd, exin3, exin4, gnt4, req4
++  functions:
++    spi, asc, cgu, jtag, exin, stp, gpt, nmi, pci, ebu
++
++XR9: ( DEPRECATED: Use xRX100/xRX200)
++  mux groups:
++    exin0, exin1, exin2, exin3, exin4, jtag, ebu a23, ebu a24, ebu a25,
++    ebu clk, ebu cs1, ebu wait, nand ale, nand cs1, nand cle, nand rdy,
++    nand rd, spi, spi_cs1, spi_cs2, spi_cs3, spi_cs4, spi_cs5, spi_cs6,
++    asc0, asc0 cts rts, stp, nmi, gpt1, gpt2, gpt3, clkout0, clkout1,
++    clkout2, clkout3, gnt1, gnt2, gnt3, gnt4, req1, req2, req3, req4, mdio,
++    gphy0 led0, gphy0 led1, gphy0 led2, gphy1 led0, gphy1 led1, gphy1 led2
++
++  functions:
++    spi, asc, cgu, jtag, exin, stp, gpt, nmi, pci, ebu, mdio, gphy
++
++AMAZON:
++  mux groups:
++    exin0, exin1, exin2, jtag, spi_di, spi_do, spi_clk, spi_cs1, spi_cs2,
++    spi_cs3, spi_cs4, spi_cs5, spi_cs6, asc, stp, gpt1, gpt2, gpt3, clkout0,
++    clkout1, clkout2, mdio, dfe led0, dfe led1, ephy led0, ephy led1, ephy led2
++
++  functions:
++    spi, asc, cgu, jtag, exin, stp, gpt, mdio, ephy, dfe
++
++DANUBE:
++  mux groups:
++    exin0, exin1, exin2, jtag, ebu a23, ebu a24, ebu a25, ebu clk, ebu cs1,
++    ebu wait, nand ale, nand cs1, nand cle, spi_di, spi_do, spi_clk, spi_cs1,
++    spi_cs2, spi_cs3, spi_cs4, spi_cs5, spi_cs6, asc0, asc0 cts rts, stp, nmi,
++    gpt1, gpt2, gpt3, clkout0, clkout1, clkout2, clkout3, gnt1, gnt2, gnt3,
++    req1, req2, req3, dfe led0, dfe led1
+ 
+   functions:
+-    spi, asc, cgu, jtag, exin, stp, gpt, nmi, pci, ebu, mdio
++    spi, asc, cgu, jtag, exin, stp, gpt, nmi, pci, ebu, dfe
+ 
++xRX100:
++  mux groups:
++    exin0, exin1, exin2, exin3, exin4, ebu a23, ebu a24, ebu a25, ebu clk,
++    ebu cs1, ebu wait, nand ale, nand cs1, nand cle, nand rdy, nand rd,
++    spi_di, spi_do, spi_clk, spi_cs1, spi_cs2, spi_cs3, spi_cs4, spi_cs5,
++    spi_cs6, asc0, asc0 cts rts, stp, nmi, gpt1, gpt2, gpt3, clkout0, clkout1,
++    clkout2, clkout3, gnt1, gnt2, gnt3, gnt4, req1, req2, req3, req4, mdio,
++    dfe led0, dfe led1
++
++  functions:
++    spi, asc, cgu, exin, stp, gpt, nmi, pci, ebu, mdio, dfe
++
++xRX200:
++  mux groups:
++    exin0, exin1, exin2, exin3, exin4, ebu a23, ebu a24, ebu a25, ebu clk,
++    ebu cs1, ebu wait, nand ale, nand cs1, nand cle, nand rdy, nand rd,
++    spi_di, spi_do, spi_clk, spi_cs1, spi_cs2, spi_cs3, spi_cs4, spi_cs5,
++    spi_cs6, usif uart_rx, usif uart_tx, usif uart_rts, usif uart_cts,
++    usif uart_dtr, usif uart_dsr, usif uart_dcd, usif uart_ri, usif spi_di,
++    usif spi_do, usif spi_clk, usif spi_cs0, usif spi_cs1, usif spi_cs2,
++    stp, nmi, gpt1, gpt2, gpt3, clkout0, clkout1, clkout2, clkout3, gnt1,
++    gnt2, gnt3, gnt4, req1, req2, req3, req4, mdio, dfe led0, dfe led1,
++    gphy0 led0, gphy0 led1, gphy0 led2, gphy1 led0, gphy1 led1, gphy1 led2
++
++  functions:
++    spi, usif, cgu, exin, stp, gpt, nmi, pci, ebu, mdio, dfe, gphy
++
++xRX300:
++  mux groups:
++    exin0, exin1, exin2, exin4, nand ale, nand cs0, nand cs1, nand cle,
++    nand rdy, nand rd, nand_d0, nand_d1, nand_d2, nand_d3, nand_d4, nand_d5,
++    nand_d6, nand_d7, nand_d1, nand wr, nand wp, nand se, spi_di, spi_do,
++    spi_clk, spi_cs1, spi_cs4, spi_cs6, usif uart_rx, usif uart_tx,
++    usif spi_di, usif spi_do, usif spi_clk, usif spi_cs0, stp, clkout2,
++    mdio, dfe led0, dfe led1, ephy0 led0, ephy0 led1, ephy1 led0, ephy1 led1
++
++  functions:
++    spi, usif, cgu, exin, stp, ebu, mdio, dfe, ephy
+ 
+ 
+ Definition of pin configurations:
+@@ -62,15 +139,32 @@ Optional subnode-properties:
+     0: none, 1: down, 2: up.
+ - lantiq,open-drain: Boolean, enables open-drain on the defined pin.
+ 
+-Valid values for XWAY pin names:
++Valid values for XWAY pin names: (DEPRECATED: Use DANUBE)
+   Pinconf pins can be referenced via the names io0-io31.
+ 
+-Valid values for XR9 pin names:
++Valid values for XR9 pin names: (DEPRECATED: Use xrX100/xRX200)
+   Pinconf pins can be referenced via the names io0-io55.
+ 
++Valid values for AMAZON pin names:
++  Pinconf pins can be referenced via the names io0-io31.
++
++Valid values for DANUBE pin names:
++  Pinconf pins can be referenced via the names io0-io31.
++
++Valid values for xRX100 pin names:
++  Pinconf pins can be referenced via the names io0-io55.
++
++Valid values for xRX200 pin names:
++  Pinconf pins can be referenced via the names io0-io49.
++
++Valid values for xRX300 pin names:
++  Pinconf pins can be referenced via the names io0-io1,io3-io6,io8-io11,
++						io13-io19,io23-io27,io34-io36,
++						io42-io43,io48-io61.
++
+ Example:
+ 	gpio: pinmux@E100B10 {
+-		compatible = "lantiq,pinctrl-xway";
++		compatible = "lantiq,danube-pinctrl";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&state_default>;
+ 
+-- 
+2.1.4

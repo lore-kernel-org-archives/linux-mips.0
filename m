@@ -1,17 +1,16 @@
-Received: from exsmtp01.microchip.com ([198.175.253.37]:52358 "EHLO
+Received: from exsmtp01.microchip.com ([198.175.253.37]:7264 "EHLO
         email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27011072AbbKYSWwnqLCC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Nov 2015 19:22:52 +0100
-Subject: Re: [PATCH 02/14] irqchip: irq-pic32-evic: Add support for PIC32
- interrupt controller
+        by eddie.linux-mips.org with ESMTP id S27006153AbbKZEFyVejO9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Nov 2015 05:05:54 +0100
+Subject: Re: [PATCH 03/14] DEVICETREE: Add PIC32 clock binding documentation
 References: <1448065205-15762-1-git-send-email-joshua.henderson@microchip.com>
- <1448065205-15762-3-git-send-email-joshua.henderson@microchip.com>
- <20151122114530.10bca210@arm.com>
+ <1448065205-15762-4-git-send-email-joshua.henderson@microchip.com>
+ <7182714.6Xmo6Noc6V@wuerfel>
 From: Joshua Henderson <joshua.henderson@microchip.com>
-Message-ID: <5655FC74.9090204@microchip.com>
-Date: Wed, 25 Nov 2015 11:22:44 -0700
+Message-ID: <56568519.3060308@microchip.com>
+Date: Wed, 25 Nov 2015 21:05:45 -0700
 MIME-Version: 1.0
-In-Reply-To: <20151122114530.10bca210@arm.com>
+In-Reply-To: <7182714.6Xmo6Noc6V@wuerfel>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Joshua.Henderson@microchip.com>
@@ -24,44 +23,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marc Zyngier <marc.zyngier@arm.com>
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Cristian Birsan <cristian.birsan@microchip.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>
-Message-ID: <20151125182244.OrENIsds0ALMmz-tv4IYMW3fJMNghVgBBr6uyQXd7_0@z>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Purna Chandra Mandal <purna.mandal@microchip.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
+Message-ID: <20151126040545.f1zlTuh-Hgm7KSz5vJ9MvNVDNUu5t2cdIPuylXKfVyc@z>
 
-On 11/22/2015 4:45 AM, Marc Zyngier wrote:
-> On Fri, 20 Nov 2015 17:17:14 -0700
-> Joshua Henderson <joshua.henderson@microchip.com> wrote:
-> 
-> Joshua, Cristian,
-> 
->> From: Cristian Birsan <cristian.birsan@microchip.com>
+Hi Arnd,
+
+On 11/21/2015 1:49 PM, Arnd Bergmann wrote:
+> On Friday 20 November 2015 17:17:15 Joshua Henderson wrote:
+>> +/* PIC32 specific clks */
+>> +pic32_clktree {
+>> +       #address-cells = <1>;
+>> +       #size-cells = <1>;
+>> +       reg = <0x1f801200 0x200>;
+>> +       compatible = "microchip,pic32-clk";
+>> +       interrupts = <12>;
+>> +       ranges;
+>> +
+>> +       /* secondary oscillator; external input on SOSCI pin */
+>> +       SOSC:sosc_clk {
+>> +               #clock-cells = <0>;
+>> +               compatible = "microchip,pic32-sosc";
+>> +               clock-frequency = <32768>;
+>> +               reg = <0x1f801200 0x10   /* enable reg */
+>> +                       0x1f801390 0x10>; /* status reg */
+>> +               microchip,bit-mask = <0x02>; /* enable mask */
+>> +               microchip,status-bit-mask = <0x10>; /* status-mask*/
+>> +       };
 >>
->> This adds support for the EVIC present on a PIC32MZDA.
->>
->> The following features are supported:
->>  - DT properties for EVIC and for devices that use interrupt lines
->>  - persistent and non-persistent interrupt handling
->>  - Priority, sub-priority and polariy settings for each interrupt line
->>  - irqdomain support
->>
 > 
-> I haven't reviewed the code yet, but the fact that you allow (and
-> actually request) the interrupt priorities to be encoded in the DT
-> raises some concerns:
+> If you want to use the reg property in this way for each cell,
+> at least use a 'ranges' that only translates the actual registers
+> like this
 > 
-> - Aren't priorities entirely under software control (and hence don't
->   belong in DT)?
-
-These are hardware priorities configured by software.  They arbitrate pending hardware interrupts to the CPU.  We can agree that DT is probably not the best place for this configuration.  They will be removed from the binding.
-
-> - More crucially, how do you deal with nested interrupts when you have
->   interrupts running at different priorities? Most parts of Linux
->   cannot cope with that without additional support.
+> 	ranges = <0 0x1f801200 0x200>
+> 
+> 	sosc_clk {
+> 		...
+> 		reg = <0x000 0x10>, <0x190 0x10>;
+> 		...
+> 	};
+> 
+> 	Arnd
 > 
 
-We do not support nested interrupts.
+This does indeed seem to be the correct way to use ranges in this case.  Consider it done.
 
-> Thanks,
-> 
-> 	M.
-> 
+Thanks for the feedback,
+Josh

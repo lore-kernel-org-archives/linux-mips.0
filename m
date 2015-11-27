@@ -1,19 +1,17 @@
-Received: from mail-oi0-f49.google.com ([209.85.218.49]:35008 "EHLO
-        mail-oi0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27006631AbbK0O0WxWeIP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Nov 2015 15:26:22 +0100
-Received: by oige206 with SMTP id e206so62421840oig.2
-        for <linux-mips@linux-mips.org>; Fri, 27 Nov 2015 06:26:17 -0800 (PST)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54416 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27006752AbbK0PrhHkKPb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 27 Nov 2015 16:47:37 +0100
+Date: Fri, 27 Nov 2015 15:47:36 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [RFC] MIPS ABI Extension for IEEE Std 754 Non-Compliant
+ Interlinking
+In-Reply-To: <alpine.DEB.2.10.1511201815230.9012@digraph.polyomino.org.uk>
+Message-ID: <alpine.DEB.2.00.1511271547290.16168@tp.orcam.me.uk>
+References: <alpine.DEB.2.00.1511140411050.7097@tp.orcam.me.uk> <alpine.DEB.2.10.1511171503510.14808@digraph.polyomino.org.uk> <alpine.DEB.2.00.1511201535580.6915@tp.orcam.me.uk> <alpine.DEB.2.10.1511201815230.9012@digraph.polyomino.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <1448622572-16900-2-git-send-email-pmladek@suse.com>
-References: <1448622572-16900-1-git-send-email-pmladek@suse.com>
-        <1448622572-16900-2-git-send-email-pmladek@suse.com>
-Date: Fri, 27 Nov 2015 17:26:16 +0300
-Message-ID: <CAMo8BfJKrrCxhHFEgOrB+KgttjZOSKO1a=FMdEw=YcHa2KDCqw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] printk/nmi: Generic solution for safe printk in NMI
-From: Max Filippov <jcmvbkbc@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <jcmvbkbc@gmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,64 +21,99 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Petr Mladek <pmladek@suse.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, Russell King <rmk+kernel@arm.linux.org.uk>, Daniel Thompson <daniel.thompson@linaro.org>, Jiri Kosina <jkosina@suse.com>, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>, "maintainer:X86 ARCHITECTURE..." <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "moderated list:BLACKFIN ARCHITEC..." <adi-buildroot-devel@lists.sourceforge.net>, "open list:CRIS PORT" <linux-cris-kernel@axis.com>, Linux/MIPS Mailing List <linux-mips@linux-mips.org>, linuxppc-dev@lists.ozlabs.org, linux-s390 <linux-s390@vger.kernel.org>, "open list:SUPERH" <linux-sh@vger.kernel.org>, "open list:SPARC + UltraSPAR..." <sparclinux@vger.kernel.org>
-Message-ID: <20151127142616.dR_NdSOr52y1bVhMm5aTZeLdO0O1zuG9zSFd9Op_FiU@z>
+To: Joseph Myers <joseph@codesourcery.com>
+Cc: linux-mips@linux-mips.org, libc-alpha@sourceware.org, binutils@sourceware.org, gcc@gcc.gnu.org, Matthew Fortune <Matthew.Fortune@imgtec.com>, Daniel Sanders <Daniel.Sanders@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Message-ID: <20151127154736._FSfM5oCM0HgCsWJGSdvkP91Q8FnEdVOoep9-WD1dec@z>
 
-Hi Peter,
+On Fri, 20 Nov 2015, Joseph Myers wrote:
 
-On Fri, Nov 27, 2015 at 2:09 PM, Petr Mladek <pmladek@suse.com> wrote:
-> printk() takes some locks and could not be used a safe way in NMI
-> context.
->
-> The chance of a deadlock is real especially when printing
-> stacks from all CPUs. This particular problem has been addressed
-> on x86 by the commit a9edc8809328 ("x86/nmi: Perform a safe NMI stack
-> trace on all CPUs").
->
-> This patch reuses most of the code and makes it generic. It is
-> useful for all messages and architectures that support NMI.
->
-> The alternative printk_func is set when entering and is reseted when
-> leaving NMI context. It queues IRQ work to copy the messages into
-> the main ring buffer in a safe context.
->
-> __printk_nmi_flush() copies all available messages and reset
-> the buffer. Then we could use a simple cmpxchg operations to
-> get synchronized with writers. There is also used a spinlock
-> to get synchronized with other flushers.
->
-> We do not longer use seq_buf because it depends on external lock.
-> It would be hard to make all supported operations safe for
-> a lockless use. It would be confusing and error prone to
-> make only some operations safe.
->
-> The code is put into separate printk/nmi.c as suggested by
-> Steven Rostedt. It needs a per-CPU buffer and is compiled only
-> on architectures that call nmi_enter(). This is achieved by
-> the new HAVE_NMI Kconfig flag.
->
-> One exception is arm where the deferred printing is used for
-> printing backtraces even without NMI. For this purpose,
-> we define NEED_PRINTK_NMI Kconfig flag. The alternative
-> printk_func is explicitly set when IPI_CPU_BACKTRACE is
-> handled.
->
-> Another exception is Xtensa architecture that uses just a
-> fake NMI.
+> >  The target audience for the `-mieee=strict' option is in my idea a 
+> > non-technical user, say a physicist, who does not necessarily know or is 
+> > fluent with the guts of computer hardware and who has the need to build 
+> > and reliably run their software which uses IEEE Std 754 arithmetic.  
+> > Rather than giving such a user necessarily lengthy explanations as to the 
+> > complexity of the situation I'd prefer to give them this single option to 
+> > guarantee (modulo bugs, as noted above) that a piece of software built 
+> > with this option will either produce correct (as in "standard-compliant") 
+> > results or refuse to run.
+> 
+> This does not make any sense.  The correspondence between IEEE 754 
+> operations and source code in C or other languages is extremely 
+> complicated.  If the user thinks of C as some form of portable assembler 
+> for IEEE 754 operations, that is not something effectively supportable.
+> 
+> Can we assume that if the user depends on rounding modes, they will use 
+> the FENV_ACCESS pragma (not implemented, of course) or -frounding-math?  
+> Can we assume that their dependence on the absence of contraction of 
+> expressions is in accordance with ISO C rules (again, FP_CONTRACT isn't 
+> implemented but -ffp-contract=off is)?  Can we assume that they don't 
+> depend on signaling NaNs?  Can we assume they don't depend on trap 
+> handlers that count the number of times a given exception occurs, since 
+> that is explicitly unsupported by ISO C?
+> 
+> An option like that has to be defined in terms of existing C bindings for 
+> IEEE 754, not in terms of supporting users who don't know what they are 
+> doing and are unfamiliar with how C source code constructs are mapped to 
+> IEEE 754 operations and what features the C standard allows non-default 
+> pragmas or options to be required for.
 
-It's called fake because it's actually maskable, but sometimes
-it is safe to use it as NMI (when there are no other IRQs at the
-same priority level and that level equals EXCM level). That
-condition is checked in arch/xtensa/include/asm/processor.h
-So 'fake' here is to avoid confusion with real NMI that exists
-on xtensa (and is not currently used in linux), otherwise code
-that runs in fake NMI must follow the NMI rules.
+ These are all valid points, thank you for raising them.
 
-To make xtensa compatible with your change we can add a
-choice whether fake NMI should be used to kconfig. It can
-then set HAVE_NMI accordingly. I'll post a patch for xtensa.
+ One problem with the situation you have summarised is it may be possible 
+(though perhaps challenging) for software writers to understand it.  They 
+may take it into account while implementing their code, and they may even 
+provide information to the person compiling their piece of software as to 
+which revision of the relevant language standard to compile for, maybe 
+even some guidelines to which options to select with particular compilers.  
+I find it highly unlikely though that the writers will (be able to) chase 
+individual targets and any obscure hardware-dependent options the targets 
+may provide.  And we cannot expect people compiling software to be 
+educated enough to understand all the complexities behind all the 
+standards and particular implementations involved.
 
--- 
-Thanks.
--- Max
+ What I think we therefore need is an option that, on top of the generic 
+compiler options like ones you've noted, will control to permit or forbid 
+target-specific (in this case MIPS-specific) deviations from IEEE Std 754, 
+its language bindings and the ABI that has been out there for at least 20 
+years (concerning the Linux target in particular).  And I don't think 
+having to explain the peculiarities of NaN encodings and their dependency 
+on hardware implementation in this case to people compiling software is a 
+good idea.  I think they won't just get it as I've even seen people very 
+familiar with computer architectures getting lost.
+
+ As you may see in the GCC patches I have just posted the `-mieee=strict' 
+option I've implemented sets `-fno-fast-math', and `-mrelaxed-nan=none', 
+the only target-specific option so far.  So this does exactly what I 
+outlined above.
+
+ NB I am not going to dive into implementation shortcomings GCC has now as 
+I don't think they really matter for this consideration.  There's no way 
+an option is going to make a compiler do what it does not implement, and 
+users will have to live with that.  I think the presence or absence of an 
+option to control target-specific aspects of IEEE Std 754 compliance is 
+really tangential to any compiler shortcomings, and any such shortcomings 
+addressed in the future will apply accordingly to the mode of compilation 
+set with `-mieee=strict'.
+
+ Taking the observations above into account I propose to reword the 
+paragraph you questioned as follows:
+
+"Any or all of these options may have effects beyond propagating the IEEE 
+Std 754 compliance mode down to the assembler and the linker.  In 
+particular `-mieee=strict' is expected to produce strictly compliant code, 
+which in the context of this specification is defined as: following IEEE 
+Std 754 as closely as the programming language binding to the standard 
+(defined in the relevant language standard), the compiler implementation 
+and target hardware permit.  This means the use of this option may affect 
+code produced in ways beyond NaN representation only."
+
+> >  Does this answer address your concerns?
+> 
+> No, the option concept as described seems too irremediably vague.
+
+ Does this explanation give you a better idea of what I have in mind?  Do 
+you still have concerns about the feasibility of the idea?
+
+ Thank you for your input.
+
+  Maciej

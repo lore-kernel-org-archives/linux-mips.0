@@ -1,18 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:7426 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:42867 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007140AbbK3L7WoG23P (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 30 Nov 2015 12:59:22 +0100
-Subject: Re: [PATCH v2 09/19] genirq: Add a new function to get IPI reverse
- mapping
+        with ESMTP id S27007943AbbK3N5mjhvX- (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 30 Nov 2015 14:57:42 +0100
+Subject: Re: [PATCH v2 04/19] genirq: Add new struct ipi_mask and helper
+ functions
 References: <1448453217-3874-1-git-send-email-qais.yousef@imgtec.com>
- <1448453217-3874-10-git-send-email-qais.yousef@imgtec.com>
- <5658429D.3000105@imgtec.com> <alpine.DEB.2.11.1511301139500.3572@nanos>
- <565C2ABD.5030409@imgtec.com> <alpine.DEB.2.11.1511301220380.3572@nanos>
+ <1448453217-3874-5-git-send-email-qais.yousef@imgtec.com>
+ <alpine.DEB.2.11.1511301158100.3572@nanos> <565C3771.7040202@imgtec.com>
+ <alpine.DEB.2.11.1511301410280.3572@nanos>
 From: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <565C3A14.10401@imgtec.com>
-Date: Mon, 30 Nov 2015 11:59:16 +0000
+Message-ID: <565C55CF.8080702@imgtec.com>
+Date: Mon, 30 Nov 2015 13:57:35 +0000
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.11.1511301220380.3572@nanos>
+In-Reply-To: <alpine.DEB.2.11.1511301410280.3572@nanos>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Qais.Yousef@imgtec.com>
@@ -27,34 +27,26 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Thomas Gleixner <tglx@linutronix.de>
 Cc: linux-kernel@vger.kernel.org, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20151130115916.BuTIZA1td0ACfC_908fZU4domB9SgAAu_i8oir2hejw@z>
+Message-ID: <20151130135735.t1_YamQ1wf46lW8vuJgQrgMYpBd2-NW_dYJH7pUbabE@z>
 
-On 11/30/2015 11:22 AM, Thomas Gleixner wrote:
+On 11/30/2015 01:11 PM, Thomas Gleixner wrote:
 > On Mon, 30 Nov 2015, Qais Yousef wrote:
->> On 11/30/2015 10:40 AM, Thomas Gleixner wrote:
->>> On Fri, 27 Nov 2015, Qais Yousef wrote:
->>>> While trying to get my remoteproc driver work with this I uncovered a
->>>> problem
->>>> with this approach.
->>>>
->>>> mips-gic doesn't store the actual hwirq in the irq_data. It uses
->>>> GIC_SHARED_TO_HWIRQ() and GIC_HWIRQ_TO_SHARED() to add and remove an
->>>> offset.
->>> Why can't MIPS store the real hwirq number in irq_data?
 >>
->> I'm wary of ending up in inconsistency hell where some functions need to deal
->> with raw hwirq and others with translated ones.
->>
->> I will give this a go first and see if it gets really ugly.
-> Well, the question is why can't those functions not all use the raw
-> hardware irq. We have it in irq_data exactly to avoid calculations in
-> the hot path functions.
+>> Yes it would be much better to reuse it but wouldn't the runtime checks
+>> against nr_cpu_ids create problems especially when CPUMASK_ON_STACK is
+>> defined?
+> nr_cpu_ids == find_last_bit(cpumask_bits(cpu_possible_mask),NR_CPUS) + 1;
+>
 >
 
 
-I'll see what I can do as part of this series. I think I can fix the new 
-IPI and device domains, but can't promise about the root gic domain. It 
-might be too big of a change for this series.
+OK. I can partially see your point. I can't see how the extra 
+coprocessor bits will be set in cpu_possible_mask and whether this will 
+affect normal linux operation (ie: will it think it can bring that cpu 
+up or migrate irqs to it?).
+
+Since you don't see an issue with it, it must be just a missing gap in 
+my knowledge that I'll fill while doing this work.
 
 Thanks,
 Qais

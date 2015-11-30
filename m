@@ -1,21 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:42867 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007943AbbK3N5mjhvX- (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 30 Nov 2015 14:57:42 +0100
-Subject: Re: [PATCH v2 04/19] genirq: Add new struct ipi_mask and helper
- functions
-References: <1448453217-3874-1-git-send-email-qais.yousef@imgtec.com>
- <1448453217-3874-5-git-send-email-qais.yousef@imgtec.com>
- <alpine.DEB.2.11.1511301158100.3572@nanos> <565C3771.7040202@imgtec.com>
- <alpine.DEB.2.11.1511301410280.3572@nanos>
-From: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <565C55CF.8080702@imgtec.com>
-Date: Mon, 30 Nov 2015 13:57:35 +0000
+Received: from mx2.suse.de ([195.135.220.15]:36298 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27006999AbbK3OZsnsz2S (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 30 Nov 2015 15:25:48 +0100
+Date: Mon, 30 Nov 2015 15:25:45 +0100
+From: Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH v2 1/5] printk/nmi: Generic solution for safe printk in
+ NMI
+Message-ID: <20151130142545.GB8047@pathway.suse.cz>
+References: <1448622572-16900-1-git-send-email-pmladek@suse.com>
+ <1448622572-16900-2-git-send-email-pmladek@suse.com>
+ <CAMo8BfJKrrCxhHFEgOrB+KgttjZOSKO1a=FMdEw=YcHa2KDCqw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.11.1511301410280.3572@nanos>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMo8BfJKrrCxhHFEgOrB+KgttjZOSKO1a=FMdEw=YcHa2KDCqw@mail.gmail.com>
+Return-Path: <pmladek@suse.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,28 +24,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20151130135735.t1_YamQ1wf46lW8vuJgQrgMYpBd2-NW_dYJH7pUbabE@z>
+To: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, Russell King <rmk+kernel@arm.linux.org.uk>, Daniel Thompson <daniel.thompson@linaro.org>, Jiri Kosina <jkosina@suse.com>, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>, "maintainer:X86 ARCHITECTURE..." <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "moderated list:BLACKFIN ARCHITEC..." <adi-buildroot-devel@lists.sourceforge.net>, "open list:CRIS PORT" <linux-cris-kernel@axis.com>, Linux/MIPS Mailing List <linux-mips@linux-mips.org>, linuxppc-dev@lists.ozlabs.org, linux-s390 <linux-s390@vger.kernel.org>, "open list:SUPERH" <linux-sh@vger.kernel.org>, "open list:SPARC + UltraSPAR..." <sparclinux@vger.kernel.org>
+Message-ID: <20151130142545.-w4MmDelm64rq1YgXWg5L9D9jrILb91DEkDwz7Br6kM@z>
 
-On 11/30/2015 01:11 PM, Thomas Gleixner wrote:
-> On Mon, 30 Nov 2015, Qais Yousef wrote:
->>
->> Yes it would be much better to reuse it but wouldn't the runtime checks
->> against nr_cpu_ids create problems especially when CPUMASK_ON_STACK is
->> defined?
-> nr_cpu_ids == find_last_bit(cpumask_bits(cpu_possible_mask),NR_CPUS) + 1;
->
->
+On Fri 2015-11-27 17:26:16, Max Filippov wrote:
+Hi Max,
 
+> > Another exception is Xtensa architecture that uses just a
+> > fake NMI.
+> 
+> It's called fake because it's actually maskable, but sometimes
+> it is safe to use it as NMI (when there are no other IRQs at the
+> same priority level and that level equals EXCM level). That
+> condition is checked in arch/xtensa/include/asm/processor.h
+> So 'fake' here is to avoid confusion with real NMI that exists
+> on xtensa (and is not currently used in linux), otherwise code
+> that runs in fake NMI must follow the NMI rules.
+> 
+> To make xtensa compatible with your change we can add a
+> choice whether fake NMI should be used to kconfig. It can
+> then set HAVE_NMI accordingly. I'll post a patch for xtensa.
 
-OK. I can partially see your point. I can't see how the extra 
-coprocessor bits will be set in cpu_possible_mask and whether this will 
-affect normal linux operation (ie: will it think it can bring that cpu 
-up or migrate irqs to it?).
+Thanks a lot for explanation. I'll wait for the destiny of
+the patch adding CONFIG_XTENSA_FAKE_NMI. It is not easy
+for me to review. Anyway, we could select HAVE_NMI for
+Xtensa anytime later if this patchset goes in earlier.
 
-Since you don't see an issue with it, it must be just a missing gap in 
-my knowledge that I'll fill while doing this work.
-
-Thanks,
-Qais
+Best Regards,
+Petr

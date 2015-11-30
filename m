@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:21940 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:52592 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008047AbbK3QYCOGyRv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 30 Nov 2015 17:24:02 +0100
+        with ESMTP id S27007943AbbK3QYRC31rE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 30 Nov 2015 17:24:17 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 07/28] PCI: xilinx: always clear interrupt decode register
-Date: Mon, 30 Nov 2015 16:21:32 +0000
-Message-ID: <1448900513-20856-8-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 08/28] PCI: xilinx: fix INTX irq dispatch
+Date: Mon, 30 Nov 2015 16:21:33 +0000
+Message-ID: <1448900513-20856-9-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1448900513-20856-1-git-send-email-paul.burton@imgtec.com>
 References: <1448900513-20856-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,42 +21,35 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, =?UTF-8?q?S=C3=B6ren=20Brinkmann?= <soren.brinkmann@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Jiang Liu <jiang.liu@linux.intel.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Russell Joyce <russell.joyce@york.ac.uk>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org
-Message-ID: <20151130162132.AxEGLr6JRMU9iykW5LTx9W6nAg92orzgHCyPSggkZZA@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, =?UTF-8?q?S=C3=B6ren=20Brinkmann?= <soren.brinkmann@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Jiang Liu <jiang.liu@linux.intel.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Russell Joyce <russell.joyce@york.ac.uk>, linux-kernel@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>, linux-arm-kernel@lists.infradead.org
+Message-ID: <20151130162133.gRbyO3q-8e-mTgRshyLyxmFq20mYnXyu_dQxx6v4TPA@z>
 
-If an MSI or INTx interrupt is incorrectly triggered with an empty FIFO
-then xilinx_pcie_intr_handler will print a warning & skip further
-processing. However it did not clear the interrupt in the decode
-register, so the same INTX or MSI interrupt would trigger again
-immediately even though the FIFO is still empty. Clear the interrupt in
-the decode register to avoid that situation.
+The IRQ domain for INTX interrupts has 4 entries, numbered 0 to 3. This
+matches what the hardware reports from the interrupt FIFO exactly, but
+xilinx_pcie_intr_handler was adding 1 to that value to convert to the
+range 1 to 4. Stop adding 1, such that all of INTA through to INTD fall
+within the range of the IRQ domain.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
- drivers/pci/host/pcie-xilinx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pci/host/pcie-xilinx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/host/pcie-xilinx.c b/drivers/pci/host/pcie-xilinx.c
-index c6fe273..3058a57 100644
+index 3058a57..ac9da72 100644
 --- a/drivers/pci/host/pcie-xilinx.c
 +++ b/drivers/pci/host/pcie-xilinx.c
-@@ -444,7 +444,7 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
- 		/* Check whether interrupt valid */
- 		if (!(val & XILINX_PCIE_RPIFR1_INTR_VALID)) {
- 			dev_warn(port->dev, "RP Intr FIFO1 read error\n");
--			return IRQ_HANDLED;
-+			goto out;
+@@ -451,8 +451,8 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
+ 			irq = pcie_read(port, XILINX_PCIE_REG_RPIFR2) &
+ 				XILINX_PCIE_RPIFR2_MSG_DATA;
+ 		} else {
+-			val = ((val & XILINX_PCIE_RPIFR1_INTR_MASK) >>
+-				XILINX_PCIE_RPIFR1_INTR_SHIFT) + 1;
++			val = (val & XILINX_PCIE_RPIFR1_INTR_MASK) >>
++				XILINX_PCIE_RPIFR1_INTR_SHIFT;
+ 			irq = irq_find_mapping(port->irq_domain, val);
  		}
- 
- 		if (val & XILINX_PCIE_RPIFR1_MSI_INTR) {
-@@ -490,6 +490,7 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
- 	if (status & XILINX_PCIE_INTR_MST_ERRP)
- 		dev_warn(port->dev, "Master error poison\n");
- 
-+out:
- 	/* Clear the Interrupt Decode register */
- 	pcie_write(port, status, XILINX_PCIE_REG_IDR);
  
 -- 
 2.6.2

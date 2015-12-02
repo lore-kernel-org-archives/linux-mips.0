@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:54622 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18870 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011789AbbLBMWPM8eAA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Dec 2015 13:22:15 +0100
+        with ESMTP id S27011814AbbLBMWQ5pXjA (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Dec 2015 13:22:16 +0100
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH v3 00/19] Implement generic IPI support mechanism
-Date: Wed, 2 Dec 2015 12:21:41 +0000
-Message-ID: <1449058920-21011-1-git-send-email-qais.yousef@imgtec.com>
+Subject: [PATCH v3 01/19] genirq: Add new IRQ_DOMAIN_FLAGS_IPI
+Date: Wed, 2 Dec 2015 12:21:42 +0000
+Message-ID: <1449058920-21011-2-git-send-email-qais.yousef@imgtec.com>
+In-Reply-To: <1449058920-21011-1-git-send-email-qais.yousef@imgtec.com>
+References: <1449058920-21011-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Qais.Yousef@imgtec.com>
@@ -20,66 +22,81 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org
 Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org, Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <20151202122141.Hlg4u9wYt18uA8pA0xsgSBfFkpvUOxqu0FN3WKHbGm4@z>
+Message-ID: <20151202122142.qVzJuSoqXiTLo_1jqB01QsQuXo0jVWIDeexmmWYKktI@z>
 
-This series adds support for a generic IPI mechanism that can be used by both
-arch and drivers to send IPIs to other CPUs.
+This flag will be used to identify an IPI domain.
 
-v3 removes the use of struct ipi_mask and moves to using cpumask only.
-The assumption is that the user would need to set NR_CPUS to a suitable value to
-cater for coprocessors outside linux SMP range.
+We have two types:
 
-We use irq_common_data affinity to store the ipi_mask too.
+	- PER_CPU: indicating a virq for each IPI
+	- SINGLE: indicating a single virq for all IPIs
 
-This series is still based on irq/core 4.3 since 4.4-rcs has mips build issues.
-I'll rebase once they're fixed.
+Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
+---
+ include/linux/irqdomain.h | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-Thanks,
-Qais
-
-Qais Yousef (19):
-  genirq: Add new IRQ_DOMAIN_FLAGS_IPI
-  genirq: Add DOMAIN_BUS_IPI
-  genirq: Add GENERIC_IRQ_IPI Kconfig symbol
-  genirq: Add struct ipi_mapping and its helper functions
-  genirq: Add ipi_offset to irq_common_data
-  genirq: Add an extra comment about the use of affinity in
-    irq_common_data
-  genirq: Make irq_domain_alloc_descs() non static
-  genirq: Add a new generic IPI reservation code to irq core
-  genirq: Add a new function to get IPI reverse mapping
-  genirq: Add a new irq_send_ipi() to irq_chip
-  genirq: Implement ipi_send_{mask, single}()
-  irqchip/mips-gic: Add a IPI hierarchy domain
-  irqchip/mips-gic: Add device hierarchy domain
-  irqchip/mips-gic: Use gic_vpes instead of NR_CPUS
-  irqchip/mips-gic: Clear percpu_masks correctly when mapping
-  MIPS: Add generic SMP IPI support
-  MIPS: Make smp CMP, CPS and MT use the new generic IPI functions
-  MIPS: Delete smp-gic.c
-  irqchip/mips-gic: Add new DT property to reserve IPIs
-
- .../bindings/interrupt-controller/mips-gic.txt     |   7 +
- arch/mips/Kconfig                                  |   6 -
- arch/mips/include/asm/smp-ops.h                    |   5 +-
- arch/mips/kernel/Makefile                          |   1 -
- arch/mips/kernel/smp-cmp.c                         |   4 +-
- arch/mips/kernel/smp-cps.c                         |   4 +-
- arch/mips/kernel/smp-gic.c                         |  64 ---
- arch/mips/kernel/smp-mt.c                          |   2 +-
- arch/mips/kernel/smp.c                             | 136 +++++++
- drivers/irqchip/Kconfig                            |   2 +
- drivers/irqchip/irq-mips-gic.c                     | 353 ++++++++++++-----
- include/linux/irq.h                                |  61 ++-
- include/linux/irqchip/mips-gic.h                   |   3 -
- include/linux/irqdomain.h                          |  46 +++
- kernel/irq/Kconfig                                 |   4 +
- kernel/irq/Makefile                                |   1 +
- kernel/irq/ipi.c                                   | 437 +++++++++++++++++++++
- kernel/irq/irqdomain.c                             |   6 +-
- 18 files changed, 965 insertions(+), 177 deletions(-)
- delete mode 100644 arch/mips/kernel/smp-gic.c
- create mode 100644 kernel/irq/ipi.c
-
+diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
+index d5e5c5bef28c..c1a59f37674d 100644
+--- a/include/linux/irqdomain.h
++++ b/include/linux/irqdomain.h
+@@ -171,6 +171,12 @@ enum {
+ 	/* Core calls alloc/free recursive through the domain hierarchy. */
+ 	IRQ_DOMAIN_FLAG_AUTO_RECURSIVE	= (1 << 1),
+ 
++	/* Irq domain is an IPI domain with virq per cpu */
++	IRQ_DOMAIN_FLAG_IPI_PER_CPU	= (1 << 2),
++
++	/* Irq domain is an IPI domain with single virq */
++	IRQ_DOMAIN_FLAG_IPI_SINGLE	= (1 << 3),
++
+ 	/*
+ 	 * Flags starting from IRQ_DOMAIN_FLAG_NONCORE are reserved
+ 	 * for implementation specific purposes and ignored by the
+@@ -391,6 +397,22 @@ static inline bool irq_domain_is_hierarchy(struct irq_domain *domain)
+ {
+ 	return domain->flags & IRQ_DOMAIN_FLAG_HIERARCHY;
+ }
++
++static inline bool irq_domain_is_ipi(struct irq_domain *domain)
++{
++	return domain->flags &
++		(IRQ_DOMAIN_FLAG_IPI_PER_CPU | IRQ_DOMAIN_FLAG_IPI_SINGLE);
++}
++
++static inline bool irq_domain_is_ipi_per_cpu(struct irq_domain *domain)
++{
++	return domain->flags & IRQ_DOMAIN_FLAG_IPI_PER_CPU;
++}
++
++static inline bool irq_domain_is_ipi_single(struct irq_domain *domain)
++{
++	return domain->flags & IRQ_DOMAIN_FLAG_IPI_SINGLE;
++}
+ #else	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
+ static inline void irq_domain_activate_irq(struct irq_data *data) { }
+ static inline void irq_domain_deactivate_irq(struct irq_data *data) { }
+@@ -404,6 +426,21 @@ static inline bool irq_domain_is_hierarchy(struct irq_domain *domain)
+ {
+ 	return false;
+ }
++
++static inline bool irq_domain_is_ipi(struct irq_domain *domain)
++{
++	return false;
++}
++
++static inline bool irq_domain_is_ipi_per_cpu(struct irq_domain *domain)
++{
++	return false;
++}
++
++static inline bool irq_domain_is_ipi_single(struct irq_domain *domain)
++{
++	return false;
++}
+ #endif	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
+ 
+ #else /* CONFIG_IRQ_DOMAIN */
 -- 
 2.1.0

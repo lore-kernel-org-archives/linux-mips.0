@@ -1,17 +1,14 @@
-Received: from mx2.suse.de ([195.135.220.15]:43713 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27007995AbbLAXY7wDJBD (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 2 Dec 2015 00:24:59 +0100
-Date: Wed, 2 Dec 2015 00:24:49 +0100 (CET)
-From: Jiri Kosina <jikos@kernel.org>
-Subject: Re: [PATCH v2 1/5] printk/nmi: Generic solution for safe printk in
- NMI
-In-Reply-To: <20151127153804.GC2648@pathway.suse.cz>
-Message-ID: <alpine.LNX.2.00.1512020022460.32500@pobox.suse.cz>
-References: <1448622572-16900-2-git-send-email-pmladek@suse.com> <201511271919.aEZuZKNe%fengguang.wu@intel.com> <20151127153804.GC2648@pathway.suse.cz>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54622 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27011789AbbLBMWPM8eAA (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Dec 2015 13:22:15 +0100
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: [PATCH v3 00/19] Implement generic IPI support mechanism
+Date: Wed, 2 Dec 2015 12:21:41 +0000
+Message-ID: <1449058920-21011-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-Path: <jikos@kernel.org>
+Content-Type: text/plain
+Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,18 +18,68 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Petr Mladek <pmladek@suse.com>
-Cc: kbuild test robot <lkp@intel.com>, kbuild-all@01.org, Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, Russell King <rmk+kernel@arm.linux.org.uk>, Daniel Thompson <daniel.thompson@linaro.org>, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, x86@kernel.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-cris-kernel@axis.com, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, linux-am33-list@redhat.com
-Message-ID: <20151201232449.CrvQZCxUiolu6W5vAHtDMP3NWZLpn1AY6qIvHZS8HOg@z>
+To: linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org, Qais Yousef <qais.yousef@imgtec.com>
+Message-ID: <20151202122141.Hlg4u9wYt18uA8pA0xsgSBfFkpvUOxqu0FN3WKHbGm4@z>
 
-On Fri, 27 Nov 2015, Petr Mladek wrote:
+This series adds support for a generic IPI mechanism that can be used by both
+arch and drivers to send IPIs to other CPUs.
 
-> MN10300 has its own implementation for entering and exiting NMI 
-> handlers. It does not call nmi_enter() and nmi_exit(). Please, find 
-> below an updated patch that adds printk_nmi_enter() and 
-> printk_nmi_exit() to the custom entry points. Then we could add HAVE_NMI 
-> to arch/mn10300/Kconfig and avoid the above warning.
+v3 removes the use of struct ipi_mask and moves to using cpumask only.
+The assumption is that the user would need to set NR_CPUS to a suitable value to
+cater for coprocessors outside linux SMP range.
 
-Hmm, so what exactly would go wrong if MN10300 (whatever that architecture 
-is) would call nmi_enter() and nmi_exit() at the places where it's 
-starting and finishing NMI handler?
+We use irq_common_data affinity to store the ipi_mask too.
+
+This series is still based on irq/core 4.3 since 4.4-rcs has mips build issues.
+I'll rebase once they're fixed.
+
+Thanks,
+Qais
+
+Qais Yousef (19):
+  genirq: Add new IRQ_DOMAIN_FLAGS_IPI
+  genirq: Add DOMAIN_BUS_IPI
+  genirq: Add GENERIC_IRQ_IPI Kconfig symbol
+  genirq: Add struct ipi_mapping and its helper functions
+  genirq: Add ipi_offset to irq_common_data
+  genirq: Add an extra comment about the use of affinity in
+    irq_common_data
+  genirq: Make irq_domain_alloc_descs() non static
+  genirq: Add a new generic IPI reservation code to irq core
+  genirq: Add a new function to get IPI reverse mapping
+  genirq: Add a new irq_send_ipi() to irq_chip
+  genirq: Implement ipi_send_{mask, single}()
+  irqchip/mips-gic: Add a IPI hierarchy domain
+  irqchip/mips-gic: Add device hierarchy domain
+  irqchip/mips-gic: Use gic_vpes instead of NR_CPUS
+  irqchip/mips-gic: Clear percpu_masks correctly when mapping
+  MIPS: Add generic SMP IPI support
+  MIPS: Make smp CMP, CPS and MT use the new generic IPI functions
+  MIPS: Delete smp-gic.c
+  irqchip/mips-gic: Add new DT property to reserve IPIs
+
+ .../bindings/interrupt-controller/mips-gic.txt     |   7 +
+ arch/mips/Kconfig                                  |   6 -
+ arch/mips/include/asm/smp-ops.h                    |   5 +-
+ arch/mips/kernel/Makefile                          |   1 -
+ arch/mips/kernel/smp-cmp.c                         |   4 +-
+ arch/mips/kernel/smp-cps.c                         |   4 +-
+ arch/mips/kernel/smp-gic.c                         |  64 ---
+ arch/mips/kernel/smp-mt.c                          |   2 +-
+ arch/mips/kernel/smp.c                             | 136 +++++++
+ drivers/irqchip/Kconfig                            |   2 +
+ drivers/irqchip/irq-mips-gic.c                     | 353 ++++++++++++-----
+ include/linux/irq.h                                |  61 ++-
+ include/linux/irqchip/mips-gic.h                   |   3 -
+ include/linux/irqdomain.h                          |  46 +++
+ kernel/irq/Kconfig                                 |   4 +
+ kernel/irq/Makefile                                |   1 +
+ kernel/irq/ipi.c                                   | 437 +++++++++++++++++++++
+ kernel/irq/irqdomain.c                             |   6 +-
+ 18 files changed, 965 insertions(+), 177 deletions(-)
+ delete mode 100644 arch/mips/kernel/smp-gic.c
+ create mode 100644 kernel/irq/ipi.c
+
+-- 
+2.1.0

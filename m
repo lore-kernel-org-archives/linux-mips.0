@@ -1,16 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:22169 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012122AbbLBMWoI88hA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Dec 2015 13:22:44 +0100
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH v3 19/19] irqchip/mips-gic: Add new DT property to reserve IPIs
-Date: Wed, 2 Dec 2015 12:22:00 +0000
-Message-ID: <1449058920-21011-20-git-send-email-qais.yousef@imgtec.com>
-In-Reply-To: <1449058920-21011-1-git-send-email-qais.yousef@imgtec.com>
-References: <1449058920-21011-1-git-send-email-qais.yousef@imgtec.com>
+Received: from smtp-out6.electric.net ([192.162.217.183]:58386 "EHLO
+        smtp-out6.electric.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27012198AbbLBQWRk8yse (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Dec 2015 17:22:17 +0100
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH v2 5/5] printk/nmi: Increase the size of the temporary
+ buffer
+Date: Wed, 2 Dec 2015 16:20:41 +0000
+Message-ID: <063D6719AE5E284EB5DD2968C1650D6D1CBE1231@AcuExch.aculab.com>
+References: <1448622572-16900-1-git-send-email-pmladek@suse.com>
+ <1448622572-16900-6-git-send-email-pmladek@suse.com>
+ <81211733-2484-40A9-9D4A-644AA27FBC73@gmail.com>
+In-Reply-To: <81211733-2484-40A9-9D4A-644AA27FBC73@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Qais.Yousef@imgtec.com>
+Return-Path: <David.Laight@ACULAB.COM>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,76 +25,16 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org, Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <20151202122200.sgiZjRyB7dgOAUNyM6D6_iO1vskimpKbCzl6ErFecHI@z>
+To: 'yalin wang' <yalin.wang2010@gmail.com>, Petr Mladek <pmladek@suse.com>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Daniel Thompson <daniel.thompson@linaro.org>, Jiri Kosina <jkosina@suse.com>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, "x86@kernel.org" <x86@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Ingo Molnar <mingo@redhat.com>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Russell King <rmk+kernel@arm.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Thomas Gleixner <tglx@linutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20151202162041.xNWrfjrfrzYu0k-JZcDE78pfKp0zIPIt-wDG6U5KVfY@z>
 
-The new property will allow to specify the range of GIC hwirqs to use for IPIs.
-
-This is an optinal property. We preserve the previous behaviour of allocating
-the last 2 * gic_vpes if it's not specified or DT is not supported.
-
-Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
-Acked-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/interrupt-controller/mips-gic.txt    |  7 +++++++
- drivers/irqchip/irq-mips-gic.c                               | 12 ++++++++++--
- 2 files changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt b/Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
-index aae4c384ee1f..173595305e26 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
-+++ b/Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
-@@ -23,6 +23,12 @@ Optional properties:
- - mti,reserved-cpu-vectors : Specifies the list of CPU interrupt vectors
-   to which the GIC may not route interrupts.  Valid values are 2 - 7.
-   This property is ignored if the CPU is started in EIC mode.
-+- mti,reserved-ipi-vectors : Specifies the range of GIC interrupts that are
-+  reserved for IPIs.
-+  It accepts 2 values, the 1st is the starting interrupt and the 2nd is the size
-+  of the reserved range.
-+  If not specified, the driver will allocate the last 2 * number of VPEs in the
-+  system.
- 
- Required properties for timer sub-node:
- - compatible : Should be "mti,gic-timer".
-@@ -44,6 +50,7 @@ Example:
- 		#interrupt-cells = <3>;
- 
- 		mti,reserved-cpu-vectors = <7>;
-+		mti,reserved-ipi-vectors = <40 8>;
- 
- 		timer {
- 			compatible = "mti,gic-timer";
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 77200da9d8d3..055aa513295c 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -944,6 +944,7 @@ static void __init __gic_init(unsigned long gic_base_addr,
- 			      struct device_node *node)
- {
- 	unsigned int gicconfig;
-+	unsigned int v[2];
- 
- 	gic_base = ioremap_nocache(gic_base_addr, gic_addrspace_size);
- 
-@@ -1012,8 +1013,15 @@ static void __init __gic_init(unsigned long gic_base_addr,
- 
- 	gic_ipi_domain->bus_token = DOMAIN_BUS_IPI;
- 
--	/* Make the last 2 * NR_CPUS available for IPIs */
--	bitmap_set(ipi_resrv, gic_shared_intrs - 2 * gic_vpes, 2 * gic_vpes);
-+	if (node &&
-+	    !of_property_read_u32_array(node, "mti,reserved-ipi-vectors", v, 2)) {
-+		bitmap_set(ipi_resrv, v[0], v[1]);
-+	} else {
-+		/* Make the last 2 * gic_vpes available for IPIs */
-+		bitmap_set(ipi_resrv,
-+			   gic_shared_intrs - 2 * gic_vpes,
-+			   2 * gic_vpes);
-+	}
- 
- 	gic_basic_init();
- }
--- 
-2.1.0
+RnJvbTogeWFsaW4gd2FuZw0KPiBTZW50OiAzMCBOb3ZlbWJlciAyMDE1IDE2OjQyDQo+ID4gT24g
+Tm92IDI3LCAyMDE1LCBhdCAxOTowOSwgUGV0ciBNbGFkZWsgPHBtbGFkZWtAc3VzZS5jb20+IHdy
+b3RlOg0KPiA+DQo+ID4gVGVzdGluZyBoYXMgc2hvd24gdGhhdCB0aGUgYmFja3RyYWNlIHNvbWV0
+aW1lcyBkb2VzIG5vdCBmaXQNCj4gPiBpbnRvIHRoZSA0a0IgdGVtcG9yYXJ5IGJ1ZmZlciB0aGF0
+IGlzIHVzZWQgaW4gTk1JIGNvbnRleHQuDQo+ID4NCj4gPiBUaGUgd2FybmluZ3MgYXJlIGdvbmUg
+d2hlbiBJIGRvdWJsZSB0aGUgdGVtcG9yYXJ5IGJ1ZmZlciBzaXplLg0KDQpZb3UgYXJlIHdhc3Rp
+bmcgYSBsb3Qgb2YgbWVtb3J5IGZvciBzb21ldGhpbmcgdGhhdCBpcyBpbmZyZXF1ZW50bHkgdXNl
+ZC4NClRoZXJlIG91Z2h0IHRvIGJlIHNvbWUgd2F5IG9mIGNvcHlpbmcgcGFydGlhbCB0cmFjZWJh
+Y2tzIGludG8gdGhlDQptYWluIGJ1ZmZlci4NCg0KCURhdmlkDQoNCg==

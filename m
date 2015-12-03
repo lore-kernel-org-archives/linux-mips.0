@@ -1,16 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61144 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:23806 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012227AbbLBQ0vaN20X (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Dec 2015 17:26:51 +0100
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: [PATCH v8 3/3] MIPS: dts: jz4780/ci20: Add NEMC, BCH and NAND device tree nodes
-Date: Wed, 2 Dec 2015 16:26:17 +0000
-Message-ID: <1449073577-28465-4-git-send-email-harvey.hunt@imgtec.com>
-In-Reply-To: <1449073577-28465-1-git-send-email-harvey.hunt@imgtec.com>
-References: <1449073577-28465-1-git-send-email-harvey.hunt@imgtec.com>
+        with ESMTP id S27007572AbbLCJwIGx5aZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 3 Dec 2015 10:52:08 +0100
+Subject: Re: [PATCH v3 14/19] irqchip/mips-gic: Use gic_vpes instead of
+ NR_CPUS
+References: <1449058920-21011-1-git-send-email-qais.yousef@imgtec.com>
+ <1449058920-21011-15-git-send-email-qais.yousef@imgtec.com>
+ <565F3869.4020603@cogentembedded.com>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Message-ID: <566010C1.1000506@imgtec.com>
+Date: Thu, 3 Dec 2015 09:52:01 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Harvey.Hunt@imgtec.com>
+In-Reply-To: <565F3869.4020603@cogentembedded.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,154 +24,22 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mtd@lists.infradead.org
-Cc: alex@alex-smith.me.uk, computersforpeace@gmail.com, dwmw2@infradead.org, Zubair.Kakakhel@imgtec.com, linux-kernel@vger.kernel.org, Alex Smith <alex.smith@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, Harvey Hunt <harvey.hunt@imgtec.com>
-Message-ID: <20151202162617.WQvVLFNmb_71W9SZ71PCQrSPBDsnRzBgVCWkhV_Xpvo@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20151203095201.88x-8uLPUQeOzBbhyIXcgythhgn0B84SYpVwNRhI0HE@z>
 
-From: Alex Smith <alex.smith@imgtec.com>
+On 12/02/2015 06:28 PM, Sergei Shtylyov wrote:
+>
+>> @@ -1084,7 +1084,7 @@ static void __init __gic_init(unsigned long 
+>> gic_base_addr,
+>>       gic_ipi_domain->bus_token = DOMAIN_BUS_IPI;
+>>
+>>       /* Make the last 2 * NR_CPUS available for IPIs */
+>
+>    Looks like you forgot to also change this comment...
 
-Add device tree nodes for the NEMC and BCH to the JZ4780 device tree,
-and make use of them in the Ci20 device tree to add a node for the
-board's NAND.
+This code changes again in a later patch with the correct comment on. 
+I'll fix it in the next series.
 
-Note that since the pinctrl driver is not yet upstream, this includes
-neither pin configuration nor busy/write-protect GPIO pins for the
-NAND. Use of the NAND relies on the boot loader to have left the pins
-configured in a usable state, which should be the case when booted
-from the NAND.
-
-Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: devicetree@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org
-Cc: Alex Smith <alex@alex-smith.me.uk>
-Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
----
-v7 -> v8:
- - Describe the NAND chips as children nodes of the NAND controller.
- - Remove ingenic, prefix from ECC settings.
- - Renamed some ECC settings.
-
-v6 -> v7:
- - Add nand-ecc-mode to DT.
- - Add nand-on-flash-bbt to DT.
-
-v4 -> v5:
- - New patch adding DT nodes for the NAND so that the driver can be
-   tested.
-
- arch/mips/boot/dts/ingenic/ci20.dts    | 61 ++++++++++++++++++++++++++++++++++
- arch/mips/boot/dts/ingenic/jz4780.dtsi | 26 +++++++++++++++
- 2 files changed, 87 insertions(+)
-
-diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-index 9fcb9e7..46ed8d0 100644
---- a/arch/mips/boot/dts/ingenic/ci20.dts
-+++ b/arch/mips/boot/dts/ingenic/ci20.dts
-@@ -42,3 +42,64 @@
- &uart4 {
- 	status = "okay";
- };
-+
-+&nemc {
-+	status = "okay";
-+
-+	nandc: nand-controller@1 {
-+		compatible = "ingenic,jz4780-nand";
-+		reg = <1 0 0x1000000>;
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		ingenic,bch-controller = <&bch>;
-+
-+		ingenic,nemc-tAS = <10>;
-+		ingenic,nemc-tAH = <5>;
-+		ingenic,nemc-tBP = <10>;
-+		ingenic,nemc-tAW = <15>;
-+		ingenic,nemc-tSTRV = <100>;
-+
-+		nand@1 {
-+			reg = <1>;
-+
-+			nand-ecc-step-size = <1024>;
-+			nand-ecc-strength = <24>;
-+			nand-ecc-mode = "hw";
-+			nand-on-flash-bbt;
-+
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+
-+			partition@0 {
-+				label = "u-boot-spl";
-+				reg = <0x0 0x0 0x0 0x800000>;
-+			};
-+
-+			partition@0x800000 {
-+				label = "u-boot";
-+				reg = <0x0 0x800000 0x0 0x200000>;
-+			};
-+
-+			partition@0xa00000 {
-+				label = "u-boot-env";
-+				reg = <0x0 0xa00000 0x0 0x200000>;
-+			};
-+
-+			partition@0xc00000 {
-+				label = "boot";
-+				reg = <0x0 0xc00000 0x0 0x4000000>;
-+			};
-+
-+			partition@0x8c00000 {
-+				label = "system";
-+				reg = <0x0 0x4c00000 0x1 0xfb400000>;
-+			};
-+		};
-+	};
-+};
-+
-+&bch {
-+	status = "okay";
-+};
-diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-index 65389f6..b868b42 100644
---- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-@@ -108,4 +108,30 @@
- 
- 		status = "disabled";
- 	};
-+
-+	nemc: nemc@13410000 {
-+		compatible = "ingenic,jz4780-nemc";
-+		reg = <0x13410000 0x10000>;
-+		#address-cells = <2>;
-+		#size-cells = <1>;
-+		ranges = <1 0 0x1b000000 0x1000000
-+			  2 0 0x1a000000 0x1000000
-+			  3 0 0x19000000 0x1000000
-+			  4 0 0x18000000 0x1000000
-+			  5 0 0x17000000 0x1000000
-+			  6 0 0x16000000 0x1000000>;
-+
-+		clocks = <&cgu JZ4780_CLK_NEMC>;
-+
-+		status = "disabled";
-+	};
-+
-+	bch: bch@134d0000 {
-+		compatible = "ingenic,jz4780-bch";
-+		reg = <0x134d0000 0x10000>;
-+
-+		clocks = <&cgu JZ4780_CLK_BCH>;
-+
-+		status = "disabled";
-+	};
- };
--- 
-2.6.2
+Thanks,
+Qais

@@ -1,20 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:23806 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:48070 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007572AbbLCJwIGx5aZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 3 Dec 2015 10:52:08 +0100
-Subject: Re: [PATCH v3 14/19] irqchip/mips-gic: Use gic_vpes instead of
- NR_CPUS
-References: <1449058920-21011-1-git-send-email-qais.yousef@imgtec.com>
- <1449058920-21011-15-git-send-email-qais.yousef@imgtec.com>
- <565F3869.4020603@cogentembedded.com>
-From: Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <566010C1.1000506@imgtec.com>
-Date: Thu, 3 Dec 2015 09:52:01 +0000
+        with ESMTP id S27007603AbbLCKI2VFjFZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 3 Dec 2015 11:08:28 +0100
+Received: from hhmail02.hh.imgtec.org (unknown [10.100.10.20])
+        by Websense Email Security Gateway with ESMTPS id A23E4AAD964C9
+        for <linux-mips@linux-mips.org>; Thu,  3 Dec 2015 10:08:20 +0000 (GMT)
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH 0/9] MIPS Relocatable kernel & KASLR
+Date: Thu, 3 Dec 2015 10:08:08 +0000
+Message-ID: <1449137297-30464-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <565F3869.4020603@cogentembedded.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Qais.Yousef@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,22 +21,78 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, linux-kernel@vger.kernel.org
-Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org
-Message-ID: <20151203095201.88x-8uLPUQeOzBbhyIXcgythhgn0B84SYpVwNRhI0HE@z>
+To: linux-mips@linux-mips.org
+Cc: Matt Redfearn <matt.redfearn@imgtec.com>
+Message-ID: <20151203100808.ze34UY6FyEF5hb4JRSMMG6OQuk5Jnj-7njJQGkxDGAI@z>
 
-On 12/02/2015 06:28 PM, Sergei Shtylyov wrote:
->
->> @@ -1084,7 +1084,7 @@ static void __init __gic_init(unsigned long 
->> gic_base_addr,
->>       gic_ipi_domain->bus_token = DOMAIN_BUS_IPI;
->>
->>       /* Make the last 2 * NR_CPUS available for IPIs */
->
->    Looks like you forgot to also change this comment...
+This series adds the ability for the MIPS kernel to relocate itself at
+runtime, optionally to an address determined at random each boot. This
+series is based on v4.3 and has been tested on the Malta platform.
 
-This code changes again in a later patch with the correct comment on. 
-I'll fix it in the next series.
+Here is a description of how relocation is achieved:
+* Kernel is compiled & statically linked as normal (no position
+  independent code).
+* The linker flag --emit-relocs is added to the linker command line,
+  causing ld to include relocation sections in the output elf
+* A tool derived from the x86 relocs tool is used to parse the
+  relocation sections and create a binary table of relocations. Each
+  entry in the table is 32bits, comprised of a 24bit offset (in words)
+  from _text and an 8bit relocation type.
+* The table is inserted into the vmlinux elf, into some space reserved
+  for it in the linker script. Inserting the table into vmlinux means
+  all boot targets will automatically include the relocation code and
+  information.
+* At boot, the kernel memcpy()s itself elsewhere in memory, then goes
+  through the table performing each relocation on the new image.
+* If all goes well, control is passed to the entry point of the new
+  kernel.
 
-Thanks,
-Qais
+Restrictions:
+* The new kernel is not allowed to overlap the old kernel, such that
+  the original kernel can still be booted if relocation fails.
+* Relocation is supported only by multiples of 64k bytes. This
+  eliminates the need to handle R_MIPS_LO16 relocations as the bottom
+  16bits will remain the same at the relocated address.
+* In 64 bit kernels, relocation is supported only within the same 4Gb
+  memory segment as the kernel link address (CONFIG_PHYSICAL_START).
+  This eliminates the need to handle R_MIPS_HIGHEST and R_MIPS_HIGHER
+  relocations as the top 32bits will remain the same at the relocated
+  address.
+* Relocation is currently supported on R2 of the MIPS architecture,
+  32bit and 64bit.
+
+Matt Redfearn (9):
+  MIPS: tools: Add relocs tool
+  MIPS: tools: Build relocs tool
+  MIPS: Reserve space for relocation table
+  MIPS: Generate relocation table when CONFIG_RELOCATABLE
+  MIPS: Kernel: Add relocate.c
+  MIPS: Call relocate_kernel if CONFIG_RELOCATABLE=y
+  MIPS: bootmem: When relocatable, free memory below kernel
+  MIPS: Add CONFIG_RELOCATABLE Kconfig option
+  MIPS: Kernel: Implement kASLR using CONFIG_RELOCATABLE
+
+ arch/mips/Kconfig                  |  53 +++
+ arch/mips/Makefile                 |  19 ++
+ arch/mips/boot/tools/Makefile      |   8 +
+ arch/mips/boot/tools/relocs.c      | 675 +++++++++++++++++++++++++++++++++++++
+ arch/mips/boot/tools/relocs.h      |  34 ++
+ arch/mips/boot/tools/relocs_32.c   |  17 +
+ arch/mips/boot/tools/relocs_64.c   |  27 ++
+ arch/mips/boot/tools/relocs_main.c |  84 +++++
+ arch/mips/kernel/Makefile          |   2 +
+ arch/mips/kernel/head.S            |  20 ++
+ arch/mips/kernel/relocate.c        | 296 ++++++++++++++++
+ arch/mips/kernel/setup.c           |  13 +
+ arch/mips/kernel/vmlinux.lds.S     |  20 ++
+ 13 files changed, 1268 insertions(+)
+ create mode 100644 arch/mips/boot/tools/Makefile
+ create mode 100644 arch/mips/boot/tools/relocs.c
+ create mode 100644 arch/mips/boot/tools/relocs.h
+ create mode 100644 arch/mips/boot/tools/relocs_32.c
+ create mode 100644 arch/mips/boot/tools/relocs_64.c
+ create mode 100644 arch/mips/boot/tools/relocs_main.c
+ create mode 100644 arch/mips/kernel/relocate.c
+
+-- 
+2.1.4

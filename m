@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:63746 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:14196 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009877AbbLCKI3av0AZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 3 Dec 2015 11:08:29 +0100
-Received: from hhmail02.hh.imgtec.org (unknown [10.100.10.20])
-        by Websense Email Security Gateway with ESMTPS id 0E25EF3D2651F
+        with ESMTP id S27012273AbbLCKIaeJB4Z (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 3 Dec 2015 11:08:30 +0100
+Received: from HHMAIL01.hh.imgtec.org (unknown [10.100.10.19])
+        by Websense Email Security Gateway with ESMTPS id C858DDD4F81EC
         for <linux-mips@linux-mips.org>; Thu,  3 Dec 2015 10:08:22 +0000 (GMT)
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH 2/9] MIPS: tools: Build relocs tool
-Date: Thu, 3 Dec 2015 10:08:10 +0000
-Message-ID: <1449137297-30464-3-git-send-email-matt.redfearn@imgtec.com>
+Subject: [PATCH 3/9] MIPS: Reserve space for relocation table
+Date: Thu, 3 Dec 2015 10:08:11 +0000
+Message-ID: <1449137297-30464-4-git-send-email-matt.redfearn@imgtec.com>
 In-Reply-To: <1449137297-30464-1-git-send-email-matt.redfearn@imgtec.com>
 References: <1449137297-30464-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
@@ -25,28 +25,80 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <20151203100810.tNz7JmaS_9-9-KeRIRMc4-NERs7AlWBZSBpzze3WBnI@z>
+Message-ID: <20151203100811.AnV3OcOXnuDyMieX1MIwzTV2Zxibg1nQZ8cQkWNLqUc@z>
 
-Build the relocs tool as part of the kbuild
+When CONFIG_RELOCATABLE is enabled, add a new section in the memory map
+to be filled with relocation data.
+
+CONFIG_RELOCATION_TABLE_SIZE allows the amount of space reserved to be
+adjusted if necessary.
+
+The relocs tool will populate this reserved space with relocation
+information. The space is reserved within the elf by filling it with
+0's, and an invalid entry is left at the start of the space such that
+kernel relocation will be aborted if the table is empty.
 
 Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
 ---
- arch/mips/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/Kconfig              | 14 ++++++++++++++
+ arch/mips/kernel/vmlinux.lds.S | 20 ++++++++++++++++++++
+ 2 files changed, 34 insertions(+)
 
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 252e347958f3..33fbfd276671 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -12,6 +12,9 @@
- # for "archclean" cleaning up for this architecture.
- #
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index e3aa5b0b4ef1..b8ed64dfaafc 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2431,6 +2431,20 @@ config NUMA
+ config SYS_SUPPORTS_NUMA
+ 	bool
  
-+archscripts: scripts_basic
-+	$(Q)$(MAKE) $(build)=arch/mips/boot/tools relocs
++config RELOCATION_TABLE_SIZE
++	hex "Relocation table size"
++	depends on RELOCATABLE
++	range 0x0 0x01000000
++	default "0x00100000"
++	---help---
++	  A table of relocation data will be appended to the kernel binary
++	  and parsed at boot to fix up the relocated kernel.
 +
- KBUILD_DEFCONFIG := ip22_defconfig
- 
- #
++	  This option allows the amount of space reserved for the table to be
++	  adjusted, although the default of 1Mb should be ok in most cases.
++
++	  If unsure, leave at the default value.
++
+ config NODES_SHIFT
+ 	int
+ 	default "6"
+diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+index 07d32a4aea60..27d70423f1dd 100644
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -128,6 +128,26 @@ SECTIONS
+ #ifdef CONFIG_SMP
+ 	PERCPU_SECTION(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+ #endif
++
++#ifdef CONFIG_RELOCATABLE
++	. = ALIGN(4);
++
++	.data.reloc : {
++		_relocation_start = .;
++		/* Space for relocation table
++		 * This needs to be filled so that the
++		 * relocs tool can overwrite the content.
++		 * An invalid value is left at the start of the
++		 * section to abort relocation if the table
++		 * has not been filled in.
++		 */
++		LONG(0xFFFFFFFF);
++		FILL(0);
++		. += CONFIG_RELOCATION_TABLE_SIZE - 4;
++		_relocation_end = .;
++	}
++#endif
++
+ #ifdef CONFIG_MIPS_RAW_APPENDED_DTB
+ 	__appended_dtb = .;
+ 	/* leave space for appended DTB */
 -- 
 2.1.4

@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:35059 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:59270 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007703AbbLDWZQLPMeY (ORCPT
+        with ESMTP id S27007714AbbLDWZQLeQkU (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Fri, 4 Dec 2015 23:25:16 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 0/2] MIPS: Minor EVA related unwind fixes
-Date: Fri, 4 Dec 2015 22:25:00 +0000
-Message-ID: <1449267902-28674-1-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 1/2] MIPS: Don't unwind to user mode with EVA
+Date: Fri, 4 Dec 2015 22:25:01 +0000
+Message-ID: <1449267902-28674-2-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1449267902-28674-1-git-send-email-james.hogan@imgtec.com>
+References: <1449267902-28674-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <James.Hogan@imgtec.com>
@@ -20,44 +22,47 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
 Cc: James Hogan <james.hogan@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20151204222500.o0lOYSWL1FJIcBqXdLMRu60sUh1gLE9fIqIDSKw_Zwg@z>
+Message-ID: <20151204222501.0sveNRPlZmgocifvJ0sxkJ-7Pn22yWiGefJUHFjlDa0@z>
 
-Here are a couple of minor EVA related stack unwind fixes, which
-prevent the use of unwind_stack() (which unwinds using kallsyms
-knowledge of where kernel functions begin and end) to unwind userland
-code, particularly where the PC is a valid kernel address, which could
-happen innocently with EVA due to the overlapped user/kernel address
-spaces.
+When unwinding through IRQs and exceptions, the unwinding only continues
+if the PC is a kernel text address, however since EVA it is possible for
+user and kernel address ranges to overlap, potentially allowing
+unwinding to continue to user mode if the user PC happens to be in the
+kernel text address range.
 
-Note that unwind_stack() is defensive enough that it shouldn't do any
-harm, so I've only tagged stable back to v3.15, when EVA was added and
-it could conceivably happen under normal operation.
+Adjust the check to also ensure that the register state from before the
+exception is actually running in kernel mode, i.e. !user_mode(regs).
 
-A rough audit shows no other uses of __kernel_text_address() in relation
-to possibly user mode register contexts.
+I don't believe any harm can come of this problem, since the PC is only
+output, the stack pointer is checked to ensure it resides within the
+task's stack page before it is dereferenced in search of the return
+address, and the return address register is similarly only output (if
+the PC is in a leaf function or the beginning of a non-leaf function).
 
+However unwind_stack() is only meant for unwinding kernel code, so to be
+correct the unwind should stop there.
 
-The first patch fixes unwind_stack() itself not to unwind through an
-exception frame if it represents the user register context, preventing
-itself being called with that context next.
-
-The second patch fixes show_backtrace() to fall back to raw backtrace
-for user mode register contexts, rather than using unwind_stack(). This
-is used on certain faults which can be triggered by userland (namely
-unaligned accesses when reporting is enabled in debugfs).
-
-
-James Hogan (2):
-  MIPS: Don't unwind to user mode with EVA
-  MIPS: Avoid using unwind_stack() with usermode
-
- arch/mips/kernel/process.c | 2 +-
- arch/mips/kernel/traps.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 Cc: <stable@vger.kernel.org> # 3.15+
+---
+ arch/mips/kernel/process.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+index f2975d4d1e44..6b3ae73cda3f 100644
+--- a/arch/mips/kernel/process.c
++++ b/arch/mips/kernel/process.c
+@@ -457,7 +457,7 @@ unsigned long notrace unwind_stack_by_address(unsigned long stack_page,
+ 		    *sp + sizeof(*regs) <= stack_page + THREAD_SIZE - 32) {
+ 			regs = (struct pt_regs *)*sp;
+ 			pc = regs->cp0_epc;
+-			if (__kernel_text_address(pc)) {
++			if (!user_mode(regs) && __kernel_text_address(pc)) {
+ 				*sp = regs->regs[29];
+ 				*ra = regs->regs[31];
+ 				return pc;
 -- 
 2.4.10

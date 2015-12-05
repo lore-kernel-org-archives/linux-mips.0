@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:36987 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:23369 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007703AbbLEAVSA7glZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 5 Dec 2015 01:21:18 +0100
-Message-ID: <56622DF5.30005@imgtec.com>
-Date: Fri, 4 Dec 2015 16:21:09 -0800
+        with ESMTP id S27013276AbbLEAVfBheMZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 5 Dec 2015 01:21:35 +0100
+Message-ID: <56622E06.9060401@imgtec.com>
+Date: Fri, 4 Dec 2015 16:21:26 -0800
 From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] MIPS: Don't unwind to user mode with EVA
-References: <1449267902-28674-1-git-send-email-james.hogan@imgtec.com> <1449267902-28674-2-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1449267902-28674-2-git-send-email-james.hogan@imgtec.com>
+Subject: Re: [PATCH 2/2] MIPS: Avoid using unwind_stack() with usermode
+References: <1449267902-28674-1-git-send-email-james.hogan@imgtec.com> <1449267902-28674-3-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1449267902-28674-3-git-send-email-james.hogan@imgtec.com>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Leonid.Yegoshin@imgtec.com>
@@ -23,6 +23,6 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
 Cc: stable@vger.kernel.org
-Message-ID: <20151205002109.HXsYknS1-oKxfwLNdBqOvHsn3MjhPGAwMDcjs0IDknw@z>
+Message-ID: <20151205002126.vfnOqHpJZDMv08kQvwlbNqjj8pm0P2yapWhAybeTufg@z>
 
 OK.

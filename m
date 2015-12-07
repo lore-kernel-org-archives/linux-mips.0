@@ -1,20 +1,23 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:19691 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27006898AbbLGInwiqUE6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Dec 2015 09:43:52 +0100
-Date: Mon, 7 Dec 2015 08:43:46 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH 1/2] MIPS: Don't unwind to user mode with EVA
-Message-ID: <20151207084345.GB874@jhogan-linux.le.imgtec.org>
-References: <1449267902-28674-1-git-send-email-james.hogan@imgtec.com>
- <1449267902-28674-2-git-send-email-james.hogan@imgtec.com>
- <56622DF5.30005@imgtec.com>
+Received: from smtp-out6.electric.net ([192.162.217.187]:51948 "EHLO
+        smtp-out6.electric.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27011740AbbLGPuVTCEs4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Dec 2015 16:50:21 +0100
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH v2 3/5] printk/nmi: Try hard to print Oops message in
+ NMI context
+Date: Mon, 7 Dec 2015 15:48:33 +0000
+Message-ID: <063D6719AE5E284EB5DD2968C1650D6D1CBE68C7@AcuExch.aculab.com>
+References: <1448622572-16900-1-git-send-email-pmladek@suse.com>
+ <1448622572-16900-4-git-send-email-pmladek@suse.com>
+ <20151201234437.GA8644@n2100.arm.linux.org.uk>
+ <20151204152709.GA20935@pathway.suse.cz>
+ <20151204171255.GZ8644@n2100.arm.linux.org.uk>
+In-Reply-To: <20151204171255.GZ8644@n2100.arm.linux.org.uk>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tjCHc7DPkfUGtrlw"
-Content-Disposition: inline
-In-Reply-To: <56622DF5.30005@imgtec.com>
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <David.Laight@ACULAB.COM>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,42 +27,34 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20151207084346.GRrtKX_fe5Dq_UQolDglC8ld_PC7Qzp9j8b_YUEe5S0@z>
+To: 'Russell King - ARM Linux' <linux@arm.linux.org.uk>, Petr Mladek <pmladek@suse.com>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Daniel Thompson <daniel.thompson@linaro.org>, Jiri Kosina <jkosina@suse.com>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, "x86@kernel.org" <x86@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Ingo Molnar <mingo@redhat.com>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Thomas Gleixner <tglx@linutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20151207154833.RhHafsbd9sS9fbByIx1R_n0EjvB5wvJZFmeWTaEVvXA@z>
 
---tjCHc7DPkfUGtrlw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
-On Fri, Dec 04, 2015 at 04:21:09PM -0800, Leonid Yegoshin wrote:
-> OK.
-
-Thanks Leonid. Can that be taken as a Reviewed-by?
-
-Cheers
-James
-
---tjCHc7DPkfUGtrlw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJWZUbBAAoJEGwLaZPeOHZ6SKwP/i0PfNI1qeOpYUuFbkYaqPSw
-CyR4utT8xp9yJhFl7H/186J09oYOtreFwrncO4apUBwkaEjZUFE4aRp5VNpdFBgy
-KHLnTgwvRSEmnayVwRQnZhfSnP0nf0oDysZ7ZgorX9Lux2pe3o9/lBarYvSqQnto
-dDXu9XW7+is1B/eVUm255eEXOLf525SzHTrR8bCjRKomeaZXJJQddvvDSq3kPImR
-3ei7006JX6iYtftzf2g1lzsH70ssouNOOSl0iqQNXfEKi2E4Xu/MEd2PZuPl4KMS
-bAfYvG2xjTh/CxhXoH/53iJQKe1ecCNM0+yAzqtNTIswnMJEBAfik22CTBDuNgXZ
-DYuP7ONfSVArt5n+ZDE5kvTi7SgRFjgXhqZ76nH6gzP5OH3Z4nmevBTDAAVyQ6dY
-VpFjFFwoJDLcwnF8Q3zHP6in8DE/GM63L2kD2ogi3mBFlOP+m60YTmmt0QNhSHph
-R4bjNxFUguNAHFVOyLSErVbXi5IFZNP3OYzLB62wXYKOgiLpdGWgbrzgHB5oFJSv
-DbqFBiZJjrCpKKnP755UMOrJotNFKUpR4GEF+hMkzUX8p6YwHX8YPkMOE/S6Aqd6
-fdQ9xqJjQzUKt/BnbaAPFE1+1OTwlTmAnwDRtFvfpNiNWOcMAFlKCcJLLcd99MyC
-3mKxS3IzGrHdoLVcV3zC
-=WguQ
------END PGP SIGNATURE-----
-
---tjCHc7DPkfUGtrlw--
+RnJvbTogUnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4DQo+IFNlbnQ6IDA0IERlY2VtYmVyIDIwMTUg
+MTc6MTMNCi4uLg0KPiBJIGhhdmUgYSBzbGlnaHRseSBkaWZmZXJlbnQgdmlldy4uLg0KPiANCj4g
+PiA+IEkgZG9uJ3Qgc2VlIGJ1c3Rfc3BpbmxvY2tzKCkgZGVhbGluZyB3aXRoIGFueSBvZiB0aGVz
+ZSBsb2Nrcywgc28gSU1ITw0KPiA+ID4gdHJ5aW5nIHRvIG1ha2UgdGhpcyB3b3JrIGluIE5NSSBj
+b250ZXh0IHN0cmlrZXMgbWUgYXMgbWFraW5nIHRoZQ0KPiA+ID4gZXhpc3Rpbmcgc29sdXRpb24g
+bW9yZSB1bnJlbGlhYmxlIG9uIEFSTSBzeXN0ZW1zLg0KPiA+DQo+ID4gYnVzdF9zcGlubG9ja3Mo
+KSBjYWxscyBwcmludGtfbm1pX2ZsdXNoKCkgdGhhdCB3b3VsZCBjYWxsIHByaW50aygpDQo+ID4g
+dGhhdCB3b3VsZCB6YXAgImxvY2tidWZfbG9jayIgYW5kICJjb25zb2xlX3NlbSIgd2hlbiBpbiBP
+b3BzIGFuZCBOTUkuDQo+ID4gWWVzLCB0aGVyZSBtaWdodCBiZSBtb3JlIGxvY2tzIGJsb2NrZWQg
+YnV0IHdlIHRyeSB0byBicmVhayBhdCBsZWFzdA0KPiA+IHRoZSBmaXJzdCB0d28gd2FsbHMuIEFs
+c28gemFwcGluZyBpcyBhbGxvd2VkIG9ubHkgb25jZSBwZXIgMzAgc2Vjb25kcywNCj4gPiBzZWUg
+emFwX2xvY2tzKCkuIFdoeSBkbyB5b3UgdGhpbmsgdGhhdCBpdCBtaWdodCBtYWtlIHRoaW5ncyBt
+b3JlDQo+ID4gdW5yZWxpYWJsZSwgcGxlYXNlPw0KPiANCj4gVGFrZSB0aGUgc2NlbmFyaW8gd2hl
+cmUgQ1BVMSBpcyBpbiB0aGUgbWlkZGxlIG9mIGEgcHJpbnRrKCksIGFuZCBpcw0KPiBob2xkaW5n
+IGl0cyBsb2NrLg0KPiANCj4gQ1BVMCBjb21lcyBhbG9uZyBhbmQgZGVjaWRlcyB0byB0cmlnZ2Vy
+IGEgTk1JIGJhY2t0cmFjZS4gIFRoaXMgc2VuZHMNCj4gYSBOTUkgdG8gQ1BVMSwgd2hpY2ggdGFr
+ZXMgaXQgaW4gdGhlIG1pZGRsZSBvZiB0aGUgc2VyaWFsIGNvbnNvbGUNCj4gb3V0cHV0Lg0KPiAN
+Cj4gV2l0aCB0aGUgZXhpc3Rpbmcgc29sdXRpb24sIHRoZSBOTUkgb3V0cHV0IHdpbGwgYmUgd3Jp
+dHRlbiB0byB0aGUNCj4gdGVtcG9yYXJ5IGJ1ZmZlciwgYW5kIENQVTEgaGFzIGZpbmlzaGVkIGhh
+bmRsaW5nIHRoZSBOTUkgaXQgcmVzdW1lcw0KPiB0aGUgc2VyaWFsIGNvbnNvbGUgb3V0cHV0LCBl
+dmVudHVhbGx5IGRyb3BwaW5nIHRoZSBsb2NrLiAgVGhhdCB0aGVuDQo+IGFsbG93cyBDUFUwIHRv
+IHByaW50IHRoZSBjb250ZW50cyBvZiBhbGwgYnVmZmVycywgYW5kIHdlIGdldCBOTUkNCj4gcHJp
+bnRrIG91dHB1dC4NCg0KSXMgdGhlIHRyYWNlYmFjayBmcm9tIGluc2lkZSBwcmludGsoKSBvciBz
+ZXJpYWwgY29uc29sZSBjb2RlDQpsaWtlbHkgdG8gYmUgdXNlZnVsPw0KSWYgbm90IHRoZW4gd2h5
+IG5vdCBnZXQgdGhlIHN0YWNrdHJhY2UgZ2VuZXJhdGVkIHdoZW4gdGhlIHJlbGV2YW50DQpsb2Nr
+IGlzIHJlbGVhc2VkPw0KVGhhdCBzaG91bGQgc2F2ZSBhbnkgZmFmZmluZyB3aXRoIGEgc3BlY2lh
+bCBidWZmZXIuDQoNCglEYXZpZA0KDQo=

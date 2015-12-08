@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:60662 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:55312 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006859AbbLHNVCljReZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Dec 2015 14:21:02 +0100
+        with ESMTP id S27013368AbbLHNVGzf62Z (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Dec 2015 14:21:06 +0100
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH v4 01/19] genirq: Add new IRQ_DOMAIN_FLAGS_IPI
-Date: Tue, 8 Dec 2015 13:20:12 +0000
-Message-ID: <1449580830-23652-2-git-send-email-qais.yousef@imgtec.com>
+Subject: [PATCH v4 02/19] genirq: Add DOMAIN_BUS_IPI
+Date: Tue, 8 Dec 2015 13:20:13 +0000
+Message-ID: <1449580830-23652-3-git-send-email-qais.yousef@imgtec.com>
 In-Reply-To: <1449580830-23652-1-git-send-email-qais.yousef@imgtec.com>
 References: <1449580830-23652-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
@@ -22,81 +22,28 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org
 Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org, lisa.parratt@imgtec.com, Qais Yousef <qais.yousef@imgtec.com>
-Message-ID: <20151208132012.tkpyOrlxhxFwjAzDRZ1PAyGEiQZsMJkAGft3twh7an8@z>
+Message-ID: <20151208132013.y8LOjAhGVU5NxA-GNXMxVo2EerK-MFirY4rhoZjvm40@z>
 
-This flag will be used to identify an IPI domain.
+We need a way to search and match IPI domains.
 
-We have two types:
-
-	- PER_CPU: indicating a virq for each IPI
-	- SINGLE: indicating a single virq for all IPIs
+Using the new enum we can use irq_find_matching_host() to do that.
 
 Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
 ---
- include/linux/irqdomain.h | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ include/linux/irqdomain.h | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index d5e5c5bef28c..c1a59f37674d 100644
+index c1a59f37674d..f717796a4d5e 100644
 --- a/include/linux/irqdomain.h
 +++ b/include/linux/irqdomain.h
-@@ -171,6 +171,12 @@ enum {
- 	/* Core calls alloc/free recursive through the domain hierarchy. */
- 	IRQ_DOMAIN_FLAG_AUTO_RECURSIVE	= (1 << 1),
+@@ -73,6 +73,7 @@ enum irq_domain_bus_token {
+ 	DOMAIN_BUS_PCI_MSI,
+ 	DOMAIN_BUS_PLATFORM_MSI,
+ 	DOMAIN_BUS_NEXUS,
++	DOMAIN_BUS_IPI,
+ };
  
-+	/* Irq domain is an IPI domain with virq per cpu */
-+	IRQ_DOMAIN_FLAG_IPI_PER_CPU	= (1 << 2),
-+
-+	/* Irq domain is an IPI domain with single virq */
-+	IRQ_DOMAIN_FLAG_IPI_SINGLE	= (1 << 3),
-+
- 	/*
- 	 * Flags starting from IRQ_DOMAIN_FLAG_NONCORE are reserved
- 	 * for implementation specific purposes and ignored by the
-@@ -391,6 +397,22 @@ static inline bool irq_domain_is_hierarchy(struct irq_domain *domain)
- {
- 	return domain->flags & IRQ_DOMAIN_FLAG_HIERARCHY;
- }
-+
-+static inline bool irq_domain_is_ipi(struct irq_domain *domain)
-+{
-+	return domain->flags &
-+		(IRQ_DOMAIN_FLAG_IPI_PER_CPU | IRQ_DOMAIN_FLAG_IPI_SINGLE);
-+}
-+
-+static inline bool irq_domain_is_ipi_per_cpu(struct irq_domain *domain)
-+{
-+	return domain->flags & IRQ_DOMAIN_FLAG_IPI_PER_CPU;
-+}
-+
-+static inline bool irq_domain_is_ipi_single(struct irq_domain *domain)
-+{
-+	return domain->flags & IRQ_DOMAIN_FLAG_IPI_SINGLE;
-+}
- #else	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
- static inline void irq_domain_activate_irq(struct irq_data *data) { }
- static inline void irq_domain_deactivate_irq(struct irq_data *data) { }
-@@ -404,6 +426,21 @@ static inline bool irq_domain_is_hierarchy(struct irq_domain *domain)
- {
- 	return false;
- }
-+
-+static inline bool irq_domain_is_ipi(struct irq_domain *domain)
-+{
-+	return false;
-+}
-+
-+static inline bool irq_domain_is_ipi_per_cpu(struct irq_domain *domain)
-+{
-+	return false;
-+}
-+
-+static inline bool irq_domain_is_ipi_single(struct irq_domain *domain)
-+{
-+	return false;
-+}
- #endif	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
- 
- #else /* CONFIG_IRQ_DOMAIN */
+ /**
 -- 
 2.1.0

@@ -1,19 +1,14 @@
-Received: from down.free-electrons.com ([37.187.137.238]:39980 "EHLO
-        mail.free-electrons.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27012381AbbLHKdwVMQEp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Dec 2015 11:33:52 +0100
-Date: Tue, 8 Dec 2015 11:33:43 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH 05/23] mtd: nand: jz4770: kill the ->ecc_layout field
-Message-ID: <20151208113343.2b049993@bbrezillon>
-In-Reply-To: <5666B150.2030406@imgtec.com>
-References: <1449527178-5930-1-git-send-email-boris.brezillon@free-electrons.com>
-        <1449527178-5930-6-git-send-email-boris.brezillon@free-electrons.com>
-        <5666B150.2030406@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:42642 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007016AbbLHNU6P2jvZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Dec 2015 14:20:58 +0100
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: [PATCH v4 00/19] Implement generic IPI support mechanism
+Date: Tue, 8 Dec 2015 13:20:11 +0000
+Message-ID: <1449580830-23652-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <boris.brezillon@free-electrons.com>
+Content-Type: text/plain
+Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,67 +18,73 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Josh Wu <josh.wu@atmel.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com, Stefan Agner <stefan@agner.ch>, Kyungmin Park <kyungmin.park@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org, punnaiah choudary kalluri <punnaia@xilinx.com>
-Message-ID: <20151208103343.eRskRk7-eX6hQlnTHvcUyluPKGg3CUHNh1JoPDOq3Us@z>
+To: linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, jiang.liu@linux.intel.com, ralf@linux-mips.org, linux-mips@linux-mips.org, lisa.parratt@imgtec.com, Qais Yousef <qais.yousef@imgtec.com>
+Message-ID: <20151208132011.cykj8djGaa8sOvUvPcyN5I3JfdnLSkTVWx-1bcfhWF0@z>
 
-On Tue, 8 Dec 2015 10:30:40 +0000
-Harvey Hunt <harvey.hunt@imgtec.com> wrote:
+This series adds support for a generic IPI mechanism that can be used by both
+arch and drivers to send IPIs to other CPUs.
 
-> Hi Boris,
-> 
-> On 07/12/15 22:26, Boris Brezillon wrote:
-> > ->ecc_layout is not used by any board file. Kill this field to avoid any
-> > confusion. New boards are encouraged to use the default ECC layout defined
-> > in NAND core.
-> >
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> >   arch/mips/include/asm/mach-jz4740/jz4740_nand.h | 2 --
-> >   drivers/mtd/nand/jz4740_nand.c                  | 3 ---
-> >   2 files changed, 5 deletions(-)
-> >
-> > diff --git a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h b/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-> > index 79cff26..398733e 100644
-> > --- a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-> > +++ b/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-> > @@ -25,8 +25,6 @@ struct jz_nand_platform_data {
-> >   	int			num_partitions;
-> >   	struct mtd_partition	*partitions;
-> >
-> > -	struct nand_ecclayout	*ecc_layout;
-> > -
-> >   	unsigned char banks[JZ_NAND_NUM_BANKS];
-> >
-> >   	void (*ident_callback)(struct platform_device *, struct nand_chip *,
-> > diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
-> > index 5a99a93..c4fe446 100644
-> > --- a/drivers/mtd/nand/jz4740_nand.c
-> > +++ b/drivers/mtd/nand/jz4740_nand.c
-> > @@ -446,9 +446,6 @@ static int jz_nand_probe(struct platform_device *pdev)
-> >   	chip->ecc.bytes		= 9;
-> >   	chip->ecc.strength	= 4;
-> >
-> > -	if (pdata)
-> > -		chip->ecc.layout = pdata->ecc_layout;
-> > -
-> >   	chip->chip_delay = 50;
-> >   	chip->cmd_ctrl = jz_nand_cmd_ctrl;
-> >   	chip->select_chip = jz_nand_select_chip;
-> >
-> 
-> Is there a typo in this commit title? The JZ4740 and JZ4770 have quite 
-> different NAND controller interfaces, so I don't think that the JZ4740 
-> driver will support the JZ4770.
+v4 is rebased on tip of irq/core and fixes a bug in ipi_send_single() where we
+were passing the basevirq irq_data instead of the irq_data for the target cpu.
 
-Yes, it's a typo, I meant jz4740, I'll fix my commit message
-accordingly.
+v3 removed the use of struct ipi_mask and moved to using cpumask only.
+The assumption is that the user would need to set NR_CPUS to a suitable value to
+cater for coprocessors outside linux SMP range.
+
+We use irq_common_data affinity to store the ipi_mask too. Maybe we need to
+separate them later, but I think it can be done safely later if the need arises.
+
+This is boot tested on Malta platform.
+
+Note that of_irq_find_parent() was moved to be static and could cause this patch
+series not to compile. The issue was reported and a fix to undo that change
+is in the pipeline (in the DT tree I guess).
 
 Thanks,
+Qais
 
-Boris
+Qais Yousef (19):
+  genirq: Add new IRQ_DOMAIN_FLAGS_IPI
+  genirq: Add DOMAIN_BUS_IPI
+  genirq: Add GENERIC_IRQ_IPI Kconfig symbol
+  genirq: Add struct ipi_mapping and its helper functions
+  genirq: Add ipi_offset to irq_common_data
+  genirq: Add an extra comment about the use of affinity in
+    irq_common_data
+  genirq: Make irq_domain_alloc_descs() non static
+  genirq: Add a new generic IPI reservation code to irq core
+  genirq: Add a new function to get IPI reverse mapping
+  genirq: Add a new irq_send_ipi() to irq_chip
+  genirq: Implement ipi_send_{mask, single}()
+  irqchip/mips-gic: Add a IPI hierarchy domain
+  irqchip/mips-gic: Add device hierarchy domain
+  irqchip/mips-gic: Use gic_vpes instead of NR_CPUS
+  irqchip/mips-gic: Clear percpu_masks correctly when mapping
+  MIPS: Add generic SMP IPI support
+  MIPS: Make smp CMP, CPS and MT use the new generic IPI functions
+  MIPS: Delete smp-gic.c
+  irqchip/mips-gic: Add new DT property to reserve IPIs
+
+ .../bindings/interrupt-controller/mips-gic.txt     |   7 +
+ arch/mips/Kconfig                                  |   6 -
+ arch/mips/include/asm/smp-ops.h                    |   5 +-
+ arch/mips/kernel/Makefile                          |   1 -
+ arch/mips/kernel/smp-cmp.c                         |   4 +-
+ arch/mips/kernel/smp-cps.c                         |   4 +-
+ arch/mips/kernel/smp-mt.c                          |   2 +-
+ arch/mips/kernel/smp.c                             | 136 +++++++
+ drivers/irqchip/Kconfig                            |   2 +
+ drivers/irqchip/irq-mips-gic.c                     | 354 ++++++++++++-----
+ include/linux/irq.h                                |  61 ++-
+ include/linux/irqchip/mips-gic.h                   |   3 -
+ include/linux/irqdomain.h                          |  45 +++
+ kernel/irq/Kconfig                                 |   4 +
+ kernel/irq/Makefile                                |   1 +
+ kernel/irq/ipi.c                                   | 441 +++++++++++++++++++++
+ kernel/irq/irqdomain.c                             |   6 +-
+ 17 files changed, 969 insertions(+), 113 deletions(-)
+ create mode 100644 kernel/irq/ipi.c
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.1.0

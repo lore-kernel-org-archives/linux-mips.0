@@ -1,19 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]:45245 "EHLO
-        mail.free-electrons.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27007050AbbLHOVGN8Z-A (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Dec 2015 15:21:06 +0100
-Date: Tue, 8 Dec 2015 15:20:48 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v9 3/3] MIPS: dts: jz4780/ci20: Add NEMC, BCH and NAND
- device tree nodes
-Message-ID: <20151208152048.0e298fc1@bbrezillon>
-In-Reply-To: <1449144142-24004-4-git-send-email-harvey.hunt@imgtec.com>
-References: <1449144142-24004-1-git-send-email-harvey.hunt@imgtec.com>
-        <1449144142-24004-4-git-send-email-harvey.hunt@imgtec.com>
+Received: from mx2.suse.de ([195.135.220.15]:33775 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27007050AbbLHOtIts0IU (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 8 Dec 2015 15:49:08 +0100
+Date: Tue, 8 Dec 2015 15:49:06 +0100
+From: Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH v2 3/5] printk/nmi: Try hard to print Oops message in NMI
+ context
+Message-ID: <20151208144906.GL20935@pathway.suse.cz>
+References: <1448622572-16900-1-git-send-email-pmladek@suse.com>
+ <1448622572-16900-4-git-send-email-pmladek@suse.com>
+ <20151201234437.GA8644@n2100.arm.linux.org.uk>
+ <20151204152709.GA20935@pathway.suse.cz>
+ <20151204171255.GZ8644@n2100.arm.linux.org.uk>
+ <063D6719AE5E284EB5DD2968C1650D6D1CBE68C7@AcuExch.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6D1CBE68C7@AcuExch.aculab.com>
+Return-Path: <pmladek@suse.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,90 +27,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Alex Smith <alex.smith@imgtec.com>, Brian Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20151208142048.iD1p2QlGYdcm7hgGn8aZRUWZ3pATyXSLYC0jkR3xWvU@z>
+To: David Laight <David.Laight@ACULAB.COM>
+Cc: 'Russell King - ARM Linux' <linux@arm.linux.org.uk>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Daniel Thompson <daniel.thompson@linaro.org>, Jiri Kosina <jkosina@suse.com>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, "x86@kernel.org" <x86@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Ingo Molnar <mingo@redhat.com>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Thomas Gleixner <tglx@linutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20151208144906.AeJll9-vFM82o9EaYNhO8WL-sJpjNie2hNA1UwqgwWc@z>
 
-On Thu, 3 Dec 2015 12:02:22 +0000
-Harvey Hunt <harvey.hunt@imgtec.com> wrote:
+On Mon 2015-12-07 15:48:33, David Laight wrote:
+> From: Russell King - ARM Linux
+> > Sent: 04 December 2015 17:13
+> ...
+> > I have a slightly different view...
+> > 
+> > > > I don't see bust_spinlocks() dealing with any of these locks, so IMHO
+> > > > trying to make this work in NMI context strikes me as making the
+> > > > existing solution more unreliable on ARM systems.
+> > >
+> > > bust_spinlocks() calls printk_nmi_flush() that would call printk()
+> > > that would zap "lockbuf_lock" and "console_sem" when in Oops and NMI.
+> > > Yes, there might be more locks blocked but we try to break at least
+> > > the first two walls. Also zapping is allowed only once per 30 seconds,
+> > > see zap_locks(). Why do you think that it might make things more
+> > > unreliable, please?
+> > 
+> > Take the scenario where CPU1 is in the middle of a printk(), and is
+> > holding its lock.
+> > 
+> > CPU0 comes along and decides to trigger a NMI backtrace.  This sends
+> > a NMI to CPU1, which takes it in the middle of the serial console
+> > output.
+> > 
+> > With the existing solution, the NMI output will be written to the
+> > temporary buffer, and CPU1 has finished handling the NMI it resumes
+> > the serial console output, eventually dropping the lock.  That then
+> > allows CPU0 to print the contents of all buffers, and we get NMI
+> > printk output.
+> 
+> Is the traceback from inside printk() or serial console code
+> likely to be useful?
 
-> From: Alex Smith <alex.smith@imgtec.com>
-> 
-> Add device tree nodes for the NEMC and BCH to the JZ4780 device tree,
-> and make use of them in the Ci20 device tree to add a node for the
-> board's NAND.
-> 
-> Note that since the pinctrl driver is not yet upstream, this includes
-> neither pin configuration nor busy/write-protect GPIO pins for the
-> NAND. Use of the NAND relies on the boot loader to have left the pins
-> configured in a usable state, which should be the case when booted
-> from the NAND.
-> 
-> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-> Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Paul Burton <paul.burton@imgtec.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mips@linux-mips.org
-> Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
-> ---
-> v8 -> v9:
->  - Represent the partition table as a subnode of a NAND chip. 
-> 
-> v7 -> v8:
->  - Describe the NAND chips as children nodes of the NAND controller.
->  - Remove ingenic, prefix from ECC settings.
->  - Renamed some ECC settings.
-> 
-> v6 -> v7:
->  - Add nand-ecc-mode to DT.
->  - Add nand-on-flash-bbt to DT.
-> 
-> v4 -> v5:
->  - New patch adding DT nodes for the NAND so that the driver can be
->    tested.
-> 
->  arch/mips/boot/dts/ingenic/ci20.dts    | 63 ++++++++++++++++++++++++++++++++++
->  arch/mips/boot/dts/ingenic/jz4780.dtsi | 26 ++++++++++++++
->  2 files changed, 89 insertions(+)
-> 
-> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-> index 9fcb9e7..782258c 100644
-> --- a/arch/mips/boot/dts/ingenic/ci20.dts
-> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-> @@ -42,3 +42,66 @@
->  &uart4 {
->  	status = "okay";
->  };
-> +
-> +&nemc {
-> +	status = "okay";
-> +
-> +	nandc: nand-controller@1 {
-> +		compatible = "ingenic,jz4780-nand";
-> +		reg = <1 0 0x1000000>;
-> +
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		ingenic,bch-controller = <&bch>;
-> +
-> +		ingenic,nemc-tAS = <10>;
-> +		ingenic,nemc-tAH = <5>;
-> +		ingenic,nemc-tBP = <10>;
-> +		ingenic,nemc-tAW = <15>;
-> +		ingenic,nemc-tSTRV = <100>;
-
-I guess those are encoding controller specific timings. Maybe they
-could be automatically deduced from nand_timings information (I'm not
-asking to implement that right now, but keep it in the back of your
-mind as possible future improvements).
+It is useful if a problem is caused by the printk or serial console
+code. For example, a slow serial console might cause a soft lockup
+if there are too many messages to print.
 
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> If not then why not get the stacktrace generated when the relevant
+> lock is released? That should save any faffing with a special
+> buffer.
+
+Another question is how to detect that NMI interrupted printk() code.
+We would either need to analyze backtrace. Or we would need to
+know which CPU took the printk() or console locks. This check
+should be race-safe vs. the NMI context.
+
+
+Best Regards,
+Petr

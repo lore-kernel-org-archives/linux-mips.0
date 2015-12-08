@@ -1,18 +1,14 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66]:22964 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27008161AbbLHBTV0xEQC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Dec 2015 02:19:21 +0100
-Subject: Re: [PATCH part3 v12 00/10] Cleanup platform pci_domain_nr()
-References: <1437393678-4077-1-git-send-email-wangyijing@huawei.com>
- <20151207215356.GD14429@localhost>
-From: wangyijing <wangyijing@huawei.com>
-Message-ID: <56662FCE.40807@huawei.com>
-Date: Tue, 8 Dec 2015 09:18:06 +0800
+Received: from mailapp01.imgtec.com ([195.59.15.196]:26261 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27006859AbbLHKMErPtB2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Dec 2015 11:12:04 +0100
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: [PATCH] MIPS: VDSO: Fix build error
+Date: Tue, 8 Dec 2015 10:11:43 +0000
+Message-ID: <1449569503-1611-1-git-send-email-qais.yousef@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20151207215356.GD14429@localhost>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <wangyijing@huawei.com>
+Content-Type: text/plain
+Return-Path: <Qais.Yousef@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,20 +18,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, linux-xtensa@linux-xtensa.org, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <20151208011806.AZZlMPAN57jhinjeCj2KpRL_HPl6fJ89yaMdvSmSyWk@z>
+To: linux-mips@linux-mips.org
+Cc: alex@alex-smith.me.uk, linux-kernel@vger.kernel.org, ralf@linux-mips.org, Qais Yousef <qais.yousef@imgtec.com>
+Message-ID: <20151208101143.9RJ1ZTOwHR3GaCRCMBnkOhrcq37V_hq4Ws6i6OoNiGg@z>
 
-> 
-> Doesn't apply to v4.4-rc2.  Please refresh and repost if this is still
-> relevant.
+Commit ebb5e78cc634 (MIPS: Initial implementation of a VDSO) introduced a build
+error.
 
-Hi Bjorn, this is still relevant, I will refresh it and post the new version soon.
+For MIPS VDSO to be compiled it requires binutils version 2.25 or above but the
+check in the Makefile had inverted logic causing it to be compiled in if binutils
+is below 2.25.
 
-Thanks!
-Yijing.
+This fixes the following compilation error:
 
+CC      arch/mips/vdso/gettimeofday.o
+/tmp/ccsExcUd.s: Assembler messages:
+/tmp/ccsExcUd.s:62: Error: can't resolve `_start' {*UND* section} - `L0' {.text section}
+/tmp/ccsExcUd.s:467: Error: can't resolve `_start' {*UND* section} - `L0' {.text section}
+make[2]: *** [arch/mips/vdso/gettimeofday.o] Error 1
+make[1]: *** [arch/mips/vdso] Error 2
+make: *** [arch/mips] Error 2
 
-> 
-> .
-> 
+Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
+---
+ arch/mips/vdso/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
+index ef5f348f386a..018f8c7b94f2 100644
+--- a/arch/mips/vdso/Makefile
++++ b/arch/mips/vdso/Makefile
+@@ -26,8 +26,8 @@ aflags-vdso := $(ccflags-vdso) \
+ # the comments on that file.
+ #
+ ifndef CONFIG_CPU_MIPSR6
+-  ifeq ($(call ld-ifversion, -gt, 22400000, y),)
+-    $(warning MIPS VDSO requires binutils > 2.24)
++  ifeq ($(call ld-ifversion, -lt, 22500000, y),)
++    $(warning MIPS VDSO requires binutils >= 2.25)
+     obj-vdso-y := $(filter-out gettimeofday.o, $(obj-vdso-y))
+     ccflags-vdso += -DDISABLE_MIPS_VDSO
+   endif
+-- 
+2.1.0

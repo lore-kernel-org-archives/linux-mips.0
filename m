@@ -1,21 +1,22 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:36733 "EHLO
-        mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27008262AbbLKW5dUOwaa (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Dec 2015 23:57:33 +0100
-Date: Fri, 11 Dec 2015 14:57:25 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
+Received: from pandora.arm.linux.org.uk ([78.32.30.218]:36501 "EHLO
+        pandora.arm.linux.org.uk" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27008262AbbLKXWvy23Ma (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 12 Dec 2015 00:22:51 +0100
+Date: Fri, 11 Dec 2015 23:21:13 +0000
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Subject: Re: [PATCH v3 4/4] printk/nmi: Increase the size of NMI buffer and
  make it configurable
-Message-ID: <20151211145725.b0e81bb4bb18fcd72ef5f557@linux-foundation.org>
-In-Reply-To: <20151211124159.GB3729@pathway.suse.cz>
+Message-ID: <20151211232113.GZ8644@n2100.arm.linux.org.uk>
 References: <1449667265-17525-1-git-send-email-pmladek@suse.com>
-        <1449667265-17525-5-git-send-email-pmladek@suse.com>
-        <CAMuHMdXVgr58YjoePGrRbMyMncQ27f85prL7G5SpeHeNxoYrXQ@mail.gmail.com>
-        <20151211124159.GB3729@pathway.suse.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <akpm@linux-foundation.org>
+ <1449667265-17525-5-git-send-email-pmladek@suse.com>
+ <CAMuHMdXVgr58YjoePGrRbMyMncQ27f85prL7G5SpeHeNxoYrXQ@mail.gmail.com>
+ <20151211124159.GB3729@pathway.suse.cz>
+ <20151211145725.b0e81bb4bb18fcd72ef5f557@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151211145725.b0e81bb4bb18fcd72ef5f557@linux-foundation.org>
+Return-Path: <linux+linux-mips=linux-mips.org@arm.linux.org.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,71 +26,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Petr Mladek <pmladek@suse.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, Russell King <rmk+kernel@arm.linux.org.uk>, Daniel Thompson <daniel.thompson@linaro.org>, Jiri Kosina <jkosina@suse.com>, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Cris <linux-cris-kernel@axis.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>
-Message-ID: <20151211225725.6DHCZGPhkf2nv5GfV92gfCKCuqa7eo_nE1EvTDX1mFA@z>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Petr Mladek <pmladek@suse.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, Daniel Thompson <daniel.thompson@linaro.org>, Jiri Kosina <jkosina@suse.com>, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Cris <linux-cris-kernel@axis.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>
+Message-ID: <20151211232113.ou3os_3P-JFKcb56P3XGgL1paVSUhPFn7gp_EoV-pgA@z>
 
-On Fri, 11 Dec 2015 13:41:59 +0100 Petr Mladek <pmladek@suse.com> wrote:
-
-> On Fri 2015-12-11 12:10:02, Geert Uytterhoeven wrote:
-> > On Wed, Dec 9, 2015 at 2:21 PM, Petr Mladek <pmladek@suse.com> wrote:
-> > > --- a/init/Kconfig
-> > > +++ b/init/Kconfig
-> > > @@ -866,6 +866,28 @@ config LOG_CPU_MAX_BUF_SHIFT
-> > >                      13 =>   8 KB for each CPU
-> > >                      12 =>   4 KB for each CPU
-> > >
-> > > +config NMI_LOG_BUF_SHIFT
-> > > +       int "Temporary per-CPU NMI log buffer size (12 => 4KB, 13 => 8KB)"
-> > > +       range 10 21
-> > > +       default 13
-> > > +       depends on PRINTK && HAVE_NMI
-> > 
-> > Symbol NMI_LOG_BUF_SHIFT does not exist if its dependencies are not met.
+On Fri, Dec 11, 2015 at 02:57:25PM -0800, Andrew Morton wrote:
+> This is a bit messy.  NEED_PRINTK_NMI is an added-on hack for one
+> particular arm variant.  From the changelog:
 > 
-> __h, the NMI buffer is enabled on arm via NEED_PRINTK_NMI.
-> 
-> The buffer is compiled when CONFIG_PRINTK_NMI is defined. I am going
-> to fix it the following way:
+>    "One exception is arm where the deferred printing is used for
+>     printing backtraces even without NMI.  For this purpose, we define
+>     NEED_PRINTK_NMI Kconfig flag.  The alternative printk_func is
+>     explicitly set when IPI_CPU_BACKTRACE is handled."
 > 
 > 
-> diff --git a/init/Kconfig b/init/Kconfig
-> index efcff25a112d..61cfd96a3c96 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -870,7 +870,7 @@ config NMI_LOG_BUF_SHIFT
->  	int "Temporary per-CPU NMI log buffer size (12 => 4KB, 13 => 8KB)"
->  	range 10 21
->  	default 13
-> -	depends on PRINTK && HAVE_NMI
-> +	depends on PRINTK_NMI
->  	help
->  	  Select the size of a per-CPU buffer where NMI messages are temporary
->  	  stored. They are copied to the main log buffer in a safe context
+> - why does arm needs deferred printing for backtraces?
+> 
+> - why is this specific to CONFIG_CPU_V7M?
+> 
+> - can this Kconfig logic be cleaned up a bit?
 
-I'm wondering why we're building kernel/printk/nmi.o if HAVE_NMI is not
-set.
+I think this comes purely from this attempt to apply another round of
+cleanups to the nmi backtrace work I did.
 
-	obj-$(CONFIG_PRINTK_NMI)		+= nmi.o
+As I explained when I did that work, the vast majority of ARM platforms
+are unable to trigger anything like a NMI - the FIQ is something that's
+generally a property of the secure monitor, and is not accessible to
+Linux.  However, there are platforms where it is accessible.
 
-and
+The work to add the FIQ-based variant never happened (I've no idea what
+happened to that part, Daniel seems to have lost interest in working on
+it.)  So, what we have is the IRQ-based variant merged in mainline, which
+would be the fallback for the "FIQ not available" cases, and I carry a
+local hack in my tree which provides the FIQ-based version - but if it
+were to trigger, it takes out all interrupts (hence why I've not merged
+my hack.)
 
-	config PRINTK_NMI
-		def_bool y
-		depends on PRINTK
-		depends on HAVE_NMI || NEED_PRINTK_NMI
+I think the reason that the FIQ-based variant has never really happened
+is that hooking into the interrupt controller code to clear down the FIQ
+creates such a horrid layering violation, and also a locking mess that
+I suspect it's just been given up with.
 
-This is a bit messy.  NEED_PRINTK_NMI is an added-on hack for one
-particular arm variant.  From the changelog:
+However, I've found my "hack" useful - it's turned a number of totally
+undebuggable hangs (where one CPU silently hangs leaving the others
+running with no way to find out where the hung CPU is) into something
+that can be debugged.
 
-   "One exception is arm where the deferred printing is used for
-    printing backtraces even without NMI.  For this purpose, we define
-    NEED_PRINTK_NMI Kconfig flag.  The alternative printk_func is
-    explicitly set when IPI_CPU_BACKTRACE is handled."
+Now, when we end up triggering the IRQ-based variant, we could already
+be in a situation where IRQs are off for the local CPU, so the IRQ is
+never delivered.  Others decided that it wasn't acceptable to wait 10sec
+for the local CPU to time out, and (iirc) we'd also loose the local CPUs
+backtrace in certain situations.
 
+I'm personally happy with the existing code, and I've been wondering why
+there's this effort to apply further cleanups - to me, the changelogs
+don't seem to make that much sense, unless we want to start using
+printk() extensively in NMI functions - using the generic nmi backtrace
+code surely gets us something that works across all architectures...
 
-- why does arm needs deferred printing for backtraces?
+I've been assuming that I've missed something, which is why I've not
+said anything on that point until now.
 
-- why is this specific to CONFIG_CPU_V7M?
-
-- can this Kconfig logic be cleaned up a bit?
+-- 
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.

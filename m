@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:51678 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13472 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008283AbbLKRHRZ0cxs (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Dec 2015 18:07:17 +0100
+        with ESMTP id S27011935AbbLKRHSJwqqs (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Dec 2015 18:07:18 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH backport v3.10..v3.14 3/4] MIPS: KVM: Fix CACHE immediate offset sign extension
-Date: Fri, 11 Dec 2015 17:06:54 +0000
-Message-ID: <1449853615-6535-3-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH backport v3.10..v3.14 4/4] MIPS: KVM: Uninit VCPU in vcpu_create error path
+Date: Fri, 11 Dec 2015 17:06:55 +0000
+Message-ID: <1449853615-6535-4-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1449853615-6535-1-git-send-email-james.hogan@imgtec.com>
 References: <1449853615-6535-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -22,15 +22,15 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: stable@vger.kernel.org
 Cc: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Paolo Bonzini <pbonzini@redhat.com>, Gleb Natapov <gleb@kernel.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org
-Message-ID: <20151211170654.AoBlMKNaZe5RXbyjj4y-02ha4D6iTJBxLHudF0FE0pA@z>
+Message-ID: <20151211170655.9e2qQvnQaukxFRs5HXLUJ0t4-jyyuNconfRJj41PS2Y@z>
 
-commit c5c2a3b998f1ff5a586f9d37e154070b8d550d17 upstream.
+commit 585bb8f9a5e592f2ce7abbe5ed3112d5438d2754 upstream.
 
-The immediate field of the CACHE instruction is signed, so ensure that
-it gets sign extended by casting it to an int16_t rather than just
-masking the low 16 bits.
+If either of the memory allocations in kvm_arch_vcpu_create() fail, the
+vcpu which has been allocated and kvm_vcpu_init'd doesn't get uninit'd
+in the error handling path. Add a call to kvm_vcpu_uninit() to fix this.
 
-Fixes: e685c689f3a8 ("KVM/MIPS32: Privileged instruction/target branch emulation.")
+Fixes: 669e846e6c4e ("KVM/MIPS32: MIPS arch specific APIs for KVM")
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: Paolo Bonzini <pbonzini@redhat.com>
@@ -40,21 +40,31 @@ Cc: kvm@vger.kernel.org
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 ---
- arch/mips/kvm/kvm_mips_emul.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kvm/kvm_mips.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kvm/kvm_mips_emul.c b/arch/mips/kvm/kvm_mips_emul.c
-index c76f297b7149..33085819cd89 100644
---- a/arch/mips/kvm/kvm_mips_emul.c
-+++ b/arch/mips/kvm/kvm_mips_emul.c
-@@ -935,7 +935,7 @@ kvm_mips_emulate_cache(uint32_t inst, uint32_t *opc, uint32_t cause,
+diff --git a/arch/mips/kvm/kvm_mips.c b/arch/mips/kvm/kvm_mips.c
+index 2cb24788a8a6..7e7de1f2b8ed 100644
+--- a/arch/mips/kvm/kvm_mips.c
++++ b/arch/mips/kvm/kvm_mips.c
+@@ -312,7 +312,7 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm, unsigned int id)
  
- 	base = (inst >> 21) & 0x1f;
- 	op_inst = (inst >> 16) & 0x1f;
--	offset = inst & 0xffff;
-+	offset = (int16_t)inst;
- 	cache = (inst >> 16) & 0x3;
- 	op = (inst >> 18) & 0x7;
+ 	if (!gebase) {
+ 		err = -ENOMEM;
+-		goto out_free_cpu;
++		goto out_uninit_cpu;
+ 	}
+ 	kvm_info("Allocated %d bytes for KVM Exception Handlers @ %p\n",
+ 		 ALIGN(size, PAGE_SIZE), gebase);
+@@ -372,6 +372,9 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm, unsigned int id)
+ out_free_gebase:
+ 	kfree(gebase);
+ 
++out_uninit_cpu:
++	kvm_vcpu_uninit(vcpu);
++
+ out_free_cpu:
+ 	kfree(vcpu);
  
 -- 
 2.4.10

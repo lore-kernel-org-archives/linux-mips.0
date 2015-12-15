@@ -1,24 +1,19 @@
-Received: from mx2.suse.de ([195.135.220.15]:58901 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27008431AbbLOO0XYb1Nq (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 15 Dec 2015 15:26:23 +0100
-Date: Tue, 15 Dec 2015 15:26:21 +0100
-From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH v3 4/4] printk/nmi: Increase the size of NMI buffer and
- make it configurable
-Message-ID: <20151215142621.GE3729@pathway.suse.cz>
-References: <1449667265-17525-1-git-send-email-pmladek@suse.com>
- <1449667265-17525-5-git-send-email-pmladek@suse.com>
- <CAMuHMdXVgr58YjoePGrRbMyMncQ27f85prL7G5SpeHeNxoYrXQ@mail.gmail.com>
- <20151211124159.GB3729@pathway.suse.cz>
- <20151211145725.b0e81bb4bb18fcd72ef5f557@linux-foundation.org>
- <20151211232113.GZ8644@n2100.arm.linux.org.uk>
- <20151211153054.48da5d4139b93dd4ed438f4c@linux-foundation.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38361 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27013883AbbLOVG2VnC9V (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 15 Dec 2015 22:06:28 +0100
+Date: Tue, 15 Dec 2015 21:06:22 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH] mips: Fix CPC_BASE_ADDR mask to match datasheet
+Message-ID: <20151215210622.GP23944@jhogan-linux.le.imgtec.org>
+References: <1449599222-8967-1-git-send-email-mar.kolya@gmail.com>
+ <CALGY4fu3NUAsc-y7zqPx_o=ggea+1yvs_QYV9PyCVOkkgugUrw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="GvDmwISikgK05D7L"
 Content-Disposition: inline
-In-Reply-To: <20151211153054.48da5d4139b93dd4ed438f4c@linux-foundation.org>
-Return-Path: <pmladek@suse.com>
+In-Reply-To: <CALGY4fu3NUAsc-y7zqPx_o=ggea+1yvs_QYV9PyCVOkkgugUrw@mail.gmail.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -28,80 +23,98 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Geert Uytterhoeven <geert@linux-m68k.org>, Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, Daniel Thompson <daniel.thompson@linaro.org>, Jiri Kosina <jkosina@suse.com>, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Cris <linux-cris-kernel@axis.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>
-Message-ID: <20151215142621.qHFCoqC46rT-qjLp-G-topHRkWW3FqB5S4C3LU3L8Y0@z>
+To: Nikolay Martynov <mar.kolya@gmail.com>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20151215210622.jaMVrn_oe652hy9jkDRRCgUc2oGdyZGNIiT7_VH-G84@z>
 
-On Fri 2015-12-11 15:30:54, Andrew Morton wrote:
-> On Fri, 11 Dec 2015 23:21:13 +0000 Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
-> 
-> > On Fri, Dec 11, 2015 at 02:57:25PM -0800, Andrew Morton wrote:
-> > > This is a bit messy.  NEED_PRINTK_NMI is an added-on hack for one
-> > > particular arm variant.  From the changelog:
-> > > 
-> > >    "One exception is arm where the deferred printing is used for
-> > >     printing backtraces even without NMI.  For this purpose, we define
-> > >     NEED_PRINTK_NMI Kconfig flag.  The alternative printk_func is
-> > >     explicitly set when IPI_CPU_BACKTRACE is handled."
-> > > 
-> > > 
-> > > - why does arm needs deferred printing for backtraces?
-> > > 
-> > > - why is this specific to CONFIG_CPU_V7M?
+--GvDmwISikgK05D7L
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi Nikolay,
 
+On Mon, Dec 14, 2015 at 07:31:29PM -0500, Nikolay Martynov wrote:
+> Hi.
+>=20
+>   I just wanted to confirm that this is the right list for this kind
+> of patches. Please let me know if I should submit it to some other
+> place.
 
-> > > - can this Kconfig logic be cleaned up a bit?
-> > 
-> > I think this comes purely from this attempt to apply another round of
-> > cleanups to the nmi backtrace work I did.
-> > 
-> > As I explained when I did that work, the vast majority of ARM platforms
-> > are unable to trigger anything like a NMI - the FIQ is something that's
-> > generally a property of the secure monitor, and is not accessible to
-> > Linux.  However, there are platforms where it is accessible.
-> 
-> OK, thanks.  So "not needed at present, might be needed in the future,
-> useful for out-of-tree debug code"?
+You have the right list. All patches to this list go into patchwork[1],
+so they shouldn't get forgotten.
 
-It is possible that I got it a wrong way on arm. The NMI buffer is
-usable there on two locations.
+The patch looks correct to me based on interAptiv and P5600 manuals, and
+the current uses of these definitions.
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
 
-First, the temporary is currently used to handle IPI_CPU_BACKTRACE.
-It seems that it is not a real NMI. But it seems to be available
-(compiled) on all arm system. This is why I introduced NEED_PRINTK_NMI
-Kconfig flag to avoid confusion with a real NMI.
+Thanks!
+James
 
-Second, there is the FIQ "NMI" handler that is called from
-/arch/arm/kernel/entry-armv.S. It is compiled only if _not_
-defined $(CONFIG_CPU_V7M). It calls nmi_enter() and nmi_stop().
-It looks like a real NMI handler. This is why I defined HAVE_NMI
-if (!CPU_V7M).
+[1] http://patchwork.linux-mips.org
 
-A solution would be to define HAVE_NMI on all Arm systems and get rid
-of NEED_PRINTK_NMI. If you think that it would cause less confusion...
+>=20
+> Thanks!
+>=20
+> 2015-12-08 13:27 GMT-05:00 Nikolay Martynov <mar.kolya@gmail.com>:
+> > According to 'MIPS32=C2=AE interAptivTM Multiprocessing
+> > System Programmer=E2=80=99s Guide' CPC_BASE_ADDR takes bits [31:15].
+> >
+> > This change is tested ith mt7621 which wasn't working without it.
+> >
+> > Signed-off-by: Nikolay Martynov <mar.kolya@gmail.com>
+> > ---
+> >  arch/mips/include/asm/mips-cm.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mi=
+ps-cm.h
+> > index 6516e9d..f942ec2 100644
+> > --- a/arch/mips/include/asm/mips-cm.h
+> > +++ b/arch/mips/include/asm/mips-cm.h
+> > @@ -286,8 +286,8 @@ BUILD_CM_Cx_R_(tcid_8_priority,     0x80)
+> >  #define CM_GCR_GIC_BASE_GICEN_MSK              (_ULCAST_(0x1) << 0)
+> >
+> >  /* GCR_CPC_BASE register fields */
+> > -#define CM_GCR_CPC_BASE_CPCBASE_SHF            17
+> > -#define CM_GCR_CPC_BASE_CPCBASE_MSK            (_ULCAST_(0x7fff) << 17)
+> > +#define CM_GCR_CPC_BASE_CPCBASE_SHF            15
+> > +#define CM_GCR_CPC_BASE_CPCBASE_MSK            (_ULCAST_(0x1ffff) << 1=
+5)
+> >  #define CM_GCR_CPC_BASE_CPCEN_SHF              0
+> >  #define CM_GCR_CPC_BASE_CPCEN_MSK              (_ULCAST_(0x1) << 0)
+> >
+> > --
+> > 2.6.3
+> >
+>=20
+>=20
+>=20
+> --=20
+> Martynov Nikolay.
+> Email: mar.kolya@gmail.com
+>=20
 
+--GvDmwISikgK05D7L
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> > there's this effort to apply further cleanups - to me, the changelogs
-> > don't seem to make that much sense, unless we want to start using
-> > printk() extensively in NMI functions - using the generic nmi backtrace
-> > code surely gets us something that works across all architectures...
-> 
-> Yes, I was scratching my head over that.  The patchset takes an nmi-safe
-> all-cpu-backtrace and generalises that into an nmi-safe printk.  That
-> *sounds* like a good thing to do but yes, some additional justification
-> would be helpful.  What real-world value does this patchset really
-> bring to real-world users?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-The patchset brings two big advantages. First, it makes the NMI
-backtraces safe on all architectures for free. Second, it makes
-all NMI messages almost[*] safe on all architectures.
+iQIcBAEBCAAGBQJWcIDOAAoJEGwLaZPeOHZ6agEP/itFQbEpi5rJI+Vs4ubpqThO
++gnV2MSzSffhKpC8ibHiVcNxIVNhV4Wdryfuq1CigJ7tN/PuXQEbhder4KwKUwCN
+RoL8kjTdnwr+SXvJcTmxJINpIoRrQO3A5Ab6YyAB0MTNPX6DNz44hYs7lfNPugvm
+vlzEgeH3oPgaV3ClSJvboivW4FLSt+pobPNGBampoPrnSmy/QSgG+ucKsOgytYRs
+3NEpiMHezg5tYspHaNY5K5rP2Nt+tTDeNf5K6kKDeLMcBsbqAySah661rVi67zvq
+MNRl+lbEmCP7DwjpdnTDTWLAE7saW/pv/sD6bIS8vHUV1C5baNoMmdOLBbph6crF
+YiA2TOhj+4CsAomzye9gkyOcsLbp6jikLLrueJbaDHaYjWNPlXMt8xZ4QWBq1MjQ
+lZXSZlutnF8HyGAS7Ym2J3amvB984plx6rCZOtlW8pNEY1n3lSMm1HJtxEt3Apnr
+e12RKzfV3dj+cHvq4eR4uFQiSlJBbOAR9dOtyhJ+0LzngDbi2Rpp9yZvCBZTQ1xp
+9ZPC4XwoQYrnEPIfUxIuW5RrJK/aMvUdPxwqhTxA/agJqOjpCl7XTj2bhNIm9iki
+dNLb/hPnFDY1MySx/mBGXC3HKcp0KAzLVsyioZ8j+hlbWhQGP4Pt1qiHpV1zCyUx
+9qStlXYnMx9/DbTVKfGH
+=BNwk
+-----END PGP SIGNATURE-----
 
-Note that there already are several messages printed in NMI context.
-See the mail from Jiri Kosina. They are not easy to avoid.
-
-[*] The temporary buffer is limited. We still should keep
-the number of messages in NMI context at minimum.
-
-Best Regards,
-Petr
+--GvDmwISikgK05D7L--

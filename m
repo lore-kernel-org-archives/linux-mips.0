@@ -1,16 +1,24 @@
-Received: from exsmtp03.microchip.com ([198.175.253.49]:44820 "EHLO
-        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27013880AbbLNWkoVHVeo (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Dec 2015 23:40:44 +0100
-From: Joshua Henderson <joshua.henderson@microchip.com>
-Subject: [PATCH v2 14/14] MIPS: pic32mzda: Add initial PIC32MZDA Starter Kit defconfig
-Date: Mon, 14 Dec 2015 15:42:16 -0700
-Message-ID: <1450133093-7053-15-git-send-email-joshua.henderson@microchip.com>
-In-Reply-To: <1450133093-7053-1-git-send-email-joshua.henderson@microchip.com>
-References: <1450133093-7053-1-git-send-email-joshua.henderson@microchip.com>
+Received: from mx2.suse.de ([195.135.220.15]:58901 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27008431AbbLOO0XYb1Nq (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 15 Dec 2015 15:26:23 +0100
+Date: Tue, 15 Dec 2015 15:26:21 +0100
+From: Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH v3 4/4] printk/nmi: Increase the size of NMI buffer and
+ make it configurable
+Message-ID: <20151215142621.GE3729@pathway.suse.cz>
+References: <1449667265-17525-1-git-send-email-pmladek@suse.com>
+ <1449667265-17525-5-git-send-email-pmladek@suse.com>
+ <CAMuHMdXVgr58YjoePGrRbMyMncQ27f85prL7G5SpeHeNxoYrXQ@mail.gmail.com>
+ <20151211124159.GB3729@pathway.suse.cz>
+ <20151211145725.b0e81bb4bb18fcd72ef5f557@linux-foundation.org>
+ <20151211232113.GZ8644@n2100.arm.linux.org.uk>
+ <20151211153054.48da5d4139b93dd4ed438f4c@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Joshua.Henderson@microchip.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151211153054.48da5d4139b93dd4ed438f4c@linux-foundation.org>
+Return-Path: <pmladek@suse.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,113 +28,80 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Joshua Henderson <joshua.henderson@microchip.com>
-Message-ID: <20151214224216.V1zaXVaCWiRrBZrxdRC12BfbwLpO5cbEYYot_8ozM2A@z>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Geert Uytterhoeven <geert@linux-m68k.org>, Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, Daniel Thompson <daniel.thompson@linaro.org>, Jiri Kosina <jkosina@suse.com>, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Cris <linux-cris-kernel@axis.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>
+Message-ID: <20151215142621.qHFCoqC46rT-qjLp-G-topHRkWW3FqB5S4C3LU3L8Y0@z>
 
-This adds an initial default config that enables all available PIC32
-drivers and is enough for booting a PIC32MZDA Starter Kit.
+On Fri 2015-12-11 15:30:54, Andrew Morton wrote:
+> On Fri, 11 Dec 2015 23:21:13 +0000 Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
+> 
+> > On Fri, Dec 11, 2015 at 02:57:25PM -0800, Andrew Morton wrote:
+> > > This is a bit messy.  NEED_PRINTK_NMI is an added-on hack for one
+> > > particular arm variant.  From the changelog:
+> > > 
+> > >    "One exception is arm where the deferred printing is used for
+> > >     printing backtraces even without NMI.  For this purpose, we define
+> > >     NEED_PRINTK_NMI Kconfig flag.  The alternative printk_func is
+> > >     explicitly set when IPI_CPU_BACKTRACE is handled."
+> > > 
+> > > 
+> > > - why does arm needs deferred printing for backtraces?
+> > > 
+> > > - why is this specific to CONFIG_CPU_V7M?
 
-Signed-off-by: Joshua Henderson <joshua.henderson@microchip.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
----
- arch/mips/configs/pic32mzda_defconfig |   88 +++++++++++++++++++++++++++++++++
- 1 file changed, 88 insertions(+)
- create mode 100644 arch/mips/configs/pic32mzda_defconfig
 
-diff --git a/arch/mips/configs/pic32mzda_defconfig b/arch/mips/configs/pic32mzda_defconfig
-new file mode 100644
-index 0000000..17014ca
---- /dev/null
-+++ b/arch/mips/configs/pic32mzda_defconfig
-@@ -0,0 +1,88 @@
-+CONFIG_MACH_PIC32=y
-+CONFIG_DTB_PIC32_MZDA_SK=y
-+CONFIG_HZ_100=y
-+CONFIG_PREEMPT_VOLUNTARY=y
-+# CONFIG_SECCOMP is not set
-+CONFIG_SYSVIPC=y
-+CONFIG_NO_HZ=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_IKCONFIG=y
-+CONFIG_IKCONFIG_PROC=y
-+CONFIG_LOG_BUF_SHIFT=14
-+CONFIG_RELAY=y
-+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-+CONFIG_EMBEDDED=y
-+# CONFIG_COMPAT_BRK is not set
-+CONFIG_SLAB=y
-+CONFIG_JUMP_LABEL=y
-+CONFIG_MODULES=y
-+CONFIG_MODULE_UNLOAD=y
-+CONFIG_MODVERSIONS=y
-+CONFIG_MODULE_SRCVERSION_ALL=y
-+CONFIG_BLK_DEV_BSGLIB=y
-+CONFIG_PARTITION_ADVANCED=y
-+CONFIG_SGI_PARTITION=y
-+CONFIG_BINFMT_MISC=m
-+# CONFIG_SUSPEND is not set
-+CONFIG_DEVTMPFS=y
-+CONFIG_DEVTMPFS_MOUNT=y
-+# CONFIG_FIRMWARE_IN_KERNEL is not set
-+# CONFIG_ALLOW_DEV_COREDUMP is not set
-+CONFIG_BLK_DEV_LOOP=m
-+CONFIG_SCSI=y
-+CONFIG_BLK_DEV_SD=y
-+CONFIG_SCSI_CONSTANTS=y
-+CONFIG_SCSI_SCAN_ASYNC=y
-+# CONFIG_SCSI_LOWLEVEL is not set
-+CONFIG_INPUT_LEDS=m
-+CONFIG_INPUT_POLLDEV=y
-+CONFIG_INPUT_MOUSEDEV=m
-+CONFIG_INPUT_EVDEV=y
-+CONFIG_INPUT_EVBUG=m
-+# CONFIG_KEYBOARD_ATKBD is not set
-+CONFIG_KEYBOARD_GPIO=m
-+CONFIG_KEYBOARD_GPIO_POLLED=m
-+# CONFIG_MOUSE_PS2 is not set
-+# CONFIG_SERIO is not set
-+CONFIG_SERIAL_PIC32=y
-+CONFIG_SERIAL_PIC32_CONSOLE=y
-+CONFIG_HW_RANDOM=y
-+CONFIG_RAW_DRIVER=m
-+CONFIG_GPIO_SYSFS=y
-+# CONFIG_HWMON is not set
-+CONFIG_HIDRAW=y
-+# CONFIG_USB_SUPPORT is not set
-+CONFIG_MMC=y
-+CONFIG_MMC_SDHCI=y
-+CONFIG_MMC_SDHCI_MICROCHIP_PIC32=y
-+CONFIG_NEW_LEDS=y
-+CONFIG_LEDS_CLASS=y
-+CONFIG_LEDS_GPIO=y
-+CONFIG_LEDS_TRIGGERS=y
-+CONFIG_LEDS_TRIGGER_TIMER=m
-+CONFIG_LEDS_TRIGGER_ONESHOT=m
-+CONFIG_LEDS_TRIGGER_HEARTBEAT=y
-+CONFIG_LEDS_TRIGGER_GPIO=m
-+CONFIG_LEDS_TRIGGER_DEFAULT_ON=y
-+# CONFIG_MIPS_PLATFORM_DEVICES is not set
-+# CONFIG_IOMMU_SUPPORT is not set
-+CONFIG_EXT4_FS=y
-+CONFIG_EXT4_FS_POSIX_ACL=y
-+CONFIG_EXT4_FS_SECURITY=y
-+CONFIG_AUTOFS4_FS=m
-+CONFIG_FUSE_FS=m
-+CONFIG_FSCACHE=m
-+CONFIG_ISO9660_FS=m
-+CONFIG_JOLIET=y
-+CONFIG_ZISOFS=y
-+CONFIG_UDF_FS=m
-+CONFIG_MSDOS_FS=m
-+CONFIG_VFAT_FS=m
-+CONFIG_PROC_KCORE=y
-+CONFIG_TMPFS=y
-+CONFIG_TMPFS_POSIX_ACL=y
-+CONFIG_SQUASHFS=m
-+CONFIG_SQUASHFS_XATTR=y
-+CONFIG_SQUASHFS_LZ4=y
-+CONFIG_SQUASHFS_LZO=y
-+CONFIG_SQUASHFS_XZ=y
--- 
-1.7.9.5
+
+> > > - can this Kconfig logic be cleaned up a bit?
+> > 
+> > I think this comes purely from this attempt to apply another round of
+> > cleanups to the nmi backtrace work I did.
+> > 
+> > As I explained when I did that work, the vast majority of ARM platforms
+> > are unable to trigger anything like a NMI - the FIQ is something that's
+> > generally a property of the secure monitor, and is not accessible to
+> > Linux.  However, there are platforms where it is accessible.
+> 
+> OK, thanks.  So "not needed at present, might be needed in the future,
+> useful for out-of-tree debug code"?
+
+It is possible that I got it a wrong way on arm. The NMI buffer is
+usable there on two locations.
+
+First, the temporary is currently used to handle IPI_CPU_BACKTRACE.
+It seems that it is not a real NMI. But it seems to be available
+(compiled) on all arm system. This is why I introduced NEED_PRINTK_NMI
+Kconfig flag to avoid confusion with a real NMI.
+
+Second, there is the FIQ "NMI" handler that is called from
+/arch/arm/kernel/entry-armv.S. It is compiled only if _not_
+defined $(CONFIG_CPU_V7M). It calls nmi_enter() and nmi_stop().
+It looks like a real NMI handler. This is why I defined HAVE_NMI
+if (!CPU_V7M).
+
+A solution would be to define HAVE_NMI on all Arm systems and get rid
+of NEED_PRINTK_NMI. If you think that it would cause less confusion...
+
+
+> > there's this effort to apply further cleanups - to me, the changelogs
+> > don't seem to make that much sense, unless we want to start using
+> > printk() extensively in NMI functions - using the generic nmi backtrace
+> > code surely gets us something that works across all architectures...
+> 
+> Yes, I was scratching my head over that.  The patchset takes an nmi-safe
+> all-cpu-backtrace and generalises that into an nmi-safe printk.  That
+> *sounds* like a good thing to do but yes, some additional justification
+> would be helpful.  What real-world value does this patchset really
+> bring to real-world users?
+
+The patchset brings two big advantages. First, it makes the NMI
+backtraces safe on all architectures for free. Second, it makes
+all NMI messages almost[*] safe on all architectures.
+
+Note that there already are several messages printed in NMI context.
+See the mail from Jiri Kosina. They are not easy to avoid.
+
+[*] The temporary buffer is limited. We still should keep
+the number of messages in NMI context at minimum.
+
+Best Regards,
+Petr

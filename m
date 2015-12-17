@@ -1,19 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:35473 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27013952AbbLQKtYyAvUa (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Dec 2015 11:49:24 +0100
-Date: Thu, 17 Dec 2015 10:49:18 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH 00/16] MIPS: KVM: Misc trivial cleanups
-Message-ID: <20151217104918.GA2789@jhogan-linux.le.imgtec.org>
-References: <1450309781-28030-1-git-send-email-james.hogan@imgtec.com>
- <567290D2.70207@redhat.com>
+Received: from exsmtp01.microchip.com ([198.175.253.37]:54347 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27014123AbbLQSFdmg4sg (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Dec 2015 19:05:33 +0100
+From: <Paul.Thacker@microchip.com>
+Subject: RE: [PATCH v2 12/14] mmc: sdhci-pic32: Add PIC32 SDHCI host
+ controller driver
+Date: Thu, 17 Dec 2015 18:05:24 +0000
+Message-ID: <F2D704DDA6AE8B4A87FF87509480F4A449E07947@CHN-SV-EXMX01.mchp-main.com>
+References: <1450133093-7053-1-git-send-email-joshua.henderson@microchip.com>
+        <1450133093-7053-13-git-send-email-joshua.henderson@microchip.com>
+ <CAPDyKFpQeq-9G_=n62c8uE+Tkiz3o9jManiOuCZG2qNKwkZ5EQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFpQeq-9G_=n62c8uE+Tkiz3o9jManiOuCZG2qNKwkZ5EQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ibTvN161/egqYuK8"
-Content-Disposition: inline
-In-Reply-To: <567290D2.70207@redhat.com>
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Paul.Thacker@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,124 +25,122 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Gleb Natapov <gleb@kernel.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org
-Message-ID: <20151217104918.WOlf7c65Z53_-drkqBZ-wB2PYClc3Rf1d-ZiEUFgA8E@z>
+To: ulf.hansson@linaro.org, Joshua.Henderson@microchip.com
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org, Andrei.Pistirica@microchip.com, jdelvare@suse.de, geert@linux-m68k.org, cdoban@broadcom.com, haojian.zhuang@gmail.com, luisbg@osg.samsung.com, Weijun.Yang@csr.com, lokeshvutla@ti.com, sbranden@broadcom.com, vincent.yang.fujitsu@gmail.com, chaotian.jing@mediatek.com, ludovic.desroches@atmel.com, shawn.lin@rock-chips.com, sboyd@codeaurora.org, yangbo.lu@freescale.com, haokexin@gmail.com, ben@decadent.org.uk, andy.green@linaro.org, linux-mmc@vger.kernel.org
+Message-ID: <20151217180524.D4PzVhEYhtU0SRIAt_n_R0_3ZHHh7wwhF_FDNR1Cje8@z>
 
---ibTvN161/egqYuK8
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Paolo.
-
-On Thu, Dec 17, 2015 at 11:39:14AM +0100, Paolo Bonzini wrote:
->=20
->=20
-> On 17/12/2015 00:49, James Hogan wrote:
-> > This patchset contains a bunch of miscellaneous cleanups (which are
-> > mostly trivial) for MIPS KVM & MIPS headers, such as:
-> > - Style/whitespace fixes
-> > - General cleanup and removal of dead code.
-> > - Moving/refactoring of general MIPS definitions out of arch/mips/kvm/
-> >   and into arch/mips/include/asm/ so they can be shared with the rest of
-> >   arch/mips. Specifically COP0 register bits, exception codes, cache
-> >   ops, & instruction opcodes.
-> > - Add MAINTAINERS entry for MIPS KVM.
-> >=20
-> > Due to the interaction with other arch/mips/ code, I think it makes
-> > sense for these to go via the MIPS tree.
->=20
-> No objection.
->=20
-> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-
-Thanks!
-
->=20
-> I think I'd use s8/u8 instead of int8_t/uint8_t in patch 15, but really
-> that's just me.  I'm fine either way, and that's really the only comment
-> I have on the series. :)
-
-I'm inclined to agree. u?int(8|16|32)_t all over arch/mips/kvm/ instead
-of [us](8|16|32) irritates me as its not very kernel'y.
-
-Ralf: Maybe don't apply patch 15 (I've marked rejected in patchwork),
-and I'll do a wider cleanup at some point instead.
-
-Cheers
-James
-
->=20
-> Paolo
->=20
-> > James Hogan (16):
-> >   MIPS: KVM: Trivial whitespace and style fixes
-> >   MIPS: KVM: Drop some unused definitions from kvm_host.h
-> >   MIPS: Move definition of DC bit to mipsregs.h
-> >   MIPS: KVM: Drop unused kvm_mips_host_tlb_inv_index()
-> >   MIPS: KVM: Convert EXPORT_SYMBOL to _GPL
-> >   MIPS: KVM: Refactor added offsetof()s
-> >   MIPS: KVM: Make kvm_mips_{init,exit}() static
-> >   MIPS: Move Cause.ExcCode trap codes to mipsregs.h
-> >   MIPS: Update trap codes
-> >   MIPS: Use EXCCODE_ constants with set_except_vector()
-> >   MIPS: Break down cacheops.h definitions
-> >   MIPS: KVM: Use cacheops.h definitions
-> >   MIPS: Move KVM specific opcodes into asm/inst.h
-> >   MIPS: KVM: Add missing newline to kvm_err()
-> >   MIPS: KVM: Consistent use of uint*_t in MMIO handling
-> >   MAINTAINERS: Add KVM for MIPS entry
-> >=20
-> >  MAINTAINERS                       |   8 +++
-> >  arch/mips/Kconfig                 |   3 +-
-> >  arch/mips/include/asm/cacheops.h  | 106 ++++++++++++++++++++----------=
-----
-> >  arch/mips/include/asm/kvm_host.h  |  39 +------------
-> >  arch/mips/include/asm/mipsregs.h  |  34 +++++++++++
-> >  arch/mips/include/uapi/asm/inst.h |   3 +-
-> >  arch/mips/kernel/cpu-bugs64.c     |   8 +--
-> >  arch/mips/kernel/traps.c          |  52 ++++++++---------
-> >  arch/mips/kvm/callback.c          |   2 +-
-> >  arch/mips/kvm/dyntrans.c          |  10 +---
-> >  arch/mips/kvm/emulate.c           | 118 ++++++++++++++++--------------=
---------
-> >  arch/mips/kvm/interrupt.c         |   8 +--
-> >  arch/mips/kvm/locore.S            |  12 ++--
-> >  arch/mips/kvm/mips.c              |  38 ++++++------
-> >  arch/mips/kvm/opcode.h            |  22 -------
-> >  arch/mips/kvm/tlb.c               |  77 +++++++------------------
-> >  arch/mips/kvm/trap_emul.c         |   1 -
-> >  17 files changed, 245 insertions(+), 296 deletions(-)
-> >  delete mode 100644 arch/mips/kvm/opcode.h
-> >=20
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: Gleb Natapov <gleb@kernel.org>
-> > Cc: linux-mips@linux-mips.org
-> > Cc: kvm@vger.kernel.org
-> >=20
-
---ibTvN161/egqYuK8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJWcpMuAAoJEGwLaZPeOHZ6VhYQAJ+PwFTimcObsAV65URdWakP
-G9w/rkpv+XYuIfA4dh5p44njEhL5+r9kXrIps7u03Cv3SU8h+PmZej2Ni9Tt8RQP
-pBSOc0AxJFU8tdLkIju1oHflAblbkOe7OXJTFKZA1NEBn5diJt6e8CCeC8rkZbB/
-wvKDmrvfZuDqCrPj4+XOU1rVpLEeQem+oH4qXvTudQEuz/8u8FTZjFVb/YjT+vp5
-6XQmc/6Oh2nZO1HU67nrqu/VdwesokbaKzc71CZ1SqJi2XACzFZgcx4l0D6VNvrU
-G4LAr0IoYh9v1cpvwbi9mYzzTA+9Kq66b+EpxtCJj1OyqAMi4imNtrpBq56hlM99
-dHSJFXwm8iPF+zwR+VhoAZMQpbDC+T+6M1J+V9j5DwrttyAuOAeYMqG1zEpbbPTC
-QfeNMxIO82gjAQU5fDqkxrZPkLibCJtVlZqe4/WOPybS1Xzf6L4UOSSDka6UNaKM
-2n4Bo8o1h8cDamA1YHA1nHB+HWkSQTXVROj8jBJZrW0r0gWJI+Ex9cHgDFLOt1T9
-J9HDHyshMrR6WLk4NM+rww4370h+fwQ3Fdz58kjjNgIDfAgcSz0QKL6m2RQYMdil
-jUdshWUvIcgmfPsaMCCBkP9O6RjEpKJ7+gD5BB27T/u35dK8K0E1WuarH+IatNru
-6ccg+2wvsctx4NKrhwh8
-=sNqW
------END PGP SIGNATURE-----
-
---ibTvN161/egqYuK8--
+T24gMTIvMTYvMjAxNSAzOjQ4IEFNLCBVbGYgSGFuc3NvbiB3cm90ZToNCj4gDQo+IFsuLi5dDQo+
+IA0KPiA+ICtzdGF0aWMgaW50IHBpYzMyX3NkaGNpX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
+Y2UgKnBkZXYpIHsNCj4gPiArICAgICAgIHN0cnVjdCBkZXZpY2UgKmRldiA9ICZwZGV2LT5kZXY7
+DQo+ID4gKyAgICAgICBzdHJ1Y3Qgc2RoY2lfaG9zdCAqaG9zdDsNCj4gPiArICAgICAgIHN0cnVj
+dCByZXNvdXJjZSAqaW9tZW07DQo+ID4gKyAgICAgICBzdHJ1Y3QgcGljMzJfc2RoY2lfcGRhdGEg
+KnNkaGNpX3BkYXRhOw0KPiA+ICsgICAgICAgc3RydWN0IHBpYzMyX3NkaGNpX3BsYXRmb3JtX2Rh
+dGEgKnBsYXRfZGF0YTsNCj4gPiArICAgICAgIHVuc2lnbmVkIGludCBjbGtfcmF0ZSA9IDA7DQo+
+ID4gKyAgICAgICBpbnQgcmV0Ow0KPiA+ICsgICAgICAgc3RydWN0IHBpbmN0cmwgKnBpbmN0cmw7
+DQo+ID4gKw0KPiA+ICsgICAgICAgaG9zdCA9IHNkaGNpX2FsbG9jX2hvc3QoZGV2LCBzaXplb2Yo
+KnNkaGNpX3BkYXRhKSk7DQo+ID4gKyAgICAgICBpZiAoSVNfRVJSKGhvc3QpKSB7DQo+ID4gKyAg
+ICAgICAgICAgICAgIHJldCA9IFBUUl9FUlIoaG9zdCk7DQo+ID4gKyAgICAgICAgICAgICAgIGRl
+dl9lcnIoJnBkZXYtPmRldiwgImNhbm5vdCBhbGxvY2F0ZSBtZW1vcnkgZm9yIHNkaGNpXG4iKTsN
+Cj4gPiArICAgICAgICAgICAgICAgZ290byBlcnI7DQo+ID4gKyAgICAgICB9DQo+ID4gKw0KPiA+
+ICsgICAgICAgc2RoY2lfcGRhdGEgPSBzZGhjaV9wcml2KGhvc3QpOw0KPiA+ICsgICAgICAgc2Ro
+Y2lfcGRhdGEtPnBkZXYgPSBwZGV2Ow0KPiA+ICsgICAgICAgcGxhdGZvcm1fc2V0X2RydmRhdGEo
+cGRldiwgaG9zdCk7DQo+ID4gKw0KPiA+ICsgICAgICAgaW9tZW0gPSBwbGF0Zm9ybV9nZXRfcmVz
+b3VyY2UocGRldiwgSU9SRVNPVVJDRV9NRU0sIDApOw0KPiA+ICsgICAgICAgaG9zdC0+aW9hZGRy
+ID0gZGV2bV9pb3JlbWFwX3Jlc291cmNlKCZwZGV2LT5kZXYsIGlvbWVtKTsNCj4gPiArICAgICAg
+IGlmIChJU19FUlIoaG9zdC0+aW9hZGRyKSkgew0KPiA+ICsgICAgICAgICAgICAgICByZXQgPSBQ
+VFJfRVJSKGhvc3QtPmlvYWRkcik7DQo+ID4gKyAgICAgICAgICAgICAgIGRldl9lcnIoJnBkZXYt
+PmRldiwgInVuYWJsZSB0byBtYXAgaW9tZW06ICVkXG4iLCByZXQpOw0KPiA+ICsgICAgICAgICAg
+ICAgICBnb3RvIGVycl9ob3N0Ow0KPiA+ICsgICAgICAgfQ0KPiA+ICsNCj4gPiArICAgICAgIHBs
+YXRfZGF0YSA9IHBkZXYtPmRldi5wbGF0Zm9ybV9kYXRhOw0KPiA+ICsgICAgICAgaWYgKHBsYXRf
+ZGF0YSAmJiBwbGF0X2RhdGEtPnNldHVwX2RtYSkgew0KPiA+ICsgICAgICAgICAgICAgICByZXQg
+PSBwbGF0X2RhdGEtPnNldHVwX2RtYShBRE1BX0ZJRk9fUkRfVEhTSExELA0KPiA+ICsgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBBRE1BX0ZJRk9fV1JfVEhTSExEKTsN
+Cj4gPiArICAgICAgICAgICAgICAgaWYgKHJldCkNCj4gPiArICAgICAgICAgICAgICAgICAgICAg
+ICBnb3RvIGVycl9ob3N0Ow0KPiA+ICsgICAgICAgfQ0KPiA+ICsNCj4gPiArICAgICAgIHBpbmN0
+cmwgPSBkZXZtX3BpbmN0cmxfZ2V0X3NlbGVjdF9kZWZhdWx0KCZwZGV2LT5kZXYpOw0KPiANCj4g
+VGhpcyBpc24ndCBuZWVkIGFzIGl0J3MgYWxyZWFkeSBoYW5kbGVkIGJ5IHRoZSBQTSBjb3JlLg0K
+DQpBY2suIFdpbGwgcmVtb3ZlLg0KDQo+IA0KPiA+ICsgICAgICAgaWYgKElTX0VSUihwaW5jdHJs
+KSkgew0KPiA+ICsgICAgICAgICAgICAgICByZXQgPSBQVFJfRVJSKHBpbmN0cmwpOw0KPiA+ICsg
+ICAgICAgICAgICAgICBkZXZfd2FybigmcGRldi0+ZGV2LCAiTm8gcGluY3RybCBwcm92aWRlZCAl
+ZFxuIiwgcmV0KTsNCj4gPiArICAgICAgICAgICAgICAgaWYgKHJldCA9PSAtRVBST0JFX0RFRkVS
+KQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGdvdG8gZXJyX2hvc3Q7DQo+ID4gKyAgICAg
+ICB9DQo+ID4gKw0KPiA+ICsgICAgICAgaG9zdC0+b3BzID0gJnBpYzMyX3NkaGNpX29wczsNCj4g
+PiArICAgICAgIGhvc3QtPmlycSA9IHBsYXRmb3JtX2dldF9pcnEocGRldiwgMCk7DQo+ID4gKw0K
+PiA+ICsgICAgICAgc2RoY2lfcGRhdGEtPnN5c19jbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRl
+diwgInN5c19jbGsiKTsNCj4gPiArICAgICAgIGlmIChJU19FUlIoc2RoY2lfcGRhdGEtPnN5c19j
+bGspKSB7DQo+ID4gKyAgICAgICAgICAgICAgIHJldCA9IFBUUl9FUlIoc2RoY2lfcGRhdGEtPnN5
+c19jbGspOw0KPiA+ICsgICAgICAgICAgICAgICBkZXZfZXJyKCZwZGV2LT5kZXYsICJFcnJvciBn
+ZXR0aW5nIGNsb2NrXG4iKTsNCj4gPiArICAgICAgICAgICAgICAgZ290byBlcnJfaG9zdDsNCj4g
+PiArICAgICAgIH0NCj4gPiArDQo+ID4gKyAgICAgICAvKiBFbmFibGUgY2xvY2sgd2hlbiBhdmFp
+bGFibGUhICovDQo+ID4gKyAgICAgICByZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoc2RoY2lfcGRh
+dGEtPnN5c19jbGspOw0KPiA+ICsgICAgICAgaWYgKHJldCkgew0KPiA+ICsgICAgICAgICAgICAg
+ICBkZXZfZGJnKCZwZGV2LT5kZXYsICJFcnJvciBlbmFibGluZyBjbG9ja1xuIik7DQo+ID4gKyAg
+ICAgICAgICAgICAgIGdvdG8gZXJyX2hvc3Q7DQo+ID4gKyAgICAgICB9DQo+ID4gKw0KPiA+ICsg
+ICAgICAgLyogU0RIIENMSyBlbmFibGUgKi8NCj4gPiArICAgICAgIHNkaGNpX3BkYXRhLT5iYXNl
+X2NsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAiYmFzZV9jbGsiKTsNCj4gPiArICAgICAg
+IGlmIChJU19FUlIoc2RoY2lfcGRhdGEtPmJhc2VfY2xrKSkgew0KPiA+ICsgICAgICAgICAgICAg
+ICByZXQgPSBQVFJfRVJSKHNkaGNpX3BkYXRhLT5iYXNlX2Nsayk7DQo+ID4gKyAgICAgICAgICAg
+ICAgIGRldl9lcnIoJnBkZXYtPmRldiwgIkVycm9yIGdldHRpbmcgY2xvY2tcbiIpOw0KPiA+ICsg
+ICAgICAgICAgICAgICBnb3RvIGVycl9ob3N0Ow0KPiA+ICsgICAgICAgfQ0KPiA+ICsNCj4gPiAr
+ICAgICAgIC8qIEVuYWJsZSBjbG9jayB3aGVuIGF2YWlsYWJsZSEgKi8NCj4gPiArICAgICAgIHJl
+dCA9IGNsa19wcmVwYXJlX2VuYWJsZShzZGhjaV9wZGF0YS0+YmFzZV9jbGspOw0KPiA+ICsgICAg
+ICAgaWYgKHJldCkgew0KPiA+ICsgICAgICAgICAgICAgICBkZXZfZGJnKCZwZGV2LT5kZXYsICJF
+cnJvciBlbmFibGluZyBjbG9ja1xuIik7DQo+ID4gKyAgICAgICAgICAgICAgIGdvdG8gZXJyX2hv
+c3Q7DQo+ID4gKyAgICAgICB9DQo+ID4gKw0KPiA+ICsgICAgICAgY2xrX3JhdGUgPSBjbGtfZ2V0
+X3JhdGUoc2RoY2lfcGRhdGEtPmJhc2VfY2xrKTsNCj4gPiArICAgICAgIGRldl9kYmcoJnBkZXYt
+PmRldiwgImJhc2UgY2xvY2sgYXQ6ICV1XG4iLCBjbGtfcmF0ZSk7DQo+ID4gKyAgICAgICBjbGtf
+cmF0ZSA9IGNsa19nZXRfcmF0ZShzZGhjaV9wZGF0YS0+c3lzX2Nsayk7DQo+ID4gKyAgICAgICBk
+ZXZfZGJnKCZwZGV2LT5kZXYsICJzeXMgY2xvY2sgYXQ6ICV1XG4iLCBjbGtfcmF0ZSk7DQo+IA0K
+PiBUaGlzIGxvb2tzIGxpa2Ugc29tZSBsZWZ0b3ZlciBmcm9tIGEgZGVidWdnaW5nIHRhc2suIENh
+biB5b3UgcmVtb3ZlIHRoZW0/DQo+IA0KDQpZZXMsIHRoZXNlIGFyZSBub3QgbmVlZGVkIGFuZCB3
+aWxsIGJlIHJlbW92ZWQuDQoNCj4gPiArDQo+ID4gKyAgICAgICBob3N0LT5xdWlya3MyIHw9IFNE
+SENJX1FVSVJLMl9OT18xXzhfVjsNCj4gPiArDQo+ID4gKyAgICAgICBob3N0LT5xdWlya3MgfD0g
+U0RIQ0lfUVVJUktfTk9fSElTUERfQklUOw0KPiA+ICsNCj4gPiArICAgICAgIHJldCA9IG1tY19v
+Zl9wYXJzZShob3N0LT5tbWMpOw0KPiA+ICsgICAgICAgaWYgKHJldCkNCj4gDQo+IEZyb20gdGhp
+cyBwb2ludCwgdGhlIGVycm9yIGhhbmRsaW5nIGRvZXNuJ3QgdW5kbyBjbGtfcHJlcGFyZV9lbmFi
+bGUoKS4NCj4gUGxlYXNlIGFkZCB0aGF0Lg0KDQpBY2suIFdpbGwgZG8uDQoNCj4gDQo+ID4gKyAg
+ICAgICAgICAgICAgIGdvdG8gZXJyX2hvc3Q7DQo+ID4gKw0KPiA+ICsgICAgICAgcmV0ID0gcGlj
+MzJfc2RoY2lfcHJvYmVfcGxhdGZvcm0ocGRldiwgc2RoY2lfcGRhdGEpOw0KPiA+ICsgICAgICAg
+aWYgKHJldCkgew0KPiA+ICsgICAgICAgICAgICAgICBkZXZfZXJyKCZwZGV2LT5kZXYsICJmYWls
+ZWQgdG8gcHJvYmUgcGxhdGZvcm0hXG4iKTsNCj4gPiArICAgICAgICAgICAgICAgZ290byBlcnJf
+aG9zdDsNCj4gPiArICAgICAgIH0NCj4gPiArDQo+ID4gKyAgICAgICByZXQgPSBzZGhjaV9hZGRf
+aG9zdChob3N0KTsNCj4gPiArICAgICAgIGlmIChyZXQpIHsNCj4gPiArICAgICAgICAgICAgICAg
+ZGV2X2RiZygmcGRldi0+ZGV2LCAiZXJyb3IgYWRkaW5nIGhvc3RcbiIpOw0KPiA+ICsgICAgICAg
+ICAgICAgICBnb3RvIGVycl9ob3N0Ow0KPiA+ICsgICAgICAgfQ0KPiA+ICsNCj4gPiArICAgICAg
+IGRldl9pbmZvKCZwZGV2LT5kZXYsICJTdWNjZXNzZnVsbHkgYWRkZWQgc2RoY2kgaG9zdFxuIik7
+DQo+ID4gKyAgICAgICByZXR1cm4gMDsNCj4gPiArDQo+ID4gK2Vycl9ob3N0Og0KPiA+ICsgICAg
+ICAgc2RoY2lfZnJlZV9ob3N0KGhvc3QpOw0KPiA+ICtlcnI6DQo+ID4gKyAgICAgICBkZXZfZXJy
+KCZwZGV2LT5kZXYsICJwaWMzMi1zZGhjaSBwcm9iZSBmYWlsZWQ6ICVkXG4iLCByZXQpOw0KPiA+
+ICsgICAgICAgcmV0dXJuIHJldDsNCj4gDQo+IEEgZ2VuZXJhbCBjb21tZW50IGZvciB0aGUgLT5w
+cm9iZSgpIGFuZCB0aGUgYmVsb3cgLT5yZW1vdmUoKSBjYWxsYmFjaywgaXMgdGhhdA0KPiB5b3Ug
+c2hvdWxkIHByb2JhYmx5IGJlIGFibGUgdG8gY29udmVydCB0byB1c2UNCj4gc2RoY2lfcGx0Zm1f
+aW5pdCgpIGFuZCBzZGhjaV9wbHRmbV9mcmVlKCkgaW4gZmF2b3Igb2YNCj4gc2RoY2lfYWxsb2Nf
+aG9zdCgpIGFuZCBzZGhjaV9mcmVlX2hvc3QoKS4NCj4gDQo+IEkgdGhpbmsgdGhhdCBjb3VsZCBz
+aW1wbGlmeSB0aGUgY29kZSBhIGJpdC4NCg0KT2suIFdpbGwgZG8uDQoNCj4gDQo+ID4gK30NCj4g
+PiArDQo+ID4gK3N0YXRpYyBpbnQgcGljMzJfc2RoY2lfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9k
+ZXZpY2UgKnBkZXYpIHsNCj4gPiArICAgICAgIHN0cnVjdCBzZGhjaV9ob3N0ICpob3N0ID0gcGxh
+dGZvcm1fZ2V0X2RydmRhdGEocGRldik7DQo+ID4gKyAgICAgICBzdHJ1Y3QgcGljMzJfc2RoY2lf
+cGRhdGEgKnNkaGNpX3BkYXRhID0gc2RoY2lfcHJpdihob3N0KTsNCj4gPiArICAgICAgIGludCBk
+ZWFkID0gMDsNCj4gPiArICAgICAgIHUzMiBzY3JhdGNoOw0KPiA+ICsNCj4gPiArICAgICAgIHNj
+cmF0Y2ggPSByZWFkbChob3N0LT5pb2FkZHIgKyBTREhDSV9JTlRfU1RBVFVTKTsNCj4gPiArICAg
+ICAgIGlmIChzY3JhdGNoID09ICh1MzIpLTEpDQo+ID4gKyAgICAgICAgICAgICAgIGRlYWQgPSAx
+Ow0KPiA+ICsNCj4gPiArICAgICAgIHNkaGNpX3JlbW92ZV9ob3N0KGhvc3QsIGRlYWQpOw0KPiA+
+ICsgICAgICAgY2xrX2Rpc2FibGVfdW5wcmVwYXJlKHNkaGNpX3BkYXRhLT5iYXNlX2Nsayk7DQo+
+ID4gKyAgICAgICBjbGtfZGlzYWJsZV91bnByZXBhcmUoc2RoY2lfcGRhdGEtPnN5c19jbGspOw0K
+PiA+ICsgICAgICAgc2RoY2lfZnJlZV9ob3N0KGhvc3QpOw0KPiA+ICsNCj4gPiArICAgICAgIHJl
+dHVybiAwOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2Rldmlj
+ZV9pZCBwaWMzMl9zZGhjaV9pZF90YWJsZVtdID0gew0KPiA+ICsgICAgICAgeyAuY29tcGF0aWJs
+ZSA9ICJtaWNyb2NoaXAscGljMzJtemRhLXNkaGNpIiB9LA0KPiA+ICsgICAgICAge30NCj4gPiAr
+fTsNCj4gPiArTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgcGljMzJfc2RoY2lfaWRfdGFibGUpOw0K
+PiA+ICsNCj4gPiArc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgcGljMzJfc2RoY2lfZHJp
+dmVyID0gew0KPiA+ICsgICAgICAgLmRyaXZlciA9IHsNCj4gPiArICAgICAgICAgICAgICAgLm5h
+bWUgICA9IERFVl9OQU1FLA0KPiA+ICsgICAgICAgICAgICAgICAub3duZXIgID0gVEhJU19NT0RV
+TEUsDQo+ID4gKyAgICAgICAgICAgICAgIC5vZl9tYXRjaF90YWJsZSA9IG9mX21hdGNoX3B0cihw
+aWMzMl9zZGhjaV9pZF90YWJsZSksDQo+ID4gKyAgICAgICB9LA0KPiA+ICsgICAgICAgLnByb2Jl
+ICAgICAgICAgID0gcGljMzJfc2RoY2lfcHJvYmUsDQo+ID4gKyAgICAgICAucmVtb3ZlICAgICAg
+ICAgPSBwaWMzMl9zZGhjaV9yZW1vdmUsDQo+ID4gK307DQo+ID4gKw0KPiA+ICttb2R1bGVfcGxh
+dGZvcm1fZHJpdmVyKHBpYzMyX3NkaGNpX2RyaXZlcik7DQo+ID4gKw0KPiA+ICtNT0RVTEVfREVT
+Q1JJUFRJT04oIk1pY3JvY2hpcCBQSUMzMiBTREhDSSBkcml2ZXIiKTsNCj4gPiArTU9EVUxFX0FV
+VEhPUigiUGlzdGlyaWNhIFNvcmluIEFuZHJlaSAmIFNhbmRlZXAgU2hlcmlrZXIiKTsNCj4gPiAr
+TU9EVUxFX0xJQ0VOU0UoIkdQTCB2MiIpOw0KPiA+IC0tDQo+ID4gMS43LjkuNQ0KDQpUaGFua3Ms
+DQpQYXVsDQo=

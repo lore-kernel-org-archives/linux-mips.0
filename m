@@ -1,20 +1,18 @@
-Received: from kirsty.vergenet.net ([202.4.237.240]:54720 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009469AbcACVjoUyGcs (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 3 Jan 2016 22:39:44 +0100
-Date: Mon, 4 Jan 2016 08:39:38 +1100
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH v2 0/9] ARM: dts: Add compatible property to "partitions"
- node
-Message-ID: <20160103213938.GD22806@verge.net.au>
-References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
- <20151228050147.GE1066@verge.net.au>
- <CAMuHMdXt36GSDuoFVGBebJVN9OHPh=ze8u8KvQ0B+RcvT6xTYQ@mail.gmail.com>
+Received: from smtp02.citrix.com ([66.165.176.63]:21710 "EHLO
+        SMTP02.CITRIX.COM" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27009352AbcADLcHQ6ptO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 4 Jan 2016 12:32:07 +0100
+Message-ID: <568A5830.9000501@citrix.com>
+Date: Mon, 4 Jan 2016 11:32:00 +0000
+From: David Vrabel <david.vrabel@citrix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXt36GSDuoFVGBebJVN9OHPh=ze8u8KvQ0B+RcvT6xTYQ@mail.gmail.com>
-Return-Path: <horms@verge.net.au>
+Subject: Re: [Xen-devel] [PATCH v2 33/34] xenbus: use virt_xxx barriers
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+ <1451572003-2440-34-git-send-email-mst@redhat.com>
+In-Reply-To: <1451572003-2440-34-git-send-email-mst@redhat.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <prvs=8047ed68d=david.vrabel@citrix.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,58 +22,24 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, "arm@kernel.org" <arm@kernel.org>, Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>, Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh+dt@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux-sh list <linux-sh@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, MTD Maling List <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20160103213938.msjoAkzFvni4aGkCy809CTAuFXd7ezF5BI9IhT_ZZV4@z>
+To: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, virtualization@lists.linux-foundation.org, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, Boris Ostrovsky <boris.ostrovsky@oracle.com>, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@elte.hu>, linux-xtensa@linux-xtensa.org, user-mode-linux-devel@lists.sourceforge.net, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, adi-buildroot-devel@lists.sourceforge.net, Thomas Gleixner <tglx@linutronix.de>, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Andrew Cooper <andrew.cooper3@citrix.com>, David Vrabel <david.vrabel@citrix.com>, linuxppc-dev@lists.ozlabs.org, David Miller <davem@davemloft.net>
+Message-ID: <20160104113200.K8j-yrDax2ZfeP_-UmfxR4CgUl-eEBKxpvEHiSx5mGo@z>
 
-On Mon, Dec 28, 2015 at 11:15:30AM +0100, Geert Uytterhoeven wrote:
-> Hi Simon,
+On 31/12/15 19:10, Michael S. Tsirkin wrote:
+> drivers/xen/xenbus/xenbus_comms.c uses
+> full memory barriers to communicate with the other side.
 > 
-> On Mon, Dec 28, 2015 at 6:01 AM, Simon Horman <horms@verge.net.au> wrote:
-> > On Mon, Dec 21, 2015 at 11:33:44AM +0100, Geert Uytterhoeven wrote:
-> >> As of commit e488ca9f8d4f62c2 ("doc: dt: mtd: partitions: add compatible
-> >> property to "partitions" node"), which is in v4.4-rc6, the "partitions"
-> >> subnode of an SPI FLASH device node must have a compatible property. The
-> >> partitions are no longer detected if it is not present.
-> >>
-> >> However, several DTSes in -next have already been converted to the
-> >> "partitions" subnode without "compatible" property, introduced by
-> >> commits 5cfdedb7b9a0fe38 ("mtd: ofpart: move ofpart partitions to a
-> >> dedicated dt node") and fe2585e9c29a650a ("doc: dt: mtd: support
-> >> partitions in a special 'partitions' subnode"). Hence all of these are
-> >> now broken in -next, and will be broken in upstream during the merge
-> >> window.
-> >>
-> >> This series fixes all users in next-20151221.
-> >> Tested on r8a7791/koelsch.
-> >>
-> >> Changes since v1:
-> >>   - Add Acked-by,
-> >>   - Fix new users in -next (kirkwood, ci20).
-> >>
-> >> Most of these are in arm-soc/for-next. Exceptions are kirkwood (in
-> >> mvebu/for-next), and ci20 (in mips/mips-for-linux-next).
-> >>
-> >> Given we're late in the v4.4-rc cycle, perhaps it's easiest if the
-> >> arm-soc maintainers take all applicable patches directly, bypassing the
-> >> mvebu and shmobile maintainers?
-> >>
-> >> Thanks for queuing for v4.5!
-> >>
-> >> Geert Uytterhoeven (9):
-> >>   ARM: mvebu: ix4-300d: Add compatible property to "partitions" node
-> >>   ARM: mvebu: kirkwood: Add compatible property to "partitions" node
-> >>   ARM: shmobile: bockw dts: Add compatible property to "partitions" node
-> >>   ARM: shmobile: lager dts: Add compatible property to "partitions" node
-> >>   ARM: shmobile: koelsch dts: Add compatible property to "partitions"
-> >>     node
-> >>   ARM: shmobile: porter dts: Add compatible property to "partitions"
-> >>     node
-> >>   ARM: shmobile: gose dts: Add compatible property to "partitions" node
-> >>   ARM: shmobile: silk dts: Add compatible property to "partitions" node
-> >
-> > Thanks, I have queued up the above "shmobile" patches for v4.6.
+> For guests compiled with CONFIG_SMP, smp_wmb and smp_mb
+> would be sufficient, so mb() and wmb() here are only needed if
+> a non-SMP guest runs on an SMP host.
 > 
-> I'm afraid v4.6 is too late, leaving all SPI FLASHes broken in v4.5.
+> Switch to virt_xxx barriers which serve this exact purpose.
 
-Thanks. I'll re-queue them up as fixes for v4.5.
+Acked-by: David Vrabel <david.vrabel@citrix.com>
+
+If you're feeling particularly keen there's a rmb() consume_one_event()
+in drivers/xen/events/events_fifo.c that can be converted to virt_rmb()
+as well.
+
+David

@@ -1,21 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:32744 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:50614 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27006513AbcADQFCK0q-V (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 4 Jan 2016 17:05:02 +0100
-Date: Mon, 4 Jan 2016 16:04:55 +0000
+        by eddie.linux-mips.org with ESMTP id S27009664AbcADSNHsHVJO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 4 Jan 2016 19:13:07 +0100
+Date: Mon, 4 Jan 2016 18:13:01 +0000
 From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH v2 20/32] metag: define __smp_xxx
-Message-ID: <20160104160455.GE17861@jhogan-linux.le.imgtec.org>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
- <1451572003-2440-21-git-send-email-mst@redhat.com>
- <20160104134128.GZ6344@twins.programming.kicks-ass.net>
- <20160104152558.GD17861@jhogan-linux.le.imgtec.org>
- <20160104153036.GG6344@twins.programming.kicks-ass.net>
+Subject: Re: [PATCH 3/3] MIPS: uaccess: Take EVA into account in
+ [__]clear_user
+Message-ID: <20160104181301.GH17861@jhogan-linux.le.imgtec.org>
+References: <1438789299-1608-1-git-send-email-james.hogan@imgtec.com>
+ <1438789299-1608-4-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="PGNNI9BzQDUtgA2J"
+        protocol="application/pgp-signature"; boundary="1EKig6ypoSyM7jaD"
 Content-Disposition: inline
-In-Reply-To: <20160104153036.GG6344@twins.programming.kicks-ass.net>
+In-Reply-To: <1438789299-1608-4-git-send-email-james.hogan@imgtec.com>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -26,69 +24,160 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@kernel.org>, Davidlohr Bueso <dbueso@suse.de>, Andrey Konovalov <andreyknvl@google.com>
-Message-ID: <20160104160455.Skyav2bdzfN38YI6FwRg6nCZnVviQYAncPYNLr4ubkM@z>
+To: stable@vger.kernel.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Leonid Yegoshin <leonid.yegoshin@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20160104181301.7GywhGqRizvfOXBIWzcORojasK_emCbq4AlmDfGeMT8@z>
 
---PGNNI9BzQDUtgA2J
+--1EKig6ypoSyM7jaD
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 04, 2016 at 04:30:36PM +0100, Peter Zijlstra wrote:
-> On Mon, Jan 04, 2016 at 03:25:58PM +0000, James Hogan wrote:
-> > It is used along with the metag specific __global_lock1() (global
-> > voluntary lock between hw threads) whenever a write is performed, and by
-> > smp_mb/smp_rmb to try to catch other cases, but I've never been
-> > confident this fixes every single corner case, since there could be
-> > other places where multiple CPUs perform unsynchronised writes to the
-> > same memory location, and expect cache not to become incoherent at that
-> > location.
+Hi stable folk,
+
+On Wed, Aug 05, 2015 at 04:41:39PM +0100, James Hogan wrote:
+> __clear_user() (and clear_user() which uses it), always access the user
+> mode address space, which results in EVA store instructions when EVA is
+> enabled even if the current user address limit is KERNEL_DS.
 >=20
-> Ah, yuck, I thought blackfin was the only one attempting !coherent SMP.
-> And yes, this is bound to break in lots of places in subtle ways. We
-> very much assume cache coherency for SMP in generic code.
-
-Well, its usually completely coherent, its just a bit dodgy in a
-particular hardware corner case, which was pretty hard to hit, even
-without these workarounds.
-
+> Fix this by adding a new symbol __bzero_kernel for the normal kernel
+> address space bzero in EVA mode, and call that from __clear_user() if
+> eva_kernel_access().
 >=20
-> > It seemed to be sufficient to achieve stability however, and SMP on Meta
-> > Linux never made it into a product anyway, since the other hw thread
-> > tended to be used for RTOS stuff, so it didn't seem worth extending the
-> > generic barrier API for it.
->=20
-> *phew*, should we take it out then, just to be sure nobody accidentally
-> tries to use it then?
+> Signed-off-by: James Hogan <james.hogan@imgtec.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Markos Chandras <markos.chandras@imgtec.com>
+> Cc: Paul Burton <paul.burton@imgtec.com>
+> Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>
+> Cc: linux-mips@linux-mips.org
+> ---
+> I've not Cc'd stable on this patch as eva_kernel_access() was only added
+> in 4.2. I'll submit a backport once it is merged.
 
-SMP support on this SoC you mean? I doubt it'll be a problem tbh, and
-it'd work fine in QEMU when emulating this SoC, so I'd prefer to keep it
-in.
+This is now merged, but a little later than anticipated. Please can
+patch 2 & 3 be applied to stable >=3D v4.2.
 
-Cheers
+The upstream commits are:
+
+6f06a2c45d8d714ea3b11a360b4a7191e52acaa4
+("MIPS: uaccess: Take EVA into account in __copy_from_user()")
+
+d6a428fb583738ad685c91a684748cdee7b2a05f
+("MIPS: uaccess: Take EVA into account in [__]clear_user")
+
+As stated above, I'll provide backports for v3.15 <=3D version < v4.2.
+
+Thanks
 James
 
---PGNNI9BzQDUtgA2J
+> ---
+>  arch/mips/include/asm/uaccess.h | 32 ++++++++++++++++++++++----------
+>  arch/mips/kernel/mips_ksyms.c   |  2 ++
+>  arch/mips/lib/memset.S          |  2 ++
+>  3 files changed, 26 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uacc=
+ess.h
+> index 5014e187df23..2e3b3991cf0b 100644
+> --- a/arch/mips/include/asm/uaccess.h
+> +++ b/arch/mips/include/asm/uaccess.h
+> @@ -1235,16 +1235,28 @@ __clear_user(void __user *addr, __kernel_size_t s=
+ize)
+>  {
+>  	__kernel_size_t res;
+> =20
+> -	might_fault();
+> -	__asm__ __volatile__(
+> -		"move\t$4, %1\n\t"
+> -		"move\t$5, $0\n\t"
+> -		"move\t$6, %2\n\t"
+> -		__MODULE_JAL(__bzero)
+> -		"move\t%0, $6"
+> -		: "=3Dr" (res)
+> -		: "r" (addr), "r" (size)
+> -		: "$4", "$5", "$6", __UA_t0, __UA_t1, "$31");
+> +	if (eva_kernel_access()) {
+> +		__asm__ __volatile__(
+> +			"move\t$4, %1\n\t"
+> +			"move\t$5, $0\n\t"
+> +			"move\t$6, %2\n\t"
+> +			__MODULE_JAL(__bzero_kernel)
+> +			"move\t%0, $6"
+> +			: "=3Dr" (res)
+> +			: "r" (addr), "r" (size)
+> +			: "$4", "$5", "$6", __UA_t0, __UA_t1, "$31");
+> +	} else {
+> +		might_fault();
+> +		__asm__ __volatile__(
+> +			"move\t$4, %1\n\t"
+> +			"move\t$5, $0\n\t"
+> +			"move\t$6, %2\n\t"
+> +			__MODULE_JAL(__bzero)
+> +			"move\t%0, $6"
+> +			: "=3Dr" (res)
+> +			: "r" (addr), "r" (size)
+> +			: "$4", "$5", "$6", __UA_t0, __UA_t1, "$31");
+> +	}
+> =20
+>  	return res;
+>  }
+> diff --git a/arch/mips/kernel/mips_ksyms.c b/arch/mips/kernel/mips_ksyms.c
+> index 291af0b5c482..e2b6ab74643d 100644
+> --- a/arch/mips/kernel/mips_ksyms.c
+> +++ b/arch/mips/kernel/mips_ksyms.c
+> @@ -17,6 +17,7 @@
+>  #include <asm/fpu.h>
+>  #include <asm/msa.h>
+> =20
+> +extern void *__bzero_kernel(void *__s, size_t __count);
+>  extern void *__bzero(void *__s, size_t __count);
+>  extern long __strncpy_from_kernel_nocheck_asm(char *__to,
+>  					      const char *__from, long __len);
+> @@ -64,6 +65,7 @@ EXPORT_SYMBOL(__copy_from_user_eva);
+>  EXPORT_SYMBOL(__copy_in_user_eva);
+>  EXPORT_SYMBOL(__copy_to_user_eva);
+>  EXPORT_SYMBOL(__copy_user_inatomic_eva);
+> +EXPORT_SYMBOL(__bzero_kernel);
+>  #endif
+>  EXPORT_SYMBOL(__bzero);
+>  EXPORT_SYMBOL(__strncpy_from_kernel_nocheck_asm);
+> diff --git a/arch/mips/lib/memset.S b/arch/mips/lib/memset.S
+> index b8e63fd00375..8f0019a2e5c8 100644
+> --- a/arch/mips/lib/memset.S
+> +++ b/arch/mips/lib/memset.S
+> @@ -283,6 +283,8 @@ LEAF(memset)
+>  1:
+>  #ifndef CONFIG_EVA
+>  FEXPORT(__bzero)
+> +#else
+> +FEXPORT(__bzero_kernel)
+>  #endif
+>  	__BUILD_BZERO LEGACY_MODE
+> =20
+> --=20
+> 2.3.6
+>=20
+
+--1EKig6ypoSyM7jaD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCAAGBQJWipgnAAoJEGwLaZPeOHZ6H00QAJCE8+tFVrOY06765tPTdzed
-wYC0LFfKDLv/TtsEAy4zBhWYEwJ0R1gQOTjCKsdaJMINDcpCy+1mWV4b1X1B+ptV
-QD5oOYZy7Fln8VYYvzWp+2Tz/iAoBSnBV1S8rG9eIxwWmJ9NQmhRl7I+GaFO5kgS
-+0p+z0sJ6Fvv8jmFdzGF4AIAgm4hFY2O2ojy2jtGArgkFmuSdrrrS2//Uls6z3ZC
-thEMVwEapQUjh0JZXDxkImzKXDfMcDi7Sse8Pdz+hXn0Q8J1u2tlhNwL7mqlY5lz
-JpV/L050BZ94Vpop0JXLmQRkqaO7dDgmi+zGXSvSqSUL7/qWHk3h6gE6tTShr4Qp
-rccA+QoreW9oQmUaAERc/DlB7I8SFYZE08YTLLVh+6bqPPK2sZOSa1/XfRC3UC35
-+/exm7MjSr4Emmfo9D5xxRAf4e+nYIuYjmf0rik9Hz5CUYqgbc6yoN570p0omqnL
-7WaRZWn+KESjhPrBrEcEbHFqV3OYsRgCPcoiSL5MVXXE0PlRXQtkDG9ach9jmtyZ
-gz103rjyp1FdqUVG3yYfmCsTNfWwiOJRX1IXLkuTJ0Spjmmk9KtFFO5sUxMV/2l6
-aJ+ehCqr/o58IZf71tqQvLQPeJCvUZ6y8mqAjBAdx1b+FBxUlu2kZ+opl3tI96dK
-DUA3rNDlPNmeqf8XVgY8
-=bXcF
+iQIcBAEBCAAGBQJWirYtAAoJEGwLaZPeOHZ6YIcQAIHUaorQsFqii/tARCtZOpBS
+C21PK05Bq83Riqw2dE24sqrH027MgJw1N7XPVdXq4lDAZIrbuk3JI4Mm4+Num2Ci
+zk3qFHlrcDRmGvKJ+HK7gmbjm2/A1hq/v10x0wS1Ot71tWH/1cPo7TCjY6PR7C+8
+NjXv7T50eVbgY5++DD+K4qHHoNXeoWwC+GhllXvcC5K0aN8qRcl2+q68Jns65pkO
+mFnatuFCFVY4yvwuLb9dMcge2xn4XB9yIP4Gb/bYE6+bXF0fNLnPW8VQtoJozz6Z
+VwWr667meF+Ni63NwayvFD0Q5fvMawEM2XJ2USxBDYv+gaCsHii77vFz73+ITJE/
+detyVGR23rcqv6tvaBmmtFPoMu5YpwYb4yN8qOmfXWZILeQo7+Rpts3lFnVCmIZm
++005XXtokDLaXESw1wex+Y0Y7LuazhWus9NTvMomrRD3juGnjXiJ7qNpcfMl63mG
+XNG441XNtZJaR0BVtVlxsxR36RYJGdY1nzuVpL5iXc4aRfUg5AZuRNqFwuPEDAvU
+t9KCfEq718ZSdsk+9j3KdkxloLHQRnLKAMfsdbAV44RHiWbxUP3xkjlB+3349a5N
+7flwTtvX28ok5mondrhqEWZ92zo454ka1pYCdwAezV11D0iDGmXZAhwe4LbtcUFX
+Zmu9X8DVG2w5bIDtUdDs
+=9jRx
 -----END PGP SIGNATURE-----
 
---PGNNI9BzQDUtgA2J--
+--1EKig6ypoSyM7jaD--

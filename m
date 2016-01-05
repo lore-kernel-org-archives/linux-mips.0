@@ -1,14 +1,22 @@
-Received: from smtpbguseast2.qq.com ([54.204.34.130]:58643 "EHLO
-        smtpbguseast2.qq.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008336AbcAEFy6M2F0- (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Jan 2016 06:54:58 +0100
-From: Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH 3/6] MIPS: Loongson-3: Fix SMP_ASK_C0COUNT IPI handler
-Date: Tue,  5 Jan 2016 13:59:06 +0800
-Message-ID: <1451973549-16198-4-git-send-email-chenhc@lemote.com>
-In-Reply-To: <1451973549-16198-1-git-send-email-chenhc@lemote.com>
-References: <1451973549-16198-1-git-send-email-chenhc@lemote.com>
-Return-Path: <chenhc@lemote.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:17123 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27009111AbcAEKGgtLhdh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Jan 2016 11:06:36 +0100
+Date: Tue, 5 Jan 2016 10:06:30 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH -next] MIPS: VDSO: Fix build error with binutils 2.24 and
+ earlier
+Message-ID: <20160105100630.GA26905@jhogan-linux.le.imgtec.org>
+References: <1450933471-7357-1-git-send-email-linux@roeck-us.net>
+ <20151224124812.GA5376@jhogan-linux.le.imgtec.org>
+ <20151224125726.GB5376@jhogan-linux.le.imgtec.org>
+ <568B8AFB.1020403@suse.cz>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="lrZ03NoBR/3+SXJZ"
+Content-Disposition: inline
+In-Reply-To: <568B8AFB.1020403@suse.cz>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,40 +26,138 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Aurelien Jarno <aurelien@aurel32.net>, "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Huacai Chen <chenhc@lemote.com>, stable@vger.kernel.org
-Message-ID: <20160105055906.Nm_bOdstvosmk2QTCQp4evXzVnBB0fqz9UpEuOQB03Y@z>
+To: Michal Marek <mmarek@suse.cz>
+Cc: Guenter Roeck <linux@roeck-us.net>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@imgtec.com>, Andi Kleen <ak@linux.intel.com>
+Message-ID: <20160105100630.4EEHUd8WHrMdVy0smJ10d0DKM6Cu5J8fDW8PjgCRvAk@z>
 
-When Core-0 handle SMP_ASK_C0COUNT IPI, we should make other cores to
-see the result as soon as possible (especially when Store-Fill-Buffer
-is enabled). Otherwise, C0_Count syncronization makes no sense.
+--lrZ03NoBR/3+SXJZ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-BTW, there is a corner should be avoid: C0_Count of Core-0 is really 0.
+On Tue, Jan 05, 2016 at 10:20:59AM +0100, Michal Marek wrote:
+> On 2015-12-24 13:57, James Hogan wrote:
+> > On Thu, Dec 24, 2015 at 12:48:12PM +0000, James Hogan wrote:
+> >> Hi Guenter,
+> >>
+> >> On Wed, Dec 23, 2015 at 09:04:31PM -0800, Guenter Roeck wrote:
+> >>> Commit 2a037f310bab ("MIPS: VDSO: Fix build error") tries to fix a bu=
+ild
+> >>> error seen with binutils 2.24 and earlier. However, the fix does not =
+work,
+> >>> and again results in the already known build errors if the kernel is =
+built
+> >>> with an earlier version of binutils.
+> >>>
+> >>> CC      arch/mips/vdso/gettimeofday.o
+> >>> /tmp/ccnOVbHT.s: Assembler messages:
+> >>> /tmp/ccnOVbHT.s:50: Error: can't resolve `_start' {*UND* section} - `=
+L0 {.text section}
+> >>> /tmp/ccnOVbHT.s:374: Error: can't resolve `_start' {*UND* section} - =
+`L0 {.text section}
+> >>> scripts/Makefile.build:258: recipe for target 'arch/mips/vdso/gettime=
+ofday.o' failed
+> >>> make[2]: *** [arch/mips/vdso/gettimeofday.o] Error 1
+> >>>
+> >>> Fixes: 2a037f310bab ("MIPS: VDSO: Fix build error")
+> >>> Cc: Qais Yousef <qais.yousef@imgtec.com>
+> >>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> >>> ---
+> >>> Tested with binutils 2.25 and 2.22.
+> >>>
+> >>>  arch/mips/vdso/Makefile | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
+> >>> index 018f8c7b94f2..14568900fc1d 100644
+> >>> --- a/arch/mips/vdso/Makefile
+> >>> +++ b/arch/mips/vdso/Makefile
+> >>> @@ -26,7 +26,7 @@ aflags-vdso :=3D $(ccflags-vdso) \
+> >>>  # the comments on that file.
+> >>>  #
+> >>>  ifndef CONFIG_CPU_MIPSR6
+> >>> -  ifeq ($(call ld-ifversion, -lt, 22500000, y),)
+> >>> +  ifeq ($(call ld-ifversion, -lt, 22500000, y),y)
+> >>
+> >> I agree this is semantically correct, but there is something more evil
+> >> going on here.
+> >>
+> >> Originally the check was version <=3D 2.24
+> >> Qais' patch changed it to version >=3D 2.25 (intending version < 2.25)
+> >> Your patch changes it to version < 2.25
+> >>
+> >> I think the reason this fixed the problem for Qais is actually that he
+> >> probably had a similar toolchain version to what I'm using:
+> >>
+> >> GNU ld (Codescape GNU Tools 2015.06-05 for MIPS MTI Linux) 2.24.90
+> >>
+> >> ./scripts/ld-version.sh does this:
+> >>
+> >> print a[1]*10000000 + a[2]*100000 + a[3]*10000 + a[4]*100 + a[5];
+> >>
+> >> which changes that version number into:
+> >>  20000000
+> >> + 2400000
+> >> +  900000 =3D 23300000
+> >>
+> >> I.e. it doesn't expect a[3] to be >=3D 10.
+> >>
+> >> Should we do something like this (increase multipliers on a[1] and
+> >> a[2])?:
+> >>
+> >> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+> >> index 198580d245e0..0b67edc5bc6f 100755
+> >> --- a/scripts/ld-version.sh
+> >> +++ b/scripts/ld-version.sh
+> >> @@ -3,6 +3,6 @@
+> >>  	{
+> >>  	gsub(".*)", "");
+> >>  	split($1,a, ".");
+> >> -	print a[1]*10000000 + a[2]*100000 + a[3]*10000 + a[4]*100 + a[5];
+> >> +	print a[1]*100000000 + a[2]*1000000 + a[3]*10000 + a[4]*100 + a[5];
+> >>  	exit
+> >>  	}
+> >>
+> >> which gives 2.24.90 =3D> 224900000.
+> >>
+> >> All call sites would need updating too to add the extra 0, but a quick
+> >> git grep isn't showing any other ones than this one.
+> >=20
+> > Actually, linux-next includes this commit which uses ld-ifversion too:
+> >=20
+> > 19a3cc83353e3bb4bc28769f8606139a3d350d2d
+> > "Kbuild, lto: Add Link Time Optimization support v3"
+>=20
+> That commit needs updating for other reasons, so feel free to fix
+> ld-ifversion and its usage in arch/mips.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
----
- arch/mips/loongson64/loongson-3/smp.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks. This change is now in linux-next, and will hopefully be included
+in v4.4:
+http://patchwork.linux-mips.org/patch/11931/
 
-diff --git a/arch/mips/loongson64/loongson-3/smp.c b/arch/mips/loongson64/loongson-3/smp.c
-index 1a4738a..55d0f5f 100644
---- a/arch/mips/loongson64/loongson-3/smp.c
-+++ b/arch/mips/loongson64/loongson-3/smp.c
-@@ -275,8 +275,10 @@ void loongson3_ipi_interrupt(struct pt_regs *regs)
- 	if (action & SMP_ASK_C0COUNT) {
- 		BUG_ON(cpu != 0);
- 		c0count = read_c0_count();
-+		c0count = c0count ? c0count : 1;
- 		for (i = 1; i < num_possible_cpus(); i++)
- 			per_cpu(core0_c0count, i) = c0count;
-+		__wbflush(); /* Let others see the result ASAP */
- 	}
- }
- 
--- 
-2.4.6
+Cheers
+James
 
+--lrZ03NoBR/3+SXJZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-ÿÿ		
+iQIcBAEBCAAGBQJWi5WmAAoJEGwLaZPeOHZ6g9YQAKGIYRRg7QjX2ZzBAmKk2jyb
+Jj056iLKQJKzqI4LCb/3TVGG7G7Rx2z/9XKqeQEj1R52eypXqC7LQpfx573EAT2E
+x32Mx/VVID225Um+AIkz83IwJL37o97azmVlvm8J4jXPM3zfkkw1hxeEmgwH9dqA
+2wGM1Gw6tMMXiwImatUoLcR78O/Ewp7bP8SLAzh8HZa4SRWZVC5gwdBTTPttBS5y
+CwnQJ699isya+k9IFEtsrAHem+196/Z1TH9G1qe19J1OoQ9+dijhHJqxJs4hWMnv
+3dXoxLQ9ksSYGLIed5F6y2LjBdC1yhw+vZCt+q8N5SqXg2F3TPO1OokmjBFEnwQZ
+AQBgk73VRcJBum3/j5rVx68VPIPTgzEiIALpNEGmMAi24fJ0/UXBB12tTEcy3Uj6
+XmJtsQEPKqQKlkKBWKdYBP9B12UsjbJ9ghCB0yk/TSfFbOnfhm41V7SJ6MNMpu66
+aZNo6Js6bCIXFW+Xk8nTbPCcMX8zHOzttlYTMRBZuNeFheK8dSj3apG0/W/sdIlU
+S1pc4aSnbHfjjHpFp7uJeVQK3JjV+k7xDjg+2u0sYCMrG0joVMjfdbHkm3qFwKZm
+vkcRlWHRyMhKzJKudPrtFQmvEANbpksDBt9PWT4boHJ+Z2BhnNpwqmqBgZYeC/Le
+0IJodBUlnV3nspg9fPhd
+=sEW7
+-----END PGP SIGNATURE-----
+
+--lrZ03NoBR/3+SXJZ--

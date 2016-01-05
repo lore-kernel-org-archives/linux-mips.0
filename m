@@ -1,22 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:17123 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27009111AbcAEKGgtLhdh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Jan 2016 11:06:36 +0100
-Date: Tue, 5 Jan 2016 10:06:30 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH -next] MIPS: VDSO: Fix build error with binutils 2.24 and
- earlier
-Message-ID: <20160105100630.GA26905@jhogan-linux.le.imgtec.org>
-References: <1450933471-7357-1-git-send-email-linux@roeck-us.net>
- <20151224124812.GA5376@jhogan-linux.le.imgtec.org>
- <20151224125726.GB5376@jhogan-linux.le.imgtec.org>
- <568B8AFB.1020403@suse.cz>
+Received: from exsmtp01.microchip.com ([198.175.253.37]:50494 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27006757AbcAERnOK5AEm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Jan 2016 18:43:14 +0100
+From: Joshua Henderson <joshua.henderson@microchip.com>
+Subject: Re: [PATCH v2 02/14] irqchip: irq-pic32-evic: Add support for PIC32
+ interrupt controller
+References: <1450133093-7053-1-git-send-email-joshua.henderson@microchip.com>
+ <1450133093-7053-3-git-send-email-joshua.henderson@microchip.com>
+ <5670471B.6090608@arm.com>
+Message-ID: <568C0271.2020007@microchip.com>
+Date: Tue, 5 Jan 2016 10:50:41 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lrZ03NoBR/3+SXJZ"
-Content-Disposition: inline
-In-Reply-To: <568B8AFB.1020403@suse.cz>
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <5670471B.6090608@arm.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Joshua.Henderson@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,138 +24,98 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Michal Marek <mmarek@suse.cz>
-Cc: Guenter Roeck <linux@roeck-us.net>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@imgtec.com>, Andi Kleen <ak@linux.intel.com>
-Message-ID: <20160105100630.4EEHUd8WHrMdVy0smJ10d0DKM6Cu5J8fDW8PjgCRvAk@z>
+To: Marc Zyngier <marc.zyngier@arm.com>, linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Cristian Birsan <cristian.birsan@microchip.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>
+Message-ID: <20160105175041.8w_gNA7IJc0dXLuXlbSaYUVAI1shgK1yLXx22Pe00xw@z>
 
---lrZ03NoBR/3+SXJZ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Marc,
 
-On Tue, Jan 05, 2016 at 10:20:59AM +0100, Michal Marek wrote:
-> On 2015-12-24 13:57, James Hogan wrote:
-> > On Thu, Dec 24, 2015 at 12:48:12PM +0000, James Hogan wrote:
-> >> Hi Guenter,
-> >>
-> >> On Wed, Dec 23, 2015 at 09:04:31PM -0800, Guenter Roeck wrote:
-> >>> Commit 2a037f310bab ("MIPS: VDSO: Fix build error") tries to fix a bu=
-ild
-> >>> error seen with binutils 2.24 and earlier. However, the fix does not =
-work,
-> >>> and again results in the already known build errors if the kernel is =
-built
-> >>> with an earlier version of binutils.
-> >>>
-> >>> CC      arch/mips/vdso/gettimeofday.o
-> >>> /tmp/ccnOVbHT.s: Assembler messages:
-> >>> /tmp/ccnOVbHT.s:50: Error: can't resolve `_start' {*UND* section} - `=
-L0 {.text section}
-> >>> /tmp/ccnOVbHT.s:374: Error: can't resolve `_start' {*UND* section} - =
-`L0 {.text section}
-> >>> scripts/Makefile.build:258: recipe for target 'arch/mips/vdso/gettime=
-ofday.o' failed
-> >>> make[2]: *** [arch/mips/vdso/gettimeofday.o] Error 1
-> >>>
-> >>> Fixes: 2a037f310bab ("MIPS: VDSO: Fix build error")
-> >>> Cc: Qais Yousef <qais.yousef@imgtec.com>
-> >>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> >>> ---
-> >>> Tested with binutils 2.25 and 2.22.
-> >>>
-> >>>  arch/mips/vdso/Makefile | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-> >>> index 018f8c7b94f2..14568900fc1d 100644
-> >>> --- a/arch/mips/vdso/Makefile
-> >>> +++ b/arch/mips/vdso/Makefile
-> >>> @@ -26,7 +26,7 @@ aflags-vdso :=3D $(ccflags-vdso) \
-> >>>  # the comments on that file.
-> >>>  #
-> >>>  ifndef CONFIG_CPU_MIPSR6
-> >>> -  ifeq ($(call ld-ifversion, -lt, 22500000, y),)
-> >>> +  ifeq ($(call ld-ifversion, -lt, 22500000, y),y)
-> >>
-> >> I agree this is semantically correct, but there is something more evil
-> >> going on here.
-> >>
-> >> Originally the check was version <=3D 2.24
-> >> Qais' patch changed it to version >=3D 2.25 (intending version < 2.25)
-> >> Your patch changes it to version < 2.25
-> >>
-> >> I think the reason this fixed the problem for Qais is actually that he
-> >> probably had a similar toolchain version to what I'm using:
-> >>
-> >> GNU ld (Codescape GNU Tools 2015.06-05 for MIPS MTI Linux) 2.24.90
-> >>
-> >> ./scripts/ld-version.sh does this:
-> >>
-> >> print a[1]*10000000 + a[2]*100000 + a[3]*10000 + a[4]*100 + a[5];
-> >>
-> >> which changes that version number into:
-> >>  20000000
-> >> + 2400000
-> >> +  900000 =3D 23300000
-> >>
-> >> I.e. it doesn't expect a[3] to be >=3D 10.
-> >>
-> >> Should we do something like this (increase multipliers on a[1] and
-> >> a[2])?:
-> >>
-> >> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-> >> index 198580d245e0..0b67edc5bc6f 100755
-> >> --- a/scripts/ld-version.sh
-> >> +++ b/scripts/ld-version.sh
-> >> @@ -3,6 +3,6 @@
-> >>  	{
-> >>  	gsub(".*)", "");
-> >>  	split($1,a, ".");
-> >> -	print a[1]*10000000 + a[2]*100000 + a[3]*10000 + a[4]*100 + a[5];
-> >> +	print a[1]*100000000 + a[2]*1000000 + a[3]*10000 + a[4]*100 + a[5];
-> >>  	exit
-> >>  	}
-> >>
-> >> which gives 2.24.90 =3D> 224900000.
-> >>
-> >> All call sites would need updating too to add the extra 0, but a quick
-> >> git grep isn't showing any other ones than this one.
-> >=20
-> > Actually, linux-next includes this commit which uses ld-ifversion too:
-> >=20
-> > 19a3cc83353e3bb4bc28769f8606139a3d350d2d
-> > "Kbuild, lto: Add Link Time Optimization support v3"
->=20
-> That commit needs updating for other reasons, so feel free to fix
-> ld-ifversion and its usage in arch/mips.
+On 12/15/2015 10:00 AM, Marc Zyngier wrote:
+> On 14/12/15 22:42, Joshua Henderson wrote:
+>> From: Cristian Birsan <cristian.birsan@microchip.com>
+>>
+>> This adds support for the interrupt controller present on PIC32 class
+>> devices.
+>>
+>> The following features are supported:
+>>  - DT properties for EVIC and for devices that use interrupt lines
+>>  - Persistent and non-persistent interrupt handling
+>>  - irqdomain support
+>>
+>> Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
+>> Signed-off-by: Joshua Henderson <joshua.henderson@microchip.com>
+>> Cc: Ralf Baechle <ralf@linux-mips.org>
+>> ---
+>>  drivers/irqchip/Makefile           |    1 +
+>>  drivers/irqchip/irq-pic32-evic.c   |  321 ++++++++++++++++++++++++++++++++++++
+>>  include/linux/irqchip/pic32-evic.h |   19 +++
+>>  3 files changed, 341 insertions(+)
+>>  create mode 100644 drivers/irqchip/irq-pic32-evic.c
+>>  create mode 100644 include/linux/irqchip/pic32-evic.h
+>>
+>> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+>> index 177f78f..e3608fc 100644
+>> --- a/drivers/irqchip/Makefile
+>> +++ b/drivers/irqchip/Makefile
+>> @@ -55,3 +55,4 @@ obj-$(CONFIG_RENESAS_H8S_INTC)		+= irq-renesas-h8s.o
+>>  obj-$(CONFIG_ARCH_SA1100)		+= irq-sa11x0.o
+>>  obj-$(CONFIG_INGENIC_IRQ)		+= irq-ingenic.o
+>>  obj-$(CONFIG_IMX_GPCV2)			+= irq-imx-gpcv2.o
+>> +obj-$(CONFIG_MACH_PIC32)		+= irq-pic32-evic.o
+>> diff --git a/drivers/irqchip/irq-pic32-evic.c b/drivers/irqchip/irq-pic32-evic.c
+>> new file mode 100644
+>> index 0000000..6a7747c
+>> --- /dev/null
+>> +++ b/drivers/irqchip/irq-pic32-evic.c
 
-Thanks. This change is now in linux-next, and will hopefully be included
-in v4.4:
-http://patchwork.linux-mips.org/patch/11931/
+[...]
 
-Cheers
-James
+>> +
+>> +static struct irq_chip pic32_irq_chip = {
+>> +	.name = "PIC32-EVIC",
+>> +	.irq_ack = ack_pic32_irq,
+>> +	.irq_mask = mask_pic32_irq,
+>> +	.irq_mask_ack = mask_ack_pic32_irq,
+>> +	.irq_unmask = unmask_pic32_irq,
+>> +	.irq_eoi = ack_pic32_irq,
+>> +	.irq_set_type = set_type_pic32_irq,
+>> +	.irq_enable = unmask_pic32_irq,
+>> +	.irq_disable = mask_pic32_irq,
+> 
+> I'm not sure I see the point of having all these methods. First, there
+> is a lot of duplication: no need to provide enable/disable if all you
+> have is mask/unmask - the core code can deal with that.
 
---lrZ03NoBR/3+SXJZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+This is to avoid the lazy disable approach in irq_disable(). The .irq_enable is there for symmetry.  .irq_mask_ack is also redundant excluding performance.  These can be removed if the preference is to end up with:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+static struct irq_chip pic32_irq_chip = {
+	.name = "PIC32-EVIC",
+	.irq_ack = ack_pic32_irq,
+	.irq_mask = mask_pic32_irq,
+	.irq_unmask = unmask_pic32_irq,
+	.irq_eoi = ack_pic32_irq,
+	.irq_set_type = set_type_pic32_irq,
+};
 
-iQIcBAEBCAAGBQJWi5WmAAoJEGwLaZPeOHZ6g9YQAKGIYRRg7QjX2ZzBAmKk2jyb
-Jj056iLKQJKzqI4LCb/3TVGG7G7Rx2z/9XKqeQEj1R52eypXqC7LQpfx573EAT2E
-x32Mx/VVID225Um+AIkz83IwJL37o97azmVlvm8J4jXPM3zfkkw1hxeEmgwH9dqA
-2wGM1Gw6tMMXiwImatUoLcR78O/Ewp7bP8SLAzh8HZa4SRWZVC5gwdBTTPttBS5y
-CwnQJ699isya+k9IFEtsrAHem+196/Z1TH9G1qe19J1OoQ9+dijhHJqxJs4hWMnv
-3dXoxLQ9ksSYGLIed5F6y2LjBdC1yhw+vZCt+q8N5SqXg2F3TPO1OokmjBFEnwQZ
-AQBgk73VRcJBum3/j5rVx68VPIPTgzEiIALpNEGmMAi24fJ0/UXBB12tTEcy3Uj6
-XmJtsQEPKqQKlkKBWKdYBP9B12UsjbJ9ghCB0yk/TSfFbOnfhm41V7SJ6MNMpu66
-aZNo6Js6bCIXFW+Xk8nTbPCcMX8zHOzttlYTMRBZuNeFheK8dSj3apG0/W/sdIlU
-S1pc4aSnbHfjjHpFp7uJeVQK3JjV+k7xDjg+2u0sYCMrG0joVMjfdbHkm3qFwKZm
-vkcRlWHRyMhKzJKudPrtFQmvEANbpksDBt9PWT4boHJ+Z2BhnNpwqmqBgZYeC/Le
-0IJodBUlnV3nspg9fPhd
-=sEW7
------END PGP SIGNATURE-----
+> 
+> Then, your EOI method is not really an EOI. It doesn't terminate the
+> handling, or at least that's not what the name suggest. If this is
+> really an EOI, then you should be able to simplify the whole thing on
+> only use the fasteoi handler, including for edge interrupts.
 
---lrZ03NoBR/3+SXJZ--
+There are two types of hardware interrupts: persistent and non persistent. For the persistent ones we need to clear the condition that caused the interrupt before clearing the interrupt flag and this one is mapped to the fasteoi handler. For the non persistent ones we can clear the interrupt flag as soon as we enter the interrupt handler, but we need to re-enable the interrupt to avoid missing any event that occur during servicing the interrupt. This one is mapped to the edge handler. This is needed, for example, with the core timer interrupt.
+
+>
+> It would be good to have an insight on how this thing actually works
+> (I've tried to read the only documentation, but this is vague at best),
+> that would help picking the right design for your use case.
+> 
+
+We're in agreement here on the lack of documentation.  While this chip is not released to the public yet, we do have a generic document that outlines the interrupt controllers across the PIC32 family that will shed some light on how this thing operates:  http://ww1.microchip.com/downloads/en/DeviceDoc/60001108H.pdf
+
+> Thanks,
+> 
+> 	M.
+> 
+
+Josh

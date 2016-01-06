@@ -1,18 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:33160 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27009186AbcAFPWIijcKa (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 6 Jan 2016 16:22:08 +0100
-Date: Wed, 6 Jan 2016 15:22:01 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] MIPS: VDSO: Fix binutils version test
-Message-ID: <20160106152201.GC17861@jhogan-linux.le.imgtec.org>
-References: <20160105151705-tung7970@googlemail.com>
+Received: from exsmtp01.microchip.com ([198.175.253.37]:55112 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27010011AbcAFWAwcJw1w convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 6 Jan 2016 23:00:52 +0100
+From: <Paul.Thacker@microchip.com>
+Subject: Re: [PATCH v2 10/14] serial: pic32_uart: Add PIC32 UART driver
+Date: Wed, 6 Jan 2016 22:00:43 +0000
+Message-ID: <F2D704DDA6AE8B4A87FF87509480F4A449E46187@CHN-SV-EXMX01.mchp-main.com>
+References: <1450133093-7053-1-git-send-email-joshua.henderson@microchip.com>
+        <1450133093-7053-11-git-send-email-joshua.henderson@microchip.com>
+ <20160105204322.2dc5ab3f@lxorguk.ukuu.org.uk>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Hmb9n29fjuiORm2l"
-Content-Disposition: inline
-In-Reply-To: <20160105151705-tung7970@googlemail.com>
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Paul.Thacker@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,92 +24,76 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Tony Wu <tung7970@gmail.com>
-Cc: ralf@linux-mips.org, Qais Yousef <qais.yousef@imgtec.com>, Alex Smith <alex@alex-smith.me.uk>, linux-mips@linux-mips.org
-Message-ID: <20160106152201.1hs20oBExUJfxsiD0LsxeDKYT67WthlZeTSdnJsuZRg@z>
+To: gnomes@lxorguk.ukuu.org.uk, Joshua.Henderson@microchip.com
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org, Andrei.Pistirica@microchip.com, gregkh@linuxfoundation.org, jslaby@suse.com, linux-serial@vger.kernel.org, linux-api@vger.kernel.org
+Message-ID: <20160106220043.sjh-KVhpJvYX-6bLpnovmcsy6EO75P2MnVh4ncNNY3U@z>
 
---Hmb9n29fjuiORm2l
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 01/05/2016 03:50 PM, One Thousand Gnomes wrote:
+>
+>> +#define PIC32_SDEV_NAME		"ttyS"
+>> +#define PIC32_SDEV_MAJOR	TTY_MAJOR
+>> +#define PIC32_SDEV_MINOR	64
+>
+> No. Same goes for you as every one of the forty other people a year who
+> try and claim their console is ttyS. If it's not an 8250 it isn't.
+>
+> ttyS is the 8250, use dynamic major and minor and a different name.
 
-Hi Tony,
+Ok. Is there a naming convention documented anywhere? How about ttyPIC?
 
-On Tue, Jan 05, 2016 at 03:21:01PM +0800, Tony Wu wrote:
-> Commit 2a037f310bab ("MIPS: VDSO: Fix build error") fixed the logic
-> for testing binutils version, but introduced another issue.
->=20
-> The ld-ifversion macro is defined as follows:
->=20
->   $(shell [ $(ld-version) $(1) $(2) ] && echo $(3) || echo $(4))
->=20
-> This macro checks ld version to echo $(3) or echo $(4) based on
-> the given condition.
->=20
-> It is called as follows in arch/mips/vdso/Makefile:
->=20
->   ifeq ($(call ld-ifversion, -lt, 22500000, y),)
->     $(warning MIPS VDSO requires binutils >=3D 2.25)
->     obj-vdso-y :=3D $(filter-out gettimeofday.o, $(obj-vdso-y))
->     ccflags-vdso +=3D -DDISABLE_MIPS_VDSO
->   endif
->=20
-> Since $(4) is empty, echo $(4) will evaluate to a simple 'echo'. So, in
-> case binutils version is indeed greater than 2.25.0, ld-ifversion macro
-> will return a newline, not the empty string as expected, and that makes
-> the test fail.
->=20
-> This patch fixes the test condition.
+>
+>
+>> +/* serial core request to change current uart setting */
+>> +static void pic32_uart_set_termios(struct uart_port *port,
+>> +				   struct ktermios *new,
+>> +				   struct ktermios *old)
+>> +{
+>
+> You need to clear any termios features requested but not supported. In
+> your case that appears to be CMSPAR, as you don't seem to support
+> mark/space parity.
 
-See:
-- http://patchwork.linux-mips.org/patch/11926/
-  (now merged into mainline)
-- http://patchwork.linux-mips.org/patch/11931/
-  (in mips-for-linux-next / linux-next for v4.4)
+Ack.
 
-Thanks
-James
- =20
->=20
-> Signed-off-by: Tony Wu <tung7970@gmail.com>
-> Cc: Qais Yousef <qais.yousef@imgtec.com>
-> Cc: Alex Smith <alex@alex-smith.me.uk>
->=20
-> diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-> index 018f8c7..a54a082 100644
-> --- a/arch/mips/vdso/Makefile
-> +++ b/arch/mips/vdso/Makefile
-> @@ -26,7 +26,7 @@ aflags-vdso :=3D $(ccflags-vdso) \
->  # the comments on that file.
->  #
->  ifndef CONFIG_CPU_MIPSR6
-> -  ifeq ($(call ld-ifversion, -lt, 22500000, y),)
-> +  ifneq ($(call ld-ifversion,-ge,22500000,y),y)
->      $(warning MIPS VDSO requires binutils >=3D 2.25)
->      obj-vdso-y :=3D $(filter-out gettimeofday.o, $(obj-vdso-y))
->      ccflags-vdso +=3D -DDISABLE_MIPS_VDSO
->=20
+>
+> Similarly if you only support 8N1 or 7E1/7O1 you need to force the CSIZE
+> bits to match what you ended up setting the UART to do.
 
---Hmb9n29fjuiORm2l
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Ack.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+>
+>> +	/* update baud */
+>> +	baud = uart_get_baud_rate(port, new, old, 0, port->uartclk / 16);
+>> +	quot = uart_get_divisor(port, baud) - 1;
+>> +	pic32_uart_write(quot, sport, PIC32_UART_BRG);
+>> +	uart_update_timeout(port, new->c_cflag, baud);
+>
+> See the 8250 driver for an example: you probably need to write back the
+> actual rate you got.
 
-iQIcBAEBCAAGBQJWjTEZAAoJEGwLaZPeOHZ6rqIQAI84r0QL4TjF7Qqwj4YpGjF8
-soDWPLIzZSltQV/qF+vxPB613vM9AEOqTe4hTU6axpH9PgTgI6FXzeRg00qvzTZi
-iYIn7qOPvQupJmKpPsRcevIVRm8A/o4pHhgd+DfagTU/ZxKD22bc0yop8elAnYyX
-ceicsKif6gVJDJ8RimEhIXm7e125uqoIDeIKQyrM2Tohcuztd4b5BqER66mK0M5g
-TEU3OoG/VvgUvHCXAiWXkxg15n8/FHGlFFkmwFkD8GnHbwfJmHyzaDecC+2nJmjR
-0p1srNG3ay7hzpP05iGMj6CuC9h65Y4/n+i3O3R/Nix3FtTbHjO0tEYgrGR7znAd
-ENLe2MCp+FP/jTDu+pAUzPRoDN3ZZAG1H9BS1QFGxV6vQnxQTuRZY7RuLEgsRdQU
-k56K1J5heFGQSC6k+8Qb6c0Jt1GlA65B7a/I15PfA2V8Y2wWi092YYQDKNf6T+SC
-LCLDBL3R5TBE2z2uK2/nkk7VHk44HV/Wrn9bjH8QQrhfhsZwcrMrzvCuiSJrMp5w
-QSZHZ/rAR+hgeop/TJUo9pfW54rsAzUNMcguVudJGUAfI4Dmf+n1BFxvqCvLRXgp
-jQoEgX5cR6k3CN5cNflSyyc+hVQVpeMzhapZZqa0GbVJxmY8fO0+QrBcEAwA4TG0
-BwHtofNgGWUWbbT1vaj4
-=2IR+
------END PGP SIGNATURE-----
+Ack.
 
---Hmb9n29fjuiORm2l--
+>
+>> +/* serial core request to release uart iomem */
+>> +static void pic32_uart_release_port(struct uart_port *port)
+>> +{
+>> +	struct platform_device *pdev = to_platform_device(port->dev);
+>> +	struct resource *res_mem;
+>> +	unsigned int res_size;
+>
+> resource_size_t for resources. Or you could just avoid the pointless
+> variable in the first place 8)
+
+Pointless variable removed.
+
+>
+> Other oddments - things like kasprintf() returns should be checked
+
+Ack.
+
+>
+>
+> Alan
+
+Thanks,
+Paul

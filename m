@@ -1,16 +1,17 @@
-Received: from exsmtp01.microchip.com ([198.175.253.37]:46766 "EHLO
-        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27010667AbcAIBeI00-9N (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 9 Jan 2016 02:34:08 +0100
-From: Joshua Henderson <joshua.henderson@microchip.com>
-Subject: [PATCH v4 05/14] dt/bindings: Add bindings for PIC32/MZDA platforms
-Date: Fri, 8 Jan 2016 18:40:18 -0700
-Message-ID: <1452303638-21388-2-git-send-email-joshua.henderson@microchip.com>
-In-Reply-To: <1452303638-21388-1-git-send-email-joshua.henderson@microchip.com>
-References: <1452303638-21388-1-git-send-email-joshua.henderson@microchip.com>
+Received: from dub004-omc3s14.hotmail.com ([157.55.2.23]:54135 "EHLO
+        DUB004-OMC3S14.hotmail.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27006823AbcAJVx4cOwxG convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 10 Jan 2016 22:53:56 +0100
+Message-ID: <DUB128-W482D8922008A1EB108523C9CC80@phx.gbl>
+From: David Binderman <dcb314@hotmail.com>
+Subject: linux-4.4-rc8/arch/mips/include/asm/netlogic/xlr/fmn.h:304: bad
+ test ?
+Date: Sun, 10 Jan 2016 21:53:50 +0000
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Joshua.Henderson@microchip.com>
+Return-Path: <dcb314@hotmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,61 +21,25 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Joshua Henderson <joshua.henderson@microchip.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Message-ID: <20160109014018.xRbpHAx7ozB3k0O8wlO5F29wkU81fA7RqG5GtVSDxVU@z>
+To: "ralf@linux-mips.org" <ralf@linux-mips.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Message-ID: <20160110215350.Iqi68M1cBXjcY_ciWU6JfXn2yJ7C8NeskJmQ7KoeGbM@z>
 
-This adds support for the Microchip PIC32 platform along with the
-specific variant PIC32MZDA on a PIC32MZDA Starter Kit.
+Hello there,
 
-Signed-off-by: Joshua Henderson <joshua.henderson@microchip.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Acked-by: Rob Herring <robh@kernel.org>
----
-Changes since v3 (https://lkml.org/lkml/2016/1/7/760):
-	+ Remove broken URL and use full manual name for boot protocol
+[linux-4.4-rc8/arch/mips/include/asm/netlogic/xlr/fmn.h:304]: (style) Expression '(X & 0x2) == 0x1' is always false.
 
+Source code is
 
- .../bindings/mips/pic32/microchip,pic32mzda.txt    |   31 ++++++++++++++++++++
- 1 file changed, 31 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/pic32/microchip,pic32mzda.txt
+    if ((status & 0x2) == 1)
+            pr_info("Send pending fail!\n");
 
-diff --git a/Documentation/devicetree/bindings/mips/pic32/microchip,pic32mzda.txt b/Documentation/devicetree/bindings/mips/pic32/microchip,pic32mzda.txt
-new file mode 100644
-index 0000000..1c8dbc4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/pic32/microchip,pic32mzda.txt
-@@ -0,0 +1,31 @@
-+* Microchip PIC32MZDA Platforms
-+
-+PIC32MZDA Starter Kit
-+Required root node properties:
-+    - compatible = "microchip,pic32mzda-sk", "microchip,pic32mzda"
-+
-+CPU nodes:
-+----------
-+A "cpus" node is required.  Required properties:
-+ - #address-cells: Must be 1.
-+ - #size-cells: Must be 0.
-+A CPU sub-node is also required.  Required properties:
-+ - device_type: Must be "cpu".
-+ - compatible: Must be "mti,mips14KEc".
-+Example:
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "mti,mips14KEc";
-+		};
-+	};
-+
-+Boot protocol
-+--------------
-+In accordance with Unified Hosting Interface Reference Manual (MD01069), the
-+bootloader must pass the following arguments to the kernel:
-+ - $a0: -2.
-+ - $a1: KSEG0 address of the flattened device-tree blob.
---
-1.7.9.5
+Maybe better code
+
+    if ((status & 0x2) != 0)
+            pr_info("Send pending fail!\n");
+
+Regards
+
+David Binderman
+
+ 		 	   		  

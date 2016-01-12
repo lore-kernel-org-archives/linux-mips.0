@@ -1,20 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]:52500 "EHLO
-        mail.free-electrons.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27009453AbcAKQIFmgL5O (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 11 Jan 2016 17:08:05 +0100
-From: Gregory CLEMENT <gregory.clement@free-electrons.com>
-Subject: Re: [PATCH v2 0/9] ARM: dts: Add compatible property to "partitions" node
-References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
-        <20151228050147.GE1066@verge.net.au>
-        <CAMuHMdXt36GSDuoFVGBebJVN9OHPh=ze8u8KvQ0B+RcvT6xTYQ@mail.gmail.com>
-        <20160103213938.GD22806@verge.net.au>
-Date: Mon, 11 Jan 2016 17:07:58 +0100
-In-Reply-To: <20160103213938.GD22806@verge.net.au> (Simon Horman's message of
-        "Mon, 4 Jan 2016 08:39:38 +1100")
-Message-ID: <87lh7wyu8x.fsf@free-electrons.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:24044 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27011069AbcALBO2cdckj (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Jan 2016 02:14:28 +0100
+Message-ID: <56945366.2090504@imgtec.com>
+Date: Mon, 11 Jan 2016 17:14:14 -0800
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <gregory.clement@free-electrons.com>
+Subject: Re: [v3,11/41] mips: reuse asm-generic/barrier.h
+References: <1452426622-4471-12-git-send-email-mst@redhat.com>
+In-Reply-To: <1452426622-4471-12-git-send-email-mst@redhat.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,52 +21,20 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Olof Johansson <olof@lixom.net>
-Cc: Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert@linux-m68k.org>, Geert Uytterhoeven <geert+renesas@glider.be>, "arm@kernel.org" <arm@kernel.org>, Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>, Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh+dt@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux-sh list <linux-sh@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, MTD Maling List <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20160111160758.DO1H6rBTusu7W2F7eVSmZ6zGjIcBfjeBhSChTY1gqD4@z>
+To: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>
+Message-ID: <20160112011414.3c83vM4wrQRWU23J8jcwaS-Gm_yi00zAUpsd1heaN7I@z>
 
-Hi Olof,
- 
- On dim., janv. 03 2016, Simon Horman <horms@verge.net.au> wrote:
-
-> On Mon, Dec 28, 2015 at 11:15:30AM +0100, Geert Uytterhoeven wrote:
-
->> >> Most of these are in arm-soc/for-next. Exceptions are kirkwood (in
->> >> mvebu/for-next), and ci20 (in mips/mips-for-linux-next).
->> >>
->> >> Given we're late in the v4.4-rc cycle, perhaps it's easiest if the
->> >> arm-soc maintainers take all applicable patches directly, bypassing the
->> >> mvebu and shmobile maintainers?
->> >>
->> >> Thanks for queuing for v4.5!
->> >>
->> >> Geert Uytterhoeven (9):
->> >>   ARM: mvebu: ix4-300d: Add compatible property to "partitions" node
->> >>   ARM: mvebu: kirkwood: Add compatible property to "partitions" node
->> >>   ARM: shmobile: bockw dts: Add compatible property to "partitions" node
->> >>   ARM: shmobile: lager dts: Add compatible property to "partitions" node
->> >>   ARM: shmobile: koelsch dts: Add compatible property to "partitions"
->> >>     node
->> >>   ARM: shmobile: porter dts: Add compatible property to "partitions"
->> >>     node
->> >>   ARM: shmobile: gose dts: Add compatible property to "partitions" node
->> >>   ARM: shmobile: silk dts: Add compatible property to "partitions" node
->> >
->> > Thanks, I have queued up the above "shmobile" patches for v4.6.
->> 
->> I'm afraid v4.6 is too late, leaving all SPI FLASHes broken in v4.5.
+On 01/10/2016 06:18 AM, Michael S. Tsirkin wrote:
+> On mips dma_rmb, dma_wmb, smp_store_mb, read_barrier_depends,
+> smp_read_barrier_depends, smp_store_release and smp_load_acquire  match
+> the asm-generic variants exactly. Drop the local definitions and pull in
+> asm-generic/barrier.h instead.
 >
-> Thanks. I'll re-queue them up as fixes for v4.5.
+This statement doesn't fit MIPS barriers variations. Moreover, there is 
+a reason to extend that even more specific, at least for 
+smp_store_release and smp_load_acquire, look into
 
-I thought you planned to directly apply them for v4.5 but I did not see
-them in the for-next branch of arm-soc. So as Simon I will submit them
-as fix for 4.5.
+     http://patchwork.linux-mips.org/patch/10506/
 
-Gregory
-
-
--- 
-Gregory Clement, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+- Leonid.

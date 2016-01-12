@@ -1,17 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24044 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011069AbcALBO2cdckj (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Jan 2016 02:14:28 +0100
-Message-ID: <56945366.2090504@imgtec.com>
-Date: Mon, 11 Jan 2016 17:14:14 -0800
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Received: from exsmtp01.microchip.com ([198.175.253.37]:39744 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27009614AbcALTbebSTGK (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Jan 2016 20:31:34 +0100
+From: Joshua Henderson <joshua.henderson@microchip.com>
+Subject: Re: [PATCH v3 02/14] irqchip: irq-pic32-evic: Add support for PIC32
+ interrupt controller
+References: <1452211389-31025-1-git-send-email-joshua.henderson@microchip.com>
+ <1452211389-31025-3-git-send-email-joshua.henderson@microchip.com>
+ <alpine.DEB.2.11.1601081931080.3575@nanos> <56903D9F.3010908@microchip.com>
+ <alpine.DEB.2.11.1601091148480.3575@nanos>
+Message-ID: <5695565E.4050500@microchip.com>
+Date: Tue, 12 Jan 2016 12:39:10 -0700
 MIME-Version: 1.0
-Subject: Re: [v3,11/41] mips: reuse asm-generic/barrier.h
-References: <1452426622-4471-12-git-send-email-mst@redhat.com>
-In-Reply-To: <1452426622-4471-12-git-send-email-mst@redhat.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <alpine.DEB.2.11.1601091148480.3575@nanos>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Return-Path: <Joshua.Henderson@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,20 +25,186 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>
-Message-ID: <20160112011414.3c83vM4wrQRWU23J8jcwaS-Gm_yi00zAUpsd1heaN7I@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org, Cristian Birsan <cristian.birsan@microchip.com>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>
+Message-ID: <20160112193910.Q6UleTwwvri8Zo5p6N-jq4qxgWB1wURIK6z639W8L9Y@z>
 
-On 01/10/2016 06:18 AM, Michael S. Tsirkin wrote:
-> On mips dma_rmb, dma_wmb, smp_store_mb, read_barrier_depends,
-> smp_read_barrier_depends, smp_store_release and smp_load_acquire  match
-> the asm-generic variants exactly. Drop the local definitions and pull in
-> asm-generic/barrier.h instead.
->
-This statement doesn't fit MIPS barriers variations. Moreover, there is 
-a reason to extend that even more specific, at least for 
-smp_store_release and smp_load_acquire, look into
+Thomas,
 
-     http://patchwork.linux-mips.org/patch/10506/
+On 01/10/2016 03:09 AM, Thomas Gleixner wrote:
+> Joshua,
+> 
+> On Fri, 8 Jan 2016, Joshua Henderson wrote:
+>> On 01/08/2016 12:04 PM, Thomas Gleixner wrote:
+>>> On Thu, 7 Jan 2016, Joshua Henderson wrote:
+>>>> +/* acknowledge an interrupt */
+>>>> +static void ack_pic32_irq(struct irq_data *irqd)
+>>>> +{
+>>>> +	u32 reg, mask;
+>>>> +	unsigned int hwirq = irqd_to_hwirq(irqd);
+>>>> +
+>>>> +	BIT_REG_MASK(hwirq, reg, mask);
+>>>> +	writel(mask, &evic_base->ifs[reg].clr);
+>>>
+>>> So you invented an open coded variant of the generic irq chip. Just with the
+>>> difference that the generic chip caches the mask and the register offsets ....
+>>>
+>>
+>> On PIC32 we have 4 different register offsets in many cases, including the interrupt
+>> controller registers, to write to one hardware register.  The PIC32 has special
+>> write only registers for set/clear/invert and which one is used is dependent on
+>> the logic at the time of writel(). Point being, there is no obvious value in
+>> caching when using these registers.  We don't have to perform a readl() at any
+>> time beforehand to write a mask to a register to update it atomically.
+> 
+> The generic chip has functions which handle the seperate register case.
+> 
+> void irq_gc_mask_disable_reg(struct irq_data *d);
+> void irq_gc_unmask_enable_reg(struct irq_data *d);
+> void irq_gc_mask_disable_reg_and_ack(struct irq_data *d);
+> void irq_gc_eoi(struct irq_data *d);
+> 
 
-- Leonid.
+This makes sense now.  Using these is a natural result of moving to using generic chip as suggested below.
+
+>>>> +static int set_type_pic32_irq(struct irq_data *data, unsigned int flow_type)
+>>>> +{
+>>>> +	int index;
+>>>> +
+>>>> +	switch (flow_type) {
+>>>> +
+>>>> +	case IRQ_TYPE_EDGE_RISING:
+>>>> +	case IRQ_TYPE_EDGE_FALLING:
+>>>> +		irq_set_handler_locked(data, handle_edge_irq);
+>>>> +		break;
+>>>> +
+>>>> +	case IRQ_TYPE_LEVEL_HIGH:
+>>>> +	case IRQ_TYPE_LEVEL_LOW:
+>>>> +		irq_set_handler_locked(data, handle_fasteoi_irq);
+>>>> +		break;
+>>>> +
+>>>> +	default:
+>>>> +		pr_err("Invalid interrupt type !\n");
+>>>> +		return -EINVAL;
+>>>> +	}
+>>>> +
+>>>> +	/* set polarity for external interrupts only */
+>>>> +	index = get_ext_irq_index(data->hwirq);
+>>>> +	if (index >= 0)
+>>>> +		evic_set_ext_irq_polarity(index, flow_type);
+>>>
+>>> So for the non external interrupts you set a different handler and be
+>>> done. How is that supposed to work? They switch magically from one mode to the
+>>> other?
+>>>
+>>
+>> It's all the same handlers (depending on whether it's persistent or
+>> non-persistent) irrelevant of it being an external interrupt or not.  It's all
+>> the same hardware interrupt controller.  Some pins on the chip can be configured
+>> as an interrupt source through pin configuration and those have dedicated
+>> interrupts associated with them.  The only thing "special" about these external
+>> interrupts is they must be explicitly configured as edge rising or edge falling
+>> in hardware- which is what is being handled here.  Non-external interrupts don't
+>> need this configuration.
+> 
+> I really cannot follow here. The code tells me that I can set
+> EDGE_RISING/FALLING/LEVEL_HIGH/LOW for any of those interrupts.
+> 
+> So that makes two questions:
+> 
+>    1) Can the non-external mode handle all type variants automagically? I
+>       seriously doubt that. If the type cannot be set, then it makes no sense
+>       to pretend that it can and allow to switch the handler from fasteoi to
+>       edge mode.
+> 
+>    2) The external irqs do not support level according to your
+>       evic_set_ext_irq_polarity() function. But you return success if set_type
+>       is called with a level type and gladly switch the handler. You merily
+>       pr_warn in evic_set_ext_irq_polarity().
+> 
+> That's just crap.
+> 
+
+Got it.  The plan is for .irq_set_type to only exist for edge interrupts, and properly fail if it is not an external interrupt (meaning, there is no actual hardware change otherwise).  External interrupts will configured through a custom DT property in the evic node.  So, this means all non external interrupts will be "locked" to the DT specified irq type at mapping.  This should cleanly address these two issues.  Comments will be added to explain this.
+ 
+>>>> +int pic32_get_c0_compare_int(void)
+>>>> +{
+>>>> +	int virq;
+>>>> +
+>>>> +	virq = irq_create_mapping(evic_irq_domain, CORE_TIMER_INTERRUPT);
+>>>> +	irq_set_irq_type(virq, IRQ_TYPE_EDGE_RISING);
+>>>> +	return virq;
+>>>
+>>> Why isn't that information retrieved via device tree?
+>>>
+>>
+>> I suppose it could be.  We took a lesson from irq-mips-gic.c on this one.
+> 
+> You copied it, right? That does not make it any better.
+>  
+
+Typically, this CPU core interrupt number can be read from the CP0 registers.  However, the interrupt controller on PIC32 is the interface/arbiter for all interrupts, peripheral and CPU, and therefore we have to specify it.  Because this is not a unique scenario for probably various reasons, the arch/mips/kernel/cevt-r4k.c provides get_c0_compare_int() as a __weak symbol which is currently overwritten by ~11 MIPS platforms in the exact same non-DTS way.  This is what I meant by saying PIC32 implemented this like irq-mips-gic.c.  So, I see 2 options to address this:
+
+1) Move pic32_get_c0_compare_int() to platform code as get_c0_compare_int().  Load a fixed mapping from DT in the irqchip driver and find that mapping with get_c0_compare_int().
+2) Add DT support to arch cevt-r4k.c or cpu_probe.c read an arch common property from DT to get the core timer interrupt number.
+
+I think 1) satisfies your feedback on this.  Does this make sense?
+
+>>> Why don't you use a seperate irq chip for the ext irqs? You can do that with
+>>> the generic chip as well.
+>>>
+>>>     irq_alloc_domain_generic_chips(domain, 32, 2, ....)
+>>>
+>>> And then you assign the alternate chip (2) to your ext irqs and have the set
+>>> type function only for the alternate chip.
+>>>
+>>
+>> We have one interrupt controller.  All interrupts have a hardware hard-coded
+>> flow type (edge, level) ...
+> 
+> And that's exactly the point. They are hardcoded, but you still allow any
+> random driver to change the type and therefor the handler. How is that
+> supposed to work?
+> 
+
+To clarify, by hardcoded, I mean the hardware peripheral the interrupt controller is arbitrating for has a defined irq type.  We specify this in a DT standard way for each peripheral, seeing that it varies by peripheral and there is no rhyme or reason to it in the linear IRQ mapping for > 200 interrupts at the evic level:
+
+	uart1: serial@1f822000 {
+                compatible = "microchip,pic32mzda-uart";
+		...
+                interrupts = <112 IRQ_TYPE_LEVEL_HIGH>,
+                        <113 IRQ_TYPE_LEVEL_HIGH>,
+                        <114 IRQ_TYPE_LEVEL_HIGH>;
+		...
+        };
+
+	PBTIMER1:pbtimer1 {
+		compatible = "microchip,pic32mzda-timerA";
+		...
+                interrupts = <4 IRQ_TYPE_EDGE_RISING>;
+		...
+        };
+
+The shortcoming of allowing a change to the flow handler will be addressed.  It does make sense as you are suggesting to use different irq chips for the different flow handlers.  irq_alloc_domain_generic_chips() will work as suggested and there will be alternate chips for the different scenarios.
+
+>> ...  with the exception of what we are calling "external interrupts".
+>> These are essentially gpio interrupts that can be software
+>> configured as edge rising or edge falling.  Otherwise, there is no difference
+>> between any of the interrupts.
+> 
+> And again. Here you can change the type, but only edge rising and falling are
+> supported. And you still allow setting a level type.
+> 
+
+This will be addressed.
+
+> So for both types you allow the driver/DT writer to get it wrong. And of
+> course this happens without a single line of comment which explains the
+> oddities of your driver, so a causual reader will stumble over it and ask
+> exactly the questions I'm asking. We want understandable and maintainable code
+> and not some 'work for me' hackery.
+
+Make no mistake, I'm here to do this the right way.  A new irqchip driver is in the oven.
+
+Thanks,
+Josh

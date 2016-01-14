@@ -1,16 +1,18 @@
-Received: from exsmtp03.microchip.com ([198.175.253.49]:38040 "EHLO
-        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27014750AbcANBNKhLif9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 14 Jan 2016 02:13:10 +0100
-From: Joshua Henderson <joshua.henderson@microchip.com>
-Subject: [PATCH v5 14/14] MIPS: pic32mzda: Add initial PIC32MZDA Starter Kit defconfig
-Date: Wed, 13 Jan 2016 18:15:47 -0700
-Message-ID: <1452734299-460-15-git-send-email-joshua.henderson@microchip.com>
-In-Reply-To: <1452734299-460-1-git-send-email-joshua.henderson@microchip.com>
-References: <1452734299-460-1-git-send-email-joshua.henderson@microchip.com>
+Received: from mail-io0-f180.google.com ([209.85.223.180]:36215 "EHLO
+        mail-io0-f180.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27007755AbcANIpt71hBm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 14 Jan 2016 09:45:49 +0100
+Received: by mail-io0-f180.google.com with SMTP id g73so251532251ioe.3
+        for <linux-mips@linux-mips.org>; Thu, 14 Jan 2016 00:45:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Joshua.Henderson@microchip.com>
+In-Reply-To: <8128014.DbbgBtKY3z@wuerfel>
+References: <8128014.DbbgBtKY3z@wuerfel>
+Date: Thu, 14 Jan 2016 09:45:44 +0100
+Message-ID: <CACna6rwAUh+LTBAepMTy1ZT7QhRYFPFmP5wPxyyQVb29gFwQYg@mail.gmail.com>
+Subject: Re: [PATCH] ssb: host_soc depends on sprom
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <zajec5@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,120 +22,22 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Joshua Henderson <joshua.henderson@microchip.com>
-Message-ID: <20160114011547.bIAuG9jreByEoZw8GMihAvPu9d6hy0nPqFKrBcdosEQ@z>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Kalle Valo <kvalo@codeaurora.org>, Hauke Mehrtens <hauke@hauke-m.de>, Michael Buesch <m@bues.ch>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20160114084544.qh1R9Ro8WfQGcfHfWPKA65oN1aOdXyeuvX8jd2iKQww@z>
 
-This adds an initial default config that enables all available PIC32
-drivers and is enough for booting a PIC32MZDA Starter Kit.
+On 13 January 2016 at 23:51, Arnd Bergmann <arnd@arndb.de> wrote:
+> Drivers that use the SSB sprom functionality typically 'select SSB_SPROM'
+> from Kconfig, but CONFIG_SSB_HOST_SOC misses this, which results in
+> a build failure unless at least one of the other drivers that selects
+> it is enabled:
+>
+> drivers/built-in.o: In function `ssb_host_soc_get_invariants':
+> (.text+0x459494): undefined reference to `ssb_fill_sprom_with_fallback'
+>
+> This adds the same select statement that is used elsewhere.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Fixes: 541c9a84cd85 ("ssb: pick SoC invariants code from MIPS BCM47xx arch")
 
-Signed-off-by: Joshua Henderson <joshua.henderson@microchip.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
----
-Changes since v4: None
-Changes since v3: None
-Changes since v2:
-	- Add CONFIG_MMC_SDHCI_PLTFM=y
-Changes since v1: None
----
- arch/mips/configs/pic32mzda_defconfig |   89 +++++++++++++++++++++++++++++++++
- 1 file changed, 89 insertions(+)
- create mode 100644 arch/mips/configs/pic32mzda_defconfig
-
-diff --git a/arch/mips/configs/pic32mzda_defconfig b/arch/mips/configs/pic32mzda_defconfig
-new file mode 100644
-index 0000000..52192c6
---- /dev/null
-+++ b/arch/mips/configs/pic32mzda_defconfig
-@@ -0,0 +1,89 @@
-+CONFIG_MACH_PIC32=y
-+CONFIG_DTB_PIC32_MZDA_SK=y
-+CONFIG_HZ_100=y
-+CONFIG_PREEMPT_VOLUNTARY=y
-+# CONFIG_SECCOMP is not set
-+CONFIG_SYSVIPC=y
-+CONFIG_NO_HZ=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_IKCONFIG=y
-+CONFIG_IKCONFIG_PROC=y
-+CONFIG_LOG_BUF_SHIFT=14
-+CONFIG_RELAY=y
-+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-+CONFIG_EMBEDDED=y
-+# CONFIG_COMPAT_BRK is not set
-+CONFIG_SLAB=y
-+CONFIG_JUMP_LABEL=y
-+CONFIG_MODULES=y
-+CONFIG_MODULE_UNLOAD=y
-+CONFIG_MODVERSIONS=y
-+CONFIG_MODULE_SRCVERSION_ALL=y
-+CONFIG_BLK_DEV_BSGLIB=y
-+CONFIG_PARTITION_ADVANCED=y
-+CONFIG_SGI_PARTITION=y
-+CONFIG_BINFMT_MISC=m
-+# CONFIG_SUSPEND is not set
-+CONFIG_DEVTMPFS=y
-+CONFIG_DEVTMPFS_MOUNT=y
-+# CONFIG_FIRMWARE_IN_KERNEL is not set
-+# CONFIG_ALLOW_DEV_COREDUMP is not set
-+CONFIG_BLK_DEV_LOOP=m
-+CONFIG_SCSI=y
-+CONFIG_BLK_DEV_SD=y
-+CONFIG_SCSI_CONSTANTS=y
-+CONFIG_SCSI_SCAN_ASYNC=y
-+# CONFIG_SCSI_LOWLEVEL is not set
-+CONFIG_INPUT_LEDS=m
-+CONFIG_INPUT_POLLDEV=y
-+CONFIG_INPUT_MOUSEDEV=m
-+CONFIG_INPUT_EVDEV=y
-+CONFIG_INPUT_EVBUG=m
-+# CONFIG_KEYBOARD_ATKBD is not set
-+CONFIG_KEYBOARD_GPIO=m
-+CONFIG_KEYBOARD_GPIO_POLLED=m
-+# CONFIG_MOUSE_PS2 is not set
-+# CONFIG_SERIO is not set
-+CONFIG_SERIAL_PIC32=y
-+CONFIG_SERIAL_PIC32_CONSOLE=y
-+CONFIG_HW_RANDOM=y
-+CONFIG_RAW_DRIVER=m
-+CONFIG_GPIO_SYSFS=y
-+# CONFIG_HWMON is not set
-+CONFIG_HIDRAW=y
-+# CONFIG_USB_SUPPORT is not set
-+CONFIG_MMC=y
-+CONFIG_MMC_SDHCI=y
-+CONFIG_MMC_SDHCI_PLTFM=y
-+CONFIG_MMC_SDHCI_MICROCHIP_PIC32=y
-+CONFIG_NEW_LEDS=y
-+CONFIG_LEDS_CLASS=y
-+CONFIG_LEDS_GPIO=y
-+CONFIG_LEDS_TRIGGERS=y
-+CONFIG_LEDS_TRIGGER_TIMER=m
-+CONFIG_LEDS_TRIGGER_ONESHOT=m
-+CONFIG_LEDS_TRIGGER_HEARTBEAT=y
-+CONFIG_LEDS_TRIGGER_GPIO=m
-+CONFIG_LEDS_TRIGGER_DEFAULT_ON=y
-+# CONFIG_MIPS_PLATFORM_DEVICES is not set
-+# CONFIG_IOMMU_SUPPORT is not set
-+CONFIG_EXT4_FS=y
-+CONFIG_EXT4_FS_POSIX_ACL=y
-+CONFIG_EXT4_FS_SECURITY=y
-+CONFIG_AUTOFS4_FS=m
-+CONFIG_FUSE_FS=m
-+CONFIG_FSCACHE=m
-+CONFIG_ISO9660_FS=m
-+CONFIG_JOLIET=y
-+CONFIG_ZISOFS=y
-+CONFIG_UDF_FS=m
-+CONFIG_MSDOS_FS=m
-+CONFIG_VFAT_FS=m
-+CONFIG_PROC_KCORE=y
-+CONFIG_TMPFS=y
-+CONFIG_TMPFS_POSIX_ACL=y
-+CONFIG_SQUASHFS=m
-+CONFIG_SQUASHFS_XATTR=y
-+CONFIG_SQUASHFS_LZ4=y
-+CONFIG_SQUASHFS_LZO=y
-+CONFIG_SQUASHFS_XZ=y
--- 
-1.7.9.5
+I missed this dependency, thanks, patch looks OK.

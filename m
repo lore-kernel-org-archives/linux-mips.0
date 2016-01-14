@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:57484 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010858AbcAMW0Z4w6Zj (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 13 Jan 2016 23:26:25 +0100
-Message-ID: <5696CF08.8080700@imgtec.com>
-Date: Wed, 13 Jan 2016 14:26:16 -0800
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Received: from exsmtp01.microchip.com ([198.175.253.37]:58961 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27010453AbcANBKt7H0T9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 14 Jan 2016 02:10:49 +0100
+From: Joshua Henderson <joshua.henderson@microchip.com>
+Subject: [PATCH v5 00/14] Initial Microchip PIC32MZDA Support
+Date: Wed, 13 Jan 2016 18:15:33 -0700
+Message-ID: <1452734299-460-1-git-send-email-joshua.henderson@microchip.com>
 MIME-Version: 1.0
-Subject: Re: [v3,11/41] mips: reuse asm-generic/barrier.h
-References: <1452426622-4471-12-git-send-email-mst@redhat.com> <56945366.2090504@imgtec.com> <20160112092711.GP6344@twins.programming.kicks-ass.net> <20160112102555.GV6373@twins.programming.kicks-ass.net> <20160112104012.GW6373@twins.programming.kicks-ass.net> <20160112114111.GB15737@arm.com> <569565DA.2010903@imgtec.com> <20160113104516.GE25458@arm.com>
-In-Reply-To: <20160113104516.GE25458@arm.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Joshua.Henderson@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,84 +18,217 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Will Deacon <will.deacon@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>, ddaney.cavm@gmail.com, james.hogan@imgtec.com, Michael Ellerman <mpe@ellerman.id.au>, Paul McKenney <paulmck@linux.vnet.ibm.com>
-Message-ID: <20160113222616.QyHnfaMq-OrmyoFojRbAGuRhUOihdgsctUiM6gDxiq0@z>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Joshua Henderson <joshua.henderson@microchip.com>, Andrei Pistirica <andrei.pistirica@microchip.com>, Andrew Bresticker <abrestic@chromium.org>, Andy Green <andy.green@linaro.org>, Ben Hutchings <ben@decadent.org.uk>, Chaotian Jing <chaotian.jing@mediatek.com>, Corneliu Doban <cdoban@broadcom.com>, devicetree@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jean Delvare <jdelvare@suse.de>, Kevin Hao <haokexin@gmail.com>, linux-api@vger.kernel.org, linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org, linux-mmc@vger.kernel.org, linux-serial@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>, "ludovic.desroches@atmel.com" <ludovic.desroches@atmel.com>, Luis de Bethencourt <luisbg@osg.samsung.com>, Paul Burton <paul.burton@imgtec.com>, Purna Chandra Mandal <purna.mandal@microchip.com>, Rob Herring <robh@kernel.org>, Scott Branden <sbranden@broadcom.com>, Shawn Lin <shawn.lin@rock-chips.com>, Stephen Boyd <sboyd@codeaurora.org>, Ulf Hansson <ulf.hansson@linaro.org>, Vincent Yang <vincent.yang.fujitsu@gmail.com>, Weijun Yang <Weijun.Yang@csr.com>, yangbo lu <yangbo.lu@freescale.com>
+Message-ID: <20160114011533.SVcv5VHMmk3agJRd-MzxEZoch0Rf78_d0HkrGQ34Gfw@z>
 
-On 01/13/2016 02:45 AM, Will Deacon wrote:
->>
-> I don't think the address dependency is enough on its own. By that
-> reasoning, the following variant (WRC+addr+addr) would work too:
->
->
-> P0:
-> Wx = 1
->
-> P1:
-> Rx == 1
-> <address dep>
-> Wy = 1
->
-> P2:
-> Ry == 1
-> <address dep>
-> Rx = 0
->
->
-> So are you saying that this is also forbidden?
-> Imagine that P0 and P1 are two threads that share a store buffer. What
-> then?
+This patch series adds support for the Microchip PIC32MZDA MIPS platform.
+All drivers required to boot from a MMC uSD card are included. Clock,
+external interrupt controller, serial, SDHCI, and pinctrl/gpio drivers
+are included. This has been tested on a PIC32MZDA Starter Kit. A tree
+with these changes is available at [0].
 
-OK, I collected answers and it is:
+[0] https://github.com/joshua-henderson/linux/tree/pic32-upstream-v5
 
-     In MIPS R6 this test passes OK, I mean - P2: Rx = 1 if Ry is read 
-as 1. By design.
+Changes since v4 (https://lkml.org/lkml/2016/1/8/964
+	          https://lkml.org/lkml/2016/1/8/965):
 
-     However, it is unclear that happens in MIPS R2 1004K.
+	+ Add soc node for core timer interrupt to DTS
+        + Add external IRQ property to DTS
+	+ Clean up irq alloc on failure
+        + Fix rework regression with handling failure in probe
+	+ Select config PIC32_EVIC for PIC32MZDA
+        + Implement get_c0_compare_int() in platform using DTS
+	+ Rearchitect (rewrite) to use generic chip
+        + Be consistent with naming of functions, use pic32_ prefix
+        + Move get_c0_compare_int() to platform where it belongs
+        + Drop obsolete header
+        + Add comments about the handler flow of the different interrupt types
+        + Prevent external interrupts from being requested as level flow type
+        + Simplify/optimize register access
+        + Configure external interrupts from DT
+        + Simplify plat_irq_dispatch() implementation
+        + Change irq chip names to evic-*
+        + Add EVIC_PIC32 config option and have platform select it
+        + Support to configure core timer interrupt from DT
+        + Use proper code comment formatting
+	+ Add new microchip,external-interrupts property
+        + Provide a better description of some of the features
+        + Clean up formatting
 
-     Moreover, there are voices against guarantee that it will be in 
-future and that voices point me to Documentation/memory-barriers.txt 
-section "DATA DEPENDENCY BARRIERS" examples which require SYNC_RMB 
-between loading address/index and using that for loading data based on 
-that address or index for shared data (look on CPU2 pseudo-code):
-> To deal with this, a data dependency barrier or better must be inserted
-> between the address load and the data load:
->
->         CPU 1                 CPU 2
->         ===============       ===============
->         { A == 1, B == 2, C = 3, P == &A, Q == &C }
->         B = 4;
->         <write barrier>
->         WRITE_ONCE(P, &B);
->                               Q = READ_ONCE(P);
->                               <data dependency barrier> <----------- 
-> SYNC_RMB is here
->                               D = *Q;
-...
-> Another example of where data dependency barriers might be required is 
-> where a
-> number is read from memory and then used to calculate the index for an 
-> array
-> access:
->
->         CPU 1                 CPU 2
->         ===============       ===============
->         { M[0] == 1, M[1] == 2, M[3] = 3, P == 0, Q == 3 }
->         M[1] = 4;
->         <write barrier>
->         WRITE_ONCE(P, 1);
->                               Q = READ_ONCE(P);
->                               <data dependency barrier> <------------ 
-> SYNC_RMB is here
->                               D = M[Q];
+Changes since v3 (https://lkml.org/lkml/2016/1/7/760):
 
-That voices say that there is a legitimate reason to relax HW here for 
-performance if SYNC_RMB is needed anyway to work with this sequence of 
-shared data.
+	+ Remove broken URL and use full manual name for boot protocol
+	+ Formatting and comment location
+	+ Move functions to remove need for forward declaration
+
+Changes since v2 (https://lkml.org/lkml/2015/12/14/818):
+
+	+ Prefer dt/bindings: prefix for subject
+	+ Remove redundant irq_chip functions in interrupt driver
+	+ Use 'sdhci_pltfm_*' instead of 'sdhci_*_host' and other cleanup
+	+ Use dynamic major/minor and ttyPIC* instead of ttyS*
+	+ Follow device-tree node naming convention for clocks
+	+ Remove pinctrl pins that are not port pins
+	+ Force lowercase in PIC32 clock binding documentation
+	+ Replace __clk_debug with pr_debug
+	+ Add of_clk_parent_fill usage in PIC32 clock driver
+	+ UART: Remove unused header files
+	+ UART: Refactor register read/write functions
+	+ UART: Reorder arguments to readl/writel functions
+	+ UART: Add missing initializations to termios
+	+ UART: Fix clk enable/disable mismatch
+
+Changes since v1 (https://lkml.org/lkml/2015/11/20/848):
+
+	+ Rename all DT compatible properties to be chip specific.
+	+ Remove hardware interrupt priorities from interrupt controller DT
+	  bindings.
+	+ Remove all dependencies on include headers used by PIC32 DTS
+	  files.
+	+ Remove arch/mips/include/asm/mach-pic32/gpio.h
+	+ Drop usage of the following, mostly non-standard, properties in
+	  DT bindings:
+		device_type
+		piomode
+		no-1-8-v
+		uart-has-rtscts
+		clock-frequency => assigned-clock-rate
+	+ Remove PIC32 memory PLL support from DT.
+	+ Replace empty 'ranges' with populated one for clock tree node.
+	+ Rename all instances of "USART" to "UART".
+	+ Remove 'interrupts' property from FSCM of PIC32 clock tree node.
+	+ Add default REFCLK rate initialization required for SDHCI in DTS.
+	+ Remove default frequency setup for REFOSC clocks in -clk DTS.
+	+ Address missing static on local functions and other sparse
+	  warnings in several drivers.
+	+ Update pinctrl driver to address major binding and architectural
+	  issues.
+	+ Remove redundant probing 'pb7_clk' to find CPU clock.
+	+ Remove unused PIC32 MPLL support.
+	+ Remove support for initializing default parent/rate for REFOSC
+	  clocks.
+	+ Be consistent and use only "SDHCI" when referring to SD host
+	  controller
+	+ Remove unnecessary PIC32 sdhci_ops min clock function.
+	+ Make platform PIC32[_CLR|_SET|_INV] register macros safer.
 
 
-And all that is out-of-topic here in my mind. I just want to be sure 
-that this patchset still provides a use of a specific lightweight SYNCs 
-on MIPS vs bold and heavy generalized "SYNC 0" in any case.
+Andrei Pistirica (4):
+  dt/bindings: Add bindings for PIC32 UART driver
+  serial: pic32_uart: Add PIC32 UART driver
+  dt/bindings: Add bindings for PIC32 SDHCI host controller
+  mmc: sdhci-pic32: Add PIC32 SDHCI host controller driver
 
-- Leonid.
+Cristian Birsan (2):
+  dt/bindings: Add bindings for PIC32 interrupt controller
+  irqchip: irq-pic32-evic: Add support for PIC32 interrupt controller
+
+Joshua Henderson (6):
+  dt/bindings: Add bindings for PIC32/MZDA platforms
+  MIPS: Add support for PIC32MZDA platform
+  dt/bindings: Add bindings for PIC32 pin control and GPIO
+  pinctrl: pinctrl-pic32: Add PIC32 pin control driver
+  MIPS: dts: Add initial DTS for the PIC32MZDA Starter Kit
+  MIPS: pic32mzda: Add initial PIC32MZDA Starter Kit defconfig
+
+Purna Chandra Mandal (2):
+  dt/bindings: Add PIC32 clock binding documentation
+  clk: clk-pic32: Add PIC32 clock driver
+
+ .../devicetree/bindings/clock/microchip,pic32.txt  |  257 +++
+ .../bindings/gpio/microchip,pic32-gpio.txt         |   49 +
+ .../interrupt-controller/microchip,pic32-evic.txt  |   67 +
+ .../bindings/mips/pic32/microchip,pic32mzda.txt    |   31 +
+ .../bindings/mmc/microchip,sdhci-pic32.txt         |   29 +
+ .../bindings/pinctrl/microchip,pic32-pinctrl.txt   |   60 +
+ .../bindings/serial/microchip,pic32-uart.txt       |   29 +
+ arch/mips/Kbuild.platforms                         |    1 +
+ arch/mips/Kconfig                                  |    9 +
+ arch/mips/boot/dts/Makefile                        |    1 +
+ arch/mips/boot/dts/pic32/Makefile                  |   12 +
+ arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi        |  236 ++
+ arch/mips/boot/dts/pic32/pic32mzda.dtsi            |  281 +++
+ arch/mips/boot/dts/pic32/pic32mzda_sk.dts          |  151 ++
+ arch/mips/configs/pic32mzda_defconfig              |   89 +
+ .../include/asm/mach-pic32/cpu-feature-overrides.h |   32 +
+ arch/mips/include/asm/mach-pic32/irq.h             |   22 +
+ arch/mips/include/asm/mach-pic32/pic32.h           |   44 +
+ arch/mips/include/asm/mach-pic32/spaces.h          |   24 +
+ arch/mips/pic32/Kconfig                            |   51 +
+ arch/mips/pic32/Makefile                           |    6 +
+ arch/mips/pic32/Platform                           |    7 +
+ arch/mips/pic32/common/Makefile                    |    5 +
+ arch/mips/pic32/common/irq.c                       |   21 +
+ arch/mips/pic32/common/reset.c                     |   62 +
+ arch/mips/pic32/pic32mzda/Makefile                 |    9 +
+ arch/mips/pic32/pic32mzda/config.c                 |  126 ++
+ arch/mips/pic32/pic32mzda/early_clk.c              |  106 +
+ arch/mips/pic32/pic32mzda/early_console.c          |  171 ++
+ arch/mips/pic32/pic32mzda/early_pin.c              |  275 +++
+ arch/mips/pic32/pic32mzda/early_pin.h              |  241 ++
+ arch/mips/pic32/pic32mzda/init.c                   |  156 ++
+ arch/mips/pic32/pic32mzda/pic32mzda.h              |   29 +
+ arch/mips/pic32/pic32mzda/time.c                   |   73 +
+ drivers/clk/Kconfig                                |    3 +
+ drivers/clk/Makefile                               |    1 +
+ drivers/clk/clk-pic32.c                            | 1801 +++++++++++++++
+ drivers/irqchip/Kconfig                            |    5 +
+ drivers/irqchip/Makefile                           |    1 +
+ drivers/irqchip/irq-pic32-evic.c                   |  324 +++
+ drivers/mmc/host/Kconfig                           |   11 +
+ drivers/mmc/host/Makefile                          |    1 +
+ drivers/mmc/host/sdhci-pic32.c                     |  257 +++
+ drivers/pinctrl/Kconfig                            |   17 +
+ drivers/pinctrl/Makefile                           |    1 +
+ drivers/pinctrl/pinctrl-pic32.c                    | 2339 ++++++++++++++++++++
+ drivers/pinctrl/pinctrl-pic32.h                    |  141 ++
+ drivers/tty/serial/Kconfig                         |   21 +
+ drivers/tty/serial/Makefile                        |    1 +
+ drivers/tty/serial/pic32_uart.c                    |  960 ++++++++
+ drivers/tty/serial/pic32_uart.h                    |  126 ++
+ include/linux/platform_data/sdhci-pic32.h          |   22 +
+ include/uapi/linux/serial_core.h                   |    3 +
+ 53 files changed, 8797 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/microchip,pic32.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/microchip,pic32-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/microchip,pic32-evic.txt
+ create mode 100644 Documentation/devicetree/bindings/mips/pic32/microchip,pic32mzda.txt
+ create mode 100644 Documentation/devicetree/bindings/mmc/microchip,sdhci-pic32.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/microchip,pic32-pinctrl.txt
+ create mode 100644 Documentation/devicetree/bindings/serial/microchip,pic32-uart.txt
+ create mode 100644 arch/mips/boot/dts/pic32/Makefile
+ create mode 100644 arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi
+ create mode 100644 arch/mips/boot/dts/pic32/pic32mzda.dtsi
+ create mode 100644 arch/mips/boot/dts/pic32/pic32mzda_sk.dts
+ create mode 100644 arch/mips/configs/pic32mzda_defconfig
+ create mode 100644 arch/mips/include/asm/mach-pic32/cpu-feature-overrides.h
+ create mode 100644 arch/mips/include/asm/mach-pic32/irq.h
+ create mode 100644 arch/mips/include/asm/mach-pic32/pic32.h
+ create mode 100644 arch/mips/include/asm/mach-pic32/spaces.h
+ create mode 100644 arch/mips/pic32/Kconfig
+ create mode 100644 arch/mips/pic32/Makefile
+ create mode 100644 arch/mips/pic32/Platform
+ create mode 100644 arch/mips/pic32/common/Makefile
+ create mode 100644 arch/mips/pic32/common/irq.c
+ create mode 100644 arch/mips/pic32/common/reset.c
+ create mode 100644 arch/mips/pic32/pic32mzda/Makefile
+ create mode 100644 arch/mips/pic32/pic32mzda/config.c
+ create mode 100644 arch/mips/pic32/pic32mzda/early_clk.c
+ create mode 100644 arch/mips/pic32/pic32mzda/early_console.c
+ create mode 100644 arch/mips/pic32/pic32mzda/early_pin.c
+ create mode 100644 arch/mips/pic32/pic32mzda/early_pin.h
+ create mode 100644 arch/mips/pic32/pic32mzda/init.c
+ create mode 100644 arch/mips/pic32/pic32mzda/pic32mzda.h
+ create mode 100644 arch/mips/pic32/pic32mzda/time.c
+ create mode 100644 drivers/clk/clk-pic32.c
+ create mode 100644 drivers/irqchip/irq-pic32-evic.c
+ create mode 100644 drivers/mmc/host/sdhci-pic32.c
+ create mode 100644 drivers/pinctrl/pinctrl-pic32.c
+ create mode 100644 drivers/pinctrl/pinctrl-pic32.h
+ create mode 100644 drivers/tty/serial/pic32_uart.c
+ create mode 100644 drivers/tty/serial/pic32_uart.h
+ create mode 100644 include/linux/platform_data/sdhci-pic32.h
+
+--
+1.7.9.5

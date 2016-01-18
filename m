@@ -1,22 +1,14 @@
-Received: from smtp.codeaurora.org ([198.145.29.96]:57349 "EHLO
-        smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010464AbcARI0h5NK28 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Jan 2016 09:26:37 +0100
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH, RESEND] ssb: mark ssb_bus_register as __maybe_unused
-References: <8128014.DbbgBtKY3z@wuerfel>
-        <8760ywd5fe.fsf@kamboji.qca.qualcomm.com> <4037550.DMaVTE01Aq@wuerfel>
-        <87bn8l7miw.fsf@kamboji.qca.qualcomm.com>
-        <CACna6ryvDFHqwJ3ExURcyFT2ZaT9fS9v36wCnJfze5BLnE88og@mail.gmail.com>
-Date: Mon, 18 Jan 2016 10:26:29 +0200
-In-Reply-To: <CACna6ryvDFHqwJ3ExURcyFT2ZaT9fS9v36wCnJfze5BLnE88og@mail.gmail.com>
-        (=?utf-8?Q?=22Rafa=C5=82_Mi=C5=82ecki=22's?= message of "Sat, 16 Jan 2016
- 15:44:23 +0100")
-Message-ID: <87y4bn5m4q.fsf@kamboji.qca.qualcomm.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:31756 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010718AbcAROSdJXH3m (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Jan 2016 15:18:33 +0100
+From: Govindraj Raja <Govindraj.Raja@imgtec.com>
+Subject: [PATCH] mips: scache: fix scache init with invalid line size.
+Date: Mon, 18 Jan 2016 14:18:26 +0000
+Message-ID: <1453126706-24299-1-git-send-email-Govindraj.Raja@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Return-Path: <kvalo@codeaurora.org>
+Content-Type: text/plain
+Return-Path: <Govindraj.Raja@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,49 +18,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Hauke Mehrtens <hauke@hauke-m.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Michael Buesch <m@bues.ch>, Network Development <netdev@vger.kernel.org>
-Message-ID: <20160118082629.QZqClw5Ii1vTb6GsjugYdgmrWvgZ8qFzSlopOdxebLE@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, James Hogan <James.Hogan@imgtec.com>, James Hartley <James.Hartley@imgtec.com>
+Message-ID: <20160118141826.yQoHsSFjLun1fjEinSy5L0Z9foZpBEdvtskybK1CeMg@z>
 
-Rafał Miłecki <zajec5@gmail.com> writes:
+In current scache init cache line_size is determined from
+cpu config register, however if there there no scache
+then mips_sc_probe_cm3 function populates a invalid line_size of 2.
 
-> On 16 January 2016 at 13:10, Kalle Valo <kvalo@codeaurora.org> wrote:
->> Arnd Bergmann <arnd@arndb.de> writes:
->>
->>> On Thursday 14 January 2016 08:46:29 Kalle Valo wrote:
->>>> I can take it. For historical reasons ssb patches go through my
->>>> wireless-drivers trees.
->>>
->>> I found this in my backlog, and I believe it still applies. Can you take
->>> that one too?
->>
->> I'm not sure what you mean here, I can take any ssb patch if it's ok for
->> Michael or Rafal :)
->>
->> Just please submit the patch properly (with S-o-B line) and CC
->> linux-wireless so that it goes to patchwork.
->
-> It was already sent once and Acked by Michael:
-> https://patchwork.kernel.org/patch/7543191/
->
-> The problem was not cc-ing linux-wireless so it wasn't picked by the
-> linux-wireless patchwork.
+The invalid line_size can cause a NULL pointer deference
+during r4k_dma_cache_inv as r4k_blast_scache is populated based on
+line_size. Scache line_size of 2 is invalid option in r4k_blast_scache_setup.
 
-Ah, that's why I missed it. I only follow patchwork, I basically ignore
-patches which are sent via email. Arnd, can you please resend the patch
-and CC linux-wireless? Sorry for the trouble.
+This issue was faced during a MIPS I6400 based virtual platform bring up
+where scache was not available in virtual platform model.
 
-To avoid this in the future I think we should replace netdev with
-linux-wireless in the MAINTAINERS entry:
+Signed-off-by: Govindraj Raja <Govindraj.Raja@imgtec.com>
+---
+ arch/mips/mm/sc-mips.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-SONICS SILICON BACKPLANE DRIVER (SSB)
-M:      Michael Buesch <m@bues.ch>
-L:      netdev@vger.kernel.org
-S:      Maintained
-F:      drivers/ssb/
-F:      include/linux/ssb/
-
-Are people ok with that? Patches welcome :)
-
+diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
+index 3bd0597..6e422bc 100644
+--- a/arch/mips/mm/sc-mips.c
++++ b/arch/mips/mm/sc-mips.c
+@@ -168,7 +168,8 @@ static int __init mips_sc_probe_cm3(void)
+ 
+ 	line_sz = cfg & CM_GCR_L2_CONFIG_LINE_SIZE_MSK;
+ 	line_sz >>= CM_GCR_L2_CONFIG_LINE_SIZE_SHF;
+-	c->scache.linesz = 2 << line_sz;
++	if (line_sz)
++		c->scache.linesz = 2 << line_sz;
+ 
+ 	assoc = cfg & CM_GCR_L2_CONFIG_ASSOC_MSK;
+ 	assoc >>= CM_GCR_L2_CONFIG_ASSOC_SHF;
 -- 
-Kalle Valo
+2.5.0

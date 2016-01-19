@@ -1,15 +1,15 @@
-Received: from mga14.intel.com ([192.55.52.115]:56629 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27010563AbcASL23QGufS (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 19 Jan 2016 12:28:29 +0100
-Date: Tue, 19 Jan 2016 19:27:55 +0800
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [linux-review:James-Hogan/kbuild-Remove-stale-asm-generic-wrappers/20160119-183642] d979f99e9cc14e2667e9b6e268db695977e4197a BUILD DONE
-Message-ID: <569e1dbb.MgLv8OaZwklOxxtU%fengguang.wu@intel.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:29737 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008981AbcASNiDXGGMj (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 19 Jan 2016 14:38:03 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH v2 0/2] kbuild: Remove stale asm-generic wrappers
+Date: Tue, 19 Jan 2016 13:37:48 +0000
+Message-ID: <1453210670-12596-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Return-Path: <fengguang.wu@intel.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,170 +19,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: linux-mips@linux-mips.org, linux-arch@vger.kernel.org, linux-kbuild@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>, Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Arnd Bergmann <arnd@arndb.de>, Heinrich Schuchardt <xypron.glpk@gmx.de>, linux-kernel@vger.kernel.orglinux-mips@linux-mips.orglinux-arch@vger.kernel.orglinux-kbuild@vger.kernel.orgFlorian Fainelli <f.fainelli@gmail.com>Paul Burton <paul.burton@imgtec.com>Ralf Baechle <ralf@linux-mips.org>Arnd Bergmann <arnd@arndb.de>Heinrich Schuchardt <xypron.glpk@gmx.de>linux-kernel@vger.kernel.org, Michal Marek <mmarek@suse.com>
-Message-ID: <20160119112755.KyaNUbhAAmtqIQP2YfUm6of5uk5FR7rDO0k2YiYIc-A@z>
+To: Michal Marek <mmarek@suse.com>
+Cc: linux-kernel@vger.kernel.org, Heinrich Schuchardt <xypron.glpk@gmx.de>, James Hogan <james.hogan@imgtec.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, Florian Fainelli <f.fainelli@gmail.com>, linux-kbuild@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20160119133748.XhKxbJYe-1aXdWx7y_IZA2wyRsL8F9FIlkO6JkJg4d0@z>
 
-https://github.com/0day-ci/linux  James-Hogan/kbuild-Remove-stale-asm-generic-wrappers/20160119-183642
-d979f99e9cc14e2667e9b6e268db695977e4197a  kbuild: Remove stale asm-generic wrappers
+This patchset attempts to fix kbuild to automatically remove stale
+asm-generic wrappers, i.e. when files are removed from generic-y and
+added directly into arch/*/include/uapi/asm/, but where the existing
+wrapper in arch/*/include/generated/asm/ continues to be used.
 
-arch/x86/include/asm/unistd.h:15:29: fatal error: asm/unistd_32.h: No such file or directory
-arch/x86/kernel/asm-offsets_32.c:12:29: fatal error: asm/syscalls_32.h: No such file or directory
-arch/x86/kernel/asm-offsets_64.c:15:29: fatal error: asm/syscalls_64.h: No such file or directory
-/bin/sh: line 0: [: -ge: unary operator expected
+MIPS was recently burned by this in v4.3 (see patch 2), with continuing
+reports of build failures when people upgrade their trees, which go away
+after arch/mips/include/generated is removed (or reportedly make
+mrproper/distclean). It is particularly irritating during bisection.
 
-Error ids grouped by kconfigs:
+Changes in v2:
+- New patch 1 to add tracking of generated headers that aren't generic-y
+  wrappers, via generated-y, particularly for x86 (thanks to kbuild test
+  robot).
+- Rewrite a bit, drawing inspiration from Makefile.headersinst.
+- Exclude genhdr-y and generated-y (thanks to kbuild test robot).
 
-recent_errors
-├── i386-alldefconfig
-│   └── arch-x86-include-asm-unistd.h:fatal-error:asm-unistd_32.h:No-such-file-or-directory
-├── i386-allmodconfig
-│   └── arch-x86-include-asm-unistd.h:fatal-error:asm-unistd_32.h:No-such-file-or-directory
-├── i386-allyesconfig
-│   └── arch-x86-include-asm-unistd.h:fatal-error:asm-unistd_32.h:No-such-file-or-directory
-├── i386-defconfig
-│   └── arch-x86-include-asm-unistd.h:fatal-error:asm-unistd_32.h:No-such-file-or-directory
-├── i386-randconfig-a0-201603
-│   └── arch-x86-kernel-asm-offsets_32.c:fatal-error:asm-syscalls_32.h:No-such-file-or-directory
-├── i386-randconfig-b0-01191831
-│   └── arch-x86-kernel-asm-offsets_32.c:fatal-error:asm-syscalls_32.h:No-such-file-or-directory
-├── i386-randconfig-i0-201603
-│   └── arch-x86-include-asm-unistd.h:fatal-error:asm-unistd_32.h:No-such-file-or-directory
-├── i386-randconfig-i1-201603
-│   └── arch-x86-include-asm-unistd.h:fatal-error:asm-unistd_32.h:No-such-file-or-directory
-├── i386-randconfig-r0-201603
-│   └── arch-x86-kernel-asm-offsets_32.c:fatal-error:asm-syscalls_32.h:No-such-file-or-directory
-├── i386-randconfig-s1-201603
-│   └── arch-x86-kernel-asm-offsets_32.c:fatal-error:asm-syscalls_32.h:No-such-file-or-directory
-├── i386-randconfig-x002-01181631
-│   └── bin-sh:line::ge:unary-operator-expected
-├── i386-tinyconfig
-│   └── arch-x86-kernel-asm-offsets_32.c:fatal-error:asm-syscalls_32.h:No-such-file-or-directory
-└── x86_64-randconfig-s3-01191831
-    └── arch-x86-kernel-asm-offsets_64.c:fatal-error:asm-syscalls_64.h:No-such-file-or-directory
+James Hogan (2):
+  kbuild, x86: Track generated headers with generated-y
+  kbuild: Remove stale asm-generic wrappers
 
-elapsed time: 50m
+ Documentation/kbuild/makefiles.txt | 14 ++++++++++++++
+ arch/x86/include/asm/Kbuild        |  6 ++++++
+ scripts/Makefile.asm-generic       | 17 ++++++++++++++++-
+ 3 files changed, 36 insertions(+), 1 deletion(-)
 
-configs tested: 118
-
-i386                     randconfig-a0-201603
-x86_64                             acpi-redef
-x86_64                           allyesdebian
-x86_64                                nfsroot
-blackfin                BF526-EZBRD_defconfig
-blackfin                BF533-EZKIT_defconfig
-blackfin            BF561-EZKIT-SMP_defconfig
-blackfin                  TCM-BF537_defconfig
-cris                 etrax-100lx_v2_defconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-arm                               allnoconfig
-arm                         at91_dt_defconfig
-arm                                  at_hdmac
-arm                                    ep93xx
-arm                       imx_v6_v7_defconfig
-arm                                  iop-adma
-arm                          marzen_defconfig
-arm                          prima2_defconfig
-arm                                    sa1100
-arm                                   samsung
-arm                                        sh
-arm                       spear13xx_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-m32r                       m32104ut_defconfig
-m32r                     mappi3.smp_defconfig
-m32r                         opsput_defconfig
-m32r                           usrv_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-alpha                               defconfig
-parisc                            allnoconfig
-parisc                         b180_defconfig
-parisc                        c3000_defconfig
-parisc                              defconfig
-avr32                    hammerhead_defconfig
-m32r                    m32700ut.up_defconfig
-mips                        bcm47xx_defconfig
-mips                       capcella_defconfig
-powerpc                   bluestone_defconfig
-i386                             alldefconfig
-i386                              allnoconfig
-i386                                defconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-i386                     randconfig-s0-201603
-i386                     randconfig-s1-201603
-x86_64                 randconfig-s0-01191831
-x86_64                 randconfig-s1-01191831
-x86_64                 randconfig-s2-01191831
-x86_64                           allmodconfig
-x86_64                 randconfig-s3-01191831
-x86_64                 randconfig-s4-01191831
-x86_64                 randconfig-s5-01191831
-avr32                      atngw100_defconfig
-avr32                     atstk1006_defconfig
-frv                                 defconfig
-mn10300                     asb2364_defconfig
-openrisc                    or1ksim_defconfig
-tile                         tilegx_defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-m68k                             alldefconfig
-mips                         db1xxx_defconfig
-mips                malta_qemu_32r6_defconfig
-sh                          landisk_defconfig
-mips                              allnoconfig
-mips                      fuloong2e_defconfig
-mips                                   jz4740
-mips                                     txx9
-x86_64                   randconfig-i0-201603
-i386                   randconfig-b0-01191831
-sparc                               defconfig
-sparc64                           allnoconfig
-sparc64                             defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-i386                     randconfig-i0-201603
-i386                     randconfig-i1-201603
-i386                             allyesconfig
-x86_64                 randconfig-b0-01191744
-i386                               tinyconfig
-i386                     randconfig-n0-201603
-ia64                             alldefconfig
-ia64                              allnoconfig
-ia64                                defconfig
-x86_64                                   rhel
-ia64                          tiger_defconfig
-x86_64                 randconfig-x000-201603
-x86_64                 randconfig-x001-201603
-x86_64                 randconfig-x002-201603
-x86_64                 randconfig-x003-201603
-x86_64                 randconfig-x004-201603
-x86_64                 randconfig-x005-201603
-x86_64                 randconfig-x006-201603
-x86_64                 randconfig-x007-201603
-x86_64                 randconfig-x008-201603
-x86_64                 randconfig-x009-201603
-i386                     randconfig-r0-201603
-i386                             allmodconfig
-m68k                          sun3x_defconfig
-mips                  mips_paravirt_defconfig
-powerpc                     ppa8548_defconfig
-i386                 randconfig-x000-01181631
-i386                 randconfig-x001-01181631
-i386                 randconfig-x002-01181631
-i386                 randconfig-x003-01181631
-i386                 randconfig-x004-01181631
-i386                 randconfig-x005-01181631
-i386                 randconfig-x006-01181631
-i386                 randconfig-x007-01181631
-i386                 randconfig-x008-01181631
-i386                 randconfig-x009-01181631
-
-Thanks,
-Fengguang
+Cc: Michal Marek <mmarek@suse.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Cc: linux-kbuild@vger.kernel.org
+Cc: x86@kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-mips@linux-mips.org
+-- 
+2.4.10

@@ -1,20 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:1879 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27010833AbcASOWWilq5j (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 19 Jan 2016 15:22:22 +0100
-Date: Tue, 19 Jan 2016 14:22:13 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH v2 2/2] kbuild: Remove stale asm-generic wrappers
-Message-ID: <20160119142213.GA12679@jhogan-linux.le.imgtec.org>
-References: <1453210670-12596-1-git-send-email-james.hogan@imgtec.com>
- <1453210670-12596-3-git-send-email-james.hogan@imgtec.com>
- <1667268.iM977TQnEK@wuerfel>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:63405 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010763AbcASPesH-PJx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 19 Jan 2016 16:34:48 +0100
+From: Govindraj Raja <govindraj.raja@imgtec.com>
+Subject: Re: [PATCH] mips: scache: fix scache init with invalid line size.
+References: <1453126706-24299-1-git-send-email-Govindraj.Raja@imgtec.com>
+ <20160118150519.GC25510@jhogan-linux.le.imgtec.org>
+Message-ID: <569E5790.4060704@imgtec.com>
+Date: Tue, 19 Jan 2016 15:34:40 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
-Content-Disposition: inline
-In-Reply-To: <1667268.iM977TQnEK@wuerfel>
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <20160118150519.GC25510@jhogan-linux.le.imgtec.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Govindraj.Raja@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,76 +22,88 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Michal Marek <mmarek@suse.com>, linux-kernel@vger.kernel.org, Heinrich Schuchardt <xypron.glpk@gmx.de>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, Florian Fainelli <f.fainelli@gmail.com>, linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160119142213.BDFz5boXBEvdLYDmQfgjxSaTYY945ZVwfThzy9aLmh4@z>
+To: James Hogan <james.hogan@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Leonid Yegoshin <leonid.yegoshin@imgtec.com>, James Hartley <james.hartley@imgtec.com>
+Message-ID: <20160119153440.HsKt6YeTd8BzzgkP_y9_U1_87jW06jGDEMoXdhZqHno@z>
 
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 19, 2016 at 03:09:14PM +0100, Arnd Bergmann wrote:
-> On Tuesday 19 January 2016 13:37:50 James Hogan wrote:
-> > When a header file is removed from generic-y (often accompanied by the
-> > addition of an arch specific header), the generated wrapper file will
-> > persist, and in some cases may still take precedence over the new arch
-> > header.
-> >=20
-> > For example commit f1fe2d21f4e1 ("MIPS: Add definitions for extended
-> > context") removed ucontext.h from generic-y in arch/mips/include/asm/,
-> > and added an arch/mips/include/uapi/asm/ucontext.h. The continued use of
-> > the wrapper when reusing a dirty build tree resulted in build failures
-> > in arch/mips/kernel/signal.c:
-> >=20
-> > arch/mips/kernel/signal.c: In function =E2=80=98sc_to_extcontext=E2=80=
-=99:
-> > arch/mips/kernel/signal.c:142:12: error: =E2=80=98struct ucontext=E2=80=
-=99 has no member named =E2=80=98uc_extcontext=E2=80=99
-> >   return &uc->uc_extcontext;
-> >             ^
-> >=20
-> > Fix by detecting and removing wrapper headers in generated header
-> > directories that do not correspond to a filename in generic-y, genhdr-y,
-> > or the newly introduced generated-y.
->=20
-> Good idea.
->=20
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+Hi James,
 
-Thanks Arnd
+On 18/01/16 15:05, James Hogan wrote:
+> Hi Govindraj,
+>
+> On Mon, Jan 18, 2016 at 02:18:26PM +0000, Govindraj Raja wrote:
+>> In current scache init cache line_size is determined from
+>> cpu config register, however if there there no scache
+>> then mips_sc_probe_cm3 function populates a invalid line_size of 2.
+>>
+>> The invalid line_size can cause a NULL pointer deference
+>> during r4k_dma_cache_inv as r4k_blast_scache is populated based on
+>> line_size. Scache line_size of 2 is invalid option in r4k_blast_scache_setup.
+>>
+>> This issue was faced during a MIPS I6400 based virtual platform bring up
+>> where scache was not available in virtual platform model.
+>>
+>> Signed-off-by: Govindraj Raja <Govindraj.Raja@imgtec.com>
+>> ---
+>>  arch/mips/mm/sc-mips.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
+>> index 3bd0597..6e422bc 100644
+>> --- a/arch/mips/mm/sc-mips.c
+>> +++ b/arch/mips/mm/sc-mips.c
+>> @@ -168,7 +168,8 @@ static int __init mips_sc_probe_cm3(void)
+>>  
+>>  	line_sz = cfg & CM_GCR_L2_CONFIG_LINE_SIZE_MSK;
+>>  	line_sz >>= CM_GCR_L2_CONFIG_LINE_SIZE_SHF;
+>> -	c->scache.linesz = 2 << line_sz;
+>> +	if (line_sz)
+>> +		c->scache.linesz = 2 << line_sz;
+> It seems wrong to clear MIPS_CACHE_NOT_PRESENT if we know there isn't a
+> cache actually present.
+>
+> Cheers
+> James
+>
+>
+Does this patch[1] makes sense?
 
-> Can you merge this through the mips tree, or do you need me to pick it
-> up through asm-generic?
+I will repost v2 is its ok?
 
-I was envisaging the kbuild tree tbh, but I don't really mind how it
-gets merged. This patch depends on patch 1, which adds generated-y to
-x86 so we don't delete their other generated headers, but other than
-that it doesn't really have any dependencies.
+--
+Thanks,
+Govindraj.R
 
-Cheers
-James
+[1]:
 
---Qxx1br4bt0+wmkIi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJWnkaVAAoJEGwLaZPeOHZ6LmUQAKpWgHRKouJiF5R5uD2uvVkn
-PfRiCE8HmFx4ZN6wZu5uSF8wujCGQGxUr6JTvfyC66CvHlFSgPwCwHEseoTFAvHj
-rE77AQcz3qUwz30KIfS9Hj7XaBBPgi6XC9ljQ4qghijCpLANreyLvah90pg1Tgge
-r9AX7SaSsXMX9jJj8h6zOuTKXELlDAzi6rGm/Zp+dzscdht9U5OoTruJ06HvxdLG
-+4AdpuYpAW+qHYrqhmo6vGWwgLZaps37dOHk0pRcdRXRVaaCr9LjZmywR/FAz6+3
-idr6ME2irAhSe8sMXB+A4dscHp8GFCcutyInhNFSw5JrZrifjp15sLhpbb8pgX5y
-I4N8mn9ADW/bRNcvi6Y9zPBNLbnY+kOdPNKrSsJbtW9oLhS4ZR9amYjqsfzFfWzM
-yvhr1BB7ENHca2aF9Cm2RM0W25luhYjOhMY1QMTg0Wk28dbGeKh5eMOt4MEuf4/1
-sd/b5SRgAIoSCvq9dJfIpOv6tu0WIooepA6ZtJ7N7LYSaI7PdAbjIqKG/lNUWB66
-PFzprvBh9XI/dpoUTYtWgIG7Kt6cLA8gcfwqa0ZCK+1B0kR/B2OxymaXEIig/CpL
-54F2hef8q3L8aHlP6XZ4911AT2nPhtt9s4hoUhWnJBnkWlS5C5RyiSmPzfp617tn
-iWeC12OMk1R0ZgpqL3HU
-=Lh3+
------END PGP SIGNATURE-----
-
---Qxx1br4bt0+wmkIi--
+diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
+index 3bd0597..68c48f4 100644
+--- a/arch/mips/mm/sc-mips.c
++++ b/arch/mips/mm/sc-mips.c
+@@ -164,11 +164,13 @@ static int __init mips_sc_probe_cm3(void)
+ 
+        sets = cfg & CM_GCR_L2_CONFIG_SET_SIZE_MSK;
+        sets >>= CM_GCR_L2_CONFIG_SET_SIZE_SHF;
+-       c->scache.sets = 64 << sets;
++       if (sets)
++               c->scache.sets = 64 << sets;
+ 
+        line_sz = cfg & CM_GCR_L2_CONFIG_LINE_SIZE_MSK;
+        line_sz >>= CM_GCR_L2_CONFIG_LINE_SIZE_SHF;
+-       c->scache.linesz = 2 << line_sz;
++       if (line_sz)
++               c->scache.linesz = 2 << line_sz;
+ 
+        assoc = cfg & CM_GCR_L2_CONFIG_ASSOC_MSK;
+        assoc >>= CM_GCR_L2_CONFIG_ASSOC_SHF;
+@@ -176,7 +178,8 @@ static int __init mips_sc_probe_cm3(void)
+        c->scache.waysize = c->scache.sets * c->scache.linesz;
+        c->scache.waybit = __ffs(c->scache.waysize);
+ 
+-       c->scache.flags &= ~MIPS_CACHE_NOT_PRESENT;
++       if (c->scache.linesz)
++               c->scache.flags &= ~MIPS_CACHE_NOT_PRESENT;
+ 
+        return 1;
+ }

@@ -1,19 +1,20 @@
-Received: from foss.arm.com ([217.140.101.70]:55439 "EHLO foss.arm.com"
+Received: from smtp6-g21.free.fr ([212.27.42.6]:12206 "EHLO smtp6-g21.free.fr"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27011324AbcATMuAuXL4K (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 20 Jan 2016 13:50:00 +0100
-Date: Wed, 20 Jan 2016 12:49:48 +0000
-From: Marc Zyngier <marc.zyngier@arm.com>
+        id S27010675AbcATTqg1rfdt (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 20 Jan 2016 20:46:36 +0100
+Date: Wed, 20 Jan 2016 20:46:20 +0100
+From: Alban <albeu@free.fr>
 Subject: Re: [PATCH 6/6] MIPS: ath79: irq: Move the CPU IRQ driver to
  drivers/irqchip
-Message-ID: <20160120124948.6917859f@sofa.wild-wind.fr.eu.org>
-In-Reply-To: <1447788896-15553-7-git-send-email-albeu@free.fr>
+Message-ID: <20160120204620.714636eb@tock>
+In-Reply-To: <20160120124948.6917859f@sofa.wild-wind.fr.eu.org>
 References: <1447788896-15553-1-git-send-email-albeu@free.fr>
         <1447788896-15553-7-git-send-email-albeu@free.fr>
+        <20160120124948.6917859f@sofa.wild-wind.fr.eu.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-Path: <marc.zyngier@arm.com>
+Return-Path: <albeu@free.fr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,136 +24,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alban Bedel <albeu@free.fr>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Alexander Couzens <lynxis@fe80.eu>, Joel Porquet <joel@porquet.org>, Andrew Bresticker <abrestic@chromium.org>, linux-kernel@vger.kernel.org
-Message-ID: <20160120124948.c1uARQyz2z2s-dxTUm_3mSlN34Qs3qHVYdyqtvgOLVQ@z>
+To: Marc Zyngier <marc.zyngier@arm.com>
+Cc: Aban Bedel <albeu@free.fr>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Alexander Couzens <lynxis@fe80.eu>, Joel Porquet <joel@porquet.org>, Andrew Bresticker <abrestic@chromium.org>, linux-kernel@vger.kernel.org
+Message-ID: <20160120194620.kpJ9B6Q2KLo3efxnCzU9pn7-DU1Wm3kXomYk3_G4Ids@z>
 
-On Tue, 17 Nov 2015 20:34:56 +0100
-Alban Bedel <albeu@free.fr> wrote:
+On Wed, 20 Jan 2016 12:49:48 +0000
+Marc Zyngier <marc.zyngier@arm.com> wrote:
 
-> Signed-off-by: Alban Bedel <albeu@free.fr>
-> ---
->  arch/mips/ath79/irq.c                    | 81 ++------------------------
->  arch/mips/include/asm/mach-ath79/ath79.h |  1 +
->  drivers/irqchip/Makefile                 |  1 +
->  drivers/irqchip/irq-ath79-cpu.c          | 97 ++++++++++++++++++++++++++++++++
->  4 files changed, 105 insertions(+), 75 deletions(-)
->  create mode 100644 drivers/irqchip/irq-ath79-cpu.c
->
-
-[...]
+> On Tue, 17 Nov 2015 20:34:56 +0100
+> Alban Bedel <albeu@free.fr> wrote:
+> 
+> > Signed-off-by: Alban Bedel <albeu@free.fr>
+> > ---
+> >  arch/mips/ath79/irq.c                    | 81
+> > ++------------------------ arch/mips/include/asm/mach-ath79/ath79.h
+> > |  1 + drivers/irqchip/Makefile                 |  1 +
+> >  drivers/irqchip/irq-ath79-cpu.c          | 97
+> > ++++++++++++++++++++++++++++++++ 4 files changed, 105
+> > insertions(+), 75 deletions(-) create mode 100644
+> > drivers/irqchip/irq-ath79-cpu.c
+> >
  
-> diff --git a/drivers/irqchip/irq-ath79-cpu.c b/drivers/irqchip/irq-ath79-cpu.c
-> new file mode 100644
-> index 0000000..befe93c
-> --- /dev/null
-> +++ b/drivers/irqchip/irq-ath79-cpu.c
-> @@ -0,0 +1,97 @@
-> +/*
-> + *  Atheros AR71xx/AR724x/AR913x specific interrupt handling
-> + *
-> + *  Copyright (C) 2015 Alban Bedel <albeu@free.fr>
-> + *  Copyright (C) 2010-2011 Jaiganesh Narayanan <jnarayanan@atheros.com>
-> + *  Copyright (C) 2008-2011 Gabor Juhos <juhosg@openwrt.org>
-> + *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>
-> + *
-> + *  Parts of this file are based on Atheros' 2.6.15/2.6.31 BSP
-> + *
-> + *  This program is free software; you can redistribute it and/or modify it
-> + *  under the terms of the GNU General Public License version 2 as published
-> + *  by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/interrupt.h>
-> +#include <linux/irqchip.h>
-> +#include <linux/of.h>
-> +
-> +#include <asm/irq_cpu.h>
-> +#include <asm/mach-ath79/ath79.h>
-> +
-> +/*
-> + * The IP2/IP3 lines are tied to a PCI/WMAC/USB device. Drivers for
-> + * these devices typically allocate coherent DMA memory, however the
-> + * DMA controller may still have some unsynchronized data in the FIFO.
-> + * Issue a flush in the handlers to ensure that the driver sees
-> + * the update.
-> + *
-> + * This array map the interrupt lines to the DDR write buffer channels.
-> + */
-> +
-> +static unsigned irq_wb_chan[8] = {
-> +	-1, -1, -1, -1, -1, -1, -1, -1,
-> +};
-> +
-> +asmlinkage void plat_irq_dispatch(void)
-> +{
-> +	unsigned long pending;
-> +	int irq;
-> +
-> +	pending = read_c0_status() & read_c0_cause() & ST0_IM;
-> +
-> +	if (!pending) {
-> +		spurious_interrupt();
-> +		return;
-> +	}
-> +
-> +	pending >>= CAUSEB_IP;
-> +	while (pending) {
-> +		irq = fls(pending) - 1;
-> +		if (irq < ARRAY_SIZE(irq_wb_chan) && irq_wb_chan[irq] != -1)
-> +			ath79_ddr_wb_flush(irq_wb_chan[irq]);
-> +		do_IRQ(MIPS_CPU_IRQ_BASE + irq);
+ [...]
 
-I'm rather unfamiliar with the MIPS IRQ handling, but I'm vaguely
-surprised by the lack of domain. How do you unsure that the IRQ space
-used here doesn't clash with the one created in your "misc" irqchip?
+> > +asmlinkage void plat_irq_dispatch(void)
+> > +{
+> > +	unsigned long pending;
+> > +	int irq;
+> > +
+> > +	pending = read_c0_status() & read_c0_cause() & ST0_IM;
+> > +
+> > +	if (!pending) {
+> > +		spurious_interrupt();
+> > +		return;
+> > +	}
+> > +
+> > +	pending >>= CAUSEB_IP;
+> > +	while (pending) {
+> > +		irq = fls(pending) - 1;
+> > +		if (irq < ARRAY_SIZE(irq_wb_chan) && irq_wb_chan[irq] != -1)
+> > +			ath79_ddr_wb_flush(irq_wb_chan[irq]);
+> > +		do_IRQ(MIPS_CPU_IRQ_BASE + irq);
+> 
+> I'm rather unfamiliar with the MIPS IRQ handling, but I'm vaguely
+> surprised by the lack of domain. How do you unsure that the IRQ space
+> used here doesn't clash with the one created in your "misc" irqchip?
 
-> +		pending &= ~BIT(irq);
-> +	}
-> +}
-> +
-> +static int __init ar79_cpu_intc_of_init(
-> +	struct device_node *node, struct device_node *parent)
-> +{
-> +	int err, i, count;
-> +
-> +	/* Fill the irq_wb_chan table */
-> +	count = of_count_phandle_with_args(
-> +		node, "qca,ddr-wb-channels", "#qca,ddr-wb-channel-cells");
-> +
-> +	for (i = 0; i < count; i++) {
-> +		struct of_phandle_args args;
-> +		u32 irq = i;
-> +
-> +		of_property_read_u32_index(
-> +			node, "qca,ddr-wb-channel-interrupts", i, &irq);
-> +		if (irq >= ARRAY_SIZE(irq_wb_chan))
-> +			continue;
-> +
-> +		err = of_parse_phandle_with_args(
-> +			node, "qca,ddr-wb-channels",
-> +			"#qca,ddr-wb-channel-cells",
-> +			i, &args);
-> +		if (err)
-> +			return err;
-> +
-> +		irq_wb_chan[irq] = args.args[0];
-> +	}
-> +
-> +	return mips_cpu_irq_of_init(node, parent);
-> +}
-> +IRQCHIP_DECLARE(ar79_cpu_intc, "qca,ar7100-cpu-intc",
-> +		ar79_cpu_intc_of_init);
-> +
-> +void __init ath79_cpu_irq_init(unsigned irq_wb_chan2, unsigned irq_wb_chan3)
-> +{
-> +	irq_wb_chan[2] = irq_wb_chan2;
-> +	irq_wb_chan[3] = irq_wb_chan3;
-> +	mips_cpu_irq_init();
-> +}
+This driver extend the irq-mips-cpu driver which take care of setting up
+a legacy domain starting from MIPS_CPU_IRQ_BASE for these interrupts. I
+don't find this very nice either, but this patch is about moving the
+code out of arch/mips, so I tried to minimize unrelated changes.
 
-Thanks,
-
-	M.
--- 
-AAAFNRAA
+Alban

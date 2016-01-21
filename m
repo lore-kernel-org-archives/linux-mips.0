@@ -1,20 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:58254 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27009479AbcAUKT15tkZs (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Jan 2016 11:19:27 +0100
-Date: Thu, 21 Jan 2016 10:19:21 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH v2 2/2] kbuild: Remove stale asm-generic wrappers
-Message-ID: <20160121101921.GC24198@jhogan-linux.le.imgtec.org>
-References: <1453210670-12596-1-git-send-email-james.hogan@imgtec.com>
- <1453210670-12596-3-git-send-email-james.hogan@imgtec.com>
- <20160121000342.GA7538@NP-P-BURTON>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bAmEntskrkuBymla"
-Content-Disposition: inline
-In-Reply-To: <20160121000342.GA7538@NP-P-BURTON>
-Return-Path: <James.Hogan@imgtec.com>
+Received: from smtpbgau2.qq.com ([54.206.34.216]:45131 "EHLO smtpbgau2.qq.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27009614AbcAUNFm3Rixu (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 21 Jan 2016 14:05:42 +0100
+From: Huacai Chen <chenhc@lemote.com>
+Subject: [PATCH V2 3/6] MIPS: Loongson-3: Fix SMP_ASK_C0COUNT IPI handler
+Date: Thu, 21 Jan 2016 21:09:49 +0800
+Message-ID: <1453381793-8357-4-git-send-email-chenhc@lemote.com>
+In-Reply-To: <1453381793-8357-1-git-send-email-chenhc@lemote.com>
+References: <1453381793-8357-1-git-send-email-chenhc@lemote.com>
+Return-Path: <chenhc@lemote.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,158 +18,84 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: Michal Marek <mmarek@suse.com>, linux-kernel@vger.kernel.org, Heinrich Schuchardt <xypron.glpk@gmx.de>, Arnd Bergmann <arnd@arndb.de>, Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160121101921.mcriNopWMo2kUAPsQMA8N9uixI5rqWFd_ir7mBPu2pw@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Aurelien Jarno <aurelien@aurel32.net>, "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Huacai Chen <chenhc@lemote.com>, stable@vger.kernel.org
+Message-ID: <20160121130949.RpRuHTRzS7D4OEee7cRUfOlT5kgyavoeCdjEIIZ0d44@z>
 
---bAmEntskrkuBymla
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When Core-0 handle SMP_ASK_C0COUNT IPI, we should make other cores to
+see the result as soon as possible (especially when Store-Fill-Buffer
+is enabled). Otherwise, C0_Count syncronization makes no sense.
 
-On Thu, Jan 21, 2016 at 12:03:42AM +0000, Paul Burton wrote:
-> On Tue, Jan 19, 2016 at 01:37:50PM +0000, James Hogan wrote:
-> > When a header file is removed from generic-y (often accompanied by the
-> > addition of an arch specific header), the generated wrapper file will
-> > persist, and in some cases may still take precedence over the new arch
-> > header.
-> >=20
-> > For example commit f1fe2d21f4e1 ("MIPS: Add definitions for extended
-> > context") removed ucontext.h from generic-y in arch/mips/include/asm/,
-> > and added an arch/mips/include/uapi/asm/ucontext.h. The continued use of
-> > the wrapper when reusing a dirty build tree resulted in build failures
-> > in arch/mips/kernel/signal.c:
-> >=20
-> > arch/mips/kernel/signal.c: In function =E2=80=98sc_to_extcontext=E2=80=
-=99:
-> > arch/mips/kernel/signal.c:142:12: error: =E2=80=98struct ucontext=E2=80=
-=99 has no member named =E2=80=98uc_extcontext=E2=80=99
-> >   return &uc->uc_extcontext;
-> >             ^
-> >=20
-> > Fix by detecting and removing wrapper headers in generated header
-> > directories that do not correspond to a filename in generic-y, genhdr-y,
-> > or the newly introduced generated-y.
-> >=20
-> > Reported-by: Jacek Anaszewski <j.anaszewski@samsung.com>
-> > Reported-by: Hauke Mehrtens <hauke@hauke-m.de>
-> > Reported-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-> > Signed-off-by: James Hogan <james.hogan@imgtec.com>
-> > Cc: Michal Marek <mmarek@suse.com>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: Paul Burton <paul.burton@imgtec.com>
-> > Cc: Florian Fainelli <f.fainelli@gmail.com>
-> > Cc: linux-kbuild@vger.kernel.org
-> > Cc: linux-arch@vger.kernel.org
-> > Cc: linux-mips@linux-mips.org
-> > ---
-> > Changes in v2:
-> > - Rewrite a bit, drawing inspiration from Makefile.headersinst.
-> > - Exclude genhdr-y and generated-y (thanks to kbuild test robot).
-> > ---
-> >  scripts/Makefile.asm-generic | 17 ++++++++++++++++-
-> >  1 file changed, 16 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/scripts/Makefile.asm-generic b/scripts/Makefile.asm-generic
-> > index 045e0098e962..24c29f16f029 100644
-> > --- a/scripts/Makefile.asm-generic
-> > +++ b/scripts/Makefile.asm-generic
-> > @@ -13,11 +13,26 @@ include scripts/Kbuild.include
-> >  # Create output directory if not already present
-> >  _dummy :=3D $(shell [ -d $(obj) ] || mkdir -p $(obj))
-> > =20
-> > +# Stale wrappers when the corresponding files are removed from generic=
--y
-> > +# need removing.
-> > +generated-y   :=3D $(generic-y) $(genhdr-y) $(generated-y)
-> > +all-files     :=3D $(patsubst %, $(obj)/%, $(generated-y))
-> > +old-headers   :=3D $(wildcard $(obj)/*.h)
-> > +unwanted      :=3D $(filter-out $(all-files),$(old-headers))
->=20
-> Hi James,
->=20
-> Thanks a bunch for fixing this!
+BTW, array is more suitable than per-cpu variable for syncronization,
+and there is a corner case should be avoid: C0_Count of Core-0 can be
+really 0.
 
-FTR, I noticed yesterday it fixes a similar case when switching v4.3 to
-v4.4 too:
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Huacai Chen <chenhc@lemote.com>
+---
+ arch/mips/loongson64/loongson-3/smp.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-arch/mips/kernel/../../../fs/binfmt_elf.c In function =E2=80=98create_elf_t=
-ables=E2=80=99:
-=2E/arch/mips/include/asm/elf.h +425 :14: error: =E2=80=98AT_SYSINFO_EHDR=
-=E2=80=99 undeclared (first use in this function)
-  NEW_AUX_ENT(AT_SYSINFO_EHDR,     \
-              ^
-
-Due to commit ebb5e78cc634 ("MIPS: Initial implementation of a VDSO")
-adding uapi/asm/auxvec.h and changing generic-y to header-y. Should
-ucontext.h be exported via header-y too?
-
-With these patches, it removes the stale file:
-  REMOVE  arch/mips/include/generated/uapi/asm/auxvec.h
-
->=20
-> Though is it my sleepy self or are all-files & old-headers misnomers?
-> That is, isn't all-files actually a list of headers to be kept, and
-> old-headers actually the list of all (header) files?
-
-I've followed the naming in Makefile.headersinst. I read all-files as
-"all the files we care about" (i.e. its a combination of several sets of
-generated files, hence "all") and old-headers as in "existing headers"
-(since it won't include files which haven't been generated yet).
-
-all-files could perhaps be renamed new-headers, but that could be
-misleading too.
-
-Cheers
-James
-
->=20
-> Thanks,
->     Paul
->=20
-> > +
-> >  quiet_cmd_wrap =3D WRAP    $@
-> >  cmd_wrap =3D echo "\#include <asm-generic/$*.h>" >$@
-> > =20
-> > -all: $(patsubst %, $(obj)/%, $(generic-y))
-> > +quiet_cmd_remove =3D REMOVE  $(unwanted)
-> > +cmd_remove =3D rm -f $(unwanted)
-> > +
-> > +all: $(patsubst %, $(obj)/%, $(generic-y)) FORCE
-> > +	$(if $(unwanted),$(call cmd,remove),)
-> >  	@:
-> > =20
-> >  $(obj)/%.h:
-> >  	$(call cmd,wrap)
-> > +
-> > +.PHONY: $(PHONY)
-> > +PHONY +=3D FORCE
-> > +FORCE: ;
-> > --=20
-> > 2.4.10
-> >=20
-
---bAmEntskrkuBymla
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJWoLCpAAoJEGwLaZPeOHZ6TaYP/iZf6/2NywLVhS2CqOESHACj
-QCJ192fD3M6pC8KZ0oMw0mqNGupk4G3y7Q1S5uLhm1mI5Ggu3kmvM4x062jFYAZ5
-TQJmpqOqrRAhCWCcEr3MPY3YoPk/ReCs6Z3CtvZ2h+NzG/69GWGZ9gvYfvcVYs9G
-FbzOfPvQq4vUTV3wYdZfkep4bVDFIgUJoCLJuPpTvzcIwDNXu+J8YNYwhphOkFJO
-bsLFpfqd0s/fWhv/hrCf0q1ZM4M899D2wJjOumCeM2rTmzw/CQLbtxOEoyp4aZq9
-lIl2hMgN/cGuBv86dRLwdlOI3hg5sDu74HNQQpXgm9dOFe+TMUoLekeekWs7CEqe
-3lN4zy7HSn6tKjk/OjK5o4vkBUKFIrRh1rV7aSQ85CxuClvaPeSZ5aWS6pVrGXJg
-VaTXeqMF49ref03vs28iQ3ZvwiyLlow5v9JM4z8hSJoXil5SIfU3YxCa57pcqlTB
-92pNm5zipZK8pvMdGIPkkp3V1I07nnUH/ziUIWIPgnVNbJe5GjHDVUIYChVtJJoQ
-0P7ScIJZ2D0ggdOL2+EBZ+bAYzIuP4y5x0K2G9SXp7pfy/VJhVH7Xtpzy/cSpDgS
-Fe0+BuS6P8EUacScrN99EdoNCs0HaQIEXJKvPRcj5qFPWe8oCwWv40PpesdUxZ8c
-N1/7yI/91ymf1KdLbHIs
-=aDXE
------END PGP SIGNATURE-----
-
---bAmEntskrkuBymla--
+diff --git a/arch/mips/loongson64/loongson-3/smp.c b/arch/mips/loongson64/loongson-3/smp.c
+index 1a4738a..509832a9 100644
+--- a/arch/mips/loongson64/loongson-3/smp.c
++++ b/arch/mips/loongson64/loongson-3/smp.c
+@@ -30,13 +30,13 @@
+ #include "smp.h"
+ 
+ DEFINE_PER_CPU(int, cpu_state);
+-DEFINE_PER_CPU(uint32_t, core0_c0count);
+ 
+ static void *ipi_set0_regs[16];
+ static void *ipi_clear0_regs[16];
+ static void *ipi_status0_regs[16];
+ static void *ipi_en0_regs[16];
+ static void *ipi_mailbox_buf[16];
++static uint32_t core0_c0count[NR_CPUS];
+ 
+ /* read a 32bit value from ipi register */
+ #define loongson3_ipi_read32(addr) readl(addr)
+@@ -275,12 +275,14 @@ void loongson3_ipi_interrupt(struct pt_regs *regs)
+ 	if (action & SMP_ASK_C0COUNT) {
+ 		BUG_ON(cpu != 0);
+ 		c0count = read_c0_count();
+-		for (i = 1; i < num_possible_cpus(); i++)
+-			per_cpu(core0_c0count, i) = c0count;
++		c0count = c0count ? c0count : 1;
++		for (i = 1; i < nr_cpu_ids; i++)
++			core0_c0count[i] = c0count;
++		__wbflush(); /* Let others see the result ASAP */
+ 	}
+ }
+ 
+-#define MAX_LOOPS 1111
++#define MAX_LOOPS 800
+ /*
+  * SMP init and finish on secondary CPUs
+  */
+@@ -305,16 +307,20 @@ static void loongson3_init_secondary(void)
+ 		cpu_logical_map(cpu) / loongson_sysconf.cores_per_package;
+ 
+ 	i = 0;
+-	__this_cpu_write(core0_c0count, 0);
++	core0_c0count[cpu] = 0;
+ 	loongson3_send_ipi_single(0, SMP_ASK_C0COUNT);
+-	while (!__this_cpu_read(core0_c0count)) {
++	while (!core0_c0count[cpu]) {
+ 		i++;
+ 		cpu_relax();
+ 	}
+ 
+ 	if (i > MAX_LOOPS)
+ 		i = MAX_LOOPS;
+-	initcount = __this_cpu_read(core0_c0count) + i;
++	if (cpu_data[cpu].package)
++		initcount = core0_c0count[cpu] + i;
++	else /* Local access is faster for loops */
++		initcount = core0_c0count[cpu] + i/2;
++
+ 	write_c0_count(initcount);
+ }
+ 
+-- 
+2.4.6

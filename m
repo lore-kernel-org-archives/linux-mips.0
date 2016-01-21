@@ -1,11 +1,11 @@
-Received: from smtpbgau2.qq.com ([54.206.34.216]:45131 "EHLO smtpbgau2.qq.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27009614AbcAUNFm3Rixu (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 21 Jan 2016 14:05:42 +0100
+Received: from smtpproxy19.qq.com ([184.105.206.84]:47749 "EHLO
+        smtpproxy19.qq.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27009614AbcAUNGOSbJYu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Jan 2016 14:06:14 +0100
 From: Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH V2 3/6] MIPS: Loongson-3: Fix SMP_ASK_C0COUNT IPI handler
-Date: Thu, 21 Jan 2016 21:09:49 +0800
-Message-ID: <1453381793-8357-4-git-send-email-chenhc@lemote.com>
+Subject: [PATCH V2 4/6] MIPS: hpet: Choose a safe value for the ETIME check
+Date: Thu, 21 Jan 2016 21:09:50 +0800
+Message-ID: <1453381793-8357-5-git-send-email-chenhc@lemote.com>
 In-Reply-To: <1453381793-8357-1-git-send-email-chenhc@lemote.com>
 References: <1453381793-8357-1-git-send-email-chenhc@lemote.com>
 Return-Path: <chenhc@lemote.com>
@@ -20,82 +20,78 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: Aurelien Jarno <aurelien@aurel32.net>, "Steven J. Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Huacai Chen <chenhc@lemote.com>, stable@vger.kernel.org
-Message-ID: <20160121130949.RpRuHTRzS7D4OEee7cRUfOlT5kgyavoeCdjEIIZ0d44@z>
+Message-ID: <20160121130950.QCfxcBG1Vw3kjtRWLDPwrRCS0rwbLtIvq6e3LIFBB8c@z>
 
-When Core-0 handle SMP_ASK_C0COUNT IPI, we should make other cores to
-see the result as soon as possible (especially when Store-Fill-Buffer
-is enabled). Otherwise, C0_Count syncronization makes no sense.
+This patch is borrowed from x86 hpet driver and explaind below:
 
-BTW, array is more suitable than per-cpu variable for syncronization,
-and there is a corner case should be avoid: C0_Count of Core-0 can be
-really 0.
+Due to the overly intelligent design of HPETs, we need to workaround
+the problem that the compare value which we write is already behind
+the actual counter value at the point where the value hits the real
+compare register. This happens for two reasons:
+
+1) We read out the counter, add the delta and write the result to the
+   compare register. When a NMI hits between the read out and the write
+   then the counter can be ahead of the event already.
+
+2) The write to the compare register is delayed by up to two HPET
+   cycles in AMD chipsets.
+
+We can work around this by reading back the compare register to make
+sure that the written value has hit the hardware. But that is bad
+performance wise for the normal case where the event is far enough in
+the future.
+
+As we already know that the write can be delayed by up to two cycles
+we can avoid the read back of the compare register completely if we
+make the decision whether the delta has elapsed already or not based
+on the following calculation:
+
+  cmp = event - actual_count;
+
+If cmp is less than 64 HPET clock cycles, then we decide that the event
+has happened already and return -ETIME. That covers the above #1 and #2
+problems which would cause a wait for HPET wraparound (~306 seconds).
 
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Huacai Chen <chenhc@lemote.com>
 ---
- arch/mips/loongson64/loongson-3/smp.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ arch/mips/loongson64/loongson-3/hpet.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/loongson64/loongson-3/smp.c b/arch/mips/loongson64/loongson-3/smp.c
-index 1a4738a..509832a9 100644
---- a/arch/mips/loongson64/loongson-3/smp.c
-+++ b/arch/mips/loongson64/loongson-3/smp.c
-@@ -30,13 +30,13 @@
- #include "smp.h"
+diff --git a/arch/mips/loongson64/loongson-3/hpet.c b/arch/mips/loongson64/loongson-3/hpet.c
+index bf9f1a7..a2631a5 100644
+--- a/arch/mips/loongson64/loongson-3/hpet.c
++++ b/arch/mips/loongson64/loongson-3/hpet.c
+@@ -13,6 +13,9 @@
+ #define SMBUS_PCI_REG64		0x64
+ #define SMBUS_PCI_REGB4		0xb4
  
- DEFINE_PER_CPU(int, cpu_state);
--DEFINE_PER_CPU(uint32_t, core0_c0count);
- 
- static void *ipi_set0_regs[16];
- static void *ipi_clear0_regs[16];
- static void *ipi_status0_regs[16];
- static void *ipi_en0_regs[16];
- static void *ipi_mailbox_buf[16];
-+static uint32_t core0_c0count[NR_CPUS];
- 
- /* read a 32bit value from ipi register */
- #define loongson3_ipi_read32(addr) readl(addr)
-@@ -275,12 +275,14 @@ void loongson3_ipi_interrupt(struct pt_regs *regs)
- 	if (action & SMP_ASK_C0COUNT) {
- 		BUG_ON(cpu != 0);
- 		c0count = read_c0_count();
--		for (i = 1; i < num_possible_cpus(); i++)
--			per_cpu(core0_c0count, i) = c0count;
-+		c0count = c0count ? c0count : 1;
-+		for (i = 1; i < nr_cpu_ids; i++)
-+			core0_c0count[i] = c0count;
-+		__wbflush(); /* Let others see the result ASAP */
- 	}
- }
- 
--#define MAX_LOOPS 1111
-+#define MAX_LOOPS 800
- /*
-  * SMP init and finish on secondary CPUs
-  */
-@@ -305,16 +307,20 @@ static void loongson3_init_secondary(void)
- 		cpu_logical_map(cpu) / loongson_sysconf.cores_per_package;
- 
- 	i = 0;
--	__this_cpu_write(core0_c0count, 0);
-+	core0_c0count[cpu] = 0;
- 	loongson3_send_ipi_single(0, SMP_ASK_C0COUNT);
--	while (!__this_cpu_read(core0_c0count)) {
-+	while (!core0_c0count[cpu]) {
- 		i++;
- 		cpu_relax();
- 	}
- 
- 	if (i > MAX_LOOPS)
- 		i = MAX_LOOPS;
--	initcount = __this_cpu_read(core0_c0count) + i;
-+	if (cpu_data[cpu].package)
-+		initcount = core0_c0count[cpu] + i;
-+	else /* Local access is faster for loops */
-+		initcount = core0_c0count[cpu] + i/2;
++#define HPET_MIN_CYCLES		64
++#define HPET_MIN_PROG_DELTA	(HPET_MIN_CYCLES + (HPET_MIN_CYCLES >> 1))
 +
- 	write_c0_count(initcount);
+ static DEFINE_SPINLOCK(hpet_lock);
+ DEFINE_PER_CPU(struct clock_event_device, hpet_clockevent_device);
+ 
+@@ -161,8 +164,9 @@ static int hpet_next_event(unsigned long delta,
+ 	cnt += delta;
+ 	hpet_write(HPET_T0_CMP, cnt);
+ 
+-	res = ((int)(hpet_read(HPET_COUNTER) - cnt) > 0) ? -ETIME : 0;
+-	return res;
++	res = (int)(cnt - hpet_read(HPET_COUNTER));
++
++	return res < HPET_MIN_CYCLES ? -ETIME : 0;
  }
  
+ static irqreturn_t hpet_irq_handler(int irq, void *data)
+@@ -237,7 +241,7 @@ void __init setup_hpet_timer(void)
+ 	cd->cpumask = cpumask_of(cpu);
+ 	clockevent_set_clock(cd, HPET_FREQ);
+ 	cd->max_delta_ns = clockevent_delta2ns(0x7fffffff, cd);
+-	cd->min_delta_ns = 5000;
++	cd->min_delta_ns = clockevent_delta2ns(HPET_MIN_PROG_DELTA, cd);
+ 
+ 	clockevents_register_device(cd);
+ 	setup_irq(HPET_T0_IRQ, &hpet_irq);
 -- 
 2.4.6

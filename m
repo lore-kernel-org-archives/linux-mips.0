@@ -1,20 +1,19 @@
-Received: from smtp6-g21.free.fr ([212.27.42.6]:31427 "EHLO smtp6-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27011009AbcATTv3xug0t (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 20 Jan 2016 20:51:29 +0100
-Date: Wed, 20 Jan 2016 20:51:13 +0100
-From: Alban <albeu@free.fr>
-Subject: Re: [PATCH 4/6] MIPS: ath79: irq: Move the MISC driver to
- drivers/irqchip
-Message-ID: <20160120205113.4b706e2f@tock>
-In-Reply-To: <20160120123841.039345ad@sofa.wild-wind.fr.eu.org>
-References: <1447788896-15553-1-git-send-email-albeu@free.fr>
-        <1447788896-15553-5-git-send-email-albeu@free.fr>
-        <20160120123841.039345ad@sofa.wild-wind.fr.eu.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:49391 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27014789AbcAUADvGgUZ0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Jan 2016 01:03:51 +0100
+Date: Thu, 21 Jan 2016 00:03:42 +0000
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH v2 2/2] kbuild: Remove stale asm-generic wrappers
+Message-ID: <20160121000342.GA7538@NP-P-BURTON>
+References: <1453210670-12596-1-git-send-email-james.hogan@imgtec.com>
+ <1453210670-12596-3-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <albeu@free.fr>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1453210670-12596-3-git-send-email-james.hogan@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,235 +23,95 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marc Zyngier <marc.zyngier@arm.com>
-Cc: Aban Bedel <albeu@free.fr>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Alexander Couzens <lynxis@fe80.eu>, Joel Porquet <joel@porquet.org>, Andrew Bresticker <abrestic@chromium.org>, linux-kernel@vger.kernel.org
-Message-ID: <20160120195113.KyFiFJjKuawRU4ZojhzbzoPNYfe5PWIwwPDHzF5Oe9M@z>
+To: James Hogan <james.hogan@imgtec.com>
+Cc: Michal Marek <mmarek@suse.com>, linux-kernel@vger.kernel.org, Heinrich Schuchardt <xypron.glpk@gmx.de>, Arnd Bergmann <arnd@arndb.de>, Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20160121000342.x2_HT-pYRjV904qVzcgTC2Edt1d5Uv41MQ5NkKkX_Ko@z>
 
-On Wed, 20 Jan 2016 12:38:41 +0000
-Marc Zyngier <marc.zyngier@arm.com> wrote:
+On Tue, Jan 19, 2016 at 01:37:50PM +0000, James Hogan wrote:
+> When a header file is removed from generic-y (often accompanied by the
+> addition of an arch specific header), the generated wrapper file will
+> persist, and in some cases may still take precedence over the new arch
+> header.
+> 
+> For example commit f1fe2d21f4e1 ("MIPS: Add definitions for extended
+> context") removed ucontext.h from generic-y in arch/mips/include/asm/,
+> and added an arch/mips/include/uapi/asm/ucontext.h. The continued use of
+> the wrapper when reusing a dirty build tree resulted in build failures
+> in arch/mips/kernel/signal.c:
+> 
+> arch/mips/kernel/signal.c: In function ‘sc_to_extcontext’:
+> arch/mips/kernel/signal.c:142:12: error: ‘struct ucontext’ has no member named ‘uc_extcontext’
+>   return &uc->uc_extcontext;
+>             ^
+> 
+> Fix by detecting and removing wrapper headers in generated header
+> directories that do not correspond to a filename in generic-y, genhdr-y,
+> or the newly introduced generated-y.
+> 
+> Reported-by: Jacek Anaszewski <j.anaszewski@samsung.com>
+> Reported-by: Hauke Mehrtens <hauke@hauke-m.de>
+> Reported-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> Signed-off-by: James Hogan <james.hogan@imgtec.com>
+> Cc: Michal Marek <mmarek@suse.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Paul Burton <paul.burton@imgtec.com>
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: linux-kbuild@vger.kernel.org
+> Cc: linux-arch@vger.kernel.org
+> Cc: linux-mips@linux-mips.org
+> ---
+> Changes in v2:
+> - Rewrite a bit, drawing inspiration from Makefile.headersinst.
+> - Exclude genhdr-y and generated-y (thanks to kbuild test robot).
+> ---
+>  scripts/Makefile.asm-generic | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/scripts/Makefile.asm-generic b/scripts/Makefile.asm-generic
+> index 045e0098e962..24c29f16f029 100644
+> --- a/scripts/Makefile.asm-generic
+> +++ b/scripts/Makefile.asm-generic
+> @@ -13,11 +13,26 @@ include scripts/Kbuild.include
+>  # Create output directory if not already present
+>  _dummy := $(shell [ -d $(obj) ] || mkdir -p $(obj))
+>  
+> +# Stale wrappers when the corresponding files are removed from generic-y
+> +# need removing.
+> +generated-y   := $(generic-y) $(genhdr-y) $(generated-y)
+> +all-files     := $(patsubst %, $(obj)/%, $(generated-y))
+> +old-headers   := $(wildcard $(obj)/*.h)
+> +unwanted      := $(filter-out $(all-files),$(old-headers))
 
-> On Tue, 17 Nov 2015 20:34:54 +0100
-> Alban Bedel <albeu@free.fr> wrote:
-> 
-> Hi Alban,
-> 
-> > The driver stays the same but the initialization changes a bit.
-> > For OF boards we now get the memory map from the OF node and use
-> > a linear mapping instead of the legacy mapping. For legacy boards
-> > we still use a legacy mapping and just pass down all the parameters
-> > from the board init code.
-> > 
-> > Signed-off-by: Alban Bedel <albeu@free.fr>
-> > ---
-> >  arch/mips/ath79/irq.c                    | 163 +++------------------------
-> >  arch/mips/include/asm/mach-ath79/ath79.h |   3 +
-> >  drivers/irqchip/Makefile                 |   1 +
-> >  drivers/irqchip/irq-ath79-misc.c         | 182 +++++++++++++++++++++++++++++++
-> >  4 files changed, 201 insertions(+), 148 deletions(-)
-> >  create mode 100644 drivers/irqchip/irq-ath79-misc.c
-> > 
-> 
-> [...]
-> 
-> > diff --git a/drivers/irqchip/irq-ath79-misc.c b/drivers/irqchip/irq-ath79-misc.c
-> > new file mode 100644
-> > index 0000000..bd2121f1
-> > --- /dev/null
-> > +++ b/drivers/irqchip/irq-ath79-misc.c
-> > @@ -0,0 +1,182 @@
-> > +/*
-> > + *  Atheros AR71xx/AR724x/AR913x MISC interrupt controller
-> > + *
-> > + *  Copyright (C) 2015 Alban Bedel <albeu@free.fr>
-> > + *  Copyright (C) 2010-2011 Jaiganesh Narayanan <jnarayanan@atheros.com>
-> > + *  Copyright (C) 2008-2011 Gabor Juhos <juhosg@openwrt.org>
-> > + *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>
-> > + *
-> > + *  Parts of this file are based on Atheros' 2.6.15/2.6.31 BSP
-> > + *
-> > + *  This program is free software; you can redistribute it and/or modify it
-> > + *  under the terms of the GNU General Public License version 2 as published
-> > + *  by the Free Software Foundation.
-> > + */
-> > +
-> > +#include <linux/irqchip.h>
-> > +#include <linux/of_address.h>
-> > +#include <linux/of_irq.h>
-> > +
-> > +#define AR71XX_RESET_REG_MISC_INT_STATUS	0
-> > +#define AR71XX_RESET_REG_MISC_INT_ENABLE	4
-> > +
-> > +#define ATH79_MISC_IRQ_COUNT			32
-> > +
-> > +static void ath79_misc_irq_handler(struct irq_desc *desc)
-> > +{
-> > +	struct irq_domain *domain = irq_desc_get_handler_data(desc);
-> > +	void __iomem *base = domain->host_data;
-> > +	u32 pending;
-> > +
-> > +	pending = __raw_readl(base + AR71XX_RESET_REG_MISC_INT_STATUS) &
-> > +		  __raw_readl(base + AR71XX_RESET_REG_MISC_INT_ENABLE);
-> > +
-> > +	if (!pending) {
-> > +		spurious_interrupt();
-> > +		return;
-> > +	}
-> > +
-> > +	while (pending) {
-> > +		int bit = __ffs(pending);
-> > +
-> > +		generic_handle_irq(irq_linear_revmap(domain, bit));
-> > +		pending &= ~BIT(bit);
-> > +	}
-> > +}
-> 
-> Given that this function is used as a chained handler, it seems to be
-> missing the usual chained_irq_enter/exit...
+Hi James,
 
-I'll fix this.
+Thanks a bunch for fixing this!
 
-> > +
-> > +static void ar71xx_misc_irq_unmask(struct irq_data *d)
-> > +{
-> > +	void __iomem *base = irq_data_get_irq_chip_data(d);
-> > +	unsigned int irq = d->hwirq;
-> > +	u32 t;
-> > +
-> > +	t = __raw_readl(base + AR71XX_RESET_REG_MISC_INT_ENABLE);
-> > +	__raw_writel(t | BIT(irq), base + AR71XX_RESET_REG_MISC_INT_ENABLE);
-> > +
-> > +	/* flush write */
-> > +	__raw_readl(base + AR71XX_RESET_REG_MISC_INT_ENABLE);
-> > +}
-> > +
-> > +static void ar71xx_misc_irq_mask(struct irq_data *d)
-> > +{
-> > +	void __iomem *base = irq_data_get_irq_chip_data(d);
-> > +	unsigned int irq = d->hwirq;
-> > +	u32 t;
-> > +
-> > +	t = __raw_readl(base + AR71XX_RESET_REG_MISC_INT_ENABLE);
-> > +	__raw_writel(t & ~BIT(irq), base + AR71XX_RESET_REG_MISC_INT_ENABLE);
-> > +
-> > +	/* flush write */
-> > +	__raw_readl(base + AR71XX_RESET_REG_MISC_INT_ENABLE);
-> > +}
-> > +
-> > +static void ar724x_misc_irq_ack(struct irq_data *d)
-> > +{
-> > +	void __iomem *base = irq_data_get_irq_chip_data(d);
-> > +	unsigned int irq = d->hwirq;
-> > +	u32 t;
-> > +
-> > +	t = __raw_readl(base + AR71XX_RESET_REG_MISC_INT_STATUS);
-> > +	__raw_writel(t & ~BIT(irq), base + AR71XX_RESET_REG_MISC_INT_STATUS);
-> > +
-> > +	/* flush write */
-> > +	__raw_readl(base + AR71XX_RESET_REG_MISC_INT_STATUS);
-> > +}
-> > +
-> > +static struct irq_chip ath79_misc_irq_chip = {
-> > +	.name		= "MISC",
-> > +	.irq_unmask	= ar71xx_misc_irq_unmask,
-> > +	.irq_mask	= ar71xx_misc_irq_mask,
-> > +};
-> > +
-> > +static int misc_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hw)
-> > +{
-> > +	irq_set_chip_and_handler(irq, &ath79_misc_irq_chip, handle_level_irq);
-> > +	irq_set_chip_data(irq, d->host_data);
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct irq_domain_ops misc_irq_domain_ops = {
-> > +	.xlate = irq_domain_xlate_onecell,
-> > +	.map = misc_map,
-> > +};
-> > +
-> > +static void __init ath79_misc_intc_domain_init(
-> > +	struct irq_domain *domain, int irq)
-> > +{
-> > +	void __iomem *base = domain->host_data;
-> > +
-> > +	/* Disable and clear all interrupts */
-> > +	__raw_writel(0, base + AR71XX_RESET_REG_MISC_INT_ENABLE);
-> > +	__raw_writel(0, base + AR71XX_RESET_REG_MISC_INT_STATUS);
-> > +
-> > +	irq_set_chained_handler_and_data(irq, ath79_misc_irq_handler, domain);
-> > +}
-> > +
-> > +static int __init ath79_misc_intc_of_init(
-> > +	struct device_node *node, struct device_node *parent)
-> > +{
-> > +	struct irq_domain *domain;
-> > +	void __iomem *base;
-> > +	int irq;
-> > +
-> > +	irq = irq_of_parse_and_map(node, 0);
-> > +	if (!irq) {
-> > +		pr_err("Failed to get MISC IRQ\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	base = of_iomap(node, 0);
-> > +	if (!base) {
-> > +		pr_err("Failed to get MISC IRQ registers\n");
-> > +		return -ENOMEM;
-> > +	}
-> > +
-> > +	domain = irq_domain_add_linear(node, ATH79_MISC_IRQ_COUNT,
-> > +				&misc_irq_domain_ops, base);
-> > +	if (!domain) {
-> > +		pr_err("Failed to add MISC irqdomain\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	ath79_misc_intc_domain_init(domain, irq);
-> > +	return 0;
-> > +}
-> > +
-> > +static int __init ar7100_misc_intc_of_init(
-> > +	struct device_node *node, struct device_node *parent)
-> > +{
-> > +	ath79_misc_irq_chip.irq_mask_ack = ar71xx_misc_irq_mask;
-> > +	return ath79_misc_intc_of_init(node, parent);
-> > +}
-> > +
-> > +IRQCHIP_DECLARE(ar7100_misc_intc, "qca,ar7100-misc-intc",
-> > +		ar7100_misc_intc_of_init);
-> > +
-> > +static int __init ar7240_misc_intc_of_init(
-> > +	struct device_node *node, struct device_node *parent)
-> > +{
-> > +	ath79_misc_irq_chip.irq_ack = ar724x_misc_irq_ack;
-> > +	return ath79_misc_intc_of_init(node, parent);
-> > +}
-> > +
-> > +IRQCHIP_DECLARE(ar7240_misc_intc, "qca,ar7240-misc-intc",
-> > +		ar7240_misc_intc_of_init);
-> > +
-> > +void __init ath79_misc_irq_init(void __iomem *regs, int irq,
-> > +				int irq_base, bool is_ar71xx)
-> > +{
-> > +	struct irq_domain *domain;
-> > +
-> > +	if (is_ar71xx)
-> > +		ath79_misc_irq_chip.irq_mask_ack = ar71xx_misc_irq_mask;
-> > +	else
-> > +		ath79_misc_irq_chip.irq_ack = ar724x_misc_irq_ack;
-> > +
-> > +	domain = irq_domain_add_legacy(NULL, ATH79_MISC_IRQ_COUNT,
-> > +			irq_base, 0, &misc_irq_domain_ops, regs);
-> > +	if (!domain)
-> > +		panic("Failed to create MISC irqdomain");
-> > +
-> > +	ath79_misc_intc_domain_init(domain, irq);
-> > +}
+Though is it my sleepy self or are all-files & old-headers misnomers?
+That is, isn't all-files actually a list of headers to be kept, and
+old-headers actually the list of all (header) files?
+
+Thanks,
+    Paul
+
+> +
+>  quiet_cmd_wrap = WRAP    $@
+>  cmd_wrap = echo "\#include <asm-generic/$*.h>" >$@
+>  
+> -all: $(patsubst %, $(obj)/%, $(generic-y))
+> +quiet_cmd_remove = REMOVE  $(unwanted)
+> +cmd_remove = rm -f $(unwanted)
+> +
+> +all: $(patsubst %, $(obj)/%, $(generic-y)) FORCE
+> +	$(if $(unwanted),$(call cmd,remove),)
+>  	@:
+>  
+>  $(obj)/%.h:
+>  	$(call cmd,wrap)
+> +
+> +.PHONY: $(PHONY)
+> +PHONY += FORCE
+> +FORCE: ;
+> -- 
+> 2.4.10
 > 
-> Other than that, this looks OK.
-> 
-> Thanks,
-
-Great, thanks for the review.
-
-Alban

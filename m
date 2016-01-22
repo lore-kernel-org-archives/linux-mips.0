@@ -1,13 +1,12 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:20440 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:49542 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008530AbcAVFUxMM0Rz (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Jan 2016 06:20:53 +0100
-Date: Fri, 22 Jan 2016 05:21:13 +0000
+        with ESMTP id S27009598AbcAVFVNp8Fzz (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Jan 2016 06:21:13 +0100
+Date: Fri, 22 Jan 2016 05:21:34 +0000
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: [PATCH 5/7] MIPS: math-emu: dsemul: Correct description of the
- emulation frame
+Subject: [PATCH 6/7] MIPS: inst.h: Fix some instruction descriptions
 In-Reply-To: <alpine.DEB.2.00.1601220227590.5958@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.00.1601220254370.5958@tp.orcam.me.uk>
+Message-ID: <alpine.DEB.2.00.1601220254560.5958@tp.orcam.me.uk>
 References: <alpine.DEB.2.00.1601220227590.5958@tp.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
@@ -23,35 +22,44 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: Aurelien Jarno <aurelien@aurel32.net>, linux-mips@linux-mips.org
-Message-ID: <20160122052113.rRZj5cUGiitEv3kI90lL-jQTrCZoPu3-hhdQKgbBnDM@z>
+Message-ID: <20160122052134.zVbz83zBIiRF0W0rynwCbNX89W6bT67BDGTXglqxcGg@z>
 
-Remove irrelevant content from the description of the emulation frame in 
-`mips_dsemul', referring to bare-metal configurations.  Update the text,
-reflecting the change made with commit ba3049ed4086 ("MIPS: Switch FPU 
-emulator trap to BREAK instruction."), where we switched from using an 
-address error exception on an unaligned access to the use of a BREAK 514 
-instruction causing a breakpoint exception instead.
+Fix the description of the microMIPS NOP16 encoding or MM_NOP16, which 
+is not equivalent to the MIPS16 NOP instruction.  This is 0x0c00 and 
+represents the microMIPS `MOVE16 $0, $0' operation, whereas MIPS16 NOP 
+is encoded as 0x6500, representing `MOVE $0, $16'.
+
+Also fix a typo in `mm_fp0_format' description.
 
 Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
 ---
-linux-mips-dsemul-comment.diff
-Index: linux-sfr-sead/arch/mips/math-emu/dsemul.c
+Ralf,
+
+ I don't think these changes are worth two separate patches.  Please 
+apply.
+
+  Maciej
+
+linux-mips-inst-comment-fix.diff
+Index: linux-sfr-test/arch/mips/include/uapi/asm/inst.h
 ===================================================================
---- linux-sfr-sead.orig/arch/mips/math-emu/dsemul.c	2016-01-22 01:10:10.476810000 +0000
-+++ linux-sfr-sead/arch/mips/math-emu/dsemul.c	2016-01-22 01:10:44.420413000 +0000
-@@ -78,13 +78,8 @@ int mips_dsemul(struct pt_regs *regs, mi
- 	 * Algorithmics used a system call instruction, and
- 	 * borrowed that vector.  MIPS/Linux version is a bit
- 	 * more heavyweight in the interests of portability and
--	 * multiprocessor support.  For Linux we generate a
--	 * an unaligned access and force an address error exception.
--	 *
--	 * For embedded systems (stand-alone) we prefer to use a
--	 * non-existing CP1 instruction. This prevents us from emulating
--	 * branches, but gives us a cleaner interface to the exception
--	 * handler (single entry point).
-+	 * multiprocessor support.  For Linux we use a BREAK 514
-+	 * instruction causing a breakpoint exception.
- 	 */
- 	break_math = BREAK_MATH(get_isa16_mode(regs->cp0_epc));
+--- linux-sfr-test.orig/arch/mips/include/uapi/asm/inst.h	2016-01-20 21:52:36.000000000 +0000
++++ linux-sfr-test/arch/mips/include/uapi/asm/inst.h	2016-01-20 21:54:36.191277000 +0000
+@@ -529,7 +529,7 @@ enum MIPS6e_i8_func {
+ };
  
+ /*
+- * (microMIPS & MIPS16e) NOP instruction.
++ * (microMIPS) NOP instruction.
+  */
+ #define MM_NOP16	0x0c00
+ 
+@@ -679,7 +679,7 @@ struct fp0_format {		/* FPU multiply and
+ 	;))))))
+ };
+ 
+-struct mm_fp0_format {		/* FPU multipy and add format (microMIPS) */
++struct mm_fp0_format {		/* FPU multiply and add format (microMIPS) */
+ 	__BITFIELD_FIELD(unsigned int opcode : 6,
+ 	__BITFIELD_FIELD(unsigned int ft : 5,
+ 	__BITFIELD_FIELD(unsigned int fs : 5,

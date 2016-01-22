@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:5309 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:53705 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009519AbcAVK6obVKVh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Jan 2016 11:58:44 +0100
+        with ESMTP id S27014850AbcAVK6pCXN-h (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Jan 2016 11:58:45 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 1/2] MIPS: c-r4k: Sync icache when it fills from dcache
-Date: Fri, 22 Jan 2016 10:58:25 +0000
-Message-ID: <1453460306-8505-2-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 2/2] MIPS: I6400: Icache fills from dcache
+Date: Fri, 22 Jan 2016 10:58:26 +0000
+Message-ID: <1453460306-8505-3-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1453460306-8505-1-git-send-email-james.hogan@imgtec.com>
 References: <1453460306-8505-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -22,82 +22,34 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: Manuel Lauss <manuel.lauss@gmail.com>, James Hogan <james.hogan@imgtec.com>, Leonid Yegoshin <leonid.yegoshin@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20160122105825.nHFHr3LMbDbh5ZzG0X4sbli5E_OLMLhgfIC0q-mFa7k@z>
+Message-ID: <20160122105826.PTNGm50evS_WhId3dGLB4OaktExIFG7jdryxNhrcOfs@z>
 
-It is still necessary to handle icache coherency in flush_cache_range()
-and copy_to_user_page() when the icache fills from the dcache, even
-though the dcache does not need to be written back. However when this
-handling was added in commit 2eaa7ec286db ("[MIPS] Handle I-cache
-coherency in flush_cache_range()"), it did not do any icache flushing
-when it fills from dcache.
+Coherence Manager 3 (CM3) as present in I6400 can fill icache lines
+effectively from dirty dcaches, so there is no need to flush dirty lines
+from dcaches through to L2 prior to icache invalidation.
 
-Therefore fix r4k_flush_cache_range() to run
-local_r4k_flush_cache_range() without taking into account whether icache
-fills from dcache, so that the icache coherency gets handled. Checks are
-also added in local_r4k_flush_cache_range() so that the dcache blast
-doesn't take place when icache fills from dcache.
-
-A test to mmap a page PROT_READ|PROT_WRITE, modify code in it, and
-mprotect it to VM_READ|VM_EXEC (similar to case described in above
-commit) can hit this case quite easily to verify the fix.
-
-A similar check was added in commit f8829caee311 ("[MIPS] Fix aliasing
-bug in copy_to_user_page / copy_from_user_page"), so also fix
-copy_to_user_page() similarly, to call flush_cache_page() without taking
-into account whether icache fills from dcache, since flush_cache_page()
-already takes that into account to avoid performing a dcache flush.
+Set the MIPS_CACHE_IC_F_DC flag such that cpu_has_ic_fills_f_dc
+evaluates to true, which avoids those dcache flushes.
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>
-Cc: Manuel Lauss <manuel.lauss@gmail.com>
 Cc: linux-mips@linux-mips.org
 ---
- arch/mips/mm/c-r4k.c | 11 +++++++++--
- arch/mips/mm/init.c  |  2 +-
- 2 files changed, 10 insertions(+), 3 deletions(-)
+ arch/mips/mm/c-r4k.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index caac3d747a90..fc7289dfaf5a 100644
+index fc7289dfaf5a..69e7e5873af3 100644
 --- a/arch/mips/mm/c-r4k.c
 +++ b/arch/mips/mm/c-r4k.c
-@@ -492,7 +492,14 @@ static inline void local_r4k_flush_cache_range(void * args)
- 	if (!(has_valid_asid(vma->vm_mm)))
- 		return;
+@@ -1311,6 +1311,7 @@ static void probe_pcache(void)
+ 		break;
  
--	r4k_blast_dcache();
-+	/*
-+	 * If dcache can alias, we must blast it since mapping is changing.
-+	 * If executable, we must ensure any dirty lines are written back far
-+	 * enough to be visible to icache.
-+	 */
-+	if (cpu_has_dc_aliases || (exec && !cpu_has_ic_fills_f_dc))
-+		r4k_blast_dcache();
-+	/* If executable, blast stale lines from icache */
- 	if (exec)
- 		r4k_blast_icache();
- }
-@@ -502,7 +509,7 @@ static void r4k_flush_cache_range(struct vm_area_struct *vma,
- {
- 	int exec = vma->vm_flags & VM_EXEC;
- 
--	if (cpu_has_dc_aliases || (exec && !cpu_has_ic_fills_f_dc))
-+	if (cpu_has_dc_aliases || exec)
- 		r4k_on_each_cpu(local_r4k_flush_cache_range, vma);
- }
- 
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 7e5fa0938c21..6c6a843b0d17 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -196,7 +196,7 @@ void copy_to_user_page(struct vm_area_struct *vma,
- 		if (cpu_has_dc_aliases)
- 			SetPageDcacheDirty(page);
- 	}
--	if ((vma->vm_flags & VM_EXEC) && !cpu_has_ic_fills_f_dc)
-+	if (vma->vm_flags & VM_EXEC)
- 		flush_cache_page(vma, vaddr, page_to_pfn(page));
- }
+ 	case CPU_ALCHEMY:
++	case CPU_I6400:
+ 		c->icache.flags |= MIPS_CACHE_IC_F_DC;
+ 		break;
  
 -- 
 2.4.10

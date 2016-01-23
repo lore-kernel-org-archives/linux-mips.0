@@ -1,16 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53705 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27014850AbcAVK6pCXN-h (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Jan 2016 11:58:45 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 2/2] MIPS: I6400: Icache fills from dcache
-Date: Fri, 22 Jan 2016 10:58:26 +0000
-Message-ID: <1453460306-8505-3-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1453460306-8505-1-git-send-email-james.hogan@imgtec.com>
-References: <1453460306-8505-1-git-send-email-james.hogan@imgtec.com>
+Received: from foss.arm.com ([217.140.101.70]:41609 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S27009236AbcAWPCRrbMl5 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 23 Jan 2016 16:02:17 +0100
+Date: Sat, 23 Jan 2016 15:02:00 +0000
+From: Marc Zyngier <marc.zyngier@arm.com>
+Subject: Re: [PATCH v2 1/2] MIPS: ath79: irq: Move the MISC driver to
+ drivers/irqchip
+Message-ID: <20160123150200.5bc027a6@arm.com>
+In-Reply-To: <1453553867-27003-1-git-send-email-albeu@free.fr>
+References: <1453553867-27003-1-git-send-email-albeu@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <marc.zyngier@arm.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,36 +22,23 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Manuel Lauss <manuel.lauss@gmail.com>, James Hogan <james.hogan@imgtec.com>, Leonid Yegoshin <leonid.yegoshin@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20160122105826.PTNGm50evS_WhId3dGLB4OaktExIFG7jdryxNhrcOfs@z>
+To: Alban Bedel <albeu@free.fr>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Alexander Couzens <lynxis@fe80.eu>, Joel Porquet <joel@porquet.org>, linux-kernel@vger.kernel.org
+Message-ID: <20160123150200.ht4445PaJ7Te5XTLUEwwPPpJEpK7SxDIcBm3TNxiUPc@z>
 
-Coherence Manager 3 (CM3) as present in I6400 can fill icache lines
-effectively from dirty dcaches, so there is no need to flush dirty lines
-from dcaches through to L2 prior to icache invalidation.
+On Sat, 23 Jan 2016 13:57:46 +0100
+Alban Bedel <albeu@free.fr> wrote:
 
-Set the MIPS_CACHE_IC_F_DC flag such that cpu_has_ic_fills_f_dc
-evaluates to true, which avoids those dcache flushes.
+> The driver stays the same but the initialization changes a bit.
+> For OF boards we now get the memory map from the OF node and use
+> a linear mapping instead of the legacy mapping. For legacy boards
+> we still use a legacy mapping and just pass down all the parameters
+> from the board init code.
+> 
+> Signed-off-by: Alban Bedel <albeu@free.fr>
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/mm/c-r4k.c | 1 +
- 1 file changed, 1 insertion(+)
+Acked-by: Marc Zyngier <marc.zyngier@arm.com>
 
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index fc7289dfaf5a..69e7e5873af3 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -1311,6 +1311,7 @@ static void probe_pcache(void)
- 		break;
- 
- 	case CPU_ALCHEMY:
-+	case CPU_I6400:
- 		c->icache.flags |= MIPS_CACHE_IC_F_DC;
- 		break;
- 
+	M.
 -- 
-2.4.10
+Jazz is not dead. It just smells funny.

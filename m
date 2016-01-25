@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:49428 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:36750 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010210AbcAYQHMZcKNA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 25 Jan 2016 17:07:12 +0100
+        with ESMTP id S27011442AbcAYUcTB-v8f (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 25 Jan 2016 21:32:19 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: cpu_name_string: Use raw_smp_processor_id().
-Date: Mon, 25 Jan 2016 16:06:59 +0000
-Message-ID: <1453738019-6553-1-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH] MIPS: Fix buffer overflow in syscall_get_arguments()
+Date: Mon, 25 Jan 2016 20:32:03 +0000
+Message-ID: <1453753923-26620-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <James.Hogan@imgtec.com>
@@ -18,74 +18,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20160125160659.BNydiQLQu6cNA0kJwxrpKXcdsMFg9b10FydgxSGG908@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Milko Leporis <milko.leporis@imgtec.com>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20160125203203.GG45-yqqKPTmKJ9TDZ8qiwLUip7-9zWMOSGejoydPSI@z>
 
-If cpu_name_string() is used in non-atomic context when preemption is
-enabled, it can trigger a BUG such as this one:
+Since commit 4c21b8fd8f14 ("MIPS: seccomp: Handle indirect system calls
+(o32)"), syscall_get_arguments() attempts to handle o32 indirect syscall
+arguments by incrementing both the start argument number and the number
+of arguments to fetch. However only the start argument number needs to
+be incremented. The number of arguments does not change, they're just
+shifted up by one, and in fact the output array is provided by the
+caller and is likely only n entries long, so reading more arguments
+overflows the output buffer.
 
-BUG: using smp_processor_id() in preemptible [00000000] code: unaligned/156
-caller is __show_regs+0x1e4/0x330
-CPU: 2 PID: 156 Comm: unaligned Tainted: G        W       4.3.0-00366-ga3592179816d-dirty #1501
-Stack : ffffffff80900000 ffffffff8019bc18 000000000000005f ffffffff80a20000
-         0000000000000000 0000000000000009 ffffffff8019c0e0 ffffffff80835648
-         a8000000ff2bdec0 ffffffff80a1e628 000000000000009c 0000000000000002
-         ffffffff80840000 a8000000fff2ffb0 0000000000000020 ffffffff8020e43c
-         a8000000fff2fcf8 ffffffff80a20000 0000000000000000 ffffffff808f2607
-         ffffffff8082b138 ffffffff8019cd1c 0000000000000030 ffffffff8082b138
-         0000000000000002 000000000000009c 0000000000000000 0000000000000000
-         0000000000000000 a8000000fff2fc40 0000000000000000 ffffffff8044dbf4
-         0000000000000000 0000000000000000 0000000000000000 ffffffff8010c400
-         ffffffff80855bb0 ffffffff8010d008 0000000000000000 ffffffff8044dbf4
-         ...
-Call Trace:
-[<ffffffff8010d008>] show_stack+0x90/0xb0
-[<ffffffff8044dbf4>] dump_stack+0x84/0xe0
-[<ffffffff8046d4ec>] check_preemption_disabled+0x10c/0x110
-[<ffffffff8010c40c>] __show_regs+0x1e4/0x330
-[<ffffffff8010d060>] show_registers+0x28/0xc0
-[<ffffffff80110748>] do_ade+0xcc8/0xce0
-[<ffffffff80105b84>] resume_userspace_check+0x0/0x10
+In the case of seccomp, this results in it fetching 7 arguments starting
+at the 2nd one, which overflows the unsigned long args[6] in
+populate_seccomp_data(). This clobbers the $s0 register from
+syscall_trace_enter() which __seccomp_phase1_filter() saved onto the
+stack, into which syscall_trace_enter() had placed its syscall number
+argument. This caused Chromium to crash.
 
-This is possible because cpu_name_string() is used by __show_regs(),
-which is used by both show_regs() and show_registers(). These two
-functions are used by various exception handling functions, only some of
-which ensure that interrupts or preemption is disabled.
+Credit goes to Milko for tracking it down as far as $s0 being clobbered.
 
-However the following have interrupts explicitly enabled or not
-explicitly disabled:
-- do_reserved() (irqs enabled)
-- do_ade() (irqs not disabled)
-
-This can be hit by setting /sys/kernel/debug/mips/unaligned_action to 2,
-and triggering an address error exception, e.g. an unaligned access or
-access to kernel segment from user mode.
-
-To fix the above cases, use raw_smp_processor_id() instead. It is
-unusual for CPU names to be different in the same system, and even if
-they were, its possible the process has migrated between the exception
-of interest and the cpu_name_string() call anyway.
-
+Fixes: 4c21b8fd8f14 ("MIPS: seccomp: Handle indirect system calls (o32)")
+Reported-by: Milko Leporis <milko.leporis@imgtec.com>
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
+Cc: <stable@vger.kernel.org> # 3.15-
 ---
- arch/mips/include/asm/cpu-info.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/include/asm/syscall.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/mips/include/asm/cpu-info.h b/arch/mips/include/asm/cpu-info.h
-index e7dc785a91ca..af12c1f9f1a8 100644
---- a/arch/mips/include/asm/cpu-info.h
-+++ b/arch/mips/include/asm/cpu-info.h
-@@ -102,7 +102,7 @@ extern void cpu_probe(void);
- extern void cpu_report(void);
+diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
+index 6499d93ae68d..47bc45a67e9b 100644
+--- a/arch/mips/include/asm/syscall.h
++++ b/arch/mips/include/asm/syscall.h
+@@ -101,10 +101,8 @@ static inline void syscall_get_arguments(struct task_struct *task,
+ 	/* O32 ABI syscall() - Either 64-bit with O32 or 32-bit */
+ 	if ((config_enabled(CONFIG_32BIT) ||
+ 	    test_tsk_thread_flag(task, TIF_32BIT_REGS)) &&
+-	    (regs->regs[2] == __NR_syscall)) {
++	    (regs->regs[2] == __NR_syscall))
+ 		i++;
+-		n++;
+-	}
  
- extern const char *__cpu_name[];
--#define cpu_name_string()	__cpu_name[smp_processor_id()]
-+#define cpu_name_string()	__cpu_name[raw_smp_processor_id()]
- 
- struct seq_file;
- struct notifier_block;
+ 	while (n--)
+ 		ret |= mips_get_syscall_arg(args++, task, regs, i++);
 -- 
 2.4.10

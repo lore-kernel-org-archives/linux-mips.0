@@ -1,26 +1,14 @@
-Received: from foss.arm.com ([217.140.101.70]:48045 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27011398AbcAYOltaRzzk (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 25 Jan 2016 15:41:49 +0100
-Date: Mon, 25 Jan 2016 14:41:34 +0000
-From: Will Deacon <will.deacon@arm.com>
-Subject: Re: [v3,11/41] mips: reuse asm-generic/barrier.h
-Message-ID: <20160125144133.GB22927@arm.com>
-References: <20160114121449.GC15828@arm.com>
- <5697F6D2.60409@imgtec.com>
- <20160114203430.GC3818@linux.vnet.ibm.com>
- <56980C91.1010403@imgtec.com>
- <20160114212913.GF3818@linux.vnet.ibm.com>
- <569814F2.50801@imgtec.com>
- <20160114225510.GJ3818@linux.vnet.ibm.com>
- <20160115102431.GB2131@arm.com>
- <20160115175401.GW3818@linux.vnet.ibm.com>
- <20160115192845.GA12510@linux.vnet.ibm.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:49428 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010210AbcAYQHMZcKNA (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 25 Jan 2016 17:07:12 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] MIPS: cpu_name_string: Use raw_smp_processor_id().
+Date: Mon, 25 Jan 2016 16:06:59 +0000
+Message-ID: <1453738019-6553-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160115192845.GA12510@linux.vnet.ibm.com>
-Return-Path: <will.deacon@arm.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -30,78 +18,74 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Peter Zijlstra <peterz@infradead.org>, "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>, ddaney.cavm@gmail.com, james.hogan@imgtec.com, Michael Ellerman <mpe@ellerman.id.au>
+To: linux-mips@linux-mips.org
+Cc: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20160125160659.BNydiQLQu6cNA0kJwxrpKXcdsMFg9b10FydgxSGG908@z>
 
-On Fri, Jan 15, 2016 at 11:28:45AM -0800, Paul E. McKenney wrote:
-> On Fri, Jan 15, 2016 at 09:54:01AM -0800, Paul E. McKenney wrote:
-> > On Fri, Jan 15, 2016 at 10:24:32AM +0000, Will Deacon wrote:
-> > > See my earlier reply [1] (but also, your WRC Linux example looks more
-> > > like a variant on WWC and I couldn't really follow it).
-> > 
-> > I will revisit my WRC Linux example.  And yes, creating litmus tests
-> > that use non-fake dependencies is still a bit of an undertaking.  :-/
-> > I am sure that it will seem more natural with time and experience...
-> 
-> Hmmm...  You are quite right, I did do WWC.  I need to change cpu2()'s
-> last access from a store to a load to get WRC.  Plus the levels of
-> indirection definitely didn't match up, did they?
+If cpu_name_string() is used in non-atomic context when preemption is
+enabled, it can trigger a BUG such as this one:
 
-Nope, it was pretty baffling!
+BUG: using smp_processor_id() in preemptible [00000000] code: unaligned/156
+caller is __show_regs+0x1e4/0x330
+CPU: 2 PID: 156 Comm: unaligned Tainted: G        W       4.3.0-00366-ga3592179816d-dirty #1501
+Stack : ffffffff80900000 ffffffff8019bc18 000000000000005f ffffffff80a20000
+         0000000000000000 0000000000000009 ffffffff8019c0e0 ffffffff80835648
+         a8000000ff2bdec0 ffffffff80a1e628 000000000000009c 0000000000000002
+         ffffffff80840000 a8000000fff2ffb0 0000000000000020 ffffffff8020e43c
+         a8000000fff2fcf8 ffffffff80a20000 0000000000000000 ffffffff808f2607
+         ffffffff8082b138 ffffffff8019cd1c 0000000000000030 ffffffff8082b138
+         0000000000000002 000000000000009c 0000000000000000 0000000000000000
+         0000000000000000 a8000000fff2fc40 0000000000000000 ffffffff8044dbf4
+         0000000000000000 0000000000000000 0000000000000000 ffffffff8010c400
+         ffffffff80855bb0 ffffffff8010d008 0000000000000000 ffffffff8044dbf4
+         ...
+Call Trace:
+[<ffffffff8010d008>] show_stack+0x90/0xb0
+[<ffffffff8044dbf4>] dump_stack+0x84/0xe0
+[<ffffffff8046d4ec>] check_preemption_disabled+0x10c/0x110
+[<ffffffff8010c40c>] __show_regs+0x1e4/0x330
+[<ffffffff8010d060>] show_registers+0x28/0xc0
+[<ffffffff80110748>] do_ade+0xcc8/0xce0
+[<ffffffff80105b84>] resume_userspace_check+0x0/0x10
 
-> 	struct foo {
-> 		struct foo *next;
-> 	};
-> 	struct foo a;
-> 	struct foo b;
-> 	struct foo c = { &a };
-> 	struct foo d = { &b };
-> 	struct foo x = { &c };
-> 	struct foo y = { &d };
-> 	struct foo *r1, *r2, *r3;
-> 
-> 	void cpu0(void)
-> 	{
-> 		WRITE_ONCE(x.next, &y);
-> 	}
-> 
-> 	void cpu1(void)
-> 	{
-> 		r1 = lockless_dereference(x.next);
-> 		WRITE_ONCE(r1->next, &x);
-> 	}
-> 
-> 	void cpu2(void)
-> 	{
-> 		r2 = lockless_dereference(y.next);
-> 		r3 = READ_ONCE(r2->next);
-> 	}
-> 
-> In this case, it is legal to end the run with:
-> 
-> 	r1 == &y && r2 == &x && r3 == &c
-> 
-> Please see below for a ppcmem litmus test.
-> 
-> So, did I get it right this time?  ;-)
+This is possible because cpu_name_string() is used by __show_regs(),
+which is used by both show_regs() and show_registers(). These two
+functions are used by various exception handling functions, only some of
+which ensure that interrupts or preemption is disabled.
 
-The code above looks correct to me (in that it matches WRC+addrs),
-but your litmus test:
+However the following have interrupts explicitly enabled or not
+explicitly disabled:
+- do_reserved() (irqs enabled)
+- do_ade() (irqs not disabled)
 
-> PPC WRCnf+addrs
-> ""
-> {
-> 0:r2=x; 0:r3=y;
-> 1:r2=x; 1:r3=y;
-> 2:r2=x; 2:r3=y;
-> c=a; d=b; x=c; y=d;
-> }
->  P0           | P1            | P2            ;
->  stw r3,0(r2) | lwz r8,0(r2)  | lwz r8,0(r3)  ;
->               | stw r2,0(r3)  | lwz r9,0(r8)  ;
-> exists
-> (1:r8=y /\ 2:r8=x /\ 2:r9=c)
+This can be hit by setting /sys/kernel/debug/mips/unaligned_action to 2,
+and triggering an address error exception, e.g. an unaligned access or
+access to kernel segment from user mode.
 
-Seems to be missing the address dependency on P1.
+To fix the above cases, use raw_smp_processor_id() instead. It is
+unusual for CPU names to be different in the same system, and even if
+they were, its possible the process has migrated between the exception
+of interest and the cpu_name_string() call anyway.
 
-Will
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+---
+ arch/mips/include/asm/cpu-info.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/include/asm/cpu-info.h b/arch/mips/include/asm/cpu-info.h
+index e7dc785a91ca..af12c1f9f1a8 100644
+--- a/arch/mips/include/asm/cpu-info.h
++++ b/arch/mips/include/asm/cpu-info.h
+@@ -102,7 +102,7 @@ extern void cpu_probe(void);
+ extern void cpu_report(void);
+ 
+ extern const char *__cpu_name[];
+-#define cpu_name_string()	__cpu_name[smp_processor_id()]
++#define cpu_name_string()	__cpu_name[raw_smp_processor_id()]
+ 
+ struct seq_file;
+ struct notifier_block;
+-- 
+2.4.10

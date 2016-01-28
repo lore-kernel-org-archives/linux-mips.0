@@ -1,17 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:3690 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009266AbcA1A6vBAQl9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Jan 2016 01:58:51 +0100
-Message-ID: <56A967BF.70200@imgtec.com>
-Date: Wed, 27 Jan 2016 16:58:39 -0800
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Received: from mail-ig0-f193.google.com ([209.85.213.193]:33331 "EHLO
+        mail-ig0-f193.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27011283AbcA1SAjmRFwq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Jan 2016 19:00:39 +0100
 MIME-Version: 1.0
-Subject: Re: [v3,11/41] mips: reuse asm-generic/barrier.h
-References: <20160113104516.GE25458@arm.com> <5696CF08.8080700@imgtec.com> <20160114121449.GC15828@arm.com> <5697F6D2.60409@imgtec.com> <20160114203430.GC3818@linux.vnet.ibm.com> <56980C91.1010403@imgtec.com> <20160114212913.GF3818@linux.vnet.ibm.com> <569814F2.50801@imgtec.com> <20160114225510.GJ3818@linux.vnet.ibm.com> <56983054.4070807@imgtec.com> <20160115004753.GN3818@linux.vnet.ibm.com> <56984642.3090106@imgtec.com> <alpine.DEB.2.00.1601271116520.5958@tp.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.00.1601271116520.5958@tp.orcam.me.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+In-Reply-To: <3596300.IYfzmako0c@wuerfel>
+References: <569e1dbb.MgLv8OaZwklOxxtU%fengguang.wu@intel.com>
+        <1947556.38OyJnvGS5@wuerfel>
+        <20160127093018.GA21190@wfg-t540p.sh.intel.com>
+        <3596300.IYfzmako0c@wuerfel>
+Date: Thu, 28 Jan 2016 19:00:30 +0100
+Message-ID: <CAMuHMdWCwP8Hkn+tGEoG-FxUnjAq8uExcPhmXASh_ErU8DDN2w@mail.gmail.com>
+Subject: Re: [linux-review:James-Hogan/kbuild-Remove-stale-asm-generic-wrappers/20160119-183642]
+ d979f99e9cc14e2667e9b6e268db695977e4197a BUILD DONE
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,54 +24,25 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@imgtec.com>
-Cc: paulmck@linux.vnet.ibm.com, Will Deacon <will.deacon@arm.com>, Peter Zijlstra <peterz@infradead.org>, "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>, ddaney.cavm@gmail.com, james.hogan@imgtec.com, Michael Ellerman <mpe@ellerman.id.au>
-Message-ID: <20160128005839.90qLdrjnMPdbaMsqJiDmrLqW_aDoO1TY8xtb7jRhA8E@z>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Fengguang Wu <fengguang.wu@intel.com>, James Hogan <james.hogan@imgtec.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-Arch <linux-arch@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Heinrich Schuchardt <xypron.glpk@gmx.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michal Marek <mmarek@suse.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20160128180030.oePYhvBjQ_Rvof5incO7AlVdZ8YX27f7V4DEnnK6ykY@z>
 
-On 01/27/2016 03:26 AM, Maciej W. Rozycki wrote:
-> On Fri, 15 Jan 2016, Leonid Yegoshin wrote:
->
->>> So you need to build a different kernel for some types of MIPS systems?
->>> Or do you do boot-time rewriting, like a number of other arches do?
->> I don't know. I would like to have responses. Ralf asked Maciej about old
->> systems and that came nowhere. Even rewrite - don't know what to do with that:
->> no lightweight SYNC or no SYNC at all - yes, it is still possible that SYNC on
->> some systems can be too heavy or even harmful, nobody tested that.
->   I don't recall being asked; mind that I might not get to messages I have
-> not been cc-ed in a timely manner and I may miss some altogether.  With
-> the amount of mailing list traffic that passes by me my scanner may fail
-> to trigger.  Sorry if this causes anybody trouble, but such is life.
->
->   Coincidentally, I have just posted some notes on SYNC in a different
-> thread, see <http://lkml.iu.edu/hypermail/linux/kernel/1601.3/03080.html>.
-> There's a reference to an older message of mine there too.  I hope this
-> answers your questions.
->
->    Maciej
-In http://patchwork.linux-mips.org/patch/10505/the very last mesg 
-exchange is:
+Hi Arnd,
 
-Maciej,
+On Wed, Jan 27, 2016 at 10:44 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+> - in some configurations, you end up without any boards selected, hitting
+>   an #error in the final link
 
-do you have an R4000 / R4600 / R5000 / R7000 / SiByte system at hand to
-test this?
-...
-   Ralf
+FWIW, I have a similar problem with m68k+MMU=y randconfig...
 
-Maciej W. Rozycki- June 5, 2015, 9:18 p.m.
+Gr{oetje,eeting}s,
 
-On Fri, 5 Jun 2015, Ralf Baechle wrote:
+                        Geert
 
-> do you have an R4000 / R4600 / R5000 / R7000 / SiByte system at hand to
-> test this?
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-  I should be able to check R4400 (that is virtually the same as R4000)
-next week or so.  As to SiByte -- not before next month I'm afraid.  I
-don't have access to any of the other processors you named.  You may
-want to find a better person if you want to accept this change soon.
-
-   Maciej
-
-... and that stops forever...
-
-- Leonid.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

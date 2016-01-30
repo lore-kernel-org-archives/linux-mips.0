@@ -1,14 +1,12 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:34383 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:61406 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010110AbcA3JIt1q-2N (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 30 Jan 2016 10:08:49 +0100
-Date: Sat, 30 Jan 2016 09:08:43 +0000
+        with ESMTP id S27008725AbcA3JJtPsPLN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 30 Jan 2016 10:09:49 +0100
+Date: Sat, 30 Jan 2016 09:09:43 +0000
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: [PATCH 3/3] MIPS: traps.c: Verify the ISA for microMIPS RDHWR
+Subject: [PATCH] MIPS: math-emu: dsemul: Remove an unused bit in ADDIUPC
  emulation
-In-Reply-To: <alpine.DEB.2.00.1601300356250.5958@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.00.1601300403230.5958@tp.orcam.me.uk>
-References: <alpine.DEB.2.00.1601300356250.5958@tp.orcam.me.uk>
+Message-ID: <alpine.DEB.2.00.1601300820430.5958@tp.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@imgtec.com>
@@ -23,58 +21,23 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20160130090843.AS8rBdvhqflgcaZo03vcCRigNzSjBzULj5dQmTqnHis@z>
+Message-ID: <20160130090943.b5wkqbuKzwjt-AkRmKv30Cwibf_tFmZsAzO6HDfENTg@z>
 
-Make sure it's the microMIPS rather than MIPS16 ISA before emulating 
-microMIPS RDHWR.  Mostly needed as an optimisation for configurations 
-where `cpu_has_mmips' is hardcoded to 0 and also a good measure in case 
-we add further microMIPS instructions to emulate in the future, as the 
-corresponding MIPS16 encoding is ADDIUSP, not supposed to trap.
+Avoid a reader's confusion, as the calculation is correct either way.
 
 Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
 ---
-linux-umips-rdhwr-isa.diff
-Index: linux-sfr-test/arch/mips/kernel/traps.c
+linux-umips-dsemul-addiupc-nit.diff
+Index: linux-sfr-test/arch/mips/math-emu/dsemul.c
 ===================================================================
---- linux-sfr-test.orig/arch/mips/kernel/traps.c	2016-01-30 03:42:36.000000000 +0000
-+++ linux-sfr-test/arch/mips/kernel/traps.c	2016-01-30 03:42:14.980343000 +0000
-@@ -1116,19 +1116,7 @@ asmlinkage void do_ri(struct pt_regs *re
- 	if (unlikely(compute_return_epc(regs) < 0))
- 		goto out;
+--- linux-sfr-test.orig/arch/mips/math-emu/dsemul.c	2016-01-29 14:11:03.000000000 +0000
++++ linux-sfr-test/arch/mips/math-emu/dsemul.c	2016-01-29 14:13:53.613960000 +0000
+@@ -60,7 +60,7 @@ int mips_dsemul(struct pt_regs *regs, mi
+ 			unsigned int rs;
+ 			s32 v;
  
--	if (get_isa16_mode(regs->cp0_epc)) {
--		unsigned short mmop[2] = { 0 };
--
--		if (unlikely(get_user(mmop[0], (u16 __user *)epc + 0) < 0))
--			status = SIGSEGV;
--		if (unlikely(get_user(mmop[1], (u16 __user *)epc + 1) < 0))
--			status = SIGSEGV;
--		opcode = mmop[0];
--		opcode = (opcode << 16) | mmop[1];
--
--		if (status < 0)
--			status = simulate_rdhwr_mm(regs, opcode);
--	} else {
-+	if (!get_isa16_mode(regs->cp0_epc)) {
- 		if (unlikely(get_user(opcode, epc) < 0))
- 			status = SIGSEGV;
- 
-@@ -1143,6 +1131,18 @@ asmlinkage void do_ri(struct pt_regs *re
- 
- 		if (status < 0)
- 			status = simulate_fp(regs, opcode, old_epc, old31);
-+	} else if (cpu_has_mmips) {
-+		unsigned short mmop[2] = { 0 };
-+
-+		if (unlikely(get_user(mmop[0], (u16 __user *)epc + 0) < 0))
-+			status = SIGSEGV;
-+		if (unlikely(get_user(mmop[1], (u16 __user *)epc + 1) < 0))
-+			status = SIGSEGV;
-+		opcode = mmop[0];
-+		opcode = (opcode << 16) | mmop[1];
-+
-+		if (status < 0)
-+			status = simulate_rdhwr_mm(regs, opcode);
- 	}
- 
- 	if (status < 0)
+-			rs = (((insn.mm_a_format.rs + 0x1e) & 0xf) + 2);
++			rs = (((insn.mm_a_format.rs + 0xe) & 0xf) + 2);
+ 			v = regs->cp0_epc & ~3;
+ 			v += insn.mm_a_format.simmediate << 2;
+ 			regs->regs[rs] = (long)v;

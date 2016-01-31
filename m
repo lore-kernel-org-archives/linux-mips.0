@@ -1,12 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61406 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:43252 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008725AbcA3JJtPsPLN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 30 Jan 2016 10:09:49 +0100
-Date: Sat, 30 Jan 2016 09:09:43 +0000
+        with ESMTP id S27007295AbcAaXfYS0hKA (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 1 Feb 2016 00:35:24 +0100
+Date: Sun, 31 Jan 2016 23:33:30 +0000
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: [PATCH] MIPS: math-emu: dsemul: Remove an unused bit in ADDIUPC
- emulation
-Message-ID: <alpine.DEB.2.00.1601300820430.5958@tp.orcam.me.uk>
+Subject: Re: [PATCH] MIPS: Fix buffer overflow in syscall_get_arguments()
+In-Reply-To: <1453753923-26620-1-git-send-email-james.hogan@imgtec.com>
+Message-ID: <alpine.DEB.2.00.1601312327590.5958@tp.orcam.me.uk>
+References: <1453753923-26620-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@imgtec.com>
@@ -19,25 +20,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20160130090943.b5wkqbuKzwjt-AkRmKv30Cwibf_tFmZsAzO6HDfENTg@z>
+To: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Milko Leporis <milko.leporis@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20160131233330.FPxpcFnxhpqjkudBfpSmT2JPTuE_FcLBf71bjqSJWLg@z>
 
-Avoid a reader's confusion, as the calculation is correct either way.
+On Mon, 25 Jan 2016, James Hogan wrote:
 
-Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
----
-linux-umips-dsemul-addiupc-nit.diff
-Index: linux-sfr-test/arch/mips/math-emu/dsemul.c
-===================================================================
---- linux-sfr-test.orig/arch/mips/math-emu/dsemul.c	2016-01-29 14:11:03.000000000 +0000
-+++ linux-sfr-test/arch/mips/math-emu/dsemul.c	2016-01-29 14:13:53.613960000 +0000
-@@ -60,7 +60,7 @@ int mips_dsemul(struct pt_regs *regs, mi
- 			unsigned int rs;
- 			s32 v;
- 
--			rs = (((insn.mm_a_format.rs + 0x1e) & 0xf) + 2);
-+			rs = (((insn.mm_a_format.rs + 0xe) & 0xf) + 2);
- 			v = regs->cp0_epc & ~3;
- 			v += insn.mm_a_format.simmediate << 2;
- 			regs->regs[rs] = (long)v;
+> Since commit 4c21b8fd8f14 ("MIPS: seccomp: Handle indirect system calls
+> (o32)"), syscall_get_arguments() attempts to handle o32 indirect syscall
+> arguments by incrementing both the start argument number and the number
+> of arguments to fetch. However only the start argument number needs to
+> be incremented. The number of arguments does not change, they're just
+> shifted up by one, and in fact the output array is provided by the
+> caller and is likely only n entries long, so reading more arguments
+> overflows the output buffer.
+[...]
+> diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
+> index 6499d93ae68d..47bc45a67e9b 100644
+> --- a/arch/mips/include/asm/syscall.h
+> +++ b/arch/mips/include/asm/syscall.h
+> @@ -101,10 +101,8 @@ static inline void syscall_get_arguments(struct task_struct *task,
+>  	/* O32 ABI syscall() - Either 64-bit with O32 or 32-bit */
+>  	if ((config_enabled(CONFIG_32BIT) ||
+>  	    test_tsk_thread_flag(task, TIF_32BIT_REGS)) &&
+> -	    (regs->regs[2] == __NR_syscall)) {
+> +	    (regs->regs[2] == __NR_syscall))
+>  		i++;
+> -		n++;
+> -	}
+>  
+>  	while (n--)
+>  		ret |= mips_get_syscall_arg(args++, task, regs, i++);
+
+ What I think it really needs to do is to *decrease* the number of 
+arguments, as we're throwing the syscall number away as not an argument to 
+itself.  So this looks like a typo to me, the expression was meant to be 
+`n--' rather than `n++'.  With the number of arguments unchanged, as in 
+your proposed change, we're still reaching one word too far.
+
+  Maciej

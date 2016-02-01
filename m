@@ -1,16 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:54603 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010933AbcBAA4cWVzOW (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 1 Feb 2016 01:56:32 +0100
-Date: Mon, 1 Feb 2016 00:52:28 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] MIPS: Differentiate between 32 and 64 bit ELF header
-In-Reply-To: <1454074137-16334-1-git-send-email-daniel.wagner@bmw-carit.de>
-Message-ID: <alpine.DEB.2.00.1602010038230.5958@tp.orcam.me.uk>
-References: <1453992270-4688-1-git-send-email-daniel.wagner@bmw-carit.de> <1454074137-16334-1-git-send-email-daniel.wagner@bmw-carit.de>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:21048 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27010982AbcBALunCLKcY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 1 Feb 2016 12:50:43 +0100
+Date: Mon, 1 Feb 2016 11:50:36 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH] MIPS: Fix buffer overflow in syscall_get_arguments()
+Message-ID: <20160201115036.GB32210@jhogan-linux.le.imgtec.org>
+References: <1453753923-26620-1-git-send-email-james.hogan@imgtec.com>
+ <alpine.DEB.2.00.1601312327590.5958@tp.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="LyciRD1jyfeSSjG0"
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.00.1601312327590.5958@tp.orcam.me.uk>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,44 +23,115 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Wagner <daniel.wagner@bmw-carit.de>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20160201005228.Rq288k0q4vutEicQzye7D7pCFFLvyY_kS9wGGqvpUEo@z>
+To: "Maciej W. Rozycki" <macro@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Milko Leporis <milko.leporis@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20160201115036.1b6Q4PhXLR9L3Zwum4ppORFI9y1K8F8_jV6-DswSySg@z>
 
-On Fri, 29 Jan 2016, Daniel Wagner wrote:
+--LyciRD1jyfeSSjG0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Depending on the configuration either the 32 or 64 bit version of
-> elf_check_arch() is defined. parse_crash_elf32_headers() does
-> some basic verification of the ELF header via elf_check_arch().
-> parse_crash_elf64_headers() does it via vmcore_elf64_check_arch()
-> which expands to the same elf_check_check().
-> 
->    In file included from include/linux/elf.h:4:0,
->                     from fs/proc/vmcore.c:13:
->    fs/proc/vmcore.c: In function 'parse_crash_elf64_headers':
-> >> arch/mips/include/asm/elf.h:228:23: error: initialization from incompatible pointer type [-Werror=incompatible-pointer-types]
->      struct elfhdr *__h = (hdr);     \
->                           ^
->    include/linux/crash_dump.h:41:37: note: in expansion of macro 'elf_check_arch'
->     #define vmcore_elf64_check_arch(x) (elf_check_arch(x) || vmcore_elf_check_arch_cross(x))
->                                         ^
->    fs/proc/vmcore.c:1015:4: note: in expansion of macro 'vmcore_elf64_check_arch'
->       !vmcore_elf64_check_arch(&ehdr) ||
->        ^
-> 
-> Since the MIPS ELF header for 32 bit and 64 bit differ we need
-> to check accordingly.
+Hi Maciej,
 
- I fail to see how it can work as it stands given that `elf_check_arch' is 
-called from the same source file both on a pointer to `Elf32_Ehdr' and one 
-to `Elf64_Ehdr'.  However the MIPS implementations of `elf_check_arch' 
-only use an auxiliary variable to avoid multiple evaluation of a macro 
-argument and therefore instead I recommend the use of the usual approach
-taken in such a situation within a statement expression, that is to 
-declare the variable with `typeof' rather than an explicit type.  As an
-upside this will minimise code disruption as well.
+On Sun, Jan 31, 2016 at 11:33:30PM +0000, Maciej W. Rozycki wrote:
+> On Mon, 25 Jan 2016, James Hogan wrote:
+>=20
+> > Since commit 4c21b8fd8f14 ("MIPS: seccomp: Handle indirect system calls
+> > (o32)"), syscall_get_arguments() attempts to handle o32 indirect syscall
+> > arguments by incrementing both the start argument number and the number
+> > of arguments to fetch. However only the start argument number needs to
+> > be incremented. The number of arguments does not change, they're just
+> > shifted up by one, and in fact the output array is provided by the
+> > caller and is likely only n entries long, so reading more arguments
+> > overflows the output buffer.
+> [...]
+> > diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/sy=
+scall.h
+> > index 6499d93ae68d..47bc45a67e9b 100644
+> > --- a/arch/mips/include/asm/syscall.h
+> > +++ b/arch/mips/include/asm/syscall.h
+> > @@ -101,10 +101,8 @@ static inline void syscall_get_arguments(struct ta=
+sk_struct *task,
+> >  	/* O32 ABI syscall() - Either 64-bit with O32 or 32-bit */
+> >  	if ((config_enabled(CONFIG_32BIT) ||
+> >  	    test_tsk_thread_flag(task, TIF_32BIT_REGS)) &&
+> > -	    (regs->regs[2] =3D=3D __NR_syscall)) {
+> > +	    (regs->regs[2] =3D=3D __NR_syscall))
+> >  		i++;
+> > -		n++;
+> > -	}
+> > =20
+> >  	while (n--)
+> >  		ret |=3D mips_get_syscall_arg(args++, task, regs, i++);
+>=20
+>  What I think it really needs to do is to *decrease* the number of=20
+> arguments, as we're throwing the syscall number away as not an argument t=
+o=20
+> itself.  So this looks like a typo to me, the expression was meant to be=
+=20
+> `n--' rather than `n++'.  With the number of arguments unchanged, as in=
+=20
+> your proposed change, we're still reaching one word too far.
 
- For consistency I suggest making the same change to the `elf_check_arch' 
-definitions in arch/mips/kernel/binfmt_elf*.c as well.
+No, the caller asked for n args, thats what it should get. It doesn't
+care whether the syscall was indirected or not.
 
-  Maciej
+The syscall doesn't have 1 less arg as a result of indirection. E.g.
+What about system calls with 6 arguments, and hence 7 arguments
+including syscall number argument when redirected? We'd get an
+uninitialised 6th arg back when passing n=3D6.
+
+Note scall32-o32.S sys_syscall shifts 7 arguments starting at a1 (I've
+reordered code slightly):
+	move	a0, a1				# shift argument registers
+	move	a1, a2
+	move	a2, a3
+	lw	a3, 16(sp)
+	lw	t4, 20(sp)
+	lw	t5, 24(sp)
+	lw	t6, 28(sp)
+
+	sw	a0, PT_R4(sp)			# .. and push back a0 - a3, some
+	sw	a1, PT_R5(sp)			# syscalls expect them there
+	sw	a2, PT_R6(sp)
+	sw	a3, PT_R7(sp)
+	sw	t4, 16(sp)
+	sw	t5, 20(sp)
+	sw	t6, 24(sp)
+
+So it takes args 0..2 from a1..a3, and 3..6 from stack.
+
+I presume the handling of 7th arg after syscall number argument is for
+fadvise64_64 and sync_file_range, which had badly designed arguments
+(odd 64bit args requiring a word of padding).
+
+Cheers
+James
+
+>=20
+>   Maciej
+
+--LyciRD1jyfeSSjG0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJWr0aMAAoJEGwLaZPeOHZ6YI4QAJFt3ofcuJd55luAvREqrwcn
+aaXGLaLFFuXyeRU4zhiSmJ9eWvdLQ67EfiDXvVXcCJfcSvT6lyndtTuZD4XudWRY
+7o2netybOy2xjqjvUTBXES3YGd6nzFBuQn/4fzJ9jHJgxglL46M7eCtYMkJkHcdn
+6tg55bAHvHh1v0n9rh+fol6tN5yiZ8IrounJVWEz9VkyLJddXCl3EEVabYZUVgdh
+4ZIsrkKA5Ia4oZHpfmEJPAudL2Z9F01ZRHd67dvOf544BqreGzOzuDEzwJpkClcE
+sY2ojReimA22Jv2qn1wHCnZPq1GOG0z+ef4ektRBF5Rx35QfcS8otpvALnBGVHfe
+urOaLx0FuO1D0W56cNUqkWhUQHllJUcnblFbm4GdAyE9o9ksRtOaY2Jd3KIzzB66
+HjPG9r/rebbKETpix5cGPYmhvosGWr018O1BBdPle/ucOpUlFgV8MHfXrU4DQ5bQ
+0yjPZkexfmK7d0Bjh/tqqhtnmWZnEJhcZ6NOmaTcTxrqrFekF10yXwLwVO3Wdyvv
+M1odJdp6CvcbQaooxI1ELaVGlI4vjge7HhRg6agqiDRKJgqGFkw5ZWoE15DjFLav
+TA9S0+CiK5XDoRdYfGJ/VTptEHPeVtjn2C04neDsA+zWUZlwUZ6XagVSYotH7BNx
+Vym6CqhIR4p2nEykWRHX
+=/lsx
+-----END PGP SIGNATURE-----
+
+--LyciRD1jyfeSSjG0--

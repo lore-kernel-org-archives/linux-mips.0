@@ -1,19 +1,14 @@
-Received: from mail.bmw-carit.de ([62.245.222.98]:43380 "EHLO
-        mail.bmw-carit.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011951AbcBAQHLUZ9JN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 1 Feb 2016 17:07:11 +0100
-Subject: Re: [PATCH] MIPS: Differentiate between 32 and 64 bit ELF header
-References: <1453992270-4688-1-git-send-email-daniel.wagner@bmw-carit.de>
- <1454074137-16334-1-git-send-email-daniel.wagner@bmw-carit.de>
- <alpine.DEB.2.00.1602010038230.5958@tp.orcam.me.uk>
-From: Daniel Wagner <daniel.wagner@bmw-carit.de>
-Message-ID: <56AF82AB.5010502@bmw-carit.de>
-Date: Mon, 1 Feb 2016 17:07:07 +0100
+Received: from exsmtp03.microchip.com ([198.175.253.49]:51221 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27012012AbcBAWiiIIWhJ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 1 Feb 2016 23:38:38 +0100
+From: Joshua Henderson <joshua.henderson@microchip.com>
+Subject: [PATCH 1/2] dt/bindings: Add bindings for the PIC32 random number generator
+Date: Mon, 1 Feb 2016 15:41:41 -0700
+Message-ID: <1454366511-10640-1-git-send-email-joshua.henderson@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.00.1602010038230.5958@tp.orcam.me.uk>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <daniel.wagner@bmw-carit.de>
+Content-Type: text/plain
+Return-Path: <Joshua.Henderson@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,128 +18,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@imgtec.com>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20160201160707.8d4dPXJ_1OsHBaOpXBKGhHhdD3aWpTys33VtZqKoGhE@z>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, Joshua Henderson <joshua.henderson@microchip.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
+Message-ID: <20160201224141.aBl-IP1AchzkUBhpCq_-6nA2rNmqu-c9CAQ4lKuZVKQ@z>
 
-On 02/01/2016 01:52 AM, Maciej W. Rozycki wrote:
-> On Fri, 29 Jan 2016, Daniel Wagner wrote:
-> 
->> Depending on the configuration either the 32 or 64 bit version of
->> elf_check_arch() is defined. parse_crash_elf32_headers() does
->> some basic verification of the ELF header via elf_check_arch().
->> parse_crash_elf64_headers() does it via vmcore_elf64_check_arch()
->> which expands to the same elf_check_check().
->>
->>    In file included from include/linux/elf.h:4:0,
->>                     from fs/proc/vmcore.c:13:
->>    fs/proc/vmcore.c: In function 'parse_crash_elf64_headers':
->>>> arch/mips/include/asm/elf.h:228:23: error: initialization from incompatible pointer type [-Werror=incompatible-pointer-types]
->>      struct elfhdr *__h = (hdr);     \
->>                           ^
->>    include/linux/crash_dump.h:41:37: note: in expansion of macro 'elf_check_arch'
->>     #define vmcore_elf64_check_arch(x) (elf_check_arch(x) || vmcore_elf_check_arch_cross(x))
->>                                         ^
->>    fs/proc/vmcore.c:1015:4: note: in expansion of macro 'vmcore_elf64_check_arch'
->>       !vmcore_elf64_check_arch(&ehdr) ||
->>        ^
->>
->> Since the MIPS ELF header for 32 bit and 64 bit differ we need
->> to check accordingly.
-> 
->  I fail to see how it can work as it stands given that `elf_check_arch' is 
-> called from the same source file both on a pointer to `Elf32_Ehdr' and one 
-> to `Elf64_Ehdr'.  However the MIPS implementations of `elf_check_arch' 
-> only use an auxiliary variable to avoid multiple evaluation of a macro 
-> argument and therefore instead I recommend the use of the usual approach
-> taken in such a situation within a statement expression, that is to 
-> declare the variable with `typeof' rather than an explicit type.  As an
-> upside this will minimise code disruption as well.
+Document the devicetree bindings for the random number generator found
+on Microchip PIC32 class devices.
 
-Good point on the type for hdr. Thought elf_check_arch() implementation
-differ on 32 bit and 64 bit implementation. I played a bit around and the
-simplest version I found was this here:
+Signed-off-by: Joshua Henderson <joshua.henderson@microchip.com>
+---
+ .../bindings/rng/microchip,pic32-rng.txt           |   17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rng/microchip,pic32-rng.txt
 
-
-diff --git a/arch/mips/include/asm/elf.h b/arch/mips/include/asm/elf.h
-index b01a6ff..8c88238 100644
---- a/arch/mips/include/asm/elf.h
-+++ b/arch/mips/include/asm/elf.h
-@@ -205,8 +205,6 @@ struct mips_elf_abiflags_v0 {
- #define MIPS_ABI_FP_64		6	/* -mips32r2 -mfp64 */
- #define MIPS_ABI_FP_64A		7	/* -mips32r2 -mfp64 -mno-odd-spreg */
- 
--#ifdef CONFIG_32BIT
--
- /*
-  * In order to be sure that we don't attempt to execute an O32 binary which
-  * requires 64 bit FP (FR=1) on a system which does not support it we refuse
-@@ -225,23 +223,30 @@ struct mips_elf_abiflags_v0 {
- #define elf_check_arch(hdr)						\
- ({									\
- 	int __res = 1;							\
--	struct elfhdr *__h = (hdr);					\
-+	typeof(*(hdr)) *__h = (hdr);					\
- 									\
- 	if (__h->e_machine != EM_MIPS)					\
- 		__res = 0;						\
--	if (__h->e_ident[EI_CLASS] != ELFCLASS32)			\
--		__res = 0;						\
--	if ((__h->e_flags & EF_MIPS_ABI2) != 0)				\
--		__res = 0;						\
--	if (((__h->e_flags & EF_MIPS_ABI) != 0) &&			\
--	    ((__h->e_flags & EF_MIPS_ABI) != EF_MIPS_ABI_O32))		\
--		__res = 0;						\
--	if (__h->e_flags & __MIPS_O32_FP64_MUST_BE_ZERO)		\
--		__res = 0;						\
-+	if (__same_type(hdr, Elf32_Ehdr *)) {				\
-+		if (__h->e_ident[EI_CLASS] != ELFCLASS32)		\
-+			__res = 0;					\
-+		if ((__h->e_flags & EF_MIPS_ABI2) != 0)			\
-+			__res = 0;					\
-+		if (((__h->e_flags & EF_MIPS_ABI) != 0) &&		\
-+			((__h->e_flags & EF_MIPS_ABI) != EF_MIPS_ABI_O32)) \
-+			__res = 0;					\
-+		if (__h->e_flags & __MIPS_O32_FP64_MUST_BE_ZERO)	\
-+			__res = 0;					\
-+	} else if (__same_type(hdr, Elf64_Ehdr *)) {			\
-+		if (__h->e_ident[EI_CLASS] != ELFCLASS64)		\
-+			__res = 0;					\
-+	}								\
- 									\
- 	__res;								\
- })
- 
-+#ifdef CONFIG_32BIT
+diff --git a/Documentation/devicetree/bindings/rng/microchip,pic32-rng.txt b/Documentation/devicetree/bindings/rng/microchip,pic32-rng.txt
+new file mode 100644
+index 0000000..c6d1003
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rng/microchip,pic32-rng.txt
+@@ -0,0 +1,17 @@
++* Microchip PIC32 Random Number Generator
 +
- /*
-  * These are used to set parameters in the core dumps.
-  */
-@@ -250,21 +255,6 @@ struct mips_elf_abiflags_v0 {
- #endif /* CONFIG_32BIT */
- 
- #ifdef CONFIG_64BIT
--/*
-- * This is used to ensure we don't load something for the wrong architecture.
-- */
--#define elf_check_arch(hdr)						\
--({									\
--	int __res = 1;							\
--	struct elfhdr *__h = (hdr);					\
--									\
--	if (__h->e_machine != EM_MIPS)					\
--		__res = 0;						\
--	if (__h->e_ident[EI_CLASS] != ELFCLASS64)			\
--		__res = 0;						\
--									\
--	__res;								\
--})
- 
- /*
-  * These are used to set parameters in the core dumps.
-
-
-Not sure if that is what you had in mind.
-
-cheers,
-daniel
++The PIC32 RNG provides a pseudo random number generator which can be seeded by
++another true random number generator.
++
++Required properties:
++- compatible : should be "microchip,pic32mzda-rng"
++- reg : Specifies base physical address and size of the registers.
++- clocks: clock phandle.
++
++Example:
++
++	rng: rng@1f8e6000 {
++		compatible = "microchip,pic32mzda-rng";
++		reg = <0x1f8e6000 0x1000>;
++		clocks = <&PBCLK5>;
++	};
+-- 
+1.7.9.5

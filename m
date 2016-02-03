@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:12788 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:43956 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006154AbcBCDSVPF470 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 04:18:21 +0100
+        with ESMTP id S27010012AbcBCDShznoo0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 04:18:37 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 08/15] irqchip: mips-gic: Provide VP ID accessor
-Date: Wed, 3 Feb 2016 03:15:28 +0000
-Message-ID: <1454469335-14778-9-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 09/15] MIPS: smp-cps: Ensure our VP ident calculation is correct
+Date: Wed, 3 Feb 2016 03:15:29 +0000
+Message-ID: <1454469335-14778-10-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1454469335-14778-1-git-send-email-paul.burton@imgtec.com>
 References: <1454469335-14778-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,79 +21,41 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, Andrew Bresticker <abrestic@chromium.org>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Marc Zyngier <marc.zyngier@arm.com>, Alex Smith <alex.smith@imgtec.com>
-Message-ID: <20160203031528.QNDu9yB8u5AxHeIvQtMfTXbFx_bP0C_IFCpvDjL3Px8@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Rusty Russell <rusty@rustcorp.com.au>, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org, Niklas Cassel <niklas.cassel@axis.com>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20160203031529.37iWogXmqZ2Pf7_Zsu87jSF1Gc4ryH8XV0mhi3odUw0@z>
 
-Provide a gic_read_local_vp_id() function to read the VCNUM field of the
-GICs local VP_IDENT register. This will be used by a further patch to
-check that the value reported by the GIC matches up with the kernels
-calculation.
+When bringing up a CPU, ensure that its local ID as provided by the GIC
+matches up with our calculation of it. This is vital, since if the
+condition doesn't hold then we won't have configured interrupts
+correctly for the VP.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
- drivers/irqchip/irq-mips-gic.c   |  8 ++++++++
- include/linux/irqchip/mips-gic.h | 17 +++++++++++++++++
- 2 files changed, 25 insertions(+)
+ arch/mips/kernel/smp-cps.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 787bafc..e569c52 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -230,6 +230,14 @@ void gic_stop_count(void)
+diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+index 2ad4e4c..7b35dec 100644
+--- a/arch/mips/kernel/smp-cps.c
++++ b/arch/mips/kernel/smp-cps.c
+@@ -307,6 +307,17 @@ static void cps_init_secondary(void)
+ 	if (cpu_has_mipsmt)
+ 		dmt();
  
- #endif
- 
-+unsigned gic_read_local_vp_id(void)
-+{
-+	unsigned long ident;
++	if (mips_cm_revision() >= CM_REV_CM3) {
++		unsigned ident = gic_read_local_vp_id();
 +
-+	ident = gic_read(GIC_REG(VPE_LOCAL, GIC_VP_IDENT));
-+	return ident & GIC_VP_IDENT_VCNUM_MSK;
-+}
++		/*
++		 * Ensure that our calculation of the VP ID matches up with
++		 * what the GIC reports, otherwise we'll have configured
++		 * interrupts incorrectly.
++		 */
++		BUG_ON(ident != mips_cm_vp_id(smp_processor_id()));
++	}
 +
- static bool gic_local_irq_is_routable(int intr)
- {
- 	u32 vpe_ctl;
-diff --git a/include/linux/irqchip/mips-gic.h b/include/linux/irqchip/mips-gic.h
-index ce824db..d5d82c7 100644
---- a/include/linux/irqchip/mips-gic.h
-+++ b/include/linux/irqchip/mips-gic.h
-@@ -103,6 +103,7 @@
- #define GIC_VPE_SWINT0_MAP_OFS		0x0054
- #define GIC_VPE_SWINT1_MAP_OFS		0x0058
- #define GIC_VPE_OTHER_ADDR_OFS		0x0080
-+#define GIC_VP_IDENT_OFS		0x0088
- #define GIC_VPE_WD_CONFIG0_OFS		0x0090
- #define GIC_VPE_WD_COUNT0_OFS		0x0094
- #define GIC_VPE_WD_INITIAL0_OFS		0x0098
-@@ -211,6 +212,10 @@
- #define GIC_VPE_SMASK_FDC_SHF		6
- #define GIC_VPE_SMASK_FDC_MSK		(MSK(1) << GIC_VPE_SMASK_FDC_SHF)
- 
-+/* GIC_VP_IDENT fields */
-+#define GIC_VP_IDENT_VCNUM_SHF		0
-+#define GIC_VP_IDENT_VCNUM_MSK		(MSK(6) << GIC_VP_IDENT_VCNUM_SHF)
-+
- /* GIC nomenclature for Core Interrupt Pins. */
- #define GIC_CPU_INT0		0 /* Core Interrupt 2 */
- #define GIC_CPU_INT1		1 /* .		      */
-@@ -281,4 +286,16 @@ static inline int gic_get_usm_range(struct resource *gic_usm_res)
- 
- #endif /* CONFIG_MIPS_GIC */
- 
-+/**
-+ * gic_read_local_vp_id() - read the local VPs VCNUM
-+ *
-+ * Read the VCNUM of the local VP from the GIC_VP_IDENT register and
-+ * return it to the caller. This ID should be used to refer to the VP
-+ * via the GICs VP-other region, or when calculating an offset to a
-+ * bit representing the VP in interrupt masks.
-+ *
-+ * Return: The VCNUM value for the local VP.
-+ */
-+extern unsigned gic_read_local_vp_id(void);
-+
- #endif /* __LINUX_IRQCHIP_MIPS_GIC_H */
+ 	change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 | STATUSF_IP4 |
+ 				 STATUSF_IP5 | STATUSF_IP6 | STATUSF_IP7);
+ }
 -- 
 2.7.0

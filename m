@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:29339 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:7361 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009961AbcBBLZueOiHl (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Feb 2016 12:25:50 +0100
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH] MIPS: Octeon: Add Octeon III CN7XXX interface detection
-Date: Tue, 2 Feb 2016 11:25:18 +0000
-Message-ID: <1454412318-27213-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+        with ESMTP id S27006154AbcBCDQY3-gF0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 04:16:24 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 00/15] Support for MIPSr6 Virtual Processors (multi-threading)
+Date: Wed, 3 Feb 2016 03:15:20 +0000
+Message-ID: <1454469335-14778-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Zubair.Kakakhel@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,87 +18,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: david.daney@cavium.com
-Cc: janne.huttunen@nokia.com, aaro.koskinen@nokia.com, ralf@linux-mips.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Zubair.Kakakhel@imgtec.com
-Message-ID: <20160202112518.2ODvJx6Sv56H3wNEpLibGrw3Ddgg7P5Zq8z6QiaExkM@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>, "Maciej W. Rozycki" <macro@imgtec.com>, Joshua Kinard <kumba@gentoo.org>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Jason Cooper <jason@lakedaemon.net>, Ezequiel Garcia <ezequiel.garcia@imgtec.com>, Rusty Russell <rusty@rustcorp.com.au>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Andrew Bresticker <abrestic@chromium.org>, "Maciej W. Rozycki" <macro@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>, Bjorn Helgaas <bhelgaas@google.com>, Markos Chandras <markos.chandras@imgtec.com>, Petri Gynther <pgynther@google.com>, Alex Smith <alex.smith@imgtec.com>, Niklas Cassel <niklas.cassel@axis.com>, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Marc Zyngier <marc.zyngier@arm.com>
+Message-ID: <20160203031520.Rv1_3iAx6m-gYKMpptbJGStxaKnJ75aNvTJSZrBXqts@z>
 
-Add basic CN7XXX interface detection.
+This series introduces support for the multi-core & multi-threading
+capabilities of the I6400. That is, it introduces support for MIPSr6
+Virtual Processors & enables CPS SMP for MIPSr6.
 
-This allows the kernel to boot with ethernet working as it initializes
-the ethernet ports with SGMII instead of defaulting to RGMII routines.
+Based atop v4.5-rc2.
 
-Tested on the utm8 from Rhino Labs with a CN7130.
+Markos Chandras (3):
+  MIPS: traps: Make sure secondary cores have a sane ebase register
+  MIPS: pm-cps: Avoid offset overflow on MIPSr6
+  MIPS: CPC: Add start, stop and running CM3 CPC registers
 
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
----
- arch/mips/cavium-octeon/executive/cvmx-helper.c | 41 +++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+Paul Burton (12):
+  MIPS: Detect MIPSr6 Virtual Processor support
+  MIPS: CM: Add CM GCR_BEV_BASE accessors
+  MIPS: CM: Fix mips_cm_max_vp_width for UP kernels
+  irqchip: mips-gic: Use HW IDs for VPE_OTHER_ADDR
+  irqchip: mips-gic: Provide VP ID accessor
+  MIPS: smp-cps: Ensure our VP ident calculation is correct
+  MIPS: smp-cps: Pull cache init into a function
+  MIPS: smp-cps: Pull boot config retrieval out of mips_cps_boot_vpes
+  MIPS: smp-cps: Skip core setup if coherent
+  MIPS: smp-cps: Support MIPSr6 Virtual Processors
+  MIPS: smp-cps: Add nothreads kernel parameter
+  MIPS: smp-cps: Stop printing EJTAG exceptions to UART
 
-diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper.c b/arch/mips/cavium-octeon/executive/cvmx-helper.c
-index 376701f..1a28009 100644
---- a/arch/mips/cavium-octeon/executive/cvmx-helper.c
-+++ b/arch/mips/cavium-octeon/executive/cvmx-helper.c
-@@ -87,6 +87,8 @@ int cvmx_helper_get_number_of_interfaces(void)
- 		return 9;
- 	if (OCTEON_IS_MODEL(OCTEON_CN56XX) || OCTEON_IS_MODEL(OCTEON_CN52XX))
- 		return 4;
-+	if (OCTEON_IS_MODEL(OCTEON_CN7XXX))
-+		return 5;
- 	else
- 		return 3;
- }
-@@ -260,6 +262,39 @@ static cvmx_helper_interface_mode_t __cvmx_get_mode_octeon2(int interface)
- }
- 
- /**
-+ * @INTERNAL
-+ * Return interface mode for CN7XXX.
-+ */
-+static cvmx_helper_interface_mode_t __cvmx_get_mode_cn7xxx(int interface)
-+{
-+	union cvmx_gmxx_inf_mode mode;
-+
-+	mode.u64 = cvmx_read_csr(CVMX_GMXX_INF_MODE(interface));
-+
-+	if (interface < 2) {		/* SGMII/QSGMII/XAUI */
-+		switch (mode.cn68xx.mode) {
-+		case 0:
-+			return CVMX_HELPER_INTERFACE_MODE_DISABLED;
-+		case 1:
-+		case 2:
-+			return CVMX_HELPER_INTERFACE_MODE_SGMII;
-+		case 3:
-+			return CVMX_HELPER_INTERFACE_MODE_XAUI;
-+		default:
-+			return CVMX_HELPER_INTERFACE_MODE_SGMII;
-+		}
-+	} else if (interface == 2)	/* NPI */
-+		return CVMX_HELPER_INTERFACE_MODE_NPI;
-+	else if (interface == 3)	/* LOOP */
-+		return CVMX_HELPER_INTERFACE_MODE_LOOP;
-+	else if (interface == 4)	/* RGMII (AGL) */
-+		return CVMX_HELPER_INTERFACE_MODE_RGMII;
-+
-+	return CVMX_HELPER_INTERFACE_MODE_DISABLED;
-+}
-+
-+
-+/**
-  * Get the operating mode of an interface. Depending on the Octeon
-  * chip and configuration, this function returns an enumeration
-  * of the type of packet I/O supported by an interface.
-@@ -278,6 +313,12 @@ cvmx_helper_interface_mode_t cvmx_helper_interface_get_mode(int interface)
- 		return CVMX_HELPER_INTERFACE_MODE_DISABLED;
- 
- 	/*
-+	 * OCTEON III models
-+	 */
-+	if (OCTEON_IS_MODEL(OCTEON_CN7XXX))
-+		return __cvmx_get_mode_cn7xxx(interface);
-+
-+	/*
- 	 * Octeon II models
- 	 */
- 	if (OCTEON_IS_MODEL(OCTEON_CN6XXX) || OCTEON_IS_MODEL(OCTEON_CNF71XX))
+ arch/mips/Kconfig                    |   2 +-
+ arch/mips/include/asm/cpu-features.h |   4 +
+ arch/mips/include/asm/cpu-info.h     |   4 +-
+ arch/mips/include/asm/cpu.h          |   1 +
+ arch/mips/include/asm/mips-cm.h      |   6 +-
+ arch/mips/include/asm/mips-cpc.h     |   3 +
+ arch/mips/include/asm/mipsregs.h     |   1 +
+ arch/mips/include/asm/smp-cps.h      |   2 +-
+ arch/mips/kernel/cps-vec.S           | 296 ++++++++++++++++++++++-------------
+ arch/mips/kernel/cpu-probe.c         |   2 +
+ arch/mips/kernel/pm-cps.c            |  15 +-
+ arch/mips/kernel/smp-cps.c           |  64 +++++++-
+ arch/mips/kernel/traps.c             |   7 +
+ drivers/irqchip/irq-mips-gic.c       |  22 ++-
+ include/linux/irqchip/mips-gic.h     |  17 ++
+ 15 files changed, 320 insertions(+), 126 deletions(-)
+
 -- 
-1.9.1
+2.7.0

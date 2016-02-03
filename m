@@ -1,18 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:39482 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:21128 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012267AbcBCPqmDFoDQ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 16:46:42 +0100
-Date: Wed, 3 Feb 2016 15:46:34 +0000
+        with ESMTP id S27012294AbcBCQP2ZBbvQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 17:15:28 +0100
+Date: Wed, 3 Feb 2016 16:15:17 +0000
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 06/15] MIPS: CM: Fix mips_cm_max_vp_width for UP kernels
-Message-ID: <20160203154634.GC30470@NP-P-BURTON>
-References: <1454469335-14778-1-git-send-email-paul.burton@imgtec.com>
- <1454469335-14778-7-git-send-email-paul.burton@imgtec.com>
- <20160203145858.GH5464@jhogan-linux.le.imgtec.org>
+Subject: Re: [PATCH 1/5] MIPS: Bail on unsupported module relocs
+Message-ID: <20160203161517.GE30470@NP-P-BURTON>
+References: <1454471085-20963-1-git-send-email-paul.burton@imgtec.com>
+ <1454471085-20963-2-git-send-email-paul.burton@imgtec.com>
+ <alpine.DEB.2.00.1602031139250.15885@tp.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20160203145858.GH5464@jhogan-linux.le.imgtec.org>
+In-Reply-To: <alpine.DEB.2.00.1602031139250.15885@tp.orcam.me.uk>
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,69 +23,48 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20160203154634.O85dqpOKjrrNBBHwF-hDgcSHScVcnBIzDNMNOmmz1uY@z>
+To: "Maciej W. Rozycki" <macro@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, Andrey Konovalov <adech.fo@gmail.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, "Maciej W. Rozycki" <macro@linux-mips.org>
+Message-ID: <20160203161517.qz2qLFy4q-Oza043HjNO-SCpvijJKSZv3tN1xm5UV98@z>
 
-On Wed, Feb 03, 2016 at 02:58:59PM +0000, James Hogan wrote:
-> On Wed, Feb 03, 2016 at 03:15:26AM +0000, Paul Burton wrote:
-> > Fix mips_cm_max_vp_width for UP kernels where it previously referenced
-> > smp_num_siblings, which is not declared for UP kernels. This led to
-> > build errors such as the following:
-> > 
-> >   drivers/built-in.o: In function `$L446':
-> >   irq-mips-gic.c:(.text+0x1994): undefined reference to `smp_num_siblings'
-> >   drivers/built-in.o:irq-mips-gic.c:(.text+0x199c): more undefined references to `smp_num_siblings' follow
-> > 
-> > On UP kernels simply return 1, leaving the reference to smp_num_siblings
-> > in place only for SMP kernels.
-> > 
-> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+On Wed, Feb 03, 2016 at 12:24:38PM +0000, Maciej W. Rozycki wrote:
+> On Wed, 3 Feb 2016, Paul Burton wrote:
 > 
-> Need tagging for stable v4.3+?
+> > --- a/arch/mips/kernel/module-rela.c
+> > +++ b/arch/mips/kernel/module-rela.c
+> > @@ -134,9 +135,21 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+> >  			return -ENOENT;
+> >  		}
+> >  
+> > -		v = sym->st_value + rel[i].r_addend;
+> > +		type = ELF_MIPS_R_TYPE(rel[i]);
+> > +
+> > +		if (type < ARRAY_SIZE(reloc_handlers_rela))
+> > +			handler = reloc_handlers_rela[type];
+> > +		else
+> > +			handler = NULL;
+> >  
+> > -		res = reloc_handlers_rela[ELF_MIPS_R_TYPE(rel[i])](me, location, v);
+> > +		if (!handler) {
+> > +			pr_warn("%s: Unknown relocation type %u\n",
+> > +				me->name, type);
+> > +			return -EINVAL;
+> 
+>  Hmm, this looks like a fatal error condition to me, the module won't 
+> load.  Why `pr_warn' rather than `pr_err' then?  Likewise in the other 
+> file.
+> 
+>   Maciej
 
-It happens that there were no uses of mips_cm_max_vp_width in UP
-kernels, but some are added later in this series (the next patch for
-instance). So I don't see a need to backport to stable branches. Sorry
-that could have been clearer.
+Hi Maciej,
 
-> I do wonder if this should be handled in the header files though...
+To me fatality implies death, and nothing dies here. The module isn't
+loaded but that's done gracefully & is not likely due to an error in the
+kernel - it's far more likely that the module isn't valid. So to me,
+warning seems appropriate rather than implying an error in the kernel.
 
-As in you don't think it should be handled in headers? It seems like the
-logical place to do it to me...
-
-Or do you mean smp_num_siblings should be defined as 1 for UP kernels? I
-did consider that approach, but thought this possibly more semantically
-correct since smp isn't in use at all so neither is smp_num_siblings.
+Having said that I think it's a non-issue & don't really care either
+way, so if Ralf wants it to be pr_err fine.
 
 Thanks,
     Paul
-
-> Cheers
-> James
-> 
-> > ---
-> > 
-> >  arch/mips/include/asm/mips-cm.h | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
-> > index 1395bbc..3fdb6c9 100644
-> > --- a/arch/mips/include/asm/mips-cm.h
-> > +++ b/arch/mips/include/asm/mips-cm.h
-> > @@ -462,7 +462,10 @@ static inline unsigned int mips_cm_max_vp_width(void)
-> >  	if (mips_cm_revision() >= CM_REV_CM3)
-> >  		return read_gcr_sys_config2() & CM_GCR_SYS_CONFIG2_MAXVPW_MSK;
-> >  
-> > -	return smp_num_siblings;
-> > +	if (config_enabled(CONFIG_SMP))
-> > +		return smp_num_siblings;
-> > +
-> > +	return 1;
-> >  }
-> >  
-> >  /**
-> > -- 
-> > 2.7.0
-> > 
-> > 

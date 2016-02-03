@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:32767 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:53953 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012217AbcBCMEXxCWVM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 13:04:23 +0100
+        with ESMTP id S27012220AbcBCMEiIzmIM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 13:04:38 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 5/6] net: pch_gbe: Add device tree support
-Date: Wed, 3 Feb 2016 12:02:43 +0000
-Message-ID: <1454500964-6256-6-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH v2 6/6] net: pch_gbe: Allow longer for resets
+Date: Wed, 3 Feb 2016 12:02:44 +0000
+Message-ID: <1454500964-6256-7-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1454500964-6256-1-git-send-email-paul.burton@imgtec.com>
 References: <1454500964-6256-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,84 +22,33 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
 Cc: Paul Burton <paul.burton@imgtec.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20160203120243.r7RPa2gPFPCD1s8QGzvnMA1FQ8qb5celoehFIK9OFkQ@z>
+Message-ID: <20160203120244.Y0IIDphIM2zrzBLpHAkokRcT2RT3r0VtbjBL29R3udo@z>
 
-Introduce support for retrieving the PHY reset GPIO from device tree,
-which will be used on the MIPS Boston development board. This requires
-support for probe deferral in order to work correctly, since the order
-of device probe is not guaranteed & typically the EG20T GPIO controller
-device will be probed after the ethernet MAC.
+Resets of the EG20T MAC on the MIPS Boston development board take longer
+than the 1000 loops that pch_gbe_wait_clr_bit was performing. Bump up
+the number of loops.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+
 ---
 
-Changes in v2:
-- Tidy up handling of parsing private data, drop err_out.
+Changes in v2: None
 
- .../net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c   | 30 +++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-index 824ff9e..00ef83c 100644
+index 00ef83c..87994d2 100644
 --- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
 +++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-@@ -23,6 +23,8 @@
- #include <linux/net_tstamp.h>
- #include <linux/ptp_classify.h>
- #include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/of_gpio.h>
+@@ -321,7 +321,7 @@ static void pch_gbe_wait_clr_bit(void *reg, u32 bit)
+ 	u32 tmp;
  
- #define DRV_VERSION     "1.01"
- const char pch_driver_version[] = DRV_VERSION;
-@@ -2594,13 +2596,39 @@ static void pch_gbe_remove(struct pci_dev *pdev)
- 	free_netdev(netdev);
- }
- 
-+static struct pch_gbe_privdata *
-+pch_gbe_get_priv(struct pci_dev *pdev, const struct pci_device_id *pci_id)
-+{
-+	struct pch_gbe_privdata *pdata;
-+	struct gpio_desc *gpio;
-+
-+	if (!config_enabled(CONFIG_OF))
-+		return (struct pch_gbe_privdata *)pci_id->driver_data;
-+
-+	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
-+	if (!pdata)
-+		return ERR_PTR(-ENOMEM);
-+
-+	gpio = devm_gpiod_get(&pdev->dev, "phy-reset", GPIOD_ASIS);
-+	if (IS_ERR(gpio))
-+		return ERR_PTR(PTR_ERR(gpio));
-+	pdata->phy_reset_gpio = gpio;
-+
-+	return pdata;
-+}
-+
- static int pch_gbe_probe(struct pci_dev *pdev,
- 			  const struct pci_device_id *pci_id)
- {
- 	struct net_device *netdev;
- 	struct pch_gbe_adapter *adapter;
-+	struct pch_gbe_privdata *pdata;
- 	int ret;
- 
-+	pdata = pch_gbe_get_priv(pdev, pci_id);
-+	if (IS_ERR(pdata))
-+		return PTR_ERR(pdata);
-+
- 	ret = pcim_enable_device(pdev);
- 	if (ret)
- 		return ret;
-@@ -2638,7 +2666,7 @@ static int pch_gbe_probe(struct pci_dev *pdev,
- 	adapter->pdev = pdev;
- 	adapter->hw.back = adapter;
- 	adapter->hw.reg = pcim_iomap_table(pdev)[PCH_GBE_PCI_BAR];
--	adapter->pdata = (struct pch_gbe_privdata *)pci_id->driver_data;
-+	adapter->pdata = pdata;
- 	if (adapter->pdata && adapter->pdata->platform_init)
- 		adapter->pdata->platform_init(pdev, pdata);
- 
+ 	/* wait busy */
+-	tmp = 1000;
++	tmp = 10000;
+ 	while ((ioread32(reg) & bit) && --tmp)
+ 		cpu_relax();
+ 	if (!tmp)
 -- 
 2.7.0

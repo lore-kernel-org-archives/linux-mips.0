@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:65086 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:30965 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012181AbcBCLdYbdPgM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 12:33:24 +0100
+        with ESMTP id S27012183AbcBCLdjJG6oM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 12:33:39 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 09/15] PCI: xilinx: Allow build on MIPS platforms
-Date: Wed, 3 Feb 2016 11:30:39 +0000
-Message-ID: <1454499045-5020-10-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH v2 10/15] misc: pch_phub: Allow build on MIPS platforms
+Date: Wed, 3 Feb 2016 11:30:40 +0000
+Message-ID: <1454499045-5020-11-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1454499045-5020-1-git-send-email-paul.burton@imgtec.com>
 References: <1454499045-5020-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,32 +21,32 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, Ley Foon Tan <lftan@altera.com>, Arnd Bergmann <arnd@arndb.de>, Bjorn Helgaas <bhelgaas@google.com>, Phil Edworthy <phil.edworthy@renesas.com>, Scott Branden <sbranden@broadcom.com>, Stanimir Varbanov <svarbanov@mm-sol.com>, linux-kernel@vger.kernel.org, Duc Dang <dhdang@apm.com>, linux-pci@vger.kernel.org, Gabriele Paoloni <gabriele.paoloni@huawei.com>, Marc Zyngier <marc.zyngier@arm.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Ray Jui <rjui@broadcom.com>, Hauke Mehrtens <hauke@hauke-m.de>, Richard Cochran <richardcochran@gmail.com>
-Message-ID: <20160203113039.4j3tgD-MD3GYwB4_FpeAxJgyKpT2AndSRRWh3ZmmZAU@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Message-ID: <20160203113040.-GVdtFgHGJ71lKcJGYsNR5FClR-aDDWsY65FduUfAXA@z>
 
-Allow the xilinx-pcie driver to be built on MIPS platforms. This will be
-used on the MIPS Boston board.
+Allow the pch_phub driver to be build on MIPS platforms, in preparation
+for its use on the MIPS Boston board.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
 Changes in v2: None
 
- drivers/pci/host/Kconfig | 2 +-
+ drivers/misc/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/host/Kconfig b/drivers/pci/host/Kconfig
-index 75a6054..0aee193 100644
---- a/drivers/pci/host/Kconfig
-+++ b/drivers/pci/host/Kconfig
-@@ -81,7 +81,7 @@ config PCI_KEYSTONE
- 
- config PCIE_XILINX
- 	bool "Xilinx AXI PCIe host bridge support"
--	depends on ARCH_ZYNQ
-+	depends on ARCH_ZYNQ || MIPS
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index 054fc10..d8b11d7 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -470,7 +470,7 @@ config BMP085_SPI
+ config PCH_PHUB
+ 	tristate "Intel EG20T PCH/LAPIS Semicon IOH(ML7213/ML7223/ML7831) PHUB"
+ 	select GENERIC_NET_UTILS
+-	depends on PCI && (X86_32 || COMPILE_TEST)
++	depends on PCI && (X86_32 || MIPS || COMPILE_TEST)
  	help
- 	  Say 'Y' here if you want kernel to support the Xilinx AXI PCIe
- 	  Host Bridge driver.
+ 	  This driver is for PCH(Platform controller Hub) PHUB(Packet Hub) of
+ 	  Intel Topcliff which is an IOH(Input/Output Hub) for x86 embedded
 -- 
 2.7.0

@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18690 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:60689 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012378AbcBCQSqCUGOQ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 17:18:46 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 3/3] MIPS: Probe the M6250 CPU
-Date: Wed, 3 Feb 2016 16:17:30 +0000
-Message-ID: <1454516250-9395-4-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1454516250-9395-1-git-send-email-paul.burton@imgtec.com>
-References: <1454516250-9395-1-git-send-email-paul.burton@imgtec.com>
+        with ESMTP id S27012139AbcBCQzvxtUct (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 17:55:51 +0100
+Date: Wed, 3 Feb 2016 16:55:44 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH 1/5] MIPS: Bail on unsupported module relocs
+In-Reply-To: <20160203161517.GE30470@NP-P-BURTON>
+Message-ID: <alpine.DEB.2.00.1602031636220.15885@tp.orcam.me.uk>
+References: <1454471085-20963-1-git-send-email-paul.burton@imgtec.com> <1454471085-20963-2-git-send-email-paul.burton@imgtec.com> <alpine.DEB.2.00.1602031139250.15885@tp.orcam.me.uk> <20160203161517.GE30470@NP-P-BURTON>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,34 +20,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, "Maciej W. Rozycki" <macro@imgtec.com>, Joshua Kinard <kumba@gentoo.org>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20160203161730.bW6qQj90fAHlElL_onwbPKum84vL_ye-4mSs0PddN30@z>
+To: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, Andrey Konovalov <adech.fo@gmail.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, "Maciej W. Rozycki" <macro@linux-mips.org>
+Message-ID: <20160203165544.EW4lia1-LFRQmhQXGzte0SmFE9MM372c34B72KhHHzs@z>
 
-Support probing the M6250 CPU now that cases for handling it have been
-added where required in the core MIPS kernel code.
+On Wed, 3 Feb 2016, Paul Burton wrote:
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> >  Hmm, this looks like a fatal error condition to me, the module won't 
+> > load.  Why `pr_warn' rather than `pr_err' then?  Likewise in the other 
+> > file.
+> 
+> To me fatality implies death, and nothing dies here. The module isn't
+> loaded but that's done gracefully & is not likely due to an error in the
+> kernel - it's far more likely that the module isn't valid. So to me,
+> warning seems appropriate rather than implying an error in the kernel.
 
----
+ It may be bikeshedding, however these levels affect what goes to syslog 
+and the console.  There are `crit', `alert' and `emerg' levels above, to 
+raise more severe conditions.  As to `warn' I'd expect one on a succesful 
+action made with some limitations, e.g. a compatibility mode of some kind, 
+running with a performance limitation, some functionality disabled, etc.  
+There's also `notice', which is lower, I'd use for normal actions that 
+might require operator's attention, e.g. I'd put switching a network 
+interface into the promiscuous mode there, due to its side effect on 
+overall system performance.
 
- arch/mips/kernel/cpu-probe.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ And I don't think it has to be a bug in the kernel to raise an `err' 
+condition.  However I do agree the boundary here may be a bit fuzzy and 
+code you've been changing doesn't seem consistent either.
 
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 92cc4d8..429e2e1 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -1327,6 +1327,10 @@ static inline void cpu_probe_mips(struct cpuinfo_mips *c, unsigned int cpu)
- 		c->cputype = CPU_M5150;
- 		__cpu_name[cpu] = "MIPS M5150";
- 		break;
-+	case PRID_IMP_M6250:
-+		c->cputype = CPU_M6250;
-+		__cpu_name[cpu] = "MIPS M6250";
-+		break;
- 	}
- 
- 	decode_configs(c);
--- 
-2.7.0
+ FWIW,
+
+  Maciej

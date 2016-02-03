@@ -1,18 +1,16 @@
-Received: from mail-by2on0086.outbound.protection.outlook.com ([207.46.100.86]:36256
-        "EHLO na01-by2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27012139AbcBCSDwkV-qz (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 3 Feb 2016 19:03:52 +0100
-Message-ID: <56B240FD.4090400@caviumnetworks.com>
-Date: Wed, 3 Feb 2016 10:03:41 -0800
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:33963 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27011683AbcBCTnzCyGC3 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 20:43:55 +0100
+Date: Wed, 3 Feb 2016 19:43:44 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH 2/3] MIPS: Add P6600 cases to CPU switch statements
+In-Reply-To: <1454469999-17818-3-git-send-email-paul.burton@imgtec.com>
+Message-ID: <alpine.DEB.2.00.1602031941170.15885@tp.orcam.me.uk>
+References: <1454469999-17818-1-git-send-email-paul.burton@imgtec.com> <1454469999-17818-3-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] MIPS: Octeon: Add Octeon III CN7xxx interface detection
-References: <1454522496-35794-1-git-send-email-Zubair.Kakakhel@imgtec.com>
-In-Reply-To: <1454522496-35794-1-git-send-email-Zubair.Kakakhel@imgtec.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,99 +20,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Cc: david.daney@cavium.com, janne.huttunen@nokia.com, aaro.koskinen@nokia.com, ralf@linux-mips.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20160203180341.ywclpZsb3QhRaRObDCf2K4xZDrW1J27jq93IUFnqdpA@z>
+To: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Peter Zijlstra <peterz@infradead.org>, Joshua Kinard <kumba@gentoo.org>, Andrzej Hajda <a.hajda@samsung.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Ingo Molnar <mingo@redhat.com>, Markos Chandras <markos.chandras@imgtec.com>, Petri Gynther <pgynther@google.com>
+Message-ID: <20160203194344.HzTVGLqvtOnw2pwGzSYORMC9SYP7inkGQLtWBECHmag@z>
 
-On 02/03/2016 10:01 AM, Zubair Lutfullah Kakakhel wrote:
-> Add basic CN7XXX interface detection.
->
-> This allows the kernel to boot with ethernet working as it initializes
-> the ethernet ports with SGMII instead of defaulting to RGMII routines.
->
-> Tested on the utm8 from Rhino Labs with a CN7130.
->
-> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+On Wed, 3 Feb 2016, Paul Burton wrote:
 
-Acked-by: David Daney <david.daney@cavium.com>
+> diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
+> index d7b8dd4..ae378d9 100644
+> --- a/arch/mips/kernel/perf_event_mipsxx.c
+> +++ b/arch/mips/kernel/perf_event_mipsxx.c
+> @@ -1556,6 +1556,7 @@ static const struct mips_perf_event *mipsxx_pmu_map_raw_event(u64 config)
+>  #endif
+>  		break;
+>  	case CPU_P5600:
+> +	case CPU_P6600:
+>  	case CPU_I6400:
+>  		/* 8-bit event numbers */
+>  		raw_id = config & 0x1ff;
+> @@ -1718,6 +1719,11 @@ init_hw_perf_events(void)
+>  		mipspmu.general_event_map = &mipsxxcore_event_map2;
+>  		mipspmu.cache_event_map = &mipsxxcore_cache_map2;
+>  		break;
+> +	case CPU_P6600:
+> +		mipspmu.name = "mips/P6600";
+> +		mipspmu.general_event_map = &mipsxxcore_event_map2;
+> +		mipspmu.cache_event_map = &mipsxxcore_cache_map2;
+> +		break;
+>  	case CPU_I6400:
+>  		mipspmu.name = "mips/I6400";
+>  		mipspmu.general_event_map = &mipsxxcore_event_map2;
+> diff --git a/arch/mips/kernel/spram.c b/arch/mips/kernel/spram.c
+> index 8489c88..d6e6cf7 100644
+> --- a/arch/mips/kernel/spram.c
+> +++ b/arch/mips/kernel/spram.c
+> @@ -210,6 +210,7 @@ void spram_config(void)
+>  	case CPU_P5600:
+>  	case CPU_QEMU_GENERIC:
+>  	case CPU_I6400:
+> +	case CPU_P6600:
+>  		config0 = read_c0_config();
+>  		/* FIXME: addresses are Malta specific */
+>  		if (config0 & (1<<24)) {
 
+ Minor nit: you sometimes place the I6400 before and sometimes after the 
+P6600 -- would it make sense to keep the ordering consistent?
 
->
-> ---
-> V1 -> V2
-> - Rebase to v4.5-rc2
-> - Used switch instead of too many if-else.
-> - Change subject from XXX to xxx as lkml bounced the mail..  ¯\_(ツ)_/¯
-> ---
->   arch/mips/cavium-octeon/executive/cvmx-helper.c | 43 +++++++++++++++++++++++++
->   1 file changed, 43 insertions(+)
->
-> diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper.c b/arch/mips/cavium-octeon/executive/cvmx-helper.c
-> index 376701f..ff26d02 100644
-> --- a/arch/mips/cavium-octeon/executive/cvmx-helper.c
-> +++ b/arch/mips/cavium-octeon/executive/cvmx-helper.c
-> @@ -87,6 +87,8 @@ int cvmx_helper_get_number_of_interfaces(void)
->   		return 9;
->   	if (OCTEON_IS_MODEL(OCTEON_CN56XX) || OCTEON_IS_MODEL(OCTEON_CN52XX))
->   		return 4;
-> +	if (OCTEON_IS_MODEL(OCTEON_CN7XXX))
-> +		return 5;
->   	else
->   		return 3;
->   }
-> @@ -260,6 +262,41 @@ static cvmx_helper_interface_mode_t __cvmx_get_mode_octeon2(int interface)
->   }
->
->   /**
-> + * @INTERNAL
-> + * Return interface mode for CN7XXX.
-> + */
-> +static cvmx_helper_interface_mode_t __cvmx_get_mode_cn7xxx(int interface)
-> +{
-> +	union cvmx_gmxx_inf_mode mode;
-> +
-> +	mode.u64 = cvmx_read_csr(CVMX_GMXX_INF_MODE(interface));
-> +
-> +	switch (interface) {
-> +	case 0:
-> +	case 1:
-> +		switch (mode.cn68xx.mode) {
-> +		case 0:
-> +			return CVMX_HELPER_INTERFACE_MODE_DISABLED;
-> +		case 1:
-> +		case 2:
-> +			return CVMX_HELPER_INTERFACE_MODE_SGMII;
-> +		case 3:
-> +			return CVMX_HELPER_INTERFACE_MODE_XAUI;
-> +		default:
-> +			return CVMX_HELPER_INTERFACE_MODE_SGMII;
-> +		}
-> +	case 2:
-> +		return CVMX_HELPER_INTERFACE_MODE_NPI;
-> +	case 3:
-> +		return CVMX_HELPER_INTERFACE_MODE_LOOP;
-> +	case 4:
-> +		return CVMX_HELPER_INTERFACE_MODE_RGMII;
-> +	default:
-> +		return CVMX_HELPER_INTERFACE_MODE_DISABLED;
-> +	}
-> +}
-> +
-> +/**
->    * Get the operating mode of an interface. Depending on the Octeon
->    * chip and configuration, this function returns an enumeration
->    * of the type of packet I/O supported by an interface.
-> @@ -278,6 +315,12 @@ cvmx_helper_interface_mode_t cvmx_helper_interface_get_mode(int interface)
->   		return CVMX_HELPER_INTERFACE_MODE_DISABLED;
->
->   	/*
-> +	 * OCTEON III models
-> +	 */
-> +	if (OCTEON_IS_MODEL(OCTEON_CN7XXX))
-> +		return __cvmx_get_mode_cn7xxx(interface);
-> +
-> +	/*
->   	 * Octeon II models
->   	 */
->   	if (OCTEON_IS_MODEL(OCTEON_CN6XXX) || OCTEON_IS_MODEL(OCTEON_CNF71XX))
->
+  Maciej

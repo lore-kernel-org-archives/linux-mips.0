@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:38886 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:12788 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009963AbcBCDSF6x4J0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 04:18:05 +0100
+        with ESMTP id S27006154AbcBCDSVPF470 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 04:18:21 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 07/15] irqchip: mips-gic: Use HW IDs for VPE_OTHER_ADDR
-Date: Wed, 3 Feb 2016 03:15:27 +0000
-Message-ID: <1454469335-14778-8-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 08/15] irqchip: mips-gic: Provide VP ID accessor
+Date: Wed, 3 Feb 2016 03:15:28 +0000
+Message-ID: <1454469335-14778-9-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1454469335-14778-1-git-send-email-paul.burton@imgtec.com>
 References: <1454469335-14778-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,73 +21,79 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, Marc Zyngier <marc.zyngier@arm.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Message-ID: <20160203031527.0iIiOamgyISfyLPQn3tbDPOM1B2En_d6R_8z4g0KIF0@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Andrew Bresticker <abrestic@chromium.org>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Marc Zyngier <marc.zyngier@arm.com>, Alex Smith <alex.smith@imgtec.com>
+Message-ID: <20160203031528.QNDu9yB8u5AxHeIvQtMfTXbFx_bP0C_IFCpvDjL3Px8@z>
 
-The Linux CPU number doesn't necessarily match up with the ID used for a
-VP by hardware. Convert the CPU number to the HW ID using mips_cm_vp_id
-when writing to the VP(E)_OTHER_ADDR register in order to ensure that we
-correctly access registers for the VPs of secondary cores. This most
-notably affects systems using CM3, such as those based around I6400.
+Provide a gic_read_local_vp_id() function to read the VCNUM field of the
+GICs local VP_IDENT register. This will be used by a further patch to
+check that the value reported by the GIC matches up with the kernels
+calculation.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
- drivers/irqchip/irq-mips-gic.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/irqchip/irq-mips-gic.c   |  8 ++++++++
+ include/linux/irqchip/mips-gic.h | 17 +++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
 diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 9e17ef2..787bafc 100644
+index 787bafc..e569c52 100644
 --- a/drivers/irqchip/irq-mips-gic.c
 +++ b/drivers/irqchip/irq-mips-gic.c
-@@ -181,7 +181,7 @@ void gic_write_cpu_compare(cycle_t cnt, int cpu)
+@@ -230,6 +230,14 @@ void gic_stop_count(void)
  
- 	local_irq_save(flags);
+ #endif
  
--	gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR), cpu);
-+	gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR), mips_cm_vp_id(cpu));
++unsigned gic_read_local_vp_id(void)
++{
++	unsigned long ident;
++
++	ident = gic_read(GIC_REG(VPE_LOCAL, GIC_VP_IDENT));
++	return ident & GIC_VP_IDENT_VCNUM_MSK;
++}
++
+ static bool gic_local_irq_is_routable(int intr)
+ {
+ 	u32 vpe_ctl;
+diff --git a/include/linux/irqchip/mips-gic.h b/include/linux/irqchip/mips-gic.h
+index ce824db..d5d82c7 100644
+--- a/include/linux/irqchip/mips-gic.h
++++ b/include/linux/irqchip/mips-gic.h
+@@ -103,6 +103,7 @@
+ #define GIC_VPE_SWINT0_MAP_OFS		0x0054
+ #define GIC_VPE_SWINT1_MAP_OFS		0x0058
+ #define GIC_VPE_OTHER_ADDR_OFS		0x0080
++#define GIC_VP_IDENT_OFS		0x0088
+ #define GIC_VPE_WD_CONFIG0_OFS		0x0090
+ #define GIC_VPE_WD_COUNT0_OFS		0x0094
+ #define GIC_VPE_WD_INITIAL0_OFS		0x0098
+@@ -211,6 +212,10 @@
+ #define GIC_VPE_SMASK_FDC_SHF		6
+ #define GIC_VPE_SMASK_FDC_MSK		(MSK(1) << GIC_VPE_SMASK_FDC_SHF)
  
- 	if (mips_cm_is64) {
- 		gic_write(GIC_REG(VPE_OTHER, GIC_VPE_COMPARE), cnt);
-@@ -534,7 +534,8 @@ static void gic_mask_local_irq_all_vpes(struct irq_data *d)
++/* GIC_VP_IDENT fields */
++#define GIC_VP_IDENT_VCNUM_SHF		0
++#define GIC_VP_IDENT_VCNUM_MSK		(MSK(6) << GIC_VP_IDENT_VCNUM_SHF)
++
+ /* GIC nomenclature for Core Interrupt Pins. */
+ #define GIC_CPU_INT0		0 /* Core Interrupt 2 */
+ #define GIC_CPU_INT1		1 /* .		      */
+@@ -281,4 +286,16 @@ static inline int gic_get_usm_range(struct resource *gic_usm_res)
  
- 	spin_lock_irqsave(&gic_lock, flags);
- 	for (i = 0; i < gic_vpes; i++) {
--		gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR), i);
-+		gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR),
-+			  mips_cm_vp_id(i));
- 		gic_write32(GIC_REG(VPE_OTHER, GIC_VPE_RMASK), 1 << intr);
- 	}
- 	spin_unlock_irqrestore(&gic_lock, flags);
-@@ -548,7 +549,8 @@ static void gic_unmask_local_irq_all_vpes(struct irq_data *d)
+ #endif /* CONFIG_MIPS_GIC */
  
- 	spin_lock_irqsave(&gic_lock, flags);
- 	for (i = 0; i < gic_vpes; i++) {
--		gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR), i);
-+		gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR),
-+			  mips_cm_vp_id(i));
- 		gic_write32(GIC_REG(VPE_OTHER, GIC_VPE_SMASK), 1 << intr);
- 	}
- 	spin_unlock_irqrestore(&gic_lock, flags);
-@@ -665,7 +667,8 @@ static void __init gic_basic_init(void)
- 	for (i = 0; i < gic_vpes; i++) {
- 		unsigned int j;
- 
--		gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR), i);
-+		gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR),
-+			  mips_cm_vp_id(i));
- 		for (j = 0; j < GIC_NUM_LOCAL_INTRS; j++) {
- 			if (!gic_local_irq_is_routable(j))
- 				continue;
-@@ -710,7 +713,8 @@ static int gic_local_irq_domain_map(struct irq_domain *d, unsigned int virq,
- 	for (i = 0; i < gic_vpes; i++) {
- 		u32 val = GIC_MAP_TO_PIN_MSK | gic_cpu_pin;
- 
--		gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR), i);
-+		gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR),
-+			  mips_cm_vp_id(i));
- 
- 		switch (intr) {
- 		case GIC_LOCAL_INT_WD:
++/**
++ * gic_read_local_vp_id() - read the local VPs VCNUM
++ *
++ * Read the VCNUM of the local VP from the GIC_VP_IDENT register and
++ * return it to the caller. This ID should be used to refer to the VP
++ * via the GICs VP-other region, or when calculating an offset to a
++ * bit representing the VP in interrupt masks.
++ *
++ * Return: The VCNUM value for the local VP.
++ */
++extern unsigned gic_read_local_vp_id(void);
++
+ #endif /* __LINUX_IRQCHIP_MIPS_GIC_H */
 -- 
 2.7.0

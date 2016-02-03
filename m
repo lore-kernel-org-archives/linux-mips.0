@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:19374 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18814 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27009881AbcBCDRgwddP0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 04:17:36 +0100
+        with ESMTP id S27009953AbcBCDRvPg0D0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 04:17:51 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 05/15] MIPS: CM: Add CM GCR_BEV_BASE accessors
-Date: Wed, 3 Feb 2016 03:15:25 +0000
-Message-ID: <1454469335-14778-6-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 06/15] MIPS: CM: Fix mips_cm_max_vp_width for UP kernels
+Date: Wed, 3 Feb 2016 03:15:26 +0000
+Message-ID: <1454469335-14778-7-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1454469335-14778-1-git-send-email-paul.burton@imgtec.com>
 References: <1454469335-14778-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,28 +22,40 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
 Cc: Paul Burton <paul.burton@imgtec.com>, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20160203031525.Yr9LYw7fIUWywIAnRyFIzTVRjhBkTprJ53XjSpFjvVs@z>
+Message-ID: <20160203031526.v0Y_SeM76e5Hw73r8yI-dxzXmzuw7tMZTSdrp_qGy70@z>
 
-Generate accessor functions for the GCR_BEV_BASE register introduced by
-CM3, for use by a later patch.
+Fix mips_cm_max_vp_width for UP kernels where it previously referenced
+smp_num_siblings, which is not declared for UP kernels. This led to
+build errors such as the following:
+
+  drivers/built-in.o: In function `$L446':
+  irq-mips-gic.c:(.text+0x1994): undefined reference to `smp_num_siblings'
+  drivers/built-in.o:irq-mips-gic.c:(.text+0x199c): more undefined references to `smp_num_siblings' follow
+
+On UP kernels simply return 1, leaving the reference to smp_num_siblings
+in place only for SMP kernels.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
- arch/mips/include/asm/mips-cm.h | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/include/asm/mips-cm.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
-index b196825..1395bbc 100644
+index 1395bbc..3fdb6c9 100644
 --- a/arch/mips/include/asm/mips-cm.h
 +++ b/arch/mips/include/asm/mips-cm.h
-@@ -208,6 +208,7 @@ BUILD_CM_RW(l2_config,		MIPS_CM_GCB_OFS + 0x130)
- BUILD_CM_RW(sys_config2,	MIPS_CM_GCB_OFS + 0x150)
- BUILD_CM_RW(l2_pft_control,	MIPS_CM_GCB_OFS + 0x300)
- BUILD_CM_RW(l2_pft_control_b,	MIPS_CM_GCB_OFS + 0x308)
-+BUILD_CM_RW(bev_base,		MIPS_CM_GCB_OFS + 0x680)
+@@ -462,7 +462,10 @@ static inline unsigned int mips_cm_max_vp_width(void)
+ 	if (mips_cm_revision() >= CM_REV_CM3)
+ 		return read_gcr_sys_config2() & CM_GCR_SYS_CONFIG2_MAXVPW_MSK;
  
- /* Core Local & Core Other register accessor functions */
- BUILD_CM_Cx_RW(reset_release,	0x00)
+-	return smp_num_siblings;
++	if (config_enabled(CONFIG_SMP))
++		return smp_num_siblings;
++
++	return 1;
+ }
+ 
+ /**
 -- 
 2.7.0

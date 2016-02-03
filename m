@@ -1,18 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:56770 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011683AbcBCRpvcppqz (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 18:45:51 +0100
-Subject: Re: [PATCH] MIPS: Octeon: Add Octeon III CN7XXX interface detection
-References: <1454412318-27213-1-git-send-email-Zubair.Kakakhel@imgtec.com>
- <56B09528.1030902@cogentembedded.com>
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Message-ID: <56B23CB2.5090805@imgtec.com>
-Date: Wed, 3 Feb 2016 17:45:22 +0000
+Received: from mail-bl2on0055.outbound.protection.outlook.com ([65.55.169.55]:47232
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27011683AbcBCR5PCBJTz (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 3 Feb 2016 18:57:15 +0100
+Message-ID: <56B23F70.80308@caviumnetworks.com>
+Date: Wed, 3 Feb 2016 09:57:04 -0800
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-In-Reply-To: <56B09528.1030902@cogentembedded.com>
+Subject: Re: [PATCH] MIPS: Octeon: Add Octeon III CN7XXX interface detection
+References: <1454412318-27213-1-git-send-email-Zubair.Kakakhel@imgtec.com> <56B09528.1030902@cogentembedded.com> <56B23CB2.5090805@imgtec.com> <56B23E44.7080304@cogentembedded.com>
+In-Reply-To: <56B23E44.7080304@cogentembedded.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Return-Path: <Zubair.Kakakhel@imgtec.com>
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,97 +22,68 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, david.daney@cavium.com
-Cc: janne.huttunen@nokia.com, aaro.koskinen@nokia.com, ralf@linux-mips.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20160203174522.jDGO_LJL9yHOtgLBlSNFsKNgr2WNLTemk3VHdMJsDUU@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, david.daney@cavium.com, janne.huttunen@nokia.com, aaro.koskinen@nokia.com, ralf@linux-mips.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20160203175704.E53xY4eFuFdBuh7LZaba1Po869aKCnt6desIXjXQ7t8@z>
 
-Hi,
-
-Thanks for the review. Comments below.
-
-On 02/02/16 11:38, Sergei Shtylyov wrote:
-> Hello.
+On 02/03/2016 09:52 AM, Sergei Shtylyov wrote:
+> On 02/03/2016 08:45 PM, Zubair Lutfullah Kakakhel wrote:
 >
-> On 2/2/2016 2:25 PM, Zubair Lutfullah Kakakhel wrote:
+>>>> Add basic CN7XXX interface detection.
+>>>>
+>>>> This allows the kernel to boot with ethernet working as it initializes
+>>>> the ethernet ports with SGMII instead of defaulting to RGMII routines.
+>>>>
+>>>> Tested on the utm8 from Rhino Labs with a CN7130.
+>>>>
+>>>> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+>>>> ---
+>>>>   arch/mips/cavium-octeon/executive/cvmx-helper.c | 41
+>>>> +++++++++++++++++++++++++
+>>>>   1 file changed, 41 insertions(+)
+>>>>
+>>>> diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper.c
+>>>> b/arch/mips/cavium-octeon/executive/cvmx-helper.c
+>>>> index 376701f..1a28009 100644
+>>>> --- a/arch/mips/cavium-octeon/executive/cvmx-helper.c
+>>>> +++ b/arch/mips/cavium-octeon/executive/cvmx-helper.c
+>>> [...]
+>>>> @@ -260,6 +262,39 @@ static cvmx_helper_interface_mode_t
+>>>> __cvmx_get_mode_octeon2(int interface)
+>>>>   }
+>>>>
+>>>>   /**
+>>>> + * @INTERNAL
+>>>> + * Return interface mode for CN7XXX.
+>>>> + */
+>>>> +static cvmx_helper_interface_mode_t __cvmx_get_mode_cn7xxx(int
+>>>> interface)
+>>>
+>>>     Not *unsigned*?
+>>
+>> The rest of the instances in the file don't have unsigned.
+>>
+>> Probably because it is an enum..
 >
->> Add basic CN7XXX interface detection.
->>
->> This allows the kernel to boot with ethernet working as it initializes
->> the ethernet ports with SGMII instead of defaulting to RGMII routines.
->>
->> Tested on the utm8 from Rhino Labs with a CN7130.
->>
->> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
->> ---
->>   arch/mips/cavium-octeon/executive/cvmx-helper.c | 41 +++++++++++++++++++++++++
->>   1 file changed, 41 insertions(+)
->>
->> diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper.c b/arch/mips/cavium-octeon/executive/cvmx-helper.c
->> index 376701f..1a28009 100644
->> --- a/arch/mips/cavium-octeon/executive/cvmx-helper.c
->> +++ b/arch/mips/cavium-octeon/executive/cvmx-helper.c
+>     I meant the parameter, of course.
+>
+
+In this file, the "interface" is consistently given the type int.  Check 
+it out, it is int everywhere.
+
+I think it makes sense to maintain consistency and use int here too.
+
+David Daney
+
+
 > [...]
->> @@ -260,6 +262,39 @@ static cvmx_helper_interface_mode_t __cvmx_get_mode_octeon2(int interface)
->>   }
+>
+>> (⌐▀͡ ̯ʖ▀)
 >>
->>   /**
->> + * @INTERNAL
->> + * Return interface mode for CN7XXX.
->> + */
->> +static cvmx_helper_interface_mode_t __cvmx_get_mode_cn7xxx(int interface)
+>> Thanks
+>> ZubairLK
 >
->     Not *unsigned*?
-
-The rest of the instances in the file don't have unsigned.
-
-Probably because it is an enum..
-
->
->> +{
->> +    union cvmx_gmxx_inf_mode mode;
->> +
->> +    mode.u64 = cvmx_read_csr(CVMX_GMXX_INF_MODE(interface));
->> +
->> +    if (interface < 2) {        /* SGMII/QSGMII/XAUI */
->> +        switch (mode.cn68xx.mode) {
->> +        case 0:
->> +            return CVMX_HELPER_INTERFACE_MODE_DISABLED;
->> +        case 1:
->> +        case 2:
->> +            return CVMX_HELPER_INTERFACE_MODE_SGMII;
->> +        case 3:
->> +            return CVMX_HELPER_INTERFACE_MODE_XAUI;
->> +        default:
->> +            return CVMX_HELPER_INTERFACE_MODE_SGMII;
->> +        }
->> +    } else if (interface == 2)    /* NPI */
->> +        return CVMX_HELPER_INTERFACE_MODE_NPI;
->> +    else if (interface == 3)    /* LOOP */
->> +        return CVMX_HELPER_INTERFACE_MODE_LOOP;
->> +    else if (interface == 4)    /* RGMII (AGL) */
->> +        return CVMX_HELPER_INTERFACE_MODE_RGMII;
->
->     This is asking to be a *switch* statement.
-
-Ask and you shall receive
-
-(⌐▀͡ ̯ʖ▀)
-
-Thanks
-ZubairLK
-
->
->> +
->> +    return CVMX_HELPER_INTERFACE_MODE_DISABLED;
->> +}
->> +
->> +
->> +/**
->>    * Get the operating mode of an interface. Depending on the Octeon
->>    * chip and configuration, this function returns an enumeration
->>    * of the type of packet I/O supported by an interface.
 > [...]
 >
 > MBR, Sergei
->
 >

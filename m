@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13709 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57136 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012294AbcBCQSCLEy5Q (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 17:18:02 +0100
+        with ESMTP id S27012047AbcBCQSQsVCuQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 17:18:16 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 0/3] Imagination Technologies MIPS M6250 CPU support
-Date: Wed, 3 Feb 2016 16:17:27 +0000
-Message-ID: <1454516250-9395-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 1/3] MIPS: Add M6250 PRID & cpu_type_enum values
+Date: Wed, 3 Feb 2016 16:17:28 +0000
+Message-ID: <1454516250-9395-2-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1454516250-9395-1-git-send-email-paul.burton@imgtec.com>
+References: <1454516250-9395-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -19,29 +21,38 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, Joshua Kinard <kumba@gentoo.org>, "Maciej W. Rozycki" <macro@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, "Maciej W. Rozycki" <macro@codesourcery.com>, James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20160203161727.TegG050uHqSLf36EAyXKcBm2rNNlp4ePpMGBHKXiJiE@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Joshua Kinard <kumba@gentoo.org>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
+Message-ID: <20160203161728.ZgYlP1CxEuJpucJJ6nvjxmAJbkQGnWG5Q5BZAyBwoNw@z>
 
-This series adds support for probing the Imagination Technologies MIPS
-M6250 CPU. This is a small, low power microprocessor implementing the
-MIPS32r6 architecture. We already support everything required for it to
-work, so this series simply adds the PRID & various switch cases then
-matches the PRID during probe.
+Define the processor ID for the M6250 CPU and add a value to the enum
+cpu_type_enum for the core.
 
-This applies atop v4.5-rc2 with the similar P6600 patch set applied
-first. There is no real dependency between the two patch sets, just
-overlap in the context of the changes.
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+---
 
-Paul Burton (3):
-  MIPS: Add M6250 PRID & cpu_type_enum values
-  MIPS: Add M6250 cases to CPU switch statements
-  MIPS: Probe the M6250 CPU
+ arch/mips/include/asm/cpu.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
- arch/mips/include/asm/cpu-type.h | 4 ++++
- arch/mips/include/asm/cpu.h      | 3 ++-
- arch/mips/kernel/cpu-probe.c     | 4 ++++
- arch/mips/mm/c-r4k.c             | 1 +
- 4 files changed, 11 insertions(+), 1 deletion(-)
-
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index 7908dc2..96b7dd1 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -122,6 +122,7 @@
+ #define PRID_IMP_M5150		0xa700
+ #define PRID_IMP_P5600		0xa800
+ #define PRID_IMP_I6400		0xa900
++#define PRID_IMP_M6250		0xab00
+ 
+ /*
+  * These are the PRID's for when 23:16 == PRID_COMP_SIBYTE
+@@ -309,7 +310,7 @@ enum cpu_type_enum {
+ 	CPU_ALCHEMY, CPU_PR4450, CPU_BMIPS32, CPU_BMIPS3300, CPU_BMIPS4350,
+ 	CPU_BMIPS4380, CPU_BMIPS5000, CPU_JZRISC, CPU_LOONGSON1, CPU_M14KC,
+ 	CPU_M14KEC, CPU_INTERAPTIV, CPU_P5600, CPU_PROAPTIV, CPU_1074K, CPU_M5150,
+-	CPU_I6400, CPU_P6600,
++	CPU_I6400, CPU_P6600, CPU_M6250,
+ 
+ 	/*
+ 	 * MIPS64 class processors
 -- 
 2.7.0

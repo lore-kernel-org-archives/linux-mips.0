@@ -1,16 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:60689 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:56770 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012139AbcBCQzvxtUct (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 17:55:51 +0100
-Date: Wed, 3 Feb 2016 16:55:44 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH 1/5] MIPS: Bail on unsupported module relocs
-In-Reply-To: <20160203161517.GE30470@NP-P-BURTON>
-Message-ID: <alpine.DEB.2.00.1602031636220.15885@tp.orcam.me.uk>
-References: <1454471085-20963-1-git-send-email-paul.burton@imgtec.com> <1454471085-20963-2-git-send-email-paul.burton@imgtec.com> <alpine.DEB.2.00.1602031139250.15885@tp.orcam.me.uk> <20160203161517.GE30470@NP-P-BURTON>
+        with ESMTP id S27011683AbcBCRpvcppqz (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Feb 2016 18:45:51 +0100
+Subject: Re: [PATCH] MIPS: Octeon: Add Octeon III CN7XXX interface detection
+References: <1454412318-27213-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+ <56B09528.1030902@cogentembedded.com>
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Message-ID: <56B23CB2.5090805@imgtec.com>
+Date: Wed, 3 Feb 2016 17:45:22 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+In-Reply-To: <56B09528.1030902@cogentembedded.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,35 +22,97 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, Andrey Konovalov <adech.fo@gmail.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, "Maciej W. Rozycki" <macro@linux-mips.org>
-Message-ID: <20160203165544.EW4lia1-LFRQmhQXGzte0SmFE9MM372c34B72KhHHzs@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, david.daney@cavium.com
+Cc: janne.huttunen@nokia.com, aaro.koskinen@nokia.com, ralf@linux-mips.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20160203174522.jDGO_LJL9yHOtgLBlSNFsKNgr2WNLTemk3VHdMJsDUU@z>
 
-On Wed, 3 Feb 2016, Paul Burton wrote:
+Hi,
 
-> >  Hmm, this looks like a fatal error condition to me, the module won't 
-> > load.  Why `pr_warn' rather than `pr_err' then?  Likewise in the other 
-> > file.
-> 
-> To me fatality implies death, and nothing dies here. The module isn't
-> loaded but that's done gracefully & is not likely due to an error in the
-> kernel - it's far more likely that the module isn't valid. So to me,
-> warning seems appropriate rather than implying an error in the kernel.
+Thanks for the review. Comments below.
 
- It may be bikeshedding, however these levels affect what goes to syslog 
-and the console.  There are `crit', `alert' and `emerg' levels above, to 
-raise more severe conditions.  As to `warn' I'd expect one on a succesful 
-action made with some limitations, e.g. a compatibility mode of some kind, 
-running with a performance limitation, some functionality disabled, etc.  
-There's also `notice', which is lower, I'd use for normal actions that 
-might require operator's attention, e.g. I'd put switching a network 
-interface into the promiscuous mode there, due to its side effect on 
-overall system performance.
+On 02/02/16 11:38, Sergei Shtylyov wrote:
+> Hello.
+>
+> On 2/2/2016 2:25 PM, Zubair Lutfullah Kakakhel wrote:
+>
+>> Add basic CN7XXX interface detection.
+>>
+>> This allows the kernel to boot with ethernet working as it initializes
+>> the ethernet ports with SGMII instead of defaulting to RGMII routines.
+>>
+>> Tested on the utm8 from Rhino Labs with a CN7130.
+>>
+>> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+>> ---
+>>   arch/mips/cavium-octeon/executive/cvmx-helper.c | 41 +++++++++++++++++++++++++
+>>   1 file changed, 41 insertions(+)
+>>
+>> diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper.c b/arch/mips/cavium-octeon/executive/cvmx-helper.c
+>> index 376701f..1a28009 100644
+>> --- a/arch/mips/cavium-octeon/executive/cvmx-helper.c
+>> +++ b/arch/mips/cavium-octeon/executive/cvmx-helper.c
+> [...]
+>> @@ -260,6 +262,39 @@ static cvmx_helper_interface_mode_t __cvmx_get_mode_octeon2(int interface)
+>>   }
+>>
+>>   /**
+>> + * @INTERNAL
+>> + * Return interface mode for CN7XXX.
+>> + */
+>> +static cvmx_helper_interface_mode_t __cvmx_get_mode_cn7xxx(int interface)
+>
+>     Not *unsigned*?
 
- And I don't think it has to be a bug in the kernel to raise an `err' 
-condition.  However I do agree the boundary here may be a bit fuzzy and 
-code you've been changing doesn't seem consistent either.
+The rest of the instances in the file don't have unsigned.
 
- FWIW,
+Probably because it is an enum..
 
-  Maciej
+>
+>> +{
+>> +    union cvmx_gmxx_inf_mode mode;
+>> +
+>> +    mode.u64 = cvmx_read_csr(CVMX_GMXX_INF_MODE(interface));
+>> +
+>> +    if (interface < 2) {        /* SGMII/QSGMII/XAUI */
+>> +        switch (mode.cn68xx.mode) {
+>> +        case 0:
+>> +            return CVMX_HELPER_INTERFACE_MODE_DISABLED;
+>> +        case 1:
+>> +        case 2:
+>> +            return CVMX_HELPER_INTERFACE_MODE_SGMII;
+>> +        case 3:
+>> +            return CVMX_HELPER_INTERFACE_MODE_XAUI;
+>> +        default:
+>> +            return CVMX_HELPER_INTERFACE_MODE_SGMII;
+>> +        }
+>> +    } else if (interface == 2)    /* NPI */
+>> +        return CVMX_HELPER_INTERFACE_MODE_NPI;
+>> +    else if (interface == 3)    /* LOOP */
+>> +        return CVMX_HELPER_INTERFACE_MODE_LOOP;
+>> +    else if (interface == 4)    /* RGMII (AGL) */
+>> +        return CVMX_HELPER_INTERFACE_MODE_RGMII;
+>
+>     This is asking to be a *switch* statement.
+
+Ask and you shall receive
+
+(⌐▀͡ ̯ʖ▀)
+
+Thanks
+ZubairLK
+
+>
+>> +
+>> +    return CVMX_HELPER_INTERFACE_MODE_DISABLED;
+>> +}
+>> +
+>> +
+>> +/**
+>>    * Get the operating mode of an interface. Depending on the Octeon
+>>    * chip and configuration, this function returns an enumeration
+>>    * of the type of packet I/O supported by an interface.
+> [...]
+>
+> MBR, Sergei
+>
+>

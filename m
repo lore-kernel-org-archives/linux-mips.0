@@ -1,19 +1,16 @@
-Received: from mail-bn1bon0061.outbound.protection.outlook.com ([157.56.111.61]:64448
-        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27011848AbcBERWOIAep- (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 5 Feb 2016 18:22:14 +0100
-Message-ID: <56B4DA3B.40607@caviumnetworks.com>
-Date: Fri, 5 Feb 2016 09:22:03 -0800
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:61063 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007227AbcBFRQ6g0KLC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 6 Feb 2016 18:16:58 +0100
+Date: Sat, 6 Feb 2016 17:16:33 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH] MIPS: Differentiate between 32 and 64 bit ELF header
+In-Reply-To: <56AF82AB.5010502@bmw-carit.de>
+Message-ID: <alpine.DEB.2.00.1602061624460.15885@tp.orcam.me.uk>
+References: <1453992270-4688-1-git-send-email-daniel.wagner@bmw-carit.de> <1454074137-16334-1-git-send-email-daniel.wagner@bmw-carit.de> <alpine.DEB.2.00.1602010038230.5958@tp.orcam.me.uk> <56AF82AB.5010502@bmw-carit.de>
 MIME-Version: 1.0
-Subject: Re: [PATCH 6/7] [PATCH] MIPS: OCTEON: Add support for OCTEON III
- interrupt controller.
-References: <1454632974-7686-1-git-send-email-ddaney.cavm@gmail.com> <1454632974-7686-7-git-send-email-ddaney.cavm@gmail.com> <alpine.DEB.2.11.1602050954480.25254@nanos>
-In-Reply-To: <alpine.DEB.2.11.1602050954480.25254@nanos>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,114 +20,90 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: David Daney <ddaney.cavm@gmail.com>, linux-mips@linux-mips.org, ralf@linux-mips.org, linux-kernel@vger.kernel.org, David Daney <david.daney@cavium.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Message-ID: <20160205172203.qvQ7lru55SB6EEjXTlmEqvkHk3MitaJ6mr30YbrF_Ws@z>
+To: Daniel Wagner <daniel.wagner@bmw-carit.de>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20160206171633.sAD1XdZrNGA4aaStqxsd6G9CybqAGQXATlZ1wbr1-5c@z>
 
-On 02/05/2016 01:06 AM, Thomas Gleixner wrote:
-> On Thu, 4 Feb 2016, David Daney wrote:
->> +static int octeon_irq_ciu_set_type(struct irq_data *data, unsigned int t)
->> +{
->> +	irqd_set_trigger_type(data, t);
->> +
->> +	if (irqd_get_trigger_type(data) & IRQ_TYPE_EDGE_BOTH)
->> +		irq_set_handler_locked(data, handle_edge_irq);
->> +	else
->> +		irq_set_handler_locked(data, handle_level_irq);
->> +
->> +	return IRQ_SET_MASK_OK;
->
-> That doesn't make any sense. First you store the type 't' in irq data, then
-> you query irq data for the type and at the end you tell the core to set the
-> type in irq data.
->
->       if (t & IRQ_TYPE_EDGE_BOTH)
->       	...
->       else
->          ...
->       return IRQ_SET_MASK_OK;
->
-> does the same, right?
+On Mon, 1 Feb 2016, Daniel Wagner wrote:
 
-Yes, clearly that is better.  I don't know what we were thinking there.
+> >> Depending on the configuration either the 32 or 64 bit version of
+> >> elf_check_arch() is defined. parse_crash_elf32_headers() does
+> >> some basic verification of the ELF header via elf_check_arch().
+> >> parse_crash_elf64_headers() does it via vmcore_elf64_check_arch()
+> >> which expands to the same elf_check_check().
+> >>
+> >>    In file included from include/linux/elf.h:4:0,
+> >>                     from fs/proc/vmcore.c:13:
+> >>    fs/proc/vmcore.c: In function 'parse_crash_elf64_headers':
+> >>>> arch/mips/include/asm/elf.h:228:23: error: initialization from incompatible pointer type [-Werror=incompatible-pointer-types]
+> >>      struct elfhdr *__h = (hdr);     \
+> >>                           ^
+> >>    include/linux/crash_dump.h:41:37: note: in expansion of macro 'elf_check_arch'
+> >>     #define vmcore_elf64_check_arch(x) (elf_check_arch(x) || vmcore_elf_check_arch_cross(x))
+> >>                                         ^
+> >>    fs/proc/vmcore.c:1015:4: note: in expansion of macro 'vmcore_elf64_check_arch'
+> >>       !vmcore_elf64_check_arch(&ehdr) ||
+> >>        ^
+> >>
+> >> Since the MIPS ELF header for 32 bit and 64 bit differ we need
+> >> to check accordingly.
+> > 
+> >  I fail to see how it can work as it stands given that `elf_check_arch' is 
+> > called from the same source file both on a pointer to `Elf32_Ehdr' and one 
+> > to `Elf64_Ehdr'.  However the MIPS implementations of `elf_check_arch' 
+> > only use an auxiliary variable to avoid multiple evaluation of a macro 
+> > argument and therefore instead I recommend the use of the usual approach
+> > taken in such a situation within a statement expression, that is to 
+> > declare the variable with `typeof' rather than an explicit type.  As an
+> > upside this will minimise code disruption as well.
+> 
+> Good point on the type for hdr. Thought elf_check_arch() implementation
+> differ on 32 bit and 64 bit implementation. I played a bit around and the
+> simplest version I found was this here:
 
+ Umm, somehow I didn't really realise this code wants ELF32 and ELF64 
+checks both at once -- does it actually make sense?  Is a core file from a 
+kernel crash dump ever going to be the opposite kind to the newly booted 
+kernel?
 
->
->> +int octeon_irq_ciu3_xlat(struct irq_domain *d,
->
-> static ?
+ Anyway sorry about my confusion and the point above aside I don't really 
+like the idea of merging both `elf_check_arch' variations into one, it 
+just looks messy to me.  So your original patch was somewhat better after 
+all, but I think it wasn't enough; for one it didn't handle the 32-bit 
+case in a 64-bit kernel.
 
-To be used in follow-on patch for MSI-X irq_chip driver residing in a 
-separate file.
+ What I think we want to do here is to draw a clear line between ELF32 and 
+ELF64.  So first in include/linux/crash_dump.h:
 
-The idea was to not be changing the to/from static multiple times as the 
-new patches were merged.  If you think it preferable, I can make them 
-all static and then remove the static later, when needed.
+#ifndef vmcore_elf32_check_arch
+#define vmcore_elf32_check_arch elf_check_arch
+#endif
 
->
->> +			 struct device_node *node,
->> +			 const u32 *intspec,
->> +			 unsigned int intsize,
->> +			 unsigned long *out_hwirq,
->> +			 unsigned int *out_type)
->> +{
->> +
->> +void octeon_irq_ciu3_enable(struct irq_data *data)
->
-> static
->
->> +void octeon_irq_ciu3_disable(struct irq_data *data)
->> +void octeon_irq_ciu3_ack(struct irq_data *data)
->> +void octeon_irq_ciu3_mask(struct irq_data *data)
->> +void octeon_irq_ciu3_mask_ack(struct irq_data *data)
->> +int octeon_irq_ciu3_set_affinity(struct irq_data *data,
->> +				 const struct cpumask *dest, bool force)
->
-> ditto
+and use `vmcore_elf32_check_arch' rather than `elf_check_arch' in 
+`parse_crash_elf32_headers' in fs/proc/vmcore.c (I think the checks for 
+ELFCLASS32/ELFCLASS64 ought to go first too, although that'd have to be a 
+separate patch).
 
-Same, see above.
+ Then we can redefine `vmcore_elf32_check_arch' and 
+`vmcore_elf64_check_arch' along your first proposal (although we don't 
+need to refer to `vmcore_elf_check_arch_cross' as we don't define it 
+anyway).  However given that IIUC we're dealing with kernel rather than 
+userland images here I think we want to skip all the ABI peculiarities and 
+just accept anything that is compatible with the architecture.  It'll then 
+be the business of whatever tool is going to handle this image to sort out 
+the details.
 
+ So to make things plain we just need:
 
->
->> +int octeon_irq_ciu3_mapx(struct irq_domain *d, unsigned int virq,
->> +			 irq_hw_number_t hw, struct irq_chip *chip)
->
-> ....
+#define mips_elf_check_machine(x) ((x)->e_machine == EM_MIPS)
 
-Yep.
+#define vmcore_elf32_check_arch mips_elf_check_machine
+#define vmcore_elf64_check_arch mips_elf_check_machine
 
->
->> +void octeon_ciu3_mbox_send(int cpu, unsigned int mbox)
->> +{
->> +	struct octeon_ciu3_info *ciu3_info;
->> +	unsigned int intsn;
->> +	union cvmx_ciu3_iscx_w1s isc_w1s;
->> +	u64 isc_w1s_addr;
->> +
->> +	if (WARN_ON_ONCE(mbox >= CIU3_MBOX_PER_CORE))
->> +		return;
->> +
->> +	intsn = octeon_irq_ciu3_mbox_intsn_for_cpu(cpu, mbox);
->> +	ciu3_info = per_cpu(octeon_ciu3_info, cpu);
->> +	isc_w1s_addr = ciu3_info->ciu3_addr + CIU3_ISC_W1S(intsn);
->> +
->> +	isc_w1s.u64 = 0;
->> +	isc_w1s.s.raw = 1;
->> +
->> +	cvmx_write_csr(isc_w1s_addr, isc_w1s.u64);
->> +	cvmx_read_csr(isc_w1s_addr);
->> +}
->> +EXPORT_SYMBOL(octeon_ciu3_mbox_send);
->
-> Why need modules that function?
+in arch/mips/include/asm/elf.h (and then our definitions of 
+`elf_check_arch' can be rewritten to use `mips_elf_check_machine' too, 
+also in arch/mips/kernel/binfmt_elf?32.c).
 
-Similar to the MSI-X irq_chip thing, but this time for follow-on 
-kexec/kdump patches which may be implemented as a module.
+ Questions or comments?
 
-I will remove the EXPORT_SYMBOL().
-
->
-> Thanks,
->
-> 	tglx
->
+  Maciej

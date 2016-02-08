@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:40928 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:3824 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012181AbcBHSoLcOUEb (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Feb 2016 19:44:11 +0100
+        with ESMTP id S27012185AbcBHSoMZuU4b (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Feb 2016 19:44:12 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 1/3] MIPS: Fix siginfo.h to use strict posix types
-Date: Mon, 8 Feb 2016 18:43:49 +0000
-Message-ID: <1454957031-20138-2-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 2/3] signal: Move generic copy_siginfo() to signal.h
+Date: Mon, 8 Feb 2016 18:43:50 +0000
+Message-ID: <1454957031-20138-3-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1454957031-20138-1-git-send-email-james.hogan@imgtec.com>
 References: <1454957031-20138-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -21,80 +21,96 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-kernel@vger.kernel.org, Christopher Ferris <cferris@google.com>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20160208184349.DDhKjBQgLJNqKcAe9SxOmrEHugy86MAavLcMtpJ1SfU@z>
+Cc: linux-kernel@vger.kernel.org, Christopher Ferris <cferris@google.com>, James Hogan <james.hogan@imgtec.com>, Arnd Bergmann <arnd@arndb.de>, Petr Malat <oss@malat.biz>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, stable@vger.kernel.org
+Message-ID: <20160208184350.IwAqxAECSgyAxfq-8uxTqHMoNN9Z2WDrspam_KFenJ0@z>
 
-Commit 85efde6f4e0d ("make exported headers use strict posix types")
-changed the asm-generic siginfo.h to use the __kernel_* types, and
-commit 3a471cbc081b ("remove __KERNEL_STRICT_NAMES") make the internal
-types accessible only to the kernel, but the MIPS implementation hasn't
-been updated to match.
+The generic copy_siginfo() is currently defined in
+asm-generic/siginfo.h, after including uapi/asm-generic/siginfo.h which
+defines the generic struct siginfo. However this makes it awkward for an
+architecture to use it if it has to define its own struct siginfo (e.g.
+MIPS and potentially IA64), since it means that asm-generic/siginfo.h
+can only be included after defining the arch-specific siginfo, which may
+be problematic if the arch-specific definition needs definitions from
+uapi/asm-generic/siginfo.h.
 
-Switch to proper types now so that the exported asm/siginfo.h won't
-produce quite so many compiler errors when included alone by a user
-program.
+It is possible to work around this by first including
+uapi/asm-generic/siginfo.h to get the constants before defining the
+arch-specific siginfo, and include asm-generic/siginfo.h after. However
+uapi headers can't be included by other uapi headers, so that first
+include has to be in an ifdef __kernel__, with the non __kernel__ case
+including the non-UAPI header instead.
+
+Instead of that mess, move the generic copy_siginfo() definition into
+linux/signal.h, which allows an arch-specific uapi/asm/siginfo.h to
+include asm-generic/siginfo.h and define the arch-specific siginfo, and
+for the generic copy_siginfo() to see that arch-specific definition.
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Petr Malat <oss@malat.biz>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: linux-arch@vger.kernel.org
 Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # 2.6.30-
+Cc: linux-ia64@vger.kernel.org
+Cc: <stable@vger.kernel.org> # 4.0-
 ---
- arch/mips/include/uapi/asm/siginfo.h | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ include/asm-generic/siginfo.h | 15 ---------------
+ include/linux/signal.h        | 15 +++++++++++++++
+ 2 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/arch/mips/include/uapi/asm/siginfo.h b/arch/mips/include/uapi/asm/siginfo.h
-index 2cb7fdead570..03ec1090f781 100644
---- a/arch/mips/include/uapi/asm/siginfo.h
-+++ b/arch/mips/include/uapi/asm/siginfo.h
-@@ -42,13 +42,13 @@ typedef struct siginfo {
+diff --git a/include/asm-generic/siginfo.h b/include/asm-generic/siginfo.h
+index 3d1a3af5cf59..a2508a8f9a9c 100644
+--- a/include/asm-generic/siginfo.h
++++ b/include/asm-generic/siginfo.h
+@@ -17,21 +17,6 @@
+ struct siginfo;
+ void do_schedule_next_timer(struct siginfo *info);
  
- 		/* kill() */
- 		struct {
--			pid_t _pid;		/* sender's pid */
-+			__kernel_pid_t _pid;	/* sender's pid */
- 			__ARCH_SI_UID_T _uid;	/* sender's uid */
- 		} _kill;
+-#ifndef HAVE_ARCH_COPY_SIGINFO
+-
+-#include <linux/string.h>
+-
+-static inline void copy_siginfo(struct siginfo *to, struct siginfo *from)
+-{
+-	if (from->si_code < 0)
+-		memcpy(to, from, sizeof(*to));
+-	else
+-		/* _sigchld is currently the largest know union member */
+-		memcpy(to, from, __ARCH_SI_PREAMBLE_SIZE + sizeof(from->_sifields._sigchld));
+-}
+-
+-#endif
+-
+ extern int copy_siginfo_to_user(struct siginfo __user *to, const struct siginfo *from);
  
- 		/* POSIX.1b timers */
- 		struct {
--			timer_t _tid;		/* timer id */
-+			__kernel_timer_t _tid;	/* timer id */
- 			int _overrun;		/* overrun count */
- 			char _pad[sizeof( __ARCH_SI_UID_T) - sizeof(int)];
- 			sigval_t _sigval;	/* same as below */
-@@ -57,26 +57,26 @@ typedef struct siginfo {
+ #endif
+diff --git a/include/linux/signal.h b/include/linux/signal.h
+index 92557bbce7e7..d80259afb9e5 100644
+--- a/include/linux/signal.h
++++ b/include/linux/signal.h
+@@ -28,6 +28,21 @@ struct sigpending {
+ 	sigset_t signal;
+ };
  
- 		/* POSIX.1b signals */
- 		struct {
--			pid_t _pid;		/* sender's pid */
-+			__kernel_pid_t _pid;	/* sender's pid */
- 			__ARCH_SI_UID_T _uid;	/* sender's uid */
- 			sigval_t _sigval;
- 		} _rt;
- 
- 		/* SIGCHLD */
- 		struct {
--			pid_t _pid;		/* which child */
-+			__kernel_pid_t _pid;	/* which child */
- 			__ARCH_SI_UID_T _uid;	/* sender's uid */
- 			int _status;		/* exit code */
--			clock_t _utime;
--			clock_t _stime;
-+			__kernel_clock_t _utime;
-+			__kernel_clock_t _stime;
- 		} _sigchld;
- 
- 		/* IRIX SIGCHLD */
- 		struct {
--			pid_t _pid;		/* which child */
--			clock_t _utime;
-+			__kernel_pid_t _pid;	/* which child */
-+			__kernel_clock_t _utime;
- 			int _status;		/* exit code */
--			clock_t _stime;
-+			__kernel_clock_t _stime;
- 		} _irix_sigchld;
- 
- 		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS */
++#ifndef HAVE_ARCH_COPY_SIGINFO
++
++#include <linux/string.h>
++
++static inline void copy_siginfo(struct siginfo *to, struct siginfo *from)
++{
++	if (from->si_code < 0)
++		memcpy(to, from, sizeof(*to));
++	else
++		/* _sigchld is currently the largest know union member */
++		memcpy(to, from, __ARCH_SI_PREAMBLE_SIZE + sizeof(from->_sifields._sigchld));
++}
++
++#endif
++
+ /*
+  * Define some primitives to manipulate sigset_t.
+  */
 -- 
 2.4.10

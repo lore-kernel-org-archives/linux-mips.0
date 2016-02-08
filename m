@@ -1,15 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:5507 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:23581 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012028AbcBHRFog-QTP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Feb 2016 18:05:44 +0100
-Date: Mon, 8 Feb 2016 17:05:37 +0000
+        with ESMTP id S27012134AbcBHRT22Z8DP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Feb 2016 18:19:28 +0100
+Date: Mon, 8 Feb 2016 17:19:14 +0000
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH v3 2/3] crash_dump: Add vmcore_elf32_check_arch
-In-Reply-To: <1454946278-13859-3-git-send-email-daniel.wagner@bmw-carit.de>
-Message-ID: <alpine.DEB.2.00.1602081705150.15885@tp.orcam.me.uk>
-References: <alpine.DEB.2.00.1602061624460.15885@tp.orcam.me.uk> <1454946278-13859-1-git-send-email-daniel.wagner@bmw-carit.de> <1454946278-13859-3-git-send-email-daniel.wagner@bmw-carit.de>
+Subject: Re: [PATCH v3 1/3] mips: Use arch specific auxvec.h instead of
+ generic-asm version
+In-Reply-To: <1454946278-13859-2-git-send-email-daniel.wagner@bmw-carit.de>
+Message-ID: <alpine.DEB.2.00.1602081705470.15885@tp.orcam.me.uk>
+References: <alpine.DEB.2.00.1602061624460.15885@tp.orcam.me.uk> <1454946278-13859-1-git-send-email-daniel.wagner@bmw-carit.de> <1454946278-13859-2-git-send-email-daniel.wagner@bmw-carit.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,21 +24,41 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Daniel Wagner <daniel.wagner@bmw-carit.de>
 Cc: Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160208170537.OlcpMk4vaTWZiV7gdKBIWONlU-mQcErj_XiqGqtP1TE@z>
+Message-ID: <20160208171914.454m5bilJKctM4HQeuH6loEzO6j03v04F94zzGJvCUI@z>
 
 On Mon, 8 Feb 2016, Daniel Wagner wrote:
 
-> parse_crash_elf{32|64}_headers will check the headers via the
-> elf_check_arch respectively vmcore_elf64_check_arch macro.
+> The generic auxvec.h is used instead the arch specific version.
+> This happens when cross compiling the kernel.
 > 
-> The MIPS architecture implements those two macros differently.
-> In order to make the differentiation more explicit, let's introduce
-> an vmcore_elf32_check_arch to allow the archs to overwrite it.
+> mips64-linux-gnu-gcc (GCC) 5.2.1 20151104 (Red Hat Cross 5.2.1-4)
 > 
-> Signed-off-by: Daniel Wagner <daniel.wagner@bmw-carit.de>
-> Suggested-by: Maciej W. Rozycki <macro@imgtec.com>
-> ---
+> arch/mips/kernel/../../../fs/binfmt_elf.c: In function ‘create_elf_tables’:
+> ./arch/mips/include/asm/elf.h:425:14: error: ‘AT_SYSINFO_EHDR’ undeclared (first use in this function)
 
-Reviewed-by: Maciej W. Rozycki <macro@imgtec.com>
+ There must be something wrong with your setup, or maybe a bug somewhere 
+in our build machinery you just happened to trigger.  Most of us routinely 
+use a cross-compiler to build the kernel and you're the first one to 
+report the problem.
+
+ Can you report the compiler invocation that has lead to this error?  
+Have you used a default config or a custom one?
+
+> diff --git a/arch/mips/include/asm/auxvec.h b/arch/mips/include/asm/auxvec.h
+> new file mode 100644
+> index 0000000..fbd388c
+> --- /dev/null
+> +++ b/arch/mips/include/asm/auxvec.h
+> @@ -0,0 +1 @@
+> +#include <uapi/asm/auxvec.h>
+
+ You're not supposed to require a header in asm/ merely to include a 
+header of the same name from uapi/asm/ as there are normally 
+-I./arch/mips/include and -I./arch/mips/include/uapi options present both 
+at once, in this order, on the compiler's invocation line.  So:
+
+#include <asm/auxvec.h>
+
+will pull the header from uapi/asm/ if none is present in asm/.
 
   Maciej

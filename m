@@ -1,16 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:4714 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:28508 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012202AbcBHSoNZqcrb (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Feb 2016 19:44:13 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 3/3] MIPS: Fix uapi include in exported asm/siginfo.h
-Date: Mon, 8 Feb 2016 18:43:51 +0000
-Message-ID: <1454957031-20138-4-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1454957031-20138-1-git-send-email-james.hogan@imgtec.com>
-References: <1454957031-20138-1-git-send-email-james.hogan@imgtec.com>
+        with ESMTP id S27012212AbcBHVsn7Fbdh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Feb 2016 22:48:43 +0100
+Subject: Re: [PATCH] MIPS: Always page align TASK_SIZE
+References: <1454954723-24887-1-git-send-email-harvey.hunt@imgtec.com>
+ <56B8DA56.9020108@caviumnetworks.com> <56B8DB2D.3070604@imgtec.com>
+ <56B90A3E.7000507@gentoo.org>
+From: Harvey Hunt <harvey.hunt@imgtec.com>
+Message-ID: <56B90D30.5020904@imgtec.com>
+Date: Mon, 8 Feb 2016 13:48:32 -0800
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <56B90A3E.7000507@gentoo.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Harvey.Hunt@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,53 +23,105 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-kernel@vger.kernel.org, Christopher Ferris <cferris@google.com>, James Hogan <james.hogan@imgtec.com>, Petr Malat <oss@malat.biz>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20160208184351.Idnp53250vawdIyooIFvDWsB8K4Vjq1prHATwEWHAHY@z>
+To: Joshua Kinard <kumba@gentoo.org>, David Daney <ddaney@caviumnetworks.com>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, David Daney <david.daney@cavium.com>, Paul Burton <paul.burton@imgtec.com>, James Hogan <james.hogan@imgtec.com>, linux-kernel@vger.kernel.org
+Message-ID: <20160208214832.KCZ8Lxf0fFBhht5AAxtUH3OjdsWxoFpZI3ATF8MKdKs@z>
 
-Since commit 8cb48fe169dd ("MIPS: Provide correct siginfo_t.si_stime"),
-MIPS' uapi/asm/siginfo.h has included uapi/asm-generic/siginfo.h
-directly before defining MIPS' struct siginfo, in order to get the
-necessary definitions needed for the siginfo struct without the generic
-copy_siginfo() hitting compiler errors due to struct siginfo not yet
-being defined.
+Hi Joshua,
 
-Now that the generic copy_siginfo() is moved out to linux/signal.h we
-can safely include asm-generic/siginfo.h before defining the MIPS
-specific struct siginfo, which avoids the uapi/ include as well as
-breakage due to generic copy_siginfo() being defined before struct
-siginfo.
+On 02/08/2016 01:35 PM, Joshua Kinard wrote:
+> On 02/08/2016 13:15, Harvey Hunt wrote:
+>> Hi David,
+>>
+>> On 02/08/2016 10:11 AM, David Daney wrote:
+>>> On 02/08/2016 10:05 AM, Harvey Hunt wrote:
+>>>> STACK_TOP_MAX is aligned on a 32k boundary. When __bprm_mm_init()
+>>>> creates an
+>>>> initial stack for a process, it does so using STACK_TOP_MAX as the end
+>>>> of the
+>>>> vma. A process's arguments and environment information are placed on
+>>>> the stack
+>>>> and then the stack is relocated and aligned on a page boundary. When
+>>>> using a 32
+>>>> bit kernel with 64k pages, the relocated stack has the process's args
+>>>> erroneously stored in the middle of the stack. This means that processes
+>>>> receive no arguments or environment variables, preventing them from
+>>>> running
+>>>> correctly.
+>>>>
+>>>> Fix this by aligning TASK_SIZE on a page boundary.
+>>>>
+>>>> Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
+>>>> Cc: David Daney <david.daney@cavium.com>
+>>>> Cc: Paul Burton <paul.burton@imgtec.com>
+>>>> Cc: James Hogan <james.hogan@imgtec.com>
+>>>> Cc: linux-kernel@vger.kernel.org
+>>>> ---
+>>>>    arch/mips/include/asm/processor.h | 6 +++---
+>>>>    1 file changed, 3 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/arch/mips/include/asm/processor.h
+>>>> b/arch/mips/include/asm/processor.h
+>>>> index 3f832c3..b618b40 100644
+>>>> --- a/arch/mips/include/asm/processor.h
+>>>> +++ b/arch/mips/include/asm/processor.h
+>>>> @@ -39,13 +39,13 @@ extern unsigned int vced_count, vcei_count;
+>>>>    #ifdef CONFIG_32BIT
+>>>>    #ifdef CONFIG_KVM_GUEST
+>>>>    /* User space process size is limited to 1GB in KVM Guest Mode */
+>>>> -#define TASK_SIZE    0x3fff8000UL
+>>>> +#define TASK_SIZE    (0x40000000UL - PAGE_SIZE)
+>>>>    #else
+>>>>    /*
+>>>>     * User space process size: 2GB. This is hardcoded into a few places,
+>>>>     * so don't change it unless you know what you are doing.
+>>>>     */
+>>>> -#define TASK_SIZE    0x7fff8000UL
+>>>> +#define TASK_SIZE    (0x7fff8000UL & PAGE_SIZE)
+>>>
+>>> Can you check your math here.  This doesn't seem correct.
+>>
+>> Thanks for spotting that - it should have been:
+>>
+>> (0x7fff8000UL & PAGE_MASK)
+>>
+>> I'll do a v2 now.
+>>
+>
+> FYI, TASK_SIZE was recently changed to 0x80000000UL in commit 7f8ca9cb1ed3 on
+> the linux-mips.org tree.
 
-Reported-by: Christopher Ferris <cferris@google.com>
-Fixes: 8cb48fe169dd ("MIPS: Provide correct siginfo_t.si_stime")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Petr Malat <oss@malat.biz>
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # 4.0-
----
- arch/mips/include/uapi/asm/siginfo.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Thanks, I'll rebase.
 
-diff --git a/arch/mips/include/uapi/asm/siginfo.h b/arch/mips/include/uapi/asm/siginfo.h
-index 03ec1090f781..e2b5337e840f 100644
---- a/arch/mips/include/uapi/asm/siginfo.h
-+++ b/arch/mips/include/uapi/asm/siginfo.h
-@@ -28,7 +28,7 @@
- 
- #define __ARCH_SIGSYS
- 
--#include <uapi/asm-generic/siginfo.h>
-+#include <asm-generic/siginfo.h>
- 
- /* We can't use generic siginfo_t, because our si_code and si_errno are swapped */
- typedef struct siginfo {
-@@ -118,6 +118,4 @@ typedef struct siginfo {
- #define SI_TIMER __SI_CODE(__SI_TIMER, -3) /* sent by timer expiration */
- #define SI_MESGQ __SI_CODE(__SI_MESGQ, -4) /* sent by real time mesq state change */
- 
--#include <asm-generic/siginfo.h>
--
- #endif /* _UAPI_ASM_SIGINFO_H */
--- 
-2.4.10
+>
+>
+>>>
+>>>>    #endif
+>>>>
+>>>>    #define STACK_TOP_MAX    TASK_SIZE
+>>>> @@ -62,7 +62,7 @@ extern unsigned int vced_count, vcei_count;
+>>>>     * support 16TB; the architectural reserve for future expansion is
+>>>>     * 8192EB ...
+>>>>     */
+>>>> -#define TASK_SIZE32    0x7fff8000UL
+>>>> +#define TASK_SIZE32    (0x7fff8000UL & PAGE_SIZE)
+>>>
+>>> Same here.
+>>
+>> As above.
+>>
+>>>
+>>>>    #define TASK_SIZE64    0x10000000000UL
+>>>>    #define TASK_SIZE (test_thread_flag(TIF_32BIT_ADDR) ? TASK_SIZE32 :
+>>>> TASK_SIZE64)
+>>>>    #define STACK_TOP_MAX    TASK_SIZE64
+>>>>
+>>>
+>>
+>> Thanks,
+>>
+>> Harvey
+>>
+>>
+>
+>

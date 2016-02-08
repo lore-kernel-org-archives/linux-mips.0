@@ -1,16 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61063 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007227AbcBFRQ6g0KLC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 6 Feb 2016 18:16:58 +0100
-Date: Sat, 6 Feb 2016 17:16:33 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] MIPS: Differentiate between 32 and 64 bit ELF header
-In-Reply-To: <56AF82AB.5010502@bmw-carit.de>
-Message-ID: <alpine.DEB.2.00.1602061624460.15885@tp.orcam.me.uk>
-References: <1453992270-4688-1-git-send-email-daniel.wagner@bmw-carit.de> <1454074137-16334-1-git-send-email-daniel.wagner@bmw-carit.de> <alpine.DEB.2.00.1602010038230.5958@tp.orcam.me.uk> <56AF82AB.5010502@bmw-carit.de>
+Received: from exsmtp03.microchip.com ([198.175.253.49]:26221 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27008245AbcBHFHelMOj6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Feb 2016 06:07:34 +0100
+Subject: Re: [PATCH 1/2] dt/bindings: Add bindings for the PIC32 SPI
+ peripheral
+References: <1454366701-10847-1-git-send-email-joshua.henderson@microchip.com>
+ <56B08EEB.3050808@cogentembedded.com> <56B42E4C.8040201@microchip.com>
+ <56B4A457.7050807@cogentembedded.com>
+From: Purna Chandra Mandal <purna.mandal@microchip.com>
+Message-ID: <56B8223D.2030705@microchip.com>
+Date: Mon, 8 Feb 2016 10:36:05 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+In-Reply-To: <56B4A457.7050807@cogentembedded.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Purna.Mandal@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,90 +24,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Wagner <daniel.wagner@bmw-carit.de>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20160206171633.sAD1XdZrNGA4aaStqxsd6G9CybqAGQXATlZ1wbr1-5c@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: Joshua Henderson <joshua.henderson@microchip.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
+Message-ID: <20160208050605.HYVZEkqnZHbwt596YR2kWeLke7gT4o12MqQfZFyZ17Y@z>
 
-On Mon, 1 Feb 2016, Daniel Wagner wrote:
+On 02/05/2016 07:02 PM, Sergei Shtylyov wrote:
 
-> >> Depending on the configuration either the 32 or 64 bit version of
-> >> elf_check_arch() is defined. parse_crash_elf32_headers() does
-> >> some basic verification of the ELF header via elf_check_arch().
-> >> parse_crash_elf64_headers() does it via vmcore_elf64_check_arch()
-> >> which expands to the same elf_check_check().
-> >>
-> >>    In file included from include/linux/elf.h:4:0,
-> >>                     from fs/proc/vmcore.c:13:
-> >>    fs/proc/vmcore.c: In function 'parse_crash_elf64_headers':
-> >>>> arch/mips/include/asm/elf.h:228:23: error: initialization from incompatible pointer type [-Werror=incompatible-pointer-types]
-> >>      struct elfhdr *__h = (hdr);     \
-> >>                           ^
-> >>    include/linux/crash_dump.h:41:37: note: in expansion of macro 'elf_check_arch'
-> >>     #define vmcore_elf64_check_arch(x) (elf_check_arch(x) || vmcore_elf_check_arch_cross(x))
-> >>                                         ^
-> >>    fs/proc/vmcore.c:1015:4: note: in expansion of macro 'vmcore_elf64_check_arch'
-> >>       !vmcore_elf64_check_arch(&ehdr) ||
-> >>        ^
-> >>
-> >> Since the MIPS ELF header for 32 bit and 64 bit differ we need
-> >> to check accordingly.
-> > 
-> >  I fail to see how it can work as it stands given that `elf_check_arch' is 
-> > called from the same source file both on a pointer to `Elf32_Ehdr' and one 
-> > to `Elf64_Ehdr'.  However the MIPS implementations of `elf_check_arch' 
-> > only use an auxiliary variable to avoid multiple evaluation of a macro 
-> > argument and therefore instead I recommend the use of the usual approach
-> > taken in such a situation within a statement expression, that is to 
-> > declare the variable with `typeof' rather than an explicit type.  As an
-> > upside this will minimise code disruption as well.
-> 
-> Good point on the type for hdr. Thought elf_check_arch() implementation
-> differ on 32 bit and 64 bit implementation. I played a bit around and the
-> simplest version I found was this here:
+> Hello.
+> On 2/5/2016 8:08 AM, Purna Chandra Mandal wrote:
+>>>> From: Purna Chandra Mandal <purna.mandal@microchip.com>
+>>>> Document the devicetree bindings for the SPI peripheral found
+>>>> on Microchip PIC32 class devices.
+>>>> Signed-off-by: Purna Chandra Mandal <purna.mandal@microchip.com>
+>>>> Signed-off-by: Joshua Henderson <joshua.henderson@microchip.com>
+>>>> ---
+>>>>    .../bindings/spi/microchip,spi-pic32.txt           |   44 ++++++++++++++++++++
+>>>>    1 file changed, 44 insertions(+)
+>>>>    create mode 100644 Documentation/devicetree/bindings/spi/microchip,spi-pic32.txt
+>>>> diff --git 
+>>>> a/Documentation/devicetree/bindings/spi/microchip,spi-pic32.txt 
+>>>> b/Documentation/devicetree/bindings/spi/microchip,spi-pic32.txt
+>>>> new file mode 100644
+>>>> index 0000000..a555618
+>>>> --- /dev/null
+>>>> +++ b/Documentation/devicetree/bindings/spi/microchip,spi-pic32.txt
+>>>> @@ -0,0 +1,44 @@
+>>>> +* Microchip PIC32 SPI device
+> [...]
+>>>> +Example:
+>>>> +
+>>>> +    spi1:spi@0x1f821000 {
+>>> Please insert spaces after colon.
+>> ack
+>>
+> And please drop "0x" from the <unit-address> part of the name.
 
- Umm, somehow I didn't really realise this code wants ELF32 and ELF64 
-checks both at once -- does it actually make sense?  Is a core file from a 
-kernel crash dump ever going to be the opposite kind to the newly booted 
-kernel?
+ack.
 
- Anyway sorry about my confusion and the point above aside I don't really 
-like the idea of merging both `elf_check_arch' variations into one, it 
-just looks messy to me.  So your original patch was somewhat better after 
-all, but I think it wasn't enough; for one it didn't handle the 32-bit 
-case in a 64-bit kernel.
-
- What I think we want to do here is to draw a clear line between ELF32 and 
-ELF64.  So first in include/linux/crash_dump.h:
-
-#ifndef vmcore_elf32_check_arch
-#define vmcore_elf32_check_arch elf_check_arch
-#endif
-
-and use `vmcore_elf32_check_arch' rather than `elf_check_arch' in 
-`parse_crash_elf32_headers' in fs/proc/vmcore.c (I think the checks for 
-ELFCLASS32/ELFCLASS64 ought to go first too, although that'd have to be a 
-separate patch).
-
- Then we can redefine `vmcore_elf32_check_arch' and 
-`vmcore_elf64_check_arch' along your first proposal (although we don't 
-need to refer to `vmcore_elf_check_arch_cross' as we don't define it 
-anyway).  However given that IIUC we're dealing with kernel rather than 
-userland images here I think we want to skip all the ABI peculiarities and 
-just accept anything that is compatible with the architecture.  It'll then 
-be the business of whatever tool is going to handle this image to sort out 
-the details.
-
- So to make things plain we just need:
-
-#define mips_elf_check_machine(x) ((x)->e_machine == EM_MIPS)
-
-#define vmcore_elf32_check_arch mips_elf_check_machine
-#define vmcore_elf64_check_arch mips_elf_check_machine
-
-in arch/mips/include/asm/elf.h (and then our definitions of 
-`elf_check_arch' can be rewritten to use `mips_elf_check_machine' too, 
-also in arch/mips/kernel/binfmt_elf?32.c).
-
- Questions or comments?
-
-  Maciej
+> MBR, Sergei

@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:2414 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:20488 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012187AbcBIUAZ1zLfS (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 9 Feb 2016 21:00:25 +0100
-Date: Tue, 9 Feb 2016 19:44:08 +0000
+        with ESMTP id S27011766AbcBIVBXdbg7b (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 9 Feb 2016 22:01:23 +0100
+Date: Tue, 9 Feb 2016 20:55:34 +0000
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH v3 3/3] mips: Differentiate between 32 and 64 bit ELF
- header
-In-Reply-To: <56B9DDCA.3000700@bmw-carit.de>
-Message-ID: <alpine.DEB.2.00.1602091941400.15885@tp.orcam.me.uk>
-References: <201602090033.mukhdG4N%fengguang.wu@intel.com> <56B99D55.2020301@bmw-carit.de> <alpine.DEB.2.00.1602091148570.15885@tp.orcam.me.uk> <56B9DDCA.3000700@bmw-carit.de>
+Subject: Re: [PATCH] Expect SI_KERNEL si_code for a MIPS software breakpoint
+ trap
+In-Reply-To: <56B9F7E6.5010006@codesourcery.com>
+Message-ID: <alpine.DEB.2.00.1602092020150.15885@tp.orcam.me.uk>
+References: <1442592647-3051-1-git-send-email-lgustavo@codesourcery.com> <alpine.LFD.2.20.1509181729100.10647@eddie.linux-mips.org> <56B9F7E6.5010006@codesourcery.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@imgtec.com>
@@ -21,20 +21,85 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Wagner <daniel.wagner@bmw-carit.de>
-Cc: kbuild test robot <lkp@intel.com>, kbuild-all@01.org, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160209194408.xFUkdfKlFK3H-fmZkObeVp_0wDg54WIMF8H-WFC-LDY@z>
+To: Luis Machado <lgustavo@codesourcery.com>
+Cc: "Maciej W. Rozycki" <macro@linux-mips.org>, gdb-patches@sourceware.org, linux-mips@linux-mips.org
+Message-ID: <20160209205534.OA_JUZAS5xzpGnq--_COIrh2go7ofSz2Gr6rRod_2fs@z>
 
-On Tue, 9 Feb 2016, Daniel Wagner wrote:
+On Tue, 9 Feb 2016, Luis Machado wrote:
 
-> >  FWIW I think all the MIPS ABI flags stuff also needs to go outside the 
-> > conditional, because it's ABI agnostic.  I'll make the right change myself 
-> > on top of your fixes.  It'll remove a little bit of code duplication, 
-> > which is always welcome.
+> I'm finally getting back to this. Sorry for the delay.
+
+ No problem, thanks for keeping a track of it.
+
+> >   I'm not convinced however that it is safe to assume all SIGTRAPs come
+> > from breakpoints -- this signal is sent by the kernel for both BREAK and
+> > trap (multiple mnemonics, e.g. TEQ, TGEI, etc.) instructions which may
+> > have been placed throughout code for some reason, for example to serve as
+> > cheap assertion checks.
+> > 
+> >   Is there a separate check made afterwards like `bpstat_explains_signal'
+> > to validate the source of the signal here?
 > 
-> Great, thanks for taking care of it.
+> In my specific example we are dealing with two breakpoint hits by different
+> threads. The first one is reported just fine and the one we have problems with
+> is the queued one that is reported afterwards when we attempt to move the
+> other thread.
+> 
+> We do rely on bpstat_explains_signal when gdbserver/the remote target notifies
+> gdb about a stop. In the case of a queued breakpoint hit, it doesn't even get
+> reported back to gdb and is just ignored by gdbserver if it is recognized as a
+> breakpoint hit.
 
- My ABI flags change has passed testing and I'm ready to post it, will you 
-be respinning your patch soon?
+ I'm not sure I understand what's going on here, why is a breakpoint hit
+required to be ignored by gdbserver?
+
+ From what you say I infer GDB controls a multi-threaded program and there 
+it sets a software breakpoint which, by its nature, is global to all the 
+threads.  Then multiple threads hit the breakpoint simultaneously (or 
+nearly simultaneously) and the hits are delivered to GDB one by one, via 
+gdbserver.  So why is GDB not prepared for that?
+
+ It set the breakpoint itself so it should expect it to hit sometime, and 
+if there are multiple threads, then there can be multiple hits at once or 
+almost at once because, even in the all-stop mode, there is no guaranteed 
+way to stop the threads all at once.  The threads may be spread across 
+different processors in an SMP system for example, all trapping literally 
+at once -- and then the kernel queueing the signals according to its own 
+internal schedule before delivering them to the debugger (that, from the 
+kernel's point of view, being gdbserver in this case).
+
+> With the proposed change, even the hardcoded traps will initially be
+> recognized as breakpoints, albeit maybe recognized as permanent breakpoints
+> for some opcodes. It may cause gdbserver to ignore a second hardcoded trap
+> hit, which is not desirable.
+
+ So why does gdbserver have to be taught which breakpoints may have 
+potentially been set by GDB and which may have not?  Why not to deliver 
+them all and leave it up to GDB to decide?  I believe it will be the right 
+thing to let GDB know that more than one thread has hit the same 
+breakpoint.
+
+ Did I miss anything?  How is this situation handled in a native debug 
+scenario?
+
+> >   Perhaps we should make it a part of the ABI and teach MIPS/Linux about
+> > the breakpoint encoding used by GDB, which is `BREAK 5' (aka BRK_SSTEPBP
+> > in kernel-speak, a misnomer I'm afraid), and make it set `si_code' to
+> > TRAP_BRKPT, as expected.  This won't fix history of course, but at least
+> > it will make debugging a little bit easier to handle in the future.
+> > Cc-ing `linux-mips' for further input.
+> 
+> This is the best solution in my opinion and will definitely make the
+> debugger's life easier if it can tell the difference between multiple
+> seemingly equivalent SIGTRAP's.
+> 
+> Does this involve handling BRK_SSTEPBP inside
+> arch/mips/kernel/traps.c:do_trap_or_bp?
+
+ No, as I noted in my reply to David elsewhere in this thread, this would 
+have to be in `do_bp' instead, to exclude trap instructions (e.g. TEQ, 
+etc.) from being treated as breakpoints.  I can implement this change 
+myself for you, but we need to agree first what the right solution for GDB 
+is.  So far it looks to me we'd be only papering over a problem elsewhere.
 
   Maciej

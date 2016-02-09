@@ -1,20 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:35094 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012226AbcBHW04bPCcq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 8 Feb 2016 23:26:56 +0100
-Subject: Re: [PATCH] MIPS: Always page align TASK_SIZE
-References: <1454954723-24887-1-git-send-email-harvey.hunt@imgtec.com>
- <56B8DA56.9020108@caviumnetworks.com> <56B8DB2D.3070604@imgtec.com>
- <56B90A3E.7000507@gentoo.org> <56B90D30.5020904@imgtec.com>
- <56B911D1.2090402@caviumnetworks.com>
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Message-ID: <56B91623.4020408@imgtec.com>
-Date: Mon, 8 Feb 2016 14:26:43 -0800
+Received: from mail.bmw-carit.de ([62.245.222.98]:42418 "EHLO
+        mail.bmw-carit.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27010545AbcBIHBMZwtZq convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 9 Feb 2016 08:01:12 +0100
+Subject: Re: [PATCH v3 1/3] mips: Use arch specific auxvec.h instead of
+ generic-asm version
+References: <alpine.DEB.2.00.1602061624460.15885@tp.orcam.me.uk>
+ <1454946278-13859-1-git-send-email-daniel.wagner@bmw-carit.de>
+ <1454946278-13859-2-git-send-email-daniel.wagner@bmw-carit.de>
+ <alpine.DEB.2.00.1602081705470.15885@tp.orcam.me.uk>
+From: Daniel Wagner <daniel.wagner@bmw-carit.de>
+Message-ID: <56B98EAE.9080505@bmw-carit.de>
+Date: Tue, 9 Feb 2016 08:01:02 +0100
 MIME-Version: 1.0
-In-Reply-To: <56B911D1.2090402@caviumnetworks.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Harvey.Hunt@imgtec.com>
+In-Reply-To: <alpine.DEB.2.00.1602081705470.15885@tp.orcam.me.uk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Return-Path: <daniel.wagner@bmw-carit.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,126 +25,93 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: Joshua Kinard <kumba@gentoo.org>, linux-mips@linux-mips.org, ralf@linux-mips.org, David Daney <david.daney@cavium.com>, Paul Burton <paul.burton@imgtec.com>, James Hogan <james.hogan@imgtec.com>, linux-kernel@vger.kernel.org
-Message-ID: <20160208222643.4s68_78QnoXmjddAd9ZiSpgiYdSWKxadoC77qNF9yx8@z>
+To: "Maciej W. Rozycki" <macro@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20160209070102.70McR0hfNHFSsKl6XdD_E2wMuc1wfFJaz4U9-SIs_ow@z>
 
+Good Morning,
 
-
-On 02/08/2016 02:08 PM, David Daney wrote:
-> On 02/08/2016 01:48 PM, Harvey Hunt wrote:
->> Hi Joshua,
+On 02/08/2016 06:19 PM, Maciej W. Rozycki wrote:
+> On Mon, 8 Feb 2016, Daniel Wagner wrote:
+> 
+>> The generic auxvec.h is used instead the arch specific version.
+>> This happens when cross compiling the kernel.
 >>
->> On 02/08/2016 01:35 PM, Joshua Kinard wrote:
->>> On 02/08/2016 13:15, Harvey Hunt wrote:
->>>> Hi David,
->>>>
->>>> On 02/08/2016 10:11 AM, David Daney wrote:
->>>>> On 02/08/2016 10:05 AM, Harvey Hunt wrote:
->>>>>> STACK_TOP_MAX is aligned on a 32k boundary. When __bprm_mm_init()
->>>>>> creates an
->>>>>> initial stack for a process, it does so using STACK_TOP_MAX as the
->>>>>> end
->>>>>> of the
->>>>>> vma. A process's arguments and environment information are placed on
->>>>>> the stack
->>>>>> and then the stack is relocated and aligned on a page boundary. When
->>>>>> using a 32
->>>>>> bit kernel with 64k pages, the relocated stack has the process's args
->>>>>> erroneously stored in the middle of the stack. This means that
->>>>>> processes
->>>>>> receive no arguments or environment variables, preventing them from
->>>>>> running
->>>>>> correctly.
->>>>>>
->>>>>> Fix this by aligning TASK_SIZE on a page boundary.
->>>>>>
->>>>>> Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
->>>>>> Cc: David Daney <david.daney@cavium.com>
->>>>>> Cc: Paul Burton <paul.burton@imgtec.com>
->>>>>> Cc: James Hogan <james.hogan@imgtec.com>
->>>>>> Cc: linux-kernel@vger.kernel.org
->>>>>> ---
->>>>>>    arch/mips/include/asm/processor.h | 6 +++---
->>>>>>    1 file changed, 3 insertions(+), 3 deletions(-)
->>>>>>
->>>>>> diff --git a/arch/mips/include/asm/processor.h
->>>>>> b/arch/mips/include/asm/processor.h
->>>>>> index 3f832c3..b618b40 100644
->>>>>> --- a/arch/mips/include/asm/processor.h
->>>>>> +++ b/arch/mips/include/asm/processor.h
->>>>>> @@ -39,13 +39,13 @@ extern unsigned int vced_count, vcei_count;
->>>>>>    #ifdef CONFIG_32BIT
->>>>>>    #ifdef CONFIG_KVM_GUEST
->>>>>>    /* User space process size is limited to 1GB in KVM Guest Mode */
->>>>>> -#define TASK_SIZE    0x3fff8000UL
->>>>>> +#define TASK_SIZE    (0x40000000UL - PAGE_SIZE)
->>>>>>    #else
->>>>>>    /*
->>>>>>     * User space process size: 2GB. This is hardcoded into a few
->>>>>> places,
->>>>>>     * so don't change it unless you know what you are doing.
->>>>>>     */
->>>>>> -#define TASK_SIZE    0x7fff8000UL
->>>>>> +#define TASK_SIZE    (0x7fff8000UL & PAGE_SIZE)
->>>>>
->>>>> Can you check your math here.  This doesn't seem correct.
->>>>
->>>> Thanks for spotting that - it should have been:
->>>>
->>>> (0x7fff8000UL & PAGE_MASK)
->>>>
->>>> I'll do a v2 now.
->>>>
->>>
->>> FYI, TASK_SIZE was recently changed to 0x80000000UL in commit
->>> 7f8ca9cb1ed3 on
->>> the linux-mips.org tree.
+>> mips64-linux-gnu-gcc (GCC) 5.2.1 20151104 (Red Hat Cross 5.2.1-4)
 >>
->> Thanks, I'll rebase.
->
-> You may find that in rebasing, suddenly you have a completely empty patch!
->
+>> arch/mips/kernel/../../../fs/binfmt_elf.c: In function ‘create_elf_tables’:
+>> ./arch/mips/include/asm/elf.h:425:14: error: ‘AT_SYSINFO_EHDR’ undeclared (first use in this function)
+> 
+>  There must be something wrong with your setup, or maybe a bug somewhere 
+> in our build machinery you just happened to trigger.  Most of us routinely 
+> use a cross-compiler to build the kernel and you're the first one to 
+> report the problem.
 
-Yeah, I noticed that. I'll just drop this patch...
+Yeah, I thought so too and I would also bet on the toolchain. After
+'fixing' this small problem I got a nice and shiny binary without any
+other warnings or errors.
 
-Thanks,
+>  Can you report the compiler invocation that has lead to this error?  
 
-Harvey
+ /usr/bin/mips64-linux-gnu-gcc -Wp,-MD,fs/.binfmt_elf.o.d  -nostdinc -isystem /usr/lib/gcc/mips64-linux-gnu/5.2.1/include -I./arch/mips/include -Iarch/mips/include/generated/uapi -Iarch/mips/include/generated  -Iinclude -I./arch/mips/include/uapi -Iarch/mips/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -DVMLINUX_LOAD_ADDRESS=0xffffffff88002000 -DDATAOFFSET=0 -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -mno-check-zero-division -mabi=32 -G 0 -mno-abicalls -fno-pic -pipe -msoft-float -DGAS_HAS_SET_HARDFLOAT -Wa,-msoft-float -ffreestanding -march=r5000 -Wa,--trap -I./arch/mips/include/asm/mach-ip22 -I./arch/mips/include/asm/mach-generic -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -fno-var-tracking
+-assignments -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO    -D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(binfmt_elf)"  -D"KBUILD_MODNAME=KBUILD_STR(binfmt_elf)" -c -o fs/.tmp_binfmt_elf.o fs/binfmt_elf.c
 
->
->>
->>>
->>>
->>>>>
->>>>>>    #endif
->>>>>>
->>>>>>    #define STACK_TOP_MAX    TASK_SIZE
->>>>>> @@ -62,7 +62,7 @@ extern unsigned int vced_count, vcei_count;
->>>>>>     * support 16TB; the architectural reserve for future expansion is
->>>>>>     * 8192EB ...
->>>>>>     */
->>>>>> -#define TASK_SIZE32    0x7fff8000UL
->>>>>> +#define TASK_SIZE32    (0x7fff8000UL & PAGE_SIZE)
->>>>>
->>>>> Same here.
->>>>
->>>> As above.
->>>>
->>>>>
->>>>>>    #define TASK_SIZE64    0x10000000000UL
->>>>>>    #define TASK_SIZE (test_thread_flag(TIF_32BIT_ADDR) ?
->>>>>> TASK_SIZE32 :
->>>>>> TASK_SIZE64)
->>>>>>    #define STACK_TOP_MAX    TASK_SIZE64
->>>>>>
->>>>>
->>>>
->>>> Thanks,
->>>>
->>>> Harvey
->>>>
->>>>
->>>
->>>
->
+> Have you used a default config or a custom one?
+
+I used the default one per 'make defconfig ARCH=mips
+CROSS_COMPILE=/usr/bin/mips64-linux-gnu-' with Fedora 23 MIPS cross
+toolchain.
+
+>> diff --git a/arch/mips/include/asm/auxvec.h b/arch/mips/include/asm/auxvec.h
+>> new file mode 100644
+>> index 0000000..fbd388c
+>> --- /dev/null
+>> +++ b/arch/mips/include/asm/auxvec.h
+>> @@ -0,0 +1 @@
+>> +#include <uapi/asm/auxvec.h>
+> 
+>  You're not supposed to require a header in asm/ merely to include a 
+> header of the same name from uapi/asm/ as there are normally 
+> -I./arch/mips/include and -I./arch/mips/include/uapi options present both 
+> at once, in this order, on the compiler's invocation line.  So:
+> 
+> #include <asm/auxvec.h>
+> 
+> will pull the header from uapi/asm/ if none is present in asm/.
+
+Okay, thanks for the explanation. I was pretty confused by the build
+machinery and saw this include for ARM arch which provides also a their
+own uapi/asm/auxvec.h
+
+Also I looked at the cpp output and saw that there was no uapi/asm/auxvec.h
+included instead it pulls arch/mips/include/generated/uapi/asm/auxvec.h
+
+Not working version:
+
+# 1 "arch/mips/include/generated/uapi/asm/auxvec.h" 1
+# 1 "./include/uapi/asm-generic/auxvec.h" 1
+# 1 "arch/mips/include/generated/uapi/asm/auxvec.h" 2
+# 5 "include/uapi/linux/auxvec.h" 2
+# 5 "include/linux/auxvec.h" 2
+# 12 "./arch/mips/include/asm/elf.h" 2
+# 1 "include/linux/fs.h" 1
+
+working version:
+
+# 1 "./arch/mips/include/asm/auxvec.h" 1
+# 1 "./arch/mips/include/uapi/asm/auxvec.h" 1
+# 1 "./arch/mips/include/asm/auxvec.h" 2
+# 5 "include/uapi/linux/auxvec.h" 2
+# 5 "include/linux/auxvec.h" 2
+# 12 "./arch/mips/include/asm/elf.h" 2
+# 1 "include/linux/fs.h" 1
+
+I've uploaded the cpp output and the config just in case:
+
+https://www.monom.org/data/mips/auxvec/
+
+I am still pretty confused about what should happen in which order. 
+Maybe I should call the Confuse-A-Cat squat team.
+
+cheers,
+daniel

@@ -1,17 +1,23 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24310 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011628AbcBIMcZIX8Zb (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 9 Feb 2016 13:32:25 +0100
-Date: Tue, 9 Feb 2016 12:32:18 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH v3 3/3] mips: Differentiate between 32 and 64 bit ELF
- header
-In-Reply-To: <56B99D55.2020301@bmw-carit.de>
-Message-ID: <alpine.DEB.2.00.1602091148570.15885@tp.orcam.me.uk>
-References: <201602090033.mukhdG4N%fengguang.wu@intel.com> <56B99D55.2020301@bmw-carit.de>
+Received: from mail.bmw-carit.de ([62.245.222.98]:59392 "EHLO
+        mail.bmw-carit.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27011118AbcBIMhuq4PPb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 9 Feb 2016 13:37:50 +0100
+Subject: Re: [PATCH v3 1/3] mips: Use arch specific auxvec.h instead of
+ generic-asm version
+References: <alpine.DEB.2.00.1602061624460.15885@tp.orcam.me.uk>
+ <1454946278-13859-1-git-send-email-daniel.wagner@bmw-carit.de>
+ <1454946278-13859-2-git-send-email-daniel.wagner@bmw-carit.de>
+ <alpine.DEB.2.00.1602081705470.15885@tp.orcam.me.uk>
+ <56B98EAE.9080505@bmw-carit.de>
+ <alpine.DEB.2.00.1602091129020.15885@tp.orcam.me.uk>
+From: Daniel Wagner <daniel.wagner@bmw-carit.de>
+Message-ID: <56B9DD98.7090809@bmw-carit.de>
+Date: Tue, 9 Feb 2016 13:37:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+In-Reply-To: <alpine.DEB.2.00.1602091129020.15885@tp.orcam.me.uk>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <daniel.wagner@bmw-carit.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,47 +27,27 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Wagner <daniel.wagner@bmw-carit.de>
-Cc: kbuild test robot <lkp@intel.com>, kbuild-all@01.org, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160209123218.FXY-lyaNhEtPBacK1xdVK8uILZz6QhsCeVhrlAKSoj8@z>
+To: "Maciej W. Rozycki" <macro@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20160209123744.kNmuFVY5YYYMIuIo53s_oDqkz9F8Y00ozHitFL-pStQ@z>
 
-On Tue, 9 Feb 2016, Daniel Wagner wrote:
-
-> > All error/warnings (new ones prefixed by >>):
-> > 
-> >    arch/mips/kernel/../../../fs/binfmt_elf.c: In function 'load_elf_interp':
-> >>> arch/mips/kernel/binfmt_elfn32.c:38:7: error: implicit declaration of function 'mips_elf_check_machine' [-Werror=implicit-function-declaration]
-> >      if (!mips_elf_check_machine(__h))    \
-> >           ^
-> >>> arch/mips/kernel/../../../fs/binfmt_elf.c:536:7: note: in expansion of macro 'elf_check_arch'
-> >      if (!elf_check_arch(interp_elf_ex))
-> >           ^
-> >    cc1: some warnings being treated as errors
-> > --
-> >    arch/mips/kernel/../../../fs/binfmt_elf.c: In function 'load_elf_interp':
+On 02/09/2016 12:46 PM, Maciej W. Rozycki wrote:
+> On Tue, 9 Feb 2016, Daniel Wagner wrote:
 > 
-> Hmm how I was able to build binfmt_elfo32.o because it should suffer
-> from the same problem.
+>> Also I looked at the cpp output and saw that there was no uapi/asm/auxvec.h
+>> included instead it pulls arch/mips/include/generated/uapi/asm/auxvec.h
 > 
-> I think reusing mips_elf_check_machine() in binfmt_elf?32.c is only
-> going to work if we include arch/mips/include/asm/elf.h. Though this
-> looks kind of wrong.
+>  Hmm, did you update your source in an old build tree and reuse it for a 
+> new build?  The rule to make arch/mips/include/generated/uapi/asm/auxvec.h 
+> was removed with commit ebb5e78cc634 ("MIPS: Initial implementation of a 
+> VDSO") as arch/mips/include/uapi/asm/auxvec.h was added, in the 4.4-rc1 
+> timeframe.  So the generated version is not supposed to be there anymore.
+> 
+>  Can you try `make mrproper' (stash away your .config) and see if the 
+> problem goes away?
 
- But neither binfmt_elf?32.c actually expands `elf_check_arch' and both 
-include fs/binfmt_elf.c at the end, which in turn includes <linux/elf.h>, 
-which in turn does include <asm/elf.h> before expanding `elf_check_arch', 
-and consequently at that point `mips_elf_check_machine' will have been 
-already defined.  So things are all right, except you need to define the 
-macro outside `#ifndef ELF_ARCH'.
+Indeed, 'make mrproper' did the trick. I am sorry for the noise. Until
+now I never had to use mrproper before and therefore didn't think of it.
 
- I suggest moving it down, right below the conditional, rather than up as 
-the top of the file contains generic MIPS ELF stuff.  I think all the 
-three macros can go together, it doesn't appear to me they need to depend 
-on `ELF_ARCH', and we can fix it up if ever in the future they have to.
-
- FWIW I think all the MIPS ABI flags stuff also needs to go outside the 
-conditional, because it's ABI agnostic.  I'll make the right change myself 
-on top of your fixes.  It'll remove a little bit of code duplication, 
-which is always welcome.
-
-  Maciej
+Thanks a lot!
+Daniel

@@ -1,13 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:57977 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:53843 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012371AbcBIXwuUIdrO (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 10 Feb 2016 00:52:50 +0100
-Date: Tue, 9 Feb 2016 23:52:42 +0000
+        with ESMTP id S27011376AbcBJAyjLKRSx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 10 Feb 2016 01:54:39 +0100
+Date: Wed, 10 Feb 2016 00:54:31 +0000
 From: "Maciej W. Rozycki" <macro@imgtec.com>
 Subject: Re: [PATCH 1/6] MIPS: BMIPS: Disable pref 30 for buggy CPUs
-In-Reply-To: <56BA6AD3.9050308@gmail.com>
-Message-ID: <alpine.DEB.2.00.1602092245180.15885@tp.orcam.me.uk>
-References: <1455051354-6225-1-git-send-email-f.fainelli@gmail.com> <1455051354-6225-2-git-send-email-f.fainelli@gmail.com> <alpine.DEB.2.00.1602092101240.15885@tp.orcam.me.uk> <56BA6AD3.9050308@gmail.com>
+In-Reply-To: <56BA7E94.6080302@gmail.com>
+Message-ID: <alpine.DEB.2.00.1602100013570.15885@tp.orcam.me.uk>
+References: <1455051354-6225-1-git-send-email-f.fainelli@gmail.com> <1455051354-6225-2-git-send-email-f.fainelli@gmail.com> <alpine.DEB.2.00.1602092101240.15885@tp.orcam.me.uk> <56BA6AD3.9050308@gmail.com> <alpine.DEB.2.00.1602092245180.15885@tp.orcam.me.uk>
+ <56BA7E94.6080302@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@imgtec.com>
@@ -22,127 +23,88 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Florian Fainelli <f.fainelli@gmail.com>
 Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, blogic@openwrt.org, cernekee@gmail.com, jon.fraser@broadcom.com, pgynther@google.com, paul.burton@imgtec.com, ddaney.cavm@gmail.com
-Message-ID: <20160209235242.DFv-FzK9KnISvYcDx9Sz1LXQdGIZFdp9YXHLPSUnyEI@z>
+Message-ID: <20160210005431.z991JCM8s1I6YLDQzPH8_suqe7T3jtlxKeLmAoTSTq8@z>
 
-On Tue, 9 Feb 2016, Florian Fainelli wrote:
+On Wed, 10 Feb 2016, Florian Fainelli wrote:
 
-> >> +static void bmips5000_pref30_quirk(void)
-> >> +{
-> >> +	__asm__ __volatile__(
-> >> +	"	.word	0x4008b008\n"	/* mfc0 $8, $22, 8 */
-> >> +	"	lui	$9, 0x0100\n"
-> >> +	"	or	$8, $9\n"
-> >> +	/* disable "pref 30" on buggy CPUs */
-> >> +	"	lui	$9, 0x0800\n"
-> >> +	"	or	$8, $9\n"
-> >> +	"	.word	0x4088b008\n"	/* mtc0 $8, $22, 8 */
-> >> +	: : : "$8", "$9");
-> >> +}
-> > 
-> >  Ouch, why not using our standard accessors and avoid magic numbers, e.g.:
+> >  So first, are you aware of support for these Broadcom instruction 
+> > encoding extensions being considered for inclusion in binutils?  I'll be 
+> > happy to accept a patch and AFAICT it's a simple extension of the `sel' 
+> > field within the existing MFC0/MTC0 instruction definitions.
 > 
-> Are you positive the assembler will not barf on these custom cp0 reg 22
-> selectors?
+> That's a bit of a stretch for something that a) nobody is likely to
+> benefit from except these two patches, b) introducing a 3 way dependency
+> with: getting these current patches accepted, wait for the new binutils
+> to be widely spread we can count on the assembler to know about these
+> additional selectors, update the kernel again...
 
- Indeed, I missed that this is beyond the usual select range of 0-7.  
-Sorry about that.
+ No need to wait, we have all the build tools at hand, that is we could 
+conditionalise it on $(as-instr), formulated appropriately.  See 
+Documentation/kbuild/makefiles.txt and examples in our tree.
 
- That does not mean it shouldn't be done in a cleaner way, stashing the 
-obscurity in one place only.  I did notice a similar piece in one of your 
-other patches, which is a strong argument for abstracting it.
+ Overall I think the toolchain should be complete, even if for an exotic 
+case here or there.  If a processor has an instruction, then the assembler 
+should support it.  As I say this addition looks very simple to me and I 
+could (and, if nobody beats me to, probably will, now that I'm aware) make 
+such a change to binutils myself, but I'd prefer to get a change from 
+someone actually having a documentation reference for the instruction set 
+extension.
 
- So first, are you aware of support for these Broadcom instruction 
-encoding extensions being considered for inclusion in binutils?  I'll be 
-happy to accept a patch and AFAICT it's a simple extension of the `sel' 
-field within the existing MFC0/MTC0 instruction definitions.
+ An immediate benefit will be that you'll get a proper disassembly in 
+`objdump' so the unaware poor soul debugging an odd issue won't have to 
+scratch their head wondering what the heck 0x4008b008 in disassembly is, 
+and if this is toolchain bug or some corruption (though it would likely 
+still require telling the disassembler to use BMIPS5000 as the processor 
+to disassemble for).
 
- Second, regardless we need to abstract this in a reusable way while we 
-don't have such support in the assembler.  So here:
+> > #define __read_32bit_c0_brcm_register(reg, sel)				\
+> > ({									\
+> > 	register unsigned int __res asm("t0");				\
 
-> > #define read_c0_brcm_whateverthisiscalled() \
-> > 	__read_32bit_c0_register($22, 8)
-> > #define write_c0_brcm_whateverthisiscalled(val) \
-> > 	__write_32bit_c0_register($22, 8, val)
+ Actually on second thoughts explicit asm("$8") will be better here.  For 
+GCC both variants are equivalent, unlike GAS the compiler does not have a 
+concept of ABI register names, so no `a4' in place of `t0', etc., but 0x08 
+is embedded in the instruction word used, so better have it consistent.
 
-rather than using `__read_32bit_c0_register' and 
-`__write_32bit_c0_register' we can define special 
-`__read_32bit_c0_brcm_register' and `__write_32bit_c0_brcm_register' 
-helpers like:
-
-#define __read_32bit_c0_brcm_register(reg, sel)				\
-({									\
-	register unsigned int __res asm("t0");				\
-									\
-	__asm__ __volatile__(						\
-		/* mfc0 t0, $reg, sel */				\
-		".word	0x40080000 | ((%1 & 0x1f) << 11) | (%2 & 0xf)"	\
-		: "=r" (__res) : "i" (reg), "i" (sel));			\
-	__res;								\
-})
-
-#define __write_32bit_c0_brcm_register(reg, sel, value)			\
-do {									\
-	register unsigned int __val asm("t0") = value;			\
-									\
-	__asm__ __volatile__(						\
-		/* mtc0 t0, $reg, sel */				\
-		".word  0x40880000 | ((%1 & 0x1f) << 11) | (%2 & 0xf)"	\
-		: : "r" (__val), "i" (reg), "i" (sel));			\
-} while (0)
-
-(if 0xf is indeed the mask for `sel').  This is untested, but should work, 
-perhaps with a minor fix somewhere if I made a typo.  It should also 
-produce a little bit better code, although I realise this is a corner case 
-hardly worth optimising for.  What is important is maintainability.
-
-> > #define BMIPS5000_WHATEVERTHISISCALLED_BIT_X 0x0100
-> > #define BMIPS5000_WHATEVERTHISISCALLED_BIT_Y 0x0800
-> > 
-> > static void bmips5000_pref30_quirk(void)
-> > {
-> > 	unsigned int whateverthisiscalled;
-> > 
-> > 	whateverthisiscalled = read_c0_brcm_whateverthisiscalled();
-> > 	whateverthisiscalled |= BMIPS_WHATEVERTHISISCALLED_BIT_X;
-> > 	/* disable "pref 30" on buggy CPUs */
-> > 	whateverthisiscalled |= BMIPS_WHATEVERTHISISCALLED_BIT_Y;
-> > 	write_c0_brcm_whateverthisiscalled(whateverthisiscalled);
-> > }
-> > 
-> > ?  I'm leaving it up to you to select the right names here -- just about 
-> > anything will be better than the halfway-binary piece you have proposed.
+> > (why is ROTR set along NO_PREF30 BTW? -- it does not seem related).
 > 
-> These are not standardized registers in any form, which is why these are
-> in a halfway-binary form, they are not meant to be re-used outside of
-> two known places: disabling pref30 and enabling "rotr".
+> They are not, Petri is quoting the downstream kernel which does thing
+> completely differently because it has separate build options per SoC.
+> The upstream kernel does not, it can run the sam binary on multiple SoCs
+> and perform run-time detection, hence the two patches which changes
+> things at two different spots because, unrelated.
 
- Well, if Broadcom didn't give this register any name, then `reg22_sel8' 
-will be as good as any.  We don't need to invent things here, just to keep 
-them maintainable.  If you call something `8', then you can't easily 
-search through the tree to find references.  If you use something uniquely 
-identifiable, then you can.  So:
+ Hmm, maybe call the quirk `bmips5000_pref30_rotr_quirk' or suchlike then?
 
-#define read_c0_brcm_reg22_sel8()					\
-	__read_32bit_c0_brcm_register(22, 8)
-#define write_c0_brcm_reg22_sel8(val)					\
-	__write_32bit_c0_brcm_register(22, 8, val)
+> >  I hope you agree this all is reasonable from a maintainer's point of 
+> > view.  I'll leave it up to you to make a patch out of it.  You'll then be 
+> > able to use this stuff in 2/6 too.
+> 
+> It seems reasonable to adopt your suggestion, but I will certainly drop
+> the binutils suggestion, that's just way out of the scope of this patch,
+> and creates a dependency issue that I do not want to deal with, as
+> history showed recently, testing correctly for a proper ld version
+> turned out to be interesting, so pardon my skepticism here.
 
-(note the dropped `$' because we can't pass it along in this form).
+ Fine with me, I just wanted to have a full picture and also hoped a 
+little a patch might have already been in the works.
 
- As to the bit names -- you already gave them: NO_PREF30 (since this is 
-negated) and ROTR will be just fine, with a BMIPS5000_REG22_SEL8_ prefix.  
-So:
+ The LD version case?  Well, the lack of experience with the toolchain has 
+certainly contributed here (not a blame, not especially for kernel hackers 
+who need not necessarily go down to such details, just an observation -- 
+though I think a question how to correctly interpret binutils versioning 
+posted to <binutils@sourceware.org> would have certainly been addressed 
+with a correct answer).  We've had an LD version check sorted out since 
+forever in glibc's build machinery for example, by using prefix matching, 
+essentially. :)
 
-#define BMIPS5000_REG22_SEL8_ROTR	0x0100
-#define BMIPS5000_REG22_SEL8_NO_PREF30	0x0800
+> >  Please try to give meaningful names to the other magic numbers you 
+> > introduce too.
+> 
+> These are actually *magic* register values, I swear to you, I had to dig
+> in the RTL to understand what this does, there is zero documentation
+> besides the code.
 
-(why is ROTR set along NO_PREF30 BTW? -- it does not seem related).
-
- I hope you agree this all is reasonable from a maintainer's point of 
-view.  I'll leave it up to you to make a patch out of it.  You'll then be 
-able to use this stuff in 2/6 too.
-
- Please try to give meaningful names to the other magic numbers you 
-introduce too.
+ OK, fair enough.  Thanks for your patience in explaining the details!
 
   Maciej

@@ -1,17 +1,15 @@
-Received: from mail-sn1nam02on0073.outbound.protection.outlook.com ([104.47.36.73]:17120
+Received: from mail-sn1nam02on0078.outbound.protection.outlook.com ([104.47.36.78]:41784
         "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27008720AbcBKFvFM9l6A convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 11 Feb 2016 06:51:05 +0100
+        id S27011485AbcBKGUxFk2jA convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 11 Feb 2016 07:20:53 +0100
 From: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-Subject: RE: [PATCH v3 2/6] PCI: xilinx: Unify INTx & MSI interrupt FIFO
- decode
-Date: Thu, 11 Feb 2016 05:50:54 +0000
-Message-ID: <8520D5D51A55D047800579B09414719825881B00@XAP-PVEXMBX01.xlnx.xilinx.com>
+Subject: RE: [PATCH v3 4/6] PCI: xilinx: Clear interrupt FIFO during probe
+Date: Thu, 11 Feb 2016 06:20:42 +0000
+Message-ID: <8520D5D51A55D047800579B09414719825881B1B@XAP-PVEXMBX01.xlnx.xilinx.com>
 References: <1454602213-967-1-git-send-email-paul.burton@imgtec.com>
- <1454602213-967-3-git-send-email-paul.burton@imgtec.com>
- <8520D5D51A55D047800579B09414719825881ADE@XAP-PVEXMBX01.xlnx.xilinx.com>
-In-Reply-To: <8520D5D51A55D047800579B09414719825881ADE@XAP-PVEXMBX01.xlnx.xilinx.com>
+ <1454602213-967-5-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1454602213-967-5-git-send-email-paul.burton@imgtec.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
@@ -26,125 +24,61 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Bharat Kumar Gogada <bharatku@xilinx.com>, Paul Burton <paul.burton@imgtec.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Cc: Michal Simek <michals@xilinx.com>, Ravikiran Gummaluri <rgummal@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>, Jiang Liu <jiang.liu@linux.intel.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Grygorii Strashko <grygorii.strashko@ti.com>, Russell Joyce <russell.joyce@york.ac.uk>, Bjorn Helgaas <bhelgaas@google.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Rob Herring <robh@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jingoo Han <jingoohan1@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Message-ID: <20160211055054.DUGxOM25bhiO3xNnlGeEWSKZrXohie3yl9NBP8U03e4@z>
+To: Paul Burton <paul.burton@imgtec.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Cc: Michal Simek <michals@xilinx.com>, Ravikiran Gummaluri <rgummal@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>, Jiang Liu <jiang.liu@linux.intel.com>, Grygorii Strashko <grygorii.strashko@ti.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Russell Joyce <russell.joyce@york.ac.uk>, Bjorn Helgaas <bhelgaas@google.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jingoo Han <jingoohan1@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20160211062042.XB7SXBR1FvBBC7aB417VaspisUWQUiN8fXJgw-yv7Rg@z>
 
-> > Subject: [PATCH v3 2/6] PCI: xilinx: Unify INTx & MSI interrupt FIFO
-> > decode
-> >
-> > When decoding either an INTx or MSI interrupt, the driver has no way
-> > to know which it will pull out of the interrupt FIFO. If both were
-> > pending then this would lead to either the interrupt being handled
-> > incorrectly (MSI interrupt treated as INTx) or not at all (INTx interrupt
-> dropped by MSI path).
-> > Unify the reading of the interrupt FIFO & act according to the type of
-> > interrupt actually read.
-> >
-> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> > Fixes: 8961def56845 ("PCI: xilinx: Add Xilinx AXI PCIe Host Bridge IP
-> > driver")
-> >
-> > ---
-> >
-> > Changes in v3:
-> > - Split out from Boston patchset.
-> >
-> > Changes in v2:
-> > - Add Fixes tag.
-> >
-> >  drivers/pci/host/pcie-xilinx.c | 47
-> > +++++++++++++-----------------------------
-> >  1 file changed, 14 insertions(+), 33 deletions(-)
-> >
-> > diff --git a/drivers/pci/host/pcie-xilinx.c
-> > b/drivers/pci/host/pcie-xilinx.c index
-> > 1490bd1..afdfb09 100644
-> > --- a/drivers/pci/host/pcie-xilinx.c
-> > +++ b/drivers/pci/host/pcie-xilinx.c
-> > @@ -397,7 +397,7 @@ static const struct irq_domain_ops
-> intx_domain_ops
-> > = {  static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)  {
-> >  	struct xilinx_pcie_port *port = (struct xilinx_pcie_port *)data;
-> > -	u32 val, mask, status, msi_data;
-> > +	u32 val, mask, status;
-> >
-> >  	/* Read interrupt decode and mask registers */
-> >  	val = pcie_read(port, XILINX_PCIE_REG_IDR); @@ -437,8 +437,8 @@
-> > static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
-> >  		xilinx_pcie_clear_err_interrupts(port);
-> >  	}
-> >
-> > -	if (status & XILINX_PCIE_INTR_INTX) {
-> > -		/* INTx interrupt received */
-> > +	if (status & (XILINX_PCIE_INTR_INTX | XILINX_PCIE_INTR_MSI)) {
-> > +		/* Interrupt received */
-> >  		val = pcie_read(port, XILINX_PCIE_REG_RPIFR1);
-> >
-> >  		/* Check whether interrupt valid */ @@ -447,41 +447,22 @@
-> static
-> > irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
-> >  			return IRQ_HANDLED;
-> >  		}
-> >
-> > -		if (!(val & XILINX_PCIE_RPIFR1_MSI_INTR)) {
-> > -			/* Clear interrupt FIFO register 1 */
-> > -			pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
-> > -				   XILINX_PCIE_REG_RPIFR1);
-> > -
-> > -			/* Handle INTx Interrupt */
-> > +		if (val & XILINX_PCIE_RPIFR1_MSI_INTR) {
-> > +			irq = pcie_read(port, XILINX_PCIE_REG_RPIFR2) &
-> > +				XILINX_PCIE_RPIFR2_MSG_DATA;
-> > +		} else {
-> >  			val = ((val & XILINX_PCIE_RPIFR1_INTR_MASK) >>
-> >  				XILINX_PCIE_RPIFR1_INTR_SHIFT) + 1;
-> > -			generic_handle_irq(irq_find_mapping(port-
-> > >irq_domain,
-> > -							    val));
-> > +			irq = irq_find_mapping(port->irq_domain, val);
-> >  		}
-> > -	}
-> >
-> > -	if (status & XILINX_PCIE_INTR_MSI) {
-> > -		/* MSI Interrupt */
-> > -		val = pcie_read(port, XILINX_PCIE_REG_RPIFR1);
-> > +		/* Clear interrupt FIFO register 1 */
-> > +		pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
-> > +			   XILINX_PCIE_REG_RPIFR1);
-> >
-> > -		if (!(val & XILINX_PCIE_RPIFR1_INTR_VALID)) {
-> > -			dev_warn(port->dev, "RP Intr FIFO1 read error\n");
-> > -			return IRQ_HANDLED;
-> > -		}
-> > -
-> > -		if (val & XILINX_PCIE_RPIFR1_MSI_INTR) {
-> > -			msi_data = pcie_read(port,
-> > XILINX_PCIE_REG_RPIFR2) &
-> > -				   XILINX_PCIE_RPIFR2_MSG_DATA;
-> > -
-> > -			/* Clear interrupt FIFO register 1 */
-> > -			pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
-> > -				   XILINX_PCIE_REG_RPIFR1);
-> > -
-> > -			if (IS_ENABLED(CONFIG_PCI_MSI)) {
-> > -				/* Handle MSI Interrupt */
-> > -				generic_handle_irq(msi_data);
-> > -			}
-> > -		}
-> > +		if (IS_ENABLED(CONFIG_PCI_MSI) ||
-> > +			!(val & XILINX_PCIE_RPIFR1_MSI_INTR))
-> > +			generic_handle_irq(irq);
-> >  	}
-> >
-> >  	if (status & XILINX_PCIE_INTR_SLV_UNSUPP)
-> > --
+ > xilinx_pcie_init_port clears the pending interrupts in the interrupt decode
+> register, but does not clear the interrupt FIFO. This would lead to spurious
+> interrupts if any were present in the FIFO at probe time.
+> Clear the interrupt FIFO prior to the interrupt decode register in order to
+> start with a clean slate as expected.
 > 
-> Hi Paul,
+> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> Fixes: 8961def56845 ("PCI: xilinx: Add Xilinx AXI PCIe Host Bridge IP driver")
 > 
-> Even with above condition you are still missing either MSI or legacy interrupt
-> handling, when both MSI and legacy interrupts occurred.
+> ---
+> 
+> Changes in v3:
+> - Split out from Boston patchset.
+> 
+> Changes in v2:
+> - Add Fixes tag.
+> 
+>  drivers/pci/host/pcie-xilinx.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/drivers/pci/host/pcie-xilinx.c b/drivers/pci/host/pcie-xilinx.c index
+> 1eb74a2..6c5a503 100644
+> --- a/drivers/pci/host/pcie-xilinx.c
+> +++ b/drivers/pci/host/pcie-xilinx.c
+> @@ -568,6 +568,8 @@ static int xilinx_pcie_init_irq_domain(struct
+> xilinx_pcie_port *port)
+>   */
+>  static void xilinx_pcie_init_port(struct xilinx_pcie_port *port)  {
+> +	u32 val;
+> +
+>  	if (xilinx_pcie_link_is_up(port))
+>  		dev_info(port->dev, "PCIe Link is UP\n");
+>  	else
+> @@ -577,6 +579,17 @@ static void xilinx_pcie_init_port(struct
+> xilinx_pcie_port *port)
+>  	pcie_write(port, ~XILINX_PCIE_IDR_ALL_MASK,
+>  		   XILINX_PCIE_REG_IMR);
+> 
+> +	/* Clear interrupt FIFO */
+> +	while (1) {
+> +		val = pcie_read(port, XILINX_PCIE_REG_RPIFR1);
+> +
+> +		if (!(val & XILINX_PCIE_RPIFR1_INTR_VALID))
+> +			break;
+> +
+> +		pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
+> +			   XILINX_PCIE_REG_RPIFR1);
+> +	}
+> +
+Hi Paul,
 
-It would be better if the condition when both legacy and MSI interrupts occurred can be handled separately, leaving the current individual interrupt cases as they are.
+This case will create problem with error case, suppose if we have continuous correctable errors on link this will always be while loop.
 
 Bharat

@@ -1,18 +1,21 @@
-Received: from mail-bl2on0090.outbound.protection.outlook.com ([65.55.169.90]:7060
-        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+Received: from mail-sn1nam02on0056.outbound.protection.outlook.com ([104.47.36.56]:42384
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27010896AbcBKAc6gdYyE (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 11 Feb 2016 01:32:58 +0100
-Message-ID: <56BBD6AD.2090902@caviumnetworks.com>
-Date: Wed, 10 Feb 2016 16:32:45 -0800
-From: David Daney <ddaney@caviumnetworks.com>
+        id S27011403AbcBKFmmIImdA convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 11 Feb 2016 06:42:42 +0100
+From: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+Subject: RE: [PATCH v3 2/6] PCI: xilinx: Unify INTx & MSI interrupt FIFO
+ decode
+Date: Thu, 11 Feb 2016 05:42:30 +0000
+Message-ID: <8520D5D51A55D047800579B09414719825881ADE@XAP-PVEXMBX01.xlnx.xilinx.com>
+References: <1454602213-967-1-git-send-email-paul.burton@imgtec.com>
+ <1454602213-967-3-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1454602213-967-3-git-send-email-paul.burton@imgtec.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Subject: Re: [PATCH v5] mmc: OCTEON: Add host driver for OCTEON MMC controller
-References: <1455125775-7245-1-git-send-email-matt.redfearn@imgtec.com> <56BB7B2F.60307@caviumnetworks.com> <20160210234907.GC1640@darkstar.musicnaut.iki.fi>
-In-Reply-To: <20160210234907.GC1640@darkstar.musicnaut.iki.fi>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Return-Path: <bharat.kumar.gogada@xilinx.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,39 +25,116 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Matt Redfearn <matt.redfearn@imgtec.com>, linux-mmc@vger.kernel.org, david.daney@cavium.com, ulf.hansson@linaro.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Zubair.Kakakhel@imgtec.com, Aleksey Makarov <aleksey.makarov@caviumnetworks.com>, Chandrakala Chavva <cchavva@caviumnetworks.com>, Aleksey Makarov <aleksey.makarov@auriga.com>, Leonid Rosenboim <lrosenboim@caviumnetworks.com>, Peter Swain <pswain@cavium.com>, Aaron Williams <aaron.williams@cavium.com>
-Message-ID: <20160211003245.GPCreAXGtvwIiSwOMLyL2KCGmNR6Qkb8QNxW3VRrqFE@z>
+To: Paul Burton <paul.burton@imgtec.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Cc: Michal Simek <michals@xilinx.com>, Ravikiran Gummaluri <rgummal@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>, Jiang Liu <jiang.liu@linux.intel.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Grygorii Strashko <grygorii.strashko@ti.com>, Russell Joyce <russell.joyce@york.ac.uk>, Bjorn Helgaas <bhelgaas@google.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Rob Herring <robh@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jingoo Han <jingoohan1@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20160211054230.JbbgG3iuQPap3LNxUwtyK6UG1sA7sI5XFauZ-wDUf4w@z>
 
-On 02/10/2016 03:49 PM, Aaro Koskinen wrote:
-> Hi,
->
-> On Wed, Feb 10, 2016 at 10:02:23AM -0800, David Daney wrote:
->> On 02/10/2016 09:36 AM, Matt Redfearn wrote:
->>> +		pr_warn(FW_WARN "%s: Legacy property '%s'. Please remove\n",
->>> +			node->full_name, legacy_name);
->>
->> I don't like this warning message.
->>
->> The vast majority of people that see it will not be able to change their
->> firmware.  So it will be forever cluttering up their boot logs.
->
-> Until they switch to use APPENDED_DTB. :-)
->
+> Subject: [PATCH v3 2/6] PCI: xilinx: Unify INTx & MSI interrupt FIFO decode
+> 
+> When decoding either an INTx or MSI interrupt, the driver has no way to
+> know which it will pull out of the interrupt FIFO. If both were pending then
+> this would lead to either the interrupt being handled incorrectly (MSI
+> interrupt treated as INTx) or not at all (INTx interrupt dropped by MSI path).
+> Unify the reading of the interrupt FIFO & act according to the type of
+> interrupt actually read.
+> 
+> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> Fixes: 8961def56845 ("PCI: xilinx: Add Xilinx AXI PCIe Host Bridge IP driver")
+> 
+> ---
+> 
+> Changes in v3:
+> - Split out from Boston patchset.
+> 
+> Changes in v2:
+> - Add Fixes tag.
+> 
+>  drivers/pci/host/pcie-xilinx.c | 47 +++++++++++++-----------------------------
+>  1 file changed, 14 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/pci/host/pcie-xilinx.c b/drivers/pci/host/pcie-xilinx.c index
+> 1490bd1..afdfb09 100644
+> --- a/drivers/pci/host/pcie-xilinx.c
+> +++ b/drivers/pci/host/pcie-xilinx.c
+> @@ -397,7 +397,7 @@ static const struct irq_domain_ops intx_domain_ops
+> = {  static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)  {
+>  	struct xilinx_pcie_port *port = (struct xilinx_pcie_port *)data;
+> -	u32 val, mask, status, msi_data;
+> +	u32 val, mask, status;
+> 
+>  	/* Read interrupt decode and mask registers */
+>  	val = pcie_read(port, XILINX_PCIE_REG_IDR); @@ -437,8 +437,8 @@
+> static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
+>  		xilinx_pcie_clear_err_interrupts(port);
+>  	}
+> 
+> -	if (status & XILINX_PCIE_INTR_INTX) {
+> -		/* INTx interrupt received */
+> +	if (status & (XILINX_PCIE_INTR_INTX | XILINX_PCIE_INTR_MSI)) {
+> +		/* Interrupt received */
+>  		val = pcie_read(port, XILINX_PCIE_REG_RPIFR1);
+> 
+>  		/* Check whether interrupt valid */
+> @@ -447,41 +447,22 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq,
+> void *data)
+>  			return IRQ_HANDLED;
+>  		}
+> 
+> -		if (!(val & XILINX_PCIE_RPIFR1_MSI_INTR)) {
+> -			/* Clear interrupt FIFO register 1 */
+> -			pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
+> -				   XILINX_PCIE_REG_RPIFR1);
+> -
+> -			/* Handle INTx Interrupt */
+> +		if (val & XILINX_PCIE_RPIFR1_MSI_INTR) {
+> +			irq = pcie_read(port, XILINX_PCIE_REG_RPIFR2) &
+> +				XILINX_PCIE_RPIFR2_MSG_DATA;
+> +		} else {
+>  			val = ((val & XILINX_PCIE_RPIFR1_INTR_MASK) >>
+>  				XILINX_PCIE_RPIFR1_INTR_SHIFT) + 1;
+> -			generic_handle_irq(irq_find_mapping(port-
+> >irq_domain,
+> -							    val));
+> +			irq = irq_find_mapping(port->irq_domain, val);
+>  		}
+> -	}
+> 
+> -	if (status & XILINX_PCIE_INTR_MSI) {
+> -		/* MSI Interrupt */
+> -		val = pcie_read(port, XILINX_PCIE_REG_RPIFR1);
+> +		/* Clear interrupt FIFO register 1 */
+> +		pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
+> +			   XILINX_PCIE_REG_RPIFR1);
+> 
+> -		if (!(val & XILINX_PCIE_RPIFR1_INTR_VALID)) {
+> -			dev_warn(port->dev, "RP Intr FIFO1 read error\n");
+> -			return IRQ_HANDLED;
+> -		}
+> -
+> -		if (val & XILINX_PCIE_RPIFR1_MSI_INTR) {
+> -			msi_data = pcie_read(port,
+> XILINX_PCIE_REG_RPIFR2) &
+> -				   XILINX_PCIE_RPIFR2_MSG_DATA;
+> -
+> -			/* Clear interrupt FIFO register 1 */
+> -			pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
+> -				   XILINX_PCIE_REG_RPIFR1);
+> -
+> -			if (IS_ENABLED(CONFIG_PCI_MSI)) {
+> -				/* Handle MSI Interrupt */
+> -				generic_handle_irq(msi_data);
+> -			}
+> -		}
+> +		if (IS_ENABLED(CONFIG_PCI_MSI) ||
+> +			!(val & XILINX_PCIE_RPIFR1_MSI_INTR))
+> +			generic_handle_irq(irq);
+>  	}
+> 
+>  	if (status & XILINX_PCIE_INTR_SLV_UNSUPP)
+> --
 
-I am philosophically opposed to making the DTB an internal kernel 
-implementation detail.
+Hi Paul,
 
-For OCTEON boards, it is an ABI between the boot firmware and the 
-kernel, and is impractical to change.
+Even with above condition you are still missing either MSI or legacy interrupt handling, when both MSI and legacy interrupts occurred.
 
-One could argue that many years ago, when the decision was made (by me), 
-that we should have opted to carry in the kernel source code tree the 
-DTS files for all OCTEON boards ever made, but we did not do that.  Due 
-to the non-reversibility of time, the decision is hard to reverse.
-
-In the case of this MMC driver, the only real difference is that two 
-properties have legacy names that later had differing "official" names. 
-  The overhead of carrying the legacy bindings is very low.
-
-David.
+Bharat

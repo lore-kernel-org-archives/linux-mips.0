@@ -1,19 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:1630 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57445 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011033AbcBKO7Cp0dHv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 11 Feb 2016 15:59:02 +0100
-Date: Thu, 11 Feb 2016 14:58:55 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH v4 2/2] mips: Differentiate between 32 and 64 bit ELF
- header
-In-Reply-To: <alpine.DEB.2.00.1602111153320.15885@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.00.1602111430530.15885@tp.orcam.me.uk>
-References: <56BAD881.9000208@bmw-carit.de> <1455096081-7176-1-git-send-email-daniel.wagner@bmw-carit.de> <1455096081-7176-3-git-send-email-daniel.wagner@bmw-carit.de> <20160211104903.GD11091@linux-mips.org>
- <alpine.DEB.2.00.1602111153320.15885@tp.orcam.me.uk>
+        with ESMTP id S27011283AbcBKQLbyDAGN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 11 Feb 2016 17:11:31 +0100
+Subject: Re: [Patch v9] SATA: OCTEON: support SATA on OCTEON platform
+References: <1455198788-24754-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+ <20160211151551.GX3741@mtj.duckdns.org>
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Message-ID: <56BCB28A.4070302@imgtec.com>
+Date: Thu, 11 Feb 2016 16:10:50 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-7"
-Content-Transfer-Encoding: 8BIT
-Return-Path: <Maciej.Rozycki@imgtec.com>
+In-Reply-To: <20160211151551.GX3741@mtj.duckdns.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,58 +22,34 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Daniel Wagner <daniel.wagner@bmw-carit.de>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160211145855.kgaPCG6lETNYmGS5d-3FYveSLtPSY9p1rn5u3ineAsk@z>
+To: Tejun Heo <tj@kernel.org>
+Cc: hdegoede@redhat.com, david.daney@cavium.com, aleksey.makarov@caviumnetworks.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org
+Message-ID: <20160211161050.JvvaY5ZkveyUDT7ekGA_SPNOsueuPGQ7cTqHce2XCFI@z>
 
-On Thu, 11 Feb 2016, Maciej W. Rozycki wrote:
 
-> > > Signed-off-by: Daniel Wagner <daniel.wagner@bmw-carit.de>
-> > > Suggested-by: Maciej W. Rozycki <macro@imgtec.com>
-> > > Reviewed-by: Maciej W. Rozycki <macro@imgtec.com>
-> > > Reported-by: Fengguang Wu <fengguang.wu@intel.com>
-> > 
-> > Thanks, applied.
-> > 
-> > I'm getting a less spectacular warning from gcc 5.2:
-> > 
-> >   CC      fs/proc/vmcore.o
-> > fs/proc/vmcore.c: In function �parse_crash_elf64_headers�:
-> > fs/proc/vmcore.c:939:47: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
-> 
->  Yes, the temporaries still need to have their pointed types changed, to 
-> `Elf32_Ehdr' and `Elf64_Ehdr' respectively, as in the original change.
-> 
->  I had it mentioned in a WIP version of my review (stating that it would 
-> verify that the correct type is used by the caller), but then deleted that 
-> part inadvertently, sigh.
 
- Hold on, I was right in dropping it actually.
+On 11/02/16 15:15, Tejun Heo wrote:
+> On Thu, Feb 11, 2016 at 01:53:08PM +0000, Zubair Lutfullah Kakakhel wrote:
+>> From: Aleksey Makarov <aleksey.makarov@caviumnetworks.com>
+>>
+>> The OCTEON SATA controller is currently found on cn71XX devices.
+>>
+>> Cc: Arnd Bergmann <arnd@arndb.de>
+>> Acked-by: Hans de Goede <hdegoede@redhat.com>
+>> Acked-by: Rob Herring <robh@kernel.org>
+>> Signed-off-by: David Daney <david.daney@cavium.com>
+>> Signed-off-by: Vinita Gupta <vgupta@caviumnetworks.com>
+>> Signed-off-by: Aleksey Makarov <aleksey.makarov@auriga.com>
+>> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+>
+> Applied to libata/for-4.6.
 
- With your v4 change in place all `parse_crash_elf64_headers' is supposed 
-to call is `mips_elf_check_machine' and that doesn't make any 
-intialisations, it just dereferences the pointer passed once.  This error 
-does not make any sense to me and line 939 isn't even in 
-`parse_crash_elf64_headers', which starts at line 999, it's in 
-`process_ptload_program_headers_elf32'.
+Thank-you very much everyone.
 
- So Ralf, what tree are you using that is off from LMO/Linus by 60 lines?
+( ͡° ͜ʖ ͡°)
 
- BTW line 939 at LMO and in Linus's tree looks like:
+ZubairLK
 
-	Elf32_Phdr *phdr_ptr;
-
-and the pointer is assigned to at line 944 like this:
-
-	phdr_ptr = (Elf32_Phdr*)(elfptr + sizeof(Elf32_Ehdr)); /* PT_NOTE hdr */
-
-so this does not explain the error.  I get a clean build with this version 
-of Daniel's patches, both 32-bit and 64-bit, and FAOD with 
-CONFIG_PROC_VMCORE=y.
-
- Daniel, please hold on with further updates, before this is cleared.  
-Your v4 looks fine to me AFAICT, no need to change types.  Sorry about 
-this all confusion, something's clearly broken somewhere -- maybe due to 
-someone else's unpublished patch.
-
-  Maciej
+>
+> Thanks.
+>

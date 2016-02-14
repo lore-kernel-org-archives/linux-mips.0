@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:54571 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:43645 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27012151AbcBKT21HQCya (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 11 Feb 2016 20:28:27 +0100
-Date: Thu, 11 Feb 2016 19:28:17 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH v5] mmc: OCTEON: Add host driver for OCTEON MMC
- controller
-In-Reply-To: <56BBD6AD.2090902@caviumnetworks.com>
-Message-ID: <alpine.DEB.2.00.1602111910240.15885@tp.orcam.me.uk>
-References: <1455125775-7245-1-git-send-email-matt.redfearn@imgtec.com> <56BB7B2F.60307@caviumnetworks.com> <20160210234907.GC1640@darkstar.musicnaut.iki.fi> <56BBD6AD.2090902@caviumnetworks.com>
+        with ESMTP id S27010848AbcBNTVPl3E0v (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 14 Feb 2016 20:21:15 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: Use CPHYSADDR to implement mips32 __pa
+Date: Sun, 14 Feb 2016 11:20:26 -0800
+Message-ID: <1455477626-30988-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,49 +18,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>, Matt Redfearn <matt.redfearn@imgtec.com>, linux-mmc@vger.kernel.org, david.daney@cavium.com, ulf.hansson@linaro.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Zubair.Kakakhel@imgtec.com, Aleksey Makarov <aleksey.makarov@caviumnetworks.com>, Chandrakala Chavva <cchavva@caviumnetworks.com>, Aleksey Makarov <aleksey.makarov@auriga.com>, Leonid Rosenboim <lrosenboim@caviumnetworks.com>, Peter Swain <pswain@cavium.com>, Aaron Williams <aaron.williams@cavium.com>
-Message-ID: <20160211192817.BFZgWTjnH4xvUfkij0hDM985R3h3LeOfv6-3tq22N5E@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20160214192026.vZ24pVx6FeVbBVhNmg1QqYkYZQrnUDZc_MFvseGKk78@z>
 
-On Thu, 11 Feb 2016, David Daney wrote:
+Use CPHYSADDR to implement the __pa macro converting from a virtual to a
+physical address for MIPS32, much as is already done for MIPS64 (though
+without the complication of having both compatibility & XKPHYS
+segments).
 
-> > > The vast majority of people that see it will not be able to change their
-> > > firmware.  So it will be forever cluttering up their boot logs.
-> > 
-> > Until they switch to use APPENDED_DTB. :-)
-> > 
-> 
-> I am philosophically opposed to making the DTB an internal kernel
-> implementation detail.
-> 
-> For OCTEON boards, it is an ABI between the boot firmware and the kernel, and
-> is impractical to change.
-> 
-> One could argue that many years ago, when the decision was made (by me), that
-> we should have opted to carry in the kernel source code tree the DTS files for
-> all OCTEON boards ever made, but we did not do that.  Due to the
-> non-reversibility of time, the decision is hard to reverse.
+This allows for __pa to work regardless of whether the address being
+translated is in kseg0 or kseg1, unlike the previous subtraction based
+approach which only worked for addresses in kseg0. Working for kseg1
+addresses is important if __pa is used on addresses allocated by
+dma_alloc_coherent, where on systems with non-coherent I/O we provide
+addresses in kseg1. If this address is then used with
+dma_map_single_attrs then it is provided to virt_to_page, which in turn
+calls virt_to_phys which is a wrapper around __pa. The result is that we
+end up with a physical address 0x20000000 bytes (ie. the size of kseg0)
+too high.
 
- I concur, a very good decision as far as I'm concerned!
+In addition to providing consistency with MIPS64 & fixing the kseg1 case
+above this has the added bonus of generating smaller code for systems
+implementing MIPS32r2 & beyond, where a single ext instruction can
+extract the physical address rather than needing to load an immediate
+into a temp register & subtract it. This results in ~1.3KB savings for a
+boston_defconfig kernel adjusted to set CONFIG_32BIT=y.
 
- I had the misfortune to work with some Freescale Power boards which used 
-in-kernel DTS files in a hope to match the respective board's firmware 
-(U-boot).  Needless to say, that didn't quite work.  The mapping of board 
-resources was reportedly changed in some version of the firmware to give 
-more flexibility and the DTS files bundled with Linux updated accordingly, 
-however no version of the old files was kept around and maintained.  So a 
-kernel upgrade, which turned out inevitable at one point, became a 
-challenging task to update the DTS files so as to match the version of the 
-firmware the boards had.
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+---
 
- With some pain I was eventually able to sort this out through patching 
-the old DTS files to match the ever-changing DTS syntax and get them 
-accepted for a DTB build and work to an acceptable extent with the then 
-current version of Linux.  However some board resources were lost, for 
-example the IDE interface was no longer accessible; fortunately I didn't 
-need it, so I just left it like that and didn't figure out what else I'd 
-have to do to regain access.
+ arch/mips/include/asm/page.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- So no, no standalone DTS/DTBs please, thank you very much.
-
-  Maciej
+diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
+index 21ed715..35c1222 100644
+--- a/arch/mips/include/asm/page.h
++++ b/arch/mips/include/asm/page.h
+@@ -169,8 +169,7 @@ typedef struct { unsigned long pgprot; } pgprot_t;
+     __x < CKSEG0 ? XPHYSADDR(__x) : CPHYSADDR(__x);			\
+ })
+ #else
+-#define __pa(x)								\
+-    ((unsigned long)(x) - PAGE_OFFSET + PHYS_OFFSET)
++#define __pa(x)		CPHYSADDR(x)
+ #endif
+ #define __va(x)		((void *)((unsigned long)(x) + PAGE_OFFSET - PHYS_OFFSET))
+ #include <asm/io.h>
+-- 
+2.7.1

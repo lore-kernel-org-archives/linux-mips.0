@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:20153 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:33750 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008752AbcBOISGMUHBx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 15 Feb 2016 09:18:06 +0100
-Subject: Re: [PATCH v6 2/3] MIPS: OCTEON: Rename legacy properties in internal
- device trees.
-References: <1455207976-2262-1-git-send-email-matt.redfearn@imgtec.com>
- <1455207976-2262-2-git-send-email-matt.redfearn@imgtec.com>
- <56BCB7AE.2050901@gmail.com> <56BCBC90.6090805@imgtec.com>
- <56BCC64A.5040902@caviumnetworks.com>
+        with ESMTP id S27010629AbcBOKffVaXTj (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 15 Feb 2016 11:35:35 +0100
+Received: from HHMAIL01.hh.imgtec.org (unknown [10.100.10.19])
+        by Websense Email Security Gateway with ESMTPS id 1E61616427DDC
+        for <linux-mips@linux-mips.org>; Mon, 15 Feb 2016 10:35:27 +0000 (GMT)
+Subject: Re: [PATCH] MIPS: Use CPHYSADDR to implement mips32 __pa
+References: <1455477626-30988-1-git-send-email-paul.burton@imgtec.com>
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <56C189B7.5020504@imgtec.com>
-Date: Mon, 15 Feb 2016 08:17:59 +0000
+Message-ID: <56C1A9F0.90706@imgtec.com>
+Date: Mon, 15 Feb 2016 10:35:28 +0000
 MIME-Version: 1.0
-In-Reply-To: <56BCC64A.5040902@caviumnetworks.com>
+In-Reply-To: <1455477626-30988-1-git-send-email-paul.burton@imgtec.com>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Matt.Redfearn@imgtec.com>
@@ -25,92 +24,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: David Daney <ddaney.cavm@gmail.com>, david.daney@cavium.com, aleksey.makarov@caviumnetworks.com, ulf.hansson@linaro.org, robh@kernel.org, ralf@linux-mips.org, linux-mmc@vger.kernel.org, linux-mips@linux-mips.org, devicetree@vger.kernel.org
-Message-ID: <20160215081759.6uemL6PenEOVVbUy6J2I9_2fMC5Zpc9nGaXE9YyFLr4@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20160215103528.QDff7kTQ7UCqi9Abi91SwmLLb5Y6Q5MdjwnPWk71ZjM@z>
 
-Hi David,
+Hi Paul,
 
-On 11/02/16 17:35, David Daney wrote:
-> On 02/11/2016 08:53 AM, Matt Redfearn wrote:
->> Hi David,
->>
->> On 11/02/16 16:32, David Daney wrote:
->>> On 02/11/2016 08:26 AM, Matt Redfearn wrote:
->>>> Many OCTEON devices have been shipped in products with fixed DTBs. 
->>>> These
->>>> DTBS contain properties which are not compatible with newer kernels 
->>>> with
->>>> upstream drivers.
->>>> Therefore some mechanism is necessary to convert legacy naming into
->>>> upstream naming. In the first instance this is to support the 
->>>> OCTEON MMC
->>>> controller, which is in a later patch of this series.
->>>> This patch adds a octeon_handle_legacy_device_tree() function which is
->>>> always called from device_tree_init() to fix up the device tree so 
->>>> that
->>>> drivers need have no knowledge of the legacy naming or properties.
->>>>
->>>> Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
->>>
->>> NAK...
->>>
->>> I already sent e-mail on this, but it crossed in flight.
->>
->> Yeah, unfortunate timing.
->>
->>>
->>> Basically, this patch is much more complex than the original code
->>> which was just a few lines to check the alternate "legacy" names.
->>
->> This code is functionally equivalent to the previous version, just
->> located in platform code rather than the driver itself.
+On 14/02/16 19:20, Paul Burton wrote:
+> Use CPHYSADDR to implement the __pa macro converting from a virtual to a
+> physical address for MIPS32, much as is already done for MIPS64 (though
+> without the complication of having both compatibility & XKPHYS
+> segments).
 >
-> I know, one thing I really don't like about it, is that we are 
-> modifying the kernel's view of the device that was passed in.  How 
-> does that effect what is seen in /sys/firmware ?
-
-Yes, that's true. The tree as visible in /sys/firmware is the modified 
-version, because the modifications are performed on the DTB before it is 
-unflattened and copied. This is what can be seen with the update:
-
-# ls /sys/firmware/devicetree/base/soc\@0/mmc\@1180000002000/mmc-slot\@0/
-bus-width  compatible  max-frequency  name  reg  voltage-ranges
-
+> This allows for __pa to work regardless of whether the address being
+> translated is in kseg0 or kseg1, unlike the previous subtraction based
+> approach which only worked for addresses in kseg0. Working for kseg1
+> addresses is important if __pa is used on addresses allocated by
+> dma_alloc_coherent, where on systems with non-coherent I/O we provide
+> addresses in kseg1. If this address is then used with
+> dma_map_single_attrs then it is provided to virt_to_page, which in turn
+> calls virt_to_phys which is a wrapper around __pa. The result is that we
+> end up with a physical address 0x20000000 bytes (ie. the size of kseg0)
+> too high.
 >
-> I would rather see code that calls mmc_of_parse(), and then, if the 
-> two properties in question (bus-width, and max-frequency) have not 
-> been filled in, attempt to read them with the legacy names using 
-> of_property_read_u32()
-
-OK, well we can go back to that...
-
+> In addition to providing consistency with MIPS64 & fixing the kseg1 case
+> above this has the added bonus of generating smaller code for systems
+> implementing MIPS32r2 & beyond, where a single ext instruction can
+> extract the physical address rather than needing to load an immediate
+> into a temp register & subtract it. This results in ~1.3KB savings for a
+> boston_defconfig kernel adjusted to set CONFIG_32BIT=y.
 >
-> The implementation of mmc_of_parse() already contains support for 
-> parsing legacy properties, so we could also add a couple more there, 
-> which would be the simplest change of all.
+> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> ---
+>
+>   arch/mips/include/asm/page.h | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
+> index 21ed715..35c1222 100644
+> --- a/arch/mips/include/asm/page.h
+> +++ b/arch/mips/include/asm/page.h
+> @@ -169,8 +169,7 @@ typedef struct { unsigned long pgprot; } pgprot_t;
+>       __x < CKSEG0 ? XPHYSADDR(__x) : CPHYSADDR(__x);			\
+>   })
+>   #else
+> -#define __pa(x)								\
+> -    ((unsigned long)(x) - PAGE_OFFSET + PHYS_OFFSET)
+> +#define __pa(x)		CPHYSADDR(x)
+>   #endif
+>   #define __va(x)		((void *)((unsigned long)(x) + PAGE_OFFSET - PHYS_OFFSET))
+>   #include <asm/io.h>
+I have tested this patch on an EVA Interaptiv and confirmed that it 
+fixes previous regressions.
 
-Best to keep the support in the driver, I think.
-
->
->
->> In terms of LOC
->> it's not much different. Doing it this was does allow future flexibility
->> to change other bindings that are fixed in firmware without having to
->> support each set in the individual drivers.
->
-> I think the controversy is limited to the MMC driver.  As far as I 
-> know, we are in good shape with the bindings for the other drivers.
-OK cool, well let's go back to that version, then.
+Tested-by: Matt Redfearn <matt.redfearn@imgtec.com>
 
 Thanks,
 Matt
->
->
->> Leaving this patch out will mean having to get any legacy bindings
->> accepted into each driver via their maintainer.
->> But for the moment we're just talking about the MMC driver - if this
->> patch is not accepted then the only way to support legacy devices is
->> with Ulf's signoff of handling both binding versions in the driver.
->>
-> [...]

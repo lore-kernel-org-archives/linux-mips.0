@@ -1,20 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:33750 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:60346 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010629AbcBOKffVaXTj (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 15 Feb 2016 11:35:35 +0100
-Received: from HHMAIL01.hh.imgtec.org (unknown [10.100.10.19])
-        by Websense Email Security Gateway with ESMTPS id 1E61616427DDC
-        for <linux-mips@linux-mips.org>; Mon, 15 Feb 2016 10:35:27 +0000 (GMT)
-Subject: Re: [PATCH] MIPS: Use CPHYSADDR to implement mips32 __pa
-References: <1455477626-30988-1-git-send-email-paul.burton@imgtec.com>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <56C1A9F0.90706@imgtec.com>
-Date: Mon, 15 Feb 2016 10:35:28 +0000
+        with ESMTP id S27011948AbcBOR7sG0m0r (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 15 Feb 2016 18:59:48 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] compiler-gcc: Workaround MIPS GCC reordering bug
+Date: Mon, 15 Feb 2016 09:59:05 -0800
+Message-ID: <1455559145-26805-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <1455477626-30988-1-git-send-email-paul.burton@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,59 +18,83 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Message-ID: <20160215103528.QDff7kTQ7UCqi9Abi91SwmLLb5Y6Q5MdjwnPWk71ZjM@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>, "# v4 . 4+" <stable@vger.kernel.org>, Matthew Fortune <matthew.fortune@imgtec.com>, Robert Suchanek <robert.suchanek@imgtec.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, Hannes Frederic Sowa <hannes@stressinduktion.org>, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Joe Perches <joe@perches.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Daniel Borkmann <daniel@iogearbox.net>, Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <20160215175905.NItgfvbEzH0sp-O2ABlF2w-wEIkcn2PACKwqvh8HcHw@z>
 
-Hi Paul,
+GCC for MIPS currently has a bug which leads to it reordering
+instructions into branch delay slots incorrectly when a call to
+__builtin_unreachable is the only content of the default case of a
+switch statement. See this thread for details:
 
-On 14/02/16 19:20, Paul Burton wrote:
-> Use CPHYSADDR to implement the __pa macro converting from a virtual to a
-> physical address for MIPS32, much as is already done for MIPS64 (though
-> without the complication of having both compatibility & XKPHYS
-> segments).
->
-> This allows for __pa to work regardless of whether the address being
-> translated is in kseg0 or kseg1, unlike the previous subtraction based
-> approach which only worked for addresses in kseg0. Working for kseg1
-> addresses is important if __pa is used on addresses allocated by
-> dma_alloc_coherent, where on systems with non-coherent I/O we provide
-> addresses in kseg1. If this address is then used with
-> dma_map_single_attrs then it is provided to virt_to_page, which in turn
-> calls virt_to_phys which is a wrapper around __pa. The result is that we
-> end up with a physical address 0x20000000 bytes (ie. the size of kseg0)
-> too high.
->
-> In addition to providing consistency with MIPS64 & fixing the kseg1 case
-> above this has the added bonus of generating smaller code for systems
-> implementing MIPS32r2 & beyond, where a single ext instruction can
-> extract the physical address rather than needing to load an immediate
-> into a temp register & subtract it. This results in ~1.3KB savings for a
-> boston_defconfig kernel adjusted to set CONFIG_32BIT=y.
->
-> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> ---
->
->   arch/mips/include/asm/page.h | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-> index 21ed715..35c1222 100644
-> --- a/arch/mips/include/asm/page.h
-> +++ b/arch/mips/include/asm/page.h
-> @@ -169,8 +169,7 @@ typedef struct { unsigned long pgprot; } pgprot_t;
->       __x < CKSEG0 ? XPHYSADDR(__x) : CPHYSADDR(__x);			\
->   })
->   #else
-> -#define __pa(x)								\
-> -    ((unsigned long)(x) - PAGE_OFFSET + PHYS_OFFSET)
-> +#define __pa(x)		CPHYSADDR(x)
->   #endif
->   #define __va(x)		((void *)((unsigned long)(x) + PAGE_OFFSET - PHYS_OFFSET))
->   #include <asm/io.h>
-I have tested this patch on an EVA Interaptiv and confirmed that it 
-fixes previous regressions.
+    https://gcc.gnu.org/ml/gcc-patches/2015-09/msg00360.html
 
-Tested-by: Matt Redfearn <matt.redfearn@imgtec.com>
+Work around this bug by placing an empty volatile asm statement before
+the __builtin_unreachable call, which prevents GCC's delay slot filler
+from seeing past the asm statement (& thus the call to
+__builtin_unreachable) to instructions it shouldn't reorder. It would be
+good to guard this based upon GCC_VERSION once the bug is fixed in GCC,
+but meanwhile this workaround has no known negative side effects.
 
-Thanks,
-Matt
+This bug affects at least a maltasmvp_defconfig kernel built from the
+v4.4 tag using GCC 4.9.2 (from a Codescape SDK 2015.06-05 toolchain),
+with the result being an address exception taken after log messages
+about the L1 caches (during probe of the L2 cache):
+
+    Initmem setup node 0 [mem 0x0000000080000000-0x000000009fffffff]
+    VPE topology {2,2} total 4
+    Primary instruction cache 64kB, VIPT, 4-way, linesize 32 bytes.
+    Primary data cache 64kB, 4-way, PIPT, no aliases, linesize 32 bytes
+    <AdEL exception here>
+
+This is early enough that the kernel exception vectors are not in use,
+so any further output depends upon the bootloader. This is reproducible
+in QEMU where no further output occurs - ie. the system hangs here.
+Given the affected v4.4 configuration this patch is marked for stable
+backport to v4.4, however I cannot test every configuration so it's
+entirely possible that this bug hits other platforms in earlier kernel
+versions. Given the nature of the bug it may potentially be hit with
+differing symptoms.
+
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Cc: <stable@vger.kernel.org> # v4.4+
+Cc: Matthew Fortune <matthew.fortune@imgtec.com>
+Cc: Robert Suchanek <robert.suchanek@imgtec.com>
+---
+
+ include/linux/compiler-gcc.h | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index 22ab246..e7c3502 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -196,7 +196,25 @@
+  * this in the preprocessor, but we can live with this because they're
+  * unreleased.  Really, we need to have autoconf for the kernel.
+  */
+-#define unreachable() __builtin_unreachable()
++#if defined(__mips__)
++/*
++ * GCC for MIPS currently has a bug which leads to it incorrectly
++ * reordering instructions into branch delay slots when a call to
++ * __builtin_unreachable() is the only thing in the default case of a
++ * switch statement. We avoid this bug for those versions of GCC by
++ * placing an empty volatile asm statement before the call to
++ * __builtin_unreachable, which GCC is prevented from reordering past.
++ *
++ * See this thread for details:
++ * https://gcc.gnu.org/ml/gcc-patches/2015-09/msg00360.html
++ */
++# define unreachable() do {		\
++	asm volatile("");		\
++	__builtin_unreachable();	\
++} while (0)
++#else
++# define unreachable() __builtin_unreachable()
++#endif
+ 
+ /* Mark a function definition as prohibited from being cloned. */
+ #define __noclone	__attribute__((__noclone__))
+-- 
+2.7.1

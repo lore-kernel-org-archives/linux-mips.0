@@ -1,14 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:60346 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:19590 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011948AbcBOR7sG0m0r (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 15 Feb 2016 18:59:48 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] compiler-gcc: Workaround MIPS GCC reordering bug
-Date: Mon, 15 Feb 2016 09:59:05 -0800
-Message-ID: <1455559145-26805-1-git-send-email-paul.burton@imgtec.com>
+        with ESMTP id S27007227AbcBOXu0WrA9g (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Feb 2016 00:50:26 +0100
+Date: Mon, 15 Feb 2016 23:50:16 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH] Expect SI_KERNEL si_code for a MIPS software breakpoint
+ trap
+In-Reply-To: <56BB329F.3080606@codesourcery.com>
+Message-ID: <alpine.DEB.2.00.1602152315540.15885@tp.orcam.me.uk>
+References: <1442592647-3051-1-git-send-email-lgustavo@codesourcery.com> <alpine.LFD.2.20.1509181729100.10647@eddie.linux-mips.org> <56B9F7E6.5010006@codesourcery.com> <alpine.DEB.2.00.1602092020150.15885@tp.orcam.me.uk> <56BB329F.3080606@codesourcery.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,83 +21,130 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, "# v4 . 4+" <stable@vger.kernel.org>, Matthew Fortune <matthew.fortune@imgtec.com>, Robert Suchanek <robert.suchanek@imgtec.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, Hannes Frederic Sowa <hannes@stressinduktion.org>, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Joe Perches <joe@perches.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Daniel Borkmann <daniel@iogearbox.net>, Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <20160215175905.NItgfvbEzH0sp-O2ABlF2w-wEIkcn2PACKwqvh8HcHw@z>
+To: Luis Machado <lgustavo@codesourcery.com>
+Cc: "Maciej W. Rozycki" <macro@linux-mips.org>, gdb-patches@sourceware.org, linux-mips@linux-mips.org
+Message-ID: <20160215235016.duI1Ce5QaX95TAiVP3Va4leCkT1tJM_K6WOUe_UBh68@z>
 
-GCC for MIPS currently has a bug which leads to it reordering
-instructions into branch delay slots incorrectly when a call to
-__builtin_unreachable is the only content of the default case of a
-switch statement. See this thread for details:
+On Wed, 10 Feb 2016, Luis Machado wrote:
 
-    https://gcc.gnu.org/ml/gcc-patches/2015-09/msg00360.html
+> I went through the data again and i was partially mistaken about the above.
+> Here's a detailed description of the events that take place in the reported
+> situation.
+> 
+> 1 - A breakpoint is inserted by GDB at some code that is executed by multiple
+> threads.
+> 2 - Two threads, let us call them 1 and 2, happen to hit the same software
+> breakpoint, so both SIGTRAP's get sent by the kernel and gdbserver picks one
+> of them to process.
+> 3 - gdbserver figures out this is from a breakpoint hit, since it knows there
+> is a breakpoint inserted at that PC, and sends a swbreak stop reply back to
+> gdb.
+> 4 - GDB gets the swbreak stop reply and notifies the user about the breakpoint
+> hit for thread 1, displays the frame information etc.
+> 
+> Now, the user goes and deletes that specific breakpoint that triggered the
+> previous event and switches the context to thread 2 and then attempts to
+> continue execution.
+> 
+> 5 - In gdbserver, thread 2 still has a pending SIGTRAP that was not yet
+> handled.
+> 6 - gdbserver proceeds to handle it, sees it is a SIGTRAP but cannot map that
+> event back to a software breakpoint hit due to the removal of such breakpoint
+> and because gdbserver doesn't expect SI_KERNEL to mean "software breakpoint
+> hit".
+> 7 - gdbserver then assumes this is a generic trap and reports it as such to
+> GDB, in a new stop reply.
+> 8 - GDB receives the stop reply and displays a generic trace/breakpoint
+> SIGTRAP since it also cannot map the trap back to a software breakpoint, i.e.
+> bpstat_explains_signal returns 0 and random_signal is non-zero.
+> 
+> Patching gdbserver to recognize a si_code of SI_KERNEL as a software
+> breakpoint trap causes changes starting from 6.
+> 
+> 6 - gdbserver proceeds to handle it, sees it is a SIGTRAP and that its si_code
+> is SI_KERNEL, meaning a software breakpoint hit now, even though we can't
+> recognize a breakpoint hit by checking for an underlying breakpoint
+> instruction.
+> 7 - gdbserver sends a swbreak stop reply back to GDB.
+> 8 - GDB receives the stop reply and notices it is a delayed breakpoint hit.
+> According to its logic, GDB discards this as useless and the program continues
+> its execution properly. Here random_signal is non-zero and
+> target_stopped_by_sw_breakpoint () returns 1 (because gdbserver told GDB so).
+> 
+> The problem of forcing gdbserver to recognize all traps with
+> si_code==SI_KERNEL is that even hardcoded traps will be reported back to GDB
+> as a swbreak event, which is not ideal.
+> 
+> But currently there is no easy way to tell a software breakpoint hit and a
+> hardcoded trap (and maybe even a hardware breakpoint hit?) apart.
 
-Work around this bug by placing an empty volatile asm statement before
-the __builtin_unreachable call, which prevents GCC's delay slot filler
-from seeing past the asm statement (& thus the call to
-__builtin_unreachable) to instructions it shouldn't reorder. It would be
-good to guard this based upon GCC_VERSION once the bug is fixed in GCC,
-but meanwhile this workaround has no known negative side effects.
+ Thanks for the detailed explanation.
 
-This bug affects at least a maltasmvp_defconfig kernel built from the
-v4.4 tag using GCC 4.9.2 (from a Codescape SDK 2015.06-05 toolchain),
-with the result being an address exception taken after log messages
-about the L1 caches (during probe of the L2 cache):
+ FWIW, I maintain it's GDB that should be handling it.  What if TRAP_BRKPT 
+is reported for a breakpoint that has not been set by GDB in the first 
+place and is still there in code?  I take it either GDB or gdbserver, as 
+applicable, will just sit there looping indefinitely in an attempt to 
+discard the event while executing the breakpoint instruction over and over 
+again.  There's nothing stopping the user from having a MIPS `BREAK 5' 
+instruction or say INT3 for the x86 target already present in the 
+executable being debugged.
 
-    Initmem setup node 0 [mem 0x0000000080000000-0x000000009fffffff]
-    VPE topology {2,2} total 4
-    Primary instruction cache 64kB, VIPT, 4-way, linesize 32 bytes.
-    Primary data cache 64kB, 4-way, PIPT, no aliases, linesize 32 bytes
-    <AdEL exception here>
+ What I think GDB ought to be doing here is caching addresses for recently 
+removed breakpoints and discarding spurious hits in that cache.  It may 
+actually be worth verifying, before discarding such a hit, that there is 
+no breakpoint instruction there anymore in target memory too -- a clever 
+user might have set a breakpoint on a breakpoint instruction already there 
+in code!
 
-This is early enough that the kernel exception vectors are not in use,
-so any further output depends upon the bootloader. This is reproducible
-in QEMU where no further output occurs - ie. the system hangs here.
-Given the affected v4.4 configuration this patch is marked for stable
-backport to v4.4, however I cannot test every configuration so it's
-entirely possible that this bug hits other platforms in earlier kernel
-versions. Given the nature of the bug it may potentially be hit with
-differing symptoms.
+ It seems to me it'll be enough if the cache is only retained over a 
+single resumption step, per thread of course, as it does not appear to me 
+that the kernel might queue more than one software breakpoint signal at 
+once.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: <stable@vger.kernel.org> # v4.4+
-Cc: Matthew Fortune <matthew.fortune@imgtec.com>
-Cc: Robert Suchanek <robert.suchanek@imgtec.com>
----
+ NB conceptually this is similar to handling spurious hardware interrupts 
+in the kernel, where the kernel interrogates all possible interrupt 
+sources for the reporting interrupt line, which might be a physical shared 
+wire, a shared vector, etc., before discarding them as invalid.  Such 
+interrupts are sometimes delivered when the originating device pulls its 
+request away before it's been handled.
 
- include/linux/compiler-gcc.h | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+> >   Did I miss anything?  How is this situation handled in a native debug
+> > scenario?
+> 
+> I take it native debugging will display the same sympthoms because the
+> definitions of si_code are shared between GDB and gdbserver, from
+> nat/linux-ptrace.h. Native also uses a similar function to check for
+> breakpoint hits, namely gdb/linux-nat.c:check_stopped_by_breakpoint. I did not
+> test this with a native debugger though.
 
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index 22ab246..e7c3502 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -196,7 +196,25 @@
-  * this in the preprocessor, but we can live with this because they're
-  * unreleased.  Really, we need to have autoconf for the kernel.
-  */
--#define unreachable() __builtin_unreachable()
-+#if defined(__mips__)
-+/*
-+ * GCC for MIPS currently has a bug which leads to it incorrectly
-+ * reordering instructions into branch delay slots when a call to
-+ * __builtin_unreachable() is the only thing in the default case of a
-+ * switch statement. We avoid this bug for those versions of GCC by
-+ * placing an empty volatile asm statement before the call to
-+ * __builtin_unreachable, which GCC is prevented from reordering past.
-+ *
-+ * See this thread for details:
-+ * https://gcc.gnu.org/ml/gcc-patches/2015-09/msg00360.html
-+ */
-+# define unreachable() do {		\
-+	asm volatile("");		\
-+	__builtin_unreachable();	\
-+} while (0)
-+#else
-+# define unreachable() __builtin_unreachable()
-+#endif
- 
- /* Mark a function definition as prohibited from being cloned. */
- #define __noclone	__attribute__((__noclone__))
--- 
-2.7.1
+ OK, noted.  Thanks!
+
+> > > >    Perhaps we should make it a part of the ABI and teach MIPS/Linux
+> > > > about
+> > > > the breakpoint encoding used by GDB, which is `BREAK 5' (aka BRK_SSTEPBP
+> > > > in kernel-speak, a misnomer I'm afraid), and make it set `si_code' to
+> > > > TRAP_BRKPT, as expected.  This won't fix history of course, but at least
+> > > > it will make debugging a little bit easier to handle in the future.
+> > > > Cc-ing `linux-mips' for further input.
+> > > 
+> > > This is the best solution in my opinion and will definitely make the
+> > > debugger's life easier if it can tell the difference between multiple
+> > > seemingly equivalent SIGTRAP's.
+> > > 
+> > > Does this involve handling BRK_SSTEPBP inside
+> > > arch/mips/kernel/traps.c:do_trap_or_bp?
+> > 
+> >   No, as I noted in my reply to David elsewhere in this thread, this would
+> > have to be in `do_bp' instead, to exclude trap instructions (e.g. TEQ,
+> > etc.) from being treated as breakpoints.  I can implement this change
+> > myself for you, but we need to agree first what the right solution for GDB
+> > is.  So far it looks to me we'd be only papering over a problem elsewhere.
+> 
+> Hopefully the above makes what we're facing more clear.
+
+ I think we could do this as well, so as to save GDB from the need to 
+verify truly irrelevant traps against its cache.  Though I don't think it 
+buys us anything short-term as we'll have to continue support kernels 
+which have no notion of TRAP_BRKPT.  So no need to rush doing this IMHO.
+
+  Maciej

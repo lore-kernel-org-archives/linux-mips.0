@@ -1,14 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:39938 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011174AbcBPRll5FZrZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Feb 2016 18:41:41 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2] MIPS: Use CPHYSADDR to implement mips32 __pa
-Date: Tue, 16 Feb 2016 09:41:18 -0800
-Message-ID: <1455644478-23415-1-git-send-email-paul.burton@imgtec.com>
+Received: from mail-ig0-f169.google.com ([209.85.213.169]:38903 "EHLO
+        mail-ig0-f169.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27012840AbcBPS7OC7Zdk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Feb 2016 19:59:14 +0100
+Received: by mail-ig0-f169.google.com with SMTP id y8so84147561igp.1
+        for <linux-mips@linux-mips.org>; Tue, 16 Feb 2016 10:59:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+In-Reply-To: <20160215175825.GA15878@linux.vnet.ibm.com>
+References: <20160215175825.GA15878@linux.vnet.ibm.com>
+Date: Tue, 16 Feb 2016 10:59:08 -0800
+Message-ID: <CA+55aFxaQEvDrzecmZUQ5QfKzU4ei6E-+NpsW5hYp3ouaLP98g@mail.gmail.com>
+Subject: Re: Writes, smp_wmb(), and transitivity?
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <linus971@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,77 +22,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Matt Redfearn <matt.redfearn@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
-Message-ID: <20160216174118.qe2czsGHwCnhnePopdfdGzU6zRN7d35KZ2l4zSiE4eo@z>
+To: Paul McKenney <paulmck@linux.vnet.ibm.com>
+Cc: Will Deacon <will.deacon@arm.com>, Andy.Glew@imgtec.com, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Peter Zijlstra <peterz@infradead.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, David Miller <davem@davemloft.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-metag@vger.kernel.org, linux-mips <linux-mips@linux-mips.org>, linux-xtensa@linux-xtensa.org, ppc-dev <linuxppc-dev@lists.ozlabs.org>, graham.whaley@gmail.com, Peter Anvin <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>
+Message-ID: <20160216185908.47o2OwfEO8FZjj-SbVc7VIoAj8w4jvhl86k4xxHU5cI@z>
 
-Use CPHYSADDR to implement the __pa macro converting from a virtual to a
-physical address for MIPS32, much as is already done for MIPS64 (though
-without the complication of having both compatibility & XKPHYS
-segments).
+On Mon, Feb 15, 2016 at 9:58 AM, Paul E. McKenney
+<paulmck@linux.vnet.ibm.com> wrote:
+>
+> Two threads:
+>
+>         int a, b;
+>
+>         void thread0(void)
+>         {
+>                 WRITE_ONCE(a, 1);
+>                 smp_wmb();
+>                 WRITE_ONCE(b, 2);
+>         }
+>
+>         void thread1(void)
+>         {
+>                 WRITE_ONCE(b, 1);
+>                 smp_wmb();
+>                 WRITE_ONCE(a, 2);
+>         }
+>
+>         /* After all threads have completed and the dust has settled... */
+>
+>         BUG_ON(a == 1 && b == 1);
 
-This allows for __pa to work regardless of whether the address being
-translated is in kseg0 or kseg1, unlike the previous subtraction based
-approach which only worked for addresses in kseg0. Working for kseg1
-addresses is important if __pa is used on addresses allocated by
-dma_alloc_coherent, where on systems with non-coherent I/O we provide
-addresses in kseg1. If this address is then used with
-dma_map_single_attrs then it is provided to virt_to_page, which in turn
-calls virt_to_phys which is a wrapper around __pa. The result is that we
-end up with a physical address 0x20000000 bytes (ie. the size of kseg0)
-too high.
+So the more I look at that kind of litmus test, the less I think that
+we should care, because I can't come up with a scenario in where that
+kind of test makes sense. without even a possibility of any causal
+relationship between the two, I can't say why we'd ever care about the
+ordering of the (independent) writes to the individual variables.
 
-In addition to providing consistency with MIPS64 & fixing the kseg1 case
-above this has the added bonus of generating smaller code for systems
-implementing MIPS32r2 & beyond, where a single ext instruction can
-extract the physical address rather than needing to load an immediate
-into a temp register & subtract it. This results in ~1.3KB savings for a
-boston_defconfig kernel adjusted to set CONFIG_32BIT=y.
+If somebody can make up a causal chain, things differ. But as long as
+all the CPU's are just doing locally ordered writes, I don't think we
+need to care about a global store ordering.
 
-This patch does not change the EVA case, which may or may not have
-similar issues around handling both cached & uncached addresses but is
-beyond the scope of this patch.
-
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-
----
-
-Changes in v2:
-- Leave the EVA case as-is.
-
- arch/mips/include/asm/page.h | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-index 21ed715..ac0c1b7 100644
---- a/arch/mips/include/asm/page.h
-+++ b/arch/mips/include/asm/page.h
-@@ -169,8 +169,24 @@ typedef struct { unsigned long pgprot; } pgprot_t;
-     __x < CKSEG0 ? XPHYSADDR(__x) : CPHYSADDR(__x);			\
- })
- #else
--#define __pa(x)								\
--    ((unsigned long)(x) - PAGE_OFFSET + PHYS_OFFSET)
-+static inline unsigned long __pa(unsigned long x)
-+{
-+	if (!config_enabled(CONFIG_EVA)) {
-+		/*
-+		 * We're using the standard MIPS32 legacy memory map, ie.
-+		 * the address x is going to be in kseg0 or kseg1. We can
-+		 * handle either case by masking out the desired bits using
-+		 * CPHYSADDR.
-+		 */
-+		return CPHYSADDR(x);
-+	}
-+
-+	/*
-+	 * EVA is in use so the memory map could be anything, making it not
-+	 * safe to just mask out bits.
-+	 */
-+	return x - PAGE_OFFSET + PHYS_OFFSET;
-+}
- #endif
- #define __va(x)		((void *)((unsigned long)(x) + PAGE_OFFSET - PHYS_OFFSET))
- #include <asm/io.h>
--- 
-2.7.1
+              Linus

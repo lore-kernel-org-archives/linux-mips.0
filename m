@@ -1,32 +1,14 @@
-Received: from e33.co.us.ibm.com ([32.97.110.151]:49217 "EHLO
-        e33.co.us.ibm.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008543AbcBPTg7KkuEF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Feb 2016 20:36:59 +0100
-Received: from localhost
-        by e33.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-mips@linux-mips.org> from <paulmck@linux.vnet.ibm.com>;
-        Tue, 16 Feb 2016 12:36:52 -0700
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by d03dlp01.boulder.ibm.com (Postfix) with ESMTP id 946031FF001E
-        for <linux-mips@linux-mips.org>; Tue, 16 Feb 2016 12:24:49 -0700 (MST)
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id u1GJadTr32047122
-        for <linux-mips@linux-mips.org>; Tue, 16 Feb 2016 19:36:39 GMT
-Received: from d01av01.pok.ibm.com (localhost [127.0.0.1])
-        by d01av01.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id u1GJab5T014131
-        for <linux-mips@linux-mips.org>; Tue, 16 Feb 2016 14:36:38 -0500
-Date: Tue, 16 Feb 2016 11:36:44 -0800
-From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Subject: Re: Writes, smp_wmb(), and transitivity?
-Message-ID: <20160216193644.GV6719@linux.vnet.ibm.com>
-Reply-To: paulmck@linux.vnet.ibm.com
-References: <20160215175825.GA15878@linux.vnet.ibm.com>
- <CA+55aFxaQEvDrzecmZUQ5QfKzU4ei6E-+NpsW5hYp3ouaLP98g@mail.gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:37231 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012229AbcBQPhWoTd04 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 17 Feb 2016 16:37:22 +0100
+From: Daniel Sanders <daniel.sanders@imgtec.com>
+Subject: [PATCH] mips: Avoid a form of the .type directive that is not supported by LLVM's Integrated Assembler
+Date: Wed, 17 Feb 2016 15:37:09 +0000
+Message-ID: <1455723429-26459-1-git-send-email-daniel.sanders@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+55aFxaQEvDrzecmZUQ5QfKzU4ei6E-+NpsW5hYp3ouaLP98g@mail.gmail.com>
-Return-Path: <paulmck@linux.vnet.ibm.com>
+Content-Type: text/plain
+Return-Path: <Daniel.Sanders@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -36,56 +18,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Will Deacon <will.deacon@arm.com>, Andy.Glew@imgtec.com, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Peter Zijlstra <peterz@infradead.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, David Miller <davem@davemloft.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-metag@vger.kernel.org, linux-mips <linux-mips@linux-mips.org>, linux-xtensa@linux-xtensa.org, ppc-dev <linuxppc-dev@lists.ozlabs.org>, graham.whaley@gmail.com, Peter Anvin <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>
-Message-ID: <20160216193644.DSqsmLygTh8Yd-DzCxkWDC9oIVnLJRWqhH7KaqTueW0@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Daniel Sanders <daniel.sanders@imgtec.com>, Scott Egerton <Scott.Egerton@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20160217153709.6UQEgu31rjg-pEGP_h0qZFwzn3mrKlXefi953Mb8KNk@z>
 
-On Tue, Feb 16, 2016 at 10:59:08AM -0800, Linus Torvalds wrote:
-> On Mon, Feb 15, 2016 at 9:58 AM, Paul E. McKenney
-> <paulmck@linux.vnet.ibm.com> wrote:
-> >
-> > Two threads:
-> >
-> >         int a, b;
-> >
-> >         void thread0(void)
-> >         {
-> >                 WRITE_ONCE(a, 1);
-> >                 smp_wmb();
-> >                 WRITE_ONCE(b, 2);
-> >         }
-> >
-> >         void thread1(void)
-> >         {
-> >                 WRITE_ONCE(b, 1);
-> >                 smp_wmb();
-> >                 WRITE_ONCE(a, 2);
-> >         }
-> >
-> >         /* After all threads have completed and the dust has settled... */
-> >
-> >         BUG_ON(a == 1 && b == 1);
-> 
-> So the more I look at that kind of litmus test, the less I think that
-> we should care, because I can't come up with a scenario in where that
-> kind of test makes sense. without even a possibility of any causal
-> relationship between the two, I can't say why we'd ever care about the
-> ordering of the (independent) writes to the individual variables.
-> 
-> If somebody can make up a causal chain, things differ. But as long as
-> all the CPU's are just doing locally ordered writes, I don't think we
-> need to care about a global store ordering.
+The target independent parts of the LLVM Lexer considers 'fault@function'
+to be a single token representing the 'fault' symbol with a 'function'
+modifier. However, this is not the case in the .type directive where
+'function' refers to STT_FUNC from the ELF standard.
 
-Works for me!  (Yes, I can artificially generate a use case for this
-thing, but all the ones I have come up with have some better and more
-sane way to get the job done.  So I completely agree with your not caring
-about it.)
+This is the only example of this form of '.type' that we are aware of in
+MIPS source so we'd prefer to make this small source change rather than
+complicate the target independent parts of LLVM's assembly lexer with
+directive and/or target specific exceptions to the lexing rules.
 
-So for transitivity, we focus on causal chains, where one task writes
-to some variable that the next task reads.
+Signed-off-by: Scott Egerton <Scott.Egerton@imgtec.com>
+Signed-off-by: Daniel Sanders <daniel.sanders@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Markos Chandras <markos.chandras@imgtec.com>
+Cc: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Cc: linux-mips@linux-mips.org
 
-In addition, if all threads use full memory barriers throughout, as in
-smp_mb(), then full ordering is of course provided regardless of the
-pattern of reads and writes.
+---
+ arch/mips/kernel/r4k_fpu.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-							Thanx, Paul
+diff --git a/arch/mips/kernel/r4k_fpu.S b/arch/mips/kernel/r4k_fpu.S
+index f09546e..17732f8 100644
+--- a/arch/mips/kernel/r4k_fpu.S
++++ b/arch/mips/kernel/r4k_fpu.S
+@@ -358,7 +358,7 @@ LEAF(_restore_msa_all_upper)
+ 
+ 	.set	reorder
+ 
+-	.type	fault@function
++	.type	fault, @function
+ 	.ent	fault
+ fault:	li	v0, -EFAULT				# failure
+ 	jr	ra
+-- 
+2.1.4

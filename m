@@ -1,21 +1,20 @@
-Received: from mail-lf0-f42.google.com ([209.85.215.42]:34289 "EHLO
-        mail-lf0-f42.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27012967AbcBRRlJNxi6y convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 18 Feb 2016 18:41:09 +0100
-Received: by mail-lf0-f42.google.com with SMTP id j78so37688169lfb.1
-        for <linux-mips@linux-mips.org>; Thu, 18 Feb 2016 09:41:09 -0800 (PST)
-Date: Thu, 18 Feb 2016 21:06:52 +0300
-From: Antony Pavlov <antonynpavlov@gmail.com>
-Subject: Re: [RFC v5 07/15] usb: ehci: add vbus-gpio parameter
-Message-ID: <20160218210652.68ae464eed8ddbffd33e7a02@gmail.com>
-In-Reply-To: <Pine.LNX.4.44L0.1602181111350.1280-100000@iolanthe.rowland.org>
-References: <1455005641-7079-8-git-send-email-antonynpavlov@gmail.com>
-        <Pine.LNX.4.44L0.1602181111350.1280-100000@iolanthe.rowland.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
-Return-Path: <antonynpavlov@gmail.com>
+Received: from mail-oi0-f47.google.com ([209.85.218.47]:33328 "EHLO
+        mail-oi0-f47.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27012971AbcBRXTY734py (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Feb 2016 00:19:24 +0100
+Received: by mail-oi0-f47.google.com with SMTP id j125so873527oih.0
+        for <linux-mips@linux-mips.org>; Thu, 18 Feb 2016 15:19:24 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20160216160609.GA15268@linux-mips.org>
+References: <455637086-2794174-1-git-send-email-arnd@arndb.de>
+        <1455637261-2920972-1-git-send-email-arnd@arndb.de>
+        <20160216160609.GA15268@linux-mips.org>
+Date: Fri, 19 Feb 2016 00:19:18 +0100
+Message-ID: <CACRpkda=TFuUWzV_pLKoVhCZp1zWbEjoGmCey_w87bsuQZZ=jg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] MIPS: jz4740: remove broken irq_to_gpio() call
+From: Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <linus.walleij@linaro.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,127 +24,25 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alan Stern <stern@rowland.harvard.edu>, Marek Vasut <marex@denx.de>
-Cc: linux-mips@linux-mips.org, Wills Wang <wills.wang@live.com>, Daniel Schwierzeck <daniel.schwierzeck@gmail.com>, Alban Bedel <albeu@free.fr>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20160218180652.5uBD7BXZPqGt8RnpAHnfVO9zdqFKceRTBVK4F08F96k@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Russell King <rmk+kernel@arm.linux.org.uk>, Bjorn Helgaas <bhelgaas@google.com>, Alexandre Courbot <gnurou@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Linux MIPS <linux-mips@linux-mips.org>, "# v4 . 3+" <stable@vger.kernel.org>, Alban Bedel <albeu@free.fr>, Thomas Gleixner <tglx@linutronix.de>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20160218231918.qQXxjP-AKIueAgehIqiTa8uLrl5eNT_6mZB1IG8dzX0@z>
 
-On Thu, 18 Feb 2016 11:12:43 -0500 (EST)
-Alan Stern <stern@rowland.harvard.edu> wrote:
+On Tue, Feb 16, 2016 at 5:06 PM, Ralf Baechle <ralf@linux-mips.org> wrote:
 
-> On Tue, 9 Feb 2016, Antony Pavlov wrote:
-> 
-> > This patch retrieves and configures the vbus control gpio via
-> > the device tree.
-> > 
-> > This patch is based on a ehci-s5p.c commit fd81d59c90d38661
-> > ("USB: ehci-s5p: Add vbus setup function to the s5p ehci glue layer").
-> > 
-> > Signed-off-by: Antony Pavlov <antonynpavlov@gmail.com>
-> > Cc: Alan Stern <stern@rowland.harvard.edu>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: linux-usb@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > ---
-> >  drivers/usb/host/ehci-platform.c | 22 ++++++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
-> > 
-> > diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
-> > index bd7082f2..0d95ced 100644
-> > --- a/drivers/usb/host/ehci-platform.c
-> > +++ b/drivers/usb/host/ehci-platform.c
-> > @@ -28,6 +28,7 @@
-> >  #include <linux/io.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of.h>
-> > +#include <linux/of_gpio.h>
-> >  #include <linux/phy/phy.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/reset.h>
-> > @@ -142,6 +143,25 @@ static struct usb_ehci_pdata ehci_platform_defaults = {
-> >  	.power_off =		ehci_platform_power_off,
-> >  };
-> >  
-> > +static void setup_vbus_gpio(struct device *dev)
-> > +{
-> > +	int err;
-> > +	int gpio;
-> > +
-> > +	if (!dev->of_node)
-> > +		return;
-> > +
-> > +	gpio = of_get_named_gpio(dev->of_node, "vbus-gpio", 0);
-> > +	if (!gpio_is_valid(gpio))
-> > +		return;
-> > +
-> > +	err = devm_gpio_request_one(dev, gpio,
-> > +				GPIOF_OUT_INIT_HIGH | GPIOF_EXPORT_DIR_FIXED,
-> > +				"ehci_vbus_gpio");
-> > +	if (err)
-> > +		dev_err(dev, "can't request ehci vbus gpio %d", gpio);
+>> -#define IRQ_TO_BIT(irq) BIT(irq_to_gpio(irq) & 0x1f)
+>> +#define IRQ_TO_BIT(irq) BIT((irq - JZ4740_IRQ_GPIO(0)) & 0x1f)
+>>
+>>  static void jz_gpio_check_trigger_both(struct jz_gpio_chip *chip, unsigned int irq)
+>>  {
 >
+> I've already committed an identical fix locally.
 >
-> I don't understand this.  If you get an error here, what's the point of 
-> allowing the probe to continue?  Shouldn't you return an error code so 
-> the probe will fail?
+>   Ralf
 
-Please ignore the 'usb: ehci: add vbus-gpio parameter' patch!
+I took that fix out of linux-next and applied to the GPIO tree so I can apply
+the rest of the patches without build problems. If you keep it
+around without changing it, git should cope I guess.
 
-In the new AR9331 patchseries I use chipidea USB driver (thanks to Marek for the suggestion)
-in the AR9331 dtsi-file:
-
-        usb: usb@1b000100 {
-                compatible = "chipidea,usb2";
-                reg = <0x1b000000 0x200>;
-
-                interrupt-parent = <&cpuintc>;
-                interrupts = <3>;
-                resets = <&rst 5>;
-
-                phy-names = "usb-phy";
-                phys = <&usb_phy>;
-
-                status = "disabled";
-        };
-
-
-so I use regulator in the TL-MR3020 board dts file:
-
-        reg_usb_vbus: reg_usb_vbus {
-                compatible = "regulator-fixed";
-                regulator-name = "usb_vbus";
-                regulator-min-microvolt = <5000000>;
-                regulator-max-microvolt = <5000000>;
-                gpio = <&gpio 8 GPIO_ACTIVE_HIGH>;
-                enable-active-high;
-        };
-
-&usb {
-        dr_mode = "host";
-        vbus-supply = <&reg_usb_vbus>;
-        status = "okay";
-};
-
-As a result there is no need in adding vbus-gpio parameter to ehci anymore!
-
-> > +}
-> > +
-> >  static int ehci_platform_probe(struct platform_device *dev)
-> >  {
-> >  	struct usb_hcd *hcd;
-> > @@ -174,6 +194,8 @@ static int ehci_platform_probe(struct platform_device *dev)
-> >  		return irq;
-> >  	}
-> >  
-> > +	setup_vbus_gpio(&dev->dev);
-> > +
-> >  	hcd = usb_create_hcd(&ehci_platform_hc_driver, &dev->dev,
-> >  			     dev_name(&dev->dev));
-> >  	if (!hcd)
-> > 
-> 
-
-
--- 
--- 
-Best regards,
-  Antony Pavlov
+Yours,
+Linus Walleij

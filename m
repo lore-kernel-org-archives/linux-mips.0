@@ -1,21 +1,14 @@
-Received: from mail-pa0-f41.google.com ([209.85.220.41]:34876 "EHLO
-        mail-pa0-f41.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27013221AbcBSUQZ0A4Z0 convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 19 Feb 2016 21:16:25 +0100
-Received: by mail-pa0-f41.google.com with SMTP id ho8so57037709pac.2
-        for <linux-mips@linux-mips.org>; Fri, 19 Feb 2016 12:16:24 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+Received: from mail.windriver.com ([147.11.1.11]:38933 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27012263AbcBTAFNiHsoD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 20 Feb 2016 01:05:13 +0100
+From: Yang Shi <yang.shi@windriver.com>
+Subject: [PATCH] mips: Kconfig: replace OPROFILE=n to !OPROFILE
+Date: Fri, 19 Feb 2016 15:42:11 -0800
+Message-ID: <1455925331-9662-1-git-send-email-yang.shi@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-From: Michael Turquette <mturquette@baylibre.com>
-In-Reply-To: <1455899179-14097-3-git-send-email-joshua.henderson@microchip.com>
-References: <1455899179-14097-1-git-send-email-joshua.henderson@microchip.com>
- <1455899179-14097-3-git-send-email-joshua.henderson@microchip.com>
-Message-ID: <20160219201615.2278.2909@quark.deferred.io>
-Subject: Re: [PATCH v7 2/3] clk: clk-pic32: Add PIC32 clock driver
-Date: Fri, 19 Feb 2016 12:16:15 -0800
-Return-Path: <mturquette@baylibre.com>
+Content-Type: text/plain
+Return-Path: <Yang.Shi@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,36 +18,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Joshua Henderson <joshua.henderson@microchip.com>, linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Purna Chandra Mandal <purna.mandal@microchip.com>, Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org
-Message-ID: <20160219201615.7bp_xtRNoY5dUJaOYMU62oZuVnDiESGbnwtmswdbiyE@z>
+To: ralf@linux-mips.org
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20160219234211.fGHYSg6jFAQyaCyAjvfp58nV0lC4znAK76vMDe6gNHw@z>
 
-Quoting Joshua Henderson (2016-02-19 08:25:35)
-> +const struct clk_ops pic32_roclk_ops = {
-> +       .enable                 = roclk_enable,
-> +       .disable                = roclk_disable,
-> +       .is_enabled             = roclk_is_enabled,
-> +       .get_parent             = roclk_get_parent,
-> +       .set_parent             = roclk_set_parent,
-> +       .determine_rate         = roclk_determine_rate,
-> +       .recalc_rate            = roclk_recalc_rate,
-> +       .round_rate             = roclk_round_rate,
-> +       .set_rate_and_parent    = roclk_set_rate_and_parent,
-> +       .set_rate               = roclk_set_rate,
-> +       .init                   = roclk_init,
-> +};
+In Kconfig "=n" is not correct syntax, "!" is the preferred way for
+false-positive expression.
 
-You can remove .round_rate and only use .determine_rate.
+Signed-off-by: Yang Shi <yang.shi@windriver.com>
+---
+ arch/mips/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-...
-> +CLK_OF_DECLARE(pic32mzda_clk, "microchip,pic32mzda-clk", pic32mzda_clock_init);
-
-Can you make this a platform_driver instead of using CLK_OF_DECLARE? I
-asked this in v6 but there was no response.
-
-Regards,
-Mike
-
-> -- 
-> 1.7.9.5
-> 
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 74a3db9..ab433d3 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2484,7 +2484,7 @@ config NODES_SHIFT
+ 
+ config HW_PERF_EVENTS
+ 	bool "Enable hardware performance counter support for perf events"
+-	depends on PERF_EVENTS && OPROFILE=n && (CPU_MIPS32 || CPU_MIPS64 || CPU_R10000 || CPU_SB1 || CPU_CAVIUM_OCTEON || CPU_XLP || CPU_LOONGSON3)
++	depends on PERF_EVENTS && !OPROFILE && (CPU_MIPS32 || CPU_MIPS64 || CPU_R10000 || CPU_SB1 || CPU_CAVIUM_OCTEON || CPU_XLP || CPU_LOONGSON3)
+ 	default y
+ 	help
+ 	  Enable hardware performance counter support for perf events. If
+-- 
+2.0.2

@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:46255 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:21094 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013423AbcBVSKJBmjIv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Feb 2016 19:10:09 +0100
+        with ESMTP id S27013423AbcBVSKX4YcOv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Feb 2016 19:10:23 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 1/2] MIPS: Add barriers between dcache & icache flushes
-Date: Mon, 22 Feb 2016 18:09:44 +0000
-Message-ID: <1456164585-26910-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 2/2] MIPS: Flush highmem pages from dcache in __flush_icache_page
+Date: Mon, 22 Feb 2016 18:09:45 +0000
+Message-ID: <1456164585-26910-2-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1456164585-26910-1-git-send-email-paul.burton@imgtec.com>
+References: <1456164585-26910-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -19,86 +21,54 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, James Hogan <james.hogan@imgtec.com>, Joshua Kinard <kumba@gentoo.org>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, "Maciej W. Rozycki" <macro@codesourcery.com>, Markos Chandras <markos.chandras@imgtec.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Message-ID: <20160222180944.KHMwg004DceJPPXReugZVM5fu3x4HpJFpjauihp9CLE@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Lars Persson <lars.persson@axis.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Jerome Marchand <jmarchan@redhat.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Message-ID: <20160222180945.jKosXIy-uMUrL6ON7FAqib5f6wX-ZnGUxQcB4PHaSoA@z>
 
-Index-based cache operations may be arbitrarily reordered by out of
-order CPUs. Thus code which writes back the dcache & then invalidates
-the icache using indexed cache ops must include a barrier between
-operating on the 2 caches in order to prevent the scenario in which:
-
-  - icache invalidation occurs.
-
-  - icache fetch occurs, due to speculation.
-
-  - dcache writeback occurs.
-
-If the above were allowed to happen then the icache would contain stale
-data. Forcing the dcache writeback to complete before the icache
-invalidation avoids this.
+When a page is to be mapped executable for userspace, we can presume
+that the icache doesn't contain anything valid for its address range but
+we cannot be sure that its content has been written back from the dcache
+to L2 or memory further out. If the icache fills from those memories,
+ie. does not fill from the dcache, then we need to ensure that content
+has been flushed from the dcache. This was being done for lowmem pages
+but not for highmem pages. Fix this by mapping the page & flushing its
+content from the dcache in __flush_icache_page, before the page is
+provided to userland.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: James Hogan <james.hogan@imgtec.com>
+
 ---
 
- arch/mips/mm/c-r4k.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ arch/mips/mm/cache.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index caac3d7..a49010c 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -449,6 +449,7 @@ static inline void local_r4k___flush_cache_all(void * args)
+diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+index 3f159ca..734cb2f 100644
+--- a/arch/mips/mm/cache.c
++++ b/arch/mips/mm/cache.c
+@@ -16,6 +16,7 @@
+ #include <linux/mm.h>
  
- 	default:
- 		r4k_blast_dcache();
-+		mb(); /* cache instructions may be reordered */
- 		r4k_blast_icache();
- 		break;
- 	}
-@@ -493,8 +494,10 @@ static inline void local_r4k_flush_cache_range(void * args)
- 		return;
+ #include <asm/cacheflush.h>
++#include <asm/highmem.h>
+ #include <asm/processor.h>
+ #include <asm/cpu.h>
+ #include <asm/cpu-features.h>
+@@ -124,10 +125,14 @@ void __flush_icache_page(struct vm_area_struct *vma, struct page *page)
+ 	unsigned long addr;
  
- 	r4k_blast_dcache();
--	if (exec)
-+	if (exec) {
-+		mb(); /* cache instructions may be reordered */
- 		r4k_blast_icache();
-+	}
- }
+ 	if (PageHighMem(page))
+-		return;
++		addr = (unsigned long)kmap_atomic(page);
++	else
++		addr = (unsigned long)page_address(page);
  
- static void r4k_flush_cache_range(struct vm_area_struct *vma,
-@@ -599,8 +602,13 @@ static inline void local_r4k_flush_cache_page(void *args)
- 	if (cpu_has_dc_aliases || (exec && !cpu_has_ic_fills_f_dc)) {
- 		vaddr ? r4k_blast_dcache_page(addr) :
- 			r4k_blast_dcache_user_page(addr);
--		if (exec && !cpu_icache_snoops_remote_store)
-+		if (exec)
-+			mb(); /* cache instructions may be reordered */
+-	addr = (unsigned long) page_address(page);
+ 	flush_data_cache_page(addr);
 +
-+		if (exec && !cpu_icache_snoops_remote_store) {
- 			r4k_blast_scache_page(addr);
-+			mb(); /* cache instructions may be reordered */
-+		}
- 	}
- 	if (exec) {
- 		if (vaddr && cpu_has_vtag_icache && mm == current->active_mm) {
-@@ -660,6 +668,7 @@ static inline void local_r4k_flush_icache_range(unsigned long start, unsigned lo
- 			R4600_HIT_CACHEOP_WAR_IMPL;
- 			protected_blast_dcache_range(start, end);
- 		}
-+		mb(); /* cache instructions may be reordered */
- 	}
++	if (PageHighMem(page))
++		__kunmap_atomic((void *)addr);
+ }
+ EXPORT_SYMBOL_GPL(__flush_icache_page);
  
- 	if (end - start > icache_size)
-@@ -798,6 +807,8 @@ static void local_r4k_flush_cache_sigtramp(void * arg)
- 		protected_writeback_dcache_line(addr & ~(dc_lsize - 1));
- 	if (!cpu_icache_snoops_remote_store && scache_size)
- 		protected_writeback_scache_line(addr & ~(sc_lsize - 1));
-+	if ((dc_lsize || scache_size) && ic_lsize)
-+		mb(); /* cache instructions may be reordered */
- 	if (ic_lsize)
- 		protected_flush_icache_line(addr & ~(ic_lsize - 1));
- 	if (MIPS4K_ICACHE_REFILL_WAR) {
 -- 
 2.7.1

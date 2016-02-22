@@ -1,16 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:21094 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27013423AbcBVSKX4YcOv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Feb 2016 19:10:23 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 2/2] MIPS: Flush highmem pages from dcache in __flush_icache_page
-Date: Mon, 22 Feb 2016 18:09:45 +0000
-Message-ID: <1456164585-26910-2-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1456164585-26910-1-git-send-email-paul.burton@imgtec.com>
-References: <1456164585-26910-1-git-send-email-paul.burton@imgtec.com>
+Received: from mail.windriver.com ([147.11.1.11]:62138 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007608AbcBVSWOnY5gv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Feb 2016 19:22:14 +0100
+From: Yang Shi <yang.shi@windriver.com>
+Subject: Does CN68XX still need DCache prefetch workaround?
+Message-ID: <56CB51CE.6070905@windriver.com>
+Date: Mon, 22 Feb 2016 10:22:06 -0800
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Yang.Shi@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,55 +19,23 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, Lars Persson <lars.persson@axis.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Jerome Marchand <jmarchan@redhat.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Message-ID: <20160222180945.jKosXIy-uMUrL6ON7FAqib5f6wX-ZnGUxQcB4PHaSoA@z>
+To: david.daney@cavium.com
+Cc: linux-mips@linux-mips.org
+Message-ID: <20160222182206.moIM3lKutV1nDxp58Vz97eAf_dLcQ1MeAahd3D_vqe8@z>
 
-When a page is to be mapped executable for userspace, we can presume
-that the icache doesn't contain anything valid for its address range but
-we cannot be sure that its content has been written back from the dcache
-to L2 or memory further out. If the icache fills from those memories,
-ie. does not fill from the dcache, then we need to ensure that content
-has been flushed from the dcache. This was being done for lowmem pages
-but not for highmem pages. Fix this by mapping the page & flushing its
-content from the dcache in __flush_icache_page, before the page is
-provided to userland.
+I David,
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+When I booted up 4.5-rc4 kernel on CN68xx board, both pass 1.1 and pass 
+2.2 reports:
 
----
+Kernel panic - not syncing: OCTEON II DCache prefetch workaround not in 
+place (cfa00000).
+Please build kernel with proper options (CONFIG_CAVIUM_CN63XXP1).
 
- arch/mips/mm/cache.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+According to the description of he option, it should just have impact on 
+63xx pass 1.x. It looks confusing.
 
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index 3f159ca..734cb2f 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -16,6 +16,7 @@
- #include <linux/mm.h>
- 
- #include <asm/cacheflush.h>
-+#include <asm/highmem.h>
- #include <asm/processor.h>
- #include <asm/cpu.h>
- #include <asm/cpu-features.h>
-@@ -124,10 +125,14 @@ void __flush_icache_page(struct vm_area_struct *vma, struct page *page)
- 	unsigned long addr;
- 
- 	if (PageHighMem(page))
--		return;
-+		addr = (unsigned long)kmap_atomic(page);
-+	else
-+		addr = (unsigned long)page_address(page);
- 
--	addr = (unsigned long) page_address(page);
- 	flush_data_cache_page(addr);
-+
-+	if (PageHighMem(page))
-+		__kunmap_atomic((void *)addr);
- }
- EXPORT_SYMBOL_GPL(__flush_icache_page);
- 
--- 
-2.7.1
+Any hint is appreciated?
+
+Thanks,
+Yang

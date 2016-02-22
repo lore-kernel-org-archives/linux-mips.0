@@ -1,19 +1,14 @@
-Received: from exsmtp03.microchip.com ([198.175.253.49]:34679 "EHLO
-        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27011328AbcBTHFEzXMhV (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 20 Feb 2016 08:05:04 +0100
-Subject: Re: [PATCH v7 2/3] clk: clk-pic32: Add PIC32 clock driver
-References: <1455899179-14097-1-git-send-email-joshua.henderson@microchip.com>
- <1455899179-14097-3-git-send-email-joshua.henderson@microchip.com>
- <20160219201615.2278.2909@quark.deferred.io>
-From: Purna Chandra Mandal <purna.mandal@microchip.com>
-Message-ID: <56C80FC3.8050205@microchip.com>
-Date: Sat, 20 Feb 2016 12:33:31 +0530
+Received: from mailapp01.imgtec.com ([195.59.15.196]:46255 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27013423AbcBVSKJBmjIv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Feb 2016 19:10:09 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 1/2] MIPS: Add barriers between dcache & icache flushes
+Date: Mon, 22 Feb 2016 18:09:44 +0000
+Message-ID: <1456164585-26910-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20160219201615.2278.2909@quark.deferred.io>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Purna.Mandal@microchip.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,48 +18,87 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Michael Turquette <mturquette@baylibre.com>, Joshua Henderson <joshua.henderson@microchip.com>, linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org
-Message-ID: <20160220070331.RBXg-AVpTcQ47jKus8SqRNSRqOqdyzeFy3du3CPEJzA@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>, James Hogan <james.hogan@imgtec.com>, Joshua Kinard <kumba@gentoo.org>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, "Maciej W. Rozycki" <macro@codesourcery.com>, Markos Chandras <markos.chandras@imgtec.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Message-ID: <20160222180944.KHMwg004DceJPPXReugZVM5fu3x4HpJFpjauihp9CLE@z>
 
-On 02/20/2016 01:46 AM, Michael Turquette wrote:
+Index-based cache operations may be arbitrarily reordered by out of
+order CPUs. Thus code which writes back the dcache & then invalidates
+the icache using indexed cache ops must include a barrier between
+operating on the 2 caches in order to prevent the scenario in which:
 
-> Quoting Joshua Henderson (2016-02-19 08:25:35)
->> +const struct clk_ops pic32_roclk_ops = {
->> +       .enable                 = roclk_enable,
->> +       .disable                = roclk_disable,
->> +       .is_enabled             = roclk_is_enabled,
->> +       .get_parent             = roclk_get_parent,
->> +       .set_parent             = roclk_set_parent,
->> +       .determine_rate         = roclk_determine_rate,
->> +       .recalc_rate            = roclk_recalc_rate,
->> +       .round_rate             = roclk_round_rate,
->> +       .set_rate_and_parent    = roclk_set_rate_and_parent,
->> +       .set_rate               = roclk_set_rate,
->> +       .init                   = roclk_init,
->> +};
-> You can remove .round_rate and only use .determine_rate.
+  - icache invalidation occurs.
 
-Ack. Will remove .round_rate.
+  - icache fetch occurs, due to speculation.
 
-> ...
->> +CLK_OF_DECLARE(pic32mzda_clk, "microchip,pic32mzda-clk", pic32mzda_clock_init);
-> Can you make this a platform_driver instead of using CLK_OF_DECLARE? I
-> asked this in v6 but there was no response.
+  - dcache writeback occurs.
 
-Mike,
-I tried to use platform_driver approach, but didn't work for me.
-On MIPS/PIC32 first call of clk_get() happens from "start_kernel -> time_init()->
-plat_time_init()" which is very early in boot sequence even before execution of
-early_initcall(). In short, by platform_driver way I'was not able to register clock(s)
-before the first clock user becomes ready. Whereas with CLK_OF_DECLARE() I can
-explicitly call of_clk_init() in plat_time_init() just before calling clk_get().
+If the above were allowed to happen then the icache would contain stale
+data. Forcing the dcache writeback to complete before the icache
+invalidation avoids this.
 
-Please suggest me if you have any reference to avoid my case.
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Cc: James Hogan <james.hogan@imgtec.com>
+---
 
-> Regards,
-> Mike
->
->> -- 
->> 1.7.9.5
->>
+ arch/mips/mm/c-r4k.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index caac3d7..a49010c 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -449,6 +449,7 @@ static inline void local_r4k___flush_cache_all(void * args)
+ 
+ 	default:
+ 		r4k_blast_dcache();
++		mb(); /* cache instructions may be reordered */
+ 		r4k_blast_icache();
+ 		break;
+ 	}
+@@ -493,8 +494,10 @@ static inline void local_r4k_flush_cache_range(void * args)
+ 		return;
+ 
+ 	r4k_blast_dcache();
+-	if (exec)
++	if (exec) {
++		mb(); /* cache instructions may be reordered */
+ 		r4k_blast_icache();
++	}
+ }
+ 
+ static void r4k_flush_cache_range(struct vm_area_struct *vma,
+@@ -599,8 +602,13 @@ static inline void local_r4k_flush_cache_page(void *args)
+ 	if (cpu_has_dc_aliases || (exec && !cpu_has_ic_fills_f_dc)) {
+ 		vaddr ? r4k_blast_dcache_page(addr) :
+ 			r4k_blast_dcache_user_page(addr);
+-		if (exec && !cpu_icache_snoops_remote_store)
++		if (exec)
++			mb(); /* cache instructions may be reordered */
++
++		if (exec && !cpu_icache_snoops_remote_store) {
+ 			r4k_blast_scache_page(addr);
++			mb(); /* cache instructions may be reordered */
++		}
+ 	}
+ 	if (exec) {
+ 		if (vaddr && cpu_has_vtag_icache && mm == current->active_mm) {
+@@ -660,6 +668,7 @@ static inline void local_r4k_flush_icache_range(unsigned long start, unsigned lo
+ 			R4600_HIT_CACHEOP_WAR_IMPL;
+ 			protected_blast_dcache_range(start, end);
+ 		}
++		mb(); /* cache instructions may be reordered */
+ 	}
+ 
+ 	if (end - start > icache_size)
+@@ -798,6 +807,8 @@ static void local_r4k_flush_cache_sigtramp(void * arg)
+ 		protected_writeback_dcache_line(addr & ~(dc_lsize - 1));
+ 	if (!cpu_icache_snoops_remote_store && scache_size)
+ 		protected_writeback_scache_line(addr & ~(sc_lsize - 1));
++	if ((dc_lsize || scache_size) && ic_lsize)
++		mb(); /* cache instructions may be reordered */
+ 	if (ic_lsize)
+ 		protected_flush_icache_line(addr & ~(ic_lsize - 1));
+ 	if (MIPS4K_ICACHE_REFILL_WAR) {
+-- 
+2.7.1

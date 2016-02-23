@@ -1,18 +1,21 @@
-Received: from mail1.windriver.com ([147.11.146.13]:62714 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011154AbcBVTP4zS9yN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Feb 2016 20:15:56 +0100
-Subject: Re: 4.5-rc4 kernel is failed to bootup on CN6880
-References: <56C7BD89.2040800@windriver.com>
- <20160222124303.GR22974@ak-desktop.emea.nsn-net.net>
-From: Yang Shi <yang.shi@windriver.com>
-Message-ID: <56CB5E63.1080005@windriver.com>
-Date: Mon, 22 Feb 2016 11:15:47 -0800
+Received: from mailapp01.imgtec.com ([195.59.15.196]:50416 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27010875AbcBWJvOBjMVF (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Feb 2016 10:51:14 +0100
+Date: Tue, 23 Feb 2016 09:51:07 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH v2 2/2] kbuild: Remove stale asm-generic wrappers
+Message-ID: <20160223095107.GC21143@jhogan-linux.le.imgtec.org>
+References: <1453210670-12596-1-git-send-email-james.hogan@imgtec.com>
+ <1667268.iM977TQnEK@wuerfel>
+ <20160119142213.GA12679@jhogan-linux.le.imgtec.org>
+ <4206493.gjdgtfndZ8@wuerfel>
 MIME-Version: 1.0
-In-Reply-To: <20160222124303.GR22974@ak-desktop.emea.nsn-net.net>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Yang.Shi@windriver.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4ZLFUWh1odzi/v6L"
+Content-Disposition: inline
+In-Reply-To: <4206493.gjdgtfndZ8@wuerfel>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,56 +25,93 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aaro Koskinen <aaro.koskinen@nokia.com>, david.daney@cavium.com
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160222191547.vLw2yWdf-cmKii3XFovmFAxH7E-CmGamtergBKEeH30@z>
+To: Michal Marek <mmarek@suse.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Heinrich Schuchardt <xypron.glpk@gmx.de>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, Florian Fainelli <f.fainelli@gmail.com>, linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20160223095107.6fytT9uidmgUgGfbzw-a-74MlgkdqdcDiad_GaOpNAc@z>
 
-On 2/22/2016 4:43 AM, Aaro Koskinen wrote:
-> Hi,
->
-> On Fri, Feb 19, 2016 at 05:12:41PM -0800, Yang Shi wrote:
->> I tried to boot 4.5-rc4 kernel on my CN6880 board, but it is failed at
->> booting up secondary cores. The error is:
-> With v4.5-rc5, EBB6800 is booting fine:
->
-> [    0.000000] CPU0 revision is: 000d9108 (Cavium Octeon II)
-> [...]
-> [ 2286.273935] SMP: Booting CPU01 (CoreId  1)...
-> [ 2286.278201] CPU1 revision is: 000d9108 (Cavium Octeon II)
-> [...]
-> [ 2287.214953] SMP: Booting CPU31 (CoreId 31)...
-> [ 2287.224668] CPU31 revision is: 000d9108 (Cavium Octeon II)
-> [ 2287.224865] Brought up 32 CPUs
->
->> CPU31 revision is: 000d9101 (Cavium Octeon II)
->> SMP: Booting CPU32 (CoreId 32)...
->> Secondary boot timeout
->>
->> I passed "numcores=32" in kernel commandline since there are 32 cores ion
->> CN6880.
-> You shouldn't have CPU32 in that case, the numbering starts from zero.
-> Also the coremask is 32-bit.
->
-> I can reproduce your issue with CONFIG_NR_CPUS=64. Possibly this code
-> is incorrect for NR_CPUS bigger than 32:
->
->          /* The present CPUs get the lowest CPU numbers. */
->          cpus = 1;
->          for (id = 0; id < NR_CPUS; id++) {
->                  if ((id != coreid) && (core_mask & (1 << id))) {
->                          set_cpu_possible(cpus, true);
->                          set_cpu_present(cpus, true);
->
-> What CONFIG_NR_CPUS did you use?
+--4ZLFUWh1odzi/v6L
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks. I did have 48 NR_CPUS set. It works when I changed it to 32.
+Hi Michal,
 
-I think the problem is core_mask is 32 bit. But when NR_CPUS > 32, in 
-"core_mask & (1 << id)" core_mask will be sign extended, then the 
-statement will return non-zero all the time.
+On Tue, Jan 19, 2016 at 03:27:24PM +0100, Arnd Bergmann wrote:
+> On Tuesday 19 January 2016 14:22:13 James Hogan wrote:
+> > On Tue, Jan 19, 2016 at 03:09:14PM +0100, Arnd Bergmann wrote:
+> > > On Tuesday 19 January 2016 13:37:50 James Hogan wrote:
+> > > > When a header file is removed from generic-y (often accompanied by =
+the
+> > > > addition of an arch specific header), the generated wrapper file wi=
+ll
+> > > > persist, and in some cases may still take precedence over the new a=
+rch
+> > > > header.
+> > > >=20
+> > > > For example commit f1fe2d21f4e1 ("MIPS: Add definitions for extended
+> > > > context") removed ucontext.h from generic-y in arch/mips/include/as=
+m/,
+> > > > and added an arch/mips/include/uapi/asm/ucontext.h. The continued u=
+se of
+> > > > the wrapper when reusing a dirty build tree resulted in build failu=
+res
+> > > > in arch/mips/kernel/signal.c:
+> > > >=20
+> > > > arch/mips/kernel/signal.c: In function =E2=80=98sc_to_extcontext=E2=
+=80=99:
+> > > > arch/mips/kernel/signal.c:142:12: error: =E2=80=98struct ucontext=
+=E2=80=99 has no member named =E2=80=98uc_extcontext=E2=80=99
+> > > >   return &uc->uc_extcontext;
+> > > >             ^
+> > > >=20
+> > > > Fix by detecting and removing wrapper headers in generated header
+> > > > directories that do not correspond to a filename in generic-y, genh=
+dr-y,
+> > > > or the newly introduced generated-y.
+> > >=20
+> > > Good idea.
+> > >=20
+> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> >=20
+> > Thanks Arnd
+> >=20
+> > > Can you merge this through the mips tree, or do you need me to pick it
+> > > up through asm-generic?
+> >=20
+> > I was envisaging the kbuild tree tbh, but I don't really mind how it
+> > gets merged. This patch depends on patch 1, which adds generated-y to
+> > x86 so we don't delete their other generated headers, but other than
+> > that it doesn't really have any dependencies.
+>=20
+> Ok, the kbuild tree works fine too, and I guess the x86 tree would
+> also be fine if that helps avoid the dependency.
 
-Yang
+Were you okay to take these patches, or would you prefer they go via the
+MIPS tree?
 
->
-> A.
->
+Thanks
+James
+
+--4ZLFUWh1odzi/v6L
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJWzCuLAAoJEGwLaZPeOHZ6y0QQAJL67+KgctHHDL1wPNksjxaR
+fvBuO401HDcxEG3gSlbFHYseQoUoamOO/VnMOJuExDdI7Ni4smf3RLZSNCtq4Z3a
+KmGIQKwUfqfZqaQUCqwSUM84wd5ZravahegTLiIO1eQD+KZAIJ1GJACm0i+PCf3R
+FlhvoFaszx1wbPB9IquNJ56EEq+KW0UrmLdRBaJ8l1h1BKU5yKRNHWToQ8Y5c9wn
+zrW59Rdo6ApU38KKjueycEw/vV4PUl0V3sd+TUhaFTNfnHvqyrEoq3UWPxYD/NFI
+6xlkuwj5zw9pDRhSDQ/garAUBXxnzlSCs3ckp6Qn3zqXFbQfVVRYuifUVe6+2Ghw
+Lo23XwXO1785ctY6Ucqbn+ayn+fJrp1HMDPSSh48njX/2pZzqRG6bCf2V7Y9nqmR
+xelqodsIgBQLwaLhc2GHWCsomYC2nmyuWYc+62ejKWaJlZPzWcyPORqs6fbXrUKl
+8wU1i9DcbyyPae2yMXb5U55vtLpk6s0ZJgA5eXnGGeWj6a6dm+9gXHvo+hEriWNG
+ZhrDni2JPVDm5NzlpModcNEmeeRFSgJpe/+UVhP9krpQ8ehKxJybYToAQbUEug/i
+Onzk6FlkFiLiOmJPUBsoDC0hWD0mAZ9cPEvPwxTPEeqq6bMi+MO7SCiTkTvB9P9u
+q6ObpxlafO+ioYNFdHa8
+=zDnk
+-----END PGP SIGNATURE-----
+
+--4ZLFUWh1odzi/v6L--

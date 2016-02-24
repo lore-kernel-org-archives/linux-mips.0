@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:26185 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010717AbcBXMa7jzyg2 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Feb 2016 13:30:59 +0100
-Date: Wed, 24 Feb 2016 12:30:52 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] mips: Avoid a form of the .type directive that is not
- supported by LLVM's Integrated Assembler
-In-Reply-To: <20160224015058.GA25673@linux-mips.org>
-Message-ID: <alpine.DEB.2.00.1602240328360.15885@tp.orcam.me.uk>
-References: <1455723429-26459-1-git-send-email-daniel.sanders@imgtec.com> <alpine.DEB.2.00.1602171944410.15885@tp.orcam.me.uk> <20160224015058.GA25673@linux-mips.org>
+Received: from exsmtp03.microchip.com ([198.175.253.49]:36776 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27012764AbcBXQHjM5svO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Feb 2016 17:07:39 +0100
+From: Joshua Henderson <joshua.henderson@microchip.com>
+Subject: [PATCH v8 0/3] PIC32MZDA Clock Driver
+Date: Wed, 24 Feb 2016 09:07:14 -0700
+Message-ID: <1456330090-27226-1-git-send-email-joshua.henderson@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Joshua.Henderson@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,42 +18,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Daniel Sanders <daniel.sanders@imgtec.com>, Scott Egerton <Scott.Egerton@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20160224123052.QGD1uOs_eEamAq4OpD1j2ErxHVb3sPKCC9WvZGi7z3I@z>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Joshua Henderson <joshua.henderson@microchip.com>, devicetree@vger.kernel.org, linux-clk@vger.kernel.org, Purna Chandra Mandal <purna.mandal@microchip.com>, Rob Herring <robh@kernel.org>, Sandeep Sheriker <sandeepsheriker.mallikarjun@microchip.com>
+Message-ID: <20160224160714.BMzbNnqCfVOazkUp0kHCcaukx8I4ZlCWLmrXfqDrL9k@z>
 
-On Wed, 24 Feb 2016, Ralf Baechle wrote:
+Clock bindings got acked and then essentially unacked, while the clock
+driver never made it upstream. In the meantime, the initial DTS file
+made it upstream. This latest patch series includes a patch to go back
+and correct the DTS files to reflect the new clock bindings in this
+patch series.
 
-> >  If LLVM strives to be GNU toolchain compatible, then this looks like a 
-> > bug in their scanner as generic ELF support in GAS (gas/config/obj-elf.c) 
-> > has this, in `obj_elf_type':
-> > 
-> >   if (*input_line_pointer == ',')
-> >     ++input_line_pointer;
-> > 
-> > so the comma is entirely optional.  I realise this is undocumented, but 
-> > there you go.  It must have been there since forever.
-> 
-> It contradicts documentation.  The gas manual says:
-> 
-> * Type::                        `.type <INT | NAME , TYPE DESCRIPTION>'
-> 
-> And the SGI assembler manual I dug up as ".type name, value".  So maybe
-> gas is too generous here?
+This series still uses the CLK_OF_DECLARE approach despite not being
+regarded as the best approach. On MIPS/PIC32 the first call of clk_get()
+happens from "start_kernel -> time_init() -> plat_time_init()" which is
+very early in boot sequence even before execution of early_initcall().
+In short, by platform_driver way I was not able to register clock(s)
+before the first clock user becomes ready. With CLK_OF_DECLARE() I can
+explicitly call of_clk_init() in plat_time_init() just before calling
+clk_get().
 
- I find it interesting that you mention SGI here as the commit which might 
-be responsible for the current interpretation is this:
+Purna Chandra Mandal (3):
+  dt/bindings: Add PIC32 clock binding documentation
+  clk: clk-pic32: Add PIC32 clock driver
+  MIPS: dts: pic32: Update dts to reflect new PIC32MZDA clk binding
 
-Mon Sep 12 17:51:39 1994  Ian Lance Taylor  (ian@sanguine.cygnus.com)
+ .../devicetree/bindings/clock/microchip,pic32.txt  |   39 +
+ arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi        |  236 -----
+ arch/mips/boot/dts/pic32/pic32mzda.dtsi            |   63 +-
+ arch/mips/boot/dts/pic32/pic32mzda_sk.dts          |    5 +-
+ drivers/clk/Kconfig                                |    3 +
+ drivers/clk/Makefile                               |    1 +
+ drivers/clk/microchip/Makefile                     |    2 +
+ drivers/clk/microchip/clk-core.c                   |  954 ++++++++++++++++++++
+ drivers/clk/microchip/clk-core.h                   |   78 ++
+ drivers/clk/microchip/clk-pic32mzda.c              |  214 +++++
+ include/dt-bindings/clock/microchip,pic32-clock.h  |   42 +
+ 11 files changed, 1378 insertions(+), 259 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/microchip,pic32.txt
+ delete mode 100644 arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi
+ create mode 100644 drivers/clk/microchip/Makefile
+ create mode 100644 drivers/clk/microchip/clk-core.c
+ create mode 100644 drivers/clk/microchip/clk-core.h
+ create mode 100644 drivers/clk/microchip/clk-pic32mzda.c
+ create mode 100644 include/dt-bindings/clock/microchip,pic32-clock.h
 
-	* config/obj-elf.c (obj_elf_type): Rewrite to accept syntax
-	reportedly to be used on Irix 6.
-
-Given its age I doubt further information can be found, it might be just 
-sloppy coding.
-
-> Either way, I think the patch is right and I've just applied v2.
-
- Sure, thanks!
-
-  Maciej
+--
+1.7.9.5

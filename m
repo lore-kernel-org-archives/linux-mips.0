@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:50322 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007825AbcBYA72Tmb3x (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 25 Feb 2016 01:59:28 +0100
-Date: Thu, 25 Feb 2016 00:59:21 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] MIPS: Introduce cpu_has_coherent_cache feature
-In-Reply-To: <1456324384-18118-3-git-send-email-chenhc@lemote.com>
-Message-ID: <alpine.DEB.2.00.1602250050170.15885@tp.orcam.me.uk>
-References: <1456324384-18118-1-git-send-email-chenhc@lemote.com> <1456324384-18118-3-git-send-email-chenhc@lemote.com>
+Received: from exsmtp01.microchip.com ([198.175.253.37]:18449 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27013779AbcBYSIQUymGy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 25 Feb 2016 19:08:16 +0100
+From: Joshua Henderson <joshua.henderson@microchip.com>
+Subject: [PATCH v9 0/3] PIC32MZDA Clock Driver
+Date: Thu, 25 Feb 2016 11:07:50 -0700
+Message-ID: <1456423709-24145-1-git-send-email-joshua.henderson@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Joshua.Henderson@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,39 +18,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Huacai Chen <chenhc@lemote.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Aurelien Jarno <aurelien@aurel32.net>, "Steven J . Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
-Message-ID: <20160225005921.-dQYdO9fKuQXLbDkBVGZDeKLSETyj_iI-o4JnXOUdGg@z>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, Joshua Henderson <joshua.henderson@microchip.com>, devicetree@vger.kernel.org, linux-clk@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>, Purna Chandra Mandal <purna.mandal@microchip.com>, Rob Herring <robh@kernel.org>, Sandeep Sheriker <sandeepsheriker.mallikarjun@microchip.com>
+Message-ID: <20160225180750.vxpKfpIIIFDiWzv4bmtCLOHI1-SfskTU_DErwVVCx8M@z>
 
-On Wed, 24 Feb 2016, Huacai Chen wrote:
+Clock bindings got acked and then essentially unacked, while the clock
+driver never made it upstream. In the meantime, the initial DTS file
+made it upstream. This latest patch series includes a patch to go back
+and correct the DTS files to reflect the new clock bindings in this
+patch series.
 
-> If a platform maintains cache coherency by hardware fully:
->  1) It's icache is coherent with dcache.
->  2) It's dcaches don't alias (maybe depend on PAGE_SIZE).
->  3) It maintains cache coherency across cores (and for DMA).
-> 
-> So we introduce a MIPS_CPU_CACHE_COHERENT bit, and a cpu feature named
-> cpu_has_coherent_cache to modify MIPS's cache flushing functions.
-[...]
-> diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-> index caac3d7..04a38d8 100644
-> --- a/arch/mips/mm/c-r4k.c
-> +++ b/arch/mips/mm/c-r4k.c
-> @@ -428,6 +428,9 @@ static void r4k_blast_scache_setup(void)
->  
->  static inline void local_r4k___flush_cache_all(void * args)
->  {
-> +	if (cpu_has_coherent_cache)
-> +		return;
-> +
-[etc.]
+Purna Chandra Mandal (3):
+  dt/bindings: Add PIC32 clock binding documentation
+  clk: clk-pic32: Add PIC32 clock driver
+  MIPS: dts: pic32: Update dts to reflect new PIC32MZDA clk binding
 
- Have you considered setting the relevant handlers to `cache_noop' in 
-`r4k_cache_init' instead?  It seems more natural to me and avoids the 
-performance hit where `cpu_has_coherent_cache' is variable, which at this 
-time means everywhere.
+ .../devicetree/bindings/clock/microchip,pic32.txt  |   39 +
+ arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi        |  236 -----
+ arch/mips/boot/dts/pic32/pic32mzda.dtsi            |   63 +-
+ arch/mips/boot/dts/pic32/pic32mzda_sk.dts          |    5 +-
+ drivers/clk/Kconfig                                |    3 +
+ drivers/clk/Makefile                               |    1 +
+ drivers/clk/microchip/Makefile                     |    2 +
+ drivers/clk/microchip/clk-core.c                   |  954 ++++++++++++++++++++
+ drivers/clk/microchip/clk-core.h                   |   78 ++
+ drivers/clk/microchip/clk-pic32mzda.c              |  269 ++++++
+ include/dt-bindings/clock/microchip,pic32-clock.h  |   42 +
+ 11 files changed, 1433 insertions(+), 259 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/microchip,pic32.txt
+ delete mode 100644 arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi
+ create mode 100644 drivers/clk/microchip/Makefile
+ create mode 100644 drivers/clk/microchip/clk-core.c
+ create mode 100644 drivers/clk/microchip/clk-core.h
+ create mode 100644 drivers/clk/microchip/clk-pic32mzda.c
+ create mode 100644 include/dt-bindings/clock/microchip,pic32-clock.h
 
- Also you don't set the MIPS_CPU_CACHE_COHERENT bit anywhere within you 
-patch set -- is there a follow-up change you're going to submit?
-
-  Maciej
+--
+1.7.9.5

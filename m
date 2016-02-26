@@ -1,19 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:23314 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:35516 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006830AbcBZPRfbj6B5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 26 Feb 2016 16:17:35 +0100
-Subject: Re: [PATCH v3 07/52] mtd: nand: core: use mtd_ooblayout_xxx() helpers
- where appropriate
-References: <1456448280-27788-1-git-send-email-boris.brezillon@free-electrons.com>
- <1456448280-27788-8-git-send-email-boris.brezillon@free-electrons.com>
- <56D0629C.9080805@imgtec.com> <20160226161054.3477cd4b@bbrezillon>
+        with ESMTP id S27012361AbcBZQEKiCRZx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 26 Feb 2016 17:04:10 +0100
 From: Harvey Hunt <harvey.hunt@imgtec.com>
-Message-ID: <56D06C88.9080608@imgtec.com>
-Date: Fri, 26 Feb 2016 15:17:28 +0000
+Subject: [PATCH] MIPS: ci20_defconfig: Enable NAND and UBIFS support
+Date: Fri, 26 Feb 2016 16:03:48 +0000
+Message-ID: <1456502628-13628-1-git-send-email-harvey.hunt@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20160226161054.3477cd4b@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Harvey.Hunt@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,55 +18,61 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com, Stefan Agner <stefan@agner.ch>, Kyungmin Park <kyungmin.park@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org, punnaiah choudary kalluri <punnaia@xilinx.com>, Priit Laes <plaes@plaes.org>, Kamal Dasu <kdasu.kdev@gmail.com>, bcm-kernel-feedback-list@broadcom.com, linux-api@vger.kernel.org
-Message-ID: <20160226151728.OTiHn_kx-fVoInDwCCa1wm_ehY3p-tzXyp02lthBW2s@z>
+To: ralf@linux-mips.org, linux-mips@linux-mips.org
+Cc: Harvey Hunt <harvey.hunt@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, linux-kernel@vger.kernel.org
+Message-ID: <20160226160348.qzhXf8i124k_7nuocn86Evrej5osr1RHTzgUtlZsnrg@z>
 
-Hi Boris,
+Update the Ci20's defconfig to enable the JZ4780's NAND driver and
+therefore access to the UBIFS rootfs.
 
-On 26/02/16 15:10, Boris Brezillon wrote:
-> Hi Harvey,
->
-> On Fri, 26 Feb 2016 14:35:08 +0000
-> Harvey Hunt <harvey.hunt@imgtec.com> wrote:
->
->> [...]
->> I'll look into this more later today, but wanted to run it by you in
->> case you have any thoughts.
->
-> Can you apply this patch [1], and let me know if you see the additional
-> trace?
+Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/mips/configs/ci20_defconfig | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-I applied the patch, the following is the (unchanged) output:
-
-[    0.256375] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0x88
-[    0.262887] nand: Micron MT29F64G08CBAAAWP
-[    0.266995] nand: 8192 MiB, MLC, erase size: 2048 KiB, page size: 
-8192, OOB size: 448
-[    0.274881] jz4780-nand 1b000000.nand-controller: using hardware BCH 
-(strength 24, size 1024, bytes 42)
-[    0.289046] Bad block table not found for chip 0
-[    0.297769] Bad block table not found for chip 0
-[    0.302425] Scanning device for bad blocks
-[    0.320239] Bad eraseblock 90 at 0x00000b400000
-[    0.324934] Bad eraseblock 91 at 0x00000b600000
-[    0.931054] Bad eraseblock 4092 at 0x0001ff800000
-[    0.935917] Bad eraseblock 4093 at 0x0001ffa00000
-[    0.944660] nand_bbt: error while writing bad block table -34
-[    0.950448] jz4780-nand: probe of 1b000000.nand-controller failed 
-with error -34
-[    0.958079] UBI error: cannot open mtd 3, error -19
-[    0.962788] UBI error: cannot open mtd 4, error -19[    0.970229] 
-clk: Not disabling unused clocks
-
->
-> Thanks,
->
-> Boris
->
-> [1]http://code.bulix.org/l2hkl1-91947
->
-
-Thanks,
-
-Harvey
+diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
+index 4e36b6e..43e0ba2 100644
+--- a/arch/mips/configs/ci20_defconfig
++++ b/arch/mips/configs/ci20_defconfig
+@@ -17,13 +17,12 @@ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_LOG_BUF_SHIFT=14
+ CONFIG_CGROUPS=y
++CONFIG_MEMCG=y
++CONFIG_CGROUP_SCHED=y
+ CONFIG_CGROUP_FREEZER=y
+-CONFIG_CGROUP_DEVICE=y
+ CONFIG_CPUSETS=y
++CONFIG_CGROUP_DEVICE=y
+ CONFIG_CGROUP_CPUACCT=y
+-CONFIG_MEMCG=y
+-CONFIG_MEMCG_KMEM=y
+-CONFIG_CGROUP_SCHED=y
+ CONFIG_NAMESPACES=y
+ CONFIG_USER_NS=y
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+@@ -52,6 +51,11 @@ CONFIG_DEVTMPFS=y
+ # CONFIG_ALLOW_DEV_COREDUMP is not set
+ CONFIG_DMA_CMA=y
+ CONFIG_CMA_SIZE_MBYTES=32
++CONFIG_MTD=y
++CONFIG_MTD_NAND=y
++CONFIG_MTD_NAND_JZ4780=y
++CONFIG_MTD_UBI=y
++CONFIG_MTD_UBI_FASTMAP=y
+ CONFIG_NETDEVICES=y
+ # CONFIG_NET_VENDOR_ARC is not set
+ # CONFIG_NET_CADENCE is not set
+@@ -103,7 +107,7 @@ CONFIG_PROC_KCORE=y
+ # CONFIG_PROC_PAGE_MONITOR is not set
+ CONFIG_TMPFS=y
+ CONFIG_CONFIGFS_FS=y
+-# CONFIG_MISC_FILESYSTEMS is not set
++CONFIG_UBIFS_FS=y
+ # CONFIG_NETWORK_FILESYSTEMS is not set
+ CONFIG_NLS=y
+ CONFIG_NLS_CODEPAGE_437=y
+-- 
+2.7.1

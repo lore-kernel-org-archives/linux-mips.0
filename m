@@ -1,16 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:16985 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008265AbcCAWUD3Kyi- (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 1 Mar 2016 23:20:03 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 4/4] MIPS: Add and use watch register field definitions
-Date: Tue, 1 Mar 2016 22:19:39 +0000
-Message-ID: <1456870779-21007-5-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1456870779-21007-1-git-send-email-james.hogan@imgtec.com>
-References: <1456870779-21007-1-git-send-email-james.hogan@imgtec.com>
+Received: from mail333.us4.mandrillapp.com ([205.201.137.77]:37203 "EHLO
+        mail333.us4.mandrillapp.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27007431AbcCAXvG5es6J (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Mar 2016 00:51:06 +0100
+Received: from pmta03.dal05.mailchimp.com (127.0.0.1) by mail333.us4.mandrillapp.com id hqolek174noh for <linux-mips@linux-mips.org>; Tue, 1 Mar 2016 23:51:00 +0000 (envelope-from <bounce-md_30481620.56d62ae4.v1-9edb38bdf75e4a0ab6cdb726df4e7730@mandrillapp.com>)
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 3.14 033/130] MIPS: KVM: Fix ASID restoration logic
+Message-ID: <20160301234500.926247873@linuxfoundation.org>
+In-Reply-To: <20160301234459.768886030@linuxfoundation.org>
+References: <20160301234459.768886030@linuxfoundation.org>
+Date: Tue, 01 Mar 2016 23:51:00 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-Path: <bounce-md_30481620.56d62ae4.v1-9edb38bdf75e4a0ab6cdb726df4e7730@mandrillapp.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,253 +22,70 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20160301221939.t2givYUDv5jA1d89RvmoCWIuQ3-7RNIXf2w8Iydjk4E@z>
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Paolo Bonzini <pbonzini@redhat.com>, Gleb Natapov <gleb@kernel.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org
+Message-ID: <20160301235100.BvgJiKq-fFUn0cYSZLulCnUWi-sylJewqHNHCXCpl30@z>
 
-The files watch.c and ptrace.c contain various magic masks for
-WatchLo/WatchHi register fields. Add some definitions to mipsregs.h for
-these registers and make use of them in both watch.c and ptrace.c,
-hopefully making them more readable.
+3.14-stable review patch.  If anyone has any objections, please let me know.
 
+------------------
+
+From: James Hogan <james.hogan@imgtec.com>
+
+commit 002374f371bd02df864cce1fe85d90dc5b292837 upstream.
+
+ASID restoration on guest resume should determine the guest execution
+mode based on the guest Status register rather than bit 30 of the guest
+PC.
+
+Fix the two places in locore.S that do this, loading the guest status
+from the cop0 area. Note, this assembly is specific to the trap &
+emulate implementation of KVM, so it doesn't need to check the
+supervisor bit as that mode is not implemented in the guest.
+
+Fixes: b680f70fc111 ("KVM/MIPS32: Entry point for trampolining to...")
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Gleb Natapov <gleb@kernel.org>
 Cc: linux-mips@linux-mips.org
+Cc: kvm@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/include/asm/mipsregs.h | 18 ++++++++++
- arch/mips/kernel/ptrace.c        |  7 ++--
- arch/mips/kernel/watch.c         | 74 ++++++++++++++++++++++------------------
- 3 files changed, 63 insertions(+), 36 deletions(-)
+ arch/mips/kvm/kvm_locore.S |   16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index f7e3215ca2f6..b04f80271f46 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -647,6 +647,24 @@
- /* FTLB probability bits for R6 */
- #define MIPS_CONF7_FTLBP_SHIFT	(18)
+--- a/arch/mips/kvm/kvm_locore.S
++++ b/arch/mips/kvm/kvm_locore.S
+@@ -159,9 +159,11 @@ FEXPORT(__kvm_mips_vcpu_run)
  
-+/* WatchLo* register definitions */
-+#define MIPS_WATCHLO_IRW	(_ULCAST_(0x7) << 0)
-+
-+/* WatchHi* register definitions */
-+#define MIPS_WATCHHI_M		(_ULCAST_(1) << 31)
-+#define MIPS_WATCHHI_G		(_ULCAST_(1) << 30)
-+#define MIPS_WATCHHI_WM		(_ULCAST_(0x3) << 28)
-+#define MIPS_WATCHHI_WM_R_RVA	(_ULCAST_(0) << 28)
-+#define MIPS_WATCHHI_WM_R_GPA	(_ULCAST_(1) << 28)
-+#define MIPS_WATCHHI_WM_G_GVA	(_ULCAST_(2) << 28)
-+#define MIPS_WATCHHI_EAS	(_ULCAST_(0x3) << 24)
-+#define MIPS_WATCHHI_ASID	(_ULCAST_(0xff) << 16)
-+#define MIPS_WATCHHI_MASK	(_ULCAST_(0x1ff) << 3)
-+#define MIPS_WATCHHI_I		(_ULCAST_(1) << 2)
-+#define MIPS_WATCHHI_R		(_ULCAST_(1) << 1)
-+#define MIPS_WATCHHI_W		(_ULCAST_(1) << 0)
-+#define MIPS_WATCHHI_IRW	(_ULCAST_(0x7) << 0)
-+
- /* MAAR bit definitions */
- #define MIPS_MAAR_ADDR		((BIT_ULL(BITS_PER_LONG - 12) - 1) << 12)
- #define MIPS_MAAR_ADDR_SHIFT	12
-diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
-index a5279b2f3198..48c0534c4d15 100644
---- a/arch/mips/kernel/ptrace.c
-+++ b/arch/mips/kernel/ptrace.c
-@@ -210,7 +210,8 @@ int ptrace_get_watch_regs(struct task_struct *child,
- 	for (i = 0; i < boot_cpu_data.watch_reg_use_cnt; i++) {
- 		__put_user(child->thread.watch.mips3264.watchlo[i],
- 			   &addr->WATCH_STYLE.watchlo[i]);
--		__put_user(child->thread.watch.mips3264.watchhi[i] & 0xfff,
-+		__put_user(child->thread.watch.mips3264.watchhi[i] &
-+				(MIPS_WATCHHI_MASK | MIPS_WATCHHI_IRW),
- 			   &addr->WATCH_STYLE.watchhi[i]);
- 		__put_user(boot_cpu_data.watch_reg_masks[i],
- 			   &addr->WATCH_STYLE.watch_masks[i]);
-@@ -252,12 +253,12 @@ int ptrace_set_watch_regs(struct task_struct *child,
- 		}
- #endif
- 		__get_user(ht[i], &addr->WATCH_STYLE.watchhi[i]);
--		if (ht[i] & ~0xff8)
-+		if (ht[i] & ~MIPS_WATCHHI_MASK)
- 			return -EINVAL;
- 	}
- 	/* Install them. */
- 	for (i = 0; i < boot_cpu_data.watch_reg_use_cnt; i++) {
--		if (lt[i] & 7)
-+		if (lt[i] & MIPS_WATCHLO_IRW)
- 			watch_active = 1;
- 		child->thread.watch.mips3264.watchlo[i] = lt[i];
- 		/* Set the G bit. */
-diff --git a/arch/mips/kernel/watch.c b/arch/mips/kernel/watch.c
-index 9b78e375118e..19fcab7348b1 100644
---- a/arch/mips/kernel/watch.c
-+++ b/arch/mips/kernel/watch.c
-@@ -25,16 +25,20 @@ void mips_install_watch_registers(struct task_struct *t)
- 		write_c0_watchlo3(watches->watchlo[3]);
- 		/* Write 1 to the I, R, and W bits to clear them, and
- 		   1 to G so all ASIDs are trapped. */
--		write_c0_watchhi3(0x40000007 | watches->watchhi[3]);
-+		write_c0_watchhi3(MIPS_WATCHHI_G | MIPS_WATCHHI_IRW |
-+				  watches->watchhi[3]);
- 	case 3:
- 		write_c0_watchlo2(watches->watchlo[2]);
--		write_c0_watchhi2(0x40000007 | watches->watchhi[2]);
-+		write_c0_watchhi2(MIPS_WATCHHI_G | MIPS_WATCHHI_IRW |
-+				  watches->watchhi[2]);
- 	case 2:
- 		write_c0_watchlo1(watches->watchlo[1]);
--		write_c0_watchhi1(0x40000007 | watches->watchhi[1]);
-+		write_c0_watchhi1(MIPS_WATCHHI_G | MIPS_WATCHHI_IRW |
-+				  watches->watchhi[1]);
- 	case 1:
- 		write_c0_watchlo0(watches->watchlo[0]);
--		write_c0_watchhi0(0x40000007 | watches->watchhi[0]);
-+		write_c0_watchhi0(MIPS_WATCHHI_G | MIPS_WATCHHI_IRW |
-+				  watches->watchhi[0]);
- 	}
- }
+ FEXPORT(__kvm_mips_load_asid)
+ 	/* Set the ASID for the Guest Kernel */
+-	INT_SLL	t0, t0, 1	/* with kseg0 @ 0x40000000, kernel */
+-			        /* addresses shift to 0x80000000 */
+-	bltz	t0, 1f		/* If kernel */
++	PTR_L	t0, VCPU_COP0(k1)
++	LONG_L	t0, COP0_STATUS(t0)
++	andi	t0, KSU_USER | ST0_ERL | ST0_EXL
++	xori	t0, KSU_USER
++	bnez	t0, 1f		/* If kernel */
+ 	 INT_ADDIU t1, k1, VCPU_GUEST_KERNEL_ASID  /* (BD)  */
+ 	INT_ADDIU t1, k1, VCPU_GUEST_USER_ASID    /* else user */
+ 1:
+@@ -438,9 +440,11 @@ __kvm_mips_return_to_guest:
+ 	mtc0	t0, CP0_EPC
  
-@@ -51,22 +55,26 @@ void mips_read_watch_registers(void)
- 	default:
- 		BUG();
- 	case 4:
--		watches->watchhi[3] = (read_c0_watchhi3() & 0x0fff);
-+		watches->watchhi[3] = (read_c0_watchhi3() &
-+				       (MIPS_WATCHHI_MASK | MIPS_WATCHHI_IRW));
- 	case 3:
--		watches->watchhi[2] = (read_c0_watchhi2() & 0x0fff);
-+		watches->watchhi[2] = (read_c0_watchhi2() &
-+				       (MIPS_WATCHHI_MASK | MIPS_WATCHHI_IRW));
- 	case 2:
--		watches->watchhi[1] = (read_c0_watchhi1() & 0x0fff);
-+		watches->watchhi[1] = (read_c0_watchhi1() &
-+				       (MIPS_WATCHHI_MASK | MIPS_WATCHHI_IRW));
- 	case 1:
--		watches->watchhi[0] = (read_c0_watchhi0() & 0x0fff);
-+		watches->watchhi[0] = (read_c0_watchhi0() &
-+				       (MIPS_WATCHHI_MASK | MIPS_WATCHHI_IRW));
- 	}
- 	if (current_cpu_data.watch_reg_use_cnt == 1 &&
--	    (watches->watchhi[0] & 7) == 0) {
-+	    (watches->watchhi[0] & MIPS_WATCHHI_IRW) == 0) {
- 		/* Pathological case of release 1 architecture that
- 		 * doesn't set the condition bits.  We assume that
- 		 * since we got here, the watch condition was met and
- 		 * signal that the conditions requested in watchlo
- 		 * were met.  */
--		watches->watchhi[0] |= (watches->watchlo[0] & 7);
-+		watches->watchhi[0] |= (watches->watchlo[0] & MIPS_WATCHHI_IRW);
- 	}
-  }
- 
-@@ -109,86 +117,86 @@ void mips_probe_watch_registers(struct cpuinfo_mips *c)
- 	 * Check which of the I,R and W bits are supported, then
- 	 * disable the register.
- 	 */
--	write_c0_watchlo0(7);
-+	write_c0_watchlo0(MIPS_WATCHLO_IRW);
- 	back_to_back_c0_hazard();
- 	t = read_c0_watchlo0();
- 	write_c0_watchlo0(0);
--	c->watch_reg_masks[0] = t & 7;
-+	c->watch_reg_masks[0] = t & MIPS_WATCHLO_IRW;
- 
- 	/* Write the mask bits and read them back to determine which
- 	 * can be used. */
- 	c->watch_reg_count = 1;
- 	c->watch_reg_use_cnt = 1;
- 	t = read_c0_watchhi0();
--	write_c0_watchhi0(t | 0xff8);
-+	write_c0_watchhi0(t | MIPS_WATCHHI_MASK);
- 	back_to_back_c0_hazard();
- 	t = read_c0_watchhi0();
--	c->watch_reg_masks[0] |= (t & 0xff8);
--	if ((t & 0x80000000) == 0)
-+	c->watch_reg_masks[0] |= (t & MIPS_WATCHHI_MASK);
-+	if ((t & MIPS_WATCHHI_M) == 0)
- 		return;
- 
--	write_c0_watchlo1(7);
-+	write_c0_watchlo1(MIPS_WATCHLO_IRW);
- 	back_to_back_c0_hazard();
- 	t = read_c0_watchlo1();
- 	write_c0_watchlo1(0);
--	c->watch_reg_masks[1] = t & 7;
-+	c->watch_reg_masks[1] = t & MIPS_WATCHLO_IRW;
- 
- 	c->watch_reg_count = 2;
- 	c->watch_reg_use_cnt = 2;
- 	t = read_c0_watchhi1();
--	write_c0_watchhi1(t | 0xff8);
-+	write_c0_watchhi1(t | MIPS_WATCHHI_MASK);
- 	back_to_back_c0_hazard();
- 	t = read_c0_watchhi1();
--	c->watch_reg_masks[1] |= (t & 0xff8);
--	if ((t & 0x80000000) == 0)
-+	c->watch_reg_masks[1] |= (t & MIPS_WATCHHI_MASK);
-+	if ((t & MIPS_WATCHHI_M) == 0)
- 		return;
- 
--	write_c0_watchlo2(7);
-+	write_c0_watchlo2(MIPS_WATCHLO_IRW);
- 	back_to_back_c0_hazard();
- 	t = read_c0_watchlo2();
- 	write_c0_watchlo2(0);
--	c->watch_reg_masks[2] = t & 7;
-+	c->watch_reg_masks[2] = t & MIPS_WATCHLO_IRW;
- 
- 	c->watch_reg_count = 3;
- 	c->watch_reg_use_cnt = 3;
- 	t = read_c0_watchhi2();
--	write_c0_watchhi2(t | 0xff8);
-+	write_c0_watchhi2(t | MIPS_WATCHHI_MASK);
- 	back_to_back_c0_hazard();
- 	t = read_c0_watchhi2();
--	c->watch_reg_masks[2] |= (t & 0xff8);
--	if ((t & 0x80000000) == 0)
-+	c->watch_reg_masks[2] |= (t & MIPS_WATCHHI_MASK);
-+	if ((t & MIPS_WATCHHI_M) == 0)
- 		return;
- 
--	write_c0_watchlo3(7);
-+	write_c0_watchlo3(MIPS_WATCHLO_IRW);
- 	back_to_back_c0_hazard();
- 	t = read_c0_watchlo3();
- 	write_c0_watchlo3(0);
--	c->watch_reg_masks[3] = t & 7;
-+	c->watch_reg_masks[3] = t & MIPS_WATCHLO_IRW;
- 
- 	c->watch_reg_count = 4;
- 	c->watch_reg_use_cnt = 4;
- 	t = read_c0_watchhi3();
--	write_c0_watchhi3(t | 0xff8);
-+	write_c0_watchhi3(t | MIPS_WATCHHI_MASK);
- 	back_to_back_c0_hazard();
- 	t = read_c0_watchhi3();
--	c->watch_reg_masks[3] |= (t & 0xff8);
--	if ((t & 0x80000000) == 0)
-+	c->watch_reg_masks[3] |= (t & MIPS_WATCHHI_MASK);
-+	if ((t & MIPS_WATCHHI_M) == 0)
- 		return;
- 
- 	/* We use at most 4, but probe and report up to 8. */
- 	c->watch_reg_count = 5;
- 	t = read_c0_watchhi4();
--	if ((t & 0x80000000) == 0)
-+	if ((t & MIPS_WATCHHI_M) == 0)
- 		return;
- 
- 	c->watch_reg_count = 6;
- 	t = read_c0_watchhi5();
--	if ((t & 0x80000000) == 0)
-+	if ((t & MIPS_WATCHHI_M) == 0)
- 		return;
- 
- 	c->watch_reg_count = 7;
- 	t = read_c0_watchhi6();
--	if ((t & 0x80000000) == 0)
-+	if ((t & MIPS_WATCHHI_M) == 0)
- 		return;
- 
- 	c->watch_reg_count = 8;
--- 
-2.4.10
+ 	/* Set the ASID for the Guest Kernel */
+-	INT_SLL	t0, t0, 1	/* with kseg0 @ 0x40000000, kernel */
+-				/* addresses shift to 0x80000000 */
+-	bltz	t0, 1f		/* If kernel */
++	PTR_L	t0, VCPU_COP0(k1)
++	LONG_L	t0, COP0_STATUS(t0)
++	andi	t0, KSU_USER | ST0_ERL | ST0_EXL
++	xori	t0, KSU_USER
++	bnez	t0, 1f		/* If kernel */
+ 	 INT_ADDIU t1, k1, VCPU_GUEST_KERNEL_ASID  /* (BD)  */
+ 	INT_ADDIU t1, k1, VCPU_GUEST_USER_ASID    /* else user */
+ 1:

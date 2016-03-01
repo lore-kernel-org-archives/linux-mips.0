@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:58872 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:39061 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27011399AbcCACi3XqtE- (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 1 Mar 2016 03:38:29 +0100
+        with ESMTP id S27007156AbcCACinsG0h- (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 1 Mar 2016 03:38:43 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 0/4] MIPS cache & highmem fixes
-Date: Tue, 1 Mar 2016 02:37:55 +0000
-Message-ID: <1456799879-14711-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 1/4] MIPS: Flush dcache for flush_kernel_dcache_page
+Date: Tue, 1 Mar 2016 02:37:56 +0000
+Message-ID: <1456799879-14711-2-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1456799879-14711-1-git-send-email-paul.burton@imgtec.com>
+References: <1456799879-14711-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -19,31 +21,36 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Lars Persson <lars.persson@axis.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Huacai Chen <chenhc@lemote.com>, David Daney <david.daney@cavium.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Jerome Marchand <jmarchan@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <20160301023755.ESSnkZvAyXYcdlAT9X0cEN0K6-pS7dEDKoRhPZFyoYs@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Lars Persson <lars.persson@axis.com>, linux-kernel@vger.kernel.org
+Message-ID: <20160301023756.GD8TKV_7k5x-fE2_bvmwMLiH1q0uYzXdRaxh5pq_-hg@z>
 
-This series fixes up a few issues with our current cache maintenance
-code, some specific to highmem & some not. It fixes an issue with icache
-corruption seen on the pistachio SoC & Ci40, and icache corruption seen
-using highmem on MIPS Malta boards with a P5600 CPU.
+The flush_kernel_dcache_page function was previously essentially a nop.
+This is incorrect for MIPS, where if a page has been modified & either
+it aliases or it's executable & the icache doesn't fill from dcache then
+the content needs to be written back from dcache to the next level of
+the cache hierarchy (which is shared with the icache).
 
-Applies atop v4.5-rc6. It would be great to squeeze these in for v4.5,
-but I recognise it's quite late in the cycle & this brokenness has been
-around for a while so won't object to v4.6.
+Implement this by simply calling flush_dcache_page, treating this
+kmapped cache flush function (flush_kernel_dcache_page) exactly the same
+as its non-kmapped counterpart (flush_dcache_page).
 
-Thanks,
-    Paul
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+---
 
-Paul Burton (4):
-  MIPS: Flush dcache for flush_kernel_dcache_page
-  MIPS: Flush highmem pages in __flush_dcache_page
-  MIPS: Handle highmem pages in __update_cache
-  MIPS: Sync icache & dcache in set_pte_at
+ arch/mips/include/asm/cacheflush.h | 1 +
+ 1 file changed, 1 insertion(+)
 
- arch/mips/include/asm/cacheflush.h |  7 +------
- arch/mips/include/asm/pgtable.h    | 26 +++++++++++++++++++-----
- arch/mips/mm/cache.c               | 41 +++++++++++++++++++-------------------
- 3 files changed, 43 insertions(+), 31 deletions(-)
-
+diff --git a/arch/mips/include/asm/cacheflush.h b/arch/mips/include/asm/cacheflush.h
+index 723229f..7e9f468 100644
+--- a/arch/mips/include/asm/cacheflush.h
++++ b/arch/mips/include/asm/cacheflush.h
+@@ -132,6 +132,7 @@ static inline void kunmap_noncoherent(void)
+ static inline void flush_kernel_dcache_page(struct page *page)
+ {
+ 	BUG_ON(cpu_has_dc_aliases && PageHighMem(page));
++	flush_dcache_page(page);
+ }
+ 
+ /*
 -- 
 2.7.1

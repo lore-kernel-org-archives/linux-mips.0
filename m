@@ -1,16 +1,15 @@
-Received: from mail177-1.suw61.mandrillapp.com ([198.2.177.1]:23001 "EHLO
-        mail177-1.suw61.mandrillapp.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27007550AbcCATKruanoh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 1 Mar 2016 20:10:47 +0100
-Received: from pmta06.mandrill.prod.suw01.rsglab.com (127.0.0.1) by mail177-1.suw61.mandrillapp.com id hqnkje22rtk7 for <linux-mips@linux-mips.org>; Tue, 1 Mar 2016 19:10:44 +0000 (envelope-from <bounce-md_30481620.56d5e934.v1-b8c94b4daff54c9c8932d8518a06b2a3@mandrillapp.com>)
-From: <gregkh@linuxfoundation.org>
-Subject: Patch "Revert "MIPS: Fix PAGE_MASK definition"" has been added to the 4.4-stable tree
-Message-ID: <145685944232118@kroah.com>
-Date: Tue, 01 Mar 2016 19:10:44 +0000
+Received: from mout.kundenserver.de ([212.227.126.187]:57435 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27008292AbcCAWMzmSFe- (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 1 Mar 2016 23:12:55 +0100
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] pcmcia: db1xxx: use correct irq_to_gpio helper
+Date: Tue, 01 Mar 2016 23:12:20 +0100
+Message-ID: <1547427.xN2rd1Mon4@wuerfel>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-Path: <bounce-md_30481620.56d5e934.v1-b8c94b4daff54c9c8932d8518a06b2a3@mandrillapp.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Return-Path: <arnd@arndb.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,21 +19,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: dan.j.williams@intel.com, gregkh@linuxfoundation.org, linux-mips@linux-mips.org, manuel.lauss@gmail.com, ralf@linux-mips.org
-Cc: stable@vger.kernel.org, stable-commits@vger.kernel.org
-Message-ID: <20160301191044.yf8_xwZdMyt6gXkmVie4wx-XFQL6BfxP20cE7BN8flM@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-pcmcia@lists.infradead.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Manuel Lauss <manuel.lauss@gmail.com>, linux-mips@linux-mips.org, linux-arm-kernel@lists.infradead.orglinux-kernel@vger.kernel.org
+Message-ID: <20160301221220.uNrDo9PSeTR-2QaIGZ3fq3iKLFIqcK9fEAbCrPhzpoE@z>
 
+After the removal of asm/gpio.h and asm/mach-au1x00/gpio.h, the db1xxx_ss
+pcmcia driver picked up the wrong irq_to_gpio function from the generic
+headers.
 
-This is a note to let you know that I've just added the patch titled
+This restores the old __au_irq_to_gpio() implementation, but keeps
+it local to the only file that uses it.
 
-    Revert "MIPS: Fix PAGE_MASK definition"
+It would be nicer to just pass the gpio number from platform code,
+but restoring the previous implementation seems safer.
 
-to the 4.4-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: stable@vger.kernel.org # v4.3
+Fixes: 832f5dacfa0b ("MIPS: Remove all the uses of custom gpio.h")
+---
+I think this is now the last holdout of the irq_to_gpio function,
+and it's been broken for a while. Maybe Ralf can queue it up through
+the MIPS tree along with the other fix for irq_to_gpio?
 
-The filename of the patch is:
-     revert-mips-fix-page_mask-definition.patch
-and it can be found in the queue-4.4 subdirectory.
+Linus, maybe you can queue up the include/linux/gpio.h change to
+remove the function as well for 4.6. We have two users of this function
+on MIPS that are already broken, and adding the patch turns the
+runtime bug into a compile-time bug, which seems like a good thing
+to me. The other patch is already queued in the mips tree.
 
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
+diff --git a/drivers/pcmcia/db1xxx_ss.c b/drivers/pcmcia/db1xxx_ss.c
+index 4c2fa05b4589..41f28879bfef 100644
+--- a/drivers/pcmcia/db1xxx_ss.c
++++ b/drivers/pcmcia/db1xxx_ss.c
+@@ -35,6 +35,19 @@
+ 
+ #include <asm/mach-au1x00/au1000.h>
+ #include <asm/mach-db1x00/bcsr.h>
++#include <asm/mach-au1x00/gpio-au1000.h>
++#include <asm/mach-au1x00/gpio-au1300.h>
++
++static inline int __au_irq_to_gpio(unsigned int irq)
++{
++	switch (alchemy_get_cputype()) {
++	case ALCHEMY_CPU_AU1000...ALCHEMY_CPU_AU1200:
++		return alchemy_irq_to_gpio(irq);
++	case ALCHEMY_CPU_AU1300:
++		return au1300_irq_to_gpio(irq);
++	}
++	return -EINVAL;
++}
+ 
+ #define MEM_MAP_SIZE	0x400000
+ #define IO_MAP_SIZE	0x1000
+@@ -83,7 +96,7 @@ static int db1200_card_inserted(struct db1x_pcmcia_sock *sock)
+ /* carddetect gpio: low-active */
+ static int db1000_card_inserted(struct db1x_pcmcia_sock *sock)
+ {
+-	return !gpio_get_value(irq_to_gpio(sock->insert_irq));
++	return !gpio_get_value(__au_irq_to_gpio(sock->insert_irq));
+ }
+ 
+ static int db1x_card_inserted(struct db1x_pcmcia_sock *sock)

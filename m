@@ -1,18 +1,17 @@
-Received: from mail333.us4.mandrillapp.com ([205.201.137.77]:58633 "EHLO
-        mail333.us4.mandrillapp.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27024642AbcCAXyl4WaGJ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Mar 2016 00:54:41 +0100
-Received: from pmta03.dal05.mailchimp.com (127.0.0.1) by mail333.us4.mandrillapp.com id hqols2174nol for <linux-mips@linux-mips.org>; Tue, 1 Mar 2016 23:54:36 +0000 (envelope-from <bounce-md_30481620.56d62bbc.v1-dd98e1dcd21e4d748cac6204cc74067c@mandrillapp.com>)
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.4 157/342] MIPS: Fix some missing CONFIG_CPU_MIPSR6 #ifdefs
-Message-ID: <20160301234533.043363729@linuxfoundation.org>
-In-Reply-To: <20160301234527.990448862@linuxfoundation.org>
-References: <20160301234527.990448862@linuxfoundation.org>
-Date: Tue, 01 Mar 2016 23:54:36 +0000
+Received: from mailapp01.imgtec.com ([195.59.15.196]:51338 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27006797AbcCBLjoShQh4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Mar 2016 12:39:44 +0100
+Subject: Re: [PATCH 0/4] MIPS cache & highmem fixes
+References: <1456799879-14711-1-git-send-email-paul.burton@imgtec.com>
+From: Harvey Hunt <harvey.hunt@imgtec.com>
+Message-ID: <56D6D0F8.5090204@imgtec.com>
+Date: Wed, 2 Mar 2016 11:39:36 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1456799879-14711-1-git-send-email-paul.burton@imgtec.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <bounce-md_30481620.56d62bbc.v1-dd98e1dcd21e4d748cac6204cc74067c@mandrillapp.com>
+Return-Path: <Harvey.Hunt@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,67 +21,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Huacai Chen <chenhc@lemote.com>, Aurelien Jarno <aurelien@aurel32.net>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20160301235436.QU0q6MLJ_lRQgzycFVcI_Fifd8np4DwEgXTijrH-eSQ@z>
+To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Cc: Lars Persson <lars.persson@axis.com>, "Steven J. Hill" <Steven.Hill@imgtec.com>, Huacai Chen <chenhc@lemote.com>, David Daney <david.daney@cavium.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Jerome Marchand <jmarchan@redhat.com>, Ralf
+ Baechle <ralf@linux-mips.org>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <20160302113936.s-SrSZtF8p7614Xz_So6CsKjlT1Jl9qGvhVwhLAGJtA@z>
 
-4.4-stable review patch.  If anyone has any objections, please let me know.
+Hi Paul,
 
-------------------
+On 01/03/16 02:37, Paul Burton wrote:
+> This series fixes up a few issues with our current cache maintenance
+> code, some specific to highmem & some not. It fixes an issue with icache
+> corruption seen on the pistachio SoC & Ci40, and icache corruption seen
+> using highmem on MIPS Malta boards with a P5600 CPU.
+>
+> Applies atop v4.5-rc6. It would be great to squeeze these in for v4.5,
+> but I recognise it's quite late in the cycle & this brokenness has been
+> around for a while so won't object to v4.6.
+>
+> Thanks,
+>      Paul
+>
+> Paul Burton (4):
+>    MIPS: Flush dcache for flush_kernel_dcache_page
+>    MIPS: Flush highmem pages in __flush_dcache_page
+>    MIPS: Handle highmem pages in __update_cache
+>    MIPS: Sync icache & dcache in set_pte_at
+>
+>   arch/mips/include/asm/cacheflush.h |  7 +------
+>   arch/mips/include/asm/pgtable.h    | 26 +++++++++++++++++++-----
+>   arch/mips/mm/cache.c               | 41 +++++++++++++++++++-------------------
+>   3 files changed, 43 insertions(+), 31 deletions(-)
+>
 
-From: Huacai Chen <chenhc@lemote.com>
+I tested this patchset on a Ci20 (using highmem) and I can successfully 
+boot to userland from an rfs on NAND, which I couldn't do before.
 
-commit 4f33f6c522948fffc345261896042b58dea23754 upstream.
+Tested-by: Harvey Hunt <harvey.hunt@imgtec.com>
 
-Commit be0c37c985eddc4 (MIPS: Rearrange PTE bits into fixed positions.)
-defines fixed PTE bits for MIPS R2. Then, commit d7b631419b3d230a4d383
-(MIPS: pgtable-bits: Fix XPA damage to R6 definitions.) adds the MIPS
-R6 definitions in the same way as MIPS R2. But some R6 #ifdefs in the
-later commit are missing, so in this patch I fix that.
+Thanks,
 
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
-Cc: Aurelien Jarno <aurelien@aurel32.net>
-Cc: Steven J. Hill <Steven.Hill@imgtec.com>
-Cc: Fuxin Zhang <zhangfx@lemote.com>
-Cc: Zhangjin Wu <wuzhangjin@gmail.com>
-Cc: linux-mips@linux-mips.org
-Patchwork: https://patchwork.linux-mips.org/patch/12164/
-Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- arch/mips/include/asm/pgtable.h |    4 ++--
- arch/mips/mm/tlbex.c            |    2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -353,7 +353,7 @@ static inline pte_t pte_mkdirty(pte_t pt
- static inline pte_t pte_mkyoung(pte_t pte)
- {
- 	pte_val(pte) |= _PAGE_ACCESSED;
--#ifdef CONFIG_CPU_MIPSR2
-+#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_MIPSR6)
- 	if (!(pte_val(pte) & _PAGE_NO_READ))
- 		pte_val(pte) |= _PAGE_SILENT_READ;
- 	else
-@@ -560,7 +560,7 @@ static inline pmd_t pmd_mkyoung(pmd_t pm
- {
- 	pmd_val(pmd) |= _PAGE_ACCESSED;
- 
--#ifdef CONFIG_CPU_MIPSR2
-+#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_MIPSR6)
- 	if (!(pmd_val(pmd) & _PAGE_NO_READ))
- 		pmd_val(pmd) |= _PAGE_SILENT_READ;
- 	else
---- a/arch/mips/mm/tlbex.c
-+++ b/arch/mips/mm/tlbex.c
-@@ -242,7 +242,7 @@ static void output_pgtable_bits_defines(
- 	pr_define("_PAGE_HUGE_SHIFT %d\n", _PAGE_HUGE_SHIFT);
- 	pr_define("_PAGE_SPLITTING_SHIFT %d\n", _PAGE_SPLITTING_SHIFT);
- #endif
--#ifdef CONFIG_CPU_MIPSR2
-+#if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_MIPSR6)
- 	if (cpu_has_rixi) {
- #ifdef _PAGE_NO_EXEC_SHIFT
- 		pr_define("_PAGE_NO_EXEC_SHIFT %d\n", _PAGE_NO_EXEC_SHIFT);
+Harvey

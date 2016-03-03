@@ -1,21 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:23676 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:37330 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27010043AbcCBOYKhDkYC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 2 Mar 2016 15:24:10 +0100
-Date: Wed, 2 Mar 2016 14:24:01 +0000
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 4/4] MIPS: Sync icache & dcache in set_pte_at
-Message-ID: <20160302142401.GA10198@NP-P-BURTON>
-References: <1456799879-14711-1-git-send-email-paul.burton@imgtec.com>
- <1456799879-14711-5-git-send-email-paul.burton@imgtec.com>
- <56D5CDB3.80407@caviumnetworks.com>
- <20160301171940.GA26791@NP-P-BURTON>
- <20160302141203.GB18341@linux-mips.org>
+        with ESMTP id S27013049AbcCCDDogQhoA (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 3 Mar 2016 04:03:44 +0100
+Message-ID: <56D7A987.5040602@imgtec.com>
+Date: Wed, 2 Mar 2016 19:03:35 -0800
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20160302141203.GB18341@linux-mips.org>
-Return-Path: <Paul.Burton@imgtec.com>
+Subject: Re: [4/4] MIPS: Sync icache & dcache in set_pte_at
+References: <1456799879-14711-5-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1456799879-14711-5-git-send-email-paul.burton@imgtec.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,109 +21,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: David Daney <ddaney@caviumnetworks.com>, linux-mips@linux-mips.org, Lars Persson <lars.persson@axis.com>, "stable # v4 . 1+" <stable@vger.kernel.org>, "Steven J. Hill" <Steven.Hill@imgtec.com>, David Daney <david.daney@cavium.com>, Huacai Chen <chenhc@lemote.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Jerome Marchand <jmarchan@redhat.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Message-ID: <20160302142401.D2oZwYNDxf_01OT0glPA6qCndEpdN410bBc8ee_TwIk@z>
+To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Cc: Lars Persson <lars.persson@axis.com>, "stable # v4 . 1+" <stable@vger.kernel.org>, "Steven J. Hill" <Steven.Hill@imgtec.com>, David Daney <david.daney@cavium.com>, Huacai Chen <chenhc@lemote.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Jerome Marchand <jmarchan@redhat.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20160303030335.HFDhBKu7RhC7w3tWklzto-zJwFnuSacQl72utFgiMnM@z>
 
-On Wed, Mar 02, 2016 at 03:12:03PM +0100, Ralf Baechle wrote:
-> On Tue, Mar 01, 2016 at 05:19:40PM +0000, Paul Burton wrote:
-> 
-> > > >+static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
-> > > >+			      pte_t *ptep, pte_t pteval)
-> > > >+{
-> > > >+	extern void __update_cache(unsigned long address, pte_t pte);
-> > > >+
-> > > >+	if (!pte_present(pteval))
-> > > >+		goto cache_sync_done;
-> > > >+
-> > > >+	if (pte_present(*ptep) && (pte_pfn(*ptep) == pte_pfn(pteval)))
-> > > >+		goto cache_sync_done;
-> > > >+
-> > > >+	__update_cache(addr, pteval);
-> > > >+cache_sync_done:
-> > > >+	set_pte(ptep, pteval);
-> > > >+}
-> > > >+
-> > > 
-> > > This seems crazy.
-> > 
-> > Perhaps, but also correct...
-> > 
-> > > I don't think any other architecture does this type of work in set_pte_at().
-> > 
-> > Yes they do. As mentioned in the commit message see arm, ia64 or powerpc
-> > for architectures that all do the same sort of thing in set_pte_at.
-> > 
-> > > Can you look into finding a better way?
-> > 
-> > Not that I can see.
-> 
-> FYI, this is the original commit message adding set_pte_at().  The commit
-> predates Linus' git history but is in the various history trees, for example
-> https://git.kernel.org/cgit/linux/kernel/git/tglx/history.git/commit/?id=ae3d0a847f4b38812241e4a5dc3371965c752a8c
-> 
-> Or for your convenience:
-> 
-> commit ae3d0a847f4b38812241e4a5dc3371965c752a8c
-> Author: David S. Miller <davem@nuts.davemloft.net>
-> Date:   Tue Feb 22 23:42:56 2005 -0800
-> 
->     [MM]: Add set_pte_at() which takes 'mm' and 'addr' args.
->     
->     I'm taking a slightly different approach this time around so things
->     are easier to integrate.  Here is the first patch which builds the
->     infrastructure.  Basically:
->     
->     1) Add set_pte_at() which is set_pte() with 'mm' and 'addr' arguments
->        added.  All generic code uses set_pte_at().
->     
->        Most platforms simply get this define:
->         #define set_pte_at(mm,addr,ptep,pteval) set_pte(ptep,pteval)
->     
->        I chose this method over simply changing all set_pte() call sites
->        because many platforms implement this in assembler and it would
->        take forever to preserve the build and stabilize things if modifying
->        that was necessary.
->     
->        Soon, with platform maintainer's help, we can kill of set_pte() entirely.
->        To be honest, there are only a handful of set_pte() call sites in the
->        arch specific code.
->     
->        Actually, in this patch ppc64 is completely set_pte() free and does not
->        define it.
->     
->     2) pte_clear() gets 'mm' and 'addr' arguments now.
->        This had a cascading effect on many ptep_test_and_*() routines.  Specifically:
->        a) ptep_test_and_clear_{young,dirty}() now take 'vma' and 'address' args.
->        b) ptep_get_and_clear now take 'mm' and 'address' args.
->        c) ptep_mkdirty was deleted, unused by any code.
->        d) ptep_set_wrprotect now takes 'mm' and 'address' args.
->     
->     I've tested this patch as follows:
->     
->     1) compile and run tested on sparc64/SMP
->     2) compile tested on:
->        a) ppc64/SMP
->        b) i386 both with and without PAE enabled
->     
->     Signed-off-by: David S. Miller <davem@davemloft.net>
-> 
-> Which doesn't specify if the function is meant for cache management nor
-> is it documented in Documentation/cachetlb.txt.
-> 
->   Ralf
+Paul Burton wrote:
 
-Hi Ralf,
+> It is, however, used in such a way by others & seems to me like the only
+> correct way to implement the lazy cache flushing. The alternative would
+> be to adjust all generic code to ensure flush_icache_page gets called
+> before set_pte_at
 
-It is, however, used in such a way by others & seems to me like the only
-correct way to implement the lazy cache flushing. The alternative would
-be to adjust all generic code to ensure flush_icache_page gets called
-before set_pte_at, which is far more invasive.
+... which is an exact case right now. Both calls of flush_icache_page() are:
 
-Since you mention Documentation/cachetlb.txt that does indicate that
-flush_icache_page should be removed some time & prior to this patch
-we're making use of it, so I hardly think the content of that document
-can be taken as defining what's acceptable.
+1) do_swap_page()
 
-Thanks,
-    Paul
+         flush_icache_page(vma, page);
+         if (pte_swp_soft_dirty(orig_pte))
+                 pte = pte_mksoft_dirty(pte);
+         set_pte_at(mm, address, page_table, pte);
+...
+
+2) do_set_pte()
+
+         flush_icache_page(vma, page);
+         entry = mk_pte(page, vma->vm_page_prot);
+         if (write)
+                 entry = maybe_mkwrite(pte_mkdirty(entry), vma);
+         if (anon) {
+                 inc_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
+                 page_add_new_anon_rmap(page, vma, address);
+         } else {
+                 inc_mm_counter_fast(vma->vm_mm, MM_FILEPAGES);
+                 page_add_file_rmap(page);
+         }
+         set_pte_at(vma->vm_mm, address, pte, entry);
+
+         /* no need to invalidate: a not-present page won't be cached */
+         update_mmu_cache(vma, address, pte);
+....
+
+You should only be sure that flush_icache_page() completes a lazy 
+D-cache flush.
+
+- Leonid.

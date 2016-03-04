@@ -1,19 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:15784 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27007830AbcCDNueVHWkp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Mar 2016 14:50:34 +0100
-Date: Fri, 4 Mar 2016 13:50:28 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] MIPS: smp.c: Fix uninitialised temp_foreign_map
-Message-ID: <20160304135028.GE31414@jhogan-linux.le.imgtec.org>
-References: <1457086251-6477-1-git-send-email-james.hogan@imgtec.com>
- <56D99109.2050306@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:10840 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27013282AbcCDP2cR4rLK (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Mar 2016 16:28:32 +0100
+From: Govindraj Raja <Govindraj.Raja@imgtec.com>
+Subject: [PATCH] pinctrl: pistachio: fix mfio84-89 function description and pinmux.
+Date: Fri, 4 Mar 2016 15:28:22 +0000
+Message-ID: <1457105302-15070-1-git-send-email-Govindraj.Raja@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="84ND8YJRMFlzkrP4"
-Content-Disposition: inline
-In-Reply-To: <56D99109.2050306@imgtec.com>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Govindraj.Raja@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,98 +18,132 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Matt Redfearn <matt.redfearn@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20160304135028.oeinoumw4TJppGx3ZMIsiavVz4rmrcnFeOq_KpHcjvc@z>
+To: linux-gpio@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
+Cc: Govindraj Raja <Govindraj.Raja@imgtec.com>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Andrew Bresticker <abrestic@chromium.org>, linux-mips@linux-mips.org, James Hartley <James.Hartley@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20160304152822.Tw9tH3aYZEhVhrWRdbAiBT8eXzUKnNI3dfVpcIxY-44@z>
 
---84ND8YJRMFlzkrP4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+mfio 84 to 89 are described wrongly, fix it to describe
+the right pin and add them to right pin-mux group.
 
-Hi Matt,
+The correct order is:
+	pll1_lock => mips_pll	-- MFIO_83
+	pll2_lock => audio_pll	-- MFIO_84
+	pll3_lock => rpu_v_pll	-- MFIO_85
+	pll4_lock => rpu_l_pll	-- MFIO_86
+	pll5_lock => sys_pll	-- MFIO_87
+	pll6_lock => wifi_pll	-- MFIO_88
+	pll7_lock => bt_pll	-- MFIO_89
 
-On Fri, Mar 04, 2016 at 01:43:37PM +0000, Matt Redfearn wrote:
-> Hi James,
->=20
-> On 04/03/16 10:10, James Hogan wrote:
-> > When calculate_cpu_foreign_map() recalculates the cpu_foreign_map
-> > cpumask it uses the local variable temp_foreign_map without initialising
-> > it to zero. Since the calculation only ever sets bits in this cpumask
-> > any existing bits at that memory location will remain set and find their
-> > way into cpu_foreign_map too. This could potentially lead to cache
-> > operations suboptimally doing smp calls to multiple VPEs in the same
-> > core, even though the VPEs share primary caches.
-> >
-> > Therefore initialise temp_foreign_map using cpumask_clear() before use.
-> >
-> > Fixes: cccf34e9411c ("MIPS: c-r4k: Fix cache flushing for MT cores")
->=20
-> cccf34e9411c was CC'd to stable 3.15+, should this fix do the same?
+Fixes: cefc03e5995e("pinctrl: Add Pistachio SoC pin control driver")
+Signed-off-by: Govindraj Raja <Govindraj.Raja@imgtec.com>
+Cc: linux-gpio@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Andrew Bresticker <abrestic@chromium.org>
+Cc: linux-mips@linux-mips.org
+Cc: James Hartley <James.Hartley@imgtec.com>
+Cc: <stable@vger.kernel.org> # v4.2+
+---
+Do I need to split this patch into dt & pinctrl?
+Or can it be picked up through pinctrl subsystem with dt maintainers Ack?
 
-I originally didn't think it was needed for stable, since it only causes
-a few unnecessary IPIs. However having thought some more about it, I
-think it could result in cpu_foreign_map containing VPEs that are
-offline, and not ones online, which could result in the IPI *not* being
-called on a given core at all when it should.
+ .../bindings/pinctrl/img,pistachio-pinctrl.txt     | 12 +++++------
+ drivers/pinctrl/pinctrl-pistachio.c                | 24 +++++++++++-----------
+ 2 files changed, 18 insertions(+), 18 deletions(-)
 
-E.g.
-if the initial undefined value is 0x2 (CPU 1) and 2nd VPE of 1st core is
-offline, then CPU 0 wouldn't be set (since CPU 1 is a sibling) and
-neither VPE in core 0 would get the IPI.
-
-So yeh, maybe it should.
-
-Cheers
-James
-
->=20
-> Thanks,
-> Matt
->=20
->=20
-> > Signed-off-by: James Hogan <james.hogan@imgtec.com>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: Paul Burton <paul.burton@imgtec.com>
-> > Cc: linux-mips@linux-mips.org
-> > ---
-> >   arch/mips/kernel/smp.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> >
-> > diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-> > index bd4385a8e6e8..2b521e07b860 100644
-> > --- a/arch/mips/kernel/smp.c
-> > +++ b/arch/mips/kernel/smp.c
-> > @@ -121,6 +121,7 @@ static inline void calculate_cpu_foreign_map(void)
-> >   	cpumask_t temp_foreign_map;
-> >  =20
-> >   	/* Re-calculate the mask */
-> > +	cpumask_clear(&temp_foreign_map);
-> >   	for_each_online_cpu(i) {
-> >   		core_present =3D 0;
-> >   		for_each_cpu(k, &temp_foreign_map)
->=20
-
---84ND8YJRMFlzkrP4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJW2ZKkAAoJEGwLaZPeOHZ6nCgP/0cE0n6o93+DVF6AGk6Ahq0m
-fsKnRf+kOoIhMEni/PrFnjgpG0awhz3D8Bpq+csdhEtTYZOh0RsI1S4JWxjEgIBE
-1oJguHbdkgjLeA5frgucMUqCa3aZusLpgKj4vVCe0EfXfvzlpOPwIdxIQs4KDA7r
-LiVVOaxqCxJn5+4irD6JvifA2dtnDNv5hchjhXfBdsF7Z4YPsGgiD4ZnNrb7Xed3
-kFr3v/BW2fgplAbV3fQxUDPGbxNnPZgmn222nU5+1PNQmnZqoeAiZzfUEhG7mXzZ
-XXTfs3tnA3DKFGVHce+JMfE/NZWMrj2f7pt0kgLokQVDLViv+9FPZiOAmNtaJU6e
-o2UJjb81YxvCZN6XnlVrXOIjItAFkfKVyFeoJsaMH+Bo5IGceB12a/o2Ygsj4K9F
-5szWYit71Orixo4LOx0EP8/waga+6LCpGX7M1wzaxo3mqMZvI1PVpb3u3y8i1n6F
-UnmN/Au5a089htvT/R5/tv2DbLuyVNZtsQcJ5uQ80yMQl0FajNi1uRSZLPDVA+1y
-eLw+SMUg2AM3ssyamWTh4LoKpJds8LMBvHtWMGuTNjTdleWatG6AEi17gxy/h6bT
-pv2phwHovbHA1eCiVPBama3iGkdBIVefuBOsS2U3OR/vbYCYP5l5YBGp6bjjy7Xq
-k1GWc6waVMALTTy2RrEY
-=NYk4
------END PGP SIGNATURE-----
-
---84ND8YJRMFlzkrP4--
+diff --git a/Documentation/devicetree/bindings/pinctrl/img,pistachio-pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/img,pistachio-pinctrl.txt
+index 08a4a32..0326154 100644
+--- a/Documentation/devicetree/bindings/pinctrl/img,pistachio-pinctrl.txt
++++ b/Documentation/devicetree/bindings/pinctrl/img,pistachio-pinctrl.txt
+@@ -134,12 +134,12 @@ mfio80		ddr_debug, mips_trace_data, mips_debug
+ mfio81		dreq0, mips_trace_data, eth_debug
+ mfio82		dreq1, mips_trace_data, eth_debug
+ mfio83		mips_pll_lock, mips_trace_data, usb_debug
+-mfio84		sys_pll_lock, mips_trace_data, usb_debug
+-mfio85		wifi_pll_lock, mips_trace_data, sdhost_debug
+-mfio86		bt_pll_lock, mips_trace_data, sdhost_debug
+-mfio87		rpu_v_pll_lock, dreq2, socif_debug
+-mfio88		rpu_l_pll_lock, dreq3, socif_debug
+-mfio89		audio_pll_lock, dreq4, dreq5
++mfio84		audio_pll_lock, mips_trace_data, usb_debug
++mfio85		rpu_v_pll_lock, mips_trace_data, sdhost_debug
++mfio86		rpu_l_pll_lock, mips_trace_data, sdhost_debug
++mfio87		sys_pll_lock, dreq2, socif_debug
++mfio88		wifi_pll_lock, dreq3, socif_debug
++mfio89		bt_pll_lock, dreq4, dreq5
+ tck
+ trstn
+ tdi
+diff --git a/drivers/pinctrl/pinctrl-pistachio.c b/drivers/pinctrl/pinctrl-pistachio.c
+index 856f736..2673cd9 100644
+--- a/drivers/pinctrl/pinctrl-pistachio.c
++++ b/drivers/pinctrl/pinctrl-pistachio.c
+@@ -469,27 +469,27 @@ static const char * const pistachio_mips_pll_lock_groups[] = {
+ 	"mfio83",
+ };
+ 
+-static const char * const pistachio_sys_pll_lock_groups[] = {
++static const char * const pistachio_audio_pll_lock_groups[] = {
+ 	"mfio84",
+ };
+ 
+-static const char * const pistachio_wifi_pll_lock_groups[] = {
++static const char * const pistachio_rpu_v_pll_lock_groups[] = {
+ 	"mfio85",
+ };
+ 
+-static const char * const pistachio_bt_pll_lock_groups[] = {
++static const char * const pistachio_rpu_l_pll_lock_groups[] = {
+ 	"mfio86",
+ };
+ 
+-static const char * const pistachio_rpu_v_pll_lock_groups[] = {
++static const char * const pistachio_sys_pll_lock_groups[] = {
+ 	"mfio87",
+ };
+ 
+-static const char * const pistachio_rpu_l_pll_lock_groups[] = {
++static const char * const pistachio_wifi_pll_lock_groups[] = {
+ 	"mfio88",
+ };
+ 
+-static const char * const pistachio_audio_pll_lock_groups[] = {
++static const char * const pistachio_bt_pll_lock_groups[] = {
+ 	"mfio89",
+ };
+ 
+@@ -559,12 +559,12 @@ enum pistachio_mux_option {
+ 	PISTACHIO_FUNCTION_DREQ4,
+ 	PISTACHIO_FUNCTION_DREQ5,
+ 	PISTACHIO_FUNCTION_MIPS_PLL_LOCK,
++	PISTACHIO_FUNCTION_AUDIO_PLL_LOCK,
++	PISTACHIO_FUNCTION_RPU_V_PLL_LOCK,
++	PISTACHIO_FUNCTION_RPU_L_PLL_LOCK,
+ 	PISTACHIO_FUNCTION_SYS_PLL_LOCK,
+ 	PISTACHIO_FUNCTION_WIFI_PLL_LOCK,
+ 	PISTACHIO_FUNCTION_BT_PLL_LOCK,
+-	PISTACHIO_FUNCTION_RPU_V_PLL_LOCK,
+-	PISTACHIO_FUNCTION_RPU_L_PLL_LOCK,
+-	PISTACHIO_FUNCTION_AUDIO_PLL_LOCK,
+ 	PISTACHIO_FUNCTION_DEBUG_RAW_CCA_IND,
+ 	PISTACHIO_FUNCTION_DEBUG_ED_SEC20_CCA_IND,
+ 	PISTACHIO_FUNCTION_DEBUG_ED_SEC40_CCA_IND,
+@@ -620,12 +620,12 @@ static const struct pistachio_function pistachio_functions[] = {
+ 	FUNCTION(dreq4),
+ 	FUNCTION(dreq5),
+ 	FUNCTION(mips_pll_lock),
++	FUNCTION(audio_pll_lock),
++	FUNCTION(rpu_v_pll_lock),
++	FUNCTION(rpu_l_pll_lock),
+ 	FUNCTION(sys_pll_lock),
+ 	FUNCTION(wifi_pll_lock),
+ 	FUNCTION(bt_pll_lock),
+-	FUNCTION(rpu_v_pll_lock),
+-	FUNCTION(rpu_l_pll_lock),
+-	FUNCTION(audio_pll_lock),
+ 	FUNCTION(debug_raw_cca_ind),
+ 	FUNCTION(debug_ed_sec20_cca_ind),
+ 	FUNCTION(debug_ed_sec40_cca_ind),
+-- 
+2.5.0

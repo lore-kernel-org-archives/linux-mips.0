@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:22276 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:17004 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007619AbcCDKhVggb2h (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Mar 2016 11:37:21 +0100
-Date: Fri, 4 Mar 2016 10:37:14 +0000
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [4/4] MIPS: Sync icache & dcache in set_pte_at
-Message-ID: <20160304103714.GA5576@NP-P-BURTON>
-References: <1456799879-14711-5-git-send-email-paul.burton@imgtec.com>
- <56D7A987.5040602@imgtec.com>
+        with ESMTP id S27013201AbcCDNnoaDfqp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Mar 2016 14:43:44 +0100
+Subject: Re: [PATCH] MIPS: smp.c: Fix uninitialised temp_foreign_map
+References: <1457086251-6477-1-git-send-email-james.hogan@imgtec.com>
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Message-ID: <56D99109.2050306@imgtec.com>
+Date: Fri, 4 Mar 2016 13:43:37 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <56D7A987.5040602@imgtec.com>
-Return-Path: <Paul.Burton@imgtec.com>
+In-Reply-To: <1457086251-6477-1-git-send-email-james.hogan@imgtec.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,85 +21,48 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Cc: linux-mips@linux-mips.org, Lars Persson <lars.persson@axis.com>, "stable # v4 . 1+" <stable@vger.kernel.org>, "Steven J. Hill" <Steven.Hill@imgtec.com>, David Daney <david.daney@cavium.com>, Huacai Chen <chenhc@lemote.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Jerome Marchand <jmarchan@redhat.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20160304103714.cNsY8wXl_Ri_hTVb_bPsAjfcMOxEk1GUAWQrkkAmxTQ@z>
+To: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20160304134337.DJN8JDnaztPi4FPOTJi2gIIP6LadDrkm9-MXcPt1FoI@z>
 
-Hi Leonid,
+Hi James,
 
-On Wed, Mar 02, 2016 at 07:03:35PM -0800, Leonid Yegoshin wrote:
-> Paul Burton wrote:
-> >It is, however, used in such a way by others & seems to me like the only
-> >correct way to implement the lazy cache flushing. The alternative would
-> >be to adjust all generic code to ensure flush_icache_page gets called
-> >before set_pte_at
-> 
-> ... which is an exact case right now.
+On 04/03/16 10:10, James Hogan wrote:
+> When calculate_cpu_foreign_map() recalculates the cpu_foreign_map
+> cpumask it uses the local variable temp_foreign_map without initialising
+> it to zero. Since the calculation only ever sets bits in this cpumask
+> any existing bits at that memory location will remain set and find their
+> way into cpu_foreign_map too. This could potentially lead to cache
+> operations suboptimally doing smp calls to multiple VPEs in the same
+> core, even though the VPEs share primary caches.
+>
+> Therefore initialise temp_foreign_map using cpumask_clear() before use.
+>
+> Fixes: cccf34e9411c ("MIPS: c-r4k: Fix cache flushing for MT cores")
 
-No, it isn't. I included call traces for 2 cases where this is not the
-case right in the commit message.
-
-> Both calls of flush_icache_page() are:
-> 
-> 1) do_swap_page()
-> 
->         flush_icache_page(vma, page);
->         if (pte_swp_soft_dirty(orig_pte))
->                 pte = pte_mksoft_dirty(pte);
->         set_pte_at(mm, address, page_table, pte);
-> ...
-> 
-> 2) do_set_pte()
-> 
->         flush_icache_page(vma, page);
->         entry = mk_pte(page, vma->vm_page_prot);
->         if (write)
->                 entry = maybe_mkwrite(pte_mkdirty(entry), vma);
->         if (anon) {
->                 inc_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
->                 page_add_new_anon_rmap(page, vma, address);
->         } else {
->                 inc_mm_counter_fast(vma->vm_mm, MM_FILEPAGES);
->                 page_add_file_rmap(page);
->         }
->         set_pte_at(vma->vm_mm, address, pte, entry);
-> 
->         /* no need to invalidate: a not-present page won't be cached */
->         update_mmu_cache(vma, address, pte);
-> ....
-> 
-> You should only be sure that flush_icache_page() completes a lazy D-cache
-> flush.
-> 
-> - Leonid.
-
-Well of course that's fine in those 2 cases. Of course both callers of
-flush_icache_page call flush_icache_page - that's a meaningless
-tautology. You're grepping for the wrong thing.
-
-The problem is that there are other code paths which dirty pages (ie.
-call flush_dcache_page), then get as far as set_pte_at *without* calling
-flush_icache_page. Again - I included call traces from 2 paths that hit
-this right in the commit message.
-
-So:
-
-  - flush_icache_page isn't always called before we *need* to writeback
-    the page from the dcache. This is demonstrably the case (again, see
-    the commit message), and causes bugs when using UBIFS on boards
-    using the pistachio SoC at least.
-
-  - flush_icache_page is indicated as something that should go away in
-    Documentation/cachetlb.txt. Why do you feel we should make use of
-    it?
-
-  - Other architectures (at least arm, ia64 & powerpc which may not be
-    an exhaustive list) handle this in set_pte_at too. Doing it in the
-    same way can only be good for consistency.
-
-So flush_icache_page is insufficient, apparently disliked & not the way
-any other architectures solve the exact same problem (again, because it
-does *not* cover all cases).
+cccf34e9411c was CC'd to stable 3.15+, should this fix do the same?
 
 Thanks,
-    Paul
+Matt
+
+
+> Signed-off-by: James Hogan <james.hogan@imgtec.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Paul Burton <paul.burton@imgtec.com>
+> Cc: linux-mips@linux-mips.org
+> ---
+>   arch/mips/kernel/smp.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+> index bd4385a8e6e8..2b521e07b860 100644
+> --- a/arch/mips/kernel/smp.c
+> +++ b/arch/mips/kernel/smp.c
+> @@ -121,6 +121,7 @@ static inline void calculate_cpu_foreign_map(void)
+>   	cpumask_t temp_foreign_map;
+>   
+>   	/* Re-calculate the mask */
+> +	cpumask_clear(&temp_foreign_map);
+>   	for_each_online_cpu(i) {
+>   		core_present = 0;
+>   		for_each_cpu(k, &temp_foreign_map)

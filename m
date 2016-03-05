@@ -1,9 +1,9 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59888 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8804 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008319AbcCDVVcKAMcG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Mar 2016 22:21:32 +0100
-Message-ID: <56D9FC52.7020803@imgtec.com>
-Date: Fri, 4 Mar 2016 13:21:22 -0800
+        with ESMTP id S27008358AbcCEBGM1dohm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 5 Mar 2016 02:06:12 +0100
+Message-ID: <56DA30FC.10603@imgtec.com>
+Date: Fri, 4 Mar 2016 17:06:04 -0800
 From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
 Subject: Re: [4/4] MIPS: Sync icache & dcache in set_pte_at
@@ -23,16 +23,28 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paul Burton <paul.burton@imgtec.com>
 Cc: linux-mips@linux-mips.org, Lars Persson <lars.persson@axis.com>, "stable # v4 . 1+" <stable@vger.kernel.org>, "Steven J. Hill" <Steven.Hill@imgtec.com>, David Daney <david.daney@cavium.com>, Huacai Chen <chenhc@lemote.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Jerome Marchand <jmarchan@redhat.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20160304212122.PUcbs9emhY2Xer1nFWC4G6oKt661DEBIyPvVyVglwMc@z>
+Message-ID: <20160305010604.Ao2Xm5WmW8er2Egdt1_5PBQTN4XB4CqIxPKzB5IEGiM@z>
 
-Correct:
+On Sat, Mar 05, 2016 at 12:21:54AM +0000, Paul Burton wrote:
 
-On 03/04/2016 01:01 PM, Leonid Yegoshin wrote:
+> > On Fri, Mar 04, 2016 at 07:02:24PM +0000, Lars Persson wrote:
+> > > Hi
+> > >
+> > > Some further thoughts on the matter. You have so far not showed a
+> > > valid example of a race condition. The two examples you give in the
+> > > commit message are for a _single_ thread existing in the address space
+> > > (fork and execve).
+> >
+> > Hi Lars,
+> >
+> > Neither fork nor exec are limited to a single thread existing in the
+> > address space - I'm not sure what you're saying? fork by its very
+> > definition results in 2.
 >
-> I suspect that your problem with UBIFS is because any DMA-ed code page 
-> should be flushed from DCache during page fault in flush_icache_page.
-I suspect that your problem with UBIFS is because any non-DMA-ed code...
+> Ok, exec kinda is (it's late...). Still, fork clearly isn't.
+Again - fork doesn't copy any user page. Copy_page_range just 
+manipulates PTE tree.
 
-Sorry for mistype.
+So, no user page cache flushes are needed on MIPS during fork, at least now.
 
 - Leonid.

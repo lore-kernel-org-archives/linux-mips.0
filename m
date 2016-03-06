@@ -1,11 +1,11 @@
-Received: from exsmtp03.microchip.com ([198.175.253.49]:29075 "EHLO
+Received: from exsmtp03.microchip.com ([198.175.253.49]:60915 "EHLO
         email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27005160AbcCFEh3A3rQg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 6 Mar 2016 05:37:29 +0100
+        by eddie.linux-mips.org with ESMTP id S27005162AbcCFO6WzFxbC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 6 Mar 2016 15:58:22 +0100
 From: Purna Chandra Mandal <purna.mandal@microchip.com>
-Subject: [RESEND PATCH v2 1/2] dt/bindings: Add bindings for PIC32 SPI peripheral
-Date: Sun, 6 Mar 2016 10:05:26 +0530
-Message-ID: <1457238927-16120-1-git-send-email-purna.mandal@microchip.com>
+Subject: [PATCH v3 1/2] dt/bindings: Add bindings for PIC32 SPI peripheral
+Date: Sun, 6 Mar 2016 20:26:37 +0530
+Message-ID: <1457276198-30622-1-git-send-email-purna.mandal@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Purna.Mandal@microchip.com>
@@ -20,12 +20,14 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
 Cc: Mark Brown <broonie@kernel.org>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Joshua Henderson <digitalpeer@digitalpeer.com>, Purna Chandra Mandal <purna.mandal@microchip.com>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>
-Message-ID: <20160306043526.KEDgC-2RVRJT3KI0P1GFvAqSASTZxt12--vH1wfCTVI@z>
+Message-ID: <20160306145637.275WN_ZZCR5SQCbGv52ABGwohkyL2I02tT70nG24L54@z>
 
 Signed-off-by: Purna Chandra Mandal <purna.mandal@microchip.com>
+Acked-by: Rob Herring <robh@kernel.org>
 
 ---
 
+Changes in v3: None
 Changes in v2:
  - fix indentation
  - add space after comma

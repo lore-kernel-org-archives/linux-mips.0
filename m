@@ -1,14 +1,18 @@
-Received: from exsmtp03.microchip.com ([198.175.253.49]:60915 "EHLO
-        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27005162AbcCFO6WzFxbC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 6 Mar 2016 15:58:22 +0100
-From: Purna Chandra Mandal <purna.mandal@microchip.com>
-Subject: [PATCH v3 1/2] dt/bindings: Add bindings for PIC32 SPI peripheral
-Date: Sun, 6 Mar 2016 20:26:37 +0530
-Message-ID: <1457276198-30622-1-git-send-email-purna.mandal@microchip.com>
+Received: from mail-io0-f181.google.com ([209.85.223.181]:33288 "EHLO
+        mail-io0-f181.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27006151AbcCGJBPb8E6P (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Mar 2016 10:01:15 +0100
+Received: by mail-io0-f181.google.com with SMTP id n190so124596996iof.0
+        for <linux-mips@linux-mips.org>; Mon, 07 Mar 2016 01:01:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Purna.Mandal@microchip.com>
+In-Reply-To: <1457340934-23042-1-git-send-email-geert@linux-m68k.org>
+References: <1457340934-23042-1-git-send-email-geert@linux-m68k.org>
+Date: Mon, 7 Mar 2016 10:01:09 +0100
+Message-ID: <CAMuHMdWe9bTjp-qmTJc9=n9-iP-qH8-O0jafiRD3-y_EtT=WvA@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v4.5-rc7
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,64 +22,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Joshua Henderson <digitalpeer@digitalpeer.com>, Purna Chandra Mandal <purna.mandal@microchip.com>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>
-Message-ID: <20160306145637.275WN_ZZCR5SQCbGv52ABGwohkyL2I02tT70nG24L54@z>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>
+Message-ID: <20160307090109.iyIAC9ZtKbQlWTyeLpxdroWMAliaIIUtajstZE3KyXQ@z>
 
-Signed-off-by: Purna Chandra Mandal <purna.mandal@microchip.com>
-Acked-by: Rob Herring <robh@kernel.org>
+On Mon, Mar 7, 2016 at 9:55 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> JFYI, when comparing v4.5-rc7[1] to v4.5-rc6[3], the summaries are:
+>   - build errors: +8/-7
+  + error: debugfs.c: undefined reference to `clk_round_rate':  =>
+.text+0x11b9e0)
 
----
+arm-randconfig
 
-Changes in v3: None
-Changes in v2:
- - fix indentation
- - add space after comma
- - moved 'cs-gpios' section under 'required' properties.
+While looking for more context, I noticed another regression that fell through
+the cracks of my script:
 
- .../bindings/spi/microchip,spi-pic32.txt           | 34 ++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/spi/microchip,spi-pic32.txt
+    arch/arm/kernel/head.o: In function `stext':
+    (.head.text+0x40): undefined reference to `CONFIG_PHYS_OFFSET'
+    drivers/built-in.o: In function `v4l2_clk_set_rate':
+    debugfs.c:(.text+0x11b9e0): undefined reference to `clk_round_rate'
 
-diff --git a/Documentation/devicetree/bindings/spi/microchip,spi-pic32.txt b/Documentation/devicetree/bindings/spi/microchip,spi-pic32.txt
-new file mode 100644
-index 0000000..79de379f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/microchip,spi-pic32.txt
-@@ -0,0 +1,34 @@
-+Microchip PIC32 SPI Master controller
-+
-+Required properties:
-+- compatible: Should be "microchip,pic32mzda-spi".
-+- reg: Address and length of register space for the device.
-+- interrupts: Should contain all three spi interrupts in sequence
-+              of <fault-irq>, <receive-irq>, <transmit-irq>.
-+- interrupt-names: Should be "fault", "rx", "tx" in order.
-+- clocks: Phandle of the clock generating SPI clock on the bus.
-+- clock-names: Should be "mck0".
-+- cs-gpios: Specifies the gpio pins to be used for chipselects.
-+            See: Documentation/devicetree/bindings/spi/spi-bus.txt
-+
-+Optional properties:
-+- dmas: Two or more DMA channel specifiers following the convention outlined
-+        in Documentation/devicetree/bindings/dma/dma.txt
-+- dma-names: Names for the dma channels. There must be at least one channel
-+             named "spi-tx" for transmit and named "spi-rx" for receive.
-+
-+Example:
-+
-+spi1: spi@1f821000 {
-+        compatible = "microchip,pic32mzda-spi";
-+        reg = <0x1f821000 0x200>;
-+        interrupts = <109 IRQ_TYPE_LEVEL_HIGH>,
-+                     <110 IRQ_TYPE_LEVEL_HIGH>,
-+                     <111 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-names = "fault", "rx", "tx";
-+        clocks = <&PBCLK2>;
-+        clock-names = "mck0";
-+        cs-gpios = <&gpio3 4 GPIO_ACTIVE_LOW>;
-+        dmas = <&dma 134>, <&dma 135>;
-+        dma-names = "spi-rx", "spi-tx";
-+};
--- 
-1.8.3.1
+  + error: misc.c: undefined reference to `ftrace_likely_update':  =>
+.text+0x714), .text+0x94c), .text+0x3b8), .text+0xc10)
+
+sh-randconfig
+
+    arch/sh/boot/compressed/misc.o: In function `lzo1x_decompress_safe':
+    misc.c:(.text+0x3b8): undefined reference to `ftrace_likely_update'
+    misc.c:(.text+0x714): undefined reference to `ftrace_likely_update'
+    misc.c:(.text+0x94c): undefined reference to `ftrace_likely_update'
+    arch/sh/boot/compressed/misc.o: In function `unlzo.constprop.2':
+    misc.c:(.text+0xc10): undefined reference to `ftrace_likely_update'
+
+  + /tmp/cc52LvuK.s: Error: can't resolve `_start' {*UND* section} -
+`L0^A' {.text section}:  => 41, 403
+  + /tmp/ccHfoDA4.s: Error: can't resolve `_start' {*UND* section} -
+`L0^A' {.text section}:  => 43
+  + /tmp/cch1r0UQ.s: Error: can't resolve `_start' {*UND* section} -
+`L0^A' {.text section}:  => 49, 378
+  + /tmp/ccoHdFI8.s: Error: can't resolve `_start' {*UND* section} -
+`L0^A' {.text section}:  => 43
+
+mips-allnoconfig
+bigsur_defconfig
+malta_defconfig
+cavium_octeon_defconfig
+
+Not really new, but it would be great if the MIPS people could get this
+fixed for the final release.
+
+Thanks!
+
+> [1] http://kisskb.ellerman.id.au/kisskb/head/10011/ (all 262 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/head/9974/ (all 262 configs)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

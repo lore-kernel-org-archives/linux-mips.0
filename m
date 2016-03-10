@@ -1,13 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:40530 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007998AbcCHQsg4mkxr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Mar 2016 17:48:36 +0100
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54719 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27007691AbcCJUuLpyEj4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 10 Mar 2016 21:50:11 +0100
+Date: Thu, 10 Mar 2016 20:50:04 +0000
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] ld-version: Fix awk regex compile failure
-Date: Tue, 8 Mar 2016 16:47:53 +0000
-Message-ID: <1457455673-12219-1-git-send-email-james.hogan@imgtec.com>
+Subject: Re: [PATCH] ld-version: Fix awk regex compile failure
+Message-ID: <20160310205004.GB31414@jhogan-linux.le.imgtec.org>
+References: <1457455673-12219-1-git-send-email-james.hogan@imgtec.com>
+ <56E1B3C5.7040204@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="EH85xkKza2NXtwkF"
+Content-Disposition: inline
+In-Reply-To: <56E1B3C5.7040204@gmail.com>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,53 +23,66 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, Michal Marek <mmarek@suse.com>, Andi Kleen <ak@linux.intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: James Hogan <james.hogan@imgtec.com>, "Michael S. Tsirkin" <mst@redhat.com>, linux-mips@linux-mips.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Message-ID: <20160308164753.XdGxhs3fOxwVucsGO8EBshnrxGJD4gQfnIIDPfjNHTQ@z>
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Michal Marek <mmarek@suse.com>, Andi Kleen <ak@linux.intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "Michael S. Tsirkin" <mst@redhat.com>, linux-mips@linux-mips.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Message-ID: <20160310205004.eiBJgps-IX_AlvTO8PIbdD5n-kuPuwfTrwFIF4-P8EA@z>
 
-The ld-version.sh script fails on some versions of awk with the
-following error, resulting in build failures for MIPS:
+--EH85xkKza2NXtwkF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-awk: scripts/ld-version.sh: line 4: regular expression compile failed (missing '(')
+On Thu, Mar 10, 2016 at 11:19:57PM +0530, Sudip Mukherjee wrote:
+> On Tuesday 08 March 2016 10:17 PM, James Hogan wrote:
+> > The ld-version.sh script fails on some versions of awk with the
+> > following error, resulting in build failures for MIPS:
+> >
+> > awk: scripts/ld-version.sh: line 4: regular expression compile failed (=
+missing '(')
+> >
+> > This is due to the regular expression ".*)", meant to strip off the
+> > beginning of the ld version string up to the close bracket, however
+> > brackets have a meaning in regular expressions, so lets escape it so
+> > that awk doesn't expect a corresponding open bracket.
+> >
+> > Fixes: ccbef1674a15 ("Kbuild, lto: add ld-version and ld-ifversion ...")
+> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Signed-off-by: James Hogan <james.hogan@imgtec.com>
+>=20
+> This error was only coming in my gitlab builds but was not showing in=20
+> the build of travis-ci. Maybe it depends on the version of awk also.
+> Build log at: https://gitlab.com/sudipm/linux-next/builds/839573
+>=20
+> Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
-This is due to the regular expression ".*)", meant to strip off the
-beginning of the ld version string up to the close bracket, however
-brackets have a meaning in regular expressions, so lets escape it so
-that awk doesn't expect a corresponding open bracket.
+Great, that looks pretty conclusive. Thanks for testing Sudip and
+Michael.
 
-Fixes: ccbef1674a15 ("Kbuild, lto: add ld-version and ld-ifversion ...")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Michal Marek <mmarek@suse.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: linux-mips@linux-mips.org
-Cc: linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: <stable@vger.kernel.org> # 4.4.x-
----
-I've only tested this with GNU Awk 4.0.2, which seems a bit more
-lenient than whatever version of awk Geert's build machine is using.
+Ralf: is it too late to get this into v4.5 via MIPS tree?
 
-I'd appreciated if somebody experiencing the error could give this patch
-a spin to check it fixes it.
----
- scripts/ld-version.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Cheers
+James
 
-diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-index d154f0877fd8..7bfe9fa1c8dc 100755
---- a/scripts/ld-version.sh
-+++ b/scripts/ld-version.sh
-@@ -1,7 +1,7 @@
- #!/usr/bin/awk -f
- # extract linker version number from stdin and turn into single number
- 	{
--	gsub(".*)", "");
-+	gsub(".*\\)", "");
- 	gsub(".*version ", "");
- 	gsub("-.*", "");
- 	split($1,a, ".");
--- 
-2.4.10
+--EH85xkKza2NXtwkF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJW4d38AAoJEGwLaZPeOHZ64ysP/RVG0eQAAPvheI/yCFhjWUDo
+Tor55GMAMBF8Wd/XExW77EVSRSpPBGc/UWaIv1LHXdCRciNIvU/awY7J4rEKYQTL
+tpQIfoIwUG5oXneWFQGKVtt0W93KYOAtTQooIaBJ+tPvY4sjqLvrtI02hdbHnVzg
+mzpK9Xdxy1C0aAjtZMyL9+0gAdL/ijCet2TUmvK478KvMNPp2VbFOgocMIYpC60S
+MGY91pvNY8uHhMKnz30KgRFy1f/YGxkH6zcSKmW99xhUNh03PtE501Fagp8mH+24
+aMI0s6qYGJxA66l28QCurZzt2l41gBGDl3DSx2MnYJp9xmTcciTJRFdrasgfF3mR
+MFStIDJ2c8ilEpiVLWRKmE9HuVEbFav/mGtQYs0Y7KI2smO9CTV9AmLL86eXnD2B
+wSBTOwEteCjDNrdwx8pAQp7ZwkTV0sAxkODZUXvWdEB9nJRIX2GhUNmCziBu8Tpw
+X8gs7h4KFeSSgByRF+mE7sZdPwYNSf9QywX4OIOPTN43OrusrSvo/MYr18oorClm
+dqLolsgo6zXLzsJiM8RaQ3XCT6ZeaVvAjq1bRH7rmJpeipDJZBte6XRqPnyvoqCi
+Q5MCONCaad3K+ZqGnQTRBZPHqe/96MsQPrdlIOtYOc7w8IQBsjrIkAyHvRINIxFT
++nsPpa1GjHKeEJ5G2s9E
+=FOWj
+-----END PGP SIGNATURE-----
+
+--EH85xkKza2NXtwkF--

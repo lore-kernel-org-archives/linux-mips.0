@@ -1,14 +1,17 @@
-Received: from mailgw02.mediatek.com ([210.61.82.184]:1204 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27007246AbcCNGNOQDqQq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Mar 2016 07:13:14 +0100
-From: <miles.chen@mediatek.com>
-Subject: [PATCH] MIPS: smp.c: Fix uninitialised temp_foreign_map
-Date: Mon, 14 Mar 2016 14:12:58 +0800
-Message-ID: <1457935978-16062-1-git-send-email-miles.chen@mediatek.com>
+Received: from mout.kundenserver.de ([212.227.126.135]:59615 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27013700AbcCNPeXQw2m1 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Mar 2016 16:34:23 +0100
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] Firmware: broadcom sprom: clarifiy SSB dependency
+Date: Mon, 14 Mar 2016 16:34:09 +0100
+Message-ID: <4928549.J7iBRWWaDH@wuerfel>
+In-Reply-To: <CACna6rwx4Lna-PXNaHFwqn8xWitN=5ReUsAGPsK75YC2SLpDNg@mail.gmail.com>
+References: <1457965305-3258441-1-git-send-email-arnd@arndb.de> <CACna6rwx4Lna-PXNaHFwqn8xWitN=5ReUsAGPsK75YC2SLpDNg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <miles.chen@mediatek.com>
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Return-Path: <arnd@arndb.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,43 +21,23 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Miles <miles.chen@mediatek.com>
-Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20160314061258.6tZ3HLyral4eXH-4CXm1ClWIXIzSf5B98WsXjZy00Pg@z>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Walmsley <paul@pwsan.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-ID: <20160314153409.vDffkGugHhCU1maz2ZmxxyZI4OwvHjdU13UGvq_GpkE@z>
 
-From: James Hogan <james.hogan@imgtec.com>
-
-When calculate_cpu_foreign_map() recalculates the cpu_foreign_map
-cpumask it uses the local variable temp_foreign_map without initialising
-it to zero. Since the calculation only ever sets bits in this cpumask
-any existing bits at that memory location will remain set and find their
-way into cpu_foreign_map too. This could potentially lead to cache
-operations suboptimally doing smp calls to multiple VPEs in the same
-core, even though the VPEs share primary caches.
-
-Therefore initialise temp_foreign_map using cpumask_clear() before use.
-
-Fixes: cccf34e9411c ("MIPS: c-r4k: Fix cache flushing for MT cores")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Patchwork: https://patchwork.linux-mips.org/patch/12759/
-Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
----
- arch/mips/kernel/smp.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index bd4385a..2b521e0 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -121,6 +121,7 @@ static inline void calculate_cpu_foreign_map(void)
- 	cpumask_t temp_foreign_map;
- 
- 	/* Re-calculate the mask */
-+	cpumask_clear(&temp_foreign_map);
- 	for_each_online_cpu(i) {
- 		core_present = 0;
- 		for_each_cpu(k, &temp_foreign_map)
--- 
-1.9.1
+On Monday 14 March 2016 15:37:18 Rafał Miłecki wrote:
+> On 14 March 2016 at 15:21, Arnd Bergmann <arnd@arndb.de> wrote:
+> > The broadcom firmware drvier calls into the ssb SPROM code if that
+> > is enabled, but it fails if the SSB code is in a loadable module
+> > because the bcm47xx firmware is always built-in:
+> >
+> > drivers/firmware/built-in.o: In function `bcm47xx_sprom_register_fallbacks':
+> > bcm47xx_sprom.c:(.text+0x11c4): undefined reference to `ssb_arch_register_fallback_sprom'
+> >
+> > This adds a Kconfig dependency to ensure that we cannot turn on the
+> > generic sprom support if the ssb sprom is in a module.
+> 
+> Can you attach your config that triggered this build error? I modified
+> condition to the:
+> #if IS_BUILTIN(CONFIG_SSB) && IS_ENABLED(CONFIG_SSB_SPROM)
+> which I believe should be enough.

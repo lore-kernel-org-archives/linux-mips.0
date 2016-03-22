@@ -1,19 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:48902 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008643AbcCQNdL3GBOe (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Mar 2016 14:33:11 +0100
-Subject: Re: [PATCH 3/5] rtc: rtc-jz4740: Add support for devicetree
-References: <1457217531-26064-1-git-send-email-paul@crapouillou.net>
- <1457217531-26064-3-git-send-email-paul@crapouillou.net>
- <20160317120804.GD3362@piout.net>
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Message-ID: <56EAB210.70900@imgtec.com>
-Date: Thu, 17 Mar 2016 13:33:04 +0000
+Received: from mail-bn1on0082.outbound.protection.outlook.com ([157.56.110.82]:51857
+        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27006641AbcCVShtPp4Ch (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 22 Mar 2016 19:37:49 +0100
+Message-ID: <56F190F2.9090300@caviumnetworks.com>
+Date: Tue, 22 Mar 2016 11:37:38 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-In-Reply-To: <20160317120804.GD3362@piout.net>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Subject: Re: FROZEN transitions in hotplug notifier
+References: <alpine.DEB.2.11.1603221822560.30089@hypnos> <20160322183350.GC1670@linux-mips.org>
+In-Reply-To: <20160322183350.GC1670@linux-mips.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Harvey.Hunt@imgtec.com>
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,45 +22,25 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Paul Cercueil <paul@crapouillou.net>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Ralf Baechle <ralf@linux-mips.org>, Alessandro Zummo <a.zummo@towertech.it>, Paul Burton <paul.burton@imgtec.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, rtc-linux@googlegroups.com
-Message-ID: <20160317133304.OFY9HDPECkaQbVgqHqHTiDA5HN5D__H9zZHfhzKNb-g@z>
+To: Ralf Baechle <ralf@linux-mips.org>, Anna-Maria Gleixner <anna-maria@linutronix.de>
+Cc: linux-mips@linux-mips.org, rt@linutronix.de
+Message-ID: <20160322183738.uVgp4Wn3Zckdwjavaalbeizq5sGfGSndWl1Lr039t_U@z>
 
-Hi Alexandre,
-
-On 17/03/16 12:08, Alexandre Belloni wrote:
-> On 05/03/2016 at 23:38:49 +0100, Paul Cercueil wrote :
->> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->> ---
->>   drivers/rtc/rtc-jz4740.c | 16 +++++++++++++++-
->>   1 file changed, 15 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/rtc/rtc-jz4740.c b/drivers/rtc/rtc-jz4740.c
->> index 47617bd..3914b1c 100644
->> --- a/drivers/rtc/rtc-jz4740.c
->> +++ b/drivers/rtc/rtc-jz4740.c
->> @@ -17,6 +17,7 @@
->>   #include <linux/io.h>
->>   #include <linux/kernel.h>
->>   #include <linux/module.h>
->> +#include <linux/of_device.h>
->>   #include <linux/platform_device.h>
->>   #include <linux/rtc.h>
->>   #include <linux/slab.h>
->> @@ -245,6 +246,13 @@ void jz4740_rtc_poweroff(struct device *dev)
->>   }
->>   EXPORT_SYMBOL_GPL(jz4740_rtc_poweroff);
->>
->> +static const struct of_device_id jz4740_rtc_of_match[] = {
->> +	{ .compatible = "ingenic,jz4740-rtc", .data = (void *) ID_JZ4740 },
->> +	{ .compatible = "ingenic,jz4780-rtc", .data = (void *) ID_JZ4780 },
+On 03/22/2016 11:33 AM, Ralf Baechle wrote:
+> Hello Anna-Maria :)
 >
-> ingenic is not in Documentation/devicetree/bindings/vendor-prefixes.txt,
-> you have to add it there before using it.
+> On Tue, Mar 22, 2016 at 06:24:20PM +0100, Anna-Maria Gleixner wrote:
+>
+>> the hotplug notifier in arch/mips/cavium-octeon/smp.c doesn't handle
+>> the corresponding FROZEN transitions. Is there a reason for it?
+>
+> My guess would be bitrot.
+>
+> David?
 
-Ingenic is in vendor-prefixes.txt - it was added by Commit f289cc7 
-("devicetree/bindings: add Ingenic Semiconductor vendor prefix").
+That is correct.
 
-Thanks,
+We have some updates to the CPU hotplug code that may improve things, 
+but its current state is definitely bitrotten.
 
-Harvey
+David.

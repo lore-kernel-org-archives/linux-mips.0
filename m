@@ -1,18 +1,14 @@
-Received: from mail-bn1on0082.outbound.protection.outlook.com ([157.56.110.82]:51857
-        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27006641AbcCVShtPp4Ch (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 22 Mar 2016 19:37:49 +0100
-Message-ID: <56F190F2.9090300@caviumnetworks.com>
-Date: Tue, 22 Mar 2016 11:37:38 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from exsmtp03.microchip.com ([198.175.253.49]:51874 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27008157AbcCWLIxEUlEX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Mar 2016 12:08:53 +0100
+From: Purna Chandra Mandal <purna.mandal@microchip.com>
+Subject: [PATCH v10 0/3] PIC32MZDA Clock Driver
+Date: Wed, 23 Mar 2016 16:36:45 +0530
+Message-ID: <1458731208-25333-1-git-send-email-purna.mandal@microchip.com>
 MIME-Version: 1.0
-Subject: Re: FROZEN transitions in hotplug notifier
-References: <alpine.DEB.2.11.1603221822560.30089@hypnos> <20160322183350.GC1670@linux-mips.org>
-In-Reply-To: <20160322183350.GC1670@linux-mips.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain
+Return-Path: <Purna.Mandal@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,25 +18,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, Anna-Maria Gleixner <anna-maria@linutronix.de>
-Cc: linux-mips@linux-mips.org, rt@linutronix.de
-Message-ID: <20160322183738.uVgp4Wn3Zckdwjavaalbeizq5sGfGSndWl1Lr039t_U@z>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, Joshua Henderson <digitalpeer@digitalpeer.com>, Purna Chandra Mandal <purna.mandal@microchip.com>, devicetree@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>, Joshua Henderson <joshua.henderson@microchip.com>, Pawel Moll <pawel.moll@arm.com>, Sandeep Sheriker <sandeepsheriker.mallikarjun@microchip.com>, Ralf Baechle <ralf@linux-mips.org>, Mark Rutland <mark.rutland@arm.com>
+Message-ID: <20160323110645.jQi28WmzH-1k2-3PJ1-geQolQzTvdmDDpZdqg7lHBz8@z>
 
-On 03/22/2016 11:33 AM, Ralf Baechle wrote:
-> Hello Anna-Maria :)
->
-> On Tue, Mar 22, 2016 at 06:24:20PM +0100, Anna-Maria Gleixner wrote:
->
->> the hotplug notifier in arch/mips/cavium-octeon/smp.c doesn't handle
->> the corresponding FROZEN transitions. Is there a reason for it?
->
-> My guess would be bitrot.
->
-> David?
+Clock bindings got acked and then essentially unacked, while the clock
+driver never made it upstream. In the meantime, the initial DTS file
+made it upstream. This latest patch series includes a patch to go back
+and correct the DTS files to reflect the new clock bindings in this
+patch series.
 
-That is correct.
+Purna Chandra Mandal (3):
+  dt/bindings: Add PIC32 clock binding documentation
+  clk: microchip: Add PIC32 clock driver
+  MIPS: dts: pic32: Update dts to reflect new PIC32MZDA clk binding
 
-We have some updates to the CPU hotplug code that may improve things, 
-but its current state is definitely bitrotten.
+ .../devicetree/bindings/clock/microchip,pic32.txt  |  39 +
+ arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi        | 236 -----
+ arch/mips/boot/dts/pic32/pic32mzda.dtsi            |  63 +-
+ arch/mips/boot/dts/pic32/pic32mzda_sk.dts          |   5 +-
+ drivers/clk/Kconfig                                |   3 +
+ drivers/clk/Makefile                               |   1 +
+ drivers/clk/microchip/Makefile                     |   2 +
+ drivers/clk/microchip/clk-core.c                   | 954 +++++++++++++++++++++
+ drivers/clk/microchip/clk-core.h                   |  78 ++
+ drivers/clk/microchip/clk-pic32mzda.c              | 240 ++++++
+ include/dt-bindings/clock/microchip,pic32-clock.h  |  42 +
+ 11 files changed, 1404 insertions(+), 259 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/microchip,pic32.txt
+ delete mode 100644 arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi
+ create mode 100644 drivers/clk/microchip/Makefile
+ create mode 100644 drivers/clk/microchip/clk-core.c
+ create mode 100644 drivers/clk/microchip/clk-core.h
+ create mode 100644 drivers/clk/microchip/clk-pic32mzda.c
+ create mode 100644 include/dt-bindings/clock/microchip,pic32-clock.h
 
-David.
+-- 
+1.8.3.1

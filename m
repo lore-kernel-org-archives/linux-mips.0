@@ -1,13 +1,14 @@
-Received: from ozlabs.org ([103.22.144.67]:55188 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27008482AbcCYI4VbXFf4 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 25 Mar 2016 09:56:21 +0100
-In-Reply-To: <1458824294-29733-1-git-send-email-jslaby@suse.cz>
-From: Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [3/4] exit_thread: accept a task parameter to be exited
-Message-ID: <3qWc3w0GCtz9sdm@ozlabs.org>
-Date: Fri, 25 Mar 2016 19:32:11 +1100 (AEDT)
-Return-Path: <michael@ozlabs.org>
+Received: from mail1.windriver.com ([147.11.146.13]:60704 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27025308AbcC0RBFd9Nkn (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 27 Mar 2016 19:01:05 +0200
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH 0/2] scsi: remove orphaned modular code from non-modular drivers
+Date: Sun, 27 Mar 2016 13:00:23 -0400
+Message-ID: <1459098025-26269-1-git-send-email-paul.gortmaker@windriver.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Paul.Gortmaker@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -17,15 +18,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jiri Slaby <jslaby@suse.cz>, akpm@linux-foundation.org
-Cc: linux-mips@linux-mips.org, linux-s390@vger.kernel.org, Rich Felker <dalias@libc.org>, Aurelien Jacquiot <a-jacquiot@ti.com>, Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, David Howells <dhowells@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, linux-hexagon@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, Lennox Wu <lennox.wu@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Jonas Bonn <jonas@southpole.se>, Chen Liqin <liqin.linux@gmail.com>, Jesper Nilsson <jesper.nilsson@axis.com>, linux-am33-list@redhat.com, Russell King <linux@arm.linux.org.uk>, linux-c6x-dev@linux-c6x.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-sh@vger.kernel.org, Helge Deller <deller@gmx.de>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, linux-snps-arc@lists.infradead.org, Haavard Skinnemoen <hskinnemoen@gmail.com>, uclinux-h8-devel@lists.sourceforge.jp, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Chris Metcalf <cmetcalf@mellanox.com>, user-mode-linux-devel@lists.sourceforge.net, Steven Miao <realmz6@gmail.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Jeff Dike <jdike@addtoit.com>, linux-alpha@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, Mikael Starvik <starvik@axis.com>, linux-m68k@lists.linux-m68k.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, user-mode-linux-user@lists.sourceforge.net, nios2-dev@lists.rocketboards.org, Thomas Gleixner <tglx@linutronix.de>, linux-xtensa@linux-xtensa.org, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Richard Henderson <rth@twiddle.net>, Chris Zankel <chris@zankel.net>, Michal Simek <monstr@mon>, str.eu, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, Vineet Gupta <vgupta@synopsys.com>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Ley Foon Tan <lftan@altera.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
-Message-ID: <20160325083211.PilGcMZYdNQ742bK9SJpFKQik669dLJsnxnKawA8bkM@z>
+To: linux-kernel@vger.kernel.org
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-scsi@vger.kernel.org
+Message-ID: <20160327170023.CRCv9u16dYYKB2yVjir62700dhO5EZLYHpzNosznohI@z>
 
-On Thu, 2016-24-03 at 12:58:13 UTC, Jiri Slaby wrote:
-> We need to call exit_thread from copy_process in a fail path.  So make
-> it accept task_struct as a parameter.
+In the ongoing audit/cleanup of non-modular code needlessly using modular
+infrastructure, the SCSI subsystem fortunately only contains two instances
+that I detected.  Both are for legacy drivers that predate the git epoch,
+so cleary there is no demand for converting these drivers to be tristate.
 
-If I'm counting right 22 of those are empty functions, so would it be a good
-clean up to make it optional first?
+For anyone new to the underlying goal of this cleanup, we are trying to
+not use module support for code that isn't buildable as a module since:
 
-cheers
+ (1) it is easy to accidentally write unused module_exit and remove code
+ (2) it can be misleading when reading the source, thinking it can be
+     modular when the Makefile and/or Kconfig prohibit it
+ (3) it requires the include of the module.h header file which in turn
+     includes nearly everything else, thus adding to CPP overhead.
+ (4) it gets copied/replicated into other code and spreads like weeds.
+
+Build tested for mips (jazz) and m68k (sun3x) on 4.6-rc1 to ensure no
+silly typos crept in.
+
+---
+
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@linux-mips.org
+Cc: linux-scsi@vger.kernel.org
+
+Paul Gortmaker (2):
+  drivers/scsi: make jazz_esp.c driver explicitly non-modular
+  drivers/scsi: make sun3x_esp.c driver explicitly non-modular
+
+ drivers/scsi/jazz_esp.c  | 43 ++++++-------------------------------------
+ drivers/scsi/sun3x_esp.c | 44 +++++---------------------------------------
+ 2 files changed, 11 insertions(+), 76 deletions(-)
+
+-- 
+2.6.1

@@ -1,16 +1,18 @@
-Received: from mail5.windriver.com ([192.103.53.11]:54884 "EHLO mail5.wrs.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27025308AbcC0RBcBll0n (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 27 Mar 2016 19:01:32 +0200
+Received: from mail1.windriver.com ([147.11.146.13]:39317 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27014253AbcC1PKbQ0Tz9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 28 Mar 2016 17:10:31 +0200
+Date: Mon, 28 Mar 2016 11:10:14 -0400
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH 1/2] drivers/scsi: make jazz_esp.c driver explicitly non-modular
-Date: Sun, 27 Mar 2016 13:00:24 -0400
-Message-ID: <1459098025-26269-2-git-send-email-paul.gortmaker@windriver.com>
-In-Reply-To: <1459098025-26269-1-git-send-email-paul.gortmaker@windriver.com>
+Subject: Re: [PATCH 0/2] scsi: remove orphaned modular code from non-modular
+ drivers
+Message-ID: <20160328151014.GR16831@windriver.com>
 References: <1459098025-26269-1-git-send-email-paul.gortmaker@windriver.com>
+ <1459143107.13004.21.camel@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1459143107.13004.21.camel@linux.vnet.ibm.com>
 Return-Path: <Paul.Gortmaker@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,111 +23,70 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-scsi@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160327170024.sJSkNWtU8bIW1_dSu4Q9EOqAY2RbhI8YpJf9LdTZBPc@z>
+To: James Bottomley <jejb@linux.vnet.ibm.com>
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-scsi@vger.kernel.org
+Message-ID: <20160328151014.5TCBAQx1q8_2NhfSKbJa-vT8LZIYkSGbRilsbTCfhfo@z>
 
-The Kconfig for this driver is currently:
+[Re: [PATCH 0/2] scsi: remove orphaned modular code from non-modular drivers] On 27/03/2016 (Sun 22:31) James Bottomley wrote:
 
-config JAZZ_ESP
-        bool "MIPS JAZZ FAS216 SCSI support
+> On Sun, 2016-03-27 at 13:00 -0400, Paul Gortmaker wrote:
+> > In the ongoing audit/cleanup of non-modular code needlessly using 
+> > modular infrastructure, the SCSI subsystem fortunately only contains 
+> > two instances that I detected.  Both are for legacy drivers that 
+> > predate the git epoch, so cleary there is no demand for converting 
+> > these drivers to be tristate.
+> > 
+> > For anyone new to the underlying goal of this cleanup, we are trying 
+> > to not use module support for code that isn't buildable as a module
+> > since:
+> > 
+> >  (1) it is easy to accidentally write unused module_exit and remove
+> > code
+> >  (2) it can be misleading when reading the source, thinking it can be
+> >      modular when the Makefile and/or Kconfig prohibit it
+> >  (3) it requires the include of the module.h header file which in
+> > turn
+> >      includes nearly everything else, thus adding to CPP overhead.
+> >  (4) it gets copied/replicated into other code and spreads like
+> > weeds.
+> 
+> I don't really buy any of these as being credible issues for the
+> ancient drivers, so there doesn't appear to be an real benefit to this
+> conversion; however, besides the danger of touching old stuff, there
+> are some down sides:
 
-...meaning that it currently is not being built as a module by anyone,
-and it has been this way since the beginning of git history (~2005).
+Thanks James for your review and always interesting/alternative
+viewpoints.  You seem pretty clear in your conviction here, so I won't
+bother making counter points ; best we just agree to disagree, and I
+won't bother you with these patches again.
 
-Lets remove the modular code that is essentially orphaned, so that
-when reading the driver there is no doubt it is builtin-only.
+Paul.
+--
 
-We explicitly disallow a driver unbind, since that doesn't have a
-sensible use case anyway, and it allows us to drop the ".remove"
-code for non-modular drivers.
-
-Since module_init translates to device_initcall in the non-modular
-case, the init ordering remains unchanged with this commit.
-
-We also delete the MODULE_LICENSE tag etc. since all that information
-was (or is now) contained at the top of the file in the comments.
-
-Cc: "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-scsi@vger.kernel.org
-Cc: linux-mips@linux-mips.org
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
----
- drivers/scsi/jazz_esp.c | 43 ++++++-------------------------------------
- 1 file changed, 6 insertions(+), 37 deletions(-)
-
-diff --git a/drivers/scsi/jazz_esp.c b/drivers/scsi/jazz_esp.c
-index 9aaa74e349cc..4260a0f7e154 100644
---- a/drivers/scsi/jazz_esp.c
-+++ b/drivers/scsi/jazz_esp.c
-@@ -1,12 +1,13 @@
- /* jazz_esp.c: ESP front-end for MIPS JAZZ systems.
-  *
-- * Copyright (C) 2007 Thomas Bogendörfer (tsbogend@alpha.frankende)
-+ * Copyright (C) 2007 Thomas Bogendörfer (tsbogend@alpha.franken.de)
-+ *
-+ * License: GPL
-  */
- 
- #include <linux/kernel.h>
- #include <linux/gfp.h>
- #include <linux/types.h>
--#include <linux/module.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
-@@ -201,31 +202,11 @@ fail:
- 	return err;
- }
- 
--static int esp_jazz_remove(struct platform_device *dev)
--{
--	struct esp *esp = dev_get_drvdata(&dev->dev);
--	unsigned int irq = esp->host->irq;
--
--	scsi_esp_unregister(esp);
--
--	free_irq(irq, esp);
--	dma_free_coherent(esp->dev, 16,
--			  esp->command_block,
--			  esp->command_block_dma);
--
--	scsi_host_put(esp->host);
--
--	return 0;
--}
--
--/* work with hotplug and coldplug */
--MODULE_ALIAS("platform:jazz_esp");
--
- static struct platform_driver esp_jazz_driver = {
- 	.probe		= esp_jazz_probe,
--	.remove		= esp_jazz_remove,
- 	.driver	= {
--		.name	= "jazz_esp",
-+		.name			= "jazz_esp",
-+		.suppress_bind_attrs	= true,
- 	},
- };
- 
-@@ -233,16 +214,4 @@ static int __init jazz_esp_init(void)
- {
- 	return platform_driver_register(&esp_jazz_driver);
- }
--
--static void __exit jazz_esp_exit(void)
--{
--	platform_driver_unregister(&esp_jazz_driver);
--}
--
--MODULE_DESCRIPTION("JAZZ ESP SCSI driver");
--MODULE_AUTHOR("Thomas Bogendoerfer (tsbogend@alpha.franken.de)");
--MODULE_LICENSE("GPL");
--MODULE_VERSION(DRV_VERSION);
--
--module_init(jazz_esp_init);
--module_exit(jazz_esp_exit);
-+device_initcall(jazz_esp_init);
--- 
-2.6.1
+> 
+> > -MODULE_DESCRIPTION("Sun3x ESP SCSI driver");
+> > -MODULE_AUTHOR("Thomas Bogendoerfer (tsbogend@alpha.franken.de)");
+> > -MODULE_LICENSE("GPL");
+> > -MODULE_VERSION(DRV_VERSION);
+> 
+> These tags are usefully greppable for drivers, regardless of whether
+> they generate actual kernel side information.
+> 
+> > We explicitly disallow a driver unbind, since that doesn't have a
+> > sensible use case anyway, and it allows us to drop the ".remove"
+> > code for non-modular drivers.
+> 
+> That's bogus.  I use bind and unbind a lot for testing built in drivers
+> but the usual user use case is for resetting the devices.
+> 
+> > Build tested for mips (jazz) and m68k (sun3x) on 4.6-rc1 to ensure no
+> > silly typos crept in.
+> 
+> For trivial changes, build testing is not really sufficient: a
+> significant fraction of them break something that isn't spotted by the
+> reviewers.  For the older drivers, this isn't discovered for months to
+> years and then someone has to go digging back through all the so called
+> trivial changes to find which one it was.
+> 
+> James
+> 

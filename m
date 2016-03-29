@@ -1,19 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:62931 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:44164 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27006779AbcC2Iz5FRZik (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Mar 2016 10:55:57 +0200
-Date: Tue, 29 Mar 2016 09:55:49 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 2/4] MIPS: Flush highmem pages in __flush_dcache_page
-Message-ID: <20160329085549.GA17987@NP-P-BURTON>
-References: <1456799879-14711-1-git-send-email-paul.burton@imgtec.com>
- <1456799879-14711-3-git-send-email-paul.burton@imgtec.com>
- <20160329083543.GD11282@linux-mips.org>
+        with ESMTP id S27008125AbcC2OvIT4gA5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Mar 2016 16:51:08 +0200
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Subject: [PATCH] MIPS: Detect DSP v3 support
+Date: Tue, 29 Mar 2016 15:50:25 +0100
+Message-ID: <1459263025-9433-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20160329083543.GD11282@linux-mips.org>
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,85 +18,84 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Lars Persson <lars.persson@axis.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Message-ID: <20160329085549.UahcBZNyZaR_KaGwuuPhtei2QcRmHYvDl7qZbA7bH7g@z>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Zubair.Kakakhel@imgtec.com, paul.burton@imgtec.com
+Message-ID: <20160329145025.diSm-NRFBFnnHoNRwjSFNQjYOPXF0Lgntruks_nvFnQ@z>
 
-On Tue, Mar 29, 2016 at 10:35:43AM +0200, Ralf Baechle wrote:
-> On Tue, Mar 01, 2016 at 02:37:57AM +0000, Paul Burton wrote:
-> 
-> > When flush_dcache_page is called on an executable page, that page is
-> > about to be provided to userland & we can presume that the icache
-> > contains no valid entries for its address range. However if the icache
-> > does not fill from the dcache then we cannot presume that the pages
-> > content has been written back as far as the memories that the dcache
-> > will fill from (ie. L2 or further out).
-> > 
-> > This was being done for lowmem pages, but not for highmem which can lead
-> > to icache corruption. Fix this by mapping highmem pages & flushing their
-> > content from the dcache in __flush_dcache_page before providing the page
-> > to userland, just as is done for lowmem pages.
-> > 
-> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> > Cc: Lars Persson <lars.persson@axis.com>
-> > ---
-> > 
-> >  arch/mips/mm/cache.c | 12 +++++++++---
-> >  1 file changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-> > index 3f159ca..5a67d8c 100644
-> > --- a/arch/mips/mm/cache.c
-> > +++ b/arch/mips/mm/cache.c
-> > @@ -16,6 +16,7 @@
-> >  #include <linux/mm.h>
-> >  
-> >  #include <asm/cacheflush.h>
-> > +#include <asm/highmem.h>
-> >  #include <asm/processor.h>
-> >  #include <asm/cpu.h>
-> >  #include <asm/cpu-features.h>
-> > @@ -83,8 +84,6 @@ void __flush_dcache_page(struct page *page)
-> >  	struct address_space *mapping = page_mapping(page);
-> >  	unsigned long addr;
-> >  
-> > -	if (PageHighMem(page))
-> > -		return;
-> >  	if (mapping && !mapping_mapped(mapping)) {
-> >  		SetPageDcacheDirty(page);
-> >  		return;
-> > @@ -95,8 +94,15 @@ void __flush_dcache_page(struct page *page)
-> >  	 * case is for exec env/arg pages and those are %99 certainly going to
-> >  	 * get faulted into the tlb (and thus flushed) anyways.
-> >  	 */
-> > -	addr = (unsigned long) page_address(page);
-> > +	if (PageHighMem(page))
-> > +		addr = (unsigned long)kmap_atomic(page);
-> > +	else
-> > +		addr = (unsigned long)page_address(page);
-> > +
-> >  	flush_data_cache_page(addr);
-> > +
-> > +	if (PageHighMem(page))
-> > +		__kunmap_atomic((void *)addr);
-> >  }
-> >  
-> >  EXPORT_SYMBOL(__flush_dcache_page);
-> 
-> I don't see how this should work with cache aliases.  If the page is unmapped
-> kmap_atomic will pick a deterministic address only under some circumstances,
-> kmap won't.  As the result the wrong cache way will be flushed out, I think.
-> 
->   Ralf
+DSPv3 is supported on all MIPSr6 systems which indicate support for DSPv2.
 
-Hi Ralf,
+This doesn't require any changes to the kernel's handling of DSP
+resources. The patch is to detect support and indicate it in /proc/cpuinfo
 
-None of the systems I tested this on have cache aliases, and highmem on
-systems with cache aliases is currently unsupported to the extent that
-we BUG_ON such cases in flush_kernel_dcache_page.
+DSP v3 introduces a new instruction BPOSGE32C
 
-So hopefully you won't require that this code making highmem without
-aliases also fix the currently-unsupported highmem with aliases case?
+Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Reviewed-by: Paul Burton <paul.burton@imgtec.com>
 
-Thanks,
-    Paul
+---
+
+Based on v4.6-rc1
+---
+ arch/mips/include/asm/cpu-features.h | 4 ++++
+ arch/mips/include/asm/cpu.h          | 1 +
+ arch/mips/kernel/cpu-probe.c         | 5 ++++-
+ arch/mips/kernel/proc.c              | 1 +
+ 4 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
+index eeec8c8..0671f29 100644
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -307,6 +307,10 @@
+ #define cpu_has_dsp2		(cpu_data[0].ases & MIPS_ASE_DSP2P)
+ #endif
+ 
++#ifndef cpu_has_dsp3
++#define cpu_has_dsp3		(cpu_data[0].ases & MIPS_ASE_DSP3)
++#endif
++
+ #ifndef cpu_has_mipsmt
+ #define cpu_has_mipsmt		(cpu_data[0].ases & MIPS_ASE_MIPSMT)
+ #endif
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index a97ca97..e699b23 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -401,5 +401,6 @@ enum cpu_type_enum {
+ #define MIPS_ASE_DSP2P		0x00000040 /* Signal Processing ASE Rev 2 */
+ #define MIPS_ASE_VZ		0x00000080 /* Virtualization ASE */
+ #define MIPS_ASE_MSA		0x00000100 /* MIPS SIMD Architecture */
++#define MIPS_ASE_DSP3		0x00000200 /* Signal Processing ASE Rev 3*/
+ 
+ #endif /* _ASM_CPU_H */
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index b725b71..da0f3be 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -679,8 +679,11 @@ static inline unsigned int decode_config3(struct cpuinfo_mips *c)
+ 		c->options |= MIPS_CPU_RIXI;
+ 	if (config3 & MIPS_CONF3_DSP)
+ 		c->ases |= MIPS_ASE_DSP;
+-	if (config3 & MIPS_CONF3_DSP2P)
++	if (config3 & MIPS_CONF3_DSP2P) {
+ 		c->ases |= MIPS_ASE_DSP2P;
++		if (cpu_has_mips_r6)
++			c->ases |= MIPS_ASE_DSP3;
++	}
+ 	if (config3 & MIPS_CONF3_VINT)
+ 		c->options |= MIPS_CPU_VINT;
+ 	if (config3 & MIPS_CONF3_VEIC)
+diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+index 298b2b7..97dc01b 100644
+--- a/arch/mips/kernel/proc.c
++++ b/arch/mips/kernel/proc.c
+@@ -114,6 +114,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+ 	if (cpu_has_smartmips)	seq_printf(m, "%s", " smartmips");
+ 	if (cpu_has_dsp)	seq_printf(m, "%s", " dsp");
+ 	if (cpu_has_dsp2)	seq_printf(m, "%s", " dsp2");
++	if (cpu_has_dsp3)	seq_printf(m, "%s", " dsp3");
+ 	if (cpu_has_mipsmt)	seq_printf(m, "%s", " mt");
+ 	if (cpu_has_mmips)	seq_printf(m, "%s", " micromips");
+ 	if (cpu_has_vz)		seq_printf(m, "%s", " vz");
+-- 
+1.9.1

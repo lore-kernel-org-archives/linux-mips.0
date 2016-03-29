@@ -1,19 +1,14 @@
-Received: from mail1.windriver.com ([147.11.146.13]:39317 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27014253AbcC1PKbQ0Tz9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 28 Mar 2016 17:10:31 +0200
-Date: Mon, 28 Mar 2016 11:10:14 -0400
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: [PATCH 0/2] scsi: remove orphaned modular code from non-modular
- drivers
-Message-ID: <20160328151014.GR16831@windriver.com>
-References: <1459098025-26269-1-git-send-email-paul.gortmaker@windriver.com>
- <1459143107.13004.21.camel@linux.vnet.ibm.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8508 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27024936AbcC2Ifxqs1ak (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Mar 2016 10:35:53 +0200
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH v2 0/6] MIPS seccomp_bpf self test and fixups
+Date: Tue, 29 Mar 2016 09:35:28 +0100
+Message-ID: <1459240534-8658-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1459143107.13004.21.camel@linux.vnet.ibm.com>
-Return-Path: <Paul.Gortmaker@windriver.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,70 +18,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Bottomley <jejb@linux.vnet.ibm.com>
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-scsi@vger.kernel.org
-Message-ID: <20160328151014.5TCBAQx1q8_2NhfSKbJa-vT8LZIYkSGbRilsbTCfhfo@z>
+To: IMG-MIPSLinuxKerneldevelopers@imgtec.com
+Cc: Matt Redfearn <matt.redfearn@imgtec.com>, linux-mips@linux-mips.org, Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@amacapital.net>, Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org, Shuah Khan <shuahkh@osg.samsung.com>, Eric B Munson <emunson@akamai.com>, James Hogan <james.hogan@imgtec.com>, Andrew Morton <akpm@linux-foundation.org>, linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org, Markos Chandras <markos.chandras@imgtec.com>, Amanieu d'Antras <amanieu@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Will Drewry <wad@chromium.org>
+Message-ID: <20160329083528.qaEyXT3hdtU9hm6iU0HmwNYry6bToGvh52OR4rrsbME@z>
 
-[Re: [PATCH 0/2] scsi: remove orphaned modular code from non-modular drivers] On 27/03/2016 (Sun 22:31) James Bottomley wrote:
+These patches imporve seccomp support on MIPS.
 
-> On Sun, 2016-03-27 at 13:00 -0400, Paul Gortmaker wrote:
-> > In the ongoing audit/cleanup of non-modular code needlessly using 
-> > modular infrastructure, the SCSI subsystem fortunately only contains 
-> > two instances that I detected.  Both are for legacy drivers that 
-> > predate the git epoch, so cleary there is no demand for converting 
-> > these drivers to be tristate.
-> > 
-> > For anyone new to the underlying goal of this cleanup, we are trying 
-> > to not use module support for code that isn't buildable as a module
-> > since:
-> > 
-> >  (1) it is easy to accidentally write unused module_exit and remove
-> > code
-> >  (2) it can be misleading when reading the source, thinking it can be
-> >      modular when the Makefile and/or Kconfig prohibit it
-> >  (3) it requires the include of the module.h header file which in
-> > turn
-> >      includes nearly everything else, thus adding to CPP overhead.
-> >  (4) it gets copied/replicated into other code and spreads like
-> > weeds.
-> 
-> I don't really buy any of these as being credible issues for the
-> ancient drivers, so there doesn't appear to be an real benefit to this
-> conversion; however, besides the danger of touching old stuff, there
-> are some down sides:
+Firstly support is added for building the seccomp_bpf self test for
+MIPS. The
+initial results of these tests were:
 
-Thanks James for your review and always interesting/alternative
-viewpoints.  You seem pretty clear in your conviction here, so I won't
-bother making counter points ; best we just agree to disagree, and I
-won't bother you with these patches again.
+32bit kernel O32 userspace before: 48 / 48 pass
+64bit kernel O32 userspace before: 47 / 48 pass
+ Failures: TRAP.Handler
+64bit kernel N32 userspace before: 44 / 48 pass
+ Failures: global.mode_strict_support, TRAP.handler,
+TRACE_syscall.syscall_redirected, TRACE_syscall.syscall_dropped
+64bit kernel N64 userspace before: 46 / 48 pass
+ Failures: TRACE_syscall.syscall_redirected,
+TRACE_syscall.syscall_dropped
 
-Paul.
---
+The subsequent patches fix issues that were causing the above tests to
+fail. With
+these fixes, the results are:
+32bit kernel O32 userspace after: 48 / 48
+64bit kernel O32 userspace after: 48 / 48
+64bit kernel N32 userspace after: 48 / 48
+64bit kernel N64 userspace after: 48 / 48
 
-> 
-> > -MODULE_DESCRIPTION("Sun3x ESP SCSI driver");
-> > -MODULE_AUTHOR("Thomas Bogendoerfer (tsbogend@alpha.franken.de)");
-> > -MODULE_LICENSE("GPL");
-> > -MODULE_VERSION(DRV_VERSION);
-> 
-> These tags are usefully greppable for drivers, regardless of whether
-> they generate actual kernel side information.
-> 
-> > We explicitly disallow a driver unbind, since that doesn't have a
-> > sensible use case anyway, and it allows us to drop the ".remove"
-> > code for non-modular drivers.
-> 
-> That's bogus.  I use bind and unbind a lot for testing built in drivers
-> but the usual user use case is for resetting the devices.
-> 
-> > Build tested for mips (jazz) and m68k (sun3x) on 4.6-rc1 to ensure no
-> > silly typos crept in.
-> 
-> For trivial changes, build testing is not really sufficient: a
-> significant fraction of them break something that isn't spotted by the
-> reviewers.  For the older drivers, this isn't discovered for months to
-> years and then someone has to go digging back through all the so called
-> trivial changes to find which one it was.
-> 
-> James
-> 
+Thanks,
+Matt
+
+Changes in v2:
+- Tested on additional platforms
+- Replace __NR_syscall which isn't defined for N32 / N64 ABIs
+
+Matt Redfearn (6):
+  selftests/seccomp: add MIPS self-test support
+  MIPS: Support sending SIG_SYS to 32bit userspace from 64bit kernel
+  MIPS: scall: Handle seccomp filters which redirect syscalls
+  seccomp: Get compat syscalls from asm-generic header
+  MIPS: seccomp: Support compat with both O32 and N32
+  secomp: Constify mode1 syscall whitelist
+
+ arch/mips/include/asm/seccomp.h               | 47 +++++++++++++++------------
+ arch/mips/kernel/scall32-o32.S                | 11 +++----
+ arch/mips/kernel/scall64-64.S                 |  3 +-
+ arch/mips/kernel/scall64-n32.S                | 14 +++++---
+ arch/mips/kernel/scall64-o32.S                | 14 +++++---
+ arch/mips/kernel/signal32.c                   |  6 ++++
+ include/asm-generic/seccomp.h                 | 14 ++++++++
+ kernel/seccomp.c                              | 13 ++------
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 30 +++++++++++++++--
+ 9 files changed, 101 insertions(+), 51 deletions(-)
+
+-- 
+2.5.0

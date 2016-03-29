@@ -1,16 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:46201 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62931 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27024909AbcC2IgAR1iSk (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Mar 2016 10:36:00 +0200
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH v2 5/6] MIPS: seccomp: Support compat with both O32 and N32
-Date: Tue, 29 Mar 2016 09:35:33 +0100
-Message-ID: <1459240534-8658-6-git-send-email-matt.redfearn@imgtec.com>
-In-Reply-To: <1459240534-8658-1-git-send-email-matt.redfearn@imgtec.com>
-References: <1459240534-8658-1-git-send-email-matt.redfearn@imgtec.com>
+        with ESMTP id S27006779AbcC2Iz5FRZik (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Mar 2016 10:55:57 +0200
+Date: Tue, 29 Mar 2016 09:55:49 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH 2/4] MIPS: Flush highmem pages in __flush_dcache_page
+Message-ID: <20160329085549.GA17987@NP-P-BURTON>
+References: <1456799879-14711-1-git-send-email-paul.burton@imgtec.com>
+ <1456799879-14711-3-git-send-email-paul.burton@imgtec.com>
+ <20160329083543.GD11282@linux-mips.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20160329083543.GD11282@linux-mips.org>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,83 +23,85 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: IMG-MIPSLinuxKerneldevelopers@imgtec.com
-Cc: Matt Redfearn <matt.redfearn@imgtec.com>, linux-mips@linux-mips.org, Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <20160329083533.aL9_tEu48bAGtwlp3rGwyVMEzGgMGK0lUFfUBibVxTQ@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Lars Persson <lars.persson@axis.com>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Message-ID: <20160329085549.UahcBZNyZaR_KaGwuuPhtei2QcRmHYvDl7qZbA7bH7g@z>
 
-Previously the seccomp would only support strict mode on O32 userland
-programs when the kernel had support for both O32 and N32 ABIs. Remove
-kludge and support both ABIs.
+On Tue, Mar 29, 2016 at 10:35:43AM +0200, Ralf Baechle wrote:
+> On Tue, Mar 01, 2016 at 02:37:57AM +0000, Paul Burton wrote:
+> 
+> > When flush_dcache_page is called on an executable page, that page is
+> > about to be provided to userland & we can presume that the icache
+> > contains no valid entries for its address range. However if the icache
+> > does not fill from the dcache then we cannot presume that the pages
+> > content has been written back as far as the memories that the dcache
+> > will fill from (ie. L2 or further out).
+> > 
+> > This was being done for lowmem pages, but not for highmem which can lead
+> > to icache corruption. Fix this by mapping highmem pages & flushing their
+> > content from the dcache in __flush_dcache_page before providing the page
+> > to userland, just as is done for lowmem pages.
+> > 
+> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> > Cc: Lars Persson <lars.persson@axis.com>
+> > ---
+> > 
+> >  arch/mips/mm/cache.c | 12 +++++++++---
+> >  1 file changed, 9 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+> > index 3f159ca..5a67d8c 100644
+> > --- a/arch/mips/mm/cache.c
+> > +++ b/arch/mips/mm/cache.c
+> > @@ -16,6 +16,7 @@
+> >  #include <linux/mm.h>
+> >  
+> >  #include <asm/cacheflush.h>
+> > +#include <asm/highmem.h>
+> >  #include <asm/processor.h>
+> >  #include <asm/cpu.h>
+> >  #include <asm/cpu-features.h>
+> > @@ -83,8 +84,6 @@ void __flush_dcache_page(struct page *page)
+> >  	struct address_space *mapping = page_mapping(page);
+> >  	unsigned long addr;
+> >  
+> > -	if (PageHighMem(page))
+> > -		return;
+> >  	if (mapping && !mapping_mapped(mapping)) {
+> >  		SetPageDcacheDirty(page);
+> >  		return;
+> > @@ -95,8 +94,15 @@ void __flush_dcache_page(struct page *page)
+> >  	 * case is for exec env/arg pages and those are %99 certainly going to
+> >  	 * get faulted into the tlb (and thus flushed) anyways.
+> >  	 */
+> > -	addr = (unsigned long) page_address(page);
+> > +	if (PageHighMem(page))
+> > +		addr = (unsigned long)kmap_atomic(page);
+> > +	else
+> > +		addr = (unsigned long)page_address(page);
+> > +
+> >  	flush_data_cache_page(addr);
+> > +
+> > +	if (PageHighMem(page))
+> > +		__kunmap_atomic((void *)addr);
+> >  }
+> >  
+> >  EXPORT_SYMBOL(__flush_dcache_page);
+> 
+> I don't see how this should work with cache aliases.  If the page is unmapped
+> kmap_atomic will pick a deterministic address only under some circumstances,
+> kmap won't.  As the result the wrong cache way will be flushed out, I think.
+> 
+>   Ralf
 
-With this patch in place, the seccomp_bpf self test now passes
-global.mode_strict_support with N32 userland.
+Hi Ralf,
 
-Suggested-by: Paul Burton <paul.burton@imgtec.com>
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
----
+None of the systems I tested this on have cache aliases, and highmem on
+systems with cache aliases is currently unsupported to the extent that
+we BUG_ON such cases in flush_kernel_dcache_page.
 
-Changes in v2: None
+So hopefully you won't require that this code making highmem without
+aliases also fix the currently-unsupported highmem with aliases case?
 
- arch/mips/include/asm/seccomp.h | 47 +++++++++++++++++++++++------------------
- 1 file changed, 26 insertions(+), 21 deletions(-)
-
-diff --git a/arch/mips/include/asm/seccomp.h b/arch/mips/include/asm/seccomp.h
-index 1d8a2e2c75c1..684fb3a12ed3 100644
---- a/arch/mips/include/asm/seccomp.h
-+++ b/arch/mips/include/asm/seccomp.h
-@@ -2,27 +2,32 @@
- 
- #include <linux/unistd.h>
- 
--/*
-- * Kludge alert:
-- *
-- * The generic seccomp code currently allows only a single compat ABI.	Until
-- * this is fixed we priorize O32 as the compat ABI over N32.
-- */
--#ifdef CONFIG_MIPS32_O32
--
--#define __NR_seccomp_read_32		4003
--#define __NR_seccomp_write_32		4004
--#define __NR_seccomp_exit_32		4001
--#define __NR_seccomp_sigreturn_32	4193	/* rt_sigreturn */
--
--#elif defined(CONFIG_MIPS32_N32)
--
--#define __NR_seccomp_read_32		6000
--#define __NR_seccomp_write_32		6001
--#define __NR_seccomp_exit_32		6058
--#define __NR_seccomp_sigreturn_32	6211	/* rt_sigreturn */
--
--#endif /* CONFIG_MIPS32_O32 */
-+#ifdef CONFIG_COMPAT
-+static inline const int *get_compat_mode1_syscalls(void)
-+{
-+	static const int syscalls_O32[] = {
-+		__NR_O32_Linux + 3, __NR_O32_Linux + 4,
-+		__NR_O32_Linux + 1, __NR_O32_Linux + 193,
-+		0, /* null terminated */
-+	};
-+	static const int syscalls_N32[] = {
-+		__NR_N32_Linux + 0, __NR_N32_Linux + 1,
-+		__NR_N32_Linux + 58, __NR_N32_Linux + 211,
-+		0, /* null terminated */
-+	};
-+
-+	if (config_enabled(CONFIG_MIPS32_O32) && test_thread_flag(TIF_32BIT_REGS))
-+		return syscalls_O32;
-+
-+	if (config_enabled(CONFIG_MIPS32_N32))
-+		return syscalls_N32;
-+
-+	BUG();
-+}
-+
-+#define get_compat_mode1_syscalls get_compat_mode1_syscalls
-+
-+#endif /* CONFIG_COMPAT */
- 
- #include <asm-generic/seccomp.h>
- 
--- 
-2.5.0
+Thanks,
+    Paul

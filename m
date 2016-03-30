@@ -1,13 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44164 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:24569 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008125AbcC2OvIT4gA5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Mar 2016 16:51:08 +0200
+        with ESMTP id S27024719AbcC3PWQN2aL4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 30 Mar 2016 17:22:16 +0200
+Subject: Re: [PATCH v2] MIPS: vdso: flush the vdso data page to update it on
+ all processes
+References: <1456074518-13163-1-git-send-email-hauke@hauke-m.de>
+ <56FAF575.4070607@hauke-m.de>
 From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH] MIPS: Detect DSP v3 support
-Date: Tue, 29 Mar 2016 15:50:25 +0100
-Message-ID: <1459263025-9433-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+Message-ID: <56FBEEFF.10406@imgtec.com>
+Date: Wed, 30 Mar 2016 16:21:35 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <56FAF575.4070607@hauke-m.de>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,84 +23,87 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Zubair.Kakakhel@imgtec.com, paul.burton@imgtec.com
-Message-ID: <20160329145025.diSm-NRFBFnnHoNRwjSFNQjYOPXF0Lgntruks_nvFnQ@z>
+To: Hauke Mehrtens <hauke@hauke-m.de>, linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: alex.smith@imgtec.com, sergei.shtylyov@cogentembedded.com, "# v4 . 4+" <stable@vger.kernel.org>
+Message-ID: <20160330152135.vfD8fnwtYhPPJXZZ-XBA-Ha-h-p5E0aXFLX5ZCNpDmg@z>
 
-DSPv3 is supported on all MIPSr6 systems which indicate support for DSPv2.
+Hi Hauke,
 
-This doesn't require any changes to the kernel's handling of DSP
-resources. The patch is to detect support and indicate it in /proc/cpuinfo
+Could you share details of what version of glibc/rfs setup you are using?
 
-DSP v3 introduces a new instruction BPOSGE32C
+Thanks.
 
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Reviewed-by: Paul Burton <paul.burton@imgtec.com>
+Regards,
+ZubairLK
 
----
-
-Based on v4.6-rc1
----
- arch/mips/include/asm/cpu-features.h | 4 ++++
- arch/mips/include/asm/cpu.h          | 1 +
- arch/mips/kernel/cpu-probe.c         | 5 ++++-
- arch/mips/kernel/proc.c              | 1 +
- 4 files changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index eeec8c8..0671f29 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -307,6 +307,10 @@
- #define cpu_has_dsp2		(cpu_data[0].ases & MIPS_ASE_DSP2P)
- #endif
- 
-+#ifndef cpu_has_dsp3
-+#define cpu_has_dsp3		(cpu_data[0].ases & MIPS_ASE_DSP3)
-+#endif
-+
- #ifndef cpu_has_mipsmt
- #define cpu_has_mipsmt		(cpu_data[0].ases & MIPS_ASE_MIPSMT)
- #endif
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index a97ca97..e699b23 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -401,5 +401,6 @@ enum cpu_type_enum {
- #define MIPS_ASE_DSP2P		0x00000040 /* Signal Processing ASE Rev 2 */
- #define MIPS_ASE_VZ		0x00000080 /* Virtualization ASE */
- #define MIPS_ASE_MSA		0x00000100 /* MIPS SIMD Architecture */
-+#define MIPS_ASE_DSP3		0x00000200 /* Signal Processing ASE Rev 3*/
- 
- #endif /* _ASM_CPU_H */
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index b725b71..da0f3be 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -679,8 +679,11 @@ static inline unsigned int decode_config3(struct cpuinfo_mips *c)
- 		c->options |= MIPS_CPU_RIXI;
- 	if (config3 & MIPS_CONF3_DSP)
- 		c->ases |= MIPS_ASE_DSP;
--	if (config3 & MIPS_CONF3_DSP2P)
-+	if (config3 & MIPS_CONF3_DSP2P) {
- 		c->ases |= MIPS_ASE_DSP2P;
-+		if (cpu_has_mips_r6)
-+			c->ases |= MIPS_ASE_DSP3;
-+	}
- 	if (config3 & MIPS_CONF3_VINT)
- 		c->options |= MIPS_CPU_VINT;
- 	if (config3 & MIPS_CONF3_VEIC)
-diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
-index 298b2b7..97dc01b 100644
---- a/arch/mips/kernel/proc.c
-+++ b/arch/mips/kernel/proc.c
-@@ -114,6 +114,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 	if (cpu_has_smartmips)	seq_printf(m, "%s", " smartmips");
- 	if (cpu_has_dsp)	seq_printf(m, "%s", " dsp");
- 	if (cpu_has_dsp2)	seq_printf(m, "%s", " dsp2");
-+	if (cpu_has_dsp3)	seq_printf(m, "%s", " dsp3");
- 	if (cpu_has_mipsmt)	seq_printf(m, "%s", " mt");
- 	if (cpu_has_mmips)	seq_printf(m, "%s", " micromips");
- 	if (cpu_has_vz)		seq_printf(m, "%s", " vz");
--- 
-1.9.1
+On 29/03/16 22:36, Hauke Mehrtens wrote:
+> On 02/21/2016 06:08 PM, Hauke Mehrtens wrote:
+>> Without flushing the vdso data page the vdso call is working on dated
+>> or unsynced data. This resulted in problems where the clock_gettime
+>> vdso call returned a time 6 seconds later after a 3 seconds sleep,
+>> while the syscall reported a time 3 sounds later, like expected. This
+>> happened very often and I got these ping results for example:
+>>
+>> root@OpenWrt:/# ping 192.168.1.255
+>> PING 192.168.1.255 (192.168.1.255): 56 data bytes
+>> 64 bytes from 192.168.1.3: seq=0 ttl=64 time=0.688 ms
+>> 64 bytes from 192.168.1.3: seq=1 ttl=64 time=4294172.045 ms
+>> 64 bytes from 192.168.1.3: seq=2 ttl=64 time=4293968.105 ms
+>> 64 bytes from 192.168.1.3: seq=3 ttl=64 time=4294055.920 ms
+>> 64 bytes from 192.168.1.3: seq=4 ttl=64 time=4294671.913 ms
+>>
+>> This was tested on a Lantiq/Intel VRX288 (MIPS BE 34Kc V5.6 CPU with
+>> two VPEs)
+>>
+>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>> Cc: <stable@vger.kernel.org> # v4.4+
+>
+> This patch flushes the complete dcache of the CPU if cpu_has_dc_aliases
+> is set.
+>
+> Calling flush_dcache_page(virt_to_page(&vdso_data)); improved the
+> situation a litte bit but did not fix my problem.
+>
+> Could someone from Imagination please look into this problem. The page
+> is linked into many virtual address spaces and when it gets modified by
+> the kernel the user space processes are still accessing partly old data,
+> even when lush_dcache_page() was called.
+>
+>> ---
+>>   arch/mips/kernel/vdso.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
+>> index 975e997..8b0d974 100644
+>> --- a/arch/mips/kernel/vdso.c
+>> +++ b/arch/mips/kernel/vdso.c
+>> @@ -20,6 +20,8 @@
+>>   #include <linux/timekeeper_internal.h>
+>>
+>>   #include <asm/abi.h>
+>> +#include <asm/cacheflush.h>
+>> +#include <asm/page.h>
+>>   #include <asm/vdso.h>
+>>
+>>   /* Kernel-provided data used by the VDSO. */
+>> @@ -85,6 +87,8 @@ void update_vsyscall(struct timekeeper *tk)
+>>   	}
+>>
+>>   	vdso_data_write_end(&vdso_data);
+>> +	flush_cache_vmap((unsigned long)&vdso_data,
+>> +			 (unsigned long)&vdso_data + sizeof(vdso_data));
+>>   }
+>>
+>>   void update_vsyscall_tz(void)
+>> @@ -93,6 +97,8 @@ void update_vsyscall_tz(void)
+>>   		vdso_data.tz_minuteswest = sys_tz.tz_minuteswest;
+>>   		vdso_data.tz_dsttime = sys_tz.tz_dsttime;
+>>   	}
+>> +	flush_cache_vmap((unsigned long)&vdso_data,
+>> +			 (unsigned long)&vdso_data + sizeof(vdso_data));
+>>   }
+>>
+>>   int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+>>
+>
+>

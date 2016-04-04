@@ -1,18 +1,21 @@
-Received: from exsmtp01.microchip.com ([198.175.253.37]:33488 "EHLO
-        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27007470AbcDDKJs03hHa (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 4 Apr 2016 12:09:48 +0200
-Subject: Re: [PATCH v5 1/2] dt/bindings: Add bindings for PIC32 SPI peripheral
-References: <1459509530-22716-1-git-send-email-purna.mandal@microchip.com>
- <20160402163506.GD2350@sirena.org.uk>
-From: Purna Chandra Mandal <purna.mandal@microchip.com>
-Message-ID: <57023CFF.5040308@microchip.com>
-Date: Mon, 4 Apr 2016 15:37:59 +0530
+Received: from mailapp01.imgtec.com ([195.59.15.196]:20543 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27026006AbcDDKJuN4n2a (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 4 Apr 2016 12:09:50 +0200
+Date: Mon, 4 Apr 2016 11:09:40 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH v2 03/15] MIPS: PCI: Compatibility with ARM-like PCI host
+ drivers
+Message-ID: <20160404100940.GA21568@NP-P-BURTON>
+References: <1454499045-5020-1-git-send-email-paul.burton@imgtec.com>
+ <1454499045-5020-4-git-send-email-paul.burton@imgtec.com>
+ <56FB0D90.8000200@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20160402163506.GD2350@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Purna.Mandal@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <56FB0D90.8000200@gmail.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,15 +25,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Joshua Henderson <digitalpeer@digitalpeer.com>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>
-Message-ID: <20160404100759.ATW6-4kgCGsZyZ4hD6zeoMQ0lc5FreoeGTVAHGbYyXA@z>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Joshua Kinard <kumba@gentoo.org>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Bjorn Helgaas <bhelgaas@google.com>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, Jens Axboe <axboe@fb.com>, linux-kernel@vger.kernel.org, Yijing Wang <wangyijing@huawei.com>, John Crispin <blogic@openwrt.org>, Yinghai Lu <yinghai@kernel.org>
+Message-ID: <20160404100940.TugwmRRDYJtJb4YduCKyo9Zjq5u0yWpqTy3n4qPQiOc@z>
 
-On 04/02/2016 10:05 PM, Mark Brown wrote:
+On Tue, Mar 29, 2016 at 04:19:44PM -0700, Florian Fainelli wrote:
+> Le 03/02/2016 03:30, Paul Burton a écrit :
+> > Introduce support for struct hw_pci & the associated pci_common_init_dev
+> > function as used by the PCI drivers written for ARM platforms under
+> > drivers/pci. This is in preparation for reusing the xilinx-pcie driver
+> > on the MIPS Boston board.
+> > 
+> > Platforms that make use of this more generic code will need to select
+> > CONFIG_MIPS_GENERIC_PCI. Platforms which don't will continue to work as
+> > they have, with the intent that PCI drivers be migrated towards struct
+> > hw_pci & drivers/pci/ over time.
+> > 
+> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> > ---
+> 
+> [snip]
+> 
+> > +		if (hw->preinit)
+> > +			hw->preinit();
+> > +
+> > +		ret = hw->setup(i, &ctl->sysdata);
+> > +		if (ret < 0) {
+> 
+> This needs to be ret <= 0 to be compliant with what ARM PCI host
+> controllers do, which is return 1 in case they could get hw->setup to
+> finish with success, and 0 or negative if they could not, see
+> arch/arm/kernel/bios32.c.
+> -- 
+> Florian
 
-> On Fri, Apr 01, 2016 at 04:48:49PM +0530, Purna Chandra Mandal wrote:
->> Document the devicetree bindings for the SPI peripheral found
->> on Microchip PIC32 class devices.
-> Please use subject lines reflecting the style for the subsystem.
+Hi Florian,
 
-ack. Will do.
+Just an FYI, the pcie-xilinx driver I wrote this for has since been
+converted away from the ARM-like pci_common_init_dev & struct hw_pci to
+use only functions provided by the core PCI subsystem[1]. As a result
+I've stopped using this patch & don't plan to continue work on it.
+Perhaps it would be cleanest to do a similar conversion for the driver
+you're using?
+
+[1] https://patchwork.ozlabs.org/patch/581967/ & the rest of the series
+
+Thanks,
+    Paul

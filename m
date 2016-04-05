@@ -1,24 +1,22 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:48366 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27026027AbcDFGqWHnDrQ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 6 Apr 2016 08:46:22 +0200
-Date: Tue, 5 Apr 2016 22:00:29 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [kernel-hardening] [PATCH v2 00/11] MIPS relocatable kernel &
- KASLR
-Message-ID: <20160405210029.GG31316@jhogan-linux.le.imgtec.org>
-References: <1459415142-3412-1-git-send-email-matt.redfearn@imgtec.com>
- <CAGXu5jKMLcRmMkowF=fUEQdtccTJLR9FEWT4g_zeyZMW4BWQOg@mail.gmail.com>
- <20160404233721.GB26295@linux-mips.org>
- <CAGXu5jJ7P95T0ZyAVZagQ0LZhSg28wxkQxR-tRFkhZsHekrN_Q@mail.gmail.com>
- <20160405090923.GF31316@jhogan-linux.le.imgtec.org>
- <CAGXu5jJ5B+MEg7SVgbmWju+y8XYnbunvfdR0ZD_tfz-u=iB03w@mail.gmail.com>
+Received: from mail-wm0-f50.google.com ([74.125.82.50]:36222 "EHLO
+        mail-wm0-f50.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27007830AbcDFIJsihpIi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 6 Apr 2016 10:09:48 +0200
+Received: by mail-wm0-f50.google.com with SMTP id v188so13777652wme.1
+        for <linux-mips@linux-mips.org>; Wed, 06 Apr 2016 01:09:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7lMq7vMTJT4tNk0a"
-Content-Disposition: inline
-In-Reply-To: <CAGXu5jJ5B+MEg7SVgbmWju+y8XYnbunvfdR0ZD_tfz-u=iB03w@mail.gmail.com>
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <20160405090923.GF31316@jhogan-linux.le.imgtec.org>
+References: <1459415142-3412-1-git-send-email-matt.redfearn@imgtec.com>
+        <CAGXu5jKMLcRmMkowF=fUEQdtccTJLR9FEWT4g_zeyZMW4BWQOg@mail.gmail.com>
+        <20160404233721.GB26295@linux-mips.org>
+        <CAGXu5jJ7P95T0ZyAVZagQ0LZhSg28wxkQxR-tRFkhZsHekrN_Q@mail.gmail.com>
+        <20160405090923.GF31316@jhogan-linux.le.imgtec.org>
+Date: Tue, 5 Apr 2016 11:10:40 -0700
+Message-ID: <CAGXu5jJ5B+MEg7SVgbmWju+y8XYnbunvfdR0ZD_tfz-u=iB03w@mail.gmail.com>
+Subject: Re: [kernel-hardening] [PATCH v2 00/11] MIPS relocatable kernel & KASLR
+From: Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <keescook@google.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -28,80 +26,130 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kees Cook <keescook@chromium.org>
+To: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>, "kernel-hardening@lists.openwall.com" <kernel-hardening@lists.openwall.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Matt Redfearn <matt.redfearn@imgtec.com>, Aaro Koskinen <aaro.koskinen@nokia.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Alexander Sverdlin <alexander.sverdlin@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, David Daney <ddaney@caviumnetworks.com>, Jaedon Shin <jaedon.shin@gmail.com>, Jonas Gorski <jogo@openwrt.org>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20160405210029.56teOa8Ssa05uzmpOqkx0sBe-neFyTjnP4q0CZMt8Wc@z>
+Message-ID: <20160405181040.cpep3RsX_dlU4j-XDwUhuUzlijqLDrYg8Y3wD9rfzHs@z>
 
---7lMq7vMTJT4tNk0a
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 5, 2016 at 2:09 AM, James Hogan <james.hogan@imgtec.com> wrote:
+> On Mon, Apr 04, 2016 at 04:56:58PM -0700, Kees Cook wrote:
+>> On Mon, Apr 4, 2016 at 4:37 PM, Ralf Baechle <ralf@linux-mips.org> wrote:
+>> > On Mon, Apr 04, 2016 at 12:46:29PM -0700, Kees Cook wrote:
+>> >
+>> >> This is great! Thanks for working on this! :)
+>> >>
+>> >> Without actually reading the code yet, I wonder if the x86 and MIPS
+>> >> relocs tool could be merged at all? Sounds like it might be more
+>> >> difficult though -- the relocation output is different and its storage
+>> >> location is different...
+>> >>
+>> >> > Restrictions:
+>> >> > * The new kernel is not allowed to overlap the old kernel, such that
+>> >> >   the original kernel can still be booted if relocation fails.
+>> >>
+>> >> This sounds like physical-only relocation then? Is the virtual offset
+>> >> randomized as well (like arm64) or just physical (like x86 currently
+>> >> -- though there is a series to fix this).
+>> >
+>> > On MIPS we normally place the kernel in KSEG0 or XKPHYS which address
+>> > segments which are not mapped through the TLB so the difference is
+>> > kinda moot.
+>>
+>> Ah-ha, excellent. Does this mean that MIPS is effectively doing memory
+>> segmentation between userspace and kernel space (or some version of
+>> x86's SMEP/SMAP or ARM's PXN/PAN)? I don't know much about the MIPS
+>> architecture yet.
+>
+> User and kernel virtual address spaces don't traditionally overlap, so
+> you don't get that sort of protection at the moment.
+>
+> MIPS TLBs do have ASIDs though, and kernel mappings are marked global,
+> so it could easily reserve an ASID with no mappings, and switch to that
+> while in kernel mode. It'd have to keep switching between them when
+> reading/writing userland though, as you can't directly access another
+> ASID, and I don't think thats a particularly cheap operation, especially
+> on cores with hardware page table walkers.
 
-On Tue, Apr 05, 2016 at 11:10:40AM -0700, Kees Cook wrote:
-> On Tue, Apr 5, 2016 at 2:09 AM, James Hogan <james.hogan@imgtec.com> wrot=
-e:
-> > EVA (enhanced virtual addressing) is a feature present on recent MIPS
-> > 32-bit i-class and p-class cores (and p6600 too which is 64-bit),
-> > intended to make better use of 32-bit virtual address space. It can
-> > actually overlap kernel and virtual address space, requiring special
-> > instructions for accessing userland mappings, however each segment can't
-> > have distinct TLB mappings for kernel and user mode (if kernel and user
-> > view of segment differs, kernel would need to see it unmapped, i.e. a
-> > window into physical memory). As such its generally better to keep the
-> > lowest segment visible to both kernel and user, so that kernel NULL
-> > dereferences can still be caught, which would negate the point of using
-> > it for security. It is possible to make it work with watchpoints to
-> > catch NULL dereferences in lowest 4KB, so kernel can't access any user
-> > address space directly, but thats a bit of a hack really. Also since EVA
-> > is aimed at making better use of 32-bit address space, it doesn't
-> > address 64-bit.
->=20
-> Ah, so it couldn't cover a 64-bit userspace range?
+Yeah, it seems that x86 SMAP has some performance problems too. I'd be
+curious to see how much of a hit it would be to use ASID switching on
+MIPS.
 
-Correct.
+> EVA (enhanced virtual addressing) is a feature present on recent MIPS
+> 32-bit i-class and p-class cores (and p6600 too which is 64-bit),
+> intended to make better use of 32-bit virtual address space. It can
+> actually overlap kernel and virtual address space, requiring special
+> instructions for accessing userland mappings, however each segment can't
+> have distinct TLB mappings for kernel and user mode (if kernel and user
+> view of segment differs, kernel would need to see it unmapped, i.e. a
+> window into physical memory). As such its generally better to keep the
+> lowest segment visible to both kernel and user, so that kernel NULL
+> dereferences can still be caught, which would negate the point of using
+> it for security. It is possible to make it work with watchpoints to
+> catch NULL dereferences in lowest 4KB, so kernel can't access any user
+> address space directly, but thats a bit of a hack really. Also since EVA
+> is aimed at making better use of 32-bit address space, it doesn't
+> address 64-bit.
 
-<long version>
-OTOH the segments that can be configured by EVA on MIPS64 (specifically
-P6600 core) are:
+Ah, so it couldn't cover a 64-bit userspace range? It seems like it
+might work for 32-bit if mmap_min_addr sysctl was used to choose the
+size of the low-address shared mapping.
 
-0xffffffffe0000000..0xffffffffffffffff 512MB (normally kernel mapped)
-0xffffffffc0000000..0xffffffffdfffffff 512MB (normally kernel mapped)
-0xffffffffa0000000..0xffffffffbfffffff 512MB (normally kernel uncached)
-0xffffffff80000000..0xffffffff9fffffff 512MB (normally kernel)
-=2E..
-0x8000000000000000..0xbfffffffffffffff 8 64-bit unmapped segments (kern)
-=2E.. <- MIPS64 extends user address space here
-0x0000000040000000..0x000000007fffffff 1GB (normally user)
-0x0000000000000000..0x000000003fffffff 1GB (normally user)
+>> What do I need to fill in on these tables for MIPS?
+>>
+>> http://kernsec.org/wiki/index.php/Exploit_Methods/Userspace_execution
+>> http://kernsec.org/wiki/index.php/Exploit_Methods/Userspace_data_usage
+>
+> Both are best addressed using ASID switching in my opinion at the
+> moment.
 
-In the middle there, MIPS64 extends userspace from 0x0000000080000000
-towards 0x4000000000000000 (depending on number of virtual address bits
-implemented), over which there is no segmentation control.
-</long version>
+Okay, thanks, I'll make a note.
 
-Cheers
-James
+-Kees
 
---7lMq7vMTJT4tNk0a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>
+> Cheers
+> James
+>
+>>
+>> >
+>> >> > * Relocation is supported only by multiples of 64k bytes. This
+>> >> >   eliminates the need to handle R_MIPS_LO16 relocations as the bottom
+>> >> >   16bits will remain the same at the relocated address.
+>> >>
+>> >> IIUC, that's actually better than x86, which needs to be 2MB aligned.
+>> >
+>> > On MIPS a key concern was maintaining a reasonable size for the final
+>> > kernel image.  The R_MIPS_LO16 relocatio records make a significant
+>> > portion of the relocations in a relocatable .o file, so we wanted to
+>> > get rid of them.  This results in a relocation granularity of 64kB.
+>> > If we were truely, truely stingy we could come up with a relocation format
+>> > to save a few more bits but I doubt that'd make any sense.
+>> >
+>> >> > * In 64 bit kernels, relocation is supported only within the same 4Gb
+>> >> >   memory segment as the kernel link address (CONFIG_PHYSICAL_START).
+>> >> >   This eliminates the need to handle R_MIPS_HIGHEST and R_MIPS_HIGHER
+>> >> >   relocations as the top 32bits will remain the same at the relocated
+>> >> >   address.
+>> >>
+>> >> Interesting. Could the relocation code be updated in the future to
+>> >> bump the high addresses too?
+>> >
+>> > It could but yet again, the idea was to keep the size of the final
+>> > generated file under control.  The R_MIPS_HIGHER and R_MIPS_HIGHEST
+>> > relocations can be discarded if we constrain the addresses to be in
+>> > a single 4GB segment.  Removing this constraint would make a kernel
+>> > image much bigger so I suggested to add this restriction at least for
+>> > this initial version.
+>>
+>> Awesome, thanks for the details.
+>>
+>> -Kees
+>>
+>> --
+>> Kees Cook
+>> Chrome OS & Brillo Security
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
 
-iQIcBAEBCAAGBQJXBCdtAAoJEGwLaZPeOHZ6xEYP/1QCAip793JX3QvQlc34TXLt
-sORXtYXDhQdSUc0JcWuarMMdqaXaJXismSp8Hf8uGDlFQDnPubCoeSNi1Cuz5gLR
-aN5IjBYdlbUAKcxDzNnmuNmdrXwTiv90QIiqGzvE9TRY+j/06N4tVfAr6kRNew9l
-gZMHbozKa/abz3dr2+QeoivDAo21tCIaDgCxDnNiaBkvQ4UfPZ7X9nyRO72FCakx
-cyHIaEp+MkVe4r9hyFGUHEOkYTmQ4J2Dou80vjRNc9BpKgkE2sUMruR0+7iBtxXQ
-zl5l6HWbNSKI2ZtsQLej8ud7+8KFlDPQmIIArnf0eeFunrY8RRUVS2lsgHLMYqeK
-3iwU4sOK3y59yaWC7p7RGspGpW28uu29OOdbEFMH/Ra2Xq5ChF/tahVGKvYCbJpg
-o6F5O/kNfA6ELKaQGkKURy9ukOWr3Jl8QkmeTbd1VMjsN54jiqSvZ5pTYXMb1m61
-mKCy3IrNpHEZ+H74NWTAkoOyqN6npwCZO3i+I+wzDpcN4ug3ieCM40axm0BGV5WC
-nX59qkmtySxAgRw0yKmgABNd4Gqt4a9dHVGxcjWgSTSjw1Q/5NLZDvnXVXQEIDpl
-RyBZEFRMGxzR7HAvn6NFas6iETZIDMcvcqCjT7296hWwxpe7gAxMcQqMhgpzyjaF
-mdB1GgOr+yuNWfqDmu+B
-=d+Hw
------END PGP SIGNATURE-----
 
---7lMq7vMTJT4tNk0a--
+-- 
+Kees Cook
+Chrome OS & Brillo Security

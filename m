@@ -1,14 +1,18 @@
-Received: from mail-pf0-f174.google.com ([209.85.192.174]:33669 "EHLO
-        mail-pf0-f174.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27026500AbcDMSUC3lcD5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 13 Apr 2016 20:20:02 +0200
-Received: by mail-pf0-f174.google.com with SMTP id 184so37555060pff.0
-        for <linux-mips@linux-mips.org>; Wed, 13 Apr 2016 11:20:02 -0700 (PDT)
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH] bus: brcmstb_gisb: Rework dependencies
-Date: Wed, 13 Apr 2016 11:17:48 -0700
-Message-ID: <1460571469-20201-1-git-send-email-f.fainelli@gmail.com>
-Return-Path: <f.fainelli@gmail.com>
+Received: from devils.ext.ti.com ([198.47.26.153]:51796 "EHLO
+        devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007321AbcDNFxX5TVF6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 14 Apr 2016 07:53:23 +0200
+Subject: Re: [PATCH v2 1/5] phy: Add a driver for simple phy
+References: <1447708924-15076-1-git-send-email-albeu@free.fr>
+ <1447708924-15076-2-git-send-email-albeu@free.fr>
+From: Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <570F303A.6030605@ti.com>
+Date: Thu, 14 Apr 2016 11:22:58 +0530
+MIME-Version: 1.0
+In-Reply-To: <1447708924-15076-2-git-send-email-albeu@free.fr>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <kishon@ti.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,47 +22,134 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-arm-kernel@lists.infradead.org
-Cc: linux-mips@linux-mips.org, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Russell King <linux@arm.linux.org.uk>, Suzuki K Poulose <suzuki.poulose@arm.com>, Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>, Punit Agrawal <punit.agrawal@arm.com>, Mark Rutland <mark.rutland@arm.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Chen-Yu Tsai <wens@csie.org>, "open list:BROADCOM
-        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." <bcm-kernel-feedback-list@broadcom.com>, open list <linux-kernel@vger.kernel.org>
-Message-ID: <20160413181748.sDCj540LufsFqt5xNotg1fOzABqUrPv-w0S3ul1D10I@z>
+To: Alban Bedel <albeu@free.fr>, linux-mips@linux-mips.org
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Ralf Baechle <ralf@linux-mips.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20160414055258.soRDc6NhbzCVcTdFGNNIITKiDUZeT3o-0x6SrOQN3CY@z>
 
-Do not have the machine Kconfig entry point need to select
-BRCMSTB_GISB_ARB, instead, just let it be default ARCH_BRCMSTB which is
-a better way to deal with this. While at it, also make it default
-BMIPS_GENERIC so the legacy MIPS-based STB platforms can benefit from
-the same thing.
+Hi,
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/arm/mach-bcm/Kconfig | 1 -
- drivers/bus/Kconfig       | 2 ++
- 2 files changed, 2 insertions(+), 1 deletion(-)
+On Tuesday 17 November 2015 02:52 AM, Alban Bedel wrote:
+> This driver is meant to take care of all trivial phys that don't need
+> any special configuration, it just enable a regulator, a clock and
+> deassert a reset. A public API is also included to allow re-using the
+> code in other drivers.
+> 
+> Signed-off-by: Alban Bedel <albeu@free.fr>
+> ---
+>  drivers/phy/Kconfig        |  12 +++
+>  drivers/phy/Makefile       |   1 +
+>  drivers/phy/phy-simple.c   | 204 +++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/phy/simple.h |  39 +++++++++
+>  4 files changed, 256 insertions(+)
+>  create mode 100644 drivers/phy/phy-simple.c
+>  create mode 100644 include/linux/phy/simple.h
+> 
+> diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
+> index 7eb5859d..028fb16 100644
+> --- a/drivers/phy/Kconfig
+> +++ b/drivers/phy/Kconfig
+> @@ -118,6 +118,18 @@ config PHY_RCAR_GEN2
+>  	help
+>  	  Support for USB PHY found on Renesas R-Car generation 2 SoCs.
+>  
+> +config PHY_SIMPLE
+> +	tristate
+> +	select GENERIC_PHY
+> +	help
+> +
+> +config PHY_SIMPLE_PDEV
 
-diff --git a/arch/arm/mach-bcm/Kconfig b/arch/arm/mach-bcm/Kconfig
-index 7ef121472cdd..af10ff27a2ed 100644
---- a/arch/arm/mach-bcm/Kconfig
-+++ b/arch/arm/mach-bcm/Kconfig
-@@ -173,7 +173,6 @@ config ARCH_BRCMSTB
- 	select ARM_GIC
- 	select ARM_ERRATA_798181 if SMP
- 	select HAVE_ARM_ARCH_TIMER
--	select BRCMSTB_GISB_ARB
- 	select BRCMSTB_L2_IRQ
- 	select BCM7120_L2_IRQ
- 	select ARCH_DMA_ADDR_T_64BIT if ARM_LPAE
-diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
-index d4a3a3133da5..85c66e5028c1 100644
---- a/drivers/bus/Kconfig
-+++ b/drivers/bus/Kconfig
-@@ -58,6 +58,8 @@ config ARM_CCN
- config BRCMSTB_GISB_ARB
- 	bool "Broadcom STB GISB bus arbiter"
- 	depends on ARM || MIPS
-+	default ARCH_BRCMSTB
-+	default BMIPS_GENERIC
- 	help
- 	  Driver for the Broadcom Set Top Box System-on-a-chip internal bus
- 	  arbiter. This driver provides timeout and target abort error handling
--- 
-2.1.0
+Where will this config be used? Why do we need two configs for a single driver?
+> +	tristate "Simple PHY driver"
+> +	select PHY_SIMPLE
+> +	help
+> +	  A PHY driver for simple devices that only need a regulator, clock
+> +	  and reset for power up and shutdown.
+> +
+>  config OMAP_CONTROL_PHY
+>  	tristate "OMAP CONTROL PHY Driver"
+>  	depends on ARCH_OMAP2PLUS || COMPILE_TEST
+> diff --git a/drivers/phy/Makefile b/drivers/phy/Makefile
+> index 075db1a..1a44362 100644
+> --- a/drivers/phy/Makefile
+> +++ b/drivers/phy/Makefile
+> @@ -24,6 +24,7 @@ obj-$(CONFIG_TWL4030_USB)		+= phy-twl4030-usb.o
+>  obj-$(CONFIG_PHY_EXYNOS5250_SATA)	+= phy-exynos5250-sata.o
+>  obj-$(CONFIG_PHY_HIX5HD2_SATA)		+= phy-hix5hd2-sata.o
+>  obj-$(CONFIG_PHY_MT65XX_USB3)		+= phy-mt65xx-usb3.o
+> +obj-$(CONFIG_PHY_SIMPLE)		+= phy-simple.o
+>  obj-$(CONFIG_PHY_SUN4I_USB)		+= phy-sun4i-usb.o
+>  obj-$(CONFIG_PHY_SUN9I_USB)		+= phy-sun9i-usb.o
+>  obj-$(CONFIG_PHY_SAMSUNG_USB2)		+= phy-exynos-usb2.o
+> diff --git a/drivers/phy/phy-simple.c b/drivers/phy/phy-simple.c
+> new file mode 100644
+> index 0000000..013f846
+> --- /dev/null
+> +++ b/drivers/phy/phy-simple.c
+> @@ -0,0 +1,204 @@
+> +/*
+> + * Copyright (C) 2015 Alban Bedel <albeu@free.fr>
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/phy/simple.h>
+> +#include <linux/clk.h>
+> +#include <linux/reset.h>
+> +
+> +int simple_phy_power_on(struct phy *phy)
+> +{
+> +	struct simple_phy *sphy = phy_get_drvdata(phy);
+> +	int err;
+> +
+> +	if (sphy->regulator) {
+> +		err = regulator_enable(sphy->regulator);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	if (sphy->clk) {
+> +		err = clk_prepare_enable(sphy->clk);
+> +		if (err)
+> +			goto regulator_disable;
+> +	}
+> +
+> +	if (sphy->reset) {
+> +		err = reset_control_deassert(sphy->reset);
+> +		if (err)
+> +			goto clock_disable;
+> +	}
+> +
+> +	return 0;
+> +
+> +clock_disable:
+> +	if (sphy->clk)
+> +		clk_disable_unprepare(sphy->clk);
+> +regulator_disable:
+> +	if (sphy->regulator)
+> +		WARN_ON(regulator_disable(sphy->regulator));
+> +
+> +	return err;
+> +}
+> +EXPORT_SYMBOL_GPL(simple_phy_power_on);
+
+IMO simple-phy driver should be an independent driver and shouldn't export
+symbols. The dt binding for the simple phy device should be something like
+below where all the properties of the simple phy device should be in the
+binding documentation.
+usbphy {
+	compatible = "simple-phy";
+	phy-supply = <&supply>;
+	clocks = <&clock>;
+	reset = <&reset>;
+};
+
+Anything that needs more than this shouldn't be a simple phy.
+
+Thanks
+Kishon

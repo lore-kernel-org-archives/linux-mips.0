@@ -1,18 +1,19 @@
-Received: from devils.ext.ti.com ([198.47.26.153]:51796 "EHLO
-        devils.ext.ti.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007321AbcDNFxX5TVF6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 14 Apr 2016 07:53:23 +0200
-Subject: Re: [PATCH v2 1/5] phy: Add a driver for simple phy
-References: <1447708924-15076-1-git-send-email-albeu@free.fr>
- <1447708924-15076-2-git-send-email-albeu@free.fr>
-From: Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <570F303A.6030605@ti.com>
-Date: Thu, 14 Apr 2016 11:22:58 +0530
+Received: from mail.baikalelectronics.com ([87.245.175.226]:50628 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27026275AbcDNOms43I60 convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 14 Apr 2016 16:42:48 +0200
+From: <Dmitry.Dunaev@baikalelectronics.ru>
+Subject: New MIPS SoC code insertion request
+Date: Thu, 14 Apr 2016 14:43:06 +0000
+Message-ID: <E6691421972ADD4588ABC5DDDF6E279B87347565@NRMAIL.baikal.int>
+References: <E6691421972ADD4588ABC5DDDF6E279B8734754A@NRMAIL.baikal.int>
+In-Reply-To: <E6691421972ADD4588ABC5DDDF6E279B8734754A@NRMAIL.baikal.int>
+Content-Language: ru-RU
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <1447708924-15076-2-git-send-email-albeu@free.fr>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <kishon@ti.com>
+Return-Path: <Dmitry.Dunaev@baikalelectronics.ru>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,134 +23,18 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alban Bedel <albeu@free.fr>, linux-mips@linux-mips.org
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Ralf Baechle <ralf@linux-mips.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20160414055258.soRDc6NhbzCVcTdFGNNIITKiDUZeT3o-0x6SrOQN3CY@z>
+To: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Cc: Constantine.Gurin@baikalelectronics.ru, Alexey.Malahov@baikalelectronics.ru
+Message-ID: <20160414144306.CFBznnm1tmlnPm9Sem2N_yfnr8pKOD8y9M98ZFXsGPI@z>
 
-Hi,
+Good day!
 
-On Tuesday 17 November 2015 02:52 AM, Alban Bedel wrote:
-> This driver is meant to take care of all trivial phys that don't need
-> any special configuration, it just enable a regulator, a clock and
-> deassert a reset. A public API is also included to allow re-using the
-> code in other drivers.
-> 
-> Signed-off-by: Alban Bedel <albeu@free.fr>
-> ---
->  drivers/phy/Kconfig        |  12 +++
->  drivers/phy/Makefile       |   1 +
->  drivers/phy/phy-simple.c   | 204 +++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/phy/simple.h |  39 +++++++++
->  4 files changed, 256 insertions(+)
->  create mode 100644 drivers/phy/phy-simple.c
->  create mode 100644 include/linux/phy/simple.h
-> 
-> diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
-> index 7eb5859d..028fb16 100644
-> --- a/drivers/phy/Kconfig
-> +++ b/drivers/phy/Kconfig
-> @@ -118,6 +118,18 @@ config PHY_RCAR_GEN2
->  	help
->  	  Support for USB PHY found on Renesas R-Car generation 2 SoCs.
->  
-> +config PHY_SIMPLE
-> +	tristate
-> +	select GENERIC_PHY
-> +	help
-> +
-> +config PHY_SIMPLE_PDEV
+I'm Dmitry Dunaev, software designer from Baikal Electronics - Russian semiconductor company (http://www.baikalelectronics.com/). Some time ago we are released our first MIPS processor based on P5600 core (https://www.linux-mips.org/wiki/Baikal).
 
-Where will this config be used? Why do we need two configs for a single driver?
-> +	tristate "Simple PHY driver"
-> +	select PHY_SIMPLE
-> +	help
-> +	  A PHY driver for simple devices that only need a regulator, clock
-> +	  and reset for power up and shutdown.
-> +
->  config OMAP_CONTROL_PHY
->  	tristate "OMAP CONTROL PHY Driver"
->  	depends on ARCH_OMAP2PLUS || COMPILE_TEST
-> diff --git a/drivers/phy/Makefile b/drivers/phy/Makefile
-> index 075db1a..1a44362 100644
-> --- a/drivers/phy/Makefile
-> +++ b/drivers/phy/Makefile
-> @@ -24,6 +24,7 @@ obj-$(CONFIG_TWL4030_USB)		+= phy-twl4030-usb.o
->  obj-$(CONFIG_PHY_EXYNOS5250_SATA)	+= phy-exynos5250-sata.o
->  obj-$(CONFIG_PHY_HIX5HD2_SATA)		+= phy-hix5hd2-sata.o
->  obj-$(CONFIG_PHY_MT65XX_USB3)		+= phy-mt65xx-usb3.o
-> +obj-$(CONFIG_PHY_SIMPLE)		+= phy-simple.o
->  obj-$(CONFIG_PHY_SUN4I_USB)		+= phy-sun4i-usb.o
->  obj-$(CONFIG_PHY_SUN9I_USB)		+= phy-sun9i-usb.o
->  obj-$(CONFIG_PHY_SAMSUNG_USB2)		+= phy-exynos-usb2.o
-> diff --git a/drivers/phy/phy-simple.c b/drivers/phy/phy-simple.c
-> new file mode 100644
-> index 0000000..013f846
-> --- /dev/null
-> +++ b/drivers/phy/phy-simple.c
-> @@ -0,0 +1,204 @@
-> +/*
-> + * Copyright (C) 2015 Alban Bedel <albeu@free.fr>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/phy/simple.h>
-> +#include <linux/clk.h>
-> +#include <linux/reset.h>
-> +
-> +int simple_phy_power_on(struct phy *phy)
-> +{
-> +	struct simple_phy *sphy = phy_get_drvdata(phy);
-> +	int err;
-> +
-> +	if (sphy->regulator) {
-> +		err = regulator_enable(sphy->regulator);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	if (sphy->clk) {
-> +		err = clk_prepare_enable(sphy->clk);
-> +		if (err)
-> +			goto regulator_disable;
-> +	}
-> +
-> +	if (sphy->reset) {
-> +		err = reset_control_deassert(sphy->reset);
-> +		if (err)
-> +			goto clock_disable;
-> +	}
-> +
-> +	return 0;
-> +
-> +clock_disable:
-> +	if (sphy->clk)
-> +		clk_disable_unprepare(sphy->clk);
-> +regulator_disable:
-> +	if (sphy->regulator)
-> +		WARN_ON(regulator_disable(sphy->regulator));
-> +
-> +	return err;
-> +}
-> +EXPORT_SYMBOL_GPL(simple_phy_power_on);
+Now we have this SoC in silicon. Also we have released several revisions of development boards for our SoC. So it seems that we ready to add our platform code into Linux kernel mainline.
 
-IMO simple-phy driver should be an independent driver and shouldn't export
-symbols. The dt binding for the simple phy device should be something like
-below where all the properties of the simple phy device should be in the
-binding documentation.
-usbphy {
-	compatible = "simple-phy";
-	phy-supply = <&supply>;
-	clocks = <&clock>;
-	reset = <&reset>;
-};
+Could you please clarify me what steps we should to do to add our code into kernel repositary?
 
-Anything that needs more than this shouldn't be a simple phy.
-
-Thanks
-Kishon
+Best regards,
+Dmitry Dunaev
+http://www.baikalelectronics.com/

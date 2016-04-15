@@ -1,16 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:21039 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026662AbcDOKk171e9e (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Apr 2016 12:40:27 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 12/12] MIPS: mm: Don't do MTHC0 if XPA not present
-Date: Fri, 15 Apr 2016 11:37:00 +0100
-Message-ID: <1460716620-13382-13-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1460716620-13382-1-git-send-email-paul.burton@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13270 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27026175AbcDOTQruH6JG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Apr 2016 21:16:47 +0200
+Date: Fri, 15 Apr 2016 20:16:40 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH 03/12] MIPS: Remove redundant asm/pgtable-bits.h
+ inclusions
+Message-ID: <20160415191640.GE7859@jhogan-linux.le.imgtec.org>
 References: <1460716620-13382-1-git-send-email-paul.burton@imgtec.com>
+ <1460716620-13382-4-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="DqhR8hV3EnoxUkKN"
+Content-Disposition: inline
+In-Reply-To: <1460716620-13382-4-git-send-email-paul.burton@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,112 +24,110 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Adam Buchbinder <adam.buchbinder@gmail.com>, Huacai Chen <chenhc@lemote.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, David Hildenbrand <dahi@linux.vnet.ibm.com>
-Message-ID: <20160415103700.4KoYZDzanh7BSJPoLwYjmJM0AFUMRjXunx1eVXp8B90@z>
+To: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-kernel@vger.kernel.org, Jonas Gorski <jogo@openwrt.org>, Markos Chandras <markos.chandras@imgtec.com>, Alex Smith <alex.smith@imgtec.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <20160415191640.Csd-HTHuTPXR7aGz2pdTQSBbC816saVQJDGNhwg0Ymw@z>
 
-From: James Hogan <james.hogan@imgtec.com>
+--DqhR8hV3EnoxUkKN
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Performing an MTHC0 instruction without XPA being present will trigger a
-reserved instruction exception, therefore conditionalise the use of this
-instruction when building TLB handlers (build_update_entries()), and in
-__update_tlb().
+On Fri, Apr 15, 2016 at 11:36:51AM +0100, Paul Burton wrote:
+> asm/pgtable-bits.h is included in 2 assembly files and thus has to
+> in either of the assembly files that include it.
 
-This allows an XPA kernel to run on non XPA hardware without that
-instruction implemented, just like it can run on XPA capable hardware
-without XPA in use (with the noxpa kernel argument) or with XPA not
-configured in hardware.
+That could do with rewording :-)
 
-[paul.burton@imgtec.com:
-  - Rebase atop other TLB work.
-  - Add "mm" to subject.
-  - Handle the __kmap_pgprot case.]
+Otherwise
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
 
-Fixes: c5b367835cfc ("MIPS: Add support for XPA.")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
----
+Cheers
+James
 
- arch/mips/mm/init.c    | 12 +++++++-----
- arch/mips/mm/tlb-r4k.c |  6 ++++--
- arch/mips/mm/tlbex.c   | 16 ++++++++++------
- 3 files changed, 21 insertions(+), 13 deletions(-)
+>=20
+> Remove the redundant inclusions such that asm/pgtable-bits.h doesn't
+> need to #ifdef around C code, for cleanliness & and in preparation for
+> later patches which will add more C.
+>=20
+> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> ---
+>=20
+>  arch/mips/include/asm/pgtable-bits.h | 2 --
+>  arch/mips/kernel/head.S              | 1 -
+>  arch/mips/kernel/r4k_switch.S        | 1 -
+>  3 files changed, 4 deletions(-)
+>=20
+> diff --git a/arch/mips/include/asm/pgtable-bits.h b/arch/mips/include/asm=
+/pgtable-bits.h
+> index 97b3138..2f40312 100644
+> --- a/arch/mips/include/asm/pgtable-bits.h
+> +++ b/arch/mips/include/asm/pgtable-bits.h
+> @@ -191,7 +191,6 @@
+>   */
+> =20
+> =20
+> -#ifndef __ASSEMBLY__
+>  /*
+>   * pte_to_entrylo converts a page table entry (PTE) into a Mips
+>   * entrylo0/1 value.
+> @@ -218,7 +217,6 @@ static inline uint64_t pte_to_entrylo(unsigned long p=
+te_val)
+> =20
+>  	return pte_val >> _PAGE_GLOBAL_SHIFT;
+>  }
+> -#endif
+> =20
+>  /*
+>   * Cache attributes
+> diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
+> index 4e4cc5b..b8fb0ba 100644
+> --- a/arch/mips/kernel/head.S
+> +++ b/arch/mips/kernel/head.S
+> @@ -21,7 +21,6 @@
+>  #include <asm/asmmacro.h>
+>  #include <asm/irqflags.h>
+>  #include <asm/regdef.h>
+> -#include <asm/pgtable-bits.h>
+>  #include <asm/mipsregs.h>
+>  #include <asm/stackframe.h>
+> =20
+> diff --git a/arch/mips/kernel/r4k_switch.S b/arch/mips/kernel/r4k_switch.S
+> index 92cd051..2f0a3b2 100644
+> --- a/arch/mips/kernel/r4k_switch.S
+> +++ b/arch/mips/kernel/r4k_switch.S
+> @@ -15,7 +15,6 @@
+>  #include <asm/fpregdef.h>
+>  #include <asm/mipsregs.h>
+>  #include <asm/asm-offsets.h>
+> -#include <asm/pgtable-bits.h>
+>  #include <asm/regdef.h>
+>  #include <asm/stackframe.h>
+>  #include <asm/thread_info.h>
+> --=20
+> 2.8.0
+>=20
 
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 0e57893..1588409 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -111,11 +111,13 @@ static void *__kmap_pgprot(struct page *page, unsigned long addr, pgprot_t prot)
- 	write_c0_entryhi(vaddr & (PAGE_MASK << 1));
- 	write_c0_entrylo0(entrylo);
- 	write_c0_entrylo1(entrylo);
--#ifdef CONFIG_XPA
--	entrylo = (pte.pte_low & _PFNX_MASK);
--	writex_c0_entrylo0(entrylo);
--	writex_c0_entrylo1(entrylo);
--#endif
-+
-+	if (config_enabled(CONFIG_XPA) && cpu_has_xpa) {
-+		entrylo = (pte.pte_low & _PFNX_MASK);
-+		writex_c0_entrylo0(entrylo);
-+		writex_c0_entrylo1(entrylo);
-+	}
-+
- 	tlbidx = read_c0_wired();
- 	write_c0_wired(tlbidx + 1);
- 	write_c0_index(tlbidx);
-diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
-index c17d762..b99695c 100644
---- a/arch/mips/mm/tlb-r4k.c
-+++ b/arch/mips/mm/tlb-r4k.c
-@@ -336,10 +336,12 @@ void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
- #if defined(CONFIG_PHYS_ADDR_T_64BIT) && defined(CONFIG_CPU_MIPS32)
- #ifdef CONFIG_XPA
- 		write_c0_entrylo0(pte_to_entrylo(ptep->pte_high));
--		writex_c0_entrylo0(ptep->pte_low & _PFNX_MASK);
-+		if (cpu_has_xpa)
-+			writex_c0_entrylo0(ptep->pte_low & _PFNX_MASK);
- 		ptep++;
- 		write_c0_entrylo1(pte_to_entrylo(ptep->pte_high));
--		writex_c0_entrylo1(ptep->pte_low & _PFNX_MASK);
-+		if (cpu_has_xpa)
-+			writex_c0_entrylo1(ptep->pte_low & _PFNX_MASK);
- #else
- 		write_c0_entrylo0(ptep->pte_high);
- 		ptep++;
-diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-index 45234ad..4b41859 100644
---- a/arch/mips/mm/tlbex.c
-+++ b/arch/mips/mm/tlbex.c
-@@ -1023,17 +1023,21 @@ static void build_update_entries(u32 **p, unsigned int tmp, unsigned int ptep)
- 		UASM_i_ROTR(p, tmp, tmp, ilog2(_PAGE_GLOBAL));
- 		UASM_i_MTC0(p, tmp, C0_ENTRYLO0);
- 
--		uasm_i_lw(p, tmp, 0, ptep);
--		uasm_i_ext(p, tmp, tmp, 0, 24);
--		uasm_i_mthc0(p, tmp, C0_ENTRYLO0);
-+		if (cpu_has_xpa && !mips_xpa_disabled) {
-+			uasm_i_lw(p, tmp, 0, ptep);
-+			uasm_i_ext(p, tmp, tmp, 0, 24);
-+			uasm_i_mthc0(p, tmp, C0_ENTRYLO0);
-+		}
- 
- 		uasm_i_lw(p, tmp, pte_off_odd, ptep); /* odd pte */
- 		UASM_i_ROTR(p, tmp, tmp, ilog2(_PAGE_GLOBAL));
- 		UASM_i_MTC0(p, tmp, C0_ENTRYLO1);
- 
--		uasm_i_lw(p, tmp, sizeof(pte_t), ptep);
--		uasm_i_ext(p, tmp, tmp, 0, 24);
--		uasm_i_mthc0(p, tmp, C0_ENTRYLO1);
-+		if (cpu_has_xpa && !mips_xpa_disabled) {
-+			uasm_i_lw(p, tmp, sizeof(pte_t), ptep);
-+			uasm_i_ext(p, tmp, tmp, 0, 24);
-+			uasm_i_mthc0(p, tmp, C0_ENTRYLO1);
-+		}
- 		return;
- 	}
- 
--- 
-2.8.0
+--DqhR8hV3EnoxUkKN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXET4YAAoJEGwLaZPeOHZ6j5wP/AtoZM/60bHhaoMsXQSoAoPU
+xO+TFwdF4tqwoyPQDx/K/CpzYYtViUMVuwISyDcDrefqFMrjGKtVKZU+GDBgeWjf
+HPj6KoqmV5Uzqk7xV9/PKXRPvv3OdO+gNx+w731oh7xxWXUx+RZjVavfxcSgy/nb
+1PmdVSH2RI8axpLRm4sKSJr9v+eW7XeLCfSpNSgKWP7qHQhYbwVH1peibWjL6fjl
+bLZFxXrfufrF5EKKWKKI8uC7xwUfdRJY5fVOEe6TQnboxc9ScRrWgET0baj9Mn5s
+Z23zakUxM9cxeB2RTF0tWzIfX7aNzvhoEGAOiCiVak/CN+zMEZuW/AQoDDUChMOu
+NOUXgZ3qUxQeZ47HE9US52moTR/Q94OVONqNFEob79YwK3EmmS07UCJeFQqEF4rm
+8EsP5eUpzaR1jtxhyeUYuG6Qw9qnyeQanBGh8eG6mwaFI1UXyudIcbqEkfB3tTQx
+RUYHfgdt5Y7bgkBoQbWh89XiDPPuOUQrpTv6eyWOW9dyRqA2qWG8ASy6lg+37fMX
+c/VqEUpO3AX5oWBS3APyXWqjUSNumQ3mvSe7yNfxjl8KSO0pzaYcYqQHCTaEwnNb
+t320rlhNPVFSVJ00ao/xRy3mwnv5pprkU6UhsmxsMQpZwx1HtzKrHPXTaCxasKVv
+Kiiy6osk+H0IscYM5aQD
+=ETBt
+-----END PGP SIGNATURE-----
+
+--DqhR8hV3EnoxUkKN--

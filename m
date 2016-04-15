@@ -1,18 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:51547 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:48376 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026562AbcDNP3d7TD3N (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 14 Apr 2016 17:29:33 +0200
-Subject: Re: New MIPS SoC code insertion request
-References: <E6691421972ADD4588ABC5DDDF6E279B8734754A@NRMAIL.baikal.int>
- <E6691421972ADD4588ABC5DDDF6E279B87347565@NRMAIL.baikal.int>
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Message-ID: <570FB753.3060001@imgtec.com>
-Date: Thu, 14 Apr 2016 16:29:23 +0100
+        with ESMTP id S27025228AbcDOJHnKX60c (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Apr 2016 11:07:43 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 0/4] MIPS: MSA fixes
+Date: Fri, 15 Apr 2016 10:07:22 +0100
+Message-ID: <1460711246-4394-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <E6691421972ADD4588ABC5DDDF6E279B87347565@NRMAIL.baikal.int>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-Path: <Zubair.Kakakhel@imgtec.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,48 +18,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Dmitry.Dunaev@baikalelectronics.ru, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Cc: Constantine.Gurin@baikalelectronics.ru, Alexey.Malahov@baikalelectronics.ru
-Message-ID: <20160414152923.g1wE7PeglNffA9DYFiEqdr5sr5UJcp9fAJyFOtbc858@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Paul Burton <paul.burton@imgtec.com>, James Hogan <james.hogan@imgtec.com>, stable@vger.kernel.org
+Message-ID: <20160415090722.aVBpSsIsGagwmBphh0m7a7zfeDcfl3rdtL4JDSB2rtM@z>
 
-Hi Dmitry,
+Here are some miscellaneous fixes for MSA (MIPS SIMD Architecture)
+support:
+1) Fix MSA build with recent toolchains
+2) Fix 32-bit pointer additions on 64-bit with non-MSA capable
+   toolchain.
+3) Fix MSA + 64-bit + lockdep build due to large immediate offsets
+4) Fix some MSA assembler warnings due to missing .set fp=64
 
-Thank-you very much for reaching out to the mailing list.
+James Hogan (3):
+  MIPS: Fix MSA ld_*/st_* asm macros to use PTR_ADDU
+  MIPS: Fix MSA assembly with big thread offsets
+  MIPS: Fix MSA assembly warnings
 
-The Linux kernel follows a structure for patch submissions.
+Paul Burton (1):
+  MIPS: Use copy_s.fmt rather than copy_u.fmt
 
-There’s a tutorial on github with a pdf and readmes.
+ arch/mips/include/asm/asmmacro.h | 193 ++++++++++++++++++++++-----------------
+ arch/mips/kernel/r4k_fpu.S       |  10 +-
+ 2 files changed, 113 insertions(+), 90 deletions(-)
 
-https://github.com/gregkh/kernel-tutorial
-
-Tutorial Videos on YouTube by GregKH are also very useful.
-
-https://www.youtube.com/watch?v=LLBrBBImJt4
-
-https://www.youtube.com/watch?v=XXix80GCvpo
-
-These will give an overview of the entire process.
-
-It would be nice if you could push your current working kernel
-somewhere on a git server where we could see the patches
-and then provide guidance accordingly.
-
-If you don't have a public-facing git server. You could just
-push the code to a repository on github and share the link.
-
-Regards,
-ZubairLK
-
-On 14/04/16 15:43, Dmitry.Dunaev@baikalelectronics.ru wrote:
-> Good day!
->
-> I'm Dmitry Dunaev, software designer from Baikal Electronics - Russian semiconductor company (http://www.baikalelectronics.com/). Some time ago we are released our first MIPS processor based on P5600 core (https://www.linux-mips.org/wiki/Baikal).
->
-> Now we have this SoC in silicon. Also we have released several revisions of development boards for our SoC. So it seems that we ready to add our platform code into Linux kernel mainline.
->
-> Could you please clarify me what steps we should to do to add our code into kernel repositary?
->
-> Best regards,
-> Dmitry Dunaev
-> http://www.baikalelectronics.com/
->
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: <stable@vger.kernel.org>
+-- 
+2.4.10

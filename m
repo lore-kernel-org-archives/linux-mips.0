@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:48616 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:58288 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026657AbcDOKjmvvQ9e (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Apr 2016 12:39:42 +0200
+        with ESMTP id S27026665AbcDOKj5k5LOe (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Apr 2016 12:39:57 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 09/12] MIPS: mm: Pass scratch register through to iPTE_SW
-Date: Fri, 15 Apr 2016 11:36:57 +0100
-Message-ID: <1460716620-13382-10-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH 10/12] MIPS: mm: Be more explicit about PTE mode bit handling
+Date: Fri, 15 Apr 2016 11:36:58 +0100
+Message-ID: <1460716620-13382-11-git-send-email-paul.burton@imgtec.com>
 In-Reply-To: <1460716620-13382-1-git-send-email-paul.burton@imgtec.com>
 References: <1460716620-13382-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,122 +21,66 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Adam Buchbinder <adam.buchbinder@gmail.com>, Huacai Chen <chenhc@lemote.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Message-ID: <20160415103657.UNQAk-luQnre1_HdrnMRSuZAWFo0HCLjDIa8SOYBB74@z>
+Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Adam Buchbinder <adam.buchbinder@gmail.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Message-ID: <20160415103658.46RPNmfaSGML5n5khU43NB_7yFT_ZvTRNxlUHSCp0FA@z>
 
-Rather than hardcode a scratch register for the XPA case in iPTE_SW,
-pass one through from the work registers allocated by the caller. This
-allows for the XPA path to function correctly regardless of the work
-registers in use.
+The XPA case in iPTE_SW or's in software mode bits to the pte_low value
+(which is what actually ends up in the high 32 bits of EntryLo...). It
+does this presuming that only bits in the upper 16 bits of the 32 bit
+pte_low value will be set. Make this assumption explicit with a BUG_ON.
+
+A similar assumption is made for the hardware mode bits, which are or'd
+in with a single ori instruction. Make that assumption explicit with a
+BUG_ON too.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
- arch/mips/mm/tlbex.c | 24 +++++++++++-------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
+ arch/mips/mm/tlbex.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-index 004cd9f..d7a7b3d 100644
+index d7a7b3d..0bd3755 100644
 --- a/arch/mips/mm/tlbex.c
 +++ b/arch/mips/mm/tlbex.c
-@@ -1526,14 +1526,12 @@ iPTE_LW(u32 **p, unsigned int pte, unsigned int ptr)
- 
- static void
+@@ -1528,15 +1528,17 @@ static void
  iPTE_SW(u32 **p, struct uasm_reloc **r, unsigned int pte, unsigned int ptr,
--	unsigned int mode)
-+	unsigned int mode, unsigned int scratch)
+ 	unsigned int mode, unsigned int scratch)
  {
- #ifdef CONFIG_PHYS_ADDR_T_64BIT
+-#ifdef CONFIG_PHYS_ADDR_T_64BIT
  	unsigned int hwmode = mode & (_PAGE_VALID | _PAGE_DIRTY);
++	unsigned int swmode = mode & ~hwmode;
  
  	if (config_enabled(CONFIG_XPA) && !cpu_has_64bits) {
--		const int scratch = 1; /* Our extra working register */
--
- 		uasm_i_lui(p, scratch, (mode >> 16));
+-		uasm_i_lui(p, scratch, (mode >> 16));
++		uasm_i_lui(p, scratch, swmode >> 16);
  		uasm_i_or(p, pte, pte, scratch);
- 	} else
-@@ -1630,11 +1628,11 @@ build_pte_present(u32 **p, struct uasm_reloc **r,
- /* Make PTE valid, store result in PTR. */
- static void
- build_make_valid(u32 **p, struct uasm_reloc **r, unsigned int pte,
--		 unsigned int ptr)
-+		 unsigned int ptr, unsigned int scratch)
- {
- 	unsigned int mode = _PAGE_VALID | _PAGE_ACCESSED;
- 
--	iPTE_SW(p, r, pte, ptr, mode);
-+	iPTE_SW(p, r, pte, ptr, mode, scratch);
- }
- 
- /*
-@@ -1670,12 +1668,12 @@ build_pte_writable(u32 **p, struct uasm_reloc **r,
-  */
- static void
- build_make_write(u32 **p, struct uasm_reloc **r, unsigned int pte,
--		 unsigned int ptr)
-+		 unsigned int ptr, unsigned int scratch)
- {
- 	unsigned int mode = (_PAGE_ACCESSED | _PAGE_MODIFIED | _PAGE_VALID
- 			     | _PAGE_DIRTY);
- 
--	iPTE_SW(p, r, pte, ptr, mode);
-+	iPTE_SW(p, r, pte, ptr, mode, scratch);
- }
- 
- /*
-@@ -1780,7 +1778,7 @@ static void build_r3000_tlb_load_handler(void)
- 	build_r3000_tlbchange_handler_head(&p, K0, K1);
- 	build_pte_present(&p, &r, K0, K1, -1, label_nopage_tlbl);
- 	uasm_i_nop(&p); /* load delay */
--	build_make_valid(&p, &r, K0, K1);
-+	build_make_valid(&p, &r, K0, K1, -1);
- 	build_r3000_tlb_reload_write(&p, &l, &r, K0, K1);
- 
- 	uasm_l_nopage_tlbl(&l, p);
-@@ -1811,7 +1809,7 @@ static void build_r3000_tlb_store_handler(void)
- 	build_r3000_tlbchange_handler_head(&p, K0, K1);
- 	build_pte_writable(&p, &r, K0, K1, -1, label_nopage_tlbs);
- 	uasm_i_nop(&p); /* load delay */
--	build_make_write(&p, &r, K0, K1);
-+	build_make_write(&p, &r, K0, K1, -1);
- 	build_r3000_tlb_reload_write(&p, &l, &r, K0, K1);
- 
- 	uasm_l_nopage_tlbs(&l, p);
-@@ -1842,7 +1840,7 @@ static void build_r3000_tlb_modify_handler(void)
- 	build_r3000_tlbchange_handler_head(&p, K0, K1);
- 	build_pte_modifiable(&p, &r, K0, K1,  -1, label_nopage_tlbm);
- 	uasm_i_nop(&p); /* load delay */
--	build_make_write(&p, &r, K0, K1);
-+	build_make_write(&p, &r, K0, K1, -1);
- 	build_r3000_pte_reload_tlbwi(&p, K0, K1);
- 
- 	uasm_l_nopage_tlbm(&l, p);
-@@ -2010,7 +2008,7 @@ static void build_r4000_tlb_load_handler(void)
- 		}
- 		uasm_l_tlbl_goaround1(&l, p);
+-	} else
+-#endif
+-	uasm_i_ori(p, pte, pte, mode);
++		BUG_ON(swmode & 0xffff);
++	} else {
++		uasm_i_ori(p, pte, pte, mode);
++	}
++
+ #ifdef CONFIG_SMP
+ # ifdef CONFIG_PHYS_ADDR_T_64BIT
+ 	if (cpu_has_64bits)
+@@ -1555,6 +1557,7 @@ iPTE_SW(u32 **p, struct uasm_reloc **r, unsigned int pte, unsigned int ptr,
+ 		/* no uasm_i_nop needed */
+ 		uasm_i_ll(p, pte, sizeof(pte_t) / 2, ptr);
+ 		uasm_i_ori(p, pte, pte, hwmode);
++		BUG_ON(hwmode & ~0xffff);
+ 		uasm_i_sc(p, pte, sizeof(pte_t) / 2, ptr);
+ 		uasm_il_beqz(p, r, pte, label_smp_pgtable_change);
+ 		/* no uasm_i_nop needed */
+@@ -1576,6 +1579,7 @@ iPTE_SW(u32 **p, struct uasm_reloc **r, unsigned int pte, unsigned int ptr,
+ 	if (!cpu_has_64bits) {
+ 		uasm_i_lw(p, pte, sizeof(pte_t) / 2, ptr);
+ 		uasm_i_ori(p, pte, pte, hwmode);
++		BUG_ON(hwmode & ~0xffff);
+ 		uasm_i_sw(p, pte, sizeof(pte_t) / 2, ptr);
+ 		uasm_i_lw(p, pte, 0, ptr);
  	}
--	build_make_valid(&p, &r, wr.r1, wr.r2);
-+	build_make_valid(&p, &r, wr.r1, wr.r2, wr.r3);
- 	build_r4000_tlbchange_handler_tail(&p, &l, &r, wr.r1, wr.r2);
- 
- #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
-@@ -2124,7 +2122,7 @@ static void build_r4000_tlb_store_handler(void)
- 	build_pte_writable(&p, &r, wr.r1, wr.r2, wr.r3, label_nopage_tlbs);
- 	if (m4kc_tlbp_war())
- 		build_tlb_probe_entry(&p);
--	build_make_write(&p, &r, wr.r1, wr.r2);
-+	build_make_write(&p, &r, wr.r1, wr.r2, wr.r3);
- 	build_r4000_tlbchange_handler_tail(&p, &l, &r, wr.r1, wr.r2);
- 
- #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
-@@ -2180,7 +2178,7 @@ static void build_r4000_tlb_modify_handler(void)
- 	if (m4kc_tlbp_war())
- 		build_tlb_probe_entry(&p);
- 	/* Present and writable bits set, set accessed and dirty bits. */
--	build_make_write(&p, &r, wr.r1, wr.r2);
-+	build_make_write(&p, &r, wr.r1, wr.r2, wr.r3);
- 	build_r4000_tlbchange_handler_tail(&p, &l, &r, wr.r1, wr.r2);
- 
- #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
 -- 
 2.8.0

@@ -1,17 +1,14 @@
-Received: from mout.kundenserver.de ([212.227.17.13]:63830 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27007663AbcDPUCAs1wve (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 16 Apr 2016 22:02:00 +0200
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] bus: brcmstb_gisb: Rework dependencies
-Date: Sat, 16 Apr 2016 22:01:05 +0200
-Message-ID: <13932531.o87aikNi0r@wuerfel>
-In-Reply-To: <1460571469-20201-1-git-send-email-f.fainelli@gmail.com>
-References: <1460571469-20201-1-git-send-email-f.fainelli@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Return-Path: <arnd@arndb.de>
+Received: from mail-ob0-f179.google.com ([209.85.214.179]:35430 "EHLO
+        mail-ob0-f179.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27026769AbcDPUq3P2AVH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 16 Apr 2016 22:46:29 +0200
+Received: by mail-ob0-f179.google.com with SMTP id n10so19601564obb.2
+        for <linux-mips@linux-mips.org>; Sat, 16 Apr 2016 13:46:29 -0700 (PDT)
+From: Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH v2] bus: brcmstb_gisb: Rework dependencies
+Date: Sat, 16 Apr 2016 13:46:14 -0700
+Message-ID: <1460839575-16869-1-git-send-email-f.fainelli@gmail.com>
+Return-Path: <f.fainelli@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,25 +18,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Russell King <linux@arm.linux.org.uk>, Suzuki K Poulose <suzuki.poulose@arm.com>, Olof Johansson <olof@lixom.net>, Punit Agrawal <punit.agrawal@arm.com>, Mark Rutland <mark.rutland@arm.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Chen-Yu Tsai <wens@csie.org>, "open list:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." <bcm-kernel-feedback-list@broadcom.com>, open list <linux-kernel@vger.kernel.org>
-Message-ID: <20160416200105.RpvhPF2aEcJMPn2rhGDJJtJYGbUKJB1PebbSeAZ31MQ@z>
+To: linux-arm-kernel@lists.infradead.org
+Cc: linux-mips@linux-mips.org, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Russell King <linux@arm.linux.org.uk>, Olof Johansson <olof@lixom.net>, Suzuki K Poulose <suzuki.poulose@arm.com>, Arnd Bergmann <arnd@arndb.de>, Punit Agrawal <punit.agrawal@arm.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Chen-Yu Tsai <wens@csie.org>, "open list:BROADCOM
+        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." <bcm-kernel-feedback-list@broadcom.com>, open list <linux-kernel@vger.kernel.org>
+Message-ID: <20160416204614.0lGIsALKJfEYRJXtflCrWmsRviugYydTiCPP_j7IGf8@z>
 
-On Wednesday 13 April 2016 11:17:48 Florian Fainelli wrote:
-> --- a/drivers/bus/Kconfig
-> +++ b/drivers/bus/Kconfig
-> @@ -58,6 +58,8 @@ config ARM_CCN
->  config BRCMSTB_GISB_ARB
->         bool "Broadcom STB GISB bus arbiter"
->         depends on ARM || MIPS
-> +       default ARCH_BRCMSTB
-> +       default BMIPS_GENERIC
-> 
+Do not have the machine Kconfig entry point need to select
+BRCMSTB_GISB_ARB, instead, just let it be default ARCH_BRCMSTB which is
+a better way to deal with this. While at it, also make it default
+BMIPS_GENERIC so the legacy MIPS-based STB platforms can benefit from
+the same thing.
 
-I think having two 'default' statements is not clear to human
-readers, how about changing it to
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+Changes in v2:
 
-	default ARCH_BRCMSTB || BMIPS_GENERIC
+- put conditional on the same line, do not use two default lines
 
+ arch/arm/mach-bcm/Kconfig | 1 -
+ drivers/bus/Kconfig       | 1 +
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-	Arnd
+diff --git a/arch/arm/mach-bcm/Kconfig b/arch/arm/mach-bcm/Kconfig
+index b95ea1135ef9..68ab6412392a 100644
+--- a/arch/arm/mach-bcm/Kconfig
++++ b/arch/arm/mach-bcm/Kconfig
+@@ -173,7 +173,6 @@ config ARCH_BRCMSTB
+ 	select ARM_GIC
+ 	select ARM_ERRATA_798181 if SMP
+ 	select HAVE_ARM_ARCH_TIMER
+-	select BRCMSTB_GISB_ARB
+ 	select BRCMSTB_L2_IRQ
+ 	select BCM7120_L2_IRQ
+ 	select ARCH_DMA_ADDR_T_64BIT if ARM_LPAE
+diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
+index d4a3a3133da5..8807495e0efd 100644
+--- a/drivers/bus/Kconfig
++++ b/drivers/bus/Kconfig
+@@ -58,6 +58,7 @@ config ARM_CCN
+ config BRCMSTB_GISB_ARB
+ 	bool "Broadcom STB GISB bus arbiter"
+ 	depends on ARM || MIPS
++	default ARCH_BRCMSTB || BMIPS_GENERIC
+ 	help
+ 	  Driver for the Broadcom Set Top Box System-on-a-chip internal bus
+ 	  arbiter. This driver provides timeout and target abort error handling
+-- 
+2.5.0

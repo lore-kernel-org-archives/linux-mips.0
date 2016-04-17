@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:58272 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:58613 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27026803AbcDQLEvpofwL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 17 Apr 2016 13:04:51 +0200
-Subject: Patch "pcmcia: db1xxx_ss: fix last irq_to_gpio user" has been added to the 4.5-stable tree
+        by eddie.linux-mips.org with ESMTP id S27026803AbcDQLLPh4xZL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 17 Apr 2016 13:11:15 +0200
+Subject: Patch "pcmcia: db1xxx_ss: fix last irq_to_gpio user" has been added to the 4.4-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Sun, 17 Apr 2016 03:27:00 -0700
-Message-ID: <1460888820946@kroah.com>
+Date: Sun, 17 Apr 2016 03:32:42 -0700
+Message-ID: <146088916265243@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,19 +21,19 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: manuel.lauss@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org, linus.walleij@linaro.org, linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: stable@vger.kernel.org, stable-commits@vger.kernel.org
-Message-ID: <20160417102700.ZR_U89zg497AnbBaHM0ztGN953wWht0WrpR9JJmNbNM@z>
+Message-ID: <20160417103242.WlWY-kO1OlE1bszy3bUdM1I2eg3DZdmw0weMFYbE7Jg@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
     pcmcia: db1xxx_ss: fix last irq_to_gpio user
 
-to the 4.5-stable tree which can be found at:
+to the 4.4-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      pcmcia-db1xxx_ss-fix-last-irq_to_gpio-user.patch
-and it can be found in the queue-4.5 subdirectory.
+and it can be found in the queue-4.4 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.

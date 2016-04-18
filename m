@@ -1,15 +1,20 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:58613 "EHLO
-        mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27026803AbcDQLLPh4xZL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 17 Apr 2016 13:11:15 +0200
-Subject: Patch "pcmcia: db1xxx_ss: fix last irq_to_gpio user" has been added to the 4.4-stable tree
-From: <gregkh@linuxfoundation.org>
-Date: Sun, 17 Apr 2016 03:32:42 -0700
-Message-ID: <146088916265243@kroah.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:36303 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27026862AbcDRJDK1f9Wb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Apr 2016 11:03:10 +0200
+Date: Mon, 18 Apr 2016 10:03:03 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH 05/12] MIPS: mm: Standardise on _PAGE_NO_READ, drop
+ _PAGE_READ
+Message-ID: <20160418090303.GA3741@NP-P-BURTON>
+References: <1460716620-13382-1-git-send-email-paul.burton@imgtec.com>
+ <1460716620-13382-6-git-send-email-paul.burton@imgtec.com>
+ <20160415212200.GG7859@jhogan-linux.le.imgtec.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
-Return-Path: <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20160415212200.GG7859@jhogan-linux.le.imgtec.org>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,21 +24,48 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: manuel.lauss@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org, linus.walleij@linaro.org, linux-mips@linux-mips.org, ralf@linux-mips.org
-Cc: stable@vger.kernel.org, stable-commits@vger.kernel.org
-Message-ID: <20160417103242.WlWY-kO1OlE1bszy3bUdM1I2eg3DZdmw0weMFYbE7Jg@z>
+To: James Hogan <james.hogan@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Adam
+ Buchbinder <adam.buchbinder@gmail.com>, David Daney <david.daney@cavium.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, Paul Gortmaker <paul.gortmaker@windriver.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Andrew
+ Morton <akpm@linux-foundation.org>, Markos Chandras <markos.chandras@imgtec.com>, Alex Smith <alex.smith@imgtec.com>, "Kirill A.
+ Shutemov" <kirill.shutemov@linux.intel.com>
+Message-ID: <20160418090303.hqN92KyQMFih_39p9lcyB06JB96lu22mufwSmD9F1fs@z>
 
+On Fri, Apr 15, 2016 at 10:22:00PM +0100, James Hogan wrote:
+> > @@ -1615,9 +1611,8 @@ build_pte_present(u32 **p, struct uasm_reloc **r,
+> >  			cur = t;
+> >  		}
+> >  		uasm_i_andi(p, t, cur,
+> > -			(_PAGE_PRESENT | _PAGE_READ) >> _PAGE_PRESENT_SHIFT);
+> > -		uasm_i_xori(p, t, t,
+> > -			(_PAGE_PRESENT | _PAGE_READ) >> _PAGE_PRESENT_SHIFT);
+> > +			(_PAGE_PRESENT | _PAGE_NO_READ) >> _PAGE_PRESENT_SHIFT);
+> > +		uasm_i_xori(p, t, t, _PAGE_PRESENT >> _PAGE_PRESENT_SHIFT);
+> 
+> This code makes the assumption that _PAGE_READ was always at a higher
+> bit number than _PAGE_PRESENT, however this isn't true for _PAGE_NO_READ
+> in the defined(CONFIG_PHYS_ADDR_T_64BIT) && defined(CONFIG_CPU_MIPS32)
+> case, where the no read bit will have been shifted off the end of the
+> register value.
 
-This is a note to let you know that I've just added the patch titled
+Hi James,
 
-    pcmcia: db1xxx_ss: fix last irq_to_gpio user
+Note that as of this patch the PHYS_ADDR_T_64BIT && CPU_MIPS32 case is
+still the XPA case, until patch 7.
 
-to the 4.4-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+XPA support hardcodes for RIXI being present, which whilst technically
+doesn't seem valid it's already in mainline & seems like a requirement
+unlikely to be violated - R6 mandates RIXI, and it seems unlikely any
+new R5 + XPA cores would come along at this point. That being the case,
+XPA kernels where _PAGE_PRESENT_SHIFT > _PAGE_NO_READ_SHIFT would always
+take the cpu_has_rixi path & not hit the problem you describe, or else
+would already be hitting problems elsewhere due to the lack of RIXI.
 
-The filename of the patch is:
-     pcmcia-db1xxx_ss-fix-last-irq_to_gpio-user.patch
-and it can be found in the queue-4.4 subdirectory.
+I agree it would be good to make that clearer though, so will add a
+panic or something in another patch.
 
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
+> Other than that, I can't fault this patch.
+
+Thanks for the review :)
+
+Paul

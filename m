@@ -1,18 +1,14 @@
-Received: from mail-yw0-f177.google.com ([209.85.161.177]:36204 "EHLO
-        mail-yw0-f177.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27027022AbcDSNxrU78ej (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 19 Apr 2016 15:53:47 +0200
-Received: by mail-yw0-f177.google.com with SMTP id o66so17548311ywc.3
-        for <linux-mips@linux-mips.org>; Tue, 19 Apr 2016 06:53:47 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38634 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27007106AbcDSOrJBjAQv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 19 Apr 2016 16:47:09 +0200
+From: James Hartley <james.hartley@imgtec.com>
+Subject: [PATCH V2] mips: pistachio: Determine SoC revision during boot
+Date: Tue, 19 Apr 2016 15:46:55 +0100
+Message-ID: <1461077215-1884-1-git-send-email-james.hartley@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <1461064751-17873-1-git-send-email-chenhc@lemote.com>
-References: <1461064751-17873-1-git-send-email-chenhc@lemote.com>
-Date: Tue, 19 Apr 2016 09:53:41 -0400
-Message-ID: <CADnq5_OyS_pCu-4wW5uFpnr5kvqkHK5uPdmBKgHHmfZ-dOdXvw@mail.gmail.com>
-Subject: Re: [PATCH] drm: Loongson-3 doesn't fully support wc memory
-From: Alex Deucher <alexdeucher@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <alexdeucher@gmail.com>
+Content-Type: text/plain
+Return-Path: <James.Hartley@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,38 +18,88 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Huacai Chen <chenhc@lemote.com>
-Cc: David Airlie <airlied@linux.ie>, linux-mips@linux-mips.org, Maling list - DRI developers <dri-devel@lists.freedesktop.org>
-Message-ID: <20160419135341.FFzQ6WHk84SPl6qBapYvykYeBB4Y7gd4n8YCWhemGyY@z>
+To: Ralf Baechle <ralf@linux-mips.org>, Andrew Bresticker <abrestic@chromium.org>, Jonas Gorski <jogo@openwrt.org>, James Hogan <james.hogan@imgtec.com>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Ionela Voinescu <ionela.voinescu@imgtec.com>, James Hartley <james.hartley@imgtec.com>
+Message-ID: <20160419144655.GmngndVsU6KbWRwdwBlQ2KLfNMkTdqko7vQYNh00Pss@z>
 
-On Tue, Apr 19, 2016 at 7:19 AM, Huacai Chen <chenhc@lemote.com> wrote:
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Now that there are different revisions of the Pistachio SoC
+in circulation, add this information to the boot log to make
+it easier for users to determine which hardware they have.
 
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: James Hartley <james.hartley@imgtec.com>
+Signed-off-by: Ionela Voinescu <ionela.voinescu@imgtec.com>
+---
+ arch/mips/pistachio/init.c | 35 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
 
-> ---
->  include/drm/drm_cache.h | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/include/drm/drm_cache.h b/include/drm/drm_cache.h
-> index 461a055..cebecff 100644
-> --- a/include/drm/drm_cache.h
-> +++ b/include/drm/drm_cache.h
-> @@ -39,6 +39,8 @@ static inline bool drm_arch_can_wc_memory(void)
->  {
->  #if defined(CONFIG_PPC) && !defined(CONFIG_NOT_COHERENT_CACHE)
->         return false;
-> +#elif defined(CONFIG_MIPS) && defined(CONFIG_CPU_LOONGSON3)
-> +       return false;
->  #else
->         return true;
->  #endif
-> --
-> 2.7.0
->
->
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+diff --git a/arch/mips/pistachio/init.c b/arch/mips/pistachio/init.c
+index 96ba2cc..956c92e 100644
+--- a/arch/mips/pistachio/init.c
++++ b/arch/mips/pistachio/init.c
+@@ -2,6 +2,7 @@
+  * Pistachio platform setup
+  *
+  * Copyright (C) 2014 Google, Inc.
++ * Copyright (C) 2016 Imagination Technologies
+  *
+  * This program is free software; you can redistribute it and/or modify it
+  * under the terms and conditions of the GNU General Public License,
+@@ -9,6 +10,7 @@
+  */
+ 
+ #include <linux/init.h>
++#include <linux/io.h>
+ #include <linux/kernel.h>
+ #include <linux/of_address.h>
+ #include <linux/of_fdt.h>
+@@ -24,9 +26,38 @@
+ #include <asm/smp-ops.h>
+ #include <asm/traps.h>
+ 
++/*
++ * Core revision register decoding
++ * Bits 23 to 20: Major rev
++ * Bits 15 to 8: Minor rev
++ * Bits 7 to 0: Maintenance rev
++ */
++#define PISTACHIO_CORE_REV_REG	0xB81483D0
++#define PISTACHIO_CORE_REV_A1	0x00100006
++#define PISTACHIO_CORE_REV_B0	0x00100106
++
+ const char *get_system_type(void)
+ {
+-	return "IMG Pistachio SoC";
++	u32 core_rev;
++	const char *sys_type;
++
++	core_rev = __raw_readl((const void *)PISTACHIO_CORE_REV_REG);
++
++	switch (core_rev) {
++	case PISTACHIO_CORE_REV_B0:
++		sys_type = "IMG Pistachio SoC (B0)";
++		break;
++
++	case PISTACHIO_CORE_REV_A1:
++		sys_type = "IMG Pistachio SoC (A1)";
++		break;
++
++	default:
++		sys_type = "IMG Pistachio SoC";
++		break;
++	}
++
++	return sys_type;
+ }
+ 
+ static void __init plat_setup_iocoherency(void)
+@@ -109,6 +140,8 @@ void __init prom_init(void)
+ 	mips_cm_probe();
+ 	mips_cpc_probe();
+ 	register_cps_smp_ops();
++
++	pr_info("SoC Type: %s\n", get_system_type());
+ }
+ 
+ void __init prom_free_prom_memory(void)
+-- 
+2.5.0

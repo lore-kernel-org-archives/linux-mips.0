@@ -1,19 +1,14 @@
-Received: from mail-pf0-f182.google.com ([209.85.192.182]:34685 "EHLO
-        mail-pf0-f182.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27026949AbcDRVXQ5O50i (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Apr 2016 23:23:16 +0200
-Received: by mail-pf0-f182.google.com with SMTP id c20so84551515pfc.1
-        for <linux-mips@linux-mips.org>; Mon, 18 Apr 2016 14:23:16 -0700 (PDT)
-Subject: Re: [PATCH v2] bus: brcmstb_gisb: Rework dependencies
-References: <1460839575-16869-1-git-send-email-f.fainelli@gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <57154FBD.9080903@gmail.com>
-Date: Mon, 18 Apr 2016 14:21:01 -0700
+Received: from mailapp01.imgtec.com ([195.59.15.196]:5527 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27027002AbcDSIZe68DcY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 19 Apr 2016 10:25:34 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH v3 00/13] TLB/XPA fixes & cleanups
+Date: Tue, 19 Apr 2016 09:24:58 +0100
+Message-ID: <1461054311-387-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <1460839575-16869-1-git-send-email-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-Path: <f.fainelli@gmail.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,19 +18,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-arm-kernel@lists.infradead.org
-Cc: linux-mips@linux-mips.org, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Russell King <linux@arm.linux.org.uk>, Olof Johansson <olof@lixom.net>, Suzuki K Poulose <suzuki.poulose@arm.com>, Arnd Bergmann <arnd@arndb.de>, Punit Agrawal <punit.agrawal@arm.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Chen-Yu Tsai <wens@csie.org>, "open list:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." <bcm-kernel-feedback-list@broadcom.com>, open list <linux-kernel@vger.kernel.org>
-Message-ID: <20160418212101.rsLNFXX1gRAHAPpZUcA1L-pAQSy-0IHwY-bBA9gswPU@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, "Maciej W. Rozycki" <macro@imgtec.com>, Joshua
+ Kinard <kumba@gentoo.org>, Huacai Chen <chenhc@lemote.com>, "Maciej W.
+ Rozycki" <macro@linux-mips.org>, Paul Gortmaker <paul.gortmaker@windriver.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, "Peter
+ Zijlstra (Intel)" <peterz@infradead.org>, David Hildenbrand <dahi@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, David
+ Daney <david.daney@cavium.com>, Jonas Gorski <jogo@openwrt.org>, Markos
+ Chandras <markos.chandras@imgtec.com>, Ingo Molnar <mingo@kernel.org>, Jerome Marchand <jmarchan@redhat.com>, Alex Smith <alex.smith@imgtec.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Message-ID: <20160419082458.uKCGIp8wSy_vEyyWjC-EBKBzL8JvAWqmmIMk-f4BsSE@z>
 
-On 16/04/16 13:46, Florian Fainelli wrote:
-> Do not have the machine Kconfig entry point need to select
-> BRCMSTB_GISB_ARB, instead, just let it be default ARCH_BRCMSTB which is
-> a better way to deal with this. While at it, also make it default
-> BMIPS_GENERIC so the legacy MIPS-based STB platforms can benefit from
-> the same thing.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+This series fixes up a number of issues introduced by commit
+c5b367835cfc ("MIPS: Add support for XPA."), including breakage of the
+MIPS32 with 36 bit physical addressing case & clobbering of $1 upon TLB
+refill exceptions. Along the way a number of cleanups are made, which
+leaves pgtable-bits.h in particular much more readable than before.
 
-Applied to drivers/next
+The series applies atop v4.6-rc4.
+
+James Hogan (4):
+  MIPS: Separate XPA CPU feature into LPA and MVH
+  MIPS: Fix HTW config on XPA kernel without LPA enabled
+  MIPS: mm: Don't clobber $1 on XPA TLB refill
+  MIPS: mm: Don't do MTHC0 if XPA not present
+
+Paul Burton (9):
+  MIPS: Remove redundant asm/pgtable-bits.h inclusions
+  MIPS: Use enums to make asm/pgtable-bits.h readable
+  MIPS: mm: Standardise on _PAGE_NO_READ, drop _PAGE_READ
+  MIPS: mm: Unify pte_page definition
+  MIPS: mm: Fix MIPS32 36b physical addressing (alchemy, netlogic)
+  MIPS: mm: Pass scratch register through to iPTE_SW
+  MIPS: mm: Be more explicit about PTE mode bit handling
+  MIPS: mm: Simplify build_update_entries
+  MIPS: mm: Panic if an XPA kernel is run without RIXI
+
+ arch/mips/include/asm/cpu-features.h |   8 +-
+ arch/mips/include/asm/cpu.h          |   3 +-
+ arch/mips/include/asm/pgtable-32.h   |  33 +++++-
+ arch/mips/include/asm/pgtable-bits.h | 211 ++++++++++++++++-------------------
+ arch/mips/include/asm/pgtable.h      |  78 +++++++++----
+ arch/mips/kernel/cpu-probe.c         |   6 +-
+ arch/mips/kernel/head.S              |   1 -
+ arch/mips/kernel/r4k_switch.S        |   1 -
+ arch/mips/mm/init.c                  |  12 +-
+ arch/mips/mm/tlb-r4k.c               |   6 +-
+ arch/mips/mm/tlbex.c                 | 116 +++++++++----------
+ 11 files changed, 263 insertions(+), 212 deletions(-)
+
 -- 
-Florian
+2.8.0

@@ -1,22 +1,18 @@
-Received: from mail-wm0-f42.google.com ([74.125.82.42]:35061 "EHLO
-        mail-wm0-f42.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27026633AbcDTLYRKaxS9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 20 Apr 2016 13:24:17 +0200
-Received: by mail-wm0-f42.google.com with SMTP id e201so46624823wme.0
-        for <linux-mips@linux-mips.org>; Wed, 20 Apr 2016 04:24:17 -0700 (PDT)
-Date: Wed, 20 Apr 2016 13:24:09 +0200
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH] drm: Loongson-3 doesn't fully support wc memory
-Message-ID: <20160420112409.GN2510@phenom.ffwll.local>
-References: <1461064751-17873-1-git-send-email-chenhc@lemote.com>
- <CADnq5_OyS_pCu-4wW5uFpnr5kvqkHK5uPdmBKgHHmfZ-dOdXvw@mail.gmail.com>
- <CAAhV-H6EsxUhuXAAYBhun-S4+tM-xhWxKbXD4Jg0btK4sLfjGg@mail.gmail.com>
- <20160420064923.GA698@kroah.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:10572 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27027150AbcDTPMxu2b-x (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 20 Apr 2016 17:12:53 +0200
+Date: Wed, 20 Apr 2016 16:12:46 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH] KVM: remove buggy vcpu id check on vcpu creation
+Message-ID: <20160420151246.GY7859@jhogan-linux.le.imgtec.org>
+References: <146116487861.14909.7528002102875279653.stgit@bahia.huguette.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ELMKpCVvjiB+uwRu"
 Content-Disposition: inline
-In-Reply-To: <20160420064923.GA698@kroah.com>
-Return-Path: <daniel@ffwll.ch>
+In-Reply-To: <146116487861.14909.7528002102875279653.stgit@bahia.huguette.org>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,35 +22,122 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Greg KH <greg@kroah.com>
-Cc: Huacai Chen <chenhc@lemote.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, stable <stable@vger.kernel.org>
-Message-ID: <20160420112409.Gj1SscSrFBPTfuDPbdqmHxgFdo0MNUJ0YSLzSkRJqLQ@z>
+To: Greg Kurz <gkurz@linux.vnet.ibm.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, mingo@redhat.com, linux-mips@linux-mips.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, qemu-ppc@nongnu.org, Cornelia Huck <cornelia.huck@de.ibm.com>, Paul Mackerras <paulus@samba.org>, David Gibson <david@gibson.dropbear.id.au>
+Message-ID: <20160420151246.iHz_3mKKDH7CaktxTMrSj5JTjMBTMj1tFr_MAxhewJ8@z>
 
-On Wed, Apr 20, 2016 at 03:49:23PM +0900, Greg KH wrote:
-> On Wed, Apr 20, 2016 at 02:18:20PM +0800, Huacai Chen wrote:
-> > Cc: stable@vger.kernel.org
-> 
-> <formletter>
-> 
-> This is not the correct way to submit patches for inclusion in the
-> stable kernel tree.  Please read Documentation/stable_kernel_rules.txt
-> for how to do this properly.
-> 
-> </formletter>
+--ELMKpCVvjiB+uwRu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Not sure what exactly your script latched onto, but at least in the drm
-subsystem it's pretty common to remind maintainers with a reply just
-containing
+Hi Greg,
 
-Cc: stable@vger.kernel.org
+On Wed, Apr 20, 2016 at 05:07:58PM +0200, Greg Kurz wrote:
+> Commit 338c7dbadd26 ("KVM: Improve create VCPU parameter (CVE-2013-4587)")
+> introduced a check to prevent potential kernel memory corruption in case
+> the vcpu id is too great.
+>=20
+> Unfortunately this check assumes vcpu ids grow in sequence with a common
+> difference of 1, which is wrong: archs are free to use vcpu id as they fi=
+t.
+> For example, QEMU originated vcpu ids for PowerPC cpus running in boot3s_=
+hv
+> mode, can grow with a common difference of 2, 4 or 8: if KVM_MAX_VCPUS is
+> 1024, guests may be limited down to 128 vcpus on POWER8.
+>=20
+> This means the check does not belong here and should be moved to some arch
+> specific function: kvm_arch_vcpu_create() looks like a good candidate.
+>=20
+> ARM and s390 already have such a check.
+>=20
+> I could not spot any path in the PowerPC or common KVM code where a vcpu
+> id is used as described in the above commit: I believe PowerPC can live
+> without this check.
+>=20
+> In the end, this patch simply moves the check to MIPS and x86.
+>=20
+> Signed-off-by: Greg Kurz <gkurz@linux.vnet.ibm.com>
+> ---
+>  arch/mips/kvm/mips.c |    3 +++
+>  arch/x86/kvm/x86.c   |    3 +++
+>  virt/kvm/kvm_main.c  |    3 ---
+>  3 files changed, 6 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+> index 70ef1a43c114..ce3f1e8a8b3f 100644
+> --- a/arch/mips/kvm/mips.c
+> +++ b/arch/mips/kvm/mips.c
+> @@ -251,6 +251,9 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm=
+, unsigned int id)
+> =20
+>  	struct kvm_vcpu *vcpu =3D kzalloc(sizeof(struct kvm_vcpu), GFP_KERNEL);
+> =20
+> +	if (id >=3D KVM_MAX_VCPUS)
+> +		return -EINVAL;
 
-that they need to add that to the patch when applying. Often combined with
-an r-b/a-b tag. And Damien is working to teach patchwork to auto-add
-those, so yeah it's indeed the right way to submit a patch for stable. At
-least here ;-)
+This needs to go before the kzalloc above, otherwise you introduce a
+memory leak.
 
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Cheers
+James
+
+> +
+>  	if (!vcpu) {
+>  		err =3D -ENOMEM;
+>  		goto out;
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 9b7798c7b210..f705d57b12ed 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -7358,6 +7358,9 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *k=
+vm,
+>  {
+>  	struct kvm_vcpu *vcpu;
+> =20
+> +	if (id >=3D KVM_MAX_VCPUS)
+> +		return -EINVAL;
+> +
+>  	if (check_tsc_unstable() && atomic_read(&kvm->online_vcpus) !=3D 0)
+>  		printk_once(KERN_WARNING
+>  		"kvm: SMP vm created on host with unstable TSC; "
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 4fd482fb9260..6b6cca3cb488 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -2272,9 +2272,6 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm=
+, u32 id)
+>  	int r;
+>  	struct kvm_vcpu *vcpu;
+> =20
+> -	if (id >=3D KVM_MAX_VCPUS)
+> -		return -EINVAL;
+> -
+>  	vcpu =3D kvm_arch_vcpu_create(kvm, id);
+>  	if (IS_ERR(vcpu))
+>  		return PTR_ERR(vcpu);
+>=20
+
+--ELMKpCVvjiB+uwRu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXF5xuAAoJEGwLaZPeOHZ60s0QALg9Z/BOYnfQaiJ9wDAGu90S
+3lMgWV+Mff+vyMKSAKfBei0XpGAqB2rIIY0kW1tVEBisF8mIMAEfRp6Mdhh4WHQn
+a/of3S5GWZiiIXnl+0BdwoReLdRKl6ewOWbPVVIDCTuuvuDEXPEzCVQDhJp9jxzG
+uy1xYI5wEP6ytHsmhA4hOlwb+tnO7eZKSfIr8sz66OIeZgtPfqI9iMH259Y/Rjg3
+AStvgQw4TZyItA5GXM0EYi+dyJQTEIXJPA1frFSCofyHmT+r4sSjBvQilYM3Fiic
+9Sngxw2W0OHkDwnITQJw6oKp0DJbDhzHaO7+2WdGJrAK7HQUzFM8Yzem1Ufp29ni
+X4min9elfJ+0xAvyrekdlWcppr2akz34Kd+GlGD0AuG+0077czNzonnHvsEF7m2n
+5IKcRWeth3d1NUMLz/gFoPDPFMg+gst+T7GPGjEl4SlNP40sBshOympSa5pTYajc
+O3qVUaKeNpJJoMLKOFKJYkK48yd2dF5Rft+6jc5Cg52htfnzxwOSaOqzXg5brpjd
+AIQ1mdixUnq8OHsJMoZYx7NORUMf4kE7fnZBdLM8BLj8iPyGY2RWh4yCk7IESiwH
+yG/YMW6HTYiM49N3+j2VPGoUeFJvPfg/A2btV80gB83FE1L5JPqfVCPg1moD1G5d
+F9A+EyI/TmRVpctVWisu
+=z0sT
+-----END PGP SIGNATURE-----
+
+--ELMKpCVvjiB+uwRu--

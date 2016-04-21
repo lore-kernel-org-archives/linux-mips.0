@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44339 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8154 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026632AbcDUNINNFPNj (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Apr 2016 15:08:13 +0200
+        with ESMTP id S27025433AbcDUPkZWwrdb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Apr 2016 17:40:25 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 11/11] MIPS: math-emu: Fix jalr emulation when rd == $0
-Date: Thu, 21 Apr 2016 14:04:55 +0100
-Message-ID: <1461243895-30371-12-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1461243895-30371-1-git-send-email-paul.burton@imgtec.com>
-References: <1461243895-30371-1-git-send-email-paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: Prevent "restoration" of MSA context in non-MSA kernels
+Date: Thu, 21 Apr 2016 16:39:37 +0100
+Message-ID: <1461253177-6724-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -21,44 +19,57 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, "stable # v3 . 10" <stable@vger.kernel.org>, "Maciej W. Rozycki" <macro@imgtec.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20160421130455.WUsmEZuRdyqj6KDxmzD3HKhedGG2-2TqjQJTvVXwoq8@z>
+Cc: Michal Toman <michal.toman@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, James Hogan <james.hogan@imgtec.com>, "stable # v4 . 3+" <stable@vger.kernel.org>
+Message-ID: <20160421153937.Jj2vsuBxWMXWi6XfJalx4PpGSuFWi-aDLvgcZuetpRg@z>
 
-When emulating a jalr instruction with rd == $0, the code in
-isBranchInstr was incorrectly writing to GPR $0 which should actually
-always remain zeroed. This would lead to any further instructions
-emulated which use $0 operating on a bogus value until the task is next
-context switched, at which point the value of $0 in the task context
-would be restored to the correct zero by a store in SAVE_SOME. Fix this
-by not writing to rd if it is $0.
+If a kernel doesn't support MSA context (ie. CONFIG_CPU_HAS_MSA=n) then
+it will only keep 64 bits per FP register in thread context, and the
+calls to set_fpr64 in restore_msa_extcontext will overrun the end of the
+FP register context into the FCSR & MSACSR values. GCC 6.x has become
+smart enough to detect this & complain like so:
 
-Fixes: 102cedc32a6e ("MIPS: microMIPS: Floating point support.")
-Cc: stable <stable@vger.kernel.org> # v3.10
+    arch/mips/kernel/signal.c: In function 'protected_restore_fp_context':
+    ./arch/mips/include/asm/processor.h:114:17: error: array subscript is above array bounds [-Werror=array-bounds]
+      fpr->val##width[FPR_IDX(width, idx)] = val;   \
+      ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+    ./arch/mips/include/asm/processor.h:118:1: note: in expansion of macro 'BUILD_FPR_ACCESS'
+     BUILD_FPR_ACCESS(64)
+
+The only way to trigger this code to run would be for a program to set
+up an artificial extended MSA context structure following a sigframe &
+execute sigreturn. Whilst this doesn't allow a program to write to any
+state that it couldn't already, it makes little sense to allow this
+"restoration" of MSA context in a system that doesn't support MSA.
+
+Fix this by killing a program with SIGSYS if it tries something as crazy
+as "restoring" fake MSA context in this way, also fixing the build error
+& allowing for most of restore_msa_extcontext to be optimised out of
+kernels without support for MSA.
+
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Reported-by: Michal Toman <michal.toman@imgtec.com>
+Fixes: bf82cb30c7e5 ("MIPS: Save MSA extended context around signals")
+Cc: James Hogan <james.hogan@imgtec.com>
+Cc: stable <stable@vger.kernel.org> # v4.3+
 
 ---
 
- arch/mips/math-emu/cp1emu.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/mips/kernel/signal.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-index 85dd174..d96e912 100644
---- a/arch/mips/math-emu/cp1emu.c
-+++ b/arch/mips/math-emu/cp1emu.c
-@@ -445,9 +445,11 @@ static int isBranchInstr(struct pt_regs *regs, struct mm_decoded_insn dec_insn,
- 	case spec_op:
- 		switch (insn.r_format.func) {
- 		case jalr_op:
--			regs->regs[insn.r_format.rd] =
--				regs->cp0_epc + dec_insn.pc_inc +
--				dec_insn.next_pc_inc;
-+			if (insn.r_format.rd != 0) {
-+				regs->regs[insn.r_format.rd] =
-+					regs->cp0_epc + dec_insn.pc_inc +
-+					dec_insn.next_pc_inc;
-+			}
- 			/* Fall through */
- 		case jr_op:
- 			/* For R6, JR already emulated in jalr_op */
+diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+index bf792e2..a304b70 100644
+--- a/arch/mips/kernel/signal.c
++++ b/arch/mips/kernel/signal.c
+@@ -195,6 +195,9 @@ static int restore_msa_extcontext(void __user *buf, unsigned int size)
+ 	unsigned int csr;
+ 	int i, err;
+ 
++	if (!config_enabled(CONFIG_CPU_HAS_MSA))
++		return SIGSYS;
++
+ 	if (size != sizeof(*msa))
+ 		return -EINVAL;
+ 
 -- 
 2.8.0
